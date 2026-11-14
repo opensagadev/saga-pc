@@ -52,26 +52,26 @@ extern "C" {
     extern "C" {
         extern NUMTL *FadeMtl;
 
-        typedef struct nuprimvertex_pc_s { // size 0x18
-            f32 x;                         // 0x00
-            f32 y;                         // 0x04
-            f32 z;                         // 0x08
-            u32 colour;                    // 0x0c
-            f32 u;                         // 0x10
-            f32 v;                         // 0x14
+        typedef struct nuprimvertex_s { // size 0x18
+            f32 x;                      // 0x00
+            f32 y;                      // 0x04
+            f32 z;                      // 0x08
+            u32 colour;                 // 0x0c
+            f32 u;                      // 0x10
+            f32 v;                      // 0x14
         } NUPRIMVERTEX_PC;
 
-        typedef struct LEGAL_MATERIAL_PC { // size 0xb8
-            u8 reserved00[0x40];           // 0x00
-            u32 attributes;                // 0x40
-            u8 reserved44[0x10];           // 0x44
-            NUVEC diffuse;                 // 0x54
-            u8 reserved60[0x10];           // 0x60
-            f32 opacity;                   // 0x70
-            i16 texture_id;                // 0x74
-            u8 reserved76[0x3e];           // 0x76
-            u32 shader_flags;              // 0xb4
-        } LEGAL_MATERIAL_PC;
+        typedef struct LEGAL_MATERIAL { // size 0xb8
+            u8 reserved00[0x40];        // 0x00
+            u32 attributes;             // 0x40
+            u8 reserved44[0x10];        // 0x44
+            NUVEC diffuse;              // 0x54
+            u8 reserved60[0x10];        // 0x60
+            f32 opacity;                // 0x70
+            i16 texture_id;             // 0x74
+            u8 reserved76[0x3e];        // 0x76
+            u32 shader_flags;           // 0xb4
+        } LEGAL_MATERIAL;
     }
 
     extern "C" {
@@ -144,7 +144,7 @@ extern "C" {
 
         static i32 LoadPermCreateLegalMtl(NUMTL **output, i32 texture_id) {
             NUMTL *material;
-            LEGAL_MATERIAL_PC *view;
+            LEGAL_MATERIAL *view;
             if (*output != NULL) {
                 return 1;
             }
@@ -152,7 +152,7 @@ extern "C" {
             if (material == NULL) {
                 return 0;
             }
-            view = (LEGAL_MATERIAL_PC *)material;
+            view = (LEGAL_MATERIAL *)material;
             view->diffuse.x = 1.0f;
             view->diffuse.y = 1.0f;
             view->diffuse.z = 1.0f;

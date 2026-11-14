@@ -10,7 +10,7 @@
 #include "legoapi/items/base/apiobject.h"
 #endif
 
-typedef struct episode_data_pc_s {
+typedef struct episode_data_s {
     i16 name_id;
     i16 text_id;
     i16 area_ids[10];

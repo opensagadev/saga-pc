@@ -111,18 +111,18 @@ void *Technos_FindTgt(TECHNO_s *techno) {
     }
 }
 
-typedef struct techno_callback_pc_s { // size 0x70
-    char name[16];                    // 0x00
-    NUVEC position;                   // 0x10
-    NUVEC ground_position;            // 0x1c
-    f32 ground_offset;                // 0x28
-    f32 scale;                        // 0x2c
-    u16 y_rotation;                   // 0x30
-    u16 ground_x_rotation;            // 0x32
-    u16 ground_z_rotation;            // 0x34
-    u8 enabled;                       // 0x36
-    u8 target_mode;                   // 0x37
-    i32 output;                       // 0x38
+typedef struct techno_callback_s { // size 0x70
+    char name[16];                 // 0x00
+    NUVEC position;                // 0x10
+    NUVEC ground_position;         // 0x1c
+    f32 ground_offset;             // 0x28
+    f32 scale;                     // 0x2c
+    u16 y_rotation;                // 0x30
+    u16 ground_x_rotation;         // 0x32
+    u16 ground_z_rotation;         // 0x34
+    u8 enabled;                    // 0x36
+    u8 target_mode;                // 0x37
+    i32 output;                    // 0x38
 
     union { // size 0x1
         u8 flags;
@@ -141,24 +141,24 @@ typedef struct techno_callback_pc_s { // size 0x70
     GIZMO_PC *controlled_object; // 0x6c
 } TECHNO_CALLBACK_PC;
 
-typedef struct techno_level_view_pc_s { // size 0xed
-    u8 reserved_000[0xec];              // 0x00
-    u8 max_technos;                     // 0xec
+typedef struct techno_level_view_s { // size 0xed
+    u8 reserved_000[0xec];           // 0x00
+    u8 max_technos;                  // 0xec
 } TECHNO_LEVEL_VIEW_PC;
 
-typedef struct techno_gizmo_type_name_pc_s { // size 0x9c
-    char name[32];                           // 0x00
-    u8 reserved_20[0x7c];                    // 0x20
+typedef struct techno_gizmo_type_name_s { // size 0x9c
+    char name[32];                        // 0x00
+    u8 reserved_20[0x7c];                 // 0x20
 } TECHNO_GIZMO_TYPE_NAME_PC;
 
-typedef struct techno_obstacle_view_pc_s { // size 0x38
-    u8 reserved_00[0x34];                  // 0x00
-    GAMEANIMSET *anim_set;                 // 0x34
+typedef struct techno_obstacle_view_s { // size 0x38
+    u8 reserved_00[0x34];               // 0x00
+    GAMEANIMSET *anim_set;              // 0x34
 } TECHNO_OBSTACLE_VIEW_PC;
 
-typedef struct techno_progress_pc_s { // size 0x8
-    u32 active[1];                    // 0x0
-    u32 visible[1];                   // 0x4
+typedef struct techno_progress_s { // size 0x8
+    u32 active[1];                 // 0x0
+    u32 visible[1];                // 0x4
 } TECHNO_PROGRESS_PC;
 
 STATIC_ASSERT(sizeof(TECHNO_CONFIG_PC) == 0x4c);

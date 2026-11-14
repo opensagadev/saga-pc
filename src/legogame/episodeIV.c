@@ -3,19 +3,19 @@
 #include <stdio.h>
 struct panel_movement_pc_s;
 
-typedef struct CLOUDCITY_PANEL_FLAGS_VIEW_PC {
+typedef struct CLOUDCITY_PANEL_FLAGS_VIEW {
     u8 unknown_00[0x62];
     u8 flags;
-} CLOUDCITY_PANEL_FLAGS_VIEW_PC;
+} CLOUDCITY_PANEL_FLAGS_VIEW;
 
 // Kept as an assert, not a layout comment: the declaration count of this unit steers
 // BlockadeRunnerDEjectCreaturePc (docs/cleanup-audit.md, section 6).
-STATIC_ASSERT(offsetof(CLOUDCITY_PANEL_FLAGS_VIEW_PC, flags) == 0x62);
+STATIC_ASSERT(offsetof(CLOUDCITY_PANEL_FLAGS_VIEW, flags) == 0x62);
 STATIC_ASSERT(offsetof(GIZBUILDIT_PC, build_state) == 0x6d);
 
-typedef struct CLOUDCITY_LEVEL_FLAG_VIEW_PC { // size 0x1
-    u8 started;                               // 0x0
-} CLOUDCITY_LEVEL_FLAG_VIEW_PC;
+typedef struct CLOUDCITY_LEVEL_FLAG_VIEW { // size 0x1
+    u8 started;                            // 0x0
+} CLOUDCITY_LEVEL_FLAG_VIEW;
 
 i32 MosEisleyC_PastBarrier(GAMEOBJECT *object) {
     if (WORLD->current_level == MOSEISLEYC_LDATA) {
@@ -35,15 +35,15 @@ void DeathStarEscapeC_Reset(WORLDINFO *unused0) {
     LevAIMessage[0] = CheckGizAIMessage(gizaimessagesys, "RescuedDroids", NULL);
 }
 
-typedef struct TORPEDO_MUSIC_FLAGS_VIEW_PC {
+typedef struct TORPEDO_MUSIC_FLAGS_VIEW {
     u8 count;
     u8 flags;
-} TORPEDO_MUSIC_FLAGS_VIEW_PC;
+} TORPEDO_MUSIC_FLAGS_VIEW;
 
 // Kept as an assert, not a layout comment: the declaration count of this unit steers
 // BlockadeRunnerDEjectCreaturePc (docs/cleanup-audit.md, section 6).
-STATIC_ASSERT(offsetof(TORPEDO_MUSIC_FLAGS_VIEW_PC, count) == 0);
-STATIC_ASSERT(offsetof(TORPEDO_MUSIC_FLAGS_VIEW_PC, flags) == 1);
+STATIC_ASSERT(offsetof(TORPEDO_MUSIC_FLAGS_VIEW, count) == 0);
+STATIC_ASSERT(offsetof(TORPEDO_MUSIC_FLAGS_VIEW, flags) == 1);
 STATIC_ASSERT(offsetof(GIZMO_PC, object) == 0);
 STATIC_ASSERT(offsetof(GIZMOBLOWUP_PC, status_flags) == 0x94);
 STATIC_ASSERT(offsetof(GAMEOBJECT, torpedo) == 0xcc4);
@@ -54,7 +54,7 @@ STATIC_ASSERT(offsetof(WORLDINFO, level_idx) == 0x11c);
 i32 DeathStarShieldDown(void) {
     GIZMOBLOWUP_PC *blowup;
     GAMEOBJECT *player;
-    TORPEDO_MUSIC_FLAGS_VIEW_PC *packet;
+    TORPEDO_MUSIC_FLAGS_VIEW *packet;
     if (LevGizmo[0] == NULL) {
         LevGizmo[0] = GizmoFindByName(WORLD->gizmo_sys, blowup_gizmotype_id, "bigbang1");
     }
@@ -72,7 +72,7 @@ i32 DeathStarShieldDown(void) {
     if (player != NULL && (WORLD->current_level != DEATHSTARBATTLED_LDATA ||
                            ObjInNarrowSock(player, WORLD->sock_sys, WORLD->level_idx) == 0)) {
         player = Player[0];
-        packet = (TORPEDO_MUSIC_FLAGS_VIEW_PC *)player->torpedo;
+        packet = (TORPEDO_MUSIC_FLAGS_VIEW *)player->torpedo;
         if (packet != NULL && (packet->count > 0 || (packet->flags & 2) != 0)) {
             return 1;
         }
@@ -81,7 +81,7 @@ i32 DeathStarShieldDown(void) {
     if (player != NULL && (WORLD->current_level != DEATHSTARBATTLED_LDATA ||
                            ObjInNarrowSock(player, WORLD->sock_sys, WORLD->level_idx) == 0)) {
         player = Player[1];
-        packet = (TORPEDO_MUSIC_FLAGS_VIEW_PC *)player->torpedo;
+        packet = (TORPEDO_MUSIC_FLAGS_VIEW *)player->torpedo;
         if (packet != NULL && (packet->count > 0 || (packet->flags & 2) != 0)) {
             return 1;
         }
@@ -420,11 +420,11 @@ void DeathStarBattleC_AlwaysUpdate(WORLDINFO *world) {
     }
 }
 
-typedef struct trenchrun_pc_s { // size 0x20
-    GAMEOBJECT *objects[3];     // 0x00
-    NUVEC position;             // 0x0c
-    i32 midtro_played;          // 0x18
-    f32 spawn_timer;            // 0x1c
+typedef struct trenchrun_s { // size 0x20
+    GAMEOBJECT *objects[3];  // 0x00
+    NUVEC position;          // 0x0c
+    i32 midtro_played;       // 0x18
+    f32 spawn_timer;         // 0x1c
 } TRENCHRUN_PC;
 
 /* Death Star trench run state. */

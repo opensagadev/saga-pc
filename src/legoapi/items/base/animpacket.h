@@ -7,7 +7,7 @@
 
 struct CHARACTER_MODEL_LAYERS_PC;
 
-typedef struct animpacket_pc_s {
+typedef struct animpacket_s {
     f32 current_time;
     f32 previous_time;
     f32 blend_elapsed_pc;
@@ -42,7 +42,7 @@ STATIC_ASSERT(offsetof(ANIMPACKET_PC, blend_source_animation) == 0x32);
 STATIC_ASSERT(offsetof(ANIMPACKET_PC, blend_target_animation) == 0x34);
 STATIC_ASSERT(offsetof(ANIMPACKET_PC, animation_index) == 0x36);
 
-typedef struct minianimpacket_pc_s MINIANIMPACKET_PC;
+typedef struct minianimpacket_s MINIANIMPACKET_PC;
 #ifdef __cplusplus
 extern "C" {
 #endif

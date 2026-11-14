@@ -10,16 +10,16 @@ extern "C" {
     extern char AreaFixUpName_Jedi[8];
 }
 
-typedef struct CHARACTER_SCENE_WORLD_PC {     // size 0x2984
+typedef struct CHARACTER_SCENE_WORLD {        // size 0x2984
     u8 unknown_0000[0x2980];                  // 0x0000
     KILLPARTS_CHARSCENE_PC *character_scenes; // 0x2980
-} CHARACTER_SCENE_WORLD_PC;
+} CHARACTER_SCENE_WORLD;
 
-typedef struct CHARACTER_SCENE_CUTSYS_PC { // size 0xc
-    CUTINFO **records;                     // 0x0
-    i32 count;                             // 0x4
-    u32 *character_flags;                  // 0x8
-} CHARACTER_SCENE_CUTSYS_PC;
+typedef struct CHARACTER_SCENE_CUTSYS { // size 0xc
+    CUTINFO **records;                  // 0x0
+    i32 count;                          // 0x4
+    u32 *character_flags;               // 0x8
+} CHARACTER_SCENE_CUTSYS;
 
 STATIC_ASSERT(offsetof(WORLDINFO, buffer_end) == 0x108);
 STATIC_ASSERT(offsetof(CHARACTERDATA_PC, flags) == 0x40);
@@ -36,23 +36,23 @@ STATIC_ASSERT(offsetof(GAMEOBJECT, jump_variant_state) == 0xe32);
 STATIC_ASSERT(offsetof(GAMEOBJECT, locator_matrices) == 0x804);
 STATIC_ASSERT(offsetof(NUMTX, translation) == 0x30);
 STATIC_ASSERT(offsetof(PLAYERCHARACTERCONFIG_PC, thingy_locator) == 0x110);
-STATIC_ASSERT(offsetof(GAMEDEBRISENTRY_PC, effect) == 0);
+STATIC_ASSERT(offsetof(GAMEDEBRISENTRY, effect) == 0);
 STATIC_ASSERT(offsetof(GAMEOBJECT, saved_hitpoints) == 0xe39);
 STATIC_ASSERT(sizeof(PLAYERCHARACTERCONFIG_PC) == 0x120);
 STATIC_ASSERT(sizeof(CHARACTERDATA_PC) == 0x4c);
 STATIC_ASSERT(offsetof(CHARACTERDATA_PC, name_id) == 0);
 STATIC_ASSERT(offsetof(CHARACTERDATA_PC, move_fn) == 0x18);
 STATIC_ASSERT(offsetof(CHARACTERDATA_PC, animate_fn) == 0x1c);
-STATIC_ASSERT(offsetof(GAMESAVE, customiser_start) + offsetof(GAME_CUSTOMISER_START_PC, name) == 0x7c38);
-STATIC_ASSERT(offsetof(GAMESAVE, customiser_start) + sizeof(GAME_CUSTOMISER_START_PC) +
-                  offsetof(GAME_CUSTOMISER_START_PC, name) ==
+STATIC_ASSERT(offsetof(GAMESAVE, customiser_start) + offsetof(GAME_CUSTOMISER_START, name) == 0x7c38);
+STATIC_ASSERT(offsetof(GAMESAVE, customiser_start) + sizeof(GAME_CUSTOMISER_START) +
+                  offsetof(GAME_CUSTOMISER_START, name) ==
               0x7c70);
 STATIC_ASSERT(offsetof(CHARACTERANIM_CONFIG_PC, name) == 0);
 STATIC_ASSERT(offsetof(CHARACTERANIM_CONFIG_PC, flags) == 4);
 STATIC_ASSERT(offsetof(CHARACTERANIM_CONFIG_PC, action_id) == 8);
 typedef void (*CHARACTER_UPDATE_CALLBACK_PC)(GAMEOBJECT *);
 
-typedef struct character_callback_writer_pc_s {
+typedef struct character_callback_writer_s {
     i32 name_id;
     u32 model_flags;
     u8 unknown_08[0x10];
@@ -61,7 +61,7 @@ typedef struct character_callback_writer_pc_s {
     CHARACTER_UPDATE_CALLBACK_PC post_animate;
 } CHARACTER_CALLBACK_WRITER_PC;
 
-struct KILLPARTS_WORLD_SCENES_PC {
+struct KILLPARTS_WORLD_SCENES {
     u8 unknown_0[0x2980];
     KILLPARTS_CHARSCENE_PC *character_scenes;
 };
@@ -160,12 +160,11 @@ extern "C" {
 
     void CharScenes_LevelLoad(WORLDINFO *world) {
         for (i32 i = 0; i < CHARCOUNT; ++i) {
-            ((CHARACTER_SCENE_WORLD_PC *)world)->character_scenes[i].scene = NULL;
+            ((CHARACTER_SCENE_WORLD *)world)->character_scenes[i].scene = NULL;
             if ((KillPartsCharSceneAreaPc == NULL || KillPartsCharSceneAreaPc[i].scene == NULL) &&
                 (CDataList[i].flags & 1) != 0 && world->cutscene_sys != NULL &&
-                ((((CHARACTER_SCENE_CUTSYS_PC *)world->cutscene_sys)->character_flags[i / 32] & (1 << (i & 31))) !=
-                 0)) {
-                CharScene_Load(&((CHARACTER_SCENE_WORLD_PC *)world)->character_scenes[i], i, &world->giz_buffer,
+                ((((CHARACTER_SCENE_CUTSYS *)world->cutscene_sys)->character_flags[i / 32] & (1 << (i & 31))) != 0)) {
+                CharScene_Load(&((CHARACTER_SCENE_WORLD *)world)->character_scenes[i], i, &world->giz_buffer,
                                world->buffer_end);
             }
         }
@@ -187,7 +186,7 @@ extern "C" {
     }
 
     NUSPECIALHANDLE *CharScene_FindHSpecial(WORLDINFO *world, i32 character_id) {
-        KILLPARTS_WORLD_SCENES_PC *scenes = reinterpret_cast<KILLPARTS_WORLD_SCENES_PC *>(world);
+        KILLPARTS_WORLD_SCENES *scenes = reinterpret_cast<KILLPARTS_WORLD_SCENES *>(world);
         NUSPECIALHANDLE *special;
         if (KillPartsCharSceneAreaPc != NULL && KillPartsCharSceneAreaPc[character_id].scene != NULL) {
             special = &KillPartsCharSceneAreaPc[character_id].special_scene;
@@ -218,7 +217,7 @@ void CharScene_Draw(WORLDINFO *world, i32 character_id, NUMTX *matrix, NUMTX *re
 extern "C" {
 
     void CharScenes_LevelDump(WORLDINFO *world) {
-        CHARACTER_SCENE_WORLD_PC *resource = (CHARACTER_SCENE_WORLD_PC *)world;
+        CHARACTER_SCENE_WORLD *resource = (CHARACTER_SCENE_WORLD *)world;
         if (resource->character_scenes == NULL) {
             return;
         }

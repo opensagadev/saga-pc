@@ -428,18 +428,18 @@ NUFPCOMJMPCTX SockSys_ConfigKeywords[] = {{"circuit", SockParCircuit},
                                           {NULL, NULL}};
 
 // The context a sock block is parsed with: the system and the sock being configured.
-typedef struct SOCKPAR_CONTEXT_PC {
+typedef struct SOCKPAR_CONTEXT {
     u32 reserved[2];
     SOCKSYS_PC *sock_sys;
     SOCK_PC *sock;
-} SOCKPAR_CONTEXT_PC;
+} SOCKPAR_CONTEXT;
 
 // Empty on PC, like SockSysMissingCameraDiagnostic: the warning for a
 // sock block without sock_end was compiled out.
 void SockSysMissingSockEndDiagnostic(char *file_name);
 
 void SockSysConfigureNuFPar(NUFPAR_PC *parser, void *data) {
-    SOCKPAR_CONTEXT_PC *context;
+    SOCKPAR_CONTEXT *context;
     i32 sock_index;
 
     context = data;
@@ -2375,16 +2375,16 @@ void RestoreLastSocksTurnoff(SOCKSYS_PC *system) {
     }
 }
 
-typedef struct SOCK_CAMERA_RESULT_PC { // size 0x64
-    SOCKPOSITION_PC socket;            // 0x00
-    NUVEC position;                    // 0x38
-    NUVEC target;                      // 0x44
-    f32 blend;                         // 0x50
-    f32 position_seek;                 // 0x54
-    f32 angle_seek;                    // 0x58
-    f32 shake;                         // 0x5c
-    f32 separation;                    // 0x60
-} SOCK_CAMERA_RESULT_PC;
+typedef struct SOCK_CAMERA_RESULT { // size 0x64
+    SOCKPOSITION_PC socket;         // 0x00
+    NUVEC position;                 // 0x38
+    NUVEC target;                   // 0x44
+    f32 blend;                      // 0x50
+    f32 position_seek;              // 0x54
+    f32 angle_seek;                 // 0x58
+    f32 shake;                      // 0x5c
+    f32 separation;                 // 0x60
+} SOCK_CAMERA_RESULT;
 
 i32 LastSingleSockWeWereInPc = -1;
 
@@ -2458,8 +2458,8 @@ i32 SockSysCameraWithOverlapBlend(SOCKSYS_PC *sock_sys, NUVEC *fallback_camera_p
                                   f32 *overlap_blend, f32 *position_seek, f32 *angle_seek, f32 *camera_shake,
                                   f32 *separation_scale) {
     f32 blend;
-    SOCK_CAMERA_RESULT_PC *from;
-    SOCK_CAMERA_RESULT_PC *to;
+    SOCK_CAMERA_RESULT *from;
+    SOCK_CAMERA_RESULT *to;
     i32 i;
     i32 j;
     ComplexSockPosition(sock_sys, player_camera_positions, camera_socket_position->sock_index,
@@ -2471,8 +2471,8 @@ i32 SockSysCameraWithOverlapBlend(SOCKSYS_PC *sock_sys, NUVEC *fallback_camera_p
         SOCK_PC *second_sock = &sock_sys->socks[second_index];
         i32 reverse;
         f32 distances[2];
-        SOCK_CAMERA_RESULT_PC first;
-        SOCK_CAMERA_RESULT_PC second;
+        SOCK_CAMERA_RESULT first;
+        SOCK_CAMERA_RESULT second;
         first.socket = second.socket = *camera_socket_position;
         for (i = 0; i < (i32)first_sock->blend_count; ++i) {
             if (first_sock->blend_entries[i].value == TempSPosList[1].sock_index) {

@@ -10,7 +10,7 @@
 #include "nu2api/numath/nuplane.h"
 #endif
 
-typedef struct pc_frustum_group_pc_s {
+typedef struct pc_frustum_group_s {
     u8 unknown_0000[0x1a0];
     NUPLANE planes[12];
     i32 plane_count;

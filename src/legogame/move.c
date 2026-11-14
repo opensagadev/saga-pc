@@ -8,15 +8,15 @@
 STATIC_ASSERT(offsetof(GIZMO_PC, object) == 0);
 STATIC_ASSERT(offsetof(WORLDINFO, giz_panel_sys) == 0x5070);
 STATIC_ASSERT(offsetof(WORLDINFO, level_objects) == 0x2ac0);
-STATIC_ASSERT(sizeof(LEVEL_OBJECT_RUNTIME_PC) == 0x10);
-STATIC_ASSERT(offsetof(LEVEL_OBJECT_RUNTIME_PC, active) == 0xe);
+STATIC_ASSERT(sizeof(LEVEL_OBJECT_RUNTIME) == 0x10);
+STATIC_ASSERT(offsetof(LEVEL_OBJECT_RUNTIME, active) == 0xe);
 STATIC_ASSERT(offsetof(TIMER, time_elapsed_mod_seconds) == 8);
 STATIC_ASSERT(offsetof(GAMEOBJECT, context_hover_target_y) == 0x778);
 STATIC_ASSERT(offsetof(GAMEOBJECT, context_timer) == 0x77c);
 STATIC_ASSERT(offsetof(GAMEOBJECT, panel_request_data) == 0x7a0);
 STATIC_ASSERT(offsetof(GAMEOBJECT, protocol_interface_action) == 0xe39);
 
-typedef struct default_animation_timers_pc_s {
+typedef struct default_animation_timers_s {
     u8 unknown_0000[0xd24];
     f32 ground_contact_grace;
     u8 unknown_0d28[0x78];
@@ -25,22 +25,22 @@ typedef struct default_animation_timers_pc_s {
     f32 fall_animation_timer;
 } DEFAULT_ANIMATION_TIMERS_PC;
 
-typedef struct CHARACTER_FALL_ANIMATION_READER_PC {
+typedef struct CHARACTER_FALL_ANIMATION_READER {
     u8 unknown_000[0xdac];
     f32 fall_animation_timer;
-} CHARACTER_FALL_ANIMATION_READER_PC;
+} CHARACTER_FALL_ANIMATION_READER;
 
-typedef struct default_animation_mini_request_pc_s {
+typedef struct default_animation_mini_request_s {
     u8 unknown_0000[0x7d0];
     DRAW_ATTACHMENTS_MINI_PC packet;
 } DEFAULT_ANIMATION_MINI_REQUEST_PC;
 
-typedef struct pod_camera_reader_pc_s {
+typedef struct pod_camera_reader_s {
     u8 unknown_0[0x1038];
     f32 camera_shake_strength;
 } POD_CAMERA_READER_PC;
 
-typedef struct pod_merge_packet_reader_pc_s {
+typedef struct pod_merge_packet_reader_s {
     u8 unknown_00[0x10];
     f32 blend_source_time;
     f32 blend_target_time;
@@ -54,13 +54,13 @@ typedef struct pod_merge_packet_reader_pc_s {
 extern i32 FalconDebKey[2];
 extern i32 LandspeederExhaustJointsPc[3];
 
-typedef struct force_glow_reader_pc_s {
+typedef struct force_glow_reader_s {
     u8 unknown_0000[0xd14];
     GAMEOBJECT *force_glow_object;
     GAMEOBJECT *force_glow_candidate;
 } FORCE_GLOW_READER_PC;
 
-typedef struct force_glow_packet_pc_s {
+typedef struct force_glow_packet_s {
     u8 unknown000[0x650];
     void *object;
     void *candidate;
@@ -72,10 +72,10 @@ typedef struct force_glow_packet_pc_s {
     f32 hold;
 } FORCE_GLOW_PACKET_PC;
 
-typedef struct BALLOON_HEIGHT_VIEW_PC {
+typedef struct BALLOON_HEIGHT_VIEW {
     u8 unknown[0x778];
     f32 height;
-} BALLOON_HEIGHT_VIEW_PC;
+} BALLOON_HEIGHT_VIEW;
 
 void SecurityDoor_MoveCode(WORLDINFO *, GAMEOBJECT *);
 void Techno_MoveCode(WORLDINFO *, GAMEOBJECT *);
@@ -89,12 +89,12 @@ void Transform_MoveCode(WORLDINFO *, GAMEOBJECT *);
 void Whip_MoveCode(GAMEOBJECT *);
 void TakeOverCode(GAMEOBJECT *, i32);
 
-typedef struct movement_suit_pc_s {
+typedef struct movement_suit_s {
     u8 unknown_00[0xc];
     u8 store_flag;
 } MOVEMENT_SUIT_PC;
 
-typedef struct movement_model_pc_s {
+typedef struct movement_model_s {
     u8 unknown_00[0xc];
     void **model_data_b;
 } MOVEMENT_MODEL_PC;
@@ -111,7 +111,7 @@ TUBE_PC *Tube_InAnyCylinder(WORLDINFO *, GAMEOBJECT *, i32);
 /* Subtracts the shared 0.0 double literal without folding it. */
 extern const f64 ActionSnapWeightedRandomZeroPc;
 
-typedef struct move_gunship_level_flags_pc_s {
+typedef struct move_gunship_level_flags_s {
     u8 progress;
     u8 secondary;
     u8 reserved[14];
@@ -176,22 +176,22 @@ typedef struct directional_world_pc_s {
     void *grabber;
 } DIRECTIONAL_WORLD_PC;
 
-typedef struct terrain_parent_context_view_pc_s {
+typedef struct terrain_parent_context_view_s {
     u8 unknown_0[0x6c4];
     u8 reset_context;
 } TERRAIN_PARENT_CONTEXT_VIEW_PC;
 
-typedef struct fire_target_view_pc_s {
+typedef struct fire_target_view_s {
     u8 unknown_0[0xc8c];
     NUVEC target_velocity;
 } FIRE_TARGET_VIEW_PC;
 
-typedef struct DEACTIVATED_MOVE_VIEW_PC {
+typedef struct DEACTIVATED_MOVE_VIEW {
     u8 unknown_000[0x778];
     f32 action_delay;
-} DEACTIVATED_MOVE_VIEW_PC;
+} DEACTIVATED_MOVE_VIEW;
 
-typedef struct vehicle_shoot_state_pc_s {
+typedef struct vehicle_shoot_state_s {
     u8 unknown_00[0x28b];
     u8 shoot_blocked;
     u8 unknown_28c[0x7f4 - 0x28c];
@@ -205,56 +205,56 @@ typedef struct vehicle_shoot_state_pc_s {
 
 extern f32 animduration_blendouttime;
 
-typedef struct communicate_move_view_pc_s {
+typedef struct communicate_move_view_s {
     u8 unknown_000[0xd38];
     f32 communication_blend;
 } COMMUNICATE_MOVE_VIEW_PC;
 
-typedef struct zap_variant_view_pc_s {
+typedef struct zap_variant_view_s {
     u8 unknown_000[0x7bc];
     u32 unknown_bits : 8;
     u32 r2q5_zapped : 1;
 } ZAP_VARIANT_VIEW_PC;
 
-typedef struct BEAST_FALL_VIEW_PC {
+typedef struct BEAST_FALL_VIEW {
     u8 unknown_000[0xdac];
     f32 fall_animation_time;
-} BEAST_FALL_VIEW_PC;
+} BEAST_FALL_VIEW;
 
-typedef struct beast_ground_contact_view_pc_s {
+typedef struct beast_ground_contact_view_s {
     u8 unknown_0[0xd24];
     f32 ground_contact_grace_timer;
 } BEAST_GROUND_CONTACT_VIEW_PC;
 
-typedef struct beast_poo_volume_view_pc_s {
+typedef struct beast_poo_volume_view_s {
     u8 unknown_0[0xd94];
     f32 force_use_volume;
 } BEAST_POO_VOLUME_VIEW_PC;
 
-typedef struct punch_style_view_pc_s {
+typedef struct punch_style_view_s {
     u8 unknown_0[0xe41];
     u8 combo_style;
 } PUNCH_STYLE_VIEW_PC;
 
-typedef struct COMBO_AI_VIEW_PC {
+typedef struct COMBO_AI_VIEW {
     u8 unknown_000[0x39c];
     GAMEOBJECT **primary_target_ref;
     f32 nearest_opponent_metric;
-} COMBO_AI_VIEW_PC;
+} COMBO_AI_VIEW;
 
 extern void (*VehicleSlowdownCallbackPc)(GAMEOBJECT *);
 extern AREA_DATA_PC *DEATHSTARBATTLE_ADATA;
 extern AREA_DATA_PC *ANAKINSFLIGHT_ADATA;
 extern AREA_DATA_PC *BOUNTYHUNTERPURSUIT_ADATA;
 
-typedef struct vehicle_thrust_view_pc_s {
+typedef struct vehicle_thrust_view_s {
     u8 unknown_000[0xdcc];
     f32 thrust_level;
     u8 unknown_dd0[0xe28 - 0xdd0];
     u8 effect_noise[4];
 } VEHICLE_THRUST_VIEW_PC;
 
-typedef struct vehicle_joint_modifier_pc_s {
+typedef struct vehicle_joint_modifier_s {
     NUVEC rotation;
     u8 unknown_00c[0x30 - 0xc];
     u8 joint_index;
@@ -262,58 +262,58 @@ typedef struct vehicle_joint_modifier_pc_s {
     u8 unknown_032[2];
 } VEHICLE_JOINT_MODIFIER_PC;
 
-typedef struct vehicle_joint_view_pc_s {
+typedef struct vehicle_joint_view_s {
     u8 unknown_000[0xf3c];
     VEHICLE_JOINT_MODIFIER_PC joints[2];
     u8 unknown_fa4[0x107d - 0xfa4];
     u8 joint_count;
 } VEHICLE_JOINT_VIEW_PC;
 
-typedef struct VEHICLE_WEAPONS_STATE_PC {
+typedef struct VEHICLE_WEAPONS_STATE {
     u8 unknown_000[0xd24];
     f32 ground_contact_grace_timer;
     u8 unknown_d28[0x24];
     f32 smartbomb_timer;
-} VEHICLE_WEAPONS_STATE_PC;
+} VEHICLE_WEAPONS_STATE;
 
-typedef struct pod_boost_view_pc_s {
+typedef struct pod_boost_view_s {
     u8 unknown_0000[0x1038];
     f32 boost_timer;
 } POD_BOOST_VIEW_PC;
 
-typedef struct FORCE_ANIMATION_OBJECT_PC {
+typedef struct FORCE_ANIMATION_OBJECT {
     u8 unknown_000[4];
     NUSPECIALHANDLE special;
-} FORCE_ANIMATION_OBJECT_PC;
+} FORCE_ANIMATION_OBJECT;
 
-typedef struct FORCE_ATTENTION_PC {
+typedef struct FORCE_ATTENTION {
     u8 unknown_000[0xc5c];
     f32 head_facing;
     u8 unknown_c60[4];
     f32 attention_timer;
-} FORCE_ATTENTION_PC;
+} FORCE_ATTENTION;
 
-typedef struct FORCE_GLOW_PC {
+typedef struct FORCE_GLOW {
     u8 unknown_000[0xd18];
     void *candidate;
     u8 unknown_d1c[0x70];
     f32 horizontal_range;
     u8 unknown_d90[0x9d];
     u8 candidate_kind;
-} FORCE_GLOW_PC;
+} FORCE_GLOW;
 
-typedef struct FORCE_TARGET_PC {
+typedef struct FORCE_TARGET {
     u8 unknown_000[0x10cc];
     GIZFORCE_PC *force;
-    FORCE_ANIMATION_OBJECT_PC *animation;
-} FORCE_TARGET_PC;
+    FORCE_ANIMATION_OBJECT *animation;
+} FORCE_TARGET;
 
-typedef struct WORLD_FORCE_PC {
+typedef struct WORLD_FORCE {
     u8 unknown_000[0x46ac];
     void *force_system;
-} WORLD_FORCE_PC;
+} WORLD_FORCE;
 
-typedef struct GLOW_OBJECT_PC {
+typedef struct GLOW_OBJECT {
     u8 unused_0000[0x6c4];
     u8 player_packet[0x64];
     u8 unused_0728[0x540];
@@ -332,9 +332,9 @@ typedef struct GLOW_OBJECT_PC {
     u8 unused_0e20[0xc];
     u8 kind;
     u8 candidate_kind;
-} GLOW_OBJECT_PC;
+} GLOW_OBJECT;
 
-typedef struct GLOW_FORCE_PC {
+typedef struct GLOW_FORCE {
     u8 unused_0000[0x1c];
     NUVEC position;
     u8 unused_0028[0x40];
@@ -343,14 +343,14 @@ typedef struct GLOW_FORCE_PC {
     f32 horizontal_scale;
     u8 unused_0074[0x2c];
     u32 flags;
-} GLOW_FORCE_PC;
+} GLOW_FORCE;
 
-typedef struct GLOW_ANIMATION_DATA_PC {
+typedef struct GLOW_ANIMATION_DATA {
     u8 unused_0000[0x4];
     u32 flags;
-} GLOW_ANIMATION_DATA_PC;
+} GLOW_ANIMATION_DATA;
 
-typedef struct cable_view_pc_s {
+typedef struct cable_view_s {
     u8 unknown_000[0xd18];
     GAMEOBJECT *glow_candidate;
     u8 unknown_d1c[0xd80 - 0xd1c];
@@ -361,12 +361,12 @@ typedef struct cable_view_pc_s {
     void *cable;
 } CABLE_VIEW_PC;
 
-typedef struct message_draw_view_pc_s {
+typedef struct message_draw_view_s {
     u8 unknown_000[0x10c];
     void (*draw)(GAME_MESSAGE_PC *, NUVEC *, f32);
 } MESSAGE_DRAW_VIEW_PC;
 
-typedef struct default_motion_batarang_pointer_pc_s {
+typedef struct default_motion_batarang_pointer_s {
     u8 unknown_0000[0xcc0];
     void *batarang;
 } DEFAULT_MOTION_BATARANG_POINTER_PC;
@@ -378,20 +378,20 @@ typedef struct MOTION_PLATFORM_CONTACT_READER_PC {
     i16 contacted_platform;
 } MOTION_PLATFORM_CONTACT_READER_PC;
 
-typedef struct MOTION_SHOOT_PHASE_READER_PC {
+typedef struct MOTION_SHOOT_PHASE_READER {
     u8 unknown_000[0xe3a];
     u8 bolt_fire_phase;
-} MOTION_SHOOT_PHASE_READER_PC;
+} MOTION_SHOOT_PHASE_READER;
 
 extern i16 TextIdPc881060;
 
-typedef struct lunge_target_slots_pc_s {
+typedef struct lunge_target_slots_s {
     u8 unknown_000[0x790];
     GAMEOBJECT *character_target;
     GIZMOBLOWUP_PC *gizmo_target;
 } LUNGE_TARGET_SLOTS_PC;
 
-struct minianimpacket_pc_s {    // size 0x24
+struct minianimpacket_s {       // size 0x24
     f32 current_time;           // 0x00
     f32 previous_time;          // 0x04
     u8 unknown_08[0xc];         // 0x08
@@ -404,7 +404,7 @@ struct minianimpacket_pc_s {    // size 0x24
     i16 requested_animation_id; // 0x22
 };
 
-typedef struct jump_auxiliary_fields_pc_s {
+typedef struct jump_auxiliary_fields_s {
     u8 unknown_000[0x7b1];
     u8 landing_followup;
     u8 unknown_7b2[0x1e];
@@ -425,7 +425,7 @@ typedef struct jump_auxiliary_fields_pc_s {
 extern i16 id_WATTO;
 extern u8 DroidCheat32EnabledPc;
 
-typedef struct critter_object_reader_pc_s {
+typedef struct critter_object_reader_s {
     u8 unknown_0000[0x10ac];
     void *snake_body;
 } CRITTER_OBJECT_READER_PC;
@@ -434,38 +434,38 @@ void *CreateSnakeBody(GAMEOBJECT *object, i32 segment_count);
 void UpdateSnakeBody(GAMEOBJECT *object);
 
 /* Private helpers and combo provider. */
-typedef struct COMBO_STATE_VIEW_PC {
+typedef struct COMBO_STATE_VIEW {
     u8 unknown_000[0xe2e];
     u8 blocked_attack_stage;
     u8 unknown_e2f[0x12];
     u8 combo_alternate;
-} COMBO_STATE_VIEW_PC;
+} COMBO_STATE_VIEW;
 
-typedef struct COMBO_CONTEXT_INFO_PC {
+typedef struct COMBO_CONTEXT_INFO {
     const char *name;
     i32 action;
     u64 flags;
-} COMBO_CONTEXT_INFO_PC;
+} COMBO_CONTEXT_INFO;
 
 extern f32 ForceDeflectSpeedPc;
 extern f32 ForceDeflectSeekRatePc;
 extern i16 CharacterFixupIdPc007f1a78;
 
-typedef struct weirdo_batarang_reader_pc_s {
+typedef struct weirdo_batarang_reader_s {
     u8 unknown_000[0xcc0];
     void *batarang;
 } WEIRDO_BATARANG_READER_PC;
 
 extern AREA_DATA_PC *EMPERORFIGHT_ADATA;
 
-typedef struct forcepush_feedback_view_pc_s {
+typedef struct forcepush_feedback_view_s {
     u8 reserved[0xd18];
     GAMEOBJECT *candidate;
     u8 reserved_d1c[0xe2d - 0xd1c];
     u8 candidate_kind;
 } FORCEPUSH_FEEDBACK_VIEW_PC;
 
-typedef struct player_reset_fields_pc_s {
+typedef struct player_reset_fields_s {
     u8 unknown_0[0xc50];
     NUVEC weapon_trail_offset;
     u8 unknown_c5c[0xa4];
@@ -496,10 +496,10 @@ static f32 MoveFabsPc(f32 value) {
 
 i16 id_R2Q5;
 
-typedef struct CHARACTER_COMMUNICATE_READER_PC {
+typedef struct CHARACTER_COMMUNICATE_READER {
     u8 unknown_000[0xd38];
     f32 communicate_blend;
-} CHARACTER_COMMUNICATE_READER_PC;
+} CHARACTER_COMMUNICATE_READER;
 
 /* NuASin polynomial; this unit carries its own instance. */
 static i16 MovementArcSine(f32 sin) {
@@ -2734,7 +2734,7 @@ GAMEOBJECT *PlayerOpponent(GAMEOBJECT *object, f32 range, i32 arc) {
 static i32 SetComboOpponent(GAMEOBJECT *object, f32 range, i32 update_heading, i32 mode) {
     i32 searched = 0;
     i32 result = 0;
-    COMBO_AI_VIEW_PC *ai = (COMBO_AI_VIEW_PC *)object;
+    COMBO_AI_VIEW *ai = (COMBO_AI_VIEW *)object;
     object->force_target = NULL;
     object->blowup_target = NULL;
     if ((object->flags_1fc & 0x80) != 0 && mode == 0 && object->pad->input_magnitude > 0.0f) {
@@ -2822,7 +2822,7 @@ void StartBallooning(GAMEOBJECT *object, i32 movement_state) {
 
 void SetBallooningHeight(GAMEOBJECT *object, f32 height) {
     if (object->character_context == 0x5d) {
-        ((BALLOON_HEIGHT_VIEW_PC *)object)->height = height;
+        ((BALLOON_HEIGHT_VIEW *)object)->height = height;
     }
 }
 
@@ -3228,7 +3228,7 @@ static void StartComboJump(GAMEOBJECT *object, i32 variant) {
 }
 
 static i32 StartBlock(GAMEOBJECT *object) {
-    COMBO_STATE_VIEW_PC *state = (COMBO_STATE_VIEW_PC *)object;
+    COMBO_STATE_VIEW *state = (COMBO_STATE_VIEW *)object;
     if (NewBlockAction(object) != 0) {
         object->character_context = 0xc;
         object->block_latch = 0;
@@ -3267,7 +3267,7 @@ static i32 StartBlock(GAMEOBJECT *object) {
 static void BlockCode(GAMEOBJECT *object, i32 pressed, i32 held, i32 jump_pressed, i32 allow_start) {
     GAMEOBJECT *attacker;
     f32 remaining;
-    COMBO_STATE_VIEW_PC *state = (COMBO_STATE_VIEW_PC *)object;
+    COMBO_STATE_VIEW *state = (COMBO_STATE_VIEW *)object;
     if ((object->field_e22 & 1) != 0 && object->field_e33 == 0) {
         void **animations = object->character_model->model_data_b;
         BOLT *bolt;
@@ -4397,7 +4397,7 @@ i32 fun_004a10b0(void) {
 
 static void LightSabreComboCode(GAMEOBJECT *object, i32 action_pressed, i32 action_held, i32 jump_pressed,
                                 i32 special_pressed) {
-    COMBO_STATE_VIEW_PC *state = (COMBO_STATE_VIEW_PC *)object;
+    COMBO_STATE_VIEW *state = (COMBO_STATE_VIEW *)object;
     object->context_variant_flags &= ~2u;
     if (object->character_context == 5) {
         object->portal_flags |= 0x800;
@@ -4645,8 +4645,8 @@ static void LightSabreComboCode(GAMEOBJECT *object, i32 action_pressed, i32 acti
             !(object->character_context == 0 &&
               (object->action_movement_state == 3 || object->action_movement_state == 4)) &&
             context != 0xd && context != 0xe && context != 0x2e && (object->flags_e20 & 0x1000000) == 0 &&
-            (((COMBO_CONTEXT_INFO_PC *)CInfo)[context].flags & 0x4000000) == 0 &&
-            ((((COMBO_CONTEXT_INFO_PC *)CInfo)[context].flags & 0x8000000) == 0 ||
+            (((COMBO_CONTEXT_INFO *)CInfo)[context].flags & 0x4000000) == 0 &&
+            ((((COMBO_CONTEXT_INFO *)CInfo)[context].flags & 0x8000000) == 0 ||
              (object->context_variant_flags & 0x20000) == 0) &&
             context != 8) {
             if (object->field_281 && object->pad->input_magnitude == 0.0f &&
@@ -4654,7 +4654,7 @@ static void LightSabreComboCode(GAMEOBJECT *object, i32 action_pressed, i32 acti
                                                               (object->character_data->model_flags & 0x80)
                                                           ? 0x7e
                                                           : 0x10] != NULL &&
-                (context == -1 || (((COMBO_CONTEXT_INFO_PC *)CInfo)[context].flags & 4) != 0)) {
+                (context == -1 || (((COMBO_CONTEXT_INFO *)CInfo)[context].flags & 4) != 0)) {
                 SlowWeaponIn(object);
             } else {
                 FastWeaponIn(object, 1);
@@ -4737,8 +4737,8 @@ void EndForce(GAMEOBJECT *object, i32 mode) {
     GameCam_Blend(GameCam, 0.5f, 0.0f, 1);
 }
 
-static void HighlightForceObject(GAMEOBJECT *object, GIZFORCE_PC *force, FORCE_ANIMATION_OBJECT_PC *animation) {
-    FORCE_GLOW_PC *glow = (FORCE_GLOW_PC *)object;
+static void HighlightForceObject(GAMEOBJECT *object, GIZFORCE_PC *force, FORCE_ANIMATION_OBJECT *animation) {
+    FORCE_GLOW *glow = (FORCE_GLOW *)object;
     NUVEC *position;
     object->flags_e20 |= 0x20000;
     if (animation != NULL) {
@@ -4767,8 +4767,8 @@ static void ForceCode(GAMEOBJECT *object, i32 pressed, i32 held, i32 unused) {
     i32 previous = (object->flags_ef4 >> 20) & 1;
     i32 start = 0;
     i32 can_use;
-    FORCE_TARGET_PC *target = (FORCE_TARGET_PC *)object;
-    FORCE_ATTENTION_PC *attention = (FORCE_ATTENTION_PC *)object;
+    FORCE_TARGET *target = (FORCE_TARGET *)object;
+    FORCE_ATTENTION *attention = (FORCE_ATTENTION *)object;
     GIZFORCE_PC *force;
     object->flags_ef4 &= ~0x100000u;
     if (object->character_context == 8) {
@@ -4823,7 +4823,7 @@ static void ForceCode(GAMEOBJECT *object, i32 pressed, i32 held, i32 unused) {
     }
     if (start) {
         if (!(object->pad->runtime_flags & 4) || target->force == NULL) {
-            GizForce_FindBestForceTarget(((WORLD_FORCE_PC *)WORLD)->force_system, object);
+            GizForce_FindBestForceTarget(((WORLD_FORCE *)WORLD)->force_system, object);
         }
         if (target->force != NULL) {
             object->context_timer = 0.5f;
@@ -4838,7 +4838,7 @@ static void ForceCode(GAMEOBJECT *object, i32 pressed, i32 held, i32 unused) {
             }
         }
     } else if (object->flags_1fc & 0x80) {
-        GizForce_FindBestForceTarget(((WORLD_FORCE_PC *)WORLD)->force_system, object);
+        GizForce_FindBestForceTarget(((WORLD_FORCE *)WORLD)->force_system, object);
     }
     force = target->force;
     if (force != NULL && (object->flags_1fc & 0x80) && !(object->flags_e20 & 0x20000) && object->field_281) {
@@ -4994,8 +4994,8 @@ static void ForcePushCode(GAMEOBJECT *object, i32 held) {
         SetObjAsHeadTarget(object, target, 2, 1.0f, 0.0f, 0.0f);
         SetObjAsHeadTarget(target, object, 2, 1.0f, 0.0f, 0.0f);
         if ((object->flags_e20 & 0x400) != 0) {
-            ((FORCE_GLOW_PC *)object)->candidate = target;
-            ((FORCE_GLOW_PC *)object)->candidate_kind = 2;
+            ((FORCE_GLOW *)object)->candidate = target;
+            ((FORCE_GLOW *)object)->candidate_kind = 2;
             if ((object->flags_e20 & 0x100) != 0) {
                 DrawLightningBolts(object, target, 0);
             }
@@ -5007,8 +5007,8 @@ static void ForcePushCode(GAMEOBJECT *object, i32 held) {
             if ((object->flags_e20 & 0x100) != 0) {
                 DrawLightningBolts(object, target, 1);
             }
-            ((FORCE_GLOW_PC *)object)->candidate = target;
-            ((FORCE_GLOW_PC *)object)->candidate_kind = 2;
+            ((FORCE_GLOW *)object)->candidate = target;
+            ((FORCE_GLOW *)object)->candidate_kind = 2;
             if (target->character_context != 0x1c || (target->character_data->model_flags & 0x20) != 0 ||
                 target->character_model->model_data_b[target->field_7aa] == NULL ||
                 CurrentAnim(&target->anim_packet) == target->field_7aa) {
@@ -5639,8 +5639,8 @@ i32 ForcePushed_SuperPush_Occurring(GAMEOBJECT *first, GAMEOBJECT *second) {
 
 static void ForceThrowCode(GAMEOBJECT *object, i32 pressed) {
     f32 distance = 1.0e9f;
-    FORCE_TARGET_PC *target = (FORCE_TARGET_PC *)object;
-    FORCE_GLOW_PC *glow = (FORCE_GLOW_PC *)object;
+    FORCE_TARGET *target = (FORCE_TARGET *)object;
+    FORCE_GLOW *glow = (FORCE_GLOW *)object;
     PART_PC *part;
     if (object->character_context == 0x12) {
         f32 previous;
@@ -5684,8 +5684,8 @@ static void ForceThrowCode(GAMEOBJECT *object, i32 pressed) {
                             SetHeadTarget(object, &part->position, 2, 1.0f, 0.0f, 0.0f);
                             object->force_heading =
                                 NuAtan2D(part->position.x - object->position.x, part->position.z - object->position.z);
-                            ((GLOW_OBJECT_PC *)object)->object = glow->candidate;
-                            ((GLOW_OBJECT_PC *)object)->kind = glow->candidate_kind;
+                            ((GLOW_OBJECT *)object)->object = glow->candidate;
+                            ((GLOW_OBJECT *)object)->kind = glow->candidate_kind;
                         }
                     }
                 } else {
@@ -5715,7 +5715,7 @@ static void ForceThrowCode(GAMEOBJECT *object, i32 pressed) {
         return;
     }
     if ((object->flags_1fc_word & 0x80) != 0 && (object->flags_1fc_word & 0x100) == 0) {
-        GizForce_FindBestForceTarget(((WORLD_FORCE_PC *)WORLD)->force_system, object);
+        GizForce_FindBestForceTarget(((WORLD_FORCE *)WORLD)->force_system, object);
     }
     if (target->force == NULL || (target->force->config_flags & 0x80) == 0) {
         return;
@@ -5925,7 +5925,7 @@ void DrawForceGlowSprite(NUVEC *position, f32 radius, i32 model, f32 alpha, GAME
 }
 
 static void ForceGlowCode(GAMEOBJECT *object, i32 model) {
-    GLOW_OBJECT_PC *glow = (GLOW_OBJECT_PC *)object;
+    GLOW_OBJECT *glow = (GLOW_OBJECT *)object;
     f32 target;
     f32 previous;
     if (object->dead != 0 || FadeSys.fade != 0.0f) {
@@ -5986,7 +5986,7 @@ static void ForceGlowCode(GAMEOBJECT *object, i32 model) {
     }
     switch (glow->kind) {
         case 0: {
-            GLOW_FORCE_PC *force = glow->object;
+            GLOW_FORCE *force = glow->object;
             if ((force->flags & 1) == 0) {
                 ResetForceGlow(glow->player_packet);
                 return;
@@ -6010,7 +6010,7 @@ static void ForceGlowCode(GAMEOBJECT *object, i32 model) {
             glow->model = (i16)model;
             glow->radius *= scale;
             if (animation->object_data != NULL) {
-                ((GLOW_ANIMATION_DATA_PC *)animation->object_data)->flags |= 1;
+                ((GLOW_ANIMATION_DATA *)animation->object_data)->flags |= 1;
             }
             break;
         }
@@ -7001,7 +7001,7 @@ static void SetDefaultCharacterAnimPc(GAMEOBJECT *object) {
 static void BeastStartFallCodePc(GAMEOBJECT *object) {
     if (object->character_context == -1 && object->jump_variant_state == 0 && object->field_281 != 0 &&
         object->field_282 == 0) {
-        if ((((BEAST_FALL_VIEW_PC *)object)->fall_animation_time >= 0.2f || (object->flags_e24 & 0x400) != 0) &&
+        if ((((BEAST_FALL_VIEW *)object)->fall_animation_time >= 0.2f || (object->flags_e24 & 0x400) != 0) &&
             ((object->flags_e24 & 0x400) != 0 || object->pad->input_magnitude == 0.0f ||
              ((object->flags_1fc & 0x80) == 0 && object->character_model->model_data_b[0x59] != NULL))) {
             StartFallLand(object, -1);
@@ -7220,7 +7220,7 @@ static void SelfDestructCode(GAMEOBJECT *object, i32 pressed) {
 }
 
 static void SmartBombCode(GAMEOBJECT *object) {
-    VEHICLE_WEAPONS_STATE_PC *state = (VEHICLE_WEAPONS_STATE_PC *)object;
+    VEHICLE_WEAPONS_STATE *state = (VEHICLE_WEAPONS_STATE *)object;
     i32 old_phase;
     f32 sign;
     if (!Cheat_IsOn(20) || (object->flags_1fc & 0x80) == 0 || (object->character_data->model_flags & 0x2000) == 0 ||
@@ -7618,9 +7618,9 @@ void Animate_BEAST(GAMEOBJECT *object) {
     animation = object->anim_packet.requested_animation;
     if (animation == 5 || ((object->character_data->model_flags & 0x20) != 0 &&
                            (animation == 40 || animation == 75 || animation == 76))) {
-        ((CHARACTER_FALL_ANIMATION_READER_PC *)object)->fall_animation_timer += FRAMETIME;
+        ((CHARACTER_FALL_ANIMATION_READER *)object)->fall_animation_timer += FRAMETIME;
     } else {
-        ((CHARACTER_FALL_ANIMATION_READER_PC *)object)->fall_animation_timer = 0.0f;
+        ((CHARACTER_FALL_ANIMATION_READER *)object)->fall_animation_timer = 0.0f;
     }
 }
 
@@ -7633,7 +7633,7 @@ void Animate_CANNON(GAMEOBJECT *object) {
 }
 
 void Animate_WEIRDO(GAMEOBJECT *object) {
-    CHARACTER_FALL_ANIMATION_READER_PC *state = (CHARACTER_FALL_ANIMATION_READER_PC *)object;
+    CHARACTER_FALL_ANIMATION_READER *state = (CHARACTER_FALL_ANIMATION_READER *)object;
     i16 animation;
     i32 weapon;
     if ((U64_PAIR(&CInfo[object->character_context].flags) & 0x10) != 0) {
@@ -7700,7 +7700,7 @@ void Animate_DEFAULT(GAMEOBJECT *object) {
 }
 
 void Animate_JEDI(GAMEOBJECT *object) {
-    CHARACTER_FALL_ANIMATION_READER_PC *state = (CHARACTER_FALL_ANIMATION_READER_PC *)object;
+    CHARACTER_FALL_ANIMATION_READER *state = (CHARACTER_FALL_ANIMATION_READER *)object;
     i16 animation;
     if ((object->flags_e20 & 0x1000000) != 0) {
         if (((object->flags_e20 & 0x10000) != 0 || object->field_e33 == 1) &&
@@ -7779,7 +7779,7 @@ void Animate_JEDI(GAMEOBJECT *object) {
 }
 
 void Animate_ASTROMECH(GAMEOBJECT *object) {
-    CHARACTER_FALL_ANIMATION_READER_PC *state = (CHARACTER_FALL_ANIMATION_READER_PC *)object;
+    CHARACTER_FALL_ANIMATION_READER *state = (CHARACTER_FALL_ANIMATION_READER *)object;
     i16 animation;
     if ((U64_PAIR(&CInfo[object->character_context].flags) & 0x10) != 0) {
         object->anim_packet.requested_animation = object->field_7aa;
@@ -7818,7 +7818,7 @@ void Animate_ASTROMECH(GAMEOBJECT *object) {
 }
 
 void PostAnimate_ASTROMECH(GAMEOBJECT *object) {
-    CHARACTER_COMMUNICATE_READER_PC *state = (CHARACTER_COMMUNICATE_READER_PC *)object;
+    CHARACTER_COMMUNICATE_READER *state = (CHARACTER_COMMUNICATE_READER *)object;
     i32 count;
     i32 effect;
     i32 locator;
@@ -7899,7 +7899,7 @@ i32 SetProtocolDroidFallAnim(GAMEOBJECT *object) {
 }
 
 void Animate_PROTOCOL(GAMEOBJECT *object) {
-    CHARACTER_FALL_ANIMATION_READER_PC *state = (CHARACTER_FALL_ANIMATION_READER_PC *)object;
+    CHARACTER_FALL_ANIMATION_READER *state = (CHARACTER_FALL_ANIMATION_READER *)object;
     i32 falling = 0;
     i16 animation;
     if ((U64_PAIR(&CInfo[object->character_context].flags) & 0x10) != 0) {
@@ -7960,7 +7960,7 @@ void Animate_PROTOCOL(GAMEOBJECT *object) {
 }
 
 void Animate_BATTLEDROID(GAMEOBJECT *object) {
-    CHARACTER_FALL_ANIMATION_READER_PC *state = (CHARACTER_FALL_ANIMATION_READER_PC *)object;
+    CHARACTER_FALL_ANIMATION_READER *state = (CHARACTER_FALL_ANIMATION_READER *)object;
     i16 animation;
     if ((U64_PAIR(&CInfo[object->character_context].flags) & 0x10) != 0) {
         object->anim_packet.requested_animation = object->field_7aa;
@@ -8019,7 +8019,7 @@ void Animate_REPUBLICGUNSHIP(GAMEOBJECT *object) {
 }
 
 void Animate_SUPERBATTLEDROID(GAMEOBJECT *object) {
-    CHARACTER_FALL_ANIMATION_READER_PC *state = (CHARACTER_FALL_ANIMATION_READER_PC *)object;
+    CHARACTER_FALL_ANIMATION_READER *state = (CHARACTER_FALL_ANIMATION_READER *)object;
     i16 animation;
     if ((U64_PAIR(&CInfo[object->character_context].flags) & 0x10) != 0) {
         object->anim_packet.requested_animation = object->field_7aa;
@@ -8229,7 +8229,7 @@ static void ShieldCode(GAMEOBJECT *object) {
             target = VehicleShieldTargetPc;
         } else {
             animation = CurrentAnim(&object->anim_packet);
-            if ((object->field_281 != 0 || ((VEHICLE_WEAPONS_STATE_PC *)object)->ground_contact_grace_timer > 0.0f) &&
+            if ((object->field_281 != 0 || ((VEHICLE_WEAPONS_STATE *)object)->ground_contact_grace_timer > 0.0f) &&
                 animation != -1 && animation != 3 && animation != 0x23 && animation != 5 && animation != 0x6a &&
                 object->character_context != 0x17 && object->character_context != 0x3d) {
                 target = 1.0f;
@@ -8245,7 +8245,7 @@ static void ShieldCode(GAMEOBJECT *object) {
 }
 
 void Animate_DROIDEKA(GAMEOBJECT *object) {
-    CHARACTER_FALL_ANIMATION_READER_PC *state = (CHARACTER_FALL_ANIMATION_READER_PC *)object;
+    CHARACTER_FALL_ANIMATION_READER *state = (CHARACTER_FALL_ANIMATION_READER *)object;
     i16 animation;
     if ((U64_PAIR(&CInfo[object->character_context].flags) & 0x10) != 0) {
         object->anim_packet.requested_animation = object->field_7aa;
@@ -8273,7 +8273,7 @@ void Animate_DROIDEKA(GAMEOBJECT *object) {
 }
 
 void Animate_GEONOSIAN(GAMEOBJECT *object) {
-    CHARACTER_FALL_ANIMATION_READER_PC *state = (CHARACTER_FALL_ANIMATION_READER_PC *)object;
+    CHARACTER_FALL_ANIMATION_READER *state = (CHARACTER_FALL_ANIMATION_READER *)object;
     i16 animation;
     if ((U64_PAIR(&CInfo[object->character_context].flags) & 0x10) != 0) {
         object->anim_packet.requested_animation = object->field_7aa;
@@ -10492,7 +10492,7 @@ static void DeactivatedCode(GAMEOBJECT *object) {
     GAMEOBJECT *candidate;
     GAMEOBJECT *target;
     GAMEOBJECT *player;
-    DEACTIVATED_MOVE_VIEW_PC *view = (DEACTIVATED_MOVE_VIEW_PC *)object;
+    DEACTIVATED_MOVE_VIEW *view = (DEACTIVATED_MOVE_VIEW *)object;
     if (object->character_context == 0x41) {
         if (AnimPlaying(&object->anim_packet, object->field_7aa, 1, 0) == NULL) {
             return;
@@ -10618,7 +10618,7 @@ static void DeactivatedCode(GAMEOBJECT *object) {
                           &target->collision_position);
             GameCam_HitJudder();
         }
-        ((DEACTIVATED_MOVE_VIEW_PC *)target)->action_delay =
+        ((DEACTIVATED_MOVE_VIEW *)target)->action_delay =
             (f32)((f64)qrand() * (f64)(1.0f / 65535.0f) * (f64)0.3f + (f64)0.2f);
         if (target->id == (u16)id_JAWA) {
             PlaySfx("Jawa_Dizzy", &target->collision_position);
@@ -10733,7 +10733,7 @@ static void ForceDeflectCode(GAMEOBJECT *object, i32 pressed, i32 held) {
     PART_PC *assist = NULL;
     i32 waiting = objInNetWaitContext(object, 0x1d);
     PART_PC *part;
-    FORCE_GLOW_PC *glow = (FORCE_GLOW_PC *)object;
+    FORCE_GLOW *glow = (FORCE_GLOW *)object;
     if (object->character_context == 0x1d) {
         object->flags_e20 |= 0x20000;
         object->context_timer += FRAMETIME;
@@ -10843,7 +10843,7 @@ static void ForceDeflectCode(GAMEOBJECT *object, i32 pressed, i32 held) {
 void GameObjectStuffAfterAnimation(void) {
     GAMEOBJECT *object = Obj;
 
-    union POST_ANIMATION_EFFECT_SCRATCH_PC {
+    union POST_ANIMATION_EFFECT_SCRATCH {
         NUVEC points[4];
 
         struct {
@@ -10859,9 +10859,9 @@ void GameObjectStuffAfterAnimation(void) {
     } scratch;
 
     STATIC_ASSERT(sizeof(scratch) == 52);
-    STATIC_ASSERT(offsetof(union POST_ANIMATION_EFFECT_SCRATCH_PC, motion.velocity) == 24);
-    STATIC_ASSERT(offsetof(union POST_ANIMATION_EFFECT_SCRATCH_PC, motion.object_index) == 36);
-    STATIC_ASSERT(offsetof(union POST_ANIMATION_EFFECT_SCRATCH_PC, shared.position) == 40);
+    STATIC_ASSERT(offsetof(union POST_ANIMATION_EFFECT_SCRATCH, motion.velocity) == 24);
+    STATIC_ASSERT(offsetof(union POST_ANIMATION_EFFECT_SCRATCH, motion.object_index) == 36);
+    STATIC_ASSERT(offsetof(union POST_ANIMATION_EFFECT_SCRATCH, shared.position) == 40);
     NUVEC *points = scratch.points;
     for (scratch.motion.object_index = 0; scratch.motion.object_index < HIGHGAMEOBJECT;
          ++scratch.motion.object_index, ++object) {
@@ -10938,7 +10938,7 @@ void GameObjectStuffAfterAnimation(void) {
                           (NUVEC *)&object->locator_matrices[object->debris_joint].m30);
         }
         if (object->character_context == 38) {
-            CHARACTER_ANIMATION_LOCATOR_PC *animation = object->character_model->animations[object->field_7aa];
+            CHARACTER_ANIMATION_LOCATOR *animation = object->character_model->animations[object->field_7aa];
             if (animation != NULL && animation->locator != -1 &&
                 ((object->context_variant_flags & 0x40) == 0 || object->debris_joint != -1)) {
                 i32 joint = animation->locator;
@@ -12528,7 +12528,7 @@ zap:
 }
 
 void Move_WALKER(GAMEOBJECT *object) {
-    MOTION_SHOOT_PHASE_READER_PC *state = (MOTION_SHOOT_PHASE_READER_PC *)object;
+    MOTION_SHOOT_PHASE_READER *state = (MOTION_SHOOT_PHASE_READER *)object;
     GAMEPAD_PC *pad = object->pad;
     KeepWeaponOut(object);
     DropInOutCode(object);
@@ -12560,7 +12560,7 @@ void Move_WALKER(GAMEOBJECT *object) {
 }
 
 void Move_ATAT(GAMEOBJECT *object) {
-    MOTION_SHOOT_PHASE_READER_PC *state = (MOTION_SHOOT_PHASE_READER_PC *)object;
+    MOTION_SHOOT_PHASE_READER *state = (MOTION_SHOOT_PHASE_READER *)object;
     GAMEPAD_PC *pad = object->pad;
     KeepWeaponOut(object);
     DropInOutCode(object);

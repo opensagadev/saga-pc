@@ -57,16 +57,16 @@ i32 ObjInTube(GAMEOBJECT *object) {
     return 0;
 }
 
-typedef struct TUBE_COOLDOWN_VIEW_PC { // size 0x34
-    u8 unknown_00[0x30];               // 0x00
-    f32 audio_cooldown;                // 0x30
-} TUBE_COOLDOWN_VIEW_PC;
+typedef struct TUBE_COOLDOWN_VIEW { // size 0x34
+    u8 unknown_00[0x30];            // 0x00
+    f32 audio_cooldown;             // 0x30
+} TUBE_COOLDOWN_VIEW;
 
-typedef struct TUBE_ENTRY_VIEW_PC { // size 0x7a4
-    u8 unknown_000[0x79c];          // 0x000
-    i32 entry_state;                // 0x79c
-    void *entry_data;               // 0x7a0
-} TUBE_ENTRY_VIEW_PC;
+typedef struct TUBE_ENTRY_VIEW { // size 0x7a4
+    u8 unknown_000[0x79c];       // 0x000
+    i32 entry_state;             // 0x79c
+    void *entry_data;            // 0x7a0
+} TUBE_ENTRY_VIEW;
 
 STATIC_ASSERT(offsetof(GAMEOBJECT, techno) == 0x798);
 STATIC_ASSERT(offsetof(GAMEOBJECT, jump_variant_state) == 0xe32);
@@ -94,12 +94,12 @@ void Tube_MoveCode(GAMEOBJECT *object, WORLDINFO *world) {
     }
     tube = world->tubes;
     for (index = 0; index < world->tube_count; ++index, ++tube) {
-        TUBE_COOLDOWN_VIEW_PC *cooldown;
+        TUBE_COOLDOWN_VIEW *cooldown;
         if ((tube->flags & 2) == 0 || (tube->flags & 1) == 0 || (tube->flags & 4) != 0) {
             continue;
         }
         if (Tube_InCylinder(object, tube, NULL, 0) == 0 &&
-            (((TUBE_ENTRY_VIEW_PC *)object)->entry_state != 5 || ((TUBE_ENTRY_VIEW_PC *)object)->entry_data == NULL)) {
+            (((TUBE_ENTRY_VIEW *)object)->entry_state != 5 || ((TUBE_ENTRY_VIEW *)object)->entry_data == NULL)) {
             continue;
         }
         if (LEGOCONTEXT_GLIDE != -1 && object->character_context == LEGOCONTEXT_GLIDE) {
@@ -109,7 +109,7 @@ void Tube_MoveCode(GAMEOBJECT *object, WORLDINFO *world) {
         object->techno = (TECHNO_PC *)tube;
         object->character_context = (i8)LEGOCONTEXT_TUBE;
         object->jump_variant_state = 0;
-        cooldown = (TUBE_COOLDOWN_VIEW_PC *)tube;
+        cooldown = (TUBE_COOLDOWN_VIEW *)tube;
         if ((object->flags_1fc & 0x80) != 0 && cooldown->audio_cooldown == 0.0f) {
             cooldown->audio_cooldown = 4.0f;
             GameAudio_PlaySfx(6, &object->collision_position, 0, 0);
@@ -118,15 +118,15 @@ void Tube_MoveCode(GAMEOBJECT *object, WORLDINFO *world) {
     }
 }
 
-typedef struct tube_callbacks_pc_s { // size 0x40
-    char name[16];                   // 0x00
-    NUVEC position;                  // 0x10
-    f32 height;                      // 0x1c
-    f32 radius;                      // 0x20
-    f32 directional_speed;           // 0x24
-    f32 top;                         // 0x28
-    f32 radius_squared;              // 0x2c
-    f32 audio_cooldown;              // 0x30
+typedef struct tube_callbacks_s { // size 0x40
+    char name[16];                // 0x00
+    NUVEC position;               // 0x10
+    f32 height;                   // 0x1c
+    f32 radius;                   // 0x20
+    f32 directional_speed;        // 0x24
+    f32 top;                      // 0x28
+    f32 radius_squared;           // 0x2c
+    f32 audio_cooldown;           // 0x30
 
     union { // size 0x1
         u8 flags;
@@ -144,7 +144,7 @@ typedef struct tube_callbacks_pc_s { // size 0x40
     u32 occupied_object_masks[2]; // 0x38
 } TUBE_CALLBACKS_PC;
 
-typedef struct tube_progress_pc_s { // size 0x8
+typedef struct tube_progress_s { // size 0x8
     /* Indexes both masks by tube / 32, although only 32 tubes are stored. */
     u32 visible_mask[1]; // 0x0
     u32 active_mask[1];  // 0x4

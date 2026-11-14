@@ -24,10 +24,10 @@ typedef struct TRAFFICANIMSYS_PC {    // size 0x77e4
     u8 unknown_77e2[2];               // 0x77e2
 } TRAFFICANIMSYS_PC;
 
-typedef struct TRAFFIC_WORLD_VIEW_PC {  // size 0x516c
+typedef struct TRAFFIC_WORLD_VIEW {     // size 0x516c
     u8 unknown_000[0x5168];             // 0x0000
     TRAFFICANIMSYS_PC *trafficanim_sys; // 0x5168
-} TRAFFIC_WORLD_VIEW_PC;
+} TRAFFIC_WORLD_VIEW;
 
 static TRAFFICANIM_PC reference_trafficanim = {0};
 static TRAFFICANIM_PC *parse_trafficanim = 0;
@@ -120,7 +120,7 @@ static NUFPCOMJMP Traffic_ConfigKeywords[] = {{"animobj", Traffic_animobj},
                                               {NULL, NULL}};
 
 void TrafficAnimSys_Configure(WORLDINFO *world, char *config) {
-    TRAFFIC_WORLD_VIEW_PC *view = (TRAFFIC_WORLD_VIEW_PC *)world;
+    TRAFFIC_WORLD_VIEW *view = (TRAFFIC_WORLD_VIEW *)world;
     NUFPAR_PC *parser;
     VARIPTR old_buffer;
     VARIPTR old_end;

@@ -6,18 +6,18 @@ static void *pause_rndr_mtl = 0;
 #pragma bss_seg(".bss$pause_rt")
 static i32 pause_rt = 0;
 
-typedef struct STILL_RENDER_MATERIAL_PC { // size 0x2bc
-    u8 unknown_00[0x40];                  // 0x000
-    u32 attributes;                       // 0x040
-    u8 unknown_44[0x2c];                  // 0x044
-    f32 opacity;                          // 0x070
-    i16 texture_id;                       // 0x074
-    i16 sort_priority;                    // 0x076
-    u8 unknown_78[0x3c];                  // 0x078
-    PC_MATERIAL_SHADER_DESC_VIEW shader;  // 0x0b4
-} STILL_RENDER_MATERIAL_PC;
+typedef struct STILL_RENDER_MATERIAL {   // size 0x2bc
+    u8 unknown_00[0x40];                 // 0x000
+    u32 attributes;                      // 0x040
+    u8 unknown_44[0x2c];                 // 0x044
+    f32 opacity;                         // 0x070
+    i16 texture_id;                      // 0x074
+    i16 sort_priority;                   // 0x076
+    u8 unknown_78[0x3c];                 // 0x078
+    PC_MATERIAL_SHADER_DESC_VIEW shader; // 0x0b4
+} STILL_RENDER_MATERIAL;
 
-typedef struct permanent_material_reader_pc_s {
+typedef struct permanent_material_reader_s {
     u8 unknown_0000[0x40];
     u32 attributes;
     u32 shader_flags;
@@ -37,19 +37,19 @@ extern "C" {
 }
 extern "C" GRAPHICS_RENDER_TEXTURE_PC *PCGraphicsFrameRenderTexturePc(i32);
 
-typedef struct CUT_DISPLAY_VIEW_PC { // size 0xec
-    u8 unknown_00[0x6c];             // 0x00
-    f32 camera_near_clip;            // 0x6c
-    u8 unknown_70[0x78];             // 0x70
-    u16 camera_far_clip;             // 0xe8
-} CUT_DISPLAY_VIEW_PC;
+typedef struct CUT_DISPLAY_VIEW { // size 0xec
+    u8 unknown_00[0x6c];          // 0x00
+    f32 camera_near_clip;         // 0x6c
+    u8 unknown_70[0x78];          // 0x70
+    u16 camera_far_clip;          // 0xe8
+} CUT_DISPLAY_VIEW;
 
 extern "C" f32 CutSceneCameraFocalLengthPc;
 
-typedef struct CUT_BORDER_RECORD_PC { // size 0x54
-    u8 unknown_00[0x50];              // 0x00
-    u32 flags;                        // 0x50
-} CUT_BORDER_RECORD_PC;
+typedef struct CUT_BORDER_RECORD { // size 0x54
+    u8 unknown_00[0x50];           // 0x00
+    u32 flags;                     // 0x50
+} CUT_BORDER_RECORD;
 
 extern "C" NUMTL *FadeMtl;
 extern "C" {
@@ -407,7 +407,7 @@ extern "C" {
 }
 
 extern "C" void GameDisplaySettings(LEVEL_DISPLAY_PC *display, i32 *colours) {
-    CUT_DISPLAY_VIEW_PC *cut = (CUT_DISPLAY_VIEW_PC *)CutStopInfo;
+    CUT_DISPLAY_VIEW *cut = (CUT_DISPLAY_VIEW *)CutStopInfo;
     i32 top_r;
     i32 top_g;
     i32 top_b;
@@ -421,7 +421,7 @@ extern "C" void GameDisplaySettings(LEVEL_DISPLAY_PC *display, i32 *colours) {
     } else {
         pNuCam->near_clip = display->near_clip;
     }
-    cut = (CUT_DISPLAY_VIEW_PC *)CutStopInfo;
+    cut = (CUT_DISPLAY_VIEW *)CutStopInfo;
     if (cut != NULL && cut->camera_far_clip != 0) {
         pNuCam->far_clip = (f32)cut->camera_far_clip;
     } else {
@@ -531,9 +531,9 @@ extern "C" void DrawCutBorders(i32 widescreen) {
         return;
     }
     NuRndrBeginScene(1);
-    if ((CutStopInfo != NULL && (((CUT_BORDER_RECORD_PC *)CutStopInfo)->flags & 0x4000) != 0) ||
+    if ((CutStopInfo != NULL && (((CUT_BORDER_RECORD *)CutStopInfo)->flags & 0x4000) != 0) ||
         (WORLD->cutscene_sys != NULL && WORLD->cutscene_sys->count == 1 &&
-         (((CUT_BORDER_RECORD_PC *)WORLD->cutscene_sys->records[0])->flags & 0x4000) != 0)) {
+         (((CUT_BORDER_RECORD *)WORLD->cutscene_sys->records[0])->flags & 0x4000) != 0)) {
         border_scale = 0.21276596188545227f;
     } else {
         border_scale = 0.1f;
@@ -552,7 +552,7 @@ extern "C" void DrawCutBorders(i32 widescreen) {
 
 extern "C" void InitStillRender(VARIPTR *buffer, VARIPTR end) {
     pause_rt = NuTexCreateFramebufferCopy(buffer, end);
-    STILL_RENDER_MATERIAL_PC *material = (STILL_RENDER_MATERIAL_PC *)NuMtlCreate3D(1);
+    STILL_RENDER_MATERIAL *material = (STILL_RENDER_MATERIAL *)NuMtlCreate3D(1);
     material->texture_id = (i16)pause_rt;
     material->opacity = 1.0f;
     u32 attributes = (material->attributes & 0xfffee5d1u) | 0x6e511u;

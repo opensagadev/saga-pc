@@ -10,12 +10,12 @@ STATIC_ASSERT(offsetof(GAMEOBJECT, takeover_source) == 0xcd0);
 STATIC_ASSERT(offsetof(GAMEOBJECT, jump_variant_state) == 0xe32);
 STATIC_ASSERT(offsetof(GAMEOBJECT, attached_tube_pc) == 0x798);
 
-typedef struct STARWARS_PREPARE_PC {      // size 0x8
+typedef struct STARWARS_PREPARE {         // size 0x8
     u32 capabilities;                     // 0x0
     AI_PREPARING_SPECIAL_MOVE_PC prepare; // 0x4
-} STARWARS_PREPARE_PC;
+} STARWARS_PREPARE;
 
-extern STARWARS_PREPARE_PC starwars_prepareforspecialmove[8];
+extern STARWARS_PREPARE starwars_prepareforspecialmove[8];
 extern AI_MID_SPECIAL_MOVE_PC starwars_midspecialmovefns[4];
 extern u32 LEGO_AIPATHCNX_BIGJUMP;
 extern u32 LEGO_AIPATHCNX_REQUIRESPERMISSION;
@@ -26,7 +26,7 @@ void ClearSpecialMove(GAMEOBJECT *);
 void InitFn_PreparingForSpecialMove(AI_PREPARING_SPECIAL_MOVE_PC);
 void InitFn_MidSpecialMove(AI_MID_SPECIAL_MOVE_PC);
 
-typedef struct character_ai_capabilities_pc_s {
+typedef struct character_ai_capabilities_s {
     u8 unknown_00[0x44];
     u32 path_capabilities;
 } CHARACTER_AI_CAPABILITIES_PC;
@@ -430,7 +430,7 @@ i32 StarWars_PreparingForSpecialMove(AIPACKET_PC *packet, APIOBJECT_PC *apiobjec
     GAMEOBJECT *owner = apiobject->owner;
     u32 flags;
     u32 capabilities;
-    STARWARS_PREPARE_PC *entry;
+    STARWARS_PREPARE *entry;
     if (owner->character_context == 0x5b) {
         owner->pad->buttons_pressed |= GAMEPAD_JUMP;
     }
@@ -820,7 +820,7 @@ AI_MID_SPECIAL_MOVE_PC starwars_midspecialmovefns[4] = {
     StarWars_MidSpecialMove_UseHatch,
     StarWars_MidSpecialMove_BigJump,
 };
-STARWARS_PREPARE_PC starwars_prepareforspecialmove[8] = {
+STARWARS_PREPARE starwars_prepareforspecialmove[8] = {
     {0x23, StarWars_PrepareJump},           {0x4, StarWars_PrepareR2D2Glide},
     {0x18, StarWars_PrepareHatch},          {0x40, StarWars_PrepareHoverTube},
     {0x1000, StarWars_PrepareBigJump},      {0x8000, StarWars_PrepareTakeOverJump},

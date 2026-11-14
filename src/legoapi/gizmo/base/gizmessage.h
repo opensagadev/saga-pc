@@ -22,7 +22,7 @@ extern "C" {
     extern const char GizAIMessage_NameFormat[3];
     extern const char GizAIMessage_PrefixedNameFormat[5];
     GIZAIMESSAGESYS *CreateGizAIMessageSys(VARIPTR *cursor, VARIPTR *end, i32 count);
-    void GizAIMessage_AddGizmos(struct gizmosys_pc_s *gizmo_sys, i32 arg1, void *arg2, void *arg3);
+    void GizAIMessage_AddGizmos(struct gizmosys_s *gizmo_sys, i32 arg1, void *arg2, void *arg3);
     char *GizAIMessage_GetGizmoName(GIZMO_PC *gizmo);
     i32 GizAIMessage_GetMaxGizmos(void *arg0);
     i32 GizAIMessage_GetNumOutputs(GIZMO_PC *gizmo);

@@ -5,7 +5,7 @@
 
 #include "nu2api/nucore/common.h"
 
-typedef struct specialmove_pc_s {
+typedef struct specialmove_s {
     i16 attacker_animation;
     i16 attacker_id;
     i8 attacker_action_type;

@@ -104,7 +104,7 @@ typedef struct cut_load_bounds_s {
     NUVEC max;
 } CUT_LOAD_BOUNDS;
 
-struct cut_scene_load_pc_s {                            // size 0x5c
+struct cut_scene_load_s {                               // size 0x5c
     i32 version;                                        // 0x00
     i32 string_delta;                                   // 0x04
     f32 duration;                                       // 0x08
@@ -200,7 +200,7 @@ typedef struct cut_load_trigger_instance_s {
     u32 *states;
 } CUT_LOAD_TRIGGER_INSTANCE;
 
-typedef struct cut_instance_load_pc_s {                     // size 0xf8
+typedef struct cut_instance_load_s {                        // size 0xf8
     INSTNUGCUTSCENE *next;                                  // 0x00
     INSTNUGCUTSCENE *previous;                              // 0x04
     char name[16];                                          // 0x08
@@ -234,63 +234,63 @@ typedef struct cut_instance_load_pc_s {                     // size 0xf8
     u32 unknown_f4;                                         // 0xf4
 } CUT_INSTANCE_LOAD_PC;
 
-struct cut_locator_function_entry_pc_s { // size 0x14
-    char *name;                          // 0x00
-    u8 unknown_04[16];                   // 0x04
+struct cut_locator_function_entry_s { // size 0x14
+    char *name;                       // 0x00
+    u8 unknown_04[16];                // 0x04
 };
 
-typedef struct CUT_LOOKAT_TEXTURE_PC { // size 0x20
-    char *name;                        // 0x00
-    u32 unknown_04;                    // 0x04
-    i16 *frames;                       // 0x08
-    i16 frame_count;                   // 0x0c
-    i16 unknown_0e;                    // 0x0e
-    NUMTL *material;                   // 0x10
-    u8 unknown_14[12];                 // 0x14
-} CUT_LOOKAT_TEXTURE_PC;
+typedef struct CUT_LOOKAT_TEXTURE { // size 0x20
+    char *name;                     // 0x00
+    u32 unknown_04;                 // 0x04
+    i16 *frames;                    // 0x08
+    i16 frame_count;                // 0x0c
+    i16 unknown_0e;                 // 0x0e
+    NUMTL *material;                // 0x10
+    u8 unknown_14[12];              // 0x14
+} CUT_LOOKAT_TEXTURE;
 
-typedef struct CUT_LOOKAT_HIERARCHY_PC { // size 0x68
-    u8 unknown_00[12];                   // 0x00
-    NUMTL **materials;                   // 0x0c
-    i32 material_count;                  // 0x10
-    u8 unknown_14[0x4c];                 // 0x14
-    i32 texture_count;                   // 0x60
-    CUT_LOOKAT_TEXTURE_PC *textures;     // 0x64
-} CUT_LOOKAT_HIERARCHY_PC;
+typedef struct CUT_LOOKAT_HIERARCHY { // size 0x68
+    u8 unknown_00[12];                // 0x00
+    NUMTL **materials;                // 0x0c
+    i32 material_count;               // 0x10
+    u8 unknown_14[0x4c];              // 0x14
+    i32 texture_count;                // 0x60
+    CUT_LOOKAT_TEXTURE *textures;     // 0x64
+} CUT_LOOKAT_HIERARCHY;
 
-typedef struct CUT_LOOKAT_MATERIAL_PC { // size 0x9b
-    u8 unknown_00[0x9a];                // 0x00
-    u8 type;                            // 0x9a
-} CUT_LOOKAT_MATERIAL_PC;
+typedef struct CUT_LOOKAT_MATERIAL { // size 0x9b
+    u8 unknown_00[0x9a];             // 0x00
+    u8 type;                         // 0x9a
+} CUT_LOOKAT_MATERIAL;
 
-typedef struct CUT_LOOKAT_LOCATOR_INFO_PC { // size 0x60
-    u8 unknown_00[0x5b];                    // 0x00
-    u8 character_id;                        // 0x5b
-    u8 joint;                               // 0x5c
-    u8 material;                            // 0x5d
-    u8 secondary_material;                  // 0x5e
-    u8 tertiary_material;                   // 0x5f
-} CUT_LOOKAT_LOCATOR_INFO_PC;
+typedef struct CUT_LOOKAT_LOCATOR_INFO { // size 0x60
+    u8 unknown_00[0x5b];                 // 0x00
+    u8 character_id;                     // 0x5b
+    u8 joint;                            // 0x5c
+    u8 material;                         // 0x5d
+    u8 secondary_material;               // 0x5e
+    u8 tertiary_material;                // 0x5f
+} CUT_LOOKAT_LOCATOR_INFO;
 
-typedef struct CUT_LOOKAT_STATE_PC {     // size 0x18
-    NUHGOBJ_EVAL_PC *hierarchy;          // 0x00
-    f32 blend;                           // 0x04
-    u16 character;                       // 0x08
-    u16 material;                        // 0x0a
-    u16 texture;                         // 0x0c
-    u16 secondary_material;              // 0x0e
-    u16 tertiary_material;               // 0x10
-    u16 joint;                           // 0x12
-    CUT_LOOKAT_LOCATOR_INFO_PC *locator; // 0x14
+typedef struct CUT_LOOKAT_STATE_PC {  // size 0x18
+    NUHGOBJ_EVAL_PC *hierarchy;       // 0x00
+    f32 blend;                        // 0x04
+    u16 character;                    // 0x08
+    u16 material;                     // 0x0a
+    u16 texture;                      // 0x0c
+    u16 secondary_material;           // 0x0e
+    u16 tertiary_material;            // 0x10
+    u16 joint;                        // 0x12
+    CUT_LOOKAT_LOCATOR_INFO *locator; // 0x14
 } CUT_LOOKAT_STATE_PC;
 
 extern NUHGOBJ_EVAL_PC *(*NuCutSceneGetHGObj)(INSTNUGCUTSCENE *, i32);
 
 i32 FindMtlInHGObj(NUHGOBJ_EVAL_PC *hierarchy, i32 material_type) {
-    CUT_LOOKAT_HIERARCHY_PC *view = (CUT_LOOKAT_HIERARCHY_PC *)hierarchy;
+    CUT_LOOKAT_HIERARCHY *view = (CUT_LOOKAT_HIERARCHY *)hierarchy;
     i32 index;
     for (index = 0; index < view->material_count; ++index) {
-        CUT_LOOKAT_MATERIAL_PC *material = (CUT_LOOKAT_MATERIAL_PC *)view->materials[index];
+        CUT_LOOKAT_MATERIAL *material = (CUT_LOOKAT_MATERIAL *)view->materials[index];
         if (material->type == material_type) {
             return index + 1;
         }
@@ -299,7 +299,7 @@ i32 FindMtlInHGObj(NUHGOBJ_EVAL_PC *hierarchy, i32 material_type) {
 }
 
 i32 FindTexAnimFromMtl(NUHGOBJ_EVAL_PC *hierarchy, NUMTL *material) {
-    CUT_LOOKAT_HIERARCHY_PC *view = (CUT_LOOKAT_HIERARCHY_PC *)hierarchy;
+    CUT_LOOKAT_HIERARCHY *view = (CUT_LOOKAT_HIERARCHY *)hierarchy;
     i32 index;
     for (index = 0; index < view->texture_count; ++index) {
         if (view->textures[index].material == material) {
@@ -310,7 +310,7 @@ i32 FindTexAnimFromMtl(NUHGOBJ_EVAL_PC *hierarchy, NUMTL *material) {
 }
 
 void instGetLookAtLocatorInfo(INSTNUGCUTSCENE *owner, CUT_LOOKAT_STATE_PC *state) {
-    CUT_LOOKAT_LOCATOR_INFO_PC *locator = state->locator;
+    CUT_LOOKAT_LOCATOR_INFO *locator = state->locator;
     CUT_INSTANCE_LOAD_PC *instance = (CUT_INSTANCE_LOAD_PC *)owner;
     CUT_SCENE_LOAD_PC *scene;
     CUT_LOAD_CHARACTER_ANIMATION *animations;
@@ -346,7 +346,7 @@ void instGetLookAtLocatorInfo(INSTNUGCUTSCENE *owner, CUT_LOOKAT_STATE_PC *state
     state->material = (u16)FindMtlInHGObj(hierarchy, locator->material);
     if (state->material != 0) {
         state->texture =
-            (u16)FindTexAnimFromMtl(hierarchy, ((CUT_LOOKAT_HIERARCHY_PC *)hierarchy)->materials[state->material - 1]);
+            (u16)FindTexAnimFromMtl(hierarchy, ((CUT_LOOKAT_HIERARCHY *)hierarchy)->materials[state->material - 1]);
     }
     state->secondary_material = (u16)FindMtlInHGObj(hierarchy, locator->secondary_material);
     state->tertiary_material = (u16)FindMtlInHGObj(hierarchy, locator->tertiary_material);
@@ -373,28 +373,28 @@ void CutGetJointOverrideMatrixPc(NUHGOBJ_EVAL_PC *hierarchy, i32 index, NUMTX *m
     NuMtxTransposeR(matrix, matrix);
 }
 
-typedef struct CUT_UPDATE_LOCATOR_MATRIX_PC { // size 0x64
-    NUMTX matrix;                             // 0x00
-    NUVEC pivot;                              // 0x40
-    f32 scale;                                // 0x4c
-    NUANIMDATA2_PC *animation;                // 0x50
-    u32 unknown_54;                           // 0x54
-    u8 flags;                                 // 0x58
-    u8 type;                                  // 0x59
-    u8 joint;                                 // 0x5a
-    u8 self;                                  // 0x5b
-    u8 unknown_5c[8];                         // 0x5c
-} CUT_UPDATE_LOCATOR_MATRIX_PC;
+typedef struct CUT_UPDATE_LOCATOR_MATRIX { // size 0x64
+    NUMTX matrix;                          // 0x00
+    NUVEC pivot;                           // 0x40
+    f32 scale;                             // 0x4c
+    NUANIMDATA2 *animation;                // 0x50
+    u32 unknown_54;                        // 0x54
+    u8 flags;                              // 0x58
+    u8 type;                               // 0x59
+    u8 joint;                              // 0x5a
+    u8 self;                               // 0x5b
+    u8 unknown_5c[8];                      // 0x5c
+} CUT_UPDATE_LOCATOR_MATRIX;
 
-typedef struct CUT_UPDATE_ENTRY_PC { // size 0x14
-    char *name;                      // 0x00
-    u32 unknown_04;                  // 0x04
-    u32 unknown_08;                  // 0x08
-    u32 unknown_0c;                  // 0x0c
+typedef struct CUT_UPDATE_ENTRY { // size 0x14
+    char *name;                   // 0x00
+    u32 unknown_04;               // 0x04
+    u32 unknown_08;               // 0x08
+    u32 unknown_0c;               // 0x0c
     void (*update)(INSTNUGCUTSCENE *, CUT_LOAD_LOCATOR_SYSTEM *, CUT_LOAD_LOCATOR_INSTANCE *, CUT_LOAD_LOCATOR *, f32,
                    NUMTX *,
                    i32); // 0x10
-} CUT_UPDATE_ENTRY_PC;
+} CUT_UPDATE_ENTRY;
 
 extern i32 (*TriggerLocatorVfxFn)(i32, NUMTX *);
 extern void (*UpdateLocatorVfxFn)(i32, NUMTX *);
@@ -527,22 +527,22 @@ static void CutSceneLocatorVfxUpdatePc(CUT_LOAD_LOCATOR *locator, CUT_LOAD_LOCAT
     }
 }
 
-typedef struct CUT_LOOKAT_MATERIAL_VALUES_PC { // size 0x88
-    u8 unknown_00[0x80];                       // 0x00
-    f32 look_x;                                // 0x80
-    f32 look_y;                                // 0x84
-} CUT_LOOKAT_MATERIAL_VALUES_PC;
+typedef struct CUT_LOOKAT_MATERIAL_VALUES { // size 0x88
+    u8 unknown_00[0x80];                    // 0x00
+    f32 look_x;                             // 0x80
+    f32 look_y;                             // 0x84
+} CUT_LOOKAT_MATERIAL_VALUES;
 
 static void CutSceneLocatorLookAtUpdatePc(CUT_LOAD_LOCATOR_INSTANCE *instance, CUT_LOAD_LOCATOR *locator, f32 frame,
                                           NUMTX *parent, INSTNUGCUTSCENE *owner) {
     CUT_LOOKAT_STATE_PC *state;
     CUT_INSTANCE_LOAD_PC *owner_view = (CUT_INSTANCE_LOAD_PC *)owner;
     NUHGOBJ_EVAL_PC *hierarchy;
-    CUT_LOOKAT_HIERARCHY_PC *hierarchy_view;
-    CUT_LOOKAT_MATERIAL_VALUES_PC *eye_material;
+    CUT_LOOKAT_HIERARCHY *hierarchy_view;
+    CUT_LOOKAT_MATERIAL_VALUES *eye_material;
     CUT_LOAD_CHARACTER *character;
     CUT_LOAD_CHARACTER_INSTANCE *character_instance;
-    CUT_LOOKAT_TEXTURE_PC *texture;
+    CUT_LOOKAT_TEXTURE *texture;
     NUMTL *material;
     NUMTX locator_matrix;
     NUMTX character_matrix;
@@ -569,7 +569,7 @@ static void CutSceneLocatorLookAtUpdatePc(CUT_LOAD_LOCATOR_INSTANCE *instance, C
     f32 blend;
     f32 start;
     i32 layers;
-    u32 magic = ((NUANIMDATA2_PC *)locator->animation)->header.magic;
+    u32 magic = ((NUANIMDATA2 *)locator->animation)->header.magic;
     if ((i32)magic < 0x414e4934 || (i32)magic > 0x414e4935) {
         return;
     }
@@ -579,7 +579,7 @@ static void CutSceneLocatorLookAtUpdatePc(CUT_LOAD_LOCATOR_INSTANCE *instance, C
         return;
     }
     hierarchy = state->hierarchy;
-    hierarchy_view = (CUT_LOOKAT_HIERARCHY_PC *)hierarchy;
+    hierarchy_view = (CUT_LOOKAT_HIERARCHY *)hierarchy;
     values = NuGCutLocatorCalcMtx((CUT_LOCATOR_GENERIC_PC *)locator, frame, &locator_matrix, NULL);
     if ((locator->flags & 4) != 0) {
         NuMtxPreTranslate(&locator_matrix, &locator->pivot);
@@ -614,7 +614,7 @@ static void CutSceneLocatorLookAtUpdatePc(CUT_LOAD_LOCATOR_INSTANCE *instance, C
                 y = (f32)((f64)local_direction.y * 0.5);
             }
         }
-        eye_material = (CUT_LOOKAT_MATERIAL_VALUES_PC *)hierarchy_view->materials[state->secondary_material - 1];
+        eye_material = (CUT_LOOKAT_MATERIAL_VALUES *)hierarchy_view->materials[state->secondary_material - 1];
         if ((f64)x > 0.23999999463558197) {
             x = 0.24f;
         }
@@ -675,7 +675,7 @@ void instNuGCutLocatorUpdate(INSTNUGCUTSCENE *owner, CUT_LOAD_LOCATOR_SYSTEM *sy
         }
     } else if ((type->flags & 2) != 0) {
         if (type->function_index != 0xffff) {
-            CUT_UPDATE_ENTRY_PC *entry = &((CUT_UPDATE_ENTRY_PC *)CutSceneLocatorFunctionsPc)[type->function_index];
+            CUT_UPDATE_ENTRY *entry = &((CUT_UPDATE_ENTRY *)CutSceneLocatorFunctionsPc)[type->function_index];
             if (entry->update != NULL) {
                 entry->update(owner, system, instance, locator, frame, parent, paused);
             }

@@ -38,43 +38,43 @@ void Customiser_GetActiveWeirdoIndex(i32 *index, i32 *count);
 void GetShopCamLookPos(struct nuvec_s *position);
 i32 SockSysCamera(SOCKSYS_PC *sock_sys, struct nuvec_s *fallback_camera_position, i32 socket_changed,
                   struct nuvec_s *player_camera_positions, struct nuvec_s *player_positions, i32 player_count,
-                  struct sockposition_pc_s *camera_socket_position, struct nuvec_s *camera_position,
+                  struct sockposition_s *camera_socket_position, struct nuvec_s *camera_position,
                   struct nuvec_s *camera_target, f32 *overlap_blend, f32 *position_seek, f32 *angle_seek,
                   f32 *camera_shake, f32 *separation_scale);
 struct nuvec_s *Technos_TgtPos(struct TECHNO_s *techno);
 f32 getPodRoll(i32 arg0);
 
-typedef struct CAMERA_CONTEXT_PATH_PC {
+typedef struct CAMERA_CONTEXT_PATH {
     u8 unknown_00[0x40];
     struct nugspline_s *path;
     u8 unknown_44[8];
     u8 flags;
-} CAMERA_CONTEXT_PATH_PC;
+} CAMERA_CONTEXT_PATH;
 
-typedef struct CAMERA_CONTEXT_FOCUS_PC {
+typedef struct CAMERA_CONTEXT_FOCUS {
     u8 unknown_00[0x28];
     NUVEC focus;
-} CAMERA_CONTEXT_FOCUS_PC;
+} CAMERA_CONTEXT_FOCUS;
 
-typedef struct CAMERA_CONTEXT_BUILDIT_PC {
+typedef struct CAMERA_CONTEXT_BUILDIT {
     u8 unknown_00[0x34];
     NUVEC position;
-} CAMERA_CONTEXT_BUILDIT_PC;
+} CAMERA_CONTEXT_BUILDIT;
 
-typedef struct CAMERA_GIZFORCE_TARGET_PC {
+typedef struct CAMERA_GIZFORCE_TARGET {
     u8 unknown_00[0x1c];
     NUVEC position;
-} CAMERA_GIZFORCE_TARGET_PC;
+} CAMERA_GIZFORCE_TARGET;
 
-typedef struct CAMERA_CABLE_PC {
+typedef struct CAMERA_CABLE {
     GAMEOBJECT *source;
     GAMEOBJECT *target;
-} CAMERA_CABLE_PC;
+} CAMERA_CABLE;
 
-typedef struct CAMERA_GRABBER_PC {
+typedef struct CAMERA_GRABBER {
     u8 unknown_000[0x48c];
     NUVEC grab_position;
-} CAMERA_GRABBER_PC;
+} CAMERA_GRABBER;
 
 i32 Grapple_LookAtPos(GAMEOBJECT *object, NUVEC *position);
 f32 NuVecMagVU0(NUVEC *v);
@@ -144,8 +144,8 @@ static void PlayerCamPos(GAMEOBJECT *object, NUVEC *position, NUVEC *reference) 
     }
     target = NULL;
     if (object->character_context == 0x0f && object->techno != NULL &&
-        (((CAMERA_CONTEXT_PATH_PC *)object->techno)->flags & 0x10) != 0) {
-        NUVEC *points = ((CAMERA_CONTEXT_PATH_PC *)object->techno)->path->pts;
+        (((CAMERA_CONTEXT_PATH *)object->techno)->flags & 0x10) != 0) {
+        NUVEC *points = ((CAMERA_CONTEXT_PATH *)object->techno)->path->pts;
         f32 scale;
         NuVecSub(&direction, &points[0], &points[3]);
         NuVecSub(&focus, &points[0], &object->position);
@@ -164,13 +164,13 @@ static void PlayerCamPos(GAMEOBJECT *object, NUVEC *position, NUVEC *reference) 
     position->x = object->position.x;
     position->y = object->position.y + height;
     position->z = object->position.z;
-    if (object->cable != NULL && ((CAMERA_CABLE_PC *)object->cable)->target != NULL) {
-        target = &((CAMERA_CABLE_PC *)object->cable)->target->collision_position;
+    if (object->cable != NULL && ((CAMERA_CABLE *)object->cable)->target != NULL) {
+        target = &((CAMERA_CABLE *)object->cable)->target->collision_position;
     }
     switch (object->character_context) {
         case 0x08:
             if (object->gizforce_target != NULL) {
-                target = &((CAMERA_GIZFORCE_TARGET_PC *)object->gizforce_target)->position;
+                target = &((CAMERA_GIZFORCE_TARGET *)object->gizforce_target)->position;
             }
             break;
         case 0x1b:
@@ -185,7 +185,7 @@ static void PlayerCamPos(GAMEOBJECT *object, NUVEC *position, NUVEC *reference) 
             break;
         case 0x2d:
             if (object->techno != NULL) {
-                target = &((CAMERA_CONTEXT_BUILDIT_PC *)object->techno)->position;
+                target = &((CAMERA_CONTEXT_BUILDIT *)object->techno)->position;
             }
             break;
         case 0x51:
@@ -200,7 +200,7 @@ static void PlayerCamPos(GAMEOBJECT *object, NUVEC *position, NUVEC *reference) 
             break;
         case 0x59:
             if (object->techno != NULL) {
-                target = &((CAMERA_CONTEXT_FOCUS_PC *)object->techno)->focus;
+                target = &((CAMERA_CONTEXT_FOCUS *)object->techno)->focus;
             }
             break;
         case 0x46:
@@ -210,7 +210,7 @@ static void PlayerCamPos(GAMEOBJECT *object, NUVEC *position, NUVEC *reference) 
             break;
     }
     if ((object->id == (u16)id_GRABCONTROL || object->id == (u16)id_GRABR2CONTROL) && world->grabber != NULL) {
-        CAMERA_GRABBER_PC *grabber = world->grabber;
+        CAMERA_GRABBER *grabber = world->grabber;
         focus.x = (grabber->grab_position.x + position->x) * 0.5f;
         focus.y = position->y;
         focus.z = (grabber->grab_position.z + position->z) * 0.5f;

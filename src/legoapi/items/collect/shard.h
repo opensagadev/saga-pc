@@ -9,7 +9,7 @@ struct SIGNAL_s;
 struct WORLDINFO_s;
 struct gameobject_s;
 
-typedef struct AREA_SAVE_PICKUP_PC {
+typedef struct AREA_SAVE_PICKUP {
     union {
         struct {
             u8 unknown0[5];
@@ -37,11 +37,11 @@ typedef struct AREA_SAVE_PICKUP_PC {
             f32 challenge_trial_time;
         };
     };
-} AREA_SAVE_PICKUP_PC;
+} AREA_SAVE_PICKUP;
 
-STATIC_ASSERT(sizeof(AREA_SAVE_PICKUP_PC) == 0xc);
-STATIC_ASSERT(offsetof(AREA_SAVE_PICKUP_PC, minikit_count) == 5);
-STATIC_ASSERT(offsetof(AREA_SAVE_PICKUP_PC, red_brick_collected) == 6);
+STATIC_ASSERT(sizeof(AREA_SAVE_PICKUP) == 0xc);
+STATIC_ASSERT(offsetof(AREA_SAVE_PICKUP, minikit_count) == 5);
+STATIC_ASSERT(offsetof(AREA_SAVE_PICKUP, red_brick_collected) == 6);
 #ifdef __cplusplus
 extern "C" {
 #endif

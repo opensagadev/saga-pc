@@ -52,7 +52,7 @@ STATIC_ASSERT(sizeof(struct STATUSCOLLECT_s) == 4);
 extern "C" {
 #endif
     extern i32 LEGOMENU_PAUSESYNC;
-    struct level_data_pc_s *CanSaveAndExit(struct WORLDINFO_s *world);
+    struct level_data_s *CanSaveAndExit(struct WORLDINFO_s *world);
     void AddToGoldBricks(void);
     void PauseGame(i32);
 #ifdef __cplusplus

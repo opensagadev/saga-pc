@@ -11,7 +11,7 @@
 #include "nu2api/numath/nuvec.h"
 #endif
 
-typedef struct cheat_pc_s {
+typedef struct cheat_s {
     char *name;
     i16 *text_id;
     u8 enabled;

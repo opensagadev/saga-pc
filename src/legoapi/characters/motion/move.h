@@ -25,10 +25,10 @@
 #if SAGA_LEGOAPI_CHARACTERS_MOTION_MOVE_H_PART == 1 && !defined(SAGA_LEGOAPI_CHARACTERS_MOTION_MOVE_H_STOP)
 
 struct CHARACTER_MODEL_LAYERS_PC;
-struct GAMECHARACTERLAYER_PC;
+struct GAMECHARACTERLAYER;
 struct PART_PC;
 struct gameobject_s;
-struct level_data_pc_s;
+struct level_data_s;
 
 typedef struct GAMEPAD_PC {
     struct FRAME_PAD_PC *bound_pad;
@@ -69,14 +69,14 @@ STATIC_ASSERT(offsetof(GAMEPAD_PC, input_magnitude) == 0x28);
 STATIC_ASSERT(offsetof(GAMEPAD_PC, previous_input_magnitude) == 0x38);
 STATIC_ASSERT(offsetof(GAMEPAD_PC, previous_input_angle) == 0x58);
 
-typedef struct blowup_target_pc_s {
+typedef struct blowup_target_s {
     u8 unknown_00[0x4c];
     NUVEC mid_position;
 } BLOWUP_TARGET_PC;
 
 STATIC_ASSERT(offsetof(BLOWUP_TARGET_PC, mid_position) == 0x4c);
 
-typedef struct awkward_shape_sphere_pc_s {
+typedef struct awkward_shape_sphere_s {
     i16 *character_id;
     i16 joint;
     u16 flags;
@@ -240,7 +240,7 @@ extern "C" {
 
 typedef struct PLAYERCHARACTERCONFIG_PC {
     i32 (*make_layer_list)(struct CHARACTER_MODEL_LAYERS_PC *, i16 *, u32);
-    struct GAMECHARACTERLAYER_PC *layers;
+    struct GAMECHARACTERLAYER *layers;
     i8 *layer_lookup;
     f32 stop_speed;
     f32 idle_speed;
@@ -599,7 +599,7 @@ extern "C" {
     extern void (*VehicleSlowdownCallbackPc)(struct gameobject_s *);
     void AwkwardShapeCode(struct gameobject_s *, i32);
     void TakeHitCode(struct gameobject_s *object);
-    i32 TwistLevel(struct level_data_pc_s *);
+    i32 TwistLevel(struct level_data_s *);
     void LoopCode(struct gameobject_s *, i32, i32, GAMEPAD_PC *, i32);
     void EndForce(struct gameobject_s *object, i32 mode);
     void ReleaseForce(struct gameobject_s *object, i32 mode);

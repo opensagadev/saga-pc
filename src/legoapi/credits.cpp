@@ -206,10 +206,10 @@ void Credits_GetInfo(f32 *duration, i32 *flag, f32 *alpha) {
 extern "C" void fun_0059d750() {
 }
 
-typedef struct credits_completion_reader_pc_s { // size 0x4
-    u16 points;                                 // 0x0
-    u8 unknown_02;                              // 0x2
-    u8 flags;                                   // 0x3
+typedef struct credits_completion_reader_s { // size 0x4
+    u16 points;                              // 0x0
+    u8 unknown_02;                           // 0x2
+    u8 flags;                                // 0x3
 } CREDITS_COMPLETION_READER_PC;
 
 static void CreditsDrawListPc(CREDIT_RECORD_PC *credit, f32 time) {

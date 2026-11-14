@@ -28,7 +28,7 @@ struct starfighter_s;
 extern "C" {
 #endif
 
-    typedef struct flight_spline_resource_pc_s {
+    typedef struct flight_spline_resource_s {
         NUVEC4 points[64];
         i32 point_count;
         u8 unknown_0404[12];

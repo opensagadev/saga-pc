@@ -1,11 +1,11 @@
 #include "saga.h"
 
-typedef struct security_door_record_pc_s { // size 0xc0
-    NUMTX leaf_matrix[2];                  // 0x00
-    char name[16];                         // 0x80
-    NUVEC position;                        // 0x90
-    i16 platform_id[2];                    // 0x9c
-    u16 yaw;                               // 0xa0
+typedef struct security_door_record_s { // size 0xc0
+    NUMTX leaf_matrix[2];               // 0x00
+    char name[16];                      // 0x80
+    NUVEC position;                     // 0x90
+    i16 platform_id[2];                 // 0x9c
+    u16 yaw;                            // 0xa0
 
     union { // size 0x1
         u8 flags;
@@ -27,10 +27,10 @@ typedef struct security_door_record_pc_s { // size 0xc0
     u8 unknown_b8[8];      // 0xb8
 } SECURITY_DOOR_RECORD_PC;
 
-typedef struct security_door_progress_pc_s { // size 0xc
-    u32 visible_mask[1];                     // 0x0
-    u32 active_mask[1];                      // 0x4
-    u32 opened_mask[1];                      // 0x8
+typedef struct security_door_progress_s { // size 0xc
+    u32 visible_mask[1];                  // 0x0
+    u32 active_mask[1];                   // 0x4
+    u32 opened_mask[1];                   // 0x8
 } SECURITY_DOOR_PROGRESS_PC;
 
 STATIC_ASSERT(offsetof(WORLDINFO, security_doors) == 0x50b0);

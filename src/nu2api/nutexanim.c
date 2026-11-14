@@ -116,12 +116,12 @@ struct TEXTURE_ANIMATION_PC {         // size 0x20
     char *program_name;               // 0x1c
 };
 
-typedef struct TEXTURE_ANIM_MATERIAL_PC { // size 0xbc
-    u8 unknown_00[0x74];                  // 0x00
-    i16 texture_id;                       // 0x74
-    u8 unknown_76[0x42];                  // 0x76
-    i32 diffuse_texture_id;               // 0xb8
-} TEXTURE_ANIM_MATERIAL_PC;
+typedef struct TEXTURE_ANIM_MATERIAL { // size 0xbc
+    u8 unknown_00[0x74];               // 0x00
+    i16 texture_id;                    // 0x74
+    u8 unknown_76[0x42];               // 0x76
+    i32 diffuse_texture_id;            // 0xb8
+} TEXTURE_ANIM_MATERIAL;
 
 static u32 nta_sig_off = 0;
 static u32 nta_sig_on = 0;
@@ -203,12 +203,12 @@ static void TextureAnimationCrossReferencePrivatePc(i32 label, PC_TEXTURE_ANIM_E
 
 void NuTexAnimEnvProc(PC_TEXTURE_ANIM_ENV *environment) {
     TEXTURE_ANIM_PROGRAM_PC *program = environment->program;
-    TEXTURE_ANIM_MATERIAL_PC *material;
+    TEXTURE_ANIM_MATERIAL *material;
     i32 i;
     if (program == NULL || (program->mask & nta_script_mask) == 0) {
         return;
     }
-    material = (TEXTURE_ANIM_MATERIAL_PC *)environment->material;
+    material = (TEXTURE_ANIM_MATERIAL *)environment->material;
     if ((nta_sig_off & program->off_mask) != 0) {
         for (i = 0; i < 32; ++i) {
             if ((nta_sig_off & (program->off_mask & (1U << i))) != 0) {

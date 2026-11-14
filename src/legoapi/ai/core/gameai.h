@@ -30,9 +30,9 @@ struct AIPACKET_PC;
 struct AISYS_PC;
 struct APIOBJECT_PC;
 struct gameobject_s;
-struct gizmosys_pc_s;
+struct gizmosys_s;
 
-typedef struct level_script_process_pc_s {
+typedef struct level_script_process_s {
     char name[16];
     AISCRIPTPROCESS_PC processor;
     u8 unknown_d8[4];
@@ -79,7 +79,7 @@ extern "C" {
     extern i32 nbaddies_can_see_players;
     extern f32 fakeanimframe[1];
     void AI_Activate(void *gizmo, i32 active);
-    void AI_AddGizmos(struct gizmosys_pc_s *gizmo_sys, i32 type_id, void *world_ptr, void *unused);
+    void AI_AddGizmos(struct gizmosys_s *gizmo_sys, i32 type_id, void *world_ptr, void *unused);
     char *AI_GetGizmoName(void *gizmo);
     i32 AI_GetMaxGizmos(void *arg0);
     i32 AI_GetNumOutputs(void *arg0);
@@ -147,7 +147,7 @@ extern "C" {
 }
 #endif
 
-typedef struct ai_control_system_pc_s AI_CONTROL_SYSTEM_PC;
+typedef struct ai_control_system_s AI_CONTROL_SYSTEM_PC;
 #ifdef __cplusplus
 extern "C" {
 #endif

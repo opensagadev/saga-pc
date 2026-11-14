@@ -21,21 +21,21 @@ STATIC_ASSERT(offsetof(GAMEOBJECT, ai_packet) + offsetof(AIPACKET_PC, path_info)
 STATIC_ASSERT(offsetof(GRAPPLE_MOTION_PC, name) == 0);
 STATIC_ASSERT(offsetof(GIZMO_PC, object) == 0);
 
-typedef struct WORLD_GRAPPLE_MOTION_VIEW_PC { // size 0x5088
-    u8 unknown_0000[0x5080];                  // 0x0000
-    GRAPPLE_MOTION_PC *grapples;              // 0x5080
-    i32 grapple_count;                        // 0x5084
-} WORLD_GRAPPLE_MOTION_VIEW_PC;
+typedef struct WORLD_GRAPPLE_MOTION_VIEW { // size 0x5088
+    u8 unknown_0000[0x5080];               // 0x0000
+    GRAPPLE_MOTION_PC *grapples;           // 0x5080
+    i32 grapple_count;                     // 0x5084
+} WORLD_GRAPPLE_MOTION_VIEW;
 
-typedef struct OBJECT_GRAPPLE_MOTION_VIEW_PC { // size 0x1074
-    u8 unknown_0000[0x79c];                    // 0x0000
-    i32 panel_use_request;                     // 0x079c
-    void *tube_entry_data;                     // 0x07a0
-    u8 unknown_07a4[0x758];                    // 0x07a4
-    GRAPPLE_MOTION_PC *can_use_object;         // 0x0efc
-    u8 unknown_0f00[0x172];                    // 0x0f00
-    u8 input_flags;                            // 0x1072
-} OBJECT_GRAPPLE_MOTION_VIEW_PC;
+typedef struct OBJECT_GRAPPLE_MOTION_VIEW { // size 0x1074
+    u8 unknown_0000[0x79c];                 // 0x0000
+    i32 panel_use_request;                  // 0x079c
+    void *tube_entry_data;                  // 0x07a0
+    u8 unknown_07a4[0x758];                 // 0x07a4
+    GRAPPLE_MOTION_PC *can_use_object;      // 0x0efc
+    u8 unknown_0f00[0x172];                 // 0x0f00
+    u8 input_flags;                         // 0x1072
+} OBJECT_GRAPPLE_MOTION_VIEW;
 
 STATIC_ASSERT(sizeof(GRAPPLE_MOTION_PC) == sizeof(GRAPPLE_DYNAMIC_PC));
 STATIC_ASSERT(sizeof(GRAPPLE_MOTION_PC) == 0xf8);
@@ -59,11 +59,11 @@ STATIC_ASSERT(offsetof(GAMEOBJECT, field_7a8) == 0x7a8);
 STATIC_ASSERT(offsetof(GAMEOBJECT, field_7a4) == 0x7a4);
 #define GRAPPLE_CURRENT ((GRAPPLE_MOTION_PC *)object->grapple)
 
-typedef struct grapple_load_extra_pc_s { // size 0xf8
-    char name[16];                       // 0x00
-    NUVEC file_position;                 // 0x10
-    u8 unknown_1c[0xd0];                 // 0x1c
-    NUSPECIALHANDLE special;             // 0xec
+typedef struct grapple_load_extra_s { // size 0xf8
+    char name[16];                    // 0x00
+    NUVEC file_position;              // 0x10
+    u8 unknown_1c[0xd0];              // 0x1c
+    NUSPECIALHANDLE special;          // 0xec
 } GRAPPLE_LOAD_EXTRA_PC;
 
 STATIC_ASSERT(sizeof(GRAPPLE_DYNAMIC_PC) == 0xf8);
@@ -100,7 +100,7 @@ extern "C" {
 STATIC_ASSERT(sizeof(NURND_VERTEX3D_PC) == 0x24);
 extern "C" {}
 
-typedef struct grapple_movement_pc_s {
+typedef struct grapple_movement_s {
     u8 unknown_00[0x3c];
     NUVEC shadow_probe_position;
     u8 unknown_48[4];
@@ -361,7 +361,7 @@ static void Grapple_FindNearestInList(NUVEC *position, GRAPPLE_MOTION_PC *grappl
 
 extern "C" GRAPPLE_MOTION_PC *Grapple_FindNearest(WORLDINFO *world, NUVEC *position, GAMEOBJECT *object,
                                                   f32 *distance_squared) {
-    if (((WORLD_GRAPPLE_MOTION_VIEW_PC *)world)->grapples == NULL) {
+    if (((WORLD_GRAPPLE_MOTION_VIEW *)world)->grapples == NULL) {
         return NULL;
     }
     GRAPPLE_MOTION_PC *nearest = NULL;
@@ -376,9 +376,8 @@ extern "C" GRAPPLE_MOTION_PC *Grapple_FindNearest(WORLDINFO *world, NUVEC *posit
     } else {
         nearest_distance = 1000000000.0f;
     }
-    Grapple_FindNearestInList(position, ((WORLD_GRAPPLE_MOTION_VIEW_PC *)world)->grapples,
-                              ((WORLD_GRAPPLE_MOTION_VIEW_PC *)world)->grapple_count, object, &nearest,
-                              &nearest_distance);
+    Grapple_FindNearestInList(position, ((WORLD_GRAPPLE_MOTION_VIEW *)world)->grapples,
+                              ((WORLD_GRAPPLE_MOTION_VIEW *)world)->grapple_count, object, &nearest, &nearest_distance);
     if (object != NULL) {
         Grapple_FindNearestInList(position, ((GRAPPLE_MOTION_PC *)DynamicGrapplePc), 4, object, &nearest,
                                   &nearest_distance);
@@ -696,7 +695,7 @@ extern "C" {
 
 extern "C" void Grapples_Update(void *world_pointer, void *unused_system, f32 unused_time) {
     WORLDINFO *world = (WORLDINFO *)world_pointer;
-    WORLD_GRAPPLE_MOTION_VIEW_PC *view = (WORLD_GRAPPLE_MOTION_VIEW_PC *)world;
+    WORLD_GRAPPLE_MOTION_VIEW *view = (WORLD_GRAPPLE_MOTION_VIEW *)world;
     GRAPPLE_MOTION_PC *grapple = view->grapples;
     GAMEOBJECT *occupant;
     GAMEOBJECT *attached;
@@ -957,7 +956,7 @@ extern "C" void Grapple_MoveCode(GAMEOBJECT *object) {
 
     if (object->character_context == LEGOCONTEXT_GRAPPLE) {
         if ((object->flags_1fc & 0x80) == 0 &&
-            ((OBJECT_GRAPPLE_MOTION_VIEW_PC *)object)->can_use_object != object->grapple) {
+            ((OBJECT_GRAPPLE_MOTION_VIEW *)object)->can_use_object != object->grapple) {
             GRAPPLE_CURRENT->activation_progress = 0.0f;
             object->character_context = -1;
             return;
@@ -1018,16 +1017,15 @@ extern "C" void Grapple_MoveCode(GAMEOBJECT *object) {
         } else {
             object->context_variant_flags &= ~0x100;
         }
-        if (object->pad->input_magnitude != 0.0f || ((OBJECT_GRAPPLE_MOTION_VIEW_PC *)object)->input_flags != 0) {
+        if (object->pad->input_magnitude != 0.0f || ((OBJECT_GRAPPLE_MOTION_VIEW *)object)->input_flags != 0) {
             const i32 difference = RotDiff(GRAPPLE_CURRENT->y_rotation, input_angle);
             const i32 absolute_difference = abs(difference);
-            if (0x2000 >= absolute_difference || (((OBJECT_GRAPPLE_MOTION_VIEW_PC *)object)->input_flags & 2) != 0) {
+            if (0x2000 >= absolute_difference || (((OBJECT_GRAPPLE_MOTION_VIEW *)object)->input_flags & 2) != 0) {
                 down = 1;
                 if (Grapple_RopeSwingRotate == 0 || !GRAPPLE_CURRENT->disabled) {
                     object->movement_facing_angle = GRAPPLE_CURRENT->y_rotation;
                 }
-            } else if (absolute_difference < 0x6000 &&
-                       (((OBJECT_GRAPPLE_MOTION_VIEW_PC *)object)->input_flags & 1) == 0) {
+            } else if (absolute_difference < 0x6000 && (((OBJECT_GRAPPLE_MOTION_VIEW *)object)->input_flags & 1) == 0) {
                 if (difference > 0) {
                     swing_positive = 1;
                     object->movement_facing_angle = static_cast<u16>(GRAPPLE_CURRENT->y_rotation + 0x4000);
@@ -1208,14 +1206,14 @@ extern "C" void Grapple_MoveCode(GAMEOBJECT *object) {
         if (grapple == NULL) {
             return;
         }
-        if ((object->flags_1fc & 0x80) == 0 && ((OBJECT_GRAPPLE_MOTION_VIEW_PC *)object)->can_use_object != grapple) {
+        if ((object->flags_1fc & 0x80) == 0 && ((OBJECT_GRAPPLE_MOTION_VIEW *)object)->can_use_object != grapple) {
             return;
         }
         if (!((grapple->disabled && grapple->activation_progress <= 0.0f &&
                (object->pad->input_magnitude > 0.0f || object->field_281 == 0)) ||
               (!grapple->disabled && ((object->pad->buttons_pressed & GAMEPAD_SPECIAL) != 0 ||
-                                      (4 == ((OBJECT_GRAPPLE_MOTION_VIEW_PC *)object)->panel_use_request &&
-                                       ((OBJECT_GRAPPLE_MOTION_VIEW_PC *)object)->tube_entry_data != NULL))))) {
+                                      (4 == ((OBJECT_GRAPPLE_MOTION_VIEW *)object)->panel_use_request &&
+                                       ((OBJECT_GRAPPLE_MOTION_VIEW *)object)->tube_entry_data != NULL))))) {
             SetHeadTarget(object, &grapple->hook_position, 4, 2.0f, 1.0f, 2.0f);
             return;
         }

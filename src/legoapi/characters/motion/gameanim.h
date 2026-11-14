@@ -104,7 +104,7 @@ extern "C" {
     void Animate_WALKER(GAMEOBJECT *);
     void Animate_WEIRDO(GAMEOBJECT *);
     void Animate_POD(GAMEOBJECT *);
-    i16 FindAnimIX(struct characterdata_pc_s *character, char *name);
+    i16 FindAnimIX(struct characterdata_s *character, char *name);
 #ifdef __cplusplus
 }
 #endif

@@ -1,55 +1,55 @@
 #include "saga.h"
 #include <string.h>
 
-typedef struct PLAYER_PACKET_RESET_PC { // size 0x788
-    u8 unknown_000[0x101];              // 0x000
-    u8 context_state_flags;             // 0x101
-    u8 unknown_102[0x4d2];              // 0x102
-    NUVEC reset_up_direction;           // 0x5d4
-    GAMEPAD_PC *gamepad;                // 0x5e0
-    u8 unknown_5e4[0x20];               // 0x5e4
-    void *field_604;                    // 0x604
-    u8 unknown_608[0xc];                // 0x608
-    u32 field_614[8];                   // 0x614
-    u8 unknown_634[0x28];               // 0x634
-    i32 input_state;                    // 0x65c
-    f32 field_660;                      // 0x660
-    u8 unknown_664[0x20];               // 0x664
-    f32 delayed_turn_timer;             // 0x684
-    f32 field_688;                      // 0x688
-    u8 unknown_68c[0x4];                // 0x68c
-    f32 field_690;                      // 0x690
-    u8 unknown_694[0x24];               // 0x694
-    f32 field_6b8;                      // 0x6b8
-    u8 unknown_6bc[0x1c];               // 0x6bc
-    f32 field_6d8;                      // 0x6d8
-    f32 ground_height;                  // 0x6dc
-    u8 unknown_6e0[0xc];                // 0x6e0
-    f32 field_6ec;                      // 0x6ec
-    u8 unknown_6f0[0x18];               // 0x6f0
-    f32 field_708;                      // 0x708
-    f32 field_70c;                      // 0x70c
-    f32 field_710;                      // 0x710
-    u8 unknown_714[0x4];                // 0x714
-    f32 field_718;                      // 0x718
-    u8 unknown_71c[0x10];               // 0x71c
-    f32 field_72c;                      // 0x72c
-    u8 unknown_730[0x1c];               // 0x730
-    i16 movement_angle_0;               // 0x74c
-    i16 movement_angle_1;               // 0x74e
-    u8 unknown_750[0x4];                // 0x750
-    u16 movement_lean_angle;            // 0x754
-    u16 secondary_lean_angle;           // 0x756
-    u16 tertiary_lean_angle;            // 0x758
-    i16 force_glow_index;               // 0x75a
-    u32 secondary_flags;                // 0x75c
-    u32 render_flags;                   // 0x760
-    u8 random_state[4];                 // 0x764
-    u8 unknown_768[0x17];               // 0x768
-    i8 surface_type;                    // 0x77f
-    u8 unknown_780[0x4];                // 0x780
-    f32 field_784;                      // 0x784
-} PLAYER_PACKET_RESET_PC;
+typedef struct PLAYER_PACKET_RESET { // size 0x788
+    u8 unknown_000[0x101];           // 0x000
+    u8 context_state_flags;          // 0x101
+    u8 unknown_102[0x4d2];           // 0x102
+    NUVEC reset_up_direction;        // 0x5d4
+    GAMEPAD_PC *gamepad;             // 0x5e0
+    u8 unknown_5e4[0x20];            // 0x5e4
+    void *field_604;                 // 0x604
+    u8 unknown_608[0xc];             // 0x608
+    u32 field_614[8];                // 0x614
+    u8 unknown_634[0x28];            // 0x634
+    i32 input_state;                 // 0x65c
+    f32 field_660;                   // 0x660
+    u8 unknown_664[0x20];            // 0x664
+    f32 delayed_turn_timer;          // 0x684
+    f32 field_688;                   // 0x688
+    u8 unknown_68c[0x4];             // 0x68c
+    f32 field_690;                   // 0x690
+    u8 unknown_694[0x24];            // 0x694
+    f32 field_6b8;                   // 0x6b8
+    u8 unknown_6bc[0x1c];            // 0x6bc
+    f32 field_6d8;                   // 0x6d8
+    f32 ground_height;               // 0x6dc
+    u8 unknown_6e0[0xc];             // 0x6e0
+    f32 field_6ec;                   // 0x6ec
+    u8 unknown_6f0[0x18];            // 0x6f0
+    f32 field_708;                   // 0x708
+    f32 field_70c;                   // 0x70c
+    f32 field_710;                   // 0x710
+    u8 unknown_714[0x4];             // 0x714
+    f32 field_718;                   // 0x718
+    u8 unknown_71c[0x10];            // 0x71c
+    f32 field_72c;                   // 0x72c
+    u8 unknown_730[0x1c];            // 0x730
+    i16 movement_angle_0;            // 0x74c
+    i16 movement_angle_1;            // 0x74e
+    u8 unknown_750[0x4];             // 0x750
+    u16 movement_lean_angle;         // 0x754
+    u16 secondary_lean_angle;        // 0x756
+    u16 tertiary_lean_angle;         // 0x758
+    i16 force_glow_index;            // 0x75a
+    u32 secondary_flags;             // 0x75c
+    u32 render_flags;                // 0x760
+    u8 random_state[4];              // 0x764
+    u8 unknown_768[0x17];            // 0x768
+    i8 surface_type;                 // 0x77f
+    u8 unknown_780[0x4];             // 0x780
+    f32 field_784;                   // 0x784
+} PLAYER_PACKET_RESET;
 
 typedef struct GAMEPAD_RESET_PC {  // size 0x5c
     void *bound_pad;               // 0x00
@@ -72,13 +72,13 @@ typedef struct GAMEPAD_RESET_PC {  // size 0x5c
     u16 runtime_flags;             // 0x5a
 } GAMEPAD_RESET_PC;
 
-typedef struct TERRAIN_PLAYER_IMPACT_PC { // size 0x1c
-    NUVEC position;                       // 0x00
-    NUVEC normal;                         // 0x0c
-    u8 material[2];                       // 0x18
-    u8 flags;                             // 0x1a
-    u8 normal_flags;                      // 0x1b
-} TERRAIN_PLAYER_IMPACT_PC;
+typedef struct TERRAIN_PLAYER_IMPACT { // size 0x1c
+    NUVEC position;                    // 0x00
+    NUVEC normal;                      // 0x0c
+    u8 material[2];                    // 0x18
+    u8 flags;                          // 0x1a
+    u8 normal_flags;                   // 0x1b
+} TERRAIN_PLAYER_IMPACT;
 
 typedef struct TERRAIN_PLAYER_PLATFORM_RECORD_PC { // size 0x14
     u8 unknown_0[0xe];                             // 0x00
@@ -92,37 +92,37 @@ typedef struct TERRAIN_PLAYER_PLATFORM_SYS_PC {   // size 0x1c
     TERRAIN_PLAYER_PLATFORM_RECORD_PC entries[1]; // 0x08
 } TERRAIN_PLAYER_PLATFORM_SYS_PC;
 
-typedef struct TERRAIN_PLAYER_GRABBER_PC { // size 0x564
-    u8 unknown_0[0x554];                   // 0x000
-    f32 platform_contact_timer;            // 0x554
-    u8 unknown_558[8];                     // 0x558
-    i16 platform_id;                       // 0x560
-} TERRAIN_PLAYER_GRABBER_PC;
+typedef struct TERRAIN_PLAYER_GRABBER { // size 0x564
+    u8 unknown_0[0x554];                // 0x000
+    f32 platform_contact_timer;         // 0x554
+    u8 unknown_558[8];                  // 0x558
+    i16 platform_id;                    // 0x560
+} TERRAIN_PLAYER_GRABBER;
 
-typedef struct TERRAIN_PLAYER_WORLD_PC { // size 0x46f0
-    u8 unknown_0[0x46ec];                // 0x0000
-    TERRAIN_PLAYER_GRABBER_PC *grabber;  // 0x46ec
-} TERRAIN_PLAYER_WORLD_PC;
+typedef struct TERRAIN_PLAYER_WORLD { // size 0x46f0
+    u8 unknown_0[0x46ec];             // 0x0000
+    TERRAIN_PLAYER_GRABBER *grabber;  // 0x46ec
+} TERRAIN_PLAYER_WORLD;
 
-typedef struct TERRAIN_PLAYER_BLOWUP_PC { // size 0x104
-    u8 unknown_0[0x102];                  // 0x000
-    i16 platform_id;                      // 0x102
-} TERRAIN_PLAYER_BLOWUP_PC;
+typedef struct TERRAIN_PLAYER_BLOWUP { // size 0x104
+    u8 unknown_0[0x102];               // 0x000
+    i16 platform_id;                   // 0x102
+} TERRAIN_PLAYER_BLOWUP;
 
-typedef struct TERRAIN_PLAYER_COINS_PC { // size 0x8
-    u32 coins;                           // 0x0
-    f32 scale;                           // 0x4
-} TERRAIN_PLAYER_COINS_PC;
+typedef struct TERRAIN_PLAYER_COINS { // size 0x8
+    u32 coins;                        // 0x0
+    f32 scale;                        // 0x4
+} TERRAIN_PLAYER_COINS;
 
-typedef struct TERRAIN_PLAYER_SET_PC { // size 0x1bb0
-    u8 unknown_0[0x1bac];              // 0x0000
-    i32 minimum_height;                // 0x1bac
-} TERRAIN_PLAYER_SET_PC;
+typedef struct TERRAIN_PLAYER_SET { // size 0x1bb0
+    u8 unknown_0[0x1bac];           // 0x0000
+    i32 minimum_height;             // 0x1bac
+} TERRAIN_PLAYER_SET;
 
-typedef struct TERRAIN_PLAYER_CHARACTER_PC { // size 0x1c
-    u8 unknown_0[0x18];                      // 0x00
-    void (*move_callback)(GAMEOBJECT *);     // 0x18
-} TERRAIN_PLAYER_CHARACTER_PC;
+typedef struct TERRAIN_PLAYER_CHARACTER { // size 0x1c
+    u8 unknown_0[0x18];                   // 0x00
+    void (*move_callback)(GAMEOBJECT *);  // 0x18
+} TERRAIN_PLAYER_CHARACTER;
 
 void TakeOverCode(GAMEOBJECT *, i32);
 void ApplyGravity(GAMEOBJECT *, f32 *, f32, f32, f32 *);
@@ -131,7 +131,7 @@ void GameObjectRotation(GAMEOBJECT *, i32);
 #define AIPATHCNX_FLAG_SET(connection, field, flag)                                                                    \
     ((connection) != NULL && ((connection)->field[0] & (u32)(flag)) != 0)
 
-typedef struct level_ai_progress_pc_s {
+typedef struct level_ai_progress_s {
     u8 unknown_0000[0x2808];
 
     union {
@@ -140,34 +140,34 @@ typedef struct level_ai_progress_pc_s {
     };
 } LEVEL_AI_PROGRESS_PC;
 
-typedef struct AI_CREATURE_RESET_VIEW_PC {
+typedef struct AI_CREATURE_RESET_VIEW {
     u8 unknown_00[0x10];
     char script_name[0x10];
     u8 unknown_20[0x2c];
     u8 creature_set;
     u8 unknown_4d[4];
     u8 count_across;
-} AI_CREATURE_RESET_VIEW_PC;
+} AI_CREATURE_RESET_VIEW;
 
-typedef struct AI_RESET_EXTRA_PC {
+typedef struct AI_RESET_EXTRA {
     u8 unknown_000[0x1086];
     u8 search_state;
     u8 avoidance_state;
     u8 unknown_1088[8];
     f32 reset_timer;
-} AI_RESET_EXTRA_PC;
+} AI_RESET_EXTRA;
 
-typedef struct AI_CREATURE_RESET_FLAGS_PC {
+typedef struct AI_CREATURE_RESET_FLAGS {
     u8 unknown_0000[0x1386];
     u16 reset_flags;
-} AI_CREATURE_RESET_FLAGS_PC;
+} AI_CREATURE_RESET_FLAGS;
 
-typedef struct KEEP_SCREEN_CAMERA_FIELDS_PC {
+typedef struct KEEP_SCREEN_CAMERA_FIELDS {
     u8 unknown_000[0x110];
     NUVEC direction;
     u8 unknown_11c[0xdc];
     u16 pitch;
-} KEEP_SCREEN_CAMERA_FIELDS_PC;
+} KEEP_SCREEN_CAMERA_FIELDS;
 
 void MovePlayer_VEHICLEDIRECTIONAL(GAMEOBJECT *object);
 void MovePlayer_ROLLING(GAMEOBJECT *object);
@@ -188,19 +188,19 @@ static __inline f32 PlayersFabsPc(f32 value) {
     return *(f32 *)&bits;
 }
 
-typedef struct CHARACTER_IDLE_STATE_PC {
+typedef struct CHARACTER_IDLE_STATE {
     u8 unknown_000[0x2b8];
     f32 idle_total_time;
     f32 idle_animation_time;
     f32 idle_animation_limit;
     i16 idle_animation;
     i16 previous_idle_animation;
-} CHARACTER_IDLE_STATE_PC;
+} CHARACTER_IDLE_STATE;
 
-typedef struct CHARACTER_IDLE_POLICY_PC {
+typedef struct CHARACTER_IDLE_POLICY {
     u8 unknown_000[0x116];
     u8 use_standard_idle;
-} CHARACTER_IDLE_POLICY_PC;
+} CHARACTER_IDLE_POLICY;
 
 f32 animduration_blendouttime;
 i32 CharacterLoadAreaModelsPc;
@@ -213,7 +213,7 @@ typedef struct SPECIAL_LAYER_PC_s {
     u32 mask;
 } SPECIAL_LAYER_PC;
 
-typedef struct player_reset_fields_pc_s {
+typedef struct player_reset_fields_s {
     u8 unknown_0[0xc50];
     NUVEC weapon_trail_offset;
     u8 unknown_c5c[0xa4];
@@ -234,49 +234,49 @@ typedef struct player_reset_fields_pc_s {
     u8 pre_reset_state;
 } PLAYER_RESET_FIELDS_PC;
 
-typedef struct player_suit_name_pc_s {
+typedef struct player_suit_name_s {
     u8 unknown_000[0x4];
     char *name;
 } PLAYER_SUIT_NAME_PC;
 
-typedef struct player_packet_storage_pc_s {
+typedef struct player_packet_storage_s {
     u8 unknown_000[0x6c4];
     u8 player_packet_storage[0x788];
 } PLAYER_PACKET_STORAGE_PC;
 
-typedef struct player_batarang_idle_pc_s {
+typedef struct player_batarang_idle_s {
     u8 unknown_00[0x7d];
     u8 active;
 } PLAYER_BATARANG_IDLE_PC;
 
-typedef struct player_idle_character_pc_s {
+typedef struct player_idle_character_s {
     u8 unknown_00[0x116];
     u8 use_standard_idle;
 } PLAYER_IDLE_CHARACTER_PC;
 
 /* Two-DWORD view of the default mask. */
-typedef struct PLAYER_ROUTE_MASK_WORDS_PC {
+typedef struct PLAYER_ROUTE_MASK_WORDS {
     u32 low;
     u32 high;
-} PLAYER_ROUTE_MASK_WORDS_PC;
+} PLAYER_ROUTE_MASK_WORDS;
 
 extern u64 CharacterMaskAllPc;
 extern i32 complexsockposition_forcesock;
 
-typedef struct CREATURE_RESET_PACKET_VIEW_PC {
+typedef struct CREATURE_RESET_PACKET_VIEW {
     u8 unknown_000[0x6c4];
     u8 packet[0x788];
-} CREATURE_RESET_PACKET_VIEW_PC;
+} CREATURE_RESET_PACKET_VIEW;
 
-typedef struct PLAYER_LAYER_FLAGS_PC {
+typedef struct PLAYER_LAYER_FLAGS {
     u32 unknown_0 : 9;
     u32 bob : 1;
     u32 unknown_10 : 22;
-} PLAYER_LAYER_FLAGS_PC;
+} PLAYER_LAYER_FLAGS;
 
 extern i16 CharacterFixupIdPc007f1810;
 
-typedef struct PARAPHERNALIA_EXTRA_PC {
+typedef struct PARAPHERNALIA_EXTRA {
     u8 prefix[0xc68];
     NUVEC force_position;
     u8 gap_c74[0x10c];
@@ -285,12 +285,12 @@ typedef struct PARAPHERNALIA_EXTRA_PC {
     f32 force_radius;
     u8 gap_d90[0x2ec];
     u8 draw_reflection;
-} PARAPHERNALIA_EXTRA_PC;
+} PARAPHERNALIA_EXTRA;
 
 void DrawForceGlowSprite(NUVEC *, f32, i32, f32, GAMEOBJECT *);
 void DrawSnakeBody(GAMEOBJECT *);
 
-typedef struct draw_objects_flags_pc_s {
+typedef struct draw_objects_flags_s {
     u8 unknown_000[0xe24];
     u32 flags_e24_bits_0_2 : 3;
     u32 locators_updated : 1;
@@ -299,7 +299,7 @@ typedef struct draw_objects_flags_pc_s {
 extern f32 DrawGameObjectsFarClipPc;
 extern f32 DrawGameObjectsVehicleFarClipPc;
 
-typedef struct new_player_flags_pc_s {
+typedef struct new_player_flags_s {
     u8 unknown_000[0xef0];
     u32 flags_ef0_bits_0_8 : 9;
     u32 geonosian_variant : 1;
@@ -307,7 +307,7 @@ typedef struct new_player_flags_pc_s {
     u32 flags_ef0_bit_21 : 1;
 } NEW_PLAYER_FLAGS_PC;
 
-typedef struct player_init_progress_pc_s {
+typedef struct player_init_progress_s {
     u32 coins;
     i16 previous_state;
     u8 active;
@@ -319,7 +319,7 @@ typedef struct player_init_progress_pc_s {
     f32 powerup_time;
 } PLAYER_INIT_PROGRESS_PC;
 
-typedef struct player_init_extra_pc_s {
+typedef struct player_init_extra_s {
     u8 unknown_0000[0x454];
     f32 field_454;
     u8 unknown_0458[0xcc0 - 0x458];
@@ -328,7 +328,7 @@ typedef struct player_init_extra_pc_s {
     i16 previous_state;
 } PLAYER_INIT_EXTRA_PC;
 
-typedef struct player_init_flags_pc_s {
+typedef struct player_init_flags_s {
     u8 unknown_000[0xe20];
     u32 flags_e20_bits_0_15 : 16;
     u32 stored_flag : 1;
@@ -336,37 +336,37 @@ typedef struct player_init_flags_pc_s {
 
 extern i32 movegamecamera_forcesock;
 
-typedef union DRAW_ATTACHMENTS_PACKET_PC {
+typedef union DRAW_ATTACHMENTS_PACKET {
     ANIMPACKET_PC packet;
     u32 words[18];
-} DRAW_ATTACHMENTS_PACKET_PC;
+} DRAW_ATTACHMENTS_PACKET;
 
 /* Both calculated return paths end in an f32 store/reload. */
 f32 DropInOutScale(GAMEOBJECT *object);
 
-typedef struct CHARACTER_DRAW_HIERARCHY_PC {
+typedef struct CHARACTER_DRAW_HIERARCHY {
     u8 unknown_000[0x1a0];
     u8 suppress_shadow_surface_points;
-} CHARACTER_DRAW_HIERARCHY_PC;
+} CHARACTER_DRAW_HIERARCHY;
 
 extern i32 GameKeepMergeActionPc;
 extern i32 CharacterBlobShadowsOnPc;
 extern i32 GameDrawCharacterModelFlagPc;
 
-typedef struct DRAW_PREPASS_TELEPORT_PC {
+typedef struct DRAW_PREPASS_TELEPORT {
     u8 unknown_00[0x4c];
     u8 flags;
-} DRAW_PREPASS_TELEPORT_PC;
+} DRAW_PREPASS_TELEPORT;
 
-typedef struct DRAW_PREPASS_TELEPORT_OBJECT_PC {
+typedef struct DRAW_PREPASS_TELEPORT_OBJECT {
     u8 unknown_000[0x798];
-    DRAW_PREPASS_TELEPORT_PC *teleport;
-} DRAW_PREPASS_TELEPORT_OBJECT_PC;
+    DRAW_PREPASS_TELEPORT *teleport;
+} DRAW_PREPASS_TELEPORT_OBJECT;
 
 f32 PodSprint_RollMul(GAMEOBJECT *);
 void ApplyExtraRotation(GAMEOBJECT *, NUMTX *);
 
-typedef struct draw_process_flags_pc_s {
+typedef struct draw_process_flags_s {
     u8 unknown_000[0xe20];
     u32 flags_e20_bits_0_26 : 27;
     u32 origin_joint_was_ready : 1;
@@ -385,7 +385,7 @@ void DrawTorpedos(GAMEOBJECT *);
 void GizDrawBuildItPiece(GAMEOBJECT *, i32);
 void TransformDrawTargetPc(NUVEC *, f32, f32);
 
-typedef struct ai_creature_init_packet_pc_s {
+typedef struct ai_creature_init_packet_s {
     u8 unknown_000[0xa0];
     void *area;
     void *locator;
@@ -584,7 +584,7 @@ void ExtraCharacterFixUpAfterConfig(void) {
 }
 
 void ResetPlayerPacket(void *opaque_packet, CHARACTERDATA_PC *character) {
-    PLAYER_PACKET_RESET_PC *packet = opaque_packet;
+    PLAYER_PACKET_RESET *packet = opaque_packet;
     i32 i;
     (void)character;
     packet->context_state_flags &= (u8)~1;
@@ -902,9 +902,9 @@ void ResetCharacterIdle(GAMEOBJECT *object, i32 mode, i32 animation) {
 }
 
 static void NewCharacterIdle(GAMEOBJECT *object, i32 default_idle) {
-    CHARACTER_IDLE_STATE_PC *state = (CHARACTER_IDLE_STATE_PC *)object;
+    CHARACTER_IDLE_STATE *state = (CHARACTER_IDLE_STATE *)object;
     CHARACTERDATA_PC *character = object->character_data;
-    i32 alternate = ((CHARACTER_IDLE_POLICY_PC *)character->game_character)->use_standard_idle == 0 &&
+    i32 alternate = ((CHARACTER_IDLE_POLICY *)character->game_character)->use_standard_idle == 0 &&
                             (character->model_flags & 0x80) != 0
                         ? 118
                         : 25;
@@ -960,7 +960,7 @@ static void NewCharacterIdle(GAMEOBJECT *object, i32 default_idle) {
 }
 
 void UpdateCharacterIdle(GAMEOBJECT *object) {
-    CHARACTER_IDLE_STATE_PC *state = (CHARACTER_IDLE_STATE_PC *)object;
+    CHARACTER_IDLE_STATE *state = (CHARACTER_IDLE_STATE *)object;
     CHARACTERDATA_PC *character;
     i32 alternate;
     i32 default_idle;
@@ -969,7 +969,7 @@ void UpdateCharacterIdle(GAMEOBJECT *object) {
         return;
     }
     character = object->character_data;
-    alternate = ((CHARACTER_IDLE_POLICY_PC *)character->game_character)->use_standard_idle == 0 &&
+    alternate = ((CHARACTER_IDLE_POLICY *)character->game_character)->use_standard_idle == 0 &&
                         (character->model_flags & 0x80) != 0
                     ? 118
                     : 25;
@@ -1132,13 +1132,13 @@ void KeepOnScreen(GAMEOBJECT *object) {
         constrained = 1;
     }
     if ((VehicleArea != 0 && (WORLD->area == NULL || WORLD->area != PODSPRINT_ADATA)) || KEEPONSCREEN_SIDESONLY == 0 ||
-        (two_players && abs(RotDiff(0, ((KEEP_SCREEN_CAMERA_FIELDS_PC *)GameCam)->pitch)) > 0x2000)) {
+        (two_players && abs(RotDiff(0, ((KEEP_SCREEN_CAMERA_FIELDS *)GameCam)->pitch)) > 0x2000)) {
         if (OnOrInsidePlane(&object->collision_position, &PlayPlanePc[4].point, &PlayPlanePc[4].normal, NULL,
                             -object->bounds_half_height, NULL)) {
-            index = !(((KEEP_SCREEN_CAMERA_FIELDS_PC *)GameCam)->direction.y <= 0.0f) ? 5 : 0;
+            index = !(((KEEP_SCREEN_CAMERA_FIELDS *)GameCam)->direction.y <= 0.0f) ? 5 : 0;
         } else if (OnOrInsidePlane(&object->collision_position, &PlayPlanePc[3].point, &PlayPlanePc[3].normal, NULL,
                                    -object->bounds_half_height, NULL)) {
-            index = !(((KEEP_SCREEN_CAMERA_FIELDS_PC *)GameCam)->direction.y <= 0.0f) ? 0 : 5;
+            index = !(((KEEP_SCREEN_CAMERA_FIELDS *)GameCam)->direction.y <= 0.0f) ? 0 : 5;
         } else {
             index = -1;
         }
@@ -1567,7 +1567,7 @@ void TerrainPlayer(GAMEOBJECT *object) {
     i32 entry_intersects_water;
     i32 entry_menu_id;
     i32 entry_platform;
-    TERRAIN_PLAYER_IMPACT_PC impact_records[8];
+    TERRAIN_PLAYER_IMPACT impact_records[8];
     i32 impact_count;
     f32 movement_scale;
     i32 terrain_moved;
@@ -1888,7 +1888,7 @@ void TerrainPlayer(GAMEOBJECT *object) {
                             excluded_platforms[excluded_count++] = target->level_object_index;
                         }
                     } else if (object->character_context == 0x58 && object->field_7b3 == 1) {
-                        TERRAIN_PLAYER_BLOWUP_PC *blowup;
+                        TERRAIN_PLAYER_BLOWUP *blowup;
 
                         blowup = object->grapple;
                         if (blowup->platform_id != -1) {
@@ -1937,7 +1937,7 @@ void TerrainPlayer(GAMEOBJECT *object) {
                     object->contact_count = ((u8)(TerrImpact));
                     if (object->contact_count != 0 && impact_count > 0) {
                         memcpy(&object->contact_position, &impact_records[impact_count - 1],
-                               sizeof(TERRAIN_PLAYER_IMPACT_PC));
+                               sizeof(TERRAIN_PLAYER_IMPACT));
                         object->terrain_impact_speed = -NuVecDot(&object->contact_normal, &incoming_velocity);
                     } else {
                         object->contact_count = 0;
@@ -2067,9 +2067,9 @@ void TerrainPlayer(GAMEOBJECT *object) {
 
             if (api->field_281 != 0 && entry_platform == -1 && api->supporting_platform_id != -1 &&
                 api->supporting_platform_id == object->terrain_platform_id && entry_vertical_velocity < 0.0f) {
-                TERRAIN_PLAYER_GRABBER_PC *grabber;
+                TERRAIN_PLAYER_GRABBER *grabber;
 
-                grabber = ((TERRAIN_PLAYER_WORLD_PC *)(WORLD))->grabber;
+                grabber = ((TERRAIN_PLAYER_WORLD *)(WORLD))->grabber;
                 if (grabber != NULL && grabber->platform_id == api->supporting_platform_id) {
                     if (grabber->platform_contact_timer <= 0.0f) {
                         grabber->platform_contact_timer = 0.25f;
@@ -2087,9 +2087,9 @@ void TerrainPlayer(GAMEOBJECT *object) {
             }
             if (api->field_281 == 0 && entry_platform != -1 && api->supporting_platform_id == -1 &&
                 object->terrain_platform_id == entry_platform) {
-                TERRAIN_PLAYER_GRABBER_PC *grabber;
+                TERRAIN_PLAYER_GRABBER *grabber;
 
-                grabber = ((TERRAIN_PLAYER_WORLD_PC *)(WORLD))->grabber;
+                grabber = ((TERRAIN_PLAYER_WORLD *)(WORLD))->grabber;
                 if (grabber != NULL && grabber->platform_id == entry_platform) {
                     if (grabber->platform_contact_timer <= 0.0f) {
                         grabber->platform_contact_timer = 0.25f;
@@ -2145,12 +2145,12 @@ void TerrainPlayer(GAMEOBJECT *object) {
                         }
                     }
                 } else if ((api->flags_1fc_word & 4) == 0 && gone_through_door_to_new_level == 0) {
-                    TERRAIN_PLAYER_IMPACT_PC *impacts;
+                    TERRAIN_PLAYER_IMPACT *impacts;
                     i32 count;
 
                     if (impact_count == -1) {
                         count = 1;
-                        impacts = (TERRAIN_PLAYER_IMPACT_PC *)&object->contact_position;
+                        impacts = (TERRAIN_PLAYER_IMPACT *)&object->contact_position;
                     } else {
                         impacts = impact_records;
                         count = impact_count;
@@ -2289,8 +2289,8 @@ void TerrainPlayer(GAMEOBJECT *object) {
                                         PlayDieSfx(object);
                                         object->current_hp = 0;
                                         if (((api->flags_1fc_word & 0x80) != 0) &&
-                                            ((TERRAIN_PLAYER_COINS_PC *)(object->coin_packet)) != NULL &&
-                                            ((TERRAIN_PLAYER_COINS_PC *)(object->coin_packet))->coins > 0 &&
+                                            ((TERRAIN_PLAYER_COINS *)(object->coin_packet)) != NULL &&
+                                            ((TERRAIN_PLAYER_COINS *)(object->coin_packet))->coins > 0 &&
                                             BonusWinner == -1) {
                                             i32 coins;
 
@@ -2304,7 +2304,7 @@ void TerrainPlayer(GAMEOBJECT *object) {
                                                                : 2000000.0f,
                                                            NULL, 1, 0);
                                             }
-                                            ((TERRAIN_PLAYER_COINS_PC *)(object->coin_packet))->scale = 1.5f;
+                                            ((TERRAIN_PLAYER_COINS *)(object->coin_packet))->scale = 1.5f;
                                         }
                                     }
                                 rescue_done:;
@@ -2360,7 +2360,7 @@ void TerrainPlayer(GAMEOBJECT *object) {
                 }
                 Tag_Check(object);
                 PreResetCode(object);
-                ((TERRAIN_PLAYER_CHARACTER_PC *)(api->character_data))->move_callback(object);
+                ((TERRAIN_PLAYER_CHARACTER *)(api->character_data))->move_callback(object);
                 PostResetCode(object);
                 if ((api->character_data->model_flags & 0x00200000) == 0) {
                     BigJumpCode(object);
@@ -2369,9 +2369,9 @@ void TerrainPlayer(GAMEOBJECT *object) {
                 object->pad->buttons_pressed = pressed_buttons;
             }
 
-            if ((object->portal_flags & 0x40000) == 0 && ((TERRAIN_PLAYER_SET_PC *)(CurrentTerrain)) != NULL &&
+            if ((object->portal_flags & 0x40000) == 0 && ((TERRAIN_PLAYER_SET *)(CurrentTerrain)) != NULL &&
                 api->dead == 0 && (WORLD->current_level->flags & 0xe0) == 0 &&
-                (((((TERRAIN_PLAYER_SET_PC *)(CurrentTerrain))->minimum_height))) - 5.0f > api->position.y) {
+                (((((TERRAIN_PLAYER_SET *)(CurrentTerrain))->minimum_height))) - 5.0f > api->position.y) {
                 if (api->model_draw_result != 0) {
                     InstantKillParts(object, 0, 0.0f);
                 }
@@ -3228,7 +3228,7 @@ static void SetLayersBobPc(GAMEOBJECT *object) {
     i32 legs[3] = {11, 12, 15};
     i32 arms[2] = {13, 14};
     i32 hands[2] = {19, 20};
-    ((PLAYER_LAYER_FLAGS_PC *)&object->flags_ef0)->bob = qrand() < 0x8000;
+    ((PLAYER_LAYER_FLAGS *)&object->flags_ef0)->bob = qrand() < 0x8000;
     if (qrand() < 0x8000) {
         object->layer_mask |= 0x10;
     }
@@ -3333,10 +3333,10 @@ void InitPlayerAI(GAMEOBJECT *object) {
     object->ai_packet.route_mask_low = 0;
     object->ai_packet.route_mask_high = 0;
     if (FreePlay != 0 && (object->flags_1f8 & 0x400) == 0) {
-        memcpy(&route_mask_word, (u8 *)&CharacterMaskAllPc + offsetof(PLAYER_ROUTE_MASK_WORDS_PC, low),
+        memcpy(&route_mask_word, (u8 *)&CharacterMaskAllPc + offsetof(PLAYER_ROUTE_MASK_WORDS, low),
                sizeof(route_mask_word));
         object->ai_packet.route_mask_low = route_mask_word;
-        memcpy(&route_mask_word, (u8 *)&CharacterMaskAllPc + offsetof(PLAYER_ROUTE_MASK_WORDS_PC, high),
+        memcpy(&route_mask_word, (u8 *)&CharacterMaskAllPc + offsetof(PLAYER_ROUTE_MASK_WORDS, high),
                sizeof(route_mask_word));
         object->ai_packet.route_mask_high = route_mask_word;
     } else if (SpecialRouteCharacterTypeIDFn != NULL) {
@@ -3348,10 +3348,10 @@ void InitPlayerAI(GAMEOBJECT *object) {
                 object->ai_packet.route_mask_low = (u32)route_mask;
                 object->ai_packet.route_mask_high = (u32)(route_mask >> 32);
             } else {
-                memcpy(&route_mask_word, (u8 *)&CharacterMaskAllPc + offsetof(PLAYER_ROUTE_MASK_WORDS_PC, low),
+                memcpy(&route_mask_word, (u8 *)&CharacterMaskAllPc + offsetof(PLAYER_ROUTE_MASK_WORDS, low),
                        sizeof(route_mask_word));
                 object->ai_packet.route_mask_low = route_mask_word;
-                memcpy(&route_mask_word, (u8 *)&CharacterMaskAllPc + offsetof(PLAYER_ROUTE_MASK_WORDS_PC, high),
+                memcpy(&route_mask_word, (u8 *)&CharacterMaskAllPc + offsetof(PLAYER_ROUTE_MASK_WORDS, high),
                        sizeof(route_mask_word));
                 object->ai_packet.route_mask_high = route_mask_word;
             }
@@ -3519,7 +3519,7 @@ i32 NewPlayerCharacter(GAMEOBJECT *object, i32 id, i32 old_id, i32 unused) {
     ResetPlayerMoves(object);
     SetGameObjectCharacterData(object);
     ResetAnimPacket(&object->anim_packet, -1);
-    Player_ResetContexts(((CREATURE_RESET_PACKET_VIEW_PC *)object)->packet);
+    Player_ResetContexts(((CREATURE_RESET_PACKET_VIEW *)object)->packet);
     GetTopBot(object);
     GameObjectDimensions(object);
     object->hud_icon_timer = 2.0f;
@@ -3595,7 +3595,7 @@ void ResetAICreature(GAMEOBJECT *object, AISYS_PC *system) {
     object->shield_hitpoints = object->character_data->game_character->shield_hitpoints;
     object->saved_hitpoints = 4;
     creature = &system->creatures[object->ai_packet.creature_index];
-    object->ai_packet.creature_set = ((AI_CREATURE_RESET_VIEW_PC *)creature)->creature_set;
+    object->ai_packet.creature_set = ((AI_CREATURE_RESET_VIEW *)creature)->creature_set;
     if ((creature->flags & 1) != 0) {
         object->ai_packet.flags |= 0x80;
     } else {
@@ -3640,7 +3640,7 @@ void ResetAICreature(GAMEOBJECT *object, AISYS_PC *system) {
     AISysCharacterSetPathCnx(&object->ai_packet, &object->position, path_info->connection, path_info->direction);
     object->dead = 0;
     AIScriptProcessorInit(WORLD->ai_sys, &object->ai_packet, &object->ai_packet.script_processor, creature,
-                          ((AI_CREATURE_RESET_VIEW_PC *)creature)->script_name, NULL, 1, NULL, NULL);
+                          ((AI_CREATURE_RESET_VIEW *)creature)->script_name, NULL, 1, NULL, NULL);
     object->ai_packet.inside_path_node = -1;
     object->ai_packet.current_route = 0xff;
     object->ai_packet.next_route = 0;
@@ -3648,12 +3648,12 @@ void ResetAICreature(GAMEOBJECT *object, AISYS_PC *system) {
     ResetAnimPacket(&object->anim_packet, 1);
     SetAnimTimeRandom(object->character_model, &object->anim_packet);
     object->ai_packet.movement_stopping_distance = 0.0f;
-    ((AI_RESET_EXTRA_PC *)object)->reset_timer = 0.0f;
+    ((AI_RESET_EXTRA *)object)->reset_timer = 0.0f;
     object->ai_packet.flags &= ~0x1000000u;
     object->ai_packet.movement_destination = object->position;
     object->ai_packet.path_target = NULL;
-    ((AI_RESET_EXTRA_PC *)object)->search_state = 0;
-    ((AI_RESET_EXTRA_PC *)object)->avoidance_state = 0;
+    ((AI_RESET_EXTRA *)object)->search_state = 0;
+    ((AI_RESET_EXTRA *)object)->avoidance_state = 0;
     PortalGameObject(object, 1, 1, -1, WORLD->current_gscn);
     object->flags_1fc_word |= 0x1000;
     ++object->ai_packet.respawn_count;
@@ -3663,7 +3663,7 @@ void ResetAICreature(GAMEOBJECT *object, AISYS_PC *system) {
         row = &object->ai_packet.group->rows[object->ai_packet.group_row];
         row->is_alive |=
             (u8)((u64)1 << (object->ai_packet.group_member_index -
-                            ((AI_CREATURE_RESET_VIEW_PC *)creature)->count_across * object->ai_packet.group_row));
+                            ((AI_CREATURE_RESET_VIEW *)creature)->count_across * object->ai_packet.group_row));
         if (object->ai_packet.group_column == 0) {
             row->position = object->position;
             row->path_info = object->ai_packet.path_info;
@@ -3687,10 +3687,10 @@ void ResetAICreatures(AISYS_PC *system) {
     GAMEOBJECT *object;
     AICREATURE_PC *creature;
     i32 index;
-    if (system == NULL || (((AI_CREATURE_RESET_FLAGS_PC *)system)->reset_flags & 1) != 0) {
+    if (system == NULL || (((AI_CREATURE_RESET_FLAGS *)system)->reset_flags & 1) != 0) {
         return;
     }
-    ((AI_CREATURE_RESET_FLAGS_PC *)system)->reset_flags |= 1;
+    ((AI_CREATURE_RESET_FLAGS *)system)->reset_flags |= 1;
     object = Obj;
     for (index = 0; index < HIGHGAMEOBJECT; ++index, ++object) {
         if ((object->flags_1fc_word & 1) == 0 || (object->flags_1f8 & 0x400) == 0) {
@@ -3705,7 +3705,7 @@ void ResetAICreatures(AISYS_PC *system) {
             object->ai_packet.respawn_count = 0;
             object->ai_packet.reset_mode = 0;
             AIScriptProcessorInit(WORLD->ai_sys, &object->ai_packet, &object->ai_packet.script_processor, creature,
-                                  ((AI_CREATURE_RESET_VIEW_PC *)creature)->script_name, "InActive", 1, NULL, NULL);
+                                  ((AI_CREATURE_RESET_VIEW *)creature)->script_name, "InActive", 1, NULL, NULL);
             if (object->ai_packet.script_processor.state != NULL &&
                 object->ai_packet.script_processor.state->name != NULL &&
                 NuStrICmp(object->ai_packet.script_processor.state->name, "InActive") == 0) {
@@ -3747,7 +3747,7 @@ i32 InitCreature(GAMEOBJECT *object, i32 id, i32 parameter) {
     object->layer_mask = object->character_data->game_character->layer_mask;
     object->flags_1f8 = 0;
     object->level_object_index = -1;
-    memset(((CREATURE_RESET_PACKET_VIEW_PC *)object)->packet, 0, 0x788);
+    memset(((CREATURE_RESET_PACKET_VIEW *)object)->packet, 0, 0x788);
     object->field_280 = -1;
     start = *Player_StartPos(object);
     object->flags_1f8 |= 2;
@@ -3760,7 +3760,7 @@ i32 InitCreature(GAMEOBJECT *object, i32 id, i32 parameter) {
     object->pad = GamePad_Allocate();
     object->pad->input_mode = 1;
     object->current_hp = object->field_107e = object->character_data->game_character->hitpoints;
-    ResetPlayerPacket(((CREATURE_RESET_PACKET_VIEW_PC *)object)->packet, object->character_data);
+    ResetPlayerPacket(((CREATURE_RESET_PACKET_VIEW *)object)->packet, object->character_data);
     object->movement_direction = v000;
     object->shield_hitpoints = object->character_data->game_character->shield_hitpoints;
     object->saved_hitpoints = 4;
@@ -3808,7 +3808,7 @@ i32 InitCreature(GAMEOBJECT *object, i32 id, i32 parameter) {
     } else if (object->id == (u16)id_BOB) {
         SetLayersBobPc(object);
     } else if (object->id == (u16)id_GEONOSIAN) {
-        ((PLAYER_LAYER_FLAGS_PC *)&object->flags_ef0)->bob = qrand() < 0x8000;
+        ((PLAYER_LAYER_FLAGS *)&object->flags_ef0)->bob = qrand() < 0x8000;
     }
     InitCreatureModelFlagsPc(object);
     return 1;
@@ -3852,13 +3852,13 @@ i32 GameDrawCharacterModel(CHARACTER_MODEL_LAYERS_PC *model, ANIMPACKET_PC *anim
     complex_shadow = 0;
     if (object != NULL && (object->character_data->model_flags & 0x10000) != 0 &&
         (WORLD->area == NULL || WORLD->area != BATTLEOVERCORUSCANT_ADATA)) {
-        ((CHARACTER_DRAW_HIERARCHY_PC *)model->hierarchy)->suppress_shadow_surface_points = 0;
+        ((CHARACTER_DRAW_HIERARCHY *)model->hierarchy)->suppress_shadow_surface_points = 0;
         if (reflection_matrix != NULL) {
             ConfigureComplexShadow(object);
             complex_shadow = 1;
         }
     } else {
-        ((CHARACTER_DRAW_HIERARCHY_PC *)model->hierarchy)->suppress_shadow_surface_points = 1;
+        ((CHARACTER_DRAW_HIERARCHY *)model->hierarchy)->suppress_shadow_surface_points = 1;
     }
     drawcharactermodel_keepmergeaction = GameKeepMergeActionPc;
     MakeLayerList = GCDataList[model->model_id].make_layer_list;
@@ -3943,8 +3943,8 @@ i32 DrawGameObjectsProcess(void) {
             continue;
         }
         if (object->character_context == 0xf && object->field_7b3 == 1 &&
-            ((DRAW_PREPASS_TELEPORT_OBJECT_PC *)object)->teleport != NULL &&
-            (((DRAW_PREPASS_TELEPORT_OBJECT_PC *)object)->teleport->flags & 4) == 0) {
+            ((DRAW_PREPASS_TELEPORT_OBJECT *)object)->teleport != NULL &&
+            (((DRAW_PREPASS_TELEPORT_OBJECT *)object)->teleport->flags & 4) == 0) {
             continue;
         }
         if (object->character_context == 0x3b || object->character_context == 0x39) {
@@ -4322,7 +4322,7 @@ static void DrawExtraCharacterLayerBits(GAMEOBJECT *object, i32 character_id, NU
 void DrawCharacterAttachments(GAMEOBJECT *object, NUMTX *joint_matrices) {
     i32 character_id;
     i32 current_animation;
-    DRAW_ATTACHMENTS_PACKET_PC animation;
+    DRAW_ATTACHMENTS_PACKET animation;
     NUMTX *override_matrix = NULL;
     if (object->suit != NULL && (object->suit->flags & 2) != 0) {
         if (object->id != (u16)ID_DEFAULTCHARACTER_A) {
@@ -4372,9 +4372,9 @@ void DrawParaphernaliaPc(GAMEOBJECT *object) {
     NUMTX reflected;
     NUMTX special_reflected;
     NUMTX attachments[16];
-    PARAPHERNALIA_EXTRA_PC *extra;
+    PARAPHERNALIA_EXTRA *extra;
     GAMEOBJECT *carried;
-    PARAPHERNALIA_EXTRA_PC *carried_extra;
+    PARAPHERNALIA_EXTRA *carried_extra;
     i32 ride_locator;
     NUVEC carried_position;
     NUMTX *carried_reflection;
@@ -4403,7 +4403,7 @@ void DrawParaphernaliaPc(GAMEOBJECT *object) {
     NUVEC special_scaling;
     i32 special_phase;
 
-    extra = ((PARAPHERNALIA_EXTRA_PC *)(object));
+    extra = ((PARAPHERNALIA_EXTRA *)(object));
     if (DrawParaphernaliaEnabledPc == 0) {
         return;
     }
@@ -4411,7 +4411,7 @@ void DrawParaphernaliaPc(GAMEOBJECT *object) {
     carried = object->takeover_source;
     if (carried != NULL && object->character_context != 0x3b &&
         (object->character_data->game_character->flags_098[0] & 0x40) == 0) {
-        carried_extra = ((PARAPHERNALIA_EXTRA_PC *)(carried));
+        carried_extra = ((PARAPHERNALIA_EXTRA *)(carried));
         carried_extra->draw_reflection = extra->draw_reflection;
         carried->reflection_enabled = object->reflection_enabled;
         carried->reflection_height = object->reflection_height;
@@ -4691,7 +4691,7 @@ void DrawGameObjectsDraw(i32 pass) {
                    object->transform_alpha > 0.0f && object->transform_target_scale > 0.0f &&
                    WORLD->level_objects[object->field_e1e].active != 0 &&
                    (object->character_data->game_character->flags_090 & 0x400) == 0) {
-            DrawForceGlowSprite(&((PARAPHERNALIA_EXTRA_PC *)object)->force_position, object->transform_target_scale,
+            DrawForceGlowSprite(&((PARAPHERNALIA_EXTRA *)object)->force_position, object->transform_target_scale,
                                 object->field_e1e, object->transform_alpha / FORCEGLOWTIME, object);
         }
         if (object->snake_body != NULL) {

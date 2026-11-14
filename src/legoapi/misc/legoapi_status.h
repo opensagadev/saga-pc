@@ -111,7 +111,7 @@ extern "C" {
 
 #if SAGA_LEGOAPI_MISC_LEGOAPI_STATUS_H_PART == 2 && !defined(SAGA_LEGOAPI_MISC_LEGOAPI_STATUS_H_STOP)
 
-typedef struct minikit_piece_pc_s {
+typedef struct minikit_piece_s {
     NUSPECIALHANDLE special;
     NUMTX matrix;
     u8 unknown_4c[0x18];
@@ -127,7 +127,7 @@ STATIC_ASSERT(offsetof(MINIKIT_PIECE_PC, matrix) == 0xc);
 STATIC_ASSERT(offsetof(MINIKIT_PIECE_PC, direction) == 0x64);
 STATIC_ASSERT(offsetof(MINIKIT_PIECE_PC, direction_index) == 0x67);
 
-typedef struct status_minikit_draw_cache_pc_s {
+typedef struct status_minikit_draw_cache_s {
     NUMTX matrix;
     MINIKIT_PIECE_PC *piece;
     i32 active;

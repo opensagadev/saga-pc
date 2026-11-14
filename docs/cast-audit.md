@@ -110,47 +110,47 @@ casts; the 135 with ten or more casts explain 4,540, the 335 with five or more
 | 7 | 109 | void-pointer-cpp, byte-pointer | `variable CurrentTerrain: void * -> TERRAIN_SET_PC *` | src/saga.h:16538 | 5 |
 | 8 | 109 | declaration-type | `variable edui_font: void * -> vufnt_s *` | src/saga.h:28831 | 1 |
 | 9 | 102 | byte-pointer, void-pointer-cpp | `field APIOBJECT_PC.owner: void * -> gameobject_s *` | src/saga.h:1560 | 6 |
-| 10 | 92 | duplicate-type | `part_runtime_type_pc_s <-> parttype_lookup_pc_s` (src/gameapi/edpart.c:9) |  | 1 |
+| 10 | 92 | duplicate-type | `part_runtime_type_s <-> parttype_lookup_s` (src/gameapi/edpart.c:9) |  | 1 |
 | 11 | 84 | signedness | `function EdFileReadChar (result): char -> unsigned char` | src/saga.h:15432 | 14 |
-| 12 | 81 | duplicate-type | `cut_instance_load_pc_s <-> instnugcutscene_s` (src/legoapi/cutscene_lifecycle.c:749) |  | 1 |
+| 12 | 81 | duplicate-type | `cut_instance_load_s <-> instnugcutscene_s` (src/legoapi/cutscene_lifecycle.c:749) |  | 1 |
 | 13 | 79 | signedness | `field gameobject_s.field_280: u8 -> signed char` | src/saga.h:6391 | 23 |
 | 14 | 79 | view-type | `PC_MATERIAL_CREATE_VIEW <-> numtl_s` (src/nu2api/nu3d_includes.cpp:4286) |  | 1 |
 | 15 | 74 | declaration-type | `field bolt_s.owner: void * -> gameobject_s *` | src/saga.h:3851 | 10 |
-| 16 | 65 | declaration-type | `variable gizmotypes: void * -> gizmotypes_pc_s *` | src/saga.h:13803 | 4 |
+| 16 | 65 | declaration-type | `variable gizmotypes: void * -> gizmotypes_s *` | src/saga.h:13803 | 4 |
 | 17 | 54 | declaration-type | `function NuStringTableGetByName (result): u16 * -> char *` | src/saga.h:13956 | 1 |
 | 18 | 51 | const | `variable AIActionFalseName: const char[6] -> char *` | src/saga.h:14214 | 2 |
-| 19 | 44 | duplicate-type | `LEVER_WORLD_PC <-> WORLDINFO_s` (src/legogame/lever.c:35) |  | 1 |
+| 19 | 44 | duplicate-type | `LEVER_WORLD <-> WORLDINFO_s` (src/legogame/lever.c:35) |  | 1 |
 | 20 | 43 | record-pun | `TERRAIN_POLYGON_INFO_PC <-> TERRAIN_SHAPE_BATCH` (src/saga.h:642, 927) |  | 4 |
-| 21 | 39 | duplicate-type | `permanent_material_reader_pc_s <-> numtl_s` (src/legoapi/screen.cpp:25) |  | 1 |
+| 21 | 39 | duplicate-type | `permanent_material_reader_s <-> numtl_s` (src/legoapi/screen.cpp:25) |  | 1 |
 | 22 | 37 | declaration-type | `variable nu_input_state: NuKeyboardState_PC * -> PC_INPUT_RUNTIME_PC *` | src/saga.h:13692 | 2 |
 | 23 | 36 | const | `variable AIGameCharacterName: const char[11] -> char *` | src/saga.h:14517 | 1 |
 | 24 | 34 | void-pointer-cpp, byte-pointer | `field nuspecial_handle_s.scene: void * -> NUGSCN_s *` | src/saga.h:1072 | 12 |
 | 25 | 34 | declaration-type | `variable id_ATAT: i16 -> unsigned short` | src/saga.h:14282 | 8 |
 | 26 | 33 | duplicate-type | `GRAPHICS_DEVICE_PC <-> PC_D3D9_DEVICE_PC` (src/nu2api/pc_device.cpp:531) |  | 1 |
-| 27 | 32 | duplicate-type | `debris_material_pc_s <-> numtl_s` (src/legoapi/parts.c:878) |  | 1 |
-| 28 | 32 | duplicate-type | `PC_DI_RANGE_PC <-> PC_DI_PROPERTY_PC` (src/nu2api/pc_input.cpp:208) |  | 1 |
-| 29 | 31 | byte-pointer | `field variptr_u.void_ptr: void * -> locator_prim_vertex_pc_s *` | src/saga.h:1944 | 1 |
+| 27 | 32 | duplicate-type | `debris_material_s <-> numtl_s` (src/legoapi/parts.c:878) |  | 1 |
+| 28 | 32 | duplicate-type | `PC_DI_RANGE <-> PC_DI_PROPERTY` (src/nu2api/pc_input.cpp:208) |  | 1 |
+| 29 | 31 | byte-pointer | `field variptr_u.void_ptr: void * -> locator_prim_vertex_s *` | src/saga.h:1944 | 1 |
 | 30 | 29 | signedness | `function EdFileReadShort (result): i16 -> unsigned short` | src/saga.h:15430 | 9 |
 | 31 | 29 | byte-pointer | `variable LevFlag: i32[4] -> unsigned char *` | src/saga.h:14378 | 5 |
 | 32 | 28 | declaration-type | `field nudisplay_list_pc_s.items: void * -> nudisplaylistitem_s *` | src/saga.h:3315 | 2 |
-| 33 | 27 | duplicate-type | `HATMACHINE_WORLD_PC <-> WORLDINFO_s` (src/legogame/hatmachine.cpp:37) |  | 1 |
+| 33 | 27 | duplicate-type | `HATMACHINE_WORLD <-> WORLDINFO_s` (src/legogame/hatmachine.cpp:37) |  | 1 |
 | 34 | 27 | record-pun | `NUVEC4 <-> VuVec` (src/saga.h:101, 27156) |  | 1 |
 | 35 | 27 | byte-pointer | `variable WORLD: WORLDINFO * -> void *` | src/saga.h:16151 | 3 |
-| 36 | 26 | duplicate-type | `carry_basis_pc_s <-> gameobject_s` (src/legoapi/carrying.c:55) |  | 1 |
-| 37 | 26 | duplicate-type | `nuqfnt_atlas_material_pc_s <-> numtl_s` (src/nu2api/nu3d_platform.cpp:1151) |  | 1 |
+| 36 | 26 | duplicate-type | `carry_basis_s <-> gameobject_s` (src/legoapi/carrying.c:55) |  | 1 |
+| 37 | 26 | duplicate-type | `nuqfnt_atlas_material_s <-> numtl_s` (src/nu2api/nu3d_platform.cpp:1151) |  | 1 |
 | 38 | 26 | declaration-type | `variable EdLevelFnt: i32 -> void *` | src/legoapi/rtlhelper.cpp:18 | 2 |
 | 39 | 26 | declaration-type | `variable id_SPEEDERBIKE: i16 -> unsigned short` | src/saga.h:12951 | 8 |
-| 40 | 25 | duplicate-type | `techno_callback_pc_s <-> techno_pc_s` (src/legogame/techno.c:115) |  | 1 |
+| 40 | 25 | duplicate-type | `techno_callback_s <-> techno_s` (src/legogame/techno.c:115) |  | 1 |
 | 41 | 24 | duplicate-type | `CUT_LOAD_RECORD_PC <-> cutinfo_s` (src/legoapi/cutscenes.cpp:94) |  | 1 |
 | 42 | 24 | const | `variable AIScriptActionNameArgPrefix: const char[6] -> char *` | src/saga.h:16791 | 2 |
 | 43 | 24 | declaration-type | `variable GAMERAND (address): i32 -> nunrand_s *` | src/saga.h:15534 | 7 |
-| 44 | 24 | declaration-type | `variable NuDebrisVertexData: void * -> nulgtvertex_pc_s *` | src/saga.h:13344 | 1 |
+| 44 | 24 | declaration-type | `variable NuDebrisVertexData: void * -> nulgtvertex_s *` | src/saga.h:13344 | 1 |
 | 45 | 23 | declaration-type | `field SoundQueue.volume_sink: SoundQueueVolumeSink * -> IDirectSoundBuffer *` | src/saga.h:19404 | 1 |
 | 46 | 23 | signedness | `field gameobject_s.jump_animation_state: u8 -> signed char` | src/saga.h:6404 | 5 |
-| 47 | 23 | duplicate-type | `charconfig_variant_reader_pc_s <-> PLAYERCHARACTERCONFIG_PC` (src/legogame/config.c:31) |  | 1 |
+| 47 | 23 | duplicate-type | `charconfig_variant_reader_s <-> PLAYERCHARACTERCONFIG_PC` (src/legogame/config.c:31) |  | 1 |
 | 48 | 22 | field-address | `field numtx_s.m20 (address): f32 -> nuvec_s *` | src/saga.h:130 | 11 |
 | 49 | 21 | void-pointer-cpp | `field variptr_u.void_ptr: void * -> float *` | src/saga.h:1944 | 3 |
-| 50 | 20 | duplicate-type | `cut_instance_lifecycle_pc_s <-> instnugcutscene_s` (src/legoapi/cutscene_lifecycle.c:137) |  | 1 |
+| 50 | 20 | duplicate-type | `cut_instance_lifecycle_s <-> instnugcutscene_s` (src/legoapi/cutscene_lifecycle.c:137) |  | 1 |
 
 What the list says:
 

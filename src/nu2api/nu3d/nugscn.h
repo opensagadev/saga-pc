@@ -13,13 +13,13 @@ struct nudisplay_list_pc_s;
 struct nuinstance_s;
 struct numtl_s;
 struct nuspecial_handle_s;
-struct nuspecial_legacy_pc_s;
-struct nutexdim_pc_s;
+struct nuspecial_legacy_s;
+struct nutexdim_s;
 
 typedef struct NUGSCN_s {
     i32 *texture_ids;
     i32 texture_count;
-    struct nutexdim_pc_s **textures;
+    struct nutexdim_s **textures;
     struct numtl_s **materials;
     i32 material_count;
     i32 num_objects;
@@ -27,7 +27,7 @@ typedef struct NUGSCN_s {
     i32 num_instances;
     struct nuinstance_s *instances;
     i32 special_count;
-    struct nuspecial_legacy_pc_s *specials;
+    struct nuspecial_legacy_s *specials;
     u32 unknown_002c;
     i32 spline_count;
     struct nugspline_s *splines;
@@ -67,7 +67,7 @@ typedef struct NUGSCN_s {
     u32 unknown_016c[0x19];
     void *native_scene;
     u32 unknown_01d4[3];
-    struct nugscn_anim_lookup_pc_s *end_frame_lookup;
+    struct nugscn_anim_lookup_s *end_frame_lookup;
     u32 unknown_01e4[4];
     u32 legacy_format;
     u32 unknown_01f8[5];

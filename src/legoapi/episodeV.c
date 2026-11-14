@@ -17,14 +17,14 @@ void GizBuildit_SetVisibility(GIZBUILDIT_s *, i32);
 struct panel_movement_pc_s;
 struct panel_movement_pc_s *GizPanel_FindByName(WORLDINFO *, char *);
 
-typedef struct CLOUDCITY_PANEL_FLAGS_VIEW_PC {
+typedef struct CLOUDCITY_PANEL_FLAGS_VIEW {
     u8 unknown_00[0x62];
     u8 flags;
-} CLOUDCITY_PANEL_FLAGS_VIEW_PC;
+} CLOUDCITY_PANEL_FLAGS_VIEW;
 
-typedef struct CLOUDCITY_LEVEL_FLAG_VIEW_PC {
+typedef struct CLOUDCITY_LEVEL_FLAG_VIEW {
     u8 started;
-} CLOUDCITY_LEVEL_FLAG_VIEW_PC;
+} CLOUDCITY_LEVEL_FLAG_VIEW;
 
 extern i32 turret_gizmotype_id;
 void DrawMeleeTargetsNumber(i16 *targets, u8 *counts, i32 count, u8 reset, NUSPECIALHANDLE *special);
@@ -88,15 +88,15 @@ extern u32 LEGO_AIPATHCNX_BIGJUMP;
         }                                                                                                              \
     } while (0)
 
-typedef struct HOTH_WORLD_SCRIPT_PC {
+typedef struct HOTH_WORLD_SCRIPT {
     u8 reserved[0x2b00];
     AISCRIPTPROCESS_PC processor;
-} HOTH_WORLD_SCRIPT_PC;
+} HOTH_WORLD_SCRIPT;
 
-typedef struct HOTH_ANTINODE_PC {
+typedef struct HOTH_ANTINODE {
     u8 reserved[0x50];
     i64 excluded_character_types;
-} HOTH_ANTINODE_PC;
+} HOTH_ANTINODE;
 
 void DrawMeleeTargetsRowsPc(i16 *targets, char *defeated, f32 *values, i32 count);
 
@@ -920,7 +920,7 @@ static const char CloudCityEscapeFightMessagePc[20] = "BobaFightStarted";
 
 void CloudCityEscapeA_Init(WORLDINFO *world) {
     LevAIMessage[0] = CheckGizAIMessage(gizaimessagesys, (char *)CloudCityEscapeFightMessagePc, NULL);
-    ((CLOUDCITY_LEVEL_FLAG_VIEW_PC *)LevFlag)->started = 0;
+    ((CLOUDCITY_LEVEL_FLAG_VIEW *)LevFlag)->started = 0;
     NuSpecialFind(world->current_gscn, &LevHSpecial[1], (char *)CloudCityEscapeGas1Pc, 1);
     NuSpecialFind(world->current_gscn, &LevHSpecial[2], (char *)CloudCityEscapeGas2Pc, 1);
     NuSpecialFind(world->current_gscn, &LevHSpecial[3], (char *)CloudCityEscapeGas3Pc, 1);
@@ -942,12 +942,12 @@ static const char CloudCityEscapeSteamSfxPc[16] = "env_steam_lp";
 void CloudCityEscapeA_Update(WORLDINFO *world) {
     i32 i;
     NUINSTANIM *animation;
-    if (((CLOUDCITY_LEVEL_FLAG_VIEW_PC *)LevFlag)->started == 0 && NuSpecialGetVisibilityFn(&LevHSpecial[0]) != 0) {
+    if (((CLOUDCITY_LEVEL_FLAG_VIEW *)LevFlag)->started == 0 && NuSpecialGetVisibilityFn(&LevHSpecial[0]) != 0) {
         PlaySfx((char *)CloudCityEscapeDeskSfxPc, NuSpecialGetDrawPos(&LevHSpecial[0]));
-        ((CLOUDCITY_LEVEL_FLAG_VIEW_PC *)LevFlag)->started = 1;
+        ((CLOUDCITY_LEVEL_FLAG_VIEW *)LevFlag)->started = 1;
     }
     TerSurface[14].flags = 0x2002;
-    if (LevGizPanel == NULL || (((CLOUDCITY_PANEL_FLAGS_VIEW_PC *)LevGizPanel)->flags & 2) == 0) {
+    if (LevGizPanel == NULL || (((CLOUDCITY_PANEL_FLAGS_VIEW *)LevGizPanel)->flags & 2) == 0) {
         for (i = 1; i <= 3; ++i) {
             if (NuSpecialExistsFn(&LevHSpecial[i])) {
                 animation = NuSpecialGetInstAnim(&LevHSpecial[i]);
@@ -1566,7 +1566,7 @@ void HothBattleE_UpdateWave(void) {
     i32 index;
     char state[16];
     GAMEOBJECT *object;
-    HOTH_ANTINODE_PC *node;
+    HOTH_ANTINODE *node;
     f32 radius;
     i32 count;
     if (melee.current_wave != melee.next_wave) {
@@ -1585,8 +1585,8 @@ void HothBattleE_UpdateWave(void) {
             }
             melee.wave_delay = 0.0f;
             sprintf(state, "CamCut_%d", melee.next_wave);
-            if (AIScriptSetBaseScriptStateByName(&((HOTH_WORLD_SCRIPT_PC *)WORLD)->processor, state) != 0) {
-                AIScriptProcess(WORLD->ai_sys, NULL, NULL, &((HOTH_WORLD_SCRIPT_PC *)WORLD)->processor, FRAMETIME);
+            if (AIScriptSetBaseScriptStateByName(&((HOTH_WORLD_SCRIPT *)WORLD)->processor, state) != 0) {
+                AIScriptProcess(WORLD->ai_sys, NULL, NULL, &((HOTH_WORLD_SCRIPT *)WORLD)->processor, FRAMETIME);
             }
             melee.transition_phase = 0;
             melee.wave_delay = 0.0f;
@@ -1625,10 +1625,10 @@ void HothBattleE_UpdateWave(void) {
     HothBattle_ManageBackgroundCreatures();
     if (melee.current_wave == 3 && melee.waves[0].creatures[0] != NULL && melee.waves[0].creatures[1] != NULL) {
         radius = (f32)((f64)melee.waves[0].creatures[type]->bounds_radius * 3.0);
-        node = (HOTH_ANTINODE_PC *)AIAntinodeCreateSingleFrame(&melee.waves[0].creatures[0]->position, radius);
+        node = (HOTH_ANTINODE *)AIAntinodeCreateSingleFrame(&melee.waves[0].creatures[0]->position, radius);
         node->excluded_character_types = (i32) ~(1u << melee.waves[0].creatures[1]->hostility_group);
         radius = (f32)((f64)melee.waves[0].creatures[type]->bounds_radius * 3.0);
-        node = (HOTH_ANTINODE_PC *)AIAntinodeCreateSingleFrame(&melee.waves[0].creatures[1]->position, radius);
+        node = (HOTH_ANTINODE *)AIAntinodeCreateSingleFrame(&melee.waves[0].creatures[1]->position, radius);
         node->excluded_character_types = (i32) ~(1u << melee.waves[0].creatures[0]->hostility_group);
     }
     for (wave_index = 0; wave_index < 4; ++wave_index) {

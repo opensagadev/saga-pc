@@ -14,7 +14,7 @@ void CharShadows_Reset(CHARACTER_SHADOW_PACKET_PC *packet) {
 void CharShadows_Update(void) {
     GAMEOBJECT *object = Obj;
     CHARACTER_SHADOW_PACKET_PC *packet;
-    CHARACTER_SHADOW_RESET_SLOT_PC *slot;
+    CHARACTER_SHADOW_RESET_SLOT *slot;
     NUVEC position;
     NUVEC *locator_position;
     f32 height;
@@ -87,7 +87,7 @@ void CharShadows_Update(void) {
 void CharShadows_Draw(void) {
     GAMEOBJECT *object;
     CHARACTER_SHADOW_PACKET_PC *packet;
-    CHARACTER_SHADOW_RESET_SLOT_PC *slot;
+    CHARACTER_SHADOW_RESET_SLOT *slot;
     NUVEC position;
     f32 alpha;
     f32 radius;

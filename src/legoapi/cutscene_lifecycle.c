@@ -8,77 +8,77 @@ static INSTNUGCUTSCENE *CutSceneBackgroundInstancesPc = 0;
 static INSTNUGCUTSCENE *active_cutscene_instances = 0;
 #pragma bss_seg()
 
-struct state_anim_pc_s;
+struct state_anim_s;
 
-typedef struct cut_rigid_lifecycle_pc_s {    // size 0x5c
-    CUT_RIGID_GENERIC_PC generic;            // 0x00
-    struct state_anim_pc_s *state_animation; // 0x50
-    u8 unknown_54[4];                        // 0x54
-    u8 flags;                                // 0x58
-    u8 unknown_59[3];                        // 0x59
+typedef struct cut_rigid_lifecycle_s {    // size 0x5c
+    CUT_RIGID_GENERIC_PC generic;         // 0x00
+    struct state_anim_s *state_animation; // 0x50
+    u8 unknown_54[4];                     // 0x54
+    u8 flags;                             // 0x58
+    u8 unknown_59[3];                     // 0x59
 } CUT_RIGID_LIFECYCLE_PC;
 
 STATIC_ASSERT(sizeof(CUT_CHARACTER_GENERIC_PC) == 0x64);
 
-typedef struct cut_rigid_instance_pc_s { // size 0x10
-    NUSPECIALHANDLE special;             // 0x0
-    u8 state_index;                      // 0xc
-    u8 unknown_0d[3];                    // 0xd
+typedef struct cut_rigid_instance_s { // size 0x10
+    NUSPECIALHANDLE special;          // 0x0
+    u8 state_index;                   // 0xc
+    u8 unknown_0d[3];                 // 0xd
 } CUT_RIGID_INSTANCE_PC;
 
-typedef struct cut_character_instance_pc_s { // size 0x18
-    void *model;                             // 0x00
-    u8 unknown_04[0x14];                     // 0x04
+typedef struct cut_character_instance_s { // size 0x18
+    void *model;                          // 0x00
+    u8 unknown_04[0x14];                  // 0x04
 } CUT_CHARACTER_INSTANCE_PC;
 
-typedef struct cut_rigid_system_lifecycle_pc_s { // size 0x8
-    CUT_RIGID_LIFECYCLE_PC *rigids;              // 0x0
-    u16 count;                                   // 0x4
+typedef struct cut_rigid_system_lifecycle_s { // size 0x8
+    CUT_RIGID_LIFECYCLE_PC *rigids;           // 0x0
+    u16 count;                                // 0x4
 } CUT_RIGID_SYSTEM_LIFECYCLE_PC;
 
-typedef struct cut_character_system_lifecycle_pc_s { // size 0x8
-    CUT_CHARACTER_GENERIC_PC *characters;            // 0x0
-    u16 count;                                       // 0x4
+typedef struct cut_character_system_lifecycle_s { // size 0x8
+    CUT_CHARACTER_GENERIC_PC *characters;         // 0x0
+    u16 count;                                    // 0x4
 } CUT_CHARACTER_SYSTEM_LIFECYCLE_PC;
 
-typedef struct cut_rigid_instance_system_pc_s {
+typedef struct cut_rigid_instance_system_s {
     CUT_RIGID_INSTANCE_PC *rigids;
 } CUT_RIGID_INSTANCE_SYSTEM_PC;
 
-typedef struct cut_character_instance_system_pc_s { // size 0x4
-    CUT_CHARACTER_INSTANCE_PC *characters;          // 0x0
+typedef struct cut_character_instance_system_s { // size 0x4
+    CUT_CHARACTER_INSTANCE_PC *characters;       // 0x0
 } CUT_CHARACTER_INSTANCE_SYSTEM_PC;
 
-typedef struct cut_locator_lifecycle_pc_s { // size 0x64
-    CUT_LOCATOR_GENERIC_PC generic;         // 0x00
-    u8 unknown_54[4];                       // 0x54
-    u8 flags;                               // 0x58
-    u8 type_index;                          // 0x59
-    u8 unknown_5a[10];                      // 0x5a
+typedef struct cut_locator_lifecycle_s { // size 0x64
+    CUT_LOCATOR_GENERIC_PC generic;      // 0x00
+    u8 unknown_54[4];                    // 0x54
+    u8 flags;                            // 0x58
+    u8 type_index;                       // 0x59
+    u8 unknown_5a[10];                   // 0x5a
 } CUT_LOCATOR_LIFECYCLE_PC;
 
-typedef struct cut_locator_type_lifecycle_pc_s { // size 0xc
-    u8 unknown_00[4];                            // 0x0
-    u8 flags;                                    // 0x4
-    u8 unknown_05[7];                            // 0x5
+typedef struct cut_locator_type_lifecycle_s { // size 0xc
+    u8 unknown_00[4];                         // 0x0
+    u8 flags;                                 // 0x4
+    u8 unknown_05[7];                         // 0x5
 } CUT_LOCATOR_TYPE_LIFECYCLE_PC;
 
-typedef struct cut_locator_system_lifecycle_pc_s { // size 0xc
-    CUT_LOCATOR_LIFECYCLE_PC *locators;            // 0x0
-    CUT_LOCATOR_TYPE_LIFECYCLE_PC *types;          // 0x4
-    u8 count;                                      // 0x8
+typedef struct cut_locator_system_lifecycle_s { // size 0xc
+    CUT_LOCATOR_LIFECYCLE_PC *locators;         // 0x0
+    CUT_LOCATOR_TYPE_LIFECYCLE_PC *types;       // 0x4
+    u8 count;                                   // 0x8
 } CUT_LOCATOR_SYSTEM_LIFECYCLE_PC;
 
-typedef struct cut_locator_instance_pc_s { // size 0x8
-    f32 frame;                             // 0x0
-    i32 effect_handle;                     // 0x4
+typedef struct cut_locator_instance_s { // size 0x8
+    f32 frame;                          // 0x0
+    i32 effect_handle;                  // 0x4
 } CUT_LOCATOR_INSTANCE_PC;
 
-typedef struct cut_locator_instance_system_pc_s {
+typedef struct cut_locator_instance_system_s {
     CUT_LOCATOR_INSTANCE_PC *locators;
 } CUT_LOCATOR_INSTANCE_SYSTEM_PC;
 
-typedef struct cut_scene_lifecycle_pc_s {                // size 0x44
+typedef struct cut_scene_lifecycle_s {                   // size 0x44
     i32 version;                                         // 0x00
     u8 unknown_04[4];                                    // 0x04
     f32 duration;                                        // 0x08
@@ -94,19 +94,19 @@ typedef struct cut_scene_lifecycle_pc_s {                // size 0x44
     u16 total_stream_frames;                             // 0x42
 } CUT_SCENE_LIFECYCLE_PC;
 
-typedef struct cut_camera_instance_lifecycle_pc_s { // size 0xa
-    u8 unknown_00[9];                               // 0x0
-    i8 camera_index;                                // 0x9
+typedef struct cut_camera_instance_lifecycle_s { // size 0xa
+    u8 unknown_00[9];                            // 0x0
+    i8 camera_index;                             // 0x9
 } CUT_CAMERA_INSTANCE_LIFECYCLE_PC;
 
-typedef struct cut_instance_lifecycle_pc_s { // size 0xe4
-    INSTNUGCUTSCENE *next;                   // 0x00
-    INSTNUGCUTSCENE *previous;               // 0x04
-    u8 unknown_08[0x10];                     // 0x08
-    NUMTX matrix;                            // 0x18
-    CUT_SCENE_LIFECYCLE_PC *scene;           // 0x58
-    CUT_SCENE_LIFECYCLE_PC *saved_scene;     // 0x5c
-    u8 unknown_60[0x28];                     // 0x60
+typedef struct cut_instance_lifecycle_s { // size 0xe4
+    INSTNUGCUTSCENE *next;                // 0x00
+    INSTNUGCUTSCENE *previous;            // 0x04
+    u8 unknown_08[0x10];                  // 0x08
+    NUMTX matrix;                         // 0x18
+    CUT_SCENE_LIFECYCLE_PC *scene;        // 0x58
+    CUT_SCENE_LIFECYCLE_PC *saved_scene;  // 0x5c
+    u8 unknown_60[0x28];                  // 0x60
 
     union { // size 0x4
         u32 flags_88;
@@ -130,25 +130,25 @@ typedef struct cut_instance_lifecycle_pc_s { // size 0xe4
     f32 accumulated_stream_duration;                      // 0xe0
 } CUT_INSTANCE_LIFECYCLE_PC;
 
-typedef struct cut_sound_voice_lifecycle_pc_s { // size 0x88
-    u8 unknown_00[0x80];                        // 0x00
-    f32 first;                                  // 0x80
-    f32 second;                                 // 0x84
+typedef struct cut_sound_voice_lifecycle_s { // size 0x88
+    u8 unknown_00[0x80];                     // 0x00
+    f32 first;                               // 0x80
+    f32 second;                              // 0x84
 } CUT_SOUND_VOICE_LIFECYCLE_PC;
 
-typedef struct cut_sound_owner_lifecycle_pc_s { // size 0x10
-    u8 unknown_00[0xc];                         // 0x0
-    CUT_SOUND_VOICE_LIFECYCLE_PC **voices;      // 0xc
+typedef struct cut_sound_owner_lifecycle_s { // size 0x10
+    u8 unknown_00[0xc];                      // 0x0
+    CUT_SOUND_VOICE_LIFECYCLE_PC **voices;   // 0xc
 } CUT_SOUND_OWNER_LIFECYCLE_PC;
 
-typedef struct cut_sound_handle_lifecycle_pc_s { // size 0x14
-    CUT_SOUND_OWNER_LIFECYCLE_PC *owner;         // 0x00
-    u8 unknown_04[4];                            // 0x04
-    i16 active;                                  // 0x08
-    u16 third_voice;                             // 0x0a
-    u8 unknown_0c[2];                            // 0x0c
-    u16 first_voice;                             // 0x0e
-    u16 second_voice;                            // 0x10
+typedef struct cut_sound_handle_lifecycle_s { // size 0x14
+    CUT_SOUND_OWNER_LIFECYCLE_PC *owner;      // 0x00
+    u8 unknown_04[4];                         // 0x04
+    i16 active;                               // 0x08
+    u16 third_voice;                          // 0x0a
+    u8 unknown_0c[2];                         // 0x0c
+    u16 first_voice;                          // 0x0e
+    u16 second_voice;                         // 0x10
 } CUT_SOUND_HANDLE_LIFECYCLE_PC;
 
 static void CutSceneDestroyCharactersPC(CUT_INSTANCE_LIFECYCLE_PC *instance) {
@@ -480,13 +480,13 @@ typedef struct cut_load_character_animation_s { // size 0x10
     u8 unknown_08[8];                           // 0x8
 } CUT_LOAD_CHARACTER_ANIMATION;
 
-typedef struct cut_load_camera_pc_s { // size 0x50
-    NUMTX matrix;                     // 0x00
-    u8 flags;                         // 0x40
-    u8 unknown_41;                    // 0x41
-    u8 animation_node;                // 0x42
-    u8 focus_flags;                   // 0x43
-    u8 unknown_44[12];                // 0x44
+typedef struct cut_load_camera_s { // size 0x50
+    NUMTX matrix;                  // 0x00
+    u8 flags;                      // 0x40
+    u8 unknown_41;                 // 0x41
+    u8 animation_node;             // 0x42
+    u8 focus_flags;                // 0x43
+    u8 unknown_44[12];             // 0x44
 } CUT_LOAD_CAMERA_PC;
 
 typedef struct cut_load_camera_system_s { // size 0x24
@@ -517,7 +517,7 @@ typedef struct cut_load_bounds_s { // size 0x18
     NUVEC max;                     // 0x0c
 } CUT_LOAD_BOUNDS;
 
-struct cut_scene_load_pc_s {                            // size 0x5c
+struct cut_scene_load_s {                               // size 0x5c
     i32 version;                                        // 0x00
     i32 string_delta;                                   // 0x04
     f32 duration;                                       // 0x08
@@ -543,18 +543,18 @@ struct cut_scene_load_pc_s {                            // size 0x5c
     i32 loaded_size;                                    // 0x58
 };
 
-typedef struct cut_load_camera_target_pc_s { // size 0x10
-    NUVEC *target;                           // 0x0
-    f32 start_frame;                         // 0x4
-    f32 duration;                            // 0x8
-    i8 target_index;                         // 0xc
-    u8 unknown_0d[3];                        // 0xd
+typedef struct cut_load_camera_target_s { // size 0x10
+    NUVEC *target;                        // 0x0
+    f32 start_frame;                      // 0x4
+    f32 duration;                         // 0x8
+    i8 target_index;                      // 0xc
+    u8 unknown_0d[3];                     // 0xd
 } CUT_LOAD_CAMERA_TARGET_PC;
 
-typedef struct cut_load_camera_state_pc_s { // size 0x4
-    u8 flags;                               // 0x0
-    u8 event_index;                         // 0x1
-    u8 unknown_02[2];                       // 0x2
+typedef struct cut_load_camera_state_s { // size 0x4
+    u8 flags;                            // 0x0
+    u8 event_index;                      // 0x1
+    u8 unknown_02[2];                    // 0x2
 } CUT_LOAD_CAMERA_STATE_PC;
 
 typedef struct cut_load_camera_instance_s { // size 0x10
@@ -621,10 +621,10 @@ typedef struct cut_load_trigger_entry_s { // size 0x34
     u8 unknown_04[0x30];                  // 0x04
 } CUT_LOAD_TRIGGER_ENTRY;
 
-typedef struct cut_load_trigger_flag_pc_s { // size 0x4
-    u16 unknown_00;                         // 0x0
-    u8 flags;                               // 0x2
-    u8 unknown_03;                          // 0x3
+typedef struct cut_load_trigger_flag_s { // size 0x4
+    u16 unknown_00;                      // 0x0
+    u8 flags;                            // 0x2
+    u8 unknown_03;                       // 0x3
 } CUT_LOAD_TRIGGER_FLAG_PC;
 
 typedef struct cut_load_trigger_owner_s { // size 0x10
@@ -637,9 +637,9 @@ typedef struct cut_load_trigger_owner_s { // size 0x10
     }; // 0xc
 } CUT_LOAD_TRIGGER_OWNER;
 
-typedef struct cut_load_trigger_state_pc_s { // size 0x4
-    u8 state_index;                          // 0x0
-    u8 unknown_01[3];                        // 0x1
+typedef struct cut_load_trigger_state_s { // size 0x4
+    u8 state_index;                       // 0x0
+    u8 unknown_01[3];                     // 0x1
 } CUT_LOAD_TRIGGER_STATE_PC;
 
 typedef struct cut_load_trigger_instance_s {
@@ -647,17 +647,17 @@ typedef struct cut_load_trigger_instance_s {
     CUT_LOAD_TRIGGER_STATE_PC *states;
 } CUT_LOAD_TRIGGER_INSTANCE;
 
-typedef struct cut_instance_load_pc_s { // size 0xf8
-    INSTNUGCUTSCENE *next;              // 0x00
-    INSTNUGCUTSCENE *previous;          // 0x04
-    char name[16];                      // 0x08
-    NUMTX matrix;                       // 0x18
-    CUT_SCENE_LOAD_PC *scene;           // 0x58
-    CUT_SCENE_LOAD_PC *saved_scene;     // 0x5c
-    NUVEC center;                       // 0x60
-    NUVEC bounds_min;                   // 0x6c
-    NUVEC bounds_max;                   // 0x78
-    f32 radius_squared;                 // 0x84
+typedef struct cut_instance_load_s { // size 0xf8
+    INSTNUGCUTSCENE *next;           // 0x00
+    INSTNUGCUTSCENE *previous;       // 0x04
+    char name[16];                   // 0x08
+    NUMTX matrix;                    // 0x18
+    CUT_SCENE_LOAD_PC *scene;        // 0x58
+    CUT_SCENE_LOAD_PC *saved_scene;  // 0x5c
+    NUVEC center;                    // 0x60
+    NUVEC bounds_min;                // 0x6c
+    NUVEC bounds_max;                // 0x78
+    f32 radius_squared;              // 0x84
 
     union { // size 0x4
         u32 flags_88;
@@ -716,9 +716,9 @@ typedef struct cut_instance_load_pc_s { // size 0xf8
     INSTNUGCUTSCENE *queued_stream_instance;   // 0xf4
 } CUT_INSTANCE_LOAD_PC;
 
-struct cut_locator_function_entry_pc_s { // size 0x14
-    char *name;                          // 0x00
-    u32 unknown_04;                      // 0x04
+struct cut_locator_function_entry_s { // size 0x14
+    char *name;                       // 0x00
+    u32 unknown_04;                   // 0x04
     void (*reset)(INSTNUGCUTSCENE *, CUT_LOAD_LOCATOR_SYSTEM *, CUT_LOAD_LOCATOR_INSTANCE *,
                   CUT_LOAD_LOCATOR *); // 0x08
     u8 unknown_0c[8];                  // 0x0c
@@ -2984,17 +2984,17 @@ CUT_SCENE_LOAD_PC *RelocateCutScene(CUT_SCENE_LOAD_PC *source, VARIPTR *buffer) 
 
 #define CUT_SCENE_DEAD_MAGIC 0x44454144
 
-typedef struct cut_cleanup_entry_pc_s { // size 0x10
-    void *handle;                       // 0x0
-    CUT_SCENE_LOAD_PC *scene;           // 0x4
-    f32 accumulated_duration;           // 0x8
-    u8 flags;                           // 0xc
-    u8 unknown_0d[3];                   // 0xd
+typedef struct cut_cleanup_entry_s { // size 0x10
+    void *handle;                    // 0x0
+    CUT_SCENE_LOAD_PC *scene;        // 0x4
+    f32 accumulated_duration;        // 0x8
+    u8 flags;                        // 0xc
+    u8 unknown_0d[3];                // 0xd
 } CUT_CLEANUP_ENTRY_PC;
 
-typedef struct cut_cleanup_instance_pc_s { // size 0xe4
-    u8 unknown_00[0xe0];                   // 0x00
-    f32 accumulated_stream_duration;       // 0xe0
+typedef struct cut_cleanup_instance_s { // size 0xe4
+    u8 unknown_00[0xe0];                // 0x00
+    f32 accumulated_stream_duration;    // 0xe0
 } CUT_CLEANUP_INSTANCE_PC;
 
 extern CUT_CLEANUP_ENTRY_PC *DefragCutSceneListBase;

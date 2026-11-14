@@ -111,16 +111,16 @@ STATIC_ASSERT(offsetof(EDLOCATOR_s, path_check.path) == 0x2c);
 extern void AiRndrLine3d(NURND_VERTEX3D_PC *, NUMTL *, NUMTX *);
 
 /* Path-build view of the runtime path system (AIPATHSYS_PC is opaque here). */
-typedef struct AI_PATH_BUILD_SYSTEM_PC {   // size 0x10
-    u8 path_count;                         // 0x0
-    u8 unknown1;                           // 0x1
-    u16 special_route_count;               // 0x2
-    AIPATH_PC **paths;                     // 0x4
-    AIPATH_PC *active_path;                // 0x8
-    AIPATHSPECIALROUTE_PC *special_routes; // 0xc
-} AI_PATH_BUILD_SYSTEM_PC;
+typedef struct AI_PATH_BUILD_SYSTEM {   // size 0x10
+    u8 path_count;                      // 0x0
+    u8 unknown1;                        // 0x1
+    u16 special_route_count;            // 0x2
+    AIPATH_PC **paths;                  // 0x4
+    AIPATH_PC *active_path;             // 0x8
+    AIPATHSPECIALROUTE *special_routes; // 0xc
+} AI_PATH_BUILD_SYSTEM;
 
-STATIC_ASSERT(sizeof(((AIPATHROUTE_PC *)0)->character_mask) == 16);
+STATIC_ASSERT(sizeof(((AIPATHROUTE *)0)->character_mask) == 16);
 STATIC_ASSERT(sizeof(EDAIPATHNODE_s) == 0xb4);
 STATIC_ASSERT(offsetof(EDAIPATHNODE_s, connections) == 0x30);
 STATIC_ASSERT(offsetof(EDAIPATHNODE_s, index) == 0x90);
@@ -205,10 +205,10 @@ STATIC_ASSERT(offsetof(GAMEOBJECT, character_context) == 0x7b5);
 
 STATIC_ASSERT(offsetof(GAMEOBJECT, flags_e20) == 0xe20);
 
-typedef struct INTERACTION_ANTINODE_VIEW_PC { // size 0x58
-    u8 unknown[0x50];                         // 0x00
-    u64 excluded_character_types;             // 0x50
-} INTERACTION_ANTINODE_VIEW_PC;
+typedef struct INTERACTION_ANTINODE_VIEW { // size 0x58
+    u8 unknown[0x50];                      // 0x00
+    u64 excluded_character_types;          // 0x50
+} INTERACTION_ANTINODE_VIEW;
 
 #define INTERACTION_GEOMETRY(p) ((GAMEOBJECT *)(p))
 
@@ -216,13 +216,13 @@ typedef void (*CHECK_ANTINODE_FN_PC)(APIOBJECT_PC *, AIANTINODE_PC *, NUVEC *, f
 
 extern CHECK_ANTINODE_FN_PC checkantinodefns[3];
 
-typedef struct INTERACTION_ANTINODE_SHAPE_VIEW_PC { // size 0x48
-    u8 unknown[0x40];                               // 0x00
-    f32 base_radius;                                // 0x40
-    f32 base_height;                                // 0x44
-} INTERACTION_ANTINODE_SHAPE_VIEW_PC;
+typedef struct INTERACTION_ANTINODE_SHAPE_VIEW { // size 0x48
+    u8 unknown[0x40];                            // 0x00
+    f32 base_radius;                             // 0x40
+    f32 base_height;                             // 0x44
+} INTERACTION_ANTINODE_SHAPE_VIEW;
 
-#define INTERACTION_ANTINODE_SHAPE(a) ((INTERACTION_ANTINODE_SHAPE_VIEW_PC *)(a))
+#define INTERACTION_ANTINODE_SHAPE(a) ((INTERACTION_ANTINODE_SHAPE_VIEW *)(a))
 
 #define INTERACTION_SIN(a) NuTrigTable[((a) >> 1) & 0x7fff]
 
@@ -240,94 +240,94 @@ static void AISysCheckAntinode_Rectangle(APIOBJECT_PC *object, AIANTINODE_PC *an
 CHECK_ANTINODE_FN_PC checkantinodefns[3] = {AISysCheckAntinode_Circle, AISysCheckAntinode_Ellipse,
                                             AISysCheckAntinode_Rectangle};
 
-typedef struct ai_area_load_pc_s { // size 0x40
-    char name[16];                 // 0x00
-    NUVEC minimum;                 // 0x10
-    NUVEC maximum;                 // 0x1c
-    u16 flags;                     // 0x28
-    u8 unknown_2a;                 // 0x2a
-    u8 game_flags;                 // 0x2b
-    u8 unknown_2c[12];             // 0x2c
-    AISYS_PC *system;              // 0x38
-    u8 unknown_3c[4];              // 0x3c
+typedef struct ai_area_load_s { // size 0x40
+    char name[16];              // 0x00
+    NUVEC minimum;              // 0x10
+    NUVEC maximum;              // 0x1c
+    u16 flags;                  // 0x28
+    u8 unknown_2a;              // 0x2a
+    u8 game_flags;              // 0x2b
+    u8 unknown_2c[12];          // 0x2c
+    AISYS_PC *system;           // 0x38
+    u8 unknown_3c[4];           // 0x3c
 } AI_AREA_LOAD_PC;
 
-typedef struct ai_creature_load_pc_s { // size 0xa4
-    char name[16];                     // 0x00
-    char script_name[16];              // 0x10
-    NUVEC position;                    // 0x20
-    i32 y_rotation;                    // 0x2c
-    AIPATHINFO_PC path_info;           // 0x30
-    i32 flags;                         // 0x48
-    u8 set;                            // 0x4c
-    u8 unknown_4d;                     // 0x4d
-    i16 type;                          // 0x4e
-    u8 count;                          // 0x50
-    u8 count_across;                   // 0x51
-    u8 unknown_52[6];                  // 0x52
-    u32 active_mask;                   // 0x58
-    f32 x_spacing;                     // 0x5c
-    f32 z_spacing;                     // 0x60
-    f32 script_params[4];              // 0x64
-    AIAREA_PC *activate_area;          // 0x74
-    AIAREA_PC *area;                   // 0x78
-    AILOCATOR_PC *locator;             // 0x7c
-    AILOCATOR_PC *respawn_locator;     // 0x80
-    u8 activation_difficulty;          // 0x84
-    i8 min_respawn_count;              // 0x85
-    i8 max_respawn_count;              // 0x86
-    u8 activation_type;                // 0x87
-    f32 min_respawn_time;              // 0x88
-    f32 max_respawn_time;              // 0x8c
-    f32 start_stagger;                 // 0x90
-    f32 view_distance;                 // 0x94
-    f32 hear_distance;                 // 0x98
-    f32 max_view_height;               // 0x9c
-    f32 min_view_height;               // 0xa0
+typedef struct ai_creature_load_s { // size 0xa4
+    char name[16];                  // 0x00
+    char script_name[16];           // 0x10
+    NUVEC position;                 // 0x20
+    i32 y_rotation;                 // 0x2c
+    AIPATHINFO_PC path_info;        // 0x30
+    i32 flags;                      // 0x48
+    u8 set;                         // 0x4c
+    u8 unknown_4d;                  // 0x4d
+    i16 type;                       // 0x4e
+    u8 count;                       // 0x50
+    u8 count_across;                // 0x51
+    u8 unknown_52[6];               // 0x52
+    u32 active_mask;                // 0x58
+    f32 x_spacing;                  // 0x5c
+    f32 z_spacing;                  // 0x60
+    f32 script_params[4];           // 0x64
+    AIAREA_PC *activate_area;       // 0x74
+    AIAREA_PC *area;                // 0x78
+    AILOCATOR_PC *locator;          // 0x7c
+    AILOCATOR_PC *respawn_locator;  // 0x80
+    u8 activation_difficulty;       // 0x84
+    i8 min_respawn_count;           // 0x85
+    i8 max_respawn_count;           // 0x86
+    u8 activation_type;             // 0x87
+    f32 min_respawn_time;           // 0x88
+    f32 max_respawn_time;           // 0x8c
+    f32 start_stagger;              // 0x90
+    f32 view_distance;              // 0x94
+    f32 hear_distance;              // 0x98
+    f32 max_view_height;            // 0x9c
+    f32 min_view_height;            // 0xa0
 } AI_CREATURE_LOAD_PC;
 
-typedef struct ai_antinode_load_pc_s { // size 0x58
-    NUVEC position;                    // 0x00
-    f32 radius;                        // 0x0c
-    f32 min_y;                         // 0x10
-    f32 min_y_offset;                  // 0x14
-    f32 max_y;                         // 0x18
-    f32 max_y_offset;                  // 0x1c
-    NUSPECIALHANDLE special_handle;    // 0x20
-    NUVEC special_position;            // 0x2c
-    i32 flags;                         // 0x38
-    i32 rotation_offset;               // 0x3c
-    f32 base_radius;                   // 0x40
-    f32 base_height;                   // 0x44
-    u8 enabled;                        // 0x48
-    u8 game_flags;                     // 0x49
-    u8 type;                           // 0x4a
-    u8 has_special;                    // 0x4b
-    u8 unknown_4c[12];                 // 0x4c
+typedef struct ai_antinode_load_s { // size 0x58
+    NUVEC position;                 // 0x00
+    f32 radius;                     // 0x0c
+    f32 min_y;                      // 0x10
+    f32 min_y_offset;               // 0x14
+    f32 max_y;                      // 0x18
+    f32 max_y_offset;               // 0x1c
+    NUSPECIALHANDLE special_handle; // 0x20
+    NUVEC special_position;         // 0x2c
+    i32 flags;                      // 0x38
+    i32 rotation_offset;            // 0x3c
+    f32 base_radius;                // 0x40
+    f32 base_height;                // 0x44
+    u8 enabled;                     // 0x48
+    u8 game_flags;                  // 0x49
+    u8 type;                        // 0x4a
+    u8 has_special;                 // 0x4b
+    u8 unknown_4c[12];              // 0x4c
 } AI_ANTINODE_LOAD_PC;
 
-typedef struct ai_system_load_pc_s { // size 0x1398
-    void *storage;                   // 0x0000
-    VARIPTR storage_end;             // 0x0004
-    VARIPTR storage_cursor;          // 0x0008
-    i32 storage_size;                // 0x000c
-    AIPATHSYS_PC *path_sys;          // 0x0010
-    i32 creature_count;              // 0x0014
-    AI_CREATURE_LOAD_PC *creatures;  // 0x0018
-    NULISTHDR scripts;               // 0x001c
-    i32 locator_count;               // 0x0024
-    AILOCATOR_PC *locators;          // 0x0028
-    i32 locator_set_count;           // 0x002c
-    AILOCATORSET_PC *locator_sets;   // 0x0030
-    i32 area_count;                  // 0x0034
-    AI_AREA_LOAD_PC *areas;          // 0x0038
-    AIGROUP_PC groups[16];           // 0x003c
-    i32 antinode_count;              // 0x137c
-    AI_ANTINODE_LOAD_PC *antinodes;  // 0x1380
-    u8 unknown_1384[8];              // 0x1384
-    APIOBJECT_PC *player_1;          // 0x138c
-    APIOBJECT_PC *player_2;          // 0x1390
-    NUGSCN *scene;                   // 0x1394
+typedef struct ai_system_load_s {   // size 0x1398
+    void *storage;                  // 0x0000
+    VARIPTR storage_end;            // 0x0004
+    VARIPTR storage_cursor;         // 0x0008
+    i32 storage_size;               // 0x000c
+    AIPATHSYS_PC *path_sys;         // 0x0010
+    i32 creature_count;             // 0x0014
+    AI_CREATURE_LOAD_PC *creatures; // 0x0018
+    NULISTHDR scripts;              // 0x001c
+    i32 locator_count;              // 0x0024
+    AILOCATOR_PC *locators;         // 0x0028
+    i32 locator_set_count;          // 0x002c
+    AILOCATORSET_PC *locator_sets;  // 0x0030
+    i32 area_count;                 // 0x0034
+    AI_AREA_LOAD_PC *areas;         // 0x0038
+    AIGROUP_PC groups[16];          // 0x003c
+    i32 antinode_count;             // 0x137c
+    AI_ANTINODE_LOAD_PC *antinodes; // 0x1380
+    u8 unknown_1384[8];             // 0x1384
+    APIOBJECT_PC *player_1;         // 0x138c
+    APIOBJECT_PC *player_2;         // 0x1390
+    NUGSCN *scene;                  // 0x1394
 } AI_SYSTEM_LOAD_PC;
 
 static f32 AiLoadStartStaggerPc = 0.0f;
@@ -336,13 +336,13 @@ extern i32 (*GlobalCharacterTypeIDFn)(char *);
 
 extern void (*GameAILoadFn)(AISYS_PC *, i32, NUGSCN *, VARIPTR *, VARIPTR *);
 
-typedef struct ai_path_system_load_pc_s {  // size 0x10
-    u8 path_count;                         // 0x0
-    u8 unknown_01;                         // 0x1
-    u16 special_route_count;               // 0x2
-    AIPATH_PC **paths;                     // 0x4
-    AIPATH_PC *active_path;                // 0x8
-    AIPATHSPECIALROUTE_PC *special_routes; // 0xc
+typedef struct ai_path_system_load_s {  // size 0x10
+    u8 path_count;                      // 0x0
+    u8 unknown_01;                      // 0x1
+    u16 special_route_count;            // 0x2
+    AIPATH_PC **paths;                  // 0x4
+    AIPATH_PC *active_path;             // 0x8
+    AIPATHSPECIALROUTE *special_routes; // 0xc
 } AI_PATH_SYSTEM_LOAD_PC;
 
 // Inlined AISysBufferAlloc: the failure diagnostic and publication follow the
@@ -392,9 +392,9 @@ STATIC_ASSERT(offsetof(GAMEOBJECT, tag_flags) == 0x7c5);
 
 STATIC_ASSERT(offsetof(GAMEOBJECT, takeover_source) == 0xcd0);
 
-typedef struct condition_trigger_process_pc_s { // size 0xa4
-    u8 unknown_000[0xa0];                       // 0x00
-    AIAREA_PC *trigger_area;                    // 0xa0
+typedef struct condition_trigger_process_s { // size 0xa4
+    u8 unknown_000[0xa0];                    // 0x00
+    AIAREA_PC *trigger_area;                 // 0xa0
 } CONDITION_TRIGGER_PROCESS_PC;
 
 STATIC_ASSERT(offsetof(GAMEOBJECT, ai_area_mask) == 0x2b0);
@@ -403,19 +403,19 @@ STATIC_ASSERT(offsetof(GAMEOBJECT, position) == 0x5c);
 
 extern char *(*GlobalCharacterNameFn)(i32);
 
-typedef struct AI_EDITOR_MODE_ENTRY_PC {    // size 0x30
+typedef struct AI_EDITOR_MODE_ENTRY {       // size 0x30
     char name[32];                          // 0x00
     void (*enter)(void);                    // 0x20
     eduimenu_s *(*process)(FRAME_PAD_PC *); // 0x24
     void (*draw)(i32, i32, f32, f32);       // 0x28
     void (*leave)(void);                    // 0x2c
-} AI_EDITOR_MODE_ENTRY_PC;
+} AI_EDITOR_MODE_ENTRY;
 
-typedef struct AI_EDITOR_MODE_BANK_PC { // size 0x184
-    AI_EDITOR_MODE_ENTRY_PC entries[8]; // 0x000
-    i16 count;                          // 0x180
-    i16 current;                        // 0x182
-} AI_EDITOR_MODE_BANK_PC;
+typedef struct AI_EDITOR_MODE_BANK { // size 0x184
+    AI_EDITOR_MODE_ENTRY entries[8]; // 0x000
+    i16 count;                       // 0x180
+    i16 current;                     // 0x182
+} AI_EDITOR_MODE_BANK;
 
 /* AI editor settings block (0x200 bytes, zeroed by the editor initializer). */
 typedef struct AIEDITORSETTINGS_PC {                                  // size 0x200
@@ -435,7 +435,7 @@ typedef struct AIEDITORSETTINGS_PC {                                  // size 0x
     NUMTL *overlay_material;                                          // 0x070
     void *path_scratch_cursor;                                        // 0x074
     void *path_scratch_end;                                           // 0x078
-    AI_EDITOR_MODE_BANK_PC modes;                                     // 0x07c
+    AI_EDITOR_MODE_BANK modes;                                        // 0x07c
 } AIEDITORSETTINGS_PC;
 
 #pragma section(".bss$aieditorsettings", read, write)
@@ -473,16 +473,16 @@ STATIC_ASSERT(sizeof(AiEditorSaveMessageColoursPc) == 16);
 
 /* The record has a four-byte mask, a five-word drawing callback,
  * a bounded 64-byte name and a final four-byte options word. */
-typedef struct AI_PATH_CONNECTION_TYPE_PC {        // size 0x4c
+typedef struct AI_PATH_CONNECTION_TYPE {           // size 0x4c
     u32 connection_flag;                           // 0x00
     void (*draw)(NUVEC *, f32, NUVEC *, u32, i32); // 0x04
     char name[64];                                 // 0x08
     u32 flags;                                     // 0x48
-} AI_PATH_CONNECTION_TYPE_PC;
+} AI_PATH_CONNECTION_TYPE;
 
 extern i32 AIPathConnectionTypeCountPc;
 
-extern AI_PATH_CONNECTION_TYPE_PC AIPathConnectionTypesPc[32];
+extern AI_PATH_CONNECTION_TYPE AIPathConnectionTypesPc[32];
 
 typedef struct AI_EDITOR_SPECIAL_PLATFORM_PC { // size 0x6c
     u8 unknown_00[0x4a];                       // 0x00
@@ -490,10 +490,10 @@ typedef struct AI_EDITOR_SPECIAL_PLATFORM_PC { // size 0x6c
     u8 unknown_4c[0x20];                       // 0x4c
 } AI_EDITOR_SPECIAL_PLATFORM_PC;
 
-typedef struct AI_EDITOR_SPECIAL_TERRAIN_PC { // size 0x6c
+typedef struct AI_EDITOR_SPECIAL_TERRAIN {    // size 0x6c
     u8 unknown_00[0x68];                      // 0x00
     AI_EDITOR_SPECIAL_PLATFORM_PC *platforms; // 0x68
-} AI_EDITOR_SPECIAL_TERRAIN_PC;
+} AI_EDITOR_SPECIAL_TERRAIN;
 
 i16 disable_cylinder_check = 0;
 
@@ -652,11 +652,11 @@ void NuRndrBoundingBox(NUVEC *minimum, NUVEC *maximum, NUMTX *matrix, i32 colour
 STATIC_ASSERT(offsetof(AIEDITOR_RENDER_STATE, ai_system) == 0x64);
 
 /* Draw-family field views. */
-typedef struct AI_PATH_DRAW_FLAGS_PC { // size 0xc
-    NULISTLNK link;                    // 0x0
-    u8 unknown_08[2];                  // 0x8
-    i16 flags;                         // 0xa
-} AI_PATH_DRAW_FLAGS_PC;
+typedef struct AI_PATH_DRAW_FLAGS { // size 0xc
+    NULISTLNK link;                 // 0x0
+    u8 unknown_08[2];               // 0x8
+    i16 flags;                      // 0xa
+} AI_PATH_DRAW_FLAGS;
 
 STATIC_ASSERT(offsetof(AIEDITOR_RENDER_STATE, path_walls) == 0x31b8c);
 
@@ -706,12 +706,12 @@ extern f32 default_zspacing;
 
 eduiitem_s *creatureEditor_ResetParamsItem = NULL;
 
-typedef struct AI_CREATURE_MODEL_BOUNDS_PC { // size 0x1d0
-    u8 unknown_00[0x1c4];                    // 0x000
-    f32 min_height;                          // 0x1c4
-    f32 height;                              // 0x1c8
-    f32 radius;                              // 0x1cc
-} AI_CREATURE_MODEL_BOUNDS_PC;
+typedef struct AI_CREATURE_MODEL_BOUNDS { // size 0x1d0
+    u8 unknown_00[0x1c4];                 // 0x000
+    f32 min_height;                       // 0x1c4
+    f32 height;                           // 0x1c8
+    f32 radius;                           // 0x1cc
+} AI_CREATURE_MODEL_BOUNDS;
 
 extern i32 aisys_maxnumcreaturesets;
 
@@ -756,7 +756,7 @@ eduimenu_s *locatorEditor_Process(FRAME_PAD_PC *pad);
 
 #define AIEDITOR_REGISTER_PC(id, mode_name, enter_fn, process_fn, draw_fn)                                             \
     do {                                                                                                               \
-        AI_EDITOR_MODE_ENTRY_PC *entry_;                                                                               \
+        AI_EDITOR_MODE_ENTRY *entry_;                                                                                  \
         i32 index_ = -1;                                                                                               \
         if (aieditorsettings.modes.count < 8) {                                                                        \
             index_ = aieditorsettings.modes.count++;                                                                   \
@@ -798,9 +798,9 @@ eduimenu_s *locatorEditor_Process(FRAME_PAD_PC *pad);
 
 extern NUFPCOMJMP AIScriptStateCommandsPc[5];
 
-typedef struct aiscript_const_record_pc_s { // size 0x24
-    char name[32];                          // 0x00
-    f32 default_val;                        // 0x20
+typedef struct aiscript_const_record_s { // size 0x24
+    char name[32];                       // 0x00
+    f32 default_val;                     // 0x20
 } AISCRIPT_CONST_RECORD_PC;
 
 STATIC_ASSERT(offsetof(NUFPCOMJMP, keyword) == 0);
@@ -965,14 +965,14 @@ STATIC_ASSERT(offsetof(GAMEOBJECT, objptr) == 0);
 
 STATIC_ASSERT(offsetof(GAMEOBJECT, field_f10) == 0xf10);
 
-typedef struct condition_trigger_process_reader_pc_s { // size 0xa4
-    u8 unknown_00[0xa0];                               // 0x00
-    AIAREA_PC *trigger_area;                           // 0xa0
+typedef struct condition_trigger_process_reader_s { // size 0xa4
+    u8 unknown_00[0xa0];                            // 0x00
+    AIAREA_PC *trigger_area;                        // 0xa0
 } CONDITION_TRIGGER_PROCESS_READER_PC;
 
-typedef struct condition_trigger_player_reader_pc_s { // size 0x2b8
-    u8 unknown_00[0x2b0];                             // 0x000
-    u64 membership;                                   // 0x2b0
+typedef struct condition_trigger_player_reader_s { // size 0x2b8
+    u8 unknown_00[0x2b0];                          // 0x000
+    u64 membership;                                // 0x2b0
 } CONDITION_TRIGGER_PLAYER_READER_PC;
 
 STATIC_ASSERT(offsetof(GAMEOBJECT, current_hp) == 0x107f);
@@ -1375,7 +1375,7 @@ f32 AiParseExpression(char *expr) {
     return value;
 }
 
-static void ConditionsParseFinalise(AICONDITION_PC *cond, NUFPAR_PC *parser) {
+static void ConditionsParseFinalise(AICONDITION *cond, NUFPAR_PC *parser) {
     NuFParGetWord(parser);
     if (NuStrICmp(parser->word_buffer_ptr, "goto") == 0) {
         cond->flags &= (u16)~2;
@@ -1574,16 +1574,16 @@ void xDeriveFromScript(NUFPAR_PC *parser) {
 }
 
 void AIScriptCopyConditions(NULISTHDR *src, NULISTHDR *dst, VARIPTR *buf, VARIPTR *buf_end) {
-    AICONDITION_PC *src_cond;
+    AICONDITION *src_cond;
 
-    src_cond = (AICONDITION_PC *)NuLinkedListGetHead(src);
+    src_cond = (AICONDITION *)NuLinkedListGetHead(src);
     while (src_cond != NULL) {
-        AICONDITION_PC *dst_cond;
+        AICONDITION *dst_cond;
 
-        dst_cond = AIScriptBufferAllocOrWarn(buf, buf_end, sizeof(AICONDITION_PC));
+        dst_cond = AIScriptBufferAllocOrWarn(buf, buf_end, sizeof(AICONDITION));
         if (dst_cond != NULL) {
-            memset(dst_cond, 0, sizeof(AICONDITION_PC));
-            PCByteCopy(dst_cond, src_cond, sizeof(AICONDITION_PC));
+            memset(dst_cond, 0, sizeof(AICONDITION));
+            PCByteCopy(dst_cond, src_cond, sizeof(AICONDITION));
 
             memset(&dst_cond->link, 0, sizeof(dst_cond->link));
 
@@ -1593,7 +1593,7 @@ void AIScriptCopyConditions(NULISTHDR *src, NULISTHDR *dst, VARIPTR *buf, VARIPT
             NuLinkedListAppend(dst, &dst_cond->link);
         }
 
-        src_cond = (AICONDITION_PC *)NuLinkedListGetNext(src, &src_cond->link);
+        src_cond = (AICONDITION *)NuLinkedListGetNext(src, &src_cond->link);
     }
 }
 
@@ -1625,17 +1625,17 @@ void AIScriptCopyActions(NULISTHDR *src, NULISTHDR *dst, VARIPTR *buf, VARIPTR *
 
 static AISTATE_PC *AIScriptCopyStatePc(AISTATE_PC *source_state, VARIPTR *buffer, VARIPTR *end_buffer) {
     AISTATE_PC *copy;
-    AIREFSCRIPT_PC *source_reference;
+    AIREFSCRIPT *source_reference;
 
     copy = AIScriptBufferAllocOrWarn(buffer, end_buffer, sizeof(AISTATE_PC));
     if (copy != NULL) {
         copy->name = AIScriptCopyString(source_state->name, buffer, end_buffer);
         AIScriptCopyConditions(&source_state->conditions, &copy->conditions, buffer, end_buffer);
         AIScriptCopyActions(&source_state->actions, &copy->actions, buffer, end_buffer);
-        source_reference = (AIREFSCRIPT_PC *)NuLinkedListGetHead(&source_state->reference_scripts);
+        source_reference = (AIREFSCRIPT *)NuLinkedListGetHead(&source_state->reference_scripts);
         while (source_reference != NULL) {
-            AIREFSCRIPT_PC *reference_copy;
-            reference_copy = AIScriptBufferAllocOrWarn(buffer, end_buffer, sizeof(AIREFSCRIPT_PC));
+            AIREFSCRIPT *reference_copy;
+            reference_copy = AIScriptBufferAllocOrWarn(buffer, end_buffer, sizeof(AIREFSCRIPT));
             if (reference_copy != NULL) {
                 reference_copy->name = AIScriptCopyString(source_reference->name, buffer, end_buffer);
                 reference_copy->return_state_name =
@@ -1646,7 +1646,7 @@ static AISTATE_PC *AIScriptCopyStatePc(AISTATE_PC *source_state, VARIPTR *buffer
                 NuLinkedListAppend(&copy->reference_scripts, &reference_copy->link);
             }
             source_reference =
-                (AIREFSCRIPT_PC *)NuLinkedListGetNext(&source_state->reference_scripts, &source_reference->link);
+                (AIREFSCRIPT *)NuLinkedListGetNext(&source_state->reference_scripts, &source_reference->link);
         }
     }
     return copy;
@@ -1656,7 +1656,7 @@ i32 AIScriptBuildDerivedScript(AISCRIPT_PC *script, VARIPTR *buffer, VARIPTR *en
     AISCRIPT_PC *source_script;
     AISTATE_PC *source_state;
     AISTATE_PC *state;
-    AICONDITION_PC *condition;
+    AICONDITION *condition;
     u32 level_bits;
     i32 i;
 
@@ -1696,7 +1696,7 @@ i32 AIScriptBuildDerivedScript(AISCRIPT_PC *script, VARIPTR *buffer, VARIPTR *en
 
                 state = (AISTATE_PC *)NuLinkedListGetHead(&script->states);
                 while (state != NULL) {
-                    condition = (AICONDITION_PC *)NuLinkedListGetHead(&state->conditions);
+                    condition = (AICONDITION *)NuLinkedListGetHead(&state->conditions);
                     while (condition != NULL) {
                         condition->next_state = AIStateFind(condition->next_state_name, script);
                         if (condition->next_state_name != NULL && condition->next_state == NULL) {
@@ -1707,7 +1707,7 @@ i32 AIScriptBuildDerivedScript(AISCRIPT_PC *script, VARIPTR *buffer, VARIPTR *en
                                 AIScriptMissingStateDiagnostic(condition->next_state_name, script->name, state->name);
                             }
                         }
-                        condition = (AICONDITION_PC *)NuLinkedListGetNext(&state->conditions, &condition->link);
+                        condition = (AICONDITION *)NuLinkedListGetNext(&state->conditions, &condition->link);
                     }
                     state = (AISTATE_PC *)NuLinkedListGetNext(&script->states, &state->link);
                 }
@@ -1723,19 +1723,19 @@ i32 AIScriptBuildDerivedScript(AISCRIPT_PC *script, VARIPTR *buffer, VARIPTR *en
 }
 
 static void AIScriptFindRefScripts(AISYS_PC *sys, AISCRIPT_PC *script) {
-    AIREFSCRIPT_PC *ref;
-    AIREFSCRIPT_PC *next;
-    AICONDITION_PC *condition;
+    AIREFSCRIPT *ref;
+    AIREFSCRIPT *next;
+    AICONDITION *condition;
     AISTATE_PC *state;
 
     if (sys == NULL || script == NULL) {
         return;
     }
 
-    ref = (AIREFSCRIPT_PC *)NuLinkedListGetHead(&script->reference_scripts);
+    ref = (AIREFSCRIPT *)NuLinkedListGetHead(&script->reference_scripts);
 
     while (ref != NULL) {
-        next = (AIREFSCRIPT_PC *)NuLinkedListGetNext(&script->reference_scripts, &ref->link);
+        next = (AIREFSCRIPT *)NuLinkedListGetNext(&script->reference_scripts, &ref->link);
 
         if (!(sys->reset_flags & 4) || ref->script == NULL) {
             ref->script = AIScriptFind(sys, ref->name, 1, ref->check_level_scripts, ref->check_global_scripts);
@@ -1751,7 +1751,7 @@ static void AIScriptFindRefScripts(AISYS_PC *sys, AISCRIPT_PC *script) {
                 }
             }
 
-            condition = (AICONDITION_PC *)NuLinkedListGetHead(&ref->conditions);
+            condition = (AICONDITION *)NuLinkedListGetHead(&ref->conditions);
 
             while (condition != NULL) {
                 if (condition->definition->init_fn != NULL) {
@@ -1759,7 +1759,7 @@ static void AIScriptFindRefScripts(AISYS_PC *sys, AISCRIPT_PC *script) {
                         (*condition->definition->init_fn)(sys, condition->argument, script);
                 }
 
-                condition = (AICONDITION_PC *)NuLinkedListGetNext(&ref->conditions, &condition->link);
+                condition = (AICONDITION *)NuLinkedListGetNext(&ref->conditions, &condition->link);
             }
         } else {
             NuLinkedListRemove(&script->reference_scripts, &ref->link);
@@ -1771,10 +1771,10 @@ static void AIScriptFindRefScripts(AISYS_PC *sys, AISCRIPT_PC *script) {
     state = (AISTATE_PC *)NuLinkedListGetHead(&script->states);
 
     while (state != NULL) {
-        ref = (AIREFSCRIPT_PC *)NuLinkedListGetHead(&state->reference_scripts);
+        ref = (AIREFSCRIPT *)NuLinkedListGetHead(&state->reference_scripts);
 
         while (ref != NULL) {
-            next = (AIREFSCRIPT_PC *)NuLinkedListGetNext(&state->reference_scripts, &ref->link);
+            next = (AIREFSCRIPT *)NuLinkedListGetNext(&state->reference_scripts, &ref->link);
 
             if (!(sys->reset_flags & 4) || ref->script == NULL) {
                 ref->script = AIScriptFind(sys, ref->name, 1, ref->check_level_scripts, ref->check_global_scripts);
@@ -1793,7 +1793,7 @@ static void AIScriptFindRefScripts(AISYS_PC *sys, AISCRIPT_PC *script) {
                 }
             }
 
-            condition = (AICONDITION_PC *)NuLinkedListGetHead(&ref->conditions);
+            condition = (AICONDITION *)NuLinkedListGetHead(&ref->conditions);
 
             while (condition != NULL) {
                 if (condition->definition->init_fn != NULL) {
@@ -1801,7 +1801,7 @@ static void AIScriptFindRefScripts(AISYS_PC *sys, AISCRIPT_PC *script) {
                         (*condition->definition->init_fn)(sys, condition->argument, script);
                 }
 
-                condition = (AICONDITION_PC *)NuLinkedListGetNext(&ref->conditions, &condition->link);
+                condition = (AICONDITION *)NuLinkedListGetNext(&ref->conditions, &condition->link);
             }
 
             ref = next;
@@ -1814,8 +1814,8 @@ static void AIScriptFindRefScripts(AISYS_PC *sys, AISCRIPT_PC *script) {
 void AIScriptInitConditions(AISYS_PC *sys) {
     AISCRIPT_PC *script;
     AISTATE_PC *state;
-    AICONDITION_PC *condition;
-    AICONDITION_PC *parameter_condition;
+    AICONDITION *condition;
+    AICONDITION *parameter_condition;
 
     NuLinkedListGetHead(&global_aiscripts);
 
@@ -1826,7 +1826,7 @@ void AIScriptInitConditions(AISYS_PC *sys) {
             state = (AISTATE_PC *)NuLinkedListGetHead(&script->states);
 
             while (state != NULL) {
-                condition = (AICONDITION_PC *)NuLinkedListGetHead(&state->conditions);
+                condition = (AICONDITION *)NuLinkedListGetHead(&state->conditions);
 
                 while (condition != NULL) {
                     if (condition->definition->init_fn != NULL) {
@@ -1847,7 +1847,7 @@ void AIScriptInitConditions(AISYS_PC *sys) {
                             (*parameter_condition->definition->init_fn)(sys, parameter_condition->argument, script);
                     }
 
-                    condition = (AICONDITION_PC *)NuLinkedListGetNext(&state->conditions, &condition->link);
+                    condition = (AICONDITION *)NuLinkedListGetNext(&state->conditions, &condition->link);
                 }
 
                 state = (AISTATE_PC *)NuLinkedListGetNext(&script->states, &state->link);
@@ -1867,7 +1867,7 @@ void AIScriptInitConditions(AISYS_PC *sys) {
         state = (AISTATE_PC *)NuLinkedListGetHead(&script->states);
 
         while (state != NULL) {
-            condition = (AICONDITION_PC *)NuLinkedListGetHead(&state->conditions);
+            condition = (AICONDITION *)NuLinkedListGetHead(&state->conditions);
 
             while (condition != NULL) {
                 if (condition->definition->init_fn != NULL) {
@@ -1877,7 +1877,7 @@ void AIScriptInitConditions(AISYS_PC *sys) {
                     }
                 }
 
-                condition = (AICONDITION_PC *)NuLinkedListGetNext(&state->conditions, &condition->link);
+                condition = (AICONDITION *)NuLinkedListGetNext(&state->conditions, &condition->link);
             }
 
             state = (AISTATE_PC *)NuLinkedListGetNext(&script->states, &state->link);
@@ -3727,10 +3727,10 @@ static AIPATHSYS_PC *AISysLoadPathsPc(VARIPTR *cursor, i32 version, NUGSCN *scen
                 if (version >= 5) {
                     path->route_count = (u8)EdFileReadChar();
                     if (path->route_count != 0) {
-                        PATH_LOAD_ALLOCATE(AIPATHROUTE_PC *, path->routes, cursor, end,
-                                           path->route_count * sizeof(AIPATHROUTE_PC));
+                        PATH_LOAD_ALLOCATE(AIPATHROUTE *, path->routes, cursor, end,
+                                           path->route_count * sizeof(AIPATHROUTE));
                         for (route_index = 0; route_index < path->route_count; ++route_index) {
-                            AIPATHROUTE_PC *route = &path->routes[route_index];
+                            AIPATHROUTE *route = &path->routes[route_index];
                             length = EdFileReadChar();
                             if (length != 0) {
                                 PATH_LOAD_ALLOCATE(char *, route->name, cursor, end, length);
@@ -3781,9 +3781,9 @@ static AIPATHSYS_PC *AISysLoadPathsPc(VARIPTR *cursor, i32 version, NUGSCN *scen
                 if (version >= 19) {
                     path->special_route_count = (u8)EdFileReadChar();
                     if (path->special_route_count != 0) {
-                        AIPATHNODELINK_PC *link;
-                        PATH_LOAD_ALLOCATE(AIPATHNODELINK_PC *, path->special_routes, cursor, end,
-                                           path->special_route_count * sizeof(AIPATHNODELINK_PC));
+                        AIPATHNODELINK *link;
+                        PATH_LOAD_ALLOCATE(AIPATHNODELINK *, path->special_routes, cursor, end,
+                                           path->special_route_count * sizeof(AIPATHNODELINK));
                         link = path->special_routes;
                         for (index = 0; index < path->special_route_count; ++index, ++link) {
                             link->node_index = EdFileReadUnsignedChar();
@@ -3795,9 +3795,9 @@ static AIPATHSYS_PC *AISysLoadPathsPc(VARIPTR *cursor, i32 version, NUGSCN *scen
             if (version >= 19) {
                 system->special_route_count = (u16)EdFileReadShort();
                 if (system->special_route_count != 0) {
-                    AIPATHSPECIALROUTE_PC *route;
+                    AIPATHSPECIALROUTE *route;
                     system->special_routes =
-                        AISysBufferAlloc(cursor, end, system->special_route_count * sizeof(AIPATHSPECIALROUTE_PC));
+                        AISysBufferAlloc(cursor, end, system->special_route_count * sizeof(AIPATHSPECIALROUTE));
                     route = system->special_routes;
                     for (index = 0; index < system->special_route_count; ++index, ++route) {
                         route->path_count = (u8)EdFileReadChar();
@@ -4398,7 +4398,7 @@ void AISysCreatureAntinodeInteraction(AISYS_PC *system, i32 object_count, APIOBJ
                         continue;
                     }
                     if (((u64)1 << object->object_id) &
-                        ((INTERACTION_ANTINODE_VIEW_PC *)antinode)->excluded_character_types) {
+                        ((INTERACTION_ANTINODE_VIEW *)antinode)->excluded_character_types) {
                         continue;
                     }
                     radius = object->ai->mover_height + antinode->radius;
@@ -4760,7 +4760,7 @@ f32 AIPathNodeDistanceToPathNode(AIPATH_PC *path, i32 start_node, i32 destinatio
     AIPATHNODE_PC *destination;
     AIPATHCNX_PC *connection;
     AIPATHCNX_PC *previous_connection = NULL;
-    AIPATHROUTE_PC *route = NULL;
+    AIPATHROUTE *route = NULL;
     f32 *cached_distance = NULL;
     f32 distance = 0.0f;
     i32 connection_index;
@@ -5496,7 +5496,7 @@ static AIPATHCNX_PC *GetNextConnection(const AIPACKET_PC *packet, i32 *direction
     AIPATHCNX_PC *connection = NULL;
     i32 connection_index;
     u8 route_index;
-    AIPATHROUTE_PC *route;
+    AIPATHROUTE *route;
     i32 next_node = 0;
     f32 nearest;
     i32 index;
@@ -6112,7 +6112,7 @@ static void FormationMove(AIGROUP_PC *group, i32 (*move)(AIGROUP_PC *, AIROW_PC 
 }
 
 static i32 AIMoveFindNearestSpecialRouteNode(AIPATH_PC *path, NUVEC *destination, i32 *nearest_node, f32 *distance) {
-    AIPATHNODELINK_PC *routes = path->special_routes;
+    AIPATHNODELINK *routes = path->special_routes;
     f32 nearest = FLT_MAX;
     i32 node = -1;
     i32 index;
@@ -6136,7 +6136,7 @@ static i32 AIMoveFindNearestSpecialRouteNode(AIPATH_PC *path, NUVEC *destination
 i32 fun_0051d290(AISYS_PC *system, AIPATH_PC *path, AIPATH_PC *target) {
     i32 index;
     i32 route_index;
-    AIPATHSPECIALROUTE_PC *route;
+    AIPATHSPECIALROUTE *route;
     for (index = 0; index < path->special_route_count; ++index) {
         route = &system->path_sys->special_routes[path->special_routes[index].special_route_index];
         /* The inner loop advances the outer index and recurses with unchanged arguments, as in the original. */
@@ -6153,7 +6153,7 @@ i32 fun_0051d290(AISYS_PC *system, AIPATH_PC *path, AIPATH_PC *target) {
 }
 
 static void AIMoveFindDivertNode(AISYS_PC *system, AIPATH_PC *path, AIPACKET_PC *packet, NUVEC *destination) {
-    AIPATHNODELINK_PC *links;
+    AIPATHNODELINK *links;
     f32 nearest = FLT_MAX;
     i32 count = 4;
     i32 initial_index;
@@ -6235,7 +6235,7 @@ static i32 AIMoveChooseExitNodePath(AISYS_PC *system, AIPACKET_PC *packet) {
     f32 first_distance;
     f32 second_distance;
     AIPATHNODE_PC *node;
-    AIPATHSPECIALROUTE_PC *route;
+    AIPATHSPECIALROUTE *route;
     i32 index;
     f32 nearest;
     AIPATH_PC *selected = NULL;
@@ -7465,7 +7465,7 @@ void InitFn_GetAICreatureOrigin(AI_GET_CREATURE_ORIGIN_PC function) {
  * already -1, which needs it in this unit. */
 i32 aieditor_Register(char *name, void (*enter)(void), eduimenu_s *(*process)(FRAME_PAD_PC *),
                       void (*draw)(i32, i32, f32, f32), void (*leave)(void)) {
-    AI_EDITOR_MODE_ENTRY_PC *entry;
+    AI_EDITOR_MODE_ENTRY *entry;
     i32 index = -1;
     if (aieditorsettings.modes.count < 8) {
         index = aieditorsettings.modes.count++;
@@ -7524,7 +7524,7 @@ i32 NuSpecialFindByPlatformID(NUGSCN *scene, struct nuhspecial_s *result, i32 pl
     memset(result, 0, sizeof(*result));
     if (scene != NULL && CurrentTerrain != NULL && platform_id != -1) {
         count = NuGScnNumSpecials(scene);
-        instance_index = ((AI_EDITOR_SPECIAL_TERRAIN_PC *)CurrentTerrain)->platforms[platform_id].instance_index;
+        instance_index = ((AI_EDITOR_SPECIAL_TERRAIN *)CurrentTerrain)->platforms[platform_id].instance_index;
         for (index = 0; index < count; ++index) {
             NuGScnGetSpecial(&candidate, scene, index);
             if (NuSpecialGetInstanceix(&candidate) == instance_index) {
@@ -8326,7 +8326,7 @@ void aieditor_RegisterPathCnxType(const char *name, u32 connection_flag, void (*
                                   u32 flags) {
     i32 i;
     i32 count;
-    AI_PATH_CONNECTION_TYPE_PC *type;
+    AI_PATH_CONNECTION_TYPE *type;
     if (name != NULL && strlen(name) < 64 && connection_flag != 0 && (count = AIPathConnectionTypeCountPc) < 32) {
         for (i = 0; i < count; ++i) {
             if (AIPathConnectionTypesPc[i].connection_flag & connection_flag) {
@@ -8704,7 +8704,7 @@ void pathEditorDrawConnectionInfo(NUVEC *position, f32 radius, NUVEC *other, u32
     end.y = other->y + aiEditor_DrawYOffset;
     end.z = other->z;
     for (i = 0; i < AIPathConnectionTypeCountPc; ++i) {
-        AI_PATH_CONNECTION_TYPE_PC *type = &AIPathConnectionTypesPc[i];
+        AI_PATH_CONNECTION_TYPE *type = &AIPathConnectionTypesPc[i];
         if (type->draw != NULL && (type->connection_flag & flags) != 0) {
             type->draw(&start, radius, &end, flags, colour);
             return;
@@ -8818,7 +8818,7 @@ static void pathEditorDrawPath(EDAIPATH_s *path, i32 path_index) {
                                node->upper_height + node->position.y, node_colour, 0, segments, solid);
             if (node->shared_node != NULL && !(node->shared_node->draw_flags & 1)) {
                 AiPathDrawCrossPc(&node->position, node->radius, node_colour);
-                ((AI_PATH_DRAW_FLAGS_PC *)node->shared_node)->flags |= 1;
+                ((AI_PATH_DRAW_FLAGS *)node->shared_node)->flags |= 1;
             }
             if (node->route_mask & active_route) {
                 if (path == aieditor->current_path && path->current_node == node) {
@@ -8893,7 +8893,7 @@ void fun_00524180(void) {
 void pathEditorDrawPaths(void) {
     EDAIPATHWALL_s *wall = (EDAIPATHWALL_s *)NuLinkedListGetHead(&aieditor->path_walls);
     while (wall != NULL) {
-        ((AI_PATH_DRAW_FLAGS_PC *)wall)->flags &= ~1;
+        ((AI_PATH_DRAW_FLAGS *)wall)->flags &= ~1;
         wall = (EDAIPATHWALL_s *)NuLinkedListGetNext(&aieditor->path_walls, &wall->link);
     }
 
@@ -9268,9 +9268,9 @@ void pathEditorSaveData(AIPATHSYS_PC *path_system) {
     AIPATH_PC *path;
     AIPATHCNX_PC *connection;
     AIPATHNODE_PC *node;
-    AIPATHROUTE_PC *route;
-    AIPATHNODELINK_PC *link;
-    AIPATHSPECIALROUTE_PC *group;
+    AIPATHROUTE *route;
+    AIPATHNODELINK *link;
+    AIPATHSPECIALROUTE *group;
 
     EdFileWriteInt(system->path_count);
     for (path_index = 0; path_index < system->path_count; ++path_index) {
@@ -9530,7 +9530,7 @@ void pathEditor_cbDrawWallsplinesToggle(eduimenu_s *menu, eduiitem_s *item, u32 
 }
 
 void pathEditor_cbCnxFlagsToggle(eduimenu_s *menu, eduiitem_s *item, u32 event) {
-    AI_PATH_CONNECTION_TYPE_PC *type = &AIPathConnectionTypesPc[item->data];
+    AI_PATH_CONNECTION_TYPE *type = &AIPathConnectionTypesPc[item->data];
     EDAIPATHNODE_s *node;
     EDAIPATHNODE_s *other;
     EDAIPATHCNX_s *connection;
@@ -9722,7 +9722,7 @@ void pathEditor_Enter(void) {
                                 strcpy(node->name, source->name);
                             }
                             if (source->special_route_index < runtime->special_route_count) {
-                                AIPATHNODELINK_PC *link = &runtime->special_routes[source->special_route_index];
+                                AIPATHNODELINK *link = &runtime->special_routes[source->special_route_index];
                                 if (shared_nodes[link->special_route_index] == NULL) {
                                     shared = (EDAISHAREDPATHNODE_s *)NuLinkedListGetHead(&aieditor->free_shared_nodes);
                                     if (shared != NULL) {
@@ -9966,10 +9966,10 @@ static void pathEditorCreateSpecialRouteData(AIPATH_PC *path, EDAIPATH_s *editor
     } else {
         EDAIPATHNODE_s *editor_node;
         i32 route_index;
-        PATH_BUILD_ALLOCATE(AIPATHROUTE_PC *, path->routes, cursor, end, path->route_count * sizeof(AIPATHROUTE_PC));
-        memset(path->routes, 0, path->route_count * sizeof(AIPATHROUTE_PC));
+        PATH_BUILD_ALLOCATE(AIPATHROUTE *, path->routes, cursor, end, path->route_count * sizeof(AIPATHROUTE));
+        memset(path->routes, 0, path->route_count * sizeof(AIPATHROUTE));
         for (slot = 0; slot < 16; ++slot) {
-            AIPATHROUTE_PC *route;
+            AIPATHROUTE *route;
             i32 name_length;
             u32 *user_mask;
             if (!(editor_path->routes[slot].flags & 1)) {
@@ -10031,7 +10031,7 @@ static void pathEditorCreateSpecialRouteData(AIPATH_PC *path, EDAIPATH_s *editor
         }
 
         for (route_index = 0; route_index < path->route_count; ++route_index) {
-            AIPATHROUTE_PC *route = &path->routes[route_index];
+            AIPATHROUTE *route = &path->routes[route_index];
             i32 node;
             i32 member_index;
             i32 exit_index;
@@ -10890,7 +10890,7 @@ EDAICREATURE_s *creatureEditor_GetNearest(i32 use_radius) {
     if (GlobalCharacterHGobjFn != NULL) {
         for (creature = (EDAICREATURE_s *)NuLinkedListGetHead(&aieditor->creatures); creature != NULL;
              creature = (EDAICREATURE_s *)NuLinkedListGetNext(&aieditor->creatures, &creature->link)) {
-            AI_CREATURE_MODEL_BOUNDS_PC *model;
+            AI_CREATURE_MODEL_BOUNDS *model;
             f32 height;
             f32 min_height;
             f32 radius;
@@ -11945,7 +11945,7 @@ void xConditions(NUFPAR_PC *parser) {
     i32 complex_idx = 0;
 
     while (NuFParGetLine(parser) != 0) {
-        AICONDITION_PC *cond;
+        AICONDITION *cond;
         AICONDITIONDEF_PC *definition;
 
         NuFParGetWord(parser);
@@ -11959,13 +11959,12 @@ void xConditions(NUFPAR_PC *parser) {
 
             definition = AIConditionFind(parser->word_buffer_ptr);
             if (definition != NULL) {
-                cond =
-                    AIScriptBufferAllocOrWarn(aiscript_load_buffer, aiscript_load_end_buffer, sizeof(AICONDITION_PC));
+                cond = AIScriptBufferAllocOrWarn(aiscript_load_buffer, aiscript_load_end_buffer, sizeof(AICONDITION));
                 if (cond == NULL) {
                     continue;
                 }
 
-                memset(cond, 0, sizeof(AICONDITION_PC));
+                memset(cond, 0, sizeof(AICONDITION));
 
                 NuLinkedListAppend(aiscript_load_conditions, &cond->link);
 
@@ -12065,26 +12064,25 @@ void xConditions(NUFPAR_PC *parser) {
                                                aiscript_load_state != NULL ? aiscript_load_state->name : "?");
             }
         } else if (NuStrICmp(parser->word_buffer_ptr, "OnMacro") == 0) {
-            AICONDITIONMACRO_PC *macro;
+            AICONDITIONMACRO *macro;
 
             NuFParGetWord(parser);
 
-            macro = (AICONDITIONMACRO_PC *)NuLinkedListGetHead(&aiscript_load_script->condition_macros);
+            macro = (AICONDITIONMACRO *)NuLinkedListGetHead(&aiscript_load_script->condition_macros);
             while (macro != NULL) {
                 if (NuStrICmp(macro->name, parser->word_buffer_ptr) == 0) {
-                    AICONDITION_PC *macro_last;
+                    AICONDITION *macro_last;
 
                     AIScriptCopyConditions(&macro->conditions, aiscript_load_conditions, aiscript_load_buffer,
                                            aiscript_load_end_buffer);
-                    macro_last = (AICONDITION_PC *)NuLinkedListGetTail(aiscript_load_conditions);
+                    macro_last = (AICONDITION *)NuLinkedListGetTail(aiscript_load_conditions);
 
                     ConditionsParseFinalise(macro_last, parser);
 
                     break;
                 }
 
-                macro =
-                    (AICONDITIONMACRO_PC *)NuLinkedListGetNext(&aiscript_load_script->condition_macros, &macro->link);
+                macro = (AICONDITIONMACRO *)NuLinkedListGetNext(&aiscript_load_script->condition_macros, &macro->link);
             }
             if (macro == NULL) {
                 if (AIActionDiagnosticMode == 1) {
@@ -12121,11 +12119,11 @@ void xActions(NUFPAR_PC *parser) {
         }
 
         if (NuStrICmp(parser->word_buffer_ptr, "DoMacro") == 0) {
-            AIACTIONMACRO_PC *macro;
+            AIACTIONMACRO *macro;
 
             NuFParGetWord(parser);
 
-            macro = (AIACTIONMACRO_PC *)NuLinkedListGetHead(&aiscript_load_script->action_macros);
+            macro = (AIACTIONMACRO *)NuLinkedListGetHead(&aiscript_load_script->action_macros);
             while (macro != NULL) {
                 if (NuStrICmp(macro->name, parser->word_buffer_ptr) == 0) {
                     AIScriptCopyActions(&macro->actions, aiscript_load_actions, aiscript_load_buffer,
@@ -12134,7 +12132,7 @@ void xActions(NUFPAR_PC *parser) {
                     break;
                 }
 
-                macro = (AIACTIONMACRO_PC *)NuLinkedListGetNext(&aiscript_load_script->action_macros, &macro->link);
+                macro = (AIACTIONMACRO *)NuLinkedListGetNext(&aiscript_load_script->action_macros, &macro->link);
             }
             if (macro == NULL) {
                 if (AIActionDiagnosticMode == 1) {
@@ -12232,7 +12230,7 @@ void AIScriptOpenPakFileParse(AISCRIPT_PC **script_ref, void *pak, char *filenam
 }
 
 void xConditionMacro(NUFPAR_PC *parser) {
-    AICONDITIONMACRO_PC *macro;
+    AICONDITIONMACRO *macro;
     VARIPTR *buffer;
     VARIPTR *buffer_end;
 
@@ -12241,9 +12239,9 @@ void xConditionMacro(NUFPAR_PC *parser) {
     }
     buffer = aiscript_load_buffer;
     buffer_end = aiscript_load_end_buffer;
-    macro = AIScriptBufferAllocOrWarn(buffer, buffer_end, sizeof(AICONDITIONMACRO_PC));
+    macro = AIScriptBufferAllocOrWarn(buffer, buffer_end, sizeof(AICONDITIONMACRO));
     if (macro != NULL) {
-        memset(macro, 0, sizeof(AICONDITIONMACRO_PC));
+        memset(macro, 0, sizeof(AICONDITIONMACRO));
         macro->name = AIScriptCopyString(parser->word_buffer_ptr, buffer, buffer_end);
         NuLinkedListAppend(&aiscript_load_script->condition_macros, &macro->link);
         aiscript_load_conditions = &macro->conditions;
@@ -12255,7 +12253,7 @@ void xConditionMacro(NUFPAR_PC *parser) {
 }
 
 void xActionMacro(NUFPAR_PC *parser) {
-    AIACTIONMACRO_PC *macro;
+    AIACTIONMACRO *macro;
     VARIPTR *buffer;
     VARIPTR *buffer_end;
 
@@ -12264,9 +12262,9 @@ void xActionMacro(NUFPAR_PC *parser) {
     }
     buffer = aiscript_load_buffer;
     buffer_end = aiscript_load_end_buffer;
-    macro = AIScriptBufferAllocOrWarn(buffer, buffer_end, sizeof(AIACTIONMACRO_PC));
+    macro = AIScriptBufferAllocOrWarn(buffer, buffer_end, sizeof(AIACTIONMACRO));
     if (macro != NULL) {
-        memset(macro, 0, sizeof(AIACTIONMACRO_PC));
+        memset(macro, 0, sizeof(AIACTIONMACRO));
         macro->name = AIScriptCopyString(parser->word_buffer_ptr, buffer, buffer_end);
         NuLinkedListAppend(&aiscript_load_script->action_macros, &macro->link);
         aiscript_load_actions = &macro->actions;
@@ -12290,7 +12288,7 @@ void xInclude(NUFPAR_PC *parser) {
 }
 
 void xRefScript(NUFPAR_PC *parser) {
-    AIREFSCRIPT_PC *reference;
+    AIREFSCRIPT *reference;
     VARIPTR saved_buffer;
     char *copy;
     i32 done;
@@ -12299,11 +12297,11 @@ void xRefScript(NUFPAR_PC *parser) {
         return;
     }
     saved_buffer = *aiscript_load_buffer;
-    reference = AIScriptBufferAllocOrWarn(aiscript_load_buffer, aiscript_load_end_buffer, sizeof(AIREFSCRIPT_PC));
+    reference = AIScriptBufferAllocOrWarn(aiscript_load_buffer, aiscript_load_end_buffer, sizeof(AIREFSCRIPT));
     if (reference == NULL) {
         return;
     }
-    memset(reference, 0, sizeof(AIREFSCRIPT_PC));
+    memset(reference, 0, sizeof(AIREFSCRIPT));
     done = 0;
     while (!done && NuFParGetLine(parser) != 0) {
         while (!done && NuFParGetWord(parser) != 0) {
@@ -12348,7 +12346,7 @@ static AISCRIPT_PC *AIScriptLoadPakFile(void *pak, char *filename, char *path, V
     AISCRIPT_PC *script = NULL;
     AISTATE_PC *state;
     AISTATE_PC *later;
-    AICONDITION_PC *condition;
+    AICONDITION *condition;
     load_path = path;
     load_pakfile = pak;
     AIScriptOpenPakFileParse(&script, pak, filename, path, buffer, end);
@@ -12357,7 +12355,7 @@ static AISCRIPT_PC *AIScriptLoadPakFile(void *pak, char *filename, char *path, V
     if (script != NULL) {
         state = (AISTATE_PC *)NuLinkedListGetHead(&script->states);
         while (state != NULL) {
-            condition = (AICONDITION_PC *)NuLinkedListGetHead(&state->conditions);
+            condition = (AICONDITION *)NuLinkedListGetHead(&state->conditions);
             while (condition != NULL) {
                 condition->next_state = AIStateFind(condition->next_state_name, script);
                 if (condition->next_state_name != NULL && condition->next_state == NULL) {
@@ -12367,7 +12365,7 @@ static AISCRIPT_PC *AIScriptLoadPakFile(void *pak, char *filename, char *path, V
                         AIScriptMissingStateDiagnostic(condition->next_state_name, script->name, state->name);
                     }
                 }
-                condition = (AICONDITION_PC *)NuLinkedListGetNext(&state->conditions, &condition->link);
+                condition = (AICONDITION *)NuLinkedListGetNext(&state->conditions, &condition->link);
             }
             later = (AISTATE_PC *)NuLinkedListGetNext(&script->states, &state->link);
             while (later != NULL) {
@@ -12508,33 +12506,33 @@ i32 AIScriptSetBaseScriptStateByName(AISCRIPTPROCESS_PC *processor, char *name) 
 }
 
 static void AIScriptFillRemainingComplexOperands(NULISTHDR *conditions, AIPACKET_PC *packet,
-                                                 AISCRIPTPROCESS_PC *processor, AICONDITION_PC *condition,
+                                                 AISCRIPTPROCESS_PC *processor, AICONDITION *condition,
                                                  i32 stack_index) {
-    AICONDITION_PC *remaining;
+    AICONDITION *remaining;
     if (processor->param_stack[stack_index].force_complex_eval != 0) {
         if (processor->param_stack[stack_index].is_first_time_state != 0) {
-            remaining = (AICONDITION_PC *)NuLinkedListGetNext(conditions, (NULISTLNK *)condition);
+            remaining = (AICONDITION *)NuLinkedListGetNext(conditions, (NULISTLNK *)condition);
             while (remaining != NULL) {
                 if ((remaining->flags & 8) != 0) {
                     processor->param_stack[stack_index].complex_params[remaining->param_index] =
                         AIParamToFloatEx(packet, processor, remaining->complex_expression);
                 }
-                remaining = (AICONDITION_PC *)NuLinkedListGetNext(conditions, &remaining->link);
+                remaining = (AICONDITION *)NuLinkedListGetNext(conditions, &remaining->link);
             }
         }
         processor->param_stack[stack_index].force_complex_eval = 0;
     }
 }
 
-static AICONDITION_PC *AIScriptProcessStateConditions(AISYS_PC *system, NULISTHDR *conditions, AIPACKET_PC *packet,
-                                                      AISCRIPTPROCESS_PC *processor, i32 stack_index) {
-    AICONDITION_PC *condition;
+static AICONDITION *AIScriptProcessStateConditions(AISYS_PC *system, NULISTHDR *conditions, AIPACKET_PC *packet,
+                                                   AISCRIPTPROCESS_PC *processor, i32 stack_index) {
+    AICONDITION *condition;
     f32 condition_value = 0.0f;
     f32 comparison_value;
     AICONDITION_EVAL_PC comparison_fn;
     i32 comparison_passed;
     if (processor != NULL && conditions != NULL) {
-        condition = (AICONDITION_PC *)NuLinkedListGetHead(conditions);
+        condition = (AICONDITION *)NuLinkedListGetHead(conditions);
         while (condition != NULL) {
             comparison_passed = 0;
             if (condition->definition != NULL) {
@@ -12605,7 +12603,7 @@ static AICONDITION_PC *AIScriptProcessStateConditions(AISYS_PC *system, NULISTHD
                 }
             } else {
                 while ((condition->flags & 1) != 0) {
-                    condition = (AICONDITION_PC *)NuLinkedListGetNext(conditions, &condition->link);
+                    condition = (AICONDITION *)NuLinkedListGetNext(conditions, &condition->link);
                     if (condition == NULL) {
                         break;
                     }
@@ -12618,7 +12616,7 @@ static AICONDITION_PC *AIScriptProcessStateConditions(AISYS_PC *system, NULISTHD
                 }
             }
             if (condition != NULL) {
-                condition = (AICONDITION_PC *)NuLinkedListGetNext(conditions, &condition->link);
+                condition = (AICONDITION *)NuLinkedListGetNext(conditions, &condition->link);
             }
         }
         AIScriptFillRemainingComplexOperands(conditions, packet, processor, condition, stack_index);
@@ -12629,12 +12627,11 @@ static AICONDITION_PC *AIScriptProcessStateConditions(AISYS_PC *system, NULISTHD
 
 static i32 AIScriptProcessReferences(AISYS_PC *system, AIPACKET_PC *packet, AISCRIPTPROCESS_PC *processor) {
     NULISTHDR *references;
-    AIREFSCRIPT_PC *reference;
-    AICONDITION_PC *entry_condition;
+    AIREFSCRIPT *reference;
+    AICONDITION *entry_condition;
     if (system != NULL && processor != NULL && processor->script != NULL && processor->active_ref_count < 4) {
-        for (reference = (AIREFSCRIPT_PC *)NuLinkedListGetHead(&processor->script->reference_scripts);
-             reference != NULL; reference = (AIREFSCRIPT_PC *)NuLinkedListGetNext(&processor->script->reference_scripts,
-                                                                                  &reference->link)) {
+        for (reference = (AIREFSCRIPT *)NuLinkedListGetHead(&processor->script->reference_scripts); reference != NULL;
+             reference = (AIREFSCRIPT *)NuLinkedListGetNext(&processor->script->reference_scripts, &reference->link)) {
             processor->param_stack[1].is_first_time_state = 1;
             processor->param_stack[1].force_complex_eval = 1;
             if ((NuLinkedListGetHead(&reference->conditions) == NULL ||
@@ -12651,8 +12648,8 @@ static i32 AIScriptProcessReferences(AISYS_PC *system, AIPACKET_PC *packet, AISC
         }
         if (processor->state != NULL) {
             references = &processor->state->reference_scripts;
-            for (reference = (AIREFSCRIPT_PC *)NuLinkedListGetHead(references); reference != NULL;
-                 reference = (AIREFSCRIPT_PC *)NuLinkedListGetNext(references, &reference->link)) {
+            for (reference = (AIREFSCRIPT *)NuLinkedListGetHead(references); reference != NULL;
+                 reference = (AIREFSCRIPT *)NuLinkedListGetNext(references, &reference->link)) {
                 processor->param_stack[1].is_first_time_state = 1;
                 processor->param_stack[1].force_complex_eval = 1;
                 if ((NuLinkedListGetHead(&reference->conditions) == NULL ||
@@ -12681,12 +12678,12 @@ found:
 void AIScriptProcess(AISYS_PC *system, APIOBJECT_PC *object, AIPACKET_PC *packet, AISCRIPTPROCESS_PC *processor,
                      f32 elapsed) {
     i32 index;
-    AIREFSCRIPT_PC *reference;
+    AIREFSCRIPT *reference;
     AICREATURE_PC *creature;
     AIACTION_PC *action;
     i32 first_time;
     f32 old_interrupt_timer;
-    AICONDITION_PC *transition;
+    AICONDITION *transition;
     if (processor == NULL || processor->script == NULL) {
         return;
     }
@@ -14973,7 +14970,7 @@ AIPATHSYS_PC *pathEditorCreateData(VARIPTR *cursor, VARIPTR *end, void **scratch
     NUVEC difference;
     i32 path_count;
     EDAIPATH_s *path_iter;
-    AI_PATH_BUILD_SYSTEM_PC *system;
+    AI_PATH_BUILD_SYSTEM *system;
     VARIPTR *scratch_limit;
     EDAISHAREDPATHNODE_s *shared;
     i32 path_index;
@@ -14989,7 +14986,7 @@ AIPATHSYS_PC *pathEditorCreateData(VARIPTR *cursor, VARIPTR *end, void **scratch
             path_iter->draw_index = path_count++;
         }
         if (path_count != 0) {
-            system = AISysBufferAlloc(cursor, end, sizeof(AI_PATH_BUILD_SYSTEM_PC));
+            system = AISysBufferAlloc(cursor, end, sizeof(AI_PATH_BUILD_SYSTEM));
             if (system != NULL) {
                 memset(system, 0, sizeof(*system));
                 system->path_count = path_count;
@@ -15007,13 +15004,13 @@ AIPATHSYS_PC *pathEditorCreateData(VARIPTR *cursor, VARIPTR *end, void **scratch
                     shared->runtime_index = system->special_route_count++;
                 }
                 if (system->special_route_count != 0) {
-                    system->special_routes = AISysBufferAlloc(
-                        &scratch, scratch_limit, system->special_route_count * sizeof(AIPATHSPECIALROUTE_PC));
-                    memset(system->special_routes, 0, system->special_route_count * sizeof(AIPATHSPECIALROUTE_PC));
+                    system->special_routes = AISysBufferAlloc(&scratch, scratch_limit,
+                                                              system->special_route_count * sizeof(AIPATHSPECIALROUTE));
+                    memset(system->special_routes, 0, system->special_route_count * sizeof(AIPATHSPECIALROUTE));
                     for (shared = (EDAISHAREDPATHNODE_s *)NuLinkedListGetHead(&aieditor->shared_path_nodes);
                          shared != NULL; shared = (EDAISHAREDPATHNODE_s *)NuLinkedListGetNext(
                                              &aieditor->shared_path_nodes, &shared->link)) {
-                        AIPATHSPECIALROUTE_PC *route = &system->special_routes[shared->runtime_index];
+                        AIPATHSPECIALROUTE *route = &system->special_routes[shared->runtime_index];
                         PATH_BUILD_ALLOCATE(AIPATH_PC **, route->paths, &scratch, scratch_limit,
                                             shared->reference_count * sizeof(AIPATH_PC));
                         memset(route->paths, 0, shared->reference_count * sizeof(AIPATH_PC));
@@ -15061,8 +15058,8 @@ AIPATHSYS_PC *pathEditorCreateData(VARIPTR *cursor, VARIPTR *end, void **scratch
                         }
                         if (path->special_route_count != 0) {
                             path->special_routes =
-                                AISysBufferAlloc(cursor, end, path->special_route_count * sizeof(AIPATHNODELINK_PC));
-                            memset(path->special_routes, 0, path->special_route_count * sizeof(AIPATHNODELINK_PC));
+                                AISysBufferAlloc(cursor, end, path->special_route_count * sizeof(AIPATHNODELINK));
+                            memset(path->special_routes, 0, path->special_route_count * sizeof(AIPATHNODELINK));
                             path->special_route_count = 0;
                         }
                         if (path->node_count != 0) {
@@ -15160,9 +15157,9 @@ AIPATHSYS_PC *pathEditorCreateData(VARIPTR *cursor, VARIPTR *end, void **scratch
                                     runtime->distance_cache_nodes[0] = 0xff;
                                     runtime->distance_cache_nodes[1] = 0xff;
                                     if (node->shared_node != NULL) {
-                                        AIPATHSPECIALROUTE_PC *shared_route =
+                                        AIPATHSPECIALROUTE *shared_route =
                                             &system->special_routes[node->shared_node->runtime_index];
-                                        AIPATHNODELINK_PC *link;
+                                        AIPATHNODELINK *link;
                                         runtime->special_route_index = path->special_route_count++;
                                         link = &path->special_routes[runtime->special_route_index];
                                         shared_route->paths[shared_route->path_count++] = path;
@@ -17361,7 +17358,7 @@ i32 aieditor_Save(void) {
     VARIPTR cursor;
     VARIPTR end;
     AIPATHSYS_PC *paths;
-    AI_EDITOR_FILE_INFO_PC info;
+    AI_EDITOR_FILE_INFO info;
     char filename[128];
     char backup[128];
     char *basename;

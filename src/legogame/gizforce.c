@@ -1,59 +1,59 @@
 #include "saga.h"
 
-typedef struct GIZFORCE_ANIMATION_DATA_PC {
+typedef struct GIZFORCE_ANIMATION_DATA {
     u8 unknown_00[2];
     i16 platform_id;
-} GIZFORCE_ANIMATION_DATA_PC;
+} GIZFORCE_ANIMATION_DATA;
 
-typedef struct GIZFORCE_GROUP_BEST_PC {
+typedef struct GIZFORCE_GROUP_BEST {
     GIZFORCE_PC *forces[9];
     u8 flags;
     u8 unknown_25;
     u8 count;
-} GIZFORCE_GROUP_BEST_PC;
+} GIZFORCE_GROUP_BEST;
 
-typedef struct GIZFORCE_BEST_PC {
+typedef struct GIZFORCE_BEST {
     u8 unknown_000[0x1c];
     NUVEC position;
     GAMEANIMSET *anim_set;
     u8 unknown_02c[0xc];
     GAMEOBJECT *using_object;
     u32 unavailable_flags;
-    GIZFORCE_GROUP_BEST_PC *group;
+    GIZFORCE_GROUP_BEST *group;
     u8 unknown_044[0x10];
     f32 interaction_radius;
     u8 unknown_058[0x1c];
     u32 config_flags;
     u8 unknown_078[0x28];
     u32 runtime_flags;
-} GIZFORCE_BEST_PC;
+} GIZFORCE_BEST;
 
-typedef struct GIZFORCE_SYS_BEST_PC {
+typedef struct GIZFORCE_SYS_BEST {
     u8 unknown_000[4];
     GIZFORCE_PC **visible_forces;
     u8 unknown_008[8];
     u16 visible_count;
     u8 unknown_012[2];
     GAMEANIMOBJPOOL *anim_pool;
-} GIZFORCE_SYS_BEST_PC;
+} GIZFORCE_SYS_BEST;
 
-typedef struct GIZFORCE_LOS_BEST_PC {
+typedef struct GIZFORCE_LOS_BEST {
     u32 clear_bits[12];
     u32 queried_at[1];
-} GIZFORCE_LOS_BEST_PC;
+} GIZFORCE_LOS_BEST;
 
-typedef struct GIZFORCE_OBJECT_BEST_PC {
+typedef struct GIZFORCE_OBJECT_BEST {
     u8 unknown_000[0x10cc];
     GIZFORCE_PC *target;
     GAMEANIMOBJ *animation;
-} GIZFORCE_OBJECT_BEST_PC;
+} GIZFORCE_OBJECT_BEST;
 
 typedef struct GIZFORCE_PLATFORM_BEST_PC {
     u8 unknown_000[2];
     i16 platform_id;
 } GIZFORCE_PLATFORM_BEST_PC;
 
-typedef struct force_sfx_config_pc_s {
+typedef struct force_sfx_config_s {
     u8 unknown_00[0x28];
     GAMEANIMSET *anim_set;
     u8 unknown_2c[0x82 - 0x2c];
@@ -63,25 +63,25 @@ typedef struct force_sfx_config_pc_s {
     u8 unknown_88[0xa4 - 0x88];
 } FORCE_SFX_CONFIG_PC;
 
-typedef struct force_sfx_system_pc_s {
+typedef struct force_sfx_system_s {
     FORCE_SFX_CONFIG_PC *forces;
     u8 unknown_04[0xe - 4];
     u16 count;
 } FORCE_SFX_SYSTEM_PC;
 
-typedef struct world_force_sfx_pc_s {
+typedef struct world_force_sfx_s {
     u8 unknown_0000[0x46ac];
     FORCE_SFX_SYSTEM_PC *force_system;
 } WORLD_FORCE_SFX_PC;
 
-typedef struct trigger_force_object_pc_s {
+typedef struct trigger_force_object_s {
     u8 unknown000[0x10cc];
     GIZFORCE_PC *force;
 } TRIGGER_FORCE_OBJECT_PC;
 
 void GameAnimSet_SetOffset(GAMEANIMSET *, NUVEC *);
 
-typedef struct FORCE_RESET_PROGRESS_PC {
+typedef struct FORCE_RESET_PROGRESS {
     u32 enabled[4];
     u32 visible[4];
     u32 reward_released[4];
@@ -90,7 +90,7 @@ typedef struct FORCE_RESET_PROGRESS_PC {
     u32 completion_pending[4];
     u32 destroyed[4];
     u8 group_members[8][8];
-} FORCE_RESET_PROGRESS_PC;
+} FORCE_RESET_PROGRESS;
 
 typedef struct {
     char name[16];
@@ -771,7 +771,7 @@ i32 GizForce_StoodOnForce(GIZFORCE_PC *force, GAMEOBJECT *object) {
         return 0;
     }
     for (animation = force->anim_set->objects; animation != NULL; animation = animation->next) {
-        if (((GIZFORCE_ANIMATION_DATA_PC *)animation->object_data)->platform_id == object->terrain_platform_id) {
+        if (((GIZFORCE_ANIMATION_DATA *)animation->object_data)->platform_id == object->terrain_platform_id) {
             return 1;
         }
     }
@@ -1376,7 +1376,7 @@ i32 GizmoForce_ActivateRev(GIZMO_PC *gizmo, i32 reverse, i32 mode) {
 void GizForces_Reset(void *world_ptr, void *data_ptr, void *progress_ptr) {
     WORLDINFO *world = world_ptr;
     GIZFORCESYS_s *system = data_ptr;
-    FORCE_RESET_PROGRESS_PC *progress = progress_ptr;
+    FORCE_RESET_PROGRESS *progress = progress_ptr;
     GIZFORCE_PC *force;
     i32 index;
     NUVEC offset;
@@ -1396,7 +1396,7 @@ void GizForces_Reset(void *world_ptr, void *data_ptr, void *progress_ptr) {
             force->destroyed = (progress->destroyed[word] & bit) != 0;
         }
         if ((i8)force->group_index >= 0 && (i8)force->group_index < 8) {
-            force->group = (FORCE_RESET_GROUP_PC *)&system->groups[(i8)force->group_index];
+            force->group = (FORCE_RESET_GROUP *)&system->groups[(i8)force->group_index];
             ++force->group->configured_count;
         } else {
             force->group = NULL;
@@ -1460,7 +1460,7 @@ void GizForces_Update(void *world_pointer, void *system_pointer, f32 unused_time
         return;
     }
     for (group_index = 0; group_index < 8; ++group_index) {
-        ((FORCE_RESET_GROUP_PC *)&system->groups[group_index])->runtime_flags &= ~1u;
+        ((FORCE_RESET_GROUP *)&system->groups[group_index])->runtime_flags &= ~1u;
     }
     system->visible_force_count = 0;
     system->hit_test_gizmo_count = 0;
@@ -1475,11 +1475,11 @@ void GizForces_Update(void *world_pointer, void *system_pointer, f32 unused_time
         i32 updating_animation;
         i32 started_shaking = 0;
         GAMEANIMOBJ *object;
-        FORCE_RESET_GROUP_PC *group;
+        FORCE_RESET_GROUP *group;
         if (force->using_object != NULL && force->group != NULL && (force->runtime_flags & 0x20) == 0 &&
             (force->group->runtime_flags & 1) != 0 && force->using_object->character_context == 8) {
             force->using_object->character_context = -1;
-            ((GIZFORCE_OBJECT_BEST_PC *)force->using_object)->target = NULL;
+            ((GIZFORCE_OBJECT_BEST *)force->using_object)->target = NULL;
             force->using_object = NULL;
         }
         user = force->using_object;
@@ -1752,9 +1752,9 @@ void GizForces_Update(void *world_pointer, void *system_pointer, f32 unused_time
 }
 
 i32 GizForce_FindBestForceTarget(void *system_ptr, GAMEOBJECT *object) {
-    GIZFORCE_SYS_BEST_PC *system = system_ptr;
-    GIZFORCE_OBJECT_BEST_PC *target = (GIZFORCE_OBJECT_BEST_PC *)object;
-    GIZFORCE_LOS_BEST_PC *los;
+    GIZFORCE_SYS_BEST *system = system_ptr;
+    GIZFORCE_OBJECT_BEST *target = (GIZFORCE_OBJECT_BEST *)object;
+    GIZFORCE_LOS_BEST *los;
     GIZFORCE_TARGET_RECORD_PC *oldest = NULL;
     GIZFORCE_TARGET_RECORD_PC *best = NULL;
     GIZFORCE_TARGET_RECORD_PC *record;
@@ -1777,10 +1777,10 @@ i32 GizForce_FindBestForceTarget(void *system_ptr, GAMEOBJECT *object) {
     facing.z = NuTrigTable[((object->movement_facing_angle + 0x4000) >> 1) & 0x7fff];
     for (i = 0; i < system->visible_count; ++i) {
         GIZFORCE_PC *force = system->visible_forces[i];
-        GIZFORCE_BEST_PC *fields = (GIZFORCE_BEST_PC *)force;
+        GIZFORCE_BEST *fields = (GIZFORCE_BEST *)force;
         GAMEANIMOBJ *animation;
         NUVEC *draw_position;
-        GIZFORCE_GROUP_BEST_PC *group;
+        GIZFORCE_GROUP_BEST *group;
         if (fields->using_object != NULL || fields->unavailable_flags != 0) {
             continue;
         }
@@ -1797,10 +1797,10 @@ i32 GizForce_FindBestForceTarget(void *system_ptr, GAMEOBJECT *object) {
                     continue;
                 }
                 if (group->forces[group->count - 1] != NULL &&
-                    ((((GIZFORCE_BEST_PC *)group->forces[group->count - 1])->anim_set->flags & 1) ||
-                     (((GIZFORCE_BEST_PC *)group->forces[group->count - 1])->anim_set->flags & 2) ||
-                     (((GIZFORCE_BEST_PC *)group->forces[group->count - 1])->anim_set->flags & 4) ||
-                     ((GIZFORCE_BEST_PC *)group->forces[group->count - 1])->using_object != NULL)) {
+                    ((((GIZFORCE_BEST *)group->forces[group->count - 1])->anim_set->flags & 1) ||
+                     (((GIZFORCE_BEST *)group->forces[group->count - 1])->anim_set->flags & 2) ||
+                     (((GIZFORCE_BEST *)group->forces[group->count - 1])->anim_set->flags & 4) ||
+                     ((GIZFORCE_BEST *)group->forces[group->count - 1])->using_object != NULL)) {
                     continue;
                 }
             }
@@ -1854,8 +1854,8 @@ i32 GizForce_FindBestForceTarget(void *system_ptr, GAMEOBJECT *object) {
         }
         if (oldest != NULL) {
             los->queried_at[oldest->index] = LevelTimer.update_count;
-            if (((GIZFORCE_BEST_PC *)oldest->force)->config_flags & 0x800) {
-                ((GIZFORCE_LOS_BEST_PC *)object->gizforce_los_info)->clear_bits[oldest->index >> 5] &=
+            if (((GIZFORCE_BEST *)oldest->force)->config_flags & 0x800) {
+                ((GIZFORCE_LOS_BEST *)object->gizforce_los_info)->clear_bits[oldest->index >> 5] &=
                     ~(1u << (oldest->index & 31));
                 if (oldest->animation != NULL) {
                     NUVEC *draw_position = NuSpecialGetDrawPos(&oldest->animation->special);
@@ -1871,15 +1871,15 @@ i32 GizForce_FindBestForceTarget(void *system_ptr, GAMEOBJECT *object) {
                     }
                 } else {
                     GAMEANIMOBJ *animation;
-                    NuVecSub(&direction, &((GIZFORCE_BEST_PC *)oldest->force)->position, &object->collision_position);
+                    NuVecSub(&direction, &((GIZFORCE_BEST *)oldest->force)->position, &object->collision_position);
                     if (NewRayCastScaleYMask(&object->collision_position, &direction, 0.0f, 1.0f, 0, 0) != 0) {
-                        if (!(((GIZFORCE_BEST_PC *)oldest->force)->runtime_flags & 0x100)) {
+                        if (!(((GIZFORCE_BEST *)oldest->force)->runtime_flags & 0x100)) {
                             goto choose;
                         }
                         if (TerrainPlatId() == -1) {
                             goto choose;
                         }
-                        for (animation = ((GIZFORCE_BEST_PC *)oldest->force)->anim_set->objects;;
+                        for (animation = ((GIZFORCE_BEST *)oldest->force)->anim_set->objects;;
                              animation = animation->next) {
                             if (animation == NULL) {
                                 goto choose;
@@ -1891,8 +1891,8 @@ i32 GizForce_FindBestForceTarget(void *system_ptr, GAMEOBJECT *object) {
                     }
                 }
             }
-            ((GIZFORCE_LOS_BEST_PC *)object->gizforce_los_info)->clear_bits[oldest->index >> 5] |=
-                1u << (oldest->index & 31);
+            ((GIZFORCE_LOS_BEST *)object->gizforce_los_info)->clear_bits[oldest->index >> 5] |= 1u
+                                                                                                << (oldest->index & 31);
         }
     }
 choose:

@@ -75,18 +75,18 @@ extern "C" {
 extern "C" NUMTL *FadeMtl2;
 extern "C" void DrawPauseFade(void);
 
-typedef struct PANEL_PRIM_VERTEX_PC {
+typedef struct PANEL_PRIM_VERTEX {
     f32 x;
     f32 y;
     f32 z;
     u32 colour;
-} PANEL_PRIM_VERTEX_PC;
+} PANEL_PRIM_VERTEX;
 
-typedef struct TAG_CHARACTER_DATA_READER_PC {
+typedef struct TAG_CHARACTER_DATA_READER {
     u8 opaque_00[0x42];
     i16 icon_model;
     u8 opaque_44[8];
-} TAG_CHARACTER_DATA_READER_PC;
+} TAG_CHARACTER_DATA_READER;
 
 extern i32 (*Tag_NoHiddenIconFn)(GAMEOBJECT *);
 
@@ -98,7 +98,7 @@ static void NuRndrPrimSetColour(i32 colour) {
         converted =
             ((colour & 0xfe) << 15) + ((colour >> 1) & 0x7f00) + ((colour >> 17) & 0x7f) + (colour & 0xff000000);
     }
-    ((PANEL_PRIM_VERTEX_PC *)NuPrimStreamBufferPointer->void_ptr)->colour = converted;
+    ((PANEL_PRIM_VERTEX *)NuPrimStreamBufferPointer->void_ptr)->colour = converted;
 }
 
 extern "C" {
@@ -1523,7 +1523,7 @@ void Tag_DrawIcon_Batman(GAMEOBJECT *object) {
     message.scale = MissionPlayerIconSizePc + MissionPlayerIconSizePc;
     message.text = NULL;
     message.flags = 0x11087;
-    message.icon = ((TAG_CHARACTER_DATA_READER_PC *)apicharsys->char_data)[(i16)object->id].icon_model;
+    message.icon = ((TAG_CHARACTER_DATA_READER *)apicharsys->char_data)[(i16)object->id].icon_model;
     message.special = &WORLD->level_objects[message.icon];
     AddGameMsg(&message);
     message.icon = object->field_280 != 0 ? 0xa5 : 0xa6;
@@ -1563,7 +1563,7 @@ void Tag_DrawIcon_LSW(GAMEOBJECT *object) {
         message.unknown_34 += 0.002f;
     }
     id = (i16)object->id;
-    message.icon = ((TAG_CHARACTER_DATA_READER_PC *)apicharsys->char_data)[(i16)object->id].icon_model;
+    message.icon = ((TAG_CHARACTER_DATA_READER *)apicharsys->char_data)[(i16)object->id].icon_model;
     if (message.icon != -1 && GCDataList[id].hover_fall_mode == 0 && message.icon != PCArcadeUnpairedIconModel) {
         message.icon++;
     }

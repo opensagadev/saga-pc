@@ -10,7 +10,7 @@
 #include "legoapi/core/input/timer.h"
 #endif
 
-struct mission_data_pc_s;
+struct mission_data_s;
 
 typedef struct MISSION_SAVE_READER_PC {
     f32 best_times[20];
@@ -24,13 +24,13 @@ STATIC_ASSERT(offsetof(MISSION_SAVE_READER_PC, completed) == 0x50);
 extern "C" {
 #endif
 
-    typedef struct mission_sys_pc_s {
+    typedef struct mission_sys_s {
         union {
             u8 unknown_00[4];
-            struct mission_data_pc_s *missions;
+            struct mission_data_s *missions;
         };
 
-        struct mission_data_pc_s *active_mission;
+        struct mission_data_s *active_mission;
 
         union {
             u8 unknown_08[0x15];

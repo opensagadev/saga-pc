@@ -13,7 +13,7 @@ STATIC_ASSERT(offsetof(PART_PC, active) == 0x144);
 STATIC_ASSERT(sizeof(PART_PC) == 0x220);
 STATIC_ASSERT(offsetof(GAMESAVE, difficulty) == 1);
 
-typedef struct creature_crate_part_view_pc_s {
+typedef struct creature_crate_part_view_s {
     u8 unknown_000[0x20c];
     f32 spawn_delay;
 } CREATURE_CRATE_PART_VIEW_PC;
@@ -22,7 +22,7 @@ i32 TagCode(GAMEOBJECT *source, GAMEOBJECT *destination, i32 takeover, i32 blend
 void MovePlayer_NETWORK(GAMEOBJECT *);
 GAMEOBJECT *fun_0055e2b0(i32 id);
 
-typedef struct grapple_rotation_pc_s {
+typedef struct grapple_rotation_s {
     u8 unknown_00[0x30];
     NUVEC hook_position;
 } GRAPPLE_ROTATION_PC;
@@ -34,22 +34,22 @@ void DieRumble(GAMEOBJECT *);
 void GetTakeOverPos(GAMEOBJECT *, NUVEC *);
 extern i16 CharacterFixupIdPc007f18c4;
 
-typedef struct kill_zipup_pc_s {
+typedef struct kill_zipup_s {
     u8 unknown_00[0x68];
     u16 runtime_flags;
 } KILL_ZIPUP_PC;
 
-typedef struct combat_coinpacket_pc_s {
+typedef struct combat_coinpacket_s {
     u32 coins;
 } COMBAT_COINPACKET_PC;
 
-typedef struct shield_state_pc_s {
+typedef struct shield_state_s {
     u8 unknown_000[0xd30];
     f32 shield_enabled;
     f32 shield_timer;
 } SHIELD_STATE_PC;
 
-typedef struct reaction_fields_pc_s {
+typedef struct reaction_fields_s {
     u8 unknown_00[0x6c4];
     u8 reset_contexts;
     u8 unknown_6c5[0x750 - 0x6c5];
@@ -62,17 +62,17 @@ typedef struct reaction_fields_pc_s {
    physical calling convention and finite reader cohorts independently reviewed.
    PC-only reaction and adaptive branches and PC DWORD masks are preserved.
    Existing partial part/object providers retain their explicit runtime gaps. */
-typedef struct combat_reaction_owner_pc_s {
+typedef struct combat_reaction_owner_s {
     u8 unknown_000[0x7bb];
     i8 attacker_slot;
 } COMBAT_REACTION_OWNER_PC;
 
-typedef struct combat_attack_counter_pc_s {
+typedef struct combat_attack_counter_s {
     u8 unknown_000[0x1083];
     u8 attack_count;
 } COMBAT_ATTACK_COUNTER_PC;
 
-typedef struct collision_exclusion_view_pc_s {
+typedef struct collision_exclusion_view_s {
     u8 unknown_0000[0x298];
     GAMEOBJECT *excluded_object;
     u8 unknown_029c[4];
@@ -84,12 +84,12 @@ typedef struct collision_platform_push_view_pc_s {
     f32 platform_push_timer;
 } COLLISION_PLATFORM_PUSH_VIEW_PC;
 
-typedef struct collision_techno_view_pc_s {
+typedef struct collision_techno_view_s {
     u8 unknown_0000[0x68];
     u8 flags;
 } COLLISION_TECHNO_VIEW_PC;
 
-typedef struct collision_masks_view_pc_s {
+typedef struct collision_masks_view_s {
     u8 unknown_0000[0x1e8];
     u64 collision_identity_mask;
     u64 collision_contact_mask;
@@ -97,38 +97,38 @@ typedef struct collision_masks_view_pc_s {
 
 #define PANEL_PLAYER_ACTIVE(flags) (((flags) & 0x1000) != 0 && ((flags) & 0x80) != 0)
 
-typedef struct KILLPARTS_MINIKIT_PIECE_PC {
+typedef struct KILLPARTS_MINIKIT_PIECE {
     NUSPECIALHANDLE special;
     NUMTX matrix;
     u8 unknown_4c[0x1c];
-} KILLPARTS_MINIKIT_PIECE_PC;
+} KILLPARTS_MINIKIT_PIECE;
 
-typedef struct KILLPARTS_MINIKIT_PIECES_PC {
+typedef struct KILLPARTS_MINIKIT_PIECES {
     u8 unknown_0[4];
-    KILLPARTS_MINIKIT_PIECE_PC *pieces;
+    KILLPARTS_MINIKIT_PIECE *pieces;
     u8 piece_count;
-} KILLPARTS_MINIKIT_PIECES_PC;
+} KILLPARTS_MINIKIT_PIECES;
 
-typedef struct KILLPARTS_RENDER_PC {
+typedef struct KILLPARTS_RENDER {
     const char *name;
     NUSPECIALHANDLE **rigid_specials;
     u8 unknown_8[0xc];
-} KILLPARTS_RENDER_PC;
+} KILLPARTS_RENDER;
 
-typedef struct KILLPARTS_OBJECT_LIGHT_PC {
+typedef struct KILLPARTS_OBJECT_LIGHT {
     u8 unknown_0[0x4d8];
     PART_LIGHTING_DATA_PC lighting;
-} KILLPARTS_OBJECT_LIGHT_PC;
+} KILLPARTS_OBJECT_LIGHT;
 
-typedef struct KILLPARTS_PART_PC {
+typedef struct KILLPARTS_PART {
     u8 unknown_0[0x20c];
     f32 speeder_index;
-} KILLPARTS_PART_PC;
+} KILLPARTS_PART;
 
-typedef struct KILLPARTS_RIDER_LIGHT_PC {
+typedef struct KILLPARTS_RIDER_LIGHT {
     u8 unknown_0[0x628];
     NUVEC intensity[2];
-} KILLPARTS_RIDER_LIGHT_PC;
+} KILLPARTS_RIDER_LIGHT;
 
 /* The SDK's inline NuFabs (nufloat.h): a masked copy of the float bits. */
 static f32 GameObjFabsPc(f32 f) {
@@ -1380,7 +1380,7 @@ static i32 FindFreeBikePart(void) {
 void SpeederPart_Update(PART_PC *part) {
     f32 distance = ((GAMEOBJECT *)(Player[0]))->horizontal_velocity_magnitude * FRAMETIME * ((f64)(1.1f));
     f32 time = part->time_remaining / part->initial_time;
-    KILLPARTS_BIKE_PC *bike = &KillPartsBikesPc[((i32)(((KILLPARTS_PART_PC *)part)->speeder_index))];
+    KILLPARTS_BIKE_PC *bike = &KillPartsBikesPc[((i32)(((KILLPARTS_PART *)part)->speeder_index))];
     NUVEC *camera = ((NUVEC *)(&GameCam->mtx.m30));
     NUVEC previous_position;
     NUVEC position;
@@ -1421,8 +1421,8 @@ void SpeederPart_Update(PART_PC *part) {
         part->velocity = velocity;
         AddVariableShotDebrisEffectTimed1(
             WORLD->game_debris_sys->entries[96].effect,
-            &KillPartsBikesPc[((i32)(((KILLPARTS_PART_PC *)part)->speeder_index))].spline_position.position, 5,
-            FRAMETIME, pitch, yaw, NULL);
+            &KillPartsBikesPc[((i32)(((KILLPARTS_PART *)part)->speeder_index))].spline_position.position, 5, FRAMETIME,
+            pitch, yaw, NULL);
     } else {
         u16 spin;
         u16 turn;
@@ -1474,12 +1474,12 @@ void SpeederPart_Update(PART_PC *part) {
             bike->rider->pitch_angle += ((i32)(NuFloatRand(((NURAND *)(&GAMERAND))) * 2730.0f));
             bike->rider->field_0x276 += ((i32)(NuFloatRand(((NURAND *)(&GAMERAND))) * 2730.0f));
             bike->rider->roll_angle += ((i32)(NuFloatRand(((NURAND *)(&GAMERAND))) * 2730.0f));
-            ((KILLPARTS_RIDER_LIGHT_PC *)bike->rider)->intensity[0].x = 1.0f;
-            ((KILLPARTS_RIDER_LIGHT_PC *)bike->rider)->intensity[0].y = 1.0f;
-            ((KILLPARTS_RIDER_LIGHT_PC *)bike->rider)->intensity[0].z = 1.0f;
-            ((KILLPARTS_RIDER_LIGHT_PC *)bike->rider)->intensity[1].x = 1.0f;
-            ((KILLPARTS_RIDER_LIGHT_PC *)bike->rider)->intensity[1].y = 1.0f;
-            ((KILLPARTS_RIDER_LIGHT_PC *)bike->rider)->intensity[1].z = 1.0f;
+            ((KILLPARTS_RIDER_LIGHT *)bike->rider)->intensity[0].x = 1.0f;
+            ((KILLPARTS_RIDER_LIGHT *)bike->rider)->intensity[0].y = 1.0f;
+            ((KILLPARTS_RIDER_LIGHT *)bike->rider)->intensity[0].z = 1.0f;
+            ((KILLPARTS_RIDER_LIGHT *)bike->rider)->intensity[1].x = 1.0f;
+            ((KILLPARTS_RIDER_LIGHT *)bike->rider)->intensity[1].y = 1.0f;
+            ((KILLPARTS_RIDER_LIGHT *)bike->rider)->intensity[1].z = 1.0f;
         } else {
             bike->rider = NULL;
         }
@@ -3010,21 +3010,21 @@ i32 KillPlayer(GAMEOBJECT *object, i32 reason, i32 ignore_spawn_protection, NUVE
 
 void SpeederPart_Kill(PART_PC *part, i32 unused) {
     AddGameDebris(WORLD->game_debris_sys, 0x6a, &part->position);
-    if (((KILLPARTS_PART_PC *)part)->speeder_index != -1.0f) {
-        GAMEOBJECT *rider = KillPartsBikesPc[((i32)(((KILLPARTS_PART_PC *)part)->speeder_index))].rider;
+    if (((KILLPARTS_PART *)part)->speeder_index != -1.0f) {
+        GAMEOBJECT *rider = KillPartsBikesPc[((i32)(((KILLPARTS_PART *)part)->speeder_index))].rider;
         if (rider != NULL && (rider->flags_1fc_word & 1) != 0 && (rider->flags_1fc_word & 0x1000) != 0) {
-            KillPartsBikesPc[((i32)(((KILLPARTS_PART_PC *)part)->speeder_index))].rider->flags_ef0 &= ~0x400000;
-            KillParts(KillPartsBikesPc[((i32)(((KILLPARTS_PART_PC *)part)->speeder_index))].rider, -1, -1, 1, 0.0f, 0,
+            KillPartsBikesPc[((i32)(((KILLPARTS_PART *)part)->speeder_index))].rider->flags_ef0 &= ~0x400000;
+            KillParts(KillPartsBikesPc[((i32)(((KILLPARTS_PART *)part)->speeder_index))].rider, -1, -1, 1, 0.0f, 0,
                       NULL);
-            KillGameObject(KillPartsBikesPc[((i32)(((KILLPARTS_PART_PC *)part)->speeder_index))].rider, 2, 0);
+            KillGameObject(KillPartsBikesPc[((i32)(((KILLPARTS_PART *)part)->speeder_index))].rider, 2, 0);
         }
-        memset(&KillPartsBikesPc[((i32)(((KILLPARTS_PART_PC *)part)->speeder_index))], 0, sizeof(KILLPARTS_BIKE_PC));
+        memset(&KillPartsBikesPc[((i32)(((KILLPARTS_PART *)part)->speeder_index))], 0, sizeof(KILLPARTS_BIKE_PC));
     }
 }
 
 void KillParts_SpeederBike(ADDPART_PC *params, i32 unused1, i32 unused2, GAMEOBJECT *object) {
     PART_PC *part;
-    KILLPARTS_PART_PC *bike_part;
+    KILLPARTS_PART *bike_part;
     f32 distance;
     NUVEC position;
     NUVEC velocity;
@@ -3044,7 +3044,7 @@ void KillParts_SpeederBike(ADDPART_PC *params, i32 unused1, i32 unused2, GAMEOBJ
     }
     part->time_remaining = 1.5f;
     part->initial_time = 1.5f;
-    bike_part = ((KILLPARTS_PART_PC *)part);
+    bike_part = ((KILLPARTS_PART *)part);
     bike_part->speeder_index = ((f32)(FindFreeBikePart()));
     if (bike_part->speeder_index == -1.0f || object->movement_spline_position.spline == NULL) {
         KillPart(part, 0);
@@ -3100,7 +3100,7 @@ void KillParts(GAMEOBJECT *object, i32 animation, i32 excluded_layer, i32 mode, 
 
     if ((object->character_data->model_flags & 0x04000000) != 0 && ((i16)object->id) != id_MINIDROIDEKA) {
         i32 i;
-        KILLPARTS_MINIKIT_PIECES_PC *pieces = ((KILLPARTS_MINIKIT_PIECES_PC **)Char_MiniKit)[((i16)object->id)];
+        KILLPARTS_MINIKIT_PIECES *pieces = ((KILLPARTS_MINIKIT_PIECES **)Char_MiniKit)[((i16)object->id)];
         if (pieces == NULL) {
             return;
         }
@@ -3128,7 +3128,7 @@ void KillParts(GAMEOBJECT *object, i32 animation, i32 excluded_layer, i32 mode, 
             params.gravity = -10.0f;
             params.special = &pieces->pieces[i].special;
             params.lighting_data = Cheats_CheckFlags(1) ? ((PART_LIGHTING_DATA_PC *)(&KillPartsZeroLightingPc))
-                                                        : (&((KILLPARTS_OBJECT_LIGHT_PC *)object)->lighting);
+                                                        : (&((KILLPARTS_OBJECT_LIGHT *)object)->lighting);
             params.time_step = FRAMETIME;
             params.flags = mode == 0 ? 0x480 : 0x90;
             params.field_c4 = 1;
@@ -3166,14 +3166,14 @@ void KillParts(GAMEOBJECT *object, i32 animation, i32 excluded_layer, i32 mode, 
     render_count =
         object->character_data->game_character->make_layer_list(object->character_model, render_indices, layers);
     for (render_index = 0; render_index < render_count; ++render_index) {
-        KILLPARTS_RENDER_PC *render;
+        KILLPARTS_RENDER *render;
         i32 joint;
         const i16 layer = render_indices[render_index];
         if (layer == -1 || (animation != -1 && layer != animation) ||
             (excluded_layer != -1 && layer == excluded_layer)) {
             continue;
         }
-        render = ((KILLPARTS_RENDER_PC *)(&object->character_model->hierarchy->render_parts[layer]));
+        render = ((KILLPARTS_RENDER *)(&object->character_model->hierarchy->render_parts[layer]));
         if (render->rigid_specials == NULL) {
             continue;
         }
@@ -3225,7 +3225,7 @@ void KillParts(GAMEOBJECT *object, i32 animation, i32 excluded_layer, i32 mode, 
             params.velocity = &momentum;
             params.special = render->rigid_specials[joint];
             params.lighting_data = Cheats_CheckFlags(1) ? ((PART_LIGHTING_DATA_PC *)(&KillPartsZeroLightingPc))
-                                                        : (&((KILLPARTS_OBJECT_LIGHT_PC *)object)->lighting);
+                                                        : (&((KILLPARTS_OBJECT_LIGHT *)object)->lighting);
             if (((i16)object->id) == id_TIEFIGHTER) {
                 KillParts_TIEFIGHTER(&params, part_index, mode, object, random_variant, random_rotation_a,
                                      random_rotation_b, &momentum);
@@ -3272,7 +3272,7 @@ void KillParts(GAMEOBJECT *object, i32 animation, i32 excluded_layer, i32 mode, 
             params.gravity = -10.0f;
             params.special = special;
             params.lighting_data = Cheats_CheckFlags(1) ? ((PART_LIGHTING_DATA_PC *)(&KillPartsZeroLightingPc))
-                                                        : (&((KILLPARTS_OBJECT_LIGHT_PC *)object)->lighting);
+                                                        : (&((KILLPARTS_OBJECT_LIGHT *)object)->lighting);
             params.time_step = FRAMETIME;
             params.flags = mode == 0 ? 0x480 : 0x90;
             params.field_c4 = 1;

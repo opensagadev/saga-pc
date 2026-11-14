@@ -11,7 +11,7 @@
 #include "nu2api/numath/nuvec.h"
 #endif
 
-typedef struct edanim_param_pc_s {
+typedef struct edanim_param_s {
     i32 instance_id;
     i32 effect_count;
     i32 sound_count;

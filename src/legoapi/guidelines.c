@@ -1,9 +1,9 @@
 #include "saga.h"
 
-typedef struct guideline_record_pc_s { // size 0x24
-    char name[8];                      // 0x00
-    NUVEC start_position;              // 0x08
-    NUVEC end_position;                // 0x14
+typedef struct guideline_record_s { // size 0x24
+    char name[8];                   // 0x00
+    NUVEC start_position;           // 0x08
+    NUVEC end_position;             // 0x14
 
     union { // size 0x1
         u8 flags;
@@ -17,9 +17,9 @@ typedef struct guideline_record_pc_s { // size 0x24
     u8 unknown_21[3]; // 0x21
 } GUIDELINE_RECORD_PC;
 
-typedef struct guideline_progress_pc_s { // size 0x8
-    u32 active_mask[1];                  // 0x0
-    u32 visible_mask[1];                 // 0x4
+typedef struct guideline_progress_s { // size 0x8
+    u32 active_mask[1];               // 0x0
+    u32 visible_mask[1];              // 0x4
 } GUIDELINE_PROGRESS_PC;
 
 STATIC_ASSERT(offsetof(WORLDINFO, guidelines) == 0x50a0);

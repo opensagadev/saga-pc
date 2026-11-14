@@ -14,7 +14,7 @@
 extern "C" {
 #endif
     void Door_Activate(GIZMO_PC *gizmo, i32 value);
-    void Door_AddGizmos(struct gizmosys_pc_s *gizmo_sys, i32 type_id, void *world_ptr, void *arg3);
+    void Door_AddGizmos(struct gizmosys_s *gizmo_sys, i32 type_id, void *world_ptr, void *arg3);
     char *Door_GetGizmoName(GIZMO_PC *gizmo);
     i32 Door_GetMaxGizmos(void *door);
     i32 Door_GetNumOutputs(GIZMO_PC *arg0);

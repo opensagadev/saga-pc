@@ -1353,7 +1353,7 @@ extern "C" {
         }
         current->platform_position.y = current->position.y - current->collision_radius;
         TerI = old_query;
-        TERRAIN_FLOAT_BITS_PC absolute_4;
+        TERRAIN_FLOAT_BITS absolute_4;
         absolute_4.value = query->platform_normal.y - query->platform_position.y - old_query->collision_radius;
         absolute_4.bits &= 0x7fffffff;
         if (query->hit_type == 0 || absolute_4.value > TerConTol * 0.5 || query->movement_normal.y < 0.707f) {
@@ -2281,7 +2281,7 @@ found_track:
     query->collision_radius_sq = collision_radius * collision_radius;
     castnum = -1;
 
-    TERRAIN_FLOAT_BITS_PC value;
+    TERRAIN_FLOAT_BITS value;
     value.value = position->x;
     query->position.x = value.value;
     query->start_position.x = value.value;
@@ -2310,15 +2310,15 @@ found_track:
     ScanTerrain(1, terrain_mask, scan_flags != 0 ? 0x40 : 0);
 
     if (hit_flags[1] != 0) {
-        TERRAIN_FLOAT_BITS_PC absolute_x;
+        TERRAIN_FLOAT_BITS absolute_x;
         absolute_x.value = movement->x;
         absolute_x.bits &= 0x7fffffff;
         if (absolute_x.value < radius) {
-            TERRAIN_FLOAT_BITS_PC absolute_y;
+            TERRAIN_FLOAT_BITS absolute_y;
             absolute_y.value = movement->y;
             absolute_y.bits &= 0x7fffffff;
             if (absolute_y.value < radius) {
-                TERRAIN_FLOAT_BITS_PC absolute_z;
+                TERRAIN_FLOAT_BITS absolute_z;
                 absolute_z.value = movement->z;
                 absolute_z.bits &= 0x7fffffff;
                 if (absolute_z.value < radius && platinrange == 0) {

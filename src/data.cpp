@@ -10893,8 +10893,8 @@ extern "C" {
 #pragma const_seg()
 }
 
-struct TERRAIN_SKIN_INFO_PC;
-struct TERRAIN_SKIN_USE_RECORD_PC;
+struct TERRAIN_SKIN_INFO;
+struct TERRAIN_SKIN_USE_RECORD;
 
 extern "C" {
 // Accessed terrain state and literals; full original allocation extents remain unknown.
@@ -10944,13 +10944,13 @@ extern "C" {
     i32 PlatSkinCnt = 0;
 #pragma bss_seg()
 #pragma bss_seg(".bss$TerrainSkinInfosPc")
-    struct TERRAIN_SKIN_INFO_PC *PlatSkinInfo = 0;
+    struct TERRAIN_SKIN_INFO *PlatSkinInfo = 0;
 #pragma bss_seg()
 #pragma bss_seg(".bss$TerrainSkinUseEpochPc")
     u32 TerrainUpadteCnt = 0;
 #pragma bss_seg()
 #pragma bss_seg(".bss$TerrainSkinUseRecordsPc")
-    struct TERRAIN_SKIN_USE_RECORD_PC *SkinMemInfo = 0;
+    struct TERRAIN_SKIN_USE_RECORD *SkinMemInfo = 0;
 #pragma bss_seg()
 #pragma bss_seg(".bss$TerrainSkinPoolSlotCountPc")
     i32 PlatSkinMaxStore = 0;
@@ -11956,7 +11956,7 @@ extern "C" {
     i32 (*CanMagnetClimbFn)(GAMEOBJECT *) = 0;
 #pragma bss_seg()
 #pragma bss_seg(".bss$PlayerSpecialMoveDataPc")
-    struct specialmove_pc_s *SpecialMove = 0;
+    struct specialmove_s *SpecialMove = 0;
 #pragma bss_seg()
 #pragma data_seg(".data$force_gizmotype_id")
     i32 force_gizmotype_id = -1;
@@ -16751,7 +16751,7 @@ extern "C" {
     i32 COLLECTION_COMPLETIONCOUNT = 0;
     HUB_AI_MUSIC_VIEW_PC HubAiMusicStatePc = {0};
     KAMINO_DISCO_MUSIC_VIEW_PC KaminoDiscoMusicStatePc = {0};
-    SARLACC_NETPACKET_PC *sarlaccb_netpacket = NULL;
+    SARLACC_NETPACKET *sarlaccb_netpacket = NULL;
 }
 
 extern "C" {
@@ -30519,18 +30519,18 @@ extern "C" {
         AISYS_PC *, VARIPTR *, VARIPTR *) = NULL;
 }
 
-typedef struct AI_PATH_CONNECTION_TYPE_PC {        // size 0x4c
+typedef struct AI_PATH_CONNECTION_TYPE {           // size 0x4c
     u32 connection_flag;                           // 0x00
     void (*draw)(NUVEC *, f32, NUVEC *, u32, i32); // 0x04
     char name[64];                                 // 0x08
     u32 flags;                                     // 0x48
-} AI_PATH_CONNECTION_TYPE_PC;
+} AI_PATH_CONNECTION_TYPE;
 
 #pragma section(".data$AIPathConnectionViewsPc", read, write)
 extern "C" {
     __declspec(allocate(".data$AIPathConnectionViewsPc")) f32 aiEditor_DrawYOffset = 0.25f;
     __declspec(allocate(".data$AIPathConnectionViewsPc")) i32 AIPathConnectionTypeCountPc = 0;
-    __declspec(allocate(".data$AIPathConnectionViewsPc")) AI_PATH_CONNECTION_TYPE_PC AIPathConnectionTypesPc[32] = {};
+    __declspec(allocate(".data$AIPathConnectionViewsPc")) AI_PATH_CONNECTION_TYPE AIPathConnectionTypesPc[32] = {};
 }
 
 #pragma section(".data$AiEditorModeWorkingPc", read, write)

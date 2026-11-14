@@ -99,7 +99,7 @@ struct PC_CONTROL_ROW_PC {
     PC_CONTROL_ITEM_PC *items;
 };
 
-struct PC_CONTROL_TEXT_PC {
+struct PC_CONTROL_TEXT {
     char text[0x100];
     f32 fade;
     f32 x;
@@ -156,7 +156,7 @@ struct PC_CONTROL_SCREEN_PC {
     struct vufnt_s *font;
     PC_CONTROL_ROW_PC rows[4];
     u8 unknownd4[4];
-    PC_CONTROL_TEXT_PC text[12];
+    PC_CONTROL_TEXT text[12];
     f32 elapsed;
     struct numtl_s *material;
     void (*play_sound)(i32);
@@ -194,8 +194,8 @@ struct PC_CONTROL_SCREEN_PC {
 
 STATIC_ASSERT(sizeof(PC_CONTROL_ITEM_PC) == 8);
 STATIC_ASSERT(sizeof(PC_CONTROL_ROW_PC) == 0xc);
-STATIC_ASSERT(sizeof(PC_CONTROL_TEXT_PC) == 0x128);
-STATIC_ASSERT(offsetof(PC_CONTROL_TEXT_PC, key) == 0x120);
+STATIC_ASSERT(sizeof(PC_CONTROL_TEXT) == 0x128);
+STATIC_ASSERT(offsetof(PC_CONTROL_TEXT, key) == 0x120);
 STATIC_ASSERT(offsetof(PC_CONTROL_SCREEN_PC, ports) == 0x3c);
 STATIC_ASSERT(offsetof(PC_CONTROL_SCREEN_PC, saved_ports) == 0x5c);
 STATIC_ASSERT(offsetof(PC_CONTROL_SCREEN_PC, draw_background) == 0x74);
@@ -212,8 +212,8 @@ STATIC_ASSERT(offsetof(PC_CONTROL_CONFIG_PC, draw_background) == 4);
 STATIC_ASSERT(offsetof(PC_CONTROL_CONFIG_PC, rows) == 8);
 STATIC_ASSERT(offsetof(PC_CONTROL_CONFIG_PC, play_sound) == 0xc);
 STATIC_ASSERT(offsetof(PC_CONTROL_CONFIG_PC, blocked_keys) == 0x10);
-STATIC_ASSERT(offsetof(PC_CONTROL_TEXT_PC, alignment) == 0x124);
-STATIC_ASSERT(offsetof(PC_CONTROL_TEXT_PC, refreshed) == 0x125);
+STATIC_ASSERT(offsetof(PC_CONTROL_TEXT, alignment) == 0x124);
+STATIC_ASSERT(offsetof(PC_CONTROL_TEXT, refreshed) == 0x125);
 
 #ifdef __cplusplus
 extern "C" {

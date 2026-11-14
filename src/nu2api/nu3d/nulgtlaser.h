@@ -11,7 +11,7 @@
 #include "nu2api/numath/nuvec.h"
 #endif
 
-typedef struct nulgtlaser_pc_s {
+typedef struct nulgtlaser_s {
     NUVEC start;
     NUVEC end;
     f32 width;
@@ -32,7 +32,7 @@ STATIC_ASSERT(offsetof(NULGTLASER_PC, arc) == 0x2d);
 STATIC_ASSERT(offsetof(NULGTLASER_PC, colour) == 0x30);
 STATIC_ASSERT(offsetof(NULGTLASER_PC, seed) == 0x34);
 
-typedef struct nulgtarclaser_pc_s {
+typedef struct nulgtarclaser_s {
     NUVEC start;
     NUVEC end;
     NUVEC bend;
@@ -52,7 +52,7 @@ STATIC_ASSERT(offsetof(NULGTARCLASER_PC, width) == 0x24);
 STATIC_ASSERT(offsetof(NULGTARCLASER_PC, colour) == 0x38);
 STATIC_ASSERT(offsetof(NULGTARCLASER_PC, seed) == 0x40);
 
-typedef struct nulgtarcmaterial_pc_s {
+typedef struct nulgtarcmaterial_s {
     NUMTL *material;
     f32 u0;
     f32 v0;

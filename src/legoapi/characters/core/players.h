@@ -81,7 +81,7 @@ extern "C" {
     void ActivatePlayer(GAMEOBJECT *);
     void PostResetCode(GAMEOBJECT *);
 
-    typedef struct player_force_los_slot_pc_s {
+    typedef struct player_force_los_slot_s {
         u8 unknown_00[0x630];
     } PLAYER_FORCE_LOS_SLOT_PC;
 
@@ -191,7 +191,7 @@ extern "C" {
     /* C++ only, complete neutral class in original shadow owner; method in shared
        declaration needed for natural WorldInfo_Init member caller later. No adapter. */
 
-    typedef struct player_item_type_reset_pc_s PLAYER_ITEM_TYPE_RESET_PC;
+    typedef struct player_item_type_reset_s PLAYER_ITEM_TYPE_RESET_PC;
     i32 Player_HasDeflectBolts(GAMEOBJECT *);
     i32 Player_HasDoubleBoltDamage_FromBolt(struct bolt_s *);
     void PlayerItemTypes_Init(PLAYER_ITEM_TYPE_RESET_PC *);
@@ -218,9 +218,9 @@ extern "C" {
 /* Declaration inventory only. Keep owning data definitions in their genuine
  * source groups; shared placement remains root/sole-writer work. */
 
-/* Existing incomplete player_item_type_reset_pc_s completed identically,
+/* Existing incomplete player_item_type_reset_s completed identically,
  * apart from readonly pointee qualification required by the source literals. */
-struct player_item_type_reset_pc_s {
+struct player_item_type_reset_s {
     i16 id;
     u8 unknown_02[2];
     const char *bolt_name;
@@ -229,10 +229,10 @@ struct player_item_type_reset_pc_s {
     u8 unknown_0a[2];
 };
 
-STATIC_ASSERT(sizeof(struct player_item_type_reset_pc_s) == 12);
-STATIC_ASSERT(offsetof(struct player_item_type_reset_pc_s, id) == 0);
-STATIC_ASSERT(offsetof(struct player_item_type_reset_pc_s, bolt_name) == 4);
-STATIC_ASSERT(offsetof(struct player_item_type_reset_pc_s, bolt_id) == 9);
+STATIC_ASSERT(sizeof(struct player_item_type_reset_s) == 12);
+STATIC_ASSERT(offsetof(struct player_item_type_reset_s, id) == 0);
+STATIC_ASSERT(offsetof(struct player_item_type_reset_s, bolt_name) == 4);
+STATIC_ASSERT(offsetof(struct player_item_type_reset_s, bolt_id) == 9);
 #ifdef __cplusplus
 extern "C" {
 #endif

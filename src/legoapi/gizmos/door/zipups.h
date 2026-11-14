@@ -26,7 +26,7 @@ struct WORLDINFO_s;
 struct gameobject_s;
 struct numtl_s;
 
-typedef struct zipup_pc_s ZIPUP_PC;
+typedef struct zipup_s ZIPUP_PC;
 #ifdef __cplusplus
 extern "C" {
 #endif

@@ -19,7 +19,7 @@ static void Shards_Draw(void *context, void *unused1, float unused2) {
         return;
     }
     for (i = 0; i < world->shard_count; ++i, ++shard) {
-        struct LEVEL_OBJECT_RUNTIME_PC *model;
+        struct LEVEL_OBJECT_RUNTIME *model;
         shard->drawn = 0;
         if ((shard->state_flags & 0x0a) != 2) {
             continue;
@@ -66,9 +66,9 @@ static void Shards_Draw(void *context, void *unused1, float unused2) {
 
 STATIC_ASSERT(offsetof(GAMEOBJECT, ai_player_packet_pc) == 0x6c4);
 STATIC_ASSERT(sizeof(CHARACTER_SHADOW_PACKET_PC) == 0x64);
-STATIC_ASSERT(offsetof(CHARACTER_SHADOW_RESET_SLOT_PC, x_rotation) == 0xc);
-STATIC_ASSERT(offsetof(CHARACTER_SHADOW_RESET_SLOT_PC, z_rotation) == 0xe);
-STATIC_ASSERT(offsetof(CHARACTER_SHADOW_RESET_SLOT_PC, opacity) == 0x10);
+STATIC_ASSERT(offsetof(CHARACTER_SHADOW_RESET_SLOT, x_rotation) == 0xc);
+STATIC_ASSERT(offsetof(CHARACTER_SHADOW_RESET_SLOT, z_rotation) == 0xe);
+STATIC_ASSERT(offsetof(CHARACTER_SHADOW_RESET_SLOT, opacity) == 0x10);
 STATIC_ASSERT(offsetof(GAMEOBJECT, floor_height) == 0x21c);
 STATIC_ASSERT(offsetof(GAMEOBJECT, shadow_radius) == 0x1024);
 STATIC_ASSERT(offsetof(GAMEOBJECT, shadow_joint_mask) == 0x105a);

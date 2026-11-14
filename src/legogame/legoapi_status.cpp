@@ -4,13 +4,13 @@
 static i32 goldbrickmsgcount = 0;
 
 /* Walks the two adjacent 0x14-byte rumble records. */
-typedef struct STATUS_RUMBLE_PAIR_PC {
+typedef struct STATUS_RUMBLE_PAIR {
     RUMBLE_PACKET_RESOURCE_PC players[2];
-} STATUS_RUMBLE_PAIR_PC;
+} STATUS_RUMBLE_PAIR;
 
-typedef struct StatusPlayerModelPairPc {
+typedef struct StatusPlayerModelPair {
     u16 model[2];
-} StatusPlayerModelPairPc;
+} StatusPlayerModelPair;
 
 #define STATUS_APPEND_STAGE_INLINE_PC(packet_arg, type_arg, gold_arg)                                                  \
     do {                                                                                                               \
@@ -19,7 +19,7 @@ typedef struct StatusPlayerModelPairPc {
         ++(packet_arg)->stage_count;                                                                                   \
     } while (0)
 
-typedef struct status_world_minikit_reader_pc_s {
+typedef struct status_world_minikit_reader_s {
     u8 unknown_0000[0x2968];
     MINIKIT_PC minikit;
 } STATUS_WORLD_MINIKIT_READER_PC;
@@ -250,7 +250,7 @@ extern "C" {
         for (i32 i = 0; i < 2; ++i) {
             if (StatusPacket.player_active[i] != 0 && (player == -1 || player == i)) {
                 RUMBLE_PACKET_RESOURCE_PC *rumble =
-                    &((STATUS_RUMBLE_PAIR_PC *)&StatusPacket.player0_rumble_amount)->players[i];
+                    &((STATUS_RUMBLE_PAIR *)&StatusPacket.player0_rumble_amount)->players[i];
                 if (amount > 0.0f &&
                     (rumble->amount <= 0.0f || amount > rumble->amount / rumble->decay_duration * rumble->intensity)) {
                     rumble->intensity = amount;
@@ -268,7 +268,7 @@ extern "C" {
     }
 
     void StatusRumbleUpdatePc(void) {
-        RUMBLE_PACKET_RESOURCE_PC *packet = ((STATUS_RUMBLE_PAIR_PC *)&StatusPacket.player0_rumble_amount)->players;
+        RUMBLE_PACKET_RESOURCE_PC *packet = ((STATUS_RUMBLE_PAIR *)&StatusPacket.player0_rumble_amount)->players;
         i32 player;
         for (player = 0; player < 2; ++player, ++packet) {
             i32 motor1;
@@ -424,7 +424,7 @@ extern "C" {
         CoinTotalScale = 1.0f;
         goldbrickmsgcount = 0;
         if (netclient == 0) {
-            StatusPlayerModelPairPc *models = (StatusPlayerModelPairPc *)&p->player0_model;
+            StatusPlayerModelPair *models = (StatusPlayerModelPair *)&p->player0_model;
             for (i = 0; i < 2; ++i) {
                 GAMEOBJECT *object = (GAMEOBJECT *)Player[i];
                 if (object != NULL) {
@@ -896,7 +896,7 @@ extern "C" {
             }
             weight = packet->player_active[player] != 0 ? 1.0f : 0.25f;
             icon_alpha = weight * alpha;
-            DrawCharIcon((i16)((StatusPlayerModelPairPc *)&packet->player0_model)->model[player], x, y, 0.0f,
+            DrawCharIcon((i16)((StatusPlayerModelPair *)&packet->player0_model)->model[player], x, y, 0.0f,
                          MissionPlayerIconSizePc, frame, icon_alpha, icon_alpha, 1, NULL);
         }
     }

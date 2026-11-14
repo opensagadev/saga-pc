@@ -16,13 +16,13 @@
 #ifdef __cplusplus
 extern "C" {
 #endif
-    typedef struct trigger_system_pc_s TRIGGER_SYSTEM_PC;
+    typedef struct trigger_system_s TRIGGER_SYSTEM_PC;
     i32 GameObjectUsingLever(GAMEOBJECT *, void *);
     void AITriggerSetSysProcess(TRIGGER_SYSTEM_PC *);
 #ifdef __cplusplus
 }
 #endif
-typedef struct trigger_system_pc_s TRIGGER_SYSTEM_PC;
+typedef struct trigger_system_s TRIGGER_SYSTEM_PC;
 #ifdef __cplusplus
 extern "C" {
 #endif

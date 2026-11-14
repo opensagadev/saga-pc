@@ -23,10 +23,10 @@ struct shadow_platform_list_pc_s {
 
 extern void (*DisguiseAdjustFn)(i32, i32, NUVEC *, NUVEC *);
 
-typedef struct USEFUL_MATERIAL_PC {
+typedef struct USEFUL_MATERIAL {
     u8 unknown_00[0x40];
     u32 attributes;
-} USEFUL_MATERIAL_PC;
+} USEFUL_MATERIAL;
 
 extern NUMTL *SolidMtl;
 extern i32 (*MatrixReflection_CanOverrideFn)(void);
@@ -1587,14 +1587,14 @@ void DrawObjectOnCharacter(WORLDINFO *world, GAMEOBJECT *object, i32 object_id, 
 
 void CreateUsefulMaterials(void) {
     SolidMtl = NuMtlCreate(1);
-    ((USEFUL_MATERIAL_PC *)SolidMtl)->attributes &= 0xffff3fffu;
-    ((USEFUL_MATERIAL_PC *)SolidMtl)->attributes &= 0xfffffff0u;
-    ((USEFUL_MATERIAL_PC *)SolidMtl)->attributes |= 0x40000u;
+    ((USEFUL_MATERIAL *)SolidMtl)->attributes &= 0xffff3fffu;
+    ((USEFUL_MATERIAL *)SolidMtl)->attributes &= 0xfffffff0u;
+    ((USEFUL_MATERIAL *)SolidMtl)->attributes |= 0x40000u;
     NuMtlUpdate(SolidMtl);
     ZipUpLineMaterialPc = NuMtlCreate3D(1);
-    ((USEFUL_MATERIAL_PC *)ZipUpLineMaterialPc)->attributes &= 0xffff3fffu;
-    ((USEFUL_MATERIAL_PC *)ZipUpLineMaterialPc)->attributes &= 0xfffffff0u;
-    ((USEFUL_MATERIAL_PC *)ZipUpLineMaterialPc)->attributes |= 0x40000u;
+    ((USEFUL_MATERIAL *)ZipUpLineMaterialPc)->attributes &= 0xffff3fffu;
+    ((USEFUL_MATERIAL *)ZipUpLineMaterialPc)->attributes &= 0xfffffff0u;
+    ((USEFUL_MATERIAL *)ZipUpLineMaterialPc)->attributes |= 0x40000u;
     NuMtlUpdate(ZipUpLineMaterialPc);
 }
 

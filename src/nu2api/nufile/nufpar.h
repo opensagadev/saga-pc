@@ -26,7 +26,7 @@
 struct nufpcomjmp_s;
 struct nufpcomjmpctx_s;
 
-typedef struct nufparpos_pc_s {
+typedef struct nufparpos_s {
     i32 line_number;
     i32 line_position;
     i32 character_position;

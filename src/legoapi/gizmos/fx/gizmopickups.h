@@ -27,7 +27,7 @@
 struct GIZMO_PICKUP_TYPE_PC;
 struct WORLDINFO_s;
 struct gameobject_s;
-struct player_coin_packet_pc_s;
+struct player_coin_packet_s;
 
 typedef struct game_message_pc_s GAME_MESSAGE_PC;
 
@@ -146,7 +146,7 @@ STATIC_ASSERT(offsetof(PICKUP_TYPE_SYSTEM_PC, alternate_type) == 0xc);
 extern "C" {
 #endif
     extern f32 (*GizmoPickups_Collide2DFn)(struct gameobject_s *);
-    void UpdateCoinPacket(struct player_coin_packet_pc_s *packet, i32 active, i32 player_index);
+    void UpdateCoinPacket(struct player_coin_packet_s *packet, i32 active, i32 player_index);
     void GizmoPickups_InitSys(PICKUP_TYPE_SYSTEM_PC *system);
     GIZMOPICKUP_PC *GizmoPickups_Collide(struct WORLDINFO_s *world, struct gameobject_s *object, i32 unused);
     i32 GizmoPickup_NumberOfType(struct WORLDINFO_s *, i32, u8);

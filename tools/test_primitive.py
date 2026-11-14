@@ -16,7 +16,7 @@ from tools.lib import ROOT
 
 def write_provider(directory):
     production = (ROOT / "src/nu2api/nu3d_includes.cpp").read_text()
-    types_start = production.index("typedef struct nuprim_command_pc_s {")
+    types_start = production.index("typedef struct nuprim_command_s {")
     types_end = production.index("void NuDisplayListLinkMtl(", types_start)
     types = production[types_start:types_end]
     if len(re.findall(r"^typedef struct", types, re.MULTILINE)) != 2:

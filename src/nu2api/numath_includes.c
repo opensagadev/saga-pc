@@ -33,14 +33,14 @@ STATIC_ASSERT(offsetof(NUMTX, m13) == 0x1c);
 STATIC_ASSERT(offsetof(NUMTX, m23) == 0x2c);
 STATIC_ASSERT(offsetof(NUMTX, m33) == 0x3c);
 
-typedef struct NuMtxIndexedViewPc { // size 0x40
-    f32 elements[4][4];             // 0x00
-} NuMtxIndexedViewPc;
+typedef struct NuMtxIndexedView { // size 0x40
+    f32 elements[4][4];           // 0x00
+} NuMtxIndexedView;
 
-STATIC_ASSERT(sizeof(NuMtxIndexedViewPc) == sizeof(NUMTX));
-STATIC_ASSERT(sizeof(((NuMtxIndexedViewPc *)0)->elements[0]) == 0x10);
-STATIC_ASSERT(sizeof(((NuMtxIndexedViewPc *)0)->elements[0]) + sizeof(f32) == offsetof(NUMTX, m11));
-STATIC_ASSERT(2 * sizeof(((NuMtxIndexedViewPc *)0)->elements[0]) + 2 * sizeof(f32) == offsetof(NUMTX, m22));
+STATIC_ASSERT(sizeof(NuMtxIndexedView) == sizeof(NUMTX));
+STATIC_ASSERT(sizeof(((NuMtxIndexedView *)0)->elements[0]) == 0x10);
+STATIC_ASSERT(sizeof(((NuMtxIndexedView *)0)->elements[0]) + sizeof(f32) == offsetof(NUMTX, m11));
+STATIC_ASSERT(2 * sizeof(((NuMtxIndexedView *)0)->elements[0]) + 2 * sizeof(f32) == offsetof(NUMTX, m22));
 #define NU_SIN_PC(angle) NuTrigTable[((angle) >> 1) & 0x7fff]
 #define NU_COS_PC(angle) NuTrigTable[(((angle) + 0x4000) >> 1) & 0x7fff]
 
@@ -2327,7 +2327,7 @@ void NuEulerXYZFromQuat(NUANG *x, NUANG *y, NUANG *z, NUQUAT *input) {
 }
 
 void NuMtxToQuat(NUMTX *m, NUQUAT *out) {
-    NuMtxIndexedViewPc *indexed = (NuMtxIndexedViewPc *)m;
+    NuMtxIndexedView *indexed = (NuMtxIndexedView *)m;
     i32 next[3];
     f32 q[4];
     f32 s;

@@ -51,8 +51,8 @@ extern "C" {
                                     ANI3_ROOT_CALLBACK_PC, NUVEC *, void *);
     void NuAnimBuffEvaluate_3(ANI3_BUFFER_PC *, NUHGOBJ_EVAL_PC *, NUMTX *, ANI3_HEADER_PC *, ANI3_ROOT_CALLBACK_PC,
                               NUVEC *, void *);
-    i32 NuAnimNumNodes(NUANIMDATA2_PC *);
-    f32 NuAnimCurve2CalcValEx(DWA_CURVE_CELL_PC *, NUANIM_TIME2_PC *, u32);
+    i32 NuAnimNumNodes(NUANIMDATA2 *);
+    f32 NuAnimCurve2CalcValEx(DWA_CURVE_CELL *, NUANIM_TIME2_PC *, u32);
     extern i32 MaxAnimJoints;
     void NuAnimInit(i32, VARIPTR *, VARIPTR);
     f32 NuAnimCurveCalcVal2(NUANIM_LEGACY_CURVE_PC *, NUANIM_TIME2_PC *);

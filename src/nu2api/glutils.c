@@ -1,27 +1,27 @@
 #include "saga.h"
 
-typedef struct debris_material_flags_pc_s { // size 0x4
-    u32 alpha_mode : 4;                     // 0x0:0
-    u32 filter_mode : 2;                    // 0x0:4
-    u32 unknown_0_64_128 : 2;               // 0x0:6
-    u32 unknown_1_1_2 : 2;                  // 0x0:8
-    u32 unknown_1_4_8 : 2;                  // 0x0:10
-    u32 cull_mode : 2;                      // 0x0:12
-    u32 z_mode : 2;                         // 0x0:14
-    u32 unknown_2_1_2 : 2;                  // 0x0:16
-    u32 unknown_2_4 : 1;                    // 0x0:18
-    u32 unknown_19 : 1;                     // 0x0:19
-    u32 alpha_test : 2;                     // 0x0:20
-    u32 unknown_22_31 : 10;                 // 0x0:22
+typedef struct debris_material_flags_s { // size 0x4
+    u32 alpha_mode : 4;                  // 0x0:0
+    u32 filter_mode : 2;                 // 0x0:4
+    u32 unknown_0_64_128 : 2;            // 0x0:6
+    u32 unknown_1_1_2 : 2;               // 0x0:8
+    u32 unknown_1_4_8 : 2;               // 0x0:10
+    u32 cull_mode : 2;                   // 0x0:12
+    u32 z_mode : 2;                      // 0x0:14
+    u32 unknown_2_1_2 : 2;               // 0x0:16
+    u32 unknown_2_4 : 1;                 // 0x0:18
+    u32 unknown_19 : 1;                  // 0x0:19
+    u32 alpha_test : 2;                  // 0x0:20
+    u32 unknown_22_31 : 10;              // 0x0:22
 } DEBRIS_MATERIAL_FLAGS_PC;
 
-typedef struct debris_material_secondary_pc_s { // size 0x4
-    u32 alpha_fail : 2;                         // 0x0:0
-    u32 disable_depth_write : 1;                // 0x0:2
-    u32 unknown_03_31 : 29;                     // 0x0:3
+typedef struct debris_material_secondary_s { // size 0x4
+    u32 alpha_fail : 2;                      // 0x0:0
+    u32 disable_depth_write : 1;             // 0x0:2
+    u32 unknown_03_31 : 29;                  // 0x0:3
 } DEBRIS_MATERIAL_SECONDARY_PC;
 
-typedef struct debris_material_pc_s {       // size 0x1f4
+typedef struct debris_material_s {          // size 0x1f4
     u8 unknown_000[0x40];                   // 0x000
     DEBRIS_MATERIAL_FLAGS_PC attribs;       // 0x040
     DEBRIS_MATERIAL_SECONDARY_PC secondary; // 0x044

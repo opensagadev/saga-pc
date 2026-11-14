@@ -39,9 +39,9 @@ typedef struct gizmo_pc_s {
 STATIC_ASSERT(sizeof(GIZMO_PC) == 8);
 STATIC_ASSERT(offsetof(GIZMO_PC, type_id) == 6);
 
-struct gizmoset_pc_s;
+struct gizmoset_s;
 
-typedef struct gizmofns_pc_s {
+typedef struct gizmofns_s {
     i16 options;
     u16 padding;
     i32 (*get_max_gizmos_fn)(void *world);
@@ -61,7 +61,7 @@ typedef struct gizmofns_pc_s {
     void *get_pos_fn;
     void *using_special_fn;
     void *bolt_hit_plat_fn;
-    struct gizmo_pc_s *(*get_best_bolt_target_fn)(struct gizmoset_pc_s *, f32 *, NUVEC *, NUVEC *, void *, NUVEC *,
+    struct gizmo_pc_s *(*get_best_bolt_target_fn)(struct gizmoset_s *, f32 *, NUVEC *, NUVEC *, void *, NUVEC *,
                                                   NUVEC *, f32, f32, i32, i32, i32);
     void *bolt_hit_fn;
     void *(*allocate_progress_data_fn)(union variptr_u *buffer, union variptr_u *end);
@@ -85,13 +85,13 @@ typedef struct gizmotype_pc_s {
 
 STATIC_ASSERT(sizeof(GIZMOTYPE_PC) == 0x9c);
 
-typedef struct gizmotypes_pc_s {
+typedef struct gizmotypes_s {
     i32 count;
     i32 max_levels;
     GIZMOTYPE_PC *types;
 } GIZMOTYPES_PC;
 
-typedef struct gizmoset_pc_s {
+typedef struct gizmoset_s {
     GIZMOTYPE_PC *type;
     i32 count;
     i32 max_count;
@@ -101,7 +101,7 @@ typedef struct gizmoset_pc_s {
 
 STATIC_ASSERT(sizeof(GIZMOSET_PC) == 0x14);
 
-typedef struct gizmosys_pc_s {
+typedef struct gizmosys_s {
     GIZMOSET_PC *sets;
     char *error_log;
     u16 flags;
@@ -123,7 +123,7 @@ extern ADDGIZMOTYPE_PC Default_ADDGIZMOTYPE;
 
 STATIC_ASSERT(offsetof(GIZMOSET_PC, data) == 0x10);
 
-typedef struct gizmosys_prefix_pc_s {
+typedef struct gizmosys_prefix_s {
     GIZMOSET_PC *sets;
 } GIZMOSYS_PREFIX_PC;
 
@@ -159,7 +159,7 @@ extern "C" {
     typedef struct addgizmotype_pc_s TECHNO_REGISTRATION_PC;
     typedef struct addgizmotype_pc_s PORTAL_REGISTRATION_PC;
     typedef struct addgizmotype_pc_s SHADOW_REGISTRATION_PC;
-    struct nuvec_s *GizmoGetPos(struct gizmosys_pc_s *gizmo_sys, void *gizmo);
+    struct nuvec_s *GizmoGetPos(struct gizmosys_s *gizmo_sys, void *gizmo);
     char *GizmoGetName(struct gizmo_pc_s *gizmo);
     void GizmoSysPanelDraw(void *, void *, f32);
 #ifdef __cplusplus

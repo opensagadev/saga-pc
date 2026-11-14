@@ -5,7 +5,7 @@ extern i32 drawautosaveicon;
 STATIC_ASSERT(offsetof(LEVELDATA_PC, callbacks) + 6 * sizeof(void *) == 0x80);
 STATIC_ASSERT(offsetof(GAMECAMERA, render_mtx) == 0xb8);
 STATIC_ASSERT(offsetof(NUCAMERA, mtx) == 0);
-STATIC_ASSERT(offsetof(LEVEL_OBJECT_RUNTIME_PC, active) == 0xe);
+STATIC_ASSERT(offsetof(LEVEL_OBJECT_RUNTIME, active) == 0xe);
 STATIC_ASSERT(offsetof(HINT_PC, id) == 0);
 STATIC_ASSERT(offsetof(GAMEOBJECT, flags_1fc) == 0x1fc);
 STATIC_ASSERT(offsetof(GAMEOBJECT, flags_1fc_word) == 0x1fc);
@@ -33,7 +33,7 @@ STATIC_ASSERT(offsetof(GIZTORPMACHINESYS_s, scale) == 8);
 STATIC_ASSERT(offsetof(WORLDINFO, giz_force_sys) == 0x46ac);
 STATIC_ASSERT(offsetof(WORLDINFO, giz_bombgen_sys) == 0x5114);
 
-typedef struct coin_reset_packet_pc_s {
+typedef struct coin_reset_packet_s {
     u8 unknown_00[4];
     f32 scale;
     u8 unknown_08[2];
@@ -53,15 +53,15 @@ typedef struct {
 
 void GizmoPickups_PostLoad(void *, void *);
 
-typedef struct lose_coins_packet_pc_s { // size 0x4
-    u32 coins;                          // 0x0
+typedef struct lose_coins_packet_s { // size 0x4
+    u32 coins;                       // 0x0
 } LOSE_COINS_PACKET_PC;
 
 STATIC_ASSERT(offsetof(GAMEOBJECT, coin_packet) == 0x7fc);
 STATIC_ASSERT(offsetof(CHARACTERDATA_PC, game_character) == 0x24);
 STATIC_ASSERT(offsetof(PLAYERCHARACTERCONFIG_PC, flags_090) == 0x90);
 
-typedef struct SPECIAL_MINIKIT_PC { // size 0x3c
+typedef struct SPECIAL_MINIKIT {    // size 0x3c
     NUSPECIALHANDLE special;        // 0x00
     NUINSTANIM *instance_animation; // 0x0c
     void *animation_data;           // 0x10
@@ -71,17 +71,17 @@ typedef struct SPECIAL_MINIKIT_PC { // size 0x3c
     GIZMO_PC *at_gizmo;             // 0x30
     GIZMO_PC *pickup;               // 0x34
     u32 flags;                      // 0x38
-} SPECIAL_MINIKIT_PC;
+} SPECIAL_MINIKIT;
 
-typedef struct SPECIAL_MINIKIT_SYSTEM_PC { // size 0x8
-    SPECIAL_MINIKIT_PC *items;             // 0x0
-    i32 count;                             // 0x4
-} SPECIAL_MINIKIT_SYSTEM_PC;
+typedef struct SPECIAL_MINIKIT_SYSTEM { // size 0x8
+    SPECIAL_MINIKIT *items;             // 0x0
+    i32 count;                          // 0x4
+} SPECIAL_MINIKIT_SYSTEM;
 
-typedef struct SPECIAL_MINIKIT_WORLD_PC {        // size 0x5058
-    u8 unknown_0[0x5054];                        // 0x0000
-    SPECIAL_MINIKIT_SYSTEM_PC *special_minikits; // 0x5054
-} SPECIAL_MINIKIT_WORLD_PC;
+typedef struct SPECIAL_MINIKIT_WORLD {        // size 0x5058
+    u8 unknown_0[0x5054];                     // 0x0000
+    SPECIAL_MINIKIT_SYSTEM *special_minikits; // 0x5054
+} SPECIAL_MINIKIT_WORLD;
 
 STATIC_ASSERT(offsetof(AREA_GLOBALS_PC, field_18) == 0x18);
 STATIC_ASSERT(sizeof(struct GIZMOPICKUPRUNTIMESYS_s) == 0x1c);
@@ -99,12 +99,12 @@ STATIC_ASSERT(offsetof(AREA_DATA_PC, flags) == 0x7a);
 STATIC_ASSERT(offsetof(GIZMOPICKUP_PC, unknown_14) == 0x14);
 STATIC_ASSERT(offsetof(GIZMOPICKUP_PC, activation_group) == 0x18);
 
-typedef struct PICKUP_RESET_RECORD_PC { // size 0x2c
-    char name[8];                       // 0x00
-    NUVEC position;                     // 0x08
-    u8 type_code;                       // 0x14
-    u8 config_flags;                    // 0x15
-    u8 model_variant;                   // 0x16
+typedef struct PICKUP_RESET_RECORD { // size 0x2c
+    char name[8];                    // 0x00
+    NUVEC position;                  // 0x08
+    u8 type_code;                    // 0x14
+    u8 config_flags;                 // 0x15
+    u8 model_variant;                // 0x16
 
     union { // size 0x1
         u8 flags;
@@ -129,14 +129,14 @@ typedef struct PICKUP_RESET_RECORD_PC { // size 0x2c
     u8 type_index;    // 0x25
     u16 rotation;     // 0x26
     f32 timer;        // 0x28
-} PICKUP_RESET_RECORD_PC;
+} PICKUP_RESET_RECORD;
 
-typedef struct PICKUP_RESET_PROGRESS_PC { // size 0x100
-    u32 collected[16];                    // 0x00
-    u32 enabled[16];                      // 0x40
-    u32 visible[16];                      // 0x80
-    u32 activated[16];                    // 0xc0
-} PICKUP_RESET_PROGRESS_PC;
+typedef struct PICKUP_RESET_PROGRESS { // size 0x100
+    u32 collected[16];                 // 0x00
+    u32 enabled[16];                   // 0x40
+    u32 visible[16];                   // 0x80
+    u32 activated[16];                 // 0xc0
+} PICKUP_RESET_PROGRESS;
 
 STATIC_ASSERT(sizeof(struct LEVELSAVE_s) == 0x54);
 STATIC_ASSERT(offsetof(struct LEVELSAVE_s, minikit_count) == 0x50);
@@ -148,19 +148,19 @@ extern i32 turret_gizmotype_id;
 extern i32 gizbuildit_gizmotype_id;
 i32 SuperCounter_AnyCollected(AREA_SUPERCOUNTER_PC *, WORLDINFO *);
 
-typedef struct pickup_counter_turret_pc_s { // size 0x13c
-    u8 unknown_000[0x13a];                  // 0x000
-    u16 flags;                              // 0x13a
+typedef struct pickup_counter_turret_s { // size 0x13c
+    u8 unknown_000[0x13a];               // 0x000
+    u16 flags;                           // 0x13a
 } PICKUP_COUNTER_TURRET_PC;
 
-typedef struct pickup_counter_blowup_pc_s { // size 0x95
-    u8 unknown_00[0x94];                    // 0x00
-    u8 output_flags;                        // 0x94
+typedef struct pickup_counter_blowup_s { // size 0x95
+    u8 unknown_00[0x94];                 // 0x00
+    u8 output_flags;                     // 0x94
 } PICKUP_COUNTER_BLOWUP_PC;
 
-typedef struct pickup_counter_buildit_pc_s { // size 0x6e
-    u8 unknown_00[0x6d];                     // 0x00
-    u8 build_state;                          // 0x6d
+typedef struct pickup_counter_buildit_s { // size 0x6e
+    u8 unknown_00[0x6d];                  // 0x00
+    u8 build_state;                       // 0x6d
 } PICKUP_COUNTER_BUILDIT_PC;
 
 STATIC_ASSERT(offsetof(GAMECAMERA, position) == 0x11c);
@@ -169,8 +169,8 @@ STATIC_ASSERT(sizeof(GIZMOPICKUP_PC) == 0x2c);
 STATIC_ASSERT(offsetof(WORLDINFO, game_debris_sys) == 0x134);
 void SuperCounter_ActivateGizmoPickup(GIZMO_PC *, GIZMOPICKUP_PC *);
 
-typedef struct PICKUP_VISIBILITY_VIEW_PC { // size 0x2c
-    u8 unknown_00[0x17];                   // 0x00
+typedef struct PICKUP_VISIBILITY_VIEW { // size 0x2c
+    u8 unknown_00[0x17];                // 0x00
 
     struct {              // size 0x1
         u8 unknown_0 : 2; // 0x17:0
@@ -179,11 +179,11 @@ typedef struct PICKUP_VISIBILITY_VIEW_PC { // size 0x2c
     } flags;              // 0x17
 
     u8 unknown_18[0x14]; // 0x18
-} PICKUP_VISIBILITY_VIEW_PC;
+} PICKUP_VISIBILITY_VIEW;
 
-STATIC_ASSERT(sizeof(PICKUP_VISIBILITY_VIEW_PC) == sizeof(GIZMOPICKUP_PC));
-STATIC_ASSERT(offsetof(PICKUP_VISIBILITY_VIEW_PC, flags) == offsetof(GIZMOPICKUP_PC, flags));
-STATIC_ASSERT(sizeof(((PICKUP_VISIBILITY_VIEW_PC *)0)->flags) == 1);
+STATIC_ASSERT(sizeof(PICKUP_VISIBILITY_VIEW) == sizeof(GIZMOPICKUP_PC));
+STATIC_ASSERT(offsetof(PICKUP_VISIBILITY_VIEW, flags) == offsetof(GIZMOPICKUP_PC, flags));
+STATIC_ASSERT(sizeof(((PICKUP_VISIBILITY_VIEW *)0)->flags) == 1);
 STATIC_ASSERT(offsetof(GIZMOPICKUP_PC, filter_byte) == 0x14);
 
 static NUMTX *PickupSetRotationXPc(NUMTX *matrix, i32 angle) {
@@ -598,14 +598,14 @@ void *GizmoPickups_ReserveBufferSpace(void *world_ptr) {
 }
 
 void GizmoPickup_SetVisibility(GIZMO_PC *gizmo, i32 visible) {
-    PICKUP_VISIBILITY_VIEW_PC *pickup;
+    PICKUP_VISIBILITY_VIEW *pickup;
     if (gizmo != NULL) {
         pickup = gizmo->object;
         pickup->flags.visible = visible != 0;
     }
 }
 
-static void GizmoPickups_Reset(WORLDINFO *world, PICKUP_RESET_RECORD_PC *pickup) {
+static void GizmoPickups_Reset(WORLDINFO *world, PICKUP_RESET_RECORD *pickup) {
     f32 floor;
     pickup->type_index = (u8)FindPickupTypeIndex(pickup->type_code);
     NewTerrPlatformsOff();
@@ -634,9 +634,9 @@ static void GizmoPickups_Reset(WORLDINFO *world, PICKUP_RESET_RECORD_PC *pickup)
 
 void GizmoPickups_ResetPc(void *world_ptr, void *unused, void *progress_ptr) {
     WORLDINFO *world = world_ptr;
-    PICKUP_RESET_PROGRESS_PC *progress = progress_ptr;
+    PICKUP_RESET_PROGRESS *progress = progress_ptr;
     struct GIZMOPICKUPRUNTIMESYS_s *system;
-    PICKUP_RESET_RECORD_PC *pickup;
+    PICKUP_RESET_RECORD *pickup;
     i32 index;
     (void)unused;
     for (index = 0; index < GizmoPickupSys->type_count; ++index) {
@@ -649,7 +649,7 @@ void GizmoPickups_ResetPc(void *world_ptr, void *unused, void *progress_ptr) {
         return;
     }
     system = world->pickup_runtime_sys;
-    pickup = (PICKUP_RESET_RECORD_PC *)system->pickups;
+    pickup = (PICKUP_RESET_RECORD *)system->pickups;
     if (pickup != NULL) {
         for (index = 0; index < world->pickup_runtime_sys->pickup_count; ++index, ++pickup) {
             GizmoPickups_Reset(world, pickup);
@@ -1139,10 +1139,10 @@ void PartUpdate_Heart(PART_PC *part) {
 }
 
 void SpecialMiniKits_Configure(WORLDINFO *world, char *config) {
-    SPECIAL_MINIKIT_WORLD_PC *view = (SPECIAL_MINIKIT_WORLD_PC *)world;
-    SPECIAL_MINIKIT_PC *items;
-    SPECIAL_MINIKIT_PC *cursor;
-    SPECIAL_MINIKIT_SYSTEM_PC *system;
+    SPECIAL_MINIKIT_WORLD *view = (SPECIAL_MINIKIT_WORLD *)world;
+    SPECIAL_MINIKIT *items;
+    SPECIAL_MINIKIT *cursor;
+    SPECIAL_MINIKIT_SYSTEM *system;
     i32 count;
     NUFPAR_PC *parser;
     view->special_minikits = NULL;
@@ -1154,7 +1154,7 @@ void SpecialMiniKits_Configure(WORLDINFO *world, char *config) {
         return;
     }
     world->giz_buffer.addr = (world->giz_buffer.addr + 3U) & ~3U;
-    items = (SPECIAL_MINIKIT_PC *)world->giz_buffer.addr;
+    items = (SPECIAL_MINIKIT *)world->giz_buffer.addr;
     cursor = items;
     count = 0;
     while (NuFParGetLine(parser) != 0 && NuFParGetWord(parser) != 0) {
@@ -1213,15 +1213,15 @@ void SpecialMiniKits_Configure(WORLDINFO *world, char *config) {
         return;
     }
     world->giz_buffer.addr = (u32)cursor;
-    view->special_minikits = system = (SPECIAL_MINIKIT_SYSTEM_PC *)world->giz_buffer.addr;
+    view->special_minikits = system = (SPECIAL_MINIKIT_SYSTEM *)world->giz_buffer.addr;
     system->items = items;
     system->count = count;
     world->giz_buffer.addr = (world->giz_buffer.addr + sizeof(*system) + 3U) & ~3U;
 }
 
 void SpecialMiniKits_Reset(WORLDINFO *world) {
-    SPECIAL_MINIKIT_WORLD_PC *view = (SPECIAL_MINIKIT_WORLD_PC *)world;
-    SPECIAL_MINIKIT_PC *item;
+    SPECIAL_MINIKIT_WORLD *view = (SPECIAL_MINIKIT_WORLD *)world;
+    SPECIAL_MINIKIT *item;
     i32 index;
     if (view->special_minikits == NULL || GizmoPickupSys->gizmo_type_id == -1) {
         return;
@@ -1236,8 +1236,8 @@ void SpecialMiniKits_Reset(WORLDINFO *world) {
 }
 
 void SpecialMiniKits_Draw(WORLDINFO *world) {
-    SPECIAL_MINIKIT_WORLD_PC *view = (SPECIAL_MINIKIT_WORLD_PC *)world;
-    SPECIAL_MINIKIT_PC *item;
+    SPECIAL_MINIKIT_WORLD *view = (SPECIAL_MINIKIT_WORLD *)world;
+    SPECIAL_MINIKIT *item;
     GIZMOPICKUP_PC *pickup;
     GIZMO_PICKUP_TYPE_PC *type;
     NUINSTANIM *animation;

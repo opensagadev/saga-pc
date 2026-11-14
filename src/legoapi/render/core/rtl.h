@@ -148,7 +148,7 @@ extern "C" {
 
     STATIC_ASSERT(sizeof(RTL_SET_PC) == 0x4f84);
 
-    typedef struct rtl_fog_migration_pc_s {
+    typedef struct rtl_fog_migration_s {
         f32 start;
         f32 end;
         u32 colour;

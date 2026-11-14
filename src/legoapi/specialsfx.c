@@ -7,22 +7,22 @@ STATIC_ASSERT(offsetof(WORLDINFO, special_sfx_events) == 0x46d8);
 
 STATIC_ASSERT(offsetof(WORLDINFO, current_gscn) == 0x13c);
 STATIC_ASSERT(offsetof(WORLDINFO, special_sfx) == 0x46d0);
-STATIC_ASSERT(sizeof(SPECIAL_RESOURCE_ENTRY_PC) == 20);
-STATIC_ASSERT(offsetof(SPECIAL_RESOURCE_ENTRY_PC, special) == 4);
-STATIC_ASSERT(offsetof(SPECIAL_RESOURCE_ENTRY_PC, events) == 16);
+STATIC_ASSERT(sizeof(SPECIAL_RESOURCE_ENTRY) == 20);
+STATIC_ASSERT(offsetof(SPECIAL_RESOURCE_ENTRY, special) == 4);
+STATIC_ASSERT(offsetof(SPECIAL_RESOURCE_ENTRY, events) == 16);
 
 i32 InitSpecialSfx(void *world_ptr) {
-    SPECIAL_RESOURCE_WORLD_PC *world = world_ptr;
+    SPECIAL_RESOURCE_WORLD *world = world_ptr;
     if (!world) {
         return 0;
     }
     world->buffer.addr = (world->buffer.addr + 3) & ~3u;
-    world->entries = (SPECIAL_RESOURCE_ENTRY_PC *)world->buffer.addr;
+    world->entries = (SPECIAL_RESOURCE_ENTRY *)world->buffer.addr;
     world->buffer.addr += 0xf00;
     world->entry_count = 0;
     memset(world->entries, 0, 0xf00);
     world->buffer.addr = (world->buffer.addr + 15) & ~15u;
-    world->events = (SPECIAL_RESOURCE_EVENT_PC *)world->buffer.addr;
+    world->events = (SPECIAL_RESOURCE_EVENT *)world->buffer.addr;
     world->buffer.addr = (world->buffer.addr + 0xc03) & ~3u;
     world->event_count = 0;
     memset(world->events, 0, 0xc00);
@@ -40,9 +40,9 @@ i32 SpecialSfxLoad(char *path, void *world_ptr) {
     i32 j;
     char name[64];
     i32 length;
-    SPECIAL_RESOURCE_ENTRY_PC *entry;
-    SPECIAL_RESOURCE_EVENT_PC *event;
-    SPECIAL_RESOURCE_EVENT_PC *previous;
+    SPECIAL_RESOURCE_ENTRY *entry;
+    SPECIAL_RESOURCE_EVENT *event;
+    SPECIAL_RESOURCE_EVENT *previous;
     if (!world) {
         return 0;
     }
@@ -114,7 +114,7 @@ i32 SpecialSfxLoad(char *path, void *world_ptr) {
 
 i32 SpecialSfxAdd(i32 special_index) {
     NUSPECIALHANDLE special;
-    SPECIAL_RESOURCE_ENTRY_PC *entry;
+    SPECIAL_RESOURCE_ENTRY *entry;
     if (WORLD->special_sfx_count < 192) {
         NuGScnGetSpecial(&special, WORLD->current_gscn, special_index);
         if (NuSpecialExistsFn(&special) != 0) {
@@ -135,8 +135,8 @@ void UpdateSpecialSfx(WORLDINFO *world_info) {
     i32 j;
     i32 direction;
     i32 play;
-    SPECIAL_RESOURCE_ENTRY_PC *entry;
-    SPECIAL_RESOURCE_EVENT_PC *event;
+    SPECIAL_RESOURCE_ENTRY *entry;
+    SPECIAL_RESOURCE_EVENT *event;
     NUINSTANIM *animation;
     NUVEC *position;
     f32 end_frame;
@@ -231,7 +231,7 @@ void SetSpecialSfxBits(i32 *ids, i32 *count, WORLDINFO *world) {
 }
 
 void LoadSpecialSfxFile(void *world_ptr) {
-    SPECIAL_RESOURCE_WORLD_PC *world = world_ptr;
+    SPECIAL_RESOURCE_WORLD *world = world_ptr;
     char path[256];
     sprintf(path, "%s.sfx", world->config_file);
     if (NuFileExists(path)) {
@@ -589,7 +589,7 @@ void cbPtlReadoutMenu(eduimenu_s *menu, eduiitem_s *unused1, u32 unused2) {
 }
 
 static void cbPtlGSortMenu(eduimenu_s *menu, eduiitem_s *unused1, u32 unused2) {
-    struct debris_info_pc_s *effect;
+    struct debris_info_s *effect;
     u32 colours[4] = {0x80000000, 0x80ff0000, 0x80808080, 0x80404040};
     if (edpp_nearest == -1 || edpp_ptls[edpp_nearest].instance_id == -1) {
         return;

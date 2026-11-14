@@ -25,33 +25,33 @@
 
 struct ANI3_HEADER_PC;
 struct CUT_LOOKAT_STATE_PC;
-union DWA_CURVE_CELL_PC;
-struct NUANIMDATA2_SKELETAL_PC;
+union DWA_CURVE_CELL;
+struct NUANIMDATA2_SKELETAL;
 struct NUHGOBJ_EVAL_PC;
 struct cut_load_locator_instance_s;
 struct instnugcutscene_s;
 struct numtl_s;
 struct nuspecial_handle_s;
 
-typedef union DWA_FRAME_HEADER_PC {
+typedef union DWA_FRAME_HEADER {
     f32 duration;
     u32 magic;
-} DWA_FRAME_HEADER_PC;
+} DWA_FRAME_HEADER;
 
-typedef union DWA_NODE_COUNT_PC {
+typedef union DWA_NODE_COUNT {
     i16 legacy;
     u16 modern;
-} DWA_NODE_COUNT_PC;
+} DWA_NODE_COUNT;
 
-typedef struct NUANIMDATA2_PC {
-    DWA_FRAME_HEADER_PC header;
-    DWA_NODE_COUNT_PC node_count;
+typedef struct NUANIMDATA2 {
+    DWA_FRAME_HEADER header;
+    DWA_NODE_COUNT node_count;
     i16 curve_count;
     i16 chunk_count;
     u16 modern_frame_count;
-    union DWA_CURVE_CELL_PC *curves;
+    union DWA_CURVE_CELL *curves;
     i8 *curve_types;
-} NUANIMDATA2_PC;
+} NUANIMDATA2;
 
 typedef struct CUT_LOCATOR_ANIMATION_PC {
     NUMTX base_matrix;
@@ -64,8 +64,8 @@ typedef struct CUT_CHARACTER_ANIMATION_PC {
     NUMTX base_matrix;
     u8 unknown_40[4];
     struct ANI3_HEADER_PC *animation;
-    struct NUANIMDATA2_PC *face_animation;
-    struct NUANIMDATA2_PC *extra_animation;
+    struct NUANIMDATA2 *face_animation;
+    struct NUANIMDATA2 *extra_animation;
     u8 unknown_50[0x4];
     void *locator;
     f32 animation_rate;
@@ -87,21 +87,21 @@ STATIC_ASSERT(offsetof(CUT_CHARACTER_ANIMATION_PC, blend_time) == 0x61);
 STATIC_ASSERT(offsetof(CUT_CHARACTER_ANIMATION_PC, start_frame) == 0x63);
 
 STATIC_ASSERT(offsetof(CUT_CHARACTER_ANIMATION_PC, animation_index) == 0x5d);
-STATIC_ASSERT(offsetof(NUANIMDATA2_PC, curve_count) == 6);
-STATIC_ASSERT(offsetof(NUANIMDATA2_PC, chunk_count) == 8);
-STATIC_ASSERT(offsetof(NUANIMDATA2_PC, modern_frame_count) == 0x0a);
-STATIC_ASSERT(offsetof(NUANIMDATA2_PC, curves) == 0x0c);
-STATIC_ASSERT(offsetof(NUANIMDATA2_PC, curve_types) == 0x10);
+STATIC_ASSERT(offsetof(NUANIMDATA2, curve_count) == 6);
+STATIC_ASSERT(offsetof(NUANIMDATA2, chunk_count) == 8);
+STATIC_ASSERT(offsetof(NUANIMDATA2, modern_frame_count) == 0x0a);
+STATIC_ASSERT(offsetof(NUANIMDATA2, curves) == 0x0c);
+STATIC_ASSERT(offsetof(NUANIMDATA2, curve_types) == 0x10);
 
-STATIC_ASSERT(offsetof(NUANIMDATA2_PC, header) == 0);
-STATIC_ASSERT(offsetof(NUANIMDATA2_PC, node_count) == 4);
-STATIC_ASSERT(offsetof(NUANIMDATA2_PC, curve_types) == 0x10);
-STATIC_ASSERT(sizeof(NUANIMDATA2_PC) == 0x14);
+STATIC_ASSERT(offsetof(NUANIMDATA2, header) == 0);
+STATIC_ASSERT(offsetof(NUANIMDATA2, node_count) == 4);
+STATIC_ASSERT(offsetof(NUANIMDATA2, curve_types) == 0x10);
+STATIC_ASSERT(sizeof(NUANIMDATA2) == 0x14);
 
-typedef struct cut_scene_load_pc_s CUT_SCENE_LOAD_PC;
+typedef struct cut_scene_load_s CUT_SCENE_LOAD_PC;
 typedef struct cut_load_character_s CUT_LOAD_CHARACTER;
 typedef struct cut_load_character_instance_s CUT_LOAD_CHARACTER_INSTANCE;
-typedef struct cut_locator_function_entry_pc_s CUT_LOCATOR_FUNCTION_ENTRY_PC;
+typedef struct cut_locator_function_entry_s CUT_LOCATOR_FUNCTION_ENTRY_PC;
 #ifdef __cplusplus
 extern "C" {
 #endif
@@ -124,7 +124,7 @@ extern "C" {
     i32 PCCutAni3CurveInteger(struct ANI3_HEADER_PC *, f32 *, i32);
     extern const f64 AIPathAngularScale;
 
-    typedef struct state_anim_pc_s {
+    typedef struct state_anim_s {
         u16 count;
         u16 unknown_0002;
         f32 *times;
@@ -208,21 +208,21 @@ extern "C" {
 typedef struct CUT_LOCATOR_GENERIC_PC {
     NUMTX base_matrix;
     u8 unknown_40_4f[16];
-    struct NUANIMDATA2_SKELETAL_PC *animation;
+    struct NUANIMDATA2_SKELETAL *animation;
 } CUT_LOCATOR_GENERIC_PC;
 
 typedef struct CUT_RIGID_GENERIC_PC {
     NUMTX base_matrix;
     u8 unknown_40_4b[12];
-    struct NUANIMDATA2_SKELETAL_PC *animation;
+    struct NUANIMDATA2_SKELETAL *animation;
 } CUT_RIGID_GENERIC_PC;
 
 typedef struct CUT_CHARACTER_GENERIC_PC {
     NUMTX base_matrix;
     char *name;
-    struct NUANIMDATA2_SKELETAL_PC *animation;
-    struct NUANIMDATA2_PC *face_animation;
-    struct NUANIMDATA2_PC *extra_animation;
+    struct NUANIMDATA2_SKELETAL *animation;
+    struct NUANIMDATA2 *face_animation;
+    struct NUANIMDATA2 *extra_animation;
     u8 unknown_50[0x4];
     void *locator;
     f32 animation_rate;

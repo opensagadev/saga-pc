@@ -3,29 +3,29 @@
 #include <stdio.h>
 #include <math.h>
 
-typedef struct BONUS_GUNSHIP_FLAGS_PC {
+typedef struct BONUS_GUNSHIP_FLAGS {
     u8 progress;
     u8 secondary;
     u8 reserved[14];
-} BONUS_GUNSHIP_FLAGS_PC;
+} BONUS_GUNSHIP_FLAGS;
 
-#define BONUS_GUNSHIP_FLAGS_PC_VIEW ((BONUS_GUNSHIP_FLAGS_PC *)LevFlag)
+#define BONUS_GUNSHIP_FLAGS_PC_VIEW ((BONUS_GUNSHIP_FLAGS *)LevFlag)
 
-typedef struct cutinfo_reader_pc_s {
+typedef struct cutinfo_reader_s {
     u8 opaque_00_04[0x4];
     void *instance;
     u8 opaque_08_54[0x4c];
     f32 previous_frame;
 } CUTINFO_READER_PC;
 
-typedef struct cut_instance_reader_pc_s {
+typedef struct cut_instance_reader_s {
     u8 opaque_00_88[0x88];
     u32 flags_88;
     u32 unknown_8c;
     f32 current_frame;
 } CUT_INSTANCE_READER_PC;
 
-typedef struct dooku_c_pc_s {
+typedef struct dooku_c_s {
     GIZAIMESSAGE *total_message;
     GIZAIMESSAGE *hit_message;
     NUSPECIALHANDLE node;
@@ -35,7 +35,7 @@ void KillBossNewLevel(i32 id, i32 unused_4, f32 delay, i32 level_index);
 void DrawForceBackEffect(NUSPECIALHANDLE *special);
 void GizPanel_Reset(void *panel);
 
-typedef struct kaminodisco_pc_s {
+typedef struct kaminodisco_s {
     AIAREA_PC *area;
     NUSPECIALHANDLE off[16];
     NUSPECIALHANDLE pending[16];
@@ -53,7 +53,7 @@ typedef struct kaminodisco_pc_s {
     GIZAIMESSAGE *complete_message;
 } KAMINODISCO_PC;
 
-typedef struct kaminoc_packet_pc_s {
+typedef struct kaminoc_packet_s {
     i16 off_mask;
     i16 pending_mask;
     i16 occupied_mask;
@@ -64,17 +64,17 @@ typedef struct kaminoc_packet_pc_s {
     u8 reserved_0d;
 } KAMINOC_PACKET_PC;
 
-typedef struct kamino_progress_gizmo_reader_pc_s {
+typedef struct kamino_progress_gizmo_reader_s {
     u8 opaque_00_94[0x94];
     u8 flags;
 } KAMINO_PROGRESS_GIZMO_READER_PC;
 
-typedef struct gizforce_reader_pc_s {
+typedef struct gizforce_reader_s {
     u8 opaque_00_28[0x28];
     GAMEANIMSET *anim_set;
 } GIZFORCE_READER_PC;
 
-typedef struct kaminoe_turret_reader_pc_s {
+typedef struct kaminoe_turret_reader_s {
     u8 opaque_00_1c[0x1c];
     GAMEANIMOBJ *primary_anim_obj;
     u8 opaque_20_e4[0xc4];
@@ -88,7 +88,7 @@ typedef struct kaminoe_turret_reader_pc_s {
     u8 opaque_13c_140[0x4];
 } KAMINOE_TURRET_READER_PC;
 
-typedef struct kamino_e_pc_s {
+typedef struct kamino_e_s {
     GIZAIMESSAGE *jango_fight;
     GIZAIMESSAGE *can_fire;
     GIZAIMESSAGE *reset_turrets;

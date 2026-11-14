@@ -38,16 +38,16 @@ struct HATMACHINE_PC {      // size 0xa0
     u8 reserved_9c[4];     // 0x9c
 };
 
-struct HATMACHINE_SYS_PC {   // size 0x10
+struct HATMACHINE_SYS {      // size 0x10
     i32 count;               // 0x0
     i32 reserved_04;         // 0x4
     i32 reserved_08;         // 0x8
     HATMACHINE_PC *machines; // 0xc
 };
 
-struct HATMACHINE_WORLD_PC {            // size 0x5078
-    u8 unknown_000[0x5074];             // 0x0000
-    HATMACHINE_SYS_PC *hat_machine_sys; // 0x5074
+struct HATMACHINE_WORLD {            // size 0x5078
+    u8 unknown_000[0x5074];          // 0x0000
+    HATMACHINE_SYS *hat_machine_sys; // 0x5074
 };
 
 /* The SDK's inline NuFabs (nufloat.h): a masked copy of the float bits. */
@@ -71,12 +71,11 @@ extern "C" void Hat_GetAbsTargetPos(HATMACHINE_PC *machine, NUVEC *position) {
 }
 
 extern "C" void HatMachines_InitTerrain(WORLDINFO *world) {
-    if (((HATMACHINE_WORLD_PC *)world)->hat_machine_sys != NULL) {
-        for (i32 index = 0; index < ((HATMACHINE_WORLD_PC *)world)->hat_machine_sys->count; ++index) {
-            HATMACHINE_PC *machine = &((HATMACHINE_WORLD_PC *)world)->hat_machine_sys->machines[index];
-            ((HATMACHINE_WORLD_PC *)world)->hat_machine_sys->machines[index].platform_id =
-                NewPlatPickupInst(machine, 2);
-            PlatInstRotate(((HATMACHINE_WORLD_PC *)world)->hat_machine_sys->machines[index].platform_id, 1);
+    if (((HATMACHINE_WORLD *)world)->hat_machine_sys != NULL) {
+        for (i32 index = 0; index < ((HATMACHINE_WORLD *)world)->hat_machine_sys->count; ++index) {
+            HATMACHINE_PC *machine = &((HATMACHINE_WORLD *)world)->hat_machine_sys->machines[index];
+            ((HATMACHINE_WORLD *)world)->hat_machine_sys->machines[index].platform_id = NewPlatPickupInst(machine, 2);
+            PlatInstRotate(((HATMACHINE_WORLD *)world)->hat_machine_sys->machines[index].platform_id, 1);
         }
     }
 }
@@ -84,11 +83,11 @@ extern "C" void HatMachines_InitTerrain(WORLDINFO *world) {
 extern "C" HATMACHINE_PC *HatMachine_FindNearest(WORLDINFO *world, NUVEC *position, GAMEOBJECT *object, f32 *distance) {
     f32 nearest_distance = 1.0e9f;
     HATMACHINE_PC *nearest = NULL;
-    if (world == NULL || ((HATMACHINE_WORLD_PC *)world)->hat_machine_sys == NULL) {
+    if (world == NULL || ((HATMACHINE_WORLD *)world)->hat_machine_sys == NULL) {
         return NULL;
     }
-    for (i32 index = 0; index < ((HATMACHINE_WORLD_PC *)world)->hat_machine_sys->count; ++index) {
-        HATMACHINE_PC *machine = &((HATMACHINE_WORLD_PC *)world)->hat_machine_sys->machines[index];
+    for (i32 index = 0; index < ((HATMACHINE_WORLD *)world)->hat_machine_sys->count; ++index) {
+        HATMACHINE_PC *machine = &((HATMACHINE_WORLD *)world)->hat_machine_sys->machines[index];
         f32 candidate_distance;
         if (object != NULL) {
             if ((machine->flags & 8) == 0 || (machine->flags & 4) == 0 || (machine->flags & 3) != 0 ||
@@ -116,10 +115,10 @@ extern "C" i32 HatMachine_BeingUsed(HATMACHINE_PC *machine) {
     return machine->flags & 1;
 }
 
-struct HAT_USE_REQUEST_PC { // size 0x7a4
-    u8 unknown_000[0x79c];  // 0x000
-    i32 request;            // 0x79c
-    void *net_wait_info;    // 0x7a0
+struct HAT_USE_REQUEST {   // size 0x7a4
+    u8 unknown_000[0x79c]; // 0x000
+    i32 request;           // 0x79c
+    void *net_wait_info;   // 0x7a0
 };
 
 extern "C" i16 id_PRINCESSLEIABOUSHH;
@@ -141,8 +140,8 @@ extern "C" void HatMachine_MoveCode(WORLDINFO *world, GAMEOBJECT *object, i32 sp
         }
         f32 range = (f64)object->bounds_radius + 0.25;
         range *= machine->scale;
-        if (distance < range && (special_pressed != 0 || (((HAT_USE_REQUEST_PC *)object)->request == 2 &&
-                                                          ((HAT_USE_REQUEST_PC *)object)->net_wait_info != NULL))) {
+        if (distance < range && (special_pressed != 0 || (((HAT_USE_REQUEST *)object)->request == 2 &&
+                                                          ((HAT_USE_REQUEST *)object)->net_wait_info != NULL))) {
             object->grapple = machine;
             object->movement_facing_angle = machine->yaw;
             object->context_hover_target_y = 0.0f;
@@ -291,10 +290,10 @@ extern "C" void HatMachine_MoveCode(WORLDINFO *world, GAMEOBJECT *object, i32 sp
     }
 }
 
-struct HATMACHINE_PROGRESS_PC { // size 0xc
-    i32 preserved_state;        // 0x0
-    u32 enabled_mask[1];        // 0x4
-    u32 visible_mask[1];        // 0x8
+struct HATMACHINE_PROGRESS { // size 0xc
+    i32 preserved_state;     // 0x0
+    u32 enabled_mask[1];     // 0x4
+    u32 visible_mask[1];     // 0x8
 };
 
 extern "C" ADDGIZMOTYPE_PC Default_ADDGIZMOTYPE;
@@ -329,10 +328,10 @@ extern "C" {
 
     static i32 HatMachine_Load(void *world_ptr, void *) {
         WORLDINFO *world = (WORLDINFO *)world_ptr;
-        if (world == NULL || ((HATMACHINE_WORLD_PC *)world)->hat_machine_sys == NULL) {
+        if (world == NULL || ((HATMACHINE_WORLD *)world)->hat_machine_sys == NULL) {
             return 0;
         }
-        HATMACHINE_SYS_PC *system = ((HATMACHINE_WORLD_PC *)world)->hat_machine_sys;
+        HATMACHINE_SYS *system = ((HATMACHINE_WORLD *)world)->hat_machine_sys;
         if (system->count != 0) {
             return 0;
         }
@@ -368,23 +367,23 @@ extern "C" {
 
     static void *HatMachines_ReserveBufferSpace(void *world_ptr) {
         WORLDINFO *world = (WORLDINFO *)world_ptr;
-        ((HATMACHINE_WORLD_PC *)world)->hat_machine_sys = NULL;
+        ((HATMACHINE_WORLD *)world)->hat_machine_sys = NULL;
         if (world->current_level->max_levers > 0) {
             world->giz_buffer.addr = (world->giz_buffer.addr + 3) & ~3u;
-            ((HATMACHINE_WORLD_PC *)world)->hat_machine_sys = (HATMACHINE_SYS_PC *)world->giz_buffer.void_ptr;
-            world->giz_buffer.addr += sizeof(HATMACHINE_SYS_PC);
-            memset(((HATMACHINE_WORLD_PC *)world)->hat_machine_sys, 0, sizeof(HATMACHINE_SYS_PC));
+            ((HATMACHINE_WORLD *)world)->hat_machine_sys = (HATMACHINE_SYS *)world->giz_buffer.void_ptr;
+            world->giz_buffer.addr += sizeof(HATMACHINE_SYS);
+            memset(((HATMACHINE_WORLD *)world)->hat_machine_sys, 0, sizeof(HATMACHINE_SYS));
             world->giz_buffer.addr = (world->giz_buffer.addr + 15) & ~15u;
-            ((HATMACHINE_WORLD_PC *)world)->hat_machine_sys->machines = (HATMACHINE_PC *)world->giz_buffer.void_ptr;
+            ((HATMACHINE_WORLD *)world)->hat_machine_sys->machines = (HATMACHINE_PC *)world->giz_buffer.void_ptr;
             world->giz_buffer.addr += world->current_level->max_hatmachines * sizeof(HATMACHINE_PC);
-            memset(((HATMACHINE_WORLD_PC *)world)->hat_machine_sys->machines, 0,
+            memset(((HATMACHINE_WORLD *)world)->hat_machine_sys->machines, 0,
                    world->current_level->max_hatmachines * sizeof(HATMACHINE_PC));
         }
-        return ((HATMACHINE_WORLD_PC *)world)->hat_machine_sys;
+        return ((HATMACHINE_WORLD *)world)->hat_machine_sys;
     }
 
     static void HatMachines_ClearProgress(void *, void *progress_ptr) {
-        HATMACHINE_PROGRESS_PC *progress = (HATMACHINE_PROGRESS_PC *)progress_ptr;
+        HATMACHINE_PROGRESS *progress = (HATMACHINE_PROGRESS *)progress_ptr;
         if (progress != NULL) {
             progress->enabled_mask[0] = ~0u;
             progress->visible_mask[0] = ~0u;
@@ -392,7 +391,7 @@ extern "C" {
     }
 
     static void *HatMachines_AllocateProgressData(VARIPTR *buffer, VARIPTR *end) {
-        return GizmoBufferAlloc(buffer, end, sizeof(HATMACHINE_PROGRESS_PC));
+        return GizmoBufferAlloc(buffer, end, sizeof(HATMACHINE_PROGRESS));
     }
 
     static void HatMachine_SetVisibility(GIZMO_PC *gizmo, i32 visible) {
@@ -412,30 +411,30 @@ extern "C" {
 
     static void HatMachine_AddGizmos(void *gizmo_sys, i32 type_id, void *world_ptr, void *) {
         WORLDINFO *world = (WORLDINFO *)world_ptr;
-        if (world == NULL || ((HATMACHINE_WORLD_PC *)world)->hat_machine_sys == NULL) {
+        if (world == NULL || ((HATMACHINE_WORLD *)world)->hat_machine_sys == NULL) {
             return;
         }
-        for (i32 index = 0; index < ((HATMACHINE_WORLD_PC *)world)->hat_machine_sys->count; ++index) {
-            if (NuStrLen(((HATMACHINE_WORLD_PC *)world)->hat_machine_sys->machines[index].name) != 0) {
-                AddGizmo(gizmo_sys, type_id, NULL, &((HATMACHINE_WORLD_PC *)world)->hat_machine_sys->machines[index]);
+        for (i32 index = 0; index < ((HATMACHINE_WORLD *)world)->hat_machine_sys->count; ++index) {
+            if (NuStrLen(((HATMACHINE_WORLD *)world)->hat_machine_sys->machines[index].name) != 0) {
+                AddGizmo(gizmo_sys, type_id, NULL, &((HATMACHINE_WORLD *)world)->hat_machine_sys->machines[index]);
             }
         }
     }
 
     static void HatMachines_StoreProgress(void *world_ptr, void *, void *progress_ptr) {
-        HATMACHINE_PROGRESS_PC *progress = (HATMACHINE_PROGRESS_PC *)progress_ptr;
+        HATMACHINE_PROGRESS *progress = (HATMACHINE_PROGRESS *)progress_ptr;
         if (progress == NULL) {
             return;
         }
         progress->enabled_mask[0] = ~0u;
         progress->visible_mask[0] = ~0u;
         WORLDINFO *world = (WORLDINFO *)world_ptr;
-        if (world == NULL || ((HATMACHINE_WORLD_PC *)world)->hat_machine_sys == NULL ||
-            ((HATMACHINE_WORLD_PC *)world)->hat_machine_sys->machines == NULL) {
+        if (world == NULL || ((HATMACHINE_WORLD *)world)->hat_machine_sys == NULL ||
+            ((HATMACHINE_WORLD *)world)->hat_machine_sys->machines == NULL) {
             return;
         }
-        for (i32 index = 0; index < ((HATMACHINE_WORLD_PC *)world)->hat_machine_sys->count && index < 32; ++index) {
-            HATMACHINE_PC *machine = &((HATMACHINE_WORLD_PC *)world)->hat_machine_sys->machines[index];
+        for (i32 index = 0; index < ((HATMACHINE_WORLD *)world)->hat_machine_sys->count && index < 32; ++index) {
+            HATMACHINE_PC *machine = &((HATMACHINE_WORLD *)world)->hat_machine_sys->machines[index];
             const i32 word = index / 32;
             const u32 mask = 1u << (index % 32);
             if ((machine->flags & 4) == 0) {
@@ -487,11 +486,11 @@ extern "C" {
         if (world == NULL) {
             return;
         }
-        HATMACHINE_SYS_PC *system = ((HATMACHINE_WORLD_PC *)world)->hat_machine_sys;
+        HATMACHINE_SYS *system = ((HATMACHINE_WORLD *)world)->hat_machine_sys;
         if (system == NULL || system->machines == NULL) {
             return;
         }
-        HATMACHINE_PROGRESS_PC *progress = (HATMACHINE_PROGRESS_PC *)progress_ptr;
+        HATMACHINE_PROGRESS *progress = (HATMACHINE_PROGRESS *)progress_ptr;
         for (i32 index = 0; index < system->count; ++index) {
             HATMACHINE_PC *machine = &system->machines[index];
             HatMachine_Reset(machine);
@@ -517,7 +516,7 @@ extern "C" {
 
     static void HatMachine_Update(void *world_ptr, void *, f32 elapsed) {
         WORLDINFO *world = (WORLDINFO *)world_ptr;
-        HATMACHINE_SYS_PC *system = ((HATMACHINE_WORLD_PC *)world)->hat_machine_sys;
+        HATMACHINE_SYS *system = ((HATMACHINE_WORLD *)world)->hat_machine_sys;
         if (system == NULL) {
             return;
         }
@@ -606,8 +605,8 @@ STATIC_ASSERT(sizeof(((HATMACHINE_PC *)0)->model_special_index) == 1);
 
 extern "C" void HatMachine_Draw(void *world_ptr, void *, f32) {
     WORLDINFO *world = (WORLDINFO *)world_ptr;
-    HATMACHINE_SYS_PC *system;
-    if (world == NULL || (system = ((HATMACHINE_WORLD_PC *)world)->hat_machine_sys) == NULL || system->count == 0) {
+    HATMACHINE_SYS *system;
+    if (world == NULL || (system = ((HATMACHINE_WORLD *)world)->hat_machine_sys) == NULL || system->count == 0) {
         return;
     }
     NUVEC draw_position;

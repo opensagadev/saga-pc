@@ -9,7 +9,7 @@ extern "C" {
     void InitSuperStory(i32 episode);
 }
 
-typedef struct hub_minikit_runtime_pc_s {
+typedef struct hub_minikit_runtime_s {
     NUVEC position;
     f32 scale;
     f32 scalar_10;
@@ -39,9 +39,9 @@ typedef struct hub_minikit_runtime_pc_s {
     f32 velocity_z;
 } HUB_MINIKIT_RUNTIME_PC;
 
-typedef struct hub_world_reader_pc_s {
+typedef struct hub_world_reader_s {
     u8 unknown_0000[0x2984];
-    struct hub_minikit_pieces_pc_s **pieces;
+    struct hub_minikit_pieces_s **pieces;
     u8 unknown_2988[0x158];
     HUB_MINIKIT_RUNTIME_PC *minikits;
 } HUB_WORLD_READER_PC;
@@ -75,10 +75,10 @@ extern "C" {
     void ClearSpecialMove(GAMEOBJECT *);
 }
 
-typedef struct ARCADE_COIN_PACKET_PC {
+typedef struct ARCADE_COIN_PACKET {
     u32 coins;
     f32 scale;
-} ARCADE_COIN_PACKET_PC;
+} ARCADE_COIN_PACKET;
 
 extern "C" {
     extern void (*AIPathCnxHelperSysInitFn)(WORLDINFO *);
@@ -93,13 +93,13 @@ extern "C" {
     void InitFn_MidSpecialMove(AI_MID_SPECIAL_MOVE_PC);
 }
 
-typedef struct HINT_COMPLETION_PC {
+typedef struct HINT_COMPLETION {
     u16 points;
     u8 reserved02;
     u8 flags;
-} HINT_COMPLETION_PC;
+} HINT_COMPLETION;
 
-typedef struct hub_minikit_piece_pc_s {
+typedef struct hub_minikit_piece_s {
     NUSPECIALHANDLE special;
     NUMTX matrix;
     u8 unknown_4c[0x1a];
@@ -107,7 +107,7 @@ typedef struct hub_minikit_piece_pc_s {
     u8 direction_index;
 } HUB_MINIKIT_PIECE_PC;
 
-typedef struct hub_minikit_pieces_pc_s {
+typedef struct hub_minikit_pieces_s {
     NUGSCN *scene;
     HUB_MINIKIT_PIECE_PC *pieces;
     u8 piece_count;
@@ -125,7 +125,7 @@ typedef struct hub_pad_reader_pc_s {
 } HUB_PAD_READER_PC;
 
 /* Draw3D on PC has no sign/episode scene branch. */
-typedef struct hub_game_stats_reader_pc_s {
+typedef struct hub_game_stats_reader_s {
     u8 unknown_0000[0x7c18];
     u16 completion;
     u8 unknown_7c1a[6];
@@ -144,7 +144,7 @@ typedef struct hub_episode_info_pc_s {
     NUSPECIALHANDLE lock_on;
 } HUB_EPISODE_INFO_PC;
 
-typedef struct hub_init_world_reader_pc_s {
+typedef struct hub_init_world_reader_s {
     u8 unknown_00[0x13c];
     NUGSCN *scene;
     u8 unknown_140[0x2988];
@@ -153,12 +153,12 @@ typedef struct hub_init_world_reader_pc_s {
 
 extern void (*HubInitAIFnPc)(WORLDINFO *);
 
-typedef struct hub_door_object_reader_pc_s {
+typedef struct hub_door_object_reader_s {
     u8 unknown_00[0x9c];
     u32 flags;
 } HUB_DOOR_OBJECT_READER_PC;
 
-typedef struct hub_door_reader_pc_s {
+typedef struct hub_door_reader_s {
     HUB_DOOR_OBJECT_READER_PC *object;
 } HUB_DOOR_READER_PC;
 
@@ -235,7 +235,7 @@ typedef struct hub_freeplay_pad_reader_pc_s {
     u32 digital_buttons_pressed;
 } HUB_FREEPLAY_PAD_READER_PC;
 
-typedef struct world_minikit_reader_pc_s {
+typedef struct world_minikit_reader_s {
     u8 unknown_0000[0x2968];
     MINIKIT_PC minikit;
     u8 unknown_2980[4];
@@ -1316,7 +1316,7 @@ extern "C" {
             PlaySfx("env_padLight_on", NULL);
             object = (GAMEOBJECT *)Player[player_index];
             if (object != NULL && object->coin_packet != NULL) {
-                ((ARCADE_COIN_PACKET_PC *)object->coin_packet)->scale = 1.5f;
+                ((ARCADE_COIN_PACKET *)object->coin_packet)->scale = 1.5f;
             }
             if (AreaGlobals_PC.arcade_ai_kills[player_index] >= (u32)Arcade_Mode[ArcadeItem.mode].target) {
                 Arcade_AwardPoint(player_index, 0, 0);
@@ -1324,14 +1324,14 @@ extern "C" {
                 AreaGlobals_PC.arcade_ai_kills[1] = 0;
                 object = (GAMEOBJECT *)Player[player_index == 0 ? 1 : 0];
                 if (object != NULL && object->coin_packet != NULL) {
-                    ((ARCADE_COIN_PACKET_PC *)object->coin_packet)->scale = 1.5f;
+                    ((ARCADE_COIN_PACKET *)object->coin_packet)->scale = 1.5f;
                 }
             }
         } else {
             GameAudio_PlaySfx(0x32, NULL, 0, 0);
             object = (GAMEOBJECT *)Player[player_index];
             if (object != NULL && object->coin_packet != NULL) {
-                ((ARCADE_COIN_PACKET_PC *)object->coin_packet)->scale = 1.5f;
+                ((ARCADE_COIN_PACKET *)object->coin_packet)->scale = 1.5f;
             }
             Arcade_NeedTwoPlayers_Scale = 1.5f;
         }
@@ -1339,7 +1339,7 @@ extern "C" {
 
     void Arcade_CoinCollected(i32 player_index, u32 *score, u32 previous_score) {
         GAMEOBJECT *object;
-        ARCADE_COIN_PACKET_PC *packet;
+        ARCADE_COIN_PACKET *packet;
         if ((player_index != 0 && player_index != 1) || (Arcade_Mode[ArcadeItem.mode].flags & 4) == 0) {
             return;
         }
@@ -1348,22 +1348,22 @@ extern "C" {
             if (object == NULL || object->coin_packet == NULL) {
                 return;
             }
-            packet = (ARCADE_COIN_PACKET_PC *)object->coin_packet;
+            packet = (ARCADE_COIN_PACKET *)object->coin_packet;
             if (packet->coins < (u32)Arcade_Mode[ArcadeItem.mode].target) {
                 return;
             }
             Arcade_AwardPoint(player_index, 0, 0);
             object = (GAMEOBJECT *)Player[0];
             if (object != NULL && object->coin_packet != NULL) {
-                ((ARCADE_COIN_PACKET_PC *)object->coin_packet)->coins = 0;
+                ((ARCADE_COIN_PACKET *)object->coin_packet)->coins = 0;
             }
             object = (GAMEOBJECT *)Player[1];
             if (object != NULL && object->coin_packet != NULL) {
-                ((ARCADE_COIN_PACKET_PC *)object->coin_packet)->coins = 0;
+                ((ARCADE_COIN_PACKET *)object->coin_packet)->coins = 0;
             }
             object = (GAMEOBJECT *)Player[player_index == 0 ? 1 : 0];
             if (object != NULL && object->coin_packet != NULL) {
-                ((ARCADE_COIN_PACKET_PC *)object->coin_packet)->scale = 1.5f;
+                ((ARCADE_COIN_PACKET *)object->coin_packet)->scale = 1.5f;
             }
         } else {
             *score = previous_score;
@@ -2597,7 +2597,7 @@ extern "C" {
     i32 Percent_UpdateHint(HINT_PC *hint) {
         if (hint->completed == 0 && WORLD->current_level == HUB_LDATA && FadeSys.fade == 0.0f &&
             CustomiserCompletionSavePc != NULL &&
-            ((HINT_COMPLETION_PC *)CustomiserCompletionSavePc)->points >= HubCompletionPointsPc) {
+            ((HINT_COMPLETION *)CustomiserCompletionSavePc)->points >= HubCompletionPointsPc) {
             i32 nearby = 0;
             i32 active = 0;
             i32 index;
@@ -3710,7 +3710,7 @@ extern "C" void Hub_Update(WORLDINFO *world) {
             GizmoGetOutput(world->gizmo_sys, HubAreaInfoPc[i].second_bonus_gizmo, 1, 0) == 0) {
             continue;
         }
-        NUVEC *position = GizmoGetPos((gizmosys_pc_s *)world->gizmo_sys, HubAreaInfoPc[i].second_bonus_gizmo);
+        NUVEC *position = GizmoGetPos((gizmosys_s *)world->gizmo_sys, HubAreaInfoPc[i].second_bonus_gizmo);
         if (position == NULL) {
             continue;
         }
@@ -3945,7 +3945,7 @@ extern "C" void Hub_DrawPanel(WORLDINFO *) {
             i32 gold_total = 0;
             i32 count = AREACOUNT;
             AREA_DATA_PC *area = ADataList;
-            AREA_SAVE_PICKUP_PC *save = Game.area_save;
+            AREA_SAVE_PICKUP *save = Game.area_save;
             if (count > 0) {
                 for (; count != 0; --count, ++area, ++save) {
                     if (area == HUB_ADATA || (area->flags & 0x22) != 0 || area->episode_index != -1 ||

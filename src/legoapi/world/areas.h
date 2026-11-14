@@ -26,9 +26,9 @@
 
 struct WORLDINFO_s;
 
-typedef struct area_supercounter_pc_s AREA_SUPERCOUNTER_PC;
+typedef struct area_supercounter_s AREA_SUPERCOUNTER_PC;
 
-typedef struct area_supercounter_pickup_pc_s {
+typedef struct area_supercounter_pickup_s {
     void *gizmo;
     void *position_gizmo;
     void *position_special[3];
@@ -130,7 +130,7 @@ extern "C" {
 
 #if SAGA_LEGOAPI_WORLD_AREAS_H_PART == 2 && !defined(SAGA_LEGOAPI_WORLD_AREAS_H_STOP)
 
-struct area_supercounter_pc_s {
+struct area_supercounter_s {
     AREA_SUPERCOUNTER_PICKUP_PC pickups[10];
     u16 pickup_count;
     u16 collected_count;
@@ -151,8 +151,8 @@ extern "C" {
     AREA_SUPERCOUNTER_PC *SuperCounter_FindFromNameAndLevel(char *name, struct WORLDINFO_s *world,
                                                             AREA_SUPERCOUNTER_PICKUP_PC **pickup_out);
     void SuperCounters_ResetProcessed(struct WORLDINFO_s *world);
-    struct area_supercounter_pc_s *SuperCounters_FindPickup(struct WORLDINFO_s *arg0, void *arg1, struct nuvec_s *arg2,
-                                                            void *arg3);
+    struct area_supercounter_s *SuperCounters_FindPickup(struct WORLDINFO_s *arg0, void *arg1, struct nuvec_s *arg2,
+                                                         void *arg3);
 #ifdef __cplusplus
 }
 #endif

@@ -171,7 +171,7 @@ extern "C" {
         u8 unknown_4c[0x20];
     } AI_SPECIAL_TERRAIN_PLATFORM_PC;
 
-    typedef struct ai_special_terrain_view_pc_s {
+    typedef struct ai_special_terrain_view_s {
         u8 unknown_00[0x68];
         AI_SPECIAL_TERRAIN_PLATFORM_PC *platforms;
     } AI_SPECIAL_TERRAIN_VIEW_PC;
@@ -809,15 +809,15 @@ STATIC_ASSERT(__alignof(GAMEPAD_INIT_RECORD) == 4);
 #ifdef __cplusplus
 extern "C" {
 #endif
-    STATIC_ASSERT(__alignof(BATARANG_FLIGHT_STATE_PC) == 1);
-    STATIC_ASSERT(__alignof(BATARANG_RICOCHET_STATE_PC) == 1);
+    STATIC_ASSERT(__alignof(BATARANG_FLIGHT_STATE) == 1);
+    STATIC_ASSERT(__alignof(BATARANG_RICOCHET_STATE) == 1);
 #ifdef __cplusplus
 }
 #endif
 STATIC_ASSERT(sizeof(((GAMEOBJECT *)0)->landing_followup) == 1);
 STATIC_ASSERT(sizeof(((GAMEOBJECT *)0)->batarang) == 4);
 STATIC_ASSERT(sizeof(((LEVELDATA_PC *)0)->episode) == 1);
-STATIC_ASSERT(__alignof(INDY_GUIDELINE_STATE_PC) == 1);
+STATIC_ASSERT(__alignof(INDY_GUIDELINE_STATE) == 1);
 STATIC_ASSERT(sizeof(((WORLDINFO *)0)->unknown_4680) == 8);
 #undef SAGA_DECOMP_H_PART
 #define SAGA_DECOMP_H_PART 7
@@ -830,22 +830,22 @@ STATIC_ASSERT(sizeof(((WORLDINFO *)0)->unknown_4680) == 8);
 #ifdef __cplusplus
 extern "C" {
 #endif
-    STATIC_ASSERT(sizeof(((SPECIAL_RESOURCE_ENTRY_PC *)0)->animation_playing) == 1);
-    STATIC_ASSERT(sizeof(((SPECIAL_RESOURCE_EVENT_PC *)0)->previous_frame) == 4);
-    STATIC_ASSERT(sizeof(((SPECIAL_RESOURCE_EVENT_PC *)0)->flags) == 1);
-    STATIC_ASSERT(sizeof(((SPECIAL_RESOURCE_EVENT_PC *)0)->sfx_id) == 2);
-    STATIC_ASSERT(sizeof(((SPECIAL_RESOURCE_EVENT_PC *)0)->trigger_frame) == 4);
-    STATIC_ASSERT(sizeof(((SPECIAL_RESOURCE_EVENT_PC *)0)->next) == 4);
-    STATIC_ASSERT(sizeof(((SPECIAL_RESOURCE_ENTRY_PC *)0)->flags) == 1);
-    STATIC_ASSERT(sizeof(((SPECIAL_RESOURCE_ENTRY_PC *)0)->event_count) == 1);
-    STATIC_ASSERT(sizeof(((SPECIAL_RESOURCE_ENTRY_PC *)0)->special) == 12);
-    STATIC_ASSERT(sizeof(((SPECIAL_RESOURCE_ENTRY_PC *)0)->events) == 4);
-    STATIC_ASSERT(sizeof(((SPECIAL_RESOURCE_WORLD_PC *)0)->buffer) == 4);
-    STATIC_ASSERT(sizeof(((SPECIAL_RESOURCE_WORLD_PC *)0)->scene) == 4);
-    STATIC_ASSERT(sizeof(((SPECIAL_RESOURCE_WORLD_PC *)0)->entry_count) == 4);
-    STATIC_ASSERT(sizeof(((SPECIAL_RESOURCE_WORLD_PC *)0)->entries) == 4);
-    STATIC_ASSERT(sizeof(((SPECIAL_RESOURCE_WORLD_PC *)0)->event_count) == 4);
-    STATIC_ASSERT(sizeof(((SPECIAL_RESOURCE_WORLD_PC *)0)->events) == 4);
+    STATIC_ASSERT(sizeof(((SPECIAL_RESOURCE_ENTRY *)0)->animation_playing) == 1);
+    STATIC_ASSERT(sizeof(((SPECIAL_RESOURCE_EVENT *)0)->previous_frame) == 4);
+    STATIC_ASSERT(sizeof(((SPECIAL_RESOURCE_EVENT *)0)->flags) == 1);
+    STATIC_ASSERT(sizeof(((SPECIAL_RESOURCE_EVENT *)0)->sfx_id) == 2);
+    STATIC_ASSERT(sizeof(((SPECIAL_RESOURCE_EVENT *)0)->trigger_frame) == 4);
+    STATIC_ASSERT(sizeof(((SPECIAL_RESOURCE_EVENT *)0)->next) == 4);
+    STATIC_ASSERT(sizeof(((SPECIAL_RESOURCE_ENTRY *)0)->flags) == 1);
+    STATIC_ASSERT(sizeof(((SPECIAL_RESOURCE_ENTRY *)0)->event_count) == 1);
+    STATIC_ASSERT(sizeof(((SPECIAL_RESOURCE_ENTRY *)0)->special) == 12);
+    STATIC_ASSERT(sizeof(((SPECIAL_RESOURCE_ENTRY *)0)->events) == 4);
+    STATIC_ASSERT(sizeof(((SPECIAL_RESOURCE_WORLD *)0)->buffer) == 4);
+    STATIC_ASSERT(sizeof(((SPECIAL_RESOURCE_WORLD *)0)->scene) == 4);
+    STATIC_ASSERT(sizeof(((SPECIAL_RESOURCE_WORLD *)0)->entry_count) == 4);
+    STATIC_ASSERT(sizeof(((SPECIAL_RESOURCE_WORLD *)0)->entries) == 4);
+    STATIC_ASSERT(sizeof(((SPECIAL_RESOURCE_WORLD *)0)->event_count) == 4);
+    STATIC_ASSERT(sizeof(((SPECIAL_RESOURCE_WORLD *)0)->events) == 4);
 #ifdef __cplusplus
 }
 #endif

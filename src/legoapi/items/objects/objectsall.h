@@ -35,7 +35,7 @@ struct eduiitem_s;
 struct eduimenu_s;
 struct gameobject_s;
 
-typedef struct parttype_lookup_pc_s {
+typedef struct parttype_lookup_s {
     char name[16];
     char object_names[16][8];
     i16 effect_ids[8];
@@ -119,10 +119,10 @@ STATIC_ASSERT(offsetof(PARTDEBRISSYS, named_count) == 0);
 STATIC_ASSERT(offsetof(PARTDEBRISSYS, capacity) == 4);
 STATIC_ASSERT(sizeof(PARTDEBRISSYS) == 0xc);
 
-typedef struct rtlset_pc_s RTLSET_PC;
+typedef struct rtlset_s RTLSET_PC;
 struct PART_PC;
 
-typedef struct debris_collision_entry_pc_s {
+typedef struct debris_collision_entry_s {
     i32 key_index;
     u32 flags;
 } DEBRIS_COLLISION_ENTRY_PC;
@@ -135,7 +135,7 @@ typedef struct PART_PC PART_PC;
 extern "C" {
 #endif
 
-    typedef struct debris_scale_cache_pc_s {
+    typedef struct debris_scale_cache_s {
         i32 base_effect_index;
         i32 scaled_effect_index;
         f32 scale;
@@ -199,7 +199,7 @@ extern "C" {
     void edpartDrawCursor(void);
     void edpartHighlightNearest(void);
     extern i32 edpart_create_type;
-    extern struct part_emit_pc_s *edpart_nearest_emit;
+    extern struct part_emit_s *edpart_nearest_emit;
     extern i32 edpart_count;
     extern i32 edpart_emitrotx;
     extern i32 edpart_emitroty;

@@ -1,6 +1,6 @@
 #include "saga.h"
 
-typedef struct bulk_ai_panel_pc_s {
+typedef struct bulk_ai_panel_s {
     u8 unknown_00[0x50];
     NUVEC position;
     u8 unknown_5c[5];
@@ -63,7 +63,7 @@ typedef struct panel_movement_pc_s {
     f32 target_scale;
 } PANEL_MOVEMENT_PC;
 
-typedef struct panel_load_system_pc_s {
+typedef struct panel_load_system_s {
     i32 count;
     PANEL_MOVEMENT_PC *panels;
 } PANEL_SYSTEM_PC;
@@ -82,13 +82,13 @@ extern u8 PanelBountyHunterActivePc;
 void SetProtocolDroidInterfaceAction(GAMEOBJECT *object);
 
 /* Hint updater records keep their packed field offsets. */
-typedef struct HINT_PANEL_PC {
+typedef struct HINT_PANEL {
     u8 reserved00[0x61];
     u8 model_variant;
     u8 flags;
     u8 reserved63[0x29];
     f32 target_scale;
-} HINT_PANEL_PC;
+} HINT_PANEL;
 struct panel_movement_pc_s;
 
 /* Terrain helper private to these callers (panel arrives in ESI). */
@@ -146,7 +146,7 @@ static NUVEC *PanelGetTrackingPositionPc(PANEL_MOVEMENT_PC *panel, NUVEC *positi
 }
 
 i32 GizPanel_Load(void *world_pointer, void *unused) {
-    typedef union PanelLoadFlagsPc {
+    typedef union PanelLoadFlags {
         u8 value;
 
         struct {
@@ -155,9 +155,9 @@ i32 GizPanel_Load(void *world_pointer, void *unused) {
             u8 flag_6 : 1;
             u8 flag_7 : 1;
         } bits;
-    } PanelLoadFlagsPc;
+    } PanelLoadFlags;
 
-    typedef union PanelLoadDrawFlagsPc {
+    typedef union PanelLoadDrawFlags {
         u8 value;
 
         struct {
@@ -166,19 +166,19 @@ i32 GizPanel_Load(void *world_pointer, void *unused) {
             u8 flag_2 : 1;
             u8 unknown_3 : 5;
         } bits;
-    } PanelLoadDrawFlagsPc;
+    } PanelLoadDrawFlags;
 
-    typedef struct PanelLoadStatePc {
+    typedef struct PanelLoadState {
         u8 unknown_00[0x62];
-        PanelLoadFlagsPc flags;
-        PanelLoadDrawFlagsPc draw_flags;
-    } PanelLoadStatePc;
+        PanelLoadFlags flags;
+        PanelLoadDrawFlags draw_flags;
+    } PanelLoadState;
 
-    STATIC_ASSERT(sizeof(PanelLoadFlagsPc) == 1);
-    STATIC_ASSERT(sizeof(PanelLoadDrawFlagsPc) == 1);
-    STATIC_ASSERT(offsetof(PanelLoadStatePc, flags) == 0x62);
-    STATIC_ASSERT(offsetof(PanelLoadStatePc, draw_flags) == 0x63);
-    STATIC_ASSERT(sizeof(PanelLoadStatePc) == 0x64);
+    STATIC_ASSERT(sizeof(PanelLoadFlags) == 1);
+    STATIC_ASSERT(sizeof(PanelLoadDrawFlags) == 1);
+    STATIC_ASSERT(offsetof(PanelLoadState, flags) == 0x62);
+    STATIC_ASSERT(offsetof(PanelLoadState, draw_flags) == 0x63);
+    STATIC_ASSERT(sizeof(PanelLoadState) == 0x64);
     WORLDINFO *world = world_pointer;
     PANEL_SYSTEM_PC *system;
     i32 version;
@@ -204,7 +204,7 @@ i32 GizPanel_Load(void *world_pointer, void *unused) {
         system->panels[index].model_variant = value;
         if (version >= 3) {
             value = (u8)EdFileReadChar();
-            ((PanelLoadStatePc *)&system->panels[index])->flags.bits.flag_5 = value & 1;
+            ((PanelLoadState *)&system->panels[index])->flags.bits.flag_5 = value & 1;
         }
         if (version >= 4) {
             EdFileReadNuVec(&system->panels[index].target_offset);
@@ -217,23 +217,23 @@ i32 GizPanel_Load(void *world_pointer, void *unused) {
         }
         if (version >= 5) {
             value = (u8)EdFileReadChar();
-            ((PanelLoadStatePc *)&system->panels[index])->flags.bits.flag_6 = value & 1;
+            ((PanelLoadState *)&system->panels[index])->flags.bits.flag_6 = value & 1;
         }
         if (version >= 6) {
             value = (u8)EdFileReadChar();
-            ((PanelLoadStatePc *)&system->panels[index])->flags.bits.flag_7 = value & 1;
+            ((PanelLoadState *)&system->panels[index])->flags.bits.flag_7 = value & 1;
             value = (u8)EdFileReadChar();
-            ((PanelLoadStatePc *)&system->panels[index])->draw_flags.bits.flag_0 = value & 1;
+            ((PanelLoadState *)&system->panels[index])->draw_flags.bits.flag_0 = value & 1;
         }
         if (version >= 7) {
             value = (u8)EdFileReadChar();
-            ((PanelLoadStatePc *)&system->panels[index])->draw_flags.bits.flag_1 = value & 1;
+            ((PanelLoadState *)&system->panels[index])->draw_flags.bits.flag_1 = value & 1;
         }
         if (version >= 8) {
             value = (u8)EdFileReadChar();
-            ((PanelLoadStatePc *)&system->panels[index])->draw_flags.bits.flag_2 = value != 0;
+            ((PanelLoadState *)&system->panels[index])->draw_flags.bits.flag_2 = value != 0;
         } else {
-            ((PanelLoadStatePc *)&system->panels[index])->draw_flags.bits.flag_2 = 0;
+            ((PanelLoadState *)&system->panels[index])->draw_flags.bits.flag_2 = 0;
         }
     }
     return 1;
@@ -259,7 +259,7 @@ void *GizPanels_ReserveBufferSpace(void *pointer) {
 }
 
 void GizPanel_SetVisibility(GIZMO_PC *gizmo, i32 visible) {
-    typedef union PanelVisibleFlagsPc {
+    typedef union PanelVisibleFlags {
         u8 value;
 
         struct {
@@ -267,23 +267,23 @@ void GizPanel_SetVisibility(GIZMO_PC *gizmo, i32 visible) {
             u8 visible : 1;
             u8 unknown_3 : 5;
         } bits;
-    } PanelVisibleFlagsPc;
+    } PanelVisibleFlags;
 
-    typedef struct PanelVisibleStatePc {
+    typedef struct PanelVisibleState {
         u8 unknown_00[0x62];
-        PanelVisibleFlagsPc flags;
-    } PanelVisibleStatePc;
+        PanelVisibleFlags flags;
+    } PanelVisibleState;
 
-    STATIC_ASSERT(sizeof(PanelVisibleFlagsPc) == 1);
-    STATIC_ASSERT(offsetof(PanelVisibleStatePc, flags) == 0x62);
+    STATIC_ASSERT(sizeof(PanelVisibleFlags) == 1);
+    STATIC_ASSERT(offsetof(PanelVisibleState, flags) == 0x62);
     PANEL_MOVEMENT_PC *panel;
-    PanelVisibleStatePc *state;
+    PanelVisibleState *state;
     i32 was_visible;
     if (gizmo == NULL || gizmo->object == NULL) {
         return;
     }
     panel = gizmo->object;
-    state = (PanelVisibleStatePc *)panel;
+    state = (PanelVisibleState *)panel;
     was_visible = state->flags.bits.visible;
     state->flags.bits.visible = visible != 0;
     if (state->flags.bits.visible && !was_visible) {
@@ -972,8 +972,7 @@ i32 GizPanel_UpdateHint(HINT_PC *hint) {
         GAMEOBJECT *object = Player[index];
         if (object != NULL) {
             f32 distance;
-            HINT_PANEL_PC *panel =
-                (HINT_PANEL_PC *)GizPanel_FindNearest(WORLD, &object->position, object, &distance, 0);
+            HINT_PANEL *panel = (HINT_PANEL *)GizPanel_FindNearest(WORLD, &object->position, object, &distance, 0);
             if (panel != NULL && (panel->flags & 8) != 0 && (panel->flags & 3) == 0) {
                 f32 radius = (f32)(((f64)((GAMEOBJECT *)Player[index])->bounds_radius + 1.0) * panel->target_scale);
                 radius *= radius;
@@ -1053,7 +1052,7 @@ void GizPanel_Reset(void *context) {
 }
 
 void GizPanels_Reset(void *world_pointer, void *unused, void *progress_pointer) {
-    typedef union PanelProgressFlagsPc {
+    typedef union PanelProgressFlags {
         u8 value;
 
         struct {
@@ -1062,16 +1061,16 @@ void GizPanels_Reset(void *world_pointer, void *unused, void *progress_pointer) 
             u8 progress_3 : 1;
             u8 unknown_4 : 4;
         } bits;
-    } PanelProgressFlagsPc;
+    } PanelProgressFlags;
 
-    typedef struct PanelProgressStatePc {
+    typedef struct PanelProgressState {
         u8 unknown_00[0x62];
-        PanelProgressFlagsPc flags;
-    } PanelProgressStatePc;
+        PanelProgressFlags flags;
+    } PanelProgressState;
 
-    STATIC_ASSERT(sizeof(PanelProgressFlagsPc) == 1);
-    STATIC_ASSERT(offsetof(PanelProgressStatePc, flags) == 0x62);
-    STATIC_ASSERT(sizeof(PanelProgressStatePc) == 0x63);
+    STATIC_ASSERT(sizeof(PanelProgressFlags) == 1);
+    STATIC_ASSERT(offsetof(PanelProgressState, flags) == 0x62);
+    STATIC_ASSERT(sizeof(PanelProgressState) == 0x63);
     WORLDINFO *world = world_pointer;
     PANEL_SYSTEM_PC *system;
     PANEL_MOVEMENT_PC *panel;
@@ -1089,7 +1088,7 @@ void GizPanels_Reset(void *world_pointer, void *unused, void *progress_pointer) 
         panel = &system->panels[index];
         GizPanel_Reset(panel);
         if (progress != NULL && index < 32) {
-            PanelProgressStatePc *state = (PanelProgressStatePc *)panel;
+            PanelProgressState *state = (PanelProgressState *)panel;
             i32 word = index / 32;
             u32 bit = 1u << (index % 32);
             if (progress[word] & bit) {
@@ -1112,7 +1111,7 @@ void fun_0046f6f0(PANEL_MOVEMENT_PC *panel, NUVEC *position) {
 }
 
 void GizPanel_Activate(void *input, i32 active) {
-    typedef union PanelActiveFlagsPc {
+    typedef union PanelActiveFlags {
         u8 value;
 
         struct {
@@ -1120,21 +1119,21 @@ void GizPanel_Activate(void *input, i32 active) {
             u8 active : 1;
             u8 unknown_4 : 4;
         } bits;
-    } PanelActiveFlagsPc;
+    } PanelActiveFlags;
 
-    typedef struct PanelActiveStatePc {
+    typedef struct PanelActiveState {
         u8 unknown_00[0x62];
-        PanelActiveFlagsPc flags;
-    } PanelActiveStatePc;
+        PanelActiveFlags flags;
+    } PanelActiveState;
 
-    STATIC_ASSERT(sizeof(PanelActiveFlagsPc) == 1);
-    STATIC_ASSERT(offsetof(PanelActiveStatePc, flags) == 0x62);
-    STATIC_ASSERT(sizeof(PanelActiveStatePc) == 0x63);
+    STATIC_ASSERT(sizeof(PanelActiveFlags) == 1);
+    STATIC_ASSERT(offsetof(PanelActiveState, flags) == 0x62);
+    STATIC_ASSERT(sizeof(PanelActiveState) == 0x63);
     GIZMO_PC *gizmo = input;
     PANEL_MOVEMENT_PC *panel;
     if (gizmo != NULL && gizmo->object != NULL) {
         panel = gizmo->object;
-        ((PanelActiveStatePc *)panel)->flags.bits.active = active != 0;
+        ((PanelActiveState *)panel)->flags.bits.active = active != 0;
         if (active != 0) {
             GizPanel_Reset(panel);
         }

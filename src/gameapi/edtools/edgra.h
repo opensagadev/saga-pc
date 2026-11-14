@@ -11,11 +11,11 @@
 #include "nu2api/numath/nuvec.h"
 #endif
 
-struct debris_part_header_pc_s;
+struct debris_part_header_s;
 struct eduiitem_s;
 struct eduimenu_s;
 
-typedef struct debris_info_pc_s {
+typedef struct debris_info_s {
     char name[16];
     u8 category;
     i8 page;
@@ -77,7 +77,7 @@ typedef struct debris_info_pc_s {
     f32 texture_v0;
     f32 texture_u1;
     f32 texture_v1;
-    struct debris_part_header_pc_s *native_data;
+    struct debris_part_header_s *native_data;
     f32 last_render_time;
     DEBRIS_FLOAT_KEY_PC collision_keys[8];
     i8 process_spheres;

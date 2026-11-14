@@ -2,7 +2,7 @@
 #include <string.h>
 #include <stdio.h>
 
-typedef struct startup_object_light_pc_s {
+typedef struct startup_object_light_s {
     u8 unknown_000[0x1fc];
     u32 flags;
     u8 unknown_200[0xc04];
@@ -10,21 +10,21 @@ typedef struct startup_object_light_pc_s {
     u8 unknown_e08[0x2d0];
 } STARTUP_OBJECT_LIGHT_PC;
 
-typedef struct OBJECT_LIGHT_STATE_GAME_PC {
+typedef struct OBJECT_LIGHT_STATE_GAME {
     NUVEC ambient;
     NUVEC intensity[3];
     NUVEC direction[3];
-} OBJECT_LIGHT_STATE_GAME_PC;
+} OBJECT_LIGHT_STATE_GAME;
 
-typedef struct GAME_LIGHT_VIEW_PC {
+typedef struct GAME_LIGHT_VIEW {
     u8 unknown000[0x285];
     i8 floor_surface;
     u8 unknown286[0x4d8 - 0x286];
     RTL_DATA_PC light_data;
-    OBJECT_LIGHT_STATE_GAME_PC lighting_state;
-} GAME_LIGHT_VIEW_PC;
+    OBJECT_LIGHT_STATE_GAME lighting_state;
+} GAME_LIGHT_VIEW;
 
-typedef struct BURN_OUT_PC {
+typedef struct BURN_OUT {
     i32 active;
     NUVEC position;
     f32 field_10;
@@ -32,7 +32,7 @@ typedef struct BURN_OUT_PC {
     f32 field_18;
     f32 field_1c;
     f32 field_20;
-} BURN_OUT_PC;
+} BURN_OUT;
 
 typedef struct BURN_SET_PC {
     BURN_PARAMETERS_PC parameters;
@@ -47,7 +47,7 @@ typedef struct BURN_SET_PC {
     f32 field_c4;
     f32 field_c8;
     f32 field_cc;
-    BURN_OUT_PC burnouts[32];
+    BURN_OUT burnouts[32];
     i32 active_count;
     i32 selected_index;
     f32 field_558;
@@ -55,7 +55,7 @@ typedef struct BURN_SET_PC {
     i32 field_560;
 } BURN_SET_PC;
 
-typedef struct LIGHTING_LOAD_WORLD_PC {
+typedef struct LIGHTING_LOAD_WORLD {
     u8 unknown_000[0x104];
     VARIPTR buffer;
     VARIPTR end_buffer;
@@ -63,7 +63,7 @@ typedef struct LIGHTING_LOAD_WORLD_PC {
     BURN_SET_PC *burnset;
     u8 unknown_2ab0[4];
     RTL_SET_PC *rtl_set;
-} LIGHTING_LOAD_WORLD_PC;
+} LIGHTING_LOAD_WORLD;
 
 extern "C" {
     void NuMtxSetOrthoBlend(NUMTX *, f32, f32, f32, f32, f32, f32);
@@ -78,7 +78,7 @@ extern "C" {
     extern i32 ShadowLightSplitCountPc;
 }
 
-struct SHADOW_PLAYER_BOUNDS_PC {
+struct SHADOW_PLAYER_BOUNDS {
     u8 unknown_000[0x5fc];
     NUVEC center;
     f32 radius;
@@ -324,7 +324,7 @@ extern "C" {
     }
 
     void LoadLights(void *world_ptr, char *path) {
-        LIGHTING_LOAD_WORLD_PC *world = (LIGHTING_LOAD_WORLD_PC *)world_ptr;
+        LIGHTING_LOAD_WORLD *world = (LIGHTING_LOAD_WORLD *)world_ptr;
         char filename[256];
         sprintf(filename, "%s.rtl", path);
         world->rtl_set = rtlLoadSet(filename, &world->buffer, world->end_buffer.addr);
@@ -362,7 +362,7 @@ extern "C" {
     }
 
     void LightGameObject(GAMEOBJECT *object, void *set) {
-        GAME_LIGHT_VIEW_PC *view = (GAME_LIGHT_VIEW_PC *)object;
+        GAME_LIGHT_VIEW *view = (GAME_LIGHT_VIEW *)object;
         f32 surface_fade;
         i32 index;
         rtlResetEx(&view->light_data, 1);
@@ -412,7 +412,7 @@ extern "C" {
 
     void SetCreatureLights(APIOBJECT_PC *object) {
         GAMEOBJECT *owner = (GAMEOBJECT *)object->owner;
-        GAME_LIGHT_VIEW_PC *view = (GAME_LIGHT_VIEW_PC *)owner;
+        GAME_LIGHT_VIEW *view = (GAME_LIGHT_VIEW *)owner;
         NUVEC ambient;
         NUVEC intensity[3];
         NUVEC direction[3];
@@ -579,10 +579,10 @@ extern "C" {
         i32 count = 0;
         for (i32 i = 0; i < 2; ++i) {
             if (Player[i] != NULL && (static_cast<GAMEOBJECT *>(Player[i])->flags_1fc & 0x80) != 0) {
-                NuVecAdd(center, center, &reinterpret_cast<SHADOW_PLAYER_BOUNDS_PC *>(Player[i])->center);
-                *radius = *radius > reinterpret_cast<SHADOW_PLAYER_BOUNDS_PC *>(Player[i])->radius
+                NuVecAdd(center, center, &reinterpret_cast<SHADOW_PLAYER_BOUNDS *>(Player[i])->center);
+                *radius = *radius > reinterpret_cast<SHADOW_PLAYER_BOUNDS *>(Player[i])->radius
                               ? *radius
-                              : reinterpret_cast<SHADOW_PLAYER_BOUNDS_PC *>(Player[i])->radius;
+                              : reinterpret_cast<SHADOW_PLAYER_BOUNDS *>(Player[i])->radius;
                 ++count;
             }
         }

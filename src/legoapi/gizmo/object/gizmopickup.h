@@ -16,7 +16,7 @@
 struct WORLDINFO_s;
 struct gameobject_s;
 
-typedef struct add_game_message_pc_s {
+typedef struct add_game_message_s {
     const char *text;
     NUVEC *position;
     NUVEC *target_position;

@@ -30,20 +30,20 @@ typedef struct {
     u16 count;
 } BOMB_PROGRESS_SYSTEM_PC;
 
-typedef struct bombgen_activation_reader_pc_s {
+typedef struct bombgen_activation_reader_s {
     u8 unknown_00[0x1c];
     GAMEANIMSET *anim_set;
     u8 unknown_20[0xa];
     u16 flags;
 } BOMBGEN_ACTIVATION_READER_PC;
 
-typedef struct bombgen_activation_flags_pc_s {
+typedef struct bombgen_activation_flags_s {
     u16 active : 1;
     u16 visible : 1;
     u16 unknown : 14;
 } BOMBGEN_ACTIVATION_FLAGS_PC;
 
-typedef struct bomb_generator_runtime_pc_s {
+typedef struct bomb_generator_runtime_s {
     char name[16];
     NUVEC position;
     GAMEANIMSET *anim_set;
@@ -62,7 +62,7 @@ typedef struct bomb_generator_runtime_pc_s {
     };
 } BOMB_GENERATOR_RUNTIME_PC;
 
-typedef struct bomb_generator_system_runtime_pc_s {
+typedef struct bomb_generator_system_runtime_s {
     BOMB_GENERATOR_RUNTIME_PC *items;
     u16 count;
     u16 capacity;
@@ -72,7 +72,7 @@ typedef struct bomb_generator_system_runtime_pc_s {
     void *progress;
 } BOMB_GENERATOR_SYSTEM_RUNTIME_PC;
 
-typedef struct bomb_generator_progress_pc_s {
+typedef struct bomb_generator_progress_s {
     u32 active[3];
     u32 visible[3];
 } BOMB_GENERATOR_PROGRESS_PC;

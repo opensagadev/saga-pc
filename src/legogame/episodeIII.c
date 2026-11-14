@@ -4,40 +4,40 @@
 
 STATIC_ASSERT(offsetof(VADERA_PC, in_control_room_message) == 0x00);
 
-typedef struct BONUS_GUNSHIP_FLAGS_PC { // size 0x10
-    u8 progress;                        // 0x0
-    u8 secondary;                       // 0x1
-    u8 reserved[14];                    // 0x2
-} BONUS_GUNSHIP_FLAGS_PC;
+typedef struct BONUS_GUNSHIP_FLAGS { // size 0x10
+    u8 progress;                     // 0x0
+    u8 secondary;                    // 0x1
+    u8 reserved[14];                 // 0x2
+} BONUS_GUNSHIP_FLAGS;
 
-STATIC_ASSERT(sizeof(BONUS_GUNSHIP_FLAGS_PC) == sizeof(LevFlag));
+STATIC_ASSERT(sizeof(BONUS_GUNSHIP_FLAGS) == sizeof(LevFlag));
 STATIC_ASSERT(offsetof(GAMEOBJECT, sock_position.sock_index) == 0x671);
 STATIC_ASSERT(offsetof(GAMEOBJECT, sock_position.distance) == 0x69c);
 STATIC_ASSERT(offsetof(GAMEOBJECT, dead) == 0x28b);
 STATIC_ASSERT(offsetof(GAMEOBJECT, flags_1fc) == 0x1fc);
 STATIC_ASSERT(offsetof(GIZOBSTACLE, runtime_flags) == 0x9c);
 
-typedef struct cutinfo_reader_pc_s { // size 0x58
-    u8 opaque_00_04[0x4];            // 0x00
-    void *instance;                  // 0x04
-    u8 opaque_08_54[0x4c];           // 0x08
-    f32 previous_frame;              // 0x54
+typedef struct cutinfo_reader_s { // size 0x58
+    u8 opaque_00_04[0x4];         // 0x00
+    void *instance;               // 0x04
+    u8 opaque_08_54[0x4c];        // 0x08
+    f32 previous_frame;           // 0x54
 } CUTINFO_READER_PC;
 
-typedef struct cut_instance_reader_pc_s { // size 0x94
-    u8 opaque_00_88[0x88];                // 0x00
-    u32 flags_88;                         // 0x88
-    u32 unknown_8c;                       // 0x8c
-    f32 current_frame;                    // 0x90
+typedef struct cut_instance_reader_s { // size 0x94
+    u8 opaque_00_88[0x88];             // 0x00
+    u32 flags_88;                      // 0x88
+    u32 unknown_8c;                    // 0x8c
+    f32 current_frame;                 // 0x90
 } CUT_INSTANCE_READER_PC;
 
-typedef struct dooku_c_pc_s {    // size 0x14
+typedef struct dooku_c_s {       // size 0x14
     GIZAIMESSAGE *total_message; // 0x00
     GIZAIMESSAGE *hit_message;   // 0x04
     NUSPECIALHANDLE node;        // 0x08
 } DOOKU_C_PC;
 
-typedef struct kaminodisco_pc_s {    // size 0x3e8
+typedef struct kaminodisco_s {       // size 0x3e8
     AIAREA_PC *area;                 // 0x000
     NUSPECIALHANDLE off[16];         // 0x004
     NUSPECIALHANDLE pending[16];     // 0x0c4
@@ -55,32 +55,32 @@ typedef struct kaminodisco_pc_s {    // size 0x3e8
     GIZAIMESSAGE *complete_message;  // 0x3e4
 } KAMINODISCO_PC;
 
-typedef struct kaminoc_packet_pc_s { // size 0xe
-    i16 off_mask;                    // 0x0
-    i16 pending_mask;                // 0x2
-    i16 occupied_mask;               // 0x4
-    i16 complete_mask;               // 0x6
-    i16 final_mask;                  // 0x8
-    i16 sound_mask;                  // 0xa
-    u8 complete;                     // 0xc
-    u8 reserved_0d;                  // 0xd
+typedef struct kaminoc_packet_s { // size 0xe
+    i16 off_mask;                 // 0x0
+    i16 pending_mask;             // 0x2
+    i16 occupied_mask;            // 0x4
+    i16 complete_mask;            // 0x6
+    i16 final_mask;               // 0x8
+    i16 sound_mask;               // 0xa
+    u8 complete;                  // 0xc
+    u8 reserved_0d;               // 0xd
 } KAMINOC_PACKET_PC;
 
-typedef struct kaminoe_turret_reader_pc_s { // size 0x140
-    u8 opaque_00_1c[0x1c];                  // 0x000
-    GAMEANIMOBJ *primary_anim_obj;          // 0x01c
-    u8 opaque_20_e4[0xc4];                  // 0x020
-    NUVEC *target_position;                 // 0x0e4
-    u8 opaque_e8_12c[0x44];                 // 0x0e8
-    u8 field_12c;                           // 0x12c
-    u8 opaque_12d;                          // 0x12d
-    u8 field_12e;                           // 0x12e
-    u8 opaque_12f_13a[0xb];                 // 0x12f
-    u16 flags_13a;                          // 0x13a
-    u8 opaque_13c_140[0x4];                 // 0x13c
+typedef struct kaminoe_turret_reader_s { // size 0x140
+    u8 opaque_00_1c[0x1c];               // 0x000
+    GAMEANIMOBJ *primary_anim_obj;       // 0x01c
+    u8 opaque_20_e4[0xc4];               // 0x020
+    NUVEC *target_position;              // 0x0e4
+    u8 opaque_e8_12c[0x44];              // 0x0e8
+    u8 field_12c;                        // 0x12c
+    u8 opaque_12d;                       // 0x12d
+    u8 field_12e;                        // 0x12e
+    u8 opaque_12f_13a[0xb];              // 0x12f
+    u16 flags_13a;                       // 0x13a
+    u8 opaque_13c_140[0x4];              // 0x13c
 } KAMINOE_TURRET_READER_PC;
 
-typedef struct kamino_e_pc_s {               // size 0x78
+typedef struct kamino_e_s {                  // size 0x78
     GIZAIMESSAGE *jango_fight;               // 0x00
     GIZAIMESSAGE *can_fire;                  // 0x04
     GIZAIMESSAGE *reset_turrets;             // 0x08
@@ -120,11 +120,11 @@ extern i32 i_boulder;
 extern f32 boulder_radius;
 extern i32 boulder_blowup_type;
 
-typedef struct cruisera_levflag_pc_s {
+typedef struct cruisera_levflag_s {
     u8 starfighter_state;
 } CRUISERA_LEVFLAG_PC;
 
-typedef struct cruiserc_pc_s {
+typedef struct cruiserc_s {
     GIZAIMESSAGE *dooku_fight;
     GAMEOBJECT *count_dooku;
     GIZAIMESSAGE *free_palpatine;
@@ -132,18 +132,18 @@ typedef struct cruiserc_pc_s {
     AILOCATOR_PC *palpatine_locator;
 } CRUISERC_PC;
 
-typedef struct cruiserc_netpacket_pc_s {
+typedef struct cruiserc_netpacket_s {
     i16 free_palpatine;
     i16 dooku_fight;
 } CRUISERC_NETPACKET_PC;
 
-typedef struct cruiserd_netpacket_pc_s {
+typedef struct cruiserd_netpacket_s {
     f32 frame;
     f32 speed;
     u32 flags;
 } CRUISERD_NETPACKET_PC;
 
-typedef struct cruiserd_lift_anim_pc_s {
+typedef struct cruiserd_lift_anim_s {
     NUMTX matrix;
     f32 tfactor;
     u8 unknown_44[8];
@@ -155,13 +155,13 @@ typedef struct cruiserd_lift_anim_pc_s {
     u16 animation_index;
 } CRUISERD_LIFT_ANIM_PC;
 
-typedef struct vadera_netpacket_pc_s {
+typedef struct vadera_netpacket_s {
     u16 count;
     i16 subtitle;
     f32 timer;
 } VADERA_NETPACKET_PC;
 
-typedef struct vaderc_pc_s {
+typedef struct vaderc_s {
     GIZAIMESSAGE *final_fight_message;
     AILOCATOR_PC *big_jump_locator;
     NUSPECIALHANDLE rocks[10];
@@ -177,7 +177,7 @@ typedef struct terrain_platform_reader_pc_s {
     u8 opaque_44_6c[0x28];
 } TERRAIN_PLATFORM_READER_PC;
 
-typedef struct terrain_set_reader_pc_s {
+typedef struct terrain_set_reader_s {
     u8 opaque_00_68[0x68];
     TERRAIN_PLATFORM_READER_PC *platforms;
 } TERRAIN_SET_READER_PC;

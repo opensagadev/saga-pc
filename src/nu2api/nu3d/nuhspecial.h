@@ -11,7 +11,7 @@ typedef struct nuhspecial_s nuhspecial_s;
 struct nuhspecial_s {
     struct NUGSCN_s *scene;
     void *special;
-    struct nudisplay_special_pc_s *display_special;
+    struct nudisplay_special_s *display_special;
 };
 
 STATIC_ASSERT(sizeof(struct nuhspecial_s) == 12);

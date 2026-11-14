@@ -12,7 +12,7 @@
 
 struct addgizmotype_pc_s;
 
-typedef struct edgizshadow_pc_s {
+typedef struct edgizshadow_s {
     NUVEC direction;
     f32 field_0c;
     f32 field_10;

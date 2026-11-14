@@ -32,22 +32,22 @@
 
 struct AIPATHCNX_PC;
 struct AIPATHNODE_PC;
-struct AITRIGGERSET_PARTIAL_PC;
+struct AITRIGGERSET_PARTIAL;
 struct DRAW_ATTACHMENTS_MINI_PC;
-struct GAMEDEBRISENTRY_PC;
+struct GAMEDEBRISENTRY;
 struct GAMEPAD_PC;
 struct PLAYERCHARACTERCONFIG_PC;
 struct SUIT_LAYERS_PC;
 struct TUBE_PC;
-struct ai_helper_slot_pc_s;
+struct ai_helper_slot_s;
 struct apicharactermodellist_s;
-struct blowup_target_pc_s;
+struct blowup_target_s;
 struct bolt_s;
-struct characterdata_pc_s;
-struct climb_slot_pc_s;
-struct indy_guideline_pc_s;
+struct characterdata_s;
+struct climb_slot_s;
+struct indy_guideline_s;
 struct numtl_s;
-struct techno_pc_s;
+struct techno_s;
 
 struct gameobject_s;
 
@@ -85,7 +85,7 @@ STATIC_ASSERT(offsetof(APIOBJECTSYS_PC, los_cursor_208) == 0x208);
 STATIC_ASSERT(offsetof(APIOBJECTSYS_PC, los_cursor_20c) == 0x20c);
 STATIC_ASSERT(offsetof(APIOBJECTSYS_PC, flags) == 0x210);
 
-typedef struct CHARACTER_ANIMATION_LOCATOR_PC {
+typedef struct CHARACTER_ANIMATION_LOCATOR {
     u8 unknown_00[0x14];
     f32 blend_out_time;
     f32 playback_rate;
@@ -95,19 +95,19 @@ typedef struct CHARACTER_ANIMATION_LOCATOR_PC {
     u8 unknown_28[0x20];
     u16 misc_flags;
     i8 locator;
-} CHARACTER_ANIMATION_LOCATOR_PC;
+} CHARACTER_ANIMATION_LOCATOR;
 
-STATIC_ASSERT(offsetof(CHARACTER_ANIMATION_LOCATOR_PC, locator) == 0x4a);
-STATIC_ASSERT(offsetof(CHARACTER_ANIMATION_LOCATOR_PC, action_speed) == 0x24);
-STATIC_ASSERT(offsetof(CHARACTER_ANIMATION_LOCATOR_PC, misc_flags) == 0x48);
+STATIC_ASSERT(offsetof(CHARACTER_ANIMATION_LOCATOR, locator) == 0x4a);
+STATIC_ASSERT(offsetof(CHARACTER_ANIMATION_LOCATOR, action_speed) == 0x24);
+STATIC_ASSERT(offsetof(CHARACTER_ANIMATION_LOCATOR, misc_flags) == 0x48);
 
-typedef struct API_ANIMATION_CACHE_PC {
+typedef struct API_ANIMATION_CACHE {
     char path[0x30];
     void *animation;
-} API_ANIMATION_CACHE_PC;
+} API_ANIMATION_CACHE;
 
-STATIC_ASSERT(sizeof(API_ANIMATION_CACHE_PC) == 0x34);
-STATIC_ASSERT(offsetof(API_ANIMATION_CACHE_PC, animation) == 0x30);
+STATIC_ASSERT(sizeof(API_ANIMATION_CACHE) == 0x34);
+STATIC_ASSERT(offsetof(API_ANIMATION_CACHE, animation) == 0x30);
 
 typedef struct TORPEDOPACKET_PC {
     u8 count;
@@ -168,8 +168,8 @@ extern "C" {
     STATIC_ASSERT(offsetof(API_EXTRA_ACTION_PC, action) == 4);
     void PCCharacterModelDiagnosticNoOp();
     extern i32 nu_keyboard_no_key_state;
-    STATIC_ASSERT(offsetof(CHARACTER_ANIMATION_LOCATOR_PC, blend_out_time) == 0x14);
-    STATIC_ASSERT(offsetof(CHARACTER_ANIMATION_LOCATOR_PC, playback_rate) == 0x18);
+    STATIC_ASSERT(offsetof(CHARACTER_ANIMATION_LOCATOR, blend_out_time) == 0x14);
+    STATIC_ASSERT(offsetof(CHARACTER_ANIMATION_LOCATOR, playback_rate) == 0x18);
     void *LoadAnimFromPAK(char *path, i32 clip, void *pak, i32 flags);
     void *LoadAnim(char *path, i32 clip, VARIPTR *buffer, VARIPTR end);
     void APIObjectDestroyAll(APIOBJECTSYS_PC *system);
@@ -205,7 +205,7 @@ enum { CHARACTER_CONTEXT_DROP_OUT = 36 };
 typedef struct APIDEBRISSYS_PC {
     i32 named_count;
     i32 capacity;
-    struct GAMEDEBRISENTRY_PC *entries;
+    struct GAMEDEBRISENTRY *entries;
 } APIDEBRISSYS_PC;
 
 STATIC_ASSERT(sizeof(APIDEBRISSYS_PC) == 0xc);
@@ -234,9 +234,9 @@ struct AIPACKET_PC { // size 0x20c
             struct AISTATE_PC *next_state;              // 0x010
             f32 params[4];                              // 0x014
             f32 script_timer;                           // 0x024
-            AISCRIPTPROCESSSTACK_PC param_stack[2];     // 0x028
+            AISCRIPTPROCESSSTACK param_stack[2];        // 0x028
             u8 unknown_50[0x4];                         // 0x050
-            struct AIREFSCRIPT_PC *active_refs[4];      // 0x054
+            struct AIREFSCRIPT *active_refs[4];         // 0x054
             i32 active_ref_count;                       // 0x064
             u8 action_data_1;                           // 0x068
             u8 action_data_2;                           // 0x069
@@ -380,7 +380,7 @@ typedef struct APIOBJECT_PC {                          // size 0x29c
     AIPACKET_PC *ai;                                   // 0x004
     u8 unknown_008[0x48];                              // 0x008
     struct CHARACTER_MODEL_LAYERS_PC *character_model; // 0x050
-    struct characterdata_pc_s *character_data;         // 0x054
+    struct characterdata_s *character_data;            // 0x054
     u16 facing_angle;                                  // 0x058
     u16 movement_facing_angle;                         // 0x05a
     NUVEC position;                                    // 0x05c
@@ -520,7 +520,7 @@ typedef struct CHARACTER_MODEL_LAYERS_PC {
     struct NUHGOBJ_EVAL_PC *hierarchy;
 
     union {
-        struct CHARACTER_ANIMATION_LOCATOR_PC **animations;
+        struct CHARACTER_ANIMATION_LOCATOR **animations;
         CHARACTERANIM_CONFIG_PC **animation_configs;
     };
 
@@ -528,7 +528,7 @@ typedef struct CHARACTER_MODEL_LAYERS_PC {
         void **action_animations;
         void **model_data_b;
     };
-    struct NUANIMDATA2_PC **model_data_c;
+    struct NUANIMDATA2 **model_data_c;
     void *points_of_interest[16];
 } CHARACTER_MODEL_LAYERS_PC;
 
@@ -602,7 +602,7 @@ typedef struct apicharsys_s {
     CHARACTER_MODEL_LAYERS_PC *models;
     i16 *playermodelids;
     APICHARACTERDATA *char_data;
-    API_ANIMATION_CACHE_PC *animations;
+    API_ANIMATION_CACHE *animations;
     i32 area_animation_count;
     i32 loaded_animation_count;
     i32 animation_load_attempts;
@@ -658,21 +658,21 @@ extern "C" {
 #if SAGA_LEGOAPI_ITEMS_BASE_APIOBJECT_H_PART == 6 && !defined(SAGA_LEGOAPI_ITEMS_BASE_APIOBJECT_H_STOP)
 #pragma pack(push, 1)
 
-typedef struct AI_SPECIAL_PROGRESS_PC {
+typedef struct AI_SPECIAL_PROGRESS {
     u8 reserved_1072;
     u8 flags;
     f32 progress;
-} AI_SPECIAL_PROGRESS_PC;
+} AI_SPECIAL_PROGRESS;
 
-typedef struct INDY_GUIDELINE_STATE_PC {
+typedef struct INDY_GUIDELINE_STATE {
     u8 movement_direction;
     i8 endpoint;
-    struct indy_guideline_pc_s *guideline;
-} INDY_GUIDELINE_STATE_PC;
+    struct indy_guideline_s *guideline;
+} INDY_GUIDELINE_STATE;
 
 #pragma pack(pop)
-STATIC_ASSERT(sizeof(AI_SPECIAL_PROGRESS_PC) == 6);
-STATIC_ASSERT(offsetof(AI_SPECIAL_PROGRESS_PC, progress) == 2);
+STATIC_ASSERT(sizeof(AI_SPECIAL_PROGRESS) == 6);
+STATIC_ASSERT(offsetof(AI_SPECIAL_PROGRESS, progress) == 2);
 
 typedef struct gameobject_s {
     union {
@@ -692,7 +692,7 @@ typedef struct gameobject_s {
 
     u8 unknown_004c[4];
     CHARACTER_MODEL_LAYERS_PC *character_model;
-    struct characterdata_pc_s *character_data;
+    struct characterdata_s *character_data;
     u16 facing_angle;
     u16 movement_facing_angle;
     NUVEC position;
@@ -919,12 +919,12 @@ typedef struct gameobject_s {
     f32 airborne_action_timer;
     f32 jump_start_height;
     struct gameobject_s *force_target;
-    struct blowup_target_pc_s *blowup_target;
+    struct blowup_target_s *blowup_target;
 
     union {
         void *grapple;
         struct PART_PC *force_throw_part;
-        struct techno_pc_s *techno;
+        struct techno_s *techno;
         struct ZIPUP_s *attached_zipup;
         struct TUBE_PC *attached_tube_pc;
     };
@@ -1425,8 +1425,8 @@ typedef struct gameobject_s {
     union {
         u8 unknown_1072[6];
         u8 ai_frame_event;
-        AI_SPECIAL_PROGRESS_PC special_move_progress_view_pc;
-        INDY_GUIDELINE_STATE_PC indy_guideline_state;
+        AI_SPECIAL_PROGRESS special_move_progress_view_pc;
+        INDY_GUIDELINE_STATE indy_guideline_state;
     };
 
     u8 contact_count;
@@ -1470,7 +1470,7 @@ typedef struct gameobject_s {
         };
 
         u32 field_108c;
-        struct ai_helper_slot_pc_s *indy_connection_helper;
+        struct ai_helper_slot_s *indy_connection_helper;
     };
 
     union {
@@ -1509,7 +1509,7 @@ typedef struct gameobject_s {
 
     union {
         u8 unknown_10b4[4];
-        struct climb_slot_pc_s *indy_climb;
+        struct climb_slot_s *indy_climb;
     };
 
     f32 ai_elapsed_time;
@@ -1517,7 +1517,7 @@ typedef struct gameobject_s {
     f32 ai_vertical_velocity;
     void *gizforce_target;
     struct gameanimobj_s *gizforce_target_object;
-    struct AITRIGGERSET_PARTIAL_PC *active_trigger_set;
+    struct AITRIGGERSET_PARTIAL *active_trigger_set;
 } GAMEOBJECT;
 
 STATIC_ASSERT(offsetof(GAMEOBJECT, field_e33) == 0xe33);
@@ -1873,12 +1873,11 @@ STATIC_ASSERT(offsetof(GAMEOBJECT, ai_jump_destination_distance_pc) == 0xed0);
 STATIC_ASSERT(offsetof(GAMEOBJECT, attached_tube_pc) == 0x798);
 STATIC_ASSERT(offsetof(GAMEOBJECT, ai_collision_priority_pc) == 0x292);
 STATIC_ASSERT(offsetof(GAMEOBJECT, ai_player_packet_pc) == 0x6c4);
-STATIC_ASSERT(offsetof(GAMEOBJECT, special_move_progress_view_pc) + offsetof(AI_SPECIAL_PROGRESS_PC, flags) == 0x1073);
-STATIC_ASSERT(offsetof(GAMEOBJECT, special_move_progress_view_pc) + offsetof(AI_SPECIAL_PROGRESS_PC, progress) ==
-              0x1074);
+STATIC_ASSERT(offsetof(GAMEOBJECT, special_move_progress_view_pc) + offsetof(AI_SPECIAL_PROGRESS, flags) == 0x1073);
+STATIC_ASSERT(offsetof(GAMEOBJECT, special_move_progress_view_pc) + offsetof(AI_SPECIAL_PROGRESS, progress) == 0x1074);
 STATIC_ASSERT(offsetof(GAMEOBJECT, special_move_timer_pc) == 0x1090);
 STATIC_ASSERT(offsetof(GAMEOBJECT, special_move_source_pc) == 0x1094);
-STATIC_ASSERT(sizeof(INDY_GUIDELINE_STATE_PC) == 6);
+STATIC_ASSERT(sizeof(INDY_GUIDELINE_STATE) == 6);
 STATIC_ASSERT(offsetof(GAMEOBJECT, indy_guideline_state) == 0x1072);
 STATIC_ASSERT(offsetof(GAMEOBJECT, indy_guideline_state.endpoint) == 0x1073);
 STATIC_ASSERT(offsetof(GAMEOBJECT, indy_guideline_state.guideline) == 0x1074);

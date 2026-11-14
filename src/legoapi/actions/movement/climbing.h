@@ -25,10 +25,10 @@
 struct AIPATHCNX_PC;
 struct AIPATH_PC;
 struct WORLDINFO_s;
-struct climb_system_pc_s;
+struct climb_system_s;
 struct gameobject_s;
 
-typedef struct climb_slot_pc_s {
+typedef struct climb_slot_s {
     NUVEC normal;
     f32 impact_x;
     f32 impact_z;
@@ -84,7 +84,7 @@ extern "C" {
     void WeaponScalingCode(struct gameobject_s *);
     void LedgeTerrain_MoveCode(struct gameobject_s *);
     void InitClimbObjectSys(struct WORLDINFO_s *world);
-    CLIMB_SLOT_PC *FindClimbObject(struct climb_system_pc_s *system, struct AIPATHCNX_PC *connection);
+    CLIMB_SLOT_PC *FindClimbObject(struct climb_system_s *system, struct AIPATHCNX_PC *connection);
 #ifdef __cplusplus
 }
 #endif

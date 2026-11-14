@@ -33,7 +33,7 @@ extern "C" void SurfaceMaskOff(u32 *surface_mask);
 extern "C" void VaderA_GoneThroughDoor(WORLDINFO *world, DOOR_s *door);
 extern "C" void PodRace_IncreaseLap(void);
 
-typedef struct SHOP_COMPLETION_GAME_PC {  // size 0x7e4c
+typedef struct SHOP_COMPLETION_GAME {     // size 0x7e4c
     u8 reserved_0000[0x782c];             // 0x0000
     AREASAVE_s area_save[72];             // 0x782c
     struct EPISODESAVE_s episode_save[6]; // 0x7b8c
@@ -46,7 +46,7 @@ typedef struct SHOP_COMPLETION_GAME_PC {  // size 0x7e4c
     u8 reserved_7c1b[0x79];               // 0x7c1b
     MISSION_SAVE_READER_PC mission_save;  // 0x7c94
     u8 reserved_7cf8[0x154];              // 0x7cf8
-} SHOP_COMPLETION_GAME_PC;
+} SHOP_COMPLETION_GAME;
 
 STATIC_ASSERT(offsetof(COLLECTID, field5_0x9) == 9);
 STATIC_ASSERT(offsetof(AREA_DATA_PC, flags) == 0x7a);
@@ -77,7 +77,7 @@ extern "C" {
     extern i16 CharacterFixupIdPc007f1828; /* character id fixed up from "PenguinBomb" */
 }
 
-typedef struct SHOP_SAVE_VIEW_PC {
+typedef struct SHOP_SAVE_VIEW {
     u8 unknown_0000[0x7bd4];
     u32 hint_purchased_bits[3];
     u32 character_purchased_bits[4];
@@ -86,7 +86,7 @@ typedef struct SHOP_SAVE_VIEW_PC {
     u32 extra_purchased_bits[2];
     u8 unknown_7c08[0x15];
     u8 bolt_unlocked;
-} SHOP_SAVE_VIEW_PC;
+} SHOP_SAVE_VIEW;
 
 extern "C" i32 Hub_PanelBusy(void);
 #define GAME_PUBLISHER_ASSERT(expression)                                                                              \
@@ -124,7 +124,7 @@ GAME_PUBLISHER_ASSERT(offsetof(GAMEOBJECT, rider) == 0xcd0);
 GAME_PUBLISHER_ASSERT(offsetof(GAMEOBJECT, locator_matrices) == 0x804);
 GAME_PUBLISHER_ASSERT(offsetof(NUMTX, translation) == 0x30);
 
-typedef struct buck_rotation_reader_pc_s {
+typedef struct buck_rotation_reader_s {
     u8 unknown_0000[0x27a];
     u16 rotation;
 } BUCK_ROTATION_READER_PC;
@@ -134,7 +134,7 @@ GAME_PUBLISHER_ASSERT(offsetof(GAMEOBJECT, pad) == 0xca4);
 GAME_PUBLISHER_ASSERT(offsetof(GAMEPAD_PC, bound_pad) == 0);
 GAME_PUBLISHER_ASSERT(offsetof(WORLDINFO, current_level) == 0x128);
 
-typedef struct game_callback_weapon_flags_pc_s {
+typedef struct game_callback_weapon_flags_s {
     u8 unknown_00[0xe22];
     u8 weapon_flags;
 } GAME_CALLBACK_WEAPON_FLAGS_PC;
@@ -245,19 +245,19 @@ GAME_PUBLISHER_ASSERT(offsetof(GAME_MESSAGE_PC, has_start_position) == 0xf9);
 GAME_PUBLISHER_ASSERT(offsetof(GAME_MESSAGE_PC, icon) == 0xe6);
 GAME_PUBLISHER_ASSERT(offsetof(WORLDINFO, game_debris_sys) == 0x134);
 GAME_PUBLISHER_ASSERT(offsetof(WORLDINFO, level_objects) == 0x2ac0);
-GAME_PUBLISHER_ASSERT(sizeof(LEVEL_OBJECT_RUNTIME_PC) == 0x10);
-GAME_PUBLISHER_ASSERT(offsetof(LEVEL_OBJECT_RUNTIME_PC, special) == 0);
+GAME_PUBLISHER_ASSERT(sizeof(LEVEL_OBJECT_RUNTIME) == 0x10);
+GAME_PUBLISHER_ASSERT(offsetof(LEVEL_OBJECT_RUNTIME, special) == 0);
 struct GIZBUILDIT_PC;
 
-struct GAME_BUILDIT_READER_PC {
+struct GAME_BUILDIT_READER {
     u8 opaque_00[0x34];
     NUVEC position;
     u8 opaque_40[0x2c];
     u8 anim_object_count;
 };
 
-GAME_PUBLISHER_ASSERT(offsetof(GAME_BUILDIT_READER_PC, position) == 0x34);
-GAME_PUBLISHER_ASSERT(offsetof(GAME_BUILDIT_READER_PC, anim_object_count) == 0x6c);
+GAME_PUBLISHER_ASSERT(offsetof(GAME_BUILDIT_READER, position) == 0x34);
+GAME_PUBLISHER_ASSERT(offsetof(GAME_BUILDIT_READER, anim_object_count) == 0x6c);
 GAME_PUBLISHER_ASSERT(offsetof(GAMESAVE, gold_bricks) == 0x7c1a);
 GAME_PUBLISHER_ASSERT(offsetof(GAMESAVE, purchased_extra_bits_high) == 0x7c04);
 GAME_PUBLISHER_ASSERT(offsetof(WORLDINFO, part_debris_sys) == 0x138);
@@ -271,31 +271,31 @@ extern "C" void Hub_ResetPanel(void);
 GAME_PUBLISHER_ASSERT(offsetof(GAMEOBJECT, field_7b3) == 0x7b3);
 
 /* Local minimum reader; no GAMECAMERA size or backing claim. */
-typedef struct GAME_GIZMO_SFX_CAMERA_READER_PC {
+typedef struct GAME_GIZMO_SFX_CAMERA_READER {
     u8 opaque_00;
     u8 sock;
     u8 opaque_02[0x2a];
     f32 sock_distance;
-} GAME_GIZMO_SFX_CAMERA_READER_PC;
+} GAME_GIZMO_SFX_CAMERA_READER;
 
-GAME_PUBLISHER_ASSERT(offsetof(GAME_GIZMO_SFX_CAMERA_READER_PC, sock) == 1);
-GAME_PUBLISHER_ASSERT(offsetof(GAME_GIZMO_SFX_CAMERA_READER_PC, sock_distance) == 0x2c);
+GAME_PUBLISHER_ASSERT(offsetof(GAME_GIZMO_SFX_CAMERA_READER, sock) == 1);
+GAME_PUBLISHER_ASSERT(offsetof(GAME_GIZMO_SFX_CAMERA_READER, sock_distance) == 0x2c);
 
-typedef struct TAG_CHARACTER_DATA_READER_PC {
+typedef struct TAG_CHARACTER_DATA_READER {
     u8 opaque_00[0x42];
     i16 icon_model;
     u8 opaque_44[8];
-} TAG_CHARACTER_DATA_READER_PC;
+} TAG_CHARACTER_DATA_READER;
 
-GAME_PUBLISHER_ASSERT(sizeof(TAG_CHARACTER_DATA_READER_PC) == 0x4c);
-GAME_PUBLISHER_ASSERT(offsetof(TAG_CHARACTER_DATA_READER_PC, icon_model) == 0x42);
+GAME_PUBLISHER_ASSERT(sizeof(TAG_CHARACTER_DATA_READER) == 0x4c);
+GAME_PUBLISHER_ASSERT(offsetof(TAG_CHARACTER_DATA_READER, icon_model) == 0x42);
 GAME_PUBLISHER_ASSERT(offsetof(APICHARSYS, char_data) == 0x20);
 GAME_PUBLISHER_ASSERT(offsetof(GAMEOBJECT, hud_icon_timer) == 0xd60);
 GAME_PUBLISHER_ASSERT(offsetof(GAMEOBJECT, character_top) == 0xff4);
 GAME_PUBLISHER_ASSERT(offsetof(GAMEOBJECT, origin_scale) == 0xa8);
 GAME_PUBLISHER_ASSERT(offsetof(PLAYERCHARACTERCONFIG_PC, hover_fall_mode) == 0x116);
 extern i32 (*Tag_NoHiddenIconFn)(GAMEOBJECT *);
-/* Reuse TAG_CHARACTER_DATA_READER_PC from the LSW callback contract. */
+/* Reuse TAG_CHARACTER_DATA_READER from the LSW callback contract. */
 GAME_PUBLISHER_ASSERT(offsetof(GAMEOBJECT, pause_context_state) == 0xee8);
 GAME_PUBLISHER_ASSERT(offsetof(GAMEOBJECT, upper_position) == 0x190);
 GAME_PUBLISHER_ASSERT(offsetof(GAMEOBJECT, flags_e24) == 0xe24);
@@ -306,27 +306,27 @@ GAME_PUBLISHER_ASSERT(offsetof(NUMTX, m32) == 0x38);
 GAME_PUBLISHER_ASSERT(offsetof(GIZMOBLOWUP_PC, mid_position) == 0x4c);
 GAME_PUBLISHER_ASSERT(offsetof(GIZMOBLOWUP_PC, target_scale) == 0xa8);
 
-typedef struct ATTRACTO_READER_PC {
+typedef struct ATTRACTO_READER {
     u8 opaque_00[0x5c];
     u16 angle;
-} ATTRACTO_READER_PC;
+} ATTRACTO_READER;
 
-GAME_PUBLISHER_ASSERT(offsetof(ATTRACTO_READER_PC, angle) == 0x5c);
+GAME_PUBLISHER_ASSERT(offsetof(ATTRACTO_READER, angle) == 0x5c);
 
-typedef struct GAME_CUSTOMISER_REWARD_READER_PC {
+typedef struct GAME_CUSTOMISER_REWARD_READER {
     u8 opaque_00[0x174];
     u16 *save_pieces;
-} GAME_CUSTOMISER_REWARD_READER_PC;
+} GAME_CUSTOMISER_REWARD_READER;
 
-GAME_PUBLISHER_ASSERT(offsetof(GAME_CUSTOMISER_REWARD_READER_PC, save_pieces) == 0x174);
+GAME_PUBLISHER_ASSERT(offsetof(GAME_CUSTOMISER_REWARD_READER, save_pieces) == 0x174);
 
-struct MUSIC_PAIR_ARENA_PC { // size 0x3c
-    i32 prefix_word;         // 0x00
-    u8 unknown_004[0x18];    // 0x04
-    i16 action_first;        // 0x1c
-    u8 unknown_01e[0x1a];    // 0x1e
-    i16 ambient_first;       // 0x38
-    u8 unknown_03a[2];       // 0x3a
+struct MUSIC_PAIR_ARENA { // size 0x3c
+    i32 prefix_word;      // 0x00
+    u8 unknown_004[0x18]; // 0x04
+    i16 action_first;     // 0x1c
+    u8 unknown_01e[0x1a]; // 0x1e
+    i16 ambient_first;    // 0x38
+    u8 unknown_03a[2];    // 0x3a
 };
 
 STATIC_ASSERT(offsetof(CUTINFO, skip_level) == 0xec);
@@ -598,7 +598,7 @@ static i32 GizBuildit_AutoBuildPos_Game(void *context, NUVEC *position, NUVEC *r
     if (attracto != NULL) {
         Attracto_GetPos_Top(attracto, result);
         if (angle != NULL) {
-            *angle = ((ATTRACTO_READER_PC *)attracto)->angle;
+            *angle = ((ATTRACTO_READER *)attracto)->angle;
         }
         return 1;
     }
@@ -1047,7 +1047,7 @@ static i32 CheckMusicOther(void) {
 }
 
 static i32 GizBuildIt_CanStartBuildingFn_Game(GIZBUILDIT_PC *input, GAMEOBJECT *object) {
-    GAME_BUILDIT_READER_PC *buildit = (GAME_BUILDIT_READER_PC *)input;
+    GAME_BUILDIT_READER *buildit = (GAME_BUILDIT_READER *)input;
     if (WORLD->area != NULL && (WORLD->area->flags & 0x40) != 0) {
         if (input == HubBuildItPc) {
             if (Game.gold_bricks < 2 * buildit->anim_object_count) {
@@ -1096,7 +1096,7 @@ static void LEGO_100PercentFn(void) {
         Customiser_Set100PercentPieces(CharacterCustomiser);
         if (Customiser_FindPieceByName(CharacterCustomiser, "hat_hair_00", &category, &piece) != NULL &&
             category != -1 && piece != -1) {
-            GAME_CUSTOMISER_REWARD_READER_PC *customiser = (GAME_CUSTOMISER_REWARD_READER_PC *)CharacterCustomiser;
+            GAME_CUSTOMISER_REWARD_READER *customiser = (GAME_CUSTOMISER_REWARD_READER *)CharacterCustomiser;
             customiser->save_pieces[category] = (u16)piece;
         }
     }
@@ -1267,7 +1267,7 @@ static i32 GizmoBlowUp_NoTarget(WORLDINFO *world, GAMEOBJECT *object) {
 
 void GizmoBlowUp_Sfx(GIZMOBLOWUP_PC *unused, NUVEC *position) {
     LEVELDATA_PC *level = WORLD->current_level;
-    GAME_GIZMO_SFX_CAMERA_READER_PC *camera = (GAME_GIZMO_SFX_CAMERA_READER_PC *)GameCam;
+    GAME_GIZMO_SFX_CAMERA_READER *camera = (GAME_GIZMO_SFX_CAMERA_READER *)GameCam;
     (void)unused;
     if (level == PODSPRINTA_LDATA && (camera->sock == 10 || camera->sock == 11 || camera->sock == 12) &&
         camera->sock_distance > 145.0f && camera->sock_distance < 195.0f) {
@@ -1446,7 +1446,7 @@ extern "C" {
     i32 CompletionPointInfoRecalculatePc[7] = {0};
 
     void ReCalculateCompletionPoints(void) {
-        SHOP_COMPLETION_GAME_PC *save = reinterpret_cast<SHOP_COMPLETION_GAME_PC *>(&Game);
+        SHOP_COMPLETION_GAME *save = reinterpret_cast<SHOP_COMPLETION_GAME *>(&Game);
         i32 i;
         AREA_DATA_PC *area;
         AREASAVE_s *area_save;
@@ -1628,7 +1628,7 @@ extern "C" {
     }
 
     void BuyAllShopExtras(void) {
-        SHOP_SAVE_VIEW_PC *save = (SHOP_SAVE_VIEW_PC *)&Game;
+        SHOP_SAVE_VIEW *save = (SHOP_SAVE_VIEW *)&Game;
         i32 index;
         i8 area;
         for (index = 0; index < 44; ++index) {
@@ -2658,7 +2658,7 @@ extern "C" {
     f32 SpeedBlurScalePc = 0.5f;
 
     void SpeedBlur_Apply(WORLDINFO *world) {
-        struct level_data_pc_s *level;
+        struct level_data_s *level;
         if (editor_active != 0 || CUTSTOPGAME != 0 || MiniCutCam != 0) {
             return;
         }
@@ -2688,7 +2688,7 @@ static void GizBuildIt_FinishFn_Game(GIZBUILDIT_PC *input) {
         AddFancyMessageRGB(TTab[TextIdPc880ff0], 0.0f, 0.0f, 0.6f, 1.25f, 1, 255, 0, 0);
         BuyAllShopExtras();
         ReCalculateCompletionPoints();
-        AddPartDebris(WORLD->part_debris_sys, 15, &((GAME_BUILDIT_READER_PC *)HubBuildItPc)->position);
+        AddPartDebris(WORLD->part_debris_sys, 15, &((GAME_BUILDIT_READER *)HubBuildItPc)->position);
     }
 }
 

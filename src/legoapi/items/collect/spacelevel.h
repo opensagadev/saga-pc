@@ -55,7 +55,7 @@ struct starfighter_s {
     i32 reserved_0c8;
     f32 aim_bias;
     struct spacelevel_flight_group_s *parent;
-    struct flight_spline_resource_pc_s *spline;
+    struct flight_spline_resource_s *spline;
     f32 spline_progress;
     f32 initial_delay;
     f32 shoot_timer;

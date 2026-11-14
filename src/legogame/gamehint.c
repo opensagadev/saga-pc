@@ -46,7 +46,7 @@ void DrawHint_LSW(HINT_PC *hint, i32 max_lines) {
     i32 green;
     i32 blue;
     char expanded[1024];
-    LEVEL_OBJECT_RUNTIME_PC *icon;
+    LEVEL_OBJECT_RUNTIME *icon;
     if (hint == NULL || FadeSys.fade != 0.0f) {
         return;
     }

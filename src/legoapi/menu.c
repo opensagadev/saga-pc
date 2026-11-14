@@ -254,22 +254,22 @@ void DrawMenuButtonPrompts(i32 confirm, i32 cancel, i32 enabled, u32 red, u32 gr
     DrawMenuButtonPromptsEx(confirm, cancel, 0, enabled, red, green, blue, alpha);
 }
 
-typedef struct menu_draw_state_pc_s { // size 0xb0
-    u8 unknown_00[0x0e];              // 0x00
-    i16 first_row;                    // 0x0e
-    u8 unknown_10[2];                 // 0x10
-    i16 last_row;                     // 0x12
-    i16 menu;                         // 0x14
-    u8 unknown_16[0x76];              // 0x16
-    i32 draw_item;                    // 0x8c
-    f32 item_scale;                   // 0x90
-    f32 draw_x;                       // 0x94
-    f32 draw_y;                       // 0x98
-    f32 draw_z;                       // 0x9c
-    f32 draw_offset;                  // 0xa0
-    f32 centre_offset;                // 0xa4
-    u8 unknown_a8[4];                 // 0xa8
-    i32 paused;                       // 0xac
+typedef struct menu_draw_state_s { // size 0xb0
+    u8 unknown_00[0x0e];           // 0x00
+    i16 first_row;                 // 0x0e
+    u8 unknown_10[2];              // 0x10
+    i16 last_row;                  // 0x12
+    i16 menu;                      // 0x14
+    u8 unknown_16[0x76];           // 0x16
+    i32 draw_item;                 // 0x8c
+    f32 item_scale;                // 0x90
+    f32 draw_x;                    // 0x94
+    f32 draw_y;                    // 0x98
+    f32 draw_z;                    // 0x9c
+    f32 draw_offset;               // 0xa0
+    f32 centre_offset;             // 0xa4
+    u8 unknown_a8[4];              // 0xa8
+    i32 paused;                    // 0xac
 } MENU_DRAW_STATE_PC;
 
 STATIC_ASSERT(offsetof(MENUFNINFO, draw_fn) == 8);
@@ -833,30 +833,30 @@ void BackupMenuNoFn(void) {
     }
 }
 
-typedef struct MENU_DRAW_VIEW_PC { // size 0xe0
-    u8 unknown_00[0xe];            // 0x00
-    i16 first_row;                 // 0x0e
-    u8 unknown_10[2];              // 0x10
-    i16 last_row;                  // 0x12
-    u8 unknown_14[0x78];           // 0x14
-    i32 draw_item;                 // 0x8c
-    f32 item_scale;                // 0x90
-    f32 draw_x;                    // 0x94
-    f32 draw_y;                    // 0x98
-    f32 draw_z;                    // 0x9c
-    u8 unknown_a0[0x24];           // 0xa0
-    f32 *item_offsets;             // 0xc4
-    f32 item_offset_scale;         // 0xc8
-    u8 unknown_cc[4];              // 0xcc
-    f32 item_scale_x;              // 0xd0
-    f32 item_spacing;              // 0xd4
-    u8 unknown_d8[8];              // 0xd8
-} MENU_DRAW_VIEW_PC;
+typedef struct MENU_DRAW_VIEW { // size 0xe0
+    u8 unknown_00[0xe];         // 0x00
+    i16 first_row;              // 0x0e
+    u8 unknown_10[2];           // 0x10
+    i16 last_row;               // 0x12
+    u8 unknown_14[0x78];        // 0x14
+    i32 draw_item;              // 0x8c
+    f32 item_scale;             // 0x90
+    f32 draw_x;                 // 0x94
+    f32 draw_y;                 // 0x98
+    f32 draw_z;                 // 0x9c
+    u8 unknown_a0[0x24];        // 0xa0
+    f32 *item_offsets;          // 0xc4
+    f32 item_offset_scale;      // 0xc8
+    u8 unknown_cc[4];           // 0xcc
+    f32 item_scale_x;           // 0xd0
+    f32 item_spacing;           // 0xd4
+    u8 unknown_d8[8];           // 0xd8
+} MENU_DRAW_VIEW;
 
-STATIC_ASSERT(sizeof(MENU_DRAW_VIEW_PC) == sizeof(MENU));
+STATIC_ASSERT(sizeof(MENU_DRAW_VIEW) == sizeof(MENU));
 
 void DrawMenuEntryEx(MENU *menu, char *text, u8 alpha) {
-    MENU_DRAW_VIEW_PC *view = (MENU_DRAW_VIEW_PC *)menu;
+    MENU_DRAW_VIEW *view = (MENU_DRAW_VIEW *)menu;
     f32 scale;
     f32 spacing;
 

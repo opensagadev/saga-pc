@@ -19,23 +19,23 @@ typedef struct TIGHTROPE_MOTION_PC { // size 0x48
     u8 available;                    // 0x47
 } TIGHTROPE_MOTION_PC;
 
-typedef struct WORLD_TIGHTROPE_VIEW_PC { // size 0x5060
-    u8 unknown_0000[0x5058];             // 0x0000
-    TIGHTROPE_MOTION_PC *tightropes;     // 0x5058
-    i32 tightrope_count;                 // 0x505c
-} WORLD_TIGHTROPE_VIEW_PC;
+typedef struct WORLD_TIGHTROPE_VIEW { // size 0x5060
+    u8 unknown_0000[0x5058];          // 0x0000
+    TIGHTROPE_MOTION_PC *tightropes;  // 0x5058
+    i32 tightrope_count;              // 0x505c
+} WORLD_TIGHTROPE_VIEW;
 
-typedef struct TIGHTROPE_OBJECT_AUX_PC { // size 0xd2c
-    u8 unknown_0000[0xd28];              // 0x000
-    f32 jump_reentry_timer;              // 0xd28
-} TIGHTROPE_OBJECT_AUX_PC;
+typedef struct TIGHTROPE_OBJECT_AUX { // size 0xd2c
+    u8 unknown_0000[0xd28];           // 0x000
+    f32 jump_reentry_timer;           // 0xd28
+} TIGHTROPE_OBJECT_AUX;
 
 STATIC_ASSERT(offsetof(GAMEOBJECT, launch_origin) == 0x754);
 STATIC_ASSERT(offsetof(GAMEOBJECT, context_position_offset) == 0x760);
 STATIC_ASSERT(offsetof(GAMEOBJECT, field_7a4) == 0x7a4);
 STATIC_ASSERT(offsetof(GAMEOBJECT, field_7a8) == 0x7a8);
 
-typedef struct tightrope_progress_recovered_pc_s {
+typedef struct tightrope_progress_recovered_s {
     u32 active_mask[1];
     u32 visible_mask[1];
 } TIGHTROPE_PROGRESS_PC;
@@ -76,7 +76,7 @@ extern "C" {
     extern char TextInputKeyNameTextPc7516c0[1];
 }
 
-typedef struct tightrope_movement_pc_s {
+typedef struct tightrope_movement_s {
     u8 unknown_00[0x40];
     f32 horizontal_length;
     u16 rotation;
@@ -194,11 +194,11 @@ extern "C" {
 }
 
 extern "C" TIGHTROPE_MOTION_PC *TightRope_InRange(GAMEOBJECT *object, WORLDINFO *world, NUVEC *position) {
-    TIGHTROPE_MOTION_PC *rope = ((WORLD_TIGHTROPE_VIEW_PC *)world)->tightropes;
+    TIGHTROPE_MOTION_PC *rope = ((WORLD_TIGHTROPE_VIEW *)world)->tightropes;
     f32 width = 3.0f * object->bounds_radius;
     NUVEC origin = object->collision_position;
     NUVEC offset;
-    for (i32 index = 0; index < ((WORLD_TIGHTROPE_VIEW_PC *)world)->tightrope_count; ++index, ++rope) {
+    for (i32 index = 0; index < ((WORLD_TIGHTROPE_VIEW *)world)->tightrope_count; ++index, ++rope) {
         if (rope->enabled == 0 || rope->available == 0) {
             continue;
         }
@@ -613,7 +613,7 @@ extern "C" void TightRope_MoveCode(GAMEOBJECT *object, i32 jump_pressed) {
                         object->character_context = 1;
                         object->field_7aa = 7;
                         object->context_timer = AnimDuration((i16)object->id, 7, 0.0f, 0.0f, 1);
-                        ((TIGHTROPE_OBJECT_AUX_PC *)object)->jump_reentry_timer = 0.2f;
+                        ((TIGHTROPE_OBJECT_AUX *)object)->jump_reentry_timer = 0.2f;
                         ResetAnimPacket(&object->anim_packet, -1);
                     } else {
                         object->character_context = -1;

@@ -30,14 +30,14 @@ struct PC_D3D9_DEVICE_PC;
 
 typedef struct PC_TEXTURE_RESOURCE_PC PC_TEXTURE_RESOURCE_PC;
 
-typedef struct PC_LOCKED_RECT_PC {
+typedef struct PC_LOCKED_RECT {
     i32 pitch;
     void *bits;
-} PC_LOCKED_RECT_PC;
+} PC_LOCKED_RECT;
 
-STATIC_ASSERT(sizeof(PC_LOCKED_RECT_PC) == 8);
+STATIC_ASSERT(sizeof(PC_LOCKED_RECT) == 8);
 
-typedef struct PC_TEXTURE_RESOURCE_METHODS_PC {
+typedef struct PC_TEXTURE_RESOURCE_METHODS {
     void *unknown_0000[2];
     ULONG(__stdcall *release)(PC_TEXTURE_RESOURCE_PC *);
     void *unknown_000c[10];
@@ -45,18 +45,18 @@ typedef struct PC_TEXTURE_RESOURCE_METHODS_PC {
     void *unknown_0038[3];
     HRESULT(__stdcall *get_level_desc)(PC_TEXTURE_RESOURCE_PC *, u32, PC_TEXTURE_LEVEL_DESC_PC *);
     HRESULT(__stdcall *get_surface_level)(PC_TEXTURE_RESOURCE_PC *, u32, PC_TEXTURE_RESOURCE_PC **);
-    HRESULT(__stdcall *lock_rect)(PC_TEXTURE_RESOURCE_PC *, u32, PC_LOCKED_RECT_PC *, const void *, u32);
+    HRESULT(__stdcall *lock_rect)(PC_TEXTURE_RESOURCE_PC *, u32, PC_LOCKED_RECT *, const void *, u32);
     HRESULT(__stdcall *unlock_rect)(PC_TEXTURE_RESOURCE_PC *, u32);
-} PC_TEXTURE_RESOURCE_METHODS_PC;
+} PC_TEXTURE_RESOURCE_METHODS;
 
 struct PC_TEXTURE_RESOURCE_PC {
-    const PC_TEXTURE_RESOURCE_METHODS_PC *methods;
+    const PC_TEXTURE_RESOURCE_METHODS *methods;
 };
 
-STATIC_ASSERT(offsetof(PC_TEXTURE_RESOURCE_METHODS_PC, release) == 8);
-STATIC_ASSERT(offsetof(PC_TEXTURE_RESOURCE_METHODS_PC, get_level_count) == 0x34);
-STATIC_ASSERT(offsetof(PC_TEXTURE_RESOURCE_METHODS_PC, get_level_desc) == 0x44);
-STATIC_ASSERT(offsetof(PC_TEXTURE_RESOURCE_METHODS_PC, lock_rect) == 0x4c);
+STATIC_ASSERT(offsetof(PC_TEXTURE_RESOURCE_METHODS, release) == 8);
+STATIC_ASSERT(offsetof(PC_TEXTURE_RESOURCE_METHODS, get_level_count) == 0x34);
+STATIC_ASSERT(offsetof(PC_TEXTURE_RESOURCE_METHODS, get_level_desc) == 0x44);
+STATIC_ASSERT(offsetof(PC_TEXTURE_RESOURCE_METHODS, lock_rect) == 0x4c);
 STATIC_ASSERT(offsetof(PC_TEXTURE_RESOURCE_PC, methods) == 0);
 
 typedef struct PC_VERTEX_ELEMENT_PC {
@@ -238,7 +238,7 @@ typedef struct PC_DEVICE_BACKEND_PC {
     PC_VIEWPORT_PC requested_viewport;
     PC_VIEWPORT_PC full_viewport;
     u32 adapter;
-    GRAPHICS_ADAPTER_IDENTIFIER_PC identifier;
+    GRAPHICS_ADAPTER_IDENTIFIER identifier;
     i32 device_type;
     u32 creation_flags;
     u8 force_software;
@@ -468,7 +468,7 @@ STATIC_ASSERT(offsetof(PC_DEVICE_BACKEND_PC, parameters) + offsetof(GRAPHICS_PRE
 STATIC_ASSERT(offsetof(PC_DEVICE_BACKEND_PC, desktop_mode) + offsetof(GRAPHICS_DISPLAY_MODE_PC, width) == 0x608);
 STATIC_ASSERT(offsetof(PC_DEVICE_BACKEND_PC, desktop_mode) + offsetof(GRAPHICS_DISPLAY_MODE_PC, height) == 0x60c);
 #ifdef __cplusplus
-STATIC_ASSERT(offsetof(PC_DEVICE_BACKEND_PC, identifier) + offsetof(GRAPHICS_ADAPTER_IDENTIFIER_PC, vendor) == 0x5cc);
+STATIC_ASSERT(offsetof(PC_DEVICE_BACKEND_PC, identifier) + offsetof(GRAPHICS_ADAPTER_IDENTIFIER, vendor) == 0x5cc);
 #endif
 STATIC_ASSERT(offsetof(PC_DEVICE_BACKEND_PC, caps) + offsetof(GRAPHICS_CAPS_PC, sampler_count_pc) == 0xa0);
 #undef SAGA_NU2API_NUWIN32_D3DCORE_H_PART

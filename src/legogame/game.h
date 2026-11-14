@@ -22,7 +22,7 @@ struct PART_PC;
 struct WORLDINFO_s;
 struct area_data_pc_s;
 struct gameobject_s;
-struct level_data_pc_s;
+struct level_data_s;
 
 typedef struct gamesave_s {
     union {
@@ -42,7 +42,7 @@ typedef struct gamesave_s {
 
     OPTIONSSAVE options_save;
     u8 level_save[0x781b];
-    AREA_SAVE_PICKUP_PC area_save[72];
+    AREA_SAVE_PICKUP area_save[72];
 
     union {
         struct {
@@ -102,7 +102,7 @@ typedef struct gamesave_s {
 
             u16 save_hash;
             u8 newgame_reserved_7c1a[0xa];
-            GAME_CUSTOMISER_START_PC customiser_start[2];
+            GAME_CUSTOMISER_START customiser_start[2];
         };
     };
 
@@ -143,7 +143,7 @@ STATIC_ASSERT(offsetof(GAMESAVE, mission_save) == 0x7c94);
 STATIC_ASSERT(offsetof(GAMESAVE, mission_save) + offsetof(MISSION_SAVE_READER_PC, completed) == 0x7ce4);
 
 // Access prefix only; the original allocation extent remains unknown.
-typedef struct area_globals_pc_s {
+typedef struct area_globals_s {
     i32 field_00;
     i32 field_04;
     i32 field_08;
@@ -304,7 +304,7 @@ extern "C" {
 }
 #endif
 
-typedef struct customiser_completion_reader_pc_s {
+typedef struct customiser_completion_reader_s {
     u8 unknown_00[3];
     u8 flags;
 } CUSTOMISER_COMPLETION_READER_PC;
@@ -323,10 +323,10 @@ extern "C" {
     extern i16 FreePlayId007f1a98Pc;
     extern i32 DefaultMotionLedgeTerrainEnabledPc;
     extern i32 Grapple_RopeSwingsAvailable;
-    extern struct level_data_pc_s *LevelFixupSlotPc0087b1a8;
-    extern struct level_data_pc_s *LevelFixupSlotPc0087b1bc;
-    extern struct level_data_pc_s *LevelFixupSlotPc0087b1d0;
-    extern struct level_data_pc_s *LevelFixupSlotPc0087b2c4;
+    extern struct level_data_s *LevelFixupSlotPc0087b1a8;
+    extern struct level_data_s *LevelFixupSlotPc0087b1bc;
+    extern struct level_data_s *LevelFixupSlotPc0087b1d0;
+    extern struct level_data_s *LevelFixupSlotPc0087b2c4;
     extern i32 Lighting_FlashRedOnLastHeart;
     extern struct area_data_pc_s *UTAPAU_ADATA;
     extern struct area_data_pc_s *HOTH_ADATA;

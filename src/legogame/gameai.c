@@ -8,36 +8,36 @@ STATIC_ASSERT(offsetof(WORLDINFO, level_objects) == 0x2ac0);
 STATIC_ASSERT(offsetof(PART_PC, move_fn) == 0x1b0);
 STATIC_ASSERT(offsetof(PART_PC, draw_fn) == 0x1d0);
 
-typedef struct ai_control_slot_pc_s {
+typedef struct ai_control_slot_s {
     NULISTLNK links;
     u8 unknown_08[0xa0];
 } AI_CONTROL_SLOT_PC;
 
-typedef struct ai_control_system_pc_s {
+typedef struct ai_control_system_s {
     i32 capacity;
     AI_CONTROL_SLOT_PC *controllers;
     NULISTHDR available;
     NULISTHDR active;
 } AI_CONTROL_SYSTEM_PC;
 
-typedef struct ai_controller_scene_view_pc_s {
+typedef struct ai_controller_scene_view_s {
     u8 unknown_0000[0x1394];
     NUGSCN *scene;
 } AI_CONTROLLER_SCENE_VIEW_PC;
 
 void *CutScene_FindInst(void *, char *);
 
-typedef struct controller_animation_view_pc_s {
+typedef struct controller_animation_view_s {
     u8 unknown_00[0x5c];
     u16 animation_index;
 } CONTROLLER_ANIMATION_VIEW_PC;
 
-typedef struct controller_cut_animation_pc_s {
+typedef struct controller_cut_animation_s {
     u8 unknown_00[8];
     f32 end_frame;
 } CONTROLLER_CUT_ANIMATION_PC;
 
-typedef struct controller_cut_view_pc_s {
+typedef struct controller_cut_view_s {
     u8 unknown_00[0x58];
     CONTROLLER_CUT_ANIMATION_PC *animation;
     u8 unknown_5c[0x34];
@@ -145,7 +145,7 @@ typedef struct OPPONENT_LOS_PC {
 void __movsd(unsigned long *, unsigned long const *, unsigned int);
 void LevelScriptReStoreProgress(WORLDINFO *, LEVEL_SCRIPT_PROCESS_PC *);
 
-typedef struct ai_frame_world_pc_s {
+typedef struct ai_frame_world_s {
     u8 unknown_0000[0x2aec];
     i32 processor_count;
     LEVEL_SCRIPT_PROCESS_PC processors[32];
@@ -159,7 +159,7 @@ typedef struct {
 
 extern char AIGizmoNameBufferPc[16];
 
-typedef struct ai_gizmo_name_process_pc_s {
+typedef struct ai_gizmo_name_process_s {
     char name[16];
     u8 unknown_10[4];
     AISCRIPT_PC *script;
@@ -177,7 +177,7 @@ typedef struct AIONCEATTACKER_PC {
     f32 distance;
 } AIONCEATTACKER_PC;
 
-typedef struct bulk_ai_full_object_pc_s {      // size 0x2b8
+typedef struct bulk_ai_full_object_s {         // size 0x2b8
     APIOBJECT_PC object;                       // 0x000
     u8 trailing[0x2b8 - sizeof(APIOBJECT_PC)]; // 0x29c
 } BULK_AI_FULL_OBJECT_PC;

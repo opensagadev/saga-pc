@@ -25,9 +25,9 @@
 #if SAGA_GAMEAPI_EDPTL_H_PART == 1 && !defined(SAGA_GAMEAPI_EDPTL_H_STOP)
 
 struct NUGSCN_s;
-struct debris_collision_entry_pc_s;
-struct debris_info_pc_s;
-struct debris_particle_chunk_pc_s;
+struct debris_collision_entry_s;
+struct debris_info_s;
+struct debris_particle_chunk_s;
 struct eduiitem_s;
 struct eduimenu_s;
 
@@ -108,7 +108,7 @@ extern "C" {
     STATIC_ASSERT(offsetof(PC_EDGRAINDIVIDUAL, field_12) == 0x12);
     i32 edbriLoadPage(char *path, void *scene);
 
-    typedef struct debris_key_pc_s DEBRISKEY_PC;
+    typedef struct debris_key_s DEBRISKEY_PC;
 #define PCGrassTerrainScene CurrentTerrain // NOLINT(readability-identifier-naming)
     extern i32 debrischunks;
     extern i32 debrischunksglass;
@@ -123,7 +123,7 @@ extern "C" {
     void edppClearPage(i8);
     void DebrisCleanUpDmaDebTypeTables(void);
 
-    extern struct debris_collision_entry_pc_s *spherecolldata;
+    extern struct debris_collision_entry_s *spherecolldata;
     extern i32 DebrisProcessingEnabledPc;
     extern i32 debris_sort_delay;
     extern i32 debris_sort_this_stack;
@@ -148,12 +148,12 @@ extern "C" {
 extern "C" {
 #endif
 
-    struct debris_key_pc_s {
+    struct debris_key_s {
         NUMTX clip_matrix;
         NUMTX effect_orientation;
         NUMTX emitter_orientation;
         NUMTX particle_orientation;
-        struct debris_particle_chunk_pc_s *particle_chunks[32];
+        struct debris_particle_chunk_s *particle_chunks[32];
         i16 allocated_chunk_count;
         i16 effect_index;
         u8 finite;
@@ -339,14 +339,14 @@ extern "C" {
 extern "C" {
 #endif
 
-    typedef struct debris_render_chunk_pc_s {
-        struct debris_particle_chunk_pc_s *particle_chunk;
-        struct debris_info_pc_s *effect;
+    typedef struct debris_render_chunk_s {
+        struct debris_particle_chunk_s *particle_chunk;
+        struct debris_info_s *effect;
         DEBRISKEY_PC *key;
         NUMTX effect_orientation;
         NUVEC position;
-        struct debris_render_chunk_pc_s *previous;
-        struct debris_render_chunk_pc_s *next;
+        struct debris_render_chunk_s *previous;
+        struct debris_render_chunk_s *next;
         u16 render_priority;
         u8 fields_062[2];
     } DEBRIS_RENDER_CHUNK_PC;

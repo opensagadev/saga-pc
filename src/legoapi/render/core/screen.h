@@ -13,7 +13,7 @@
 struct NUGSCN_s;
 struct WORLDINFO_s;
 
-typedef struct level_display_pc_s {
+typedef struct level_display_s {
     f32 farclip_hack;
     f32 near_clip;
     i16 far_clip;
@@ -61,7 +61,7 @@ extern "C" {
     extern i32 cut_waiting_for_new_level;
     void InitStillRender(VARIPTR *buffer, VARIPTR end);
 
-    typedef struct gamefog_state_pc_s {
+    typedef struct gamefog_state_s {
         f32 colour_channels[4];
         f32 start;
         f32 end;

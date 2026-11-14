@@ -36,11 +36,11 @@ STATIC_ASSERT(offsetof(GIZTURRETSYS_s, capacity) == 0xa);
 STATIC_ASSERT(offsetof(GIZTURRETSYS_s, opponent_cursor) == 0xc);
 STATIC_ASSERT(offsetof(WORLDINFO, giz_turret_sys) == 0x46b8);
 
-typedef struct TURRET_ANIM_DATA_PC { // size 0x4
-    u8 flags;                        // 0x0
-    u8 role;                         // 0x1
-    i16 platform_id;                 // 0x2
-} TURRET_ANIM_DATA_PC;
+typedef struct TURRET_ANIM_DATA { // size 0x4
+    u8 flags;                     // 0x0
+    u8 role;                      // 0x1
+    i16 platform_id;              // 0x2
+} TURRET_ANIM_DATA;
 
 typedef struct {      // size 0x70
     u32 enabled[2];   // 0x00
@@ -88,12 +88,12 @@ extern "C" {
     }
 
     static void GizTurretReadAnimSetDataPc(GAMEANIMOBJ *object, u8 version) {
-        TURRET_ANIM_DATA_PC scratch;
-        TURRET_ANIM_DATA_PC *data;
+        TURRET_ANIM_DATA scratch;
+        TURRET_ANIM_DATA *data;
         if (object == NULL || version <= 2) {
             return;
         }
-        data = (TURRET_ANIM_DATA_PC *)object->object_data;
+        data = (TURRET_ANIM_DATA *)object->object_data;
         if (data == NULL) {
             data = &scratch;
         }
@@ -112,7 +112,7 @@ extern "C" {
         i32 object_index;
         GIZTURRET_s *turret;
         GAMEANIMOBJ *object;
-        TURRET_ANIM_DATA_PC *data;
+        TURRET_ANIM_DATA *data;
         char name[256];
         system->count = (u16)EdFileReadShort();
         if (system->count == 0) {
@@ -185,7 +185,7 @@ extern "C" {
             if (version <= 4) {
                 object_index = 0;
                 for (object = turret->anim_set->objects; object != NULL; object = object->next, ++object_index) {
-                    data = (TURRET_ANIM_DATA_PC *)object->object_data;
+                    data = (TURRET_ANIM_DATA *)object->object_data;
                     if (object_index == 0) {
                         data->role = 1;
                     } else if (object_index == 1) {
@@ -303,7 +303,7 @@ extern "C" {
 
     static void GizTurrets_Reset(GIZTURRET_s *turret, WORLDINFO *world) {
         GAMEANIMOBJ *object;
-        TURRET_ANIM_DATA_PC *data;
+        TURRET_ANIM_DATA *data;
         NUMTX *primary;
         NUMTX *secondary;
         turret->flags |= 6;
@@ -315,7 +315,7 @@ extern "C" {
             return;
         }
         for (object = turret->anim_set->objects; object != NULL; object = object->next) {
-            data = (TURRET_ANIM_DATA_PC *)object->object_data;
+            data = (TURRET_ANIM_DATA *)object->object_data;
             if (data->role == 1) {
                 turret->primary_anim_obj = object;
             } else if (data->role == 2) {
@@ -353,7 +353,7 @@ extern "C" {
         i32 index;
         TURRET_PROGRESS_PC *progress = (TURRET_PROGRESS_PC *)progress_pointer;
         GAMEANIMOBJ *object;
-        TURRET_ANIM_DATA_PC *data;
+        TURRET_ANIM_DATA *data;
         GIZTURRET_s *turret = system->turrets;
         for (index = 0; index < system->count; ++index, ++turret) {
             GizTurrets_Reset(turret, world);
@@ -372,7 +372,7 @@ extern "C" {
             }
             if (turret->anim_set != NULL) {
                 for (object = turret->anim_set->objects; object != NULL; object = object->next) {
-                    data = (TURRET_ANIM_DATA_PC *)object->object_data;
+                    data = (TURRET_ANIM_DATA *)object->object_data;
                     if (data->role == 3) {
                         NuSpecialSetVisibility(&object->special, turret->update_disabled);
                     }
@@ -1160,7 +1160,7 @@ extern "C" {
     i32 GizTurrets_Hit(WORLDINFO *world, GIZTURRET_s *turret, NUVEC *hit_position, i32 player, i32 damage) {
         f32 judder;
         GAMEANIMOBJ *object;
-        TURRET_ANIM_DATA_PC *data;
+        TURRET_ANIM_DATA *data;
         NUVEC centre;
         NUVEC position;
         NUVEC direction;
@@ -1183,7 +1183,7 @@ extern "C" {
                     GameAnimSet_SetVisibility(turret->anim_set, 0);
                     if (turret->anim_set != NULL) {
                         for (object = turret->anim_set->objects; object != NULL; object = object->next) {
-                            data = (TURRET_ANIM_DATA_PC *)object->object_data;
+                            data = (TURRET_ANIM_DATA *)object->object_data;
                             if (data->role == 3) {
                                 NuSpecialSetVisibility(&object->special, 1);
                             }
@@ -1239,7 +1239,7 @@ extern "C" {
                 }
                 animation = turret->anim_set->objects;
                 while (animation != NULL) {
-                    if (((TURRET_ANIM_DATA_PC *)animation->object_data)->platform_id == bolt->hit_platform) {
+                    if (((TURRET_ANIM_DATA *)animation->object_data)->platform_id == bolt->hit_platform) {
                         type = BoltType_FindByID(bolt->type_id, world);
                         owner = (GAMEOBJECT *)bolt->owner;
                         if (owner != NULL && (turret->behavior_flags & 0x10000) != 0 && owner->rider == NULL) {

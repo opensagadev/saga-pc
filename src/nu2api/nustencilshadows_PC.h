@@ -63,14 +63,14 @@ STATIC_ASSERT(offsetof(PC_TEXTURE_LEVEL_DESC_PC, format) == 0);
 STATIC_ASSERT(offsetof(PC_TEXTURE_LEVEL_DESC_PC, width) == 0x18);
 STATIC_ASSERT(offsetof(PC_TEXTURE_LEVEL_DESC_PC, height) == 0x1c);
 
-typedef struct nutexbmp_colour_pc_s {
+typedef struct nutexbmp_colour_s {
     u8 blue;
     u8 green;
     u8 red;
     u8 alpha;
 } NUTEXBMP_COLOUR_PC;
 
-typedef struct nutexbmp_pc_s {
+typedef struct nutexbmp_s {
     i32 type;
     i32 width;
     i32 height;
@@ -93,7 +93,7 @@ typedef struct PC_VIEWPORT_PC {
     f32 max_z;
 } PC_VIEWPORT_PC;
 
-typedef struct nulgtvertex_pc_s {
+typedef struct nulgtvertex_s {
     f32 x;
     f32 y;
     f32 z;
@@ -108,22 +108,22 @@ STATIC_ASSERT(offsetof(NULGTVERTEX_PC, v) == 0x14);
 
 typedef struct PC_BUFFER_RESOURCE_PC PC_BUFFER_RESOURCE_PC;
 
-typedef struct PC_BUFFER_RESOURCE_METHODS_PC {
+typedef struct PC_BUFFER_RESOURCE_METHODS {
     void *unknown_0000[2];
     ULONG(__stdcall *release)(PC_BUFFER_RESOURCE_PC *);
     void *unknown_000c[8];
     HRESULT(__stdcall *lock)(PC_BUFFER_RESOURCE_PC *, u32, u32, void **, u32);
     HRESULT(__stdcall *unlock)(PC_BUFFER_RESOURCE_PC *);
-} PC_BUFFER_RESOURCE_METHODS_PC;
+} PC_BUFFER_RESOURCE_METHODS;
 
 struct PC_BUFFER_RESOURCE_PC {
-    const PC_BUFFER_RESOURCE_METHODS_PC *methods;
+    const PC_BUFFER_RESOURCE_METHODS *methods;
 };
 
 STATIC_ASSERT(offsetof(PC_BUFFER_RESOURCE_PC, methods) == 0);
-STATIC_ASSERT(offsetof(PC_BUFFER_RESOURCE_METHODS_PC, release) == 8);
-STATIC_ASSERT(offsetof(PC_BUFFER_RESOURCE_METHODS_PC, lock) == 0x2c);
-STATIC_ASSERT(offsetof(PC_BUFFER_RESOURCE_METHODS_PC, unlock) == 0x30);
+STATIC_ASSERT(offsetof(PC_BUFFER_RESOURCE_METHODS, release) == 8);
+STATIC_ASSERT(offsetof(PC_BUFFER_RESOURCE_METHODS, lock) == 0x2c);
+STATIC_ASSERT(offsetof(PC_BUFFER_RESOURCE_METHODS, unlock) == 0x30);
 
 typedef struct PC_EFFECT_SURFACE_PC PC_EFFECT_SURFACE_PC;
 
@@ -187,7 +187,7 @@ extern "C" {
     extern void *NuDebrisVertexData;
     extern u32 NuDebrisFrameVertexCount;
 
-    typedef struct debris_particle_chunk_pc_s DEBRIS_PARTICLE_CHUNK_PC;
+    typedef struct debris_particle_chunk_s DEBRIS_PARTICLE_CHUNK_PC;
     void PCDeviceCreateVertexBuffer(u32, u32, u32, i32, PC_BUFFER_RESOURCE_PC **);
     void PCDeviceCreateIndexBuffer(u32, u32, i32, i32, PC_BUFFER_RESOURCE_PC **, HANDLE *);
     extern i32 nu_water_reset_state;
@@ -322,7 +322,7 @@ extern "C" {
 
 #if SAGA_NU2API_NUSTENCILSHADOWS_PC_H_PART == 2 && !defined(SAGA_NU2API_NUSTENCILSHADOWS_PC_H_STOP)
 
-typedef struct debris_part_header_pc_s {
+typedef struct debris_part_header_s {
     u8 fields_000[16];
     f32 gravity;
     f32 last_render_time;
@@ -386,12 +386,12 @@ extern "C" {
     extern struct PC_TEXTURE_RESOURCE_PC *NuDisplayMaterialFaceOnDeclarationPc;
     extern struct PC_TEXTURE_RESOURCE_PC *NuDisplayMaterialDefaultDeclarationPc;
 
-    typedef struct PC_GOBJ_NATIVE_RESOURCE_PC {
+    typedef struct PC_GOBJ_NATIVE_RESOURCE {
         u8 unknown_00[0x10];
         struct PC_TEXTURE_RESOURCE_PC *resource;
-    } PC_GOBJ_NATIVE_RESOURCE_PC;
+    } PC_GOBJ_NATIVE_RESOURCE;
 
-    STATIC_ASSERT(offsetof(PC_GOBJ_NATIVE_RESOURCE_PC, resource) == 0x10);
+    STATIC_ASSERT(offsetof(PC_GOBJ_NATIVE_RESOURCE, resource) == 0x10);
 
     typedef struct PC_GOBJ_REGISTRY_CHILD_PC {
         struct PC_GOBJ_REGISTRY_CHILD_PC *next;
@@ -400,7 +400,7 @@ extern "C" {
         u8 unknown_24[8];
         PC_GOBJ_REGISTRY_AUX_PC *auxiliary;
         u8 unknown_30[8];
-        PC_GOBJ_NATIVE_RESOURCE_PC *native_resource;
+        PC_GOBJ_NATIVE_RESOURCE *native_resource;
     } PC_GOBJ_REGISTRY_CHILD_PC;
 
     STATIC_ASSERT(offsetof(PC_GOBJ_REGISTRY_CHILD_PC, owned_buffer) == 0x20);
@@ -605,10 +605,10 @@ extern "C" {
 extern "C" {
 #endif
 
-    struct debris_particle_chunk_pc_s {
+    struct debris_particle_chunk_s {
         u8 command;
         u8 fields_001[3];
-        struct debris_particle_chunk_pc_s *next;
+        struct debris_particle_chunk_s *next;
         u8 fields_008[12];
         u32 field_014;
         u32 field_018;

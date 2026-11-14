@@ -59,7 +59,7 @@ STATIC_ASSERT(offsetof(GAMEANIMOBJ, end_frame) == 0x1c);
 STATIC_ASSERT(offsetof(GAMEANIMSET, objects) == 0x18);
 STATIC_ASSERT(offsetof(NUINSTANIM, ltime) == 0x4c);
 STATIC_ASSERT(offsetof(NUINSTANIM, fparam1) == 0x54);
-STATIC_ASSERT(sizeof(GAMEDEBRISENTRY_PC) == 0x14);
+STATIC_ASSERT(sizeof(GAMEDEBRISENTRY) == 0x14);
 STATIC_ASSERT(offsetof(APIDEBRISSYS_PC, entries) == 8);
 STATIC_ASSERT(sizeof(GIZMO_PC) == 8);
 STATIC_ASSERT(offsetof(GIZMOSET_PC, count) == 4);
@@ -92,8 +92,8 @@ static i32 SpinnerFindSpecialPc(WORLDINFO *world, NUSPECIALHANDLE *special, char
 
 // Private helper; receives spinner in EAX, bolt in ESI, and flags on the stack.
 // A four-byte aggregate preserves that stack slot under VC8's private argument optimization.
-struct SPINNER_HIT_FLAGS_STACK_PC { // size 0x4
-    u8 *value;                      // 0x0
+struct SPINNER_HIT_FLAGS_STACK { // size 0x4
+    u8 *value;                   // 0x0
 };
 
 extern "C" {
@@ -1020,7 +1020,7 @@ extern "C" i32 GizSpinner_UsingSpecial(void *results_ptr, void *world_ptr, i32 c
 }
 
 extern "C" {
-    static void GizSpinner_BoltHitPlat(GIZSPINNER_s *spinner, BOLT_PC *bolt, SPINNER_HIT_FLAGS_STACK_PC argument) {
+    static void GizSpinner_BoltHitPlat(GIZSPINNER_s *spinner, BOLT_PC *bolt, SPINNER_HIT_FLAGS_STACK argument) {
         u8 *hit_flags = argument.value;
         GAMEOBJECT *owner = (GAMEOBJECT *)bolt->owner;
         if (spinner == NULL || (spinner->state_flags & 8) != 0) {
@@ -1044,7 +1044,7 @@ extern "C" i32 GizSpinner_BoltHitPlatPc(WORLDINFO *, void *spinner_ptr, BOLT_PC 
     if ((spinner->flags & 0x22) != 0 && spinner->platform_id == bolt->hit_platform) {
         return 1;
     }
-    SPINNER_HIT_FLAGS_STACK_PC argument = {hit_flags};
+    SPINNER_HIT_FLAGS_STACK argument = {hit_flags};
     if (spinner->platform_id == bolt->hit_platform) {
         GizSpinner_BoltHitPlat(spinner, bolt, argument);
         return 1;

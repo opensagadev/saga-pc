@@ -12,19 +12,19 @@ static u16 rtl_uid = 1;
 static i32 rtl_dynamic_cnt = 0;
 #pragma bss_seg()
 
-typedef union RTL_FRAME_TIMER_VIEW_PC { // size 0x4
+typedef union RTL_FRAME_TIMER_VIEW { // size 0x4
     i32 value;
 
     struct {      // size 0x4
         u16 low;  // 0x0
         u16 high; // 0x2
     } words;
-} RTL_FRAME_TIMER_VIEW_PC;
+} RTL_FRAME_TIMER_VIEW;
 
-STATIC_ASSERT(sizeof(RTL_FRAME_TIMER_VIEW_PC) == sizeof(i32));
+STATIC_ASSERT(sizeof(RTL_FRAME_TIMER_VIEW) == sizeof(i32));
 
 void rtlFrameUpdate(f32 frame_time) {
-    ((RTL_FRAME_TIMER_VIEW_PC *)&rtltimer1)->words.low += (u16)(i32)(rtltimer1adv * frame_time);
+    ((RTL_FRAME_TIMER_VIEW *)&rtltimer1)->words.low += (u16)(i32)(rtltimer1adv * frame_time);
     NuTimeBarSlotReset(0, 6);
 }
 
@@ -1045,15 +1045,15 @@ void rtlSetShadowFlickerBlendTime(f32 time) {
 void fun_00635b00(void) {
 }
 
-typedef struct BURN_OUT_PC { // size 0x24
-    i32 active;              // 0x00
-    NUVEC position;          // 0x04
-    f32 field_10;            // 0x10
-    f32 field_14;            // 0x14
-    f32 field_18;            // 0x18
-    f32 field_1c;            // 0x1c
-    f32 field_20;            // 0x20
-} BURN_OUT_PC;
+typedef struct BURN_OUT { // size 0x24
+    i32 active;           // 0x00
+    NUVEC position;       // 0x04
+    f32 field_10;         // 0x10
+    f32 field_14;         // 0x14
+    f32 field_18;         // 0x18
+    f32 field_1c;         // 0x1c
+    f32 field_20;         // 0x20
+} BURN_OUT;
 
 struct BURN_SET_PC {                    // size 0x564
     BURN_PARAMETERS_PC parameters;      // 0x000
@@ -1068,7 +1068,7 @@ struct BURN_SET_PC {                    // size 0x564
     f32 field_c4;                       // 0x0c4
     f32 field_c8;                       // 0x0c8
     f32 field_cc;                       // 0x0cc
-    BURN_OUT_PC burnouts[32];           // 0x0d0
+    BURN_OUT burnouts[32];              // 0x0d0
     i32 active_count;                   // 0x550
     i32 selected_index;                 // 0x554
     f32 field_558;                      // 0x558

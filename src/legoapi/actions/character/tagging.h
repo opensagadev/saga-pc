@@ -23,7 +23,7 @@ extern "C" {
 }
 #endif
 
-typedef struct tag_transfer_pc_s {
+typedef struct tag_transfer_s {
     GAMEOBJECT *source;
     NUVEC previous[3];
     f32 height_fraction[3];

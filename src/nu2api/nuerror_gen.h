@@ -5,7 +5,7 @@
 
 #include "nu2api/nucore/common.h"
 
-typedef struct PC_NATIVE_DEBUG_HEADER_PC {
+typedef struct PC_NATIVE_DEBUG_HEADER {
     i32 first;
     i32 second;
     i32 third;
@@ -16,15 +16,15 @@ typedef struct PC_NATIVE_DEBUG_HEADER_PC {
     u32 high_colour;
     u32 low_colour;
     u32 inner_colour;
-} PC_NATIVE_DEBUG_HEADER_PC;
+} PC_NATIVE_DEBUG_HEADER;
 
-typedef struct PC_NATIVE_DEBUG_VERTEX_PC {
+typedef struct PC_NATIVE_DEBUG_VERTEX {
     f32 x;
     f32 y;
     f32 z;
     f32 w;
     u32 colour;
-} PC_NATIVE_DEBUG_VERTEX_PC;
+} PC_NATIVE_DEBUG_VERTEX;
 
 typedef struct PC_NATIVE_DEBUG_STATE_PC {
     u8 unknown_0;
@@ -33,13 +33,13 @@ typedef struct PC_NATIVE_DEBUG_STATE_PC {
     i32 unknown_004;
     i32 unknown_008;
     i32 unknown_00c;
-    PC_NATIVE_DEBUG_HEADER_PC header;
-    PC_NATIVE_DEBUG_HEADER_PC *current_header;
+    PC_NATIVE_DEBUG_HEADER header;
+    PC_NATIVE_DEBUG_HEADER *current_header;
     f32 top;
     f32 left;
     f32 right;
     f32 bottom;
-    PC_NATIVE_DEBUG_VERTEX_PC vertices[54];
+    PC_NATIVE_DEBUG_VERTEX vertices[54];
     i32 log_file;
     u8 write_log;
     u8 unknown_505[3];
@@ -55,23 +55,23 @@ typedef struct PC_NATIVE_DEBUG_STATE_PC {
 #endif
 } PC_NATIVE_DEBUG_STATE_PC;
 
-STATIC_ASSERT(sizeof(PC_NATIVE_DEBUG_HEADER_PC) == 0xa4);
-STATIC_ASSERT(offsetof(PC_NATIVE_DEBUG_HEADER_PC, first) == 0);
-STATIC_ASSERT(offsetof(PC_NATIVE_DEBUG_HEADER_PC, second) == 4);
-STATIC_ASSERT(offsetof(PC_NATIVE_DEBUG_HEADER_PC, third) == 8);
-STATIC_ASSERT(offsetof(PC_NATIVE_DEBUG_HEADER_PC, font_size) == 0xc);
-STATIC_ASSERT(offsetof(PC_NATIVE_DEBUG_HEADER_PC, label) == 0x10);
-STATIC_ASSERT(offsetof(PC_NATIVE_DEBUG_HEADER_PC, unknown_colour) == 0x90);
-STATIC_ASSERT(offsetof(PC_NATIVE_DEBUG_HEADER_PC, face_colour) == 0x94);
-STATIC_ASSERT(offsetof(PC_NATIVE_DEBUG_HEADER_PC, high_colour) == 0x98);
-STATIC_ASSERT(offsetof(PC_NATIVE_DEBUG_HEADER_PC, low_colour) == 0x9c);
-STATIC_ASSERT(offsetof(PC_NATIVE_DEBUG_HEADER_PC, inner_colour) == 0xa0);
-STATIC_ASSERT(sizeof(PC_NATIVE_DEBUG_VERTEX_PC) == 20);
-STATIC_ASSERT(offsetof(PC_NATIVE_DEBUG_VERTEX_PC, x) == 0);
-STATIC_ASSERT(offsetof(PC_NATIVE_DEBUG_VERTEX_PC, y) == 4);
-STATIC_ASSERT(offsetof(PC_NATIVE_DEBUG_VERTEX_PC, z) == 8);
-STATIC_ASSERT(offsetof(PC_NATIVE_DEBUG_VERTEX_PC, w) == 12);
-STATIC_ASSERT(offsetof(PC_NATIVE_DEBUG_VERTEX_PC, colour) == 16);
+STATIC_ASSERT(sizeof(PC_NATIVE_DEBUG_HEADER) == 0xa4);
+STATIC_ASSERT(offsetof(PC_NATIVE_DEBUG_HEADER, first) == 0);
+STATIC_ASSERT(offsetof(PC_NATIVE_DEBUG_HEADER, second) == 4);
+STATIC_ASSERT(offsetof(PC_NATIVE_DEBUG_HEADER, third) == 8);
+STATIC_ASSERT(offsetof(PC_NATIVE_DEBUG_HEADER, font_size) == 0xc);
+STATIC_ASSERT(offsetof(PC_NATIVE_DEBUG_HEADER, label) == 0x10);
+STATIC_ASSERT(offsetof(PC_NATIVE_DEBUG_HEADER, unknown_colour) == 0x90);
+STATIC_ASSERT(offsetof(PC_NATIVE_DEBUG_HEADER, face_colour) == 0x94);
+STATIC_ASSERT(offsetof(PC_NATIVE_DEBUG_HEADER, high_colour) == 0x98);
+STATIC_ASSERT(offsetof(PC_NATIVE_DEBUG_HEADER, low_colour) == 0x9c);
+STATIC_ASSERT(offsetof(PC_NATIVE_DEBUG_HEADER, inner_colour) == 0xa0);
+STATIC_ASSERT(sizeof(PC_NATIVE_DEBUG_VERTEX) == 20);
+STATIC_ASSERT(offsetof(PC_NATIVE_DEBUG_VERTEX, x) == 0);
+STATIC_ASSERT(offsetof(PC_NATIVE_DEBUG_VERTEX, y) == 4);
+STATIC_ASSERT(offsetof(PC_NATIVE_DEBUG_VERTEX, z) == 8);
+STATIC_ASSERT(offsetof(PC_NATIVE_DEBUG_VERTEX, w) == 12);
+STATIC_ASSERT(offsetof(PC_NATIVE_DEBUG_VERTEX, colour) == 16);
 STATIC_ASSERT(sizeof(PC_NATIVE_DEBUG_STATE_PC) == 0x508);
 STATIC_ASSERT(offsetof(PC_NATIVE_DEBUG_STATE_PC, unknown_0) == 0);
 STATIC_ASSERT(offsetof(PC_NATIVE_DEBUG_STATE_PC, enabled) == 1);

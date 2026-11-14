@@ -652,7 +652,7 @@ struct MINESYS_s {
 STATIC_ASSERT(sizeof(struct MINESYS_s) == 1864);
 
 struct SOCKSYS {
-    struct sock_pc_s *sock;
+    struct sock_s *sock;
     i32 count;
 };
 
@@ -796,7 +796,7 @@ extern "C" {
     extern i32 LEGOMENU_PAUSECUT;
     extern struct gameobject_s *pod_pacemaker;
     extern void *gunship_weapons[4];
-    extern struct level_data_pc_s *CLOUDCITYTRAPOUTRO_LDATA;
+    extern struct level_data_s *CLOUDCITYTRAPOUTRO_LDATA;
     extern i16 id_DARTHVADER;
     extern void (*LEGO_SET_SLOWDOWNFN)(struct gameobject_s *arg0);
     extern i32 (*GizObstacle_CheckExcludeFlagsFn)(struct gizobstacle_s *arg0, struct gameobject_s *arg1);
@@ -820,7 +820,7 @@ extern "C" {
     extern f32 GIZPANEL_PLAYERPOSLIFT;
     void GizTurret_ReadAnimSetData(struct gameanimobj_s *object, u8 version);
     u8 Store_IsPackUnlocked(i32 pack);
-    extern struct level_data_pc_s *PODRACEC_LDATA;
+    extern struct level_data_s *PODRACEC_LDATA;
     extern char Door_ExitCameraSplineName[32];
     void PodSprint_InitAISpline(struct WORLDINFO_s *world, void *ai, char *name);
     extern i32 max_nsnipers;
@@ -866,9 +866,9 @@ extern "C" {
     extern i16 tNEXTCHAPTERLOCKED;
     extern i16 tRESTART;
     extern const f64 ShopCharacterAmplitudePc;
-    extern struct level_data_pc_s *DAGOBAHA_LDATA;
-    extern struct level_data_pc_s *DAGOBAHD_LDATA;
-    extern struct level_data_pc_s *DAGOBAHE_LDATA;
+    extern struct level_data_s *DAGOBAHA_LDATA;
+    extern struct level_data_s *DAGOBAHD_LDATA;
+    extern struct level_data_s *DAGOBAHE_LDATA;
     void NuTexAddReference(i32 tex_id, struct NUGSCN_s *scene);
     extern void (*nudebug_handler)(char *arg0);
     void NuHtmlFlush(i32 force);
@@ -892,10 +892,10 @@ extern "C" {
     extern i16 id_IMPERIALSHUTTLE;
     extern i16 id_NABOOSTARFIGHTER;
     extern i16 id_SNOWSPEEDER;
-    extern struct level_data_pc_s *TEMPLESTATUS_LDATA;
+    extern struct level_data_s *TEMPLESTATUS_LDATA;
     i32 ImplodeGetI(void *buf, i32 size);
     void *NuFramebufferGetFrontBuffer(void);
-    extern struct level_data_pc_s *HOTHBATTLED_LDATA;
+    extern struct level_data_s *HOTHBATTLED_LDATA;
     extern i32 TERRAINMASK_NONDROID;
     u32 ParseAIPathCnxFlag(char *name);
     void *CreatePodRaceMine(struct nuvec_s *pos);
@@ -906,7 +906,7 @@ extern "C" {
     i32 eduiMenuProcessSelectedItem(struct eduimenu_s *menu, f32 delta_time, struct FRAME_PAD_PC *pad);
     extern u8 hub_makefreeplaylist_addotherid;
     extern i32 hub_new_level;
-    void edpartRemoveInstance(struct parttype_lookup_pc_s *type, i32 index);
+    void edpartRemoveInstance(struct parttype_lookup_s *type, i32 index);
     extern const char NuFileIopImageNamePc[13];
     void MakePlayCorner(struct gamecamera_s *camera, f32 screen_x, f32 screen_y, struct nuvec_s *near_corner,
                         struct nuvec_s *far_corner);

@@ -28,7 +28,7 @@ struct WORLDINFO_s;
 struct bolt_s;
 struct gameobject_s;
 
-typedef struct game_antinode_data_pc_s {
+typedef struct game_antinode_data_s {
     NUVEC position;
     f32 radius;
     f32 min_y;

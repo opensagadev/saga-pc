@@ -23,21 +23,21 @@ STATIC_ASSERT(offsetof(GAMEOBJECT, torpedo) == 0xcc4);
 STATIC_ASSERT(offsetof(GAMEOBJECT, flags_1fc_word) == 0x1fc);
 STATIC_ASSERT(offsetof(GAMEOBJECT, field_280) == 0x280);
 STATIC_ASSERT(offsetof(GAMEOBJECT, pad) == 0xca4);
-STATIC_ASSERT(offsetof(GAMEDEBRISENTRY_PC, effect) == 0);
-STATIC_ASSERT(85 * sizeof(GAMEDEBRISENTRY_PC) == 0x6a4);
+STATIC_ASSERT(offsetof(GAMEDEBRISENTRY, effect) == 0);
+STATIC_ASSERT(85 * sizeof(GAMEDEBRISENTRY) == 0x6a4);
 
-typedef struct VEHICLE_FIRE_STATE_PC { // size 0xe3c
-    u8 unknown_000[0x7f4];             // 0x000
-    WEAPON_AMMO_PC weapon_ammo;        // 0x7f4
-    u8 unknown_7fc[0xe3a - 0x7fc];     // 0x7fc
-    u8 bolt_fire_phase;                // 0xe3a
-} VEHICLE_FIRE_STATE_PC;
+typedef struct VEHICLE_FIRE_STATE { // size 0xe3c
+    u8 unknown_000[0x7f4];          // 0x000
+    WEAPON_AMMO_PC weapon_ammo;     // 0x7f4
+    u8 unknown_7fc[0xe3a - 0x7fc];  // 0x7fc
+    u8 bolt_fire_phase;             // 0xe3a
+} VEHICLE_FIRE_STATE;
 
-STATIC_ASSERT(offsetof(VEHICLE_FIRE_STATE_PC, weapon_ammo) + offsetof(WEAPON_AMMO_PC, ammo) == 0x7f8);
+STATIC_ASSERT(offsetof(VEHICLE_FIRE_STATE, weapon_ammo) + offsetof(WEAPON_AMMO_PC, ammo) == 0x7f8);
 
 i32 BoltType_FindIDByCreature(GAMEOBJECT *object, i32 fallback) {
     WORLDINFO *world = WorldInfo_CurrentlyActive();
-    VEHICLE_FIRE_STATE_PC *state = (VEHICLE_FIRE_STATE_PC *)object;
+    VEHICLE_FIRE_STATE *state = (VEHICLE_FIRE_STATE *)object;
     i32 id;
     i32 result;
     if (object == NULL) {

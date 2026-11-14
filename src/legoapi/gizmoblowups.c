@@ -99,15 +99,15 @@ typedef struct {         // size 0x3c
 STATIC_ASSERT(offsetof(GIZSPINNER_s, position) == 0x5c);
 STATIC_ASSERT(offsetof(GIZMOPICKUP_PC, position) == 8);
 
-typedef struct ai_gizmo_name_process_pc_s { // size 0xdc
-    char name[16];                          // 0x00
-    u8 unknown_10[4];                       // 0x10
-    AISCRIPT_PC *script;                    // 0x14
-    u8 unknown_18[0x98];                    // 0x18
-    char *context_name;                     // 0xb0
-    char *locator_name;                     // 0xb4
-    char *locator_set_name;                 // 0xb8
-    u8 unknown_bc[0x20];                    // 0xbc
+typedef struct ai_gizmo_name_process_s { // size 0xdc
+    char name[16];                       // 0x00
+    u8 unknown_10[4];                    // 0x10
+    AISCRIPT_PC *script;                 // 0x14
+    u8 unknown_18[0x98];                 // 0x18
+    char *context_name;                  // 0xb0
+    char *locator_name;                  // 0xb4
+    char *locator_set_name;              // 0xb8
+    u8 unknown_bc[0x20];                 // 0xbc
 } AI_GIZMO_NAME_PROCESS_PC;
 
 STATIC_ASSERT(offsetof(GIZMO_PC, type_id) == 6);
@@ -267,31 +267,31 @@ STATIC_ASSERT(offsetof(GIZMOBLOWUP_PC, anti_node) == 0xd8);
 STATIC_ASSERT(offsetof(GIZMOBLOWUP_PC, model_rotation_y) == 0xea);
 STATIC_ASSERT(offsetof(GIZMOBLOWUP_PC, model_rotation_z) == 0xec);
 
-typedef struct respawn_initial_pc_s { // size 0x112
-    u8 unknown_000[0x10f];            // 0x000
-    u8 initial_damage;                // 0x10f
-    u8 remaining_health;              // 0x110
-    u8 initial_health;                // 0x111
+typedef struct respawn_initial_s { // size 0x112
+    u8 unknown_000[0x10f];         // 0x000
+    u8 initial_damage;             // 0x10f
+    u8 remaining_health;           // 0x110
+    u8 initial_health;             // 0x111
 } RESPAWN_INITIAL_PC;
 
-typedef struct respawn_particle_types_pc_s { // size 0xa8
-    u8 unknown_000[0xa4];                    // 0x00
-    i16 initial_particle_types[2];           // 0xa4
+typedef struct respawn_particle_types_s { // size 0xa8
+    u8 unknown_000[0xa4];                 // 0x00
+    i16 initial_particle_types[2];        // 0xa4
 } RESPAWN_PARTICLE_TYPES_PC;
 
-typedef struct blowup_effect_instance_pc_s { // size 0x110
-    u8 unknown_00[0x7c];                     // 0x000
-    NUVEC effect_offset;                     // 0x07c
-    u8 unknown_88[0xa0 - 0x88];              // 0x088
-    i32 pickup_value;                        // 0x0a0
-    u8 unknown_a4[0xee - 0xa4];              // 0x0a4
-    u16 launch_pitch;                        // 0x0ee
-    u16 launch_yaw;                          // 0x0f0
-    u8 unknown_f2[0x10d - 0xf2];             // 0x0f2
-    i8 pickup_multiplier;                    // 0x10d
+typedef struct blowup_effect_instance_s { // size 0x110
+    u8 unknown_00[0x7c];                  // 0x000
+    NUVEC effect_offset;                  // 0x07c
+    u8 unknown_88[0xa0 - 0x88];           // 0x088
+    i32 pickup_value;                     // 0x0a0
+    u8 unknown_a4[0xee - 0xa4];           // 0x0a4
+    u16 launch_pitch;                     // 0x0ee
+    u16 launch_yaw;                       // 0x0f0
+    u8 unknown_f2[0x10d - 0xf2];          // 0x0f2
+    i8 pickup_multiplier;                 // 0x10d
 } BLOWUP_EFFECT_INSTANCE_PC;
 
-typedef struct blowup_effect_type_pc_s {   // size 0xfc
+typedef struct blowup_effect_type_s {      // size 0xfc
     NUSPECIALHANDLE alternate_specials[4]; // 0x00
     u8 unknown_30[0x94 - 0x30];            // 0x30
     f32 fragment_gravity;                  // 0x94
@@ -362,7 +362,7 @@ STATIC_ASSERT(offsetof(BOLT_PC, direction) == 0xac);
 
 /* Bit view of GIZMOBLOWUP_PC.status_flags, whose bits are stored as bitfields. Stands in for a
  * bitfield member of the shared struct. */
-typedef struct BLOWUP_STATUS_BITS_PC {
+typedef struct BLOWUP_STATUS_BITS {
     u32 blown_up : 1;
     u32 unknown_1 : 13;
     u32 visible : 1;
@@ -371,9 +371,9 @@ typedef struct BLOWUP_STATUS_BITS_PC {
     u32 unknown_24 : 4;
     u32 secondary_output : 1;
     u32 unknown_29 : 3;
-} BLOWUP_STATUS_BITS_PC;
+} BLOWUP_STATUS_BITS;
 
-STATIC_ASSERT(sizeof(BLOWUP_STATUS_BITS_PC) == sizeof(((GIZMOBLOWUP_PC *)0)->status_flags));
+STATIC_ASSERT(sizeof(BLOWUP_STATUS_BITS) == sizeof(((GIZMOBLOWUP_PC *)0)->status_flags));
 
 typedef struct {              // size 0x100
     u32 blown_up[16];         // 0x00
@@ -561,14 +561,14 @@ void Blowup_SetVisibility(GIZMO_PC *gizmo, i32 visible) {
         return;
     }
     blowup = gizmo->object;
-    ((BLOWUP_STATUS_BITS_PC *)&blowup->status_flags)->visible = visible != 0;
+    ((BLOWUP_STATUS_BITS *)&blowup->status_flags)->visible = visible != 0;
     if (blowup->platform_id != -1) {
         PlatOnOff(blowup->platform_id, visible);
     }
-    if (((BLOWUP_STATUS_BITS_PC *)&blowup->status_flags)->visible == 0 && blowup->anti_node != NULL) {
+    if (((BLOWUP_STATUS_BITS *)&blowup->status_flags)->visible == 0 && blowup->anti_node != NULL) {
         GameAntinode_UnregisterAntiNode(WORLD->game_antinode_sys, blowup->anti_node);
         blowup->anti_node = NULL;
-    } else if (((BLOWUP_STATUS_BITS_PC *)&blowup->status_flags)->visible && blowup->anti_node == NULL) {
+    } else if (((BLOWUP_STATUS_BITS *)&blowup->status_flags)->visible && blowup->anti_node == NULL) {
         blowup->status_flags |= 0x10000;
     }
 }
@@ -2417,7 +2417,7 @@ void Blowup_Activate(GIZMO_PC *gizmo, i32 active) {
         return;
     }
     blowup = gizmo->object;
-    ((BLOWUP_STATUS_BITS_PC *)&blowup->status_flags)->active = active != 0;
+    ((BLOWUP_STATUS_BITS *)&blowup->status_flags)->active = active != 0;
     animation = NuSpecialGetInstAnim(&blowup->type->animated_special);
     if (animation != NULL) {
         if (active == 0) {
@@ -2452,18 +2452,18 @@ void Blowups_Reset(void *world_ptr, void *unused, void *progress_ptr) {
             if (progress != NULL && index < 512) {
                 word = index / 32;
                 bit = 1 << (index & 31);
-                ((BLOWUP_STATUS_BITS_PC *)&blowup->status_flags)->blown_up = (progress->blown_up[word] & bit) != 0;
-                old_visible = ((BLOWUP_STATUS_BITS_PC *)&blowup->status_flags)->visible;
-                ((BLOWUP_STATUS_BITS_PC *)&blowup->status_flags)->visible = (progress->visible[word] & bit) != 0;
+                ((BLOWUP_STATUS_BITS *)&blowup->status_flags)->blown_up = (progress->blown_up[word] & bit) != 0;
+                old_visible = ((BLOWUP_STATUS_BITS *)&blowup->status_flags)->visible;
+                ((BLOWUP_STATUS_BITS *)&blowup->status_flags)->visible = (progress->visible[word] & bit) != 0;
                 if (!old_visible) {
-                    if (((BLOWUP_STATUS_BITS_PC *)&blowup->status_flags)->visible) {
+                    if (((BLOWUP_STATUS_BITS *)&blowup->status_flags)->visible) {
                         GizBlowup_InitSingleTerrain(blowup);
                     }
-                } else if (!((BLOWUP_STATUS_BITS_PC *)&blowup->status_flags)->visible) {
+                } else if (!((BLOWUP_STATUS_BITS *)&blowup->status_flags)->visible) {
                     GizBlowup_DeleteSingleTerrain(blowup);
                 }
-                ((BLOWUP_STATUS_BITS_PC *)&blowup->status_flags)->active = (progress->activated[word] & bit) != 0;
-                ((BLOWUP_STATUS_BITS_PC *)&blowup->status_flags)->secondary_output =
+                ((BLOWUP_STATUS_BITS *)&blowup->status_flags)->active = (progress->activated[word] & bit) != 0;
+                ((BLOWUP_STATUS_BITS *)&blowup->status_flags)->secondary_output =
                     (progress->secondary_output[word] & bit) != 0;
             }
             if (blowup->status_flags & 1) {

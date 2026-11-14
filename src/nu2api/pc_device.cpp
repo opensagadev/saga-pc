@@ -654,7 +654,7 @@ u32 PC_DEVICE_BACKEND_PC::GetMultisampleType() {
 }
 struct PC_TEXTURE_CREATE_DEVICE_PC;
 
-struct PC_TEXTURE_CREATE_METHODS_PC {  // size 0x78
+struct PC_TEXTURE_CREATE_METHODS {     // size 0x78
     void *reserved_00[23];             // 0x00
     HRESULT(__stdcall *create_texture) // 0x5c
     (PC_TEXTURE_CREATE_DEVICE_PC *, u32, u32, u32, u32, i32, i32, PC_TEXTURE_RESOURCE_PC **, HANDLE *);
@@ -663,8 +663,8 @@ struct PC_TEXTURE_CREATE_METHODS_PC {  // size 0x78
     (PC_TEXTURE_CREATE_DEVICE_PC *, u32, u32, i32, i32, u32, BOOL, PC_TEXTURE_RESOURCE_PC **, HANDLE *);
 };
 
-struct PC_TEXTURE_CREATE_DEVICE_PC {             // size 0x4
-    const PC_TEXTURE_CREATE_METHODS_PC *methods; // 0x0
+struct PC_TEXTURE_CREATE_DEVICE_PC {          // size 0x4
+    const PC_TEXTURE_CREATE_METHODS *methods; // 0x0
 };
 
 extern "C" void PCDeviceCreateDepthSurface(u32 width, u32 height, i32 format, i32 multisample, u32 quality,
@@ -1390,30 +1390,30 @@ extern "C" {
     HRESULT PCDeviceUnlockIndexBuffer(PC_BUFFER_RESOURCE_PC *);
 }
 
-struct PC_GRAPHICS_CLIP_VERTEX_PC { // size 0x14
-    f32 x;                          // 0x00
-    f32 y;                          // 0x04
-    f32 z;                          // 0x08
-    f32 u;                          // 0x0c
-    f32 v;                          // 0x10
+struct PC_GRAPHICS_CLIP_VERTEX { // size 0x14
+    f32 x;                       // 0x00
+    f32 y;                       // 0x04
+    f32 z;                       // 0x08
+    f32 u;                       // 0x0c
+    f32 v;                       // 0x10
 };
 
-struct PC_GRAPHICS_SCREEN_VERTEX_PC { // size 0x10
-    f32 x;                            // 0x0
-    f32 y;                            // 0x4
-    f32 u;                            // 0x8
-    f32 v;                            // 0xc
+struct PC_GRAPHICS_SCREEN_VERTEX { // size 0x10
+    f32 x;                         // 0x0
+    f32 y;                         // 0x4
+    f32 u;                         // 0x8
+    f32 v;                         // 0xc
 };
 
-struct GRAPHICS_TEXTURE_SURFACE_VIEW_PC;
+struct GRAPHICS_TEXTURE_SURFACE_VIEW;
 
-struct GRAPHICS_TEXTURE_SURFACE_METHODS_PC { // size 0x4c
-    void *unknown_000[18];                   // 0x00
-    HRESULT(__stdcall *get_surface_level)(GRAPHICS_TEXTURE_SURFACE_VIEW_PC *, u32, PC_TEXTURE_RESOURCE_PC **); // 0x48
+struct GRAPHICS_TEXTURE_SURFACE_METHODS {                                                                   // size 0x4c
+    void *unknown_000[18];                                                                                  // 0x00
+    HRESULT(__stdcall *get_surface_level)(GRAPHICS_TEXTURE_SURFACE_VIEW *, u32, PC_TEXTURE_RESOURCE_PC **); // 0x48
 };
 
-struct GRAPHICS_TEXTURE_SURFACE_VIEW_PC {               // size 0x4
-    const GRAPHICS_TEXTURE_SURFACE_METHODS_PC *methods; // 0x0
+struct GRAPHICS_TEXTURE_SURFACE_VIEW {               // size 0x4
+    const GRAPHICS_TEXTURE_SURFACE_METHODS *methods; // 0x0
 };
 
 // noinline: the original calls PCDeviceLockIndexBuffer out of line from
@@ -1460,17 +1460,17 @@ extern "C" const char *WINAPI DXGetErrorString9A(HRESULT result);
 /* IDirect3DSurface9 methods used by the BMP dump; the shared resource table models textures. */
 typedef struct PC_SURFACE_PC PC_SURFACE_PC;
 
-typedef struct PC_SURFACE_METHODS_PC {                                                      // size 0x3c
-    void *unknown_0000[2];                                                                  // 0x00
-    ULONG(__stdcall *release)(PC_SURFACE_PC *);                                             // 0x08
-    void *unknown_000c[9];                                                                  // 0x0c
-    HRESULT(__stdcall *get_desc)(PC_SURFACE_PC *, PC_TEXTURE_LEVEL_DESC_PC *);              // 0x30
-    HRESULT(__stdcall *lock_rect)(PC_SURFACE_PC *, PC_LOCKED_RECT_PC *, const RECT *, u32); // 0x34
-    HRESULT(__stdcall *unlock_rect)(PC_SURFACE_PC *);                                       // 0x38
-} PC_SURFACE_METHODS_PC;
+typedef struct PC_SURFACE_METHODS {                                                      // size 0x3c
+    void *unknown_0000[2];                                                               // 0x00
+    ULONG(__stdcall *release)(PC_SURFACE_PC *);                                          // 0x08
+    void *unknown_000c[9];                                                               // 0x0c
+    HRESULT(__stdcall *get_desc)(PC_SURFACE_PC *, PC_TEXTURE_LEVEL_DESC_PC *);           // 0x30
+    HRESULT(__stdcall *lock_rect)(PC_SURFACE_PC *, PC_LOCKED_RECT *, const RECT *, u32); // 0x34
+    HRESULT(__stdcall *unlock_rect)(PC_SURFACE_PC *);                                    // 0x38
+} PC_SURFACE_METHODS;
 
 struct PC_SURFACE_PC {
-    const PC_SURFACE_METHODS_PC *methods;
+    const PC_SURFACE_METHODS *methods;
 };
 
 /* Copies a render-target surface to system memory and writes it as the first free "<prefix>_pcNNN.bmp".
@@ -1481,7 +1481,7 @@ extern "C" void PCDeviceSaveSurfaceBmpPc(const char *prefix, PC_SURFACE_PC *surf
     PC_SURFACE_PC *copy;
     PC_TEXTURE_RESOURCE_PC *texture;
     PC_TEXTURE_LEVEL_DESC_PC desc;
-    PC_LOCKED_RECT_PC locked;
+    PC_LOCKED_RECT locked;
     BITMAPFILEHEADER file_header;
     BITMAPINFOHEADER info_header;
     char path[256];
@@ -1606,18 +1606,18 @@ void PC_DEVICE_BACKEND_PC::BuildDefaultPoolResources() {
                 break;
         }
         if (textures[i] != NULL) {
-            GRAPHICS_TEXTURE_SURFACE_VIEW_PC *texture =
-                reinterpret_cast<GRAPHICS_TEXTURE_SURFACE_VIEW_PC *>(textures[i]->resource);
+            GRAPHICS_TEXTURE_SURFACE_VIEW *texture =
+                reinterpret_cast<GRAPHICS_TEXTURE_SURFACE_VIEW *>(textures[i]->resource);
             texture->methods->get_surface_level(texture, 0, &target_surfaces[i]);
         }
     }
-    PC_GRAPHICS_SCREEN_VERTEX_PC triangle[3] = {{0.0f, 0.0f, 0.0f, 0.0f},
-                                                {0.0f, (f32)((f32)parameters.height * 3.0), 0.0f, 3.0f},
-                                                {(f32)((f32)parameters.width * 3.0), 0.0f, 3.0f, 0.0f}};
-    PC_GRAPHICS_CLIP_VERTEX_PC quad[4] = {{-1.0f, 1.0f, 0.0f, 0.0f, 0.0f},
-                                          {-1.0f, -1.0f, 0.0f, 0.0f, 1.0f},
-                                          {1.0f, 1.0f, 0.0f, 1.0f, 0.0f},
-                                          {1.0f, -1.0f, 0.0f, 1.0f, 1.0f}};
+    PC_GRAPHICS_SCREEN_VERTEX triangle[3] = {{0.0f, 0.0f, 0.0f, 0.0f},
+                                             {0.0f, (f32)((f32)parameters.height * 3.0), 0.0f, 3.0f},
+                                             {(f32)((f32)parameters.width * 3.0), 0.0f, 3.0f, 0.0f}};
+    PC_GRAPHICS_CLIP_VERTEX quad[4] = {{-1.0f, 1.0f, 0.0f, 0.0f, 0.0f},
+                                       {-1.0f, -1.0f, 0.0f, 0.0f, 1.0f},
+                                       {1.0f, 1.0f, 0.0f, 1.0f, 0.0f},
+                                       {1.0f, -1.0f, 0.0f, 1.0f, 1.0f}};
     PCDeviceCreateVertexBuffer(sizeof(quad), 8, 0, 0, &buffer690);
     PCDeviceCreateVertexBuffer(sizeof(triangle), 8, 0, 0, &buffer688);
     void *data = NULL;
@@ -1634,7 +1634,7 @@ void PC_DEVICE_BACKEND_PC::BuildDefaultPoolResources() {
     PCDeviceCreateVertexBuffer((u32)state6a4 * 20, 8, 0, 0, &buffer694);
     PCDeviceCreateIndexBuffer((u32)state6a8 * 6, 8, 101, 0, &buffer698, NULL);
     PCDeviceLockVertexBuffer(0, (u32)state6a4 * 20, &data, 0, buffer694);
-    PC_GRAPHICS_CLIP_VERTEX_PC *vertex = static_cast<PC_GRAPHICS_CLIP_VERTEX_PC *>(data);
+    PC_GRAPHICS_CLIP_VERTEX *vertex = static_cast<PC_GRAPHICS_CLIP_VERTEX *>(data);
     for (u32 row = 0; row != (u32)state69c + 1; ++row) {
         for (u32 column = 0; column != (u32)state6a0 + 1; ++column) {
             f32 rounded_row = (f32)row;

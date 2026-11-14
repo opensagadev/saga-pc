@@ -1,35 +1,35 @@
 #include "saga.h"
 #include <string.h>
 
-typedef struct GIZFLOW_LOAD_LEVEL_PC { // size 0x104
-    u8 unknown_000[0xe9];              // 0x000
-    u8 max_timers;                     // 0x0e9
-    u8 unknown_0ea[0xb];               // 0x0ea
-    u8 max_specials;                   // 0x0f5
-    u8 unknown_0f6[0xd];               // 0x0f6
-    u8 max_randoms;                    // 0x103
-} GIZFLOW_LOAD_LEVEL_PC;
+typedef struct GIZFLOW_LOAD_LEVEL { // size 0x104
+    u8 unknown_000[0xe9];           // 0x000
+    u8 max_timers;                  // 0x0e9
+    u8 unknown_0ea[0xb];            // 0x0ea
+    u8 max_specials;                // 0x0f5
+    u8 unknown_0f6[0xd];            // 0x0f6
+    u8 max_randoms;                 // 0x103
+} GIZFLOW_LOAD_LEVEL;
 
-typedef struct GIZFLOW_TIMER_PC { // size 0x1c
-    u8 unknown_000[4];            // 0x00
-    f32 start_time;               // 0x04
-    u8 unknown_008[2];            // 0x08
-    u8 flags;                     // 0x0a
-    u8 unknown_00b;               // 0x0b
-    char name[16];                // 0x0c
-} GIZFLOW_TIMER_PC;
+typedef struct GIZFLOW_TIMER { // size 0x1c
+    u8 unknown_000[4];         // 0x00
+    f32 start_time;            // 0x04
+    u8 unknown_008[2];         // 0x08
+    u8 flags;                  // 0x0a
+    u8 unknown_00b;            // 0x0b
+    char name[16];             // 0x0c
+} GIZFLOW_TIMER;
 
-typedef struct GIZFLOW_RANDOM_PC { // size 0x3c
-    char name[16];                 // 0x00
-    i32 output_count;              // 0x10
-    i32 output_weights[8];         // 0x14
-    u8 unknown_034[8];             // 0x34
-} GIZFLOW_RANDOM_PC;
+typedef struct GIZFLOW_RANDOM { // size 0x3c
+    char name[16];              // 0x00
+    i32 output_count;           // 0x10
+    i32 output_weights[8];      // 0x14
+    u8 unknown_034[8];          // 0x34
+} GIZFLOW_RANDOM;
 
-typedef struct GIZFLOW_RANDOM_SYSTEM_PC { // size 0x8
-    GIZFLOW_RANDOM_PC *randoms;           // 0x0
-    i32 count;                            // 0x4
-} GIZFLOW_RANDOM_SYSTEM_PC;
+typedef struct GIZFLOW_RANDOM_SYSTEM { // size 0x8
+    GIZFLOW_RANDOM *randoms;           // 0x0
+    i32 count;                         // 0x4
+} GIZFLOW_RANDOM_SYSTEM;
 
 typedef struct GIZFLOW_SPECIAL_PC { // size 0x28
     char name[32];                  // 0x00
@@ -37,24 +37,24 @@ typedef struct GIZFLOW_SPECIAL_PC { // size 0x28
     u8 unknown_024[4];              // 0x24
 } GIZFLOW_SPECIAL_PC;
 
-typedef struct GIZFLOW_SPECIAL_SYSTEM_PC { // size 0x8
-    GIZFLOW_SPECIAL_PC *specials;          // 0x0
-    i32 count;                             // 0x4
-} GIZFLOW_SPECIAL_SYSTEM_PC;
+typedef struct GIZFLOW_SPECIAL_SYSTEM { // size 0x8
+    GIZFLOW_SPECIAL_PC *specials;       // 0x0
+    i32 count;                          // 0x4
+} GIZFLOW_SPECIAL_SYSTEM;
 
-typedef struct GIZFLOW_LOAD_WORLD_PC {   // size 0x510c
-    u8 unknown_000[0x128];               // 0x0000
-    GIZFLOW_LOAD_LEVEL_PC *level;        // 0x0128
-    u8 unknown_12c[0x10];                // 0x012c
-    NUGSCN *current_gscn;                // 0x013c
-    u8 unknown_140[0x2988];              // 0x0140
-    void *gizmo_sys;                     // 0x2ac8
-    u8 unknown_2acc[0x262c];             // 0x2acc
-    GIZFLOW_TIMER_PC *timers;            // 0x50f8
-    i32 timer_count;                     // 0x50fc
-    u8 unknown_5100[4];                  // 0x5100
-    GIZFLOW_RANDOM_SYSTEM_PC *randoms;   // 0x5104
-    GIZFLOW_SPECIAL_SYSTEM_PC *specials; // 0x5108
+typedef struct GIZFLOW_LOAD_WORLD_PC { // size 0x510c
+    u8 unknown_000[0x128];             // 0x0000
+    GIZFLOW_LOAD_LEVEL *level;         // 0x0128
+    u8 unknown_12c[0x10];              // 0x012c
+    NUGSCN *current_gscn;              // 0x013c
+    u8 unknown_140[0x2988];            // 0x0140
+    void *gizmo_sys;                   // 0x2ac8
+    u8 unknown_2acc[0x262c];           // 0x2acc
+    GIZFLOW_TIMER *timers;             // 0x50f8
+    i32 timer_count;                   // 0x50fc
+    u8 unknown_5100[4];                // 0x5100
+    GIZFLOW_RANDOM_SYSTEM *randoms;    // 0x5104
+    GIZFLOW_SPECIAL_SYSTEM *specials;  // 0x5108
 } GIZFLOW_LOAD_WORLD_PC;
 
 static char gizspecial_prefix_pc[8] = "qaz_";
@@ -104,9 +104,9 @@ GIZFLOW_SPECIAL_PC *GizSpecial_FindByName(char *name, GIZFLOW_LOAD_WORLD_PC *wor
     return NULL;
 }
 
-typedef struct gizspecial_callback_pc_s { // size 0x28
-    char name[32];                        // 0x00
-    GAMEANIMSET *anim_set;                // 0x20
+typedef struct gizspecial_callback_s { // size 0x28
+    char name[32];                     // 0x00
+    GAMEANIMSET *anim_set;             // 0x20
 
     union { // size 0x1
         u8 flags;
@@ -121,16 +121,16 @@ typedef struct gizspecial_callback_pc_s { // size 0x28
     u8 reserved_25[3]; // 0x25
 } GIZSPECIAL_CALLBACK_PC;
 
-typedef struct gizspecial_system_callback_pc_s { // size 0x10
-    GIZSPECIAL_CALLBACK_PC *specials;            // 0x0
-    i32 count;                                   // 0x4
-    u32 reserved_08;                             // 0x8
-    GAMEANIMOBJPOOL *anim_pool;                  // 0xc
+typedef struct gizspecial_system_callback_s { // size 0x10
+    GIZSPECIAL_CALLBACK_PC *specials;         // 0x0
+    i32 count;                                // 0x4
+    u32 reserved_08;                          // 0x8
+    GAMEANIMOBJPOOL *anim_pool;               // 0xc
 } GIZSPECIAL_SYSTEM_CALLBACK_PC;
 
-typedef struct gizspecial_progress_pc_s { // size 0x40
-    u32 active[8];                        // 0x00
-    u32 reversed[8];                      // 0x20
+typedef struct gizspecial_progress_s { // size 0x40
+    u32 active[8];                     // 0x00
+    u32 reversed[8];                   // 0x20
 } GIZSPECIAL_PROGRESS_PC;
 
 static i32 GizSpecial_GetMaxGizmos(void *world_ptr) {
@@ -339,7 +339,7 @@ static void *GizSpecial_ReserveBuffer(void *world_ptr) {
     i32 index;
     if (fields->level->max_specials != 0) {
         world->giz_buffer.addr = (world->giz_buffer.addr + 3) & ~3u;
-        fields->specials = (GIZFLOW_SPECIAL_SYSTEM_PC *)world->giz_buffer.addr;
+        fields->specials = (GIZFLOW_SPECIAL_SYSTEM *)world->giz_buffer.addr;
         system = (GIZSPECIAL_SYSTEM_CALLBACK_PC *)fields->specials;
         world->giz_buffer.addr += 16;
         system->anim_pool =

@@ -21,10 +21,10 @@ struct CABLE_RECORD_PC {     // size 0x1ec
 };
 
 // The cable code tests the character context flags as a 64-bit field.
-typedef struct cable_context_info_pc_s { // size 0x10
-    const char *name;                    // 0x0
-    i32 action;                          // 0x4
-    u64 flags;                           // 0x8
+typedef struct cable_context_info_s { // size 0x10
+    const char *name;                 // 0x0
+    i32 action;                       // 0x4
+    u64 flags;                        // 0x8
 } CABLE_CONTEXT_INFO_PC;
 
 extern const f64 GameObjectNearFloorNoFloorHeight;

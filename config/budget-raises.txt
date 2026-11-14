@@ -57,7 +57,7 @@ config/oddscan-budget.json stdcall 288 new class (attribute audit): every remain
 config/oddscan-budget.json declspec-align 152 new class (attribute audit): the aligned locals, globals and SSE types whose removal changes an object (137 others removed)
 config/oddscan-budget.json declspec-other 17 new class (attribute audit): RAD Bink and RtlUnwind dllimport prototypes and NuCommandLine's __restrict (removing it changes the code)
 config/oddscan-budget.json address-name 3370 port batch 2 (510 new functions, member functions under address names): new address names, literal flags and states, Pc and placeholder member names, unit-local helpers
-config/oddscan-budget.json assert-offsetof-header 4448 port batch 2: get_level_count asserted like the other slots of the not yet converted PC_TEXTURE_RESOURCE_METHODS_PC
+config/oddscan-budget.json assert-offsetof-header 4448 port batch 2: get_level_count asserted like the other slots of the not yet converted PC_TEXTURE_RESOURCE_METHODS
 config/oddscan-budget.json declspec-align 166 port batch 2: aligned locals of new member functions whose removal changes the object (tried one by one)
 config/oddscan-budget.json define-in-unit 536 port batch 2 (510 new functions, member functions under address names): new address names, literal flags and states, Pc and placeholder member names, unit-local helpers
 config/oddscan-budget.json dense-function 1217 port batch 2 (510 new functions, member functions under address names): new address names, literal flags and states, Pc and placeholder member names, unit-local helpers
@@ -70,7 +70,7 @@ config/oddscan-budget.json nolint 65 port batch 2: XINPUT_VIBRATION completed wi
 config/oddscan-budget.json pc-suffix 46293 port batch 2 (510 new functions, member functions under address names): new address names, literal flags and states, Pc and placeholder member names, unit-local helpers
 config/oddscan-budget.json placeholder-field 9575 port batch 2 (510 new functions, member functions under address names): new address names, literal flags and states, Pc and placeholder member names, unit-local helpers
 config/oddscan-budget.json pragma-seg 6456 port batch 2: new data rows defined in data.cpp under the per-variable section pragmas of their neighbours
-config/oddscan-budget.json stdcall 289 port batch 2: get_level_count, a COM slot of the D3D texture vtable view (PC_TEXTURE_RESOURCE_METHODS_PC +0x34)
+config/oddscan-budget.json stdcall 289 port batch 2: get_level_count, a COM slot of the D3D texture vtable view (PC_TEXTURE_RESOURCE_METHODS +0x34)
 config/oddscan-budget.json undef-in-unit 220 port batch 2 (510 new functions, member functions under address names): new address names, literal flags and states, Pc and placeholder member names, unit-local helpers
 config/oddscan-budget.json view-type 186 port batch 2 (510 new functions, member functions under address names): new address names, literal flags and states, Pc and placeholder member names, unit-local helpers
 config/oddscan-budget.json view-use 1049 port batch 2 (510 new functions, member functions under address names): new address names, literal flags and states, Pc and placeholder member names, unit-local helpers
@@ -136,4 +136,5 @@ config/castscan-budget.json int-pointer 814 port batch 4: casts and unit-local d
 config/castscan-budget.json void-pointer-cpp 1276 port batch 4: casts and unit-local declarations the new functions keep where the header types the member as void * or an overlay view
 config/declscan-budget.json C 369 port batch 4: casts and unit-local declarations the new functions keep where the header types the member as void * or an overlay view
 config/literalscan-budget.json kept 7 the scan also counts constants read several times (tools/literalscan.py multi-use): three frontend strings whose uses sit under different const_seg settings and three doubles whose inline literals VC8 compiles or folds differently (config/literalscan-keep.csv)
-config/oddscan-budget.json view-use 1052 the class counts lines: clang-format splits one NuAlloc(sizeof(EduiSeparatorViewPc), ...) call in edui_widget_render_pc.cpp over two lines once its source path is written inline (no new view use)
+config/oddscan-budget.json view-use 1052 the class counts lines: clang-format splits one NuAlloc(sizeof(EduiSeparatorView), ...) call in edui_widget_render_pc.cpp over two lines once its source path is written inline (no new view use)
+config/castscan-budget.json duplicate-type 1647 a type renamed from ...ViewPc to ...View no longer reads as a view to castscan (view-type 532 -> 531); the same cast moved class

@@ -38,7 +38,7 @@
 
 struct BOLTTYPE_PC_s;
 struct FLOWBOX_PC;
-struct FORCE_RESET_GROUP_PC;
+struct FORCE_RESET_GROUP;
 struct FRAME_PAD_PC;
 struct GIZFLOW_PC;
 struct GIZMOPICKUP_PC;
@@ -46,13 +46,13 @@ struct NUGSCN_s;
 struct PART_PC;
 struct VuMtx;
 struct WORLDINFO_s;
-struct debris_info_pc_s;
-struct debris_key_pc_s;
-struct debris_particle_chunk_pc_s;
+struct debris_info_s;
+struct debris_key_s;
+struct debris_particle_chunk_s;
 struct eduiitem_s;
 struct eduimenu_s;
 struct gameobject_s;
-struct mission_data_pc_s;
+struct mission_data_s;
 struct numtl_s;
 
 typedef void (*GIZACTIONFN_PC)(struct GIZFLOW_PC *, struct FLOWBOX_PC *, char **, i32);
@@ -88,17 +88,17 @@ typedef struct TERRAIN_WALL_POINT TERRAIN_WALL_POINT;
 typedef struct TERRAIN_SPATIAL_NODE TERRAIN_SPATIAL_NODE;
 typedef struct TERRAIN_SHAPE_BATCH TERRAIN_SHAPE_BATCH;
 
-typedef struct TERRAIN_INDEX_LEVEL_PC {
+typedef struct TERRAIN_INDEX_LEVEL {
     i16 cache_age;
     u8 unknown_02[2];
     f32 center_x;
     f32 center_z;
-    TERRAIN_SCAN_WORD_PC scan_words[512];
-} TERRAIN_INDEX_LEVEL_PC;
+    TERRAIN_SCAN_WORD scan_words[512];
+} TERRAIN_INDEX_LEVEL;
 
 typedef struct TERRAIN_GROUP_PC {
     NUVEC origin;
-    TERRAIN_SKIN_STREAM_PC *data;
+    TERRAIN_SKIN_STREAM *data;
     NUVEC bounds_min;
     NUVEC bounds_max;
     u32 platform_flags;
@@ -117,11 +117,11 @@ typedef struct TERRAIN_CELL_PC {
     f32 max_z;
 } TERRAIN_CELL_PC;
 
-STATIC_ASSERT(sizeof(TERRAIN_INDEX_LEVEL_PC) == 0x80c);
-STATIC_ASSERT(offsetof(TERRAIN_INDEX_LEVEL_PC, cache_age) == 0);
-STATIC_ASSERT(offsetof(TERRAIN_INDEX_LEVEL_PC, center_x) == 4);
-STATIC_ASSERT(offsetof(TERRAIN_INDEX_LEVEL_PC, center_z) == 8);
-STATIC_ASSERT(offsetof(TERRAIN_INDEX_LEVEL_PC, scan_words) == 0xc);
+STATIC_ASSERT(sizeof(TERRAIN_INDEX_LEVEL) == 0x80c);
+STATIC_ASSERT(offsetof(TERRAIN_INDEX_LEVEL, cache_age) == 0);
+STATIC_ASSERT(offsetof(TERRAIN_INDEX_LEVEL, center_x) == 4);
+STATIC_ASSERT(offsetof(TERRAIN_INDEX_LEVEL, center_z) == 8);
+STATIC_ASSERT(offsetof(TERRAIN_INDEX_LEVEL, scan_words) == 0xc);
 STATIC_ASSERT(offsetof(TERRAIN_CELL_PC, min_x) == 4);
 STATIC_ASSERT(offsetof(TERRAIN_CELL_PC, min_z) == 8);
 STATIC_ASSERT(offsetof(TERRAIN_CELL_PC, max_x) == 0xc);
@@ -187,7 +187,7 @@ typedef struct TerrainQuery_s {
 
     union {
         u8 scan_list_storage[0x800];
-        TERRAIN_SCAN_WORD_PC scan_words[512];
+        TERRAIN_SCAN_WORD scan_words[512];
     };
 } TerrainQuery_s;
 
@@ -260,7 +260,7 @@ typedef struct gizaimessagesys_s { // size 0x18
     NULISTHDR active_list;         // 0x10
 } GIZAIMESSAGESYS;
 
-typedef struct part_emit_pc_s {
+typedef struct part_emit_s {
     NUVEC position;
     i32 effect_id;
     char name[16];
@@ -304,7 +304,7 @@ STATIC_ASSERT(offsetof(PART_EMIT_PC, camera_distance) == 0x40);
 STATIC_ASSERT(offsetof(PART_EMIT_PC, field_44) == 0x44);
 STATIC_ASSERT(offsetof(PART_EMIT_PC, field_46) == 0x46);
 
-typedef struct terrain_surface_pc_s {
+typedef struct terrain_surface_s {
     f32 movement_scale;
     u32 flags;
 
@@ -325,7 +325,7 @@ STATIC_ASSERT(offsetof(TERRAIN_SURFACE_PC, field_08) == 8);
 struct bolt_s;
 struct bolt_s;
 
-typedef struct narrowsockexception_pc_s {
+typedef struct narrowsockexception_s {
     const char *level_name;
     i16 level_index;
     i16 sock_index;
@@ -338,15 +338,15 @@ STATIC_ASSERT(offsetof(NARROWSOCKEXCEPTION_PC, level_index) == 4);
 STATIC_ASSERT(offsetof(NARROWSOCKEXCEPTION_PC, sock_index) == 6);
 STATIC_ASSERT(offsetof(NARROWSOCKEXCEPTION_PC, start_distance) == 8);
 STATIC_ASSERT(offsetof(NARROWSOCKEXCEPTION_PC, end_distance) == 0xc);
-typedef struct cutsys_pc_s CUTSYS_PC;
+typedef struct cutsys_s CUTSYS_PC;
 typedef struct gameanimsys_s GAMEANIMSYS;
 
-typedef struct debris_float_key_pc_s {
+typedef struct debris_float_key_s {
     f32 time;
     f32 value;
 } DEBRIS_FLOAT_KEY_PC;
 
-typedef struct debris_colour_key_pc_s {
+typedef struct debris_colour_key_s {
     f32 time;
     u8 red;
     u8 green;
@@ -354,7 +354,7 @@ typedef struct debris_colour_key_pc_s {
     u8 unknown_7;
 } DEBRIS_COLOUR_KEY_PC;
 
-typedef struct debris_particle_frame_pc_s {
+typedef struct debris_particle_frame_s {
     NUVEC position;
     NUVEC texture_offset;
     NUVEC extent;
@@ -473,7 +473,7 @@ STATIC_ASSERT(offsetof(OCCLUSIONMANAGER, current_set) == 0x154);
 STATIC_ASSERT(offsetof(OCCLUSIONMANAGER, unknown_0160) == 0x160);
 STATIC_ASSERT(offsetof(OCCLUSIONMANAGER, unknown_0164) == 0x164);
 
-typedef struct gizforce_pc_s GIZFORCE_PC;
+typedef struct gizforce_s GIZFORCE_PC;
 #ifdef __cplusplus
 extern "C" {
 #endif
@@ -494,7 +494,7 @@ extern "C" {
     STATIC_ASSERT(offsetof(BATARANG_TARGET_s, fallback_position) == 8);
     struct CHARPIVOT_PC;
 
-    typedef struct debris_process_sphere_pc_s {
+    typedef struct debris_process_sphere_s {
         NUVEC position;
         NUVEC momentum;
         f32 time;
@@ -503,7 +503,7 @@ extern "C" {
     STATIC_ASSERT(sizeof(DEBRIS_PROCESS_SPHERE_PC) == 0x1c);
     STATIC_ASSERT(offsetof(DEBRIS_PROCESS_SPHERE_PC, time) == 0x18);
 
-    typedef struct edpp_particle_pc_s {
+    typedef struct edpp_particle_s {
         NUVEC position;
         i32 effect_index;
         i32 instance_id;
@@ -558,7 +558,7 @@ extern "C" {
     STATIC_ASSERT(offsetof(EDPP_PARTICLE_PC, facing_rotation_y) == 0x56);
     struct GIZTURRET_s;
 
-    typedef struct ripple_set_pc_s RIPPLE_SET_PC;
+    typedef struct ripple_set_s RIPPLE_SET_PC;
 #ifdef __cplusplus
 }
 #endif
@@ -1072,7 +1072,7 @@ extern "C" {
 
 #if SAGA_LEGOAPI_LEGOAPI_TYPES_H_PART == 4 && !defined(SAGA_LEGOAPI_LEGOAPI_TYPES_H_STOP)
 
-typedef struct levelspline_pc_s {
+typedef struct levelspline_s {
     struct NUGSCN_s **scene;
     const char *name;
     u16 min_points;
@@ -1479,7 +1479,7 @@ typedef struct bolt_s {
 } BOLT;
 
 // Access prefixes only: the trailing name and complete original sizes are unknown.
-struct cutsys_pc_s {
+struct cutsys_s {
     CUTINFO **records;
     i32 count;
 };
@@ -1889,7 +1889,7 @@ STATIC_ASSERT(offsetof(GIZMO_PICKUP_TYPE_PC, overlay_model_id) == 0x2e);
 STATIC_ASSERT(offsetof(GIZMO_PICKUP_TYPE_PC, shadow_extent_x) == 0x30);
 STATIC_ASSERT(offsetof(GIZMO_PICKUP_TYPE_PC, shadow_extent_z) == 0x34);
 
-struct gizforce_pc_s {
+struct gizforce_s {
     char name[16];
     NUVEC file_position;
     NUVEC position;
@@ -1897,7 +1897,7 @@ struct gizforce_pc_s {
     NUSPECIALHANDLE along_socket;
     struct gameobject_s *using_object;
     u32 reset_word;
-    struct FORCE_RESET_GROUP_PC *group;
+    struct FORCE_RESET_GROUP *group;
     f32 force_strength;
     f32 field_48;
     f32 force_range;
@@ -2218,9 +2218,9 @@ struct STATUSPACKET_s {
     void (*reset_callback)(struct STATUSPACKET_s *arg0);
     void (*draw_background_callback)(struct STATUSPACKET_s *arg0);
     struct area_data_pc_s *area;
-    struct episode_data_pc_s *episode;
+    struct episode_data_s *episode;
     u32 *score;
-    struct mission_data_pc_s *mission;
+    struct mission_data_s *mission;
     f32 player0_rumble_amount;
     f32 player0_rumble_time;
     f32 player0_rumble_duration;
@@ -2829,8 +2829,8 @@ STATIC_ASSERT(sizeof(struct GAMEANTINODE_s) == 56);
 #ifdef __cplusplus
 extern "C" {
 #endif
-    typedef DEBRISPARTICLE_PC *(*DEBRISGENERATOR_PC)(struct debris_key_pc_s *, struct debris_info_pc_s *, f32);
-    typedef void (*DEBRISMOMENTUMADJUSTER_PC)(struct debris_key_pc_s *, struct debris_info_pc_s *, DEBRISPARTICLE_PC *);
+    typedef DEBRISPARTICLE_PC *(*DEBRISGENERATOR_PC)(struct debris_key_s *, struct debris_info_s *, f32);
+    typedef void (*DEBRISMOMENTUMADJUSTER_PC)(struct debris_key_s *, struct debris_info_s *, DEBRISPARTICLE_PC *);
 #ifdef __cplusplus
 }
 #endif
@@ -2862,12 +2862,12 @@ STATIC_ASSERT(sizeof(struct nugraph_s) == 92);
 extern "C" {
 #endif
 
-    typedef struct debris_chunk_control_pc_s {
-        struct debris_particle_chunk_pc_s *particle_chunk;
+    typedef struct debris_chunk_control_s {
+        struct debris_particle_chunk_s *particle_chunk;
         f32 expiry_time;
         i32 active;
-        struct debris_key_pc_s *owner;
-        struct debris_chunk_control_pc_s *next;
+        struct debris_key_s *owner;
+        struct debris_chunk_control_s *next;
         i32 particle_index;
         f32 collision_time;
         i16 effect_index;

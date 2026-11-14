@@ -1204,10 +1204,10 @@ static i32 Bolt_HitPlatPrivate(BOLT_PC *, u8 *);
 
 extern "C" i32 i_temp_xrot;
 
-typedef struct bolt_context_info_pc_s { // size 0x10
-    const char *name;                   // 0x0
-    i32 action;                         // 0x4
-    u64 flags;                          // 0x8
+typedef struct bolt_context_info_s { // size 0x10
+    const char *name;                // 0x0
+    i32 action;                      // 0x4
+    u64 flags;                       // 0x8
 } BOLT_CONTEXT_INFO_PC;
 
 STATIC_ASSERT(offsetof(GAMEOBJECT, context_variant_flags) == 0x7bc);

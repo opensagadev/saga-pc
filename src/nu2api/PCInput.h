@@ -32,7 +32,7 @@ STATIC_ASSERT(offsetof(NuKeyboardState_PC, keyboard_polled) == 0x4e10);
 STATIC_ASSERT(offsetof(NuKeyboardState_PC, keyboard_state) == 0x68b0);
 
 typedef struct NuKeyboardDevice_PC NuKeyboardDevice_PC;
-typedef struct PC_DI_FACTORY_PC PC_DI_FACTORY_PC;
+typedef struct PC_DI_FACTORY PC_DI_FACTORY;
 
 typedef struct NuKeyboardOwner_PC {
     f32 unknown_0000;
@@ -44,7 +44,7 @@ typedef struct NuKeyboardOwner_PC {
     NuKeyboardDevice_PC *device;
     i32 poll_status;
     i32 key_count;
-    PC_DI_FACTORY_PC *factory;
+    PC_DI_FACTORY *factory;
     i32 mouse_axes;
     i32 mouse_buttons;
     i32 mouse_cooperative;
@@ -99,7 +99,7 @@ typedef struct GRAPHICS_CAPS_PC {
 
 #pragma pack(push, 4)
 
-typedef struct GRAPHICS_ADAPTER_IDENTIFIER_PC {
+typedef struct GRAPHICS_ADAPTER_IDENTIFIER {
     char driver[512];
     char description[512];
     char device_name[32];
@@ -110,7 +110,7 @@ typedef struct GRAPHICS_ADAPTER_IDENTIFIER_PC {
     u32 revision;
     GUID device_identifier;
     u32 whql_level;
-} GRAPHICS_ADAPTER_IDENTIFIER_PC;
+} GRAPHICS_ADAPTER_IDENTIFIER;
 
 #pragma pack(pop)
 STATIC_ASSERT(sizeof(GRAPHICS_CAPS_PC) == 0x130);
@@ -118,17 +118,17 @@ STATIC_ASSERT(offsetof(GRAPHICS_CAPS_PC, caps2) == 0x14);
 STATIC_ASSERT(offsetof(GRAPHICS_CAPS_PC, device_caps) == 0x1c);
 STATIC_ASSERT(offsetof(GRAPHICS_CAPS_PC, vertex_shader_version) == 0xc4);
 STATIC_ASSERT(offsetof(GRAPHICS_CAPS_PC, simultaneous_render_targets) == 0xf0);
-STATIC_ASSERT(sizeof(GRAPHICS_ADAPTER_IDENTIFIER_PC) == 0x44c);
-STATIC_ASSERT(offsetof(GRAPHICS_ADAPTER_IDENTIFIER_PC, driver) == 0x0);
-STATIC_ASSERT(offsetof(GRAPHICS_ADAPTER_IDENTIFIER_PC, description) == 0x200);
-STATIC_ASSERT(offsetof(GRAPHICS_ADAPTER_IDENTIFIER_PC, device_name) == 0x400);
-STATIC_ASSERT(offsetof(GRAPHICS_ADAPTER_IDENTIFIER_PC, driver_version) == 0x420);
-STATIC_ASSERT(offsetof(GRAPHICS_ADAPTER_IDENTIFIER_PC, vendor) == 0x428);
-STATIC_ASSERT(offsetof(GRAPHICS_ADAPTER_IDENTIFIER_PC, device_id) == 0x42c);
-STATIC_ASSERT(offsetof(GRAPHICS_ADAPTER_IDENTIFIER_PC, subsystem_id) == 0x430);
-STATIC_ASSERT(offsetof(GRAPHICS_ADAPTER_IDENTIFIER_PC, revision) == 0x434);
-STATIC_ASSERT(offsetof(GRAPHICS_ADAPTER_IDENTIFIER_PC, device_identifier) == 0x438);
-STATIC_ASSERT(offsetof(GRAPHICS_ADAPTER_IDENTIFIER_PC, whql_level) == 0x448);
+STATIC_ASSERT(sizeof(GRAPHICS_ADAPTER_IDENTIFIER) == 0x44c);
+STATIC_ASSERT(offsetof(GRAPHICS_ADAPTER_IDENTIFIER, driver) == 0x0);
+STATIC_ASSERT(offsetof(GRAPHICS_ADAPTER_IDENTIFIER, description) == 0x200);
+STATIC_ASSERT(offsetof(GRAPHICS_ADAPTER_IDENTIFIER, device_name) == 0x400);
+STATIC_ASSERT(offsetof(GRAPHICS_ADAPTER_IDENTIFIER, driver_version) == 0x420);
+STATIC_ASSERT(offsetof(GRAPHICS_ADAPTER_IDENTIFIER, vendor) == 0x428);
+STATIC_ASSERT(offsetof(GRAPHICS_ADAPTER_IDENTIFIER, device_id) == 0x42c);
+STATIC_ASSERT(offsetof(GRAPHICS_ADAPTER_IDENTIFIER, subsystem_id) == 0x430);
+STATIC_ASSERT(offsetof(GRAPHICS_ADAPTER_IDENTIFIER, revision) == 0x434);
+STATIC_ASSERT(offsetof(GRAPHICS_ADAPTER_IDENTIFIER, device_identifier) == 0x438);
+STATIC_ASSERT(offsetof(GRAPHICS_ADAPTER_IDENTIFIER, whql_level) == 0x448);
 
 typedef struct TEXT_INPUT_LABELS_PC TEXT_INPUT_LABELS_PC;
 
@@ -223,7 +223,7 @@ struct PC_DI_CAPS_PC {
     DWORD ff_driver_version;
 };
 
-struct PC_DI_PROPERTY_PC {
+struct PC_DI_PROPERTY {
     DWORD size;
     DWORD header_size;
     DWORD object;
@@ -264,7 +264,7 @@ struct PC_DI_DEVICE_METHODS_PC {
     HRESULT(__stdcall *get_caps)(NuKeyboardDevice_PC *, PC_DI_CAPS_PC *);
     void *unknown_10;
     void *unknown_14;
-    HRESULT(__stdcall *set_property)(NuKeyboardDevice_PC *, REFGUID, const PC_DI_PROPERTY_PC *);
+    HRESULT(__stdcall *set_property)(NuKeyboardDevice_PC *, REFGUID, const PC_DI_PROPERTY *);
     HRESULT(__stdcall *acquire)(NuKeyboardDevice_PC *);
     HRESULT(__stdcall *unacquire)(NuKeyboardDevice_PC *);
     HRESULT(__stdcall *get_state)(NuKeyboardDevice_PC *, DWORD, void *);
@@ -280,17 +280,17 @@ struct NuKeyboardDevice_PC {
     PC_DI_DEVICE_METHODS_PC *methods;
 };
 
-struct PC_DI_FACTORY_METHODS_PC {
+struct PC_DI_FACTORY_METHODS {
     void *unknown_00;
     void *unknown_04;
-    ULONG(__stdcall *release)(PC_DI_FACTORY_PC *);
-    HRESULT(__stdcall *create_device)(PC_DI_FACTORY_PC *, REFGUID, NuKeyboardDevice_PC **, IUnknown *);
+    ULONG(__stdcall *release)(PC_DI_FACTORY *);
+    HRESULT(__stdcall *create_device)(PC_DI_FACTORY *, REFGUID, NuKeyboardDevice_PC **, IUnknown *);
     HRESULT(__stdcall *enum_devices)
-    (PC_DI_FACTORY_PC *, DWORD, BOOL(__stdcall *)(const PC_DI_INSTANCE_PC *, void *), void *, DWORD);
+    (PC_DI_FACTORY *, DWORD, BOOL(__stdcall *)(const PC_DI_INSTANCE_PC *, void *), void *, DWORD);
 };
 
-struct PC_DI_FACTORY_PC {
-    PC_DI_FACTORY_METHODS_PC *methods;
+struct PC_DI_FACTORY {
+    PC_DI_FACTORY_METHODS *methods;
 };
 
 extern const GUID PcDirectInput8AId;
@@ -305,7 +305,7 @@ STATIC_ASSERT(sizeof(PC_DI_CAPS_PC) == 44);
 STATIC_ASSERT(offsetof(PC_DI_CAPS_PC, flags) == 4);
 STATIC_ASSERT(offsetof(PC_DI_CAPS_PC, axes) == 12);
 STATIC_ASSERT(offsetof(PC_DI_CAPS_PC, buttons) == 16);
-STATIC_ASSERT(sizeof(PC_DI_PROPERTY_PC) == 20);
+STATIC_ASSERT(sizeof(PC_DI_PROPERTY) == 20);
 STATIC_ASSERT(sizeof(PC_DI_DATA_FORMAT_PC) == 24);
 STATIC_ASSERT(offsetof(PC_DI_DATA_FORMAT_PC, objects) == 20);
 STATIC_ASSERT(sizeof(PC_DI_OBJECT_FORMAT_PC) == 16);
@@ -319,8 +319,8 @@ STATIC_ASSERT(offsetof(PC_DI_DEVICE_METHODS_PC, acquire) == 0x1c);
 STATIC_ASSERT(offsetof(PC_DI_DEVICE_METHODS_PC, set_format) == 0x2c);
 STATIC_ASSERT(offsetof(PC_DI_DEVICE_METHODS_PC, set_cooperative_level) == 0x34);
 STATIC_ASSERT(offsetof(PC_DI_DEVICE_METHODS_PC, poll) == 0x64);
-STATIC_ASSERT(offsetof(PC_DI_FACTORY_METHODS_PC, create_device) == 0xc);
-STATIC_ASSERT(offsetof(PC_DI_FACTORY_METHODS_PC, enum_devices) == 0x10);
+STATIC_ASSERT(offsetof(PC_DI_FACTORY_METHODS, create_device) == 0xc);
+STATIC_ASSERT(offsetof(PC_DI_FACTORY_METHODS, enum_devices) == 0x10);
 STATIC_ASSERT(sizeof(NuKeyboardOwner_PC) == 0x44);
 STATIC_ASSERT(offsetof(NuKeyboardOwner_PC, mouse) == 0x20);
 STATIC_ASSERT(offsetof(NuKeyboardOwner_PC, key_count) == 0x2c);
@@ -331,11 +331,11 @@ STATIC_ASSERT(offsetof(NuKeyboardOwner_PC, mouse_buttons) == 0x38);
 STATIC_ASSERT(offsetof(PC_DI_CAPS_PC, size) == 0x0);
 STATIC_ASSERT(offsetof(PC_DI_CAPS_PC, device_type) == 0x8);
 STATIC_ASSERT(offsetof(PC_DI_CAPS_PC, povs) == 0x14);
-STATIC_ASSERT(offsetof(PC_DI_PROPERTY_PC, size) == 0x0);
-STATIC_ASSERT(offsetof(PC_DI_PROPERTY_PC, header_size) == 0x4);
-STATIC_ASSERT(offsetof(PC_DI_PROPERTY_PC, object) == 0x8);
-STATIC_ASSERT(offsetof(PC_DI_PROPERTY_PC, how) == 0xc);
-STATIC_ASSERT(offsetof(PC_DI_PROPERTY_PC, data) == 0x10);
+STATIC_ASSERT(offsetof(PC_DI_PROPERTY, size) == 0x0);
+STATIC_ASSERT(offsetof(PC_DI_PROPERTY, header_size) == 0x4);
+STATIC_ASSERT(offsetof(PC_DI_PROPERTY, object) == 0x8);
+STATIC_ASSERT(offsetof(PC_DI_PROPERTY, how) == 0xc);
+STATIC_ASSERT(offsetof(PC_DI_PROPERTY, data) == 0x10);
 STATIC_ASSERT(offsetof(PC_DI_DATA_FORMAT_PC, size) == 0x0);
 STATIC_ASSERT(offsetof(PC_DI_DATA_FORMAT_PC, object_size) == 0x4);
 STATIC_ASSERT(offsetof(PC_DI_DATA_FORMAT_PC, flags) == 0x8);
@@ -879,7 +879,7 @@ extern "C" {
 }
 #endif
 #ifdef __cplusplus
-STATIC_ASSERT(offsetof(PC_DI_FACTORY_METHODS_PC, release) == 8);
+STATIC_ASSERT(offsetof(PC_DI_FACTORY_METHODS, release) == 8);
 STATIC_ASSERT(offsetof(PC_INPUT_RUNTIME_PC, shutdown_state) == 0x67e4);
 #endif
 #ifdef __cplusplus

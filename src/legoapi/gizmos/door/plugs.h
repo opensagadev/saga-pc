@@ -15,8 +15,8 @@
 #ifdef __cplusplus
 extern "C" {
 #endif
-    struct carry_plug_pc_s *Plug_FindNearest(struct carry_plug_sys_pc_s *, NUVEC *, f32 *, i32);
-    void Plug_MakeDrawMtx(struct carry_plug_pc_s *, NUMTX *);
+    struct carry_plug_s *Plug_FindNearest(struct carry_plug_sys_s *, NUVEC *, f32 *, i32);
+    void Plug_MakeDrawMtx(struct carry_plug_s *, NUMTX *);
     extern const char *PlugGizmoNamePc;
     extern const char *PlugOutputNamePc;
     extern i32 plug_gizmotype_id;

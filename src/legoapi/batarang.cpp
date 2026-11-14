@@ -7,7 +7,7 @@ extern "C" {
     void ClearSpecialMove(GAMEOBJECT *);
 }
 
-typedef struct batman_prepare_pc_s {      // size 0x8
+typedef struct batman_prepare_s {         // size 0x8
     u32 capabilities;                     // 0x0
     AI_PREPARING_SPECIAL_MOVE_PC prepare; // 0x4
 } BATMAN_PREPARE_PC;
@@ -21,12 +21,12 @@ STATIC_ASSERT(offsetof(GAMEOBJECT, jump_reentry_timer) == 0xd28);
 STATIC_ASSERT(offsetof(GAMEOBJECT, portal_flags) == 0xeec);
 STATIC_ASSERT(offsetof(GAMEOBJECT, ai_collision_priority_pc) == 0x292);
 
-typedef struct character_ai_capabilities_pc_s {
+typedef struct character_ai_capabilities_s {
     u8 unknown_00[0x44];
     u32 path_capabilities;
 } CHARACTER_AI_CAPABILITIES_PC;
 
-typedef struct suit_ai_capabilities_pc_s {
+typedef struct suit_ai_capabilities_s {
     u8 unknown_00[0x10];
     u32 path_capabilities;
 } SUIT_AI_CAPABILITIES_PC;

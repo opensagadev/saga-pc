@@ -17,7 +17,7 @@
 
 #if SAGA_NU2API_NUFMV_PC_BINK_DSPLAY_BINK_H_PART == 1 && !defined(SAGA_NU2API_NUFMV_PC_BINK_DSPLAY_BINK_H_STOP)
 
-struct GRAPHICS_ADAPTER_IDENTIFIER_PC;
+struct GRAPHICS_ADAPTER_IDENTIFIER;
 struct GRAPHICS_CAPS_PC;
 struct GRAPHICS_DISPLAY_MODE_PC;
 struct GRAPHICS_PRESENT_PARAMETERS_PC;
@@ -204,13 +204,13 @@ typedef struct PC_FMV_REALTIME_PC PC_FMV_REALTIME_PC;
 
 #if SAGA_NU2API_NUFMV_PC_BINK_DSPLAY_BINK_H_PART == 2 && !defined(SAGA_NU2API_NUFMV_PC_BINK_DSPLAY_BINK_H_STOP)
 
-typedef struct GRAPHICS_FACTORY_METHODS_PC {
+typedef struct GRAPHICS_FACTORY_METHODS {
     void *unknown_000[2];
     ULONG(__stdcall *release)(GRAPHICS_FACTORY_PC *);
     void *register_software;
     void *get_adapter_count;
     HRESULT(__stdcall *get_adapter_identifier)
-    (GRAPHICS_FACTORY_PC *, u32, u32, struct GRAPHICS_ADAPTER_IDENTIFIER_PC *);
+    (GRAPHICS_FACTORY_PC *, u32, u32, struct GRAPHICS_ADAPTER_IDENTIFIER *);
     u32(__stdcall *get_adapter_mode_count)(GRAPHICS_FACTORY_PC *, u32, i32);
     HRESULT(__stdcall *enum_adapter_modes)(GRAPHICS_FACTORY_PC *, u32, i32, u32, struct GRAPHICS_DISPLAY_MODE_PC *);
     HRESULT(__stdcall *get_adapter_display_mode)(GRAPHICS_FACTORY_PC *, u32, struct GRAPHICS_DISPLAY_MODE_PC *);
@@ -222,24 +222,24 @@ typedef struct GRAPHICS_FACTORY_METHODS_PC {
     void *get_adapter_monitor;
     HRESULT(__stdcall *create_device)
     (GRAPHICS_FACTORY_PC *, u32, i32, HWND, u32, struct GRAPHICS_PRESENT_PARAMETERS_PC *, PC_D3D9_DEVICE_PC **);
-} GRAPHICS_FACTORY_METHODS_PC;
+} GRAPHICS_FACTORY_METHODS;
 
 struct GRAPHICS_FACTORY_PC {
-    const GRAPHICS_FACTORY_METHODS_PC *methods;
+    const GRAPHICS_FACTORY_METHODS *methods;
 };
 
-STATIC_ASSERT(offsetof(GRAPHICS_FACTORY_METHODS_PC, release) == 8);
-STATIC_ASSERT(offsetof(GRAPHICS_FACTORY_METHODS_PC, get_device_caps) == 0x38);
-STATIC_ASSERT(offsetof(GRAPHICS_FACTORY_METHODS_PC, create_device) == 0x40);
-STATIC_ASSERT(offsetof(GRAPHICS_FACTORY_METHODS_PC, get_adapter_identifier) == 0x14);
-STATIC_ASSERT(offsetof(GRAPHICS_FACTORY_METHODS_PC, get_adapter_mode_count) == 0x18);
-STATIC_ASSERT(offsetof(GRAPHICS_FACTORY_METHODS_PC, enum_adapter_modes) == 0x1c);
-STATIC_ASSERT(offsetof(GRAPHICS_FACTORY_METHODS_PC, get_adapter_display_mode) == 0x20);
-STATIC_ASSERT(offsetof(GRAPHICS_FACTORY_METHODS_PC, check_device_type) == 0x24);
-STATIC_ASSERT(offsetof(GRAPHICS_FACTORY_METHODS_PC, check_multisample) == 0x2c);
+STATIC_ASSERT(offsetof(GRAPHICS_FACTORY_METHODS, release) == 8);
+STATIC_ASSERT(offsetof(GRAPHICS_FACTORY_METHODS, get_device_caps) == 0x38);
+STATIC_ASSERT(offsetof(GRAPHICS_FACTORY_METHODS, create_device) == 0x40);
+STATIC_ASSERT(offsetof(GRAPHICS_FACTORY_METHODS, get_adapter_identifier) == 0x14);
+STATIC_ASSERT(offsetof(GRAPHICS_FACTORY_METHODS, get_adapter_mode_count) == 0x18);
+STATIC_ASSERT(offsetof(GRAPHICS_FACTORY_METHODS, enum_adapter_modes) == 0x1c);
+STATIC_ASSERT(offsetof(GRAPHICS_FACTORY_METHODS, get_adapter_display_mode) == 0x20);
+STATIC_ASSERT(offsetof(GRAPHICS_FACTORY_METHODS, check_device_type) == 0x24);
+STATIC_ASSERT(offsetof(GRAPHICS_FACTORY_METHODS, check_multisample) == 0x2c);
 STATIC_ASSERT(offsetof(GRAPHICS_FACTORY_PC, methods) == 0x0);
 STATIC_ASSERT(sizeof(GRAPHICS_FACTORY_PC) == 4);
-STATIC_ASSERT(sizeof(GRAPHICS_FACTORY_METHODS_PC) == 0x44);
+STATIC_ASSERT(sizeof(GRAPHICS_FACTORY_METHODS) == 0x44);
 #undef SAGA_NU2API_NUFMV_PC_BINK_DSPLAY_BINK_H_PART
 #define SAGA_NU2API_NUFMV_PC_BINK_DSPLAY_BINK_H_PART 3
 #ifdef SAGA_SHIM

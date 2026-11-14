@@ -33,11 +33,11 @@ extern "C" {
     i32 GizSpinner_Push(struct GIZSPINNER_s *, i32);
     void GizSpinner_PushFail(GAMEOBJECT *, struct GIZSPINNER_s *);
     void GizSpinner_Activate(void *gizmo, i32 active);
-    void GizSpinner_AddGizmos(struct gizmosys_pc_s *gizmo_sys, i32 type_id, void *world_ptr, void *arg3);
+    void GizSpinner_AddGizmos(struct gizmosys_s *gizmo_sys, i32 type_id, void *world_ptr, void *arg3);
     void *GizSpinner_AllocateProgressData(void *buffer, void *buffer_end);
     void GizSpinner_ClearProgress(void *arg0, void *progress_ptr);
     void GizSpinner_Draw(void *world_ptr, void *arg1, f32 arg2);
-    i32 *GizSpinner_GetBestBoltTarget(struct gizmoset_pc_s *arg0, f32 *arg1, struct nuvec_s *result_position,
+    i32 *GizSpinner_GetBestBoltTarget(struct gizmoset_s *arg0, f32 *arg1, struct nuvec_s *result_position,
                                       struct nuvec_s *result_velocity, void *arg4, struct nuvec_s *position,
                                       struct nuvec_s *direction, f32 radius, f32 range_squared, i32 directional,
                                       i32 arg10, i32 arg11);

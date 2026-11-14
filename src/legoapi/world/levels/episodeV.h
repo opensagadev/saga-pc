@@ -16,7 +16,7 @@ struct PART_PC;
 struct WORLDINFO_s;
 struct gameobject_s;
 struct gizmo_pc_s;
-struct level_data_pc_s;
+struct level_data_s;
 
 typedef void (*PART_KILL_PC)(struct PART_PC *, i32);
 #ifdef __cplusplus
@@ -28,7 +28,7 @@ extern "C" {
     extern u8 minikitCounter_C;
     extern u8 minikitCounter_A;
     extern const char AITransferLiteral758430[5];
-    extern struct level_data_pc_s *LevelFixupSlotPc0087b250;
+    extern struct level_data_s *LevelFixupSlotPc0087b250;
 #ifdef __cplusplus
 }
 #endif

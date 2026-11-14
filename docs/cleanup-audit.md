@@ -172,7 +172,7 @@ The 20 most-used resolved fields (the pilot batch, section 8):
 |---:|---|---|---|---:|---:|---|
 | 1 | `gameobject_s.character_context` | i8 | enum | 783 | 97 | `LEGOCONTEXT_*` are `extern i32` variables; `CHARACTER_CONTEXT_*` names 4 values |
 | 2 | `gameobject_s.flags_1fc_word` | u32 | flags | 516 | 14 | `APIOBJECT_FLAG_*` names 3 |
-| 3 | `characterdata_pc_s.model_flags` | u32 | flags | 258 | 26 | - |
+| 3 | `characterdata_s.model_flags` | u32 | flags | 258 | 26 | - |
 | 4 | `gameobject_s.flags_e20` | u32 | flags | 248 | 32 | - |
 | 5 | `gameobject_s.flags_1fc` | u8 | flags | 239 | 4 | - |
 | 6 | `STATUS_STAGE_s.field_0x14` | i32 | enum | 207 | 10 | - |
@@ -186,8 +186,8 @@ The 20 most-used resolved fields (the pilot batch, section 8):
 | 14 | `gameobject_s.flags_ef0` | u32 | flags | 143 | 32 | - |
 | 15 | `AIPACKET_PC.flags` | u32 | flags | 140 | 24 | - |
 | 16 | `gameobject_s.flags_ef4` | u32 | flags | 126 | 32 | - |
-| 17 | `debris_info_pc_s.generator_type` | i8 | enum | 120 | 7 | - |
-| 18 | `animpacket_pc_s.requested_animation` | i16 | enum | 110 | 36 | animation ids |
+| 17 | `debris_info_s.generator_type` | i8 | enum | 120 | 7 | - |
+| 18 | `animpacket_s.requested_animation` | i16 | enum | 110 | 36 | animation ids |
 | 19 | `FRAME_PAD_PC.digital_buttons` | u32 | flags | 110 | 14 | `PAD_BUTTON_*` names 6 |
 | 20 | `area_data_pc_s.flags` | u16 | flags | 89 | 14 | Android `enum AREA_FLAGS` (value overlap 0.93) |
 
@@ -283,8 +283,8 @@ calls; `STATIC_ASSERT` names its typedefs with `__COUNTER__`. Before and after:
 
 ```c
 /* before (legogame/zipup.c) */
-} HINT_ZIPUP_PC;
-typedef struct zipup_transport_view_pc_s {
+} HINT_ZIPUP;
+typedef struct zipup_transport_view_s {
     ...
 static i32 ZipUp_ActivateRev(GIZMO_PC *gizmo, i32 active, i32 query) {
     ZIPUP_PC *zipup;
@@ -296,9 +296,9 @@ static i32 ZipUp_ActivateRev(GIZMO_PC *gizmo, i32 active, i32 query) {
         return active != zipup->direction;
 
 /* after */
-} HINT_ZIPUP_PC;
+} HINT_ZIPUP;
 
-typedef struct zipup_transport_view_pc_s {
+typedef struct zipup_transport_view_s {
     ...
 static i32 ZipUp_ActivateRev(GIZMO_PC *gizmo, i32 active, i32 query) {
     ZIPUP_PC *zipup;
@@ -587,7 +587,7 @@ it) lost the exact `DebrisSetup2` (parts.c), `BlockadeRunnerDEjectCreaturePc`
 (episodeIV.c) and `BoulderSpawnPc` (episodeIII.c). Adding back ids after the
 block keeps all three at +34 or +46 C ids and loses at least one at most other
 values. The pilot therefore keeps the asserts of `AIPATHINFO_PC` (11 in
-saga.h) and `AISCRIPTPROCESSSTACK_PC` (1); together they cost 34 C ids. Both
+saga.h) and `AISCRIPTPROCESSSTACK` (1); together they cost 34 C ids. Both
 groups are marked with a comment that points here. With them, all 337 units
 compile to the same code and data as before except four functions that
 were already not exact: `InitGameAfterConfig` and `Minicam_Update` (score
@@ -622,7 +622,7 @@ comment that points here:
 
 | unit | kept (`--skip`) | assert lines | reacts |
 |---|---|---:|---|
-| `legogame/episodeIV.c` | `CLOUDCITY_PANEL_FLAGS_VIEW_PC`, `TORPEDO_MUSIC_FLAGS_VIEW_PC` | 3 | `BlockadeRunnerDEjectCreaturePc` loses exact with any one struct kept or with none; this pair keeps it |
+| `legogame/episodeIV.c` | `CLOUDCITY_PANEL_FLAGS_VIEW`, `TORPEDO_MUSIC_FLAGS_VIEW` | 3 | `BlockadeRunnerDEjectCreaturePc` loses exact with any one struct kept or with none; this pair keeps it |
 | `nu2api/nu3d_includes.cpp` | `PC_SPECIAL_RENDER_SCENE` | 1 | `NuDeferredFilterGen::render` (93.89 % vs 93.90 %) |
 
 With them every object is byte-identical to the build before the conversion.

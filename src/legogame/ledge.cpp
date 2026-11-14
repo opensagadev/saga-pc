@@ -25,11 +25,11 @@ typedef struct LEDGE_MOTION_PC { // size 0x38
     NUVEC bounds_max;  // 0x2c
 } LEDGE_MOTION_PC;
 
-typedef struct LEDGE_WORLD_PC { // size 0x50b0
-    u8 unknown_000[0x50a8];     // 0x0000
-    LEDGE_MOTION_PC *ledges;    // 0x50a8
-    i32 count;                  // 0x50ac
-} LEDGE_WORLD_PC;
+typedef struct LEDGE_WORLD { // size 0x50b0
+    u8 unknown_000[0x50a8];  // 0x0000
+    LEDGE_MOTION_PC *ledges; // 0x50a8
+    i32 count;               // 0x50ac
+} LEDGE_WORLD;
 
 typedef struct LEDGEPIECE { // size 0x20
     i16 object_id;          // 0x00
@@ -73,7 +73,7 @@ extern "C" {
 
 static LEDGE_MOTION_PC *LedgeAttachPointPc(WORLDINFO *world, NUVEC *position, NUVEC *bounds_min, NUVEC *bounds_max,
                                            u16 *angle) {
-    LEDGE_MOTION_PC *ledge = ((LEDGE_WORLD_PC *)world)->ledges;
+    LEDGE_MOTION_PC *ledge = ((LEDGE_WORLD *)world)->ledges;
     LEDGE_MOTION_PC *nearest_segment;
     LEDGE_MOTION_PC *nearest_endpoint;
     f32 segment_distance;
@@ -98,7 +98,7 @@ static LEDGE_MOTION_PC *LedgeAttachPointPc(WORLDINFO *world, NUVEC *position, NU
     nearest_endpoint = NULL;
     segment_angle = 0;
     endpoint_angle = 0;
-    for (i32 i = 0; i < ((LEDGE_WORLD_PC *)world)->count; ++i, ++ledge) {
+    for (i32 i = 0; i < ((LEDGE_WORLD *)world)->count; ++i, ++ledge) {
         if ((ledge->state_flags & 2) == 0 || (ledge->state_flags & 1) == 0) {
             continue;
         }

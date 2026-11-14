@@ -1,7 +1,7 @@
 #include "saga.h"
 #include <stdio.h>
 
-typedef struct bolt_gizmo_type_pc_s {
+typedef struct bolt_gizmo_type_s {
     u8 unknown_00[0x6c];
     i32 (*hit_platform)(WORLDINFO *, void *, BOLT_PC *, u8 *);
     u8 unknown_70[4];

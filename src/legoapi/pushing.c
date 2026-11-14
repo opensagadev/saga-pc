@@ -1,35 +1,35 @@
 #include "saga.h"
 #include <string.h>
 
-typedef struct PUSH_CONTEXT_INFO_PC { // size 0x10
-    const char *name;                 // 0x0
-    i32 action;                       // 0x4
-    u64 flags;                        // 0x8
-} PUSH_CONTEXT_INFO_PC;
+typedef struct PUSH_CONTEXT_INFO { // size 0x10
+    const char *name;              // 0x0
+    i32 action;                    // 0x4
+    u64 flags;                     // 0x8
+} PUSH_CONTEXT_INFO;
 
-typedef struct PART_RELEASE_PUSH_PC { // size 0xdc8
-    u8 unknown_000[0xdc4];            // 0x000
-    f32 push_timer;                   // 0xdc4
-} PART_RELEASE_PUSH_PC;
+typedef struct PART_RELEASE_PUSH { // size 0xdc8
+    u8 unknown_000[0xdc4];         // 0x000
+    f32 push_timer;                // 0xdc4
+} PART_RELEASE_PUSH;
 
 STATIC_ASSERT(offsetof(GIZSPINNER_s, state_flags) == 0x84);
 STATIC_ASSERT(offsetof(GIZSPINNER_s, spin_timer) == 0x90);
 
-typedef struct PUSH_OBJECT_LOCAL_PC { // size 0x7b4
-    u8 unknown_000[0x768];            // 0x000
-    f32 obstacle_timer;               // 0x768
-    u8 unknown_076c[0x7b1 - 0x76c];   // 0x76c
-    u8 landing_followup;              // 0x7b1
-} PUSH_OBJECT_LOCAL_PC;
+typedef struct PUSH_OBJECT_LOCAL {  // size 0x7b4
+    u8 unknown_000[0x768];          // 0x000
+    f32 obstacle_timer;             // 0x768
+    u8 unknown_076c[0x7b1 - 0x76c]; // 0x76c
+    u8 landing_followup;            // 0x7b1
+} PUSH_OBJECT_LOCAL;
 
 extern u32 (*CanPushObstaclesFn)(GAMEOBJECT *);
 
-typedef struct PUSH_OBSTACLE_WORLD_PC { // size 0x46a8
-    u8 unknown_000[0x46a4];             // 0x0000
-    void *obstacle_sys;                 // 0x46a4
-} PUSH_OBSTACLE_WORLD_PC;
+typedef struct PUSH_OBSTACLE_WORLD { // size 0x46a8
+    u8 unknown_000[0x46a4];          // 0x0000
+    void *obstacle_sys;              // 0x46a4
+} PUSH_OBSTACLE_WORLD;
 
-typedef struct spinner_movement_pc_s {
+typedef struct spinner_movement_s {
     u8 unknown_00[0x84];
     u32 state_flags;
 } SPINNER_MOVEMENT_PC;
@@ -110,59 +110,59 @@ void PushCode(GAMEOBJECT *object, i32 allow_push) {
         return;
     }
     saved_context = object->character_context;
-    saved_push_timer = ((PART_RELEASE_PUSH_PC *)object)->push_timer;
+    saved_push_timer = ((PART_RELEASE_PUSH *)object)->push_timer;
     if (Pushing(object, &wall_angle, &surface, &angle_difference) != 0) {
         i8 contact_surface = (i8)object->jump_animation_state;
         pushing = 1;
         wall_angle += 0x8000;
         if (contact_surface >= 0 ? contact_surface < 32 && (TerSurface[contact_surface].flags & 0x20000) != 0 : 0) {
-            ((PART_RELEASE_PUSH_PC *)object)->push_timer = 0.4f;
+            ((PART_RELEASE_PUSH *)object)->push_timer = 0.4f;
         } else if (object->field_281 == 0 && GameObjectNearFloor(object, 1.25f, NULL) == 0) {
-            ((PART_RELEASE_PUSH_PC *)object)->push_timer = 0.01f;
+            ((PART_RELEASE_PUSH *)object)->push_timer = 0.01f;
         } else {
             if (FRAMETIME > 1.0f / 30.0f) {
-                ((PART_RELEASE_PUSH_PC *)object)->push_timer += FRAMETIME + FRAMETIME;
+                ((PART_RELEASE_PUSH *)object)->push_timer += FRAMETIME + FRAMETIME;
             } else {
                 f64 step = (1.0f / FRAMETIME) / 30.0;
-                ((PART_RELEASE_PUSH_PC *)object)->push_timer += (step + step) * FRAMETIME;
+                ((PART_RELEASE_PUSH *)object)->push_timer += (step + step) * FRAMETIME;
             }
-            if (((PART_RELEASE_PUSH_PC *)object)->push_timer >= 0.25f) {
-                ((PART_RELEASE_PUSH_PC *)object)->push_timer = 0.4f;
+            if (((PART_RELEASE_PUSH *)object)->push_timer >= 0.25f) {
+                ((PART_RELEASE_PUSH *)object)->push_timer = 0.4f;
             }
         }
     } else {
         pushing = 0;
         if (object->pad->input_magnitude > 0.0f ||
             (LEGOCONTEXT_PUSHOBSTACLE != -1 && object->character_context == LEGOCONTEXT_PUSHOBSTACLE)) {
-            ((PART_RELEASE_PUSH_PC *)object)->push_timer -= FRAMETIME;
-            if (((PART_RELEASE_PUSH_PC *)object)->push_timer < 0.0f) {
-                ((PART_RELEASE_PUSH_PC *)object)->push_timer = 0.0f;
+            ((PART_RELEASE_PUSH *)object)->push_timer -= FRAMETIME;
+            if (((PART_RELEASE_PUSH *)object)->push_timer < 0.0f) {
+                ((PART_RELEASE_PUSH *)object)->push_timer = 0.0f;
             }
         } else {
-            ((PART_RELEASE_PUSH_PC *)object)->push_timer = 0.0f;
+            ((PART_RELEASE_PUSH *)object)->push_timer = 0.0f;
         }
     }
 
-    if ((((PUSH_CONTEXT_INFO_PC *)CInfo)[object->character_context].flags & 0x2000) != 0) {
+    if ((((PUSH_CONTEXT_INFO *)CInfo)[object->character_context].flags & 0x2000) != 0) {
         if (LEGOCONTEXT_WALLJUMPWAIT != -1 && object->character_context == LEGOCONTEXT_WALLJUMPWAIT) {
             u32 buttons = object->pad->buttons_pressed;
             if ((buttons & GAMEPAD_JUMP) != 0) {
-                ((PUSH_OBJECT_LOCAL_PC *)object)->landing_followup = 1;
+                ((PUSH_OBJECT_LOCAL *)object)->landing_followup = 1;
             } else if ((buttons & GAMEPAD_ACTION) != 0) {
-                ((PUSH_OBJECT_LOCAL_PC *)object)->landing_followup = 3;
+                ((PUSH_OBJECT_LOCAL *)object)->landing_followup = 3;
             }
             if (object->character_model->model_data_b[object->field_7aa] == NULL ||
                 AnimPlaying(&object->anim_packet, object->field_7aa, 1, 0) != NULL) {
                 object->context_timer -= FRAMETIME;
                 if (object->context_timer <= 0.0f) {
-                    if (((PUSH_OBJECT_LOCAL_PC *)object)->landing_followup == 1) {
+                    if (((PUSH_OBJECT_LOCAL *)object)->landing_followup == 1) {
                         StartJump(object, 9);
                         object->airborne_action_timer = 1.2f;
                         object->movement_facing_angle += 0x8000;
                         object->facing_angle = object->movement_facing_angle;
                         object->field_0x276 = object->movement_facing_angle;
                         PlayGruntSfx(object);
-                    } else if (((PUSH_OBJECT_LOCAL_PC *)object)->landing_followup == 3 && LEGOACT_LUNGE != -1 &&
+                    } else if (((PUSH_OBJECT_LOCAL *)object)->landing_followup == 3 && LEGOACT_LUNGE != -1 &&
                                object->character_model->model_data_b[LEGOACT_LUNGE] != NULL) {
                         object->movement_facing_angle += 0x8000;
                         object->facing_angle = object->movement_facing_angle;
@@ -178,7 +178,7 @@ void PushCode(GAMEOBJECT *object, i32 allow_push) {
             if (pushing) {
                 object->takeover_start_angle = wall_angle;
             }
-            if (((PART_RELEASE_PUSH_PC *)object)->push_timer <= 0.0f) {
+            if (((PART_RELEASE_PUSH *)object)->push_timer <= 0.0f) {
                 if (LEGOCONTEXT_PUSHOBSTACLE != -1 && object->character_context == LEGOCONTEXT_PUSHOBSTACLE) {
                     GameCam_Blend(NULL, 0.5f, 0.0f, 1);
                 }
@@ -189,7 +189,7 @@ void PushCode(GAMEOBJECT *object, i32 allow_push) {
                object->character_context == -1 &&
                (allow_push == 0 ||
                 (LEGOACT_PUSH != -1 && object->character_model->model_data_b[LEGOACT_PUSH] != NULL))) {
-        if (((PART_RELEASE_PUSH_PC *)object)->push_timer >= 0.25f) {
+        if (((PART_RELEASE_PUSH *)object)->push_timer >= 0.25f) {
             i32 push_surface = surface;
             if (push_surface == 30 || push_surface == 31 || (object->flags_ef4 & 0x20000) != 0) {
                 GIZSPINNER_s *spinner = NULL;
@@ -217,11 +217,11 @@ void PushCode(GAMEOBJECT *object, i32 allow_push) {
                     }
                 } else if (LEGOCONTEXT_PUSHOBSTACLE != -1 && CanPushObstaclesFn != NULL &&
                            CanPushObstaclesFn(object) != 0) {
-                    GIZOBSTACLE *obstacle = GizObstacle_FindNearest(((PUSH_OBSTACLE_WORLD_PC *)WORLD)->obstacle_sys,
+                    GIZOBSTACLE *obstacle = GizObstacle_FindNearest(((PUSH_OBSTACLE_WORLD *)WORLD)->obstacle_sys,
                                                                     &object->collision_position, object, &distance, 7);
                     if (obstacle != NULL && distance < 6.25) {
                         object->character_context = LEGOCONTEXT_PUSHOBSTACLE;
-                        ((PUSH_OBJECT_LOCAL_PC *)object)->obstacle_timer = 0.75f;
+                        ((PUSH_OBJECT_LOCAL *)object)->obstacle_timer = 0.75f;
                         object->grapple = obstacle;
                         object->context_variant = (u8)push_surface;
                         FastWeaponIn(object, 0);
@@ -230,7 +230,7 @@ void PushCode(GAMEOBJECT *object, i32 allow_push) {
                     }
                 }
             } else if (object->supporting_platform_id == -1 &&
-                       ((PART_RELEASE_PUSH_PC *)object)->push_timer >= saved_push_timer) {
+                       ((PART_RELEASE_PUSH *)object)->push_timer >= saved_push_timer) {
                 object->character_context = LEGOCONTEXT_PUSH;
             } else {
                 object->character_context = LEGOCONTEXT_PUSH;
@@ -262,7 +262,7 @@ void PushCode(GAMEOBJECT *object, i32 allow_push) {
             if (object->context_timer <= 0.0f) {
                 object->context_timer = 0.3f;
             }
-            ((PUSH_OBJECT_LOCAL_PC *)object)->landing_followup = 0;
+            ((PUSH_OBJECT_LOCAL *)object)->landing_followup = 0;
             object->movement_facing_angle = wall_angle;
             object->velocity = v000;
         }
@@ -275,7 +275,7 @@ void PushCode(GAMEOBJECT *object, i32 allow_push) {
         i32 moving = 0;
         if ((pad->buttons_pressed & GAMEPAD_JUMP) != 0) {
             StartJump(object, 0);
-            ((PART_RELEASE_PUSH_PC *)object)->push_timer = 0.0f;
+            ((PART_RELEASE_PUSH *)object)->push_timer = 0.0f;
             object->flags_e24 |= 0x1000;
             return;
         }
@@ -291,7 +291,7 @@ void PushCode(GAMEOBJECT *object, i32 allow_push) {
                 object->field_7aa = LEGOACT_SUPERPUSH_IDLE;
                 goto finalize;
             }
-            ((PUSH_OBJECT_LOCAL_PC *)object)->obstacle_timer = 0.75f;
+            ((PUSH_OBJECT_LOCAL *)object)->obstacle_timer = 0.75f;
             if (object->context_variant == 0x1e) {
                 if (forward != 0) {
                     goto push_obstacle;
@@ -323,8 +323,8 @@ void PushCode(GAMEOBJECT *object, i32 allow_push) {
             }
         } else {
             object->field_7aa = LEGOACT_SUPERPUSH_IDLE;
-            ((PUSH_OBJECT_LOCAL_PC *)object)->obstacle_timer -= FRAMETIME;
-            if (((PUSH_OBJECT_LOCAL_PC *)object)->obstacle_timer <= 0.0f) {
+            ((PUSH_OBJECT_LOCAL *)object)->obstacle_timer -= FRAMETIME;
+            if (((PUSH_OBJECT_LOCAL *)object)->obstacle_timer <= 0.0f) {
                 GameCam_Blend(NULL, 0.5f, 0.0f, 1);
                 object->character_context = -1;
                 return;
@@ -333,7 +333,7 @@ void PushCode(GAMEOBJECT *object, i32 allow_push) {
     } else if (LEGOCONTEXT_PUSHSPINNER != -1 && object->character_context == LEGOCONTEXT_PUSHSPINNER) {
         if ((object->pad->buttons_pressed & GAMEPAD_JUMP) != 0) {
             StartJump(object, 0);
-            ((PART_RELEASE_PUSH_PC *)object)->push_timer = 0.0f;
+            ((PART_RELEASE_PUSH *)object)->push_timer = 0.0f;
             object->flags_e24 |= 0x1000;
             return;
         }
@@ -361,7 +361,7 @@ void PushCode(GAMEOBJECT *object, i32 allow_push) {
     }
 finalize:
     if (object->character_context != saved_context &&
-        (((PUSH_CONTEXT_INFO_PC *)CInfo)[object->character_context].flags & 0x2000) != 0) {
+        (((PUSH_CONTEXT_INFO *)CInfo)[object->character_context].flags & 0x2000) != 0) {
         FastWeaponIn(object, 0);
         if (LEGOCONTEXT_WALLJUMPWAIT != -1 && object->character_context == LEGOCONTEXT_WALLJUMPWAIT) {
             PlayLandSfx(object, 0, 0);
@@ -410,11 +410,11 @@ i32 WallShuffle_SetTargetMom(GAMEOBJECT *object, u16 input_angle) {
 
 void ReleasePush(GAMEOBJECT *object) {
     i32 context = object->character_context;
-    if ((((PUSH_CONTEXT_INFO_PC *)CInfo)[context].flags & 0x2000) != 0) {
+    if ((((PUSH_CONTEXT_INFO *)CInfo)[context].flags & 0x2000) != 0) {
         if (LEGOCONTEXT_PUSHOBSTACLE != -1 && context == LEGOCONTEXT_PUSHOBSTACLE) {
             GameCam_Blend(NULL, 0.5f, 0.0f, 1);
         }
-        ((PART_RELEASE_PUSH_PC *)object)->push_timer = 0.0f;
+        ((PART_RELEASE_PUSH *)object)->push_timer = 0.0f;
         object->character_context = -1;
     }
 }

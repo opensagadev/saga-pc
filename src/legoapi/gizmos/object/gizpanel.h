@@ -25,7 +25,7 @@ extern "C" {
     extern i32 gizpanel_gizmotype_id;
     void GizPanel_GetAbsTargetPos(void *, NUVEC *, i32);
     void GizPanel_Activate(void *gizmo, i32 active);
-    void GizPanel_AddGizmos(struct gizmosys_pc_s *gizmo_sys, i32 type_id, void *world_ptr, void *arg3);
+    void GizPanel_AddGizmos(struct gizmosys_s *gizmo_sys, i32 type_id, void *world_ptr, void *arg3);
     void GizPanel_Draw(void *world_ptr, void *arg1, f32 arg2);
     char *GizPanel_GetGizmoName(void *gizmo);
     i32 GizPanel_GetMaxGizmos(void *world_ptr);

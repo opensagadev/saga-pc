@@ -10,7 +10,7 @@ extern "C" {
     extern void *Door_Last;
 }
 
-typedef struct player_progress_hp_pc_s {
+typedef struct player_progress_hp_s {
     u8 unknown_0000[8];
     u8 hitpoints;
     u8 unknown_0009[7];
@@ -20,7 +20,7 @@ extern "C" {
     extern AREA_DATA_PC *ANEWHOPE_ADATA;
 }
 
-typedef struct area_loading_clock_reader_pc_s {
+typedef struct area_loading_clock_reader_s {
     u8 unknown_0000[0x7c20];
     f32 elapsed_time;
 } AREA_LOADING_CLOCK_READER_PC;
@@ -50,7 +50,7 @@ extern "C" void edbitsRegisterThingsScene(NUGSCN *scene);
 extern "C" i32 NuMtlSetCurrentRenderPlane(i32 render_plane);
 extern "C" void ParticleReset(void);
 
-typedef struct permanent_material_reader_pc_s {
+typedef struct permanent_material_reader_s {
     u8 unknown_0000[0x40];
     u32 attributes;
     u32 shader_flags;
@@ -64,14 +64,14 @@ typedef struct permanent_material_reader_pc_s {
 
 extern "C" void DebrisSetup(VARIPTR *, VARIPTR, char *, i32, i32, i32);
 
-typedef struct permanent_customiser_save_pc_s {
+typedef struct permanent_customiser_save_s {
     u16 pieces[9];
     u8 unknown_12[0x26];
     u16 secondary_pieces[9];
     u8 unknown_4a[0x26];
 } PERMANENT_CUSTOMISER_SAVE_PC;
 
-typedef struct permanent_customiser_game_pc_s {
+typedef struct permanent_customiser_game_s {
     u8 unknown_0000[0x7c24];
     PERMANENT_CUSTOMISER_SAVE_PC customiser;
 } PERMANENT_CUSTOMISER_GAME_PC;
@@ -320,12 +320,12 @@ extern "C" void ChrisDogFightAReset(WORLDINFO *);
 extern "C" void ChrisDogFightAUpdate(WORLDINFO *);
 extern "C" void ChrisDogFightADraw(WORLDINFO *);
 
-typedef struct level_script_progress_pc_s {
+typedef struct level_script_progress_s {
     char name[16];
     f32 params[4];
 } LEVEL_SCRIPT_PROGRESS_PC;
 
-typedef struct ai_script_progress_view_pc_s {
+typedef struct ai_script_progress_view_s {
     u8 unknown_0000[0x2824];
     LEVEL_SCRIPT_PROGRESS_PC scripts[32];
 } AI_SCRIPT_PROGRESS_VIEW_PC;
@@ -334,12 +334,12 @@ typedef struct ai_script_progress_view_pc_s {
 extern "C" {
     void SaveSceneObjectAnimTFactors(NUGSCN *scene);
 
-    typedef struct world_script_progress_pc_s {
+    typedef struct world_script_progress_s {
         char name[16];
         f32 params[4];
     } WORLD_SCRIPT_PROGRESS_PC;
 
-    typedef struct level_progress_transfer_pc_s {
+    typedef struct level_progress_transfer_s {
         SCENEPROGRESS scene_progress;
         u32 flags;
         u8 unknown_2804[0x20];
@@ -348,7 +348,7 @@ extern "C" {
         char disabled_effect_names[12][16];
     } LEVEL_PROGRESS_TRANSFER_PC;
 
-    typedef struct world_persistence_flags_pc_s {
+    typedef struct world_persistence_flags_s {
         u8 unknown_0000[0x5170];
         u32 progress_flags;
     } WORLD_PERSISTENCE_FLAGS_PC;
@@ -359,12 +359,12 @@ extern "C" {
     void LoadTerrainFile(WORLDINFO *world);
 }
 
-typedef struct world_minikit_load_pc_s {
+typedef struct world_minikit_load_s {
     NUGSCN *scene;
     u8 unknown_04[0x14];
 } WORLD_MINIKIT_LOAD_PC;
 
-typedef struct world_load_reader_pc_s {
+typedef struct world_load_reader_s {
     u8 unknown_0000[0x2964];
     NUGSCN *icons_scene;
     WORLD_MINIKIT_LOAD_PC minikit;
@@ -1604,7 +1604,7 @@ void LoadAreaCharacters(void) {
 extern "C" {
 
     /* Bitfield view of SCENESPECIALPROGRESS_PC.flags. */
-    typedef struct scene_special_state_pc_s {
+    typedef struct scene_special_state_s {
         u32 frame : 11;
         u32 visible : 1;
         u32 playing : 1;

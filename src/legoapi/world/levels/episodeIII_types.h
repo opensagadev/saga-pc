@@ -11,7 +11,7 @@
 #include "legoapi/legoapi_types.h"
 #endif
 
-typedef struct vadera_pc_s {
+typedef struct vadera_s {
     GIZAIMESSAGE *in_control_room_message;
     GIZAIMESSAGE *ceiling_collapse_message;
     GIZAIMESSAGE *timer_message;

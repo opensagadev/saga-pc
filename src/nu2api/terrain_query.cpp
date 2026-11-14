@@ -91,7 +91,7 @@ struct ShadowScanWriter {
     do {                                                                                                               \
         TerrainScanWriter *w = (w_arg);                                                                                \
         if (w->group_shape_count) {                                                                                    \
-            TERRAIN_SCAN_WORD_PC *h = (TERRAIN_SCAN_WORD_PC *)w->group_header;                                         \
+            TERRAIN_SCAN_WORD *h = (TERRAIN_SCAN_WORD *)w->group_header;                                               \
             h->header.shape_count = (i16)w->group_shape_count;                                                         \
             h->header.terrain_group = (i16)(g_arg);                                                                    \
             w->group_header = (u8 *)w->cursor;                                                                         \
@@ -103,7 +103,7 @@ struct ShadowScanWriter {
     do {                                                                                                               \
         ShadowScanWriter *w = (w_arg);                                                                                 \
         if (w->shape_count) {                                                                                          \
-            TERRAIN_SCAN_WORD_PC *h = (TERRAIN_SCAN_WORD_PC *)w->group_header;                                         \
+            TERRAIN_SCAN_WORD *h = (TERRAIN_SCAN_WORD *)w->group_header;                                               \
             h->header.shape_count = (i16)w->shape_count;                                                               \
             h->header.terrain_group = (i16)(g_arg);                                                                    \
             w->group_header = (u8 *)w->cursor;                                                                         \
@@ -166,7 +166,7 @@ extern "C" {
             if (count <= 0)                                                                                            \
                 break;                                                                                                 \
             const i32 group_index = (entry_var)->header.terrain_group;                                                 \
-            TERRAIN_SCAN_WORD_PC *shapes = (entry_var) + 1;                                                            \
+            TERRAIN_SCAN_WORD *shapes = (entry_var) + 1;                                                               \
             TERRAIN_GROUP_PC *group = &TERRAIN_NS_SET->groups[group_index];                                            \
             if (TERRAIN_NS_GROUP_OVERLAP(min_x, min_z, max_x, max_z, group) && group->chunk_type != -1) {              \
                 TERRAIN_NS_LOCAL_BOUNDS(group);                                                                        \
@@ -190,10 +190,10 @@ extern "C" {
         i32 hit_index = -1;
         i32 oldest_index = -1;
         i32 oldest_age = 0x7fffffff;
-        TERRAIN_SCAN_WORD_PC *group_header;
-        TERRAIN_SCAN_WORD_PC *cursor;
-        TERRAIN_SCAN_WORD_PC *limit;
-        TERRAIN_SCAN_WORD_PC *entry;
+        TERRAIN_SCAN_WORD *group_header;
+        TERRAIN_SCAN_WORD *cursor;
+        TERRAIN_SCAN_WORD *limit;
+        TERRAIN_SCAN_WORD *entry;
         i32 shape_count;
         f32 max_x;
         f32 max_z;
@@ -205,7 +205,7 @@ extern "C" {
         f32 local_min_z;
 
         for (i32 i = 0; i < 16; ++i) {
-            TERRAIN_INDEX_LEVEL_PC *level = &TERRAIN_NS_SET->index_levels[i];
+            TERRAIN_INDEX_LEVEL *level = &TERRAIN_NS_SET->index_levels[i];
             const i16 age = level->cache_age;
             if (age > 0) {
                 const f64 dx = (saved_position.x + 1.0) - level->center_x;
@@ -435,9 +435,9 @@ extern "C" {
     } while (0)
 
     void ScanTerrainHandel(i32 terrain_mask, i16 *handle) {
-        TERRAIN_SCAN_WORD_PC *group_header;
-        TERRAIN_SCAN_WORD_PC *cursor;
-        TERRAIN_SCAN_WORD_PC *limit;
+        TERRAIN_SCAN_WORD *group_header;
+        TERRAIN_SCAN_WORD *cursor;
+        TERRAIN_SCAN_WORD *limit;
         i32 shape_count;
         f32 max_x;
         f32 min_x;
@@ -506,7 +506,7 @@ extern "C" {
         shape_count = 0;
         while (handle[0] > 0) {
             const i32 group_index = handle[1];
-            TERRAIN_SCAN_WORD_PC *shapes = reinterpret_cast<TERRAIN_SCAN_WORD_PC *>(handle) + 1;
+            TERRAIN_SCAN_WORD *shapes = reinterpret_cast<TERRAIN_SCAN_WORD *>(handle) + 1;
             TERRAIN_GROUP_PC *group = &TERRAIN_STH_SET->groups[group_index];
             f32 local_min_x;
             f32 local_max_x;
@@ -629,9 +629,9 @@ extern "C" {
     } while (0)
 
     void ScanTerrainPlatform(i32 group_index, i32 terrain_mask) {
-        TERRAIN_SCAN_WORD_PC *group_header;
-        TERRAIN_SCAN_WORD_PC *cursor;
-        TERRAIN_SCAN_WORD_PC *limit;
+        TERRAIN_SCAN_WORD *group_header;
+        TERRAIN_SCAN_WORD *cursor;
+        TERRAIN_SCAN_WORD *limit;
         i32 shape_count;
         i32 scaled_count;
         f32 max_x;
@@ -658,7 +658,7 @@ extern "C" {
         ScaleTerrain = ScaleTerrainT1;
         query = TerI;
         group_header = query->scan_words;
-        cursor = reinterpret_cast<TERRAIN_SCAN_WORD_PC *>(query->scan_list_storage) + 1;
+        cursor = reinterpret_cast<TERRAIN_SCAN_WORD *>(query->scan_list_storage) + 1;
         limit = cursor + 508;
         shape_count = 0;
         platinrange = 0;
@@ -1354,9 +1354,9 @@ extern "C" i32 NewRayCastSetMask(NUVEC *position, NUVEC *movement, f32 radius, f
 
 static u8 *TempStackPtrPc = 0;
 
-struct TERRAIN_HANDLE_WALL_PAIR_PC { // size 0x8
-    TERRAIN_WALL_POINT *first;       // 0x0
-    TERRAIN_WALL_POINT *second;      // 0x4
+struct TERRAIN_HANDLE_WALL_PAIR { // size 0x8
+    TERRAIN_WALL_POINT *first;    // 0x0
+    TERRAIN_WALL_POINT *second;   // 0x4
 };
 
 extern "C" void NewScanInit(void) {
@@ -1407,10 +1407,10 @@ extern "C" void NewScanInit(void) {
     } while (0)
 
 i16 *NewScanHandelSubsetPc(i16 *subset, NUVEC *position, NUVEC *movement, f32 radius, i32 terrain_mask) {
-    TERRAIN_SCAN_WORD_PC *group_header;
-    TERRAIN_SCAN_WORD_PC *cursor;
-    TERRAIN_SCAN_WORD_PC *limit;
-    TERRAIN_SCAN_WORD_PC *result;
+    TERRAIN_SCAN_WORD *group_header;
+    TERRAIN_SCAN_WORD *cursor;
+    TERRAIN_SCAN_WORD *limit;
+    TERRAIN_SCAN_WORD *result;
     i32 shape_count;
     f32 max_x;
     f32 min_x;
@@ -1419,21 +1419,21 @@ i16 *NewScanHandelSubsetPc(i16 *subset, NUVEC *position, NUVEC *movement, f32 ra
     f32 max_y;
     f32 min_y;
     f32 scan_radius;
-    TERRAIN_HANDLE_WALL_PAIR_PC *walls;
-    TERRAIN_HANDLE_WALL_PAIR_PC *source;
+    TERRAIN_HANDLE_WALL_PAIR *walls;
+    TERRAIN_HANDLE_WALL_PAIR *source;
 
     if (subset == NULL) {
         return NULL;
     }
-    group_header = reinterpret_cast<TERRAIN_SCAN_WORD_PC *>(TempStackPtrPc);
-    cursor = reinterpret_cast<TERRAIN_SCAN_WORD_PC *>(TempStackPtrPc) + 1;
+    group_header = reinterpret_cast<TERRAIN_SCAN_WORD *>(TempStackPtrPc);
+    cursor = reinterpret_cast<TERRAIN_SCAN_WORD *>(TempStackPtrPc) + 1;
     result = group_header;
     limit = cursor + 508;
     if (reinterpret_cast<u8 *>(cursor) > reinterpret_cast<u8 *>(ScaleTerrainT1) + 0x63c18) {
         return NULL;
     }
     if (reinterpret_cast<u8 *>(limit) > reinterpret_cast<u8 *>(ScaleTerrainT1) + 0x63da8) {
-        limit = reinterpret_cast<TERRAIN_SCAN_WORD_PC *>(reinterpret_cast<u8 *>(ScaleTerrainT1) + 0x63da8);
+        limit = reinterpret_cast<TERRAIN_SCAN_WORD *>(reinterpret_cast<u8 *>(ScaleTerrainT1) + 0x63da8);
     }
     if (movement->x > 0.0f) {
         min_x = position->x - 0.02f - radius;
@@ -1466,7 +1466,7 @@ i16 *NewScanHandelSubsetPc(i16 *subset, NUVEC *position, NUVEC *movement, f32 ra
     while (subset[0] > 0) {
         const i32 count = subset[0];
         const i32 group_index = subset[1];
-        TERRAIN_SCAN_WORD_PC *shapes = reinterpret_cast<TERRAIN_SCAN_WORD_PC *>(subset) + 1;
+        TERRAIN_SCAN_WORD *shapes = reinterpret_cast<TERRAIN_SCAN_WORD *>(subset) + 1;
         TERRAIN_GROUP_PC *group = &static_cast<TERRAIN_SET_PC *>(CurrentTerrain)->groups[group_index];
         f32 local_min_x;
         f32 local_max_x;
@@ -1556,8 +1556,8 @@ i16 *NewScanHandelSubsetPc(i16 *subset, NUVEC *position, NUVEC *movement, f32 ra
     min_z = min_z - 0.02f;
     max_x = max_x + 0.02f;
     max_z = max_z + 0.02f;
-    walls = reinterpret_cast<TERRAIN_HANDLE_WALL_PAIR_PC *>(group_header + 1);
-    source = reinterpret_cast<TERRAIN_HANDLE_WALL_PAIR_PC *>(subset + 2);
+    walls = reinterpret_cast<TERRAIN_HANDLE_WALL_PAIR *>(group_header + 1);
+    source = reinterpret_cast<TERRAIN_HANDLE_WALL_PAIR *>(subset + 2);
     while (static_cast<i32>(reinterpret_cast<usize>(source->first)) > 0) {
         TERRAIN_WALL_POINT *wall = source->first;
         if (((wall[0].position.x >= min_x && wall[1].position.x <= max_x) ||
@@ -1571,7 +1571,7 @@ i16 *NewScanHandelSubsetPc(i16 *subset, NUVEC *position, NUVEC *movement, f32 ra
         }
         ++source;
     }
-    group_header = reinterpret_cast<TERRAIN_SCAN_WORD_PC *>(walls);
+    group_header = reinterpret_cast<TERRAIN_SCAN_WORD *>(walls);
     group_header->header.shape_count = 0;
     group_header->header.terrain_group = 0;
     TempStackPtrPc = reinterpret_cast<u8 *>(group_header + 1);
@@ -1593,8 +1593,8 @@ extern "C" void fun_0067e980(void) {
 STATIC_ASSERT(offsetof(TERRAIN_SPATIAL_NODE, point_count) == 0);
 STATIC_ASSERT(offsetof(TERRAIN_SPATIAL_CHUNK, previous) == 0);
 
-struct TERRAIN_HANDLE_END_PC {       // size 0x8
-    TERRAIN_SCAN_WORD_PC terminator; // 0x0
+struct TERRAIN_HANDLE_END {       // size 0x8
+    TERRAIN_SCAN_WORD terminator; // 0x0
 
     union { // size 0x4
         TERRAIN_WALL_POINT *wall_cursor;
@@ -1642,10 +1642,10 @@ STATIC_ASSERT(offsetof(TERRAIN_WALL_POINT, material) == 12);
     } while (0)
 
 i16 *NewScanHandelFullPc(NUVEC *position, NUVEC *movement, f32 radius, i32 scan_type, i32 terrain_mask) {
-    TERRAIN_SCAN_WORD_PC *group_header;
-    TERRAIN_SCAN_WORD_PC *cursor;
-    TERRAIN_SCAN_WORD_PC *limit;
-    TERRAIN_SCAN_WORD_PC *result;
+    TERRAIN_SCAN_WORD *group_header;
+    TERRAIN_SCAN_WORD *cursor;
+    TERRAIN_SCAN_WORD *limit;
+    TERRAIN_SCAN_WORD *result;
     i32 shape_count;
     i32 scaled_count;
     TerrainScanBounds bounds;
@@ -1653,9 +1653,9 @@ i16 *NewScanHandelFullPc(NUVEC *position, NUVEC *movement, f32 radius, i32 scan_
     f32 extent_sq;
     f32 scan_radius;
     NUVEC4 *vertices;
-    TERRAIN_HANDLE_END_PC *end_header;
+    TERRAIN_HANDLE_END *end_header;
 
-    group_header = reinterpret_cast<TERRAIN_SCAN_WORD_PC *>(TempStackPtrPc);
+    group_header = reinterpret_cast<TERRAIN_SCAN_WORD *>(TempStackPtrPc);
     cursor = group_header + 1;
     scaled_count = 0;
     ScaleTerrain = ScaleTerrainT1;
@@ -1665,7 +1665,7 @@ i16 *NewScanHandelFullPc(NUVEC *position, NUVEC *movement, f32 radius, i32 scan_
         return NULL;
     }
     if (reinterpret_cast<u8 *>(limit) > reinterpret_cast<u8 *>(ScaleTerrainT1) + 0x63da8) {
-        limit = reinterpret_cast<TERRAIN_SCAN_WORD_PC *>(reinterpret_cast<u8 *>(ScaleTerrainT1) + 0x63da8);
+        limit = reinterpret_cast<TERRAIN_SCAN_WORD *>(reinterpret_cast<u8 *>(ScaleTerrainT1) + 0x63da8);
     }
     vertices = reinterpret_cast<NUVEC4 *>((reinterpret_cast<u32>(NuScratchAlloc32(0xd0)) + 31) & ~u32(15));
     shape_count = 0;
@@ -1944,7 +1944,7 @@ i16 *NewScanHandelFullPc(NUVEC *position, NUVEC *movement, f32 radius, i32 scan_
             TERRAIN_NSF_FINISH_GROUP(*indices);
         }
     }
-    end_header = reinterpret_cast<TERRAIN_HANDLE_END_PC *>(group_header);
+    end_header = reinterpret_cast<TERRAIN_HANDLE_END *>(group_header);
     end_header->terminator.header.shape_count = 0;
     end_header->terminator.header.terrain_group = 0;
     scan->min_x = scan->min_x - 0.02f;
@@ -2194,10 +2194,10 @@ extern "C" void DrawHitTerrain(void) {
         return;
     }
     TerI = static_cast<TerrainQuery_s *>(NuScratchAlloc32(sizeof(TerrainQuery_s)));
-    TERRAIN_SCAN_WORD_PC *word = TerI->scan_words;
+    TERRAIN_SCAN_WORD *word = TerI->scan_words;
     for (;;) {
         while (word->header.shape_count > 0) {
-            TERRAIN_SCAN_WORD_PC *shape = word + 1;
+            TERRAIN_SCAN_WORD *shape = word + 1;
             for (i32 count = word->header.shape_count; count > 0; --count, ++shape) {
                 i16 group = word->header.terrain_group;
                 TERRAIN_POLYGON_INFO_PC *surface = shape->shape;

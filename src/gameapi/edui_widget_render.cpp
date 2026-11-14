@@ -570,14 +570,14 @@ extern "C" eduiitem_s *eduiItemNumberCreate(u32 data, void *colours, i32 group, 
     return item;
 }
 
-struct EduiTextSelectorViewPc { // size 0x70
-    edui_slider_s slider;       // 0x00
-    char **options;             // 0x6c
+struct EduiTextSelectorView { // size 0x70
+    edui_slider_s slider;     // 0x00
+    char **options;           // 0x6c
 };
 
 extern "C" i32 eduicbRenderTextSelector(eduimenu_s *unused_menu, eduiitem_s *item, i32 x, i32 y, i32 width,
                                         i32 unused_selected) {
-    EduiTextSelectorViewPc *selector = (EduiTextSelectorViewPc *)item;
+    EduiTextSelectorView *selector = (EduiTextSelectorView *)item;
     i32 height = (i32)(NuQFntHeight((VUFNT *)edui_font) * 1.25) >> 3;
     f64 scaled_height = NuQFntHeight((VUFNT *)edui_font) * 0.125;
     i32 baseline = (i32)(scaled_height + NuQFntBaseline((VUFNT *)edui_font));
@@ -603,10 +603,10 @@ extern "C" i32 eduicbRenderTextSelector(eduimenu_s *unused_menu, eduiitem_s *ite
 
 extern "C" eduiitem_s *eduiItemTextSelectorCreate(u32 data, void *colours, i32 group, void *callback, i32 count,
                                                   i32 value, char *text, char **options) {
-    EduiTextSelectorViewPc *item = (EduiTextSelectorViewPc *)NuAlloc(
-        sizeof(EduiTextSelectorViewPc), "d:\\projects\\game_saga\\gameapi.saga\\edtools\\edui.cpp", 0x10e4);
+    EduiTextSelectorView *item = (EduiTextSelectorView *)NuAlloc(
+        sizeof(EduiTextSelectorView), "d:\\projects\\game_saga\\gameapi.saga\\edtools\\edui.cpp", 0x10e4);
     if (item) {
-        memset(item, 0, sizeof(EduiTextSelectorViewPc));
+        memset(item, 0, sizeof(EduiTextSelectorView));
         item->slider.base.data = data;
         item->slider.base.type = 6;
         memcpy(item->slider.base.colours, colours, sizeof(item->slider.base.colours));
@@ -635,7 +635,7 @@ extern "C" eduiitem_s *eduiItemTextSelectorCreate(u32 data, void *colours, i32 g
     return NULL;
 }
 
-struct EduiSeparatorViewPc {            // size 0x4c
+struct EduiSeparatorView {              // size 0x4c
     eduiitem_s base;                    // 0x00
     i32 (*interact)(edui_interact_s *); // 0x48
 };
@@ -663,8 +663,8 @@ extern "C" i32 eduicbRenderSeparator(eduimenu_s *unused_menu, eduiitem_s *item, 
 }
 
 extern "C" eduiitem_s *eduiItemSeparatorCreate(u32 data, const void *colours) {
-    EduiSeparatorViewPc *item = (EduiSeparatorViewPc *)NuAlloc(
-        sizeof(EduiSeparatorViewPc), "d:\\projects\\game_saga\\gameapi.saga\\edtools\\edui.cpp", 0x1362);
+    EduiSeparatorView *item = (EduiSeparatorView *)NuAlloc(
+        sizeof(EduiSeparatorView), "d:\\projects\\game_saga\\gameapi.saga\\edtools\\edui.cpp", 0x1362);
     if (item != NULL) {
         memset(item, 0, sizeof(*item));
         item->base.data = data;
@@ -1398,17 +1398,17 @@ extern "C" i32 eduicbRenderColourPick(eduimenu_s *unused_menu, eduiitem_s *item,
     return width;
 }
 
-typedef struct edui_colour_pick_flags_pc_s { // size 0x74
-    eduiitem_s base;                         // 0x00
-    i32 (*interact)(edui_interact_s *);      // 0x48
-    f32 cursor_x;                            // 0x4c
-    f32 cursor_y;                            // 0x50
-    f32 hue;                                 // 0x54
-    f32 saturation;                          // 0x58
-    f32 value;                               // 0x5c
-    f32 red;                                 // 0x60
-    f32 green;                               // 0x64
-    f32 blue;                                // 0x68
+typedef struct edui_colour_pick_flags_s { // size 0x74
+    eduiitem_s base;                      // 0x00
+    i32 (*interact)(edui_interact_s *);   // 0x48
+    f32 cursor_x;                         // 0x4c
+    f32 cursor_y;                         // 0x50
+    f32 hue;                              // 0x54
+    f32 saturation;                       // 0x58
+    f32 value;                            // 0x5c
+    f32 red;                              // 0x60
+    f32 green;                            // 0x64
+    f32 blue;                             // 0x68
 
     union { // size 0x4
         u32 flags;
@@ -2399,16 +2399,16 @@ extern "C" i32 eduicbProcessColourSlider(eduimenu_s *menu, eduiitem_s *item, f32
     return 0;
 }
 
-typedef struct edui_gradient_stage_pc_s { // size 0x24
-    f32 time;                             // 0x00
-    f32 hue;                              // 0x04
-    f32 saturation;                       // 0x08
-    f32 value;                            // 0x0c
-    f32 red;                              // 0x10
-    f32 green;                            // 0x14
-    f32 blue;                             // 0x18
-    u32 colour;                           // 0x1c
-    u32 metadata;                         // 0x20
+typedef struct edui_gradient_stage_s { // size 0x24
+    f32 time;                          // 0x00
+    f32 hue;                           // 0x04
+    f32 saturation;                    // 0x08
+    f32 value;                         // 0x0c
+    f32 red;                           // 0x10
+    f32 green;                         // 0x14
+    f32 blue;                          // 0x18
+    u32 colour;                        // 0x1c
+    u32 metadata;                      // 0x20
 } EDUI_GRADIENT_STAGE_PC;
 
 STATIC_ASSERT(offsetof(edui_gradient_node_s, hue) == 0x10);

@@ -19,7 +19,7 @@ extern "C" {
     u32 SpecialMove_GetFlags(i32, u32);
     i32 SpecialMove_Check(GAMEOBJECT *, GAMEOBJECT *);
     extern i32 SpecialMoveCount;
-    extern struct specialmove_pc_s *SpecialMove;
+    extern struct specialmove_s *SpecialMove;
     void SpecialMove_Cancel(GAMEOBJECT *);
 
     void SpecialMoves_Configure(char *, VARIPTR *, VARIPTR *);

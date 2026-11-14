@@ -434,12 +434,12 @@ extern NUVEC *ed_loc;
 extern i32 edmain_cursor_enabled;
 void PcEditorCursorEnablePc(i32 enabled);
 
-typedef struct EDUI_PRIM_VERTEX_PC { // size 0x10
-    f32 x;                           // 0x0
-    f32 y;                           // 0x4
-    f32 z;                           // 0x8
-    u32 colour;                      // 0xc
-} EDUI_PRIM_VERTEX_PC;
+typedef struct EDUI_PRIM_VERTEX { // size 0x10
+    f32 x;                        // 0x0
+    f32 y;                        // 0x4
+    f32 z;                        // 0x8
+    u32 colour;                   // 0xc
+} EDUI_PRIM_VERTEX;
 
 static void EduiPrimSetColourPc(i32 colour) {
     u32 converted;
@@ -449,7 +449,7 @@ static void EduiPrimSetColourPc(i32 colour) {
         converted =
             ((colour >> 1) & 0x7f00) + ((colour & 0xfe) << 15) + ((colour >> 17) & 0x7f) + (colour & 0xff000000);
     }
-    ((EDUI_PRIM_VERTEX_PC *)NuPrimStreamBufferPointer->void_ptr)->colour = converted;
+    ((EDUI_PRIM_VERTEX *)NuPrimStreamBufferPointer->void_ptr)->colour = converted;
 }
 
 void fun_00617d30(void) {
@@ -1977,7 +1977,7 @@ void eduiSetFontScale(f32 x, f32 y) {
     edui_font_scale_y = y;
 }
 
-typedef struct EDUI_EXPANDER_PC {                                     // size 0x6c
+typedef struct EDUI_EXPANDER {                                        // size 0x6c
     eduiitem_s base;                                                  // 0x00
     i32 (*interact)(edui_interact_s *interact);                       // 0x48
     eduiitem_s *first_child;                                          // 0x4c
@@ -1990,10 +1990,10 @@ typedef struct EDUI_EXPANDER_PC {                                     // size 0x
     f32 button_y;                                                     // 0x60
     i32 depth;                                                        // 0x64
     void (*changed)(eduimenu_s *menu, eduiitem_s *item, u32 buttons); // 0x68
-} EDUI_EXPANDER_PC;
+} EDUI_EXPANDER;
 
 void eduicbItemExpanderClose(eduiitem_s *item) {
-    EDUI_EXPANDER_PC *expander = (EDUI_EXPANDER_PC *)item;
+    EDUI_EXPANDER *expander = (EDUI_EXPANDER *)item;
     eduiitem_s *child;
     for (child = expander->first_child; child; child = child->next) {
         if (child->type == 19) {
@@ -2028,7 +2028,7 @@ extern f32 EduiScaleYPc;
 i32 NuVSPrintf(char *dest, const char *format, va_list args);
 void NuRndrLineRect2di(i32 x, i32 y, i32 width, i32 height, i32 colour, NUMTL *material);
 
-static void EduiExpanderOpenPc(EDUI_EXPANDER_PC *expander) {
+static void EduiExpanderOpenPc(EDUI_EXPANDER *expander) {
     if (expander->first_child && !expander->open) {
         expander->last_child->next = expander->base.next;
         if (expander->base.next) {
@@ -2041,10 +2041,10 @@ static void EduiExpanderOpenPc(EDUI_EXPANDER_PC *expander) {
 }
 
 /* Is the editor cursor over the expander's open/close button? */
-static i32 EduiExpanderOverButtonPc(EDUI_EXPANDER_PC *expander) {
+static i32 EduiExpanderOverButtonPc(EDUI_EXPANDER *expander) {
     // MATCH-EXCEPTION: parameter copy, reversed declarations, a local for button_x and mirrored
     // compares; only this form gives the original x87 operand order.
-    EDUI_EXPANDER_PC *e = expander;
+    EDUI_EXPANDER *e = expander;
     f32 bottom = (e->button_y + e->button_size) * 0.5;
     f32 right = e->button_size + e->button_x;
     f32 top = e->button_y * 0.5;
@@ -2056,7 +2056,7 @@ static i32 EduiExpanderOverButtonPc(EDUI_EXPANDER_PC *expander) {
 }
 
 static i32 eduicbProcessExpander(eduimenu_s *menu, eduiitem_s *item, f32 delta_time, FRAME_PAD_PC *pad) {
-    EDUI_EXPANDER_PC *expander = (EDUI_EXPANDER_PC *)item;
+    EDUI_EXPANDER *expander = (EDUI_EXPANDER *)item;
     (void)delta_time;
     if (pad->digital_buttons_pressed & 0x40) {
         if (expander->changed) {
@@ -2074,7 +2074,7 @@ static i32 eduicbProcessExpander(eduimenu_s *menu, eduiitem_s *item, f32 delta_t
 }
 
 static i32 eduicbInteractExpander(edui_interact_s *interact) {
-    EDUI_EXPANDER_PC *expander = (EDUI_EXPANDER_PC *)interact->item;
+    EDUI_EXPANDER *expander = (EDUI_EXPANDER *)interact->item;
     if (edui_cursor_buttons_db & 0x40) {
         if (expander->changed) {
             expander->changed(interact->menu, &expander->base, 0);
@@ -2091,7 +2091,7 @@ static i32 eduicbInteractExpander(edui_interact_s *interact) {
 }
 
 static void eduicbItemDestroyExpander(eduimenu_s *menu, eduiitem_s *item) {
-    EDUI_EXPANDER_PC *expander = (EDUI_EXPANDER_PC *)item;
+    EDUI_EXPANDER *expander = (EDUI_EXPANDER *)item;
     if (expander->last_child) {
         expander->last_child->next = NULL;
     }
@@ -2103,7 +2103,7 @@ static void eduicbItemDestroyExpander(eduimenu_s *menu, eduiitem_s *item) {
 }
 
 void eduiIitemExpanderSetDepth(eduiitem_s *item, i32 depth) {
-    EDUI_EXPANDER_PC *expander = (EDUI_EXPANDER_PC *)item;
+    EDUI_EXPANDER *expander = (EDUI_EXPANDER *)item;
     eduiitem_s *child;
     expander->depth = depth;
     for (child = expander->first_child; child; child = child->next) {
@@ -2120,7 +2120,7 @@ void eduiIitemExpanderSetDepth(eduiitem_s *item, i32 depth) {
 }
 
 void eduiItemExpanderAddChild(eduiitem_s *item, eduiitem_s *child) {
-    EDUI_EXPANDER_PC *expander = (EDUI_EXPANDER_PC *)item;
+    EDUI_EXPANDER *expander = (EDUI_EXPANDER *)item;
     child->previous = expander->last_child;
     if (expander->last_child) {
         expander->last_child->next = child;
@@ -2272,7 +2272,7 @@ static void eduiFntPrintClipEx(void *font, f32 x, f32 y, i32 alignment, f32 clip
 }
 
 static i32 eduicbRenderExpander(eduimenu_s *menu, eduiitem_s *item, i32 x, i32 y, i32 width, i32 height) {
-    EDUI_EXPANDER_PC *expander = (EDUI_EXPANDER_PC *)item;
+    EDUI_EXPANDER *expander = (EDUI_EXPANDER *)item;
     u32 button_colours[2];
     f32 item_x = (f32)x;
     f32 item_y = (f32)y;
@@ -2327,10 +2327,10 @@ static i32 eduicbRenderExpander(eduimenu_s *menu, eduiitem_s *item, i32 x, i32 y
 }
 
 eduiitem_s *eduiItemExpanderCreate(u32 data, const void *colours, void *callback, char *text) {
-    EDUI_EXPANDER_PC *item =
-        NuAlloc(sizeof(EDUI_EXPANDER_PC), "d:\\projects\\game_saga\\gameapi.saga\\edtools\\edui.cpp", 0x1473);
+    EDUI_EXPANDER *item =
+        NuAlloc(sizeof(EDUI_EXPANDER), "d:\\projects\\game_saga\\gameapi.saga\\edtools\\edui.cpp", 0x1473);
     if (item != NULL) {
-        memset(item, 0, sizeof(EDUI_EXPANDER_PC));
+        memset(item, 0, sizeof(EDUI_EXPANDER));
         item->base.data = data;
         item->base.type = 19;
         memcpy(item->base.colours, colours, sizeof(item->base.colours));
@@ -3805,7 +3805,7 @@ void eduicbMenuOpenAllexpanders(eduimenu_s *menu) {
     eduiitem_s *item;
     for (item = menu->first; item != NULL; item = item->next) {
         if (item->type == 19) {
-            EDUI_EXPANDER_PC *expander = (EDUI_EXPANDER_PC *)item;
+            EDUI_EXPANDER *expander = (EDUI_EXPANDER *)item;
             if (expander->first_child != NULL && !expander->open) {
                 expander->last_child->next = expander->base.next;
                 if (expander->base.next != NULL) {
@@ -4381,19 +4381,19 @@ typedef struct FILE_DIRECTORY_HOST_ENTRY_PC { // size 0x144
 
 extern i32 NuFileReadDir(i32 file, FILE_DIRECTORY_ENTRY_PC *entry);
 
-typedef struct FS_PACKED_ENTRY_HEADER_PC { // size 0x7
-    u8 kind;                               // 0x0
-    u8 encoded_second;                     // 0x1
-    u8 encoded_minute;                     // 0x2
-    u8 encoded_hour;                       // 0x3
-    u8 encoded_day;                        // 0x4
-    u8 encoded_month;                      // 0x5
-    u8 encoded_year;                       // 0x6
-} FS_PACKED_ENTRY_HEADER_PC;
+typedef struct FS_PACKED_ENTRY_HEADER { // size 0x7
+    u8 kind;                            // 0x0
+    u8 encoded_second;                  // 0x1
+    u8 encoded_minute;                  // 0x2
+    u8 encoded_hour;                    // 0x3
+    u8 encoded_day;                     // 0x4
+    u8 encoded_month;                   // 0x5
+    u8 encoded_year;                    // 0x6
+} FS_PACKED_ENTRY_HEADER;
 
 void FS_GetDirList(char *path, char *filter, char *filter_out) {
     FILE_DIRECTORY_ENTRY_PC entry;
-    FS_PACKED_ENTRY_HEADER_PC header;
+    FS_PACKED_ENTRY_HEADER header;
     char *next = FS_FileList;
     char *drive;
     char *file_begin;
@@ -4607,18 +4607,18 @@ i32 eduiMenuProcessAux(eduimenu_s *menu, f32 delta_time, FRAME_PAD_PC *pad) {
     return eduiProcessInteracts(menu, pad);
 }
 
-void FS_MakeDateTimeString(const FS_PACKED_ENTRY_HEADER_PC *entry, char *output) {
+void FS_MakeDateTimeString(const FS_PACKED_ENTRY_HEADER *entry, char *output) {
     NuSPrintf(output, " %.2d/%.2d/%d %.2d:%.2d:%.2d", entry->encoded_day - 'A', entry->encoded_month - 'A',
               entry->encoded_year + 1915, entry->encoded_hour - 'A', entry->encoded_minute - 'A',
               entry->encoded_second - 'A');
 }
 
-void FS_MakeTimeString(const FS_PACKED_ENTRY_HEADER_PC *entry, char *output) {
+void FS_MakeTimeString(const FS_PACKED_ENTRY_HEADER *entry, char *output) {
     NuSPrintf(output, " %.2d:%.2d:%.2d", entry->encoded_hour - 'A', entry->encoded_minute - 'A',
               entry->encoded_second - 'A');
 }
 
-void FS_MakeDateString(const FS_PACKED_ENTRY_HEADER_PC *entry, char *output) {
+void FS_MakeDateString(const FS_PACKED_ENTRY_HEADER *entry, char *output) {
     NuSPrintf(output, " %.2d/%.2d/%d", entry->encoded_day - 'A', entry->encoded_month - 'A',
               entry->encoded_year + 1915);
 }
@@ -4649,9 +4649,9 @@ f32 FS_GetDirTextWidth(void) {
     f32 max_width = 0.0f;
     char *entry;
     for (entry = FS_FileList; entry < FS_FileListEnd;) {
-        FS_PACKED_ENTRY_HEADER_PC *header = (FS_PACKED_ENTRY_HEADER_PC *)entry;
+        FS_PACKED_ENTRY_HEADER *header = (FS_PACKED_ENTRY_HEADER *)entry;
         f32 width;
-        entry += sizeof(FS_PACKED_ENTRY_HEADER_PC);
+        entry += sizeof(FS_PACKED_ENTRY_HEADER);
         NuQFntSetPointSize(system_qfont, 1.0f, 1.0f);
         width = NuQFntPrintLenU(system_qfont, entry);
         if (header->encoded_year != '#') {
@@ -4822,7 +4822,7 @@ void RenderFileSel3(i32 draw_title) {
     line_y = path_y + 32.0;
     entry = FS_CurrentPos;
     for (line = 0; line < 14; ++line) {
-        FS_PACKED_ENTRY_HEADER_PC *header;
+        FS_PACKED_ENTRY_HEADER *header;
         char *name;
         if (entry >= FS_FileListEnd) {
             break;
@@ -4833,7 +4833,7 @@ void RenderFileSel3(i32 draw_title) {
         }
         NuQFntSet(system_qfont);
         NuQFntMove(system_qfont, text_x, line_y, 0.0f);
-        header = (FS_PACKED_ENTRY_HEADER_PC *)entry;
+        header = (FS_PACKED_ENTRY_HEADER *)entry;
         if (header->kind == 'V') {
             NuQFntSetColour(system_qfont, 0x80204080);
         } else if (header->kind == 'D') {
@@ -5122,7 +5122,7 @@ void FS_OpenFileSelPc(char *title, char *path, char *filter, char *filter_out,
 
 /* An editor item hosting the file selector; the layout copies the colour
  * picker's, whose cursor and colour defaults the create call still sets. */
-typedef struct EDUI_FILE_SELECT_PC {                                  // size 0x64
+typedef struct EDUI_FILE_SELECT {                                     // size 0x64
     eduiitem_s base;                                                  // 0x00
     i32 (*interact)(edui_interact_s *interact);                       // 0x48
     f32 cursor_x;                                                     // 0x4c
@@ -5131,11 +5131,11 @@ typedef struct EDUI_FILE_SELECT_PC {                                  // size 0x
     f32 saturation;                                                   // 0x58
     f32 value;                                                        // 0x5c
     void (*changed)(eduimenu_s *menu, eduiitem_s *item, u32 buttons); // 0x60
-} EDUI_FILE_SELECT_PC;
+} EDUI_FILE_SELECT;
 
 static i32 eduicbProcessFileSelPc(eduimenu_s *menu, eduiitem_s *item, f32 delta_time, FRAME_PAD_PC *pad) {
-    if (ProcessFileSel3(delta_time, pad) && ((EDUI_FILE_SELECT_PC *)item)->changed) {
-        ((EDUI_FILE_SELECT_PC *)item)->changed(menu, item, pad->digital_buttons);
+    if (ProcessFileSel3(delta_time, pad) && ((EDUI_FILE_SELECT *)item)->changed) {
+        ((EDUI_FILE_SELECT *)item)->changed(menu, item, pad->digital_buttons);
     }
     return 0;
 }
@@ -5150,10 +5150,10 @@ static i32 eduicbRenderFileSelPc(eduimenu_s *menu, eduiitem_s *item, i32 x, i32 
 }
 
 eduiitem_s *eduiItemFileSelCreatePc(u32 data, void *colours, void *callback, char *text) {
-    EDUI_FILE_SELECT_PC *item =
-        NuAlloc(sizeof(EDUI_FILE_SELECT_PC), "d:\\projects\\game_saga\\gameapi.saga\\edtools\\fileselect.c", 0x54a);
+    EDUI_FILE_SELECT *item =
+        NuAlloc(sizeof(EDUI_FILE_SELECT), "d:\\projects\\game_saga\\gameapi.saga\\edtools\\fileselect.c", 0x54a);
     if (item) {
-        memset(item, 0, sizeof(EDUI_FILE_SELECT_PC));
+        memset(item, 0, sizeof(EDUI_FILE_SELECT));
         item->base.data = data;
         item->base.type = 16;
         memcpy(item->base.colours, colours, sizeof(item->base.colours));

@@ -2,20 +2,20 @@
 
 #include <string.h>
 
-typedef struct MINICAM_CAMERA_PC { // size 0x230
-    u8 unknown000[0xe8];           // 0x000
-    NUVEC render_position;         // 0x0e8
-    u8 unknown0f4[0x28];           // 0x0f4
-    NUVEC position;                // 0x11c
-    u8 unknown128[0xd0];           // 0x128
-    u16 pitch;                     // 0x1f8
-    u8 unknown1fa[2];              // 0x1fa
-    u16 yaw;                       // 0x1fc
-    u8 unknown1fe[0x2e];           // 0x1fe
-    i8 mode;                       // 0x22c
-} MINICAM_CAMERA_PC;
+typedef struct MINICAM_CAMERA { // size 0x230
+    u8 unknown000[0xe8];        // 0x000
+    NUVEC render_position;      // 0x0e8
+    u8 unknown0f4[0x28];        // 0x0f4
+    NUVEC position;             // 0x11c
+    u8 unknown128[0xd0];        // 0x128
+    u16 pitch;                  // 0x1f8
+    u8 unknown1fa[2];           // 0x1fa
+    u16 yaw;                    // 0x1fc
+    u8 unknown1fe[0x2e];        // 0x1fe
+    i8 mode;                    // 0x22c
+} MINICAM_CAMERA;
 
-#define MINI_CAM_CAMERA (*(MINICAM_CAMERA_PC *)GameCam)
+#define MINI_CAM_CAMERA (*(MINICAM_CAMERA *)GameCam)
 
 /* The SDK's inline NuFdiv: a quotient that is 0 when either operand is 0. */
 static f32 MinicamcutFdivPc(f32 a, f32 b) {
@@ -267,7 +267,7 @@ void Minicam_ResetForNextCommand(void) {
         MiniCam.commands[i] = MiniCam.commands[MiniCam.current_command + i + 1];
     }
     MiniCam.command_count = (u8)i;
-    memset(&MiniCam.commands[MiniCam.command_count], 0, (32 - MiniCam.command_count) * sizeof(MINICAM_COMMAND_PC));
+    memset(&MiniCam.commands[MiniCam.command_count], 0, (32 - MiniCam.command_count) * sizeof(MINICAM_COMMAND));
     MiniCam.current_command = 0;
     MiniCam.delta_time = 0.0f;
 }

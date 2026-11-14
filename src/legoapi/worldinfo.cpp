@@ -22,9 +22,9 @@ extern "C" {
     STATIC_ASSERT(offsetof(GIZMOTYPE_PC, fns.clear_progress_fn) == 0x7c);
     STATIC_ASSERT(offsetof(GIZMOTYPE_PC, progress) == 0x98);
 
-    typedef struct world_script_progress_pc_s { // size 0x20
-        char name[16];                          // 0x00
-        f32 params[4];                          // 0x10
+    typedef struct world_script_progress_s { // size 0x20
+        char name[16];                       // 0x00
+        f32 params[4];                       // 0x10
     } WORLD_SCRIPT_PROGRESS_PC;
 
     STATIC_ASSERT(offsetof(WORLDINFO, game_anim_sys) == 0x2960);
@@ -32,42 +32,42 @@ extern "C" {
     STATIC_ASSERT(offsetof(WORLDINFO, script_processor_count) == 0x2aec);
     STATIC_ASSERT(offsetof(WORLDINFO, script_processors) == 0x2af0);
 
-    typedef struct level_progress_transfer_pc_s { // size 0x2e28
-        SCENEPROGRESS scene_progress;             // 0x0000
-        u32 flags;                                // 0x2800
-        u8 unknown_2804[0x20];                    // 0x2804
-        WORLD_SCRIPT_PROGRESS_PC scripts[32];     // 0x2824
-        GIZFLOWPROGRESS_PC giz_flow_progress;     // 0x2c24
-        char disabled_effect_names[12][16];       // 0x2d68
+    typedef struct level_progress_transfer_s { // size 0x2e28
+        SCENEPROGRESS scene_progress;          // 0x0000
+        u32 flags;                             // 0x2800
+        u8 unknown_2804[0x20];                 // 0x2804
+        WORLD_SCRIPT_PROGRESS_PC scripts[32];  // 0x2824
+        GIZFLOWPROGRESS_PC giz_flow_progress;  // 0x2c24
+        char disabled_effect_names[12][16];    // 0x2d68
     } LEVEL_PROGRESS_TRANSFER_PC;
 
-    typedef struct world_persistence_flags_pc_s { // size 0x5174
-        u8 unknown_0000[0x5170];                  // 0x0000
-        u32 progress_flags;                       // 0x5170
+    typedef struct world_persistence_flags_s { // size 0x5174
+        u8 unknown_0000[0x5170];               // 0x0000
+        u32 progress_flags;                    // 0x5170
     } WORLD_PERSISTENCE_FLAGS_PC;
 
-    typedef struct world_initial_progress_pc_s { // size 0x2804
-        SCENEPROGRESS scene;                     // 0x0000
-        u32 initialized_flags;                   // 0x2800
+    typedef struct world_initial_progress_s { // size 0x2804
+        SCENEPROGRESS scene;                  // 0x0000
+        u32 initialized_flags;                // 0x2800
     } WORLD_INITIAL_PROGRESS_PC;
 
-    typedef struct world_initial_final_pc_s { // size 0x5174
-        u8 unknown_0000[0x5170];              // 0x0000
-        i32 initialized;                      // 0x5170
+    typedef struct world_initial_final_s { // size 0x5174
+        u8 unknown_0000[0x5170];           // 0x0000
+        i32 initialized;                   // 0x5170
     } WORLD_INITIAL_FINAL_PC;
 
-    typedef struct world_initial_reset_pc_s { // size 0x11c
-        u8 unknown_0000[0x114];               // 0x000
-        u32 initialized;                      // 0x114
-        u32 reset_flags;                      // 0x118
+    typedef struct world_initial_reset_s { // size 0x11c
+        u8 unknown_0000[0x114];            // 0x000
+        u32 initialized;                   // 0x114
+        u32 reset_flags;                   // 0x118
     } WORLD_INITIAL_RESET_PC;
 
     void ResetSounds(void);
     i32 AmbientFromQuiet(i32);
 
-    typedef struct world_resource_icons_reader_pc_s { // size 0x2968
-        u8 unknown_0000[0x2964];                      // 0x0000
-        NUGSCN *icons_scene;                          // 0x2964
+    typedef struct world_resource_icons_reader_s { // size 0x2968
+        u8 unknown_0000[0x2964];                   // 0x0000
+        NUGSCN *icons_scene;                       // 0x2964
     } WORLD_RESOURCE_ICONS_READER_PC;
 
     void PC_SPECIAL_SHADOW_LIGHT::SetEnabledPc(i32 enabled) {
@@ -291,34 +291,34 @@ extern "C" {
     STATIC_ASSERT(offsetof(GAMEOBJECT, position) == 0x5c);
     STATIC_ASSERT(offsetof(GAMEOBJECT, flags_1fc_word) == 0x1fc);
 
-    typedef struct EQUIVALENTOBJECTGROUP_PC {
+    typedef struct EQUIVALENTOBJECTGROUP {
         i16 object_count;
         i16 byte_size;
         NUSPECIALHANDLE objects[1];
-    } EQUIVALENTOBJECTGROUP_PC;
+    } EQUIVALENTOBJECTGROUP;
 
-    typedef struct EQUIVALENT_GROUP_PC {
+    typedef struct EQUIVALENT_GROUP {
         i16 object_count;
         i16 byte_size;
         NUSPECIALHANDLE objects[1];
-    } EQUIVALENT_GROUP_PC;
+    } EQUIVALENT_GROUP;
 
-    typedef struct PORTAL_DOOR_PC { // size 0x10
-        NUSPECIALHANDLE special;    // 0x0
-        u16 flags;                  // 0xc
-        u8 portal_id;               // 0xe
-        u8 unknown_0f;              // 0xf
-    } PORTAL_DOOR_PC;
+    typedef struct PORTAL_DOOR { // size 0x10
+        NUSPECIALHANDLE special; // 0x0
+        u16 flags;               // 0xc
+        u8 portal_id;            // 0xe
+        u8 unknown_0f;           // 0xf
+    } PORTAL_DOOR;
 
-    typedef struct PORTAL_DOOR_WORLD_PC { // size 0x5050
-        u8 unknown_0000[0x5048];          // 0x0000
-        PORTAL_DOOR_PC *portal_doors;     // 0x5048
-        i32 portal_door_count;            // 0x504c
-    } PORTAL_DOOR_WORLD_PC;
+    typedef struct PORTAL_DOOR_WORLD { // size 0x5050
+        u8 unknown_0000[0x5048];       // 0x0000
+        PORTAL_DOOR *portal_doors;     // 0x5048
+        i32 portal_door_count;         // 0x504c
+    } PORTAL_DOOR_WORLD;
 
     void PortalDoors_Configure(WORLDINFO *world, char *config) {
-        PORTAL_DOOR_WORLD_PC *view = (PORTAL_DOOR_WORLD_PC *)world;
-        PORTAL_DOOR_PC *cursor;
+        PORTAL_DOOR_WORLD *view = (PORTAL_DOOR_WORLD *)world;
+        PORTAL_DOOR *cursor;
         NUFPAR_PC *parser;
         view->portal_doors = NULL;
         view->portal_door_count = 0;
@@ -330,7 +330,7 @@ extern "C" {
             return;
         }
         world->giz_buffer.addr = (world->giz_buffer.addr + 3U) & ~3U;
-        cursor = (PORTAL_DOOR_PC *)world->giz_buffer.addr;
+        cursor = (PORTAL_DOOR *)world->giz_buffer.addr;
         view->portal_doors = cursor;
         while (NuFParGetLine(parser) != 0) {
             NuFParGetWord(parser);
@@ -393,9 +393,9 @@ extern "C" {
     }
 
     void PortalDoors_Reset(WORLDINFO *world) {
-        PORTAL_DOOR_WORLD_PC *view = (PORTAL_DOOR_WORLD_PC *)world;
+        PORTAL_DOOR_WORLD *view = (PORTAL_DOOR_WORLD *)world;
         i32 index;
-        PORTAL_DOOR_PC *door = view->portal_doors;
+        PORTAL_DOOR *door = view->portal_doors;
         if (door != NULL) {
             for (index = 0; index < view->portal_door_count; ++index, ++door) {
                 door->flags &= ~6;
@@ -405,7 +405,7 @@ extern "C" {
 
     void EquivalentObjects_Configure(WORLDINFO *world, char *config) {
         NUFPAR_PC *parser;
-        EQUIVALENT_GROUP_PC *cursor;
+        EQUIVALENT_GROUP *cursor;
         world->equivalent_groups = NULL;
         world->equivalent_group_count = 0;
         if (world->current_gscn == NULL) {
@@ -416,7 +416,7 @@ extern "C" {
             return;
         }
         world->giz_buffer.addr = (world->giz_buffer.addr + 3U) & ~3U;
-        cursor = (EQUIVALENT_GROUP_PC *)world->giz_buffer.addr;
+        cursor = (EQUIVALENT_GROUP *)world->giz_buffer.addr;
         world->equivalent_groups = cursor;
         while (NuFParGetLine(parser) != 0) {
             NuFParGetWord(parser);
@@ -433,7 +433,7 @@ extern "C" {
                 }
             }
             if (cursor->object_count > 0) {
-                cursor = (EQUIVALENT_GROUP_PC *)((u8 *)cursor + cursor->byte_size);
+                cursor = (EQUIVALENT_GROUP *)((u8 *)cursor + cursor->byte_size);
                 ++world->equivalent_group_count;
             }
         }
@@ -446,12 +446,12 @@ extern "C" {
     }
 
     i32 EquivalentObject_Find(WORLDINFO *world, NUSPECIALHANDLE *special) {
-        EQUIVALENTOBJECTGROUP_PC *group;
+        EQUIVALENTOBJECTGROUP *group;
         i32 group_index;
         i32 index;
         i32 candidate;
         if (special != NULL && NuSpecialExistsFn(special)) {
-            group = (EQUIVALENTOBJECTGROUP_PC *)world->equivalent_groups;
+            group = (EQUIVALENTOBJECTGROUP *)world->equivalent_groups;
             if (group != NULL) {
                 for (group_index = 0; group_index < world->equivalent_group_count; ++group_index) {
                     for (index = 0; index < group->object_count; ++index) {
@@ -465,7 +465,7 @@ extern "C" {
                             return 0;
                         }
                     }
-                    group = (EQUIVALENTOBJECTGROUP_PC *)((u8 *)group + group->byte_size);
+                    group = (EQUIVALENTOBJECTGROUP *)((u8 *)group + group->byte_size);
                 }
             }
         }

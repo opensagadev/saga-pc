@@ -6,7 +6,7 @@
 #include <stdio.h>
 #include <string.h>
 
-typedef union AI_ACTION_FLAGS_EF4_PC { // size 0x4
+typedef union AI_ACTION_FLAGS_EF4 { // size 0x4
     u32 word;
 
     struct {                   // size 0x4
@@ -14,26 +14,26 @@ typedef union AI_ACTION_FLAGS_EF4_PC { // size 0x4
         u32 no_idle_speed : 1; // 0x0:25
         u32 unused26 : 6;      // 0x0:26
     } bits;
-} AI_ACTION_FLAGS_EF4_PC;
+} AI_ACTION_FLAGS_EF4;
 
 extern void AiRndrLine3d(NURND_VERTEX3D_PC *, NUMTL *, NUMTX *);
 
 void AIRetreatFromDestination2(AISYS_PC *, AIPACKET_PC *, APIOBJECT_PC *, i32);
 
-typedef struct GIZSPECIAL_PARTIAL_PC { // size 0x24
-    u8 unknown_00[0x20];               // 0x00
-    GAMEANIMSET *anim_set;             // 0x20
-} GIZSPECIAL_PARTIAL_PC;
+typedef struct GIZSPECIAL_PARTIAL { // size 0x24
+    u8 unknown_00[0x20];            // 0x00
+    GAMEANIMSET *anim_set;          // 0x20
+} GIZSPECIAL_PARTIAL;
 
-typedef struct AITURRET_PARTIAL_PC { // size 0xec
-    u8 unknown_00[0xe8];             // 0x00
-    GAMEOBJECT *controller;          // 0xe8
-} AITURRET_PARTIAL_PC;
+typedef struct AITURRET_PARTIAL { // size 0xec
+    u8 unknown_00[0xe8];          // 0x00
+    GAMEOBJECT *controller;       // 0xe8
+} AITURRET_PARTIAL;
 
-typedef struct AIOBSTACLE_PARTIAL_PC { // size 0xa0
-    u8 unknown_00[0x9c];               // 0x00
-    u32 runtime_flags;                 // 0x9c
-} AIOBSTACLE_PARTIAL_PC;
+typedef struct AIOBSTACLE_PARTIAL { // size 0xa0
+    u8 unknown_00[0x9c];            // 0x00
+    u32 runtime_flags;              // 0x9c
+} AIOBSTACLE_PARTIAL;
 
 void FindForcePushTarget(GAMEOBJECT *object, i32 activate, i32 target_filter);
 
@@ -51,9 +51,9 @@ typedef void (*CHECK_ANTINODE_FN_PC)(APIOBJECT_PC *, AIANTINODE_PC *, NUVEC *, f
 
 /* AISYS PC callbacks. */
 
-typedef struct ai_context_reset_view_pc_s { // size 0x6c5
-    u8 unknown_000[0x6c4];                  // 0x000
-    u8 reset_contexts;                      // 0x6c4
+typedef struct ai_context_reset_view_s { // size 0x6c5
+    u8 unknown_000[0x6c4];               // 0x000
+    u8 reset_contexts;                   // 0x6c4
 } AI_CONTEXT_RESET_VIEW_PC;
 
 STATIC_ASSERT(offsetof(GAMEOBJECT, flags_1f8) == 0x1f8);
@@ -74,18 +74,18 @@ STATIC_ASSERT(sizeof(GAMEOBJECT) == 0x10d8);
 
 STATIC_ASSERT(offsetof(GAMEOBJECT, ai_packet) + offsetof(AIPACKET_PC, creature_index) == 0x400);
 
-typedef struct ai_force_fields_pc_s { // size 0xa4
-    u8 unknown000[0x1c];              // 0x00
-    NUVEC position;                   // 0x1c
-    u8 unknown028[0x74 - 0x28];       // 0x28
-    u32 config_flags;                 // 0x74
-    u8 unknown078[0xa0 - 0x78];       // 0x78
-    u32 runtime_flags;                // 0xa0
+typedef struct ai_force_fields_s { // size 0xa4
+    u8 unknown000[0x1c];           // 0x00
+    NUVEC position;                // 0x1c
+    u8 unknown028[0x74 - 0x28];    // 0x28
+    u32 config_flags;              // 0x74
+    u8 unknown078[0xa0 - 0x78];    // 0x78
+    u32 runtime_flags;             // 0xa0
 } AI_FORCE_FIELDS_PC;
 
-typedef struct ai_force_object_pc_s { // size 0x10d0
-    u8 unknown000[0x10cc];            // 0x0000
-    GIZFORCE_PC *force;               // 0x10cc
+typedef struct ai_force_object_s { // size 0x10d0
+    u8 unknown000[0x10cc];         // 0x0000
+    GIZFORCE_PC *force;            // 0x10cc
 } AI_FORCE_OBJECT_PC;
 
 /* AISYS callback family: seven-argument callbacks. */
@@ -95,16 +95,16 @@ STATIC_ASSERT(offsetof(GAMEOBJECT, tag_flags) == 0x7c5);
 
 STATIC_ASSERT(offsetof(GAMEOBJECT, takeover_source) == 0xcd0);
 
-typedef struct torpedo_action_packet_pc_s { // size 0x88
-    u8 count;                               // 0x00
-    u8 flags;                               // 0x01
-    u8 unknown_02;                          // 0x02
-    u8 state;                               // 0x03
-    u8 unknown_04[4];                       // 0x04
-    f32 timer;                              // 0x08
-    u8 unknown_0c[0x30];                    // 0x0c
-    NUVEC pickup_positions[5];              // 0x3c
-    u8 unknown_78[0x10];                    // 0x78
+typedef struct torpedo_action_packet_s { // size 0x88
+    u8 count;                            // 0x00
+    u8 flags;                            // 0x01
+    u8 unknown_02;                       // 0x02
+    u8 state;                            // 0x03
+    u8 unknown_04[4];                    // 0x04
+    f32 timer;                           // 0x08
+    u8 unknown_0c[0x30];                 // 0x0c
+    NUVEC pickup_positions[5];           // 0x3c
+    u8 unknown_78[0x10];                 // 0x78
 } TORPEDO_ACTION_PACKET_PC;
 
 STATIC_ASSERT(offsetof(GAMEOBJECT, ai_area_mask) == 0x2b0);
@@ -165,14 +165,14 @@ extern i32 GizmoGetTypeIDByName(void *, char *);
 
 STATIC_ASSERT(offsetof(TECHNO_s, flags) == 0x3c);
 
-typedef struct ai_cable_head_pc_s { // size 0x8
-    GAMEOBJECT *source;             // 0x0
-    GAMEOBJECT *target;             // 0x4
+typedef struct ai_cable_head_s { // size 0x8
+    GAMEOBJECT *source;          // 0x0
+    GAMEOBJECT *target;          // 0x4
 } AI_CABLE_HEAD_PC;
 
-typedef struct ai_cable_object_pc_s { // size 0x1044
-    u8 unknown000[0x1040];            // 0x0000
-    CABLE_RECORD_PC *cable;           // 0x1040
+typedef struct ai_cable_object_s { // size 0x1044
+    u8 unknown000[0x1040];         // 0x0000
+    CABLE_RECORD_PC *cable;        // 0x1040
 } AI_CABLE_OBJECT_PC;
 
 STATIC_ASSERT(offsetof(GAMEOBJECT, ai_packet) + offsetof(AIPACKET_PC, locator) == 0x36c);
@@ -223,10 +223,10 @@ STATIC_ASSERT(offsetof(GAMEOBJECT, movement_spline_position) + offsetof(SPLINEPO
 
 extern f32 debug_condition;
 
-typedef struct AI_CONDITION_TURRET_PC { // size 0x13c
-    u8 unknown_000[0x13a];              // 0x000
-    u16 flags;                          // 0x13a
-} AI_CONDITION_TURRET_PC;
+typedef struct AI_CONDITION_TURRET { // size 0x13c
+    u8 unknown_000[0x13a];           // 0x000
+    u16 flags;                       // 0x13a
+} AI_CONDITION_TURRET;
 
 STATIC_ASSERT(sizeof(FLOWBOX_PC) == 0x20);
 
@@ -240,9 +240,9 @@ i32 Hint_isAvailable(i32 hint_id);
 
 i32 Hint_isCompleteByIdPc(i32 hint_id);
 
-typedef struct ai_global_trigger_world_pc_s { // size 0x467c
-    u8 unknown_0000[0x4678];                  // 0x0000
-    AITRIGGERSETSYS_s *trigger_system;        // 0x4678
+typedef struct ai_global_trigger_world_s { // size 0x467c
+    u8 unknown_0000[0x4678];               // 0x0000
+    AITRIGGERSETSYS_s *trigger_system;     // 0x4678
 } AI_GLOBAL_TRIGGER_WORLD_PC;
 
 STATIC_ASSERT(offsetof(AITRIGGERSETSYS_s, field_0x4280) == 0x4280);
@@ -261,14 +261,14 @@ STATIC_ASSERT(offsetof(GAMEOBJECT, field_f10) == 0xf10);
 
 i32 ForceAnimationDonePc(GIZFORCE_PC *force);
 
-typedef struct condition_trigger_process_reader_pc_s { // size 0xa4
-    u8 unknown_00[0xa0];                               // 0x00
-    AIAREA_PC *trigger_area;                           // 0xa0
+typedef struct condition_trigger_process_reader_s { // size 0xa4
+    u8 unknown_00[0xa0];                            // 0x00
+    AIAREA_PC *trigger_area;                        // 0xa0
 } CONDITION_TRIGGER_PROCESS_READER_PC;
 
-typedef struct condition_trigger_player_reader_pc_s { // size 0x2b8
-    u8 unknown_00[0x2b0];                             // 0x000
-    u64 membership;                                   // 0x2b0
+typedef struct condition_trigger_player_reader_s { // size 0x2b8
+    u8 unknown_00[0x2b0];                          // 0x000
+    u64 membership;                                // 0x2b0
 } CONDITION_TRIGGER_PLAYER_READER_PC;
 
 STATIC_ASSERT(offsetof(GAMEOBJECT, current_hp) == 0x107f);
@@ -277,10 +277,10 @@ STATIC_ASSERT(offsetof(GAMEOBJECT, last_attacker) == 0x10a8);
 
 STATIC_ASSERT(offsetof(GAMEOBJECT, flags_1fc) == 0x1fc);
 
-typedef struct ai_been_to_level_progress_pc_s { // size 0x2e28
-    u8 unknown_0000[0x2800];                    // 0x0000
-    u32 visited_flags;                          // 0x2800
-    u8 unknown_2804[0x624];                     // 0x2804
+typedef struct ai_been_to_level_progress_s { // size 0x2e28
+    u8 unknown_0000[0x2800];                 // 0x0000
+    u32 visited_flags;                       // 0x2800
+    u8 unknown_2804[0x624];                  // 0x2804
 } AI_BEEN_TO_LEVEL_PROGRESS_PC;
 
 STATIC_ASSERT(sizeof(AI_BEEN_TO_LEVEL_PROGRESS_PC) == sizeof(LEVEL_PROGRESS));
@@ -295,9 +295,9 @@ typedef struct ai_on_object_platform_pc_s { // size 0x6c
     u8 unknown_44[0x28];                    // 0x44
 } AI_ON_OBJECT_PLATFORM_PC;
 
-typedef struct ai_on_object_terrain_pc_s { // size 0x6c
-    u8 unknown_00[0x68];                   // 0x00
-    AI_ON_OBJECT_PLATFORM_PC *platforms;   // 0x68
+typedef struct ai_on_object_terrain_s {  // size 0x6c
+    u8 unknown_00[0x68];                 // 0x00
+    AI_ON_OBJECT_PLATFORM_PC *platforms; // 0x68
 } AI_ON_OBJECT_TERRAIN_PC;
 
 STATIC_ASSERT(offsetof(NUMTX, m31) == 0x34);
@@ -329,14 +329,14 @@ STATIC_ASSERT(offsetof(GIZOBSTACLE, triggering_object) == 0x38);
 STATIC_ASSERT(offsetof(GIZOBSTACLE, runtime_flags) == 0x9c);
 
 /* Instance reader: only the condition's flags field is consumed. */
-typedef struct condition_cut_instance_reader_pc_s { // size 0x8c
-    u8 opaque_00_88[0x88];                          // 0x00
-    u32 flags;                                      // 0x88
+typedef struct condition_cut_instance_reader_s { // size 0x8c
+    u8 opaque_00_88[0x88];                       // 0x00
+    u32 flags;                                   // 0x88
 } CONDITION_CUT_INSTANCE_READER_PC;
 
-typedef struct condition_hat_name_reader_pc_s { // size 0x50
-    u8 unknown_00[0x40];                        // 0x00
-    char name[16];                              // 0x40
+typedef struct condition_hat_name_reader_s { // size 0x50
+    u8 unknown_00[0x40];                     // 0x00
+    char name[16];                           // 0x40
 } CONDITION_HAT_NAME_READER_PC;
 
 STATIC_ASSERT(offsetof(GIZMO_LEVER_PC, name) == 0x58);
@@ -371,26 +371,26 @@ typedef struct ai_force_platform_object_data_pc_s { // size 0x4
     i16 platform_id;                                // 0x2
 } AI_FORCE_PLATFORM_OBJECT_DATA_PC;
 
-typedef struct ai_trigger_world_pc_s { // size 0x467c
+typedef struct ai_trigger_world_s {    // size 0x467c
     u8 unknown_0000[0x4678];           // 0x0000
     AITRIGGERSETSYS_s *trigger_system; // 0x4678
 } AI_TRIGGER_WORLD_PC;
 
-typedef struct ai_trigger_grapple_pc_s { // size 0x30
-    u8 unknown_00[0x24];                 // 0x00
-    NUVEC ground_position;               // 0x24
+typedef struct ai_trigger_grapple_s { // size 0x30
+    u8 unknown_00[0x24];              // 0x00
+    NUVEC ground_position;            // 0x24
 } AI_TRIGGER_GRAPPLE_PC;
 
-typedef struct ai_trigger_object_pc_s { // size 0x1073
-    u8 unknown_0000[0x1072];            // 0x0000
-    u8 grapple_direction;               // 0x1072
+typedef struct ai_trigger_object_s { // size 0x1073
+    u8 unknown_0000[0x1072];         // 0x0000
+    u8 grapple_direction;            // 0x1072
 } AI_TRIGGER_OBJECT_PC;
 
-typedef struct ai_trigger_force_pc_s { // size 0x78
-    u8 unknown_00[0x1c];               // 0x00
-    NUVEC position;                    // 0x1c
-    u8 unknown_28[0x4c];               // 0x28
-    u32 config_flags;                  // 0x74
+typedef struct ai_trigger_force_s { // size 0x78
+    u8 unknown_00[0x1c];            // 0x00
+    NUVEC position;                 // 0x1c
+    u8 unknown_28[0x4c];            // 0x28
+    u32 config_flags;               // 0x74
 } AI_TRIGGER_FORCE_PC;
 
 STATIC_ASSERT(offsetof(GAMEOBJECT, field_1088) == 0x1088);
@@ -411,20 +411,20 @@ u32 LEGO_AIPATHCNX_NO_DESTINATION_CHECK;
 u32 LEGO_AIPATHCNX_JUMP_NOW;
 u32 LEGO_AIPATHCNX_DONT_JUMP_NOW;
 
-typedef struct bulk_ai_lever_pc_s { // size 0x98
-    u8 unknown_00[0x40];            // 0x00
-    NUVEC floor_position;           // 0x40
-    u8 unknown_4c[0x1c];            // 0x4c
-    NUVEC position;                 // 0x68
-    u8 unknown_74[4];               // 0x74
-    f32 pull_progress;              // 0x78
-    u8 unknown_7c[0x12];            // 0x7c
-    u16 animation_frame;            // 0x8e
-    u8 unknown_90[4];               // 0x90
-    u16 flags;                      // 0x94
+typedef struct bulk_ai_lever_s { // size 0x98
+    u8 unknown_00[0x40];         // 0x00
+    NUVEC floor_position;        // 0x40
+    u8 unknown_4c[0x1c];         // 0x4c
+    NUVEC position;              // 0x68
+    u8 unknown_74[4];            // 0x74
+    f32 pull_progress;           // 0x78
+    u8 unknown_7c[0x12];         // 0x7c
+    u16 animation_frame;         // 0x8e
+    u8 unknown_90[4];            // 0x90
+    u16 flags;                   // 0x94
 } BULK_AI_LEVER_PC;
 
-typedef struct bulk_ai_panel_pc_s {
+typedef struct bulk_ai_panel_s {
     u8 unknown_00[0x50];
     NUVEC position;
     u8 unknown_5c[5];
@@ -434,19 +434,19 @@ typedef struct bulk_ai_panel_pc_s {
     NUVEC floor_position;
 } BULK_AI_PANEL_PC;
 
-typedef struct bulk_ai_techno_pc_s { // size 0x40
-    u8 unknown_00[0x10];             // 0x00
-    NUVEC position;                  // 0x10
-    NUVEC ground_position;           // 0x1c
-    u8 unknown_28[0x14];             // 0x28
-    u8 flags;                        // 0x3c
+typedef struct bulk_ai_techno_s { // size 0x40
+    u8 unknown_00[0x10];          // 0x00
+    NUVEC position;               // 0x10
+    NUVEC ground_position;        // 0x1c
+    u8 unknown_28[0x14];          // 0x28
+    u8 flags;                     // 0x3c
 } BULK_AI_TECHNO_PC;
 
 i32 GizTechno_CanUseTechno(GAMEOBJECT *object, BULK_AI_TECHNO_PC *techno);
 
-typedef struct ai_action_controller_world_pc_s { // size 0x4674
-    u8 unknown_0000[0x4670];                     // 0x0000
-    AI_CONTROL_SYSTEM_PC *control_system;        // 0x4670
+typedef struct ai_action_controller_world_s { // size 0x4674
+    u8 unknown_0000[0x4670];                  // 0x0000
+    AI_CONTROL_SYSTEM_PC *control_system;     // 0x4670
 } AI_ACTION_CONTROLLER_WORLD_PC;
 struct AIPATHCNXCONTROLLER_s *AIPathCnxControllerCreate(AI_CONTROL_SYSTEM_PC *, AISYS_PC *, AIPATH_PC *, char *, char *,
                                                         i32, char *, i32, i32);
@@ -917,7 +917,7 @@ void *Condition_TurretAliveInit(AISYS_PC *system, char *name, AISCRIPT_PC *scrip
 
 f32 Condition_TurretAlive(AISYS_PC *system, AISCRIPTPROCESS_PC *process, AIPACKET_PC *packet, char *name,
                           void *argument) {
-    AI_CONDITION_TURRET_PC *turret = argument;
+    AI_CONDITION_TURRET *turret = argument;
     u16 flags;
     if (turret != NULL) {
         memcpy(&flags, &turret->flags, sizeof(flags));
@@ -4979,7 +4979,7 @@ i32 Action_EngageOpponent(AISYS_PC *sys, AISCRIPTPROCESS_PC *processor, AIPACKET
             } else if (NuStrIStr(params[index], "no_fire_in_minicut") != NULL) {
                 processor->action_data_1 |= 4;
             } else if (NuStrIStr(params[index], "circle") != NULL) {
-                typedef union AI_ENGAGE_CIRCLE_FLAGS_PC {
+                typedef union AI_ENGAGE_CIRCLE_FLAGS {
                     u32 raw;
 
                     struct {
@@ -4987,9 +4987,9 @@ i32 Action_EngageOpponent(AISYS_PC *sys, AISCRIPTPROCESS_PC *processor, AIPACKET
                         u32 circle_clockwise : 1;
                         u32 reserved_after : 22;
                     } bits;
-                } AI_ENGAGE_CIRCLE_FLAGS_PC;
+                } AI_ENGAGE_CIRCLE_FLAGS;
 
-                AI_ENGAGE_CIRCLE_FLAGS_PC *flags = (AI_ENGAGE_CIRCLE_FLAGS_PC *)&packet->flags;
+                AI_ENGAGE_CIRCLE_FLAGS *flags = (AI_ENGAGE_CIRCLE_FLAGS *)&packet->flags;
                 flags->bits.circle_clockwise = !flags->bits.circle_clockwise;
                 processor->action_data_1 |= 8;
             } else if ((value = NuStrIStr(params[index], "fireinterval")) != NULL) {
@@ -7136,7 +7136,7 @@ i32 Action_NoIdleSpeed(AISYS_PC *sys, AISCRIPTPROCESS_PC *processor, AIPACKET_PC
             }
         }
         if (object != NULL) {
-            ((AI_ACTION_FLAGS_EF4_PC *)&object->flags_ef4)->bits.no_idle_speed = enabled;
+            ((AI_ACTION_FLAGS_EF4 *)&object->flags_ef4)->bits.no_idle_speed = enabled;
         }
     }
     return 1;
@@ -8083,7 +8083,7 @@ i32 Action_AnimTimeRandom(AISYS_PC *system, AISCRIPTPROCESS_PC *processor, AIPAC
 i32 Action_AlwaysTriggerObstacle(AISYS_PC *sys, AISCRIPTPROCESS_PC *processor, AIPACKET_PC *packet, char **params,
                                  i32 param_count, i32 first_time, f32 elapsed) {
     i32 index;
-    AIOBSTACLE_PARTIAL_PC *obstacle;
+    AIOBSTACLE_PARTIAL *obstacle;
     i32 enabled;
     char *value;
     GIZMO_PC *gizmo;
@@ -8113,7 +8113,7 @@ i32 Action_AlwaysTriggerObstacle(AISYS_PC *sys, AISCRIPTPROCESS_PC *processor, A
 i32 Action_CanTriggerObstacle(AISYS_PC *sys, AISCRIPTPROCESS_PC *processor, AIPACKET_PC *packet, char **params,
                               i32 param_count, i32 first_time, f32 elapsed) {
     i32 index;
-    AIOBSTACLE_PARTIAL_PC *obstacle;
+    AIOBSTACLE_PARTIAL *obstacle;
     i32 blocked;
     char *value;
     GIZMO_PC *gizmo;
@@ -8195,7 +8195,7 @@ i32 Action_PlayGizObstacle(AISYS_PC *system, AISCRIPTPROCESS_PC *processor, AIPA
 i32 Action_PlayGizSpecial(AISYS_PC *sys, AISCRIPTPROCESS_PC *processor, AIPACKET_PC *packet, char **params, i32 param_4,
                           i32 param_5, f32 param_6) {
     i32 index;
-    GIZSPECIAL_PARTIAL_PC *special;
+    GIZSPECIAL_PARTIAL *special;
     i32 backwards;
     i32 snap;
     i32 restart;
@@ -10304,7 +10304,7 @@ i32 Action_UseTriggerSet(AISYS_PC *system, AISCRIPTPROCESS_PC *processor, AIPACK
     }
     set = processor->action_data_3;
     if (set != NULL) {
-        object->active_trigger_set = (AITRIGGERSET_PARTIAL_PC *)set;
+        object->active_trigger_set = (AITRIGGERSET_PARTIAL *)set;
         set->flags_word |= 2;
         Action_HelpWithTriggers(system, processor, packet, params, count, first_time, elapsed);
     }
@@ -10878,7 +10878,7 @@ i32 Action_LinkTurretToController(AISYS_PC *system, AISCRIPTPROCESS_PC *processo
                                   i32 param_count, i32 first_time, f32 elapsed) {
     i32 index;
     APIOBJECT_PC *lookup;
-    AITURRET_PARTIAL_PC *turret;
+    AITURRET_PARTIAL *turret;
     GAMEOBJECT *controller;
     char *value;
     GIZMO_PC *gizmo;

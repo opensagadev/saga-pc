@@ -24,12 +24,12 @@ void GizForce_PlayForwards(GIZFORCE_PC *force);
 void GizForce_PlayBackwards(GIZFORCE_PC *force);
 i32 turret_gizmotype_id;
 
-typedef struct GIZACTION_FORCE_ANIMATION_PC { // size 0xa4
-    u8 unknown_000[0x28];                     // 0x00
-    GAMEANIMSET *anim_set;                    // 0x28
-    u8 unknown_02c[0x74];                     // 0x2c
-    u32 flags;                                // 0xa0
-} GIZACTION_FORCE_ANIMATION_PC;
+typedef struct GIZACTION_FORCE_ANIMATION { // size 0xa4
+    u8 unknown_000[0x28];                  // 0x00
+    GAMEANIMSET *anim_set;                 // 0x28
+    u8 unknown_02c[0x74];                  // 0x2c
+    u32 flags;                             // 0xa0
+} GIZACTION_FORCE_ANIMATION;
 
 STATIC_ASSERT(offsetof(GIZSPECIAL_s, anim_set) == 0x20);
 i32 obstacle_gizmotype_id;
@@ -51,12 +51,12 @@ const char GizActionLiteral758a48[];
 const char GizActionLiteral758a54[];
 void *Technos_FindTgt(TECHNO_s *techno);
 
-typedef struct ACTIVATE_CHAR_BUILDIT_VIEW_PC {
+typedef struct ACTIVATE_CHAR_BUILDIT_VIEW {
     u8 unknown_00[0x34];
     NUVEC position;
     u8 unknown_40[0x34];
     u16 angle;
-} ACTIVATE_CHAR_BUILDIT_VIEW_PC;
+} ACTIVATE_CHAR_BUILDIT_VIEW;
 
 extern i32 gizbuildit_gizmotype_id;
 GAMEOBJECT *ActivateCharacter(char *, NUVEC *, i32);
@@ -230,7 +230,7 @@ void GizActions_ActivateGizmoPc(GIZFLOW_PC *flow, FLOWBOX_PC *unused, char **par
 void GizActions_ActivateCharPc(GIZFLOW_PC *flow, FLOWBOX_PC *unused, char **params, i32 count) {
     char *name = NULL;
     i32 active = 1;
-    ACTIVATE_CHAR_BUILDIT_VIEW_PC *buildit = NULL;
+    ACTIVATE_CHAR_BUILDIT_VIEW *buildit = NULL;
     i32 index = 0;
     WORLDINFO *world = WorldInfo_CurrentlyActive();
     GAMEOBJECT *player;
@@ -501,7 +501,7 @@ void GizAction_SetAIState(GIZFLOW_PC *unused0, FLOWBOX_PC *unused1, char **param
 
 void GizActions_CompleteLevel(GIZFLOW_PC *unused0, FLOWBOX_PC *unused1, char **params, int count) {
     char *cutscene_name = NULL;
-    struct level_data_pc_s *level = NULL;
+    struct level_data_s *level = NULL;
     i32 index;
     if (netclient != 0) {
         return;
@@ -680,7 +680,7 @@ void GizActions_PlayForce(GIZFLOW_PC *flow, FLOWBOX_PC *unused, char **params, i
     if (name != NULL) {
         GIZMO_PC *gizmo = GizmoFindByName(flow->gizmo_sys, force_gizmotype_id, name);
         if (gizmo != NULL) {
-            GIZACTION_FORCE_ANIMATION_PC *force;
+            GIZACTION_FORCE_ANIMATION *force;
             force = gizmo->object;
             if (force != NULL) {
                 if (forward != 0) {

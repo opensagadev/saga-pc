@@ -1,7 +1,7 @@
 #include "saga.h"
 #include <stdio.h>
 
-struct attracto_pc_s {   // size 0x74
+struct attracto_s {      // size 0x74
     u8 unknown_00[0x10]; // 0x00
     NUVEC position;      // 0x10
     u8 unknown_1c[0x46]; // 0x1c
@@ -23,50 +23,50 @@ struct attracto_pc_s {   // size 0x74
     u8 unknown_70[4];      // 0x70
 };
 
-typedef struct attracto_world_reader_pc_s { // size 0x50a0
-    u8 unknown_00[0x5098];                  // 0x0000
-    ATTRACTO_PC *attractos;                 // 0x5098
-    i32 attracto_count;                     // 0x509c
+typedef struct attracto_world_reader_s { // size 0x50a0
+    u8 unknown_00[0x5098];               // 0x0000
+    ATTRACTO_PC *attractos;              // 0x5098
+    i32 attracto_count;                  // 0x509c
 } ATTRACTO_WORLD_READER_PC;
 
 STATIC_ASSERT(sizeof(((ATTRACTO_WORLD_READER_PC *)0)->attractos) == 4);
 STATIC_ASSERT(sizeof(((ATTRACTO_WORLD_READER_PC *)0)->attracto_count) == 4);
 
-typedef struct attracto_record_recovered_pc_s { // size 0x74
-    char name[16];                              // 0x00
-    NUVEC position;                             // 0x10
-    NUMTX transform;                            // 0x1c
-    u16 angle;                                  // 0x5c
-    u8 capacity;                                // 0x5e
-    u8 collected_count;                         // 0x5f
-    i16 platform_id;                            // 0x60
-    u8 active : 1;                              // 0x62:0
-    u8 visible : 1;                             // 0x62:1
-    u8 filled : 1;                              // 0x62:2
-    u8 drawn : 1;                               // 0x62:3
-    u8 unknown_62 : 4;                          // 0x62:4
-    u8 unknown_63;                              // 0x63
-    NUVEC active_position;                      // 0x64
-    u16 ground_angle_z;                         // 0x70
-    u16 ground_angle_x;                         // 0x72
+typedef struct attracto_record_recovered_s { // size 0x74
+    char name[16];                           // 0x00
+    NUVEC position;                          // 0x10
+    NUMTX transform;                         // 0x1c
+    u16 angle;                               // 0x5c
+    u8 capacity;                             // 0x5e
+    u8 collected_count;                      // 0x5f
+    i16 platform_id;                         // 0x60
+    u8 active : 1;                           // 0x62:0
+    u8 visible : 1;                          // 0x62:1
+    u8 filled : 1;                           // 0x62:2
+    u8 drawn : 1;                            // 0x62:3
+    u8 unknown_62 : 4;                       // 0x62:4
+    u8 unknown_63;                           // 0x63
+    NUVEC active_position;                   // 0x64
+    u16 ground_angle_z;                      // 0x70
+    u16 ground_angle_x;                      // 0x72
 } ATTRACTO_RECORD_PC;
 
-typedef struct attracto_progress_recovered_pc_s { // size 0x2c
-    u8 counts[32];                                // 0x00
-    u32 visible[1];                               // 0x20
-    u32 active[1];                                // 0x24
-    u32 filled[1];                                // 0x28
+typedef struct attracto_progress_recovered_s { // size 0x2c
+    u8 counts[32];                             // 0x00
+    u32 visible[1];                            // 0x20
+    u32 active[1];                             // 0x24
+    u32 filled[1];                             // 0x28
 } ATTRACTO_PROGRESS_PC;
 
-typedef struct attracto_shard_reader_pc_s { // size 0x54
-    char name[16];                          // 0x00
-    NUVEC position;                         // 0x10
-    NUVEC current_position;                 // 0x1c
-    NUVEC screen_position;                  // 0x28
-    i16 model;                              // 0x34
-    u16 angle_x;                            // 0x36
-    u16 angle_z;                            // 0x38
-    u16 spin;                               // 0x3a
+typedef struct attracto_shard_reader_s { // size 0x54
+    char name[16];                       // 0x00
+    NUVEC position;                      // 0x10
+    NUVEC current_position;              // 0x1c
+    NUVEC screen_position;               // 0x28
+    i16 model;                           // 0x34
+    u16 angle_x;                         // 0x36
+    u16 angle_z;                         // 0x38
+    u16 spin;                            // 0x3a
 
     union { // size 0x1
         u8 flags;

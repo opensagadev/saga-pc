@@ -7,7 +7,7 @@
 #include "support.h"
 #include <tlhelp32.h>
 
-struct FAULT_MODULE_PC {
+struct FAULT_MODULE {
     DWORD base;
     DWORD size;
     char name[64];
@@ -21,7 +21,7 @@ static unsigned fault_count = 0;
 static char fault_build[96] = {0};
 static char fault_image[MAX_PATH] = {0};
 static char fault_path[MAX_PATH] = {0};
-static FAULT_MODULE_PC fault_modules[64] = {0};
+static FAULT_MODULE fault_modules[64] = {0};
 static unsigned fault_module_count = 0;
 static char fault_text[4096] = {0};
 static unsigned fault_used = 0;
@@ -216,7 +216,7 @@ extern "C" void SagaDebugCrashInitPc(HANDLE existing_log_file, const char *build
         entry.dwSize = sizeof(entry);
         if (Module32First(modules, &entry)) {
             do {
-                FAULT_MODULE_PC *module = &fault_modules[fault_module_count++];
+                FAULT_MODULE *module = &fault_modules[fault_module_count++];
                 module->base = (DWORD)entry.modBaseAddr;
                 module->size = entry.modBaseSize;
                 fault_copy(module->name, sizeof(module->name), entry.szModule);

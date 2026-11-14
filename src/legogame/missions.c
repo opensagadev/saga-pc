@@ -1,13 +1,13 @@
 #include "saga.h"
 
-typedef struct MISSION_END_DATA_VIEW_PC {
+typedef struct MISSION_END_DATA_VIEW {
     i16 find_character;
-} MISSION_END_DATA_VIEW_PC;
+} MISSION_END_DATA_VIEW;
 
-typedef struct MISSION_END_SYSTEM_VIEW_PC {
+typedef struct MISSION_END_SYSTEM_VIEW {
     u8 unknown_00[8];
     f32 elapsed_time;
-} MISSION_END_SYSTEM_VIEW_PC;
+} MISSION_END_SYSTEM_VIEW;
 
 typedef struct MENU_INPUT_PAD_PC {
     FRAME_PAD_PC *bound_pad;
@@ -18,7 +18,7 @@ typedef struct MENU_INPUT_PAD_PC {
     u8 unknown14[0x4c];
 } MENU_INPUT_PAD_PC;
 
-typedef struct MISSION_SYSTEM_READER_PC {
+typedef struct MISSION_SYSTEM_READER {
     MISSIONDATA_PC *missions;
     MISSIONDATA_PC *active_mission;
     TIMER timer;
@@ -28,7 +28,7 @@ typedef struct MISSION_SYSTEM_READER_PC {
     u8 flags;
     u8 character_count;
     i16 character_ids[8];
-} MISSION_SYSTEM_READER_PC;
+} MISSION_SYSTEM_READER;
 
 // noinline: the original calls EndMissionsMenu out of line from MenuUpdateMissions; VC8 would inline it there.
 __declspec(noinline) void EndMissionsMenu(void) {
@@ -51,7 +51,7 @@ static f32 MissionsFabsPc(f32 f) {
     return rv;
 }
 
-static void UpdateMissionIconX(MISSION_SYSTEM_READER_PC *system, i32 initialize) {
+static void UpdateMissionIconX(MISSION_SYSTEM_READER *system, i32 initialize) {
     i32 index;
     f32 x;
     for (index = 0; index < system->count; ++index) {
@@ -77,7 +77,7 @@ static f32 MissionsAlphaPc = 0;
 static f32 MissionIconScalePc[20] = {0};
 
 void MenuInitMissions(MENU *menu) {
-    MISSION_SYSTEM_READER_PC *system = (MISSION_SYSTEM_READER_PC *)MissionSys;
+    MISSION_SYSTEM_READER *system = (MISSION_SYSTEM_READER *)MissionSys;
     i32 index;
     MissionsAlphaPc = 0.0f;
     if (system == NULL) {
@@ -101,7 +101,7 @@ void MenuDrawMissions(MENU *menu) {
     f32 icon_size;
     i32 i;
     i32 appearance;
-    MISSION_SYSTEM_READER_PC *system;
+    MISSION_SYSTEM_READER *system;
     char time[64];
     char text[64];
     i32 select0;
@@ -115,7 +115,7 @@ void MenuDrawMissions(MENU *menu) {
         return;
     }
     alpha = MenuAlpha;
-    system = (MISSION_SYSTEM_READER_PC *)MissionSys;
+    system = (MISSION_SYSTEM_READER *)MissionSys;
     SmartTextEx(TTab[system->missions[MissionMenuSelectionPc].name_id], 0.0f, MissionNameYPc, 1.0f, MissionNameScalePc,
                 MissionNameScalePc, MissionNameScalePc, 0, 255, 191, 0, 1.7f, 1, NULL, 0,
                 (u32)(i32)(128.0f * MissionsAlphaPc * alpha));
@@ -254,8 +254,8 @@ void CheckMissionEnd(MISSIONSYS_PC *system) {
     GAMEOBJECT *candidate;
     u64 mask;
     i32 index;
-    target = FindGameObject(((MISSION_END_DATA_VIEW_PC *)system->active_mission)->find_character, 0, 0, 1, 0);
-    if (((MISSION_END_SYSTEM_VIEW_PC *)system)->elapsed_time < 3.0f) {
+    target = FindGameObject(((MISSION_END_DATA_VIEW *)system->active_mission)->find_character, 0, 0, 1, 0);
+    if (((MISSION_END_SYSTEM_VIEW *)system)->elapsed_time < 3.0f) {
         return;
     }
     if (GetMenuID() == 9) {
@@ -301,7 +301,7 @@ void MenuUpdateMissions(MENU *menu) {
     i32 right = 0;
     i32 player;
     i32 index;
-    MISSION_SYSTEM_READER_PC *system;
+    MISSION_SYSTEM_READER *system;
     if (MissionSys == NULL) {
         cancel = 1;
     }
@@ -345,13 +345,13 @@ void MenuUpdateMissions(MENU *menu) {
         }
     }
     if (start != 0) {
-        system = (MISSION_SYSTEM_READER_PC *)MissionSys;
+        system = (MISSION_SYSTEM_READER *)MissionSys;
         system->active_mission = &system->missions[MissionMenuSelectionPc];
         system->state = 1;
         ResetTimer(&system->timer, 0.0f);
         Cheats_TurnOff(0);
         GameAudio_PlaySfx(0x30, NULL, 0, 0);
-        system = (MISSION_SYSTEM_READER_PC *)MissionSys;
+        system = (MISSION_SYSTEM_READER *)MissionSys;
         NextArea_FreePlay = 0;
         FreePlay = 0;
         NewLData = &LDataList[system->active_mission->level];
@@ -362,7 +362,7 @@ void MenuUpdateMissions(MENU *menu) {
         if (MissionMenuSelectionPc > 0) {
             --MissionMenuSelectionPc;
         }
-    } else if (right != 0 && MissionMenuSelectionPc < ((MISSION_SYSTEM_READER_PC *)MissionSys)->count - 1) {
+    } else if (right != 0 && MissionMenuSelectionPc < ((MISSION_SYSTEM_READER *)MissionSys)->count - 1) {
         ++MissionMenuSelectionPc;
     }
     if (MissionMenuSelectionPc != previous) {
@@ -379,6 +379,6 @@ void MenuUpdateMissions(MENU *menu) {
             MissionIconScalePc[index] =
                 SeekValF(MissionIconScalePc[index], index == MissionMenuSelectionPc ? 1.0f : 0.0f, 5.0f);
         }
-        UpdateMissionIconX((MISSION_SYSTEM_READER_PC *)MissionSys, 0);
+        UpdateMissionIconX((MISSION_SYSTEM_READER *)MissionSys, 0);
     }
 }

@@ -10,7 +10,7 @@
 #include "nu2api/numusic/numusic.h"
 #endif
 
-struct sfx_file_info_pc_s;
+struct sfx_file_info_s;
 
 #ifdef __cplusplus
 extern "C" {
@@ -58,7 +58,7 @@ typedef struct PC_SOUND_INIT_CONFIG {
     VARIPTR *cursor;
     VARIPTR end;
     i32 device_parameter;
-    struct sfx_file_info_pc_s *sample_table;
+    struct sfx_file_info_s *sample_table;
     i32 sample_capacity;
     i32 option_14;
     i32 option_18;

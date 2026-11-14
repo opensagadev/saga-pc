@@ -4,7 +4,7 @@
 extern i32 LEGO_AIPATHCNX_VARIANT_FLAG0_PC;
 extern i32 LEGO_AIPATHCNX_VARIANT_FLAG1_PC;
 
-typedef struct movement_model_pc_s {
+typedef struct movement_model_s {
     u8 unknown_00[0xc];
     void **model_data_b;
 } MOVEMENT_MODEL_PC;

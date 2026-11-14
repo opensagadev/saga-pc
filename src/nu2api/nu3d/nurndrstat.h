@@ -14,7 +14,7 @@
 #include "nu2api/numath/nuvec.h"
 #endif
 
-typedef struct nuglobalrndrstate_pc_s {
+typedef struct nuglobalrndrstate_s {
     u8 unknown_0000[8];
     i32 state_0008;
     u8 unknown_000c[8];

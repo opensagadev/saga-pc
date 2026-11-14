@@ -843,7 +843,7 @@ void ClearLinkedCutSceneMusic(void *context) {
 }
 
 void PauseGameCut(void) {
-    struct music_playback_pc_s *music;
+    struct music_playback_s *music;
     if (NOMUSIC != 0 || NOSOUND != 0 || PCStereoChannel1B == -1) {
         return;
     }

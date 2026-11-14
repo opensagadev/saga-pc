@@ -19,8 +19,8 @@ static f32 ZipUpSwingOffsetHeightPc = 0.25150299072265625f;
 static f32 ZipUpSwingOffsetLengthPc = 1.9236159324645996f;
 #pragma data_seg()
 
-struct zipup_pc_s { // size 0x7c
-    char name[16];  // 0x00
+struct zipup_s {   // size 0x7c
+    char name[16]; // 0x00
 
     union { // size 0x24
         NUVEC endpoints[3];
@@ -90,22 +90,22 @@ struct zipup_pc_s { // size 0x7c
 
 i32 ActivePlayerInRange(NUVEC *position, f32 range_squared, f32 *distance_squared);
 
-typedef struct HINT_ZIPUP_PC {
+typedef struct HINT_ZIPUP {
     u8 name[16];
     NUVEC lower_position;
     u8 reserved1c[0x4c];
     u8 flags;
     u8 reserved69[0x13];
-} HINT_ZIPUP_PC;
+} HINT_ZIPUP;
 
-typedef struct zipup_transport_view_pc_s { // size 0xdb0
-    u8 unknown_00[0x748];                  // 0x000
-    NUVEC entry;                           // 0x748
-    NUVEC start;                           // 0x754
-    NUVEC swing;                           // 0x760
-    NUVEC landing;                         // 0x76c
-    u8 unknown_778[0x634];                 // 0x778
-    f32 detach_fall_delay;                 // 0xdac
+typedef struct zipup_transport_view_s { // size 0xdb0
+    u8 unknown_00[0x748];               // 0x000
+    NUVEC entry;                        // 0x748
+    NUVEC start;                        // 0x754
+    NUVEC swing;                        // 0x760
+    NUVEC landing;                      // 0x76c
+    u8 unknown_778[0x634];              // 0x778
+    f32 detach_fall_delay;              // 0xdac
 } ZIPUP_TRANSPORT_VIEW_PC;
 
 #define ASIN_NEG_1_OVER_6 PCPathArcSineCoefficient3
@@ -133,17 +133,17 @@ enum ZIPUP_FLAGS {
     ZIPUP_FLAG_VISIBLE = 0x80
 };
 
-typedef struct zipup_rope_vertex_pc_s { // size 0x24
-    NUVEC position;                     // 0x00
-    NUVEC normal;                       // 0x0c
-    u32 colour;                         // 0x18
-    f32 u;                              // 0x1c
-    f32 v;                              // 0x20
+typedef struct zipup_rope_vertex_s { // size 0x24
+    NUVEC position;                  // 0x00
+    NUVEC normal;                    // 0x0c
+    u32 colour;                      // 0x18
+    f32 u;                           // 0x1c
+    f32 v;                           // 0x20
 } ZIPUP_ROPE_VERTEX_PC;
 
-typedef struct zipup_rope_material_pc_s { // size 0x74
-    u8 unknown_0[0x70];                   // 0x00
-    f32 opacity;                          // 0x70
+typedef struct zipup_rope_material_s { // size 0x74
+    u8 unknown_0[0x70];                // 0x00
+    f32 opacity;                       // 0x70
 } ZIPUP_ROPE_MATERIAL_PC;
 
 static f32 ZipUpFabsPc(f32 value);
@@ -837,12 +837,12 @@ extern void ZipUps_Update(WORLDINFO *world, void *unused, f32 time) {
 
 i32 ZipUps_UpdateHint(HINT_PC *hint) {
     WORLDINFO *world = WorldInfo_CurrentlyActive();
-    HINT_ZIPUP_PC *zipups;
+    HINT_ZIPUP *zipups;
     i32 index;
     if (world->area != NULL && world->area == HUB_ADATA) {
         return 0;
     }
-    zipups = (HINT_ZIPUP_PC *)world->zipups;
+    zipups = (HINT_ZIPUP *)world->zipups;
     if (zipups == NULL) {
         return 0;
     }

@@ -3,12 +3,12 @@
 
 #include <stdio.h>
 
-typedef struct portal_callback_pc_s { // size 0x20
-    u8 reserved_00[0x1a];             // 0x00
-    i8 id;                            // 0x1a
-    u8 reserved_1b;                   // 0x1b
-    u8 flags;                         // 0x1c
-    u8 reserved_1d[3];                // 0x1d
+typedef struct portal_callback_s { // size 0x20
+    u8 reserved_00[0x1a];          // 0x00
+    i8 id;                         // 0x1a
+    u8 reserved_1b;                // 0x1b
+    u8 flags;                      // 0x1c
+    u8 reserved_1d[3];             // 0x1d
 } PORTAL_CALLBACK_PC;
 
 static char portal_output_name_pc[64] = "Active";

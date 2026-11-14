@@ -54,7 +54,7 @@ STATIC_ASSERT(offsetof(NUANGVEC, x) == 0);
 STATIC_ASSERT(offsetof(NUANGVEC, y) == 4);
 STATIC_ASSERT(offsetof(NUANGVEC, z) == 8);
 
-typedef struct nurnd_vertex2d_pc_s {
+typedef struct nurnd_vertex2d_s {
     f32 x;
     f32 y;
     f32 z;
@@ -98,7 +98,7 @@ STATIC_ASSERT(offsetof(NUGSCNROOM, portal_count) == 0xf);
 STATIC_ASSERT(offsetof(NUGSCNROOM, visibility_flags) == 0x10);
 STATIC_ASSERT(offsetof(NUGSCNROOM, priority) == 0x14);
 
-typedef struct pc_display_clip_object_pc_s {
+typedef struct pc_display_clip_object_s {
     i32 material_count;
     i32 *material_ids;
     i32 *item_indices;
@@ -126,7 +126,7 @@ STATIC_ASSERT(offsetof(NUPORTAL_FRUSTUM_PC, planes) == 0x80);
 STATIC_ASSERT(offsetof(NUPORTAL_FRUSTUM_PC, plane_count) == 0x9c);
 STATIC_ASSERT(offsetof(NUPORTAL_FRUSTUM_PC, room_id) == 0x9e);
 
-typedef struct nugscn_anim_lookup_pc_s {
+typedef struct nugscn_anim_lookup_s {
     u16 count;
     u16 end_frame;
     f32 *times;
@@ -196,10 +196,10 @@ STATIC_ASSERT(offsetof(ANI3_HEADER_PC, node_flags) == 0x34);
 STATIC_ASSERT(offsetof(ANI3_HEADER_PC, field_38) == 0x38);
 STATIC_ASSERT(sizeof(ANI3_HEADER_PC) == 0x3c);
 
-typedef union DWA_CURVE_CELL_PC {
+typedef union DWA_CURVE_CELL {
     f32 constant;
     void *encoded;
-} DWA_CURVE_CELL_PC;
+} DWA_CURVE_CELL;
 
 typedef struct NUANIM_TIME2_PC {
     f32 time;
@@ -215,7 +215,7 @@ typedef struct DWA_WEIGHT_BLOCK_PC {
     f32 values[128];
 } DWA_WEIGHT_BLOCK_PC;
 
-STATIC_ASSERT(sizeof(DWA_CURVE_CELL_PC) == 4);
+STATIC_ASSERT(sizeof(DWA_CURVE_CELL) == 4);
 STATIC_ASSERT(sizeof(NUANIM_TIME2_PC) == 24);
 STATIC_ASSERT(offsetof(NUANIM_TIME2_PC, time_mask) == 0x0c);
 STATIC_ASSERT(offsetof(DWA_WEIGHT_BLOCK_PC, values) == 8);
@@ -235,7 +235,7 @@ STATIC_ASSERT(offsetof(NUHGOBJ_JOINT_OVERRIDE_PC, rotation_max_pc) == 0x24);
 STATIC_ASSERT(offsetof(NUHGOBJ_JOINT_OVERRIDE_PC, rotation_min_pc) == 0x2a);
 STATIC_ASSERT(offsetof(NUHGOBJ_JOINT_OVERRIDE_PC, flags_pc) == 0x31);
 
-typedef struct nuprim_vertex_group_source_pc_s {
+typedef struct nuprim_vertex_group_source_s {
     u8 count;
     u8 block_count;
     u8 flags;
@@ -307,15 +307,15 @@ extern "C" {
     extern i32 PCSpecialForceMaterialCount;
     extern u8 CutSceneBoundingBoxTrackRoot;
 
-    typedef struct FONT_LEGACY_GLYPH_PC {
+    typedef struct FONT_LEGACY_GLYPH {
         f32 u0;
         f32 v0;
         f32 u1;
         f32 v1;
         u32 unknown10;
-    } FONT_LEGACY_GLYPH_PC;
+    } FONT_LEGACY_GLYPH;
 
-    STATIC_ASSERT(sizeof(FONT_LEGACY_GLYPH_PC) == 0x14);
+    STATIC_ASSERT(sizeof(FONT_LEGACY_GLYPH) == 0x14);
 
     extern const char RenderSplineShopStartPc[11];
 
@@ -454,7 +454,7 @@ extern "C" {
     extern i32 noscenespecials;
     extern i32 VisibilityPortalFilterEnabledPc;
 
-    typedef struct render_post_bloom_reader_pc_s {
+    typedef struct render_post_bloom_reader_s {
         u8 unknown_00[4];
         f32 near_angle;
         f32 near_scale;
@@ -494,7 +494,7 @@ extern "C" {
     void NuTexAnimSetSignals(u32 signals);
     void NuTexAnimProcess(f32 frame_time);
 
-    typedef struct render_post_viewport_prefix_pc_s {
+    typedef struct render_post_viewport_prefix_s {
         f32 source_x;
         f32 source_y;
         f32 source_right;
@@ -529,16 +529,16 @@ extern "C" {
      * storage.
      */
 
-    typedef struct NUANIM_LEGACY_KEY_PC {
+    typedef struct NUANIM_LEGACY_KEY {
         f32 time;
         f32 reciprocal_span;
         f32 tangent;
         f32 value;
-    } NUANIM_LEGACY_KEY_PC;
+    } NUANIM_LEGACY_KEY;
 
     typedef struct NUANIM_LEGACY_CURVE_PC {
         u8 key_mask[4];
-        NUANIM_LEGACY_KEY_PC *keys;
+        NUANIM_LEGACY_KEY *keys;
         i32 key_count;
         u32 flags;
     } NUANIM_LEGACY_CURVE_PC;
@@ -558,10 +558,10 @@ extern "C" {
         void **chunks;
     } NUANIM_LEGACY_HEADER_PC;
 
-    STATIC_ASSERT(sizeof(NUANIM_LEGACY_KEY_PC) == 0x10);
-    STATIC_ASSERT(offsetof(NUANIM_LEGACY_KEY_PC, reciprocal_span) == 4);
-    STATIC_ASSERT(offsetof(NUANIM_LEGACY_KEY_PC, tangent) == 8);
-    STATIC_ASSERT(offsetof(NUANIM_LEGACY_KEY_PC, value) == 12);
+    STATIC_ASSERT(sizeof(NUANIM_LEGACY_KEY) == 0x10);
+    STATIC_ASSERT(offsetof(NUANIM_LEGACY_KEY, reciprocal_span) == 4);
+    STATIC_ASSERT(offsetof(NUANIM_LEGACY_KEY, tangent) == 8);
+    STATIC_ASSERT(offsetof(NUANIM_LEGACY_KEY, value) == 12);
     STATIC_ASSERT(sizeof(NUANIM_LEGACY_CURVE_PC) == 0x10);
     STATIC_ASSERT(offsetof(NUANIM_LEGACY_CURVE_PC, keys) == 4);
     STATIC_ASSERT(offsetof(NUANIM_LEGACY_CURVE_PC, key_count) == 8);
@@ -574,21 +574,21 @@ extern "C" {
     STATIC_ASSERT(offsetof(NUANIM_LEGACY_HEADER_PC, chunk_count) == 8);
     STATIC_ASSERT(offsetof(NUANIM_LEGACY_HEADER_PC, chunks) == 12);
 
-    STATIC_ASSERT(offsetof(NUANIM_LEGACY_KEY_PC, time) == 0);
+    STATIC_ASSERT(offsetof(NUANIM_LEGACY_KEY, time) == 0);
     STATIC_ASSERT(offsetof(NUANIM_LEGACY_CURVE_PC, key_mask) == 0);
     STATIC_ASSERT(offsetof(NUANIM_LEGACY_SET_PC, flags) == 0);
     STATIC_ASSERT(sizeof(NUANIM_LEGACY_HEADER_PC) == 0x10);
 
-    typedef struct NUANIM_LEGACY_CHUNK_PC {
+    typedef struct NUANIM_LEGACY_CHUNK {
         i32 node_count;
         u32 unknown_04;
         NUANIM_LEGACY_SET_PC **curve_sets;
-    } NUANIM_LEGACY_CHUNK_PC;
+    } NUANIM_LEGACY_CHUNK;
 
-    STATIC_ASSERT(offsetof(NUANIM_LEGACY_CHUNK_PC, node_count) == 0);
-    STATIC_ASSERT(offsetof(NUANIM_LEGACY_CHUNK_PC, curve_sets) == 8);
+    STATIC_ASSERT(offsetof(NUANIM_LEGACY_CHUNK, node_count) == 0);
+    STATIC_ASSERT(offsetof(NUANIM_LEGACY_CHUNK, curve_sets) == 8);
 
-    STATIC_ASSERT(sizeof(NUANIM_LEGACY_CHUNK_PC) == 0xc);
+    STATIC_ASSERT(sizeof(NUANIM_LEGACY_CHUNK) == 0xc);
     void NuAnimDataCalcTime(NUANIM_LEGACY_HEADER_PC *, f32, NUANIM_TIME2_PC *);
     DWA_WEIGHT_BLOCK_PC **NuHGobjEvalDwa(i32, i16 *, NUANIM_LEGACY_HEADER_PC *, f32);
     extern f32 FrameMaterialAnimationSpeedPc;
@@ -735,7 +735,7 @@ extern "C" {
 
 #if SAGA_NU2API_NU3D_NU3D_INCLUDES_H_PART == 2 && !defined(SAGA_NU2API_NU3D_NU3D_INCLUDES_H_STOP)
 
-typedef struct nutexdim_pc_s {
+typedef struct nutexdim_s {
     i32 width;
     i32 height;
     u8 checksum[0x10];
@@ -847,7 +847,7 @@ STATIC_ASSERT(sizeof(NUSPECIALHANDLE) == 0xc);
 STATIC_ASSERT(offsetof(NUSPECIALHANDLE, special) == 4);
 STATIC_ASSERT(offsetof(NUSPECIALHANDLE, display_special) == 8);
 
-typedef struct nuspecial_legacy_pc_s {
+typedef struct nuspecial_legacy_s {
     NUMTX matrix;
     struct nuinstance_s *instance;
     char *name;
@@ -857,7 +857,7 @@ typedef struct nuspecial_legacy_pc_s {
 STATIC_ASSERT(sizeof(NUSPECIAL_LEGACY_PC) == 0x4c);
 STATIC_ASSERT(offsetof(NUSPECIAL_LEGACY_PC, name) == 0x44);
 
-typedef struct nudisplay_special_pc_s {
+typedef struct nudisplay_special_s {
     NUMTX instance_matrix;
     NUMTX draw_matrix;
     NUVEC4 bounds_min;
@@ -899,22 +899,22 @@ typedef struct nuinstance_s {
     u32 pad_4c;
 } NUINSTANCE;
 
-typedef struct ANI3_JOINT_PC {
+typedef struct ANI3_JOINT {
     NUVEC4 translation;
     NUVEC4 rotation;
     NUVEC4 scale;
-} ANI3_JOINT_PC;
+} ANI3_JOINT;
 
-STATIC_ASSERT(offsetof(ANI3_JOINT_PC, rotation) == 0x10);
-STATIC_ASSERT(offsetof(ANI3_JOINT_PC, scale) == 0x20);
-STATIC_ASSERT(sizeof(ANI3_JOINT_PC) == 0x30);
+STATIC_ASSERT(offsetof(ANI3_JOINT, rotation) == 0x10);
+STATIC_ASSERT(offsetof(ANI3_JOINT, scale) == 0x20);
+STATIC_ASSERT(sizeof(ANI3_JOINT) == 0x30);
 
 typedef struct ANI3_BUFFER_PC {
     i32 joint_count;
     i16 max_joints;
     u8 use_quaternions;
     u8 pad_07;
-    ANI3_JOINT_PC *joints;
+    ANI3_JOINT *joints;
     u8 *joint_flags;
 } ANI3_BUFFER_PC;
 
@@ -934,7 +934,7 @@ typedef struct ANI3_GLOBALBUFFER_PC {
 
     union {
         f32 *animation_values;
-        ANI3_JOINT_PC *joints;
+        ANI3_JOINT *joints;
     };
 
     u8 *joint_flags;
@@ -966,16 +966,16 @@ STATIC_ASSERT(offsetof(NUHGOBJ_EVAL_JOINT_PC, pivot_pc) == 0x40);
 STATIC_ASSERT(offsetof(NUHGOBJ_EVAL_JOINT_PC, flags_pc) == 0x51);
 STATIC_ASSERT(sizeof(NUHGOBJ_EVAL_JOINT_PC) == 0x60);
 
-typedef struct NUHGOBJ_RENDER_PART_PC {
+typedef struct NUHGOBJ_RENDER_PART {
     const char *name;
     NUSPECIALHANDLE **rigid;
     NUSPECIALHANDLE *smooth;
     NUSPECIALHANDLE **alternate_rigid;
     NUSPECIALHANDLE *alternate_smooth;
-} NUHGOBJ_RENDER_PART_PC;
+} NUHGOBJ_RENDER_PART;
 
-STATIC_ASSERT(sizeof(NUHGOBJ_RENDER_PART_PC) == 0x14);
-STATIC_ASSERT(offsetof(NUHGOBJ_RENDER_PART_PC, name) == 0);
+STATIC_ASSERT(sizeof(NUHGOBJ_RENDER_PART) == 0x14);
+STATIC_ASSERT(offsetof(NUHGOBJ_RENDER_PART, name) == 0);
 
 typedef struct NUHGOBJ_POI_PC {
     NUMTX matrix;
@@ -987,10 +987,10 @@ typedef struct NUHGOBJ_POI_PC {
 STATIC_ASSERT(sizeof(NUHGOBJ_POI_PC) == 0x50);
 STATIC_ASSERT(offsetof(NUHGOBJ_POI_PC, matrix) == 0);
 STATIC_ASSERT(offsetof(NUHGOBJ_POI_PC, joint_index) == 0x44);
-STATIC_ASSERT(offsetof(NUHGOBJ_RENDER_PART_PC, rigid) == 4);
-STATIC_ASSERT(offsetof(NUHGOBJ_RENDER_PART_PC, alternate_smooth) == 16);
+STATIC_ASSERT(offsetof(NUHGOBJ_RENDER_PART, rigid) == 4);
+STATIC_ASSERT(offsetof(NUHGOBJ_RENDER_PART, alternate_smooth) == 16);
 
-typedef struct nuqfnt_render_data_pc_s {
+typedef struct nuqfnt_render_data_s {
     u32 colour;
     f32 x;
     f32 y;
@@ -1151,21 +1151,21 @@ STATIC_ASSERT(offsetof(NU_POST_SPEED_PARAMETERS_PC, scale) == 0x88);
 
 #if SAGA_NU2API_NU3D_NU3D_INCLUDES_H_PART == 4 && !defined(SAGA_NU2API_NU3D_NU3D_INCLUDES_H_STOP)
 
-typedef struct NUANIMDATA2_SKELETAL_PC {
-    NUANIMDATA2_PC prefix;
+typedef struct NUANIMDATA2_SKELETAL {
+    NUANIMDATA2 prefix;
     i8 *node_flags;
-} NUANIMDATA2_SKELETAL_PC;
+} NUANIMDATA2_SKELETAL;
 
-STATIC_ASSERT(offsetof(NUANIMDATA2_SKELETAL_PC, prefix) == 0);
-STATIC_ASSERT(offsetof(NUANIMDATA2_SKELETAL_PC, node_flags) == 0x14);
-STATIC_ASSERT(sizeof(NUANIMDATA2_SKELETAL_PC) == 0x18);
+STATIC_ASSERT(offsetof(NUANIMDATA2_SKELETAL, prefix) == 0);
+STATIC_ASSERT(offsetof(NUANIMDATA2_SKELETAL, node_flags) == 0x14);
+STATIC_ASSERT(sizeof(NUANIMDATA2_SKELETAL) == 0x18);
 #ifdef __cplusplus
 extern "C" {
 #endif
     extern NUCAMERA *NuPortalCameraPc;
     extern NUCAMERA NuPortalDebugCameraPc;
     extern NUCAMERA NuPortalRestoreCameraPc;
-    void NuAnimData2CalcTime(NUANIMDATA2_PC *, f32, NUANIM_TIME2_PC *);
+    void NuAnimData2CalcTime(NUANIMDATA2 *, f32, NUANIM_TIME2_PC *);
     /* C extern declarations: */
     i32 StateAnimEvaluate2(STATE_ANIM_PC *state, u8 *index, u8 *value, f32 frame);
     i32 StateAnimEvaluate(STATE_ANIM_PC *state, u8 *index, u8 *value, f32 frame);
@@ -1261,7 +1261,7 @@ typedef struct nudisplay_list_pc_s {
     };
     struct NUGSCN_s *gscene;
     u32 *native_word;
-    struct nuglobalrndrstate_pc_s *local_state;
+    struct nuglobalrndrstate_s *local_state;
     u8 unknown_84[0x4];
     u8 *portal_visibility_overrides;
     struct PC_MATERIAL_ANIM_SET *material_animations;
@@ -1309,7 +1309,7 @@ typedef struct NUHGOBJ_EVAL_PC {
     i32 point_index_count;
     u8 *point_index_map;
     i32 render_count;
-    NUHGOBJ_RENDER_PART_PC *render_parts;
+    NUHGOBJ_RENDER_PART *render_parts;
     u8 unknown_198[4];
     struct PC_HG_SHADOW_GROUP *shadow_groups;
     u8 suppress_shadow_points;
@@ -1390,7 +1390,7 @@ extern "C" {
         NUMTL *material;
         i32 glyph_count;
         u8 character_map[256];
-        FONT_LEGACY_GLYPH_PC glyphs[256];
+        FONT_LEGACY_GLYPH glyphs[256];
     } FONT_LEGACY_READER_PC;
 
     STATIC_ASSERT(offsetof(FONT_LEGACY_READER_PC, height) == 0xc);
@@ -1821,7 +1821,7 @@ STATIC_ASSERT(offsetof(PC_FRAMEBUFFER_PC, targets) == 0);
 STATIC_ASSERT(offsetof(PC_FRAMEBUFFER_PC, clear_colour) == 0x8c);
 STATIC_ASSERT(offsetof(PC_FRAMEBUFFER_PC, changed) == 0xa0);
 
-STATIC_ASSERT(offsetof(PC_TEXTURE_RESOURCE_METHODS_PC, get_surface_level) == 0x48);
+STATIC_ASSERT(offsetof(PC_TEXTURE_RESOURCE_METHODS, get_surface_level) == 0x48);
 
 #ifdef __cplusplus
 extern "C" {

@@ -35,10 +35,10 @@ struct AISYS_PC;
 struct APIOBJECT_PC;
 struct GIZBUILDIT_PC;
 struct WORLDINFO_s;
-struct ai_helper_slot_pc_s;
-struct area_supercounter_pc_s;
+struct ai_helper_slot_s;
+struct area_supercounter_s;
 struct gameobject_s;
-struct level_data_pc_s;
+struct level_data_s;
 struct nugspline_s;
 
 typedef struct FADEINFO_PC {
@@ -289,7 +289,7 @@ typedef struct area_data_pc_s {
     u8 level_count;
     i8 cheat;
     u8 super_counter_count;
-    struct area_supercounter_pc_s *super_counters;
+    struct area_supercounter_s *super_counters;
     u16 challenge_trial_time;
     i8 episode_index;
     i8 area_index;
@@ -358,7 +358,7 @@ extern "C" {
 extern "C" {
 #endif
     extern GAMEPAD_INIT_RECORD GamePadStorage[64];
-    extern struct level_data_pc_s *LevelFixupSlotPc0087b2dc;
+    extern struct level_data_s *LevelFixupSlotPc0087b2dc;
     i32 Hub_BonusBuildIt(struct GIZBUILDIT_PC *);
     extern APICHARACTERMODELLIST fplist[341];
     extern APICHARACTERMODELLIST fplist[341];
@@ -377,7 +377,7 @@ extern "C" {
 #endif
     extern INDY_PREPARE_SPECIAL_MOVE_PC IndyPrepareSpecialMovePc[7];
     extern AI_MID_SPECIAL_MOVE_PC IndyMidSpecialMoveFnsPc[10];
-    i32 IndyGrappleHelperOccupiedPc(struct ai_helper_slot_pc_s *helper, struct gameobject_s *owner,
+    i32 IndyGrappleHelperOccupiedPc(struct ai_helper_slot_s *helper, struct gameobject_s *owner,
                                     struct AIPATHCNX_PC *connection, u8 direction, u8 type);
 #ifdef __cplusplus
 }

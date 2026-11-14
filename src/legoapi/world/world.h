@@ -21,25 +21,25 @@ struct APIDEBRISSYS_PC;
 struct APIOBJECTSYS_PC;
 struct GIZMOBLOWUPTYPE_PC;
 struct GIZMOBLOWUP_PC;
-struct LEVEL_OBJECT_RUNTIME_PC;
+struct LEVEL_OBJECT_RUNTIME;
 struct NUGSCN_s;
 struct TUBE_PC;
-struct ai_helper_system_pc_s;
+struct ai_helper_system_s;
 struct bolt_s;
-struct climb_system_pc_s;
-struct cutsys_pc_s;
-struct edgizshadow_pc_s;
+struct climb_system_s;
+struct cutsys_s;
+struct edgizshadow_s;
 struct gameanimsys_s;
-struct level_progress_pc_s;
-struct minikit_piece_pc_s;
+struct level_progress_s;
+struct minikit_piece_s;
 struct numtx_s;
 struct partdebrissys_s;
-struct rtlset_pc_s;
-struct socksys_pc_s;
-struct techno_pc_s;
-struct zipup_pc_s;
+struct rtlset_s;
+struct socksys_s;
+struct techno_s;
+struct zipup_s;
 
-typedef struct level_sfx_entry_pc_s {
+typedef struct level_sfx_entry_s {
     NUVEC position;
     i16 id;
     u8 references;
@@ -170,9 +170,9 @@ typedef struct WORLDINFO_s {
     i32 level_idx;
     i32 area_index;
     i32 episode_index;
-    struct level_data_pc_s *current_level;
+    struct level_data_s *current_level;
     struct area_data_pc_s *area;
-    struct level_progress_pc_s *level_progress;
+    struct level_progress_s *level_progress;
     struct APIDEBRISSYS_PC *game_debris_sys;
     struct partdebrissys_s *part_debris_sys;
     struct NUGSCN_s *current_gscn;
@@ -183,7 +183,7 @@ typedef struct WORLDINFO_s {
     void *terrain;
     struct gameanimsys_s *game_anim_sys;
     u32 unknown_2964[9];
-    struct socksys_pc_s *sock_sys;
+    struct socksys_s *sock_sys;
     struct APIOBJECTSYS_PC *object_sys;
     u8 room_visibility_flag;
     u8 rooms_visible[0x100];
@@ -195,11 +195,11 @@ typedef struct WORLDINFO_s {
     i32 page_grass;
     i32 page_bridge;
     i32 page_unknown;
-    struct cutsys_pc_s *cutscene_sys;
-    struct rtlset_pc_s *rtl_set;
+    struct cutsys_s *cutscene_sys;
+    struct rtlset_s *rtl_set;
     i32 rtl_id;
     void *light_dir;
-    struct LEVEL_OBJECT_RUNTIME_PC *level_objects;
+    struct LEVEL_OBJECT_RUNTIME *level_objects;
     struct nugspline_s **camera_splines;
     void *gizmo_sys;
     struct GIZFLOW_PC *giz_flow;
@@ -210,12 +210,12 @@ typedef struct WORLDINFO_s {
     struct AISYS_PC *ai_sys;
     i32 script_processor_count;
     LEVEL_SCRIPT_PROCESS_PC script_processors[32];
-    struct ai_control_system_pc_s *ai_path_cnx_control_sys;
-    struct ai_helper_system_pc_s *ai_connection_helpers;
+    struct ai_control_system_s *ai_path_cnx_control_sys;
+    struct ai_helper_system_s *ai_connection_helpers;
     void *ai_trigger_set;
-    struct climb_system_pc_s *climb_objects;
+    struct climb_system_s *climb_objects;
     u8 unknown_4680[8];
-    struct zipup_pc_s *zipups;
+    struct zipup_s *zipups;
     i32 zipup_count;
     struct TUBE_PC *tubes;
     i32 tube_count;
@@ -225,7 +225,7 @@ typedef struct WORLDINFO_s {
     void *giz_obstacle_sys;
     struct GIZBUILDITSYS_s *giz_buildit_sys;
     struct GIZFORCESYS_s *giz_force_sys;
-    struct EQUIVALENT_GROUP_PC *equivalent_groups;
+    struct EQUIVALENT_GROUP *equivalent_groups;
     i32 equivalent_group_count;
     struct GIZTURRETSYS_s *giz_turret_sys;
     struct pushblock_s *push_blocks;
@@ -233,9 +233,9 @@ typedef struct WORLDINFO_s {
     struct nuvec_s *push_block_positions;
     i32 push_block_position_count;
     i32 special_sfx_count;
-    struct SPECIAL_RESOURCE_ENTRY_PC *special_sfx;
+    struct SPECIAL_RESOURCE_ENTRY *special_sfx;
     i32 special_sfx_event_count;
-    struct SPECIAL_RESOURCE_EVENT_PC *special_sfx_events;
+    struct SPECIAL_RESOURCE_EVENT *special_sfx_events;
     char filler7c[4];
     struct GIZSPINNER_s *spinners;
     i32 spinner_count;
@@ -267,7 +267,7 @@ typedef struct WORLDINFO_s {
     i32 nlevers;
     struct GIZPANELSYS_s *giz_panel_sys;
     void *hat_machine_sys;
-    struct techno_pc_s *technos;
+    struct techno_s *technos;
     i32 techno_count;
     struct GRAPPLE_DYNAMIC_PC *grapples;
     i32 grapple_count;
@@ -296,11 +296,11 @@ typedef struct WORLDINFO_s {
     i32 minicut_count;
     void *giz_timers;
     i32 giz_timers_count;
-    struct TORPEDO_MACHINE_SYS_PC *torpedo_machine_sys;
+    struct TORPEDO_MACHINE_SYS *torpedo_machine_sys;
     void *giz_randoms;
     void *giz_special_sys;
     void *game_antinode_sys;
-    struct edgizshadow_pc_s *shadow_editor;
+    struct edgizshadow_s *shadow_editor;
     struct GIZBOMBGENSYS_s *giz_bombgen_sys;
     i32 has_level_specific_data;
     void *level_specific_data;
@@ -354,13 +354,13 @@ STATIC_ASSERT(offsetof(WORLDINFO, level_sfx) == 0x4710);
 STATIC_ASSERT(offsetof(WORLDINFO, level_sfx_count) == 0x4b10);
 STATIC_ASSERT(offsetof(WORLDINFO, bolt_types) == 0x4b14);
 
-typedef struct TORPEDO_MACHINE_SYS_PC {
+typedef struct TORPEDO_MACHINE_SYS {
     u8 unknown0[8];
     f32 scale;
-} TORPEDO_MACHINE_SYS_PC;
+} TORPEDO_MACHINE_SYS;
 
-STATIC_ASSERT(sizeof(TORPEDO_MACHINE_SYS_PC) == 0xc);
-STATIC_ASSERT(offsetof(TORPEDO_MACHINE_SYS_PC, scale) == 8);
+STATIC_ASSERT(sizeof(TORPEDO_MACHINE_SYS) == 0xc);
+STATIC_ASSERT(offsetof(TORPEDO_MACHINE_SYS, scale) == 8);
 STATIC_ASSERT(offsetof(WORLDINFO, pickup_runtime_sys) == 0x50b8);
 STATIC_ASSERT(offsetof(WORLDINFO, torpedo_machine_sys) == 0x5100);
 #ifdef __cplusplus
@@ -393,7 +393,7 @@ extern "C" {
     WORLDINFO *WorldInfo_CurrentlyLoading(void);
     i32 WorldInfo_OtherLevel(WORLDINFO *world);
     void WorldInfo_UpdateRoomVisibility(WORLDINFO *world, i32 param);
-    void StoreLevelProgressFn(WORLDINFO *world, struct level_progress_pc_s *progress, i32 area_progress);
+    void StoreLevelProgressFn(WORLDINFO *world, struct level_progress_s *progress, i32 area_progress);
     void WorldInfo_Dump(WORLDINFO *);
     i32 WorldInfo_Reset(WORLDINFO *, i32);
     void WorldInfo_Load(WORLDINFO *);
@@ -434,9 +434,9 @@ extern "C" {
 }
 #endif
 
-typedef struct minikit_pc_s {
+typedef struct minikit_s {
     struct NUGSCN_s *scene;
-    struct minikit_piece_pc_s *pieces;
+    struct minikit_piece_s *pieces;
     u8 piece_count;
     i8 area_index;
     i16 model_id;

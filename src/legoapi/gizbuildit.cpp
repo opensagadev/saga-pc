@@ -1,33 +1,33 @@
 #include "saga.h"
 
-typedef struct gizbuildit_record_reader_pc_s { // size 0x7c
-    char name[16];                             // 0x00
-    u8 unknown_10[0x6c];                       // 0x10
+typedef struct gizbuildit_record_reader_s { // size 0x7c
+    char name[16];                          // 0x00
+    u8 unknown_10[0x6c];                    // 0x10
 } GIZBUILDIT_RECORD_READER_PC;
 
-typedef struct gizbuildit_system_reader_pc_s { // size 0x8
-    GIZBUILDIT_RECORD_READER_PC *buildits;     // 0x0
-    u16 count;                                 // 0x4
+typedef struct gizbuildit_system_reader_s { // size 0x8
+    GIZBUILDIT_RECORD_READER_PC *buildits;  // 0x0
+    u16 count;                              // 0x4
 } GIZBUILDIT_SYSTEM_READER_PC;
 
-typedef struct gizbuildit_world_reader_pc_s { // size 0x46ac
-    u8 unknown_00[0x46a8];                    // 0x0000
-    GIZBUILDIT_SYSTEM_READER_PC *system;      // 0x46a8
+typedef struct gizbuildit_world_reader_s { // size 0x46ac
+    u8 unknown_00[0x46a8];                 // 0x0000
+    GIZBUILDIT_SYSTEM_READER_PC *system;   // 0x46a8
 } GIZBUILDIT_WORLD_READER_PC;
 
-typedef struct buildit_matrices_pc_s { // size 0x80
-    NUMTX start_mtx;                   // 0x00
-    NUMTX end_mtx;                     // 0x40
+typedef struct buildit_matrices_s { // size 0x80
+    NUMTX start_mtx;                // 0x00
+    NUMTX end_mtx;                  // 0x40
 } BUILDIT_MATRICES_PC;
 
-typedef struct buildit_animation_pc_s { // size 0x28
-    u8 unknown_00[4];                   // 0x00
-    NUSPECIALHANDLE special;            // 0x04
-    u8 unknown_10[0x14];                // 0x10
-    BUILDIT_MATRICES_PC *object_data;   // 0x24
+typedef struct buildit_animation_s {  // size 0x28
+    u8 unknown_00[4];                 // 0x00
+    NUSPECIALHANDLE special;          // 0x04
+    u8 unknown_10[0x14];              // 0x10
+    BUILDIT_MATRICES_PC *object_data; // 0x24
 } BUILDIT_ANIMATION_PC;
 
-typedef struct buildit_movement_pc_s {   // size 0x74
+typedef struct buildit_movement_s {      // size 0x74
     u8 unknown_00[0x10];                 // 0x00
     void *anim_set;                      // 0x10
     BUILDIT_ANIMATION_PC **anim_objects; // 0x14
@@ -42,41 +42,41 @@ typedef struct buildit_movement_pc_s {   // size 0x74
     u8 state_flags;                      // 0x72
 } BUILDIT_MOVEMENT_PC;
 
-typedef struct buildit_reset_matrices_pc_s { // size 0xc0
-    NUMTX start_mtx;                         // 0x00
-    NUMTX end_mtx;                           // 0x40
-    NUMTX draw_mtx;                          // 0x80
+typedef struct buildit_reset_matrices_s { // size 0xc0
+    NUMTX start_mtx;                      // 0x00
+    NUMTX end_mtx;                        // 0x40
+    NUMTX draw_mtx;                       // 0x80
 } BUILDIT_RESET_MATRICES_PC;
 
-typedef struct buildit_reset_pc_s {            // size 0x7c
-    char name[16];                             // 0x00
-    GAMEANIMSET *anim_set;                     // 0x10
-    GAMEANIMOBJ **anim_objects;                // 0x14
-    struct buildit_reset_pc_s *linked_buildit; // 0x18
-    NUVEC file_position;                       // 0x1c
-    NUVEC start_position;                      // 0x28
-    NUVEC position;                            // 0x34
-    f32 bounds_radius;                         // 0x40
-    f32 reset_step_timer;                      // 0x44
-    f32 reset_step_duration;                   // 0x48
-    f32 interaction_radius;                    // 0x4c
-    f32 field_50;                              // 0x50
-    i16 wobble_parameter;                      // 0x54
-    i16 completion_score;                      // 0x56
-    i16 field_58;                              // 0x58
-    i16 field_5a;                              // 0x5a
-    NUVEC effect_position;                     // 0x5c
-    f32 activation_radius;                     // 0x68
-    u8 anim_object_count;                      // 0x6c
-    u8 build_state;                            // 0x6d
-    u8 builders_active;                        // 0x6e
-    u8 built_object_count;                     // 0x6f
-    u8 batch_size;                             // 0x70
-    u8 progress;                               // 0x71
-    u16 state_flags;                           // 0x72
-    u16 linked_rotation;                       // 0x74
-    i16 room_index;                            // 0x76
-    i16 blowup_type;                           // 0x78
+typedef struct buildit_reset_s {            // size 0x7c
+    char name[16];                          // 0x00
+    GAMEANIMSET *anim_set;                  // 0x10
+    GAMEANIMOBJ **anim_objects;             // 0x14
+    struct buildit_reset_s *linked_buildit; // 0x18
+    NUVEC file_position;                    // 0x1c
+    NUVEC start_position;                   // 0x28
+    NUVEC position;                         // 0x34
+    f32 bounds_radius;                      // 0x40
+    f32 reset_step_timer;                   // 0x44
+    f32 reset_step_duration;                // 0x48
+    f32 interaction_radius;                 // 0x4c
+    f32 field_50;                           // 0x50
+    i16 wobble_parameter;                   // 0x54
+    i16 completion_score;                   // 0x56
+    i16 field_58;                           // 0x58
+    i16 field_5a;                           // 0x5a
+    NUVEC effect_position;                  // 0x5c
+    f32 activation_radius;                  // 0x68
+    u8 anim_object_count;                   // 0x6c
+    u8 build_state;                         // 0x6d
+    u8 builders_active;                     // 0x6e
+    u8 built_object_count;                  // 0x6f
+    u8 batch_size;                          // 0x70
+    u8 progress;                            // 0x71
+    u16 state_flags;                        // 0x72
+    u16 linked_rotation;                    // 0x74
+    i16 room_index;                         // 0x76
+    i16 blowup_type;                        // 0x78
 
     union { // size 0x2
         u16 availability_flags;
@@ -99,17 +99,17 @@ STATIC_ASSERT(offsetof(GIZBUILDITANIMDATA_s, end_mtx) == 0x40);
 STATIC_ASSERT(offsetof(GIZBUILDITANIMDATA_s, draw_mtx) == 0x80);
 STATIC_ASSERT(offsetof(GIZBUILDITANIMDATA_s, wobble_time) == 0xc0);
 
-typedef struct buildit_reset_system_pc_s { // size 0x8
-    BUILDIT_RESET_PC *buildits;            // 0x0
-    u16 count;                             // 0x4
+typedef struct buildit_reset_system_s { // size 0x8
+    BUILDIT_RESET_PC *buildits;         // 0x0
+    u16 count;                          // 0x4
 } BUILDIT_RESET_SYSTEM_PC;
 
-typedef struct buildit_reset_progress_pc_s { // size 0x60
-    u32 completed[2];                        // 0x00
-    u32 active[2];                           // 0x08
-    u32 visible[2];                          // 0x10
-    u32 reward_released[2];                  // 0x18
-    u8 built_object_count[64];               // 0x20
+typedef struct buildit_reset_progress_s { // size 0x60
+    u32 completed[2];                     // 0x00
+    u32 active[2];                        // 0x08
+    u32 visible[2];                       // 0x10
+    u32 reward_released[2];               // 0x18
+    u8 built_object_count[64];            // 0x20
 } BUILDIT_RESET_PROGRESS_PC;
 
 extern "C" {}
@@ -137,13 +137,13 @@ STATIC_ASSERT(offsetof(WORLDINFO, giz_buildit_sys) == 0x46a8);
 STATIC_ASSERT(offsetof(GIZBUILDITSYS_s, buildits) == 0);
 STATIC_ASSERT(offsetof(GIZBUILDITSYS_s, count) == 4);
 
-typedef struct buildit_attracto_reader_pc_s { // size 0x7c
-    u8 unknown_00[0x18];                      // 0x00
-    void *linked_buildit;                     // 0x18
-    u8 unknown_1c[0x28];                      // 0x1c
-    f32 step_timer;                           // 0x44
-    f32 step_duration;                        // 0x48
-    u8 unknown_4c[0x30];                      // 0x4c
+typedef struct buildit_attracto_reader_s { // size 0x7c
+    u8 unknown_00[0x18];                   // 0x00
+    void *linked_buildit;                  // 0x18
+    u8 unknown_1c[0x28];                   // 0x1c
+    f32 step_timer;                        // 0x44
+    f32 step_duration;                     // 0x48
+    u8 unknown_4c[0x30];                   // 0x4c
 } BUILDIT_ATTRACTO_READER_PC;
 
 STATIC_ASSERT(offsetof(GIZBUILDIT_PC, step_timer) == 0x44);
@@ -210,7 +210,7 @@ extern "C" {
 }
 struct GIZBUILDIT_PC;
 
-typedef struct hub_buildit_sys_pc_s {
+typedef struct hub_buildit_sys_s {
     GIZBUILDIT_PC *buildits;
     u16 count;
 } HUB_BUILDIT_SYS_PC;

@@ -1,7 +1,7 @@
 #include "saga.h"
 #include <stdio.h>
 
-typedef struct SHOP_SAVE_VIEW_PC {
+typedef struct SHOP_SAVE_VIEW {
     u8 unknown_0000[0x7bd4];
     u32 hint_purchased_bits[3];
     u32 character_purchased_bits[4];
@@ -10,7 +10,7 @@ typedef struct SHOP_SAVE_VIEW_PC {
     u32 extra_purchased_bits[2];
     u8 unknown_7c08[0x15];
     u8 bolt_unlocked;
-} SHOP_SAVE_VIEW_PC;
+} SHOP_SAVE_VIEW;
 
 #define SHOP_FMIN(a, b) ((a) < (b) ? (a) : (b))
 #define SHOP_FMAX(a, b) ((a) > (b) ? (a) : (b))
@@ -237,7 +237,7 @@ static void NuMtxRotateZInline(NUMTX *m, i32 a) {
 /* Same-unit helper taking EAX; includes the vehicle exception. */
 static i32 Shop_CharacterUnlockedPc(i32 character_id) {
     if (character_id == VehicleBoltId7f17d4Pc) {
-        return ((SHOP_SAVE_VIEW_PC *)&Game)->bolt_unlocked != 0;
+        return ((SHOP_SAVE_VIEW *)&Game)->bolt_unlocked != 0;
     }
     return CollectIDUnlocked(character_id) != 0;
 }
@@ -354,7 +354,7 @@ void LoadShelfSplines(void) {
 void InitExtraList(void) {
     i32 i;
     i32 word;
-    SHOP_SAVE_VIEW_PC *save = (SHOP_SAVE_VIEW_PC *)&Game;
+    SHOP_SAVE_VIEW *save = (SHOP_SAVE_VIEW *)&Game;
     for (i = 0; i < 44; ++i) {
         NuStrCpy(ExtraItems[i].special_name, ExtrasCheatsPc[i].extra_name);
         NuSpecialFind(WORLD->current_gscn, &ExtraItems[i].special, ExtraItems[i].special_name, 1);
@@ -408,7 +408,7 @@ void InitShop(WORLDINFO *world) {
     i32 i;
     i32 code_count;
     i32 price;
-    SHOP_SAVE_VIEW_PC *save = (SHOP_SAVE_VIEW_PC *)&Game;
+    SHOP_SAVE_VIEW *save = (SHOP_SAVE_VIEW *)&Game;
     CharItems = GameBufferAlloc(&world->giz_buffer, &world->buffer_end, 100 * sizeof(shopitem_s));
     HintItems = GameBufferAlloc(&world->giz_buffer, &world->buffer_end, 64 * sizeof(shopitem_s));
     ExtraItems = GameBufferAlloc(&world->giz_buffer, &world->buffer_end, 64 * sizeof(shopitem_s));
@@ -634,7 +634,7 @@ i32 CheckCash(shopitem_s *items, i32 item) {
 }
 
 i32 BuyShopItem(shopitem_s *items, i32 index, i32 charge) {
-    SHOP_SAVE_VIEW_PC *save = (SHOP_SAVE_VIEW_PC *)&Game;
+    SHOP_SAVE_VIEW *save = (SHOP_SAVE_VIEW *)&Game;
     u32 *bits = NULL;
     if (items[index].type == 0) {
         bits = save->hint_purchased_bits;
@@ -663,7 +663,7 @@ i32 BuyShopItem(shopitem_s *items, i32 index, i32 charge) {
 }
 
 i32 SelectShopItem(shopitem_s *items, i32 index) {
-    SHOP_SAVE_VIEW_PC *save = (SHOP_SAVE_VIEW_PC *)&Game;
+    SHOP_SAVE_VIEW *save = (SHOP_SAVE_VIEW *)&Game;
     HINT_PC *hint;
     i32 id;
     i32 i;
@@ -1144,7 +1144,7 @@ i32 CodeMenu(void *menu) {
     i32 confirm = 0;
     i32 cancel = 0;
     SHOP_INPUT_PC input;
-    SHOP_SAVE_VIEW_PC *save = (SHOP_SAVE_VIEW_PC *)&Game;
+    SHOP_SAVE_VIEW *save = (SHOP_SAVE_VIEW *)&Game;
     f32 factor;
     f32 phase;
     i32 i;
@@ -1421,12 +1421,12 @@ static void Shop_DrawCharacter(shopitem_s *item, NUVEC *position, f32 scale_valu
 
         character_id = (u16)(item->item_id);
         unavailable = 1;
-        if ((character_id == VehicleBoltId7f17d4Pc ? ((SHOP_SAVE_VIEW_PC *)&Game)->bolt_unlocked != 0
+        if ((character_id == VehicleBoltId7f17d4Pc ? ((SHOP_SAVE_VIEW *)&Game)->bolt_unlocked != 0
                                                    : CollectIDUnlocked(character_id) != NULL) &&
             item->unlocked == 1) {
             unavailable = 0;
         }
-        alpha = (character_id == VehicleBoltId7f17d4Pc ? ((SHOP_SAVE_VIEW_PC *)&Game)->bolt_unlocked != 0
+        alpha = (character_id == VehicleBoltId7f17d4Pc ? ((SHOP_SAVE_VIEW *)&Game)->bolt_unlocked != 0
                                                        : CollectIDUnlocked(character_id) != NULL)
                     ? 1.0f
                     : 0.5f;
@@ -1602,7 +1602,7 @@ void DrawSubItems(void) {
     nuhspecial_s *blank;
     nuhspecial_s *film;
     LEVELDATA_PC *level;
-    SHOP_SAVE_VIEW_PC *save = (SHOP_SAVE_VIEW_PC *)&Game;
+    SHOP_SAVE_VIEW *save = (SHOP_SAVE_VIEW *)&Game;
     if (ShopPurchasePulsePc > 0.0f) {
         bing = ShopPurchasePulsePc / ShopPurchasePulseDurationPc;
         ShopPurchasePulsePc -= FRAMETIME;
@@ -1855,7 +1855,7 @@ void DrawSubItemMenu2D(void) {
             show_name = 1;
             buyable = 0;
         } else if ((u16)items[ids[3]].item_id == VehicleBoltId7f17d4Pc
-                       ? ((SHOP_SAVE_VIEW_PC *)&Game)->bolt_unlocked != 0
+                       ? ((SHOP_SAVE_VIEW *)&Game)->bolt_unlocked != 0
                        : CollectIDUnlocked((u16)items[ids[3]].item_id) != 0) {
             buyable = show_name = 1;
         } else {
@@ -1975,7 +1975,7 @@ void DrawShopPanel(void) {
 
 static i32 Shop_CanSelectPc(void) {
     shopitem_s *item;
-    SHOP_SAVE_VIEW_PC *save = (SHOP_SAVE_VIEW_PC *)&Game;
+    SHOP_SAVE_VIEW *save = (SHOP_SAVE_VIEW *)&Game;
     i32 id;
     i32 index;
     switch (picked) {
@@ -2009,7 +2009,7 @@ static i32 Shop_CanSelectPc(void) {
 }
 
 void Shop_CollectAllCharacters(i32 mode) {
-    SHOP_SAVE_VIEW_PC *save = (SHOP_SAVE_VIEW_PC *)&Game;
+    SHOP_SAVE_VIEW *save = (SHOP_SAVE_VIEW *)&Game;
     i32 i;
     if (mode != 0) {
         return;

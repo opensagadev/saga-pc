@@ -24,14 +24,14 @@
 
 struct MISSION_SAVE_READER_PC;
 struct gameobject_s;
-struct mission_sys_pc_s;
+struct mission_sys_s;
 
 #ifdef __cplusplus
 extern "C" {
 #endif
     void EndChallenge(i32, i32);
 
-    struct mission_data_pc_s {
+    struct mission_data_s {
         i16 find_character;
         i16 level;
         i16 name_id;
@@ -42,7 +42,7 @@ extern "C" {
         u8 index;
         u8 unknown_13[5];
     };
-    typedef struct mission_data_pc_s MISSIONDATA_PC;
+    typedef struct mission_data_s MISSIONDATA_PC;
 #ifdef __cplusplus
 }
 #endif
@@ -69,13 +69,13 @@ extern "C" {
 #ifdef __cplusplus
 extern "C" {
 #endif
-    extern struct mission_sys_pc_s *MissionSys;
-    MISSIONDATA_PC *Mission_Active(struct mission_sys_pc_s *);
-    void CheckMissionEnd(struct mission_sys_pc_s *system);
-    struct mission_sys_pc_s *Missions_Configure(char *, VARIPTR *, VARIPTR *, struct MISSION_SAVE_READER_PC *);
-    void EndMission(struct mission_sys_pc_s *, i32, i32);
-    i32 Mission_CurrentState(struct mission_sys_pc_s *);
-    i32 Missions_PickupsOff(struct mission_sys_pc_s *);
+    extern struct mission_sys_s *MissionSys;
+    MISSIONDATA_PC *Mission_Active(struct mission_sys_s *);
+    void CheckMissionEnd(struct mission_sys_s *system);
+    struct mission_sys_s *Missions_Configure(char *, VARIPTR *, VARIPTR *, struct MISSION_SAVE_READER_PC *);
+    void EndMission(struct mission_sys_s *, i32, i32);
+    i32 Mission_CurrentState(struct mission_sys_s *);
+    i32 Missions_PickupsOff(struct mission_sys_s *);
 #ifdef __cplusplus
 }
 #endif
@@ -104,7 +104,7 @@ STATIC_ASSERT(sizeof(struct MISSIONSYS_s) == 48);
 #ifdef __cplusplus
 extern "C" {
 #endif
-    struct gameobject_s *Mission_FindTarget(struct mission_sys_pc_s *, u64 *);
+    struct gameobject_s *Mission_FindTarget(struct mission_sys_s *, u64 *);
 #ifdef __cplusplus
 }
 #endif

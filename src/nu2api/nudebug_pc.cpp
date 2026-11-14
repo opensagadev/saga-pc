@@ -152,7 +152,7 @@ void PC_NATIVE_DEBUG_STATE_PC::InitializeHeader() {
 }
 
 // Builds each position in one shared 16-byte temporary (UpdateGeometry's position) and copies it in.
-struct PC_NATIVE_DEBUG_POSITION_PC {
+struct PC_NATIVE_DEBUG_POSITION {
     f32 x;
     f32 y;
     f32 z;
@@ -165,7 +165,7 @@ struct PC_NATIVE_DEBUG_POSITION_PC {
         position.y = (py);                                                                                             \
         position.z = 0.5f;                                                                                             \
         position.w = 1.0f;                                                                                             \
-        *(PC_NATIVE_DEBUG_POSITION_PC *)&vertex[index].x = position;                                                   \
+        *(PC_NATIVE_DEBUG_POSITION *)&vertex[index].x = position;                                                      \
     } while (0)
 #define DEBUG_RECT_PC(start, l, t, r, b)                                                                               \
     DEBUG_POINT_PC(start, l, t);                                                                                       \
@@ -176,8 +176,8 @@ struct PC_NATIVE_DEBUG_POSITION_PC {
     DEBUG_POINT_PC(start + 5, l, b)
 
 void PC_NATIVE_DEBUG_STATE_PC::UpdateGeometry() {
-    PC_NATIVE_DEBUG_POSITION_PC position;
-    PC_NATIVE_DEBUG_VERTEX_PC *vertex = vertices;
+    PC_NATIVE_DEBUG_POSITION position;
+    PC_NATIVE_DEBUG_VERTEX *vertex = vertices;
     DEBUG_RECT_PC(0, left + 1, top + 1, right, bottom);
     DEBUG_RECT_PC(6, left, top, right - 1, bottom - 1);
     DEBUG_RECT_PC(12, left + 1, top + 1, right - 1, bottom - 1);

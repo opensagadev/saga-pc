@@ -56,7 +56,7 @@ STATIC_ASSERT(sizeof(struct GIZTORPMACHINESYS_s) == 12);
 extern "C" {
 #endif
     void GizTorp_Activate(void *gizmo, i32 active);
-    void GizTorp_AddGizmos(struct gizmosys_pc_s *gizmo_sys, i32 type_id, void *world_ptr, void *arg3);
+    void GizTorp_AddGizmos(struct gizmosys_s *gizmo_sys, i32 type_id, void *world_ptr, void *arg3);
     void GizTorp_Draw(void *world_ptr, void *arg1, f32 arg2);
     char *GizTorp_GetGizmoName(void *gizmo);
     i32 GizTorp_GetMaxGizmos(void *world_ptr);

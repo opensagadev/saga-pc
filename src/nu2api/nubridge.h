@@ -14,7 +14,7 @@
 #include "nu2api/numath/nuvec.h"
 #endif
 
-typedef struct nubridge_pc_s {
+typedef struct nubridge_s {
     u8 active;
     u8 unknown_01;
     i16 idle_frames;

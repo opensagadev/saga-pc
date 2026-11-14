@@ -22,14 +22,14 @@
 
 #if SAGA_LEGOAPI_RENDER_FX_GAME_DEB_H_PART == 1 && !defined(SAGA_LEGOAPI_RENDER_FX_GAME_DEB_H_STOP)
 
-struct debris_info_pc_s;
-struct debris_key_pc_s;
-struct debris_part_header_pc_s;
-struct debris_particle_pc_s;
+struct debris_info_s;
+struct debris_key_s;
+struct debris_part_header_s;
+struct debris_particle_s;
 struct gameobject_s;
 struct numtl_s;
 struct numtx_s;
-struct ripple_set_pc_s;
+struct ripple_set_s;
 
 typedef struct BURN_PARAMETERS_PC {
     i32 field_00;
@@ -86,7 +86,7 @@ extern "C" {
     extern i32 forced_debris_thinning;
     extern i32 freeDmaDebType;
     extern i32 EDPP_MAX_DMADEBTYPES;
-    extern struct debris_part_header_pc_s **DmaDebTypes;
+    extern struct debris_part_header_s **DmaDebTypes;
     extern i32 debris_render_group;
     void DebrisProcessTriggers(void);
     void DebrisProcessGeneration(void);
@@ -99,7 +99,7 @@ extern "C" {
     void Debris(i32);
     void BuildRippleMtx(struct numtx_s *, NUVEC *, NUVEC *, u16, u16);
 
-    extern struct ripple_set_pc_s *RippleSetPc;
+    extern struct ripple_set_s *RippleSetPc;
     extern f32 RipplePerturbationPc;
     extern f32 RippleSfxCooldownPc;
     extern f32 ForceFieldRippleRatePc;
@@ -139,7 +139,7 @@ extern "C" {
 #ifdef __cplusplus
 extern "C" {
 #endif
-    extern struct debris_info_pc_s **debtab;
+    extern struct debris_info_s **debtab;
 #ifdef __cplusplus
 }
 #endif
@@ -154,10 +154,9 @@ extern "C" {
 #ifdef __cplusplus
 extern "C" {
 #endif
-    void DebrisStartOffsetEx(struct debris_key_pc_s *, f32);
-    void DebrisProcessSpheres(struct debris_particle_pc_s *, f32, struct debris_info_pc_s *, struct debris_key_pc_s *,
-                              i32);
-    void DebReAlloc(struct debris_key_pc_s *, i32);
+    void DebrisStartOffsetEx(struct debris_key_s *, f32);
+    void DebrisProcessSpheres(struct debris_particle_s *, f32, struct debris_info_s *, struct debris_key_s *, i32);
+    void DebReAlloc(struct debris_key_s *, i32);
 #ifdef __cplusplus
 }
 #endif

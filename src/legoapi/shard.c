@@ -113,5 +113,5 @@ STATIC_ASSERT(offsetof(LEVELDATA_PC, area_index) == 0xa3);
 
 STATIC_ASSERT(offsetof(GAMESAVE, game_time) == 0x7c20);
 STATIC_ASSERT(offsetof(GAMESAVE, area_save) == 0x782c);
-STATIC_ASSERT(sizeof(AREA_SAVE_PICKUP_PC) == 0xc);
-STATIC_ASSERT(offsetof(AREA_SAVE_PICKUP_PC, red_brick_collected) == 6);
+STATIC_ASSERT(sizeof(AREA_SAVE_PICKUP) == 0xc);
+STATIC_ASSERT(offsetof(AREA_SAVE_PICKUP, red_brick_collected) == 6);

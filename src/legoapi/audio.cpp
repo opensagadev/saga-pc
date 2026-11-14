@@ -13,14 +13,14 @@ extern "C" {
 }
 extern "C" void (*ExtraDieSfxFn)(GAMEOBJECT *);
 extern "C" {
-    typedef struct footstep_audio_callbacks_pc_s {
+    typedef struct footstep_audio_callbacks_s {
         i32 (*override_footstep)(GAMEOBJECT *, i32);
     } FOOTSTEP_AUDIO_CALLBACKS_PC;
 }
 extern i32 (*CheckMusicOtherFn)(void);
 extern i32 (*GameAudio_ActionMusicFn)(void);
 
-struct MUSIC_PAIR_ARENA_PC {
+struct MUSIC_PAIR_ARENA {
     i32 prefix_word;
     u8 unknown_004[0x18];
     i16 action_first;
@@ -695,13 +695,13 @@ extern "C" nusound_filename_info_s *ConfigureMusic(char *ignored_file, VARIPTR *
     SfxMusicExtensionPc = ".mib";
     buffer.addr = (cursor->addr + 3) & ~3u;
     *(i32 *)buffer.void_ptr = 0;
-    buffer.addr += offsetof(MUSIC_PAIR_ARENA_PC, action_first);
+    buffer.addr += offsetof(MUSIC_PAIR_ARENA, action_first);
     *(i16 *)buffer.void_ptr = -1;
     ActionPairTab = (PC_MUSIC_ACTION_PAIR_PC *)buffer.void_ptr;
-    buffer.addr += offsetof(MUSIC_PAIR_ARENA_PC, ambient_first) - offsetof(MUSIC_PAIR_ARENA_PC, action_first);
+    buffer.addr += offsetof(MUSIC_PAIR_ARENA, ambient_first) - offsetof(MUSIC_PAIR_ARENA, action_first);
     *(i16 *)buffer.void_ptr = -1;
     AmbientPairTab = (i16 *)buffer.void_ptr;
-    buffer.addr += sizeof(MUSIC_PAIR_ARENA_PC) - offsetof(MUSIC_PAIR_ARENA_PC, ambient_first);
+    buffer.addr += sizeof(MUSIC_PAIR_ARENA) - offsetof(MUSIC_PAIR_ARENA, ambient_first);
     *cursor = buffer;
     return files;
 }

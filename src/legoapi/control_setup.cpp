@@ -898,13 +898,13 @@ i32 PC_CONTROL_SCREEN_PC::Update(FRAME_PAD_PC *first, FRAME_PAD_PC *second, f32 
 // Private source; sole integration owner installs.
 extern char *PcControlTextPc[45];
 
-struct PC_CONTROL_VERTEX_PC { // size 0x18
-    f32 x;                    // 0x00
-    f32 y;                    // 0x04
-    f32 z;                    // 0x08
-    u32 colour;               // 0x0c
-    f32 u;                    // 0x10
-    f32 v;                    // 0x14
+struct PC_CONTROL_VERTEX { // size 0x18
+    f32 x;                 // 0x00
+    f32 y;                 // 0x04
+    f32 z;                 // 0x08
+    u32 colour;            // 0x0c
+    f32 u;                 // 0x10
+    f32 v;                 // 0x14
 };
 
 extern "C" i32 PcControlWrapTextPc(char *, f32);
@@ -918,7 +918,7 @@ static void PcControlPrimColourPc(u32 colour) {
         converted =
             ((colour >> 1) & 0x7f00) + ((colour & 0xfe) << 15) + ((colour >> 17) & 0x7f) + (colour & 0xff000000);
     }
-    ((PC_CONTROL_VERTEX_PC *)NuPrimStreamBufferPointer->void_ptr)->colour = converted;
+    ((PC_CONTROL_VERTEX *)NuPrimStreamBufferPointer->void_ptr)->colour = converted;
 }
 
 extern "C" void fun_00420210() {
@@ -1083,7 +1083,7 @@ f32 PC_CONTROL_SCREEN_PC::DrawText(char *string, f32 x, f32 y, f32 z, i32 alignm
 
 void PC_CONTROL_SCREEN_PC::DrawQueuedText(f32 delta) {
     delta += delta;
-    PC_CONTROL_TEXT_PC *entry = text;
+    PC_CONTROL_TEXT *entry = text;
     for (i32 i = 0; i < 12; ++i, ++entry) {
         if (!entry->key) {
             continue;

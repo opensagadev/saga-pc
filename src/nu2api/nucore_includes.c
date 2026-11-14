@@ -43,7 +43,7 @@ void NuRDPIVariableErrorPc(char *name);
         bit = (bits >> 8) & 1;                                                                                         \
     }
 
-struct NUPPHEADER_PC { // size 0xc
+struct NUPPHEADER {    // size 0xc
     u32 magic;         // 0x0
     u32 unpacked_size; // 0x4
     u32 packed_size;   // 0x8
@@ -74,7 +74,7 @@ static i32 file_time_count;
 #define CLAMP_WIDE_LINE(position) ((position) & ((parser->line_buffer_size >> 1) - 1))
 #define CLAMP_WIDE_WORD(position) ((position) & ((parser->word_buffer_size >> 1) - 1))
 
-typedef struct nurdpfcontext_pc_s {            // size 0x14
+typedef struct nurdpfcontext_s {               // size 0x14
     i32 token;                                 // 0x00
     f32 value;                                 // 0x04
     char *input;                               // 0x08
@@ -96,12 +96,12 @@ enum {
 
 static f32 NuRDPFExpression(NURDPFCTX_PC *context);
 
-typedef struct nurdpicontext_pc_s { // size 0x14
-    i32 token;                      // 0x00
-    i32 value;                      // 0x04
-    char *input;                    // 0x08
-    i32 position;                   // 0x0c
-    NURDPGETVARFN get_variable;     // 0x10
+typedef struct nurdpicontext_s { // size 0x14
+    i32 token;                   // 0x00
+    i32 value;                   // 0x04
+    char *input;                 // 0x08
+    i32 position;                // 0x0c
+    NURDPGETVARFN get_variable;  // 0x10
 } NURDPICTX_PC;
 
 enum {
@@ -132,7 +132,7 @@ enum {
 static i32 NuRDPIExpression(NURDPICTX_PC *context);
 
 /* PC manager prefix and block header touched by the allocator. */
-typedef struct nualloc_manager_block_pc_s { // size 0xc
+typedef struct nualloc_manager_block_s { // size 0xc
 
     union { // size 0x4
         u32 size_flags;
@@ -142,19 +142,19 @@ typedef struct nualloc_manager_block_pc_s { // size 0xc
             u32 used : 1;  // 0x0:31
         };
     }; // 0x0
-    struct nualloc_manager_block_pc_s *next;     // 0x4
-    struct nualloc_manager_block_pc_s *previous; // 0x8
+    struct nualloc_manager_block_s *next;     // 0x4
+    struct nualloc_manager_block_s *previous; // 0x8
 } NUALLOC_MANAGER_BLOCK_PC;
 
-typedef struct nualloc_manager_trailer_pc_s { // size 0x4
+typedef struct nualloc_manager_trailer_s {    // size 0x4
     NUALLOC_MANAGER_BLOCK_PC *previous_block; // 0x0
 } NUALLOC_MANAGER_TRAILER_PC;
 
-typedef struct nualloc_manager_prefix_pc_s { // size 0x10
-    void *base;                              // 0x0
-    u32 size;                                // 0x4
-    u32 block_count;                         // 0x8
-    u32 used_bytes;                          // 0xc
+typedef struct nualloc_manager_prefix_s { // size 0x10
+    void *base;                           // 0x0
+    u32 size;                             // 0x4
+    u32 block_count;                      // 0x8
+    u32 used_bytes;                       // 0xc
 } NUALLOC_MANAGER_PREFIX_PC;
 
 #define NUGENERICPAD FRAME_SCANNED_PAD_PC
@@ -317,21 +317,21 @@ void NuMemCopy128(void *destination, const void *source, i32 count) {
 void fun_004ef710(void) {
 }
 
-typedef struct NUMEMBUF_PC {
+typedef struct NUMEMBUF {
     u32 size;
     u32 remaining;
     u8 *cursor;
     u32 pad;
-} NUMEMBUF_PC;
+} NUMEMBUF;
 
 extern NUALLOC_POOL *NuAllocPool;
 
-NUMEMBUF_PC *fun_004ef720(u32 size) {
+NUMEMBUF *fun_004ef720(u32 size) {
     NUALLOC_POOL *pool;
-    NUMEMBUF_PC *buffer;
+    NUMEMBUF *buffer;
     pool = NuAllocPool;
     NuAllocPool = NULL;
-    buffer = NuAlloc(sizeof(NUMEMBUF_PC) + size, ".\\numem.c", 0x73);
+    buffer = NuAlloc(sizeof(NUMEMBUF) + size, ".\\numem.c", 0x73);
     NuAllocPool = pool;
     if (buffer != NULL) {
         buffer->size = size;
@@ -2762,23 +2762,23 @@ void *NuFilePakLoad(char *filepath, VARIPTR *buffer, VARIPTR end, i32 alignment)
     return NuFilePakLoadKey(filepath, buffer, end, alignment, NULL, 0);
 }
 
-typedef struct NUFILE_RELOC_ENTRY_PC {
+typedef struct NUFILE_RELOC_ENTRY {
     i16 type;
     i16 pad;
     u32 data;
     u32 size;
-} NUFILE_RELOC_ENTRY_PC;
+} NUFILE_RELOC_ENTRY;
 
-typedef struct NUFILE_RELOC_HEADER_PC {
+typedef struct NUFILE_RELOC_HEADER {
     u32 unknown_00[5];
     u32 entries;
     i32 entry_count;
     u32 unknown_1c;
     u32 data;
-} NUFILE_RELOC_HEADER_PC;
+} NUFILE_RELOC_HEADER;
 
-NUFILE_RELOC_HEADER_PC *fun_004fda20(char *filepath, VARIPTR *buffer, VARIPTR *buffer_end) {
-    NUFILE_RELOC_HEADER_PC *header;
+NUFILE_RELOC_HEADER *fun_004fda20(char *filepath, VARIPTR *buffer, VARIPTR *buffer_end) {
+    NUFILE_RELOC_HEADER *header;
     i32 loaded;
     i32 index;
 
@@ -2790,7 +2790,7 @@ NUFILE_RELOC_HEADER_PC *fun_004fda20(char *filepath, VARIPTR *buffer, VARIPTR *b
         header->entries += (u32)header;
         header->data += (u32)header;
         for (index = 0; index < header->entry_count; ++index) {
-            NUFILE_RELOC_ENTRY_PC *entry = (NUFILE_RELOC_ENTRY_PC *)header->entries + index;
+            NUFILE_RELOC_ENTRY *entry = (NUFILE_RELOC_ENTRY *)header->entries + index;
 
             if (entry->type > 0) {
                 entry->data += (u32)header;
@@ -4553,15 +4553,15 @@ typedef struct NUQTDIM_PC { // size 0x10
     f32 y1;                 // 0xc
 } NUQTDIM_PC;
 
-typedef struct NUQTENTRY_PC { // size 0xc
-    i16 count;                // 0x0
-    i16 parent;               // 0x2
+typedef struct NUQTENTRY { // size 0xc
+    i16 count;             // 0x0
+    i16 parent;            // 0x2
 
     union { // size 0x8
         u8 *data;
         u16 children[4];
     } u; // 0x4
-} NUQTENTRY_PC;
+} NUQTENTRY;
 
 typedef struct NUQTHDR_PC { // size 0x38
     u32 flags;              // 0x00
@@ -4569,7 +4569,7 @@ typedef struct NUQTHDR_PC { // size 0x38
     f32 y1;                 // 0x08
     f32 x0;                 // 0x0c
     f32 x1;                 // 0x10
-    NUQTENTRY_PC *entries;  // 0x14
+    NUQTENTRY *entries;     // 0x14
     i32 entry_count;        // 0x18
     i32 entry_capacity;     // 0x1c
     u8 *data;               // 0x20
@@ -4637,7 +4637,7 @@ static i32 AddNode(NUQTHDR_PC *header, i32 parent) {
 
     if (header->entry_count < header->entry_capacity) {
         index = header->entry_count;
-        memset(&header->entries[index], 0, sizeof(NUQTENTRY_PC));
+        memset(&header->entries[index], 0, sizeof(NUQTENTRY));
         header->entries[index].parent = (i16)parent;
         header->entries[index].count = -1;
         header->entry_count++;
@@ -4735,7 +4735,7 @@ void NuQTAddElement(NUQTHDR_PC *header, void *item, f32 x0, f32 x1, f32 y0, f32 
 i32 NuQTCreate(i32 entry_capacity, i32 data_capacity, i32 element_size, i32 max_depth, i32 split_count, f32 y0, f32 x0,
                f32 y1, f32 x1, VARIPTR *cursor, VARIPTR *end) {
     cursor->addr = (cursor->addr + 15) & ~15;
-    if (cursor->addr + sizeof(NUQTHDR_PC) + sizeof(NUQTENTRY_PC) * entry_capacity + 16 + data_capacity <= end->addr) {
+    if (cursor->addr + sizeof(NUQTHDR_PC) + sizeof(NUQTENTRY) * entry_capacity + 16 + data_capacity <= end->addr) {
         NUQTHDR_PC *header = cursor->void_ptr;
 
         cursor->addr += sizeof(NUQTHDR_PC);
@@ -4752,7 +4752,7 @@ i32 NuQTCreate(i32 entry_capacity, i32 data_capacity, i32 element_size, i32 max_
         header->max_depth = max_depth;
         header->split_count = split_count;
         header->entries = cursor->void_ptr;
-        cursor->addr += sizeof(NUQTENTRY_PC) * entry_capacity;
+        cursor->addr += sizeof(NUQTENTRY) * entry_capacity;
         cursor->addr = (cursor->addr + 15) & ~15;
         header->data = cursor->void_ptr;
         cursor->addr += data_capacity;
@@ -4769,7 +4769,7 @@ static void NuQTUnfixAddress(NUQTHDR_PC *header) {
             header->entries[index].u.data = header->entries[index].u.data + base;
         }
     }
-    header->entries = (NUQTENTRY_PC *)((u8 *)header->entries + base);
+    header->entries = (NUQTENTRY *)((u8 *)header->entries + base);
     header->data = header->data + base;
 }
 
@@ -4777,7 +4777,7 @@ static void NuQTFixAddress(NUQTHDR_PC *header) {
     u32 base = (u32)header;
     i32 index;
 
-    header->entries = (NUQTENTRY_PC *)((u8 *)header->entries + base);
+    header->entries = (NUQTENTRY *)((u8 *)header->entries + base);
     header->data = header->data + base;
     for (index = 0; index < header->entry_count; ++index) {
         if (header->entries[index].count > 0) {
@@ -7472,7 +7472,7 @@ i32 NuPPLoadBuffer(NUFILE file, void *buf, i32 buf_size) {
     i32 size;
     i32 loaded;
     u8 *source;
-    struct NUPPHEADER_PC header;
+    struct NUPPHEADER header;
     do {
         while (NuFileSeek(file, 0, 0) < 0) {
             NuFileRetry();

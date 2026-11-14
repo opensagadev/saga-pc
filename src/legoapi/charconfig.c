@@ -1,10 +1,10 @@
 #include "saga.h"
 extern i32 configureallcharacters_perm;
 
-typedef struct CHARCONFIG_PC {            // size 0xfc8
-    CHARACTERDATA_PC *character;          // 0x000
-    PLAYERCHARACTERCONFIG_PC *runtime;    // 0x004
-    GAMECHARACTERLAYER_PC *layer_scratch; // 0x008
+typedef struct CHARCONFIG_PC {         // size 0xfc8
+    CHARACTERDATA_PC *character;       // 0x000
+    PLAYERCHARACTERCONFIG_PC *runtime; // 0x004
+    GAMECHARACTERLAYER *layer_scratch; // 0x008
 
     union { // size 0x4
         u32 flags;
@@ -32,7 +32,7 @@ CHARCONFIG_PC charconfig = {0};
 /* Bit views of PLAYERCHARACTERCONFIG_PC.flags_094 and flags_098: the keyword handlers
    store these as 1-bit fields of a 32-bit unit. They belong in saga.h as members of the
    flags_094/flags_098 unions; until then the CC_FLAGS macros view the words through them. */
-typedef struct CHARCONFIG_FLAGS094_PC {     // size 0x4
+typedef struct CHARCONFIG_FLAGS094 {        // size 0x4
     u32 minikit_with_scene : 1;             // 0x0:0
     u32 dont_turn : 1;                      // 0x0:1
     u32 no_jump : 1;                        // 0x0:2
@@ -65,21 +65,21 @@ typedef struct CHARCONFIG_FLAGS094_PC {     // size 0x4
     u32 has_whip : 1;                       // 0x0:29
     u32 atatheadmovement : 1;               // 0x0:30
     u32 can_poo : 1;                        // 0x0:31
-} CHARCONFIG_FLAGS094_PC;
+} CHARCONFIG_FLAGS094;
 
-typedef struct CHARCONFIG_FLAGS098_PC { // size 0x4
-    u32 can_zap : 1;                    // 0x0:0
-    u32 put_weapon_away_on_shoot : 1;   // 0x0:1
-    u32 always_stop_to_shoot : 1;       // 0x0:2
-    u32 second_shot_only : 1;           // 0x0:3
-    u32 no_start_punch_sfx : 1;         // 0x0:4
-    u32 single_jump_slam : 1;           // 0x0:5
-    u32 dont_draw_rider : 1;            // 0x0:6
-    u32 unknown_7 : 1;                  // 0x0:7
-} CHARCONFIG_FLAGS098_PC;
+typedef struct CHARCONFIG_FLAGS098 {  // size 0x4
+    u32 can_zap : 1;                  // 0x0:0
+    u32 put_weapon_away_on_shoot : 1; // 0x0:1
+    u32 always_stop_to_shoot : 1;     // 0x0:2
+    u32 second_shot_only : 1;         // 0x0:3
+    u32 no_start_punch_sfx : 1;       // 0x0:4
+    u32 single_jump_slam : 1;         // 0x0:5
+    u32 dont_draw_rider : 1;          // 0x0:6
+    u32 unknown_7 : 1;                // 0x0:7
+} CHARCONFIG_FLAGS098;
 
-#define CC_FLAGS094 (*(CHARCONFIG_FLAGS094_PC *)&charconfig.runtime->flags_094)
-#define CC_FLAGS098 (*(CHARCONFIG_FLAGS098_PC *)charconfig.runtime->flags_098)
+#define CC_FLAGS094 (*(CHARCONFIG_FLAGS094 *)&charconfig.runtime->flags_094)
+#define CC_FLAGS098 (*(CHARCONFIG_FLAGS098 *)charconfig.runtime->flags_098)
 
 /* Defined at the end of this file; called with and without a path. */
 void CharConfigPakDiagnosticPc(const char *format, ...);
@@ -1789,7 +1789,7 @@ static i32 CharConfig(i32 character_id, char *directory, char *filename, VARIPTR
     char redirected_name[64];
     char path[128];
     i32 redirected = 0;
-    GAMECHARACTERLAYER_PC layers[32];
+    GAMECHARACTERLAYER layers[32];
     CHARACTER_EFFECT_CONFIG_PC effects[33];
     PLAYERCHARACTERCONFIG_PC *data;
     NUFPAR_PC *parser;
@@ -1912,9 +1912,9 @@ static i32 CharConfig(i32 character_id, char *directory, char *filename, VARIPTR
         } else {
             charconfig.arena->addr = (charconfig.arena->addr + 3) & ~3u;
             charconfig.runtime->layers = charconfig.arena->void_ptr;
-            charconfig.arena->addr += charconfig.runtime->layer_count * sizeof(GAMECHARACTERLAYER_PC);
+            charconfig.arena->addr += charconfig.runtime->layer_count * sizeof(GAMECHARACTERLAYER);
             PCByteCopy(charconfig.runtime->layers, charconfig.layer_scratch,
-                       charconfig.runtime->layer_count * sizeof(GAMECHARACTERLAYER_PC));
+                       charconfig.runtime->layer_count * sizeof(GAMECHARACTERLAYER));
             charconfig.runtime->layer_lookup = charconfig.arena->void_ptr;
             charconfig.arena->addr += 32;
             for (bit = 0; bit < 32; ++bit) {

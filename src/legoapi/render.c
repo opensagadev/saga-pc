@@ -19,13 +19,13 @@ STATIC_ASSERT(sizeof(CUT_DRAW_SETTINGS_PC) == 8);
 
 /* Source-first scratch candidate; unclosed real leaf declarations only. */
 
-typedef struct render_post_prim_vertex_pc_s { // size 0x18
-    f32 x;                                    // 0x00
-    f32 y;                                    // 0x04
-    f32 z;                                    // 0x08
-    u32 colour;                               // 0x0c
-    f32 u;                                    // 0x10
-    f32 v;                                    // 0x14
+typedef struct render_post_prim_vertex_s { // size 0x18
+    f32 x;                                 // 0x00
+    f32 y;                                 // 0x04
+    f32 z;                                 // 0x08
+    u32 colour;                            // 0x0c
+    f32 u;                                 // 0x10
+    f32 v;                                 // 0x14
 } RENDER_POST_PRIM_VERTEX_PC;
 
 #define GRID_TAN_HALF_FOV(half_fov)                                                                                    \
@@ -173,23 +173,23 @@ void CollectCharactersOff_Skip(STATUS_STAGE_s *stage, STATUSPACKET_s *packet) {
 }
 
 /* Native walks the two adjacent 0x14-byte rumble records. */
-typedef struct STATUS_RUMBLE_PAIR_PC {
+typedef struct STATUS_RUMBLE_PAIR {
     RUMBLE_PACKET_RESOURCE_PC players[2];
-} STATUS_RUMBLE_PAIR_PC;
+} STATUS_RUMBLE_PAIR;
 
 STATIC_ASSERT(sizeof(RUMBLE_PACKET_RESOURCE_PC) == 0x14);
 STATIC_ASSERT(offsetof(STATUSPACKET_s, player1_rumble_amount) - offsetof(STATUSPACKET_s, player0_rumble_amount) ==
               sizeof(RUMBLE_PACKET_RESOURCE_PC));
 STATIC_ASSERT(offsetof(STATUSPACKET_s, area_time) ==
-              offsetof(STATUSPACKET_s, player0_rumble_amount) + sizeof(STATUS_RUMBLE_PAIR_PC));
+              offsetof(STATUSPACKET_s, player0_rumble_amount) + sizeof(STATUS_RUMBLE_PAIR));
 
-typedef struct StatusPlayerModelPairPc { // size 0x4
-    u16 model[2];                        // 0x0
-} StatusPlayerModelPairPc;
+typedef struct StatusPlayerModelPair { // size 0x4
+    u16 model[2];                      // 0x0
+} StatusPlayerModelPair;
 
 STATIC_ASSERT(offsetof(STATUSPACKET_s, player1_model) == offsetof(STATUSPACKET_s, player0_model) + sizeof(u16));
 STATIC_ASSERT(offsetof(STATUSPACKET_s, area_id) ==
-              offsetof(STATUSPACKET_s, player0_model) + sizeof(StatusPlayerModelPairPc));
+              offsetof(STATUSPACKET_s, player0_model) + sizeof(StatusPlayerModelPair));
 
 #define STATUS_APPEND_STAGE_INLINE_PC(packet_arg, type_arg, gold_arg)                                                  \
     do {                                                                                                               \

@@ -27,7 +27,7 @@ struct PART_PC;
 struct addgizmotype_pc_s;
 struct gameanimobj_s;
 struct gameobject_s;
-struct gizforce_pc_s;
+struct gizforce_s;
 
 typedef struct addgizmotype_pc_s *(*REGISTER_GIZMO_CONFIG_TYPE_FN)(i32 type_id);
 #ifdef __cplusplus
@@ -62,10 +62,10 @@ extern "C" {
 
 #if SAGA_LEGOAPI_GIZMOS_TRAPS_GIZFORCE_H_PART == 2 && !defined(SAGA_LEGOAPI_GIZMOS_TRAPS_GIZFORCE_H_STOP)
 
-typedef struct FORCE_RESET_GROUP_PC {
+typedef struct FORCE_RESET_GROUP {
     union {
         struct {
-            struct gizforce_pc_s *forces[8];
+            struct gizforce_s *forces[8];
             f32 combined_height;
         };
 
@@ -75,7 +75,7 @@ typedef struct FORCE_RESET_GROUP_PC {
     u16 runtime_flags;
     u8 member_count;
     u8 configured_count;
-} FORCE_RESET_GROUP_PC;
+} FORCE_RESET_GROUP;
 
 #undef SAGA_LEGOAPI_GIZMOS_TRAPS_GIZFORCE_H_PART
 #define SAGA_LEGOAPI_GIZMOS_TRAPS_GIZFORCE_H_PART 3
@@ -86,8 +86,8 @@ typedef struct FORCE_RESET_GROUP_PC {
 
 #if SAGA_LEGOAPI_GIZMOS_TRAPS_GIZFORCE_H_PART == 3 && !defined(SAGA_LEGOAPI_GIZMOS_TRAPS_GIZFORCE_H_STOP)
 
-typedef struct gizforce_target_record_pc_s {
-    struct gizforce_pc_s *force;
+typedef struct gizforce_target_record_s {
+    struct gizforce_s *force;
     struct gameanimobj_s *animation;
     f32 distance;
     i32 index;
@@ -103,13 +103,13 @@ extern "C" {
     extern GIZFORCE_TARGET_RECORD_PC PossibleForceTargetsPc[];
     i32 GizForce_FindBestForceTarget(void *, struct gameobject_s *);
 
-    i32 GizForce_StoodOnForce(struct gizforce_pc_s *, struct gameobject_s *);
-    u16 GizForces_AngleToForce(NUVEC *, struct gizforce_pc_s *);
-    i32 GizForce_Complete(struct gizforce_pc_s *);
+    i32 GizForce_StoodOnForce(struct gizforce_s *, struct gameobject_s *);
+    u16 GizForces_AngleToForce(NUVEC *, struct gizforce_s *);
+    i32 GizForce_Complete(struct gizforce_s *);
     void ForceLightning_Origin(struct gameobject_s *, NUVEC *, NUVEC *);
-    struct PART_PC *GizForce_Throw(struct gameobject_s *, struct gizforce_pc_s *, f32, f32, i32);
+    struct PART_PC *GizForce_Throw(struct gameobject_s *, struct gizforce_s *, f32, f32, i32);
     void GizForce_ResetLOS(struct gameobject_s *);
-    i32 GizForce_GameObjUsingForce(struct gameobject_s *, struct gizforce_pc_s *);
+    i32 GizForce_GameObjUsingForce(struct gameobject_s *, struct gizforce_s *);
 #ifdef __cplusplus
 }
 #endif

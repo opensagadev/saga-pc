@@ -26,16 +26,16 @@ struct PART_PC;
 struct bolt_s;
 struct gameobject_s;
 
-typedef struct GAMEDEBRISENTRY_PC {
+typedef struct GAMEDEBRISENTRY {
     i32 effect;
     char name[16];
-} GAMEDEBRISENTRY_PC;
+} GAMEDEBRISENTRY;
 
-STATIC_ASSERT(sizeof(GAMEDEBRISENTRY_PC) == 0x14);
-STATIC_ASSERT(offsetof(GAMEDEBRISENTRY_PC, name) == 4);
+STATIC_ASSERT(sizeof(GAMEDEBRISENTRY) == 0x14);
+STATIC_ASSERT(offsetof(GAMEDEBRISENTRY, name) == 4);
 
 /* Minimum shared consumer records; offsets verified, no item allocation extent claimed. */
-typedef struct vehicle_weapon_item_pc_s {
+typedef struct vehicle_weapon_item_s {
     u8 unknown_00[2];
     u8 start_ammo;
     u8 start_field_03;
@@ -47,7 +47,7 @@ typedef struct vehicle_weapon_item_pc_s {
 STATIC_ASSERT(offsetof(VEHICLE_WEAPON_ITEM_PC, type) == 8);
 STATIC_ASSERT(offsetof(VEHICLE_WEAPON_ITEM_PC, bolt_override) == 9);
 
-typedef struct weapon_ammo_pc_s {
+typedef struct weapon_ammo_s {
     VEHICLE_WEAPON_ITEM_PC *type;
     u8 ammo;
     u8 field_05;

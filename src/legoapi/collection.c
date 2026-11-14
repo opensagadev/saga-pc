@@ -23,13 +23,13 @@ i32 InCollectList_Index(i32 id, COLLECTID_PC *list, i32 count) {
     return -1;
 }
 
-typedef struct coin_reset_packet_pc_s { // size 0x10
-    u8 unknown_00[4];                   // 0x0
-    f32 scale;                          // 0x4
-    u8 unknown_08[2];                   // 0x8
-    u8 active;                          // 0xa
-    u8 unknown_0b;                      // 0xb
-    f32 double_score_timer;             // 0xc
+typedef struct coin_reset_packet_s { // size 0x10
+    u8 unknown_00[4];                // 0x0
+    f32 scale;                       // 0x4
+    u8 unknown_08[2];                // 0x8
+    u8 active;                       // 0xa
+    u8 unknown_0b;                   // 0xb
+    f32 double_score_timer;          // 0xc
 } COIN_RESET_PACKET_PC;
 
 i32 Collection_Got(i32 id) {
@@ -50,10 +50,10 @@ i32 Collection_Got(i32 id) {
     return 1;
 }
 
-typedef struct collection_variant_reader_pc_s { // size 0x120
-    u8 unknown_00[0x116];                       // 0x000
-    i8 variant_type;                            // 0x116
-    u8 unknown_117[9];                          // 0x117
+typedef struct collection_variant_reader_s { // size 0x120
+    u8 unknown_00[0x116];                    // 0x000
+    i8 variant_type;                         // 0x116
+    u8 unknown_117[9];                       // 0x117
 } COLLECTION_VARIANT_READER_PC;
 
 STATIC_ASSERT(sizeof(PLAYERCHARACTERCONFIG_PC) == 0x120);
@@ -109,11 +109,11 @@ void CollectAllCharacters(i32 only_story) {
     }
 }
 
-typedef struct collection_buyable_reader_pc_s { // size 0x1c
-    i16 id;                                     // 0x00
-    u8 unknown_02[6];                           // 0x02
-    u8 can_buy;                                 // 0x08
-    u8 unknown_09[0x13];                        // 0x09
+typedef struct collection_buyable_reader_s { // size 0x1c
+    i16 id;                                  // 0x00
+    u8 unknown_02[6];                        // 0x02
+    u8 can_buy;                              // 0x08
+    u8 unknown_09[0x13];                     // 0x09
 } COLLECTION_BUYABLE_READER_PC;
 
 STATIC_ASSERT(sizeof(COLLECTION_BUYABLE_READER_PC) == sizeof(COLLECTID_PC));
@@ -245,15 +245,15 @@ i32 Collection_GetIDList(COLLECTION_BUILD_PC *collection, u32 mask, u32 required
     return count;
 }
 
-typedef struct collection_config_entry_pc_s { // size 0x1c
-    i16 id;                                   // 0x00
-    u8 type;                                  // 0x02
-    u8 area_index;                            // 0x03
-    i32 buy_price;                            // 0x04
-    u8 can_buy;                               // 0x08
-    u8 counts_towards_completion;             // 0x09
-    u16 gold_bricks;                          // 0x0a
-    char cheat_code[16];                      // 0x0c
+typedef struct collection_config_entry_s { // size 0x1c
+    i16 id;                                // 0x00
+    u8 type;                               // 0x02
+    u8 area_index;                         // 0x03
+    i32 buy_price;                         // 0x04
+    u8 can_buy;                            // 0x08
+    u8 counts_towards_completion;          // 0x09
+    u16 gold_bricks;                       // 0x0a
+    char cheat_code[16];                   // 0x0c
 } COLLECTION_CONFIG_ENTRY_PC;
 
 STATIC_ASSERT(sizeof(COLLECTION_CONFIG_ENTRY_PC) == sizeof(COLLECTID_PC));
@@ -353,16 +353,16 @@ STATIC_ASSERT(offsetof(GAMEOBJECT, character_context) == 0x7b5);
 
 /* Append to existing collection.c after its canonical static CollectCount/CollectList. */
 
-typedef struct SHOP_UNLOCK_AREA_PC { // size 0xc
-    u8 unknown_00;                   // 0x0
-    u8 area_complete;                // 0x1
-    u8 unknown_02[10];               // 0x2
-} SHOP_UNLOCK_AREA_PC;
+typedef struct SHOP_UNLOCK_AREA { // size 0xc
+    u8 unknown_00;                // 0x0
+    u8 area_complete;             // 0x1
+    u8 unknown_02[10];            // 0x2
+} SHOP_UNLOCK_AREA;
 
-typedef struct SHOP_UNLOCK_COMPLETION_PC { // size 0x3
-    u8 unknown_00[2];                      // 0x0
-    u8 gold_bricks;                        // 0x2
-} SHOP_UNLOCK_COMPLETION_PC;
+typedef struct SHOP_UNLOCK_COMPLETION { // size 0x3
+    u8 unknown_00[2];                   // 0x0
+    u8 gold_bricks;                     // 0x2
+} SHOP_UNLOCK_COMPLETION;
 
 i32 Episodes_Completed(void);
 i32 AllMiniKitsDone(AREASAVE_s *);
@@ -384,7 +384,7 @@ COLLECTID *CollectIDUnlocked(i32 id) {
                     break;
                 case 2:
                     area = (i8)entry->field2_0x3;
-                    if (area != -1 && ((SHOP_UNLOCK_AREA_PC *)Game_AreaSave)[area].area_complete != 0) {
+                    if (area != -1 && ((SHOP_UNLOCK_AREA *)Game_AreaSave)[area].area_complete != 0) {
                         unlocked = 1;
                     }
                     break;
@@ -395,7 +395,7 @@ COLLECTID *CollectIDUnlocked(i32 id) {
                     break;
                 case 6:
                     if (CustomiserCompletionSavePc != NULL &&
-                        ((SHOP_UNLOCK_COMPLETION_PC *)CustomiserCompletionSavePc)->gold_bricks >= entry->field6_0xa) {
+                        ((SHOP_UNLOCK_COMPLETION *)CustomiserCompletionSavePc)->gold_bricks >= entry->field6_0xa) {
                         unlocked = 1;
                     }
                     break;

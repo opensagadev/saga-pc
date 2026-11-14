@@ -2,13 +2,13 @@
 #include <string.h>
 #include "saga.h"
 
-typedef struct customiser_names_pc_s {
+typedef struct customiser_names_s {
     u8 unknown_00[0x6c];
     i16 character_ids[2];
     char display_names[2][128];
 } CUSTOMISER_NAMES_PC;
 
-typedef struct custom_piece_config_pc_s {
+typedef struct custom_piece_config_s {
     char *name;
     i16 character_id;
     i16 icon_character_id;
@@ -22,7 +22,7 @@ typedef struct custom_piece_config_pc_s {
     u8 unknown_1c[12];
 } CUSTOM_PIECE_CONFIG_PC;
 
-typedef struct custom_category_config_pc_s {
+typedef struct custom_category_config_s {
     char *name;
     u8 uses_special;
     i8 material_tag;
@@ -30,14 +30,14 @@ typedef struct custom_category_config_pc_s {
     char *scene_file;
 } CUSTOM_CATEGORY_CONFIG_PC;
 
-typedef struct custom_save_config_pc_s {
+typedef struct custom_save_config_s {
     u16 pieces[9];
     u8 unknown_12[0x26];
     u16 secondary_pieces[9];
     u8 unknown_4a[0x26];
 } CUSTOM_SAVE_CONFIG_PC;
 
-typedef struct customiser_config_pc_s {
+typedef struct customiser_config_s {
     CUSTOM_CATEGORY_CONFIG_PC *categories[9];
     CUSTOM_PIECE_CONFIG_PC *piece_sets[9];
     i32 piece_counts[9];
@@ -57,13 +57,13 @@ typedef struct customiser_config_pc_s {
     f32 locator_y_offsets[9];
 } CUSTOMISER_CONFIG_PC;
 
-typedef struct customiser_game_setting_pc_s {
+typedef struct customiser_game_setting_s {
     char *name;
     u32 model_flags;
     u32 gameplay_flags;
 } CUSTOMISER_GAME_SETTING_PC;
 
-typedef struct custom_accessory_resource_pc_s {
+typedef struct custom_accessory_resource_s {
     NUGSCN *scene;
     NUSPECIALHANDLE special;
     i32 original_texture_id;
@@ -73,7 +73,7 @@ typedef struct custom_accessory_resource_pc_s {
 } CUSTOM_ACCESSORY_RESOURCE_PC;
 
 /* Source-private views for customise.c. Config/piece/category types already defined there. */
-typedef struct custom_piece_anim_pc_s {
+typedef struct custom_piece_anim_s {
     f32 duration;
     f32 elapsed;
     f32 hold_time;
@@ -85,12 +85,12 @@ typedef struct custom_piece_anim_pc_s {
 
 /* Native customiser packet allocation stride is 0x48; canonical API view
  * currently covers offsets 0..0x43. Preserve its unknown four-byte tail. */
-typedef struct customiser_anim_packet_pc_s {
+typedef struct customiser_anim_packet_s {
     ANIMPACKET_PC packet;
     u8 unknown_44[4];
 } CUSTOMISER_ANIM_PACKET_PC;
 
-typedef struct customiser_update_pc_s {
+typedef struct customiser_update_s {
     u8 unknown_00[0x178];
     CUSTOMISER_ANIM_PACKET_PC animation_packets[2];
     u8 unknown_208[0x60];
@@ -101,19 +101,19 @@ typedef struct customiser_update_pc_s {
     f32 animation_values[2];
 } CUSTOMISER_UPDATE_PC;
 
-typedef struct custom_resource_update_pc_s {
+typedef struct custom_resource_update_s {
     u8 unknown_00[0x14];
     u32 texture_id;
     u8 unknown_18[8];
 } CUSTOM_RESOURCE_UPDATE_PC;
 
-typedef struct custom_hierarchy_update_pc_s {
+typedef struct custom_hierarchy_update_s {
     u8 unknown_00[0xc];
     NUMTL **materials;
     i32 material_count;
 } CUSTOM_HIERARCHY_UPDATE_PC;
 
-typedef struct custom_material_update_pc_s {
+typedef struct custom_material_update_s {
     u8 unknown_00[0x9a];
     u8 material_tag;
 } CUSTOM_MATERIAL_UPDATE_PC;
@@ -137,7 +137,7 @@ void Text_FillInExtendedSaveInfo(void);
 i32 TriggerAutoSave(void);
 
 /* 424750/92. Can share the fuller Customiser canonical type once integrated. */
-typedef struct hub_customiser_menu_reader_pc_s {
+typedef struct hub_customiser_menu_reader_s {
     u8 unknown_00[0x6c];
     i16 character_ids[2];
     u8 unknown_70[0x142];
@@ -1265,7 +1265,7 @@ void Customiser_Draw3D(CUSTOMISER_LAYERS_PC *input) {
         if (customiser->piece_counts[2] > 0) {
             i32 hand = character->weapon_joints[0];
             CUSTOM_PIECE_CONFIG_PC *weapon;
-            LEVEL_OBJECT_RUNTIME_PC *object;
+            LEVEL_OBJECT_RUNTIME *object;
             if (hand == -1 || model->points_of_interest[hand] == NULL) {
                 continue;
             }

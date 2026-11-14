@@ -23,18 +23,18 @@ extern "C" {
 
 #pragma pack(push, 1)
 
-    typedef struct BATARANG_FLIGHT_STATE_PC {
+    typedef struct BATARANG_FLIGHT_STATE {
         u8 in_flight;
         u8 current_target;
         u8 reserved_7f;
         f32 flight_time;
-    } BATARANG_FLIGHT_STATE_PC;
+    } BATARANG_FLIGHT_STATE;
 
-    typedef struct BATARANG_RICOCHET_STATE_PC {
+    typedef struct BATARANG_RICOCHET_STATE {
         i8 count;
         u8 flags;
         f32 timer;
-    } BATARANG_RICOCHET_STATE_PC;
+    } BATARANG_RICOCHET_STATE;
 
 #pragma pack(pop)
 
@@ -57,7 +57,7 @@ extern "C" {
 
                 union {
                     u8 targeting_reserved_7d[7];
-                    BATARANG_FLIGHT_STATE_PC flight_state;
+                    BATARANG_FLIGHT_STATE flight_state;
                 };
 
                 struct gameobject_s *owner;
@@ -73,14 +73,14 @@ extern "C" {
 
                 union {
                     u8 targeting_reserved_ae[6];
-                    BATARANG_RICOCHET_STATE_PC ricochet_state;
+                    BATARANG_RICOCHET_STATE ricochet_state;
                 };
             };
         };
     } PLAYER_BATARANG_SLOT_PC;
 
-    STATIC_ASSERT(sizeof(BATARANG_FLIGHT_STATE_PC) == 7);
-    STATIC_ASSERT(sizeof(BATARANG_RICOCHET_STATE_PC) == 6);
+    STATIC_ASSERT(sizeof(BATARANG_FLIGHT_STATE) == 7);
+    STATIC_ASSERT(sizeof(BATARANG_RICOCHET_STATE) == 6);
     STATIC_ASSERT(sizeof(PLAYER_BATARANG_SLOT_PC) == 0xb4);
     STATIC_ASSERT(offsetof(PLAYER_BATARANG_SLOT_PC, position) == 0x64);
     STATIC_ASSERT(offsetof(PLAYER_BATARANG_SLOT_PC, velocity) == 0x70);

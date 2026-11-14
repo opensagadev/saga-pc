@@ -13,17 +13,17 @@ extern "C" {
     extern i16 TextIdPc880764;
 }
 
-struct EXTRAS_AREA_SAVE_READER_PC { // size 0xc
-    u8 unknown0[6];                 // 0x0
-    u8 red_brick_unlocked;          // 0x6
-    u8 unknown7[5];                 // 0x7
+struct EXTRAS_AREA_SAVE_READER { // size 0xc
+    u8 unknown0[6];              // 0x0
+    u8 red_brick_unlocked;       // 0x6
+    u8 unknown7[5];              // 0x7
 };
 
-struct EXTRAS_SAVE_READER_PC {            // size 0x7c08
-    u8 unknown0[0x782c];                  // 0x0000
-    EXTRAS_AREA_SAVE_READER_PC areas[72]; // 0x782c
-    u8 unknown7b8c[0x74];                 // 0x7b8c
-    u32 unlocked[2];                      // 0x7c00
+struct EXTRAS_SAVE_READER {            // size 0x7c08
+    u8 unknown0[0x782c];               // 0x0000
+    EXTRAS_AREA_SAVE_READER areas[72]; // 0x782c
+    u8 unknown7b8c[0x74];              // 0x7b8c
+    u32 unlocked[2];                   // 0x7c00
 };
 
 extern "C" {
@@ -78,9 +78,9 @@ extern "C" {
     extern i32 pause_i_pad;
 }
 
-typedef struct OPTIONS_MENU_READER_PC {
+typedef struct OPTIONS_MENU_READER {
     u8 player_control[2];
-} OPTIONS_MENU_READER_PC;
+} OPTIONS_MENU_READER;
 
 extern "C" {
     extern i16 TextIdPc88081c;
@@ -92,10 +92,10 @@ extern "C" {
     extern f32 MenuSaveSlotsStepYPc;
 }
 
-typedef struct GAME_STATE_MENU_READER_PC {
+typedef struct GAME_STATE_MENU_READER {
     u8 reserved[0x7c18];
     u16 completion;
-} GAME_STATE_MENU_READER_PC;
+} GAME_STATE_MENU_READER;
 
 typedef struct MENU_INPUT_PAD_PC {
     FRAME_PAD_PC *bound_pad;
@@ -210,7 +210,7 @@ extern "C" void DrawGameState(f32 x, f32 y, i32 highlight, i32 slot) {
     }
     Text3DEx(game_name, x, (f32)(y - spacing * 1.5), 1.0f, scale, scale, scale, 0, red, green, 255, (u8)MenuA);
     if (slot == -1 || saveload_slotused[slot] != 0) {
-        i32 completion = slot == -1 ? ((GAME_STATE_MENU_READER_PC *)&Game)->completion : saveload_slotcode[slot];
+        i32 completion = slot == -1 ? ((GAME_STATE_MENU_READER *)&Game)->completion : saveload_slotcode[slot];
         sprintf(progress, "%.1f%%", (f64)(completion * 100) / HubCompletionPointsPc);
         spacing = (f32)(spacing * 1.5);
         Text3DEx(progress, x, (f32)(y + spacing * 0.5), 1.0f, scale, scale, scale, 0, 255, 191, 0, (u8)MenuA);
@@ -304,7 +304,7 @@ extern "C" void MenuUpdateOptions(MENU *menu) {
         requested_sound = memcmp(&TempOptions, &Game.options_save, sizeof(TempOptions)) == 0 ? 0x31 : 0x30;
         sound = GameAudio_GetSfxId(requested_sound);
         Game.options_save = TempOptions;
-        MenuOptionsPlayerFlagPc = ((OPTIONS_MENU_READER_PC *)&TempOptions)->player_control[pause_i_pad] == 0;
+        MenuOptionsPlayerFlagPc = ((OPTIONS_MENU_READER *)&TempOptions)->player_control[pause_i_pad] == 0;
         PcWindowOptions.SetSfxVolume(TempOptions.sound_volume);
         PcWindowOptions.SetMusicVolume(TempOptions.music_volume);
         PcWindowOptions.SetMasterVolume(TempOptions.master_volume);
@@ -352,7 +352,7 @@ extern "C" {
 }
 
 extern "C" void MenuUpdateExtras(MENU *menu) {
-    EXTRAS_SAVE_READER_PC *save = (EXTRAS_SAVE_READER_PC *)&Game;
+    EXTRAS_SAVE_READER *save = (EXTRAS_SAVE_READER *)&Game;
     if (menu->confirm_pressed) {
         i32 index = (menu->selected_item + 44) % 45;
         i32 locked = 1;
@@ -374,7 +374,7 @@ extern "C" void MenuUpdateExtras(MENU *menu) {
 extern "C" void MenuDrawExtras(MENU *menu) {
     char text[256];
     char number[64];
-    EXTRAS_SAVE_READER_PC *save = (EXTRAS_SAVE_READER_PC *)&Game;
+    EXTRAS_SAVE_READER *save = (EXTRAS_SAVE_READER *)&Game;
     menu->draw_y = -menu->selected_row * MENUDY * menu->item_scale;
     for (i32 i = 0; i < 45; ++i) {
         i32 index = (i + 44) % 45;

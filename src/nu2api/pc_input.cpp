@@ -236,13 +236,13 @@ void PC_INPUT_RUNTIME_PC::InitKeyboardProfiles() {
     }
 }
 
-struct PC_DI_RANGE_PC { // size 0x18
-    DWORD size;         // 0x00
-    DWORD header_size;  // 0x04
-    DWORD object;       // 0x08
-    DWORD how;          // 0x0c
-    LONG minimum;       // 0x10
-    LONG maximum;       // 0x14
+struct PC_DI_RANGE {   // size 0x18
+    DWORD size;        // 0x00
+    DWORD header_size; // 0x04
+    DWORD object;      // 0x08
+    DWORD how;         // 0x0c
+    LONG minimum;      // 0x10
+    LONG maximum;      // 0x14
 };
 
 /* TODO(saga.h): the DirectInput device is called through its C++ interface in retail. */
@@ -252,8 +252,8 @@ struct PC_DI_DEVICE_INTERFACE_PC {
     virtual ULONG __stdcall Release(void) = 0;
     virtual HRESULT __stdcall GetCapabilities(PC_DI_CAPS_PC *) = 0;
     virtual HRESULT __stdcall EnumObjects(void *, void *, DWORD) = 0;
-    virtual HRESULT __stdcall GetProperty(REFGUID, PC_DI_PROPERTY_PC *) = 0;
-    virtual HRESULT __stdcall SetProperty(REFGUID, const PC_DI_PROPERTY_PC *) = 0;
+    virtual HRESULT __stdcall GetProperty(REFGUID, PC_DI_PROPERTY *) = 0;
+    virtual HRESULT __stdcall SetProperty(REFGUID, const PC_DI_PROPERTY *) = 0;
     virtual HRESULT __stdcall Acquire(void) = 0;
     virtual HRESULT __stdcall Unacquire(void) = 0;
     virtual HRESULT __stdcall GetDeviceState(DWORD, void *) = 0;
@@ -263,7 +263,7 @@ struct PC_DI_DEVICE_INTERFACE_PC {
     virtual HRESULT __stdcall SetCooperativeLevel(HWND, DWORD) = 0;
 };
 
-struct PC_DI_FACTORY_INTERFACE_PC {
+struct PC_DI_FACTORY_INTERFACE {
     virtual HRESULT __stdcall QueryInterface(REFIID, void **) = 0;
     virtual ULONG __stdcall AddRef(void) = 0;
     virtual ULONG __stdcall Release(void) = 0;
@@ -276,7 +276,7 @@ extern "C" void ConfigureJoystickRangesPc(NuKeyboardDevice_PC *device) {
     if (device == NULL) {
         return;
     }
-    PC_DI_RANGE_PC range;
+    PC_DI_RANGE range;
     PC_DI_DEVICE_INTERFACE_PC *input = (PC_DI_DEVICE_INTERFACE_PC *)device;
     range.size = 24;
     range.header_size = 16;
@@ -284,69 +284,69 @@ extern "C" void ConfigureJoystickRangesPc(NuKeyboardDevice_PC *device) {
     range.minimum = -32768;
     range.maximum = 32767;
     range.object = 0;
-    input->SetProperty(*(const GUID *)4, (const PC_DI_PROPERTY_PC *)&range);
+    input->SetProperty(*(const GUID *)4, (const PC_DI_PROPERTY *)&range);
     range.object = 0x4;
-    input->SetProperty(*(const GUID *)4, (const PC_DI_PROPERTY_PC *)&range);
+    input->SetProperty(*(const GUID *)4, (const PC_DI_PROPERTY *)&range);
     range.object = 0x8;
-    input->SetProperty(*(const GUID *)4, (const PC_DI_PROPERTY_PC *)&range);
+    input->SetProperty(*(const GUID *)4, (const PC_DI_PROPERTY *)&range);
     range.object = 0xc;
-    input->SetProperty(*(const GUID *)4, (const PC_DI_PROPERTY_PC *)&range);
+    input->SetProperty(*(const GUID *)4, (const PC_DI_PROPERTY *)&range);
     range.object = 0x10;
-    input->SetProperty(*(const GUID *)4, (const PC_DI_PROPERTY_PC *)&range);
+    input->SetProperty(*(const GUID *)4, (const PC_DI_PROPERTY *)&range);
     range.object = 0x14;
-    input->SetProperty(*(const GUID *)4, (const PC_DI_PROPERTY_PC *)&range);
+    input->SetProperty(*(const GUID *)4, (const PC_DI_PROPERTY *)&range);
     range.object = 0x18;
-    input->SetProperty(*(const GUID *)4, (const PC_DI_PROPERTY_PC *)&range);
+    input->SetProperty(*(const GUID *)4, (const PC_DI_PROPERTY *)&range);
     range.object = 0x1c;
-    input->SetProperty(*(const GUID *)4, (const PC_DI_PROPERTY_PC *)&range);
+    input->SetProperty(*(const GUID *)4, (const PC_DI_PROPERTY *)&range);
     range.object = 0xb0;
-    input->SetProperty(*(const GUID *)4, (const PC_DI_PROPERTY_PC *)&range);
+    input->SetProperty(*(const GUID *)4, (const PC_DI_PROPERTY *)&range);
     range.object = 0xb4;
-    input->SetProperty(*(const GUID *)4, (const PC_DI_PROPERTY_PC *)&range);
+    input->SetProperty(*(const GUID *)4, (const PC_DI_PROPERTY *)&range);
     range.object = 0xb8;
-    input->SetProperty(*(const GUID *)4, (const PC_DI_PROPERTY_PC *)&range);
+    input->SetProperty(*(const GUID *)4, (const PC_DI_PROPERTY *)&range);
     range.object = 0xbc;
-    input->SetProperty(*(const GUID *)4, (const PC_DI_PROPERTY_PC *)&range);
+    input->SetProperty(*(const GUID *)4, (const PC_DI_PROPERTY *)&range);
     range.object = 0xc0;
-    input->SetProperty(*(const GUID *)4, (const PC_DI_PROPERTY_PC *)&range);
+    input->SetProperty(*(const GUID *)4, (const PC_DI_PROPERTY *)&range);
     range.object = 0xc4;
-    input->SetProperty(*(const GUID *)4, (const PC_DI_PROPERTY_PC *)&range);
+    input->SetProperty(*(const GUID *)4, (const PC_DI_PROPERTY *)&range);
     range.object = 0xc8;
-    input->SetProperty(*(const GUID *)4, (const PC_DI_PROPERTY_PC *)&range);
+    input->SetProperty(*(const GUID *)4, (const PC_DI_PROPERTY *)&range);
     range.object = 0xcc;
-    input->SetProperty(*(const GUID *)4, (const PC_DI_PROPERTY_PC *)&range);
+    input->SetProperty(*(const GUID *)4, (const PC_DI_PROPERTY *)&range);
     range.object = 0xd0;
-    input->SetProperty(*(const GUID *)4, (const PC_DI_PROPERTY_PC *)&range);
+    input->SetProperty(*(const GUID *)4, (const PC_DI_PROPERTY *)&range);
     range.object = 0xd4;
-    input->SetProperty(*(const GUID *)4, (const PC_DI_PROPERTY_PC *)&range);
+    input->SetProperty(*(const GUID *)4, (const PC_DI_PROPERTY *)&range);
     range.object = 0xd8;
-    input->SetProperty(*(const GUID *)4, (const PC_DI_PROPERTY_PC *)&range);
+    input->SetProperty(*(const GUID *)4, (const PC_DI_PROPERTY *)&range);
     range.object = 0xdc;
-    input->SetProperty(*(const GUID *)4, (const PC_DI_PROPERTY_PC *)&range);
+    input->SetProperty(*(const GUID *)4, (const PC_DI_PROPERTY *)&range);
     range.object = 0xe0;
-    input->SetProperty(*(const GUID *)4, (const PC_DI_PROPERTY_PC *)&range);
+    input->SetProperty(*(const GUID *)4, (const PC_DI_PROPERTY *)&range);
     range.object = 0xe4;
-    input->SetProperty(*(const GUID *)4, (const PC_DI_PROPERTY_PC *)&range);
+    input->SetProperty(*(const GUID *)4, (const PC_DI_PROPERTY *)&range);
     range.object = 0xe8;
-    input->SetProperty(*(const GUID *)4, (const PC_DI_PROPERTY_PC *)&range);
+    input->SetProperty(*(const GUID *)4, (const PC_DI_PROPERTY *)&range);
     range.object = 0xec;
-    input->SetProperty(*(const GUID *)4, (const PC_DI_PROPERTY_PC *)&range);
+    input->SetProperty(*(const GUID *)4, (const PC_DI_PROPERTY *)&range);
     range.object = 0xf0;
-    input->SetProperty(*(const GUID *)4, (const PC_DI_PROPERTY_PC *)&range);
+    input->SetProperty(*(const GUID *)4, (const PC_DI_PROPERTY *)&range);
     range.object = 0xf4;
-    input->SetProperty(*(const GUID *)4, (const PC_DI_PROPERTY_PC *)&range);
+    input->SetProperty(*(const GUID *)4, (const PC_DI_PROPERTY *)&range);
     range.object = 0xf8;
-    input->SetProperty(*(const GUID *)4, (const PC_DI_PROPERTY_PC *)&range);
+    input->SetProperty(*(const GUID *)4, (const PC_DI_PROPERTY *)&range);
     range.object = 0xfc;
-    input->SetProperty(*(const GUID *)4, (const PC_DI_PROPERTY_PC *)&range);
+    input->SetProperty(*(const GUID *)4, (const PC_DI_PROPERTY *)&range);
     range.object = 0x100;
-    input->SetProperty(*(const GUID *)4, (const PC_DI_PROPERTY_PC *)&range);
+    input->SetProperty(*(const GUID *)4, (const PC_DI_PROPERTY *)&range);
     range.object = 0x104;
-    input->SetProperty(*(const GUID *)4, (const PC_DI_PROPERTY_PC *)&range);
+    input->SetProperty(*(const GUID *)4, (const PC_DI_PROPERTY *)&range);
     range.object = 0x108;
-    input->SetProperty(*(const GUID *)4, (const PC_DI_PROPERTY_PC *)&range);
+    input->SetProperty(*(const GUID *)4, (const PC_DI_PROPERTY *)&range);
     range.object = 0x10c;
-    input->SetProperty(*(const GUID *)4, (const PC_DI_PROPERTY_PC *)&range);
+    input->SetProperty(*(const GUID *)4, (const PC_DI_PROPERTY *)&range);
 }
 
 extern "C" BOOL __stdcall InputEnumDevicesPc(const PC_DI_INSTANCE_PC *instance, void *unused) {
@@ -388,7 +388,7 @@ extern "C" BOOL __stdcall InputEnumDevicesPc(const PC_DI_INSTANCE_PC *instance, 
             return TRUE;
         }
         NuKeyboardDevice_PC *device;
-        if (((PC_DI_FACTORY_INTERFACE_PC *)nu_keyboard_owner.factory)->CreateDevice(instance->instance, &device, NULL) <
+        if (((PC_DI_FACTORY_INTERFACE *)nu_keyboard_owner.factory)->CreateDevice(instance->instance, &device, NULL) <
             0) {
             return TRUE;
         }
@@ -469,7 +469,7 @@ void NuKeyboardOwner_PC::Setup(HWND window, HINSTANCE instance) {
         mouse_buttons = capabilities.buttons;
         mouse->methods->set_cooperative_level(mouse, window, 5);
         mouse->methods->set_format(mouse, &PcMouseDataFormat);
-        PC_DI_PROPERTY_PC property;
+        PC_DI_PROPERTY property;
         property.header_size = 16;
         property.size = 20;
         property.how = 0;
@@ -491,9 +491,9 @@ void NuKeyboardOwner_PC::Setup(HWND window, HINSTANCE instance) {
     PcInput_EnableKeyboards(NULL, 0);
     device_count = 0;
     PcXInputDeviceCount = 0;
-    ((PC_DI_FACTORY_INTERFACE_PC *)factory)->EnumDevices(3, InputEnumDevicesPc, NULL, 1);
-    ((PC_DI_FACTORY_INTERFACE_PC *)factory)->EnumDevices(2, InputEnumDevicesPc, NULL, 1);
-    ((PC_DI_FACTORY_INTERFACE_PC *)factory)->EnumDevices(4, InputEnumDevicesPc, NULL, 1);
+    ((PC_DI_FACTORY_INTERFACE *)factory)->EnumDevices(3, InputEnumDevicesPc, NULL, 1);
+    ((PC_DI_FACTORY_INTERFACE *)factory)->EnumDevices(2, InputEnumDevicesPc, NULL, 1);
+    ((PC_DI_FACTORY_INTERFACE *)factory)->EnumDevices(4, InputEnumDevicesPc, NULL, 1);
     nu_keyboard_owner.unknown_0000 = 0.2f;
     nu_keyboard_owner.unknown_0008 = 0.2f;
     PcInputSelectedPort = -1;
@@ -547,7 +547,7 @@ STATIC_ASSERT(offsetof(PC_INPUT_DEVICE_PC, device) == 4);
 STATIC_ASSERT(offsetof(PC_INPUT_DEVICE_PC, capabilities_valid) == 0x2d);
 STATIC_ASSERT(offsetof(PC_INPUT_RUNTIME_PC, devices) == 0x4e34);
 STATIC_ASSERT(offsetof(PC_INPUT_RUNTIME_PC, shutdown_state) == 0x67e4);
-STATIC_ASSERT(offsetof(PC_DI_FACTORY_METHODS_PC, release) == 8);
+STATIC_ASSERT(offsetof(PC_DI_FACTORY_METHODS, release) == 8);
 
 extern "C" void PcInput_DisableAllKeyboards(void) {
     PC_INPUT_RUNTIME_PC *state = (PC_INPUT_RUNTIME_PC *)nu_input_state;
@@ -745,9 +745,9 @@ void NuKeyboardOwner_PC::RescanDevicesPc() {
     }
     device_count = 0;
     PcXInputDeviceCount = 0;
-    ((PC_DI_FACTORY_INTERFACE_PC *)factory)->EnumDevices(3, InputEnumDevicesPc, NULL, 1);
-    ((PC_DI_FACTORY_INTERFACE_PC *)factory)->EnumDevices(2, InputEnumDevicesPc, NULL, 1);
-    ((PC_DI_FACTORY_INTERFACE_PC *)factory)->EnumDevices(4, InputEnumDevicesPc, NULL, 1);
+    ((PC_DI_FACTORY_INTERFACE *)factory)->EnumDevices(3, InputEnumDevicesPc, NULL, 1);
+    ((PC_DI_FACTORY_INTERFACE *)factory)->EnumDevices(2, InputEnumDevicesPc, NULL, 1);
+    ((PC_DI_FACTORY_INTERFACE *)factory)->EnumDevices(4, InputEnumDevicesPc, NULL, 1);
 }
 
 extern "C" void fun_006da360(i32 player) {

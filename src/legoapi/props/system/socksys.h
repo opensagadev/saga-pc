@@ -27,7 +27,7 @@ struct nugspline_s;
 struct numtx_s;
 struct nuspecial_handle_s;
 
-typedef struct sockrot_pc_s {
+typedef struct sockrot_s {
     u16 x;
     u16 y;
 } SOCKROT_PC;
@@ -36,7 +36,7 @@ STATIC_ASSERT(sizeof(SOCKROT_PC) == 4);
 STATIC_ASSERT(offsetof(SOCKROT_PC, x) == 0);
 STATIC_ASSERT(offsetof(SOCKROT_PC, y) == 2);
 
-typedef struct socksegment_pc_s {
+typedef struct socksegment_s {
     NUVEC min;
     NUVEC max;
     NUVEC planes[6];
@@ -55,7 +55,7 @@ STATIC_ASSERT(offsetof(SOCKSEGMENT_PC, next_midpoint) == 0x6c);
 STATIC_ASSERT(offsetof(SOCKSEGMENT_PC, length) == 0x78);
 STATIC_ASSERT(offsetof(SOCKSEGMENT_PC, distance_from_start) == 0x7c);
 
-typedef struct sockposition_pc_s {
+typedef struct sockposition_s {
     u8 unknown_00;
     i8 sock_index;
     i16 segment;
@@ -115,7 +115,7 @@ extern "C" {
 
 #if SAGA_LEGOAPI_PROPS_SYSTEM_SOCKSYS_H_PART == 2 && !defined(SAGA_LEGOAPI_PROPS_SYSTEM_SOCKSYS_H_STOP)
 
-typedef struct sock_pc_s {
+typedef struct sock_s {
     struct nugspline_s *cam;
     struct nugspline_s *a;
     struct nugspline_s *b;
@@ -135,9 +135,9 @@ typedef struct sock_pc_s {
         u8 unknown_33;
         u8 looping;
     };
-    struct socksegment_pc_s *segments;
-    struct sockrot_pc_s *cam_rotations;
-    struct sockrot_pc_s *mid_rotations;
+    struct socksegment_s *segments;
+    struct sockrot_s *cam_rotations;
+    struct sockrot_s *mid_rotations;
     NUVEC min;
     NUVEC max;
     NUVEC center;
@@ -314,7 +314,7 @@ STATIC_ASSERT(offsetof(SOCK_PC, terrain_camera_inactive) == 0x138);
 STATIC_ASSERT(offsetof(SOCK_PC, looping) == 0x33);
 STATIC_ASSERT(offsetof(SOCK_PC, blend_count) == 0x110);
 
-typedef struct socksys_pc_s {
+typedef struct socksys_s {
     SOCK_PC *socks;
     i32 count;
 } SOCKSYS_PC;

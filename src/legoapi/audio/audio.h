@@ -13,11 +13,11 @@
 
 struct WORLDINFO_s;
 struct gameobject_s;
-struct level_data_pc_s;
+struct level_data_s;
 struct nusound_filename_info_s;
-struct sfx_file_info_pc_s;
+struct sfx_file_info_s;
 
-typedef struct repeat_sfx_entry_pc_s {
+typedef struct repeat_sfx_entry_s {
     i16 sfx_id;
     i8 state;
     i8 play_count;
@@ -88,7 +88,7 @@ extern "C" {
     extern void (*ExtraDieSfxFn)(struct gameobject_s *);
     void UpdateBackgroundMusic(void);
     void ClearLinkedCutSceneMusic(void *context);
-    void ProcessMusicChanges(struct level_data_pc_s *level, OPTIONSSAVE *options);
+    void ProcessMusicChanges(struct level_data_s *level, OPTIONSSAVE *options);
     void PauseGameAudio(i32 ignored);
     void SetLinkedCutSceneMusic(void *context, i32 state);
     void PlayJumpSfx(struct gameobject_s *, i32);
@@ -106,7 +106,7 @@ extern "C" {
     void UpdateRepeatSfx(void);
     extern GAMEAUDIO_PC GameAudioStorage;
     extern GAMEAUDIO_PC *GameAudio;
-    void SfxSetFileTable(struct sfx_file_info_pc_s *records);
+    void SfxSetFileTable(struct sfx_file_info_s *records);
     extern i16 *AmbientPairTab;
     void PlayFootStepSfx(struct gameobject_s *);
     typedef struct PC_MUSIC_ACTION_PAIR_PC PC_MUSIC_ACTION_PAIR_PC;

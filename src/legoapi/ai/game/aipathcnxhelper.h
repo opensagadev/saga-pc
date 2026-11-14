@@ -21,7 +21,7 @@ struct AIPATHCNX_PC;
 struct WORLDINFO_s;
 struct gameobject_s;
 
-typedef struct ai_helper_slot_pc_s {
+typedef struct ai_helper_slot_s {
     struct AIPATHCNX_PC *connection;
     void *target;
     u8 direction;
@@ -30,7 +30,7 @@ typedef struct ai_helper_slot_pc_s {
     f32 jump_off_dy;
 } AI_HELPER_SLOT_PC;
 
-typedef struct ai_helper_system_pc_s {
+typedef struct ai_helper_system_s {
     i16 capacity;
     i16 count;
     AI_HELPER_SLOT_PC *helpers;
@@ -63,7 +63,7 @@ extern "C" {
 #ifdef __cplusplus
 extern "C" {
 #endif
-    void AIPathCnxHelperSysReset(struct WORLDINFO_s *, struct ai_helper_system_pc_s *);
+    void AIPathCnxHelperSysReset(struct WORLDINFO_s *, struct ai_helper_system_s *);
 #ifdef __cplusplus
 }
 #endif

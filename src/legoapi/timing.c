@@ -65,15 +65,15 @@ extern TIMER OverallGamePlayTimer;
 extern TIMER ChallengeTimer;
 extern f32 global_pulse;
 
-typedef struct GAME_TIMING_MISSION_DATA_PC { // size 0x12
-    u8 unknown_00[0x10];                     // 0x00
-    u16 time;                                // 0x10
-} GAME_TIMING_MISSION_DATA_PC;
+typedef struct GAME_TIMING_MISSION_DATA { // size 0x12
+    u8 unknown_00[0x10];                  // 0x00
+    u16 time;                             // 0x10
+} GAME_TIMING_MISSION_DATA;
 
-typedef struct GAME_TIMING_AREA_SAVE_PC { // size 0xc
-    u8 unknown_00[8];                     // 0x0
-    f32 challenge_trial_time;             // 0x8
-} GAME_TIMING_AREA_SAVE_PC;
+typedef struct GAME_TIMING_AREA_SAVE { // size 0xc
+    u8 unknown_00[8];                  // 0x0
+    f32 challenge_trial_time;          // 0x8
+} GAME_TIMING_AREA_SAVE;
 
 STATIC_ASSERT(offsetof(WORLDINFO, area_index) == 0x120);
 
@@ -125,11 +125,11 @@ void GameTiming(WORLDINFO *world, f32 *game_time) {
                         UpdateTimer(&ChallengeTimer);
                         if (Game_AreaSave != NULL &&
                             ChallengeTimer.time_elapsed >=
-                                ((GAME_TIMING_AREA_SAVE_PC *)Game_AreaSave)[world->area_index].challenge_trial_time) {
+                                ((GAME_TIMING_AREA_SAVE *)Game_AreaSave)[world->area_index].challenge_trial_time) {
                             EndChallenge(3, 1);
                         }
                     } else if (Mission_CurrentState(NULL) == 1) {
-                        time_limit = (f32)((GAME_TIMING_MISSION_DATA_PC *)MissionSys->active_mission)->time;
+                        time_limit = (f32)((GAME_TIMING_MISSION_DATA *)MissionSys->active_mission)->time;
                         UpdateTimer(&MissionSys->timer);
                         if (MissionSys->timer.time_elapsed >= time_limit && netclient == 0) {
                             EndMission(MissionSys, 3, 1);

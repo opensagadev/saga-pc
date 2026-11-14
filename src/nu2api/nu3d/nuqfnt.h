@@ -59,7 +59,7 @@ struct vufnt_s {
     void *hdr;
     struct numtl_s *material;
     u32 *color_abgr;
-    struct nuqfnt_render_data_pc_s *platform_data;
+    struct nuqfnt_render_data_s *platform_data;
 };
 
 STATIC_ASSERT(offsetof(VUFNT, size) == 0x08);

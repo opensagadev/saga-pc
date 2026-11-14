@@ -169,7 +169,7 @@ void PCCutCharacterAni3(CUT_CHARACTER_ANIMATION_PC *character, f32 frame, NUMTX 
     } while (0)
 
 f32 *NuGCutLocatorCalcMtx(CUT_LOCATOR_GENERIC_PC *locator, f32 frame, NUMTX *matrix, NUANIM_TIME2_PC *time) {
-    DWA_CURVE_CELL_PC *curves;
+    DWA_CURVE_CELL *curves;
     i8 *types;
     NUVEC translation;
     NUVEC rotation;
@@ -206,7 +206,7 @@ f32 *NuGCutLocatorCalcMtx(CUT_LOCATOR_GENERIC_PC *locator, f32 frame, NUMTX *mat
 
 void NuGCutRigidCalcMtx(CUT_RIGID_GENERIC_PC *rigid, f32 frame, NUMTX *matrix) {
     NUANIM_TIME2_PC time;
-    DWA_CURVE_CELL_PC *curves;
+    DWA_CURVE_CELL *curves;
     i8 *types;
     u8 flags;
     NUVEC translation;
@@ -254,7 +254,7 @@ void NuGCutCharAnimProcess(CUT_CHARACTER_GENERIC_PC *character, f32 frame, NUMTX
                            u32 *animation_index, f32 *animation_rate, f32 *blend_time, f32 *start_frame,
                            i32 *layer_mask) {
     NUANIM_TIME2_PC time;
-    DWA_CURVE_CELL_PC *curves;
+    DWA_CURVE_CELL *curves;
     i8 *types;
     i32 flags;
     NUVEC translation;
@@ -365,14 +365,14 @@ void NuGCutCharAnimProcess(CUT_CHARACTER_GENERIC_PC *character, f32 frame, NUMTX
 #undef CUT2_VALUE
 #undef CUT2_FLIP
 
-typedef struct CUT_VISIBLE_LOCATOR_PC { // size 0x5c
-    NUMTX matrix;                       // 0x00
-    NUVEC pivot;                        // 0x40
-    f32 scale;                          // 0x4c
-    NUANIMDATA2_PC *animation;          // 0x50
-    u32 unknown_54;                     // 0x54
-    u8 flags;                           // 0x58
-} CUT_VISIBLE_LOCATOR_PC;
+typedef struct CUT_VISIBLE_LOCATOR { // size 0x5c
+    NUMTX matrix;                    // 0x00
+    NUVEC pivot;                     // 0x40
+    f32 scale;                       // 0x4c
+    NUANIMDATA2 *animation;          // 0x50
+    u32 unknown_54;                  // 0x54
+    u8 flags;                        // 0x58
+} CUT_VISIBLE_LOCATOR;
 
 static char CutLocatorSfxFilterPc[] = {3, -1};
 static char CutLocatorFilterPc[] = {6, 7, -1};
@@ -408,21 +408,21 @@ i32 NuGCutLocatorIsVisble_3(CUT_LOCATOR_GENERIC_PC *locator, f32 frame, f32 *sca
 }
 
 i32 NuGCutLocatorIsVisble(CUT_LOCATOR_GENERIC_PC *locator, f32 frame, NUANIM_TIME2_PC *time, f32 *scale, f32 *rate) {
-    DWA_CURVE_CELL_PC *curves;
+    DWA_CURVE_CELL *curves;
     i8 *types;
     i32 visible;
     f32 evaluated;
     if (locator->animation != NULL) {
-        if ((i32)((NUANIMDATA2_PC *)locator->animation)->header.magic >= 0x414e4934 &&
-            (i32)((NUANIMDATA2_PC *)locator->animation)->header.magic <= 0x414e4935) {
+        if ((i32)((NUANIMDATA2 *)locator->animation)->header.magic >= 0x414e4934 &&
+            (i32)((NUANIMDATA2 *)locator->animation)->header.magic <= 0x414e4935) {
             return NuGCutLocatorIsVisble_3(locator, frame, scale, rate);
         }
         if (rate != NULL) {
             *rate = 1.0f;
         }
-        curves = ((NUANIMDATA2_PC *)locator->animation)->curves;
-        types = ((NUANIMDATA2_PC *)locator->animation)->curve_types;
-        if (((NUANIMDATA2_PC *)locator->animation)->curve_count == 4) {
+        curves = ((NUANIMDATA2 *)locator->animation)->curves;
+        types = ((NUANIMDATA2 *)locator->animation)->curve_types;
+        if (((NUANIMDATA2 *)locator->animation)->curve_count == 4) {
             if (types[3] == 0) {
                 evaluated = curves[3].constant;
             } else {
@@ -446,9 +446,9 @@ i32 NuGCutLocatorIsVisble(CUT_LOCATOR_GENERIC_PC *locator, f32 frame, NUANIM_TIM
             }
         }
     } else {
-        visible = ((CUT_VISIBLE_LOCATOR_PC *)locator)->flags & 8;
+        visible = ((CUT_VISIBLE_LOCATOR *)locator)->flags & 8;
         if (visible != 0 && scale != NULL) {
-            *scale = ((CUT_VISIBLE_LOCATOR_PC *)locator)->scale;
+            *scale = ((CUT_VISIBLE_LOCATOR *)locator)->scale;
         }
     }
     return visible;

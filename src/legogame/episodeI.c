@@ -18,7 +18,7 @@ extern f32 sebulba_catchup_speed_mul;
 extern f32 sebulba_catchup_dist;
 extern f32 sebulba_fallback_speed_mul;
 
-typedef struct racepod_resource_pc_s {
+typedef struct racepod_resource_s {
     NUMTX matrix;
     NUVEC4 previous_axis;
     NUVEC4 previous_position;
@@ -37,7 +37,7 @@ typedef struct racepod_resource_pc_s {
     u8 unknown_0098[8];
 } RACEPOD_RESOURCE_PC;
 
-typedef struct podrace_resource_pc_s {
+typedef struct podrace_resource_s {
     FLIGHT_SPLINE_RESOURCE_PC splines[32];
     RACEPOD_RESOURCE_PC lap_entries[16];
     f32 lap_countdown;
@@ -58,19 +58,19 @@ extern f32 SebulbaThrowIntervalPc;
 static f32 PodSebulbaThrowSpeedPc;
 static f32 PodSebulbaThrowGravityPc;
 
-typedef struct pod_race_countdown_reader_pc_s {
+typedef struct pod_race_countdown_reader_s {
     u8 unknown_0000[0xb000];
     f32 lap_countdown;
 } POD_RACE_COUNTDOWN_READER_PC;
 
 /* Episode I level callbacks installed by FixUpLevels. */
-typedef struct podrace_levflag_pc_s {
+typedef struct podrace_levflag_s {
     u8 podrace_state;
     u8 mushroom_state;
     u8 remaining[14];
 } PODRACE_LEVFLAG_PC;
 
-typedef struct gungan_a_pc_s {
+typedef struct gungan_a_s {
     i16 unknown_000;
     i16 count;
     AILOCATOR_PC *origins[32];
@@ -81,7 +81,7 @@ typedef struct gungan_a_pc_s {
     i16 models[4];
 } GUNGAN_A_PC;
 
-typedef struct mine_entry_pc_s {
+typedef struct mine_entry_s {
     u32 active;
     NUVEC pos;
     f32 grow;
@@ -90,7 +90,7 @@ typedef struct mine_entry_pc_s {
     u16 roty;
 } MINE_ENTRY_PC;
 
-typedef struct minesys_pc_s {
+typedef struct minesys_s {
     NUSPECIALHANDLE mine_special;
     MINE_ENTRY_PC mines[64];
     f32 mine_radius;
@@ -102,19 +102,19 @@ typedef struct minesys_pc_s {
     f32 update_timer;
 } MINESYS_PC;
 
-typedef struct client_mines_pc_s {
+typedef struct client_mines_s {
     NUVEC positions[64];
     u32 present_words[2];
     u32 exploded_words[2];
     u32 unknown_310[2];
 } CLIENT_MINES_PC;
 
-typedef struct retakeg_netpacket_pc_s {
+typedef struct retakeg_netpacket_s {
     i16 guard_a;
     i16 guard_b;
 } RETAKEG_NETPACKET_PC;
 
-typedef struct cut_instance_reader_pc_s {
+typedef struct cut_instance_reader_s {
     u8 opaque_00_88[0x88];
     u32 flags_88;
     u32 unknown_8c;
@@ -130,7 +130,7 @@ void FlightSpline_Init(WORLDINFO *world, FLIGHT_SPLINE_RESOURCE_PC *splines, i32
 i32 QuickNewRayCast(NUVEC *position, NUVEC *movement, f32 radius, i32 scan_flags, f32 max_distance, f32 step);
 void PodLoseSpeed(GAMEOBJECT *object, i32 hit, i32 rumble);
 
-typedef struct podrace_netpacket_pc_s {
+typedef struct podrace_netpacket_s {
     f32 start_countdown;
     f32 remaining_time;
     f32 available_time;
@@ -141,7 +141,7 @@ typedef struct podrace_netpacket_pc_s {
 i32 NuSpecialClipTestExtents(NUSPECIALHANDLE *special, NUMTX *matrix);
 
 /* Pod sprint (Episode I bonus) level callbacks. */
-typedef struct PODSPRINT_VIEW_PC {
+typedef struct PODSPRINT_VIEW {
     NUGSPLINE *finish_line;
     NUGSPLINE *halfway;
     PODSPRINT_AI_PC ai[6];
@@ -170,17 +170,17 @@ typedef struct PODSPRINT_VIEW_PC {
             i16 unknown_5 : 11;
         } bits;
     };
-} PODSPRINT_VIEW_PC;
+} PODSPRINT_VIEW;
 
-typedef struct PODSPRINT_NETPACKET_PC {
+typedef struct PODSPRINT_NETPACKET {
     i16 ai_state;
     u8 unknown_02[4];
     i16 countdown;
     i16 lap_time;
-} PODSPRINT_NETPACKET_PC;
+} PODSPRINT_NETPACKET;
 
-#define PODSPRINT ((PODSPRINT_VIEW_PC *)&podsprint)
-#define PODSPRINT_NET ((PODSPRINT_NETPACKET_PC *)podsprint_netpacket)
+#define PODSPRINT ((PODSPRINT_VIEW *)&podsprint)
+#define PODSPRINT_NET ((PODSPRINT_NETPACKET *)podsprint_netpacket)
 /* Last player positions used for the finish line tests. */
 static NUVEC pod_old_pos[2];
 extern f32 HudBossIconYPc;

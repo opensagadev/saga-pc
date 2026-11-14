@@ -15,7 +15,7 @@ extern "C" {
 #endif
 
     /* NuFileGetInfo result; the AI editor's file browser reads it. */
-    typedef struct AI_EDITOR_FILE_INFO_PC {
+    typedef struct AI_EDITOR_FILE_INFO {
         u32 flags;
         u32 size;
         i8 created_second;
@@ -33,12 +33,12 @@ extern "C" {
         u8 unknown_15;
         i16 year;
         char name[256]; /* NuFileGetInfo (PC) only clears name[0] */
-    } AI_EDITOR_FILE_INFO_PC;
+    } AI_EDITOR_FILE_INFO;
 
-    STATIC_ASSERT(sizeof(AI_EDITOR_FILE_INFO_PC) == 0x118);
-    STATIC_ASSERT(offsetof(AI_EDITOR_FILE_INFO_PC, second) == 0x10);
-    STATIC_ASSERT(offsetof(AI_EDITOR_FILE_INFO_PC, year) == 0x16);
-    STATIC_ASSERT(offsetof(AI_EDITOR_FILE_INFO_PC, name) == 0x18);
+    STATIC_ASSERT(sizeof(AI_EDITOR_FILE_INFO) == 0x118);
+    STATIC_ASSERT(offsetof(AI_EDITOR_FILE_INFO, second) == 0x10);
+    STATIC_ASSERT(offsetof(AI_EDITOR_FILE_INFO, year) == 0x16);
+    STATIC_ASSERT(offsetof(AI_EDITOR_FILE_INFO, name) == 0x18);
 #ifdef __cplusplus
 }
 #endif

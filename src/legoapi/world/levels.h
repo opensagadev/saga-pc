@@ -40,7 +40,7 @@
 #if SAGA_LEGOAPI_WORLD_LEVELS_H_PART == 1 && !defined(SAGA_LEGOAPI_WORLD_LEVELS_H_STOP)
 #define AREA_GLOBALS_PROGRESS_FLAGS_PC (AreaGlobals_PC.progress_flags)
 
-typedef struct scene_special_progress_pc_s {
+typedef struct scene_special_progress_s {
     union {
         u32 flags;
 
@@ -60,7 +60,7 @@ typedef struct scene_special_progress_pc_s {
 STATIC_ASSERT(sizeof(SCENESPECIALPROGRESS_PC) == 8);
 STATIC_ASSERT(offsetof(SCENESPECIALPROGRESS_PC, tfactor) == 4);
 
-typedef struct scene_progress_pc_s {
+typedef struct scene_progress_s {
     SCENESPECIALPROGRESS_PC specials[1280];
 } SCENEPROGRESS;
 

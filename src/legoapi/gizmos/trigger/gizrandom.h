@@ -16,7 +16,7 @@ extern "C" {
     GIZMO_PC *createGizRandom(void *, i32, i32 *, char *);
     extern i32 gizrandom_gizmotype_id;
     void GizRandom_Activate(GIZMO_PC *gizmo, i32 active);
-    void GizRandom_AddGizmos(struct gizmosys_pc_s *gizmo_sys, i32 type_id, void *world_ptr, void *arg3);
+    void GizRandom_AddGizmos(struct gizmosys_s *gizmo_sys, i32 type_id, void *world_ptr, void *arg3);
     char *GizRandom_GetGizmoName(GIZMO_PC *gizmo);
     i32 GizRandom_GetMaxGizmos(void *world_ptr);
     i32 GizRandom_GetNumOutputs(void *gizmo);

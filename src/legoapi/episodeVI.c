@@ -25,12 +25,12 @@ typedef struct SARLACC_DISCO_PC {   // size 0x400
     NUVEC *last_selected_position;  // 0x3fc
 } SARLACC_DISCO_PC;
 
-STATIC_ASSERT(offsetof(SARLACC_NETPACKET_PC, off_mask) == 4);
-STATIC_ASSERT(offsetof(SARLACC_NETPACKET_PC, flash_mask) == 6);
-STATIC_ASSERT(offsetof(SARLACC_NETPACKET_PC, select_mask) == 8);
-STATIC_ASSERT(offsetof(SARLACC_NETPACKET_PC, on_mask) == 0xa);
-STATIC_ASSERT(offsetof(SARLACC_NETPACKET_PC, finish_mask) == 0xc);
-STATIC_ASSERT(offsetof(SARLACC_NETPACKET_PC, sound_mask) == 0xe);
+STATIC_ASSERT(offsetof(SARLACC_NETPACKET, off_mask) == 4);
+STATIC_ASSERT(offsetof(SARLACC_NETPACKET, flash_mask) == 6);
+STATIC_ASSERT(offsetof(SARLACC_NETPACKET, select_mask) == 8);
+STATIC_ASSERT(offsetof(SARLACC_NETPACKET, on_mask) == 0xa);
+STATIC_ASSERT(offsetof(SARLACC_NETPACKET, finish_mask) == 0xc);
+STATIC_ASSERT(offsetof(SARLACC_NETPACKET, sound_mask) == 0xe);
 f32 SarlaccDiscoBaseOffsetPc = -0.12f;
 
 static SARLACC_DISCO_PC sarlaccdisco = {0};
@@ -49,41 +49,41 @@ i32 DeathStarZapLaserTypePc = 0;
 static f32 slowDownTimer[2] = {0};
 f32 FireDeltaPositionPc = 0.0f;
 
-typedef struct emperor_fight_packet_pc_s { // size 0x8
-    i32 state;                             // 0x0
-    u8 enabled;                            // 0x4
-    u8 zap;                                // 0x5
-    u8 player_floor_mask;                  // 0x6
-    u8 reserved;                           // 0x7
+typedef struct emperor_fight_packet_s { // size 0x8
+    i32 state;                          // 0x0
+    u8 enabled;                         // 0x4
+    u8 zap;                             // 0x5
+    u8 player_floor_mask;               // 0x6
+    u8 reserved;                        // 0x7
 } EMPEROR_FIGHT_PACKET_PC;
 
-typedef struct level_script_flags_pc_s { // size 0x10
-    u8 first;                            // 0x0
-    u8 light_flags[4];                   // 0x1
-    u8 arrow_flags[4];                   // 0x5
-    u8 remaining[7];                     // 0x9
+typedef struct level_script_flags_s { // size 0x10
+    u8 first;                         // 0x0
+    u8 light_flags[4];                // 0x1
+    u8 arrow_flags[4];                // 0x5
+    u8 remaining[7];                  // 0x9
 } LEVEL_SCRIPT_FLAGS_PC;
 
-typedef struct sarlacc_world_pc_s {  // size 0x50d4
+typedef struct sarlacc_world_s {     // size 0x50d4
     u8 unknown_0000[0x50cc];         // 0x0000
     i32 blowup_target_count;         // 0x50cc
     GIZMOBLOWUP_PC **blowup_targets; // 0x50d0
 } SARLACC_WORLD_PC;
 
-typedef struct sarlacc_panel_pc_s { // size 0x63
-    u8 unknown_00[0x62];            // 0x00
-    u8 state_flags;                 // 0x62
+typedef struct sarlacc_panel_s { // size 0x63
+    u8 unknown_00[0x62];         // 0x00
+    u8 state_flags;              // 0x62
 } SARLACC_PANEL_PC;
 
 extern i32 DrawBossHitPointsTwoRowsPc;
 
 /* Emperor floor packet and private controls. */
-typedef struct emperor_update_packet_pc_s { // size 0x8
-    i32 state;                              // 0x0
-    u8 enabled;                             // 0x4
-    u8 zap;                                 // 0x5
-    i8 player_floor_mask;                   // 0x6
-    u8 reserved;                            // 0x7
+typedef struct emperor_update_packet_s { // size 0x8
+    i32 state;                           // 0x0
+    u8 enabled;                          // 0x4
+    u8 zap;                              // 0x5
+    i8 player_floor_mask;                // 0x6
+    u8 reserved;                         // 0x7
 } EMPEROR_UPDATE_PACKET_PC;
 
 void KillBossNewLevel(i32 id, i32 unused_4, f32 delay, i32 level_index);
@@ -94,15 +94,15 @@ STATIC_ASSERT(offsetof(GAMEOBJECT, ai_opponent_exclusion_mask) == 0xeb8);
 /* Fairground party split locator. */
 static AILOCATOR_PC *FairgroundSplitPartyLocatorPc;
 
-typedef struct JABBA_ANTINODE_VIEW_PC {
+typedef struct JABBA_ANTINODE_VIEW {
     u8 unknown_00[0x40];
     f32 base_radius;
     f32 base_height;
     u8 unknown_48[2];
     u8 type;
-} JABBA_ANTINODE_VIEW_PC;
+} JABBA_ANTINODE_VIEW;
 
-STATIC_ASSERT(offsetof(JABBA_ANTINODE_VIEW_PC, type) == offsetof(AIANTINODE_PC, type));
+STATIC_ASSERT(offsetof(JABBA_ANTINODE_VIEW, type) == offsetof(AIANTINODE_PC, type));
 extern i16 CharacterFixupIdPc007f1a7c;
 extern i16 CharacterFixupIdPc007f1a88;
 #pragma section(".sarlrw", read, write)
@@ -778,9 +778,9 @@ void JabbasPalaceA_Reset(WORLDINFO *world) {
 
 void JabbasPalaceA_Update(WORLDINFO *world) {
     NUVEC position = {-0.01503f, 0.7414f, 11.5824f};
-    JABBA_ANTINODE_VIEW_PC *antinode;
+    JABBA_ANTINODE_VIEW *antinode;
     if (NuSpecialExistsFn(&LevHSpecial[0]) != 0 && NuSpecialGetVisibilityFn(&LevHSpecial[0]) == 0) {
-        antinode = (JABBA_ANTINODE_VIEW_PC *)AIAntinodeCreateSingleFrame(&position, 1.0f);
+        antinode = (JABBA_ANTINODE_VIEW *)AIAntinodeCreateSingleFrame(&position, 1.0f);
         if (antinode != NULL) {
             antinode->type = 2;
             antinode->base_radius = 0.82443f;

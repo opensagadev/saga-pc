@@ -27,7 +27,7 @@ struct addgizmotype_pc_s;
 struct gameobject_s;
 struct nuspecial_handle_s;
 
-typedef struct techno_pc_s {
+typedef struct techno_s {
     u8 unknown_00[0x37];
     u8 target_mode;
     u8 unknown_38[0x34];
@@ -43,7 +43,7 @@ STATIC_ASSERT(offsetof(TECHNO_PC, target_mode) == 0x37);
 STATIC_ASSERT(offsetof(TECHNO_PC, controlled_object) == 0x6c);
 STATIC_ASSERT(sizeof(TECHNO_PC) == 0x70);
 
-typedef struct techno_config_pc_s {
+typedef struct techno_config_s {
     f32 interaction_time;
     i16 idle_object_ids[4];
     NUVEC idle_offsets[3];

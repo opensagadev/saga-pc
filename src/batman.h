@@ -12,7 +12,7 @@
 #include "nu2api/nufile/nufile.h"
 #endif
 
-typedef struct dat_handles_pc_s {
+typedef struct dat_handles_s {
     NUDATHDR *previous;
     NUDATHDR *episode[6];
 } DAT_HANDLES_PC;

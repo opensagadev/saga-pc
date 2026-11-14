@@ -29,12 +29,12 @@ struct BOLTTYPE_PC_s;
 struct WORLDINFO_s;
 struct bolt_s;
 struct cutinfo_s;
-struct cutsys_pc_s;
+struct cutsys_s;
 struct gameobject_s;
 struct nufpcomjmp_s;
 struct numtx_s;
 
-typedef struct level_progress_pc_s {
+typedef struct level_progress_s {
     SCENEPROGRESS scene_progress;
 
     union {
@@ -103,18 +103,18 @@ STATIC_ASSERT(offsetof(LEVEL_PROGRESS, destroyed_trooper_cannon_mask) == 0x281c)
 
 #if SAGA_LEGOAPI_WORLD_LEVEL_H_PART == 2 && !defined(SAGA_LEGOAPI_WORLD_LEVEL_H_STOP)
 
-typedef struct LEVEL_OBJECT_RUNTIME_PC {
+typedef struct LEVEL_OBJECT_RUNTIME {
     NUSPECIALHANDLE special;
     u8 unknown_c[2];
     u8 active;
     u8 padding_f;
-} LEVEL_OBJECT_RUNTIME_PC;
+} LEVEL_OBJECT_RUNTIME;
 
-STATIC_ASSERT(sizeof(LEVEL_OBJECT_RUNTIME_PC) == 0x10);
-STATIC_ASSERT(offsetof(LEVEL_OBJECT_RUNTIME_PC, active) == 0xe);
-STATIC_ASSERT(offsetof(LEVEL_OBJECT_RUNTIME_PC, special) == 0);
-STATIC_ASSERT(sizeof(LEVEL_OBJECT_RUNTIME_PC) == 16);
-STATIC_ASSERT(offsetof(LEVEL_OBJECT_RUNTIME_PC, active) == 14);
+STATIC_ASSERT(sizeof(LEVEL_OBJECT_RUNTIME) == 0x10);
+STATIC_ASSERT(offsetof(LEVEL_OBJECT_RUNTIME, active) == 0xe);
+STATIC_ASSERT(offsetof(LEVEL_OBJECT_RUNTIME, special) == 0);
+STATIC_ASSERT(sizeof(LEVEL_OBJECT_RUNTIME) == 16);
+STATIC_ASSERT(offsetof(LEVEL_OBJECT_RUNTIME, active) == 14);
 #undef SAGA_LEGOAPI_WORLD_LEVEL_H_PART
 #define SAGA_LEGOAPI_WORLD_LEVEL_H_PART 3
 #ifdef SAGA_SHIM
@@ -124,7 +124,7 @@ STATIC_ASSERT(offsetof(LEVEL_OBJECT_RUNTIME_PC, active) == 14);
 
 #if SAGA_LEGOAPI_WORLD_LEVEL_H_PART == 3 && !defined(SAGA_LEGOAPI_WORLD_LEVEL_H_STOP)
 
-typedef struct level_data_pc_s {
+typedef struct level_data_s {
     char dir[0x40];
     char name[0x20];
 
@@ -319,7 +319,7 @@ STATIC_ASSERT(offsetof(LEVELFIXUP_PC, draw_status) == 0x20);
 extern "C" {
 #endif
     extern LEVELDATA_PC *TITLES_LDATA;
-    struct cutinfo_s *NewCutScene(struct cutinfo_s *cutscene, struct cutsys_pc_s *system, char *name, i32 unused_4);
+    struct cutinfo_s *NewCutScene(struct cutinfo_s *cutscene, struct cutsys_s *system, char *name, i32 unused_4);
     void Levels_FixUp(struct level_fixup_pc_s *levels);
     LEVELDATA_PC *Level_FindByName(char *name, i32 *index);
     extern LEVELDATA_PC *LDataList;

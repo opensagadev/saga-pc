@@ -21,8 +21,8 @@ extern "C" {
     void SuperCarry_Release(GAMEOBJECT *);
     void SuperCarry_GetObjectPos(GAMEOBJECT *, NUVEC *, NUVEC *);
     extern const f64 TerrainSkinSampleCountPc;
-    struct carry_plug_pc_s;
-    struct carry_plug_sys_pc_s;
+    struct carry_plug_s;
+    struct carry_plug_sys_s;
     void SuperCarry_PartImpact(PART_PC *);
     i32 SuperCarry_TurnBlowupBackOn(GIZMOBLOWUP_PC *, NUVEC *, u16, i32);
     extern f32 SuperCarryImpactSpeedPc;

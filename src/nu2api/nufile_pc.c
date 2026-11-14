@@ -321,7 +321,7 @@ i32 fun_004ff960(void) {
     return 0;
 }
 
-i32 NuFileGetInfo(char *path, AI_EDITOR_FILE_INFO_PC *info) {
+i32 NuFileGetInfo(char *path, AI_EDITOR_FILE_INFO *info) {
     WIN32_FILE_ATTRIBUTE_DATA attributes;
     SYSTEMTIME time;
     u32 flags;

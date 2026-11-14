@@ -986,7 +986,7 @@ void MenuText3DEx(char *text, f32 x, f32 y, f32 z, f32 sx, f32 sy, f32 sz, u32 a
 
 void SmartTextEx(char *text, f32 x, f32 y, f32 z, f32 x_scale, f32 y_scale, f32 z_scale, u32 alignment, u8 red,
                  u8 green, u8 blue, f32 max_width, i32 max_lines, void *message_box, i32 suppress_draw, i32 alpha) {
-    typedef struct box_geometry_pc_s {
+    typedef struct box_geometry_s {
         f32 reserved;
         f32 x;
         f32 y;
@@ -1283,10 +1283,10 @@ typedef struct text_crawl_view_pc_s { // size 0x10
     u8 unknown_0e[2];                 // 0xe
 } TEXT_CRAWL_VIEW_PC;
 
-typedef struct text_crawl_mission_view_pc_s { // size 0x8
-    u8 unknown_00[4];                         // 0x0
-    i16 name_id;                              // 0x4
-    i16 text_id;                              // 0x6
+typedef struct text_crawl_mission_view_s { // size 0x8
+    u8 unknown_00[4];                      // 0x0
+    i16 name_id;                           // 0x4
+    i16 text_id;                           // 0x6
 } TEXT_CRAWL_MISSION_VIEW_PC;
 
 STATIC_ASSERT(offsetof(AREA_DATA_PC, name_id) == 0x78);

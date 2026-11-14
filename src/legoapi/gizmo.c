@@ -4,19 +4,19 @@
 STATIC_ASSERT(offsetof(GIZMOTYPE_PC, fns) + offsetof(GIZMOFNS_PC, get_gizmo_name_fn) == 0x44);
 STATIC_ASSERT(offsetof(GIZMOTYPE_PC, fns) + offsetof(GIZMOFNS_PC, get_num_outputs_fn) == 0x50);
 
-typedef struct area_gizmotype_pc_s {
+typedef struct area_gizmotype_s {
     u8 unknown_0000[0x44];
     char *(*get_gizmo_name)(void *gizmo);
     u8 unknown_0048[0x54];
 } AREA_GIZMOTYPE_PC;
 
-typedef struct area_gizmotypes_pc_s {
+typedef struct area_gizmotypes_s {
     i32 count;
     i32 unknown_0004;
     AREA_GIZMOTYPE_PC *types;
 } AREA_GIZMOTYPES_PC;
 
-typedef struct area_gizmoset_pc_s {
+typedef struct area_gizmoset_s {
     void *type;
     i32 count;
     i32 max_count;
@@ -24,14 +24,14 @@ typedef struct area_gizmoset_pc_s {
     void *unknown_0010;
 } AREA_GIZMOSET_PC;
 
-typedef struct area_gizmo_pc_s {
+typedef struct area_gizmo_s {
     void *object;
     i16 unknown_0004;
     u8 type_id;
     u8 unknown_0007;
 } AREA_GIZMO_PC;
 
-typedef struct area_gizmosys_prefix_pc_s {
+typedef struct area_gizmosys_prefix_s {
     AREA_GIZMOSET_PC *sets;
 } AREA_GIZMOSYS_PREFIX_PC;
 
@@ -63,7 +63,7 @@ STATIC_ASSERT(offsetof(GIZMOTYPES_PC, max_levels) == 4);
 STATIC_ASSERT(offsetof(GIZMOTYPES_PC, types) == 8);
 STATIC_ASSERT(offsetof(GIZMOSET_PC, data) == 0x10);
 
-typedef struct bolt_gizmo_type_pc_s {                          // size 0x9c
+typedef struct bolt_gizmo_type_s {                             // size 0x9c
     u8 unknown_00[0x6c];                                       // 0x00
     i32 (*hit_platform)(WORLDINFO *, void *, BOLT_PC *, u8 *); // 0x6c
     u8 unknown_70[4];                                          // 0x70
@@ -78,13 +78,13 @@ void EdFileWriteInt(i32 value);
 void EdFileWriteChar(char value);
 extern GIZACTIONDEF_PC *gizactiondefs;
 
-typedef struct GIZMO_NAME_TYPE_PC {  // size 0x9c
+typedef struct GIZMO_NAME_TYPE {     // size 0x9c
     u8 unknown_00[0x20];             // 0x00
     char prefix[0x20];               // 0x20
     u8 unknown_40[4];                // 0x40
     char *(*get_gizmo_name)(void *); // 0x44
     u8 unknown_48[0x54];             // 0x48
-} GIZMO_NAME_TYPE_PC;
+} GIZMO_NAME_TYPE;
 
 typedef struct level_sfx_gizmotype_s {
     u8 unknown_00[0x94];
@@ -876,7 +876,7 @@ i32 GizmoIsNameUnique(GIZMOSYS_PREFIX_PC *system, char *name) {
     GIZMOSET_PC *set;
     i32 type_index;
     if (system != NULL && name != NULL) {
-        type = (GIZMO_NAME_TYPE_PC *)((GIZMOTYPES_PC *)gizmotypes)->types;
+        type = (GIZMO_NAME_TYPE *)((GIZMOTYPES_PC *)gizmotypes)->types;
         set = system->sets;
         for (type_index = 0; type_index < ((GIZMOTYPES_PC *)gizmotypes)->count; ++type_index, ++type, ++set) {
             GIZMO_PC *gizmo;

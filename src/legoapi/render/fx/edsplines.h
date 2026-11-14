@@ -12,7 +12,7 @@
 
 struct NUGSCN_s;
 struct NUVEC4;
-struct flight_spline_resource_pc_s;
+struct flight_spline_resource_s;
 struct nugspline_s;
 struct nuspecial_handle_s;
 
@@ -52,7 +52,7 @@ STATIC_ASSERT(offsetof(SPLINEPOS, along) == 0x1c);
 #ifdef __cplusplus
 extern "C" {
 #endif
-    void CalcSplinePoint(struct flight_spline_resource_pc_s *spline, struct NUVEC4 *result, f32 along);
+    void CalcSplinePoint(struct flight_spline_resource_s *spline, struct NUVEC4 *result, f32 along);
     i32 OutSideSplineArea(NUVEC *, struct nugspline_s *, NUVEC *, NUVEC *, i32);
     void PointAlongSpline(struct nugspline_s *spline, f32 along, NUVEC *result, u16 *yaw, u16 *pitch, i32 looping);
     void MoveSplinePosition(SPLINEPOS *position, f32 distance);

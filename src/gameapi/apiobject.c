@@ -79,17 +79,17 @@ STATIC_ASSERT(offsetof(GAMEOBJECT, surface_effect_count) == 0x28e);
 STATIC_ASSERT(offsetof(GAMEOBJECT, surface_effect_id) == 0x290);
 STATIC_ASSERT(offsetof(APICHARACTERDATA, effects) == 0x28);
 
-typedef struct minianimpacket_pc_s { // size 0x24
-    f32 current_time;                // 0x00
-    f32 previous_time;               // 0x04
-    u8 unknown_08[0xc];              // 0x08
-    f32 blend_target_time;           // 0x14
-    u8 flags;                        // 0x18
-    u8 blending;                     // 0x19
-    u8 unknown_1a[4];                // 0x1a
-    i16 current_animation_id;        // 0x1e
-    i16 previous_animation_id;       // 0x20
-    i16 requested_animation_id;      // 0x22
+typedef struct minianimpacket_s { // size 0x24
+    f32 current_time;             // 0x00
+    f32 previous_time;            // 0x04
+    u8 unknown_08[0xc];           // 0x08
+    f32 blend_target_time;        // 0x14
+    u8 flags;                     // 0x18
+    u8 blending;                  // 0x19
+    u8 unknown_1a[4];             // 0x1a
+    i16 current_animation_id;     // 0x1e
+    i16 previous_animation_id;    // 0x20
+    i16 requested_animation_id;   // 0x22
 } MINIANIMPACKET_PC;
 
 STATIC_ASSERT(offsetof(GAMEOBJECT, initial_position) == 0x98);
@@ -103,14 +103,14 @@ STATIC_ASSERT(offsetof(CHARACTER_MODEL_LAYERS_PC, model_id) == 0);
 STATIC_ASSERT(offsetof(CHARACTERDATA_PC, dir) == 8);
 STATIC_ASSERT(offsetof(CHARACTERDATA_PC, animations) == 0x10);
 
-typedef struct CHARACTER_PACK_ANIMATION_PC { // size 0x8
-    u32 pointer_table;                       // 0x0
-    u32 animation_magic;                     // 0x4
-} CHARACTER_PACK_ANIMATION_PC;
+typedef struct CHARACTER_PACK_ANIMATION { // size 0x8
+    u32 pointer_table;                    // 0x0
+    u32 animation_magic;                  // 0x4
+} CHARACTER_PACK_ANIMATION;
 
 STATIC_ASSERT(offsetof(ANI3_HEADER_PC, field_12_low) == 0x12);
 
-typedef struct CHARACTER_LIST_ENTRY_PC {      // size 0x4c
+typedef struct CHARACTER_LIST_ENTRY {         // size 0x4c
     i32 name_id;                              // 0x00
     u32 model_flags;                          // 0x04
     char *dir;                                // 0x08
@@ -133,9 +133,9 @@ typedef struct CHARACTER_LIST_ENTRY_PC {      // size 0x4c
     i16 icon_model;                           // 0x42
     u32 unknown_44;                           // 0x44
     u32 unknown_48;                           // 0x48
-} CHARACTER_LIST_ENTRY_PC;
+} CHARACTER_LIST_ENTRY;
 
-STATIC_ASSERT(sizeof(CHARACTER_LIST_ENTRY_PC) == sizeof(CHARACTERDATA_PC));
+STATIC_ASSERT(sizeof(CHARACTER_LIST_ENTRY) == sizeof(CHARACTERDATA_PC));
 extern void NuHGobjDestroy(NUHGOBJ_EVAL_PC *object);
 STATIC_ASSERT(offsetof(APICHARSYS, permanent_model_count) == 0xc);
 STATIC_ASSERT(offsetof(APICHARSYS, loaded_model_count) == 0x10);
@@ -932,7 +932,7 @@ APIDEBRISSYS_PC *InitGameDebris(VARIPTR *cursor, VARIPTR end, i32 count, i32 nam
         memset(system, 0, sizeof(*system));
         system->capacity = count;
         system->named_count = named_count;
-        system->entries = (GAMEDEBRISENTRY_PC *)((cursor->addr + 15) & ~15u);
+        system->entries = (GAMEDEBRISENTRY *)((cursor->addr + 15) & ~15u);
         cursor->addr = ((cursor->addr + 15) & ~15u) + count * sizeof(*system->entries);
         if (system->entries != NULL) {
             memset(system->entries, -1, count * sizeof(*system->entries));
@@ -1306,7 +1306,7 @@ void APICharacterModelReset(CHARACTER_MODEL_LAYERS_PC *model) {
 }
 
 void *LoadAnimFromPAK(char *path, i32 area_animation, void *data, i32 size) {
-    API_ANIMATION_CACHE_PC *entry = apicharsys->animations;
+    API_ANIMATION_CACHE *entry = apicharsys->animations;
     i32 i;
     for (i = 0; i < apicharsys->loaded_animation_count; ++entry, ++i) {
         if (NuStrICmp(path, entry->path) == 0) {
@@ -1330,7 +1330,7 @@ void *LoadAnimFromPAK(char *path, i32 area_animation, void *data, i32 size) {
 }
 
 void *LoadAnim(char *path, i32 area_animation, VARIPTR *cursor, VARIPTR end) {
-    API_ANIMATION_CACHE_PC *entry = apicharsys->animations;
+    API_ANIMATION_CACHE *entry = apicharsys->animations;
     i32 i;
     for (i = 0; i < apicharsys->loaded_animation_count; ++i, ++entry) {
         if (NuStrICmp(path, entry->path) == 0) {
@@ -1514,7 +1514,7 @@ void APILoadCharacterModels(APICHARACTERMODELLIST *list, i32 area_animation, VAR
                         if (item != 0 && NuFilePakGetItemInfo(pak, item, &data, &size) != 0) {
                             i32 pointer_block = 0;
                             ANI3_HEADER_PC *joint;
-                            if ((i32)((CHARACTER_PACK_ANIMATION_PC *)data)->animation_magic >= 0x414e4935) {
+                            if ((i32)((CHARACTER_PACK_ANIMATION *)data)->animation_magic >= 0x414e4935) {
                                 pointer_block = 1;
                                 joint = (ANI3_HEADER_PC *)((u8 *)data + 4);
                             } else {
@@ -1657,7 +1657,7 @@ f32 animduration_blendouttime = 0;
 f32 AnimDuration(i32 character_id, i32 animation, f32 start_frame, f32 end_frame, i32 subtract_blend_out) {
     i16 model_id;
     CHARACTER_MODEL_LAYERS_PC *model;
-    CHARACTER_ANIMATION_LOCATOR_PC *animation_info;
+    CHARACTER_ANIMATION_LOCATOR *animation_info;
     f32 duration;
     if (character_id < 0 || character_id >= apicharsys->character_count) {
         return 0.0f;
@@ -2878,8 +2878,8 @@ i32 ActionFromName(const char *name) {
 CHARACTERDATA_PC *ConfigureCharacterList(char *file, VARIPTR *buffer_start, VARIPTR *buffer_end, i32 maximum,
                                          i32 *count_out, i32 game_stride, PLAYERCHARACTERCONFIG_PC **game_data_out) {
     NUFPAR_PC *parser;
-    CHARACTER_LIST_ENTRY_PC *first;
-    CHARACTER_LIST_ENTRY_PC *current;
+    CHARACTER_LIST_ENTRY *first;
+    CHARACTER_LIST_ENTRY *current;
     i16 directory_offsets[500];
     i16 filename_offsets[500];
     char strings[10000];
@@ -3011,13 +3011,13 @@ void APICharacterSysInit(VARIPTR *cursor, VARIPTR end, i32 character_count, i32 
         for (i = 0; i < apicharsys->model_capacity; ++i) {
             model = &apicharsys->models[i];
             if (apicharsys->model_id_capacity != 0) {
-                model->animations = (CHARACTER_ANIMATION_LOCATOR_PC **)((cursor->addr + 3) & ~3u);
+                model->animations = (CHARACTER_ANIMATION_LOCATOR **)((cursor->addr + 3) & ~3u);
                 cursor->addr = (cursor->addr + 3) & ~3u;
                 cursor->addr += apicharsys->model_id_capacity * sizeof(void *);
                 model->model_data_b = (void **)((cursor->addr + 3) & ~3u);
                 cursor->addr = (cursor->addr + 3) & ~3u;
                 cursor->addr += apicharsys->model_id_capacity * sizeof(void *);
-                model->model_data_c = (NUANIMDATA2_PC **)((cursor->addr + 3) & ~3u);
+                model->model_data_c = (NUANIMDATA2 **)((cursor->addr + 3) & ~3u);
                 cursor->addr = (cursor->addr + 3) & ~3u;
                 cursor->addr += apicharsys->model_id_capacity * sizeof(void *);
             }
@@ -3031,7 +3031,7 @@ void APICharacterSysInit(VARIPTR *cursor, VARIPTR end, i32 character_count, i32 
         memset(apicharsys->playermodelids, 0, apicharsys->character_count * sizeof(i16));
     }
     if (apicharsys->animation_capacity != 0) {
-        apicharsys->animations = (API_ANIMATION_CACHE_PC *)((cursor->addr + 3) & ~3u);
+        apicharsys->animations = (API_ANIMATION_CACHE *)((cursor->addr + 3) & ~3u);
         cursor->addr = (cursor->addr + 3) & ~3u;
         cursor->addr += apicharsys->animation_capacity * sizeof(*apicharsys->animations);
         memset(apicharsys->animations, 0, apicharsys->animation_capacity * sizeof(*apicharsys->animations));

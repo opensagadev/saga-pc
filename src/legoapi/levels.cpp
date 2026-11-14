@@ -12,43 +12,43 @@ extern "C" {
     void LevelsConfigDiagnosticPc(char *message);
 }
 
-typedef struct level_script_progress_pc_s { // size 0x20
-    char name[16];                          // 0x00
-    f32 params[4];                          // 0x10
+typedef struct level_script_progress_s { // size 0x20
+    char name[16];                       // 0x00
+    f32 params[4];                       // 0x10
 } LEVEL_SCRIPT_PROGRESS_PC;
 
-typedef struct ai_script_progress_view_pc_s { // size 0x2c24
-    u8 unknown_0000[0x2824];                  // 0x0000
-    LEVEL_SCRIPT_PROGRESS_PC scripts[32];     // 0x2824
+typedef struct ai_script_progress_view_s { // size 0x2c24
+    u8 unknown_0000[0x2824];               // 0x0000
+    LEVEL_SCRIPT_PROGRESS_PC scripts[32];  // 0x2824
 } AI_SCRIPT_PROGRESS_VIEW_PC;
 
 extern "C" {
     void LevelObjectsArenaDiagnosticPc(i32 size);
 }
 
-typedef struct startup_level_object_pc_s { // size 0x10
-    NUSPECIALHANDLE special;               // 0x0
-    i16 platform_id;                       // 0xc
-    u8 active;                             // 0xe
-    u8 unknown_f;                          // 0xf
+typedef struct startup_level_object_s { // size 0x10
+    NUSPECIALHANDLE special;            // 0x0
+    i16 platform_id;                    // 0xc
+    u8 active;                          // 0xe
+    u8 unknown_f;                       // 0xf
 } STARTUP_LEVEL_OBJECT_PC;
 
-typedef struct WORLD_OBJECT_SETUP_READER_PC { // size 0x2968
-    u8 unknown_0000[0x2964];                  // 0x0000
-    NUGSCN *icons_gscn;                       // 0x2964
-} WORLD_OBJECT_SETUP_READER_PC;
+typedef struct WORLD_OBJECT_SETUP_READER { // size 0x2968
+    u8 unknown_0000[0x2964];               // 0x0000
+    NUGSCN *icons_gscn;                    // 0x2964
+} WORLD_OBJECT_SETUP_READER;
 
 STATIC_ASSERT(offsetof(WORLDINFO, giz_buffer) == 0x104);
 STATIC_ASSERT(offsetof(WORLDINFO, current_gscn) == 0x13c);
 STATIC_ASSERT(offsetof(WORLDINFO, area) == 0x12c);
 STATIC_ASSERT(offsetof(WORLDINFO, level_objects) == 0x2ac0);
-STATIC_ASSERT(offsetof(LEVEL_OBJECT_RUNTIME_PC, active) == 0xe);
+STATIC_ASSERT(offsetof(LEVEL_OBJECT_RUNTIME, active) == 0xe);
 STATIC_ASSERT(sizeof(LEVEL_OBJECT_CONFIG_PC) == 8);
 STATIC_ASSERT(offsetof(LEVEL_OBJECT_CONFIG_PC, name) == 4);
 
-typedef struct menu_mission_reader_pc_s { // size 0x13
-    u8 unknown_00[0x12];                  // 0x00
-    i8 active_count;                      // 0x12
+typedef struct menu_mission_reader_s { // size 0x13
+    u8 unknown_00[0x12];               // 0x00
+    i8 active_count;                   // 0x12
 } MENU_MISSION_READER_PC;
 
 extern "C" {
@@ -764,8 +764,8 @@ extern "C" {
         i32 index;
         u32 size;
         world->giz_buffer.addr = (world->giz_buffer.addr + 3) & ~3u;
-        world->level_objects = (LEVEL_OBJECT_RUNTIME_PC *)world->giz_buffer.void_ptr;
-        size = LEVELOBJECTCOUNT * sizeof(LEVEL_OBJECT_RUNTIME_PC);
+        world->level_objects = (LEVEL_OBJECT_RUNTIME *)world->giz_buffer.void_ptr;
+        size = LEVELOBJECTCOUNT * sizeof(LEVEL_OBJECT_RUNTIME);
         world->giz_buffer.addr += size;
         memset(world->level_objects, 0, size);
         if (ObjTabList == NULL) {
@@ -799,8 +799,7 @@ extern "C" {
                     if (found) {
                         goto resolved;
                     }
-                    scene =
-                        big_icon_scene != NULL ? big_icon_scene : ((WORLD_OBJECT_SETUP_READER_PC *)world)->icons_gscn;
+                    scene = big_icon_scene != NULL ? big_icon_scene : ((WORLD_OBJECT_SETUP_READER *)world)->icons_gscn;
                     break;
                 }
                 case 4:

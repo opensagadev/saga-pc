@@ -11,7 +11,7 @@
 #include "nu2api/numath/nuvec.h"
 #endif
 
-struct NUANIMDATA2_PC;
+struct NUANIMDATA2;
 struct numtx_s;
 
 typedef void (*NUJOINTPROCANIMFN_PC)(ANI3_BUFFER_PC *, NUHGOBJ_EVAL_PC *, i32, NUHGOBJ_JOINT_OVERRIDE_PC *);
@@ -33,9 +33,8 @@ extern "C" {
     void NuHGobjEval(NUHGOBJ_EVAL_PC *, i32, NUHGOBJ_JOINT_OVERRIDE_PC *, struct numtx_s *);
     void NuHGobjEvalAnimBlend2Root(NUHGOBJ_EVAL_PC *, ANI3_HEADER_PC *, f32, ANI3_HEADER_PC *, f32, f32, i32, void *,
                                    struct numtx_s *, ANI3_ROOT_CALLBACK_PC, void *);
-    DWA_WEIGHT_BLOCK_PC **NuHGobjEvalDwa2(i32, i16 *, struct NUANIMDATA2_PC *, f32);
-    DWA_WEIGHT_BLOCK_PC **NuHGobjEvalDwaBlend2(i32, i16 *, struct NUANIMDATA2_PC *, f32, struct NUANIMDATA2_PC *, f32,
-                                               f32);
+    DWA_WEIGHT_BLOCK_PC **NuHGobjEvalDwa2(i32, i16 *, struct NUANIMDATA2 *, f32);
+    DWA_WEIGHT_BLOCK_PC **NuHGobjEvalDwaBlend2(i32, i16 *, struct NUANIMDATA2 *, f32, struct NUANIMDATA2 *, f32, f32);
     void NuHGobjEvalAnim2Root_3(NUHGOBJ_EVAL_PC *, ANI3_HEADER_PC *, f32, i32, void *, struct numtx_s *,
                                 ANI3_ROOT_CALLBACK_PC, void *);
     void NuHGobjEvalAnimBlend2Root_3(NUHGOBJ_EVAL_PC *, ANI3_HEADER_PC *, f32, ANI3_HEADER_PC *, f32, f32, i32, void *,

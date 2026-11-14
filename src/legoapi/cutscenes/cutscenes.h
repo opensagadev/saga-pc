@@ -13,9 +13,9 @@
 
 struct WORLDINFO_s;
 struct cutinfo_s;
-struct cutsys_pc_s;
+struct cutsys_s;
 
-typedef NUANIMDATA2_SKELETAL_PC CUT_ANIMATION_PC;
+typedef NUANIMDATA2_SKELETAL CUT_ANIMATION_PC;
 
 STATIC_ASSERT(offsetof(CUT_ANIMATION_PC, node_flags) == 0x14);
 
@@ -45,7 +45,7 @@ extern "C" {
     extern CUT_DRAW_SETTINGS_PC CutSceneDrawSettingsPc;
     extern CUT_DRAW_SETTINGS_PC *CutSceneSys;
     void CutScenes_InitSystem(CUT_DRAW_SETTINGS_PC *);
-    struct cutinfo_s *CutScene_Find(struct cutsys_pc_s *system, char *name);
+    struct cutinfo_s *CutScene_Find(struct cutsys_s *system, char *name);
     extern struct cutinfo_s *NewCutInfo[8];
     extern i32 NewCutInfoCount;
     extern i32 (*CutScene_StartFn)(struct cutinfo_s *cut);
@@ -66,7 +66,7 @@ extern "C" {
     extern const char AreaConfigKeyword_resident[9];
     extern const char AreaResidentsDirectory[8];
     extern const char LevelConfigKeyword_zspeed[7];
-    void CutScenes_Destroy(struct cutsys_pc_s *);
+    void CutScenes_Destroy(struct cutsys_s *);
 #ifdef __cplusplus
 }
 #endif
@@ -119,7 +119,7 @@ extern "C" {
 
     void CutScenes_Start(struct WORLDINFO_s *world);
     void CutScenes_Reset(struct WORLDINFO_s *world);
-    void CutScenes_Stop(struct cutsys_pc_s *system);
+    void CutScenes_Stop(struct cutsys_s *system);
     void CutScenes_End(void);
     void CutScenes_Update(struct WORLDINFO_s *world, i32 paused);
     void CutScenes_Draw(struct WORLDINFO_s *world);

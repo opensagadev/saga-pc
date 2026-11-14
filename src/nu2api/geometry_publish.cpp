@@ -1,23 +1,23 @@
 #include "saga.h"
 
-struct PC_GEOMETRY_PUBLISH_FORMAT_RECORD_PC { // size 0x78
-    u32 unknown_00;                           // 0x00
-    i32 element_count;                        // 0x04
-    u8 unknown_08[0x70];                      // 0x08
+struct PC_GEOMETRY_PUBLISH_FORMAT_RECORD { // size 0x78
+    u32 unknown_00;                        // 0x00
+    i32 element_count;                     // 0x04
+    u8 unknown_08[0x70];                   // 0x08
 };
 
-struct PC_GEOMETRY_PUBLISH_SKIN_REF_PC { // size 0x1c
-    u32 unknown_00;                      // 0x00
-    i32 matrix_count;                    // 0x04
-    u8 unknown_08[0x14];                 // 0x08
+struct PC_GEOMETRY_PUBLISH_SKIN_REF { // size 0x1c
+    u32 unknown_00;                   // 0x00
+    i32 matrix_count;                 // 0x04
+    u8 unknown_08[0x14];              // 0x08
 };
 
-struct PC_GEOMETRY_PUBLISH_FORMAT_PC {             // size 0x14
-    u32 kind;                                      // 0x00
-    u32 record_count;                              // 0x04
-    u32 skin_ref_count;                            // 0x08
-    PC_GEOMETRY_PUBLISH_FORMAT_RECORD_PC *records; // 0x0c
-    PC_GEOMETRY_PUBLISH_SKIN_REF_PC *skin_refs;    // 0x10
+struct PC_GEOMETRY_PUBLISH_FORMAT_PC {          // size 0x14
+    u32 kind;                                   // 0x00
+    u32 record_count;                           // 0x04
+    u32 skin_ref_count;                         // 0x08
+    PC_GEOMETRY_PUBLISH_FORMAT_RECORD *records; // 0x0c
+    PC_GEOMETRY_PUBLISH_SKIN_REF *skin_refs;    // 0x10
 };
 
 struct PC_GEOMETRY_PUBLISH_RECORD_PC {          // size 0x28
@@ -54,10 +54,10 @@ struct NuVec : NUVEC {
     f32 fun_005c69c0() const;
 };
 
-struct PC_GEOMETRY_PUBLISH_SORT_ITEM_PC { // size 0xc
-    u32 output_index;                     // 0x0
-    f32 distance_squared;                 // 0x4
-    u32 unknown_08;                       // 0x8
+struct PC_GEOMETRY_PUBLISH_SORT_ITEM { // size 0xc
+    u32 output_index;                  // 0x0
+    f32 distance_squared;              // 0x4
+    u32 unknown_08;                    // 0x8
 };
 
 extern "C" i32 PcGeometryBackendAvailablePc(void) {
@@ -101,10 +101,10 @@ extern "C" i32 PcRegisterDynamicGeometryPc(PC_GEOMETRY_PUBLISH_FORMAT_PC *format
         return 0;
     }
     record->sort_items =
-        (PC_GEOMETRY_SORT_ITEM_PC *)NuAlloc((i32)((u32)count * sizeof(PC_GEOMETRY_PUBLISH_SORT_ITEM_PC)),
+        (PC_GEOMETRY_SORT_ITEM_PC *)NuAlloc((i32)((u32)count * sizeof(PC_GEOMETRY_PUBLISH_SORT_ITEM)),
                                             "d:\\projects\\game_saga\\nu2api.saga\\nu3d\\nuinstsurfgeom_gen.cpp", 0x91);
     for (i32 i = 0; i < count; ++i) {
-        ((PC_GEOMETRY_PUBLISH_SORT_ITEM_PC *)record->sort_items)[i].output_index = (u32)i;
+        ((PC_GEOMETRY_PUBLISH_SORT_ITEM *)record->sort_items)[i].output_index = (u32)i;
     }
 
     i32 maximum = 0;

@@ -1,11 +1,11 @@
 #include "saga.h"
 #include <string.h>
 
-struct BATARANG_DETONATOR_HIT_VIEW_PC { // size 0x24
-    u8 unknown00[0xc];                  // 0x00
-    f32 scale;                          // 0x0c
-    u8 unknown10[0x10];                 // 0x10
-    f32 delay;                          // 0x20
+struct BATARANG_DETONATOR_HIT_VIEW { // size 0x24
+    u8 unknown00[0xc];               // 0x00
+    f32 scale;                       // 0x0c
+    u8 unknown10[0x10];              // 0x10
+    f32 delay;                       // 0x20
 };
 
 extern "C" const f64 GameObjectNearFloorNoFloorHeight;
@@ -113,7 +113,7 @@ extern "C" {
 extern "C" void Detonator_Detonate(DETONATOR_s *detonator) {
     Batarangs_CheckLostData(detonator);
     Detonate(&detonator->field_0x0c, 0);
-    BATARANG_DETONATOR_HIT_VIEW_PC *hit_data = static_cast<BATARANG_DETONATOR_HIT_VIEW_PC *>(detonator->field_0x34);
+    BATARANG_DETONATOR_HIT_VIEW *hit_data = static_cast<BATARANG_DETONATOR_HIT_VIEW *>(detonator->field_0x34);
     detonator->active = 0;
     if (hit_data != NULL) {
         hit_data->delay = BatarangDetonatorHitDelayPc;
@@ -134,8 +134,7 @@ extern "C" void Detonators_Update(void) {
         if (timer >= 10.7f) {
             Detonator_Detonate(detonator);
         } else if (detonator->field_0x34 != NULL) {
-            BATARANG_DETONATOR_HIT_VIEW_PC *hit_data =
-                static_cast<BATARANG_DETONATOR_HIT_VIEW_PC *>(detonator->field_0x34);
+            BATARANG_DETONATOR_HIT_VIEW *hit_data = static_cast<BATARANG_DETONATOR_HIT_VIEW *>(detonator->field_0x34);
             if (!(detonator->timer >= 10.0f) && (detonator->object == NULL || detonator->object->dead != 0 ||
                                                  !(detonator->object->field_de0 >= 0.3f))) {
                 hit_data->scale = DetonatorHitScaleIdlePc;

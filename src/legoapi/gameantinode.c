@@ -1,73 +1,73 @@
 #include "saga.h"
 
-typedef struct antinode_pc_s {  // size 0x40
-    NUVEC position;             // 0x00
-    f32 radius;                 // 0x0c
-    f32 min_y;                  // 0x10
-    f32 max_y;                  // 0x14
-    f32 extent_x;               // 0x18
-    f32 extent_z;               // 0x1c
-    f32 remaining_time;         // 0x20
-    u32 user_data[3];           // 0x24
-    u16 angle;                  // 0x30
-    u8 shape;                   // 0x32
-    u8 grid_min_x;              // 0x33
-    u8 grid_min_z;              // 0x34
-    u8 grid_max_x;              // 0x35
-    u8 grid_max_z;              // 0x36
-    u8 reserved_37;             // 0x37
-    struct antinode_pc_s *next; // 0x38
-    u8 unknown_3c[4];           // 0x3c
+typedef struct antinode_s {  // size 0x40
+    NUVEC position;          // 0x00
+    f32 radius;              // 0x0c
+    f32 min_y;               // 0x10
+    f32 max_y;               // 0x14
+    f32 extent_x;            // 0x18
+    f32 extent_z;            // 0x1c
+    f32 remaining_time;      // 0x20
+    u32 user_data[3];        // 0x24
+    u16 angle;               // 0x30
+    u8 shape;                // 0x32
+    u8 grid_min_x;           // 0x33
+    u8 grid_min_z;           // 0x34
+    u8 grid_max_x;           // 0x35
+    u8 grid_max_z;           // 0x36
+    u8 reserved_37;          // 0x37
+    struct antinode_s *next; // 0x38
+    u8 unknown_3c[4];        // 0x3c
 } ANTINODE_PC;
 
-typedef struct antinode_sys_pc_s { // size 0x18
-    ANTINODE_PC *nodes;            // 0x00
-    ANTINODE_PC *active;           // 0x04
-    ANTINODE_PC *free;             // 0x08
-    WORLDINFO *world;              // 0x0c
-    i32 capacity;                  // 0x10
-    i32 count;                     // 0x14
+typedef struct antinode_sys_s { // size 0x18
+    ANTINODE_PC *nodes;         // 0x00
+    ANTINODE_PC *active;        // 0x04
+    ANTINODE_PC *free;          // 0x08
+    WORLDINFO *world;           // 0x0c
+    i32 capacity;               // 0x10
+    i32 count;                  // 0x14
 } ANTINODE_SYS_PC;
 
-typedef struct antinode_data_pc_s { // size 0x24
-    NUVEC position;                 // 0x00
-    f32 radius;                     // 0x0c
-    f32 min_y;                      // 0x10
-    f32 max_y;                      // 0x14
-    f32 extent_x;                   // 0x18
-    f32 extent_z;                   // 0x1c
-    u16 angle;                      // 0x20
-    u8 shape;                       // 0x22
-    u8 mode;                        // 0x23
+typedef struct antinode_data_s { // size 0x24
+    NUVEC position;              // 0x00
+    f32 radius;                  // 0x0c
+    f32 min_y;                   // 0x10
+    f32 max_y;                   // 0x14
+    f32 extent_x;                // 0x18
+    f32 extent_z;                // 0x1c
+    u16 angle;                   // 0x20
+    u8 shape;                    // 0x22
+    u8 mode;                     // 0x23
 } ANTINODE_DATA_PC;
 
-typedef struct antinode_world_pc_s { // size 0x15c
-    u8 unknown_0000[0x144];          // 0x000
-    NUVEC level_min;                 // 0x144
-    NUVEC level_max;                 // 0x150
+typedef struct antinode_world_s { // size 0x15c
+    u8 unknown_0000[0x144];       // 0x000
+    NUVEC level_min;              // 0x144
+    NUVEC level_max;              // 0x150
 } ANTINODE_WORLD_PC;
 
-typedef struct ANTINODE_AI_OUTPUT_PC { // size 0x58
-    u8 unknown_00[0x10];               // 0x00
-    f32 min_y;                         // 0x10
-    u8 unknown_14[4];                  // 0x14
-    f32 max_y;                         // 0x18
-    u8 unknown_1c[0x1c];               // 0x1c
-    i32 rotation;                      // 0x38
-    u8 unknown_3c[4];                  // 0x3c
-    f32 extent_x;                      // 0x40
-    f32 extent_z;                      // 0x44
-    u8 unknown_48[2];                  // 0x48
-    u8 shape;                          // 0x4a
-    u8 unknown_4b[5];                  // 0x4b
-    u32 user_data[2];                  // 0x50
-} ANTINODE_AI_OUTPUT_PC;
+typedef struct ANTINODE_AI_OUTPUT { // size 0x58
+    u8 unknown_00[0x10];            // 0x00
+    f32 min_y;                      // 0x10
+    u8 unknown_14[4];               // 0x14
+    f32 max_y;                      // 0x18
+    u8 unknown_1c[0x1c];            // 0x1c
+    i32 rotation;                   // 0x38
+    u8 unknown_3c[4];               // 0x3c
+    f32 extent_x;                   // 0x40
+    f32 extent_z;                   // 0x44
+    u8 unknown_48[2];               // 0x48
+    u8 shape;                       // 0x4a
+    u8 unknown_4b[5];               // 0x4b
+    u32 user_data[2];               // 0x50
+} ANTINODE_AI_OUTPUT;
 
-STATIC_ASSERT(offsetof(ANTINODE_AI_OUTPUT_PC, user_data) + sizeof(u32) == 0x54);
+STATIC_ASSERT(offsetof(ANTINODE_AI_OUTPUT, user_data) + sizeof(u32) == 0x54);
 STATIC_ASSERT(offsetof(ANTINODE_PC, user_data) + sizeof(u32) == 0x28);
 STATIC_ASSERT(offsetof(ANTINODE_PC, user_data) + 2 * sizeof(u32) == 0x2c);
 
-typedef struct GAME_ANTI_NODE_DATA_PC {
+typedef struct GAME_ANTI_NODE_DATA {
     NUVEC position;
     f32 radius;
     f32 min_y;
@@ -77,7 +77,7 @@ typedef struct GAME_ANTI_NODE_DATA_PC {
     u16 angle;
     u8 shape;
     u8 mode;
-} GAME_ANTI_NODE_DATA_PC;
+} GAME_ANTI_NODE_DATA;
 
 #define GAME_ANTI_NODE_ABS(destination, expression)                                                                    \
     (temporary = (expression), *(u32 *)&(destination) = *(u32 *)&temporary & 0x7fffffff)
@@ -216,7 +216,7 @@ void GameAntinode_Update(void *opaque_system) {
     i32 found;
     i32 object_count;
     GAMEOBJECT *object;
-    ANTINODE_AI_OUTPUT_PC *active;
+    ANTINODE_AI_OUTPUT *active;
     f32 remaining;
     if (!system) {
         return;
@@ -264,7 +264,7 @@ void GameAntinode_Update(void *opaque_system) {
             }
         }
         if (found) {
-            active = (ANTINODE_AI_OUTPUT_PC *)AIAntinodeCreateSingleFrame(&node->position, node->radius);
+            active = (ANTINODE_AI_OUTPUT *)AIAntinodeCreateSingleFrame(&node->position, node->radius);
             if (active) {
                 active->extent_x = node->extent_x;
                 active->extent_z = node->extent_z;
@@ -280,7 +280,7 @@ void GameAntinode_Update(void *opaque_system) {
 }
 
 void GameAntiNodeData_Init(void *opaque_data, NUSPECIALHANDLE *special) {
-    GAME_ANTI_NODE_DATA_PC *data = opaque_data;
+    GAME_ANTI_NODE_DATA *data = opaque_data;
     NUVEC minimum;
     NUVEC maximum;
     NUMTX *matrix;
@@ -320,7 +320,7 @@ void GameAntiNodeData_Init(void *opaque_data, NUSPECIALHANDLE *special) {
 }
 
 void GameAntiNodeData_Read(void *opaque_data) {
-    GAME_ANTI_NODE_DATA_PC *data = opaque_data;
+    GAME_ANTI_NODE_DATA *data = opaque_data;
     if ((u8)EdFileReadChar() <= 0) {
         return;
     }

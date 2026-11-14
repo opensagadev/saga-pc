@@ -96,52 +96,52 @@ extern "C" {
         f32 timer;                    // 0x10
     } DOGFIGHT_DOOR_PC;
 
-    typedef struct DOGFIGHT_RESET_RECORD_PC { // size 0x60
-        u8 unknown[0x60];                     // 0x00
-    } DOGFIGHT_RESET_RECORD_PC;
+    typedef struct DOGFIGHT_RESET_RECORD { // size 0x60
+        u8 unknown[0x60];                  // 0x00
+    } DOGFIGHT_RESET_RECORD;
 
-    typedef struct DOGFIGHT_RESET_BUFFER_PC { // size 0xc
-        DOGFIGHT_RESET_RECORD_PC *records;    // 0x0
-        u32 capacity;                         // 0x4
-        u32 used;                             // 0x8
-    } DOGFIGHT_RESET_BUFFER_PC;
+    typedef struct DOGFIGHT_RESET_BUFFER { // size 0xc
+        DOGFIGHT_RESET_RECORD *records;    // 0x0
+        u32 capacity;                      // 0x4
+        u32 used;                          // 0x8
+    } DOGFIGHT_RESET_BUFFER;
 
-    typedef struct DOGFIGHT_COIN_RECORD_PC { // size 0x10
-        i32 spline_id;                       // 0x0
-        f32 spawn_time;                      // 0x4
-        u8 unknown_08[8];                    // 0x8
-    } DOGFIGHT_COIN_RECORD_PC;
+    typedef struct DOGFIGHT_COIN_RECORD { // size 0x10
+        i32 spline_id;                    // 0x0
+        f32 spawn_time;                   // 0x4
+        u8 unknown_08[8];                 // 0x8
+    } DOGFIGHT_COIN_RECORD;
 
-    typedef struct DOGFIGHT_SPACE_PC {               // size 0x64740
-        DOGFIGHT_CROSS_PC crosses[2];                // 0x00000
-        DOGFIGHT_GROUP_PC groups[8];                 // 0x000a0
-        NUVEC4 draw_scale;                           // 0x034a0
-        DOGFIGHT_ACTION_PC *actions;                 // 0x034b0
-        DOGFIGHT_ACTION_PC *current_action;          // 0x034b4
-        i32 unknown_34b8;                            // 0x034b8
-        i32 unknown_34bc;                            // 0x034bc
-        u8 unknown_34c0[12];                         // 0x034c0
-        struct DOGFIGHT_SPACE_PC *owner;             // 0x034cc
-        DOGFIGHT_SPLINE_HISTORY_PC splines[256];     // 0x034d0
-        DOGFIGHT_FIGHTER_PC queued_fighters[96];     // 0x564d0
-        DOGFIGHT_RESET_RECORD_PC reset_records[256]; // 0x5d6d0
-        DOGFIGHT_RESET_BUFFER_PC reset_buffer;       // 0x636d0
-        u8 unknown_636dc[4];                         // 0x636dc
-        NUVEC4 origin_start;                         // 0x636e0
-        NUVEC4 origin_end;                           // 0x636f0
-        NUVEC4 direction;                            // 0x63700
-        f32 direction_length;                        // 0x63710
-        f32 inverse_direction_length;                // 0x63714
-        u8 unknown_63718[4];                         // 0x63718
-        f32 door_time;                               // 0x6371c
-        f32 door_countdown;                          // 0x63720
-        f32 door_elapsed;                            // 0x63724
-        f32 normalized_speed;                        // 0x63728
-        f32 value_one_a;                             // 0x6372c
-        f32 value_one_b;                             // 0x63730
-        i32 coin_history_count;                      // 0x63734
-        DOGFIGHT_COIN_RECORD_PC coin_history[256];   // 0x63738
-        u8 unknown_64738[8];                         // 0x64738
+    typedef struct DOGFIGHT_SPACE_PC {            // size 0x64740
+        DOGFIGHT_CROSS_PC crosses[2];             // 0x00000
+        DOGFIGHT_GROUP_PC groups[8];              // 0x000a0
+        NUVEC4 draw_scale;                        // 0x034a0
+        DOGFIGHT_ACTION_PC *actions;              // 0x034b0
+        DOGFIGHT_ACTION_PC *current_action;       // 0x034b4
+        i32 unknown_34b8;                         // 0x034b8
+        i32 unknown_34bc;                         // 0x034bc
+        u8 unknown_34c0[12];                      // 0x034c0
+        struct DOGFIGHT_SPACE_PC *owner;          // 0x034cc
+        DOGFIGHT_SPLINE_HISTORY_PC splines[256];  // 0x034d0
+        DOGFIGHT_FIGHTER_PC queued_fighters[96];  // 0x564d0
+        DOGFIGHT_RESET_RECORD reset_records[256]; // 0x5d6d0
+        DOGFIGHT_RESET_BUFFER reset_buffer;       // 0x636d0
+        u8 unknown_636dc[4];                      // 0x636dc
+        NUVEC4 origin_start;                      // 0x636e0
+        NUVEC4 origin_end;                        // 0x636f0
+        NUVEC4 direction;                         // 0x63700
+        f32 direction_length;                     // 0x63710
+        f32 inverse_direction_length;             // 0x63714
+        u8 unknown_63718[4];                      // 0x63718
+        f32 door_time;                            // 0x6371c
+        f32 door_countdown;                       // 0x63720
+        f32 door_elapsed;                         // 0x63724
+        f32 normalized_speed;                     // 0x63728
+        f32 value_one_a;                          // 0x6372c
+        f32 value_one_b;                          // 0x63730
+        i32 coin_history_count;                   // 0x63734
+        DOGFIGHT_COIN_RECORD coin_history[256];   // 0x63738
+        u8 unknown_64738[8];                      // 0x64738
     } DOGFIGHT_SPACE_PC;
 
     STATIC_ASSERT(offsetof(WORLDINFO, has_level_specific_data) == 0x5118);
@@ -238,11 +238,11 @@ extern "C" {
         u32 used;                             // 0x8
     } DOGFIGHT_QUICK_BUFFER_PC;
 
-    typedef struct DOGFIGHT_TARGET_SPLINE_PC { // size 0x530
-        u8 unknown_000[0x51c];                 // 0x000
-        i32 target_id;                         // 0x51c
-        u8 unknown_520[16];                    // 0x520
-    } DOGFIGHT_TARGET_SPLINE_PC;
+    typedef struct DOGFIGHT_TARGET_SPLINE { // size 0x530
+        u8 unknown_000[0x51c];              // 0x000
+        i32 target_id;                      // 0x51c
+        u8 unknown_520[16];                 // 0x520
+    } DOGFIGHT_TARGET_SPLINE;
 
 #pragma data_seg(push, ".data$DogfightDeathImpulseScalePc")
     f32 DogfightDeathImpulseScalePc = 10.0f;
@@ -298,14 +298,14 @@ extern "C" {
         DOGFIGHT_SPACE_PC *owner;             // 0x2c
     } DOGFIGHT_ACTION_STATE_PC;
 
-    typedef struct DOGFIGHT_LEVEL_FLAGS_PC {
+    typedef struct DOGFIGHT_LEVEL_FLAGS {
         u8 first;
         u8 remainder[15];
-    } DOGFIGHT_LEVEL_FLAGS_PC;
+    } DOGFIGHT_LEVEL_FLAGS;
 
-    STATIC_ASSERT(sizeof(DOGFIGHT_LEVEL_FLAGS_PC) == sizeof(LevFlag));
+    STATIC_ASSERT(sizeof(DOGFIGHT_LEVEL_FLAGS) == sizeof(LevFlag));
     STATIC_ASSERT(offsetof(GAMESAVE, area_save) == 0x782c);
-    STATIC_ASSERT(offsetof(AREA_SAVE_PICKUP_PC, area_complete) == 1);
+    STATIC_ASSERT(offsetof(AREA_SAVE_PICKUP, area_complete) == 1);
     STATIC_ASSERT(offsetof(AREA_DATA_PC, index) == 0x7c);
     STATIC_ASSERT(offsetof(WORLDINFO, doors) == 0x4698);
     STATIC_ASSERT(offsetof(WORLDINFO, door_count) == 0x469c);
@@ -357,11 +357,11 @@ extern "C" {
     STATIC_ASSERT(offsetof(starfighter_s, spawn_time) == 0xf8);
     STATIC_ASSERT(offsetof(starfighter_s, hit_count) == 0x118);
 
-    typedef __declspec(align(16)) struct DOGFIGHT_COLLISION_VECTOR_PC { // size 0x10
-        NUVEC xyz;                                                      // 0x0
-    } DOGFIGHT_COLLISION_VECTOR_PC;
+    typedef __declspec(align(16)) struct DOGFIGHT_COLLISION_VECTOR { // size 0x10
+        NUVEC xyz;                                                   // 0x0
+    } DOGFIGHT_COLLISION_VECTOR;
 
-    STATIC_ASSERT(__alignof(DOGFIGHT_COLLISION_VECTOR_PC) == 16);
+    STATIC_ASSERT(__alignof(DOGFIGHT_COLLISION_VECTOR) == 16);
     STATIC_ASSERT(__alignof(NUVEC) == 4);
 
     STATIC_ASSERT(__alignof(NUVEC) == 4);
@@ -1186,7 +1186,7 @@ extern "C" {
     }
 
     static void DogfightResetWorldRecordsPc(WORLDINFO *world, DOGFIGHT_SPACE_PC *space) {
-        DOGFIGHT_RESET_BUFFER_PC *buffer;
+        DOGFIGHT_RESET_BUFFER *buffer;
         DogfightDrawScalePc.x = 4.0f;
         DogfightDrawScalePc.y = 4.0f;
         DogfightDrawScalePc.z = 4.0f;
@@ -1406,7 +1406,7 @@ extern "C" {
 
     static void StarFighterTargetPc(starfighter_s *fighter) {
         DOGFIGHT_SPACE_PC *space = (DOGFIGHT_SPACE_PC *)WORLD->level_specific_data;
-        DOGFIGHT_TARGET_SPLINE_PC *spline = (DOGFIGHT_TARGET_SPLINE_PC *)fighter->spline;
+        DOGFIGHT_TARGET_SPLINE *spline = (DOGFIGHT_TARGET_SPLINE *)fighter->spline;
         DOGFIGHT_FIGHTER_PC *record;
         i32 target_id;
         i32 i;
@@ -2290,8 +2290,8 @@ extern "C" {
 
     i32 ChrisExtraBoltCollision(BOLT *bolt, NUVEC *points) {
         DOGFIGHT_SPACE_PC *space;
-        DOGFIGHT_COLLISION_VECTOR_PC position;
-        DOGFIGHT_COLLISION_VECTOR_PC velocity;
+        DOGFIGHT_COLLISION_VECTOR position;
+        DOGFIGHT_COLLISION_VECTOR velocity;
         i32 group;
         i32 i;
         if (WORLD->has_level_specific_data == 0) {
@@ -2719,7 +2719,7 @@ extern "C" {
     }
 
     void ChrisDogFightAUpdate(WORLDINFO *world) {
-        DOGFIGHT_LEVEL_FLAGS_PC *flags = (DOGFIGHT_LEVEL_FLAGS_PC *)&LevFlag;
+        DOGFIGHT_LEVEL_FLAGS *flags = (DOGFIGHT_LEVEL_FLAGS *)&LevFlag;
         SpaceResetAudioPoint();
         ProcessCurrentSpeed(world, DogfightSpeedListPc);
         ProcessSpaceLevelPc((DOGFIGHT_SPACE_PC *)world->level_specific_data);

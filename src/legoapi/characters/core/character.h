@@ -33,11 +33,11 @@ struct DWA_WEIGHT_BLOCK_PC;
 struct NUGSCN_s;
 struct NUHGOBJ_EVAL_PC;
 struct NUHGOBJ_JOINT_OVERRIDE_PC;
-struct animpacket_pc_s;
+struct animpacket_s;
 struct apicharactermodellist_s;
 struct numtx_s;
 
-typedef struct characterdata_pc_s {
+typedef struct characterdata_s {
     i32 name_id;
     u32 model_flags;
     char *dir;
@@ -206,7 +206,7 @@ extern "C" {
 }
 #endif
 
-typedef struct charfixup_pc_s {
+typedef struct charfixup_s {
     char *name;
     i16 *id;
 } CHARFIXUP_PC;
@@ -272,9 +272,9 @@ extern "C" {
 #ifdef __cplusplus
 extern "C" {
 #endif
-    i32 APIDrawCharacterModel(CHARACTER_MODEL_LAYERS_PC *, APICHARACTERDATA *, struct animpacket_pc_s *,
-                              struct numtx_s *, struct numtx_s *, struct numtx_s *, NUVEC *, struct numtx_s *,
-                              GAMEOBJECT *, u32, struct NUHGOBJ_JOINT_OVERRIDE_PC *, i32, i32, f32, struct numtx_s *,
+    i32 APIDrawCharacterModel(CHARACTER_MODEL_LAYERS_PC *, APICHARACTERDATA *, struct animpacket_s *, struct numtx_s *,
+                              struct numtx_s *, struct numtx_s *, NUVEC *, struct numtx_s *, GAMEOBJECT *, u32,
+                              struct NUHGOBJ_JOINT_OVERRIDE_PC *, i32, i32, f32, struct numtx_s *,
                               void (*)(void *, GAMEOBJECT *, i32, i32), APIDEBRISSYS_PC *);
     i32 GetDefaultIdle(GAMEOBJECT *);
     void IconScenes_Load(struct apicharactermodellist_s *, i32, VARIPTR *, VARIPTR *);

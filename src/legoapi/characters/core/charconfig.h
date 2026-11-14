@@ -25,22 +25,22 @@
 struct APIDEBRISSYS_PC;
 struct CHARACTER_MODEL_LAYERS_PC;
 struct PLAYERCHARACTERCONFIG_PC;
-struct animpacket_pc_s;
+struct animpacket_s;
 struct apicharacterdata_s;
 struct apicharactermodellist_s;
 struct gameobject_s;
 struct nufpcomjmp_s;
 struct numtx_s;
 
-typedef struct GAMECHARACTERLAYER_PC {
+typedef struct GAMECHARACTERLAYER {
     char name[0x18];
     i16 mask_bit;
     i16 hierarchy_layer_index;
-} GAMECHARACTERLAYER_PC;
+} GAMECHARACTERLAYER;
 
-STATIC_ASSERT(sizeof(GAMECHARACTERLAYER_PC) == 0x1c);
-STATIC_ASSERT(offsetof(GAMECHARACTERLAYER_PC, mask_bit) == 0x18);
-STATIC_ASSERT(offsetof(GAMECHARACTERLAYER_PC, hierarchy_layer_index) == 0x1a);
+STATIC_ASSERT(sizeof(GAMECHARACTERLAYER) == 0x1c);
+STATIC_ASSERT(offsetof(GAMECHARACTERLAYER, mask_bit) == 0x18);
+STATIC_ASSERT(offsetof(GAMECHARACTERLAYER, hierarchy_layer_index) == 0x1a);
 
 typedef struct CHARACTER_EFFECT_CONFIG_PC {
     i16 character_id;
@@ -120,7 +120,7 @@ extern "C" {
 extern "C" {
 #endif
     extern BOLTSYS_PC GlobalBoltSystem_Default;
-    void AddAnimEffects(struct CHARACTER_MODEL_LAYERS_PC *, struct apicharacterdata_s *, struct animpacket_pc_s *,
+    void AddAnimEffects(struct CHARACTER_MODEL_LAYERS_PC *, struct apicharacterdata_s *, struct animpacket_s *,
                         struct numtx_s *, struct gameobject_s *, CHARACTER_EFFECT_CONFIG_PC *, i32, f32,
                         void (*)(void *, struct gameobject_s *, i32, i32), struct APIDEBRISSYS_PC *);
     i32 CharCategory_IsCategory(struct gameobject_s *, i32);

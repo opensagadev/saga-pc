@@ -16,23 +16,23 @@ extern "C" {
 #endif
 
     typedef struct CHARACTER_SHADOW_PACKET_PC {
-        CHARACTER_SHADOW_RESET_SLOT_PC shadows[5];
+        CHARACTER_SHADOW_RESET_SLOT shadows[5];
     } CHARACTER_SHADOW_PACKET_PC;
 
-    STATIC_ASSERT(offsetof(CHARACTER_SHADOW_PACKET_PC, shadows) + sizeof(CHARACTER_SHADOW_RESET_SLOT_PC) * 0 +
-                      offsetof(CHARACTER_SHADOW_RESET_SLOT_PC, position) + offsetof(NUVEC, y) ==
+    STATIC_ASSERT(offsetof(CHARACTER_SHADOW_PACKET_PC, shadows) + sizeof(CHARACTER_SHADOW_RESET_SLOT) * 0 +
+                      offsetof(CHARACTER_SHADOW_RESET_SLOT, position) + offsetof(NUVEC, y) ==
                   4);
-    STATIC_ASSERT(offsetof(CHARACTER_SHADOW_PACKET_PC, shadows) + sizeof(CHARACTER_SHADOW_RESET_SLOT_PC) * 1 +
-                      offsetof(CHARACTER_SHADOW_RESET_SLOT_PC, position) + offsetof(NUVEC, y) ==
+    STATIC_ASSERT(offsetof(CHARACTER_SHADOW_PACKET_PC, shadows) + sizeof(CHARACTER_SHADOW_RESET_SLOT) * 1 +
+                      offsetof(CHARACTER_SHADOW_RESET_SLOT, position) + offsetof(NUVEC, y) ==
                   0x18);
-    STATIC_ASSERT(offsetof(CHARACTER_SHADOW_PACKET_PC, shadows) + sizeof(CHARACTER_SHADOW_RESET_SLOT_PC) * 2 +
-                      offsetof(CHARACTER_SHADOW_RESET_SLOT_PC, position) + offsetof(NUVEC, y) ==
+    STATIC_ASSERT(offsetof(CHARACTER_SHADOW_PACKET_PC, shadows) + sizeof(CHARACTER_SHADOW_RESET_SLOT) * 2 +
+                      offsetof(CHARACTER_SHADOW_RESET_SLOT, position) + offsetof(NUVEC, y) ==
                   0x2c);
-    STATIC_ASSERT(offsetof(CHARACTER_SHADOW_PACKET_PC, shadows) + sizeof(CHARACTER_SHADOW_RESET_SLOT_PC) * 3 +
-                      offsetof(CHARACTER_SHADOW_RESET_SLOT_PC, position) + offsetof(NUVEC, y) ==
+    STATIC_ASSERT(offsetof(CHARACTER_SHADOW_PACKET_PC, shadows) + sizeof(CHARACTER_SHADOW_RESET_SLOT) * 3 +
+                      offsetof(CHARACTER_SHADOW_RESET_SLOT, position) + offsetof(NUVEC, y) ==
                   0x40);
-    STATIC_ASSERT(offsetof(CHARACTER_SHADOW_PACKET_PC, shadows) + sizeof(CHARACTER_SHADOW_RESET_SLOT_PC) * 4 +
-                      offsetof(CHARACTER_SHADOW_RESET_SLOT_PC, position) + offsetof(NUVEC, y) ==
+    STATIC_ASSERT(offsetof(CHARACTER_SHADOW_PACKET_PC, shadows) + sizeof(CHARACTER_SHADOW_RESET_SLOT) * 4 +
+                      offsetof(CHARACTER_SHADOW_RESET_SLOT, position) + offsetof(NUVEC, y) ==
                   0x54);
 
     void CharShadows_Reset(CHARACTER_SHADOW_PACKET_PC *);

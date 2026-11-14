@@ -12,7 +12,7 @@
 
 struct WORLDINFO_s;
 
-typedef struct indy_guideline_pc_s {
+typedef struct indy_guideline_s {
     char name[8];
     NUVEC endpoints[2];
     u32 flags;

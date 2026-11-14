@@ -8,27 +8,27 @@ STATIC_ASSERT(offsetof(MISSIONSYS_PC, active_mission) == 4);
 STATIC_ASSERT(offsetof(MISSIONSYS_PC, state) == 0x1d);
 STATIC_ASSERT(offsetof(TIMER, time_elapsed) == 0);
 
-typedef struct MISSION_END_DATA_VIEW_PC { // size 0x2
-    i16 find_character;                   // 0x0
-} MISSION_END_DATA_VIEW_PC;
+typedef struct MISSION_END_DATA_VIEW { // size 0x2
+    i16 find_character;                // 0x0
+} MISSION_END_DATA_VIEW;
 
-typedef struct MISSION_END_SYSTEM_VIEW_PC { // size 0xc
-    u8 unknown_00[8];                       // 0x0
-    f32 elapsed_time;                       // 0x8
-} MISSION_END_SYSTEM_VIEW_PC;
+typedef struct MISSION_END_SYSTEM_VIEW { // size 0xc
+    u8 unknown_00[8];                    // 0x0
+    f32 elapsed_time;                    // 0x8
+} MISSION_END_SYSTEM_VIEW;
 
 STATIC_ASSERT(offsetof(GAMEOBJECT, collision_identity_mask) == 0x1e8);
 STATIC_ASSERT(offsetof(GAMEOBJECT, collision_contact_mask) == 0x1f0);
 STATIC_ASSERT(offsetof(GAMEOBJECT, dead) == 0x28b);
 STATIC_ASSERT(offsetof(GAMEOBJECT, field_280) == 0x280);
 
-typedef struct MISSION_SYSTEM_READER_PC { // size 0x30
-    MISSIONDATA_PC *missions;             // 0x00
-    MISSIONDATA_PC *active_mission;       // 0x04
-    TIMER timer;                          // 0x08
-    MISSION_SAVE_READER_PC *save;         // 0x18
-    u8 count;                             // 0x1c
-    u8 state;                             // 0x1d
+typedef struct MISSION_SYSTEM_READER { // size 0x30
+    MISSIONDATA_PC *missions;          // 0x00
+    MISSIONDATA_PC *active_mission;    // 0x04
+    TIMER timer;                       // 0x08
+    MISSION_SAVE_READER_PC *save;      // 0x18
+    u8 count;                          // 0x1c
+    u8 state;                          // 0x1d
 
     union { // size 0x1
         u8 flags;
@@ -41,7 +41,7 @@ typedef struct MISSION_SYSTEM_READER_PC { // size 0x30
 
     u8 character_count;   // 0x1f
     i16 character_ids[8]; // 0x20
-} MISSION_SYSTEM_READER_PC;
+} MISSION_SYSTEM_READER;
 
 STATIC_ASSERT(sizeof(MISSIONDATA_PC) == 0x18);
 STATIC_ASSERT(offsetof(MISSIONDATA_PC, find_character) == 0);
@@ -65,8 +65,8 @@ void MissionsConfigMissingPc(char *filename);
 MISSIONSYS_PC *Missions_Configure(char *file, VARIPTR *buffer_start, VARIPTR *buffer_end,
                                   MISSION_SAVE_READER_PC *save) {
     NUFPAR_PC *parser;
-    MISSION_SYSTEM_READER_PC temporary;
-    MISSION_SYSTEM_READER_PC *destination;
+    MISSION_SYSTEM_READER temporary;
+    MISSION_SYSTEM_READER *destination;
     MISSIONDATA_PC *mission;
     i32 character;
     parser = NuFParCreate(file);
@@ -174,14 +174,14 @@ MISSIONDATA_PC *Mission_Active(MISSIONSYS_PC *system) {
 }
 
 i32 Mission_CurrentState(MISSIONSYS_PC *system) {
-    MISSION_SYSTEM_READER_PC *reader;
+    MISSION_SYSTEM_READER *reader;
     if (system == NULL) {
         system = MissionSys;
     }
     if (system == NULL) {
         return 0;
     }
-    reader = (MISSION_SYSTEM_READER_PC *)system;
+    reader = (MISSION_SYSTEM_READER *)system;
     if (reader->state != 0 && reader->active_mission != NULL) {
         return reader->state;
     }
@@ -189,13 +189,13 @@ i32 Mission_CurrentState(MISSIONSYS_PC *system) {
 }
 
 i32 Missions_PartyAvailable(MISSIONSYS_PC *system) {
-    MISSION_SYSTEM_READER_PC *reader;
+    MISSION_SYSTEM_READER *reader;
     i32 index;
     if (system == NULL) {
         system = MissionSys;
     }
     if (system != NULL) {
-        reader = (MISSION_SYSTEM_READER_PC *)system;
+        reader = (MISSION_SYSTEM_READER *)system;
         for (index = 0; index < reader->character_count; ++index) {
             if (Collection_Got(reader->character_ids[index]) == 0) {
                 return 0;
@@ -206,14 +206,14 @@ i32 Missions_PartyAvailable(MISSIONSYS_PC *system) {
 }
 
 i32 Missions_NumCompleted(MISSIONSYS_PC *system, MISSION_SAVE_READER_PC *save, i32 complete) {
-    MISSION_SYSTEM_READER_PC *reader;
+    MISSION_SYSTEM_READER *reader;
     i32 index;
     i32 total = 0;
     if (system == NULL) {
         system = MissionSys;
     }
     if (system != NULL) {
-        reader = (MISSION_SYSTEM_READER_PC *)system;
+        reader = (MISSION_SYSTEM_READER *)system;
         for (index = 0; index < reader->count; ++index) {
             if (complete != 0) {
                 save->completed[index] = 1;
@@ -230,13 +230,13 @@ i32 Missions_NumCompleted(MISSIONSYS_PC *system, MISSION_SAVE_READER_PC *save, i
 }
 
 GAMEOBJECT *Mission_FindTarget(MISSIONSYS_PC *system, u64 *identity) {
-    MISSION_SYSTEM_READER_PC *reader;
+    MISSION_SYSTEM_READER *reader;
     GAMEOBJECT *target;
     if (system == NULL) {
         system = MissionSys;
     }
     if (system != NULL) {
-        reader = (MISSION_SYSTEM_READER_PC *)system;
+        reader = (MISSION_SYSTEM_READER *)system;
         target = FindGameObject(reader->active_mission->find_character, 0, 0, 1, 0);
         if (identity != NULL) {
             *identity = target != NULL ? U64_PAIR(target->collision_identity_mask) : 0;
@@ -250,14 +250,14 @@ GAMEOBJECT *Mission_FindTarget(MISSIONSYS_PC *system, u64 *identity) {
 }
 
 i32 Missions_PickupsOff(MISSIONSYS_PC *system) {
-    MISSION_SYSTEM_READER_PC *reader;
+    MISSION_SYSTEM_READER *reader;
     if (system == NULL) {
         system = MissionSys;
     }
     if (system == NULL) {
         return 0;
     }
-    reader = (MISSION_SYSTEM_READER_PC *)system;
+    reader = (MISSION_SYSTEM_READER *)system;
     if (reader->state == 0 || reader->active_mission == NULL || (reader->flags & 1) != 0) {
         return 0;
     }

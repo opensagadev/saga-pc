@@ -3,7 +3,7 @@
 typedef struct CHARCONFIG_PC {
     CHARACTERDATA_PC *character;
     PLAYERCHARACTERCONFIG_PC *runtime;
-    GAMECHARACTERLAYER_PC *layer_scratch;
+    GAMECHARACTERLAYER *layer_scratch;
 
     union {
         u32 flags;
@@ -28,7 +28,7 @@ typedef struct CHARCONFIG_PC {
 
 extern CHARCONFIG_PC charconfig;
 
-typedef struct charconfig_variant_reader_pc_s {
+typedef struct charconfig_variant_reader_s {
     u8 unknown_000[0x116];
     i8 variant_type;
     u8 unknown_117[9];

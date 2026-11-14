@@ -138,7 +138,7 @@ STATIC_ASSERT(offsetof(SoundVoiceManagerPC, option_d14) == 0xd14);
 
 typedef struct PC_SOUND_COMMIT_PC PC_SOUND_COMMIT_PC;
 
-typedef struct PC_SOUND_COMMIT_METHODS_PC {
+typedef struct PC_SOUND_COMMIT_METHODS {
     void *unknown_00[2];
     ULONG(__stdcall *release)(PC_SOUND_COMMIT_PC *);
     void *unknown_0c[10];
@@ -147,13 +147,13 @@ typedef struct PC_SOUND_COMMIT_METHODS_PC {
     HRESULT(__stdcall *set_rolloff_factor)(PC_SOUND_COMMIT_PC *, float, DWORD);
     void *unknown_40;
     HRESULT(__stdcall *commit_deferred_settings)(PC_SOUND_COMMIT_PC *);
-} PC_SOUND_COMMIT_METHODS_PC;
+} PC_SOUND_COMMIT_METHODS;
 
 struct PC_SOUND_COMMIT_PC {
-    const PC_SOUND_COMMIT_METHODS_PC *vtable;
+    const PC_SOUND_COMMIT_METHODS *vtable;
 };
 
-STATIC_ASSERT(offsetof(PC_SOUND_COMMIT_METHODS_PC, commit_deferred_settings) == 0x44);
+STATIC_ASSERT(offsetof(PC_SOUND_COMMIT_METHODS, commit_deferred_settings) == 0x44);
 
 struct nusound_filename_info_s;
 #ifdef __cplusplus
@@ -205,9 +205,9 @@ extern "C" {
     STATIC_ASSERT(offsetof(SoundVoiceManagerPC, primary_buffer) == 0xd80);
     STATIC_ASSERT(offsetof(SoundVoiceManagerPC, primary_desc) == 0xd84);
     STATIC_ASSERT(offsetof(SoundSamplePC, failed_byte) == 0x405);
-    STATIC_ASSERT(offsetof(PC_SOUND_COMMIT_METHODS_PC, set_orientation) == 0x34);
-    STATIC_ASSERT(offsetof(PC_SOUND_COMMIT_METHODS_PC, set_position) == 0x38);
-    STATIC_ASSERT(offsetof(PC_SOUND_COMMIT_METHODS_PC, set_rolloff_factor) == 0x3c);
+    STATIC_ASSERT(offsetof(PC_SOUND_COMMIT_METHODS, set_orientation) == 0x34);
+    STATIC_ASSERT(offsetof(PC_SOUND_COMMIT_METHODS, set_position) == 0x38);
+    STATIC_ASSERT(offsetof(PC_SOUND_COMMIT_METHODS, set_rolloff_factor) == 0x3c);
     void PCSoundPlayUnpositioned(i32, i32, i32, i32, f32, i32, f32, f32, i32);
     void PCSoundPlayUnpositionedWrapper(i32, i32, i32, i32, f32, i32, f32, f32);
     extern i32 PCSoundStartedOneShotCountPc;

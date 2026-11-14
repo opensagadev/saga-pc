@@ -13,7 +13,7 @@
 #include "nu2api/numath/nuvec.h"
 #endif
 
-typedef struct attracto_pc_s ATTRACTO_PC;
+typedef struct attracto_s ATTRACTO_PC;
 #ifdef __cplusplus
 extern "C" {
 #endif

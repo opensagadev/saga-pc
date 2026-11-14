@@ -6,7 +6,7 @@
 #include "nu2api/nucore/common.h"
 
 struct area_data_pc_s;
-struct level_data_pc_s;
+struct level_data_s;
 
 typedef struct area_fixup_pc_entry_s {
     char *name;
@@ -23,8 +23,8 @@ extern "C" {
     extern struct area_data_pc_s *ADataList;
     extern i32 AREACOUNT;
     struct area_data_pc_s *Area_FindByName(char *name, i32 *index_out);
-    struct level_data_pc_s *Area_FindStatusLevel(struct area_data_pc_s *area, i32 *index_out);
-    struct level_data_pc_s *Area_FindNextPlayLevel(i32 level_index);
+    struct level_data_s *Area_FindStatusLevel(struct area_data_pc_s *area, i32 *index_out);
+    struct level_data_s *Area_FindNextPlayLevel(i32 level_index);
     void Areas_FixUp(AREAFIXUP_PC *fixup);
     void FixUpAreas(void);
     extern u16 AREA_DEFAULTBONUSTIMETRIALTIME;

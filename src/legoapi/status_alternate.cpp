@@ -1606,7 +1606,7 @@ extern "C" {
             f32 text_x;
             u32 coins;
             i32 object_index;
-            LEVEL_OBJECT_RUNTIME_PC *object;
+            LEVEL_OBJECT_RUNTIME *object;
             Text_MakeScore(packet->coins_remaining[player], text);
             alpha = packet->player_active[player] != 0 ? 1.0f : title_alpha * 0.25;
             coins = packet->coins_remaining[player];

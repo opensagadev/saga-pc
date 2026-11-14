@@ -6,38 +6,38 @@ STATIC_ASSERT(offsetof(GAMEOBJECT, character_context) == 0x7b5);
 STATIC_ASSERT(offsetof(GAMEOBJECT, force_target) == 0x790);
 STATIC_ASSERT(offsetof(GAMEOBJECT, flags_e20) == 0xe20);
 
-typedef struct PUNCH_BLOWUP_VIEW_PC { // size 0x114
-    u8 unknown_00[0x4c];              // 0x000
-    NUVEC mid_position;               // 0x04c
-    NUVEC bounds_min;                 // 0x058
-    NUVEC bounds_max;                 // 0x064
-    u8 unknown_70[0x24];              // 0x070
-    u32 status_flags;                 // 0x094
-    u32 draw_flags;                   // 0x098
-    u32 secondary_flags;              // 0x09c
-    u8 unknown_a0[8];                 // 0x0a0
-    f32 target_scale;                 // 0x0a8
-    u8 unknown_ac[0x56];              // 0x0ac
-    i16 platform_id;                  // 0x102
-    u8 unknown_104[0x10];             // 0x104
-} PUNCH_BLOWUP_VIEW_PC;
+typedef struct PUNCH_BLOWUP_VIEW { // size 0x114
+    u8 unknown_00[0x4c];           // 0x000
+    NUVEC mid_position;            // 0x04c
+    NUVEC bounds_min;              // 0x058
+    NUVEC bounds_max;              // 0x064
+    u8 unknown_70[0x24];           // 0x070
+    u32 status_flags;              // 0x094
+    u32 draw_flags;                // 0x098
+    u32 secondary_flags;           // 0x09c
+    u8 unknown_a0[8];              // 0x0a0
+    f32 target_scale;              // 0x0a8
+    u8 unknown_ac[0x56];           // 0x0ac
+    i16 platform_id;               // 0x102
+    u8 unknown_104[0x10];          // 0x104
+} PUNCH_BLOWUP_VIEW;
 
-typedef struct weapon_rate_pc_s {
+typedef struct weapon_rate_s {
     u8 unknown_000[0xd40];
     f32 weapon_scale_rate;
 } WEAPON_RATE_PC;
 
-typedef struct blowup_movement_pc_s {
+typedef struct blowup_movement_s {
     u8 unknown_00[0x4c];
     NUVEC mid_position;
     u8 unknown_58[0x50];
     f32 target_radius;
 } BLOWUP_MOVEMENT_PC;
 
-typedef struct HOLD_RUNTIME_VIEW_PC { // size 0xde8
-    u8 unknown_000[0xde4];            // 0x000
-    f32 hold_timer;                   // 0xde4
-} HOLD_RUNTIME_VIEW_PC;
+typedef struct HOLD_RUNTIME_VIEW { // size 0xde8
+    u8 unknown_000[0xde4];         // 0x000
+    f32 hold_timer;                // 0xde4
+} HOLD_RUNTIME_VIEW;
 
 i32 ObjOpponentStillThere(GAMEOBJECT *object, GAMEOBJECT *opponent, f32 gap) {
     NUVEC forward;
@@ -489,7 +489,7 @@ void StartHold(GAMEOBJECT *object) {
         return;
     }
     if (CanStartHoldFn(object) == 2) {
-        ((HOLD_RUNTIME_VIEW_PC *)object)->hold_timer = 0.0f;
+        ((HOLD_RUNTIME_VIEW *)object)->hold_timer = 0.0f;
         object->character_context = -1;
         return;
     }
@@ -528,7 +528,7 @@ void Punch_Hit(GAMEOBJECT *attacker, GAMEOBJECT *target, f32 unused, f32 gap) {
     f32 impulse;
     u16 angle;
     i32 damage;
-    PUNCH_BLOWUP_VIEW_PC *blowup;
+    PUNCH_BLOWUP_VIEW *blowup;
     (void)unused;
     attacker->context_variant_flags |= 0x40;
     if (LEGOCONTEXT_PUNCH != -1 && attacker->character_context == LEGOCONTEXT_PUNCH) {
@@ -598,7 +598,7 @@ void Punch_Hit(GAMEOBJECT *attacker, GAMEOBJECT *target, f32 unused, f32 gap) {
             }
         }
     } else {
-        blowup = (PUNCH_BLOWUP_VIEW_PC *)attacker->blowup_target;
+        blowup = (PUNCH_BLOWUP_VIEW *)attacker->blowup_target;
         if (blowup == NULL || (blowup->status_flags & 1) || !(blowup->status_flags & 0x4000) ||
             !(blowup->status_flags & 0x800000) || attacker->collision_max.y < blowup->bounds_min.y ||
             attacker->collision_min.y > blowup->bounds_max.y) {

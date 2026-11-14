@@ -3,12 +3,12 @@
 #include "diagnostics.h"
 #include <errno.h>
 
-struct sound_tuple_pc {
+struct sound_tuple {
     const void *source;
     const void *destination;
     int count;
 };
-static struct sound_tuple_pc sound_expected = {0};
+static struct sound_tuple sound_expected = {0};
 static const void *sound_setter_caller = NULL;
 static const char *sound_last_stage = "setter";
 static DWORD sound_last_thread = 0;
@@ -92,8 +92,8 @@ void SagaDebugSoundCheckpointPc(const char *stage, void *volatile const *source,
     int skip = -1;
     int diverged = 0;
     int ready = 0;
-    struct sound_tuple_pc observed;
-    struct sound_tuple_pc expected;
+    struct sound_tuple observed;
+    struct sound_tuple expected;
     const void *caller = NULL;
     const char *previous = NULL;
     if (sound_disabled != 0) {

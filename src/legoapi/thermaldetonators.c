@@ -7,8 +7,8 @@ STATIC_ASSERT(offsetof(GAMEOBJECT, helmet) == 0x1082);
 STATIC_ASSERT(offsetof(GAMEOBJECT, jump_variant_state) == 0xe32);
 STATIC_ASSERT(offsetof(GAMEOBJECT, flags_e24) == 0xe24);
 STATIC_ASSERT(offsetof(WORLDINFO, level_objects) == 0x2ac0);
-STATIC_ASSERT(sizeof(LEVEL_OBJECT_RUNTIME_PC) == 0x10);
-STATIC_ASSERT(offsetof(LEVEL_OBJECT_RUNTIME_PC, active) == 0xe);
+STATIC_ASSERT(sizeof(LEVEL_OBJECT_RUNTIME) == 0x10);
+STATIC_ASSERT(offsetof(LEVEL_OBJECT_RUNTIME, active) == 0xe);
 STATIC_ASSERT(offsetof(PART_PC, active) == 0x144);
 STATIC_ASSERT(offsetof(PART_PC, time_remaining) == 0x100);
 

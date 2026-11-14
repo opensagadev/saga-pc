@@ -3,9 +3,9 @@
 
 STATIC_ASSERT(offsetof(PART_PC, field_206) == 0x206);
 
-typedef struct grapple_rotation_pc_s { // size 0x3c
-    u8 unknown_00[0x30];               // 0x00
-    NUVEC hook_position;               // 0x30
+typedef struct grapple_rotation_s { // size 0x3c
+    u8 unknown_00[0x30];            // 0x00
+    NUVEC hook_position;            // 0x30
 } GRAPPLE_ROTATION_PC;
 
 extern const f64 GameObjectNearFloorNoFloorHeight;
@@ -14,33 +14,33 @@ STATIC_ASSERT(offsetof(GAMEOBJECT, locator_matrices) + 2 * sizeof(NUMTX) == 0x88
 STATIC_ASSERT(offsetof(CHARACTER_MODEL_LAYERS_PC, points_of_interest) + 2 * sizeof(void *) == 0x1c);
 STATIC_ASSERT(offsetof(AREA_GLOBALS_PC, field_00) == 0);
 STATIC_ASSERT(offsetof(TORPEDOPACKET_PC, pickup_positions) == 0x3c);
-STATIC_ASSERT(offsetof(GAMEDEBRISENTRY_PC, effect) == 0);
+STATIC_ASSERT(offsetof(GAMEDEBRISENTRY, effect) == 0);
 
-typedef struct kill_zipup_pc_s { // size 0x6a
-    u8 unknown_00[0x68];         // 0x00
-    u16 runtime_flags;           // 0x68
+typedef struct kill_zipup_s { // size 0x6a
+    u8 unknown_00[0x68];      // 0x00
+    u16 runtime_flags;        // 0x68
 } KILL_ZIPUP_PC;
 
 /* A copy of the 33-DWORD script cohort (script processor plus takeover link), without extending the
    packet. Held as words so the copy is one block move and the local is not treated as a /GS buffer. */
-typedef union TAGSCRIPTSTATE_PC { // size 0xcc
+typedef union TAGSCRIPTSTATE { // size 0xcc
     u32 words[0x33];
 
     struct {                  // size 0xb4
         u32 unknown000[0x2c]; // 0x00
         u8 creature_set;      // 0xb0
     } fields;
-} TAGSCRIPTSTATE_PC;
+} TAGSCRIPTSTATE;
 
 STATIC_ASSERT(offsetof(AIPACKET_PC, takeover_script_link) - offsetof(AIPACKET_PC, script_processor) == 0xc8);
 
 /* Bitfield view of flags_1fc: bit 7 marks a player-controlled object, bit 8 an AI-driven one. */
-typedef struct TAGFLAGS1FC_PC {
+typedef struct TAGFLAGS1FC {
     u32 bits_0_6 : 7;
     u32 player : 1;
     u32 ai : 1;
     u32 bits_9_31 : 23;
-} TAGFLAGS1FC_PC;
+} TAGFLAGS1FC;
 
 STATIC_ASSERT(offsetof(GAMEOBJECT, character_data) == 0x54);
 STATIC_ASSERT(offsetof(CHARACTERDATA_PC, game_character) == 0x24);
@@ -75,23 +75,23 @@ struct shadow_platform_list_pc_s {       // size 0x2c
     SHADOW_PLATFORM_ENTRY_PC entries[1]; // 0x18
 };
 
-typedef struct gameobject_collision_reset_pc_s { // size 0x2b8
-    u8 unknown_000[0x2b0];                       // 0x000
-    u32 collision_overlap_low;                   // 0x2b0
-    u32 collision_overlap_high;                  // 0x2b4
+typedef struct gameobject_collision_reset_s { // size 0x2b8
+    u8 unknown_000[0x2b0];                    // 0x000
+    u32 collision_overlap_low;                // 0x2b0
+    u32 collision_overlap_high;               // 0x2b4
 } GAMEOBJECT_COLLISION_RESET_PC;
 
-typedef struct GAME_ANTI_NODE_DATA_PC { // size 0x24
-    NUVEC position;                     // 0x00
-    f32 radius;                         // 0x0c
-    f32 min_y;                          // 0x10
-    f32 max_y;                          // 0x14
-    f32 extent_x;                       // 0x18
-    f32 extent_z;                       // 0x1c
-    u16 angle;                          // 0x20
-    u8 shape;                           // 0x22
-    u8 mode;                            // 0x23
-} GAME_ANTI_NODE_DATA_PC;
+typedef struct GAME_ANTI_NODE_DATA { // size 0x24
+    NUVEC position;                  // 0x00
+    f32 radius;                      // 0x0c
+    f32 min_y;                       // 0x10
+    f32 max_y;                       // 0x14
+    f32 extent_x;                    // 0x18
+    f32 extent_z;                    // 0x1c
+    u16 angle;                       // 0x20
+    u8 shape;                        // 0x22
+    u8 mode;                         // 0x23
+} GAME_ANTI_NODE_DATA;
 
 STATIC_ASSERT(offsetof(GAMEOBJECT, collision_link) == 0x298);
 STATIC_ASSERT(offsetof(GAMEOBJECT, lighting_packet) == 0x4d8);
@@ -684,7 +684,7 @@ STATIC_ASSERT(offsetof(WORLDINFO, script_processors) == 0x2af0);
 STATIC_ASSERT(offsetof(WORLDINFO, ai_path_cnx_control_sys) == 0x4670);
 STATIC_ASSERT(offsetof(WORLDINFO, ai_connection_helpers) == 0x4674);
 
-typedef struct ai_frame_world_pc_s {        // size 0x4670
+typedef struct ai_frame_world_s {           // size 0x4670
     u8 unknown_0000[0x2aec];                // 0x0000
     i32 processor_count;                    // 0x2aec
     LEVEL_SCRIPT_PROCESS_PC processors[32]; // 0x2af0

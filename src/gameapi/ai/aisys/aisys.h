@@ -39,7 +39,7 @@ struct eduimenu_s;
 struct gameobject_s;
 
 typedef struct AIPATHNODE_PC AIPATHNODE_PC;
-typedef struct AIPATHROUTE_PC AIPATHROUTE_PC;
+typedef struct AIPATHROUTE AIPATHROUTE;
 
 typedef struct AIPATHCNX_PC {        // size 0x24
     u32 traversal_flags[2];          // 0x00
@@ -54,7 +54,7 @@ typedef struct AIPATHCNX_PC {        // size 0x24
     f32 max_horizontal_distance;     // 0x20
 } AIPATHCNX_PC;
 
-struct AIPATHROUTE_PC {    // size 0x28
+struct AIPATHROUTE {       // size 0x28
     char *name;            // 0x00
     u8 *node_routes;       // 0x04
     u8 *node_directions;   // 0x08
@@ -66,11 +66,11 @@ struct AIPATHROUTE_PC {    // size 0x28
     u32 character_mask[4]; // 0x18
 };
 
-typedef struct AIPATHNODELINK_PC { // size 0x4
-    u8 node_index;                 // 0x0
-    u8 unknown_1;                  // 0x1
-    i16 special_route_index;       // 0x2
-} AIPATHNODELINK_PC;
+typedef struct AIPATHNODELINK { // size 0x4
+    u8 node_index;              // 0x0
+    u8 unknown_1;               // 0x1
+    i16 special_route_index;    // 0x2
+} AIPATHNODELINK;
 typedef struct AISYS_PC AISYS_PC;
 
 typedef struct AIAREA_PC { // size 0x40
@@ -262,42 +262,42 @@ struct AIPATHNODE_PC {              // size 0x5c
     u16 route_boundary_mask;        // 0x5a
 };
 
-typedef struct AIPATH_PC {             // size 0xa8
-    char name[0x10];                   // 0x00
-    u8 node_count;                     // 0x10
-    u8 flags;                          // 0x11
-    u16 connection_count;              // 0x12
-    u8 route_count;                    // 0x14
-    u8 index;                          // 0x15
-    u8 unknown_16[2];                  // 0x16
-    u8 updated_node_bits[0x20];        // 0x18
-    u8 previous_inside_node_bits[32];  // 0x38
-    u8 inside_node_bits[0x20];         // 0x58
-    u8 search_checksum;                // 0x78
-    u8 search_reset_node;              // 0x79
-    u8 special_route_count;            // 0x7a
-    u8 unknown_7b;                     // 0x7b
-    AIPATHNODE_PC *nodes;              // 0x7c
-    AIPATHCNX_PC *connections;         // 0x80
-    u8 **route_matrix;                 // 0x84
-    AIPATHROUTE_PC *routes;            // 0x88
-    AIPATHNODELINK_PC *special_routes; // 0x8c
-    NUVEC bounds_min;                  // 0x90
-    NUVEC bounds_max;                  // 0x9c
+typedef struct AIPATH_PC {            // size 0xa8
+    char name[0x10];                  // 0x00
+    u8 node_count;                    // 0x10
+    u8 flags;                         // 0x11
+    u16 connection_count;             // 0x12
+    u8 route_count;                   // 0x14
+    u8 index;                         // 0x15
+    u8 unknown_16[2];                 // 0x16
+    u8 updated_node_bits[0x20];       // 0x18
+    u8 previous_inside_node_bits[32]; // 0x38
+    u8 inside_node_bits[0x20];        // 0x58
+    u8 search_checksum;               // 0x78
+    u8 search_reset_node;             // 0x79
+    u8 special_route_count;           // 0x7a
+    u8 unknown_7b;                    // 0x7b
+    AIPATHNODE_PC *nodes;             // 0x7c
+    AIPATHCNX_PC *connections;        // 0x80
+    u8 **route_matrix;                // 0x84
+    AIPATHROUTE *routes;              // 0x88
+    AIPATHNODELINK *special_routes;   // 0x8c
+    NUVEC bounds_min;                 // 0x90
+    NUVEC bounds_max;                 // 0x9c
 } AIPATH_PC;
 
-typedef struct AIPATHSPECIALROUTE_PC { // size 0x8
-    u8 path_count;                     // 0x0
-    u8 unknown_1[3];                   // 0x1
-    AIPATH_PC **paths;                 // 0x4
-} AIPATHSPECIALROUTE_PC;
+typedef struct AIPATHSPECIALROUTE { // size 0x8
+    u8 path_count;                  // 0x0
+    u8 unknown_1[3];                // 0x1
+    AIPATH_PC **paths;              // 0x4
+} AIPATHSPECIALROUTE;
 
-typedef struct AIPATHSYS_PC {              // size 0x10
-    u8 path_count;                         // 0x0
-    u8 unknown_01[3];                      // 0x1
-    AIPATH_PC **paths;                     // 0x4
-    AIPATH_PC *active_path;                // 0x8
-    AIPATHSPECIALROUTE_PC *special_routes; // 0xc
+typedef struct AIPATHSYS_PC {           // size 0x10
+    u8 path_count;                      // 0x0
+    u8 unknown_01[3];                   // 0x1
+    AIPATH_PC **paths;                  // 0x4
+    AIPATH_PC *active_path;             // 0x8
+    AIPATHSPECIALROUTE *special_routes; // 0xc
 } AIPATHSYS_PC;
 
 typedef struct AIANTINODE_PC {      // size 0x58

@@ -16,7 +16,7 @@ struct gameobject_s;
 extern "C" {
 #endif
 
-    typedef struct player_coin_packet_pc_s {
+    typedef struct player_coin_packet_s {
         u32 coins;
         f32 scale;
         i16 last_coin;

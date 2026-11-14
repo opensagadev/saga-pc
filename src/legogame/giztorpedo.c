@@ -1,20 +1,20 @@
 #include "saga.h"
 
-typedef struct torpedo_machine_query_pc_s { // size 0x2c
-    char name[16];                          // 0x00
-    NUVEC position;                         // 0x10
-    f32 activation_time;                    // 0x1c
-    u16 y_rotation;                         // 0x20
-    u8 unknown_22[9];                       // 0x22
-    u8 active : 1;                          // 0x2b:0
-    u8 visible : 1;                         // 0x2b:1
-    u8 alternate : 1;                       // 0x2b:2
+typedef struct torpedo_machine_query_s { // size 0x2c
+    char name[16];                       // 0x00
+    NUVEC position;                      // 0x10
+    f32 activation_time;                 // 0x1c
+    u16 y_rotation;                      // 0x20
+    u8 unknown_22[9];                    // 0x22
+    u8 active : 1;                       // 0x2b:0
+    u8 visible : 1;                      // 0x2b:1
+    u8 alternate : 1;                    // 0x2b:2
 } TORPEDO_MACHINE_QUERY_PC;
 
-typedef struct torpedo_machine_query_sys_pc_s { // size 0xc
-    TORPEDO_MACHINE_QUERY_PC *machines;         // 0x0
-    i32 count;                                  // 0x4
-    f32 scale;                                  // 0x8
+typedef struct torpedo_machine_query_sys_s { // size 0xc
+    TORPEDO_MACHINE_QUERY_PC *machines;      // 0x0
+    i32 count;                               // 0x4
+    f32 scale;                               // 0x8
 } TORPEDO_MACHINE_QUERY_SYS_PC;
 
 STATIC_ASSERT(offsetof(GIZMO_PC, object) == 0);
@@ -67,7 +67,7 @@ i32 GizTorp_Load(void *world_pointer, void *unused) {
 }
 
 /* MATCH-EXCEPTION: the original re-reads world->torpedo_machine_sys at each use; the casts stand in for its
- * GIZTORPMACHINESYS_s type (saga.h has the narrower TORPEDO_MACHINE_SYS_PC view). */
+ * GIZTORPMACHINESYS_s type (saga.h has the narrower TORPEDO_MACHINE_SYS view). */
 void *GizTorps_ReserveBufferSpace(void *pointer) {
     WORLDINFO *world = pointer;
     world->torpedo_machine_sys = NULL;

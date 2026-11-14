@@ -15,24 +15,24 @@
 extern "C" {
 #endif
 
-    typedef struct MINICAM_COMMAND_PC {
+    typedef struct MINICAM_COMMAND {
         i32 type;
         f32 duration;
         i32 argument;
         NUVEC position;
         NUVEC *target;
-    } MINICAM_COMMAND_PC;
+    } MINICAM_COMMAND;
 
-    STATIC_ASSERT(sizeof(MINICAM_COMMAND_PC) == 0x1c);
-    STATIC_ASSERT(offsetof(MINICAM_COMMAND_PC, type) == 0);
-    STATIC_ASSERT(offsetof(MINICAM_COMMAND_PC, duration) == 4);
-    STATIC_ASSERT(offsetof(MINICAM_COMMAND_PC, argument) == 8);
-    STATIC_ASSERT(offsetof(MINICAM_COMMAND_PC, position) == 0xc);
-    STATIC_ASSERT(offsetof(MINICAM_COMMAND_PC, target) == 0x18);
+    STATIC_ASSERT(sizeof(MINICAM_COMMAND) == 0x1c);
+    STATIC_ASSERT(offsetof(MINICAM_COMMAND, type) == 0);
+    STATIC_ASSERT(offsetof(MINICAM_COMMAND, duration) == 4);
+    STATIC_ASSERT(offsetof(MINICAM_COMMAND, argument) == 8);
+    STATIC_ASSERT(offsetof(MINICAM_COMMAND, position) == 0xc);
+    STATIC_ASSERT(offsetof(MINICAM_COMMAND, target) == 0x18);
 
     typedef union MINICAM_PC {
         struct {
-            MINICAM_COMMAND_PC commands[32];
+            MINICAM_COMMAND commands[32];
             u8 command_count;
             u8 current_command;
             u8 mode;
@@ -66,7 +66,7 @@ extern "C" {
             f32 elapsed_time;
         };
 
-        MINICAM_COMMAND_PC duplicate_search[33];
+        MINICAM_COMMAND duplicate_search[33];
     } MINICAM_PC;
 
     STATIC_ASSERT(sizeof(MINICAM_PC) == 0x3fc);

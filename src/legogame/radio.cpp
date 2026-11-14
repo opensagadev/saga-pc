@@ -1,7 +1,7 @@
 #include "saga.h"
 #include <string.h>
 
-struct RADIO_ENTRY_PC {      // size 0x14
+struct RADIO_ENTRY {         // size 0x14
     GIZMOBLOWUP_PC *blowup;  // 0x00
     NUSPECIALHANDLE special; // 0x04
     f32 time;                // 0x10
@@ -22,8 +22,8 @@ extern "C" void UpdateRadios(void) {
         return;
     }
     radios_playing = 0;
-    RADIO_ENTRY_PC *pool = reinterpret_cast<RADIO_ENTRY_PC *>(RadioEntriesPc);
-    RADIO_ENTRY_PC *radio;
+    RADIO_ENTRY *pool = reinterpret_cast<RADIO_ENTRY *>(RadioEntriesPc);
+    RADIO_ENTRY *radio;
     i32 index;
     NUVEC scale;
     for (index = 0, radio = pool; index < 8; ++index, ++radio) {
@@ -65,10 +65,10 @@ extern "C" void UpdateRadios(void) {
 }
 
 void PlayRadio(char *special_name, char *blowup_name, i32 play) {
-    RADIO_ENTRY_PC *pool = reinterpret_cast<RADIO_ENTRY_PC *>(RadioEntriesPc);
+    RADIO_ENTRY *pool = reinterpret_cast<RADIO_ENTRY *>(RadioEntriesPc);
     if (special_name != NULL || blowup_name != NULL) {
         if (play != 0) {
-            RADIO_ENTRY_PC *radio;
+            RADIO_ENTRY *radio;
             i32 i;
             for (i = 0, radio = pool; i < 8; ++i, ++radio) {
                 if (radio->time <= 0.0f) {
@@ -90,7 +90,7 @@ void PlayRadio(char *special_name, char *blowup_name, i32 play) {
             }
             return;
         }
-        RADIO_ENTRY_PC *radio;
+        RADIO_ENTRY *radio;
         i32 i;
         for (i = 0, radio = pool; i < 8; ++i, ++radio) {
             if (blowup_name != NULL) {

@@ -73,7 +73,7 @@ void cbChangeName(eduimenu_s *unused0, eduiitem_s *item, u32 unused2) {
 }
 
 static void cbChangeNameMenu(eduimenu_s *menu, eduiitem_s *unused1, u32 unused2) {
-    struct debris_info_pc_s *effect;
+    struct debris_info_s *effect;
     u32 colours[4] = {0x80000000, 0x80ff0000, 0x80808080, 0x80404040};
     if (edpp_create_type == -1) {
         return;
@@ -462,7 +462,7 @@ static void edptlcbStarMenu(eduimenu_s *parent, eduiitem_s *unused1, u32 unused2
 }
 
 void cbPtlDamageFlagMenu(eduimenu_s *menu, eduiitem_s *unused1, u32 unused2) {
-    struct debris_info_pc_s *effect;
+    struct debris_info_s *effect;
     if (edpp_nearest == -1 || edpp_ptls[edpp_nearest].instance_id == -1) {
         return;
     }
@@ -654,7 +654,7 @@ void cbPtlRepeatBoxMenu(eduimenu_s *parent, eduiitem_s *unused1, u32 unused2) {
 }
 
 static void cbPtlCutOffMenu(eduimenu_s *parent, eduiitem_s *unused1, u32 unused2) {
-    struct debris_info_pc_s *effect;
+    struct debris_info_s *effect;
     if (edpp_nearest == -1 || edpp_ptls[edpp_nearest].instance_id == -1) {
         return;
     }
@@ -1262,10 +1262,10 @@ void edcamMove(FRAME_PAD_PC *pad);
 void edcamGetPosAng(NUVEC *position, i32 *angle_x, i32 *angle_y);
 void edcamGetPosAngSnap(NUVEC *position, i32 *angle_x, i32 *angle_y);
 
-typedef union EDPP_FLOAT_BITS_PC {
+typedef union EDPP_FLOAT_BITS {
     f32 value;
     u32 bits;
-} EDPP_FLOAT_BITS_PC;
+} EDPP_FLOAT_BITS;
 
 static __inline f32 edppFabs(f32 value) {
     u32 bits = *(u32 *)&value & 0x7fffffff;
@@ -2902,16 +2902,16 @@ extern struct eduiitem_s *coll_env_item;
 extern struct edui_slider_s *grad_rot_min_item;
 extern struct edui_slider_s *grad_rot_max_item;
 
-typedef struct edui_gradient_stage_pc_s { // size 0x24
-    f32 time;                             // 0x00
-    f32 hue;                              // 0x04
-    f32 saturation;                       // 0x08
-    f32 value;                            // 0x0c
-    f32 red;                              // 0x10
-    f32 green;                            // 0x14
-    f32 blue;                             // 0x18
-    u32 colour;                           // 0x1c
-    u32 metadata;                         // 0x20
+typedef struct edui_gradient_stage_s { // size 0x24
+    f32 time;                          // 0x00
+    f32 hue;                           // 0x04
+    f32 saturation;                    // 0x08
+    f32 value;                         // 0x0c
+    f32 red;                           // 0x10
+    f32 green;                         // 0x14
+    f32 blue;                          // 0x18
+    u32 colour;                        // 0x1c
+    u32 metadata;                      // 0x20
 } EDUI_GRADIENT_STAGE_PC;
 
 i32 eduiGradPickRead(eduiitem_s *item, EDUI_GRADIENT_STAGE_PC *stages, i32 capacity);

@@ -16,7 +16,7 @@ extern "C" {
     GIZMO_PC *createGizTimer(void *, f32, i32, char *);
     extern i32 giztimer_gizmotype_id;
     void GizTimer_Activate(GIZMO_PC *gizmo, i32 unknown);
-    void GizTimer_AddGizmos(struct gizmosys_pc_s *gizmo_sys, i32 unknown1, void *world_info, void *unknown2);
+    void GizTimer_AddGizmos(struct gizmosys_s *gizmo_sys, i32 unknown1, void *world_info, void *unknown2);
     char *GizTimer_GetGizmoName(GIZMO_PC *gizmo);
     i32 GizTimer_GetMaxGizmos(void *world_info);
     i32 GizTimer_GetNumOutputs(GIZMO_PC *gizmo);

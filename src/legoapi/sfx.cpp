@@ -30,7 +30,7 @@ extern "C" void PlaySfxByIdAndSetPitch(i32 sfx_id, NUVEC *position, f32 pitch) {
 }
 
 extern "C" {
-    typedef struct footstep_audio_callbacks_pc_s {   // size 0x4
+    typedef struct footstep_audio_callbacks_s {      // size 0x4
         i32 (*override_footstep)(GAMEOBJECT *, i32); // 0x0
     } FOOTSTEP_AUDIO_CALLBACKS_PC;
 }

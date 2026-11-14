@@ -15,18 +15,18 @@ struct WORLDINFO_s;
 struct gameobject_s;
 struct numtx_s;
 
-typedef struct GAME_CUSTOMISER_START_PC {
+typedef struct GAME_CUSTOMISER_START {
     u16 pieces[9];
     u8 reserved_12[2];
     char name[32];
     u8 use_saved_name;
     u8 reserved_35[3];
-} GAME_CUSTOMISER_START_PC;
+} GAME_CUSTOMISER_START;
 
-STATIC_ASSERT(sizeof(GAME_CUSTOMISER_START_PC) == 56);
-STATIC_ASSERT(offsetof(GAME_CUSTOMISER_START_PC, pieces) == 0);
-STATIC_ASSERT(offsetof(GAME_CUSTOMISER_START_PC, name) == 0x14);
-STATIC_ASSERT(offsetof(GAME_CUSTOMISER_START_PC, use_saved_name) == 0x34);
+STATIC_ASSERT(sizeof(GAME_CUSTOMISER_START) == 56);
+STATIC_ASSERT(offsetof(GAME_CUSTOMISER_START, pieces) == 0);
+STATIC_ASSERT(offsetof(GAME_CUSTOMISER_START, name) == 0x14);
+STATIC_ASSERT(offsetof(GAME_CUSTOMISER_START, use_saved_name) == 0x34);
 
 typedef struct apicharactermodellist_s {
     i16 model_id;
@@ -53,7 +53,7 @@ extern "C" {
     void HairMovement(struct gameobject_s *);
     void CharScenes_LevelDump(struct WORLDINFO_s *);
 
-    typedef struct char_category_record_pc_s {
+    typedef struct char_category_record_s {
         char *name;
         u32 model_flags;
         u32 game_flags;

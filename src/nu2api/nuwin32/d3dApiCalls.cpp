@@ -414,7 +414,7 @@ extern "C" void fun_006dfb30(f32 gamma) {
 }
 
 extern "C" void fun_006dfbf0(PC_TEXTURE_RESOURCE_PC *texture, u32 level, const void *rect, u32 flags,
-                             PC_LOCKED_RECT_PC *locked) {
+                             PC_LOCKED_RECT *locked) {
     if (texture != NULL) {
         texture->methods->lock_rect(texture, level, locked, rect, flags);
     }

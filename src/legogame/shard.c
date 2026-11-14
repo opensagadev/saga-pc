@@ -1,9 +1,9 @@
 #include "saga.h"
 
-typedef struct shard_progress_recovered_pc_s { // size 0x30
-    u32 collected[4];                          // 0x00
-    u32 active[4];                             // 0x10
-    u32 visible[4];                            // 0x20
+typedef struct shard_progress_recovered_s { // size 0x30
+    u32 collected[4];                       // 0x00
+    u32 active[4];                          // 0x10
+    u32 visible[4];                         // 0x20
 } SHARD_PROGRESS_PC;
 
 STATIC_ASSERT(sizeof(SHARD_s) == 0x54);
@@ -18,8 +18,8 @@ STATIC_ASSERT(offsetof(SHARD_s, state_flags) == 0x3c);
 STATIC_ASSERT(offsetof(SHARD_s, collection_time) == 0x40);
 STATIC_ASSERT(offsetof(SHARD_s, collector) == 0x44);
 STATIC_ASSERT(offsetof(SHARD_s, collection_velocity) == 0x48);
-STATIC_ASSERT(sizeof(LEVEL_OBJECT_RUNTIME_PC) == 0x10);
-STATIC_ASSERT(offsetof(LEVEL_OBJECT_RUNTIME_PC, active) == 0xe);
+STATIC_ASSERT(sizeof(LEVEL_OBJECT_RUNTIME) == 0x10);
+STATIC_ASSERT(offsetof(LEVEL_OBJECT_RUNTIME, active) == 0xe);
 STATIC_ASSERT(offsetof(GAMEOBJECT, collision_position) == 0x80);
 STATIC_ASSERT(offsetof(WORLDINFO, shards) == 0x5090);
 STATIC_ASSERT(offsetof(WORLDINFO, shard_count) == 0x5094);
@@ -29,20 +29,20 @@ extern char TextInputKeyNameTextPc7516c0[1];
 extern char *Shard_OutputName;
 void Attracto_GetSuctionPos(GAMEOBJECT *object, NUVEC *position);
 
-typedef struct SHARD_LOST_OWNER_PC {
+typedef struct SHARD_LOST_OWNER {
     u8 unknown_00[0x3c];
     u8 state_flags;
     u8 unknown_3d[3];
     f32 collection_time;
     GAMEOBJECT *collector;
     u8 unknown_48[0xc];
-} SHARD_LOST_OWNER_PC;
+} SHARD_LOST_OWNER;
 
-typedef struct WORLD_SHARDS_READER_PC {
+typedef struct WORLD_SHARDS_READER {
     u8 unknown_0000[0x5090];
-    SHARD_LOST_OWNER_PC *shards;
+    SHARD_LOST_OWNER *shards;
     i32 shard_count;
-} WORLD_SHARDS_READER_PC;
+} WORLD_SHARDS_READER;
 
 i32 Shards_Load(WORLDINFO *world, void *unused) {
     i32 index;
@@ -394,8 +394,8 @@ void Shard_Collect(SHARD_s *shard, GAMEOBJECT *object) {
 }
 
 void Shards_HandleLostObj(WORLDINFO *opaque_world, GAMEOBJECT *object) {
-    WORLD_SHARDS_READER_PC *world = (WORLD_SHARDS_READER_PC *)opaque_world;
-    SHARD_LOST_OWNER_PC *shard = world->shards;
+    WORLD_SHARDS_READER *world = (WORLD_SHARDS_READER *)opaque_world;
+    SHARD_LOST_OWNER *shard = world->shards;
     i32 i;
     for (i = 0; i < world->shard_count; ++i, ++shard) {
         if (!(shard->state_flags & 8) && (shard->state_flags & 4) && shard->collector == object) {

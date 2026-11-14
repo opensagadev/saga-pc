@@ -55,7 +55,7 @@ extern "C" {
 }
 #endif
 
-typedef struct SARLACC_NETPACKET_PC {
+typedef struct SARLACC_NETPACKET {
     f32 height;
     i16 off_mask;
     i16 flash_mask;
@@ -66,15 +66,15 @@ typedef struct SARLACC_NETPACKET_PC {
     u8 disco_active;
     u8 reserved_11;
     i16 completion_sound_played;
-} SARLACC_NETPACKET_PC;
+} SARLACC_NETPACKET;
 
-STATIC_ASSERT(sizeof(SARLACC_NETPACKET_PC) == 0x14);
-STATIC_ASSERT(offsetof(SARLACC_NETPACKET_PC, disco_active) == 0x10);
-STATIC_ASSERT(offsetof(SARLACC_NETPACKET_PC, completion_sound_played) == 0x12);
+STATIC_ASSERT(sizeof(SARLACC_NETPACKET) == 0x14);
+STATIC_ASSERT(offsetof(SARLACC_NETPACKET, disco_active) == 0x10);
+STATIC_ASSERT(offsetof(SARLACC_NETPACKET, completion_sound_played) == 0x12);
 #ifdef __cplusplus
 extern "C" {
 #endif
-    extern SARLACC_NETPACKET_PC *sarlaccb_netpacket;
+    extern SARLACC_NETPACKET *sarlaccb_netpacket;
     i32 SarlaccPitDiscoActive(WORLDINFO *);
     void DeathStar2BattleFire_SetSlowDownMul(struct gameobject_s *object);
     extern SPLINEPOS fireBackPos;
