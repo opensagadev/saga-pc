@@ -57,8 +57,9 @@ i32 Pushing(GAMEOBJECT *object, u16 *normal_angle, i32 *surface, i32 *angle_diff
             *angle_difference = difference;
         }
         difference = abs(difference);
-        if (difference > 0x4e38 || (difference > 0x1555 && object->field_7aa != -1 &&
-                                    (object->field_7aa == LEGOACT_WALLSHUFFLE_RIGHT || object->field_7aa == LEGOACT_WALLSHUFFLE_LEFT))) {
+        if (difference > 0x4e38 ||
+            (difference > 0x1555 && object->unknown_7aa != -1 &&
+             (object->unknown_7aa == LEGOACT_WALLSHUFFLE_RIGHT || object->unknown_7aa == LEGOACT_WALLSHUFFLE_LEFT))) {
             if (normal_angle != NULL) {
                 *normal_angle = angle;
             }
@@ -100,7 +101,7 @@ void PushCode(GAMEOBJECT *object, i32 allow_push) {
     i32 surface;
     i32 angle_difference;
     f32 distance;
-    if (VehicleArea != 0 || object->field_280 == 0xff) {
+    if (VehicleArea != 0 || object->unknown_280 == 0xff) {
         return;
     }
     saved_context = object->character_context;
@@ -111,7 +112,7 @@ void PushCode(GAMEOBJECT *object, i32 allow_push) {
         wall_angle += 0x8000;
         if (contact_surface >= 0 ? contact_surface < 32 && (TerSurface[contact_surface].flags & 0x20000) != 0 : 0) {
             ((PART_RELEASE_PUSH *)object)->push_timer = 0.4f;
-        } else if (object->field_281 == 0 && GameObjectNearFloor(object, 1.25f, NULL) == 0) {
+        } else if (object->unknown_281 == 0 && GameObjectNearFloor(object, 1.25f, NULL) == 0) {
             ((PART_RELEASE_PUSH *)object)->push_timer = 0.01f;
         } else {
             if (FRAMETIME > 1.0f / 30.0f) {
@@ -145,8 +146,8 @@ void PushCode(GAMEOBJECT *object, i32 allow_push) {
             } else if ((buttons & GAMEPAD_ACTION) != 0) {
                 ((PUSH_OBJECT_LOCAL *)object)->landing_followup = 3;
             }
-            if (object->character_model->model_data_b[object->field_7aa] == NULL ||
-                AnimPlaying(&object->anim_packet, object->field_7aa, 1, 0) != NULL) {
+            if (object->character_model->model_data_b[object->unknown_7aa] == NULL ||
+                AnimPlaying(&object->anim_packet, object->unknown_7aa, 1, 0) != NULL) {
                 object->context_timer -= FRAMETIME;
                 if (object->context_timer <= 0.0f) {
                     if (((PUSH_OBJECT_LOCAL *)object)->landing_followup == 1) {
@@ -154,13 +155,13 @@ void PushCode(GAMEOBJECT *object, i32 allow_push) {
                         object->airborne_action_timer = 1.2f;
                         object->movement_facing_angle += 0x8000;
                         object->facing_angle = object->movement_facing_angle;
-                        object->field_0x276 = object->movement_facing_angle;
+                        object->unknown_276 = object->movement_facing_angle;
                         PlayGruntSfx(object);
                     } else if (((PUSH_OBJECT_LOCAL *)object)->landing_followup == 3 && LEGOACT_LUNGE != -1 &&
                                object->character_model->model_data_b[LEGOACT_LUNGE] != NULL) {
                         object->movement_facing_angle += 0x8000;
                         object->facing_angle = object->movement_facing_angle;
-                        object->field_0x276 = object->movement_facing_angle;
+                        object->unknown_276 = object->movement_facing_angle;
                         StartLunge(object, 1.0f, 0.0f);
                         PlayGruntSfx(object);
                     } else {
@@ -179,7 +180,7 @@ void PushCode(GAMEOBJECT *object, i32 allow_push) {
                 object->character_context = -1;
             }
         }
-    } else if ((object->field_281 != 0 || GameObjectNearFloor(object, 1.25f, NULL) != 0) && object->character_context == -1 &&
+    } else if ((object->unknown_281 != 0 || GameObjectNearFloor(object, 1.25f, NULL) != 0) && object->character_context == -1 &&
                (allow_push == 0 || (LEGOACT_PUSH != -1 && object->character_model->model_data_b[LEGOACT_PUSH] != NULL))) {
         if (((PART_RELEASE_PUSH *)object)->push_timer >= 0.25f) {
             i32 push_surface = surface;
@@ -225,7 +226,7 @@ void PushCode(GAMEOBJECT *object, i32 allow_push) {
                 object->character_context = LEGOCONTEXT_PUSH;
             }
             if (object->character_context != -1) {
-                object->field_7aa = LEGOACT_PUSH;
+                object->unknown_7aa = LEGOACT_PUSH;
                 SetPushAngle(object);
             }
         }
@@ -237,14 +238,14 @@ void PushCode(GAMEOBJECT *object, i32 allow_push) {
             abs(angle_difference) > 0x6aaa &&
             object->horizontal_velocity_magnitude >
                 (object->character_data->game_character->run_speed + object->character_data->game_character->walk_speed) * 0.5 &&
-            object->field_281 == 0 && object->collision_min.y - object->floor_height > (f64)0.15f && LEGOCONTEXT_JUMP != -1 &&
+            object->unknown_281 == 0 && object->collision_min.y - object->floor_height > (f64)0.15f && LEGOCONTEXT_JUMP != -1 &&
             object->character_context == LEGOCONTEXT_JUMP &&
             ((object->action_movement_state == 0 && object->jump_sequence < 2) || object->action_movement_state == 9) &&
             object->velocity.y > -1.25f && object->context_timer >= 0.25f) {
             object->character_context = LEGOCONTEXT_WALLJUMPWAIT;
             ResetAnimPacket(&object->anim_packet, -1);
-            object->field_7aa = LEGOACT_WALLJUMP_WAIT;
-            object->context_timer = AnimDuration((i16)object->id, object->field_7aa, 0.0f, 0.0f, 0);
+            object->unknown_7aa = LEGOACT_WALLJUMP_WAIT;
+            object->context_timer = AnimDuration((i16)object->id, object->unknown_7aa, 0.0f, 0.0f, 0);
             if (object->context_timer <= 0.0f) {
                 object->context_timer = 0.3f;
             }
@@ -269,12 +270,12 @@ void PushCode(GAMEOBJECT *object, i32 allow_push) {
             u16 input_angle = GamePad_InputAngle(object, pad);
             i32 difference = abs(RotDiff(input_angle, object->takeover_start_angle));
             if (difference < 0x31c7) {
-                object->field_7aa = LEGOACT_SUPERPUSH_PUSH;
+                object->unknown_7aa = LEGOACT_SUPERPUSH_PUSH;
                 forward = 1;
             } else if (difference > 0x4e38) {
-                object->field_7aa = LEGOACT_SUPERPUSH_PULL;
+                object->unknown_7aa = LEGOACT_SUPERPUSH_PULL;
             } else {
-                object->field_7aa = LEGOACT_SUPERPUSH_IDLE;
+                object->unknown_7aa = LEGOACT_SUPERPUSH_IDLE;
                 goto finalize;
             }
             ((PUSH_OBJECT_LOCAL *)object)->obstacle_timer = 0.75f;
@@ -308,7 +309,7 @@ void PushCode(GAMEOBJECT *object, i32 allow_push) {
                 NewRumble(object->pad->bound_pad, qrand() * (f64)(1.0f / 65535.0f) * (f64)0.3f, 0);
             }
         } else {
-            object->field_7aa = LEGOACT_SUPERPUSH_IDLE;
+            object->unknown_7aa = LEGOACT_SUPERPUSH_IDLE;
             ((PUSH_OBJECT_LOCAL *)object)->obstacle_timer -= FRAMETIME;
             if (((PUSH_OBJECT_LOCAL *)object)->obstacle_timer <= 0.0f) {
                 GameCam_Blend(NULL, 0.5f, 0.0f, 1);
@@ -338,7 +339,7 @@ void PushCode(GAMEOBJECT *object, i32 allow_push) {
             if (ZipUpWallShuffleContext != -1 && LEGOACT_WALLSHUFFLE_IDLE != -1 &&
                 object->character_model->model_data_b[LEGOACT_WALLSHUFFLE_IDLE] != NULL && abs(angle_difference) > 0x71c7) {
                 object->character_context = ZipUpWallShuffleContext;
-                object->field_7aa = LEGOACT_WALLSHUFFLE_IDLE;
+                object->unknown_7aa = LEGOACT_WALLSHUFFLE_IDLE;
             } else {
                 object->character_context = -1;
             }
@@ -368,20 +369,20 @@ i32 WallShuffle_SetTargetMom(GAMEOBJECT *object, u16 input_angle) {
     direction = PushingTowardsAngle(input_angle, sideways_angle);
     if (direction > NuTrigTable[0x3555]) {
         if (LEGOACT_WALLSHUFFLE_RIGHT != -1 && object->character_model->model_data_b[LEGOACT_WALLSHUFFLE_RIGHT] != NULL) {
-            object->field_7aa = LEGOACT_WALLSHUFFLE_RIGHT;
+            object->unknown_7aa = LEGOACT_WALLSHUFFLE_RIGHT;
             speed = AnimSpeed(object->character_model, LEGOACT_WALLSHUFFLE_RIGHT);
         } else {
             speed = 0.5f;
         }
     } else if (direction < -NuTrigTable[0x3555]) {
         if (LEGOACT_WALLSHUFFLE_LEFT != -1 && object->character_model->model_data_b[LEGOACT_WALLSHUFFLE_LEFT] != NULL) {
-            object->field_7aa = LEGOACT_WALLSHUFFLE_LEFT;
+            object->unknown_7aa = LEGOACT_WALLSHUFFLE_LEFT;
             speed = -AnimSpeed(object->character_model, LEGOACT_WALLSHUFFLE_LEFT);
         } else {
             speed = -0.5f;
         }
     } else {
-        object->field_7aa = LEGOACT_WALLSHUFFLE_IDLE;
+        object->unknown_7aa = LEGOACT_WALLSHUFFLE_IDLE;
         speed = 0.0f;
     }
     if (speed != 0.0f) {

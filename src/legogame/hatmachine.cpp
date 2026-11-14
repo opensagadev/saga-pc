@@ -129,7 +129,7 @@ extern "C" void HatMachine_MoveCode(WORLDINFO *world, GAMEOBJECT *object, i32 sp
         object->field_db0 -= FRAMETIME;
     }
     if (object->character_context != 0x61 || machine == NULL) {
-        if (object->character_model->model_data_b[0x5d] == NULL || object->field_281 == 0 || ObjLandReady(object) == 0) {
+        if (object->character_model->model_data_b[0x5d] == NULL || object->unknown_281 == 0 || ObjLandReady(object) == 0) {
             return;
         }
         f32 distance;
@@ -147,17 +147,17 @@ extern "C" void HatMachine_MoveCode(WORLDINFO *world, GAMEOBJECT *object, i32 sp
             object->delayed_turn_timer = 0.0f;
             object->flags_e20 &= ~0x1000;
             object->character_context = 0x61;
-            object->field_7b3 = 0;
+            object->unknown_7b3 = 0;
             FastWeaponIn(object, 0);
             object->flags_e24 |= 0x200;
-            object->field_7aa = 0x5d;
+            object->unknown_7aa = 0x5d;
             machine->animation_state = 1;
             if (StartupGameFlag1 != 0) {
                 machine->state_duration = 3.0f;
             } else {
-                machine->state_duration = AnimDuration((i16)object->id, object->field_7aa, 0.0f, 0.0f, 1);
+                machine->state_duration = AnimDuration((i16)object->id, object->unknown_7aa, 0.0f, 0.0f, 1);
             }
-            f32 end_frame = -AnimListFrame(object->character_model, object->field_7aa, 0);
+            f32 end_frame = -AnimListFrame(object->character_model, object->unknown_7aa, 0);
             machine->flags |= 1;
             machine->state_elapsed = end_frame;
             machine->state_duration -= end_frame;
@@ -168,7 +168,7 @@ extern "C" void HatMachine_MoveCode(WORLDINFO *world, GAMEOBJECT *object, i32 sp
                 ResetAnimPacket(&object->anim_packet, -1);
             }
             AlertSurroundingCreatures(object, &object->collision_position);
-            object->context_timer = AnimDuration((i16)object->id, object->field_7aa, 0.0f, 0.0f, 1);
+            object->context_timer = AnimDuration((i16)object->id, object->unknown_7aa, 0.0f, 0.0f, 1);
             ((HATMACHINE *)object->grapple)->state_duration = object->context_timer;
             if (object->context_timer <= 0.0f) {
                 object->context_timer = 2.0f;
@@ -182,14 +182,14 @@ extern "C" void HatMachine_MoveCode(WORLDINFO *world, GAMEOBJECT *object, i32 sp
         }
         return;
     }
-    if (object->character_model->model_data_b[object->field_7aa] == NULL ||
-        AnimPlaying(&object->anim_packet, object->field_7aa, 1, 0) != NULL) {
+    if (object->character_model->model_data_b[object->unknown_7aa] == NULL ||
+        AnimPlaying(&object->anim_packet, object->unknown_7aa, 1, 0) != NULL) {
         object->context_hover_target_y += FRAMETIME;
         if (object->context_hover_target_y > 1.0f) {
             object->context_hover_target_y = 1.0f;
         }
         object->context_timer -= FRAMETIME;
-        switch (object->field_7b3) {
+        switch (object->unknown_7b3) {
             case 0:
                 if (!(object->context_timer <= 0.0f)) {
                     return;
@@ -198,33 +198,33 @@ extern "C" void HatMachine_MoveCode(WORLDINFO *world, GAMEOBJECT *object, i32 sp
                     ((object->character_data->game_character->flags_090 & 0x10) != 0 ||
                      (object->id == (u16)id_PRINCESSLEIABOUSHH && FreePlay != 0))) {
                     if (machine->animation_state == 2) {
-                        object->field_7aa = 0x6d;
-                        object->field_7b3 = 1;
+                        object->unknown_7aa = 0x6d;
+                        object->unknown_7b3 = 1;
                         object->context_timer = AnimDuration((i16)object->id, 0x6d, 0.0f, 0.0f, 1);
                         machine->state_duration = (f64)object->context_timer * (f64)0.35f;
                         return;
                     }
-                    object->field_7aa = 1;
+                    object->unknown_7aa = 1;
                     return;
                 }
                 if (object->character_model->model_data_b[0x5e] != NULL) {
                     if (machine->animation_state == 2) {
-                        object->field_7aa = 0x5e;
-                        object->field_7b3 = 1;
+                        object->unknown_7aa = 0x5e;
+                        object->unknown_7b3 = 1;
                         object->context_timer = AnimDuration((i16)object->id, 0x5e, 0.0f, 0.0f, 1);
                         if (StartupGameFlag1 == 0) {
                             machine->state_duration = (f64)object->context_timer * (f64)0.35f;
                         }
                         return;
                     }
-                    object->field_7aa = 1;
+                    object->unknown_7aa = 1;
                     return;
                 }
                 if (machine->animation_state != 2) {
                     return;
                 }
-                object->field_7aa = 1;
-                object->field_7b3 = 1;
+                object->unknown_7aa = 1;
+                object->unknown_7b3 = 1;
                 machine->state_duration = 0.2f;
                 return;
             case 1:
@@ -240,7 +240,7 @@ extern "C" void HatMachine_MoveCode(WORLDINFO *world, GAMEOBJECT *object, i32 sp
                     }
                 }
                 machine->displayed_hat = 0;
-                object->field_7b3 = 2;
+                object->unknown_7b3 = 2;
                 if (StartupGameFlag1 != 0) {
                     machine->animation_state = 6;
                 }

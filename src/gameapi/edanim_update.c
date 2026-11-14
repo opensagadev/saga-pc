@@ -139,11 +139,11 @@ void edanimUpdateObjects(f32 elapsed) {
                         }
                     } else if (animation != NULL) {
                         if (animation->ltime >= AnimParams[index].sound_values[sound_index] &&
-                            AnimParams[index].sound_values[sound_index] > AnimParams[index].field_17c) {
+                            AnimParams[index].sound_values[sound_index] > AnimParams[index].unknown_17c) {
                             play = AnimParams[index].sound_ids[sound_index];
                         }
                         if ((animation->flags & 0x10) != 0 && animation->ltime <= AnimParams[index].sound_values[sound_index] &&
-                            AnimParams[index].sound_values[sound_index] < EdAnimFabs(AnimParams[index].field_17c)) {
+                            AnimParams[index].sound_values[sound_index] < EdAnimFabs(AnimParams[index].unknown_17c)) {
                             play = AnimParams[index].sound_ids[sound_index];
                         }
                     }
@@ -165,9 +165,9 @@ void edanimUpdateObjects(f32 elapsed) {
         }
         if (animation != NULL) {
             if ((animation->flags & 0x10) != 0) {
-                AnimParams[index].field_17c = -animation->ltime;
+                AnimParams[index].unknown_17c = -animation->ltime;
             } else {
-                AnimParams[index].field_17c = animation->ltime;
+                AnimParams[index].unknown_17c = animation->ltime;
             }
         }
     }

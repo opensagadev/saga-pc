@@ -325,7 +325,7 @@ class NetFtpManager : public NetListenerInterface { // size 0x1608
     void fun_0060e6f0(i32 value);
 
     FtpFileArray files; // 0x0004
-    i32 field_1604;     // 0x1604
+    i32 unknown_1604;   // 0x1604
 };
 
 struct NOSContext {

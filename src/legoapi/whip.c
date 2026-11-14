@@ -17,8 +17,8 @@ void Whip_MoveCode(GAMEOBJECT *object) {
         return;
     }
     if (object->character_context == LEGOCONTEXT_WHIP) {
-        if (object->field_7b3 == 0) {
-            if (AnimPlaying(&object->anim_packet, object->field_7aa, 1, 0) == NULL) {
+        if (object->unknown_7b3 == 0) {
+            if (AnimPlaying(&object->anim_packet, object->unknown_7aa, 1, 0) == NULL) {
                 return;
             }
             object->context_timer += FRAMETIME;
@@ -27,10 +27,10 @@ void Whip_MoveCode(GAMEOBJECT *object) {
                     case 3:
                         target = object->grapple;
                         if (target != NULL && (target->status_flags & 0x4000) && (target->status_flags & 0x800000)) {
-                            object->field_7aa = LEGOACT_WHIP_GRAB;
+                            object->unknown_7aa = LEGOACT_WHIP_GRAB;
                             object->context_timer = 0.0f;
-                            object->field_7b3 = 3;
-                            object->context_duration = AnimDuration((i16)object->id, object->field_7aa, 0.0f, 0.0f, 1);
+                            object->unknown_7b3 = 3;
+                            object->context_duration = AnimDuration((i16)object->id, object->unknown_7aa, 0.0f, 0.0f, 1);
                             object->context_variant_flags &= ~0x40u;
                             target = object->grapple;
                             object->movement_facing_angle =
@@ -41,10 +41,10 @@ void Whip_MoveCode(GAMEOBJECT *object) {
                     case 2:
                         target = object->grapple;
                         if (target != NULL && (target->status_flags & 0x4000) && (target->status_flags & 0x800000)) {
-                            object->field_7aa = LEGOACT_WHIP_BREAK;
+                            object->unknown_7aa = LEGOACT_WHIP_BREAK;
                             object->context_timer = 0.0f;
-                            object->field_7b3 = 2;
-                            object->context_duration = AnimDuration((i16)object->id, object->field_7aa, 0.0f, 0.0f, 1);
+                            object->unknown_7b3 = 2;
+                            object->context_duration = AnimDuration((i16)object->id, object->unknown_7aa, 0.0f, 0.0f, 1);
                             object->context_variant_flags &= ~0x40u;
                             target = object->grapple;
                             object->movement_facing_angle =
@@ -56,10 +56,10 @@ void Whip_MoveCode(GAMEOBJECT *object) {
                         break;
                 }
                 object->whip_action = 1;
-                object->field_7aa = LEGOACT_WHIP_CRACK;
+                object->unknown_7aa = LEGOACT_WHIP_CRACK;
                 object->context_timer = 0.0f;
-                object->field_7b3 = 1;
-                object->context_duration = AnimDuration((i16)object->id, object->field_7aa, 0.0f, 0.0f, 1);
+                object->unknown_7b3 = 1;
+                object->context_duration = AnimDuration((i16)object->id, object->unknown_7aa, 0.0f, 0.0f, 1);
                 object->context_variant_flags &= ~0x40u;
             }
             return;
@@ -76,11 +76,11 @@ void Whip_MoveCode(GAMEOBJECT *object) {
             }
         }
         activate = 0;
-        frame = AnimPlaying(&object->anim_packet, object->field_7aa, 1, 0);
+        frame = AnimPlaying(&object->anim_packet, object->unknown_7aa, 1, 0);
         if (frame != NULL) {
             object->context_timer += FRAMETIME;
             if (!(object->context_variant_flags & 0x40)) {
-                action_frame = AnimListFrame(object->character_model, object->field_7aa, 0);
+                action_frame = AnimListFrame(object->character_model, object->unknown_7aa, 0);
                 if (action_frame >= 1.0f && *frame >= action_frame) {
                     object->context_variant_flags |= 0x40;
                     activate = 1;
@@ -93,7 +93,7 @@ void Whip_MoveCode(GAMEOBJECT *object) {
                 }
             }
             if (activate) {
-                switch (object->field_7b3) {
+                switch (object->unknown_7b3) {
                     case 3:
                         GizmoBlowupBlowup(object->grapple, 0, 7, -1, NULL, 1);
                         activate = 2;
@@ -115,12 +115,12 @@ void Whip_MoveCode(GAMEOBJECT *object) {
                 }
             }
         }
-        if (object->character_context == -1 && object->field_7b3 == 3 && object->grapple != NULL) {
+        if (object->character_context == -1 && object->unknown_7b3 == 3 && object->grapple != NULL) {
             SuperCarry_Start(object, object->grapple, 1);
         }
     } else {
         i32 action;
-        if (!(object->pad->buttons_pressed & GAMEPAD_SPECIAL) || object->field_281 == 0 || !ObjLandReady(object) ||
+        if (!(object->pad->buttons_pressed & GAMEPAD_SPECIAL) || object->unknown_281 == 0 || !ObjLandReady(object) ||
             LEGOACT_WHIP_START == -1 || object->character_model->model_data_b[LEGOACT_WHIP_START] == NULL) {
             return;
         }
@@ -136,12 +136,12 @@ void Whip_MoveCode(GAMEOBJECT *object) {
             action = 1;
         }
         object->character_context = (i8)LEGOCONTEXT_WHIP;
-        object->field_7aa = LEGOACT_WHIP_START;
+        object->unknown_7aa = LEGOACT_WHIP_START;
         object->context_timer = 0.0f;
         object->context_variant_flags &= ~0x100u;
         object->whip_action = (i8)action;
-        object->field_7b3 = 0;
-        object->context_duration = AnimDuration((i16)object->id, object->field_7aa, 0.0f, 0.0f, 0);
+        object->unknown_7b3 = 0;
+        object->context_duration = AnimDuration((i16)object->id, object->unknown_7aa, 0.0f, 0.0f, 0);
         GameAudio_PlaySfx(76, &object->collision_position, GameAudio_GetPlrSfxBits(object), 0);
         SetWeaponIn(object);
         object->grapple = target;

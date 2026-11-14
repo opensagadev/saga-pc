@@ -9114,7 +9114,7 @@ function:DebReAlloc2,function,DebReAlloc2,17920,17920,1,legoapi/render/core/game
 function:DebReAlloc,function,DebReAlloc,17921,17921,1,legoapi/render/fx/game_deb.h,android,DebReAlloc
 variable:PCDynamicDisplayScene,variable,PCDynamicDisplayScene,17922,17922,1,nu2api/nu3d/nu3d_includes.h,users,PCDynamicDisplayScene: only nu2api/nu3d_includes.cpp android-path
 macro:nudlist_flags,macro,nudlist_flags,17923,17923,1,nu2api/nustencilshadows_PC.h,users,nudlist_flags: only nu2api/nu3d_pc_includes.cpp[nustencilshadows_PC.cpp] pc-path
-macro:nudlist_field_e58,macro,nudlist_field_e58,17924,17924,1,nu2api/nustencilshadows_PC.h,users,nudlist_field_e58: only nu2api/nu3d_pc_includes.cpp[nustencilshadows_PC.cpp] pc-path
+macro:nudlist_unknown_e58,macro,nudlist_unknown_e58,17924,17924,1,nu2api/nustencilshadows_PC.h,users,nudlist_unknown_e58: only nu2api/nu3d_pc_includes.cpp[nustencilshadows_PC.cpp] pc-path
 macro:PCDisplayMaterialRegistry,macro,PCDisplayMaterialRegistry,17925,17925,1,nu2api/nu3d/nu3d_includes.h,users,PCDisplayMaterialRegistry: only nu2api/nu3d_includes.cpp android-path
 macro:PCDisplayMaterialCount,macro,PCDisplayMaterialCount,17926,17926,1,nu2api/nu3d/nu3d_includes.h,users,PCDisplayMaterialCount: only nu2api/nu3d_includes.cpp android-path
 variable:numtl_renderplane,variable,numtl_renderplane,17927,17927,1,nu2api/nu3d/nu3d_includes.h,android,numtl_renderplane

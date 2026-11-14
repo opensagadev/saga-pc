@@ -9,9 +9,9 @@ typedef struct trigger_lever_s { // size 0x96
 typedef struct trigger_spinner_s { // size 0xb0
     u8 unknown000[0x70];           // 0x00
     f32 progress;                  // 0x70
-    u8 unknown074[0x10];           // 0x74
+    u8 unknown_074[0x10];          // 0x74
     u8 state_flags;                // 0x84
-    u8 unknown085[4];              // 0x85
+    u8 unknown_085[4];             // 0x85
     i8 room_index;                 // 0x89
     u8 unknown08a[0x22];           // 0x8a
     u8 flags;                      // 0xac
@@ -36,7 +36,7 @@ typedef struct trigger_set_s { // size 0x214
     u8 unknown20d;             // 0x20d
     u16 occupied;              // 0x20e
     u16 flags;                 // 0x210
-    u8 unknown212[2];          // 0x212
+    u8 unknown_212[2];         // 0x212
 } TRIGGER_SET;
 
 typedef struct trigger_system_s { // size 0x4304

@@ -89,16 +89,16 @@ void CollectPowerUp(GAMEOBJECT *object, NUVEC *position, u16 rotation, i32 flags
     GAME_MESSAGE_PC *queued;
     u16 panel_rotation;
     (void)flags;
-    if (object == NULL || ((i8)object->field_280 != 0 && (i8)object->field_280 != 1)) {
+    if (object == NULL || ((i8)object->unknown_280 != 0 && (i8)object->unknown_280 != 1)) {
         return;
     }
     if (ONEPLAYERPOWERUPS != 0) {
         panel_rotation = (u16)(rotation - RotDiff(0, GameCam_GetAdjustedYRot(NULL)));
-        target.x = (i8)object->field_280 == 0 ? -ICONX : ICONX;
-        target.y = PowerUp_GetPanelY((i8)object->field_280) + STATSPOSY;
+        target.x = (i8)object->unknown_280 == 0 ? -ICONX : ICONX;
+        target.y = PowerUp_GetPanelY((i8)object->unknown_280) + STATSPOSY;
         target.z = 1.0f;
         if (object->powerup_time > 0.0f) {
-            PowerUp_ExistingIconPrivate((i8)object->field_280);
+            PowerUp_ExistingIconPrivate((i8)object->unknown_280);
         }
         message = AddGameMsg_Default;
         message.icon = 0xd0;
@@ -112,12 +112,12 @@ void CollectPowerUp(GAMEOBJECT *object, NUVEC *position, u16 rotation, i32 flags
         message.end_fn = PowerUp_EndMsg;
         message.allow_temporary = 1;
         message.flags = 0x2112d;
-        message.player_index = (i8)object->field_280;
+        message.player_index = (i8)object->unknown_280;
         message.target_is_coin_total = 7;
         queued = AddGameMsg(&message);
         if (queued != NULL) {
             queued->parameter_e2 = panel_rotation;
-            PowerUp_PanelYRot[(i8)object->field_280] = panel_rotation;
+            PowerUp_PanelYRot[(i8)object->unknown_280] = panel_rotation;
         }
     }
     Cheat_StartPowerUp(position, object);
@@ -305,7 +305,7 @@ void GizmoPickup_CollectCoin(WORLDINFO *world, NUVEC *position, i32 type_index, 
     char text[8];
     (void)ignored;
     if (object != NULL) {
-        player_index = (i8)object->field_280;
+        player_index = (i8)object->unknown_280;
     } else {
         player0_active = Player[0] != NULL && (((GAMEOBJECT *)Player[0])->flags_1fc & 0x80) != 0;
         player1_active = Player[1] != NULL && (((GAMEOBJECT *)Player[1])->flags_1fc & 0x80) != 0;
@@ -635,11 +635,11 @@ void AddTorpedoAsPart(NUVEC *position, NUVEC *velocity, f32 scale, f32 lifetime)
         params.move_fn = PartMove_VehiclePickup;
     }
     params.time_step = FRAMETIME;
-    params.field_c0 = scale;
+    params.unknown_c0 = scale;
     part = AddPart(&params);
     if (part != NULL) {
         part->rotation_y = (u16)qrand();
-        part->field_206 = 3;
+        part->unknown_206 = 3;
         part->field_214 = (f32)((f64)WORLD->torpedo_machine_sys->scale * 4.0 * (f64)NuTrigTable[0x2000]);
     }
 }
@@ -676,7 +676,7 @@ void AddHeartAsPart(GAMEOBJECT *recipient, NUVEC *position, NUVEC *velocity, f32
         }
     }
     params.time_step = FRAMETIME;
-    params.field_c0 = scale;
+    params.unknown_c0 = scale;
     part = AddPart(&params);
     if (part != NULL) {
         part->rotation_y = (u16)qrand();
@@ -740,7 +740,7 @@ void PowerUp_AddPart(NUVEC *position, NUVEC *velocity, f32 scale, f32 lifetime) 
         params.move_fn = PartMove_VehiclePickup;
     }
     params.time_step = FRAMETIME;
-    params.field_c0 = scale;
+    params.unknown_c0 = scale;
     part = AddPart(&params);
     if (part != NULL) {
         part->rotation_y = (u16)(i32)((f64)NuFmod(GameTimer.time_elapsed, 4.0f) * 0.25 * 65536.0);
@@ -798,8 +798,8 @@ void CollectHitPoint(GAMEOBJECT *object, NUVEC *position, i32 flags) {
     (void)flags;
     // MATCH-EXCEPTION: the original tests the same range twice (likely a macro/PC variant pair that
     // expanded to the same check); a single test drops the second compare.
-    if ((object->current_hp > 0 && object->current_hp < object->field_107e) ||
-        (object->current_hp > 0 && object->current_hp < object->field_107e)) {
+    if ((object->current_hp > 0 && object->current_hp < object->unknown_107e) ||
+        (object->current_hp > 0 && object->current_hp < object->unknown_107e)) {
         ++object->current_hp;
     }
     if (object->saved_hitpoints < 4) {
@@ -825,7 +825,7 @@ i32 ReleaseHearts(void) {
     i32 chance;
     i32 adjustment;
     if (player != NULL && player->dead == 0) {
-        hitpoints = player->field_107e;
+        hitpoints = player->unknown_107e;
         if (hitpoints > 0) {
             missing_hitpoints = hitpoints - player->current_hp;
             total_hitpoints = hitpoints;
@@ -833,7 +833,7 @@ i32 ReleaseHearts(void) {
     }
     player = Player[1];
     if (player != NULL && player->dead == 0) {
-        hitpoints = player->field_107e;
+        hitpoints = player->unknown_107e;
         if (hitpoints > 0) {
             missing_hitpoints += hitpoints - player->current_hp;
             total_hitpoints += hitpoints;
@@ -1097,7 +1097,7 @@ void AddCoinsAsParts(i32 type_id, NUVEC *position, NUVEC *velocity, f32 lifetime
     params.stop_fn = PartStop_Coin;
     params.impact_fn = PartImpact_Coin;
     params.time_step = FRAMETIME;
-    params.field_c0 = scale;
+    params.unknown_c0 = scale;
     part = AddPart(&params);
     if (part != NULL) {
         part->time_remaining = 30.0f;

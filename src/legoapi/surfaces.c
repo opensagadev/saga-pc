@@ -75,26 +75,26 @@ void GetSurfaceInfo(GAMEOBJECT *object, i32 update_fields, f32 floor_height) {
     object->water_height = EShadY;
     if (object->water_height != GameObjectNearFloorNoFloorHeight) {
         material = (i8)EShadowInfo();
-        object->field_283 = material;
+        object->unknown_283 = material;
         if (VehicleArea != 0 && BonusArea != 0 && (material == 7 || material == 16)) {
             object->water_height = 2000000.0f;
-            object->field_105e = 0;
-            object->field_105c = 0;
-            object->field_283 = -1;
+            object->unknown_105e = 0;
+            object->unknown_105c = 0;
+            object->unknown_283 = -1;
         } else {
             if (material < 0 || material >= 17) {
-                object->field_283 = 0;
+                object->unknown_283 = 0;
             }
             material_mask = GetSurfaceInfoDefaultMask.low | GetSurfaceInfoRuntimeMask.low | 0x40u;
-            object->field_283 = (i8)((u8)object->field_283 & (u8)~material_mask);
+            object->unknown_283 = (i8)((u8)object->unknown_283 & (u8)~material_mask);
             FindAnglesZX(&GetSurfaceInfoWaterNormal, NULL, NULL);
-            object->field_105c = temp_zrot;
-            object->field_105e = temp_xrot;
+            object->unknown_105c = temp_zrot;
+            object->unknown_105e = temp_xrot;
         }
     } else {
-        object->field_105e = 0;
-        object->field_105c = 0;
-        object->field_283 = -1;
+        object->unknown_105e = 0;
+        object->unknown_105c = 0;
+        object->unknown_283 = -1;
     }
 
     object->roof_height_pc = GetSurfaceInfoRoofHeight;
@@ -149,11 +149,11 @@ i32 Conveyor_AdjustSpeed(NUVEC *velocity) {
 }
 
 i32 UnderWater(GAMEOBJECT *object) {
-    return (object->field_283 == 1 || object->field_283 == 9) && object->collision_position.y <= object->water_height;
+    return (object->unknown_283 == 1 || object->unknown_283 == 9) && object->collision_position.y <= object->water_height;
 }
 
 i32 IntersectWater(GAMEOBJECT *object) {
-    if (object->field_283 != 1 && object->field_283 != 9) {
+    if (object->unknown_283 != 1 && object->unknown_283 != 9) {
         return 0;
     }
     if (object->collision_max.y < object->water_height) {
@@ -190,10 +190,10 @@ void InitSurfaceInfo(GAMEOBJECT *object) {
             object->surface_flag8_scale = 0.0f;
         }
         FindAnglesZX(&object->surface_normal, NULL, NULL);
-        object->field_1056 = temp_zrot;
-        object->field_1052 = temp_zrot;
-        object->field_1058 = temp_xrot;
-        object->field_1054 = temp_xrot;
+        object->unknown_1056 = temp_zrot;
+        object->unknown_1052 = temp_zrot;
+        object->unknown_1058 = temp_xrot;
+        object->unknown_1054 = temp_xrot;
     } else {
         GetSurfaceInfo(object, 0, object->floor_height);
         object->surface_flag8_scale = 0.0f;
@@ -202,13 +202,13 @@ void InitSurfaceInfo(GAMEOBJECT *object) {
         object->surface_normal = v010;
     }
 
-    object->unknown_0286 = (object->field_283 == 1 || object->field_283 == 9) && object->collision_position.y <= object->water_height;
-    object->water_intersects = (object->field_283 == 1 || object->field_283 == 9) && object->water_height <= object->collision_max.y &&
+    object->unknown_0286 = (object->unknown_283 == 1 || object->unknown_283 == 9) && object->collision_position.y <= object->water_height;
+    object->water_intersects = (object->unknown_283 == 1 || object->unknown_283 == 9) && object->water_height <= object->collision_max.y &&
                                object->water_height >= object->collision_min.y;
 
     object->water_height = LevelConfigFarDistance;
     object->roof_height_pc = LevelConfigFarDistance;
-    object->field_283 = -1;
+    object->unknown_283 = -1;
     object->roof_surface_id = 0xff;
     GetSurfaceInfo(object, 1, object->floor_height);
 

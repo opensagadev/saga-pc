@@ -149,8 +149,8 @@ void PartKill_ThermalDetonator(PART_PC *part, i32 unused1) {
     }
 
     explosion = Detonate(&part->position, flags);
-    if (explosion != NULL && part->owner != NULL && (part->owner->field_280 == 0 || part->owner->field_280 == 1)) {
-        explosion->field_0x33 = part->owner->field_280;
+    if (explosion != NULL && part->owner != NULL && (part->owner->unknown_280 == 0 || part->owner->unknown_280 == 1)) {
+        explosion->field_0x33 = part->owner->unknown_280;
     }
 }
 
@@ -174,7 +174,7 @@ void ThermalDetonator_Throw(GAMEOBJECT *object) {
     locator = object->character_data->game_character->throw_locator;
     blocked = 0;
     if (locator != -1 && object->character_model->points_of_interest[locator] != NULL) {
-        if (object->id == (u16)id_JANGOFETT && object->field_7aa == 0x6e) {
+        if (object->id == (u16)id_JANGOFETT && object->unknown_7aa == 0x6e) {
             NuMtxSetRotationY(&matrix, qrand());
             NuMtxRotateZ(&matrix, qrand());
             NuMtxRotateX(&matrix, qrand());
@@ -225,7 +225,7 @@ void ThermalDetonator_Throw(GAMEOBJECT *object) {
     part = AddPart(&params);
     if (part != NULL) {
         part->force_flags = ObjHitObj_Flags(object);
-        part->field_206 = 0;
+        part->unknown_206 = 0;
         part->update_fn = PartUpdate_ThermalDetonator;
         part->reflection_height = 2000000.0f;
         part->active &= ~0x38000;
@@ -247,7 +247,7 @@ void ThermalDetonator_ThrowMom(GAMEOBJECT *object, NUVEC *velocity) {
     }
     locator = object->character_data->game_character->throw_locator;
     if (locator != -1 && object->character_model->points_of_interest[locator] != NULL) {
-        if (object->id == (u16)id_JANGOFETT && object->field_7aa == 0x6e) {
+        if (object->id == (u16)id_JANGOFETT && object->unknown_7aa == 0x6e) {
             NuMtxSetRotationY(&matrix, qrand());
             NuMtxRotateZ(&matrix, qrand());
             NuMtxRotateX(&matrix, qrand());
@@ -286,7 +286,7 @@ void ThermalDetonator_ThrowMom(GAMEOBJECT *object, NUVEC *velocity) {
     part = AddPart(&params);
     if (part != NULL) {
         part->force_flags = ObjHitObj_Flags(object);
-        part->field_206 = 0;
+        part->unknown_206 = 0;
         part->update_fn = PartUpdate_ThermalDetonator;
         part->reflection_height = 2000000.0f;
         part->active &= ~0x38000;
@@ -300,8 +300,8 @@ i32 ThermalDetonator_MoveCode(GAMEOBJECT *object) {
     PART_PC *part;
     f32 release_frame;
     if (object->character_context == 0x2e) {
-        if (object->character_model->action_animations[object->field_7aa] != NULL) {
-            frame = AnimPlaying(&object->anim_packet, object->field_7aa, 1, 0);
+        if (object->character_model->action_animations[object->unknown_7aa] != NULL) {
+            frame = AnimPlaying(&object->anim_packet, object->unknown_7aa, 1, 0);
             if (frame == NULL) {
                 return 0;
             }
@@ -313,8 +313,8 @@ i32 ThermalDetonator_MoveCode(GAMEOBJECT *object) {
                 object->flags_e24 |= 0x4000;
             }
         } else if ((object->context_variant_flags & 0x40) == 0) {
-            if (object->character_model->action_animations[object->field_7aa] != NULL) {
-                release_frame = AnimListFrame(object->character_model, object->field_7aa, 2);
+            if (object->character_model->action_animations[object->unknown_7aa] != NULL) {
+                release_frame = AnimListFrame(object->character_model, object->unknown_7aa, 2);
                 if (frame != NULL && *frame > 0.0f && *frame >= release_frame) {
                     object->flags_e24 |= 0x4000;
                 }
@@ -332,7 +332,7 @@ i32 ThermalDetonator_MoveCode(GAMEOBJECT *object) {
         return 0;
     }
     if (((object->character_data->model_flags & 0x1000000) == 0 && object->helmet != 6 && !SuperWeirdo(object)) ||
-        (object->field_281 == 0 && object->jump_variant_state != 1)) {
+        (object->unknown_281 == 0 && object->jump_variant_state != 1)) {
         return 0;
     }
     if (object->character_context != -1 && object->character_context != 6 && object->character_context != 7 &&
@@ -349,21 +349,21 @@ i32 ThermalDetonator_MoveCode(GAMEOBJECT *object) {
     }
     object->character_context = 0x2e;
     if (object->jump_variant_state == 1) {
-        object->field_7aa = 0x6f;
+        object->unknown_7aa = 0x6f;
     } else if ((object->flags_e20 & 0x10000) != 0) {
-        object->field_7aa = 0x6e;
+        object->unknown_7aa = 0x6e;
     } else {
-        object->field_7aa = 0x65;
+        object->unknown_7aa = 0x65;
     }
-    if (object->character_model->action_animations[object->field_7aa] == NULL) {
-        object->field_7aa = 0x65;
+    if (object->character_model->action_animations[object->unknown_7aa] == NULL) {
+        object->unknown_7aa = 0x65;
     }
-    if (AnimPlaying(&object->anim_packet, object->field_7aa, 1, 1) != NULL) {
+    if (AnimPlaying(&object->anim_packet, object->unknown_7aa, 1, 1) != NULL) {
         ResetAnimPacket(&object->anim_packet, -1);
     }
     object->context_variant_flags &= ~0x40;
-    object->context_timer = object->character_model->action_animations[object->field_7aa] != NULL
-                                ? AnimDuration((i16)object->id, object->field_7aa, 0.0f, 0.0f, 1)
+    object->context_timer = object->character_model->action_animations[object->unknown_7aa] != NULL
+                                ? AnimDuration((i16)object->id, object->unknown_7aa, 0.0f, 0.0f, 1)
                                 : 1.0f;
     return 0;
 }
@@ -406,7 +406,7 @@ static i32 TightRopes_Load(void *world_info, void *unused1) {
             world->tightropes[i].field_0x2c = EdFileReadUnsignedShort();
             world->tightropes[i].field_0x2e = EdFileReadUnsignedShort();
             world->tightropes[i].field_0x30 = EdFileReadUnsignedChar();
-            world->tightropes[i].field_0x31 = EdFileReadUnsignedChar();
+            world->tightropes[i].unknown_31 = EdFileReadUnsignedChar();
             if (version != 2) {
                 world->tightropes[i].field_0x32 = EdFileReadChar();
             }

@@ -94,7 +94,7 @@ GAME_PUBLISHER_ASSERT(offsetof(CHARACTERDATA_PC, model_flags) == 4);
 GAME_PUBLISHER_ASSERT(offsetof(PLAYERCHARACTERCONFIG, flags_090) == 0x90);
 GAME_PUBLISHER_ASSERT(offsetof(PLAYERCHARACTERCONFIG, weapon_action) == 0x116);
 GAME_PUBLISHER_ASSERT(offsetof(GAMEOBJECT, flags_e20) == 0xe20);
-GAME_PUBLISHER_ASSERT(offsetof(GAMEOBJECT, field_e33) == 0xe33);
+GAME_PUBLISHER_ASSERT(offsetof(GAMEOBJECT, unknown_e33) == 0xe33);
 GAME_PUBLISHER_ASSERT(offsetof(GAMEOBJECT, id) == 0x1064);
 GAME_PUBLISHER_ASSERT(sizeof(CUT_PLAYER_CLIP_CONFIG) == 0x44);
 GAME_PUBLISHER_ASSERT(offsetof(CUT_PLAYER_CLIP_CONFIG, level_id) == 0);
@@ -107,12 +107,12 @@ GAME_PUBLISHER_ASSERT(offsetof(AREA_DATA_PC, index) == 0x7c);
 GAME_PUBLISHER_ASSERT(offsetof(GAMEOBJECT, id) == 0x1064);
 GAME_PUBLISHER_ASSERT(offsetof(GAMEOBJECT, character_model) == 0x50);
 GAME_PUBLISHER_ASSERT(offsetof(GAMEOBJECT, character_context) == 0x7b5);
-GAME_PUBLISHER_ASSERT(offsetof(GAMEOBJECT, field_7aa) == 0x7aa);
+GAME_PUBLISHER_ASSERT(offsetof(GAMEOBJECT, unknown_7aa) == 0x7aa);
 GAME_PUBLISHER_ASSERT(offsetof(GAMEOBJECT, collision_position) == 0x80);
 GAME_PUBLISHER_ASSERT(offsetof(GAMEOBJECT, lower_position) == 0x19c);
 GAME_PUBLISHER_ASSERT(offsetof(GAMEOBJECT, flags_ef0) == 0xef0);
 GAME_PUBLISHER_ASSERT(offsetof(GAMEOBJECT, bounds_radius) == 0x1dc);
-GAME_PUBLISHER_ASSERT(offsetof(GAMEOBJECT, field_280) == 0x280);
+GAME_PUBLISHER_ASSERT(offsetof(GAMEOBJECT, unknown_280) == 0x280);
 GAME_PUBLISHER_ASSERT(offsetof(GAMEOBJECT, flags_1fc_word) == 0x1fc);
 GAME_PUBLISHER_ASSERT(offsetof(GAMEOBJECT, dead) == 0x28b);
 GAME_PUBLISHER_ASSERT(offsetof(GAMEOBJECT, rider) == 0xcd0);
@@ -138,7 +138,7 @@ GAME_PUBLISHER_ASSERT(offsetof(GAME_CALLBACK_WEAPON_FLAGS, weapon_flags) == 0xe2
 GAME_PUBLISHER_ASSERT(offsetof(GAMEOBJECT, anim_packet) == 8);
 GAME_PUBLISHER_ASSERT(offsetof(GAMEOBJECT, flags_1fc) == 0x1fc);
 GAME_PUBLISHER_ASSERT(offsetof(GAMEOBJECT, floor_height) == 0x21c);
-GAME_PUBLISHER_ASSERT(offsetof(GAMEOBJECT, field_283) == 0x283);
+GAME_PUBLISHER_ASSERT(offsetof(GAMEOBJECT, unknown_283) == 0x283);
 GAME_PUBLISHER_ASSERT(offsetof(GAMEOBJECT, jump_animation_state) == 0x285);
 GAME_PUBLISHER_ASSERT(offsetof(GAMEOBJECT, suit) == 0xcbc);
 GAME_PUBLISHER_ASSERT(offsetof(GAMEOBJECT, surface_normal) + offsetof(NUVEC, y) == 0xf28);
@@ -262,7 +262,7 @@ GAME_PUBLISHER_ASSERT(offsetof(MISSION_MENU_PACKET, player_model) == 0);
 GAME_PUBLISHER_ASSERT(offsetof(MISSION_MENU_PACKET, active_player) == 4);
 GAME_PUBLISHER_ASSERT(offsetof(WORLDINFO, current_level) == 0x128);
 extern "C" void Hub_ResetPanel(void);
-GAME_PUBLISHER_ASSERT(offsetof(GAMEOBJECT, field_7b3) == 0x7b3);
+GAME_PUBLISHER_ASSERT(offsetof(GAMEOBJECT, unknown_7b3) == 0x7b3);
 
 /* Local minimum reader; no GAMECAMERA size or backing claim. */
 typedef struct GAME_GIZMO_SFX_CAMERA_READER {
@@ -536,7 +536,7 @@ static i32 CanGlide_Game(GAMEOBJECT *object) {
 }
 
 static i32 UsingExtraActions_Game(GAMEOBJECT *object) {
-    return object->id == (u16)id_GRIEVOUS && (((u8)(object->flags_e20 >> 16) & 1) == 0 || object->field_e33 == 2);
+    return object->id == (u16)id_GRIEVOUS && (((u8)(object->flags_e20 >> 16) & 1) == 0 || object->unknown_e33 == 2);
 }
 
 static i32 CanStartHold_Game(GAMEOBJECT *object) {
@@ -550,11 +550,11 @@ static i32 CanStartHold_Game(GAMEOBJECT *object) {
 }
 
 static i32 Slam_GetDebris_Game(GAMEOBJECT *object, i32 effect) {
-    if (object->field_280 != 0xff) {
+    if (object->unknown_280 != 0xff) {
         if (Cheat_IsOn(0x19)) {
             return 1;
         }
-        if (object->field_280 != 0xff && Player_HasPurpleForce(object)) {
+        if (object->unknown_280 != 0xff && Player_HasPurpleForce(object)) {
             return 4;
         }
     }
@@ -697,7 +697,7 @@ static void Player_ToggledCharacter_Game(GAMEOBJECT *object, i32 owned) {
 }
 
 static void Punch_HitExtraCode_alternate(GAMEOBJECT *object, NUVEC *position) {
-    if ((AnimMiscFlags(object->character_model, object->field_7aa) & 4) != 0) {
+    if ((AnimMiscFlags(object->character_model, object->unknown_7aa) & 4) != 0) {
         if (position != NULL) {
             PlaySfx("WhipHit", position);
         } else {
@@ -708,12 +708,12 @@ static void Punch_HitExtraCode_alternate(GAMEOBJECT *object, NUVEC *position) {
 
 static void Punch_HitExtraCode_LSW(GAMEOBJECT *object, NUVEC *position) {
     if (object->id == (u16)id_GAMORREANGUARD &&
-        ((object->character_context == 0x26 && object->field_7aa == 0x56) || object->character_context == 0x0d)) {
+        ((object->character_context == 0x26 && object->unknown_7aa == 0x56) || object->character_context == 0x0d)) {
         NewRumbleAllPlayers(0.4f, 0.0f, 1, 0);
         NewRumble(object->pad->bound_pad, 0.7f, 0);
         GameCam_Judder(GameCam, 0.25f, 0, &object->collision_position);
         PlaySfx("fs_gamorr_land", &object->lower_position);
-    } else if ((AnimMiscFlags(object->character_model, object->field_7aa) & 4) != 0) {
+    } else if ((AnimMiscFlags(object->character_model, object->unknown_7aa) & 4) != 0) {
         if (position != NULL) {
             PlaySfx("WhipHit", position);
         } else {
@@ -879,7 +879,7 @@ static i32 BoltInitSfx_LSW(GAMEOBJECT *object) {
 }
 
 static void GameObjectDimensionsExtra_LSW(GAMEOBJECT *object) {
-    if (object->id == (u16)id_ATAT && object->character_context == 0x17 && object->field_7aa == 0x41) {
+    if (object->id == (u16)id_ATAT && object->character_context == 0x17 && object->unknown_7aa == 0x41) {
         object->bounds_radius += object->bounds_radius;
     }
 }
@@ -1089,7 +1089,7 @@ static i32 LastSafePosExtra(GAMEOBJECT *object) {
     if (level == dat_0087b1a8 && object->jump_animation_state == 0x0e) {
         return 1;
     }
-    if (level == dat_0087b264 && object->jump_animation_state == 0x18 && (object->flags_1fc & 0x80) != 0 && object->field_283 == -1) {
+    if (level == dat_0087b264 && object->jump_animation_state == 0x18 && (object->flags_1fc & 0x80) != 0 && object->unknown_283 == -1) {
         return 1;
     }
     if (level == DEATHSTARESCAPEC_LDATA && (i16)object->id == id_SERVICECAR) {
@@ -1264,15 +1264,15 @@ static NUSPECIALHANDLE *GameMsg_GetExtraObj(GAME_MESSAGE_PC *message) {
 static void Jump_EndOfLandContext(GAMEOBJECT *object) {
     GAME_CALLBACK_WEAPON_FLAGS *weapon = (GAME_CALLBACK_WEAPON_FLAGS *)object;
     if ((i16)object->id == id_THEEMPEROR && object->character_context == LEGOCONTEXT_LAND_COMBOJUMP && BigJumpLandPreferred != -1 &&
-        object->field_7aa == BigJumpLandPreferred && ((weapon->weapon_flags & 1) == 0 || object->field_e33 == 2)) {
+        object->unknown_7aa == BigJumpLandPreferred && ((weapon->weapon_flags & 1) == 0 || object->unknown_e33 == 2)) {
         ResetAnimPacket(&object->anim_packet, -1);
     }
 }
 
 static void BigJump_EndOfLand(GAMEOBJECT *object) {
     GAME_CALLBACK_WEAPON_FLAGS *weapon = (GAME_CALLBACK_WEAPON_FLAGS *)object;
-    if ((i16)object->id == id_THEEMPEROR && BigJumpLandPreferred != -1 && object->field_7aa == BigJumpLandPreferred &&
-        ((weapon->weapon_flags & 1) == 0 || object->field_e33 == 2)) {
+    if ((i16)object->id == id_THEEMPEROR && BigJumpLandPreferred != -1 && object->unknown_7aa == BigJumpLandPreferred &&
+        ((weapon->weapon_flags & 1) == 0 || object->unknown_e33 == 2)) {
         ResetAnimPacket(&object->anim_packet, -1);
     }
 }
@@ -1956,7 +1956,7 @@ extern "C" {
         PART_PC *deflected;
         KillPart(part, 0);
         if (deflect != 0 && owner != NULL) {
-            if ((object->flags_1fc & 0x80) != 0 && owner->field_280 == 0xff) {
+            if ((object->flags_1fc & 0x80) != 0 && owner->unknown_280 == 0xff) {
                 MakeThrowVector(&velocity, (NUVEC *)&matrix.m30, &owner->collision_position, &owner->velocity, speed, gravity);
             } else {
                 velocity.x = velocity.y = 0.0f;
@@ -2030,12 +2030,12 @@ extern "C" {
             if ((U64_PAIR(&CInfo[context].flags) & 0x8000) != 0 || (object->flags_e20 & 0x20) != 0) {
                 continue;
             }
-            if (part->field_206 == 0) {
+            if (part->unknown_206 == 0) {
                 if (object == part->owner) {
                     if (part->scale_time < 0.5f) {
                         continue;
                     }
-                } else if (api->field_280 != 0xff && part->scale_time < 0.25f) {
+                } else if (api->unknown_280 != 0xff && part->scale_time < 0.25f) {
                     continue;
                 }
             } else if ((part->flags & 0x8000) == 0 && part->owner == object) {
@@ -2123,7 +2123,7 @@ extern "C" {
             collect_pickup:
                 if ((part->active & 2) == 0) {
                     if (part->part_id != 0xcb || !(part->scale_time >= 0.5f) ||
-                        (VehicleArea == 0 && (object->current_hp <= 0 || object->current_hp >= object->field_107e))) {
+                        (VehicleArea == 0 && (object->current_hp <= 0 || object->current_hp >= object->unknown_107e))) {
                         if (part->part_id == 0xcb) {
                             continue;
                         }
@@ -2142,7 +2142,7 @@ extern "C" {
                 } else if (part->part_id == 0xd0) {
                     CollectPowerUp(object, &part->position, part->rotation_y, 1);
                     KillPart(part, 2);
-                } else if (part->field_206 == 3) {
+                } else if (part->unknown_206 == 3) {
                     if ((api->character_data->model_flags & 0x2000) == 0) {
                         continue;
                     }
@@ -2178,12 +2178,12 @@ extern "C" {
     }
 
     void Game_KillPart(PART_PC *part, i32 reason) {
-        if (reason == 1 && part->field_206 != -1) {
-            if ((part->field_206 & 1) != 0 && Player[0] != NULL) {
+        if (reason == 1 && part->unknown_206 != -1) {
+            if ((part->unknown_206 & 1) != 0 && Player[0] != NULL) {
                 NewBuzz(((GAMEOBJECT *)Player[0])->pad->bound_pad, 0.2f, 0);
                 NewRumble(((GAMEOBJECT *)Player[0])->pad->bound_pad, 0.8f, 0);
             }
-            if ((part->field_206 & 2) != 0 && Player[1] != NULL) {
+            if ((part->unknown_206 & 2) != 0 && Player[1] != NULL) {
                 NewBuzz(((GAMEOBJECT *)Player[1])->pad->bound_pad, 0.2f, 0);
                 NewRumble(((GAMEOBJECT *)Player[1])->pad->bound_pad, 0.8f, 0);
             }

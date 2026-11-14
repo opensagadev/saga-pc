@@ -510,7 +510,7 @@ static ATTRACTO_SHARD_READER *AttractoSelectShard(WORLDINFO *world, GAMEOBJECT *
 static void AttractoStartSuction(GAMEOBJECT *object) {
     object->character_context = 0x52;
     object->context_timer = 0.0f;
-    object->field_7aa = 0x9a;
+    object->unknown_7aa = 0x9a;
     object->context_duration = 0.2f;
     object->external_force.x = object->camera_screen_position.x;
     object->external_force.y = object->camera_screen_position.y;
@@ -529,7 +529,7 @@ void Attracto_MoveCode(WORLDINFO *world, GAMEOBJECT *object) {
     if ((object->flags_1fc_word & 0x80) != 0 && object->suit != NULL && (object->suit->flags & 0x80) != 0) {
         GAME_MESSAGE_PC *message;
         available = 1;
-        sprintf(text, "%i", object->field_1062);
+        sprintf(text, "%i", object->unknown_1062);
         NuVecMtxRotate(&position, &AttractoBackPackCountPos, &object->transform);
         NuVecAdd(&position, &position, &object->position);
         message = AddGameMessage(text, &position, 1.3f, NULL, 0.0f, 255, 255, 255, 0x1087, 0.0f);
@@ -538,8 +538,8 @@ void Attracto_MoveCode(WORLDINFO *world, GAMEOBJECT *object) {
         }
     }
     if (object->character_context == 0x53) {
-        if (object->character_model->action_animations[object->field_7aa] != NULL &&
-            AnimPlaying(&object->anim_packet, object->field_7aa, 1, 0) == NULL) {
+        if (object->character_model->action_animations[object->unknown_7aa] != NULL &&
+            AnimPlaying(&object->anim_packet, object->unknown_7aa, 1, 0) == NULL) {
             return;
         }
         if ((object->pad->buttons_held & GAMEPAD_SPECIAL) != 0) {
@@ -548,16 +548,16 @@ void Attracto_MoveCode(WORLDINFO *world, GAMEOBJECT *object) {
             if (!(object->context_duration <= 0.0f)) {
                 return;
             }
-            if (object->field_1062 > 0) {
+            if (object->unknown_1062 > 0) {
                 ATTRACTO_RECORD *attracto = object->grapple;
                 if (attracto->collected_count < attracto->capacity) {
-                    --object->field_1062;
+                    --object->unknown_1062;
                     ++attracto->collected_count;
                     object->context_duration = 0.2f;
                     attracto = object->grapple;
                     if (attracto->collected_count == attracto->capacity) {
                         attracto->filled = 1;
-                    } else if (object->field_1062 != 0) {
+                    } else if (object->unknown_1062 != 0) {
                         goto check_context;
                     }
                 }
@@ -583,8 +583,8 @@ void Attracto_MoveCode(WORLDINFO *world, GAMEOBJECT *object) {
             object->character_context = -1;
             return;
         }
-        if (object->character_model->action_animations[object->field_7aa] == NULL ||
-            AnimPlaying(&object->anim_packet, object->field_7aa, 1, 0) != NULL) {
+        if (object->character_model->action_animations[object->unknown_7aa] == NULL ||
+            AnimPlaying(&object->anim_packet, object->unknown_7aa, 1, 0) != NULL) {
             f32 x;
             f32 y;
             ATTRACTO_SHARD_READER *nearest;
@@ -617,17 +617,17 @@ void Attracto_MoveCode(WORLDINFO *world, GAMEOBJECT *object) {
         AddGameMessage("[  ]", &object->external_force, 1.0f, NULL, 0.0f, red, green, blue, 0x1080, 0.0f);
         return;
     }
-    if (available && object->field_281 != 0 && ObjLandReady(object)) {
+    if (available && object->unknown_281 != 0 && ObjLandReady(object)) {
         f32 radius = (f64)object->bounds_radius + 0.25;
         f32 distance;
         ATTRACTO_RECORD *attracto = (ATTRACTO_RECORD *)Attracto_FindNearest(world, &object->lower_position, object, &distance);
         if (attracto != NULL) {
             radius = (f64)radius * (f64)radius;
-            if (distance < radius && object->field_1062 > 0 && (object->pad->buttons_pressed & GAMEPAD_SPECIAL) != 0) {
+            if (distance < radius && object->unknown_1062 > 0 && (object->pad->buttons_pressed & GAMEPAD_SPECIAL) != 0) {
                 object->character_context = 0x53;
                 object->context_timer = 0.0f;
                 object->grapple = attracto;
-                object->field_7aa = 0x9b;
+                object->unknown_7aa = 0x9b;
                 object->movement_facing_angle = attracto->angle;
                 return;
             }

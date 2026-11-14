@@ -24,7 +24,7 @@ void CheckForPlayersTurnedOff(void) {
                     target->character_context == 0x1f) {
                     continue;
                 }
-                if (target->field_281 != 0 ||
+                if (target->unknown_281 != 0 ||
                     (target->jump_variant_state == 1 && target->character_data->game_character->field_028 > 0.0f)) {
                     TagCharacter(Player[source_index], target, 1);
                 }
@@ -63,7 +63,7 @@ i32 FreePlay_DropInToPlayerPos(GAMEOBJECT *object) {
             object->start_position = position;
             object->position = position;
             object->velocity = v000;
-            object->field_0x276 = player->field_0x276;
+            object->unknown_276 = player->unknown_276;
             ResetPlayerMoves(object);
             object->respawn_timer = 0.0f;
             InitSurfaceInfo(object);
@@ -101,7 +101,7 @@ void DropInOutCode(GAMEOBJECT *object) {
         }
         object->character_context = -1;
         if ((object->character_data->model_flags & 0x2000) == 0) {
-            object->field_281 = 0;
+            object->unknown_281 = 0;
             object->velocity.y = -0.1f;
         }
     } else if (WORLD->current_level == PODSPRINTA_LDATA) {
@@ -120,7 +120,7 @@ void StartDropIn(GAMEOBJECT *object) {
     animation = (object->character_data->model_flags & 0x2000) == 0 ? 5 : 1;
     object->context_timer = 0.0f;
     object->context_duration = 0.5f;
-    object->field_7aa = animation;
+    object->unknown_7aa = animation;
 }
 
 void StartDropOut(GAMEOBJECT *object) {
@@ -133,7 +133,7 @@ void StartDropOut(GAMEOBJECT *object) {
     animation = CurrentAnim(&object->anim_packet);
     object->context_timer = 0.0f;
     object->context_duration = 0.5f;
-    object->field_7aa = animation;
+    object->unknown_7aa = animation;
 }
 
 void DropOut(i32 player, i32 resume, i32 silent, i32 unused) {
@@ -169,7 +169,7 @@ void DropOut(i32 player, i32 resume, i32 silent, i32 unused) {
         StartDropOut(object);
     }
     if (object->dead || object->character_context == 0x2b) {
-        PlayerProgress[player].hitpoints = object->field_107e;
+        PlayerProgress[player].hitpoints = object->unknown_107e;
     } else {
         PlayerProgress[player].hitpoints = object->current_hp;
     }
@@ -324,7 +324,7 @@ i32 PlayersDropInOut(void) {
         if (!join && CUTSTOPGAME == 0 && MiniCutCam != 2 && !(object->tag_flags & 2) && !(object->portal_flags & 0x4000000) &&
             object->character_context != 0x24 && object->character_context != 0x1f) {
             if (DROPIN_SCREEN_INSIDE(object) &&
-                (force_join || object->field_281 != 0 || object->id == (u16)id_SPEEDERBIKE ||
+                (force_join || object->unknown_281 != 0 || object->id == (u16)id_SPEEDERBIKE ||
                  (object->jump_variant_state == 1 && object->character_data->game_character->field_028 > 0.0f))) {
                 join = 1;
             } else if (force_join) {
@@ -342,7 +342,7 @@ i32 PlayersDropInOut(void) {
                 tag = VehicleArea != 0 && object->character_context != 0x24;
                 if (!tag && CUTSTOPGAME == 0 && MiniCutCam != 2 && !(target->tag_flags & 2) && !(target->portal_flags & 0x4000000) &&
                     target->character_context != 0x24 && target->character_context != 0x1f && target->model_draw_result != 0 &&
-                    (target->field_281 != 0 ||
+                    (target->unknown_281 != 0 ||
                      (target->jump_variant_state == 1 && target->character_data->game_character->field_028 > 0.0f)) &&
                     DROPIN_SCREEN_INSIDE(target)) {
                     tag = 1;
@@ -409,7 +409,7 @@ i32 PlayersDropInOut(void) {
                 }
                 continue;
             }
-            if (object->field_da8 >= 2.0f) {
+            if (object->unknown_da8 >= 2.0f) {
                 continue;
             }
             if ((object->model_draw_result != 0 || DROPIN_SCREEN_OUTSIDE(object)) && !(object->tag_flags & 2) &&
@@ -418,7 +418,7 @@ i32 PlayersDropInOut(void) {
             }
         } else if (Player[0] != NULL && (((GAMEOBJECT *)Player[0])->flags_1fc_word & 0x80) && Player[1] != NULL &&
                    (((GAMEOBJECT *)Player[1])->flags_1fc_word & 0x80)) {
-            if (object->field_da8 >= 2.0f || (object->model_draw_result == 0 && DROPIN_SCREEN_OUTSIDE(object))) {
+            if (object->unknown_da8 >= 2.0f || (object->model_draw_result == 0 && DROPIN_SCREEN_OUTSIDE(object))) {
                 drop_index = index;
             }
         }

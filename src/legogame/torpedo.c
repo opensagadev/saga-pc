@@ -330,7 +330,7 @@ void Torpedo_UpdateJobbies(GAMEOBJECT *object) {
             target_z = (u16)TORPEDO_PACKET(object)->pickup_data[index - 1];
             target_y = (u16)TORPEDO_PACKET(object)->pickup_flags[index - 1];
         } else {
-            target_z = NuAngAdd(object->field_0x276, 0x8000);
+            target_z = NuAngAdd(object->unknown_276, 0x8000);
             target_y = (u16)-object->secondary_lean_angle;
         }
         TORPEDO_PACKET(object)->pickup_data[index] = SeekRot((u16)TORPEDO_PACKET(object)->pickup_data[index], target_z, 5.0f);
@@ -347,7 +347,7 @@ void Torpedo_UpdateJobbies(GAMEOBJECT *object) {
                                               (i16)(TORPEDO_PACKET(object)->pickup_data[0] - 0x4000), NULL);
         }
     }
-    if ((TORPEDO_PACKET(object)->flags & 0x20) == 0 || TORPEDO_PACKET(object)->count == 0 || object->field_280 != 0xff) {
+    if ((TORPEDO_PACKET(object)->flags & 0x20) == 0 || TORPEDO_PACKET(object)->count == 0 || object->unknown_280 != 0xff) {
         return;
     }
     for (index = 0; index < 2; ++index) {
@@ -589,7 +589,7 @@ void TorpedoHitTarget(BOLT_PC *bolt) {
         if (target_position != NULL) {
             NuVecSub(&delta, target_position, &bolt->position);
             if (NuVecMagSqr(&delta) < radius * radius) {
-                player = bolt->owner != NULL ? (i8)((GAMEOBJECT *)bolt->owner)->field_280 : -1;
+                player = bolt->owner != NULL ? (i8)((GAMEOBJECT *)bolt->owner)->unknown_280 : -1;
                 TorpedoHitDispatch(((GAMEOBJECT *)bolt->owner)->torpedo->target, &bolt->position, player,
                                    ((GAMEOBJECT *)bolt->owner)->torpedo->target_type);
             }

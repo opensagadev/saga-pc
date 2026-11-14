@@ -2182,7 +2182,7 @@ f32 Condition_YawToOpponent(AISYS_PC *system, AISCRIPTPROCESS *process, AIPACKET
         difference.x = packet->opponent->position.x - packet->owner->position.x;
         difference.z = packet->opponent->position.z - packet->owner->position.z;
         /* difference.y is left unwritten before this in-place rotation. */
-        NuVecRotateY(&difference, &difference, -packet->owner->field_0x276);
+        NuVecRotateY(&difference, &difference, -packet->owner->unknown_276);
         return (f32)((f64)NuAtan2D(difference.x, difference.z) * (360.0 / 65536.0));
     }
     return -180.0f;

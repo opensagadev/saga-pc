@@ -47,7 +47,7 @@ i32 StarWars_MidSpecialMove_Default(AISYS_PC *system, AIPACKET *packet, APIOBJEC
                 AIPathNodeUpdatePos(system, path, owner->ai_packet.special_move_node);
             }
         }
-        if (owner->field_281 != 0 && owner->supporting_platform_id != -1 && CurrentTerrain != NULL &&
+        if (owner->unknown_281 != 0 && owner->supporting_platform_id != -1 && CurrentTerrain != NULL &&
             NuSpecialGetInstanceix(&owner->ai_packet.special_move_node->special_handle) ==
                 ((AI_SPECIAL_TERRAIN_VIEW *)CurrentTerrain)->platforms[owner->supporting_platform_id].scene_object_index) {
             skip_inside = 0;
@@ -62,7 +62,7 @@ i32 StarWars_MidSpecialMove_Default(AISYS_PC *system, AIPACKET *packet, APIOBJEC
     } else if (owner->character_context != 0 &&
                (owner->position.y < owner->ai_packet.special_move_node->min_height ||
                 (packet->path_info.connection->traversal_flags[packet->path_info.direction] & 0x80000000) != 0 ||
-                ((capabilities & 0x40) != 0 && owner->field_281 != 0))) {
+                ((capabilities & 0x40) != 0 && owner->unknown_281 != 0))) {
         ClearSpecialMove(owner);
     }
     if (owner->ai_packet.special_move_node != NULL) {
@@ -198,7 +198,7 @@ i32 StarWars_PrepareHatch(AIPACKET *packet, APIOBJECT *object, i32 checks_unused
 
 i32 StarWars_MidSpecialMove_UseHatch(AISYS_PC *system, AIPACKET *packet, APIOBJECT *object) {
     GAMEOBJECT *owner = object->owner;
-    switch ((i8)owner->field_1087) {
+    switch ((i8)owner->unknown_1087) {
         case 0:
             if (owner->character_context == 0x0f || owner->character_context == 0x47 ||
                 (owner->character_context == 0 && owner->action_movement_state == 6)) {
@@ -207,7 +207,7 @@ i32 StarWars_MidSpecialMove_UseHatch(AISYS_PC *system, AIPACKET *packet, APIOBJE
                 ((GAMEOBJECT *)object)->ai_collision_priority |= 0x4000;
                 return 1;
             }
-            owner->field_1087 = 1;
+            owner->unknown_1087 = 1;
             owner->special_move_timer = 1.0f;
         case 1:
             owner->ai_packet.movement_destination = owner->ai_packet.special_move_node->position;
@@ -456,7 +456,7 @@ i32 StarWars_MidSpecialMove(AISYS_PC *system, AIPACKET *packet, APIOBJECT *apiob
         if (TryToTeleportToNextNode(owner, owner->ai_packet.special_move_node, 0) != 0) {
             ClearSpecialMove(owner);
         } else {
-            function = starwars_midspecialmovefns[(i8)owner->field_1086];
+            function = starwars_midspecialmovefns[(i8)owner->unknown_1086];
             if (function != NULL) {
                 return function(system, packet, apiobject);
             }
@@ -520,7 +520,7 @@ void PlayerInitCapabilitiesVariant1(GAMEOBJECT *object) {
     if ((character->model_flags & 0x88) != 0 || (character->game_character->flags_090 & 0x40) != 0) {
         object->ai_packet.capabilities |= 0x8000;
     }
-    if (object->field_280 != 0xff) {
+    if (object->unknown_280 != 0xff) {
         object->ai_packet.capabilities |= 0x20000;
     }
     if (object->id == (u16)id_SNAKE) {

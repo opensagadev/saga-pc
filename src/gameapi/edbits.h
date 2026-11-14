@@ -38,7 +38,7 @@ extern "C" {
         u8 red;                  // 0x40
         u8 green;                // 0x41
         u8 blue;                 // 0x42
-        u8 field_43;             // 0x43
+        u8 unknown_43;           // 0x43
     } PC_EDBRIDGE;
 
     extern i32 edbri_bridges_used;

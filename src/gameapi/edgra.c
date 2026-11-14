@@ -62,7 +62,7 @@ i32 edgraFileSave(char *path) {
             EdFileWriteFloat(GrassClumps[i].near_distance);
             EdFileWriteFloat(GrassClumps[i].far_distance);
             EdFileWriteChar(GrassClumps[i].field_42);
-            EdFileWriteChar(GrassClumps[i].field_43);
+            EdFileWriteChar(GrassClumps[i].unknown_43);
             EdFileWriteFloat(GrassClumps[i].field_44);
             if (GrassClumps[i].kind == 3) {
                 for (j = 0; j < GrassClumps[i].element_count; ++j) {

@@ -824,8 +824,8 @@ void GizPanel_MoveCode(WORLDINFO *world, GAMEOBJECT *object, i32 use) {
     PanelDroidActive = 0;
     PanelBountyHunterActive = 0;
     if (object->character_context == 0x0b && object->grapple != NULL) {
-        if (object->character_model->model_data_b[object->field_7aa] == NULL ||
-            AnimPlaying(&object->anim_packet, object->field_7aa, 1, 0) != NULL) {
+        if (object->character_model->model_data_b[object->unknown_7aa] == NULL ||
+            AnimPlaying(&object->anim_packet, object->unknown_7aa, 1, 0) != NULL) {
             object->context_hover_target_y += FRAMETIME;
             if (object->context_hover_target_y > 1.0f) {
                 object->context_hover_target_y = 1.0f;
@@ -896,46 +896,46 @@ void GizPanel_MoveCode(WORLDINFO *world, GAMEOBJECT *object, i32 use) {
         object->flags_e20 &= ~0x1000u;
         object->character_context = 0x0b;
         object->grapple = panel;
-        object->field_7b3 = 0;
+        object->unknown_7b3 = 0;
         FastWeaponIn(object, 0);
         object->flags_e24 |= 0x200;
         panel = object->grapple;
         if (panel->model_variant == 2) {
             if (object->character_model->model_data_b[0x46] != NULL) {
-                object->field_7aa = 0x46;
+                object->unknown_7aa = 0x46;
             } else {
-                object->field_7aa = 0x45;
+                object->unknown_7aa = 0x45;
             }
             Hint_SetComplete(0x261);
             Hint_SetComplete(0x26a);
         } else if (panel->model_variant == 3) {
             if (object->character_model->model_data_b[0x45] == NULL && object->character_model->model_data_b[0x46] != NULL) {
-                object->field_7aa = 0x46;
+                object->unknown_7aa = 0x46;
             } else {
-                object->field_7aa = 0x45;
+                object->unknown_7aa = 0x45;
             }
             MakeBaddiesForgetAboutParty(1);
             Hint_SetComplete(0x260);
             Hint_SetComplete(0x269);
         } else {
-            object->field_7aa = 0x18;
+            object->unknown_7aa = 0x18;
             if (panel->model_variant == 1) {
                 if (!InStory() || (((PANEL_MOVEMENT *)object->grapple)->draw_flags & 4) == 0) {
-                    GizPanel_PlaySfx("TC14_VLA", &object->collision_position, 1 << object->field_280);
+                    GizPanel_PlaySfx("TC14_VLA", &object->collision_position, 1 << object->unknown_280);
                 }
                 if ((object->character_data->model_flags & 0x20) != 0) {
                     SetProtocolDroidInterfaceAction(object);
                 }
             } else {
                 if (!InStory() || (((PANEL_MOVEMENT *)object->grapple)->draw_flags & 4) == 0) {
-                    GizPanel_PlaySfx("R2D2_VLA", &object->collision_position, 1 << object->field_280);
+                    GizPanel_PlaySfx("R2D2_VLA", &object->collision_position, 1 << object->unknown_280);
                 }
             }
             Hint_SetComplete(0x25f);
             LswForceUsedHintFlags |= 4;
         }
         {
-            f32 duration = AnimDuration((i16)object->id, object->field_7aa, 0.0f, 0.0f, 1);
+            f32 duration = AnimDuration((i16)object->id, object->unknown_7aa, 0.0f, 0.0f, 1);
             object->context_timer = duration;
             if (duration <= 0.0f) {
                 object->context_timer = 2.0f;
@@ -944,7 +944,7 @@ void GizPanel_MoveCode(WORLDINFO *world, GAMEOBJECT *object, i32 use) {
         }
     } else if (use != 0 && (object->flags_1fc & 0x80) != 0 && (object->character_data->model_flags & 0x20) != 0 &&
                object->field_db0 <= 0.0f) {
-        GizPanel_PlaySfx("TC14_VLN", &object->collision_position, 1 << object->field_280);
+        GizPanel_PlaySfx("TC14_VLN", &object->collision_position, 1 << object->unknown_280);
         object->field_db0 = 0.5f;
     }
 }

@@ -250,10 +250,10 @@ GAMEOBJECT *fun_0055e2b0(i32 id) {
 NUVEC *Player_StartPos(GAMEOBJECT *object) {
     i32 index;
     NUVEC *position;
-    if ((i8)object->field_280 < 0 || (i8)object->field_280 >= 8) {
+    if ((i8)object->unknown_280 < 0 || (i8)object->unknown_280 >= 8) {
         index = object->hostility_group;
     } else {
-        index = (i8)object->field_280;
+        index = (i8)object->unknown_280;
     }
     index %= 8;
     position = PlayerStart[index].position;
@@ -364,7 +364,7 @@ i32 MovingBackwards(GAMEOBJECT *object) {
     GAMEPAD_PC *pad = object->pad;
     i32 difference;
     if (pad->operator_data != NULL && pad->input_magnitude != 0.0f) {
-        difference = RotDiff(object->pad->input_angle + GameCam->input_yaw, object->field_0x276);
+        difference = RotDiff(object->pad->input_angle + GameCam->input_yaw, object->unknown_276);
         if (difference < -0x4000 || difference > 0x4000) {
             return 1;
         }
@@ -405,7 +405,7 @@ void PushAway(NUVEC *position, f32 radius, NUVEC *minimum, NUVEC *maximum, GAMEO
             (object->flags_e20 & 0x20)) {
             continue;
         }
-        if ((flags & 2) && !object->field_281) {
+        if ((flags & 2) && !object->unknown_281) {
             continue;
         }
         if (U64_PAIR(&CInfo[object->character_context].flags) & 0x40000000) {
@@ -610,7 +610,7 @@ void Player_ToggleCharacter(GAMEOBJECT *object, i32 direction, i32 sound) {
                            !(BonusArea != 0 && Cheats_CheckFlags(0x100) != 0 && (GCDataList[id].flags_094 & 0x2000000) != 0)) {
                     goto next_character;
                 }
-                if (object->field_283 >= 0 && object->field_283 < 17 && (TerLayer[object->field_283].flags & 1) != 0 &&
+                if (object->unknown_283 >= 0 && object->unknown_283 < 17 && (TerLayer[object->unknown_283].flags & 1) != 0 &&
                     GCDataList[id].field_028 <= 0.0f) {
                     goto next_character;
                 }
@@ -752,7 +752,7 @@ void ResetPlayer(GAMEOBJECT *object, i32 reset_moves, NUVEC *position, i32 snap_
     if (object == NULL) {
         return;
     }
-    restore_hitpoints = object->field_280 != 0xff && object->character_context == 0x2b;
+    restore_hitpoints = object->unknown_280 != 0xff && object->character_context == 0x2b;
     if (reset_moves != 0) {
         if (position == NULL) {
             position = Player_StartPos(object);
@@ -760,7 +760,7 @@ void ResetPlayer(GAMEOBJECT *object, i32 reset_moves, NUVEC *position, i32 snap_
         if (position != NULL) {
             object->position = *position;
         }
-        if (object->field_280 != 0xff) {
+        if (object->unknown_280 != 0xff) {
             object->flags_ef4 |= 0x40;
         }
         ResetPlayerMoves(object);
@@ -789,7 +789,7 @@ void ResetPlayer(GAMEOBJECT *object, i32 reset_moves, NUVEC *position, i32 snap_
             ComplexSockPosition(WORLD->sock_sys, &object->position, object->sock_position.sock_index, object->sock_position.segment,
                                 &object->sock_position);
             ComplexSockAngles(&object->sock_angles);
-            if ((i8)object->field_280 < 2 && object->sock_position.sock_index != -1) {
+            if ((i8)object->unknown_280 < 2 && object->sock_position.sock_index != -1) {
                 if (BONUS_GUNSHIP_ADATA != NULL && WORLD->area == BONUS_GUNSHIP_ADATA) {
                     object->position = object->sock_position.midpoint;
                     surface_y = FindGunshipHoverHeight(object);
@@ -819,8 +819,8 @@ void ResetPlayer(GAMEOBJECT *object, i32 reset_moves, NUVEC *position, i32 snap_
                 }
             }
         }
-        if ((i8)object->field_280 >= 0 && (i8)object->field_280 < 8) {
-            player_index = (i8)object->field_280;
+        if ((i8)object->unknown_280 >= 0 && (i8)object->unknown_280 < 8) {
+            player_index = (i8)object->unknown_280;
         } else {
             player_index = object->hostility_group;
         }
@@ -828,7 +828,7 @@ void ResetPlayer(GAMEOBJECT *object, i32 reset_moves, NUVEC *position, i32 snap_
         object->pitch_angle = 0;
         object->movement_facing_angle = facing;
         object->facing_angle = facing;
-        object->field_0x276 = facing;
+        object->unknown_276 = facing;
         object->roll_angle = 0;
         NuVecRotateYValZ(&object->facing_direction, 1.0f, facing);
         object->current_speed_mul = 1.0f;
@@ -857,13 +857,13 @@ void ResetPlayer(GAMEOBJECT *object, i32 reset_moves, NUVEC *position, i32 snap_
         PortalGameObject(object, 1, 1, -1, WORLD->current_gscn);
         if ((ResetBits & 2) != 0 || object->dead != 0 || restore_hitpoints != 0) {
             object->current_hp = (i8)DEFAULT_PLAYERHITPOINTS;
-            if (object->current_hp > object->field_107e) {
-                object->current_hp = (i8)object->field_107e;
+            if (object->current_hp > object->unknown_107e) {
+                object->current_hp = (i8)object->unknown_107e;
             }
             object->vehicle_secondary_hp = 4;
         }
         if ((ResetBits & 8) != 0) {
-            player_index = (i8)object->field_280;
+            player_index = (i8)object->unknown_280;
             if (PlayerProgress[player_index].field_b != 0) {
                 object->jump_variant_state = 1;
             }
@@ -874,22 +874,22 @@ void ResetPlayer(GAMEOBJECT *object, i32 reset_moves, NUVEC *position, i32 snap_
         object->ai_update_position = object->position;
         if ((object->character_data->model_flags & 0x2000) != 0) {
             object->in_narrow_socket = ObjInNarrowSock(object, WORLD->sock_sys, WORLD->level_idx);
-            object->field_dc8 = GetVehicleSpeedMul(object, 0.0f);
+            object->unknown_dc8 = GetVehicleSpeedMul(object, 0.0f);
         } else {
-            object->field_dc8 = 0.0f;
+            object->unknown_dc8 = 0.0f;
         }
-        if (object->field_dc8 > 0.0f) {
-            object->velocity.x = NuTrigTable[object->facing_angle >> 1] * object->field_dc8;
-            object->velocity.z = NuTrigTable[((object->facing_angle + 0x4000) >> 1) & 0x7fff] * object->field_dc8;
+        if (object->unknown_dc8 > 0.0f) {
+            object->velocity.x = NuTrigTable[object->facing_angle >> 1] * object->unknown_dc8;
+            object->velocity.z = NuTrigTable[((object->facing_angle + 0x4000) >> 1) & 0x7fff] * object->unknown_dc8;
         }
     } else {
-        object->field_dc8 = 0.0f;
+        object->unknown_dc8 = 0.0f;
     }
     object->flags_1fc_word &= 0xfffdfa83u;
     object->collision_scale = 1.0f;
     object->flags_ef0 |= 0x80;
-    object->field_1010 = 0.0f;
-    object->field_da8 = 0.0f;
+    object->unknown_1010 = 0.0f;
+    object->unknown_da8 = 0.0f;
     // MATCH-EXCEPTION: the original clears bit 8 as or 0x100 then xor 0x100 in a register; a plain &= ~0x100
     // emits a memory and.
     object->flags_1f8 |= 0x100;
@@ -901,9 +901,9 @@ void ResetPlayer(GAMEOBJECT *object, i32 reset_moves, NUVEC *position, i32 snap_
     object->previous_floor_height = 2000000.0f;
     object->effect_flags = 0;
     object->field_dbc = 0.0f;
-    object->field_f10 = 0.0f;
+    object->unknown_f10 = 0.0f;
     object->camera_screen_position.z = -1.0f;
-    object->field_de0 = 0.0f;
+    object->unknown_de0 = 0.0f;
 }
 
 static i32 Customise_FindLetter(char character) {

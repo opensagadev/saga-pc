@@ -516,7 +516,7 @@ extern "C" {
         f32 spacing;
         f32 draw_y;
         f32 start_x;
-        if (SuperStory != 0 && WORLD->current_level == VADERC_LDATA && object->field_107e == 10) {
+        if (SuperStory != 0 && WORLD->current_level == VADERC_LDATA && object->unknown_107e == 10) {
             two_rows = 1;
         } else if ((object->portal_flags & 0x08000000) != 0) {
             two_rows = DrawBossHitPointsTwoRows != 0;
@@ -528,8 +528,8 @@ extern "C" {
         if (WORLD->level_objects[heart_object].active == 0) {
             return;
         }
-        if (object->field_107e > 0) {
-            hitpoints = object->field_107e;
+        if (object->unknown_107e > 0) {
+            hitpoints = object->unknown_107e;
             current_hp = object->current_hp;
             if ((PlayerHitPointsTwoHearts != 0 && (object->flags_1fc & 0x80) != 0) || WORLD->current_level == BOUNTYHUNTERPURSUITE_LDATA) {
                 odd = (hitpoints & 1) != 0 && hitpoints == current_hp ? 0 : current_hp & 1;
@@ -544,10 +544,10 @@ extern "C" {
         if (two_rows != 0 && hitpoints < 2) {
             two_rows = 0;
         }
-        if ((object->field_280 == 0 || object->field_280 == 1) && hitpoints > 1 && object->dead != 0 && object->field_1010 > 0.0f &&
-            object->field_1010 < 1.0f) {
+        if ((object->unknown_280 == 0 || object->unknown_280 == 1) && hitpoints > 1 && object->dead != 0 && object->unknown_1010 > 0.0f &&
+            object->unknown_1010 < 1.0f) {
             transitioning = 1;
-            current_hp = (i32)((1.0f - object->field_1010) * (f32)object->field_107e);
+            current_hp = (i32)((1.0f - object->unknown_1010) * (f32)object->unknown_107e);
         }
         spacing = PanelHeartSpacing * scale;
         if (GetMenuID() == 4) {
@@ -747,7 +747,7 @@ extern "C" {
             }
             if (StartupGameFlag1 != 0 && paused == 0 && FadeSys.fade == 0.0f && (object->flags_1fc & 0x80) != 0) {
                 if (ONEPLAYERPOWERUPS != 0 && object->powerup_time > 0.0f) {
-                    if (FindGameMsgsWithID(7, 0, (i8)object->field_280, NULL) == 0 &&
+                    if (FindGameMsgsWithID(7, 0, (i8)object->unknown_280, NULL) == 0 &&
                         (object->powerup_time >= 3.0f || GameTimer.update_count % 6 < 3)) {
                         DrawPanel3DObject(player == 0 ? -ICONX : ICONX, PowerUp_GetPanelY(player) + status_y, 1.0f, POWERUPOBJSIZE,
                                           POWERUPOBJSIZE, POWERUPOBJSIZE, 0, PowerUp_PanelYRot[player], 0,
@@ -1416,7 +1416,7 @@ void Tag_DrawIcon_Batman(GAMEOBJECT *object) {
         return;
     }
     message = AddGameMsg_Default;
-    if (object->field_280 == 0) {
+    if (object->unknown_280 == 0) {
         first_red = 0;
         first_green = 127;
         first_blue = 255;
@@ -1461,7 +1461,7 @@ void Tag_DrawIcon_Batman(GAMEOBJECT *object) {
     message.green = (u8)first_green;
     message.blue = (u8)first_blue;
     message.alpha = (u8)alpha;
-    if (object->field_280 == 1) {
+    if (object->unknown_280 == 1) {
         message.unknown_34 += 0.002f;
     }
     message.text = TagAsciiDown;
@@ -1475,7 +1475,7 @@ void Tag_DrawIcon_Batman(GAMEOBJECT *object) {
     message.icon = ((TAG_CHARACTER_DATA_READER *)apicharsys->char_data)[(i16)object->id].icon_model;
     message.special = &WORLD->level_objects[message.icon];
     AddGameMsg(&message);
-    message.icon = object->field_280 != 0 ? 0xa5 : 0xa6;
+    message.icon = object->unknown_280 != 0 ? 0xa5 : 0xa6;
     message.special = &WORLD->level_objects[message.icon];
     AddGameMsg(&message);
 }
@@ -1507,7 +1507,7 @@ void Tag_DrawIcon_LSW(GAMEOBJECT *object) {
     message.target_is_coin_total = 2;
     message.flags = 0x87;
     message.unknown_34 = 0.0f;
-    if (object->field_280 == 1) {
+    if (object->unknown_280 == 1) {
         message.unknown_34 += 0.002f;
     }
     id = (i16)object->id;
@@ -1517,7 +1517,7 @@ void Tag_DrawIcon_LSW(GAMEOBJECT *object) {
     }
     message.special = &WORLD->level_objects[message.icon];
     AddGameMsg(&message);
-    message.icon = object->field_280 != 0 ? 0xa5 : 0xa6;
+    message.icon = object->unknown_280 != 0 ? 0xa5 : 0xa6;
     message.special = &WORLD->level_objects[message.icon];
     AddGameMsg(&message);
 }

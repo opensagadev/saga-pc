@@ -202,7 +202,7 @@ i32 AddPARTEffect(i32 effect, NUVEC *position) {
             part_emits[i].shots_remaining = 0;
             part_emits[i].field_33 = 0;
             part_emits[i].field_44 = 0;
-            part_emits[i].field_46 = 0;
+            part_emits[i].unknown_46 = 0;
             part_emits[i].field_3d = 1;
             return i;
         }
@@ -246,14 +246,14 @@ i32 DebAlloc(void) {
     debkeydata[slot].previous_allocated_chunk_count = 0;
     debkeydata[slot].previous_particle_count = 0;
     debkeydata[slot].controlled_chunk_count = 0;
-    debkeydata[slot].field_2f2 = -1;
+    debkeydata[slot].unknown_2f2 = -1;
     debkeydata[slot].gscene = NULL;
-    debkeydata[slot].field_2f4 = 1;
-    debkeydata[slot].field_2f6 = 1;
-    debkeydata[slot].field_2f7 = 1;
+    debkeydata[slot].unknown_2f4 = 1;
+    debkeydata[slot].unknown_2f6 = 1;
+    debkeydata[slot].unknown_2f7 = 1;
     debkeydata[slot].user_data = NULL;
     debkeydata[slot].allocation_index = slot;
-    debkeydata[slot].field_2fa = 0;
+    debkeydata[slot].unknown_2fa = 0;
     return slot;
 }
 

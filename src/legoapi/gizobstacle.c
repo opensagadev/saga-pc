@@ -535,11 +535,11 @@ static i32 GizObstacle_PosWithinBox(GIZOBSTACLE *obstacle, NUVEC *position) {
 static i32 GizObstacle_SatisfyingTerrainChecks(GIZOBSTACLE *obstacle, GAMEOBJECT *object) {
     GAMEANIMOBJ *anim_object;
     if ((i8)obstacle->trigger_mode >= 0) {
-        if ((!object->field_281 && !(object->flags_ef4 & 0x20000000)) || object->jump_animation_state != obstacle->trigger_mode) {
+        if ((!object->unknown_281 && !(object->flags_ef4 & 0x20000000)) || object->jump_animation_state != obstacle->trigger_mode) {
             return 0;
         }
     } else if (obstacle->config_flags & 0x10) {
-        if (!object->field_281 && !(object->flags_ef4 & 0x20000000)) {
+        if (!object->unknown_281 && !(object->flags_ef4 & 0x20000000)) {
             return 0;
         }
         if (object->supporting_platform_id >= 0 && obstacle->anim_set && (obstacle->runtime_flags & 0x10)) {
@@ -591,7 +591,7 @@ static void GizObstacleUpdate_Proximity(GIZOBSTACLE *obstacle) {
                 (object->flags_e20 & 0x20)) {
                 continue;
             }
-            player = (i8)object->field_280;
+            player = (i8)object->unknown_280;
             if (player != -1) {
                 players |= 1 << player;
             }
@@ -605,7 +605,7 @@ static void GizObstacleUpdate_Proximity(GIZOBSTACLE *obstacle) {
                 (GizObstacleExcludeFn && GizObstacleExcludeFn(obstacle, object))) {
                 continue;
             }
-            if ((obstacle->mode == 2 || obstacle->mode == 6) && !object->field_281 && !(object->flags_ef4 & 0x20000000) &&
+            if ((obstacle->mode == 2 || obstacle->mode == 6) && !object->unknown_281 && !(object->flags_ef4 & 0x20000000) &&
                 object->jump_variant_state != 1) {
                 GAMEANIMOBJ *anim_object = obstacle->anim_set ? obstacle->anim_set->objects : NULL;
                 while (anim_object) {
@@ -626,15 +626,15 @@ static void GizObstacleUpdate_Proximity(GIZOBSTACLE *obstacle) {
                     closest = distance;
                     closest_position = &object->lower_position;
                     closest_object = object;
-                    if ((i8)object->field_280 != -1) {
-                        players &= ~(1 << (i8)object->field_280);
+                    if ((i8)object->unknown_280 != -1) {
+                        players &= ~(1 << (i8)object->unknown_280);
                     }
                 }
-            } else if ((obstacle->config_flags & 0x2000) && (i8)object->field_280 != -1 &&
+            } else if ((obstacle->config_flags & 0x2000) && (i8)object->unknown_280 != -1 &&
                        distance < obstacle->trigger_radius * obstacle->trigger_radius &&
                        GizObstacle_PosWithinBox(obstacle, &object->collision_position) &&
                        GizObstacle_SatisfyingTerrainChecks(obstacle, object)) {
-                players &= ~(1 << (i8)object->field_280);
+                players &= ~(1 << (i8)object->unknown_280);
             }
         }
         if (obstacle->config_flags & 1) {
@@ -1101,7 +1101,7 @@ static i32 GizObstacles_BoltHitPlat(void *world, void *data, BOLT_PC *bolt, u8 *
                 if (object_data->platform == bolt->hit_platform) {
                     BOLTTYPE_PC *type = BoltType_FindByID(bolt->type_id, world);
                     GAMEOBJECT *owner = bolt->owner;
-                    i32 player = owner ? (i8)owner->field_280 : -1;
+                    i32 player = owner ? (i8)owner->unknown_280 : -1;
                     GizObstacles_Hit(world, obstacle, &bolt->position, player, type->field_3c);
                     return 1;
                 }
@@ -1162,7 +1162,7 @@ static i32 GizObstacles_BoltHit(void *world, void *data, void *attacker_ptr, NUV
             }
             type = BoltType_FindByID(bolt->type_id, world);
             owner = bolt->owner;
-            player = owner ? (i8)owner->field_280 : -1;
+            player = owner ? (i8)owner->unknown_280 : -1;
             if (GizObstacles_Hit(world, nearest, &bolt->position, player, type->field_3c)) {
                 if (attacker) {
                     NewRumble(attacker->pad->bound_pad, 0.4f, 0);

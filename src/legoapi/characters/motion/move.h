@@ -243,7 +243,7 @@ typedef struct PLAYERCHARACTERCONFIG {                                   // size
     f32 jump_hold_duration;      // 0x048
     f32 collision_origin_radius; // 0x04c
     f32 field_050;               // 0x050
-    f32 field_054;               // 0x054
+    f32 unknown_054;             // 0x054
     f32 field_058;               // 0x058
     f32 field_05c;               // 0x05c
     f32 field_060;               // 0x060

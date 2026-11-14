@@ -197,7 +197,7 @@ void Bolt_Debris_LSW(BOLT_PC *bolt, NUVEC *points, i32 point, NUVEC *unused, i32
         if (explosion != NULL && Arcade != 0) {
             GAMEOBJECT *owner = bolt->owner;
             if (owner != NULL && (owner == Player[0] || owner == Player[1]) && (owner->flags_1fc_word & 1) != 0 &&
-                (owner->flags_1fc_word & 0x1000) != 0 && (owner->field_280 == 0 || owner->field_280 == 1)) {
+                (owner->flags_1fc_word & 0x1000) != 0 && (owner->unknown_280 == 0 || owner->unknown_280 == 1)) {
                 explosion->flags |= 0x10000;
                 explosion->owner = bolt->owner;
             }
@@ -206,10 +206,10 @@ void Bolt_Debris_LSW(BOLT_PC *bolt, NUVEC *points, i32 point, NUVEC *unused, i32
 }
 
 i32 Bolt_HitPart_LSW(BOLT_PC *bolt, PART_PC *part) {
-    if (part->field_206 == 1 && part->scale_time < 2.0f) {
+    if (part->unknown_206 == 1 && part->scale_time < 2.0f) {
         return 1;
     }
-    if (part->field_206 == 2 && part->scale_time < 1.0f) {
+    if (part->unknown_206 == 2 && part->scale_time < 1.0f) {
         return 1;
     }
     return 0;

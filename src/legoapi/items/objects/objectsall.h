@@ -44,7 +44,7 @@ typedef struct parttype_lookup_s { // size 0x178
     i8 variant_count;              // 0x0b0
     u8 variant_mode;               // 0x0b1
     i8 page;                       // 0x0b2
-    u8 field_b3;                   // 0x0b3
+    u8 unknown_b3;                 // 0x0b3
     f32 particle_scale;            // 0x0b4
     f32 effect_scale;              // 0x0b8
     f32 lifetime;                  // 0x0bc
@@ -76,10 +76,10 @@ typedef struct parttype_lookup_s { // size 0x178
     union { // size 0xc
         NUVEC lighting_scale;
 
-        struct {           // size 0xc
-            f32 field_160; // 0x160
-            f32 field_164; // 0x164
-            f32 field_168; // 0x168
+        struct {             // size 0xc
+            f32 unknown_160; // 0x160
+            f32 unknown_164; // 0x164
+            f32 field_168;   // 0x168
         };
     }; // 0x160
 
@@ -292,27 +292,27 @@ struct PART_PC { // size 0x220
     i32 *lighting_handle;            // 0x1dc
     i32 effect_id_1e0;               // 0x1e0
     i32 effect_id_1e4;               // 0x1e4
-    f32 field_1e8;                   // 0x1e8
-    f32 field_1ec;                   // 0x1ec
+    f32 unknown_1e8;                 // 0x1e8
+    f32 unknown_1ec;                 // 0x1ec
     i32 effect_id_1f0;               // 0x1f0
     i32 effect_id_1f4;               // 0x1f4
     i32 effect_id_1f8;               // 0x1f8
     f32 effect_scale;                // 0x1fc
     u32 field_200;                   // 0x200
     u16 field_204;                   // 0x204
-    i8 field_206;                    // 0x206
+    i8 unknown_206;                  // 0x206
     u8 hostility_group;              // 0x207
     u8 field_208;                    // 0x208
     u8 unknown_209;                  // 0x209
     u8 flicker_flags;                // 0x20a
-    i8 field_20b;                    // 0x20b
+    i8 unknown_20b;                  // 0x20b
     f32 crate_spawn_delay;           // 0x20c
     u32 field_210;                   // 0x210
     f32 field_214;                   // 0x214
     u32 force_flags;                 // 0x218
 
     union { // size 0x4
-        u32 field_21c;
+        u32 unknown_21c;
         f32 reflection_height;
     }; // 0x21c
 };

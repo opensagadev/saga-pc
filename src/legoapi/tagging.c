@@ -58,19 +58,19 @@ void StoreStatusTakeOverObjectSys(void) {
             continue;
         }
         takeoverobjects[index].last_safe_position = object->last_safe_position;
-        takeoverobjects[index].heading = object->field_0x276;
+        takeoverobjects[index].heading = object->unknown_276;
         if (object->rider != NULL && LEGOCONTEXT_BEENTAKENOVER != -1 && object->rider->character_context == LEGOCONTEXT_BEENTAKENOVER &&
-            object->field_280 != 0xff && Door_Last != NULL && ((struct DOOR_s *)Door_Last)->takeover_character_mask != 0 &&
+            object->unknown_280 != 0xff && Door_Last != NULL && ((struct DOOR_s *)Door_Last)->takeover_character_mask != 0 &&
             (((struct DOOR_s *)Door_Last)->takeover_character_mask == CharacterMaskAll ||
              ((character_index = (u8)Area_CharIDInCurrentList((i16)object->id)) < 63 &&
               (((struct DOOR_s *)Door_Last)->takeover_character_mask & ((u64)1 << character_index)) != 0))) {
-            takeoverobjects[index].contact_index = takeoverobjects[index].object->field_280;
+            takeoverobjects[index].contact_index = takeoverobjects[index].object->unknown_280;
         } else {
             takeoverobjects[index].contact_index = 0xff;
         }
         takeoverobjects[index].hitpoints = takeoverobjects[index].object->current_hp;
-        if (takeoverobjects[index].hitpoints == 0 && takeoverobjects[index].object->field_107e != 0) {
-            takeoverobjects[index].hitpoints = takeoverobjects[index].object->field_107e;
+        if (takeoverobjects[index].hitpoints == 0 && takeoverobjects[index].object->unknown_107e != 0) {
+            takeoverobjects[index].hitpoints = takeoverobjects[index].object->unknown_107e;
         }
         takeoverobjects[index].current_level = (u8)level;
     }
@@ -132,7 +132,7 @@ void ReStoreStatusTakeOverObjectSys(i32 restore_progress) {
                 takeoverobjects[index].object->flags_1fc_word |= 0x1000;
                 takeoverobjects[index].object->flags_1fc_word |= 1;
                 takeoverobjects[index].object->ai_packet.reset_mode = 2;
-                SnapCreaturePos(takeoverobjects[index].object, &controller->position, controller->field_0x276,
+                SnapCreaturePos(takeoverobjects[index].object, &controller->position, controller->unknown_276,
                                 &controller->ai_packet.path_info, 1);
                 InitPlayerAI(controller);
                 TakeOverGameObject(controller, takeoverobjects[index].object, 0, 1);
@@ -151,13 +151,13 @@ void Tag_NewTransfer(GAMEOBJECT *source, GAMEOBJECT *target) {
     f32 height;
     f32 lower;
     NUVEC *previous;
-    if (target->field_280 == 0 || target->field_280 == 1) {
-        TagTransfers[(i8)target->field_280].source = source;
-        TagTransfers[(i8)target->field_280].elapsed = 0.0f;
+    if (target->unknown_280 == 0 || target->unknown_280 == 1) {
+        TagTransfers[(i8)target->unknown_280].source = source;
+        TagTransfers[(i8)target->unknown_280].elapsed = 0.0f;
         for (particle = 0; particle < 3; ++particle) {
-            height = TagTransfers[(i8)target->field_280].height_fraction[particle] =
+            height = TagTransfers[(i8)target->unknown_280].height_fraction[particle] =
                 (f32)((f64)qrand() * PlayerRandomScale * (f64)0.4f + (f64)0.4f);
-            previous = &TagTransfers[(i8)target->field_280].previous[particle];
+            previous = &TagTransfers[(i8)target->unknown_280].previous[particle];
             previous->x = source->collision_position.x;
             previous->z = source->collision_position.z;
             lower = source->collision_min.y;
@@ -278,7 +278,7 @@ void Buck_Start(GAMEOBJECT *object, GAMEOBJECT *rider) {
         NewRumble(rider->pad->bound_pad, 0.6f, 0);
     }
     object->character_context = (i8)LEGOCONTEXT_BUCK;
-    object->field_7aa = LEGOACT_BUCK;
+    object->unknown_7aa = LEGOACT_BUCK;
     object->context_timer = AnimDuration((i16)object->id, LEGOACT_BUCK, 0.0f, 0.0f, 1);
     if (BuckStartExtraFn != NULL) {
         BuckStartExtraFn(object);

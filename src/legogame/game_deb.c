@@ -21,7 +21,7 @@ typedef struct OBJECT_LIGHT_STATE_GAME { // size 0x54
 typedef struct GAME_LIGHT_VIEW {            // size 0x670
     u8 unknown000[0x285];                   // 0x000
     i8 floor_surface;                       // 0x285
-    u8 unknown286[0x4d8 - 0x286];           // 0x286
+    u8 unknown_286[0x4d8 - 0x286];          // 0x286
     RTL_DATA light_data;                    // 0x4d8
     OBJECT_LIGHT_STATE_GAME lighting_state; // 0x61c
 } GAME_LIGHT_VIEW;
@@ -45,16 +45,16 @@ typedef struct BURN_SET {            // size 0x564
     i32 field_b4;                    // 0x0b4
     f32 field_b8;                    // 0x0b8
     f32 field_bc;                    // 0x0bc
-    f32 field_c0;                    // 0x0c0
+    f32 unknown_c0;                  // 0x0c0
     f32 field_c4;                    // 0x0c4
-    f32 field_c8;                    // 0x0c8
+    f32 unknown_c8;                  // 0x0c8
     f32 field_cc;                    // 0x0cc
     BURN_OUT burnouts[32];           // 0x0d0
     i32 active_count;                // 0x550
     i32 selected_index;              // 0x554
     f32 field_558;                   // 0x558
-    f32 field_55c;                   // 0x55c
-    i32 field_560;                   // 0x560
+    f32 unknown_55c;                 // 0x55c
+    i32 unknown_560;                 // 0x560
 } BURN_SET;
 
 typedef struct LIGHTING_LOAD_WORLD { // size 0x2ab8
@@ -159,7 +159,7 @@ void AddSurfaceDebris(GAMEOBJECT *object) {
     if (object->character_context == 0x2b) {
         return;
     }
-    layer = object->field_283;
+    layer = object->unknown_283;
     if (layer != -1 && (TerLayer[layer].flags & 1)) {
         return;
     }

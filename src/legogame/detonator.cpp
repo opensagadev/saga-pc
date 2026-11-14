@@ -136,7 +136,7 @@ extern "C" void Detonators_Update(void) {
         } else if (detonator->field_0x34 != NULL) {
             BATARANG_DETONATOR_HIT_VIEW *hit_data = static_cast<BATARANG_DETONATOR_HIT_VIEW *>(detonator->field_0x34);
             if (!(detonator->timer >= 10.0f) &&
-                (detonator->object == NULL || detonator->object->dead != 0 || !(detonator->object->field_de0 >= 0.3f))) {
+                (detonator->object == NULL || detonator->object->dead != 0 || !(detonator->object->unknown_de0 >= 0.3f))) {
                 hit_data->scale = DetonatorHitScaleIdle;
             } else {
                 hit_data->scale = DetonatorHitScaleArmed;
@@ -162,7 +162,7 @@ extern "C" void Detonators_Draw(void) {
         NuMtxTranslate(&matrix, &detonator->position);
         NuSpecialDrawAt(&WORLD->level_objects[0xec].special, &matrix);
         if (GameTimer.update_count % 6 < 3 && (detonator->timer >= 10.0f || (detonator->object != NULL && detonator->object->dead == 0 &&
-                                                                             detonator->object->field_de0 >= 0.3f))) {
+                                                                             detonator->object->unknown_de0 >= 0.3f))) {
             if (WORLD->level_objects[0xef].active) {
                 detonator->draw_result = (u8)NuSpecialDrawAt(&WORLD->level_objects[0xef].special, &matrix);
             }
@@ -177,37 +177,37 @@ extern "C" void Detonators_Draw(void) {
 extern "C" void Detonator_MoveCode(GAMEOBJECT *object) {
     if (object->character_context != 0x49 && object->character_context != 0x48) {
         if (WORLD->level_objects[0xec].active == 0 || (object->flags_1fc & 0x80) == 0 ||
-            (object->field_281 == 0 && object->jump_variant_state != 1) ||
+            (object->unknown_281 == 0 && object->jump_variant_state != 1) ||
             (ObjLandReady(object) == 0 && (*(u64 *)&CInfo[object->character_context].flags & 0x2000) == 0)) {
             object->flags_e20 |= 0x8000;
-            object->field_de0 = 0.0f;
+            object->unknown_de0 = 0.0f;
             return;
         }
         if ((object->pad->buttons_held & GAMEPAD_SPECIAL) != 0) {
-            if (!(object->field_de0 > 0.0f) && (object->flags_e20 & 0x8000) != 0) {
+            if (!(object->unknown_de0 > 0.0f) && (object->flags_e20 & 0x8000) != 0) {
                 return;
             }
             object->flags_e20 |= 0x8000;
-            object->field_de0 += FRAMETIME;
-            if (object->field_de0 >= 0.3f && object->field_de0 >= 1.0f) {
+            object->unknown_de0 += FRAMETIME;
+            if (object->unknown_de0 >= 0.3f && object->unknown_de0 >= 1.0f) {
                 DETONATOR_s *oldest = Detonator_FindOldest();
                 if (oldest != NULL) {
                     Detonator_Detonate(oldest);
-                    object->field_de0 = 0.7f;
+                    object->unknown_de0 = 0.7f;
                 } else {
-                    object->field_de0 = 0.0f;
+                    object->unknown_de0 = 0.0f;
                     object->flags_e20 |= 0x8000;
                 }
             }
             return;
         }
-        if (object->field_de0 > 0.0f && object->field_de0 < 0.3f) {
+        if (object->unknown_de0 > 0.0f && object->unknown_de0 < 0.3f) {
             DETONATOR_s *nearest = Detonator_FindNearest(&object->lower_position, object->bounds_radius + 0.0775f, object);
             if (nearest != NULL) {
-                object->field_7b3 = 0;
+                object->unknown_7b3 = 0;
                 object->character_context = 0x49;
                 FastWeaponIn(object, 0);
-                object->field_7aa = 0x66;
+                object->unknown_7aa = 0x66;
                 object->grapple = nearest;
                 object->movement_facing_angle =
                     NuAtan2D(nearest->position.x - object->position.x, nearest->position.z - object->position.z);
@@ -221,13 +221,13 @@ extern "C" void Detonator_MoveCode(GAMEOBJECT *object) {
                 object->launch_origin.y = object->floor_height;
                 object->launch_origin.z = object->lower_position.z;
                 if (Detonator_FindNearest(&object->launch_origin, 0.155f, NULL) == NULL) {
-                    object->field_7b3 = 0;
+                    object->unknown_7b3 = 0;
                     object->character_context = 0x48;
                     FastWeaponIn(object, 0);
-                    object->field_7aa = 0x8d;
-                    object->field_7a4 = object->field_1056;
+                    object->unknown_7aa = 0x8d;
+                    object->unknown_7a4 = object->unknown_1056;
                     object->takeover_start_angle = (u16)qrand();
-                    object->field_7a8 = object->field_1058;
+                    object->unknown_7a8 = object->unknown_1058;
                 } else {
                     GameAudio_PlaySfx(0x32, NULL, 0, 0);
                 }
@@ -237,26 +237,26 @@ extern "C" void Detonator_MoveCode(GAMEOBJECT *object) {
             if (object->character_context == 0x48 || object->character_context == 0x49) {
                 object->velocity.z = 0.0f;
                 object->velocity.x = 0.0f;
-                if (AnimPlaying(&object->anim_packet, object->field_7aa, 1, 1) != NULL) {
+                if (AnimPlaying(&object->anim_packet, object->unknown_7aa, 1, 1) != NULL) {
                     ResetAnimPacket(&object->anim_packet, -1);
                 }
-                if (object->character_model->model_data_b[object->field_7aa] != NULL) {
-                    object->context_timer = AnimDuration((i16)object->id, object->field_7aa, 0.0f, 0.0f, 1);
+                if (object->character_model->model_data_b[object->unknown_7aa] != NULL) {
+                    object->context_timer = AnimDuration((i16)object->id, object->unknown_7aa, 0.0f, 0.0f, 1);
                 } else {
                     object->context_timer = 1.0f;
                 }
             }
         }
         object->flags_e20 &= ~0x8000;
-        object->field_de0 = 0.0f;
+        object->unknown_de0 = 0.0f;
         return;
     }
 
     object->flags_e20 |= 0x8000;
-    object->field_de0 = 0.0f;
+    object->unknown_de0 = 0.0f;
     f32 *frame = NULL;
-    if (object->character_model->model_data_b[object->field_7aa] != NULL) {
-        frame = AnimPlaying(&object->anim_packet, object->field_7aa, 1, 0);
+    if (object->character_model->model_data_b[object->unknown_7aa] != NULL) {
+        frame = AnimPlaying(&object->anim_packet, object->unknown_7aa, 1, 0);
         if (frame == NULL) {
             return;
         }
@@ -264,15 +264,15 @@ extern "C" void Detonator_MoveCode(GAMEOBJECT *object) {
     object->context_timer -= FRAMETIME;
     if (object->context_timer <= 0.0f) {
         object->character_context = -1;
-        if (object->field_7b3 != 0) {
+        if (object->unknown_7b3 != 0) {
             return;
         }
     } else {
-        if (object->field_7b3 != 0) {
+        if (object->unknown_7b3 != 0) {
             return;
         }
-        if (object->character_model->model_data_b[object->field_7aa] != NULL) {
-            f32 marker = AnimListFrame(object->character_model, object->field_7aa, object->character_context == 0x49 ? 0 : 2);
+        if (object->character_model->model_data_b[object->unknown_7aa] != NULL) {
+            f32 marker = AnimListFrame(object->character_model, object->unknown_7aa, object->character_context == 0x49 ? 0 : 2);
             if (frame == NULL || !(*frame > 0.0f)) {
                 return;
             }
@@ -283,7 +283,7 @@ extern "C" void Detonator_MoveCode(GAMEOBJECT *object) {
             return;
         }
     }
-    object->field_7b3 = 1;
+    object->unknown_7b3 = 1;
     if (object->character_context == 0x49) {
         DETONATOR_s *detonator = (DETONATOR_s *)object->grapple;
         if (detonator != NULL) {
@@ -300,9 +300,9 @@ extern "C" void Detonator_MoveCode(GAMEOBJECT *object) {
         detonator->position = object->launch_origin;
         detonator->active = 1;
         detonator->object = object;
-        detonator->rotation_x = object->field_7a4;
-        detonator->rotation_y = (u16)(object->takeover_start_angle + object->field_0x276);
-        detonator->rotation_z = object->field_7a8;
+        detonator->rotation_x = object->unknown_7a4;
+        detonator->rotation_y = (u16)(object->takeover_start_angle + object->unknown_276);
+        detonator->rotation_z = object->unknown_7a8;
         detonator->field_0x0c.z = 0.0f;
         detonator->field_0x0c.x = 0.0f;
         detonator->field_0x0c.y = 0.0775f;

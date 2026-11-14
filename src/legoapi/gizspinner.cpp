@@ -191,7 +191,7 @@ extern "C" i32 GizSpinner_Load(void *world_pointer, void *unused) {
                     spinner_type = EdFileReadChar();
                     if (version >= 3) {
                         spinner_state_flags = (u32)EdFileReadInt() & ~0x360u;
-                        world->spinners[index].field_0x2d8 = EdFileReadFloat();
+                        world->spinners[index].unknown_2d8 = EdFileReadFloat();
                         if (version >= 4) {
                             animation_speed = EdFileReadFloat();
                             if (version >= 6) {
@@ -1334,8 +1334,8 @@ extern "C" void GizSpinners_Update(void *world_pointer, void *unused, f32 unused
         }
         GizSpinner_Update(spinner);
         i32 output = GizSpinner_WithinOutput(spinner);
-        if ((spinner->flags & 0x40) == 0 && output != -1 && spinner->field_0x2d8 > 0.0f) {
-            spinner->output_pause_time = spinner->field_0x2d8;
+        if ((spinner->flags & 0x40) == 0 && output != -1 && spinner->unknown_2d8 > 0.0f) {
+            spinner->output_pause_time = spinner->unknown_2d8;
             spinner->flags |= 0x40;
             GAMEOBJECT *owner = SpinnerOwner(spinner);
             if (owner != NULL) {

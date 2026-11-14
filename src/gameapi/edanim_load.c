@@ -272,7 +272,7 @@ i32 edanimLoadPage(char *path, NUGSCN *scene) {
                 EdFileReadShort();
             }
         }
-        AnimParams[slot].field_17c = 0.99f;
+        AnimParams[slot].unknown_17c = 0.99f;
         extra = 0;
         if (version >= 2) {
             if (AnimParams[slot].sound_count > 8) {

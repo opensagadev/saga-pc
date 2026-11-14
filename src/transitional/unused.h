@@ -242,13 +242,13 @@ struct PLAYERPACKET_s {                             // size 0x798
     struct gameobject_s *linked_object;             // 0x60c
     u8 pad_610[4];                                  // 0x610
     u32 field_0x614;                                // 0x614
-    u32 field_0x618;                                // 0x618
+    u32 unknown_618;                                // 0x618
     u32 field_0x61c;                                // 0x61c
-    u32 field_0x620;                                // 0x620
-    u32 field_0x624;                                // 0x624
-    u32 field_0x628;                                // 0x628
-    u32 field_0x62c;                                // 0x62c
-    u32 field_0x630;                                // 0x630
+    u32 unknown_620;                                // 0x620
+    u32 unknown_624;                                // 0x624
+    u32 unknown_628;                                // 0x628
+    u32 unknown_62c;                                // 0x62c
+    u32 unknown_630;                                // 0x630
     u8 pad_634[20];                                 // 0x634
     u32 field_0x648;                                // 0x648
     u8 pad_64c[8];                                  // 0x64c
@@ -270,7 +270,7 @@ struct PLAYERPACKET_s {                             // size 0x798
     u8 pad_66c[4];            // 0x66c
     u32 field_0x670;          // 0x670
     u32 field_0x674;          // 0x674
-    u32 field_0x678;          // 0x678
+    u32 unknown_678;          // 0x678
     f32 context_blend;        // 0x67c
     f32 context_distance;     // 0x680
     u8 pad_684[4];            // 0x684
@@ -280,8 +280,8 @@ struct PLAYERPACKET_s {                             // size 0x798
     u32 field_0x694;          // 0x694
     u8 pad_698[4];            // 0x698
     u32 field_0x69c;          // 0x69c
-    u32 field_0x6a0;          // 0x6a0
-    u32 field_0x6a4;          // 0x6a4
+    u32 unknown_6a0;          // 0x6a0
+    u32 unknown_6a4;          // 0x6a4
     u8 pad_6a8[32];           // 0x6a8
     u32 field_0x6c8;          // 0x6c8
     f32 force_glow_x;         // 0x6cc
@@ -294,8 +294,8 @@ struct PLAYERPACKET_s {                             // size 0x798
     u32 field_0x6e8;          // 0x6e8
     f32 ground_height;        // 0x6ec
     u8 pad_6f0[8];            // 0x6f0
-    u32 field_0x6f8;          // 0x6f8
-    u32 field_0x6fc;          // 0x6fc
+    u32 unknown_6f8;          // 0x6f8
+    u32 unknown_6fc;          // 0x6fc
     u8 pad_700[16];           // 0x700
     u32 field_0x710;          // 0x710
     u8 pad_714[4];            // 0x714
@@ -306,9 +306,9 @@ struct PLAYERPACKET_s {                             // size 0x798
     u32 field_0x728;          // 0x728
     u8 pad_72c[4];            // 0x72c
     u32 field_0x730;          // 0x730
-    u32 field_0x734;          // 0x734
+    u32 unknown_734;          // 0x734
     u8 pad_738[4];            // 0x738
-    u32 field_0x73c;          // 0x73c
+    u32 unknown_73c;          // 0x73c
     u8 pad_740[28];           // 0x740
     i16 movement_angle_0;     // 0x75c
     i16 movement_angle_1;     // 0x75e
@@ -323,31 +323,31 @@ struct PLAYERPACKET_s {                             // size 0x798
     u8 animation_flags;       // 0x76e
     u8 pad_76f;               // 0x76f
     u8 render_flags;          // 0x770
-    u8 field_0x771;           // 0x771
+    u8 unknown_771;           // 0x771
     u8 pad_772;               // 0x772
     u8 random_state[4];       // 0x773
     u8 pad_777[6];            // 0x777
-    u8 field_0x77d;           // 0x77d
-    u8 field_0x77e;           // 0x77e
+    u8 unknown_77d;           // 0x77d
+    u8 unknown_77e;           // 0x77e
     u8 pad_77f[13];           // 0x77f
     u8 random_context;        // 0x78c
     u8 pad_78d;               // 0x78d
     i8 surface_type;          // 0x78e
     u8 pad_78f[5];            // 0x78f
-    u32 field_0x794;          // 0x794
+    u32 unknown_794;          // 0x794
 };
 
 struct HINT_s {              // size 0x24
     i16 control_mode_ids[2]; // 0x00
     u8 flags;                // 0x04
-    u8 pad_0x05[3];          // 0x05
+    u8 pad_05[3];            // 0x05
     i32 shop_price;          // 0x08
     f32 display_duration;    // 0x0c
     f32 repeat_delay;        // 0x10
 
     union { // size 0x4
         i32 (*availability_fn)(struct HINT_s *arg0);
-        u8 pad_0x14[4];
+        u8 pad_14[4];
     }; // 0x14
 
     void (*on_display)(struct HINT_s *arg0); // 0x18
@@ -436,9 +436,9 @@ struct AIAREA_s {  // size 0x3c
 
     u8 runtime_flags;        // 0x2a
     u8 game_flags;           // 0x2b
-    u8 padding_0x2c[8];      // 0x2c
+    u8 pad_2c[8];            // 0x2c
     struct AISYS_PC *system; // 0x34
-    u8 padding_0x38[4];      // 0x38
+    u8 pad_38[4];            // 0x38
 };
 
 struct AIPATHCNXCONTROLSYS_s {                 // size 0x18
@@ -499,9 +499,9 @@ struct RUMBLEPACKET {  // size 0x14
     union { // size 0x4
         u32 field_0x10;
 
-        struct {            // size 0x4
-            u8 active;      // 0x10
-            u8 pad_0x11[3]; // 0x11
+        struct {          // size 0x4
+            u8 active;    // 0x10
+            u8 pad_11[3]; // 0x11
         };
     }; // 0x10
 };

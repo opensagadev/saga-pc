@@ -62,7 +62,7 @@ extern "C" {
         f32 far_distance;          // 0x3c
         i16 individual_index;      // 0x40
         u8 field_42;               // 0x42
-        u8 field_43;               // 0x43
+        u8 unknown_43;             // 0x43
         f32 field_44;              // 0x44
         NUMTX *matrices;           // 0x48
         void *vector_buffer;       // 0x4c
@@ -163,14 +163,14 @@ extern "C" {
         f32 reflection_scale;                                // 0x2e4
         i16 collision_timers[4];                             // 0x2e8
         i16 render_group;                                    // 0x2f0
-        i16 field_2f2;                                       // 0x2f2
-        u8 field_2f4;                                        // 0x2f4
+        i16 unknown_2f2;                                     // 0x2f2
+        u8 unknown_2f4;                                      // 0x2f4
         u8 process_collision_sound;                          // 0x2f5
-        u8 field_2f6;                                        // 0x2f6
-        u8 field_2f7;                                        // 0x2f7
+        u8 unknown_2f6;                                      // 0x2f6
+        u8 unknown_2f7;                                      // 0x2f7
         i8 timed_flags;                                      // 0x2f8
-        u8 field_2f9;                                        // 0x2f9
-        u8 field_2fa;                                        // 0x2fa
+        u8 unknown_2f9;                                      // 0x2f9
+        u8 unknown_2fa;                                      // 0x2fa
         u8 unknown_2fb;                                      // 0x2fb
         struct NUGSCN_s *gscene;                             // 0x2fc
 

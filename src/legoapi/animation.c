@@ -163,10 +163,10 @@ static void HeadMovementLegacy(GAMEOBJECT *object) {
             }
             angle = NuAtan2(-direction.y, -direction.z);
             second = joints->overrides[joints->count].rotation.y - angle;
-            if (second >= object->character_data->game_character->field_054) {
-                second = object->character_data->game_character->field_054;
-            } else if (second <= -object->character_data->game_character->field_054) {
-                second = -object->character_data->game_character->field_054;
+            if (second >= object->character_data->game_character->unknown_054) {
+                second = object->character_data->game_character->unknown_054;
+            } else if (second <= -object->character_data->game_character->unknown_054) {
+                second = -object->character_data->game_character->unknown_054;
             }
         }
     }
@@ -180,8 +180,8 @@ static void HeadMovementLegacy(GAMEOBJECT *object) {
     joints->overrides[joints->count].rotation_max[0] = (i32)(object->character_data->game_character->field_050 * 10430.3779296875);
     joints->overrides[joints->count].rotation_min[0] = (i32)(object->character_data->game_character->field_050 * -10430.3779296875);
     joints->overrides[joints->count].rotation.y = second * blend + joints->overrides[joints->count].rotation.y * (1.0f - blend);
-    joints->overrides[joints->count].rotation_max[1] = (i32)(object->character_data->game_character->field_054 * 10430.3779296875);
-    joints->overrides[joints->count].rotation_min[1] = (i32)(object->character_data->game_character->field_054 * -10430.3779296875);
+    joints->overrides[joints->count].rotation_max[1] = (i32)(object->character_data->game_character->unknown_054 * 10430.3779296875);
+    joints->overrides[joints->count].rotation_min[1] = (i32)(object->character_data->game_character->unknown_054 * -10430.3779296875);
     joints->overrides[joints->count].rotation.z = 0.0f;
     if (joints->overrides[joints->count].rotation.x > HeadMovementThreshold ||
         joints->overrides[joints->count].rotation.x < -HeadMovementThreshold ||
@@ -256,10 +256,10 @@ static void HeadMovementAlternate(GAMEOBJECT *object) {
             if (direction.z < 0.0f) {
                 f32 pitch = NuAtan2(-direction.y, NuFsqrt(direction.x * direction.x + direction.z * direction.z));
                 first = pitch - joints->overrides[joints->count].rotation.y;
-                if (first >= object->character_data->game_character->field_054) {
-                    first = object->character_data->game_character->field_054;
-                } else if (first <= -object->character_data->game_character->field_054) {
-                    first = -object->character_data->game_character->field_054;
+                if (first >= object->character_data->game_character->unknown_054) {
+                    first = object->character_data->game_character->unknown_054;
+                } else if (first <= -object->character_data->game_character->unknown_054) {
+                    first = -object->character_data->game_character->unknown_054;
                 }
                 angle = -NuAtan2(-direction.x, -direction.z);
                 second = angle - joints->overrides[joints->count].rotation.z;
@@ -280,8 +280,8 @@ static void HeadMovementAlternate(GAMEOBJECT *object) {
         }
         joints->overrides[joints->count].rotation.x = 0.0f;
         joints->overrides[joints->count].rotation.y = first * blend + joints->overrides[joints->count].rotation.y * (1.0f - blend);
-        joints->overrides[joints->count].rotation_max[1] = (i32)(object->character_data->game_character->field_054 * 10430.3779296875);
-        joints->overrides[joints->count].rotation_min[1] = (i32)(object->character_data->game_character->field_054 * -10430.3779296875);
+        joints->overrides[joints->count].rotation_max[1] = (i32)(object->character_data->game_character->unknown_054 * 10430.3779296875);
+        joints->overrides[joints->count].rotation_min[1] = (i32)(object->character_data->game_character->unknown_054 * -10430.3779296875);
         joints->overrides[joints->count].rotation.z = second * blend + joints->overrides[joints->count].rotation.z * (1.0f - blend);
         joints->overrides[joints->count].rotation_max[2] = (i32)(object->character_data->game_character->field_050 * 10430.3779296875);
         joints->overrides[joints->count].rotation_min[2] = (i32)(object->character_data->game_character->field_050 * -10430.3779296875);
@@ -359,10 +359,10 @@ static void HeadMovementOrdinary(GAMEOBJECT *object) {
             if (direction.z < 0.0f) {
                 f32 pitch = NuAtan2(-direction.y, NuFsqrt(direction.x * direction.x + direction.z * direction.z));
                 first = joints->overrides[joints->count].rotation.y - pitch;
-                if (first >= object->character_data->game_character->field_054) {
-                    first = object->character_data->game_character->field_054;
-                } else if (first <= -object->character_data->game_character->field_054) {
-                    first = -object->character_data->game_character->field_054;
+                if (first >= object->character_data->game_character->unknown_054) {
+                    first = object->character_data->game_character->unknown_054;
+                } else if (first <= -object->character_data->game_character->unknown_054) {
+                    first = -object->character_data->game_character->unknown_054;
                 }
                 angle = -NuAtan2(-direction.x, -direction.z);
                 second = joints->overrides[joints->count].rotation.z - angle;
@@ -383,8 +383,8 @@ static void HeadMovementOrdinary(GAMEOBJECT *object) {
         }
         joints->overrides[joints->count].rotation.x = 0.0f;
         joints->overrides[joints->count].rotation.y = first * blend + joints->overrides[joints->count].rotation.y * (1.0f - blend);
-        joints->overrides[joints->count].rotation_max[1] = (i32)(object->character_data->game_character->field_054 * 10430.3779296875);
-        joints->overrides[joints->count].rotation_min[1] = (i32)(object->character_data->game_character->field_054 * -10430.3779296875);
+        joints->overrides[joints->count].rotation_max[1] = (i32)(object->character_data->game_character->unknown_054 * 10430.3779296875);
+        joints->overrides[joints->count].rotation_min[1] = (i32)(object->character_data->game_character->unknown_054 * -10430.3779296875);
         joints->overrides[joints->count].rotation.z = second * blend + joints->overrides[joints->count].rotation.z * (1.0f - blend);
         joints->overrides[joints->count].rotation_max[2] = (i32)(object->character_data->game_character->field_050 * 10430.3779296875);
         joints->overrides[joints->count].rotation_min[2] = (i32)(object->character_data->game_character->field_050 * -10430.3779296875);

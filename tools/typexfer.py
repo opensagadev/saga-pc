@@ -411,7 +411,7 @@ def plan(android_root, only=None):
             if delta is None:
                 continue
             target = offset + delta
-            # Placeholders named after their PC offset keep the PC convention (field_e33).
+            # Placeholders named after their PC offset keep the PC convention (unknown_e33).
             new_name = f"field_{target:x}" if placeholder else snake(name)
             if placeholder and target != int(placeholder.group(1), 16):
                 continue

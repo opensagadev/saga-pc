@@ -196,7 +196,7 @@ static void BombGeneratorsApplyReset(BOMB_GENERATOR_SYSTEM_RUNTIME *system, BOMB
             position.x = 0.0f;
             position.y = 0.0f;
             position.z = -2.0f;
-            NuVecRotateY(&position, &position, ((GAMEOBJECT *)Player[index])->field_0x276);
+            NuVecRotateY(&position, &position, ((GAMEOBJECT *)Player[index])->unknown_276);
             NuVecAdd(&position, &position, &((GAMEOBJECT *)Player[index])->collision_position);
             bomb = AddDynamicCreature((i16)id_DRAGBOMB, &position, 0, "dragbomb", NULL, NULL, 0, NULL, NULL, 0, 0);
         }

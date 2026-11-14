@@ -196,7 +196,7 @@ typedef struct WORLDINFO_s { // size 0x51ac
     struct SPECIAL_RESOURCE_ENTRY *special_sfx;                // 0x46d0
     i32 special_sfx_event_count;                               // 0x46d4
     struct SPECIAL_RESOURCE_EVENT *special_sfx_events;         // 0x46d8
-    char filler7c[4];                                          // 0x46dc
+    char pad_7c[4];                                            // 0x46dc
     struct GIZSPINNER_s *spinners;                             // 0x46e0
     i32 spinner_count;                                         // 0x46e4
     struct gameanimobjpool_s *spinner_anim_pool;               // 0x46e8
@@ -249,7 +249,7 @@ typedef struct WORLDINFO_s { // size 0x51ac
     struct GIZMOBLOWUP_PC *gizmo_blowups;                      // 0x50c8
     i32 blowup_target_candidate_count;                         // 0x50cc
     struct GIZMOBLOWUP_PC **blowup_target_candidates;          // 0x50d0
-    char filler12a[20];                                        // 0x50d4
+    char pad_12a[20];                                          // 0x50d4
     struct numtx_s *gizmo_blowup_mtx_buffer;                   // 0x50e8
     void *minicuts;                                            // 0x50ec
     void *minicut_parts;                                       // 0x50f0
@@ -269,7 +269,7 @@ typedef struct WORLDINFO_s { // size 0x51ac
     struct TRAFFICANIMSYS_s *trafficanim_sys;                  // 0x5168
     void *plug_sys;                                            // 0x516c
     u32 progress_flag_5174;                                    // 0x5170
-    char filler15[56];                                         // 0x5174
+    char pad_15[56];                                           // 0x5174
 } WORLDINFO;
 
 typedef struct TORPEDO_MACHINE_SYS { // size 0xc

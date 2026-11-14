@@ -9,9 +9,9 @@ typedef struct MINICAM_CAMERA { // size 0x230
     NUVEC position;             // 0x11c
     u8 unknown128[0xd0];        // 0x128
     u16 pitch;                  // 0x1f8
-    u8 unknown1fa[2];           // 0x1fa
+    u8 unknown_1fa[2];          // 0x1fa
     u16 yaw;                    // 0x1fc
-    u8 unknown1fe[0x2e];        // 0x1fe
+    u8 unknown_1fe[0x2e];       // 0x1fe
     i8 mode;                    // 0x22c
 } MINICAM_CAMERA;
 

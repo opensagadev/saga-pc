@@ -756,7 +756,7 @@ typedef struct NUHGOBJ_POI { // size 0x50
     NUMTX matrix;            // 0x00
     u8 unknown_40[4];        // 0x40
     u8 joint_index;          // 0x44
-    u8 field_45[11];         // 0x45
+    u8 unknown_45[11];       // 0x45
 } NUHGOBJ_POI;
 
 typedef struct nuqfnt_render_data_s { // size 0x50

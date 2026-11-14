@@ -13965,11 +13965,11 @@ struct SHADOW_PRODUCER_SET { // size 0x380
         u8 unknown028[0x1c];   // 0x2cc
     } lists[2];                // 0x2a4
 
-    u8 unknown32c[0x10];          // 0x32c
+    u8 unknown_32c[0x10];         // 0x32c
     NUDISPLAYLISTITEM *cursor[2]; // 0x33c
     NUDISPLAYLISTITEM *first[2];  // 0x344
     NUDISPLAYLISTITEM *last[2];   // 0x34c
-    u8 unknown354[0x2c];          // 0x354
+    u8 unknown_354[0x2c];         // 0x354
 };
 
 struct SHADOW_PRODUCER_BOUNDS { // size 0x20

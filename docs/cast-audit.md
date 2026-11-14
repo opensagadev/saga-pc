@@ -113,7 +113,7 @@ casts; the 135 with ten or more casts explain 4,540, the 335 with five or more
 | 10 | 92 | duplicate-type | `part_runtime_type_s <-> parttype_lookup_s` (src/gameapi/edpart.c:9) |  | 1 |
 | 11 | 84 | signedness | `function EdFileReadChar (result): char -> unsigned char` | src/saga.h:15432 | 14 |
 | 12 | 81 | duplicate-type | `cut_instance_load_s <-> instnugcutscene_s` (src/legoapi/cutscene_lifecycle.c:749) |  | 1 |
-| 13 | 79 | signedness | `field gameobject_s.field_280: u8 -> signed char` | src/saga.h:6391 | 23 |
+| 13 | 79 | signedness | `field gameobject_s.unknown_280: u8 -> signed char` | src/saga.h:6391 | 23 |
 | 14 | 79 | view-type | `PC_MATERIAL_CREATE_VIEW <-> numtl_s` (src/nu2api/nu3d_includes.cpp:4286) |  | 1 |
 | 15 | 74 | declaration-type | `field bolt_s.owner: void * -> gameobject_s *` | src/saga.h:3851 | 10 |
 | 16 | 65 | declaration-type | `variable gizmotypes: void * -> gizmotypes_s *` | src/saga.h:13803 | 4 |
@@ -167,7 +167,7 @@ What the list says:
   `PLAYERCHARACTERCONFIG` carry a dozen to 100 casts each.
 - **Missing rows**: `numtx_s` has no `NUVEC` view of its rows, so
   `(NUVEC *)&m->m30` appears 157 times (and `m20` 22).
-- **Signedness of a declaration** (`gameobject_s.id`, `field_280`,
+- **Signedness of a declaration** (`gameobject_s.id`, `unknown_280`,
   `EdFileReadChar`, `id_ATAT`): the declaration may well be wrong, but every
   other use of it compiles with the new signedness, so these are matching
   experiments, not mechanical fixes.
@@ -233,7 +233,7 @@ the check is needed anyway).
 | 5 | Record pairs in `src/saga.h`: `NUVEC4` embeds `NUVEC`, `numtx_s` gets row vectors, `PC_SCENE_MTL_VIEW` into `NUMTL`, `APIOBJECT` into `GAMEOBJECT`, `TERRAIN_POLYGON_INFO`/`TERRAIN_SHAPE_BATCH` | ~1,000 | 5-6 type changes | medium to high: layouts must be proven equal (`STATIC_ASSERT`s), every user recompiles | one pair per commit, full build each |
 | 6 | `const`: string-name tables (`AIActionFalseName`, `AIGameCharacterName`, ...) passed to `char *` parameters | ~1,000 of 1,967 | the prototypes of the receiving helpers | low for code (const does not change code), medium for churn | make the parameters `const char *`; the casts go with them |
 | 7 | Function-pointer casts (`function-pointer`) | ~400 of 796 | table element types and prototypes | medium | type the tables; callbacks that really take different arguments keep their cast |
-| 8 | Signedness of declarations (`gameobject_s.id`, `field_280`, `EdFileReadChar/Short`, `id_*` globals) | ~450 | ~10 declarations | high: the pilot shows that the load extension follows the declared type | only as matching experiments, each with a full exact-set comparison |
+| 8 | Signedness of declarations (`gameobject_s.id`, `unknown_280`, `EdFileReadChar/Short`, `id_*` globals) | ~450 | ~10 declarations | high: the pilot shows that the load extension follows the declared type | only as matching experiments, each with a full exact-set comparison |
 | — | Steering classes (`float-int`, `float-width`, `truncation`, `signedness`, `widening`, `scalar-pun`), necessary (`void-pointer-cpp`, vararg, unprototyped) and idiomatic (`discard`, `null-pointer`, `embedded-base`, enum, bool) | ~15,000 | — | — | not a target; new casts of these classes still raise the budget, which shows them in review |
 
 Batches 1-7 remove an estimated 8,000 to 9,000 casts (about 30% of 27,805);

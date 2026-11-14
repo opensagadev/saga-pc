@@ -1750,7 +1750,7 @@ extern "C" {
                 buildit->builders_active = 1;
                 ((GIZBUILDIT *)player->grapple)->availability_flags |= 4;
             }
-            animation = player->field_7aa;
+            animation = player->unknown_7aa;
             if (player->character_model->model_data_b[animation] != NULL && AnimPlaying(&player->anim_packet, animation, 1, 0) == NULL) {
                 return;
             }
@@ -1776,7 +1776,7 @@ extern "C" {
         if (AnimPlaying(&player->anim_packet, LEGOACT_BUILD, 1, 1) != NULL) {
             return;
         }
-        if (player->field_281 == 0) {
+        if (player->unknown_281 == 0) {
             return;
         }
         if (ObjLandReady(player) == 0 && objInNetWaitContext(player, LEGOCONTEXT_BUILDIT) == 0) {
@@ -1794,7 +1794,7 @@ extern "C" {
         if (buildit == NULL || (player->flags_1fc & 0x80) == 0) {
             return;
         }
-        if (player->field_281 != 0 && (buildit->state_flags & 4) != 0) {
+        if (player->unknown_281 != 0 && (buildit->state_flags & 4) != 0) {
             GizBuildItPushAwayFromStart(player, buildit);
         }
         GizBuildIt_SetHeadTarget((GIZBUILDIT_s *)buildit, player);
@@ -1805,7 +1805,7 @@ extern "C" {
                 return;
             }
             player->character_context = (i8)LEGOCONTEXT_BUILDIT;
-            player->field_7aa = LEGOACT_BUILD;
+            player->unknown_7aa = LEGOACT_BUILD;
             player->context_timer = 0.4f;
             player->flags_e20 &= ~0x4000;
             player->grapple = buildit;
@@ -1814,7 +1814,7 @@ extern "C" {
             GameCam_Blend(GameCam, 0.5f, 0.0f, 1);
             Hint_SetComplete(LEGOHINT_BUILD);
         }
-        if ((player->flags_1fc & 0x80) != 0 && player->field_281 != 0) {
+        if ((player->flags_1fc & 0x80) != 0 && player->unknown_281 != 0) {
             GizBuildItPushAwayFromEnd(player);
         }
     }

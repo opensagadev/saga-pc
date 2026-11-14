@@ -263,7 +263,7 @@ void CheckMissionEnd(MISSIONSYS_PC *system) {
         for (index = 0; index < HIGHGAMEOBJECT; ++index) {
             candidate = &Obj[index];
             if ((candidate->flags_1fc_word & 1) != 0 && (candidate->flags_1fc_word & 0x1000) != 0 && candidate->dead == 0 &&
-                candidate->field_280 == 0xff) {
+                candidate->unknown_280 == 0xff) {
                 mask |= U64_PAIR(candidate->collision_identity_mask);
             }
         }

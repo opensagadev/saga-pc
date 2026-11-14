@@ -162,7 +162,7 @@ void HubGoneThroughDoor(WORLDINFO *world) {
     }
     new_area = -1;
     for (index = 0; index < 10; ++index) {
-        if (CheckPosAIArea(HubAiMusicState.areas[index], PlayerStart[(i8)player->field_280].position, 0.0f) != 0) {
+        if (CheckPosAIArea(HubAiMusicState.areas[index], PlayerStart[(i8)player->unknown_280].position, 0.0f) != 0) {
             new_area = index;
             break;
         }
@@ -177,14 +177,14 @@ void HubGoneThroughDoor(WORLDINFO *world) {
             object = Player[index];
             if (object != NULL && (object->flags_1fc_half & 1) != 0) {
                 AISysCharacterSetPath(&object->ai_packet, world->ai_sys->path_sys->active_path);
-                AISysGetCharacterPathPos(world->ai_sys, (APIOBJECT *)object, &object->ai_packet, 0xff, (i8)object->field_281);
+                AISysGetCharacterPathPos(world->ai_sys, (APIOBJECT *)object, &object->ai_packet, 0xff, (i8)object->unknown_281);
             }
         }
     }
     Hub_MakeListCharactersAvailable(characters);
     object = Obj;
     for (index = 0; index < HIGHGAMEOBJECT; ++index, ++object) {
-        if ((object->flags_1fc_half & 1) == 0 || (i8)object->field_280 != -1 || object->ai_packet.creature_index != 0xff) {
+        if ((object->flags_1fc_half & 1) == 0 || (i8)object->unknown_280 != -1 || object->ai_packet.creature_index != 0xff) {
             continue;
         }
         object->tag_object_callback = NULL;

@@ -32,8 +32,8 @@ void Transform_MoveCode(WORLDINFO *world, GAMEOBJECT *object) {
     if (object->character_context == 86) {
         i32 trigger;
         f32 *frame = NULL;
-        if (object->character_model->model_data_b[object->field_7aa] != NULL) {
-            frame = AnimPlaying(&object->anim_packet, object->field_7aa, 1, 0);
+        if (object->character_model->model_data_b[object->unknown_7aa] != NULL) {
+            frame = AnimPlaying(&object->anim_packet, object->unknown_7aa, 1, 0);
             if (frame == NULL) {
                 return;
             }
@@ -43,7 +43,7 @@ void Transform_MoveCode(WORLDINFO *world, GAMEOBJECT *object) {
         object->movement_facing_angle =
             NuAtan2D(target->mid_position.x - object->collision_position.x, target->mid_position.z - object->collision_position.z);
         if (frame != NULL && !(object->context_variant_flags & 0x40)) {
-            f32 marker = AnimListFrame(object->character_model, object->field_7aa, 0);
+            f32 marker = AnimListFrame(object->character_model, object->unknown_7aa, 0);
             if (marker >= 1.0f && *frame >= marker) {
                 trigger = 1;
             }
@@ -70,7 +70,7 @@ void Transform_MoveCode(WORLDINFO *world, GAMEOBJECT *object) {
         f32 distance;
         i32 i;
         if (!(object->character_data->game_character->flags_090 & 0x01000000) || !(object->flags_1fc_low & 0x80) ||
-            object->field_281 == 0 || !ObjLandReady(object)) {
+            object->unknown_281 == 0 || !ObjLandReady(object)) {
             return;
         }
         candidate = world->gizmo_blowups;
@@ -115,7 +115,7 @@ void Transform_MoveCode(WORLDINFO *world, GAMEOBJECT *object) {
                 object->context_timer = 0.0f;
                 object->character_context = 86;
                 object->grapple = nearest;
-                object->field_7aa = 160;
+                object->unknown_7aa = 160;
                 object->context_duration = AnimDuration((i16)object->id, 160, 0.0f, 0.0f, 1);
                 if (object->context_duration <= 0.0f) {
                     object->context_duration = 1.0f;

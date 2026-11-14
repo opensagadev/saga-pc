@@ -1043,16 +1043,16 @@ struct BURN_SET {                    // size 0x564
     i32 field_b4;                    // 0x0b4
     f32 field_b8;                    // 0x0b8
     f32 field_bc;                    // 0x0bc
-    f32 field_c0;                    // 0x0c0
+    f32 unknown_c0;                  // 0x0c0
     f32 field_c4;                    // 0x0c4
-    f32 field_c8;                    // 0x0c8
+    f32 unknown_c8;                  // 0x0c8
     f32 field_cc;                    // 0x0cc
     BURN_OUT burnouts[32];           // 0x0d0
     i32 active_count;                // 0x550
     i32 selected_index;              // 0x554
     f32 field_558;                   // 0x558
-    f32 field_55c;                   // 0x55c
-    i32 field_560;                   // 0x560
+    f32 unknown_55c;                 // 0x55c
+    i32 unknown_560;                 // 0x560
 };
 
 static NUVEC burn_editor_position = {0};
@@ -1090,15 +1090,15 @@ void edrtlInitBurnset(BURN_SET *set) {
     set->field_b4 = 1;
     set->field_b8 = 1.0f;
     set->field_bc = 4.0f;
-    set->field_c0 = 0.2f;
+    set->unknown_c0 = 0.2f;
     set->field_c4 = 0.5f;
-    set->field_c8 = 1.9f;
+    set->unknown_c8 = 1.9f;
     set->field_cc = 0.0f;
     set->active_count = 0;
     set->selected_index = -1;
     set->field_558 = 1.0f;
-    set->field_55c = 0.2f;
-    set->field_560 = 0;
+    set->unknown_55c = 0.2f;
+    set->unknown_560 = 0;
     for (i = 0; i < 32; ++i) {
         set->burnouts[i].active = 0;
     }
@@ -1156,19 +1156,19 @@ i32 edrtlBurnoutLoadSet(char *filename, BURN_SET *set) {
         if (version >= 2) {
             set->field_b8 = EdFileReadFloat();
             set->field_bc = EdFileReadFloat();
-            set->field_c0 = EdFileReadFloat();
+            set->unknown_c0 = EdFileReadFloat();
             set->field_c4 = EdFileReadFloat();
             if (version == 2) {
                 set->field_c4 = set->field_c4 - 1.0f;
             }
-            set->field_c8 = EdFileReadFloat();
+            set->unknown_c8 = EdFileReadFloat();
             set->field_cc = EdFileReadFloat();
         } else {
             set->field_b8 = 1.0f;
             set->field_bc = 4.0f;
-            set->field_c0 = 0.2f;
+            set->unknown_c0 = 0.2f;
             set->field_c4 = 0.5f;
-            set->field_c8 = 1.9f;
+            set->unknown_c8 = 1.9f;
             set->field_cc = 0.0f;
         }
         if (set->active_count + count > 32) {
@@ -1222,7 +1222,7 @@ BURN_SET *edrtlBurnoutLoad(char *filename, VARIPTR *buffer, i32 unused_end) {
     buffer->addr = (buffer->addr + 3) & ~3u;
     set = (BURN_SET *)buffer->addr;
     edrtlInitBurnset(set);
-    set->field_560 = edrtlBurnoutLoadSet(filename, set);
+    set->unknown_560 = edrtlBurnoutLoadSet(filename, set);
     edrtl_edit_burnset = set;
     buffer->addr += sizeof(BURN_SET);
     return set;
@@ -1301,9 +1301,9 @@ void edrtlCalculateBurnout(BURN_SET *set, f32 *threshold, f32 *intensity, f32 *d
         }
 
         if (!set->field_b0 && !set->field_a8 && !set->field_ac) {
-            if (desired_intensity >= set->field_c0 + set->parameters_copy.field_14) {
+            if (desired_intensity >= set->unknown_c0 + set->parameters_copy.field_14) {
                 set->field_a8 = 1;
-            } else if (set->parameters_copy.field_14 - set->field_c0 >= desired_intensity) {
+            } else if (set->parameters_copy.field_14 - set->unknown_c0 >= desired_intensity) {
                 set->field_ac = 1;
             }
         }
@@ -1313,8 +1313,8 @@ void edrtlCalculateBurnout(BURN_SET *set, f32 *threshold, f32 *intensity, f32 *d
             step = set->field_bc * frame_time;
             if (set->field_a8) {
                 intensity_target = desired_intensity + set->field_c4;
-                if (intensity_target > set->field_c8) {
-                    intensity_target = desired_intensity > set->field_c8 ? desired_intensity : set->field_c8;
+                if (intensity_target > set->unknown_c8) {
+                    intensity_target = desired_intensity > set->unknown_c8 ? desired_intensity : set->unknown_c8;
                 }
             } else {
                 intensity_target = desired_intensity - set->field_c4;
@@ -1632,9 +1632,9 @@ i32 edrtlBurnoutSave(char *filename, BURN_SET *set) {
             EdFileWriteFloat(set->parameters.field_1c);
             EdFileWriteFloat(set->field_b8);
             EdFileWriteFloat(set->field_bc);
-            EdFileWriteFloat(set->field_c0);
+            EdFileWriteFloat(set->unknown_c0);
             EdFileWriteFloat(set->field_c4);
-            EdFileWriteFloat(set->field_c8);
+            EdFileWriteFloat(set->unknown_c8);
             EdFileWriteFloat(set->field_cc);
             for (index = 0; index < 32; ++index) {
                 if (set->burnouts[index].active) {
@@ -1757,7 +1757,7 @@ void edrtlSetBurnoutOvershootRate(eduimenu_s *unused_menu, eduiitem_s *item, u32
 void edrtlSetBurnoutOvershootCutin(eduimenu_s *unused_menu, eduiitem_s *item, u32 unused_value) {
     if (edrtl_edit_burnset) {
         edui_slider_s *slider = (edui_slider_s *)item;
-        edrtl_edit_burnset->field_c0 = slider->value;
+        edrtl_edit_burnset->unknown_c0 = slider->value;
     }
 }
 
@@ -1771,7 +1771,7 @@ void edrtlSetBurnoutOvershootAmount(eduimenu_s *unused_menu, eduiitem_s *item, u
 void edrtlSetBurnoutOverbrightCap(eduimenu_s *unused_menu, eduiitem_s *item, u32 unused_value) {
     if (edrtl_edit_burnset) {
         edui_slider_s *slider = (edui_slider_s *)item;
-        edrtl_edit_burnset->field_c8 = slider->value;
+        edrtl_edit_burnset->unknown_c8 = slider->value;
     }
 }
 
@@ -1797,11 +1797,11 @@ void edrtlBurnTransitionsMenu(eduimenu_s *parent, eduiitem_s *unused_item, u32 u
         eduiMenuAddItem(edrtl_burn_transitions_menu, eduiItemSliderCreate(0, edblack, 0, edrtlSetBurnoutOvershootRate, 0.01f, 4.99f,
                                                                           edrtl_edit_burnset->field_bc, "Overshoot Rate"));
         eduiMenuAddItem(edrtl_burn_transitions_menu, eduiItemSliderCreate(0, edblack, 0, edrtlSetBurnoutOvershootCutin, 0.0f, 2.0f,
-                                                                          edrtl_edit_burnset->field_c0, "Overshoot Cutin"));
+                                                                          edrtl_edit_burnset->unknown_c0, "Overshoot Cutin"));
         eduiMenuAddItem(edrtl_burn_transitions_menu, eduiItemSliderCreate(0, edblack, 0, edrtlSetBurnoutOvershootAmount, 0.0f, 2.0f,
                                                                           edrtl_edit_burnset->field_c4, "Overshoot Amount"));
         eduiMenuAddItem(edrtl_burn_transitions_menu,
-                        eduiItemSliderCreate(0, edblack, 0, edrtlSetBurnoutOverbrightCap, 0.0f, 2.0f, edrtl_edit_burnset->field_c8,
+                        eduiItemSliderCreate(0, edblack, 0, edrtlSetBurnoutOverbrightCap, 0.0f, 2.0f, edrtl_edit_burnset->unknown_c8,
                                              "edrtl_edit_burnset->Overbright Cap"));
         eduiMenuAddItem(edrtl_burn_transitions_menu,
                         eduiItemSliderCreate(0, edblack, 0, edrtlSetBurnoutOverdarkCap, 0.0f, 2.0f, edrtl_edit_burnset->field_cc,
@@ -1995,7 +1995,7 @@ void edrtlSetBurnRadius(eduimenu_s *unused_menu, eduiitem_s *item, u32 unused_va
 void edrtlSetBurnFalloff(eduimenu_s *unused_menu, eduiitem_s *item, u32 unused_value) {
     if (edrtl_edit_burnset) {
         edui_slider_s *slider = (edui_slider_s *)item;
-        edrtl_edit_burnset->field_55c = slider->value;
+        edrtl_edit_burnset->unknown_55c = slider->value;
     }
 }
 
@@ -2012,7 +2012,7 @@ void edrtlBurnRadiusMenu(eduimenu_s *parent, eduiitem_s *unused_item, u32 unused
         eduiMenuAddItem(edrtl_burn_radius_menu,
                         eduiItemSliderCreate(0, edblack, 0, edrtlSetBurnRadius, 0.2f, 19.8f, edrtl_edit_burnset->field_558, "Radius"));
         eduiMenuAddItem(edrtl_burn_radius_menu,
-                        eduiItemSliderCreate(0, edblack, 0, edrtlSetBurnFalloff, 0.0f, 10.0f, edrtl_edit_burnset->field_55c, "Falloff"));
+                        eduiItemSliderCreate(0, edblack, 0, edrtlSetBurnFalloff, 0.0f, 10.0f, edrtl_edit_burnset->unknown_55c, "Falloff"));
         eduiMenuAttach(parent, edrtl_burn_radius_menu);
         edrtl_burn_radius_menu->x = parent->x + 10;
         edrtl_burn_radius_menu->y = parent->y + 40;
@@ -2122,7 +2122,7 @@ i32 edrtlAddBurnout(NUVEC *position) {
         edrtl_edit_burnset->burnouts[index].active = 1;
         edrtl_edit_burnset->burnouts[index].position = *position;
         edrtl_edit_burnset->burnouts[index].field_1c = edrtl_edit_burnset->field_558;
-        edrtl_edit_burnset->burnouts[index].field_20 = edrtl_edit_burnset->field_55c;
+        edrtl_edit_burnset->burnouts[index].field_20 = edrtl_edit_burnset->unknown_55c;
         edrtl_edit_burnset->burnouts[index].field_10 = edrtl_edit_burnset->parameters.field_24;
         edrtl_edit_burnset->burnouts[index].field_14 = edrtl_edit_burnset->parameters.field_14;
         edrtl_edit_burnset->burnouts[index].field_18 = edrtl_edit_burnset->parameters.field_1c;
@@ -2490,7 +2490,7 @@ void edrtlDrawBurnInfo(void) {
         y += height;
         NuQFntPrintEx(system_qfont, x, y, 16, "Default Radius: %0.2f", edrtl_edit_burnset->field_558);
         y += height;
-        NuQFntPrintEx(system_qfont, x, y, 16, "Default Falloff: %0.2f", edrtl_edit_burnset->field_55c);
+        NuQFntPrintEx(system_qfont, x, y, 16, "Default Falloff: %0.2f", edrtl_edit_burnset->unknown_55c);
         y += 2 * height;
         NuQFntPrintEx(system_qfont, x, y, 16, "Current Global Scale/Intensity: %0.2f", edrtl_edit_burnset->parameters_copy.field_14);
     } else {
@@ -4370,7 +4370,7 @@ static i32 edrtlProcBurn(f32 delta_time, FRAME_PAD_PC *pad) {
             if (edrtl_edit_burnset != NULL && edrtl_edit_burnset->selected_index != -1) {
                 edcamSetPos(&edrtl_edit_burnset->burnouts[edrtl_edit_burnset->selected_index].position);
                 edrtl_edit_burnset->field_558 = edrtl_edit_burnset->burnouts[edrtl_edit_burnset->selected_index].field_1c;
-                edrtl_edit_burnset->field_55c = edrtl_edit_burnset->burnouts[edrtl_edit_burnset->selected_index].field_20;
+                edrtl_edit_burnset->unknown_55c = edrtl_edit_burnset->burnouts[edrtl_edit_burnset->selected_index].field_20;
             }
         }
 

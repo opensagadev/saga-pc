@@ -117,7 +117,7 @@ static void CableAtstToppled(GAMEOBJECT *target) {
     GAMEOBJECT *object;
     i32 i;
     target->character_context = 0x3d;
-    target->field_7aa = 0x85;
+    target->unknown_7aa = 0x85;
     target->context_duration = AnimDuration((i16)target->id, 0x85, 0.0f, 0.0f, 1);
     target->flags_ef4 |= 0x800000;
     target->context_timer = 0.0f;
@@ -199,7 +199,7 @@ void UpdateCables(void) {
             release = 1;
         }
         source = cable->source;
-        if (source == NULL || !(source->flags_1fc_word & 0x1000) || source->dead != 0 || (source->field_e20 & 0x20) ||
+        if (source == NULL || !(source->flags_1fc_word & 0x1000) || source->dead != 0 || (source->unknown_e20 & 0x20) ||
             (target != NULL && target->character_context == 0x17) ||
             ((flags & 2) && source->pad->bound_pad != NULL && (source->pad->bound_pad->digital_buttons_pressed & GAMEPAD_SPECIAL))) {
             release = 1;
@@ -317,7 +317,7 @@ void UpdateCables(void) {
                                 f32 line_distance;
                                 f32 squared;
                                 if (!(object->flags_1fc_word & 1) || !(object->flags_1fc_word & 0x1000) || object->dead != 0 ||
-                                    (object->field_e20 & 0x20) || (object->flags_1fc_word & 0x80)) {
+                                    (object->unknown_e20 & 0x20) || (object->flags_1fc_word & 0x80)) {
                                     continue;
                                 }
                                 if (WORLD->area != NULL && WORLD->area == HOTHBATTLE_ADATA && object->id != (u16)id_ATAT &&

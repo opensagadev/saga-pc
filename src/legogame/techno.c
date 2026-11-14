@@ -591,7 +591,7 @@ void Technos_MoveTarget(TECHNO_PC *techno_pointer, GAMEOBJECT *object) {
     GIZOBSTACLE *obstacle;
     if (object == NULL) {
         speed = 0.0f;
-    } else if ((object->flags_1fc & 0x80) == 0 && object->field_f00 == 2) {
+    } else if ((object->flags_1fc & 0x80) == 0 && object->unknown_f00 == 2) {
         speed = 1.0f;
     } else if ((techno->enabled & 1) != 0) {
         speed = (object->pad->runtime_flags & 8) != 0 ? 1.0f : 0.0f;
@@ -623,10 +623,10 @@ void Technos_MoveTarget(TECHNO_PC *techno_pointer, GAMEOBJECT *object) {
         return;
     }
     obstacle = techno->controlled_object->object;
-    if ((techno->enabled & 2) != 0 && object != NULL && (object->field_280 == 0 || object->field_280 == 1)) {
+    if ((techno->enabled & 2) != 0 && object != NULL && (object->unknown_280 == 0 || object->unknown_280 == 1)) {
         rate = object->pad->waggle_magnitude != 0.0f ? (f32)(3.0 * FRAMETIME) : (f32)(2.0 * FRAMETIME);
-        TechnoMoveSpeed[(i8)object->field_280] = SeekLinearF(TechnoMoveSpeed[(i8)object->field_280], speed, rate);
-        GizObstacle_SetTechnoControlled(obstacle, TechnoMoveSpeed[(i8)object->field_280]);
+        TechnoMoveSpeed[(i8)object->unknown_280] = SeekLinearF(TechnoMoveSpeed[(i8)object->unknown_280], speed, rate);
+        GizObstacle_SetTechnoControlled(obstacle, TechnoMoveSpeed[(i8)object->unknown_280]);
     } else {
         GizObstacle_SetTechnoControlled(obstacle, speed);
     }
@@ -639,12 +639,12 @@ void Techno_MoveCode(WORLDINFO *world, GAMEOBJECT *object) {
     f32 hint_range;
     if (object->character_context == 0x51) {
         ((TECHNO_CALLBACK *)object->techno)->flags |= 4;
-        if (object->character_model->model_data_b[object->field_7aa] != NULL &&
-            AnimPlaying(&object->anim_packet, object->field_7aa, 1, 0) == NULL) {
+        if (object->character_model->model_data_b[object->unknown_7aa] != NULL &&
+            AnimPlaying(&object->anim_packet, object->unknown_7aa, 1, 0) == NULL) {
             return;
         }
         object->context_timer += FRAMETIME;
-        if ((object->pad->buttons_pressed & GAMEPAD_TAG) != 0 || ((object->flags_1fc & 0x80) == 0 && object->field_f00 != 2)) {
+        if ((object->pad->buttons_pressed & GAMEPAD_TAG) != 0 || ((object->flags_1fc & 0x80) == 0 && object->unknown_f00 != 2)) {
             GameCam_Blend(GameCam, 0.5f, 0.0f, 1);
             object->tag_flags |= 1;
             object->movement_facing_angle += 0x8000;
@@ -654,7 +654,8 @@ void Techno_MoveCode(WORLDINFO *world, GAMEOBJECT *object) {
             Technos_MoveTarget(object->techno, object);
         }
     } else {
-        if (!((((object->flags_1fc & 0x80) != 0 || object->field_f00 == 2) && object->suit != NULL && (object->suit->flags & 0x20) != 0) ||
+        if (!((((object->flags_1fc & 0x80) != 0 || object->unknown_f00 == 2) && object->suit != NULL &&
+               (object->suit->flags & 0x20) != 0) ||
               (StartupGameFlag1 != 0 && StartupGameFlag0 != 0))) {
             return;
         }
@@ -667,19 +668,19 @@ void Techno_MoveCode(WORLDINFO *world, GAMEOBJECT *object) {
         if (distance < (f64)hint_range * hint_range) {
             techno->flags |= 4;
         }
-        if (object->field_281 == 0 || ObjLandReady(object) == 0 || !(distance < (f64)range * range) ||
-            ((object->pad->buttons_pressed & GAMEPAD_SPECIAL) == 0 && object->field_f00 != 2)) {
+        if (object->unknown_281 == 0 || ObjLandReady(object) == 0 || !(distance < (f64)range * range) ||
+            ((object->pad->buttons_pressed & GAMEPAD_SPECIAL) == 0 && object->unknown_f00 != 2)) {
             return;
         }
         if (Techno_isReady((TECHNO_s *)techno) != 0) {
             object->character_context = 0x51;
             object->context_timer = 0.0f;
             object->techno = (TECHNO_PC *)techno;
-            object->field_7aa = 0x99;
+            object->unknown_7aa = 0x99;
             object->movement_facing_angle = techno->y_rotation + 0x8000;
             GameCam_Blend(GameCam, 0.5f, 0.0f, 1);
-            if (object->field_280 == 0 || object->field_280 == 1) {
-                TechnoMoveSpeed[(i8)object->field_280] = 0.0f;
+            if (object->unknown_280 == 0 || object->unknown_280 == 1) {
+                TechnoMoveSpeed[(i8)object->unknown_280] = 0.0f;
             }
         } else {
             GameAudio_PlaySfx(0x32, &techno->position, 0, 0);

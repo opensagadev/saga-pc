@@ -1482,7 +1482,7 @@ static void CC_maxheadturn(NUFPAR_PC *parser) {
 }
 
 static void CC_maxheadtilt(NUFPAR_PC *parser) {
-    charconfig.runtime->field_054 = (NuFParGetFloat(parser) * 3.1415927f) / 180.0f;
+    charconfig.runtime->unknown_054 = (NuFParGetFloat(parser) * 3.1415927f) / 180.0f;
 }
 
 static void CC_headrotrate(NUFPAR_PC *parser) {

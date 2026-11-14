@@ -44,7 +44,7 @@ struct TIGHTROPE_s { // size 0x48
     u16 field_0x2c;  // 0x2c
     u16 field_0x2e;  // 0x2e
     u8 field_0x30;   // 0x30
-    u8 field_0x31;   // 0x31
+    u8 unknown_31;   // 0x31
     i8 field_0x32;   // 0x32
     u8 pad_33;       // 0x33
     NUVEC direction; // 0x34

@@ -119,7 +119,7 @@ struct TERRAIN_DISPLAY_OBJECT { // size 0xd0
     u32 unknown_bc;             // 0xbc
     i32 scene_object_index;     // 0xc0
     void *object;               // 0xc4
-    u8 pad_0xc8[8];             // 0xc8
+    u8 pad_c8[8];               // 0xc8
 };
 
 struct TERRAIN_DISPLAY_SCENE {       // size 0x74
@@ -132,10 +132,10 @@ struct TERRAIN_GSCENE {                   // size 0x114
     u8 pad_0x00[0x1c];                    // 0x000
     i32 object_count;                     // 0x01c
     TERRAIN_SCENE_OBJECT *objects;        // 0x020
-    u8 pad_0x24[0x34];                    // 0x024
+    u8 pad_24[0x34];                      // 0x024
     void *object_map_present;             // 0x058
     u16 *object_map;                      // 0x05c
-    u8 pad_0x60[0xb0];                    // 0x060
+    u8 pad_60[0xb0];                      // 0x060
     TERRAIN_DISPLAY_SCENE *display_scene; // 0x110
 };
 
@@ -167,7 +167,7 @@ typedef struct music_playback_s { // size 0x24
     u8 pause_requested;           // 0x10
     u8 restore_requested;         // 0x11
     u8 field_0012;                // 0x12
-    u8 field_0013;                // 0x13
+    u8 unknown_0013;              // 0x13
     f32 seek_offset;              // 0x14
     f32 transition;               // 0x18
     u16 update_delay;             // 0x1c

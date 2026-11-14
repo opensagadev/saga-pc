@@ -215,7 +215,7 @@ i32 edbriLoadPage(char *path, void *scene) {
             edBridges[index].red = (u8)EdFileReadChar();
             edBridges[index].green = (u8)EdFileReadChar();
             edBridges[index].blue = (u8)EdFileReadChar();
-            edBridges[index].field_43 = (u8)EdFileReadChar();
+            edBridges[index].unknown_43 = (u8)EdFileReadChar();
             ++edbri_bridges_used;
         }
     }
@@ -448,7 +448,7 @@ i32 edbriFileSave(char *path) {
             EdFileWriteChar(edBridges[i].red);
             EdFileWriteChar(edBridges[i].green);
             EdFileWriteChar(edBridges[i].blue);
-            EdFileWriteChar(edBridges[i].field_43);
+            EdFileWriteChar(edBridges[i].unknown_43);
         }
         EdFileClose();
         return 1;
@@ -573,7 +573,7 @@ i32 edbriBridgeCreate(NUVEC *position) {
     edBridges[index].red = 0x50;
     edBridges[index].green = 0x50;
     edBridges[index].blue = 0x30;
-    edBridges[index].field_43 = 0x80;
+    edBridges[index].unknown_43 = 0x80;
     edbri_page_used[edbri_pageid] = 1;
     edbri_page_scene[edbri_pageid] = edbits_base_scene;
     edbriBridgePlace(index, position);

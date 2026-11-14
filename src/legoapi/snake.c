@@ -115,7 +115,7 @@ SNAKE_BODY *CreateSnakeBody(GAMEOBJECT *object, i32 segment_count) {
             body->flags |= 1;
             body->segment_count = (u16)segment_count;
             for (index = 0; index < body->segment_count; index++) {
-                body->segments[index].yaw = object->field_0x276;
+                body->segments[index].yaw = object->unknown_276;
                 body->segments[index].pitch = 0;
                 body->segments[index].ground_height = 1000000000.0f;
             }
@@ -142,7 +142,7 @@ void UpdateSnakeBody(GAMEOBJECT *object) {
         reader->snake_body->segments[index].position = position;
         reader->snake_body->segments[index].yaw =
             SeekRot((u16)reader->snake_body->segments[index].yaw,
-                    index != 0 ? reader->snake_body->segments[index - 1].yaw : object->field_0x276, SnakeYawSeekRate);
+                    index != 0 ? reader->snake_body->segments[index - 1].yaw : object->unknown_276, SnakeYawSeekRate);
         reader->snake_body->segments[index].pitch = 0;
         offset.x = 0.0f;
         offset.y = 0.0f;

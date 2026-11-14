@@ -313,15 +313,15 @@ static i32 GrabberFindShadow(NUVEC *position, GRABBER_PC *grabber) {
 
 static void GrabberGrabVictim(GAMEOBJECT *victim) {
     victim->character_context = 0x2f;
-    victim->field_7aa = 0x68;
+    victim->unknown_7aa = 0x68;
     if (victim->character_model->model_data_b[104] == NULL) {
-        victim->field_7aa = 5;
+        victim->unknown_7aa = 5;
     }
     NewRumbleAllPlayers(0.0f, 0.1f, 0, 0);
     victim->context_timer = 0.0f;
     victim->context_duration = 0.75f;
     victim->external_force = victim->start_position;
-    victim->field_7b3 = 0;
+    victim->unknown_7b3 = 0;
     Hint_SetComplete(0x28b);
 }
 
@@ -486,18 +486,18 @@ static void Grabber_SetVictimPos(GRABBER_PC *grabber) {
         grabber->victim->position.y = start.y + (position.y - start.y) * fraction;
         grabber->victim->position.z = start.z + (position.z - start.z) * fraction;
         victim = grabber->victim;
-        victim->position.x -= NU_SIN_LUT(victim->field_0x276) * victim->bounds_half_height * fraction;
+        victim->position.x -= NU_SIN_LUT(victim->unknown_276) * victim->bounds_half_height * fraction;
         victim = grabber->victim;
-        victim->position.z -= NU_COS_LUT(victim->field_0x276) * victim->bounds_half_height * fraction;
-        if (grabber->victim->field_7b3 == 0 && fraction == 1.0f) {
+        victim->position.z -= NU_COS_LUT(victim->unknown_276) * victim->bounds_half_height * fraction;
+        if (grabber->victim->unknown_7b3 == 0 && fraction == 1.0f) {
             PlaySfx("imp_C3PO_magnet", &position);
-            grabber->victim->field_7b3 = 1;
+            grabber->victim->unknown_7b3 = 1;
         }
-    } else if (victim->field_7aa == 5) {
-        victim->position.x = position.x - NU_SIN_LUT(victim->field_0x276) * victim->bounds_half_height;
+    } else if (victim->unknown_7aa == 5) {
+        victim->position.x = position.x - NU_SIN_LUT(victim->unknown_276) * victim->bounds_half_height;
         grabber->victim->position.y = position.y;
         victim = grabber->victim;
-        victim->position.z = position.z - NU_COS_LUT(victim->field_0x276) * victim->bounds_half_height;
+        victim->position.z = position.z - NU_COS_LUT(victim->unknown_276) * victim->bounds_half_height;
     } else {
         victim->position = position;
     }
@@ -556,7 +556,7 @@ void Grabber_Drop(GRABBER_PC *grabber, NUVEC *previous) {
 
     grabber->flags |= 2;
     if (grabber->victim != NULL) {
-        if (grabber->character_id == GrabMagnetId && grabber->victim->field_7b3 != 0) {
+        if (grabber->character_id == GrabMagnetId && grabber->victim->unknown_7b3 != 0) {
             PlaySfx("imp_C3PO_magnet_drop", Grabber_GetGrabPos(grabber, NULL));
         }
         Grabber_SetVictimPos(grabber);
@@ -965,7 +965,7 @@ void Grabber_Update(WORLDINFO *world) {
         grabber->victim->velocity.z = 0.0f;
         grabber->victim->velocity.x = 0.0f;
         grabber->victim->velocity.y = -0.1f;
-        grabber->victim->field_281 = 0;
+        grabber->victim->unknown_281 = 0;
     }
     if (grabber->character_id == GrabMachineId) {
         mask = 0;

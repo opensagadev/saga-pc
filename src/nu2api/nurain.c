@@ -38,7 +38,7 @@ void NuRainProcess(i32 paused) {
                 goto done;
             }
             debkeydata[NuRainKey].effect_index = (i16)LookupDebrisEffectPage("DAVE_RAIN", 0);
-            debkeydata[NuRainKey].field_2f6 = 0;
+            debkeydata[NuRainKey].unknown_2f6 = 0;
             if (debkeydata[NuRainKey].effect_index != -1) {
                 DebReAlloc(&debkeydata[NuRainKey], 0x280);
                 debkeydata[NuRainKey].particle_cursor = 0;

@@ -26,7 +26,7 @@ typedef struct edanim_param_s { // size 0x2d4
     f32 effect_positions[8][3]; // 0x0fc
     i16 effect_angles[8];       // 0x15c
     i16 effect_angle_ranges[8]; // 0x16c
-    f32 field_17c;              // 0x17c
+    f32 unknown_17c;            // 0x17c
     char sound_names[8][16];    // 0x180
     i32 sound_ids[8];           // 0x200
     i32 sound_flags[8];         // 0x220

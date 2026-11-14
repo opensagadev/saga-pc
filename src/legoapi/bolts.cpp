@@ -444,7 +444,7 @@ extern "C" {
             }
             if (check_owner != 0 && bolt->owner != NULL && (((GAMEOBJECT *)bolt->owner)->flags_1fc_word & 1) != 0 &&
                 (((GAMEOBJECT *)bolt->owner)->flags_1fc_word & 0x1000) != 0 && ((GAMEOBJECT *)bolt->owner)->dead == 0 &&
-                ((GAMEOBJECT *)bolt->owner)->field_280 != 0xff) {
+                ((GAMEOBJECT *)bolt->owner)->unknown_280 != 0xff) {
                 continue;
             }
             half_speed = (f32)((f64)bolt->speed * 0.5);
@@ -771,10 +771,10 @@ extern "C" {
     i32 Bolt_HitPartMode(BOLT_PC *bolt) {
         GAMEOBJECT *owner = (GAMEOBJECT *)bolt->owner;
         if (owner != NULL) {
-            if (owner->field_280 == 0) {
+            if (owner->unknown_280 == 0) {
                 return 4;
             }
-            if (owner->field_280 == 1) {
+            if (owner->unknown_280 == 1) {
                 return 5;
             }
         }
@@ -1251,14 +1251,14 @@ extern "C" i32 Bolt_HitGameObjects(BOLT_PC *bolt, NUVEC *points, NUVEC *minimum,
             continue;
         }
         flags = bolt->flags;
-        if ((flags & 0x80) != 0 && object->field_280 == 0xff && (object->rider == NULL || object->rider->field_280 == 0xff)) {
+        if ((flags & 0x80) != 0 && object->unknown_280 == 0xff && (object->rider == NULL || object->rider->unknown_280 == 0xff)) {
             continue;
         }
         if ((reinterpret_cast<BOLT_CONTEXT_INFO *>(CInfo)[object->character_context].flags & 0x8080) != 0 ||
             (object->flags_e24 & 0x8000) != 0) {
             continue;
         }
-        if (VehicleArea != 0 && BonusArea == 0 && owner != NULL && owner->field_280 != 0xff && object->field_280 != 0xff) {
+        if (VehicleArea != 0 && BonusArea == 0 && owner != NULL && owner->unknown_280 != 0xff && object->unknown_280 != 0xff) {
             continue;
         }
         if ((object->character_data->game_character->flags_090 & 0x8000) != 0) {
@@ -1341,9 +1341,9 @@ extern "C" void Bolt_Init(void *storage, NETMESSAGE &message) {
     if (owner != NULL) {
         if ((owner->flags_1fc & 0x80) != 0) {
             flags |= 0x28;
-            if (owner->field_280 == 0) {
+            if (owner->unknown_280 == 0) {
                 flags |= 1;
-            } else if (owner->field_280 == 1) {
+            } else if (owner->unknown_280 == 1) {
                 flags |= 2;
             }
         }
@@ -1387,12 +1387,12 @@ extern "C" void Bolt_Init(void *storage, NETMESSAGE &message) {
     bolt->hit_platform = -1;
     bolt->field_e4 = 2000000.0f;
     bolt->reflection_height = 2000000.0f;
-    bolt->field_105 = -1;
+    bolt->unknown_105 = -1;
     if (owner != NULL) {
         if (owner->floor_height != 2000000.0f) {
             bolt->field_e4 = owner->floor_height;
-            bolt->surface_x_rotation = owner->field_1052;
-            bolt->surface_z_rotation = owner->field_1054;
+            bolt->surface_x_rotation = owner->unknown_1052;
+            bolt->surface_z_rotation = owner->unknown_1054;
         }
         if (owner->reflection_height != 2000000.0f && owner->reflection_enabled == 2) {
             bolt->reflection_height = owner->reflection_height;
@@ -1474,7 +1474,7 @@ extern "C" void Bolt_Init(void *storage, NETMESSAGE &message) {
                 i32 hit = 0;
                 if ((bolt->flags & 0x13) != 0 ||
                     (bolt->owner != NULL && ((static_cast<GAMEOBJECT *>(bolt->owner)->portal_flags & 0x10000000) != 0 ||
-                                             static_cast<GAMEOBJECT *>(bolt->owner)->field_f00 == 5))) {
+                                             static_cast<GAMEOBJECT *>(bolt->owner)->unknown_f00 == 5))) {
                     hit = bolt->hit_platform != -1 && Bolt_HitPlatPrivate(bolt, NULL);
                     if (!hit) {
                         hit = GizmoSys_BoltHit(world->gizmo_sys, world, bolt, points, &bolt->bounds_min, &bolt->bounds_max,
@@ -1629,7 +1629,7 @@ extern "C" void Bolts_Update(WORLDINFO *world) {
             }
             if ((bolt->flags & 0x13) != 0 ||
                 (bolt->owner != NULL && ((static_cast<GAMEOBJECT *>(bolt->owner)->portal_flags & 0x10000000) != 0 ||
-                                         static_cast<GAMEOBJECT *>(bolt->owner)->field_f00 == 5))) {
+                                         static_cast<GAMEOBJECT *>(bolt->owner)->unknown_f00 == 5))) {
                 if (bolt->hit_platform != -1) {
                     if (Bolt_HitPlatFn == NULL || !Bolt_HitPlatFn(bolt)) {
                         Bolt_HitPlatPrivate(bolt, processed);
@@ -1688,14 +1688,14 @@ extern "C" void Bolts_Update(WORLDINFO *world) {
                     continue;
                 }
                 u32 flags = bolt->flags;
-                if ((flags & 0x80) != 0 && object->field_280 == 0xff && (object->rider == NULL || object->rider->field_280 == 0xff)) {
+                if ((flags & 0x80) != 0 && object->unknown_280 == 0xff && (object->rider == NULL || object->rider->unknown_280 == 0xff)) {
                     continue;
                 }
                 if ((reinterpret_cast<BOLT_CONTEXT_INFO *>(CInfo)[object->character_context].flags & 0x8080) != 0 ||
                     (object->flags_e24 & 0x8000) != 0) {
                     continue;
                 }
-                if (VehicleArea != 0 && BonusArea == 0 && owner != NULL && owner->field_280 != 0xff && object->field_280 != 0xff) {
+                if (VehicleArea != 0 && BonusArea == 0 && owner != NULL && owner->unknown_280 != 0xff && object->unknown_280 != 0xff) {
                     continue;
                 }
                 if ((object->character_data->game_character->flags_090 & 0x8000) != 0) {
@@ -1715,7 +1715,7 @@ extern "C" void Bolts_Update(WORLDINFO *world) {
             }
             if ((bolt->flags & 0x13) != 0 ||
                 (bolt->owner != NULL && ((static_cast<GAMEOBJECT *>(bolt->owner)->portal_flags & 0x10000000) != 0 ||
-                                         static_cast<GAMEOBJECT *>(bolt->owner)->field_f00 == 5))) {
+                                         static_cast<GAMEOBJECT *>(bolt->owner)->unknown_f00 == 5))) {
                 if (GizmoSys_BoltHit(world->gizmo_sys, world, bolt, points, &bolt->bounds_min, &bolt->bounds_max, bolt->collision_radius,
                                      processed)) {
                     continue;
@@ -1757,9 +1757,9 @@ extern "C" {
 
         if ((object->flags_1fc & 0x80) != 0) {
             flags |= 0x20;
-            if (object->field_280 == 0) {
+            if (object->unknown_280 == 0) {
                 flags |= 1;
-            } else if (object->field_280 == 1) {
+            } else if (object->unknown_280 == 1) {
                 flags |= 2;
             }
         }
@@ -1769,18 +1769,18 @@ extern "C" {
         aimed_position = object->attack_target_position;
         BoltSys->shoot_origin(object, &origin);
         heading = BoltSys->shoot_direction(object, &direction);
-        if (object->character_context != -1 && object->field_7aa != -1) {
-            if ((u16)object->field_7aa == BoltShootClassId0) {
+        if (object->character_context != -1 && object->unknown_7aa != -1) {
+            if ((u16)object->unknown_7aa == BoltShootClassId0) {
                 heading = (u16)(heading + 0x4000);
-            } else if ((u16)object->field_7aa == BoltShootClassId1) {
+            } else if ((u16)object->unknown_7aa == BoltShootClassId1) {
                 heading = (u16)(heading - 0x4000);
-            } else if ((u16)object->field_7aa == BoltShootClassId2) {
+            } else if ((u16)object->unknown_7aa == BoltShootClassId2) {
                 heading = (u16)(heading + 0x8000);
             }
         }
         if ((object->flags_e20 & 0x800) != 0) {
-            if ((object->portal_flags & 0x8000) == 0 && object->field_ea0_target == NULL && object->field_280 != 0xff &&
-                (object->field_c8c != 0.0f || object->field_c90 != 0.0f || object->field_c94 != 0.0f)) {
+            if ((object->portal_flags & 0x8000) == 0 && object->field_ea0_target == NULL && object->unknown_280 != 0xff &&
+                (object->unknown_c8c != 0.0f || object->unknown_c90 != 0.0f || object->unknown_c94 != 0.0f)) {
                 target_distance = duration * speed;
                 NuVecSub(&adjusted_position, &aimed_position, &origin);
                 NuVecNorm(&adjusted_position, &adjusted_position);
@@ -1796,9 +1796,9 @@ extern "C" {
         intercept_position = NULL;
         velocity = NULL;
         if ((object->portal_flags & 0x8000) != 0) {
-            target_position = intercept_position = &object->field_e4c;
+            target_position = intercept_position = &object->unknown_e4c;
             if ((object->portal_flags & 0x10000) == 0 && (object->portal_flags & 0x20000) != 0) {
-                NuVecSub(&target_velocity, &object->field_e4c, &object->field_e58);
+                NuVecSub(&target_velocity, &object->unknown_e4c, &object->unknown_e58);
                 NuVecScale(&target_velocity, &target_velocity, 1.0f / FRAMETIME);
                 velocity = &target_velocity;
             }
@@ -1908,7 +1908,7 @@ extern "C" {
                 sound_positions[sound_count++] = BoltShootPositionScratch;
             }
             if ((type->flags_60 & 0x20000000) != 0) {
-                object->field_d54 = BoltShootParameter;
+                object->unknown_d54 = BoltShootParameter;
             }
         }
         object->flags_e20 |= 0x40000;

@@ -149,3 +149,4 @@ config/oddscan-budget.json hex-name 9428 address-named globals (dat_008810c0 sty
 config/oddscan-budget.json address-name 16324 2,419 names that restated their address in free forms (TextIdPc8810c0) take the standard fun_/dat_<VA> form this class counts; hex-name falls from 9428 to 562
 config/oddscan-budget.json hex-name 590 offset-named fields (state6a0Pc) were hidden from the pattern by the pc marker; they are now visible for the placeholder pass (no new name)
 config/oddscan-budget.json view-use 886 locals named ...ViewPc read as views once the pc marker goes (no new view)
+config/oddscan-budget.json placeholder-field 8998 placeholder names the class did not recognise (padding_12, field_c0 spellings) take its unknown_<hex>/pad_<hex> form (no new placeholder)

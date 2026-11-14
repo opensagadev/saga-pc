@@ -3246,7 +3246,7 @@ void NewArea(void) {
     for (i = 0; i < 8; ++i) {
         ((PLAYER_PROGRESS_HP *)PlayerProgress)[i].hitpoints = (u8)DEFAULT_PLAYERHITPOINTS;
         if (Player[i] != NULL) {
-            ((GAMEOBJECT *)Player[i])->current_hp = (i8)((GAMEOBJECT *)Player[i])->field_107e;
+            ((GAMEOBJECT *)Player[i])->current_hp = (i8)((GAMEOBJECT *)Player[i])->unknown_107e;
         }
     }
     ResetTimer(&AreaTimer, 0.0f);

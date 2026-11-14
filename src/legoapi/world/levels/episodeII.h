@@ -103,7 +103,7 @@ typedef struct JEDIB_STATE {           // size 0x63f0
     GIZAIMESSAGE *msg_restrain[3];     // 0x63b8
     i16 wave_ids[6];                   // 0x63c4
     u8 wave_spawned[6];                // 0x63d0
-    u8 pad_0x63d6[2];                  // 0x63d6
+    u8 pad_63d6[2];                    // 0x63d6
     GAMEOBJECT *boss;                  // 0x63d8
     f32 wave_timer;                    // 0x63dc
 

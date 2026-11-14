@@ -224,13 +224,13 @@ struct MENU_s {                     // size 0x2678
     f32 draw_z;                     // 0x009c
     f32 field_a0;                   // 0x00a0
     f32 centre_offset;              // 0x00a4
-    u8 filler_a8[4];                // 0x00a8
+    u8 pad_a8[4];                   // 0x00a8
     i32 paused;                     // 0x00ac
     i32 field_b0;                   // 0x00b0
     i32 field_b4;                   // 0x00b4
     i32 field_b8;                   // 0x00b8
     i32 field_bc;                   // 0x00bc
-    i32 field_c0;                   // 0x00c0
+    i32 unknown_c0;                 // 0x00c0
     f32 *item_offsets;              // 0x00c4
     f32 item_offset_scale;          // 0x00c8
     f32 field_cc;                   // 0x00cc
@@ -247,7 +247,7 @@ struct MENU_s {                     // size 0x2678
     u8 move_down;                   // 0x00ef
     u8 close_requested;             // 0x00f0
     u8 input_activity;              // 0x00f1
-    u8 filler_f2[2];                // 0x00f2
+    u8 pad_f2[2];                   // 0x00f2
     f32 horizontal_scroll_distance; // 0x00f4
     f32 item_x[400];                // 0x00f8
     f32 item_y[400];                // 0x0738

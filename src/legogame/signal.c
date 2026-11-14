@@ -403,8 +403,8 @@ void Signal_MoveCode(WORLDINFO *world, GAMEOBJECT *object) {
         f32 *animation_time = NULL;
         i32 exchange;
         f32 elapsed;
-        if (object->character_model->action_animations[object->field_7aa] != NULL) {
-            animation_time = AnimPlaying(&object->anim_packet, object->field_7aa, 1, 0);
+        if (object->character_model->action_animations[object->unknown_7aa] != NULL) {
+            animation_time = AnimPlaying(&object->anim_packet, object->unknown_7aa, 1, 0);
             if (animation_time == NULL) {
                 return;
             }
@@ -423,7 +423,7 @@ void Signal_MoveCode(WORLDINFO *world, GAMEOBJECT *object) {
                 return;
             }
             if (animation_time != NULL) {
-                f32 frame = AnimListFrame(object->character_model, object->field_7aa, 0);
+                f32 frame = AnimListFrame(object->character_model, object->unknown_7aa, 0);
                 if (frame >= 1.0f && *animation_time >= frame) {
                     exchange = 1;
                 }
@@ -459,7 +459,7 @@ void Signal_MoveCode(WORLDINFO *world, GAMEOBJECT *object) {
         }
         return;
     }
-    if (object->field_281 != 0 || object->character_context == 0x1f || object->character_context == 0x2b ||
+    if (object->unknown_281 != 0 || object->character_context == 0x1f || object->character_context == 0x2b ||
         object->character_context == 0x4b || (object->flags_1fc_word & 0x80) == 0 ||
         (U64_PAIR(&CInfo[object->character_context].flags) & 0x800) != 0) {
         return;
@@ -471,7 +471,7 @@ void Signal_MoveCode(WORLDINFO *world, GAMEOBJECT *object) {
             object->context_timer = 0.0f;
             object->character_context = 0x4c;
             object->grapple = signal;
-            object->field_7aa = 0x96;
+            object->unknown_7aa = 0x96;
             object->context_duration = AnimDuration((i16)object->id, 0x96, 0.0f, 0.0f, 1);
             if (object->context_duration <= 0.0f) {
                 object->context_duration = 1.0f;
@@ -490,8 +490,8 @@ void SuitBlowupCode(WORLDINFO *world, GAMEOBJECT *object) {
     i32 index;
     f32 remaining;
     if (object->character_context == 0x54) {
-        if (object->character_model->model_data_b[object->field_7aa] != NULL &&
-            AnimPlaying(&object->anim_packet, object->field_7aa, 1, 0) == NULL) {
+        if (object->character_model->model_data_b[object->unknown_7aa] != NULL &&
+            AnimPlaying(&object->anim_packet, object->unknown_7aa, 1, 0) == NULL) {
             return;
         }
         object->context_timer += FRAMETIME;
@@ -540,10 +540,10 @@ void SuitBlowupCode(WORLDINFO *world, GAMEOBJECT *object) {
             GizmoBlowupBlowup(candidates[qrand() / (65535 / count + 1)], 1, 6, 1, NULL, 1);
         }
     } else {
-        if (object->field_281 != 0 && ObjLandReady(object) != 0 && (object->pad->buttons_held & GAMEPAD_SPECIAL) != 0) {
+        if (object->unknown_281 != 0 && ObjLandReady(object) != 0 && (object->pad->buttons_held & GAMEPAD_SPECIAL) != 0) {
             object->character_context = 0x54;
             object->context_timer = 0.0f;
-            object->field_7aa = 0x9c;
+            object->unknown_7aa = 0x9c;
             object->context_duration = 0.3f;
         }
     }

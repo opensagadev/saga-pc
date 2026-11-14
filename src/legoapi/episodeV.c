@@ -28,7 +28,7 @@ typedef struct CLOUDCITY_LEVEL_FLAG_VIEW {
 
 extern i32 turret_gizmotype_id;
 void DrawMeleeTargetsNumber(i16 *targets, u8 *counts, i32 count, u8 reset, NUSPECIALHANDLE *special);
-#define FALCON_SLOT(object) ((i8)(object)->field_280)
+#define FALCON_SLOT(object) ((i8)(object)->unknown_280)
 
 /* Asteroid field. */
 typedef struct ASTEROID {
@@ -178,7 +178,7 @@ void ResetTrooperCannons(WORLDINFO *world, i32 trooper_id) {
                 ActivateCharacter(name, NULL, 0);
                 AddGameDebris(world->game_debris_sys, 0x5c, &troopercannons[index].object->collision_position);
                 trooper = AddDynamicCreature(trooper_id, &troopercannons[index].object->collision_position,
-                                             troopercannons[index].object->field_0x276, "CannonTrooper",
+                                             troopercannons[index].object->unknown_276, "CannonTrooper",
                                              &troopercannons[index].object->ai_packet.path_info, NULL, 0, NULL, NULL, 0, 0);
                 if (trooper != NULL) {
                     TakeOverGameObject(trooper, troopercannons[index].object, 0, 1);
@@ -304,7 +304,7 @@ void Asteroid_PartKill(PART_PC *part, i32 reason) {
     AddGameDebris(WORLD->game_debris_sys, 0x5e, &part->position);
     AddGameDebris(WORLD->game_debris_sys, 0x5f, &part->position);
     AddPartDebris(WORLD->part_debris_sys, 4, &part->position);
-    if (part->field_206 == 1) {
+    if (part->unknown_206 == 1) {
         i32 type;
         if (reason == 4) {
             type = 0;
@@ -362,7 +362,7 @@ void Asteroid_AddParts(GIZMOBLOWUP_PC *blowup) {
         params.field_a4 = (f32)(qrand() * PlayerRandomScale * NuTimeBarColumnStep + 7.0);
         part = AddPart(&params);
         if (part != NULL) {
-            part->field_206 = (index != 0) + 1;
+            part->unknown_206 = (index != 0) + 1;
         }
     }
 }
@@ -483,7 +483,8 @@ f32 spotLightB_zrot[2] = {0.5f, 0.5f};
 
 void DrawFalconSpotLights(GAMEOBJECT *object) {
     NUMTX matrix;
-    if ((object->field_280 != 0 && object->field_280 != 1) || (i16)object->id != dat_007f19a4 || WORLD->level_objects[0x127].active == 0) {
+    if ((object->unknown_280 != 0 && object->unknown_280 != 1) || (i16)object->id != dat_007f19a4 ||
+        WORLD->level_objects[0x127].active == 0) {
         return;
     }
     if (object->character_model->points_of_interest[4] != NULL) {
@@ -993,7 +994,7 @@ i32 TakeOverYodaSeekDistanceHack(GAMEOBJECT *object, GAMEOBJECT *luke, NUVEC *of
         (luke->flags_1fc_word & 0x80) == 0 || !((f64)NuVecDistSqr(&object->position, &luke->position, offset) < (f64)(0.7f * 0.7f))) {
         return 0;
     }
-    NuVecRotateY(offset, offset, -luke->field_0x276);
+    NuVecRotateY(offset, offset, -luke->unknown_276);
     return offset->z > 0.0f;
 }
 
@@ -1391,7 +1392,7 @@ i32 SpawnMeleeCreatureType(i32 type) {
     NUVEC offset;
     for (index = 0; index < melee.waves[type].active_count; ++index) {
         if (melee.waves[type].character_id != id_ATAT && melee.waves[type].creatures[index] != NULL &&
-            melee.waves[type].creatures[index]->field_f10 > 5.0f) {
+            melee.waves[type].creatures[index]->unknown_f10 > 5.0f) {
             KillGameObject(melee.waves[type].creatures[index], 4, 0);
             melee.waves[type].creatures[index] = NULL;
             --melee.waves[type].active_count;

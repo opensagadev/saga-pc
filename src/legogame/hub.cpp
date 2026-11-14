@@ -165,7 +165,7 @@ typedef struct hub_door_reader_s {
 extern void (*HubResetAIFn)(WORLDINFO *);
 struct GIZBUILDIT;
 #define HUB_PC_MENU_PLAYER(p, mode)                                                                                                        \
-    ((p) != NULL && ((p)->flags_1fc & 0x80) != 0 && (p)->field_281 != 0 &&                                                                 \
+    ((p) != NULL && ((p)->flags_1fc & 0x80) != 0 && (p)->unknown_281 != 0 &&                                                               \
      ((p)->character_context == -1 || (p)->character_context == 0x31 || (p)->character_context == 0x32) &&                                 \
      (p)->jump_animation_state == (mode))
 extern "C" i32 HubDrawMiniKitCharacter;
@@ -4057,7 +4057,7 @@ extern "C" {
                     AIPathNodeUpdatePos(system, path, node);
                 }
             }
-            if (owner->field_281 != 0 && owner->supporting_platform_id != -1 && CurrentTerrain != NULL) {
+            if (owner->unknown_281 != 0 && owner->supporting_platform_id != -1 && CurrentTerrain != NULL) {
                 instance = NuSpecialGetInstanceix(&owner->ai_packet.special_move_node->special_handle);
                 if (instance == ((AI_SPECIAL_TERRAIN_VIEW *)CurrentTerrain)->platforms[owner->supporting_platform_id].scene_object_index) {
                     skip_inside = 0;
@@ -4105,7 +4105,7 @@ extern "C" {
             if (destination->position.y > source->position.y) {
                 SetSpecialMove(owner, destination, source, 3);
             } else {
-                if (owner->field_281 && owner->position.y < source->min_height) {
+                if (owner->unknown_281 && owner->position.y < source->min_height) {
                     return 0;
                 }
                 SetSpecialMove(owner, destination, source, 4);
@@ -4211,11 +4211,11 @@ extern "C" {
                 packet->movement_stopping_distance = 0.0f;
             }
         } else {
-            if (owner->field_281 && owner->position.y < owner->special_move_source->min_height) {
+            if (owner->unknown_281 && owner->position.y < owner->special_move_source->min_height) {
                 ClearSpecialMove(owner);
                 return 0;
             }
-            if (owner->field_281) {
+            if (owner->unknown_281) {
                 owner->ai_packet.movement_destination = owner->ai_packet.special_move_node->position;
             } else {
                 owner->ai_packet.movement_destination.x = owner->indy_climb->impact_x;
@@ -4267,7 +4267,7 @@ extern "C" {
                 owner->ai_packet.movement_stopping_distance = 0;
                 SetSpecialMove(owner, destination, source, 7);
                 if (owner->field_1088) {
-                    owner->field_1087 = 50;
+                    owner->unknown_1087 = 50;
                     owner->field_1088 = 0;
                 }
                 return 1;
@@ -4348,12 +4348,12 @@ extern "C" {
             } else if (difference < -IndyGrappleHeightTolerance) {
                 owner->indy_guideline_state.movement_direction = 2;
             }
-            owner->field_1087 = 50;
+            owner->unknown_1087 = 50;
             return 1;
         }
-        if (owner->field_1087 != 0) {
-            --owner->field_1087;
-            if (owner->field_1087 == 0 || (owner->ai_packet.fallback_path_info.flags & 1)) {
+        if (owner->unknown_1087 != 0) {
+            --owner->unknown_1087;
+            if (owner->unknown_1087 == 0 || (owner->ai_packet.fallback_path_info.flags & 1)) {
                 ClearSpecialMove(owner);
                 return 0;
             }
@@ -4787,7 +4787,7 @@ extern "C" {
 
     i32 Indy_MidSpecialMove_WhipSwingPc(AISYS_PC *system, AIPACKET *packet, APIOBJECT *object) {
         GAMEOBJECT *owner = (GAMEOBJECT *)object->owner;
-        switch ((i8)owner->field_1087) {
+        switch ((i8)owner->unknown_1087) {
             case 0:
                 if (owner->character_context == 0x47) {
                     owner->ai_packet.movement_destination = owner->ai_packet.special_move_node->position;
@@ -4795,7 +4795,7 @@ extern "C" {
                     ((GAMEOBJECT *)object)->ai_collision_priority |= 0x4000;
                     return 1;
                 }
-                owner->field_1087 = 1;
+                owner->unknown_1087 = 1;
                 owner->special_move_timer = 1.0f;
             case 1:
                 owner->ai_packet.movement_destination = owner->ai_packet.special_move_node->position;
@@ -4870,7 +4870,7 @@ extern "C" {
             if (TryToTeleportToNextNode(owner, owner->ai_packet.special_move_node, 0) != 0) {
                 ClearSpecialMove(owner);
             } else {
-                callback = IndyMidSpecialMoveFns[(i8)owner->field_1086];
+                callback = IndyMidSpecialMoveFns[(i8)owner->unknown_1086];
                 if (callback != NULL) {
                     return callback(system, packet, apiobject);
                 }

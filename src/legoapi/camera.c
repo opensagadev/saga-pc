@@ -326,9 +326,9 @@ void GameCam_Reset(GAMECAMERA *camera) {
     MiniCutCam = 0;
     camera->position_seek = (f32)WORLD->current_level->cam_pos_seek;
     camera->angle_seek = (f32)WORLD->current_level->cam_angle_seek;
-    camera->field_1b8 = 0;
-    camera->field_1e8 = camera->field_1ec = 0.0f;
-    camera->field_1f0 = camera->field_1f4 = 0.0f;
+    camera->unknown_1b8 = 0;
+    camera->unknown_1e8 = camera->unknown_1ec = 0.0f;
+    camera->unknown_1f0 = camera->unknown_1f4 = 0.0f;
     camera->adjusted_yaw_offset = camera->field_214 = 0.0f;
     camera->field_210 = camera->field_20c = 0.0f;
     camera->field_208 = camera->field_204 = 0.0f;
@@ -439,7 +439,7 @@ i32 ObjInNarrowSock(GAMEOBJECT *object, SOCKSYS_PC *system, i32 level_index) {
     if (disable_narrow_socks != 0) {
         return 0;
     }
-    if (object->field_280 != 0xff) {
+    if (object->unknown_280 != 0xff) {
         if ((object->flags_1fc_word & 0x80) != 0) {
             if (object == Player[0]) {
                 other = Player[1];

@@ -140,7 +140,7 @@ extern "C" {
     void NuSound3SetLoopHoldTime(f32 time);
     void NuSound3FlushLoops(void);
     void NuSound3StopRumble(void);
-    void NuSound3SetRumblePads(void *pad0, void *pad1);
+    void NuSound3SetRumblePads(void *pad_0, void *pad1);
     void NuSound3StopStereoStream(i32 index);
     void NuSound3PauseStereoStream(i32 index);
     void NuSound3ResumeStereoStream(i32 index);

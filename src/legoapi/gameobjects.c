@@ -101,7 +101,7 @@ GAMEOBJECT *AddGameObject(void) {
         object->layer_mask = 1;
         object->floor_height = 2000000.0f;
         object->roof_surface_id = 0xff;
-        object->field_283 = -1;
+        object->unknown_283 = -1;
         object->jump_animation_state = 0xff;
         RecomputeHighGameObject();
         ((APIOBJECT *)object)->owner = object;
@@ -126,7 +126,7 @@ void RemoveGameObject(GAMEOBJECT *object, i32 unused) {
         // Shifts through __allshl, which yields 0 for groups >= 64.
         U64_PAIR(other->collision_contact_mask) &= ~U64_PAIR(object->collision_identity_mask);
         U64_PAIR(other->hostility_mask) &= ~((u64)1 << object->hostility_group);
-        U64_PAIR(&other->field_eb0) &= ~((u64)1 << object->hostility_group);
+        U64_PAIR(&other->unknown_eb0) &= ~((u64)1 << object->hostility_group);
         U64_PAIR(other->ai_opponent_exclusion_mask) &= ~((u64)1 << object->hostility_group);
     }
     if (object->pad != NULL) {
@@ -247,15 +247,15 @@ GAMEOBJECT *FindNearestGameObject(NUVEC *position, GAMEOBJECT *exclude, u32 requ
         }
         if (player_index >= 0) {
             if (player_index < 2) {
-                if (((i8)object->field_280) != player_index) {
+                if (((i8)object->unknown_280) != player_index) {
                     continue;
                 }
             } else if (player_index == 99) {
-                if (((i8)object->field_280) == -1) {
+                if (((i8)object->unknown_280) == -1) {
                     continue;
                 }
             } else if (player_index == 100) {
-                if (((i8)object->field_280) != -1) {
+                if (((i8)object->unknown_280) != -1) {
                     continue;
                 }
             }
@@ -428,7 +428,7 @@ void PortalGameObject(GAMEOBJECT *object, i32 enabled, i32 update_room, i16 room
 
 void SnapCreaturePos(GAMEOBJECT *object, NUVEC *position, i32 angle, AIPATHINFO *path_info, i32 set_on_surface) {
     object->position = *position;
-    object->field_0x276 = (u16)angle;
+    object->unknown_276 = (u16)angle;
     object->facing_angle = (u16)angle;
     object->movement_facing_angle = (u16)angle;
     object->collision_position = object->position;
@@ -470,7 +470,7 @@ void UpdateLastSafePosition(GAMEOBJECT *object) {
                 : object;
         surface = terrain_object->jump_animation_state;
         if ((surface != -1 && (TerSurface[surface].flags & 0xc041) != 0) ||
-            ((layer = terrain_object->field_283) != -1 && ((TerLayer[layer].flags & 1) != 0 || layer == 9))) {
+            ((layer = terrain_object->unknown_283) != -1 && ((TerLayer[layer].flags & 1) != 0 || layer == 9))) {
             unsafe = 1;
             if (VehicleArea && BonusArea && terrain_object->character_data->game_character->field_028 > 0.0f) {
                 unsafe = 0;
@@ -486,7 +486,7 @@ void UpdateLastSafePosition(GAMEOBJECT *object) {
             if ((U64_PAIR(&CInfo[context].flags) & 0x800000000ULL) != 0) {
                 break;
             }
-            if (object->field_281 == 0 &&
+            if (object->unknown_281 == 0 &&
                 (context == -1 || (context != LEGOCONTEXT_BEENTAKENOVER && context != LEGOCONTEXT_EATEN && context != LEGOCONTEXT_GETIN)) &&
                 !VehicleArea) {
                 model_flags = object->character_data->model_flags;
@@ -520,7 +520,7 @@ void UpdateLastSafePosition(GAMEOBJECT *object) {
                 object->respawn_position = object->last_safe_position;
                 object->flags_1fc_word |= 0x2000;
             }
-            if ((object->field_280 == 0 || object->field_280 == 1) && object->field_da8 <= 0.0f &&
+            if ((object->unknown_280 == 0 || object->unknown_280 == 1) && object->unknown_da8 <= 0.0f &&
                 GameCam->blend_time >= GameCam->blend_duration && object->sock_index != 0xff) {
                 if (object->takeover_owner != NULL && (LEGOCONTEXT_GETIN == -1 || object->character_context != LEGOCONTEXT_GETIN) &&
                     (LEGOCONTEXT_BEENTAKENOVER == -1 || object->character_context != LEGOCONTEXT_BEENTAKENOVER)) {
@@ -530,7 +530,7 @@ void UpdateLastSafePosition(GAMEOBJECT *object) {
             }
             goto safe_position_done;
         } while (0);
-        if ((object->flags_1fc & 0x80) != 0 && (layer = object->field_283) != -1 && (TerLayer[layer].flags & 1) != 0 &&
+        if ((object->flags_1fc & 0x80) != 0 && (layer = object->unknown_283) != -1 && (TerLayer[layer].flags & 1) != 0 &&
             !NoLayerKill(object)) {
             if (object->fall_recovery_timer <= 0.0f) {
                 object->fall_hover_height = object->position.y;
@@ -559,7 +559,7 @@ safe_position_done:
 
 void GameObjectSetCanUse(GAMEOBJECT *object, void *target, u8 action, u8 unused, f32 parameter) {
     object->can_use_object = target;
-    object->field_f00 = action;
+    object->unknown_f00 = action;
     object->use_action_frames = grapple_attach_frames;
     object->use_action_parameter = parameter;
 }
@@ -587,7 +587,7 @@ typedef struct OPPONENT_PACKET_PC {      // size 0x1ec
 typedef struct OPPONENT_OBJECT_PC { // size 0x2b0
     u8 unknown000[0x230];           // 0x000
     f32 view_distance;              // 0x230
-    u8 unknown234[0xc];             // 0x234
+    u8 unknown_234[0xc];            // 0x234
     f32 visibility_range_extension; // 0x240
     u8 unknown244[0x64];            // 0x244
     u64 awareness;                  // 0x2a8

@@ -52,10 +52,10 @@ typedef struct debris_info_s {   // size 0x428
 
     f32 gravity;                              // 0x0a0
     f32 particle_lifetime;                    // 0x0a4
-    i16 field_0a8;                            // 0x0a8
-    i8 field_0aa;                             // 0x0aa
-    i8 field_0ab;                             // 0x0ab
-    f32 field_0ac;                            // 0x0ac
+    i16 unknown_0a8;                          // 0x0a8
+    i8 unknown_0aa;                           // 0x0aa
+    i8 unknown_0ab;                           // 0x0ab
+    f32 unknown_0ac;                          // 0x0ac
     f32 jib_x_frequency;                      // 0x0b0
     f32 jib_x_amplitude;                      // 0x0b4
     f32 jib_y_frequency;                      // 0x0b8

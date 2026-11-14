@@ -20,7 +20,7 @@ void CharPivot_Check(GAMEOBJECT *object, NUVEC *velocity) {
     NUVEC offset;
     NUVEC previous_point;
 
-    if (object->field_0x276 == object->previous_movement_angle || CharPivot == NULL) {
+    if (object->unknown_276 == object->previous_movement_angle || CharPivot == NULL) {
         return;
     }
     for (pivot = CharPivot; pivot->name != NULL; ++pivot) {
@@ -34,13 +34,13 @@ void CharPivot_Check(GAMEOBJECT *object, NUVEC *velocity) {
             }
         }
         if (pivot->point_of_interest == -1) {
-            object->field_0x276 = object->previous_movement_angle;
+            object->unknown_276 = object->previous_movement_angle;
             object->movement_facing_angle = object->previous_movement_angle;
             object->facing_angle = object->previous_movement_angle;
         } else {
             model = object->character_model;
             if (model->points_of_interest[pivot->point_of_interest] != NULL) {
-                rotation = RotDiff(object->previous_movement_angle, object->field_0x276);
+                rotation = RotDiff(object->previous_movement_angle, object->unknown_276);
                 point = *(NUVEC *)&object->locator_matrices[pivot->point_of_interest].m30;
                 NuVecSub(&offset, &point, &object->position);
                 NuVecRotateY(&previous_point, &offset, -rotation);

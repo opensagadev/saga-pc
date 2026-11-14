@@ -191,7 +191,7 @@ void cbPtlSelTextureType(eduimenu_s *menu, eduiitem_s *item, u32 unused2) {
                 AddDebrisEffect(&edpp_ptls[index].instance_id, edpp_ptls[index].effect_index, edpp_ptls[index].position.x,
                                 edpp_ptls[index].position.y, edpp_ptls[index].position.z);
                 if (edpp_ptls[index].instance_id != -1) {
-                    debkeydata[edpp_ptls[index].instance_id].field_2f9 = 0;
+                    debkeydata[edpp_ptls[index].instance_id].unknown_2f9 = 0;
                     DebrisOrientation(edpp_ptls[index].instance_id, edpp_ptls[index].rotation_z, edpp_ptls[index].rotation_y);
                     DebrisEmitterOrientation(edpp_ptls[index].instance_id, edpp_ptls[index].emitter_rotation_z,
                                              edpp_ptls[index].emitter_rotation_y, edpp_ptls[index].emitter_rotation_x);

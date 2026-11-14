@@ -92,7 +92,7 @@ static void cbChangeNameMenu(eduimenu_s *menu, eduiitem_s *unused1, u32 unused2)
 
 static __inline void edppDebrisStatusNormal(i32 *handle) {
     if (*handle != -1) {
-        debkeydata[*handle].field_2f4 = 1;
+        debkeydata[*handle].unknown_2f4 = 1;
     }
 }
 
@@ -187,7 +187,7 @@ void edppStartSingleEffect(i32 index) {
     if (edpp_ptls[index].instance_id == -1) {
         return;
     }
-    debkeydata[edpp_ptls[index].instance_id].field_2f9 = 0;
+    debkeydata[edpp_ptls[index].instance_id].unknown_2f9 = 0;
     DebrisOrientation(edpp_ptls[index].instance_id, edpp_ptls[index].rotation_z, edpp_ptls[index].rotation_y);
     DebrisEmitterOrientation(edpp_ptls[index].instance_id, edpp_ptls[index].emitter_rotation_z, edpp_ptls[index].emitter_rotation_y,
                              edpp_ptls[index].emitter_rotation_x);
@@ -1272,7 +1272,7 @@ static __inline void edppDebrisSetPriority(i32 handle, u16 priority, u8 automati
 }
 
 static __inline void edppDebrisClearRoomID(i32 handle) {
-    debkeydata[handle].field_2f2 = -1;
+    debkeydata[handle].unknown_2f2 = -1;
     debkeydata[handle].gscene = NULL;
 }
 
@@ -1308,7 +1308,7 @@ i32 edppPtlCreate(NUVEC *position, i32 effect_index) {
     }
     AddDebrisEffect(&edpp_ptls[index].instance_id, effect_index, position->x, position->y, position->z);
     if (edpp_ptls[index].instance_id != -1) {
-        debkeydata[edpp_ptls[index].instance_id].field_2f9 = 0;
+        debkeydata[edpp_ptls[index].instance_id].unknown_2f9 = 0;
         edpp_ptls[index].reflection_offset = 0.0f;
         edpp_ptls[index].render_group = 0;
         edpp_ptls[index].reflection_bounce = 0.9f;
@@ -1374,7 +1374,7 @@ i32 edppPtlCreateCopy(NUVEC *position, i32 source_index) {
     }
     AddDebrisEffect(&edpp_ptls[index].instance_id, edpp_ptls[source_index].effect_index, position->x, position->y, position->z);
     if (edpp_ptls[index].instance_id != -1) {
-        debkeydata[edpp_ptls[index].instance_id].field_2f9 = 0;
+        debkeydata[edpp_ptls[index].instance_id].unknown_2f9 = 0;
         edpp_ptls[index].render_group = edpp_ptls[source_index].render_group;
         edpp_ptls[index].page = edpp_ptls[source_index].page;
         edpp_ptls[index].reflection_offset = edpp_ptls[source_index].reflection_offset;
@@ -1787,10 +1787,10 @@ i32 edppSaveEffects(char *filename, u8 page) {
             EdFileWriteFloat(effecttypes[index].unknown_070[11]);
             EdFileWriteFloat(effecttypes[index].gravity);
             EdFileWriteFloat(effecttypes[index].particle_lifetime);
-            EdFileWriteShort(effecttypes[index].field_0a8);
-            EdFileWriteChar(effecttypes[index].field_0aa);
-            EdFileWriteChar(effecttypes[index].field_0ab);
-            EdFileWriteFloat(effecttypes[index].field_0ac);
+            EdFileWriteShort(effecttypes[index].unknown_0a8);
+            EdFileWriteChar(effecttypes[index].unknown_0aa);
+            EdFileWriteChar(effecttypes[index].unknown_0ab);
+            EdFileWriteFloat(effecttypes[index].unknown_0ac);
             EdFileWriteFloat(effecttypes[index].jib_x_frequency);
             EdFileWriteFloat(effecttypes[index].jib_x_amplitude);
             EdFileWriteFloat(effecttypes[index].jib_y_frequency);
@@ -2117,7 +2117,7 @@ void edppRestartAllEffectsInLevel(void) {
         AddDebrisEffect(&edpp_ptls[index].instance_id, edpp_ptls[index].effect_index, edpp_ptls[index].position.x,
                         edpp_ptls[index].position.y, edpp_ptls[index].position.z);
         if (edpp_ptls[index].instance_id != -1) {
-            debkeydata[edpp_ptls[index].instance_id].field_2f9 = 0;
+            debkeydata[edpp_ptls[index].instance_id].unknown_2f9 = 0;
             DebrisOrientation(edpp_ptls[index].instance_id, edpp_ptls[index].rotation_z, edpp_ptls[index].rotation_y);
             DebrisEmitterOrientation(edpp_ptls[index].instance_id, edpp_ptls[index].emitter_rotation_z, edpp_ptls[index].emitter_rotation_y,
                                      edpp_ptls[index].emitter_rotation_x);
@@ -4243,7 +4243,7 @@ i32 edppPtlChangeType(i32 index, i32 effect_index) {
         AddDebrisEffect(&edpp_ptls[index].instance_id, effect_index, edpp_ptls[index].position.x, edpp_ptls[index].position.y,
                         edpp_ptls[index].position.z);
         if (edpp_ptls[index].instance_id != -1) {
-            debkeydata[edpp_ptls[index].instance_id].field_2f9 = 0;
+            debkeydata[edpp_ptls[index].instance_id].unknown_2f9 = 0;
         }
         edpp_ptls[index].effect_index = effect_index;
     }

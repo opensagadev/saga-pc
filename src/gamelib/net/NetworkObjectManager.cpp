@@ -266,7 +266,7 @@ void NetworkObjectManager::NetPeerPush::SetNextObject(i32 index) {
 }
 
 i32 TTNetwork::fun_00611dc0() const {
-    return field_2148;
+    return unknown_2148;
 }
 
 i32 NuNetEmu::fun_00611dd0() const {

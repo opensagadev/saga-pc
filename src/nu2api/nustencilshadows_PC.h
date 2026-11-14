@@ -531,7 +531,7 @@ extern "C" {
         u8 fields_008[12];                    // 0x008
         u32 field_014;                        // 0x014
         u32 field_018;                        // 0x018
-        u32 field_01c;                        // 0x01c
+        u32 unknown_01c;                      // 0x01c
         DEBRISPARTICLE_PC particles[32];      // 0x020
         u32 end_command;                      // 0x420
     };

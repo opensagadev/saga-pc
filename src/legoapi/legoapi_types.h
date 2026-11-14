@@ -137,7 +137,7 @@ typedef struct TerrainQuery_s {     // size 0x948
     f32 inverse_object_scale;       // 0x064
     f32 inverse_object_scale_sq;    // 0x068
     i16 terrain_group_index;        // 0x06c
-    u8 pad_0x06e[2];                // 0x06e
+    u8 pad_06e[2];                  // 0x06e
     NUVEC local_start;              // 0x070
     NUVEC local_end;                // 0x07c
     u8 hit_type;                    // 0x088
@@ -155,9 +155,9 @@ typedef struct TerrainQuery_s {     // size 0x948
     NUVEC platform_position;        // 0x0c0
     NUVEC platform_normal;          // 0x0cc
     NUVEC previous_movement_normal; // 0x0d8
-    u8 pad_0x0e4[0x18];             // 0x0e4
+    u8 pad_0e4[0x18];               // 0x0e4
     NUVEC transformed_vertices[4];  // 0x0fc
-    u8 pad_0x12c[0x1c];             // 0x12c
+    u8 pad_12c[0x1c];               // 0x12c
 
     union { // size 0x800
         u8 scan_list_storage[0x800];
@@ -235,7 +235,7 @@ typedef struct part_emit_s {     // size 0x6c
     u8 field_3f;                 // 0x3f
     f32 camera_distance;         // 0x40
     i16 field_44;                // 0x44
-    i16 field_46;                // 0x46
+    i16 unknown_46;              // 0x46
     i32 instance_id;             // 0x48
     i32 trailing_state_words[8]; // 0x4c
 } PART_EMIT_PC;
@@ -705,7 +705,7 @@ typedef struct gamecamera_s { // size 0x230
     NUVEC shake_offset;               // 0x194
     NUVEC shake_direction;            // 0x1a0
     NUVEC shake_target;               // 0x1ac
-    i32 field_1b8;                    // 0x1b8
+    i32 unknown_1b8;                  // 0x1b8
     f32 blend_time;                   // 0x1bc
     f32 blend_duration;               // 0x1c0
     f32 blend_curve;                  // 0x1c4
@@ -717,10 +717,10 @@ typedef struct gamecamera_s { // size 0x230
     f32 shake_freq;                   // 0x1dc
     f32 position_seek;                // 0x1e0
     f32 angle_seek;                   // 0x1e4
-    f32 field_1e8;                    // 0x1e8
-    f32 field_1ec;                    // 0x1ec
-    f32 field_1f0;                    // 0x1f0
-    f32 field_1f4;                    // 0x1f4
+    f32 unknown_1e8;                  // 0x1e8
+    f32 unknown_1ec;                  // 0x1ec
+    f32 unknown_1f0;                  // 0x1f0
+    f32 unknown_1f4;                  // 0x1f4
     i32 pitch;                        // 0x1f8
 
     union { // size 0x4
@@ -817,9 +817,9 @@ struct GIZBUILDITANIMDATA_s { // size 0xc8
     NUMTX draw_mtx;           // 0x80
     f32 wobble_time;          // 0xc0
     u8 wobble_axis;           // 0xc4
-    u8 padding_0xc5;          // 0xc5
+    u8 pad_c5;                // 0xc5
     u8 was_drawn;             // 0xc6
-    u8 padding_0xc7;          // 0xc7
+    u8 pad_c7;                // 0xc7
 };
 
 #undef SAGA_LEGOAPI_LEGOAPI_TYPES_H_PART
@@ -962,7 +962,7 @@ extern "C" {
 struct AITRIGGERSET_s { // size 0x214
 
     union { // size 0x204
-        u8 pad_0x000[516];
+        u8 pad_000[516];
 
         struct { // size 0x204
 
@@ -1011,8 +1011,8 @@ struct AITRIGGERSET_s { // size 0x214
 
 struct AITRIGGERSETSYS_s {          // size 0x4304
     struct AITRIGGERSET_s sets[32]; // 0x0000
-    i8 field_0x4280[64];            // 0x4280
-    i8 field_0x42c0[64];            // 0x42c0
+    i8 unknown_4280[64];            // 0x4280
+    i8 unknown_42c0[64];            // 0x42c0
     i32 field_0x4300;               // 0x4300
 };
 
@@ -1046,9 +1046,9 @@ struct AIPATHCNXCONTROLLER_s {    // size 0xa8
     union { // size 0x2
         u16 flags_word;
 
-        struct {             // size 0x2
-            u8 flags;        // 0xa6
-            u8 padding_0xa7; // 0xa7
+        struct {       // size 0x2
+            u8 flags;  // 0xa6
+            u8 pad_a7; // 0xa7
         };
     }; // 0xa6
 };
@@ -1185,7 +1185,7 @@ typedef struct bolt_s {         // size 0x138
     u8 field_102;                // 0x102
     u8 index;                    // 0x103
     i8 field_104;                // 0x104
-    i8 field_105;                // 0x105
+    i8 unknown_105;              // 0x105
     u16 unknown_106;             // 0x106
     NUVEC bounds_min;            // 0x108
     NUVEC bounds_max;            // 0x114
@@ -1259,7 +1259,7 @@ struct LEVER_s {                             // size 0xa8
     }; // 0x9c
 
     char model_variant; // 0x9e
-    u8 field_0x9f[9];   // 0x9f
+    u8 unknown_9f[9];   // 0x9f
 };
 
 struct GIZPANELSYS_s {         // size 0x8
@@ -1798,7 +1798,7 @@ struct STATUSPACKET_s {                                                         
     f32 player1_rumble_duration;                                                             // 0x040
     f32 player1_buzz_amount;                                                                 // 0x044
     u8 player1_rumble_priority;                                                              // 0x048
-    u8 field_0x49[3];                                                                        // 0x049
+    u8 unknown_49[3];                                                                        // 0x049
     f32 area_time;                                                                           // 0x04c
     f32 collected_score;                                                                     // 0x050
     f32 true_hero_target;                                                                    // 0x054
@@ -1821,7 +1821,7 @@ struct STATUSPACKET_s {                                                         
     u16 player1_model;                                                                       // 0x09e
     i16 area_id;                                                                             // 0x0a0
     i8 episode_id;                                                                           // 0x0a2
-    u8 field_0xa3;                                                                           // 0x0a3
+    u8 unknown_a3;                                                                           // 0x0a3
 
     union { // size 0x2
         u8 player_active[2];
@@ -1891,7 +1891,7 @@ struct STATUSPACKET_s {                                                         
     u8 gold_brick_enabled[40];               // 0x0f0
     i16 next_area;                           // 0x118
     i8 chapter;                              // 0x11a
-    u8 field_0x119[1];                       // 0x11b
+    u8 unknown_119[1];                       // 0x11b
     struct STATUS_STAGE_s *previous_stage_2; // 0x11c
     struct STATUS_STAGE_s *previous_stage;   // 0x120
     struct STATUS_STAGE_s *stage;            // 0x124
@@ -1906,7 +1906,7 @@ struct STATUS_STAGE_s {                                                         
     i32 type;                                                                                    // 0x0c
     u16 field_0x10;                                                                              // 0x10
     u8 field_0x12;                                                                               // 0x12
-    u8 pad_0x13;                                                                                 // 0x13
+    u8 pad_13;                                                                                   // 0x13
     i32 field_0x14;                                                                              // 0x14
     f32 field_0x18;                                                                              // 0x18
     f32 field_0x1c;                                                                              // 0x1c
@@ -1973,9 +1973,9 @@ struct GIZTURRET_s {                          // size 0x13c
     u8 muzzle_count;     // 0x130
     u8 shots_required;   // 0x131
     u8 shots_fired;      // 0x132
-    u8 field_0x133;      // 0x133
+    u8 unknown_133;      // 0x133
     u16 y_rotation;      // 0x134
-    u8 field_0x136[2];   // 0x136
+    u8 unknown_136[2];   // 0x136
     i16 destroy_sfx;     // 0x138
 
     union { // size 0x2
@@ -2005,7 +2005,7 @@ struct GIZFORCEGROUP_s {          // size 0x28
     u8 field_0x24;                // 0x24
     u8 count;                     // 0x25
     u8 configured_count;          // 0x26
-    u8 field_0x27;                // 0x27
+    u8 unknown_27;                // 0x27
 };
 
 struct GIZFORCESYS_s {                   // size 0x158
@@ -2250,26 +2250,26 @@ struct GIZSPINNER_s {                       // size 0x304
     u8 state;                       // 0x08a
     u8 type;                        // 0x08b
     u16 field_0x08c;                // 0x08c
-    u8 field_0x08e[2];              // 0x08e
+    u8 unknown_08e[2];              // 0x08e
     f32 spin_timer;                 // 0x090
     f32 field_0x094;                // 0x094
     f32 field_0x098;                // 0x098
     f32 field_0x09c;                // 0x09c
     f32 ground_height;              // 0x0a0
     u8 output_count;                // 0x0a4
-    u8 field_0x0a5[7];              // 0x0a5
+    u8 unknown_0a5[7];              // 0x0a5
     u8 flags;                       // 0x0ac
-    u8 field_0x0ad;                 // 0x0ad
+    u8 unknown_0ad;                 // 0x0ad
     i16 platform_id;                // 0x0ae
     u8 field_0x0b0[4];              // 0x0b0
     struct GIZSPINNERARM_s arms[8]; // 0x0b4
 
     union { // size 0x4
-        u8 field_0x2d4[4];
+        u8 unknown_2d4[4];
         f32 output_pause_time;
     }; // 0x2d4
 
-    f32 field_0x2d8;                  // 0x2d8
+    f32 unknown_2d8;                  // 0x2d8
     f32 animation_points[9];          // 0x2dc
     struct GAMEANTINODE_s *anti_node; // 0x300
 };
@@ -2347,7 +2347,7 @@ extern "C" {
         i16 effect_index;                               // 0x1c
         i16 field_01e;                                  // 0x1e
         i16 rotation_y;                                 // 0x20
-        i16 field_022;                                  // 0x22
+        i16 unknown_022;                                // 0x22
         f32 collision_plane;                            // 0x24
         f32 restitution;                                // 0x28
     } DEBRIS_CHUNK_CONTROL_PC;
@@ -2873,12 +2873,12 @@ class TTNetwork : public NetTransporter, public BaseThing { // size 0x110f4
 
     NetLogFile log;                    // 0x00020
     u32 frame_count;                   // 0x02134
-    i32 field_2138;                    // 0x02138
-    i32 field_213c;                    // 0x0213c
+    i32 unknown_2138;                  // 0x02138
+    i32 unknown_213c;                  // 0x0213c
     i32 state;                         // 0x02140
-    i32 field_2144;                    // 0x02144
-    i32 field_2148;                    // 0x02148
-    i32 field_214c;                    // 0x0214c
+    i32 unknown_2144;                  // 0x02144
+    i32 unknown_2148;                  // 0x02148
+    i32 unknown_214c;                  // 0x0214c
     i32 display_page;                  // 0x02150
     f32 display_x;                     // 0x02154
     f32 display_y;                     // 0x02158

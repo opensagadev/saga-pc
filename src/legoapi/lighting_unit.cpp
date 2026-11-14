@@ -19,7 +19,7 @@ typedef struct OBJECT_LIGHT_STATE_GAME {
 typedef struct GAME_LIGHT_VIEW {
     u8 unknown000[0x285];
     i8 floor_surface;
-    u8 unknown286[0x4d8 - 0x286];
+    u8 unknown_286[0x4d8 - 0x286];
     RTL_DATA light_data;
     OBJECT_LIGHT_STATE_GAME lighting_state;
 } GAME_LIGHT_VIEW;
@@ -43,16 +43,16 @@ typedef struct BURN_SET {
     i32 field_b4;
     f32 field_b8;
     f32 field_bc;
-    f32 field_c0;
+    f32 unknown_c0;
     f32 field_c4;
-    f32 field_c8;
+    f32 unknown_c8;
     f32 field_cc;
     BURN_OUT burnouts[32];
     i32 active_count;
     i32 selected_index;
     f32 field_558;
-    f32 field_55c;
-    i32 field_560;
+    f32 unknown_55c;
+    i32 unknown_560;
 } BURN_SET;
 
 typedef struct LIGHTING_LOAD_WORLD {
@@ -443,7 +443,7 @@ extern "C" {
             blue = (f32)(((f64)Lighting_RedFlashBlue - 1.0) * flash + 1.0);
         } else if (Lighting_HighlightFlash != 0 && (owner->flags_1fc_word & 0x80) && owner->hud_icon_timer > 0.0f &&
                    (owner->hud_icon_timer >= 2.0f || (f64)NuFmod(owner->hud_icon_timer, 0.4f) >= (f64)0.2f)) {
-            if (owner->field_280 == 1) {
+            if (owner->unknown_280 == 1) {
                 red = 1.7f;
                 green = 2.0f;
                 blue = 1.4f;
@@ -469,15 +469,15 @@ extern "C" {
         } else if (owner->arrow_blend > 0.0f) {
             i32 angle = (i32)((f64)NuFmod(GameTimer.time_elapsed_mod_seconds, 0.5f) * 2.0 * 65536.0);
             red = green = blue = (f32)(NuTrigTable[((u32)(angle >> 1)) & 0x7fff] * ((f64)owner->arrow_blend * 0.5) + 1.0);
-        } else if (Lighting_FlashRedOnLastHeart != 0 && (owner->flags_1fc_word & 0x80) && owner->current_hp == 1 && owner->field_107e > 1 &&
-                   owner->vehicle_hit_timer < -0.5f) {
+        } else if (Lighting_FlashRedOnLastHeart != 0 && (owner->flags_1fc_word & 0x80) && owner->current_hp == 1 &&
+                   owner->unknown_107e > 1 && owner->vehicle_hit_timer < -0.5f) {
             // MATCH-EXCEPTION: the original negates the (negative) timer and subtracts it rather than adding.
             i32 angle = (i32)((1.0 - (-owner->vehicle_hit_timer)) * 2.0 * 65536.0 + 16384.0);
             f32 flash = (f32)((1.0 - NuTrigTable[((u32)(angle >> 1)) & 0x7fff]) * 0.5 * (f64)0.333f);
             red = (f32)(((f64)Lighting_RedFlashRed - 1.0) * flash + 1.0);
             green = (f32)(((f64)Lighting_RedFlashGreen - 1.0) * flash + 1.0);
             blue = (f32)(((f64)Lighting_RedFlashBlue - 1.0) * flash + 1.0);
-        } else if (owner->spawn_protection_timer > 0.0f && owner->field_280 != 0xff) {
+        } else if (owner->spawn_protection_timer > 0.0f && owner->unknown_280 != 0xff) {
             u16 angle = (u16)(i32)((f64)NuFmod((f32)(2.5 - owner->spawn_protection_timer), 0.5f) * 2.0 * 65536.0);
             red = green = blue = NuTrigTable[angle >> 1] + 1.0f;
         }

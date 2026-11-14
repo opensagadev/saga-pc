@@ -1099,7 +1099,7 @@ i32 GizForces_BoltHitPlatPc(WORLDINFO *world, void *system_pointer, BOLT_PC *bol
             while (animation != NULL) {
                 if (((GIZFORCEANIMDATA_s *)animation->object_data)->platform_id == bolt->hit_platform) {
                     (void)BoltType_FindByID(bolt->type_id, world);
-                    GizForces_BoltHitPlat(force, world, bolt->owner != NULL ? (i8)((GAMEOBJECT *)bolt->owner)->field_280 : -1);
+                    GizForces_BoltHitPlat(force, world, bolt->owner != NULL ? (i8)((GAMEOBJECT *)bolt->owner)->unknown_280 : -1);
                     return 1;
                 }
                 animation = animation->next;
@@ -1276,7 +1276,7 @@ i32 GizForces_BoltHit(WORLDINFO *world, void *system_pointer, GAMEOBJECT *object
             (void)Player_HasDoubleBoltDamage_FromBolt(bolt);
         }
         (void)BoltType_FindByID(bolt->type_id, world);
-        player_index = bolt->owner != NULL ? (i8)((GAMEOBJECT *)bolt->owner)->field_280 : -1;
+        player_index = bolt->owner != NULL ? (i8)((GAMEOBJECT *)bolt->owner)->unknown_280 : -1;
         if (GizForces_BoltHitPlat(best, world, player_index) != 0) {
             if (object != NULL) {
                 NewRumble(object->pad->bound_pad, 0.4f, 0);

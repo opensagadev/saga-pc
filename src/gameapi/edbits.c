@@ -469,7 +469,7 @@ void edgraCalculatePage(i8 page, i32 calculate_vectors) {
         }
         height_offset = GrassClumps[clump_index].field_44;
         terrain_enabled = (i8)GrassClumps[clump_index].field_42;
-        slope_enabled = (i8)GrassClumps[clump_index].field_43;
+        slope_enabled = (i8)GrassClumps[clump_index].unknown_43;
         if (GrassClumps[clump_index].kind == 1) {
             slope_enabled = 0;
         }

@@ -817,7 +817,7 @@ void SoundStopMusic(void) {
         Music.pause_requested = 0;
         Music.resume_frames = 0;
         Music.field_0012 = 0;
-        Music.field_0013 = 0;
+        Music.unknown_0013 = 0;
         Music.update_delay = 0;
         Music.restore_requested = 0;
         Music.resume_track = -1;
@@ -889,8 +889,8 @@ void NuSound3AddRumble(void *pad, f32 strength, i32 duration, f32 priority, f32 
     (void)buzz;
 }
 
-void NuSound3SetRumblePads(void *pad0, void *pad1) {
-    (void)pad0;
+void NuSound3SetRumblePads(void *pad_0, void *pad1) {
+    (void)pad_0;
     (void)pad1;
 }
 

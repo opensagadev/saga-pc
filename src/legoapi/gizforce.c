@@ -28,7 +28,7 @@ static void DrawLightningBolts(GAMEOBJECT *object, GAMEOBJECT *target, i32 light
                    &primary, &delta, lightning_col[lightning_index], lightning_endw[lightning_index], distance);
         PlaySfx("ForceLightningLp", &target->collision_position);
 
-        if (object->field_1088 != 0 && object->field_1087 == 2 && NuIsLowEndDevice() == 0 && lightning_type != 0) {
+        if (object->field_1088 != 0 && object->unknown_1087 == 2 && NuIsLowEndDevice() == 0 && lightning_type != 0) {
             NUVEC reflected_target;
             f32 plane;
             reflected_origin = primary;
@@ -58,7 +58,7 @@ static void DrawLightningBolts(GAMEOBJECT *object, GAMEOBJECT *target, i32 light
                &secondary, &delta, lightning_col[lightning_index], lightning_endw[lightning_index], distance);
     PlaySfx("ForceLightningLp", &target->collision_position);
 
-    if (object->field_1088 != 0 && object->field_1087 == 2 && NuIsLowEndDevice() == 0 && lightning_type != 0) {
+    if (object->field_1088 != 0 && object->unknown_1087 == 2 && NuIsLowEndDevice() == 0 && lightning_type != 0) {
         NUVEC reflected_origin = secondary;
         NUVEC reflected_target = target_position;
         f32 plane = WORLD->current_level->reflection_y;
@@ -77,7 +77,7 @@ typedef struct force_glow_packet_s { // size 0x6d0
     u8 unknown000[0x650];            // 0x000
     void *object;                    // 0x650
     void *candidate;                 // 0x654
-    u8 unknown658[0x6bc - 0x658];    // 0x658
+    u8 unknown_658[0x6bc - 0x658];   // 0x658
     f32 alpha;                       // 0x6bc
     f32 target;                      // 0x6c0
     f32 recovery;                    // 0x6c4

@@ -82,7 +82,7 @@ typedef struct kaminoe_turret_reader_s {
     u8 opaque_e8_12c[0x44];
     u8 field_12c;
     u8 opaque_12d;
-    u8 field_12e;
+    u8 unknown_12e;
     u8 opaque_12f_13a[0xb];
     u16 flags_13a;
     u8 opaque_13c_140[0x4];
@@ -728,7 +728,7 @@ void JediB_Update(WORLDINFO *world) {
             jedi_b.heroes[hero]->position = *NuSpecialGetDrawPos(&jedi_b.hero_spawns[hero][spawn]);
             NuVecAdd(&jedi_b.heroes[hero]->position, &jedi_b.heroes[hero]->position, &jedib_offsets[hero]);
             jedi_b.heroes[hero]->ai_update_position = jedi_b.heroes[hero]->position;
-            jedi_b.heroes[hero]->field_0x276 = (u16)jedib_yrot[hero];
+            jedi_b.heroes[hero]->unknown_276 = (u16)jedib_yrot[hero];
             jedi_b.heroes[hero]->velocity.x = 0.0f;
             jedi_b.heroes[hero]->velocity.y = 0.0f;
             jedi_b.heroes[hero]->velocity.z = 0.0f;
@@ -825,7 +825,7 @@ void JediB_Update(WORLDINFO *world) {
                             OnOrInsidePlane(&baddie->locator.position, &PlayPlane[2].point, &PlayPlane[2].normal, NULL, 2.0f, NULL) == 0);
                 if (in_range == 0) {
                     baddie->position = baddie->object->position;
-                    baddie->angle = baddie->object->field_0x276;
+                    baddie->angle = baddie->object->unknown_276;
                     RemoveGameObject(baddie->object, 1);
                     baddie->object = NULL;
                     continue;
@@ -1098,7 +1098,7 @@ void FactoryG_Update(WORLDINFO *world) {
         ObiWan->position.z = -10.5f;
         lamp =
             (f32)(NuTrigTable[(u16)(i32)((f64)NuFmod(GameTimer.time_elapsed, 2.0f) * NuQFntHalfScale * VehicleTurnPhaseScale) >> 1] * 30.0);
-        ObiWan->field_0x276 = (u16)(0xc000 - (i16)(i32)((f64)lamp * -182.04444885253906));
+        ObiWan->unknown_276 = (u16)(0xc000 - (i16)(i32)((f64)lamp * -182.04444885253906));
         return;
     }
     if (ObiWan == NULL) {
@@ -1344,7 +1344,7 @@ void KaminoC_Update(WORLDINFO *world) {
                 for (i = 0; i < 8; i++) {
                     GAMEOBJECT *object = Player[i];
                     if (object != NULL && (object->flags_1fc_word & 1) != 0 && (object->flags_1fc_word & 0x1000) != 0 &&
-                        object->field_281 != 0) {
+                        object->unknown_281 != 0) {
                         f32 dx = position->x - object->position.x;
                         f32 dy = position->y - object->position.y;
                         f32 dz = position->z - object->position.z;
@@ -1553,7 +1553,7 @@ static void KaminoEResetTurrets(void) {
     kamino_e.active_turret = NULL;
     for (i = 0; i < 4; i++) {
         GizmoActivate(WORLD->gizmo_sys, GizmoFindByData(WORLD->gizmo_sys, gizpanel_gizmotype_id, kamino_e.panels[i]), 1, 1);
-        kamino_e.turrets[i]->field_12e = 1;
+        kamino_e.turrets[i]->unknown_12e = 1;
         kamino_e.turrets[i]->flags_13a &= ~0x10;
     }
 }
@@ -1845,7 +1845,7 @@ void KaminoE_UpdatePc(WORLDINFO *world) {
         return;
     }
     target->position = wait->position;
-    target->field_0x276 = wait->rotation;
+    target->unknown_276 = wait->rotation;
     target->facing_angle = wait->rotation;
     target->movement_facing_angle = wait->rotation;
     target->ai_packet.path_info = wait->path_info;

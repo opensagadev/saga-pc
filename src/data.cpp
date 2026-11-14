@@ -6957,7 +6957,7 @@ extern "C" {
         1.0f, // lighting_scale_z
         0.0f, // field_a4
         {0x0u, 0x0u, 0x0u, 0x0u, 0x0u, 0x0u}, // field_a8
-        1.0f, // field_c0
+        1.0f, // unknown_c0
         0, // field_c4
     };
 #pragma data_seg()
@@ -13436,7 +13436,7 @@ extern "C" {
         0.0f, /* 0x48 jump_hold_duration */
         0.3375f, /* 0x4c collision_origin_radius */
         1.0471976f, /* 0x50 field_050 */
-        0.34906587f, /* 0x54 field_054 */
+        0.34906587f, /* 0x54 unknown_054 */
         10.0f, /* 0x58 field_058 */
         -1.8325958f, /* 0x5c field_05c */
         0.0f, /* 0x60 field_060 */

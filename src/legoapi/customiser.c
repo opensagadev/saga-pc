@@ -352,8 +352,8 @@ void CustomiserDrawAccessories(CUSTOMISER_LAYERS *input, GAMEOBJECT *object, NUM
             matrix = object->locator_matrices[joint];
         }
         NuSpecialDrawAt(&resource->special, &matrix);
-        if ((u8)object->field_107c != 0 && MatrixReflection(&matrix, object->reflection_enabled, object->reflection_height,
-                                                            WORLD->current_level->reflection_y, &reflection) != 0) {
+        if ((u8)object->unknown_107c != 0 && MatrixReflection(&matrix, object->reflection_enabled, object->reflection_height,
+                                                              WORLD->current_level->reflection_y, &reflection) != 0) {
             NuRndrStartReflectionRender(0);
             NuSpecialDrawAt(&resource->special, &reflection);
             NuRndrEndReflectionRender();

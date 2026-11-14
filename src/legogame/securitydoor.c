@@ -391,7 +391,7 @@ static void SecurityDoorStart(GAMEOBJECT *object, SECURITY_DOOR_RECORD_PC *door,
     object->context_timer = 0.0f;
     object->character_context = 0x5c;
     object->grapple = door;
-    object->field_7aa = 0xad;
+    object->unknown_7aa = 0xad;
     object->context_duration = AnimDuration((i16)object->id, 0xad, 0.0f, 0.0f, 1);
     if (object->context_duration <= 0.0f) {
         object->context_duration = 1.0f;
@@ -409,8 +409,8 @@ void SecurityDoor_MoveCode(WORLDINFO *world, GAMEOBJECT *object) {
     f32 *playing = NULL;
     if (object->character_context == 0x5c) {
         f32 elapsed;
-        if (object->character_model->action_animations[object->field_7aa] != NULL) {
-            playing = AnimPlaying(&object->anim_packet, object->field_7aa, 1, 0);
+        if (object->character_model->action_animations[object->unknown_7aa] != NULL) {
+            playing = AnimPlaying(&object->anim_packet, object->unknown_7aa, 1, 0);
             if (playing == NULL) {
                 return;
             }
@@ -427,7 +427,7 @@ void SecurityDoor_MoveCode(WORLDINFO *world, GAMEOBJECT *object) {
             if (playing == NULL) {
                 return;
             }
-            frame = AnimListFrame(object->character_model, object->field_7aa, 0);
+            frame = AnimListFrame(object->character_model, object->unknown_7aa, 0);
             if (!(frame >= 1.0f && *playing >= frame)) {
                 return;
             }
@@ -440,7 +440,7 @@ void SecurityDoor_MoveCode(WORLDINFO *world, GAMEOBJECT *object) {
         return;
     }
     if ((object->character_data->game_character->flags_090 & 0x2000000) == 0 || (object->flags_1fc_word & 0x80) == 0 ||
-        object->field_281 == 0 || ObjLandReady(object) == 0) {
+        object->unknown_281 == 0 || ObjLandReady(object) == 0) {
         return;
     }
     {

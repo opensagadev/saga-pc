@@ -542,7 +542,7 @@ void UpdatePodRaceMines(void) {
                 reach = object->bounds_radius + radius;
                 distance = delta.x * delta.x + delta.z * delta.z;
                 if (distance < reach * reach) {
-                    if (object->field_280 == 0xff) {
+                    if (object->unknown_280 == 0xff) {
                         KillPlayer(object, 2, 1, NULL);
                         objects[j] = NULL;
                     } else {
@@ -1487,9 +1487,9 @@ void PodDust(WORLDINFO *world, GAMEOBJECT *object) {
         if (PodRaceKey[key + 2] == -1) {
             AddDebrisEffect(&PodRaceKey[key + 2], world->game_debris_sys->entries[54].effect, 0, 0, 0);
         } else {
-            matrix.m00 = -NuTrigTable[((object->field_0x276 + 0x4000) >> 1) & 0x7fff];
+            matrix.m00 = -NuTrigTable[((object->unknown_276 + 0x4000) >> 1) & 0x7fff];
             matrix.m01 = 0;
-            matrix.m02 = NuTrigTable[object->field_0x276 >> 1];
+            matrix.m02 = NuTrigTable[object->unknown_276 >> 1];
             matrix.m10 = -matrix.m02;
             matrix.m11 = 0;
             matrix.m12 = matrix.m00;
@@ -1621,11 +1621,11 @@ void PodSprintA_Reset(WORLDINFO *world) {
         for (i = 0; i < 2; i++) {
             object = i != 0 ? player2 : player;
             if (object != NULL && (object->flags_1fc_word & 0x1000) != 0) {
-                object->field_dc8 = 1.0f;
+                object->unknown_dc8 = 1.0f;
                 object->velocity.x = 0.0f;
                 object->velocity.y = 0.0f;
                 object->velocity.z = object->character_data->game_character->run_speed;
-                NuVecRotateY(&object->velocity, &object->velocity, object->field_0x276);
+                NuVecRotateY(&object->velocity, &object->velocity, object->unknown_276);
             }
         }
         if (game_cutscenes_cutscene != NULL) {
@@ -1683,7 +1683,7 @@ static i32 PodSprint_UpdateCountdown(void) {
         }
         if (Player[0] != NULL) {
             if (PODSPRINT->countdown > 0.0f) {
-                ((GAMEOBJECT *)Player[0])->field_dc8 = 0.0f;
+                ((GAMEOBJECT *)Player[0])->unknown_dc8 = 0.0f;
                 ((GAMEOBJECT *)Player[0])->velocity.z = 0.0f;
                 ((GAMEOBJECT *)Player[0])->velocity.x = 0.0f;
                 ((GAMEOBJECT *)Player[0])->run_speed_override = 0.0f;
@@ -1693,7 +1693,7 @@ static i32 PodSprint_UpdateCountdown(void) {
         }
         if (Player[1] != NULL) {
             if (PODSPRINT->countdown > 0.0f) {
-                ((GAMEOBJECT *)Player[1])->field_dc8 = 0.0f;
+                ((GAMEOBJECT *)Player[1])->unknown_dc8 = 0.0f;
                 ((GAMEOBJECT *)Player[1])->velocity.z = 0.0f;
                 ((GAMEOBJECT *)Player[1])->velocity.x = 0.0f;
                 ((GAMEOBJECT *)Player[1])->run_speed_override = 0.0f;
@@ -1830,7 +1830,7 @@ void PodSprintA_Update(WORLDINFO *world) {
     }
     object = Obj;
     for (i = 0; i < HIGHGAMEOBJECT; i++, object++) {
-        if ((object->flags_1fc_word & 1) != 0 && (object->flags_1fc_word & 0x1000) != 0 && object->field_280 == 0xff) {
+        if ((object->flags_1fc_word & 1) != 0 && (object->flags_1fc_word & 0x1000) != 0 && object->unknown_280 == 0xff) {
             seek = 0.0f;
             if (PODSPRINT->boulders != NULL && WORLD->ai_sys != NULL && PODSPRINT->ai_state > 1 &&
                 (*(u64 *)object->ai_area_mask & (u64)(i64)(1 << (PODSPRINT->boulders - WORLD->ai_sys->areas))) != 0) {
@@ -2051,7 +2051,7 @@ void MaulA_Panel(WORLDINFO *world) {
         if (Maul_obj != NULL && MaulA_ai_message != NULL && MaulA_ai_message->value == 0.0f && MaulA_hits_message != NULL) {
             GAMEOBJECT *maul = Maul_obj;
             maul->current_hp = (u8)(i32)MaulA_hits_message->value;
-            maul->field_107e = 3;
+            maul->unknown_107e = 3;
             DrawBossHitPoints(maul);
         } else {
             DrawBossHitPoints(NULL);

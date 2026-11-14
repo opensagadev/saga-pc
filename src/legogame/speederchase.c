@@ -175,7 +175,7 @@ i32 ObjIsTargetSpeeder(GAMEOBJECT *object) {
     if (object->rider == NULL) {
         return 0;
     }
-    return object->field_280 == 0xff;
+    return object->unknown_280 == 0xff;
 }
 
 i32 fun_004c9210(GAMEOBJECT *object) {

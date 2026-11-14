@@ -640,7 +640,7 @@ GIZMOBLOWUPTYPE *GizmoBlowupTypeAdd(WORLDINFO *world, NUSPECIALHANDLE *special, 
         type->particle_types[i] = -1;
     }
     type->effect_flags = 100;
-    type->field_0fb = 1;
+    type->unknown_0fb = 1;
     type->animation_flags = 0xc000;
     if (flags) {
         type->animation_flags = 0xe000;
@@ -655,7 +655,7 @@ GIZMOBLOWUPTYPE *GizmoBlowupTypeAdd(WORLDINFO *world, NUSPECIALHANDLE *special, 
     }
     type->animation_base_frame = 1.0f;
     type->field_09c = 0.0f;
-    type->field_084 = 1.0f;
+    type->unknown_084 = 1.0f;
     GameAntiNodeData_Init(&type->anti_node_data, special);
     ++world->gizmo_blowup_type_count;
     return type;
@@ -963,7 +963,7 @@ i32 GizmoBlowupBlowup(GIZMOBLOWUP_PC *blowup, i32 effects, i32 hit_type, i32 dam
             for (player = 0; player < 8; ++player) {
                 target = Player[player];
                 if (target != NULL && (target->flags_1fc_word & 1) != 0 && (target->flags_1fc_word & 0x1000) != 0 && target->dead == 0 &&
-                    !(target->field_1010 > 0.0f)) {
+                    !(target->unknown_1010 > 0.0f)) {
                     x = blowup->mid_position.x - target->collision_position.x;
                     y = blowup->mid_position.y - target->collision_position.y;
                     z = blowup->mid_position.z - target->collision_position.z;
@@ -1482,10 +1482,10 @@ i32 gizmoblowup_Load(void *world_ptr, void *data) {
             type.animation_flags = (u32)EdFileReadInt();
             if (version >= 7) {
                 type.effect_flags = (u32)EdFileReadInt();
-                type.field_0fb = (u8)EdFileReadChar();
+                type.unknown_0fb = (u8)EdFileReadChar();
             } else {
                 type.effect_flags = 100;
-                type.field_0fb = 1;
+                type.unknown_0fb = 1;
             }
             type.animation_time_scale = version >= 8 ? EdFileReadFloat() : 0.0f;
             if (version >= 9) {
@@ -1509,7 +1509,7 @@ i32 gizmoblowup_Load(void *world_ptr, void *data) {
             }
             if (version >= 15) {
                 type.field_0f8 = (u8)EdFileReadChar();
-                type.field_0f9 = (u8)EdFileReadChar();
+                type.unknown_0f9 = (u8)EdFileReadChar();
             }
             if (version >= 16) {
                 GameAntiNodeData_Read(&type.anti_node_data);
@@ -1526,7 +1526,7 @@ i32 gizmoblowup_Load(void *world_ptr, void *data) {
                                             "BlowUpEmitObj", type.name);
                     }
                 }
-                type.field_0fa = (u8)EdFileReadChar();
+                type.unknown_0fa = (u8)EdFileReadChar();
                 type.field_094 = EdFileReadFloat();
                 type.field_098 = EdFileReadFloat();
             } else if (version >= 18) {
@@ -1537,11 +1537,11 @@ i32 gizmoblowup_Load(void *world_ptr, void *data) {
                     Gizmo_FindNuSpecial(world->current_gscn, &type.alternate_specials[0], text, 1, world->gizmo_sys, "BlowUpEmitObj",
                                         type.name);
                 }
-                type.field_0fa = (u8)EdFileReadChar();
+                type.unknown_0fa = (u8)EdFileReadChar();
                 type.field_094 = EdFileReadFloat();
                 type.field_098 = EdFileReadFloat();
             } else {
-                type.field_0fa = 0;
+                type.unknown_0fa = 0;
                 type.field_094 = -10.0f;
                 type.field_098 = 1.0f;
             }
@@ -1567,7 +1567,7 @@ i32 gizmoblowup_Load(void *world_ptr, void *data) {
                 type.field_09c = EdFileReadFloat();
             }
             if (version >= 24) {
-                type.field_084 = EdFileReadFloat();
+                type.unknown_084 = EdFileReadFloat();
             }
             if (!missing_type) {
                 *output_type++ = type;
@@ -1646,9 +1646,9 @@ i32 gizmoblowup_Load(void *world_ptr, void *data) {
         }
         blowup.decal_scale = version >= 10 ? EdFileReadFloat() : 1.0f;
         if (version >= 11) {
-            blowup.field_07c.x = EdFileReadFloat();
-            blowup.field_07c.y = EdFileReadFloat();
-            blowup.field_07c.z = EdFileReadFloat();
+            blowup.unknown_07c.x = EdFileReadFloat();
+            blowup.unknown_07c.y = EdFileReadFloat();
+            blowup.unknown_07c.z = EdFileReadFloat();
         }
         if (version >= 12) {
             blowup.initial_health = blowup.remaining_health = (u8)EdFileReadChar();
@@ -1666,7 +1666,7 @@ i32 gizmoblowup_Load(void *world_ptr, void *data) {
             blowup.shadow_offset.x = EdFileReadFloat();
             blowup.shadow_offset.y = EdFileReadFloat();
             blowup.shadow_offset.z = EdFileReadFloat();
-            blowup.field_0c4 = EdFileReadFloat();
+            blowup.unknown_0c4 = EdFileReadFloat();
         }
         blowup.animation_offset = version >= 21 ? EdFileReadFloat() : 0.0f;
         if (version >= 23) {

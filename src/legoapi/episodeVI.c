@@ -301,7 +301,7 @@ void DeathStar2BattleFire_SetSlowDownMul(GAMEOBJECT *object) {
     if (WORLD->current_level == DEATHSTAR2BATTLEE_LDATA || WORLD->current_level == DEATHSTAR2BATTLEF_LDATA ||
         WORLD->current_level == DEATHSTAR2BATTLEG_LDATA) {
         if (object != NULL) {
-            index = (i8)object->field_280;
+            index = (i8)object->unknown_280;
             if (index == 0 || index == 1) {
                 object->velocity = v000;
                 slowDownTimer[index] = 3.0f;
@@ -320,14 +320,14 @@ static void DeathStar2BattleFire_UpdateSlowDownMul(f32 dt) {
 }
 
 f32 DeathStar2BattleFire_GetSlowDownMul(GAMEOBJECT *object) {
-    // MATCH-EXCEPTION: the original reads field_280 as a signed char (movsx) at each use; saga.h declares it u8
-    if (object == NULL || (object->field_280 != 0 && object->field_280 != 1)) {
+    // MATCH-EXCEPTION: the original reads unknown_280 as a signed char (movsx) at each use; saga.h declares it u8
+    if (object == NULL || (object->unknown_280 != 0 && object->unknown_280 != 1)) {
         return 1.0f;
     }
-    if (slowDownTimer[(i8)object->field_280] < 0.0f) {
-        slowDownTimer[(i8)object->field_280] = 0.0f;
+    if (slowDownTimer[(i8)object->unknown_280] < 0.0f) {
+        slowDownTimer[(i8)object->unknown_280] = 0.0f;
     }
-    return (f32)((3.0 - (f64)slowDownTimer[(i8)object->field_280]) / 3.0);
+    return (f32)((3.0 - (f64)slowDownTimer[(i8)object->unknown_280]) / 3.0);
 }
 
 void EmperorFightA_Init(WORLDINFO *world) {
@@ -467,12 +467,12 @@ void EmperorFightA_Update(WORLDINFO *world) {
 
         EMPEROR_PACKET->player_floor_mask = 0;
         player = Player[0];
-        if (player != NULL && !player->dead && player->field_1010 <= 0.0f && LevArea[0] != NULL &&
+        if (player != NULL && !player->dead && player->unknown_1010 <= 0.0f && LevArea[0] != NULL &&
             (U64_PAIR(player->ai_area_mask) & EMPEROR_FLOOR_AREA_MASK(world, LevArea[0]))) {
             EMPEROR_PACKET->player_floor_mask |= 1;
         }
         player = Player[1];
-        if (player != NULL && !player->dead && player->field_1010 <= 0.0f && LevArea[0] != NULL &&
+        if (player != NULL && !player->dead && player->unknown_1010 <= 0.0f && LevArea[0] != NULL &&
             (U64_PAIR(player->ai_area_mask) & EMPEROR_FLOOR_AREA_MASK(world, LevArea[0]))) {
             EMPEROR_PACKET->player_floor_mask |= 2;
         }
@@ -568,7 +568,7 @@ void EmperorFightA_Update(WORLDINFO *world) {
                 NUVEC *sound_position;
                 i32 sound;
                 player = Player[i];
-                if (player->dead || !(player->field_1010 <= 0.0f) || !(EMPEROR_PACKET->player_floor_mask & (1 << i))) {
+                if (player->dead || !(player->unknown_1010 <= 0.0f) || !(EMPEROR_PACKET->player_floor_mask & (1 << i))) {
                     continue;
                 }
                 if ((i8)player->flags_1fc_word < 0) {
@@ -662,14 +662,14 @@ void EmperorFightA_Update(WORLDINFO *world) {
             f64 minimum;
             player = Player[0];
             minimum = EmperorFloorSafeXMinimum;
-            if (!player->dead && player->field_1010 <= 0.0f && LevArea[0] != NULL &&
+            if (!player->dead && player->unknown_1010 <= 0.0f && LevArea[0] != NULL &&
                 (U64_PAIR(player->ai_area_mask) & EMPEROR_FLOOR_AREA_MASK(world, LevArea[0])) && player->collision_position.x < minimum) {
                 player->flags_ef4 |= 4;
                 ((GAMEOBJECT *)Player[0])->last_safe_position.x = (f32)minimum;
                 ((GAMEOBJECT *)Player[0])->respawn_position.x = (f32)minimum;
             }
             player = Player[1];
-            if (!player->dead && player->field_1010 <= 0.0f && LevArea[0] != NULL &&
+            if (!player->dead && player->unknown_1010 <= 0.0f && LevArea[0] != NULL &&
                 (U64_PAIR(player->ai_area_mask) & EMPEROR_FLOOR_AREA_MASK(world, LevArea[0])) && player->collision_position.x < minimum) {
                 player->flags_ef4 |= 4;
                 ((GAMEOBJECT *)Player[1])->last_safe_position.x = (f32)minimum;
@@ -1163,7 +1163,8 @@ void SarlaccPitB_Update(WORLDINFO *world) {
                     position = NuSpecialGetPos(&sarlaccdisco.flash[*selected]);
                     for (index = 0; index < 8; ++index) {
                         GAMEOBJECT *object = Player[index];
-                        if (object != NULL && (object->flags_1fc_word & 1) && (object->flags_1fc_word & 0x1000) && object->field_281 != 0) {
+                        if (object != NULL && (object->flags_1fc_word & 1) && (object->flags_1fc_word & 0x1000) &&
+                            object->unknown_281 != 0) {
                             f32 dx = position->x - object->position.x;
                             f32 dz = position->z - object->position.z;
                             f32 distance = dx * dx + dz * dz;
@@ -1732,7 +1733,7 @@ void DeathStar2BattleFire_Update(WORLDINFO *world) {
     }
 
     for (index = 0; index < 8; ++index) {
-        if (Player[index] != NULL && (((GAMEOBJECT *)Player[index])->field_e20 & 0x20) == 0) {
+        if (Player[index] != NULL && (((GAMEOBJECT *)Player[index])->unknown_e20 & 0x20) == 0) {
             NuVecSub(&difference, &((GAMEOBJECT *)Player[index])->position, &fireSplinePos.position);
             NuVecRotateY(&difference, &difference, -yaw);
             if (difference.z < nearest_distance) {

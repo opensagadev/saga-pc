@@ -40,7 +40,7 @@ extern "C" {
     i32 GameAudio_GetPlrSfxBits(void *object_ptr) {
         GAMEOBJECT *object = (GAMEOBJECT *)object_ptr;
         if (object != NULL && object->player_controlled) {
-            return 1 << object->field_280;
+            return 1 << object->unknown_280;
         }
         return 0;
     }
@@ -235,7 +235,7 @@ extern "C" {
         target = 0.0f;
         if (silent == 0) {
             if (object->flags_1fc & 0x80) {
-                target = AudioFabs(object->field_dc8);
+                target = AudioFabs(object->unknown_dc8);
             } else {
                 target = object->velocity_magnitude / character->run_speed;
             }
@@ -472,7 +472,7 @@ extern "C" void PlayDieSfx(GAMEOBJECT *object) {
 }
 
 extern "C" void PlaySabreSfx(char *name, GAMEOBJECT *object, NUVEC *position, i32 unused) {
-    u8 player = object->field_280;
+    u8 player = object->unknown_280;
     i32 bits = 0;
     (void)unused;
     if (player == 0xff && WORLD->rooms_visible_ptr[object->portal_room] == 0) {

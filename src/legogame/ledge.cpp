@@ -200,7 +200,7 @@ extern "C" void Ledge_MoveCode(WORLDINFO *world, GAMEOBJECT *object) {
             }
             return;
         }
-        if (object->field_281 & 2) {
+        if (object->unknown_281 & 2) {
             object->character_context = -1;
             return;
         }
@@ -211,20 +211,20 @@ extern "C" void Ledge_MoveCode(WORLDINFO *world, GAMEOBJECT *object) {
             f32 speed;
             if (push > NuTrigTable[0x3555]) {
                 if (object->character_model->model_data_b[0x9f] != NULL) {
-                    object->field_7aa = 0x9f;
+                    object->unknown_7aa = 0x9f;
                     speed = AnimSpeed(object->character_model, 0x9f);
                 } else {
                     speed = 0.5f;
                 }
             } else if (push < -NuTrigTable[0x3555]) {
                 if (object->character_model->model_data_b[0x9e] != NULL) {
-                    object->field_7aa = 0x9e;
+                    object->unknown_7aa = 0x9e;
                     speed = -AnimSpeed(object->character_model, 0x9e);
                 } else {
                     speed = -0.5f;
                 }
             } else {
-                object->field_7aa = 0x9d;
+                object->unknown_7aa = 0x9d;
                 return;
             }
             if (speed == 0.0f) {
@@ -242,20 +242,20 @@ extern "C" void Ledge_MoveCode(WORLDINFO *world, GAMEOBJECT *object) {
                             NuTrigTable[((angle + 0x4000) >> 1) & 0x7fff] * (FRAMETIME * speed)};
             NuVecAdd(&position, &object->external_force, &offset);
             if (LedgeAttachPoint(world, &position, &minimum, &maximum, &angle) == NULL) {
-                object->field_7aa = 0x9d;
+                object->unknown_7aa = 0x9d;
                 return;
             }
             LedgeSetAttachPosition(object, &position, angle + 0x8000);
             if (object->external_force.x == previous.x && object->external_force.y == previous.y &&
                 object->external_force.z == previous.z) {
-                object->field_7aa = 0x9d;
+                object->unknown_7aa = 0x9d;
             }
             return;
         }
-        object->field_7aa = 0x9d;
+        object->unknown_7aa = 0x9d;
         return;
     }
-    if (object->field_281 != 0 || !(object->velocity.y <= 0.0f)) {
+    if (object->unknown_281 != 0 || !(object->velocity.y <= 0.0f)) {
         return;
     }
 
@@ -281,7 +281,7 @@ extern "C" void Ledge_MoveCode(WORLDINFO *world, GAMEOBJECT *object) {
         return;
     }
     object->character_context = 0x5b;
-    object->field_7aa = 0x9d;
+    object->unknown_7aa = 0x9d;
     object->velocity = v000;
     LedgeSetAttachPosition(object, &position, angle + 0x8000);
 }

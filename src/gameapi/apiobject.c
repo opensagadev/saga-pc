@@ -1010,10 +1010,10 @@ void AddAnimEffects(CHARACTER_MODEL_LAYERS *model, APICHARACTERDATA *character_d
 
         if (object != NULL) {
             api = object;
-            if ((effects->flags & 0x400) != 0 && api->field_280 == 255) {
+            if ((effects->flags & 0x400) != 0 && api->unknown_280 == 255) {
                 continue;
             }
-            if ((effects->flags & 0x10) != 0 && (api->field_281 & 2) == 0) {
+            if ((effects->flags & 0x10) != 0 && (api->unknown_281 & 2) == 0) {
                 continue;
             }
             if ((effects->flags & 0x40) != 0 && api->is_underwater != 0) {
@@ -1025,7 +1025,7 @@ void AddAnimEffects(CHARACTER_MODEL_LAYERS *model, APICHARACTERDATA *character_d
             if ((effects->flags & 0x80) != 0 && api->water_intersects == 0) {
                 continue;
             }
-            if ((effects->flags & 0x03000000) != 0 && (api->model_draw_result == 0 || (api->field_281 & 2) == 0)) {
+            if ((effects->flags & 0x03000000) != 0 && (api->model_draw_result == 0 || (api->unknown_281 & 2) == 0)) {
                 continue;
             }
         } else if ((effects->flags & 0x03000000) != 0) {

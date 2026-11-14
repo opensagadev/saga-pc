@@ -157,7 +157,7 @@ typedef struct ADDPART {                // size 0xc8
     f32 lighting_scale_z;               // 0xa0
     f32 field_a4;                       // 0xa4
     u32 field_a8[6];                    // 0xa8
-    f32 field_c0;                       // 0xc0
+    f32 unknown_c0;                     // 0xc0
     u8 field_c4;                        // 0xc4
 } ADDPART;
 

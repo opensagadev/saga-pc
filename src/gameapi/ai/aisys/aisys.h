@@ -61,7 +61,7 @@ struct AIPATHROUTE {       // size 0x28
     u8 *exit_nodes;        // 0x0c
     u8 route_count;        // 0x10
     u8 exit_node_count;    // 0x11
-    u8 padding_12[2];      // 0x12
+    u8 pad_12[2];          // 0x12
     u8 **route_nodes;      // 0x14
     u32 character_mask[4]; // 0x18
 };
@@ -253,7 +253,7 @@ struct AIPATHNODE {                 // size 0x5c
     i16 path_flags;                 // 0x2c
     u8 distance_cache_nodes[2];     // 0x2e
     u8 special_route_index;         // 0x30
-    u8 padding_31[3];               // 0x31
+    u8 pad_31[3];                   // 0x31
     AIPATHCNX **connections;        // 0x34
     f32 distance_cache[2];          // 0x38
     NUSPECIALHANDLE special_handle; // 0x40

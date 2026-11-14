@@ -112,7 +112,7 @@ struct PC_CONTROL_TEXT { // size 0x128
     u32 key;             // 0x120
     i8 alignment;        // 0x124
     u8 refreshed;        // 0x125
-    u8 unknown126[2];    // 0x126
+    u8 unknown_126[2];   // 0x126
 };
 
 struct PC_CONTROL_CONFIG {                  // size 0x14

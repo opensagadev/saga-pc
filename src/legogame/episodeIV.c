@@ -488,18 +488,18 @@ void TrenchMove(GAMEOBJECT *object) {
     pad = object->pad;
     object->start_position = object->position;
     object->initial_position = object->collision_position;
-    object->field_282 = object->field_281;
+    object->field_282 = object->unknown_281;
     input_magnitude = pad->input_magnitude;
     input_angle = pad->input_angle;
     pad->previous_input_magnitude = input_magnitude;
     pad->previous_input_angle = input_angle;
-    object->previous_movement_angle = object->field_0x276;
+    object->previous_movement_angle = object->unknown_276;
     object->flags_ef0 &= ~0x4000;
     object->flags_107a = 0;
     if (object->model_draw_result != 0) {
-        object->field_f10 = 0.0f;
+        object->unknown_f10 = 0.0f;
     } else {
-        object->field_f10 = FRAMETIME + object->field_f10;
+        object->unknown_f10 = FRAMETIME + object->unknown_f10;
     }
     if (object->character_context == 0x2b) {
         object->turn_braking += FRAMETIME;
@@ -512,7 +512,7 @@ void TrenchMove(GAMEOBJECT *object) {
         } else if (object->character_context != 0x36 && player->character_context == 0x36 &&
                    player->context_timer < 0.75 * VehicleLoopTime) {
             object->character_context = player->character_context;
-            object->field_7aa = 1;
+            object->unknown_7aa = 1;
             object->context_duration = VehicleLoopTime;
             object->context_timer = VehicleLoopTime;
         }

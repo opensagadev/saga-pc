@@ -20,20 +20,20 @@ typedef struct PLAYER_PACKET_RESET { // size 0x788
     u8 unknown_68c[0x4];             // 0x68c
     f32 field_690;                   // 0x690
     u8 unknown_694[0x24];            // 0x694
-    f32 field_6b8;                   // 0x6b8
+    f32 unknown_6b8;                 // 0x6b8
     u8 unknown_6bc[0x1c];            // 0x6bc
-    f32 field_6d8;                   // 0x6d8
+    f32 unknown_6d8;                 // 0x6d8
     f32 ground_height;               // 0x6dc
     u8 unknown_6e0[0xc];             // 0x6e0
     f32 field_6ec;                   // 0x6ec
     u8 unknown_6f0[0x18];            // 0x6f0
     f32 field_708;                   // 0x708
-    f32 field_70c;                   // 0x70c
+    f32 unknown_70c;                 // 0x70c
     f32 field_710;                   // 0x710
     u8 unknown_714[0x4];             // 0x714
     f32 field_718;                   // 0x718
     u8 unknown_71c[0x10];            // 0x71c
-    f32 field_72c;                   // 0x72c
+    f32 unknown_72c;                 // 0x72c
     u8 unknown_730[0x1c];            // 0x730
     i16 movement_angle_0;            // 0x74c
     i16 movement_angle_1;            // 0x74e
@@ -48,7 +48,7 @@ typedef struct PLAYER_PACKET_RESET { // size 0x788
     u8 unknown_768[0x17];            // 0x768
     i8 surface_type;                 // 0x77f
     u8 unknown_780[0x4];             // 0x780
-    f32 field_784;                   // 0x784
+    f32 unknown_784;                 // 0x784
 } PLAYER_PACKET_RESET;
 
 typedef struct GAMEPAD_RESET_PC {  // size 0x5c
@@ -320,7 +320,7 @@ typedef struct player_init_progress_s {
 
 typedef struct player_init_extra_s {
     u8 unknown_0000[0x454];
-    f32 field_454;
+    f32 unknown_454;
     u8 unknown_0458[0xcc0 - 0x458];
     PLAYER_BATARANG_SLOT_PC *batarang;
     u8 unknown_0cc4[0x1062 - 0xcc4];
@@ -615,12 +615,12 @@ void ResetPlayerPacket(void *opaque_packet, CHARACTERDATA_PC *character) {
     for (i = 0; i < 8; ++i) {
         packet->field_614[i] = 0;
     }
-    packet->field_6b8 = 0.0f;
-    packet->field_6d8 = 0.0f;
+    packet->unknown_6b8 = 0.0f;
+    packet->unknown_6d8 = 0.0f;
     ResetForceGlow(packet);
     packet->ground_height = 2000000.0f;
     packet->secondary_flags &= ~1u;
-    packet->field_72c = 0.0f;
+    packet->unknown_72c = 0.0f;
     packet->force_glow_index = -1;
     packet->field_6ec = 0.0f;
     packet->movement_angle_0 = -1;
@@ -630,7 +630,7 @@ void ResetPlayerPacket(void *opaque_packet, CHARACTERDATA_PC *character) {
         packet->random_state[i] = (u8)(qrand() >> 8);
     }
     packet->render_flags &= 0xfffff3feu;
-    packet->field_70c = 0.0f;
+    packet->unknown_70c = 0.0f;
     packet->field_604 = NULL;
     packet->field_710 = 0.0f;
     packet->surface_type = -1;
@@ -638,7 +638,7 @@ void ResetPlayerPacket(void *opaque_packet, CHARACTERDATA_PC *character) {
     packet->reset_up_direction = v010;
     packet->field_690 = 0.0f;
     packet->field_688 = 0.0f;
-    packet->field_784 = 0.0f;
+    packet->unknown_784 = 0.0f;
 }
 
 void SetFlicker(GAMEOBJECT *object, f32 duration) {
@@ -655,8 +655,8 @@ void ResetPlayerAI(GAMEOBJECT *object) {
     object->ai_packet.intersection_connection = NULL;
     object->ai_packet.intersection_target_connection = NULL;
     object->ai_packet.path_target = NULL;
-    object->field_1086 = 0;
-    object->field_1087 = 0;
+    object->unknown_1086 = 0;
+    object->unknown_1087 = 0;
     object->field_108c = 0;
     object->field_1088 = 0;
     object->can_use_object = NULL;
@@ -725,8 +725,8 @@ static __declspec(noinline) void InitCreatureModelFlags(GAMEOBJECT *object) {
    inlining it, so the definition lives in its own unit. */
 void PlayerSetCurrentHp(GAMEOBJECT *object, i8 hitpoints) {
     object->current_hp = hitpoints;
-    if (hitpoints > object->field_107e) {
-        object->current_hp = object->field_107e;
+    if (hitpoints > object->unknown_107e) {
+        object->current_hp = object->unknown_107e;
     }
 }
 
@@ -747,7 +747,7 @@ i32 MakePlayerList(i32 count) {
         }
         progress = &PlayerProgress[player_count];
         progress->active = player->player_controlled;
-        if (player->character_context != 6 && player->field_e33 != 2 && ((player->field_e22 & 1) != 0 || player->field_e33 != 0)) {
+        if (player->character_context != 6 && player->unknown_e33 != 2 && ((player->unknown_e22 & 1) != 0 || player->unknown_e33 != 0)) {
             progress->field_7 = 1;
         } else {
             progress->field_7 = 0;
@@ -759,14 +759,14 @@ i32 MakePlayerList(i32 count) {
         }
         progress->field_b = player->jump_variant_state == 1;
         if (player->dead != 0) {
-            progress->hitpoints = player->field_107e;
+            progress->hitpoints = player->unknown_107e;
             progress->field_9 = 4;
         } else {
             progress->hitpoints = player->current_hp;
             progress->field_9 = player->saved_hitpoints;
         }
         progress->field_a = player->helmet;
-        progress->unknown_0004 = player->field_1062;
+        progress->unknown_0004 = player->unknown_1062;
         progress->field_c = player->powerup_time;
         PlayerSuit[player_count] = player->suit;
         if (player->torpedo != NULL) {
@@ -790,7 +790,7 @@ void fun_00414ea0(GAMEOBJECT *source, GAMEOBJECT *target) {
     target->batarang = source->batarang;
     target->torpedo = source->torpedo;
     target->previous_sock_position = source->previous_sock_position;
-    target->field_107e = source->field_107e;
+    target->unknown_107e = source->unknown_107e;
     target->tag_object_callback = source->tag_object_callback;
     target->flags_1f8 = source->flags_1f8;
 }
@@ -860,7 +860,7 @@ i32 GetDefaultIdle(GAMEOBJECT *object) {
     if (idle != NULL && standard == NULL) {
         return animation;
     }
-    if (((object->field_e22 & 1) != 0 || object->field_e33 == 1) && idle != NULL) {
+    if (((object->unknown_e22 & 1) != 0 || object->unknown_e33 == 1) && idle != NULL) {
         return animation;
     }
     return 1;
@@ -1049,7 +1049,7 @@ static void GunshipKeepOnScreen(GAMEOBJECT *object) {
 }
 
 void KeepOnScreen(GAMEOBJECT *object) {
-    f32 previous_keep_time = object->field_da8;
+    f32 previous_keep_time = object->unknown_da8;
     i32 controlled = 0;
     i32 index;
     i32 two_players;
@@ -1057,7 +1057,7 @@ void KeepOnScreen(GAMEOBJECT *object) {
     PLAYERCHARACTERCONFIG *character;
     f32 push_distance;
     NUVEC movement;
-    object->field_da8 = 0.0f;
+    object->unknown_da8 = 0.0f;
     if (newgamecam != 0 || (object->flags_ef4 & 0x10000000) != 0) {
         return;
     }
@@ -1143,10 +1143,10 @@ void KeepOnScreen(GAMEOBJECT *object) {
     if (constrained) {
         object->movement_direction_x = movement.x;
         object->movement_direction_z = movement.z;
-        object->field_da8 = previous_keep_time + FRAMETIME;
+        object->unknown_da8 = previous_keep_time + FRAMETIME;
         SpecialMove_Cancel(object);
     } else {
-        object->field_da8 = 0.0f;
+        object->unknown_da8 = 0.0f;
     }
 }
 
@@ -1166,16 +1166,16 @@ void MovePlayerSpline(GAMEOBJECT *object) {
     object->previous_floor_height = object->floor_height;
     object->start_position = object->position;
     object->initial_position = object->collision_position;
-    object->field_282 = object->field_281;
+    object->field_282 = object->unknown_281;
     pad->previous_input_angle = pad->input_angle;
     pad->previous_input_magnitude = pad->input_magnitude;
-    object->previous_movement_angle = object->field_0x276;
+    object->previous_movement_angle = object->unknown_276;
     object->flags_ef0 &= ~0x4000;
 
     if (object->model_draw_result != 0) {
-        object->field_f10 = 0.0f;
+        object->unknown_f10 = 0.0f;
     } else {
-        object->field_f10 += FRAMETIME;
+        object->unknown_f10 += FRAMETIME;
     }
     if (object->character_context == 0x2b) {
         object->turn_braking += FRAMETIME;
@@ -1195,7 +1195,7 @@ void MovePlayerSpline(GAMEOBJECT *object) {
         pitch = (u16)-pitch;
     }
     object->movement_facing_angle = angle;
-    object->field_0x276 = object->facing_angle = SeekRot(object->facing_angle, angle, spline_seek_ang);
+    object->unknown_276 = object->facing_angle = SeekRot(object->facing_angle, angle, spline_seek_ang);
     object->pitch_angle = SeekRot(object->pitch_angle, -pitch, spline_seek_ang);
 
     if (WORLD->current_level != PODSPRINTA_LDATA || speed > 0.0f) {
@@ -1205,7 +1205,7 @@ void MovePlayerSpline(GAMEOBJECT *object) {
     object->movement_spline_offset.x += object->movement_spline_lateral_speed * FRAMETIME;
     if (object->movement_spline_offset.x != 0.0f || object->movement_spline_offset.y != 0.0f || object->movement_spline_offset.z != 0.0f) {
         NuVecRotateX(&offset, &object->movement_spline_offset, object->pitch_angle);
-        NuVecRotateY(&offset, &offset, object->field_0x276);
+        NuVecRotateY(&offset, &offset, object->unknown_276);
         NuVecAdd(&position, &position, &offset);
     }
 
@@ -1245,7 +1245,7 @@ void MovePlayerSpline(GAMEOBJECT *object) {
     if ((object->character_data->game_character->flags_090 & 1) != 0) {
         roll = 0;
         if (object->character_context != 0x2a && object->character_context != 0x36 && object->character_context != 0x3a) {
-            diff = RotDiff(object->previous_movement_angle, object->field_0x276);
+            diff = RotDiff(object->previous_movement_angle, object->unknown_276);
             roll = (i32)(diff / FRAMETIME);
             roll += (i32)(object->movement_spline_lateral_speed * spline_xoffset_speed_roll);
             if (roll < -0x10000) {
@@ -1297,15 +1297,15 @@ void MovePlayer(GAMEOBJECT *object) {
     object->previous_floor_height = object->floor_height;
     object->start_position = object->position;
     object->initial_position = object->collision_position;
-    object->field_282 = object->field_281;
+    object->field_282 = object->unknown_281;
     pad->previous_input_angle = pad->input_angle;
     pad->previous_input_magnitude = pad->input_magnitude;
     object->flags_ef0 &= ~0x4000;
-    object->previous_movement_angle = object->field_0x276;
+    object->previous_movement_angle = object->unknown_276;
     if (object->model_draw_result != 0) {
-        object->field_f10 = 0.0f;
+        object->unknown_f10 = 0.0f;
     } else {
-        object->field_f10 += FRAMETIME;
+        object->unknown_f10 += FRAMETIME;
     }
     if (object->character_context == 0x2b) {
         object->turn_braking += FRAMETIME;
@@ -1314,7 +1314,7 @@ void MovePlayer(GAMEOBJECT *object) {
         if (!object->dead) {
             pad->runtime_flags &= ~8;
             pad->waggle_magnitude = 0.0f;
-            object->field_106e = -1;
+            object->unknown_106e = -1;
             object->flags_ef0 &= ~0x400;
             menu_id = GetMenuID();
             if ((object->flags_1fc_word & 0x80) != 0 && (object->flags_1fc_word & 0x100) == 0) {
@@ -1393,7 +1393,7 @@ void MovePlayer(GAMEOBJECT *object) {
                 } else if (object->ai_packet.movement_stopped == 1) {
                     pad->input_direction_x = pad->input_direction_z = pad->input_magnitude = 0.0f;
                     pad->input_mode = 1;
-                } else if (object->character_context == 0x17 && (object->field_ef8 & 1) == 0) {
+                } else if (object->character_context == 0x17 && (object->unknown_ef8 & 1) == 0) {
                     pad->input_magnitude = 0.0f;
                 } else {
                     axis.x = object->ai_packet.movement_position.x - object->position.x;
@@ -1445,7 +1445,7 @@ void MovePlayer(GAMEOBJECT *object) {
                         }
                     }
                     if ((object->flags_1f8 & 0x400) == 0 && (object->portal_flags & 0x2000000) == 0 &&
-                        (object->field_f10 >= OFFSCREEN_CATCHUP_TIME ||
+                        (object->unknown_f10 >= OFFSCREEN_CATCHUP_TIME ||
                          (object->model_draw_result == 0 && (object->tag_flags & 2) == 0 && drop_back_in_timer > 0.0f)) &&
                         (pad->input_magnitude + (f64)0.001f >= walk_speed || object->id == (u16)id_SPEEDERBIKE)) {
                         object->flags_ef0 |= 0x400;
@@ -1486,7 +1486,7 @@ void MovePlayer(GAMEOBJECT *object) {
                     object->techno->controlled_player != NULL) {
                     object->techno->controlled_player->position.y += FRAMETIME * 1.5;
                     object->techno->controlled_player->velocity.y = 0.0f;
-                    object->techno->controlled_player->field_281 = 0;
+                    object->techno->controlled_player->unknown_281 = 0;
                     object->techno->controlled_player->lift_clear_state = 0;
                     if (object->techno->controlled_player->character_context == 0x33) {
                         object->techno->controlled_player->character_context = -1;
@@ -1494,7 +1494,7 @@ void MovePlayer(GAMEOBJECT *object) {
                 } else {
                     object->position.y += FRAMETIME * 1.5;
                     object->velocity.y = 0.0f;
-                    object->field_281 = 0;
+                    object->unknown_281 = 0;
                     object->lift_clear_state = 0;
                     if (object->character_context == 0x33) {
                         object->character_context = -1;
@@ -1520,7 +1520,7 @@ static void TerrainPlayerResetContact(GAMEOBJECT *object) {
     object->surface_normal = v010;
     object->water_height = 2000000.0f;
     object->roof_height_pc = 2000000.0f;
-    object->field_283 = -1;
+    object->unknown_283 = -1;
     object->roof_surface_id = (u8)-1;
     object->terrain_platform_id = -1;
 }
@@ -1532,7 +1532,7 @@ static i32 TerrainKillPlayer(GAMEOBJECT *object, i32 surface, NUVEC *normal) {
     if ((flags & 1) == 0 &&
         ((flags & 0x4000) == 0 || (object->character_data->model_flags & 0x10) != 0 ||
          (object->character_data->game_character->flags_090 & 0x8000) != 0) &&
-        ((flags & 0x8000) == 0 || ((i8)object->field_280 != -1 && !(normal->y > 0.0f)))) {
+        ((flags & 0x8000) == 0 || ((i8)object->unknown_280 != -1 && !(normal->y > 0.0f)))) {
         return 0;
     }
     InstantKillParts(object, 1, 0.0f);
@@ -1627,7 +1627,7 @@ void TerrainPlayer(GAMEOBJECT *object) {
                                    !AIPATHCNX_FLAG_SET(path_info->connection, original_traversal_flags, LEGO_AIPATHCNX_BLOCKAGE) &&
                                    !AIPATHCNX_FLAG_SET(path_info->connection, traversal_flags, LEGO_AIPATHCNX_WALLSHUFFLE) &&
                                    !AIPATHCNX_FLAG_SET(path_info->connection, traversal_flags, LEGO_AIPATHCNX_FULLTERRAIN) &&
-                                   (object->character_context != 0x5a || object->field_7b3 != 0);
+                                   (object->character_context != 0x5a || object->unknown_7b3 != 0);
                 if (ordinary_ai_path) {
                     retain_floor = (api->flags_1fc_word & 0x10) != 0;
                     shadow_grounding = 1;
@@ -1648,7 +1648,7 @@ void TerrainPlayer(GAMEOBJECT *object) {
             player_edge_probe = ((api->flags_1fc_word & 0x80) != 0) && object->spawn_protection_timer > 1.25f;
 
             if (VehicleArea == 0 && api->dead == 0 &&
-                (api->field_281 != 0 || (player_edge_probe && object->character_context == -1 && object->jump_variant_state != 1))) {
+                (api->unknown_281 != 0 || (player_edge_probe && object->character_context == -1 && object->jump_variant_state != 1))) {
                 i32 walkable_floor;
                 i32 probe_edge;
 
@@ -1672,7 +1672,7 @@ void TerrainPlayer(GAMEOBJECT *object) {
                 }
             }
             if (!(object->pad->input_magnitude > 0.0f) && object->character_context != 0x33 &&
-                !(api->field_281 != 0 && (i8)api->jump_animation_state >= 0 && (i8)api->jump_animation_state < 32 &&
+                !(api->unknown_281 != 0 && (i8)api->jump_animation_state >= 0 && (i8)api->jump_animation_state < 32 &&
                   TerSurface[(i8)api->jump_animation_state].movement_scale < 1.0f) &&
                 AnimSpeed(api->character_model, CurrentAnim(&api->anim_packet)) == 0.0f &&
                 (api->character_data->model_flags & 0x800) == 0) {
@@ -1685,9 +1685,10 @@ void TerrainPlayer(GAMEOBJECT *object) {
             if ((object->flags_ef0 & 0x20) == 0 && (object->flags_ef4 & 0x400000) != 0 && !special_path_endpoints &&
                 object->ai_packet.path_target == NULL && !((api->flags_1fc_word & 0x80) != 0) && (object->flags_e20 & 0x10000000) == 0 &&
                 object->jump_variant_state == 0 && object->character_context != 0 && object->character_context != 0x1c &&
-                api->jump_animation_state != 8 && (GameTimer.update_count >= 2 || (api->flags_1f8 & 5) != 0) && (api->field_281 & 3) != 0 &&
-                api->supporting_platform_id == -1 && movement_threshold * movement_threshold >= speed_squared &&
-                object->character_context != 0x0f && object->character_context != 0x0b && object->character_context != 0x1e) {
+                api->jump_animation_state != 8 && (GameTimer.update_count >= 2 || (api->flags_1f8 & 5) != 0) &&
+                (api->unknown_281 & 3) != 0 && api->supporting_platform_id == -1 &&
+                movement_threshold * movement_threshold >= speed_squared && object->character_context != 0x0f &&
+                object->character_context != 0x0b && object->character_context != 0x1e) {
                 api->flags_1fc_word |= 4;
             } else {
                 api->flags_1fc_word &= ~4u;
@@ -1696,12 +1697,12 @@ void TerrainPlayer(GAMEOBJECT *object) {
             object->contact_count = 0;
             if ((api->flags_1fc_word & 0x20) != 0 || (object->flags_e20 & 0x20) != 0 || object->movement_spline_position.spline != NULL ||
                 object->move_override != NULL ||
-                (object->character_context == 0x0f && (object->field_7b3 == 1 || object->field_7b3 == 0)) ||
-                (object->character_context == 0x2c && object->field_7b3 == 0) ||
+                (object->character_context == 0x0f && (object->unknown_7b3 == 1 || object->unknown_7b3 == 0)) ||
+                (object->character_context == 0x2c && object->unknown_7b3 == 0) ||
                 (object->character_context == 0x47 && object->action_movement_state == 1)) {
                 api->respawn_timer = 0.0f;
                 object->flags_e20 |= 2;
-                api->field_281 = 0;
+                api->unknown_281 = 0;
                 api->supporting_platform_id = -1;
                 object->contact_material_word = 0;
                 api->position.x += api->velocity.x * FRAMETIME;
@@ -1741,7 +1742,7 @@ void TerrainPlayer(GAMEOBJECT *object) {
                         }
                         api->is_underwater = ((u8)(UnderWater(object)));
                         api->water_intersects = ((u8)(IntersectWater(object)));
-                        if (api->supporting_platform_id == -1 && api->field_281 != 0 && object->terrain_platform_id != -1) {
+                        if (api->supporting_platform_id == -1 && api->unknown_281 != 0 && object->terrain_platform_id != -1) {
                             api->supporting_platform_id = object->terrain_platform_id;
                         }
                     }
@@ -1751,14 +1752,14 @@ void TerrainPlayer(GAMEOBJECT *object) {
                         api->position.y = api->floor_height - grounded_lower_bound;
                     }
 
-                    api->field_281 = 0;
+                    api->unknown_281 = 0;
                     if (GameObjectNearFloor(object, 1.0f, NULL) != 0) {
-                        api->field_281 |= 2;
+                        api->unknown_281 |= 2;
                     }
                     if (api->collision_min.y <= api->floor_height) {
-                        api->field_281 |= 1;
+                        api->unknown_281 |= 1;
                     }
-                    if ((api->field_281 & 1) != 0) {
+                    if ((api->unknown_281 & 1) != 0) {
                         object->contact_count = 1;
                         object->contact_position.x = api->position.x;
                         object->contact_position.y = api->floor_height;
@@ -1798,7 +1799,7 @@ void TerrainPlayer(GAMEOBJECT *object) {
 
                     object->contact_material_word = 0;
 
-                    if (object->use_model_origin > 0 && api->field_281 != 0 && (movement.x != 0.0f || movement.z != 0.0f) &&
+                    if (object->use_model_origin > 0 && api->unknown_281 != 0 && (movement.x != 0.0f || movement.z != 0.0f) &&
                         !(WORLD->current_level == ENDORBATTLEC_LDATA && object->id == GameObjectRotationAtstId)) {
                         i32 deflection_mode;
 
@@ -1842,8 +1843,8 @@ void TerrainPlayer(GAMEOBJECT *object) {
                         movement.z *= movement_scale;
                     }
                     excluded_count = 0;
-                    if (object->field_106e != -1) {
-                        excluded_platforms[excluded_count++] = object->field_106e;
+                    if (object->unknown_106e != -1) {
+                        excluded_platforms[excluded_count++] = object->unknown_106e;
                     }
                     if (object->level_object_index != -1) {
                         excluded_platforms[excluded_count++] = object->level_object_index;
@@ -1855,7 +1856,7 @@ void TerrainPlayer(GAMEOBJECT *object) {
                         if (target != NULL && target->level_object_index != -1) {
                             excluded_platforms[excluded_count++] = target->level_object_index;
                         }
-                    } else if (object->character_context == 0x58 && object->field_7b3 == 1) {
+                    } else if (object->character_context == 0x58 && object->unknown_7b3 == 1) {
                         TERRAIN_PLAYER_BLOWUP *blowup;
 
                         blowup = object->grapple;
@@ -1886,7 +1887,7 @@ void TerrainPlayer(GAMEOBJECT *object) {
                         PlatOnOff(excluded_platforms[i], 0);
                     }
 
-                    NewTerrainScaleYMask(&collision_position, &movement, ((u8 *)(&object->field_1050)), object_index,
+                    NewTerrainScaleYMask(&collision_position, &movement, ((u8 *)(&object->unknown_1050)), object_index,
                                          entry_pad->input_magnitude > 0.0f ? 0.0f : movement_threshold * FRAMETIME, api->collision_radius,
                                          object->collision_y_scale, 0, 0, terrain_mask);
                     terrain_moved = 1;
@@ -1937,7 +1938,7 @@ void TerrainPlayer(GAMEOBJECT *object) {
                             current_heading = NuAtan2D(current_forward.x, current_forward.z);
                             rotation = NuAngSub(current_heading, previous_heading);
                             if (rotation != 0) {
-                                api->field_0x276 = NuAngAdd(rotation, api->field_0x276);
+                                api->unknown_276 = NuAngAdd(rotation, api->unknown_276);
                                 api->facing_angle = NuAngAdd(rotation, api->facing_angle);
                                 api->movement_facing_angle = NuAngAdd(rotation, api->movement_facing_angle);
                             }
@@ -2005,7 +2006,7 @@ void TerrainPlayer(GAMEOBJECT *object) {
                     } else {
                         GetSurfaceInfo(object, 0, floor_height);
                     }
-                    if (api->supporting_platform_id == -1 && api->field_281 != 0 && object->terrain_platform_id != -1) {
+                    if (api->supporting_platform_id == -1 && api->unknown_281 != 0 && object->terrain_platform_id != -1) {
                         api->supporting_platform_id = object->terrain_platform_id;
                     }
                     if ((0x8000 & api->character_data->game_character->flags_090) == 0 && object->reflection_height == 2000000.0f &&
@@ -2020,16 +2021,16 @@ void TerrainPlayer(GAMEOBJECT *object) {
                     }
                 }
 
-                api->field_281 = object->field_1050 != 0 ? 1 : 0;
+                api->unknown_281 = object->unknown_1050 != 0 ? 1 : 0;
                 if (GameObjectNearFloor(object, 1.0f, NULL) != 0) {
-                    api->field_281 |= 2;
+                    api->unknown_281 |= 2;
                 }
-                if (api->field_281 != 0) {
+                if (api->unknown_281 != 0) {
                     object->flags_ef0 |= 0x2000000;
                 }
             }
 
-            if (api->field_281 != 0 && entry_platform == -1 && api->supporting_platform_id != -1 &&
+            if (api->unknown_281 != 0 && entry_platform == -1 && api->supporting_platform_id != -1 &&
                 api->supporting_platform_id == object->terrain_platform_id && entry_vertical_velocity < 0.0f) {
                 TERRAIN_PLAYER_GRABBER *grabber;
 
@@ -2048,7 +2049,7 @@ void TerrainPlayer(GAMEOBJECT *object) {
                     }
                 }
             }
-            if (api->field_281 == 0 && entry_platform != -1 && api->supporting_platform_id == -1 &&
+            if (api->unknown_281 == 0 && entry_platform != -1 && api->supporting_platform_id == -1 &&
                 object->terrain_platform_id == entry_platform) {
                 TERRAIN_PLAYER_GRABBER *grabber;
 
@@ -2085,7 +2086,7 @@ void TerrainPlayer(GAMEOBJECT *object) {
             }
 
             if (api->dead != 0) {
-                if (api->field_281 != 0) {
+                if (api->unknown_281 != 0) {
                     api->velocity.y = 0.0f;
                     api->flags_1fc_word |= 4;
                 }
@@ -2097,7 +2098,7 @@ void TerrainPlayer(GAMEOBJECT *object) {
                 u32 pressed_buttons;
 
                 if (object->character_context == 0x2b) {
-                    if (api->field_281 != 0 || api->model_draw_result == 0 || object->turn_braking >= 5.0f ||
+                    if (api->unknown_281 != 0 || api->model_draw_result == 0 || object->turn_braking >= 5.0f ||
                         (object->wall_run_state == 3 && object->contact_count != 0)) {
                         if (api->model_draw_result != 0) {
                             InstantKillParts(object, 0, 0.0f);
@@ -2144,7 +2145,7 @@ void TerrainPlayer(GAMEOBJECT *object) {
                                     }
                                 } else if (((api->character_data->model_flags & 0x2000) != 0 ||
                                             (api->character_data->game_character->flags_090 & 0x04000000) != 0) &&
-                                           api->field_283 == 6) {
+                                           api->unknown_283 == 6) {
                                     break;
                                 }
                                 if ((WORLD->area == NULL || WORLD->area != PODSPRINT_ADATA) &&
@@ -2163,7 +2164,7 @@ void TerrainPlayer(GAMEOBJECT *object) {
                                     break;
                                 }
                             }
-                        } else if (api->field_281 != 0 && (WORLD->area == NULL || WORLD->area != PODSPRINT_ADATA)) {
+                        } else if (api->unknown_281 != 0 && (WORLD->area == NULL || WORLD->area != PODSPRINT_ADATA)) {
                             i32 surface;
 
                             surface = ((i8)(api->jump_animation_state));
@@ -2176,7 +2177,7 @@ void TerrainPlayer(GAMEOBJECT *object) {
                         api->water_height != 2000000.0f) {
                         i32 layer;
 
-                        layer = api->field_283;
+                        layer = api->unknown_283;
                         if ((layer == 3 ||
                              (layer == 9 && object->id == (u16)id_TRACTOR && WORLD->area != NULL && WORLD->area == DAGOBAH_ADATA) ||
                              (TerLayer[layer].flags & 0x20) != 0 ||
@@ -2185,9 +2186,9 @@ void TerrainPlayer(GAMEOBJECT *object) {
                             NoLayerKill(object) == 0 && object->character_context != 0x5d) {
                             u32 layer_flags;
 
-                            layer_flags = TerLayer[api->field_283].flags;
-                            if ((((layer_flags & 1) != 0 || (api->field_283 == 9 && object->id == (u16)id_TRACTOR && WORLD->area != NULL &&
-                                                             WORLD->area == DAGOBAH_ADATA)) &&
+                            layer_flags = TerLayer[api->unknown_283].flags;
+                            if ((((layer_flags & 1) != 0 || (api->unknown_283 == 9 && object->id == (u16)id_TRACTOR &&
+                                                             WORLD->area != NULL && WORLD->area == DAGOBAH_ADATA)) &&
                                  api->position.y < api->water_height &&
                                  !(VehicleArea != 0 && BonusArea != 0 && api->character_data->game_character->field_028 > 0.0f) &&
                                  (((api->flags_1fc_word >> 7) & 1) != 0 ||
@@ -2206,7 +2207,7 @@ void TerrainPlayer(GAMEOBJECT *object) {
                                     i32 saved_rescue_surface;
 
                                     saved_rescue_surface = 0;
-                                    if (StartupGameFlag1 == 0 && StartupGameFlag0 == 0 && api->field_283 == 6 &&
+                                    if (StartupGameFlag1 == 0 && StartupGameFlag0 == 0 && api->unknown_283 == 6 &&
                                         (i8)api->jump_animation_state >= 0 && (i8)api->jump_animation_state < 32) {
                                         if ((TerSurface[(i8)api->jump_animation_state].flags & 1) != 0) {
                                             saved_rescue_surface = 1;
@@ -2220,16 +2221,16 @@ void TerrainPlayer(GAMEOBJECT *object) {
                                     {
                                         ClearLastSafeTakeOver(object);
                                         Player_ClearContext(object, 1);
-                                        object->field_7aa = 5;
+                                        object->unknown_7aa = 5;
                                         if (object->character_context != -1 &&
                                             api->character_model->model_data_b[api->anim_packet.requested_animation] != NULL) {
-                                            object->field_7aa = api->anim_packet.requested_animation;
+                                            object->unknown_7aa = api->anim_packet.requested_animation;
                                         }
                                         object->character_context = 0x2b;
                                         object->jump_variant_state = 0;
-                                        if ((TerLayer[api->field_283].flags & 0x20) != 0) {
+                                        if ((TerLayer[api->unknown_283].flags & 0x20) != 0) {
                                             object->wall_run_state = 3;
-                                        } else if (saved_rescue_surface || api->field_283 == 6) {
+                                        } else if (saved_rescue_surface || api->unknown_283 == 6) {
                                             api->velocity.y = -0.25f;
                                             object->wall_run_state = 2;
                                             NewBuzz(object->pad->bound_pad, 0.1f, 0);
@@ -2250,9 +2251,9 @@ void TerrainPlayer(GAMEOBJECT *object) {
 
                                             coins = LoseCoins(object, 2);
                                             if (coins > 0) {
-                                                AddPickups(coins, 0, 0, 0, &api->collision_position, NULL, 2.0f, ((i8)(api->field_280)),
+                                                AddPickups(coins, 0, 0, 0, &api->collision_position, NULL, 2.0f, ((i8)(api->unknown_280)),
                                                            1.0f,
-                                                           api->water_height != 2000000.0f && (TerLayer[api->field_283].flags & 1) != 0
+                                                           api->water_height != 2000000.0f && (TerLayer[api->unknown_283].flags & 1) != 0
                                                                ? api->water_height
                                                                : 2000000.0f,
                                                            NULL, 1, 0);
@@ -2263,13 +2264,13 @@ void TerrainPlayer(GAMEOBJECT *object) {
                                 rescue_done:;
                                 }
                             } else if ((api->character_data->model_flags & 0x40) == 0 && object->id != (u16)id_SNAKE &&
-                                       api->field_283 == 9 && api->collision_max.y < api->water_height) {
+                                       api->unknown_283 == 9 && api->collision_max.y < api->water_height) {
                                 if (BonusWinner == -1) {
                                     i32 coins;
 
                                     coins = LoseCoins(object, 2);
                                     if (coins > 0) {
-                                        AddPickups(coins, 0, 0, 0, &api->upper_position, NULL, 2.0f, ((i8)(api->field_280)), 1.0f,
+                                        AddPickups(coins, 0, 0, 0, &api->upper_position, NULL, 2.0f, ((i8)(api->unknown_280)), 1.0f,
                                                    2000000.0f, NULL, 1, 0);
                                     }
                                 }
@@ -2333,9 +2334,9 @@ void TerrainPlayer(GAMEOBJECT *object) {
     }
 
     entry_pad->runtime_flags &= ~0x16u;
-    object->field_d20 = 0;
+    object->unknown_d20 = 0;
     entry_pad->operator_data = NULL;
-    NuVecRotateYValZ(&object->facing_direction, 1.0f, object->field_0x276);
+    NuVecRotateYValZ(&object->facing_direction, 1.0f, object->unknown_276);
 }
 
 void AnimatePlayer(GAMEOBJECT *object) {
@@ -2595,11 +2596,11 @@ void ParaphernaliaCommunicate(GAMEOBJECT *object, i32 reflection) {
         scaling.z = object->communicate_blend * object->origin_scale;
         scaling.x = scaling.y = scaling.z;
         NuMtxSetScale(&matrix, &scaling);
-        GameDrawMtxRotateY(&matrix, object->field_0x276 + 0x8000);
+        GameDrawMtxRotateY(&matrix, object->unknown_276 + 0x8000);
         matrix.m30 = object->locator_matrices[locator].m30;
         matrix.m31 = object->locator_matrices[locator].m31;
         matrix.m32 = object->locator_matrices[locator].m32;
-        if (object->field_283 == 9 && matrix.m31 < object->water_height) {
+        if (object->unknown_283 == 9 && matrix.m31 < object->water_height) {
             matrix.m31 = object->water_height;
         }
         model = 0x19;
@@ -2642,12 +2643,12 @@ static void ParaphernaliaPlace(GAMEOBJECT *object, i32 model, i32 reflection, i3
     if (WORLD->level_objects[model].active == 0 || locator == -1 || object->character_model->points_of_interest[locator] == NULL) {
         return;
     }
-    frame = AnimPlaying(&object->anim_packet, object->field_7aa, 1, 0);
+    frame = AnimPlaying(&object->anim_packet, object->unknown_7aa, 1, 0);
     if (frame == NULL) {
         return;
     }
-    end = NuAnimEndFrame(object->character_model->model_data_b[object->field_7aa]);
-    start = AnimListFrame(object->character_model, object->field_7aa, 0);
+    end = NuAnimEndFrame(object->character_model->model_data_b[object->unknown_7aa]);
+    start = AnimListFrame(object->character_model, object->unknown_7aa, 0);
     if (start >= end) {
         return;
     }
@@ -2657,7 +2658,7 @@ static void ParaphernaliaPlace(GAMEOBJECT *object, i32 model, i32 reflection, i3
     if (*frame < start) {
         return;
     }
-    marker = AnimListFrame(object->character_model, object->field_7aa, 1);
+    marker = AnimListFrame(object->character_model, object->unknown_7aa, 1);
     if (marker <= start) {
         return;
     }
@@ -2705,12 +2706,12 @@ static void ParaphernaliaRemove(GAMEOBJECT *object, i32 model, i32 reflection, i
     if (WORLD->level_objects[model].active == 0 || locator == -1 || object->character_model->points_of_interest[locator] == NULL) {
         return;
     }
-    frame = AnimPlaying(&object->anim_packet, object->field_7aa, 1, 0);
+    frame = AnimPlaying(&object->anim_packet, object->unknown_7aa, 1, 0);
     if (frame == NULL) {
         return;
     }
-    end = NuAnimEndFrame(object->character_model->model_data_b[object->field_7aa]);
-    start = AnimListFrame(object->character_model, object->field_7aa, 0);
+    end = NuAnimEndFrame(object->character_model->model_data_b[object->unknown_7aa]);
+    start = AnimListFrame(object->character_model, object->unknown_7aa, 0);
     if (start >= end) {
         return;
     }
@@ -2720,11 +2721,11 @@ static void ParaphernaliaRemove(GAMEOBJECT *object, i32 model, i32 reflection, i
     if (*frame < start) {
         return;
     }
-    fade_start = AnimListFrame(object->character_model, object->field_7aa, 1);
+    fade_start = AnimListFrame(object->character_model, object->unknown_7aa, 1);
     if (fade_start <= start) {
         return;
     }
-    fade_end = AnimListFrame(object->character_model, object->field_7aa, 2);
+    fade_end = AnimListFrame(object->character_model, object->unknown_7aa, 2);
     if (fade_end < fade_start) {
         fade_end = fade_start;
     }
@@ -3235,7 +3236,7 @@ void FixUpLayers(void) {
 
 i32 fun_0041aec0(GAMEOBJECT *object) {
     u8 context = (u8)object->character_context;
-    if (context == 0x4d && object->field_7b3 == 0) {
+    if (context == 0x4d && object->unknown_7b3 == 0) {
         return 2;
     }
     return (context == 0x52) + 1;
@@ -3271,7 +3272,7 @@ void ResetPlayerMoves(GAMEOBJECT *object) {
         ResetAnimPacket(&object->anim_packet, -1);
     }
     object->field_282 = 0;
-    object->field_281 = 0;
+    object->unknown_281 = 0;
     SetGameObjectCharacterData(object);
     object->spawn_protection_timer = 0.0f;
     SetFlicker(object, 0.0f);
@@ -3360,7 +3361,7 @@ void InitPlayerAI(GAMEOBJECT *object) {
         object->portal_flags &= ~0x100000u;
     }
     object->tag_flags &= ~2u;
-    object->field_ec4 = 0.0f;
+    object->unknown_ec4 = 0.0f;
     object->ai_packet.flags &= 0xffffafff;
     object->ai_packet.target_metric_e0 = 1000000000.0f;
     object->ai_packet.target_metric_f0 = 1000000000.0f;
@@ -3375,8 +3376,8 @@ void InitPlayerAI(GAMEOBJECT *object) {
     object->ai_packet.target_ec = NULL;
     object->ai_awareness_mask = 0;
     object->ai_seen_mask = 0;
-    object->field_eb0 = 0;
-    object->field_eb4 = 0;
+    object->unknown_eb0 = 0;
+    object->unknown_eb4 = 0;
     object->opponent = NULL;
     object->last_attacker = NULL;
     object->ai_opponent_exclusion_mask[0] = 0;
@@ -3389,7 +3390,7 @@ void InitPlayerAI(GAMEOBJECT *object) {
     object->collision_link = NULL;
     object->collision_exclusion_mask[0] = 0;
     object->collision_exclusion_mask[1] = 0;
-    if ((character->model_flags & 0x4000) != 0 && (object->field_280 == 0xff || object->rider != NULL)) {
+    if ((character->model_flags & 0x4000) != 0 && (object->unknown_280 == 0xff || object->rider != NULL)) {
         object->flags_1fc_word |= 2;
     } else {
         object->flags_1fc_word &= ~2u;
@@ -3404,9 +3405,9 @@ void InitPlayerAI(GAMEOBJECT *object) {
     object->animation_speed_multiplier = 1.0f;
     object->flags_ef0 &= 0xfbbfffff;
     object->flags_ef8_word &= 0xfffffff3;
-    object->field_1038 = 0.0f;
+    object->unknown_1038 = 0.0f;
     object->indy_climb = NULL;
-    object->field_1083 = 0;
+    object->unknown_1083 = 0;
     object->gizforce_target = NULL;
     ResetPlayerAI(object);
 }
@@ -3456,7 +3457,7 @@ i32 NewPlayerCharacter(GAMEOBJECT *object, i32 id, i32 old_id, i32 unused) {
     object->character_data = (CHARACTERDATA_PC *)&apicharsys->char_data[id];
     velocity = object->velocity;
     health = object->current_hp;
-    hitpoints = object->field_107e;
+    hitpoints = object->unknown_107e;
     saved_flag = object->flags_1fc_bit_13;
     object->takeover_owner = NULL;
     object->suit = Suit_GetDefault(id);
@@ -3496,11 +3497,11 @@ i32 NewPlayerCharacter(GAMEOBJECT *object, i32 id, i32 old_id, i32 unused) {
     object->pause_context_state = 0.0f;
     object->flags_ef0 &= ~0x80000u;
     object->current_hp = health;
-    object->field_107e = hitpoints;
+    object->unknown_107e = hitpoints;
     object->flags_1fc_bit_13 = saved_flag;
     ResetMiniAnimPacket((MINIANIMPACKET_PC *)object->mini_anim_packet, -1);
     object->weapon_scale = ((object->flags_e20 >> 16) & 1) != 0 ? 1.0 : 0.0;
-    object->field_e33 = 0;
+    object->unknown_e33 = 0;
     if (on_surface == 0) {
         object->velocity.y = velocity.y;
     } else {
@@ -3555,7 +3556,7 @@ void ResetAICreature(GAMEOBJECT *object, AISYS_PC *system) {
     ResetPlayerMoves(object);
     Player_ClearContext(object, 1);
     Player_ResetContexts(object->unknown_06c4);
-    object->current_hp = object->field_107e = object->character_data->game_character->hitpoints;
+    object->current_hp = object->unknown_107e = object->character_data->game_character->hitpoints;
     object->shield_hitpoints = object->character_data->game_character->shield_hitpoints;
     object->saved_hitpoints = 4;
     creature = &system->creatures[object->ai_packet.creature_index];
@@ -3596,7 +3597,7 @@ void ResetAICreature(GAMEOBJECT *object, AISYS_PC *system) {
     object->velocity = object->reset_velocity;
     InitSurfaceInfo(object);
     SetObjOnSurface(object, 0);
-    object->field_0x276 = (u16)angle;
+    object->unknown_276 = (u16)angle;
     object->facing_angle = (u16)angle;
     object->movement_facing_angle = (u16)angle;
     NuVecRotateYValZ(&object->facing_direction, 1.0f, (u16)angle);
@@ -3608,7 +3609,7 @@ void ResetAICreature(GAMEOBJECT *object, AISYS_PC *system) {
     object->ai_packet.inside_path_node = -1;
     object->ai_packet.current_route = 0xff;
     object->ai_packet.next_route = 0;
-    AISysGetCharacterPathPos(WORLD->ai_sys, (APIOBJECT *)object, &object->ai_packet, 0xff, (i8)object->field_281);
+    AISysGetCharacterPathPos(WORLD->ai_sys, (APIOBJECT *)object, &object->ai_packet, 0xff, (i8)object->unknown_281);
     ResetAnimPacket(&object->anim_packet, 1);
     SetAnimTimeRandom(object->character_model, &object->anim_packet);
     object->ai_packet.movement_stopping_distance = 0.0f;
@@ -3630,7 +3631,7 @@ void ResetAICreature(GAMEOBJECT *object, AISYS_PC *system) {
         if (object->ai_packet.group_column == 0) {
             row->position = object->position;
             row->path_info = object->ai_packet.path_info;
-            row->rotation = object->field_0x276;
+            row->rotation = object->unknown_276;
             row->flags &= ~2u;
             row->next_connection = NULL;
         }
@@ -3640,7 +3641,7 @@ void ResetAICreature(GAMEOBJECT *object, AISYS_PC *system) {
     if ((object->character_data->model_flags & 0x20000000) != 0 && object->character_model->action_animations[0x41] != NULL) {
         object->context_timer = 1000000000.0f;
         object->character_context = 0x17;
-        object->field_7aa = 0x41;
+        object->unknown_7aa = 0x41;
         ResetAnimPacket(&object->anim_packet, 0x41);
     }
 }
@@ -3707,7 +3708,7 @@ i32 InitCreature(GAMEOBJECT *object, i32 id, i32 parameter) {
     object->flags_1f8 = 0;
     object->level_object_index = -1;
     memset(((CREATURE_RESET_PACKET_VIEW *)object)->packet, 0, 0x788);
-    object->field_280 = -1;
+    object->unknown_280 = -1;
     start = *Player_StartPos(object);
     object->flags_1f8 |= 2;
     if (parameter != 0) {
@@ -3718,7 +3719,7 @@ i32 InitCreature(GAMEOBJECT *object, i32 id, i32 parameter) {
     }
     object->pad = GamePad_Allocate();
     object->pad->input_mode = 1;
-    object->current_hp = object->field_107e = object->character_data->game_character->hitpoints;
+    object->current_hp = object->unknown_107e = object->character_data->game_character->hitpoints;
     ResetPlayerPacket(((CREATURE_RESET_PACKET_VIEW *)object)->packet, object->character_data);
     object->movement_direction = v000;
     object->shield_hitpoints = object->character_data->game_character->shield_hitpoints;
@@ -3842,7 +3843,7 @@ i32 GameDrawCharacterModel(CHARACTER_MODEL_LAYERS *model, ANIMPACKET_PC *animati
     if (PcWindowOptions.shadowmethod == 1 && draw_shadow && secondary_matrix != NULL && object != NULL) {
         u8 level_alpha = WORLD->current_level->blob_shadow_alpha;
         if (level_alpha > 0 && object->shadow_opacity > 0.0f && object->surface_normal.y > 0.0f &&
-            (object->water_height == -1.0f || (TerLayer[object->field_283].flags & 1) == 0)) {
+            (object->water_height == -1.0f || (TerLayer[object->unknown_283].flags & 1) == 0)) {
             if ((i16)object->id == id_MOUSEDROID && WORLD->level_objects[0xa2].active != 0) {
                 f32 opacity;
                 special_matrix = *secondary_matrix;
@@ -3857,8 +3858,8 @@ i32 GameDrawCharacterModel(CHARACTER_MODEL_LAYERS *model, ANIMPACKET_PC *animati
                     if (radius > 0.0f) {
                         radius = DropInOutScale(object) * radius;
                         NuRndrAddShadow(&secondary_matrix->translation, object->origin_scale * radius,
-                                        alpha * object->shadow_opacity * object->surface_normal.y, object->field_1052, 0,
-                                        object->field_1054);
+                                        alpha * object->shadow_opacity * object->surface_normal.y, object->unknown_1052, 0,
+                                        object->unknown_1054);
                     }
                 }
             }
@@ -3892,13 +3893,13 @@ i32 DrawGameObjectsProcess(void) {
         object->flags_e24 &= ~8u;
         ((DRAW_PROCESS_FLAGS *)object)->origin_joint_was_ready = object->origin_joint_ready;
         object->origin_joint_ready = 0;
-        if (object->dead != 0 && (object->field_1010 > 0.0f || object->death_delay == 0.0f)) {
+        if (object->dead != 0 && (object->unknown_1010 > 0.0f || object->death_delay == 0.0f)) {
             continue;
         }
         if ((object->flags_e20 & 0x20) != 0 && object->character_context != 0x23 && object->character_context != 0x24) {
             continue;
         }
-        if (object->character_context == 0xf && object->field_7b3 == 1 && ((DRAW_PREPASS_TELEPORT_OBJECT *)object)->teleport != NULL &&
+        if (object->character_context == 0xf && object->unknown_7b3 == 1 && ((DRAW_PREPASS_TELEPORT_OBJECT *)object)->teleport != NULL &&
             (((DRAW_PREPASS_TELEPORT_OBJECT *)object)->teleport->flags & 4) == 0) {
             continue;
         }
@@ -3925,7 +3926,7 @@ i32 DrawGameObjectsProcess(void) {
                 if (object->pitch_angle != 0) {
                     GameDrawMtxRotateX(&orientation, object->pitch_angle);
                 }
-                angle = object->field_0x276;
+                angle = object->unknown_276;
                 if (angle != 0) {
                     GameDrawMtxRotateY(&orientation, angle);
                 }
@@ -3936,7 +3937,7 @@ i32 DrawGameObjectsProcess(void) {
                 NuMtxTranslate(&matrix, &position);
                 break;
             case 1:
-                GameDrawMtxSetYRotation(&orientation, object->field_0x276 + 0x8000);
+                GameDrawMtxSetYRotation(&orientation, object->unknown_276 + 0x8000);
                 if (object->pitch_angle != 0) {
                     GameDrawMtxRotateX(&orientation, object->pitch_angle);
                 }
@@ -3954,7 +3955,7 @@ i32 DrawGameObjectsProcess(void) {
                 if (object->pitch_angle != 0) {
                     GameDrawMtxRotateX(&orientation, object->pitch_angle);
                 }
-                angle = object->field_0x276;
+                angle = object->unknown_276;
                 if (angle != 0) {
                     GameDrawMtxRotateY(&orientation, angle);
                 }
@@ -3974,7 +3975,7 @@ i32 DrawGameObjectsProcess(void) {
                 break;
             default:
             case 2:
-                GameDrawMtxSetYRotation(&orientation, object->field_0x276 + 0x8000);
+                GameDrawMtxSetYRotation(&orientation, object->unknown_276 + 0x8000);
                 if (object->roll_angle != 0) {
                     GameDrawMtxRotateZ(&orientation, object->roll_angle);
                 }
@@ -4023,22 +4024,22 @@ i32 DrawGameObjectsProcess(void) {
         }
         object->flags_1f8 ^= 0x800;
         object->flags_ef0 &= ~0x20000u;
-        *(u8 *)&object->field_107c = 0;
+        *(u8 *)&object->unknown_107c = 0;
         if (object->reflection_enabled != 0 && (f64)object->reflection_height != 2000000.0 &&
             object->ai_update_distance < WORLD->current_level->reflection_range) {
-            *(u8 *)&object->field_107c = (u8)MatrixReflection(&matrix, object->reflection_enabled, object->reflection_height,
-                                                              WORLD->current_level->reflection_y, &reflected);
+            *(u8 *)&object->unknown_107c = (u8)MatrixReflection(&matrix, object->reflection_enabled, object->reflection_height,
+                                                                WORLD->current_level->reflection_y, &reflected);
             object->draw_tertiary_mtx = reflected;
         }
         if (object->dead == 0 && (f64)object->floor_height != 2000000.0 && (object->flags_1f8 & 0x40) != 0 &&
             object->character_data->game_character->shadow_locators == 0) {
             GameDrawMtxCopy(&shadow, &ANI3_EVAL_IDENTITY_MATRIX);
-            GameDrawMtxRotateY(&shadow, object->field_0x276 + 0x8000);
-            if (object->field_1054 != 0) {
-                GameDrawMtxRotateZ(&shadow, object->field_1054);
+            GameDrawMtxRotateY(&shadow, object->unknown_276 + 0x8000);
+            if (object->unknown_1054 != 0) {
+                GameDrawMtxRotateZ(&shadow, object->unknown_1054);
             }
-            if (object->field_1052 != 0) {
-                GameDrawMtxRotateX(&shadow, object->field_1052);
+            if (object->unknown_1052 != 0) {
+                GameDrawMtxRotateX(&shadow, object->unknown_1052);
             }
             shadow.m30 = object->position.x;
             object->flags_ef0 |= 0x20000;
@@ -4100,9 +4101,9 @@ void DrawWeapons(GAMEOBJECT *object, i32 reflection, f32 weapon_scale) {
                 if (object->id == (u16)id_JANGOFETT) {
                     rotation = 0xd1c8;
                 } else if (models[0] == 0x65 || models[0] == 0x67 || models[0] == 0x69 || models[0] == 0x6b) {
-                    if (object->field_280 != 0xff && Cheat_IsOn(25)) {
+                    if (object->unknown_280 != 0xff && Cheat_IsOn(25)) {
                         red = 1;
-                    } else if (object->field_280 != 0xff && Player_HasPurpleForce(object)) {
+                    } else if (object->unknown_280 != 0xff && Player_HasPurpleForce(object)) {
                         purple = 1;
                     } else if (models[0] == 0x65) {
                         red = 1;
@@ -4144,11 +4145,11 @@ void DrawWeapons(GAMEOBJECT *object, i32 reflection, f32 weapon_scale) {
                     } else if (data->streak_color == 3) {
                         purple = 1;
                     }
-                    if (object->field_280 != 0xff && Cheat_IsOn(25)) {
+                    if (object->unknown_280 != 0xff && Cheat_IsOn(25)) {
                         red = 1;
                         green = blue = purple = 0;
                     } else if (red || green || blue || purple) {
-                        if (object->field_280 != 0xff && Player_HasPurpleForce(object)) {
+                        if (object->unknown_280 != 0xff && Player_HasPurpleForce(object)) {
                             purple = 1;
                             red = green = blue = 0;
                         } else if (green && object->id == (u16)id_GRIEVOUS && (hand == 0 || hand == 3)) {
@@ -4223,7 +4224,8 @@ void DrawWeapons(GAMEOBJECT *object, i32 reflection, f32 weapon_scale) {
                         }
                     }
                     if (!side && object->id == (u16)id_DARTHMAUL &&
-                        ((object->field_280 != 0xff && Cheat_IsOn(25)) || (object->field_280 != 0xff && Player_HasPurpleForce(object)))) {
+                        ((object->unknown_280 != 0xff && Cheat_IsOn(25)) ||
+                         (object->unknown_280 != 0xff && Player_HasPurpleForce(object)))) {
                         scale.z = scale.x = 1.0f;
                         scale.y = -1.0f;
                         blade_matrix = saved_matrix;
@@ -4260,7 +4262,7 @@ static void DrawExtraCharacterLayerBits(GAMEOBJECT *object, i32 character_id, NU
     } else {
         matrix = joint_matrices[locator];
     }
-    if ((u8)object->field_107c != 0 && (f64)object->reflection_height != 2000000.0 &&
+    if ((u8)object->unknown_107c != 0 && (f64)object->reflection_height != 2000000.0 &&
         MatrixReflection(&matrix, object->reflection_enabled, object->reflection_height, WORLD->current_level->reflection_y, &reflected) !=
             0) {
         reflection = &reflected;
@@ -4406,11 +4408,11 @@ void DrawParaphernalia(GAMEOBJECT *object) {
             matrix = object->locator_matrices[passenger_locator];
         } else {
             passenger_rotation.x = -0x4000;
-            passenger_rotation.y = object->field_0x276;
+            passenger_rotation.y = object->unknown_276;
             NuMtxSetRotationXYVU0(&matrix, &passenger_rotation);
-            matrix.m30 = object->position.x + NuTrigTable[object->field_0x276 >> 1] * object->bounds_radius * 1.75;
+            matrix.m30 = object->position.x + NuTrigTable[object->unknown_276 >> 1] * object->bounds_radius * 1.75;
             matrix.m31 = object->collision_min.y + (object->collision_max.y - object->collision_min.y) * 0.6000000238418579;
-            matrix.m32 = object->position.z + NuTrigTable[((object->field_0x276 + 0x4000) >> 1) & 0x7fff] * object->bounds_radius * 1.75;
+            matrix.m32 = object->position.z + NuTrigTable[((object->unknown_276 + 0x4000) >> 1) & 0x7fff] * object->bounds_radius * 1.75;
         }
         GameDrawCharacterModel(passenger->character_model, &passenger->anim_packet, &matrix, NULL, NULL, NULL, NULL,
                                passenger->character_data->game_character->layer_mask_medium);
@@ -4440,7 +4442,7 @@ void DrawParaphernalia(GAMEOBJECT *object) {
                               object->locator_matrices, extra->draw_reflection, object->layer_mask, NULL, NULL, 1.0f, 1.0f);
     } else if (object->weapon_scale > 0.0f) {
         DrawWeapons(object, extra->draw_reflection, object->weapon_scale);
-        if (object->field_d54 > 0.0f) {
+        if (object->unknown_d54 > 0.0f) {
             dco_locatorposonly = 1;
             DrawObjectOnCharacter(WORLD, object, 0x35, NULL, object->character_data->game_character->weapon_shoot_joints[0], -1,
                                   object->locator_matrices, extra->draw_reflection, object->layer_mask, NULL, NULL, 1.0f, 1.0f);
@@ -4475,10 +4477,10 @@ void DrawParaphernalia(GAMEOBJECT *object) {
             }
             DrawForceGlowSprite(&glow_position, glow_radius, 0xdf, glow_alpha, object);
         }
-    } else if (extra->force_alpha > 0.0f && extra->force_radius > 0.0f && WORLD->level_objects[object->field_e1e].active != 0 &&
+    } else if (extra->force_alpha > 0.0f && extra->force_radius > 0.0f && WORLD->level_objects[object->unknown_e1e].active != 0 &&
                (object->character_data->game_character->flags_090 & 0x400) == 0) {
         held_glow_alpha = (extra->force_alpha / FORCEGLOWTIME);
-        DrawForceGlowSprite(&extra->force_position, extra->force_radius, object->field_e1e, held_glow_alpha, object);
+        DrawForceGlowSprite(&extra->force_position, extra->force_radius, object->unknown_e1e, held_glow_alpha, object);
     }
     if (Cheat_IsOn(2)) {
         DrawObjectOnCharacter(WORLD, object, 0xe7, NULL, object->character_data->game_character->head_locator, -1, object->locator_matrices,
@@ -4500,10 +4502,11 @@ void DrawParaphernalia(GAMEOBJECT *object) {
     if (object->character_context == 0x2d) {
         GizDrawBuildItPiece(object, extra->draw_reflection);
     }
-    if (object->character_context == 0x48 && object->character_model->model_data_b[object->field_7aa] != NULL && object->field_7b3 == 0) {
+    if (object->character_context == 0x48 && object->character_model->model_data_b[object->unknown_7aa] != NULL &&
+        object->unknown_7b3 == 0) {
         ParaphernaliaPlace(object, 0xec, extra->draw_reflection, object->character_data->game_character->place_locator);
-    } else if (object->character_context == 0x49 && object->character_model->model_data_b[object->field_7aa] != NULL &&
-               object->field_7b3 != 0) {
+    } else if (object->character_context == 0x49 && object->character_model->model_data_b[object->unknown_7aa] != NULL &&
+               object->unknown_7b3 != 0) {
         ParaphernaliaRemove(object, 0xec, extra->draw_reflection, object->character_data->game_character->place_locator);
     }
     if ((object->flags_e20 & 0x400000) != 0) {
@@ -4583,7 +4586,7 @@ void DrawParaphernalia(GAMEOBJECT *object) {
                 special_scaling.y = special_scaling.z = special_scaling.x;
                 NuMtxSetScale(&matrix, &special_scaling);
                 NuMtxRotateX(&matrix, ((u16)(((i32)(fraction * -65536.0)))));
-                NuMtxRotateY(&matrix, object->field_0x276);
+                NuMtxRotateY(&matrix, object->unknown_276);
                 NuMtxTranslate(&matrix, &object->locator_matrices[0].translation);
                 special_phase = ((i32)(fraction * 32768.0));
                 matrix.m31 = matrix.m31 + NuTrigTable[(special_phase >> 1) & 0x7fff] * 0.20000000298023224;
@@ -4610,16 +4613,16 @@ void DrawGameObjectsDraw(i32 pass) {
         }
         drawn = (u8)GameDrawCharacterModel(object->character_model, &object->anim_packet, &object->transform,
                                            (object->flags_ef0 & 0x20000) != 0 ? &object->draw_secondary_mtx : NULL,
-                                           (u8)object->field_107c != 0 ? &object->draw_tertiary_mtx : NULL, object->locator_matrices,
+                                           (u8)object->unknown_107c != 0 ? &object->draw_tertiary_mtx : NULL, object->locator_matrices,
                                            object, object->layer_mask);
         object->model_draw_result = drawn;
         ((DRAW_OBJECTS_FLAGS *)object)->locators_updated = drawcharactermodel_locatorsupdated;
         if (drawn != 0) {
             DrawParaphernalia(object);
         } else if (((object->flags_e20 & 0x400) != 0 || object->character_context == 8) && object->transform_alpha > 0.0f &&
-                   object->transform_target_scale > 0.0f && WORLD->level_objects[object->field_e1e].active != 0 &&
+                   object->transform_target_scale > 0.0f && WORLD->level_objects[object->unknown_e1e].active != 0 &&
                    (object->character_data->game_character->flags_090 & 0x400) == 0) {
-            DrawForceGlowSprite(&((PARAPHERNALIA_EXTRA *)object)->force_position, object->transform_target_scale, object->field_e1e,
+            DrawForceGlowSprite(&((PARAPHERNALIA_EXTRA *)object)->force_position, object->transform_target_scale, object->unknown_e1e,
                                 object->transform_alpha / FORCEGLOWTIME, object);
         }
         if (object->snake_body != NULL) {
@@ -4660,7 +4663,7 @@ GAMEOBJECT *ActivateCharacter(char *name, NUVEC *position, i32 angle) {
             AIScriptSetBaseScriptStateByName(&object->ai_packet.script_processor, "Base");
             if (position != NULL) {
                 object->position = *position;
-                object->movement_facing_angle = object->facing_angle = object->field_0x276 = (u16)angle;
+                object->movement_facing_angle = object->facing_angle = object->unknown_276 = (u16)angle;
                 AISysGetCharacterPathPos(WORLD->ai_sys, (APIOBJECT *)object, &object->ai_packet, 0xff, 1);
                 object->initial_position = object->position;
                 object->collision_position = object->position;
@@ -4742,15 +4745,15 @@ void Players_Init(void) {
             api = (APIOBJECT *)object;
             players[PLAYERCOUNT] = object;
             object->previous_sock_position = &OldPlrSPos[PLAYERCOUNT];
-            players[PLAYERCOUNT]->field_280 = (u8)PLAYERCOUNT;
+            players[PLAYERCOUNT]->unknown_280 = (u8)PLAYERCOUNT;
             ((PLAYER_INIT_EXTRA *)players[PLAYERCOUNT])->batarang = &BatarangPackets[PLAYERCOUNT];
             players[PLAYERCOUNT]->torpedo = GetTorpedoPacket();
             ++PLAYERCOUNT;
             object->flags_1044 |= 1;
-            object->field_107e = (u8)DEFAULT_PLAYERHITPOINTS;
+            object->unknown_107e = (u8)DEFAULT_PLAYERHITPOINTS;
             object->helmet = 0;
             if (UsePlayerList != 0) {
-                i32 slot = (i8)object->field_280;
+                i32 slot = (i8)object->unknown_280;
                 object->player_controlled = PlayerProgress[slot].active;
                 if (Area != last_area) {
                     object->flags_e20 &= ~0x10000u;
@@ -4758,8 +4761,8 @@ void Players_Init(void) {
                 } else if (UsePlayerList == 1) {
                     ((PLAYER_INIT_FLAGS *)object)->stored_flag = PlayerProgress[slot].field_7;
                     object->current_hp = PlayerProgress[slot].hitpoints;
-                    if (object->current_hp > object->field_107e) {
-                        object->current_hp = (i8)object->field_107e;
+                    if (object->current_hp > object->unknown_107e) {
+                        object->current_hp = (i8)object->unknown_107e;
                     }
                     object->helmet = PlayerProgress[slot].field_a;
                     extra->previous_state = PlayerProgress[slot].unknown_0004;
@@ -4791,12 +4794,12 @@ void Players_Init(void) {
             object->ai_packet.target_dc = NULL;
             object->ai_packet.opponent = NULL;
             object->ai_packet.target_ec = NULL;
-            object->field_ec4 = 0.0f;
-            extra->field_454 = 0.0f;
+            object->unknown_ec4 = 0.0f;
+            extra->unknown_454 = 0.0f;
             object->ai_awareness_mask = 0;
             object->ai_seen_mask = 0;
-            object->field_eb0 = 0;
-            object->field_eb4 = 0;
+            object->unknown_eb0 = 0;
+            object->unknown_eb4 = 0;
             object->opponent = NULL;
             object->last_attacker = NULL;
             object->alert_target = NULL;

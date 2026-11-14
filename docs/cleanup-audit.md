@@ -176,7 +176,7 @@ The 20 most-used resolved fields (the pilot batch, section 8):
 | 4 | `gameobject_s.flags_e20` | u32 | flags | 248 | 32 | - |
 | 5 | `gameobject_s.flags_1fc` | u8 | flags | 239 | 4 | - |
 | 6 | `STATUS_STAGE_s.field_0x14` | i32 | enum | 207 | 10 | - |
-| 7 | `gameobject_s.field_7aa` | i16 | enum | 206 | 104 | 78 named uses (animation ids) |
+| 7 | `gameobject_s.unknown_7aa` | i16 | enum | 206 | 104 | 78 named uses (animation ids) |
 | 8 | `gameobject_s.context_variant_flags` | u32 | flags | 206 | 18 | - |
 | 9 | `gameobject_s.flags_1f8` | u32 | flags | 175 | 15 | - |
 | 10 | `gameobject_s.portal_flags` | u32 | flags | 154 | 31 | - |

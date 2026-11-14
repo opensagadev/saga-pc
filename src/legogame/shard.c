@@ -157,7 +157,7 @@ void Shards_UpdateAfterCharacters(WORLDINFO *world, void *unused, f32 delta_time
             shard->current_position.z = (f64)shard->current_position.z + (f64)shard->collection_velocity.z * (f64)FRAMETIME;
             if (NuVecDistSqr(&shard->current_position, &target, NULL) < ForcePushApproachOuterSquare) {
                 shard->state_flags = (shard->state_flags & ~4u) | 8;
-                ++shard->collector->field_1062;
+                ++shard->collector->unknown_1062;
                 NewBuzzFrames(shard->collector->pad->bound_pad, 1, 0);
             }
         } else if ((shard->state_flags & 0x20) != 0) {

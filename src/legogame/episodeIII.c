@@ -67,7 +67,7 @@ typedef struct kaminoe_turret_reader_s { // size 0x140
     u8 opaque_e8_12c[0x44];              // 0x0e8
     u8 field_12c;                        // 0x12c
     u8 opaque_12d;                       // 0x12d
-    u8 field_12e;                        // 0x12e
+    u8 unknown_12e;                      // 0x12e
     u8 opaque_12f_13a[0xb];              // 0x12f
     u16 flags_13a;                       // 0x13a
     u8 opaque_13c_140[0x4];              // 0x13c
@@ -229,7 +229,7 @@ void CruiserCUpdate(WORLDINFO *world) {
     if (FreePlay == 0 && cruiser_c.palpatine != NULL && cruiser_c.palpatine_locator != NULL && cruiser_c.free_palpatine != NULL &&
         cruiser_c.free_palpatine->value < 2.0f) {
         cruiser_c.palpatine->position = cruiser_c.palpatine_locator->position;
-        cruiser_c.palpatine->field_0x276 = cruiser_c.palpatine_locator->rotation;
+        cruiser_c.palpatine->unknown_276 = cruiser_c.palpatine_locator->rotation;
     }
 }
 
@@ -807,14 +807,14 @@ void VaderC_Update(WORLDINFO *world) {
             player->supporting_platform_id != -1) {
             vader_c.big_jump_locator->position = player->lower_position;
             for (i = 0; i < 10; i++) {
-                if (Player[0] != NULL && vader_c.platform_ids[i] != -1 && ((GAMEOBJECT *)Player[0])->field_281 != 0 &&
+                if (Player[0] != NULL && vader_c.platform_ids[i] != -1 && ((GAMEOBJECT *)Player[0])->unknown_281 != 0 &&
                     ((GAMEOBJECT *)Player[0])->supporting_platform_id == vader_c.platform_ids[i] &&
                     ((GAMEOBJECT *)Player[0])->position.y >= ((TERRAIN_SET_READER *)CurTerr)
                                                                  ->platforms[((GAMEOBJECT *)Player[0])->supporting_platform_id]
                                                                  .scene_object->translation.y) {
                     vader_c.progress_mask |= 1;
                 }
-                if (Player[1] != NULL && vader_c.platform_ids[i] != -1 && ((GAMEOBJECT *)Player[1])->field_281 != 0 &&
+                if (Player[1] != NULL && vader_c.platform_ids[i] != -1 && ((GAMEOBJECT *)Player[1])->unknown_281 != 0 &&
                     ((GAMEOBJECT *)Player[1])->supporting_platform_id == vader_c.platform_ids[i] &&
                     ((GAMEOBJECT *)Player[1])->position.y >= ((TERRAIN_SET_READER *)CurTerr)
                                                                  ->platforms[((GAMEOBJECT *)Player[1])->supporting_platform_id]
