@@ -19,6 +19,8 @@ the reproduced-data bytes. A passing run records the build as the new proven sta
     python3 tools/proof.py --no-tests # skip the tool tests (about 100 s)
 """
 import argparse
+import contextlib
+import fcntl
 import hashlib
 import json
 import os
@@ -68,6 +70,42 @@ def wait_for_memory(minimum_gb=6, limit=600):
         except OSError:
             return
         time.sleep(5)
+
+
+@contextlib.contextmanager
+def scan_lock(name):
+    """libclang scans of several worktrees take turns on SAGA_SCAN_LOCK (one parse set in memory at a time)."""
+    path = os.environ.get("SAGA_SCAN_LOCK")
+    if name not in CLANG_SCANS or not path:
+        yield
+        return
+    with open(path, "a") as handle:
+        fcntl.flock(handle, fcntl.LOCK_EX)
+        try:
+            yield
+        finally:
+            fcntl.flock(handle, fcntl.LOCK_UN)
+
+
+def checks_only(args):
+    """Scans and tool tests of the working tree, no build or match: run before taking the shared push lock."""
+    logs = ROOT / "build/proof"
+    logs.mkdir(parents=True, exist_ok=True)
+    env = dict(os.environ, PYTHONPATH=os.pathsep.join(filter(None, [str(ROOT / "tools"), str(ROOT),
+                                                                 os.environ.get("PYTHONPATH")])))
+    failures, total = [], time.monotonic()
+    for name, command in [("check", ["tools/check.py"])] + CHECKS + ([] if args.no_tests else test_groups()):
+        wait_for_memory()
+        python = os.environ.get("SAGA_CLANG_PYTHON", sys.executable) if name in CLANG_SCANS else sys.executable
+        begin = time.monotonic()
+        with open(logs / f"{name}.log", "w") as out, scan_lock(name):
+            code = subprocess.run([python, *command], cwd=ROOT, stdout=out, stderr=subprocess.STDOUT, env=env).returncode
+        print(f"  {name:12} {time.monotonic() - begin:7.1f} s{'  FAILED' if code else ''}")
+        if code:
+            failures.append(name)
+    print(f"checks: {'PASS' if not failures else 'FAIL'}; {time.monotonic() - total:.0f} s"
+          + (f"; failed: {', '.join(failures)}" if failures else ""))
+    return 1 if failures else 0
 
 
 def test_groups(count=2):
@@ -173,7 +211,13 @@ def main(argv=None):
     parser = argparse.ArgumentParser(description=__doc__, formatter_class=argparse.RawDescriptionHelpFormatter)
     parser.add_argument("--no-tests", action="store_true", help="skip the tool tests")
     parser.add_argument("--jobs", type=int, default=min(12, os.cpu_count() or 4), help="compiler jobs (default 12)")
+    parser.add_argument("--no-checks", action="store_true",
+                        help="build, identity and match only (scans and tests ran before with --checks-only)")
+    parser.add_argument("--checks-only", action="store_true",
+                        help="scans and tool tests only, without build or match (no lock on the shared base needed)")
     args = parser.parse_args(argv)
+    if args.checks_only:
+        return checks_only(args)
     timings, failures, digests = [], [], {}
     total = time.monotonic()
     wait_for_memory()
@@ -199,6 +243,8 @@ def main(argv=None):
         # waits before each command while less than 6 GB of memory is available.
         lanes = [[c for c in CHECKS if c[0] in CLANG_SCANS], [c for c in CHECKS if c[0] not in CLANG_SCANS],
                  [] if args.no_tests else test_groups()]
+        if args.no_checks:
+            lanes = []
         results = []
 
         def lane(commands):
@@ -206,7 +252,7 @@ def main(argv=None):
                 wait_for_memory()
                 python = os.environ.get("SAGA_CLANG_PYTHON", sys.executable) if name in CLANG_SCANS else sys.executable
                 begin = time.monotonic()
-                with open(logs / f"{name}.log", "w") as out:
+                with open(logs / f"{name}.log", "w") as out, scan_lock(name):
                     code = subprocess.run([python, *command], cwd=ROOT, stdout=out, stderr=subprocess.STDOUT,
                                           env=env).returncode
                 results.append((name, time.monotonic() - begin, code))
