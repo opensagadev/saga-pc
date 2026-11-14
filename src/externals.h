@@ -124,7 +124,12 @@ struct IDirectSound3DBufferVtbl {
 };
 
 typedef struct _XINPUT_STATE XINPUT_STATE;
-typedef struct _XINPUT_VIBRATION XINPUT_VIBRATION;
+
+// The XInput SDK spells these members; NOLINT keeps them byte- and name-compatible with xinput.h.
+typedef struct _XINPUT_VIBRATION {
+    WORD wLeftMotorSpeed;  // NOLINT(readability-identifier-naming)
+    WORD wRightMotorSpeed; // NOLINT(readability-identifier-naming)
+} XINPUT_VIBRATION;
 typedef struct _XINPUT_CAPABILITIES XINPUT_CAPABILITIES;
 
 // The enum tags and widths are fixed; add named values as source needs them.

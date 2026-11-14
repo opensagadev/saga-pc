@@ -384,6 +384,15 @@ extern "C" i32 fun_007454b0(void) {
     return PCDeviceHardwareVertexProcessingPC;
 }
 
+void NuShaderObject::fun_00745470(const u32 *key, i32 index, const char *vertex_source, i32 vertex_length,
+                                  const char *pixel_source, i32 pixel_length, i32 version) {
+    PCShaderObjectInitHLSLPc(this, key, index, vertex_source, vertex_length, pixel_source, pixel_length, version);
+}
+
+i32 NuShaderObject::fun_007454a0() {
+    return marker;
+}
+
 void ShaderManagerHLSLPc::AdaptDescriptor(const PC_SHADER_FILTER_DESC_VIEW *input,
                                           const PC_SHADER_FILTER_MATERIAL_VIEW *input_material) {
     PC_SHADER_FILTER_DESC_VIEW *desc = const_cast<PC_SHADER_FILTER_DESC_VIEW *>(input);

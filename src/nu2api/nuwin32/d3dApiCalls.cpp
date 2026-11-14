@@ -80,6 +80,18 @@ STATIC_ASSERT(sizeof(D3DXMATRIX) == sizeof(NUMTX));
 extern "C" void fun_006df010(void) {
 }
 
+i32 PC_DEVICE_BACKEND_PC::fun_006df050() {
+    return multisample_index != 0;
+}
+
+u32 PC_DEVICE_BACKEND_PC::fun_006df060() {
+    return state600;
+}
+
+u32 PC_DEVICE_BACKEND_PC::fun_006df070() {
+    return state604;
+}
+
 extern "C" void NuKeyboardCreateWindowState(HWND window, HINSTANCE instance) {
     PCFrameCriticalSectionIndex = PCThreadCriticalSectionCreate_candidate();
     PCDeviceBackend.InitializeAdapter();
@@ -121,6 +133,16 @@ extern "C" void PcRendererShutdown(i32 unused) {
     NuTexReleaseResourcesPc();
     FmvReleasePc();
     NuFmvTextureReleasePc();
+}
+
+extern "C" void fun_006df1a0(u32 width, u32 height, u32 refresh, i32 windowed, i32 reposition_window) {
+    PCDeviceBackend.fun_006e2ce0(width, height, refresh);
+    PCDeviceBackend.requested_windowed = windowed == 1;
+    PCDeviceBackend.CreateOrResetDevice(reposition_window);
+}
+
+extern "C" void fun_006df1e0(u32 width, u32 height, u32 refresh) {
+    PCDeviceBackend.fun_006e2ce0(width, height, refresh);
 }
 
 extern "C" void fun_006df200(i32 windowed) {
@@ -317,6 +339,23 @@ extern "C" void PCDeviceResetSamplerDefaultsPc(void) {
     } while (stage != PCDeviceBackend.caps.sampler_count_pc);
 }
 
+extern "C" void fun_006dfa70(f32 gamma) {
+    u16 ramp[3][256];
+    i32 i;
+    for (i = 0; i != 256; ++i) {
+        f32 level = i / 255.0;
+        i32 value = NuPow(level, gamma) * 65535.0;
+        if (value >= 0xffff) {
+            value = 0xffff;
+        }
+        value = value <= 0 ? 0 : value;
+        ramp[0][i] = value;
+        ramp[1][i] = value;
+        ramp[2][i] = value;
+    }
+    PCDeviceSetGammaRampPc(ramp);
+}
+
 extern "C" void fun_006dfb30(f32 gamma) {
     u16 ramp[3][256];
     i32 i;
@@ -355,6 +394,10 @@ extern "C" void fun_006dfc40(PC_TEXTURE_RESOURCE_PC *texture, u32 level, PC_TEXT
     }
 }
 
+extern "C" u32 fun_006dfc60(PC_TEXTURE_RESOURCE_PC *texture) {
+    return texture->methods->get_level_count(texture);
+}
+
 extern "C" void fun_006dfc70(i32 format, u32 width, u32 height, u32 levels, i32 render_target,
                              PC_TEXTURE_RESOURCE_PC **texture) {
     if (render_target == 0) {
@@ -362,6 +405,14 @@ extern "C" void fun_006dfc70(i32 format, u32 width, u32 height, u32 levels, i32 
     } else {
         PCDeviceCreateTexture(width, height, 1, 1, format, 0, texture);
     }
+}
+
+extern "C" PC_TEXTURE_LEVEL_DESC_PC *fun_006dfcc0(PC_TEXTURE_RESOURCE_PC *texture, u32 level) {
+    static PC_TEXTURE_LEVEL_DESC_PC description;
+    if (texture != NULL) {
+        return FAILED(texture->methods->get_level_desc(texture, level, &description)) ? NULL : &description;
+    }
+    return NULL;
 }
 
 extern "C" u32 fun_006dfcf0(void) {
@@ -443,6 +494,10 @@ extern "C" void PCGraphicsRecreateResources(i32 reset_available) {
     FmvRestorePc();
     NuFmvTextureRestorePc();
     PCGraphicsClearFrameTexturesPc();
+}
+
+extern "C" void fun_006dfea0(void) {
+    fun_006df670(0.0f, 160.0f);
 }
 
 extern "C" void fun_006dfec0(u32 width, u32 height) {

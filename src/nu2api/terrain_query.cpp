@@ -1057,6 +1057,10 @@ extern "C" void RayImpact(NUVEC *movement) {
     }
 }
 
+extern "C" i32 NewRayCastEx(NUVEC *position, NUVEC *movement, f32 radius, i32 scan_flags) {
+    return NewRayCast(position, movement, radius, scan_flags);
+}
+
 extern "C" i32 NewRayCastScaleYMask(NUVEC *position, NUVEC *movement, f32 radius, f32 scale_y, i32 scan_flags,
                                     u32 terrain_mask) {
     plathitid = -1;
@@ -2152,6 +2156,36 @@ extern "C" i32 NewRayCastPlatForm(NUVEC *position, NUVEC *movement, f32 radius, 
     }
     NuScratchRelease();
     return TerI->hit_type;
+}
+
+extern "C" void DrawHitTerrain(void) {
+    if (CurrentTerrain == NULL) {
+        return;
+    }
+    TerI = static_cast<TerrainQuery_s *>(NuScratchAlloc32(sizeof(TerrainQuery_s)));
+    TERRAIN_SCAN_WORD_PC *word = TerI->scan_words;
+    for (;;) {
+        while (word->header.shape_count > 0) {
+            TERRAIN_SCAN_WORD_PC *shape = word + 1;
+            for (i32 count = word->header.shape_count; count > 0; --count, ++shape) {
+                i16 group = word->header.terrain_group;
+                TERRAIN_POLYGON_INFO_PC *surface = shape->shape;
+                if (static_cast<TERRAIN_SET_PC *>(CurrentTerrain)->groups[group].chunk_type == 0) {
+                    TerrDraw(surface, group);
+                } else {
+                    TerrDrawPlat(surface, group);
+                }
+            }
+            word = shape;
+        }
+        if (word->header.shape_count >= 0) {
+            break;
+        }
+        while (word->header.shape_count < 0) {
+            word += abs(word->header.shape_count) + 1;
+        }
+    }
+    NuScratchRelease();
 }
 
 extern "C" {

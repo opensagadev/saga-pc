@@ -29,3 +29,9 @@ extern "C" void fun_006dddc0(void) {
 extern "C" WNDCLASSEXA *fun_006dddd0(void) {
     return &PcWindowClass;
 }
+
+extern "C" i32 dat_02975c40;
+
+extern "C" void fun_006ddde0(i32 value) {
+    dat_02975c40 = value;
+}

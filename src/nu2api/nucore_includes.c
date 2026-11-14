@@ -199,6 +199,7 @@ u8 ImplodeGetByteFromMem(void);
 void ImplodeError(char *msg, ...);
 
 static i32 ImplodePendingCopyPc = 0;
+static i32 inlen = 0;
 
 static unsigned char ImplodeRingBufferPc[0x2000] = {0};
 
@@ -316,6 +317,10 @@ void NuMemCopy128(void *destination, const void *source, i32 count) {
 }
 
 void fun_004ef710(void) {
+}
+
+void fun_004ef770(void *data) {
+    NuFree(data, ".\\numem.c", 0x82);
 }
 
 void NuDatFileDecodeNext(void) {
@@ -5373,6 +5378,14 @@ char *NuStrIStr(char *text, char *substring) {
     return NULL;
 }
 
+extern i32 dat_0091eeec;
+
+void fun_004f8af0(const char *a, const char *b) {
+    if (NuStrCmp(a, b) == 0) {
+        ++dat_0091eeec;
+    }
+}
+
 i32 NuStrCmp(const char *a, const char *b) {
     char a_cursor;
     char b_cursor;
@@ -6636,6 +6649,24 @@ i32 GetLineW(u16 *line, NUFILE file) {
     }
 }
 
+i32 fun_004fcba0(NUFILE file) {
+    u32 header[3];
+    i32 size;
+    i32 position = NuFileSeek(file, 0, 1);
+    NuFileSeek(file, 0, 0);
+    NuFileRead(file, header, 12);
+    if (header[0] == 0x2434e52) {
+        header[1] = ((header[1] & 0xff0000 | header[1] >> 16) >> 8) | ((header[1] & 0xff00 | header[1] << 16) << 8);
+        header[2] =
+            (((header[2] & 0xff0000 | header[2] >> 16) >> 8) | ((header[2] & 0xff00 | header[2] << 16) << 8)) + 6;
+        size = header[1];
+    } else {
+        size = NuFileOpenSize(file);
+    }
+    NuFileSeek(file, position, 0);
+    return size;
+}
+
 void NuStringTableSetFormat(i32 format) {
     nustring_format = (u32)format;
 }
@@ -7448,8 +7479,27 @@ static void NuFileAddExtensionPC(const char *extension, i32 type, i32 platform) 
     ++num_extensions;
 }
 
+extern u32 dat_0091ef20;
+
+void NuTimeStartFrame(void) {
+    dat_0091ef20 = PCThreadMillisecondsPc();
+}
+
+u32 NuTimeGetStartFrame(void) {
+    return dat_0091ef20;
+}
+
+u32 NuTimeGetSinceStartFrame(void) {
+    u32 now = PCThreadMillisecondsPc();
+    return now - dat_0091ef20;
+}
+
 f32 NuTimeGetFrameTime(void) {
     return nuapi.frame_time;
+}
+
+void NuTimeForceFrameTime(f32 frame_time) {
+    nuapi.forced_frame_time = frame_time;
 }
 
 void NuTimeGet(NuTime *time) {
@@ -7511,6 +7561,10 @@ void NuCommandLine(i32 *__restrict count, char ***__restrict arguments) {
     // NuMain passes separate stack arguments, not these global cursors.
     argc = *count;
     argv = *arguments;
+}
+
+void fun_004f4080(void) {
+    nuapi.frame_end_state = 1;
 }
 
 void fun_004f4090(u8 enabled) {
@@ -8425,13 +8479,13 @@ i32 NuPadRead(FRAME_PAD_PC *pad) {
     return 0;
 }
 
-void fun_006d9430(i32 port, i32 motor0, i32 motor1);
+void NuPadSetMotorsPS(i32 port, i32 motor0, i32 motor1);
 
 void NuPadSetMotors(FRAME_PAD_PC *pad, i32 motor0, i32 motor1) {
     if (FramePadDirectMappingPc && g_nupadScannedPads[pad->device].is_valid) {
-        fun_006d9430(pad->device, motor0, motor1);
+        NuPadSetMotorsPS(pad->device, motor0, motor1);
     } else if (g_nupadMapping[pad->device].port != -1) {
-        fun_006d9430(g_nupadMapping[pad->device].port, motor0, motor1);
+        NuPadSetMotorsPS(g_nupadMapping[pad->device].port, motor0, motor1);
     }
 }
 
@@ -8475,6 +8529,10 @@ void NuPadResetState(i32 preserve_scanned_state) {
             g_nupadScannedPads[i].digital_buttons = g_nupadScannedPads[i].digital_buttons_prev;
         }
     }
+}
+
+void NuPadRecordStart(void) {
+    nuapi.pad_record.is_recording = 1;
 }
 
 void NuPadSetStatus(i32 pad, i32 status) {
@@ -8550,6 +8608,14 @@ void NuPadRecordPlay(NUGENERICPAD *pad) {
     }
 }
 
+void NuPadRecordSetPlayEndButtons(u32 buttons) {
+    nuapi.pad_record.end_play_buttons = buttons;
+}
+
+void NuPadRecordSetRecordEndButtons(u32 buttons) {
+    nuapi.pad_record.end_record_buttons = buttons;
+}
+
 void fun_004f4f10(void) {
 }
 
@@ -8580,6 +8646,19 @@ void NuPadRecordSave(char *filepath) {
         record->should_end = 0;
         record->mode = NUPAD_NORM;
     }
+}
+
+void NuPadRecordEnd(void) {
+    switch (nuapi.pad_record.mode) {
+        case NUPAD_RECORD:
+            NuPadRecordSave(nuapi.pad_record.filepath);
+            break;
+        case NUPAD_PLAY:
+            nuapi.pad_record.mode = 0;
+            nuapi.pad_record.record.u8_ptr = nuapi.pad_record.buf_start;
+            break;
+    }
+    nuapi.pad_record.should_end = 0;
 }
 
 void *NuPtrBlockFix(void *block) {
@@ -8938,6 +9017,15 @@ u32 ImplodeGetBits(i32 count) {
     ImplodeFillBuf(count);
 
     return value;
+}
+
+u32 ImplodeFReadMem(u8 *buffer, i32 size) {
+    i32 count = size < inlen ? size : inlen;
+    memcpy(buffer, implode_inbuffer, count);
+    implode_inbuffer += count;
+    implode_origsize += count;
+    inlen -= count;
+    return count;
 }
 
 void ImplodeInitGetBits() {

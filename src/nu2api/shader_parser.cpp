@@ -154,12 +154,14 @@ void ShaderCompilerParserPc::EndIf() {
 struct ShaderParserTogglePc : ShaderParserNodePc {
     u8 enabled;      // 0x8
     u8 unknown_9[3]; // 0x9
+    ShaderParserTogglePc(u8 enabled);
 }; // size 0xc
 
 struct ShaderParserReferencePc : ShaderParserNodePc {
     u32 flags;       // 0x08
     i32 alias_depth; // 0x0c
     char *name;      // 0x10
+    ShaderParserReferencePc(u32 flags, i32 alias_depth, char *name);
 }; // size 0x14
 
 struct ShaderParserDeclarationPc : ShaderParserNodePc {
@@ -171,11 +173,56 @@ struct ShaderParserDeclarationPc : ShaderParserNodePc {
     char *custom_semantic; // 0x1c
     i32 vertex_register;   // 0x20
     i32 pixel_register;    // 0x24
+    ShaderParserDeclarationPc(u32 flags, i32 type, i32 array_count, char *name, i32 semantic, char *custom_semantic,
+                              i32 vertex_register, i32 pixel_register);
 }; // size 0x28
 
 struct ShaderParserEmitPc : ShaderParserNodePc {
     u32 flags; // 0x8
+    ShaderParserEmitPc(u32 flags);
 }; // size 0xc
+
+ShaderParserNodePc::ShaderParserNodePc(i32 kind) : kind(kind), next(NULL) {
+}
+
+ShaderParserBranchNodePc::ShaderParserBranchNodePc(ShaderConditionNodePc *condition)
+    : ShaderParserNodePc(0), if_true(NULL), if_false(NULL), condition(condition) {
+}
+
+ShaderParserMacroNodePc::ShaderParserMacroNodePc(char *name, char *value)
+    : ShaderParserNodePc(1), name(name), value(value) {
+}
+
+ShaderParserUndefNodePc::ShaderParserUndefNodePc(char *name) : ShaderParserNodePc(2), name(name) {
+}
+
+ShaderParserDeclarationPc::ShaderParserDeclarationPc(u32 flags, i32 type, i32 array_count, char *name, i32 semantic,
+                                                     char *custom_semantic, i32 vertex_register, i32 pixel_register)
+    : ShaderParserNodePc(3), flags(flags), type(type), array_count(array_count), name(name), semantic(semantic),
+      custom_semantic(custom_semantic), vertex_register(vertex_register), pixel_register(pixel_register) {
+}
+
+ShaderParserReferencePc::ShaderParserReferencePc(u32 flags, i32 alias_depth, char *name)
+    : ShaderParserNodePc(4), flags(flags), alias_depth(alias_depth), name(name) {
+}
+
+ShaderParserEmitPc::ShaderParserEmitPc(u32 flags) : ShaderParserNodePc(6), flags(flags) {
+}
+
+ShaderParserTogglePc::ShaderParserTogglePc(u8 enabled) : ShaderParserNodePc(5), enabled(enabled) {
+}
+
+ShaderParserTextNodePc::ShaderParserTextNodePc(char *bytes, i32 count)
+    : ShaderParserNodePc(7), bytes(bytes), count(count) {
+}
+
+void ShaderCompilerParserPc::fun_0074b330(const ShaderLexicalSlicePc &slice) {
+    text.AppendBytes(slice.begin, slice.length);
+}
+
+void ShaderCompilerParserPc::fun_0074b6b0(ShaderParserNodePc *node) {
+    APPEND_NODE(node);
+}
 
 STATIC_ASSERT(sizeof(ShaderCompilerParserPc) == 0x45c);
 

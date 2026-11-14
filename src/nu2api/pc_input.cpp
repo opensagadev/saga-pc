@@ -33,6 +33,35 @@ PC_INPUT_CONFIG_PC *PC_INPUT_RUNTIME_PC::FindConfig(u8 mask, i32 port, i32 key) 
     return NULL;
 }
 
+PC_INPUT_CONFIG_PC *PC_INPUT_RUNTIME_PC::fun_006d4500(u8 mask, const char *name) {
+    if (mask & 4) {
+        for (i32 index = 0; index < 64; ++index) {
+            if (NuStrICmp(secondary[index].name, name) == 0) {
+                return &secondary[index];
+            }
+        }
+    }
+    if (mask & 2) {
+        for (i32 index = 0; index < 64; ++index) {
+            if (NuStrICmp(primary[index].name, name) == 0) {
+                return &primary[index];
+            }
+        }
+    }
+    if (mask & 1) {
+        for (u32 index = 0; index < sizeof(PcStaticInputConfigs) / sizeof(PcStaticInputConfigs[0]); ++index) {
+            if (NuStrICmp(PcStaticInputConfigs[index].name, name) == 0) {
+                return &PcStaticInputConfigs[index];
+            }
+        }
+    }
+    return NULL;
+}
+
+void PC_INPUT_RUNTIME_PC::fun_006d45e0(i32 key) {
+    preferred_key = key;
+}
+
 void PC_INPUT_RUNTIME_PC::InitXInputCaps(const PC_XINPUT_CAPABILITIES_PC *caps, PC_INPUT_DEVICE_PC *record) {
     record->pov_count = 0;
     record->button_count = 0;
@@ -144,6 +173,10 @@ void PC_INPUT_RUNTIME_PC::InstallConfig(PC_INPUT_CONFIG_PC *config, i32 port, i3
             }
         }
     }
+}
+
+i32 PC_INPUT_RUNTIME_PC::fun_006d4790(i32) {
+    return 0;
 }
 
 void PC_INPUT_RUNTIME_PC::InitKeyboardProfiles() {
@@ -684,6 +717,14 @@ void NuKeyboardOwner_PC::ScheduleRescan(f32 interval, i32 repetitions) {
     unknown_0008 = interval;
 }
 
+i32 NuKeyboardOwner_PC::fun_006d5970() {
+    return mouse != NULL;
+}
+
+i32 NuKeyboardOwner_PC::fun_006d5980() {
+    return device != NULL;
+}
+
 NuKeyboardOwner_PC::NuKeyboardOwner_PC() {
     unknown_0000 = 0.0f;
     unknown_0008 = 0.0f;
@@ -703,6 +744,17 @@ NuKeyboardOwner_PC::~NuKeyboardOwner_PC() {
     unknown_0004 = 0;
     unknown_0008 = 0.0f;
     device_count = 0;
+}
+
+i32 NuKeyboardOwner_PC::fun_006d5720(i32 *axes, i32 *buttons) {
+    if (mouse_axes != 0 && mouse_buttons != 0) {
+        *axes = mouse_axes;
+        *buttons = mouse_buttons;
+        return 1;
+    }
+    *axes = 0;
+    *buttons = 0;
+    return 0;
 }
 
 void NuKeyboardOwner_PC::SetMouseEnabledPc(u8 enabled) {
@@ -750,6 +802,10 @@ extern "C" f32 NuMouseReadYVel(void) {
 
 extern "C" f32 NuMouseReadZVel(void) {
     return (f32)(nu_input_state->mouse_delta[2] * -4.0);
+}
+
+extern "C" void fun_006d5c70(f32 threshold, i32 motion, f32 ramp) {
+    ((PC_INPUT_RUNTIME_PC *)nu_input_state)->fun_006d3630(threshold, motion, ramp);
 }
 
 extern "C" i32 fun_006d5ca0(i32 device, i32 binding, i32 auxiliary, i32 auxiliary_port) {

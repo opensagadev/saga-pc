@@ -422,6 +422,26 @@ extern "C" void fun_006dc6f0(void) {
     NuPrimSetCoordinateSystem(NuPrimCoordSystemStack[--NuPrimCSPos]);
 }
 
+i32 PC_WINDOW_OPTIONS_PC::fun_006dc710() {
+    return client_width;
+}
+
+i32 PC_WINDOW_OPTIONS_PC::fun_006dc720() {
+    return client_height;
+}
+
+i32 PC_WINDOW_OPTIONS_PC::fun_006dc730() {
+    return window_x;
+}
+
+i32 PC_WINDOW_OPTIONS_PC::fun_006dc740() {
+    return window_y;
+}
+
+i32 PC_DEVICE_BACKEND_PC::fun_006dc750() {
+    return parameters.windowed == 1;
+}
+
 extern "C" i32 PcNativeSelectLanguage(const char *configuration_name) {
     char path[256];
     DWORD language;

@@ -86,11 +86,23 @@ void fun_006dea80(void) {
 void fun_006deb00(void) {
 }
 
+i32 dat_02976ce8 = 0;
+
+i32 fun_006deb10(void) {
+    return dat_02976ce8;
+}
+
 void fun_006deb20(void) {
 }
 
 i32 fun_006deb30(void) {
     return 0;
+}
+
+i32 dat_0297ad84 = 0;
+
+void fun_006deb40(void) {
+    dat_0297ad84 = 1;
 }
 
 i32 fun_006debd0(void) {

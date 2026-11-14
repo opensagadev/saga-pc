@@ -48,6 +48,97 @@ void AINet::Register() {
     theTTNetwork.AddListener(this, 10, "AINet");
 }
 
+void NETMESSAGE_PC::MessageData::fun_0053d2e0() {
+    references++;
+}
+
+void NETMESSAGE_PC::fun_0053d330(i8 &value) {
+    if (data != NULL) {
+        PCByteCopy(&value, data->bytes + read_offset, 1);
+        read_offset++;
+    }
+}
+
+void NETMESSAGE_PC::fun_0053d360(i16 &value) {
+    if (data != NULL) {
+        PCByteCopy(&value, data->bytes + read_offset, 2);
+        if (swap_endianness) {
+            EdFileSwapEndianess16(&value);
+        }
+        read_offset += 2;
+    }
+}
+
+/* Writes the string with a leading length byte. */
+void NETMESSAGE_PC::fun_0053d4a0(char *text) {
+    if (data != NULL) {
+        i32 length = NuStrLen(text);
+        u8 *destination = data->bytes + write_offset;
+        *destination++ = (u8)length;
+        PCByteCopy(destination, text, length);
+        write_offset += length + 1;
+    }
+}
+
+/* Reads a string written by fun_0053d4a0 into a cleared buffer. */
+void NETMESSAGE_PC::fun_0053d4e0(char *text, i32 size) {
+    if (data != NULL) {
+        i32 length = (i8)data->bytes[read_offset];
+        read_offset++;
+        memset(text, 0, size);
+        PCByteCopy(text, data->bytes + read_offset, length);
+        read_offset += length;
+    }
+}
+
+void NETMESSAGE_PC::MessageData::fun_0053d5c0() {
+    references = 0;
+}
+
+void NETMESSAGE_PC::MessageData::fun_0053d620() {
+    u32 count = references;
+    if (count > 1) {
+        references = count - 1;
+    } else {
+        references = 0;
+    }
+}
+
+void NETMESSAGE_PC::fun_00613140(i16 &value) {
+    if (data != NULL) {
+        PCByteCopy(&value, data->bytes + read_offset, 2);
+        if (swap_endianness) {
+            EdFileSwapEndianess16(&value);
+        }
+        read_offset += 2;
+    }
+}
+
+void NETMESSAGE_PC::fun_00613180(i8 &value) {
+    if (data != NULL) {
+        PCByteCopy(&value, data->bytes + read_offset, 1);
+        read_offset++;
+    }
+}
+
+void NETMESSAGE_PC::fun_006131b0(u32 &value) {
+    if (data != NULL) {
+        PCByteCopy(&value, data->bytes + read_offset, 4);
+        if (swap_endianness) {
+            EdFileSwapEndianess32(&value);
+        }
+        read_offset += 4;
+    }
+}
+
+/* Bytes left in the message buffer after the written data. */
+i32 NETMESSAGE_PC::fun_00613230() {
+    if (data == NULL) {
+        return 0;
+    }
+    return 0x4af - write_offset;
+}
+
 void AINet::Receive(NETMESSAGE_PC message, u8 channel, const V2Peer &peer) {
     char param_text[16][256];
     char *params[16];

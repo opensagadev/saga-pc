@@ -109,6 +109,10 @@ struct MemoryBuffer {
     u32 used;          // 0x8
     u32 remaining;     // 0xc
 
+    VARIPTR *fun_006b85e0();
+    VARIPTR *fun_006b85f0();
+    u32 fun_006b8600();
+
     void *Allocate(u32 size) {
         void *allocation = NULL;
         if (size < end->addr - position->addr) {
@@ -248,6 +252,11 @@ class EdFileInputStream : public EdInputStream {
     i32 pending; // 0x194
     NUFILE file; // 0x198
 }; // size 0x19c
+
+/* The original keeps standalone copies of the stack members no caller uses. */
+template EdFileInputStream::Block EdStack<EdFileInputStream::Block, 8>::Pop();
+template void EdStack<i32, 8>::Push(i32 item);
+template i32 EdStack<i32, 8>::Pop();
 
 /* Transform gizmo of the class editor (Android EdManipulator). */
 class EdManipulator {
@@ -413,6 +422,7 @@ class PropertyTool : public EdTool {
     void ediMenuStoreMetrics(eduimenu_s *menu);
     void ediMenuRetrieveMetrics(eduimenu_s *menu);
     PropertyMenu *CreatePropertyMenu(ClassObject &object);
+    PropertyMenu *fun_006cd120(ClassObject &object, i32);
     PropertyMenu *FindItemMenu(PropertyMenu *menu, ClassObjectListEntry *entry);
     void BringToFront(PropertyMenu *menu);
     PropertyMenu *GetActiveMenu(PropertyMenu *menu);
@@ -1306,6 +1316,7 @@ class SplineObject : public CSListLink<SplineObject> {
     }
 
     void ReverseKnots();
+    void SmoothKnots();
     SplineObject *Clone();
 }; // size 0x58
 
@@ -1353,6 +1364,8 @@ class SplineHelper : public EdClassInterface {
     virtual void AddMenuItems(eduimenu_s *menu);
     using EdClassInterface::GetNextObject;
     void Initialise();
+    SplineObject *Find(char *name);
+    i32 Find(char *name, SplineObject **objects, i32 capacity);
 
     SplineObjectList objects; // 0x08
     i32 auto_generate_points; // 0x14
@@ -1717,13 +1730,117 @@ static inline void VuMtxSetScale(VuMtx &matrix, const VuVec &scale) {
     matrix.matrix.m33 = value;
 }
 
+void VuVec::fun_006b83b0() {
+    x = 0.0f;
+    y = 0.0f;
+    z = 0.0f;
+    w = 1.0f;
+}
+
+void VuVec::fun_006b83c0() {
+    x = 1.0f;
+    y = 0.0f;
+    z = 0.0f;
+    w = 1.0f;
+}
+
+void VuVec::fun_006b83d0() {
+    x = 0.0f;
+    y = 1.0f;
+    z = 0.0f;
+    w = 1.0f;
+}
+
+void VuVec::fun_006b83e0() {
+    x = 0.0f;
+    y = 0.0f;
+    z = 1.0f;
+    w = 1.0f;
+}
+
+VuVec VuVec::fun_006b8400(f32 value) const {
+    __declspec(align(16)) VuVec result;
+    f32 inverse = 1.0f / value;
+    result.x = x * inverse;
+    result.y = y * inverse;
+    result.z = z * inverse;
+    return result;
+}
+
+f32 VuVec::fun_006b8440(const VuVec &other) const {
+    return other.x * x + other.y * y + other.z * z;
+}
+
+/* A scaling matrix with the vector's components on the diagonal. */
+void VuMtx::fun_006b8470(const VuVec &scale) {
+    f32 value;
+    matrix.m00 = scale.x;
+    matrix.m01 = 0.0f;
+    matrix.m02 = 0.0f;
+    matrix.m03 = 0.0f;
+    value = scale.y;
+    matrix.m10 = 0.0f;
+    matrix.m11 = value;
+    matrix.m12 = 0.0f;
+    matrix.m13 = 0.0f;
+    value = scale.z;
+    matrix.m20 = 0.0f;
+    matrix.m21 = 0.0f;
+    matrix.m22 = value;
+    matrix.m23 = 0.0f;
+    value = scale.w;
+    matrix.m30 = 0.0f;
+    matrix.m31 = 0.0f;
+    matrix.m32 = 0.0f;
+    matrix.m33 = value;
+}
+
 EdTool::~EdTool() {
 }
 
 BaseEditor::~BaseEditor() {
 }
 
+EdTool *ClassEditor::fun_006b8be0() {
+    return first_tool;
+}
+
+f32 &ClassEditor::fun_006b8bf0() {
+    return snap_distance;
+}
+
 ClassEditor::~ClassEditor() {
+}
+
+i32 ClassEditor::fun_006b8c10() {
+    if (manipulator != NULL) {
+        return manipulator->selected_attribute;
+    }
+    return 0;
+}
+
+void ClassEditor::fun_006b8c20(EdTool *tool) {
+    active_tool = tool;
+}
+
+void ClassEditor::fun_006b8c30(ClassObject &object) {
+    current_object = object;
+}
+
+void ClassEditor::fun_006b8c50(i32 value) {
+    field_3c = value;
+}
+
+i32 ClassEditor::fun_006b8c60(ClassObject &object) {
+    return current_object.fun_006b89f0(object);
+}
+
+ClassObjectList &ClassEditor::fun_006b8c90() {
+    return selected_objects;
+}
+
+ClassObject &ClassEditor::fun_006b8ca0() {
+    return current_object;
 }
 
 EditorSettings::~EditorSettings() {
@@ -1741,6 +1858,31 @@ EdSubSystem::~EdSubSystem() {
 extern "C" void fun_006b8500(void) {
 }
 
+/* The pool size EdString::Set allocates: the length rounded up to 32. */
+i32 EdString::fun_006b85c0(i32 size) {
+    return ((size - 1) / 32 + 1) * 32;
+}
+
+VARIPTR *MemoryBuffer::fun_006b85e0() {
+    return position;
+}
+
+VARIPTR *MemoryBuffer::fun_006b85f0() {
+    return end;
+}
+
+u32 MemoryBuffer::fun_006b8600() {
+    return remaining;
+}
+
+/* The text after the capacity byte. */
+char *EdString::fun_006b86a0() {
+    if (data != NULL) {
+        return data + 1;
+    }
+    return NULL;
+}
+
 extern "C" i32 fun_006b8700(i32 first, i32 second) {
     return second;
 }
@@ -1749,14 +1891,66 @@ extern "C" i32 fun_006b8f00(i32 first, i32 second) {
     return second;
 }
 
+void LevelEditor::fun_006b8ff0(bool value) {
+    multi_load_active = value;
+}
+
+void LevelEditor::fun_006b9000(u8 value) {
+    loading = value;
+}
+
+void LevelEditor::fun_006b9010(u8 value) {
+    destroying_objects = value;
+}
+
+i16 LevelEditor::fun_006b9020() {
+    return current_led_file;
+}
+
+void LevelEditor::fun_006b9030(i16 value) {
+    current_led_file = value;
+}
+
+i32 LevelEditor::fun_006b9040() {
+    return reset_pending;
+}
+
 void LevelEditor::SetCameraPosition(VuVec &position) {
     VuVec &camera_position = *reinterpret_cast<VuVec *>(background_colour);
     VuVecCopy(camera_position, position);
     edcamSetPos(&camera_position.xyz);
 }
 
+f32 *LevelEditor::fun_006b9080() {
+    return background_colour;
+}
+
+void LevelEditor::fun_006b9090(i32 value) {
+    field_0x2c = value;
+}
+
+i32 LevelEditor::fun_006b90a0() {
+    return field_0x30;
+}
+
+void LevelEditor::fun_006b90b0(i32 value) {
+    field_0x30 = value;
+}
+
+void LevelEditor::fun_006b90c0(i32 value) {
+    field_0x38 = value;
+}
+
 extern "C" i32 fun_006b90d0(void) {
     return edLevelActiveMenu != NULL;
+}
+
+i32 LevelEditor::fun_006b90e0() {
+    return field_0x28;
+}
+
+void LevelEditor::fun_006b90f0(BaseEditor *editor) {
+    active_editor = editor;
 }
 
 /* Editor file blocks: a 16-byte header (type, size, two spare words) whose
@@ -2217,6 +2411,15 @@ char *EdEnumControl::GetEnumString(i32 value) {
         }
     }
     return "Unknown";
+}
+
+i32 EdEnumControl::fun_006ba010(char *name) {
+    for (Item *entry = items; entry->name != NULL; entry++) {
+        if (NuStrICmp(entry->name, name)) {
+            return entry->value;
+        }
+    }
+    return 0;
 }
 
 void EdEnumControl::Refresh() {
@@ -2949,6 +3152,15 @@ i32 LevelEditor::FindSceneId(char *name) {
     return -1;
 }
 
+NUGSCN *LevelEditor::fun_006bc740(char *name) {
+    for (i32 i = 0; i < reset_pending; i++) {
+        if (NuStrICmp(name, scenes[i].name) == 0) {
+            return scenes[i].scene;
+        }
+    }
+    return NULL;
+}
+
 NUGSCN *LevelEditor::GetScene(i32 index) {
     if ((u32)index <= 9) {
         return scenes[index].scene;
@@ -2961,6 +3173,15 @@ LevelEditorScene *LevelEditor::GetEdScene(i32 index) {
         return &scenes[index];
     }
     return NULL;
+}
+
+i32 LevelEditor::fun_006bc7e0(NUGSCN *scene) {
+    for (i32 i = 0; i < reset_pending; i++) {
+        if (scene == scenes[i].scene) {
+            return scenes[i].active;
+        }
+    }
+    return 0;
 }
 
 /* Scene -1 (no scene) is always editable; an inactive scene is too. */
@@ -3039,6 +3260,19 @@ extern "C" void fun_006bc990(void) {
         }
     }
     edLevelDestroyActiveMenu = 1;
+}
+
+void LevelEditor::fun_006bc9d0(eduimenu_s *menu) {
+    edLevelNextMenu = menu;
+}
+
+/* Copies the text into the editor's text pool and returns the copy. */
+char *LevelEditor::fun_006bc9e0(char *text) {
+    i32 length = NuStrLen(text) + 1;
+    char *copy = &text_buffer[text_length];
+    NuStrCpy(copy, text);
+    text_length += length;
+    return copy;
 }
 
 void LevelEditor::AddInfoText(char *text) {
@@ -4554,6 +4788,26 @@ EdStream::EdStream() {
     flags = 0;
 }
 
+i32 EdStream::fun_00611910() {
+    return mode;
+}
+
+i32 EdStream::fun_006119a0(i32 mask) {
+    return (flags & mask) != 0;
+}
+
+void EdStream::fun_006119b0(MemoryBuffer *buffer) {
+    memory_buffer = buffer;
+}
+
+EdStream::EdStream(MemoryBuffer *buffer) {
+    memory_buffer = buffer;
+    secondary_buffer = NULL;
+    mode = 0;
+    swap_endianness = 0;
+    flags = 0;
+}
+
 i32 EdInputStream::SerialiseString(char **text, i32 count) {
     if (*text != NULL) {
         return SerialiseString(*text, count);
@@ -4770,6 +5024,36 @@ i32 LineToSphereIntersection(VuVec &origin, VuVec &direction, VuVec &center, f32
     return 1;
 }
 
+ClassObjectListEntry *ClassObjectList::fun_006c1440() {
+    return first;
+}
+
+/* A NULL position appends the entry. */
+void ClassObjectList::fun_006c1450(ClassObjectListEntry *entry, ClassObjectListEntry *position) {
+    if (position != NULL) {
+        entry->previous = position;
+        entry->next = position->next;
+        if (position->next != NULL) {
+            position->next->previous = entry;
+        } else {
+            last = entry;
+        }
+        position->next = entry;
+        count++;
+    } else {
+        entry->next = NULL;
+        entry->previous = last;
+        if (last != NULL) {
+            last->next = entry;
+        }
+        last = entry;
+        if (first == NULL) {
+            first = entry;
+        }
+        count++;
+    }
+}
+
 void ClassObjectList::Remove(ClassObjectListEntry *entry) {
     if (entry->next != NULL) {
         entry->next->previous = entry->previous;
@@ -4784,6 +5068,10 @@ void ClassObjectList::Remove(ClassObjectListEntry *entry) {
     entry->next = NULL;
     entry->previous = NULL;
     count--;
+}
+
+i32 ClassObjectList::fun_006c14f0() {
+    return count;
 }
 
 void PropertyMenuList::InsertBefore(PropertyMenu *menu, PropertyMenu *position) {
@@ -4941,8 +5229,28 @@ void SplineKnotList::Remove(SplineKnot *knot) {
     count--;
 }
 
+i32 EdStream::fun_006c1e00(i32 &value) {
+    return SerialiseBuffer(&value, 4, 1);
+}
+
+i32 EdStream::fun_006c1e20(u8 &value) {
+    return SerialiseBuffer(&value, 1, 1);
+}
+
 EdInputStream::EdInputStream(MemoryBuffer *buffer, MemoryBuffer *secondary) : EdStream(buffer, secondary) {
     mode = 1;
+}
+
+i32 EdMember::fun_006c1f60(i32 attribute, i32 requested_type, void *data, i32 data_size) {
+    return reference->GetAttributeData(object, attribute, requested_type, data, data_size);
+}
+
+i32 EdMember::fun_006c1f90(i32 attribute, i32 requested_type, void *data, i32 data_size) {
+    return reference->SetAttributeData(object, attribute, requested_type, data, data_size);
+}
+
+void EdInputContext::fun_006c1fc0(i32 input, i32 value, f32 repeat_delay) {
+    Set(input, value, repeat_delay);
 }
 
 /* Keeps the list ordered by PropertyMenu::order. */
@@ -4978,6 +5286,20 @@ SplineKnotList::~SplineKnotList() {
 }
 
 SplineObject::~SplineObject() {
+}
+
+/* Appends the tool to the class editor's tool list. */
+void ClassEditor::RegisterTool(EdTool &tool) {
+    tool.next = NULL;
+    tool.previous = last_tool;
+    if (last_tool != NULL) {
+        last_tool->next = &tool;
+    }
+    tool_count++;
+    if (first_tool == NULL) {
+        first_tool = &tool;
+    }
+    last_tool = &tool;
 }
 
 /* Snapping onto the terrain along snap_ray: retail keeps only the ray
@@ -5195,6 +5517,34 @@ void ClassEditor::cbEdClassViewMenu(eduimenu_s *parent, eduiitem_s *item, u32) {
 
 /* Samples the camera, the cursor ray and every logical input for this frame.
  * While a property text field is being edited every input is released. */
+i32 ClassObjectList::IsInList(ClassObject object) {
+    for (ClassObjectListEntry *entry = first; entry != NULL; entry = entry->next) {
+        if (entry->object == object.object && entry->reference == object.reference) {
+            return 1;
+        }
+    }
+    return 0;
+}
+
+/* A NULL reference matches the object picked by any member. */
+i32 ClassObjectList::IsInList(void *object, EdRef *reference) {
+    for (ClassObjectListEntry *entry = first; entry != NULL; entry = entry->next) {
+        if (entry->object == object && (reference == NULL || entry->reference == reference)) {
+            return 1;
+        }
+    }
+    return 0;
+}
+
+i32 ClassObjectList::IsInList(EdClass *object_class) {
+    for (ClassObjectListEntry *entry = first; entry != NULL; entry = entry->next) {
+        if (entry->ed_class == object_class) {
+            return 1;
+        }
+    }
+    return 0;
+}
+
 void EdInputContext::Update(NUCAMERA *camera, FRAME_PAD_PC *new_pad, f32 elapsed, bool) {
     f32 cursor_y = 0.5f;
     f32 cursor_x = 0.5f;
@@ -6853,6 +7203,26 @@ void SplineHelper::DestroyObject(void *object, i32) {
 
 void SplineHelper::Render(void *object, i32 selected) {
     static_cast<SplineObject *>(object)->Draw(selected, selected == 0, selected, 0.0f);
+}
+
+SplineObject *SplineHelper::Find(char *name) {
+    for (SplineObject *spline = objects.first; spline != NULL; spline = spline->next) {
+        if (NuStrICmp(name, spline->name) == 0) {
+            return spline;
+        }
+    }
+    return NULL;
+}
+
+/* Collects up to capacity splines whose name contains the given text. */
+i32 SplineHelper::Find(char *name, SplineObject **objects, i32 capacity) {
+    i32 count = 0;
+    for (SplineObject *spline = this->objects.first; spline != NULL && count < capacity; spline = spline->next) {
+        if (NuStrIStr(spline->name, name) != NULL) {
+            objects[count++] = spline;
+        }
+    }
+    return count;
 }
 
 i32 KnotHelper::GetNumObjects() {
@@ -8819,6 +9189,10 @@ void PropertyTool::ToggleActiveMenu() {
     }
 }
 
+PropertyMenu *PropertyTool::fun_006cd120(ClassObject &object, i32) {
+    return CreatePropertyMenu(object);
+}
+
 void PropertyTool::RenderMenu(PropertyMenu *property_menu) {
     eduimenu_s *menu = property_menu->menu;
     VuVec start;
@@ -9269,6 +9643,12 @@ void SplineKnot::Smooth() {
     in_tangent.y = before.y;
     in_tangent.z = before.z;
     in_tangent.w = before.w;
+}
+
+void SplineObject::SmoothKnots() {
+    for (SplineKnot *knot = knots.first; knot != NULL; knot = knot->next) {
+        knot->Smooth();
+    }
 }
 
 /* Copies the spline with its knots; the points are regenerated on this

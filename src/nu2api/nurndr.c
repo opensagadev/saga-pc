@@ -274,6 +274,30 @@ void NuRndrEndReflectionRender(void) {
     RndrStateSetReflection(0);
 }
 
+extern i32 dat_00973934;
+extern i32 dat_00973938;
+extern i32 dat_0097393c;
+
+i32 fun_005d46d0(void) {
+    return dat_00973934;
+}
+
+i32 fun_005d46e0(void) {
+    return dat_0097393c;
+}
+
+void fun_005d46f0(void) {
+    dat_00973938 = 1;
+}
+
+void fun_005d4700(void) {
+    dat_00973938 = 0;
+}
+
+i32 fun_005d4710(void) {
+    return dat_00973938;
+}
+
 void fun_005d4720(void) {
 }
 
@@ -298,6 +322,104 @@ void NuRndrSetBurnoutParametersPc(i32 view, const BURN_PARAMETERS_PC *parameters
     currentScene.burnout_parameters_pc = *parameters;
 }
 
+/* View of the scene's post-effect block at 0xac..0x187 (Android nurenderscene_s: depth of field,
+ * texture blend, camera and accumulation motion blur). */
+typedef struct NURNDR_EFFECTS_VIEW_PC {
+    NU_POST_DOF_PARAMETERS_PC dof;   // 0x00
+    u32 texture_blend_enabled;       // 0x18
+    i32 texture_blend_arg0;          // 0x1c
+    i32 texture_blend_arg1;          // 0x20
+    NUVEC4 texture_blend_parameters; // 0x24
+    u32 motion_params_set;           // 0x34
+    u32 motion_effect_set;           // 0x38
+    NUMTX motion_previous;           // 0x3c
+    NUMTX motion_current;            // 0x7c
+    f32 motion_scale;                // 0xbc
+    f32 motion_maximum;              // 0xc0
+    f32 motion_falloff;              // 0xc4
+    u32 accumulation_params_set;     // 0xc8
+    u32 accumulation_effect_set;     // 0xcc
+    i32 accumulation_frames;         // 0xd0
+    f32 accumulation_mode;           // 0xd4
+    f32 accumulation_blend;          // 0xd8
+} NURNDR_EFFECTS_VIEW_PC;            // size 0xdc
+
+#define NURNDR_EFFECTS ((NURNDR_EFFECTS_VIEW_PC *)&currentScene.unknown_ac)
+
+extern i32 NuRndrDoingScreenGrab;
+
+void NuDepthOfFieldEffectEx(const NU_POST_DOF_PARAMETERS_PC *parameters) {
+    NURNDR_EFFECTS->dof = *parameters;
+    if (NuRndrDoingScreenGrab != 0) {
+        NURNDR_EFFECTS->dof.enabled = 0;
+    }
+}
+
+void NuDepthOfFieldEffect(f32 strength, f32 near_distance, f32 far_distance) {
+    NURNDR_EFFECTS->dof.enabled = 1;
+    NURNDR_EFFECTS->dof.strength = strength;
+    NURNDR_EFFECTS->dof.near_distance = near_distance;
+    NURNDR_EFFECTS->dof.far_distance = far_distance;
+    NURNDR_EFFECTS->dof.bias = 0;
+    NURNDR_EFFECTS->dof.mode = 3;
+    if (NuRndrDoingScreenGrab != 0) {
+        NURNDR_EFFECTS->dof.enabled = 0;
+    }
+}
+
+void NuDepthOfFieldEffect1(f32 near_distance, f32 far_distance) {
+    f32 ratio = near_distance / (near_distance + far_distance);
+    near_distance = (far_distance - near_distance) * ratio + near_distance;
+    NuDepthOfFieldEffect(1.0f, (far_distance * near_distance) / ((far_distance - near_distance) + far_distance),
+                         near_distance);
+}
+
+void NuDepthOfFieldEffect2(f32 near_distance, f32 far_distance, f32 strength) {
+    f32 ratio = near_distance / (near_distance + far_distance);
+    near_distance = (far_distance - near_distance) * ratio + near_distance;
+    NuDepthOfFieldEffect(strength, (far_distance * near_distance) / ((far_distance - near_distance) + far_distance),
+                         near_distance);
+}
+
+void NuTextureBlendEffect(i32 arg0, i32 arg1, NUVEC4 *parameters) {
+    NURNDR_EFFECTS->texture_blend_arg0 = arg0;
+    NURNDR_EFFECTS->texture_blend_enabled = 1;
+    NURNDR_EFFECTS->texture_blend_arg1 = arg1;
+    NURNDR_EFFECTS->texture_blend_parameters = *parameters;
+}
+
+void NuCameraMotionBlurParams(const NUMTX *current) {
+    currentScene.unknown_e0 = 1;
+    NURNDR_EFFECTS->motion_current = *current;
+}
+
+void NuCameraMotionBlurEffect(const NUMTX *previous, const NUMTX *current, f32 scale, f32 maximum, f32 falloff) {
+    currentScene.unknown_e4 = 1;
+    NURNDR_EFFECTS->motion_previous = *previous;
+    NURNDR_EFFECTS->motion_current = *current;
+    NURNDR_EFFECTS->motion_scale = scale;
+    NURNDR_EFFECTS->motion_maximum = maximum;
+    NURNDR_EFFECTS->motion_falloff = falloff;
+}
+
+void NuAccumulationMotionBlurParams(i32 frames, f32 blend, f32 mode) {
+    NURNDR_EFFECTS->accumulation_blend = blend;
+    currentScene.unknown_174 = 1;
+    NURNDR_EFFECTS->accumulation_frames = frames;
+    NURNDR_EFFECTS->accumulation_mode = mode;
+}
+
+extern i32 motionBlurAccumActiveThisFrame;
+
+void NuAccumulationMotionBlurEffect(i32 frames, f32 blend, f32 mode) {
+    NURNDR_EFFECTS->accumulation_blend = blend;
+    currentScene.unknown_174 = 1;
+    currentScene.unknown_178 = 1;
+    NURNDR_EFFECTS->accumulation_frames = frames;
+    NURNDR_EFFECTS->accumulation_mode = mode;
+    motionBlurAccumActiveThisFrame = 1;
+}
+
 void NuDeferredShadingRender(void) {
     currentScene.unknown_48 = 1;
 }
@@ -312,6 +434,23 @@ void NuRndrSetShadowCoefficientPc(i32 index, f32 value) {
             break;
         case 2:
             currentScene.shadow_coefficients_pc[2] = value;
+            break;
+        default:
+            AnimationDiagnosticNoOpPc();
+            break;
+    }
+}
+
+void NuDynamicLightingGetParameterfv(i32 parameter, f32 *out) {
+    switch (parameter) {
+        case 0:
+            *out = currentScene.shadow_coefficients_pc[0];
+            break;
+        case 1:
+            *out = currentScene.shadow_coefficients_pc[1];
+            break;
+        case 2:
+            *out = currentScene.shadow_coefficients_pc[2];
             break;
         default:
             AnimationDiagnosticNoOpPc();
@@ -345,6 +484,12 @@ f32 fun_005d52b0(f32 value, f32 minimum, f32 maximum) {
 
 void fun_005d5230(void) {
     currentScene.unknown_24 = 1;
+}
+
+extern i32 dat_0080b6e4;
+
+void fun_005d5250(i32 value) {
+    dat_0080b6e4 = value;
 }
 
 void fun_005d5260(f32 offset) {
@@ -2036,6 +2181,8 @@ void NuRndrLineRect2di(i32 x, i32 y, i32 width, i32 height, i32 colour, NUMTL *m
     --NuPrimCSPos;
     NuPrimSetCoordinateSystem(NuPrimCoordSystemStack[NuPrimCSPos]);
 }
+
+i32 dat_0080b6e4 = 13;
 
 /* Native speed-blur state has distinct writable storage. */
 i32 NuLightSpeedBlurEnabledPc = 1;

@@ -1468,6 +1468,10 @@ typedef void (*CUT_DRAW_EVAL_CALLBACK_PC)(INSTNUGCUTSCENE *, void *, void *, voi
 typedef void (*CUT_DRAW_RIGID_CALLBACK_PC)(void *, NUSPECIALHANDLE *, NUMTX *);
 extern void (*NuCutSceneResetCharacters)(INSTNUGCUTSCENE *);
 
+void fun_005000c0(void) {
+    CutSceneBackgroundInstancesPc = NULL;
+}
+
 void NuGCutSceneSysInit(CUT_LOCATOR_FUNCTION_ENTRY_PC *functions) {
     CutSceneBackgroundInstancesPc = NULL;
     active_cutscene_instances = NULL;
@@ -2697,6 +2701,10 @@ void instNuGCutSceneStop(INSTNUGCUTSCENE *owner) {
     }
 }
 
+void fun_00500200(void) {
+    active_cutscene_instances = NULL;
+}
+
 i32 instNuGCutSceneIsFinished(INSTNUGCUTSCENE *owner) {
     /* Retail sign-extends bit 12 of the flags word. */
     return (i32)(((CUT_INSTANCE_LIFECYCLE_PC *)owner)->flags_88 << 19) >> 31;
@@ -2758,6 +2766,7 @@ f32 instNuGCutSceneTotalTime(INSTNUGCUTSCENE *owner) {
 
 i32 gcutSoundVol = 100;
 i32 gcutSoundMusVol = 30;
+i32 dat_008008b0 = -1;
 
 void gcutSetSoundVol(i32 sound_volume, i32 music_volume) {
     gcutSoundVol = sound_volume;
@@ -2799,6 +2808,10 @@ i32 instNuGCutScenePreload(INSTNUGCUTSCENE *owner) {
     }
     CutSceneLoadingInstancePc = owner;
     return 1;
+}
+
+void fun_00500a60(i32 value) {
+    dat_008008b0 = value;
 }
 
 i32 instNuGCutSceneSwapBuffers(INSTNUGCUTSCENE *owner, i32 force) {

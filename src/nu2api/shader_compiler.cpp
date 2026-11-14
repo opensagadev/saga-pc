@@ -388,8 +388,20 @@ void ShaderCompilerBasePc::SetProfile(i32 profile, i32 first, i32 second) {
     dictionary.SetProfile(profile, first, second);
 }
 
+void ShaderCompilerBasePc::fun_00745270(const char *name, i32 count) {
+    dictionary.AddRegisterBlock(name, count);
+}
+
 void ShaderCompilerBasePc::SetForceMode(bool force) {
     dictionary.force_mode = force;
+}
+
+bool ShaderCompilerBasePc::fun_00745290() {
+    return dictionary.force_mode;
+}
+
+i32 ShaderCompilerBasePc::fun_007452a0() {
+    return dictionary.profile;
 }
 
 void *ShaderCompilerBasePc::ParseSource(const char *source, i32 length, ShaderCompilerBufferAllocatorPc *buffer,

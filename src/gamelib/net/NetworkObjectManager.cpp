@@ -38,6 +38,26 @@ extern "C" void fun_006118a0() {
 void NOSTrace(...) {
 }
 
+void NETMESSAGE_PC::fun_00611a00(u32 size) {
+    if (data != NULL) {
+        write_offset += size;
+    }
+}
+
+void NETMESSAGE_PC::fun_00611a10(u32 size) {
+    if (data != NULL) {
+        read_offset += size;
+    }
+}
+
+u8 V2Peer::fun_00611a20() const {
+    return local;
+}
+
+i32 V2Peer::fun_00611a60(i32 time) const {
+    return time_offset + time;
+}
+
 /* Serialises replicated members into a NETMESSAGE_PC (Android NetOutputStream). */
 class NetOutputStream : public EdOutputStream {
   public:
@@ -194,6 +214,53 @@ class NetRotator2 : public NetPredictor {
 i32 ForceDummySerialise = 0;
 NetworkObjectManager *theNos = NULL;
 
+void ReplicatorData::fun_00611b60(u8 *memory, u32 size) {
+    start = cursor = memory;
+    end = memory + size;
+}
+
+i32 ReplicatorData::fun_00611b80() const {
+    return cursor - start;
+}
+
+void ReplicatorData::fun_00611b90(u32 alignment) {
+    cursor = (u8 *)((u32)(cursor + alignment - 1) & ~(alignment - 1));
+}
+
+i32 NetReplicator::fun_00611bb0() const {
+    return id;
+}
+
+i32 NetReplicator::fun_00611bc0(i32 groups) const {
+    return (replication_group & groups) != 0;
+}
+
+i32 NetReplicator::fun_00611be0(u16 groups) {
+    replication_group |= groups;
+    return replication_group;
+}
+
+i32 NetReplicator::fun_00611c00(u16 groups) {
+    replication_group &= ~groups;
+    return replication_group;
+}
+
+i32 NetReplicator::fun_00611c20() const {
+    return data_size;
+}
+
+void NetReplicator::fun_00611c30(u16 size) {
+    data_size = size;
+}
+
+i32 NetReplicator::fun_00611c40() const {
+    return message_size;
+}
+
+void NetReplicator::fun_00611c50(u16 size) {
+    message_size = size;
+}
+
 void NetChangedReplicator::CheckSum(u8 byte, u32 &checksum) const {
     checksum = (checksum >> 8) ^ mCrc32Table[(checksum & 0xff) ^ byte];
 }
@@ -216,6 +283,17 @@ i32 NetworkObjectManager::NetPeerPush::GetNextObject() const {
 
 void NetworkObjectManager::NetPeerPush::SetNextObject(i32 index) {
     next_object = index;
+}
+
+i32 TTNetwork::fun_00611dc0() const {
+    return field_2148;
+}
+
+i32 NuNetEmu::fun_00611dd0() const {
+    if (packet_stats.pack_ratio > 0.0f) {
+        return queued_bytes * packet_stats.pack_ratio;
+    }
+    return queued_bytes;
 }
 
 void NetworkObject::Initialise(i32 guid, void *new_object, EdClass *new_class, const V2Peer &new_owner, i32 new_flags) {
@@ -612,6 +690,57 @@ i32 NetworkObjectManager::GetPeerStatus() {
         }
     }
     return status;
+}
+
+void NetworkObjectManager::ReplicatorList::fun_00612f70(NetReplicator *replicator, NetReplicator *after) {
+    if (after != NULL) {
+        replicator->previous = after;
+        replicator->next = after->next;
+        if (after->next != NULL) {
+            after->next->previous = replicator;
+        } else {
+            tail = replicator;
+        }
+        after->next = replicator;
+    } else {
+        replicator->next = NULL;
+        replicator->previous = tail;
+        if (tail != NULL) {
+            tail->next = replicator;
+        }
+        tail = replicator;
+        if (head == NULL) {
+            head = replicator;
+        }
+    }
+    count++;
+}
+
+/* Carves an aligned T out of the replicator data. */
+template <class T> T *ReplicatorData::Allocate(u32 alignment) {
+    T *block = (T *)((u32)(cursor + alignment - 1) & ~(alignment - 1));
+    cursor = (u8 *)(block + 1);
+    return block;
+}
+
+template u32 *ReplicatorData::Allocate<u32>(u32);
+template NetPredictor::PredictorTime *ReplicatorData::Allocate<NetPredictor::PredictorTime>(u32);
+
+i32 EdStream::fun_00613030(u8 &value) {
+    return SerialiseBuffer(&value, 1, 1);
+}
+
+i32 EdStream::fun_00613050(i32 &value) {
+    return SerialiseBuffer(&value, 4, 1);
+}
+
+template NetPredictor::PredictorData *ReplicatorData::Allocate<NetPredictor::PredictorData>(u32);
+
+void NETMESSAGE_PC::fun_00613090(const u8 &value) {
+    if (data != NULL) {
+        read_offset--;
+        PCByteCopy(data->bytes + read_offset, &value, 1);
+    }
 }
 
 i32 NOSGetGuid() {
@@ -1423,6 +1552,27 @@ void NetworkObjectManager::Stop() {
         } while (++i < 8);
         message.Release();
     }
+}
+
+i32 NetworkObjectManager::RemoteCall(i32 call_id, NETMESSAGE_PC message, const V2Peer *peer) {
+    NETMESSAGE_PC outgoing(message);
+    u8 header = call_id;
+    outgoing.fun_00613090(header);
+    header = 7;
+    outgoing.fun_00613090(header);
+    if (peer != NULL) {
+        if (peer->local) {
+            ((void (*)(NETMESSAGE_PC &))registered_calls[call_id - 1].callback)(message);
+        } else {
+            theTTNetwork.SendEx(outgoing, 3, (V2Peer *)peer, 0, 0);
+        }
+    } else {
+        theTTNetwork.BroadcastEx(outgoing, 3);
+        ((void (*)(NETMESSAGE_PC &))registered_calls[call_id - 1].callback)(message);
+    }
+    outgoing.Release();
+    message.Release();
+    return 1;
 }
 
 i32 NetworkObjectManager::ObjectCall(void *instance, i32 call_id, NETMESSAGE_PC message, const V2Peer *peer) {

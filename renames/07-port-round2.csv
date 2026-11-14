@@ -1,0 +1,68 @@
+old,new,evidence
+fun_005c6cb0,NuDynamicLightGetParameterf,C wrapper of PC_SPECIAL_SHADOW_LIGHT::GetParameterfPc between NuDynamicLightSetParameterf and NuDynamicLightSetParameteri
+fun_005e8850,NuDynamicLightTestShadowExtrusionsSpecial,"Android NuDynamicLightTestShadowExtrusionsSpecial(light, special, matrix) is this C wrapper; the old map name sat on the thiscall body 0x5e66b0 (now PCFrustumClipSet::fun_005e66b0)"
+fun_005e87f0,NuDynamicLightTestShadowExtrusions,"Android NuDynamicLightTestShadowExtrusions(light, first, second) copies second then first and tests"
+fun_005e8890,NuDynamicLightTestShadowExtrusionsExtent,"Android NuDynamicLightTestShadowExtrusionsExtent(light, center, extent)"
+fun_005f5cc0,NuDynamicLightClone,"Android NuDynamicLightClone(light, arena, end) -> clone; calls PC_SPECIAL_SHADOW_LIGHT::Clone"
+fun_005d4db0,NuLightBurnoutEffect,"Android NuLightBurnoutEffect(i32, threshold, intensity, flare): identical stores to currentScene"
+fun_005d4d30,NuRndrAnglesZX,"Android NuRndrAnglesZX, identical body (NuAtan2D/NuVecRotateX)"
+fun_005d7060,BoxTreeRndrRec,"Android static BoxTreeRndrRec (32-byte node tree, recursive)"
+fun_005da8d0,NuSpecialSetInstAnimTime,Android NuSpecialSetInstAnimTime (NuSpecialGetInstAnim inlined + StateAnimEvaluate2)
+fun_005e6a40,NuPostEffectTiming,"Android NuPostEffectTiming (motionAccumFilter->GetTiming, motionBlurAccumActiveThisFrame)"
+fun_005c3500,NuPostEffectIsEnabled,"Android NuPostEffectIsEnabled, same switch on the effect mask"
+fun_005c3880,NuPostEffectGetDepthBuffer,"Android NuPostEffectGetDepthBuffer (proxyDepthBuffer, frame id/copy statics -> _dat_0080bf24/_dat_0097ace4)"
+fun_005db150,NuViewPortSet,Android NuViewPortSet with the same static NUVIEWPORT2 initialiser; renaming also renames the static row ?vp@?1??fun_005db150@@9@4UNUVIEWPORT2_PC@@A at 0x80c010
+fun_005f3720,NuQFntPrint2dW,"Android NuQFntPrint2dW: push mode 2, NuQFntPrintW, pop"
+fun_005f37f0,NuQFntPrint3DW,"Android NuQFntPrint3DW: push mode 4, NuQFntPrintW, pop"
+fun_005f3860,NuQFntPrint3DU,"Android NuQFntPrint3DU: push mode 4, NuQFntPrintU, pop"
+fun_005fcda0,NuRndrStateSetFogState,"Android nurndrstat_android.c NuRndrStateSetFogState(near, far, colour, density): same four fields, fog cache reset, global/fog id increments; sits right after NuRndrStateSetFogEnabled (0x5fcd60)"
+fun_00601840,NuLightFogX,"Android nurndr_android.c NuLightFogX(f32 near, f32 far, u32 colour, f32, f32, i32, f32 density) = NuRndrStateSetFogEnabled(1) + NuRndrStateSetFogState; identical 7-argument use (density is the 7th stack argument)"
+fun_0065b6a0,edqrand,"Android gameliball.cpp edqrand: same body (seed*0x24cd+1)&0xffff on edqseed=12345, placed right after edanimLookupSpecial as in retail"
+fun_0065b6c0,edbitsRegisterLevel,"Android edbitsRegisterLevel(filename, game): same body, right before edbitsRegisterSaveFormat as in retail"
+fun_0065c130,edbitsSetSoundFxVolume,Android edbitsSetSoundFxVolume; edbitsSfxVol initial 100 matches retail 0x810a1c
+fun_0065c6f0,edbitsRegisterSoundEffect,Android edbitsRegisterSoundEffect: same body over edbitsGameSound[320]/edbits_numsounds
+fun_0065c740,edbitsRegisterPlaySound,"Android edbitsRegisterPlaySound (first of the two callback setters, sets the first global)"
+fun_0065c750,edbitsRegisterRequestSound,Android edbitsRegisterRequestSound
+fun_0065c760,edbitsLookupSound,"Android edbitsLookupSound: NuStrNICmp(name,15) loop returning index or -1"
+fun_0064a390,edpartEnter,"Android objectsall.cpp edpartEnter: same body (entry position, first-time camera move, edpart_nearest=-1); follows edpartClose as in retail"
+fun_005437c0,fullcodename,"Android gameframework/saveload.c fullcodename: folder + ""\\"" + ""code.bin"" into a static buffer; follows fullslotname"
+fun_006299a0,edmainRegister,Android edtoolsall.cpp edmainRegister: identical body on ed_init/ed_list
+fun_006d9430,NuPadSetMotorsPS,"NuPadSetMotors (0x4f4bc0) tail-jumps to it twice with (port, motor0, motor1) exactly as Android nucore_includes.c NuPadSetMotors calls NuPadSetMotorsPS; body is the XInput motor set"
+fun_006e1850,GetDeviceWidth,PC_WINDOW_OPTIONS_PC getter of the field that the mapped SetDeviceWidth writes (weak: name by symmetry with the setter)
+fun_006e1860,GetDeviceHeight,PC_WINDOW_OPTIONS_PC getter of the field that the mapped SetDeviceHeight writes (weak: name by symmetry with the setter)
+fun_006e1870,GetRefresh,PC_WINDOW_OPTIONS_PC getter of the field that the mapped SetRefresh writes (weak: name by symmetry with the setter)
+fun_006e1880,GetMultisample,PC_WINDOW_OPTIONS_PC getter of the field that the mapped SetMultisample writes (weak: name by symmetry with the setter)
+fun_006e1890,GetBloomMethod,PC_WINDOW_OPTIONS_PC getter of the field that the mapped SetBloomMethod writes (weak: name by symmetry with the setter)
+fun_006e18a0,GetDesiredBloomMethod,PC_WINDOW_OPTIONS_PC getter of the field that the mapped SetDesiredBloomMethod writes (weak: name by symmetry with the setter)
+fun_006e18b0,GetDesiredShadowMethod,PC_WINDOW_OPTIONS_PC getter of the field that the mapped SetDesiredShadowMethod writes (weak: name by symmetry with the setter)
+fun_006e18c0,GetSpeedBlurSupported,PC_WINDOW_OPTIONS_PC getter of the field that the mapped SetSpeedBlurSupported writes (weak: name by symmetry with the setter)
+fun_0067b410,NewRayCastEx,"Android gameliball.cpp NewRayCastEx (return NewRayCast(position, movement, radius, scan_flags)) sits between NewRayCast and NewRayCastScaleYMask, exactly as 0x67b410 sits between them in retail; identical body"
+fun_004f3b80,NuTimeStartFrame,"Android nucore_includes.c NuTimeStartFrame: frameStartTime = NuTimeGetTime(); followed by NuTimeGetStartFrame/NuTimeGetSinceStartFrame in the same order (0x4f3b90, 0x4f3ba0), right before NuTimeGetFrameTime"
+fun_004f3b90,NuTimeGetStartFrame,Android: returns frameStartTime; follows NuTimeStartFrame
+fun_004f3ba0,NuTimeGetSinceStartFrame,Android: NuTimeGetTime() - frameStartTime
+fun_004f3bc0,NuTimeForceFrameTime,Android: nuapi.forced_frame_time = frame_time; directly after NuTimeGetFrameTime in both
+fun_004f4c70,NuPadRecordStart,Android: nuapi.pad_record.is_recording = 1; placed right before NuPadRecordEndFrame (0x4f4c80) in both
+fun_004f4ef0,NuPadRecordSetPlayEndButtons,Android: nuapi.pad_record.end_play_buttons = buttons
+fun_004f4f00,NuPadRecordSetRecordEndButtons,Android: nuapi.pad_record.end_record_buttons = buttons
+fun_004fae60,NuPadRecordEnd,"Android NuPadRecordEnd: switch on pad_record.mode (RECORD: NuPadRecordSave(filepath); PLAY: mode = NORM, cursor = buf_start), then should_end = 0; follows NuPadRecordSave (0x4fadd0)"
+fun_00681d30,TerrErrorString,"Android gameliball.cpp TerrErrorString(error): index = -error, clamped to 0 when >= 7, returns errstr[index]; the retail table at 0x810b58 points at the same seven ERR_* strings in Android's order"
+fun_00680de0,DrawHitTerrain,"Android gameliball.cpp DrawHitTerrain: reopens the TerI scratch allocation and walks its scan list calling TerrDraw/TerrDrawPlat by group chunk_type, then NuScratchRelease; identical structure"
+fun_0067c160,NewPlatInstMSitu,"Android gameliball.cpp NewPlatInstMSitu(object, source): same guards, copies groups[source] into the next group, fills platform fields and bumps the counters; sits right after NewPlatInst (0x67bf50) as in Android"
+fun_0067c320,NewMSituTerrEx,"Android gameliball.cpp NewMSituTerrEx(position, data, minimum, maximum, radius): writes field_0x32/scene_index = -1, clears platform flag, chunk_type = 0, origin/data/bounds/radius, bumps counters, returns group_count - 1; follows NewPlatInstMSitu in Android"
+fun_005d4e90,NuDepthOfFieldEffectEx,"Android nu3d_includes.cpp NuDepthOfFieldEffectEx writes the same currentScene fields (nugscn.h offsets 0xac..0x184 match the PC NURNDRLIBSCENE) in the same address order between NuRndrSetBurnoutParametersPc and NuDeferredShadingRender/NuLightSpeedBlurOldCameraPos; bodies identical (NuDynamicLightingGetParameterfv is C++ in Android, the PC symbol is C)"
+fun_005d4ee0,NuDepthOfFieldEffect,"Android nu3d_includes.cpp NuDepthOfFieldEffect writes the same currentScene fields (nugscn.h offsets 0xac..0x184 match the PC NURNDRLIBSCENE) in the same address order between NuRndrSetBurnoutParametersPc and NuDeferredShadingRender/NuLightSpeedBlurOldCameraPos; bodies identical (NuDynamicLightingGetParameterfv is C++ in Android, the PC symbol is C)"
+fun_005d4f30,NuDepthOfFieldEffect1,"Android nu3d_includes.cpp NuDepthOfFieldEffect1 writes the same currentScene fields (nugscn.h offsets 0xac..0x184 match the PC NURNDRLIBSCENE) in the same address order between NuRndrSetBurnoutParametersPc and NuDeferredShadingRender/NuLightSpeedBlurOldCameraPos; bodies identical (NuDynamicLightingGetParameterfv is C++ in Android, the PC symbol is C)"
+fun_005d4fb0,NuDepthOfFieldEffect2,"Android nu3d_includes.cpp NuDepthOfFieldEffect2 writes the same currentScene fields (nugscn.h offsets 0xac..0x184 match the PC NURNDRLIBSCENE) in the same address order between NuRndrSetBurnoutParametersPc and NuDeferredShadingRender/NuLightSpeedBlurOldCameraPos; bodies identical (NuDynamicLightingGetParameterfv is C++ in Android, the PC symbol is C)"
+fun_005d5030,NuTextureBlendEffect,"Android nu3d_includes.cpp NuTextureBlendEffect writes the same currentScene fields (nugscn.h offsets 0xac..0x184 match the PC NURNDRLIBSCENE) in the same address order between NuRndrSetBurnoutParametersPc and NuDeferredShadingRender/NuLightSpeedBlurOldCameraPos; bodies identical (NuDynamicLightingGetParameterfv is C++ in Android, the PC symbol is C)"
+fun_005d5080,NuCameraMotionBlurParams,"Android nu3d_includes.cpp NuCameraMotionBlurParams writes the same currentScene fields (nugscn.h offsets 0xac..0x184 match the PC NURNDRLIBSCENE) in the same address order between NuRndrSetBurnoutParametersPc and NuDeferredShadingRender/NuLightSpeedBlurOldCameraPos; bodies identical (NuDynamicLightingGetParameterfv is C++ in Android, the PC symbol is C)"
+fun_005d50a0,NuCameraMotionBlurEffect,"Android nu3d_includes.cpp NuCameraMotionBlurEffect writes the same currentScene fields (nugscn.h offsets 0xac..0x184 match the PC NURNDRLIBSCENE) in the same address order between NuRndrSetBurnoutParametersPc and NuDeferredShadingRender/NuLightSpeedBlurOldCameraPos; bodies identical (NuDynamicLightingGetParameterfv is C++ in Android, the PC symbol is C)"
+fun_005d50f0,NuAccumulationMotionBlurParams,"Android nu3d_includes.cpp NuAccumulationMotionBlurParams writes the same currentScene fields (nugscn.h offsets 0xac..0x184 match the PC NURNDRLIBSCENE) in the same address order between NuRndrSetBurnoutParametersPc and NuDeferredShadingRender/NuLightSpeedBlurOldCameraPos; bodies identical (NuDynamicLightingGetParameterfv is C++ in Android, the PC symbol is C)"
+fun_005d5120,NuAccumulationMotionBlurEffect,"Android nu3d_includes.cpp NuAccumulationMotionBlurEffect writes the same currentScene fields (nugscn.h offsets 0xac..0x184 match the PC NURNDRLIBSCENE) in the same address order between NuRndrSetBurnoutParametersPc and NuDeferredShadingRender/NuLightSpeedBlurOldCameraPos; bodies identical (NuDynamicLightingGetParameterfv is C++ in Android, the PC symbol is C)"
+fun_005d51b0,NuDynamicLightingGetParameterfv,"Android nu3d_includes.cpp NuDynamicLightingGetParameterfv writes the same currentScene fields (nugscn.h offsets 0xac..0x184 match the PC NURNDRLIBSCENE) in the same address order between NuRndrSetBurnoutParametersPc and NuDeferredShadingRender/NuLightSpeedBlurOldCameraPos; bodies identical (NuDynamicLightingGetParameterfv is C++ in Android, the PC symbol is C)"
+fun_0068f620,AddMSituExtraTerrRot,"Android gameliball.cpp AddMSituExtraTerrRot(source_index, matrix, previous, rotating, source): adopts source as CurTerr when none (deleting its removed platforms, curSphereter = 0), same guards, then the inlined InstallExtraTerrainPlatform body; matches field for field"
+fun_006590f0,DebrisGlassClose,"Android gameliball.cpp DebrisGlassClose: same body (destroy copy material and debris_rt, clear initialised flag), placed between DebrisGlassParticlesActive (= fun_006590e0, same body: return freedebchkptrg > 0) and DebrisGlassInit"
+fun_006590e0,DebrisGlassParticlesActive,"Android gameliball.cpp DebrisGlassParticlesActive: return freedebchkptrg > 0, directly before DebrisGlassClose/DebrisGlassInit (not my function, already ported)"
+fun_00686890,DebrisDrawGlassEx,Android DebrisDrawGlassEx(i32 flicker) sits directly before DebrisDrawGlass and has the same body once the flicker paths are dropped; retail 0x686890 precedes DebrisDrawGlass (0x6868f0) with that body
+fun_0050d680,MessageBoxInitMtl,"Android gamemenuall.cpp MessageBoxInitMtl: creates MessageMtl with the same seven attribute stores, NuMtlUpdate, MessageMtlInit = 1"
+fun_0050d720,DrawMessageBox,"Android gamemenuall.cpp DrawMessageBox(i32, f32 x, f32 y, f32 width, f32 height): lazy MessageBoxInitMtl, NuRndrRect2di + four NuRndrGradRectUV2di with the same colours/offsets (30/60/7/15)"
+fun_0066b0c0,edppFindAllSounds,"Android gameliball.cpp edppFindAllSounds, same body and position after ParticleReset (function not ported, see skipped)"

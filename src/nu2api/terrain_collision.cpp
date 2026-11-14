@@ -2145,6 +2145,95 @@ extern "C" i32 TerrainInfoExtra(void) {
     return -1;
 }
 
+#define TERRAIN_AMS_SET (static_cast<TERRAIN_SET_PC *>(CurrentTerrain))
+
+extern "C" i32 AddMSituExtraTerrRot(i32 source_index, NUMTX *matrix, NUMTX *previous, i32 rotating,
+                                    TERRAIN_SET_PC *source) {
+    TERRAIN_SET_PC *terrain;
+    TERRAIN_GROUP *group;
+    i32 index;
+    i32 i;
+
+    if (source == NULL) {
+        return -1;
+    }
+    if (CurrentTerrain == NULL) {
+        CurrentTerrain = source;
+        for (i = 0; i < TERRAIN_AMS_SET->removed_platform_count; ++i) {
+            DeletePlatinst(TERRAIN_AMS_SET->removed_platforms[i]);
+        }
+        TERRAIN_AMS_SET->removed_platform_count = 0;
+        curSphereter = 0;
+    }
+    terrain = TERRAIN_AMS_SET;
+    if (terrain->group_index_count >= terrain->max_group_indices) {
+        return -1;
+    }
+    if (terrain->group_count >= terrain->max_groups) {
+        return -1;
+    }
+    if (matrix == NULL || (previous == NULL && rotating) || source->removed_platform_count >= 32 ||
+        source_index >= source->group_count) {
+        return -1;
+    }
+    index = -1;
+    for (i = 0; i < terrain->max_platforms; ++i) {
+        if (terrain->platforms[i].scene_object == NULL) {
+            index = i;
+            break;
+        }
+    }
+    if (index == -1) {
+        return -1;
+    }
+
+    group = &terrain->groups[terrain->group_count];
+    *group = source->groups[source_index];
+    group->scene_index = index;
+    group->chunk_type = 1;
+    TERRAIN_AMS_SET->platforms[index].scene_object = matrix;
+    if (rotating) {
+        TERRAIN_AMS_SET->platforms[index].previous_matrix = *previous;
+        TERRAIN_AMS_SET->platforms[index].flags |= 1;
+    } else {
+        if (previous != NULL) {
+            TERRAIN_AMS_SET->platforms[index].previous_matrix.m30 = previous->m30;
+            TERRAIN_AMS_SET->platforms[index].previous_matrix.m31 = previous->m31;
+            TERRAIN_AMS_SET->platforms[index].previous_matrix.m32 = previous->m32;
+        } else {
+            TERRAIN_AMS_SET->platforms[index].previous_matrix.m30 = matrix->m30;
+            TERRAIN_AMS_SET->platforms[index].previous_matrix.m31 = matrix->m31;
+            TERRAIN_AMS_SET->platforms[index].previous_matrix.m32 = matrix->m32;
+        }
+        TERRAIN_AMS_SET->platforms[index].flags &= ~1;
+    }
+    group->origin.x = matrix->m30;
+    group->origin.y = matrix->m31;
+    group->origin.z = matrix->m32;
+    TERRAIN_AMS_SET->platforms[index].terrain_group_index = TERRAIN_AMS_SET->group_count;
+    TERRAIN_AMS_SET->platforms[index].scene_object_index = 0;
+    TERRAIN_AMS_SET->platforms[index].instance_flags = NULL;
+    TERRAIN_AMS_SET->group_indices[TERRAIN_AMS_SET->group_index_count] = TERRAIN_AMS_SET->group_count;
+    TERRAIN_AMS_SET->group_index_count++;
+    TERRAIN_AMS_SET->platforms[index].bounce_54 = 0.0f;
+    TERRAIN_AMS_SET->platforms[index].bounce_58 = 0.0f;
+    TERRAIN_AMS_SET->platforms[index].bounce_5c = 0.0f;
+    TERRAIN_AMS_SET->platforms[index].bounce_64 = 0.0f;
+    TERRAIN_AMS_SET->platforms[index].bounce_60 = 0.0f;
+    TERRAIN_AMS_SET->platforms[index].flags &= ~2;
+    if (TERRAIN_AMS_SET->active_platform_count < 96) {
+        TERRAIN_AMS_SET->active_platform_groups[TERRAIN_AMS_SET->active_platform_count] = TERRAIN_AMS_SET->group_count;
+        TERRAIN_AMS_SET->active_platform_count++;
+    }
+    TERRAIN_AMS_SET->group_count++;
+    TERRAIN_AMS_SET->platform_cell.group_count++;
+    TERRAIN_AMS_SET->removed_platforms[TERRAIN_AMS_SET->removed_platform_count] = index;
+    TERRAIN_AMS_SET->removed_platform_count++;
+    return index;
+}
+
+#undef TERRAIN_AMS_SET
+
 extern "C" void NewTerrainScaleYMask(NUVEC *position, NUVEC *movement, u8 *hit_flags, i32 object_index, f32 radius,
                                      f32 collision_radius, f32 object_scale, i32 embedded_retry, i32 scan_flags,
                                      i32 terrain_mask) {

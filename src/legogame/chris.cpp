@@ -542,6 +542,11 @@ extern "C" {
         return 0;
     }
 
+    void fun_0040eb80(GAMEOBJECT *object, NUMTX *matrix) {
+        *matrix = object->transform;
+        NuMtxPreRotateY(matrix, 0x8000);
+    }
+
     static void ProcessQuickBoltsPc(DOGFIGHT_QUICK_BUFFER_PC *buffer) {
         __declspec(align(16)) NUVEC player0;
         __declspec(align(16)) NUVEC player1;
@@ -2075,6 +2080,14 @@ extern "C" {
         }
     }
 
+    void fun_00412680(WORLDINFO *world) {
+        world->level_specific_data = NULL;
+        if (AnakinC == NULL) {
+            AnakinC = NULL;
+        }
+        world->level_specific_data = NULL;
+    }
+
     i32 ShipDropCoins(starfighter_s *fighter) {
         DOGFIGHT_SPACE_PC *space = (DOGFIGHT_SPACE_PC *)WORLD->level_specific_data;
         i32 index;
@@ -2346,6 +2359,12 @@ extern "C" {
     void ChrisAnakinCInit() {
         NuSpecialList(WORLD->current_gscn);
         ChrisAnakinCReset();
+    }
+
+    void fun_00413230(GAMEOBJECT *object, NUMTX *matrix) {
+        __declspec(align(16)) NUMTX rotated = object->transform;
+        *matrix = rotated;
+        NuMtxPreRotateY(matrix, 0x8000);
     }
 
     static void SpawnFlightFighterPc(DOGFIGHT_PLAYBACK_SPLINE_PC *spline, DOGFIGHT_FIGHTER_PC *record) {

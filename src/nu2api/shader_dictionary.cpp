@@ -69,6 +69,15 @@ extern "C" i32 fun_00746560(u32 flags) {
     return (flags >> 12) & 1;
 }
 
+PC_SHADER_MATERIAL_FILTER_VIEW::PC_SHADER_MATERIAL_FILTER_VIEW(const PC_SHADER_FILTER_DESC_VIEW *descriptor, i32 flags,
+                                                               i32 parameter) {
+    Initialize(descriptor, NULL, flags, parameter);
+}
+
+void ShaderCompilerDictionaryPc::fun_007451c0(bool force) {
+    force_mode = force;
+}
+
 bool ShaderCompilerDictionaryPc::GetForceMode() const {
     return force_mode;
 }
@@ -685,6 +694,51 @@ void ShaderCompilerDictionaryPc::EmitAttribute(ShaderCompilerBufferAllocatorPc *
         }
     }
     output->AppendText("};\r\n");
+}
+
+ShaderCompilerBufferAllocatorPc &ShaderCompilerBufferAllocatorPc::operator<<(i32 value) {
+    AppendInt(value);
+    return *this;
+}
+
+ShaderMacroDefinitionPc::ShaderMacroDefinitionPc(const char *name, const char *value, u8 emit)
+    : name(name), value(value), emit(emit) {
+}
+
+i32 ShaderSourceNodePc::fun_00746620() {
+    return ShaderCompilerTypeComponentsPc[type];
+}
+
+const char *ShaderSourceNodePc::fun_00746630() {
+    return ShaderCompilerTypeNamesPc[type];
+}
+
+void ShaderRegisterBlockPc::fun_00746760(const char *block_name, i32 count) {
+    PCByteCopy(name, block_name, NuStrLen(block_name) + 1);
+    register_count = count;
+}
+
+void ShaderCompilerDictionaryPc::fun_00746940(ShaderConditionNodePc *node, char *text) {
+    if (node->left != NULL) {
+        fun_00746940(node->left, text);
+    }
+    strcat(text, node->token);
+    if (node->right != NULL) {
+        fun_00746940(node->right, text);
+    }
+}
+
+void ShaderCompilerDictionaryPc::fun_00746bf0(const char *name) {
+    i32 i;
+    for (i = 0; i < program_count; ++i) {
+        if (strcmp(programs[i]->name, name) == 0) {
+            break;
+        }
+    }
+    if (i < program_count - 1) {
+        programs[i] = programs[program_count - 1];
+    }
+    program_count--;
 }
 
 void ShaderCompilerDictionaryPc::AddASTDefinition(ShaderSourceNodePc *node) {

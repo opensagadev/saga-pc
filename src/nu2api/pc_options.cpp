@@ -3,6 +3,10 @@
 #include <shlobj.h>
 #include <string.h>
 
+GRAPHICS_DISPLAY_MODE_PC *PC_DEVICE_BACKEND_PC::fun_006daee0() {
+    return &desktop_mode;
+}
+
 void PC_WINDOW_OPTIONS_PC::SetWidth(i32 value) {
     client_width = value;
 }
@@ -383,6 +387,18 @@ void PC_WINDOW_OPTIONS_PC::Load() {
         usehires = usehirespending;
     }
     Validate();
+}
+
+u32 PC_DEVICE_BACKEND_PC::fun_006dbae0() {
+    return shader_flags;
+}
+
+u32 PC_DEVICE_BACKEND_PC::fun_006dbaf0() {
+    return render_target_flags;
+}
+
+void PC_DEVICE_BACKEND_PC::fun_006dbb00(u8 windowed) {
+    requested_windowed = windowed;
 }
 
 extern "C" i32 fun_006dbb10(void) {

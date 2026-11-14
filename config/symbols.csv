@@ -331,17 +331,17 @@ address,symbol,size,ctype
 0x4200c0,?PcControlPrimColourPc@@YAXI@Z,108,
 0x420130,_fun_00420130,15,
 0x420140,_fun_00420140,28,
-0x420160,_fun_00420160,5,
-0x420170,_fun_00420170,11,
-0x420180,_fun_00420180,13,
-0x420190,_fun_00420190,115,
+0x420160,?fun_00420160@PC_CONTROL_SCREEN_PC@@QAEHXZ,5,
+0x420170,?fun_00420170@PC_CONTROL_SCREEN_PC@@QAEHH@Z,11,
+0x420180,?fun_00420180@PC_CONTROL_SCREEN_PC@@QAEXP6AXH@Z@Z,13,
+0x420190,?fun_00420190@PC_CONTROL_SCREEN_PC@@QAEPAU1@XZ,115,
 0x420210,_fun_00420210,1,
 0x420220,?Register@PC_CONTROL_SCREEN_PC@@QAEXPAUPC_CONTROL_CONFIG_PC@@PATvariptr_u@@1@Z,249,
-0x420320,_fun_00420320,10,
+0x420320,?fun_00420320@PC_CONTROL_SCREEN_PC@@QAEXH@Z,10,
 0x420330,?HashConfiguration@PC_CONTROL_SCREEN_PC@@QAEHXZ,142,
 0x4203c0,?WaitForRelease@PC_CONTROL_SCREEN_PC@@QAEHXZ,90,
-0x420420,_fun_00420420,21,
-0x420440,_fun_00420440,16,
+0x420420,?fun_00420420@PC_CONTROL_SCREEN_PC@@QAEXH@Z,21,
+0x420440,?fun_00420440@PC_CONTROL_SCREEN_PC@@QAEXXZ,16,
 0x420450,?SaveConfiguration@PC_CONTROL_SCREEN_PC@@QAEXXZ,138,
 0x4204e0,?PortAllowed@PC_CONTROL_SCREEN_PC@@QAEEHHH@Z,130,
 0x420570,?HasMissingBindings@PC_CONTROL_SCREEN_PC@@QAEEXZ,201,
@@ -351,8 +351,8 @@ address,symbol,size,ctype
 0x420780,?ScaleColour@PC_CONTROL_SCREEN_PC@@QAEIMMI@Z,274,
 0x4208a0,?ScaleAlpha@PC_CONTROL_SCREEN_PC@@QAEIMI@Z,118,
 0x420920,?DrawDeadzone@PC_CONTROL_SCREEN_PC@@QAEXMMMMMMMM@Z,1033,
-0x420d30,_fun_00420d30,738,
-0x421020,_fun_00421020,33,
+0x420d30,?fun_00420d30@PC_CONTROL_SCREEN_PC@@QAEXMMMMMMMM@Z,738,
+0x421020,?fun_00421020@PC_CONTROL_SCREEN_PC@@QAEXXZ,33,
 0x421050,?HashString@PC_CONTROL_SCREEN_PC@@QAEIPBD@Z,161,
 0x421100,?QueueText@PC_CONTROL_SCREEN_PC@@QAEXPADMMMHMMIMMI@Z,472,
 0x4212e0,?CountPlayerRows@PC_CONTROL_SCREEN_PC@@QAEHPAUPC_CONTROL_ROW_PC@@@Z,57,
@@ -3122,11 +3122,11 @@ address,symbol,size,ctype
 0x004f3650,_NuStringFilterBadWordsW,212,"i32 __cdecl (u16 *, u16 *, u16 *)"
 0x004f3730,_NuStringFilterBadWords,130,"i32 __cdecl (u8 *, u8 *, u8 *)"
 0x4f37c0,_NuPPUnpack,948,"void __cdecl(void *, void *)"
-0x4f3b80,_fun_004f3b80,11,
-0x4f3b90,_fun_004f3b90,6,
-0x4f3ba0,_fun_004f3ba0,12,
+0x4f3b80,_NuTimeStartFrame,11,
+0x4f3b90,_NuTimeGetStartFrame,6,
+0x4f3ba0,_NuTimeGetSinceStartFrame,12,
 0x4f3bb0,_NuTimeGetFrameTime,7,f32 __cdecl(void)
-0x4f3bc0,_fun_004f3bc0,11,
+0x4f3bc0,_NuTimeForceFrameTime,11,
 0x004f3bd0,_NuTimeGet,18,void __cdecl (NuTime *)
 0x004f3bf0,_NuTimeSub,58,"void __cdecl (NuTime *, NuTime *, NuTime *)"
 0x004f3c30,_NuTimeSeconds,102,f32 __cdecl (NuTime *)
@@ -3164,11 +3164,11 @@ address,symbol,size,ctype
 0x4f49b0,_NuPadRead,528,i32 __cdecl(FRAME_PAD_PC*)
 0x4f4bc0,_NuPadSetMotors,68,
 0x4f4c10,_NuPadResetState,95,void __cdecl(i32)
-0x4f4c70,_fun_004f4c70,11,
+0x4f4c70,_NuPadRecordStart,11,
 0x4f4c80,_NuPadRecordEndFrame,110,void __cdecl(void)
 0x4f4cf0,_NuPadRecordPlay,510,void __cdecl(FRAME_SCANNED_PAD_PC*)
-0x4f4ef0,_fun_004f4ef0,10,
-0x4f4f00,_fun_004f4f00,10,
+0x4f4ef0,_NuPadRecordSetPlayEndButtons,10,
+0x4f4f00,_NuPadRecordSetRecordEndButtons,10,
 0x4f4f10,_fun_004f4f10,1,
 0x4f4f20,_fun_004f4f20,1,
 0x4f4f30,_fun_004f4f30,1,
@@ -3328,7 +3328,7 @@ address,symbol,size,ctype
 0x004fa880,_NuQTWrite,176,"i32 __cdecl (char *, NUQTHDR_PC *)"
 0x004fa930,_NuStringTableSaveCharacterList,1182,"void __cdecl (char *, char *, i32)"
 0x4fadd0,_NuPadRecordSave,133,void __cdecl (char *)
-0x4fae60,_fun_004fae60,64,
+0x4fae60,_NuPadRecordEnd,64,
 0x4faea0,_ExplodeBufferNoHeader,187,"i32 __cdecl(char *,char *,i32,i32)"
 0x004faf60,_NuDatFileRead,451,"i32 __cdecl (NUFILE, void *, i32)"
 0x4fb130,_NuPadUpdatePads,854,void __cdecl(void)
@@ -3651,11 +3651,11 @@ address,symbol,size,ctype
 0x509090,_fun_00509090,16,
 0x5090a0,_fun_005090a0,7,
 0x5090b0,?SupportsMultisamplePc@PC_DEVICE_BACKEND_PC@@QAEEH@Z,36,
-0x5090e0,_fun_005090e0,43,
-0x509110,_fun_00509110,7,
-0x509120,_fun_00509120,7,
-0x509130,_fun_00509130,13,
-0x509140,_fun_00509140,63,
+0x5090e0,?fun_005090e0@PC_DEVICE_BACKEND_PC@@QAEEXZ,43,
+0x509110,?fun_00509110@PC_DEVICE_BACKEND_PC@@QAEIXZ,7,
+0x509120,?fun_00509120@PC_DEVICE_BACKEND_PC@@QAEHXZ,7,
+0x509130,?fun_00509130@PC_DEVICE_BACKEND_PC@@QAEXH@Z,13,
+0x509140,?fun_00509140@PC_DEVICE_BACKEND_PC@@QAEXH@Z,63,
 0x509180,?ChangedPc@MENU_VIDEO_OPTIONS_PC@@QAEEXZ,98,
 0x5091f0,_fun_005091f0,64,
 0x509230,?ApplyPc@MENU_VIDEO_OPTIONS_PC@@QAEXXZ,132,
@@ -3763,8 +3763,8 @@ address,symbol,size,ctype
 0x50d1c0,_Text3DEx2,117,"void __cdecl(char*,f32,f32,f32,f32,f32,f32,u32,u32,u32,u32,u8)"
 0x50d240,_FindNextBreak,375,"i32 __cdecl(u8*,i32)"
 0x50d3c0,_FindNearestBreak,690,"i32 __cdecl(u8*,i32)"
-0x50d680,_fun_0050d680,160,
-0x50d720,_fun_0050d720,496,
+0x50d680,_MessageBoxInitMtl,160,
+0x50d720,_DrawMessageBox,496,
 0x50d910,_SmartTextEx,2661,"void __cdecl(char*,f32,f32,f32,f32,f32,f32,u32,u8,u8,u8,f32,i32,void*,i32,i32)"
 0x50e380,_SmartTextEx2,140,"void __cdecl(char*,f32,f32,f32,f32,f32,f32,u32,u8,u8,u8,f32,i32,void*,i32,u32)"
 0x50e410,_SmartTextExDrop,252,
@@ -4446,11 +4446,11 @@ address,symbol,size,ctype
 0x53d290,??1AINet@@UAE@XZ,17,
 0x53d2b0,?Register@AINet@@QAEXXZ,19,
 0x53d2d0,_fun_0053d2d0,3,
-0x53d2e0,_fun_0053d2e0,8,
+0x53d2e0,?fun_0053d2e0@MessageData@NETMESSAGE_PC@@QAEXXZ,8,
 0x53d2f0,_fun_0053d2f0,3,
 0x53d300,?Read8@NETMESSAGE_PC@@QAEXAAE@Z,39,void __thiscall NETMESSAGE_PC::Read8(u8 &)
-0x53d330,_fun_0053d330,39,
-0x53d360,_fun_0053d360,55,
+0x53d330,?fun_0053d330@NETMESSAGE_PC@@QAEXAAC@Z,39,
+0x53d360,?fun_0053d360@NETMESSAGE_PC@@QAEXAAF@Z,55,
 0x53d3a0,?Write8@NETMESSAGE_PC@@QAEXABE@Z,39,void __thiscall NETMESSAGE_PC::Write8(const u8 &)
 0x53d3d0,?Write16@NETMESSAGE_PC@@QAEXABG@Z,59,void __thiscall NETMESSAGE_PC::Write16(const u16 &)
 0x53d410,_fun_0053d410,3,
@@ -4459,16 +4459,16 @@ address,symbol,size,ctype
 0x53d440,_fun_0053d440,3,
 0x53d450,_fun_0053d450,1,
 0x53d460,??0NETMESSAGE_PC@@QAE@ABU0@@Z,60,
-0x53d4a0,_fun_0053d4a0,57,
-0x53d4e0,_fun_0053d4e0,68,
+0x53d4a0,?fun_0053d4a0@NETMESSAGE_PC@@QAEXPAD@Z,57,
+0x53d4e0,?fun_0053d4e0@NETMESSAGE_PC@@QAEXPADH@Z,68,
 0x53d530,??_GAINet@@UAEPAXI@Z,45,
 0x53d530,??_EAINet@@UAEPAXI@Z,,COFF weak alias of ??_GAINet@@UAEPAXI@Z
 0x53d560,_fun_0053d560,13,
 0x53d570,_fun_0053d570,25,
 0x53d590,_fun_0053d590,48,
-0x53d5c0,_fun_0053d5c0,11,
+0x53d5c0,?fun_0053d5c0@MessageData@NETMESSAGE_PC@@QAEXXZ,11,
 0x53d5d0,??0NETMESSAGE_PC@@QAE@I@Z,66,NETMESSAGE_PC::NETMESSAGE_PC(u32)
-0x53d620,_fun_0053d620,32,
+0x53d620,?fun_0053d620@MessageData@NETMESSAGE_PC@@QAEXXZ,32,
 0x53d640,?Release@NETMESSAGE_PC@@QAEXXZ,39,
 0x53d670,?Receive@NetListenerInterface@@UAEXUNETMESSAGE_PC@@EABVV2Peer@@@Z,44,
 0x53d6a0,?Receive@AINet@@UAEXUNETMESSAGE_PC@@EABVV2Peer@@@Z,662,
@@ -4583,7 +4583,7 @@ address,symbol,size,ctype
 0x543620,_fun_00543620,74,
 0x543670,_createslotfolder,112,void __cdecl(i32)
 0x5436e0,_fullslotname,224,char * __cdecl (i32)
-0x5437c0,_fun_005437c0,186,
+0x5437c0,_fullcodename,186,
 0x543880,_saveload_getinfo,135,i32 __cdecl (void)
 0x543910,_fun_00543910,3,
 0x543920,_saveloadCheckCardPresent,6,
@@ -6255,11 +6255,11 @@ address,symbol,size,ctype
 0x595200,_fun_00595200,28,
 0x595220,_fun_00595220,18,
 0x595240,_fun_00595240,3,
-0x595250,_fun_00595250,30,
-0x595270,_fun_00595270,22,
-0x595290,_fun_00595290,46,
+0x595250,?fun_00595250@NUVEC4@@QAEXMMMM@Z,30,
+0x595270,?fun_00595270@NUVEC4@@QAEXXZ,22,
+0x595290,?fun_00595290@NUVEC4@@QAEAAU1@ABUnuvec_s@@@Z,46,
 0x5952c0,?LookAtPc@PC_SPECIAL_SHADOW_LIGHT@@QAEXPAUnuvec_s@@00@Z,148,three stack vector pointers thiscallRET12
-0x595360,_fun_00595360,78,
+0x595360,?fun_00595360@PC_SPECIAL_SHADOW_LIGHT@@QAEXMMMMMM@Z,78,
 0x5953b0,?SetParameterfPc@PC_SPECIAL_SHADOW_LIGHT@@QAEXHM@Z,257,"void __thiscall PC_SPECIAL_SHADOW_LIGHT::SetParameterfPc(i32,f32)"
 0x5954c0,_fun_005954c0,28,
 0x5954e0,_fun_005954e0,1,
@@ -7290,17 +7290,17 @@ address,symbol,size,ctype
 0x5c2260,??_GNuPostFilterGen@@UAEPAXI@Z,31,native scalar-deleting dtor exactVTidentity
 0x5c2280,_fun_005c2280,3,
 0x5c2290,??0NuPostFilterGen@@QAE@XZ,17,native ctor fullvptr/field proof
-0x5c22b0,_fun_005c22b0,20,
+0x5c22b0,?fun_005c22b0@NuPostFilterGen@@QAEXXZ,20,
 0x5c22d0,?reset@NuPostFilterGen@@UAEXXZ,5,clears enabled
 0x5c22e0,?resetAll@NuPostFilterGen@@UAEXXZ,1,native exactVT binding; unimplemented extent unclaimed
 0x5c22f0,?isEnabled@NuPostFilterGen@@UAE_NXZ,4,native exactVT binding; unimplemented extent unclaimed
 0x5c2300,?getInputFbo@NuPostFilterGen@@UAEPAUPC_FRAMEBUFFER_PC@@XZ,4,native exactVT binding; unimplemented extent unclaimed
-0x5c2310,_fun_005c2310,70,
-0x5c2360,_fun_005c2360,14,
-0x5c2370,_fun_005c2370,43,
-0x5c23a0,_fun_005c23a0,10,
-0x5c23b0,_fun_005c23b0,73,
-0x5c2400,_fun_005c2400,33,
+0x5c2310,?fun_005c2310@NuMainFilterGen@@QAEXH_N@Z,70,
+0x5c2360,?fun_005c2360@NuMainFilterGen@@QAE_NH@Z,14,
+0x5c2370,?fun_005c2370@NuMainFilterGen@@QAEXPBUNU_POST_DOF_PARAMETERS_PC@@@Z,43,
+0x5c23a0,?fun_005c23a0@NuMainFilterGen@@QAEXPBUNU_POST_BLOOM_PARAMETERS_PC@@@Z,10,
+0x5c23b0,?fun_005c23b0@NuMainFilterGen@@QAEXPBUnumtx_s@@0MMM@Z,73,
+0x5c2400,?fun_005c2400@NuMainFilterGen@@QAEXHMM@Z,33,
 0x5c2430,_fun_005c2430,15,
 0x5c2440,_fun_005c2440,7,
 0x5c2450,_fun_005c2450,17,
@@ -7327,31 +7327,31 @@ address,symbol,size,ctype
 0x5c2920,?reset@NuMainFilterGen@@UAEXXZ,25,
 0x5c2940,?preprocessBlurTextures@NuMainFilterGen@@QAEXPAUGRAPHICS_RENDER_TEXTURE_PC@@0@Z,417,"void __thiscall (GRAPHICS_RENDER_TEXTURE_PC *, GRAPHICS_RENDER_TEXTURE_PC *)"
 0x5c2af0,?preprocessDofMotionBlur@NuMainFilterGen@@QAEXPAUGRAPHICS_RENDER_TEXTURE_PC@@@Z,737,"void __thiscall (GRAPHICS_RENDER_TEXTURE_PC *)"
-0x5c2de0,_fun_005c2de0,10,
-0x5c2df0,_fun_005c2df0,67,
+0x5c2de0,?fun_005c2de0@NuMotionFilterGen@@QAEX_N@Z,10,
+0x5c2df0,?fun_005c2df0@NuMotionFilterGen@@QAEXPBUnumtx_s@@0MMM@Z,67,
 0x5c2e40,??0NuMotionFilterGen@@QAE@XZ,39,native ctor fullvptr/field proof
 0x5c2e70,_fun_005c2e70,7,
 0x5c2e80,_fun_005c2e80,20,
 0x5c2ea0,_fun_005c2ea0,1,
-0x5c2eb0,_fun_005c2eb0,7,
-0x5c2ec0,_fun_005c2ec0,13,
+0x5c2eb0,?fun_005c2eb0@PC_SPECIAL_SHADOW_LIGHT@@QAEHXZ,7,
+0x5c2ec0,?fun_005c2ec0@PC_SPECIAL_SHADOW_LIGHT@@QAEXH@Z,13,
 0x5c2ed0,_fun_005c2ed0,1,
 0x5c2ee0,_fun_005c2ee0,53,
-0x5c2f20,_fun_005c2f20,7,
-0x5c2f30,_fun_005c2f30,7,
-0x5c2f40,_fun_005c2f40,7,
-0x5c2f50,_fun_005c2f50,185,
-0x5c3010,_fun_005c3010,40,
-0x5c3040,_fun_005c3040,37,
-0x5c3070,_fun_005c3070,39,
-0x5c30a0,_fun_005c30a0,10,
-0x5c30b0,_fun_005c30b0,18,
-0x5c30d0,_fun_005c30d0,4,
-0x5c30e0,_fun_005c30e0,30,
-0x5c3100,_fun_005c3100,10,
-0x5c3110,_fun_005c3110,24,
-0x5c3130,_fun_005c3130,10,
-0x5c3140,_fun_005c3140,10,
+0x5c2f20,?fun_005c2f20@PC_SPECIAL_SHADOW_LIGHT@@QAEHXZ,7,
+0x5c2f30,?fun_005c2f30@PC_SPECIAL_SHADOW_LIGHT@@QAEPAUnumtx_s@@XZ,7,
+0x5c2f40,?fun_005c2f40@PC_SPECIAL_SHADOW_LIGHT@@QAEPAUnumtx_s@@XZ,7,
+0x5c2f50,?GetParameterfPc@PC_SPECIAL_SHADOW_LIGHT@@QAEMH@Z,185,
+0x5c3010,?SetParameteriPc@PC_SPECIAL_SHADOW_LIGHT@@QAEXHH@Z,40,
+0x5c3040,?GetParameteriPc@PC_SPECIAL_SHADOW_LIGHT@@QAEHH@Z,37,
+0x5c3070,?fun_005c3070@PC_SPECIAL_SHADOW_LIGHT@@QAEXHH@Z,39,
+0x5c30a0,?fun_005c30a0@NuDeferredFilterGen@@QAEX_N@Z,10,
+0x5c30b0,?fun_005c30b0@NuDeferredFilterGen@@QAEXPAUNuDynamicLight@@@Z,18,
+0x5c30d0,?fun_005c30d0@NuDeferredFilterGen@@QAEHXZ,4,
+0x5c30e0,?fun_005c30e0@NuDeferredFilterGen@@QAEXPBM@Z,30,
+0x5c3100,?fun_005c3100@NuMotionAccumFilterGen@@QAEX_N@Z,10,
+0x5c3110,?fun_005c3110@NuMotionAccumFilterGen@@QAEXHMM@Z,24,
+0x5c3130,?fun_005c3130@NuSpeedBlurFilterGen@@QAEX_N@Z,10,
+0x5c3140,?fun_005c3140@NuSpeedBlurFilterGen@@QAEXPBUNU_POST_SPEED_PARAMETERS_PC@@@Z,10,
 0x5c3150,??0NuMotionFilter@@QAE@XZ,39,native ctor fullvptr/field proof
 0x5c3180,??0NuCopyFilter@@QAE@XZ,17,native ctor fullvptr/field proof
 0x5c31a0,_fun_005c31a0,7,
@@ -7364,7 +7364,7 @@ address,symbol,size,ctype
 0x5c32c0,_NuPostEffectIsInitialised,16,i32 __cdecl(u32)
 0x5c32d0,_NuPostEffectEnable,273,void __cdecl(i32)
 0x5c33f0,_NuPostEffectDisable,265,void __cdecl(u32)
-0x5c3500,_fun_005c3500,317,
+0x5c3500,_NuPostEffectIsEnabled,317,
 0x5c3640,_NuPostEffectAddDynamicLight,30,void __cdecl(NuDynamicLight*)
 0x5c3660,_NuPostEffectGetActiveDynamicLightCount,16,i32 __cdecl(void)
 0x5c3670,_NuPostEffectDepthOfField,50,void __cdecl(const NU_POST_DOF_PARAMETERS_PC*)
@@ -7374,7 +7374,7 @@ address,symbol,size,ctype
 0x5c3790,_NuPostEffectAccumulationMotionBlur,63,"void __cdecl(i32,f32,f32)"
 0x5c37d0,_NuPostEffectSpeedBlur,17,void __cdecl(const NU_POST_SPEED_PARAMETERS_PC*)
 0x005c37f0,_NuPostEffectGetBackBuffer,135,GRAPHICS_RENDER_TEXTURE_PC *__cdecl(i32)
-0x5c3880,_fun_005c3880,117,
+0x5c3880,_NuPostEffectGetDepthBuffer,117,
 0x5c3900,_NuPostEffectResizePc,78,void __cdecl(void)
 0x5c3950,??_I@YGXPAXIHP6EX0@Z@Z,50,"void __stdcall(void*,u32,i32,void(__thiscall *)(void*))"
 0x5c3990,_PCGraphicsCreatePostEffectWorkTexture,33,"void __cdecl(i32,i32)"
@@ -7404,7 +7404,7 @@ address,symbol,size,ctype
 0x5c4ea0,?destroyResources@NuMotionAccumFilterGen@@UAEXXZ,40,Native VT cleanup complete CFG bound; working partial where applicable
 0x5c4ed0,?initTextureResources@NuMotionAccumFilterGen@@UAEXHH@Z,34,native exactVT binding; unimplemented extent unclaimed
 0x5c4f00,?destroyTextureResources@NuMotionAccumFilterGen@@UAEXXZ,11,Native VT cleanup complete CFG bound; working partial where applicable
-0x5c4f10,_fun_005c4f10,112,
+0x5c4f10,?GetTiming@NuMotionAccumFilterGen@@QAEMPAH@Z,112,
 0x5c4f80,??0NuSpeedBlurFilterGen@@QAE@XZ,17,native ctor fullvptr/field proof
 0x5c4fa0,??_ENuSpeedBlurFilterGen@@UAEPAXI@Z,,COFF weak alias of ??_GNuSpeedBlurFilterGen@@UAEPAXI@Z; no independent body
 0x5c4fa0,??_GNuSpeedBlurFilterGen@@UAEPAXI@Z,31,native scalar-deleting dtor exactVTidentity
@@ -7413,19 +7413,19 @@ address,symbol,size,ctype
 0x5c5020,?computeSpeedBlur@NuSpeedBlurFilterGen@@QAEXPAUNUVEC4@@@Z,379,void __thiscall(NUVEC4*)
 0x5c51a0,_NuSpeedBlurSetMotionFactors,31,
 0x5c51c0,?Register@PC_POST_DATA_PORT_MANAGER@@QAEHPBDPAX@Z,142,
-0x5c5250,_fun_005c5250,4,
-0x5c5260,_fun_005c5260,4,
-0x5c5270,_fun_005c5270,4,
-0x5c5280,_fun_005c5280,3,
-0x5c5290,_fun_005c5290,20,
-0x5c52b0,_fun_005c52b0,13,
-0x5c52c0,_fun_005c52c0,13,
-0x5c52d0,_fun_005c52d0,7,
-0x5c52e0,_fun_005c52e0,10,
+0x5c5250,?fun_005c5250@OccluderSet@@QAEIXZ,4,
+0x5c5260,?fun_005c5260@OccluderSet@@QAEIXZ,4,
+0x5c5270,?fun_005c5270@OccluderSet@@QAE_NXZ,4,
+0x5c5280,?fun_005c5280@OcclusionManager@@QAE_NXZ,3,
+0x5c5290,?fun_005c5290@OcclusionManager@@QAE_NXZ,20,
+0x5c52b0,?fun_005c52b0@OcclusionManager@@QAEXM@Z,13,
+0x5c52c0,?fun_005c52c0@OcclusionManager@@QAEXM@Z,13,
+0x5c52d0,?fun_005c52d0@OcclusionManager@@QAEPAUOccluderSet@@XZ,7,
+0x5c52e0,?SetEnabled@OcclusionManager@@QAEX_N@Z,10,
 0x5c52f0,_fun_005c52f0,1,
 0x5c5300,_fun_005c5300,16,
 0x5c5310,_fun_005c5310,1,
-0x5c5320,_fun_005c5320,9,
+0x5c5320,?Clear@OccluderSet@@QAEXXZ,9,
 0x5c5330,?AddOccluder@OccluderSet@@QAEXPBUnuvec_s@@000@Z,234,"void __thiscall (const NUVEC *, const NUVEC *, const NUVEC *, const NUVEC *)"
 0x5c5420,?SortByDepth@OccluderSet@@SAHPBX0@Z,75,"i32 __cdecl (const void *, const void *)"
 0x5c5470,?IsOccludedSphere@OccluderSet@@QAE_NPBUnuvec_s@@M@Z,729,"bool __thiscall (const NUVEC *, f32)"
@@ -7491,7 +7491,7 @@ address,symbol,size,ctype
 0x5c6c70,_NuDynamicLightGetView,10,
 0x5c6c80,_NuDynamicLightGetProjection,10,
 0x5c6c90,_NuDynamicLightSetParameterf,23,"void __cdecl(struct PC_SPECIAL_SHADOW_LIGHT *,i32,f32)"
-0x5c6cb0,_fun_005c6cb0,15,
+0x5c6cb0,_NuDynamicLightGetParameterf,15,
 0x5c6cc0,_NuDynamicLightSetParameteri,44,"void __cdecl(struct PC_SPECIAL_SHADOW_LIGHT *,i32,i32)"
 0x5c6cf0,_NuDynamicLightGetParameteri,39,
 0x5c6d20,_NuDynamicLightAddRenderScene,39,"void __cdecl(NURNDRLIGHTRECORD*,i32,i32)"
@@ -7512,8 +7512,8 @@ address,symbol,size,ctype
 0x5c82c0,_PostShadowComputePlanesPc,626,"i32 __cdecl(const NUVEC4 *,const NUVEC4 *,NUVEC4 *)"
 0x5c8540,_PostShadowComputeCapsulePc,713,"void __cdecl(const NUVEC4 *,const NUVEC4 *,NUVEC4 *,NUVEC4 *,f32 *)"
 0x5c8810,?ShadowSegmentClipPc@@YAHPBUnuvec_s@@00MM@Z,417,
-0x5c89c0,_fun_005c89c0,56,
-0x5c8a00,_fun_005c8a00,1144,
+0x5c89c0,?fun_005c89c0@PC_SPECIAL_SHADOW_LIGHT@@QAEHPBUnuvec_s@@MH@Z,56,
+0x5c8a00,??4nurndrlightrecord_s@@QAEAAU0@ABU0@@Z,1144,
 0x5c8e80,??0NuDeferredFilterGen@@QAE@XZ,78,native ctor fullvptr/field proof
 0x5c8ed0,?isEnabled@NuDeferredFilterGen@@UAE_NXZ,30,native exactVT binding; unimplemented extent unclaimed
 0x5c8ef0,??_ENuDeferredFilterGen@@UAEPAXI@Z,,COFF weak alias of ??_GNuDeferredFilterGen@@UAEPAXI@Z; no independent body
@@ -7787,21 +7787,21 @@ address,symbol,size,ctype
 0x5d4780,_NuRndrCalcRandEllipsePos,283,"void __cdecl(NUVEC4 *,NUMTX *,NUVEC *)"
 0x5d48a0,_NuRndrCalcRandCylinderPos,266,"void __cdecl(NUVEC4 *,NUMTX *,NUVEC *)"
 0x5d49b0,_NuHGobjRndrRandShadowSurfacePoints,883,"i32 __cdecl(NUHGOBJ_EVAL_PC *,NUMTX *,NUMTX *,i32,NUVEC *,i32)"
-0x5d4d30,_fun_005d4d30,116,
-0x5d4db0,_fun_005d4db0,189,
+0x5d4d30,_NuRndrAnglesZX,116,
+0x5d4db0,_NuLightBurnoutEffect,189,
 0x5d4e70,_NuRndrSetBurnoutParametersPc,21,"void __cdecl(i32,const BURN_PARAMETERS_PC *)"
-0x5d4e90,_fun_005d4e90,77,
-0x5d4ee0,_fun_005d4ee0,71,
-0x5d4f30,_fun_005d4f30,119,
-0x5d4fb0,_fun_005d4fb0,121,
-0x5d5030,_fun_005d5030,68,
-0x5d5080,_fun_005d5080,31,
-0x5d50a0,_fun_005d50a0,77,
-0x5d50f0,_fun_005d50f0,40,
-0x5d5120,_fun_005d5120,51,
+0x5d4e90,_NuDepthOfFieldEffectEx,77,
+0x5d4ee0,_NuDepthOfFieldEffect,71,
+0x5d4f30,_NuDepthOfFieldEffect1,119,
+0x5d4fb0,_NuDepthOfFieldEffect2,121,
+0x5d5030,_NuTextureBlendEffect,68,
+0x5d5080,_NuCameraMotionBlurParams,31,
+0x5d50a0,_NuCameraMotionBlurEffect,77,
+0x5d50f0,_NuAccumulationMotionBlurParams,40,
+0x5d5120,_NuAccumulationMotionBlurEffect,51,
 0x5d5160,_NuDeferredShadingRender,11,void __cdecl(void)
 0x5d5170,_NuRndrSetShadowCoefficientPc,57,"void __cdecl(i32,f32)"
-0x5d51b0,_fun_005d51b0,63,
+0x5d51b0,_NuDynamicLightingGetParameterfv,63,
 0x005d51f0,_NuLightSpeedBlurOldCameraPos,39,void __cdecl(NUMTX *)
 0x5d5220,_NuBackbufferCopy,10,void __cdecl (i32)
 0x5d5230,_fun_005d5230,11,
@@ -7862,7 +7862,7 @@ address,symbol,size,ctype
 0x5d6e10,_NuCameraCalcRay,240,
 0x5d6f00,_VisibilityFloorPc,36,i32 __cdecl(f32)
 0x5d6f30,_NuVisiOcclusion,293,void __cdecl(VISIBILITY_RESULT_READER_PC*)
-0x5d7060,_fun_005d7060,243,
+0x5d7060,_BoxTreeRndrRec,243,
 0x5d7160,_fun_005d7160,102,
 0x5d71d0,_fun_005d71d0,62,
 0x5d7210,_fun_005d7210,30,
@@ -7944,7 +7944,7 @@ address,symbol,size,ctype
 0x5da740,_ReadInstAnimBlock,251,
 0x5da840,_NuGScnNumSpecials,22,i32 __cdecl(NUGSCN *)
 0x5da860,_NuGScnGetSpecial,98,"void __cdecl(NUSPECIALHANDLE *, NUGSCN *, i32)"
-0x5da8d0,_fun_005da8d0,153,
+0x5da8d0,_NuSpecialSetInstAnimTime,153,
 0x5da970,_fun_005da970,10,
 0x5da980,_NuCameraClipHGobj,252,"i32 __cdecl(NUHGOBJ_EVAL_PC *,NUMTX *,NUMTX *)"
 0x5daa80,_fun_005daa80,47,
@@ -7974,7 +7974,7 @@ address,symbol,size,ctype
 0x005db100,_NuVpSetIdentityPc,25,
 0x5db120,_NuVpGetScalingMtx,25,
 0x5db140,_NuVpGetCurrentViewport,6,
-0x5db150,_fun_005db150,62,
+0x5db150,_NuViewPortSet,62,
 0x5db190,_NuVpSetSourceRect,191,
 0x5db250,_NuVpSetDestRect,71,
 0x5db2a0,_NuVpGetRegions,97,
@@ -8142,12 +8142,12 @@ address,symbol,size,ctype
 0x5e5a80,_PostShadowCopyVectorsPc,200,cdecl
 0x5e5b50,_fun_005e5b50,8,
 0x5e5b60,_fun_005e5b60,8,
-0x5e5b70,_fun_005e5b70,44,
-0x5e5ba0,_fun_005e5ba0,30,
-0x5e5bc0,_fun_005e5bc0,30,
-0x5e5be0,_fun_005e5be0,44,
-0x5e5c10,_fun_005e5c10,30,
-0x5e5c30,_fun_005e5c30,44,
+0x5e5b70,?SetOccupied@?$LightObjectPool@UPC_SPECIAL_SHADOW_LIGHT@@@@QAEXH_N@Z,44,
+0x5e5ba0,?IsOccupied@?$LightObjectPool@UPC_SPECIAL_SHADOW_LIGHT@@@@QAEHH@Z,30,
+0x5e5bc0,?IsOccupied@?$LightObjectPool@Unurndrlibstate_s@@@@QAEHH@Z,30,
+0x5e5be0,?SetOccupied@?$LightObjectPool@Unurndrlibstate_s@@@@QAEXH_N@Z,44,
+0x5e5c10,?IsOccupied@?$LightObjectPool@Unudisplaylistitem_s@@@@QAEHH@Z,30,
+0x5e5c30,?SetOccupied@?$LightObjectPool@Unudisplaylistitem_s@@@@QAEXH_N@Z,44,
 0x5e5c60,_fun_005e5c60,10,
 0x5e5c70,??0NuMainFilterGen@@QAE@XZ,97,native ctor fullvptr/field proof
 0x5e5ce0,?isEnabled@NuMainFilterGen@@UAE_NXZ,12,native exactVT binding; unimplemented extent unclaimed
@@ -8160,9 +8160,9 @@ address,symbol,size,ctype
 0x5e6400,??_ENuMotionFilterGen@@UAEPAXI@Z,,COFF weak alias of ??_GNuMotionFilterGen@@UAEPAXI@Z; no independent body
 0x5e6400,??_GNuMotionFilterGen@@UAEPAXI@Z,31,native scalar-deleting dtor exactVTidentity
 0x5e6420,?render@NuMotionFilterGen@@UAEXXZ,651,native exactVT binding
-0x5e66b0,_NuDynamicLightTestShadowExtrusionsSpecial,91,
-0x5e6710,_fun_005e6710,95,
-0x5e6770,_fun_005e6770,90,
+0x5e66b0,?fun_005e66b0@PCFrustumClipSet@@QAEHPAUnuspecial_handle_s@@PAUnumtx_s@@@Z,91,
+0x5e6710,?fun_005e6710@PCFrustumClipSet@@QAE_NPBUnuvec_s@@0H@Z,95,
+0x5e6770,?fun_005e6770@PCFrustumClipSet@@QAEHPBUnuvec_s@@0@Z,90,
 0x5e67d0,??0NuMotionAccumFilter@@QAE@XZ,30,native ctor fullvptr/field proof
 0x5e67f0,_fun_005e67f0,7,
 0x5e6800,??0NuSpeedBlurFilter@@QAE@XZ,29,native ctor fullvptr/field proof
@@ -8180,7 +8180,7 @@ address,symbol,size,ctype
 0x5e6930,??_ENuCopyFilter@@UAEPAXI@Z,,COFF weak alias of ??_GNuCopyFilter@@UAEPAXI@Z; no independent body
 0x5e6930,??_GNuCopyFilter@@UAEPAXI@Z,31,native scalar-deleting dtor exactVTidentity
 0x5e6950,_NuPostEffectReleasePc,226,void __cdecl (void)
-0x5e6a40,_fun_005e6a40,53,
+0x5e6a40,_NuPostEffectTiming,53,
 0x5e6a80,_NuPostEffectRender,774,void __cdecl(PC_FRAMEBUFFER_PC*)
 0x5e6d90,?ResetReferences@PC_POST_DATA_PORT_MANAGER@@QAEXXZ,32,void __thiscall (void)
 0x5e6db0,_NuPostEffectPortsNoOpPc,1,void __cdecl (void)
@@ -8205,17 +8205,17 @@ address,symbol,size,ctype
 0x5e84d0,_NuOcclusionManagerAddOccluderOBB,26,"void __cdecl (const NUVEC *, const NUVEC *, const NUMTX *)"
 0x5e84f0,_NuOcclusionManagerRenderZPass,32,void __cdecl (void)
 0x5e8510,_fun_005e8510,577,
-0x5e8760,_fun_005e8760,46,
+0x5e8760,?fun_005e8760@PC_POST_SHADOW_VECTOR@@QBEMXZ,46,
 0x5e8790,?Normalize@PC_POST_SHADOW_VECTOR@@QBEPAUnuvec_s@@PAU2@@Z,89,"NUVEC *__thiscall(NUVEC *)"
-0x5e87f0,_fun_005e87f0,89,
-0x5e8850,_fun_005e8850,20,
+0x5e87f0,_NuDynamicLightTestShadowExtrusions,89,
+0x5e8850,_NuDynamicLightTestShadowExtrusionsSpecial,20,
 0x5e8870,_fun_005e8870,31,
-0x5e8890,_fun_005e8890,158,
+0x5e8890,_NuDynamicLightTestShadowExtrusionsExtent,158,
 0x5e8930,_fun_005e8930,20,
 0x5e8950,?SetupCustomCameraFrustumPc@PC_SPECIAL_SHADOW_LIGHT@@QAEXPAUnucamera_s@@PBMH@Z,649,thiscall camera splits count RET12
 0x5e8be0,?resetGeometry@NuDynamicLight@@QAEXXZ,122,void __thiscall NuDynamicLight::resetGeometry(void)
 0x5e8c60,_PostShadowBuildBasisPc,318,cdecl
-0x5e8da0,_fun_005e8da0,563,
+0x5e8da0,??4PC_SPECIAL_SHADOW_LIGHT@@QAEAAU0@ABU0@@Z,563,
 0x5e8fe0,?resetAll@NuDeferredFilterGen@@UAEXXZ,50,native exactVT binding; unimplemented extent unclaimed
 0x005e9020,_NuAnimInit,89,"void __cdecl(i32,VARIPTR *,VARIPTR)"
 0x005e9080,_NuAnimDataFixPtrs,362,"void *__cdecl (void *, i32)"
@@ -8312,7 +8312,7 @@ address,symbol,size,ctype
 0x5f1fe0,_fun_005f1fe0,51,
 0x5f2020,_fun_005f2020,21,
 0x5f2040,_fun_005f2040,51,
-0x5f2080,_fun_005f2080,63,
+0x5f2080,?Free@?$LightObjectPool@UPC_SPECIAL_SHADOW_LIGHT@@@@QAEXPAUPC_SPECIAL_SHADOW_LIGHT@@@Z,63,
 0x5f20c0,?allocate@?$LightObjectPool@UPC_SPECIAL_SHADOW_LIGHT@@@@QAEPAUPC_SPECIAL_SHADOW_LIGHT@@XZ,156,struct PC_SPECIAL_SHADOW_LIGHT *__thiscall LightObjectPool<PC_SPECIAL_SHADOW_LIGHT>::allocate(void)
 0x5f2160,?allocate@?$LightObjectPool@Unurndrlibstate_s@@@@QAEPAUnurndrlibstate_s@@XZ,153,NURNDRLIBSTATE *__thiscall LightObjectPool<NURNDRLIBSTATE>::allocate(void)
 0x5f2200,?allocate@?$LightObjectPool@Unudisplaylistitem_s@@@@QAEPAUnudisplaylistitem_s@@XZ,153,NUDISPLAYLISTITEM *__thiscall LightObjectPool<NUDISPLAYLISTITEM>::allocate(void)
@@ -8328,7 +8328,7 @@ address,symbol,size,ctype
 0x5f2880,_fun_005f2880,9,
 0x5f2890,_fun_005f2890,59,
 0x5f28d0,?ComputeShadowMatrixPc@PC_SPECIAL_SHADOW_LIGHT@@QAEXPAUnurndrlightrecord_s@@@Z,1862,thiscall
-0x5f3020,_fun_005f3020,169,
+0x5f3020,?Clone@PC_SPECIAL_SHADOW_LIGHT@@QAEPAU1@PATvariptr_u@@T2@@Z,169,
 0x5f30d0,_fun_005f30d0,101,
 0x005f3140,_NuAnimData2Fixup,120,"void *__cdecl (i32, void **)"
 0x5f31c0,_NuAnimData2Relocate,176,
@@ -8345,10 +8345,10 @@ address,symbol,size,ctype
 0x005f3510,_NuQFntPrintU,108,"void __cdecl (VUFNT *, char *)"
 0x5f3580,_NuQFntPrintV,90,"void __cdecl(VUFNT*,const char*,va_list)"
 0x005f35e0,_NuQFntPrintEx,320,"void __cdecl (VUFNT *, i32, i32, i32, const char *, ...)"
-0x5f3720,_fun_005f3720,108,
+0x5f3720,_NuQFntPrint2dW,108,
 0x5f3790,_NuQFntPrint2dU,90,"void __cdecl(VUFNT *, char *)"
-0x5f37f0,_fun_005f37f0,108,
-0x5f3860,_fun_005f3860,90,
+0x5f37f0,_NuQFntPrint3DW,108,
+0x5f3860,_NuQFntPrint3DU,90,
 0x005f38c0,_NuHGobjEvalAnim2,46,
 0x005f38f0,_NuHGobjEvalAnimBlend2,90,
 0x005f3950,_NuRndrEndScene,139,void (void)
@@ -8370,7 +8370,7 @@ address,symbol,size,ctype
 0x5f5a40,?RenderStats@OcclusionManager@@QBEXXZ,555,"void __thiscall OcclusionManager::RenderStats() const"
 0x5f5c70,_NuOcclusionManagerRenderStats,10,"void __cdecl(void)"
 0x5f5c80,_fun_005f5c80,59,
-0x5f5cc0,_fun_005f5cc0,20,
+0x5f5cc0,_NuDynamicLightClone,20,
 0x5f5ce0,??0nurndrlightrecord_s@@QAE@XZ,168,NURNDRLIGHTRECORD *__thiscall nurndrlightrecord_s::nurndrlightrecord_s(void)
 0x5f5d90,??0PC_SPECIAL_SHADOW_LIGHT@@QAE@XZ,150,struct PC_SPECIAL_SHADOW_LIGHT *__thiscall PC_SPECIAL_SHADOW_LIGHT::PC_SPECIAL_SHADOW_LIGHT(void)
 0x5f5e30,?SetupShadowPc@PC_SPECIAL_SHADOW_LIGHT@@QAEXPAUnurndrlightrecord_s@@@Z,173,thiscall
@@ -8411,12 +8411,12 @@ address,symbol,size,ctype
 0x5f7750,_fun_005f7750,116,
 0x005f77d0,_NuLgtSetVertexColor,108,
 0x5f7840,_fun_005f7840,22,
-0x5f7860,_fun_005f7860,14,
-0x5f7870,_fun_005f7870,4,
-0x5f7880,_fun_005f7880,7,
-0x5f7890,_fun_005f7890,8,
-0x5f78a0,_fun_005f78a0,23,
-0x5f78c0,_fun_005f78c0,14,
+0x5f7860,?fun_005f7860@PC_DEVICE_BACKEND_PC@@QAEHXZ,14,
+0x5f7870,?fun_005f7870@PC_DEVICE_BACKEND_PC@@QAEPAUGRAPHICS_CAPS_PC@@XZ,4,
+0x5f7880,?fun_005f7880@PC_DEVICE_BACKEND_PC@@QAEPAUGRAPHICS_PRESENT_PARAMETERS_PC@@XZ,7,
+0x5f7890,?fun_005f7890@PC_DEVICE_BACKEND_PC@@QAEGXZ,8,
+0x5f78a0,?fun_005f78a0@PC_DEVICE_BACKEND_PC@@QAEHXZ,23,
+0x5f78c0,?fun_005f78c0@PC_DEVICE_BACKEND_PC@@QAEXXZ,14,
 0x5f78d0,_fun_005f78d0,14,
 0x5f78e0,_fun_005f78e0,23,
 0x5f7900,_fun_005f7900,56,
@@ -8430,11 +8430,11 @@ address,symbol,size,ctype
 0x5f7ac0,_fun_005f7ac0,3,
 0x5f7ad0,_fun_005f7ad0,3,
 0x5f7ae0,_fun_005f7ae0,3,
-0x5f7af0,_fun_005f7af0,3,
-0x5f7b00,_fun_005f7b00,5,
-0x5f7b10,_fun_005f7b10,4,
-0x5f7b20,_fun_005f7b20,5,
-0x5f7b30,_fun_005f7b30,5,
+0x5f7af0,?fun_005f7af0@PC_EFFECT_SURFACE_PC@@QAEPAUGRAPHICS_RENDER_TEXTURE_PC@@XZ,3,
+0x5f7b00,?fun_005f7b00@PC_EFFECT_SURFACE_PC@@QAEGXZ,5,
+0x5f7b10,?fun_005f7b10@PC_EFFECT_SURFACE_PC@@QAEIXZ,4,
+0x5f7b20,?fun_005f7b20@PC_EFFECT_SURFACE_PC@@QAEGXZ,5,
+0x5f7b30,?fun_005f7b30@PC_EFFECT_SURFACE_PC@@QAEGXZ,5,
 0x5f7b40,_PCGraphicsDestroyRenderTexture,255,void __cdecl(GRAPHICS_RENDER_TEXTURE_PC*)
 0x5f7c40,_PCGraphicsEffectTextureWidth,9,
 0x5f7c50,_PCGraphicsEffectTextureHeight,9,
@@ -8559,7 +8559,7 @@ address,symbol,size,ctype
 0x5fa140,_fun_005fa140,33,
 0x5fa170,_fun_005fa170,33,
 0x5fa1a0,_fun_005fa1a0,9,
-0x5fa1b0,_fun_005fa1b0,25,
+0x5fa1b0,??0bad_alloc@std@@QAE@PBD@Z,25,
 0x5fa1d0,??1bad_alloc@std@@UAE@XZ,11,
 0x5fa1e0,??_Ebad_alloc@std@@UAEPAXI@Z,,
 0x5fa1e0,??_Gbad_alloc@std@@UAEPAXI@Z,36,
@@ -8599,7 +8599,7 @@ address,symbol,size,ctype
 0x5fb800,_fun_005fb800,1,
 0x5fb810,?Reset@PC_EFFECT_SURFACE_PC@@QAEXXZ,81,
 0x5fb870,?Attach@PC_EFFECT_SURFACE_PC@@QAEXPAUGRAPHICS_RENDER_TEXTURE_PC@@H_N@Z,170,
-0x5fb920,_fun_005fb920,61,
+0x5fb920,?fun_005fb920@PC_EFFECT_SURFACE_PC@@QAEXPAU1@@Z,61,
 0x5fb960,?ReleaseResources@PC_EFFECT_SURFACE_PC@@SAXXZ,64,
 0x5fb9a0,?RestoreResources@PC_EFFECT_SURFACE_PC@@SAXXZ,190,
 0x5fba60,?initTextureResources@NuDeferredFilter@@UAEXHH@Z,5,native exactVT binding; unimplemented extent unclaimed
@@ -8639,7 +8639,7 @@ address,symbol,size,ctype
 0x5fcc80,_NuRndrStateUpdateCameraState,214,i32 __cdecl(void)
 0x5fcd60,_NuRndrStateSetFogEnabled,38,
 0x5fcd90,_NuRndrStateGetFogEnabled,6,
-0x5fcda0,_fun_005fcda0,68,
+0x5fcda0,_NuRndrStateSetFogState,68,
 0x005fcdf0,_DisplayListBuildLightPacket,245,void * __cdecl (NUGLOBALRNDRSTATE_PC *)
 0x005fcef0,_DisplayListBuildKonstPacket,60,void * __cdecl (NUGLOBALRNDRSTATE_PC *)
 0x005fcf30,_DisplayListBuildReflectionPacket,39,void * __cdecl (NUGLOBALRNDRSTATE_PC *)
@@ -8805,7 +8805,7 @@ address,symbol,size,ctype
 0x601800,_fun_00601800,6,
 0x601810,_fun_00601810,10,
 0x601820,_NuLgtRand,25,
-0x601840,_fun_00601840,99,
+0x601840,_NuLightFogX,99,
 0x6018b0,_fun_006018b0,1,
 0x006018c0,_NuLgtLaser,283,"void __cdecl(i32, f32, f32, f32, NUVEC *, NUVEC *, u32, f32, f32)"
 0x6019e0,_fun_006019e0,1,
@@ -8955,14 +8955,14 @@ address,symbol,size,ctype
 0x00605090,??Y?$_Vector_const_iterator@UPOST_VERTEX_SHADER_CACHE_ENTRY_PC@@V?$allocator@UPOST_VERTEX_SHADER_CACHE_ENTRY_PC@@@std@@@std@@QAEAAV01@H@Z,56,
 0x006050d0,??Y?$_Vector_const_iterator@UPOST_PIXEL_SHADER_CACHE_ENTRY_PC@@V?$allocator@UPOST_PIXEL_SHADER_CACHE_ENTRY_PC@@@std@@@std@@QAEAAV01@H@Z,56,
 0x00605110,?_Inside@?$basic_string@DU?$char_traits@D@std@@V?$allocator@D@2@@std@@IAE_NPBD@Z,57,
-0x605150,_fun_00605150,18,
-0x605170,_fun_00605170,38,
-0x6051a0,_fun_006051a0,23,
+0x605150,?fun_00605150@FRAME_NATIVE_TEXTURE_POOL_PC@@QAEPAU1@XZ,18,
+0x605170,?fun_00605170@FRAME_NATIVE_TEXTURE_POOL_PC@@QAEHPAUFRAME_NATIVE_TEXTURE_PC@@@Z,38,
+0x6051a0,?fun_006051a0@POST_SHADER_PROGRAM_POOL_PC@@QAEPAU1@XZ,23,
 0x6051c0,??$_Allocate@UPOST_VERTEX_SHADER_CACHE_ENTRY_PC@@@std@@YAPAUPOST_VERTEX_SHADER_CACHE_ENTRY_PC@@IPAU1@@Z,91,native typed VC8 helper
 0x605220,??$_Allocate@UPOST_PIXEL_SHADER_CACHE_ENTRY_PC@@@std@@YAPAUPOST_PIXEL_SHADER_CACHE_ENTRY_PC@@IPAU1@@Z,91,native typed VC8 helper
 0x605280,??$_Allocate@D@std@@YAPADIPAD@Z,84,"char *__cdecl(unsigned int, char *)"
 0x6052e0,??0bad_alloc@std@@QAE@ABV01@@Z,25,
-0x605300,_fun_00605300,44,
+0x605300,?fun_00605300@FRAME_NATIVE_TEXTURE_POOL_PC@@QAEXH_N@Z,44,
 0x00605330,??$_Char_traits_cat@U?$char_traits@D@std@@@std@@YA?AU_Secure_char_traits_tag@0@XZ,7,
 0x00605340,?_Copy_s@?$char_traits@D@std@@SAPADPADIPBDI@Z,33,
 0x00605370,??$_Ptr_cat@PAUPOST_VERTEX_SHADER_CACHE_ENTRY_PC@@PAU1@@std@@YA?AU_Nonscalar_ptr_iterator_tag@0@AAPAUPOST_VERTEX_SHADER_CACHE_ENTRY_PC@@0@Z,7,
@@ -8974,9 +8974,9 @@ address,symbol,size,ctype
 0x00605410,??$_Fill@PAUPOST_PIXEL_SHADER_CACHE_ENTRY_PC@@U1@@std@@YAXPAUPOST_PIXEL_SHADER_CACHE_ENTRY_PC@@0ABU1@@Z,36,
 0x00605440,??$_Iter_random@PAUPOST_PIXEL_SHADER_CACHE_ENTRY_PC@@PAU1@@std@@YA?AUrandom_access_iterator_tag@0@ABQAUPOST_PIXEL_SHADER_CACHE_ENTRY_PC@@0@Z,5,
 0x00605450,??$_Move_cat@PAUPOST_PIXEL_SHADER_CACHE_ENTRY_PC@@@std@@YA?AU_Undefined_move_tag@0@ABQAUPOST_PIXEL_SHADER_CACHE_ENTRY_PC@@@Z,7,
-0x605460,_fun_00605460,30,
-0x605480,_fun_00605480,30,
-0x6054a0,_fun_006054a0,44,
+0x605460,?fun_00605460@FRAME_NATIVE_TEXTURE_POOL_PC@@QAEHH@Z,30,
+0x605480,?fun_00605480@POST_SHADER_PROGRAM_POOL_PC@@QAEHH@Z,30,
+0x6054a0,?fun_006054a0@POST_SHADER_PROGRAM_POOL_PC@@QAEXH_N@Z,44,
 0x006054d0,??$_Checked_base@PAUPOST_VERTEX_SHADER_CACHE_ENTRY_PC@@@std@@YAPAUPOST_VERTEX_SHADER_CACHE_ENTRY_PC@@AAPAU1@U_Unchanged_checked_iterator_base_type_tag@0@@Z,7,
 0x006054e0,??$_Checked_base@PAUPOST_PIXEL_SHADER_CACHE_ENTRY_PC@@@std@@YAPAUPOST_PIXEL_SHADER_CACHE_ENTRY_PC@@AAPAU1@U_Unchanged_checked_iterator_base_type_tag@0@@Z,7,
 0x006054f0,??$_Construct@UPOST_VERTEX_SHADER_CACHE_ENTRY_PC@@U1@@std@@YAXPAUPOST_VERTEX_SHADER_CACHE_ENTRY_PC@@ABU1@@Z,23,
@@ -9063,7 +9063,7 @@ address,symbol,size,ctype
 0x00609f70,??Y?$_Vector_iterator@UPOST_VERTEX_SHADER_CACHE_ENTRY_PC@@V?$allocator@UPOST_VERTEX_SHADER_CACHE_ENTRY_PC@@@std@@@std@@QAEAAV01@H@Z,56,
 0x00609fb0,??Y?$_Vector_iterator@UPOST_PIXEL_SHADER_CACHE_ENTRY_PC@@V?$allocator@UPOST_PIXEL_SHADER_CACHE_ENTRY_PC@@@std@@@std@@QAEAAV01@H@Z,56,
 0x609ff0,?allocate@?$allocator@D@std@@QAEPADI@Z,18,
-0x60a010,_fun_0060a010,63,
+0x60a010,?fun_0060a010@FRAME_NATIVE_TEXTURE_POOL_PC@@QAEXPAUFRAME_NATIVE_TEXTURE_PC@@@Z,63,
 0x0060a050,??$copy_s@U?$char_traits@D@std@@@_Traits_helper@std@@YAPADPADIPBDIU_Secure_char_traits_tag@1@@Z,33,
 0x0060a080,??$move_s@U?$char_traits@D@std@@@_Traits_helper@std@@YAPADPADIPBDIU_Secure_char_traits_tag@1@@Z,33,
 0x60a0b0,?Allocate@FRAME_NATIVE_TEXTURE_POOL_PC@@QAEPAUFRAME_NATIVE_TEXTURE_PC@@XZ,156,
@@ -9088,7 +9088,7 @@ address,symbol,size,ctype
 0x0060a7a0,_PCGraphicsCopyFramebufferTex2DPc,137,"void __cdecl(i32,GRAPHICS_RENDER_TEXTURE_PC *,i32,i32,i32,i32,i32)"
 0x60a830,_PostBlur7x7DispatchPc,121,"void __cdecl(GRAPHICS_RENDER_TEXTURE_PC*,i32,GRAPHICS_RENDER_TEXTURE_PC*,i32,i32,i32,bool,f32,POST_SHADER_PROGRAM_PC*)"
 0x60a8b0,??0NuMainFilter@@QAE@XZ,39,native ctor fullvptr/field proof
-0x60a8e0,_fun_0060a8e0,41,
+0x60a8e0,??1NuMainFilter@@UAE@XZ,41,
 0x60a910,?RenderBloomPc@NuMainFilter@@QAEXXZ,1645,full native platform bloom member
 0x0060af80,_NuRndrFx,100,"void __cdecl(i32,void *)"
 0x60aff0,_NuRndrSwapScreen,1465,i32 __cdecl(i32)
@@ -9236,15 +9236,15 @@ address,symbol,size,ctype
 0x60e6c0,_fun_0060e6c0,4,
 0x60e6d0,??1NetTransporter@@UAE@XZ,7,
 0x60e6e0,??0NetAddress@@QAE@XZ,9,
-0x60e6f0,_fun_0060e6f0,13,
+0x60e6f0,?fun_0060e6f0@NetFtpManager@@QAEXH@Z,13,
 0x60e700,_fun_0060e700,4,
 0x60e710,_fun_0060e710,6,
 0x60e720,_fun_0060e720,7,
 0x60e730,_fun_0060e730,10,
-0x60e740,_fun_0060e740,14,
-0x60e750,_fun_0060e750,10,
-0x60e760,_fun_0060e760,7,
-0x60e770,_fun_0060e770,7,
+0x60e740,?fun_0060e740@NetworkObjectManager@@QAEPAVNetStats@@H@Z,14,
+0x60e750,?fun_0060e750@NuNetEmu@@QAEXE@Z,10,
+0x60e760,?fun_0060e760@NuNetEmu@@QAEPAVNetStats@@XZ,7,
+0x60e770,?fun_0060e770@NuNetEmu@@QAEPAVPackStats@1@XZ,7,
 0x60e780,?Start@TTNetwork@@QAEXXZ,175,
 0x60e830,?Resume@TTNetwork@@QAEXXZ,1,
 0x60e840,?Suspend@TTNetwork@@QAEHXZ,6,
@@ -9259,7 +9259,7 @@ address,symbol,size,ctype
 0x60e9c0,_fun_0060e9c0,3,
 0x60e9d0,??0NetLogFile@@QAE@XZ,13,
 0x60e9e0,?Flush@NetLogFile@@QAEHXZ,124,
-0x60ea60,_fun_0060ea60,35,
+0x60ea60,?fun_0060ea60@NETMESSAGE_PC@@QAEXABE@Z,35,
 0x60ea90,??_GNetTransporterInterface@@UAEPAXI@Z,31,
 0x60ea90,??_ENetTransporterInterface@@UAEPAXI@Z,,COFF weak alias of ??_GNetTransporterInterface@@UAEPAXI@Z
 0x60eab0,_fun_0060eab0,13,
@@ -9385,23 +9385,23 @@ address,symbol,size,ctype
 0x6118d0,_fun_006118d0,28,
 0x6118f0,?NOSTrace@@YAXZZ,1,
 0x611900,??1EdStream@@UAE@XZ,7,
-0x611910,_fun_00611910,4,
+0x611910,?fun_00611910@EdStream@@QAEHXZ,4,
 0x611920,??_EEdStream@@UAEPAXI@Z,,COFF weak alias of ??_GEdStream@@UAEPAXI@Z; no independent body
 0x611920,??_GEdStream@@UAEPAXI@Z,31,native scalar-deleting dtor exactVTidentity
 0x611940,??0EdInputStream@@QAE@XZ,25,
 0x611960,??1EdInputStream@@UAE@XZ,7,
 0x611970,??0EdOutputStream@@QAE@XZ,25,
 0x611990,??1EdOutputStream@@UAE@XZ,7,
-0x6119a0,_fun_006119a0,16,
-0x6119b0,_fun_006119b0,10,
+0x6119a0,?fun_006119a0@EdStream@@QAEHH@Z,16,
+0x6119b0,?fun_006119b0@EdStream@@QAEXPAUMemoryBuffer@@@Z,10,
 0x6119c0,??2NETMESSAGE_PC@@SAPAXI@Z,18,
 0x6119e0,??3NETMESSAGE_PC@@SAXPAX@Z,18,
-0x611a00,_fun_00611a00,16,
-0x611a10,_fun_00611a10,16,
-0x611a20,_fun_00611a20,4,
+0x611a00,?fun_00611a00@NETMESSAGE_PC@@QAEXI@Z,16,
+0x611a10,?fun_00611a10@NETMESSAGE_PC@@QAEXI@Z,16,
+0x611a20,?fun_00611a20@V2Peer@@QBEEXZ,4,
 0x611a30,_fun_00611a30,22,
 0x611a50,_fun_00611a50,7,
-0x611a60,_fun_00611a60,13,
+0x611a60,?fun_00611a60@V2Peer@@QBEHH@Z,13,
 0x611a70,??0NetInputStream@@QAE@XZ,32,
 0x611a90,?SetMessage@NetInputStream@@QAEXPAUNETMESSAGE_PC@@@Z,10,
 0x611aa0,?BeginBlock@NetInputStream@@UAEPBDPBD@Z,7,
@@ -9415,17 +9415,17 @@ address,symbol,size,ctype
 0x611b30,?BeginBlock@NetOutputStream@@UAEPBDPBD@Z,7,
 0x611b40,?EndBlock@NetOutputStream@@UAEXXZ,1,
 0x611b50,_fun_00611b50,7,
-0x611b60,_fun_00611b60,21,
-0x611b80,_fun_00611b80,6,
-0x611b90,_fun_00611b90,24,
-0x611bb0,_fun_00611bb0,5,
-0x611bc0,_fun_00611bc0,17,
-0x611be0,_fun_00611be0,19,
-0x611c00,_fun_00611c00,20,
-0x611c20,_fun_00611c20,5,
-0x611c30,_fun_00611c30,12,
-0x611c40,_fun_00611c40,5,
-0x611c50,_fun_00611c50,12,
+0x611b60,?fun_00611b60@ReplicatorData@@QAEXPAEI@Z,21,
+0x611b80,?fun_00611b80@ReplicatorData@@QBEHXZ,6,
+0x611b90,?fun_00611b90@ReplicatorData@@QAEXI@Z,24,
+0x611bb0,?fun_00611bb0@NetReplicator@@QBEHXZ,5,
+0x611bc0,?fun_00611bc0@NetReplicator@@QBEHH@Z,17,
+0x611be0,?fun_00611be0@NetReplicator@@QAEHG@Z,19,
+0x611c00,?fun_00611c00@NetReplicator@@QAEHG@Z,20,
+0x611c20,?fun_00611c20@NetReplicator@@QBEHXZ,5,
+0x611c30,?fun_00611c30@NetReplicator@@QAEXG@Z,12,
+0x611c40,?fun_00611c40@NetReplicator@@QBEHXZ,5,
+0x611c50,?fun_00611c50@NetReplicator@@QAEXG@Z,12,
 0x611c60,?CheckSum@NetChangedReplicator@@QBEXEAAI@Z,41,
 0x611c90,??0NOSContext@@QAE@XZ,16,
 0x611ca0,??4NOSContext@@QAEAAU0@ABU0@@Z,25,
@@ -9435,8 +9435,8 @@ address,symbol,size,ctype
 0x611d90,?GetStage@NetPeerPush@NetworkObjectManager@@QBEHXZ,4,
 0x611da0,?GetNextObject@NetPeerPush@NetworkObjectManager@@QBEHXZ,4,
 0x611db0,?SetNextObject@NetPeerPush@NetworkObjectManager@@QAEXH@Z,10,
-0x611dc0,_fun_00611dc0,7,
-0x611dd0,_fun_00611dd0,33,
+0x611dc0,?fun_00611dc0@TTNetwork@@QBEHXZ,7,
+0x611dd0,?fun_00611dd0@NuNetEmu@@QBEHXZ,33,
 0x611e00,?Initialise@NetworkObject@@QAEXHPAXPAUEdClass@@ABVV2Peer@@H@Z,83,
 0x611e60,?Destroy@NetworkObject@@QAEXXZ,68,
 0x611eb0,?InitTable@NetChangedReplicator@@QAEXXZ,175,
@@ -9486,24 +9486,24 @@ address,symbol,size,ctype
 0x612f40,_fun_00612f40,3,
 0x612f50,_fun_00612f50,13,
 0x612f60,_fun_00612f60,3,
-0x612f70,_fun_00612f70,101,
+0x612f70,?fun_00612f70@ReplicatorList@NetworkObjectManager@@QAEXPAVNetReplicator@@0@Z,101,
 0x612fe0,_fun_00612fe0,6,
-0x612ff0,_fun_00612ff0,27,
-0x613010,_fun_00613010,27,
-0x613030,_fun_00613030,19,
-0x613050,_fun_00613050,19,
-0x613070,_fun_00613070,27,
-0x613090,_fun_00613090,35,
+0x612ff0,??$Allocate@I@ReplicatorData@@QAEPAII@Z,27,
+0x613010,??$Allocate@UPredictorTime@NetPredictor@@@ReplicatorData@@QAEPAUPredictorTime@NetPredictor@@I@Z,27,
+0x613030,?fun_00613030@EdStream@@QAEHAAE@Z,19,
+0x613050,?fun_00613050@EdStream@@QAEHAAH@Z,19,
+0x613070,??$Allocate@UPredictorData@NetPredictor@@@ReplicatorData@@QAEPAUPredictorData@NetPredictor@@I@Z,27,
+0x613090,?fun_00613090@NETMESSAGE_PC@@QAEXABE@Z,35,
 0x006130c0,?Prepend16@NETMESSAGE_PC@@QAEXABF@Z,59,
 0x613100,?Write16@NETMESSAGE_PC@@QAEXABF@Z,59,
-0x613140,_fun_00613140,55,
-0x613180,_fun_00613180,39,
-0x6131b0,_fun_006131b0,55,
+0x613140,?fun_00613140@NETMESSAGE_PC@@QAEXAAF@Z,55,
+0x613180,?fun_00613180@NETMESSAGE_PC@@QAEXAAC@Z,39,
+0x6131b0,?fun_006131b0@NETMESSAGE_PC@@QAEXAAI@Z,55,
 0x6131f0,??_EEdInputStream@@UAEPAXI@Z,,COFF weak alias of ??_GEdInputStream@@UAEPAXI@Z; no independent body
 0x6131f0,??_GEdInputStream@@UAEPAXI@Z,31,
 0x613210,??_EEdOutputStream@@UAEPAXI@Z,,COFF weak alias of ??_GEdOutputStream@@UAEPAXI@Z; no independent body
 0x613210,??_GEdOutputStream@@UAEPAXI@Z,31,native scalar-deleting dtor exactVTidentity
-0x613230,_fun_00613230,18,
+0x613230,?fun_00613230@NETMESSAGE_PC@@QAEHXZ,18,
 0x613250,??_GNetInputStream@@UAEPAXI@Z,31,
 0x613250,??_ENetInputStream@@UAEPAXI@Z,,COFF weak alias of ??_GNetInputStream@@UAEPAXI@Z; no independent body
 0x613270,?SerialiseBuffer@NetInputStream@@UAEHPAXHH@Z,35,
@@ -9536,7 +9536,7 @@ address,symbol,size,ctype
 0x614820,??0NetworkObjectManager@@QAE@XZ,93,
 0x614880,??_GNetworkObjectManager@@UAEPAXI@Z,48,
 0x614880,??_ENetworkObjectManager@@UAEPAXI@Z,,COFF weak alias of ??_GNetworkObjectManager@@UAEPAXI@Z; no independent body
-0x6148b0,_fun_006148b0,381,
+0x6148b0,?RemoteCall@NetworkObjectManager@@QAEHHUNETMESSAGE_PC@@PBVV2Peer@@@Z,381,
 0x614a30,?ObjectCall@NetworkObjectManager@@QAEHPAXHUNETMESSAGE_PC@@PBVV2Peer@@@Z,500,
 0x614c30,?ObjectOwnerCall@NetworkObjectManager@@QAEHPAXHUNETMESSAGE_PC@@@Z,453,
 0x614e00,?ObjectOtherCall@NetworkObjectManager@@QAEHPAXHUNETMESSAGE_PC@@@Z,399,
@@ -9572,15 +9572,15 @@ address,symbol,size,ctype
 0x617080,?ImportObjects@NetworkObjectManager@@QAEXXZ,218,
 0x617160,_fun_00617160,28,
 0x617180,?CompareAddress@FtpFile@@QBEHABUNetAddress@@@Z,143,
-0x617210,_fun_00617210,20,
-0x617230,_fun_00617230,3,
-0x617240,_fun_00617240,4,
-0x617250,_fun_00617250,4,
-0x617260,_fun_00617260,13,
+0x617210,?fun_00617210@FtpFile@@QBEHABUNetAddress@@@Z,20,
+0x617230,?fun_00617230@FtpFile@@QBEPBIXZ,3,
+0x617240,?fun_00617240@FtpFile@@QBEHXZ,4,
+0x617250,?fun_00617250@FtpFile@@QAEPADXZ,4,
+0x617260,?fun_00617260@FtpFile@@QBEHXZ,13,
 0x617270,?Init@NetFtpManager@@QAEXXZ,19,
-0x617290,_fun_00617290,5,
-0x6172a0,_fun_006172a0,5,
-0x6172b0,_fun_006172b0,5,
+0x617290,?Send@NetFtpManager@@QAEHPBDPBXHABUNetAddress@@@Z,5,
+0x6172a0,?Get@NetFtpManager@@QAEHPBDPAXHABUNetAddress@@@Z,5,
+0x6172b0,?Abort@NetFtpManager@@QAEHPBDABUNetAddress@@HH@Z,5,
 0x6172c0,?GetTransfers@NetFtpManager@@QBEPBUFtpFile@@XZ,4,
 0x6172d0,?Update@NetFtpManager@@QAEXXZ,1,
 0x6172e0,?Init@FtpFile@@QAEXHPBDHABUNetAddress@@PAXH@Z,86,
@@ -9589,25 +9589,25 @@ address,symbol,size,ctype
 0x6173c0,?Accept@FtpFile@@QAEHH@Z,38,
 0x6173f0,?Accept@FtpFile@@QAEHXZ,10,
 0x617400,_fun_00617400,1,
-0x617410,_fun_00617410,3,
-0x617420,_fun_00617420,7,
+0x617410,?RecvData@FtpFile@@QAEXAAUNETMESSAGE_PC@@@Z,3,
+0x617420,?fun_00617420@MessageData@NETMESSAGE_PC@@QBEIXZ,7,
 0x617430,?InUse@FtpFile@@QBE_NXZ,13,
 0x617440,_fun_00617440,3,
 0x617450,_fun_00617450,3,
 0x617460,_fun_00617460,3,
 0x617470,_fun_00617470,3,
-0x617480,_fun_00617480,7,
-0x617490,_fun_00617490,7,
+0x617480,?fun_00617480@FtpFileArray@@QAEPAUFtpFile@@XZ,7,
+0x617490,?fun_00617490@FtpFileArray@@QBEPBUFtpFile@@XZ,7,
 0x6174a0,??0FtpFile@@QAE@XZ,13,
 0x6174b0,_fun_006174b0,1,
-0x6174c0,_fun_006174c0,15,
+0x6174c0,?fun_006174c0@NETMESSAGE_PC@@QBEIXZ,15,
 0x6174d0,?FindTransfer@NetFtpManager@@QAEPAUFtpFile@@PBDABUNetAddress@@H@Z,111,
 0x617540,?FindTransfer@NetFtpManager@@QBEPBUFtpFile@@PBDABUNetAddress@@H@Z,111,
 0x6175b0,??0FtpFileArray@@QAE@XZ,35,FtpFileArray::FtpFileArray(void)
 0x6175e0,??4NETMESSAGE_PC@@QAEAAU0@ABU0@@Z,80,NETMESSAGE_PC &__thiscall NETMESSAGE_PC::operator=(const NETMESSAGE_PC &)
 0x617630,?Receive@NetFtpManager@@UAEXUNETMESSAGE_PC@@EABUNetAddress@@@Z,44,
 0x617660,?Update@FtpFile@@QAEXXZ,108,void __thiscall FtpFile::Update(void)
-0x6176d0,_fun_006176d0,42,
+0x6176d0,?fun_006176d0@FtpFile@@QAEXXZ,42,
 0x617700,_fun_00617700,67,
 0x617750,?Close@FtpFile@@QAEXXZ,63,
 0x617790,??1FtpFileArray@@QAE@XZ,85,FtpFileArray::~FtpFileArray(void)
@@ -10010,7 +10010,7 @@ address,symbol,size,ctype
 0x006294f0,_cbColourPickSel,286,
 0x629610,_AddColourPick,466,"void __cdecl(eduimenu_s *, eduiitem_s *, f32 *, f32 *, f32 *, u32 *)"
 0x6297f0,_CreateColourPicker,427,
-0x6299a0,_fun_006299a0,51,
+0x6299a0,_edmainRegister,51,
 0x6299e0,_fun_006299e0,77,
 0x629a30,_cbMMEditorConfig,73,
 0x629a80,_cbmcfgCancel,12,
@@ -10718,7 +10718,7 @@ address,symbol,size,ctype
 0x64a260,_edpartCancelOptMenu,13,
 0x64a270,_edpartInit,262,
 0x64a380,_edpartClose,13,
-0x64a390,_fun_0064a390,160,
+0x64a390,_edpartEnter,160,
 0x64a430,_fun_0064a430,1,
 0x64a440,_NuPartEnableRayCasts,10,void __cdecl NuPartEnableRayCasts(i32 enabled)
 0x0064a450,_NuPartSetSeed,10,void __cdecl (i32)
@@ -10966,8 +10966,8 @@ address,symbol,size,ctype
 0x659040,_DebrisCollisionCheckFlag,35,"i32 __cdecl(NUVEC *,f32,u8)"
 0x659070,_DebrisCollisionCheck,32,"i32 __cdecl(NUVEC *,f32)"
 0x659090,_DebrisAllCollisionCheckScaleYFlag,77,"i32 __cdecl(NUVEC *,f32,f32,u8)"
-0x6590e0,_fun_006590e0,12,
-0x6590f0,_fun_006590f0,76,
+0x6590e0,_DebrisGlassParticlesActive,12,
+0x6590f0,_DebrisGlassClose,76,
 0x659140,_DebrisReleaseResourcesPc,1,void __cdecl(void)
 0x659150,_DebrisRestoreResourcesPc,1,void __cdecl(void)
 0x659160,_DebrisGlassInit,194,
@@ -11043,8 +11043,8 @@ address,symbol,size,ctype
 0x65b5f0,_edanimClose,13,void __cdecl(void)
 0x65b600,_edanimEnter,39,
 0x65b630,_edanimLookupSpecial,112,"i32 __cdecl(char *, NUGSCN *)"
-0x65b6a0,_fun_0065b6a0,25,
-0x65b6c0,_fun_0065b6c0,50,
+0x65b6a0,_edqrand,25,
+0x65b6c0,_edbitsRegisterLevel,50,
 0x65b700,_edbitsRegisterSaveFormat,185,
 0x65b7c0,_edbitsRegisterDataPath,31,
 0x0065b7e0,_edbitsRegisterBaseScene,10,void __cdecl (NUGSCN *)
@@ -11058,7 +11058,7 @@ address,symbol,size,ctype
 0x65bf70,_edbitsDrawDiagonalCross,212,
 0x65c050,_edbitsDrawCross,193,
 0x65c120,_edbitsLookupSoundFX,4,
-0x65c130,_fun_0065c130,10,
+0x65c130,_edbitsSetSoundFxVolume,10,
 0x65c140,_edbitsSoundPlay,1,
 0x65c150,_fun_0065c150,3,
 0x65c160,_edbitsDrawOvalTilted,389,
@@ -11069,10 +11069,10 @@ address,symbol,size,ctype
 0x65c520,_edbitsDrawSphere,249,
 0x65c620,_edbitsLookupInstance,112,"i32 __cdecl(char *, NUGSCN *)"
 0x65c690,_edbitsVector2YZRot,94,
-0x65c6f0,_fun_0065c6f0,71,
-0x65c740,_fun_0065c740,10,
-0x65c750,_fun_0065c750,10,
-0x65c760,_fun_0065c760,65,
+0x65c6f0,_edbitsRegisterSoundEffect,71,
+0x65c740,_edbitsRegisterPlaySound,10,
+0x65c750,_edbitsRegisterRequestSound,10,
+0x65c760,_edbitsLookupSound,65,
 0x65c7b0,_edbitsDoSingleDump,183,
 0x65c870,_edbitsStartCubemapDump,33,
 0x65c8a0,_edbitsProcessCubemapDump,604,
@@ -11316,7 +11316,7 @@ address,symbol,size,ctype
 0x66b010,_cbPtlSnapToggle,18,"void __cdecl (eduimenu_s *, eduiitem_s *, u32)"
 0x66b030,_cbPtlCancel,11,"void __cdecl (eduimenu_s *, eduimenu_s *)"
 0x66b040,_ParticleReset,120,
-0x66b0c0,_fun_0066b0c0,313,
+0x66b0c0,_edppFindAllSounds,313,
 0x66b200,_edppClose,27,
 0x66b220,_edppEnter,163,void __cdecl (void)
 0x66b2d0,_edppApply,1,void __cdecl (void)
@@ -11425,7 +11425,7 @@ address,symbol,size,ctype
 0x67b260,_NewRayCastGetEmbedDist,12,f32 __cdecl NewRayCastGetEmbedDist(void)
 0x67b270,_NewRayCastHitWallSpline,10,i32 __cdecl NewRayCastHitWallSpline(void)
 0x67b280,_NewRayCast,389,"i32 __cdecl NewRayCast(NUVEC *position, NUVEC *movement, f32 radius, i32 scan_flags)"
-0x67b410,_fun_0067b410,32,
+0x67b410,_NewRayCastEx,32,
 0x67b430,_NewRayCastScaleYMask,473,"i32 __cdecl(NUVEC*,NUVEC*,f32,f32,i32,u32)"
 0x67b610,_TerrainPolyEdge,928,"void __cdecl(NUVEC *,NUVEC *)"
 0x67b9b0,_NewRayCastMask,394,"i32 __cdecl(NUVEC *,NUVEC *,f32,i32,i32)"
@@ -11436,8 +11436,8 @@ address,symbol,size,ctype
 0x67bef0,_fun_0067bef0,6,
 0x67bf00,_fun_0067bf00,78,
 0x0067bf50,_NewPlatInst,528,"i32 __cdecl (void *, i32)"
-0x67c160,_fun_0067c160,444,
-0x67c320,_fun_0067c320,449,
+0x67c160,_NewPlatInstMSitu,444,
+0x67c320,_NewMSituTerrEx,449,
 0x67c4f0,_NewPlatPickupInst,470,"i16 __cdecl(void*,i32)"
 0x67c6d0,_ReassignPickupInst,135,"void __cdecl(i32,i32)"
 0x67c760,_FindPlatInst,71,i32 __cdecl(i32)
@@ -11466,7 +11466,7 @@ address,symbol,size,ctype
 0x67fd40,_ScanTerrainPlatform,3582,"void __cdecl (i32, i32)"
 0x680b40,_NewRayCastPlatForm,401,"i32 __cdecl(NUVEC *,NUVEC *,f32,f32,i32,i32)"
 0x680ce0,_TerrShowCamTerr,254,
-0x680de0,_fun_00680de0,176,
+0x680de0,_DrawHitTerrain,176,
 0x680e90,_TerrainSkinPrepareGroupPc,1348,"void __cdecl(i32,struct TERRAIN_SKIN_STREAM_VIEW_PC *,const struct TERRAIN_SKIN_INFO_VIEW_PC *)"
 0x6813e0,_TerrainSkinInitArenaPc,80,"void __cdecl(struct TERRAIN_SKIN_INFO_VIEW_PC *,u8 *,i32)"
 0x681430,_TerrainSkinResetArenaPc,59,void __cdecl(void)
@@ -11474,7 +11474,7 @@ address,symbol,size,ctype
 0x6816a0,_fun_006816a0,48,
 0x6816d0,_TerrainSkinRebuildIndexPc,1509,u8 *__cdecl(i32)
 0x681cc0,_fun_00681cc0,105,
-0x681d30,_fun_00681d30,21,
+0x681d30,_TerrErrorString,21,
 0x681d50,_fun_00681d50,10,
 0x681d60,_RegisterSounds,76,
 0x681db0,_SetSoundBitsById,122,"void __cdecl (const i32 *, void (__cdecl *)(i32))"
@@ -11518,7 +11518,7 @@ address,symbol,size,ctype
 0x685eb0,_DebrisProcessAllocation,55,void __cdecl (void)
 0x685ef0,_DebrisProcessGeneration,2144,void __cdecl (void)
 0x686750,_DebrisPreCheckCollisions,317,"i32 __cdecl(NUVEC *,f32)"
-0x686890,_fun_00686890,90,
+0x686890,_DebrisDrawGlassEx,90,
 0x006868f0,_DebrisDrawGlass,87,void __cdecl(void)
 0x686950,_edanimUpdateObjects,1644,void __cdecl(f32)
 0x686fc0,_edanimParamCreate,338,
@@ -11631,7 +11631,7 @@ address,symbol,size,ctype
 0x68ed50,_terraininit,59,
 0x68ed90,_TerrainPlatformOldUpdate,162,void __cdecl TerrainPlatformOldUpdate(void)
 0x68ee40,_PlatformChecks,2015,"i32 __cdecl(i32,NUVEC *)"
-0x68f620,_fun_0068f620,790,
+0x68f620,_AddMSituExtraTerrRot,790,
 0x0068f940,_NewTerrainScaleYMask,1984,"void __cdecl(NUVEC *,NUVEC *,u8 *,i32,f32,f32,f32,i32,i32,i32)"
 0x690100,_NewTerrainScaleY,67,
 0x690150,_NewRayCastScaleY,44,
@@ -11672,7 +11672,7 @@ address,symbol,size,ctype
 0x693b60,_PCStereoUnknownToken,1,void __cdecl(...) [C++ logical prototype; true retail RET no arguments consumed]
 0x00693b70,_PCMusicTrackNotFound,1,void __cdecl(...) [C++ logical prototype; retail passes the track name]
 0x693b80,?Nusound3IncludeVuVecMake@@YA?AUVuVec@@MMMM@Z,28,
-0x693ba0,_fun_00693ba0,14,
+0x693ba0,?fun_00693ba0@NuMusic@@QAEMXZ,14,
 0x00693bb0,?GetPlayer@NuMusic@@SAPAV1@XZ,6,NuMusic *__cdecl (void)
 0x00693bc0,??0NuMusic@@QAE@XZ,66,NuMusic *__thiscall (NuMusic *)
 0x693c10,??1NuMusic@@QAE@XZ,1,
@@ -11787,7 +11787,7 @@ address,symbol,size,ctype
 0x696bc0,?GetFactory@SoundVoiceManagerPC@@QAEPAUIDirectSound8@@XZ,7,IDirectSound8 *__thiscall(SoundVoiceManagerPC *)
 0x696bd0,_fun_00696bd0,10,
 0x00696be0,_NuSound3GetListener,15,NUMTX *__cdecl (void)
-0x696bf0,_fun_00696bf0,30,
+0x696bf0,??_GSoundQueue@@QAEPAXI@Z,30,
 0x696c10,_fun_00696c10,51,
 0x696c50,?ResetStoragePc@SoundVoiceManagerPC@@QAEPAU1@XZ,53,SoundVoiceManagerPC *__thiscall(SoundVoiceManagerPC *)
 0x696c90,?UnloadSample@SoundVoiceManagerPC@@QAEXH@Z,109,"void __thiscall(SoundVoiceManagerPC *,i32)"
@@ -11796,13 +11796,13 @@ address,symbol,size,ctype
 0x696fa0,?LoadWavSamplePc@SoundVoiceManagerPC@@QAEHPBDH@Z,805,"i32 __thiscall SoundVoiceManagerPC::LoadWavSamplePc(const char *name, i32 index)"
 0x6972d0,_fun_006972d0,65,
 0x697320,_fun_00697320,51,
-0x697360,_fun_00697360,35,
-0x697390,_fun_00697390,35,
+0x697360,?fun_00697360@SoundVoiceManagerPC@@QAEEH@Z,35,
+0x697390,?fun_00697390@SoundVoiceManagerPC@@QAEEH@Z,35,
 0x6973c0,?ClearSamplesPc@SoundVoiceManagerPC@@QAEXXZ,167,void __thiscall SoundVoiceManagerPC::ClearSamplesPc(void)
 0x00697470,?AllocateVoice@SoundVoiceManagerPC@@QAEHHH@Z,264,"i32 __thiscall (SoundVoiceManagerPC *, i32, i32)"
 0x00697580,?SetVoice@SoundVoiceManagerPC@@QAEXHHMH@Z,267,"void __thiscall (SoundVoiceManagerPC *, i32, i32, f32, i32)"
 0x00697690,?StopVoice@SoundVoiceManagerPC@@QAEXH@Z,98,"void __thiscall (SoundVoiceManagerPC *, i32)"
-0x697700,_fun_00697700,64,
+0x697700,?fun_00697700@SoundVoiceManagerPC@@QAEXHHHMMH@Z,64,
 0x697740,?FindLoopVoicePc@SoundVoiceManagerPC@@QAE_NPAUnuvec_s@@HPAH@Z,99,"bool __thiscall(NUVEC *,i32,i32 *)"
 0x6977b0,_PCSoundPositionVolumePc,200,"static i32 __cdecl(NUVEC *, NUVEC *, i32); retail relative vector in ESI"
 0x00697880,?Setup3DVoice@SoundVoiceManagerPC@@QAEXHPBUnuvec_s@@H@Z,149,"void __thiscall (SoundVoiceManagerPC *, i32, const NUVEC *, i32)"
@@ -11912,10 +11912,10 @@ address,symbol,size,ctype
 0x698ff0,_fun_00698ff0,1,
 0x699000,_fun_00699000,28,
 0x699020,_fun_00699020,32,
-0x699040,_fun_00699040,38,
+0x699040,?fun_00699040@SoundQueue@@QAEHPBUtWAVEFORMATEX@@@Z,38,
 0x699070,?SetFormatPc@SoundQueue@@QAEHPBUtWAVEFORMATEX@@@Z,266,"i32 __thiscall(SoundQueue *,const WAVEFORMATEX *)"
 0x00699180,?SendCommand@SoundQueue@@QAEHHH@Z,117,"i32 __thiscall (SoundQueue *, i32, i32)"
-0x699200,_fun_00699200,95,
+0x699200,?fun_00699200@SoundQueue@@QAEHPAH@Z,95,
 0x00699260,?HasCommand@SoundQueue@@QAE_NH@Z,85,"bool __thiscall (SoundQueue *, i32)"
 0x6992c0,?FillBufferPc@SoundQueue@@QAEHHI@Z,893,"i32 __thiscall(SoundQueue *,i32,u32)"
 0x00699640,?SetStreamFile@SoundQueue@@QAEHPBDM@Z,68,"i32 __thiscall (SoundQueue *, const char *, f32)"
@@ -12350,27 +12350,27 @@ address,symbol,size,ctype
 0x6b8110,?VuMtxRotateX@@YAXAAUVuMtx@@H@Z,217,
 0x6b81f0,?VuMtxRotateY@@YAXAAUVuMtx@@H@Z,219,
 0x6b82d0,?VuMtxRotateZ@@YAXAAUVuMtx@@H@Z,215,
-0x6b83b0,_fun_006b83b0,16,
-0x6b83c0,_fun_006b83c0,16,
-0x6b83d0,_fun_006b83d0,16,
-0x6b83e0,_fun_006b83e0,16,
+0x6b83b0,?fun_006b83b0@VuVec@@QAEXXZ,16,
+0x6b83c0,?fun_006b83c0@VuVec@@QAEXXZ,16,
+0x6b83d0,?fun_006b83d0@VuVec@@QAEXXZ,16,
+0x6b83e0,?fun_006b83e0@VuVec@@QAEXXZ,16,
 0x6b83f0,_fun_006b83f0,10,
-0x6b8400,_fun_006b8400,57,
-0x6b8440,_fun_006b8440,35,
-0x6b8470,_fun_006b8470,91,
+0x6b8400,?fun_006b8400@VuVec@@QBE?AU1@M@Z,57,
+0x6b8440,?fun_006b8440@VuVec@@QBEMABU1@@Z,35,
+0x6b8470,?fun_006b8470@VuMtx@@QAEXABUVuVec@@@Z,91,
 0x6b84d0,_fun_006b84d0,12,
 0x6b84e0,_fun_006b84e0,29,
 0x6b8500,_fun_006b8500,1,
 0x6b8510,_EdDrawSetVertexColour,108,
 0x6b8580,_EdDrawAddXYZ,51,
-0x6b85c0,_fun_006b85c0,25,
-0x6b85e0,_fun_006b85e0,3,
-0x6b85f0,_fun_006b85f0,4,
-0x6b8600,_fun_006b8600,4,
+0x6b85c0,?fun_006b85c0@EdString@@QAEHH@Z,25,
+0x6b85e0,?fun_006b85e0@MemoryBuffer@@QAEPATvariptr_u@@XZ,3,
+0x6b85f0,?fun_006b85f0@MemoryBuffer@@QAEPATvariptr_u@@XZ,4,
+0x6b8600,?fun_006b8600@MemoryBuffer@@QAEIXZ,4,
 0x6b8610,?Set@MemoryBuffer@@QAEXPATvariptr_u@@0@Z,30,
 0x6b8630,?Allocate@MemoryBuffer@@QAEPAXIIH@Z,82,
 0x6b8690,??0EdString@@QAE@XZ,9,
-0x6b86a0,_fun_006b86a0,13,
+0x6b86a0,?fun_006b86a0@EdString@@QAEPADXZ,13,
 0x6b86b0,_fun_006b86b0,4,
 0x6b86c0,?Close@EdFileInputStream@@QAEXXZ,11,
 0x6b86d0,??1EdFileInputStream@@UAE@XZ,7,
@@ -12401,7 +12401,7 @@ address,symbol,size,ctype
 0x6b89c0,_fun_006b89c0,16,
 0x6b89d0,_fun_006b89d0,14,
 0x6b89e0,_fun_006b89e0,9,
-0x6b89f0,_fun_006b89f0,33,
+0x6b89f0,?fun_006b89f0@ClassObject@@QAE_NAAU1@@Z,33,
 0x6b8a20,_fun_006b8a20,16,
 0x6b8a30,_fun_006b8a30,18,
 0x6b8a50,_fun_006b8a50,18,
@@ -12425,16 +12425,16 @@ address,symbol,size,ctype
 0x6b8bb0,?AddMenuItems@BaseEditor@@UAEXPAUeduimenu_s@@@Z,3,
 0x6b8bc0,??_EBaseEditor@@UAEPAXI@Z,,COFF weak alias of ??_GBaseEditor@@UAEPAXI@Z; no independent body
 0x6b8bc0,??_GBaseEditor@@UAEPAXI@Z,31,native scalar-deleting dtor exactVTidentity
-0x6b8be0,_fun_006b8be0,4,
-0x6b8bf0,_fun_006b8bf0,4,
+0x6b8be0,?fun_006b8be0@ClassEditor@@QAEPAVEdTool@@XZ,4,
+0x6b8bf0,?fun_006b8bf0@ClassEditor@@QAEAAMXZ,4,
 0x6b8c00,??1ClassEditor@@UAE@XZ,7,
-0x6b8c10,_fun_006b8c10,14,
-0x6b8c20,_fun_006b8c20,10,
-0x6b8c30,_fun_006b8c30,24,
-0x6b8c50,_fun_006b8c50,10,
-0x6b8c60,_fun_006b8c60,39,
-0x6b8c90,_fun_006b8c90,4,
-0x6b8ca0,_fun_006b8ca0,4,
+0x6b8c10,?fun_006b8c10@ClassEditor@@QAEHXZ,14,
+0x6b8c20,?fun_006b8c20@ClassEditor@@QAEXPAVEdTool@@@Z,10,
+0x6b8c30,?fun_006b8c30@ClassEditor@@QAEXAAUClassObject@@@Z,24,
+0x6b8c50,?fun_006b8c50@ClassEditor@@QAEXH@Z,10,
+0x6b8c60,?fun_006b8c60@ClassEditor@@QAEHAAUClassObject@@@Z,39,
+0x6b8c90,?fun_006b8c90@ClassEditor@@QAEAAUClassObjectList@@XZ,4,
+0x6b8ca0,?fun_006b8ca0@ClassEditor@@QAEAAUClassObject@@XZ,4,
 0x6b8cb0,??1EditorSettings@@UAE@XZ,7,
 0x6b8cc0,??_EEditorSettings@@UAEPAXI@Z,,COFF weak alias of ??_GEditorSettings@@UAEPAXI@Z; no independent body
 0x6b8cc0,??_GEditorSettings@@UAEPAXI@Z,31,native scalar-deleting dtor exactVTidentity
@@ -12473,21 +12473,21 @@ address,symbol,size,ctype
 0x6b8f70,_fun_006b8f70,18,
 0x6b8f90,?GetVal@EdSpecialObjectControl@@QAEXAAUnuspecial_handle_s@@@Z,35,
 0x6b8fc0,?SetVal@EdSpecialObjectControl@@QAEXAAUnuspecial_handle_s@@@Z,37,
-0x6b8ff0,_fun_006b8ff0,14,
-0x6b9000,_fun_006b9000,13,
-0x6b9010,_fun_006b9010,13,
-0x6b9020,_fun_006b9020,8,
-0x6b9030,_fun_006b9030,15,
-0x6b9040,_fun_006b9040,7,
+0x6b8ff0,?fun_006b8ff0@LevelEditor@@QAEX_N@Z,14,
+0x6b9000,?fun_006b9000@LevelEditor@@QAEXE@Z,13,
+0x6b9010,?fun_006b9010@LevelEditor@@QAEXE@Z,13,
+0x6b9020,?fun_006b9020@LevelEditor@@QAEFXZ,8,
+0x6b9030,?fun_006b9030@LevelEditor@@QAEXF@Z,15,
+0x6b9040,?fun_006b9040@LevelEditor@@QAEHXZ,7,
 0x6b9050,?SetCameraPosition@LevelEditor@@QAEXAAUVuVec@@@Z,39,
-0x6b9080,_fun_006b9080,4,
-0x6b9090,_fun_006b9090,10,
-0x6b90a0,_fun_006b90a0,4,
-0x6b90b0,_fun_006b90b0,10,
-0x6b90c0,_fun_006b90c0,10,
+0x6b9080,?fun_006b9080@LevelEditor@@QAEPAMXZ,4,
+0x6b9090,?fun_006b9090@LevelEditor@@QAEXH@Z,10,
+0x6b90a0,?fun_006b90a0@LevelEditor@@QAEHXZ,4,
+0x6b90b0,?fun_006b90b0@LevelEditor@@QAEXH@Z,10,
+0x6b90c0,?fun_006b90c0@LevelEditor@@QAEXH@Z,10,
 0x6b90d0,_fun_006b90d0,12,
-0x6b90e0,_fun_006b90e0,4,
-0x6b90f0,_fun_006b90f0,13,
+0x6b90e0,?fun_006b90e0@LevelEditor@@QAEHXZ,4,
+0x6b90f0,?fun_006b90f0@LevelEditor@@QAEXPAVBaseEditor@@@Z,13,
 0x6b9100,?Initialise@BaseEditor@@UAEXAATvariptr_u@@0H@Z,10,
 0x6b9110,?WriteBeginBlock@BaseEditor@@SAXHH@Z,73,
 0x6b9160,?WriteEndBlock@BaseEditor@@SAXH@Z,96,
@@ -12537,7 +12537,7 @@ address,symbol,size,ctype
 0x6b9dd0,?SetMenuItemAttr@EdMatrixControl@@UAEXHPAUeduiitem_s@@PAUeduiiattr_s@@1@Z,235,
 0x6b9ec0,?cbChanged@EdEnumControl@@SAXPAUeduimenu_s@@PAUeduiitem_s@@I@Z,277,
 0x6b9fe0,?GetEnumString@EdEnumControl@@QAEPADH@Z,42,
-0x6ba010,_fun_006ba010,55,
+0x6ba010,?fun_006ba010@EdEnumControl@@QAEHPAD@Z,55,
 0x6ba050,?Refresh@EdEnumControl@@UAEXXZ,100,
 0x6ba0c0,?cbChanged@EdBitControl@@SAXPAUeduimenu_s@@PAUeduiitem_s@@I@Z,277,
 0x6ba1e0,?Refresh@EdBitControl@@UAEXXZ,1,
@@ -12590,10 +12590,10 @@ address,symbol,size,ctype
 0x6bc620,?Reset@LevelEditor@@QAEXXZ,11,
 0x6bc630,?AddScene@LevelEditor@@QAEHPADPAUNUGSCN_s@@H@Z,200,
 0x6bc700,?FindSceneId@LevelEditor@@QAEHPAD@Z,61,
-0x6bc740,_fun_006bc740,92,
+0x6bc740,?fun_006bc740@LevelEditor@@QAEPAUNUGSCN_s@@PAD@Z,92,
 0x6bc7a0,?GetScene@LevelEditor@@QAEPAUNUGSCN_s@@H@Z,30,
 0x6bc7c0,?GetEdScene@LevelEditor@@QAEPAULevelEditorScene@@H@Z,30,
-0x6bc7e0,_fun_006bc7e0,72,
+0x6bc7e0,?fun_006bc7e0@LevelEditor@@QAEHPAUNUGSCN_s@@@Z,72,
 0x6bc830,?IsEditable@LevelEditor@@QAEHH@Z,48,
 0x6bc860,?cbEdLevelDestroy@@YAXPAUeduimenu_s@@0@Z,87,
 0x6bc8c0,?cbEdLevelDestroyOnSelect@@YAXPAUeduimenu_s@@PAUeduiitem_s@@I@Z,50,
@@ -12603,8 +12603,8 @@ address,symbol,size,ctype
 0x6bc950,?cbEdLevelToggleInt@@YAXPAUeduimenu_s@@PAUeduiitem_s@@I@Z,22,
 0x6bc970,?cbEdLevelEditorSelect@@YAXPAUeduimenu_s@@PAUeduiitem_s@@I@Z,24,
 0x6bc990,_fun_006bc990,59,
-0x6bc9d0,_fun_006bc9d0,12,
-0x6bc9e0,_fun_006bc9e0,59,
+0x6bc9d0,?fun_006bc9d0@LevelEditor@@QAEXPAUeduimenu_s@@@Z,12,
+0x6bc9e0,?fun_006bc9e0@LevelEditor@@QAEPADPAD@Z,59,
 0x6bca20,?AddInfoText@LevelEditor@@QAEXPAD@Z,101,
 0x6bca90,?DrawInfoText@LevelEditor@@QAEXPAPADHHHHHHH@Z,401,
 0x6bcc30,?Display@LevelEditor@@UAEXPAUThingRenderData@@@Z,520,
@@ -12752,8 +12752,8 @@ address,symbol,size,ctype
 0x6c0760,?Process@SplineTool@@UAEHAAUEdInputContext@@@Z,5,
 0x6c0770,?Render@SplineTool@@UAEXXZ,1,
 0x6c0780,??0EdStream@@QAE@XZ,26,
-0x6c07a0,_fun_006c07a0,32,
-0x6c07c0,_fun_006c07c0,36,
+0x6c07a0,??0EdStream@@QAE@PAUMemoryBuffer@@@Z,32,
+0x6c07c0,??0EdStream@@QAE@PAUMemoryBuffer@@0@Z,36,
 0x6c07f0,?SerialiseString@EdInputStream@@UAEHPAPADH@Z,39,
 0x6c0820,?SerialiseString@EdOutputStream@@UAEHPAPAD@Z,19,
 0x6c0840,?SerialiseString@EdOutputStream@@UAEHPAPADH@Z,25,
@@ -12771,11 +12771,11 @@ address,symbol,size,ctype
 0x6c1120,??0?$EdStack@UBlock@EdFileInputStream@@$07@@QAE@XZ,14,
 0x6c1130,?Count@?$EdStack@UBlock@EdFileInputStream@@$07@@QAEHXZ,4,
 0x6c1140,?Push@?$EdStack@UBlock@EdFileInputStream@@$07@@QAEXUBlock@EdFileInputStream@@@Z,41,
-0x6c1170,_fun_006c1170,37,
+0x6c1170,?Pop@?$EdStack@UBlock@EdFileInputStream@@$07@@QAE?AUBlock@EdFileInputStream@@XZ,37,
 0x6c11a0,?Top@?$EdStack@UBlock@EdFileInputStream@@$07@@QAEAAUBlock@EdFileInputStream@@XZ,11,
 0x6c11b0,??0?$EdStack@H$07@@QAE@XZ,14,
-0x6c11c0,_fun_006c11c0,22,
-0x6c11e0,_fun_006c11e0,11,
+0x6c11c0,?Push@?$EdStack@H$07@@QAEXH@Z,22,
+0x6c11e0,?Pop@?$EdStack@H$07@@QAEHXZ,11,
 0x6c11f0,_fun_006c11f0,101,
 0x6c1260,??0?$CSListLink@VEdTool@@@@QAE@XZ,20,
 0x6c1280,??0?$CSListLink@VBaseEditor@@@@QAE@XZ,20,
@@ -12789,10 +12789,10 @@ address,symbol,size,ctype
 0x6c1400,_fun_006c1400,20,
 0x6c1420,_fun_006c1420,3,
 0x6c1430,_fun_006c1430,13,
-0x6c1440,_fun_006c1440,3,
-0x6c1450,_fun_006c1450,94,
+0x6c1440,?fun_006c1440@ClassObjectList@@QAEPAUClassObjectListEntry@@XZ,3,
+0x6c1450,?fun_006c1450@ClassObjectList@@QAEXPAUClassObjectListEntry@@0@Z,94,
 0x6c14b0,?Remove@ClassObjectList@@QAEXPAUClassObjectListEntry@@@Z,63,
-0x6c14f0,_fun_006c14f0,4,
+0x6c14f0,?fun_006c14f0@ClassObjectList@@QAEHXZ,4,
 0x6c1500,??0?$CSListLink@VPropertyMenu@@@@QAE@XZ,20,
 0x6c1520,_fun_006c1520,3,
 0x6c1530,_fun_006c1530,4,
@@ -12847,8 +12847,8 @@ address,symbol,size,ctype
 0x6c1c90,_fun_006c1c90,3,
 0x6c1ca0,?Drag@EdVectorControl@@SAXPAUeduiitem_s@@@Z,173,
 0x6c1d50,?Drag@EdMatrixControl@@SAXPAUeduiitem_s@@@Z,173,
-0x6c1e00,_fun_006c1e00,19,
-0x6c1e20,_fun_006c1e20,19,
+0x6c1e00,?fun_006c1e00@EdStream@@QAEHAAH@Z,19,
+0x6c1e20,?fun_006c1e20@EdStream@@QAEHAAE@Z,19,
 0x6c1e40,_fun_006c1e40,10,
 0x6c1e50,??0EdInputStream@@QAE@PAUMemoryBuffer@@0@Z,40,
 0x6c1e80,??0EdFileInputStream@@QAE@PAUMemoryBuffer@@0@Z,68,
@@ -12858,9 +12858,9 @@ address,symbol,size,ctype
 0x6c1f20,??_EEdFileOutputStream@@UAEPAXI@Z,,COFF weak alias of ??_GEdFileOutputStream@@UAEPAXI@Z; no independent body
 0x6c1f20,??_GEdFileOutputStream@@UAEPAXI@Z,31,native scalar-deleting dtor exactVTidentity
 0x6c1f40,??0EdRef@@QAE@XZ,29,
-0x6c1f60,_fun_006c1f60,34,
-0x6c1f90,_fun_006c1f90,34,
-0x6c1fc0,_fun_006c1fc0,31,
+0x6c1f60,?fun_006c1f60@EdMember@@QAEHHHPAXH@Z,34,
+0x6c1f90,?fun_006c1f90@EdMember@@QAEHHHPAXH@Z,34,
+0x6c1fc0,?fun_006c1fc0@EdInputContext@@QAEXHHM@Z,31,
 0x6c1fe0,??1EdVectorControl@@UAE@XZ,45,
 0x6c2010,??_EEdVectorControl@@UAEPAXI@Z,,COFF weak alias of ??_GEdVectorControl@@UAEPAXI@Z; no independent body
 0x6c2010,??_GEdVectorControl@@UAEPAXI@Z,73,
@@ -12909,7 +12909,7 @@ address,symbol,size,ctype
 0x6c2560,_fun_006c2560,13,
 0x6c2570,_fun_006c2570,13,
 0x6c2580,_fun_006c2580,13,
-0x6c2590,_fun_006c2590,46,
+0x6c2590,?RegisterTool@ClassEditor@@QAEXAAVEdTool@@@Z,46,
 0x6c25c0,?SnapPoint@ClassEditor@@QAEXAAUVuVec@@@Z,72,
 0x6c2610,?UpdateClassFilter@ClassEditor@@QAEXAAUEdInputContext@@@Z,222,
 0x6c26f0,_fun_006c26f0,23,
@@ -12921,9 +12921,9 @@ address,symbol,size,ctype
 0x6c2da0,?cbEdFilterLED@ClassEditor@@SAXPAUeduimenu_s@@PAUeduiitem_s@@I@Z,93,
 0x6c2e00,?cbEdClassSetPinned@ClassEditor@@SAXPAUeduimenu_s@@PAUeduiitem_s@@I@Z,112,
 0x6c2e70,?cbEdClassViewMenu@ClassEditor@@SAXPAUeduimenu_s@@PAUeduiitem_s@@I@Z,685,
-0x6c3120,_fun_006c3120,45,
-0x6c3150,_fun_006c3150,49,
-0x6c3190,_fun_006c3190,40,
+0x6c3120,?IsInList@ClassObjectList@@QAEHUClassObject@@@Z,45,
+0x6c3150,?IsInList@ClassObjectList@@QAEHPAXPAVEdRef@@@Z,49,
+0x6c3190,?IsInList@ClassObjectList@@QAEHPAUEdClass@@@Z,40,
 0x6c31c0,??0EdClassObjectNameControl@@QAE@XZ,20,
 0x6c31e0,??3EdClassObjectNameControl@@SAXPAX@Z,18,
 0x6c3200,_fun_006c3200,7,
@@ -13044,8 +13044,8 @@ address,symbol,size,ctype
 0x6c7ce0,?CreateObject@SplineHelper@@UAEPAXPAXHH@Z,115,
 0x6c7d60,?DestroyObject@SplineHelper@@UAEXPAXH@Z,113,
 0x6c7de0,?Render@SplineHelper@@UAEXPAXH@Z,32,
-0x6c7e00,_fun_006c7e00,54,
-0x6c7e40,_fun_006c7e40,68,
+0x6c7e00,?Find@SplineHelper@@QAEPAVSplineObject@@PAD@Z,54,
+0x6c7e40,?Find@SplineHelper@@QAEHPADPAPAVSplineObject@@H@Z,68,
 0x6c7e90,?GetNumObjects@KnotHelper@@UAEHXZ,27,
 0x6c7eb0,?GetNextObject@KnotHelper@@UAEPAXPAX@Z,88,
 0x6c7f10,?DestroyObject@KnotHelper@@UAEXPAXH@Z,171,
@@ -13151,7 +13151,7 @@ address,symbol,size,ctype
 0x6ccee0,??_GPropertyTool@@UAEPAXI@Z,31,
 0x6ccf00,?CreatePropertyMenu@PropertyTool@@QAEPAVPropertyMenu@@AAUClassObject@@@Z,379,
 0x6cd080,?ToggleActiveMenu@PropertyTool@@QAEXXZ,156,
-0x6cd120,_fun_006cd120,13,
+0x6cd120,?fun_006cd120@PropertyTool@@QAEPAVPropertyMenu@@AAUClassObject@@H@Z,13,
 0x6cd130,?RenderMenu@PropertyTool@@QAEXPAVPropertyMenu@@@Z,261,
 0x6cd240,_fun_006cd240,14,
 0x6cd250,?DistanceToObject@EdClassInterface@@UAEMAAUVuVec@@0PAXPAPAVEdRef@@@Z,282,
@@ -13172,7 +13172,7 @@ address,symbol,size,ctype
 0x6cded0,?Initialise@SceneObjectHelper@@QAEXXZ,809,
 0x6ce200,?SubRender@SceneObjectHelper@@UAEXXZ,173,
 0x6ce2b0,?Smooth@SplineKnot@@QAEXXZ,455,
-0x6ce480,_fun_006ce480,19,
+0x6ce480,?SmoothKnots@SplineObject@@QAEXXZ,19,
 0x6ce4a0,?GenPoints@SplineObject@@QAEXXZ,28,
 0x6ce4c0,?Clone@SplineObject@@QAEPAV1@XZ,351,
 0x6ce620,?SetMemberData@EdRefKnot@@UAEXPAXH0HPAF@Z,480,
@@ -13266,66 +13266,66 @@ address,symbol,size,ctype
 0x6d3580,?PCInputFabs@@YAMM@Z,18,
 0x6d35a0,?PCInputVuVecMake@@YA?AUVuVec@@MMMM@Z,28,
 0x6d35c0,_fun_006d35c0,4,
-0x6d35d0,_fun_006d35d0,13,
-0x6d35e0,_fun_006d35e0,24,
-0x6d3600,_fun_006d3600,13,
-0x6d3610,_fun_006d3610,7,
-0x6d3620,_fun_006d3620,11,
-0x6d3630,_fun_006d3630,95,
+0x6d35d0,?fun_006d35d0@PC_INPUT_RUNTIME_PC@@QAEXE@Z,13,
+0x6d35e0,?fun_006d35e0@PC_INPUT_RUNTIME_PC@@QAEXHE@Z,24,
+0x6d3600,?fun_006d3600@PC_INPUT_RUNTIME_PC@@QAEXH@Z,13,
+0x6d3610,?fun_006d3610@PC_INPUT_RUNTIME_PC@@QAEHXZ,7,
+0x6d3620,?fun_006d3620@PC_INPUT_RUNTIME_PC@@QAEXXZ,11,
+0x6d3630,?fun_006d3630@PC_INPUT_RUNTIME_PC@@QAEXMHM@Z,95,
 0x6d3690,_fun_006d3690,44,
 0x6d36c0,_fun_006d36c0,6,
-0x6d36d0,_fun_006d36d0,61,
-0x6d3710,_fun_006d3710,54,
-0x6d3750,_fun_006d3750,68,
-0x6d37a0,_fun_006d37a0,38,
+0x6d36d0,?fun_006d36d0@PC_INPUT_RUNTIME_PC@@QAEXXZ,61,
+0x6d3710,?fun_006d3710@PC_INPUT_RUNTIME_PC@@QAEXHPAH00@Z,54,
+0x6d3750,?fun_006d3750@PC_INPUT_RUNTIME_PC@@QAEHPAUPC_INPUT_CONFIG_PC@@H0@Z,68,
+0x6d37a0,?fun_006d37a0@PC_INPUT_RUNTIME_PC@@QAEHHH@Z,38,
 0x6d37d0,?HashAuxiliaryBindingsPc@PC_INPUT_RUNTIME_PC@@QAEHXZ,220,
-0x6d38b0,_fun_006d38b0,52,
+0x6d38b0,?fun_006d38b0@PC_INPUT_RUNTIME_PC@@QAEHPAUPC_INPUT_CONFIG_PC@@@Z,52,
 0x6d38f0,?PromoteConfigPc@PC_INPUT_RUNTIME_PC@@QAEXPAUPC_INPUT_CONFIG_PC@@H0@Z,115,
-0x6d3970,_fun_006d3970,16,
-0x6d3980,_fun_006d3980,3,
+0x6d3970,?fun_006d3970@PC_INPUT_RUNTIME_PC@@QAEXPAUPC_INPUT_CONFIG_PC@@@Z,16,
+0x6d3980,?fun_006d3980@PC_INPUT_RUNTIME_PC@@QAEXH@Z,3,
 0x6d3990,?ReadConfiguration@PC_INPUT_RUNTIME_PC@@QAEXPAUPC_INPUT_CONFIG_PC@@PBD@Z,262,"void __thiscall PC_INPUT_RUNTIME_PC::ReadConfiguration(PC_INPUT_CONFIG_PC *, const char *)"
 0x6d3aa0,?InitConfiguration@PC_INPUT_RUNTIME_PC@@QAEXXZ,108,void __thiscall PC_INPUT_RUNTIME_PC::InitConfiguration(void)
-0x6d3b10,_fun_006d3b10,3,
+0x6d3b10,?fun_006d3b10@PC_INPUT_RUNTIME_PC@@QAEXH@Z,3,
 0x6d3b20,_fun_006d3b20,1,
 0x6d3b30,?SanitizeConfigNamePc@PC_INPUT_RUNTIME_PC@@QAEXPBDPAD@Z,84,
 0x6d3b90,?FormatConfigTextPc@PC_INPUT_RUNTIME_PC@@QAEXPADPAUPC_INPUT_CONFIG_PC@@@Z,1239,
 0x6d4070,?ExportConfigPc@PC_INPUT_RUNTIME_PC@@QAEXHPAUPC_INPUT_CONFIG_PC@@HHH@Z,877,
 0x6d43e0,?FindConfig@PC_INPUT_RUNTIME_PC@@QAEPAUPC_INPUT_CONFIG_PC@@EHH@Z,277,"PC_INPUT_CONFIG_PC* __thiscall(u8,i32,i32)"
-0x6d4500,_fun_006d4500,216,
-0x6d45e0,_fun_006d45e0,13,
+0x6d4500,?fun_006d4500@PC_INPUT_RUNTIME_PC@@QAEPAUPC_INPUT_CONFIG_PC@@EPBD@Z,216,
+0x6d45e0,?fun_006d45e0@PC_INPUT_RUNTIME_PC@@QAEXH@Z,13,
 0x6d45f0,?InstallConfig@PC_INPUT_RUNTIME_PC@@QAEXPAUPC_INPUT_CONFIG_PC@@HHHH@Z,403,"void __thiscall(PC_INPUT_CONFIG_PC*,i32,i32,i32,i32)"
-0x6d4790,_fun_006d4790,5,
+0x6d4790,?fun_006d4790@PC_INPUT_RUNTIME_PC@@QAEHH@Z,5,
 0x6d47a0,?InitXInputCaps@PC_INPUT_RUNTIME_PC@@QAEXPBUPC_XINPUT_CAPABILITIES_PC@@PAUPC_INPUT_DEVICE_PC@@@Z,215,"void __thiscall(const PC_XINPUT_CAPABILITIES_PC*,PC_INPUT_DEVICE_PC*)"
 0x6d4880,?NormalizeAxisPairPc@PC_INPUT_RUNTIME_PC@@QAEXPAF0@Z,364,"void __thiscall(i16*,i16*)"
-0x6d49f0,_fun_006d49f0,55,
-0x6d4a30,_fun_006d4a30,66,
+0x6d49f0,?fun_006d49f0@PC_INPUT_RUNTIME_PC@@QAEHH@Z,55,
+0x6d4a30,?fun_006d4a30@PC_INPUT_RUNTIME_PC@@QAEHHH@Z,66,
 0x6d4a80,_fun_006d4a80,280,
 0x6d4ba0,?CopyBindingsPc@PC_INPUT_RUNTIME_PC@@QAEXHHH@Z,103,
 0x6d4c10,?AdvanceCaptureRecordsPc@PC_INPUT_RUNTIME_PC@@QAEXXZ,127,void __thiscall(void)
-0x6d4c90,_fun_006d4c90,142,
-0x6d4d20,_fun_006d4d20,34,
-0x6d4d50,_fun_006d4d50,8,
+0x6d4c90,?fun_006d4c90@PC_INPUT_RUNTIME_PC@@QAEXI@Z,142,
+0x6d4d20,?fun_006d4d20@PC_INPUT_RUNTIME_PC@@QAEXH@Z,34,
+0x6d4d50,?fun_006d4d50@PC_INPUT_RUNTIME_PC@@QAEHXZ,8,
 0x6d4d60,_fun_006d4d60,1,
-0x6d4d70,_fun_006d4d70,21,
+0x6d4d70,?fun_006d4d70@PC_INPUT_RUNTIME_PC@@QAEXXZ,21,
 0x006d4d90,@NuKeyboardResetInputRecords@4,49,void __fastcall (NuKeyboardState_PC *)
 0x006d4dd0,_PcInput_SetStringUCGfxRemapFn,10,"void __cdecl(void (__cdecl *)(i32, char *))"
-0x6d4de0,_fun_006d4de0,60,
+0x6d4de0,?fun_006d4de0@PC_INPUT_RUNTIME_PC@@QAEHHHHH@Z,60,
 0x006d4e20,@fun_006d4e20@12,13,"void __fastcall (NuKeyboardState_PC *, i32, i32)"
 0x006d4e30,@NuKeyboardGetInputRecordCount@8,7,"i32 __fastcall (NuKeyboardState_PC *, i32)"
 0x006d4e40,@fun_006d4e40@8,7,"i32 __fastcall (NuKeyboardState_PC *, i32)"
 0x006d4e50,@fun_006d4e50@8,7,"i32 __fastcall (NuKeyboardState_PC *, i32)"
 0x006d4e60,@NuKeyboardInsertInputRecord@28,135,"void __fastcall (NuKeyboardState_PC *, i32, i32, i32, i32, i32, u16)"
-0x6d4ef0,_fun_006d4ef0,108,
-0x6d4f60,_fun_006d4f60,96,
-0x6d4fc0,_fun_006d4fc0,30,
-0x6d4fe0,_fun_006d4fe0,86,
+0x6d4ef0,?fun_006d4ef0@PC_INPUT_RUNTIME_PC@@QAEHHPAH000@Z,108,
+0x6d4f60,?fun_006d4f60@PC_INPUT_RUNTIME_PC@@QAEHHH@Z,96,
+0x6d4fc0,?fun_006d4fc0@PC_INPUT_RUNTIME_PC@@QAEXPBD@Z,30,
+0x6d4fe0,?fun_006d4fe0@PC_INPUT_RUNTIME_PC@@QAEHHHH@Z,86,
 0x006d5040,_PcInput_GetFirstKeyboardPort,6,i32 __cdecl (void)
 0x6d5050,_fun_006d5050,36,
 0x6d5080,_IsXInputProductPc,773,BOOL __cdecl(const GUID*)
 0x6d5390,_ConfigureJoystickRangesPc,797,void __cdecl(NuKeyboardDevice_PC*)
 0x6d56b0,??0NuKeyboardOwner_PC@@QAE@XZ,82,NuKeyboardOwner_PC *__thiscall (void)
 0x6d5710,??1NuKeyboardOwner_PC@@QAE@XZ,16,void __thiscall (void)
-0x6d5720,_fun_006d5720,61,
+0x6d5720,?fun_006d5720@NuKeyboardOwner_PC@@QAEHPAH0@Z,61,
 0x6d5760,?SetMouseCooperativePc@NuKeyboardOwner_PC@@QAEHH@Z,89,i32 __thiscall(i32)
 0x6d57c0,?SetMouseEnabledPc@NuKeyboardOwner_PC@@QAEXE@Z,10,void __thiscall (u8)
 0x6d57d0,?PollMousePc@NuKeyboardOwner_PC@@QAEPBUPC_DI_MOUSE_STATE_PC@@XZ,131,const PC_DI_MOUSE_STATE_PC* __thiscall(void)
@@ -13341,8 +13341,8 @@ address,symbol,size,ctype
 0x6d5910,_fun_006d5910,35,
 0x6d5940,_fun_006d5940,1,
 0x6d5950,?ScheduleRescan@NuKeyboardOwner_PC@@QAEXMH@Z,19,"void __thiscall(f32,i32)"
-0x6d5970,_fun_006d5970,9,
-0x6d5980,_fun_006d5980,9,
+0x6d5970,?fun_006d5970@NuKeyboardOwner_PC@@QAEHXZ,9,
+0x6d5980,?fun_006d5980@NuKeyboardOwner_PC@@QAEHXZ,9,
 0x006d5990,@NuKeyboardPoll@4,368,u8 *__fastcall (NuKeyboardOwner_PC *)
 0x6d5b00,_fun_006d5b00,12,
 0x6d5b10,_fun_006d5b10,12,
@@ -13433,22 +13433,22 @@ address,symbol,size,ctype
 0x6d6d80,_PcInput_GetKeyNameTable,6,char **__cdecl(void)
 0x6d6d90,_PcInput_SetIsUsedCallBack,10,
 0x6d6da0,_PcInputGetCommandFilterPc,6,
-0x6d6db0,_fun_006d6db0,37,
+0x6d6db0,?fun_006d6db0@PC_INPUT_RUNTIME_PC@@QAEHHH@Z,37,
 0x6d6de0,?WriteConfigTextPc@PC_INPUT_RUNTIME_PC@@QAEXPBDPAUPC_INPUT_CONFIG_PC@@@Z,193,
-0x6d6eb0,_fun_006d6eb0,24,
-0x6d6ed0,_fun_006d6ed0,20,
-0x6d6ef0,_fun_006d6ef0,80,
+0x6d6eb0,?fun_006d6eb0@PC_INPUT_RUNTIME_PC@@QAEXHPAUPC_INPUT_CONFIG_PC@@@Z,24,
+0x6d6ed0,?fun_006d6ed0@PC_INPUT_RUNTIME_PC@@QAEPAUPC_INPUT_CONFIG_PC@@EH@Z,20,
+0x6d6ef0,?fun_006d6ef0@PC_INPUT_RUNTIME_PC@@QAEXEHHHHH@Z,80,
 0x6d6f40,?BindingAvailablePc@PC_INPUT_RUNTIME_PC@@QAEHHHHH@Z,253,
 0x6d7040,?ResolveAuxiliaryConflictsPc@PC_INPUT_RUNTIME_PC@@QAEHHH@Z,603,
 0x6d72a0,?SelectConfigurationPc@PC_INPUT_RUNTIME_PC@@QAEHHHH@Z,170,
 0x6d7350,?InstallDropInConfigurationPc@PC_INPUT_RUNTIME_PC@@QAEEHH@Z,188,"u8 __thiscall(i32,i32)"
-0x6d7410,_fun_006d7410,19,
+0x6d7410,?fun_006d7410@PC_INPUT_RUNTIME_PC@@QAEHHH@Z,19,
 0x6d7430,?ClearOtherBankConflictsPc@PC_INPUT_RUNTIME_PC@@QAEXHH@Z,173,
 0x6d74e0,?SampleDevicePc@PC_INPUT_RUNTIME_PC@@QAEHHPAUPC_INPUT_RAW_SAMPLE_PC@@@Z,1140,"i32 __thiscall(i32,PC_INPUT_RAW_SAMPLE_PC*)"
 0x6d7960,?PollKeyboardPc@PC_INPUT_RUNTIME_PC@@QAEHXZ,42,i32 __thiscall(void)
 0x6d7990,?UpdateMousePc@PC_INPUT_RUNTIME_PC@@QAEHXZ,998,i32 __thiscall(void)
 0x6d7d80,?TranslateBindingsPc@PC_INPUT_RUNTIME_PC@@QAEHHPAUPC_INPUT_SAMPLE_PC@@HPAUPC_INPUT_RAW_SAMPLE_PC@@PAUPC_INPUT_MOUSE_RUNTIME_PC@@PAPAE@Z,1360,"i32 __thiscall(i32,PC_INPUT_SAMPLE_PC*,i32,PC_INPUT_RAW_SAMPLE_PC*,PC_INPUT_MOUSE_RUNTIME_PC*,u8**)"
-0x6d82d0,_fun_006d82d0,149,
+0x6d82d0,?fun_006d82d0@PC_INPUT_RUNTIME_PC@@QAEIHIHHHHI@Z,149,
 0x6d8370,?CombineUiButtonsPc@PC_INPUT_RUNTIME_PC@@QAEIHI@Z,285,"u32 __thiscall(i32,u32)"
 0x6d8490,?CaptureBindingPc@PC_INPUT_RUNTIME_PC@@QAEXH@Z,706,void __thiscall(i32)
 0x6d8760,?ServicePendingCapturePc@PC_INPUT_RUNTIME_PC@@QAEXXZ,135,void __thiscall(void)
@@ -13465,7 +13465,7 @@ address,symbol,size,ctype
 0x6d93a0,_PcInputAlternateDeadzonePc,36,
 0x6d93d0,_PcInputSetDeadzonePc,45,
 0x6d9400,_PcInputSetAlternateDeadzonePc,47,
-0x6d9430,_fun_006d9430,95,
+0x6d9430,_NuPadSetMotorsPS,95,
 0x6d9490,_fun_006d9490,26,
 0x6d94b0,_fun_006d94b0,59,
 0x6d94f0,_PcInputClearOtherBankConflictsPc,22,
@@ -13478,12 +13478,12 @@ address,symbol,size,ctype
 0x6d9650,_PcInputResolveAuxiliaryConflictsPc,22,
 0x6d9670,_PcInputBindingButtonNamePc,52,
 0x006d96b0,@NuKeyboardInitializeDefaultRecords_candidate@4,802,void __fastcall (NuKeyboardState_PC *)
-0x6d99e0,_fun_006d99e0,26,
+0x6d99e0,?fun_006d99e0@PC_INPUT_RUNTIME_PC@@QAEHHE@Z,26,
 0x6d9a00,?WriteConfigurationPc@PC_INPUT_RUNTIME_PC@@QAEXPAUPC_INPUT_CONFIG_PC@@HPBD@Z,267,
 0x6d9b10,?SaveConfigurationPc@PC_INPUT_RUNTIME_PC@@QAEXXZ,97,
 0x6d9b80,?BindPreferredConfig@PC_INPUT_RUNTIME_PC@@QAEXHH@Z,70,"void __thiscall(i32,i32)"
 0x6d9bd0,?InitKeyboardProfiles@PC_INPUT_RUNTIME_PC@@QAEXXZ,496,void __thiscall(void)
-0x6d9dc0,_fun_006d9dc0,42,
+0x6d9dc0,?fun_006d9dc0@TEXT_INPUT_MANAGER_PC@@QAEHHHPADHH@Z,42,
 0x6d9df0,_InputEnumDevicesPc@8,1027,"BOOL __stdcall(const PC_DI_INSTANCE_PC*,void*)"
 0x6da200,?RescanDevicesPc@NuKeyboardOwner_PC@@QAEXXZ,338,void __thiscall(void)
 0x6da360,_fun_006da360,106,
@@ -13498,7 +13498,7 @@ address,symbol,size,ctype
 0x6dae50,_NuPadReadOutputsPc,79,"i32 __cdecl(i32,u8*,u8*,u8*,u8*,u8*,u8*,u8*,u8*,u32*,u8*,i32*)"
 0x6daea0,_NuPadAutoConfigurePc,17,void __cdecl(i32)
 0x6daec0,_fun_006daec0,28,
-0x6daee0,_fun_006daee0,7,
+0x6daee0,?fun_006daee0@PC_DEVICE_BACKEND_PC@@QAEPAUGRAPHICS_DISPLAY_MODE_PC@@XZ,7,
 0x6daef0,?SetDeviceWidth@PC_WINDOW_OPTIONS_PC@@QAEXH@Z,13,void __thiscall PC_WINDOW_OPTIONS_PC::SetDeviceWidth(i32)
 0x6daf00,?SetDeviceHeight@PC_WINDOW_OPTIONS_PC@@QAEXH@Z,13,void __thiscall PC_WINDOW_OPTIONS_PC::SetDeviceHeight(i32)
 0x6daf10,?SetWidth@PC_WINDOW_OPTIONS_PC@@QAEXH@Z,13,void __thiscall PC_WINDOW_OPTIONS_PC::SetWidth(i32)
@@ -13565,9 +13565,9 @@ address,symbol,size,ctype
 0x6db990,?Load@PC_WINDOW_OPTIONS_PC@@QAEXXZ,285,void __thiscall PC_WINDOW_OPTIONS_PC::Load(void)
 0x6dbab0,_PcapiNuErrorPc,1,
 0x6dbac0,?PcapiVuVecMake@@YA?AUVuVec@@MMMM@Z,28,
-0x6dbae0,_fun_006dbae0,7,
-0x6dbaf0,_fun_006dbaf0,7,
-0x6dbb00,_fun_006dbb00,13,
+0x6dbae0,?fun_006dbae0@PC_DEVICE_BACKEND_PC@@QAEIXZ,7,
+0x6dbaf0,?fun_006dbaf0@PC_DEVICE_BACKEND_PC@@QAEIXZ,7,
+0x6dbb00,?fun_006dbb00@PC_DEVICE_BACKEND_PC@@QAEXE@Z,13,
 0x6dbb10,_fun_006dbb10,6,
 0x6dbb20,_fun_006dbb20,3,
 0x6dbb30,_NuInitHardwarePc,2930,"i32 __cdecl(VARIPTR*,VARIPTR*,i32,...)"
@@ -13575,11 +13575,11 @@ address,symbol,size,ctype
 0x6dc6c0,_fun_006dc6c0,28,
 0x6dc6e0,_fun_006dc6e0,15,
 0x6dc6f0,_fun_006dc6f0,28,
-0x6dc710,_fun_006dc710,7,
-0x6dc720,_fun_006dc720,7,
-0x6dc730,_fun_006dc730,7,
-0x6dc740,_fun_006dc740,7,
-0x6dc750,_fun_006dc750,13,
+0x6dc710,?fun_006dc710@PC_WINDOW_OPTIONS_PC@@QAEHXZ,7,
+0x6dc720,?fun_006dc720@PC_WINDOW_OPTIONS_PC@@QAEHXZ,7,
+0x6dc730,?fun_006dc730@PC_WINDOW_OPTIONS_PC@@QAEHXZ,7,
+0x6dc740,?fun_006dc740@PC_WINDOW_OPTIONS_PC@@QAEHXZ,7,
+0x6dc750,?fun_006dc750@PC_DEVICE_BACKEND_PC@@QAEHXZ,13,
 0x6dc760,_RegisterWindowCallbackPc,25,void __cdecl(PC_WINDOW_CALLBACK_PC)
 0x6dc780,_fun_006dc780,32,
 0x6dc7a0,_SetAccessibilityPc,230,void __cdecl(u8)
@@ -13730,9 +13730,9 @@ address,symbol,size,ctype
 0x6df010,_fun_006df010,1,
 0x6df020,_D3dApiCallsNuErrorPc,1,
 0x6df030,?D3dApiCallsVuVecMake@@YA?AUVuVec@@MMMM@Z,28,
-0x6df050,_fun_006df050,12,
-0x6df060,_fun_006df060,7,
-0x6df070,_fun_006df070,7,
+0x6df050,?fun_006df050@PC_DEVICE_BACKEND_PC@@QAEHXZ,12,
+0x6df060,?fun_006df060@PC_DEVICE_BACKEND_PC@@QAEIXZ,7,
+0x6df070,?fun_006df070@PC_DEVICE_BACKEND_PC@@QAEIXZ,7,
 0x6df080,_NuKeyboardCreateWindowState,55,"void __cdecl(HWND,HINSTANCE)"
 0x6df0c0,_PcRendererCleanup,20,void __cdecl(void)
 0x6df0e0,_PcRendererShutdown,181,void __cdecl(i32)
@@ -13787,9 +13787,9 @@ address,symbol,size,ctype
 0x6dff30,_fun_006dff30,1,
 0x6dff40,_PCNativeErrorHookPc,1,"void __cdecl (char *)"
 0x6dff50,_fun_006dff50,28,
-0x6dff70,_fun_006dff70,3,
+0x6dff70,?fun_006dff70@PC_NATIVE_DEBUG_STATE_PC@@QAEPAU1@XZ,3,
 0x6dff80,?Shutdown@PC_NATIVE_DEBUG_STATE_PC@@QAEXXZ,31,void __thiscall(void)
-0x6dffa0,_fun_006dffa0,10,
+0x6dffa0,?fun_006dffa0@PC_NATIVE_DEBUG_STATE_PC@@QAEXE@Z,10,
 0x6dffb0,_fun_006dffb0,1,
 0x6dffc0,?InitializeHeader@PC_NATIVE_DEBUG_STATE_PC@@QAEXXZ,104,void __thiscall(void)
 0x006e0030,_PCNativeDebugPrint,72,"void __cdecl (PC_NATIVE_DEBUG_STATE_PC *, const char *, ...)"
@@ -13808,18 +13808,18 @@ address,symbol,size,ctype
 0x6e1810,_fun_006e1810,15,
 0x6e1820,_D3dCoreNuErrorPc,1,
 0x6e1830,?D3dCoreVuVecMake@@YA?AUVuVec@@MMMM@Z,28,
-0x6e1850,_fun_006e1850,7,
-0x6e1860,_fun_006e1860,7,
-0x6e1870,_fun_006e1870,7,
-0x6e1880,_fun_006e1880,7,
-0x6e1890,_fun_006e1890,7,
-0x6e18a0,_fun_006e18a0,7,
-0x6e18b0,_fun_006e18b0,7,
-0x6e18c0,_fun_006e18c0,7,
-0x6e18d0,_fun_006e18d0,9,
-0x6e18e0,_fun_006e18e0,13,
-0x6e18f0,_fun_006e18f0,15,
-0x6e1900,_fun_006e1900,4,
+0x6e1850,?GetDeviceWidth@PC_WINDOW_OPTIONS_PC@@QAEHXZ,7,
+0x6e1860,?GetDeviceHeight@PC_WINDOW_OPTIONS_PC@@QAEHXZ,7,
+0x6e1870,?GetRefresh@PC_WINDOW_OPTIONS_PC@@QAEHXZ,7,
+0x6e1880,?GetMultisample@PC_WINDOW_OPTIONS_PC@@QAEHXZ,7,
+0x6e1890,?GetBloomMethod@PC_WINDOW_OPTIONS_PC@@QAEHXZ,7,
+0x6e18a0,?GetDesiredBloomMethod@PC_WINDOW_OPTIONS_PC@@QAEHXZ,7,
+0x6e18b0,?GetDesiredShadowMethod@PC_WINDOW_OPTIONS_PC@@QAEHXZ,7,
+0x6e18c0,?GetSpeedBlurSupported@PC_WINDOW_OPTIONS_PC@@QAEEXZ,7,
+0x6e18d0,?fun_006e18d0@PC_DEVICE_BACKEND_PC@@QAEHXZ,9,
+0x6e18e0,?fun_006e18e0@PC_DEVICE_BACKEND_PC@@QAEXE@Z,13,
+0x6e18f0,?fun_006e18f0@PC_DEVICE_BACKEND_PC@@QAEXG@Z,15,
+0x6e1900,?fun_006e1900@PC_DEVICE_BACKEND_PC@@QAEHXZ,4,
 0x6e1910,_fun_006e1910,6,
 0x6e1920,_fun_006e1920,1,
 0x6e1930,??0PC_DEVICE_BACKEND_PC@@QAE@XZ,472,PC_DEVICE_BACKEND_PC::PC_DEVICE_BACKEND_PC(void)
@@ -13833,17 +13833,17 @@ address,symbol,size,ctype
 0x6e2080,?PreviousRefresh@PC_DEVICE_BACKEND_PC@@QAEXXZ,104,void __thiscall PC_DEVICE_BACKEND_PC::PreviousRefresh(void)
 0x6e20f0,?ResetRequestedMode@PC_DEVICE_BACKEND_PC@@QAEXXZ,53,void __thiscall PC_DEVICE_BACKEND_PC::ResetRequestedMode(void)
 0x6e2130,?GetMultisampleType@PC_DEVICE_BACKEND_PC@@QAEIXZ,14,u32 __thiscall PC_DEVICE_BACKEND_PC::GetMultisampleType(void)
-0x6e2140,_fun_006e2140,31,
+0x6e2140,?fun_006e2140@PC_DEVICE_BACKEND_PC@@QAEGXZ,31,
 0x6e2160,_fun_006e2160,1,
 0x6e2170,?ReleaseDefaultPoolResources@PC_DEVICE_BACKEND_PC@@QAEXXZ,208,void __thiscall PC_DEVICE_BACKEND_PC::ReleaseDefaultPoolResources(void)
 0x6e2240,?EndScene@PC_DEVICE_BACKEND_PC@@QAEJXZ,15,HRESULT __thiscall PC_DEVICE_BACKEND_PC::EndScene(void)
 0x6e2250,?PostEffectBarrierPc@PC_DEVICE_BACKEND_PC@@QAEXXZ,1,
 0x6e2260,?SetDepthStencilSurface@PC_DEVICE_BACKEND_PC@@QAEXPAUPC_EFFECT_SURFACE_PC@@@Z,64,
 0x6e22a0,?ClearDepthStencilSurface@PC_DEVICE_BACKEND_PC@@QAEXXZ,17,
-0x6e22c0,_fun_006e22c0,22,
-0x6e22e0,_fun_006e22e0,62,
+0x6e22c0,?fun_006e22c0@PC_DEVICE_BACKEND_PC@@QAEXXZ,22,
+0x6e22e0,?fun_006e22e0@PC_DEVICE_BACKEND_PC@@QAEJPAUPC_EFFECT_SURFACE_PC@@H@Z,62,
 0x6e2320,?CopySurfaceTargetPc@PC_DEVICE_BACKEND_PC@@QAEJPAUPC_EFFECT_SURFACE_PC@@HH@Z,43,"HRESULT __thiscall PC_DEVICE_BACKEND_PC::CopySurfaceTargetPc(PC_EFFECT_SURFACE_PC*,i32,i32)"
-0x6e2350,_fun_006e2350,49,
+0x6e2350,?fun_006e2350@PC_DEVICE_BACKEND_PC@@QAEXXZ,49,
 0x6e2390,_fun_006e2390,71,
 0x6e23e0,?DrawPostEffectQuadPc@PC_DEVICE_BACKEND_PC@@QAEXXZ,49,
 0x6e2420,?DrawPostEffectIndexedPc@PC_DEVICE_BACKEND_PC@@QAEXXZ,77,
@@ -13855,11 +13855,11 @@ address,symbol,size,ctype
 0x006e2810,?SetColorWriteMaskPc@PC_DEVICE_BACKEND_PC@@QAEXEEH@Z,107,"void __thiscall(u8,u8,i32)"
 0x6e2880,?SetRenderTarget@PC_DEVICE_BACKEND_PC@@QAEXHPAUPC_TEXTURE_RESOURCE_PC@@@Z,87,"void __thiscall PC_DEVICE_BACKEND_PC::SetRenderTarget(i32,PC_TEXTURE_RESOURCE_PC*)"
 0x6e28e0,?CaptureScreenshotPc@PC_DEVICE_BACKEND_PC@@QAEIIIPAPAX@Z,520,
-0x6e2af0,_fun_006e2af0,79,
+0x6e2af0,?fun_006e2af0@PC_DEVICE_BACKEND_PC@@QAEXXZ,79,
 0x6e2b40,?HasRequestedModeChangedPc@PC_DEVICE_BACKEND_PC@@QAEEXZ,90,
 0x6e2ba0,?InitializeFactory@PC_DEVICE_BACKEND_PC@@QAEXXZ,187,void __thiscall PC_DEVICE_BACKEND_PC::InitializeFactory(void)
 0x6e2c60,?Shutdown@PC_DEVICE_BACKEND_PC@@QAEXXZ,123,void __thiscall PC_DEVICE_BACKEND_PC::Shutdown(void)
-0x6e2ce0,_fun_006e2ce0,49,
+0x6e2ce0,?fun_006e2ce0@PC_DEVICE_BACKEND_PC@@QAEXIII@Z,49,
 0x6e2d20,?BuildDefaultPoolResources@PC_DEVICE_BACKEND_PC@@QAEXXZ,1640,void __thiscall PC_DEVICE_BACKEND_PC::BuildDefaultPoolResources(void)
 0x6e3390,?RestoreDefaultPoolResources@PC_DEVICE_BACKEND_PC@@QAEXXZ,5,
 0x6e33a0,?ConfigureCurrentTargets@PC_DEVICE_BACKEND_PC@@QAEXXZ,293,void __thiscall PC_DEVICE_BACKEND_PC::ConfigureCurrentTargets(void)
@@ -15499,15 +15499,15 @@ address,symbol,size,ctype
 0x740f10,??0VirtualStackAllocator@@QAE@H@Z,38,
 0x740f40,??1VirtualStackAllocator@@QAE@XZ,20,
 0x740f60,?setExternalMemoryPool@VirtualStackAllocator@@QAEXPAXI@Z,50,
-0x740fa0,_fun_00740fa0,61,
+0x740fa0,?fun_00740fa0@VirtualStackAllocator@@QAEXAAU1@I@Z,61,
 0x740fe0,??0VirtualStackAllocator@@QAE@PAXI@Z,27,
 0x741000,??0VirtualStackAllocator@@QAE@AAU0@I@Z,87,
-0x741060,_fun_00741060,36,
+0x741060,??0PC_SHADER_MATERIAL_FILTER_VIEW@@QAE@PBUPC_SHADER_FILTER_DESC_VIEW@@PBUPC_SHADER_FILTER_MATERIAL_VIEW@@HH@Z,36,
 0x741090,_fun_00741090,7,
 0x7410a0,_fun_007410a0,10,
-0x7410b0,_fun_007410b0,39,
-0x7410e0,_fun_007410e0,18,
-0x741100,_fun_00741100,7,
+0x7410b0,??0ShaderObjectKey@@QAE@ABUPC_SHADER_MATERIAL_FILTER_VIEW@@_N@Z,39,
+0x7410e0,??8ShaderObjectKey@@QBE_NABU0@@Z,18,
+0x741100,?fun_00741100@VirtualStackAllocator@@QBEHXZ,7,
 0x741110,_fun_00741110,8,
 0x741120,_fun_00741120,5,
 0x741130,_fun_00741130,5,
@@ -15527,14 +15527,14 @@ address,symbol,size,ctype
 0x741220,_fun_00741220,5,
 0x741230,_fun_00741230,4,
 0x741240,_fun_00741240,4,
-0x741250,_fun_00741250,8,
-0x741260,_fun_00741260,8,
-0x741270,_fun_00741270,32,
+0x741250,?fun_00741250@NuShaderObject@@QAEXXZ,8,
+0x741260,?fun_00741260@NuShaderObject@@QBE_NXZ,8,
+0x741270,?fun_00741270@NuShaderObject@@QAEXXZ,32,
 0x741290,_fun_00741290,1,
-0x7412a0,_fun_007412a0,5,
-0x7412b0,_fun_007412b0,5,
-0x7412c0,_fun_007412c0,4,
-0x7412d0,_fun_007412d0,4,
+0x7412a0,?fun_007412a0@NuShaderObject@@QAEXXZ,5,
+0x7412b0,?fun_007412b0@NuShaderObject@@QAEXXZ,5,
+0x7412c0,?fun_007412c0@NuShaderObject@@QBEHXZ,4,
+0x7412d0,?fun_007412d0@NuShaderObject@@QAEPAIXZ,4,
 0x7412e0,_NuShaderManagerInit,124,"void __cdecl(VARIPTR *,VARIPTR)"
 0x741360,_fun_00741360,42,
 0x741390,_NuShaderManagerSetfv,22,"void __cdecl(i32,const f32*)"
@@ -15570,7 +15570,7 @@ address,symbol,size,ctype
 0x741840,_NuShaderManagerRetrieveShaderVariant,31,"PC_SHADER_OBJECT_FULL_VIEW* __cdecl(const PC_SHADER_FILTER_DESC_VIEW*,const PC_SHADER_FILTER_MATERIAL_VIEW*,i32)"
 0x741860,_fun_00741860,6,
 0x741870,_fun_00741870,41,
-0x7418a0,_fun_007418a0,3,
+0x7418a0,??0PC_SHADER_MATERIAL_FILTER_VIEW@@QAE@XZ,3,
 0x7418b0,_fun_007418b0,22,
 0x7418d0,_fun_007418d0,15,
 0x7418e0,_fun_007418e0,15,
@@ -15582,10 +15582,10 @@ address,symbol,size,ctype
 0x742040,?SetScalarValues@PC_SHADER_PARAMETER_LOCAL_PC@@QAEXHHPBM@Z,55,"void __thiscall PC_SHADER_PARAMETER_LOCAL_PC::SetScalarValues(i32,i32,const f32*)"
 0x742080,?SetVectorValues@PC_SHADER_PARAMETER_LOCAL_PC@@QAEXHHPBM@Z,55,"void __thiscall PC_SHADER_PARAMETER_LOCAL_PC::SetVectorValues(i32,i32,const f32*)"
 0x7420c0,?SetMatrixValues@PC_SHADER_PARAMETER_LOCAL_PC@@QAEXHHPBM@Z,177,"void __thiscall PC_SHADER_PARAMETER_LOCAL_PC::SetMatrixValues(i32,i32,const f32*)"
-0x742180,_fun_00742180,4,
-0x742190,_fun_00742190,4,
-0x7421a0,_fun_007421a0,10,
-0x7421b0,_fun_007421b0,3,
+0x742180,?fun_00742180@PC_SHADER_PARAMETER_LOCAL_PC@@QAEHXZ,4,
+0x742190,?fun_00742190@PC_SHADER_PARAMETER_LOCAL_PC@@QAEPAU1@XZ,4,
+0x7421a0,?fun_007421a0@PC_SHADER_PARAMETER_LOCAL_PC@@QAEXPAU1@@Z,10,
+0x7421b0,?fun_007421b0@PC_SHADER_PARAMETER_LOCAL_PC@@QAEPAU1@XZ,3,
 0x7421c0,_fun_007421c0,6,
 0x007421d0,?PCShaderUnpackColourPc@@YAPAMPAMH@Z,91,
 0x742230,_fun_00742230,5,
@@ -15601,10 +15601,10 @@ address,symbol,size,ctype
 0x007423f0,?SetValues@PC_SHADER_PARAMETER_LOCAL_PC@@QAEXHHPBM@Z,60,"void __thiscall PC_SHADER_PARAMETER_LOCAL_PC::SetValues(i32,i32,const f32*)"
 0x00742430,?SetVector@PC_SHADER_PARAMETER_LOCAL_PC@@QAEXPBM@Z,48,void __thiscall PC_SHADER_PARAMETER_LOCAL_PC::SetVector(const f32*)
 0x00742460,?SetVectorElement@PC_SHADER_PARAMETER_LOCAL_PC@@QAEXHPBM@Z,57,"void __thiscall PC_SHADER_PARAMETER_LOCAL_PC::SetVectorElement(i32,const f32*)"
-0x7424a0,_fun_007424a0,20,
+0x7424a0,?fun_007424a0@PC_SHADER_PARAMETER_LOCAL_PC@@QAEXHPBM@Z,20,
 0x7424c0,_PCShaderProbeHLSLConstants,565,"void __cdecl(PC_SHADER_OBJECT_FULL_VIEW*,ID3DXConstantTable*,ID3DXConstantTable*)"
 0x742700,_NuShaderObjectDestroy,22,void __cdecl NuShaderObjectDestroy(PC_SHADER_OBJECT_FULL_VIEW *)
-0x742720,_fun_00742720,88,
+0x742720,?fun_00742720@PC_SHADER_PARAMETER_LOCAL_PC@@QAEXHPBM@Z,88,
 0x00742780,?SetFloat2@PC_SHADER_PARAMETER_LOCAL_PC@@QAEXPBM@Z,48,void __thiscall PC_SHADER_PARAMETER_LOCAL_PC::SetFloat2(const f32*)
 0x007427b0,?SetFloat3@PC_SHADER_PARAMETER_LOCAL_PC@@QAEXPBM@Z,48,void __thiscall PC_SHADER_PARAMETER_LOCAL_PC::SetFloat3(const f32*)
 0x007427e0,_PCShaderSetMaterialParametersPc,4472,"void __cdecl(PC_SHADER_OBJECT_FULL_VIEW *,NUMTL *)"
@@ -15618,7 +15618,7 @@ address,symbol,size,ctype
 0x7439f0,_NuShaderObjectBaseSetWaterSpeed,17,void __cdecl(f32)
 0x743a10,?NushaderobjectbaseVuVecMake@@YA?AUVuVec@@MMMM@Z,28,
 0x00743a30,_NuShaderObjectBaseUpdateWaterTable,601,"void __cdecl(PC_SHADER_OBJECT_FULL_VIEW*,PC_SHADER_WATER_MATERIAL_VIEW*)"
-0x743c90,_fun_00743c90,9,
+0x743c90,?fun_00743c90@PC_SHADER_PARAMETER_LOCAL_PC@@QAEHXZ,9,
 0x743ca0,?SetTransposedMatrixValues@PC_SHADER_PARAMETER_LOCAL_PC@@QAEXHHPBM@Z,84,"void __thiscall PC_SHADER_PARAMETER_LOCAL_PC::SetTransposedMatrixValues(i32,i32,const f32*)"
 0x743d00,_PCShaderObjectCreateHLSLPc,46,void __cdecl PCShaderObjectCreateHLSLPc(PC_SHADER_OBJECT_FULL_VIEW *)
 0x743d30,_PCShaderObjectDestroyHLSLPc,5,void __cdecl PCShaderObjectDestroyHLSLPc(PC_SHADER_OBJECT_FULL_VIEW *)
@@ -15630,24 +15630,24 @@ address,symbol,size,ctype
 0x743dc0,_fun_00743dc0,21,
 0x743de0,_fun_00743de0,1,
 0x743df0,_fun_00743df0,28,
-0x743e10,_fun_00743e10,60,
+0x743e10,?fun_00743e10@PC_SHADER_PARAMETER_LOCAL_PC@@QAEXHHPBM@Z,60,
 0x743e50,_PCShaderObjectInitHLSLPc,612,"void __cdecl(PC_SHADER_OBJECT_FULL_VIEW*,const u32*,i32,const char*,i32,const char*,i32,i32)"
 0x7440c0,_PCShaderNativeUnInit,72,void __cdecl(PC_SHADER_OBJECT_FULL_VIEW*)
 0x744110,_NuShaderObjectSetElementsfv,128,"void __cdecl(PC_SHADER_OBJECT_FULL_VIEW*,i32,i32,i32,const f32*)"
 0x744190,_NuShaderObjectSetElementsfv_transpose,128,"void __cdecl(PC_SHADER_OBJECT_FULL_VIEW*,i32,i32,i32,const f32*)"
 0x744210,_NuShaderUniformGetByString,154,ShaderUniformRecordPc *__cdecl NuShaderUniformGetByString(const char *name)
 0x7442b0,?ShaderSemanticsVuVecMake@@YA?AUVuVec@@MMMM@Z,28,
-0x7442d0,_fun_007442d0,15,
+0x7442d0,?fun_007442d0@PC_SHADER_MATERIAL_FILTER_VIEW@@QBEHXZ,15,
 0x7442e0,?HasVertexSkin@PC_SHADER_MATERIAL_FILTER_VIEW@@QBE_NXZ,31,bool __thiscall PC_SHADER_MATERIAL_FILTER_VIEW::HasVertexSkin() const
 0x744300,?HasVertexSkinAlt@PC_SHADER_MATERIAL_FILTER_VIEW@@QBE_NXZ,31,bool __thiscall PC_SHADER_MATERIAL_FILTER_VIEW::HasVertexSkinAlt() const
-0x744320,_fun_00744320,15,
-0x744330,_fun_00744330,13,
-0x744340,_fun_00744340,16,
-0x744350,_fun_00744350,27,
-0x744370,_fun_00744370,9,
-0x744380,_fun_00744380,15,
-0x744390,_fun_00744390,21,
-0x7443b0,_fun_007443b0,22,
+0x744320,?fun_00744320@PC_SHADER_MATERIAL_FILTER_VIEW@@QBEHXZ,15,
+0x744330,?fun_00744330@PC_SHADER_MATERIAL_FILTER_VIEW@@QBEHXZ,13,
+0x744340,?fun_00744340@PC_SHADER_MATERIAL_FILTER_VIEW@@QBE_NXZ,16,
+0x744350,?fun_00744350@PC_SHADER_MATERIAL_FILTER_VIEW@@QBEHH@Z,27,
+0x744370,?fun_00744370@PC_SHADER_MATERIAL_FILTER_VIEW@@QBEHXZ,9,
+0x744380,?fun_00744380@PC_SHADER_MATERIAL_FILTER_VIEW@@QBEHXZ,15,
+0x744390,?fun_00744390@PC_SHADER_MATERIAL_FILTER_VIEW@@QBEHXZ,21,
+0x7443b0,?fun_007443b0@PC_SHADER_MATERIAL_FILTER_VIEW@@QBEHXZ,22,
 0x7443d0,?Initialize@PC_SHADER_MATERIAL_FILTER_VIEW@@QAEXPBUPC_SHADER_FILTER_DESC_VIEW@@PBUPC_SHADER_FILTER_MATERIAL_VIEW@@HH@Z,272,"void __thiscall PC_SHADER_MATERIAL_FILTER_VIEW::Initialize(const PC_SHADER_FILTER_DESC_VIEW*,const PC_SHADER_FILTER_MATERIAL_VIEW*,i32,i32)"
 0x7444e0,?UnfilteredHasLayer@PC_SHADER_MATERIAL_FILTER_VIEW@@QBE_NH@Z,128,bool __thiscall PC_SHADER_MATERIAL_FILTER_VIEW::UnfilteredHasLayer(i32) const
 0x744560,?HasDiffuse@PC_SHADER_MATERIAL_FILTER_VIEW@@QBE_NH@Z,120,bool __thiscall PC_SHADER_MATERIAL_FILTER_VIEW::HasDiffuse(i32) const
@@ -15695,17 +15695,17 @@ address,symbol,size,ctype
 0x745130,?GetForceMode@ShaderCompilerDictionaryPc@@QBE_NXZ,7,
 0x745140,?GetProfile@ShaderCompilerDictionaryPc@@QBEHXZ,7,
 0x745150,_fun_00745150,53,
-0x745190,_fun_00745190,33,
-0x7451c0,_fun_007451c0,13,
+0x745190,??0PC_SHADER_MATERIAL_FILTER_VIEW@@QAE@PBUPC_SHADER_FILTER_DESC_VIEW@@HH@Z,33,
+0x7451c0,?fun_007451c0@ShaderCompilerDictionaryPc@@QAEX_N@Z,13,
 0x7451d0,??_EShaderBuilderGen@@UAEPAXI@Z,,COFF weak alias to same scalar deleting destructor; zero new byte credit
 0x7451d0,??_GShaderBuilderGen@@UAEPAXI@Z,74,
 0x745220,?SetIncludeDirectories@ShaderBuilderGen@@UAEXPBD@Z,31,void __thiscall ShaderBuilderGen::SetIncludeDirectories(const char*)
 0x745240,?SetSaveDirectory@ShaderBuilderGen@@UAEXPBD@Z,31,void __thiscall ShaderBuilderGen::SetSaveDirectory(const char*)
 0x745260,?SetProfile@ShaderBuilderGen@@UAEXHHH@Z,11,"void __thiscall ShaderBuilderGen::SetProfile(i32,i32,i32)"
-0x745270,_fun_00745270,11,
+0x745270,?fun_00745270@ShaderBuilderGen@@QAEXPBDH@Z,11,
 0x745280,?SetForceMode@ShaderBuilderGen@@UAEX_N@Z,13,void __thiscall ShaderBuilderGen::SetForceMode(bool)
-0x745290,_fun_00745290,7,
-0x7452a0,_fun_007452a0,7,
+0x745290,?fun_00745290@ShaderBuilderGen@@QAE_NXZ,7,
+0x7452a0,?fun_007452a0@ShaderBuilderGen@@QAEHXZ,7,
 0x7452b0,?Prepare@ShaderBuilderGen@@UAEXPBUPC_SHADER_FILTER_DESC_VIEW@@PAUShaderCompilerDictionaryPc@@@Z,52,"void __thiscall ShaderBuilderGen::Prepare(const PC_SHADER_FILTER_DESC_VIEW *, ShaderCompilerDictionaryPc *)"
 0x7452f0,??0HLSLShaderBuilder@@QAE@AAUVirtualStackAllocator@@@Z,27,
 0x745310,??1HLSLShaderBuilder@@UAE@XZ,53,
@@ -15728,8 +15728,8 @@ address,symbol,size,ctype
 0x745440,_fun_00745440,16,
 0x745450,??0NuShaderObject@@QAE@XZ,16,void __thiscall NuShaderObject::NuShaderObject(void)
 0x745460,??1NuShaderObject@@QAE@XZ,8,void __thiscall NuShaderObject::~NuShaderObject(void)
-0x745470,_fun_00745470,47,
-0x7454a0,_fun_007454a0,3,
+0x745470,?fun_00745470@NuShaderObject@@QAEXPBIHPBDH1HH@Z,47,
+0x7454a0,?fun_007454a0@NuShaderObject@@QAEHXZ,3,
 0x7454b0,_fun_007454b0,6,
 0x7454c0,?AdaptDescriptor@ShaderManagerHLSL@@UAEXPBUPC_SHADER_FILTER_DESC_VIEW@@PBUPC_SHADER_FILTER_MATERIAL_VIEW@@@Z,835,"void __thiscall ShaderManagerHLSL::AdaptDescriptor(const PC_SHADER_FILTER_DESC_VIEW *, const PC_SHADER_FILTER_MATERIAL_VIEW *)"
 0x745810,?CreateShader@ShaderManagerHLSL@@UAE_NPBUPC_SHADER_MATERIAL_FILTER_VIEW@@_NPAVNuShaderObject@@H@Z,265,
@@ -15759,32 +15759,32 @@ address,symbol,size,ctype
 0x746400,_fun_00746400,17,
 0x746420,_fun_00746420,12,
 0x746430,_fun_00746430,20,
-0x746450,_fun_00746450,51,
-0x746490,_fun_00746490,65,
+0x746450,?fun_00746450@ShaderCompilerBufferAllocatorPc@@QAEXD@Z,51,
+0x746490,?fun_00746490@ShaderCompilerBufferAllocatorPc@@QAEPAEXZ,65,
 0x7464e0,??6ShaderCompilerBufferAllocatorPc@@QAEAAU0@PBD@Z,19,
-0x746500,_fun_00746500,19,
+0x746500,??6ShaderCompilerBufferAllocatorPc@@QAEAAU0@H@Z,19,
 0x746520,_fun_00746520,11,
 0x746530,_fun_00746530,22,
 0x746550,_fun_00746550,11,
 0x746560,_fun_00746560,11,
 0x746570,?ShaderCloneArenaStringPc@@YAPADPBDPAUVirtualStackAllocator@@@Z,60,
-0x7465b0,_fun_007465b0,25,
+0x7465b0,??0ShaderMacroDefinitionPc@@QAE@PBD0E@Z,25,
 0x7465d0,??0ShaderSourceNodePc@@QAE@IHHPBDH0HH@Z,67,
-0x746620,_fun_00746620,11,
-0x746630,_fun_00746630,11,
+0x746620,?fun_00746620@ShaderSourceNodePc@@QAEHXZ,11,
+0x746630,?fun_00746630@ShaderSourceNodePc@@QAEPBDXZ,11,
 0x746640,?SemanticName@ShaderSourceNodePc@@QAEPBDXZ,264,
 0x746750,??0ShaderRegisterBlockPc@@QAE@XZ,13,
-0x746760,_fun_00746760,40,
+0x746760,?fun_00746760@ShaderRegisterBlockPc@@QAEXPBDH@Z,40,
 0x746790,??1ShaderCompilerDictionaryPc@@QAE@XZ,37,
 0x7467c0,?SetProfile@ShaderCompilerDictionaryPc@@QAEXHHH@Z,80,
 0x746810,?AddRegisterBlock@ShaderCompilerDictionaryPc@@QAEXPBDH@Z,63,
 0x746850,?FindRegisterBlock@ShaderCompilerDictionaryPc@@QAEHPBD@Z,102,
 0x7468c0,?BindOutputBuffer@ShaderCompilerDictionaryPc@@QAEXPAUShaderCompilerBufferAllocatorPc@@@Z,126,
-0x746940,_fun_00746940,107,
+0x746940,?fun_00746940@ShaderCompilerDictionaryPc@@QAEXPAUShaderConditionNodePc@@PAD@Z,107,
 0x7469b0,?IsNumericToken@ShaderCompilerDictionaryPc@@QAE_NPBD@Z,68,
 0x746a00,?ShaderRegisterComponentsPc@@YAPBDHH@Z,172,
 0x746ab0,?RenderASTName@ShaderCompilerDictionaryPc@@QAEPBDPAUShaderSourceNodePc@@@Z,307,
-0x746bf0,_fun_00746bf0,108,
+0x746bf0,?fun_00746bf0@ShaderCompilerDictionaryPc@@QAEXPBD@Z,108,
 0x746c60,?FindDefinition@ShaderCompilerDictionaryPc@@QAEPAUShaderMacroDefinitionPc@@PBD@Z,99,
 0x746cd0,?AddASTDefinition@ShaderCompilerDictionaryPc@@QAEXPAUShaderSourceNodePc@@@Z,130,
 0x746d60,?FindASTExact@ShaderCompilerDictionaryPc@@QAEPAUShaderSourceNodePc@@PBDI@Z,99,
@@ -15880,26 +15880,26 @@ address,symbol,size,ctype
 0x74afe0,_ShaderDeclarationFlagsPc,49,
 0x74b020,?IsSpecialToken@ShaderLexicalTokenPredicatePc@@QAEHPBD@Z,50,
 0x74b060,_fun_0074b060,18,
-0x74b080,_fun_0074b080,20,
-0x74b0a0,_fun_0074b0a0,25,
+0x74b080,?fun_0074b080@ShaderLexicalSlicePc@@QAE_NPBD@Z,20,
+0x74b0a0,??0ShaderConditionNodePc@@QAE@PBDPAU0@1@Z,25,
 0x74b0c0,?AppendOperand@ShaderConditionNodePc@@QAEPAU1@PAU1@@Z,35,ShaderConditionNodePc *__thiscall ShaderConditionNodePc::AppendOperand(ShaderConditionNodePc *)
-0x74b0f0,_fun_0074b0f0,18,
-0x74b110,_fun_0074b110,25,
-0x74b130,_fun_0074b130,32,
-0x74b150,_fun_0074b150,25,
-0x74b170,_fun_0074b170,74,
-0x74b1c0,_fun_0074b1c0,39,
-0x74b1f0,_fun_0074b1f0,25,
-0x74b210,_fun_0074b210,25,
-0x74b230,_fun_0074b230,32,
-0x74b250,_fun_0074b250,30,
+0x74b0f0,??0ShaderParserNodePc@@QAE@H@Z,18,
+0x74b110,??0ShaderParserBranchNodePc@@QAE@PAUShaderConditionNodePc@@@Z,25,
+0x74b130,??0ShaderParserMacroNodePc@@QAE@PAD0@Z,32,
+0x74b150,??0ShaderParserUndefNodePc@@QAE@PAD@Z,25,
+0x74b170,??0ShaderParserDeclarationPc@@QAE@IHHPADH0HH@Z,74,
+0x74b1c0,??0ShaderParserReferencePc@@QAE@IHPAD@Z,39,
+0x74b1f0,??0ShaderParserEmitPc@@QAE@I@Z,25,
+0x74b210,??0ShaderParserTogglePc@@QAE@E@Z,25,
+0x74b230,??0ShaderParserTextNodePc@@QAE@PADH@Z,32,
+0x74b250,??0ShaderParserIncludePc@@AAE@PBDH@Z,30,
 0x74b270,?SetIncludeDirectories@ShaderCompilerParserPc@@QAEXPBD@Z,23,void __thiscall (const char *)
 0x74b290,_fun_0074b290,84,
 0x74b2f0,_fun_0074b2f0,55,
-0x74b330,_fun_0074b330,25,
+0x74b330,?fun_0074b330@ShaderCompilerParserPc@@QAEXABUShaderLexicalSlicePc@@@Z,25,
 0x74b350,?ShaderConditionPrecedencePc@@YAHPBD@Z,249,
 0x74b450,_ShaderDeclarationSemanticPc,607,
-0x74b6b0,_fun_0074b6b0,50,
+0x74b6b0,?fun_0074b6b0@ShaderCompilerParserPc@@QAEXPAUShaderParserNodePc@@@Z,50,
 0x74b6f0,?NextIncludeDirectory@ShaderCompilerParserPc@@QAE_NPBDPAHPAD@Z,95,"bool __thiscall (const char *, i32 *, char *)"
 0x74b750,_fun_0074b750,38,
 0x0074b780,?capacity@?$vector@PAUShaderParserIncludePc@@V?$allocator@PAUShaderParserIncludePc@@@std@@@std@@QBEIXZ,19,
@@ -15907,9 +15907,9 @@ address,symbol,size,ctype
 0x0074b7c0,??0?$allocator@PAUShaderParserIncludePc@@@std@@QAE@XZ,3,
 0x0074b7d0,??D?$_Vector_const_iterator@PAUShaderParserIncludePc@@V?$allocator@PAUShaderParserIncludePc@@@std@@@std@@QBEABQAUShaderParserIncludePc@@XZ,37,
 0x0074b800,??0?$allocator@PAUShaderParserIncludePc@@@std@@QAE@ABV01@@Z,5,
-0x74b810,_fun_0074b810,14,
+0x74b810,?deallocate@?$allocator@PAUShaderParserIncludePc@@@std@@QAEXPAPAUShaderParserIncludePc@@I@Z,14,
 0x0074b820,??E?$_Vector_const_iterator@PAUShaderParserIncludePc@@V?$allocator@PAUShaderParserIncludePc@@@std@@@std@@QAEAAV01@XZ,36,
-0x74b850,_fun_0074b850,9,
+0x74b850,??0?$_Ranit@PAUShaderParserIncludePc@@HPBQAU1@ABQAU1@@std@@QAE@XZ,9,
 0x0074b860,?max_size@?$allocator@PAUShaderParserIncludePc@@@std@@QBEIXZ,6,
 0x0074b870,??G?$_Vector_const_iterator@PAUShaderParserIncludePc@@V?$allocator@PAUShaderParserIncludePc@@@std@@@std@@QBEHABV01@@Z,37,
 0x0074b8a0,??8?$_Vector_const_iterator@PAUShaderParserIncludePc@@V?$allocator@PAUShaderParserIncludePc@@@std@@@std@@QBE_NABV01@@Z,41,
@@ -15921,7 +15921,7 @@ address,symbol,size,ctype
 0x0074b9b0,??$_Copy_opt@PAPAUShaderParserIncludePc@@PAPAU1@Urandom_access_iterator_tag@std@@@std@@YAPAPAUShaderParserIncludePc@@PAPAU1@00Urandom_access_iterator_tag@0@U_Scalar_ptr_iterator_tag@0@U_Range_checked_iterator_tag@0@@Z,50,
 0x74b9f0,_fun_0074b9f0,1,
 0x0074ba00,??$_Fill@PAPAUShaderParserIncludePc@@PAU1@@std@@YAXPAPAUShaderParserIncludePc@@0ABQAU1@@Z,30,
-0x74ba20,_fun_0074ba20,7,
+0x74ba20,??$_Move_cat@PAPAUShaderParserIncludePc@@@std@@YA?AU_Undefined_move_tag@0@ABQAPAUShaderParserIncludePc@@@Z,7,
 0x0074ba30,??$_Checked_base@PAPAUShaderParserIncludePc@@@std@@YAPAPAUShaderParserIncludePc@@AAPAPAU1@U_Unchanged_checked_iterator_base_type_tag@0@@Z,7,
 0x0074ba40,??$_Copy_backward_opt@PAPAUShaderParserIncludePc@@PAPAU1@Urandom_access_iterator_tag@std@@@std@@YAPAPAUShaderParserIncludePc@@PAPAU1@00Urandom_access_iterator_tag@0@U_Scalar_ptr_iterator_tag@0@U_Range_checked_iterator_tag@0@@Z,47,
 0x0074ba70,??$_Iter_cat@PAPAUShaderParserIncludePc@@@std@@YA?AUrandom_access_iterator_tag@0@ABQAPAUShaderParserIncludePc@@@Z,5,
@@ -15935,7 +15935,7 @@ address,symbol,size,ctype
 0x74bd00,_fun_0074bd00,37,
 0x0074bd30,??_GShaderParserIncludePc@@AAEPAXI@Z,54,
 0x0074bd70,??D?$_Vector_iterator@PAUShaderParserIncludePc@@V?$allocator@PAUShaderParserIncludePc@@@std@@@std@@QBEAAPAUShaderParserIncludePc@@XZ,37,
-0x74bda0,_fun_0074bda0,5,
+0x74bda0,??0?$_Vector_val@PAUShaderParserIncludePc@@V?$allocator@PAUShaderParserIncludePc@@@std@@@std@@IAE@V?$allocator@PAUShaderParserIncludePc@@@1@@Z,5,
 0x0074bdb0,??E?$_Vector_iterator@PAUShaderParserIncludePc@@V?$allocator@PAUShaderParserIncludePc@@@std@@@std@@QAEAAV01@XZ,36,
 0x0074bde0,?max_size@?$vector@PAUShaderParserIncludePc@@V?$allocator@PAUShaderParserIncludePc@@@std@@@std@@QBEIXZ,6,
 0x0074bdf0,?allocate@?$allocator@PAUShaderParserIncludePc@@@std@@QAEPAPAUShaderParserIncludePc@@I@Z,18,
@@ -20884,6 +20884,7 @@ address,symbol,size,ctype
 0x75e928,__real@c0a66666,4,const f32
 0x75e92c,__real@c23c0000,4,const f32
 0x75e930,__real@c04c800000000000,8,const f64
+0x75e93c,??_C@_09PCEBMDGE@?4?2numem?4c?$AA@,10,const char[10]
 0x0075e948,??_C@_02LHFGBEJL@PC?$AA@,3,const char[3]
 0x75e94c,??_C@_0N@CKCBCEKP@ioprp300?4img?$AA@,13,char[13]
 0x75e960,??_C@_0BI@OCLDKHMA@Waiting?5for?5restart?4?4?4?6?$AA@,24,const char[24]
@@ -21161,6 +21162,8 @@ address,symbol,size,ctype
 0x75f77c,??_C@_03NLGKJIIH@wii?$AA@,4,char[4]
 0x75f780,??_C@_04JFCNHLLM@back?$AA@,5,char[5]
 0x75f788,??_C@_06MPKMECK@accept?$AA@,7,char[7]
+0x75f790,__real@c0ac000000000000,8,const f64
+0x75f798,__real@c0c4000000000000,8,const f64
 0x75f7a0,__real@40ac000000000000,8,const f64
 0x75f7a8,__real@40c4000000000000,8,const f64
 0x75f7b0,__real@3f7cac0840000000,8,const f64
@@ -21626,6 +21629,7 @@ address,symbol,size,ctype
 0x76150c,??_C@_05LBOKJHLG@socks?$AA@,6,const char[]
 0x761518,??_C@_0BI@PANEOMLK@SaveGame?$CFd?4?$CFs_SavedGame?$AA@,24,const char[24]
 0x761530,??_C@_0L@BKAHIOAH@SavedGames?$AA@,11,const char[11]
+0x76153c,??_C@_08BLFAKFD@code?4bin?$AA@,9,const char[9]
 0x761548,??_C@_02JDPG@rb?$AA@,3,const char[3]
 0x76154c,??_C@_0N@KJPOLLCA@Save?5Slot?5?$CFd?$AA@,13,char[13]
 0x76155c,??_C@_02GMLFBBN@wb?$AA@,3,const char[3]
@@ -22525,6 +22529,7 @@ address,symbol,size,ctype
 0x7642ec,_PostShadowRenderLabelPc,28,const WCHAR[14]
 0x764308,_PostEffectRenderLabelPc,60,const WCHAR[30]
 0x764344,??_C@_1BE@LKNDAOAB@?$AA3?$AAD?$AA?5?$AAr?$AAe?$AAn?$AAd?$AAe?$AAr?$AA?$AA@,20,wchar_t[10]
+0x764358,__real@400a934f00000000,8,
 0x764364,??_7NuPostFilter@@6B@,40,native exactVT binding; unimplemented extent unclaimed
 0x764390,__real@c00a934f00000000,8,const f64
 0x76439c,??_7NuMotionFilterGen@@6B@,40,native exactVT binding; unimplemented extent unclaimed
@@ -22564,6 +22569,8 @@ address,symbol,size,ctype
 0x007646a4,_NuCameraAllocSource,54,const char[54]
 0x7646dc,??_C@_0BB@PLKHJDKB@?$DM?1font?$DO?$DM?1table?$DO?6?$AA@,17,const char[17]
 0x7646f0,??_C@_0EG@HEMFNHOH@?$DMtable?5width?$DN100?$CFc?5bgcolor?$DN?$CDCFCF@,70,const char[70]
+0x764738,??_C@_0EG@OHAKNBNN@?$DMtable?5width?$DN100?$CFc?5bgcolor?$DN?$CDDFDF@,70,const char[70]
+0x764780,??_C@_0EG@NEABBGML@?$DMtable?5width?$DN100?$CFc?5bgcolor?$DN?$CDFFDF@,70,const char[70]
 0x007647c8,??_C@_0GA@NFHLHHNJ@?$DMtable?5?5?5width?$DN100?$CFc?5height?$DN20?5b@,96,const char[96]
 0x764828,??_C@_0BO@OIIBHDMB@?$DMBR?5CLEAR?$DN?$CCall?$CC?$DO?5?$DMP?$DO?$CGnbsp?$DL?$DMP?$DO?$AA@,30,char []
 0x764848,??_C@_0BM@LLFDNOND@?$DMIMG?5ALIGN?$DN?$CCleft?$CC?5SRC?$DN?$CC?$CFs?$CC?$DO?$AA@,28,char []
@@ -23361,6 +23368,13 @@ address,symbol,size,ctype
 0x76d128,__real@40f869fe60000000,8,const f64
 0x76d130,__real@408c200000000000,8,const f64
 0x76d138,__real@40b3880000000000,8,const f64
+0x76d140,??_C@_0P@PBANBFDL@ERR_NOINSTANCE?$AA@,15,const char[15]
+0x76d150,??_C@_0BA@PHJFCDA@ERR_PLATSKINMAX?$AA@,16,const char[16]
+0x76d160,??_C@_09ECJPNOJE@ERR_INOUT?$AA@,10,const char[10]
+0x76d16c,??_C@_0M@CKOHGCCA@ERR_MAXTERR?$AA@,12,const char[12]
+0x76d178,??_C@_0P@NIAJAONJ@ERR_MAXTERLIST?$AA@,15,const char[15]
+0x76d188,??_C@_0L@DCPCJHMA@ERR_NOTERR?$AA@,11,const char[11]
+0x76d194,??_C@_0M@FDOCLIJD@ERR_UNKNOWN?$AA@,12,const char[12]
 0x76d1a0,??_C@_0BE@KCEMHNMA@Particle?5Positioner?$AA@,20,char []
 0x76d1b4,??_C@_0N@OPNDHJMM@Grass?5Editor?$AA@,13,char []
 0x76d1c4,??_C@_0O@HGNPNEDA@Bridge?5Editor?$AA@,14,char []
@@ -23878,6 +23892,9 @@ address,symbol,size,ctype
 0x76ef10,??_C@_0BC@OEIOIPPM@SpotManager?5Event?$AA@,18,const char[18]
 0x76ef24,??_C@_0BB@DHOCNDB@?4?2pc?2nusound?4cpp?$AA@,17,const char[17]
 0x76ef38,??_C@_0BJ@BHFHENMF@?$DO?$DO?$DO?5NuSoundStopStereo?5?$CFd?$AA@,25,const char[25]
+0x76ef54,??_C@_0P@JDJCDANL@unknown?5status?$AA@,15,const char[15]
+0x76ef64,??_C@_04OPEFEHND@Busy?$AA@,5,const char[5]
+0x76ef6c,??_C@_04HJMOFLDF@Free?$AA@,5,const char[5]
 0x0076ef78,__real@c0ab580000000000,8,f64
 0x76ef84,??_7WavReader@@6B@,36,native exactVT binding; unimplemented extent unclaimed
 0x76efa8,??_C@_04PJOLNDGD@data?$AA@,5,const char[5]
@@ -25458,6 +25475,7 @@ address,symbol,size,ctype
 0x77589c,__real@46fffe00,4,const f32
 0x7758a0,__real@c6fffe00,4,const f32
 0x7758a8,__real@c0dfffc000000000,8,const f64
+0x7758b0,??_C@_09MAGJAHF@?$CF08?48i32x?$AA@,10,const char[10]
 0x7758bc,??_C@_1BA@GPEMCLPB@?$AAP?$AAI?$AAD?$AA_?$AA?$CF?$AA4?$AAX?$AA?$AA@,16,const wchar_t[8]
 0x7758cc,??_C@_19JEBEJPIJ@?$AAP?$AAI?$AAD?$AA_?$AA?$AA@,10,const wchar_t[5]
 0x7758d8,??_C@_1BA@DMNNECBF@?$AAV?$AAI?$AAD?$AA_?$AA?$CF?$AA4?$AAX?$AA?$AA@,16,const wchar_t[8]
@@ -25746,6 +25764,7 @@ address,symbol,size,ctype
 0x776d2c,_MenuPcString776d2c,16,const char[16]
 0x776d3c,_MenuPcString776d3c,5,const char[5]
 0x776df8,??_C@_0BC@JNEOHIEO@?4?2d3dApiCalls?4cpp?$AA@,18,
+0x776e0c,__real@43200000,4,const f32
 0x776e10,??_C@_05MPFIAJAP@Arial?$AA@,6,const char[6]
 0x776e18,??_C@_0M@COPKFFPJ@NUDEBUG?3?5?$CFs?$AA@,12,char[12]
 0x776e24,??_C@_0N@GIPICIG@Fatal?5Error?$CB?$AA@,13,const char[13]
@@ -37949,6 +37968,7 @@ address,symbol,size,ctype
 0x8008a0,_CutSceneRenderLocatorsPc,4,i32
 0x8008a8,_gcutSoundVol,4,i32
 0x8008ac,_gcutSoundMusVol,4,i32
+0x8008b0,_dat_008008b0,4,i32
 0x8008b4,_CutLocatorSfxFilterPc,2,char[2]
 0x8008b8,_CutLocatorFilterPc,3,char[3]
 0x8008bc,_CutLocatorScaleFilterPc,4,char[4]
@@ -38642,6 +38662,7 @@ address,symbol,size,ctype
 0x80b6d4,_nutexanm_critical_section,4,i32
 0x80b6d8,_global_windscale,4,f32
 0x80b6dc,_global_windspeed,4,f32
+0x80b6e4,_dat_0080b6e4,4,i32
 0x80b6e8,_NuLightSpeedBlurEnabledPc,4,writable i32 native initial1
 0x80b6ec,_dump_state,4,i32
 0x80b6f0,_BoxTreeDrawBoundsPc,4,i32 native initial 1
@@ -38675,6 +38696,7 @@ address,symbol,size,ctype
 0x80baac,_PCMaterialGeometryItemIndex,4,i32
 0x80bab0,_PCMaterialLinkItemIndex,4,i32
 0x80bab4,_VisibilityPortalFilterEnabledPc,4,i32
+0x80bab8,_dat_0080bab8,4,i32
 0x80babc,_PCShadowSubmissionEnabled,4,i32
 0x80bac0,_mtl_animation_mask,4,i32
 0x80bac4,_FrameMaterialAnimationSpeedPc,4,f32
@@ -38689,6 +38711,7 @@ address,symbol,size,ctype
 0x80bee4,??_R0?AVNuMotionFilter@@@8,29,native exactVT binding; unimplemented extent unclaimed
 0x80bf04,??_R0?AVNuCopyFilter@@@8,27,native exactVT binding; unimplemented extent unclaimed
 0x80bf20,_NuPostEffectBackBufferFramePc,4,i32
+0x80bf24,_dat_0080bf24,4,i32
 0x80bf28,_PostBlurHighOutputBiasPc,4,f32
 0x80bf2c,_PostBlurHighInputBiasPc,4,f32
 0x80bf30,??_R0?AVNuMotionAccumFilterGen@@@8,37,native exactVT binding; unimplemented extent unclaimed
@@ -38697,6 +38720,7 @@ address,symbol,size,ctype
 0x80bf80,??_R0?AVNuDeferredFilterGen@@@8,34,native exactVT binding; unimplemented extent unclaimed
 0x80bfa8,_debris_box_corners,96,const NUVEC[8]
 0x80c008,_PCShadowSurfaceSamplingEnabled,4,i32
+0x80c010,?vp@?1??NuViewPortSet@@9@4UNUVIEWPORT2_PC@@A,64,NUVIEWPORT2_PC
 0x80c050,?first@?1??DrawAlphaGrid@@9@9,4,i32
 0x80c054,??_R0?AVNuMainFilterGen@@@8,30,native exactVT binding; unimplemented extent unclaimed
 0x80c074,_NuMainFilterDofWeightPc,4,f32
@@ -38726,6 +38750,7 @@ address,symbol,size,ctype
 0x0080e1e4,_DwaStreamCapacityPc,4,i32
 0x0080e214,_NuRndrFxHeightPc,4,f32
 0x0080e218,_NuRndrFxPreviousHeightPc,4,f32
+0x80e21c,_dat_0080e21c,4,i32
 0x80e228,_RenderPostViewportPrefixPc,48,RENDER_POST_VIEWPORT_PREFIX_PC
 0x80e258,_PCSpecialProjectionAdjust,16,PC_SPECIAL_PROJECTION_ADJUST
 0x80e268,_NuDebrisIdealDynamicVBSizePc,4,u32
@@ -38742,6 +38767,7 @@ address,symbol,size,ctype
 0x0080e698,_PS2_VREZ_H,4,i32
 0x80e69c,_NuCameraScissorWidthPc,4,i32
 0x80e6a0,_NuCameraScissorHeightPc,4,i32
+0x80e6a4,_dat_0080e6a4,4,i32
 0x80e6b4,_NuLgtStateCapacityPc,4,i32
 0x80e6b8,_NuLgtStateActiveCountPc,4,i32
 0x80e6bc,_NuLgtStateFreeHeadPc,4,i32
@@ -38751,6 +38777,7 @@ address,symbol,size,ctype
 0x80e794,_CurrentItemTable,4,PC_DISPLAY_ITEM_HANDLER_PC *
 0x80e798,_PCDisplayShadowItemHandlersPc,196,49 actual shadow dispatch entries
 0x0080e85c,_PCClipExtentsEnabled,4,i32
+0x80e864,_dat_0080e864,4,NU_CAMERA_STACK_ENTRY_PC *
 0x0080e870,_ClipOutcodeMask32,16,const u32[4]
 0x0080e880,_ClipOutcodeMask16,16,const u32[4]
 0x0080e890,_ClipOutcodeMask1,16,const u32[4]
@@ -38852,6 +38879,7 @@ address,symbol,size,ctype
 0x80fb90,_AnimBlendMode,4,i32
 0x0080fb94,_MakeLayerList,4,
 0x0080fb98,_RedirectAnimDir,64,char[64]
+0x80fbf0,_dat_0080fbf0,4,i32
 0x80fc60,_FmvCopyFlagsPc,4,i32
 0x80fc64,_FmvVolumePc,4,f32
 0x80fcd0,_FmvFrequencyPc,8,LARGE_INTEGER
@@ -38958,6 +38986,8 @@ address,symbol,size,ctype
 0x8109d8,_edblack,16,u32[4]
 0x8109e8,_edgrey,16,u32[4]
 0x8109f8,_eddarkred,16,u32[4]
+0x810a18,_edqseed,4,i32
+0x810a1c,_edbitsSfxVol,4,i32
 0x810a20,_edbits_cubemap_fov,4,f32
 0x810a24,_edbits_cubemap_aspect,4,f32
 0x810a28,_edbri_length,4,f32
@@ -38987,6 +39017,7 @@ address,symbol,size,ctype
 0x810b30,_TerConTol,4,f32
 0x00810b34,_TerrPlatScanDist,4,f32
 0x00810b38,_SkinFlipTab,32,i32[8]
+0x810b58,_errstr,28,const char *[7]
 0x810be0,_DebrisDmaCleanupIndexPc,4,i32
 0x810bf0,_PCMusicDuckOverride,4,f32
 0x810bf4,_NuMusicVoiceStatusText,32,const char *[8]
@@ -41093,6 +41124,7 @@ address,symbol,size,ctype
 0x00915fc8,_implode_n,4,i32
 0x915fcc,_blocksize,4,u32
 0x00915fd0,_file_buff,4128,FILEBUFF[4]
+0x916ff0,_inlen,4,i32
 0x00916ff4,_implode_len,4,u8 *
 0x00916ff8,_implode_freq,4,u16 *
 0x00916ffc,_implode_len_cnt,34,u16[17]
@@ -41125,11 +41157,13 @@ address,symbol,size,ctype
 0x0091eee0,_NuFParBufferBase,4,char *
 0x0091eee4,_fnInterpreterError,4,void (__cdecl *)(NUFPAR_PC *)
 0x0091eee8,_freep,4,NUMEMHIGHBLOCK_PC *
+0x91eeec,_dat_0091eeec,4,i32
 0x0091eef0,_StringBank,36,NUSTRINGBANK[3]
 0x0091ef14,_CurrentStringBank,2,i16
 0x91ef16,_UseCorrectDeadZoning,1,u8
 0x0091ef18,_BadWords,4,u16 **
 0x0091ef1c,_NumBadWords,4,i32
+0x91ef20,_dat_0091ef20,4,u32
 0x91ef24,_NuApiEndFrameCallbackPc,4,void (__cdecl *)(void)
 0x0091ef34,_argc,4,i32
 0x0091ef38,_argv,4,char **
@@ -41231,6 +41265,7 @@ address,symbol,size,ctype
 0x00921404,_menu_flash,4,i32
 0x00921408,_header_g,4,i32
 0x92140c,_SmartTextLongestWidthPc,4,f32
+0x921410,_MessageMtl,4,NUMTL *
 0x00921414,_header_b,4,i32
 0x00921418,_MenuHeader,64,char[64]
 0x921458,_text3d_height,4,f32
@@ -41345,6 +41380,7 @@ address,symbol,size,ctype
 0x921ee0,_TextPrintModePc,4,i32
 0x00921ee4,_buttonmapfn,4,"void (*)(char *, char *)"
 0x00921ee8,_smarttext_fwn,4,i32
+0x921eec,_MessageMtlInit,4,i32
 0x921ef4,_MenuFormattingResultShownPc,4,i32
 0x921ef8,_MenuDeleteResultShownPc,4,i32
 0x921efc,_MenuSaveResultShownPc,4,i32
@@ -41432,6 +41468,7 @@ address,symbol,size,ctype
 0x9242f0,_temp_sockmidpos,12,NUVEC
 0x009242fc,_sockpar_buffer_end,4,VARIPTR *
 0x924300,_temp_sockcampos,12,NUVEC
+0x924310,_SaveFullCodePathPc,256,char[256]
 0x924410,_SaveFolderPathPc,256,char[256]
 0x924510,_SaveCreateFolderPathPc,256,char[256]
 0x924610,_SaveFullSlotPathPc,256,char[256]
@@ -42227,6 +42264,7 @@ address,symbol,size,ctype
 0x009718c0,_currentScene,536,NURNDRLIBSCENE
 0x9718fc,_PCDisplayClipSet,4,void *
 0x971900,_PCDisplayClipGroupIndex,4,i32
+0x971ad8,_dat_00971ad8,4,void *
 0x971adc,_NuPortalCameraRoomPc,2,i16
 0x971ae0,_VisibilityPrimaryAbsoluteMatrixPc,64,NUMTX
 0x971b20,_NuPortalRestoreCameraPc,120,NUCAMERA
@@ -42242,6 +42280,7 @@ address,symbol,size,ctype
 0x9737fc,_NuPostLastFrameEffectPc,1,u8
 0x009737fd,_ForcePlayEndFrame,1,u8
 0x009737fe,_ForceEulerToQuat,1,u8
+0x9737ff,_dat_009737ff,1,u8
 0x973800,_mainFilter,4,NU_POST_MAIN_VIEW_PC*
 0x973804,_deferredFilter,4,NU_POST_DEFERRED_VIEW_PC*
 0x973808,_motionFilter,4,NU_POST_MOTION_VIEW_PC*
@@ -42250,7 +42289,9 @@ address,symbol,size,ctype
 0x973814,_NuPostCopyFilterPc,4,native BSS
 0x973818,_NuPostShaderEngineFlagsPc,4,native BSS
 0x97381c,_PostCopyTexProgramPc,4,POST_SHADER_PROGRAM_PC*
+0x973820,_dat_00973820,4,POST_SHADER_PROGRAM_PC*
 0x973828,_PostCopyTexLodProgramPc,4,POST_SHADER_PROGRAM_PC*
+0x97382c,_dat_0097382c,4,POST_SHADER_PROGRAM_PC*
 0x973830,_PostBlendTexProgramPc,4,POST_SHADER_PROGRAM_PC*
 0x973834,_PostBlur5x5ProgramPc,4,POST_SHADER_PROGRAM_PC*
 0x973838,_PostBlur7x7ProgramPc,4,POST_SHADER_PROGRAM_PC*
@@ -42299,15 +42340,20 @@ address,symbol,size,ctype
 0x9738fc,_ntal_free,4,PC_TEXTURE_ANIM_LIST *
 0x973900,_NuTexAnimMissingPakDiagnosticPc,4,i32
 0x00973904,_ddmaxjoints,4,
+0x973908,_motionBlurAccumActiveThisFrame,4,i32
 0x97390c,_PCSpecialForcedLOD,4,i32
 0x973910,_PCSpecialForcedMaterial,4,NUMTL *
 0x973914,_PCSpecialForcedMaterialTable,4,NUMTL **
 0x973918,_PCSpecialForceMaterialCount,4,i32
+0x97391c,_dat_0097391c,4,i32
 0x973920,_PS2_REZ_W,4,i32
 0x973924,_PS2_REZ_H,4,i32
 0x973928,_PCShaderMaterialSamplerBiasOffsetPc,4,f32
 0x97392c,_PCWindFrameCount,4,u32
 0x973930,_global_frame_count_paused,4,i32
+0x973934,_dat_00973934,4,i32
+0x973938,_dat_00973938,4,i32
+0x97393c,_dat_0097393c,4,i32
 0x973944,_RendererZClearMaterialPc,4,NUMTL *
 0x973948,_RendererAlphaMaskMaterialPc,4,NUMTL *
 0x97394c,_NuRndrDoingScreenGrab,4,i32
@@ -42322,6 +42368,7 @@ address,symbol,size,ctype
 0x973978,_NuCameraOrthographic,4,
 0x97397c,_force_camera_farclip,4,i32
 0x973980,_VisibilityUsingOcclusionPc,4,i32
+0x973984,_dat_00973984,4,i32
 0x00973988,_nudlist_field_988,4,NUFILE
 0x0097398c,_NuTimeBar_Initialised,4,i32
 0x00973990,_NuTimeBar_EngineEnabled,4,i32
@@ -42332,6 +42379,10 @@ address,symbol,size,ctype
 0x9739a8,_myvisi,4,VISIBILITY_RESULT_READER_PC*
 0x9739ac,_NuPortalDebugEnabledPc,4,i32
 0x9739b0,_NuPortalOverrideCameraPc,4,NUVEC *
+0x9739b4,_dat_009739b4,4,i32
+0x9739b8,_dat_009739b8,4,i32
+0x9739bc,_dat_009739bc,4,i32
+0x9739c0,_dat_009739c0,4,i32
 0x9739c8,_CutSceneBoundingBoxTrackRoot,1,u8
 0x009739d0,_nudlist_field_9d0,4,i32
 0x009739d8,_nudlist_field_9d8,4,u32
@@ -42370,6 +42421,8 @@ address,symbol,size,ctype
 0x974010,_RendererArenaCountPc,4,i32
 0x974014,_numtl_renderplane,4,u32
 0x974018,_g_overrideList,4,NULSTHDR *
+0x97401c,_dat_0097401c,4,i32
+0x974020,_dat_00974020,4,i32
 0x974030,_NuPostFilterAllocatorPc,16,native allocator
 0x974040,_dlistItemPool,136,LightObjectPool<NUDISPLAYLISTITEM>
 0x9740c8,_dynamicLightPool,16776,LightObjectPool<PC_SPECIAL_SHADOW_LIGHT>
@@ -42378,6 +42431,7 @@ address,symbol,size,ctype
 0x9784a0,_PostResourceManagerPc,10240,PC_POST_DATA_PORT_MANAGER
 0x97aca0,_PostShadowViewPc,64,NUMTX standalone BSS; native outputs5e8950 and copysetter5c6d90
 0x97ace0,_NuPostEffectBackBufferCopyPc,4,GRAPHICS_RENDER_TEXTURE_PC *
+0x97ace4,_dat_0097ace4,4,GRAPHICS_RENDER_TEXTURE_PC *
 0x97ace8,_PostBlurDirectOutputBiasPc,4,f32 BSS; only read by PostBlur7x7DirectPc
 0x97acec,_PostBlurDirectInputBiasPc,4,f32 BSS; only read by PostBlur7x7DirectPc
 0x97acf0,_debris_box_camera_cache,64,NUMTX
@@ -42415,6 +42469,7 @@ address,symbol,size,ctype
 0x0097c1d0,_clip_outcode_workspace_prefix,32,u32[8] (minimum source prefix; full extent unknown)
 0x0097c250,_DwaPointerPoolPc,8192,
 0x97e250,_PcGeometryViewProjectionMatrixPc,64,NUMTX
+0x97f990,_dat_0097f990,4,f32
 0x97f994,_NuLgtLaserOldCnt,4,i32
 0x97f998,_NuRndr_DebrisMtx,64,NUMTX
 0x97f9d8,_PCDeviceSamplerInvalidation,128,i32[16][2]
@@ -42443,15 +42498,18 @@ address,symbol,size,ctype
 0x280a2b8,_NuLgtArcMtl,80,NULGTARCMATERIAL_PC[4]
 0x280a30c,_rndrstream_used,4,u32
 0x280a310,_NuPortalVisibilityBitsPc,625,u8[625]
+0x280a598,_dat_0280a598,7936,NU_CAMERA_STACK_ENTRY_PC[64]
 0x0280c4a0,_clip_test_mtx,64,NUMTX
 0x280c760,_NuRndrShadPolDat,3072,PC_SHADOW_QUEUE_RECORD[128]
 0x280d360,_RndrStateTransformPc,64,NUMTX
+0x280d3a0,_dat_0280d3a0,4,f32
 0x280d3a4,_PCGraphicsFrameScratchCount,4,PC_GRAPHICS_FRAME_SCRATCH_VIEW_PC
 0x280d3a8,_PcGeometryResetMatrixPc,64,NUMTX
 0x280d3ec,_NuDebrisVertexBuffers,16,PC_BUFFER_RESOURCE_PC *[4]
 0x0280d3fc,_NuRndrFxColourPc,4,u32
 0x280d800,_PCGraphicsRenderTextureActive,32,u8[32] workingview
 0x280d828,_PcGeometryDistanceOriginPc,16,NUVEC4
+0x280d838,_dat_0280d838,4,u32
 0x280d840,_PcGeometryProjectionMatrixPc,64,NUMTX
 0x280d880,_PcGeometryInverseViewProjectionMatrixPc,64,NUMTX
 0x28358c0,_PCStartupMaterial1Pc,4,NUMTL *
@@ -42498,9 +42556,14 @@ address,symbol,size,ctype
 0x02854c5c,_DwaBlockCountPc,4,i32
 0x2854c64,_RendererConfigEnabledPc,4,i32
 0x2854c68,_RendererConfigSecondEnabledPc,4,i32
+0x2854c90,_dat_02854c90,4,i32
+0x2854c94,_dat_02854c94,4,i32
 0x2854ca4,_NuRndrShadowCnt,4,i32
+0x2854cac,_dat_02854cac,4,i32
+0x2854cb0,_dat_02854cb0,4,i32
 0x02854cdc,_PCFramePresentationStatePc,4,i32
 0x02854cec,_NuRndrFxHeightOverridePc,4,f32
+0x2854d00,_dat_02854d00,4,NUMTL *
 0x2854d04,_RenderFrameCallbackPc,4,void (__cdecl*)(void)
 0x2854d08,_NuRndr_DebrisRotMtxPtr,4,NUMTX *
 0x2854d0c,_NuDebrisUseSystemMemory,4,i32
@@ -42537,6 +42600,7 @@ address,symbol,size,ctype
 0x2854dbc,_NuGobjRegistryInitializedPc,4,i32
 0x2854dc0,_PCRegisteredNativeScenes,400,NUGSCN *[100]
 0x2854f50,_NuGobjRegistryFirstPc,4,PC_GOBJ_REGISTRY_ENTRY_PC *
+0x2854f54,_dat_02854f54,4,i32
 0x2854f58,_NuGobjRegistryCountPc,4,i32
 0x02854f70,_ClipCornerBlocks,96,NUVEC4BLOCK_PC[2] (minimum source prefix; full extent unknown)
 0x02854ff0,_ClipTransformedBlocks,96,NUVEC4BLOCK_PC[2] (minimum source prefix; full extent unknown)
@@ -42627,6 +42691,7 @@ address,symbol,size,ctype
 0x2912e98,_EdMainCurrentCameraPc,4,genuine native data owner
 0x2912e9c,_ed_loc,4,NUVEC *
 0x2912ea0,_ed_fnt,4,void *
+0x2912ea4,_edmain_render_interacts,4,i32
 0x2912ea8,_edmain_cursor_enabled,4,i32
 0x2912eac,_eduiInteractLocked,4,struct edui_interact_s *
 0x02912eb0,_ui_bgmtl,4,i32
@@ -42863,6 +42928,7 @@ address,symbol,size,ctype
 0x2913a70,_edpart_boxmtl,4,struct PC_SCENE_MTL_VIEW *
 0x2913a74,_edpart_mtl,4,struct PC_SCENE_MTL_VIEW *
 0x02913a78,_part_types,48128,PARTTYPE_LOOKUP_PC[128]
+0x291f678,_edpart_entry_position,12,NUVEC
 0x0291f684,_Part,4,PART_PC *
 0x291f688,_edpart_curr,4,i32
 0x291f68c,_edpart_nearest_orphans,4,i32
@@ -42971,6 +43037,7 @@ address,symbol,size,ctype
 0x02920da4,_EShadY,4,
 0x02920da8,_NuSound3Groups,1024,SFX_GROUP_PC[128]
 0x029211a8,_TerrainCastAuxValidPc,2,
+0x29211aa,_edbits_what_game,1,i8
 0x29211ab,_edpp_effect_list,1,u8
 0x29211ac,_cntrots,4,i32
 0x29211b0,_edanim_mtl_zoff,4,struct PC_SCENE_MTL_VIEW *
@@ -43020,6 +43087,7 @@ address,symbol,size,ctype
 0x29231c4,_edpp_cam_ax,4,i32
 0x29231c8,_edpp_nearest,4,i32
 0x29231cc,_TerrWallNorm,12,NUVEC
+0x29231d8,_edbitsGameSound,6400,EDBITS_GAME_SOUND[320]
 0x2924ad8,_WallSplCount,4,i32
 0x2924adc,_edbri_cam_pos,12,NUVEC
 0x2924ae8,_edanim_particle_type,4,i32
@@ -43225,6 +43293,7 @@ address,symbol,size,ctype
 0x296212c,_edanim_emitrotz,4,i32
 0x2962130,_edanim_emitroty,4,i32
 0x02962134,_edbits_base_scene,4,NUGSCN *
+0x2962138,_edbits_level_filename,256,char[256]
 0x2962238,_edbits_general_save_directory,256,char[256]
 0x2962338,_edbits_general_save_name,256,char[256]
 0x2962438,_edbits_general_save_extension,256,char[256]
@@ -43242,6 +43311,9 @@ address,symbol,size,ctype
 0x2962954,_edbits_cubecount,4,i32
 0x2962958,_cubemapcam,4,NUCAMERA *
 0x296295c,_EdppTypesErrorPc,4,i32
+0x2962964,_edbits_numsounds,4,i32
+0x2962968,_edbitsPlaySound,4,"void (*)(NUVEC *, i32)"
+0x296296c,_edbitsRequestSound,4,"i32 (*)(char *)"
 0x2962970,_edbits_override_backups,4,i32
 0x2962974,_edbri_active_menu,4,struct eduimenu_s *
 0x2962978,_edbri_options_menu,4,struct eduimenu_s *
@@ -43458,6 +43530,7 @@ address,symbol,size,ctype
 0x2974d40,_PcIntelShaderFallback,4,i32
 0x02974d4c,_StartupDatCount,4,i32
 0x2974d50,_PcCapsConfigured,1,u8
+0x2974d58,_dat_02974d58,1024,const char *[256]
 0x2975158,_TextInputAlternateLabelsPc,4,TEXT_INPUT_LABELS_PC*
 0x297515c,_PcMouseAxisModesPc,3,u8[3]
 0x02975164,_nu_input_state,4,NuKeyboardState_PC *
@@ -43467,6 +43540,7 @@ address,symbol,size,ctype
 0x2975194,_PcMouseSamplesPc,40,PC_DI_MOUSE_STATE_PC[2]
 0x29751bc,_PcMousePressedMaskPc,4,u32
 0x029751c0,_nu_keyboard_pages,512,u8[512]
+0x29753c0,_dat_029753c0,512,char[512]
 0x29755c0,?PcInputWriteTextProfiles@@3EA,1,
 0x029755c1,_nu_keyboard_page_index,1,u8
 0x29755c2,_PcKeyQueueHead,1,u8
@@ -43481,6 +43555,7 @@ address,symbol,size,ctype
 0x29755fc,_PcXInputDeviceCount,4,i32
 0x02975600,_nu_keyboard_previous_key_index,4,i32
 0x02975604,_nu_keyboard_no_key_state,4,i32
+0x2975608,_dat_02975608,4,f32
 0x297560c,_PcMouseCurrentAnglePc,4,i32
 0x2975610,_PcMouseTargetAnglePc,4,i32
 0x2975614,_PcMouseRadiusPc,4,f32
@@ -43500,6 +43575,7 @@ address,symbol,size,ctype
 0x2975a64,_PcWindowClass,48,WNDCLASSEXA
 0x02975a94,_win_message,28,MSG
 0x2975ab0,_PcArgv,8,char *[2]
+0x2975c40,_dat_02975c40,4,i32
 0x2975c44,_PcNoFocusPolicy,4,i32
 0x2975c48,_PcSaveHeaderMetadataPc,16,u8[16]
 0x2975c58,?PcSaveFolderRegisteredPc@@3HA,4,i32
@@ -43519,8 +43595,15 @@ address,symbol,size,ctype
 0x2976098,_PCNativeWarningDebugState,1288,PC_NATIVE_DEBUG_STATE_PC
 0x29765a0,_nu_keyboard_owner,68,NuKeyboardOwner_PC
 0x29765e8,_PCDeviceBackend,1792,PC_DEVICE_BACKEND_PC
+0x2976ce8,_dat_02976ce8,4,i32
 0x02976d00,_NuScratchBackingAccessPc,16384,u8[0x4000]
+0x297ad4c,_dat_0297ad4c,4,i32
+0x297ad58,_dat_0297ad58,4,BGPROC_HANDLER_PC *
+0x297ad5c,_dat_0297ad5c,4,i32
+0x297ad60,_dat_0297ad60,4,i32
+0x297ad68,_dat_0297ad68,4,BGPROC_HANDLER_PC *
 0x00297ad74,_nu_current_thread_id,4,volatile u32
+0x297ad84,_dat_0297ad84,4,i32
 0x0297ad94,_nuvideo_global_vbcnt,4,volatile i32
 0x297ada0,_MenuPcStrings,156,const char *[39]
 0x297ae3c,_MenuPcStringsInitialized,4,i32
@@ -43530,6 +43613,7 @@ address,symbol,size,ctype
 0x297ae4c,_PcApiCallBufferCount,4,i32
 0x297ae50,?identity@?1??PCDeviceSetWorldIdentityPc@@9@4UD3DXMATRIX@@A,64,D3DXMATRIX
 0x297ae90,?$S1@?1??PCDeviceSetWorldIdentityPc@@9@4IA,4,u32
+0x297ae94,?description@?1??fun_006dfcc0@@9@4UPC_TEXTURE_LEVEL_DESC_PC@@A,32,PC_TEXTURE_LEVEL_DESC_PC
 0x297aeb8,_PCNativeDebugOutputBuffer,2048,char[2048]
 0x297b6b8,_PCNativeDebugFormatBuffer,2048,char[2048]
 0x297beb8,_PCGraphicsDeviceLostCallback,4,void (__cdecl *)(GRAPHICS_PRESENT_PARAMETERS_PC *)

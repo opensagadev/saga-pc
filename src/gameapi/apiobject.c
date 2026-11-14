@@ -172,7 +172,52 @@ i32 AnimMiscFlags(CHARACTER_MODEL_LAYERS_PC *model, i32 animation) {
     return 0;
 }
 
-void AnimList_RequestAnimGroups(i32 character_id, ...);
+/* Marks every animation of the listed characters (up to -1) as not to be
+ * loaded. */
+void AnimList_NoLoad(i32 character_id, ...) {
+    i32 current_character = character_id;
+    va_list characters;
+    APICHARACTERDATA *character;
+    CHARACTERANIM_CONFIG_PC *animation;
+    va_start(characters, character_id);
+    do {
+        character = apicharsys != NULL ? &apicharsys->char_data[current_character] : NULL;
+        animation = character != NULL ? character->animations : NULL;
+        if (animation != NULL) {
+            while (animation->name != NULL) {
+                animation->flags |= 0x8000;
+                animation++;
+            }
+        }
+        current_character = va_arg(characters, i32);
+    } while (current_character != -1);
+    va_end(characters);
+}
+
+/* Clears the no-load flag of the character's animations in the listed
+ * groups (up to -1). */
+void AnimList_RequestAnimGroups(i32 character_id, ...) {
+    APICHARACTERDATA *character = apicharsys != NULL ? &apicharsys->char_data[character_id] : NULL;
+    CHARACTERANIM_CONFIG_PC *animations = character != NULL ? character->animations : NULL;
+    CHARACTERANIM_CONFIG_PC *animation;
+    i32 group_id;
+    va_list groups;
+    va_start(groups, character_id);
+    for (;;) {
+        animation = animations;
+        group_id = va_arg(groups, i32);
+        if (group_id == -1) {
+            break;
+        }
+        while (animation->name != NULL) {
+            if (animation->unknown_0a == group_id) {
+                animation->flags &= ~0x8000;
+            }
+            animation++;
+        }
+    }
+    va_end(groups);
+}
 
 void AnimList_RequestAnimGroupForCreatures(i32 group_id, ...) {
     va_list creatures;

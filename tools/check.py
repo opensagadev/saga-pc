@@ -250,6 +250,13 @@ def check_diagnostic_boundaries():
                 '        strcat(SaveFolderPathPc, "SavedGames");\n'
                 '#endif\n'
             ),
+            (
+                '    char *fullcodename(i32 slot) {\n'
+                '#ifndef SAGA_DEBUG\n'
+                '        PCOptionsBuildFolder(SaveFolderPathPc);\n'
+                '        strcat(SaveFolderPathPc, "SavedGames");\n'
+                '#endif\n'
+            ),
         ),
         'src/gameapi/shop_persistence.cpp': (
             (

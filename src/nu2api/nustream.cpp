@@ -47,6 +47,33 @@ extern "C" void NuSound3GetStreamInfo(i32 stream_index, void *info) {
     (void)info;
 }
 
+extern SoundQueue *NuSound3StereoStreams[2];
+
+extern "C" i32 fun_00698a50(i32 stream, i32 alternate, char *text, i32 size) {
+    i32 status;
+    if (alternate) {
+        stream += 0x18;
+    }
+    if (stream != 0) {
+        stream = 1;
+    }
+    status = NuSound3StereoStreams[stream]->GetStatus();
+    if (status == 0) {
+        NuStrNCpy(text, "Free", size);
+        return 1;
+    }
+    if (status == 1) {
+        NuStrNCpy(text, "Playing", size);
+        return 2;
+    }
+    if (status == 2) {
+        NuStrNCpy(text, "Busy", size);
+        return 2;
+    }
+    NuStrNCpy(text, "unknown status", size);
+    return 2;
+}
+
 extern "C" i32 fun_00698b00(void) {
     return 0;
 }
@@ -71,7 +98,6 @@ extern "C" i32 fun_00698b50(void) {
     return 0;
 }
 
-extern SoundQueue *NuSound3StereoStreams[2];
 extern "C" f32 NuSound3VolumeTable[0x4000];
 extern "C" i32 NuSound3VolumeOffset;
 
@@ -102,6 +128,21 @@ i32 SoundQueue::SendCommand(i32 command_value, i32 argument_value) {
         SetEvent(event);
     }
     return success;
+}
+
+i32 SoundQueue::fun_00699200(i32 *argument_value) {
+    i32 command_value = 0;
+    EnterCriticalSection(&lock);
+    if (count > 0) {
+        command_value = command[read_index];
+        if (argument_value != NULL) {
+            *argument_value = argument[read_index];
+        }
+        read_index = (read_index + 1) & 31;
+        --count;
+    }
+    LeaveCriticalSection(&lock);
+    return command_value;
 }
 
 i32 SoundQueue::Stop() {
@@ -821,6 +862,13 @@ extern "C" void fun_00698fe0(void) {
 }
 
 extern "C" void fun_00698ff0(void) {
+}
+
+i32 SoundQueue::fun_00699040(const WAVEFORMATEX *format) {
+    if (wave_format.nSamplesPerSec != format->nSamplesPerSec) {
+        return 1;
+    }
+    return wave_format.nChannels != format->nChannels;
 }
 
 extern "C" void NuSound3ResumeAfterFocusPc(void) {

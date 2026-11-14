@@ -279,6 +279,13 @@ i32 NetLogFile::Flush() {
     return 0;
 }
 
+void NETMESSAGE_PC::fun_0060ea60(const u8 &value) {
+    if (data != NULL) {
+        read_offset--;
+        PCByteCopy(data->bytes + read_offset, &value, 1);
+    }
+}
+
 NetLogFile::~NetLogFile() {
     Flush();
 }
@@ -351,6 +358,26 @@ void TTNetwork::BroadcastEx(NETMESSAGE_PC message, u8 channel) {
 
 NetAddress::NetAddress() {
     address = 0;
+}
+
+void NetFtpManager::fun_0060e6f0(i32 value) {
+    field_1604 = value;
+}
+
+NetStats *NetworkObjectManager::fun_0060e740(i32 class_id) {
+    return class_stats[class_id];
+}
+
+void NuNetEmu::fun_0060e750(u8 new_enabled) {
+    enabled = new_enabled;
+}
+
+NetStats *NuNetEmu::fun_0060e760() {
+    return &raw_stats;
+}
+
+NuNetEmu::PackStats *NuNetEmu::fun_0060e770() {
+    return &packet_stats;
 }
 
 void TTNetwork::Resume() {

@@ -113,6 +113,10 @@ typedef struct NUVEC4 {
         result.z = z - other.z;
         return result;
     }
+
+    void fun_00595250(f32 new_x, f32 new_y, f32 new_z, f32 new_w);
+    void fun_00595270();
+    NUVEC4 &fun_00595290(const NUVEC &v);
 #endif
 } NUVEC4;
 
@@ -290,6 +294,9 @@ typedef struct SoundVoiceManagerPC {
     void StopAllVoices(void);
     void UpdateVoices(void);
     void Setup3DVoice(i32, const NUVEC *, i32);
+    u8 fun_00697360(i32 sample_index);
+    u8 fun_00697390(i32 sample_index);
+    void fun_00697700(i32 voice_id, i32 sound_key, i32, f32 field_1c, f32 field_20, i32 volume_index);
 #endif
 } SoundVoiceManagerPC;
 
@@ -2332,7 +2339,10 @@ STATIC_ASSERT(offsetof(NUDISPLAYLIST_PC, items) == 0x24);
 
 typedef struct PC_TEXTURE_LEVEL_DESC_PC {
     u32 format;
-    u32 unknown_04[5];
+    u32 type;
+    u32 usage;
+    u32 pool;
+    u32 unknown_10[2];
     u32 width;
     u32 height;
 } PC_TEXTURE_LEVEL_DESC_PC;
@@ -2353,7 +2363,9 @@ STATIC_ASSERT(sizeof(PC_LOCKED_RECT_PC) == 8);
 typedef struct PC_TEXTURE_RESOURCE_METHODS_PC {
     void *unknown_0000[2];
     ULONG(__stdcall *release)(PC_TEXTURE_RESOURCE_PC *);
-    void *unknown_000c[14];
+    void *unknown_000c[10];
+    u32(__stdcall *get_level_count)(PC_TEXTURE_RESOURCE_PC *);
+    void *unknown_0038[3];
     HRESULT(__stdcall *get_level_desc)(PC_TEXTURE_RESOURCE_PC *, u32, PC_TEXTURE_LEVEL_DESC_PC *);
     HRESULT(__stdcall *get_surface_level)(PC_TEXTURE_RESOURCE_PC *, u32, PC_TEXTURE_RESOURCE_PC **);
     HRESULT(__stdcall *lock_rect)(PC_TEXTURE_RESOURCE_PC *, u32, PC_LOCKED_RECT_PC *, const void *, u32);
@@ -2365,6 +2377,7 @@ struct PC_TEXTURE_RESOURCE_PC {
 };
 
 STATIC_ASSERT(offsetof(PC_TEXTURE_RESOURCE_METHODS_PC, release) == 8);
+STATIC_ASSERT(offsetof(PC_TEXTURE_RESOURCE_METHODS_PC, get_level_count) == 0x34);
 STATIC_ASSERT(offsetof(PC_TEXTURE_RESOURCE_METHODS_PC, get_level_desc) == 0x44);
 STATIC_ASSERT(offsetof(PC_TEXTURE_RESOURCE_METHODS_PC, lock_rect) == 0x4c);
 STATIC_ASSERT(offsetof(PC_TEXTURE_RESOURCE_PC, methods) == 0);
@@ -2622,6 +2635,9 @@ typedef struct NuKeyboardOwner_PC {
     void Setup(HWND window, HINSTANCE instance);
     void ScheduleRescan(f32 interval, i32 repetitions);
     void Shutdown();
+    i32 fun_006d5720(i32 *axes, i32 *buttons);
+    i32 fun_006d5970();
+    i32 fun_006d5980();
 #endif
 } NuKeyboardOwner_PC;
 
@@ -5992,7 +6008,8 @@ typedef struct apicharacterdata_s {
     u32 model_flags;
     char *dir;
     char *name;
-    u8 opaque_10_24[0x14];
+    CHARACTERANIM_CONFIG_PC *animations;
+    u8 opaque_14_24[0x10];
     PLAYERCHARACTERCONFIG_PC *game_character;
     struct CHARACTER_EFFECT_CONFIG_PC *effects;
     f32 field13_0x2c;
@@ -7627,7 +7644,8 @@ typedef struct instnugcutscene_s {
     f32 rate;
     u8 opaque_9c_b0[0x14];
     struct instnugcutscene_s *chained_instance;
-    u8 opaque_b4_f8[0x44];
+    i32 unknown_b4;
+    u8 opaque_b8_f8[0x40];
 } INSTNUGCUTSCENE;
 
 STATIC_ASSERT(offsetof(INSTNUGCUTSCENE, scene) == 0x58);
@@ -8037,7 +8055,7 @@ typedef struct nuglobalrndrstate_pc_s {
     u32 fog_state_word;
     f32 fog_value_0170;
     f32 fog_value_0174;
-    void *fog_pointer_0178;
+    u32 fog_pointer_0178;
     f32 fog_value_017c;
     void *konst_packet_cache;
     f32 viewport_x;
@@ -8130,6 +8148,13 @@ typedef struct nucamera_s {
 } NUCAMERA;
 
 STATIC_ASSERT(sizeof(NUCAMERA) == 0x78);
+
+/* One saved camera of the PC camera stack (0x280a598, 64 entries) with the render-state camera id. */
+typedef struct NU_CAMERA_STACK_ENTRY_PC {
+    NUCAMERA camera;        // 0x00
+    i32 camera_id;          // 0x78
+} NU_CAMERA_STACK_ENTRY_PC; // size 0x7c
+
 STATIC_ASSERT(offsetof(NUCAMERA, mtx) == 0);
 STATIC_ASSERT(offsetof(NUCAMERA, fov) == 0x40);
 STATIC_ASSERT(offsetof(NUCAMERA, aspect) == 0x44);
@@ -8559,6 +8584,7 @@ typedef struct nurndrlightrecord_s {
     u8 opaque_378_380[0x8];
 #ifdef __cplusplus
     nurndrlightrecord_s();
+    nurndrlightrecord_s &operator=(const nurndrlightrecord_s &other);
 #endif
 } NURNDRLIGHTRECORD;
 
@@ -8609,7 +8635,9 @@ typedef struct nurndrlibscene_s {
     f32 calc_20;
     u32 unknown_24;
     u32 unknown_28;
-    u8 opaque_2c_38[0xc];
+    u8 burnout_intensity;
+    f32 burnout_flare;
+    f32 burnout_threshold;
     i32 dyn_light_count;
     void *dyn_light_ptr;
     i32 unknown_40;
@@ -9697,6 +9725,18 @@ typedef struct PC_WINDOW_OPTIONS_PC {
     void SetOption459(u8 value);
     void SetWindowX(i32 value);
     void SetWindowY(i32 value);
+    i32 GetDeviceWidth();
+    i32 GetDeviceHeight();
+    i32 GetRefresh();
+    i32 GetMultisample();
+    i32 GetBloomMethod();
+    i32 GetDesiredBloomMethod();
+    i32 GetDesiredShadowMethod();
+    u8 GetSpeedBlurSupported();
+    i32 fun_006dc710();
+    i32 fun_006dc720();
+    i32 fun_006dc730();
+    i32 fun_006dc740();
     void SetMouseSensitivity(i32 value);
     void SetInvertY(u8 value);
     void SetVibration(u8 value);
@@ -9937,6 +9977,36 @@ typedef struct PC_DEVICE_BACKEND_PC {
     u8 SupportsMultisamplePc(i32);
     u8 HasRequestedModeChangedPc();
     void RestoreSavedModePc();
+
+    u8 fun_005090e0();
+    u32 fun_00509110();
+    i32 fun_00509120();
+    void fun_00509130(i32 multisample);
+    void fun_00509140(i32 mode);
+    i32 fun_005f7860();
+    GRAPHICS_CAPS_PC *fun_005f7870();
+    GRAPHICS_PRESENT_PARAMETERS_PC *fun_005f7880();
+    u16 fun_005f7890();
+    i32 fun_005f78a0();
+    void fun_005f78c0();
+    u16 fun_006e2140();
+    void fun_006e22c0();
+    HRESULT fun_006e22e0(PC_EFFECT_SURFACE_PC *target, i32 filter);
+    void fun_006e2350();
+    void fun_006e2af0();
+    void fun_006e2ce0(u32 width, u32 height, u32 refresh);
+    i32 fun_006df050();
+    u32 fun_006df060();
+    u32 fun_006df070();
+    i32 fun_006e18d0();
+    void fun_006e18e0(u8 feature);
+    void fun_006e18f0(u16 count);
+    i32 fun_006e1900();
+    i32 fun_006dc750();
+    GRAPHICS_DISPLAY_MODE_PC *fun_006daee0();
+    u32 fun_006dbae0();
+    u32 fun_006dbaf0();
+    void fun_006dbb00(u8 windowed);
 #endif
 } PC_DEVICE_BACKEND_PC;
 
@@ -10162,6 +10232,8 @@ typedef struct PC_NATIVE_DEBUG_STATE_PC {
     void UpdateGeometry();
     void Initialize();
     void Shutdown();
+    PC_NATIVE_DEBUG_STATE_PC *fun_006dff70();
+    void fun_006dffa0(u8 value);
 #endif
 } PC_NATIVE_DEBUG_STATE_PC;
 
@@ -10213,6 +10285,9 @@ class PCFrustumClipSet {
     i32 active_render_set_count;
     i32 TestBoxes(const NUVEC *, const NUVEC *);
     bool TestBox(const NUVEC *minimum, const NUVEC *maximum, i32 group_index);
+    i32 fun_005e66b0(NUSPECIALHANDLE *special, NUMTX *matrix);
+    bool fun_005e6710(const NUVEC *center, const NUVEC *extent, i32 group_index);
+    i32 fun_005e6770(const NUVEC *center, const NUVEC *extent);
 };
 
 STATIC_ASSERT(offsetof(PCFrustumClipSet, first_group) == 0);
@@ -10475,6 +10550,10 @@ struct OccluderSet {
     bool IsOccludedSphere(const NUVEC *, f32);
     void PrepareForQueries(const NUMTX *, const NUMTX *);
     static i32 SortByDepth(const void *, const void *);
+    u32 fun_005c5250();
+    u32 fun_005c5260();
+    bool fun_005c5270();
+    void Clear();
 };
 
 STATIC_ASSERT(sizeof(OccluderSet) == 0xa0);
@@ -10509,6 +10588,12 @@ struct OcclusionManager {
     void AddOccluder(const NUVEC *, const NUVEC *, const NUVEC *, const NUVEC *);
     void AddOccluder(const NUVEC *, f32);
     void AddOccluder(const NUVEC *, const NUVEC *, const NUMTX *);
+    bool fun_005c5280();
+    bool fun_005c5290();
+    void fun_005c52b0(f32 threshold);
+    void fun_005c52c0(f32 threshold);
+    OccluderSet *fun_005c52d0();
+    void SetEnabled(bool value);
 };
 
 STATIC_ASSERT(sizeof(OcclusionManager) == sizeof(OCCLUSIONMANAGER));
@@ -11242,6 +11327,24 @@ extern "C" {
     extern i32 PCShadowSurfaceSamplingEnabled;
     extern struct PC_HG_SHADOW_PACKET PCShadowPackets[280];
     extern i32 PCSpecialForceMaterialCount;
+    extern i32 dat_0097391c;
+    extern u32 dat_0280d838;
+    extern i32 dat_02854cb0;
+    extern i32 dat_02854cac;
+    extern i32 dat_0080e21c;
+    extern i32 dat_02854c90;
+    extern i32 dat_02854c94;
+    extern NUMTL *dat_02854d00;
+    void fun_006df670(f32, f32);
+    void PCDeviceSetGammaRampPc(const void *ramp);
+    void NuRndrRectUV2diZ(i32 x, i32 y, i32 width, i32 height, f32 u0, f32 v0, f32 u1, f32 v1, i32 colour,
+                          NUMTL *material, i32 z);
+    extern i32 dat_0080e6a4;
+    extern f32 dat_0097f990;
+    extern f32 dat_0280d3a0;
+    extern i32 dat_02854f54;
+    extern NU_CAMERA_STACK_ENTRY_PC dat_0280a598[64];
+    extern NU_CAMERA_STACK_ENTRY_PC *dat_0080e864;
     extern u8 CutSceneBoundingBoxTrackRoot;
     extern i32 PCShadowPacketSequence;
     extern f32 PCShadowNearValue;
@@ -12064,6 +12167,8 @@ extern "C" {
     extern u8 MENUNORMALG;
     extern f32 SmartTextDefaultWidthPc;
     extern f32 SmartTextLongestWidthPc;
+    extern NUMTL *MessageMtl;
+    extern i32 MessageMtlInit;
     extern i32 MenuDisableHeaders;
     extern void (*predrawfn)(MENU *);
     extern u8 MENUNORMALB;
@@ -13457,7 +13562,14 @@ typedef struct PC_SHADER_OBJECT_FULL_VIEW PC_SHADER_OBJECT_FULL_VIEW;
         void SetFloat2(const f32 *values);
         void SetFloat3(const f32 *values);
         void SetValues(i32 first_element, i32 count, const f32 *values);
-
+        i32 fun_00742180();
+        PC_SHADER_PARAMETER_LOCAL_PC *fun_00742190();
+        void fun_007421a0(PC_SHADER_PARAMETER_LOCAL_PC *parameter);
+        PC_SHADER_PARAMETER_LOCAL_PC *fun_007421b0();
+        void fun_007424a0(i32 first_element, const f32 *values);
+        void fun_00742720(i32 index, const f32 *values);
+        i32 fun_00743c90();
+        void fun_00743e10(i32 first_element, i32 count, const f32 *values);
 #endif
     };
 
@@ -15421,6 +15533,12 @@ void AIScriptMissingConditionDiagnostic();
         void Attach(GRAPHICS_RENDER_TEXTURE_PC *, i32, bool);
         static void ReleaseResources();
         static void RestoreResources();
+        GRAPHICS_RENDER_TEXTURE_PC *fun_005f7af0();
+        u16 fun_005f7b00();
+        u32 fun_005f7b10();
+        u16 fun_005f7b20();
+        u16 fun_005f7b30();
+        void fun_005fb920(PC_EFFECT_SURFACE_PC *source);
 #endif
     };
 
@@ -19225,6 +19343,9 @@ class NuMusic {
     i32 PlayTrackI(u32 class_mask, u32 prepare_only);
     i32 CueTrack(u32 class_mask);
     void Process(f32 delta);
+    f32 fun_00693ba0();
+    static NuMusic *GetPlayer();
+    void NoMusic(i32 no_music);
 };
 
 STATIC_ASSERT(sizeof(NuMusic::Track) == 0x3c);
@@ -19365,8 +19486,14 @@ void NetMessagePoolError(void);
 
 struct NETMESSAGE_PC {
     struct MessageData {
+        u32 fun_00617420() const;
+
         u8 bytes[0x4b0];
         u32 references;
+
+        void fun_0053d2e0();
+        void fun_0053d5c0();
+        void fun_0053d620();
     };
 
     static MessageData sm_poolMessageData[512];
@@ -19452,6 +19579,11 @@ struct NETMESSAGE_PC {
     }
 
     void MakeUnique();
+    void fun_0060ea60(const u8 &value);
+    u32 fun_006174c0() const;
+    void fun_00611a00(u32 size);
+    void fun_00611a10(u32 size);
+    void fun_00613090(const u8 &value);
 
     void Write8(const u8 &value) {
         if (data != NULL) {
@@ -19603,6 +19735,15 @@ struct NETMESSAGE_PC {
             read_offset += 4;
         }
     }
+
+    void fun_0053d330(i8 &value);
+    void fun_0053d360(i16 &value);
+    void fun_0053d4a0(char *text);
+    void fun_0053d4e0(char *text, i32 size);
+    void fun_00613140(i16 &value);
+    void fun_00613180(i8 &value);
+    void fun_006131b0(u32 &value);
+    i32 fun_00613230();
 };
 
 STATIC_ASSERT(sizeof(NETMESSAGE_PC) == 0x10);
@@ -19748,6 +19889,8 @@ struct SoundQueue {
     void StopTimer();
     i32 SetStreamFile(const char *path, f32 offset);
     i32 SetStreamFlags(i32 flags);
+    i32 fun_00699040(const WAVEFORMATEX *format);
+    i32 fun_00699200(i32 *argument_value);
 };
 
 STATIC_ASSERT(offsetof(SoundQueue, stream_state) == 0x08);
@@ -19858,6 +20001,18 @@ struct PC_SPECIAL_SHADOW_LIGHT {
     void RenderConstantsPc(void *);
     void SetEnabledPc(i32 enabled);
     void SetParameterfPc(i32 parameter, f32 value);
+    i32 fun_005c2eb0();
+    void fun_005c2ec0(i32 used);
+    i32 fun_005c2f20();
+    NUMTX *fun_005c2f30();
+    NUMTX *fun_005c2f40();
+    f32 GetParameterfPc(i32 parameter);
+    void SetParameteriPc(i32 parameter, i32 value);
+    i32 GetParameteriPc(i32 parameter);
+    void fun_005c3070(i32 set, i32 scene);
+    PC_SPECIAL_SHADOW_LIGHT *Clone(VARIPTR *arena, VARIPTR end);
+    PC_SPECIAL_SHADOW_LIGHT &operator=(const PC_SPECIAL_SHADOW_LIGHT &other);
+    void fun_00595360(f32 left, f32 right, f32 bottom, f32 top, f32 near_plane, f32 far_plane);
 #endif
 };
 
@@ -20690,6 +20845,15 @@ struct PC_CONTROL_SCREEN_PC {
     void QueueText(char *, f32, f32, f32, i32, f32, f32, u32, f32, f32, u32);
     f32 DrawText(char *, f32, f32, f32, i32, f32, f32, u32, i32, f32);
     void DrawQueuedText(f32);
+    i32 fun_00420160(void);
+    i32 fun_00420170(i32);
+    void fun_00420180(void (*)(i32));
+    PC_CONTROL_SCREEN_PC *fun_00420190(void);
+    void fun_00420320(i32);
+    void fun_00420420(i32);
+    void fun_00420440(void);
+    void fun_00420d30(f32, f32, f32, f32, f32, f32, f32, f32);
+    void fun_00421020(void);
 
     void Draw(void);
 };
@@ -20782,7 +20946,7 @@ struct PC_INPUT_CONFIG_PC {
 #pragma pack(pop)
 
 struct PC_INPUT_COMMAND_PC {
-    u8 active;
+    i8 active;
     i8 axis;
     i8 button;
     u8 unknown_03;
@@ -20792,7 +20956,7 @@ struct PC_INPUT_COMMAND_PC {
 struct PC_INPUT_BINDING_PC {
     u8 kind;
     u8 unknown_01;
-    u16 value;
+    i16 value;
 };
 
 struct PC_INPUT_DEVICE_PC {
@@ -20800,13 +20964,13 @@ struct PC_INPUT_DEVICE_PC {
     NuKeyboardDevice_PC *device;
     GUID product;
     i16 button_count;
-    u8 axis_count;
-    u8 pov_count;
+    i8 axis_count;
+    i8 pov_count;
     u8 deadzone;
     u8 alternate_deadzone;
     u8 unknown_1e[2];
-    u32 left_trigger;
-    u32 right_trigger;
+    i32 left_trigger;
+    i32 right_trigger;
 
     union {
         u8 unknown_28[2];
@@ -20930,7 +21094,7 @@ struct PC_INPUT_RUNTIME_PC {
             u8 first_mouse;
             u8 unknown_671b;
             PC_INPUT_RAW_SAMPLE_PC raw_sample;
-            u8 keyboard_ui_override;
+            i8 keyboard_ui_override;
             u8 unknown_67e1;
             u8 unknown_67e2[2];
         };
@@ -20994,6 +21158,41 @@ struct PC_INPUT_RUNTIME_PC {
     void WriteConfigTextPc(const char *, PC_INPUT_CONFIG_PC *);
     void WriteConfigurationPc(PC_INPUT_CONFIG_PC *, i32, const char *);
     void SaveConfigurationPc();
+    i32 fun_006d38b0(PC_INPUT_CONFIG_PC *config);
+    void fun_006d3970(PC_INPUT_CONFIG_PC *config);
+    void fun_006d3980(i32);
+    void fun_006d3b10(i32);
+    i32 fun_006d49f0(i32 button);
+    i32 fun_006d4a30(i32 axis, i32 active);
+    void fun_006d4d20(i32 value);
+    i32 fun_006d4d50();
+    void fun_006d4d70();
+    i32 fun_006d4ef0(i32 action, i32 *active, i32 *axis, i32 *button, i32 *value);
+    i32 fun_006d4f60(i32 active, i32 code);
+    void fun_006d4fc0(const char *keys);
+    i32 fun_006d4fe0(i32 port, i32 kind, i32 value);
+    i32 fun_006d6db0(i32 port, i32 index);
+    void fun_006d6eb0(i32 port, PC_INPUT_CONFIG_PC *config);
+    PC_INPUT_CONFIG_PC *fun_006d6ed0(u8 mask, i32 port);
+    void fun_006d6ef0(u8 mask, i32 port, i32 key, i32 auxiliary, i32 auxiliary_port, i32 fallback);
+    i32 fun_006d7410(i32 key, i32 port);
+    i32 fun_006d99e0(i32 port, u8 mask);
+    u32 fun_006d82d0(i32, u32 buttons, i32 key, i32 mouse_button, i32 axis, i32 direction, u32 bit);
+    void fun_006d35d0(u8 value);
+    void fun_006d35e0(i32 port, u8 value);
+    void fun_006d3600(i32 port);
+    i32 fun_006d3610();
+    void fun_006d3620();
+    void fun_006d3630(f32 threshold, i32 motion, f32 ramp);
+    void fun_006d36d0();
+    void fun_006d3710(i32 port, i32 *buttons, i32 *axes, i32 *povs);
+    i32 fun_006d3750(PC_INPUT_CONFIG_PC *records, i32 count, PC_INPUT_CONFIG_PC *config);
+    i32 fun_006d37a0(i32 previous, i32 value);
+    PC_INPUT_CONFIG_PC *fun_006d4500(u8 mask, const char *name);
+    void fun_006d45e0(i32 key);
+    i32 fun_006d4790(i32);
+    i32 fun_006d4de0(i32 port, i32 action, i32 auxiliary, i32 bank);
+    void fun_006d4c90(u32 layout_id);
 };
 
 // Add public declarations in C++ context (PC_INPUT_CONFIG_PC type is C++ only).
@@ -21582,6 +21781,8 @@ struct VirtualStackAllocator {
     VirtualStackAllocator(VirtualStackAllocator &, u32);
     ~VirtualStackAllocator();
     void setExternalMemoryPool(void *, u32);
+    void fun_00740fa0(VirtualStackAllocator &parent, u32 size);
+    i32 fun_00741100() const;
 };
 
 STATIC_ASSERT(sizeof(VirtualStackAllocator) == 0x10);
@@ -21608,9 +21809,12 @@ struct ShaderCompilerBufferAllocatorPc {
     void WriteBytes(i32 offset, const void *source, i32 count);
     void AppendText(const char *);
     ShaderCompilerBufferAllocatorPc &operator<<(const char *);
+    ShaderCompilerBufferAllocatorPc &operator<<(i32);
     void AppendInt(i32);
     void AppendSlice(const ShaderLexicalSlicePc &slice);
     ShaderCompilerBufferAllocatorPc &operator<<(const ShaderLexicalSlicePc &slice);
+    void fun_00746450(char value);
+    u8 *fun_00746490();
 };
 
 STATIC_ASSERT(sizeof(ShaderCompilerBufferAllocatorPc) == 16);
@@ -21625,6 +21829,7 @@ struct ShaderConditionNodePc {
     ShaderConditionNodePc *left;
     ShaderConditionNodePc *right;
     const char *token;
+    ShaderConditionNodePc(const char *token, ShaderConditionNodePc *left, ShaderConditionNodePc *right);
     ShaderConditionNodePc *AppendOperand(ShaderConditionNodePc *operand);
 };
 
@@ -21640,6 +21845,8 @@ struct ShaderSourceNodePc {
     i32 expansion_state;
     ShaderSourceNodePc(u32, i32, i32, const char *, i32, const char *, i32, i32);
     const char *SemanticName();
+    i32 fun_00746620();
+    const char *fun_00746630();
 };
 
 STATIC_ASSERT(offsetof(ShaderSourceNodePc, expansion_state) == 0x20);
@@ -21652,6 +21859,8 @@ struct ShaderRegisterBlockPc {
         name[0] = 0;
         register_count = 0;
     }
+
+    void fun_00746760(const char *block_name, i32 count);
 };
 
 STATIC_ASSERT(sizeof(ShaderRegisterBlockPc) == 20);
@@ -21662,6 +21871,7 @@ struct ShaderMacroDefinitionPc {
     const char *value;
     u8 emit;
     u8 unknown_9[3];
+    ShaderMacroDefinitionPc(const char *name, const char *value, u8 emit);
 };
 
 STATIC_ASSERT(sizeof(ShaderMacroDefinitionPc) == 12);
@@ -21725,6 +21935,9 @@ struct ShaderCompilerDictionaryPc {
     void EmitAttribute(ShaderCompilerBufferAllocatorPc *);
     void EmitProgram(ShaderCompilerBufferAllocatorPc *);
     void AddASTDefinition(ShaderSourceNodePc *);
+    void fun_007451c0(bool force);
+    void fun_00746940(ShaderConditionNodePc *node, char *text);
+    void fun_00746bf0(const char *name);
 };
 
 STATIC_ASSERT(sizeof(ShaderConditionNodePc) == 12);
@@ -21849,26 +22062,31 @@ STATIC_ASSERT(offsetof(ShaderExpansionNodePc, data.text.count) == 12);
 struct ShaderParserNodePc {
     i32 kind;
     ShaderParserNodePc *next;
+    ShaderParserNodePc(i32 kind);
 };
 
 struct ShaderParserTextNodePc : ShaderParserNodePc {
     char *bytes;
     i32 count;
+    ShaderParserTextNodePc(char *bytes, i32 count);
 };
 
 struct ShaderParserMacroNodePc : ShaderParserNodePc {
     char *name;
     char *value;
+    ShaderParserMacroNodePc(char *name, char *value);
 };
 
 struct ShaderParserUndefNodePc : ShaderParserNodePc {
     char *name;
+    ShaderParserUndefNodePc(char *name);
 };
 
 struct ShaderParserBranchNodePc : ShaderParserNodePc {
     ShaderParserNodePc *if_true;
     ShaderParserNodePc *if_false;
     ShaderConditionNodePc *condition;
+    ShaderParserBranchNodePc(ShaderConditionNodePc *condition);
 };
 class ShaderCompilerParserPc;
 #ifdef SAGA_SHADER_PARSER_TYPES
@@ -21913,6 +22131,8 @@ class ShaderCompilerParserPc {
     void AddDeclaration(u32, i32, i32, const char *, i32, const char *, i32, i32);
     void EmitDeclarations(u32);
     ShaderConditionNodePc *ParseExpression(ShaderCompilerBufferAllocatorPc *input, i32 *cursor);
+    void fun_0074b330(const ShaderLexicalSlicePc &slice);
+    void fun_0074b6b0(ShaderParserNodePc *node);
 };
 
 STATIC_ASSERT(sizeof(ShaderCompilerParserPc) == 0x45c);
@@ -21958,6 +22178,7 @@ struct ShaderLexicalSlicePc {
     i32 AsInteger(i32 skipped_prefix);
     const char *GetBegin();
     const char *At(i32 offset);
+    bool fun_0074b080(const char *text);
 };
 
 struct ShaderLexicalReaderPc {
@@ -22037,6 +22258,14 @@ struct PC_SHADER_MATERIAL_FILTER_VIEW {
     i32 second_path;
     i32 layer_count;
     i32 parameter;
+
+    PC_SHADER_MATERIAL_FILTER_VIEW() {
+    }
+
+    PC_SHADER_MATERIAL_FILTER_VIEW(const PC_SHADER_FILTER_DESC_VIEW *descriptor, i32 flags, i32 parameter);
+
+    PC_SHADER_MATERIAL_FILTER_VIEW(const PC_SHADER_FILTER_DESC_VIEW *desc,
+                                   const PC_SHADER_FILTER_MATERIAL_VIEW *material, i32 flags, i32 variant);
     void Initialize(const PC_SHADER_FILTER_DESC_VIEW *, const PC_SHADER_FILTER_MATERIAL_VIEW *, i32, i32);
     bool UnfilteredHasLayer(i32) const;
     bool HasDiffuse(i32) const;
@@ -22091,6 +22320,15 @@ struct PC_SHADER_MATERIAL_FILTER_VIEW {
     bool HasEnvironmentTexture() const;
     i32 HasSurfaceLayerAbove() const;
     i32 HasSurfaceLayerAtOrBelow() const;
+    i32 fun_007442d0() const;
+    i32 fun_00744320() const;
+    i32 fun_00744330() const;
+    bool fun_00744340() const;
+    i32 fun_00744350(i32 layer) const;
+    i32 fun_00744370() const;
+    i32 fun_00744380() const;
+    i32 fun_00744390() const;
+    i32 fun_007443b0() const;
 };
 
 STATIC_ASSERT(sizeof(PC_SHADER_MATERIAL_FILTER_VIEW) == 0x24);
@@ -22131,6 +22369,9 @@ class ShaderBuilderGen {
     i32 CompileEffect(const char *source, i32 length, void *output, i32 unused);
     void Generate(PC_SHADER_MATERIAL_FILTER_VIEW *, ShaderCompilerBufferAllocatorPc *,
                   ShaderCompilerBufferAllocatorPc *);
+    void fun_00745270(const char *name, i32 count);
+    bool fun_00745290();
+    i32 fun_007452a0();
 };
 
 typedef ShaderBuilderGen ShaderCompilerBasePc;
@@ -22167,6 +22408,17 @@ class NuShaderObject {
     PC_TEXTURE_RESOURCE_PC *vertex_shader;
     PC_TEXTURE_RESOURCE_PC *pixel_shader;
     u32 unknown_4d4;
+
+    void fun_00741250();
+    bool fun_00741260() const;
+    void fun_00741270();
+    void fun_007412a0();
+    void fun_007412b0();
+    i32 fun_007412c0() const;
+    u32 *fun_007412d0();
+    void fun_00745470(const u32 *key, i32 index, const char *vertex_source, i32 vertex_length, const char *pixel_source,
+                      i32 pixel_length, i32 version);
+    i32 fun_007454a0();
 };
 
 STATIC_ASSERT(sizeof(PC_SHADER_OBJECT_FULL_VIEW) == 0x4d8);
@@ -24470,6 +24722,11 @@ typedef struct FRAME_NATIVE_TEXTURE_POOL_PC {
     i32 cursor;
 #ifdef __cplusplus
     FRAME_NATIVE_TEXTURE_PC *Allocate();
+    FRAME_NATIVE_TEXTURE_POOL_PC *fun_00605150();
+    i32 fun_00605170(FRAME_NATIVE_TEXTURE_PC *record);
+    void fun_00605300(i32 index, bool set);
+    i32 fun_00605460(i32 index);
+    void fun_0060a010(FRAME_NATIVE_TEXTURE_PC *record);
 #endif
 } FRAME_NATIVE_TEXTURE_POOL_PC;
 
@@ -24976,6 +25233,7 @@ class NuPostFilterGen {
     virtual void resetAll();
     virtual bool isEnabled();
     virtual PC_FRAMEBUFFER_PC *getInputFbo();
+    void fun_005c22b0();
     static void copy(GRAPHICS_RENDER_TEXTURE_PC *, PC_FRAMEBUFFER_PC *);
     static void copy(GRAPHICS_RENDER_TEXTURE_PC *, GRAPHICS_RENDER_TEXTURE_PC *, PC_FRAMEBUFFER_PC *);
     bool enabled;
@@ -24997,6 +25255,12 @@ class NuMainFilterGen : public NuPostFilter {
     virtual bool isEnabled();
     void preprocessBlurTextures(GRAPHICS_RENDER_TEXTURE_PC *color, GRAPHICS_RENDER_TEXTURE_PC *normal);
     void preprocessDofMotionBlur(GRAPHICS_RENDER_TEXTURE_PC *depth);
+    void fun_005c2310(i32 filter, bool enable);
+    bool fun_005c2360(i32 filter);
+    void fun_005c2370(const NU_POST_DOF_PARAMETERS_PC *parameters);
+    void fun_005c23a0(const NU_POST_BLOOM_PARAMETERS_PC *parameters);
+    void fun_005c23b0(const NUMTX *previous, const NUMTX *current, f32 scale, f32 maximum, f32 falloff);
+    void fun_005c2400(i32 frames, f32 blend, f32 mode);
     void *programs[18];
     GRAPHICS_RENDER_TEXTURE_PC *blur_texture;
     PC_FRAMEBUFFER_PC *blur_fbo;
@@ -25048,6 +25312,8 @@ class NuMotionFilterGen : public NuPostFilter {
     }
 
     virtual void render();
+    void fun_005c2de0(bool enable);
+    void fun_005c2df0(const NUMTX *previous, const NUMTX *current, f32 scale, f32 maximum, f32 falloff);
     void *programs[2];
     NUMTX previous;
     NUMTX current;
@@ -25065,6 +25331,9 @@ class NuMotionAccumFilterGen : public NuPostFilter {
     NuMotionAccumFilterGen() : frames(0), blend(1.0f), mode_pc(0.0f) {
     }
 
+    void fun_005c3100(bool enable);
+    void fun_005c3110(i32 frames, f32 blend, f32 mode);
+    f32 GetTiming(i32 *last_frame);
     virtual void initResources();
     virtual void destroyResources();
     virtual void initTextureResources(i32, i32);
@@ -25086,6 +25355,8 @@ class NuMotionAccumFilter : public NuMotionAccumFilterGen {
 
 class NuSpeedBlurFilterGen : public NuPostFilter {
   public:
+    void fun_005c3130(bool enable);
+    void fun_005c3140(const NU_POST_SPEED_PARAMETERS_PC *parameters);
     void computeSpeedBlur(NUVEC4 *);
     virtual void initTextureResources(i32, i32);
     virtual void destroyTextureResources();
@@ -25116,6 +25387,10 @@ struct NuDynamicLight {
 class NuDeferredFilterGen : public NuPostFilter {
   public:
     NuDeferredFilterGen();
+    void fun_005c30a0(bool enable);
+    void fun_005c30b0(NuDynamicLight *light);
+    i32 fun_005c30d0();
+    void fun_005c30e0(const f32 *parameters);
     virtual void initResources();
     virtual void destroyResources();
     virtual void initTextureResources(i32, i32);
@@ -27710,6 +27985,12 @@ struct VuVec {
     f32 w;
 #ifdef __cplusplus
     f32 Length();
+    void fun_006b83b0();
+    void fun_006b83c0();
+    void fun_006b83d0();
+    void fun_006b83e0();
+    VuVec fun_006b8400(f32 value) const;
+    f32 fun_006b8440(const VuVec &other) const;
 #endif
 };
 
@@ -29118,6 +29399,9 @@ STATIC_ASSERT(sizeof(struct NuSpecialLegacyLayout) == 76);
 
 struct VuMtx {
     NUMTX matrix;
+#ifdef __cplusplus
+    void fun_006b8470(const VuVec &scale);
+#endif
 };
 
 STATIC_ASSERT(sizeof(struct VuMtx) == 64);
@@ -29192,6 +29476,14 @@ extern "C" {
     extern i32 back_rgba[2];
     extern i32 old_pause_state;
     extern struct NUGSCN_s *edbits_things_scene;
+
+    /* A sound effect name the game registered for the editors (Android
+     * EDBITS_GAME_SOUND). */
+    typedef struct EDBITS_GAME_SOUND {
+        char name[16];
+        i32 id;
+    } EDBITS_GAME_SOUND;
+
     extern i32 CurrentMusicPair_Quiet;
     extern i32 MusicActive;
     extern i32 MusicActiveReset;
@@ -32096,6 +32388,7 @@ class EdEnumControl : public EdControl {
     virtual void AddMenuItem(eduimenu_s *menu, EdRef *reference, void *object);
     virtual void Refresh();
     char *GetEnumString(i32 value);
+    i32 fun_006ba010(char *name);
     static void cbChanged(eduimenu_s *, eduiitem_s *item, u32);
     static void cbButton(eduimenu_s *menu, eduiitem_s *item, u32);
     static void cbSelectItem(eduimenu_s *menu, eduiitem_s *item, u32);
@@ -32131,6 +32424,8 @@ struct EdString {
 
     void Set(const char *value);
     ~EdString();
+    i32 fun_006b85c0(i32 size);
+    char *fun_006b86a0();
 };
 
 /* Base of every placeable level-editor object (Android legoapi_types.h). */
@@ -32220,6 +32515,15 @@ class EdStream {
     virtual i32 SerialiseString(char **text, i32 count) = 0;
     virtual char const *BeginBlock(char const *name) = 0;
     virtual void EndBlock() = 0;
+    i32 fun_00613030(u8 &value);
+    i32 fun_00613050(i32 &value);
+
+    EdStream(MemoryBuffer *buffer);
+    i32 fun_00611910();
+    i32 fun_006119a0(i32 mask);
+    void fun_006119b0(MemoryBuffer *buffer);
+    i32 fun_006c1e00(i32 &value);
+    i32 fun_006c1e20(u8 &value);
 
     i32 version;
     i32 mode;
@@ -32423,6 +32727,9 @@ class EdRef : public CSListLink<EdRef> {
 struct EdMember {
     void *object;
     EdRef *reference;
+
+    i32 fun_006c1f60(i32 attribute, i32 requested_type, void *data, i32 data_size);
+    i32 fun_006c1f90(i32 attribute, i32 requested_type, void *data, i32 data_size);
 };
 
 /* An editor object together with its class and the member it was picked by. */
@@ -32438,6 +32745,11 @@ struct ClassObject {
     i32 GetAttributeData(i32 attribute, i32 requested_type, void *data, i32 data_size);
     i32 SetAttributeData(i32 attribute, i32 requested_type, void *data, i32 data_size);
     void CopyObject(ClassObject &source);
+
+    bool fun_006b89f0(ClassObject &other) {
+        return object == other.object && reference == other.reference;
+    }
+
     void Set(char *name);
     void GetName(char *destination, i32 size);
 };
@@ -32455,9 +32767,15 @@ struct ClassObjectList {
     ClassObjectListEntry *last;
     i32 count;
 
+    ClassObjectListEntry *fun_006c1440();
+    void fun_006c1450(ClassObjectListEntry *entry, ClassObjectListEntry *position);
     void Remove(ClassObjectListEntry *entry);
+    i32 fun_006c14f0();
     i32 GetAveragePosition(VuVec &average);
     i32 GetAveragePosition(VuVec &average, f32 &radius);
+    i32 IsInList(ClassObject object);
+    i32 IsInList(void *object, EdRef *reference);
+    i32 IsInList(EdClass *object_class);
 };
 
 class EdTool : public CSListLink<EdTool> {
@@ -32622,6 +32940,16 @@ class ClassEditor : public BaseEditor {
     static void cbEdClassToolsMenu(eduimenu_s *parent, eduiitem_s *item, u32 buttons);
     static void cbEdClassViewMenu(eduimenu_s *parent, eduiitem_s *item, u32 buttons);
     static void cbFileSelected(eduimenu_s *menu, eduiitem_s *item, u32 buttons);
+    EdTool *fun_006b8be0();
+    f32 &fun_006b8bf0();
+    i32 fun_006b8c10();
+    void fun_006b8c20(EdTool *tool);
+    void fun_006b8c30(ClassObject &object);
+    void fun_006b8c50(i32 value);
+    i32 fun_006b8c60(ClassObject &object);
+    ClassObjectList &fun_006b8c90();
+    void RegisterTool(EdTool &tool);
+    ClassObject &fun_006b8ca0();
 };
 
 extern ClassEditor theClassEditor;
@@ -32658,6 +32986,7 @@ struct EdInputContext {
     u8 reserved_258[8];
 
     void Set(i32 input, f32 value, f32 repeat_delay);
+    void fun_006c1fc0(i32 input, i32 value, f32 repeat_delay);
     void Clear(i32 input);
     f32 Get(i32 input);
     f32 GetPress(i32 input);
@@ -32711,6 +33040,23 @@ class LevelEditor : public BaseThing {
                   variptr_u *file_begin, variptr_u *file_end);
     void DrawInfoText(char **lines, i32 count, i32 x, i32 y, i32 available_width, i32 available_height, i32 text_colour,
                       i32 background);
+    void fun_006b8ff0(bool value);
+    void fun_006b9000(u8 value);
+    void fun_006b9010(u8 value);
+    i16 fun_006b9020();
+    void fun_006b9030(i16 value);
+    i32 fun_006b9040();
+    f32 *fun_006b9080();
+    void fun_006b9090(i32 value);
+    i32 fun_006b90a0();
+    void fun_006b90b0(i32 value);
+    void fun_006b90c0(i32 value);
+    i32 fun_006b90e0();
+    void fun_006b90f0(BaseEditor *editor);
+    NUGSCN *fun_006bc740(char *name);
+    i32 fun_006bc7e0(NUGSCN *scene);
+    void fun_006bc9d0(eduimenu_s *menu);
+    char *fun_006bc9e0(char *text);
 
     f32 background_colour[4];
     i32 field_0x20;
@@ -32825,6 +33171,9 @@ class V2Peer {
     NetStats stats;
     u32 unknown_230[27];
     i32 time_offset;
+
+    u8 fun_00611a20() const;
+    i32 fun_00611a60(i32 time) const;
 };
 
 class V2HostList {
@@ -33000,6 +33349,13 @@ struct FtpFile {
     }
 
     i32 CompareAddress(const NetAddress &other) const;
+    i32 fun_00617210(const NetAddress &other) const;
+    const u32 *fun_00617230() const;
+    i32 fun_00617240() const;
+    char *fun_00617250();
+    i32 fun_00617260() const;
+    void RecvData(NETMESSAGE_PC &message);
+    void fun_006176d0();
     void Init(i32 new_direction, const char *new_name, i32 new_size, const NetAddress &new_address, void *new_buffer,
               i32 new_capacity);
     i32 Accept(i32 new_capacity, void *new_buffer);
@@ -33031,6 +33387,9 @@ struct FtpFileArray {
         }
     }
 
+    FtpFile *fun_00617480();
+    const FtpFile *fun_00617490() const;
+
     FtpFile items[32];
 };
 
@@ -33042,12 +33401,16 @@ class NetFtpManager : public NetListenerInterface {
     virtual void Receive(NETMESSAGE_PC message, u8 channel, const NetAddress &address);
     virtual void PeerLeft(const NetAddress &address, i32 reason);
     void Init();
+    i32 Send(const char *name, const void *data, i32 size, const NetAddress &address);
+    i32 Get(const char *name, void *buffer, i32 capacity, const NetAddress &address);
+    i32 Abort(const char *name, const NetAddress &address, i32 direction, i32 reason);
     void Reset();
     void Term();
     void Update();
     FtpFile *FindTransfer(const char *name, const NetAddress &address, i32 direction);
     const FtpFile *FindTransfer(const char *name, const NetAddress &address, i32 direction) const;
     const FtpFile *GetTransfers() const;
+    void fun_0060e6f0(i32 value);
 
     FtpFileArray files;
     i32 field_1604;
@@ -33070,6 +33433,11 @@ class NOSFilter {
 };
 
 struct ReplicatorData {
+    void fun_00611b60(u8 *memory, u32 size);
+    i32 fun_00611b80() const;
+    void fun_00611b90(u32 alignment);
+    template <class T> T *Allocate(u32 alignment);
+
     u8 *start;
     u8 *end;
     u8 *cursor;
@@ -33085,6 +33453,14 @@ class NetReplicator : public CSListLink<NetReplicator> {
     virtual i32 SerialiseObject(EdStream &stream, V2Peer *peer, const EdClass *object_class, void *object,
                                 ReplicatorData &data, i16 *flags);
     virtual i32 DoPrediction(const EdClass *object_class, void *object, ReplicatorData &data, i32 check_only);
+    i32 fun_00611bb0() const;
+    i32 fun_00611bc0(i32 groups) const;
+    i32 fun_00611be0(u16 groups);
+    i32 fun_00611c00(u16 groups);
+    i32 fun_00611c20() const;
+    void fun_00611c30(u16 size);
+    i32 fun_00611c40() const;
+    void fun_00611c50(u16 size);
 
     u16 id;
     u16 replication_group;
@@ -33145,6 +33521,8 @@ class NetworkObjectManager : public NetListenerInterface, public EdObjectNotifie
     struct ReplicatorList {
         ReplicatorList() : head(NULL), tail(NULL), count(0) {
         }
+
+        void fun_00612f70(NetReplicator *replicator, NetReplicator *after);
 
         NetReplicator *head;
         NetReplicator *tail;
@@ -33208,6 +33586,7 @@ class NetworkObjectManager : public NetListenerInterface, public EdObjectNotifie
     i32 RegisterObject(void *object, EdClass *object_class, i32 guid);
     i32 RegisterObjectCall(void (*callback)(void *, NETMESSAGE_PC &), i32 flags);
     i32 RegisterRemoteCall(void (*callback)(NETMESSAGE_PC &), i32 flags);
+    i32 RemoteCall(i32 call_id, NETMESSAGE_PC message, const V2Peer *peer);
     i32 ReleaseObject(void *object, EdClass *object_class, i32 guid);
     void RemoveFromLocalObjectList(NetworkObject *object);
     void RemovePendingObject(NetworkObject *object);
@@ -33227,6 +33606,7 @@ class NetworkObjectManager : public NetListenerInterface, public EdObjectNotifie
     void Term();
     void Update();
     void UpdateLocalObjectList();
+    NetStats *fun_0060e740(i32 class_id);
 
     i32 field_08;
     i32 active;
@@ -33301,6 +33681,7 @@ class TTNetwork : public NetTransporter, public BaseThing {
     NetAddress *GetMyHostAddress();
     void SetMyHostAddress(NetAddress *address);
     void ClearMyHostAddress();
+    i32 fun_00611dc0() const;
 
     NetLogFile log;
     u32 frame_count;
@@ -33488,6 +33869,10 @@ struct NuNetEmu {
     i32 SplitSendPacket(EmuPacket *packet);
     void SetConditions(eConditions new_conditions);
     void Update();
+    void fun_0060e750(u8 new_enabled);
+    NetStats *fun_0060e760();
+    PackStats *fun_0060e770();
+    i32 fun_00611dd0() const;
 
     i32 field_00;
     EmuPacket *first_packet;

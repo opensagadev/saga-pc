@@ -1,6 +1,18 @@
 #include "saga.h"
 
 NULSTHDR *bgproc_procinfo_pool = 0;
+
+typedef struct BGPROC_HANDLER_PC {
+    struct BGPROC_HANDLER_PC *next;
+    void *unknown_04;
+    void (*handler)(void);
+} BGPROC_HANDLER_PC;
+
+i32 dat_0297ad4c = 0;
+BGPROC_HANDLER_PC *dat_0297ad58 = 0;
+i32 dat_0297ad5c = 0;
+i32 dat_0297ad60 = 0;
+BGPROC_HANDLER_PC *dat_0297ad68 = 0;
 volatile u32 nu_current_thread_id = 0;
 
 /* The PC build has no debug-print lock; both halves are empty. */
@@ -19,6 +31,17 @@ void PcDisableThreadSwap(void) {
 void fun_006de770(void) {
 }
 
+i32 fun_006de780(void) {
+    BGPROC_HANDLER_PC *handler;
+
+    dat_0297ad4c = 1;
+    for (handler = dat_0297ad58; handler != NULL; handler = handler->next) {
+        handler->handler();
+    }
+    dat_0297ad4c = 0;
+    return 1;
+}
+
 void fun_006de7c0(void) {
 }
 
@@ -31,10 +54,36 @@ void fun_006de7e0(void) {
 void fun_006de7f0(void) {
 }
 
+i32 fun_006de800(void) {
+    BGPROC_HANDLER_PC *handler;
+
+    dat_0297ad4c = 1;
+    ++nuvideo_global_vbcnt;
+    if (dat_0297ad60) {
+        for (handler = dat_0297ad68; handler != NULL; handler = handler->next) {
+            handler->handler();
+        }
+    }
+    dat_0297ad4c = 0;
+    return 1;
+}
+
 void fun_006de860(void) {
 }
 
 void fun_006de870(void) {
+}
+
+void fun_006de880(void) {
+    if (dat_0297ad60) {
+        fun_006de800();
+    }
+}
+
+void fun_006de890(void) {
+    if (dat_0297ad5c) {
+        fun_006de780();
+    }
 }
 
 void fun_006de8a0(void) {

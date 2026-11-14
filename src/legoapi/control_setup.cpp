@@ -205,6 +205,44 @@ void PC_CONTROL_SCREEN_PC::RefreshItems(void) {
     AdvanceSelection(row);
 }
 
+i32 PC_CONTROL_SCREEN_PC::fun_00420160(void) {
+    return active;
+}
+
+i32 PC_CONTROL_SCREEN_PC::fun_00420170(i32 player) {
+    return saved_ports[player];
+}
+
+void PC_CONTROL_SCREEN_PC::fun_00420180(void (*callback)(i32)) {
+    play_sound = callback;
+}
+
+PC_CONTROL_SCREEN_PC *PC_CONTROL_SCREEN_PC::fun_00420190(void) {
+    fade = 0.0f;
+    deadzone[3] = 32.0f;
+    active = 0;
+    deadzone[2] = 32.0f;
+    initialized = 0;
+    deadzone[1] = 32.0f;
+    row_count = 0;
+    deadzone[0] = 32.0f;
+    selected_row = 0;
+    keyboard_deadzone = 5.0f;
+    capture_state = 0;
+    release_reset = 0;
+    x_scale = 0.9f;
+    release_frames = 0;
+    selected_player = 0;
+    y_scale = 0.8f;
+    missing_binding = 0;
+    phase = 0;
+    for (i32 i = 3; i >= 0; --i) {
+        saved_ports[i] = -1;
+    }
+    play_sound = NULL;
+    return this;
+}
+
 extern "C" {
     i32 NuMtlSetCurrentRenderPlane(i32);
 }
@@ -236,6 +274,10 @@ void PC_CONTROL_SCREEN_PC::Register(PC_CONTROL_CONFIG_PC *config, VARIPTR *, VAR
         rows[row_count].selected = 0;
         ++row_count;
     }
+}
+
+void PC_CONTROL_SCREEN_PC::fun_00420320(i32) {
+    phase = 3;
 }
 
 i32 PC_CONTROL_SCREEN_PC::HashConfiguration(void) {
@@ -280,6 +322,17 @@ i32 PC_CONTROL_SCREEN_PC::WaitForRelease(void) {
         release_frames = release_reset;
     }
     return release_frames == 0;
+}
+
+void PC_CONTROL_SCREEN_PC::fun_00420420(i32 sound) {
+    if (play_sound) {
+        play_sound(sound);
+    }
+}
+
+void PC_CONTROL_SCREEN_PC::fun_00420440(void) {
+    release_frames = release_reset = 3;
+    PcInputResetMouseMotionPc();
 }
 
 void PC_CONTROL_SCREEN_PC::Initialize(i32 count, i32 player, i32 resolve_bank, u8 is_drop_in) {
@@ -346,6 +399,10 @@ extern "C" {
             }
         }
         PcControlScreenPc.Register(config, buffer, end);
+    }
+
+    i32 fun_00421400(void) {
+        return PcControlScreenPc.active;
     }
 
     void PcControlInitializePc(i32 players, i32 player, i32 resolve_bank, u8 drop_in) {
@@ -896,6 +953,12 @@ u32 PC_CONTROL_SCREEN_PC::ScaleColour(f32 brightness, f32 alpha, u32 colour) {
     return (((i32)b & 0xff) << 16) | ((i32)a << 24) | (((i32)g & 0xff) << 8) | ((i32)r & 0xff);
 }
 
+void PC_CONTROL_SCREEN_PC::fun_00421020(void) {
+    for (i32 i = 0; i < 12; ++i) {
+        text[i].key = 0;
+    }
+}
+
 u32 PC_CONTROL_SCREEN_PC::HashString(const char *string) {
     i32 count = NuStrLen(string);
     if (!count) {
@@ -1116,6 +1179,46 @@ void PC_CONTROL_SCREEN_PC::DrawDeadzone(f32 x, f32 y, f32 z, f32 width, f32 heig
     PcControlPrimColourPc(colour);
     NuPrim2DAddXYZ(x + radius, y + half_height, z);
     NuPrim2DEnd();
+}
+
+void PC_CONTROL_SCREEN_PC::fun_00420d30(f32 x, f32 y, f32 z, f32 width, f32 height, f32 brightness, f32 bars,
+                                        f32 level) {
+    f32 base = (height * NuQFntHalfScale);
+    u32 colour = ScaleAlpha(opacity * brightness, 0x40c88080);
+    y = (f32)(-y - 0.05999999865889549);
+    NuPrim2DBegin(13, 5, material);
+    PcControlPrimColourPc(colour);
+    NuPrim2DAddXYZ(x - width, y - base, z);
+    PcControlPrimColourPc(colour);
+    NuPrim2DAddXYZ(x - width, y + base, z);
+    PcControlPrimColourPc(colour);
+    NuPrim2DAddXYZ(x + width, y - height, z);
+    PcControlPrimColourPc(colour);
+    NuPrim2DAddXYZ(x + width, y + height, z);
+    NuPrim2DEnd();
+    i32 i = 0;
+    f32 step = (width + width) / bars;
+    f32 rise = (f32)(height - base) / bars;
+    f32 left = x - width;
+    step += 0.20000000298023224 * step / bars;
+    i32 count = level;
+    for (; i < count; ++i) {
+        colour = ScaleColour((i * 0.05000000074505806 + brightness), opacity, 0x804040c8);
+        NuPrim2DBegin(13, 5, material);
+        PcControlPrimColourPc(colour);
+        NuPrim2DAddXYZ(left, y - base, z);
+        PcControlPrimColourPc(colour);
+        NuPrim2DAddXYZ(left, y + base, z);
+        PcControlPrimColourPc(colour);
+        f32 right = (left + step * 0.800000011920929);
+        f32 top = (base + rise * 0.800000011920929);
+        NuPrim2DAddXYZ(right, y - top, z);
+        PcControlPrimColourPc(colour);
+        NuPrim2DAddXYZ(right, y + top, z);
+        NuPrim2DEnd();
+        base += rise;
+        left += step;
+    }
 }
 
 void PC_CONTROL_SCREEN_PC::Draw(void) {

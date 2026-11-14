@@ -1253,6 +1253,43 @@ void cbSetAutoSpeed(eduimenu_s *menu, eduiitem_s *item, u32 buttons) {
     }
 }
 
+/* Android edmainRegister: adds an editor module to the front of the list. */
+i32 edmainRegister(ed_module_s *module) {
+    if (ed_init) {
+        edmainClose();
+    }
+    if (ed_list) {
+        ed_list->previous = module;
+    }
+    module->next = ed_list;
+    module->previous = NULL;
+    ed_list = module;
+    return 1;
+}
+
+extern i32 edmain_render_interacts;
+void edmainRender(void);
+void eduiFlushInteracts(void);
+void eduiRenderInteracts(void);
+
+/* Renders the active editor module (the main menu without one) and the
+ * cursor's interact boxes. */
+void fun_006299e0(void) {
+    if (edmain_cursor_enabled) {
+        eduiFlushInteracts();
+    }
+    if (ed_module_active && ed_curr) {
+        if (ed_curr->render) {
+            ed_curr->render();
+        }
+    } else {
+        edmainRender();
+    }
+    if (edmain_cursor_enabled && edmain_render_interacts) {
+        eduiRenderInteracts();
+    }
+}
+
 void cbMMEditorConfig(eduimenu_s *menu, eduiitem_s *item, u32 buttons) {
     ed_cfg_menu->x = menu->x + 10;
     ed_cfg_menu->y = menu->y + 10;

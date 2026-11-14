@@ -1089,6 +1089,31 @@ void edpartClose(void) {
     eduiMenuDestroy(edpart_opt_menu);
 }
 
+extern NUVEC edpart_entry_position;
+void edcamSetPosAng(NUVEC *position, i32 pitch, i32 yaw);
+
+/* Android edpartEnter: remembers where the editor was entered and moves the
+ * camera there on the first entry of a level. */
+void edpartEnter(void) {
+    NUVEC origin = {0.0f, 0.0f, 0.0f};
+    if (edmainQueryLocVec() != NULL) {
+        edpart_entry_position = *edmainQueryLocVec();
+    } else {
+        edpart_entry_position.x = global_camera.mtx.m30;
+        edpart_entry_position.y = global_camera.mtx.m31;
+        edpart_entry_position.z = global_camera.mtx.m32;
+    }
+    if (edpart_first_time_this_level != 0) {
+        if (edmainQueryLocVec() != NULL) {
+            edcamSetPosAng(edmainQueryLocVec(), 0, 0);
+        } else {
+            edcamSetPosAng(&origin, 0, 0);
+        }
+        edpart_first_time_this_level = 0;
+    }
+    edpart_nearest = -1;
+}
+
 void fun_0064a430(void) {
 }
 

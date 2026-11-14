@@ -266,6 +266,15 @@ bool ShaderLexicalReaderPc::Next(ShaderCompilerBufferAllocatorPc *input, i32 *cu
     return false;
 }
 
+bool ShaderLexicalSlicePc::fun_0074b080(const char *text) {
+    return !Equals(text);
+}
+
+ShaderConditionNodePc::ShaderConditionNodePc(const char *token, ShaderConditionNodePc *left,
+                                             ShaderConditionNodePc *right)
+    : left(left), right(right), token(token) {
+}
+
 // noinline: the original calls AppendOperand out of line from ShaderCompilerParserPc::ParseExpression; VC8 would inline
 // it there.
 __declspec(noinline) ShaderConditionNodePc *ShaderConditionNodePc::AppendOperand(ShaderConditionNodePc *operand) {

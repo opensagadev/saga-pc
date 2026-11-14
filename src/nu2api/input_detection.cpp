@@ -6,8 +6,71 @@
 extern "C" void fun_006d3560(void) {
 }
 
+void PC_INPUT_RUNTIME_PC::fun_006d35d0(u8 value) {
+    suppress_key_1 = value;
+}
+
+void PC_INPUT_RUNTIME_PC::fun_006d35e0(i32 port, u8 value) {
+    devices[port].action_keys_active = value;
+}
+
+void PC_INPUT_RUNTIME_PC::fun_006d3600(i32 port) {
+    captured_port = port;
+}
+
+i32 PC_INPUT_RUNTIME_PC::fun_006d3610() {
+    return captured_port;
+}
+
+void PC_INPUT_RUNTIME_PC::fun_006d3620() {
+    shutdown_state = 0;
+}
+
+void PC_INPUT_RUNTIME_PC::fun_006d3630(f32 threshold, i32 motion, f32 ramp) {
+    if (threshold >= 0.0f && threshold <= 1.0f) {
+        axis_threshold = threshold * 32767.0;
+    }
+    if (motion > 0) {
+        motion_threshold = motion;
+    }
+    if (ramp >= 0.0f) {
+        ramp_seconds = ramp;
+    }
+}
+
 extern "C" NuKeyboardState_PC *fun_006d36c0(void) {
     return nu_input_state;
+}
+
+void PC_INPUT_RUNTIME_PC::fun_006d36d0() {
+    for (i32 port = 0; port < 14; ++port) {
+        for (i32 action = 0; action < 32; ++action) {
+            devices[port].reset_pairs[action].first = 0;
+            devices[port].reset_pairs[action].second = 0;
+        }
+    }
+}
+
+void PC_INPUT_RUNTIME_PC::fun_006d3710(i32 port, i32 *buttons, i32 *axes, i32 *povs) {
+    *buttons = devices[port].button_count;
+    *axes = devices[port].axis_count;
+    *povs = devices[port].pov_count;
+}
+
+i32 PC_INPUT_RUNTIME_PC::fun_006d3750(PC_INPUT_CONFIG_PC *records, i32 count, PC_INPUT_CONFIG_PC *config) {
+    for (i32 index = 0; index < count; ++index) {
+        if (config->product_id == records[index].product_id && config->key == records[index].key) {
+            return index;
+        }
+    }
+    return -1;
+}
+
+i32 PC_INPUT_RUNTIME_PC::fun_006d37a0(i32 previous, i32 value) {
+    if (previous & 0x80000000) {
+        return (previous * 2 + 1) ^ value ^ 0x12345678;
+    }
+    return (previous * 2) ^ value ^ 0x12345678;
 }
 
 // The DirectX SDK "XInput and DirectInput" IsXInputDevice sample.

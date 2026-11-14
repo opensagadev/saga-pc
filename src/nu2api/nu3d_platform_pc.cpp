@@ -1195,6 +1195,30 @@ extern "C" {
         vertex->v = v;
     }
 
+    i32 PC_DEVICE_BACKEND_PC::fun_005f7860() {
+        return quality[multisample_index];
+    }
+
+    GRAPHICS_CAPS_PC *PC_DEVICE_BACKEND_PC::fun_005f7870() {
+        return &caps;
+    }
+
+    GRAPHICS_PRESENT_PARAMETERS_PC *PC_DEVICE_BACKEND_PC::fun_005f7880() {
+        return &parameters;
+    }
+
+    u16 PC_DEVICE_BACKEND_PC::fun_005f7890() {
+        return target_count;
+    }
+
+    i32 PC_DEVICE_BACKEND_PC::fun_005f78a0() {
+        return (caps.texture_caps & 2) == 0 && (caps.texture_caps & 0x100) == 0;
+    }
+
+    void PC_DEVICE_BACKEND_PC::fun_005f78c0() {
+        PCDeviceSetVertexDeclarationPc(declaration6ac);
+    }
+
     static i32 PCGraphicsFormatToD3d(i32 format) {
         switch (format) {
             case 2:
@@ -1474,6 +1498,28 @@ extern "C" {
     }
 
     void fun_005f8390(void) {
+    }
+
+    void fun_005f83a0(GRAPHICS_RENDER_TEXTURE_PC *texture, i32 id) {
+        PC_TEXTURE_LEVEL_DESC_PC description;
+        texture->resource = NuTextureGetDimensions(id)->resource;
+        if (texture->resource == NULL) {
+            memset(texture, 0, sizeof(*texture));
+            return;
+        }
+        texture->resource->methods->get_level_desc(texture->resource, 0, &description);
+        texture->width = description.width;
+        texture->height = description.height;
+        texture->unknown_08 = 0;
+        texture->original_mip_count = texture->mip_count =
+            texture->resource->methods->get_level_count(texture->resource);
+        texture->field_10 = 1;
+        texture->format = PCGraphicsFormatFromD3d(description.format);
+        texture->usage = description.usage & 1;
+        texture->pool = description.pool;
+        texture->external_id = id;
+        texture->field_24 = 0;
+        texture->flags = 0x012449d0;
     }
 
     i32 fun_005f8450(GRAPHICS_RENDER_TEXTURE_PC *texture) {
@@ -2752,6 +2798,11 @@ extern "C" {
         }
     }
 
+    void PC_EFFECT_SURFACE_PC::fun_005fb920(PC_EFFECT_SURFACE_PC *source) {
+        bool resize = width != source->width || height != source->height;
+        PCDeviceStretchRectPc(source->surface, NULL, surface, NULL, resize ? 2 : 0);
+    }
+
     void PC_EFFECT_SURFACE_PC::ReleaseResources() {
         for (u32 index = 0; index != 256; ++index) {
             PC_EFFECT_SURFACE_PC *item = PcSurfaceRegistry[index];
@@ -3090,6 +3141,16 @@ extern "C" {
         render_state.fog_packet_cache = NULL;
     }
 
+    void NuRndrStateSetFogState(f32 near_distance, f32 far_distance, u32 colour, f32 density) {
+        render_state.fog_value_0170 = near_distance;
+        render_state.fog_value_0174 = far_distance;
+        render_state.fog_pointer_0178 = colour;
+        render_state.fog_value_017c = density;
+        render_state.fog_packet_cache = NULL;
+        ++render_state.counter_0020;
+        ++render_state.fog_id;
+    }
+
     u32 NuRndrStateGetFogEnabled(void) {
         return render_state.fog_state_word;
     }
@@ -3157,7 +3218,7 @@ extern "C" {
         *(u32 *)cursor->void_ptr = state->fog_state_word;
         cursor->addr += sizeof(u32);
         if (state->fog_state_word != 0) {
-            *(u32 *)cursor->void_ptr = (u32)state->fog_pointer_0178;
+            *(u32 *)cursor->void_ptr = state->fog_pointer_0178;
             cursor->addr += sizeof(u32);
             field = (f32 *)cursor->void_ptr;
             *field = state->fog_value_0170;
@@ -4513,9 +4574,22 @@ extern "C" {
     void fun_006017f0(void) {
     }
 
+    i32 fun_00601800(void) {
+        return dat_0080e6a4;
+    }
+
+    void fun_00601810(i32 value) {
+        dat_0080e6a4 = value;
+    }
+
     i32 NuLgtRand(void) {
         NuLgtSeed = (NuLgtSeed * 0x24cd + 1) & 0xffff;
         return NuLgtSeed;
+    }
+
+    void NuLightFogX(f32 near_distance, f32 far_distance, u32 colour, f32, f32, i32, f32 density) {
+        NuRndrStateSetFogEnabled(1);
+        NuRndrStateSetFogState(near_distance, far_distance, colour, density);
     }
 
     void fun_006018b0(void) {
@@ -4525,6 +4599,11 @@ extern "C" {
     }
 
     void fun_006019f0(void) {
+    }
+
+    void fun_00601a00(f32 first, f32 second) {
+        dat_0097f990 = first;
+        dat_0280d3a0 = second;
     }
 
     void fun_00601a20(void) {
@@ -7007,6 +7086,26 @@ extern "C" {
 extern "C" void PCGraphicsResolveFramebufferPc(i32) {
 }
 
+GRAPHICS_RENDER_TEXTURE_PC *PC_EFFECT_SURFACE_PC::fun_005f7af0() {
+    return texture;
+}
+
+u16 PC_EFFECT_SURFACE_PC::fun_005f7b00() {
+    return level;
+}
+
+u32 PC_EFFECT_SURFACE_PC::fun_005f7b10() {
+    return field_10;
+}
+
+u16 PC_EFFECT_SURFACE_PC::fun_005f7b20() {
+    return width;
+}
+
+u16 PC_EFFECT_SURFACE_PC::fun_005f7b30() {
+    return height;
+}
+
 extern "C" void NuDisplayListShadowTransformPc(void *data) {
     NUMTX *matrix = (NUMTX *)data;
     f32 saved33 = matrix->m33;
@@ -7082,6 +7181,14 @@ extern "C" {
         NuRndrClear(clear_flags, bottom_colour, alpha);
     }
 
+    void fun_005fead0(i32 value) {
+        dat_02854c94 = value;
+    }
+
+    void fun_005feae0(i32 value) {
+        dat_02854c90 = value;
+    }
+
     void fun_005fec80(void) {
     }
 
@@ -7154,8 +7261,32 @@ extern "C" {
     void NuRndrDwaReleasePc(void) {
     }
 
+    i32 fun_005fe460(void) {
+        return dat_0097391c;
+    }
+
+    void fun_005fe470(u32 colour) {
+        dat_0280d838 = colour & 0xffffff;
+        PCDeviceSetRenderState(34, colour);
+        dat_02854cb0 = 0;
+    }
+
     void fun_005fe4a0(u32 density) {
         PCDeviceSetRenderState(38, density);
+    }
+
+    void fun_005fe4b0(void) {
+        if (dat_02854cb0 == 0) {
+            PCDeviceSetRenderState(34, 0);
+        }
+        dat_02854cb0 = 1;
+    }
+
+    void fun_005fe4d0(void) {
+        if (dat_02854cb0 != 0) {
+            PCDeviceSetRenderState(34, dat_0280d838);
+            dat_02854cb0 = 0;
+        }
     }
 
     void fun_005fe500(u32 start, u32 end) {
@@ -7165,6 +7296,13 @@ extern "C" {
 
     void fun_005fe520(u32 density) {
         PCDeviceSetRenderState(38, density);
+    }
+
+    i32 fun_005fe530(i32 enable) {
+        i32 previous = dat_02854cac;
+        dat_02854cac = enable != 0;
+        PCDeviceSetRenderState(28, dat_02854cac);
+        return previous;
     }
 
     i32 fun_005fe560(void) {
@@ -7214,6 +7352,10 @@ extern "C" {
         return entry;
     }
 
+    void fun_006029d0(i32 value) {
+        dat_02854f54 = value;
+    }
+
     void *fun_006029e0(void) {
         void *block = NuAlloc(0x98, NuGobjSourcePathPc, 172);
         memset(block, 0, 0x98);
@@ -7251,6 +7393,26 @@ extern "C" {
         if (aux != NULL && aux->payload != NULL) {
             aux->payload = NULL;
         }
+    }
+
+    void fun_00603140(f32 gamma) {
+        u16 ramp[3][256];
+        for (i32 i = 0; i < 256; ++i) {
+            i32 value = i * gamma * 255.0;
+            i32 entry = 0;
+            if (value > 0x7fff) {
+                value -= 0x7fff;
+                entry = 1;
+                if (value > 0x7fff) {
+                    value = 0x7fff;
+                }
+            }
+            entry = entry * -0x8000 | value;
+            ramp[0][i] = entry;
+            ramp[1][i] = entry;
+            ramp[2][i] = entry;
+        }
+        PCDeviceSetGammaRampPc(ramp);
     }
 
     void fun_006031f0(void) {
@@ -7337,6 +7499,15 @@ extern "C" {
 
     i32 fun_005fefa0(void) {
         return 1;
+    }
+
+    void fun_005fefb0(i32, i32 x, i32 y, i32 width, i32 height, f32 u0, f32 v0, f32 u1, f32 v1, i32 colour, i32 z) {
+        NuRndrRectUV2diZ(x, y, width, height, u0, v0, u1, v1, colour, dat_02854d00, z);
+    }
+
+    i32 fun_005ff000(i32, NUMTL *material) {
+        dat_02854d00 = material;
+        return 0;
     }
 
     void fun_005ff010(void) {
@@ -7467,6 +7638,10 @@ extern "C" {
     }
 
     void fun_005fe800(void) {
+    }
+
+    void fun_005fe850(i32 value) {
+        dat_0080e21c = value;
     }
 
     void fun_005fe860(i32 restore) {
@@ -7621,6 +7796,20 @@ extern "C" {
     void NuMtlAnimate(f32 frame_time) {
         NuDisplayListAnimateMtls(frame_time * FrameMaterialAnimationSpeedPc);
         NuMtlAnimateShaderMtlTextures(frame_time);
+    }
+
+    void fun_00607b40(i32 enable, i32 mode) {
+        dat_02854cac = enable != 0;
+        PCDeviceSetRenderState(28, dat_02854cac);
+        if (enable) {
+            if (mode == 1) {
+                PCDeviceSetRenderState(35, 1);
+            } else {
+                PCDeviceSetRenderState(35, 3);
+            }
+        } else {
+            PCDeviceSetRenderState(35, 0);
+        }
     }
 
     void NuRndrInitEx(i32 size, VARIPTR *buffer, VARIPTR end) {
@@ -7973,6 +8162,32 @@ extern "C" {
         *portal_nearclip = global_camera.portal_nearclip;
     }
 
+    void fun_00603e30(void) {
+        dat_0080e864 = dat_0280a598;
+    }
+
+    void fun_00603e40(void) {
+        if (dat_0080e864 != dat_0280a598 + 64) {
+            dat_0080e864->camera = global_camera;
+            dat_0080e864->camera_id = (i16)render_state.camera_id;
+            dat_0080e864++;
+        } else {
+            PCGraphicsRenderTextureAllocationError();
+        }
+    }
+
+    void fun_00603e80(void) {
+        if (dat_0080e864 != dat_0280a598) {
+            dat_0080e864--;
+            if (dat_0080e864->camera_id != (i16)render_state.camera_id) {
+                NuCameraSetEx(&dat_0080e864->camera, 0);
+                render_state.camera_id = dat_0080e864->camera_id;
+            }
+        } else {
+            PCGraphicsRenderTextureAllocationError();
+        }
+    }
+
     NUMTX *fun_00603ed0(NUMTX *matrix) {
         *matrix = vmtx;
         return matrix;
@@ -8133,6 +8348,10 @@ extern "C" {
         pmtx.m11 *= NuCameraProjectionGlobalScaleY;
         pmtx.m20 = NuCameraProjectionGlobalOffsetX;
         pmtx.m21 = NuCameraProjectionGlobalOffsetY;
+    }
+
+    i32 fun_00604b50(NUVEC *min, NUVEC *max) {
+        return NuCameraClipTestExtents(min, max, NuCameraGetClippingMtx(), 0.0f, 0);
     }
 
     void fun_00604bf0(void) {

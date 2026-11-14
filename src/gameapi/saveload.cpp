@@ -5,6 +5,7 @@
 extern "C" {
     extern char SaveFolderPathPc[256];
     extern char SaveFullSlotPathPc[256];
+    extern char SaveFullCodePathPc[256];
     extern char SaveSlotNamePc[256];
     extern i32 saveload_slotcode[6];
     void saveloadASSave(i32 slot, void *buffer, i32 size, u32 hash);
@@ -22,6 +23,21 @@ extern "C" {
         sprintf(SaveSlotNamePc, "SaveGame%d.%s_SavedGame", slot, PcProductName);
         strcat(SaveFullSlotPathPc, SaveSlotNamePc);
         return SaveFullSlotPathPc;
+    }
+
+    /* Android fullcodename: the path of the slot's code file. */
+    char *fullcodename(i32 slot) {
+#ifndef SAGA_DEBUG
+        PCOptionsBuildFolder(SaveFolderPathPc);
+        strcat(SaveFolderPathPc, "SavedGames");
+#endif
+        i32 i = 0;
+        do {
+            SaveFullCodePathPc[i] = SaveFolderPathPc[i];
+        } while (SaveFolderPathPc[i++] != 0);
+        strcat(SaveFullCodePathPc, "\\");
+        strcat(SaveFullCodePathPc, "code.bin");
+        return SaveFullCodePathPc;
     }
 
     i32 saveload_getinfo(void) {

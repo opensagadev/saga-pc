@@ -1,6 +1,12 @@
 #include "saga.h"
 #include <stdio.h>
 
+extern EDBITS_GAME_SOUND edbitsGameSound[320];
+extern i32 edbits_numsounds;
+extern void (*edbitsPlaySound)(NUVEC *position, i32 id);
+extern i32 (*edbitsRequestSound)(char *name);
+extern i32 edbitsSfxVol;
+
 void edbitsRegisterSaveFormat(char *general_save_directory, char *general_save_name, char *general_save_extension,
                               char *level_save_directory, char *level_save_name, char *level_save_extension) {
     if (general_save_directory) {
@@ -276,8 +282,42 @@ void edbitsDrawCross(f32 x, f32 y, f32 z, f32 radius, i32 colour, struct PC_SCEN
     }
 }
 
+/* Android edbitsRegisterSoundEffect. */
+void edbitsRegisterSoundEffect(char *name, i32 id) {
+    strncpy(edbitsGameSound[edbits_numsounds].name, name, 16);
+    edbitsGameSound[edbits_numsounds].name[15] = '\0';
+    edbitsGameSound[edbits_numsounds].id = id;
+    edbits_numsounds++;
+}
+
+/* Android edbitsRegisterPlaySound. */
+void edbitsRegisterPlaySound(void (*callback)(NUVEC *position, i32 id)) {
+    edbitsPlaySound = callback;
+}
+
+/* Android edbitsRegisterRequestSound. */
+void edbitsRegisterRequestSound(i32 (*callback)(char *name)) {
+    edbitsRequestSound = callback;
+}
+
+/* Android edbitsLookupSound. */
+i32 edbitsLookupSound(char *name) {
+    i32 index;
+    for (index = 0; index < edbits_numsounds; ++index) {
+        if (NuStrNICmp(edbitsGameSound[index].name, name, 15) == 0) {
+            return index;
+        }
+    }
+    return -1;
+}
+
 i32 edbitsLookupSoundFX(char *name) {
     return -1;
+}
+
+/* Android edbitsSetSoundFxVolume. */
+void edbitsSetSoundFxVolume(i32 volume) {
+    edbitsSfxVol = volume;
 }
 
 void edbitsSoundPlay(NUVEC *position, i32 id) {

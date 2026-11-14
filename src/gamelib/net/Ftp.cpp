@@ -18,8 +18,40 @@ i32 FtpFile::CompareAddress(const NetAddress &other) const {
     return memcmp(&other, &address, sizeof(address));
 }
 
+i32 FtpFile::fun_00617210(const NetAddress &other) const {
+    return CompareAddress(other) == 0;
+}
+
+const u32 *FtpFile::fun_00617230() const {
+    return &address;
+}
+
+i32 FtpFile::fun_00617240() const {
+    return direction;
+}
+
+char *FtpFile::fun_00617250() {
+    return name;
+}
+
+i32 FtpFile::fun_00617260() const {
+    return size - transferred;
+}
+
 void NetFtpManager::Init() {
     theTTNetwork.AddListener(this, 2, "FTP");
+}
+
+i32 NetFtpManager::Send(const char *name, const void *data, i32 size, const NetAddress &address) {
+    return 0;
+}
+
+i32 NetFtpManager::Get(const char *name, void *buffer, i32 capacity, const NetAddress &address) {
+    return 0;
+}
+
+i32 NetFtpManager::Abort(const char *name, const NetAddress &address, i32 direction, i32 reason) {
+    return 0;
 }
 
 const FtpFile *NetFtpManager::GetTransfers() const {
@@ -78,7 +110,29 @@ i32 FtpFile::Accept(i32 new_capacity, void *new_buffer) {
 extern "C" void fun_00617400() {
 }
 
+void FtpFile::RecvData(NETMESSAGE_PC &message) {
+}
+
+u32 NETMESSAGE_PC::MessageData::fun_00617420() const {
+    return references;
+}
+
+FtpFile *FtpFileArray::fun_00617480() {
+    return items + 32;
+}
+
+const FtpFile *FtpFileArray::fun_00617490() const {
+    return items + 32;
+}
+
 extern "C" void fun_006174b0() {
+}
+
+u32 NETMESSAGE_PC::fun_006174c0() const {
+    if (data == NULL) {
+        return 0;
+    }
+    return data->references;
 }
 
 i32 FtpFile::Accept(i32 new_size) {
@@ -116,6 +170,10 @@ const FtpFile *NetFtpManager::FindTransfer(const char *name, const NetAddress &a
 }
 
 void NetFtpManager::Receive(NETMESSAGE_PC message, u8 channel, const NetAddress &address) {
+    message.Release();
+}
+
+void FtpFile::fun_006176d0() {
     message.Release();
 }
 

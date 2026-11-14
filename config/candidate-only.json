@@ -33,11 +33,6 @@
   },
   {
    "unit": "src/nu2api/shader_parser.cpp",
-   "symbol": "??$_Move_cat@PAPAUShaderParserIncludePc@@@std@@YA?AU_Undefined_move_tag@0@ABQAPAUShaderParserIncludePc@@@Z",
-   "kind": "function"
-  },
-  {
-   "unit": "src/nu2api/shader_parser.cpp",
    "symbol": "??$copy_s@U?$char_traits@D@std@@@_Traits_helper@std@@YAPADPADIPBDI@Z",
    "kind": "function"
   },
@@ -48,37 +43,12 @@
   },
   {
    "unit": "src/nu2api/shader_parser.cpp",
-   "symbol": "??0?$_Ranit@PAUShaderParserIncludePc@@HPBQAU1@ABQAU1@@std@@QAE@XZ",
-   "kind": "function"
-  },
-  {
-   "unit": "src/nu2api/shader_parser.cpp",
    "symbol": "??0?$_Vector_iterator@PAUShaderParserIncludePc@@V?$allocator@PAUShaderParserIncludePc@@@std@@@std@@QAE@PAPAUShaderParserIncludePc@@PBU_Container_base@1@@Z",
    "kind": "function"
   },
   {
    "unit": "src/nu2api/shader_parser.cpp",
-   "symbol": "??0?$_Vector_val@PAUShaderParserIncludePc@@V?$allocator@PAUShaderParserIncludePc@@@std@@@std@@IAE@V?$allocator@PAUShaderParserIncludePc@@@1@@Z",
-   "kind": "function"
-  },
-  {
-   "unit": "src/nu2api/shader_parser.cpp",
-   "symbol": "??0ShaderParserIncludePc@@AAE@PBDH@Z",
-   "kind": "function"
-  },
-  {
-   "unit": "src/nu2api/shader_parser.cpp",
-   "symbol": "??0bad_alloc@std@@QAE@PBD@Z",
-   "kind": "function"
-  },
-  {
-   "unit": "src/nu2api/shader_parser.cpp",
    "symbol": "?assign@?$char_traits@D@std@@SAXAADABD@Z",
-   "kind": "function"
-  },
-  {
-   "unit": "src/nu2api/shader_parser.cpp",
-   "symbol": "?deallocate@?$allocator@PAUShaderParserIncludePc@@@std@@QAEXPAPAUShaderParserIncludePc@@I@Z",
    "kind": "function"
   },
   {
@@ -153,11 +123,6 @@
   },
   {
    "unit": "src/nu2api/nudlist_material_pc.cpp",
-   "symbol": "??1NuMainFilter@@UAE@XZ",
-   "kind": "function"
-  },
-  {
-   "unit": "src/nu2api/nudlist_material_pc.cpp",
    "symbol": "??1NuMainFilterGen@@UAE@XZ",
    "kind": "function"
   },
@@ -214,11 +179,6 @@
   {
    "unit": "src/nu2api/posteffect_shader_pc.cpp",
    "symbol": "?length@?$char_traits@D@std@@SAIPBD@Z",
-   "kind": "function"
-  },
-  {
-   "unit": "src/nu2api/posteffect_shader_pc.cpp",
-   "symbol": "??0bad_alloc@std@@QAE@PBD@Z",
    "kind": "function"
   },
   {
@@ -454,11 +414,6 @@
   {
    "unit": "src/editor/edlevelall.cpp",
    "symbol": "?Allocate@MemoryBuffer@@QAEPAXI@Z",
-   "kind": "function"
-  },
-  {
-   "unit": "src/editor/edlevelall.cpp",
-   "symbol": "??0EdStream@@QAE@PAUMemoryBuffer@@0@Z",
    "kind": "function"
   },
   {

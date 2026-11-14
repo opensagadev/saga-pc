@@ -56,3 +56,4 @@ src/nu2api/terrain_query.cpp,NewScanHandelFullPc,(f32)(scan->min_y - 0.05f),1,fl
 src/nu2api/terrain_query.cpp,NewScanHandelFullPc,(f32)(scan->max_y + 0.05f),1,float cast of a float expression: without it the function's x87 code changes (score drops)
 src/nu2api/terrain_query.cpp,NewScanHandelFullPc,(f32)(scan->min_z - 0.05f),1,float cast of a float expression: without it the function's x87 code changes (score drops)
 src/nu2api/terrain_query.cpp,NewScanHandelFullPc,(f32)(scan->max_z + 0.05f),1,float cast of a float expression: without it the function's x87 code changes (score drops)
+src/legoapi/control_setup.cpp,PC_CONTROL_SCREEN_PC::fun_00420d30,(f32)(height - base),1,float cast of a float difference: without it the bar meter drops from 99.94 % to 98.99 %

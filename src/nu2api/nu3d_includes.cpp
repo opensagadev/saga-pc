@@ -4073,8 +4073,26 @@ extern "C" {
         }
     }
 
+    void NuQFntPrint2dW(VUFNT *font, u16 *text) {
+        NuQFntPushPrintMode(2);
+        NuQFntPrintW(font, text);
+        NuQFntPopPrintMode();
+    }
+
     void NuQFntPrint2dU(VUFNT *font, char *text) {
         NuQFntPushPrintMode(2);
+        NuQFntPrintU(font, text);
+        NuQFntPopPrintMode();
+    }
+
+    void NuQFntPrint3DW(VUFNT *font, u16 *text) {
+        NuQFntPushPrintMode(4);
+        NuQFntPrintW(font, text);
+        NuQFntPopPrintMode();
+    }
+
+    void NuQFntPrint3DU(VUFNT *font, char *text) {
+        NuQFntPushPrintMode(4);
         NuQFntPrintU(font, text);
         NuQFntPopPrintMode();
     }
@@ -5466,6 +5484,33 @@ void OccluderSet::RenderOccluders(bool depth_only) const {
     }
 }
 
+/* Debug triangle outlines, written here to share the vertex macro. */
+extern "C" {
+    void fun_005db360(NUVEC *a, NUVEC *b, NUVEC *c, i32 colour) {
+        NuPrim3DBegin(12, 5, NULL, NULL);
+        NuRndrPrimSetColourPrivate(colour);
+        OCCLUDER_PRIM_POSITION(*a);
+        NuRndrPrimSetColourPrivate(colour);
+        OCCLUDER_PRIM_POSITION(*b);
+        NuRndrPrimSetColourPrivate(colour);
+        OCCLUDER_PRIM_POSITION(*c);
+        NuPrim3DEnd();
+    }
+
+    void fun_005db460(NUVEC *a, NUVEC *b, NUVEC *c, i32 colour) {
+        NuPrim3DBegin(15, 5, NULL, NULL);
+        NuRndrPrimSetColourPrivate(colour);
+        OCCLUDER_PRIM_POSITION(*a);
+        NuRndrPrimSetColourPrivate(colour);
+        OCCLUDER_PRIM_POSITION(*b);
+        NuRndrPrimSetColourPrivate(colour);
+        OCCLUDER_PRIM_POSITION(*c);
+        NuRndrPrimSetColourPrivate(colour);
+        OCCLUDER_PRIM_POSITION(*a);
+        NuPrim3DEnd();
+    }
+}
+
 #undef OCCLUDER_PRIM_POSITION
 
 void OcclusionManager::EndFrame() {
@@ -6339,6 +6384,12 @@ extern "C" {
         NuPortalOverrideCameraPc = camera;
     }
 
+    extern u8 dat_009737ff;
+
+    void fun_005da470(u8 value) {
+        dat_009737ff = value;
+    }
+
     i32 clipTestBox(NUVEC *minimum, NUVEC *maximum, NUPLANE *planes, i32 plane_count) {
         NUVEC corners[8];
         i32 inside_vertices = 0;
@@ -6965,6 +7016,26 @@ extern "C" {
         }
     }
 
+    void NuRndrBoundingBox(NUVEC *minimum, NUVEC *maximum, NUMTX *matrix, i32 colour);
+
+    void fun_005ede70(NUVEC *center, NUVEC *extent, i32 colour) {
+        __declspec(align(16)) NUVEC maximum;
+        __declspec(align(16)) NUVEC minimum;
+        maximum.x = center->x + extent->x;
+        maximum.y = center->y + extent->y;
+        maximum.z = center->z + extent->z;
+        minimum.x = center->x - extent->x;
+        minimum.y = center->y - extent->y;
+        minimum.z = center->z - extent->z;
+        if (NuPortalCameraSelectPc == 1) {
+            NuCameraSet(&NuPortalDebugCameraPc);
+        }
+        NuRndrBoundingBox(&minimum, &maximum, &NuMtxSetIdentityTemplate, colour);
+        if (NuPortalCameraSelectPc == 1) {
+            NuCameraSet(&NuPortalRestoreCameraPc);
+        }
+    }
+
     static void drawFullPortal(NUPORTAL *portal, NUGSCNROOM *room) {
         i32 i;
         NUVEC nearest;
@@ -7556,6 +7627,27 @@ extern "C" {
         material = (PC_MATERIAL_CREATE_VIEW *)numtl_defaultmtl3d;
         NuMtlUpdatePS(numtl_defaultmtl3d);
         ++material->version;
+    }
+
+    GRAPHICS_RENDER_TEXTURE_PC *PCGraphicsFrameRenderTexturePc(i32 texture_id);
+
+    void fun_005f1f50(i32 texture_id) {
+        if (texture_id == 0) {
+            return;
+        }
+        bool persistent = false;
+        if (texture_id > 0) {
+            NUTEXDIM_PC *dimensions = NuTextureDimensions[texture_id - 1];
+            persistent = dimensions != NULL && dimensions->ref_count == -1;
+        }
+        if (!persistent) {
+            GRAPHICS_RENDER_TEXTURE_PC *render_texture = PCGraphicsFrameRenderTexturePc(texture_id);
+            if (render_texture != NULL) {
+                PCGraphicsDestroyRenderTexture(render_texture);
+            }
+            NuTexDestroyPS(NuTextureDimensions[texture_id - 1]);
+        }
+        NuTextureDimensions[texture_id - 1] = NULL;
     }
 
     void NuMtlInitOverride(i32 count, VARIPTR *buffer, VARIPTR *end) {
@@ -10093,6 +10185,12 @@ extern "C" void NuDisplaySceneRndr(NUDISPLAY_LIST_PC *scene) {
     }
 }
 
+extern "C" i32 dat_00974020;
+
+extern "C" void fun_005f5a00(void) {
+    dat_00974020 = 1;
+}
+
 typedef struct FRAME_MTL_ANIM_DESC_PC {
     u8 u_mode;            // 0x00
     u8 v_mode;            // 0x01
@@ -10205,6 +10303,12 @@ extern "C" void fun_005dfe40(NUDISPLAYLIST *list, void *next, NUDISPLAYLISTITEM 
     item->next = target;
     item->id = 1;
     list->mtl_last = item;
+}
+
+extern "C" i32 dat_0080bab8;
+
+extern "C" void fun_005dfe70(i32 value) {
+    dat_0080bab8 = value;
 }
 
 extern "C" void NuDisplayListCaptureBegin(void) {
@@ -10436,6 +10540,30 @@ GRAPHICS_RENDER_TEXTURE_PC *NuPostEffectGetBackBuffer(i32 frame) {
     return NuPostEffectBackBufferCopyPc;
 }
 
+extern "C" i32 dat_0080bf24;
+extern "C" GRAPHICS_RENDER_TEXTURE_PC *dat_0097ace4;
+
+extern "C" GRAPHICS_RENDER_TEXTURE_PC *NuPostEffectGetDepthBuffer(i32 frame) {
+    if (dat_0080bf24 != frame) {
+        dat_0080bf24 = frame;
+        PC_POST_BUFFER_PROXY_PC *depth = &PostProxyBuffersPc[4];
+        GRAPHICS_RENDER_TEXTURE_PC *texture;
+        if (depth->texture != NULL) {
+            if (!depth->resolved) {
+                PCGraphicsFramebufferBarrierPc(depth->kind, depth->enabled);
+                depth->resolved = 1;
+            }
+            texture = depth->texture;
+        } else {
+            PCGraphicsFramebufferBarrierPc(4, 0);
+            PC_FRAMEBUFFER_PC *bound = PCGraphicsGetBoundFramebufferPc();
+            texture = NuFramebufferGetAttachedTex(bound, 4, NULL, NULL);
+        }
+        dat_0097ace4 = texture;
+    }
+    return dat_0097ace4;
+}
+
 extern "C" void PCGraphicsResizePostEffectTexturesPc(u32, u32);
 
 /* Re-creates the size-dependent filter textures after a device reset. */
@@ -10526,6 +10654,27 @@ void NuPostEffectDisable(u32 mask) {
             speedBlurFilter->enabled = 0;
             break;
     }
+}
+
+extern "C" i32 NuPostEffectIsEnabled(i32 mask) {
+    if ((NuPostEffectInitialisedFlagsPc & mask) == 0) {
+        return 0;
+    }
+    switch (mask) {
+        case 4:
+            return mainFilter->bloom_enabled != 0;
+        case 8:
+            return mainFilter->dof_enabled != 0;
+        case 0x20:
+            return ((NuPostFilterGen *)deferredFilter)->isEnabled() ? 1 : 0;
+        case 0x10:
+            return ((NuPostFilterGen *)motionFilter)->isEnabled() ? 1 : 0;
+        case 0x40:
+            return ((NuPostFilterGen *)motionAccumFilter)->isEnabled() ? 1 : 0;
+        case 0x80:
+            return ((NuPostFilterGen *)speedBlurFilter)->isEnabled() ? 1 : 0;
+    }
+    return 0;
 }
 
 void NuPostEffectAddDynamicLight(NuDynamicLight *light) {
@@ -10735,6 +10884,10 @@ extern "C" {
     void fun_005c27d0(void) {
         NuDisplayHandlerVertexShaderCachePc = NULL;
         NuDisplayHandlerPixelShaderCachePc = NULL;
+    }
+
+    f32 fun_005c27e0(f32 value) {
+        return RenderPostLogPc(value) * 3.321928024291992;
     }
 }
 
@@ -10982,8 +11135,57 @@ void NuPostFilterGen::destroyResources() {
     input_fbo = NULL;
 }
 
+void NuPostFilterGen::fun_005c22b0() {
+    destroyTextureResources();
+    destroyResources();
+}
+
 PC_FRAMEBUFFER_PC *NuPostFilterGen::getInputFbo() {
     return input_fbo;
+}
+
+void NuMainFilterGen::fun_005c2310(i32 filter, bool enable) {
+    bool &flag = (&dof_enabled)[filter];
+    if (enable) {
+        if (!flag) {
+            ++active_filter_count;
+            flag = true;
+        }
+    } else if (flag) {
+        --active_filter_count;
+        flag = false;
+    }
+}
+
+bool NuMainFilterGen::fun_005c2360(i32 filter) {
+    bool *flags = &dof_enabled;
+    return flags[filter];
+}
+
+void NuMainFilterGen::fun_005c2370(const NU_POST_DOF_PARAMETERS_PC *parameters) {
+    dof_strength = parameters->strength;
+    dof_near = parameters->near_distance;
+    dof_far = parameters->far_distance;
+    dof_bias = parameters->bias;
+    dof_mode = parameters->mode;
+}
+
+void NuMainFilterGen::fun_005c23a0(const NU_POST_BLOOM_PARAMETERS_PC *parameters) {
+    bloom = parameters;
+}
+
+void NuMainFilterGen::fun_005c23b0(const NUMTX *previous, const NUMTX *current, f32 scale, f32 maximum, f32 falloff) {
+    motion_previous = *previous;
+    motion_current = *current;
+    motion_scale = scale;
+    motion_maximum = maximum;
+    motion_falloff = falloff;
+}
+
+void NuMainFilterGen::fun_005c2400(i32 frames, f32 blend, f32 mode) {
+    accumulation_blend = blend;
+    accumulation_frames = frames;
+    accumulation_mode_pc = mode;
 }
 
 extern "C" i32 fun_005c2470(void) {
@@ -11046,6 +11248,23 @@ void NuMotionAccumFilterGen::destroyResources() {
 
 void NuMotionAccumFilterGen::destroyTextureResources() {
     PCGraphicsDestroyRenderTexture(accumulation_texture);
+}
+
+f32 NuMotionAccumFilterGen::GetTiming(i32 *last_frame) {
+    i32 count = frames;
+    if (count != 0 && nuapi.forced_frame_time != 0.0f) {
+        if (blend > 1.0f) {
+            blend = 1.0f;
+        }
+        if (blend < 0.0f) {
+            blend = 0.0f;
+        }
+        f32 timing = nuapi.forced_frame_time / count;
+        *last_frame = current_frame == count - 1;
+        return timing;
+    }
+    *last_frame = 1;
+    return 0.0f;
 }
 
 void NuSpeedBlurFilterGen::destroyTextureResources() {
@@ -11153,6 +11372,39 @@ void NuMotionFilterGen::render() {
     PostResourcePortsPc[1].manager->entries[PostResourcePortsPc[1].index].data = color;
 }
 
+i32 PCFrustumClipSet::fun_005e66b0(NUSPECIALHANDLE *special, NUMTX *matrix) {
+    __declspec(align(16)) NUVEC minimum;
+    __declspec(align(16)) NUVEC maximum;
+    NuSpecialGetBounds(special, &minimum, &maximum);
+    NuVecMtxTransform(&minimum, &minimum, matrix);
+    NuVecMtxTransform(&maximum, &maximum, matrix);
+    return TestBoxes(&minimum, &maximum);
+}
+
+bool PCFrustumClipSet::fun_005e6710(const NUVEC *center, const NUVEC *extent, i32 group_index) {
+    __declspec(align(16)) NUVEC maximum;
+    __declspec(align(16)) NUVEC minimum;
+    minimum.x = center->x - extent->x;
+    minimum.y = center->y - extent->y;
+    minimum.z = center->z - extent->z;
+    maximum.x = center->x + extent->x;
+    maximum.y = center->y + extent->y;
+    maximum.z = center->z + extent->z;
+    return TestBox(&minimum, &maximum, group_index);
+}
+
+i32 PCFrustumClipSet::fun_005e6770(const NUVEC *center, const NUVEC *extent) {
+    __declspec(align(16)) NUVEC maximum;
+    __declspec(align(16)) NUVEC minimum;
+    minimum.x = center->x - extent->x;
+    minimum.y = center->y - extent->y;
+    minimum.z = center->z - extent->z;
+    maximum.x = center->x + extent->x;
+    maximum.y = center->y + extent->y;
+    maximum.z = center->z + extent->z;
+    return TestBoxes(&minimum, &maximum);
+}
+
 extern "C" {
     extern POST_SHADER_PROGRAM_PC *PostCopyTexProgramPc;
     extern PC_FRAMEBUFFER_PC *PostCopyFramebufferPc;
@@ -11182,6 +11434,17 @@ extern "C" void PostFilterBlitTexturePc(GRAPHICS_RENDER_TEXTURE_PC *destination,
     PCDeviceSetRenderState(168, 15);
     PCGraphicsDrawPostEffectQuadPc();
     PCGraphicsFramebufferBarrierPc(0, 1);
+}
+
+extern "C" POST_SHADER_PROGRAM_PC *dat_0097382c;
+
+extern "C" void fun_005c3cf0(GRAPHICS_RENDER_TEXTURE_PC *first, GRAPHICS_RENDER_TEXTURE_PC *second,
+                             PC_FRAMEBUFFER_PC *framebuffer) {
+    PCGraphicsBindFramebuffer(framebuffer);
+    NuShaderProgramMakeCurrent(dat_0097382c);
+    POST_FILTER_BIND_TEXTURE(0, first);
+    POST_FILTER_BIND_TEXTURE(1, second);
+    PCGraphicsDrawPostEffectQuadPc();
 }
 
 static void PostFilterBindProgramPc(const POST_SHADER_PROGRAM_PC *program) {
@@ -11439,10 +11702,138 @@ void NuMainFilterGen::preprocessDofMotionBlur(GRAPHICS_RENDER_TEXTURE_PC *depth)
     }
 }
 
+void NuMotionFilterGen::fun_005c2de0(bool enable) {
+    enabled = enable;
+}
+
+void NuMotionFilterGen::fun_005c2df0(const NUMTX *previous, const NUMTX *current, f32 scale, f32 maximum, f32 falloff) {
+    this->previous = *previous;
+    this->current = *current;
+    this->scale = scale;
+    this->maximum = maximum;
+    this->falloff = falloff;
+}
+
 extern "C" void fun_005c2ea0(void) {
 }
 
 extern "C" void fun_005c2ed0(void) {
+}
+
+i32 PC_SPECIAL_SHADOW_LIGHT::fun_005c2eb0() {
+    return used_on_specials;
+}
+
+void PC_SPECIAL_SHADOW_LIGHT::fun_005c2ec0(i32 used) {
+    used_on_specials = used;
+}
+
+i32 PC_SPECIAL_SHADOW_LIGHT::fun_005c2f20() {
+    return active_render_set_count;
+}
+
+NUMTX *PC_SPECIAL_SHADOW_LIGHT::fun_005c2f30() {
+    return &view;
+}
+
+NUMTX *PC_SPECIAL_SHADOW_LIGHT::fun_005c2f40() {
+    return &projection;
+}
+
+f32 PC_SPECIAL_SHADOW_LIGHT::GetParameterfPc(i32 parameter) {
+    switch (parameter) {
+        case 0:
+            return parameter_0;
+        case 1:
+            return parameter_1;
+        case 2:
+            return parameter_2;
+        case 3:
+            return parameter_3;
+        case 6:
+        case 7:
+            return render_sets[0].parameter_110;
+        case 8:
+            return render_sets[1].parameter_110;
+        case 9:
+        case 10:
+        case 11:
+        case 15:
+        case 16:
+            return render_sets[1].parameter_104;
+        case 12:
+        case 13:
+        case 14:
+        case 17:
+        case 18:
+            return render_sets[0].parameter_100;
+        case 19:
+            return parameter_19;
+        case 20:
+            return parameter_20;
+    }
+    return 0.0f;
+}
+
+void PC_SPECIAL_SHADOW_LIGHT::SetParameteriPc(i32 parameter, i32 value) {
+    switch (parameter) {
+        case 4:
+            parameter_4 = value;
+            break;
+        case 5:
+            parameter_5 = value;
+            break;
+    }
+}
+
+i32 PC_SPECIAL_SHADOW_LIGHT::GetParameteriPc(i32 parameter) {
+    switch (parameter) {
+        case 4:
+            return parameter_4;
+        case 5:
+            return parameter_5;
+    }
+    return 0;
+}
+
+void PC_SPECIAL_SHADOW_LIGHT::fun_005c3070(i32 set, i32 scene) {
+    NURNDRLIGHTRECORD *record = &render_sets[set];
+    record->pending[record->count] = scene;
+    ++record->count;
+}
+
+void NuDeferredFilterGen::fun_005c30a0(bool enable) {
+    enabled = enable;
+}
+
+void NuDeferredFilterGen::fun_005c30b0(NuDynamicLight *light) {
+    dynamic_lights[dynamic_light_count++] = light;
+}
+
+i32 NuDeferredFilterGen::fun_005c30d0() {
+    return dynamic_light_count;
+}
+
+void NuDeferredFilterGen::fun_005c30e0(const f32 *parameters) {
+    memcpy(this->parameters, parameters, sizeof(this->parameters));
+}
+
+void NuMotionAccumFilterGen::fun_005c3100(bool enable) {
+    enabled = enable;
+}
+
+void NuMotionAccumFilterGen::fun_005c3110(i32 frames, f32 blend, f32 mode) {
+    mode_pc = mode;
+    this->frames = frames;
+    this->blend = blend;
+}
+
+void NuSpeedBlurFilterGen::fun_005c3130(bool enable) {
+    enabled = enable;
+}
+
+void NuSpeedBlurFilterGen::fun_005c3140(const NU_POST_SPEED_PARAMETERS_PC *parameters) {
+    this->parameters = parameters;
 }
 
 /* Normalizes the xyz part and makes the result a homogeneous direction (w = 1). */
@@ -11717,6 +12108,17 @@ extern "C" void NuPostEffectReleasePc(void) {
     NuPostFilterAllocatorPc.cursor = NuPostFilterAllocatorPc.base;
 }
 
+extern "C" i32 motionBlurAccumActiveThisFrame;
+
+extern "C" f32 NuPostEffectTiming(i32 *last_frame) {
+    if (motionAccumFilter != NULL && motionBlurAccumActiveThisFrame != 0) {
+        motionBlurAccumActiveThisFrame = 0;
+        return reinterpret_cast<NuMotionAccumFilterGen *>(motionAccumFilter)->GetTiming(last_frame);
+    }
+    *last_frame = 1;
+    return 0.0f;
+}
+
 /* nulgtlaser's nu3d forwarders; the laser renderer itself is in nu3d_platform_pc.cpp. */
 extern "C" {
     void NuVec4ScaleXYZVU0(NUVEC4 *, NUVEC4 *, f32);
@@ -11768,6 +12170,33 @@ extern "C" void fun_005c39d0(GRAPHICS_RENDER_TEXTURE_PC *texture, PC_FRAMEBUFFER
 }
 
 extern "C" void fun_005c3a40(void) {
+}
+
+extern "C" POST_SHADER_PROGRAM_PC *dat_00973820;
+
+extern "C" void fun_005c3a50(GRAPHICS_RENDER_TEXTURE_PC *color, GRAPHICS_RENDER_TEXTURE_PC *depth,
+                             PC_FRAMEBUFFER_PC *framebuffer) {
+    PCGraphicsBindFramebuffer(framebuffer);
+    NuShaderProgramMakeCurrent(dat_00973820);
+    i32 width = PCGraphicsEffectTextureWidth(color);
+    i32 height = PCGraphicsEffectTextureHeight(color);
+    i32 filter = NuFramebufferGetWidth(framebuffer) == width && NuFramebufferGetHeight(framebuffer) == height ? 1 : 2;
+    PCGraphicsEffectTextureSetFilterFields(color, filter, filter, 0);
+    PCGraphicsEffectTextureSetFilterFields(depth, filter, filter, 0);
+    POST_FILTER_BIND_TEXTURE(0, color);
+    POST_FILTER_BIND_TEXTURE(5, depth);
+    PCDeviceSetRenderState(22, 1);
+    PCDeviceSetRenderState(15, 0);
+    PCDeviceSetRenderState(27, 0);
+    PCDeviceSetRenderState(7, 1);
+    PCDeviceSetRenderState(14, 1);
+    PCDeviceSetRenderState(23, 8);
+    PCGraphicsDrawPostEffectQuadPc();
+    PCDeviceSetRenderState(22, 1);
+    PCDeviceSetRenderState(15, 0);
+    PCDeviceSetRenderState(27, 0);
+    PCDeviceSetRenderState(7, 0);
+    PCDeviceSetRenderState(168, 15);
 }
 
 extern "C" i32 NuTexCreateFramebufferCopy(VARIPTR *buffer, VARIPTR end) {
@@ -11963,6 +12392,19 @@ extern "C" {
         vport_inval = 1;
     }
 
+    void NuViewPortSet(f32 left, f32 top, f32 right, f32 bottom) {
+        static NUVIEWPORT2_PC vp = {
+            0.0f,  0.0f,  640.0f, 224.0f, 8388607.0f, 0.0f, 0.5f, 0.5f,
+            0.01f, 0.01f, 0.99f,  0.99f,  0.0f,       0.0f, 0.0f, 0.0f,
+        };
+        vp.x = left;
+        vp.y = top;
+        vp.width = right - left;
+        vp.height = bottom - top;
+        NuVpSetCurrent2(&vp);
+        NuVpUpdate();
+    }
+
     void NuVpGetCurrent2(NUVIEWPORT2_PC *viewport) {
         NuVpGetPosition2(&viewport->x, &viewport->y);
         NuVpGetSize2(&viewport->width, &viewport->height);
@@ -11992,6 +12434,19 @@ extern "C" {
 
     f32 NuVpPixelHeight(f32 value) {
         return vpCurrent.height * value + vpCurrent.y;
+    }
+
+    void NuVpSetSourceRect(f32 left, f32 top, f32 right, f32 bottom) {
+        f32 source_width = right - left;
+        f32 source_height = bottom - top;
+        f32 width = (f32)PS2_VREZ_W;
+        f32 scaled_width = width / source_width * width;
+        f32 height = (f32)PS2_VREZ_H;
+        f32 scaled_height = height / source_height * height;
+        f32 position_y = -top * (scaled_height / source_height) * NuQFntHalfScale;
+        f32 position_x = -left * (scaled_width / source_width) * NuQFntHalfScale;
+        NuVpSetPosition2(position_x, position_y);
+        NuVpSetSize2(scaled_width, scaled_height);
     }
 
     void NuVpSetDestRect(f32 left, f32 top, f32 right, f32 bottom) {
@@ -12380,10 +12835,51 @@ i32 PC_POST_DATA_PORT_MANAGER::Register(const char *name, void *data) {
     return -1;
 }
 
+u32 OccluderSet::fun_005c5250() {
+    return count;
+}
+
+u32 OccluderSet::fun_005c5260() {
+    return capacity;
+}
+
+bool OccluderSet::fun_005c5270() {
+    return queries_prepared;
+}
+
+bool OcclusionManager::fun_005c5280() {
+    return initialized;
+}
+
+bool OcclusionManager::fun_005c5290() {
+    return initialized && enabled;
+}
+
+void OcclusionManager::fun_005c52b0(f32 threshold) {
+    unknown_158 = threshold;
+}
+
+void OcclusionManager::fun_005c52c0(f32 threshold) {
+    unknown_15c = threshold;
+}
+
+OccluderSet *OcclusionManager::fun_005c52d0() {
+    return current_set;
+}
+
+void OcclusionManager::SetEnabled(bool value) {
+    enabled = value;
+}
+
 extern "C" void fun_005c52f0(void) {
 }
 
 extern "C" void fun_005c5310(void) {
+}
+
+void OccluderSet::Clear() {
+    count = 0;
+    queries_prepared = false;
 }
 
 extern "C" void PostFilterInitSharedResourcesPc(void) {
@@ -12602,6 +13098,10 @@ extern "C" NUMTX *NuDynamicLightGetProjection(PC_SPECIAL_SHADOW_LIGHT *light) {
 
 extern "C" void NuDynamicLightSetParameterf(PC_SPECIAL_SHADOW_LIGHT *light, i32 parameter, f32 value) {
     light->SetParameterfPc(parameter, value);
+}
+
+extern "C" f32 NuDynamicLightGetParameterf(PC_SPECIAL_SHADOW_LIGHT *light, i32 parameter) {
+    return light->GetParameterfPc(parameter);
 }
 
 extern "C" void NuDynamicLightSetParameteri(PC_SPECIAL_SHADOW_LIGHT *light, i32 parameter, i32 value) {
@@ -12911,6 +13411,22 @@ extern "C" {
                 NuTexRemoveReference(texture_id);
             }
         }
+    }
+
+    extern void *dat_00971ad8;
+    extern i32 dat_0097401c;
+
+    void *fun_005e5680(void) {
+        return dat_00971ad8;
+    }
+
+    void fun_005e5690(VARIPTR *buffer) {
+        dat_00971ad8 = reinterpret_cast<void *>((buffer->addr + 15) & ~15);
+        buffer->addr = ((buffer->addr + 15) & ~15) + 0x40;
+    }
+
+    void fun_005e57e0(void) {
+        dat_0097401c = 2;
     }
 
     i32 NuTexCreateNative(NUTEXDIM_PC *texture) {
@@ -13604,6 +14120,81 @@ extern "C" {
                 input += length;
             }
             output += length;
+        }
+    }
+
+    typedef struct nuvisiboxtreenode_s {
+        NUVEC minimum;      // 0x00
+        NUVEC maximum;      // 0x0c
+        u16 children[2];    // 0x18
+        u16 instance_count; // 0x1c
+        u16 first_instance; // 0x1e
+    } NUVISIBOXTREENODE;    // size 0x20
+
+    typedef struct nuvisiboxtree_s {
+        u32 unknown_00;           // 0x00
+        u32 root_count;           // 0x04
+        u32 *roots;               // 0x08
+        f32 *far_clip;            // 0x0c
+        u16 *instances;           // 0x10
+        u32 unknown_14;           // 0x14
+        NUVISIBOXTREENODE *nodes; // 0x18
+    } NUVISIBOXTREE;              // size 0x1c
+
+    typedef struct nuboxtreevisibility_s {
+        i32 instance_count;  // 0x00
+        u32 unknown_04;      // 0x04
+        NUVISIBOXTREE *tree; // 0x08
+        u32 unknown_0c[5];   // 0x0c
+        u8 *clip_results;    // 0x20
+        u32 unknown_24;      // 0x24
+        u32 state;           // 0x28
+    } NUBOXTREEVISIBILITY;   // size 0x2c
+
+    extern i32 dat_00973984;
+    void NuFileWriteString(NUFILE file, const char *text);
+
+    void BoxTreeRndrRec(NUVISIBOXTREE *tree, u8 *results, NUVISIBOXTREENODE *node, i32 instance_count, f32 far_clip,
+                        NUGSCN *scene) {
+        if (node->children[0] == 0xffff) {
+            i32 clip = NuCameraClipTestExtents(&node->minimum, &node->maximum, &NuMtxSetIdentityTemplate, far_clip, 0);
+            u32 instance = tree->instances[node->first_instance];
+            results[instance >> 2] |= clip << ((instance & 3) * 2);
+        } else {
+            i32 clip = NuCameraClipTestExtents(&node->minimum, &node->maximum, &NuMtxSetIdentityTemplate, far_clip, 1);
+            if (clip == 0) {
+                return;
+            }
+            if (clip == 1) {
+                for (i32 i = 0; i < node->instance_count; ++i) {
+                    u32 instance = tree->instances[node->first_instance + i];
+                    results[instance >> 2] |= 1 << ((instance & 3) * 2);
+                }
+            } else {
+                BoxTreeRndrRec(tree, results, &tree->nodes[node->children[0]], instance_count, far_clip, scene);
+                BoxTreeRndrRec(tree, results, &tree->nodes[node->children[1]], instance_count, far_clip, scene);
+            }
+        }
+    }
+
+    void fun_005d7160(NUBOXTREEVISIBILITY *visibility, NUGSCN *scene) {
+        if (visibility->tree != NULL && dat_00973984 != 0) {
+            for (u32 i = 0; i < visibility->tree->root_count; ++i) {
+                NUVISIBOXTREE *tree = visibility->tree;
+                BoxTreeRndrRec(tree, visibility->clip_results, &tree->nodes[tree->roots[i]], visibility->instance_count,
+                               tree->far_clip[i], scene);
+            }
+            visibility->state |= 8;
+        } else {
+            visibility->state &= ~8;
+        }
+    }
+
+    void fun_005d71d0(i32 force) {
+        if ((PCDisplayCaptureCursorPc > nudlist_field_18b0) | force) {
+            NuFileWriteString(nudlist_field_988, PCDisplayCaptureBufferPc);
+            PCDisplayCaptureCursorPc = PCDisplayCaptureBufferPc;
+            nudlist_field_18b0 = PCDisplayCaptureBufferPc + 0xc00;
         }
     }
 
@@ -15356,6 +15947,24 @@ extern "C" {
         special->display_special = NULL;
     }
 
+    void NuSpecialSetInstAnimTime(NUSPECIALHANDLE *special, f32 frame) {
+        NUGSCN *scene = static_cast<NUGSCN *>(special->scene);
+        if (scene == NULL) {
+            return;
+        }
+        NUINSTANIM *animation = static_cast<NUINSTANIM *>(NuSpecialGetInstAnim(special));
+        if (animation != NULL) {
+            animation->ltime = frame;
+            u32 flags = animation->flags;
+            if ((flags >> 22) != 0 && scene->end_frame_lookup != NULL) {
+                u8 index = (u8)(flags >> 14);
+                u8 value;
+                StateAnimEvaluate2((STATE_ANIM_PC *)&scene->end_frame_lookup[(flags >> 22) - 1], &index, &value, frame);
+                animation->flags = (flags & ~0x3fc000U) | (index << 14);
+            }
+        }
+    }
+
     void fun_005da970(u8 track_root) {
         CutSceneBoundingBoxTrackRoot = track_root;
     }
@@ -15472,6 +16081,9 @@ template <typename T> struct LightObjectPool {
     i8 occupied[1];
     i32 next;
     T *allocate();
+    i32 IsOccupied(i32 index);
+    void SetOccupied(i32 index, bool used);
+    void Free(T *object);
 };
 
 template <typename T> T *LightObjectPool<T>::allocate() {
@@ -15492,6 +16104,32 @@ template <typename T> T *LightObjectPool<T>::allocate() {
     }
     return NULL;
 }
+
+template <typename T> i32 LightObjectPool<T>::IsOccupied(i32 index) {
+    return (occupied[index >> 3] >> (index & 7)) & 1;
+}
+
+template <typename T> void LightObjectPool<T>::SetOccupied(i32 index, bool used) {
+    if (used) {
+        occupied[index >> 3] |= 1 << (index & 7);
+    } else {
+        occupied[index >> 3] &= ~(1 << (index & 7));
+    }
+}
+
+template <typename T> void LightObjectPool<T>::Free(T *object) {
+    i32 index = reinterpret_cast<Slot *>(object) - slots;
+    occupied[index >> 3] &= ~(1 << (index & 7));
+    next = index;
+}
+
+template void LightObjectPool<PC_SPECIAL_SHADOW_LIGHT>::SetOccupied(i32, bool);
+template i32 LightObjectPool<PC_SPECIAL_SHADOW_LIGHT>::IsOccupied(i32);
+template i32 LightObjectPool<NURNDRLIBSTATE>::IsOccupied(i32);
+template void LightObjectPool<NURNDRLIBSTATE>::SetOccupied(i32, bool);
+template i32 LightObjectPool<NUDISPLAYLISTITEM>::IsOccupied(i32);
+template void LightObjectPool<NUDISPLAYLISTITEM>::SetOccupied(i32, bool);
+template void LightObjectPool<PC_SPECIAL_SHADOW_LIGHT>::Free(PC_SPECIAL_SHADOW_LIGHT *);
 
 static LightObjectPool<NUDISPLAYLISTITEM> dlistItemPool = {0};
 static LightObjectPool<PC_SPECIAL_SHADOW_LIGHT> dynamicLightPool = {0};
@@ -15581,6 +16219,10 @@ extern "C" void fun_005f5c80(PC_SPECIAL_SHADOW_LIGHT *light) {
     dynamicLightPool.next = index;
 }
 
+extern "C" PC_SPECIAL_SHADOW_LIGHT *NuDynamicLightClone(PC_SPECIAL_SHADOW_LIGHT *light, VARIPTR *arena, VARIPTR end) {
+    return light->Clone(arena, end);
+}
+
 extern "C" void fun_005f6a80(PC_SPECIAL_SHADOW_LIGHT *light, NUGSCN *scene) {
     light->RenderSceneShadowPc(scene);
 }
@@ -15625,6 +16267,27 @@ extern "C" {
         NUHGOBJ_POI_PC *point = &object->points[object->point_index_map[index]];
         NuMtxMulVU0(result, &point->matrix, &joint_matrices[point->joint_index]);
         NuMtxMulVU0(result, result, world_matrix);
+    }
+
+    extern i32 dat_009739b4;
+    extern i32 dat_009739b8;
+    extern i32 dat_009739bc;
+    extern i32 dat_009739c0;
+
+    void fun_005dab30(i32 value) {
+        dat_009739b4 = value;
+    }
+
+    void fun_005dab40(i32 value) {
+        dat_009739b8 = value;
+    }
+
+    void fun_005dab50(i32 value) {
+        dat_009739bc = value;
+    }
+
+    void fun_005dab60(i32 value) {
+        dat_009739c0 = value;
     }
 
     void NuHGobjEval(NUHGOBJ_EVAL_PC *object, i32 override_count, NUHGOBJ_JOINT_OVERRIDE_PC *overrides,
@@ -16131,6 +16794,31 @@ extern "C" {
         return 1;
     }
 
+    void NuRndrAnglesZX(NUVEC *direction, NUVEC *angles) {
+        NUVEC rotated;
+        angles->x = NuAtan2D(direction->z, direction->y);
+        NuVecRotateX(&rotated, direction, -(i32)angles->x);
+        angles->z = -(f32)NuAtan2D(rotated.x, rotated.y);
+    }
+
+    void NuLightBurnoutEffect(i32, f32 threshold, f32 intensity, f32 flare) {
+        currentScene.unknown_28 = 1;
+        currentScene.burnout_intensity = NuPrimTwo >= intensity ? (u8)(127.0 * intensity) : 255;
+        currentScene.burnout_flare = flare;
+        currentScene.burnout_threshold = threshold;
+        currentScene.burnout_parameters_pc.field_00 = 1;
+        currentScene.burnout_parameters_pc.field_18 = 0;
+        currentScene.burnout_parameters_pc.field_28 = 0;
+        currentScene.burnout_parameters_pc.field_04 = 0.0f;
+        currentScene.burnout_parameters_pc.field_08 = 0.0f;
+        currentScene.burnout_parameters_pc.field_0c = 180.0f;
+        currentScene.burnout_parameters_pc.field_10 = intensity;
+        currentScene.burnout_parameters_pc.field_14 = 1.0f;
+        currentScene.burnout_parameters_pc.field_1c = flare;
+        currentScene.burnout_parameters_pc.field_20 = 0.0f;
+        currentScene.burnout_parameters_pc.field_24 = threshold;
+    }
+
     i32 NuCameraClipHGobj(NUHGOBJ_EVAL_PC *hierarchy, NUMTX *world, NUMTX *root) {
         NUHGOBJ_EVAL_PC *object;
         NUVEC half;
@@ -16539,8 +17227,14 @@ extern "C" void PostShadowCopyVectorsPc(NUVEC4 *out, const NUVEC4 *in, i32 count
 
 /* ECX=input, stack=output; EAX returns output. */
 struct PC_POST_SHADOW_VECTOR : NUVEC {
+    f32 fun_005e8760() const;
     NUVEC *Normalize(NUVEC *out) const;
 };
+
+f32 PC_POST_SHADOW_VECTOR::fun_005e8760() const {
+    f32 squared = y * y + x * x + z * z;
+    return NuFsqrt(squared);
+}
 
 NUVEC *PC_POST_SHADOW_VECTOR::Normalize(NUVEC *out) const {
     f32 squared = y * y + x * x + z * z;
@@ -16549,6 +17243,50 @@ NUVEC *PC_POST_SHADOW_VECTOR::Normalize(NUVEC *out) const {
     out->y = y / length;
     out->z = z / length;
     return out;
+}
+
+extern "C" i32 NuDynamicLightTestShadowExtrusions(PCFrustumClipSet *light, const VuVec *first, const VuVec *second) {
+    VuVec second_copy;
+    __declspec(align(16)) VuVec first_copy;
+    second_copy.x = second->x;
+    second_copy.y = second->y;
+    second_copy.z = second->z;
+    second_copy.w = second->w;
+    first_copy.x = first->x;
+    first_copy.y = first->y;
+    first_copy.z = first->z;
+    first_copy.w = first->w;
+    return light->TestBoxes(&first_copy.xyz, &second_copy.xyz);
+}
+
+extern "C" void NuDynamicLightTestShadowExtrusionsSpecial(PCFrustumClipSet *light, NUSPECIALHANDLE *special,
+                                                          NUMTX *matrix) {
+    light->fun_005e66b0(special, matrix);
+}
+
+extern "C" i32 fun_005e8870(PCFrustumClipSet *light, const NUVEC *center, const NUVEC *extent, i32 group_index) {
+    return light->fun_005e6710(center, extent, group_index) ? 1 : 0;
+}
+
+extern "C" i32 NuDynamicLightTestShadowExtrusionsExtent(PCFrustumClipSet *light, const NUVEC *center,
+                                                        const NUVEC *extent) {
+    NUVEC size;
+    __declspec(align(16)) NUVEC middle;
+    __declspec(align(16)) NUVEC minimum;
+    __declspec(align(16)) NUVEC maximum;
+    size.x = extent->x;
+    size.y = extent->y;
+    size.z = extent->z;
+    middle.x = center->x;
+    middle.y = center->y;
+    middle.z = center->z;
+    minimum.x = middle.x - size.x;
+    minimum.y = middle.y - size.y;
+    minimum.z = middle.z - size.z;
+    maximum.x = size.x + middle.x;
+    maximum.y = size.y + middle.y;
+    maximum.z = size.z + middle.z;
+    return light->TestBoxes(&minimum, &maximum);
 }
 
 extern "C" i32 fun_005e8930(PCFrustumClipSet *clip_set, const NUVEC *minimum, const NUVEC *maximum) {
@@ -16581,6 +17319,54 @@ extern "C" void PostShadowBuildBasisPc(NUVEC *direction, NUVEC *up, NUMTX *basis
     a.z = forward->x * upward->y - upward->x * forward->y;
     *side = a;
     NuMtxInv(basis, inverse);
+}
+
+PC_SPECIAL_SHADOW_LIGHT &PC_SPECIAL_SHADOW_LIGHT::operator=(const PC_SPECIAL_SHADOW_LIGHT &other) {
+    for (i32 i = 0; i < 2; ++i) {
+        render_sets[i] = other.render_sets[i];
+    }
+    split_distances_pc[0] = other.split_distances_pc[0];
+    split_distances_pc[1] = other.split_distances_pc[1];
+    split_distances_pc[2] = other.split_distances_pc[2];
+    render_set_count = other.render_set_count;
+    active_render_set_count = other.active_render_set_count;
+    split_planes_pc[0].x = other.split_planes_pc[0].x;
+    split_planes_pc[0].y = other.split_planes_pc[0].y;
+    split_planes_pc[0].z = other.split_planes_pc[0].z;
+    split_planes_pc[0].w = other.split_planes_pc[0].w;
+    split_planes_pc[1].x = other.split_planes_pc[1].x;
+    split_planes_pc[1].y = other.split_planes_pc[1].y;
+    split_planes_pc[1].z = other.split_planes_pc[1].z;
+    split_planes_pc[1].w = other.split_planes_pc[1].w;
+    camera_position_pc.x = other.camera_position_pc.x;
+    camera_position_pc.y = other.camera_position_pc.y;
+    camera_position_pc.z = other.camera_position_pc.z;
+    camera_position_pc.w = other.camera_position_pc.w;
+    camera_forward_pc.x = other.camera_forward_pc.x;
+    camera_forward_pc.y = other.camera_forward_pc.y;
+    camera_forward_pc.z = other.camera_forward_pc.z;
+    camera_forward_pc.w = other.camera_forward_pc.w;
+    light_position_pc.x = other.light_position_pc.x;
+    light_position_pc.y = other.light_position_pc.y;
+    light_position_pc.z = other.light_position_pc.z;
+    light_position_pc.w = other.light_position_pc.w;
+    light_direction4_pc.x = other.light_direction4_pc.x;
+    light_direction4_pc.y = other.light_direction4_pc.y;
+    light_direction4_pc.z = other.light_direction4_pc.z;
+    light_direction4_pc.w = other.light_direction4_pc.w;
+    view = other.view;
+    projection = other.projection;
+    parameter_4 = other.parameter_4;
+    parameter_5 = other.parameter_5;
+    enabled = other.enabled;
+    parameter_0 = other.parameter_0;
+    parameter_1 = other.parameter_1;
+    parameter_2 = other.parameter_2;
+    parameter_3 = other.parameter_3;
+    parameter_19 = other.parameter_19;
+    parameter_20 = other.parameter_20;
+    used_on_specials = other.used_on_specials;
+    return *this;
 }
 
 /* Private to this unit: retail passes count in EAX and vertices in ECX, offset/scale/four outputs on the stack. */
@@ -16779,6 +17565,25 @@ void PC_SPECIAL_SHADOW_LIGHT::ComputeShadowMatrixPc(NURNDRLIGHTRECORD *set) {
     NuMtxMulH(&translated_basis, &transformed, &frustum);
     NuMtxMulH(&combined_inverse, &translated_basis, &axis);
     *shadow_matrix = combined_inverse;
+}
+
+PC_SPECIAL_SHADOW_LIGHT *PC_SPECIAL_SHADOW_LIGHT::Clone(VARIPTR *arena, VARIPTR) {
+    PC_SPECIAL_SHADOW_LIGHT *copy = reinterpret_cast<PC_SPECIAL_SHADOW_LIGHT *>((arena->addr + 31) & ~31);
+    arena->addr = ((arena->addr + 31) & ~31) + 0x830;
+    *copy = *this;
+    for (i32 i = 0; i < render_set_count; ++i) {
+        NURNDRLIGHTRECORD &set = render_sets[i];
+        set.count = 0;
+        for (i32 j = 0; j < 2; ++j) {
+            NuDisplayListResetStateCache(set.shadow_lists_pc[j].state);
+            NUDISPLAYLISTITEM *item = set.shadow_lists_pc[j].first;
+            set.shadow_lists_pc[j].material_last = item;
+            item->type = 0x8d;
+            item->next = NULL;
+            item->id = 1;
+        }
+    }
+    return copy;
 }
 
 void PC_SPECIAL_SHADOW_LIGHT::SetupShadowPc(NURNDRLIGHTRECORD *set) {

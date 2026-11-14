@@ -1704,8 +1704,25 @@ i32 DebrisAllCollisionCheckScaleYFlag(NUVEC *p, f32 r, f32 y, u8 f) {
     return result;
 }
 
-i32 fun_006590e0(void) {
+i32 DebrisGlassParticlesActive(void) {
     return freedebchkptrg > 0;
+}
+
+extern i32 DebrisGlassInitialized;
+extern void *DebrisGlassCopyMaterial;
+
+void DebrisGlassClose(void) {
+    if (DebrisGlassInitialized != 0) {
+        if (DebrisGlassCopyMaterial != NULL) {
+            NuMtlDestroy(DebrisGlassCopyMaterial);
+            DebrisGlassCopyMaterial = NULL;
+        }
+        if (debris_rt != 0) {
+            NuTexDestroy(debris_rt);
+            debris_rt = 0;
+        }
+        DebrisGlassInitialized = 0;
+    }
 }
 
 /* Native PC entries 0x00659140 and 0x00659150 are RET-only; the D3D release and
@@ -1716,8 +1733,6 @@ void DebrisReleaseResourcesPc(void) {
 void DebrisRestoreResourcesPc(void) {
 }
 
-extern i32 DebrisGlassInitialized;
-extern void *DebrisGlassCopyMaterial;
 extern f32 DebrisGlassU1;
 extern f32 DebrisGlassV1;
 i32 NuPower2(i32 value);
@@ -1759,6 +1774,21 @@ i32 NuTexGetReqSize(i32 tex_id, i32 level);
 i32 NuTexReserve(i32 size);
 void NuTexUnReserve(void);
 void NuRainDraw(i32 reserved);
+
+void DebrisDrawGlassEx(i32 flicker) {
+    i32 reserved;
+    if (DebrisGlassInitialized == 0) {
+        return;
+    }
+    reserved = NuTexReserve(NuTexGetReqSize(debris_rt, 0));
+    NuRndrBeginSceneEx(1, 2, 1);
+    if (freedebchkptrg > 0) {
+        DebrisDraw(0, 2);
+    }
+    NuRainDraw(reserved);
+    NuRndrEndScene();
+    NuTexUnReserve();
+}
 
 void DebrisDrawGlass(void) {
     i32 reserved;

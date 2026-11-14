@@ -1127,6 +1127,37 @@ u8 PC_DEVICE_BACKEND_PC::SupportsMultisamplePc(i32 index) {
     return multisample_tested != 0 && quality[index] != -1;
 }
 
+u8 PC_DEVICE_BACKEND_PC::fun_005090e0() {
+    for (i32 index = 0; index != 5; index++) {
+        if (index != 0 && SupportsMultisamplePc(index)) {
+            return 1;
+        }
+    }
+    return 0;
+}
+
+u32 PC_DEVICE_BACKEND_PC::fun_00509110() {
+    return requested_mode;
+}
+
+i32 PC_DEVICE_BACKEND_PC::fun_00509120() {
+    return requested_multisample;
+}
+
+void PC_DEVICE_BACKEND_PC::fun_00509130(i32 multisample) {
+    requested_multisample = multisample;
+}
+
+void PC_DEVICE_BACKEND_PC::fun_00509140(i32 mode) {
+    PcWindowOptions.SetAspectModePc(mode);
+    PcWindowOptions.Save();
+    if (PcWindowOptions.aspect_mode == 3) {
+        MenuAppliedAspectPc = active_aspect_mode;
+    } else {
+        MenuAppliedAspectPc = PcWindowOptions.aspect_mode;
+    }
+}
+
 u8 PC_DEVICE_BACKEND_PC::HasRequestedModeChangedPc() {
     return requested_windowed != (parameters.windowed == 1) || requested_mode != active_mode ||
            requested_feature != feature634 || requested_multisample != multisample_index ||
@@ -2336,6 +2367,51 @@ __declspec(noinline) void PC_DEVICE_BACKEND_PC::DrawPostEffectIndexedPc() {
 }
 
 void PC_DEVICE_BACKEND_PC::PostEffectBarrierPc() {
+}
+
+u16 PC_DEVICE_BACKEND_PC::fun_006e2140() {
+    if (multisample_index == 0 && PCDeviceHardwareVertexProcessingPC >= 2) {
+        return caps.simultaneous_render_targets;
+    }
+    return 1;
+}
+
+void PC_DEVICE_BACKEND_PC::fun_006e22c0() {
+    device->methods->set_depth_stencil_surface(device, depth_surface);
+}
+
+HRESULT PC_DEVICE_BACKEND_PC::fun_006e22e0(PC_EFFECT_SURFACE_PC *target, i32 filter) {
+    PC_TEXTURE_RESOURCE_PC *source = target_surfaces[0];
+    if (multisample_index != 0 || source == NULL) {
+        source = back_buffer;
+    }
+    return device->methods->stretch_rect(device, source, NULL, target->surface, NULL, filter);
+}
+
+void PC_DEVICE_BACKEND_PC::fun_006e2350() {
+    GRAPHICS_RENDER_TEXTURE_PC *texture = textures[0];
+    textures[0] = textures[2];
+    textures[2] = texture;
+    PC_TEXTURE_RESOURCE_PC *surface = target_surfaces[0];
+    target_surfaces[0] = target_surfaces[2];
+    target_surfaces[2] = surface;
+}
+
+void PC_DEVICE_BACKEND_PC::fun_006e2af0() {
+    saved_windowed = parameters.windowed == 1;
+    saved_mode = active_mode;
+    saved_feature = feature634;
+    saved_multisample = multisample_index;
+    saved_target_count = target_count;
+    saved_aspect = PcWindowOptions.aspect_mode;
+}
+
+void PC_DEVICE_BACKEND_PC::fun_006e2ce0(u32 width, u32 height, u32 refresh) {
+    u32 mode = FindMode(width, height, refresh);
+    if (mode >= mode_count) {
+        mode = active_mode;
+    }
+    requested_mode = mode;
 }
 
 extern "C" void PCGraphicsDrawPostEffectQuadPc(void) {

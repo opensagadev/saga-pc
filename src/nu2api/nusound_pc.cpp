@@ -428,6 +428,16 @@ void SoundVoiceManagerPC::StopVoice(i32 voice_id) {
     memset(&voices[voice_id], 0, sizeof(voices[voice_id]));
 }
 
+void SoundVoiceManagerPC::fun_00697700(i32 voice_id, i32 sound_key, i32, f32 field_1c, f32 field_20, i32 volume_index) {
+    voices[voice_id].field_1c = field_1c;
+    voices[voice_id].field_20 = field_20;
+    voices[voice_id].sound_key = sound_key;
+    voices[voice_id].volume_index = volume_index;
+    voices[voice_id].field_28 = PCSoundUpdateClock;
+    voices[voice_id].field_18 = 1;
+    voices[voice_id].field_2c = NuSound3LoopHoldTime;
+}
+
 void SoundVoiceManagerPC::StopAllVoices(void) {
     SoundVoiceSlotPC *slot = voices;
     i32 count = 64;
@@ -490,6 +500,21 @@ void SoundVoiceManagerPC::UpdateVoices(void) {
                 StopVoice(voice_id);
             }
         }
+    }
+}
+
+extern "C" void fun_00698e10(i32 signal) {
+    if (PCSoundMixDestination != NULL) {
+        if (PCSoundMixSource != NULL && PCSoundMixSampleCount != 0) {
+            memcpy(PCSoundMixDestination, PCSoundMixSource, (u32)PCSoundMixSampleCount * 2u);
+        }
+        if (PCSoundMixEvent != NULL && signal) {
+            SetEvent(PCSoundMixEvent);
+        }
+        if (PCSoundCommitTarget != NULL) {
+            PCSoundCommitTarget->vtable->commit_deferred_settings(PCSoundCommitTarget);
+        }
+        SoundVoiceManager.UpdateVoices();
     }
 }
 
@@ -779,6 +804,20 @@ i32 SoundVoiceManagerPC::LoadWavSamplePc(const char *name, i32 index) {
     return 0;
 }
 
+u8 SoundVoiceManagerPC::fun_00697360(i32 sample_index) {
+    if (samples != NULL) {
+        return samples[sample_index].valid_byte;
+    }
+    return 0;
+}
+
+u8 SoundVoiceManagerPC::fun_00697390(i32 sample_index) {
+    if (samples != NULL) {
+        return samples[sample_index].failed_byte;
+    }
+    return 0;
+}
+
 void SoundVoiceManagerPC::ClearSamplesPc(void) {
     i32 i;
     EnterCriticalSection(&SoundSampleCriticalSectionPc);
@@ -938,6 +977,36 @@ extern "C" {
         }
         NuSound3Initialized = 1;
         return 1;
+    }
+}
+
+extern SoundQueue *NuSound3StereoStreams[2];
+
+extern "C" void fun_00697eb0(void) {
+    if (NuSound3Initialized) {
+        if (NuSound3StereoStreams[1] != NULL) {
+            delete NuSound3StereoStreams[1];
+        }
+        if (NuSound3StereoStreams[0] != NULL) {
+            delete NuSound3StereoStreams[0];
+        }
+        NuSound3StereoStreams[1] = NULL;
+        NuSound3StereoStreams[0] = NULL;
+        if (PCSoundMixEvent != NULL && PCSoundSampleWorkerHandlePc != NULL) {
+            PCSoundSampleWorkerStopPc = 1;
+            SetEvent(PCSoundMixEvent);
+            while (PCSoundSampleWorkerHandlePc != NULL) {
+                Sleep(10);
+            }
+            DeleteObject(PCSoundMixEvent);
+            PCSoundMixEvent = NULL;
+            PCSoundSampleWorkerHandlePc = NULL;
+        }
+        if (PCSoundMixDestination != NULL) {
+            NuFree(PCSoundMixDestination, ".\\pc\\nusound.cpp", 0x72f);
+        }
+        PCSoundMixDestination = NULL;
+        NuSound3Initialized = 0;
     }
 }
 

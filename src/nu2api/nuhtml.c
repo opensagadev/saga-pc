@@ -43,6 +43,30 @@ void NuHtmlHeading(char *text, ...) {
     NuHtmlWrite("</font></table>\n");
 }
 
+void NuHtmlHeading2(char *text, ...) {
+    va_list args;
+    if (text == NULL || *text == '\0') {
+        text = NuHtmlUnknownTextPc;
+    }
+    NuHtmlWrite("<table width=100%c bgcolor=#DFDFE5><tr><td><font face=arial size=+2> ", 0x25);
+    va_start(args, text);
+    vsprintf(PCDisplayCaptureCursorPc, text, args);
+    PCDisplayCaptureCursorPc += NuStrLen(PCDisplayCaptureCursorPc);
+    NuHtmlWrite("</font></table>\n");
+}
+
+void NuHtmlHeading3(char *text, ...) {
+    va_list args;
+    if (text == NULL || *text == '\0') {
+        text = NuHtmlUnknownTextPc;
+    }
+    NuHtmlWrite("<table width=100%c bgcolor=#FFDFE5><tr><td><font face=arial size=+0> ", 0x25);
+    va_start(args, text);
+    vsprintf(PCDisplayCaptureCursorPc, text, args);
+    PCDisplayCaptureCursorPc += NuStrLen(PCDisplayCaptureCursorPc);
+    NuHtmlWrite("</font></table>\n");
+}
+
 void NuHtmlBanner(void) {
     NuHtmlWrite("<table   width=100%c height=20 bgcolor=#FF0000><tr><td><font face=arial size=+2></font></table>",
                 0x25);

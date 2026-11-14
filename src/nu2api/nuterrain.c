@@ -124,6 +124,87 @@ i32 NewPlatInst(void *object, i32 instance) {
     return new_index;
 }
 
+i32 NewPlatInstMSitu(void *object, i32 source) {
+    TERRAIN_SET_PC *terrain = CurrentTerrain;
+    i32 new_index;
+    i32 i;
+
+    if (terrain == NULL) {
+        return -1;
+    }
+    if (terrain->group_index_count >= terrain->max_group_indices) {
+        return -1;
+    }
+    if (terrain->group_count >= terrain->max_groups) {
+        return -1;
+    }
+    if (object == NULL) {
+        return -1;
+    }
+
+    new_index = -1;
+    for (i = 0; i < terrain->max_platforms; i++) {
+        if (terrain->platforms[i].scene_object == NULL) {
+            new_index = i;
+            break;
+        }
+    }
+    if (new_index == -1) {
+        return -1;
+    }
+    if (source == -1) {
+        return -1;
+    }
+
+    terrain->groups[terrain->group_count] = terrain->groups[source];
+    TERRAIN_NPI_SET->groups[TERRAIN_NPI_SET->group_count].scene_index = (i16)new_index;
+    TERRAIN_NPI_SET->groups[TERRAIN_NPI_SET->group_count].chunk_type = 1;
+    TERRAIN_NPI_SET->platforms[new_index].scene_object = object;
+    TERRAIN_NPI_SET->platforms[new_index].terrain_group_index = TERRAIN_NPI_SET->group_count;
+    TERRAIN_NPI_SET->platforms[new_index].scene_object_index = source;
+    TERRAIN_NPI_SET->platforms[new_index].instance_flags = NULL;
+    TERRAIN_NPI_SET->platforms[new_index].flags &= ~1;
+    TERRAIN_NPI_SET->platforms[new_index].bounce_54 = 0.0f;
+    TERRAIN_NPI_SET->platforms[new_index].bounce_58 = 0.0f;
+    TERRAIN_NPI_SET->platforms[new_index].bounce_5c = 0.0f;
+    TERRAIN_NPI_SET->platforms[new_index].bounce_64 = 0.0f;
+    TERRAIN_NPI_SET->platforms[new_index].bounce_60 = 0.0f;
+    TERRAIN_NPI_SET->group_indices[TERRAIN_NPI_SET->group_index_count] = TERRAIN_NPI_SET->group_count;
+    TERRAIN_NPI_SET->group_index_count++;
+    TERRAIN_NPI_SET->platform_cell.group_count++;
+    TERRAIN_NPI_SET->group_count++;
+    return new_index;
+}
+
+i32 NewMSituTerrEx(NUVEC *position, TERRAIN_SKIN_STREAM_PC *data, NUVEC *minimum, NUVEC *maximum, f32 radius) {
+    TERRAIN_SET_PC *terrain = CurrentTerrain;
+
+    if (terrain == NULL) {
+        return -1;
+    }
+    if (terrain->group_index_count >= terrain->max_group_indices) {
+        return -1;
+    }
+    if (terrain->group_count >= terrain->max_groups) {
+        return -1;
+    }
+
+    terrain->groups[terrain->group_count].group_info = -1;
+    TERRAIN_NPI_SET->groups[TERRAIN_NPI_SET->group_count].scene_index = -1;
+    TERRAIN_NPI_SET->groups[TERRAIN_NPI_SET->group_count].platform_flags &= ~1;
+    TERRAIN_NPI_SET->groups[TERRAIN_NPI_SET->group_count].chunk_type = 0;
+    TERRAIN_NPI_SET->groups[TERRAIN_NPI_SET->group_count].origin = *position;
+    TERRAIN_NPI_SET->groups[TERRAIN_NPI_SET->group_count].data = data;
+    TERRAIN_NPI_SET->groups[TERRAIN_NPI_SET->group_count].bounds_min = *minimum;
+    TERRAIN_NPI_SET->groups[TERRAIN_NPI_SET->group_count].bounds_max = *maximum;
+    TERRAIN_NPI_SET->groups[TERRAIN_NPI_SET->group_count].radius = radius;
+    TERRAIN_NPI_SET->group_indices[TERRAIN_NPI_SET->group_index_count] = TERRAIN_NPI_SET->group_count;
+    TERRAIN_NPI_SET->group_index_count++;
+    TERRAIN_NPI_SET->platform_cell.group_count++;
+    TERRAIN_NPI_SET->group_count++;
+    return TERRAIN_NPI_SET->group_count - 1;
+}
+
 #undef TERRAIN_NPI_SET
 
 #define TERRAIN_DP_SET ((TERRAIN_SET_PC *)CurrentTerrain)
@@ -3436,6 +3517,17 @@ TERRAIN_GROUP_PC *fun_00681cc0(i32 instance) {
         return NULL;
     }
     return &terrain->groups[terrain->platforms[index].terrain_group_index];
+}
+
+static const char *errstr[] = {"ERR_UNKNOWN", "ERR_NOTERR",      "ERR_MAXTERLIST", "ERR_MAXTERR",
+                               "ERR_INOUT",   "ERR_PLATSKINMAX", "ERR_NOINSTANCE"};
+
+const char *TerrErrorString(i32 error) {
+    i32 index = -error;
+    if (index >= 7) {
+        index = 0;
+    }
+    return errstr[index];
 }
 
 STATIC_ASSERT(offsetof(TERRAIN_SPATIAL_NODE, point_count) == 0);

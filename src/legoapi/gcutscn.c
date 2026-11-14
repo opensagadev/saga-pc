@@ -7,9 +7,12 @@ typedef struct cut_scene_pre_end_pc_s {
 } CUT_SCENE_PRE_END_PC; // size 0xc
 
 typedef struct cut_camera_pre_end_pc_s {
-    u8 unknown_00[9];    // 0x0
+    void *keys;          // 0x0
+    u8 unknown_04[5];    // 0x4
     i8 camera_index;     // 0x9
-} CUT_CAMERA_PRE_END_PC; // size 0xa
+    u8 unknown_0a;       // 0xa
+    u8 key_count;        // 0xb
+} CUT_CAMERA_PRE_END_PC; // size 0xc
 
 typedef struct cut_instance_pre_end_pc_s {
     u8 unknown_00[0x58];                    // 0x00
@@ -42,8 +45,34 @@ void fun_00500410(INSTNUGCUTSCENE *instance) {
     instance->flags_88 |= 0x800;
 }
 
+void fun_00500420(INSTNUGCUTSCENE *instance, i32 value) {
+    if (value > 31) {
+        value = 31;
+    }
+    instance->flags_88 = (instance->flags_88 & ~0x3e000U) | ((value << 13) & 0x3e000);
+}
+
+void fun_00500450(INSTNUGCUTSCENE *instance, i32 value) {
+    instance->flags_8c = (instance->flags_8c & ~0x40U) | ((value << 6) & 0x40);
+}
+
 void fun_00500470(INSTNUGCUTSCENE *instance, INSTNUGCUTSCENE *chained) {
     instance->chained_instance = chained;
+}
+
+void fun_00500480(INSTNUGCUTSCENE *instance, i32 value) {
+    instance->unknown_b4 = value;
+}
+
+void fun_00500490(INSTNUGCUTSCENE *owner, i32 count, VARIPTR *buffer) {
+    CUT_CAMERA_PRE_END_PC *camera = ((CUT_INSTANCE_PRE_END_PC *)owner)->camera_instance;
+    if (camera != NULL && count != 0) {
+        camera->key_count = count;
+        buffer->addr = (buffer->addr + 15) & ~15;
+        camera->keys = buffer->void_ptr;
+        buffer->addr += count * 16;
+        memset(camera->keys, 0, count * 16);
+    }
 }
 
 void fun_005004d0(void) {

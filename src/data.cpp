@@ -587,6 +587,7 @@ extern "C" {
     CUSTOMISER_COMPLETION_READER_PC *CustomiserCompletionSavePc = NULL;
     i32 PcIntelShaderFallback = 0;
     u8 PcCapsConfigured = 0;
+    const char *dat_02974d58[256] = {0};
     volatile u8 PcKeyQueueHead = 0;
     volatile u8 PcKeyQueueTail = 0;
     volatile u8 PcKeyQueueScanCodes[256] = {0};
@@ -594,6 +595,7 @@ extern "C" {
     u8 PcPressedScanCodes[256] = {0};
     u32 NuHwParameter19Pc = 0;
     WNDCLASSEXA PcWindowClass = {0};
+    i32 dat_02975c40 = 0;
     i32 PcNoFocusPolicy = 0;
     i32 PcRelaunchMce = 0;
     f32 PcMouseX = 0.0f;
@@ -7767,6 +7769,14 @@ extern "C" {
     i32 DebrisDmaCleanupIndexPc = 1;
 #pragma data_seg()
 
+#pragma bss_seg(".bss$dat_0091eeec")
+    i32 dat_0091eeec = 0;
+#pragma bss_seg()
+
+#pragma bss_seg(".bss$dat_0091ef20")
+    u32 dat_0091ef20 = 0;
+#pragma bss_seg()
+
 #pragma bss_seg(".bss$NuApiEndFrameCallbackPc")
     void (*NuApiEndFrameCallbackPc)(void) = 0;
 #pragma bss_seg()
@@ -8075,9 +8085,15 @@ extern "C" {
 #pragma bss_seg(".bss$ForceEulerToQuat")
     u8 ForceEulerToQuat = 0;
 #pragma bss_seg()
+#pragma bss_seg(".bss$dat_009737ff")
+    u8 dat_009737ff = 0;
+#pragma bss_seg()
     ANI3_GLOBALBUFFER_PC *globalbuffer = 0;
 #pragma bss_seg(".bss$DdMaxJointsPc")
     i32 ddmaxjoints = 0;
+#pragma bss_seg()
+#pragma bss_seg(".bss$MotionBlurAccumActiveThisFrame")
+    i32 motionBlurAccumActiveThisFrame = 0;
 #pragma bss_seg()
 #pragma data_seg(".data$ModelAnimLayerListDispatchPc")
     i32 (*MakeLayerList)(CHARACTER_MODEL_LAYERS_PC *, i16 *, u32) = PCBuildModelLayerList;
@@ -8491,6 +8507,7 @@ extern "C" {
     PC_DEVICE_BACKEND_PC PCDeviceBackend;
     NuKeyboardOwner_PC nu_keyboard_owner;
     u8 nu_keyboard_pages[0x200] = {0};
+    char dat_029753c0[512] = {0};
 #pragma bss_seg(".bss$nu_keyboard_page_index")
     u8 nu_keyboard_page_index = 0;
 #pragma bss_seg()
@@ -8499,6 +8516,7 @@ extern "C" {
     i32 nu_keyboard_repeat_countdown = 0;
     i32 nu_keyboard_previous_key_index = 0;
     i32 nu_keyboard_no_key_state = 0;
+    f32 dat_02975608 = 0.0f;
     i32 PCThreadCriticalSectionCount = 0;
     CRITICAL_SECTION PCThreadCriticalSections[13] = {0};
     i32 PCFrameCriticalSectionIndex = 0;
@@ -9259,6 +9277,14 @@ extern "C" {
     i32 NuCameraScissorHeightPc = 0x1000;
 #pragma data_seg()
 
+#pragma data_seg(".data$dat_0080e6a4")
+    i32 dat_0080e6a4 = 1;
+#pragma data_seg()
+
+#pragma data_seg(".data$dat_0080e864")
+    NU_CAMERA_STACK_ENTRY_PC *dat_0080e864 = dat_0280a598;
+#pragma data_seg()
+
     i32 PlayerID[2] = {-1, -1};
     i16 PlayerList[8] = {0};
     APICHARACTERMODELLIST Hub_ModelList[6] = {0};
@@ -9331,6 +9357,7 @@ extern "C" {
 #pragma const_seg()
     void (*buttonmapfn)(char *, char *) = 0;
     i32 smarttext_fwn = 0;
+    i32 MessageMtlInit = 0;
     char *txt_NULL = const_cast<char *>(Text_UnknownText);
     char *txt_UNKNOWN = const_cast<char *>(Text_UnknownText);
     char *Text_PathEnglish = const_cast<char *>("english");
@@ -10347,6 +10374,9 @@ extern "C" {
         0,                                    // field_c4
     };
 #pragma data_seg()
+
+#pragma bss_seg(".bss$edpart_entry_position")
+    NUVEC edpart_entry_position = {0};
 
 #pragma bss_seg(".bss$Part")
     PART_PC *Part = 0;
@@ -11674,6 +11704,9 @@ extern "C" {
 #pragma data_seg(".data$RedirectAnimDir")
     char RedirectAnimDir[64] = "chars\\commonanims\\";
 #pragma data_seg()
+#pragma data_seg(".data$dat_0080fbf0")
+    i32 dat_0080fbf0 = 1;
+#pragma data_seg()
 }
 
 extern "C" {
@@ -12146,6 +12179,16 @@ extern "C" {
 extern "C" {
 #pragma bss_seg(".bss$g_overrideList")
     NULSTHDR *g_overrideList = 0;
+#pragma bss_seg()
+#pragma bss_seg(".bss$dat_00973820")
+    POST_SHADER_PROGRAM_PC *dat_00973820 = 0;
+#pragma bss_seg()
+#pragma bss_seg(".bss$dat_0097382c")
+    POST_SHADER_PROGRAM_PC *dat_0097382c = 0;
+#pragma bss_seg()
+#pragma bss_seg(".bss$dat_0097401c")
+    i32 dat_0097401c = 0;
+    i32 dat_00974020 = 0;
 #pragma bss_seg()
 #pragma bss_seg(".bss$Char_MiniKit")
     i32 *Char_MiniKit = 0;
@@ -13046,6 +13089,9 @@ extern "C" {
 #pragma bss_seg()
 #pragma bss_seg(".bss$TerrWallNorm")
     NUVEC TerrWallNorm = {0};
+
+#pragma bss_seg(".bss$edbitsGameSound")
+    EDBITS_GAME_SOUND edbitsGameSound[320] = {0};
 #pragma bss_seg()
 #pragma bss_seg(".bss$plathitid")
     i32 plathitid = 0;
@@ -14143,6 +14189,30 @@ extern "C" {
 
 #pragma bss_seg(".bss$PCSpecialForceMaterialCount")
     i32 PCSpecialForceMaterialCount = 0;
+#pragma bss_seg()
+
+#pragma bss_seg(".bss$dat_0280d838")
+    u32 dat_0280d838 = 0;
+#pragma bss_seg()
+
+#pragma bss_seg(".bss$dat_0097f990")
+    f32 dat_0097f990 = 0;
+#pragma bss_seg()
+
+#pragma bss_seg(".bss$dat_0280d3a0")
+    f32 dat_0280d3a0 = 0;
+#pragma bss_seg()
+
+#pragma bss_seg(".bss$dat_02854f54")
+    i32 dat_02854f54 = 0;
+#pragma bss_seg()
+
+#pragma bss_seg(".bss$dat_0280a598")
+    NU_CAMERA_STACK_ENTRY_PC dat_0280a598[64] = {0};
+#pragma bss_seg()
+
+#pragma bss_seg(".bss$dat_0097391c")
+    i32 dat_0097391c = 0;
 #pragma bss_seg()
 
 #pragma bss_seg(".bss$CutSceneBoundingBoxTrackRoot")
@@ -15624,6 +15694,22 @@ extern "C" {
     i32 NuRndrShadowCnt = 0;
 #pragma bss_seg()
 
+#pragma bss_seg(".bss$dat_02854c90")
+    i32 dat_02854c90 = 0;
+#pragma bss_seg()
+
+#pragma bss_seg(".bss$dat_02854c94")
+    i32 dat_02854c94 = 0;
+#pragma bss_seg()
+
+#pragma bss_seg(".bss$dat_02854cac")
+    i32 dat_02854cac = 0;
+#pragma bss_seg()
+
+#pragma bss_seg(".bss$dat_02854cb0")
+    i32 dat_02854cb0 = 0;
+#pragma bss_seg()
+
 #pragma bss_seg(".bss$rtl_error")
     i32 rtl_error = 0;
 #pragma bss_seg()
@@ -15717,6 +15803,10 @@ extern "C" {
 
 #pragma bss_seg(".bss$SmartTextLongestWidthPc")
     f32 SmartTextLongestWidthPc = 0;
+#pragma bss_seg()
+
+#pragma bss_seg(".bss$MessageMtl")
+    NUMTL *MessageMtl = 0;
 #pragma bss_seg()
 
 #pragma bss_seg(".bss$MenuDisableHeaders")
@@ -16410,6 +16500,15 @@ extern "C" {
 #pragma bss_seg(".bss$NuPortalOverrideCameraPc")
     NUVEC *NuPortalOverrideCameraPc = 0;
 #pragma bss_seg()
+#pragma bss_seg(".bss$dat_009739b4")
+    i32 dat_009739b4 = 0;
+    i32 dat_009739b8 = 0;
+    i32 dat_009739bc = 0;
+    i32 dat_009739c0 = 0;
+#pragma bss_seg()
+#pragma bss_seg(".bss$dat_00971ad8")
+    void *dat_00971ad8 = 0;
+#pragma bss_seg()
 #pragma bss_seg(".bss$NuPortalCameraRoomPc")
     i16 NuPortalCameraRoomPc = 0;
 #pragma bss_seg()
@@ -16475,6 +16574,9 @@ extern "C" {
 #pragma bss_seg()
 #pragma bss_seg(".bss$VisibilityUsingOcclusionPc")
     i32 VisibilityUsingOcclusionPc = 0;
+#pragma bss_seg()
+#pragma bss_seg(".bss$dat_00973984")
+    i32 dat_00973984 = 0;
 #pragma bss_seg()
 #pragma data_seg(".data$VisibilityCurrentViewBoxPc")
     i32 VisibilityCurrentViewBoxPc = -1;
@@ -16562,6 +16664,9 @@ extern "C" {
 #pragma bss_seg()
 #pragma data_seg(".data$VisibilityPortalFilterEnabledPc")
     i32 VisibilityPortalFilterEnabledPc = 1;
+#pragma data_seg()
+#pragma data_seg(".data$dat_0080bab8")
+    i32 dat_0080bab8 = 1;
 #pragma data_seg()
 }
 
@@ -25888,6 +25993,9 @@ extern "C" {
     f32 (*nuspecial_vertex_offsets)[4] = NULL;
     u32 RenderFrameSceneFlagsPc = 0;
     i32 global_frame_count_paused = 0;
+    i32 dat_00973934 = 0;
+    i32 dat_00973938 = 0;
+    i32 dat_0097393c = 0;
     void (*RenderFrameCallbackPc)(void) = NULL;
     u32 NuPostEffectInitialisedFlagsPc = 0;
     FRAME_NATIVE_TEXTURE_POOL_PC FrameNativeTexturePoolPc = {0};
@@ -25951,6 +26059,8 @@ extern "C" {
     i32 NuPostEffectBackBufferFramePc = -1;
     GRAPHICS_RENDER_TEXTURE_PC *NuPostEffectBackBufferTexturePc = NULL;
     GRAPHICS_RENDER_TEXTURE_PC *NuPostEffectBackBufferCopyPc = NULL;
+    i32 dat_0080bf24 = -1;
+    GRAPHICS_RENDER_TEXTURE_PC *dat_0097ace4 = NULL;
     i32 PCFramePresentationStatePc = 0;
 }
 #pragma bss_seg()
@@ -26128,6 +26238,7 @@ extern "C" {
 #else
     char SaveFolderPathPc[256] = {0};
 #endif
+    char SaveFullCodePathPc[256] = {0};
     char SaveFullSlotPathPc[256] = {0};
     char SaveSlotNamePc[256] = {0};
     i32 saveload_slotcode[6] = {0};
@@ -26277,6 +26388,15 @@ extern "C" {
 extern "C" {
 #pragma bss_seg(".bss$edbits_things_scene")
     struct NUGSCN_s *edbits_things_scene = 0;
+
+#pragma bss_seg(".bss$edbits_numsounds")
+    i32 edbits_numsounds = 0;
+
+#pragma bss_seg(".bss$edbitsPlaySound")
+    void (*edbitsPlaySound)(NUVEC *position, i32 id) = 0;
+
+#pragma bss_seg(".bss$edbitsRequestSound")
+    i32 (*edbitsRequestSound)(char *name) = 0;
 }
 
 extern "C" {
@@ -26581,6 +26701,9 @@ extern "C" {
 
 #pragma data_seg(".data$edpp_create_type")
     i32 edpp_create_type = -1;
+
+#pragma bss_seg(".bss$edbits_what_game")
+    i8 edbits_what_game = 0;
 
 #pragma bss_seg(".bss$edpp_effect_list")
     u8 edpp_effect_list = 0;
@@ -27523,6 +27646,9 @@ extern "C" {
 #pragma bss_seg(".bss$edmain_cursor_enabled")
     i32 edmain_cursor_enabled = 0;
 
+#pragma bss_seg(".bss$edmain_render_interacts")
+    i32 edmain_render_interacts = 0;
+
 #pragma bss_seg(".bss$cubemapcam")
     NUCAMERA *cubemapcam = 0;
 
@@ -27675,6 +27801,9 @@ extern "C" {
 }
 
 extern "C" {
+#pragma bss_seg(".bss$edbits_level_filename")
+    char edbits_level_filename[256] = {0};
+
 #pragma bss_seg(".bss$edbits_general_save_directory")
     char edbits_general_save_directory[256] = {0};
 
@@ -27715,6 +27844,12 @@ extern "C" {
 
 #pragma data_seg(".data$gp_cam")
     edcam_s *gp_cam = &edcam_default;
+
+#pragma data_seg(".data$edqseed")
+    i32 edqseed = 12345;
+
+#pragma data_seg(".data$edbitsSfxVol")
+    i32 edbitsSfxVol = 100;
 
 #pragma data_seg(".data$edbits_cubemap_fov")
     f32 edbits_cubemap_fov = 1.5708f;
@@ -30826,11 +30961,19 @@ extern "C" {
 #pragma bss_seg(".bss$NuRndrFxHeightOverridePc")
     f32 NuRndrFxHeightOverridePc = 0;
 #pragma bss_seg()
+
+#pragma bss_seg(".bss$dat_02854d00")
+    NUMTL *dat_02854d00 = NULL;
+#pragma bss_seg()
 #pragma data_seg(".data$NuRndrFxHeightPc")
     f32 NuRndrFxHeightPc = -10000.0f;
 #pragma data_seg()
 #pragma data_seg(".data$NuRndrFxPreviousHeightPc")
     f32 NuRndrFxPreviousHeightPc = -10000.0f;
+#pragma data_seg()
+
+#pragma data_seg(".data$dat_0080e21c")
+    i32 dat_0080e21c = 1;
 #pragma data_seg()
 #pragma bss_seg(".bss$NuRndrFxColourPc")
     u32 NuRndrFxColourPc = 0;

@@ -35,6 +35,7 @@ class TEXT_INPUT_MANAGER_PC {
     TEXT_INPUT_DEVICE_KIND_PC device_kind[32];    // 0x67f0
     i32 ButtonName(i32 device, i32 button, char *destination, i32 custom, i32 custom_index, i32 use_callback,
                    i32 alternate_labels, char *delimiters);
+    i32 fun_006d9dc0(i32 device, i32 button, char *destination, i32 custom, i32 custom_index);
 }; // size 0x68b0
 
 extern "C" {
@@ -276,15 +277,33 @@ extern "C" f32 fun_006d6360(f32 period, f32 time) {
     return 1.0f - 1.0f / NuPow(NuPrimTwo, time);
 }
 
+extern "C" void fun_006d63a0(i32 *value, i32 target, f32 rate) {
+    i32 current = *value;
+    f32 step = (target - current) * rate;
+    step += current;
+    *value = step;
+}
+
 extern "C" void fun_006d63e0(f32 *value, f32 target, f32 rate) {
     target -= *value;
     target *= rate;
     *value += target;
 }
 
+extern "C" i32 fun_006d94b0(i32 player, i32 button, char *destination, i32, i32, i32 use_callback, i32 alternate_labels,
+                            char *delimiters) {
+    TEXT_INPUT_MANAGER_PC *manager = (TEXT_INPUT_MANAGER_PC *)nu_input_state;
+    i32 port = NuPadGetPort(player);
+    return manager->ButtonName(port, button, destination, 0, 0, use_callback, alternate_labels, delimiters);
+}
+
 extern "C" i32 PcInputBindingButtonNamePc(i32 action, i32 port, char *destination, i32 auxiliary, i32 bank, i32 a,
                                           i32 b, char *c) {
     return ((TEXT_INPUT_MANAGER_PC *)nu_input_state)->ButtonName(action, port, destination, auxiliary, bank, a, b, c);
+}
+
+i32 TEXT_INPUT_MANAGER_PC::fun_006d9dc0(i32 device, i32 button, char *destination, i32 custom, i32 custom_index) {
+    return ButtonName(device, button, destination, custom, custom_index, 1, 1, "()");
 }
 
 /* Append to nupad_text.cpp. Native6da3d0,51 bytes all stack cdecl. */
@@ -294,4 +313,31 @@ extern "C" char *TextInputActionLabelPc(i32 device, i32 action, i32 custom, i32 
     ((TEXT_INPUT_MANAGER_PC *)nu_input_state)
         ->ButtonName(device, action, TextInputActionLabelBufferPc, custom, custom_index, 1, 1, "()");
     return TextInputActionLabelBufferPc;
+}
+
+extern "C" i32 NuPadGetPlayer(i32 port);
+
+extern "C" void fun_006da460(i32 player) {
+    PC_INPUT_RUNTIME_PC *runtime = (PC_INPUT_RUNTIME_PC *)nu_input_state;
+    PC_INPUT_CONFIG_PC config;
+    for (i32 port = 0; port < 14; ++port) {
+        i32 owner = NuPadGetPlayer(port);
+        if (runtime->devices[port].kind != 0 && (owner == -1 || owner == player)) {
+            PC_INPUT_CONFIG_PC *found = runtime->FindConfig(3, port, player);
+            if (found == NULL) {
+                found = runtime->FindConfig(3, port, -1);
+                if (found == NULL) {
+                    continue;
+                }
+                runtime->InstallConfig(found, port, player, 1, player);
+                runtime->ExportConfigPc(port, &config, 1, player, player);
+                runtime->PromoteConfigPc(runtime->primary, 64, &config);
+                runtime->SaveConfigurationPc();
+                runtime->InstallConfig(&config, port, player, 0, -1);
+            }
+            NuPadMapPlayerToPort(player, port);
+            NuPadSetValid(port, 1);
+            return;
+        }
+    }
 }

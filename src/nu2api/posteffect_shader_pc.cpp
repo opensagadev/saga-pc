@@ -16,6 +16,9 @@ struct POST_SHADER_PROGRAM_POOL_PC {
     u8 occupied[8];                      // 0x400
     i32 cursor;                          // 0x408
     POST_SHADER_PROGRAM_PC *Allocate(void);
+    POST_SHADER_PROGRAM_POOL_PC *fun_006051a0();
+    i32 fun_00605480(i32 index);
+    void fun_006054a0(i32 index, bool set);
 }; // size 0x40c
 
 STATIC_ASSERT(sizeof(std::vector<POST_VERTEX_SHADER_CACHE_ENTRY_PC>) == 16);
@@ -48,6 +51,53 @@ found:
     occupied[index >> 3] |= (u8)(1 << (index & 7));
     cursor = (index + 1) % 64;
     return &programs[index];
+}
+
+FRAME_NATIVE_TEXTURE_POOL_PC *FRAME_NATIVE_TEXTURE_POOL_PC::fun_00605150() {
+    memset(occupied, 0, sizeof(occupied));
+    cursor = 0;
+    return this;
+}
+
+i32 FRAME_NATIVE_TEXTURE_POOL_PC::fun_00605170(FRAME_NATIVE_TEXTURE_PC *record) {
+    u32 index = record - records;
+    return index <= 15;
+}
+
+POST_SHADER_PROGRAM_POOL_PC *POST_SHADER_PROGRAM_POOL_PC::fun_006051a0() {
+    memset(occupied, 0, sizeof(occupied));
+    cursor = 0;
+    return this;
+}
+
+void FRAME_NATIVE_TEXTURE_POOL_PC::fun_00605300(i32 index, bool set) {
+    if (set) {
+        occupied[index >> 3] |= 1 << (index & 7);
+    } else {
+        occupied[index >> 3] &= ~(1 << (index & 7));
+    }
+}
+
+i32 FRAME_NATIVE_TEXTURE_POOL_PC::fun_00605460(i32 index) {
+    return occupied[index >> 3] >> (index & 7) & 1;
+}
+
+i32 POST_SHADER_PROGRAM_POOL_PC::fun_00605480(i32 index) {
+    return (i8)occupied[index >> 3] >> (index & 7) & 1;
+}
+
+void POST_SHADER_PROGRAM_POOL_PC::fun_006054a0(i32 index, bool set) {
+    if (set) {
+        occupied[index >> 3] |= 1 << (index & 7);
+    } else {
+        occupied[index >> 3] &= ~(1 << (index & 7));
+    }
+}
+
+void FRAME_NATIVE_TEXTURE_POOL_PC::fun_0060a010(FRAME_NATIVE_TEXTURE_PC *record) {
+    i32 index = record - records;
+    occupied[index >> 3] &= ~(1 << (index & 7));
+    cursor = index;
 }
 
 extern "C" POST_SHADER_PROGRAM_PC *PostShaderProgramCreatePc(i32 mode, const DWORD *vertex_tokens,

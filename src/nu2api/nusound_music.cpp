@@ -359,6 +359,23 @@ i32 NuMusic::SelectTrackByHandle(u32 class_mask, i32 handle) {
 extern "C" void PCMusicTrackNotFound(...) {
 }
 
+f32 NuMusic::fun_00693ba0() {
+    if (this != NULL) {
+        return duck_current;
+    }
+    return 1.0f;
+}
+
+NuMusic *NuMusic::GetPlayer() {
+    return the_music_player;
+}
+
+void NuMusic::NoMusic(i32 no_music) {
+    if (this != NULL && the_music_player != NULL) {
+        track_index = no_music != 0;
+    }
+}
+
 i32 NuMusic::GetTrackHandle(u32 class_mask, const char *name) {
     i32 index;
 

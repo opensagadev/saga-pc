@@ -154,6 +154,22 @@ void PC_SHADER_PARAMETER_LOCAL_PC::SetMatrixValues(i32 first_element, i32 count,
     }
 }
 
+i32 PC_SHADER_PARAMETER_LOCAL_PC::fun_00742180() {
+    return register_index;
+}
+
+PC_SHADER_PARAMETER_LOCAL_PC *PC_SHADER_PARAMETER_LOCAL_PC::fun_00742190() {
+    return next;
+}
+
+void PC_SHADER_PARAMETER_LOCAL_PC::fun_007421a0(PC_SHADER_PARAMETER_LOCAL_PC *parameter) {
+    next = parameter;
+}
+
+PC_SHADER_PARAMETER_LOCAL_PC *PC_SHADER_PARAMETER_LOCAL_PC::fun_007421b0() {
+    return this;
+}
+
 extern "C" i32 fun_007421c0(void) {
     return PCDeviceHardwareVertexProcessingPC;
 }
@@ -301,6 +317,26 @@ void PC_SHADER_PARAMETER_LOCAL_PC::SetVectorElement(i32 index, const f32 *values
         PCDeviceSetVertexShaderConstantsF(register_index + index, values, 1);
     } else {
         PCDeviceSetPixelShaderConstantsF(register_index + index, values, 1);
+    }
+}
+
+void PC_SHADER_PARAMETER_LOCAL_PC::fun_007424a0(i32 first_element, const f32 *values) {
+    SetMatrixValues(first_element, 1, values);
+}
+
+void PC_SHADER_PARAMETER_LOCAL_PC::fun_00742720(i32 index, const f32 *values) {
+    switch ((i32)(metadata << 4) >> 28) {
+        case 1:
+            SetValues(index, 1, values);
+            break;
+        case 2:
+            SetVectorElement(index, values);
+            break;
+        case 3:
+            SetMatrixValues(index, 1, values);
+            break;
+        case 4:
+            return;
     }
 }
 
@@ -899,4 +935,20 @@ extern "C" void PCShaderSetMaterialParametersPc(PC_SHADER_OBJECT_FULL_VIEW *shad
 }
 
 extern "C" void fun_00743970(void) {
+}
+
+void PC_SHADER_PARAMETER_LOCAL_PC::fun_00743e10(i32 first_element, i32 count, const f32 *values) {
+    switch ((i32)(metadata << 4) >> 28) {
+        case 1:
+            SetScalarValues(first_element, count, values);
+            break;
+        case 2:
+            SetVectorValues(first_element, count, values);
+            break;
+        case 3:
+            SetTransposedMatrixValues(first_element, count, values);
+            break;
+        case 4:
+            return;
+    }
 }

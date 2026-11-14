@@ -80,6 +80,10 @@ extern "C" void NuShaderObjectBaseUpdateWaterTable(PC_SHADER_OBJECT_FULL_VIEW *s
     PCShaderWaterLastFrame = nuapi.frame_count;
 }
 
+i32 PC_SHADER_PARAMETER_LOCAL_PC::fun_00743c90() {
+    return register_index >= 0;
+}
+
 void PC_SHADER_PARAMETER_LOCAL_PC::SetTransposedMatrixValues(i32 first_element, i32 count, const f32 *values) {
     i32 vector_count = (i8)register_count - first_element * 4;
     if (count * 4 < vector_count) {

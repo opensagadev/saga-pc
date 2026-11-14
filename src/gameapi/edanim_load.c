@@ -7,6 +7,10 @@
 void edbitsDrawCube(f32 x, f32 y, f32 z, f32 half_x, f32 half_y, f32 half_z, i32 rotation_z, i32 rotation_y,
                     i32 rotation_x, i32 outer_z, i32 outer_y, i32 colour, NUMTL *material);
 
+extern i32 edqseed;
+extern char edbits_level_filename[256];
+extern i8 edbits_what_game;
+
 STATIC_ASSERT(offsetof(TERRAIN_PLATFORM_PC, bounce_58) == 0x58);
 STATIC_ASSERT(offsetof(TERRAIN_PLATFORM_PC, bounce_64) == 0x64);
 
@@ -22,6 +26,21 @@ i32 edanimLookupSpecial(char *name, NUGSCN *scene) {
         }
     }
     return -1;
+}
+
+/* Android edqrand: the editors' 16-bit random sequence. */
+void edqrand(void) {
+    edqseed = (edqseed * 0x24cd + 1) & 0xffff;
+}
+
+/* Android edbitsRegisterLevel. */
+void edbitsRegisterLevel(char *filename, i8 game) {
+    if (filename) {
+        NuStrCpy(edbits_level_filename, filename);
+    } else {
+        edbits_level_filename[0] = '\0';
+    }
+    edbits_what_game = game;
 }
 
 void edanimDetermineNearestAnim(f32 distance) {

@@ -103,6 +103,28 @@ extern "C" {
     }
 }
 
+void NUVEC4::fun_00595250(f32 new_x, f32 new_y, f32 new_z, f32 new_w) {
+    x = new_x;
+    y = new_y;
+    z = new_z;
+    w = new_w;
+}
+
+void NUVEC4::fun_00595270() {
+    NuVecNorm((NUVEC *)this, (NUVEC *)this);
+    w = 1.0f;
+}
+
+NUVEC4 &NUVEC4::fun_00595290(const NUVEC &v) {
+    f32 new_y = v.y;
+    f32 new_z = v.z;
+    x = v.x;
+    y = new_y;
+    z = new_z;
+    w = 1.0f;
+    return *this;
+}
+
 void PC_SPECIAL_SHADOW_LIGHT::LookAtPc(NUVEC *eye, NUVEC *target, NUVEC *up) {
     NUVEC4 *direction = &light_direction4_pc;
     f32 direction_y = target->y - eye->y;
@@ -120,6 +142,11 @@ void PC_SPECIAL_SHADOW_LIGHT::LookAtPc(NUVEC *eye, NUVEC *target, NUVEC *up) {
     light_position_pc.z = position_z;
     light_position_pc.w = 1.0f;
     NuMtxLookAtD3D(&view, eye, target, up);
+}
+
+void PC_SPECIAL_SHADOW_LIGHT::fun_00595360(f32 left, f32 right, f32 bottom, f32 top, f32 near_plane, f32 far_plane) {
+    parameter_4 = 0;
+    NuMtxSetOrthoBlend(&projection, left, right, bottom, top, near_plane, far_plane);
 }
 
 void PC_SPECIAL_SHADOW_LIGHT::SetParameterfPc(i32 parameter, f32 value) {
