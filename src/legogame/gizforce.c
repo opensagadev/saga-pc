@@ -228,6 +228,9 @@ static FORCE_SFX_CONFIG_PC *FindForceForSfxPc(WORLD_FORCE_SFX_PC *world, char *n
 
 static FORCE_SFX_CONFIG_PC *GizForceSFX_force = 0;
 static WORLD_FORCE_SFX_PC *GizForceSFX_worldinfo = 0;
+// Selected input view: cumulative eligible writes <=384; actual PC capacity unknown.
+GIZFORCE_TARGET_RECORD_PC PossibleForceTargetsPc[384] = {0};
+static ADDGIZMOTYPE_PC GizmoRegistryGizForceAddTypePc = {0};
 
 static void GizForceSFX_forcename(NUFPAR_PC *parser) {
     GizForceSFX_force = NULL;
@@ -260,6 +263,9 @@ static NUFPCOMJMP GizForceSFX_ConfigKeywords[] = {{"forcename", GizForceSFX_forc
                                                   {"completesfx", GizForceSFX_completesfx},
                                                   {"returnsfx", GizForceSFX_returnsfx},
                                                   {NULL, NULL}};
+f32 ForceAnimationSeekRatePc = 5.0f;
+NUVEC ForceThrowMaulPositionPc = {19.05f, 4.0f, -105.23f};
+char *GizmoRegistryGizForceNamePtrPc = (char *)GizmoRegistryGizForceNamePc;
 
 void GizForceSFX_Configure(WORLDINFO *world_ptr, char *config) {
     WORLD_FORCE_SFX_PC *world = (WORLD_FORCE_SFX_PC *)world_ptr;
@@ -593,8 +599,6 @@ static void ForceResetSinglePc(WORLDINFO *world, GIZFORCE_PC *force) {
     GameAnimSet_GetCentreAndRadius(force->anim_set, &force->position, &force->radius, 2, 1, 1);
     GameAnimSet_EvaluateState(force->anim_set);
 }
-
-f32 ForceAnimationSeekRatePc = 5.0f;
 
 static f32 ForceUpdateSpeedPc(GIZFORCE_PC *force, GAMEOBJECT *object) {
     f32 target = 1.0f;
@@ -1920,9 +1924,6 @@ choose:
     }
     return 0;
 }
-
-char *GizmoRegistryGizForceNamePtrPc = (char *)GizmoRegistryGizForceNamePc;
-static ADDGIZMOTYPE_PC GizmoRegistryGizForceAddTypePc = {0};
 
 ADDGIZMOTYPE_PC *GizForce_RegisterGizmo(i32 type_id) {
     ADDGIZMOTYPE_PC *addtype = &GizmoRegistryGizForceAddTypePc;

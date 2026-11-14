@@ -12273,8 +12273,6 @@ extern "C" {
 }
 
 extern "C" {
-    // Selected input view: cumulative eligible writes <=384; actual PC capacity unknown.
-    GIZFORCE_TARGET_RECORD_PC PossibleForceTargetsPc[384] = {0};
 
     TIMER LevelTimer = {0};
 }
@@ -28094,7 +28092,6 @@ extern "C" {
     f32 MaulF_ForceThrowSpeed = 1.0f;
     f32 DookuC_ForceThrowGravity = -2.5f;
     f32 DookuC_ForceThrowSpeed = 2.5f;
-    NUVEC ForceThrowMaulPositionPc = {19.05f, 4.0f, -105.23f};
 #pragma data_seg()
 }
 
