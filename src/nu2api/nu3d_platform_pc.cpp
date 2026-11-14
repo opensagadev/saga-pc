@@ -10,7 +10,20 @@
 #include <float.h>
 #include <stdio.h>
 #include <string.h>
+u32 NuDebrisMaxVertexCount = 0;
+void *NuDebrisVertexData = 0;
 static NATIVE_PARTICLE_PACKET_PC *NuDebrisCurrentPacket = 0;
+i32 dat_02854c90 = 0;
+i32 dat_02854c94 = 0;
+i32 NuRndrShadowCnt = 0;
+i32 dat_02854cac = 0;
+i32 dat_02854cb0 = 0;
+i32 PCFramePresentationStatePc = 0;
+f32 NuRndrFxHeightOverridePc = 0;
+NUMTL *dat_02854d00 = NULL;
+void (*RenderFrameCallbackPc)(void) = NULL;
+NUMTX *NuRndr_DebrisRotMtxPtr = 0;
+i32 NuDebrisUseSystemMemory = 0;
 static u32 NuDebrisCurrentVertexCount = 0;
 static u32 NuDebrisVertexBufferSize = 0;
 
@@ -150,8 +163,14 @@ extern "C" {
         NUVEC direction;                // 0xdc
     } CAMERA_RENDER_SPECULAR_READER_PC; // size 0xe8
 
+    u8 NuPortalVisibilityBitsPc[625] = {0};
+    NU_CAMERA_STACK_ENTRY_PC dat_0280a598[64] = {0};
+    NUMTX clip_test_mtx = {0};
+    PC_SHADOW_QUEUE_RECORD NuRndrShadPolDat[128] = {0};
     static NUMTX RndrStateTransformPc = {0};
     static NUMTX RndrStateScaledTransformPc = {0};
+    u32 PCGraphicsPostEffectWidthPc = 512;
+    u32 PCGraphicsPostEffectHeightPc = 512;
     static f32 RndrStateTransformScalePc = 1.0f;
     STATIC_ASSERT(offsetof(NUGLOBALRNDRSTATE_PC, counter_0020) == 0x20);
     STATIC_ASSERT(offsetof(NUGLOBALRNDRSTATE_PC, fog_id) == 0x2e);
@@ -169,11 +188,28 @@ extern "C" {
         u8 transform_kind;                // 0x99
     }; // size 0x9c
 
+    SCENE_VIDEO_RESOURCE_HEADER_PC SceneVideoResourcesPC = {0};
+    NUVEC4 NuDisplayHandlerTintPc = {0};
+    i32 PCGraphicsBoundShader = 0;
+    NUMTX PcGeometryViewMatrixPc = {0};
+    i32 NuLgtLaserCnt = 0;
+    GRAPHICS_RENDER_TEXTURE_PC PCGraphicsRenderTextures[32] = {};
+    NUVEC4 NuRndr_DebrisPlane = {0};
+    i32 NuQFntScanYPc = 0;
+    void *NuDisplayMaterialLastPc = NULL;
+    PC_LIGHT_STATE_SLOT_PC NuLgtStateSlotsPc[8] = {0};
     static VARIPTR rndrstream_b = {0};
+    i32 NuQFntScanXPc = 0;
     static VARIPTR rndrstream_a = {0};
+    u8 NuPrimNeedsOverbrightening = 0;
     static i32 nurndr_maxstreamsize = 0;
     static i32 rndrstream_buffid = 0;
+    f32 NuCameraProjectionGlobalOffsetX = 0;
+    DWA_WEIGHT_BLOCK_PC DwaWeightPoolPc[60669] = {0};
+    u8 DwaBlockTablePc[0x400] = {0};
+    NULGTARCMATERIAL_PC NuLgtArcMtl[4] = {0};
     static u32 rndrstream_used = 0;
+    NUMTL *PCStartupMaterial2Pc = NULL;
     static u32 rndrstream_max_used = 0;
 
     typedef struct SCENE_FILE_TEXTURE_HEADER_PC {
@@ -969,10 +1005,61 @@ extern "C" {
     }
 
     extern "C" {
+        NULGTARCLASER_PC NuLgtArcLaserData[16] = {0};
+        NUGLOBALRNDRSTATE_PC render_state = {0};
         PC_EFFECT_SURFACE_PC *PcSurfaceRegistry[256] = {NULL};
         u8 PcSurfaceRegistryInitialized = 0;
+        DEBRIS_PART_HEADER_PC *NuDebrisLastHeader = 0;
+        u32 NuDebrisFrameVertexCount = 0;
+        VARIPTR *NuPrimStreamBufferPointer = 0;
+        i32 NuPrimVertexCount = 0;
+        i32 *NuPrimVertexCountPointer = 0;
+        i32 NuPrimCSPos = 0;
+        f32 NuPrimXBias = 0;
+        f32 NuPrimYBias = 0;
+        struct PC_DL_SHADER_PROGRAM_PAIR_PC *NuDisplayMaterialDebrisProgramsPc = NULL;
+        struct PC_DL_SHADER_PROGRAM_PAIR_PC *NuDisplayMaterialGlassProgramsPc = NULL;
+        struct PC_DL_SHADER_PROGRAM_PAIR_PC *NuDisplayMaterialFaceOnDecalProgramsPc = NULL;
+        struct PC_DL_SHADER_PROGRAM_PAIR_PC *NuDisplayMaterialFaceOnProgramsPc = NULL;
+        struct PC_DL_SHADER_PROGRAM_PAIR_PC *NuDisplayMaterialDefaultProgramsPc = NULL;
+        PC_TEXTURE_RESOURCE_PC *NuDisplayMaterialDebrisDeclarationPc = NULL;
+        PC_TEXTURE_RESOURCE_PC *NuDisplayMaterialFaceOnDeclarationPc = NULL;
+        PC_TEXTURE_RESOURCE_PC *NuDisplayMaterialDefaultDeclarationPc = NULL;
+        i32 NuDisplayMaterialDistortTexturePc = 0;
+        i32 numtl_force_mipmode = 0;
+        i32 NuDisplayHandlerReflectionPc = 0;
+        i32 NuLgtStateEnabledPc = 0;
+        i32 NuLgtStateUnknownPc = 0;
+        VARIPTR SceneUploadBufferStartPC = {0};
+        VARIPTR SceneUploadBufferCursorPC = {0};
+        VARIPTR SceneUploadBufferEndPC = {0};
+        i32 NuGobjRegistryInitializedPc = 0;
+        NUGSCN *PCRegisteredNativeScenes[100] = {0};
+        PC_GOBJ_REGISTRY_ENTRY_PC *NuGobjRegistryFirstPc = 0;
+        i32 dat_02854f54 = 0;
+        i32 NuGobjRegistryCountPc = 0;
+        NUVEC4BLOCK_PC ClipCornerBlocks[2] = {0};
+        NUVEC4BLOCK_PC ClipTransformedBlocks[2] = {0};
+        FRAME_NATIVE_TEXTURE_POOL_PC FrameNativeTexturePoolPc = {0};
         PC_FRAMEBUFFER_PC PcFramebufferPool[32];
+        f32 dat_0280d3a0 = 0;
+        PC_GRAPHICS_FRAME_SCRATCH_VIEW_PC PCGraphicsFrameScratchCount = {0};
+        NUMTX PcGeometryResetMatrixPc = {0};
+        PC_BUFFER_RESOURCE_PC *NuDebrisVertexBuffers[4] = {0};
+        u32 NuRndrFxColourPc = 0;
+        u8 PCGraphicsRenderTextureActive[32] = {};
+        NUVEC4 PcGeometryDistanceOriginPc = {0};
+        u32 dat_0280d838 = 0;
+        NUMTX PcGeometryProjectionMatrixPc = {0};
+        NUMTX PcGeometryInverseViewProjectionMatrixPc = {0};
+        NUMTL *PCStartupMaterial1Pc = NULL;
+        i32 NuLgtArcLaserCnt = 0;
+        NULGTLASER_PC NuLgtLaserData[64] = {0};
         u8 PcFramebufferActive[32] = {0};
+        u32 nuprim_field_ba8 = 0;
+        void *NuDebrisSystemBuffers[8] = {0};
+        u32 RenderFrameSceneFlagsPc = 0;
+        i32 PCGraphicsRenderTextureBytes = 0;
         PC_FRAMEBUFFER_PC *PcBoundFramebuffer = NULL;
         PC_FRAMEBUFFER_PC *PcDefaultFramebuffer = NULL;
         PC_FRAMEBUFFER_PC *PcSecondaryFramebuffer = NULL;
@@ -1052,6 +1139,12 @@ extern "C" {
     STATIC_ASSERT(offsetof(NUVPCURRENT, height) == 0xc);
 
     typedef struct screengrab_tile_params_pc_s SCREENGRAB_TILE_PARAMS_PC;
+    PC_TEXTURE_RESOURCE_PC *NuTextureEnvironmentCubePc = NULL;
+    PC_TEXTURE_RESOURCE_PC *NuTexturePhongCubePc = NULL;
+    // NuWaterReset writes these standalone four-byte PC globals.
+    i32 nu_water_reset_state = 0;
+    i32 nu_water_flow_state = 0;
+    i32 nu_water_reset_status = 0;
     PC_BUFFER_RESOURCE_PC *NuWaterVertexBufferPc = 0;
 
     typedef struct nuprimvertex_pc_s {
@@ -7682,6 +7775,19 @@ extern "C" {
         u8 unknown_26[2];       // 0x26
     } RENDERER_CLEAR_RECORD_PC; // size 0x28
 
+    i32 nurndr_tritot_this_frame = 0;
+    VARIPTR nudlist_stream_cursor = {0};
+    u32 clip_outcode_workspace_prefix[8] = {0};
+    DWA_WEIGHT_BLOCK_PC *DwaPointerPoolPc[2048] = {0};
+    NUMTX PcGeometryViewProjectionMatrixPc = {0};
+    f32 dat_0097f990 = 0;
+    i32 NuLgtLaserOldCnt = 0;
+    NUMTX NuRndr_DebrisMtx = {0};
+    i32 PCDeviceSamplerInvalidation[16][2] = {0};
+    f32 NuCameraProjectionGlobalScaleY = 0;
+    i32 NuPrimCoordSystemStack[2] = {0};
+    i32 NuLgtArcLaserOldCnt = 0;
+    f32 NuCameraProjectionGlobalOffsetY = 0;
     static RENDERER_CLEAR_RECORD_PC RendererClearRecordsPc[32] = {0};
 
     void fun_005fe640(NUVEC *position, f32 start_radius, f32 end_radius, i32 duration, u32 colour, i32 extra) {
@@ -7859,6 +7965,27 @@ extern "C" {
     }
 
     static f32 FrameShaderMaterialAnimationTimePc = 0;
+    i32 PCGraphicsFrameState = 1;
+    f32 NuDisplayHandlerOpacityPc = -1.0f;
+    i32 DwaWeightCapacityPc = 0x4000;
+    i32 DwaPointerCapacityPc = 0x4000;
+    i32 DwaBlockCapacityPc = 0x2000;
+    i32 rndr_blend_shape_deformer_wt_cnt = 61184;
+    i32 rndr_blend_shape_deformer_wt_ptrs_cnt = 2048;
+    i32 DwaEnabledPc = 1;
+    i32 DwaStreamCapacityPc = 0x2000;
+    f32 NuRndrFxHeightPc = -10000.0f;
+    f32 NuRndrFxPreviousHeightPc = -10000.0f;
+    i32 dat_0080e21c = 1;
+    RENDER_POST_VIEWPORT_PREFIX_PC RenderPostViewportPrefixPc = {0.0f,   0.0f,   640.0f, 224.0f, 0.0f, 0.0f,
+                                                                 640.0f, 224.0f, 1.0f,   1.0f,   0.0f, 0.0f};
+    PC_SPECIAL_PROJECTION_ADJUST PCSpecialProjectionAdjust = {1.0f, 1.0f, 0.0f, 0.0f};
+    u32 NuDebrisIdealDynamicVBSizePc = 262144u;
+    i32 NuPrimCurrentPrimitiveType = 10000;
+    NUMTX numtx_identity = {1.0f, 0.0f, 0.0f, 0.0f, 0.0f, 1.0f, 0.0f, 0.0f,
+                            0.0f, 0.0f, 1.0f, 0.0f, 0.0f, 0.0f, 0.0f, 1.0f};
+    f32 NuPrimXScale = 1.0f;
+    f32 NuPrimYScale = 1.0f;
     static i32 FrameShaderMaterialFirstCallPc = 1;
 
     void NuMtlAnimateShaderMtlTextures(f32 frame_time) {
@@ -7907,8 +8034,11 @@ extern "C" {
         NuRndrInit(buffer, end);
     }
 
+    i32 DwaBlockCountPc = 0;
     static i32 RendererConfigEnabledPc = 0;
     static i32 RendererConfigSecondEnabledPc = 0;
+    f32 NuCameraProjectionGlobalScaleX = 0;
+    i32 NuLgtArcLaserFrame = 0;
     static NUMTX RendererConfigMatrixPc = {0};
     static PC_BUFFER_RESOURCE_PC *RendererGeometryVertexBufferPc = 0;
     static PC_BUFFER_RESOURCE_PC *RendererGeometryIndexBufferPc = 0;

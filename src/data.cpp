@@ -379,7 +379,6 @@ extern "C" {
     LEVELDATA_PC *WorldArchiveThreeLevelsPc[4] = {NULL};
     NUFPCOMJMP WorldLoadAfterKeywordsPc[1] = {{NULL, NULL}};
     i32 WorldLightUserIdPc = 1;
-    i32 numtl_force_mipmode = 0;
 }
 
 extern "C" {
@@ -641,9 +640,6 @@ extern "C" {
 }
 
 extern "C" {
-    i32 PCGraphicsFrameState = 1;
-    i32 PCGraphicsBoundShader = 0;
-    PC_GRAPHICS_FRAME_SCRATCH_VIEW_PC PCGraphicsFrameScratchCount = {0};
     void (*PCGraphicsDeviceLostCallback)(GRAPHICS_PRESENT_PARAMETERS_PC *) = NULL;
 }
 
@@ -7263,21 +7259,6 @@ extern "C" {
 #pragma data_seg(".data$PcCursorTextureIdPc")
     i32 PcCursorTextureIdPc = -1;
 #pragma data_seg()
-#pragma data_seg(".data$DwaWeightCapacityPc")
-    i32 DwaWeightCapacityPc = 0x4000;
-#pragma data_seg()
-#pragma data_seg(".data$DwaPointerCapacityPc")
-    i32 DwaPointerCapacityPc = 0x4000;
-#pragma data_seg()
-#pragma data_seg(".data$DwaBlockCapacityPc")
-    i32 DwaBlockCapacityPc = 0x2000;
-#pragma data_seg()
-#pragma data_seg(".data$DwaEnabledPc")
-    i32 DwaEnabledPc = 1;
-#pragma data_seg()
-#pragma data_seg(".data$DwaStreamCapacityPc")
-    i32 DwaStreamCapacityPc = 0x2000;
-#pragma data_seg()
 #pragma data_seg(".data$NuHtmlUnknownTextPc")
     char NuHtmlUnknownTextPc[8] = "unknown";
 #pragma data_seg()
@@ -7858,14 +7839,6 @@ extern "C" {
     ANI3_GLOBALBUFFER_PC *globalbuffer = 0;
     i32 ddmaxjoints = 0;
     i32 motionBlurAccumActiveThisFrame = 0;
-#pragma data_seg(".data$DwaWeightCursorPc")
-    i32 rndr_blend_shape_deformer_wt_cnt = 61184;
-#pragma data_seg()
-#pragma data_seg(".data$DwaPointerCursorPc")
-    i32 rndr_blend_shape_deformer_wt_ptrs_cnt = 2048;
-#pragma data_seg()
-    DWA_WEIGHT_BLOCK_PC DwaWeightPoolPc[60669] = {0};
-    DWA_WEIGHT_BLOCK_PC *DwaPointerPoolPc[2048] = {0};
 
     i32 NumQuatPushes = 0;
     u8 AnimQuatSavedPc[4] = {0};
@@ -7932,8 +7905,6 @@ extern "C" {
     i32 NuTimeBar_Initialised = 0;
     NUMTL *NuTimeBar_FrameOutMtl = 0;
     char **TexAnimScriptTablePc = 0;
-    u8 DwaBlockTablePc[0x400] = {0};
-    i32 DwaBlockCountPc = 0;
     void *NuHwParameter33Pc = 0;
     NUMTL *PcCursorMaterialPc = 0;
     i32 nuqfnt_initialised = 0;
@@ -7950,15 +7921,6 @@ extern "C" {
     VUFNT *QFont2DButtons = 0;
     VUFNT *system_qfont = 0;
     NUTEXDIM_PC **NuTextureDimensions = 0;
-    i32 NuPrimVertexCount = 0;
-    i32 *NuPrimVertexCountPointer = 0;
-    VARIPTR *NuPrimStreamBufferPointer = 0;
-    i32 NuPrimCurrentPrimitiveType = 10000;
-    i32 NuPrimCSPos = 0;
-    f32 NuPrimXBias = 0;
-    f32 NuPrimYBias = 0;
-    f32 NuPrimXScale = 1.0f;
-    f32 NuPrimYScale = 1.0f;
 #pragma const_seg(".rdata$NuPrimPS2XScale")
     extern const f32 NuPrimPS2XScale = 0.003125f;
 #pragma const_seg(".rdata$NuPrimPS2YScale")
@@ -8065,9 +8027,7 @@ extern "C" {
     u32 nudlist_field_e80 = 0;
     u32 nudlist_field_9d0 = 0;
     u32 nudlist_field_9d8 = 0;
-    VARIPTR nudlist_stream_cursor = {0};
     u32 nudlist_field_1598 = 0;
-    u32 nuprim_field_ba8 = 0;
     LEVELDATA_PC *KAMINOE_LDATA = 0;
     LEVELDATA_PC *DOGFIGHTA_LDATA = 0;
     void *game_cutscenes_cutscene = 0;
@@ -8211,7 +8171,6 @@ extern "C" {
 #pragma data_seg()
 
     NUMTX NuCameraScissorProjectionScratch = {0};
-    NUMTX clip_test_mtx = {0};
     f32 zx = 0;
 #pragma const_seg(".rdata$ClipOutcodeMask32")
     __declspec(align(16)) extern const u32 ClipOutcodeMask32[4] = {32, 32, 32, 32};
@@ -8241,9 +8200,6 @@ extern "C" {
     i32 PCClipExtentsEnabled = 1;
 #pragma data_seg()
     i32 PCClipUseSSE = 0;
-    NUVEC4BLOCK_PC ClipCornerBlocks[2] = {0};
-    NUVEC4BLOCK_PC ClipTransformedBlocks[2] = {0};
-    u32 clip_outcode_workspace_prefix[8] = {0};
 #pragma data_seg(".data$AIPathConnectionMargin")
     f32 AIPathConnectionMargin = 0.05f;
 #pragma data_seg()
@@ -8636,7 +8592,6 @@ extern "C" {
     i32 netclient = 0;
     i32 NOSOUND = 0;
     volatile i32 nuvideo_global_vbcnt = 0;
-    i32 nurndr_tritot_this_frame = 0;
     i32 openlevels = 0;
 #pragma data_seg(".data$gizaimessage_prefix")
     char gizaimessage_prefix[5] = "msg_";
@@ -8697,10 +8652,6 @@ extern "C" {
     i16 tSPANISH = 0;
     i16 tDANISH = 0;
 
-    // NuWaterReset writes these standalone four-byte PC globals.
-    i32 nu_water_reset_state = 0;
-    i32 nu_water_flow_state = 0;
-    i32 nu_water_reset_status = 0;
     i64 NuTime_PerformanceFrequency = 0;
 #pragma const_seg(".rdata$NuTimeLowScale")
     extern const f64 NuTime_LowScale = 4294967295.0;
@@ -8724,7 +8675,6 @@ extern "C" {
     u32 *SfxCRCTable = 0;
     i32 SfxCRCTableInitialized = 0;
     NUPRIM_VERTEX_GROUP_SOURCE_PC *NuPrimVertexGroupSource = 0;
-    u8 NuPrimNeedsOverbrightening = 0;
     LEVELDATA_PC *levelconfig_ldata = 0;
     NUFPCOMJMP *Level_ConfigBeforeLoad_GameKeywords = 0;
     TERRAIN_SURFACE_PC TerSurface[32] = {
@@ -8905,11 +8855,8 @@ extern "C" {
     extern const f32 PCKeyboardDefaultValue = 0.1f;
 #pragma const_seg()
     f32 dme_sy = 1.0f;
-    NUMTX numtx_identity = {1.0f, 0.0f, 0.0f, 0.0f, 0.0f, 1.0f, 0.0f, 0.0f,
-                            0.0f, 0.0f, 1.0f, 0.0f, 0.0f, 0.0f, 0.0f, 1.0f};
     NUMTL *numtl_defaultmtl2d = 0;
     NUMTL *numtl_defaultmtl3d = 0;
-    NUGLOBALRNDRSTATE_PC render_state = {0};
     AREA_DATA_PC *GUNSHIP_ADATA = 0;
     i32 menu_flash = 0;
     i16 tAUDIOVOLUME = 0;
@@ -10174,14 +10121,6 @@ extern "C" {
 
     NUMTX NuCameraScalingTemplate = {0};
 
-    f32 NuCameraProjectionGlobalScaleX = 0;
-
-    f32 NuCameraProjectionGlobalScaleY = 0;
-
-    f32 NuCameraProjectionGlobalOffsetX = 0;
-
-    f32 NuCameraProjectionGlobalOffsetY = 0;
-
 #pragma data_seg(".data$psmtx")
     NUMTX psmtx = {1.0f, 0.0f, 0.0f, 0.0f, 0.0f, 1.0f, 0.0f, 0.0f, 0.0f, 0.0f, 1.0f, 0.0f, 0.0f, 0.0f, 0.0f, 1.0f};
 #pragma data_seg()
@@ -10290,7 +10229,6 @@ extern "C" {
 #pragma bss_seg(".bss$PCDeviceStateCachePc")
     PC_DEVICE_STATE_CACHE_PC PCDeviceStateCachePc;
 #pragma bss_seg()
-    i32 PCDeviceSamplerInvalidation[16][2] = {0};
 }
 
 extern "C" {
@@ -10389,17 +10327,9 @@ extern "C" {
 }
 
 extern "C" {
-    i32 NuLgtLaserCnt = 0;
-    i32 NuLgtLaserOldCnt = 0;
 #pragma data_seg(".data$NuLgtSeed")
     i32 NuLgtSeed = 12345;
 #pragma data_seg()
-    NULGTARCMATERIAL_PC NuLgtArcMtl[4] = {0};
-    NULGTLASER_PC NuLgtLaserData[64] = {0};
-    i32 NuLgtArcLaserCnt = 0;
-    i32 NuLgtArcLaserOldCnt = 0;
-    i32 NuLgtArcLaserFrame = 0;
-    NULGTARCLASER_PC NuLgtArcLaserData[16] = {0};
     i32 PS2_REZ_W = 0;
     i32 PS2_REZ_H = 0;
 }
@@ -10420,10 +10350,6 @@ extern "C" {
     extern const char GizmoSnapOptionNamePc[5] = "SNAP";
 #pragma const_seg()
     DEBRISKEY_PC *debkeydata = 0;
-}
-
-extern "C" {
-    i32 NuPrimCoordSystemStack[2] = {0};
 }
 
 extern "C" {
@@ -10622,9 +10548,6 @@ extern "C" {
 #pragma data_seg(".data$SceneUploadBufferSizePC")
     i32 SceneUploadBufferSizePC = 41943040;
 #pragma data_seg()
-    VARIPTR SceneUploadBufferStartPC = {0};
-    VARIPTR SceneUploadBufferCursorPC = {0};
-    VARIPTR SceneUploadBufferEndPC = {0};
     i32 PCDeviceHardwareVertexProcessingPC = 0;
     u8 PCFrameLoadingYieldEnabledPC = 0;
 }
@@ -10640,12 +10563,10 @@ extern "C" {
 }
 
 extern "C" {
-    SCENE_VIDEO_RESOURCE_HEADER_PC SceneVideoResourcesPC = {0};
     DEBRIS_RENDER_CHUNK_PC *ParticleChunkToRender = 0;
     DEBRIS_RENDER_CHUNK_PC *ParticleChunkRenderStack[5] = {0};
     PC_TEXTURE_ANIM_LIST *ntal_first = 0;
     PC_SHADER_SLOT_VIEW *PCShaderSlots = 0;
-    NUGSCN *PCRegisteredNativeScenes[100] = {0};
 #pragma data_seg(".data$NuUnresolvedTextureIDPC")
     i32 NuUnresolvedTextureIDPC = -1;
 #pragma data_seg()
@@ -10850,7 +10771,6 @@ extern "C" {
 #pragma const_seg(".rdata$TerrainScanMargin10Pc")
     extern const f64 TerrainScanMargin10Pc = 0.10000000149011612;
 #pragma const_seg()
-    NUMTX *NuRndr_DebrisRotMtxPtr = 0;
     NUMTX debris_box_camera_cache = {0};
     i32 NuRndrStopUpdate = 0;
     NUVEC NuRndrDebRange = {0};
@@ -11127,15 +11047,6 @@ extern "C" {
 }
 
 extern "C" {
-    PC_BUFFER_RESOURCE_PC *NuDebrisVertexBuffers[4] = {0};
-    void *NuDebrisSystemBuffers[8] = {0};
-    i32 NuDebrisUseSystemMemory = 0;
-    u32 NuDebrisMaxVertexCount = 0;
-    void *NuDebrisVertexData = 0;
-    DEBRIS_PART_HEADER_PC *NuDebrisLastHeader = 0;
-    u32 NuDebrisFrameVertexCount = 0;
-    NUMTX NuRndr_DebrisMtx = {0};
-    NUVEC4 NuRndr_DebrisPlane = {0};
     void *PCDisplayClipSet = 0;
     i32 PCDisplayClipGroupIndex = 0;
 #pragma const_seg(".rdata$PlayerGrappleWindSoundPc")
@@ -11641,9 +11552,6 @@ extern "C" {
 }
 
 extern "C" {
-#pragma data_seg(".data$PCSpecialProjectionAdjust")
-    PC_SPECIAL_PROJECTION_ADJUST PCSpecialProjectionAdjust = {1.0f, 1.0f, 0.0f, 0.0f};
-#pragma data_seg()
     u32 PCSpecialShadowClipResults[4] = {0};
     NUMTX PCSpecialProjectionTranslate = {0};
     NUMTX PCSpecialProjectionScale = {0};
@@ -12026,16 +11934,6 @@ extern "C" {
     PC_HG_SHADOW_PACKET PCShadowPackets[280] = {0};
 
     i32 PCSpecialForceMaterialCount = 0;
-
-    u32 dat_0280d838 = 0;
-
-    f32 dat_0097f990 = 0;
-
-    f32 dat_0280d3a0 = 0;
-
-    i32 dat_02854f54 = 0;
-
-    NU_CAMERA_STACK_ENTRY_PC dat_0280a598[64] = {0};
 
     i32 dat_0097391c = 0;
 
@@ -13136,18 +13034,6 @@ extern "C" {
     struct PC_SPECIAL_SHADOW_LIGHT *PCShadowSecondaryLight = 0;
 
     PC_GLOBAL_LIGHTING_STATE PCGlobalLightingState = {0};
-
-    PC_SHADOW_QUEUE_RECORD NuRndrShadPolDat[128] = {0};
-
-    i32 NuRndrShadowCnt = 0;
-
-    i32 dat_02854c90 = 0;
-
-    i32 dat_02854c94 = 0;
-
-    i32 dat_02854cac = 0;
-
-    i32 dat_02854cb0 = 0;
 }
 
 extern "C" {
@@ -13642,7 +13528,6 @@ extern "C" {
 #pragma const_seg(".rdata$NuPortalBoundsMinusOnePc")
     const NUVEC NuPortalBoundsMinusOnePc = {-1.0f, -1.0f, -1.0f};
 #pragma const_seg()
-    u8 NuPortalVisibilityBitsPc[625] = {0};
     NUVEC *NuPortalOverrideCameraPc = 0;
     i32 dat_009739b4 = 0;
     i32 dat_009739b8 = 0;
@@ -13750,13 +13635,6 @@ extern "C" {
 #pragma data_seg()
 #pragma data_seg(".data$antinode_reverse_time")
     f32 antinode_reverse_time = 1.0f;
-#pragma data_seg()
-}
-
-extern "C" {
-#pragma data_seg(".data$RenderPostViewportPrefixPc")
-    RENDER_POST_VIEWPORT_PREFIX_PC RenderPostViewportPrefixPc = {0.0f,   0.0f,   640.0f, 224.0f, 0.0f, 0.0f,
-                                                                 640.0f, 224.0f, 1.0f,   1.0f,   0.0f, 0.0f};
 #pragma data_seg()
 }
 
@@ -13876,12 +13754,6 @@ extern "C" {
 #pragma data_seg(".data$TextureAnimationScriptMaskPc")
     u16 script_mask = 0xffff;
 #pragma data_seg()
-#pragma data_seg(".data$NuTextureEnvironmentCubePc")
-    PC_TEXTURE_RESOURCE_PC *NuTextureEnvironmentCubePc = NULL;
-#pragma data_seg()
-#pragma data_seg(".data$NuTexturePhongCubePc")
-    PC_TEXTURE_RESOURCE_PC *NuTexturePhongCubePc = NULL;
-#pragma data_seg()
 #pragma const_seg(".rdata$PCDeviceTextureCubeSourcePathPc")
     const char PCDeviceTextureCubeSourcePathPc[15] = ".\\d3dCalls.cpp";
 #pragma const_seg()
@@ -13957,15 +13829,6 @@ extern "C" {
 }
 
 extern "C" {
-#pragma data_seg(".data$PCGraphicsRenderTextures")
-    GRAPHICS_RENDER_TEXTURE_PC PCGraphicsRenderTextures[32] = {};
-#pragma data_seg()
-#pragma data_seg(".data$PCGraphicsRenderTextureActive")
-    u8 PCGraphicsRenderTextureActive[32] = {};
-#pragma data_seg()
-#pragma data_seg(".data$PCGraphicsRenderTextureBytes")
-    i32 PCGraphicsRenderTextureBytes = 0;
-#pragma data_seg()
 #pragma data_seg(".data$GizmoPickupSys_Game")
     PICKUP_TYPE_SYSTEM_PC GizmoPickupSys_Game = {GizmoPickupType, CoinTab, 10, 4, 4, 2, 0, 0};
 #pragma data_seg()
@@ -14210,7 +14073,6 @@ extern "C" {
 struct PC_GEOMETRY_BASIS_PC;
 struct PC_GEOMETRY_OUTPUT_PC;
 extern "C" {
-    NUVEC4 PcGeometryDistanceOriginPc = {0};
     struct PC_GEOMETRY_BASIS_PC *PcGeometryTransformsPc = NULL;
     struct PC_GEOMETRY_OUTPUT_PC *PcGeometryOutputPc = NULL;
 }
@@ -14222,11 +14084,6 @@ extern "C" {
     struct PC_GEOMETRY_PUBLISH_RECORD_PC *PcGeometryRegistryPc = NULL;
     i32 PcGeometryMatrixCapacityPc = 0;
     i32 PcGeometryOutputCapacityPc = 0;
-    NUMTX PcGeometryViewMatrixPc = {0};
-    NUMTX PcGeometryViewProjectionMatrixPc = {0};
-    NUMTX PcGeometryProjectionMatrixPc = {0};
-    NUMTX PcGeometryInverseViewProjectionMatrixPc = {0};
-    NUMTX PcGeometryResetMatrixPc = {0};
     NUMTX PcGeometryAdjustedProjectionMatrixPc = {0};
     NUMTX PcGeometryTranslationMatrixPc = {0};
     NUMTX PcGeometryScaleMatrixPc = {0};
@@ -22955,14 +22812,11 @@ extern "C" {
     f32 RenderFrameShaderTimePc = 0.0f;
     i32 nuspecial_vertex_noffsets = 0;
     f32 (*nuspecial_vertex_offsets)[4] = NULL;
-    u32 RenderFrameSceneFlagsPc = 0;
     i32 global_frame_count_paused = 0;
     i32 dat_00973934 = 0;
     i32 dat_00973938 = 0;
     i32 dat_0097393c = 0;
-    void (*RenderFrameCallbackPc)(void) = NULL;
     u32 NuPostEffectInitialisedFlagsPc = 0;
-    FRAME_NATIVE_TEXTURE_POOL_PC FrameNativeTexturePoolPc = {0};
     NUFILE nudlist_field_988 = 0;
     char *PCDisplayCaptureCursorPc = NULL;
 }
@@ -22970,16 +22824,13 @@ extern "C" {
 
 #pragma data_seg(".data$DisplayHandlerStatePc")
 extern "C" {
-    NUVEC4 NuDisplayHandlerTintPc = {0};
     void *NuDisplayHandlerMaterialPc = NULL;
-    i32 NuDisplayHandlerReflectionPc = 0;
     i32 NuDisplayHandlerCameraIdPc = -1;
 }
 #pragma data_seg()
 
 #pragma data_seg(".data$DisplayHandlerBCDeviceStatePc")
 extern "C" {
-    f32 NuDisplayHandlerOpacityPc = -1.0f;
     i32 NuDisplayHandlerZModePc = -1;
     f32 NuDisplayHandlerShadowPc = 0.0f;
     u32 PCDevicePrimitiveCallCountPc = 0;
@@ -22998,25 +22849,14 @@ extern "C" {
     struct PC_SHADER_WATER_MATERIAL_VIEW *PCShaderWaterPreviousMaterial = NULL;
     u32 PCShaderWaterInitializationBits = 0;
     f32 PCShaderMaterialSamplerBiasOffsetPc = 0.0f;
-    void *NuDisplayMaterialLastPc = NULL;
     PC_TEXTURE_RESOURCE_PC *NuDisplayHandlerVertexShaderCachePc = NULL;
     PC_TEXTURE_RESOURCE_PC *NuDisplayHandlerPixelShaderCachePc = NULL;
-    struct PC_DL_SHADER_PROGRAM_PAIR_PC *NuDisplayMaterialDebrisProgramsPc = NULL;
-    struct PC_DL_SHADER_PROGRAM_PAIR_PC *NuDisplayMaterialGlassProgramsPc = NULL;
-    struct PC_DL_SHADER_PROGRAM_PAIR_PC *NuDisplayMaterialFaceOnDecalProgramsPc = NULL;
-    struct PC_DL_SHADER_PROGRAM_PAIR_PC *NuDisplayMaterialFaceOnProgramsPc = NULL;
-    struct PC_DL_SHADER_PROGRAM_PAIR_PC *NuDisplayMaterialDefaultProgramsPc = NULL;
-    PC_TEXTURE_RESOURCE_PC *NuDisplayMaterialDebrisDeclarationPc = NULL;
-    PC_TEXTURE_RESOURCE_PC *NuDisplayMaterialFaceOnDeclarationPc = NULL;
-    PC_TEXTURE_RESOURCE_PC *NuDisplayMaterialDefaultDeclarationPc = NULL;
-    i32 NuDisplayMaterialDistortTexturePc = 0;
     NUVEC4 NuDisplayHandlerDefaultTintPc = {1.0f, 1.0f, 1.0f, 1.0f};
     i32 NuPostEffectBackBufferFramePc = -1;
     GRAPHICS_RENDER_TEXTURE_PC *NuPostEffectBackBufferTexturePc = NULL;
     GRAPHICS_RENDER_TEXTURE_PC *NuPostEffectBackBufferCopyPc = NULL;
     i32 dat_0080bf24 = -1;
     GRAPHICS_RENDER_TEXTURE_PC *dat_0097ace4 = NULL;
-    i32 PCFramePresentationStatePc = 0;
 }
 #pragma data_seg()
 
@@ -23095,29 +22935,20 @@ extern "C" {
 
 /* Verified DWORD working inputs; original owning extents remain unknown. */
 extern "C" {
-    u32 NuDebrisIdealDynamicVBSizePc = 262144u;
     i32 MaxAnimJoints = 0;
 }
 
 extern "C" {
-    NUMTL *PCStartupMaterial1Pc = NULL;
-    NUMTL *PCStartupMaterial2Pc = NULL;
     i16 PlayerLastPort[8] = {-1, -1, -1, -1, -1, -1, -1, -1};
 }
 
 extern "C" {
-    PC_LIGHT_STATE_SLOT_PC NuLgtStateSlotsPc[8] = {0};
     i32 NuLgtStateCapacityPc = 8;
     i32 NuLgtStateActiveCountPc = -1;
     i32 NuLgtStateFreeHeadPc = -1;
-    i32 NuLgtStateEnabledPc = 0;
-    i32 NuLgtStateUnknownPc = 0;
 }
 
 extern "C" {
-    i32 NuGobjRegistryInitializedPc = 0;
-    PC_GOBJ_REGISTRY_ENTRY_PC *NuGobjRegistryFirstPc = 0;
-    i32 NuGobjRegistryCountPc = 0;
     extern const char NuGobjSourcePathPc[51] = "d:\\projects\\game_saga\\nu2api.saga\\nu3d\\pc\\nugobj.c";
 }
 
@@ -25355,17 +25186,9 @@ extern "C" {
 }
 
 extern "C" {
-#pragma data_seg(".data$PCGraphicsPostEffectWidthPc")
-    u32 PCGraphicsPostEffectWidthPc = 512;
-#pragma data_seg()
-#pragma data_seg(".data$PCGraphicsPostEffectHeightPc")
-    u32 PCGraphicsPostEffectHeightPc = 512;
-#pragma data_seg()
     GRAPHICS_RENDER_TEXTURE_PC *PCGraphicsPostEffectWorkTexturePc = 0;
     GRAPHICS_RENDER_TEXTURE_PC *PCGraphicsPostEffectBackBufferTexturePc = 0;
     f32 PostGaussianTexelBiasPc = 0.0f;
-    i32 NuQFntScanXPc = 0;
-    i32 NuQFntScanYPc = 0;
 #pragma bss_seg(".bss$NuTexBmpErrorTextPc")
     char NuTexBmpErrorTextPc[0x80];
 #pragma bss_seg()
@@ -26597,23 +26420,6 @@ extern "C" {
     u8 PanelStormActivePc = 0;
     u8 PanelDroidActivePc = 0;
     u8 PanelBountyHunterActivePc = 0;
-}
-
-extern "C" {
-    f32 NuRndrFxHeightOverridePc = 0;
-
-    NUMTL *dat_02854d00 = NULL;
-#pragma data_seg(".data$NuRndrFxHeightPc")
-    f32 NuRndrFxHeightPc = -10000.0f;
-#pragma data_seg()
-#pragma data_seg(".data$NuRndrFxPreviousHeightPc")
-    f32 NuRndrFxPreviousHeightPc = -10000.0f;
-#pragma data_seg()
-
-#pragma data_seg(".data$dat_0080e21c")
-    i32 dat_0080e21c = 1;
-#pragma data_seg()
-    u32 NuRndrFxColourPc = 0;
 }
 
 extern "C" {
