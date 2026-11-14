@@ -10559,7 +10559,6 @@ extern "C" {
 
 extern "C" {
     i32 Grass_Available = 0;
-    NUVEC APIObjectZeroMomentumPC = {0};
 }
 
 extern "C" {
@@ -14277,7 +14276,6 @@ extern "C" {
 extern "C" {
     i32 TreeInitialised = 0;
     VISIBILITY_RESULT_READER_PC *myvisi = 0;
-    NUMTX VisibilityZeroMatrixTemplatePc = {0};
     NUMTX VisibilityPrimaryPlaneMatrixPc = {0};
     NUMTX VisibilityAlternatePlaneMatrixPc = {0};
     NUMTX VisibilityPrimaryWorldMatrixPc = {0};
@@ -14855,7 +14853,6 @@ extern "C" {
     struct PC_GEOMETRY_PUBLISH_RECORD_PC *PcGeometryRegistryPc = NULL;
     i32 PcGeometryMatrixCapacityPc = 0;
     i32 PcGeometryOutputCapacityPc = 0;
-    NUVEC4 PcGeometryDefaultOriginPc = {0};
     NUMTX PcGeometryViewMatrixPc = {0};
     NUMTX PcGeometryViewProjectionMatrixPc = {0};
     NUMTX PcGeometryProjectionMatrixPc = {0};
@@ -23816,8 +23813,6 @@ extern "C" {
 }
 
 extern "C" {
-    i32 NuPowFirstTimePc = 1;
-    f32 NuPowBasesPc[32] = {0};
     f32 NuPowExponentsPc[32] = {0};
     f32 NuPowResultsPc[32] = {0};
     i32 NuPowCacheIndexPc = 0;

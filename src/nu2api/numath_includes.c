@@ -65,8 +65,13 @@ static i32 curve_points;
 static NUVEC *curve;
 static NUVEC *control;
 static const char NugraphSourcePathPc[] = "d:\\projects\\game_saga\\nu2api.saga\\numath\\nugraph.c";
+f32 NuPowBasesPc[32] = {0};
+NUVEC APIObjectZeroMomentumPC = {0};
 u32 fseed = 0;
+NUVEC4 PcGeometryDefaultOriginPc = {0};
+NUMTX VisibilityZeroMatrixTemplatePc = {0};
 static NURAND global_rand = {1};
+i32 NuPowFirstTimePc = 1;
 u16 ang[513] = {
     0x0000, 0x0014, 0x0029, 0x003d, 0x0051, 0x0066, 0x007a, 0x008f, 0x00a3, 0x00b7, 0x00cc, 0x00e0, 0x00f4, 0x0109,
     0x011d, 0x0131, 0x0146, 0x015a, 0x016f, 0x0183, 0x0197, 0x01ac, 0x01c0, 0x01d4, 0x01e9, 0x01fd, 0x0211, 0x0226,
