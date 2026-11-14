@@ -546,7 +546,37 @@ extern "C" {
         }
     }
 }
+i32 MusicPlrsUnderAttack = 0;
+i32 PlayersUnderAttack = 0;
+PC_MUSIC_ACTION_PAIR_PC *ActionPairTab = 0;
+f32 MusicSwapDelay = 0;
+i32 MusicPlrsHoldAttack = 0;
+struct nusound_filename_info_s *MusicInfo = 0;
+i32 AreaMusic = 0;
+i32 LevMusicOtherAmbient = 0;
+GAMEAUDIO_PC GameAudioStorage = {0};
+i32 MusicRestoreTrack = 0;
+i32 RepeatSfxQueueHead = 0;
+i32 LevMusicAmbient = 0;
+i32 MusicFindCut = 0;
+i32 LevMusicOtherAction = 0;
+i32 MusicOther = 0;
+i32 MusicSeekIndex = 0;
+i32 MusicActiveReset = 0;
+REPEAT_SFX_ENTRY_PC RepeatSfxQueue[32] = {0};
+SoundTable CurrentSFXTAB = {0};
+i16 *AmbientPairTab = 0;
+i32 LevMusicAction = 0;
+i32 (*SetSoundFadeDistCallBackFn)(WORLDINFO *) = NULL;
+i32 sticky_attack = 0;
+f32 sticky_attack_time = 0;
+i32 (*GameAudio_ActionMusicFn)(void) = NULL;
+f32 TerrainChatterWaitPc = 0;
+void (*ExtraHurtSfxFn)(GAMEOBJECT *) = 0;
+void (*ExtraDieSfxFn)(GAMEOBJECT *) = 0;
 i32 ticktock = 0;
+i32 BeenAttacked = 0;
+i32 MusicInside = 0;
 
 void TickTockSfx(void) {
     if (ticktock != 0) {

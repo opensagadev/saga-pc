@@ -27,7 +27,6 @@ extern "C" {
     i32 loadareadata_loadlevel = 0;
     i32 textcrawlactive = 0;
     i16 tTOUCHTOSTART = 0;
-    i32 AreaMusic = 0;
     AREA_LEVEL_LOAD_PC LevelLoad[12] = {0};
     i32 Area_PlayerModelCount = 0;
     APICHARACTERMODELLIST Area_FreePlayModelList[49] = {0};
@@ -7314,14 +7313,6 @@ extern "C" {
 
     u32 ResetBits = 0;
 
-    i32 LevMusicAction = 0;
-
-    i32 LevMusicAmbient = 0;
-
-    i32 LevMusicOtherAction = 0;
-
-    i32 LevMusicOtherAmbient = 0;
-
     void (*WorldInfo_InitMenuFn)(WORLDINFO *, i32 *, i32 *) = 0;
 
     void (*WorldInfo_InitLastFn)(WORLDINFO *) = 0;
@@ -7386,9 +7377,6 @@ extern "C" {
 }
 extern "C" {
     LEVEL_INST_ANIM_RESET_VIEW_PC LevInstAnimResetPc = {0};
-}
-extern "C" {
-    PC_MUSIC_ACTION_PAIR_PC *ActionPairTab = 0;
 }
 extern "C" {
     i32 ngizobstacletriggers = 0;
@@ -7924,8 +7912,6 @@ extern "C" {
     NUVEC BoltShootPositionScratch = {0};
     void *CurrentTerrain = 0;
     GAMEOBJECT_LOOKUP_CALLBACK_PC GetNamedGameObjectCallback = 0;
-    i32 RepeatSfxQueueHead = 0;
-    REPEAT_SFX_ENTRY_PC RepeatSfxQueue[32] = {0};
 #pragma data_seg(".data$TerLayer")
     TERRAIN_LAYER_PC TerLayer[17] = {
         {0x00000000, 0x0000ffff, 0x40000000}, {0x00000000, 0x0000ffff, 0x40000000},
@@ -7945,9 +7931,7 @@ extern "C" {
         {NULL, ProcessActionFlowBox, CheckOutputActionFlowBox},
     };
     u8 gizflow_loop_checksum = 0;
-    GAMEAUDIO_PC GameAudioStorage = {0};
     GAMEAUDIO_PC *GameAudio = &GameAudioStorage;
-    SoundTable CurrentSFXTAB = {0};
     NUVEC nusound_special_positions[5] = {0};
     f32 nusound_fade_start = 2.0f;
     f32 nusound_fade_end = 15.0f;
@@ -8787,13 +8771,11 @@ extern "C" {
     NUGSCN *edbits_base_scene = 0;
     void *edbits_base_terrain = 0;
     i32 NuSound3Initialized = 0;
-    struct nusound_filename_info_s *MusicInfo = 0;
     i16 *SfxHashHeads = 0;
     SFX_RECORD_PC *SfxInfo = 0;
     u32 *SfxCRCTable = 0;
     i32 SfxCRCTableInitialized = 0;
     NUPRIM_VERTEX_GROUP_SOURCE_PC *NuPrimVertexGroupSource = 0;
-    i16 *AmbientPairTab = 0;
     u8 NuPrimNeedsOverbrightening = 0;
     LEVELDATA_PC *levelconfig_ldata = 0;
     NUFPCOMJMP *Level_ConfigBeforeLoad_GameKeywords = 0;
@@ -10515,7 +10497,6 @@ extern "C" {
 #pragma const_seg(".rdata$AITransferLiteral75782c")
     extern const char AITransferLiteral75782c[5] = "name";
 #pragma const_seg()
-    i32 BeenAttacked = 0;
     TAKEOVEROBJECT_PC takeoverobjects[8] = {0};
     i32 num_takeoverobjects = 0;
 #pragma data_seg(".data$Door_NextSock")
@@ -11399,10 +11380,6 @@ extern "C" {
 }
 
 extern "C" {
-    void (*ExtraDieSfxFn)(GAMEOBJECT *) = 0;
-}
-
-extern "C" {
     f32 TerrWallDeflectYScale = 0;
 }
 
@@ -11510,7 +11487,6 @@ extern "C" {
     f32 MenuAlpha = 0;
     i32 MenuA = 0;
     i32 CurrentMenuId = 0;
-    f32 TerrainChatterWaitPc = 0;
     f32 DoubleScoreTime = 0;
     i32 LookAtBoth = 0;
     i32 PlayPlanesUseRenderMtxPc = 0;
@@ -11760,9 +11736,6 @@ extern "C" {
 #pragma data_seg(".data$KillPartsAtatExplodeTextPc")
     char KillPartsAtatExplodeTextPc[9] = "EXPLODE1";
 #pragma data_seg()
-}
-extern "C" {
-    void (*ExtraHurtSfxFn)(GAMEOBJECT *) = 0;
 }
 
 extern "C" {
@@ -14659,7 +14632,6 @@ extern "C" {
     i32 selectmodemode = 0;
     f32 selectmodetime = 0.0f;
     i32 (*CheckMusicOtherFn)(void) = NULL;
-    i32 (*GameAudio_ActionMusicFn)(void) = NULL;
     i32 (*PauseRenderOffFn)(void) = NULL;
     f32 minikittime = 0.0f;
     i32 freeplaymode = 0;
@@ -14728,7 +14700,6 @@ extern "C" {
 }
 
 extern "C" {
-    i32 (*SetSoundFadeDistCallBackFn)(WORLDINFO *) = NULL;
     i32 (*AlternateGameCallbackPc)(GAMEOBJECT *object) = NULL;
     i32 (*GamePads_IgnoreInputFn)(void) = NULL;
     i32 (*GizBuildit_AutoBuildPosFn)(void *context, NUVEC *position, NUVEC *result, u16 *angle) = NULL;
@@ -23525,30 +23496,12 @@ extern "C" {
 }
 
 extern "C" {
-    f32 sticky_attack_time = 0;
-
-    f32 MusicSwapDelay = 0;
-
-    i32 MusicPlrsUnderAttack = 0;
 
 #pragma data_seg(".data$MusicActive")
     i32 MusicActive = -1;
 
-    i32 MusicActiveReset = 0;
-    i32 MusicSeekIndex = 0;
-
-    i32 PlayersUnderAttack = 0;
-
-    i32 MusicInside = 0;
-
-    i32 MusicFindCut = 0;
-
-    i32 MusicRestoreTrack = 0;
-
 #pragma data_seg(".data$MusicOnFlag")
     i32 MusicOnFlag = 1;
-
-    i32 MusicPlrsHoldAttack = 0;
 
 #pragma data_seg(".data$CurrentMusicPair_Quiet")
     i32 CurrentMusicPair_Quiet = -1;
@@ -23561,10 +23514,6 @@ extern "C" {
 
 #pragma data_seg(".data$last_currentmusicpair_quiet")
     i32 last_currentmusicpair_quiet = -1;
-
-    i32 MusicOther = 0;
-
-    i32 sticky_attack = 0;
 }
 
 extern "C" {
