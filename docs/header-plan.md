@@ -119,6 +119,65 @@ headers have one part each and no cycle; give `decomp.h`'s prelude and
 `STATIC_ASSERT` a header that everything includes first. A header that
 compiles alone is the test (`clang -fsyntax-only` per header, C and C++).
 
+### Step 2 groundwork (2026-11-14, later)
+
+`tools/standalone.py` compiles each module header alone (included twice,
+C and C++, libclang with the lint flags) and counts those that fail against
+`config/standalone-budget.json`, which only goes down (`make check-core`;
+`--list` names the first error of each, `HEADER` shows all errors, `--vc8
+HEADER` compiles with VC8). Results are cached by the content of every file a
+header can reach.
+
+| | before | now |
+|---|---:|---:|
+| module headers that compile alone | 19 of 421 | 190 of 421 |
+| largest include cycle | 120 | 37 (plus one of 3 and one of 2) |
+| headers in parts | 74 | 70 |
+
+What changed:
+
+1. **Prelude.** `nu2api/nucore/common.h` (the Android tree's prelude
+   header) holds the platform headers, `externals.h`, `STATIC_ASSERT`,
+   `STUBBED`, `U64_PAIR`, includes `fixed_width.h` (now only the integer
+   typedefs) and checks their sizes, then the basic engine types (`f32`,
+   `VARIPTR`, `MIN`/`MAX`). Every module header includes it first; saga.h
+   includes it where decomp.h's first part was, so every unit opens the same
+   files. `decomp.h` keeps the view types and SDK layout checks. The
+   prelude rows of `config/header-map.csv` target `common.h`.
+2. **Includes from use.** Each module header includes exactly the module
+   headers it uses, read from a libclang parse of saga.h (C and C++):
+   typedef names, types used by value (`sizeof`, `offsetof`, members),
+   macros, enumerators, variables (a one-off analysis for this change; it
+   is not a tool yet). These includes stay inside `#ifndef SAGA_SHIM`, so the
+   shim is unchanged by them.
+3. **Pointers name the tag.** Where a header in an include cycle used
+   another header of the cycle only through pointers to its structs, those
+   pointers spell the tag and the header declares it first, as the Android
+   headers do (`struct numtx_s;` ... `void NuVecMtxRotate(NUVEC *, NUVEC *,
+   struct numtx_s *);`). A typedef that names a different type in C and C++
+   (`PC_SHADER_OBJECT_FULL_VIEW`) keeps its spelling. A redundant `struct
+   X;` costs VC8 no symbol id (checked on the fragile units; one `typedef`
+   in the same place moves `InitGameAfterConfig`). `levels.h` and
+   `nu3d_includes.h` keep their typedef spellings: rewriting either one
+   moves `NuRndrParticleGroup` (`nu3d_platform_pc.cpp`) from 95.9% to 94.6%
+   (where the declarations sit, not how many there are).
+4. `nuvec.h`, `nufile_pc.h` and `common.h` are one part each.
+
+Measured against origin/main 77c2713b (full build, `match.py --update`):
+no function changes its bytes or score, the exact set by address is the
+same and reproduced data stays 970,473 bytes.
+
+What is left is ownership, not spelling. The 37-header cycle runs through
+types needed by value across headers: the catch-alls
+(`legoapi/legoapi_types.h`, `globals.h`), `decomp.h`'s view types used by
+`nu3d_includes.h` and `nustencilshadows_PC.h`, `NUSPECIALHANDLE`
+(`nu3d_includes.h`) inside `world.h`, `level.h` and `apiobject.h`, and the
+save types between `levels.h`, `game.h`, `audio.h` and `hub.h`. Most of the
+231 failing headers fail only because they reach this cycle. The fragile
+units are not ready: `legogame/episodeIII.c` (`BoulderSpawnPc`) uses 55
+module headers, 39 of them not standalone; `legogame/episodeIV.c` uses 44,
+32 not standalone.
+
 The transition has three steps, each with its own proof. VC8's code for a few
 fragile functions depends on how many symbol ids a unit consumes before them
 (docs/cleanup-audit.md, section 7).

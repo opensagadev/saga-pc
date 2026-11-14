@@ -1,17 +1,17 @@
 key,kind,names,line_start,line_end,lines,target,evidence,detail
-include:stddef.h,include,stddef.h,4,4,2,decomp.h,decomp,platform prelude: SDK include
-macro:_WIN32_WINNT,macro,_WIN32_WINNT,6,8,4,decomp.h,decomp,scaffolding macro
-macro:WIN32_LEAN_AND_MEAN,macro,WIN32_LEAN_AND_MEAN,9,9,1,decomp.h,decomp,scaffolding macro
-macro:NOMINMAX,macro,NOMINMAX,10,10,1,decomp.h,decomp,scaffolding macro
-include:windows.h,include,windows.h,11,11,1,decomp.h,decomp,platform prelude: SDK include
-include:mmsystem.h,include,mmsystem.h,12,12,1,decomp.h,decomp,platform prelude: SDK include
-include:shellapi.h,include,shellapi.h,13,13,1,decomp.h,decomp,platform prelude: SDK include
-include:shlobj.h,include,shlobj.h,14,14,1,decomp.h,decomp,platform prelude: SDK include
-include:objbase.h,include,objbase.h,15,15,1,decomp.h,decomp,platform prelude: SDK include
-include:oleauto.h,include,oleauto.h,16,16,1,decomp.h,decomp,platform prelude: SDK include
-include:math.h,include,math.h,17,17,1,decomp.h,decomp,platform prelude: SDK include
-include:xmmintrin.h,include,xmmintrin.h,21,23,6,decomp.h,decomp,platform prelude: SDK include
-include:externals.h,include,externals.h,25,25,2,decomp.h,decomp,platform prelude: externals.h
+include:stddef.h,include,stddef.h,4,4,2,nu2api/nucore/common.h,decomp,"platform prelude: SDK include (prelude, step 2)"
+macro:_WIN32_WINNT,macro,_WIN32_WINNT,6,8,4,nu2api/nucore/common.h,decomp,"scaffolding macro (prelude, step 2)"
+macro:WIN32_LEAN_AND_MEAN,macro,WIN32_LEAN_AND_MEAN,9,9,1,nu2api/nucore/common.h,decomp,"scaffolding macro (prelude, step 2)"
+macro:NOMINMAX,macro,NOMINMAX,10,10,1,nu2api/nucore/common.h,decomp,"scaffolding macro (prelude, step 2)"
+include:windows.h,include,windows.h,11,11,1,nu2api/nucore/common.h,decomp,"platform prelude: SDK include (prelude, step 2)"
+include:mmsystem.h,include,mmsystem.h,12,12,1,nu2api/nucore/common.h,decomp,"platform prelude: SDK include (prelude, step 2)"
+include:shellapi.h,include,shellapi.h,13,13,1,nu2api/nucore/common.h,decomp,"platform prelude: SDK include (prelude, step 2)"
+include:shlobj.h,include,shlobj.h,14,14,1,nu2api/nucore/common.h,decomp,"platform prelude: SDK include (prelude, step 2)"
+include:objbase.h,include,objbase.h,15,15,1,nu2api/nucore/common.h,decomp,"platform prelude: SDK include (prelude, step 2)"
+include:oleauto.h,include,oleauto.h,16,16,1,nu2api/nucore/common.h,decomp,"platform prelude: SDK include (prelude, step 2)"
+include:math.h,include,math.h,17,17,1,nu2api/nucore/common.h,decomp,"platform prelude: SDK include (prelude, step 2)"
+include:xmmintrin.h,include,xmmintrin.h,21,23,6,nu2api/nucore/common.h,decomp,"platform prelude: SDK include (prelude, step 2)"
+include:externals.h,include,externals.h,25,25,2,nu2api/nucore/common.h,decomp,"platform prelude: externals.h (prelude, step 2)"
 typedef:i8,typedef,i8,28,28,3,nu2api/nucore/fixed_width.h,android,i8
 typedef:u8,typedef,u8,29,29,1,nu2api/nucore/fixed_width.h,android,u8
 typedef:i16,typedef,i16,30,30,1,nu2api/nucore/fixed_width.h,android,i16
@@ -23,20 +23,20 @@ typedef:i64,typedef,i64,35,35,1,nu2api/nucore/fixed_width.h,android,i64
 typedef:u64,typedef,u64,36,36,1,nu2api/nucore/fixed_width.h,android,u64
 typedef:f32,typedef,f32,37,37,1,nu2api/nucore/common.h,android,f32
 typedef:f64,typedef,f64,38,38,1,nu2api/nucore/common.h,android,f64
-macro:SAGA_JOIN_IMPL,macro,SAGA_JOIN_IMPL,41,41,3,decomp.h,decomp,scaffolding macro
-macro:SAGA_JOIN,macro,SAGA_JOIN,42,42,1,decomp.h,decomp,scaffolding macro
-macro:STATIC_ASSERT,macro,STATIC_ASSERT,43,43,1,decomp.h,decomp,scaffolding macro
-macro:STUBBED,macro,STUBBED,45,47,4,decomp.h,decomp,scaffolding macro
-macro:STUBBED_NAMED,macro,STUBBED_NAMED,48,50,3,decomp.h,decomp,scaffolding macro
-macro:U64_PAIR,macro,U64_PAIR,53,53,3,decomp.h,decomp,scaffolding macro
+macro:SAGA_JOIN_IMPL,macro,SAGA_JOIN_IMPL,41,41,3,nu2api/nucore/common.h,decomp,"scaffolding macro (prelude, step 2)"
+macro:SAGA_JOIN,macro,SAGA_JOIN,42,42,1,nu2api/nucore/common.h,decomp,"scaffolding macro (prelude, step 2)"
+macro:STATIC_ASSERT,macro,STATIC_ASSERT,43,43,1,nu2api/nucore/common.h,decomp,"scaffolding macro (prelude, step 2)"
+macro:STUBBED,macro,STUBBED,45,47,4,nu2api/nucore/common.h,decomp,"scaffolding macro (prelude, step 2)"
+macro:STUBBED_NAMED,macro,STUBBED_NAMED,48,50,3,nu2api/nucore/common.h,decomp,"scaffolding macro (prelude, step 2)"
+macro:U64_PAIR,macro,U64_PAIR,53,53,3,nu2api/nucore/common.h,decomp,"scaffolding macro (prelude, step 2)"
 macro:AREA_GLOBALS_PROGRESS_FLAGS_PC,macro,AREA_GLOBALS_PROGRESS_FLAGS_PC,54,54,1,legoapi/world/levels.h,users,AREA_GLOBALS_PROGRESS_FLAGS_PC: only legogame/levels.cpp android-path
-assert:-,assert,,57,57,3,nu2api/nucore/fixed_width.h,follow-type,i8
-assert:-#2,assert,,58,58,1,nu2api/nucore/fixed_width.h,follow-type,i16
-assert:-#3,assert,,59,59,1,nu2api/nucore/fixed_width.h,follow-type,i32
-assert:-#4,assert,,60,60,1,nu2api/nucore/fixed_width.h,follow-type,i64
+assert:-,assert,,57,57,3,nu2api/nucore/common.h,follow-type,"i8 (prelude, step 2)"
+assert:-#2,assert,,58,58,1,nu2api/nucore/common.h,follow-type,"i16 (prelude, step 2)"
+assert:-#3,assert,,59,59,1,nu2api/nucore/common.h,follow-type,"i32 (prelude, step 2)"
+assert:-#4,assert,,60,60,1,nu2api/nucore/common.h,follow-type,"i64 (prelude, step 2)"
 assert:-#5,assert,,61,61,1,nu2api/nucore/common.h,follow-type,f32
 assert:-#6,assert,,62,62,1,nu2api/nucore/common.h,follow-type,f64
-assert:-#7,assert,,63,63,1,decomp.h,decomp,data model check of SDK type void
+assert:-#7,assert,,63,63,1,nu2api/nucore/common.h,decomp,"data model check of SDK type void (prelude, step 2)"
 assert:-#8,assert,,64,64,1,decomp.h,decomp,data model check of SDK type MSG
 assert:-#9,assert,,66,66,2,externals/dsound.h,externals,layout check of IDirectSound8Vtbl (src/externals.h)
 assert:-#10,assert,,67,67,1,externals/dsound.h,externals,layout check of IDirectSound8Vtbl (src/externals.h)
