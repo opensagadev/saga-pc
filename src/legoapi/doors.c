@@ -338,8 +338,25 @@ typedef struct world_door_config_pc_s {
     i32 door_count;                 // 0x469c
 } WORLD_DOOR_CONFIG_PC;             // size 0x46a0
 
-static WORLD_DOOR_CONFIG_PC *D_worldinfo = 0;
+f32 Door_CutCamWaitTime = 0;
+i32 door_cutscenesnap = 0;
+i32 gone_through_door_to_new_level = 0;
+NUVEC DoorCutCameraPosition0Pc = {0};
 static DOOR_CONFIG_PC *D_door = 0;
+f32 Door_CutCamWait = 0;
+NUVEC DoorCutCameraPosition1Pc = {0};
+f32 Door_CutCamBlendTime = 0;
+void *Door_Last = 0;
+static WORLD_DOOR_CONFIG_PC *D_worldinfo = 0;
+char DoorExitNamePc[64] = {0};
+char DoorExitCameraSplineNamePc[32] = {0};
+i32 Door_Start = 0;
+NUGSPLINE *DoorCutSplinePc = 0;
+i32 Door_UseCutCam = 0;
+i32 Door_CutLookAtPlayers = 0;
+i32 gone_through_door_to_new_mode = 0;
+void *LastDoorPointerPc = 0;
+void (*Door_GoThrough_ExtraCodeFn)(WORLDINFO *world, struct game_door_callback_pc_s *door) = NULL;
 
 static void D_spline(NUFPAR_PC *parser) {
     i32 i;
@@ -472,6 +489,7 @@ static NUFPCOMJMP Door_ConfigKeywords[] = {{"spline", D_spline},
                                            {"cut_scene", D_cut_scene},
                                            {"cutscene", D_cut_scene},
                                            {NULL, NULL}};
+char door_gizmotype_id = -1;
 
 void Doors_Configure(WORLDINFO *world_ptr, char *config) {
     WORLD_DOOR_CONFIG_PC *world = (WORLD_DOOR_CONFIG_PC *)world_ptr;

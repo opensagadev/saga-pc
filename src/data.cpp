@@ -7317,14 +7317,6 @@ extern "C" {
 
     i32 shop_from_cutsceneplayer = 0;
 
-    char DoorExitCameraSplineNamePc[32] = {0};
-
-    NUGSPLINE *DoorCutSplinePc = 0;
-
-    NUVEC DoorCutCameraPosition0Pc = {0};
-
-    NUVEC DoorCutCameraPosition1Pc = {0};
-
 #pragma data_seg(".data$PlayerMissionStartDoorPc")
     char PlayerMissionStartDoorPc[13] = "mission_door";
 #pragma data_seg()
@@ -7413,9 +7405,6 @@ extern "C" {
 }
 extern "C" {
     i32 ngizobstacletriggers = 0;
-}
-extern "C" {
-    void *LastDoorPointerPc = 0;
 }
 extern "C" {
 #pragma const_seg(".rdata$GizmoSpecialErrorTabPc")
@@ -7749,7 +7738,6 @@ i32 newlevel_resumecutaudio = 1;
 i32 frameout = 0;
 i32 other_level = -1;
 volatile i32 waiting_for_level = 0;
-i32 gone_through_door_to_new_level = 0;
 i32 waiting_for_new_level = 0;
 i32 screendump = 0;
 i32 MiniCutCam = 0;
@@ -7769,7 +7757,6 @@ MAINFRAMECOUNTERS MainFrameCounters = {0};
 i32 Arcade = 0;
 i32 hub_from_arcade = -1;
 i32 UsePlayerList = 0;
-i32 Door_UseCutCam = 0;
 
 extern "C" {
     i32 SUPERBUFFERSIZE = 0x09600000;
@@ -10729,8 +10716,6 @@ extern "C" {
     i32 BeenAttacked = 0;
     TAKEOVEROBJECT_PC takeoverobjects[8] = {0};
     i32 num_takeoverobjects = 0;
-    char DoorExitNamePc[64] = {0};
-    i32 Door_Start = 0;
 #pragma data_seg(".data$Door_NextSock")
     i32 Door_NextSock = -1;
 #pragma data_seg()
@@ -10743,10 +10728,6 @@ extern "C" {
     extern const char GizmoSnapOptionNamePc[5] = "SNAP";
 #pragma const_seg()
     DEBRISKEY_PC *debkeydata = 0;
-}
-
-extern "C" {
-    void *Door_Last = 0;
 }
 
 extern "C" {
@@ -15229,7 +15210,6 @@ extern "C" {
     i32 (*SetSoundFadeDistCallBackFn)(WORLDINFO *) = NULL;
     i32 (*AlternateGameCallbackPc)(GAMEOBJECT *object) = NULL;
     i32 (*GamePads_IgnoreInputFn)(void) = NULL;
-    void (*Door_GoThrough_ExtraCodeFn)(WORLDINFO *world, struct game_door_callback_pc_s *door) = NULL;
     void (*GizmoBlowup_TransformDrawFn)(GIZMOBLOWUP_PC *target) = NULL;
     i32 (*GizBuildit_AutoBuildPosFn)(void *context, NUVEC *position, NUVEC *result, u16 *angle) = NULL;
     void (*PauseGame_ExtraCodeFn)(void) = NULL;
@@ -24052,8 +24032,6 @@ extern "C" {
 
     i32 come_from_an_editor = 0;
 
-    i32 gone_through_door_to_new_mode = 0;
-
     void *newmode_cutinfo = 0;
 }
 
@@ -24373,16 +24351,6 @@ extern "C" {
 
 extern "C" {
     f32 iconalphaoverride = 0;
-}
-
-extern "C" {
-    f32 Door_CutCamWaitTime = 0;
-
-    f32 Door_CutCamWait = 0;
-
-    f32 Door_CutCamBlendTime = 0;
-
-    i32 Door_CutLookAtPlayers = 0;
 }
 
 extern "C" {
@@ -25075,7 +25043,6 @@ extern "C" {
 
 extern "C" {
 #pragma data_seg(".data$door_gizmotype_id")
-    char door_gizmotype_id = -1;
 }
 
 extern "C" {
@@ -26593,10 +26560,6 @@ extern "C" {
     NUTEXBMP_COLOUR_PC NuTexBmpPalettePc[0x100];
 #pragma bss_seg()
     GRAPHICS_RENDER_TEXTURE_PC *PCGraphicsPostEffectAuxTexturePc = 0;
-}
-
-extern "C" {
-    i32 door_cutscenesnap = 0;
 }
 
 extern "C" {
