@@ -184,6 +184,14 @@ extern "C" {
     }
 }
 
+/* The SDK's inline NuFabs (nufloat.h): a masked copy of the float bits. */
+static f32 MenuFabs(f32 f) {
+    f32 rv;
+
+    *(i32 *)&rv = *(i32 *)&f & 0x7fffffff;
+    return rv;
+}
+
 extern "C" void DrawGameState(f32 x, f32 y, i32 highlight, i32 slot) {
     f32 spacing = (f32)(MENUDY * 0.75);
     f32 scale = (f32)(MenuTextScalePc * 0.75);
@@ -409,18 +417,12 @@ extern "C" void MenuDrawExtras(MENU *menu) {
             dme_b = 0;
         }
 
-        union {
-            f32 value;
-            u32 bits;
-        } absolute, magnitude;
-
-        absolute.value = menu->draw_y;
-        magnitude.bits = absolute.bits & 0x7fffffff;
-        if (magnitude.value > ExtrasFadeStartPc) {
-            if (magnitude.value > ExtrasFadeEndPc) {
+        f32 magnitude = MenuFabs(menu->draw_y);
+        if (magnitude > ExtrasFadeStartPc) {
+            if (magnitude > ExtrasFadeEndPc) {
                 alpha = 0.0f;
             } else {
-                alpha *= 1.0f - (magnitude.value - ExtrasFadeStartPc) / (ExtrasFadeEndPc - ExtrasFadeStartPc);
+                alpha *= 1.0f - (magnitude - ExtrasFadeStartPc) / (ExtrasFadeEndPc - ExtrasFadeStartPc);
             }
         }
         if (Paused) {

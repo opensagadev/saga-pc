@@ -43,6 +43,7 @@ typedef struct PC_WINDOW_OPTIONS_PC {
     u8 unknown_45a[2];
     i32 forceshadermodel;
 #ifdef __cplusplus
+    PC_WINDOW_OPTIONS_PC();
     void SetWidth(i32 value);
     void SetHeight(i32 value);
     void SetDeviceWidth(i32 value);
@@ -89,6 +90,12 @@ typedef struct PC_WINDOW_OPTIONS_PC {
     void SetShadowsEnabledPc(u8);
     void SetBloomEnabledPc(u8);
     void SetUseHiresPendingPc(u8);
+    u8 fun_00509030();
+    u8 fun_00509040();
+    u8 fun_00509050();
+    u8 fun_00509060();
+    u8 fun_00509070();
+    u8 fun_00509080();
 #endif
 } PC_WINDOW_OPTIONS_PC;
 

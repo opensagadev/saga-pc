@@ -20,6 +20,7 @@ typedef struct creature_crate_part_view_pc_s {
 
 i32 TagCode(GAMEOBJECT *source, GAMEOBJECT *destination, i32 takeover, i32 blend_camera, i32 unused);
 void MovePlayer_NETWORK(GAMEOBJECT *);
+GAMEOBJECT *fun_0055e2b0(i32 id);
 
 typedef struct grapple_rotation_pc_s {
     u8 unknown_00[0x30];
@@ -128,6 +129,22 @@ typedef struct KILLPARTS_RIDER_LIGHT_PC {
     u8 unknown_0[0x628];
     NUVEC intensity[2];
 } KILLPARTS_RIDER_LIGHT_PC;
+
+/* The SDK's inline NuFabs (nufloat.h): a masked copy of the float bits. */
+static f32 GameObjFabsPc(f32 f) {
+    f32 rv;
+
+    *(i32 *)&rv = *(i32 *)&f & 0x7fffffff;
+    return rv;
+}
+
+/* The SDK's inline NuFdiv: a quotient that is 0 when either operand is 0. */
+static f32 GameObjFdivPc(f32 a, f32 b) {
+    if (a == 0.0f || b == 0.0f) {
+        return 0.0f;
+    }
+    return a / b;
+}
 
 static void CreatureCrate_Stop(PART_PC *part) {
     GAMEOBJECT *object = part->owner;
@@ -1128,6 +1145,22 @@ void ActivatePlayer(GAMEOBJECT *object) {
     }
 }
 
+void FindPlayerAndSetWeapon(i32 id, i32 weapon_out) {
+    GAMEOBJECT *object = fun_0055e2b0(id);
+    if (object == NULL) {
+        return;
+    }
+    object->weapon_animation = weapon_out;
+    if (weapon_out != 0) {
+        object->weapon_scale = 1.0f;
+        if (!object->player_controlled) {
+            object->timer_ecc = DEFENDTIME;
+        }
+    } else {
+        object->weapon_scale = 0.0f;
+    }
+}
+
 void GameObjectToCameraCode(GAMEOBJECT *object) {
     PLAYERCHARACTERCONFIG_PC *data;
     u32 mask;
@@ -1371,7 +1404,7 @@ void SpeederPart_Update(PART_PC *part) {
         tilt_angle =
             ((u16)(((i32)(-((1.0f - (NU_SIN_LUT(((i32)(time * 32768.0f + 16384.0f))) + 1.0f) * 0.5f) * 5461.0f)))));
         tilt = NU_SIN_LUT(((i32)(time * 32768.0f + 16384.0f)));
-        *((u32 *)(&tilt_magnitude)) = *((u32 *)(&tilt)) & 0x7fffffff;
+        tilt_magnitude = GameObjFabsPc(tilt);
         spin = ((u16)(((i32)((NU_SIN_LUT(((i32)(time * 16384.0f + 32768.0f + 16384.0f))) + 1.0f) * 196608.0f))));
         part->rotation_x = SeekRot(part->rotation_x, tilt_angle - pitch, 10.0f);
         part->rotation_y = SeekRot(part->rotation_y, yaw + ((i32)(2730.0f - (1.0f - tilt_magnitude) * 5461.0f)), 10.0f);
@@ -2224,11 +2257,7 @@ void UpdateGameObjects(WORLDINFO *world) {
 
             vertical_displacement = object->position.y - object->start_position.y;
             elapsed = object->ai_elapsed_time;
-            if (vertical_displacement == 0.0f || elapsed == 0.0f) {
-                vertical_velocity = 0.0f;
-            } else {
-                vertical_velocity = vertical_displacement / elapsed;
-            }
+            vertical_velocity = GameObjFdivPc(vertical_displacement, elapsed);
             object->ai_vertical_velocity = vertical_velocity;
             FRAMETIME = frame_time;
         } else {

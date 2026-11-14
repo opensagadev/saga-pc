@@ -1,5 +1,12 @@
 #include "saga.h"
 
+extern i32 dat_00973868;
+extern i32 dat_00806b84;
+extern i32 dat_00806b88;
+extern i32 dat_00806b8c;
+extern i32 dat_00806b90;
+extern i32 dat_00806b94;
+
 void PCAnimationLoadFailureNoOp(char *path) {
     (void)path;
 }
@@ -25,6 +32,22 @@ void NuTexBmpUnsupportedDepthPc(i32 bit_count, const char *path) {
 }
 
 void NuFrameEndLeafPc(void) {
+}
+
+void fun_005c6110(void) {
+    i32 enabled;
+    if (dat_00973868 != 0) {
+        dat_00973868 = 0;
+        enabled = 1;
+    } else {
+        dat_00973868 = 1;
+        enabled = 0;
+    }
+    dat_00806b94 = enabled;
+    dat_00806b90 = enabled;
+    dat_00806b8c = enabled;
+    dat_00806b88 = enabled;
+    dat_00806b84 = enabled;
 }
 
 void DisplayListSpecialTransformNoOpPc(NUSPECIALHANDLE *special, NUMTX *matrix) {

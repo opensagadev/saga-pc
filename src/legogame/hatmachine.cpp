@@ -50,6 +50,16 @@ struct HATMACHINE_WORLD_PC {
     HATMACHINE_SYS_PC *hat_machine_sys; // 0x5074
 }; // size 0x5078
 
+/* The SDK's inline NuFabs (nufloat.h): a masked copy of the float bits. */
+extern "C" {
+    static f32 HatmachineFabsPc(f32 f) {
+        f32 rv;
+
+        *(i32 *)&rv = *(i32 *)&f & 0x7fffffff;
+        return rv;
+    }
+}
+
 extern "C" void Hat_GetAbsTargetPos(HATMACHINE_PC *machine, NUVEC *position) {
     if (machine != NULL && position != NULL) {
         NUVEC offset = machine->target_offset;
@@ -694,7 +704,7 @@ extern "C" void HatMachine_Draw(void *world_ptr, void *, f32) {
                                 frame = NuTrigTable
                                     [((i32)((f64)machine->idle_bounce_timer / (f64)0.15f * 32768.0 + 16384.0) >> 1) &
                                      0x7fff];
-                                magnitude.bits = *(u32 *)&frame & 0x7fffffff;
+                                magnitude.value = HatmachineFabsPc(frame);
                                 frame = (1.0 - magnitude.value) * 1.5 + 16.0;
                             }
                         } else if (qrand() < 0x800) {

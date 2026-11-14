@@ -92,6 +92,14 @@ f32 NuVecMagVU0(NUVEC *v);
         (destination) = storage.value;                                                                                 \
     } while (0)
 
+/* The SDK's inline NuFabs (nufloat.h): a masked copy of the float bits. */
+static f32 CameraFabsPc(f32 f) {
+    f32 rv;
+
+    *(i32 *)&rv = *(i32 *)&f & 0x7fffffff;
+    return rv;
+}
+
 f32 __fastcall PCDeviceBackend_GetActiveAspectPc(PC_DEVICE_BACKEND_PC *backend) {
     switch (PcWindowOptions.aspect_mode) {
         case 1:
@@ -142,7 +150,7 @@ static void PlayerCamPos(GAMEOBJECT *object, NUVEC *position, NUVEC *reference) 
         NuVecSub(&direction, &points[0], &points[3]);
         NuVecSub(&focus, &points[0], &object->position);
         scale = 1.0f / NuVecMagVU0(&direction);
-        GAME_CAMERA_ABSOLUTE_PC(direction.x, points[3].x - points[0].x);
+        direction.x = CameraFabsPc(points[3].x - points[0].x);
         direction.x *= scale;
         GAME_CAMERA_ABSOLUTE_PC(direction.y, points[3].y - points[0].y);
         direction.y *= scale;

@@ -18,6 +18,14 @@ typedef struct shove_system_pc_s {
 
 static SHOVE_SYSTEM_PC ShoveSystemPc = {0};
 
+/* The SDK's inline NuFabs (nufloat.h): a masked copy of the float bits. */
+static f32 ShovesysFabsPc(f32 f) {
+    f32 rv;
+
+    *(i32 *)&rv = *(i32 *)&f & 0x7fffffff;
+    return rv;
+}
+
 void AddShoveObject(NUSPECIALHANDLE *special, i16 platform_id) {
     NUMTX *matrix;
     if (NuSpecialExistsFn(special) && ShoveSystemPc.count < 16) {
@@ -67,7 +75,7 @@ void ShoveSystemCheckGameObject(GAMEOBJECT *object) {
             continue;
         }
         delta = object->collision_position.z - shove->position.z;
-        *(i32 *)&absolute_z = *(i32 *)&delta & 0x7fffffff; /* NuFabs */
+        absolute_z = ShovesysFabsPc(delta);
         if (!(reach > absolute_z)) {
             continue;
         }

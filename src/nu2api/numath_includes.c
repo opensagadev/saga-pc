@@ -45,14 +45,14 @@ STATIC_ASSERT(2 * sizeof(((NuMtxIndexedViewPc *)0)->elements[0]) + 2 * sizeof(f3
 #define NU_SIN_PC(angle) NuTrigTable[((angle) >> 1) & 0x7fff]
 #define NU_COS_PC(angle) NuTrigTable[(((angle) + 0x4000) >> 1) & 0x7fff]
 
-static f32 NuFdiv(f32 a, f32 b) {
+static f32 NumathIncludesFdivPc(f32 a, f32 b) {
     if (a == 0.0f || b == 0.0f) {
         return 0.0f;
     }
     return a / b;
 }
 
-static f32 NuFabs(f32 f) {
+static f32 NumathIncludesFabsPc(f32 f) {
     f32 rv;
 
     *(i32 *)&rv = *(i32 *)&f & 0x7fffffff;
@@ -168,7 +168,7 @@ void NuVecMtxTransform(NUVEC *out, NUVEC *v, NUMTX *m) {
 }
 
 f32 NuVecMtxTransformH(NUVEC *out, NUVEC *v, NUMTX *m) {
-    f32 reciprocal_w = NuFdiv(1.0f, v->x * m->m03 + v->y * m->m13 + v->z * m->m23 + m->m33);
+    f32 reciprocal_w = NumathIncludesFdivPc(1.0f, v->x * m->m03 + v->y * m->m13 + v->z * m->m23 + m->m33);
     f32 y = (v->x * m->m01 + v->y * m->m11 + v->z * m->m21 + m->m31) * reciprocal_w;
     f32 z = (v->x * m->m02 + v->y * m->m12 + v->z * m->m22 + m->m32) * reciprocal_w;
     out->x = (v->x * m->m00 + v->y * m->m10 + v->z * m->m20 + m->m30) * reciprocal_w;
@@ -1506,10 +1506,10 @@ void NuMtxInvH(NUMTX *mi, NUMTX *m0) {
             local_1c = 0.0f;
 
             for (k = i; k < n; k++) {
-                local_1c += NuFabs(a[j][k]);
+                local_1c += NumathIncludesFabsPc(a[j][k]);
             }
 
-            localm28 = NuFdiv(NuFabs(a[j][i]), local_1c);
+            localm28 = NumathIncludesFdivPc(NumathIncludesFabsPc(a[j][i]), local_1c);
 
             if (localm20 < localm28) {
                 localm20 = localm28;
@@ -1591,7 +1591,7 @@ void NuMtxAlignX(NUMTX *m, NUVEC *v) {
     m->m22 = (m->m00 * m->m11) - (m->m01 * m->m10);
 
     s = NuFsqrt(m->m20 * m->m20 + m->m21 * m->m21 + m->m22 * m->m22);
-    s = NuFdiv(1.0f, s);
+    s = NumathIncludesFdivPc(1.0f, s);
 
     m->m20 = m->m20 * s;
     m->m21 = m->m21 * s;
@@ -1611,7 +1611,7 @@ void NuMtxAlignY(NUMTX *m, NUVEC *v) {
     m->m02 = (m->m10 * m->m21) - (m->m11 * m->m20);
 
     s = NuFsqrt(m->m00 * m->m00 + m->m01 * m->m01 + m->m02 * m->m02);
-    s = NuFdiv(1.0f, s);
+    s = NumathIncludesFdivPc(1.0f, s);
 
     m->m00 = m->m00 * s;
     m->m01 = m->m01 * s;
@@ -1626,30 +1626,31 @@ void NuMtxAlignZ(NUMTX *m, NUVEC *v) {
     f32 yLenSq = (m->m10 * m->m10) + (m->m11 * m->m11) + (m->m12 * m->m12);
     f32 zLenSq = (m->m20 * m->m20) + (m->m21 * m->m21) + (m->m22 * m->m22);
 
-    f32 len = NuFsqrt(NuFdiv(zLenSq, v->x * v->x + v->y * v->y + v->z * v->z));
+    f32 len = NuFsqrt(NumathIncludesFdivPc(zLenSq, v->x * v->x + v->y * v->y + v->z * v->z));
     m->m20 = v->x * len;
     m->m21 = v->y * len;
     m->m22 = v->z * len;
 
-    if (NuFabs(NuVecDot(NUMTX_GET_ROW_VEC(m, 1), NUMTX_GET_ROW_VEC(m, 2))) > 0.86602540378f /* cos(30 deg) */) {
+    if (NumathIncludesFabsPc(NuVecDot(NUMTX_GET_ROW_VEC(m, 1), NUMTX_GET_ROW_VEC(m, 2))) >
+        0.86602540378f /* cos(30 deg) */) {
         NuVecCross(NUMTX_GET_ROW_VEC(m, 1), NUMTX_GET_ROW_VEC(m, 2), NUMTX_GET_ROW_VEC(m, 0));
-        len = NuFsqrt(NuFdiv(yLenSq, (m->m10 * m->m10) + (m->m11 * m->m11) + (m->m12 * m->m12)));
+        len = NuFsqrt(NumathIncludesFdivPc(yLenSq, (m->m10 * m->m10) + (m->m11 * m->m11) + (m->m12 * m->m12)));
         m->m10 = m->m10 * len;
         m->m11 = m->m11 * len;
         m->m12 = m->m12 * len;
         NuVecCross(NUMTX_GET_ROW_VEC(m, 0), NUMTX_GET_ROW_VEC(m, 1), NUMTX_GET_ROW_VEC(m, 2));
-        len = NuFsqrt(NuFdiv(xLenSq, m->m00 * m->m00 + m->m01 * m->m01 + m->m02 * m->m02));
+        len = NuFsqrt(NumathIncludesFdivPc(xLenSq, m->m00 * m->m00 + m->m01 * m->m01 + m->m02 * m->m02));
         m->m00 = m->m00 * len;
         m->m01 = m->m01 * len;
         m->m02 = m->m02 * len;
     } else {
         NuVecCross(NUMTX_GET_ROW_VEC(m, 0), NUMTX_GET_ROW_VEC(m, 1), NUMTX_GET_ROW_VEC(m, 2));
-        len = NuFsqrt(NuFdiv(xLenSq, m->m00 * m->m00 + m->m01 * m->m01 + m->m02 * m->m02));
+        len = NuFsqrt(NumathIncludesFdivPc(xLenSq, m->m00 * m->m00 + m->m01 * m->m01 + m->m02 * m->m02));
         m->m00 = m->m00 * len;
         m->m01 = m->m01 * len;
         m->m02 = m->m02 * len;
         NuVecCross(NUMTX_GET_ROW_VEC(m, 1), NUMTX_GET_ROW_VEC(m, 2), NUMTX_GET_ROW_VEC(m, 0));
-        len = NuFsqrt(NuFdiv(yLenSq, m->m10 * m->m10 + m->m11 * m->m11 + m->m12 * m->m12));
+        len = NuFsqrt(NumathIncludesFdivPc(yLenSq, m->m10 * m->m10 + m->m11 * m->m11 + m->m12 * m->m12));
         m->m10 = m->m10 * len;
         m->m11 = m->m11 * len;
         m->m12 = m->m12 * len;
@@ -2250,7 +2251,7 @@ f32 NuFsign(f32 value) {
 }
 
 i32 NuEquiv(f32 a, f32 b) {
-    return NuFabs(a - b) < fetol;
+    return NumathIncludesFabsPc(a - b) < fetol;
 }
 
 void NuEquivTollerance(f32 tolerance) {
@@ -2460,7 +2461,7 @@ void NuQuatInv(NUQUAT *out, NUQUAT *quat) {
 void NuQuatNormalise(NUQUAT *out, NUQUAT *q) {
     f32 magnitude_squared = q->w * q->w + q->x * q->x + q->y * q->y + q->z * q->z;
     if (magnitude_squared > 0.0f) {
-        f32 inverse_magnitude = NuFdiv(1.0, NuFsqrt(magnitude_squared));
+        f32 inverse_magnitude = NumathIncludesFdivPc(1.0, NuFsqrt(magnitude_squared));
         out->w = q->w * inverse_magnitude;
         out->x = q->x * inverse_magnitude;
         out->y = q->y * inverse_magnitude;
@@ -2586,8 +2587,8 @@ void NuQuatSlerp(NUQUAT *out, NUQUAT *from, NUQUAT *to, f32 t) {
         omega = NuACos(scale);
 
         sin_omega = NU_SIN_LUT((i32)omega);
-        from_factor = NuFdiv(NU_SIN_LUT((i32)((1.0f - t) * omega)), sin_omega);
-        to_factor = NuFdiv(NU_SIN_LUT((i32)(t * omega)), sin_omega);
+        from_factor = NumathIncludesFdivPc(NU_SIN_LUT((i32)((1.0f - t) * omega)), sin_omega);
+        to_factor = NumathIncludesFdivPc(NU_SIN_LUT((i32)(t * omega)), sin_omega);
     } else {
         from_factor = 1.0f - t;
         to_factor = t;
@@ -2958,11 +2959,11 @@ i32 NuPlnPlnIntersect(NUPLANE *first, NUPLANE *second, NUVEC *point, NUVEC *dire
     normal.z = cross_z;
     NuVecNorm(&normal, &normal);
     *direction = normal;
-    normal.x = NuFabs(normal.x);
-    normal.y = NuFabs(normal.y);
-    normal.z = NuFabs(normal.z);
+    normal.x = NumathIncludesFabsPc(normal.x);
+    normal.y = NumathIncludesFabsPc(normal.y);
+    normal.z = NumathIncludesFabsPc(normal.z);
     if (normal.z >= normal.x && normal.z >= normal.y) {
-        if (NuFabs(second->a) < 0.0001f) {
+        if (NumathIncludesFabsPc(second->a) < 0.0001f) {
             point->y = (first->d * second->a / first->a - second->d) / (-second->a * first->b / first->a + second->b);
             point->x = (-first->d - first->b * point->y) / first->a;
             point->z = 0.0f;
@@ -2972,7 +2973,7 @@ i32 NuPlnPlnIntersect(NUPLANE *first, NUPLANE *second, NUVEC *point, NUVEC *dire
             point->z = 0.0f;
         }
     } else if (normal.y >= normal.x && normal.y >= normal.z) {
-        if (NuFabs(second->a) < 0.0001f) {
+        if (NumathIncludesFabsPc(second->a) < 0.0001f) {
             point->z = (first->d * second->a / first->a - second->d) / (-second->a * first->c / first->a + second->c);
             point->x = (-first->d - first->c * point->z) / first->a;
             point->y = 0.0f;
@@ -2982,7 +2983,7 @@ i32 NuPlnPlnIntersect(NUPLANE *first, NUPLANE *second, NUVEC *point, NUVEC *dire
             point->y = 0.0f;
         }
     } else {
-        if (NuFabs(second->b) < 0.0001f) {
+        if (NumathIncludesFabsPc(second->b) < 0.0001f) {
             point->z = (first->d * second->b / first->b - second->d) / (-second->b * first->c / first->b + second->c);
             point->y = (-first->d - first->c * point->z) / first->b;
             point->x = 0.0f;

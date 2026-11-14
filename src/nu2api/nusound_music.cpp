@@ -370,6 +370,20 @@ NuMusic *NuMusic::GetPlayer() {
     return the_music_player;
 }
 
+NuMusic::NuMusic() {
+    albums = NULL;
+    album_count = 0;
+    fileinfo = NULL;
+    file_count = 0;
+    track_index = 0;
+    for (i32 i = 0; i < 6; i++) {
+        class_volumes[i] = 1.0f;
+    }
+}
+
+NuMusic::~NuMusic() {
+}
+
 void NuMusic::NoMusic(i32 no_music) {
     if (this != NULL && the_music_player != NULL) {
         track_index = no_music != 0;

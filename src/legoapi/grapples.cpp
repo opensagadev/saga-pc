@@ -115,7 +115,9 @@ typedef struct grapple_movement_pc_s {
     f32 swing_scale;
 } GRAPPLE_MOVEMENT_PC;
 
-static inline f32 GrappleFabsPc(f32 value);
+extern "C" {
+    static inline f32 GrapplesFabsPc(f32 value);
+}
 extern "C" void DrawRopeCurved(NUVEC *start, NUVEC *points, i32 count, i32 unused_flags, NUMTL *unused_material);
 
 extern "C" i32 Grapples_Load(void *world_pointer, void *unused) {
@@ -346,7 +348,7 @@ static void Grapple_FindNearestInList(NUVEC *position, GRAPPLE_MOTION_PC *grappl
             }
             NuVecSub(&local, &object->upper_position, &grapple->hook_position);
             NuVecRotateY(&local, &local, -GameCam->input_yaw);
-            side_distance = GrappleFabsPc(local.z);
+            side_distance = GrapplesFabsPc(local.z);
             if (!(side_distance < 0.5f)) {
                 continue;
             }
@@ -1234,7 +1236,7 @@ extern "C" void Grapple_MoveCode(GAMEOBJECT *object) {
         object->context_timer = 0.0f;
         object->context_duration = 0.0f;
         object->field_7b3 = 0;
-        object->context_hover_target_y = GrappleFabsPc(grapple->shadow_probe_position.y - object->upper_position.y);
+        object->context_hover_target_y = GrapplesFabsPc(grapple->shadow_probe_position.y - object->upper_position.y);
         if (grapple->disabled) {
             object->context_variant_flags &= ~0x100;
             SetWeaponIn(object);
@@ -1325,9 +1327,11 @@ extern "C" i32 Grapple_LookAtPos(GAMEOBJECT *object, NUVEC *position) {
 extern "C" void fun_0054f960() {
 }
 
-static inline f32 GrappleFabsPc(f32 value) {
-    u32 bits = *(u32 *)&value & 0x7fffffff;
-    return *(f32 *)&bits;
+extern "C" {
+    static inline f32 GrapplesFabsPc(f32 value) {
+        u32 bits = *(u32 *)&value & 0x7fffffff;
+        return *(f32 *)&bits;
+    }
 }
 
 extern "C" void DrawRopeCurved(NUVEC *start, NUVEC *points, i32 count, i32 unused_flags, NUMTL *unused_material) {

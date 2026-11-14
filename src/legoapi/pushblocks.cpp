@@ -135,10 +135,12 @@ extern "C" {
     extern f32 PushInitCornerInsetPc;
 }
 
-static __inline f32 GizPushFabsPc(f32 value) {
-    f32 result;
-    *(i32 *)&result = *(i32 *)&value & 0x7fffffff;
-    return result;
+extern "C" {
+    static __inline f32 PushblocksFabsPc(f32 value) {
+        f32 result;
+        *(i32 *)&result = *(i32 *)&value & 0x7fffffff;
+        return result;
+    }
 }
 
 extern "C" void KnockPushBlock(PUSH_BLOCK_PC *opaque_block, NUVEC *direction) {
@@ -277,8 +279,8 @@ extern "C" PUSH_BLOCK_PC *NearestFacingPushBlock(WORLDINFO *world, GAMEOBJECT *o
         }
         NUVEC bmin = block->bounds_min;
         NUVEC bmax = block->bounds_max;
-        f32 top = block->position->y + GizPushFabsPc(bmax.y);
-        f32 bottom = block->position->y - GizPushFabsPc(bmin.y);
+        f32 top = block->position->y + PushblocksFabsPc(bmax.y);
+        f32 bottom = block->position->y - PushblocksFabsPc(bmin.y);
         if (top > max_y && bottom > max_y) {
             continue;
         }
@@ -295,7 +297,7 @@ extern "C" PUSH_BLOCK_PC *NearestFacingPushBlock(WORLDINFO *world, GAMEOBJECT *o
         switch (mode) {
             case 0: {
                 f32 bound;
-                gap = dx - GizPushFabsPc(bmin.x);
+                gap = dx - PushblocksFabsPc(bmin.x);
                 bound = bmin.z + pos.z - PushBlockGapEpsilonPc;
                 if (object->collision_position.z <= bound) {
                     continue;
@@ -314,7 +316,7 @@ extern "C" PUSH_BLOCK_PC *NearestFacingPushBlock(WORLDINFO *world, GAMEOBJECT *o
             }
             case 1: {
                 f32 bound;
-                gap = GizPushFabsPc(dx) - bmax.x;
+                gap = PushblocksFabsPc(dx) - bmax.x;
                 bound = bmax.z + pos.z - PushBlockGapEpsilonPc;
                 if (object->collision_position.z >= bound) {
                     continue;
@@ -333,7 +335,7 @@ extern "C" PUSH_BLOCK_PC *NearestFacingPushBlock(WORLDINFO *world, GAMEOBJECT *o
             }
             case 2: {
                 f32 bound;
-                gap = dz - GizPushFabsPc(bmin.z);
+                gap = dz - PushblocksFabsPc(bmin.z);
                 bound = bmax.x + pos.x - PushBlockGapEpsilonPc;
                 if (object->collision_position.x >= bound) {
                     continue;
@@ -352,7 +354,7 @@ extern "C" PUSH_BLOCK_PC *NearestFacingPushBlock(WORLDINFO *world, GAMEOBJECT *o
             }
             case 3: {
                 f32 bound;
-                gap = GizPushFabsPc(dz) - bmax.z;
+                gap = PushblocksFabsPc(dz) - bmax.z;
                 bound = bmin.x + pos.x - PushBlockGapEpsilonPc;
                 if (object->collision_position.x <= bound) {
                     continue;
@@ -577,7 +579,8 @@ extern "C" {
             block->packed_state_flags |= 0x400u;
         } else {
             MoveBlocksOverBlock(opaque_world, opaque_block, index, &delta);
-            if (block->pushing_object != NULL && (GizPushFabsPc(delta.x) > 0.001f || GizPushFabsPc(delta.z) > 0.001f) &&
+            if (block->pushing_object != NULL &&
+                (PushblocksFabsPc(delta.x) > 0.001f || PushblocksFabsPc(delta.z) > 0.001f) &&
                 NuFmod(GameTimer.time_elapsed, PushRumblePeriodPc) < PushRumbleWindowPc) {
                 NewRumble(block->pushing_object->pad->bound_pad,
                           (f32)((f64)qrand() * 0.000015259021893143654 * (f64)0.05f), 0);
@@ -621,11 +624,11 @@ extern "C" {
                 continue;
             }
             max = min = *other->position;
-            min.x -= GizPushFabsPc(other->bounds_min.x);
-            min.z -= GizPushFabsPc(other->bounds_min.z);
-            max.x += GizPushFabsPc(other->bounds_max.x);
-            max.y += GizPushFabsPc(other->bounds_max.y);
-            max.z += GizPushFabsPc(other->bounds_max.z);
+            min.x -= PushblocksFabsPc(other->bounds_min.x);
+            min.z -= PushblocksFabsPc(other->bounds_min.z);
+            max.x += PushblocksFabsPc(other->bounds_max.x);
+            max.y += PushblocksFabsPc(other->bounds_max.y);
+            max.z += PushblocksFabsPc(other->bounds_max.z);
             for (j = 0; j < 4; ++j) {
                 if (points[j].x > min.x && points[j].x < max.x && points[j].z > min.z && points[j].z < max.z) {
                     heights[j] = max.y;
@@ -836,8 +839,8 @@ extern "C" void UpdatePushBlocks(void *world_ptr, void *, f32) {
                 if ((p->packed_state_flags & 0x40u) == 0) {
                     p->target_velocity.x = p->target_velocity.z = 0.0f;
                 }
-                if (GizPushFabsPc(p->pushing_object->target_velocity.x) >
-                    GizPushFabsPc(p->pushing_object->target_velocity.z)) {
+                if (PushblocksFabsPc(p->pushing_object->target_velocity.x) >
+                    PushblocksFabsPc(p->pushing_object->target_velocity.z)) {
                     p->target_velocity.x = FRAMETIME * p->pushing_object->target_velocity.x;
                     p->target_velocity.z = p->velocity.z = 0.0f;
                 } else {
@@ -856,12 +859,12 @@ extern "C" void UpdatePushBlocks(void *world_ptr, void *, f32) {
             p->velocity.z = SeekValF(p->velocity.z, p->target_velocity.z, PushVelocitySeekRatePc);
             f32 stop_speed = (30.0 / (1.0 / static_cast<f64>(FRAMETIME))) * static_cast<f64>(0.00001f);
             if (p->velocity.x == 0.0f) {
-                if (GizPushFabsPc(p->velocity.z) <= stop_speed) {
+                if (PushblocksFabsPc(p->velocity.z) <= stop_speed) {
                     p->target_velocity.z = p->velocity.z = 0.0f;
                     p->packed_state_flags &= ~0xc0u;
                 }
             } else {
-                if (GizPushFabsPc(p->velocity.x) <= stop_speed) {
+                if (PushblocksFabsPc(p->velocity.x) <= stop_speed) {
                     p->target_velocity.x = p->velocity.x = 0.0f;
                     p->packed_state_flags &= ~0xc0u;
                 }
@@ -892,13 +895,13 @@ extern "C" void UpdatePushBlocks(void *world_ptr, void *, f32) {
         if (NuSpecialGetVisibilityFn(&p->special) == 0 || (p->packed_state_flags & 0x4du) == 0) {
             continue;
         }
-        f32 left = GizPushFabsPc(p->bounds_min.x) + PushCornerInsetPc;
-        f32 right = GizPushFabsPc(p->bounds_max.x) + PushCornerInsetPc;
-        f32 back = GizPushFabsPc(p->bounds_min.z) + PushCornerInsetPc;
-        f32 front = GizPushFabsPc(p->bounds_max.z) + PushCornerInsetPc;
+        f32 left = PushblocksFabsPc(p->bounds_min.x) + PushCornerInsetPc;
+        f32 right = PushblocksFabsPc(p->bounds_max.x) + PushCornerInsetPc;
+        f32 back = PushblocksFabsPc(p->bounds_min.z) + PushCornerInsetPc;
+        f32 front = PushblocksFabsPc(p->bounds_max.z) + PushCornerInsetPc;
         NUVEC corners[4];
         corners[1] = corners[2] = corners[3] = corners[0] = *p->position;
-        corners[0].y = (corners[0].y - GizPushFabsPc(p->bounds_min.y)) - PushGroundOffsetPc;
+        corners[0].y = (corners[0].y - PushblocksFabsPc(p->bounds_min.y)) - PushGroundOffsetPc;
         corners[1].y = corners[2].y = corners[3].y = corners[0].y;
         for (i32 j = 0; j < 4; ++j) {
             corners[j].y += 0.025f;
@@ -1392,7 +1395,7 @@ static i32 Pushblocks_BoltHitPlat(void *world_ptr, void *blocks_ptr, BOLT_PC *bo
                         direction.z = static_cast<f64>(qrand()) * 0.000015259021893143654;
                     }
                 }
-                if (GizPushFabsPc(direction.x) > GizPushFabsPc(direction.z)) {
+                if (PushblocksFabsPc(direction.x) > PushblocksFabsPc(direction.z)) {
                     direction.z = 0.0f;
                 } else {
                     direction.x = 0.0f;
@@ -1514,12 +1517,12 @@ extern "C" void GizmoPushBlockInitAndReset(WORLDINFO *opaque, void *progress) {
         block->velocity = v000;
         block->target_velocity = v000;
         block->snap_origin = centre;
-        f32 left = GizPushFabsPc(block->bounds_min.x) + PushInitCornerInsetPc;
-        f32 right = GizPushFabsPc(block->bounds_max.x) + PushInitCornerInsetPc;
-        f32 back = GizPushFabsPc(block->bounds_min.z) + PushInitCornerInsetPc;
-        f32 front = GizPushFabsPc(block->bounds_max.z) + PushInitCornerInsetPc;
+        f32 left = PushblocksFabsPc(block->bounds_min.x) + PushInitCornerInsetPc;
+        f32 right = PushblocksFabsPc(block->bounds_max.x) + PushInitCornerInsetPc;
+        f32 back = PushblocksFabsPc(block->bounds_min.z) + PushInitCornerInsetPc;
+        f32 front = PushblocksFabsPc(block->bounds_max.z) + PushInitCornerInsetPc;
         corners[1] = corners[2] = corners[3] = corners[0] = centre;
-        corners[0].y = (corners[0].y - GizPushFabsPc(block->bounds_min.y)) - PushInitGroundOffsetPc;
+        corners[0].y = (corners[0].y - PushblocksFabsPc(block->bounds_min.y)) - PushInitGroundOffsetPc;
         corners[1].y = corners[2].y = corners[3].y = corners[0].y;
         for (i32 corner = 0; corner < 4; ++corner) {
             corners[corner].y += 0.025f;

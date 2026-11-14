@@ -215,6 +215,12 @@ extern "C" void fun_006db900(void) {
     PcWindowOptions.Save();
 }
 
+PC_WINDOW_OPTIONS_PC::PC_WINDOW_OPTIONS_PC() : context(-1), speedblursupported(1), option459(1) {
+    Defaults();
+}
+
+PC_WINDOW_OPTIONS_PC PcWindowOptions;
+
 void PC_WINDOW_OPTIONS_PC::InitializePath() {
     PCOptionsBuildFolder(file_name);
     strcat(file_name, "pcconfig.txt");

@@ -1114,6 +1114,8 @@ STATIC_ASSERT(offsetof(NUINSTANIM, animation_index) == 0x5c);
 #ifdef __cplusplus
 
 struct OccluderSet {
+    OccluderSet();
+    ~OccluderSet();
     static NUMTL *ms_pZOnlyMtl3D;
     static NUMTL *ms_pZOnlyMtl2D;
     static NUMTL *ms_pAlphaMtl2D;
@@ -1149,6 +1151,8 @@ STATIC_ASSERT(offsetof(OccluderSet, projection_matrix) == 0x20);
 STATIC_ASSERT(offsetof(OccluderSet, query_matrix) == 0x60);
 
 struct OcclusionManager {
+    OcclusionManager();
+    ~OcclusionManager();
     void Init(u32, VARIPTR *, VARIPTR);
     bool initialized;
     bool enabled;

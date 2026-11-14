@@ -50,6 +50,14 @@ extern f32 SnakeYawSeekRatePc;
 #define POW4(x) (POW2(x) * POW2(x))
 #define POW5(x) (POW2(x) * POW3(x))
 
+/* The SDK's inline NuFabs (nufloat.h): a masked copy of the float bits. */
+static f32 SnakeFabsPc(f32 f) {
+    f32 rv;
+
+    *(i32 *)&rv = *(i32 *)&f & 0x7fffffff;
+    return rv;
+}
+
 /* Unit-local copy of the NuASin polynomial (the snake unit carries its own instance). */
 i32 SnakeASinPc(f32 sin) {
     f32 abs;
@@ -59,14 +67,7 @@ i32 SnakeASinPc(f32 sin) {
     f32 unknown_c;
     f32 unknown_d;
 
-    union {
-        f32 value;
-        u32 bits;
-    } magnitude;
-
-    magnitude.value = sin;
-    magnitude.bits &= 0x7fffffff;
-    abs = magnitude.value;
+    abs = SnakeFabsPc(sin);
     sqrt = NuFsqrt(1.0f - sin * sin);
 
     unknown_a = MIN(sqrt, abs);

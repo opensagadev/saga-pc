@@ -30,8 +30,13 @@ typedef struct NuDynamicLight NuDynamicLight;
 typedef struct VuMtx VuMtx;
 
 struct VuMtx {
-    NUMTX matrix;
+    union {
+        NUMTX matrix;
+        VuVec rows[4];
+    };
 #ifdef __cplusplus
+    void fun_006341a0(const VuVec &translation);
+    VuVec &fun_006341d0(i32 row);
     void fun_006b8470(const VuVec &scale);
 #endif
 };

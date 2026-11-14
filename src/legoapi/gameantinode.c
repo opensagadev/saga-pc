@@ -84,6 +84,22 @@ typedef struct GAME_ANTI_NODE_DATA_PC {
 #define GAME_ANTI_NODE_ABS(destination, expression)                                                                    \
     (temporary = (expression), *(u32 *)&(destination) = *(u32 *)&temporary & 0x7fffffff)
 
+/* The SDK's inline NuFabs (nufloat.h): a masked copy of the float bits. */
+static f32 GameantinodeFabsPc(f32 f) {
+    f32 rv;
+
+    *(i32 *)&rv = *(i32 *)&f & 0x7fffffff;
+    return rv;
+}
+
+/* The SDK's inline NuFdiv: a quotient that is 0 when either operand is 0. */
+static f32 GameantinodeFdivPc(f32 a, f32 b) {
+    if (a == 0.0f || b == 0.0f) {
+        return 0.0f;
+    }
+    return a / b;
+}
+
 void *GameAntnode_CreateSys(WORLDINFO *world, VARIPTR *buffer, VARIPTR *end, i32 count) {
     u32 node_bytes = (u32)count * sizeof(ANTINODE_PC);
     u32 total_bytes = node_bytes + sizeof(ANTINODE_SYS_PC);
@@ -144,11 +160,7 @@ void GameAntinode_FindGridPosition(WORLDINFO *world, NUVEC *position, f32 radius
     f32 offset;
     if (min_x != NULL) {
         offset = position->x - radius_x - view->level_min.x;
-        if (offset == 0.0f || cell_x == 0.0f) {
-            offset = 0.0f;
-        } else {
-            offset = offset / cell_x;
-        }
+        offset = GameantinodeFdivPc(offset, cell_x);
         *min_x = (u8)offset;
         if (*min_x > 63) {
             *min_x = 63;
@@ -288,7 +300,7 @@ void GameAntiNodeData_Init(void *opaque_data, NUSPECIALHANDLE *special) {
             NuVecMtxTransform(&maximum, &maximum, matrix);
             GAME_ANTI_NODE_ABS(x, (maximum.x - minimum.x) * 0.5);
             GAME_ANTI_NODE_ABS(z, (maximum.z - minimum.z) * 0.5);
-            GAME_ANTI_NODE_ABS(difference, x - z);
+            difference = GameantinodeFabsPc(x - z);
             if (difference < 0.01f) {
                 data->shape = 0;
                 data->radius = x;

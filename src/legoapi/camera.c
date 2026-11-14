@@ -10,19 +10,26 @@ typedef struct LEVEL_JUDDER_FIELDS_PC {
     u8 maximum_distance;  // 0xcd
 } LEVEL_JUDDER_FIELDS_PC; // size 0xce
 
+/* The SDK's inline NuFabs (nufloat.h): a masked copy of the float bits. */
+static f32 LegoapiCameraFabsPc(f32 f) {
+    f32 rv;
+
+    *(i32 *)&rv = *(i32 *)&f & 0x7fffffff;
+    return rv;
+}
+
 void GameCam_Judder(GAMECAMERA *camera, f32 amount, i32 axis, NUVEC *source) {
     union {
         f32 value;
         u32 bits;
-    } absolute, magnitude;
+    } magnitude;
 
     f32 distance;
     f32 maximum_distance;
     if (camera == NULL) {
         camera = GameCam;
     }
-    absolute.value = amount;
-    magnitude.bits = absolute.bits & 0x7fffffff;
+    magnitude.value = LegoapiCameraFabsPc(amount);
     if (magnitude.value > camera->judder_time) {
         if (source != NULL) {
             distance = NuVecDist(&((CAMERA_JUDDER_FIELDS_PC *)camera)->position, source, NULL);

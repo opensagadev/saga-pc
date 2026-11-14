@@ -7640,6 +7640,102 @@ void aieditor_Render(f32 x_scale, f32 y_scale) {
     NuQFntPopCoordinateSystem();
 }
 
+static void fun_005209e0(NUVEC *direction, NUVEC *from, NUVEC *to, f32 length) {
+    direction->x = (to->x - from->x) / length;
+    direction->z = (to->z - from->z) / length;
+}
+
+static i32 fun_00520a00(AIPACKET_PC *packet, AIPATHCNX_PC *connection, AIPATHNODE_PC **start, AIPATHNODE_PC **end,
+                        NUVEC *direction) {
+    *start = &packet->path_info.path->nodes[connection->node_indices[0]];
+    *end = &packet->path_info.path->nodes[connection->node_indices[1]];
+    if (((*end)->position.z - (*start)->position.z) * direction->z +
+            ((*end)->position.x - (*start)->position.x) * direction->x <
+        0.0) {
+        *end = &packet->path_info.path->nodes[connection->node_indices[0]];
+        *start = &packet->path_info.path->nodes[connection->node_indices[1]];
+        return 1;
+    }
+    return 0;
+}
+
+void FindAIDirectionedRandomPointOnNetwork2D(AIPACKET_PC *packet, NUVEC *position, NUVEC *direction, f32 distance,
+                                             f32 offset, i32 flags, NUVEC *result) {
+    AIPATHCNX_PC *connection = packet->path_info.connection;
+    AIPATHNODE_PC *start;
+    AIPATHNODE_PC *end;
+    AIPATHNODE_PC *junction;
+    NUVEC delta;
+    f32 along;
+    f32 best_dot;
+    i32 best_index;
+    i32 count;
+    i32 i;
+    f32 fraction;
+    f32 radius;
+
+    if (connection == NULL) {
+        *result = packet->owner->position;
+        return;
+    }
+    fun_00520a00(packet, connection, &start, &end, direction);
+    fun_005209e0(&delta, &start->position, &end->position, connection->horizontal_distance);
+    if (flags & 2) {
+        distance *= connection->horizontal_distance;
+    }
+    along = (position->z - start->position.z) * delta.z + (position->x - start->position.x) * delta.x;
+    distance += along;
+    if (distance > connection->horizontal_distance || distance < 0.0f) {
+        best_dot = -FLT_MAX;
+        best_index = -1;
+        if (distance < 0.0f) {
+            junction = start;
+        } else {
+            junction = end;
+        }
+        count = junction->connection_count;
+        for (i = 0; i < count; i++) {
+            if (connection != junction->connections[i]) {
+                AIPATHNODE_PC *candidate_start;
+                AIPATHNODE_PC *candidate_end;
+                i32 reverse =
+                    fun_00520a00(packet, junction->connections[i], &candidate_start, &candidate_end, direction);
+                fun_005209e0(&delta, &candidate_start->position, &candidate_end->position,
+                             junction->connections[i]->horizontal_distance);
+                if ((junction->connections[i]->traversal_flags[reverse] & 0xc0000000) == 0) {
+                    f32 dot = direction->z * delta.z + direction->x * delta.x;
+                    if (dot > best_dot) {
+                        best_dot = dot;
+                        best_index = i;
+                    }
+                }
+            }
+        }
+        if (best_index != -1) {
+            f32 old_length = connection->horizontal_distance;
+            connection = junction->connections[best_index];
+            if (distance < 0.0f) {
+                distance += connection->horizontal_distance;
+            } else {
+                distance -= old_length;
+            }
+            fun_00520a00(packet, connection, &start, &end, direction);
+            fun_005209e0(&delta, &start->position, &end->position, connection->horizontal_distance);
+        }
+    }
+    fraction = distance / connection->horizontal_distance;
+    fraction = MIN(MAX(fraction, 0.0f), 1.0f);
+    along = connection->horizontal_distance * fraction;
+    radius = end->radius * fraction + start->radius * (1.0f - fraction);
+    if (flags & 1) {
+        offset *= radius;
+    }
+    offset = MIN(MAX(offset, -radius), radius);
+    result->x = start->position.x + along * delta.x + delta.z * offset;
+    result->y = end->position.y * fraction + start->position.y * (1.0f - fraction);
+    result->z = start->position.z + along * delta.z - delta.x * offset;
+}
+
 /* Native 520e10..520e93: private position argument EDI. */
 static EDAIAREA_s *areaEditorCreateArea(NUVEC *position, NUVEC *size, i32 rotation, i32 flags) {
     EDAIAREA_s *area = (EDAIAREA_s *)NuLinkedListGetHead(&aieditor->free_areas);

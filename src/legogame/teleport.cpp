@@ -297,6 +297,16 @@ extern "C" {
 }
 static i32 FindTeleport_Direction = 0;
 
+/* The SDK's inline NuFabs (nufloat.h): a masked copy of the float bits. */
+extern "C" {
+    static f32 TeleportFabsPc(f32 f) {
+        f32 rv;
+
+        *(i32 *)&rv = *(i32 *)&f & 0x7fffffff;
+        return rv;
+    }
+}
+
 extern "C" TELEPORT_MOTION_PC *Teleport_Find(GAMEOBJECT *object, f32 range_squared) {
     TELEPORT_MOTION_PC *teleport = ((TELEPORT_WORLD_PC *)WORLD)->teleports;
     if (teleport == NULL) {
@@ -382,15 +392,9 @@ static void Teleport_SetCrawlTime(GAMEOBJECT *object, i32 start, i32 end) {
         if (animation_speed != 0.0f) {
             TELEPORT_MOTION_PC *teleport = (TELEPORT_MOTION_PC *)object->grapple;
 
-            union {
-                f32 value;
-                u32 bits;
-            } speed, speed_abs;
-
-            speed.value = animation_speed;
-            speed_abs.bits = speed.bits & 0x7fffffff;
+            f32 speed_abs = TeleportFabsPc(animation_speed);
             NUVEC *points = teleport->path->pts;
-            object->context_duration = NuVecXZDist(&points[start], &points[end], NULL) / speed_abs.value;
+            object->context_duration = NuVecXZDist(&points[start], &points[end], NULL) / speed_abs;
             return;
         }
     }

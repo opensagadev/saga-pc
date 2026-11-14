@@ -397,6 +397,16 @@ i32 AreaFromMiniKitID(i32 id) {
     return -1;
 }
 
+extern "C" void Areas_CompleteAllBuildUps(AREASAVE_s *save) {
+    if (save == NULL) {
+        return;
+    }
+    for (i32 i = 0; i < AREACOUNT; ++i) {
+        save[i].true_hero_complete[0] = 1;
+        save[i].true_hero_complete[1] = 1;
+    }
+}
+
 extern "C" i8 Area_CharIDInCurrentList(i32 character_id) {
     i32 index;
     if (CurrentCList != NULL) {

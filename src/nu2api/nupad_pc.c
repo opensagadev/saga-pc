@@ -31,6 +31,19 @@ void NuPadClosePS(FRAME_PAD_PC *pad) {
     pad->flags &= ~4;
 }
 
+i32 fun_006d60f0(void) {
+    return nu_input_state->unknown_5d29;
+}
+
+void fun_006d6100(i32 value) {
+    if (value < 1) {
+        value = 1;
+    } else if (value > 10) {
+        value = 10;
+    }
+    nu_input_state->unknown_5d29 = value;
+}
+
 void NuPadSetMotorsPc(NUPAD_INIT_STATE *pad, i32 motor0, i32 motor1) {
     (void)pad;
     (void)motor0;

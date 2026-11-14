@@ -296,7 +296,7 @@ char const *TTNetwork::GetName() {
 
 void NETMESSAGE_PC::MakeUnique() {
     MessageData *entry;
-    for (MessageData *candidate = sm_poolMessageData; candidate != sm_poolMessageData + 512; ++candidate) {
+    for (MessageData *candidate = sm_poolMessageData.items; candidate != sm_poolMessageData.items + 512; ++candidate) {
         if (candidate->references <= 0) {
             candidate->references = 1;
             entry = candidate;
@@ -536,3 +536,6 @@ TTNetwork::~TTNetwork() {
 }
 
 TTNetwork theTTNetwork;
+#pragma bss_seg(".bss$sm_poolMessageData")
+TPool<NETMESSAGE_PC::MessageData, 512> NETMESSAGE_PC::sm_poolMessageData;
+#pragma bss_seg()

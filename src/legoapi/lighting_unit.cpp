@@ -103,6 +103,14 @@ extern "C" {
     }
 }
 
+/* The engine's VuVecNormalise: unit-length copy of a direction, as a point (w = 1). */
+extern "C" {
+    static void fun_00595220(NUVEC4 &destination, NUVEC4 &source) {
+        NuVecNorm((NUVEC *)&destination, (NUVEC *)&source);
+        destination.w = 1.0f;
+    }
+}
+
 void NUVEC4::fun_00595250(f32 new_x, f32 new_y, f32 new_z, f32 new_w) {
     x = new_x;
     y = new_y;
@@ -133,8 +141,7 @@ void PC_SPECIAL_SHADOW_LIGHT::LookAtPc(NUVEC *eye, NUVEC *target, NUVEC *up) {
     direction->y = direction_y;
     direction->z = direction_z;
     direction->w = 0.0f;
-    NuVecNorm((NUVEC *)direction, (NUVEC *)direction);
-    direction->w = 1.0f;
+    fun_00595220(*direction, *direction);
     f32 position_y = eye->y;
     f32 position_z = eye->z;
     light_position_pc.x = eye->x;

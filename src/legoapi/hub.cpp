@@ -70,6 +70,10 @@ extern "C" void Hub_LockUnlockDoors(WORLDINFO *world) {
     (void)world;
 }
 
+extern "C" void Hub_DrawStarField(void) {
+    GetMenuID();
+}
+
 /* Additional source-private viewer state/native menu-reader view, genuine
  * original backing/ownership gate pending; no placeholder storage emitted. */
 

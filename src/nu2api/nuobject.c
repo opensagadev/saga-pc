@@ -1,5 +1,7 @@
 #include "saga.h"
 
+static void (*NuFadeObjGlobalSetLightsFn)(void);
+static void (*NuFadeObjSetLightsFn)(void);
 static i32 NuFadeMaxDataPC;
 static i32 NuFadeMaxGroupsPC;
 
@@ -49,6 +51,11 @@ void NuFadeObjInit(void) {
         }
     }
     TerrainSetCur(terrain);
+}
+
+void NuFadeObjSet_SetLightsFn(void (*global_lights)(void), void (*object_lights)(void)) {
+    NuFadeObjGlobalSetLightsFn = global_lights;
+    NuFadeObjSetLightsFn = object_lights;
 }
 
 PC_NUFADEGROUP *NuFadeObjAllocateGrp(void) {

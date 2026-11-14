@@ -34,7 +34,7 @@ typedef struct spinner_movement_pc_s {
     u32 state_flags;
 } SPINNER_MOVEMENT_PC;
 
-static __inline f32 PlayersFabsPc(f32 value) {
+static __inline f32 PushingFabsPc(f32 value) {
     u32 bits = *(u32 *)&value & 0x7fffffff;
     return *(f32 *)&bits;
 }
@@ -54,7 +54,7 @@ i32 Pushing(GAMEOBJECT *object, u16 *normal_angle, i32 *surface, i32 *angle_diff
     if (((object->flags_1fc & 0x80) || (object->flags_ef4 & 0x30000)) &&
         (object->pad->input_magnitude > 0.0f || pushing_obstacle) && object->contact_count &&
         CanClimbSurface(object, (i8)object->contact_material[0]) == 0 &&
-        PlayersFabsPc(object->contact_normal.y) < NuTrigTable[0x3c71]) {
+        PushingFabsPc(object->contact_normal.y) < NuTrigTable[0x3c71]) {
         input_angle = pushing_obstacle ? object->movement_facing_angle : GamePad_InputAngle(object, object->pad);
         angle = NuAtan2D(object->contact_normal.x, object->contact_normal.z);
         difference = RotDiff(input_angle, angle);

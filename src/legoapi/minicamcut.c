@@ -18,6 +18,14 @@ typedef struct MINICAM_CAMERA_PC {
 
 #define MINI_CAM_CAMERA (*(MINICAM_CAMERA_PC *)GameCam)
 
+/* The SDK's inline NuFdiv: a quotient that is 0 when either operand is 0. */
+static f32 MinicamcutFdivPc(f32 a, f32 b) {
+    if (a == 0.0f || b == 0.0f) {
+        return 0.0f;
+    }
+    return a / b;
+}
+
 void Minicam_InitSystem(void) {
     memset(&MiniCam, 0, sizeof(MiniCam));
 }
@@ -171,11 +179,7 @@ void MiniCam_ChangeMode(i32 mode) {
 
 void Minicam_AddDeltas(float duration) {
     f32 fraction;
-    if (MiniCam.delta_time == 0.0f || duration == 0.0f) {
-        fraction = 0.0f;
-    } else {
-        fraction = MiniCam.delta_time / duration;
-    }
+    fraction = MinicamcutFdivPc(MiniCam.delta_time, duration);
     if (fraction < 0.0f) {
         fraction = 0.0f;
     } else if (fraction > 1.0f) {

@@ -18,6 +18,7 @@ typedef struct MENU_VIDEO_OPTIONS_PC {
     i32 hires_enabled;
 #ifdef __cplusplus
     u8 ChangedPc();
+    void fun_005091f0();
     void ApplyPc();
 #endif
 } MENU_VIDEO_OPTIONS_PC;

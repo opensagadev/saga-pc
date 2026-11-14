@@ -2158,6 +2158,38 @@ extern "C" i32 NewRayCastPlatForm(NUVEC *position, NUVEC *movement, f32 radius, 
     return TerI->hit_type;
 }
 
+extern "C" void TerrShowCamTerr(void) {
+    plathitid = -1;
+    TerrPolyObj = -1;
+    TerrPoly = NULL;
+    TerrWallInfo = 0;
+    PlatCrush = 0;
+    terrhitflags = 0;
+    TerrainQuery_s *query = static_cast<TerrainQuery_s *>(NuScratchAlloc32(sizeof(TerrainQuery_s)));
+    query->object_scale = 1.0f;
+    query->object_scale_sq = 1.0f;
+    query->inverse_object_scale = 1.0f;
+    query->inverse_object_scale_sq = 1.0f;
+    TerI = query;
+    query->collision_radius = 0.1f;
+    query->inverse_collision_radius = 10.0f;
+    query->collision_radius_sq = ForcePushApproachInnerSquare;
+    query->start_position.x = query->position.x = global_camera.mtx.m30 - 2.0;
+    query->start_position.y = query->position.y = global_camera.mtx.m31 - 2.0;
+    query->start_position.z = query->position.z = global_camera.mtx.m32 - 2.0;
+    query->start_movement.x = query->movement.x = 4.0f;
+    query->start_movement.y = query->movement.y = 4.0f;
+    query->start_movement.z = query->movement.z = 4.0f;
+    query->object_index = 0;
+    query->hit_flags = NULL;
+    query->scan_result = 0;
+    query->radius = 0.0f;
+    query->separation_epsilon = 0.01f;
+    query->compare_epsilon = 0.00001f;
+    ScanTerrain(1, 1, 0);
+    NuScratchRelease();
+}
+
 extern "C" void DrawHitTerrain(void) {
     if (CurrentTerrain == NULL) {
         return;

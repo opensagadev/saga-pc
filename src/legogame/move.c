@@ -491,7 +491,7 @@ extern const f64 GameObjectNearFloorNoFloorHeight;
 /* Android speederchase.cpp:99 candidate adapted to the complete PC body. */
 extern i32 objopponent_ignoreaiopponent;
 
-static __inline f32 MovePlayerFabs(f32 value) {
+static f32 MoveFabsPc(f32 value) {
     u32 bits = *(u32 *)&value & 0x7fffffff;
     return *(f32 *)&bits;
 }
@@ -502,13 +502,6 @@ typedef struct CHARACTER_COMMUNICATE_READER_PC {
     u8 unknown_000[0xd38];
     f32 communicate_blend;
 } CHARACTER_COMMUNICATE_READER_PC;
-
-/* Retail takes this absolute value through the float's bit pattern. */
-static f32 PushFabsPc(f32 value) {
-    i32 bits = *(i32 *)&value & 0x7fffffff;
-    f32 result = *(f32 *)&bits;
-    return result;
-}
 
 /* NuASin polynomial; this unit carries its own instance. */
 static i16 MovementArcSine(f32 sin) {
@@ -547,6 +540,10 @@ static i16 MovementArcSine(f32 sin) {
             ASIN_NEG_35_OVER_1152 * ASIN_POW4(unknown_b * unknown_c * unknown_a) *
                 ASIN_POW5(unknown_b * unknown_c * unknown_a)) *
            10430.4f;
+}
+
+static i16 MoveACosPc(f32 cos) {
+    return 0x4000 - MovementArcSine(cos);
 }
 
 static void MovementMtxSetRotationXPc(NUMTX *matrix, i32 angle) {
@@ -962,7 +959,7 @@ f32 ForceTowardsMid(GAMEOBJECT *object) {
         if (object->movement_mode != 4 && inner > 0.0f && outer > 0.0f) {
             dy = object->sock_position.midpoint.y - object->position.y;
             if (dy * dy >= inner * inner) {
-                ratio = (PushFabsPc(dy) - inner) / (outer - inner);
+                ratio = (MoveFabsPc(dy) - inner) / (outer - inner);
                 object->target_velocity.y += (dy * object->character_data->game_character->run_speed) * ratio;
                 amount = ratio;
             }
@@ -1221,7 +1218,7 @@ void VehicleCollisionCode(GAMEOBJECT *object) {
     NuVecNorm(&reverse_velocity, &reverse_velocity);
     reverse_velocity.x = -reverse_velocity.x;
     reverse_velocity.z = -reverse_velocity.z;
-    angle = (i16)(0x4000 - MovementArcSine(reverse_velocity.x * normal.x + reverse_velocity.z * normal.z));
+    angle = MoveACosPc(reverse_velocity.x * normal.x + reverse_velocity.z * normal.z);
     if (speeder_level && angle < (VehicleCollisionRearAngle << 16) / 360 &&
         object->horizontal_velocity_magnitude > (object->character_data->game_character->tiptoe_speed +
                                                  object->character_data->game_character->walk_speed) *
@@ -1679,7 +1676,7 @@ i32 MovePlayer_POD(GAMEOBJECT *object) {
     index = object->player_index;
     if (index < 2) {
         pod_roll_target[index] =
-            SeekLinearF(pod_roll_target[index], input, FRAMETIME * PodRollInputRate * MovePlayerFabs(input));
+            SeekLinearF(pod_roll_target[index], input, FRAMETIME * PodRollInputRate * MoveFabsPc(input));
         pod_roll_target[index] = SeekLinearF(pod_roll_target[index], 0.0f, PodRollReleaseRate * FRAMETIME);
         pod_roll[index] = SeekValF(pod_roll[index], pod_roll_target[index], 8.0f);
     }
@@ -4719,7 +4716,7 @@ static void SwipeCode(GAMEOBJECT *object, i32 pressed, i32 held) {
         }
         NuVecSub(&delta, position, &object->position);
         NuVecRotateY(&delta, &delta, -object->movement_facing_angle);
-        if ((!(object->pad->input_magnitude > 0.0f) || !(MovePlayerFabs(delta.x) > MovePlayerFabs(delta.z))) &&
+        if ((!(object->pad->input_magnitude > 0.0f) || !(MoveFabsPc(delta.x) > MoveFabsPc(delta.z))) &&
             delta.z < 0.0f && ComboOpponent_Range2 < 0.48999998f) {
             object->field_7aa = 0x29;
             if (object->character_model->model_data_b[0x29] != NULL) {
@@ -5057,7 +5054,7 @@ static void ForcePushCode(GAMEOBJECT *object, i32 held) {
             complete = object->context_timer >= duration;
             if (complete == 0 && (object->flags_e20 & 0x80) == 0 && (object->flags_e20 & 0x300) == 0 &&
                 (f64)object->context_timer >= (f64)0.2f && initial_target->contact_count != 0) {
-                complete = MovePlayerFabs(initial_target->contact_normal.y) < NuTrigTable[0x3555];
+                complete = MoveFabsPc(initial_target->contact_normal.y) < NuTrigTable[0x3555];
             }
             if (complete != 0) {
                 if (throw_target != 0) {
@@ -6708,7 +6705,7 @@ static void FireCode(GAMEOBJECT *object, i32 pressed, i32 held, f32 fire_delay, 
                 SetObjTarget(object, target);
                 if (VehicleArea != 0 && (target->character_data->model_flags & 0x2000) != 0) {
                     NuVecRotateY(&lateral, &v001, NuAtan2D(target->velocity.x, target->velocity.z) + 0x4000);
-                    lead = (f32)((f64)MovePlayerFabs(lateral.x * direction.x + lateral.z * direction.z) * 0.5 *
+                    lead = (f32)((f64)MoveFabsPc(lateral.x * direction.x + lateral.z * direction.z) * 0.5 *
                                  bolt->field_14);
                     position.x = target->collision_position.x + target->velocity.x * lead;
                     position.y = target->collision_position.y + target->velocity.y * lead;
@@ -10089,7 +10086,7 @@ void MovePlayer_VEHICLEDIRECTIONAL(GAMEOBJECT *object) {
                     TurnRot(object->movement_facing_angle, desired_angle, (i32)(rate * 65536.0f), NULL);
             }
             if (object->character_context == -1 && object->contact_count &&
-                MovePlayerFabs(object->contact_normal.y) < NuTrigTable[0x3aaa]) {
+                MoveFabsPc(object->contact_normal.y) < NuTrigTable[0x3aaa]) {
                 if ((object->flags_1fc & 0x80) != 0 && (PODSPRINT_ADATA == NULL || WORLD->area != PODSPRINT_ADATA) &&
                     (object->character_data->game_character->flags_090 & 0x10000) == 0 &&
                     WORLD->current_level != SPEEDERCHASEA_LDATA) {
@@ -10286,7 +10283,7 @@ void MovePlayer_VEHICLEDIRECTIONAL(GAMEOBJECT *object) {
                     NuVecRotateY(&direction, &v001, object->sock_heading);
                     NuVecSub(&separation, &other->position, &object->position);
                     longitudinal = separation.x * direction.x + separation.z * direction.z;
-                    distance = MovePlayerFabs(longitudinal);
+                    distance = MoveFabsPc(longitudinal);
                     inner = (object->bounds_radius + other->bounds_radius) * 2.0f;
                     if (distance > inner) {
                         outer = (object->bounds_radius + other->bounds_radius) * 5.0f + 0.1f;
@@ -12708,7 +12705,7 @@ void Move_POD(GAMEOBJECT *object) {
                 f32 speed;
                 f32 pitch;
                 steering = (f32)(((f64)object->pad->input_magnitude - 6.0) *
-                                 -MovePlayerFabs(NuTrigTable[object->pad->input_angle >> 1]) / 96.0);
+                                 -MoveFabsPc(NuTrigTable[object->pad->input_angle >> 1]) / 96.0);
                 speed =
                     (f32)(avg_currentspeed_mul < 1.1f ? (f64)avg_currentspeed_mul + 1.0 + steering : 2.0 + steering);
                 player_index = object != Player[0];

@@ -5,6 +5,14 @@ typedef struct lever_trigger_flags_pc_s {
     u8 flags;             // 0x94
 } LEVER_TRIGGER_FLAGS_PC; // size 0x95
 
+/* The SDK's inline NuFabs (nufloat.h): a masked copy of the float bits. */
+static f32 LeverFabsPc(f32 f) {
+    f32 rv;
+
+    *(i32 *)&rv = *(i32 *)&f & 0x7fffffff;
+    return rv;
+}
+
 i32 Lever_BeingPulled(void *lever) {
     return (((LEVER_TRIGGER_FLAGS_PC *)lever)->flags >> 1) & 1;
 }
@@ -670,7 +678,7 @@ static void Levers_Draw(void *world_ptr, void *data, f32 delta_time) {
                     } else {
                         f32 sine = NuTrigTable
                             [((i32)((f64)lever->idle_animation_timer / (f64)0.15f * 32768.0 + 16384.0) >> 1) & 0x7fff];
-                        animation_frame = (f32)((1.0 - fabs(sine)) * 1.5 + 16.0);
+                        animation_frame = (f32)((1.0 - LeverFabsPc(sine)) * 1.5 + 16.0);
                     }
                 } else if (qrand() < 0x800) {
                     lever->idle_animation_timer = 0.15f;

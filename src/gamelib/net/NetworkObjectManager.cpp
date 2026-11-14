@@ -35,6 +35,17 @@ void NetTrace(...) {
 extern "C" void fun_006118a0() {
 }
 
+/* The engine's VuAngleDifference: signed difference of two 16-bit angles, in -0x8000..0x7fff. */
+extern "C" {
+    static i32 fun_006118b0(i32 from, i32 to) {
+        i32 difference = (from - to) & 0xffff;
+        if (difference >= 0x8000) {
+            difference -= 0x10000;
+        }
+        return difference;
+    }
+}
+
 void NOSTrace(...) {
 }
 
@@ -415,10 +426,7 @@ void NetRotator2::PredictValue(const EdClass *, void *, PredictorTime *time, Pre
     f32 interval_scale = 1.0f / (time->values[2] - time->values[1]);
     f32 elapsed = now - time->values[2];
     for (i32 i = 0; i < count; i++) {
-        i32 delta = ((i32)samples[i]->values[2] - (i32)samples[i]->values[1]) & 0xffff;
-        if (delta >= 0x8000) {
-            delta -= 0x10000;
-        }
+        i32 delta = fun_006118b0((i32)samples[i]->values[2], (i32)samples[i]->values[1]);
         f32 velocity = delta * interval_scale;
         f32 predicted = velocity * elapsed + samples[i]->values[2];
         if (replication_group & 0x10) {

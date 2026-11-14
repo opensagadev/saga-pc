@@ -1184,6 +1184,11 @@ typedef struct gameobject_s {
             u8 field_e22;
             u8 field_e23;
         };
+
+        struct {
+            u32 : 16;
+            u32 weapon_animation : 1;
+        };
     };
 
     union {

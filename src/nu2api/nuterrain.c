@@ -313,16 +313,21 @@ typedef struct TERRAIN_SKIN_BLEND_PC {
 } TERRAIN_SKIN_BLEND_PC;                   // size 0x5c
 
 typedef struct TERRAIN_SKIN_INFO_PC {
-    NUMTX *matrix; /* +00 */                                // 0x00
-    const TERRAIN_SKIN_BLEND_PC *blend; /* +04 */           // 0x04
-    const NUVEC4 *sample_rows; /* +08: sampled row banks */ // 0x08
-    f32 scale; /* +0c */                                    // 0x0c
-    TERRAIN_SKIN_STREAM_PC *original_shape; /* +10 */       // 0x10
-    i16 group_index; /* +14 */                              // 0x14
-    i16 pool_slot; /* +16 */                                // 0x16
-    i16 mode; /* +18 */                                     // 0x18
-    i16 vertex_order; /* +1a */                             // 0x1a
-} TERRAIN_SKIN_INFO_PC;                                     // size 0x1c
+    NUMTX *matrix; /* +00 */                      // 0x00
+    const TERRAIN_SKIN_BLEND_PC *blend; /* +04 */ // 0x04
+
+    union {                        // 0x08
+        const NUVEC4 *sample_rows; // 0x08  sampled row banks
+        NUMTX *static_matrix;      // 0x08  static platform matrix
+    };
+
+    f32 scale; /* +0c */                              // 0x0c
+    TERRAIN_SKIN_STREAM_PC *original_shape; /* +10 */ // 0x10
+    i16 group_index; /* +14 */                        // 0x14
+    i16 pool_slot; /* +16 */                          // 0x16
+    i16 mode; /* +18 */                               // 0x18
+    i16 vertex_order; /* +1a */                       // 0x1a
+} TERRAIN_SKIN_INFO_PC;                               // size 0x1c
 
 typedef struct TERRAIN_SKIN_USE_RECORD_PC {
     i32 last_use;             // 0x0
@@ -566,6 +571,19 @@ void SkinPlatform(TERRAIN_GROUP_PC *group, TERRAIN_SKIN_STREAM_PC *output, const
 
 #undef TERRAIN_SKIN_NORMAL
 #undef TERRAIN_SKIN_BOUND
+
+NUVEC *TerrainStaticMtx(NUVEC *result, const TERRAIN_SKIN_INFO_PC *info, const NUVEC *position, i32 mode) {
+    NUVEC4 point;
+    point.x = position->x;
+    point.y = position->y;
+    point.z = position->z;
+    point.w = 1.0f;
+    NuVec4MtxTransformVU0(&point, &point, info->static_matrix);
+    result->x = point.x;
+    result->y = point.y;
+    result->z = point.z;
+    return result;
+}
 
 /* Insert after skin-info/use-record declarations; storage root-owned.
  * All seven new views retain BLANK original CSVsize and ctype / zero credit.
@@ -3528,6 +3546,22 @@ const char *TerrErrorString(i32 error) {
         index = 0;
     }
     return errstr[index];
+}
+
+/* A sound table followed by the NULL-terminated sfx name list it is built from. */
+typedef struct SOUND_REGISTRY_PC {
+    SoundTable table; // 0x00
+    char **names;     // 0xc8
+} SOUND_REGISTRY_PC;  // size 0xcc
+
+void RegisterSounds(SOUND_REGISTRY_PC *registry) {
+    char **name = registry->names;
+    memset(registry->table.bits, 0, sizeof(registry->table.bits));
+    /* The original tests the advancing cursor rather than the name it points at. */
+    while (name != NULL) {
+        i32 id = GetSfxId(*name++);
+        registry->table.bits[id >> 4] |= 1 << (id & 0xf);
+    }
 }
 
 STATIC_ASSERT(offsetof(TERRAIN_SPATIAL_NODE, point_count) == 0);

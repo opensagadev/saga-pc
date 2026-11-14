@@ -1,7 +1,5 @@
 #include "saga.h"
 
-NETMESSAGE_PC::MessageData NETMESSAGE_PC::sm_poolMessageData[512] = {0};
-
 /* AI script network replication (0x53d140-0x53db50). AINet is abstract: the
  * game derives from it to map AI packets to network ids. No class derives from
  * it in retail, so AINet::sm_instance stays NULL and replication is a no-op. */
@@ -69,6 +67,17 @@ void NETMESSAGE_PC::fun_0053d360(i16 &value) {
     }
 }
 
+NETMESSAGE_PC::MessageData *NETMESSAGE_PC::MessageData::fun_0053d420() {
+    return this + 512;
+}
+
+i32 NETMESSAGE_PC::MessageData::fun_0053d430() const {
+    return references > 0;
+}
+
+extern "C" void fun_0053d450(void) {
+}
+
 /* Writes the string with a leading length byte. */
 void NETMESSAGE_PC::fun_0053d4a0(char *text) {
     if (data != NULL) {
@@ -89,6 +98,22 @@ void NETMESSAGE_PC::fun_0053d4e0(char *text, i32 size) {
         PCByteCopy(text, data->bytes + read_offset, length);
         read_offset += length;
     }
+}
+
+NETMESSAGE_PC::MessageData *NETMESSAGE_PC::MessageData::fun_0053d560() {
+    references = 1;
+    return this;
+}
+
+/* Claims the first free entry of the pool starting at this one. */
+NETMESSAGE_PC::MessageData *NETMESSAGE_PC::MessageData::fun_0053d590() {
+    for (MessageData *entry = this; entry != this + 512; entry++) {
+        if (entry->references <= 0) {
+            entry->references = 1;
+            return entry;
+        }
+    }
+    return NULL;
 }
 
 void NETMESSAGE_PC::MessageData::fun_0053d5c0() {

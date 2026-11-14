@@ -426,6 +426,16 @@ f32 VuVec::Length() {
     return RtlVuVecLength(*this);
 }
 
+/* Sets the translation row; the row is a point, so w is forced to 1. */
+void VuMtx::fun_006341a0(const VuVec &translation) {
+    RtlVuVecCopy(rows[3], translation);
+    rows[3].w = 1.0f;
+}
+
+VuVec &VuMtx::fun_006341d0(i32 row) {
+    return rows[row];
+}
+
 /* Screen-space distance below which a radius ring can be grabbed. */
 static f32 rtl_helper_grab_distance = 0.5f;
 
@@ -656,6 +666,9 @@ class FogHelper : public EdClassInterface {
 
 FogHelper::FogHelper() {
 }
+
+RTLHelper dat_0080ffe0;
+FogHelper dat_0080ffec;
 
 i32 FogHelper::GetNumObjects() {
     i32 count = 0;

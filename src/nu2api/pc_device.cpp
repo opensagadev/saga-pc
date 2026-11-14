@@ -1123,6 +1123,38 @@ u32 PC_DEVICE_BACKEND_PC::CaptureScreenshotPc(u32 width, u32 height, void **data
     return size;
 }
 
+u8 PC_WINDOW_OPTIONS_PC::fun_00509030() {
+    return bloomenabled;
+}
+
+u8 PC_WINDOW_OPTIONS_PC::fun_00509040() {
+    return shadowsenabled;
+}
+
+u8 PC_WINDOW_OPTIONS_PC::fun_00509050() {
+    return speedblurenabled;
+}
+
+u8 PC_WINDOW_OPTIONS_PC::fun_00509060() {
+    return usehires;
+}
+
+u8 PC_WINDOW_OPTIONS_PC::fun_00509070() {
+    return usehirespending;
+}
+
+u8 PC_WINDOW_OPTIONS_PC::fun_00509080() {
+    return option459;
+}
+
+GRAPHICS_DISPLAY_MODE_PC *PC_DEVICE_BACKEND_PC::fun_00509090(i32 index) {
+    return &modes[index];
+}
+
+i32 PC_DEVICE_BACKEND_PC::fun_005090a0() {
+    return multisample_index;
+}
+
 u8 PC_DEVICE_BACKEND_PC::SupportsMultisamplePc(i32 index) {
     return multisample_tested != 0 && quality[index] != -1;
 }

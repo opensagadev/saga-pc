@@ -1,5 +1,7 @@
 #include "saga.h"
 
+extern i32 dat_009739d4;
+
 void NuWindAnimate(NUWIND *wind, f32 frame_time) {
     if (wind != NULL) {
         wind->phase += nu_wind_phase_scale * wind->phase_speed_scale * frame_time;
@@ -9,6 +11,10 @@ void NuWindAnimate(NUWIND *wind, f32 frame_time) {
         wind->scaled_accumulated_time = 5.0 * frame_time + wind->scaled_accumulated_time;
         wind->accumulated_time = frame_time + wind->accumulated_time;
     }
+}
+
+void fun_005ddcf0(i32 value) {
+    dat_009739d4 = value;
 }
 
 VARIPTR *fun_005ddd00(void) {
@@ -38,7 +44,16 @@ void NuWindInitialise(NUWIND *wind) {
     }
 }
 
-void fun_005ddc00(NUWIND *wind, f32 value) {
+void NuWindSetCurrent(NUWIND *wind, u32 index) {
+    if (wind == NULL || index >= 8) {
+        nuapi.wind = NULL;
+    } else if (wind->texture_ids[index] >= 0) {
+        wind->current = index;
+        nuapi.wind = wind;
+    }
+}
+
+void NuWindSetWorldSize(NUWIND *wind, f32 value) {
     if (wind != NULL) {
         if (value >= 1.0f) {
             wind->parameter_24 = value;
@@ -48,7 +63,7 @@ void fun_005ddc00(NUWIND *wind, f32 value) {
     }
 }
 
-void fun_005ddc30(NUWIND *wind, f32 value) {
+void NuWindSetSpeed(NUWIND *wind, f32 value) {
     if (wind != NULL) {
         if (value >= 1.0f) {
             wind->phase_speed_scale = value;

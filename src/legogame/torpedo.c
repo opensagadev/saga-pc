@@ -112,6 +112,14 @@ STATIC_ASSERT(offsetof(TORPEDOPACKET_PC, pickup_positions) == 0x3c);
 STATIC_ASSERT(offsetof(WORLDINFO, area) == 0x12c);
 STATIC_ASSERT(offsetof(AREA_DATA_PC, flags) == 0x7a);
 
+/* The SDK's inline NuFabs (nufloat.h): a masked copy of the float bits. */
+static f32 TorpedoFabsPc(f32 f) {
+    f32 rv;
+
+    *(i32 *)&rv = *(i32 *)&f & 0x7fffffff;
+    return rv;
+}
+
 f32 TorpedoRatioPc(f32 numerator, f32 denominator) {
     if (numerator != 0.0f && denominator != 0.0f) {
         return numerator / denominator;
@@ -128,14 +136,7 @@ i16 TorpedoArcSinePc(f32 sin) {
     f32 unknown_c;
     f32 unknown_d;
 
-    union {
-        f32 value;
-        u32 bits;
-    } magnitude;
-
-    magnitude.value = sin;
-    magnitude.bits &= 0x7fffffff;
-    abs = magnitude.value;
+    abs = TorpedoFabsPc(sin);
     sqrt = NuFsqrt(1.0f - sin * sin);
 
     unknown_a = MIN(sqrt, abs);
@@ -156,6 +157,10 @@ i16 TorpedoArcSinePc(f32 sin) {
             ASIN_NEG_35_OVER_1152 * ASIN_POW4(unknown_b * unknown_c * unknown_a) *
                 ASIN_POW5(unknown_b * unknown_c * unknown_a)) *
            10430.4f;
+}
+
+static i16 TorpedoACosPc(f32 cos) {
+    return 0x4000 - TorpedoArcSinePc(cos);
 }
 
 static void TorpedoSetRotationYPc(NUMTX *matrix, NUANG angle) {
@@ -577,7 +582,7 @@ void Torpedo_Ricochet(BOLT_PC *bolt, TORPEDOPACKET_PC *packet) {
         lengths = (f32)(NuVecMag(&packet->ricochet_position) * velocity_length);
         dot = NuVecDot(&packet->ricochet_position, &bolt->velocity);
         ratio = TorpedoRatioPc(dot, lengths);
-        angle = 0x4000 - TorpedoArcSinePc(ratio);
+        angle = TorpedoACosPc(ratio);
         NuMtxSetRotationAxis(&matrix, 2 * (0x4000 - angle), &axis);
         NuVecMtxRotate(&bolt->velocity, &bolt->velocity, &matrix);
         NuVecScale(&bolt->velocity, &bolt->velocity, 0.8f);

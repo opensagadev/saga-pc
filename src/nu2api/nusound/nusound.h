@@ -97,9 +97,10 @@ typedef struct SoundVoiceManagerPC {
     IDirectSoundBuffer *primary_buffer;
     PC_DS_BUFFER_DESC_VIEW primary_desc;
 #ifdef __cplusplus
+    SoundVoiceManagerPC();
+    ~SoundVoiceManagerPC();
     void Init(i32, u8, u8);
     i32 LoadWavSamplePc(const char *, i32);
-    SoundVoiceManagerPC *ResetStoragePc(void);
     void UnloadSample(i32);
     void ClearSamplesPc(void);
     void SetOptionD14Pc(u8);
@@ -132,7 +133,9 @@ STATIC_ASSERT(offsetof(SoundVoiceManagerPC, option_d14) == 0xd14);
 typedef struct PC_SOUND_COMMIT_PC PC_SOUND_COMMIT_PC;
 
 typedef struct PC_SOUND_COMMIT_METHODS_PC {
-    void *unknown_00[13];
+    void *unknown_00[2];
+    ULONG(__stdcall *release)(PC_SOUND_COMMIT_PC *);
+    void *unknown_0c[10];
     HRESULT(__stdcall *set_orientation)(PC_SOUND_COMMIT_PC *, float, float, float, float, float, float, DWORD);
     HRESULT(__stdcall *set_position)(PC_SOUND_COMMIT_PC *, float, float, float, DWORD);
     HRESULT(__stdcall *set_rolloff_factor)(PC_SOUND_COMMIT_PC *, float, DWORD);

@@ -122,6 +122,9 @@ extern "C" {
     static struct STATUSPACKET_LSW_s StatusPacketAltPc;
 
     f32 StatusAltTextScalePc = StatusAltScalePc;
+    u32 dat_0087b770[15] = {GAMEPAD_TAG,  GAMEPAD_SPECIAL, GAMEPAD_SPECIAL, GAMEPAD_JUMP,   GAMEPAD_JUMP,
+                            GAMEPAD_JUMP, GAMEPAD_ACTION,  GAMEPAD_ACTION,  GAMEPAD_ACTION, GAMEPAD_ACTION,
+                            GAMEPAD_TAG,  GAMEPAD_TAG,     GAMEPAD_TAG,     GAMEPAD_TAG,    GAMEPAD_TAG};
 
     /* Retail keeps an out-of-line copy at 0x458470; the draws inline it. */
     f32 StatusAltFabsPc(f32 value) {

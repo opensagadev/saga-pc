@@ -143,6 +143,10 @@ typedef struct PC_DEVICE_STATE_CACHE_PC {
     i32 state_key;
     PC_DEVICE_RENDER_CACHE_PC render_states;
 #ifdef __cplusplus
+    PC_DEVICE_STATE_CACHE_PC() {
+        Invalidate();
+    }
+
     void Invalidate();
 #endif
 } PC_DEVICE_STATE_CACHE_PC;
@@ -339,6 +343,8 @@ typedef struct PC_DEVICE_BACKEND_PC {
     void CopyBackBuffer(GRAPHICS_RENDER_TEXTURE_PC *);
     void CopyCurrentSurface(GRAPHICS_RENDER_TEXTURE_PC *);
 
+    GRAPHICS_DISPLAY_MODE_PC *fun_00509090(i32 index);
+    i32 fun_005090a0();
     u8 SupportsMultisamplePc(i32);
     u8 HasRequestedModeChangedPc();
     void RestoreSavedModePc();

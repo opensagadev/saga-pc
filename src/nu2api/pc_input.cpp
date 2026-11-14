@@ -2,6 +2,7 @@
 #include <string.h>
 
 extern "C" const char PCKeyboardMouse2Name[16];
+extern "C" i32 dat_00824fb8;
 static i32 PcXInputDeviceCount; // XInput pads found by the current device enumeration
 
 PC_INPUT_CONFIG_PC *PC_INPUT_RUNTIME_PC::FindConfig(u8 mask, i32 port, i32 key) {
@@ -647,6 +648,14 @@ const PC_DI_MOUSE_STATE_PC *NuKeyboardOwner_PC::PollMousePc() {
 extern "C" void fun_006d5860(void) {
 }
 
+extern "C" i32 fun_006d5870(void) {
+    return dat_00824fb8;
+}
+
+extern "C" i32 fun_006d5880(void) {
+    return dat_00824fb8;
+}
+
 extern "C" void fun_006d5890(void) {
 }
 
@@ -764,17 +773,21 @@ void NuKeyboardOwner_PC::SetMouseEnabledPc(u8 enabled) {
 STATIC_ASSERT(offsetof(NuKeyboardState_PC, mouse_delta) == 0x6314);
 STATIC_ASSERT(offsetof(NuKeyboardState_PC, mouse_smoothed) == 0x6320);
 
+/* The SDK's inline NuFabs (nufloat.h): a masked copy of the float bits. */
+static f32 PCInputFabs(f32 f) {
+    f32 rv;
+
+    *(i32 *)&rv = *(i32 *)&f & 0x7fffffff;
+    return rv;
+}
+
 /* Eases the smoothed mouse axis towards the latest delta and returns it scaled, with a small dead zone. */
 extern "C" f32 NuMouseSmoothAxisPc(i32 axis) {
     f32 value = nu_input_state->mouse_delta[axis] - nu_input_state->mouse_smoothed[axis];
-    f32 magnitude;
-    u32 magnitude_bits;
     value = value * 0.125 + nu_input_state->mouse_smoothed[axis];
     nu_input_state->mouse_smoothed[axis] = value;
     value = value * 4.0;
-    magnitude = value;
-    magnitude_bits = *(u32 *)&magnitude & 0x7fffffff;
-    if (*(f32 *)&magnitude_bits < 0.01f) {
+    if (PCInputFabs(value) < 0.01f) {
         value = 0.0f;
     }
     return value;
@@ -802,6 +815,14 @@ extern "C" f32 NuMouseReadYVel(void) {
 
 extern "C" f32 NuMouseReadZVel(void) {
     return (f32)(nu_input_state->mouse_delta[2] * -4.0);
+}
+
+extern "C" f32 fun_006d5c50(void) {
+    return nu_input_state->cursor_x;
+}
+
+extern "C" f32 fun_006d5c60(void) {
+    return nu_input_state->cursor_y;
 }
 
 extern "C" void fun_006d5c70(f32 threshold, i32 motion, f32 ramp) {

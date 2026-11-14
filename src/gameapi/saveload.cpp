@@ -10,6 +10,19 @@ extern "C" {
     extern i32 saveload_slotcode[6];
     void saveloadASSave(i32 slot, void *buffer, i32 size, u32 hash);
 
+    /* Android slotname: the file name of a save slot. */
+    char *slotname(i32 slot) {
+        sprintf(SaveSlotNamePc, "SaveGame%d.%s_SavedGame", slot, PcProductName);
+        return SaveSlotNamePc;
+    }
+
+    /* Android slotfolder: the folder holding every save slot. */
+    char *slotfolder(i32) {
+        PCOptionsBuildFolder(SaveFolderPathPc);
+        strcat(SaveFolderPathPc, "SavedGames");
+        return SaveFolderPathPc;
+    }
+
     char *fullslotname(i32 slot) {
 #ifndef SAGA_DEBUG
         PCOptionsBuildFolder(SaveFolderPathPc);

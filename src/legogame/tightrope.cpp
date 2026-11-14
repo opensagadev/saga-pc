@@ -186,6 +186,16 @@ extern "C" {
     }
 }
 
+/* The SDK's inline NuFabs (nufloat.h): a masked copy of the float bits. */
+extern "C" {
+    static f32 TightropeFabsPc(f32 f) {
+        f32 rv;
+
+        *(i32 *)&rv = *(i32 *)&f & 0x7fffffff;
+        return rv;
+    }
+}
+
 extern "C" TIGHTROPE_MOTION_PC *TightRope_InRange(GAMEOBJECT *object, WORLDINFO *world, NUVEC *position) {
     TIGHTROPE_MOTION_PC *rope = ((WORLD_TIGHTROPE_VIEW_PC *)world)->tightropes;
     f32 width = 3.0f * object->bounds_radius;
@@ -643,15 +653,10 @@ extern "C" void TightRope_MoveCode(GAMEOBJECT *object, i32 jump_pressed) {
             if (playing != NULL) {
                 f32 frame = AnimListFrame(object->character_model, object->field_7aa, 0);
 
-                union {
-                    f32 value;
-                    u32 bits;
-                } push, absolute;
-
                 if (frame >= 1.0f && *playing >= frame && object->pad->input_magnitude > 0.0f &&
-                    (push.value = PushingTowardsAngle(GamePad_InputAngle(object, object->pad),
-                                                      ((TIGHTROPE_MOTION_PC *)(object->grapple))->rotation),
-                     absolute.bits = push.bits & 0x7fffffff, absolute.value) > NuTrigTable[0x3000]) {
+                    TightropeFabsPc(PushingTowardsAngle(GamePad_InputAngle(object, object->pad),
+                                                        ((TIGHTROPE_MOTION_PC *)(object->grapple))->rotation)) >
+                        NuTrigTable[0x3000]) {
                     TightRope_MoveUpdate(object, 0);
                 } else {
                     object->context_timer -= FRAMETIME;

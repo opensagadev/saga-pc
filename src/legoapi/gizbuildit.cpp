@@ -225,6 +225,14 @@ typedef struct hub_buildit_sys_pc_s {
 
 extern "C" {
 
+    /* The SDK's inline NuFabs (nufloat.h): a masked copy of the float bits. */
+    static f32 GizbuilditFabsPc(f32 f) {
+        f32 rv;
+
+        *(i32 *)&rv = *(i32 *)&f & 0x7fffffff;
+        return rv;
+    }
+
     static f32 BuildItSafeRatioPc(f32 numerator, f32 denominator) {
         if (numerator != 0.0f && denominator != 0.0f) {
             f32 ratio = numerator / denominator;
@@ -274,7 +282,7 @@ extern "C" {
         f32 sine;
         NuVecNorm(&normal, axis);
         dot = NuVecDot(&normal, &v010);
-        *(i32 *)&vertical = *(i32 *)&dot & 0x7fffffff; /* NuFabs */
+        vertical = GizbuilditFabsPc(dot);
         sine = NU_SIN_LUT((f64)vertical * 16384.0 + 16384.0);
         product = (1.0f - sine) * vertical;
         factor = 1.0f - product;

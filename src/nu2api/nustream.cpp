@@ -1,5 +1,10 @@
 #include "saga.h"
+/* vorbisfile.h's static seek callback (the OV_CALLBACKS tables use it): each unit including the header carries
+ * its own copy; this one is named apart from the other units' copies. */
+// NOLINTNEXTLINE(readability-identifier-naming): vorbisfile.h names the static
+#define _ov_header_fseek_wrap fun_00699020
 #include "vorbis/vorbisfile.h"
+#undef _ov_header_fseek_wrap
 #include <stdio.h>
 
 struct PC_OGG_CACHE_RECORD_PC {
@@ -96,6 +101,42 @@ extern "C" i32 fun_00698b40(void) {
 
 extern "C" i32 fun_00698b50(void) {
     return 0;
+}
+
+extern "C" void fun_00697eb0(void);
+
+SoundVoiceManagerPC::~SoundVoiceManagerPC() {
+    i32 i;
+    fun_00697eb0();
+    for (i = 0; i < 64; i++) {
+        if (voices[i].voice != NULL) {
+            voices[i].voice->vtable->release(voices[i].voice);
+            voices[i].voice = NULL;
+        }
+    }
+    for (i = 0; i < PCSoundSampleLimitPc; i++) {
+        if (samples[i].buffer != NULL) {
+            samples[i].buffer->vtable->release(samples[i].buffer);
+            samples[i].buffer = NULL;
+        }
+    }
+    if (PCSoundCommitTarget != NULL) {
+        PCSoundCommitTarget->vtable->release(PCSoundCommitTarget);
+        PCSoundCommitTarget = NULL;
+    }
+    if (primary_buffer != NULL) {
+        primary_buffer->vtable->release(primary_buffer);
+        primary_buffer = NULL;
+    }
+    if (factory != NULL) {
+        factory->vtable->release(factory);
+        factory = NULL;
+    }
+}
+
+extern "C" void fun_00698b60(void) {
+    NuSound3StereoStreams[0]->~SoundQueue();
+    NuSound3StereoStreams[1]->~SoundQueue();
 }
 
 extern "C" f32 NuSound3VolumeTable[0x4000];

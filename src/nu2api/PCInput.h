@@ -17,10 +17,14 @@
 typedef struct NuKeyboardState_PC {
     u8 unknown_0000_to_4e10[0x4e10];
     u8 keyboard_polled;
-    u8 unknown_4e11_to_6314[0x6314 - 0x4e11];
+    u8 unknown_4e11_to_5d29[0x5d29 - 0x4e11];
+    u8 unknown_5d29;
+    u8 unknown_5d2a_to_6314[0x6314 - 0x5d2a];
     f32 mouse_delta[3];
     f32 mouse_smoothed[3];
-    u8 unknown_632c_to_68b0[0x68b0 - 0x632c];
+    f32 cursor_x;
+    f32 cursor_y;
+    u8 unknown_6334_to_68b0[0x68b0 - 0x6334];
     u8 *keyboard_state;
 } NuKeyboardState_PC;
 
@@ -167,7 +171,7 @@ extern "C" {
     i32 PcInput_GetCtrlInputString(i32 device, i32 button, char *destination);
     extern char *TextInputKeyNameTablePc[238];
     extern char **TextInputKeyNamesPc;
-    extern u8 TextInputKeyboardOverridePc[32];
+    extern u8 TextInputKeyboardOverridePc[24];
     extern i8 TextInputAxisLabelIndexPc[16];
     extern i8 TextInputButtonLabelIndexPc[11];
     extern TEXT_INPUT_LABELS_PC *TextInputAlternateLabelsPc;

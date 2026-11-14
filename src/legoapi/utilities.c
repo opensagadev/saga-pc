@@ -35,6 +35,14 @@ extern i32 (*MatrixReflection_CanOverrideFn)(void);
 
 static f32 UtilitiesFabsPc(f32 value);
 
+/* The SDK's inline NuFdiv: a quotient that is 0 when either operand is 0. */
+static f32 UtilitiesFdivPc(f32 a, f32 b) {
+    if (a == 0.0f || b == 0.0f) {
+        return 0.0f;
+    }
+    return a / b;
+}
+
 static void ReflectionCopyMatrixPc(NUMTX *result, NUMTX *source) {
     result->m00 = source->m00;
     result->m01 = source->m01;
@@ -302,11 +310,7 @@ void CalculateInterceptVector(NUVEC *origin, NUVEC *target, NUVEC *velocity, f32
         f32 time;
         NuVecSub(direction, &prediction, origin);
         distance = NuVecMag(direction);
-        if (distance == 0.0f || speed == 0.0f) {
-            time = 0.0f;
-        } else {
-            time = distance / speed;
-        }
+        time = UtilitiesFdivPc(distance, speed);
         NuVecAddScale(&prediction, target, velocity, time);
     }
     NuVecSub(direction, &prediction, origin);

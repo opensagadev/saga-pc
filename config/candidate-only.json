@@ -72,26 +72,6 @@
    "kind": "function"
   },
   {
-   "unit": "src/legogame/creature.c",
-   "symbol": "_MovePlayerFabs",
-   "kind": "function"
-  },
-  {
-   "unit": "src/legoapi/climbing.c",
-   "symbol": "_MovePlayerFabs",
-   "kind": "function"
-  },
-  {
-   "unit": "src/legogame/move.c",
-   "symbol": "_MovePlayerFabs",
-   "kind": "function"
-  },
-  {
-   "unit": "src/legoapi/grapples.cpp",
-   "symbol": "?GrappleFabsPc@@YAMM@Z",
-   "kind": "function"
-  },
-  {
    "unit": "src/nu2api/nu3d_includes.cpp",
    "symbol": "__bad_alloc_Message",
    "kind": "data"
@@ -332,33 +312,8 @@
    "kind": "function"
   },
   {
-   "unit": "src/legogame/ledge.cpp",
-   "symbol": "?LedgeFabsPc@@YAMM@Z",
-   "kind": "function"
-  },
-  {
-   "unit": "src/legogame/move.c",
-   "symbol": "_PushFabsPc",
-   "kind": "function"
-  },
-  {
-   "unit": "src/legoapi/pushblocks.cpp",
-   "symbol": "?GizPushFabsPc@@YAMM@Z",
-   "kind": "function"
-  },
-  {
-   "unit": "src/nu2api/numath_includes.c",
-   "symbol": "_NuFabs",
-   "kind": "function"
-  },
-  {
    "unit": "src/nu2api/nu3d_includes.cpp",
    "symbol": "?PostFilterBindProgramPc@@YAXPBUPOST_SHADER_PROGRAM_PC@@@Z",
-   "kind": "function"
-  },
-  {
-   "unit": "src/nu2api/nu3d_includes.cpp",
-   "symbol": "?PostVec4NormalizeDirection@@YAXPAUNUVEC4@@@Z",
    "kind": "function"
   },
   {

@@ -34,6 +34,13 @@ extern "C" {
     void PCDeviceSetGammaRampPc(const void *ramp);
 }
 extern "C" void NuPostEffectResizePc(void);
+extern "C" void fun_006d3120(void);
+extern "C" u32 dat_02974ccc;
+extern "C" u32 dat_02974cd0;
+extern "C" u32 dat_02974cd4;
+extern "C" u32 dat_02974cd8;
+extern "C" u32 dat_02974cec;
+extern "C" u32 dat_02974cf0;
 
 /* The D3DX matrix type with its sixteen-float constructor (only the parts used here). */
 struct D3DXMATRIX {
@@ -286,6 +293,39 @@ extern "C" {
         }
         NuQFntSetColour(system_qfont, colour);
         NuQFntPrintV(system_qfont, format, args);
+    }
+
+    void fun_006df670(f32 x, f32 y) {
+        f32 line_height;
+        f32 fps;
+        NuQFntPushPrintMode(2);
+        NuQFntPushCoordinateSystem(1);
+        NuQFntSet(system_qfont);
+        NuQFntSetPointSize(system_qfont, 1.0f, 1.0f);
+        line_height = NuQFntHeight(system_qfont) * 0.800000011920929;
+        if (nuapi.frame_time > 0.0f) {
+            fps = 1.0f / nuapi.frame_time;
+        } else {
+            fps = 0.0f;
+        }
+        fun_006df340(0x80008080, x, y, 0x10, "FPS %3.1f", fps);
+        y += line_height;
+        fun_006df340(0x80008080, x, y, 0x10, "Scene Gobj drawn %d of %d", dat_02974cd0, dat_02974ccc);
+        y += line_height;
+        fun_006df340(0x80008080, x, y, 0x10, "Opaque Geoms drawn %d", dat_02974cec);
+        y += line_height;
+        fun_006df340(0x80008080, x, y, 0x10, "Trans Geoms drawn %d", dat_02974cf0);
+        y += line_height;
+        fun_006df340(0x80008080, x, y, 0x10, "Total 3d geoms drawn %d", dat_02974cd8);
+        y += line_height;
+        fun_006df340(0x80008080, x, y, 0x10, "Total DIP calls %d", PCDeviceIndexedPrimitiveCallCountPc);
+        y += line_height;
+        fun_006df340(0x80008080, x, y, 0x10, "Total DP calls %d", PCDevicePrimitiveCallCountPc);
+        y += line_height;
+        fun_006df340(0x80008080, x, y, 0x10, "Blank 3d Gobjs drawn %d", dat_02974cd4);
+        NuQFntPopPrintMode();
+        NuQFntPopCoordinateSystem();
+        fun_006d3120();
     }
 }
 

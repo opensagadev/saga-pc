@@ -12,6 +12,14 @@ u8 MENU_VIDEO_OPTIONS_PC::ChangedPc() {
     return (hires_enabled == 1) != PcWindowOptions.usehirespending;
 }
 
+void MENU_VIDEO_OPTIONS_PC::fun_005091f0() {
+    aspect_mode = PcWindowOptions.aspect_mode;
+    shadows_enabled = PcWindowOptions.shadowsenabled != 0;
+    bloom_enabled = PcWindowOptions.bloomenabled != 0;
+    speed_blur_enabled = PcWindowOptions.speedblurenabled != 0;
+    hires_enabled = PcWindowOptions.usehirespending != 0;
+}
+
 void MENU_VIDEO_OPTIONS_PC::ApplyPc() {
     PcWindowOptions.SetAspectModePc(aspect_mode);
     PcWindowOptions.Save();
@@ -49,6 +57,10 @@ extern "C" void MenuEnterVideoPc(MENU *) {
     MenuVideoOptionsPc.bloom_enabled = PcWindowOptions.bloomenabled != 0;
     MenuVideoOptionsPc.speed_blur_enabled = PcWindowOptions.speedblurenabled != 0;
     MenuVideoOptionsPc.hires_enabled = PcWindowOptions.usehirespending != 0;
+}
+
+extern "C" bool fun_00509380(void) {
+    return true;
 }
 
 extern "C" void MenuEnterEffectsPc(MENU *) {
@@ -511,6 +523,11 @@ extern "C" void MenuExitVideoConfirmPc(MENU *) {
 
 extern "C" void MenuDrawNoticePc(char *text, u32 red, u32 green, u32 blue) {
     MenuSmartTextEx(text, 0.0f, 0.15f, 1.0f, MenuTextScalePc, MenuTextScalePc, MenuTextScalePc, 0, red, green, blue,
+                    1.5f, 4, NULL, 0, MenuA);
+}
+
+extern "C" void fun_0050f6e0(char *text, u32 red, u32 green, u32 blue) {
+    MenuSmartTextEx(text, 0.0f, -0.3f, 1.0f, MenuTextScalePc, MenuTextScalePc, MenuTextScalePc, 0, red, green, blue,
                     1.5f, 4, NULL, 0, MenuA);
 }
 

@@ -13,7 +13,7 @@ typedef struct movement_model_pc_s {
 
 extern i32 (*CanMagnetClimbFn)(GAMEOBJECT *);
 
-static __inline f32 MovePlayerFabs(f32 value) {
+static __inline f32 ClimbingFabsPc(f32 value) {
     u32 bits = *(u32 *)&value & 0x7fffffff;
     return *(f32 *)&bits;
 }
@@ -34,7 +34,7 @@ static i32 LedgeTerrain_Attach(GAMEOBJECT *object, u16 facing, NUVEC *position, 
         return 0;
     }
     if (object->contact_position.y <= object->collision_position.y - (f64)0.05f ||
-        MovePlayerFabs(object->contact_normal.y) > NuTrigTable[0x3000]) {
+        ClimbingFabsPc(object->contact_normal.y) > NuTrigTable[0x3000]) {
         return 0;
     }
     *wall_angle = NuAtan2D(object->contact_normal.x, object->contact_normal.z);

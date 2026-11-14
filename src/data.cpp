@@ -659,8 +659,6 @@ extern "C" {
 }
 
 extern "C" {
-    PC_WINDOW_OPTIONS_PC PcWindowOptions = {-1, {0}, 0,   0, 0, 0, 0,   0, 0, 0, 0, 0, 0, 0, 0, {0}, 0,
-                                            0,  0,   {0}, 0, 0, 0, {0}, 0, 0, 0, 1, 0, 0, 0, 1, {0}, 0};
     i32 PCOptionsFileVersion = 2;
     extern const char PCGraphicsGpuName00777bac[9] = "RIVA TNT";
     extern const char PCGraphicsGpuName00777b98[19] = "RIVA TNT2/TNT2 Pro";
@@ -7831,6 +7829,24 @@ extern "C" {
 }
 
 extern "C" {
+#pragma bss_seg(".bss$dat_02974ccc")
+    u32 dat_02974ccc = 0;
+#pragma bss_seg()
+#pragma bss_seg(".bss$dat_02974cd0")
+    u32 dat_02974cd0 = 0;
+#pragma bss_seg()
+#pragma bss_seg(".bss$dat_02974cd4")
+    u32 dat_02974cd4 = 0;
+#pragma bss_seg()
+#pragma bss_seg(".bss$dat_02974cd8")
+    u32 dat_02974cd8 = 0;
+#pragma bss_seg()
+#pragma bss_seg(".bss$dat_02974cec")
+    u32 dat_02974cec = 0;
+#pragma bss_seg()
+#pragma bss_seg(".bss$dat_02974cf0")
+    u32 dat_02974cf0 = 0;
+#pragma bss_seg()
 #pragma bss_seg(".bss$PCDevicePrimitiveUPCallCountPc")
     u32 PCDevicePrimitiveUPCallCountPc = 0;
 #pragma bss_seg()
@@ -7842,7 +7858,7 @@ extern "C" {
 struct SoundQueue;
 struct PC_SOUND_COMMIT_PC;
 #pragma bss_seg(".bss$music_man")
-NuMusic music_man = {0};
+NuMusic music_man;
 #pragma bss_seg()
 #pragma bss_seg(".bss$the_music_player")
 NuMusic *the_music_player = 0;
@@ -8136,9 +8152,6 @@ extern "C" {
 #pragma const_seg()
 #pragma bss_seg(".bss$ANI3_EVAL_SCALE_ARRAY")
     NUVEC ANI3_EVAL_SCALE_ARRAY[256] = {0};
-#pragma bss_seg()
-#pragma bss_seg(".bss$SoundVoiceManager")
-    SoundVoiceManagerPC SoundVoiceManager = {0};
 #pragma bss_seg()
 #pragma bss_seg(".bss$Bridges")
     NUBRIDGE_PC Bridges[8] = {0};
@@ -8548,6 +8561,11 @@ extern "C" {
 #pragma const_seg(".rdata$Text_TimeS")
     extern const char Text_TimeS[3] = "%i";
 #pragma const_seg()
+    i32 dat_00806b84 = 1;
+    i32 dat_00806b88 = 1;
+    i32 dat_00806b8c = 1;
+    i32 dat_00806b90 = 1;
+    i32 dat_00806b94 = 1;
     f32 nuspecial_const_alpha = 1.0f;
     NUVEC nuspecial_const_tint = {1.0f, 1.0f, 1.0f};
     NUVEC cam_axes = {1.0f, 1.0f, 1.0f};
@@ -9664,7 +9682,6 @@ extern "C" {
     EDANIM_PARAM_PC AnimParams[64] = {0};
 #pragma bss_seg()
     f32 NuVideoFrameRate = 0;
-    OcclusionManager g_OcclusionManager = {0, 1, {0}, {{0}}, 0, 0, 0.3f, -1.0f, 0, 0, {0}};
 
     void MenuEnterNoMemoryCard(MENU *);
     void MenuDrawNoData(MENU *);
@@ -11603,7 +11620,7 @@ extern "C" {
     u8 PCDeviceStateCacheEnabled = 1;
 #pragma data_seg()
 #pragma bss_seg(".bss$PCDeviceStateCachePc")
-    PC_DEVICE_STATE_CACHE_PC PCDeviceStateCachePc = {0};
+    PC_DEVICE_STATE_CACHE_PC PCDeviceStateCachePc;
 #pragma bss_seg()
 #pragma bss_seg(".bss$PCDeviceSamplerInvalidation")
     i32 PCDeviceSamplerInvalidation[16][2] = {0};
@@ -12393,7 +12410,7 @@ extern "C" {
 
 extern "C" {
 #pragma bss_seg(".bss$PCNativeWarningDebugState")
-    PC_NATIVE_DEBUG_STATE_PC PCNativeWarningDebugState = {0};
+    PC_NATIVE_DEBUG_STATE_PC PCNativeWarningDebugState;
 #pragma bss_seg()
 #pragma bss_seg(".bss$PCNativeDebugFormatBuffer")
     char PCNativeDebugFormatBuffer[2048] = {0};
@@ -14219,6 +14236,10 @@ extern "C" {
     u8 CutSceneBoundingBoxTrackRoot = 0;
 #pragma bss_seg()
 
+#pragma bss_seg(".bss$dat_009739d4")
+    i32 dat_009739d4 = 0;
+#pragma bss_seg()
+
 #pragma bss_seg(".bss$PCShadowPacketSequence")
     i32 PCShadowPacketSequence = 0;
 #pragma bss_seg()
@@ -15016,8 +15037,9 @@ extern "C" {
 #pragma data_seg()
 
 #pragma data_seg(".data$TextInputKeyboardOverridePc")
-    u8 TextInputKeyboardOverridePc[32] = {0, 0, 0, 0, 0, 0, 0, 0, 200, 205, 208, 203, 60, 1, 28, 59,
-                                          0, 0, 0, 0, 0, 0, 0, 0, 20,  0,   0,   0,   0,  0, 0,  0};
+    u8 TextInputKeyboardOverridePc[24] = {0,  0, 0,  0,  0, 0, 0, 0, 200, 205, 208, 203,
+                                          60, 1, 28, 59, 0, 0, 0, 0, 0,   0,   0,   0};
+    i32 dat_00824fb8 = 20;
 #pragma data_seg()
 
 #pragma data_seg(".data$TextInputAxisLabelIndexPc")
@@ -17224,6 +17246,7 @@ extern "C" {
 
 struct PC_GEOMETRY_PUBLISH_RECORD_PC;
 extern "C" {
+    i32 dat_00973868 = 0;
     i32 PcGeometryRegistryCountPc = 0;
     struct PC_GEOMETRY_PUBLISH_RECORD_PC *PcGeometryRegistryPc = NULL;
     i32 PcGeometryMatrixCapacityPc = 0;

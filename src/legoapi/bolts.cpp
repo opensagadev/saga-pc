@@ -18,6 +18,14 @@ STATIC_ASSERT(offsetof(GAMEOBJECT, reflection_enabled) == 0x107b);
 STATIC_ASSERT(offsetof(GAMEOBJECT, facing_direction) == 0xf30);
 STATIC_ASSERT(offsetof(GAMEOBJECT, portal_flags) == 0xeec);
 
+/* The SDK's inline NuFdiv: a quotient that is 0 when either operand is 0. */
+static f32 BoltsFdiv(f32 a, f32 b) {
+    if (a == 0.0f || b == 0.0f) {
+        return 0.0f;
+    }
+    return a / b;
+}
+
 extern "C" {
     STATIC_ASSERT(offsetof(BOLT_PC, position) == 0x88);
     STATIC_ASSERT(offsetof(BOLT_PC, hit_debris) == 0xfc);
@@ -2970,11 +2978,7 @@ extern "C" {
                 BOLT_PC *bolt = &Bolt[bolts[index]];
                 f32 distance = bolt->speed * bolt->lifetime;
                 f32 factor;
-                if (target_distance != 0.0f && distance != 0.0f) {
-                    factor = target_distance / distance;
-                } else {
-                    factor = 0.0f;
-                }
+                factor = BoltsFdiv(target_distance, distance);
                 f32 lifetime = factor * type->field_14;
                 if (bolt->lifetime > lifetime) {
                     bolt->lifetime = lifetime;

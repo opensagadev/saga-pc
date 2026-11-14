@@ -538,7 +538,7 @@ void PartExtra_PurpleCoin(PART_PC *part) {
     }
 }
 
-static f32 NuFdiv(f32 a, f32 b) {
+static f32 GizmopickupFdivPc(f32 a, f32 b) {
     if (a == 0.0f || b == 0.0f) {
         return 0.0f;
     }
@@ -553,7 +553,7 @@ static void PartMove_VehiclePickup(PART_PC *part, f32 timestep) {
     if (part->initial_time == 0.0f) {
         gain = 0.0f;
     } else {
-        gain = 1.0f - NuFdiv(part->scale_time, part->initial_time);
+        gain = 1.0f - GizmopickupFdivPc(part->scale_time, part->initial_time);
     }
     if (gain <= 0.0f) {
         part->active |= 2;

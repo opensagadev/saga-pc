@@ -27,6 +27,24 @@
 #include <stdlib.h>
 #include <string.h>
 
+/* The SDK's inline NuFabs (nufloat.h): a masked copy of the float bits. */
+static f32 Nu3dIncludesFabs(f32 f) {
+    f32 rv;
+
+    *(i32 *)&rv = *(i32 *)&f & 0x7fffffff;
+    return rv;
+}
+
+/* Unit-length copy of a direction, as a point (w = 1). */
+static void Nu3dIncludesVuVecNormalise(VuVec &destination, VuVec &source) {
+    NuVecNorm(&destination.xyz, &source.xyz);
+    destination.w = 1.0f;
+}
+
+static f32 Nu3dIncludesVuVecDot(const VuVec &a, const VuVec &b) {
+    return a.x * b.x + a.y * b.y + a.z * b.z;
+}
+
 extern "C" {
 
     typedef struct NuAnimDataPrefixView {
@@ -4323,7 +4341,15 @@ extern "C" {
     typedef struct PC_MATERIAL_CREATE_VIEW PC_MATERIAL_CREATE_VIEW;
 
     struct PC_MATERIAL_CREATE_VIEW {
-        u16 flags;                                  // 0x000
+        union {        // 0x000
+            u16 flags; // 0x000
+
+            struct {             // 0x000
+                i16 : 2;         // 0x000:0
+                i16 flag_04 : 1; // 0x000:2
+            };
+        };
+
         u8 unknown_002[0x26];                       // 0x002
         u32 retained_28;                            // 0x028
         u32 retained_2c;                            // 0x02c
@@ -5108,7 +5134,7 @@ bool OccluderSet::IsOccludedSphere(NUVEC const *center, f32 radius) {
             delta.x = projected.x - first.x;
             delta.y = projected.y - first.y;
             delta.z = 0.0f;
-            f32 distance = normal.x * delta.x + normal.y * delta.y + normal.z * delta.z;
+            f32 distance = Nu3dIncludesVuVecDot(*(VuVec *)&normal, *(VuVec *)&delta);
             if (distance - screen_radius < 0.0) {
                 break;
             }
@@ -5512,6 +5538,14 @@ extern "C" {
 }
 
 #undef OCCLUDER_PRIM_POSITION
+
+OcclusionManager::OcclusionManager()
+    : initialized(false), enabled(true), building_set(NULL), current_set(NULL), unknown_158(0.3f), unknown_15c(-1.0f) {
+}
+
+#pragma data_seg(".data$g_OcclusionManager")
+OcclusionManager g_OcclusionManager;
+#pragma data_seg()
 
 void OcclusionManager::EndFrame() {
 }
@@ -7254,6 +7288,28 @@ extern "C" {
         return ((NUMTL *)(mtl));
     }
 
+    void fun_005de1c0(NUMTL *material);
+
+    static NUMTL *NuMtlAllocateBuffPC(VARIPTR *buffer, VARIPTR buffer_end, i32 is_3d) {
+        PC_MATERIAL_CREATE_VIEW *mtl = (PC_MATERIAL_CREATE_VIEW *)((buffer->addr + 15) & ~15u);
+        buffer->addr = ((buffer->addr + 15) & ~15u) + sizeof(PC_MATERIAL_CREATE_VIEW);
+        memset(mtl, 0, sizeof(*mtl));
+        mtl->diffuse.x = 1.0f;
+        mtl->diffuse.y = 1.0f;
+        mtl->diffuse.z = 1.0f;
+        mtl->opacity = 1.0f;
+        mtl->attributes = (mtl->attributes & 0xbf9e2fd0) | 0x3f962010;
+        mtl->attributes_high |= 0x10;
+        mtl->flag_04 = 0;
+        if (is_3d != 0) {
+            fun_005de1c0((NUMTL *)mtl);
+        } else {
+            mtl->attributes_high |= 0x800000;
+        }
+        NuMtlCreatePS((NUMTL *)mtl, is_3d);
+        return (NUMTL *)mtl;
+    }
+
     NUMTL *NuMtlCreate(i32 count) {
         return NuMtlCreatePoolPC(count, numtl_renderplane, 0);
     }
@@ -7270,10 +7326,36 @@ extern "C" {
         return NuMtlCreatePoolPC(count, plane, 1);
     }
 
+    NUMTL *NuMtlCreateBuff(i32 count, VARIPTR *buffer, VARIPTR buffer_end) {
+        return NuMtlAllocateBuffPC(buffer, buffer_end, 0);
+    }
+
+    NUMTL *NuMtlCreateBuff3D(i32 count, VARIPTR *buffer, VARIPTR buffer_end) {
+        return NuMtlAllocateBuffPC(buffer, buffer_end, 1);
+    }
+
     extern i32 mtl_animation_mask;
 
     void NuMtlAnimateSetSpeedScale(f32 scale) {
         FrameMaterialAnimationSpeedPc = scale;
+    }
+
+    i32 NuMtlSpecialSetUV(nuhspecial_s *special, f32 u, f32 v) {
+        if (special->scene != NULL) {
+            NUDISPLAY_LIST_PC *scene = special->scene->display_list;
+            PC_DISPLAY_CLIP_OBJECT_PC *object = (PC_DISPLAY_CLIP_OBJECT_PC *)special->display_special->clip_objects;
+            for (i32 i = 0; i < object->material_count; ++i) {
+                NUMTL *material = scene->display_materials[object->material_ids[i]];
+                if (material == NULL) {
+                    break;
+                }
+                do {
+                    NuMtlSetUVOffsetPS(material, 0, u, v);
+                    material = material->next;
+                } while (material != NULL);
+            }
+        }
+        return 0;
     }
 
     i32 NuMtlSetCurrentRenderPlane(i32 render_plane) {
@@ -11321,11 +11403,11 @@ f32 NuMotionFilterCentrePc = 0.5f;
 
 void NuMotionFilterGen::render() {
     PC_FRAMEBUFFER_PC *output =
-        (PC_FRAMEBUFFER_PC *)PostResourcePortsPc[0].manager->entries[PostResourcePortsPc[0].index].data;
+        (PC_FRAMEBUFFER_PC *)PostPortOutFramebufferPc.manager->entries[PostPortOutFramebufferPc.index].data;
     PC_POST_BUFFER_PROXY_PC *color =
-        (PC_POST_BUFFER_PROXY_PC *)PostResourcePortsPc[1].manager->entries[PostResourcePortsPc[1].index].data;
+        (PC_POST_BUFFER_PROXY_PC *)PostPortColorBufferPc.manager->entries[PostPortColorBufferPc.index].data;
     PC_POST_BUFFER_PROXY_PC *velocity =
-        (PC_POST_BUFFER_PROXY_PC *)PostResourcePortsPc[3].manager->entries[PostResourcePortsPc[3].index].data;
+        (PC_POST_BUFFER_PROXY_PC *)PostPortVelocityBufferPc.manager->entries[PostPortVelocityBufferPc.index].data;
     if (!color->resolved) {
         PCGraphicsFramebufferBarrierPc(color->kind, color->enabled);
         color->resolved = true;
@@ -11369,7 +11451,7 @@ void NuMotionFilterGen::render() {
     color->kind = 4;
     color->enabled = true;
     color->resolved = false;
-    PostResourcePortsPc[1].manager->entries[PostResourcePortsPc[1].index].data = color;
+    PostPortColorBufferPc.manager->entries[PostPortColorBufferPc.index].data = color;
 }
 
 i32 PCFrustumClipSet::fun_005e66b0(NUSPECIALHANDLE *special, NUMTX *matrix) {
@@ -11467,9 +11549,9 @@ static void PostFilterBindProgramPc(const POST_SHADER_PROGRAM_PC *program) {
 
 void NuMotionAccumFilterGen::render() {
     PC_FRAMEBUFFER_PC *output =
-        (PC_FRAMEBUFFER_PC *)PostResourcePortsPc[0].manager->entries[PostResourcePortsPc[0].index].data;
+        (PC_FRAMEBUFFER_PC *)PostPortOutFramebufferPc.manager->entries[PostPortOutFramebufferPc.index].data;
     PC_POST_BUFFER_PROXY_PC *color =
-        (PC_POST_BUFFER_PROXY_PC *)PostResourcePortsPc[1].manager->entries[PostResourcePortsPc[1].index].data;
+        (PC_POST_BUFFER_PROXY_PC *)PostPortColorBufferPc.manager->entries[PostPortColorBufferPc.index].data;
     if (!color->resolved) {
         PCGraphicsFramebufferBarrierPc(color->kind, color->enabled);
         color->resolved = true;
@@ -11541,16 +11623,16 @@ void NuMotionAccumFilterGen::render() {
     color->kind = 4;
     color->enabled = true;
     color->resolved = false;
-    PostResourcePortsPc[1].manager->entries[PostResourcePortsPc[1].index].data = color;
+    PostPortColorBufferPc.manager->entries[PostPortColorBufferPc.index].data = color;
 }
 
 void NuSpeedBlurFilterGen::render() {
     PC_FRAMEBUFFER_PC *output =
-        (PC_FRAMEBUFFER_PC *)PostResourcePortsPc[0].manager->entries[PostResourcePortsPc[0].index].data;
+        (PC_FRAMEBUFFER_PC *)PostPortOutFramebufferPc.manager->entries[PostPortOutFramebufferPc.index].data;
     PC_POST_BUFFER_PROXY_PC *color =
-        (PC_POST_BUFFER_PROXY_PC *)PostResourcePortsPc[1].manager->entries[PostResourcePortsPc[1].index].data;
+        (PC_POST_BUFFER_PROXY_PC *)PostPortColorBufferPc.manager->entries[PostPortColorBufferPc.index].data;
     PC_POST_BUFFER_PROXY_PC *depth =
-        (PC_POST_BUFFER_PROXY_PC *)PostResourcePortsPc[5].manager->entries[PostResourcePortsPc[5].index].data;
+        (PC_POST_BUFFER_PROXY_PC *)PostPortDepthBufferPc.manager->entries[PostPortDepthBufferPc.index].data;
     if (!color->resolved) {
         PCGraphicsFramebufferBarrierPc(color->kind, color->enabled);
         color->resolved = true;
@@ -11591,7 +11673,7 @@ void NuSpeedBlurFilterGen::render() {
     color->kind = 0;
     color->enabled = true;
     color->resolved = false;
-    PostResourcePortsPc[1].manager->entries[PostResourcePortsPc[1].index].data = color;
+    PostPortColorBufferPc.manager->entries[PostPortColorBufferPc.index].data = color;
 }
 
 extern "C" {
@@ -11836,22 +11918,16 @@ void NuSpeedBlurFilterGen::fun_005c3140(const NU_POST_SPEED_PARAMETERS_PC *param
     this->parameters = parameters;
 }
 
-/* Normalizes the xyz part and makes the result a homogeneous direction (w = 1). */
-static void PostVec4NormalizeDirection(NUVEC4 *vector) {
-    NuVecNorm((NUVEC *)vector, (NUVEC *)vector);
-    vector->w = 1.0f;
-}
-
 void NuMainFilterGen::render() {
     D3DPERF_BeginEvent((D3DCOLOR)-1, L"bloom/dof");
     PC_FRAMEBUFFER_PC *output =
-        (PC_FRAMEBUFFER_PC *)PostResourcePortsPc[0].manager->entries[PostResourcePortsPc[0].index].data;
+        (PC_FRAMEBUFFER_PC *)PostPortOutFramebufferPc.manager->entries[PostPortOutFramebufferPc.index].data;
     PC_POST_BUFFER_PROXY_PC *color =
-        (PC_POST_BUFFER_PROXY_PC *)PostResourcePortsPc[1].manager->entries[PostResourcePortsPc[1].index].data;
+        (PC_POST_BUFFER_PROXY_PC *)PostPortColorBufferPc.manager->entries[PostPortColorBufferPc.index].data;
     PC_POST_BUFFER_PROXY_PC *normal =
-        (PC_POST_BUFFER_PROXY_PC *)PostResourcePortsPc[2].manager->entries[PostResourcePortsPc[2].index].data;
+        (PC_POST_BUFFER_PROXY_PC *)PostPortNormalBufferPc.manager->entries[PostPortNormalBufferPc.index].data;
     PC_POST_BUFFER_PROXY_PC *depth =
-        (PC_POST_BUFFER_PROXY_PC *)PostResourcePortsPc[5].manager->entries[PostResourcePortsPc[5].index].data;
+        (PC_POST_BUFFER_PROXY_PC *)PostPortDepthBufferPc.manager->entries[PostPortDepthBufferPc.index].data;
     if (!color->resolved) {
         PCGraphicsFramebufferBarrierPc(color->kind, color->enabled);
         color->resolved = true;
@@ -11943,7 +12019,7 @@ void NuMainFilterGen::render() {
             f32 direction_y = source->y;
             f32 direction_z = source->z;
             __declspec(align(16)) NUVEC4 direction = {source->x, direction_y, direction_z, 1.0f};
-            PostVec4NormalizeDirection(&direction);
+            Nu3dIncludesVuVecNormalise(*(VuVec *)&direction, *(VuVec *)&direction);
             direction.w = bloom->direction_bias;
             PCDeviceSetVertexShaderConstantsF(0x8a, &direction.x, 1);
         }
@@ -11979,13 +12055,13 @@ void NuMainFilterGen::render() {
     color->kind = 0;
     color->enabled = true;
     color->resolved = false;
-    PostResourcePortsPc[1].manager->entries[PostResourcePortsPc[1].index].data = color;
+    PostPortColorBufferPc.manager->entries[PostPortColorBufferPc.index].data = color;
     if (depth_destination != NULL) {
         depth->texture = depth_destination;
         depth->kind = 4;
         depth->enabled = true;
         depth->resolved = false;
-        PostResourcePortsPc[5].manager->entries[PostResourcePortsPc[5].index].data = depth;
+        PostPortDepthBufferPc.manager->entries[PostPortDepthBufferPc.index].data = depth;
     }
     D3DPERF_EndEvent();
 }
@@ -11997,23 +12073,23 @@ extern "C" {
 /* Drops this module's references to the shared post ports and frees the auxiliary and work targets. */
 extern "C" void NuPostEffectReleasePortsPc(void) {
     {
-        PC_POST_DATA_PORT_ENTRY *entry = &PostResourcePortsPc[0].manager->entries[PostResourcePortsPc[0].index];
+        PC_POST_DATA_PORT_ENTRY *entry = &PostPortOutFramebufferPc.manager->entries[PostPortOutFramebufferPc.index];
         entry->references--;
     }
     {
-        PC_POST_DATA_PORT_ENTRY *entry = &PostResourcePortsPc[1].manager->entries[PostResourcePortsPc[1].index];
+        PC_POST_DATA_PORT_ENTRY *entry = &PostPortColorBufferPc.manager->entries[PostPortColorBufferPc.index];
         entry->references--;
     }
     {
-        PC_POST_DATA_PORT_ENTRY *entry = &PostResourcePortsPc[2].manager->entries[PostResourcePortsPc[2].index];
+        PC_POST_DATA_PORT_ENTRY *entry = &PostPortNormalBufferPc.manager->entries[PostPortNormalBufferPc.index];
         entry->references--;
     }
     {
-        PC_POST_DATA_PORT_ENTRY *entry = &PostResourcePortsPc[4].manager->entries[PostResourcePortsPc[4].index];
+        PC_POST_DATA_PORT_ENTRY *entry = &PostPortDepthRTBufferPc.manager->entries[PostPortDepthRTBufferPc.index];
         entry->references--;
     }
     {
-        PC_POST_DATA_PORT_ENTRY *entry = &PostResourcePortsPc[5].manager->entries[PostResourcePortsPc[5].index];
+        PC_POST_DATA_PORT_ENTRY *entry = &PostPortDepthBufferPc.manager->entries[PostPortDepthBufferPc.index];
         entry->references--;
     }
     if (PCGraphicsPostEffectAuxTexturePc != NULL) {
@@ -12768,14 +12844,7 @@ extern "C" {
         f32 unknown_c;
         f32 unknown_d;
 
-        union {
-            f32 value;
-            u32 bits;
-        } magnitude, absolute;
-
-        magnitude.value = sin;
-        absolute.bits = magnitude.bits & 0x7fffffff;
-        abs = absolute.value;
+        abs = Nu3dIncludesFabs(sin);
         sqrt = NuFsqrt(1.0f - sin * sin);
 
         unknown_a = MIN(sqrt, abs);
@@ -12812,7 +12881,6 @@ extern "C" {
 /* posteffect_ports_pc */
 extern "C" void PCByteCopy(void *, const void *, u32);
 extern "C" PC_POST_DATA_PORT_MANAGER PostResourceManagerPc;
-extern "C" PC_POST_DATA_PORT PostResourcePortsPc[6];
 extern "C" PC_FRAMEBUFFER_PC *PostBlurFramebufferPc;
 extern "C" PC_FRAMEBUFFER_PC *PostCopyFramebufferPc;
 
@@ -12871,10 +12939,13 @@ void OcclusionManager::SetEnabled(bool value) {
     enabled = value;
 }
 
-extern "C" void fun_005c52f0(void) {
+OcclusionManager::~OcclusionManager() {
 }
 
-extern "C" void fun_005c5310(void) {
+OccluderSet::OccluderSet() : occluders(NULL), indices(NULL), capacity(0), count(0) {
+}
+
+OccluderSet::~OccluderSet() {
 }
 
 void OccluderSet::Clear() {
@@ -12883,52 +12954,62 @@ void OccluderSet::Clear() {
 }
 
 extern "C" void PostFilterInitSharedResourcesPc(void) {
-    if (PostResourcePortsPc[0].index >= 0) {
-        PC_POST_DATA_PORT_ENTRY *entry = &PostResourcePortsPc[0].manager->entries[PostResourcePortsPc[0].index];
+    if (PostPortOutFramebufferPc.index >= 0) {
+        PC_POST_DATA_PORT_ENTRY *entry = &PostPortOutFramebufferPc.manager->entries[PostPortOutFramebufferPc.index];
         --entry->references;
     }
-    PostResourcePortsPc[0].manager = &PostResourceManagerPc;
-    PostResourcePortsPc[0].index = PostResourceManagerPc.Register("postEffect.outFramebuffer", NULL);
-    if (PostResourcePortsPc[1].index >= 0) {
-        PC_POST_DATA_PORT_ENTRY *entry = &PostResourcePortsPc[1].manager->entries[PostResourcePortsPc[1].index];
+    PostPortOutFramebufferPc.manager = &PostResourceManagerPc;
+    PostPortOutFramebufferPc.index = PostResourceManagerPc.Register("postEffect.outFramebuffer", NULL);
+    if (PostPortColorBufferPc.index >= 0) {
+        PC_POST_DATA_PORT_ENTRY *entry = &PostPortColorBufferPc.manager->entries[PostPortColorBufferPc.index];
         --entry->references;
     }
-    PostResourcePortsPc[1].manager = &PostResourceManagerPc;
-    PostResourcePortsPc[1].index = PostResourceManagerPc.Register("postEffect.colorBuffer", NULL);
-    if (PostResourcePortsPc[2].index >= 0) {
-        PC_POST_DATA_PORT_ENTRY *entry = &PostResourcePortsPc[2].manager->entries[PostResourcePortsPc[2].index];
+    PostPortColorBufferPc.manager = &PostResourceManagerPc;
+    PostPortColorBufferPc.index = PostResourceManagerPc.Register("postEffect.colorBuffer", NULL);
+    if (PostPortNormalBufferPc.index >= 0) {
+        PC_POST_DATA_PORT_ENTRY *entry = &PostPortNormalBufferPc.manager->entries[PostPortNormalBufferPc.index];
         --entry->references;
     }
-    PostResourcePortsPc[2].manager = &PostResourceManagerPc;
-    PostResourcePortsPc[2].index = PostResourceManagerPc.Register("postEffect.normalBuffer", NULL);
-    if (PostResourcePortsPc[3].index >= 0) {
-        PC_POST_DATA_PORT_ENTRY *entry = &PostResourcePortsPc[3].manager->entries[PostResourcePortsPc[3].index];
+    PostPortNormalBufferPc.manager = &PostResourceManagerPc;
+    PostPortNormalBufferPc.index = PostResourceManagerPc.Register("postEffect.normalBuffer", NULL);
+    if (PostPortVelocityBufferPc.index >= 0) {
+        PC_POST_DATA_PORT_ENTRY *entry = &PostPortVelocityBufferPc.manager->entries[PostPortVelocityBufferPc.index];
         --entry->references;
     }
-    PostResourcePortsPc[3].manager = &PostResourceManagerPc;
-    PostResourcePortsPc[3].index = PostResourceManagerPc.Register("postEffect.velocityBuffer", NULL);
-    if (PostResourcePortsPc[4].index >= 0) {
-        PC_POST_DATA_PORT_ENTRY *entry = &PostResourcePortsPc[4].manager->entries[PostResourcePortsPc[4].index];
+    PostPortVelocityBufferPc.manager = &PostResourceManagerPc;
+    PostPortVelocityBufferPc.index = PostResourceManagerPc.Register("postEffect.velocityBuffer", NULL);
+    if (PostPortDepthRTBufferPc.index >= 0) {
+        PC_POST_DATA_PORT_ENTRY *entry = &PostPortDepthRTBufferPc.manager->entries[PostPortDepthRTBufferPc.index];
         --entry->references;
     }
-    PostResourcePortsPc[4].manager = &PostResourceManagerPc;
-    PostResourcePortsPc[4].index = PostResourceManagerPc.Register("postEffect.depthRTBuffer", NULL);
-    if (PostResourcePortsPc[5].index >= 0) {
-        PC_POST_DATA_PORT_ENTRY *entry = &PostResourcePortsPc[5].manager->entries[PostResourcePortsPc[5].index];
+    PostPortDepthRTBufferPc.manager = &PostResourceManagerPc;
+    PostPortDepthRTBufferPc.index = PostResourceManagerPc.Register("postEffect.depthRTBuffer", NULL);
+    if (PostPortDepthBufferPc.index >= 0) {
+        PC_POST_DATA_PORT_ENTRY *entry = &PostPortDepthBufferPc.manager->entries[PostPortDepthBufferPc.index];
         --entry->references;
     }
-    PostResourcePortsPc[5].manager = &PostResourceManagerPc;
-    PostResourcePortsPc[5].index = PostResourceManagerPc.Register("postEffect.depthBuffer", NULL);
+    PostPortDepthBufferPc.manager = &PostResourceManagerPc;
+    PostPortDepthBufferPc.index = PostResourceManagerPc.Register("postEffect.depthBuffer", NULL);
     PostBlurFramebufferPc = PCGraphicsCreateFramebuffer();
     PostCopyFramebufferPc = PCGraphicsCreateFramebuffer();
 }
 
 extern "C" {
-#pragma data_seg(".data$PostResourcePortsPc")
-    PC_POST_DATA_PORT PostResourcePortsPc[6] = {{-1, NULL}, {-1, NULL}, {-1, NULL}, {-1, NULL}, {-1, NULL}, {-1, NULL}};
+#pragma data_seg(".data$PostPortOutFramebufferPc")
+    PC_POST_DATA_PORT PostPortOutFramebufferPc = {-1, NULL};
+#pragma data_seg(".data$PostPortColorBufferPc")
+    PC_POST_DATA_PORT PostPortColorBufferPc = {-1, NULL};
+#pragma data_seg(".data$PostPortNormalBufferPc")
+    PC_POST_DATA_PORT PostPortNormalBufferPc = {-1, NULL};
+#pragma data_seg(".data$PostPortVelocityBufferPc")
+    PC_POST_DATA_PORT PostPortVelocityBufferPc = {-1, NULL};
+#pragma data_seg(".data$PostPortDepthRTBufferPc")
+    PC_POST_DATA_PORT PostPortDepthRTBufferPc = {-1, NULL};
+#pragma data_seg(".data$PostPortDepthBufferPc")
+    PC_POST_DATA_PORT PostPortDepthBufferPc = {-1, NULL};
 #pragma data_seg()
 #pragma bss_seg(".bss$PostResourceManagerPc")
-    PC_POST_DATA_PORT_MANAGER PostResourceManagerPc = {0};
+    PC_POST_DATA_PORT_MANAGER PostResourceManagerPc;
 #pragma bss_seg(".bss$PostBlurFramebufferPc")
     PC_FRAMEBUFFER_PC *PostBlurFramebufferPc = 0;
 #pragma bss_seg(".bss$PostCopyFramebufferPc")
@@ -12968,11 +13049,11 @@ extern "C" void NuPostEffectRender(PC_FRAMEBUFFER_PC *output) {
     PostProxyBuffersPc[4].kind = 4;
     PostProxyBuffersPc[4].enabled = true;
     PostProxyBuffersPc[4].resolved = true;
-    PostResourcePortsPc[1].manager->entries[PostResourcePortsPc[1].index].data = &PostProxyBuffersPc[0];
-    PostResourcePortsPc[2].manager->entries[PostResourcePortsPc[2].index].data = &PostProxyBuffersPc[1];
-    PostResourcePortsPc[3].manager->entries[PostResourcePortsPc[3].index].data = &PostProxyBuffersPc[2];
-    PostResourcePortsPc[4].manager->entries[PostResourcePortsPc[4].index].data = &PostProxyBuffersPc[3];
-    PostResourcePortsPc[5].manager->entries[PostResourcePortsPc[5].index].data = &PostProxyBuffersPc[4];
+    PostPortColorBufferPc.manager->entries[PostPortColorBufferPc.index].data = &PostProxyBuffersPc[0];
+    PostPortNormalBufferPc.manager->entries[PostPortNormalBufferPc.index].data = &PostProxyBuffersPc[1];
+    PostPortVelocityBufferPc.manager->entries[PostPortVelocityBufferPc.index].data = &PostProxyBuffersPc[2];
+    PostPortDepthRTBufferPc.manager->entries[PostPortDepthRTBufferPc.index].data = &PostProxyBuffersPc[3];
+    PostPortDepthBufferPc.manager->entries[PostPortDepthBufferPc.index].data = &PostProxyBuffersPc[4];
     D3DPERF_BeginEvent(0xffffffff, PostEffectRenderLabelPc);
     NuPostFilterGen *filters[10];
     i32 count = 0;
@@ -13004,7 +13085,7 @@ extern "C" void NuPostEffectRender(PC_FRAMEBUFFER_PC *output) {
         if (i + 1 >= count) {
             destination = target;
         }
-        PostResourcePortsPc[0].manager->entries[PostResourcePortsPc[0].index].data = destination;
+        PostPortOutFramebufferPc.manager->entries[PostPortOutFramebufferPc.index].data = destination;
         filters[i]->render();
         filters[i]->reset();
         for (u32 stage = 0; stage != 6; ++stage) {
@@ -13021,12 +13102,20 @@ extern "C" void NuPostEffectRender(PC_FRAMEBUFFER_PC *output) {
 }
 
 extern "C" {
+#pragma data_seg(".data$PostLocalPortOutFramebufferPc")
+    PC_POST_DATA_PORT PostLocalPortOutFramebufferPc = {-1, NULL};
 #pragma data_seg(".data$PostProxyBuffersPc")
     PC_POST_BUFFER_PROXY_PC PostProxyBuffersPc[5] = {{NULL, 0, true, true, {0, 0}},
                                                      {NULL, 0, true, true, {0, 0}},
                                                      {NULL, 0, true, true, {0, 0}},
                                                      {NULL, 0, true, true, {0, 0}},
                                                      {NULL, 0, true, true, {0, 0}}};
+#pragma data_seg(".data$PostLocalPortMainNormalBufferPc")
+    PC_POST_DATA_PORT PostLocalPortMainNormalBufferPc = {-1, NULL};
+#pragma data_seg(".data$PostLocalPortMainDepthBufferPc")
+    PC_POST_DATA_PORT PostLocalPortMainDepthBufferPc = {-1, NULL};
+#pragma data_seg(".data$PostLocalPortMotionVelocityBufferPc")
+    PC_POST_DATA_PORT PostLocalPortMotionVelocityBufferPc = {-1, NULL};
 #pragma data_seg(".data$PostBloomAttachPendingPc")
     u8 PostBloomAttachPendingPc = 1;
 #pragma data_seg()
@@ -13035,7 +13124,7 @@ extern "C" {
 #pragma const_seg()
 }
 
-void PC_POST_DATA_PORT_MANAGER::ResetReferences() {
+PC_POST_DATA_PORT_MANAGER::PC_POST_DATA_PORT_MANAGER() {
     PC_POST_DATA_PORT_ENTRY *entry = entries;
     for (i32 i = 255; i >= 0; --i) {
         entry->references = 0;
@@ -13043,7 +13132,7 @@ void PC_POST_DATA_PORT_MANAGER::ResetReferences() {
     }
 }
 
-extern "C" void NuPostEffectPortsNoOpPc(void) {
+PC_POST_DATA_PORT_MANAGER::~PC_POST_DATA_PORT_MANAGER() {
 }
 
 /* nudynamiclight */
@@ -13188,6 +13277,13 @@ static i32 ShadowSegmentClipPc(const NUVEC *point, const NUVEC *end, const NUVEC
     f64 difference = (f64)radius0 - radius1;
     f32 difference_squared = difference * difference;
     return difference_squared > distance ? 1 : 2;
+}
+
+NU_LIGHT_SHADOW_LIST_VIEW_PC *PC_SPECIAL_SHADOW_LIGHT::fun_005c2ee0(i32 set, NUMTL *material) {
+    if (reinterpret_cast<SHADOW_PRODUCER_MATERIAL_PC *>(material)->alternate > 0) {
+        return &render_sets[set].shadow_lists_pc[1];
+    }
+    return &render_sets[set].shadow_lists_pc[0];
 }
 
 void PC_SPECIAL_SHADOW_LIGHT::RenderSceneShadowPc(NUGSCN *scene) {
@@ -15176,6 +15272,12 @@ extern "C" {
         return display != NULL ? &display->draw_matrix : NULL;
     }
 
+    void NuSpecialSetInstanceMtx(NUSPECIALHANDLE *special, NUMTX *matrix) {
+        if (special != NULL && special->scene != NULL && special->special != NULL) {
+            *(NUMTX *)((NUSPECIAL_LEGACY_PC *)special->special)->instance = *matrix;
+        }
+    }
+
     i32 NuSpecialClipTestExtents(NUSPECIALHANDLE *special, NUMTX *matrix) {
         if (special->special != NULL) {
             return NuCameraClipTestExtents(&SPECIAL_GOBJ(special)->bounds_min, &SPECIAL_GOBJ(special)->bounds_max,
@@ -16080,6 +16182,12 @@ template <typename T> struct LightObjectPool {
 
     i8 occupied[1];
     i32 next;
+
+    LightObjectPool() {
+        occupied[0] = 0;
+        next = 0;
+    }
+
     T *allocate();
     i32 IsOccupied(i32 index);
     void SetOccupied(i32 index, bool used);
@@ -16131,9 +16239,9 @@ template i32 LightObjectPool<NUDISPLAYLISTITEM>::IsOccupied(i32);
 template void LightObjectPool<NUDISPLAYLISTITEM>::SetOccupied(i32, bool);
 template void LightObjectPool<PC_SPECIAL_SHADOW_LIGHT>::Free(PC_SPECIAL_SHADOW_LIGHT *);
 
-static LightObjectPool<NUDISPLAYLISTITEM> dlistItemPool = {0};
-static LightObjectPool<PC_SPECIAL_SHADOW_LIGHT> dynamicLightPool = {0};
-static LightObjectPool<NURNDRLIBSTATE> rndrStatePool = {0};
+static LightObjectPool<NUDISPLAYLISTITEM> dlistItemPool;
+static LightObjectPool<PC_SPECIAL_SHADOW_LIGHT> dynamicLightPool;
+static LightObjectPool<NURNDRLIBSTATE> rndrStatePool;
 STATIC_ASSERT(sizeof(dlistItemPool) == 0x88);
 STATIC_ASSERT(sizeof(dynamicLightPool) == 0x4188);
 STATIC_ASSERT(sizeof(rndrStatePool) == 0x208);
@@ -16190,6 +16298,59 @@ nurndrlightrecord_s::nurndrlightrecord_s() {
         NuDisplayListResetStateCache(render_states[i]);
         shadow_lists_pc[i].material_last = shadow_lists_pc[i].first;
     }
+}
+
+nurndrlightrecord_s &nurndrlightrecord_s::operator=(const nurndrlightrecord_s &other) {
+    i32 i;
+    view_pc = other.view_pc;
+    projection_pc = other.projection_pc;
+    shadow_matrix_pc = other.shadow_matrix_pc;
+    texture_matrix_pc = other.texture_matrix_pc;
+    parameter_100 = other.parameter_100;
+    parameter_104 = other.parameter_104;
+    enabled = other.enabled;
+    parameter_10c = other.parameter_10c;
+    parameter_110 = other.parameter_110;
+    for (i = 0; i < 8; ++i) {
+        corners_pc[i].x = other.corners_pc[i].x;
+        corners_pc[i].y = other.corners_pc[i].y;
+        corners_pc[i].z = other.corners_pc[i].z;
+        corners_pc[i].w = other.corners_pc[i].w;
+    }
+    for (i = 0; i < 12; ++i) {
+        planes_pc[i].x = other.planes_pc[i].x;
+        planes_pc[i].y = other.planes_pc[i].y;
+        planes_pc[i].z = other.planes_pc[i].z;
+        planes_pc[i].w = other.planes_pc[i].w;
+    }
+    shadow_plane_count = other.shadow_plane_count;
+    far_plane_pc.x = other.far_plane_pc.x;
+    far_plane_pc.y = other.far_plane_pc.y;
+    far_plane_pc.z = other.far_plane_pc.z;
+    far_plane_pc.w = other.far_plane_pc.w;
+    endpoint0_pc.x = other.endpoint0_pc.x;
+    endpoint0_pc.y = other.endpoint0_pc.y;
+    endpoint0_pc.z = other.endpoint0_pc.z;
+    endpoint0_pc.w = other.endpoint0_pc.w;
+    endpoint1_pc.x = other.endpoint1_pc.x;
+    endpoint1_pc.y = other.endpoint1_pc.y;
+    endpoint1_pc.z = other.endpoint1_pc.z;
+    endpoint1_pc.w = other.endpoint1_pc.w;
+    shadow_radius_pc = other.shadow_radius_pc;
+    shadow_lists_pc[0] = other.shadow_lists_pc[0];
+    shadow_lists_pc[1] = other.shadow_lists_pc[1];
+    render_states[0] = other.render_states[0];
+    render_states[1] = other.render_states[1];
+    list_items[0] = other.list_items[0];
+    list_items[1] = other.list_items[1];
+    for (i = 0; i < 6; ++i) {
+        unknown_33c[i] = other.unknown_33c[i];
+    }
+    for (i = 0; i < 8; ++i) {
+        pending[i] = other.pending[i];
+    }
+    count = other.count;
+    return *this;
 }
 
 PC_SPECIAL_SHADOW_LIGHT::PC_SPECIAL_SHADOW_LIGHT() {
@@ -16261,6 +16422,15 @@ extern "C" {
         i32 previous = nuapi.force_shadows_on_characters;
         nuapi.force_shadows_on_characters = enabled;
         return previous;
+    }
+
+    u8 NuGScnMtlLayerMask(NUGSCN *scene, u8 mask) {
+        scene->display_list->material_layer_mask = mask;
+        return scene->display_list->material_layer_mask;
+    }
+
+    void NuHGobjJointMtx(NUHGOBJ_EVAL_PC *object, u8 index, NUMTX *world_matrix, NUMTX *joint_matrices, NUMTX *result) {
+        NuMtxMulVU0(result, &joint_matrices[object->joint_override_map[index]], world_matrix);
     }
 
     void NuHGobjPOIMtx(NUHGOBJ_EVAL_PC *object, u8 index, NUMTX *world_matrix, NUMTX *joint_matrices, NUMTX *result) {
@@ -17209,6 +17379,11 @@ extern "C" {
     void PostShadowSelectHandlersPc(i32 mode);
 }
 
+void PC_SPECIAL_SHADOW_LIGHT::fun_005c6d90(NUMTX *view, NUMTX *projection) {
+    PostShadowViewPc = *view;
+    PostShadowProjectionPc = *projection;
+}
+
 void NuPostFilterGen::reset() {
     enabled = false;
 }
@@ -17727,15 +17902,15 @@ void PC_SPECIAL_SHADOW_LIGHT::RenderConstantsPc(void *) {
 void NuDeferredFilterGen::render() {
     D3DPERF_BeginEvent(0xffffffff, PostDeferredLabelPc);
     PC_FRAMEBUFFER_PC *output =
-        (PC_FRAMEBUFFER_PC *)PostResourcePortsPc[0].manager->entries[PostResourcePortsPc[0].index].data;
+        (PC_FRAMEBUFFER_PC *)PostPortOutFramebufferPc.manager->entries[PostPortOutFramebufferPc.index].data;
     PC_POST_BUFFER_PROXY_PC *color =
-        (PC_POST_BUFFER_PROXY_PC *)PostResourcePortsPc[1].manager->entries[PostResourcePortsPc[1].index].data;
+        (PC_POST_BUFFER_PROXY_PC *)PostPortColorBufferPc.manager->entries[PostPortColorBufferPc.index].data;
     PC_POST_BUFFER_PROXY_PC *normal =
-        (PC_POST_BUFFER_PROXY_PC *)PostResourcePortsPc[2].manager->entries[PostResourcePortsPc[2].index].data;
+        (PC_POST_BUFFER_PROXY_PC *)PostPortNormalBufferPc.manager->entries[PostPortNormalBufferPc.index].data;
     PC_POST_BUFFER_PROXY_PC *depth_rt =
-        (PC_POST_BUFFER_PROXY_PC *)PostResourcePortsPc[4].manager->entries[PostResourcePortsPc[4].index].data;
+        (PC_POST_BUFFER_PROXY_PC *)PostPortDepthRTBufferPc.manager->entries[PostPortDepthRTBufferPc.index].data;
     PC_POST_BUFFER_PROXY_PC *depth =
-        (PC_POST_BUFFER_PROXY_PC *)PostResourcePortsPc[5].manager->entries[PostResourcePortsPc[5].index].data;
+        (PC_POST_BUFFER_PROXY_PC *)PostPortDepthBufferPc.manager->entries[PostPortDepthBufferPc.index].data;
     if (!color->resolved) {
         PCGraphicsFramebufferBarrierPc(color->kind, color->enabled);
         color->resolved = true;
@@ -17939,7 +18114,7 @@ void NuDeferredFilterGen::render() {
     color->kind = 0;
     color->enabled = true;
     color->resolved = false;
-    PostResourcePortsPc[1].manager->entries[PostResourcePortsPc[1].index].data = color;
+    PostPortColorBufferPc.manager->entries[PostPortColorBufferPc.index].data = color;
     PCDeviceSetRenderState(190, 0xffffffff);
     PCDeviceSetRenderState(191, 0xffffffff);
     PCDeviceSetRenderState(192, 0xffffffff);

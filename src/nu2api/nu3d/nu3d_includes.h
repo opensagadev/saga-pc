@@ -654,13 +654,21 @@ struct PC_POST_DATA_PORT_ENTRY {
 
 struct PC_POST_DATA_PORT_MANAGER {
     PC_POST_DATA_PORT_ENTRY entries[256];
+    PC_POST_DATA_PORT_MANAGER();
+    ~PC_POST_DATA_PORT_MANAGER();
     i32 Register(const char *name, void *data);
-    void ResetReferences();
 };
 
 struct PC_POST_DATA_PORT {
     i32 index;
     PC_POST_DATA_PORT_MANAGER *manager;
+
+    ~PC_POST_DATA_PORT() {
+        if (index >= 0) {
+            PC_POST_DATA_PORT_ENTRY *entry = &manager->entries[index];
+            --entry->references;
+        }
+    }
 };
 
 STATIC_ASSERT(sizeof(PC_POST_DATA_PORT_ENTRY) == 40);
@@ -669,7 +677,12 @@ STATIC_ASSERT(offsetof(PC_POST_DATA_PORT_ENTRY, references) == 36);
 STATIC_ASSERT(sizeof(PC_POST_DATA_PORT_MANAGER) == 0x2800);
 STATIC_ASSERT(sizeof(PC_POST_DATA_PORT) == 8);
 STATIC_ASSERT(offsetof(PC_POST_DATA_PORT, manager) == 4);
-extern "C" PC_POST_DATA_PORT PostResourcePortsPc[6];
+extern "C" PC_POST_DATA_PORT PostPortOutFramebufferPc;
+extern "C" PC_POST_DATA_PORT PostPortColorBufferPc;
+extern "C" PC_POST_DATA_PORT PostPortNormalBufferPc;
+extern "C" PC_POST_DATA_PORT PostPortVelocityBufferPc;
+extern "C" PC_POST_DATA_PORT PostPortDepthRTBufferPc;
+extern "C" PC_POST_DATA_PORT PostPortDepthBufferPc;
 #endif
 
 typedef struct NU_POST_DOF_PARAMETERS_PC {
@@ -1236,6 +1249,11 @@ typedef struct nudisplay_list_pc_s {
             u8 instance_visibility_enabled;
             u8 unknown_0077[0x1];
         };
+
+        struct {
+            u32 : 5;
+            u32 material_layer_mask : 8;
+        };
     };
     struct NUGSCN_s *gscene;
     u32 *native_word;
@@ -1319,7 +1337,7 @@ typedef struct nurndrlightrecord_s {
     f32 parameter_100;
     f32 parameter_104;
     i32 enabled;
-    u8 opaque_10c_110[0x4];
+    f32 parameter_10c;
     f32 parameter_110;
     u8 opaque_114_120[0xc];
     NUVEC4 corners_pc[8];
@@ -1333,7 +1351,7 @@ typedef struct nurndrlightrecord_s {
     NU_LIGHT_SHADOW_LIST_VIEW_PC shadow_lists_pc[2];
     NURNDRLIBSTATE *render_states[2];
     NUDISPLAYLISTITEM *list_items[2];
-    u8 opaque_33c_354[0x18];
+    u32 unknown_33c[6];
     i32 pending[8];
     i32 count;
     u8 opaque_378_380[0x8];
@@ -1592,7 +1610,22 @@ struct GRAPHICS_RENDER_TEXTURE_PC {
             i32 format;
             i32 usage;
             i32 pool;
-            u32 flags;
+
+            union {
+                u32 flags;
+
+                struct {
+                    u32 sampler_unknown_0 : 8;
+                    u32 address_u : 3;
+                    u32 address_v : 3;
+                    u32 address_w : 3;
+                    u32 min_filter : 3;
+                    u32 mag_filter : 3;
+                    u32 mip_filter : 3;
+                    u32 sampler_unknown_26 : 6;
+                };
+            };
+
             u32 field_24;
         };
     };
@@ -1721,6 +1754,8 @@ struct PC_SPECIAL_SHADOW_LIGHT {
     void SetParameterfPc(i32 parameter, f32 value);
     i32 fun_005c2eb0();
     void fun_005c2ec0(i32 used);
+    NU_LIGHT_SHADOW_LIST_VIEW_PC *fun_005c2ee0(i32 set, NUMTL *material);
+    void fun_005c6d90(NUMTX *view, NUMTX *projection);
     i32 fun_005c2f20();
     NUMTX *fun_005c2f30();
     NUMTX *fun_005c2f40();

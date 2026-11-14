@@ -22,6 +22,10 @@ static u32 NuDebrisCurrentVertexCount = 0;
 static u32 NuDebrisVertexBufferSize = 0;
 #pragma bss_seg()
 
+static f32 Nu3dPcIncludesVuVecLengthSq(const VuVec &v) {
+    return v.x * v.x + v.y * v.y + v.z * v.z;
+}
+
 extern "C" {
 
     // @@PREAMBLE
@@ -322,7 +326,10 @@ extern "C" {
 
     typedef struct PC_DYNAMIC_GEOMETRY_PC {
         PC_GEOMETRY_FORMAT_PC *format;              // 0x00
-        u8 unknown_04[0x10];                        // 0x04
+        i32 element_count;                          // 0x04
+        u32 unknown_08;                             // 0x08
+        PC_GEOMETRY_SORT_ITEM_PC *sort_items;       // 0x0c
+        u32 unknown_10;                             // 0x10
         PC_BUFFER_RESOURCE_PC *vertex_buffer;       // 0x14
         PC_BUFFER_RESOURCE_PC *strip_vertex_buffer; // 0x18
         PC_BUFFER_RESOURCE_PC *strip_index_buffer;  // 0x1c
@@ -353,6 +360,7 @@ extern "C" {
 
     STATIC_ASSERT(offsetof(PC_GEOMETRY_OUTPUT_PC, corners) + 2 * sizeof(PC_GEOMETRY_CORNER_PC) == 0x20);
     extern "C" NUVEC4 PcGeometryDistanceOriginPc;
+    extern "C" i32 dat_00806b94;
 
     typedef struct PC_GEOMETRY_INPUT_PC {
         PC_GEOMETRY_CORNER_PC corners[4]; // 0x00
@@ -1219,6 +1227,36 @@ extern "C" {
         PCDeviceSetVertexDeclarationPc(declaration6ac);
     }
 
+    static i32 fun_005f7900(i32 mode) {
+        switch (mode) {
+            case 0:
+                return 0;
+            case 1:
+                return 1;
+            case 2:
+                return 2;
+            case 3:
+                return 3;
+            default:
+                return -1;
+        }
+    }
+
+    static i32 fun_005f7940(i32 mode) {
+        switch (mode) {
+            case 0:
+                return 1;
+            case 1:
+                return 2;
+            case 2:
+                return 3;
+            case 3:
+                return 4;
+            default:
+                return -1;
+        }
+    }
+
     static i32 PCGraphicsFormatToD3d(i32 format) {
         switch (format) {
             case 2:
@@ -1354,101 +1392,24 @@ extern "C" {
     } PC_SAMPLER_FLAGS_PC; // size 0x4
 
     void PCGraphicsEffectTextureSetFilterFields(GRAPHICS_RENDER_TEXTURE_PC *texture, i32 first, i32 second, i32 third) {
-        i32 value;
-        switch (first) {
-            case 0:
-                value = 0;
-                break;
-            case 1:
-                value = 1;
-                break;
-            case 2:
-                value = 2;
-                break;
-            case 3:
-                value = 3;
-                break;
-            default:
-                value = -1;
-                break;
-        }
-        ((PC_SAMPLER_FLAGS_PC *)&texture->flags)->bits.min_filter = value;
-        switch (second) {
-            case 0:
-                value = 0;
-                break;
-            case 1:
-                value = 1;
-                break;
-            case 2:
-                value = 2;
-                break;
-            case 3:
-                value = 3;
-                break;
-            default:
-                value = -1;
-                break;
-        }
-        ((PC_SAMPLER_FLAGS_PC *)&texture->flags)->bits.mag_filter = value;
-        switch (third) {
-            case 0:
-                value = 0;
-                break;
-            case 1:
-                value = 1;
-                break;
-            case 2:
-                value = 2;
-                break;
-            case 3:
-                value = 3;
-                break;
-            default:
-                value = -1;
-                break;
-        }
-        ((PC_SAMPLER_FLAGS_PC *)&texture->flags)->bits.mip_filter = value;
+        texture->min_filter = fun_005f7900(first);
+        texture->mag_filter = fun_005f7900(second);
+        texture->mip_filter = fun_005f7900(third);
+    }
+
+    void fun_005f7e30(GRAPHICS_RENDER_TEXTURE_PC *texture, i32 mode) {
+        texture->address_u = fun_005f7940(mode);
     }
 
     void PCGraphicsEffectTextureSetWrapFields(GRAPHICS_RENDER_TEXTURE_PC *texture, i32 first, i32 second) {
-        i32 value;
-        switch (first) {
-            case 0:
-                value = 1;
-                break;
-            case 1:
-                value = 2;
-                break;
-            case 2:
-                value = 3;
-                break;
-            case 3:
-                value = 4;
-                break;
-            default:
-                value = -1;
-                break;
-        }
-        ((PC_SAMPLER_FLAGS_PC *)&texture->flags)->bits.address_u = value;
-        switch (second) {
-            case 0:
-                value = 1;
-                break;
-            case 1:
-                value = 2;
-                break;
-            case 2:
-                value = 3;
-                break;
-            case 3:
-                value = 4;
-                break;
-            default:
-                value = -1;
-                break;
-        }
-        ((PC_SAMPLER_FLAGS_PC *)&texture->flags)->bits.address_v = value;
+        texture->address_u = fun_005f7940(first);
+        texture->address_v = fun_005f7940(second);
+    }
+
+    void fun_005f7fb0(GRAPHICS_RENDER_TEXTURE_PC *texture, i32 u, i32 v, i32 w) {
+        texture->address_u = fun_005f7940(u);
+        texture->address_v = fun_005f7940(v);
+        texture->address_w = fun_005f7940(w);
     }
 
     GRAPHICS_RENDER_TEXTURE_PC *fun_005f80e0(void) {
@@ -1605,6 +1566,22 @@ extern "C" {
         }
     }
 
+    typedef struct PC_EFFECT_PC PC_EFFECT_PC;
+
+    /* ID3DXEffect method table up to ID3DXBaseEffect::SetTexture (slot 52). */
+    typedef struct PC_EFFECT_METHODS_PC {
+        void *unknown_00[52];                                                                    // 0x00
+        HRESULT(__stdcall *set_texture)(PC_EFFECT_PC *, const char *, PC_TEXTURE_RESOURCE_PC *); // 0xd0
+    } PC_EFFECT_METHODS_PC;                                                                      // size 0xd4
+
+    struct PC_EFFECT_PC {
+        const PC_EFFECT_METHODS_PC *methods; // 0x0
+    }; // size 0x4
+
+    void fun_005f8580(GRAPHICS_RENDER_TEXTURE_PC *texture, PC_EFFECT_PC *effect, const char *parameter) {
+        effect->methods->set_texture(effect, parameter, texture->resource);
+    }
+
     void PCGraphicsReleaseEffectTextures(void) {
         for (i32 index = 0; index != 32; ++index) {
             if (PCGraphicsRenderTextureActive[index] && PCGraphicsRenderTextures[index].external_id == -1) {
@@ -1727,6 +1704,10 @@ extern "C" {
     }
 
     void fun_005f8b50(void) {
+    }
+
+    void fun_005f8b60(PC_FRAMEBUFFER_PC *framebuffer, i32 index, u32 colour) {
+        framebuffer->clear_colour[index] = colour;
     }
 
     void fun_005f8b80(void) {
@@ -3034,10 +3015,59 @@ extern "C" {
             delta.x = origin.x - position->x;
             delta.y = origin.y - position->y;
             delta.z = origin.z - position->z;
-            output[i].distance_squared = delta.x * delta.x + delta.y * delta.y + delta.z * delta.z;
+            output[i].distance_squared = Nu3dPcIncludesVuVecLengthSq(*(VuVec *)&delta);
         }
         for (i32 i = 0; i < count; ++i) {
             items[i].distance_squared = output[items[i].output_index].distance_squared;
+        }
+        return 1;
+    }
+
+    i32 fun_005fc690(PC_GEOMETRY_SORT_ITEM_PC *items, PC_GEOMETRY_OUTPUT_PC *output, i32 left, i32 right) {
+        PC_GEOMETRY_SORT_ITEM_PC pivot;
+        PC_GEOMETRY_SORT_ITEM_PC swap;
+        i32 first = left;
+        i32 last = right;
+        i32 middle = first + (last - first) / 2;
+        swap = items[left];
+        items[left] = items[middle];
+        items[middle] = swap;
+        pivot = items[left];
+        while (left < right) {
+            while (items[right].distance_squared < pivot.distance_squared && left < right) {
+                right--;
+            }
+            if (left != right) {
+                swap = items[left];
+                items[left] = items[right];
+                items[right] = swap;
+                left++;
+            }
+            while (items[left].distance_squared > pivot.distance_squared && left < right) {
+                left++;
+            }
+            if (left != right) {
+                swap = items[right];
+                items[right] = items[left];
+                items[left] = swap;
+                right--;
+            }
+            items[left] = pivot;
+        }
+        if (first < left) {
+            fun_005fc690(items, output, first, left - 1);
+        }
+        if (last > left) {
+            fun_005fc690(items, output, left + 1, last);
+        }
+        return 1;
+    }
+
+    i32 fun_005fc860(PC_DYNAMIC_GEOMETRY_PC *geometry, PC_GEOMETRY_OUTPUT_PC *output, i32 count) {
+        if (dat_00806b94 == 1) {
+            for (i32 i = 0; i < count; i++) {
+                output[i] = PcGeometryOutputPc[geometry->sort_items[i].output_index];
+            }
         }
         return 1;
     }
@@ -7395,6 +7425,20 @@ extern "C" {
         }
     }
 
+    void fun_006030d0(NUGOBJ *gobj) {
+        for (NUGEOM *geom = gobj->geom; geom != NULL; geom = geom->next) {
+        }
+    }
+
+    void fun_006030f0(NUGOBJ *gobj, i32 first, i32 second) {
+        for (NUGEOM *geom = gobj->geom; geom != NULL; geom = geom->next) {
+            NUMTL *mtl = geom->mtl;
+            mtl->unknown_0044_5 = first;
+            mtl->unknown_0044_6 = second;
+            NuMtlUpdate(mtl);
+        }
+    }
+
     void fun_00603140(f32 gamma) {
         u16 ramp[3][256];
         for (i32 i = 0; i < 256; ++i) {
@@ -7450,6 +7494,17 @@ extern "C" {
         colour[0] = r;
         colour[1] = g;
         colour[2] = b;
+    }
+
+    void fun_00603290(f32 exponent, f32 scale, u8 *table) {
+        f32 factor = scale * 255.0f / NuPowFast(255.0f, exponent);
+        for (i32 i = 0; i < 256; i++) {
+            f32 value = NuPowFast(i, exponent) * factor;
+            if (value > 255.0f) {
+                value = 255.0f;
+            }
+            table[i] = value;
+        }
     }
 
     void PermanentGraphicsResourceSetup(void) {
@@ -7634,7 +7689,62 @@ extern "C" {
     void fun_005fe630(void) {
     }
 
+    typedef struct RENDERER_CLEAR_RECORD_PC {
+        NUVEC position;         // 0x00
+        f32 start_radius;       // 0x0c
+        f32 end_radius;         // 0x10
+        f32 radius;             // 0x14
+        u32 colour;             // 0x18
+        u32 current_colour;     // 0x1c
+        i16 active;             // 0x20
+        i16 duration;           // 0x22
+        u16 unknown_24;         // 0x24
+        u8 unknown_26[2];       // 0x26
+    } RENDERER_CLEAR_RECORD_PC; // size 0x28
+
+    static RENDERER_CLEAR_RECORD_PC RendererClearRecordsPc[32] = {0};
+
+    void fun_005fe640(NUVEC *position, f32 start_radius, f32 end_radius, i32 duration, u32 colour, i32 extra) {
+        for (i32 i = 0; i < 32; i++) {
+            if (RendererClearRecordsPc[i].active == 0) {
+                position->y += 0.01f;
+                RendererClearRecordsPc[i].position = *position;
+                RendererClearRecordsPc[i].start_radius = start_radius;
+                RendererClearRecordsPc[i].radius = start_radius;
+                RendererClearRecordsPc[i].end_radius = end_radius;
+                RendererClearRecordsPc[i].active = duration;
+                RendererClearRecordsPc[i].duration = duration;
+                RendererClearRecordsPc[i].colour = colour;
+                RendererClearRecordsPc[i].current_colour = 0;
+                RendererClearRecordsPc[i].unknown_24 = extra * 4;
+                return;
+            }
+        }
+    }
+
     void fun_005fe6f0(void) {
+    }
+
+    void fun_005fe700(i32 frames) {
+        for (i32 i = 0; i < 32; i++) {
+            RENDERER_CLEAR_RECORD_PC *record = &RendererClearRecordsPc[i];
+            if (record->active != 0) {
+                record->active -= frames;
+                if (record->active <= 0) {
+                    record->active = 0;
+                } else {
+                    f32 t = (f32)record->active / record->duration;
+                    f32 fade;
+                    record->radius = (record->start_radius - record->end_radius) * t + record->end_radius;
+                    if (t > 0.75f) {
+                        fade = (1.0f - t) * 4.0f;
+                    } else {
+                        fade = t * 1.3333334f;
+                    }
+                    record->current_colour = ((u32)((record->colour >> 24) * fade) << 24) + (record->colour & 0xffffff);
+                }
+            }
+        }
     }
 
     void fun_005fe800(void) {
@@ -7832,14 +7942,6 @@ extern "C" {
         PCDeviceCreateVertexBuffer(0x40000, 0x208, 0, 0, &RendererGeometryVertexBufferPc);
         NuRndrQuadBufferInitPc();
     }
-
-    typedef struct RENDERER_CLEAR_RECORD_PC {
-        u8 unknown_00[0x20];    // 0x00
-        u16 active;             // 0x20
-        u8 unknown_22[6];       // 0x22
-    } RENDERER_CLEAR_RECORD_PC; // size 0x28
-
-    static RENDERER_CLEAR_RECORD_PC RendererClearRecordsPc[32] = {0};
 
     typedef struct RENDERER_SHADOW_DEFAULTS_PC {
         f32 state0;                // 0x0

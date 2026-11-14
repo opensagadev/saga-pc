@@ -219,6 +219,19 @@ void PC_NATIVE_DEBUG_STATE_PC::UpdateGeometry() {
 #undef DEBUG_RECT_PC
 #undef DEBUG_POINT_PC
 
+PC_NATIVE_DEBUG_STATE_PC::PC_NATIVE_DEBUG_STATE_PC() {
+    enabled = 1;
+    write_log = 0;
+    unknown_004 = 0;
+    unknown_008 = 0;
+    unknown_00c = 0;
+    log_file = 0;
+}
+
+PC_NATIVE_DEBUG_STATE_PC::~PC_NATIVE_DEBUG_STATE_PC() {
+    Shutdown();
+}
+
 void PC_NATIVE_DEBUG_STATE_PC::Initialize() {
     unknown_0 = 1;
     left = top = 100.0f;

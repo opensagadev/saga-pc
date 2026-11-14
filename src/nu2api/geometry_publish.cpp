@@ -147,6 +147,15 @@ extern "C" i32 PcUnregisterDynamicGeometryPc(PC_GEOMETRY_PUBLISH_FORMAT_PC *form
     return 0;
 }
 
+extern "C" PC_GEOMETRY_PUBLISH_RECORD_PC *fun_005c6470(PC_GEOMETRY_PUBLISH_FORMAT_PC *format) {
+    for (i32 i = 0; i < PcGeometryRegistryCountPc; ++i) {
+        if (format == PcGeometryRegistryPc[i].format) {
+            return &PcGeometryRegistryPc[i];
+        }
+    }
+    return NULL;
+}
+
 extern "C" NUDISPLAYLIST *fun_005c6680(void) {
     return &PCDisplayList2dPc;
 }

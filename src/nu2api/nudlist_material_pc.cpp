@@ -749,11 +749,11 @@ NuMainFilter::NuMainFilter() {
 
 void NuMainFilter::RenderBloomPc() {
     PC_FRAMEBUFFER_PC *output =
-        (PC_FRAMEBUFFER_PC *)PostResourcePortsPc[0].manager->entries[PostResourcePortsPc[0].index].data;
+        (PC_FRAMEBUFFER_PC *)PostPortOutFramebufferPc.manager->entries[PostPortOutFramebufferPc.index].data;
     PC_POST_BUFFER_PROXY_PC *color =
-        (PC_POST_BUFFER_PROXY_PC *)PostResourcePortsPc[1].manager->entries[PostResourcePortsPc[1].index].data;
+        (PC_POST_BUFFER_PROXY_PC *)PostPortColorBufferPc.manager->entries[PostPortColorBufferPc.index].data;
     PC_POST_BUFFER_PROXY_PC *normal =
-        (PC_POST_BUFFER_PROXY_PC *)PostResourcePortsPc[2].manager->entries[PostResourcePortsPc[2].index].data;
+        (PC_POST_BUFFER_PROXY_PC *)PostPortNormalBufferPc.manager->entries[PostPortNormalBufferPc.index].data;
     if (!color->resolved) {
         color->resolved = true;
     }
@@ -899,7 +899,7 @@ void NuMainFilter::RenderBloomPc() {
     color->kind = 0;
     color->enabled = true;
     color->resolved = false;
-    PostResourcePortsPc[1].manager->entries[PostResourcePortsPc[1].index].data = color;
+    PostPortColorBufferPc.manager->entries[PostPortColorBufferPc.index].data = color;
 }
 
 /* Stretch-copies a colour texture into the output framebuffer's first target. */
@@ -948,9 +948,9 @@ f32 NuSpeedBlurVertexScalePc = 40000.0f;
 void NuSpeedBlurFilter::render() {
     extern POST_SHADER_PROGRAM_PC *PostCopyTexProgramPc;
     PC_FRAMEBUFFER_PC *output =
-        (PC_FRAMEBUFFER_PC *)PostResourcePortsPc[0].manager->entries[PostResourcePortsPc[0].index].data;
+        (PC_FRAMEBUFFER_PC *)PostPortOutFramebufferPc.manager->entries[PostPortOutFramebufferPc.index].data;
     PC_POST_BUFFER_PROXY_PC *color =
-        (PC_POST_BUFFER_PROXY_PC *)PostResourcePortsPc[1].manager->entries[PostResourcePortsPc[1].index].data;
+        (PC_POST_BUFFER_PROXY_PC *)PostPortColorBufferPc.manager->entries[PostPortColorBufferPc.index].data;
     if (!color->resolved) {
         color->resolved = true;
     }

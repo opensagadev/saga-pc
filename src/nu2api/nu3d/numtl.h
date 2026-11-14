@@ -33,10 +33,16 @@ STATIC_ASSERT(sizeof(NUMTLATTRIB) == 4);
 
 typedef struct numtl_s {
     u16 flags;
-    u8 unknown_0002[0x3a];
+    u8 unknown_0002[0x2e];
+    struct numtl_s *next;
+    u8 unknown_0034[0x8];
     NUDISPLAYLIST_PC *display_list;
     NUMTLATTRIB attribs;
-    u8 unknown_0044[0x10];
+    u32 unknown_0044_0_4 : 5;
+    u32 unknown_0044_5 : 1;
+    u32 unknown_0044_6 : 1;
+    u32 unknown_0044_7_31 : 25;
+    u8 unknown_0048[0xc];
     f32 diffuse_r;
     f32 diffuse_g;
     f32 diffuse_b;
@@ -49,6 +55,7 @@ typedef struct numtl_s {
 } NUMTL;
 
 STATIC_ASSERT(offsetof(NUMTL, flags) == 0);
+STATIC_ASSERT(offsetof(NUMTL, next) == 0x30);
 STATIC_ASSERT(offsetof(NUMTL, display_list) == 0x3c);
 STATIC_ASSERT(offsetof(NUMTL, attribs) == 0x40);
 STATIC_ASSERT(offsetof(NUMTL, diffuse_r) == 0x54);

@@ -122,6 +122,18 @@ extern "C" {
 #if SAGA_LEGOAPI_ITEMS_COLLECT_BOLTS_H_PART == 4 && !defined(SAGA_LEGOAPI_ITEMS_COLLECT_BOLTS_H_STOP)
 #ifdef __cplusplus
 
+template <typename T, u32 COUNT> struct TPool {
+    T items[COUNT];
+
+    ~TPool() {
+        for (T *entry = items; entry != items + COUNT; ++entry) {
+            if (entry->references > 0) {
+                entry->references = 0;
+            }
+        }
+    }
+};
+
 struct NETMESSAGE_PC {
     struct MessageData {
         u32 fun_00617420() const;
@@ -129,12 +141,19 @@ struct NETMESSAGE_PC {
         u8 bytes[0x4b0];
         u32 references;
 
+        MessageData() : references(0) {
+        }
+
         void fun_0053d2e0();
         void fun_0053d5c0();
         void fun_0053d620();
+        MessageData *fun_0053d420();
+        i32 fun_0053d430() const;
+        MessageData *fun_0053d560();
+        MessageData *fun_0053d590();
     };
 
-    static MessageData sm_poolMessageData[512];
+    static TPool<MessageData, 512> sm_poolMessageData;
     i32 swap_endianness;
     MessageData *data;
     u32 read_offset;
@@ -142,12 +161,12 @@ struct NETMESSAGE_PC {
 
     NETMESSAGE_PC(u32 offset) {
         MessageData *entry;
-        for (entry = sm_poolMessageData; entry != sm_poolMessageData + 512; entry++) {
+        for (entry = sm_poolMessageData.items; entry != sm_poolMessageData.items + 512; entry++) {
             if (entry->references <= 0) {
                 break;
             }
         }
-        if (entry != sm_poolMessageData + 512) {
+        if (entry != sm_poolMessageData.items + 512) {
             entry->references = 1;
         } else {
             entry = NULL;

@@ -8,6 +8,37 @@
 static f32 MaxRadialCamY = 0;
 #pragma bss_seg(".bss$RadialMoveCentre")
 static NUVEC4 RadialMoveCentre = {0};
+#pragma bss_seg(".bss$RadialPlayerRadius")
+static f32 RadialPlayerRadius[2];
+#pragma bss_seg(".bss$dat_00855e40")
+static NUVEC4 dat_00855e40;
+
+/* The SDK's inline NuFabs (nufloat.h): a masked copy of the float bits. */
+static f32 ChrisFabs(f32 f) {
+    f32 rv;
+
+    *(i32 *)&rv = *(i32 *)&f & 0x7fffffff;
+    return rv;
+}
+
+/* Unit-length copy of a direction, as a point (w = 1). */
+static void ChrisVuVecNormalise(VuVec &destination, VuVec &source) {
+    NuVecNorm(&destination.xyz, &source.xyz);
+    destination.w = 1.0f;
+}
+
+static f32 ChrisVuVecDot(const VuVec &a, const VuVec &b) {
+    return a.x * b.x + a.y * b.y + a.z * b.z;
+}
+
+static f32 ChrisVuVecLengthSq(const VuVec &v) {
+    return v.x * v.x + v.y * v.y + v.z * v.z;
+}
+
+static f32 ChrisVuVecLength(const VuVec &v) {
+    f32 length_squared = ChrisVuVecLengthSq(v);
+    return NuFsqrt(length_squared);
+}
 
 extern "C" {
     extern const f32 DogfightOriginEndXPc;
@@ -714,8 +745,7 @@ extern "C" {
             direction.y = spline->points[0].y - spline->points[1].y;
             direction.z = spline->points[0].z - spline->points[1].z;
             index = 0;
-            NuVecNorm((NUVEC *)&direction, (NUVEC *)&direction);
-            direction.w = 1.0f;
+            ChrisVuVecNormalise(*(VuVec *)&direction, *(VuVec *)&direction);
             direction.x *= 10.0;
             direction.y *= 10.0;
             direction.z *= 10.0;
@@ -867,8 +897,7 @@ extern "C" {
                 difference.x = current.x - previous.x;
                 difference.y = current.y - previous.y;
                 difference.z = current.z - previous.z;
-                squared = (f32)((f64)difference.x * difference.x + (f64)difference.y * difference.y +
-                                (f64)difference.z * difference.z);
+                squared = ChrisVuVecLengthSq(*(VuVec *)&difference);
                 distance = (f32)((f64)NuFsqrt(squared) + distance);
             } while (along > 0.0f);
         }
@@ -1044,6 +1073,72 @@ extern "C" {
 
     void fun_0040fd50(void *unused, NUVEC *position) {
         memcpy(position, &((DOGFIGHT_SPACE_PC *)WORLD->level_specific_data)->origin_end, sizeof(NUVEC));
+    }
+
+#pragma data_seg(push, ".data$dat_007f15e4")
+    f32 dat_007f15e4 = 120.0f;
+#pragma data_seg(pop)
+#pragma data_seg(push, ".data$dat_007f15e8")
+    f32 dat_007f15e8 = 150.0f;
+#pragma data_seg(pop)
+#pragma data_seg(push, ".data$dat_007f15ec")
+    f32 dat_007f15ec = 1.0f;
+#pragma data_seg(pop)
+#pragma data_seg(push, ".data$dat_007f15f0")
+    f32 dat_007f15f0 = 1.0f;
+#pragma data_seg(pop)
+#pragma data_seg(push, ".data$dat_007f15f4")
+    f32 dat_007f15f4 = 0.6f;
+#pragma data_seg(pop)
+
+    void ChrisRadialCam(NUVEC *position, NUVEC *target) {
+        __declspec(align(16)) NUVEC new_position = *position;
+        __declspec(align(16)) NUVEC new_target = *target;
+        __declspec(align(16)) NUVEC position_delta;
+        __declspec(align(16)) NUVEC origin_delta;
+        f32 position_radius;
+        f32 base_radius;
+        f32 target_radius;
+
+        position_delta.y = 0.0f;
+        position_delta.x = new_position.x - RadialMoveCentre.x;
+        position_delta.z = new_position.z - RadialMoveCentre.z;
+        position_radius = NuFsqrt(position_delta.x * position_delta.x + position_delta.y * position_delta.y +
+                                  position_delta.z * position_delta.z);
+        origin_delta.x = dat_00855e40.x - RadialMoveCentre.x;
+        origin_delta.y = 0.0f;
+        origin_delta.z = dat_00855e40.z - RadialMoveCentre.z;
+        RadialPlayerRadius[0] = NuFsqrt(origin_delta.x * origin_delta.x + origin_delta.y * origin_delta.y +
+                                        origin_delta.z * origin_delta.z);
+
+        if (RadialPlayerRadius[0] < dat_007f15e4) {
+            base_radius = dat_007f15e4;
+        } else {
+            base_radius = MIN(dat_007f15e8, RadialPlayerRadius[0]);
+        }
+        if (position_radius != 0.0f) {
+            target_radius = base_radius + (RadialPlayerRadius[0] - base_radius) * dat_007f15ec;
+            f32 scale = target_radius / position_radius;
+            position_delta.x *= scale;
+            position_delta.z *= scale;
+        }
+        new_position.x = RadialMoveCentre.x + position_delta.x;
+        new_position.z = RadialMoveCentre.z + position_delta.z;
+        *position = new_position;
+
+        if (RadialPlayerRadius[0] < base_radius) {
+            target_radius = base_radius + (RadialPlayerRadius[0] - base_radius) * dat_007f15f0;
+        } else {
+            target_radius = base_radius + (RadialPlayerRadius[0] - base_radius) * dat_007f15f4;
+        }
+        if (RadialPlayerRadius[0] != 0.0f) {
+            f32 scale = target_radius / RadialPlayerRadius[0];
+            origin_delta.x *= scale;
+            origin_delta.z *= scale;
+        }
+        new_target.x = RadialMoveCentre.x + origin_delta.x;
+        new_target.z = RadialMoveCentre.z + origin_delta.z;
+        *target = new_target;
     }
 
     static void DogfightResetCrossesPc(DOGFIGHT_CROSS_PC *crosses, i32 count) {
@@ -1270,13 +1365,11 @@ extern "C" {
         if (fighter->fired == 0) {
             right = (NUVEC *)&fighter->matrix.m00;
             up = (NUVEC *)&fighter->matrix.m10;
-            absolute.value = (f64)right->y * offset.y + (f64)right->x * offset.x + (f64)right->z * offset.z;
-            absolute.bits &= 0x7fffffff;
-            least = absolute.value;
+            least = ChrisFabs((f64)right->y * offset.y + (f64)right->x * offset.x + (f64)right->z * offset.z);
             absolute.value = (f64)up->y * offset.y + (f64)up->x * offset.x + (f64)up->z * offset.z;
             absolute.bits &= 0x7fffffff;
             up_dot = absolute.value;
-            absolute.value = (f64)front->y * offset.y + (f64)front->x * offset.x + (f64)front->z * offset.z;
+            absolute.value = ChrisVuVecDot(*(VuVec *)front, *(VuVec *)&offset);
             absolute.bits &= 0x7fffffff;
             front_dot = absolute.value;
             axis = front;
@@ -2261,8 +2354,7 @@ extern "C" {
         difference.x -= d.x;
         difference.y -= d.y;
         difference.z -= d.z;
-        square = (f64)difference.y * difference.y + (f64)difference.x * difference.x + (f64)difference.z * difference.z;
-        (void)NuFsqrt(square);
+        ChrisVuVecLength(*(VuVec *)&difference);
         difference.x = (f64)b.x + a.x;
         difference.y = (f64)b.y + a.y;
         difference.z = (f64)b.z + a.z;

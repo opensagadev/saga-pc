@@ -225,7 +225,7 @@ void Hint_ClearHintsAndDoneFlags(void) {
     }
 }
 
-void fun_005766a0(i32 index, i32 set) {
+void Hint_SaveBits(i32 index, i32 set) {
     i32 word = index / 32;
     if (word < hintsys.save_word_count) {
         if (set == 1) {
@@ -248,6 +248,21 @@ void Hint_SaveGameState(HINT_PC *hint) {
                 hintsys.save_bits[index / 32] |= 1u << (index & 31);
             }
             return;
+        }
+    }
+}
+
+void Hint_SaveAllGameState(void) {
+    HINT_PC *hint = hintsys.hints;
+    i32 index;
+    if (hint == NULL || hintsys.save_bits == NULL) {
+        return;
+    }
+    for (index = 0; hint->id != -1; ++hint, ++index) {
+        if (hint->completed) {
+            Hint_SaveBits(index, 1);
+        } else {
+            Hint_SaveBits(index, 0);
         }
     }
 }

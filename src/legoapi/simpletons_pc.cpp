@@ -14,6 +14,14 @@ extern "C" {
     f32 MiniTrooperHopHeightPc = 0.04f;
     i32 MiniTrooperGroundRefreshMaskPc = 15;
 
+    /* The SDK's inline NuFabs (nufloat.h): a masked copy of the float bits. */
+    static f32 SimpletonsFabsPc(f32 f) {
+        f32 rv;
+
+        *(i32 *)&rv = *(i32 *)&f & 0x7fffffff;
+        return rv;
+    }
+
     static void MiniTrooperPitchMatrixPc(NUMTX *matrix, i32 angle) {
         const f32 cosine = NU_COS_LUT(angle);
         const f32 sine = NU_SIN_LUT(angle);
@@ -820,9 +828,7 @@ extern "C" {
                          0.5) *
                         16384.0);
                 const f32 hop = NuTrigTable[static_cast<u16>(phase / 2)];
-                f32 hop_magnitude;
-                // MATCH-EXCEPTION: retail clears the sign bit of the stored sine instead of calling fabs.
-                *reinterpret_cast<u32 *>(&hop_magnitude) = *reinterpret_cast<const u32 *>(&hop) & 0x7fffffff;
+                f32 hop_magnitude = SimpletonsFabsPc(hop);
                 position.y = ground + hop_magnitude * MiniTrooperHopHeightPc;
                 NuMtxTranslate(matrix, &position);
 

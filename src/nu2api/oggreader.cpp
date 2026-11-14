@@ -1,6 +1,11 @@
 #include "saga.h"
 #include <string.h>
+/* vorbisfile.h's static seek callback (the OV_CALLBACKS tables use it): each unit including the header carries
+ * its own copy; this one is named apart from the other units' copies. */
+// NOLINTNEXTLINE(readability-identifier-naming): vorbisfile.h names the static
+#define _ov_header_fseek_wrap OggreaderOvHeaderFseekWrapPc
 #include "vorbis/vorbisfile.h"
+#undef _ov_header_fseek_wrap
 
 struct PC_OGG_CACHE_RECORD_PC {
     char path[0x104];        // 0x000

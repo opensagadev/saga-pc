@@ -30,7 +30,10 @@ STATIC_ASSERT(offsetof(GAMEDEBRISENTRY_PC, name) == 4);
 
 /* Minimum shared consumer records; offsets verified, no item allocation extent claimed. */
 typedef struct vehicle_weapon_item_pc_s {
-    u8 unknown_00[8];
+    u8 unknown_00[2];
+    u8 start_ammo;
+    u8 start_field_03;
+    u8 unknown_04[4];
     u8 type;
     i8 bolt_override;
 } VEHICLE_WEAPON_ITEM_PC;
@@ -41,6 +44,7 @@ STATIC_ASSERT(offsetof(VEHICLE_WEAPON_ITEM_PC, bolt_override) == 9);
 typedef struct weapon_ammo_pc_s {
     VEHICLE_WEAPON_ITEM_PC *type;
     u8 ammo;
+    u8 field_05;
 } WEAPON_AMMO_PC;
 
 STATIC_ASSERT(offsetof(WEAPON_AMMO_PC, ammo) == 4);

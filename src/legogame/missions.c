@@ -43,6 +43,14 @@ static i32 MissionMenuSelectionPc = 0;
 static f32 MissionIconTargetXPc[20] = {0};
 static f32 MissionIconXPc[20] = {0};
 
+/* The SDK's inline NuFabs (nufloat.h): a masked copy of the float bits. */
+static f32 MissionsFabsPc(f32 f) {
+    f32 rv;
+
+    *(i32 *)&rv = *(i32 *)&f & 0x7fffffff;
+    return rv;
+}
+
 static void UpdateMissionIconX(MISSION_SYSTEM_READER_PC *system, i32 initialize) {
     i32 index;
     f32 x;
@@ -127,7 +135,7 @@ void MenuDrawMissions(MENU *menu) {
     for (i = 0; i < MissionSys->count; ++i) {
         opacity = (MissionIconScalePc[i] * 0.3f + 0.7f) * alpha;
         x = MissionIconXPc[i] - 0.0f;
-        *(i32 *)&absolute_x = *(i32 *)&x & 0x7fffffff; /* NuFabs */
+        absolute_x = MissionsFabsPc(x);
         if (!(absolute_x > 1.0f)) {
             if (absolute_x > 0.5f) {
                 opacity *= 1.0f - (absolute_x - 0.5f) * 2.0f;

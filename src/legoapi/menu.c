@@ -344,6 +344,11 @@ void DrawMenuHeader(void) {
     }
 }
 
+void fun_0050f620(char *text, u32 red, u32 green, u32 blue) {
+    MenuSmartTextEx(text, 0.0f, MenuTopYPc, 1.0f, MenuTextScalePc, MenuTextScalePc, MenuTextScalePc, 1, red, green,
+                    blue, 1.5f, 3, NULL, 0, MenuA);
+}
+
 void MenuLoadTechnicalStrings(char *filepath, char *language, VARIPTR *buffer, VARIPTR buffer_end) {
     NuStringTableSetBank(2);
     NuStringTableSetFormat(0);

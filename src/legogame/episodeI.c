@@ -188,6 +188,22 @@ static NUVEC pod_old_pos[2];
 extern f32 HudBossIconYPc;
 i32 XZLinesIntersect(NUVEC *a, NUVEC *b, NUVEC *c, NUVEC *d, f32 *first, f32 *second);
 
+/* The engine's VuVec helpers; this unit carries its own copies. */
+static void EpisodeIVuVecSetOriginPc(NUVEC4 *v) {
+    v->x = 0.0f;
+    v->y = 0.0f;
+    v->z = 0.0f;
+    v->w = 1.0f;
+}
+
+static f32 EpisodeIVuVecDotPc(const NUVEC4 *a, const NUVEC4 *b) {
+    return a->x * b->x + a->y * b->y + a->z * b->z;
+}
+
+static f32 EpisodeIVuVecLengthSqPc(const NUVEC4 *v) {
+    return v->x * v->x + v->y * v->y + v->z * v->z;
+}
+
 static void PodMatrixCopyPrivatePc(NUMTX *destination, const NUMTX *source) {
     destination->m00 = source->m00;
     destination->m01 = source->m01;
@@ -740,8 +756,8 @@ static i32 PodRaceUpdatePodPc(RACEPOD_RESOURCE_PC *pod, WORLDINFO *world) {
         direction.x = point->x - pod->matrix.m30;
         direction.y = point->y - pod->matrix.m31;
         direction.z = point->z - pod->matrix.m32;
-        length_sq = direction.x * direction.x + direction.y * direction.y + direction.z * direction.z;
-        dot = direction.y * pod->matrix.m21 + direction.x * pod->matrix.m20 + direction.z * pod->matrix.m22;
+        length_sq = EpisodeIVuVecLengthSqPc(&direction);
+        dot = EpisodeIVuVecDotPc(&direction, (NUVEC4 *)&pod->matrix.m20);
         if (!(pod->start >= 1.0f)) {
             while (length_sq < 1.0f || dot < 0.0f) {
                 pod->start = pod->start + PodRaceSplineIncrementPc;
@@ -1179,6 +1195,26 @@ i32 PodSeekMushCutSound(void) {
         mushroom_collapse != 0) {
         if (GameCam->sock_position.distance > mushroom0_along - 15.0 &&
             GameCam->sock_position.distance <= mushroom0_along + 5.0) {
+            return 1;
+        }
+    }
+    return 0;
+}
+
+i32 PodSeekSubCutSound(void) {
+    if (WORLD->current_level == LevelFixupSlotPc0087b0b4 && Lap == 3 && GameCam->sock_position.distance > 195.0f) {
+        if (PodRacePc->mushroom_timer <
+            PodRacePc->previous_lap_display - 2.8f + GameCam->sock_position.distance - 195.0) {
+            return 1;
+        }
+    }
+    return 0;
+}
+
+i32 PodSeekTuskanCutSound(void) {
+    if (WORLD->current_level == PODRACEB_LDATA && Lap == 1 && GameCam->sock_position.distance > 182.0f) {
+        if (PodRacePc->mushroom_timer <
+            PodRacePc->previous_lap_display - 2.8f + GameCam->sock_position.distance - 182.0) {
             return 1;
         }
     }
@@ -2348,10 +2384,7 @@ i32 Action_CreatePod(AISYS_PC *system, AISCRIPTPROCESS_PC *process, AIPACKET_PC 
     direction.y = next_position.y - position.y;
     direction.z = next_position.z - position.z;
     RacePodAlignPrivatePc(pod, &direction, 1.0f, 0);
-    pod->previous_axis.x = 0.0f;
-    pod->previous_axis.y = 0.0f;
-    pod->previous_axis.z = 0.0f;
-    pod->previous_axis.w = 1.0f;
+    EpisodeIVuVecSetOriginPc(&pod->previous_axis);
     pod->previous_position = position;
     pod->distance = start;
     pod->object = AddDynamicCreature(pod->model_id, (NUVEC *)spline, 0, NULL, NULL, NULL, 1, NULL, NULL, 0, 0);

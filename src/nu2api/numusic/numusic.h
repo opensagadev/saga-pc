@@ -192,6 +192,8 @@ class NuMusic {
     i32 PlayTrackI(u32 class_mask, u32 prepare_only);
     i32 CueTrack(u32 class_mask);
     void Process(f32 delta);
+    NuMusic();
+    ~NuMusic();
     f32 fun_00693ba0();
     static NuMusic *GetPlayer();
     void NoMusic(i32 no_music);

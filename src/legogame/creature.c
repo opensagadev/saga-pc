@@ -183,7 +183,7 @@ typedef struct moveplayer_pad_bits_pc_s {
     u16 high : 12;
 } MOVEPLAYER_PAD_BITS_PC;
 
-static __inline f32 MovePlayerFabs(f32 value) {
+static __inline f32 PlayersFabsPc(f32 value) {
     u32 bits = *(u32 *)&value & 0x7fffffff;
     return *(f32 *)&bits;
 }
@@ -1368,7 +1368,7 @@ void MovePlayer(GAMEOBJECT *object) {
                     z = (f32)(z * (f64)0.007843137718737125f);
                     angle = NuAtan2D(x, z);
                     axis.x = axis.y = 0.0f;
-                    axis.z = MovePlayerFabs(x) > MovePlayerFabs(z) ? MovePlayerFabs(x) : MovePlayerFabs(z);
+                    axis.z = PlayersFabsPc(x) > PlayersFabsPc(z) ? PlayersFabsPc(x) : PlayersFabsPc(z);
                     NuVecRotateY(&input, &axis, angle);
                     magnitude = NuFsqrt(input.x * input.x + input.z * input.z);
                     if (object == Player[0]) {

@@ -653,14 +653,16 @@ extern "C" i32 fun_006986c0(void) {
     return 1;
 }
 
-SoundVoiceManagerPC *SoundVoiceManagerPC::ResetStoragePc(void) {
+SoundVoiceManagerPC::SoundVoiceManagerPC() {
     memset(this, 0, sizeof(*this));
     if (PCSoundStorageLockReadyPc == 0) {
         InitializeCriticalSection(&PCSoundStorageLockPc);
         PCSoundStorageLockReadyPc = 1;
     }
-    return this;
 }
+
+// Plain .bss like retail: VC8 drops the constructor's memset only for an object it knows is zero-filled.
+SoundVoiceManagerPC SoundVoiceManager;
 
 void SoundVoiceManagerPC::UnloadSample(i32 index) {
     EnterCriticalSection(&SoundVoiceCriticalSection);

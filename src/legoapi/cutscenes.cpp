@@ -138,6 +138,14 @@ typedef struct CUT_LOAD_RECORD_PC {
         *(i32 *)&(destination) = *(i32 *)&fabs_value & 0x7fffffff;                                                     \
     } while (0)
 
+/* The SDK's inline NuFabs (nufloat.h): a masked copy of the float bits. */
+static f32 CutscenesFabs(f32 f) {
+    f32 rv;
+
+    *(i32 *)&rv = *(i32 *)&f & 0x7fffffff;
+    return rv;
+}
+
 typedef struct CUT_LOAD_SYS_PC {
     CUT_LOAD_RECORD_PC **records; // 0x0
     i32 count;                    // 0x4
@@ -778,7 +786,7 @@ extern "C" {
                     subtitle->alignment = 3;
                 }
             } else if (NuStrICmp(fp->word_buffer_ptr, "start_time") == 0) {
-                CS_NUFABS(subtitle->start_frame, NuFParGetFloat(fp));
+                subtitle->start_frame = CutscenesFabs(NuFParGetFloat(fp));
             } else if (NuStrICmp(fp->word_buffer_ptr, "end_time") == 0) {
                 CS_NUFABS(subtitle->end_frame, NuFParGetFloat(fp));
             } else if (NuStrICmp(fp->word_buffer_ptr, "pos") == 0) {

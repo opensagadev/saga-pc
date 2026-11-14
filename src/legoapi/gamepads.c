@@ -270,6 +270,16 @@ void ConstantRumble(GAMEOBJECT *object, f32 strength, f32 phase) {
     }
 }
 
+i32 fun_0054ace0(i32 index, i32 require_ready) {
+    i32 menu = GetMenuID();
+    if ((require_ready && !((GAMEPAD_RUNTIME_INPUT_PC *)GamePadStorage)[index].input_ready) ||
+        (((GAMEPAD_RUNTIME_INPUT_PC *)GamePadStorage)[index].bound_pad->flags & 4) ||
+        (LEGOMENU_NEWGAME != -1 && menu == LEGOMENU_NEWGAME) || (LEGOMENU_CREDITS != -1 && menu == LEGOMENU_CREDITS)) {
+        return 0;
+    }
+    return 1;
+}
+
 void PadOutPause(i32 index, WORLDINFO *world) {
     i32 menu;
     if (Paused) {

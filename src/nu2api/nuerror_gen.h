@@ -35,7 +35,10 @@ typedef struct PC_NATIVE_DEBUG_VERTEX_PC {
 typedef struct PC_NATIVE_DEBUG_STATE_PC {
     u8 unknown_0;
     u8 enabled;
-    u8 unknown_002[14];
+    u8 unknown_002[2];
+    i32 unknown_004;
+    i32 unknown_008;
+    i32 unknown_00c;
     PC_NATIVE_DEBUG_HEADER_PC header;
     PC_NATIVE_DEBUG_HEADER_PC *current_header;
     f32 top;
@@ -47,6 +50,8 @@ typedef struct PC_NATIVE_DEBUG_STATE_PC {
     u8 write_log;
     u8 unknown_505[3];
 #ifdef __cplusplus
+    PC_NATIVE_DEBUG_STATE_PC();
+    ~PC_NATIVE_DEBUG_STATE_PC();
     void InitializeHeader();
     void UpdateGeometry();
     void Initialize();

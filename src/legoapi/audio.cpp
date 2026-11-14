@@ -122,6 +122,14 @@ extern "C" {
     }
 }
 
+/* The SDK's inline NuFabs (nufloat.h): a masked copy of the float bits. */
+static f32 AudioFabs(f32 f) {
+    f32 rv;
+
+    *(i32 *)&rv = *(i32 *)&f & 0x7fffffff;
+    return rv;
+}
+
 void legoSetMusicVolume(f32 volume) {
     music_man.SetClassVolume(0x23, volume);
 }
@@ -232,14 +240,7 @@ extern "C" {
         target = 0.0f;
         if (silent == 0) {
             if (object->flags_1fc & 0x80) {
-                union {
-                    f32 value;
-                    u32 bits;
-                } magnitude;
-
-                magnitude.value = object->field_dc8;
-                magnitude.bits &= 0x7fffffff;
-                target = magnitude.value;
+                target = AudioFabs(object->field_dc8);
             } else {
                 target = object->velocity_magnitude / character->run_speed;
             }

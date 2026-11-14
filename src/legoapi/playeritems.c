@@ -31,6 +31,17 @@ void PlayerItemTypes_Reset(WORLDINFO *world) {
     }
 }
 
+void PlayerItem_Set(WEAPON_AMMO_PC *item, VEHICLE_WEAPON_ITEM_PC *type) {
+    item->type = type;
+    if (type != NULL) {
+        item->ammo = type->start_ammo;
+        item->field_05 = type->start_field_03;
+    } else {
+        item->ammo = 0;
+        item->field_05 = 0;
+    }
+}
+
 PLAYER_ITEM_TYPE_RESET_PC *PlayerItemType_Find(i32 id) {
     i32 index;
     if (PlayerItemTypePc == NULL) {
