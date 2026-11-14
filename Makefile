@@ -21,6 +21,10 @@ endif
 
 # Parallelize object compilation by default; explicit -j still overrides.
 MAKEFLAGS += -j$(shell nproc)
+# No built-in rules: the EXE depends on the source directories, and a directory next to a same-named unit
+# (src/gamelib/nuwind/ and nuwind.c) would otherwise match `%: %.c` and be "built" with the host cc.
+MAKEFLAGS += -r
+.SUFFIXES:
 
 SOURCES := $(filter-out src/debug/sound_monitor.c src/debug/stream_capture.c src/debug/log_copier.c src/debug/log.c src/debug/crash_diagnostics.cpp src/debug/skin_trace.cpp src/debug/skin_trace_windows.cpp,$(shell find src -type f \( -name '*.cpp' -o -name '*.c' \) | LC_ALL=C sort))
 DEPENDENCY_SOURCES := $(shell $(PYTHON) tools/dependencies.py --sources)
