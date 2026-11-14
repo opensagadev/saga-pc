@@ -4,8 +4,12 @@
 #include <string.h>
 
 /* Episode V FixUpLevels callbacks (Hoth escape, Dagobah, Cloud City trap). */
+f32 melee_waveDelay = 0;
+i32 dagobah_training = 0;
 GAMEOBJECT *Vader_obj = NULL;
 static GIZAIMESSAGE *Vader_ai_message = NULL;
+HOTHBATTLE_MELEE_s melee = {0};
+struct GIZTURRET_s *StarDestroyerTurrets[16] = {0};
 AILOCATOR_PC *HothEscapeBLocatorPc = NULL;
 GAMEOBJECT *HothEscapeBSnowmobPc = NULL;
 
@@ -371,6 +375,8 @@ void Asteroid_AddParts(GIZMOBLOWUP_PC *blowup) {
 
 ASTEROID_PC asteroids[128] = {0};
 i32 nasteroids = 0;
+/* PC 0x00800290. */
+i8 melee_wavePhase = -1;
 i32 maxrotspd[3] = {0x1555, 0x38e, 0x16c};
 
 void Asteroids_Reset(WORLDINFO *world) {
@@ -477,7 +483,8 @@ void Asteroids_Update(void) {
     }
 }
 
-/* Falcon spotlight phases. */
+/* PC 0x0088a554 / 0x0088a55c / 0x00800214 / 0x0080021c: Falcon spotlight phases. */
+u8 turretAliveCount = 0;
 f32 spotLightA_yrot[2] = {0};
 f32 spotLightA_zrot[2] = {0};
 f32 spotLightB_yrot[2] = {0.5f, 0.5f};
@@ -528,6 +535,7 @@ void AsteroidChaseA_Update(WORLDINFO *world) {
 }
 
 GIZMOBLOWUP_PC *classicBlowups[8] = {0};
+u8 troopercannons_beenReset = 0;
 u8 drawLights = 0;
 
 void AsteroidChaseB_Init(WORLDINFO *world) {
@@ -691,6 +699,10 @@ void AsteroidChaseC_Update(WORLDINFO *world) {
     }
 }
 
+/* PC 0x0088a310 / 0x0088a314. */
+u8 minikitCounter_A = 0;
+u8 minikitCounter_C = 0;
+nuhspecial_s escape[8] = {0};
 i32 lastPlaying = 0;
 NUSPECIALHANDLE specialIcon = {0};
 

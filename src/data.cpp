@@ -7721,7 +7721,6 @@ i32 loadareacharacters_loadedlevel = 0;
 i32 level_already_loaded = -1;
 i32 next_level = 0;
 volatile i32 abort_load = 0;
-i32 dagobah_training = 0;
 i32 party_cant_be_under_cover = 0;
 i32 ResetOldFStop = 0;
 i32 new_level_from_menu = 0;
@@ -10673,8 +10672,6 @@ extern "C" {
 #pragma data_seg(".data$Door_NextSock")
     i32 Door_NextSock = -1;
 #pragma data_seg()
-    u8 minikitCounter_C = 0;
-    u8 minikitCounter_A = 0;
 }
 
 extern "C" {
@@ -24030,8 +24027,6 @@ extern "C" {
 
     shopitem_s CutItems[128] = {0};
 
-    u8 troopercannons_beenReset = 0;
-
 #pragma data_seg(".data$players_going_forward")
 }
 
@@ -24182,10 +24177,6 @@ extern "C" {
 
 extern "C" {
     TIMER SuperStoryTimer = {0};
-}
-
-extern "C" {
-    HOTHBATTLE_MELEE_s melee = {0};
 }
 
 extern "C" {
@@ -24368,15 +24359,6 @@ extern "C" {
 
 extern "C" {
 #pragma data_seg(".data$melee_wavePhase")
-    i8 melee_wavePhase = -1;
-
-    nuhspecial_s escape[8] = {0};
-
-    struct GIZTURRET_s *StarDestroyerTurrets[16] = {0};
-
-    u8 turretAliveCount = 0;
-
-    f32 melee_waveDelay = 0;
 }
 
 extern "C" {
