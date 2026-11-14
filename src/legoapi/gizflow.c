@@ -831,6 +831,7 @@ static GIZFLOW_REMAP_PC *remap = 0;
 static i32 numRemaps = 0;
 static i32 load_nparents = 0;
 static i32 load_nchildren = 0;
+u8 gizflow_loop_checksum = 0;
 static i32 load_parents[16] = {0};
 static i32 load_children[32] = {0};
 static u8 load_parent_output_ix[16] = {0};
@@ -981,6 +982,11 @@ struct GIZFLOW_CONDITION_TYPE_PC {
     void (*load)(NUFPAR_PC *); // 0x8
 }; // size 0xc
 
+const FLOWBOX_CALLBACKS_PC flowbox_callbacks[3] = {
+    {ResetGizmoFlowBox, ProcessGizmoFlowBox, CheckOutputGizmoFlowBox},
+    {NULL, ProcessConditionFlowBox, CheckOutputConditionFlowBox},
+    {NULL, ProcessActionFlowBox, CheckOutputActionFlowBox},
+};
 static GIZFLOW_CONDITION_TYPE_PC gizflow_condition_types_pc[] = {
     {0, "All", NULL},  {1, "Any", NULL},
     {2, "None", NULL}, {3, "Sum", GizFlowConfigSumBoxPc},

@@ -7871,12 +7871,6 @@ extern "C" {
         {0x00000000, 0x0000ffff, 0x00000000},
     };
 #pragma data_seg()
-    const FLOWBOX_CALLBACKS_PC flowbox_callbacks[3] = {
-        {ResetGizmoFlowBox, ProcessGizmoFlowBox, CheckOutputGizmoFlowBox},
-        {NULL, ProcessConditionFlowBox, CheckOutputConditionFlowBox},
-        {NULL, ProcessActionFlowBox, CheckOutputActionFlowBox},
-    };
-    u8 gizflow_loop_checksum = 0;
     GAMEAUDIO_PC *GameAudio = &GameAudioStorage;
     NUVEC nusound_special_positions[5] = {0};
     f32 nusound_fade_start = 2.0f;
