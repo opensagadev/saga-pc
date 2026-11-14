@@ -246,6 +246,15 @@ extern "C" void CharScenes_AreaDump() {
 
 extern "C" {
     static NUGSCN **IconScenePc = 0;
+    CHARACTERDATA_PC *CDataList = 0;
+    i32 CHARCOUNT = 0;
+    KILLPARTS_CHARSCENE_PC *KillPartsCharSceneAreaPc = 0;
+    CHAR_CATEGORY_RECORD_PC *CharCategory = 0;
+    PLAYERCHARACTERCONFIG_PC *GCDataList = 0;
+    u8 *Game_CharacterSave = 0;
+    i32 drawcharicon_find = 0;
+    static char **CharVariant = 0;
+    static i32 CHARVARIANTCOUNT = 0;
 
     static char AreaIconPathPrivate[0x40] = "stuff\\icons\\";
     STATIC_ASSERT(sizeof(AreaIconPathPrivate) == 0x40);
@@ -561,9 +570,6 @@ extern "C" {
         }
         return -1;
     }
-
-    static char **CharVariant = 0;
-    static i32 CHARVARIANTCOUNT = 0;
 
     void CharVariants_Init(char **variants, i32 count) {
         if (variants != NULL && count > 0) {

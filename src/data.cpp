@@ -7442,8 +7442,6 @@ extern "C" {
 
     u8 PlayerTorpedoCount[8] = {0};
 
-    u8 *Game_CharacterSave = 0;
-
     GAMEOBJECT BackUpPlayers[2] = {0};
 
     SOCKPOSITION_PC OldPlrSPos[8] = {0};
@@ -8422,8 +8420,6 @@ extern "C" {
     EPISODEDATA_PC *EDataList = 0;
     i32 EPISODECOUNT = 0;
     i32 LEVELCOUNT = 0;
-    CHARACTERDATA_PC *CDataList = 0;
-    i32 CHARCOUNT = 0;
     CHEATSYSTEM_PC CheatSystem = {0};
 #pragma data_seg(".data$CheatSystemPtr")
     CHEATSYSTEM_PC *CheatSystemPtr = &CheatSystem;
@@ -9563,7 +9559,6 @@ extern "C" {
 }
 
 extern "C" {
-    PLAYERCHARACTERCONFIG_PC *GCDataList = 0;
     CUSTOMISER_LAYERS_PC *CharacterCustomiser = 0;
 #pragma data_seg(".data$id_BODYGUARD")
     i16 id_BODYGUARD = -1;
@@ -11927,9 +11922,6 @@ extern "C" {
 #pragma data_seg()
 }
 extern "C" {
-    KILLPARTS_CHARSCENE_PC *KillPartsCharSceneAreaPc = 0;
-}
-extern "C" {
     KILLPARTS_ACCESSORY_PC KillPartsAccessoriesPc[2][9] = {0};
 }
 extern "C" {
@@ -13554,8 +13546,6 @@ extern "C" {
 
     NUGSCN *things_scene = 0;
 
-    i32 drawcharicon_find = 0;
-
     NUSPECIALHANDLE RenderBackdropSpecialsPc[4] = {0};
 
     NUGSCN *backdrop_scene = 0;
@@ -14241,7 +14231,6 @@ extern "C" {
     u8 grapple_attach_frames = 5;
 #pragma data_seg()
     i32 CHARCATEGORYCOUNT = 0;
-    CHAR_CATEGORY_RECORD_PC *CharCategory = 0;
 }
 
 extern "C" {
