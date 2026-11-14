@@ -1,8 +1,8 @@
 #include "saga.h"
 
-/* Retail bolts unit (0x57f700-0x584590): bolts.c and the bolt runtime were one
-   translation unit, so private helpers inline into their callers. Definitions
-   follow retail address order; C entry points keep C linkage via extern "C". */
+/* Bolts unit: bolts.c and the bolt runtime are one translation unit, so
+   private helpers inline into their callers. C entry points keep C linkage
+   via extern "C". */
 
 extern "C" {
     extern i32 (*BoltInitSfxFn)(GAMEOBJECT *);
@@ -85,7 +85,7 @@ extern "C" {
 
     extern const char BoltImpactSoundPc[12] = "imp_impacts";
 
-    /* Native 44-record owner; configuration publication remains in InitGameAfterConfig. */
+    /* 44 records; the configuration is published in InitGameAfterConfig. */
     BOLTTYPE_PC GlobalBoltType[44] = {{"red",
                                        4.0f,
                                        2.0f,
@@ -1263,7 +1263,7 @@ extern "C" {
     }
 }
 
-// Retail private rotation leaves take the matrix in EAX and angle in ECX (VC8 internal ABI).
+// Private rotation leaves take the matrix in EAX and angle in ECX (VC8 internal ABI).
 extern "C" {
     static NUMTX *BoltDrawRotateXPrivate(NUMTX *m, i32 angle) {
         f32 cos_x = NuTrigTable[((angle + 0x4000) >> 1) & 0x7fff];
@@ -2331,7 +2331,7 @@ extern "C" void Bolt_Init(void *storage, NETMESSAGE_PC &message) {
     message.Read32(type_id);
     message.Read32(hit_flags);
     GAMEOBJECT *owner = owner_index >= 0 ? &Obj[owner_index] : NULL;
-    /* BoltType_FindByID(type_id, WORLD), written in place as retail inlines it. */
+    /* BoltType_FindByID(type_id, WORLD), inlined. */
     BOLTTYPE_PC *type;
     if (type_id >= 0 && type_id < BoltSys->count) {
         type = &BoltSys->types[type_id];

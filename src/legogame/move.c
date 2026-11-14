@@ -25,7 +25,6 @@ typedef struct default_animation_timers_pc_s {
     f32 fall_animation_timer;
 } DEFAULT_ANIMATION_TIMERS_PC;
 
-/* Same original motion owner; merge with the genuine static default/Manage helpers. */
 typedef struct CHARACTER_FALL_ANIMATION_READER_PC {
     u8 unknown_000[0xdac];
     f32 fall_animation_timer;
@@ -109,7 +108,7 @@ TUBE_PC *Tube_InAnyCylinder(WORLDINFO *, GAMEOBJECT *, i32);
 #define ASIN_POW3(x) ((x) * ASIN_POW2(x))
 #define ASIN_POW4(x) (ASIN_POW2(x) * ASIN_POW2(x))
 #define ASIN_POW5(x) (ASIN_POW2(x) * ASIN_POW3(x))
-/* Retail subtracts the shared 0.0 double literal (0x751790) without folding it. */
+/* Subtracts the shared 0.0 double literal without folding it. */
 extern const f64 ActionSnapWeightedRandomZeroPc;
 
 typedef struct move_gunship_level_flags_pc_s {
@@ -434,7 +433,7 @@ typedef struct critter_object_reader_pc_s {
 void *CreateSnakeBody(GAMEOBJECT *object, i32 segment_count);
 void UpdateSnakeBody(GAMEOBJECT *object);
 
-/* Retail-private helpers and combo provider; keep in move.c with native callers. */
+/* Private helpers and combo provider. */
 typedef struct COMBO_STATE_VIEW_PC {
     u8 unknown_000[0xe2e];
     u8 blocked_attack_stage;
@@ -488,7 +487,6 @@ typedef struct player_reset_fields_pc_s {
 } PLAYER_RESET_FIELDS_PC;
 
 extern const f64 GameObjectNearFloorNoFloorHeight;
-/* Android speederchase.cpp:99 candidate adapted to the complete PC body. */
 extern i32 objopponent_ignoreaiopponent;
 
 static f32 MoveFabsPc(f32 value) {
@@ -1018,7 +1016,7 @@ f32 ForceTowardsMid(GAMEOBJECT *object) {
                 }
             }
             if (planar == 0) {
-                goto done; // MATCH-EXCEPTION: retail leaves through the function's single return here, not its own
+                goto done; // MATCH-EXCEPTION: leaves through the function's single return here, not its own
                            // epilogue
             }
         }
@@ -1144,7 +1142,7 @@ i32 FaceOpponent(GAMEOBJECT *object, NUVEC *position) {
     return 0;
 }
 
-/* Retain with MovePlayer_DIRECTIONAL; retail physical ABI is ECX object plus caller-clean stack float. */
+/* Kept with MovePlayer_DIRECTIONAL. */
 static f32 MovementWalkingSpeedPC(GAMEOBJECT *object, f32 scale) {
     f32 speed = (object->character_data->game_character->run_speed * scale) / NuTimeBarColumnStep;
     if (object->pad->input_magnitude <=
@@ -2874,7 +2872,6 @@ void PopBalloon(GAMEOBJECT *object) {
     LetGoOfBalloon(object);
 }
 
-/* Native 49d6d0: genuine guard then fixed PC context/action and pointer member. */
 i32 Glide_Start(GAMEOBJECT *object) {
     if (LEGOCONTEXT_GLIDE != -1) {
         object->context_timer = 0.0f;
@@ -3203,7 +3200,6 @@ static PART_PC *BlockFindIncomingPartPc(GAMEOBJECT *object) {
     return FindIncomingPart(object, &object->collision_position, radius, 0xa, 0.0f);
 }
 
-/* PC0049e2b0: object in ESI, variant on stack. */
 static void StartComboJump(GAMEOBJECT *object, i32 variant) {
     object->velocity.y = object->character_data->game_character->second_jump_speed;
     object->context_variant_flags &= ~0x10000u;
@@ -3231,7 +3227,6 @@ static void StartComboJump(GAMEOBJECT *object, i32 variant) {
     }
 }
 
-/* PC0049e370: object in ESI; result in EAX. */
 static i32 StartBlock(GAMEOBJECT *object) {
     COMBO_STATE_VIEW_PC *state = (COMBO_STATE_VIEW_PC *)object;
     if (NewBlockAction(object) != 0) {
@@ -4164,7 +4159,7 @@ static void LightSabreStreakCode(GAMEOBJECT *object, i32 blade, i32 effect) {
         ((object->flags_1fc_word & 0x80) != 0 || (object->portal_flags & 0x40) != 0 || object->field_f00 == 5)) {
         if ((object->flags_1fc_word & 0x80) == 0 && object->model_draw_result == 0) {
             if (object->blowup_target != NULL) {
-                /* Legacy prefix view of the canonical GizmoBlowUpOpponent result. */
+                /* Prefix view of the GizmoBlowUpOpponent result. */
                 GizmoBlowupBlowup((GIZMOBLOWUP_PC *)object->blowup_target, 1, -1, 1, NULL, 1);
                 AlertSurroundingCreatures(object, &points[0]);
             }
@@ -4303,7 +4298,6 @@ static void AfterAnimationSabreCode(GAMEOBJECT *object, i32 effect) {
     }
 }
 
-/* PC004a10c0: object in EAX, action_pressed/action_held/jump_pressed/special_pressed on stack. */
 static void JediLightCode(GAMEOBJECT *object) {
     if (object->dynamic_light_id != -1) {
         NUVEC colour;
@@ -11535,7 +11529,7 @@ void Move_JEDI(GAMEOBJECT *object) {
         PlaySfxAndSetVolume("JForceUse", &object->collision_position, volume->force_use_volume);
     }
     if ((object->flags_1fc & 0x80) != 0 && force_volume == 1.0f && !Cheat_PowerUpActive(object->player_index)) {
-        /* Native computes and pushes hostility_group*.3f before qrand; true qrand reads no arguments. */
+        /* Computes and pushes hostility_group*.3f before qrand; qrand reads no arguments. */
         ConstantRumble(object, (f32)((f64)qrand() * (f64)(1.0f / 65535.0f) * (f64)0.5f),
                        (f32)((f64)object->hostility_group * (f64)0.3f));
     }
@@ -12039,26 +12033,26 @@ after_gravity:
     FloatCode(object);
     SlideCode(object);
     FlattenCode(object);
-    Hang_MoveCode(object); /* Native4b4d51: object; Hang_MoveCode. */
+    Hang_MoveCode(object);
     Ledge_MoveCode(WORLD, object);
     if (DefaultMotionLedgeTerrainEnabledPc != 0) {
-        LedgeTerrain_MoveCode(object); /* Native4b4d6f: object; LedgeTerrain_MoveCode. */
+        LedgeTerrain_MoveCode(object);
     }
-    Climb_MoveCode(object);                   /* Native4b4d78: object; Climb_MoveCode. */
-    TightRope_MoveCode(object, jump_pressed); /* Native4b4d7f: object,jump_pressed; TightRope_MoveCode. */
+    Climb_MoveCode(object);
+    TightRope_MoveCode(object, jump_pressed);
     ForcePushed_MoveCode(object);
     ForcedBackCode(object);
-    Tube_MoveCode(object, WORLD); /* Native4b4d99: true cdecl object,WORLD. */
+    Tube_MoveCode(object, WORLD);
     DeactivatedCode(object);
     PushCode(object, StartupGameFlag1 && !StartupGameFlag0);
-    BackFlipCode(object); /* Native4b4dcb: object; BackFlipCode. */
+    BackFlipCode(object);
     if (object->id != (u16)DefaultMotionSkeletonIdPc) {
         TakeOverCode(object, tag_pressed);
     }
-    Glide_MoveCode(object); /* Native4b4df2: object; Glide_MoveCode. */
+    Glide_MoveCode(object);
     runtime = object->character_data->game_character;
     if (runtime->weapon_action == 2 && object->jump_variant_state == 1) {
-        JetPackCode(object, jump_pressed, 0, 0); /* Native4b4e1c: object,jump_pressed,0,0; JetPackCode. */
+        JetPackCode(object, jump_pressed, 0, 0);
     } else if ((runtime->flags_094 & 4) == 0) {
         u32 animations = object->id == (u16)id_GAMORREANGUARD ? 0x20 : 8;
         if ((runtime->flags_090 & 0x400000) != 0) {
@@ -12070,7 +12064,7 @@ after_gravity:
     HatMachine_MoveCode(WORLD, object, special_pressed);
     ZipUp_MoveCode(object, special_pressed);
     if ((object->character_data->model_flags & 0x100000) != 0) {
-        Grapple_MoveCode(object); /* Native4b4ea7: object; Grapple_MoveCode. */
+        Grapple_MoveCode(object);
     }
     BuildIt_MoveCode(object);
     Lever_MoveCode(WORLD, object);
@@ -12100,11 +12094,11 @@ after_gravity:
             SlowWeaponIn(object);
         }
     }
-    WeaponOutCode(object);          /* Native4b4fb7: object; WeaponOutCode. */
-    WeaponInCode(object);           /* Native4b4fbd: object; WeaponInCode. */
-    WeaponScalingCode(object);      /* Native4b4fc3: object; WeaponScalingCode. */
-    SpecialMove_VictimCode(object); /* Native4b4fc9: true cdecl object. */
-    HoldCode(object);               /* Native4b4fcf: true cdecl object. */
+    WeaponOutCode(object);
+    WeaponInCode(object);
+    WeaponScalingCode(object);
+    SpecialMove_VictimCode(object);
+    HoldCode(object);
     BlockCode(object, action_pressed, action_held, 0, (object->character_data->model_flags & 0x80) == 0);
     PunchCode(object, action_pressed, action_held, object->character_data->model_flags & 0x80, 0, 0.0f);
     if ((object->character_data->game_character->flags_094 & 0x20000000) != 0 &&
@@ -12435,9 +12429,9 @@ void Move_SUPERBATTLEDROID(GAMEOBJECT *object) {
     ForcedBackCode(object);
     Tube_MoveCode(object, WORLD);
     DeactivatedCode(object);
-    WeaponOutCode(object);     /* Native 4b5e7b: WeaponOutCode(object). */
-    WeaponInCode(object);      /* Native 4b5e81: WeaponInCode(object). */
-    WeaponScalingCode(object); /* Native 4b5e87: WeaponScalingCode(object). */
+    WeaponOutCode(object);
+    WeaponInCode(object);
+    WeaponScalingCode(object);
     ShootCode(object, object->pad->buttons_pressed & GAMEPAD_ACTION, object->pad->buttons_pressed & GAMEPAD_SPECIAL, 1,
               0, 0);
     BeastStartFallCodePc(object);

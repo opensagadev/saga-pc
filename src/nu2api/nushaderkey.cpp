@@ -1,6 +1,6 @@
 #include "saga.h"
 
-// The filter predicates below are small PC_SHADER_MATERIAL_FILTER_VIEW helpers that retail inlines here; each one
+// The filter predicates below are small PC_SHADER_MATERIAL_FILTER_VIEW helpers inlined here; each one
 // rereads filter->descriptor.
 #define KEY_LAYER_BIT(filter, bit)                                                                                     \
     ((filter)->variant == 0 ? (u8)(((filter)->descriptor->layer_flags >> (bit)) & 1) : (u8)0)
@@ -112,7 +112,7 @@ extern "C" void NuShaderObjectKeyGenerate3(u32 *key, const PC_SHADER_MATERIAL_FI
     *key |= (u16)CRC16::hash(block.bytes, 104);
 }
 
-/* Native 0x745070: builds the filter view for a descriptor and generates its key. No retail caller. */
+/* Builds the filter view for a descriptor and generates its key. No caller. */
 extern "C" void NuShaderObjectKeyGeneratePc(u32 *key, const PC_SHADER_FILTER_DESC_VIEW *desc,
                                             const PC_SHADER_FILTER_MATERIAL_VIEW *material, i32 flags, i32 variant,
                                             i32 pixel_stage) {
@@ -121,7 +121,7 @@ extern "C" void NuShaderObjectKeyGeneratePc(u32 *key, const PC_SHADER_FILTER_DES
     NuShaderObjectKeyGenerate3(key, &filter, pixel_stage);
 }
 
-/* The key of a program described by flags alone. No retail caller. */
+/* The key of a program described by flags alone. No caller. */
 extern "C" void NuShaderObjectKeyGenerate4(u32 *key, u32 flags) {
     PC_SHADER_KEY_BLOCK_PC block;
     memset(&block, 0, sizeof(block));

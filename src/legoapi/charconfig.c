@@ -81,9 +81,9 @@ typedef struct CHARCONFIG_FLAGS098_PC {
 #define CC_FLAGS094 (*(CHARCONFIG_FLAGS094_PC *)&charconfig.runtime->flags_094)
 #define CC_FLAGS098 (*(CHARCONFIG_FLAGS098_PC *)charconfig.runtime->flags_098)
 
-/* Defined at the end of this file; retail calls it with and without a path. */
+/* Defined at the end of this file; called with and without a path. */
 void CharConfigPakDiagnosticPc(const char *format, ...);
-/* MATCH-EXCEPTION: retail also calls it with no arguments or with a number first; those calls go through a type
+/* MATCH-EXCEPTION: it is also called with no arguments or with a number first; those calls go through a type
  * without a prototype, as C allows no other way. */
 #define CHARCONFIG_PAK_DIAGNOSTIC_UNPROTOTYPED ((void (*)())CharConfigPakDiagnosticPc)
 
@@ -778,8 +778,8 @@ static void CC_helmet_locator(NUFPAR_PC *parser) {
 }
 
 /* Reads the next word as a locator index; zero when the line has no more words. */
-// MATCH-EXCEPTION: retail inlines this reader into both callers with no out-of-line copy and without rotating
-// the loop; a static inline function leaves a COMDAT in the object, so it is written as a macro.
+// MATCH-EXCEPTION: the original inlines this reader into both callers with no out-of-line copy and without
+// rotating the loop; a static inline function leaves a COMDAT in the object, so it is written as a macro.
 #define CC_READ_LOCATOR_INDEX(parser, locator)                                                                         \
     (NuFParGetWord(parser) == 0 ? 0 : (*(locator) = NuAToI((parser)->word_buffer_ptr), 1))
 
@@ -2062,7 +2062,6 @@ STATIC_ASSERT(offsetof(CHARACTERDATA_PC, animate_fn) == 0x1c);
 STATIC_ASSERT(sizeof(PLAYERCHARACTERCONFIG_PC) == 0x120);
 STATIC_ASSERT(offsetof(PLAYERCHARACTERCONFIG_PC, flags_094_bytes) == 0x94);
 
-/* Original source name unknown. Empty on PC (a bare RET at 0x5845b0). Defined
-   after its callers and variadic, so CharConfig_ConfigureAll keeps the calls. */
+/* Empty on PC. Defined after its callers and variadic, so CharConfig_ConfigureAll keeps the calls. */
 void CharConfigPakDiagnosticPc(const char *format, ...) {
 }

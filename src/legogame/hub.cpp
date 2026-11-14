@@ -3,10 +3,10 @@
 #include <string.h>
 
 extern "C" {
-    extern i32 HubDoorNewLevelPc;     /* 8795a8, data.obj, existing genuine owner. */
-    extern void *Door_Last;           /* 9513d0, data.obj, existing canonical void* type. */
-    void NewGameMode(void);           /* 55c5f0/16, gamestructure.obj. */
-    void InitSuperStory(i32 episode); /* 55c650/64, menu.obj. */
+    extern i32 HubDoorNewLevelPc;
+    extern void *Door_Last;
+    void NewGameMode(void);
+    void InitSuperStory(i32 episode);
 }
 
 typedef struct hub_minikit_runtime_pc_s {
@@ -62,9 +62,6 @@ typedef struct hub_area_info_pc_s {
     void *second_bonus_gizmo;
 } HUB_AREA_INFO_PC;
 
-/* Research declaration only: original HubAreaInfo is source-private. Its
- * genuine 51-record keyword-sentinel initializer is pending the sole writer;
- * no zero placeholder or fictitious shared owner is emitted here. */
 extern "C" char AreaFixUpName_Senate[];
 extern "C" char AreaFixUpName_Losttemple[];
 extern "C" char AreaFixUpName_Emperorfight[];
@@ -127,7 +124,7 @@ typedef struct hub_pad_reader_pc_s {
     u8 unknown_08[0x58];
 } HUB_PAD_READER_PC;
 
-/* Actual PC Draw3D omits the Android sign/episode scene branch. */
+/* Draw3D on PC has no sign/episode scene branch. */
 typedef struct hub_game_stats_reader_pc_s {
     u8 unknown_0000[0x7c18];
     u16 completion;
@@ -166,18 +163,15 @@ typedef struct hub_door_reader_pc_s {
 } HUB_DOOR_READER_PC;
 
 extern void (*HubResetAIFnPc)(WORLDINFO *);
-// Add only to the genuine Hub owner, after its existing private table definition.
 struct GIZBUILDIT_PC;
 #define HUB_PC_MENU_PLAYER(p, mode)                                                                                    \
     ((p) != NULL && ((p)->flags_1fc & 0x80) != 0 && (p)->field_281 != 0 &&                                             \
      ((p)->character_context == -1 || (p)->character_context == 0x31 || (p)->character_context == 0x32) &&             \
      (p)->jump_animation_state == (mode))
-/* Append to hub.cpp. Native PC extents: 478b00 544; 478d20 517. */
 extern "C" i32 HubDrawMiniKitCharacterPc;
 extern "C" i32 HubDoorNewLevelPc;
 extern "C" i16 TextIdPc8806f8;
 extern "C" i16 TextIdPc8807e4;
-/* Append to hub.cpp: PC 47af70, 494 bytes. area arrives ESI; alpha stack. */
 extern "C" f32 HubEpisodeTitleYPc;
 extern "C" f32 HubEpisodeTitleSizePc;
 extern "C" f32 HubEpisodeSubtitleYPc;
@@ -185,23 +179,18 @@ extern "C" f32 HubEpisodeSubtitleSizePc;
 extern "C" u8 HubEpisodeRedPc;
 extern "C" u8 HubEpisodeGreenPc;
 extern "C" u8 HubEpisodeBluePc;
-/* PC475090,676 bytes. selected and alpha full stack. Native PC has no hint/store/freeplay guards. */
 extern "C" i32 hub_selectmode;
 extern "C" f32 HubSelectMenuYPc;
 extern "C" char *Trailer[6];
-/* PC475350 50 bytes, result EAX, optional flag pointer EDX. */
 extern "C" AREA_DATA_PC **ArcadeLevelPc[12];
-/* PC475390 1184 bytes (CFGextent475390..47582f), five rows. Fullstackselected/alpha. */
 extern "C" i32 Arcade_Score[2];
 extern "C" i32 PCArcadePointGoals[5];
-extern "C" f32 HubArcadeMenuYPc; /*879b74 BSS0*/
-/* PC4763d0,1076 bytes. Full stack cdecl. PC has no Android hublevel flags guard. */
+extern "C" f32 HubArcadeMenuYPc;
 extern "C" i32 bonusmodearcade;
 extern "C" i32 hub_bonusepisode;
 extern "C" i32 hub_bonusarea;
 extern "C" i32 hub_bonusmode;
 extern "C" f32 HubBonusMenuYPc;
-/* PC478f30 2012bytes. mode native argument unused. */
 extern "C" f32 HubTrueJediLabelOffsetPc;
 extern "C" f32 HubTrueJediLabelScalePc;
 extern "C" f32 HubTrueJediLabelWidthPc;
@@ -209,7 +198,6 @@ extern "C" u8 HubTrueJediLabelRedPc;
 extern "C" u8 HubTrueJediLabelGreenPc;
 extern "C" u8 HubTrueJediLabelBluePc;
 extern "C" i32 HubTrueJediTypeAlphaPc;
-/* PC47b160738bytes,47b4501466bytes. Private noargument native draw bodies. */
 extern "C" FADEINFO_s *pFadeInfo;
 extern "C" i32 HubDoorAreaPc;
 extern "C" i32 selectmodemode;
@@ -227,26 +215,19 @@ extern "C" f32 BlipL[2];
 extern "C" f32 BlipR[2];
 extern "C" f32 BlipU[2];
 extern "C" f32 BlipD[2];
-/* PC47bb70 3904bytes, complete private noargument body. No Android radar/hint/menugeometry paths. */
 extern "C" i32 freeplaymode;
 extern "C" i32 freeplay_selected[2];
 extern "C" i32 fpcount;
-/* Private whole native entry/update application fragment for existing hub.cpp.
- * No menu route activation; actual renderer/freeplay17 closure still separate.
- */
 extern i32 hub_selectmode;
 extern i32 hub_bonusmode;
 extern i32 hub_bonusarea;
 extern i32 hub_bonusepisode;
-/* Whole PC 47ecb0/2344, private fragment for existing hub.cpp. */
 extern f32 bonusmodetime;
 extern f32 bonusmodeduration;
-/* Full two native Hub freeplay initialization helpers, no menu17 activation. */
 extern f32 uprepeattime[2];
 extern f32 downrepeattime[2];
 extern f32 leftrepeattime[2];
 extern f32 rightrepeattime[2];
-/* Native full menu17 control owner, private sourcefragment. */
 extern i32 HubIconWibbleRatePc[4];
 
 typedef struct hub_freeplay_pad_reader_pc_s {
@@ -854,7 +835,6 @@ extern "C" i32 Hub_BonusBuildIt(GIZBUILDIT_PC *buildit) {
     return 0;
 }
 
-/* 474d80/112, source-private original helper. */
 static void HubRestoreBuildItsPc(void) {
     i32 bit = 0;
     for (i32 i = 0; HubAreaInfoPc[i].area_name != NULL; ++i) {
@@ -871,9 +851,6 @@ static void HubRestoreBuildItsPc(void) {
     }
 }
 
-/* 474df0/89, native source-private ABI receives buildit in EAX, count on stack.
- * Keep static in hub.cpp so VC8 can choose the native internal convention.
- */
 static void HubSetBuildItPiecesVisiblePc(GIZBUILDIT_PC *buildit, i32 count) {
     if (buildit->linked_buildit != NULL) {
         buildit = buildit->linked_buildit;
@@ -889,7 +866,6 @@ static void HubSetBuildItPiecesVisiblePc(GIZBUILDIT_PC *buildit, i32 count) {
     }
 }
 
-/* 474e50/248. No Android autosave addition in the PC original. */
 static void HubUpdateBonusBuildItsPc(WORLDINFO *world) {
     i32 i = 0;
     i32 bit = 0;
@@ -931,7 +907,6 @@ static void HubResolveEpisodeInfoPc(HUB_EPISODE_INFO_PC *info, WORLDINFO *world)
     }
 }
 
-/* 474fd0/79, all direct dependencies already owned. */
 extern "C" void WipeBackToHub(void) {
     NewMenu(-1, -1, -1);
     ResetTimer(&JoinInTimer, 0);
@@ -942,7 +917,6 @@ extern "C" void WipeBackToHub(void) {
     HubMainRenderTimeHack = 1;
 }
 
-/* 475020/105. */
 static void HubInitSelectModePc(void) {
     const i32 area = LDataList[HubDoorNewLevelPc].area_index;
     if ((LOSTTEMPLE_ADATA != NULL && LOSTTEMPLE_ADATA->index == area) || (ADataList[area].flags & 0x1000) != 0 ||
@@ -1146,7 +1120,7 @@ extern "C" {
     }
 }
 
-/* PC475890 556bytes. Native arcade subtitle + scoreboard + contextual pulse message. */
+/* Arcade subtitle, scoreboard and contextual pulse message. */
 static void HubDrawArcadeStatsPc(f32 alpha) {
     const i32 menu = GetMenuID();
     const f64 alpha_scaled = alpha * 128.0;
@@ -1436,7 +1410,6 @@ extern "C" void Arcade_DrawEndMenu(MENU *menu) {
                 NULL, 0, 128);
 }
 
-/* 476360/110. */
 static void HubInitBonusModePc(void) {
     hub_bonusmode = 0;
     hub_bonusarea = LDataList[HubDoorNewLevelPc].area_index;
@@ -1525,9 +1498,6 @@ static inline COLLECTION_BUILD_PC *HubFreePlayCollectionPc(i32 area) {
     return &CharacterCollectionPc;
 }
 
-/* 476840/526; source-private ABI second_model in EDX, first on stack.
- * Actual emittedname must map existing476840 Hub_MakeFreePlayList owner.
- */
 static void Hub_MakeFreePlayList(i32 first_model, i32 second_model) {
     const i32 area = LDataList[HubDoorNewLevelPc].area_index;
     fpcount = 0;
@@ -1578,7 +1548,6 @@ static void Hub_MakeFreePlayList(i32 first_model, i32 second_model) {
     }
 }
 
-/* 476a50/282; networkbranch mustremainreal, initial native flagzero. */
 static i32 HubCopyNetworkFreePlayListPc(void) {
     if (net_recievedFreePlayList == 0) {
         return 0;
@@ -1618,7 +1587,7 @@ extern "C" void fun_00476b70() {
     }
 }
 
-/* 476ba0/220. Native0 timer resets as well as negative timer. */
+/* A zero timer resets as well as a negative one. */
 static void HubUpdateIconWibblePc(void) {
     for (i32 i = 0; i < 4; ++i) {
         const f32 remaining = HubIconWibbleTimePc[i] - FRAMETIME;
@@ -1631,9 +1600,6 @@ static void HubUpdateIconWibblePc(void) {
     }
 }
 
-/* 476c80/277; full original directionselector. NativeinternalABI EAXcollection,
- * ECXplayer, stackdirection/index. Keepstaticwithcaller forVC8 internalABI.
- */
 static i32 HubMoveFreePlayCursorPc(COLLECTION_BUILD_PC *collection, i32 player, i32 direction, i32 current) {
     const i32 other = (player - 1) & 1;
     const i32 count = collection->count;
@@ -1706,7 +1672,6 @@ static f32 freeplaytime = 0;
 static i32 hub_freeplay_area = 0;
 #pragma bss_seg()
 
-/* 476da0/2192, nativePC control excludesAndroidtouch/autoconfirm logic. */
 extern "C" void Hub_UpdateFreePlaySelect(void) {
     COLLECTION_BUILD_PC *collection;
     if ((ADataList[hub_freeplay_area].flags & 1) != 0) {
@@ -2052,7 +2017,6 @@ extern "C" void Hub_InitMiniKits(WORLDINFO *world) {
     }
 }
 
-/* Insert in hub.cpp, after HUB_PAD_READER_PC. Existing types/state are reused. */
 static i32 Hub_UpdateMiniKitBoundsPc(i32 area_index, WORLDINFO *world) {
     const i32 model = ADataList[area_index].minikit_id;
     HUB_WORLD_READER_PC *w = (HUB_WORLD_READER_PC *)world;
@@ -2347,7 +2311,6 @@ extern "C" void Hub_DrawMiniKits(WORLDINFO *world) {
     SetLevelLights(world->rtl_set, 1.0f);
 }
 
-/* New native storage owner: 879b90, i32, initial BSS 0. */
 static void Hub_DrawMiniKitCount(f32 x, f32 y, i32 count, i32 total, f32 alpha) {
     const i32 object = HubDrawMiniKitCharacterPc != 0 ? 207 : 206;
     HubDrawMiniKitCharacterPc = 0;
@@ -2464,7 +2427,6 @@ void HubDrawAreaStatsPc(f32 phase, i32 area_index, i32 mode) {
     }
 }
 
-/* PC479710/623. Native area ECX, phase stack, internal hub TU. */
 static void HubDrawMiniKitStatsPc(i32 index, f32 phase) {
     char title[128];
     AREA_DATA_PC *area = &ADataList[index];
@@ -2731,7 +2693,6 @@ extern "C" void Hub_Draw3D(WORLDINFO *world) {
     }
 }
 
-/* PC47a2d0/1536. Native episode ECX, phase stack, internal hub TU. */
 static void HubDrawEpisodeStatsPc(i32 episode_index, f32 phase) {
     char text[256];
     EPISODEDATA_PC *episode = &EDataList[episode_index];
@@ -2804,18 +2765,17 @@ extern "C" void Hub_ResetPanel(void) {
     HubMiniKitAreaPc = -1;
 }
 
-/* Six native wrapper bodies. They must be mapped independently from helpers. */
 extern "C" void MenuInitSelectMode(MENU *) {
     HubInitSelectModePc();
-} /*47a950/5*/
+}
 
 extern "C" void MenuInitBonusMode(MENU *) {
     HubInitBonusModePc();
-} /*47a960/5*/
+}
 
 extern "C" void MenuUpdateFreePlay(MENU *) {
     Hub_UpdateFreePlaySelect();
-} /*47a980/5*/
+}
 
 extern "C" {
 
@@ -2876,7 +2836,6 @@ extern "C" i32 Hub_PanelBusy(void) {
     return HubAreaPc != -1 || HubLastAreaPc != -1 || HubMiniKitAreaPc != -1 || HubEpisodePc != -1;
 }
 
-/* PC47ab00 1123bytes. Native episode ECX, alpha/area/mode stack; C++static source. */
 static void HubDrawBonusStatsPc(f32 alpha, i32 area, i32 episode, i32 mode) {
     char text[64];
     char score[64];
@@ -3117,7 +3076,7 @@ static void HubDrawBonusModePc(void) {
                           MissionMenuPacketPc.active_player[1], TextIdPc880888, prompt_alpha, -1, tBACK, -1, -1);
 }
 
-/* 47ba10/340. Native copied collection data chooses default model pair. */
+/* Copied collection data chooses the default model pair. */
 void HubInitFreePlaySelectPc(i32 area, i32 first_model, i32 second_model) {
     COLLECTION_BUILD_PC *collection = HubFreePlayCollectionPc(area);
     i32 first;
@@ -4075,24 +4034,20 @@ extern "C" void MenuDrawSelectMode(MENU *) {
     if (MenuStopDraw == 0) {
         HubDrawSelectModePc();
     }
-} /*47e780/15*/
+}
 
 extern "C" void MenuDrawBonusMode(MENU *) {
     if (MenuStopDraw == 0) {
         HubDrawBonusModePc();
     }
-} /*47e790/15*/
+}
 
 extern "C" void MenuDrawFreePlay(MENU *) {
     if (MenuStopDraw == 0) {
         Hub_DrawFreePlaySelect();
     }
-} /*47e7a0/15*/
+}
 
-/* 47e7b0/1268. Native PC intentionally has no Android FreePlayUnlocked,
- * Store_IsPackUnlocked, touch-menu input or generic availability additions.
- * GamePadStorage native raw buttons fields are newly named at8/10h, stride60h.
- */
 static void HubUpdateSelectModePc(void) {
     i16 ids[340];
     if (((FADEINFO_PC *)&FadeSys)->fade > 0 || MainRenderTime > 0) {
@@ -4321,7 +4276,7 @@ static void HubUpdateBonusModePc(void) {
                 }
             }
             if (bonusmodearcade != 0) {
-                /* Native PC suppresses only player1's up blip at row0. */
+                /* Suppresses only player 1's up blip at row 0. */
                 if (hub_bonusmode == 0) {
                     player_up[1] = 0;
                 } else if (hub_bonusmode >= 4) {
@@ -4551,15 +4506,15 @@ static void HubUpdateBonusModePc(void) {
 
 extern "C" void MenuUpdateSelectMode(MENU *) {
     HubUpdateSelectModePc();
-} /*47f5e0/5*/
+}
 
 extern "C" void MenuUpdateBonusMode(MENU *) {
     HubUpdateBonusModePc();
-} /*47f5f0/5*/
+}
 
 extern "C" {
 
-    /* Original name unknown; retail keeps it uncalled at the head of the unit (0x47f620). */
+    /* Uncalled. */
     i32 IndyConnectionHelperIsTypePc(GAMEOBJECT *owner, u8 type) {
         AI_HELPER_SLOT_PC *helper = owner->indy_connection_helper;
         if (helper != NULL && owner->ai_packet.path_info.connection == helper->connection &&

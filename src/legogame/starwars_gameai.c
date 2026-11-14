@@ -1,7 +1,5 @@
 #include "saga.h"
 
-/* Retail unit 0x4cadb0-0x4cc8bc: definitions in retail address order. */
-
 extern f32 StarWarsJumpDistancePc[3];
 STATIC_ASSERT(offsetof(GAMEOBJECT, ai_jump_destination_distance_pc) == 0xed0);
 STATIC_ASSERT(offsetof(GAMEOBJECT, ai_packet) == 0x2c8);
@@ -142,7 +140,7 @@ i32 StarWars_PrepareR2D2Glide(AIPACKET_PC *packet, APIOBJECT_PC *object, i32 che
         ((GAMEOBJECT *)object)->ai_collision_priority_pc |= 0x2000;
         return 1;
     }
-    // MATCH-EXCEPTION: retail rounds the distance through the radius local before the compare
+    // MATCH-EXCEPTION: the original rounds the distance through the radius local before the compare
     // (store/reload of the call result); the value is not read afterwards.
     if (!(packet->terrain_origin.y >= destination->min_height) ||
         !((radius = NuVecXZDistSqr(&object->position, &destination->position, &offset)) >=
@@ -791,7 +789,7 @@ check:
                             continue;
                         }
                         offset.z = other->position.z - destination->position.z;
-                        // Retail tests offset.x against -clearance again here, not offset.z.
+                        // Tests offset.x against -clearance again here, not offset.z.
                         if (!(offset.z < radius && offset.x > -radius) ||
                             !(other->collision_max.y >= destination->position.y) ||
                             !(other->collision_min.y <= destination->position.y + owner->scaled_height)) {

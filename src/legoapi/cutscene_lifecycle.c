@@ -1612,7 +1612,7 @@ static void CutSceneJumpToEndPc(CUT_INSTANCE_LIFECYCLE_PC *instance, u16 flag) {
     }
 }
 
-/* No retail references; named after what they do. */
+/* Unreferenced; named after what they do. */
 void instNuGCutSceneJumpToEnd(INSTNUGCUTSCENE *owner) {
     CutSceneJumpToEndPc((CUT_INSTANCE_LIFECYCLE_PC *)owner, 0);
 }
@@ -1910,7 +1910,7 @@ static void CutSceneCameraSysUpdatePc(INSTNUGCUTSCENE *owner, f32 frame) {
         return;
     }
     target = &state->targets[camera_state->event_index];
-    // MATCH-EXCEPTION: retail takes the absolute value by clearing the sign bit in an integer register.
+    // MATCH-EXCEPTION: the original takes the absolute value by clearing the sign bit in an integer register.
     signed_duration = target->duration;
     *(u32 *)&duration = *(u32 *)&signed_duration & 0x7fffffff;
     reverse = NuFsign(target->duration) < 0.0f;
@@ -2245,7 +2245,7 @@ static void copyAnims(CUT_SCENE_LOAD_PC *target, CUT_SCENE_LOAD_PC *source) {
 
 void CutSceneSwapStreamAssetPc(CUT_INSTANCE_LOAD_PC *instance) {
     CUT_SCENE_LOAD_PC *saved = instance->saved_scene;
-    // MATCH-EXCEPTION: retail reads the buffer select as a signed one-bit field and masks it to index the pair.
+    // MATCH-EXCEPTION: the original reads the buffer select as a signed one-bit field and masks it to index the pair.
     CUT_SCENE_LOAD_PC *scene = instance->stream_buffers[instance->active_stream_buffer & 1];
     CUT_LOAD_LOCATOR_SYSTEM *locators;
     CUT_LOAD_LOCATOR_SYSTEM *saved_locators;
@@ -2706,7 +2706,7 @@ void fun_00500200(void) {
 }
 
 i32 instNuGCutSceneIsFinished(INSTNUGCUTSCENE *owner) {
-    /* Retail sign-extends bit 12 of the flags word. */
+    /* Sign-extends bit 12 of the flags word. */
     return (i32)(((CUT_INSTANCE_LIFECYCLE_PC *)owner)->flags_88 << 19) >> 31;
 }
 

@@ -950,7 +950,7 @@ void NuSound3UpdateRumble(f32 frame_time) {
 }
 
 f32 PCSoundVolumeLookup(i32 index) {
-    /* Retail checks only the upper bound; preserve its negative-index behavior. */
+    /* Checks only the upper bound; keeps its negative-index behavior. */
     if (index > 0x3fff) {
         index = 0;
     }
@@ -1632,14 +1632,14 @@ void SetLinkedCutSceneMusic(void *context, i32 state) {
     }
 }
 
-/* Retail 0x00698a20 is a one-byte RET and reads neither argument. */
+/* A bare return that reads neither argument. */
 void NuSound3ClearLoopHold(NUVEC *position, i32 mode) {
 }
 
 void fun_00698a30(void) {
 }
 
-/* Retail's sound error report, compiled empty. It lives outside the sound voice code so its callers keep their
+/* Sound error report, compiled empty. It lives outside the sound voice code so its callers keep their
  * failure tests and calls; they pass a path, an index, an HRESULT or nothing. */
 void PCSoundFailure(const char *format, ...) {
     (void)format;

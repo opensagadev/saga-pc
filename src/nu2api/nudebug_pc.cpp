@@ -7,9 +7,9 @@
 
 extern "C" void NuFileWriteString(NUFILE file, const char *text);
 
-/* Native 0x6dff40: empty hook that receives each runtime error report. Retail
- * still calls it from PCNativeErrorPrint, which suggests it was compiled in
- * another unit; here the compiler drops the call to the empty body. */
+/* Empty hook that receives each runtime error report. PCNativeErrorPrint
+ * still calls it, which suggests it was compiled in another unit; here the
+ * compiler drops the call to the empty body. */
 extern "C" void PCNativeErrorHookPc(char *text) {
     (void)text;
 }
@@ -96,7 +96,7 @@ extern "C" void PCNativeWarningPrint(PC_NATIVE_DEBUG_STATE_PC *state, const char
     }
 }
 
-/* Native 0x6e0260 and 0x6e0280: only format the text; the PC build draws nothing. */
+/* Only format the text; the PC build draws nothing. */
 extern "C" void PCNativeDebugPrintAtPc(PC_NATIVE_DEBUG_STATE_PC *state, i32 x, i32 y, u32 colour, const char *format,
                                        ...) {
     va_list arguments;
@@ -151,7 +151,7 @@ void PC_NATIVE_DEBUG_STATE_PC::InitializeHeader() {
     header.inner_colour = 0xff3e4637;
 }
 
-// Retail builds each position in one shared 16-byte temporary (UpdateGeometry's position) and copies it in.
+// Builds each position in one shared 16-byte temporary (UpdateGeometry's position) and copies it in.
 struct PC_NATIVE_DEBUG_POSITION_PC {
     f32 x;
     f32 y;

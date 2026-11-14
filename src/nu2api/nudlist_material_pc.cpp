@@ -1,5 +1,5 @@
 // Display-list material/transform handlers and post-filter members of the platform range; the 7x7
-// high/direct blurs and the Gaussian kernel helpers (0x5c3da0-0x5c4d30) are in nu3d_includes.cpp.
+// high/direct blurs and the Gaussian kernel helpers are in nu3d_includes.cpp.
 #include "saga.h"
 #include <math.h>
 
@@ -14,7 +14,7 @@ STATIC_ASSERT(offsetof(NUMTX, m31) == 0x34);
 STATIC_ASSERT(offsetof(NUMTX, m32) == 0x38);
 STATIC_ASSERT(offsetof(NUMTX, m33) == 0x3c);
 
-/* Native private helper takes mode in EAX. Ordinary same-owner source only. */
+/* Private helper; takes mode in EAX. */
 static void PCDisplayHandlerSetZMode(i32 mode) {
     NuDisplayHandlerZModePc = mode;
     switch (mode) {
@@ -152,7 +152,7 @@ extern "C" void NuDisplayListFaceOnTransformPc(void *arg) {
         PCDeviceSetRenderState(7, 1);
         PCDeviceSetRenderState(0xe, 0);
         PCDeviceSetRenderState(0x17, 4);
-        /* Native count is 4 registers despite only four initialized tint floats. */
+        /* The count is 4 registers despite only four initialized tint floats. */
         PCDeviceSetVertexShaderConstantsF(0x28, &tint.x, 4);
     } else {
         PC_DL_MATERIAL_READER *material = (PC_DL_MATERIAL_READER *)NuDisplayHandlerMaterialPc;
@@ -203,8 +203,6 @@ extern "C" {
     }
 }
 
-/* Genuine separate provider remains held until the full4472 dispatcher closes.
-   Name/signature is a conditional prototype; no implementation is fabricated. */
 extern "C" void PCShaderSetMaterialParametersPc(PC_SHADER_OBJECT_FULL_VIEW *, NUMTL *);
 static void PCDisplayHandlerBindProgramsPc(PC_DL_SHADER_PROGRAM_PAIR_PC *);
 
@@ -487,7 +485,7 @@ extern "C" void PostBlur7x7HighPc(GRAPHICS_RENDER_TEXTURE_PC *source, i32 source
                                   GRAPHICS_RENDER_TEXTURE_PC *textures, i32 first_lod, i32 iterations, i32 levels,
                                   bool mip_chain, f32 radius, POST_SHADER_PROGRAM_PC *program);
 
-// NuShaderProgramMakeCurrent and the per-stage sampler binds, as retail inlines them here.
+// NuShaderProgramMakeCurrent and the per-stage sampler binds, inlined here.
 #define POST_BLUR_BIND_PROGRAM(bound_program)                                                                          \
     do {                                                                                                               \
         POST_SHADER_PROGRAM_PC *bound = (bound_program);                                                               \
@@ -534,7 +532,7 @@ extern "C" void PostBlur7x7HighPc(GRAPHICS_RENDER_TEXTURE_PC *source, i32 source
         }                                                                                                              \
     } while (0)
 
-// One vertex-shader tap offset; retail rounds both coordinates through f32 temporaries.
+// One vertex-shader tap offset; rounds both coordinates through f32 temporaries.
 struct __declspec(align(16)) POST_BLUR_LOW_OFFSET_PC {
     f32 x;
     f32 y;
@@ -719,7 +717,7 @@ extern "C" {
     extern PC_EFFECT_SURFACE_PC *PcSurfaceRegistry[256];
 }
 
-/* Header-inline in retail: ??_GNuMainFilter (emitted here with the ctor) expands both. */
+/* Header-inline: ??_GNuMainFilter (emitted here with the ctor) expands both. */
 inline PC_EFFECT_SURFACE_PC::~PC_EFFECT_SURFACE_PC() {
     Reset();
     PcSurfaceRegistry[registry_index] = NULL;
@@ -738,7 +736,7 @@ extern "C" void PCGraphicsCopyFramebufferTex2DPc(i32 attachment, GRAPHICS_RENDER
         target.Attach(texture, level, false);
         PCDeviceBackend.CopySurfaceTargetPc(&target, resize ? 2 : 1, 0);
     } else {
-        /* Native tail 5f7490 is the existing genuine RET-only operation; no arg is read. */
+        /* An empty operation; no argument is read. */
         PCGraphicsRenderTextureAllocationError();
     }
 }
@@ -841,7 +839,7 @@ void NuMainFilter::RenderBloomPc() {
         frustum.w = frustum.w - frustum.z;
         PCDeviceSetVertexShaderConstantsF(50, &frustum.x, 1);
     }
-    /* Preserve each native single-precision store before packing shader vectors. */
+    /* Preserve each single-precision store before packing shader vectors. */
     f32 blend = bloom->blend;
     f32 intensity = bloom->intensity * blur_gain;
     __declspec(align(16)) NUVEC4 primary = {intensity, blend, 0.0f, 0.0f};

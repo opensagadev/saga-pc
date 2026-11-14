@@ -2,11 +2,7 @@
 
 #include <string.h>
 
-/* Definitions in retail address order: five project-file functions (0x4017b0-0x401860), then the
-   retail unit 0x54a550-0x54b50c (legoapi/gamepads.c). */
-
-/* Genuine native PC entry 0x004017b0 is RET-only; NuMainRenderWorld calls it after
- * SetDepthOfField. Its historical name is unknown. */
+/* Empty hook; NuMainRenderWorld calls it after SetDepthOfField. */
 void NuMainRenderLeafPc(void) {
 }
 
@@ -27,8 +23,7 @@ void fun_00401810(void) {
 void GameFog_Set(void) {
 }
 
-/* Native PC entries 0x00401850 and 0x00401860 only return 0; the D3D restore and
- * release paths call them for the game layer. Their historical names are unknown. */
+/* Return 0 only; the D3D restore and release paths call them for the game layer. */
 i32 GameRestoreResourcesPc(void) {
     return 0;
 }

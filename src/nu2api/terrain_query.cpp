@@ -762,7 +762,7 @@ extern "C" {
             const f64 dy = ((min_y + max_y) * 0.5 - group->origin.y) * query->inverse_object_scale;
             const f64 dx = (min_x + max_x) * 0.5 - group->origin.x;
             const f64 dz = (min_z + max_z) * 0.5 - group->origin.z;
-            // Retail reuses the local minimum X slot for the distance, so the vertex test below sees it.
+            // Reuses the local minimum X slot for the distance, so the vertex test below sees it.
             local_min_x = dx * dx + dy * dy + dz * dz;
             if (group->chunk_type != -1 &&
                 local_min_x < (group->radius + scan_radius) * (group->radius + scan_radius)) {
@@ -1460,7 +1460,7 @@ i16 *NewScanHandelSubsetPc(i16 *subset, NUVEC *position, NUVEC *movement, f32 ra
     {
         const f32 extent_sq =
             (min_x - max_x) * (min_x - max_x) + (min_y - max_y) * (min_y - max_y) + (min_z - max_z) * (min_z - max_z);
-        // Retail uses the squared extent plus the margin directly as the sphere radius.
+        // Uses the squared extent plus the margin directly as the sphere radius.
         scan_radius = extent_sq + 0.05f;
     }
     while (subset[0] > 0) {
@@ -1545,7 +1545,7 @@ i16 *NewScanHandelSubsetPc(i16 *subset, NUVEC *position, NUVEC *movement, f32 ra
             TERRAIN_NSS_FILTER_SHAPES();
             TERRAIN_NSS_FINISH_GROUP(group_index);
         } else {
-            // Retail skips one extra word after a rejected static group.
+            // Skips one extra word after a rejected static group.
             shapes += count + 1;
         }
         subset = reinterpret_cast<i16 *>(shapes);
@@ -1838,7 +1838,7 @@ i16 *NewScanHandelFullPc(NUVEC *position, NUVEC *movement, f32 radius, i32 scan_
                     const f64 dy = ((scan->max_y + scan->min_y) * 0.5 - group->origin.y) * TerI->inverse_object_scale;
                     const f64 dx = (scan->max_x + scan->min_x) * 0.5 - group->origin.x;
                     const f64 dz = (scan->max_z + scan->min_z) * 0.5 - group->origin.z;
-                    // Retail reuses the local minimum Y slot for the distance; Y is not read again here.
+                    // Reuses the local minimum Y slot for the distance; Y is not read again here.
                     local_min_y = dx * dx + dy * dy + dz * dz;
                     if (local_min_y < (group->radius + scan_radius) * (group->radius + scan_radius)) {
                         TERRAIN_SHAPE_BATCH *batch = reinterpret_cast<TERRAIN_SHAPE_BATCH *>(group->data);
@@ -1981,8 +1981,7 @@ i16 *NewScanHandelFullPc(NUVEC *position, NUVEC *movement, f32 radius, i32 scan_
                 if (((a->x >= scan->min_x && b->x <= scan->max_x) || (b->x >= scan->min_x && a->x <= scan->max_x)) &&
                     ((a->z >= scan->min_z && b->z <= scan->max_z) || (b->z >= scan->min_z && a->z <= scan->max_z)) &&
                     WallSplCount < 64) {
-                    // Native header+4 is read and advanced unchecked; its valid storage is a caller/native-state
-                    // domain.
+                    // Header+4 is read and advanced unchecked.
                     end_header->wall_cursor->position = *a;
                     end_header->wall_cursor->material[0] = material;
                     end_header->wall_cursor->material[1] = mask;

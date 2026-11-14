@@ -129,7 +129,7 @@ void ShaderCompilerBasePc::Configure(PC_SHADER_MATERIAL_FILTER_VIEW *filter, Sha
             definitions->AddDefinition("LAYER0_DIFFUSEENABLE", NULL, 0);
         }
     }
-    // The native three layer paths are distinct and ordered. Their record indices are fixed 1,2,3.
+    // The three layer paths are distinct and ordered. Their record indices are fixed 1,2,3.
     if (filter->HasLayer(1) && profile != 1) {
         definitions->AddDefinition("COMBINE_OP_1", combine[descriptor->blend_ops[0]], 1);
         if ((filter->variant == 0 || filter->descriptor->override_mode != 0) &&
@@ -470,7 +470,7 @@ void ShaderCompilerBasePc::Generate(PC_SHADER_MATERIAL_FILTER_VIEW *filter, Shad
     }
 }
 
-/* Writes data to "<save directory>\<name><suffix>"; no retail caller. */
+/* Writes data to "<save directory>\<name><suffix>"; no caller. */
 void ShaderCompilerBasePc::SaveFile(const char *suffix, const char *name, const void *data, i32 size) {
     char path[0x100];
     NUFILE file;
@@ -499,7 +499,7 @@ bool ShaderNextDirectoryPc(const char *list, i32 *position, char *entry) {
     return true;
 }
 
-/* Diagnostics compiled out of retail; varargs keeps the calls. */
+/* Diagnostics compiled out; varargs keeps the calls. */
 static void ShaderBuilderTracePc(...) {
 }
 
@@ -562,7 +562,7 @@ struct ID3DXEffectCompiler {
     const D3DX_EFFECT_COMPILER_METHODS_PC *methods;
 };
 
-/* Compiles an effect from source into output; returns the compiled size. No retail caller. */
+/* Compiles an effect from source into output; returns the compiled size. No caller. */
 i32 ShaderCompilerBasePc::CompileEffect(const char *source, i32 length, void *output, i32 unused) {
     ID3DXBuffer *effect;
     ID3DXEffectCompiler *compiler;
@@ -719,9 +719,9 @@ void __stdcall ShaderParameterDefaultPc(const PC_SHADER_DEFAULTS_VIEW_PC *materi
     }
 }
 
-/* No retail caller. */
+/* No caller. */
 bool PC_SHADER_MATERIAL_FILTER_VIEW::LacksVariantAndLayerFlag12() const {
     i32 flagged = variant != 0 || (descriptor->layer_flags & 0x1000) != 0;
-    // MATCH-EXCEPTION: the u8 cast reproduces retail's byte test of the 0/1 value; flagged is 0 or 1 anyway.
+    // MATCH-EXCEPTION: the u8 cast gives a byte test of the 0/1 value; flagged is 0 or 1 anyway.
     return (u8)flagged == 0;
 }

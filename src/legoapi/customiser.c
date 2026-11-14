@@ -174,7 +174,7 @@ void Customiser_SetAnimsToLoad(CUSTOMISER_LAYERS_PC *input, i32 enabled) {
     }
 }
 
-/* 00592820..00592939, including the separate native NULL return. */
+/* Includes a separate NULL return. */
 i32 Customiser_NextPieceLeft(CUSTOMISER_LAYERS_PC *input, i32 index, i32 count, i32 unused, i32 category) {
     CUSTOMISER_CONFIG_PC *customiser = (CUSTOMISER_CONFIG_PC *)input;
     i32 attempts;
@@ -329,10 +329,6 @@ void Customiser_LoadAccessories(CUSTOMISER_LAYERS_PC *input, APICHARACTERMODELLI
     }
 }
 
-/* Private integration fragment for src/legoapi/customise.c, after its existing
- * CUSTOMISER_CONFIG_PC / CUSTOM_SAVE_CONFIG_PC definitions.
- * Native 0x592d00, 450 bytes, cdecl(customiser, object, matrices).
- */
 void CustomiserDrawAccessoriesPc(CUSTOMISER_LAYERS_PC *input, GAMEOBJECT *object, NUMTX *matrices) {
     CUSTOMISER_CONFIG_PC *customiser = (CUSTOMISER_CONFIG_PC *)input;
     i32 joint = object->character_data->game_character->helmet_locator;
@@ -467,7 +463,7 @@ void Customiser_DumpAccessories(void *input) {
 
 static i32 CustomiserUseBigScenesPc = 1;
 
-/* 005931a0 / 811. Retail ignored extra arguments remain explicit calls. */
+/* Ignored extra arguments remain explicit calls. */
 void Customiser_LoadAll(CUSTOMISER_LAYERS_PC *input, WORLDINFO *world) {
     CUSTOMISER_CONFIG_PC *customiser = (CUSTOMISER_CONFIG_PC *)input;
     char converted_path[0x80];
@@ -592,8 +588,6 @@ void Customiser_ResetModelTextureIDs(CUSTOMISER_LAYERS_PC *input) {
     }
 }
 
-/* Append after existing CUSTOM_ACCESSORY_* types in src/legoapi/customise.c.
- * Retail 005935f0/179; no callees. Uses established local view types. */
 void Customiser_SaveModelTextureIDs(void *input, CHARACTER_MODEL_LAYERS_PC *model) {
     CUSTOMISER_CONFIG_PC *customiser = input;
     CUSTOMISER_ANIMS_LOAD_PC *textures = input;
@@ -704,7 +698,7 @@ CUSTOMPIECE_LAYERS_PC *Customiser_FindPieceByName(CUSTOMISER_LAYERS_PC *input, c
     CUSTOMISER_CONFIG_PC *customiser = (CUSTOMISER_CONFIG_PC *)input;
     i32 category_index;
     i32 piece_index;
-    i32 *index_local = index; // MATCH-EXCEPTION: parameter copied to a local; VC8 register choice (U20)
+    i32 *index_local = index; // MATCH-EXCEPTION: parameter copied to a local; VC8 register choice
     if (customiser == NULL) {
         return NULL;
     }
@@ -724,7 +718,7 @@ CUSTOMPIECE_LAYERS_PC *Customiser_FindPieceByName(CUSTOMISER_LAYERS_PC *input, c
     return NULL;
 }
 
-/* 00593920 / 120; retail does not check the customiser/save arguments. */
+/* Does not check the customiser/save arguments. */
 i32 Customiser_GetIcon(CUSTOMISER_LAYERS_PC *input, const void *save_input, i32 unused) {
     CUSTOMISER_CONFIG_PC *customiser = (CUSTOMISER_CONFIG_PC *)input;
     const CUSTOM_SAVE_CONFIG_PC *save = save_input;

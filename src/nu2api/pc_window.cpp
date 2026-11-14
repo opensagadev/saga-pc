@@ -4,7 +4,7 @@
 #include <stdlib.h>
 #include <string.h>
 
-static i32 PcArgc = 1; // not address-exposed: retail keeps it in a register across the tokenizer
+static i32 PcArgc = 1; // not address-exposed: kept in a register across the tokenizer
 
 extern "C" void RegisterWindowCallbackPc(PC_WINDOW_CALLBACK_PC callback) {
     PcWindowCallbacks[PcWindowCallbackCount++] = callback;
@@ -161,8 +161,8 @@ extern "C" void SetAccessibilityPc(u8 restore) {
     }
 }
 
-// Retail keeps standalone cdecl copies of both tokenizer helpers (0x6dcec0, 0x6dcee0) next to
-// ParsePlatformArgumentsPc, which inlines them.
+// Standalone cdecl copies of both tokenizer helpers are kept next to ParsePlatformArgumentsPc, which
+// inlines them.
 char *SkipArgumentSpacesPc(char *cursor) {
     while (*cursor == ' ') {
         ++cursor;
@@ -230,7 +230,7 @@ extern "C" BOOL fun_006dd0e0(void) {
 }
 
 // MATCH-EXCEPTION: platform_policy.cpp defines PcPlatformPolicy returning a full int (it loads the
-// BOOL result into eax), but retail WinMain tests only al, so this unit saw a byte-returning prototype.
+// BOOL result into eax), but WinMain tests only al, so this unit saw a byte-returning prototype.
 extern "C" u8 PcPlatformPolicy(u8 enabled);
 
 extern "C" i32 __stdcall WinMain(HINSTANCE instance, HINSTANCE previous, LPSTR command_line, i32 show) {

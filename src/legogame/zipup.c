@@ -1,6 +1,5 @@
 #include "saga.h"
 
-/* Retail unit 0x4d55a0-0x4d8185: definitions in retail address order. */
 #pragma data_seg(".data$GrapSwing_text")
 static char GrapSwing_text[10] = "GrapSwing";
 #pragma data_seg()
@@ -180,7 +179,7 @@ static i32 ZipUpArcSinePc(f32 sin) {
            10430.4f;
 }
 
-// The retail rope draw inlines these numtx rotations (other units call the
+// The rope draw inlines these numtx rotations (other units call the
 // exported versions), so this unit carries local copies of their bodies.
 static void RopeMtxSetRotationZ(NUMTX *m, NUANG a) {
     f32 cosz = NU_COS_LUT(a);
