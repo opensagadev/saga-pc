@@ -250,6 +250,12 @@ void TTNetwork::RecordReceived(NETMESSAGE_PC message, u8 channel) {
     message.Release();
 }
 
+extern "C" void fun_0060e650() {
+}
+
+extern "C" void fun_0060e680() {
+}
+
 NetLogFile::NetLogFile() {
     state = 0;
     name[0] = 0;

@@ -730,6 +730,10 @@ char *__cdecl GizPanel_GetGizmoName(void *input) {
     return NULL;
 }
 
+i32 fun_0046eb50(PANEL_MOVEMENT_PC *panel) {
+    return panel->flags & 1;
+}
+
 i32 __cdecl GizPanel_GetOutput(void *input, i32 output, i32 mode) {
     GIZMO_PC *gizmo = input;
     PANEL_MOVEMENT_PC *panel = gizmo->object;
@@ -1103,6 +1107,16 @@ void __cdecl GizPanels_Reset(void *world_pointer, void *unused, void *progress_p
             state->flags.bits.progress_2 = (progress[word + 2] & bit) != 0;
             state->flags.bits.progress_3 = (progress[word + 1] & bit) != 0;
         }
+    }
+}
+
+void fun_0046f6f0(PANEL_MOVEMENT_PC *panel, NUVEC *position) {
+    if (position != NULL) {
+        if (panel != NULL && (panel->model_variant == 3 || panel->model_variant == 2)) {
+            GizPanel_GetAbsTargetPos(panel, position, 0);
+            return;
+        }
+        *position = panel->floor_position;
     }
 }
 

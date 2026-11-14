@@ -41,3 +41,29 @@ extern "C" i32 __cdecl MenuInMemoryCard(void) {
     }
     return 0;
 }
+
+extern "C" i32 fun_0050b360() {
+    if (MenuValidated != 0) {
+        switch (MenuInfo[GameMenu[GameMenuLevel].menu].id) {
+            case 1001:
+            case 1007:
+            case 1009:
+            case 1014:
+            case 1015:
+                return 1;
+        }
+    }
+    return 0;
+}
+
+extern "C" i32 fun_0050b3d0() {
+    return MenuValidated ? Menu_InLoadFlow : 0;
+}
+
+extern "C" i32 fun_0050b3e0() {
+    return MenuValidated ? Menu_InWarningFlow : 0;
+}
+
+extern "C" i32 fun_0050b3f0() {
+    return MenuInfo[GameMenu[GameMenuLevel].menu].id;
+}

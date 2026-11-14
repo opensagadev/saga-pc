@@ -32,6 +32,9 @@ STATIC_ASSERT(offsetof(TTNetwork, nos) == 0x3780);
 void NetTrace(...) {
 }
 
+extern "C" void fun_006118a0() {
+}
+
 void NOSTrace(...) {
 }
 

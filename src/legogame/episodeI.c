@@ -364,6 +364,12 @@ void PodRaceSnipersUpdate(void) {
 MINESYS_PC minesys = {0};
 CLIENT_MINES_PC client_mines = {0};
 
+void fun_004d8970(NUVEC **positions, u32 **present_words, u32 **exploded_words) {
+    *positions = client_mines.positions;
+    *present_words = client_mines.present_words;
+    *exploded_words = client_mines.exploded_words;
+}
+
 static void InitPodRaceMines(void) {
     char name[32];
     i32 i;
@@ -1098,6 +1104,10 @@ void __cdecl UpdatePacemakerDisplay(WORLDINFO *world) {
     }
 }
 
+void fun_004daa50(void) {
+    UpdatePodRaceLapDisplay(FRAMETIME);
+}
+
 i32 __cdecl PodRace_InStartCountdown(WORLDINFO *world) {
     POD_RACE_COUNTDOWN_READER_PC *race = (POD_RACE_COUNTDOWN_READER_PC *)PodRacePc;
     return world->area != NULL && world->area == PODRACE_ADATA && race != NULL && race->lap_countdown > 0.0f;
@@ -1397,6 +1407,17 @@ i32 Action_Sebulba(AISYS_PC *unused0, AISCRIPTPROCESS_PC *process, AIPACKET_PC *
 }
 
 i32 PodRaceKeyPc[8] = {-1, -1, -1, -1, -1, -1, -1, -1};
+
+void fun_004db710(void) {
+    PodRaceKeyPc[0] = -1;
+    PodRaceKeyPc[1] = -1;
+    PodRaceKeyPc[2] = -1;
+    PodRaceKeyPc[3] = -1;
+    PodRaceKeyPc[4] = -1;
+    PodRaceKeyPc[5] = -1;
+    PodRaceKeyPc[6] = -1;
+    PodRaceKeyPc[7] = -1;
+}
 
 void __cdecl PodDust(WORLDINFO *world, GAMEOBJECT *object) {
     NUVEC positions[2];

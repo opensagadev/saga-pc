@@ -282,6 +282,9 @@ void PC_INPUT_RUNTIME_PC::InitConfiguration() {
     ReadConfiguration(primary, directory);
 }
 
+extern "C" void fun_006d3b20(void) {
+}
+
 PC_INPUT_RUNTIME_PC::PC_INPUT_RUNTIME_PC() {
     NuKeyboardInitLayout_PC *layout = (NuKeyboardInitLayout_PC *)this;
     memset(devices, 0, sizeof(devices));
@@ -1272,6 +1275,9 @@ void PC_INPUT_RUNTIME_PC::AdvanceCaptureRecordsPc() {
     completed_mask = 0;
 }
 
+extern "C" void fun_006d4d60(void) {
+}
+
 extern "C" void __cdecl PcInputEndFramePc(void) {
     ((PC_INPUT_RUNTIME_PC *)nu_input_state)->EndFramePc();
 }
@@ -1301,6 +1307,31 @@ extern "C" void __cdecl PcInputResetMouseMotionPc() {
     runtime->mouse.accumulated[0] = 0.0f;
 }
 
+extern "C" i32 fun_006d5dd0(i32 player) {
+    i32 port = NuPadGetPort(player);
+    if (port == 10 || port == 12) {
+        return 1;
+    }
+    return 0;
+}
+
+extern "C" i32 fun_006d5df0(i32 player) {
+    i32 port = NuPadGetPort(player);
+    if (port == 10 || port == 12) {
+        return 1;
+    }
+    return 0;
+}
+
+extern "C" i32 fun_006d5e10(i32 player) {
+    i32 port = NuPadGetPort(player);
+    return port >= 10 && port <= 13;
+}
+
+extern "C" void fun_006d5e30(void (*callback)(PC_INPUT_RUNTIME_PC *)) {
+    PcInputStateInitializedCallback = callback;
+}
+
 extern "C" char *__cdecl PcInputDeviceNamePc(i32 port) {
     return ((PC_INPUT_RUNTIME_PC *)nu_input_state)->devices[port].name;
 }
@@ -1327,6 +1358,17 @@ extern "C" void __cdecl PcInputSetBlockedKeysPc(const char *keys) {
     if (keys != NULL) {
         NuStrCpy(runtime->blocked_keys, keys);
     }
+}
+
+extern "C" i32 fun_006d6760(void) {
+    PC_INPUT_RUNTIME_PC *state = (PC_INPUT_RUNTIME_PC *)nu_input_state;
+    i32 i;
+    for (i = 0; i <= 3; ++i) {
+        if (state->devices[i].kind == 6 && state->devices[i].unknown_29 != 0) {
+            return 1;
+        }
+    }
+    return 0;
 }
 
 extern "C" i32 __cdecl PcInputIsMouseDevicePc(i32 port) {
@@ -1482,6 +1524,11 @@ extern "C" void __cdecl PcInputSetAlternateDeadzonePc(i32 port, i32 value) {
     } else {
         device->alternate_deadzone = 0;
     }
+}
+
+extern "C" i32 fun_006d9490(i32 player) {
+    i32 port = NuPadGetPort(player);
+    return port >= 0 && port <= 3;
 }
 
 extern "C" PC_INPUT_COMMAND_FILTER_PC __cdecl PcInputGetCommandFilterPc() {

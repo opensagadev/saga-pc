@@ -314,3 +314,6 @@ void __cdecl Buck_MoveCode(GAMEOBJECT *object, i32 start) {
         Buck_Start(object, object->takeover_source);
     }
 }
+
+void fun_005a0440(void) {
+}

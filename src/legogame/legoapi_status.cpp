@@ -879,6 +879,10 @@ extern "C" {
         Game.initial_store_pack_flags = areaSuitBits;
     }
 
+    void fun_00485010() {
+        SendMessageA(PCInputInstance, WM_CLOSE, 0, 0);
+    }
+
     void __cdecl Status_DrawPlayerIconsPc(STATUSPACKET_s *packet, f32 y, f32 alpha) {
         i32 player;
         for (player = 0; player < 2; ++player) {

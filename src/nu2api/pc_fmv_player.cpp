@@ -265,6 +265,10 @@ extern "C" void __cdecl FmvFramePc(PC_FMV_MOVIE_PC *movie) {
     }
 }
 
+extern "C" void fun_00631ce0(PC_FMV_MOVIE_PC *movie, u32 frame, u32 flags) {
+    BinkGoto(movie->bink, frame, flags);
+}
+
 extern "C" void __cdecl FmvClosePc(PC_FMV_MOVIE_PC *movie) {
     if (FmvContextPc != NULL) {
         PC_D3D9_DEVICE_PC *device = FmvContextPc->device;
@@ -285,6 +289,9 @@ extern "C" void __cdecl FmvClosePc(PC_FMV_MOVIE_PC *movie) {
         FmvSurfacePc.Reset();
         PCGraphicsDestroyRenderTexture(movie->target);
     }
+}
+
+extern "C" void fun_00631d80(void) {
 }
 
 /* Drops the movie image before a D3D reset and remembers to recreate it. */

@@ -75,6 +75,12 @@ i32 FtpFile::Accept(i32 new_capacity, void *new_buffer) {
     return 0;
 }
 
+extern "C" void fun_00617400() {
+}
+
+extern "C" void fun_006174b0() {
+}
+
 i32 FtpFile::Accept(i32 new_size) {
     if (new_size > capacity) {
         return (i32)0xa0210001;

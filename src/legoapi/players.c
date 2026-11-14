@@ -310,6 +310,18 @@ void __cdecl RememberPlayerIDs(i32 force, i32 first_id, i32 second_id) {
     }
 }
 
+GAMEOBJECT *fun_0055e2b0(i32 id) {
+    i32 index;
+    for (index = 0; index < 8; ++index) {
+        GAMEOBJECT *player = Player[index];
+        if (player != NULL && (player->flags_1fc_word & 1) != 0 && (player->flags_1fc_word & 0x1000) != 0 &&
+            (i16)player->id == id) {
+            return player;
+        }
+    }
+    return NULL;
+}
+
 NUVEC *__cdecl Player_StartPos(GAMEOBJECT *object) {
     i32 index;
     NUVEC *position;
@@ -532,6 +544,31 @@ u8 __cdecl FindNearestPlayerToVec(NUVEC *position, GAMEOBJECT **nearest_player, 
     return 0;
 }
 
+u8 FindFurthestPlayerFromVec(NUVEC *position, GAMEOBJECT **furthest_player, f32 *distance_squared,
+                             u8 require_character_flags, u32 character_flags) {
+    i32 index;
+    // Bug in the original: clears the parameter, not *furthest_player, so the loop dereferences NULL.
+    furthest_player = NULL;
+    *distance_squared = 0.0f;
+    for (index = 0; index < 8; ++index) {
+        GAMEOBJECT *candidate = Player[index];
+        if (candidate != NULL && (candidate->flags_1fc & 0x80) != 0) {
+            f32 candidate_distance = NuVecDistSqr(&candidate->position, position, NULL);
+            if (candidate_distance > *distance_squared || *furthest_player == NULL) {
+                if (require_character_flags == 0 ||
+                    (((GAMEOBJECT *)Player[index])->character_data->game_character->flags_090 & character_flags) != 0) {
+                    *distance_squared = candidate_distance;
+                    *furthest_player = Player[index];
+                }
+            }
+        }
+    }
+    if (*furthest_player != NULL) {
+        return 1;
+    }
+    return 0;
+}
+
 void __cdecl Player_ToggleCharacter(GAMEOBJECT *object, i32 direction, i32 sound) {
     f32 hold_time = object->input_toggle_hold_time;
     WORLDINFO *world = WorldInfo_CurrentlyActive();
@@ -737,6 +774,16 @@ i32 __cdecl Player_HasDeflectBolts(GAMEOBJECT *object) {
         return 1;
     }
     return object != NULL && object->powerup_time > 0.0f;
+}
+
+i32 fun_0055f290(GAMEOBJECT *object) {
+    if (Cheats_CheckFlags(2)) {
+        return 1;
+    }
+    if (object != NULL && object->powerup_time > 0.0f) {
+        return 1;
+    }
+    return 0;
 }
 
 i32 __cdecl Player_HasDoubleBoltDamage_FromBolt(BOLT_PC *bolt) {

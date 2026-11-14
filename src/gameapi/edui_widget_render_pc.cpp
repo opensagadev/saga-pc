@@ -317,6 +317,48 @@ i32 __cdecl eduicbRenderColourSlider(eduimenu_s *unused_menu, eduiitem_s *item, 
     return height * 2;
 }
 
+extern "C" {
+    void edcamSetSpeedPos(f32 position_x, f32 position_y, f32 position_z) {
+        edcam_s *camera = gp_cam;
+        camera->position_speed.x = position_x;
+        camera->position_speed.y = position_y;
+        camera->position_speed.z = position_z;
+    }
+
+    void fun_0061fff0(f32 position_x, f32 position_y, f32 position_z, f32 distance) {
+        edcam_s *camera = gp_cam;
+        camera->position_speed.x = position_x;
+        camera->position_speed.y = position_y;
+        camera->position_speed.z = position_z;
+        camera->distance_speed = distance;
+    }
+
+    void edcamSetAutoSpeed(f32 move_base, f32 move_distance_scale, f32 zoom_base, f32 zoom_distance_scale) {
+        edcam_s *camera = gp_cam;
+        camera->auto_move_base = move_base;
+        camera->auto_move_dist_scale = move_distance_scale;
+        camera->auto_zoom_base = zoom_base;
+        camera->auto_zoom_dist_scale = zoom_distance_scale;
+    }
+
+    void edcamSetMouseSensitivity(f32 pitch, f32 yaw, f32 movement) {
+        edcam_s *camera = gp_cam;
+        camera->mouse_pitch_speed = pitch;
+        camera->mouse_yaw_speed = yaw;
+        camera->mouse_move_speed = movement;
+    }
+
+    void edcamSetAdjustFreedom(i32 position_x, i32 position_y, i32 position_z, i32 pitch, i32 yaw, i32 distance) {
+        edcam_s *camera = gp_cam;
+        camera->allow_position_x = position_x;
+        camera->allow_position_y = position_y;
+        camera->allow_position_z = position_z;
+        camera->allow_pitch = pitch;
+        camera->allow_yaw = yaw;
+        camera->allow_distance = distance;
+    }
+}
+
 i32 __cdecl eduicbRenderGradPick(eduimenu_s *unused_menu, eduiitem_s *item, i32 x, i32 y, i32 width,
                                  i32 unused_selected) {
     edui_gradient_pick_s *gradient = (edui_gradient_pick_s *)item;
@@ -2489,4 +2531,14 @@ extern "C" void __cdecl cbNearClipAtCursor(eduimenu_s *menu, eduiitem_s *item, u
     (void)menu;
     (void)buttons;
     near_clip_at_cursor = item->flags & 1;
+}
+
+extern "C" void fun_00623900(NUVEC *position, u8 red, u8 green, u8 blue) {
+    i32 colour = 0xff000000 | (blue << 16) | (green << 8) | red;
+    NuRndrLine3dDbg(position->x - 0.5, position->y, position->z, position->x + 0.5, position->y, position->z, colour);
+    NuRndrLine3dDbg(position->x, position->y - 0.5, position->z, position->x, position->y + 0.5, position->z, colour);
+    NuRndrLine3dDbg(position->x, position->y, position->z - 0.5, position->x, position->y, position->z + 0.5, colour);
+}
+
+extern "C" void fun_00623a10(void) {
 }

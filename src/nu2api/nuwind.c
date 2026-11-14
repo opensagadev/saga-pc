@@ -9,6 +9,10 @@ void __cdecl NuWindSetup(VARIPTR *buffer, VARIPTR end, i32 matrix_count, i32 gro
     (void)end;
 }
 
+i32 fun_00546fc0(void) {
+    return 0;
+}
+
 void __cdecl NuWindInit(void) {
     i32 index;
     i32 count;

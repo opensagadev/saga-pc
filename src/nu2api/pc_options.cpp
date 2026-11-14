@@ -207,6 +207,10 @@ void __thiscall PC_WINDOW_OPTIONS_PC::Validate() {
     }
 }
 
+extern "C" void fun_006db900(void) {
+    PcWindowOptions.Save();
+}
+
 void __thiscall PC_WINDOW_OPTIONS_PC::InitializePath() {
     PCOptionsBuildFolder(file_name);
     strcat(file_name, "pcconfig.txt");
@@ -263,6 +267,10 @@ static void __cdecl PCOptionsReadMusicVolume(NUFPAR_PC *parser) {
 
 static void __cdecl PCOptionsReadMasterVolume(NUFPAR_PC *parser) {
     PcWindowOptions.mastervolume = NuFParGetIntRDP(parser);
+}
+
+extern "C" void PCOptionsReadMusicEnabled(NUFPAR_PC *parser) {
+    PcWindowOptions.musicenabled = NuFParGetIntRDP(parser) > 0;
 }
 
 static void __cdecl PCOptionsReadMouseSensitivity(NUFPAR_PC *parser) {
@@ -375,6 +383,14 @@ void __thiscall PC_WINDOW_OPTIONS_PC::Load() {
         usehires = usehirespending;
     }
     Validate();
+}
+
+extern "C" i32 fun_006dbb10(void) {
+    return PCDeviceHardwareVertexProcessingPC;
+}
+
+extern "C" i32 fun_006dbb20(void) {
+    return 0;
 }
 
 void __thiscall PC_WINDOW_OPTIONS_PC::SetDesiredBloomMethod(i32 value) {

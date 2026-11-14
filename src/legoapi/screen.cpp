@@ -73,6 +73,10 @@ extern "C" {
         }
     }
 
+    i32 fun_005644f0() {
+        return FadeLoop_ObjScene != NULL;
+    }
+
     void FadeLoop_DrawObj(float alpha) {
         if (FadeLoop_ObjScene != NULL && NuSpecialExistsFn(&FadeLoop_ObjHSpecial)) {
             NUVEC scale = {0.125f, 0.125f, 0.125f};
@@ -642,6 +646,9 @@ extern "C" void __cdecl DrawPauseScreenWipe(void) {
     NuRndrEndScene();
 }
 
+extern "C" void fun_00565b90() {
+}
+
 extern "C" void __cdecl GrabStillScreen(void) {
     if (ScreenGrabNeeded != 0) {
         ScreenGrabNeeded = 0;
@@ -687,6 +694,11 @@ extern "C" void __cdecl DrawPauseFade(void) {
     } else {
         pause_fade = MIN(FRAMETIME * ScreenPauseFadeSpeedPc + pause_fade, 1.0f);
     }
+}
+
+extern "C" void fun_00565d80() {
+    Paused = 0;
+    old_pause_state = 0;
 }
 
 extern "C" void __cdecl HandleStillRender(void) {

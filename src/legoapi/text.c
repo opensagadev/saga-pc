@@ -305,6 +305,9 @@ void SmartTextGetWidescreen(f32 *font_scale_x, f32 *coordinate_scale) {
     }
 }
 
+void fun_0050e720(void) {
+}
+
 i32 SplitTextFindNextWS(u8 *text, i32 position) {
     u8 character = text[position];
 check_character:
@@ -382,6 +385,18 @@ void FixUpButtonsInFont(VUFNT *game_font_arg, VUFNT *button_font_arg) {
             }
         }
     }
+}
+
+void fun_0050ed10(void) {
+}
+
+void fun_0050ed20(void) {
+}
+
+void fun_0050ed30(void) {
+}
+
+void fun_0050ed40(void) {
 }
 
 void Text_MakeTime(f32 time, i32 show_hours, i32 show_minutes, i32 show_centiseconds, char *text) {
@@ -504,6 +519,10 @@ i32 __cdecl TriggerAutoSave(void) {
         return 1;
     }
     return 0;
+}
+
+i32 fun_0050c040(void) {
+    return saveload_status;
 }
 
 void __cdecl Text3DStringEncodeFont(u8 *source, u16 *destination, VUFNT *font) {
@@ -1207,6 +1226,10 @@ void SmartTextExDrop(char *text, f32 x, f32 y, f32 z, f32 x_scale, f32 y_scale, 
                 message_box, suppress_draw, alpha);
 }
 
+void fun_0050e510(i32 mode) {
+    TextPrintModePc = mode;
+}
+
 void __cdecl MenuSmartTextEx(char *text, f32 x, f32 y, f32 z, f32 sx, f32 sy, f32 sz, u32 alignment, u8 red, u8 green,
                              u8 blue, f32 max_width, i32 max_lines, void *box, i32 suppress, i32 alpha) {
     if (MenuDrawDropShadows != 0) {
@@ -1485,6 +1508,20 @@ VUFNT *__cdecl LoadButtonFont(char *path, char *texture_path, VARIPTR *buffer, V
         }
     }
     return QFont2DButtons;
+}
+
+void fun_00511640(MENU *menu, char *text) {
+    DrawMenuEntryEx(menu, text, MenuA);
+}
+
+void fun_00511660(MENU *menu) {
+    menu->draw_y = MENUBOTY;
+    DrawMenuEntryEx(menu, apitxt_OK, MenuA);
+}
+
+void fun_00511690(MENU *menu) {
+    menu->draw_y = MENUBOTY;
+    DrawMenuEntryEx(menu, apitxt_CANCEL, MenuA);
 }
 
 void __cdecl Text_LoadFont(char *path, VARIPTR *buffer, VARIPTR *end) {

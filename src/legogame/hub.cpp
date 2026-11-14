@@ -1366,6 +1366,10 @@ static void HubDrawSelectModeMenuPc(i32 selected, f32 alpha) {
     }
 }
 
+extern "C" i32 fun_00475340() {
+    return Arcade_BothPlayersActive() != 0;
+}
+
 static AREA_DATA_PC *HubArcadePlayableAreaPc(i32 *unavailable) {
     AREA_DATA_PC *area = *ArcadeLevelPc[ArcadeItem.level];
     if (area == NULL || Game.area_save[area->index].complete == 0) {
@@ -1750,6 +1754,14 @@ extern "C" {
         }
     }
 
+    void fun_00476210() {
+        if (GetMenuID() == -1 && Arcade_BothPlayersActive() == 0) {
+            SetForceBack(NULL, &HubForceBackPositionPc, HubForceBackRadiusPc, 4);
+        } else {
+            ResetForceBack();
+        }
+    }
+
     void __cdecl Arcade_Kill(i32 player_index, i32 killed_player) {
         if (Arcade != 0 && (player_index == 0 || player_index == 1)) {
             if ((killed_player == 0 || killed_player == 1)) {
@@ -1952,6 +1964,13 @@ static i32 HubCopyNetworkFreePlayListPc(void) {
 #pragma bss_seg(".bss$HubIconWibbleAnglePc")
 static u16 HubIconWibbleAnglePc[4] = {0};
 #pragma bss_seg()
+
+extern "C" void fun_00476b70() {
+    for (i32 i = 0; i < 4; ++i) {
+        HubIconWibbleAnglePc[i] = qrand();
+        HubIconWibbleTimePc[i] = 0.0f;
+    }
+}
 
 /* 476ba0/220. Native0 timer resets as well as negative timer. */
 static void HubUpdateIconWibblePc(void) {

@@ -2090,6 +2090,61 @@ extern "C" {
     }
 }
 
+extern "C" i32 TerrainFreeId(void *id) {
+    TERRAIN_SET_PC *terrain = (TERRAIN_SET_PC *)CurrentTerrain;
+    i32 i = 0;
+    if (terrain == NULL) {
+        return 0;
+    }
+    for (; i < 64; ++i) {
+        if (terrain->track_slots[i].id == id) {
+            terrain->track_slots[i].id = NULL;
+            return 1;
+        }
+    }
+    return 0;
+}
+
+extern "C" void TerrainTrackFlush(void) {
+    i32 slot_index;
+    if (CurrentTerrain == NULL) {
+        return;
+    }
+    for (slot_index = 0; slot_index < 64; ++slot_index) {
+        ((TERRAIN_SET_PC *)CurrentTerrain)->track_slots[slot_index].id = NULL;
+    }
+}
+
+extern "C" i32 TerrainIntensityInfo(void) {
+    if (TerrPoly != NULL) {
+        return TerrPoly->normal_flags - 8;
+    }
+    if (TerrWallInfo != 0) {
+        return TerrWallTab[3] - 8;
+    }
+    return -1;
+}
+
+extern "C" i32 TerrainInfo(void) {
+    if (TerrPoly != NULL) {
+        return TerrPoly->material[0];
+    }
+    if (TerrWallInfo != 0) {
+        return TerrWallTab[0];
+    }
+    return -1;
+}
+
+extern "C" i32 TerrainInfoExtra(void) {
+    if (TerrPoly != NULL) {
+        return TerrPoly->material[1];
+    }
+    if (TerrWallInfo != 0) {
+        return TerrWallTab[1];
+    }
+    return -1;
+}
+
 extern "C" void NewTerrainScaleYMask(NUVEC *position, NUVEC *movement, u8 *hit_flags, i32 object_index, f32 radius,
                                      f32 collision_radius, f32 object_scale, i32 embedded_retry, i32 scan_flags,
                                      i32 terrain_mask) {
@@ -2329,6 +2384,12 @@ found_track:
     TerImpactData = 0;
 }
 
+extern "C" void NewTerrainScaleY(NUVEC *position, NUVEC *movement, u8 *hit_flags, i32 object_index, f32 radius,
+                                 f32 collision_radius, f32 object_scale, i32 embedded_retry, i32 scan_flags) {
+    NewTerrainScaleYMask(position, movement, hit_flags, object_index, radius, collision_radius, object_scale,
+                         embedded_retry, scan_flags, 0);
+}
+
 extern "C" i32 NewRayCastScaleY(NUVEC *position, NUVEC *movement, f32 radius, f32 scale_y, i32 scan_flags) {
     return NewRayCastScaleYMask(position, movement, radius, scale_y, scan_flags, 0);
 }
@@ -2341,4 +2402,8 @@ extern "C" void __cdecl FullReflect(NUVEC *normal, NUVEC *movement, NUVEC *resul
     result->x = normal->x * reflection * 2.0 + movement->x;
     result->y = normal->y * reflection * 2.0 + movement->y;
     result->z = normal->z * reflection * 2.0 + movement->z;
+}
+
+extern "C" void fun_006786e0(f32 value) {
+    wallover = value;
 }

@@ -96,6 +96,16 @@ i32 __cdecl Cheat_IsOn(i32 cheat) {
     return 0;
 }
 
+void Cheat_GetOnOffBitfield(u32 *onoffs, i32 count) {
+    i32 i;
+    memset(onoffs, 0, ((count + 31) / 32) * 4);
+    for (i = 0; i < count; i++) {
+        if (CheatSystemPtr->cheats[i].enabled) {
+            onoffs[i / 32] |= 1 << (i % 32);
+        }
+    }
+}
+
 /* Complete native0056e2a0..0056e2dc. */
 u32 __cdecl Cheat_MultiplyScore(u32 score) {
     u32 flags = CheatSystemPtr->flags;

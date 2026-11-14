@@ -1,0 +1,161 @@
+old,new,evidence
+fun_005c60d0,NuOcclusionManagerSetEnabled,Android nu3d_includes.cpp: sets g_OcclusionManager.enabled = enabled != 0; follows NuOcclusionManagerIsEnabled (0x5c60a0)
+fun_005c60e0,NuOcclusionManagerSetOccluderDotProductThreshold,Android: writes OcclusionManager unknown_158; same order after SetEnabled
+fun_005c60f0,NuOcclusionManagerSetOccluderScreenSpaceThreshold,Android: writes OcclusionManager unknown_15c
+fun_005c6bc0,NuDynamicLightSetEnabled,Android NuDynamicLight API order after NuDynamicLightIsEnabled (0x5c6bb0); calls SetEnabledPc
+fun_005c6bd0,NuDynamicLightGetActiveRenderSetCount,Android: returns light->active_render_set_count (0x710)
+fun_005c6be0,NuDynamicLightBeginCapture,"Android: currentScene.unknown_38=1, unknown_3c=light, unknown_40=render_set"
+fun_005c6c00,NuDynamicLightEndCapture,Android: retail no-op between BeginCapture and LookAt
+fun_005c6c10,NuDynamicLightLookAt,Android order; forwards to PC_SPECIAL_SHADOW_LIGHT::LookAtPc
+fun_005c6c70,NuDynamicLightGetView,Android: returns &light->view (0x780)
+fun_005c6c80,NuDynamicLightGetProjection,Android: returns &light->projection (0x7c0)
+fun_005c6cf0,NuDynamicLightGetParameteri,Android: switch 4/5 -> parameter_4/5; follows NuDynamicLightSetParameteri
+fun_005c6d50,NuDynamicLightIsUsedOnSpecials,"Android: returns used_on_specials (0x824), after NuDynamicLightAddRenderScene"
+fun_005c6d60,NuDynamicLightSetUsedOnSpecials,Android: sets used_on_specials
+fun_005dac10,NuVpSetCentre,"Android NuVpSetCentre(x,y): vport_inval=1, vpCurrent.center_x/y; follows NuVpSetZRange"
+fun_005dac30,NuVpSetCurrent,Android NuVpSetCurrent: vpCurrent = *viewport; vport_inval = 1
+fun_005dac50,NuVpGetCurrent,Android NuVpGetCurrent: *viewport = vpCurrent
+fun_005daf30,NuVpSetCurrent2,Android NuVpSetCurrent2: NuVpSetPosition2/NuVpSetSize2 + copies center..scissor fields
+fun_005dafd0,NuVpGetCurrent2,Android NuVpGetCurrent2: NuVpGetPosition2/NuVpGetSize2 + copies fields back
+fun_005db080,NuVpVirtualWidth,Android: value / vpCurrent.width
+fun_005db0a0,NuVpVirtualHeight,Android: value / vpCurrent.height
+fun_005db0c0,NuVpPixelWidth,Android: width * value + x
+fun_005db0e0,NuVpPixelHeight,Android: height * value + y
+fun_005db120,NuVpGetScalingMtx,"Android NuVpGetScalingMtx: if dest, *dest = vp_smtx (PC NuCameraScalingTemplate); right before NuVpGetCurrentViewport 0x5db140"
+fun_005db250,NuVpSetDestRect,"Android NuVpSetDestRect: SetPosition2(left,top), SetSize2(right-left,bottom-top); follows NuVpSetSourceRect"
+fun_005db2a0,NuVpGetRegions,Android NuVpGetRegions copies the 8 region floats (PC RenderPostViewportPrefixPc)
+fun_005ca1f0,NuAnimBuffCreate,"Android NuAnimBuffCreate(max_joints, buf, end): identical allocation layout"
+fun_005ca240,NuAnimBuffInit,Android NuAnimBuffInit: MaxAnimJoints = max; globalbuffer = NuAnimBuffCreate(...)
+fun_005ca3c0,NuAnimGetUseQuatsFlag,Android NuAnimGetUseQuatsFlag returns ForceEulerToQuat; after NuAnimSetForceEulerToQuat (Android NuAnimSetUseQuatsFlag)
+fun_005ca3d0,NuAnimPushSetUseQuatsFlag,Android NuAnimPushSetUseQuatsFlag: push into QuatPushes (PC AnimQuatSavedPc) when < 4
+fun_005ca400,NuAnimPopUseQuatsFlag,Android NuAnimPopUseQuatsFlag
+fun_005c6b60,NuDynamicLightSetDirectional,"Android NuDynamicLightSetDirectional(light, left,right,bottom,top,near,far): parameter_4 = 0; NuMtxSetOrthoBlend(&light->projection, ...); precedes NuDynamicLightIsEnabled"
+fun_005c6c30,NuDynamicLightGetDList,"Android NuDynamicLightGetDList(light, render_set, material): material flag selects display_lists[1] or [0]; between LookAt and GetView"
+fun_005f33e0,NuSpecialDrawSmoothSkin,"Android: scene/display_special guards then NuDisplayListRndrSpecial(special, world, 2, skin, NULL); right after NuSpecialDrawAt 0x5f33b0"
+fun_005f3410,NuSpecialDrawSmoothSkinDwa,Android: same with blend_values as last argument
+fun_005efb00,NuVpSetSize,"Android NuVpSetSize(width, height) -> NuVpSetSize2 scaled by 1/16 and PS2_REZ/PS2_VREZ (inverse of NuVpGetSize2)"
+fun_005f6a30,NuGScnRndr,"Android NuGScnRndr: renders additional_scenes[n-1]->display_list or display_list, then ++counter"
+fun_005d73d0,NuHtmlBanner,Android NuHtmlBanner: same red banner string
+fun_005d7310,NuHtmlHeading2,"Android NuHtmlHeading2 (#DFDFE5 banner) - not ported, needs string data row"
+fun_005d7370,NuHtmlHeading3,"Android NuHtmlHeading3 (#FFDFE5 banner) - not ported, needs string data row"
+fun_005da710,ReadInstanceIDs,"Android ReadInstanceIDs(file, scene): num_instance_ids/instance_ids from NuFileReadInt/NuMemFileAddr"
+fun_005da640,ReadInstAnimBlockDlist,Android ReadInstAnimBlockDlist (not ported)
+fun_005da740,ReadInstAnimBlock,Android ReadInstAnimBlock (not ported)
+fun_005c6360,PcUnregisterDynamicGeometryPc,"inverse of PcRegisterDynamicGeometryPc (same registry, NuAlloc/NuFree lines 0xc8-0xdf of nuinstsurfgeom_gen.cpp)"
+fun_00601820,NuLgtRand,identical body to Android NuLgtRand (nu3d_includes.cpp: NuLgtSeed = (NuLgtSeed * 0x24cd + 1) & 0xffff; return NuLgtSeed)
+fun_0074eaa0,NuRainSetFall,"Android nurain_android.c NuRainSetFall: same clamp of fall to [0,1] into NuRainFall, identical branch structure (exact match)"
+fun_005fcd60,NuRndrStateSetFogEnabled,"Android nurndrstat_android.c NuRndrStateSetFogEnabled: fog_enabled=enabled, fog_state=NULL, ++global_id, ++fog_id (render_state+0x16c/+0x168/+0x20/+0x2e)"
+fun_005fcd90,NuRndrStateGetFogEnabled,Android NuRndrStateGetFogEnabled returns render_state.fog_enabled (+0x16c); sits right after SetFogEnabled
+fun_005ff080,NuVpRestore,Android nu3d_includes.cpp NuVpRestore: vpCurrent = vpDevice; vport_inval = 1 (PC also submits the device viewport)
+fun_00609170,NuLgtArcLaser,"Android nu3d_includes.cpp NuLgtArcLaser(type,start,end,bend,width,segment_length,wobble,bend_amount,colour) = NuLgtArcLaserEx(..., 0); exact"
+fun_006389b0,rtlSetExt,"Android rtl.c defines rtlSetExt(char*) {rtl_ext = extension;} directly before cbLoad, same as retail 0x6389b0 (before cbLoad 0x6389c0)"
+fun_0068ed50,terraininit,"Android gameliball.cpp terraininit(level,buf,end,options,path,scene,group) = TerrainInitEx(..., 0x1000, 0xc00, 0x100), identical body"
+fun_00693b10,NewTerrain,"Android gameliball.cpp NewTerrain: if (CurTerr) NewTerrainScaleY(...,1.0f,0,scan_flags) -> inlined NewTerrainScaleYMask(...,0); identical argument shape"
+fun_0064a380,edpartClose,Android objectsall.cpp edpartClose() { eduiMenuDestroy(edpart_opt_menu); } identical; follows edpartInit (edpartdesc init/close order)
+fun_00543ea0,saveloadAutoSave,"Android gameframework/saveload.c saveloadAutoSave(buffer,size,hash): if (saveload_autosave==-1||>5) return 0; saveloadASSave(saveload_autosave,...); return 1 - identical"
+fun_005b2180,edSpline_SplineList,Android edsplines.cpp edSpline_SplineList(scene) follows edSpline_SplineFind (retail 0x5b2110 -> 0x5b2180); PC body lists store and scene splines through the debug hook
+fun_005b21f0,edSpline_FindAllBeg,"Android edsplines.cpp edSpline_FindAllBeg (NuStrNICmp(prefix,name,-1)), identical body"
+fun_005b22a0,edSpline_FindAllSub,"Android edsplines.cpp edSpline_FindAllSub (NuStrIStr(name, sub)), identical body"
+fun_0065b7c0,edbitsRegisterDataPath,"Android gameliball.cpp edbitsRegisterDataPath, identical body, after edbitsRegisterSaveFormat"
+fun_0065b810,edbitsRegisterEditMode,"Android edbitsRegisterEditMode (edbits_editmode = mode), after edbitsRegisterBaseTerrain"
+fun_0065b820,edbitsRegisterEditorEnabledFlag,Android edbitsRegisterEditorEnabledFlag (edbits_editor_enabled = enabled)
+fun_0065bec0,edbitsDrawBBox,"Android edbitsDrawBBox: edbitsDrawCube(centre, half extents, 0,0,0,0,0,colour,material), identical"
+fun_0065c120,edbitsLookupSoundFX,Android edbitsLookupSoundFX returns -1; followed by edbitsSetSoundFxVolume (0x65c130) and empty edbitsSoundPlay (0x65c140) as in retail
+fun_0065c140,edbitsSoundPlay,"Android empty edbitsSoundPlay(NUVEC*, i32) after edbitsSetSoundFxVolume"
+fun_0065c690,edbitsVector2YZRot,"Android edbitsVector2YZRot: -NuAtan2DA(z,x), NuAtan2DA(y, NuFsqrt(x*x+z*z)), identical calls"
+fun_0062a780,AnimList_RequestAnimGroupForCreatures,"Android apiobject.c AnimList_RequestAnimGroupForCreatures(group, ...) calls AnimList_RequestAnimGroups(creature, group, -1) per va_arg until -1; identical"
+fun_0062a720,AnimList_RequestAnimGroups,"Android apiobject.c; called by AnimList_RequestAnimGroupForCreatures with (creature, group, -1); body clears flag 0x8000 of animations whose byte +0xa equals group"
+fun_0062a6d0,AnimList_NoLoad,Android apiobject.c AnimList_NoLoad(...) sets 0x8000 on every animation of each listed character; identical shape
+fun_0062a7c0,GetAnimBlendMode,"Android apiobject.c GetAnimBlendMode returns AnimBlendMode, right after SetAnimBlendMode"
+fun_0062e5f0,BlendTimeBetweenAnims,"Android apiobject.c BlendTimeBetweenAnims, identical body, between EvalModelAnim and ResetAnimPacket"
+fun_00630700,ActionInfoFlags,"Android apiobject.c ActionInfoFlags, after SetActionInfo"
+fun_00630720,ActionInfoName,"Android apiobject.c ActionInfoName (returns ""?"" without table)"
+fun_0061ffd0,edcamSetSpeedPos,Android edtoolsall.cpp edcamSetSpeedPos sets gp_cam.position_speed; identical stores at edcam_s+0x58
+fun_00620020,edcamSetAutoSpeed,Android edcamSetAutoSpeed (auto_move_base..auto_zoom_dist_scale)
+fun_00620050,edcamSetMouseSensitivity,Android edcamSetMouseSensitivity (mouse_pitch/yaw/move speed)
+fun_00620070,edcamSetAdjustFreedom,Android edcamSetAdjustFreedom (six freedom bitfields)
+fun_00623ee0,RndrCircleXZ,"Android edtoolsall.cpp RndrCircleXZ between RndrOSphere and RndrOSquare, identity matrix + NuVecRotateY; identical"
+fun_006240b0,FlushMenuHighlights,Android edtoolsall.cpp FlushMenuHighlights(menu) clears highlighted on type-0 items; follows RndrOSquare as in retail
+fun_00617f90,eduiSetGlobalSliderAccel,"Android edtoolsall.cpp eduiSetGlobalSliderAccel clamps to [0,1] and stores slider acceleration; follows edmainQueryLocVec in both"
+fun_00618de0,eduiSetRenderPlane,"Android eduiSetRenderPlane calls NuMtlSetRenderPlane(uimtls[0..3], plane), directly after eduiInitMaterials"
+fun_00619120,eduiMenuSelectFirstEntry,Android eduiMenuSelectFirstEntry (menu->selected = NULL) between eduiMenuSortItemsByTxt and eduiMenuRemoveItem
+fun_006219d0,EdFileWriteMemCard,"Android edtoolsall.cpp EdFileWriteMemCard (EdFileSetMedia(2); EdFileOpen(name,1) ...), after EdFileReadNuVec"
+fun_00621a20,EdFileReadMemCard,"Android EdFileReadMemCard (EdFileSetMedia(2); EdFileOpen(name,0); EdFileRead; EdFileClose)"
+fun_00621b90,FS_MakeTimeString,"Android FS_MakeTimeString, same format string ' %.2d:%.2d:%.2d', after FS_MakeDateTimeString"
+fun_00621bc0,FS_MakeDateString,"Android FS_MakeDateString, same format ' %.2d/%.2d/%d' and +1915"
+fun_00622770,RenderFileSel2,"Android RenderFileSel2(x,y,*w,*h) after RenderFileSel3, identical"
+fun_006227c0,RenderFileSel,Android RenderFileSel() { RenderFileSel3(1); }
+fun_00623670,FileSelKill,"Android FileSelKill: NuStrCpy(FS_LastFileName, FS_CurrentCursorPos + 7); FS_Active = 0"
+fun_00629dd0,eduiItemDataGradPickCreate,"Android eduiItemDataGradPickCreate (type 9 + press/add/remove/copy/paste), right after eduiItemGreyGradPickCreate"
+fun_0062a500,edmainProcess,"Android edmainProcess(delta_time, pad): editor_return, ed_curr->process/deactivate, ed_list/ed_main_menu fallback; same structure"
+fun_00623650,ProcessFileSel2,"Android ProcessFileSel2 returns ProcessFileSel3(elapsed, pad), right before FileSelKill"
+fun_00623690,ProcessFileSel,Android ProcessFileSel: ProcessFileSel3; RenderFileSel(); if (pad->digital_buttons & 0x10) FileSelKill()
+fun_005471a0,NuLstDestroy,"Android listman.c NuLstDestroy (frees the list) directly follows NuLstCreateBuff, same as retail order; body frees the list header"
+fun_004fe9a0,NuDebugMsgFunctionTTY,"Android nucore_includes.c: static empty NuDebugMsgFunctionTTY(i32 channel, char *format, ...) follows NuDebugMsgFunction; retail empty fn between NuDebugMsgFunction and NuDebugMsgProlog"
+fun_004fe9d0,NuDebugMsgPrologTTY,"Android: NuDebugMsgPrologTTY(file, line) sets nufile/nuline and returns NuDebugMsgFunctionTTY; retail identical, follows NuDebugMsgProlog"
+fun_005d1bf0,NuTexAnimEnvDestroy,frees a PC_TEXTURE_ANIM_ENV when flags&1 with the same source line 520 that NuTexAnimDestroy's inlined env free uses; Android NuTexAnimDestroy calls NuTexAnimEnvDestroy
+fun_005d3670,NuTexAnimProcessEx,"Android NuTexAnimProcessEx(f32 frame_time, u16 mask): same body as NuTexAnimProcess with mask parameter; placed right after NuTexAnimCreate as in Android"
+fun_006db5c0,PCOptionsReadMusicEnabled,"reads the musicenabled field with the exact shape of PCOptionsReadInvertY; sits among the PCOptionsRead* readers in field order (after MasterVolume, before MouseSensitivity); unreferenced by the retail table"
+fun_00545660,NuFadeObjFreeGrp,"Android nuobject_android.c NuFadeObjFreeGrp(group){group->active=0;} follows NuFadeObjAllocateGrp, same order in retail"
+fun_00545670,NuFadeObjAllocData,"Android NuFadeObjAllocData: identical body, follows NuFadeObjFreeGrp"
+fun_005456a0,NuFadeSetFxCodeMtls,"Android nuobject_android.c NuFadeSetFxCodeMtls(nugeom_s*, u8*): identical geometry-count loop starting at 1, follows NuFadeObjAllocData"
+fun_00631070,NuFmvPlay,"Android nufmv_android.cpp NuFmvPlay: forwards eight arguments as the same tagged list NuFmvPlayV(2, a0, enabled?3:0, 4, a2, 5, a3, 6, a4, 7, a5, 8, a6, a7, 1); directly follows NuFmvPlayV"
+fun_00681e30,SetSoundBitsBySingleId,"Android gameliball.cpp SetSoundBitsBySingleId(i32 sound_id, cb): same body (set id bit, then each group sample), defined right next to SetSoundBitsById"
+fun_005b7ca0,NuFpExceptionMask,"Android numath_includes.c: empty NuFpExceptionMask follows NuEquivTollerance, before NuFloor"
+fun_005b7cb0,NuFpException,"Android: empty NuFpException follows NuFpExceptionMask, before NuFloor"
+fun_005b7ce0,NuCeil,Android NuCeil(value): NuFloor then +1 unless equal; follows NuFloor
+fun_005bec30,NuMiscPow2Exp,"Android NuMiscPow2Exp: same shift loop, follows NuMiscNextPow2"
+fun_005bec50,NuMiscNextPow2Exp,"Android NuMiscNextPow2Exp: same loop returning shift, follows NuMiscPow2Exp"
+fun_005bf470,NuVecCompareTolerance,"Android NuVecCompareTolerance(a, b, tolerance): NuVecSub + NuVecMag > tolerance; directly follows BoundingBoxToLine"
+fun_006d60d0,NuPadClosePS,clears pad->flags bit 4 that NuPadOpenPS sets; directly follows NuPadOpenPS (counterpart)
+fun_00621020,edcamSetContoller,Android edtoolsall.cpp edcamSetContoller(invert_pitch): sets invert_pad_pitch; directly follows edcamGetPosAngSnap
+fun_00621060,edcamGetEdCam,Android edcamGetEdCam returns the camera; follows edcamGetDist
+fun_00621070,edcamSetOffset,Android edcamSetOffset follows edcamGetEdCam (body copies offset into gp_cam->offset)
+fun_00621090,edcamGetOffset,Android edcamGetOffset follows edcamSetOffset
+fun_00621170,edcamGetPosPointer,Android edcamGetPosPointer returns &gp_cam.position; follows edcamSet
+fun_004ef700,NuMemCopy128,"Android NuMemCopy128(dest, source, count) copies count<<4 bytes; follows NuMemSet128 (PC uses PCByteCopy for memmove)"
+fun_004efdd0,NuFileSwapEndianOnWrite,"Android: identical body (swap NuFile_SwapEndianOnWrite, return previous); follows NuFileEndianSwap32"
+fun_004efde0,NuFileGetEndianSwap,Android: returns NuFile_SwapEndianOnWrite; follows NuFileSwapEndianOnWrite
+fun_004f01b0,NuMemFileOpenSize,Android NuMemFileOpenSize: identical body (memfiles[file-0x400].end - buffer)
+fun_004f0ab0,NuDatFilePos,Android NuDatFilePos: info = &dat_file_infos[file-0x800]; return pos - start
+fun_004f4260,NuPadClose,Android NuPadClose: NuPadClosePS(pad) then free; PC frees with the nupad.cpp source path like NuPadOpen
+fun_004f49a0,NuPadSetDirectMappingState,Android NuPadSetDirectMappingState(state): sets g_directpadMapping (PC FramePadDirectMappingPc); follows NuPadInit
+fun_004f4bc0,NuPadSetMotors,"Android NuPadSetMotors(pad, m0, m1): same two-branch dispatch on direct mapping / g_nupadMapping; fun_006d9430 is then NuPadSetMotorsPS"
+fun_004f5c90,ImplodePutI,Android ImplodePutI: identical byte loop; follows ImplodeGetI
+fun_004f5ce0,ImplodePutByteToMem,Android ImplodePutByteToMem: *implode_outbuffer++ = value
+fun_004f5e10,ExplodeExit,Android ExplodeExit clears gExplodeInitialised; follows ImplodeInitGetBits
+fun_004f5db0,ImplodeFReadMem,"Android ImplodeFReadMem: clamp to inlen, memcpy from implode_inbuffer, advance counters"
+fun_004f83d0,NuMemBlkCreateVari,"Android NuMemBlkCreateVari(element_size, count, alignment_mask, buffer): NuMemBlkSize + align buffer + NuMemBlkCreateEx + advance; identical"
+fun_004f9d80,NuDatClose,"Android NuDatClose: closes each open_files[i].dat_file, clears dat_file_infos[info_idx].is_used, frees header when unknown_b0 set (PC has 8 open files)"
+fun_004fb770,NuFileReadUnsignedInt,"Android: NuFileReadUnsignedInt follows NuFileReadInt, identical body"
+fun_004fb790,NuFileReadUnsignedShort,Android: NuFileReadUnsignedShort follows NuFileReadUnsignedInt
+fun_004fb7b0,NuFileReadShort,Android: NuFileReadShort follows NuFileReadUnsignedShort
+fun_004fb7d0,NuFileReadUnsignedChar,Android: NuFileReadUnsignedChar (value = 0 initialised) follows NuFileReadShort
+fun_005ebdf0,NuRndrSphereTRS,"Android nu3d_includes.cpp NuRndrSphereTRS(translation, rotation, scale, colour, segments, material): identical body ending in NuRndrSphereMtx"
+fun_0066b810,TerrFlush,Android gameliball.cpp TerrFlush(): TerrShapeAdjCnt = 0; follows ReadTerrain
+fun_0066b820,TerrTempMemory,"Android TerrTempMemory(void **buffer): carves ScaleTerrainT1/T2, TempScanStack, WallSplList from the buffer; follows TerrFlush"
+fun_0066b890,NuVecCheckForSNANs,"Android NuVecCheckForSNANs: NaN check of x/y/z replacing the vector by (0,1,0); follows TerrTempMemory"
+fun_0066d360,TerCrossProduct,"Android TerCrossProduct(a, b): identical cross product, follows TerrainPlatformNewUpdate"
+fun_0066f740,TerrainStaticMtx,"Android TerrainStaticMtx(info, position, int): transform via NuVec4MtxTransformVU0 by info->matrix_data; follows SkinPlatform"
+fun_0067a620,ShadowIntensityInfo,Android ShadowIntensityInfo: ShadPoly ? normal_flags - 8 : -1; follows ShadowInfo
+fun_0067a640,ShadowDir,Android ShadowDir(direction): vectors[1] - vectors[0] of ShadPoly
+fun_0067a6b0,EShadowRoofInfo,Android EShadowRoofInfo: EShadRoofPoly ? material[1] : -1 (PC global TerrainCastAuxPolygonPc); follows ShadowRoofInfo
+fun_0067a720,NewShadowOnMSitu,Android NewShadowOnMSitu: castnum != -1 ? castnum : TerrPolyObj; follows NewShadowOnPlatform
+fun_0067c890,PlatInstCenter,"Android PlatInstCenter(index, position): group origin of the platform; follows PlatInstGetHit"
+fun_0067ca80,UpdatePlatinst,"Android UpdatePlatinst(index, object): sets platforms[index].scene_object"
+fun_0067cac0,PlatImpactInfo,"Android PlatImpactInfo(normal, material0, material1): copies PlatImpactNorm/PlatImpactTer materials when PlatImpactId != -1, then resets it"
+fun_0067cb10,PlatformCrush,Android PlatformCrush returns PlatCrush; follows PlatImpactInfo
+fun_00698ef0,NuSound3KillAllAudioWaitEx,same body as NuSound3KillAllAudio and directly follows it; Android nusound3_include.cpp lists NuSound3KillAllAudioWaitEx right after NuSound3KillAllAudio (tentative between WaitEx/Wait)
+fun_00670520,ScanTerrId,Android ScanTerrId(id): finds the track slot with this id; follows InsidePolLines
+fun_006705d0,TerrainFreeId,"Android TerrainFreeId(id): clears the matching track slot id, returns 1"
+fun_00670610,TerrainTrackFlush,Android TerrainTrackFlush: clears all 64 track slot ids
+fun_0067a570,TerrainIntensityInfo,Android TerrainIntensityInfo: TerrPoly normal_flags-8 / TerrWallTab[3]-8 / -1
+fun_0067a5a0,TerrainInfo,Android TerrainInfo: material[0] / TerrWallTab[0] / -1
+fun_0067a5d0,TerrainInfoExtra,Android TerrainInfoExtra: material[1] / TerrWallTab[1] / -1
+fun_00690100,NewTerrainScaleY,Android NewTerrainScaleY forwards to NewTerrainScaleYMask with terrain_mask 0; follows it
+fun_0067b1b0,NewTerrainOnAPlatform,Android NewTerrainOnAPlatform(id): CurTrackInfo = ScanTerrId(id); returns its platform_contact_state
+fun_0056e240,Cheat_SetOnOffBitfield,"Android cheats.cpp defines Cheat_SetOnOffBitfield right after Cheat_GetOnOffBitfield (0x56e1d0); body matches (bit test per cheat, store enabled 1/0)"
+fun_004d08e0,TightRope_FindNearest,"Android tightrope.cpp TightRope_FindNearest(position, world, endpoint, distance_squared): same body (nearest of start/end over world->tightropes, writes endpoint and distance) and sits between TightRopes_Reset and TightRope_InRange as in retail"
+fun_0055a390,GizmoGetGizmosUsingSpecial,"Android gizmo.cpp GizmoGetGizmosUsingSpecial(gizmo_sys, world, result, capacity, name): same loop over gizmotypes->types[].fns.using_special_fn with -1/overflow handling"
+fun_0055afd0,GizmoTypeGetProgress,"Android gizmo.cpp GizmoTypeGetProgress(system, world, progress_index, type_id, name, result): same body; retail sits right before GizmoTypeStoreProgress (0x55b050), as in Android"
+fun_0055a420,GizmoGetGuid,"Android gizmo.cpp: GizmoGetGuid(gizmo_sys, gizmo) returns -1, defined between GizmoGetGizmosUsingSpecial and GizmoSysWriteInfo exactly as retail 0x55a390/0x55a420/0x55a430"

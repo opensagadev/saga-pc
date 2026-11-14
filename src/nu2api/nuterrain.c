@@ -14,12 +14,39 @@ void *__cdecl TerrainGetCur(void) {
     return CurrentTerrain;
 }
 
+void fun_0066cbd0(void (*function)(void *argument), void *argument) {
+    if (PlatCodeCallback < 8) {
+        PlatCallback[PlatCodeCallback].function = function;
+        PlatCallback[PlatCodeCallback].argument = argument;
+        PlatCodeCallback++;
+    }
+}
+
+void fun_0066cc00(void (*function)(void *argument)) {
+    i32 i;
+    for (i = 0; i < PlatCodeCallback; ++i) {
+        if (PlatCallback[i].function == function) {
+            PlatCallback[i].function = PlatCallback[PlatCodeCallback - 1].function;
+            --PlatCodeCallback;
+            PlatCallback[i].argument = PlatCallback[PlatCodeCallback].argument;
+            --i;
+        }
+    }
+}
+
 i32 __cdecl PlatInstGetHit(i32 index) {
     TERRAIN_SET_PC *terrain = CurrentTerrain;
     if (terrain == NULL || index < 0 || index >= terrain->max_platforms) {
         return 0;
     }
     return (terrain->platforms[index].flags >> 1) & 1;
+}
+
+void PlatInstCenter(i32 index, NUVEC *position) {
+    TERRAIN_SET_PC *terrain = CurrentTerrain;
+    if (terrain != NULL && index >= 0 && index < terrain->max_platforms) {
+        *position = terrain->groups[terrain->platforms[index].terrain_group_index].origin;
+    }
 }
 
 void __cdecl ScanTerrIDRemovePlat(i32 platform_index) {
@@ -134,10 +161,36 @@ i32 __cdecl DeletePlatinst(i32 platform_index) {
     return 1;
 }
 
+void UpdatePlatinst(i32 index, void *object) {
+    if (index >= 0 && index < ((TERRAIN_SET_PC *)CurrentTerrain)->max_platforms) {
+        ((TERRAIN_SET_PC *)CurrentTerrain)->platforms[index].scene_object = object;
+    }
+}
+
+void fun_0067cab0(void) {
+}
+
+i32 PlatformCrush(void) {
+    return PlatCrush;
+}
+
 #undef TERRAIN_DP_SET
 
 i32 __cdecl ShadowInfo(void) {
     return ShadPoly != NULL ? ShadPoly->material[0] : -1;
+}
+
+i32 ShadowIntensityInfo(void) {
+    return ShadPoly != NULL ? ShadPoly->normal_flags - 8 : -1;
+}
+
+void ShadowDir(NUVEC *direction) {
+    TERRAIN_POLYGON_INFO_PC *poly = ShadPoly;
+    if (poly != NULL) {
+        direction->x = poly->vertices[1].x - poly->vertices[0].x;
+        direction->y = poly->vertices[1].y - poly->vertices[0].y;
+        direction->z = poly->vertices[1].z - poly->vertices[0].z;
+    }
 }
 
 i32 __cdecl EShadowInfo(void) {
@@ -159,6 +212,16 @@ i32 __cdecl NewShadowOnPlatform(void) {
         return -1;
     }
     return group->scene_index;
+}
+
+i32 NewShadowOnMSitu(void) {
+    if (castnum != -1) {
+        return castnum;
+    }
+    if (TerrPolyObj != -1) {
+        return TerrPolyObj;
+    }
+    return -1;
 }
 
 typedef struct TERRAIN_SKIN_BLEND_PC {
@@ -586,6 +649,10 @@ typedef struct TERRAIN_SCAN_WRITER_PC {
         cross.z = (a)->x * (b)->y - (a)->y * (b)->x;                                                                   \
         (dst) = cross;                                                                                                 \
     } while (0)
+
+i32 EShadowRoofInfo(void) {
+    return TerrainCastAuxPolygonPc != NULL ? TerrainCastAuxPolygonPc->material[1] : -1;
+}
 
 void NewScanRot(NUVEC *position, i32 terrain_mask) {
     i32 transformed_count = 0;
@@ -1403,6 +1470,18 @@ i32 ReadTerrain(unsigned char *base_path, i32 first_group, i16 **buffer, TERRSET
     return group_count;
 }
 
+void TerrFlush(void) {
+    TerrShapeAdjCnt = 0;
+}
+
+void NuVecCheckForSNANs(NUVEC *v) {
+    if (*(u32 *)&v->x == 0xffc00000 || *(u32 *)&v->y == 0xffc00000 || *(u32 *)&v->z == 0xffc00000) {
+        v->x = 0.0f;
+        v->y = 1.0f;
+        v->z = 0.0f;
+    }
+}
+
 /* Normals exported as NaN (0xffc00000) are replaced by straight up. */
 #define TERRAIN_FIX_NORMAL(normal)                                                                                     \
     if (*(u32 *)&(normal).x == 0xffc00000 || *(u32 *)&(normal).y == 0xffc00000 || *(u32 *)&(normal).z == 0xffc00000) { \
@@ -2133,6 +2212,14 @@ void __cdecl TerrainPlatformNewUpdate(void) {
             ++TERRAIN_TPNU_SET->active_platform_count;
         }
     }
+}
+
+NUVEC TerCrossProduct(NUVEC *a, NUVEC *b) {
+    NUVEC result;
+    result.x = a->y * b->z - a->z * b->y;
+    result.y = a->z * b->x - b->z * a->x;
+    result.z = a->x * b->y - b->x * a->y;
+    return result;
 }
 
 #undef TERRAIN_TPNU_PLATFORM
@@ -3139,6 +3226,11 @@ i32 TerrainSkinCreateInfoPc(NUMTX *matrix, const TERRAIN_SKIN_BLEND_PC *blend, c
     return TERRAIN_SCI_SET->group_count - 1;
 }
 
+i32 fun_006816a0(NUMTX *matrix, const TERRAIN_SKIN_BLEND_PC *blend, const NUVEC4 *sample_rows, f32 scale,
+                 i32 source_scene_index, i16 mode) {
+    return TerrainSkinCreateInfoPc(matrix, blend, sample_rows, scale, source_scene_index, mode, CurrentTerrain);
+}
+
 #undef TERRAIN_SCI_SET
 
 /* Native 6813e0: caller-owned arena start/end and explicit record capacity.
@@ -3327,6 +3419,25 @@ u8 *TerrainSkinRebuildIndexPc(i32 pool_slots) {
     }
     PlatSkinMaxStore = pool_slots;
     return (u8 *)(use + pool_slots);
+}
+
+TERRAIN_GROUP_PC *fun_00681cc0(i32 instance) {
+    TERRAIN_SET_PC *terrain = CurrentTerrain;
+    i32 index = -1;
+    i32 i;
+    if (terrain == NULL) {
+        return NULL;
+    }
+    for (i = 0; i < terrain->max_platforms; ++i) {
+        if (terrain->platforms[i].scene_object != NULL && terrain->platforms[i].scene_object_index == instance) {
+            index = i;
+            break;
+        }
+    }
+    if (index == -1) {
+        return NULL;
+    }
+    return &terrain->groups[terrain->platforms[index].terrain_group_index];
 }
 
 STATIC_ASSERT(offsetof(TERRAIN_SPATIAL_NODE, point_count) == 0);

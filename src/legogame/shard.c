@@ -204,6 +204,30 @@ void __cdecl Shards_UpdateAfterCharacters(WORLDINFO *world, void *unused, f32 de
     }
 }
 
+SHARD_s *Shard_FindNearest(WORLDINFO *world, NUVEC *position, GAMEOBJECT *object, f32 *distance_squared) {
+    SHARD_s *shard = world->shards;
+    SHARD_s *nearest = NULL;
+    f32 best_distance = 1000000000.0f;
+    f32 distance;
+    i32 i;
+    for (i = 0; i < world->shard_count; ++i, ++shard) {
+        if (object != NULL) {
+            if (!shard->active || !shard->visible || (shard->state_flags & 0xc) != 0) {
+                continue;
+            }
+        }
+        distance = NuVecDistSqr(position, &shard->current_position, NULL);
+        if (distance < best_distance) {
+            best_distance = distance;
+            nearest = shard;
+        }
+    }
+    if (distance_squared != NULL) {
+        *distance_squared = best_distance;
+    }
+    return nearest;
+}
+
 void __cdecl Shards_Draw(WORLDINFO *world, void *unused, f32 delta_time) {
     SHARD_s *shard = world->shards;
     NUMTX matrix;
@@ -389,4 +413,10 @@ void __cdecl Shards_HandleLostObj(WORLDINFO *opaque_world, GAMEOBJECT *object) {
             shard->collector = NULL;
         }
     }
+}
+
+void fun_004c0ce0(void) {
+}
+
+void fun_004c0cf0(void) {
 }

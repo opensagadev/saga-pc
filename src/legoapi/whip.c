@@ -164,3 +164,6 @@ void __cdecl Whip_Release(GAMEOBJECT *object) {
         SuperCarry_Throw(object, 1);
     }
 }
+
+void fun_005b2da0(void) {
+}

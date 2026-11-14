@@ -1220,6 +1220,16 @@ void __cdecl HothBattleC_DrawPc(WORLDINFO *world) {
     DrawMiniSnowTroopers(world);
 }
 
+void fun_004e8d20(HOTHBATTLE_MELEE_s *battle) {
+    if (battle != NULL) {
+        battle->current_wave = 0;
+        battle->next_wave = 0;
+        battle->initialize_wave = 1;
+        battle->transition_phase = -1;
+        battle->wave_delay = 0.0f;
+    }
+}
+
 void __cdecl HothBattleE_DrawPc(WORLDINFO *world) {
     DrawMiniSnowTroopers(world);
 }
@@ -1281,6 +1291,19 @@ void __cdecl HothBattleE_PanelPc(WORLDINFO *world) {
         DrawMeleeTargetsRowsPc(HothBattleENetPacketPc->targets, (char *)HothBattleENetPacketPc->defeated,
                                HothBattleENetPacketPc->alpha, HothBattleENetPacketPc->count);
     }
+}
+
+i32 fun_004e8fc0(GAMEOBJECT *object) {
+    i32 wave;
+    i32 i;
+    for (wave = 0; wave < 4; ++wave) {
+        for (i = 0; i < 4; ++i) {
+            if (object == melee.waves[wave].creatures[i]) {
+                return 1;
+            }
+        }
+    }
+    return 0;
 }
 
 AILOCATOR_PC *getSpawnLocator(float clip_radius, char *name) {

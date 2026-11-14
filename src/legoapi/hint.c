@@ -154,6 +154,12 @@ i32 __cdecl Hint_isComplete(HINT_PC *hint) {
     return hint->completed;
 }
 
+void fun_00576550(void) {
+    hintsys.state = 2;
+    hintsys.display_elapsed = 0.0f;
+    hintsys.active_hint = NULL;
+}
+
 void __cdecl RegisterWithHintSys(void(__cdecl *draw_fn)(HINT_PC *, i32), HINT_PC *hints, u32 *save_bits,
                                  i32 save_word_count) {
     hintsys.display_elapsed = 0.0f;
@@ -217,6 +223,17 @@ void __cdecl Hint_ClearHintsAndDoneFlags(void) {
         hint->flags &= 0xfd;
         hint->completed = 0;
         ++hint;
+    }
+}
+
+void fun_005766a0(i32 index, i32 set) {
+    i32 word = index / 32;
+    if (word < hintsys.save_word_count) {
+        if (set == 1) {
+            hintsys.save_bits[word] |= 1 << (index & 31);
+        } else {
+            hintsys.save_bits[word] &= ~(1 << (index & 31));
+        }
     }
 }
 
@@ -371,6 +388,9 @@ void __cdecl Hint_Process(f32 elapsed) {
             hintsys.active_hint = NULL;
         }
     }
+}
+
+void fun_00576bc0(void) {
 }
 
 /* Append to src/legoapi/hint.c. */

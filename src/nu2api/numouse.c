@@ -9,6 +9,16 @@ u32 NuMouseReadButtons(void) {
     return mbuttons;
 }
 
+u32 fun_006d58d0(i32 button) {
+    if (button >= 0 && button < 4u) {
+        return (1 << button) & mbuttons;
+    }
+    return 0;
+}
+
+void fun_006d5940(void) {
+}
+
 f32 __cdecl NuMouseReadX(void) {
     return PcMouseX;
 }

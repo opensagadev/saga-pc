@@ -1372,6 +1372,27 @@ void __cdecl CurrentStart(GAMEOBJECT *object, i32 allow_any_level, i32 use_socke
     object->target_velocity = object->velocity;
 }
 
+i32 fun_00499dc0(LEVELDATA_PC *level) {
+    if (BONUS_GUNSHIPA_LDATA != NULL && level == BONUS_GUNSHIPA_LDATA) {
+        return 1;
+    }
+    return 0;
+}
+
+i32 fun_00499de0(LEVELDATA_PC *level) {
+    if (BONUS_GUNSHIPB_LDATA != NULL && level == BONUS_GUNSHIPB_LDATA) {
+        return 1;
+    }
+    return 0;
+}
+
+i32 fun_00499e00(AREA_DATA_PC *area) {
+    if (PODRACE_ADATA != NULL && area == PODRACE_ADATA) {
+        return 1;
+    }
+    return 0;
+}
+
 i32 __cdecl MovePlayer_GUNSHIPIN(GAMEOBJECT *object) {
     WORLDINFO *world = WorldInfo_CurrentlyActive();
     GAMEPAD_PC *pad = object->pad;
@@ -4380,6 +4401,10 @@ static void JediLightCode(GAMEOBJECT *object) {
     }
 }
 
+i32 fun_004a10b0(void) {
+    return 0;
+}
+
 static void LightSabreComboCode(GAMEOBJECT *object, i32 action_pressed, i32 action_held, i32 jump_pressed,
                                 i32 special_pressed) {
     COMBO_STATE_VIEW_PC *state = (COMBO_STATE_VIEW_PC *)object;
@@ -6091,6 +6116,9 @@ static void MoveAnim_Manage(GAMEOBJECT *object, f32 speed, i32 allow_tiptoe, i32
             object->anim_packet.requested_animation = 0;
         }
     }
+}
+
+void fun_004a5690(void) {
 }
 
 #pragma data_seg(".data$rocket_lock_distance")

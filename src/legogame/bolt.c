@@ -1,4 +1,5 @@
 #include "saga.h"
+#include <math.h>
 
 STATIC_ASSERT(offsetof(PART_PC, field_206) == 0x206);
 STATIC_ASSERT(offsetof(PART_PC, scale_time) == 0xfc);
@@ -273,4 +274,12 @@ void __cdecl UpdateBolt_Geonosian(BOLT_PC *bolt) {
     if (effect != -1) {
         AddVariableShotDebrisEffectTimed1(effect, &bolt->position, 60, FRAMETIME, 0, 0, NULL);
     }
+}
+
+f32 fun_00408760(f32 value) {
+    return ceilf(value);
+}
+
+f32 fun_00408780(f32 value) {
+    return ceilf(value);
 }

@@ -203,6 +203,9 @@ void __cdecl Credits_GetInfo(f32 *duration, i32 *flag, f32 *alpha) {
     }
 }
 
+extern "C" void fun_0059d750() {
+}
+
 typedef struct credits_completion_reader_pc_s {
     u16 points;                 // 0x0
     u8 unknown_02;              // 0x2

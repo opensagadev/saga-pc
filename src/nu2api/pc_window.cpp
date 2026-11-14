@@ -1,4 +1,5 @@
 #include "saga.h"
+#include <float.h>
 #include <shellapi.h>
 #include <stdlib.h>
 #include <string.h>
@@ -7,6 +8,12 @@ static i32 PcArgc = 1; // not address-exposed: retail keeps it in a register acr
 
 extern "C" void RegisterWindowCallbackPc(PC_WINDOW_CALLBACK_PC callback) {
     PcWindowCallbacks[PcWindowCallbackCount++] = callback;
+}
+
+extern "C" void fun_006dc780(u32 mask) {
+    u32 control = _controlfp(0, 0);
+    control &= ~mask;
+    _controlfp(control, _MCW_EM);
 }
 
 extern "C" i32 PublishWindowPc(HWND window, i32 show) {
@@ -124,6 +131,12 @@ extern "C" i32 CreateWindowPc(HINSTANCE instance, i32 show, u16 icon_resource) {
     return 1;
 }
 
+extern "C" void fun_006de680(void) {
+}
+
+extern "C" void fun_006de690(void) {
+}
+
 extern "C" void SetAccessibilityPc(u8 restore) {
     if (restore) {
         SystemParametersInfoA(SPI_SETSTICKYKEYS, sizeof(PcStickyKeys), &PcStickyKeys, 0);
@@ -202,6 +215,18 @@ extern "C" void ParsePlatformArgumentsPc(char *command_line) {
             ++PcArgc;
         }
     }
+}
+
+extern "C" BOOL fun_006dd0e0(void) {
+    OSVERSIONINFOEXA info;
+    DWORDLONG condition;
+    memset(&info, 0, sizeof(info));
+    info.dwOSVersionInfoSize = sizeof(info);
+    info.dwMajorVersion = 6;
+    info.dwMinorVersion = 0;
+    condition = VerSetConditionMask(0, VER_MAJORVERSION, VER_GREATER_EQUAL);
+    condition = VerSetConditionMask(condition, VER_MINORVERSION, VER_GREATER_EQUAL);
+    return VerifyVersionInfoA(&info, VER_MAJORVERSION | VER_MINORVERSION, condition);
 }
 
 // MATCH-EXCEPTION: platform_policy.cpp defines PcPlatformPolicy returning a full int (it loads the

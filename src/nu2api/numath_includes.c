@@ -409,6 +409,23 @@ i32 __cdecl NuMiscNextPow2(i32 value) {
     return 1 << shift;
 }
 
+i32 NuMiscPow2Exp(i32 value) {
+    i32 shift = 0;
+    while (value > 1) {
+        value >>= 1;
+        ++shift;
+    }
+    return shift;
+}
+
+i32 NuMiscNextPow2Exp(i32 value) {
+    i32 shift = 0;
+    while ((1 << shift) < value) {
+        ++shift;
+    }
+    return shift;
+}
+
 f32 __cdecl NuVecMag(NUVEC *v0) {
     return NuFsqrt(NuVecMagSqr(v0));
 }
@@ -687,6 +704,15 @@ i32 __cdecl BoundingBoxToLine(NUVEC *minimum, NUVEC *maximum, NUMTX *matrix, NUV
         }
     }
     return 0;
+}
+
+i32 NuVecCompareTolerance(NUVEC *a, NUVEC *b, f32 tolerance) {
+    NUVEC diff;
+    NuVecSub(&diff, a, b);
+    if (NuVecMag(&diff) > tolerance) {
+        return 0;
+    }
+    return 1;
 }
 
 void __cdecl NuVec4Add(NUVEC4 *out, NUVEC4 *left, NUVEC4 *right) {
@@ -2232,8 +2258,19 @@ void __cdecl NuEquivTollerance(f32 tolerance) {
     fetol = tolerance;
 }
 
+void NuFpExceptionMask(void) {
+}
+
+void NuFpException(void) {
+}
+
 f32 NuFloor(f32 value) {
     return (f32)(i32)value;
+}
+
+f32 NuCeil(f32 value) {
+    f32 lower = NuFloor(value);
+    return lower == value ? value : lower + 1.0f;
 }
 
 f32 NuFmod(f32 a, f32 b) {
@@ -4524,6 +4561,10 @@ i32 NuPlnLine2(NUPLANE *plane, NUVEC *a, NUVEC *b, NUVEC *c, NUVEC *start, NUVEC
         }
     }
     return 0;
+}
+
+f32 fun_005c0200(f32 value) {
+    return sqrtf(value);
 }
 
 f32 __cdecl RenderPostLogPc(f32 value) {

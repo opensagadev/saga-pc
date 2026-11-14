@@ -48,6 +48,9 @@ void ShaderCompilerParserPc::FlushText() {
     }
 }
 
+extern "C" void fun_0074bef0(void) {
+}
+
 void ShaderCompilerParserPc::DefineMacro(const char *name, const char *value) {
     FlushText();
     char *copy_name;
@@ -604,6 +607,20 @@ void ShaderCompilerParserPc::SetIncludeDirectories(const char *paths) {
     strcpy(include_directories, paths);
 }
 
+extern "C" bool fun_0074b2f0(ShaderCompilerBufferAllocatorPc *line, i32 *position) {
+    for (i32 i = 0; i < line->length; ++i) {
+        u8 c = line->data[i];
+        if (c != ' ' && c != '\t') {
+            if (c == '#') {
+                *position = i;
+                return true;
+            }
+            break;
+        }
+    }
+    return false;
+}
+
 bool ShaderCompilerParserPc::NextIncludeDirectory(const char *paths, i32 *cursor, char *directory) {
     if (*cursor >= (i32)strlen(paths)) {
         return false;
@@ -618,6 +635,12 @@ bool ShaderCompilerParserPc::NextIncludeDirectory(const char *paths, i32 *cursor
         ++*cursor;
     }
     return true;
+}
+
+extern "C" void fun_0074b9f0(void) {
+}
+
+extern "C" void fun_0074bae0(void) {
 }
 
 ShaderCompilerBufferAllocatorPc *ShaderCompilerParserPc::LoadInclude(const char *name) {

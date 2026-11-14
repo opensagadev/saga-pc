@@ -311,6 +311,13 @@ void __cdecl NuMemSet128(void *destination, u32 value, i32 blocks) {
     memset(destination, (u8)value, (u32)blocks << 4);
 }
 
+void NuMemCopy128(void *destination, const void *source, i32 count) {
+    PCByteCopy(destination, source, count << 4);
+}
+
+void fun_004ef710(void) {
+}
+
 void __cdecl NuDatFileDecodeNext(void) {
     char char_buf[12];
 
@@ -481,6 +488,16 @@ void __cdecl NuFileSetCurrentDllDirectory(const char *path) {
 
 i32 __cdecl FileDeviceFormatDefaultNamePc(char *destination, char *path, i32 maximum_size) {
     return default_device->format_name_fn(default_device, destination, path, maximum_size);
+}
+
+i32 NuMemFileOpenSize(NUFILE file) {
+    file -= 0x400;
+    return pc_memfiles[file].end - pc_memfiles[file].buffer;
+}
+
+i32 fun_004f01d0(NUFILE file) {
+    file -= 0x1000;
+    return NuMcFileOpenSize(file);
 }
 
 NUFILE_DEVICE *__cdecl NuFileFindDevice(i32 id, i32 unit) {
@@ -996,6 +1013,9 @@ NUFILE __cdecl NuMemFileOpen(void *buffer, i32 buffer_size, i32 mode) {
     return 0;
 }
 
+void fun_004f0350(void) {
+}
+
 void __cdecl NuMemFileClose(NUFILE file) {
     if (file >= 0x800) {
         PC_NUDATFILEINFO *info = &pc_dat_file_infos[file - 0x800];
@@ -1396,6 +1416,30 @@ i32 __cdecl NuFileReadInt(NUFILE file) {
     return value;
 }
 
+u32 NuFileReadUnsignedInt(NUFILE file) {
+    u32 value;
+    NuFileRead(file, &value, sizeof(u32));
+    return value;
+}
+
+u16 NuFileReadUnsignedShort(NUFILE file) {
+    u16 value;
+    NuFileRead(file, &value, sizeof(u16));
+    return value;
+}
+
+i16 NuFileReadShort(NUFILE file) {
+    i16 value;
+    NuFileRead(file, &value, sizeof(i16));
+    return value;
+}
+
+u8 NuFileReadUnsignedChar(NUFILE file) {
+    u8 value = 0;
+    NuFileRead(file, &value, sizeof(u8));
+    return value;
+}
+
 i8 __cdecl NuFileReadChar(NUFILE file) {
     i8 value = 0;
 
@@ -1490,6 +1534,14 @@ void __cdecl PCByteCopy(void *destination, const void *source, u32 count) {
     }
 }
 
+i32 fun_004ef6c0(void) {
+    return 0;
+}
+
+NUALLOC_ARENA *fun_004ef6d0(void) {
+    return NuAllocArena;
+}
+
 static u32 CalcChecksum(void *data, i32 len) {
     unsigned char *bytes;
     u32 sum;
@@ -1540,6 +1592,16 @@ static void NuFileEndianSwap32(void *value) {
     swap_ptr[2] = value_ptr[1];
     swap_ptr[3] = value_ptr[0];
     *((u32 *)value) = swapped;
+}
+
+i32 NuFileSwapEndianOnWrite(i32 enabled) {
+    i32 previous = NuFile_SwapEndianOnWrite;
+    NuFile_SwapEndianOnWrite = enabled;
+    return previous;
+}
+
+i32 NuFileGetEndianSwap(void) {
+    return NuFile_SwapEndianOnWrite;
 }
 
 i32 __cdecl NuFileWriteFloat(NUFILE file, f32 value) {
@@ -1829,6 +1891,13 @@ i64 __cdecl NuDatCalcPos(NUDATHDR *header, i32 offset) {
         position = (i64)((u64)position << 8);
     }
     return position + datsys_offset;
+}
+
+i64 NuDatFilePos(NUFILE file) {
+    PC_NUDATFILEINFO *info;
+    file -= 0x800;
+    info = &pc_dat_file_infos[file];
+    return info->position - info->start;
 }
 
 i32 __cdecl NuDatFileLoadBuffer(NUDATHDR *header, char *filepath, void *destination, i32 capacity) {
@@ -2170,6 +2239,21 @@ NUFILE __cdecl NuDatFileOpen(NUDATHDR *hdr, char *filepath, i32 mode) {
     return 0;
 }
 
+void NuDatClose(NUDATHDR *header) {
+    i32 index;
+    for (index = 0; index < 8; ++index) {
+        if (header->open_files[index].dat_file != 0) {
+            NuFileClose(header->open_files[index].dat_file);
+        }
+        if (header->open_files[index].info_idx >= 0) {
+            pc_dat_file_infos[header->open_files[index].info_idx].is_used = 0;
+        }
+    }
+    if (header->unknown_b0 != 0) {
+        NuFree(header, NuFileSourcePathPC, 0xd22);
+    }
+}
+
 i32 __cdecl NuDatFileOpenSize(NUFILE file) {
     PC_NUDATFILEINFO *info;
 
@@ -2179,6 +2263,9 @@ i32 __cdecl NuDatFileOpenSize(NUFILE file) {
         return info->decompressed_length;
     }
     return info->file_length;
+}
+
+void fun_004f0d30(void) {
 }
 
 i32 __cdecl NuFileGetLastError(void) {
@@ -3185,6 +3272,18 @@ i32 __cdecl NuFParGetIntRDP(NUFPAR_PC *parser) {
         NuStrCpy(buffer, parser->word_buffer_ptr);
     }
     return buffer[0] != '\0' ? NuRDPI(buffer) : 0;
+}
+
+NUMEMBLK *NuMemBlkCreateEx(i32 element_size, i32 count, u32 alignment_mask, void *storage);
+
+NUMEMBLK *NuMemBlkCreateVari(i32 element_size, i32 count, u32 alignment_mask, VARIPTR *buffer) {
+    i32 size = NuMemBlkSize(element_size, count, alignment_mask);
+    NUMEMBLK *pool;
+    buffer->addr += alignment_mask;
+    buffer->addr &= ~alignment_mask;
+    pool = NuMemBlkCreateEx(element_size, count, alignment_mask, buffer->void_ptr);
+    buffer->addr += size;
+    return pool;
 }
 
 f32 __cdecl NuFParGetFloatRDP(NUFPAR_PC *parser) {
@@ -4970,6 +5069,12 @@ void *__cdecl NuAllocManagerDefragPc(NUALLOC_MANAGER_PREFIX_PC *manager, void *p
     NuAllocManagerSetPreviousPc(free_block, list);
     NuAllocManagerSetNextPc(list, free_block);
     return new_payload;
+}
+
+void fun_004efd30(void) {
+    unpack_file_info = NULL;
+    unpack_file_odi = NULL;
+    unpack_file_pos = -1;
 }
 
 void *__cdecl NuAllocManagerAllocateDefaultPc(NUALLOC_MANAGER_PREFIX_PC *manager, u32 size) {
@@ -7143,6 +7248,10 @@ void __cdecl NuStringFilterLoad(char *path, VARIPTR *buf, VARIPTR buf_end) {
     NumBadWords = i;
 }
 
+char *fun_004fe630(const char *text, const char *pattern) {
+    return strstr(text, pattern);
+}
+
 static i32 NuStringCharEquivalentPc(u16 a, u16 b) {
     i32 i = 0;
     if (a == b) {
@@ -7404,6 +7513,10 @@ void __cdecl NuCommandLine(i32 *__restrict count, char ***__restrict arguments) 
     argv = *arguments;
 }
 
+void fun_004f4090(u8 enabled) {
+    UseCorrectDeadZoning = enabled;
+}
+
 void __cdecl NuAPIInit(void) {
     memset(&nuapi, 0, sizeof(NUAPI));
     nuapi.fps = 60.0f;
@@ -7469,6 +7582,12 @@ void __cdecl PrintStartupString(u32 colour, const char *format, ...) {
     NuQFntPopPrintMode();
     NuQFntPopCoordinateSystem();
     NuApiTextLinePc += 20;
+}
+
+void fun_004f4020(void) {
+    if (GetPCStartupMessage() != NULL) {
+        PrintStartupString(-1, GetPCStartupMessage());
+    }
 }
 
 /* Shows the pending error messages for up to five seconds, or until the jump
@@ -7717,6 +7836,9 @@ void __cdecl NuRegisterEndFrameCallBackFn(void(__cdecl *callback)(void)) {
     NuApiEndFrameCallbackPc = callback;
 }
 
+void fun_004f4050(void) {
+}
+
 void ParseCommandLine() {
     i32 argument_count = argc;
     if (argument_count > 0) {
@@ -7748,6 +7870,40 @@ void ParseCommandLine() {
         argv = argument;
         argc = argument_count;
     }
+}
+
+void *fun_004f9500(NUFILE file) {
+    VARIPTR table;
+    VARIPTR start;
+    VARIPTR entry;
+    u32 *word;
+    u32 *pointer;
+    i32 count;
+    i32 index;
+
+    start.void_ptr = table.void_ptr = pc_memfiles[file - 0x400].position;
+    start.addr += 4;
+    word = table.void_ptr;
+    table.addr = *word + table.addr;
+    word = table.void_ptr;
+    count = *word;
+    table.addr += 4;
+    for (index = 0; index < count; ++index) {
+        word = table.void_ptr;
+        entry.addr = *word + table.addr;
+        pointer = entry.void_ptr;
+        if (*pointer != 0) {
+            *pointer += entry.addr;
+        }
+        table.addr += 4;
+    }
+    return start.void_ptr;
+}
+
+void fun_004f9540(void) {
+    ImplodeInitGetBits();
+    blocksize = 0;
+    ImplodePendingCopyPc = 0;
 }
 
 static void DeadZoneValueXYProper(i32 *x_value, i32 *y_value, i32 deadzone) {
@@ -7831,6 +7987,13 @@ FRAME_PAD_PC *NuPadOpen(i32 device, i32 slot) {
     }
     NuPadOpenPS(pad);
     return pad;
+}
+
+void NuPadClosePS(FRAME_PAD_PC *pad);
+
+void NuPadClose(FRAME_PAD_PC *pad) {
+    NuPadClosePS(pad);
+    NuFree(pad, "d:\\projects\\game_saga\\nu2api.saga\\nucore\\nupad.cpp", 204);
 }
 
 static f32 CalcRamp(f32 ramp) {
@@ -7962,12 +8125,29 @@ void NuPadProcessReadData(NUGENERICPAD *pad) {
     }
 }
 
+i32 fun_004f4780(void) {
+    return MaxGamePads;
+}
+
 void NuPadSetMaxGamePads(i32 count) {
     MaxGamePads = count;
 }
 
+void fun_004f47a0(i32 pad, i32 port) {
+    if (g_nupadMapping[pad].port >= 0) {
+        g_nupadScannedPads[g_nupadMapping[pad].port].mapped_to_pad = -1;
+    }
+    g_nupadMapping[pad].port = port;
+    g_nupadScannedPads[port].mapped_to_pad = pad;
+    g_nupadScannedPads[port].digital_buttons_pressed = 0;
+}
+
 void __cdecl NuPadSetValid(i32 port, i32 valid) {
     g_nupadScannedPads[port].is_valid = (u8)valid;
+}
+
+i32 fun_004f4360(void) {
+    return FramePadProfilePortPc;
 }
 
 // Uncompiled nupad.c append; Save133 belongs to peer material_review.
@@ -8173,6 +8353,10 @@ void NuPadInit(void) {
     FramePadActivatedPc = 0;
 }
 
+void NuPadSetDirectMappingState(i32 state) {
+    FramePadDirectMappingPc = state;
+}
+
 i32 NuPadRead(FRAME_PAD_PC *pad) {
     i32 device;
 
@@ -8239,6 +8423,16 @@ i32 NuPadRead(FRAME_PAD_PC *pad) {
     pad->digital_buttons_prev = pad->digital_buttons_released = pad->digital_buttons_pressed = pad->digital_buttons = 0;
 
     return 0;
+}
+
+void fun_006d9430(i32 port, i32 motor0, i32 motor1);
+
+void NuPadSetMotors(FRAME_PAD_PC *pad, i32 motor0, i32 motor1) {
+    if (FramePadDirectMappingPc && g_nupadScannedPads[pad->device].is_valid) {
+        fun_006d9430(pad->device, motor0, motor1);
+    } else if (g_nupadMapping[pad->device].port != -1) {
+        fun_006d9430(g_nupadMapping[pad->device].port, motor0, motor1);
+    }
 }
 
 void NuPadRecordEndFrame() {
@@ -8356,6 +8550,15 @@ void NuPadRecordPlay(NUGENERICPAD *pad) {
     }
 }
 
+void fun_004f4f10(void) {
+}
+
+void fun_004f4f20(void) {
+}
+
+void fun_004f4f30(void) {
+}
+
 /* Append to existing nupad.c; genuine NUAPI.pad_record layout is already asserted. */
 void __cdecl NuPadRecordSave(char *filepath) {
     NUFILE file;
@@ -8400,6 +8603,31 @@ void *__cdecl NuPtrBlockFix(void *block) {
         table.addr += 4;
     }
     return return_pointer.void_ptr;
+}
+
+void fun_004f4f80(void *block, u32 base) {
+    VARIPTR table;
+    VARIPTR entry;
+    u32 *word;
+    u32 *pointer;
+    i32 count;
+    i32 index;
+
+    table.void_ptr = block;
+    word = table.void_ptr;
+    table.addr = *word + table.addr;
+    word = table.void_ptr;
+    count = *word;
+    table.addr += 4;
+    for (index = 0; index < count; ++index) {
+        word = table.void_ptr;
+        entry.addr = *word + table.addr;
+        pointer = entry.void_ptr;
+        if (*pointer != 0) {
+            *pointer += base;
+        }
+        table.addr += 4;
+    }
 }
 
 i32 NuVideoGetMode(void) {
@@ -8643,6 +8871,17 @@ void ImplodeError(char *msg, ...) {
     NuFileError();
 }
 
+void *ImplodePutI(void *buf, u32 value, i32 size) {
+    unsigned char *cursor = buf;
+    while (size != 0) {
+        *cursor = value;
+        ++cursor;
+        value >>= 8;
+        --size;
+    }
+    return buf;
+}
+
 i32 __cdecl ExplodeBuffer(char *in_buf, char *out_buf) {
     i32 original_size;
     i32 compressed_size;
@@ -8661,6 +8900,10 @@ i32 __cdecl ExplodeBuffer(char *in_buf, char *out_buf) {
 
 unsigned char ImplodeGetByteFromMem() {
     return *implode_inbuffer++;
+}
+
+void ImplodePutByteToMem(unsigned char value) {
+    *implode_outbuffer++ = value;
 }
 
 void ImplodeFillBuf(i32 count) {
@@ -8703,6 +8946,12 @@ void ImplodeInitGetBits() {
     bitcount = 0;
 
     ImplodeFillBuf(0x20);
+}
+
+void ExplodeExit(void) {
+    if (gExplodeInitialised != 0) {
+        gExplodeInitialised = 0;
+    }
 }
 
 static void decode(u32 size, unsigned char *buf) {

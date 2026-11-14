@@ -3,6 +3,13 @@
 #include <stdio.h>
 #include <wchar.h>
 
+extern "C" void fun_006d3560(void) {
+}
+
+extern "C" NuKeyboardState_PC *fun_006d36c0(void) {
+    return nu_input_state;
+}
+
 // The DirectX SDK "XInput and DirectInput" IsXInputDevice sample.
 extern "C" BOOL IsXInputProductPc(const GUID *product) {
     IWbemLocator *locator = NULL;

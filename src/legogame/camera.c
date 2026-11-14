@@ -1370,6 +1370,15 @@ mode_selected:
     }
 }
 
+void fun_0040e660(void) {
+}
+
+void fun_0040e670(void) {
+}
+
+void fun_0040e680(void) {
+}
+
 i32 __cdecl GoingForwardsAlongNarrowSock(GAMEOBJECT *object) {
     i32 forwards;
     if (object->in_narrow_socket != 0) {

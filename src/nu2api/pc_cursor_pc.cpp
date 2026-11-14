@@ -254,3 +254,20 @@ extern "C" void __cdecl PcCreateCursorMaterialPc(void) {
     PcCursorMaterialPc->texture_id = (i16)PcCursorTextureIdPc;
     NuMtlUpdate(PcCursorMaterialPc);
 }
+
+extern "C" f32 fun_006d5c50(void);
+extern "C" f32 fun_006d5c60(void);
+extern "C" void NuRndrRectUV2dNoScale(f32 x, f32 y, f32 z, f32 width, f32 height, f32 u0, f32 v0, f32 u1, f32 v1,
+                                      i32 colour, NUMTL *material);
+
+extern "C" void fun_006ddfa0(f32 size) {
+    f32 x = fun_006d5c50();
+    f32 y = fun_006d5c60();
+    f32 width;
+    size *= NuTimeBarSlotWidth;
+    width = size / PcInputAspectRatioPc();
+    ++NuPrimCSPos;
+    NuPrimSetCoordinateSystem(2);
+    NuRndrRectUV2dNoScale(x, y, 0.0f, width, size, 0.0f, 0.0f, 1.0f, 1.0f, -1, PcCursorMaterialPc);
+    NuPrimSetCoordinateSystem(NuPrimCoordSystemStack[--NuPrimCSPos]);
+}

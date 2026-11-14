@@ -380,6 +380,10 @@ i32 PC_SHADER_MATERIAL_FILTER_VIEW::HasSelector1() const {
     return (descriptor->selectors & 2) != 0;
 }
 
+extern "C" i32 fun_007454b0(void) {
+    return PCDeviceHardwareVertexProcessingPC;
+}
+
 void ShaderManagerHLSLPc::AdaptDescriptor(const PC_SHADER_FILTER_DESC_VIEW *input,
                                           const PC_SHADER_FILTER_MATERIAL_VIEW *input_material) {
     PC_SHADER_FILTER_DESC_VIEW *desc = const_cast<PC_SHADER_FILTER_DESC_VIEW *>(input);

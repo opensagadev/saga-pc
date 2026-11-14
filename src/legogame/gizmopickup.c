@@ -902,6 +902,16 @@ i32 GetRandomCoinType() {
     return CoinTab[qrand() / 16384];
 }
 
+i32 fun_0046c6b0(i32 type) {
+    i32 i;
+    for (i = 0; i < 4; ++i) {
+        if (CoinTab[i] == type) {
+            return 1;
+        }
+    }
+    return 0;
+}
+
 i32 __cdecl LoseCoins(GAMEOBJECT *object, i32 cause) {
     u32 lost;
     i32 adjustment;

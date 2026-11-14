@@ -804,6 +804,9 @@ i32 MusicSeeking(void) {
     return 0;
 }
 
+void fun_00653830(void) {
+}
+
 void __cdecl SoundStopMusic(void) {
     if (NOSOUND == 0 && NOMUSIC == 0) {
         NuSound3StopStereoStream(0);
@@ -896,8 +899,37 @@ void __cdecl NuSound3SetRumblePads(void *pad0, void *pad1) {
     (void)pad1;
 }
 
+i32 fun_00698940(void) {
+    return 1;
+}
+
+i32 fun_00698950(void) {
+    return 1;
+}
+
+i32 fun_00698960(void) {
+    return 1;
+}
+
+i32 fun_00698970(void) {
+    return 0;
+}
+
+i32 fun_00698980(void) {
+    return 0;
+}
+
 void __cdecl NuSound3SetDat(NUDATHDR *header) {
     NuSoundDat = header;
+}
+
+void fun_006986e0(void) {
+}
+
+void fun_006986f0(void) {
+}
+
+void fun_00698700(void) {
 }
 
 i32 __cdecl NuSound3SetReverb(i32 enable) {
@@ -965,6 +997,24 @@ void __cdecl SetSoundBitsById(const i32 *ids, void(__cdecl *set_bit)(i32)) {
         for (i = 0; i < samples; ++i) {
             set_bit(NuSound3GroupSampleIds[NuSound3Groups[group].first_sample + i]);
         }
+    }
+}
+
+void SetSoundBitsBySingleId(i32 id, void (*set_bit)(i32)) {
+    i32 group;
+    i32 i;
+    i32 samples;
+    if (id < 0) {
+        return;
+    }
+    set_bit(id);
+    group = SfxInfo[id].group;
+    if (group == -1) {
+        return;
+    }
+    samples = NuSound3Groups[group].sample_count;
+    for (i = 0; i < samples; ++i) {
+        set_bit(NuSound3GroupSampleIds[NuSound3Groups[group].first_sample + i]);
     }
 }
 
@@ -1584,6 +1634,9 @@ void __cdecl SetLinkedCutSceneMusic(void *context, i32 state) {
 
 /* Retail 0x00698a20 is a one-byte RET and reads neither argument. */
 void __cdecl NuSound3ClearLoopHold(NUVEC *position, i32 mode) {
+}
+
+void fun_00698a30(void) {
 }
 
 /* Retail's sound error report, compiled empty. It lives outside the sound voice code so its callers keep their

@@ -634,6 +634,9 @@ void __cdecl MakeBaddiesForgetAboutParty(i32 check_hostility) {
     }
 }
 
+void fun_0043ada0(void) {
+}
+
 i32 CanFightLikeAJedi(GAMEOBJECT *object) {
     if (CharCategory_IsCategory(object, 0) != 0) {
         return 1;
@@ -1588,6 +1591,14 @@ struct AIPATHCNXCONTROLLER_s *__cdecl AIPathCnxControllerCreate(AI_CONTROL_SYSTE
         }
     }
     return controller;
+}
+
+void fun_0043cf70(AI_CONTROL_SYSTEM_PC *system, AI_CONTROL_SLOT_PC *controller) {
+    if (system != NULL && controller != NULL) {
+        NuLinkedListRemove(&system->active, &controller->links);
+        memset(controller, 0, sizeof(*controller));
+        NuLinkedListAppend(&system->available, &controller->links);
+    }
 }
 
 void __cdecl AIPathCnxControllerSetOnRange(struct AIPATHCNXCONTROLLER_s *controller, i32 first, i32 last) {

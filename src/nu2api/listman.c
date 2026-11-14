@@ -436,3 +436,7 @@ NULSTHDR *__cdecl NuLstCreateBuff(i32 count, i32 size, VARIPTR *buffer, VARIPTR 
     }
     return list;
 }
+
+void NuLstDestroy(NULSTHDR *list) {
+    NuFree(list, NuLstCreateTag, 0xe8);
+}

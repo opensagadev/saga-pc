@@ -46,3 +46,7 @@ extern "C" FILE *__cdecl PcOpenPlatformFile(const char *name, const char *prefix
     }
     return file;
 }
+
+extern "C" i32 fun_006ddd30(void) {
+    return 1;
+}

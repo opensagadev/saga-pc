@@ -155,6 +155,10 @@ void PC_SHADER_PARAMETER_LOCAL_PC::SetMatrixValues(i32 first_element, i32 count,
     }
 }
 
+extern "C" i32 fun_007421c0(void) {
+    return PCDeviceHardwareVertexProcessingPC;
+}
+
 extern "C" void __cdecl NuShaderObjectSetElementsfv(PC_SHADER_OBJECT_FULL_VIEW *shader, i32 semantic, i32 first_element,
                                                     i32 count, const f32 *values) {
     PC_SHADER_PARAMETER_LOCAL_PC *parameter = &shader->parameters[semantic];
@@ -372,6 +376,10 @@ static f32 *PCShaderUnpackColourPc(f32 *output, i32 colour) {
     output[2] = ((colour >> 16) & 255) / 255.0f;
     output[3] = ((colour >> 24) & 255) / 255.0f;
     return output;
+}
+
+extern "C" i32 fun_00742230(i32 value) {
+    return value;
 }
 
 static void PCShaderSamplerWrapPc(i32 u_mode, u32 stage, i32 v_mode) {
@@ -893,4 +901,7 @@ extern "C" void __cdecl PCShaderSetMaterialParametersPc(PC_SHADER_OBJECT_FULL_VI
         }
         parameter = parameter->next;
     }
+}
+
+extern "C" void fun_00743970(void) {
 }

@@ -170,6 +170,9 @@ void PC_SPECIAL_SHADOW_LIGHT::SetParameterfPc(i32 parameter, f32 value) {
     }
 }
 
+extern "C" void fun_005954e0() {
+}
+
 extern "C" {
 
     void __cdecl SetLights(NUVEC *colour0, NUVEC *direction0, NUVEC *colour1, NUVEC *direction1, NUVEC *colour2,
@@ -599,6 +602,22 @@ void __cdecl ResetShadowMapRenderingFn(void) {
 
 void __cdecl EnableShadowMapRenderingFn(void) {
     EnableShadowMapRendering(0);
+}
+
+extern "C" f32 fun_005969a0(f32 *from, f32 *to, f32 *t) {
+    return (*to - *from) * *t + *from;
+}
+
+extern "C" void fun_005969c0(void *set) {
+    GAMEOBJECT *object;
+    rtlProcessLights(set, FRAMETIME);
+    object = Obj;
+    for (i32 i = 0; i < HIGHGAMEOBJECT; ++i, ++object) {
+        if ((object->flags_1fc_word & 1) != 0 && (object->flags_1fc_word & 0x1000) != 0) {
+            object->flags_ef0 |= 0x80;
+            LightGameObject(object, set);
+        }
+    }
 }
 
 extern "C" {

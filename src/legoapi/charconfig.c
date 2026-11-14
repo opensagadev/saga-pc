@@ -1769,6 +1769,10 @@ static i32 RedirectTextFile(char *text, char *filename, i32 filename_capacity) {
     return result;
 }
 
+i32 fun_00584730(void) {
+    return 0;
+}
+
 void CharConfig_CalculateJumpStats(float jump_speed, float gravity, float *duration, float *height) {
     f32 ascent_time = CharConfigFdivPc(0.0f - jump_speed, gravity);
     if (duration != NULL) {

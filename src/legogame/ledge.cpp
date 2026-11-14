@@ -420,6 +420,34 @@ extern "C" {
         }
     }
 
+    LEDGE_MOTION_PC *Ledge_FindNearest(WORLDINFO *world, NUVEC *position, GAMEOBJECT *object, f32 *distance_squared) {
+        LEDGE_MOTION_PC *ledge = (LEDGE_MOTION_PC *)world->ledges;
+        LEDGE_MOTION_PC *nearest = NULL;
+        f32 best_distance = 1000000000.0f;
+        f32 distance;
+        for (i32 i = 0; i < world->ledge_count; ++i, ++ledge) {
+            if (object != NULL) {
+                if (!ledge->state_bits.visible || !ledge->state_bits.active) {
+                    continue;
+                }
+                if ((ledge->flags & 1) != 0 && ShadowMode == 0) {
+                    continue;
+                }
+                distance = NuVecDistSqr(position, &ledge->position, NULL);
+            } else {
+                distance = NuVecDistSqr(position, &ledge->position, NULL);
+            }
+            if (distance < best_distance) {
+                nearest = ledge;
+                best_distance = distance;
+            }
+        }
+        if (distance_squared != NULL) {
+            *distance_squared = best_distance;
+        }
+        return nearest;
+    }
+
     void __cdecl Ledges_Draw(WORLDINFO *world, void *unused, f32 unused_time) {
         LEDGE_MOTION_PC *ledge = (LEDGE_MOTION_PC *)world->ledges;
         NUMTX matrix;

@@ -15,6 +15,9 @@ void __cdecl NuFadeObjSetup(VARIPTR *buffer, VARIPTR end, i32 matrix_count, i32 
     (void)end;
 }
 
+void fun_00545e00(void) {
+}
+
 NUVEC __cdecl NuFadeObjGetAngleTerrainValues(NUVEC *position) {
     NUVEC values;
     values.y = NewShadow(position, 0.0f, 5.0f, 0);
@@ -57,6 +60,27 @@ PC_NUFADEGROUP *__cdecl NuFadeObjAllocateGrp(void) {
         }
     }
     return NULL;
+}
+
+void NuFadeObjFreeGrp(PC_NUFADEGROUP *group) {
+    group->active = 0;
+}
+
+i16 *NuFadeObjAllocData(i32 count) {
+    if (NuFadeObjDataIndex + count < NuFadeMaxDataPC) {
+        NuFadeObjDataIndex += count;
+        return &NuFadeData[NuFadeObjDataIndex - count];
+    }
+    return NULL;
+}
+
+i32 NuFadeSetFxCodeMtls(NUGEOM *geometry, u8 *codes) {
+    i32 count = 1;
+    while (geometry != NULL) {
+        geometry = geometry->next;
+        ++count;
+    }
+    return count;
 }
 
 PC_NUFADEGROUP *__cdecl NuFadeObjCreateMtx(NUSPECIALHANDLE *source, NUMTX *matrices, i16 count, f32 near_distance,
@@ -211,6 +235,9 @@ void __cdecl NuFadeObjUpdate(NUVEC *position) {
     }
     positions[0] = position;
     NuFadeObjUpdateArray(positions);
+}
+
+void fun_00545c70(void) {
 }
 
 void __cdecl NuFadeObjDraw(void) {

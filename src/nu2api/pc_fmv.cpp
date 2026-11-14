@@ -99,3 +99,9 @@ extern "C" i32 __cdecl NuFmvPlayV(i32 option, ...) {
     NuPadUpdatePads();
     return result;
 }
+
+extern "C" i32 NuFmvPlay(u32 argument0, i32 enabled, u32 argument2, u32 argument3, u32 argument4, u32 argument5,
+                         u32 argument6, u32 argument7) {
+    return NuFmvPlayV(2, argument0, enabled != 0 ? 3 : 0, 4, argument2, 5, argument3, 6, argument4, 7, argument5, 8,
+                      argument6, argument7, 1);
+}

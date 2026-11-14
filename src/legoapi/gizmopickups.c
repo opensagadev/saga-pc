@@ -263,6 +263,25 @@ static i32 FindPickupTypeIndex(u8 type_code) {
     return 0;
 }
 
+GIZMOPICKUP_PC *GizmoPickup_FindNearest(WORLDINFO *world, NUVEC *position, f32 *distance_squared) {
+    GIZMOPICKUP_PC *pickup = world->pickup_runtime_sys->pickups;
+    GIZMOPICKUP_PC *nearest = NULL;
+    f32 best_distance = 1000000000.0f;
+    f32 distance;
+    i32 index;
+    for (index = 0; index < world->pickup_runtime_sys->pickup_count; ++index, ++pickup) {
+        distance = NuVecDistSqr(position, &pickup->position, NULL);
+        if (distance < best_distance) {
+            best_distance = distance;
+            nearest = pickup;
+        }
+    }
+    if (distance_squared != NULL) {
+        *distance_squared = best_distance;
+    }
+    return nearest;
+}
+
 static void GizmoPickups_DrawList(WORLDINFO *world, GIZMOPICKUP_PC *pickup, i32 count) {
     i32 index;
     i32 angle;

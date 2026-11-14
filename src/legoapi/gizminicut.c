@@ -1,6 +1,8 @@
 #include "saga.h"
 #include <stdio.h>
 
+extern i32 FRAMES_TO_WAIT;
+
 typedef struct minicut_part_pc_s {
     char name[32];            // 0x00
     NUVEC *resolved_position; // 0x20
@@ -296,4 +298,15 @@ ADDGIZMOTYPE_PC *__cdecl MiniCut_RegisterGizmo(i32 type_id) {
     MiniCutAddTypePc.fns.post_load_fn = NULL;
     MiniCutAddTypePc.fns.add_level_sfx_fn = NULL;
     return &MiniCutAddTypePc;
+}
+
+void fun_005b1030(i32 frames) {
+    FRAMES_TO_WAIT = frames;
+}
+
+void fun_005b1040(void) {
+    if (CUTSTOPGAME == 0 && WORLD->current_level != NULL && (WORLD->current_level->flags & 0xe0) == 0 &&
+        WORLD->current_level != TITLES_LDATA) {
+        PlaySfx("WipeScreen", NULL);
+    }
 }

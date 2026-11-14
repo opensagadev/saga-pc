@@ -1329,6 +1329,9 @@ extern "C" i32 __cdecl Grapple_LookAtPos(GAMEOBJECT *object, NUVEC *position) {
     return 1;
 }
 
+extern "C" void fun_0054f960() {
+}
+
 static inline f32 GrappleFabsPc(f32 value) {
     u32 bits = *(u32 *)&value & 0x7fffffff;
     return *(f32 *)&bits;

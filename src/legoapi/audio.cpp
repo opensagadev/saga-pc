@@ -762,6 +762,10 @@ extern "C" void __cdecl GamePlayMusic(LEVELDATA_PC *level, i32 check, OPTIONSSAV
     }
 }
 
+extern "C" i32 fun_00548c30() {
+    return 0;
+}
+
 extern "C" void __cdecl ProcessMusicChanges(LEVELDATA_PC *level, OPTIONSSAVE *options) {
     if (GameAudio_ActionMusicFn != NULL) {
         MusicActiveReset = GameAudio_ActionMusicFn();

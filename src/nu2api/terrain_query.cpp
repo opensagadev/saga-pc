@@ -1574,6 +1574,9 @@ i16 *NewScanHandelSubsetPc(i16 *subset, NUVEC *position, NUVEC *movement, f32 ra
     return reinterpret_cast<i16 *>(result);
 }
 
+extern "C" void fun_0067e980(void) {
+}
+
 #undef TERRAIN_NSS_PLATFORM
 #undef TERRAIN_NSS_MATRIX
 #undef TERRAIN_NSS_GROUP_OVERLAP
@@ -2045,6 +2048,10 @@ extern "C" i16 *NewScanHandel(NUVEC *position, NUVEC *movement, f32 radius, i32 
     return handle;
 }
 
+extern "C" void fun_0067eab0(i32 distance) {
+    TerrPlatDis = distance;
+}
+
 extern "C" i32 NewRayCastSetHandel(NUVEC *position, NUVEC *movement, f32 radius, f32 separation_epsilon,
                                    f32 compare_epsilon, i16 *handle, i32 scan_type) {
     plathitid = -1;
@@ -2452,4 +2459,26 @@ extern "C" void NewTerrAxisFreedom(TERRAIN_AXIS_FREEDOM_SHAPE_PC *shape, NUVEC *
     axis.y = 0.0f;
     axis.z = -NuTrigTable[static_cast<i32>(shape->angle) >> 1 & 0x7fff];
     TerrainSideClamp(&axis, position);
+}
+
+extern "C" i32 fun_0067bf00(i32 instance) {
+    TERRAIN_SET_PC *terrain = (TERRAIN_SET_PC *)CurrentTerrain;
+    i32 index = -1;
+    i32 i;
+    for (i = 0; i < terrain->max_platforms; ++i) {
+        if (terrain->platforms[i].scene_object != NULL && terrain->platforms[i].scene_object_index == instance) {
+            index = i;
+            break;
+        }
+    }
+    if (index == -1) {
+        return 0;
+    }
+    return 1;
+}
+
+extern "C" void fun_0067bee0(NUVEC *v) {
+    v->x = 0.0f;
+    v->y = 0.0f;
+    v->z = 0.0f;
 }

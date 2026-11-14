@@ -18,6 +18,17 @@ i32 __cdecl Hub_Outside(void) {
     return 0;
 }
 
+i32 fun_004915f0(void) {
+    return 0;
+}
+
+i32 fun_00491600(void) {
+    return 0;
+}
+
+void fun_00491610(void) {
+}
+
 static void Hub_MakeListCharactersAvailable(i16 *characters) {
     i32 character;
     GAMEOBJECT *object;
@@ -264,4 +275,10 @@ f32 __cdecl Condition_InHubArea(AISYS_PC *system, AISCRIPTPROCESS_PC *process, A
         return 1.0f;
     }
     return 0.0f;
+}
+
+void fun_00491b90(void) {
+}
+
+void fun_00491ba0(void) {
 }

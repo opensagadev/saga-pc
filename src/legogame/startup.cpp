@@ -173,6 +173,9 @@ extern "C" {
             }
         }
 
+        void fun_004c9da0() {
+        }
+
         void __cdecl LoadPermLoadFonts(void) {
             if (StartupGameFlag0 != 0) {
                 Text_LoadFont("stuff\\text\\pc_font", &permbuffer_ptr, &permbuffer_end);

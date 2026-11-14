@@ -7,6 +7,7 @@ extern "C" {
     extern char SaveFullSlotPathPc[256];
     extern char SaveSlotNamePc[256];
     extern i32 saveload_slotcode[6];
+    void saveloadASSave(i32 slot, void *buffer, i32 size, u32 hash);
 
     char *__cdecl fullslotname(i32 slot) {
 #ifndef SAGA_DEBUG
@@ -43,11 +44,26 @@ extern "C" {
         return count;
     }
 
+    i32 fun_00543910(void) {
+        return 0;
+    }
+
     void __cdecl saveloadInit(VARIPTR *buffer, VARIPTR end, i32 size, const char *product, const char *icon,
                               const char *title, i32 flags) {
         saveload_getinfo();
         saveload_status = 1;
         saveload_autosave = -1;
+    }
+
+    i32 saveloadAutoSave(void *buffer, i32 size, u32 hash) {
+        if (saveload_autosave == -1 || saveload_autosave >= 6) {
+            return 0;
+        }
+        saveloadASSave(saveload_autosave, buffer, size, hash);
+        return 1;
+    }
+
+    void fun_00543ed0(void) {
     }
 
     i32 __cdecl saveloadCheckSlotsUsed(void) {
@@ -85,6 +101,10 @@ extern "C" {
 
     i32 __cdecl saveloadUnFormatCard(void) {
         return 1;
+    }
+
+    i32 fun_00543980(void) {
+        return 0;
     }
 
     i32 __cdecl saveloadCheckKeyCode(char *id, u8 *code) {

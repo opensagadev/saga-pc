@@ -1553,6 +1553,9 @@ void edanimcbMCTBMenu(eduimenu_s *parent, eduiitem_s *unused1, u32 unused2) {
     edanim_mctb_menu->y = parent->y + 40;
 }
 
+void fun_0065b5e0(void) {
+}
+
 STATIC_ASSERT(offsetof(GAMEOBJECT, mini_current_animation) == 0x7ee);
 STATIC_ASSERT(offsetof(GAMEOBJECT, mini_previous_animation) == 0x7f0);
 

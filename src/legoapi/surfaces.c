@@ -233,3 +233,6 @@ void __cdecl InitSurfaceInfo(GAMEOBJECT *object) {
         extra_reflect(object);
     }
 }
+
+void fun_00572ac0(void) {
+}

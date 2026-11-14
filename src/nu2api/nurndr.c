@@ -45,6 +45,24 @@ void __cdecl NuRndrClear(i32 clear_flags, i32 bg_colour, f32 alpha) {
     currentScene.calc_20 = (f32)(0.0625 * vpCurrent.height / ((f64)PS2_REZ_H / PS2_VREZ_H));
 }
 
+void NuRndrSphereMtx(NUMTX *matrix, i32 colour, i32 segments, NUMTL *material);
+
+void NuRndrSphereTRS(NUVEC *translation, NUANGVEC *rotation, NUVEC *scale, i32 colour, i32 segments, NUMTL *material) {
+    NUMTX matrix;
+    if (rotation != NULL) {
+        NuMtxSetRotateXYZ(&matrix, rotation);
+    } else {
+        matrix = NuMtxSetIdentityTemplate;
+    }
+    if (translation != NULL) {
+        NuMtxTranslate(&matrix, translation);
+    }
+    if (scale != NULL) {
+        NuMtxPreScale(&matrix, scale);
+    }
+    NuRndrSphereMtx(&matrix, colour, segments, material);
+}
+
 void NuRndrAxisArrows(NUVEC *position, void *unused1, f32 length, NUMTL *material) {
     NUMTX matrix;
     NuMtxSetIdentity(&matrix);
@@ -256,6 +274,22 @@ void NuRndrEndReflectionRender(void) {
     RndrStateSetReflection(0);
 }
 
+void fun_005d4720(void) {
+}
+
+i32 fun_005d4730(void) {
+    return 0;
+}
+
+void fun_005d4740(f32 speed, f32 scale) {
+    global_windspeed = speed;
+    global_windscale = scale;
+}
+
+u32 fun_005d4760(void) {
+    return PCWindFrameCount;
+}
+
 void NuRndrGlobalFrameCountPause(i32 paused) {
     global_frame_count_paused = paused;
 }
@@ -295,6 +329,26 @@ STATIC_ASSERT(offsetof(NURNDRLIBSCENE, unknown_214) == 0x214);
 
 void __cdecl NuBackbufferCopy(i32 texture_id) {
     currentScene.unknown_214 = (u32)texture_id;
+}
+
+f32 fun_005d5270(f32 value) {
+    f32 result = (i32)value;
+    if (result < value) {
+        result += 1.0f;
+    }
+    return result;
+}
+
+f32 fun_005d52b0(f32 value, f32 minimum, f32 maximum) {
+    return value < minimum ? minimum : (value > maximum ? maximum : value);
+}
+
+void fun_005d5230(void) {
+    currentScene.unknown_24 = 1;
+}
+
+void fun_005d5260(f32 offset) {
+    PCShaderMaterialSamplerBiasOffsetPc = offset;
 }
 
 typedef struct locator_prim_vertex_pc_s {
@@ -375,6 +429,13 @@ void __cdecl NuRndrAxisArrowsMtx(NUMTX *matrix, f32 length, NUMTL *material) {
    No standalone Native provider/allocation credit; actual emission must be audited. */
 static void NuRndrPrimPosition(f32 x, f32 y, f32 z) {
     LOCATOR_PRIM_POSITION(x, y, z);
+}
+
+void fun_005c2050(void) {
+    NuPrimSetCoordinateSystem(NuPrimCoordSystemStack[--NuPrimCSPos]);
+}
+
+void fun_005c2080(void) {
 }
 
 void __cdecl NuRndrSphereMtx(NUMTX *matrix, i32 colour, i32 segments, NUMTL *material) {
@@ -2048,6 +2109,10 @@ void __cdecl NuRndrTriStrip2di(i32 *positions, f32 *uvs, i32 count, i32 colour, 
     NuPrim2DEnd();
     --NuPrimCSPos;
     NuPrimSetCoordinateSystem(NuPrimCoordSystemStack[NuPrimCSPos]);
+}
+
+void fun_005dc3e0(void) {
+    AnimationDiagnosticNoOpPc();
 }
 
 void __cdecl NuRndrRect2d(f32 x, f32 y, f32 z, f32 width, f32 height, i32 colour, NUMTL *material) {

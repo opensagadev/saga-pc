@@ -442,6 +442,9 @@ void __cdecl DeathStarBattleDReset(WORLDINFO *world) {
 void __cdecl DeathStarBattleDDraw(WORLDINFO *world) {
 }
 
+void fun_004e5eb0(void) {
+}
+
 /* PC 0x00889660: asteroid field (original episodeV.cpp). */
 typedef struct ASTEROID_PC {
     NUSPECIALHANDLE special; // 0x00

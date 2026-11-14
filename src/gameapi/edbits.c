@@ -35,6 +35,14 @@ void edbitsRegisterSaveFormat(char *general_save_directory, char *general_save_n
     }
 }
 
+void edbitsRegisterDataPath(char *path) {
+    if (path) {
+        NuStrCpy(edbits_datapath, path);
+    } else {
+        edbits_datapath[0] = '\0';
+    }
+}
+
 void __cdecl edbitsRegisterBaseScene(NUGSCN *scene) {
     edbits_base_scene = scene;
 }
@@ -45,6 +53,14 @@ void edbitsRegisterThingsScene(NUGSCN *scene) {
 
 void __cdecl edbitsRegisterBaseTerrain(void *terrain) {
     edbits_base_terrain = terrain;
+}
+
+void edbitsRegisterEditMode(i32 mode) {
+    edbits_editmode = mode;
+}
+
+void edbitsRegisterEditorEnabledFlag(i32 *enabled) {
+    edbits_editor_enabled = enabled;
 }
 
 void edbitsDrawBasicCube(f32 x, f32 y, f32 z, f32 half_x, f32 half_y, f32 half_z, i32 rotation_x, i32 rotation_y,
@@ -125,6 +141,12 @@ void edbitsDrawCube(f32 x, f32 y, f32 z, f32 half_x, f32 half_y, f32 half_z, i32
     }
 }
 
+void edbitsDrawBBox(NUVEC *minimum, NUVEC *maximum, i32 colour, NUMTL *material) {
+    edbitsDrawCube((minimum->x + maximum->x) * 0.5, (minimum->y + maximum->y) * 0.5, (minimum->z + maximum->z) * 0.5,
+                   (maximum->x - minimum->x) * 0.5, (maximum->y - minimum->y) * 0.5, (maximum->z - minimum->z) * 0.5, 0,
+                   0, 0, 0, 0, colour, material);
+}
+
 i32 __cdecl edbitsLookupInstance(char *name, NUGSCN *scene) {
     i32 index;
     NUSPECIALHANDLE special;
@@ -137,6 +159,11 @@ i32 __cdecl edbitsLookupInstance(char *name, NUGSCN *scene) {
         }
     }
     return -1;
+}
+
+void edbitsVector2YZRot(i16 *rotation_y, i16 *rotation_z, f32 x, f32 y, f32 z) {
+    *rotation_y = -NuAtan2DA(z, x);
+    *rotation_z = NuAtan2DA(y, NuFsqrt(x * x + z * z));
 }
 
 void edbitsDoSingleDump(i32 face) {
@@ -247,6 +274,17 @@ void __cdecl edbitsDrawCross(f32 x, f32 y, f32 z, f32 radius, i32 colour, struct
         vertices[1].position.z = z - radius * axes[i + 2];
         NuRndrLine3d(vertices, (NUMTL *)material, NULL);
     }
+}
+
+i32 edbitsLookupSoundFX(char *name) {
+    return -1;
+}
+
+void edbitsSoundPlay(NUVEC *position, i32 id) {
+}
+
+i32 fun_0065c150(void) {
+    return 0;
 }
 
 void __cdecl edbitsDrawDiagonalCross(f32 x, f32 y, f32 z, f32 radius, i32 colour, struct PC_SCENE_MTL_VIEW *material) {

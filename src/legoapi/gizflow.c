@@ -63,6 +63,10 @@ i32 __cdecl CheckOutputGizmoFlowBox(GIZFLOW_PC *system, FLOWBOX_PC *box, u8 outp
     return result;
 }
 
+u8 fun_0059d9c0(void) {
+    return ++gizflow_loop_checksum;
+}
+
 static i32 LoopCountLoopingInputsEx(FLOWBOX_PC *loop, FLOWBOX_PC *box, i32 count, u8 checksum) {
     i32 i;
     if (box == loop) {
@@ -509,6 +513,30 @@ void __cdecl ResetGizFlowPointers(GIZFLOW_PC *system) {
     }
 }
 
+void SetGizFlowVisible(GIZFLOW_PC *system) {
+    FLOWBOX_PC *box;
+    FLOWBOXGIZMODATA_PC *data;
+    FLOWBOXGIZMOREF_PC *ref;
+    i32 i;
+    i32 j;
+
+    if (system == NULL) {
+        return;
+    }
+    box = system->flowboxes;
+    for (i = 0; i < system->flowbox_count; ++i, ++box) {
+        if (box->type == 0 && box->data != NULL) {
+            data = box->data;
+            for (j = 0; j < data->gizmo_count; ++j) {
+                ref = data->gizmos[j];
+                if (ref != NULL && ref->gizmo != NULL) {
+                    GizmoSetVisibility(system->gizmo_sys, ref->gizmo, 1, 1);
+                }
+            }
+        }
+    }
+}
+
 void __cdecl ResetGizFlow(GIZFLOW_PC *system, GIZFLOWPROGRESS_PC *progress) {
     typedef struct FlowResetFlagsPc {
         u16 active : 1;
@@ -935,6 +963,14 @@ static void GizFlowConfigCollapsePc(NUFPAR_PC *parser) {
 
 static void GizFlowConfigSumBoxPc(NUFPAR_PC *parser) {
     load_conditionParam = NuFParGetInt(parser);
+}
+
+void fun_0059ecb0(void) {
+    FLOWBOXCONDITION_PC *condition = GizmoBufferAlloc(load_buff, load_endbuff, 4);
+    if (condition != NULL) {
+        condition->operation = load_conditiontype;
+        condition->threshold = load_conditionParam;
+    }
 }
 
 typedef struct GIZFLOW_CONDITION_TYPE_PC GIZFLOW_CONDITION_TYPE_PC;

@@ -141,12 +141,23 @@ static void __cdecl NuDebugMsgFunction(char *format, ...) {
     }
 }
 
+static void NuDebugMsgFunctionTTY(i32 channel, char *format, ...) {
+}
+
 typedef void(__cdecl *NUDEBUGMSGFUNCTION_PC)(char *, ...);
 
 NUDEBUGMSGFUNCTION_PC __cdecl NuDebugMsgProlog(char *file, i32 line) {
     nufile = file;
     nuline = line;
     return NuDebugMsgFunction;
+}
+
+typedef void (*NUDEBUGTTYFUNCTION_PC)(i32 channel, char *format, ...);
+
+NUDEBUGTTYFUNCTION_PC NuDebugMsgPrologTTY(char *file, i32 line) {
+    nufile = file;
+    nuline = line;
+    return NuDebugMsgFunctionTTY;
 }
 
 GAMECAMERA GameCamera = {0};

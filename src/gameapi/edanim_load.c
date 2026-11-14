@@ -137,6 +137,13 @@ void edanimDetermineNearestSound(float distance) {
     }
 }
 
+void fun_006597e0(i32 index) {
+    if (AnimParams[index].instance_id != -1) {
+        AnimParams[index].instance_id = -1;
+    }
+    --edanim_params_used;
+}
+
 void edanimParticleDestroy(i32 parameter_index, i32 particle_index) {
     i32 index;
     for (index = particle_index; index < AnimParams[parameter_index].effect_count - 1; ++index) {

@@ -21,12 +21,51 @@ static i32 SoundSampleCountPc = 0;
 extern "C" void __cdecl PCSoundAlreadyPlayingHook(...) {
 }
 
+extern "C" void fun_00696aa0(void) {
+}
+
 extern "C" void __cdecl NuSound3FlushLoops(void) {
+}
+
+extern "C" void fun_006987d0(void) {
+}
+
+extern "C" void fun_006987e0(void) {
+}
+
+extern "C" void fun_00698800(void) {
+}
+
+extern "C" void fun_00698810(void) {
 }
 
 extern "C" void __cdecl NuSound3SetDPL(i32 mode, i32 unused) {
     (void)mode;
     (void)unused;
+}
+
+extern "C" void fun_00698850(void) {
+}
+
+extern "C" void fun_00698860(void) {
+}
+
+extern "C" void fun_00698870(void) {
+}
+
+extern "C" void fun_00698880(void) {
+}
+
+extern "C" void fun_00698890(void) {
+}
+
+extern "C" void fun_006988a0(void) {
+}
+
+extern "C" void fun_006988b0(void) {
+}
+
+extern "C" void fun_006988f0(void) {
 }
 
 extern "C" void __cdecl PCSoundPlayUnpositioned(i32 sample_id, i32 volume_index, i32 arg3, i32 arg4, f32 arg5, i32 arg6,
@@ -545,6 +584,51 @@ extern "C" void PCStereoStartPacket(PC_STEREO_PLAY_PACKET *packet) {
     }
 }
 
+extern "C" i32 fun_00698600(void) {
+    return 1;
+}
+
+extern "C" void fun_00698620(void) {
+}
+
+extern "C" i32 fun_00698630(void) {
+    return 0;
+}
+
+extern "C" i32 fun_00698640(void) {
+    return 0;
+}
+
+extern "C" i32 fun_00698650(void) {
+    return 0;
+}
+
+extern "C" i32 fun_00698660(void) {
+    return 1;
+}
+
+extern "C" i32 fun_00698670(void) {
+    return 1;
+}
+
+extern "C" void fun_00698680(void) {
+}
+
+extern "C" void fun_00698690(void) {
+}
+
+extern "C" i32 fun_006986a0(void) {
+    return 1;
+}
+
+extern "C" i32 fun_006986b0(void) {
+    return 1;
+}
+
+extern "C" i32 fun_006986c0(void) {
+    return 1;
+}
+
 SoundVoiceManagerPC *SoundVoiceManagerPC::ResetStoragePc(void) {
     memset(this, 0, sizeof(*this));
     if (PCSoundStorageLockReadyPc == 0) {
@@ -571,6 +655,10 @@ void SoundVoiceManagerPC::SetOptionD14Pc(u8 mode) {
 
 IDirectSound8 *SoundVoiceManagerPC::GetFactory(void) {
     return factory;
+}
+
+extern "C" void fun_00696bd0(NUMTX *listener) {
+    NuSound3Listener = listener;
 }
 
 void SoundVoiceManagerPC::Init(i32 unused, u8 option5_value, u8 option6_value) {
@@ -762,6 +850,9 @@ void __cdecl NuSound3SetRequestTable(u16 *request_bits, i32 short_count) {
     PCSoundMixSampleCount = short_count;
     PCSoundMixSource = request_bits;
     SAGA_SOUND_SETTER_END(request_bits, short_count, PCSoundMixDestination);
+}
+
+extern "C" void fun_00698780(void) {
 }
 
 extern "C" {

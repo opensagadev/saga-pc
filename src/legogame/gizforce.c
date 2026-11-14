@@ -537,6 +537,13 @@ void *__cdecl GizForces_ReserveBufferSpace(void *pointer) {
     return system;
 }
 
+void GizForce_SetVisibility(GIZFORCE_PC *force, i32 visible) {
+    if (force != NULL) {
+        GameAnimSet_SetVisibility(force->anim_set, visible);
+        force->visible = visible != 0;
+    }
+}
+
 void __cdecl GizmoForce_SetVisibility(GIZMO_PC *gizmo, i32 visible) {
     GIZFORCE_PC *force;
     if (gizmo == NULL) {

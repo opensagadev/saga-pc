@@ -71,11 +71,55 @@ i32 __cdecl NuMcClose(i32 file, i32 async) {
     return 0;
 }
 
+i32 fun_006dee80(void) {
+    return 0;
+}
+
 i32 __cdecl NuMcSeek(i32 file, i32 offset, i32 origin, i32 async) {
     (void)file;
     (void)offset;
     (void)origin;
     (void)async;
+    return 0;
+}
+
+i32 fun_006deea0(void) {
+    return 0;
+}
+
+i32 fun_006deeb0(void) {
+    return 0;
+}
+
+i32 fun_006deec0(void) {
+    return 0;
+}
+
+i32 fun_006deed0(void) {
+    return 0;
+}
+
+i32 fun_006deee0(void) {
+    return 0;
+}
+
+f32 fun_006deef0(void) {
+    return 0.0f;
+}
+
+i32 fun_006def00(void) {
+    return 0;
+}
+
+i32 fun_006def10(void) {
+    return 0;
+}
+
+i16 fun_006def20(void) {
+    return 0;
+}
+
+u8 fun_006def30(void) {
     return 0;
 }
 
@@ -93,5 +137,13 @@ void __cdecl FileDirectoryMcClosePc(i32 file) {
 i32 __cdecl FileDirectoryMcReadPc(i32 file, struct FILE_DIRECTORY_ENTRY_PC *entry) {
     (void)file;
     (void)entry;
+    return 0;
+}
+
+i32 fun_006def70(void) {
+    return 0;
+}
+
+i32 fun_006def80(void) {
     return 0;
 }

@@ -31,6 +31,9 @@ i32 __cdecl InitSpecialSfx(void *world_ptr) {
     return 1;
 }
 
+void fun_005b1800(void) {
+}
+
 i32 __cdecl SpecialSfxLoad(char *path, void *world_ptr) {
     WORLDINFO *world = world_ptr;
     i32 version;
@@ -236,6 +239,9 @@ void __cdecl LoadSpecialSfxFile(void *world_ptr) {
     if (NuFileExists(path)) {
         SpecialSfxLoad(path, world);
     }
+}
+
+void fun_005b1ea0(void) {
 }
 
 void FileLoadSingleEffectType(DEBRIS_INFO_PC *destination, i32 version, i8 category) {

@@ -160,6 +160,9 @@ char *__cdecl GetPartName(i32 type) {
     return part_types[type].name;
 }
 
+void fun_0064b150(void) {
+}
+
 f32 __cdecl PARTGetTotalOnTime(i32 type) {
     if (type >= 0) {
         return part_types[type].emission_period + part_types[type].emission_period_random;
@@ -2891,6 +2894,13 @@ i32 __cdecl edpartLookupObjectInScene(char *name, NUGSCN *scene) {
     return -1;
 }
 
+i32 fun_006489a0(char *name) {
+    if (edpart_load_particle_page == -1) {
+        return LookupDebrisEffect(name);
+    }
+    return LookupDebrisEffectPageOnly(name, edpart_load_particle_page);
+}
+
 void __cdecl edpartLoadSingleType(PARTTYPE_LOOKUP_PC *record, i32 version, i32 page) {
     PART_RUNTIME_TYPE_PC *type = (PART_RUNTIME_TYPE_PC *)record;
     char name[16];
@@ -4626,6 +4636,9 @@ static void PartRuntimeMatrixCopyPrivate(NUMTX *destination, NUMTX *source) {
     destination->m33 = source->m33;
 }
 
+void fun_00642520(void) {
+}
+
 static void PartRuntimeDirectionalLightsPrivate(NUVEC *direction0, NUVEC *colour0, NUVEC *direction1, NUVEC *colour1,
                                                 NUVEC *direction2, NUVEC *colour2) {
     PCGlobalLightingState.direction[0] = *direction0;
@@ -4701,6 +4714,12 @@ i32 edpartProc(float delta_time, FRAME_PAD_PC *pad) {
     edpartDoInput(pad);
     edpartDetermineNearest(1.0f);
     return (pad->digital_buttons_pressed >> 11) & 1;
+}
+
+void fun_0064fd90(void) {
+}
+
+void fun_0064fda0(void) {
 }
 
 void UpdateParts(f32 time) {

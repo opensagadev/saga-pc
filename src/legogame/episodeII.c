@@ -1915,6 +1915,13 @@ i32 __cdecl KaminoInside(void) {
     return 0;
 }
 
+i32 fun_004e2370(void) {
+    if (WORLD->current_level == KAMINOC_LDATA && GameCam->sock == 0x15) {
+        return 1;
+    }
+    return 0;
+}
+
 i32 __cdecl KaminoDiscoOn(void) {
     return KaminoDiscoMusicStatePc.mode == 2;
 }

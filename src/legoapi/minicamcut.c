@@ -269,6 +269,10 @@ void Minicam_ResetForNextCommand(void) {
     MiniCam.delta_time = 0.0f;
 }
 
+void fun_005776f0(void) {
+    memset(&MiniCam, 0, sizeof(MiniCam));
+}
+
 void Minicam_CalcCamPos(void) {
     if (MiniCam.mode == 0) {
         MiniCam.position.y = MiniCam.position.x = 0.0f;

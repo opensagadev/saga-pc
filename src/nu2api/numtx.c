@@ -27,6 +27,9 @@ void __cdecl NuMtxMulVU0(NUMTX *result, NUMTX *left, NUMTX *right) {
     D3DXMatrixMultiply((D3DXMATRIX *)result, (D3DXMATRIX *)left, (D3DXMATRIX *)right);
 }
 
+void fun_005c0520(void) {
+}
+
 void __cdecl NuVecConvertToIntVU0(void) {
 }
 
@@ -92,6 +95,9 @@ void __cdecl NuMtxMulRVU0(NUMTX *result, NUMTX *left, NUMTX *right) {
     NuMtxMulR(result, left, right);
 }
 
+void fun_005c03a0(void) {
+}
+
 void __cdecl NuMtxPreScaleUVU0(NUMTX *matrix, f32 scale) {
     matrix->m00 *= scale;
     matrix->m01 *= scale;
@@ -135,6 +141,10 @@ void __cdecl NuMtxMulnVU0(NUMTX *out, NUMTX *left, NUMTX **right) {
 
 f32 __cdecl randyfloat(void) {
     return rand() / 32767.0;
+}
+
+i32 fun_005c0a40(void) {
+    return 1;
 }
 
 void __cdecl NuVecInvMtxTransformVU0(NUVEC *out, NUVEC *v, NUMTX *m) {

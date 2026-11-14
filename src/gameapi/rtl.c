@@ -87,6 +87,10 @@ void rtlResetEx(RTL_DATA_PC *data, i32 reset_cached) {
     }
 }
 
+void rtlReset(RTL_DATA_PC *data) {
+    rtlResetEx(data, 0);
+}
+
 static void InsertLight(RTL_LIGHT_PC *light, RTL_DATA_PC *lighting_data, float strength) {
     i32 slot;
     i32 move;
@@ -1036,6 +1040,9 @@ void __cdecl rtlSetShadowFlickerBlendTime(f32 time) {
     } else {
         rtl_shadow_blend_rate = 10000.0f;
     }
+}
+
+void fun_00635b00(void) {
 }
 
 typedef struct BURN_OUT_PC {
@@ -3989,6 +3996,10 @@ void __cdecl edrtlRedo(void) {
 static i32 rtlCmp(RTL_LIGHT_PC *first, RTL_LIGHT_PC *second);
 char *__cdecl rtlGetEnvPath(void);
 char *__cdecl rtlGetEnvSceneName(void);
+
+void rtlSetExt(char *extension) {
+    rtl_ext = extension;
+}
 
 void __cdecl cbLoad(eduimenu_s *menu, eduiitem_s *item, u32 buttons) {
     char path[256];

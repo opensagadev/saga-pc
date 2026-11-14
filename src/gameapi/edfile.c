@@ -328,6 +328,24 @@ void __cdecl EdFileReadNuVec(NUVEC *out) {
     out->z = EdFileReadFloat();
 }
 
+i32 EdFileWriteMemCard(char *filename, i32 size, void *data) {
+    EdFileSetMedia(2);
+    if (EdFileOpen(filename, 1)) {
+        EdFileWrite(data, size);
+        return EdFileClose();
+    }
+    return 0;
+}
+
+i32 EdFileReadMemCard(char *filename, i32 size, void *data) {
+    EdFileSetMedia(2);
+    if (!EdFileOpen(filename, 0)) {
+        return 0;
+    }
+    EdFileRead(data, size);
+    return EdFileClose();
+}
+
 i32 EdFileBackup(char *source, char *destination) {
     i64 remaining = NuFileSize(source);
     if (remaining <= 0) {
@@ -432,6 +450,10 @@ static void EduiPrimSetColourPc(i32 colour) {
             ((colour >> 1) & 0x7f00) + ((colour & 0xfe) << 15) + ((colour >> 17) & 0x7f) + (colour & 0xff000000);
     }
     ((EDUI_PRIM_VERTEX_PC *)NuPrimStreamBufferPointer->void_ptr)->colour = converted;
+}
+
+void fun_00617d30(void) {
+    NuPrimSetCoordinateSystem(NuPrimCoordSystemStack[--NuPrimCSPos]);
 }
 
 void __cdecl edmainSetReturn(i32 result) {
@@ -551,6 +573,27 @@ void __cdecl edmainSetLocVec(NUVEC *location) {
  * The neighboring native setter 617f70 has no verified direct caller. */
 NUVEC *__cdecl edmainQueryLocVec(void) {
     return ed_loc;
+}
+
+extern f32 EduiSliderGlobalAccelerationPc;
+extern f32 EduiScaleXPc;
+extern f32 EduiScaleYPc;
+
+void eduiSetGlobalSliderAccel(f32 acceleration) {
+    if (acceleration < 0.0f) {
+        acceleration = 0.0f;
+    } else if (acceleration > 1.0f) {
+        acceleration = 1.0f;
+    }
+    EduiSliderGlobalAccelerationPc = acceleration;
+}
+
+i32 fun_00617fe0(f32 x) {
+    return (EduiScaleXPc * x);
+}
+
+i32 fun_00617ff0(f32 y) {
+    return (EduiScaleYPc * y);
 }
 
 eduiitem_s *__cdecl eduiMenuAddItem(eduimenu_s *menu, eduiitem_s *item) {
@@ -719,6 +762,10 @@ void __cdecl eduiMenuSortItemsByTxt(eduimenu_s *menu) {
             }
         } while (sorted == 0);
     }
+}
+
+void eduiMenuSelectFirstEntry(eduimenu_s *menu) {
+    menu->selected = NULL;
 }
 
 void __cdecl cbInteractMenuScrollTo(eduimenu_s *menu, char *text) {
@@ -1389,6 +1436,21 @@ eduiitem_s *eduiItemGreyGradPickCreate(size_t data, const void *colours, EdUiIte
     return item;
 }
 
+eduiitem_s *eduiItemDataGradPickCreate(size_t data, void *colours, EdUiItemCallback callback, EdUiItemCallback press,
+                                       EdUiItemCallback add, EdUiItemCallback remove, EdUiItemCallback copy,
+                                       EdUiItemCallback paste, char *text) {
+    edui_gradient_pick_s *item = (edui_gradient_pick_s *)eduiItemGradPickCreate(data, colours, callback, text);
+    if (item) {
+        item->base.type = 9;
+        item->press = press;
+        item->add = add;
+        item->remove = remove;
+        item->copy = copy;
+        item->paste = paste;
+    }
+    return &item->base;
+}
+
 void __cdecl eduiMenuAddItemFirst(eduimenu_s *menu, eduiitem_s *item) {
     if (menu->first) {
         menu->first->previous = item;
@@ -1835,6 +1897,29 @@ void __cdecl eduiProcessCursorDefault(f32 delta_time, FRAME_PAD_PC *pad) {
         PcGetMousePositionPc(&edui_cursor_x, &edui_cursor_y);
         edui_cursor_x *= 640.0;
         edui_cursor_y *= 224.0;
+    }
+    EduiClampCursorPc();
+    edui_cursor_buttons_old = edui_cursor_buttons;
+    edui_cursor_buttons = 0;
+    edui_cursor_buttons |= NuMouseReadButtons() == 1 ? 0x40 : 0;
+    edui_cursor_buttons |= NuMouseReadButtons() == 2 ? 0x10 : 0;
+    edui_cursor_buttons_db = (edui_cursor_buttons ^ edui_cursor_buttons_old) & edui_cursor_buttons;
+}
+
+void fun_00627540(f32 delta_time, FRAME_PAD_PC *pad) {
+    if (pad != NULL && eduiUsedAlgPad(pad) && !(pad->digital_buttons & 0x40)) {
+        edui_cursor_x = 320.0f;
+        edui_cursor_y = 112.0f;
+    } else {
+        edui_cursor_dx = -NuMouseReadXVel() * TerrainScanMargin10Pc;
+        edui_cursor_dy = -NuMouseReadYVel() * TerrainScanMargin10Pc;
+    }
+    if (NuKeyboard(0x38)) {
+        edui_cursor_locked = 1;
+    } else {
+        edui_cursor_locked = 0;
+        edui_cursor_x += edui_cursor_dx;
+        edui_cursor_y += edui_cursor_dy;
     }
     EduiClampCursorPc();
     edui_cursor_buttons_old = edui_cursor_buttons;
@@ -3233,6 +3318,10 @@ static void EduiTextPickToggleCasePc(void) {
     }
 }
 
+i32 fun_00619fe0(void) {
+    return 0;
+}
+
 static i32 EduiTextPickKeyboardPc(edui_textpicker_s *picker, eduimenu_s *menu, FRAME_PAD_PC *pad) {
     u32 modifiers;
     i32 key = NuKeyGet(&modifiers);
@@ -3577,6 +3666,15 @@ void __cdecl eduiInitMaterials(void) {
     ((NUMTL *)uimtls[3])->opacity = 0.999f;
     ((NUMTL *)uimtls[3])->attribs.alpha_mode = 1;
     NuMtlUpdate(((NUMTL *)uimtls[3]));
+}
+
+void fun_006017a0(struct PC_SCENE_MTL_VIEW *material, i32 plane);
+
+void eduiSetRenderPlane(i32 plane) {
+    i32 i;
+    for (i = 0; i < 4; i++) {
+        fun_006017a0(uimtls[i], plane);
+    }
 }
 
 void __cdecl eduiMenuFitWidth(eduimenu_s *menu, i32 padding) {
@@ -4472,6 +4570,16 @@ void __cdecl FS_MakeDateTimeString(const FS_PACKED_ENTRY_HEADER_PC *entry, char 
               entry->encoded_second - 'A');
 }
 
+void FS_MakeTimeString(const FS_PACKED_ENTRY_HEADER_PC *entry, char *output) {
+    NuSPrintf(output, " %.2d:%.2d:%.2d", entry->encoded_hour - 'A', entry->encoded_minute - 'A',
+              entry->encoded_second - 'A');
+}
+
+void FS_MakeDateString(const FS_PACKED_ENTRY_HEADER_PC *entry, char *output) {
+    NuSPrintf(output, " %.2d/%.2d/%d", entry->encoded_day - 'A', entry->encoded_month - 'A',
+              entry->encoded_year + 1915);
+}
+
 void __cdecl FS_MoveCursorDown(i32 steps) {
     while (steps > 0) {
         i32 top_length = NuStrLen(FS_CurrentPos) + 1;
@@ -4729,6 +4837,18 @@ void __cdecl RenderFileSel3(i32 draw_title) {
     NuQFntPopPrintMode();
 }
 
+void RenderFileSel2(i32 x, i32 y, i32 *width, i32 *height) {
+    FS_X = x;
+    FS_Y = (f32)(y * 0.5);
+    RenderFileSel3(0);
+    *height = (FS_H + FS_H);
+    *width = FS_W;
+}
+
+void RenderFileSel(void) {
+    RenderFileSel3(1);
+}
+
 STATIC_ASSERT(offsetof(edui_gradient_pick_s, first_stage) == 0x4c);
 STATIC_ASSERT(offsetof(edui_gradient_pick_s, selected_stage) == 0x50);
 STATIC_ASSERT(offsetof(edui_gradient_pick_s, changed) == 0x54);
@@ -4917,6 +5037,23 @@ i32 __cdecl ProcessFileSel3(f32 elapsed, FRAME_PAD_PC *pad) {
     return 0;
 }
 
+i32 ProcessFileSel2(f32 elapsed, FRAME_PAD_PC *pad) {
+    return ProcessFileSel3(elapsed, pad);
+}
+
+void FileSelKill(void) {
+    NuStrCpy(FS_LastFileName, FS_CurrentCursorPos + 7);
+    FS_Active = 0;
+}
+
+void ProcessFileSel(f32 elapsed, FRAME_PAD_PC *pad) {
+    ProcessFileSel3(elapsed, pad);
+    RenderFileSel();
+    if (pad->digital_buttons & 0x10) {
+        FileSelKill();
+    }
+}
+
 void __cdecl FS_OpenFileSelPc(char *title, char *path, char *filter, char *filter_out,
                               void(__cdecl *callback)(char *path, char *name)) {
     if (title) {
@@ -5042,4 +5179,49 @@ void CreateTestMenu(void *font) {
 void TestMenu(FRAME_PAD_PC *pad) {
     eduiMenuProcess(testmenu0, 0.016666668f, pad);
     eduiMenuRender(testmenu0);
+}
+
+void fun_0062a4b0(f32 delta_time, FRAME_PAD_PC *pad) {
+    eduiitem_s *item;
+    if (ed_main_menu) {
+        for (item = ed_main_menu->first; item; item = item->next) {
+            struct ed_module_s *module = item->data_ptr;
+            if (module) {
+                item->disabled = ((size_t)module->reserved & 1) != 0;
+            }
+        }
+        eduiMenuProcess(ed_main_menu, delta_time, pad);
+    }
+}
+
+i32 edmainProcess(f32 delta_time, FRAME_PAD_PC *pad) {
+    i32 result;
+    editor_return = 0;
+    if (edmain_cursor_enabled) {
+        eduiProcessCursorDefault(0.0f, NULL);
+    }
+    if (ed_module_active && ed_curr) {
+        if (ed_curr->process) {
+            result = ed_curr->process(delta_time, pad);
+            if (result) {
+                if (ed_curr->deactivate) {
+                    ed_curr->deactivate();
+                }
+                ed_module_active = 0;
+                if (result == 2) {
+                    editor_return = 1;
+                }
+            }
+            return editor_return;
+        }
+        ed_module_active = 0;
+        return editor_return;
+    }
+    if (!ed_curr) {
+        ed_curr = ed_list;
+        eduiSetActiveMenu(ed_main_menu);
+        eduiSetDefaultActiveMenu(ed_main_menu);
+    }
+    fun_0062a4b0(delta_time, pad);
+    return editor_return;
 }

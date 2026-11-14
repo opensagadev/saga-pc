@@ -3829,6 +3829,10 @@ void edptlcbResetParticles(eduimenu_s *unused0, eduiitem_s *unused1, u32 unused2
     edppRestartAllEffectsInLevel();
 }
 
+void *terraininit(i32 level_num, void *buffer, void *buffer_end, i32 options, char *path, void *scene, i32 group) {
+    return TerrainInitEx(level_num, buffer, buffer_end, options, path, scene, group, 0x1000, 0xc00, 0x100);
+}
+
 void edptlcbStartPage(eduimenu_s *unused0, eduiitem_s *item, u32 unused2) {
     edppStartPage((u8)item->data);
 }
@@ -4319,6 +4323,16 @@ void edppInit(void) {
     eduiMenuAddItem(ptloptmenu, eduiItemToggleCreate(1, colours, 0, 1, cbPtlSnapToggle, "Snap"));
     eduiMenuAddItem(ptloptmenu,
                     eduiItemSelCreate(1, colours, 0, 0, edptlcbJumpToGameLocation, "Jump To Game Location"));
+}
+
+extern void *CurTerr;
+
+void NewTerrain(NUVEC *position, NUVEC *movement, u8 *hit_flags, i32 object_index, f32 radius, f32 collision_radius,
+                i32 scan_flags) {
+    if (CurTerr != NULL) {
+        NewTerrainScaleYMask(position, movement, hit_flags, object_index, radius, collision_radius, 1.0f, 0, scan_flags,
+                             0);
+    }
 }
 
 void __cdecl edmainSetLocVec(NUVEC *position);

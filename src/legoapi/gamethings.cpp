@@ -18,6 +18,9 @@ GameThingManager::~GameThingManager() {
 void GameThingManager::AddOnceOnlyThings() {
 }
 
+extern "C" void fun_005b16d0() {
+}
+
 void CreateThingManager() {
     theGameThings = new GameThingManager(4);
 }

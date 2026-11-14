@@ -172,10 +172,30 @@ i32 __cdecl AnimMiscFlags(CHARACTER_MODEL_LAYERS_PC *model, i32 animation) {
     return 0;
 }
 
+void AnimList_RequestAnimGroups(i32 character_id, ...);
+
+void AnimList_RequestAnimGroupForCreatures(i32 group_id, ...) {
+    va_list creatures;
+    i32 creature_id;
+    va_start(creatures, group_id);
+    for (;;) {
+        creature_id = va_arg(creatures, i32);
+        if (creature_id == -1) {
+            break;
+        }
+        AnimList_RequestAnimGroups(creature_id, group_id, -1);
+    }
+    va_end(creatures);
+}
+
 static i32 AnimBlendMode = 1;
 
 void __cdecl SetAnimBlendMode(i32 mode) {
     AnimBlendMode = mode;
+}
+
+i32 GetAnimBlendMode(void) {
+    return AnimBlendMode;
 }
 
 APIOBJECTSYS_PC *__cdecl APIObjectSysInit(i32 object_size, VARIPTR *buffer, VARIPTR *end) {
@@ -192,6 +212,15 @@ APIOBJECTSYS_PC *__cdecl APIObjectSysInit(i32 object_size, VARIPTR *buffer, VARI
         }
     }
     return system;
+}
+
+void fun_0062a840(APIOBJECT_PC *object, u8 object_id, i32 enable) {
+    if (enable) {
+        object->flags_low |= 1;
+        object->object_id = object_id;
+    } else {
+        object->flags_low &= ~1;
+    }
 }
 
 GAMEOBJECT *__cdecl APIObjectCreate(APIOBJECTSYS_PC *system) {
@@ -1731,6 +1760,21 @@ void __cdecl EvalModelAnim(CHARACTER_MODEL_LAYERS_PC *model, ANIMPACKET_PC *pack
     PCStoreModelLocatorCoordinates(model, world_matrix, joint_matrices, locator_positions, locator_matrices);
 }
 
+f32 BlendTimeBetweenAnims(CHARACTER_MODEL_LAYERS_PC *model, i32 source_animation, i32 target_animation) {
+    f32 time;
+    if (model->animation_configs[source_animation] == NULL) {
+        return 0.0f;
+    }
+    if (model->animation_configs[target_animation] == NULL) {
+        return 0.0f;
+    }
+    time = model->animation_configs[target_animation]->blend_in_time;
+    if (model->animation_configs[source_animation]->blend_out_time < time) {
+        time = model->animation_configs[source_animation]->blend_out_time;
+    }
+    return time;
+}
+
 void __cdecl ResetAnimPacket(ANIMPACKET_PC *packet, i32 animation) {
     if (packet == NULL) {
         return;
@@ -1772,6 +1816,15 @@ void __cdecl SetAnimTimeRandom(CHARACTER_MODEL_LAYERS_PC *model, ANIMPACKET_PC *
         duration = (f64)NuAnimEndFrame(model->action_animations[packet->requested_animation]) - 1.0;
         packet->current_time = (f32)((f64)NuRandFloat() * duration + 1.0);
     }
+}
+
+f32 GetAnimTimeRandom(CHARACTER_MODEL_LAYERS_PC *model, i32 animation) {
+    f64 duration;
+    if (model != NULL && model->action_animations[animation] != NULL) {
+        duration = NuAnimEndFrame(model->action_animations[animation]) - 1.0;
+        return (NuRandFloat() * duration + 1.0);
+    }
+    return 0.0f;
 }
 
 static f32 UpdateAnimTimer(CHARACTER_MODEL_LAYERS_PC *model, ANIMPACKET_PC *packet, i16 animation, f32 time,
@@ -2747,6 +2800,14 @@ i32 __cdecl InModelList(APICHARACTERMODELLIST *list, i32 id, i32 *out_index) {
 void __cdecl SetActionInfo(API_ACTION_INFO_PC *info, API_EXTRA_ACTION_PC *extra) {
     APIActionInfo = info;
     APIExtraActionData = extra;
+}
+
+u32 ActionInfoFlags(i32 action) {
+    return APIActionInfo != NULL ? APIActionInfo[action].flags : 0;
+}
+
+const char *ActionInfoName(i32 action) {
+    return APIActionInfo != NULL ? APIActionInfo[action].name : "?";
 }
 
 i32 __cdecl ActionFromName(const char *name) {

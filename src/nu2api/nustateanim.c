@@ -41,3 +41,9 @@ i32 __cdecl StateAnimEvaluate2(STATE_ANIM_PC *state, u8 *index, u8 *value, f32 f
     *index = (u8)cursor;
     return old_value != new_value;
 }
+
+void ReadInstanceIDs(NUFILE file, NUGSCN *scene) {
+    scene->num_instance_ids = NuFileReadInt(file);
+    NuFileReadInt(file);
+    scene->instance_ids = NuMemFileAddr(file);
+}

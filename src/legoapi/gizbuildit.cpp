@@ -350,12 +350,28 @@ extern "C" {
         return NULL;
     }
 
+    i32 fun_0058ecd0(BUILDIT_RESET_PC *buildit) {
+        if (buildit != NULL && buildit->built_object_count == 0 && buildit->builders_active == 0) {
+            return 1;
+        }
+        return 0;
+    }
+
     i32 __cdecl GizBuildIt_AtEnd(void *buildit_pointer) {
         BUILDIT_RESET_PC *buildit = (BUILDIT_RESET_PC *)buildit_pointer;
         if (buildit != NULL && buildit->build_state == 2) {
             return 1;
         }
         return 0;
+    }
+
+    void fun_0058ed10(BUILDIT_RESET_PC *buildit) {
+        if (buildit != NULL) {
+            if (buildit->linked_buildit == NULL) {
+                GameAnimSet_SetVisibility(buildit->anim_set, 0);
+            }
+            buildit->availability_flags &= ~2;
+        }
     }
 }
 

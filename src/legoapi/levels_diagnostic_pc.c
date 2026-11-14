@@ -6,6 +6,9 @@
 void __cdecl LevelsConfigDiagnosticPc(char *message) {
 }
 
+void fun_005788a0(void) {
+}
+
 /* Original source name unknown. Also empty on PC; the retail linker folded it
    into LevelsConfigDiagnosticPc. LevelObjects_InitForGame calls it with the name
    table size when the name table overruns the buffer. */

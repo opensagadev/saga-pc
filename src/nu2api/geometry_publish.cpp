@@ -115,3 +115,61 @@ extern "C" i32 __cdecl PcRegisterDynamicGeometryPc(PC_GEOMETRY_PUBLISH_FORMAT_PC
     }
     return 1;
 }
+
+extern "C" i32 fun_005fbd40(PC_GEOMETRY_PUBLISH_RECORD_PC *record);
+
+extern "C" i32 PcUnregisterDynamicGeometryPc(PC_GEOMETRY_PUBLISH_FORMAT_PC *format) {
+    for (i32 i = 0; i < PcGeometryRegistryCountPc; ++i) {
+        if (format == PcGeometryRegistryPc[i].format) {
+            fun_005fbd40(&PcGeometryRegistryPc[i]);
+            if (PcGeometryRegistryCountPc != 0) {
+                PC_GEOMETRY_PUBLISH_RECORD_PC *old = PcGeometryRegistryPc;
+                PcGeometryRegistryPc = (PC_GEOMETRY_PUBLISH_RECORD_PC *)NuAlloc(
+                    ((PcGeometryRegistryCountPc - 1) * sizeof(PC_GEOMETRY_PUBLISH_RECORD_PC)),
+                    "d:\\projects\\game_saga\\nu2api.saga\\nu3d\\nuinstsurfgeom_gen.cpp", 0xd0);
+                i32 count = 0;
+                for (i32 j = 0; j < PcGeometryRegistryCountPc; ++j) {
+                    if (format != old[j].format) {
+                        PcGeometryRegistryPc[count++] = old[j];
+                    }
+                }
+                if (old != NULL) {
+                    NuFree(old, "d:\\projects\\game_saga\\nu2api.saga\\nu3d\\nuinstsurfgeom_gen.cpp", 0xdf);
+                }
+                --PcGeometryRegistryCountPc;
+                return 1;
+            }
+            NuFree(PcGeometryRegistryPc, "d:\\projects\\game_saga\\nu2api.saga\\nu3d\\nuinstsurfgeom_gen.cpp", 0xc8);
+            PcGeometryRegistryPc = NULL;
+            PcGeometryRegistryCountPc = 0;
+        }
+    }
+    return 0;
+}
+
+extern "C" NUDISPLAYLIST *fun_005c6680(void) {
+    return &PCDisplayList2dPc;
+}
+
+extern "C" VARIPTR *fun_005c6690(void) {
+    NuDisplayListStreamCursor->addr = (NuDisplayListStreamCursor->addr + 15) & ~15u;
+    return NuDisplayListStreamCursor;
+}
+
+extern "C" void fun_005c6820(void) {
+}
+
+extern "C" NUVEC *fun_005c6950(NUVEC *out, const NUVEC *a, const NUVEC *b) {
+    out->x = a->y * b->z - a->z * b->y;
+    out->y = a->z * b->x - a->x * b->z;
+    out->z = b->y * a->x - b->x * a->y;
+    return out;
+}
+
+extern "C" f32 fun_005c6990(const NUVEC *a, const NUVEC *b) {
+    return a->y * b->y + a->x * b->x + a->z * b->z;
+}
+
+extern "C" f32 fun_005c6b30(const NUVEC4 *plane, const NUVEC *point) {
+    return fun_005c6990((const NUVEC *)plane, point) + plane->w;
+}

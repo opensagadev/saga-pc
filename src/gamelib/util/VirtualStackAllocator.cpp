@@ -41,6 +41,18 @@ void VirtualStackAllocator::setExternalMemoryPool(void *memory, u32 size) {
     end = cursor + size;
 }
 
+extern "C" void fun_00741170() {
+}
+
+extern "C" void fun_00741180() {
+}
+
+extern "C" void fun_00741200() {
+}
+
+extern "C" void fun_00741290() {
+}
+
 VirtualStackAllocator::~VirtualStackAllocator() {
     if (owns_memory != 0 && base != NULL) {
         delete[] base;

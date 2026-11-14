@@ -10,6 +10,9 @@ static f32 EdcamFabsPc(f32 f) {
     return rv;
 }
 
+void fun_00617ca0(void) {
+}
+
 typedef struct NuKeyboardDeviceVTable_PC {
     u8 unknown_0000_to_001c[0x1c];                                                 // 0x00
     i32(__stdcall *acquire)(NuKeyboardDevice_PC *device);                          // 0x1c
@@ -318,6 +321,10 @@ void edcamGetPosAngSnap(NUVEC *position, i32 *pitch, i32 *yaw) {
     }
 }
 
+void edcamSetContoller(i32 invert_pitch) {
+    gp_cam->invert_pad_pitch = invert_pitch;
+}
+
 void edcamSetDist(f32 distance) {
     gp_cam->distance = distance;
 }
@@ -346,6 +353,10 @@ void edcamSet(void) {
     NuCameraSet(camera);
 }
 
+NUVEC *edcamGetPosPointer(void) {
+    return &gp_cam->position;
+}
+
 /* PC input startup remains structurally incomplete at the marked platform
  * dependencies; these candidates preserve the verified wrapper ABI/order. */
 extern HINSTANCE PCInputWindow;
@@ -360,6 +371,10 @@ i32 __cdecl NuKeyboardPlatformStartup(void) {
     return 1;
 }
 
+i32 fun_006d3410(void) {
+    return 0;
+}
+
 i32 __cdecl NuKeyboard_db(i32 key) {
     i32 page = (i8)nu_keyboard_page_index;
     u8 current = nu_keyboard_pages[(page << 8) + key];
@@ -367,6 +382,14 @@ i32 __cdecl NuKeyboard_db(i32 key) {
         return 1;
     }
     return 0;
+}
+
+i32 fun_006d6c80(void) {
+    return nu_keyboard_previous_key_index;
+}
+
+i32 fun_006d6c90(void) {
+    return nu_keyboard_key_index;
 }
 
 /* Private Source proposal; append in keyboard_read.c after old source. */
@@ -640,4 +663,13 @@ void do_maya_mouse_camera(edcam_s *camera) {
 
 f32 __cdecl edcamGetDist(void) {
     return gp_cam->distance;
+}
+
+edcam_s *edcamGetEdCam(void) {
+    return gp_cam;
+}
+
+void edcamGetOffset(NUVEC *offset) {
+    edcam_s *camera = gp_cam;
+    *offset = camera->offset;
 }

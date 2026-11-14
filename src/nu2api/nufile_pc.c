@@ -107,9 +107,26 @@ i32 __cdecl DEV_FormatName(NUFILE_DEVICE *device, char *formatted_name, char *pa
     return 0;
 }
 
+i32 fun_004ff280(NUFILE_DEVICE *device) {
+    device->status = 1;
+    return 1;
+}
+
 i32 __cdecl DEVHOST_Interrogate(NUFILE_DEVICE *device) {
     device->status = 1;
     return 1;
+}
+
+i32 fun_004ff2a0(NUFILE_DEVICE *device) {
+    device->status = 1;
+    return 1;
+}
+
+void fun_004ff2b0(void) {
+}
+
+i32 fun_004ff2c0(void) {
+    return 0;
 }
 
 extern i32 __cdecl FileDirectoryMcOpenPc(i32 port, i32 slot, char *path);
@@ -299,6 +316,10 @@ i32 __cdecl SaveCreateDirectoryPc(char *path) {
     security.nLength = sizeof(security);
     security.lpSecurityDescriptor = NULL;
     return CreateDirectoryA(path, &security);
+}
+
+i32 fun_004ff960(void) {
+    return 0;
 }
 
 i32 __cdecl NuFileGetInfo(char *path, AI_EDITOR_FILE_INFO_PC *info) {

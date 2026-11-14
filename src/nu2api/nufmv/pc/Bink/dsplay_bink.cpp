@@ -611,3 +611,6 @@ extern "C" void __cdecl RadFmvDestroyImagePc(RADFMV_IMAGE_PC *image) {
         }
     }
 }
+
+extern "C" void fun_00633390(void) {
+}

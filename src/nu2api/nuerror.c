@@ -40,3 +40,7 @@ char *NuGetErrN(i32 entry) {
     }
     return PCWarningMessages + offset;
 }
+
+char *fun_004fea90(void) {
+    return bHaveErr ? PCWarningMessages : NULL;
+}

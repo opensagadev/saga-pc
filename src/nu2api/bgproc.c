@@ -16,6 +16,33 @@ void __cdecl PcEnableThreadSwap(void) {
 void __cdecl PcDisableThreadSwap(void) {
 }
 
+void fun_006de770(void) {
+}
+
+void fun_006de7c0(void) {
+}
+
+void fun_006de7d0(void) {
+}
+
+void fun_006de7e0(void) {
+}
+
+void fun_006de7f0(void) {
+}
+
+void fun_006de860(void) {
+}
+
+void fun_006de870(void) {
+}
+
+void fun_006de8a0(void) {
+}
+
+void fun_006de8b0(void) {
+}
+
 void(__cdecl *NuThreadDisableThreadSwap)(void) = PcDisableThreadSwap;
 void(__cdecl *NuThreadEnableThreadSwap)(void) = PcEnableThreadSwap;
 
@@ -205,4 +232,7 @@ void __cdecl bgprocFrameSleepPc(i32 milliseconds) {
             Sleep(milliseconds);
         }
     }
+}
+
+void fun_004ff0f0(void) {
 }

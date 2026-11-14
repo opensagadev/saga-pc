@@ -86,6 +86,9 @@ AI_HELPER_SLOT_PC *__cdecl AIPathCnxHelperSys_Find(AI_HELPER_SYSTEM_PC *system, 
     return NULL;
 }
 
+void fun_005ab280(void) {
+}
+
 /* Native 0x0043d0c0, 840-byte owner including its internal ten-case table. */
 STATIC_ASSERT(offsetof(GIZBUILDIT_PC, build_state) == 0x6d);
 STATIC_ASSERT(offsetof(struct ZIPUP_s, flags) == 0x68);

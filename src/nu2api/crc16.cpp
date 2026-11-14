@@ -33,3 +33,9 @@ u32 CRC16::hashInverse(const unsigned char *data, i32 length) {
     }
     return crc;
 }
+
+extern "C" i32 fun_00746400(i32 count, ShaderCompilerBufferAllocatorPc *buffer) {
+    i32 offset = buffer->length;
+    buffer->length = offset + count;
+    return offset;
+}

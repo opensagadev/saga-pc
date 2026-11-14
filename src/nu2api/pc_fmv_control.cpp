@@ -72,3 +72,9 @@ extern "C" void __cdecl FmvRestorePc(void) {
 extern "C" void __cdecl FmvSkipPc(void) {
     FmvFadePc(&FmvMoviePc, 1000.0f);
 }
+
+extern "C" void fun_00631290(NUMTX *matrix) {
+    matrix->m01 = matrix->m02 = matrix->m03 = matrix->m10 = matrix->m12 = matrix->m13 = matrix->m20 = matrix->m21 =
+        matrix->m23 = matrix->m30 = matrix->m31 = matrix->m32 = 0.0f;
+    matrix->m00 = matrix->m11 = matrix->m22 = matrix->m33 = 1.0f;
+}

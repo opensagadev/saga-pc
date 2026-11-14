@@ -1443,6 +1443,18 @@ i32 NuMusic::PlayTrack(u32 class_mask) {
     return PlayTrack(class_mask, 0);
 }
 
+extern "C" f32 fun_00696a40(f32 value) {
+    return (f32)log10((f64)value);
+}
+
+extern "C" i32 fun_00696a60(i32 value) {
+    return abs(value);
+}
+
+extern "C" f32 fun_00696a70(f32 value) {
+    return (f32)log10((f64)value);
+}
+
 extern "C" i32 __cdecl NuSound3InitV(VARIPTR *cursor, VARIPTR end, i32 device_parameter, i32 token, ...) {
     PC_SOUND_INIT_CONFIG config;
     va_list args;

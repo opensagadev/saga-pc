@@ -521,6 +521,11 @@ void __cdecl DebFreeInstantly(i32 *handle) {
     *handle = -1;
 }
 
+void fun_00684560(DEBRISKEY_PC *key) {
+    i32 handle = key->allocation_index;
+    DebFree(&handle);
+}
+
 void __cdecl DebFree(i32 *handle) {
     DEBRIS_INFO_PC *effect;
     i32 i;
@@ -1172,6 +1177,14 @@ void __cdecl DebrisFreeOldestDmaDebTypeTable(void) {
     }
 }
 
+void fun_006580b0(void) {
+    globalframes = 0;
+    panelglobaltime = 0.0f;
+    debris_render_panel_time = 0.0f;
+    globaltime = 0.0f;
+    debris_render_global_time = 0.0f;
+}
+
 void __cdecl DebFreeAllCreatedEffects(void) {
     i32 i;
     for (i = 0; i < maxdebkeys; ++i) {
@@ -1317,6 +1330,22 @@ void __cdecl DebrisReScale(i32 effect_index, f32 scale) {
     effect->jib_x_amplitude *= scale;
     effect->jib_y_amplitude *= scale;
     GenericDebinfoDmaTypeUpdate(effect);
+}
+
+DEBRIS_INFO_PC *fun_006582c0(i32 index) {
+    if (index >= 0 && index < debinf_count && debtab[index] != NULL) {
+        return debtab[index];
+    }
+    return NULL;
+}
+
+f32 fun_006582f0(i32 index) {
+    if (index >= 0 && index < debinf_count && debtab[index] != NULL) {
+        DEBRIS_INFO_PC *info = debtab[index];
+        return info->emission_period_random + info->emission_period + info->emission_pause +
+               info->emission_pause_random;
+    }
+    return 0.0f;
 }
 
 void __cdecl DebrisPopulateInstance(i32 handle, f32 duration) {
@@ -1647,6 +1676,14 @@ i32 __cdecl DebrisTorusCollisionCheckScaleY(NUVEC *p, f32 r, f32 y) {
     return DebrisTorusCollisionCheckScaleYFlag(p, r, y, 3);
 }
 
+i32 fun_00658d00(NUVEC *position, f32 radius, u8 flags) {
+    return DebrisTorusCollisionCheckScaleYFlag(position, radius, 1.0f, flags);
+}
+
+i32 fun_00658d30(NUVEC *position, f32 radius) {
+    return DebrisTorusCollisionCheckScaleYFlag(position, radius, 1.0f, 3);
+}
+
 i32 __cdecl DebrisCollisionCheckScaleY(NUVEC *p, f32 r, f32 y) {
     return DebrisCollisionCheckScaleYFlag(p, r, y, 3);
 }
@@ -1666,6 +1703,10 @@ i32 __cdecl DebrisAllCollisionCheckScaleYFlag(NUVEC *p, f32 r, f32 y, u8 f) {
         return -1;
     }
     return result;
+}
+
+i32 fun_006590e0(void) {
+    return freedebchkptrg > 0;
 }
 
 /* Native PC entries 0x00659140 and 0x00659150 are RET-only; the D3D release and
@@ -1894,6 +1935,13 @@ void __cdecl AddScaledFiniteShotDebrisEffect(i32 *key, i32 effect, NUVEC *positi
     }
 }
 
+void fun_006904d0(i32 *handle, i32 effect, NUVEC *position, i32 count, void *user_data) {
+    AddFiniteShotDebrisEffect2(handle, effect, position, NULL, NULL, count);
+    if (*handle != -1) {
+        debkeydata[*handle].user_data = user_data;
+    }
+}
+
 void __cdecl DebrisCleanUpDmaDebTypeTables(void) {
     if (++DebrisDmaCleanupDelayPc > 5) {
         i32 index = DebrisDmaCleanupIndexPc;
@@ -2110,5 +2158,17 @@ i32 __cdecl DebrisGetConeProperties(i32 handle, NUVEC *origin, NUVEC *end, f32 *
 void __cdecl DebrisStatusAlwaysOff(i32 *handle) {
     if (*handle != -1) {
         debkeydata[*handle].field_2f4 = 0;
+    }
+}
+
+void fun_006552e0(i32 *handle) {
+    if (*handle != -1) {
+        debkeydata[*handle].field_2f4 = 2;
+    }
+}
+
+void fun_00655300(i32 *handle) {
+    if (*handle != -1) {
+        debkeydata[*handle].field_2f4 = 1;
     }
 }

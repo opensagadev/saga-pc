@@ -171,6 +171,17 @@ i32 __cdecl CharIDFromName(const char *name) {
     return -1;
 }
 
+extern "C" CHARACTERDATA_PC *CDataFromName(const char *name) {
+    i32 index;
+
+    for (index = 0; index < CHARCOUNT; ++index) {
+        if (NuStrICmp(CDataList[index].name, name) == 0) {
+            return &CDataList[index];
+        }
+    }
+    return NULL;
+}
+
 // Genuine character subsystem callback; arg1 prefix, arg4 output are PC order.
 i32 __cdecl RedirectAnim(char *directory, void *list, CHARACTERANIM_CONFIG_PC *animation, char *output_path) {
     const ANIM_REDIRECT_VIEW_PC *redirect;

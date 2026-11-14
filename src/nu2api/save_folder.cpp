@@ -20,3 +20,13 @@ extern "C" void *NuHwParameter33Pc;
 extern "C" void __cdecl NuHwSetParameter33Pc(void *value) {
     NuHwParameter33Pc = value;
 }
+
+extern "C" void fun_006dddc0(void) {
+    if (NuHwParameter33Pc != NULL) {
+        ((void (*)(void))NuHwParameter33Pc)();
+    }
+}
+
+extern "C" WNDCLASSEXA *fun_006dddd0(void) {
+    return &PcWindowClass;
+}

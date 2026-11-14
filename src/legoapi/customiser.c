@@ -978,3 +978,6 @@ CUSTOMISER_LAYERS_PC *__cdecl Customiser_Configure(char *filename, VARIPTR *buff
     }
     return NULL;
 }
+
+void fun_00594210(void) {
+}

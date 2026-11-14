@@ -1781,6 +1781,9 @@ void __cdecl NuGCutSceneSysRender(i32 paused) {
     }
 }
 
+void fun_00508f30(void) {
+}
+
 static void CutSceneCameraSysUpdatePc(INSTNUGCUTSCENE *owner, f32 frame) {
     CUT_INSTANCE_LOAD_PC *instance = (CUT_INSTANCE_LOAD_PC *)owner;
     CUT_LOAD_CAMERA_SYSTEM *system = instance->scene->camera_system;

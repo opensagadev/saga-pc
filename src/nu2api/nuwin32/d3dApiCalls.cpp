@@ -29,6 +29,9 @@ extern "C" {
     void __cdecl NuFmvTextureRestorePc(void);
     void __cdecl ResizeStillRenderPc(i32, i32);
     void __cdecl PCGraphicsClearFrameTexturesPc(void);
+    f32 fun_005d0920(void);
+    f32 fun_005d0930(void);
+    void PCDeviceSetGammaRampPc(const void *ramp);
 }
 extern "C" void __cdecl NuPostEffectResizePc(void);
 
@@ -74,6 +77,9 @@ struct D3DXMATRIX {
 
 STATIC_ASSERT(sizeof(D3DXMATRIX) == sizeof(NUMTX));
 
+extern "C" void fun_006df010(void) {
+}
+
 extern "C" void __cdecl NuKeyboardCreateWindowState(HWND window, HINSTANCE instance) {
     PCFrameCriticalSectionIndex = PCThreadCriticalSectionCreate_candidate();
     PCDeviceBackend.InitializeAdapter();
@@ -117,8 +123,44 @@ extern "C" void __cdecl PcRendererShutdown(i32 unused) {
     NuFmvTextureReleasePc();
 }
 
+extern "C" void fun_006df200(i32 windowed) {
+    PCDeviceBackend.requested_windowed = windowed == 1;
+}
+
+extern "C" i32 fun_006df210(void) {
+    return PCDeviceBackend.multisample_index != 0;
+}
+
+extern "C" i32 fun_006df220(void) {
+    return 0;
+}
+
+extern "C" i32 fun_006df230(void) {
+    return 0;
+}
+
+extern "C" i32 fun_006df240(void) {
+    return 0;
+}
+
+extern "C" i32 fun_006df250(void) {
+    return PCDeviceBackend.parameters.windowed == 0;
+}
+
+extern "C" u32 fun_006df260(void) {
+    return PCDeviceBackend.parameters.width;
+}
+
 extern "C" u32 __cdecl PcGetRefreshRatePc(void) {
     return PCDeviceBackend.parameters.refresh_rate;
+}
+
+extern "C" u32 fun_006df280(void) {
+    u32 mode = PcWindowOptions.aspect_mode;
+    if (mode == 3) {
+        mode = PCDeviceBackend.active_aspect_mode;
+    }
+    return mode;
 }
 
 extern "C" f32 __cdecl PcInputAspectRatioPc(void) {
@@ -143,6 +185,10 @@ extern "C" f32 __cdecl PcInputAspectRatioPc(void) {
     return value;
 }
 
+extern "C" u32 fun_006df2f0(void) {
+    return PCDeviceBackend.parameters.height;
+}
+
 extern "C" {
 
     void __cdecl NudxFw_D3DBeginCriticalSection(void) {
@@ -159,6 +205,65 @@ extern "C" {
 
     i32 __cdecl PCFrameLoadingYieldEnabled(void) {
         return PCFrameLoadingYieldEnabledPC;
+    }
+
+    void fun_006df340(u32 colour, f32 x, f32 y, i32 align, const char *format, ...) {
+        va_list args;
+        f32 width;
+        va_start(args, format);
+        width = NuQFntPrintLenV(system_qfont, format, args);
+        x += fun_005d0920();
+        y = y - fun_005d0930() * 0.5;
+        switch (align) {
+            case 0x10:
+                NuQFntMove(system_qfont, x, y, 0.0f);
+                break;
+            case 0x20:
+                x -= width;
+                NuQFntMove(system_qfont, x, y, 0.0f);
+                break;
+            case 0x40:
+                x -= width * 0.5;
+                NuQFntMove(system_qfont, x, y, 0.0f);
+                break;
+        }
+        NuQFntSetColour(system_qfont, colour);
+        NuQFntPrintV(system_qfont, format, args);
+    }
+
+    void fun_006df470(u32 colour, f32 x, f32 y, i32 align, const char *format, ...) {
+        va_list args;
+        f32 width;
+        va_start(args, format);
+        width = NuQFntPrintLenV(system_qfont, format, args);
+        switch (align) {
+            case 0x10:
+                NuQFntMove(system_qfont, x, y, 0.0f);
+                break;
+            case 0x20:
+                NuQFntMove(system_qfont, x - width, y, 0.0f);
+                break;
+            case 0x40:
+                NuQFntMove(system_qfont, x - width * 0.5, y, 0.0f);
+                break;
+        }
+        NuQFntSetColour(system_qfont, 0x80000000);
+        NuQFntPrintV(system_qfont, format, args);
+        x += fun_005d0920();
+        y = y - fun_005d0930() * 0.5;
+        switch (align) {
+            case 0x10:
+                NuQFntMove(system_qfont, x, y, 0.0f);
+                break;
+            case 0x20:
+                NuQFntMove(system_qfont, x - width, y, 0.0f);
+                break;
+            case 0x40:
+                NuQFntMove(system_qfont, x - width * 0.5, y, 0.0f);
+                break;
+        }
+        NuQFntSetColour(system_qfont, colour);
+        NuQFntPrintV(system_qfont, format, args);
     }
 }
 
@@ -210,6 +315,64 @@ extern "C" void __cdecl PCDeviceResetSamplerDefaultsPc(void) {
         PCDeviceSetSamplerState(stage, 9, 0);
         ++stage;
     } while (stage != PCDeviceBackend.caps.sampler_count_pc);
+}
+
+extern "C" void fun_006dfb30(f32 gamma) {
+    u16 ramp[3][256];
+    i32 i;
+    for (i = 0; i != 256; ++i) {
+        f32 level = i / 255.0;
+        i32 value;
+        level = (level - 0.5) * gamma + 0.5;
+        value = (level * 65535.0);
+        if (value >= 0xffff) {
+            value = 0xffff;
+        }
+        value = value <= 0 ? 0 : value;
+        ramp[0][i] = value;
+        ramp[1][i] = value;
+        ramp[2][i] = value;
+    }
+    PCDeviceSetGammaRampPc(ramp);
+}
+
+extern "C" void fun_006dfbf0(PC_TEXTURE_RESOURCE_PC *texture, u32 level, const void *rect, u32 flags,
+                             PC_LOCKED_RECT_PC *locked) {
+    if (texture != NULL) {
+        texture->methods->lock_rect(texture, level, locked, rect, flags);
+    }
+}
+
+extern "C" void fun_006dfc20(PC_TEXTURE_RESOURCE_PC *texture, u32 level) {
+    if (texture != NULL) {
+        texture->methods->unlock_rect(texture, level);
+    }
+}
+
+extern "C" void fun_006dfc40(PC_TEXTURE_RESOURCE_PC *texture, u32 level, PC_TEXTURE_RESOURCE_PC **surface) {
+    if (texture != NULL) {
+        texture->methods->get_surface_level(texture, level, surface);
+    }
+}
+
+extern "C" void fun_006dfc70(i32 format, u32 width, u32 height, u32 levels, i32 render_target,
+                             PC_TEXTURE_RESOURCE_PC **texture) {
+    if (render_target == 0) {
+        PCDeviceCreateTexture(width, height, levels, 0, format, 1, texture);
+    } else {
+        PCDeviceCreateTexture(width, height, 1, 1, format, 0, texture);
+    }
+}
+
+extern "C" u32 fun_006dfcf0(void) {
+    return PCDeviceBackend.state600;
+}
+
+extern "C" u32 fun_006dfd00(void) {
+    return PCDeviceBackend.state604;
+}
+
+extern "C" void fun_006dfd20(void) {
 }
 
 extern "C" i32 __cdecl PCFrameBeginScenePc(i32 begin) {
@@ -280,4 +443,12 @@ extern "C" void __cdecl PCGraphicsRecreateResources(i32 reset_available) {
     FmvRestorePc();
     NuFmvTextureRestorePc();
     PCGraphicsClearFrameTexturesPc();
+}
+
+extern "C" void fun_006dfec0(u32 width, u32 height) {
+    PcFreeApiCallBuffer();
+    PcApiCallBufferCount = PCDeviceBackend.CaptureScreenshotPc(width, height, &PcApiCallBuffer);
+}
+
+extern "C" void fun_006dff30(void) {
 }

@@ -148,6 +148,9 @@ void __cdecl NuBridgeDraw(NUMTL *material) {
     }
 }
 
+void fun_00545530(void) {
+}
+
 void NuBridgeUpdate(NUVEC *position) {
     i32 b;
     i32 i;

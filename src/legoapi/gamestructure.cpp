@@ -42,6 +42,32 @@ extern "C" void __cdecl PauseGame(i32 pad) {
     }
 }
 
+extern "C" void NetworkSyncPause(void) {
+    if (Paused == 0) {
+        NeedScreenGrab(1);
+    }
+    Paused = 1;
+    CutInstEndCount = 0;
+    NuPause(1);
+    NewMenu(LEGOMENU_PAUSESYNC, 0, -1);
+    ResetTimer(&PauseTimer, 0.0f);
+    music_man.SetFader(0.0f, 0.5f);
+    music_man.PauseTrack(0x10);
+    NuSound3StopRumble();
+    DoubleScoreTime = 0.0f;
+    ResetTimer(&JoinInTimer, 0.0f);
+    for (i32 i = 0; i < 8; ++i) {
+        if (Player[i]) {
+            ((GAMEOBJECT *)Player[i])->hud_icon_timer = 0.0f;
+            ((GAMEOBJECT *)Player[i])->input_toggle_hold_time = TOGGLEHOLDTIME;
+            ((GAMEOBJECT *)Player[i])->pause_context_state = 0.0f;
+        }
+    }
+    if (PauseGame_ExtraCodeFn) {
+        PauseGame_ExtraCodeFn();
+    }
+}
+
 extern "C" {
 
     void __cdecl ResumeGame(i32 play_sound) {
@@ -178,4 +204,18 @@ extern "C" void AddToGoldBricks() {
             ((STATUSCOLLECT_s *)CustomiserCompletionSavePc)->flags |= SAVE_REWARD_ALL_GOLD_BRICKS;
         }
     }
+}
+
+extern "C" i32 fun_0055c8f0() {
+    if (CustomiserCompletionSavePc != NULL && (CustomiserCompletionSavePc->flags & 2) != 0) {
+        return 1;
+    }
+    return 0;
+}
+
+extern "C" i32 fun_0055c910() {
+    if (memcard_autosaveneeded != 0 || memcard_autosaveinprogress != 0) {
+        return 1;
+    }
+    return 0;
 }

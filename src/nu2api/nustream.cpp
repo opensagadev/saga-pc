@@ -47,11 +47,41 @@ extern "C" void __cdecl NuSound3GetStreamInfo(i32 stream_index, void *info) {
     (void)info;
 }
 
+extern "C" i32 fun_00698b00(void) {
+    return 0;
+}
+
+extern "C" i32 fun_00698b10(void) {
+    return 0;
+}
+
+extern "C" i32 fun_00698b20(void) {
+    return 0;
+}
+
+extern "C" i32 fun_00698b30(void) {
+    return 0;
+}
+
+extern "C" i32 fun_00698b40(void) {
+    return 0;
+}
+
+extern "C" i32 fun_00698b50(void) {
+    return 0;
+}
+
 extern SoundQueue *NuSound3StereoStreams[2];
 extern "C" f32 NuSound3VolumeTable[0x4000];
 extern "C" i32 NuSound3VolumeOffset;
 
 extern "C" void __cdecl NuSound3KillAllAudio(void) {
+    NuSound3StereoStreams[0]->Stop();
+    NuSound3StereoStreams[1]->Stop();
+    SoundVoiceManager.StopAllVoices();
+}
+
+extern "C" void NuSound3KillAllAudioWaitEx(void) {
     NuSound3StereoStreams[0]->Stop();
     NuSound3StereoStreams[1]->Stop();
     SoundVoiceManager.StopAllVoices();
@@ -228,6 +258,9 @@ extern "C" i32 __cdecl NuSound3SetStreamVolume(i32 index, i32 volume) {
         level = -10000;
     }
     return NuSound3StereoStreams[index]->SetVolume(level);
+}
+
+extern "C" void fun_006984b0(void) {
 }
 
 extern "C" i32 __cdecl NuSound3GetStereoStreamStatus(i32 index) {
@@ -782,6 +815,12 @@ extern "C" void __cdecl NuSound3SuspendForFocusPc(void) {
         NuSound3StereoStreams[0]->SuspendForFocusPc();
         NuSound3StereoStreams[1]->SuspendForFocusPc();
     }
+}
+
+extern "C" void fun_00698fe0(void) {
+}
+
+extern "C" void fun_00698ff0(void) {
 }
 
 extern "C" void __cdecl NuSound3ResumeAfterFocusPc(void) {

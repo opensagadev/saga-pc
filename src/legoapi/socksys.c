@@ -754,6 +754,9 @@ SOCKROT_PC *SockRailAngles(SOCK_PC *sock, NUGSPLINE *spline, SOCKROT_PC *rotatio
     return rotations;
 }
 
+void fun_0053e800(void) {
+}
+
 f32 SockSplineLengthPc(NUGSPLINE *spline, i32 closed) {
     i32 segment_count;
     i32 segment;

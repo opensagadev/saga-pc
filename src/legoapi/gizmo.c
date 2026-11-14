@@ -256,6 +256,10 @@ void *__cdecl CreateGizmoSys(void *world, VARIPTR *buffer, VARIPTR *end) {
     return system;
 }
 
+i32 fun_00559a10(void) {
+    return 0;
+}
+
 static void GizmoSysPostLoad(GIZMOSYS_PC *system, void *world) {
     GIZMOTYPE_PC *type;
     GIZMOSET_PC *set;
@@ -714,6 +718,35 @@ NUVEC *__cdecl GizmoGetPos(GIZMOSYS_PC *system, void *pointer) {
     return get_pos_fn(gizmo);
 }
 
+i32 GizmoGetGizmosUsingSpecial(GIZMOSYS_PC *system, void *world, GIZMO_PC **results, i32 capacity, char *name) {
+    i32(__cdecl * using_special)(GIZMO_PC **, void *, i32, char *);
+    i32 count = 0;
+    i32 added;
+    i32 i;
+    if (system != NULL && gizmotypes != NULL && results != NULL) {
+        for (i = 0; i < ((GIZMOTYPES_PC *)gizmotypes)->count && count < capacity; ++i) {
+            using_special = ((GIZMOTYPES_PC *)gizmotypes)->types[i].fns.using_special_fn;
+            if (using_special != NULL) {
+                added = using_special(&results[count], world, capacity - count, name);
+                if (added == -1) {
+                    count = capacity;
+                } else {
+                    count += added;
+                    if (count > capacity) {
+                        GIZMO_DIAGNOSTIC_BARE();
+                        return capacity;
+                    }
+                }
+            }
+        }
+    }
+    return count;
+}
+
+i32 GizmoGetGuid(GIZMOSYS_PC *system, GIZMO_PC *gizmo) {
+    return -1;
+}
+
 i32 GizmoInfoVersionPc = 4;
 
 i32 __cdecl GizmoSysWriteInfo(GIZMOSYS_PC *gizmo_sys, char *path, NUGSCN *scene) {
@@ -1031,6 +1064,30 @@ void __cdecl GizmoSysAddGizmos(void *system_ptr, GIZFLOW_PC *flow, void *world) 
     if (flow != NULL && flow->pointers_need_reset != 0) {
         ResetGizFlowPointers(flow);
     }
+}
+
+i32 GizmoTypeGetProgress(GIZMOSYS_PC *system, void *world, i32 progress_index, i32 type_id, char *name, void **result) {
+    GIZMOTYPE_PC *type;
+    if (type_id == -1) {
+        if (name == NULL) {
+            return 0;
+        }
+        type_id = GizmoGetTypeIDByName(system, name);
+        if (type_id == -1) {
+            return 0;
+        }
+    }
+    type = &((GIZMOTYPES_PC *)gizmotypes)->types[type_id];
+    if (type->progress != NULL && progress_index >= 0 && progress_index < ((GIZMOTYPES_PC *)gizmotypes)->max_levels) {
+        *result = type->progress[progress_index];
+    } else {
+        *result = NULL;
+    }
+    if (type->fns.options == -1) {
+        GIZMO_DIAGNOSTIC_BARE();
+        return 0;
+    }
+    return type->fns.options;
 }
 
 void __cdecl GizmoTypeStoreProgress(GIZMOSYS_PC *system, void *world, i32 progress_index, i32 type_id, char *name) {

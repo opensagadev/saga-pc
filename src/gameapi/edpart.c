@@ -1085,6 +1085,13 @@ void edpartInit(void) {
     edpart_emitrotx = 0;
 }
 
+void edpartClose(void) {
+    eduiMenuDestroy(edpart_opt_menu);
+}
+
+void fun_0064a430(void) {
+}
+
 extern struct eduimenu_s *edpart_sscale_menu;
 extern struct eduimenu_s *edpart_switch_menu;
 extern struct eduimenu_s *edpart_switchtype_menu;

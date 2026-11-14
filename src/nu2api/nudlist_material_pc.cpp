@@ -39,6 +39,14 @@ static void PCDisplayHandlerSetZMode(i32 mode) {
     }
 }
 
+extern "C" void fun_005f8a30(void) {
+    D3DPERF_EndEvent();
+}
+
+extern "C" PC_FRAMEBUFFER_PC *fun_005f8a40(void) {
+    return PcDefaultFramebuffer;
+}
+
 extern "C" void __cdecl NuDisplayListTransformPc(void *arg) {
     NUMTX *matrix = (NUMTX *)arg;
     NUVEC4 tint = NuDisplayHandlerTintPc;
@@ -216,6 +224,28 @@ static void PCDisplayHandlerBindProgramsPc(PC_DL_SHADER_PROGRAM_PAIR_PC *program
         NuDisplayHandlerVertexShaderCachePc = NULL;
         NuDisplayHandlerPixelShaderCachePc = NULL;
     }
+}
+
+extern "C" void fun_005fa110(char *dst, const char *src) {
+    *dst = *src;
+}
+
+extern "C" u32 fun_005fa120(const char *text) {
+    return strlen(text);
+}
+
+extern "C" char *fun_005fa140(char *dst, u32 size, const char *src, u32 count) {
+    memcpy_s(dst, size, src, count);
+    return dst;
+}
+
+extern "C" char *fun_005fa170(char *dst, u32 size, const char *src, u32 count) {
+    memmove_s(dst, size, src, count);
+    return dst;
+}
+
+extern "C" void fun_005fa620(i32 mode) {
+    PCDisplayHandlerSetZMode(mode);
 }
 
 extern "C" void __cdecl NuDisplayListMaterialPc(void *arg) {

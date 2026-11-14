@@ -76,6 +76,15 @@ CABLE_RECORD_PC *__cdecl CreateCable(GAMEOBJECT *source, GAMEOBJECT *target, i32
     return NULL;
 }
 
+void DestroyCable(CABLE_s *cable) {
+    if (cable != NULL) {
+        if (cable->source != NULL && cable->source->cable == cable) {
+            cable->source->cable = NULL;
+        }
+        memset(cable, 0, sizeof(*cable));
+    }
+}
+
 static void ReleaseCable(CABLE_RECORD_PC *cable, i32 snapped) {
     i32 i;
     cable->flags |= 4;

@@ -44,6 +44,29 @@ void __cdecl RndrOSphere(NUVEC *centre, f32 radius, i32 colour, i32 segments, NU
     }
 }
 
+/* Circle outline in the XZ plane around centre. */
+extern "C" void RndrCircleXZ(NUVEC *centre, f32 radius, i32 colour, i32 segments) {
+    NUMTX matrix = NuMtxSetIdentityTemplate;
+    NURND_VERTEX3D_PC vertices[2];
+    i32 step;
+    i32 i;
+    matrix.m30 = centre->x;
+    matrix.m31 = centre->y;
+    matrix.m32 = centre->z;
+    vertices[0].position.x = radius;
+    vertices[0].position.y = 0.0f;
+    vertices[0].position.z = 0.0f;
+    vertices[0].colour = colour;
+    vertices[1].colour = colour;
+    step = 0x10000 / segments;
+    NuVecRotateY(&vertices[1].position, &vertices[0].position, step);
+    for (i = 0; i < segments; i++) {
+        RndrVtxLine3d(&matrix, vertices);
+        vertices[0].position = vertices[1].position;
+        NuVecRotateY(&vertices[1].position, &vertices[1].position, step);
+    }
+}
+
 /* Camera-facing square outline of half-size radius around centre. */
 void __cdecl RndrOSquare(NUVEC *centre, f32 radius, i32 colour, NUMTL *) {
     f32 corners[8] = {-1.0f, -1.0f, 1.0f, -1.0f, 1.0f, 1.0f, -1.0f, 1.0f};
@@ -63,5 +86,14 @@ void __cdecl RndrOSquare(NUVEC *centre, f32 radius, i32 colour, NUMTL *) {
         vertices[1].position.x = corners[(i * 2 + 2) & 7] * radius;
         vertices[1].position.y = corners[(i * 2 + 3) & 7] * radius;
         RndrVtxLine3d(&matrix, vertices);
+    }
+}
+
+extern "C" void FlushMenuHighlights(eduimenu_s *menu) {
+    eduiitem_s *item;
+    for (item = menu->first; item != NULL; item = item->next) {
+        if (item->type == 0) {
+            item->highlighted = 0;
+        }
     }
 }

@@ -925,6 +925,18 @@ i32 __cdecl MakePlayerList(i32 count) {
     return player_count;
 }
 
+void fun_00414ea0(GAMEOBJECT *source, GAMEOBJECT *target) {
+    target->pad = source->pad;
+    target->coin_packet = source->coin_packet;
+    target->gizforce_los_info = source->gizforce_los_info;
+    target->batarang = source->batarang;
+    target->torpedo = source->torpedo;
+    target->previous_sock_position = source->previous_sock_position;
+    target->field_107e = source->field_107e;
+    target->tag_object_callback = source->tag_object_callback;
+    target->flags_1f8 = source->flags_1f8;
+}
+
 void ClearAICreatures() {
     i32 i;
     GAMEOBJECT *object = Obj;

@@ -126,3 +126,6 @@ extern "C" void Collection_Draw(COLLECTION_BUILD_PC *collection, f32 x, f32 y, f
         py += dy;
     }
 }
+
+extern "C" void fun_005950e0() {
+}

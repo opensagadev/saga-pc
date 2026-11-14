@@ -10,6 +10,14 @@ SUIT_LAYERS_PC *__cdecl Suit_GetDefault(i32 character_id) {
     return NULL;
 }
 
+void fun_004cca40(void) {
+    Game.initial_store_pack_flags = 0xffffffff;
+    areaSuitBits = 0xffffffff;
+}
+
+void fun_004cca50(void) {
+}
+
 i32 __cdecl Suit_GetIndex(SUIT_LAYERS_PC *suit) {
     i32 index;
     for (index = 0; index < 10; ++index) {
@@ -28,6 +36,10 @@ SUIT_INITIALIZER_RECORD_PC *__cdecl Suit_FindFromLetter(char letter) {
         }
     }
     return NULL;
+}
+
+SUIT_INITIALIZER_RECORD_PC *fun_004cc980(SUIT_INITIALIZER_RECORD_PC *suit) {
+    return &SuitRecordInitPc[(suit->index + 1) % 10];
 }
 
 void __cdecl Suits_Init(void) {

@@ -515,6 +515,16 @@ void __cdecl HoldCode(GAMEOBJECT *object) {
     }
 }
 
+void fun_0058e480(GAMEOBJECT *object) {
+    if (LEGOCONTEXT_HOLD != -1 && object->character_context == LEGOCONTEXT_HOLD) {
+        if (object->context_timer > 0.0f) {
+            object->context_timer -= FRAMETIME;
+        } else if ((object->pad->buttons_held & GAMEPAD_ACTION) == 0) {
+            object->character_context = -1;
+        }
+    }
+}
+
 void __cdecl Punch_Hit(GAMEOBJECT *attacker, GAMEOBJECT *target, f32 unused, f32 gap) {
     NUVEC *hit_position = NULL;
     u64 flags;

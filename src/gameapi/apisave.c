@@ -309,6 +309,21 @@ void __cdecl MenuExitCardWarning(MENU *menu) {
     Menu_InWarningFlow = 0;
 }
 
+void fun_0050a7a0(MENU *menu) {
+}
+
+void fun_0050a7b0(MENU *menu) {
+}
+
+void fun_0050a7c0(MENU *menu) {
+}
+
+void fun_0050a7d0(MENU *menu) {
+}
+
+void fun_0050a7e0(MENU *menu) {
+}
+
 void __cdecl MenuDrawDoNotRemoveCard(MENU *menu) {
 }
 
@@ -702,6 +717,10 @@ void __cdecl MenuUpdateCardWarning(MENU *menu) {
     }
 }
 
+i32 fun_0050b300(void) {
+    return memcard_slot;
+}
+
 static i32 lastslot = 0;
 static i32 slideleft = 0;
 static i32 slideright = 0;
@@ -875,6 +894,17 @@ void __cdecl APIMenuDrawMemCardSlots(MENU *menu, f32 y) {
             MenuText3DEx(">", 0.8f, y, 1.0f, scale, scale, scale, 0, red, green, blue, (u8)MenuA);
         }
     }
+}
+
+void fun_005108c0(MENU *menu) {
+    /* Like MenuDrawCardWarning: the text is not drawn, its buffer keeps the security cookie. */
+    char text[8];
+    if (0) {
+        sprintf(text, "%d", menu->menu);
+    }
+}
+
+void fun_005108e0(MENU *menu) {
 }
 
 void __cdecl MenuDrawSave(MENU *menu) {

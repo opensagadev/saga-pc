@@ -924,6 +924,12 @@ void __cdecl NuTexAnimProgAssembleEnd(TEXTURE_ANIM_PROGRAM_PC *program) {
     }
 }
 
+void NuTexAnimEnvDestroy(PC_TEXTURE_ANIM_ENV *environment) {
+    if ((environment->flags & 1) != 0) {
+        NuFree(environment, NuTextureAnimationSourcePathPC, 520);
+    }
+}
+
 TEXTURE_ANIM_PROGRAM_PC *__cdecl NuTexAnimProgParseFile(NUFILE file, VARIPTR *buffer, VARIPTR end, i32 fps) {
     TEXTURE_ANIM_PROGRAM_PC *program;
     TEXTURE_ANIM_PROGRAM_PC *head;
@@ -1125,6 +1131,22 @@ TEXTURE_ANIMATION_PC *__cdecl NuTexAnimCreate(VARIPTR *buffer, TEXTURE_ANIM_PROG
     memcpy(animation->texture_ids, texture_ids, texture_count * 2);
     animation->environment = NuTexAnimEnvCreate(buffer, material, animation->texture_ids, program);
     return animation;
+}
+
+void NuTexAnimProcessEx(f32 frame_time, u16 mask) {
+    PC_TEXTURE_ANIM_LIST *list;
+    AnimationDiagnosticNoOpPc();
+    nta_iframetime = (i32)(frame_time * 4096.0);
+    nta_script_mask = mask;
+    for (list = ntal_first; list != NULL; list = list->next) {
+        TEXTURE_ANIMATION_PC *animation = list->first;
+        while (animation != NULL) {
+            if (animation->environment != NULL) {
+                NuTexAnimEnvProc(animation->environment);
+            }
+            animation = animation->next;
+        }
+    }
 }
 
 void __cdecl NuTexAnimEnvReset(PC_TEXTURE_ANIM_ENV *environment) {

@@ -234,6 +234,13 @@ void PC_NATIVE_DEBUG_STATE_PC::Initialize() {
     }
 }
 
+extern "C" i32 fun_006e1910(void) {
+    return PCDeviceHardwareVertexProcessingPC;
+}
+
+extern "C" void fun_006e1920(void) {
+}
+
 void PC_NATIVE_DEBUG_STATE_PC::Shutdown() {
     if (unknown_0) {
         unknown_0 = 0;
@@ -241,4 +248,7 @@ void PC_NATIVE_DEBUG_STATE_PC::Shutdown() {
             NuFileClose(log_file);
         }
     }
+}
+
+extern "C" void fun_006dffb0(void) {
 }

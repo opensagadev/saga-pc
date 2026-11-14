@@ -47,6 +47,8 @@ extern "C" {
     extern const DWORD PostShaderTokens769580[100];
     PC_FRAMEBUFFER_PC *__cdecl PCGraphicsCreateFramebuffer(void);
     void __cdecl NuPostEffectReleasePortsPc(void);
+    void fun_005f83a0(GRAPHICS_RENDER_TEXTURE_PC *texture, i32 texture_id);
+    void fun_005f1f50(i32 texture_id);
     extern GRAPHICS_RENDER_TEXTURE_PC *PCGraphicsPostEffectBackBufferTexturePc;
 
     typedef struct SCENE_TEXTURE_PACKET_B0_PC {
@@ -1188,6 +1190,12 @@ extern "C" {
         ((NULGTVERTEX_PC *)NuPrimStreamBufferPointer->void_ptr)->colour = converted;
     }
 
+    void fun_005f7840(f32 u, f32 v) {
+        NULGTVERTEX_PC *vertex = (NULGTVERTEX_PC *)NuPrimStreamBufferPointer->void_ptr;
+        vertex->u = u;
+        vertex->v = v;
+    }
+
     static i32 PCGraphicsFormatToD3d(i32 format) {
         switch (format) {
             case 2:
@@ -1225,6 +1233,22 @@ extern "C" {
     }
 
     i32 __cdecl NuEffectTexUnlockVP(void) {
+        return 0;
+    }
+
+    i32 fun_005f7ab0(void) {
+        return 0;
+    }
+
+    i32 fun_005f7ac0(void) {
+        return 0;
+    }
+
+    i32 fun_005f7ad0(void) {
+        return 0;
+    }
+
+    i32 fun_005f7ae0(void) {
         return 0;
     }
 
@@ -1273,6 +1297,14 @@ extern "C" {
 
     i32 __cdecl PCGraphicsEffectTextureMipCount(GRAPHICS_RENDER_TEXTURE_PC *texture) {
         return texture->mip_count;
+    }
+
+    u32 fun_005f7ca0(GRAPHICS_RENDER_TEXTURE_PC *texture) {
+        return texture->field_10;
+    }
+
+    i32 fun_005f7cb0(GRAPHICS_RENDER_TEXTURE_PC *texture) {
+        return texture->format;
     }
 
     void __cdecl PCGraphicsEffectTextureSetLowNibbles(GRAPHICS_RENDER_TEXTURE_PC *texture, i32 low, i32 high) {
@@ -1398,6 +1430,17 @@ extern "C" {
         ((PC_SAMPLER_FLAGS_PC *)&texture->flags)->bits.address_v = value;
     }
 
+    GRAPHICS_RENDER_TEXTURE_PC *fun_005f80e0(void) {
+        i32 i;
+        for (i = 0; i != 32; ++i) {
+            if (!PCGraphicsRenderTextureActive[i]) {
+                PCGraphicsRenderTextureActive[i] = 1;
+                return &PCGraphicsRenderTextures[i];
+            }
+        }
+        return NULL;
+    }
+
     void __cdecl PCGraphicsResetRenderTexture(GRAPHICS_RENDER_TEXTURE_PC *texture) {
         i32 memory_delta;
         f32 multiplier;
@@ -1425,6 +1468,19 @@ extern "C" {
             texture->surface->methods->release(texture->surface);
             texture->surface = NULL;
         }
+    }
+
+    void fun_005f81e0(void) {
+    }
+
+    void fun_005f8380(void) {
+    }
+
+    void fun_005f8390(void) {
+    }
+
+    i32 fun_005f8450(GRAPHICS_RENDER_TEXTURE_PC *texture) {
+        return texture->external_id;
     }
 
     /* Retail calls this from PCGraphicsCreatePostEffectTextures rather than inlining it. */
@@ -1545,6 +1601,34 @@ extern "C" {
         }
     }
 
+    i32 fun_005f8760(void) {
+        return PCDeviceHardwareVertexProcessingPC;
+    }
+
+    NUMTX *fun_005f8790(void) {
+        return &PcGeometryViewMatrixPc;
+    }
+
+    NUMTX *fun_005f87a0(void) {
+        return &PcGeometryProjectionMatrixPc;
+    }
+
+    NUMTX *fun_005f87b0(void) {
+        return &PcGeometryViewProjectionMatrixPc;
+    }
+
+    NUVEC4 *fun_005f87c0(void) {
+        return &PcGeometryDistanceOriginPc;
+    }
+
+    NUVEC4 *fun_005f8800(void) {
+        return &NuDisplayHandlerTintPc;
+    }
+
+    void *fun_005f8920(void) {
+        return NuDisplayHandlerMaterialPc;
+    }
+
     /* Two additional genuine original leaves, proposed in existing effect_surface.cpp.
      * Complete native entries are6B and1B; neither replaces the held copy operation. */
     PC_FRAMEBUFFER_PC *__cdecl PCGraphicsGetBoundFramebufferPc(void) {
@@ -1553,6 +1637,10 @@ extern "C" {
 
     PC_FRAMEBUFFER_PC *__cdecl NuFramebufferGetObject(i32 index) {
         return PcBootFramebuffersPc.slots[index];
+    }
+
+    i32 fun_005f8a70(void) {
+        return 0;
     }
 
     GRAPHICS_RENDER_TEXTURE_PC *__cdecl NuFramebufferGetAttachedTex(PC_FRAMEBUFFER_PC *framebuffer, i32 index,
@@ -1592,10 +1680,27 @@ extern "C" {
         return framebuffer != NULL ? framebuffer->targets[0].height : 0;
     }
 
+    i32 fun_005f8b40(void) {
+        return 0;
+    }
+
+    void fun_005f8b50(void) {
+    }
+
+    void fun_005f8b80(void) {
+    }
+
+    void fun_005f8b90(void) {
+    }
+
     void __cdecl PCGraphicsFramebufferBarrierPc(i32, i32) {
     }
 
     void __cdecl PCGraphicsFramebufferActionPc(i32) {
+    }
+
+    i32 fun_005f8bd0(void) {
+        return 1;
     }
 
     void __cdecl PCGraphicsEnableFramebufferGuardsPc(PC_FRAMEBUFFER_PC *frame, i32 enabled) {
@@ -1647,6 +1752,12 @@ extern "C" {
         return &frame->targets[index];
     }
 
+    void fun_005f8d40(void) {
+    }
+
+    void fun_005f8d50(void) {
+    }
+
     i32 __cdecl NuTexRead(char *name, VARIPTR *buffer, VARIPTR end) {
         char filename[1024];
         NUFILE file;
@@ -1688,12 +1799,19 @@ extern "C" {
         }
     }
 
+    void fun_005f8ec0(void) {
+    }
+
     void __cdecl NuTexDestroyPS(NUTEXDIM_PC *texture) {
         if (texture != NULL) {
             NudxFw_D3DBeginCriticalSection();
             PCDeviceReleaseTexture(&texture->resource);
             NudxFw_D3DEndCriticalSection();
         }
+    }
+
+    i32 fun_005f8f00(void) {
+        return 0;
     }
 
     i32 __cdecl NuTexGetReqSize(i32, i32) {
@@ -1707,8 +1825,15 @@ extern "C" {
     void __cdecl NuTexUnReserve(void) {
     }
 
+    void fun_005f8f40(void) {
+    }
+
     void __cdecl PCGraphicsBindTextureDimensionsPc(NUTEXDIM_PC *texture, u32 stage) {
         PCDeviceSetTexture(stage, texture->resource);
+    }
+
+    i32 fun_005f8f70(void) {
+        return 0;
     }
 
     void __cdecl NuTexInitExPS(VARIPTR *buffer) {
@@ -1904,8 +2029,15 @@ extern "C" {
         }
     }
 
+    void fun_005f9930(void) {
+        NuPtlDmaSlotsExhaustedPc();
+    }
+
     void __cdecl NuWaterSpeed(f32 speed) {
         NuShaderObjectBaseSetWaterSpeed(speed);
+    }
+
+    void fun_005f9950(void) {
     }
 
     void __cdecl NuRndrShadowVolumeFinishPc(void) {
@@ -1995,9 +2127,24 @@ extern "C" {
         NuRndrControlStatePc = value;
     }
 
+    void fun_005f9ea0(void) {
+        PCGraphicsRenderTextureAllocationError();
+    }
+
+    void fun_005f9eb0(void) {
+        PCGraphicsRenderTextureAllocationError();
+    }
+
+    void fun_005f9ec0(void) {
+        PCGraphicsRenderTextureAllocationError();
+    }
+
     /* Native PC entry 0x005fa220 is RET-only; the D3D release paths call it for the
      * geometry origin state. Its historical name is unknown. */
     void __cdecl PcGeometryOriginReleasePc(void) {
+    }
+
+    void fun_005fa230(void) {
     }
 
     void __cdecl PcResetGeometryOriginStatePc(void) {
@@ -2068,6 +2215,10 @@ extern "C" {
         NuShaderManagerSetfv(0x47, &frustum.x);
     }
 
+    i32 fun_005fa530(i32 value) {
+        return value;
+    }
+
     void __cdecl PCGraphicsSetSamplerTuplePc(u32 stage, const u32 *tuple) {
         union {
             f32 value;
@@ -2091,6 +2242,10 @@ extern "C" {
         PCDeviceSetSamplerState(stage, 4, tuple[1]);
         PCDeviceSamplerInvalidation[stage][0] = tuple[0];
         PCDeviceSamplerInvalidation[stage][1] = tuple[1];
+    }
+
+    void fun_005fa630(void) {
+        PCGraphicsRenderTextureAllocationError();
     }
 
     /* Converts a byte string into glyph indices of the font. */
@@ -2541,6 +2696,12 @@ extern "C" {
         PCGraphicsDestroyRenderTexture(PCGraphicsPostEffectBackBufferTexturePc);
     }
 
+    void fun_005fb7f0(void) {
+    }
+
+    void fun_005fb800(void) {
+    }
+
     /* After a D3D reset, rebinds each live frame texture's resource and clears it to opaque black. */
     /* The colour+depth copy has no PC implementation; its only call is to the shared empty function. */
     void NuPostFilterGen::copy(GRAPHICS_RENDER_TEXTURE_PC *, GRAPHICS_RENDER_TEXTURE_PC *, PC_FRAMEBUFFER_PC *) {
@@ -2698,6 +2859,29 @@ extern "C" {
         return 1;
     }
 
+    i32 fun_005fbcf0(PC_DYNAMIC_GEOMETRY_PC *geometry, void **data) {
+        PCDeviceLockVertexBuffer(0, 0, data, 0x2000, geometry->vertex_buffer);
+        return 1;
+    }
+
+    i32 fun_005fbd20(PC_DYNAMIC_GEOMETRY_PC *geometry) {
+        PCDeviceUnlockVertexBuffer(geometry->vertex_buffer);
+        return 1;
+    }
+
+    i32 fun_005fbd40(PC_DYNAMIC_GEOMETRY_PC *geometry) {
+        if (geometry->strip_index_buffer != NULL) {
+            geometry->strip_index_buffer->methods->release(geometry->strip_index_buffer);
+        }
+        if (geometry->strip_vertex_buffer != NULL) {
+            geometry->strip_vertex_buffer->methods->release(geometry->strip_vertex_buffer);
+        }
+        if (geometry->vertex_buffer != NULL) {
+            geometry->vertex_buffer->methods->release(geometry->vertex_buffer);
+        }
+        return 1;
+    }
+
     u8 __cdecl PcTransformDynamicGeometryPc(PC_GEOMETRY_SKIN_PC *skin, PC_GEOMETRY_MESH_PC *mesh, u32 *output_index) {
         for (u32 group_index = 0; group_index < mesh->group_count; ++group_index) {
             PC_GEOMETRY_GROUP_PC *group = &mesh->groups[group_index];
@@ -2812,6 +2996,26 @@ extern "C" {
         return 1;
     }
 
+    NUDISPLAYLIST *fun_005fc8c0(void) {
+        return &PCDisplayList2dPc;
+    }
+
+    void fun_005fc8d0(void) {
+        NuDisplayListStreamCursor = &nudlist_stream_cursor;
+        nudlist_field_1598 = nuprim_field_ba8;
+    }
+
+    VARIPTR *fun_005fc8f0(void) {
+        NuDisplayListStreamCursor->addr = (NuDisplayListStreamCursor->addr + 15) & ~15;
+        return NuDisplayListStreamCursor;
+    }
+
+    void fun_005fc910(void) {
+        if (NuDisplayListStreamCursor->addr > nudlist_field_1598) {
+            NuPtlDmaSlotsExhaustedPc();
+        }
+    }
+
     i32 __cdecl NuRndrSetAmbientLightPS(const NUVEC *colour) {
         render_state.ambient_intensity.x = colour->x;
         render_state.ambient_intensity.y = colour->y;
@@ -2834,6 +3038,15 @@ extern "C" {
         NuVecNorm(&render_state.light_direction[0], &render_state.light_direction[0]);
         NuVecNorm(&render_state.light_direction[1], &render_state.light_direction[1]);
         NuVecNorm(&render_state.light_direction[2], &render_state.light_direction[2]);
+        ++render_state.counter_0020;
+        ++render_state.lights_id;
+        render_state.light_packet_cache = NULL;
+        return 1;
+    }
+
+    i32 fun_005fcbc0(const NUMTX *matrix, const NUVEC *colour) {
+        render_state.specular_mtx = *matrix;
+        render_state.specular_colour = *colour;
         ++render_state.counter_0020;
         ++render_state.lights_id;
         render_state.light_packet_cache = NULL;
@@ -2873,6 +3086,17 @@ extern "C" {
         ++render_state.counter_0020;
         ++render_state.camera_id;
         return 1;
+    }
+
+    void NuRndrStateSetFogEnabled(u32 enabled) {
+        render_state.fog_state_word = enabled;
+        ++render_state.counter_0020;
+        ++render_state.fog_id;
+        render_state.fog_packet_cache = NULL;
+    }
+
+    u32 NuRndrStateGetFogEnabled(void) {
+        return render_state.fog_state_word;
     }
 
     void *__cdecl DisplayListBuildLightPacket(NUGLOBALRNDRSTATE_PC *state) {
@@ -2979,6 +3203,22 @@ extern "C" {
         return NULL;
     }
 
+    i32 *fun_005fd070(void) {
+        VARIPTR *cursor;
+        i32 *packet;
+        if (nuspecial_vertex_noffsets > 0) {
+            NuDisplayListStreamCursor->addr = (NuDisplayListStreamCursor->addr + 15) & ~15;
+            cursor = NuDisplayListStreamCursor;
+            packet = (i32 *)cursor->void_ptr;
+            *packet = nuspecial_vertex_noffsets;
+            cursor->addr += 4;
+            PCByteCopy(cursor->void_ptr, nuspecial_vertex_offsets, nuspecial_vertex_noffsets * 16);
+            cursor->addr += nuspecial_vertex_noffsets * 16;
+            return packet;
+        }
+        return NULL;
+    }
+
     void __cdecl RndrStateCopyGlobalState(NUGLOBALRNDRSTATE_PC *state) {
         memcpy(state, &render_state, sizeof(*state));
         state->fog_packet_cache = NULL;
@@ -3020,6 +3260,10 @@ extern "C" {
         memset(&render_state.camera_id, 0xff, sizeof(render_state.camera_id));
         memset(&render_state.fog_id, 0xff, sizeof(render_state.fog_id));
         memset(&render_state.counter_001e, 0xff, sizeof(render_state.counter_001e));
+    }
+
+    NUGLOBALRNDRSTATE_PC *fun_005fd1b0(void) {
+        return &render_state;
     }
 
     void __cdecl NuRndrStateInit(void) {
@@ -3190,6 +3434,14 @@ extern "C" {
                 memcpy(&point_size, &point_size_float, sizeof(point_size));
                 PCDeviceSetRenderState(154, point_size);
                 break;
+        }
+    }
+
+    void fun_005fd670(f32 shadow) {
+        if (shadow != PCGraphicsFrameState) {
+            NuDisplayHandlerShadowPc = shadow;
+            NuShaderManagerSetfv(0x63, &NuDisplayHandlerShadowPc);
+            PCGraphicsFrameState = shadow;
         }
     }
 
@@ -3473,6 +3725,20 @@ extern "C" {
         (void)tile;
     }
 
+    void NuVpRestore(void) {
+        PC_VIEWPORT_PC viewport;
+        vpCurrent = vpDevice;
+        viewport = vpDevice.viewport;
+        viewport.width >>= 4;
+        viewport.height >>= 4;
+        NuVpSubmitPc(&viewport);
+        vport_inval = 1;
+    }
+
+    void fun_005ff2c0(void) {
+        NuMtxSetIdentity(&NuVpIdentityMatrixPc);
+    }
+
     void __cdecl NuVpBuildScalingTemplatePc(void) {
         f32 width = (f32)PS2_REZ_W;
         f32 height = (f32)PS2_REZ_H;
@@ -3590,6 +3856,21 @@ extern "C" {
             vpCurrent.scissor_scale_y = reciprocal;
             vpCurrent.projection_scale_y = vpCurrent.scissor_scale_y;
         }
+    }
+
+    void fun_005ff750(void) {
+    }
+
+    i32 fun_005ff760(void) {
+        LARGE_INTEGER frequency;
+        LARGE_INTEGER counter;
+        QueryPerformanceFrequency(&frequency);
+        QueryPerformanceCounter(&counter);
+        return (counter.QuadPart / (f64)frequency.QuadPart * 1000.0);
+    }
+
+    f32 fun_005ff790(void) {
+        return 1.0f;
     }
 
     void __cdecl RenderPostViewportSetPc(f32 source_x, f32 source_y, f32 source_right, f32 source_bottom, f32 dest_x,
@@ -4210,7 +4491,50 @@ extern "C" {
         }
     }
 
+    void fun_00601770(void) {
+    }
+
+    void fun_00601780(void) {
+    }
+
+    void fun_00601790(void) {
+    }
+
+    void fun_006017a0(void) {
+    }
+
+    void fun_006017b0(void) {
+    }
+
     void __cdecl NuMtlSetRenderPlane(NUMTL *material, i32 plane) {
+    }
+
+    void fun_006017d0(void) {
+    }
+
+    void fun_006017e0(void) {
+    }
+
+    void fun_006017f0(void) {
+    }
+
+    i32 NuLgtRand(void) {
+        NuLgtSeed = (NuLgtSeed * 0x24cd + 1) & 0xffff;
+        return NuLgtSeed;
+    }
+
+    void fun_006018b0(void) {
+    }
+
+    void fun_006019e0(void) {
+    }
+
+    void fun_006019f0(void) {
+    }
+
+    void fun_00601a20(void) {
+        NuLgtStateUnknownPc = 0;
+        NuLgtStateEnabledPc = 0;
     }
 
     void __cdecl NuLgtLaser(i32 type, f32 width, f32 segment_length, f32 width_wobble, NUVEC *start, NUVEC *delta,
@@ -4251,6 +4575,10 @@ extern "C" {
         NuLgtArcMtl[type].v0 = v0;
         NuLgtArcMtl[type].u1 = u1;
         NuLgtArcMtl[type].v1 = v1;
+    }
+
+    i32 fun_00601de0(void) {
+        return 0;
     }
 
     void __cdecl NuLgtArcLaserEx(i32 type, NUVEC *start, NUVEC *end, NUVEC *bend, f32 width, f32 segment_length,
@@ -4306,6 +4634,9 @@ extern "C" {
 
     void __cdecl NuGScnRndr3(NUGSCN *scene) {
         NuDisplaySceneRndr(scene->display_list);
+    }
+
+    void fun_00601e10(void) {
     }
 
     i32 __cdecl NuGScnUploadGfxDataFromFilePS(VARIPTR *cursor, VARIPTR end, NUFILE file) {
@@ -4597,6 +4928,22 @@ extern "C" {
         }
     }
 
+    void fun_00602800(void) {
+    }
+
+    void fun_00602810(NUGSCN *scene, u32 delta) {
+        VARIPTR old_scene;
+        i32 i;
+        old_scene.void_ptr = scene;
+        old_scene.addr -= delta;
+        for (i = 0; i != 100; ++i) {
+            if (PCRegisteredNativeScenes[i] == old_scene.void_ptr) {
+                PCRegisteredNativeScenes[i] = scene;
+                return;
+            }
+        }
+    }
+
     /* Releases the dynamic vertex buffers of every registered scene before a D3D reset. */
     void __cdecl NuGScnReleaseDynamicBuffersPc(void) {
         i32 i;
@@ -4779,6 +5126,18 @@ extern "C" {
         return result;
     }
 
+    i32 fun_00603700(void) {
+        return 0;
+    }
+
+    i32 fun_006038f0(void) {
+        return 0;
+    }
+
+    i32 fun_00603900(void) {
+        return 0;
+    }
+
     void *__cdecl DisplayListCreateSkinTransformPS(VARIPTR *buffer, NUMTX *skin, void *weights, void *geometry_ptr,
                                                    void **render_geometry, void *unused) {
         PC_SPECIAL_GEOMETRY *geometry = (PC_SPECIAL_GEOMETRY *)geometry_ptr;
@@ -4840,6 +5199,15 @@ extern "C" {
     void __cdecl DisplayListSwapBuffersPS(void) {
     }
 
+    void fun_00603930(void) {
+    }
+
+    void fun_00603940(void) {
+    }
+
+    void fun_00603950(void) {
+    }
+
     /* Native603960 is an actual empty cross-TU operation, also empty in source. */
     void __cdecl DisplayGenerateTransformsNoOpPc(NUDISPLAY_LIST_PC *scene) {
         (void)scene;
@@ -4863,6 +5231,10 @@ extern "C" {
 
     void __cdecl NuDisplaySceneDestroyPS(NUDISPLAY_LIST_PC *scene) {
         (void)scene;
+    }
+
+    i32 fun_006039c0(void) {
+        return 1;
     }
 
     void __cdecl NuDisplaySceneClonePS(NUDISPLAY_LIST_PC *source_scene, NUDISPLAY_LIST_PC *clone_scene,
@@ -4956,6 +5328,14 @@ extern "C" {
         }
     }
 
+    void fun_006056b0(void) {
+        i32 i;
+        for (i = 0; i != 32; ++i) {
+            PCGraphicsRenderTextureActive[i] = 0;
+            PCGraphicsDestroyRenderTexture(&PCGraphicsRenderTextures[i]);
+        }
+    }
+
     /* Claims a free render-texture slot; retail inlines it into each creator. */
     static GRAPHICS_RENDER_TEXTURE_PC *PCGraphicsAllocRenderTexturePc(void) {
         for (i32 i = 0; i != 32; ++i) {
@@ -4982,6 +5362,12 @@ extern "C" {
                 return NULL;
         }
         PCGraphicsInitRenderTexture(texture, width, height, levels, usage, 0, format);
+        return texture;
+    }
+
+    GRAPHICS_RENDER_TEXTURE_PC *fun_00605760(i32 texture_id) {
+        GRAPHICS_RENDER_TEXTURE_PC *texture = PCGraphicsAllocRenderTexturePc();
+        fun_005f83a0(texture, texture_id);
         return texture;
     }
 
@@ -5012,6 +5398,15 @@ extern "C" {
         PCGraphicsInitRenderTexture(texture, width, height, levels, 1, 0, format);
         texture->flags = (texture->flags & 0xffffdbffu) | 0x1b00;
         return texture;
+    }
+
+    void fun_00605980(GRAPHICS_RENDER_TEXTURE_PC *texture, u32 divisor, i32 format) {
+        PCGraphicsResizeEffectTexture(texture, PCDeviceBackend.parameters.width / divisor,
+                                      PCDeviceBackend.parameters.height / divisor, format);
+    }
+
+    void fun_006059b0(GRAPHICS_RENDER_TEXTURE_PC *texture, i32 width, i32 height, i32 format) {
+        PCGraphicsResizeEffectTexture(texture, width, height, format);
     }
 
     PC_FRAMEBUFFER_PC *__cdecl PCGraphicsCreateFramebuffer(void) {
@@ -5842,6 +6237,11 @@ extern "C" {
         NuLgtArcMtl[0].v1 = v1;
     }
 
+    void NuLgtArcLaser(i32 type, NUVEC *start, NUVEC *end, NUVEC *bend, f32 width, f32 segment_length, f32 wobble,
+                       f32 bend_amount, i32 colour) {
+        NuLgtArcLaserEx(type, start, end, bend, width, segment_length, wobble, bend_amount, colour, 0);
+    }
+
     void __cdecl NuLgtArcLaserDraw(i32 paused) {
         i32 i;
         f32 tex_v[4];
@@ -6112,6 +6512,17 @@ extern "C" {
         }
     }
 
+    void fun_0060a4f0(void *, i32 texture_id) {
+        FRAME_NATIVE_TEXTURE_PC *texture = (FRAME_NATIVE_TEXTURE_PC *)NuTextureGetDimensions(texture_id);
+        if (texture != NULL) {
+            i32 index;
+            fun_005f1f50(texture_id);
+            index = texture - FrameNativeTexturePoolPc.records;
+            FrameNativeTexturePoolPc.occupied[index >> 3] &= ~(1 << (index & 7));
+            FrameNativeTexturePoolPc.cursor = index;
+        }
+    }
+
     PC_FRAMEBUFFER_PC::PC_FRAMEBUFFER_PC() {
     }
 
@@ -6278,6 +6689,28 @@ extern "C" {
         NuDebrisCurrentPacket->vertex_count += (i32)emitted;
         NuDebrisCurrentVertexCount += emitted;
         NuDebrisFrameVertexCount += emitted;
+    }
+
+    void fun_0060bb20(PC_GOBJ_REGISTRY_ENTRY_PC *entry) {
+        PC_GOBJ_REGISTRY_CHILD_PC *child = entry->children;
+        PC_GOBJ_REGISTRY_AUX_PC *aux = entry->auxiliary;
+        PC_GOBJ_REGISTRY_ENTRY_PC *next;
+        while (child != NULL) {
+            PC_GOBJ_REGISTRY_CHILD_PC *next_child = child->next;
+            NuGobjReleaseChildPc(child);
+            child = next_child;
+        }
+        while (aux != NULL) {
+            aux = aux->next;
+        }
+        if (entry->previous != NULL) {
+            entry->previous->next = entry->next;
+        }
+        next = entry->next;
+        --NuGobjRegistryCountPc;
+        if (next != NULL) {
+            next->previous = entry->previous;
+        }
     }
 
     i32 __cdecl NuTexRegisterRenderTargetPc(GRAPHICS_RENDER_TEXTURE_PC *target) {
@@ -6473,6 +6906,9 @@ extern "C" {
         Nu360MtlInit();
     }
 
+    void fun_0060dee0(void) {
+    }
+
     // @@END
 
 } // extern "C"
@@ -6518,6 +6954,14 @@ extern "C" {
             }
         }
         return NULL;
+    }
+
+    i32 fun_00604c90(void) {
+        return 16;
+    }
+
+    void fun_00605640(void) {
+        NuPrimSetCoordinateSystem(NuPrimCoordSystemStack[--NuPrimCSPos]);
     }
 
     void PCEnqueueHierarchyShadowGroup(NUMTX *matrix, void *ellipse, i32 ellipse_count, void *cylinder,
@@ -6644,6 +7088,18 @@ extern "C" {
         NuRndrClear(clear_flags, bottom_colour, alpha);
     }
 
+    void fun_005fec80(void) {
+    }
+
+    i32 fun_005fec90(void) {
+        PCGraphicsRenderTextureAllocationError();
+        return 0;
+    }
+
+    void fun_005feca0(void) {
+        PCGraphicsRenderTextureAllocationError();
+    }
+
     void __cdecl NuDisplayListResetStateCache(NURNDRLIBSTATE *state) {
         state->mtl = NULL;
         state->tex_id = -1;
@@ -6704,13 +7160,147 @@ extern "C" {
     void __cdecl NuRndrDwaReleasePc(void) {
     }
 
+    void fun_005fe4a0(u32 density) {
+        PCDeviceSetRenderState(38, density);
+    }
+
+    void fun_005fe500(u32 start, u32 end) {
+        PCDeviceSetRenderState(36, start);
+        PCDeviceSetRenderState(37, end);
+    }
+
+    void fun_005fe520(u32 density) {
+        PCDeviceSetRenderState(38, density);
+    }
+
+    i32 fun_005fe560(void) {
+        PCGraphicsRenderTextureAllocationError();
+        return 0;
+    }
+
+    void fun_005fe570(void) {
+    }
+
+    void fun_005fe580(void) {
+    }
+
+    void fun_005fe590(void) {
+    }
+
     void __cdecl NuRndrConfigureLeafPc(f32 a, f32 b, i32 c) {
         (void)a;
         (void)b;
         (void)c;
     }
 
+    void fun_00602940(void) {
+    }
+
+    void fun_00602950(void) {
+    }
+
+    void fun_00602960(void) {
+    }
+
+    void fun_00602970(void) {
+    }
+
+    PC_GOBJ_REGISTRY_ENTRY_PC *fun_00602980(void) {
+        PC_GOBJ_REGISTRY_ENTRY_PC *entry = (PC_GOBJ_REGISTRY_ENTRY_PC *)NuAlloc(0x70, NuGobjSourcePathPc, 107);
+        PC_GOBJ_REGISTRY_ENTRY_PC *first;
+        memset(entry, 0, 0x70);
+        first = NuGobjRegistryFirstPc;
+        if (first != NULL) {
+            first->previous = entry;
+        }
+        ++NuGobjRegistryCountPc;
+        entry->next = first;
+        entry->previous = NULL;
+        NuGobjRegistryFirstPc = entry;
+        return entry;
+    }
+
+    void *fun_006029e0(void) {
+        void *block = NuAlloc(0x98, NuGobjSourcePathPc, 172);
+        memset(block, 0, 0x98);
+        return block;
+    }
+
+    void *fun_00602d60(void) {
+        void *block = NuAlloc(0x98, NuGobjSourcePathPc, 368);
+        memset(block, 0, 0x98);
+        return block;
+    }
+
+    void fun_00602de0(void) {
+    }
+
+    void fun_00602df0(PC_GOBJ_REGISTRY_CHILD_PC *child) {
+        if (child->owned_buffer != NULL) {
+            NuFree(child->owned_buffer, NuGobjSourcePathPc, 605);
+            child->owned_buffer = NULL;
+        }
+    }
+
+    void *fun_00602e70(PC_GOBJ_REGISTRY_AUX_PC *aux) {
+        return aux->payload;
+    }
+
+    void fun_00602e80(void) {
+        PCGraphicsRenderTextureAllocationError();
+    }
+
+    void fun_00602e90(void) {
+    }
+
+    void fun_00602f30(PC_GOBJ_REGISTRY_AUX_PC *aux) {
+        if (aux != NULL && aux->payload != NULL) {
+            aux->payload = NULL;
+        }
+    }
+
+    void fun_006031f0(void) {
+    }
+
+    void fun_00603200(u8 *colour, const u8 *table, i32 offset) {
+        i32 r;
+        i32 g;
+        i32 b;
+        if (colour[0] == 0 && colour[1] == 0 && colour[2] == 0) {
+            r = g = b = table[0];
+        } else {
+            r = table[colour[0]] + offset;
+            g = table[colour[1]] + offset;
+            b = table[colour[2]] + offset;
+        }
+        if (r > 255) {
+            r = 255;
+        }
+        if (g > 255) {
+            g = 255;
+        }
+        if (b > 255) {
+            b = 255;
+        }
+        if (r < 0) {
+            r = 0;
+        }
+        if (g < 0) {
+            g = 0;
+        }
+        if (b < 0) {
+            b = 0;
+        }
+        colour[0] = r;
+        colour[1] = g;
+        colour[2] = b;
+    }
+
     void __cdecl PermanentGraphicsResourceSetup(void) {
+        NuPtlDmaSlotsExhaustedPc();
+    }
+
+    void fun_005f9970(void) {
         NuPtlDmaSlotsExhaustedPc();
     }
 
@@ -6719,8 +7309,50 @@ extern "C" {
         NuPtlDmaSlotsExhaustedPc();
     }
 
+    void fun_005fef00(void) {
+        PCGraphicsRenderTextureAllocationError();
+    }
+
+    void fun_005fef10(void) {
+    }
+
+    void fun_005fef20(void) {
+    }
+
+    void fun_005fef30(void) {
+    }
+
+    void fun_005fef40(void) {
+    }
+
+    void fun_005fef50(void) {
+    }
+
     void __cdecl NuLightSpotFadeSet(u32 fade) {
         (void)fade;
+    }
+
+    void fun_005fef70(void) {
+    }
+
+    void fun_005fef80(void) {
+    }
+
+    void fun_005fef90(void) {
+    }
+
+    i32 fun_005fefa0(void) {
+        return 1;
+    }
+
+    void fun_005ff010(void) {
+    }
+
+    void fun_005ff020(void) {
+    }
+
+    i32 fun_005ff030(void) {
+        return 1;
     }
 
     DWA_WEIGHT_BLOCK_PC *__cdecl NuRndrCreateBlendShapeDeformerWeightsArray(i32 count) {
@@ -6763,6 +7395,18 @@ extern "C" {
 
     /* The debug 3D line batch is not drawn on PC. */
     void __cdecl NuRndrLine3dDbgFlush(void) {
+    }
+
+    void fun_005fecc0(void) {
+        PCGraphicsRenderTextureAllocationError();
+    }
+
+    void fun_005fecd0(void) {
+        PCGraphicsRenderTextureAllocationError();
+    }
+
+    i32 fun_005fece0(NUHGOBJ_EVAL_PC *eval, NUMTX *world, i32 count, i16 *indices, NUMTX *matrices) {
+        return NuHGobjRndrMtxDwa(eval, world, count, indices, matrices, NULL, 0);
     }
 
     void __cdecl NuRndrShadPolys(NUMTL *material) {
@@ -6819,9 +7463,51 @@ extern "C" {
     void __cdecl NuRndrInitWorld(void) {
     }
 
+    void fun_005fe620(void) {
+    }
+
+    void fun_005fe630(void) {
+    }
+
+    void fun_005fe6f0(void) {
+    }
+
+    void fun_005fe800(void) {
+    }
+
+    void fun_005fe860(i32 restore) {
+        if (NuRndrFxHeightOverridePc != 0.0f) {
+            NuRndrFxHeightPc = NuRndrFxHeightOverridePc;
+            NuRndrFxColourPc = 0xc04080c0;
+        }
+        if (restore) {
+            NuRndrFxHeightPc = NuRndrFxPreviousHeightPc;
+        } else {
+            NuRndrFxPreviousHeightPc = NuRndrFxHeightPc;
+        }
+    }
+
     /* Direct object rendering is not supported on PC: retail reports it and draws nothing. */
     i32 __cdecl NuRndrGobj(void *object, NUMTX *matrix) {
         PCClipScreenUnsupported();
+        return 0;
+    }
+
+    void fun_005fe980(void) {
+    }
+
+    void fun_005fe990(void) {
+    }
+
+    void fun_005fe9a0(void) {
+        NuPtlDmaSlotsExhaustedPc();
+    }
+
+    i32 fun_005fe9b0(void) {
+        return 1;
+    }
+
+    i32 fun_005fe9c0(void) {
         return 0;
     }
 
@@ -7250,6 +7936,9 @@ extern "C" {
     i32 __cdecl NuRndrSetFxMtx(NUMTX *matrix) {
         return 1;
     }
+
+    void fun_005fe3e0(void) {
+    }
 } // extern "C"
 
 /* nucamera's platform members: NuCameraSet, the extents clip test and the projection matrix. */
@@ -7263,6 +7952,41 @@ extern "C" {
 
         PCDeviceSetTransform(2, &vmtx);
         PCDeviceSetTransform(3, &pmtx);
+    }
+
+    void fun_00603d20(NUMTX *mtx, f32 fov, f32 aspect, f32 near_clip, f32 far_clip, f32 portal_nearclip) {
+        NUCAMERA camera;
+        camera.mtx = *mtx;
+        camera.fov = fov;
+        camera.aspect = aspect;
+        camera.near_clip = near_clip;
+        camera.far_clip = far_clip;
+        camera.portal_nearclip = portal_nearclip;
+        NuCameraSetEx(&camera, 0);
+        NuVpSetIdentityPc(&cmtx);
+        NuMtxMulH(&vpc_vport_mtx, &vpmtx, &cmtx);
+        vpc_sci_mtx = vpc_vport_mtx;
+        PCDeviceSetTransform(2, &vmtx);
+        PCDeviceSetTransform(3, &pmtx);
+    }
+
+    void fun_00603dd0(NUMTX *mtx, f32 *fov, f32 *aspect, f32 *near_clip, f32 *far_clip, f32 *portal_nearclip) {
+        *mtx = global_camera.mtx;
+        *fov = global_camera.fov;
+        *aspect = global_camera.aspect;
+        *near_clip = global_camera.near_clip;
+        *far_clip = global_camera.far_clip;
+        *portal_nearclip = global_camera.portal_nearclip;
+    }
+
+    NUMTX *fun_00603ed0(NUMTX *matrix) {
+        *matrix = vmtx;
+        return matrix;
+    }
+
+    NUMTX *fun_00603ef0(NUMTX *matrix) {
+        *matrix = pmtx;
+        return matrix;
     }
 
 #define NUCAMERA_CLIP_CODE_EX(code, v, near_enabled, horizontal, vertical)                                             \
@@ -7389,6 +8113,14 @@ extern "C" {
         }
     }
 
+    void fun_00604930(i32 enabled) {
+        PCClipExtentsEnabled = enabled;
+    }
+
+    NUMTX *fun_00604a70(void) {
+        return &smtx;
+    }
+
 #undef NUCAMERA_CLIP_CODE
 #undef NUCAMERA_CLIP_CODE_EX
 
@@ -7407,6 +8139,9 @@ extern "C" {
         pmtx.m11 *= NuCameraProjectionGlobalScaleY;
         pmtx.m20 = NuCameraProjectionGlobalOffsetX;
         pmtx.m21 = NuCameraProjectionGlobalOffsetY;
+    }
+
+    void fun_00604bf0(void) {
     }
 } // extern "C"
 

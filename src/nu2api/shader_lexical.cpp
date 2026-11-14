@@ -493,6 +493,10 @@ extern "C" i32 __cdecl ShaderDeclarationSemanticPc(ShaderLexicalSlicePc *slice) 
     return 0;
 }
 
+extern "C" bool fun_0074bd00(const char *left, const char *right) {
+    return ShaderConditionPrecedencePc(left) > ShaderConditionPrecedencePc(right);
+}
+
 /* The accessors below have no retail caller. */
 i32 ShaderLexicalReaderPc::IsWordChar(u8 c) {
     return ShaderLexicalClassesPc[c] & 1;

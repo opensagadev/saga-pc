@@ -11,6 +11,9 @@ extern "C" void __cdecl PCDeviceReleaseTexture(PC_TEXTURE_RESOURCE_PC **texture)
     }
 }
 
+extern "C" void fun_006e5c10(void) {
+}
+
 void __thiscall PC_DEVICE_BACKEND_PC::ApplyViewport(const PC_VIEWPORT_PC *viewport) {
     PC_VIEWPORT_PC applied = *viewport;
     if (applied.width >= (u32)PS2_REZ_W) {
@@ -283,6 +286,12 @@ extern "C" void __cdecl PCDeviceDrawPrimitiveUPPc(i32 type, u32 count, const voi
     PCDeviceStateCachePc.index_buffer = NULL;
     PRIMITIVE_D3D_DEVICE_VIEW *device = reinterpret_cast<PRIMITIVE_D3D_DEVICE_VIEW *>(PCDeviceBackend.device);
     PCDeviceLastResult = device->methods->draw_primitive_up(device, type, count, vertices, stride);
+}
+
+extern "C" void fun_006e49f0(void) {
+}
+
+extern "C" void fun_006e4a00(void) {
 }
 
 // noinline: the original calls PCDeviceDrawIndexedPrimitiveUPPc out of line from PCGraphicsDrawUnitBoxPc; VC8 would
@@ -584,6 +593,9 @@ extern "C" GRAPHICS_FACTORY_PC *__cdecl PCDeviceGetFactoryPc(void) {
     return PCDeviceBackend.factory;
 }
 
+extern "C" void fun_006e4590(void) {
+}
+
 extern "C" {
     static u32 PCGraphicsMultisampleTypes[5] = {0, 2, 4, 8, 16};
 }
@@ -651,6 +663,9 @@ static i32 __cdecl PCGraphicsModeCompare(const void *left_ptr, const void *right
         return -1;
     }
     return left->refresh_rate > right->refresh_rate;
+}
+
+extern "C" void fun_006e2160(void) {
 }
 
 u32 __thiscall PC_DEVICE_BACKEND_PC::FindMode(u32 width, u32 height, u32 refresh) {
@@ -1623,10 +1638,20 @@ extern "C" i32 __cdecl PCGraphicsPrepareVendor() {
     return 0;
 }
 
+extern "C" PC_GRAPHICS_GPU_RECORD_PC *fun_006e6720(void) {
+    if (PCGraphicsGpuSelectionEnabled == 0) {
+        PCGraphicsPrepareVendor();
+    }
+    return PCGraphicsSelectedGpuRecord;
+}
+
 extern "C" HRESULT __cdecl PCDeviceCreateVertexShader(const DWORD *tokens, PC_TEXTURE_RESOURCE_PC **shader) {
     HRESULT result = PCDeviceBackend.device->methods->create_vertex_shader(PCDeviceBackend.device, tokens, shader);
     PCDeviceLastResult = result;
     return result;
+}
+
+extern "C" void fun_006e48d0(void) {
 }
 
 extern "C" HRESULT __cdecl PCDeviceCreatePixelShader(const DWORD *tokens, PC_TEXTURE_RESOURCE_PC **shader) {
@@ -2296,6 +2321,9 @@ void __thiscall PC_DEVICE_STATE_CACHE_PC::Invalidate() {
 extern "C" void __cdecl PCDeviceBeginScenePc(void) {
     PCDeviceStateCachePc.Invalidate();
     PCDeviceBackend.BeginScene();
+}
+
+extern "C" void fun_006e45d0(void) {
 }
 
 // noinline: the original calls DrawPostEffectQuadPc out of line from PCGraphicsDrawPostEffectQuadPc; VC8 would inline

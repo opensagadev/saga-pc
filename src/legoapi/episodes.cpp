@@ -196,6 +196,17 @@ extern "C" i32 __cdecl Episodes_Completed(void) {
     return completed;
 }
 
+extern "C" i32 fun_0059b7e0(i32 area) {
+    for (i32 episode = 0; episode < EPISODECOUNT; ++episode) {
+        for (i32 i = 0; i < EDataList[episode].area_count; ++i) {
+            if (EDataList[episode].area_ids[i] == area) {
+                return episode;
+            }
+        }
+    }
+    return -1;
+}
+
 /* Original episode.cpp C++ entry. PC resets every counter even on the -1 path,
  * counts the superstory brick regardless of area filter, and has no Android
  * Store_IsPackUnlocked guard. No backing or capacity is inferred here. */

@@ -145,3 +145,32 @@ extern "C" void __cdecl NuShaderProgramMakeCurrent(POST_SHADER_PROGRAM_PC *progr
         NuDisplayHandlerPixelShaderCachePc = NULL;
     }
 }
+
+extern "C" void fun_005fa210(void) {
+}
+
+extern "C" void fun_00605510(void) {
+}
+
+extern "C" void fun_00605540(void) {
+}
+
+extern "C" FRAME_NATIVE_TEXTURE_PC *fun_0060bf20(void *, FRAME_NATIVE_TEXTURE_POOL_PC *pool) {
+    return pool->Allocate();
+}
+
+extern "C" POST_SHADER_PROGRAM_PC *fun_0060bf30(void *, POST_SHADER_PROGRAM_POOL_PC *pool) {
+    return pool->Allocate();
+}
+
+extern "C" void fun_0060c0c0(void) {
+}
+
+extern "C" void fun_0060c110(void) {
+}
+
+extern "C" void fun_0060c970(void) {
+}
+
+extern "C" void fun_0060c9c0(void) {
+}

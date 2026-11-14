@@ -725,6 +725,24 @@ i32 UpdateMenu(u32 primary_held, u32 primary_pressed, u32 alternate_held, u32 al
     return MenuResult;
 }
 
+i32 fun_0050a3e0(void) {
+    return GameMenu[GameMenuLevel].menu != -1;
+}
+
+void fun_0050a400(void) {
+    MenuLoadStarted = 1;
+    memcard_loadneeded = 1;
+    memcard_loadstarted = 0;
+    memcard_loadfailed = 0;
+    memcard_loadcorrupt = 0;
+}
+
+void fun_0050a430(void) {
+    memcard_saveneeded = 1;
+    memcard_savestarted = 0;
+    memcard_savefailed = 0;
+}
+
 void __cdecl MenuRememberCursor(MENU *menu) {
     if (menu->menu == -1) {
         return;
@@ -915,6 +933,23 @@ void __cdecl MenuSetColours(u8 normal_r, u8 normal_g, u8 normal_b, u8 entry_r, u
     MENUFLASH1R = flash1_r;
     MENUFLASH1G = flash1_g;
     MENUFLASH1B = flash1_b;
+}
+
+void fun_00509710(f32 speed) {
+    menu_pulsate_speed = speed;
+}
+
+void fun_00509720(f32 top, f32 bottom) {
+    MenuTopYPc = top;
+    MENUBOTY = bottom;
+}
+
+void fun_00509740(void(__cdecl *function)(MENU *)) {
+    predrawfn = function;
+}
+
+void fun_00509750(void(__cdecl *function)(void)) {
+    headerdrawfn = function;
 }
 
 STATIC_ASSERT(offsetof(TIMER, time_elapsed_mod_seconds) == 8);

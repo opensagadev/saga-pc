@@ -41,6 +41,17 @@ void __cdecl PCDisplayListCriticalSectionLeavePc(void) {
     NuThreadCriticalSectionEnd(nudlist_field_fc4);
 }
 
+void fun_005de1c0(NUMTL *material) {
+    NuThreadCriticalSectionBegin(nudlist_field_fc4);
+    if (PCDisplayMaterialAddCount == 600) {
+        NuThreadCriticalSectionEnd(nudlist_field_fc4);
+        AnimationDiagnosticNoOpPc();
+        return;
+    }
+    PCDisplayMaterialAddQueue[PCDisplayMaterialAddCount++] = material;
+    NuThreadCriticalSectionEnd(nudlist_field_fc4);
+}
+
 i64 __cdecl PCThreadMillisecondsPc(void) {
     NuTime time;
     NuTimeGet(&time);

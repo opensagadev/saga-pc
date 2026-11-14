@@ -1370,6 +1370,10 @@ extern "C" {
         }
         return bolt;
     }
+
+    void fun_0057fc20(BOLT_PC *bolt) {
+        bolt->active = 0;
+    }
 }
 
 extern "C" void __cdecl Bolt_Reflect(NUVEC *normal, NUVEC *incoming, NUVEC *out) {
@@ -1755,6 +1759,10 @@ extern "C" {
                 memset(&type->specials.shadow_special, 0, sizeof(NUSPECIALHANDLE));
             }
         }
+    }
+
+    void fun_00580900(WORLDINFO *world) {
+        memset(world->bolt_types, 0, sizeof(world->bolt_types));
     }
 
     void __cdecl Bolt_GetShootOrigin_Default(GAMEOBJECT *object, NUVEC *position) {
@@ -2976,5 +2984,8 @@ extern "C" {
                 }
             }
         }
+    }
+
+    void fun_005845a0() {
     }
 }

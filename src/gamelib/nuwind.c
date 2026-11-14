@@ -11,6 +11,10 @@ void __cdecl NuWindAnimate(NUWIND *wind, f32 frame_time) {
     }
 }
 
+VARIPTR *fun_005ddd00(void) {
+    return &nudlist_stream_cursor;
+}
+
 i32 __cdecl NuWindCurrent(NUWIND *wind) {
     if (wind == NULL || wind->current < 0) {
         return -1;
@@ -31,5 +35,25 @@ void __cdecl NuWindInitialise(NUWIND *wind) {
         wind->phase = 0.0f;
         wind->accumulated_time = 0.0f;
         wind->scaled_accumulated_time = 0.0f;
+    }
+}
+
+void fun_005ddc00(NUWIND *wind, f32 value) {
+    if (wind != NULL) {
+        if (value >= 1.0f) {
+            wind->parameter_24 = value;
+        } else {
+            wind->parameter_24 = 1.0f;
+        }
+    }
+}
+
+void fun_005ddc30(NUWIND *wind, f32 value) {
+    if (wind != NULL) {
+        if (value >= 1.0f) {
+            wind->phase_speed_scale = value;
+        } else {
+            wind->phase_speed_scale = 1.0f;
+        }
     }
 }

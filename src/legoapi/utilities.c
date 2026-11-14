@@ -1336,6 +1336,27 @@ void __cdecl SaveSceneObjectAnimTFactors(NUGSCN *scene) {
     } while (count != 0);
 }
 
+void DrawRectRGBA(f32 x, f32 y, f32 width, f32 height, i32 colour, NUMTL *material, i32 alignment, f32 scale) {
+    i32 rect_width;
+    i32 rect_height;
+    width *= scale;
+    height *= scale;
+    rect_width = (width * 10240.0 * 0.5);
+    rect_height = (height * 3584.0 * 0.5);
+    if ((alignment & 5) == 4) {
+        y += height;
+    } else if ((alignment & 5) == 0) {
+        y += height * 0.5;
+    }
+    if ((alignment & 10) == 8) {
+        x -= width;
+    } else if ((alignment & 10) == 0) {
+        x -= width * 0.5;
+    }
+    NuRndrRect2di(((x + 1.0) * 0.5 * 10240.0), ((2.0 - (y + 1.0)) * 0.5 * 3584.0), rect_width, rect_height, colour,
+                  material);
+}
+
 void __cdecl InitTexAnimScripts(char **table) {
     char path[0x40];
     char **entry;
@@ -1678,6 +1699,9 @@ void __cdecl SetAnimFrame(struct nuhspecial_s *special, f32 frame) {
     instance_animation->matrix.m31 = instance_matrix->m31;
     instance_animation->matrix.m32 = instance_matrix->m32;
     instance_animation->ltime = frame;
+}
+
+void fun_00553700(void) {
 }
 
 static __inline f32 UtilitiesFabsPc(f32 value) {

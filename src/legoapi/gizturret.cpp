@@ -962,6 +962,34 @@ extern "C" {
         }
     }
 
+    GIZTURRET_s *GizTurret_FindNearest(GIZTURRETSYS_s *system, NUVEC *position, GAMEOBJECT *object,
+                                       f32 *distance_squared) {
+        if (system != NULL) {
+            GIZTURRET_s *turret = system->turrets;
+            GIZTURRET_s *nearest = NULL;
+            f32 best_distance = 1000000000.0f;
+            f32 distance;
+            for (i32 i = 0; i < system->count; ++i, ++turret) {
+                if ((turret->flags & 4) == 0) {
+                    continue;
+                }
+                if ((turret->flags & 2) == 0) {
+                    continue;
+                }
+                distance = NuVecDistSqr(position, &turret->position, NULL);
+                if (distance < best_distance) {
+                    nearest = turret;
+                    best_distance = distance;
+                }
+            }
+            if (distance_squared != NULL) {
+                *distance_squared = best_distance;
+            }
+            return nearest;
+        }
+        return NULL;
+    }
+
     void __cdecl GizTurrets_Draw(void *world_pointer, void *system_pointer, f32 unused) {
         WORLDINFO *world = (WORLDINFO *)world_pointer;
         GIZTURRETSYS_s *system = (GIZTURRETSYS_s *)system_pointer;
@@ -1071,6 +1099,19 @@ extern "C" {
         memset(progress->stopped, 0, sizeof(progress->stopped));
         memset(progress->completed, 0, sizeof(progress->completed));
         memset(progress->timers, 255, 64);
+    }
+
+    GIZTURRET_s *GizTurret_FindByName(GIZTURRETSYS_s *system, char *name) {
+        GIZTURRET_s *turret = NULL;
+        if (system != NULL && name != NULL) {
+            turret = system->turrets;
+            for (i32 i = 0; i < system->count; ++i, ++turret) {
+                if (NuStrICmp(turret->name, name) == 0) {
+                    return turret;
+                }
+            }
+        }
+        return turret;
     }
 
     void __cdecl GizTurrets_StoreProgress(void *world_ptr, void *data, void *progress_ptr) {

@@ -159,6 +159,35 @@ extern "C" {
             }
         }
     }
+
+    TIGHTROPE_s *TightRope_FindNearest(NUVEC *position, WORLDINFO *world, i32 *endpoint, f32 *distance_squared) {
+        TIGHTROPE_s *rope = world->tightropes;
+        TIGHTROPE_s *nearest = NULL;
+        i32 nearest_endpoint = -1;
+        f32 nearest_distance = 1000000000.0f;
+        f32 distance;
+        NUVEC *point;
+        i32 index;
+        i32 end;
+        for (index = 0; index < world->tightrope_count; ++index, ++rope) {
+            // The start and end positions are adjacent; the original walks them as two endpoints.
+            for (end = 0, point = &rope->start; end < 2; ++end, ++point) {
+                distance = NuVecDistSqr(position, point, NULL);
+                if (distance < nearest_distance) {
+                    nearest_distance = distance;
+                    nearest = rope;
+                    nearest_endpoint = end;
+                }
+            }
+        }
+        if (endpoint != NULL) {
+            *endpoint = nearest_endpoint;
+        }
+        if (distance_squared != NULL) {
+            *distance_squared = nearest_distance;
+        }
+        return nearest;
+    }
 }
 
 extern "C" TIGHTROPE_MOTION_PC *__cdecl TightRope_InRange(GAMEOBJECT *object, WORLDINFO *world, NUVEC *position) {

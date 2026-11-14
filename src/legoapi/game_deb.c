@@ -73,6 +73,22 @@ void __cdecl DebrisTypeStatusAlwaysOn(i32 type) {
     }
 }
 
+void fun_00655360(i32 index) {
+    if (index != -1) {
+        debtab[index]->status = 1;
+    }
+}
+
+void fun_00655380(void) {
+    i32 i;
+    for (i = 1; i < debinf_count; ++i) {
+        if (debtab[i] != NULL && debtab[i]->native_data != NULL) {
+            DmaDebTypes[--freeDmaDebType] = debtab[i]->native_data;
+            debtab[i]->native_data = NULL;
+        }
+    }
+}
+
 void DebrisSetSeed(i32 seed) {
     debrisseed = (u32)seed;
 }
@@ -81,12 +97,30 @@ u32 DebrisGetSeed(void) {
     return debrisseed;
 }
 
+void fun_00659250(i32 handle, void *user_data) {
+    if (handle != -1) {
+        debkeydata[handle].user_data = user_data;
+    }
+}
+
 void DebrisSetTimeIncrement(f32 increment) {
     debris_time_increment = increment;
 }
 
 void DebrisSetCutSceneMode(i32 enabled) {
     DebrisCutSceneMode = enabled;
+}
+
+void fun_00659290(f32 level) {
+    debris_thinning_level = level > 1.0f ? level : 1.0f;
+}
+
+void fun_006592c0(i32 level) {
+    debris_detail_level = level;
+}
+
+void fun_006592d0(i32 thinning) {
+    forced_debris_thinning = thinning;
 }
 
 float edanimPlayerAnimDistance(i32 parameter_index) {

@@ -1738,10 +1738,25 @@ KnotHelper::KnotHelper() {
 EdSubSystem::~EdSubSystem() {
 }
 
+extern "C" void fun_006b8500(void) {
+}
+
+extern "C" i32 fun_006b8700(i32 first, i32 second) {
+    return second;
+}
+
+extern "C" i32 fun_006b8f00(i32 first, i32 second) {
+    return second;
+}
+
 void LevelEditor::SetCameraPosition(VuVec &position) {
     VuVec &camera_position = *reinterpret_cast<VuVec *>(background_colour);
     VuVecCopy(camera_position, position);
     edcamSetPos(&camera_position.xyz);
+}
+
+extern "C" i32 fun_006b90d0(void) {
+    return edLevelActiveMenu != NULL;
 }
 
 /* Editor file blocks: a 16-byte header (type, size, two spare words) whose
@@ -1863,12 +1878,22 @@ void ClassEditor::PostSaveInitialisation() {
     }
 }
 
+extern "C" i32 fun_006b9510(void) {
+    return 0;
+}
+
 void ClassEditor::cbDestroyMenu(eduimenu_s *menu, eduimenu_s *) {
     eduiMenuDetach(menu);
     eduiMenuDestroy(menu);
     if (menu == theClassEditor.menu) {
         theClassEditor.menu = NULL;
     }
+}
+
+extern "C" void fun_006b9550(void) {
+}
+
+extern "C" void fun_006b9560(void) {
 }
 
 void ClassEditor::cbEdClassSetSnap(eduimenu_s *menu, eduiitem_s *item, u32) {
@@ -3001,6 +3026,19 @@ void cbEdLevelToggleInt(eduimenu_s *, eduiitem_s *item, u32) {
 
 void cbEdLevelEditorSelect(eduimenu_s *, eduiitem_s *item, u32) {
     theLevelEditor.active_editor = static_cast<BaseEditor *>(item->data_ptr);
+    edLevelDestroyActiveMenu = 1;
+}
+
+extern "C" void fun_006bc990(void) {
+    eduiSetCameraEnabled(1);
+    if (edLevelActiveMenu != NULL) {
+        if (edLevelActiveMenu->parent != NULL) {
+            edLevelActiveMenu->parent->child = NULL;
+        }
+        if (edLevelActiveMenu->child != NULL) {
+            edLevelActiveMenu->child->parent = NULL;
+        }
+    }
     edLevelDestroyActiveMenu = 1;
 }
 
@@ -10529,6 +10567,10 @@ void CursorTool::Render() {
     thePropertyTool.Render();
 }
 
+extern "C" void fun_006d1fe0(void) {
+    theLevelEditor.CreateMenu();
+}
+
 /* Per-frame editor update: counts the editable scenes, handles the pending
  * menu swaps, updates the input context and camera, runs the active menu and
  * the active editor, and saves on request. */
@@ -10944,4 +10986,20 @@ void ClassEditor::Process(EdInputContext &input) {
         SetMode(mode);
         eduiSetActiveMenu(edLevelActiveMenu != NULL ? edLevelActiveMenu : edLevelPinnedMenu);
     }
+}
+
+extern "C" void fun_006d3070(void) {
+}
+
+extern "C" void fun_006d3080(void) {
+}
+
+extern "C" void fun_006d3090(void) {
+}
+
+extern "C" i32 fun_006d3110(void) {
+    return PCDeviceHardwareVertexProcessingPC;
+}
+
+extern "C" void fun_006d3140(void) {
 }

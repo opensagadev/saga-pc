@@ -414,6 +414,14 @@ extern "C" i32 __cdecl NuInitHardwarePc(VARIPTR *buffer, VARIPTR *end, i32 alloc
     return 1;
 }
 
+extern "C" i32 fun_006dc6b0(i32 index) {
+    return nu_keyboard_owner.unknown_0010_to_0020[index];
+}
+
+extern "C" void fun_006dc6f0(void) {
+    NuPrimSetCoordinateSystem(NuPrimCoordSystemStack[--NuPrimCSPos]);
+}
+
 extern "C" i32 __cdecl PcNativeSelectLanguage(const char *configuration_name) {
     char path[256];
     DWORD language;

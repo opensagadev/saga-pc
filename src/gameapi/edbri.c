@@ -331,6 +331,15 @@ void __cdecl edbriStartPage(i32 page_number) {
     }
 }
 
+void fun_006896c0(void) {
+    i32 page;
+    for (page = 0; page < 8; ++page) {
+        if (edbri_page_used[page]) {
+            edbriStartPage(page);
+        }
+    }
+}
+
 static void edbricbRopeColourMenu(eduimenu_s *parent, eduiitem_s *unused1, u32 unused2) {
     edbri_ropecolour_menu = eduiMenuCreate(70, 70, 180, 250, ed_fnt, edbricbCancelRopeColourMenu, "Rope Colour");
     if (!edbri_ropecolour_menu) {

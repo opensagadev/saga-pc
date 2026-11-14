@@ -53,6 +53,22 @@ void ShaderCompilerDictionaryPc::SetProfile(i32 input_profile, i32 first, i32 se
     }
 }
 
+extern "C" i32 fun_00746520(u32 flags) {
+    return (flags >> 5) & 1;
+}
+
+extern "C" bool fun_00746530(u32 flags) {
+    return (flags & 0x4020) == 0x4020;
+}
+
+extern "C" i32 fun_00746550(u32 flags) {
+    return (flags >> 13) & 1;
+}
+
+extern "C" i32 fun_00746560(u32 flags) {
+    return (flags >> 12) & 1;
+}
+
 bool ShaderCompilerDictionaryPc::GetForceMode() const {
     return force_mode;
 }

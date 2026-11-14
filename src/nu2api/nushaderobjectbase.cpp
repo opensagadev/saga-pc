@@ -109,3 +109,10 @@ void __cdecl PCShaderObjectDestroyHLSLPc(PC_SHADER_OBJECT_FULL_VIEW *shader) {
 PC_SHADER_PARAMETER_LOCAL_PC *__cdecl PCShaderAllocateParameter(PC_SHADER_OBJECT_FULL_VIEW *shader, i32 index) {
     return &shader->parameters[index];
 }
+
+extern "C" i32 fun_00743d50(void) {
+    return 0;
+}
+
+extern "C" void fun_00743de0(void) {
+}

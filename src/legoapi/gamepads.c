@@ -20,6 +20,9 @@ void __cdecl GamePad_InitButtons(void) {
     GAMEPAD_MENUCANCEL = 0x120;
 }
 
+void fun_00401810(void) {
+}
+
 /* PC sets no fog here; GameFog_Update programs it directly. */
 void __cdecl GameFog_Set(void) {
 }
@@ -80,6 +83,15 @@ void __cdecl GamePads_Init(void) {
         GamePadStorage[1].pad->init_flags = 0x60;
         GamePadStorage[1].pad->init_port = 0x38;
     }
+}
+
+void fun_0054a660(void) {
+}
+
+void fun_0054a670(void) {
+}
+
+void fun_0054a680(void) {
 }
 
 f32 __cdecl GamePad_Rotate(GAMEOBJECT *object) {
@@ -516,4 +528,7 @@ i32 __cdecl GamePads_SkipMovie(void) {
         skipped = 1;
     }
     return skipped;
+}
+
+void fun_0054b510(void) {
 }

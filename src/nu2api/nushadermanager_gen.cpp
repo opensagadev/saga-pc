@@ -128,6 +128,10 @@ extern "C" PC_SHADER_OBJECT_FULL_VIEW *__cdecl NuShaderManagerRetrieveShaderVari
     return reinterpret_cast<PC_SHADER_MANAGER_VIEW *>(PCShaderSlots)->Retrieve(desc, material, variant, 0, false);
 }
 
+extern "C" i32 fun_00741860(void) {
+    return PCDeviceHardwareVertexProcessingPC;
+}
+
 extern "C" void *__cdecl PCShaderCurrentObjectPc(void) {
     return reinterpret_cast<PC_SHADER_MANAGER_VIEW *>(PCShaderSlots)->bound_slot;
 }

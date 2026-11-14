@@ -346,6 +346,21 @@ void __cdecl GizBombGens_ClearProgress(void *owner, void *progress_ptr) {
     memset(progress->visible, -1, sizeof(progress->visible));
 }
 
+GIZBOMBGEN_s *GizBombGen_FindByName(GIZBOMBGENSYS_s *system, char *name) {
+    GIZBOMBGEN_s *generator = NULL;
+    i32 index;
+    if (system != NULL && name != NULL) {
+        generator = system->bomb_generators;
+        for (index = 0; index < system->count; ++index, ++generator) {
+            if (NuStrICmp(generator->name, name) == 0) {
+                return generator;
+            }
+        }
+    }
+    // The original returns the end pointer when no generator has this name.
+    return generator;
+}
+
 void __cdecl GizBombGens_StoreProgress(void *world_ptr, void *data, void *progress_ptr) {
     BOMB_PROGRESS_PC *progress = progress_ptr;
     BOMB_PROGRESS_SYSTEM_PC *system = data;

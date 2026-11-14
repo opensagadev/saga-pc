@@ -6257,6 +6257,25 @@ static i32 AIMoveFindNearestSpecialRouteNode(AIPATH_PC *path, NUVEC *destination
     return 0;
 }
 
+i32 fun_0051d290(AISYS_PC *system, AIPATH_PC *path, AIPATH_PC *target) {
+    i32 index;
+    i32 route_index;
+    AIPATHSPECIALROUTE_PC *route;
+    for (index = 0; index < path->special_route_count; ++index) {
+        route = &system->path_sys->special_routes[path->special_routes[index].special_route_index];
+        /* The inner loop advances the outer index and recurses with unchanged arguments, as in the original. */
+        for (route_index = 0; route_index < route->path_count; ++index) {
+            if (route->paths[route_index] == target) {
+                return 1;
+            }
+            if (fun_0051d290(system, path, target)) {
+                return 1;
+            }
+        }
+    }
+    return 0;
+}
+
 static void AIMoveFindDivertNode(AISYS_PC *system, AIPATH_PC *path, AIPACKET_PC *packet, NUVEC *destination) {
     AIPATHNODELINK_PC *links;
     f32 nearest = FLT_MAX;
@@ -8900,6 +8919,9 @@ static void pathEditorDrawPath(EDAIPATH_s *path, i32 path_index) {
             }
         }
     }
+}
+
+void fun_00524180(void) {
 }
 
 void pathEditorDrawPaths(void) {
@@ -19140,8 +19162,15 @@ void __cdecl aieditor_Init(AIEDITOR_RENDER_STATE *state, void **scratch_cursor, 
     aieditorsettings.path_scratch_end = *scratch_end;
 }
 
+void fun_0053d130(void) {
+}
+
 /* Empty trace hook called from AINet::Receive (message.cpp). */
 void AINetTrace(const char *format, ...) {
+}
+
+i32 fun_0053d170(i32 first, i32 second) {
+    return second;
 }
 
 /* Script diagnostics, compiled empty in the shipped build. They take a format and its arguments; callers pass

@@ -855,6 +855,9 @@ static void PcControlPrimColourPc(u32 colour) {
     ((PC_CONTROL_VERTEX_PC *)NuPrimStreamBufferPointer->void_ptr)->colour = converted;
 }
 
+extern "C" void fun_00420210() {
+}
+
 i32 PC_CONTROL_SCREEN_PC::CountPlayerRows(PC_CONTROL_ROW_PC *row) {
     i32 result = 0;
     PC_CONTROL_ITEM_PC *item = row->items;

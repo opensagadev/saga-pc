@@ -189,6 +189,20 @@ i32 __cdecl ObjIsTargetSpeeder(GAMEOBJECT *object) {
     return object->field_280 == 0xff;
 }
 
+i32 fun_004c9210(GAMEOBJECT *object) {
+    if (object != NULL && (object->character_data->model_flags & 0x2000) != 0) {
+        return 0;
+    }
+    return 1;
+}
+
+i32 fun_004c9230(void) {
+    if (WORLD->current_level == SPEEDERCHASEA_LDATA && disable_narrow_socks == 0 && set_speedermode == 2) {
+        return 1;
+    }
+    return 0;
+}
+
 /* PC 0x0088056c / 0x00880588. */
 i32 set_speedermode = 0;
 f32 speeder_mode_ahead_timer = 0.0f;
@@ -415,4 +429,7 @@ f32 __cdecl SpeederChaseATATInOutMul(NUVEC *start, NUVEC *end) {
         multiplier = 0.1f;
     }
     return multiplier;
+}
+
+void fun_004c9a30(void) {
 }

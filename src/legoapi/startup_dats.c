@@ -18,3 +18,15 @@ void __cdecl NuWin32SetDFS(i32 index) {
         NuDatSet(StartupDatList[index]);
     }
 }
+
+void fun_006d34f0(void) {
+    if (PcWindowOptions.usehires != 0 && StartupDatCount > 0 && StartupDatList[0] != NULL) {
+        NuDatSet(StartupDatList[0]);
+    }
+}
+
+void fun_006d3520(void) {
+    if (PcWindowOptions.usehires != 0 && StartupDatCount > 0 && StartupDatList[0] != NULL) {
+        NuDatSet(StartupDatList[1]);
+    }
+}

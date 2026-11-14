@@ -173,3 +173,13 @@ void __cdecl NuRainDrawShape(f32 size) {
 void __cdecl NuRainDraw(i32 reserved) {
     (void)reserved;
 }
+
+void NuRainSetFall(f32 fall) {
+    if (fall < 0.0f) {
+        NuRainFall = 0.0f;
+    } else if (fall > 1.0f) {
+        NuRainFall = 1.0f;
+    } else {
+        NuRainFall = fall;
+    }
+}

@@ -476,6 +476,21 @@ extern "C" {
         output->y = y;
     }
 
+    void fun_0040e950() {
+    }
+
+    void fun_0040e960() {
+    }
+
+    void fun_0040e970() {
+    }
+
+    void fun_0040e980() {
+    }
+
+    void fun_0040e990() {
+    }
+
     static i32 DrawFlightCharacterPc(NUMTX *matrix, i32 model_id, i32 flags, f32 scale) {
         __declspec(align(16)) NUMTX scaled;
         i32 model_index = apicharsys->playermodelids[model_id];
@@ -528,6 +543,10 @@ extern "C" {
                 }
             }
         }
+    }
+
+    i32 fun_0040eb70() {
+        return 0;
     }
 
     static void ProcessQuickBoltsPc(DOGFIGHT_QUICK_BUFFER_PC *buffer) {
@@ -1023,6 +1042,10 @@ extern "C" {
             NuVecRotateX((NUVEC *)&axis, (NUVEC *)&axis, -pitch);
             NuVecRotateY((NUVEC *)&axis, (NUVEC *)&axis, yaw);
         }
+    }
+
+    void fun_0040fd50(void *unused, NUVEC *position) {
+        memcpy(position, &((DOGFIGHT_SPACE_PC *)WORLD->level_specific_data)->origin_end, sizeof(NUVEC));
     }
 
     static void DogfightResetCrossesPc(DOGFIGHT_CROSS_PC *crosses, i32 count) {
@@ -1853,6 +1876,13 @@ extern "C" {
         }
     }
 
+    void fun_00411f00() {
+        DogfightDebrisKeysPc[0] = -1;
+        DogfightDebrisKeysPc[1] = -1;
+        DogfightDebrisKeysPc[2] = -1;
+        DogfightDebrisKeysPc[3] = -1;
+    }
+
     static void DrawSpaceLevelPc(DOGFIGHT_SPACE_PC *space) {
         GAMEOBJECT *player;
         NUMTX matrix;
@@ -1929,6 +1959,9 @@ extern "C" {
         }
     }
 
+    void fun_00412200() {
+    }
+
     void ProcessCurrentSpeed(WORLDINFO *world, DOGFIGHT_SPEEDUP_PC *entry) {
         DOGFIGHT_SPACE_PC *space = (DOGFIGHT_SPACE_PC *)world->level_specific_data;
         while (entry->distance != 0.0f) {
@@ -1960,6 +1993,14 @@ extern "C" {
         DogfightResetSpacePc(world, (DOGFIGHT_SPACE_PC *)world->level_specific_data);
     }
 
+    void fun_00412370() {
+        DrawSpaceLevelPc((DOGFIGHT_SPACE_PC *)WORLD->level_specific_data);
+    }
+
+    void fun_00412390(WORLDINFO *world) {
+        DogfightResetSpacePc(world, (DOGFIGHT_SPACE_PC *)world->level_specific_data);
+    }
+
     void ChrisAnakinBInit() {
         NUSPECIALHANDLE centre;
         RadialMoveCentre.x = 0.0f;
@@ -1975,6 +2016,30 @@ extern "C" {
         }
     }
 
+    void fun_00412450() {
+    }
+
+    void fun_00412460() {
+    }
+
+    void fun_00412470() {
+    }
+
+    void fun_00412480() {
+        DrawSpaceLevelPc((DOGFIGHT_SPACE_PC *)WORLD->level_specific_data);
+    }
+
+    void fun_004124a0(WORLDINFO *world) {
+        DogfightResetSpacePc(world, (DOGFIGHT_SPACE_PC *)world->level_specific_data);
+    }
+
+    void fun_004124c0(WORLDINFO *world) {
+        DogfightResetSpacePc(world, (DOGFIGHT_SPACE_PC *)world->level_specific_data);
+    }
+
+    void fun_004124e0() {
+    }
+
     void ChrisDogFightAReset(WORLDINFO *world) {
         SpaceResetAudioPoint();
         ResetSpaceFromWorldPc(world);
@@ -1986,6 +2051,12 @@ extern "C" {
         DogfightDebrisKeysPc[3] = -1;
         music_man.StopTrack(2, 0);
         music_man.StopTrack(0x20, 0);
+    }
+
+    void fun_00412560() {
+    }
+
+    void fun_00412570() {
     }
 
     void __cdecl ChrisAllocLevelStuff(WORLDINFO *world) {
@@ -2229,6 +2300,13 @@ extern "C" {
                 (f64)difference.y * difference.y + (f64)difference.x * difference.x + (f64)difference.z * difference.z;
             (void)NuFsqrt(square);
         }
+    }
+
+    i32 fun_00412f90() {
+        return 0;
+    }
+
+    void fun_00412fa0() {
     }
 
     void ChrisAnakinCReset() {
@@ -2518,6 +2596,10 @@ extern "C" {
         if (WORLD->area == BATTLEOVERCORUSCANT_ADATA) {
             SpaceRumbleProcess();
         }
+    }
+
+    void fun_00413a10() {
+        ProcessSpaceLevelPc((DOGFIGHT_SPACE_PC *)WORLD->level_specific_data);
     }
 
     /* This entry is implemented without installing its original level callback. */

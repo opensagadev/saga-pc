@@ -560,6 +560,25 @@ extern "C" i32 __cdecl GamePadReadBackendPc(FRAME_PAD_PC *pad, i32 ignored) {
     return NuPadRead(pad);
 }
 
+extern "C" PC_DI_MOUSE_STATE_PC *fun_006d6080(void) {
+    return &PcMouseSamplesPc[PcMouseSampleIndexPc ^ 1];
+}
+
+extern "C" void fun_006d6030(void) {
+}
+
+extern "C" i32 fun_006d6040(void) {
+    return 0;
+}
+
+extern "C" i32 fun_006d6050(void) {
+    return 0;
+}
+
+extern "C" PC_DI_MOUSE_STATE_PC *fun_006d6060(void) {
+    return &PcMouseSamplesPc[PcMouseSampleIndexPc];
+}
+
 // Native NuKeyboardOwner_PC cohort, append to pc_input.cpp.
 i32 NuKeyboardOwner_PC::SetMouseCooperativePc(i32 value) {
     i32 previous = mouse_cooperative;
@@ -593,6 +612,12 @@ const PC_DI_MOUSE_STATE_PC *NuKeyboardOwner_PC::PollMousePc() {
     PcMouseSampleIndexPc ^= 1;
     mouse->methods->get_state(mouse, 20, &PcMouseSamplesPc[PcMouseSampleIndexPc]);
     return &PcMouseSamplesPc[PcMouseSampleIndexPc];
+}
+
+extern "C" void fun_006d5860(void) {
+}
+
+extern "C" void fun_006d5890(void) {
 }
 
 void NuKeyboardOwner_PC::RescanDevicesPc() {
@@ -643,6 +668,15 @@ void NuKeyboardOwner_PC::RescanDevicesPc() {
     ((PC_DI_FACTORY_INTERFACE_PC *)factory)->EnumDevices(3, InputEnumDevicesPc, NULL, 1);
     ((PC_DI_FACTORY_INTERFACE_PC *)factory)->EnumDevices(2, InputEnumDevicesPc, NULL, 1);
     ((PC_DI_FACTORY_INTERFACE_PC *)factory)->EnumDevices(4, InputEnumDevicesPc, NULL, 1);
+}
+
+extern "C" void fun_006da360(i32 player) {
+    PC_INPUT_RUNTIME_PC *state = (PC_INPUT_RUNTIME_PC *)nu_input_state;
+    PC_INPUT_CONFIG_PC config;
+    i32 port = NuPadGetPort(player);
+    state->ExportConfigPc(port, &config, 0, 0, 0);
+    state->PromoteConfigPc(state->primary, 64, &config);
+    state->SaveConfigurationPc();
 }
 
 /* Add out-of-line definitions to existing pc_input.cpp. The actual global
@@ -719,4 +753,35 @@ extern "C" f32 __cdecl NuMouseReadYVel(void) {
 
 extern "C" f32 __cdecl NuMouseReadZVel(void) {
     return (f32)(nu_input_state->mouse_delta[2] * -4.0);
+}
+
+extern "C" i32 fun_006d5ca0(i32 device, i32 binding, i32 auxiliary, i32 auxiliary_port) {
+    if (auxiliary != 0) {
+        return ((PC_INPUT_RUNTIME_PC *)nu_input_state)->auxiliary_bindings[auxiliary_port][binding].kind;
+    }
+    return ((PC_INPUT_RUNTIME_PC *)nu_input_state)->devices[device].bindings[binding].kind;
+}
+
+extern "C" void fun_006d5ce0(i32 device, i32 auxiliary, i32 auxiliary_port) {
+    PC_INPUT_BINDING_PC *bindings;
+    i32 i;
+    if (auxiliary != 0) {
+        bindings = ((PC_INPUT_RUNTIME_PC *)nu_input_state)->auxiliary_bindings[auxiliary_port];
+    } else {
+        if (device < 0) {
+            return;
+        }
+        bindings = ((PC_INPUT_RUNTIME_PC *)nu_input_state)->devices[device].bindings;
+    }
+    for (i = 0; i < 32; ++i) {
+        bindings[i].kind = 0;
+        bindings[i].value = 0;
+    }
+}
+
+extern "C" i32 fun_006d5d60(i32 device) {
+    if (device >= 0) {
+        return ((PC_INPUT_RUNTIME_PC *)nu_input_state)->devices[device].kind != 0;
+    }
+    return 0;
 }

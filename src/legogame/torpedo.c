@@ -199,6 +199,10 @@ static void TorpedoRotateYPc(NUMTX *m, NUANG angle) {
 
 static TORPEDO_PACKET_ALLOC_PC TorpedoPackets[16] = {0};
 
+void fun_004d2290(void) {
+    memset(TorpedoPackets, 0, sizeof(TorpedoPackets));
+}
+
 TORPEDOPACKET_PC *__cdecl GetTorpedoPacket(void) {
     i32 index;
     for (index = 0; index < 16; ++index) {
@@ -632,6 +636,9 @@ void __cdecl DrawGameMessage_Targets(GAME_MESSAGE_PC *message, NUVEC *position, 
              message->green, message->blue, alpha);
     Text3DEx("<", position->x + scale * 0.25f, position->y, position->z, scale, scale, scale, 0, message->red,
              message->green, message->blue, alpha);
+}
+
+void fun_004d3450(void) {
 }
 
 void __cdecl Torpedo_InitBolt(BOLT_PC *bolt) {

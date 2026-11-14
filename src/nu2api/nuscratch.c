@@ -45,3 +45,12 @@ void *__cdecl NuScratchAlloc128(i32 request_bytes) {
 void __cdecl NuScratchRelease(void) {
     ps2_scratch_free = ((void **)ps2_scratch_free)[-1];
 }
+
+void fun_006de970(void) {
+}
+
+void fun_006de980(void) {
+}
+
+void fun_006de990(void) {
+}

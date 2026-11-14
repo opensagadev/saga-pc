@@ -34,6 +34,21 @@ void __cdecl instNuGCutSceneEndButNotSystems(INSTNUGCUTSCENE *owner) {
     }
 }
 
+void fun_00500400(INSTNUGCUTSCENE *instance) {
+    instance->flags_88 &= ~0x800;
+}
+
+void fun_00500410(INSTNUGCUTSCENE *instance) {
+    instance->flags_88 |= 0x800;
+}
+
+void fun_00500470(INSTNUGCUTSCENE *instance, INSTNUGCUTSCENE *chained) {
+    instance->chained_instance = chained;
+}
+
+void fun_005004d0(void) {
+}
+
 STATIC_ASSERT(offsetof(CUT_PLAYER_ACTIVE_PC, active) == 4);
 
 typedef struct CUT_PLAYER_STATE_PC {

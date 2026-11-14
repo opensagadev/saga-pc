@@ -1,5 +1,8 @@
 #include "saga.h"
 
+static void EdsplinesNuErrorPc(const char *format, ...) {
+}
+
 i32 __cdecl LoadEditorSplines(char *path, VARIPTR *buffer, VARIPTR *end) {
     i32 count;
     i32 points;
@@ -91,4 +94,87 @@ NUGSPLINE *__cdecl edSpline_SplineFind(NUGSCN *scene, char *name) {
         }
     }
     return NuSplineFind(scene, name);
+}
+
+void edSpline_SplineList(NUGSCN *scene) {
+    i32 index;
+    i32 count;
+    NUGSPLINE *spline;
+    if (splineStore != NULL) {
+        spline = splineStore;
+        count = numSplinesLoaded;
+        for (index = 0; index < count; ++index, ++spline) {
+            EdsplinesNuErrorPc("%d: %s\n", index, spline->name);
+        }
+    }
+    if (scene != NULL) {
+        spline = scene->splines;
+        for (index = 0; index < scene->spline_count; ++index, ++spline) {
+            EdsplinesNuErrorPc("%d: %s\n", index, spline->name);
+        }
+    }
+}
+
+i32 edSpline_FindAllBeg(NUGSCN *scene, char *prefix, NUGSPLINE **results, i32 capacity) {
+    i32 count = 0;
+    i32 index;
+    NUGSPLINE *spline;
+    if (capacity <= 0) {
+        return 0;
+    }
+    if (splineStore != NULL) {
+        spline = splineStore;
+        for (index = 0; index < numSplinesLoaded; ++index, ++spline) {
+            if (NuStrNICmp(prefix, spline->name, -1) == 0) {
+                results[count++] = spline;
+                if (count >= capacity) {
+                    return count;
+                }
+            }
+        }
+    }
+    if (scene != NULL) {
+        spline = scene->splines;
+        for (index = 0; index < scene->spline_count; ++index, ++spline) {
+            if (NuStrNICmp(prefix, spline->name, -1) == 0) {
+                results[count++] = spline;
+                if (count >= capacity) {
+                    return count;
+                }
+            }
+        }
+    }
+    return count;
+}
+
+i32 edSpline_FindAllSub(NUGSCN *scene, char *name, NUGSPLINE **results, i32 capacity) {
+    i32 count = 0;
+    i32 index;
+    NUGSPLINE *spline;
+    if (capacity <= 0) {
+        return 0;
+    }
+    if (splineStore != NULL) {
+        spline = splineStore;
+        for (index = 0; index < numSplinesLoaded; ++index, ++spline) {
+            if (NuStrIStr(spline->name, name) != NULL) {
+                results[count++] = spline;
+                if (count >= capacity) {
+                    return count;
+                }
+            }
+        }
+    }
+    if (scene != NULL) {
+        spline = scene->splines;
+        for (index = 0; index < scene->spline_count; ++index, ++spline) {
+            if (NuStrIStr(spline->name, name) != NULL) {
+                results[count++] = spline;
+                if (count >= capacity) {
+                    return count;
+                }
+            }
+        }
+    }
+    return count;
 }
