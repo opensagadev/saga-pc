@@ -5,6 +5,10 @@ static void (*NuFadeObjSetLightsFn)(void);
 static i32 NuFadeMaxDataPC;
 static i32 NuFadeMaxGroupsPC;
 
+i16 *NuFadeData = 0;
+PC_NUFADEGROUP *NuFadeObjGroup = 0;
+PC_NUFADEGROUP *NuFadeObjCurGrp = 0;
+
 void NuFadeObjSetup(VARIPTR *buffer, VARIPTR end, i32 matrix_count, i32 group_count) {
     NuFadeMaxDataPC = matrix_count;
     NuFadeMaxGroupsPC = group_count;

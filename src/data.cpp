@@ -10851,9 +10851,6 @@ extern "C" {
 }
 
 extern "C" {
-    PC_NUFADEGROUP *NuFadeObjGroup = 0;
-    PC_NUFADEGROUP *NuFadeObjCurGrp = 0;
-    i16 *NuFadeData = 0;
     i32 NuFadeObjDataIndex = 0;
     i32 NuFadeObjWave = 0;
     i32 NuFadeObjDir = 0;
