@@ -1,8 +1,6 @@
 #include "saga.h"
 #include <string.h>
 
-extern "C" const char PCKeyboardMouse2Name[16];
-extern "C" i32 dat_00824fb8;
 static i32 PcXInputDeviceCount; // XInput pads found by the current device enumeration
 
 PC_INPUT_CONFIG_PC *PC_INPUT_RUNTIME_PC::FindConfig(u8 mask, i32 port, i32 key) {

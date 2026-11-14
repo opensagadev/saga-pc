@@ -702,6 +702,9 @@ struct PC_INPUT_RUNTIME_PC {
 typedef i32 (*PC_INPUT_COMMAND_FILTER_PC)(i32, i32);
 extern u8 PcInputAxisRemap[16];
 extern u32 PcInputAxisRemapInitialized;
+extern "C" const char PCKeyboardMouse2Name[16];
+extern "C" i32 dat_00824fb8;
+extern "C" u8 PcInput_MappingIsGood(i32 port, i32 player_index);
 extern "C" void PcInputCopyBindingsPc(i32 port, i32 to_auxiliary, i32 bank);
 extern "C" void PcInputResetMouseMotionPc();
 extern "C" char *PcInputDeviceNamePc(i32 port);

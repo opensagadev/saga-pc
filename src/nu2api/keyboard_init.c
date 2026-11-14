@@ -21,8 +21,6 @@ typedef struct NuKeyboardProfileLayout_PC {
     NuKeyboardProfile_PC profiles[4]; // 0x5d00
 } NuKeyboardProfileLayout_PC;         // size 0x62f0
 
-extern const char PCKeyboardMouse2Name[16];
-
 typedef struct NuKeyboardActionRecord_PC {
     u8 unknown_00_to_27[0x28];          // 0x000
     u8 active;                          // 0x028
