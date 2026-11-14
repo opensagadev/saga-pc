@@ -14817,9 +14817,6 @@ extern "C" {
     i16 LEGOACT_LEDGE_IDLE = -1;
     i16 LEGOACT_LEDGE_LEFT = -1;
     i16 LEGOACT_LEDGE_RIGHT = -1;
-    CREDIT_RECORD_PC *CreditList = NULL;
-    f32 CreditsTime = 0.0f;
-    f32 CreditsFinishedTime = 0.0f;
     i32 CreditsFlag = 0;
     f32 CreditsAlpha = 0.0f;
     i32 Grapples_Available = 1;
