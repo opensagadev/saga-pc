@@ -27,7 +27,11 @@ typedef struct CHARCONFIG_PC {
     char animation_names[100][40];                     // 0x028
 } CHARCONFIG_PC;                                       // size 0xfc8
 
+char MiniBuffer[0x4000] = {0};
 CHARCONFIG_PC charconfig = {0};
+i32 configureallcharacters_perm = 0;
+i32 CHARPAK = 0;
+i32 SecondCharConfigure = 0;
 
 /* Bit views of PLAYERCHARACTERCONFIG_PC.flags_094 and flags_098: the keyword handlers
    store these as 1-bit fields of a 32-bit unit. They belong in saga.h as members of the
@@ -1522,6 +1526,9 @@ static void CC_set_timebaseupdate4(NUFPAR_PC *parser) {
     CC_SetTimebase(parser, 0);
 }
 
+// Four explicit PC scalar accesses establish each array's extent.
+f32 vehicle_timebase_dist[4] = {50.0f, 25.0f, 0.0f, 0.0f};
+i32 vehicle_timebase_nframes[4] = {4, 2, 0, 0};
 static NUFPCOMJMP ConfigChar_Keywords[] = {{"name_id", CC_name_id},
                                            {"name", CC_name_id},
                                            {"mass", CC_mass},
@@ -1730,10 +1737,6 @@ static NUFPCOMJMP ConfigChar_Keywords[] = {{"name_id", CC_name_id},
                                            {"timebaseupdate3", CC_set_timebaseupdate3},
                                            {"timebaseupdate4", CC_set_timebaseupdate4},
                                            {NULL, NULL}};
-
-i32 SecondCharConfigure = 0;
-i32 configureallcharacters_perm = 0;
-char MiniBuffer[0x4000] = {0};
 
 static f32 CharConfigFdivPc(f32 a, f32 b) {
     if (a == 0.0f || b == 0.0f) {

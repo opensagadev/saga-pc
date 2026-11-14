@@ -9291,10 +9291,6 @@ i32 SkinFlipTab[8] = {0, 1, 2, 3, 0, 2, 1, 3};
 i32 TrooperStepFrames[4] = {1, 2, 1, 0};
 f32 trooperspeedtab[4] = {0.3f, 0.4f, 0.5f, 0.6f};
 
-// Four explicit PC scalar accesses establish each array's extent.
-f32 vehicle_timebase_dist[4] = {50.0f, 25.0f, 0.0f, 0.0f};
-i32 vehicle_timebase_nframes[4] = {4, 2, 0, 0};
-
 // PC checks each byte index is less than 16.
 const u8 CurveGroupMasks[4] = {2, 1, 8, 0};
 const u8 KeyStructSizes[16] = {3, 4, 4, 3, 4, 3, 4, 8, 4, 8, 4, 0, 0, 0, 0, 0};
@@ -9796,7 +9792,6 @@ extern "C" {
     AI_CHARACTER_DISTANCE_PC GetMaxViewHeightFn = 0;
     AI_CHARACTER_DISTANCE_PC GetMinViewHeightFn = 0;
     AI_ORIGIN_POSITION_PC GetOriginPositionFn = 0;
-    i32 CHARPAK = 0;
 }
 
 extern "C" {
