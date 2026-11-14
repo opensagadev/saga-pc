@@ -112,8 +112,6 @@ extern "C" {
     extern i32 levspl_i_start;
     extern i32 levspl_i_startcam;
     extern i32 LEVELSPLINECOUNT;
-    extern const char LevelSplinesStartName[6];
-    extern const char LevelSplinesStartCamName[10];
     extern i32 LSW1;
     extern i32 LevSfxFlag[4];
     extern const f32 PCKeyboardDefaultValue;
@@ -132,7 +130,6 @@ extern "C" {
     extern u16 TargetDeg_Near;
     extern i32 makefreeplaymodellist;
     extern i32 loadareacharacters_loadedlevel;
-    extern const char LevelConfigOff[4];
     extern const char LevelConfigOn[3];
     extern u32 areaSuitBits;
     extern const char SceneFileExtensionPc[5];

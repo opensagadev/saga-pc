@@ -51,8 +51,6 @@ extern "C" {
     void SuperCounters_Reset(i32 area_index);
     extern i32 openlevels;
     extern i32 last_area;
-    extern const char LevelConfigKeywordFile[5];
-    extern const char LevelConfigKeywordDir[4];
     extern const char LevelConfigKeywordStart[12];
     extern const char LevelConfigKeywordEnd[10];
     extern const char LevelConfigKeywordTest[11];
@@ -88,8 +86,6 @@ extern "C" {
     extern const char LevelConfigGenericKeyword_reflect_range[14];
     extern const char AreaConfigKeyword_redbrick_cheat[15];
     extern const char AreaConfigKeyword_timetrial_time[15];
-    extern const char AreaConfigKeyword_text_id[8];
-    extern const char AreaConfigKeyword_name_id[8];
     extern const char AreaConfigKeyword_no_freeplay[12];
     extern const char AreaConfigKeyword_no_completion_points[21];
     extern const char AreaConfigKeyword_no_gold_brick[14];

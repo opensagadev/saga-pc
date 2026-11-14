@@ -8,7 +8,6 @@
 static f32 fetol = 0.01f;
 static i32 NuExp10FirstTimePc = 1;
 static f32 *NuExp10TablePc = 0;
-static const char NuExp10SourcePathPc[] = "d:\\projects\\game_saga\\nu2api.saga\\numath\\nutrig.c";
 static i32 RenderPostLogFirstPc = 1;
 static f32 *RenderPostLogTablePc = 0;
 STATIC_ASSERT(offsetof(NUVEC, x) == 0x00);
@@ -64,7 +63,6 @@ static f32 NumathIncludesFabsPc(f32 f) {
 static i32 curve_points;
 static NUVEC *curve;
 static NUVEC *control;
-static const char NugraphSourcePathPc[] = "d:\\projects\\game_saga\\nu2api.saga\\numath\\nugraph.c";
 u32 fseed = 0;
 static NURAND global_rand = {1};
 u16 ang[513] = {
@@ -3872,11 +3870,11 @@ void nugraph_linear(i32 segment_count, NUVEC *control_points, NUVEC *output, i32
 
 void nugraphFreeTempCurveData(void) {
     if (curve != NULL) {
-        NuFree(curve, NugraphSourcePathPc, 506);
+        NuFree(curve, "d:\\projects\\game_saga\\nu2api.saga\\numath\\nugraph.c", 506);
     }
     curve = NULL;
     if (control != NULL) {
-        NuFree(control, NugraphSourcePathPc, 508);
+        NuFree(control, "d:\\projects\\game_saga\\nu2api.saga\\numath\\nugraph.c", 508);
     }
     control = NULL;
 }
@@ -3888,10 +3886,10 @@ i32 nugraphCalcCurve(nugraph_s *graph, i32 point_count) {
     }
     nugraphFreeTempCurveData();
     if (curve == NULL) {
-        curve = NuAlloc(100 * sizeof(NUVEC), NugraphSourcePathPc, 521);
+        curve = NuAlloc(100 * sizeof(NUVEC), "d:\\projects\\game_saga\\nu2api.saga\\numath\\nugraph.c", 521);
     }
     if (control == NULL) {
-        control = NuAlloc(8 * sizeof(NUVEC), NugraphSourcePathPc, 526);
+        control = NuAlloc(8 * sizeof(NUVEC), "d:\\projects\\game_saga\\nu2api.saga\\numath\\nugraph.c", 526);
     }
     if (curve == NULL || control == NULL) {
         return 0;
@@ -4572,7 +4570,7 @@ f32 RenderPostLogPc(f32 value) {
     f32 fraction;
     i32 index;
     if (RenderPostLogFirstPc) {
-        RenderPostLogTablePc = NuAlloc(36000, NuExp10SourcePathPc, 805);
+        RenderPostLogTablePc = NuAlloc(36000, "d:\\projects\\game_saga\\nu2api.saga\\numath\\nutrig.c", 805);
         if (RenderPostLogTablePc == NULL) {
             return 0.0f;
         }
@@ -4613,7 +4611,7 @@ f32 NuExp10(f32 value) {
     i32 exponent;
     i32 index;
     if (NuExp10FirstTimePc) {
-        NuExp10TablePc = NuAlloc(40000, NuExp10SourcePathPc, 866);
+        NuExp10TablePc = NuAlloc(40000, "d:\\projects\\game_saga\\nu2api.saga\\numath\\nutrig.c", 866);
         if (NuExp10TablePc == NULL) {
             return 0.0f;
         }

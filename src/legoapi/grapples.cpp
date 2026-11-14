@@ -6,19 +6,14 @@ typedef struct {
     u8 opaque[0xf8 - 16];
 } ADD_GRAPPLE_PC;
 
-extern "C" {
-    extern char AIRegistryTextPc007575bc[7];
-    extern const char GrappleOccupiedOutputTextPc[9];
-}
+extern "C" {}
 
 typedef struct {
     u32 enabled[1];
     u32 visible[1];
 } GRAPPLE_PROGRESS_PC;
 
-extern "C" {
-    extern const char PCContextName_Grapple[8];
-}
+extern "C" {}
 STATIC_ASSERT(offsetof(GAMEOBJECT, grapple) == 0x798);
 STATIC_ASSERT(offsetof(GAMEOBJECT, ai_packet) + offsetof(AIPACKET_PC, path_info) +
                   offsetof(AIPATHINFO_PC, connection) ==
@@ -632,18 +627,15 @@ extern "C" i32 Grapple_GetOutput(GIZMO_PC *gizmo, i32 output, i32 mode) {
 }
 
 extern "C" {
-#pragma const_seg(".rdata$GrappleOccupiedOutputTextPc")
-    const char GrappleOccupiedOutputTextPc[9] = "Occupied";
-#pragma const_seg()
 
     char *Grapple_GetOutputName(GIZMO_PC *gizmo, i32 output) {
         switch (output) {
             case 1:
-                return (char *)GrappleOccupiedOutputTextPc;
+                return "Occupied";
             case 2:
                 return "Occupied By 2";
         }
-        return AIRegistryTextPc007575bc;
+        return "Active";
     }
 }
 
@@ -833,7 +825,7 @@ extern "C" void Grapples_Update(void *world_pointer, void *unused_system, f32 un
 }
 
 extern "C" {
-    char *GizmoRegistryGrapplesNamePtrPc = (char *)PCContextName_Grapple;
+    char *GizmoRegistryGrapplesNamePtrPc = "Grapple";
     static ADDGIZMOTYPE_PC GizmoRegistryGrapplesAddTypePc = {0};
 
     ADDGIZMOTYPE_PC *Grapples_RegisterGizmo(i32 type_id) {

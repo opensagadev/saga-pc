@@ -1648,16 +1648,16 @@ void *TerrainInitEx(i32 level_num, void *buf, void *buf_end, i32 options, char *
     group_max_z = ((f32 *)(scratch));
 
     if (ScaleTerrainT1 == NULL) {
-        ScaleTerrainT1 = NuAlloc(0xc800, TerrainSourcePathPc, 466);
+        ScaleTerrainT1 = NuAlloc(0xc800, "d:\\projects\\game_saga\\gameapi.saga\\gamelib\\terrain.c", 466);
     }
     if (ScaleTerrainT2 == NULL) {
-        ScaleTerrainT2 = NuAlloc(0xc800, TerrainSourcePathPc, 468);
+        ScaleTerrainT2 = NuAlloc(0xc800, "d:\\projects\\game_saga\\gameapi.saga\\gamelib\\terrain.c", 468);
     }
     if (TempScanStack == NULL) {
-        TempScanStack = NuAlloc(0x2000, TerrainSourcePathPc, 470);
+        TempScanStack = NuAlloc(0x2000, "d:\\projects\\game_saga\\gameapi.saga\\gamelib\\terrain.c", 470);
     }
     if (WallSplList == NULL) {
-        WallSplList = NuAlloc(0x600, TerrainSourcePathPc, 472);
+        WallSplList = NuAlloc(0x600, "d:\\projects\\game_saga\\gameapi.saga\\gamelib\\terrain.c", 472);
     }
 
     terrain = ((TERRSET *)(cursor->char_ptr));

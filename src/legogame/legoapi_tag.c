@@ -652,13 +652,11 @@ void ReleaseTakeOver(GAMEOBJECT *target, i32 unused) {
     if ((i8)rider->field_280 != -1 || (i8)object->field_280 != -1) {
         GameCam_Blend(GameCam, 0.3f, 0.0f, 1);
     }
-    if (AIScriptSetBaseScriptStateByName(&rider->ai_packet.script_processor, (char *)TakeOverState_ReleasedTakeOver) !=
-        0) {
+    if (AIScriptSetBaseScriptStateByName(&rider->ai_packet.script_processor, "ReleasedTakeOver") != 0) {
         AIScriptProcess(WORLD->ai_sys, (APIOBJECT_PC *)rider, &rider->ai_packet, &rider->ai_packet.script_processor,
                         FRAMETIME);
     }
-    if (AIScriptSetBaseScriptStateByName(&object->ai_packet.script_processor, (char *)TakeOverState_ReleasedTakeOver) !=
-        0) {
+    if (AIScriptSetBaseScriptStateByName(&object->ai_packet.script_processor, "ReleasedTakeOver") != 0) {
         AIScriptProcess(WORLD->ai_sys, (APIOBJECT_PC *)object, &object->ai_packet, &object->ai_packet.script_processor,
                         FRAMETIME);
     }

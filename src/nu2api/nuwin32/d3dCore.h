@@ -216,7 +216,6 @@ extern "C" {
     extern u32 PCDevicePrimitiveUPCallCountPc;
     void PCDeviceDrawIndexedPrimitiveUPPc(i32, u32, u32, u32, const void *, i32, const void *, u32);
     extern u32 PCDeviceIndexedPrimitiveUPCallCountPc;
-    extern const char PCDeviceTextureCubeSourcePathPc[];
     extern u32 PCDevicePrimitiveCallCountPc;
     extern u32 PCDeviceIndexedPrimitiveCallCountPc;
 #ifdef __cplusplus

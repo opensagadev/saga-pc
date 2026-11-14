@@ -36,7 +36,6 @@ extern "C" {
 #endif
     extern f32 BOLT_OVERRIDE_PLAYERBOLTSPEED;
     extern f32 BOLT_OVERRIDE_PLAYERBOLTDURATION;
-    extern const char TorpedoFireSfxPc[14];
     void PCByteCopy(void *destination, const void *source, u32 count);
     extern i32 (*Bolt_HitCustomFn)(void *bolt, void *points);
     extern i32 i_bolt;

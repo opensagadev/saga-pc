@@ -38,7 +38,6 @@ extern "C" void FmvPlatformFinishPc(void) {
 extern "C" void fun_006d6b60(void) {
 }
 
-extern "C" const f32 InitOnceHalf;
 extern "C" f32 dat_02975608;
 
 extern "C" i32 fun_006d6b70(i32 key) {
@@ -46,7 +45,7 @@ extern "C" i32 fun_006d6b70(i32 key) {
         return 0;
     }
     if (nu_keyboard_no_key_state == 0) {
-        dat_02975608 = InitOnceHalf;
+        dat_02975608 = 0.5f;
         nu_keyboard_no_key_state = 1;
         return 1;
     }

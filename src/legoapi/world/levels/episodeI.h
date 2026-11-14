@@ -49,7 +49,6 @@ STATIC_ASSERT(offsetof(PODSPRINT_PC, speed) == 0x84);
 #ifdef __cplusplus
 extern "C" {
 #endif
-    extern const char EpisodeVI_ShowHearts[11];
 
     f32 PodSprint_InStartCountdown(WORLDINFO *);
     extern i32 Lap;

@@ -15,7 +15,6 @@ typedef struct batman_prepare_pc_s {      // size 0x8
 extern "C" {
     extern BATMAN_PREPARE_PC batman_prepareforspecialmove[11];
     extern AI_MID_SPECIAL_MOVE_PC batman_midspecialmovefns[8];
-    extern const char StarWarsTakeOverJumpPc[13];
 }
 STATIC_ASSERT(offsetof(GAMEOBJECT, ai_jump_destination_distance_pc) == 0xed0);
 STATIC_ASSERT(offsetof(GAMEOBJECT, jump_reentry_timer) == 0xd28);
@@ -1684,7 +1683,7 @@ extern "C" {
             if ((packet->path_info.connection->traversal_flags[packet->path_info.direction] & 0x8000) != 0 &&
                 (owner->character_data->game_character->flags_090 & 0x40) == 0 && owner->takeover_target == NULL &&
                 owner->character_context != 0x3c && (capabilities & 0xffff7fff) == 0) {
-                AIScriptSetBaseScriptStateByName(&apiobject->ai->script_processor, (char *)StarWarsTakeOverJumpPc);
+                AIScriptSetBaseScriptStateByName(&apiobject->ai->script_processor, "TakeOverJump");
                 return 1;
             }
             if (capabilities != 0 &&

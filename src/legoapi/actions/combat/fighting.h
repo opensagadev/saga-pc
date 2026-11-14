@@ -22,8 +22,6 @@ extern "C" {
     extern void (*Punch_HitHoldFn)(GAMEOBJECT *, GAMEOBJECT *);
     extern const f64 PlayerStepInnerActionPc;
     extern const f64 PlayerStepOuterActionPc;
-    extern const f64 PlayerStepInnerPc;
-    extern const f64 PlayerStepOuterPc;
     void ComboHitFrame(GAMEOBJECT *, i32);
     void HoldCode(GAMEOBJECT *);
     i32 ObjZappedBlue(GAMEOBJECT *);

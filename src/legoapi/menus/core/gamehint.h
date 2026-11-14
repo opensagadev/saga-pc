@@ -45,7 +45,6 @@ STATIC_ASSERT(offsetof(REGISTER_STATUS_PACKET_PC, stage_delay) == 0x14);
 #ifdef __cplusplus
 extern "C" {
 #endif
-    extern const char PCContextName_Jump[5];
     f32 CurrentHintAlpha(void);
 #ifdef __cplusplus
 }

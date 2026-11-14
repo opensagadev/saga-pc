@@ -51,7 +51,7 @@ void PartImpact_ThermalDetonator(PART_PC *part) {
                 if ((f64)water != 2000000.0) {
                     layer = EShadowInfo();
                     if ((layer == 1 || layer == 9) && part->position.y < water) {
-                        PlaySfx((char *)TerrainWaterJumpSoundNamePc, &part->position);
+                        PlaySfx("FS_WaterJump", &part->position);
                         stuck = 1;
                     }
                 }

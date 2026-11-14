@@ -98,7 +98,6 @@ extern "C" {
     extern char PCWarningOutputBuffer[];
     extern char PCWarningMessages[];
     extern void (*PCWarningHandler)(char *);
-    extern const char PCWarningSuffix[];
     extern i32 part_debris_count;
     extern i32 DisableDebugMsg;
     extern char err_msg_filter[32];

@@ -112,9 +112,7 @@ typedef struct buildit_reset_progress_pc_s { // size 0x60
     u8 built_object_count[64];               // 0x20
 } BUILDIT_RESET_PROGRESS_PC;
 
-extern "C" {
-    extern const char GizmoRegistryGizBuildItsNamePc[];
-}
+extern "C" {}
 STATIC_ASSERT(offsetof(GIZBUILDITANIMDATA_s, was_drawn) == 0xc6);
 extern "C" {
     extern f32 BuilditHopSfxWaitPc;
@@ -1281,9 +1279,6 @@ extern "C" void GizBuildIt_SetToEnd(GIZBUILDIT_PC *buildit) {
 }
 
 extern "C" {
-#pragma const_seg(".rdata$GizmoRegistryGizBuildItsNamePc")
-    const char GizmoRegistryGizBuildItsNamePc[] = "GizBuildit";
-#pragma const_seg()
 
     i32 GizBuildIts_Load(void *world_pointer, void *system_pointer) {
         WORLDINFO *world = (WORLDINFO *)world_pointer;
@@ -1304,8 +1299,7 @@ extern "C" {
             for (index = 0; index < system->count; ++index, ++buildit) {
                 EdFileRead(buildit->name, 16);
                 EdFileReadNuVec(&buildit->file_position);
-                GizmoFileReadGameAnimSet(buildit->anim_set, world, NULL, version,
-                                         (char *)GizmoRegistryGizBuildItsNamePc, buildit->name);
+                GizmoFileReadGameAnimSet(buildit->anim_set, world, NULL, version, "GizBuildit", buildit->name);
                 buildit->interaction_radius = EdFileReadFloat();
                 if (version <= 6) {
                     EdFileReadFloat();
@@ -1747,7 +1741,7 @@ extern "C" {
         }
     }
 
-    char *GizmoRegistryGizBuildItsNamePtrPc = (char *)GizmoRegistryGizBuildItsNamePc;
+    char *GizmoRegistryGizBuildItsNamePtrPc = "GizBuildit";
     static ADDGIZMOTYPE_PC GizmoRegistryGizBuildItsAddTypePc = {0};
 
     ADDGIZMOTYPE_PC *GizBuildIts_RegisterGizmo(i32 type_id) {

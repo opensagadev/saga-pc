@@ -697,9 +697,9 @@ void DeathStarBattleDUpdate(WORLDINFO *world) {
         return;
     }
     if (NuSpecialGetVisibilityFn(&LevHSpecial[0])) {
-        PlaySfx((char *)EpisodeVI_ffield, NuSpecialGetDrawPos(&LevHSpecial[0]));
+        PlaySfx("ffield", NuSpecialGetDrawPos(&LevHSpecial[0]));
     } else {
-        PlaySfx((char *)EpisodeVI_ffieldoff, NuSpecialGetDrawPos(&LevHSpecial[0]));
+        PlaySfx("ffieldoff", NuSpecialGetDrawPos(&LevHSpecial[0]));
         ((u8 *)LevFlag)[4] = 1;
     }
 }

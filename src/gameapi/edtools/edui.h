@@ -137,7 +137,6 @@ extern "C" {
     STATIC_ASSERT(offsetof(FRAME_PAD_PC, analog_left_x) == 0x92);
     STATIC_ASSERT(offsetof(FRAME_PAD_PC, analog_left_y) == 0x93);
     extern NUKEYCHAR NuKeyChar[65];
-    extern const char WorldPathSeparator[2];
     extern const char WorldObjectAnimFormat[7];
     i32 PcConfigureInputGraphicsCaps(void);
 #ifdef __cplusplus

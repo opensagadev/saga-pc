@@ -601,12 +601,10 @@ extern "C" i32 eduicbRenderTextSelector(eduimenu_s *unused_menu, eduiitem_s *ite
     return height;
 }
 
-extern "C" const char EduiSourcePathPc[52];
-
 extern "C" eduiitem_s *eduiItemTextSelectorCreate(u32 data, void *colours, i32 group, void *callback, i32 count,
                                                   i32 value, char *text, char **options) {
-    EduiTextSelectorViewPc *item =
-        (EduiTextSelectorViewPc *)NuAlloc(sizeof(EduiTextSelectorViewPc), EduiSourcePathPc, 0x10e4);
+    EduiTextSelectorViewPc *item = (EduiTextSelectorViewPc *)NuAlloc(
+        sizeof(EduiTextSelectorViewPc), "d:\\projects\\game_saga\\gameapi.saga\\edtools\\edui.cpp", 0x10e4);
     if (item) {
         memset(item, 0, sizeof(EduiTextSelectorViewPc));
         item->slider.base.data = data;
@@ -665,7 +663,8 @@ extern "C" i32 eduicbRenderSeparator(eduimenu_s *unused_menu, eduiitem_s *item, 
 }
 
 extern "C" eduiitem_s *eduiItemSeparatorCreate(u32 data, const void *colours) {
-    EduiSeparatorViewPc *item = (EduiSeparatorViewPc *)NuAlloc(sizeof(EduiSeparatorViewPc), EduiSourcePathPc, 0x1362);
+    EduiSeparatorViewPc *item = (EduiSeparatorViewPc *)NuAlloc(
+        sizeof(EduiSeparatorViewPc), "d:\\projects\\game_saga\\gameapi.saga\\edtools\\edui.cpp", 0x1362);
     if (item != NULL) {
         memset(item, 0, sizeof(*item));
         item->base.data = data;
@@ -697,7 +696,7 @@ extern "C" void eduiGradStageDelete(edui_gradient_pick_s *item, edui_gradient_no
     } else {
         item->selected_stage = stage->previous;
     }
-    NuFree(stage, EduiSourcePathPc, 0xa70);
+    NuFree(stage, "d:\\projects\\game_saga\\gameapi.saga\\edtools\\edui.cpp", 0xa70);
 }
 
 extern "C" void eduicbItemGradPickDestroy(eduimenu_s *unused_menu, eduiitem_s *item) {
@@ -705,7 +704,7 @@ extern "C" void eduicbItemGradPickDestroy(eduimenu_s *unused_menu, eduiitem_s *i
     while (gradient->first_stage != NULL) {
         eduiGradStageDelete(gradient, gradient->first_stage);
     }
-    NuFree(gradient, EduiSourcePathPc, 0xa9b);
+    NuFree(gradient, "d:\\projects\\game_saga\\gameapi.saga\\edtools\\edui.cpp", 0xa9b);
 }
 
 extern "C" void cbgpcfgDel(eduimenu_s *menu, eduiitem_s *item, u32 value) {

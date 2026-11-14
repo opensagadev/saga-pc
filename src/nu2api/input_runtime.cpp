@@ -2181,9 +2181,6 @@ extern "C" void PcInputStageAuxiliaryConfigPc(i32 port, i32 bank, i32 key) {
 // Append input_runtime.cpp. Native strings/table definitions and mappings in B-save-data.json.
 extern u8 PcInputWriteTextProfiles;
 extern const char *PcInputBindingKindNames[14];
-extern const char PcInputProfileTab[];
-extern const char PcInputProfileAxis[];
-extern const char PcInputProfileButton[];
 
 void PC_INPUT_RUNTIME_PC::SanitizeConfigNamePc(const char *name, char *destination) {
     PCByteCopy(destination, name, 63);
@@ -2220,46 +2217,46 @@ void PC_INPUT_RUNTIME_PC::FormatConfigTextPc(char *destination, PC_INPUT_CONFIG_
             config->axis_count, (i16)((u16)config->deadzone | ((u16)config->unknown_5b << 8)),
             (i16)((u16)config->alternate_deadzone | ((u16)config->unknown_5d << 8)), config->key);
     NuStrCat(destination, text);
-    NuStrCpy(text, PcInputProfileTab);
+    NuStrCpy(text, "\t");
     for (i32 i = 0; i < 4; ++i) {
-        sprintf(part, PcInputProfileAxis, PcInputBindingKindNames[config->axes[i][0]], config->axes[i][1],
+        sprintf(part, "%s,%d,%d, ", PcInputBindingKindNames[config->axes[i][0]], config->axes[i][1],
                 config->axes[i][2]);
         NuStrCat(text, part);
     }
     NuStrCat(text, "//analogue thumb sticks\n");
     NuStrCat(destination, text);
-    NuStrCpy(text, PcInputProfileTab);
+    NuStrCpy(text, "\t");
     for (i32 i = 0; i < 4; ++i) {
-        sprintf(part, PcInputProfileAxis, PcInputBindingKindNames[config->unknown_axes[i][0]],
-                config->unknown_axes[i][1], config->unknown_axes[i][2]);
+        sprintf(part, "%s,%d,%d, ", PcInputBindingKindNames[config->unknown_axes[i][0]], config->unknown_axes[i][1],
+                config->unknown_axes[i][2]);
         NuStrCat(text, part);
     }
     NuStrCat(text, "//analogue shoulder buttons\n");
     NuStrCat(destination, text);
-    NuStrCpy(text, PcInputProfileTab);
+    NuStrCpy(text, "\t");
     for (i32 i = 0; i < 4; ++i) {
-        sprintf(part, PcInputProfileButton, PcInputBindingKindNames[config->buttons[i][0]], config->buttons[i][1]);
+        sprintf(part, "%s,%d, ", PcInputBindingKindNames[config->buttons[i][0]], config->buttons[i][1]);
         NuStrCat(text, part);
     }
     NuStrCat(text, "//l2,r2,l1,r1\n");
     NuStrCat(destination, text);
-    NuStrCpy(text, PcInputProfileTab);
+    NuStrCpy(text, "\t");
     for (i32 i = 4; i < 8; ++i) {
-        sprintf(part, PcInputProfileButton, PcInputBindingKindNames[config->buttons[i][0]], config->buttons[i][1]);
+        sprintf(part, "%s,%d, ", PcInputBindingKindNames[config->buttons[i][0]], config->buttons[i][1]);
         NuStrCat(text, part);
     }
     NuStrCat(text, "//rup,rright,rdown,rleft\n");
     NuStrCat(destination, text);
-    NuStrCpy(text, PcInputProfileTab);
+    NuStrCpy(text, "\t");
     for (i32 i = 8; i < 12; ++i) {
-        sprintf(part, PcInputProfileButton, PcInputBindingKindNames[config->buttons[i][0]], config->buttons[i][1]);
+        sprintf(part, "%s,%d, ", PcInputBindingKindNames[config->buttons[i][0]], config->buttons[i][1]);
         NuStrCat(text, part);
     }
     NuStrCat(text, "//select,l3,r3,start\n");
     NuStrCat(destination, text);
-    NuStrCpy(text, PcInputProfileTab);
+    NuStrCpy(text, "\t");
     for (i32 i = 12; i < 16; ++i) {
-        sprintf(part, PcInputProfileButton, PcInputBindingKindNames[config->buttons[i][0]], config->buttons[i][1]);
+        sprintf(part, "%s,%d, ", PcInputBindingKindNames[config->buttons[i][0]], config->buttons[i][1]);
         NuStrCat(text, part);
     }
     NuStrCat(text, "//lup,lright,ldown,lleft\n");
@@ -2339,9 +2336,6 @@ extern "C" void PcInputSaveConfigurationPc() {
 
 u8 PcInputAxisRemap[16] = {0};
 u32 PcInputAxisRemapInitialized = 0;
-extern const char PcInputProfileTab[2] = "\t";
-extern const char PcInputProfileAxis[11] = "%s,%d,%d, ";
-extern const char PcInputProfileButton[8] = "%s,%d, ";
 const char *PcInputBindingKindNames[14] = {"NOTSET",        "PADDIGITAL",    "PADANALOGUEPOS",  "PADANALOGUENEG",
                                            "MOUSEDIGITAL",  "MOUSEMOVEPOS",  "MOUSEMOVENEG",    "KEYDIGITAL",
                                            "KEYDIGITALPOS", "KEYDIGITALNEG", "KEYANALOGUEPAIR", "PADANALOGUEPAIR",

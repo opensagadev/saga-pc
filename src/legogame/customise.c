@@ -866,7 +866,7 @@ i32 CustomiserMenu_Update(void) {
                 NUMTX matrix;
                 i32 category;
                 i32 angle;
-                PlaySfx((char *)GameAudioName00753354Pc, position);
+                PlaySfx("ToggleChar", position);
                 NewBuzzFrames(((GAMEPAD_RUNTIME_INPUT_PC *)&GamePadStorage[player])->bound_pad, 1, 0);
                 for (category = 0; category < 9; ++category) {
                     if (customiser->piece_counts[category] > 0) {

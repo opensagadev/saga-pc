@@ -766,7 +766,7 @@ void TorpedoCode(GAMEOBJECT *object, i32 fire, f32 fire_cooldown) {
     if (fire != 0 && object->character_context == -1 && timers->fire_cooldown <= 0.0f && object->dead == 0 &&
         (TORPEDO_PACKET_PC(object)->flags & 2) == 0 && TORPEDO_PACKET_PC(object)->pickup_timer >= 0.8f &&
         TORPEDO_PACKET_PC(object)->count > 0 && TORPEDO_PACKET_PC(object)->pickup_timer >= 0.8f) {
-        PlaySfx((char *)TorpedoFireSfxPc, &object->collision_position);
+        PlaySfx("XWing_Torpedo", &object->collision_position);
         NewRumble(object->pad->bound_pad, 0.5f, 0);
         NewBuzz(object->pad->bound_pad, 0.1f, 0);
         object->flags_e20 |= 0x4000000;

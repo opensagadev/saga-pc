@@ -19,7 +19,6 @@ STATIC_ASSERT(sizeof(SIGNALPROGRESS_s) == 0x28);
 STATIC_ASSERT(offsetof(SIGNALPROGRESS_s, active_mask) == 0x20);
 STATIC_ASSERT(offsetof(SIGNALPROGRESS_s, visible_mask) == 0x24);
 
-extern const char AIRegistryTextPc007575bc[7];
 STATIC_ASSERT(offsetof(WORLDINFO, giz_buffer) == 0x104);
 STATIC_ASSERT(offsetof(WORLDINFO, current_level) == 0x128);
 STATIC_ASSERT(offsetof(LEVELDATA_PC, max_signals) == 0xea);
@@ -38,7 +37,6 @@ STATIC_ASSERT(offsetof(GAMEOBJECT, bounds_radius) == 0x1dc);
 STATIC_ASSERT(offsetof(SUIT_INITIALIZER_RECORD_PC, character_id) == 0x14);
 STATIC_ASSERT(offsetof(SUIT_INITIALIZER_RECORD_PC, text_id) == 8);
 STATIC_ASSERT(offsetof(GAMECAMERA, position) == 0x11c);
-extern const char PCContextName_Signal[7];
 extern char TextInputKeyNameTextPc7516c0[1];
 STATIC_ASSERT(sizeof(ADDGIZMOTYPE_PC) == 0x78);
 STATIC_ASSERT(offsetof(ADDGIZMOTYPE_PC, fns) == 8);
@@ -379,7 +377,7 @@ i32 Signal_GetOutput(GIZMO_PC *gizmo, i32 unused_index, i32 unused_mode) {
 }
 
 char *Signal_GetOutputName(GIZMO_PC *unused, i32 unused_index) {
-    return (char *)AIRegistryTextPc007575bc;
+    return "Active";
 }
 
 i32 Signal_GetNumOutputs(GIZMO_PC *unused) {
@@ -420,7 +418,7 @@ void Signals_StoreProgress(WORLDINFO *world, void *unused, SIGNALPROGRESS_s *pro
 }
 
 #pragma data_seg(".data$SignalRegistryNamePc")
-char *SignalRegistryNamePc = (char *)PCContextName_Signal;
+char *SignalRegistryNamePc = "Signal";
 #pragma data_seg()
 #pragma data_seg(".data$SignalAddTypePc")
 ADDGIZMOTYPE_PC SignalAddTypePc = {0};

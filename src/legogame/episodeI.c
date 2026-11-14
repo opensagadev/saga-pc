@@ -1017,7 +1017,7 @@ void PodRacePanel(WORLDINFO *world) {
     }
     if (podhurryalpha > 0.0f && PodRacePc->lap_display > 0.0f) {
         count = (i32)PodRacePc->lap_display + 1;
-        sprintf(text, Text_TimeS, count);
+        sprintf(text, "%i", count);
         scale = NuFmod(PodRacePc->lap_display, 1.0f);
         if (scale >= 0.7f) {
             scale = (f32)(((f64)scale - (f64)0.7f) / (f64)0.3f + 1.0);
@@ -1030,7 +1030,7 @@ void PodRacePanel(WORLDINFO *world) {
     }
     if (podstartracealpha != 0.0f && PodRacePc->lap_countdown > 0.0f) {
         count = (i32)PodRacePc->lap_countdown + 1;
-        sprintf(text, Text_TimeS, count);
+        sprintf(text, "%i", count);
         scale = NuFmod(PodRacePc->lap_countdown, 1.0f);
         if (scale >= 0.7f) {
             scale = (f32)(((f64)scale - (f64)0.7f) / (f64)0.3f + 1.0);
@@ -2315,7 +2315,7 @@ i32 Action_CreatePod(AISYS_PC *system, AISCRIPTPROCESS_PC *process, AIPACKET_PC 
         char *value = NuStrIStr(params[i], PodCreateSplineKeywordPc);
         if (value != NULL) {
             spline_id = (i32)AIParamToFloat((AISCRIPTPROCESS_PC *)packet, value + 10);
-        } else if ((value = NuStrIStr(params[i], (char *)AITransferLiteral7576f8)) != NULL) {
+        } else if ((value = NuStrIStr(params[i], "type=")) != NULL) {
             if (LevelCharacterTypeIDFn != NULL && LevelCharacterGlobalIDFn != NULL) {
                 model_id = LevelCharacterTypeIDFn(value + 5);
                 if (model_id != 0xff) {

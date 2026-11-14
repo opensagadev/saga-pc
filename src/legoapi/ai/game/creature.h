@@ -36,7 +36,6 @@ extern "C" {
     extern f32 spline_xoffset_speed_seek;
     extern f32 spline_xoffset_speed_roll;
     extern const char AIScriptListFilename[11];
-    extern const char GameObjectState_InActive[9];
     void DeactivateGameObject(GAMEOBJECT *);
     extern f32 PlayerPadCurrentSpeed[2];
     extern f32 PlayerPadPreviousSpeed[2];

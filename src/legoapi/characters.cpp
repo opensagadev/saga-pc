@@ -8,7 +8,6 @@ STATIC_ASSERT(offsetof(CHAR_CATEGORY_RECORD_PC, model_flags) == 4);
 STATIC_ASSERT(offsetof(CHAR_CATEGORY_RECORD_PC, game_flags) == 8);
 extern "C" {
     extern char AreaFixUpName_Jedi[8];
-    extern const char PCContextName_Teleport[9];
 }
 
 typedef struct CHARACTER_SCENE_WORLD_PC {     // size 0x2984
@@ -80,11 +79,11 @@ extern "C" {
         {(char *)AreaFixUpName_Jedi, 0x8u, 0x0u},
         {"JediBaddie", 0xcu, 0x0u},
         {"BountyHunter", 0x1100080u, 0x0u},
-        {(char *)PCContextName_Teleport, 0x40000u, 0x0u},
+        {"Teleport", 0x40000u, 0x0u},
         {"HighJump", 0x0u, 0x400000u},
         {"Astromech", 0x40u, 0x0u},
         {"Protocol", 0x20u, 0x0u},
-        {(char *)PCContextName_ZipUp, 0x100080u, 0x0u},
+        {"ZipUp", 0x100080u, 0x0u},
         {"Blaster", 0x80u, 0x0u},
         {NULL, 0x0u, 0x0u},
     };

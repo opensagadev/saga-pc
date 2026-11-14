@@ -1788,7 +1788,7 @@ extern "C" {
             return 0;
         }
         size = (i32)NuFileOpenSize(file);
-        data = NuAlloc(size, NuTextureSourcePathPC, 0x2f);
+        data = NuAlloc(size, "d:\\projects\\game_saga\\nu2api.saga\\nu3d\\pc\\nutex_pc.cpp", 0x2f);
         NuFileRead(file, data, size);
         NuFileClose(file);
         texture = (NUTEXDIM_PC *)buffer->addr;
@@ -1797,7 +1797,7 @@ extern "C" {
         texture->image_data = data;
         texture->image_size = size;
         id = NuTexCreateNative(texture);
-        NuFree(data, NuTextureSourcePathPC, 0x4d);
+        NuFree(data, "d:\\projects\\game_saga\\nu2api.saga\\nu3d\\pc\\nutex_pc.cpp", 0x4d);
         return id;
     }
 
@@ -1868,7 +1868,8 @@ extern "C" {
     /* Creates, once, the placeholder texture used for references that fail to resolve. */
     i32 NuTexGetUnresolvedTextureTIDPS() {
         if (NuUnresolvedTextureIDPC == -1) {
-            NUTEXDIM_PC *texture = (NUTEXDIM_PC *)NuAlloc(sizeof(NUTEXDIM_PC), NuTextureSourcePathPC, 0xd9);
+            NUTEXDIM_PC *texture = (NUTEXDIM_PC *)NuAlloc(
+                sizeof(NUTEXDIM_PC), "d:\\projects\\game_saga\\nu2api.saga\\nu3d\\pc\\nutex_pc.cpp", 0xd9);
             memset(texture, 0, sizeof(*texture));
             texture->image_data = NuUnresolvedTextureDdsPc;
             texture->image_size = sizeof(NuUnresolvedTextureDdsPc);
@@ -1986,16 +1987,18 @@ extern "C" {
                     width >>= 1;
                     height >>= 1;
                 } while (--levels > 0);
-                bitmap->data = (u8 *)NuAlloc(size, NuTextureSourcePathPC, 0x195);
+                bitmap->data =
+                    (u8 *)NuAlloc(size, "d:\\projects\\game_saga\\nu2api.saga\\nu3d\\pc\\nutex_pc.cpp", 0x195);
                 if (palette_size != 0) {
-                    bitmap->palette = (u8 *)NuAlloc(palette_size, NuTextureSourcePathPC, 0x198);
+                    bitmap->palette = (u8 *)NuAlloc(
+                        palette_size, "d:\\projects\\game_saga\\nu2api.saga\\nu3d\\pc\\nutex_pc.cpp", 0x198);
                 } else {
                     bitmap->palette = NULL;
                 }
                 _flushall();
                 NuFileSeek(file, file_header.data_offset, 0);
                 NuFileRead(file, bitmap->data, NuTexImageSizePc(bitmap->type, bitmap->height, bitmap->width));
-                row = (u8 *)NuAlloc(row_size, NuTextureSourcePathPC, 0x1a0);
+                row = (u8 *)NuAlloc(row_size, "d:\\projects\\game_saga\\nu2api.saga\\nu3d\\pc\\nutex_pc.cpp", 0x1a0);
                 top = bitmap->data;
                 bottom = top + NuTexImageSizePc(bitmap->type, bitmap->height, bitmap->width) - row_size;
                 while (bottom > top) {
@@ -2005,7 +2008,7 @@ extern "C" {
                     top += row_size;
                     bottom -= row_size;
                 }
-                NuFree(row, NuTextureSourcePathPC, 0x1af);
+                NuFree(row, "d:\\projects\\game_saga\\nu2api.saga\\nu3d\\pc\\nutex_pc.cpp", 0x1af);
                 if (palette_size != 0) {
                     memcpy(bitmap->palette, NuTexBmpPalettePc, palette_size);
                 }
@@ -2018,9 +2021,10 @@ extern "C" {
     }
 
     NUTEXBMP_PC *NuTexCreateBmpPc(const char *path) {
-        NUTEXBMP_PC *bitmap = (NUTEXBMP_PC *)NuAlloc(sizeof(NUTEXBMP_PC), NuTextureSourcePathPC, 0x1e1);
+        NUTEXBMP_PC *bitmap = (NUTEXBMP_PC *)NuAlloc(
+            sizeof(NUTEXBMP_PC), "d:\\projects\\game_saga\\nu2api.saga\\nu3d\\pc\\nutex_pc.cpp", 0x1e1);
         if (!NuTexLoadBmpPc(path, 0, bitmap)) {
-            NuFree(bitmap, NuTextureSourcePathPC, 0x1e5);
+            NuFree(bitmap, "d:\\projects\\game_saga\\nu2api.saga\\nu3d\\pc\\nutex_pc.cpp", 0x1e5);
             return NULL;
         }
         return bitmap;
@@ -2669,8 +2673,8 @@ extern "C" {
             resource = NuTextureGetDimensions(texture_id)->resource;
             resource->methods->unlock_rect(resource, 0);
         }
-        NuFree(bitmap->data, NuQFntSourcePathPC, 0x264);
-        NuFree(bitmap, NuQFntSourcePathPC, 0x265);
+        NuFree(bitmap->data, "d:\\projects\\game_saga\\nu2api.saga\\nu3d\\pc\\nuqfnt_PC.cpp", 0x264);
+        NuFree(bitmap, "d:\\projects\\game_saga\\nu2api.saga\\nu3d\\pc\\nuqfnt_PC.cpp", 0x265);
         NuTexGetWidth(texture_id);
         NuTexGetHeight(texture_id);
 
@@ -4326,19 +4330,19 @@ extern "C" {
             case 0:
                 NuPrimXScale = NuPrimPS2XScale;
                 NuPrimYScale = NuPrimPS2YScale;
-                NuPrimXBias = nu_fsign_minus_one;
+                NuPrimXBias = -1.0f;
                 NuPrimYBias = 1.0f;
                 break;
             case 1:
                 NuPrimXScale = 1.0f;
-                NuPrimYScale = nu_fsign_minus_one;
+                NuPrimYScale = -1.0f;
                 NuPrimXBias = 0.0f;
                 NuPrimYBias = 0.0f;
                 break;
             case 2:
-                NuPrimXScale = NuPrimTwo;
+                NuPrimXScale = 2.0f;
                 NuPrimYScale = -2.0f;
-                NuPrimXBias = nu_fsign_minus_one;
+                NuPrimXBias = -1.0f;
                 NuPrimYBias = 1.0f;
                 break;
         }
@@ -6557,7 +6561,7 @@ extern "C" {
     void NuGobjReleaseChildPc(PC_GOBJ_REGISTRY_CHILD_PC *child) {
         PC_GOBJ_REGISTRY_AUX_PC *aux = child->auxiliary;
         if (child->owned_buffer != NULL) {
-            NuFree(child->owned_buffer, NuGobjSourcePathPc, 605);
+            NuFree(child->owned_buffer, "d:\\projects\\game_saga\\nu2api.saga\\nu3d\\pc\\nugobj.c", 605);
             child->owned_buffer = NULL;
         }
         while (aux != NULL) {
@@ -7358,7 +7362,8 @@ extern "C" {
     }
 
     PC_GOBJ_REGISTRY_ENTRY_PC *fun_00602980(void) {
-        PC_GOBJ_REGISTRY_ENTRY_PC *entry = (PC_GOBJ_REGISTRY_ENTRY_PC *)NuAlloc(0x70, NuGobjSourcePathPc, 107);
+        PC_GOBJ_REGISTRY_ENTRY_PC *entry =
+            (PC_GOBJ_REGISTRY_ENTRY_PC *)NuAlloc(0x70, "d:\\projects\\game_saga\\nu2api.saga\\nu3d\\pc\\nugobj.c", 107);
         PC_GOBJ_REGISTRY_ENTRY_PC *first;
         memset(entry, 0, 0x70);
         first = NuGobjRegistryFirstPc;
@@ -7377,13 +7382,13 @@ extern "C" {
     }
 
     void *fun_006029e0(void) {
-        void *block = NuAlloc(0x98, NuGobjSourcePathPc, 172);
+        void *block = NuAlloc(0x98, "d:\\projects\\game_saga\\nu2api.saga\\nu3d\\pc\\nugobj.c", 172);
         memset(block, 0, 0x98);
         return block;
     }
 
     void *fun_00602d60(void) {
-        void *block = NuAlloc(0x98, NuGobjSourcePathPc, 368);
+        void *block = NuAlloc(0x98, "d:\\projects\\game_saga\\nu2api.saga\\nu3d\\pc\\nugobj.c", 368);
         memset(block, 0, 0x98);
         return block;
     }
@@ -7393,7 +7398,7 @@ extern "C" {
 
     void fun_00602df0(PC_GOBJ_REGISTRY_CHILD_PC *child) {
         if (child->owned_buffer != NULL) {
-            NuFree(child->owned_buffer, NuGobjSourcePathPc, 605);
+            NuFree(child->owned_buffer, "d:\\projects\\game_saga\\nu2api.saga\\nu3d\\pc\\nugobj.c", 605);
             child->owned_buffer = NULL;
         }
     }

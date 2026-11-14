@@ -123,7 +123,6 @@ extern "C" {
     void AddHeartAsPart(struct gameobject_s *, NUVEC *, NUVEC *, f32, f32);
     void PowerUp_AddPart(NUVEC *, NUVEC *, f32, f32);
     void AddCoinsAsParts(i32, NUVEC *, NUVEC *, f32, f32);
-    extern const char PowerUpLoopSfx_PC[18];
 #define PickupCoinName PickupCoinSfx_PC         // NOLINT(readability-identifier-naming)
 #define PickupCoinBName PickupTypeLiteral758c5c // NOLINT(readability-identifier-naming)
     void AddCoinsToPanel(i32 coins, NUVEC *position, i32 player_index, f32 scale, struct gameobject_s *object,

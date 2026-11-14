@@ -326,7 +326,6 @@ extern "C" {
     extern i32 NuTimeBar_PeakReset;
     extern i32 NuTimeBar_EngineEnabled;
     extern i32 NuTimeBar_GpuFrameOutEnabled;
-    extern const char NuTimeBarSource[51];
     extern const f64 NuTimeBarScanlineMicroseconds;
     extern const f64 NuTimeBarScanlinesPerFrame;
     extern const u32 NuTimeBar_EngineColours[7];
@@ -335,7 +334,6 @@ extern "C" {
     extern const f32 NuTimeBarQFontScale;
     extern const f64 NuTimeBarSlotWidth;
     extern const f64 NuTimeBarHorizontalTop;
-    extern const char NuTimeBarValueFormat[3];
     extern const f32 NuTimeBarFontScale;
     extern const f64 NuTimeBarVerticalScale;
     extern const f64 NuTimeBarNegativeSlotWidth;
@@ -350,7 +348,6 @@ extern "C" {
     extern f32 qfnt_justify_squash;
     extern f32 qfnt_justify_stretch;
     extern i32 nuqfnt_cs_mode;
-    extern const f32 NuPrimTwo;
     extern const f32 NuPrimMinusTwo;
     extern i32 nused_sort_pris;
     extern i32 render_scene_index;
@@ -399,7 +396,6 @@ extern "C" {
     extern i32 NuTextureCapacityPC;
     extern i32 NuTextureLoadCountPC;
     extern i32 *NuTextureLoadOrderPC;
-    extern const char NuAnimSourceFileName[48];
     extern i32 nuspecial_draw_state;
     extern u8 fstackmem[NU_PORTAL_STACK_SIZE];
     extern NUPORTAL_FRUSTUM_PC **NuPortalFrustaPc;
@@ -421,7 +417,6 @@ extern "C" {
     extern i32 NuCameraOrthographic;
     extern i32 vport_inval;
     extern f32 NuCameraProjectionFarClipBias;
-    extern const char NuCameraAllocSource[54];
     extern const u8 CurveGroupMasks[4];
     extern const u8 KeyStructSizes[16];
     extern i32 cubeEdgeIndices[12][2];

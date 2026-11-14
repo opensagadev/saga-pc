@@ -364,8 +364,8 @@ i32 GizObstacles_Load(void *world_ptr, void *data) {
             } else {
                 obstacle->trigger_mode = 0xff;
             }
-            GizmoFileReadGameAnimSet(obstacle->anim_set, world, Gizobstacle_ReadAnimSetData, version,
-                                     (char *)GizObstacleTypeNamePc, obstacle->name);
+            GizmoFileReadGameAnimSet(obstacle->anim_set, world, Gizobstacle_ReadAnimSetData, version, "GizObstacle",
+                                     obstacle->name);
             if (version >= 4) {
                 obstacle->forward_speed_factor = EdFileReadFloat();
             } else {

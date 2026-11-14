@@ -75,15 +75,6 @@ extern "C" {
     extern f32 TopShelfScale[6];
     extern f32 toppush[6];
     extern f32 topscale[6];
-    extern const char GameAudioName0075c348Pc[10];
-    extern const char GameAudioName0075c354Pc[12];
-    extern const char GameAudioName0075c360Pc[9];
-    extern const char GameAudioName0075c36cPc[11];
-    extern const char GameAudioName0075c378Pc[9];
-    extern const char GameAudioName0075c3a0Pc[11];
-    extern const char GameAudioName0075c3b8Pc[9];
-    extern const char GameAudioName0075c3c4Pc[8];
-    extern const char GameAudioName0075c3ccPc[7];
     extern i32 SHOPACTIVE;
     extern f32 ShopLockedScalePc;
     extern i16 TextIdPc8808c0;

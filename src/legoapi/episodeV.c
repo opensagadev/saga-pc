@@ -798,7 +798,7 @@ void CloudCityTrapA_Init(WORLDINFO *world) {
     if (netclient == 0) {
         memset(troopercannons, 0, sizeof(troopercannons));
     }
-    LevAIMessage[0] = CheckGizAIMessage(gizaimessagesys, EpisodeVI_ShowHearts, NULL);
+    LevAIMessage[0] = CheckGizAIMessage(gizaimessagesys, "ShowHearts", NULL);
     LevGizmo[0] = GizmoFindByName(world->gizmo_sys, force_gizmotype_id, "force3");
 }
 
@@ -1086,13 +1086,6 @@ void IncrementMinikitCounter(GAMEOBJECT *unused) {
 }
 
 static const char HothBattleCGreenBoltPc[16] = "trooper_green";
-static const char HothBattleCRedBoltPc[12] = "trooper_red";
-static const char HothBattleCMinifig11Pc[12] = "minifig_1_1";
-static const char HothBattleCMinifig12Pc[12] = "minifig_1_2";
-static const char HothBattleCMinifig13Pc[12] = "minifig_1_3";
-static const char HothBattleCMinifig21Pc[12] = "minifig_2_1";
-static const char HothBattleCMinifig22Pc[12] = "minifig_2_2";
-static const char HothBattleCMinifig23Pc[12] = "minifig_2_3";
 static const char HothBattleAPickupPc[8] = "m_pup3";
 
 void HothBattleA_Init(WORLDINFO *world) {
@@ -1100,16 +1093,16 @@ void HothBattleA_Init(WORLDINFO *world) {
     LevGizmo[0] = GizmoFindByName(world->gizmo_sys, gizmopickup_typeid, (char *)HothBattleAPickupPc);
     GizmoSetVisibility(world->gizmo_sys, LevGizmo[0], 0, 1);
     gunship_bolts[1] = BoltType_FindIDByName((char *)HothBattleCGreenBoltPc, world);
-    gunship_bolts[0] = BoltType_FindIDByName((char *)HothBattleCRedBoltPc, world);
+    gunship_bolts[0] = BoltType_FindIDByName("trooper_red", world);
     trooper_side[0] = 0;
     trooper_side[1] = 1;
     InitMiniSnowTroopers(world, 2, 32, 0);
-    count = NuSpecialFind(world->current_gscn, &LevHSpecial[0], (char *)HothBattleCMinifig11Pc, 1);
-    count += NuSpecialFind(world->current_gscn, &LevHSpecial[1], (char *)HothBattleCMinifig12Pc, 1);
-    count += NuSpecialFind(world->current_gscn, &LevHSpecial[2], (char *)HothBattleCMinifig13Pc, 1);
-    count += NuSpecialFind(world->current_gscn, &LevHSpecial[3], (char *)HothBattleCMinifig21Pc, 1);
-    count += NuSpecialFind(world->current_gscn, &LevHSpecial[4], (char *)HothBattleCMinifig22Pc, 1);
-    count += NuSpecialFind(world->current_gscn, &LevHSpecial[5], (char *)HothBattleCMinifig23Pc, 1);
+    count = NuSpecialFind(world->current_gscn, &LevHSpecial[0], "minifig_1_1", 1);
+    count += NuSpecialFind(world->current_gscn, &LevHSpecial[1], "minifig_1_2", 1);
+    count += NuSpecialFind(world->current_gscn, &LevHSpecial[2], "minifig_1_3", 1);
+    count += NuSpecialFind(world->current_gscn, &LevHSpecial[3], "minifig_2_1", 1);
+    count += NuSpecialFind(world->current_gscn, &LevHSpecial[4], "minifig_2_2", 1);
+    count += NuSpecialFind(world->current_gscn, &LevHSpecial[5], "minifig_2_3", 1);
     if (count == 6) {
         hothtroopers = LevHSpecial;
     }
@@ -1159,16 +1152,16 @@ void HothBattleC_Init(WORLDINFO *world) {
     LevGizmo[1] = GizmoFindByName(world->gizmo_sys, gizmopickup_typeid, (char *)HothBattleCPickupPc);
     NuSpecialSetVisibility(&LevHSpecial[10], 0);
     gunship_bolts[1] = BoltType_FindIDByName((char *)HothBattleCGreenBoltPc, world);
-    gunship_bolts[0] = BoltType_FindIDByName((char *)HothBattleCRedBoltPc, world);
+    gunship_bolts[0] = BoltType_FindIDByName("trooper_red", world);
     trooper_side[0] = 0;
     trooper_side[1] = 1;
     InitMiniSnowTroopers(world, 2, 32, 0);
-    count = NuSpecialFind(world->current_gscn, &LevHSpecial[0], (char *)HothBattleCMinifig11Pc, 1);
-    count += NuSpecialFind(world->current_gscn, &LevHSpecial[1], (char *)HothBattleCMinifig12Pc, 1);
-    count += NuSpecialFind(world->current_gscn, &LevHSpecial[2], (char *)HothBattleCMinifig13Pc, 1);
-    count += NuSpecialFind(world->current_gscn, &LevHSpecial[3], (char *)HothBattleCMinifig21Pc, 1);
-    count += NuSpecialFind(world->current_gscn, &LevHSpecial[4], (char *)HothBattleCMinifig22Pc, 1);
-    count += NuSpecialFind(world->current_gscn, &LevHSpecial[5], (char *)HothBattleCMinifig23Pc, 1);
+    count = NuSpecialFind(world->current_gscn, &LevHSpecial[0], "minifig_1_1", 1);
+    count += NuSpecialFind(world->current_gscn, &LevHSpecial[1], "minifig_1_2", 1);
+    count += NuSpecialFind(world->current_gscn, &LevHSpecial[2], "minifig_1_3", 1);
+    count += NuSpecialFind(world->current_gscn, &LevHSpecial[3], "minifig_2_1", 1);
+    count += NuSpecialFind(world->current_gscn, &LevHSpecial[4], "minifig_2_2", 1);
+    count += NuSpecialFind(world->current_gscn, &LevHSpecial[5], "minifig_2_3", 1);
     if (count == 6) {
         hothtroopers = LevHSpecial;
     }

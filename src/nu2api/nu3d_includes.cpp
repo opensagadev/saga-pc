@@ -652,18 +652,21 @@ extern "C" {
     }
 
     NuAnimReadChunk *NuAnimDataChunkCreate(i32 curve_set_count) {
-        NuAnimReadChunk *chunk = (NuAnimReadChunk *)NuAlloc(sizeof(NuAnimReadChunk), NuAnimSourceFileName, 0x4a8);
+        NuAnimReadChunk *chunk = (NuAnimReadChunk *)NuAlloc(
+            sizeof(NuAnimReadChunk), "d:\\projects\\game_saga\\nu2api.saga\\nu3d\\nuanim.c", 0x4a8);
         memset(chunk, 0, sizeof(NuAnimReadChunk));
         chunk->curve_set_count = curve_set_count;
         chunk->curve_sets =
-            (NuAnimReadCurveSet **)NuAlloc(curve_set_count * sizeof(NuAnimReadCurveSet *), NuAnimSourceFileName, 0x4ac);
+            (NuAnimReadCurveSet **)NuAlloc(curve_set_count * sizeof(NuAnimReadCurveSet *),
+                                           "d:\\projects\\game_saga\\nu2api.saga\\nu3d\\nuanim.c", 0x4ac);
         memset(chunk->curve_sets, 0, curve_set_count * sizeof(NuAnimReadCurveSet *));
         return chunk;
     }
 
     void *NuAnimDataCreate(i32 chunk_count) {
         u32 allocation_size = (u32)chunk_count * sizeof(void *) + offsetof(NuAnimReadData, chunk_storage);
-        NuAnimReadData *animation = (NuAnimReadData *)NuAlloc((i32)allocation_size, NuAnimSourceFileName, 0x4bb);
+        NuAnimReadData *animation = (NuAnimReadData *)NuAlloc(
+            (i32)allocation_size, "d:\\projects\\game_saga\\nu2api.saga\\nu3d\\nuanim.c", 0x4bb);
         memset(animation, 0, allocation_size);
         animation->chunks = animation->chunk_storage;
         animation->chunk_count = chunk_count;
@@ -675,15 +678,18 @@ extern "C" {
         u32 array_size;
 
         if (curve_count != 0) {
-            curve_set = (NuAnimReadCurveSet *)NuAlloc(0x10, NuAnimSourceFileName, 0x4ec);
+            curve_set =
+                (NuAnimReadCurveSet *)NuAlloc(0x10, "d:\\projects\\game_saga\\nu2api.saga\\nu3d\\nuanim.c", 0x4ec);
             memset(curve_set, 0, 0x10);
             curve_set->curve_count = (i8)curve_count;
 
             array_size = (u32)curve_count * sizeof(void *);
-            curve_set->curves = (void **)NuAlloc((i32)array_size, NuAnimSourceFileName, 0x4f3);
+            curve_set->curves =
+                (void **)NuAlloc((i32)array_size, "d:\\projects\\game_saga\\nu2api.saga\\nu3d\\nuanim.c", 0x4f3);
             memset(curve_set->curves, 0, array_size);
 
-            curve_set->constants = (f32 *)NuAlloc((i32)array_size, NuAnimSourceFileName, 0x4f8);
+            curve_set->constants =
+                (f32 *)NuAlloc((i32)array_size, "d:\\projects\\game_saga\\nu2api.saga\\nu3d\\nuanim.c", 0x4f8);
             memset(curve_set->constants, 0, array_size);
         }
         return curve_set;
@@ -692,9 +698,9 @@ extern "C" {
     void NuAnimCurveDestroy(void *curve_data) {
         NUANIM_LEGACY_CURVE_PC *curve = (NUANIM_LEGACY_CURVE_PC *)curve_data;
         if (curve->keys != NULL) {
-            NuFree(curve->keys, NuAnimSourceFileName, 0x502);
+            NuFree(curve->keys, "d:\\projects\\game_saga\\nu2api.saga\\nu3d\\nuanim.c", 0x502);
         }
-        NuFree(curve, NuAnimSourceFileName, 0x503);
+        NuFree(curve, "d:\\projects\\game_saga\\nu2api.saga\\nu3d\\nuanim.c", 0x503);
     }
 
     void NuAnimCurveSetDestroy(void *curve_set, i32 destroy_curves) {
@@ -711,12 +717,12 @@ extern "C" {
                     }
                 }
             }
-            NuFree(set->curves, NuAnimSourceFileName, 0x518);
+            NuFree(set->curves, "d:\\projects\\game_saga\\nu2api.saga\\nu3d\\nuanim.c", 0x518);
         }
         if (set->constants != NULL) {
-            NuFree(set->constants, NuAnimSourceFileName, 0x51c);
+            NuFree(set->constants, "d:\\projects\\game_saga\\nu2api.saga\\nu3d\\nuanim.c", 0x51c);
         }
-        NuFree(set, NuAnimSourceFileName, 0x51e);
+        NuFree(set, "d:\\projects\\game_saga\\nu2api.saga\\nu3d\\nuanim.c", 0x51e);
     }
 
     i32 fun_005c9fe0(void) {
@@ -3097,7 +3103,7 @@ extern "C" {
 
         name_size = NuFileReadInt(file);
         if (name_size != 0) {
-            name = (char *)NuAlloc(name_size, NuAnimSourceFileName, 0x43f);
+            name = (char *)NuAlloc(name_size, "d:\\projects\\game_saga\\nu2api.saga\\nu3d\\nuanim.c", 0x43f);
             NuFileRead(file, name, name_size);
         } else {
             name = NULL;
@@ -3122,7 +3128,8 @@ extern "C" {
 
             count = NuFileReadInt(file);
             if (count != 0) {
-                chunk->curve_data = NuAlloc(count * 0x10, NuAnimSourceFileName, 0x459);
+                chunk->curve_data =
+                    NuAlloc(count * 0x10, "d:\\projects\\game_saga\\nu2api.saga\\nu3d\\nuanim.c", 0x459);
                 NuFileRead(file, chunk->curve_data, count * 0x10);
             } else {
                 chunk->curve_data = NULL;
@@ -3131,7 +3138,8 @@ extern "C" {
 
             count = NuFileReadInt(file);
             if (count != 0) {
-                chunk->shared_curves = (NuAnimReadSharedCurve *)NuAlloc(count * 0x10, NuAnimSourceFileName, 0x466);
+                chunk->shared_curves = (NuAnimReadSharedCurve *)NuAlloc(
+                    count * 0x10, "d:\\projects\\game_saga\\nu2api.saga\\nu3d\\nuanim.c", 0x466);
                 NuFileRead(file, chunk->shared_curves, count * 0x10);
             } else {
                 chunk->shared_curves = NULL;
@@ -3180,15 +3188,15 @@ extern "C" {
             }
         }
         if (chunk->curve_data != NULL) {
-            NuFree(chunk->curve_data, NuAnimSourceFileName, 0x4dc);
+            NuFree(chunk->curve_data, "d:\\projects\\game_saga\\nu2api.saga\\nu3d\\nuanim.c", 0x4dc);
         }
         if (chunk->shared_curves != NULL) {
-            NuFree(chunk->shared_curves, NuAnimSourceFileName, 0x4de);
+            NuFree(chunk->shared_curves, "d:\\projects\\game_saga\\nu2api.saga\\nu3d\\nuanim.c", 0x4de);
         }
         if (chunk->curve_sets != NULL) {
-            NuFree(chunk->curve_sets, NuAnimSourceFileName, 0x4e1);
+            NuFree(chunk->curve_sets, "d:\\projects\\game_saga\\nu2api.saga\\nu3d\\nuanim.c", 0x4e1);
         }
-        NuFree(chunk, NuAnimSourceFileName, 0x4e3);
+        NuFree(chunk, "d:\\projects\\game_saga\\nu2api.saga\\nu3d\\nuanim.c", 0x4e3);
     }
 
     /* Retains original scratch slot255. This path requires the additional
@@ -3695,9 +3703,9 @@ extern "C" {
             NuAnimDataChunkDestroy(data->chunks[index]);
         }
         if (data->name != NULL) {
-            NuFree(data->name, NuAnimSourceFileName, 0x49e);
+            NuFree(data->name, "d:\\projects\\game_saga\\nu2api.saga\\nu3d\\nuanim.c", 0x49e);
         }
-        NuFree(animation, NuAnimSourceFileName, 0x4a0);
+        NuFree(animation, "d:\\projects\\game_saga\\nu2api.saga\\nu3d\\nuanim.c", 0x4a0);
     }
 
     void NuAnimData2CalcMatrix(ANI3_HEADER_PC *animation, i32 node, f32 frame, NUMTX *matrix) {
@@ -9112,15 +9120,15 @@ extern "C" {
 
         /* Frees the allocations when this word is nonzero. */
         if (timebar->uses_buffer != 0) {
-            NuFree(timebar->accumulators[0], NuTimeBarSource, 0x169);
-            NuFree(timebar->accumulators[1], NuTimeBarSource, 0x16a);
-            NuFree(timebar->start_times, NuTimeBarSource, 0x16b);
-            NuFree(timebar->field_14, NuTimeBarSource, 0x16c);
-            NuFree(timebar->field_18, NuTimeBarSource, 0x16d);
-            NuFree(timebar->colours, NuTimeBarSource, 0x16e);
-            NuFree(timebar->toggle_flags, NuTimeBarSource, 0x16f);
-            NuFree(timebar->slot_names, NuTimeBarSource, 0x170);
-            NuFree(timebar, NuTimeBarSource, 0x172);
+            NuFree(timebar->accumulators[0], "d:\\projects\\game_saga\\nu2api.saga\\nu3d\\nutimebar.c", 0x169);
+            NuFree(timebar->accumulators[1], "d:\\projects\\game_saga\\nu2api.saga\\nu3d\\nutimebar.c", 0x16a);
+            NuFree(timebar->start_times, "d:\\projects\\game_saga\\nu2api.saga\\nu3d\\nutimebar.c", 0x16b);
+            NuFree(timebar->field_14, "d:\\projects\\game_saga\\nu2api.saga\\nu3d\\nutimebar.c", 0x16c);
+            NuFree(timebar->field_18, "d:\\projects\\game_saga\\nu2api.saga\\nu3d\\nutimebar.c", 0x16d);
+            NuFree(timebar->colours, "d:\\projects\\game_saga\\nu2api.saga\\nu3d\\nutimebar.c", 0x16e);
+            NuFree(timebar->toggle_flags, "d:\\projects\\game_saga\\nu2api.saga\\nu3d\\nutimebar.c", 0x16f);
+            NuFree(timebar->slot_names, "d:\\projects\\game_saga\\nu2api.saga\\nu3d\\nutimebar.c", 0x170);
+            NuFree(timebar, "d:\\projects\\game_saga\\nu2api.saga\\nu3d\\nutimebar.c", 0x172);
         }
         TimeBarRemoveSet(set);
     }
@@ -9231,16 +9239,25 @@ extern "C" {
 #undef TIMEBAR_ALIGNED
             timebar->uses_buffer = 1;
         } else {
-            timebar = (TimeBarSet *)NuAlloc(sizeof(TimeBarSet), NuTimeBarSource, 0xf2);
+            timebar = (TimeBarSet *)NuAlloc(sizeof(TimeBarSet),
+                                            "d:\\projects\\game_saga\\nu2api.saga\\nu3d\\nutimebar.c", 0xf2);
             memset(timebar, 0, sizeof(TimeBarSet));
-            timebar->accumulators[0] = (i32 *)NuAlloc(slot_count * sizeof(i32), NuTimeBarSource, 0xf5);
-            timebar->accumulators[1] = (i32 *)NuAlloc(slot_count * sizeof(i32), NuTimeBarSource, 0xf6);
-            timebar->start_times = (NuTime *)NuAlloc(slot_count * sizeof(NuTime), NuTimeBarSource, 0xf7);
-            timebar->field_14 = (i32 *)NuAlloc(slot_count * sizeof(i32), NuTimeBarSource, 0xf8);
-            timebar->field_18 = (i32 *)NuAlloc(slot_count * sizeof(i32), NuTimeBarSource, 0xf9);
-            timebar->colours = (i32 *)NuAlloc(slot_count * sizeof(i32), NuTimeBarSource, 0xfa);
-            timebar->toggle_flags = (i32 *)NuAlloc(slot_count * sizeof(i32), NuTimeBarSource, 0xfb);
-            timebar->slot_names = (const char **)NuAlloc(slot_count * sizeof(const char *), NuTimeBarSource, 0xfc);
+            timebar->accumulators[0] = (i32 *)NuAlloc(slot_count * sizeof(i32),
+                                                      "d:\\projects\\game_saga\\nu2api.saga\\nu3d\\nutimebar.c", 0xf5);
+            timebar->accumulators[1] = (i32 *)NuAlloc(slot_count * sizeof(i32),
+                                                      "d:\\projects\\game_saga\\nu2api.saga\\nu3d\\nutimebar.c", 0xf6);
+            timebar->start_times = (NuTime *)NuAlloc(slot_count * sizeof(NuTime),
+                                                     "d:\\projects\\game_saga\\nu2api.saga\\nu3d\\nutimebar.c", 0xf7);
+            timebar->field_14 = (i32 *)NuAlloc(slot_count * sizeof(i32),
+                                               "d:\\projects\\game_saga\\nu2api.saga\\nu3d\\nutimebar.c", 0xf8);
+            timebar->field_18 = (i32 *)NuAlloc(slot_count * sizeof(i32),
+                                               "d:\\projects\\game_saga\\nu2api.saga\\nu3d\\nutimebar.c", 0xf9);
+            timebar->colours = (i32 *)NuAlloc(slot_count * sizeof(i32),
+                                              "d:\\projects\\game_saga\\nu2api.saga\\nu3d\\nutimebar.c", 0xfa);
+            timebar->toggle_flags = (i32 *)NuAlloc(slot_count * sizeof(i32),
+                                                   "d:\\projects\\game_saga\\nu2api.saga\\nu3d\\nutimebar.c", 0xfb);
+            timebar->slot_names = (const char **)NuAlloc(
+                slot_count * sizeof(const char *), "d:\\projects\\game_saga\\nu2api.saga\\nu3d\\nutimebar.c", 0xfc);
             timebar->uses_buffer = 0;
         }
         memset(timebar->accumulators[0], 0, slot_count * sizeof(i32));
@@ -9409,18 +9426,18 @@ extern "C" {
                     *system_qfont->x_scale = NuTimeBarFontScale;
                     *system_qfont->y_scale = (NuQFntMode & 4) != 0 ? NuTimeBarFontScale : 0.42500001192092896f;
                 }
-                text_y = y + height - (i32)(NuQFntHeight(system_qfont) * NuTimeBarQuarter);
+                text_y = y + height - (i32)(NuQFntHeight(system_qfont) * 0.25);
                 if (timebar->slot_names[slot] != NULL) {
                     NuQFntPrintEx(system_qfont, (i32)(NuTimeBarSlotWidth * (PS2_VREZ_W << 4)), text_y, 0x10,
                                   timebar->slot_names[slot]);
                 }
                 if (timebar->field_18[slot] != 0) {
                     f32 lines = (f32)((f64)(u32)timebar->field_18[slot] * NuTimeBarLinesPerSecond / NuTime_MicroScale);
-                    NuQFntPrintEx(system_qfont, x, text_y, 0x10, Text_TimeS, (i32)lines);
+                    NuQFntPrintEx(system_qfont, x, text_y, 0x10, "%i", (i32)lines);
                 }
                 if (timebar->field_14[slot] != 0) {
                     f32 lines = (f32)((f64)(u32)timebar->field_14[slot] * NuTimeBarLinesPerSecond / NuTime_MicroScale);
-                    NuQFntPrintEx(system_qfont, (i32)(0.974999999627471 * (PS2_VREZ_W << 4)), text_y, 0x20, Text_TimeS,
+                    NuQFntPrintEx(system_qfont, (i32)(0.974999999627471 * (PS2_VREZ_W << 4)), text_y, 0x20, "%i",
                                   (i32)lines);
                 }
                 {
@@ -9512,17 +9529,17 @@ extern "C" {
                             text_y += (i32)NuQFntHeight(system_qfont) * 4;
                         }
                         text_y -= (i32)NuQFntHeight(system_qfont);
-                        NuQFntPrintEx(system_qfont, text_x << 4, text_y, 0x40, NuTimeBarValueFormat, digits % 10);
+                        NuQFntPrintEx(system_qfont, text_x << 4, text_y, 0x40, "%d", digits % 10);
                         digits /= 10;
                         text_y -= (i32)NuQFntHeight(system_qfont);
-                        NuQFntPrintEx(system_qfont, text_x << 4, text_y, 0x40, NuTimeBarValueFormat, digits % 10);
+                        NuQFntPrintEx(system_qfont, text_x << 4, text_y, 0x40, "%d", digits % 10);
                         digits /= 10;
                         text_y -= (i32)NuQFntHeight(system_qfont);
-                        NuQFntPrintEx(system_qfont, text_x << 4, text_y, 0x40, NuTimeBarValueFormat, digits % 10);
+                        NuQFntPrintEx(system_qfont, text_x << 4, text_y, 0x40, "%d", digits % 10);
                         digits /= 10;
                         if (digits != 0) {
                             text_y -= (i32)NuQFntHeight(system_qfont);
-                            NuQFntPrintEx(system_qfont, text_x << 4, text_y, 0x40, NuTimeBarValueFormat, digits % 10);
+                            NuQFntPrintEx(system_qfont, text_x << 4, text_y, 0x40, "%d", digits % 10);
                         }
                     }
                     if (timebar->field_14[slot] != 0) {
@@ -9533,7 +9550,7 @@ extern "C" {
                         if ((slot % 2) != 0) {
                             text_y -= 320;
                         }
-                        NuQFntPrintEx(system_qfont, text_x << 4, text_y, 0x40, NuTimeBarValueFormat,
+                        NuQFntPrintEx(system_qfont, text_x << 4, text_y, 0x40, "%d",
                                       (i32)(f32)((f32)(u32)timebar->field_14[slot] * NuTimeBarLinesPerSecond /
                                                  NuTime_MicroScale));
                     }
@@ -18125,7 +18142,7 @@ extern "C" {
 
     void NuLightBurnoutEffect(i32, f32 threshold, f32 intensity, f32 flare) {
         currentScene.unknown_28 = 1;
-        currentScene.burnout_intensity = NuPrimTwo >= intensity ? (u8)(127.0 * intensity) : 255;
+        currentScene.burnout_intensity = intensity <= 2.0f ? (u8)(127.0 * intensity) : 255;
         currentScene.burnout_flare = flare;
         currentScene.burnout_threshold = threshold;
         currentScene.burnout_parameters_pc.field_00 = 1;

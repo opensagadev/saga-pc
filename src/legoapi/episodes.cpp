@@ -95,9 +95,9 @@ extern "C" {
                             }
                         }
                     }
-                } else if (NuStrICmp(parser->word_buffer_ptr, AreaConfigKeyword_name_id) == 0) {
+                } else if (NuStrICmp(parser->word_buffer_ptr, "name_id") == 0) {
                     episode->name_id = (i16)NuFParGetInt(parser);
-                } else if (NuStrICmp(parser->word_buffer_ptr, AreaConfigKeyword_text_id) == 0) {
+                } else if (NuStrICmp(parser->word_buffer_ptr, "text_id") == 0) {
                     episode->text_id = (i16)NuFParGetInt(parser);
                 }
             } else if (NuStrICmp(parser->word_buffer_ptr, "episode_start") == 0 && episode_count < max_count) {

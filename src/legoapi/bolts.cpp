@@ -83,8 +83,6 @@ extern "C" {
     static NUGSCN *BT_scene = 0;
     static i32 BT_gdeb_moving_count = 0;
 
-    extern const char BoltImpactSoundPc[12] = "imp_impacts";
-
     /* 44 records; the configuration is published in InitGameAfterConfig. */
     BOLTTYPE_PC GlobalBoltType[44] = {{"red",
                                        4.0f,
@@ -480,7 +478,7 @@ extern "C" {
                                        Torpedo_EndBolt,
                                        Torpedo_InitRicochet,
                                        Torpedo_Scale,
-                                       {TorpedoFireSfxPc},
+                                       {"XWing_Torpedo"},
                                        {"imp_proton_torp"},
                                        34642700,
                                        {0},
@@ -505,7 +503,7 @@ extern "C" {
                                        Torpedo_EndBolt,
                                        Torpedo_InitRicochet,
                                        Torpedo_Scale,
-                                       {TorpedoFireSfxPc},
+                                       {"XWing_Torpedo"},
                                        {"imp_proton_torp"},
                                        34642700,
                                        {0},
@@ -781,7 +779,7 @@ extern "C" {
                                        NULL,
                                        NULL,
                                        {"Blaster"},
-                                       {BoltImpactSoundPc},
+                                       {"imp_impacts"},
                                        4198920,
                                        {0},
                                        {0},
@@ -806,7 +804,7 @@ extern "C" {
                                        NULL,
                                        NULL,
                                        {"Blaster"},
-                                       {BoltImpactSoundPc},
+                                       {"imp_impacts"},
                                        4198920,
                                        {0},
                                        {0},
@@ -831,7 +829,7 @@ extern "C" {
                                        NULL,
                                        NULL,
                                        {"Blaster"},
-                                       {BoltImpactSoundPc},
+                                       {"imp_impacts"},
                                        3150600,
                                        {0},
                                        {0},
@@ -855,7 +853,7 @@ extern "C" {
                                        EndBolt_EwokTorpedo,
                                        NULL,
                                        NULL,
-                                       {TorpedoFireSfxPc},
+                                       {"XWing_Torpedo"},
                                        {"imp_proton_torp"},
                                        4198920,
                                        {0},
@@ -880,7 +878,7 @@ extern "C" {
                                        EndBolt_EwokTorpedo,
                                        NULL,
                                        NULL,
-                                       {TorpedoFireSfxPc},
+                                       {"XWing_Torpedo"},
                                        {"imp_proton_torp"},
                                        4198920,
                                        {0},

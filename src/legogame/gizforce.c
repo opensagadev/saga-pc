@@ -79,7 +79,6 @@ typedef struct trigger_force_object_pc_s {
     GIZFORCE_PC *force;
 } TRIGGER_FORCE_OBJECT_PC;
 
-extern const char GizmoRegistryGizForceNamePc[];
 void GameAnimSet_SetOffset(GAMEANIMSET *, NUVEC *);
 
 typedef struct FORCE_RESET_PROGRESS_PC {
@@ -355,10 +354,6 @@ static void edgizforce_ReadAnimSetData(GAMEANIMOBJ *object, u8 version) {
     }
 }
 
-#pragma const_seg(".rdata$GizmoRegistryGizForceNamePc")
-const char GizmoRegistryGizForceNamePc[] = "GizForce";
-#pragma const_seg()
-
 i32 GizForces_Load(void *world_pointer, void *system_pointer) {
     WORLDINFO *world = world_pointer;
     GIZFORCESYS_s *system = system_pointer;
@@ -406,8 +401,7 @@ i32 GizForces_Load(void *world_pointer, void *system_pointer) {
         if (version == 1) {
             EdFileReadChar();
         }
-        GizmoFileReadGameAnimSet(force->anim_set, world, edgizforce_ReadAnimSetData, version,
-                                 (char *)GizmoRegistryGizForceNamePc, force->name);
+        GizmoFileReadGameAnimSet(force->anim_set, world, edgizforce_ReadAnimSetData, version, "GizForce", force->name);
         force->start_frame = EdFileReadFloat();
         force->end_frame = EdFileReadFloat();
         if (version >= 6) {
@@ -858,7 +852,7 @@ PART_PC *GizForce_Throw(GAMEOBJECT *object, GIZFORCE_PC *force, f32 speed, f32 g
     params.time_step = FRAMETIME;
     part = AddPart(&params);
     NewRumble(object->pad->bound_pad, 0.5f, 0);
-    PlaySfx((char *)ForcePushSoundNamePc, &object->collision_position);
+    PlaySfx("JForcePush", &object->collision_position);
     GameAnimSet_SetVisibility(force->anim_set, 0);
     force->runtime_flags |= 0x10000;
     return part;
@@ -1615,7 +1609,7 @@ void GizForces_Update(void *world_pointer, void *system_pointer, f32 unused_time
                         GameAudio_PlaySfxById(force->start_sfx_id, &force->position, 0, 0);
                     }
                 } else {
-                    PlaySfx((char *)GameAudioName00758be8Pc, &force->position);
+                    PlaySfx("LegoForm", &force->position);
                 }
             }
             if ((force->config_flags & 0x2000) == 0) {
@@ -1921,7 +1915,7 @@ choose:
     return 0;
 }
 
-char *GizmoRegistryGizForceNamePtrPc = (char *)GizmoRegistryGizForceNamePc;
+char *GizmoRegistryGizForceNamePtrPc = "GizForce";
 static ADDGIZMOTYPE_PC GizmoRegistryGizForceAddTypePc = {0};
 
 ADDGIZMOTYPE_PC *GizForce_RegisterGizmo(i32 type_id) {

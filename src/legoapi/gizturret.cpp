@@ -53,7 +53,6 @@ typedef struct {      // size 0x70
 } TURRET_PROGRESS_PC;
 
 extern "C" {
-    extern const char GizmoRegistryGizTurretsNamePc[];
     extern char *GizmoRegistryGizTurretsNamePtrPc;
     extern i32 turret_gizmotype_id;
     extern char TurretOutputBufferPc[32];
@@ -123,8 +122,8 @@ extern "C" {
         for (index = 0; index < system->count; ++index, ++turret) {
             GizTurretClearPc(turret);
             EdFileRead(turret->name, 16);
-            GizmoFileReadGameAnimSet(turret->anim_set, world, GizTurretReadAnimSetDataPc, version,
-                                     (char *)GizmoRegistryGizTurretsNamePc, turret->name);
+            GizmoFileReadGameAnimSet(turret->anim_set, world, GizTurretReadAnimSetDataPc, version, "GizTurret",
+                                     turret->name);
             EdFileReadNuVec(&turret->position);
             EdFileReadNuVec(&turret->opponent_origin);
             EdFileReadNuVec(&turret->initial_origin);

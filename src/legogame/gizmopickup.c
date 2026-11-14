@@ -49,7 +49,7 @@ void PowerUp_Particles(WORLDINFO *world, NUVEC *position) {
 
 void Pup_UpdatePowerUp(WORLDINFO *world, GIZMOPICKUP_PC *pickup) {
     PowerUp_Particles(world, &pickup->position);
-    PlaySfx((char *)PowerUpLoopSfx_PC, &pickup->position);
+    PlaySfx("Grv_GuardWeaponLp", &pickup->position);
 }
 
 static void PowerUp_UpdateMsg(GAME_MESSAGE_PC *message) {
@@ -709,7 +709,7 @@ static void PowerUp_UpdatePart(PART_PC *part) {
     NuMtxSetRotationY(&part->transform, part->rotation_y);
     NuMtxTranslate(&part->transform, &position);
     PowerUp_Particles(WorldInfo_CurrentlyActive(), &position);
-    PlaySfx((char *)PowerUpLoopSfx_PC, &position);
+    PlaySfx("Grv_GuardWeaponLp", &position);
 }
 
 static i32 PowerUp_DrawPart(PART_PC *part) {

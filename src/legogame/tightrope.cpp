@@ -73,7 +73,6 @@ STATIC_ASSERT(sizeof(NUMTX) == 0x40);
 STATIC_ASSERT(sizeof(NURND_VERTEX3D_PC) == 0x24);
 STATIC_ASSERT(offsetof(NURND_VERTEX3D_PC, colour) == 0x18);
 extern "C" {
-    extern char AIRegistryTextPc007575bc[7];
     extern char TextInputKeyNameTextPc7516c0[1];
 }
 
@@ -355,7 +354,7 @@ extern "C" {
     }
 
     char *TightRope_GetOutputName(GIZMO_PC *gizmo, i32 output) {
-        return AIRegistryTextPc007575bc;
+        return "Active";
     }
 
     i32 TightRope_GetNumOutputs(GIZMO_PC *gizmo) {

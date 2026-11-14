@@ -53,7 +53,7 @@ i32 GameAudio_OverrideFootStep_LSW(GAMEOBJECT *object, i32 on_platform) {
     }
     if ((area == DEATHSTARRESCUE_ADATA || area == DEATHSTARESCAPE_ADATA || WORLD->area == JABBASPALACE_ADATA) &&
         object->jump_animation_state == 0x14) {
-        return GetSfxId((char *)GameAudioName0075c478Pc);
+        return GetSfxId("FS_JWalkM");
     }
     return -1;
 }

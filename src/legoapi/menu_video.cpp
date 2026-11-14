@@ -274,7 +274,7 @@ extern "C" void MenuDrawVideoPc(MENU *menu) {
             if (!MenuPcStringsInitialized) {
                 MenuPcStringsInit();
             }
-            NuSPrintf(text, ExtrasNameFormatPc, MenuPcStrings[22], automatic);
+            NuSPrintf(text, "%s: %s", MenuPcStrings[22], automatic);
             break;
         }
         default:
@@ -300,7 +300,7 @@ extern "C" void MenuDrawVideoPc(MENU *menu) {
     if (!MenuPcStringsInitialized) {
         MenuPcStringsInit();
     }
-    NuSPrintf(text, ExtrasNameFormatPc, MenuPcStrings[23], value);
+    NuSPrintf(text, "%s: %s", MenuPcStrings[23], value);
     DrawMenuEntryEx(menu, text, (u8)((PcWindowOptions.option459 ? 255 : 64) * MenuAlpha));
     if (!PCDeviceBackend.HasRequestedModeChangedPc() && !MenuVideoOptionsPc.ChangedPc()) {
         if (!MenuPcStringsInitialized) {
@@ -329,7 +329,7 @@ extern "C" void MenuDrawEffectsPc(MENU *menu) {
             if (!MenuPcStringsInitialized) {
                 MenuPcStringsInit();
             }
-            NuSPrintf(text, ExtrasNameFormatPc, MenuPcStrings[30], value);
+            NuSPrintf(text, "%s: %s", MenuPcStrings[30], value);
         } else {
             if (!MenuPcStringsInitialized) {
                 MenuPcStringsInit();
@@ -338,7 +338,7 @@ extern "C" void MenuDrawEffectsPc(MENU *menu) {
             if (!MenuPcStringsInitialized) {
                 MenuPcStringsInit();
             }
-            NuSPrintf(text, ExtrasNameFormatPc, MenuPcStrings[30], value);
+            NuSPrintf(text, "%s: %s", MenuPcStrings[30], value);
         }
         DrawMenuEntryEx(menu, text, (u8)(MenuAlpha * 64.0));
     } else {
@@ -375,7 +375,7 @@ extern "C" void MenuDrawEffectsPc(MENU *menu) {
                 if (!MenuPcStringsInitialized) {
                     MenuPcStringsInit();
                 }
-                NuSPrintf(text, ExtrasNameFormatPc, MenuPcStrings[30], value);
+                NuSPrintf(text, "%s: %s", MenuPcStrings[30], value);
                 break;
             default:
                 if (!MenuPcStringsInitialized) {
@@ -385,7 +385,7 @@ extern "C" void MenuDrawEffectsPc(MENU *menu) {
                 if (!MenuPcStringsInitialized) {
                     MenuPcStringsInit();
                 }
-                NuSPrintf(text, ExtrasNameFormatPc, MenuPcStrings[30], value);
+                NuSPrintf(text, "%s: %s", MenuPcStrings[30], value);
                 break;
         }
         DrawMenuEntryEx(menu, text, (u8)((MenuCanChangeMultisamplePc() ? 255 : 64) * MenuAlpha));
@@ -404,7 +404,7 @@ extern "C" void MenuDrawEffectsPc(MENU *menu) {
     if (!MenuPcStringsInitialized) {
         MenuPcStringsInit();
     }
-    NuSPrintf(text, ExtrasNameFormatPc, MenuPcStrings[32], value);
+    NuSPrintf(text, "%s: %s", MenuPcStrings[32], value);
     DrawMenuEntryEx(menu, text, (u8)((MenuCanChangeShadowsPc() ? 255 : 64) * MenuAlpha));
     if (MenuVideoOptionsPc.bloom_enabled) {
         if (!MenuPcStringsInitialized) {
@@ -420,7 +420,7 @@ extern "C" void MenuDrawEffectsPc(MENU *menu) {
     if (!MenuPcStringsInitialized) {
         MenuPcStringsInit();
     }
-    NuSPrintf(text, ExtrasNameFormatPc, MenuPcStrings[33], value);
+    NuSPrintf(text, "%s: %s", MenuPcStrings[33], value);
     DrawMenuEntryEx(menu, text, 255);
     if (MenuVideoOptionsPc.speed_blur_enabled) {
         if (!MenuPcStringsInitialized) {
@@ -436,7 +436,7 @@ extern "C" void MenuDrawEffectsPc(MENU *menu) {
     if (!MenuPcStringsInitialized) {
         MenuPcStringsInit();
     }
-    NuSPrintf(text, ExtrasNameFormatPc, MenuPcStrings[35], value);
+    NuSPrintf(text, "%s: %s", MenuPcStrings[35], value);
     DrawMenuEntryEx(menu, text, 255);
     if (!PCDeviceBackend.HasRequestedModeChangedPc() && !MenuVideoOptionsPc.ChangedPc()) {
         if (!MenuPcStringsInitialized) {

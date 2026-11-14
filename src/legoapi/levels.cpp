@@ -106,11 +106,11 @@ extern "C" {
                     continue;
                 }
 
-                if (NuStrICmp(parser->word_buffer_ptr, LevelConfigKeywordDir) == 0) {
+                if (NuStrICmp(parser->word_buffer_ptr, "dir") == 0) {
                     if (NuFParGetWord(parser) != 0 && NuStrLen(parser->word_buffer_ptr) < 0x40) {
                         NuStrCpy(current_level->dir, parser->word_buffer_ptr);
                     }
-                } else if (NuStrICmp(parser->word_buffer_ptr, LevelConfigKeywordFile) == 0) {
+                } else if (NuStrICmp(parser->word_buffer_ptr, "file") == 0) {
                     if (NuFParGetWord(parser) != 0 && NuStrLen(parser->word_buffer_ptr) < 0x20) {
                         NuStrCpy(current_level->name, parser->word_buffer_ptr);
                     }
@@ -413,7 +413,7 @@ extern "C" {
     // Sets a level flag; a following "off" clears it again.
     static void LevelConfigSetFlag(NUFPAR_PC *parser, u32 flag) {
         levelconfig_ldata->flags |= flag;
-        if (NuFParGetWord(parser) != 0 && NuStrICmp(parser->word_buffer_ptr, LevelConfigOff) == 0) {
+        if (NuFParGetWord(parser) != 0 && NuStrICmp(parser->word_buffer_ptr, "off") == 0) {
             levelconfig_ldata->flags &= ~flag;
         }
     }
@@ -436,7 +436,7 @@ extern "C" {
                 levelconfig_ldata->flags &= ~0x800000u;
                 return;
             }
-            if (NuStrICmp(parser->word_buffer_ptr, LevelConfigOff) == 0) {
+            if (NuStrICmp(parser->word_buffer_ptr, "off") == 0) {
                 levelconfig_ldata->flags |= 0x800000;
             }
         }
@@ -620,9 +620,9 @@ extern "C" {
             return;
         }
         for (record = &table[0]; record->name != NULL; record++) {
-            if (levspl_i_start == -1 && NuStrICmp(record->name, LevelSplinesStartName) == 0) {
+            if (levspl_i_start == -1 && NuStrICmp(record->name, "start") == 0) {
                 levspl_i_start = LEVELSPLINECOUNT;
-            } else if (levspl_i_startcam == -1 && NuStrICmp(record->name, LevelSplinesStartCamName) == 0) {
+            } else if (levspl_i_startcam == -1 && NuStrICmp(record->name, "start_cam") == 0) {
                 levspl_i_startcam = LEVELSPLINECOUNT;
             }
             LEVELSPLINECOUNT++;

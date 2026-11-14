@@ -120,7 +120,7 @@ static i32 DefaultGizmo_GetOutput(GIZMO_PC *gizmo, i32 output, i32 mode) {
 static char *DefaultGizmo_GetOutputName(GIZMO_PC *gizmo, i32 output) {
     (void)gizmo;
     (void)output;
-    return (char *)GizmoDefaultOutputName;
+    return "default";
 }
 
 static i32 DefaultGizmo_GetNumOutputs(GIZMO_PC *gizmo) {
@@ -630,7 +630,7 @@ char *GizmoGetOutputName(void *system, void *gizmo_ptr, i32 output) {
             return get_name(gizmo, output);
         }
     }
-    return (char *)GizmoDefaultOutputName;
+    return "default";
 }
 
 void GizmoActivate(void *system, void *gizmo_ptr, i32 active, i32 mode) {
@@ -983,14 +983,14 @@ i32 Gizmo_FindNuSpecial(NUGSCN *scene, NUSPECIALHANDLE *special, char *name, i32
     }
     GizmoAppendSpecialErrorPrivate(system, name);
     if (prefix) {
-        GizmoAppendSpecialErrorPrivate(system, GizmoSpecialErrorTabPc);
+        GizmoAppendSpecialErrorPrivate(system, "\t\t");
         GizmoAppendSpecialErrorPrivate(system, prefix);
     }
     if (suffix) {
-        GizmoAppendSpecialErrorPrivate(system, GizmoSpecialErrorTabPc);
+        GizmoAppendSpecialErrorPrivate(system, "\t\t");
         GizmoAppendSpecialErrorPrivate(system, suffix);
     }
-    GizmoAppendSpecialErrorPrivate(system, PCWarningSuffix);
+    GizmoAppendSpecialErrorPrivate(system, "\n");
     return 0;
 }
 

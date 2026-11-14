@@ -301,7 +301,6 @@ STATIC_ASSERT(offsetof(WORLDINFO, ledges) == 0x50a8);
 STATIC_ASSERT(offsetof(WORLDINFO, ledge_count) == 0x50ac);
 STATIC_ASSERT(offsetof(LEVELDATA_PC, max_ledges) == 0xf9);
 extern "C" {
-    extern const char PCContextName_Ledge[6];
     extern char TextInputKeyNameTextPc7516c0[1];
     extern char *LedgeOutputNamePc;
 
@@ -537,7 +536,7 @@ extern "C" {
     char *LedgeOutputNamePc = "CanUse";
 #pragma data_seg()
 #pragma data_seg(".data$LedgeRegistryNamePc")
-    char *LedgeRegistryNamePc = (char *)PCContextName_Ledge;
+    char *LedgeRegistryNamePc = "Ledge";
 #pragma data_seg()
 #pragma data_seg(".data$LedgeAddTypePc")
     ADDGIZMOTYPE_PC LedgeAddTypePc = {0};

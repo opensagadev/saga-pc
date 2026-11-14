@@ -218,15 +218,6 @@ extern "C" {
     extern i32 edpart_set_debris;
     extern i32 edpart_set_part;
     extern i32 edpart_snap_enabled;
-    extern const char GameAudioName0075c27cPc[5];
-    extern const char GameAudioName0075c2acPc[12];
-    extern const char GameAudioName0075c2b8Pc[12];
-    extern const char GameAudioName0075c2c4Pc[15];
-    extern const char GameAudioName0075c2d4Pc[13];
-    extern const char GameAudioName0075c2e4Pc[12];
-    extern const char GameAudioName0075c2f0Pc[13];
-    extern const char GameAudioName0075c300Pc[8];
-    extern const char GameAudioName0075c308Pc[9];
     extern char KillPartsLegoSingleTextPc[11];
 #ifdef __cplusplus
 }

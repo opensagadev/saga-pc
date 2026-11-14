@@ -685,7 +685,7 @@ void DeactivateGameObject(GAMEOBJECT *object) {
     }
     object->flags_1fc_word &= ~0x1000u;
     if (object->ai_packet.creature_index != 0xff &&
-        AIScriptSetBaseScriptStateByName(&object->ai_packet.script_processor, (char *)GameObjectState_InActive) != 0) {
+        AIScriptSetBaseScriptStateByName(&object->ai_packet.script_processor, "InActive") != 0) {
         object->ai_packet.reset_mode = 0;
         WORLD->ai_sys->creatures[object->ai_packet.creature_index].activation_type = 2;
     } else {
@@ -3705,11 +3705,10 @@ void ResetAICreatures(AISYS_PC *system) {
             object->ai_packet.respawn_count = 0;
             object->ai_packet.reset_mode = 0;
             AIScriptProcessorInit(WORLD->ai_sys, &object->ai_packet, &object->ai_packet.script_processor, creature,
-                                  ((AI_CREATURE_RESET_VIEW_PC *)creature)->script_name,
-                                  (char *)GameObjectState_InActive, 1, NULL, NULL);
+                                  ((AI_CREATURE_RESET_VIEW_PC *)creature)->script_name, "InActive", 1, NULL, NULL);
             if (object->ai_packet.script_processor.state != NULL &&
                 object->ai_packet.script_processor.state->name != NULL &&
-                NuStrICmp(object->ai_packet.script_processor.state->name, GameObjectState_InActive) == 0) {
+                NuStrICmp(object->ai_packet.script_processor.state->name, "InActive") == 0) {
                 creature->activation_type = 2;
             }
             if (creature->activation_type != 0) {

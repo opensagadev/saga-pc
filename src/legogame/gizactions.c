@@ -63,8 +63,6 @@ GAMEOBJECT *ActivateCharacter(char *, NUVEC *, i32);
 void DeactivateCharacter(char *);
 void GizBuildIt_KillParts(GIZBUILDIT_s *);
 
-const char RaceOpponentDistancePrefix[9] = "distance";
-
 void GizAction_ActivateEffect(GIZFLOW_PC *unused0, FLOWBOX_PC *unused1, char **params, int count) {
     char *name;
     i32 visible;
@@ -85,17 +83,15 @@ void GizAction_ActivateEffect(GIZFLOW_PC *unused0, FLOWBOX_PC *unused1, char **p
     }
 }
 
-static const char GizActionPartEffectPrefixPc[12] = "part_effect";
-
 void GizAction_ActivatePartEffect(GIZFLOW_PC *unused0, FLOWBOX_PC *unused1, char **params, i32 count) {
     i32 i;
     char *name = NULL;
     for (i = 0; i < count; ++i) {
-        char *value = NuStrIStr(params[i], (char *)GizActionPartEffectPrefixPc);
+        char *value = NuStrIStr(params[i], "part_effect");
         if (value != NULL) {
-            name = value + NuStrLen(GizActionPartEffectPrefixPc) + 1;
+            name = value + NuStrLen("part_effect") + 1;
         } else {
-            NuStrICmp(params[i], AIActionFalseName);
+            NuStrICmp(params[i], "FALSE");
         }
     }
     if (name != NULL) {
@@ -110,10 +106,10 @@ void GizActions_SetVisibilityPc(GIZFLOW_PC *unused0, FLOWBOX_PC *unused1, char *
     i32 visible = 1;
     memset(&special, 0, sizeof(special));
     for (i = 0; i < count; ++i) {
-        char *value = NuStrIStr(params[i], (char *)AIScriptActionNameArgPrefix);
+        char *value = NuStrIStr(params[i], "name=");
         if (value != NULL) {
             NuSpecialFind(WORLD->current_gscn, &special, value + 5, 1);
-        } else if (NuStrIStr(params[i], (char *)AIActionFalseName) != NULL) {
+        } else if (NuStrIStr(params[i], "FALSE") != NULL) {
             visible = 0;
         }
     }
@@ -128,14 +124,14 @@ void GizActions_SetGizmoVisibilityPc(GIZFLOW_PC *flow, FLOWBOX_PC *unused, char 
     i32 type_id = -1;
     i32 visible = 1;
     for (i = 0; i < count; ++i) {
-        char *value = NuStrIStr(params[i], (char *)AIScriptActionNameArgPrefix);
+        char *value = NuStrIStr(params[i], "name=");
         if (value != NULL) {
             name = value + 5;
         } else {
-            value = NuStrIStr(params[i], (char *)AITransferLiteral7576f8);
+            value = NuStrIStr(params[i], "type=");
             if (value != NULL) {
                 type_id = GizmoGetTypeIDByName(flow->gizmo_sys, value + 5);
-            } else if (NuStrIStr(params[i], (char *)AIActionFalseName) != NULL) {
+            } else if (NuStrIStr(params[i], "FALSE") != NULL) {
                 visible = 0;
             }
         }
@@ -154,14 +150,14 @@ void GizActions_SetPickupVisibilityPc(GIZFLOW_PC *flow, FLOWBOX_PC *box, char **
     i32 visible = 1;
     GIZMOPICKUP_PC *pickup = NULL;
     for (i = 0; i < count; ++i) {
-        char *value = NuStrIStr(params[i], (char *)AIScriptActionNameArgPrefix);
+        char *value = NuStrIStr(params[i], "name=");
         if (value != NULL) {
-            value += NuStrLen(AIScriptActionNameArgPrefix);
+            value += NuStrLen("name=");
             pickup = GizmoPickup_FindByName(WORLD, value);
         } else if ((value = NuStrIStr(params[i], "id=")) != NULL) {
-            value += NuStrLen(AIActionIDName) + 1;
+            value += NuStrLen("id") + 1;
             id = NuAToI(value);
-        } else if (NuStrIStr(params[i], (char *)AIActionFalseName) != NULL) {
+        } else if (NuStrIStr(params[i], "FALSE") != NULL) {
             visible = 0;
         }
     }
@@ -189,10 +185,10 @@ void GizActions_TurnOnFlowBoxPc(GIZFLOW_PC *flow, FLOWBOX_PC *unused, char **par
     i32 enabled = 1;
     i32 i;
     for (i = 0; i < count; ++i) {
-        char *value = NuStrIStr(params[i], (char *)AIScriptActionNameArgPrefix);
+        char *value = NuStrIStr(params[i], "name=");
         if (value != NULL) {
             name = value + 5;
-        } else if (NuStrICmp(params[i], AIActionFalseName) == 0) {
+        } else if (NuStrICmp(params[i], "FALSE") == 0) {
             enabled = 0;
         }
     }
@@ -211,14 +207,14 @@ void GizActions_ActivateGizmoPc(GIZFLOW_PC *flow, FLOWBOX_PC *unused, char **par
     i32 type_id = -1;
     i32 active = 1;
     for (i = 0; i < count; ++i) {
-        char *value = NuStrIStr(params[i], (char *)AIScriptActionNameArgPrefix);
+        char *value = NuStrIStr(params[i], "name=");
         if (value != NULL) {
             name = value + 5;
         } else {
-            value = NuStrIStr(params[i], (char *)AITransferLiteral7576f8);
+            value = NuStrIStr(params[i], "type=");
             if (value != NULL) {
                 type_id = GizmoGetTypeIDByName(flow->gizmo_sys, value + 5);
-            } else if (NuStrIStr(params[i], (char *)AIActionFalseName) != NULL) {
+            } else if (NuStrIStr(params[i], "FALSE") != NULL) {
                 active = 0;
             }
         }
@@ -338,8 +334,8 @@ void GizAction_ChangeTechnoTgt(GIZFLOW_PC *unused0, FLOWBOX_PC *unused1, char **
         char *value = NuStrIStr(params[index], (char *)GizActionLiteral758a54);
         if (value != NULL) {
             techno_name = value + NuStrLen(GizActionLiteral758a54);
-        } else if ((value = NuStrIStr(params[index], (char *)AITransferLiteral757f28)) != NULL) {
-            target_name = value + NuStrLen(AITransferLiteral757f28);
+        } else if ((value = NuStrIStr(params[index], "target=")) != NULL) {
+            target_name = value + NuStrLen("target=");
         } else if (NuStrICmp(value, GizActionLiteral758a48) == 0) {
             movement = 1;
         } else if (NuStrICmp(value, GizActionLiteral758a3c) == 0) {
@@ -361,8 +357,7 @@ void GizAction_ChangeTechnoTgt(GIZFLOW_PC *unused0, FLOWBOX_PC *unused1, char **
     if (techno_name == NULL || (target_name == NULL && target_kind != -1)) {
         return;
     }
-    gizmo = GizmoFindByName(WORLD->gizmo_sys, GizmoGetTypeIDByName(WORLD->gizmo_sys, (char *)PCContextName_Techno),
-                            techno_name);
+    gizmo = GizmoFindByName(WORLD->gizmo_sys, GizmoGetTypeIDByName(WORLD->gizmo_sys, "Techno"), techno_name);
     techno = gizmo != NULL ? (TECHNO_s *)gizmo->object : NULL;
     if (techno == NULL) {
         return;
@@ -530,16 +525,14 @@ void GizActions_CompleteLevel(GIZFLOW_PC *unused0, FLOWBOX_PC *unused1, char **p
     }
 }
 
-static const char GizActionLevelPrefixPc[7] = "level=";
-
 void GizActions_GoToNewLevel(GIZFLOW_PC *unused0, FLOWBOX_PC *unused1, char **params, i32 count) {
     i32 i;
     LEVELDATA_PC *level = NULL;
     char *cutscene_name = NULL;
     for (i = 0; i < count; ++i) {
-        char *value = NuStrIStr(params[i], (char *)GizActionLevelPrefixPc);
+        char *value = NuStrIStr(params[i], "level=");
         if (value != NULL) {
-            value += NuStrLen(GizActionLevelPrefixPc);
+            value += NuStrLen("level=");
             level = Level_FindByName(value, NULL);
         } else {
             value = NuStrIStr(params[i], (char *)"cutscene=");
@@ -734,9 +727,9 @@ void GizActions_PlayCutscene(GIZFLOW_PC *unused0, FLOWBOX_PC *unused1, char **pa
     i32 i;
     char *name = NULL;
     for (i = 0; i < count; ++i) {
-        char *value = NuStrIStr(params[i], (char *)AIScriptActionNameArgPrefix);
+        char *value = NuStrIStr(params[i], "name=");
         if (value != NULL) {
-            name = value + NuStrLen(AIScriptActionNameArgPrefix);
+            name = value + NuStrLen("name=");
         }
     }
     NewCutScene(NULL, WorldInfo_CurrentlyActive()->cutscene_sys, name, 0);
@@ -808,13 +801,13 @@ void GizActions_EnableSock(GIZFLOW_PC *unused0, FLOWBOX_PC *unused1, char **para
         if (value != NULL) {
             index = (i32)NuAToF(value + 3);
         } else {
-            value = NuStrIStr(params[i], (char *)AIScriptActionNameArgPrefix);
+            value = NuStrIStr(params[i], "name=");
             if (value != NULL) {
                 SOCK_PC *sock = FindSock(WORLD->sock_sys, value + 5);
                 if (sock != NULL) {
                     index = sock - WORLD->sock_sys->socks;
                 }
-            } else if (NuStrIStr(params[i], (char *)AIActionFalseName) != NULL) {
+            } else if (NuStrIStr(params[i], "FALSE") != NULL) {
                 enabled = 0;
             }
         }

@@ -80,7 +80,7 @@ void Areas_ConfigureResidents(VARIPTR *buffer, VARIPTR *buffer_end) {
         NuStrCat(path, area->dir);
         NuStrCat(path, "\\");
         NuStrCat(path, area->file);
-        NuStrCat(path, AreaResidentsExtension);
+        NuStrCat(path, ".txt");
         parser = NuFParCreate(path);
         if (parser == NULL) {
             continue;
@@ -90,7 +90,7 @@ void Areas_ConfigureResidents(VARIPTR *buffer, VARIPTR *buffer_end) {
         while (NuFParGetLine(parser) != 0) {
             i32 character_id;
 
-            if (NuFParGetWord(parser) == 0 || NuStrICmp(parser->word_buffer_ptr, AreaConfigKeyword_character) != 0) {
+            if (NuFParGetWord(parser) == 0 || NuStrICmp(parser->word_buffer_ptr, "character") != 0) {
                 continue;
             }
             if (NuFParGetWord(parser) == 0) {
@@ -250,11 +250,11 @@ AREA_DATA_PC *Areas_ConfigureList(char *path, VARIPTR *buffer, VARIPTR *buffer_e
                     ++area_count;
                     ++area;
                 }
-            } else if (NuStrICmp(parser->word_buffer_ptr, LevelConfigKeywordDir) == 0) {
+            } else if (NuStrICmp(parser->word_buffer_ptr, "dir") == 0) {
                 if (NuFParGetWord(parser) != 0 && NuStrLen(parser->word_buffer_ptr) < 0x40) {
                     NuStrCpy(area->dir, parser->word_buffer_ptr);
                 }
-            } else if (NuStrICmp(parser->word_buffer_ptr, LevelConfigKeywordFile) == 0) {
+            } else if (NuStrICmp(parser->word_buffer_ptr, "file") == 0) {
                 if (NuFParGetWord(parser) != 0 && NuStrLen(parser->word_buffer_ptr) < 0x20) {
                     NuStrCpy(area->file, parser->word_buffer_ptr);
                 }
@@ -310,9 +310,9 @@ AREA_DATA_PC *Areas_ConfigureList(char *path, VARIPTR *buffer, VARIPTR *buffer_e
                 area->flags |= 0x2000;
             } else if (NuStrICmp(parser->word_buffer_ptr, "no_freeplay") == 0) {
                 area->flags |= 0x1000;
-            } else if (NuStrICmp(parser->word_buffer_ptr, AreaConfigKeyword_name_id) == 0) {
+            } else if (NuStrICmp(parser->word_buffer_ptr, "name_id") == 0) {
                 area->name_id = (i16)NuFParGetInt(parser);
-            } else if (NuStrICmp(parser->word_buffer_ptr, AreaConfigKeyword_text_id) == 0) {
+            } else if (NuStrICmp(parser->word_buffer_ptr, "text_id") == 0) {
                 area->text_id = (i16)NuFParGetInt(parser);
                 if (NuFParGetWord(parser) != 0) {
                     area->text_id_value = (u8)abs(NuAToI(parser->word_buffer_ptr));

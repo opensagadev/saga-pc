@@ -274,7 +274,7 @@ extern "C" i32 AreaGetKeyboardOverridePc(void) {
 
 extern "C" f32 fun_006d6360(f32 period, f32 time) {
     time /= period;
-    return 1.0f - 1.0f / NuPow(NuPrimTwo, time);
+    return 1.0f - 1.0f / NuPow(2.0f, time);
 }
 
 extern "C" void fun_006d63a0(i32 *value, i32 target, f32 rate) {

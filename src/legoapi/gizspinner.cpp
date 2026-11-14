@@ -97,9 +97,6 @@ struct SPINNER_HIT_FLAGS_STACK_PC { // size 0x4
 };
 
 extern "C" {
-    extern const char LevelObjectNamePc00754364[20];
-    extern const char LevelObjectNamePc00754378[21];
-    extern const char GizmoRegistrySpinnerNamePc[8];
     extern char TextInputKeyNameTextPc7516c0[1];
     extern char SpinnerOutputBufferPc[14];
     extern const f64 GameObjectNearFloorNoFloorHeight;
@@ -225,8 +222,8 @@ extern "C" i32 GizSpinner_Load(void *world_pointer, void *unused) {
     f32 rounded_point;
     (void)unused;
     if (world->spinners != NULL) {
-        NuSpecialFind(things_scene, (NUSPECIALHANDLE *)&thingsSceneBase, (char *)LevelObjectNamePc00754378, 0);
-        NuSpecialFind(things_scene, (NUSPECIALHANDLE *)&thingsSceneArm, (char *)LevelObjectNamePc00754364, 0);
+        NuSpecialFind(things_scene, (NUSPECIALHANDLE *)&thingsSceneBase, "Spinner_default_Base", 0);
+        NuSpecialFind(things_scene, (NUSPECIALHANDLE *)&thingsSceneArm, "Spinner_default_Arm", 0);
         if (world->spinner_count == 0) {
             version = EdFileReadInt();
             world->spinner_count = EdFileReadInt();
@@ -270,8 +267,8 @@ extern "C" i32 GizSpinner_Load(void *world_pointer, void *unused) {
                 }
                 GameAnimSet_RemoveAllObjects(world->spinners[index].anim_set);
                 if (version >= 5) {
-                    GizmoFileReadGameAnimSet(world->spinners[index].anim_set, world, NULL, (u8)version,
-                                             (char *)GizmoRegistrySpinnerNamePc, world->spinners[index].name);
+                    GizmoFileReadGameAnimSet(world->spinners[index].anim_set, world, NULL, (u8)version, "Spinner",
+                                             world->spinners[index].name);
                     for (object = world->spinners[index].anim_set->objects; object != NULL; object = object->next) {
                         if (world->spinners[index].primary_anim_obj == NULL) {
                             if (object != NULL && object->animation != NULL) {
@@ -1517,7 +1514,7 @@ extern "C" ADDGIZMOTYPE_PC *Spinner_RegisterGizmo(i32 type_id) {
     addtype->fns.post_load_fn = NULL;
     addtype->fns.add_level_sfx_fn = NULL;
     spinner_gizmotype_id = type_id;
-    addtype->name = (char *)GizmoRegistrySpinnerNamePc;
+    addtype->name = "Spinner";
     addtype->prefix = "";
     addtype->fns.options = 0x40;
     addtype->fns.get_max_gizmos_fn = (i32(*)(void *))GizSpinner_GetMaxGizmos;

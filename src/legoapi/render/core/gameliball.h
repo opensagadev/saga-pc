@@ -364,7 +364,6 @@ extern "C" {
     void DebrisTimeSlip(i32);
     void DebrisProcessTimeSlip(void);
     void TerrainDiagnosticNoOpPC(const void *context, ...);
-    extern const char TerrainSourcePathPc[53];
     extern const f32 TerrainUnusedSpatialBlockPc;
     extern const f32 TerrainBoundsMinimumPc;
     extern const f32 TerrainBoundsMaximumPc;

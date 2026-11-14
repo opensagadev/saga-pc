@@ -17,7 +17,6 @@ typedef struct STARWARS_PREPARE_PC {      // size 0x8
 
 extern STARWARS_PREPARE_PC starwars_prepareforspecialmove[8];
 extern AI_MID_SPECIAL_MOVE_PC starwars_midspecialmovefns[4];
-extern const char StarWarsTakeOverJumpPc[13];
 extern u32 LEGO_AIPATHCNX_BIGJUMP;
 extern u32 LEGO_AIPATHCNX_REQUIRESPERMISSION;
 extern u32 LEGO_AIPATHCNX_NO_DESTINATION_CHECK;
@@ -440,7 +439,7 @@ i32 StarWars_PreparingForSpecialMove(AIPACKET_PC *packet, APIOBJECT_PC *apiobjec
         capabilities = flags & packet->capabilities;
         if ((flags & 0x8000) != 0 && (owner->character_data->game_character->flags_090 & 0x40) == 0 &&
             owner->takeover_target == NULL && owner->character_context != 0x3c && (capabilities & 0xffff7fff) == 0) {
-            AIScriptSetBaseScriptStateByName(&apiobject->ai->script_processor, (char *)StarWarsTakeOverJumpPc);
+            AIScriptSetBaseScriptStateByName(&apiobject->ai->script_processor, "TakeOverJump");
             return 1;
         }
         if (capabilities != 0 && (flags & 0x98000000) == 0) {
@@ -826,4 +825,3 @@ STARWARS_PREPARE_PC starwars_prepareforspecialmove[8] = {
     {0x18, StarWars_PrepareHatch},          {0x40, StarWars_PrepareHoverTube},
     {0x1000, StarWars_PrepareBigJump},      {0x8000, StarWars_PrepareTakeOverJump},
     {0x20000000, StarWars_PrepareObstacle}, {0, NULL}};
-const char StarWarsTakeOverJumpPc[13] = "TakeOverJump";

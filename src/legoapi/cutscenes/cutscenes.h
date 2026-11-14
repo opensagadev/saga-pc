@@ -65,7 +65,6 @@ extern "C" {
     extern const char AreaConfigKeyword_area_end[9];
     extern const char AreaConfigKeyword_resident[9];
     extern const char AreaResidentsDirectory[8];
-    extern const char AreaResidentsExtension[5];
     extern const char LevelConfigKeyword_zspeed[7];
     void CutScenes_Destroy(struct cutsys_pc_s *);
 #ifdef __cplusplus
@@ -143,7 +142,6 @@ extern "C" {
     extern i32 stream_cut_issued;
     void CutScene_SnapToEnd(void *cut);
     i32 CutScene_IsSkippable(struct cutinfo_s *cut);
-    extern const char CutPlayerTextSeparatorPc[4];
 #ifdef __cplusplus
 }
 #endif

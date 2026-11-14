@@ -1361,7 +1361,7 @@ void APIObjectRegisterAnimRedirect(i32 (*callback)(char *, void *, CHARACTERANIM
     if (length < 64) {
         NuStrCpy(RedirectAnimDir, directory);
         if (directory[length - 1] != '\\') {
-            NuStrCat(RedirectAnimDir, WorldPathSeparator);
+            NuStrCat(RedirectAnimDir, "\\");
         }
     }
 }
@@ -1423,7 +1423,7 @@ void APILoadCharacterModels(APICHARACTERMODELLIST *list, i32 area_animation, VAR
         character = (CHARACTERDATA_PC *)&apicharsys->char_data[model_id];
         NuStrCpy(directory, "chars\\");
         NuStrCat(directory, character->dir);
-        NuStrCat(directory, WorldPathSeparator);
+        NuStrCat(directory, "\\");
         loaded = 0;
         if (apicharsys->playermodelids[model_id] != -1) {
             PCCharacterModelDiagnosticNoOp();
@@ -1441,9 +1441,9 @@ void APILoadCharacterModels(APICHARACTERMODELLIST *list, i32 area_animation, VAR
             NuStrCat(path, character->name);
             NuStrCat(directory_pack, character->dir);
             NuStrCpy(model_pack, path);
-            NuStrCat(model_pack, APIObjectPakExtension);
-            NuStrCat(directory_pack, APIObjectPakExtension);
-            NuStrCat(path, NuFileExt_ghg_PC);
+            NuStrCat(model_pack, ".fpk");
+            NuStrCat(directory_pack, ".fpk");
+            NuStrCat(path, ".ghg");
             model->hierarchy = NuGHGRead(path, buffer, buffer_end);
             if (model->hierarchy == NULL) {
                 ++list;
@@ -1552,7 +1552,7 @@ void APILoadCharacterModels(APICHARACTERMODELLIST *list, i32 area_animation, VAR
                 if ((animation->flags & 8) != 0 && model->model_data_c[animation->action_id] == NULL) {
                     NuStrCpy(path, directory);
                     NuStrCat(path, animation->name);
-                    NuStrCat(path, NuFileExt_bsa_PC);
+                    NuStrCat(path, ".bsa");
                     model->model_data_c[animation->action_id] = LoadAnim(path, area_animation, buffer, buffer_end);
                     if (model->model_data_c[animation->action_id] != NULL) {
                         model->animation_configs[animation->action_id] = animation;
@@ -1581,7 +1581,7 @@ void APILoadCharacterModels(APICHARACTERMODELLIST *list, i32 area_animation, VAR
                     if ((animation->flags & 8) != 0 && model->model_data_c[animation->action_id] == NULL) {
                         NuStrCpy(path, directory);
                         NuStrCat(path, animation->name);
-                        NuStrCat(path, NuFileExt_bsa_PC);
+                        NuStrCat(path, ".bsa");
                         model->model_data_c[animation->action_id] = LoadAnim(path, area_animation, buffer, buffer_end);
                         if (model->model_data_c[animation->action_id] != NULL) {
                             model->animation_configs[animation->action_id] = animation;

@@ -56,7 +56,6 @@ extern "C" {
     extern const char AICameraLiteral7580c0[9];
     extern const char AICameraLiteral7580b0[13];
     extern const char AICameraLiteral7580a4[9];
-    extern const char AITransferLiteral757f28[8];
     extern const char AITransferLiteral7583f8[8];
     extern const char AITransferLiteral7581d4[10];
     extern const char AITransferLiteral7581ec[9];

@@ -412,7 +412,6 @@ void FS_SetFileSelPathFromName(char *name) {
     }
 }
 
-extern const char EduiSourcePathPc[52];
 STATIC_ASSERT(offsetof(eduiitem_s, flags) == 0x11);
 STATIC_ASSERT(offsetof(eduiitem_s, selection_group) == 0x18);
 STATIC_ASSERT(offsetof(eduiitem_s, text) == 0x24);
@@ -425,7 +424,8 @@ extern i32 edui_filepick_listsize;
 
 static void eduiFilePickAllocDirListPc(void) {
     if (edui_filepick_listsize != 0 && dir_list == NULL) {
-        dir_list = NuAlloc(edui_filepick_listsize * 0x118, EduiSourcePathPc, 0x821);
+        dir_list =
+            NuAlloc(edui_filepick_listsize * 0x118, "d:\\projects\\game_saga\\gameapi.saga\\edtools\\edui.cpp", 0x821);
     }
 }
 
@@ -618,7 +618,7 @@ eduimenu_s *eduiMenuCreate(i32 x, i32 y, i32 width, i32 height, void *font, void
     } else {
         bytes = sizeof(eduimenu_s) + 1;
     }
-    menu = NuAlloc(bytes, EduiSourcePathPc, 0x3dd);
+    menu = NuAlloc(bytes, "d:\\projects\\game_saga\\gameapi.saga\\edtools\\edui.cpp", 0x3dd);
     if (menu != NULL) {
         memset(menu, 0, bytes);
         menu->x = x;
@@ -660,11 +660,11 @@ void eduiMenuHighlight(eduimenu_s *menu, eduiitem_s *item) {
 
 i32 eduiItemSetText(eduiitem_s *item, char *text) {
     if (item->text != NULL && NuStrLen(item->text) < NuStrLen(text)) {
-        NuFree(item->text, EduiSourcePathPc, 0x516);
+        NuFree(item->text, "d:\\projects\\game_saga\\gameapi.saga\\edtools\\edui.cpp", 0x516);
         item->text = NULL;
     }
     if (item->text == NULL) {
-        item->text = NuAlloc(NuStrLen(text) + 1, EduiSourcePathPc, 0x51b);
+        item->text = NuAlloc(NuStrLen(text) + 1, "d:\\projects\\game_saga\\gameapi.saga\\edtools\\edui.cpp", 0x51b);
     }
     if (item->text != NULL) {
         NuStrCpy(item->text, text);
@@ -718,7 +718,7 @@ void eduiMenuDestroy(eduimenu_s *menu) {
             menu->child->parent = NULL;
         }
         eduiMenuDestroyItems(menu);
-        NuFree(menu, EduiSourcePathPc, 0x3d0);
+        NuFree(menu, "d:\\projects\\game_saga\\gameapi.saga\\edtools\\edui.cpp", 0x3d0);
     }
 }
 
@@ -1411,7 +1411,8 @@ void edmainInitEx(void *font, char *configuration_file, eduiiattr_s *colours, i3
 void eduiGradStageSetHSV(edui_gradient_node_s *stage, f32 hue, f32 saturation, f32 value);
 
 edui_gradient_node_s *eduiGradStageAdd(edui_gradient_pick_s *item, f32 time, f32 hue, f32 saturation, f32 value) {
-    edui_gradient_node_s *stage = NuAlloc(sizeof(edui_gradient_node_s), EduiSourcePathPc, 0xa37);
+    edui_gradient_node_s *stage =
+        NuAlloc(sizeof(edui_gradient_node_s), "d:\\projects\\game_saga\\gameapi.saga\\edtools\\edui.cpp", 0xa37);
     edui_gradient_node_s *previous;
     edui_gradient_node_s *next;
     if (stage) {
@@ -1443,7 +1444,8 @@ edui_gradient_node_s *eduiGradStageAdd(edui_gradient_pick_s *item, f32 time, f32
 i32 eduicbProcessGradPickItem(eduimenu_s *menu, eduiitem_s *item, f32 delta_time, FRAME_PAD_PC *pad);
 
 eduiitem_s *eduiItemGradPickCreate(u32 data, void *colours, void *callback, char *text) {
-    edui_gradient_pick_s *item = NuAlloc(sizeof(edui_gradient_pick_s), EduiSourcePathPc, 0xaa2);
+    edui_gradient_pick_s *item =
+        NuAlloc(sizeof(edui_gradient_pick_s), "d:\\projects\\game_saga\\gameapi.saga\\edtools\\edui.cpp", 0xaa2);
     if (item) {
         memset(item, 0, sizeof(edui_gradient_pick_s));
         item->base.data = data;
@@ -1627,17 +1629,17 @@ static void EduiClearInteractionsPc(eduimenu_s *menu, eduiitem_s *item);
 void eduicbItemDestroy(eduimenu_s *menu, eduiitem_s *item) {
     EduiClearInteractionsPc(menu, item);
     if (item->text != NULL) {
-        NuFree(item->text, EduiSourcePathPc, 0x29e);
+        NuFree(item->text, "d:\\projects\\game_saga\\gameapi.saga\\edtools\\edui.cpp", 0x29e);
         item->text = NULL;
     }
-    NuFree(item, EduiSourcePathPc, 0x2a2);
+    NuFree(item, "d:\\projects\\game_saga\\gameapi.saga\\edtools\\edui.cpp", 0x2a2);
     menu->field_0c = menu->first;
 }
 
 void eduicbItemSliderDestroy(eduimenu_s *menu, eduiitem_s *item) {
     edui_slider_s *slider = (edui_slider_s *)item;
     if (slider->format != NULL) {
-        NuFree(slider->format, EduiSourcePathPc, 0xfbc);
+        NuFree(slider->format, "d:\\projects\\game_saga\\gameapi.saga\\edtools\\edui.cpp", 0xfbc);
         slider->format = NULL;
     }
     eduicbItemDestroy(menu, item);
@@ -1658,7 +1660,7 @@ static void EduiClearInteractionsPc(eduimenu_s *menu, eduiitem_s *item) {
 }
 
 eduiitem_s *eduiItemSelCreate(u32 data, void *colours, i32 selected, i32 group, void *callback, char *text) {
-    edui_sel_s *item = NuAlloc(sizeof(edui_sel_s), EduiSourcePathPc, 0x53b);
+    edui_sel_s *item = NuAlloc(sizeof(edui_sel_s), "d:\\projects\\game_saga\\gameapi.saga\\edtools\\edui.cpp", 0x53b);
     if (item) {
         memset(item, 0, sizeof(edui_sel_s));
         item->base.data = data;
@@ -1709,10 +1711,10 @@ void eduiItemSliderSetFmt(edui_slider_s *item, char *format) {
         if (NuStrLen(item->format) >= NuStrLen(format)) {
             goto copy;
         }
-        NuFree(item->format, EduiSourcePathPc, 0xfa6);
-        item->format = NuAlloc(NuStrLen(format) + 1, EduiSourcePathPc, 0xfa7);
+        NuFree(item->format, "d:\\projects\\game_saga\\gameapi.saga\\edtools\\edui.cpp", 0xfa6);
+        item->format = NuAlloc(NuStrLen(format) + 1, "d:\\projects\\game_saga\\gameapi.saga\\edtools\\edui.cpp", 0xfa7);
     } else {
-        item->format = NuAlloc(NuStrLen(format) + 1, EduiSourcePathPc, 0xfab);
+        item->format = NuAlloc(NuStrLen(format) + 1, "d:\\projects\\game_saga\\gameapi.saga\\edtools\\edui.cpp", 0xfab);
     }
 copy:
     NuStrCpy(item->format, format);
@@ -2325,7 +2327,8 @@ static i32 eduicbRenderExpander(eduimenu_s *menu, eduiitem_s *item, i32 x, i32 y
 }
 
 eduiitem_s *eduiItemExpanderCreate(u32 data, const void *colours, void *callback, char *text) {
-    EDUI_EXPANDER_PC *item = NuAlloc(sizeof(EDUI_EXPANDER_PC), EduiSourcePathPc, 0x1473);
+    EDUI_EXPANDER_PC *item =
+        NuAlloc(sizeof(EDUI_EXPANDER_PC), "d:\\projects\\game_saga\\gameapi.saga\\edtools\\edui.cpp", 0x1473);
     if (item != NULL) {
         memset(item, 0, sizeof(EDUI_EXPANDER_PC));
         item->base.data = data;
@@ -2356,11 +2359,12 @@ extern void NuRndrTriStrip2di(i32 *positions, f32 *uvs, i32 count, i32 colour, N
 
 i32 eduiItemPropSetText(edui_prop_s *item, char *text) {
     if (item->property_text && NuStrLen(item->property_text) < NuStrLen(text)) {
-        NuFree(item->property_text, EduiSourcePathPc, 0x1108);
+        NuFree(item->property_text, "d:\\projects\\game_saga\\gameapi.saga\\edtools\\edui.cpp", 0x1108);
         item->property_text = NULL;
     }
     if (item->property_text == NULL) {
-        item->property_text = NuAlloc(NuStrLen(text) + 1, EduiSourcePathPc, 0x110d);
+        item->property_text =
+            NuAlloc(NuStrLen(text) + 1, "d:\\projects\\game_saga\\gameapi.saga\\edtools\\edui.cpp", 0x110d);
     }
     if (item->property_text) {
         NuStrCpy(item->property_text, text);
@@ -2576,14 +2580,14 @@ static i32 eduicbInteractProp(edui_interact_s *interact) {
 static void eduicbItemDestroyProp(eduimenu_s *menu, eduiitem_s *item) {
     edui_prop_s *property = (edui_prop_s *)item;
     if (item->text) {
-        NuFree(item->text, EduiSourcePathPc, 0x1313);
+        NuFree(item->text, "d:\\projects\\game_saga\\gameapi.saga\\edtools\\edui.cpp", 0x1313);
         item->text = NULL;
     }
     if (property->property_text) {
-        NuFree(property->property_text, EduiSourcePathPc, 0x1318);
+        NuFree(property->property_text, "d:\\projects\\game_saga\\gameapi.saga\\edtools\\edui.cpp", 0x1318);
         property->property_text = NULL;
     }
-    NuFree(item, EduiSourcePathPc, 0x131c);
+    NuFree(item, "d:\\projects\\game_saga\\gameapi.saga\\edtools\\edui.cpp", 0x131c);
     menu->field_0c = menu->first;
 }
 
@@ -2758,7 +2762,8 @@ static i32 eduicbRenderProp(eduimenu_s *menu, eduiitem_s *item, i32 x, i32 y, i3
 
 eduiitem_s *eduiItemPropCreateEx(u32 data, void *colours, void *selected, void *changed, void *button, i32 button_type,
                                  char *text, char *value, i32 extra_data) {
-    edui_prop_s *item = NuAlloc(sizeof(edui_prop_s), EduiSourcePathPc, 0x1327);
+    edui_prop_s *item =
+        NuAlloc(sizeof(edui_prop_s), "d:\\projects\\game_saga\\gameapi.saga\\edtools\\edui.cpp", 0x1327);
     if (item) {
         memset(item, 0, sizeof(edui_prop_s));
         item->base.data = data;
@@ -2921,7 +2926,8 @@ static i32 eduicbRenderFilter(eduimenu_s *menu, eduiitem_s *item, i32 x, i32 y, 
 }
 
 eduiitem_s *eduiItemFilterCreate(u32 data, void *colours, char *text, char *value) {
-    edui_filter_s *item = NuAlloc(sizeof(edui_filter_s), EduiSourcePathPc, 0x151a);
+    edui_filter_s *item =
+        NuAlloc(sizeof(edui_filter_s), "d:\\projects\\game_saga\\gameapi.saga\\edtools\\edui.cpp", 0x151a);
     if (item) {
         memset(item, 0, sizeof(edui_filter_s));
         item->prop.base.data = data;
@@ -3027,7 +3033,8 @@ i32 eduicbRenderColourPick(eduimenu_s *menu, eduiitem_s *item, i32 x, i32 y, i32
 i32 eduicbInteractColourPick(edui_interact_s *interact);
 
 eduiitem_s *eduiItemColourPickCreate(u32 data, void *colours, void *callback, char *text) {
-    edui_colour_pick_s *item = NuAlloc(sizeof(edui_colour_pick_s), EduiSourcePathPc, 0xb6c);
+    edui_colour_pick_s *item =
+        NuAlloc(sizeof(edui_colour_pick_s), "d:\\projects\\game_saga\\gameapi.saga\\edtools\\edui.cpp", 0xb6c);
     if (item) {
         memset(item, 0, sizeof(edui_colour_pick_s));
         item->base.data = data;
@@ -3128,7 +3135,8 @@ static i32 eduicbProcessTexturePick(eduimenu_s *menu, eduiitem_s *item, f32 delt
 }
 
 eduiitem_s *eduiItemTexturePickCreate(u32 data, void *colours, void *callback, char *text) {
-    edui_texture_pick_s *item = NuAlloc(sizeof(edui_texture_pick_s), EduiSourcePathPc, 0xce1);
+    edui_texture_pick_s *item =
+        NuAlloc(sizeof(edui_texture_pick_s), "d:\\projects\\game_saga\\gameapi.saga\\edtools\\edui.cpp", 0xce1);
     if (item) {
         memset(item, 0, sizeof(edui_texture_pick_s));
         item->base.data = data;
@@ -3158,7 +3166,8 @@ void nugraphInit(nugraph_s *graph);
 i32 nugraphCalcCurve(nugraph_s *graph, i32 point_count);
 
 eduiitem_s *eduiItemGraphCreate(u32 data, void *colours, void *callback, nugraph_s *graph, i32 width, i32 height) {
-    edui_graph_s *item = NuAlloc(sizeof(edui_graph_s), EduiSourcePathPc, 0xd9f);
+    edui_graph_s *item =
+        NuAlloc(sizeof(edui_graph_s), "d:\\projects\\game_saga\\gameapi.saga\\edtools\\edui.cpp", 0xd9f);
     i32 i;
     if (item) {
         memset(item, 0, sizeof(edui_graph_s));
@@ -3193,7 +3202,8 @@ eduiitem_s *eduiItemGraphCreate(u32 data, void *colours, void *callback, nugraph
 
 eduiitem_s *eduiItemSliderCreate(u32 data, void *colours, i32 group, void *callback, f32 minimum, f32 range, f32 value,
                                  char *text) {
-    edui_slider_s *item = NuAlloc(sizeof(edui_slider_s), EduiSourcePathPc, 0xfd4);
+    edui_slider_s *item =
+        NuAlloc(sizeof(edui_slider_s), "d:\\projects\\game_saga\\gameapi.saga\\edtools\\edui.cpp", 0xfd4);
     if (item) {
         memset(item, 0, sizeof(edui_slider_s));
         item->base.data = data;
@@ -3232,7 +3242,8 @@ eduiitem_s *eduiItemSliderCreateInt(u32 data, void *colours, i32 group, void *ca
 
 eduiitem_s *eduiItemColourSliderCreate(u32 data, void *colours, i32 group, void *callback, f32 minimum, f32 range,
                                        f32 value, u8 red, u8 green, u8 blue, char *text) {
-    edui_colour_slider_s *item = NuAlloc(sizeof(edui_colour_slider_s), EduiSourcePathPc, 0x1a53);
+    edui_colour_slider_s *item =
+        NuAlloc(sizeof(edui_colour_slider_s), "d:\\projects\\game_saga\\gameapi.saga\\edtools\\edui.cpp", 0x1a53);
     if (item) {
         memset(item, 0, sizeof(edui_colour_slider_s));
         item->base.base.data = data;
@@ -3502,17 +3513,18 @@ void eduiItemTextPickSetFmt(edui_textpicker_s *item, char *format) {
         if (NuStrLen(item->format) >= NuStrLen(format)) {
             goto copy;
         }
-        NuFree(item->format, EduiSourcePathPc, 0x630);
-        item->format = NuAlloc(NuStrLen(format) + 1, EduiSourcePathPc, 0x631);
+        NuFree(item->format, "d:\\projects\\game_saga\\gameapi.saga\\edtools\\edui.cpp", 0x630);
+        item->format = NuAlloc(NuStrLen(format) + 1, "d:\\projects\\game_saga\\gameapi.saga\\edtools\\edui.cpp", 0x631);
     } else {
-        item->format = NuAlloc(NuStrLen(format) + 1, EduiSourcePathPc, 0x635);
+        item->format = NuAlloc(NuStrLen(format) + 1, "d:\\projects\\game_saga\\gameapi.saga\\edtools\\edui.cpp", 0x635);
     }
 copy:
     NuStrCpy(item->format, format);
 }
 
 eduiitem_s *eduiItemTextPickCreate(u32 data, void *colours, void *callback, char *text) {
-    edui_textpicker_s *item = NuAlloc(sizeof(edui_textpicker_s), EduiSourcePathPc, 0x63d);
+    edui_textpicker_s *item =
+        NuAlloc(sizeof(edui_textpicker_s), "d:\\projects\\game_saga\\gameapi.saga\\edtools\\edui.cpp", 0x63d);
     if (item) {
         memset(item, 0, sizeof(edui_textpicker_s));
         item->base.data = data;
@@ -3540,17 +3552,18 @@ void eduiItemFilePickSetFmt(edui_file_pick_s *item, char *format) {
         if (NuStrLen(item->format) >= NuStrLen(format)) {
             goto copy;
         }
-        NuFree(item->format, EduiSourcePathPc, 0x881);
-        item->format = NuAlloc(NuStrLen(format) + 1, EduiSourcePathPc, 0x882);
+        NuFree(item->format, "d:\\projects\\game_saga\\gameapi.saga\\edtools\\edui.cpp", 0x881);
+        item->format = NuAlloc(NuStrLen(format) + 1, "d:\\projects\\game_saga\\gameapi.saga\\edtools\\edui.cpp", 0x882);
     } else {
-        item->format = NuAlloc(NuStrLen(format) + 1, EduiSourcePathPc, 0x886);
+        item->format = NuAlloc(NuStrLen(format) + 1, "d:\\projects\\game_saga\\gameapi.saga\\edtools\\edui.cpp", 0x886);
     }
 copy:
     NuStrCpy(item->format, format);
 }
 
 eduiitem_s *eduiItemFilePickCreate(u32 data, void *colours, void *callback, char *text) {
-    edui_file_pick_s *item = NuAlloc(sizeof(edui_file_pick_s), EduiSourcePathPc, 0x950);
+    edui_file_pick_s *item =
+        NuAlloc(sizeof(edui_file_pick_s), "d:\\projects\\game_saga\\gameapi.saga\\edtools\\edui.cpp", 0x950);
     if (item) {
         memset(item, 0, sizeof(edui_file_pick_s));
         item->base.data = data;
@@ -3855,7 +3868,7 @@ static void EduiDrawDisabledItemPc(eduiitem_s *item, i32 x, i32 y, i32 width, i3
 void eduicbItemTextPickDestroy(eduimenu_s *menu, eduiitem_s *item) {
     edui_textpicker_s *picker = (edui_textpicker_s *)item;
     if (picker->format != NULL) {
-        NuFree(picker->format, EduiSourcePathPc, 0x623);
+        NuFree(picker->format, "d:\\projects\\game_saga\\gameapi.saga\\edtools\\edui.cpp", 0x623);
         picker->format = NULL;
     }
     eduicbItemDestroy(menu, item);
@@ -3864,7 +3877,7 @@ void eduicbItemTextPickDestroy(eduimenu_s *menu, eduiitem_s *item) {
 void eduicbItemFilePickDestroy(eduimenu_s *menu, eduiitem_s *item) {
     edui_file_pick_s *picker = (edui_file_pick_s *)item;
     if (picker->format != NULL) {
-        NuFree(picker->format, EduiSourcePathPc, 0x946);
+        NuFree(picker->format, "d:\\projects\\game_saga\\gameapi.saga\\edtools\\edui.cpp", 0x946);
         picker->format = NULL;
     }
     eduicbItemDestroy(menu, item);
@@ -5020,7 +5033,7 @@ i32 ProcessFileSel3(f32 elapsed, FRAME_PAD_PC *pad) {
         if (separator != NULL) {
             separator[1] = '\0';
         } else {
-            NuStrCat(FS_Path, WorldPathSeparator);
+            NuStrCat(FS_Path, "\\");
             FS_ShowVolumes = 1;
         }
         FS_RefreshDir = 1;
@@ -5042,16 +5055,16 @@ i32 ProcessFileSel3(f32 elapsed, FRAME_PAD_PC *pad) {
                 if (separator != NULL) {
                     separator[1] = '\0';
                 } else {
-                    NuStrCat(FS_Path, WorldPathSeparator);
+                    NuStrCat(FS_Path, "\\");
                     FS_ShowVolumes = 1;
                 }
             } else {
                 length = NuStrLen(FS_Path);
                 if (length != 0 && FS_Path[length - 1] != '\\') {
-                    NuStrCat(FS_Path, WorldPathSeparator);
+                    NuStrCat(FS_Path, "\\");
                 }
                 NuStrCat(FS_Path, FS_CurrentCursorPos + 7);
-                NuStrCat(FS_Path, WorldPathSeparator);
+                NuStrCat(FS_Path, "\\");
             }
             FS_LastFileName[0] = '\0';
             FS_RefreshDir = 1;

@@ -410,13 +410,7 @@ char SpinnerOutputBufferPc[14] = "100% Complete";
 #pragma data_seg(".data$TurretOutputBufferPc")
 char TurretOutputBufferPc[32] = {0};
 #pragma data_seg()
-#pragma const_seg(".rdata$GizmoRegistrySpinnerNamePc")
-const char GizmoRegistrySpinnerNamePc[] = "Spinner";
-#pragma const_seg()
-#pragma const_seg(".rdata$GizmoRegistryGizTurretsNamePc")
-const char GizmoRegistryGizTurretsNamePc[] = "GizTurret";
-#pragma const_seg()
-char *GizmoRegistryGizTurretsNamePtrPc = (char *)GizmoRegistryGizTurretsNamePc;
+char *GizmoRegistryGizTurretsNamePtrPc = "GizTurret";
 
 void SetLevelExBlowupFlags(u32 flags) {
     EXBLOWUPFLAGS = flags;

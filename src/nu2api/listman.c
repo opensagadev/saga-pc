@@ -198,7 +198,8 @@ NULSTHDR *NuLstCreate(i32 element_count, i32 element_size) {
     NULNKHDR *next;
 
     element_size_total = element_size + sizeof(NULNKHDR);
-    list = NuAlloc(element_count * element_size_total + sizeof(NULSTHDR), NuLstCreateTag, 0x67);
+    list = NuAlloc(element_count * element_size_total + sizeof(NULSTHDR),
+                   "d:\\projects\\game_saga\\nu2api.saga\\gamelib\\listman.c", 0x67);
     if (list != NULL) {
         list->free = (NULNKHDR *)(list + 1);
         list->head = NULL;
@@ -438,5 +439,5 @@ NULSTHDR *NuLstCreateBuff(i32 count, i32 size, VARIPTR *buffer, VARIPTR end, i32
 }
 
 void NuLstDestroy(NULSTHDR *list) {
-    NuFree(list, NuLstCreateTag, 0xe8);
+    NuFree(list, "d:\\projects\\game_saga\\nu2api.saga\\gamelib\\listman.c", 0xe8);
 }

@@ -34,18 +34,14 @@ extern "C" {
     extern void *PlayerBlockActionInfoPc;
     f32 LoadPermFadeAlpha(f32 t, f32 duration);
     extern const f32 PermLegalScale;
-    extern const char PermLegalBase[6];
-    extern const char PermLegalSeparator[2];
     extern const char PermLegalSpanish[11];
     extern const char PermLegalFrench[10];
     extern const char PermLegalUS[4];
-    extern const char PermLegalDirectoryPc[];
     extern const char PermLegalPcPrefixPc[];
     void LoadPermLoadLegalTexture(void);
     void StartPerm(void);
     void EndPerm(void);
     void LoadPermData(void *process);
-    extern const char NuFileExt_dds_PC[5];
     extern const char NuFileExt_at3_PC[5];
     extern const char NuFileExt_psc_PC[5];
     extern const char NuFileExt_phg_PC[5];

@@ -133,8 +133,6 @@ extern "C" void PCDeviceSetTextureStageState(u32 stage, i32 state, u32 value) {
         PCDeviceBackend.device->methods->set_texture_stage_state(PCDeviceBackend.device, stage, state, value);
 }
 
-extern "C" const char PCDeviceTextureCubeSourcePathPc[];
-
 extern "C" void PCDeviceCreateTextureFromFilePc(char *path, PC_TEXTURE_RESOURCE_PC **texture) {
     NudxFw_D3DBeginCriticalSection();
     u32 size = static_cast<u32>(NuFileSize(path));
@@ -144,7 +142,7 @@ extern "C" void PCDeviceCreateTextureFromFilePc(char *path, PC_TEXTURE_RESOURCE_
             PCDeviceLastResult =
                 D3DXCreateTextureFromFileInMemory(reinterpret_cast<IDirect3DDevice9 *>(PCDeviceBackend.device), data,
                                                   size, reinterpret_cast<IDirect3DTexture9 **>(texture));
-            NuFree(data, PCDeviceTextureCubeSourcePathPc, 1032);
+            NuFree(data, ".\\d3dCalls.cpp", 1032);
         }
     }
     NudxFw_D3DEndCriticalSection();
@@ -334,7 +332,7 @@ extern "C" void PCDeviceCreateCubeTextureFromFile(char *path, PC_TEXTURE_RESOURC
             PCDeviceLastResult =
                 D3DXCreateCubeTextureFromFileInMemory(reinterpret_cast<IDirect3DDevice9 *>(PCDeviceBackend.device),
                                                       data, size, reinterpret_cast<IDirect3DCubeTexture9 **>(resource));
-            NuFree(data, PCDeviceTextureCubeSourcePathPc, 1116);
+            NuFree(data, ".\\d3dCalls.cpp", 1116);
         }
     }
 }

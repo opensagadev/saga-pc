@@ -56,13 +56,11 @@ typedef struct FILE_DIRECTORY_HOST_ENTRY_PC { // size 0x144
 } FILE_DIRECTORY_HOST_ENTRY_PC;
 
 extern i32 FileDirectoryHostOpenPc(char *path);
-extern const char FileDirectorySourceNamePc[56];
 char *FileDirectoryPathSlotsPc[16] = {0};
 HANDLE FileDirectoryHostHandlesPc[16] = {0};
 WIN32_FIND_DATAA FileDirectoryFindDataPc[16] = {0};
 i32 FileDirectoryOpenCountPc = 0;
 NUFILE_DEVICE *FileDirectoryDefaultDevicePc = &host_device;
-const char FileDirectorySourceNamePc[56] = "d:\\projects\\game_saga\\nu2api.saga\\nucore\\pc\\nufile_pc.c";
 void FileDirectoryErrorPc(i32 error);
 
 i32 NuFileExists(char *filepath) {
@@ -270,12 +268,13 @@ i32 FileDirectoryHostOpenPc(char *path) {
         strcat(search, "\\");
     }
     strcat(search, "*.*");
-    FileDirectoryPathSlotsPc[slot] = NuAlloc(strlen(search) + 4, FileDirectorySourceNamePc, 0x21a);
+    FileDirectoryPathSlotsPc[slot] =
+        NuAlloc(strlen(search) + 4, "d:\\projects\\game_saga\\nu2api.saga\\nucore\\pc\\nufile_pc.c", 0x21a);
     strcpy(FileDirectoryPathSlotsPc[slot], search);
     ++FileDirectoryOpenCountPc;
     FileDirectoryHostHandlesPc[slot] = FindFirstFileA(FileDirectoryPathSlotsPc[slot], &FileDirectoryFindDataPc[slot]);
     if (FileDirectoryHostHandlesPc[slot] == INVALID_HANDLE_VALUE) {
-        NuFree(FileDirectoryPathSlotsPc[slot], FileDirectorySourceNamePc, 0x222);
+        NuFree(FileDirectoryPathSlotsPc[slot], "d:\\projects\\game_saga\\nu2api.saga\\nucore\\pc\\nufile_pc.c", 0x222);
         --FileDirectoryOpenCountPc;
         /* Clears the slot before this one (slot 0 hits the word in front of the table). */
         FileDirectoryPathSlotsPc[slot - 1] = NULL;
@@ -286,7 +285,7 @@ i32 FileDirectoryHostOpenPc(char *path) {
 
 i32 FileDirectoryHostClosePc(i32 slot) {
     HANDLE handle;
-    NuFree(FileDirectoryPathSlotsPc[slot], FileDirectorySourceNamePc, 0x22e);
+    NuFree(FileDirectoryPathSlotsPc[slot], "d:\\projects\\game_saga\\nu2api.saga\\nucore\\pc\\nufile_pc.c", 0x22e);
     handle = FileDirectoryHostHandlesPc[slot];
     /* Clears the slot before this one, as in FileDirectoryHostOpenPc. */
     FileDirectoryPathSlotsPc[slot - 1] = NULL;

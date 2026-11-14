@@ -12,8 +12,6 @@ extern NULISTLNK *NuLinkedListGetPrev(NULISTHDR *list, NULISTLNK *node);
 
 extern void EdFileWriteUnsignedChar(u8);
 
-extern const char GameAIEveryonePc[];
-
 /* Script diagnostics, defined variadic at the end of this unit (saga.h leaves their prototypes to this file). */
 void AIScriptMissingStateDiagnostic(const char *format, ...);
 void AIScriptMissingStateDiagnosticAlternate(const char *format, ...);
@@ -111,7 +109,6 @@ STATIC_ASSERT(offsetof(EDAICREATURE_s, min_view_height) == 0xa8);
 STATIC_ASSERT(offsetof(EDLOCATOR_s, path_check.path) == 0x2c);
 
 extern void AiRndrLine3d(NURND_VERTEX3D_PC *, NUMTL *, NUMTX *);
-extern const f32 InitOnceHalf;
 
 /* Path-build view of the runtime path system (AIPATHSYS_PC is opaque here). */
 typedef struct AI_PATH_BUILD_SYSTEM_PC {   // size 0x10
@@ -739,29 +736,6 @@ STATIC_ASSERT(offsetof(EDAIPATHCHECK_s, width) == 0x14);
 STATIC_ASSERT(offsetof(EDAIPATHCHECK_s, angle) == 0x18);
 
 /* NUL-terminated instruction strings, each in its own section to keep the data layout. */
-#pragma const_seg(".rdata$AiAntinodeRenderNearestPc")
-const char AiAntinodeRenderNearestPc[] = "SELECT - Select nearest";
-#pragma const_seg()
-
-#pragma const_seg(".rdata$AiAntinodeRenderMovePc")
-const char AiAntinodeRenderMovePc[] = "X - Move selected/Adjust size";
-#pragma const_seg()
-
-#pragma const_seg(".rdata$AiAntinodeRenderRotateRightPc")
-const char AiAntinodeRenderRotateRightPc[] = "LRIGHT - Rotate right";
-#pragma const_seg()
-
-#pragma const_seg(".rdata$AiAntinodeRenderRotateLeftPc")
-const char AiAntinodeRenderRotateLeftPc[] = "LLEFT - Rotate left";
-#pragma const_seg()
-
-#pragma const_seg(".rdata$AiAntinodeRenderDecreaseRadiusPc")
-const char AiAntinodeRenderDecreaseRadiusPc[] = "LLEFT - Decrease radius";
-#pragma const_seg()
-
-#pragma const_seg(".rdata$AiAntinodeRenderIncreaseRadiusPc")
-const char AiAntinodeRenderIncreaseRadiusPc[] = "LRIGHT - Increase radius, %.2f";
-#pragma const_seg()
 
 STATIC_ASSERT(offsetof(AIEDITOR_RENDER_STATE, pad_buttons) == 0xc3938);
 
@@ -822,8 +796,6 @@ eduimenu_s *locatorEditor_Process(FRAME_PAD_PC *pad);
 
 #define POW5(x) (POW2(x) * POW3(x))
 
-extern const char Text_UnknownText[2];
-
 extern NUFPCOMJMP AIScriptStateCommandsPc[5];
 
 typedef struct aiscript_const_record_pc_s { // size 0x24
@@ -866,7 +838,7 @@ static NUFPCOMJMP AIScriptCommandsPc[9] = {
     {"CONST", xConst},
     {"CONDITIONMACRO", xConditionMacro},
     {"ACTIONMACRO", xActionMacro},
-    {(char *)AIScriptKeywordReferenceScript, xRefScript},
+    {"REFERENCESCRIPT", xRefScript},
     {"DERIVEFROMSCRIPT", xDeriveFromScript},
     {"INCLUDE", xInclude},
     {NULL, NULL},
@@ -1303,7 +1275,7 @@ AISCRIPT_PC *AIScriptFind(AISYS_PC *sys, const char *name, i32 can_use_default, 
     if (can_use_default != 0) {
         script = (AISCRIPT_PC *)NuLinkedListGetHead(&global_aiscripts);
         while (script != NULL) {
-            if (NuStrICmp(GizmoDefaultOutputName, script->name) == 0) {
+            if (NuStrICmp("default", script->name) == 0) {
                 return script;
             }
             script = (AISCRIPT_PC *)NuLinkedListGetNext(&global_aiscripts, &script->link);
@@ -1419,13 +1391,11 @@ static void ConditionsParseFinalise(AICONDITION_PC *cond, NUFPAR_PC *parser) {
     } else if (condition_has_no_goto == 0) {
         if (AIActionDiagnosticMode == 1) {
             AIScriptMissingStateDiagnosticAlternate(aiscript_load_script->name,
-                                                    aiscript_load_state != NULL ? aiscript_load_state->name
-                                                                                : (char *)Text_UnknownText,
+                                                    aiscript_load_state != NULL ? aiscript_load_state->name : "?",
                                                     parser->line_buffer_ptr);
         } else {
             AIScriptMissingStateDiagnostic(aiscript_load_script->name,
-                                           aiscript_load_state != NULL ? aiscript_load_state->name
-                                                                       : (char *)Text_UnknownText,
+                                           aiscript_load_state != NULL ? aiscript_load_state->name : "?",
                                            parser->line_buffer_ptr);
         }
     }
@@ -1444,7 +1414,7 @@ static NUFPAR_PC *AIScriptOpenParserPc(void *pak, char *filename, char *path) {
     void *data;
     NUFILE file;
     NuStrCpy(script_name, filename);
-    extension = NuStrIStr(script_name, (char *)AIScriptFileExtension);
+    extension = NuStrIStr(script_name, ".scp");
     if (extension != NULL) {
         *extension = '\0';
         sprintf(filepath, "%s\\%s", path, filename);
@@ -1504,7 +1474,7 @@ void xState(NUFPAR_PC *parser) {
     memset(state, 0, sizeof(AISTATE_PC));
     name = AIScriptCopyString(parser->word_buffer_ptr, buffer, end_buffer);
     aiscript_load_state->name = name;
-    if (NuStrICmp(name, AIScriptKeywordBase) == 0) {
+    if (NuStrICmp(name, "Base") == 0) {
         NuLinkedListInsert((NULISTHDR *)((u32)aiscript_load_script + offsetof(AISCRIPT_PC, states)),
                            (NULISTLNK *)aiscript_load_state);
     } else {
@@ -1583,7 +1553,7 @@ void xDeriveFromScript(NUFPAR_PC *parser) {
     while (!done && NuFParGetLine(parser) != 0) {
         while (!done && NuFParGetWord(parser) != 0) {
             char *cursor;
-            if (NuStrICmp(parser->word_buffer_ptr, AIScriptKeywordEnd) == 0) {
+            if (NuStrICmp(parser->word_buffer_ptr, "}") == 0) {
                 done = 1;
             } else if ((cursor = NuStrIStr(parser->word_buffer_ptr, "Script")) != NULL) {
                 cursor += sizeof("Script");
@@ -1592,7 +1562,7 @@ void xDeriveFromScript(NUFPAR_PC *parser) {
             } else if (NuStrIStr(parser->word_buffer_ptr, "Source") != NULL) {
                 if (NuStrIStr(parser->word_buffer_ptr, "Global") != NULL) {
                     aiscript_load_script->flags_3c &= ~4u;
-                } else if (NuStrIStr(parser->word_buffer_ptr, (char *)AIScriptKeywordLevel) != NULL) {
+                } else if (NuStrIStr(parser->word_buffer_ptr, "Level") != NULL) {
                     aiscript_load_script->flags_3c |= 4u;
                 }
             }
@@ -2018,7 +1988,7 @@ void AIScriptProcessorInit(AISYS_PC *system, AIPACKET_PC *packet, AISCRIPTPROCES
         if (start_state != NULL) {
             AIScriptSetState(processor, start_state);
         } else {
-            AIScriptSetStateByName(processor, (char *)AIScriptKeywordBase);
+            AIScriptSetStateByName(processor, "Base");
         }
     }
     processor->interrupt_timer = 0.0f;
@@ -2034,7 +2004,7 @@ f32 AIParamToFloat(AISCRIPTPROCESS_PC *processor, char *param) {
 
     if (param != NULL) {
         if (processor != NULL) {
-            cursor = NuStrIStr(param, (char *)AIScriptParamPrefix);
+            cursor = NuStrIStr(param, "param");
             if (cursor != NULL) {
                 index = NuAToI(cursor);
                 if (index >= 0 && index < 4) {
@@ -2069,7 +2039,7 @@ static i32 AiEvalExpressionNameLoopup(char *expression, f32 *float_out, i32 *int
     } else if (NuStrICmp(expression, "true") == 0) {
         got_value = 1;
         value = 1.0f;
-    } else if (NuStrICmp(expression, AIExpressionMaxName) == 0) {
+    } else if (NuStrICmp(expression, "max") == 0) {
         got_value = 1;
         value = FLT_MAX;
     }
@@ -2796,12 +2766,12 @@ i32 Action_ResetTimer(AISYS_PC *system, AISCRIPTPROCESS_PC *processor, AIPACKET_
         return 1;
     }
     for (i = 0; i < count; i++) {
-        value = NuStrIStr(params[i], (char *)AIActionMinTimeName);
+        value = NuStrIStr(params[i], "mintime");
         if (value != NULL) {
             minimum = AIParamToFloatEx(packet, processor, value + 8);
-        } else if ((value = NuStrIStr(params[i], (char *)AIActionMaxTimeName)) != NULL) {
+        } else if ((value = NuStrIStr(params[i], "maxtime")) != NULL) {
             maximum = AIParamToFloatEx(packet, processor, value + 8);
-        } else if ((value = NuStrIStr(params[i], (char *)AIActionTimeName)) != NULL) {
+        } else if ((value = NuStrIStr(params[i], "time")) != NULL) {
             exact = AIParamToFloatEx(packet, processor, value + 5);
         }
     }
@@ -2826,15 +2796,15 @@ i32 Action_Idle(AISYS_PC *system, AISCRIPTPROCESS_PC *processor, AIPACKET_PC *pa
     frames = 0;
     if (first_time != 0) {
         for (i = 0; i < count; i++) {
-            value = NuStrIStr(params[i], (char *)AIActionMinTimeName);
+            value = NuStrIStr(params[i], "mintime");
             if (value != NULL) {
-                value += NuStrLen(AIActionMinTimeName) + 1;
+                value += NuStrLen("mintime") + 1;
                 minimum = AIParamToFloatEx(packet, processor, value);
-            } else if ((value = NuStrIStr(params[i], (char *)AIActionMaxTimeName)) != NULL) {
-                value += NuStrLen(AIActionMaxTimeName) + 1;
+            } else if ((value = NuStrIStr(params[i], "maxtime")) != NULL) {
+                value += NuStrLen("maxtime") + 1;
                 maximum = AIParamToFloatEx(packet, processor, value);
-            } else if ((value = NuStrIStr(params[i], (char *)AIActionFramesName)) != NULL) {
-                value += NuStrLen(AIActionFramesName) + 1;
+            } else if ((value = NuStrIStr(params[i], "frames")) != NULL) {
+                value += NuStrLen("frames") + 1;
                 frames = (i32)AIParamToFloatEx(packet, processor, value);
             } else {
                 processor->action_timer = AIParamToFloatEx(packet, processor, params[i]);
@@ -2878,7 +2848,7 @@ i32 Action_SetCircleDirection(AISYS_PC *system, AISCRIPTPROCESS_PC *processor, A
             packet->flags &= ~0x200u;
         } else if (NuStrICmp(params[i], "Reverse") == 0) {
             packet->flags ^= 0x200u;
-        } else if (NuStrICmp(params[i], AIActionRandomName) == 0) {
+        } else if (NuStrICmp(params[i], "Random") == 0) {
             if (NuRandFloat() > 0.5f) {
                 packet->flags |= 0x200u;
             } else {
@@ -2902,10 +2872,10 @@ i32 Action_FacePlayer(AISYS_PC *sys, AISCRIPTPROCESS_PC *processor, AIPACKET_PC 
     }
     if (first_time != 0) {
         for (index = 0; index < param_count; ++index) {
-            value = NuStrIStr(params[index], (char *)AIActionMinTimeName);
+            value = NuStrIStr(params[index], "mintime");
             if (value != NULL) {
                 min_time = AIParamToFloatEx(packet, processor, value + 8);
-            } else if ((value = NuStrIStr(params[index], (char *)AIActionMaxTimeName)) != NULL) {
+            } else if ((value = NuStrIStr(params[index], "maxtime")) != NULL) {
                 max_time = AIParamToFloatEx(packet, processor, value + 8);
             } else {
                 processor->action_timer = AIParamToFloatEx(packet, processor, params[index]);
@@ -2957,10 +2927,10 @@ i32 Action_FaceOpponent(AISYS_PC *sys, AISCRIPTPROCESS_PC *processor, AIPACKET_P
             if (AIActionParseSpeedFn != NULL && AIActionParseSpeedFn(params[index], &packet->goal_speed_mode) != 0) {
                 continue;
             }
-            value = NuStrIStr(params[index], (char *)AIActionMinTimeName);
+            value = NuStrIStr(params[index], "mintime");
             if (value != NULL) {
                 min_time = AIParamToFloatEx(packet, processor, value + 8);
-            } else if ((value = NuStrIStr(params[index], (char *)AIActionMaxTimeName)) != NULL) {
+            } else if ((value = NuStrIStr(params[index], "maxtime")) != NULL) {
                 max_time = AIParamToFloatEx(packet, processor, value + 8);
             } else if ((value = NuStrIStr(params[index], "faceoffset")) != NULL) {
                 processor->action_data_4 = AIParamToFloatEx(packet, processor, value + 11);
@@ -3138,7 +3108,7 @@ i32 Action_SetViewDistance(AISYS_PC *system, AISCRIPTPROCESS_PC *processor, AIPA
     } else {
         ((APIOBJECT_PC *)packet->owner)->view_distance = 1.0f;
     }
-    if (count != 0 && NuStrICmp(params[0], GizmoDefaultOutputName) != 0) {
+    if (count != 0 && NuStrICmp(params[0], "default") != 0) {
         ((APIOBJECT_PC *)packet->owner)->view_distance = AIParamToFloatEx(packet, processor, params[0]);
     }
     return 1;
@@ -3157,7 +3127,7 @@ i32 Action_SetMinViewHeight(AISYS_PC *system, AISCRIPTPROCESS_PC *processor, AIP
     } else {
         ((APIOBJECT_PC *)packet->owner)->min_view_height = 1.0f;
     }
-    if (count != 0 && NuStrICmp(params[0], GizmoDefaultOutputName) != 0) {
+    if (count != 0 && NuStrICmp(params[0], "default") != 0) {
         ((APIOBJECT_PC *)packet->owner)->min_view_height = AIParamToFloatEx(packet, processor, params[0]);
     }
     return 1;
@@ -3176,7 +3146,7 @@ i32 Action_SetMaxViewHeight(AISYS_PC *system, AISCRIPTPROCESS_PC *processor, AIP
     } else {
         ((APIOBJECT_PC *)packet->owner)->max_view_height = 1.0f;
     }
-    if (count != 0 && NuStrICmp(params[0], GizmoDefaultOutputName) != 0) {
+    if (count != 0 && NuStrICmp(params[0], "default") != 0) {
         ((APIOBJECT_PC *)packet->owner)->max_view_height = AIParamToFloatEx(packet, processor, params[0]);
     }
     return 1;
@@ -3195,7 +3165,7 @@ i32 Action_SetHearDistance(AISYS_PC *system, AISCRIPTPROCESS_PC *processor, AIPA
     } else {
         ((APIOBJECT_PC *)packet->owner)->hear_distance = 1.0f;
     }
-    if (count != 0 && NuStrICmp(params[0], GizmoDefaultOutputName) != 0) {
+    if (count != 0 && NuStrICmp(params[0], "default") != 0) {
         ((APIOBJECT_PC *)packet->owner)->hear_distance = AIParamToFloatEx(packet, processor, params[0]);
     }
     return 1;
@@ -3215,7 +3185,7 @@ i32 Action_SetMoveRadius(AISYS_PC *sys, AISCRIPTPROCESS_PC *processor, AIPACKET_
     }
     packet->mover_height =
         ((APIOBJECT_PC *)packet->owner)->collision_radius + ((APIOBJECT_PC *)packet->owner)->collision_radius;
-    if (param_4 != 0 && NuStrICmp(params[0], GizmoDefaultOutputName) != 0) {
+    if (param_4 != 0 && NuStrICmp(params[0], "default") != 0) {
         packet->mover_height = AIParamToFloatEx(packet, processor, params[0]);
     }
     return 1;
@@ -3290,12 +3260,12 @@ i32 Action_SetIgnoreAntinodes(AISYS_PC *sys, AISCRIPTPROCESS_PC *processor, AIPA
             object = (APIOBJECT_PC *)packet->owner;
         }
         for (i = 0; i < param_count; i++) {
-            value = NuStrIStr(params[i], (char *)AreaConfigKeyword_character);
+            value = NuStrIStr(params[i], "character");
             if (value != NULL) {
                 if (GetNamedGameObjectCallback != NULL) {
                     object = GetNamedGameObjectCallback(sys, value + 10);
                 }
-            } else if (NuStrICmp(AIActionFalseName, params[0]) == 0) {
+            } else if (NuStrICmp("FALSE", params[0]) == 0) {
                 // The original tests the first parameter, even on later iterations.
                 ignore = 0;
             }
@@ -3340,17 +3310,17 @@ i32 Action_SetParam(AISYS_PC *system, AISCRIPTPROCESS_PC *processor, AIPACKET_PC
         for (index = 0; index < 4; index++) {
             if (NuStrICmp(params[i], processor->script->params[index].name) == 0) {
                 flag = (u64)2 << index;
-                if (NuStrICmp(params[i + 1], GizmoDefaultOutputName) == 0) {
+                if (NuStrICmp(params[i + 1], "default") == 0) {
                     if (creature != NULL && ((u64)(i64)creature->flags & flag) != 0) {
                         processor->params[index] = creature->script_params[index];
                     } else {
                         processor->params[index] = processor->script->params[index].default_value;
                     }
-                } else if ((value = NuStrIStr(params[i + 1], (char *)AIActionIncrementName)) != NULL) {
-                    value += NuStrLen(AIActionIncrementName);
+                } else if ((value = NuStrIStr(params[i + 1], "inc=")) != NULL) {
+                    value += NuStrLen("inc=");
                     processor->params[index] += AIParamToFloatEx(packet, &packet->script_processor, value);
-                } else if ((value = NuStrIStr(params[i + 1], (char *)AIActionDecrementName)) != NULL) {
-                    value += NuStrLen(AIActionDecrementName);
+                } else if ((value = NuStrIStr(params[i + 1], "dec=")) != NULL) {
+                    value += NuStrLen("dec=");
                     processor->params[index] -= AIParamToFloatEx(packet, &packet->script_processor, value);
                 } else {
                     processor->params[index] = AIParamToFloatEx(packet, &packet->script_processor, params[i + 1]);
@@ -3375,7 +3345,7 @@ i32 Action_SetReturnToState(AISYS_PC *system, AISCRIPTPROCESS_PC *processor, AIP
         state = processor->state;
     }
     for (i = 0; i < count; i++) {
-        value = NuStrIStr(params[i], (char *)AIActionStateName);
+        value = NuStrIStr(params[i], "state");
         if (value != NULL) {
             state = AIStateFind(value + 6, processor->script);
             if (state == NULL) {
@@ -9421,7 +9391,7 @@ void pathEditorSaveData(AIPATHSYS_PC *path_system) {
                     }
                     if ((*(u64 *)&route->character_mask[2] & 0x8000000000000000ull) != 0) {
                         EdFileWriteChar(9);
-                        EdFileWrite((void *)GameAIEveryonePc, 9);
+                        EdFileWrite((void *)"Everyone", 9);
                     }
                 } else {
                     EdFileWriteChar(0);
@@ -9942,7 +9912,7 @@ void routeEditor_cbRouteUsers(eduimenu_s *parent, eduiitem_s *item, u32 event) {
     if (index < 64) {
         i32 selected = (aieditor->current_path->current_route->user_mask & ((u64)1 << 63)) != 0;
         eduiMenuAddItem(menu, eduiItemCheckCreate(63, &AiEditorSaveMessageColoursPc, selected, 64,
-                                                  AiEditorSetRouteUsersPc, (char *)GameAIEveryonePc));
+                                                  AiEditorSetRouteUsersPc, "Everyone"));
     }
 }
 
@@ -11373,7 +11343,7 @@ void creatureEditor_cbSelectScript(eduimenu_s *parent, eduiitem_s *item, u32 eve
         do {
             selected = 0;
             name = AIScriptNameFromIx(aieditor->ai_system, index);
-            if (name != NULL && NuStrICmp(name, AIScriptKeywordLevel) != 0) {
+            if (name != NULL && NuStrICmp(name, "Level") != 0) {
                 if (aieditor->selected_creature != NULL &&
                     NuStrICmp(aieditor->selected_creature->script_name, name) == 0) {
                     selected = 1;
@@ -12089,12 +12059,10 @@ void xConditions(NUFPAR_PC *parser) {
                 ConditionsParseFinalise(cond, parser);
             } else if (AIActionDiagnosticMode == 1) {
                 AIScriptMissingConditionDiagnostic(parser->word_buffer_ptr, aiscript_load_script->name,
-                                                   aiscript_load_state != NULL ? aiscript_load_state->name
-                                                                               : (char *)Text_UnknownText);
+                                                   aiscript_load_state != NULL ? aiscript_load_state->name : "?");
             } else {
                 AIScriptMissingStateDiagnostic(parser->word_buffer_ptr, aiscript_load_script->name,
-                                               aiscript_load_state != NULL ? aiscript_load_state->name
-                                                                           : (char *)Text_UnknownText);
+                                               aiscript_load_state != NULL ? aiscript_load_state->name : "?");
             }
         } else if (NuStrICmp(parser->word_buffer_ptr, "OnMacro") == 0) {
             AICONDITIONMACRO_PC *macro;
@@ -12122,23 +12090,20 @@ void xConditions(NUFPAR_PC *parser) {
                 if (AIActionDiagnosticMode == 1) {
                     AIScriptMissingStateDiagnosticAlternate(parser->word_buffer_ptr, aiscript_load_script->name,
                                                             aiscript_load_state != NULL ? aiscript_load_state->name
-                                                                                        : (char *)Text_UnknownText);
+                                                                                        : "?");
                 } else {
                     AIScriptMissingStateDiagnostic(parser->word_buffer_ptr, aiscript_load_script->name,
-                                                   aiscript_load_state != NULL ? aiscript_load_state->name
-                                                                               : (char *)Text_UnknownText);
+                                                   aiscript_load_state != NULL ? aiscript_load_state->name : "?");
                 }
             }
         } else {
             if (NuStrChr(parser->word_buffer_ptr, '{') == NULL) {
                 if (AIActionDiagnosticMode == 1) {
-                    AIScriptMissingConditionDiagnostic(aiscript_load_script->name, aiscript_load_state != NULL
-                                                                                       ? aiscript_load_state->name
-                                                                                       : (char *)Text_UnknownText);
+                    AIScriptMissingConditionDiagnostic(aiscript_load_script->name,
+                                                       aiscript_load_state != NULL ? aiscript_load_state->name : "?");
                 } else {
-                    AIScriptMissingStateDiagnostic(aiscript_load_script->name, aiscript_load_state != NULL
-                                                                                   ? aiscript_load_state->name
-                                                                                   : (char *)Text_UnknownText);
+                    AIScriptMissingStateDiagnostic(aiscript_load_script->name,
+                                                   aiscript_load_state != NULL ? aiscript_load_state->name : "?");
                 }
             }
         }
@@ -12175,11 +12140,10 @@ void xActions(NUFPAR_PC *parser) {
                 if (AIActionDiagnosticMode == 1) {
                     AIScriptMissingStateDiagnosticAlternate(parser->word_buffer_ptr, aiscript_load_script->name,
                                                             aiscript_load_state != NULL ? aiscript_load_state->name
-                                                                                        : (char *)Text_UnknownText);
+                                                                                        : "?");
                 } else {
                     AIScriptMissingStateDiagnostic(parser->word_buffer_ptr, aiscript_load_script->name,
-                                                   aiscript_load_state != NULL ? aiscript_load_state->name
-                                                                               : (char *)Text_UnknownText);
+                                                   aiscript_load_state != NULL ? aiscript_load_state->name : "?");
                 }
             }
         } else {
@@ -12228,11 +12192,10 @@ void xActions(NUFPAR_PC *parser) {
                 if (AIActionDiagnosticMode == 1) {
                     AIScriptMissingStateDiagnosticAlternate(parser->word_buffer_ptr, aiscript_load_script->name,
                                                             aiscript_load_state != NULL ? aiscript_load_state->name
-                                                                                        : (char *)Text_UnknownText);
+                                                                                        : "?");
                 } else {
                     AIScriptMissingStateDiagnostic(parser->word_buffer_ptr, aiscript_load_script->name,
-                                                   aiscript_load_state != NULL ? aiscript_load_state->name
-                                                                               : (char *)Text_UnknownText);
+                                                   aiscript_load_state != NULL ? aiscript_load_state->name : "?");
                 }
             }
         }
@@ -12252,7 +12215,7 @@ void AIScriptOpenPakFileParse(AISCRIPT_PC **script_ref, void *pak, char *filenam
             if (script != NULL) {
                 memset(script, 0, sizeof(AISCRIPT_PC));
                 NuStrCpy(script_name, filename);
-                extension = NuStrIStr(script_name, (char *)AIScriptFileExtension);
+                extension = NuStrIStr(script_name, ".scp");
                 if (extension != NULL) {
                     *extension = '\0';
                 }
@@ -12363,7 +12326,7 @@ void xRefScript(NUFPAR_PC *parser) {
             } else if (NuStrIStr(parser->word_buffer_ptr, "Source") != NULL) {
                 if (NuStrIStr(parser->word_buffer_ptr, "Global") != NULL) {
                     reference->check_global_scripts = 1;
-                } else if (NuStrIStr(parser->word_buffer_ptr, (char *)AIScriptKeywordLevel) != NULL) {
+                } else if (NuStrIStr(parser->word_buffer_ptr, "Level") != NULL) {
                     reference->check_level_scripts = 1;
                 }
             }
@@ -12477,7 +12440,7 @@ void AIScriptLoadAllPakFile(void *pak, char *path, VARIPTR *buffer, VARIPTR *end
                     AIScriptMissingStateDiagnostic(message);
                 }
                 NuStrCpy(script_files[file_count], parser->word_buffer_ptr);
-                NuStrCat(script_files[file_count], AIScriptFileExtension);
+                NuStrCat(script_files[file_count], ".scp");
                 file_count++;
             }
             NuFreeFPar(parser);
@@ -12964,9 +12927,9 @@ i32 Action_SetLocator(AISYS_PC *system, AISCRIPTPROCESS_PC *processor, AIPACKET_
         value = NuStrIStr(params[index], "name");
         if (value != NULL) {
             name = value + 5;
-        } else if (NuStrIStr(params[index], (char *)AIActionPersonalName) != NULL) {
+        } else if (NuStrIStr(params[index], "personal") != NULL) {
             personal = 1;
-        } else if (NuStrIStr(params[index], (char *)AIActionIndexedName) != NULL) {
+        } else if (NuStrIStr(params[index], "indexed") != NULL) {
             indexed = 1;
         } else {
             value = NuStrIStr(params[index], "random");
@@ -12977,11 +12940,11 @@ i32 Action_SetLocator(AISYS_PC *system, AISCRIPTPROCESS_PC *processor, AIPACKET_
     }
     if (name != NULL) {
         if (indexed != 0 && ((APIOBJECT_PC *)packet->owner)->locator_name_index != -1) {
-            sprintf(buffer, AILocatorIndexedFormat, name, ((APIOBJECT_PC *)packet->owner)->locator_name_index);
+            sprintf(buffer, "%s_%d", name, ((APIOBJECT_PC *)packet->owner)->locator_name_index);
         } else if (personal != 0 && ((APIOBJECT_PC *)packet->owner)->character_data != NULL) {
-            sprintf(buffer, AILocatorPersonalFormat, name, ((APIOBJECT_PC *)packet->owner)->character_data->name);
+            sprintf(buffer, "%s_%s", name, ((APIOBJECT_PC *)packet->owner)->character_data->name);
         } else if (random_count != 0) {
-            sprintf(buffer, AILocatorIndexedFormat, name, NuRand(NULL) % random_count);
+            sprintf(buffer, "%s_%d", name, NuRand(NULL) % random_count);
         } else {
             sprintf(buffer, name);
         }
@@ -13068,17 +13031,17 @@ i32 Action_BlockPath(AISYS_PC *sys, AISCRIPTPROCESS_PC *processor, AIPACKET_PC *
     (void)param_6;
     if (sys != NULL && sys->path_sys != NULL && sys->path_sys->path_count != 0 && param_5 != 0) {
         for (index = 0; index < param_4; ++index) {
-            value = NuStrIStr(params[index], (char *)AIActionFromName);
+            value = NuStrIStr(params[index], "from");
             if (value != NULL) {
                 from = value + 5;
                 continue;
             }
-            value = NuStrIStr(params[index], (char *)AIActionToName);
+            value = NuStrIStr(params[index], "to");
             if (value != NULL) {
                 to = value + 3;
             } else if (NuStrICmp(params[index], "bothways") == 0) {
                 both_ways = 1;
-            } else if (NuStrICmp(params[index], AIActionFalseName) == 0) {
+            } else if (NuStrICmp(params[index], "FALSE") == 0) {
                 blocked = 0;
             }
         }
@@ -13105,10 +13068,10 @@ i32 Action_PathConnectionMaxLength(AISYS_PC *sys, AISCRIPTPROCESS_PC *processor,
     direction = 0;
     if (sys != NULL && first_time != 0) {
         for (i = 0; i < param_count; i++) {
-            value = NuStrIStr(params[i], (char *)AIActionFromName);
+            value = NuStrIStr(params[i], "from");
             if (value != NULL) {
                 from = value + 5;
-            } else if ((value = NuStrIStr(params[i], (char *)AIActionToName)) != NULL) {
+            } else if ((value = NuStrIStr(params[i], "to")) != NULL) {
                 to = value + 3;
             } else if ((value = NuStrIStr(params[i], "length")) != NULL) {
                 length = AIParamToFloatEx(packet, processor, value + 7);
@@ -13148,12 +13111,12 @@ i32 Action_PathConnectionObstacle(AISYS_PC *sys, AISCRIPTPROCESS_PC *processor, 
     direction = 0;
     if (sys != NULL && first_time != 0) {
         for (i = 0; i < param_count; i++) {
-            value = NuStrIStr(params[i], (char *)AIActionFromName);
+            value = NuStrIStr(params[i], "from");
             if (value != NULL) {
                 from = value + 5;
-            } else if ((value = NuStrIStr(params[i], (char *)AIActionToName)) != NULL) {
+            } else if ((value = NuStrIStr(params[i], "to")) != NULL) {
                 to = value + 3;
-            } else if (NuStrICmp(params[i], AIActionOpenName) == 0) {
+            } else if (NuStrICmp(params[i], "open") == 0) {
                 open = 1;
             }
         }
@@ -13180,11 +13143,11 @@ i32 Action_SetInterrupt(AISYS_PC *system, AISCRIPTPROCESS_PC *processor, AIPACKE
         for (i = 0; i < param_count; i++) {
             if ((value = NuStrIStr(params[i], "priority")) != NULL) {
                 priority = (i32)(AIParamToFloatEx(packet, processor, value + 9));
-            } else if ((value = NuStrIStr(params[i], (char *)AIActionIDName)) != NULL) {
+            } else if ((value = NuStrIStr(params[i], "id")) != NULL) {
                 id = (i32)(AIParamToFloatEx(packet, processor, value + 3));
-            } else if ((value = NuStrIStr(params[i], (char *)AIActionStateName)) != NULL) {
+            } else if ((value = NuStrIStr(params[i], "state")) != NULL) {
                 state_name = value + 6;
-            } else if ((value = NuStrIStr(params[i], (char *)AIActionTimeName)) != NULL) {
+            } else if ((value = NuStrIStr(params[i], "time")) != NULL) {
                 time = AIParamToFloatEx(packet, processor, value + 5);
             }
         }
@@ -13204,7 +13167,7 @@ i32 Action_ClearInterrupt(AISYS_PC *system, AISCRIPTPROCESS_PC *processor, AIPAC
     if (is_first_time) {
         if (processor != NULL) {
             for (i = 0; i < param_count; i++) {
-                value = NuStrIStr(params[i], (char *)AIActionStateName);
+                value = NuStrIStr(params[i], "state");
                 if (value != NULL) {
                     state_name = value + 6;
                 }
@@ -14442,7 +14405,7 @@ void areaEditor_Render(i32 x, i32 y, f32 xscale, f32 yscale) {
     y += 15;
     if (aieditor->hovered_area != NULL) {
         if (aieditor->selected_area == aieditor->hovered_area) {
-            NuQFntPrintEx(system_qfont, text_x, y * 8, 16, AiAntinodeRenderMovePc);
+            NuQFntPrintEx(system_qfont, text_x, y * 8, 16, "X - Move selected/Adjust size");
             if (aieditor->pad_buttons & 0x40) {
                 if (aieditor->hovered_area->flags & 1) {
                     NuQFntPrintEx(system_qfont, text_x, (y + 15) * 8, 16, "LRIGHT/LLEFT - Adjust Radius");
@@ -14464,11 +14427,11 @@ void areaEditor_Render(i32 x, i32 y, f32 xscale, f32 yscale) {
             }
         } else {
             NuQFntPrintEx(system_qfont, text_x, y * 8, 16, "X - Select area");
-            NuQFntPrintEx(system_qfont, text_x, (y + 15) * 8, 16, AiAntinodeRenderNearestPc);
+            NuQFntPrintEx(system_qfont, text_x, (y + 15) * 8, 16, "SELECT - Select nearest");
         }
     } else {
         NuQFntPrintEx(system_qfont, text_x, y * 8, 16, "X - Create area");
-        NuQFntPrintEx(system_qfont, text_x, (y + 15) * 8, 16, AiAntinodeRenderNearestPc);
+        NuQFntPrintEx(system_qfont, text_x, (y + 15) * 8, 16, "SELECT - Select nearest");
     }
     areaEditorDrawAreas();
     pathEditorDrawPaths();
@@ -14855,15 +14818,15 @@ void locatorEditor_Render(i32 x, i32 y, f32 xscale, f32 yscale) {
         if (aieditor->current_locator == aieditor->nearest_locator) {
             NuQFntPrintEx(system_qfont, text_x, (y + 45) * 8, 16, "X - Move selected");
             NuQFntPrintEx(system_qfont, text_x, (y + 60) * 8, 16, "TRI - Delete selected");
-            NuQFntPrintEx(system_qfont, text_x, (y + 75) * 8, 16, AiAntinodeRenderRotateLeftPc);
-            NuQFntPrintEx(system_qfont, text_x, (y + 90) * 8, 16, AiAntinodeRenderRotateRightPc);
+            NuQFntPrintEx(system_qfont, text_x, (y + 75) * 8, 16, "LLEFT - Rotate left");
+            NuQFntPrintEx(system_qfont, text_x, (y + 90) * 8, 16, "LRIGHT - Rotate right");
         } else {
             NuQFntPrintEx(system_qfont, text_x, (y + 45) * 8, 16, "X - Select locator");
-            NuQFntPrintEx(system_qfont, text_x, (y + 60) * 8, 16, AiAntinodeRenderNearestPc);
+            NuQFntPrintEx(system_qfont, text_x, (y + 60) * 8, 16, "SELECT - Select nearest");
         }
     } else {
         NuQFntPrintEx(system_qfont, text_x, (y + 45) * 8, 16, "X - Create locator");
-        NuQFntPrintEx(system_qfont, text_x, (y + 60) * 8, 16, AiAntinodeRenderNearestPc);
+        NuQFntPrintEx(system_qfont, text_x, (y + 60) * 8, 16, "SELECT - Select nearest");
     }
     if (aieditor->nearest_locator == NULL && aieditor->cursor_check.on_path && aieditorsettings.elapsed_time < 0.5f) {
         DrawLocator(&aieditor->camera_position, aiEditor_LocatorWidth, aieditorsettings.locator_rotation, 0);
@@ -15244,7 +15207,7 @@ AIPATHSYS_PC *pathEditorCreateData(VARIPTR *cursor, VARIPTR *end, void **scratch
                             AIPATHNODE_PC *node = &path->nodes[node_index];
                             AISysGetPathPosEx(aieditor->ai_system, &node->position, &info, first_path, 0xff, 0, NULL);
                             if ((info.flags & 1)) {
-                                f64 half = InitOnceHalf;
+                                f64 half = 0.5f;
                                 f64 path_distance = info.distance;
                                 node->path_flags = info.connection - path->connections;
                                 if (path_distance > half || (info.direction != 0 && path_distance < half)) {
@@ -15610,17 +15573,17 @@ void pathEditor_Render(i32 x, i32 y, f32 xscale, f32 yscale) {
                               aieditor->current_path->node_count);
             }
             NuQFntPrintEx(system_qfont, (x + 10) * 16, y * 8 + 240, 16, "SQR - Sub menu");
-            NuQFntPrintEx(system_qfont, (x + 10) * 16, y * 8 + 360, 16, AiAntinodeRenderNearestPc);
+            NuQFntPrintEx(system_qfont, (x + 10) * 16, y * 8 + 360, 16, "SELECT - Select nearest");
             if (aieditor->flags & 1) {
                 NuQFntPrintEx(system_qfont, (x + 10) * 16, y * 8 + 480, 16, "X - Move selected");
                 NuQFntPrintEx(system_qfont, (x + 10) * 16, y * 8 + 600, 16, "TRI - Delete selected");
                 if (aieditor->current_path != NULL && aieditor->current_path->current_node != NULL) {
-                    NuQFntPrintEx(system_qfont, (x + 10) * 16, y * 8 + 840, 16, AiAntinodeRenderIncreaseRadiusPc,
+                    NuQFntPrintEx(system_qfont, (x + 10) * 16, y * 8 + 840, 16, "LRIGHT - Increase radius, %.2f",
                                   aieditor->current_path->current_node->radius);
                 } else {
                     NuQFntPrintEx(system_qfont, (x + 10) * 16, y * 8 + 840, 16, "LRIGHT - Increase radius");
                 }
-                NuQFntPrintEx(system_qfont, (x + 10) * 16, y * 8 + 960, 16, AiAntinodeRenderDecreaseRadiusPc);
+                NuQFntPrintEx(system_qfont, (x + 10) * 16, y * 8 + 960, 16, "LLEFT - Decrease radius");
             } else if (aieditor->current_path->nearest_node != NULL) {
                 NuQFntPrintEx(system_qfont, (x + 10) * 16, y * 8 + 480, 16, "X - Select");
                 NuQFntPrintEx(system_qfont, (x + 10) * 16, y * 8 + 720, 16, "O - Link/unlink to selected");
@@ -15754,7 +15717,7 @@ void routeEditor_Render(i32 x, i32 y, f32 xscale, f32 yscale) {
         }
         if (aieditor->current_path->current_node != NULL) {
             NuQFntPrintEx(system_qfont, (x + 10) * 16, y * 8 + 240, 16, "SQR - Sub menu");
-            NuQFntPrintEx(system_qfont, (x + 10) * 16, y * 8 + 360, 16, AiAntinodeRenderNearestPc);
+            NuQFntPrintEx(system_qfont, (x + 10) * 16, y * 8 + 360, 16, "SELECT - Select nearest");
             if (aieditor->current_path->nearest_node != NULL &&
                 aieditor->current_path->nearest_node != aieditor->current_path->current_node) {
                 NuQFntPrintEx(system_qfont, (x + 10) * 16, y * 8 + 480, 16, "X - Select");
@@ -15800,12 +15763,12 @@ void antinodeEditor_Render(i32 x, i32 y, f32 xscale, f32 yscale) {
         } else {
             NuQFntPrintEx(system_qfont, text_x, y * 8 + 120, 16, "Not attached to platform");
         }
-        NuQFntPrintEx(system_qfont, text_x, y * 8 + 240, 16, AiAntinodeRenderMovePc);
+        NuQFntPrintEx(system_qfont, text_x, y * 8 + 240, 16, "X - Move selected/Adjust size");
         NuQFntPrintEx(system_qfont, text_x, y * 8 + 360, 16, "TRI - Delete selected");
         if (aieditor->selected_antinode->type == 0) {
-            NuQFntPrintEx(system_qfont, text_x, y * 8 + 480, 16, AiAntinodeRenderIncreaseRadiusPc,
+            NuQFntPrintEx(system_qfont, text_x, y * 8 + 480, 16, "LRIGHT - Increase radius, %.2f",
                           aieditor->selected_antinode->radius);
-            NuQFntPrintEx(system_qfont, text_x, y * 8 + 600, 16, AiAntinodeRenderDecreaseRadiusPc);
+            NuQFntPrintEx(system_qfont, text_x, y * 8 + 600, 16, "LLEFT - Decrease radius");
         } else if (aieditor->pad_buttons & 0x40) {
             NuQFntPrintEx(system_qfont, text_x, y * 8 + 480, 16, "LRIGHT - Increase X, %.2f",
                           aieditor->selected_antinode->base_radius);
@@ -15820,8 +15783,8 @@ void antinodeEditor_Render(i32 x, i32 y, f32 xscale, f32 yscale) {
             NuQFntPrintEx(system_qfont, text_x, y * 8 + 480, 16, "L1 - Increase lower height");
             NuQFntPrintEx(system_qfont, text_x, y * 8 + 600, 16, "R1 - Decrease lower height");
         } else {
-            NuQFntPrintEx(system_qfont, text_x, y * 8 + 480, 16, AiAntinodeRenderRotateLeftPc);
-            NuQFntPrintEx(system_qfont, text_x, y * 8 + 600, 16, AiAntinodeRenderRotateRightPc);
+            NuQFntPrintEx(system_qfont, text_x, y * 8 + 480, 16, "LLEFT - Rotate left");
+            NuQFntPrintEx(system_qfont, text_x, y * 8 + 600, 16, "LRIGHT - Rotate right");
             if ((i32)(aieditorsettings.display_options << 23) >> 31) {
                 NuQFntPrintEx(system_qfont, text_x, y * 8 + 720, 16, "LUP - Adjust upper height");
                 NuQFntPrintEx(system_qfont, text_x, y * 8 + 840, 16, "LDOWN - Adjust lower height");
@@ -15829,10 +15792,10 @@ void antinodeEditor_Render(i32 x, i32 y, f32 xscale, f32 yscale) {
         }
     } else if (nearest != NULL) {
         NuQFntPrintEx(system_qfont, text_x, y * 8 + 240, 16, "X - Select antinode");
-        NuQFntPrintEx(system_qfont, text_x, y * 8 + 360, 16, AiAntinodeRenderNearestPc);
+        NuQFntPrintEx(system_qfont, text_x, y * 8 + 360, 16, "SELECT - Select nearest");
     } else {
         NuQFntPrintEx(system_qfont, text_x, y * 8 + 240, 16, "X - Create antinode");
-        NuQFntPrintEx(system_qfont, text_x, y * 8 + 360, 16, AiAntinodeRenderNearestPc);
+        NuQFntPrintEx(system_qfont, text_x, y * 8 + 360, 16, "SELECT - Select nearest");
     }
     antinodeEditorDrawAntinodes();
     areaEditorDrawAreas();
@@ -16061,9 +16024,9 @@ i32 Action_FollowOpponent(AISYS_PC *sys, AISCRIPTPROCESS_PC *processor, AIPACKET
             if (AIActionParseSpeedFn != NULL && AIActionParseSpeedFn(params[index], &packet->goal_speed_mode) != 0) {
                 continue;
             }
-            if (NuStrICmp(params[index], AIActionIgnoreRadiusName) == 0) {
+            if (NuStrICmp(params[index], "ignore_radius") == 0) {
                 processor->action_data_1 |= 2;
-            } else if (NuStrICmp(params[index], AIPathCanGoOffPathName) == 0) {
+            } else if (NuStrICmp(params[index], "can_go_off_path") == 0) {
                 processor->action_data_1 |= 1;
             } else {
                 packet->movement_instruction_parameter = AIParamToFloatEx(packet, processor, params[index]);
@@ -16091,9 +16054,9 @@ i32 Action_FollowPlayer(AISYS_PC *sys, AISCRIPTPROCESS_PC *processor, AIPACKET_P
             if (AIActionParseSpeedFn != NULL && AIActionParseSpeedFn(params[index], &packet->goal_speed_mode) != 0) {
                 continue;
             }
-            if (NuStrICmp(params[index], AIActionIgnoreRadiusName) == 0) {
+            if (NuStrICmp(params[index], "ignore_radius") == 0) {
                 processor->action_data_1 |= 2;
-            } else if (NuStrICmp(params[index], AIPathCanGoOffPathName) == 0) {
+            } else if (NuStrICmp(params[index], "can_go_off_path") == 0) {
                 processor->action_data_1 |= 1;
             } else {
                 packet->movement_instruction_parameter = AIParamToFloatEx(packet, processor, params[index]);
@@ -16127,19 +16090,19 @@ i32 Action_Circle(AISYS_PC *sys, AISCRIPTPROCESS_PC *processor, AIPACKET_PC *pac
                 continue;
             }
 
-            if (NuStrICmp(params[i], AIPathAnticlockwiseName) == 0) {
+            if (NuStrICmp(params[i], "ANTICLOCKWISE") == 0) {
                 packet->flags &= ~0x200u;
-            } else if (NuStrICmp(params[i], AIPathClockwiseName) == 0) {
+            } else if (NuStrICmp(params[i], "CLOCKWISE") == 0) {
                 packet->flags |= 0x200u;
-            } else if (NuStrICmp(params[i], AIPathReverseName) == 0) {
+            } else if (NuStrICmp(params[i], "REVERSE") == 0) {
                 // MATCH-EXCEPTION: the original flips the clockwise bit as a 1-bit field (x ^ ((~x ^ x) & 0x200));
                 // flags has no bitfield view, so the flip is a masked merge.
                 packet->flags = (packet->flags & ~0x200u) | (~packet->flags & 0x200u);
-            } else if (NuStrICmp(params[i], AIPathFacingName) == 0) {
+            } else if (NuStrICmp(params[i], "facing") == 0) {
                 processor->action_data_1 |= 1;
-            } else if (NuStrICmp(params[i], AIPathCurrentDistanceName) == 0) {
+            } else if (NuStrICmp(params[i], "currentdist") == 0) {
                 processor->action_data_1 |= 4;
-            } else if ((value = NuStrIStr(params[i], (char *)AIPathLocatorName)) != NULL) {
+            } else if ((value = NuStrIStr(params[i], "locator=")) != NULL) {
                 processor->action_data_3 = AIPathFindLocator(sys, value + 8);
                 if (processor->action_data_3 != NULL) {
                     processor->action_data_1 |= 0x10;
@@ -16147,7 +16110,7 @@ i32 Action_Circle(AISYS_PC *sys, AISCRIPTPROCESS_PC *processor, AIPACKET_PC *pac
             } else if (NuStrIStr(params[i], "current_position") != NULL) {
                 processor->action_data_1 |= 8;
                 processor->action_pos = packet->terrain_origin;
-            } else if (NuStrICmp(params[i], AIPathOriginName) == 0) {
+            } else if (NuStrICmp(params[i], "origin") == 0) {
                 if (packet->creature_index != 0xff) {
                     processor->action_data_1 |= 0x20;
                 }
@@ -16203,19 +16166,19 @@ i32 Action_CirclePlayer(AISYS_PC *sys, AISCRIPTPROCESS_PC *processor, AIPACKET_P
             if (AIActionParseSpeedFn != NULL && AIActionParseSpeedFn(params[i], &packet->goal_speed_mode) != 0) {
                 continue;
             }
-            if (NuStrICmp(params[i], AIPathAnticlockwiseName) == 0) {
+            if (NuStrICmp(params[i], "ANTICLOCKWISE") == 0) {
                 packet->flags &= ~0x200u;
-            } else if (NuStrICmp(params[i], AIPathClockwiseName) == 0) {
+            } else if (NuStrICmp(params[i], "CLOCKWISE") == 0) {
                 packet->flags |= 0x200u;
-            } else if (NuStrICmp(params[i], AIPathReverseName) == 0) {
+            } else if (NuStrICmp(params[i], "REVERSE") == 0) {
                 // MATCH-EXCEPTION: the original flips the clockwise bit as a 1-bit field (x ^ ((~x ^ x) & 0x200));
                 // flags has no bitfield view, so the flip is a masked merge.
                 packet->flags = (packet->flags & ~0x200u) | (~packet->flags & 0x200u);
-            } else if (NuStrICmp(params[i], AIPathFacingName) == 0) {
+            } else if (NuStrICmp(params[i], "facing") == 0) {
                 processor->action_data_1 |= 1;
-            } else if (NuStrICmp(params[i], AIPathCanGoOffPathName) == 0) {
+            } else if (NuStrICmp(params[i], "can_go_off_path") == 0) {
                 processor->action_data_1 |= 2;
-            } else if (NuStrICmp(params[i], AIPathCurrentDistanceName) == 0) {
+            } else if (NuStrICmp(params[i], "currentdist") == 0) {
                 processor->action_data_1 |= 4;
             } else {
                 packet->movement_instruction_parameter = AIParamToFloatEx(packet, processor, params[i]);
@@ -16252,11 +16215,11 @@ i32 Action_CircleOpponent(AISYS_PC *system, AISCRIPTPROCESS_PC *processor, AIPAC
             if (AIActionParseSpeedFn != NULL && AIActionParseSpeedFn(params[i], &packet->goal_speed_mode) != 0) {
                 continue;
             }
-            if (NuStrICmp(params[i], AIPathAnticlockwiseName) == 0) {
+            if (NuStrICmp(params[i], "ANTICLOCKWISE") == 0) {
                 packet->flags &= ~0x200u;
-            } else if (NuStrICmp(params[i], AIPathClockwiseName) == 0) {
+            } else if (NuStrICmp(params[i], "CLOCKWISE") == 0) {
                 packet->flags |= 0x200u;
-            } else if (NuStrICmp(params[i], AIPathReverseName) == 0) {
+            } else if (NuStrICmp(params[i], "REVERSE") == 0) {
                 // MATCH-EXCEPTION: the original flips the clockwise bit as a 1-bit field (x ^ ((~x ^ x) & 0x200));
                 // flags has no bitfield view, so the flip is a masked merge.
                 packet->flags = (packet->flags & ~0x200u) | (~packet->flags & 0x200u);
@@ -16266,11 +16229,11 @@ i32 Action_CircleOpponent(AISYS_PC *system, AISCRIPTPROCESS_PC *processor, AIPAC
                 } else {
                     packet->flags |= 0x200u;
                 }
-            } else if (NuStrICmp(params[i], AIPathFacingName) == 0) {
+            } else if (NuStrICmp(params[i], "facing") == 0) {
                 processor->action_data_1 |= 1;
-            } else if (NuStrICmp(params[i], AIPathCanGoOffPathName) == 0) {
+            } else if (NuStrICmp(params[i], "can_go_off_path") == 0) {
                 processor->action_data_1 |= 2;
-            } else if (NuStrICmp(params[i], AIPathCurrentDistanceName) == 0) {
+            } else if (NuStrICmp(params[i], "currentdist") == 0) {
                 processor->action_data_1 |= 4;
             } else {
                 packet->movement_instruction_parameter = AIParamToFloatEx(packet, processor, params[i]);
@@ -16306,7 +16269,7 @@ i32 Action_MoveAwayFromOpponent(AISYS_PC *sys, AISCRIPTPROCESS_PC *processor, AI
             if (AIActionParseSpeedFn != NULL && AIActionParseSpeedFn(params[i], &packet->goal_speed_mode) != 0) {
                 continue;
             }
-            if (NuStrICmp(params[i], AIPathFaceName) == 0) {
+            if (NuStrICmp(params[i], "face") == 0) {
                 processor->action_data_1 = 1;
             } else {
                 packet->movement_instruction_parameter = AIParamToFloatEx(packet, processor, params[i]);
@@ -16337,7 +16300,7 @@ i32 Action_MoveAwayFromPlayer(AISYS_PC *sys, AISCRIPTPROCESS_PC *processor, AIPA
             if (AIActionParseSpeedFn != NULL && AIActionParseSpeedFn(params[i], &packet->goal_speed_mode) != 0) {
                 continue;
             }
-            if (NuStrICmp(params[i], AIPathFaceName) == 0) {
+            if (NuStrICmp(params[i], "face") == 0) {
                 processor->action_data_1 = 1;
             } else {
                 packet->movement_instruction_parameter = AIParamToFloatEx(packet, processor, params[i]);
@@ -16366,7 +16329,7 @@ i32 Action_MoveAwayFromPlayer2(AISYS_PC *sys, AISCRIPTPROCESS_PC *processor, AIP
             if (AIActionParseSpeedFn != NULL && AIActionParseSpeedFn(params[i], &packet->goal_speed_mode) != 0) {
                 continue;
             }
-            if (NuStrICmp(params[i], AIPathFaceName) == 0) {
+            if (NuStrICmp(params[i], "face") == 0) {
                 processor->action_data_1 = 1;
             } else {
                 packet->movement_instruction_parameter = AIParamToFloatEx(packet, processor, params[i]);
@@ -16578,19 +16541,18 @@ i32 Action_GoToOrigin(AISYS_PC *sys, AISCRIPTPROCESS_PC *processor, AIPACKET_PC 
                     AIActionParseSpeedFn(params[index], &packet->goal_speed_mode) != 0) {
                     continue;
                 }
-                value = NuStrIStr(params[index], (char *)AIPathWaitTimeName);
+                value = NuStrIStr(params[index], "waittime");
                 if (value != NULL) {
-                    processor->action_timer =
-                        AIParamToFloatEx(packet, processor, value + NuStrLen(AIPathWaitTimeName) + 1);
-                } else if ((value = NuStrIStr(params[index], (char *)AIActionMinTimeName)) != NULL) {
-                    min_time = AIParamToFloatEx(packet, processor, value + NuStrLen(AIActionMinTimeName) + 1);
-                } else if ((value = NuStrIStr(params[index], (char *)AIActionMaxTimeName)) != NULL) {
-                    max_time = AIParamToFloatEx(packet, processor, value + NuStrLen(AIActionMaxTimeName) + 1);
-                } else if (NuStrICmp(params[index], AIPathXZRangeCheckName) == 0) {
+                    processor->action_timer = AIParamToFloatEx(packet, processor, value + NuStrLen("waittime") + 1);
+                } else if ((value = NuStrIStr(params[index], "mintime")) != NULL) {
+                    min_time = AIParamToFloatEx(packet, processor, value + NuStrLen("mintime") + 1);
+                } else if ((value = NuStrIStr(params[index], "maxtime")) != NULL) {
+                    max_time = AIParamToFloatEx(packet, processor, value + NuStrLen("maxtime") + 1);
+                } else if (NuStrICmp(params[index], "xz_rangecheck") == 0) {
                     processor->action_data_2 = 1;
-                } else if ((value = NuStrIStr(params[index], (char *)AIPathGoalRangeName)) != NULL) {
+                } else if ((value = NuStrIStr(params[index], "goalrange")) != NULL) {
                     packet->movement_instruction_parameter =
-                        AIParamToFloatEx(packet, processor, value + NuStrLen(AIPathGoalRangeName) + 1);
+                        AIParamToFloatEx(packet, processor, value + NuStrLen("goalrange") + 1);
                 } else {
                     packet->movement_instruction_parameter = AIParamToFloatEx(packet, processor, params[index]);
                 }
@@ -16668,14 +16630,13 @@ i32 Action_GoToLocator(AISYS_PC *sys, AISCRIPTPROCESS_PC *processor, AIPACKET_PC
                     ++index;
                     if (index < param_count) {
                         if (use_indexed_name != 0 && ((APIOBJECT_PC *)packet->owner)->locator_name_index != -1) {
-                            sprintf(locator_name, AILocatorIndexedFormat, params[index],
+                            sprintf(locator_name, "%s_%d", params[index],
                                     ((APIOBJECT_PC *)packet->owner)->locator_name_index);
                         } else if (use_personal_name != 0 && ((APIOBJECT_PC *)packet->owner)->character_data != NULL) {
-                            sprintf(locator_name, AILocatorPersonalFormat, params[index],
+                            sprintf(locator_name, "%s_%s", params[index],
                                     ((APIOBJECT_PC *)packet->owner)->character_data->name);
                         } else if (random_locator_count != 0) {
-                            sprintf(locator_name, AILocatorIndexedFormat, params[index],
-                                    NuRand(NULL) % random_locator_count);
+                            sprintf(locator_name, "%s_%d", params[index], NuRand(NULL) % random_locator_count);
                         } else {
                             sprintf(locator_name, params[index]);
                         }
@@ -16693,11 +16654,11 @@ i32 Action_GoToLocator(AISYS_PC *sys, AISCRIPTPROCESS_PC *processor, AIPACKET_PC
                     continue;
                 }
 
-                if (NuStrIStr(params[index], (char *)AIActionPersonalName) != NULL) {
+                if (NuStrIStr(params[index], "personal") != NULL) {
                     use_personal_name = 1;
                     continue;
                 }
-                if (NuStrIStr(params[index], (char *)AIActionIndexedName) != NULL) {
+                if (NuStrIStr(params[index], "indexed") != NULL) {
                     use_indexed_name = 1;
                     continue;
                 }
@@ -16707,32 +16668,31 @@ i32 Action_GoToLocator(AISYS_PC *sys, AISCRIPTPROCESS_PC *processor, AIPACKET_PC
                     random_locator_count = AIParamToFloatEx(packet, processor, value + NuStrLen("random") + 1);
                     continue;
                 }
-                value = NuStrIStr(params[index], (char *)AIPathWaitTimeName);
+                value = NuStrIStr(params[index], "waittime");
                 if (value != NULL) {
-                    processor->action_timer =
-                        AIParamToFloatEx(packet, processor, value + NuStrLen(AIPathWaitTimeName) + 1);
+                    processor->action_timer = AIParamToFloatEx(packet, processor, value + NuStrLen("waittime") + 1);
                     continue;
                 }
-                value = NuStrIStr(params[index], (char *)AIActionMinTimeName);
+                value = NuStrIStr(params[index], "mintime");
                 if (value != NULL) {
-                    minimum_time = AIParamToFloatEx(packet, processor, value + NuStrLen(AIActionMinTimeName) + 1);
+                    minimum_time = AIParamToFloatEx(packet, processor, value + NuStrLen("mintime") + 1);
                     continue;
                 }
-                value = NuStrIStr(params[index], (char *)AIActionMaxTimeName);
+                value = NuStrIStr(params[index], "maxtime");
                 if (value != NULL) {
-                    maximum_time = AIParamToFloatEx(packet, processor, value + NuStrLen(AIActionMaxTimeName) + 1);
+                    maximum_time = AIParamToFloatEx(packet, processor, value + NuStrLen("maxtime") + 1);
                     continue;
                 }
-                value = NuStrIStr(params[index], (char *)AIPathGoalRangeName);
+                value = NuStrIStr(params[index], "goalrange");
                 if (value != NULL) {
                     packet->movement_instruction_parameter =
-                        AIParamToFloatEx(packet, processor, value + NuStrLen(AIPathGoalRangeName) + 1);
+                        AIParamToFloatEx(packet, processor, value + NuStrLen("goalrange") + 1);
                     continue;
                 }
 
                 if (NuStrICmp(params[index], "on_ground") == 0) {
                     processor->action_data_1 |= 1u;
-                } else if (NuStrICmp(params[index], AIPathXZRangeCheckName) == 0) {
+                } else if (NuStrICmp(params[index], "xz_rangecheck") == 0) {
                     processor->action_data_1 |= 2u;
                 } else if (NuStrICmp(params[index], "face_opponent") == 0) {
                     processor->action_data_1 |= 4u;
@@ -16845,13 +16805,13 @@ i32 Action_FollowPath(AISYS_PC *sys, AISCRIPTPROCESS_PC *processor, AIPACKET_PC 
                 continue;
             }
 
-            value = NuStrIStr(params[index], (char *)AIActionMinTimeName);
+            value = NuStrIStr(params[index], "mintime");
             if (value != NULL) {
                 minimum_time = AIParamToFloatEx(packet, processor, value + 8);
                 continue;
             }
 
-            value = NuStrIStr(params[index], (char *)AIActionMaxTimeName);
+            value = NuStrIStr(params[index], "maxtime");
             if (value != NULL) {
                 maximum_time = AIParamToFloatEx(packet, processor, value + 8);
                 continue;
@@ -19168,19 +19128,6 @@ void AIScriptMissingStateDiagnosticAlternate(const char *format, ...) {
 void AIScriptMissingConditionDiagnostic(const char *format, ...) {
 }
 
-#pragma const_seg(".rdata$AIRegistryTextPc007562c8")
-const char AIRegistryTextPc007562c8[13] = "FollowPlayer";
-#pragma const_seg()
-#pragma const_seg(".rdata$AIRegistryTextPc007566a8")
-const char AIRegistryTextPc007566a8[9] = "DontPush";
-#pragma const_seg()
-#pragma const_seg(".rdata$AIRegistryTextPc00756a74")
-const char AIRegistryTextPc00756a74[11] = "SetLocator";
-#pragma const_seg()
-#pragma const_seg(".rdata$AIRegistryTextPc007571b8")
-const char AIRegistryTextPc007571b8[18] = "OpponentIsAThreat";
-#pragma const_seg()
-
 #pragma data_seg(".data$api_aiactiondefs")
 AIACTIONDEF_PC api_aiactiondefs[55] = {
     {"Idle", Action_Idle, 0, 0, 0},
@@ -19194,7 +19141,7 @@ AIACTIONDEF_PC api_aiactiondefs[55] = {
     {"Circle", Action_Circle, 0, 0, 0},
     {"CircleOpponent", Action_CircleOpponent, 0, 0, 0},
     {"CirclePlayer", Action_CirclePlayer, 0, 0, 0},
-    {AIRegistryTextPc007562c8, Action_FollowPlayer, 0, 0, 0},
+    {"FollowPlayer", Action_FollowPlayer, 0, 0, 0},
     {"MoveAwayFromOpponent", Action_MoveAwayFromOpponent, 0, 0, 0},
     {"FollowOpponent", Action_FollowOpponent, 0, 0, 0},
     {"FacePlayer", Action_FacePlayer, 0, 0, 0},
@@ -19206,7 +19153,7 @@ AIACTIONDEF_PC api_aiactiondefs[55] = {
     {"FlatTerrain", Action_FlatTerrain, 0, 0, 0},
     {"ShadowTerrain", Action_ShadowTerrain, 0, 0, 0},
     {"DontUseShadowTerrain", Action_DontUseShadowTerrain, 0, 0, 0},
-    {AIRegistryTextPc007566a8, Action_DontPush, 0, 0, 0},
+    {"DontPush", Action_DontPush, 0, 0, 0},
     {"CanSeeBehind", Action_CanSeeBehind, 0, 0, 0},
     {"RequiresLOS", Action_RequiresLOS, 0, 0, 0},
     {"SetFullPathSearch", Action_SetFullPathSearch, 0, 0, 0},
@@ -19219,7 +19166,7 @@ AIACTIONDEF_PC api_aiactiondefs[55] = {
     {"GoToNodeRandom", Action_GoToNodeRandom, 0, 0, 0},
     {"GoToOrigin", Action_GoToOrigin, 0, 0, 0},
     {"GoToLocator", Action_GoToLocator, 0, 0, 0},
-    {AIRegistryTextPc00756a74, Action_SetLocator, 0, 0, 0},
+    {"SetLocator", Action_SetLocator, 0, 0, 0},
     {"SetRespawnLocator", Action_SetRespawnLocator, 0, 0, 0},
     {"FollowPath", Action_FollowPath, 0, 0, 0},
     {"MoveAwayFromNode", Action_MoveAwayFromNode, 0, 0, 0},
@@ -19269,7 +19216,7 @@ AICONDITIONDEF_PC api_aiconditiondefs[50] = {
     {"GoodyInTriggerArea", Condition_GoodyInTriggerArea, Condition_GoodyInTriggerAreaInit},
     {"OpponentInTriggerArea", Condition_OpponentInTriggerArea, Condition_OpponentInTriggerAreaInit},
     {"GotOpponent", Condition_GotOpponent, NULL},
-    {AIRegistryTextPc007571b8, Condition_OpponentIsAThreat, NULL},
+    {"OpponentIsAThreat", Condition_OpponentIsAThreat, NULL},
     {"OpponentOnSamePath", Condition_OpponentOnSamePath, NULL},
     {"OpponentRange", Condition_OpponentRange, NULL},
     {"NearestOpponentRange", Condition_NearestOpponentRange, NULL},

@@ -57,7 +57,6 @@ extern "C" {
     STATIC_ASSERT(offsetof(PC_TEXTURE_ANIM_ENV, flags) == 0xe8);
     extern PC_TEXTURE_ANIM_LIST *ntal_first;
     PC_TEXTURE_ANIM_ENV *NuTexAnimEnvCreate(VARIPTR *, struct numtl_s *, u16 *, void *);
-    extern const char NuTextureAnimationSourcePathPC[50];
 
     typedef struct TEXTURE_ANIM_PROGRAM_PC TEXTURE_ANIM_PROGRAM_PC;
     typedef struct TEXTURE_ANIMATION_PC TEXTURE_ANIMATION_PC;

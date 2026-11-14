@@ -986,7 +986,7 @@ i32 NuSound3SetReverb(i32 enable) {
 }
 
 void NuSound3SetLoopHoldTime(f32 time) {
-    NuSound3LoopHoldTime = (i32)(time * NuScale1000);
+    NuSound3LoopHoldTime = (i32)(time * 1000.0);
 }
 
 void NuSound3StopRumble(void) {
@@ -1133,7 +1133,7 @@ static void fnAudioSample(NUFPAR_PC *fpar) {
             }
         } else if (NuStrICmp(fpar->word_buffer_ptr, "fname") == 0) {
             NuFParGetWord(fpar);
-            NuStrCat(fpar->word_buffer_ptr, NuFileExt_wav_PC);
+            NuStrCat(fpar->word_buffer_ptr, ".wav");
 
             if ((SfxInfo[NumSfxInst].sample_id_flags & 0xc0000u) == 0) {
                 i = 0;

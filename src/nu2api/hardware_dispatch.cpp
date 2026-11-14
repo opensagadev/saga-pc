@@ -3,7 +3,6 @@
 extern "C" {
     void NuRndrConfigureLeafPc(f32 a, f32 b, i32 c);
     void NuRndrInitLeafPc(VARIPTR *buffer, VARIPTR end);
-    extern const f32 InitOnceHalf;
     i32 PCDeviceShowCursorPc(i32 show);
     void NuRndrDwaInitPc(void);
     void NuQFntInit(VARIPTR *buffer, VARIPTR end);
@@ -51,11 +50,11 @@ extern "C" i32 NuInitHardwarePc(VARIPTR *buffer, VARIPTR *end, i32 allocate, ...
     va_list args;
     NuAPIInit();
     if (allocate) {
-        buffer->void_ptr = NuAlloc(0x4000000, NuHwAllocSourcePc, 0xb2);
+        buffer->void_ptr = NuAlloc(0x4000000, ".\\pcapi.cpp", 0xb2);
         end->addr = buffer->addr + 0x4000000;
     }
     PcInitializeStartupCriticalSection();
-    NuRndrConfigureLeafPc(1.0f, InitOnceHalf, 0);
+    NuRndrConfigureLeafPc(1.0f, 0.5f, 0);
     va_start(args, allocate);
     do {
         selector = va_arg(args, i32);
@@ -351,7 +350,7 @@ extern "C" i32 NuInitHardwarePc(VARIPTR *buffer, VARIPTR *end, i32 allocate, ...
         if (NuHwSoundDfsNamePc && *NuHwSoundDfsNamePc) {
             ++count;
         }
-        const char **names = (const char **)NuAlloc(count * 4, NuHwAllocSourcePc, 0x2a0);
+        const char **names = (const char **)NuAlloc(count * 4, ".\\pcapi.cpp", 0x2a0);
         if (NuHwDfsNamePc && *NuHwDfsNamePc) {
             PCByteCopy(names, &NuHwDfsNamePc, 4);
         }

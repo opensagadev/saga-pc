@@ -23,7 +23,6 @@ extern "C" {
      * Others remain opaque; production-local SYSTEM14/PROGRESS70 retained.
      * Exact full local source cohort is obstacle-load-local.hfrag, typed GIZOBSTACLE_RUNTIME_PC used only in scratch.
      */
-    extern const char GizObstacleTypeNamePc[12];
     void *GizObstacles_ReserveBufferSpace(void *);
     i32 GizObstacles_Load(void *, void *);
     void GizObstacles_PostLoad(void *, void *);

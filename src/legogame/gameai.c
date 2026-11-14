@@ -984,11 +984,9 @@ i32 CheckPosAIArea(AIAREA_PC *area, NUVEC *position, float tolerance) {
            local_position.y - tolerance <= area->height && local_position.z - tolerance <= area->half_depth;
 }
 
-const char GameAIEveryonePc[9] = "Everyone";
-
 u8 LevelCharacterTypeID(char *name) {
     i32 index;
-    if (NuStrICmp(name, (char *)GameAIEveryonePc) == 0) {
+    if (NuStrICmp(name, "Everyone") == 0) {
         return 0x40;
     }
     if (CurrentStoryCList != NULL) {
@@ -1018,7 +1016,7 @@ u8 SpecialRouteCharacterTypeID(char *name) {
     i32 skipped = 0;
     i32 suit;
     i32 index;
-    if (NuStrICmp(name, (char *)GameAIEveryonePc) == 0) {
+    if (NuStrICmp(name, "Everyone") == 0) {
         return 0x40;
     }
     for (suit = 0; suit < 10; ++suit) {
@@ -1232,7 +1230,7 @@ APIOBJECT_PC *GetNamedAPIObject(void *system_pointer, char *name) {
     if (object != NULL) {
         return (APIOBJECT_PC *)object;
     }
-    if (NuStrICmp(name, (char *)GameAIPlayerName) == 0) {
+    if (NuStrICmp(name, "player") == 0) {
         object = player;
     } else if (NuStrICmp(name, "player_2") == 0) {
         object = player != Player[0] ? Player[0] : Player[1];
@@ -2901,7 +2899,7 @@ void GameAISysReset(AISYS_PC *system) {
         if (script_index != 0) {
             sprintf(script_name, "Level%d", script_index);
         } else {
-            sprintf(script_name, AIScriptKeywordLevel);
+            sprintf(script_name, "Level");
         }
         if (AIScriptFind(WORLD->ai_sys, script_name, 0, 1, 0) == NULL) {
             continue;

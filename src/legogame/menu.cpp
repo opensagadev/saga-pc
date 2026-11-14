@@ -11,7 +11,6 @@ extern "C" {
     extern i16 TextIdPc88074c;
     extern i16 TextIdPc880708;
     extern i16 TextIdPc880764;
-    extern const char ExtrasNameFormatPc[];
 }
 
 struct EXTRAS_AREA_SAVE_READER_PC { // size 0xc
@@ -399,7 +398,7 @@ extern "C" void MenuDrawExtras(MENU *menu) {
                 alpha = 0.5f;
                 NuStrCpy(number, TTab[TextIdPc880764]);
             }
-            sprintf(text, ExtrasNameFormatPc, TTab[*ExtrasCheatsPc[index].text_id], number);
+            sprintf(text, "%s: %s", TTab[*ExtrasCheatsPc[index].text_id], number);
         }
         dme_sy = menu->item_scale;
         if (index >= 8) {

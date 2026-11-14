@@ -65,15 +65,15 @@ void Text_LoadStrings(VARIPTR *buffer, VARIPTR *buffer_end) {
     TextRegisterButtonMapFn(Text_DecodeButtons);
     NuStrCpy(language, Text_GetLanguagePath(Text_Language));
 
-    NuStrCpy(path, TextLoadPermTextDirectory);
+    NuStrCpy(path, "stuff\\text\\");
     NuStrCat(path, language);
-    NuStrCat(path, AreaResidentsExtension);
+    NuStrCat(path, ".txt");
     Text_LoadAndFixUpStrings(path, &string_buffer, TTab, 0x70d);
 
     if (StartupGameFlag1 != 0) {
         IntroText_SetTextID(tALONGTIMEAGO);
     } else {
-        NuStrCpy(path, TextLoadPermTextDirectory);
+        NuStrCpy(path, "stuff\\text\\");
         NuStrCat(path, language);
         NuStrCat(path, "_api.txt");
         Text_LoadAndFixUpStrings(path, &string_buffer, TTab, 0x70d);

@@ -76,7 +76,6 @@ static void Hub_MakeListCharactersAvailable(i16 *characters) {
 
 /* HubAI producer family. */
 extern const char *HubAreaNamesPc[10];
-extern const char HubAIServingCustomerPc[16];
 
 void LSW_Hub_InitAI(WORLDINFO *world) {
     i32 area;
@@ -95,7 +94,7 @@ void LSW_Hub_InitAI(WORLDINFO *world) {
     }
     HubAiMusicStatePc.area = -1;
     HubAiMusicStatePc.area_message = SetGizAIMessage(gizaimessagesys, "Area", 0.0f, NULL);
-    HubAiMusicStatePc.serving_customer_message = SetGizAIMessage(gizaimessagesys, HubAIServingCustomerPc, 0.0f, NULL);
+    HubAiMusicStatePc.serving_customer_message = SetGizAIMessage(gizaimessagesys, "ServingCustomer", 0.0f, NULL);
     HubAiMusicStatePc.counter_count = 0;
     for (counter = 0; counter < 4; ++counter) {
         sprintf(name, "CounterA_%d", counter);
@@ -197,7 +196,7 @@ void HubGoneThroughDoorPc(WORLDINFO *world) {
     HubAiMusicStatePc.door_state = 0;
     HubAiMusicStatePc.customer = NULL;
     HubAiMusicStatePc.serving_object = NULL;
-    SetGizAIMessage(gizaimessagesys, HubAIServingCustomerPc, 0.0f, HubAiMusicStatePc.serving_customer_message);
+    SetGizAIMessage(gizaimessagesys, "ServingCustomer", 0.0f, HubAiMusicStatePc.serving_customer_message);
     if (HubAiMusicStatePc.area_message != NULL) {
         HubAiMusicStatePc.area_message->value = (f32)HubAiMusicStatePc.area;
     }

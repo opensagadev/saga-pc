@@ -44,8 +44,6 @@ extern "C" {
     i32 Teleport_GetNumOutputs(GIZMO_PC *);
     void Teleport_Activate(GIZMO_PC *, i32);
     i32 Teleport_ActivateRev(GIZMO_PC *, i32, i32);
-    extern const char PCContextName_Teleport[9];
-    extern const char GrappleOccupiedOutputTextPc[9];
 }
 
 typedef struct TELEPORT_MOTION_PC {   // size 0xfc
@@ -737,7 +735,7 @@ extern "C" {
     }
 
     char *Teleport_GetOutputName(GIZMO_PC *gizmo, i32 output) {
-        return (char *)GrappleOccupiedOutputTextPc;
+        return "Occupied";
     }
 
     i32 Teleport_GetNumOutputs(GIZMO_PC *gizmo) {
@@ -768,7 +766,7 @@ extern "C" {
         addtype->fns.load_fn = NULL;
         addtype->fns.post_load_fn = NULL;
         addtype->fns.add_level_sfx_fn = NULL;
-        addtype->name = (char *)PCContextName_Teleport;
+        addtype->name = "Teleport";
         addtype->fns.get_max_gizmos_fn = (i32(*)(void *))Teleport_GetMaxGizmos;
         addtype->fns.add_gizmos_fn = (void *)Teleport_AddGizmos;
         addtype->fns.get_gizmo_name_fn = (char *(*)(GIZMO_PC *))Teleport_GetGizmoName;

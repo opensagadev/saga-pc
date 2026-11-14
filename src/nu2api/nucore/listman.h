@@ -8,7 +8,6 @@
 #ifdef __cplusplus
 extern "C" {
 #endif
-    extern const char NuLstCreateTag[52];
 #ifdef __cplusplus
 }
 #endif

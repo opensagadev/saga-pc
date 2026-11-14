@@ -436,8 +436,8 @@ i32 StepBackFromTarget(GAMEOBJECT *object) {
             inner_distance = object->collision_radius * PlayerStepInnerActionPc + blowup->target_radius;
             outer_distance = object->collision_radius * PlayerStepOuterActionPc + blowup->target_radius;
         } else {
-            inner_distance = object->collision_radius * PlayerStepInnerPc + blowup->target_radius;
-            outer_distance = object->collision_radius * PlayerStepOuterPc + blowup->target_radius;
+            inner_distance = object->collision_radius * 0.75 + blowup->target_radius;
+            outer_distance = object->collision_radius * 1.25 + blowup->target_radius;
         }
     } else {
         if (!(object->character_data->game_character->flags_090 & 0x8000) || object->force_target == NULL) {

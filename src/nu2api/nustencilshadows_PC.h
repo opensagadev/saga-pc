@@ -175,7 +175,6 @@ extern "C" {
     extern f32 NuPrimYBias;
     extern const f32 NuPrimPS2XScale;
     extern const f32 NuPrimPS2YScale;
-    extern const f32 nu_fsign_minus_one;
     extern u32 nuprim_field_ba8;
     extern f32 NuRndrFxHeightOverridePc;
     extern f32 NuRndrFxHeightPc;
@@ -224,8 +223,6 @@ extern "C" {
     extern NUTEXBMP_COLOUR_PC NuTexBmpPalettePc[0x100];
     extern i32 NuQFntScanXPc;
     extern i32 NuQFntScanYPc;
-    extern const char NuTextureSourcePathPC[55];
-    extern const char NuQFntSourcePathPC[56];
     extern i32 SceneUploadBufferSizePC;
     extern const char SceneUploadSourcePathPC[57];
 #define nudlist_flags (PCDynamicDisplayScene.render_flags)    // NOLINT(readability-identifier-naming)
@@ -307,7 +304,6 @@ extern "C" {
     STATIC_ASSERT(offsetof(PC_GOBJ_REGISTRY_AUX_PC, payload) == 0xc);
     extern i32 NuGobjRegistryInitializedPc;
     extern i32 NuGobjRegistryCountPc;
-    extern const char NuGobjSourcePathPc[51];
 #ifdef __cplusplus
     void PCGraphicsSubmitViewportPc(i32, i32, i32, i32);
     void PCGraphicsSetSamplerTuplePc(u32, const u32 *);

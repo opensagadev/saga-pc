@@ -145,7 +145,6 @@ extern "C" {
     struct addgizmotype_pc_s;
     GIZMO_PC *AddGizmo(void *system, i32 type_id, char *name, void *object);
     /* Original gizmo.c private error caller group; existing local CONFIG_SYSTEM view retained. */
-    extern const char GizmoSpecialErrorTabPc[3];
     i32 GizmoFileReadName(char *);
     i32 GizmoGetUniqueName(GIZMOSYS_PREFIX_PC *, char *, char *, char *, i32);
 

@@ -18,7 +18,6 @@
 extern "C" {
 #endif
     extern i32 objhitobj_nohurtsfx;
-    extern const char EpisodeVI_ElectricFloor[14];
     extern const char EpisodeVI_obstacle21[11];
     extern const char EpisodeVI_force15[8];
     extern const char EpisodeVI_force16[8];
@@ -35,8 +34,6 @@ extern "C" {
     extern i32 SarlaccTargetShieldPc[2];
     extern const char EpisodeVI_magnet_drop[21];
     extern const char EpisodeVI_magnet_on[14];
-    extern const char EpisodeVI_ffieldoff[10];
-    extern const char EpisodeVI_ffield[7];
     extern const char EpisodeVI_cannon_1[9];
     extern const char EpisodeVI_cover_format[9];
     extern const char EpisodeVI_cover_gizmo_format[10];

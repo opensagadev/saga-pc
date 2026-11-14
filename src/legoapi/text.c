@@ -471,7 +471,7 @@ void Text_MakeTime(f32 time, i32 show_hours, i32 show_minutes, i32 show_centisec
     } else if (show_centiseconds != 0) {
         sprintf(text, "%i.%.2i", seconds, centiseconds);
     } else {
-        sprintf(text, Text_TimeS, seconds);
+        sprintf(text, "%i", seconds);
     }
 }
 

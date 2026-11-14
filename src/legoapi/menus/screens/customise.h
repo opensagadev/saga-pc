@@ -63,7 +63,6 @@ extern "C" {
     extern const char *InitAsciiLeftPc;
     extern i32 CustomiseMode[2];
     extern char CustomiseLetter[39];
-    extern const char GameAudioName00753354Pc[11];
     void Customiser_Update(CUSTOMISER_LAYERS_PC *, struct WORLDINFO_s *);
     i32 Customiser_MenuAvailable(CUSTOMISER_LAYERS_PC *);
     void Customiser_Update(CUSTOMISER_LAYERS_PC *, struct WORLDINFO_s *);

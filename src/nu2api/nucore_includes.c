@@ -627,7 +627,7 @@ void *NuFileLoad(char *path) {
     if (file != 0) {
         i32 size = (i32)NuFileOpenSize(file);
         if (size > 0) {
-            data = NuAlloc(size, NuFileSourcePathPC, 0x64b);
+            data = NuAlloc(size, "d:\\projects\\game_saga\\nu2api.saga\\nucore\\nufile.c", 0x64b);
             if (data != NULL) {
                 NuFileRead(file, data, size);
             }
@@ -880,7 +880,7 @@ NUFILE NuFileOpenDF(const char *filepath, i32 mode, NUDATHDR *header, i32 quiet)
 
     device->format_name_fn(device, path, (char *)filepath, sizeof(path));
     if (device->id == 2) {
-        NuStrCat(path, nufile_disc_suffix);
+        NuStrCat(path, ";1");
     }
     if (device->id == 1) {
         mc_port = path[2] - '0';
@@ -1854,14 +1854,16 @@ i32 NuFileAlign(NUFILE file, i32 mask) {
 void NuFileInitAddress(i32 capacity) {
     if (capacity != MAX_FILE_ADDRESS) {
         if (addr_ref != NULL) {
-            NuFree(addr_ref, NuFileSourcePathPC, 0xa58);
+            NuFree(addr_ref, "d:\\projects\\game_saga\\nu2api.saga\\nucore\\nufile.c", 0xa58);
         }
         if (addr_pos != NULL) {
-            NuFree(addr_pos, NuFileSourcePathPC, 0xa59);
+            NuFree(addr_pos, "d:\\projects\\game_saga\\nu2api.saga\\nucore\\nufile.c", 0xa59);
         }
         MAX_FILE_ADDRESS = capacity;
-        addr_ref = NuAlloc(MAX_FILE_ADDRESS * sizeof(NUFILE_ADDRESS_PC), NuFileSourcePathPC, 0xa5d);
-        addr_pos = NuAlloc(MAX_FILE_ADDRESS * sizeof(NUFILE_ADDRESS_PC), NuFileSourcePathPC, 0xa5e);
+        addr_ref = NuAlloc(MAX_FILE_ADDRESS * sizeof(NUFILE_ADDRESS_PC),
+                           "d:\\projects\\game_saga\\nu2api.saga\\nucore\\nufile.c", 0xa5d);
+        addr_pos = NuAlloc(MAX_FILE_ADDRESS * sizeof(NUFILE_ADDRESS_PC),
+                           "d:\\projects\\game_saga\\nu2api.saga\\nucore\\nufile.c", 0xa5e);
     }
     ref_count = 0;
     pos_count = 0;
@@ -1869,11 +1871,11 @@ void NuFileInitAddress(i32 capacity) {
 
 void NuFileTidyAddress(void) {
     if (addr_ref != NULL) {
-        NuFree(addr_ref, NuFileSourcePathPC, 0xa68);
+        NuFree(addr_ref, "d:\\projects\\game_saga\\nu2api.saga\\nucore\\nufile.c", 0xa68);
         addr_ref = NULL;
     }
     if (addr_pos != NULL) {
-        NuFree(addr_pos, NuFileSourcePathPC, 0xa6d);
+        NuFree(addr_pos, "d:\\projects\\game_saga\\nu2api.saga\\nucore\\nufile.c", 0xa6d);
         addr_pos = NULL;
     }
     MAX_FILE_ADDRESS = 0;
@@ -2285,7 +2287,7 @@ void NuDatClose(NUDATHDR *header) {
         }
     }
     if (header->unknown_b0 != 0) {
-        NuFree(header, NuFileSourcePathPC, 0xd22);
+        NuFree(header, "d:\\projects\\game_saga\\nu2api.saga\\nucore\\nufile.c", 0xd22);
     }
 }
 
@@ -2445,10 +2447,10 @@ NUDATHDR *NuDatOpenEx(const char *filepath, VARIPTR *arena, i32 *size_out, i16 m
             header->mode = mode;
             if (nufile_lsn_allowed != 0 && default_device->id == 2) {
                 /* Disc path for the console LSN lookup; the PC build never resolves it. */
-                NuStrCpy(formatted_name, WorldPathSeparator);
+                NuStrCpy(formatted_name, "\\");
                 NuStrCat(formatted_name, default_device->cur_dir);
                 NuStrCat(formatted_name, filepath);
-                NuStrCat(formatted_name, nufile_disc_suffix);
+                NuStrCat(formatted_name, ";1");
             }
             header->unknown_b4 = 0;
             nufile_buffering_enabled = saved_buffering;
@@ -2481,33 +2483,33 @@ void NuFileExtInit(i32 low_resolution) {
     memset(extensions, 0, sizeof(extensions));
     num_extensions = 0;
 
-    NuFileAddExtensionPC(NuFileExt_ca3_PC, 0, 6);
-    NuFileAddExtensionPC(NuFileExt_cbs_PC, 1, 6);
+    NuFileAddExtensionPC(".ca3", 0, 6);
+    NuFileAddExtensionPC(".cbs", 1, 6);
     NuFileAddExtensionPC("_360.ghg", 2, 6);
     NuFileAddExtensionPC("_360.gsc", 3, 6);
     NuFileAddExtensionPC("_360.tex", 4, 6);
-    NuFileAddExtensionPC(NuFileExt_cc2_PC, 5, 6);
-    NuFileAddExtensionPC(NuFileExt_wavx_PC, 6, 6);
-    NuFileAddExtensionPC(NuFileExt_wavm_PC, 7, 6);
-    NuFileAddExtensionPC(NuFileExt_wmv_PC, 8, 6);
+    NuFileAddExtensionPC(".cc2", 5, 6);
+    NuFileAddExtensionPC(".wavx", 6, 6);
+    NuFileAddExtensionPC(".wavm", 7, 6);
+    NuFileAddExtensionPC(".wmv", 8, 6);
 
-    NuFileAddExtensionPC(NuFileExt_ca3_PC, 0, 5);
-    NuFileAddExtensionPC(NuFileExt_cbs_PC, 1, 5);
+    NuFileAddExtensionPC(".ca3", 0, 5);
+    NuFileAddExtensionPC(".cbs", 1, 5);
     NuFileAddExtensionPC("_ps3.ghg", 2, 5);
     NuFileAddExtensionPC("_ps3.gsc", 3, 5);
     NuFileAddExtensionPC("_ps3.tex", 4, 5);
-    NuFileAddExtensionPC(NuFileExt_cc2_PC, 5, 5);
+    NuFileAddExtensionPC(".cc2", 5, 5);
     NuFileAddExtensionPC(".msf", 6, 5);
-    NuFileAddExtensionPC(NuFileExt_mib_PC, 7, 5);
+    NuFileAddExtensionPC(".mib", 7, 5);
     NuFileAddExtensionPC(".pam", 8, 5);
 
-    NuFileAddExtensionPC(NuFileExt_an3_PC, 0, 4);
-    NuFileAddExtensionPC(NuFileExt_bsa_PC, 1, 4);
+    NuFileAddExtensionPC(".an3", 0, 4);
+    NuFileAddExtensionPC(".bsa", 1, 4);
 
     NuFileAddExtensionPC("_pc.dds", 4, 4);
-    NuFileAddExtensionPC(NuFileExt_cu2_PC, 5, 4);
-    NuFileAddExtensionPC(NuFileExt_wav_PC, 6, 4);
-    NuFileAddExtensionPC(NuFileExt_mib_PC, 7, 4);
+    NuFileAddExtensionPC(".cu2", 5, 4);
+    NuFileAddExtensionPC(".wav", 6, 4);
+    NuFileAddExtensionPC(".mib", 7, 4);
     NuFileAddExtensionPC(".bik", 8, 4);
     NuFileAddExtensionPC("_pc.gsc", 3, 4);
     if (low_resolution) {
@@ -2516,45 +2518,45 @@ void NuFileExtInit(i32 low_resolution) {
         NuFileAddExtensionPC("_pc.ghg", 2, 4);
     }
 
-    NuFileAddExtensionPC(NuFileExt_an3_PC, 0, 0);
-    NuFileAddExtensionPC(NuFileExt_bsa_PC, 1, 0);
-    NuFileAddExtensionPC(NuFileExt_ghg_PC, 2, 0);
+    NuFileAddExtensionPC(".an3", 0, 0);
+    NuFileAddExtensionPC(".bsa", 1, 0);
+    NuFileAddExtensionPC(".ghg", 2, 0);
     NuFileAddExtensionPC(".gsc", 3, 0);
-    NuFileAddExtensionPC(NuFileExt_pnt_PC, 4, 0);
-    NuFileAddExtensionPC(NuFileExt_cu2_PC, 5, 0);
-    NuFileAddExtensionPC(NuFileExt_vag_PC, 6, 0);
-    NuFileAddExtensionPC(NuFileExt_mib_PC, 7, 0);
-    NuFileAddExtensionPC(NuFileExt_pss_PC, 8, 0);
+    NuFileAddExtensionPC(".pnt", 4, 0);
+    NuFileAddExtensionPC(".cu2", 5, 0);
+    NuFileAddExtensionPC(".vag", 6, 0);
+    NuFileAddExtensionPC(".mib", 7, 0);
+    NuFileAddExtensionPC(".pss", 8, 0);
 
-    NuFileAddExtensionPC(NuFileExt_ca3_PC, 0, 2);
-    NuFileAddExtensionPC(NuFileExt_cbs_PC, 1, 2);
+    NuFileAddExtensionPC(".ca3", 0, 2);
+    NuFileAddExtensionPC(".cbs", 1, 2);
     NuFileAddExtensionPC(".chg", 2, 2);
     NuFileAddExtensionPC(".csc", 3, 2);
     NuFileAddExtensionPC(".ctx", 4, 2);
-    NuFileAddExtensionPC(NuFileExt_cc2_PC, 5, 2);
+    NuFileAddExtensionPC(".cc2", 5, 2);
     NuFileAddExtensionPC(".dsp", 6, 2);
     NuFileAddExtensionPC(".gcm", 7, 2);
     NuFileAddExtensionPC(".h4m", 8, 2);
 
-    NuFileAddExtensionPC(NuFileExt_an3_PC, 0, 1);
-    NuFileAddExtensionPC(NuFileExt_bsa_PC, 1, 1);
+    NuFileAddExtensionPC(".an3", 0, 1);
+    NuFileAddExtensionPC(".bsa", 1, 1);
     NuFileAddExtensionPC(".hx2", 2, 1);
     NuFileAddExtensionPC(".nx2", 3, 1);
-    NuFileAddExtensionPC(NuFileExt_dds_PC, 4, 1);
-    NuFileAddExtensionPC(NuFileExt_cu2_PC, 5, 1);
-    NuFileAddExtensionPC(NuFileExt_wavx_PC, 6, 1);
-    NuFileAddExtensionPC(NuFileExt_wavm_PC, 7, 1);
-    NuFileAddExtensionPC(NuFileExt_wmv_PC, 8, 1);
+    NuFileAddExtensionPC(".dds", 4, 1);
+    NuFileAddExtensionPC(".cu2", 5, 1);
+    NuFileAddExtensionPC(".wavx", 6, 1);
+    NuFileAddExtensionPC(".wavm", 7, 1);
+    NuFileAddExtensionPC(".wmv", 8, 1);
 
-    NuFileAddExtensionPC(NuFileExt_an3_PC, 0, 3);
-    NuFileAddExtensionPC(NuFileExt_bsa_PC, 1, 3);
+    NuFileAddExtensionPC(".an3", 0, 3);
+    NuFileAddExtensionPC(".bsa", 1, 3);
     NuFileAddExtensionPC(".phg", 2, 3);
     NuFileAddExtensionPC(".psc", 3, 3);
-    NuFileAddExtensionPC(NuFileExt_pnt_PC, 4, 3);
-    NuFileAddExtensionPC(NuFileExt_cu2_PC, 5, 3);
-    NuFileAddExtensionPC(NuFileExt_vag_PC, 6, 3);
+    NuFileAddExtensionPC(".pnt", 4, 3);
+    NuFileAddExtensionPC(".cu2", 5, 3);
+    NuFileAddExtensionPC(".vag", 6, 3);
     NuFileAddExtensionPC(".at3", 7, 3);
-    NuFileAddExtensionPC(NuFileExt_pss_PC, 8, 3);
+    NuFileAddExtensionPC(".pss", 8, 3);
 }
 
 static i32 NuFileMatchExtensionPC(char *extension, char *path_end, i32 path_len) {
@@ -7618,7 +7620,7 @@ f32 NuTimeMilliSeconds(NuTime *time) {
     NuTimeGetTicksPerSecondPS(&low, &high);
     ticks = time->low + time->high * NuTime_LowScale;
     ticks_per_second = low + high * NuTime_LowScale;
-    return (f32)(ticks / ticks_per_second * NuScale1000);
+    return (f32)(ticks / ticks_per_second * 1000.0);
 }
 
 f32 NuTimeScanlines(NuTime *time) {
@@ -7733,8 +7735,8 @@ void NuTimeWait(f32 milliseconds) {
         }
         NuTimeSub(&elapsed, &now, &start);
         NuTimeGetTicksPerSecondPS(&rate_low, &rate_high);
-        waited = (f32)((elapsed.low + elapsed.high * NuTime_LowScale) / (rate_low + rate_high * NuTime_LowScale) *
-                       NuScale1000);
+        waited =
+            (f32)((elapsed.low + elapsed.high * NuTime_LowScale) / (rate_low + rate_high * NuTime_LowScale) * 1000.0);
     }
 }
 

@@ -1735,7 +1735,7 @@ void StartTurn(GAMEOBJECT *object) {
     object->context_duration = TURNTIME;
     object->context_timer = TURNTIME;
     object->field_780 = object->context_timer;
-    PlaySfx((char *)TurnLoopSfx, &object->collision_position);
+    PlaySfx("XWing_LoopDeLoop", &object->collision_position);
 }
 
 void LoopCode(GAMEOBJECT *object, i32 jump_pressed, i32 unused, GAMEPAD_PC *pad, i32 allow_loop) {
@@ -1826,7 +1826,7 @@ void LoopCode(GAMEOBJECT *object, i32 jump_pressed, i32 unused, GAMEPAD_PC *pad,
         object->field_7aa = 1;
         object->context_duration = VehicleLoopTimePc;
         object->context_timer = VehicleLoopTimePc;
-        PlaySfx((char *)TurnLoopSfx, &object->collision_position);
+        PlaySfx("XWing_LoopDeLoop", &object->collision_position);
         Hint_SetComplete(0x287);
     } else if (roll_request != 0) {
         if (object->in_narrow_socket && other != NULL &&
@@ -1837,7 +1837,7 @@ void LoopCode(GAMEOBJECT *object, i32 jump_pressed, i32 unused, GAMEPAD_PC *pad,
         object->character_context = 0x3a;
         object->field_7aa = 1;
         object->field_7b3 = (u8)(roll_request - 1);
-        PlaySfx((char *)TurnLoopSfx, &object->collision_position);
+        PlaySfx("XWing_LoopDeLoop", &object->collision_position);
     } else if (turn_request != 0) {
         if (object->in_narrow_socket && other != NULL &&
             (other->character_context == 0x2a || other->character_context == 0x36 ||
@@ -4125,7 +4125,7 @@ static void LightSabreStreakCode(GAMEOBJECT *object, i32 blade, i32 effect) {
                     (U64_PAIR(&CInfo[target->character_context].flags) & 0x04000000) == 0 &&
                     ((U64_PAIR(&CInfo[target->character_context].flags) & 0x08000000) == 0 ||
                      (target->context_variant_flags & 0x20000) == 0)) {
-                    PlaySfx((char *)SaberSparksName, &points[point]);
+                    PlaySfx("SaberSparks", &points[point]);
                     SaberSparksTimer = (f32)(((f64)qrand() * (f64)(1.0f / 65535.0f)) * (f64)0.3f + (f64)0.3f);
                     NewRumble(object->pad->bound_pad,
                               (f32)((f64)qrand() * (f64)(1.0f / 65535.0f) * (f64)0.2f + (f64)0.2f), 0);
@@ -4849,7 +4849,7 @@ static void ForceCode(GAMEOBJECT *object, i32 pressed, i32 held, i32 unused) {
         EndForce(object, 0);
         if (AnimPlaying(&object->anim_packet, 0xb, 1, 1) == NULL &&
             AnimPlaying(&object->anim_packet, 0x27, 1, 1) == NULL) {
-            PlaySfx((char *)ForcePushSoundNamePc, &object->collision_position);
+            PlaySfx("JForcePush", &object->collision_position);
             PlayGruntSfx(object);
         }
         NewBuzzFrames(object->pad->bound_pad, 2, 0);
@@ -7246,7 +7246,7 @@ static void SmartBombCode(GAMEOBJECT *object) {
         sign = qrand() < 0x8000 ? -1.0f : 1.0f;
         GameCam_Judder(GameCam, (f32)((f64)sign * 1.5), 2, NULL);
         GameCam_NewShake(GameCam, 2.0f, 1.0f, 1.0f);
-        PlaySfx((char *)ForceThrowExplodeNamePc, NULL);
+        PlaySfx("Explode1", NULL);
     } else {
         PlaySfxAndSetVolume("JForceUse", NULL, (f32)((f64)state->smartbomb_timer * 3.0 * 0.5));
         if ((i32)((f64)state->smartbomb_timer / (f64)0.2f) != old_phase) {
@@ -8937,7 +8937,7 @@ void MovePlayer_DIRECTIONAL(GAMEOBJECT *object) {
         if (object->field_281 != 0) {
             object->character_context = -1;
         } else {
-            PlaySfx((char *)PlayerGrappleWindSoundPc, &object->collision_position);
+            PlaySfx("GrapWindLp", &object->collision_position);
         }
     }
     turn_rate = 8.0f;
@@ -9728,7 +9728,7 @@ void MovePlayer_DIRECTIONAL(GAMEOBJECT *object) {
         }
         if (object->wall_run_state == 2 || object->wall_run_state == 4) {
             i32 effect;
-            NewRumble(pad->bound_pad, qrand() * PlayerRandomScalePc * NuTimeBarQuarter, 0);
+            NewRumble(pad->bound_pad, qrand() * PlayerRandomScalePc * 0.25, 0);
             effect = WORLD->game_debris_sys->entries[58].effect;
             if (effect != -1) {
                 i32 count;
@@ -11090,7 +11090,7 @@ void GameObjectStuffAfterAnimation(void) {
                             (U64_PAIR(&CInfo[object->character_context].flags) & 0x04000000) == 0 &&
                             ((U64_PAIR(&CInfo[object->character_context].flags) & 0x08000000) == 0 ||
                              (object->context_variant_flags & 0x20000) == 0)) {
-                            PlaySabreSfx((char *)SaberSparksName, object, &points[blade], 1);
+                            PlaySabreSfx("SaberSparks", object, &points[blade], 1);
                             SaberSparksTimer = (f32)(((f64)qrand() * PlayerRandomScalePc) * (f64)0.3f + (f64)0.3f);
                             if (GetMenuID() == -1) {
                                 NewRumble(object->pad->bound_pad,

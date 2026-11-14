@@ -169,8 +169,6 @@ f32 StatusTrueHeroBarScalePc = 1.75f;
 f32 StatusTrueHeroBarYPc = 0.7f;
 f32 StatusTrueHeroTextScalePc = 0.8f;
 f32 StatusTrueHeroTextYPc = 0.3f;
-const char StatusTrueHeroPercentFormatPc[5] = "%i%%";
-const char StatusTrueHeroFullPercentTextPc[5] = "100%";
 
 void TrueHero_LSW_Draw(STATUS_STAGE_s *stage, STATUSPACKET_s *packet, i32 current) {
     char text[256];
@@ -204,7 +202,7 @@ void TrueHero_LSW_Draw(STATUS_STAGE_s *stage, STATUSPACKET_s *packet, i32 curren
             blend = 1.0f - (NuTrigTable[((i32)(time * 32768.0f + 16384.0f) >> 1) & 0x7fff] + 1.0f) * 0.5f;
             DrawBuildUpBar(0.0f, StatusTrueHeroBarYPc, packet->true_hero_percent, 100, 1.0f, StatusTrueHeroBarScalePc,
                            1.0f, 0);
-            sprintf(text, StatusTrueHeroPercentFormatPc, (i32)packet->true_hero_percent);
+            sprintf(text, "%i%%", (i32)packet->true_hero_percent);
             Text3DEx(text, 0.0f, StatusTrueHeroTextYPc, 1.0f, StatusTrueHeroTextScalePc, StatusTrueHeroTextScalePc,
                      StatusTrueHeroTextScalePc, 0, 255, 191, 0, (u8)(blend * 128.0f));
             break;
@@ -222,12 +220,11 @@ void TrueHero_LSW_Draw(STATUS_STAGE_s *stage, STATUSPACKET_s *packet, i32 curren
                 f32 grow = blend * 0.5f + 1.0f;
                 f32 shrink = 1.0f - blend * 0.5f;
                 i32 opacity = (u8)((1.0f - blend) * 64.0f);
-                Text3DEx((char *)StatusTrueHeroFullPercentTextPc, 0.0f, StatusTrueHeroTextYPc, 1.0f,
-                         StatusTrueHeroTextScalePc * grow, StatusTrueHeroTextScalePc * grow,
-                         StatusTrueHeroTextScalePc * grow, 0, 255, 191, 0, opacity);
-                Text3DEx((char *)StatusTrueHeroFullPercentTextPc, 0.0f, StatusTrueHeroTextYPc, 1.0f,
-                         StatusTrueHeroTextScalePc * shrink, StatusTrueHeroTextScalePc * shrink,
-                         StatusTrueHeroTextScalePc * shrink, 0, 255, 191, 0, opacity);
+                Text3DEx("100%", 0.0f, StatusTrueHeroTextYPc, 1.0f, StatusTrueHeroTextScalePc * grow,
+                         StatusTrueHeroTextScalePc * grow, StatusTrueHeroTextScalePc * grow, 0, 255, 191, 0, opacity);
+                Text3DEx("100%", 0.0f, StatusTrueHeroTextYPc, 1.0f, StatusTrueHeroTextScalePc * shrink,
+                         StatusTrueHeroTextScalePc * shrink, StatusTrueHeroTextScalePc * shrink, 0, 255, 191, 0,
+                         opacity);
             }
             DrawBuildUpBar(0.0f, StatusTrueHeroBarYPc, packet->true_hero_percent, 100, 1.0f, StatusTrueHeroBarScalePc,
                            1.0f, 0);
@@ -238,7 +235,7 @@ void TrueHero_LSW_Draw(STATUS_STAGE_s *stage, STATUSPACKET_s *packet, i32 curren
             f32 blend;
             alpha = 1.0f - stage->field_0x18;
             if (stage->type == 2 && alpha > 0.0f) {
-                sprintf(text, StatusTrueHeroPercentFormatPc, (i32)packet->true_hero_percent);
+                sprintf(text, "%i%%", (i32)packet->true_hero_percent);
                 Text3DEx(text, 0.0f, StatusTrueHeroTextYPc, 1.0f, StatusTrueHeroTextScalePc, StatusTrueHeroTextScalePc,
                          StatusTrueHeroTextScalePc, 0, 255, 191, 0, (u8)(alpha * 128.0f));
             }
@@ -982,7 +979,7 @@ void GoldBrick_LSW_Update(STATUS_STAGE_s *stage, STATUSPACKET_s *packet, f32 ela
                         NuStrCpy(text, TTab[message_id]);
                         if (HubBothTrueJediGoldBricksPc != 0) {
                             i16 name_id;
-                            NuStrCat(text, CutPlayerTextSeparatorPc);
+                            NuStrCat(text, " - ");
                             name_id = (packet->field_0xb0 & 0x40) != 0 ? TextIdPc8808a8 : TextIdPc8808a4;
                             NuStrCat(text, TTab[name_id]);
                         }
@@ -1946,7 +1943,7 @@ void BonusWin_LSW_Update(STATUS_STAGE_s *stage, STATUSPACKET_s *packet, f32 elap
                 AddGameMsg(&message);
             } else if (accumulated < 2.0f && (f64)NuFmod(previous, 0.2f) < (f64)0.1f &&
                        (f64)NuFmod(stage->field_0x18, 0.2f) >= (f64)0.1f) {
-                PlaySfx((char *)GameAudioName00758838Pc, NULL);
+                PlaySfx("PickupHeart", NULL);
             }
         }
     }

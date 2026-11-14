@@ -8,7 +8,7 @@ static i32 force_camera_farclip = 0;
 static f32 NuCameraOrthoScale = 0.1f;
 
 NUCAMERA *NuCameraCreate(void) {
-    NUCAMERA *camera = NuAlloc(sizeof(NUCAMERA), NuCameraAllocSource, 0x11e);
+    NUCAMERA *camera = NuAlloc(sizeof(NUCAMERA), "d:\\projects\\game_saga\\nu2api.saga\\nu3d\\nucamera_gen.c", 0x11e);
 
     NuMtxSetIdentity(&camera->mtx);
     camera->fov = 0.75f;
@@ -30,7 +30,7 @@ NUCAMERA *NuCameraCreate(void) {
 
 void NuCameraDestroy(NUCAMERA *camera) {
     if (camera != NULL) {
-        NuFree(camera, NuCameraAllocSource, 0x13e);
+        NuFree(camera, "d:\\projects\\game_saga\\nu2api.saga\\nu3d\\nucamera_gen.c", 0x13e);
     }
 }
 

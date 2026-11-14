@@ -102,7 +102,7 @@ void GameAnimSet_EvaluateState(GAMEANIMSET *set) {
     while (object != NULL) {
         animation = object->instance_animation;
         if (animation != NULL) {
-            direction = object->start_frame > object->end_frame ? nu_fsign_minus_one : 1.0f;
+            direction = object->start_frame > object->end_frame ? -1.0f : 1.0f;
             if (animation->ltime * direction < object->end_frame * direction) {
                 all_at_end = 0;
             }
@@ -261,7 +261,7 @@ i32 GameAnimSet_IsAnimationReset(GAMEANIMSET *set) {
             if ((animation->flags & 1) != 0) {
                 return 0;
             }
-            direction = object->start_frame > object->end_frame ? nu_fsign_minus_one : 1.0f;
+            direction = object->start_frame > object->end_frame ? -1.0f : 1.0f;
             if (animation->ltime * direction > object->start_frame * direction) {
                 return 0;
             }
@@ -1394,11 +1394,9 @@ void edanimcbFileSave(eduimenu_s *menu, eduiitem_s *unused1, u32 unused2) {
     }
 }
 
-extern const char MenuTechnicalDefaultTextPc75f29c[8];
-
 static void edanimcbMCTBCardPresent(eduimenu_s *menu, eduiitem_s *unused1, u32 unused2) {
     if (saveloadCheckCardPresent()) {
-        eduiCreateMessageMenu(menu, (char *)MenuTechnicalDefaultTextPc75f29c, 1);
+        eduiCreateMessageMenu(menu, "Present", 1);
     } else {
         eduiCreateMessageMenu(menu, (char *)("Not Present"), 0);
     }

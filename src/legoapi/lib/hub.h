@@ -60,7 +60,6 @@ STATIC_ASSERT(offsetof(FADEINFO_PC, field_28) == 0x28);
 #ifdef __cplusplus
 extern "C" {
 #endif
-    extern const char ArcadeAiKilledSoundNamePc[16];
 
     typedef struct collection_area_save_pc_s {
         union {
@@ -90,7 +89,6 @@ extern "C" {
     extern i16 tBACK;
     extern const char Text_TimeMS[8];
     extern const char Text_TimeSC[8];
-    extern const char Text_TimeS[3];
     void Hub_MakeModelList(void);
     extern f32 newgamecamtime;
     extern f32 Hub_PadSpeed[2];
@@ -165,7 +163,6 @@ extern "C" {
     extern i32 HubBothTrueJediGoldBricksPc;
     extern i16 TextIdPc88077c;
     extern i32 fpcount;
-    extern const char ArcadeAiKilledSoundNamePc[16];
     extern i32 HubTrueJediTypeAlphaPc;
     extern f32 HubMiniKitOpenThresholdPc;
     extern i32 HubCompletedAreasPc;

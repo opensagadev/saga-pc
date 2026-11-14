@@ -96,7 +96,7 @@ extern "C" {
 
         static void LoadPermBuildLegalTextureName(char *name) {
             i32 pal = NuRegionGet() != 2;
-            NuStrCpy(name, PermLegalBase);
+            NuStrCpy(name, "legal");
             if (!pal && (Text_Language == 1 || Text_Language == 0x12)) {
                 NuStrCat(name, "_us");
             } else if (!pal && Text_Language == 2) {
@@ -104,7 +104,7 @@ extern "C" {
             } else if (!pal && Text_Language == 3) {
                 NuStrCat(name, "_usspanish");
             } else {
-                NuStrCat(name, PermLegalSeparator);
+                NuStrCat(name, "_");
                 NuStrCat(name, Text_GetLanguagePath(Text_Language));
             }
             if (Text_Language == 0) {
@@ -125,19 +125,19 @@ extern "C" {
             texture_base.addr = texture_end.addr - 0x400000;
             Text_Language = NuLanguageGet();
             if (StartupGameFlag1 != 0) {
-                NuStrCpy(path, PermLegalDirectoryPc);
+                NuStrCpy(path, "stuff\\legal\\");
                 LoadPermBuildLegalTextureName(name);
                 NuStrCat(path, name);
             } else {
-                NuStrCpy(path, PermLegalDirectoryPc);
+                NuStrCpy(path, "stuff\\legal\\");
                 NuStrCat(path, "pc\\pc_");
-                NuStrCat(path, PermLegalBase);
+                NuStrCat(path, "legal");
                 if (PAL != 0 || (Text_Language != 1 && Text_Language != 0x12)) {
-                    NuStrCat(path, PermLegalSeparator);
+                    NuStrCat(path, "_");
                     NuStrCat(path, Text_GetLanguagePath(Text_Language));
                 }
             }
-            NuStrCat(path, NuFileExt_dds_PC);
+            NuStrCat(path, ".dds");
             legal_tid = NuTexRead(path, &texture_base, texture_end);
             loadlegal_done = 1;
         }

@@ -639,7 +639,7 @@ void ZipUp_MoveCode(GAMEOBJECT *object, i32 special_pressed) {
             }
         } else {
             object->context_timer += FRAMETIME;
-            PlaySfx((char *)PlayerGrappleWindSoundPc, &object->collision_position);
+            PlaySfx("GrapWindLp", &object->collision_position);
         }
         return;
     }

@@ -31,8 +31,6 @@ extern "C" {
     extern f32 StatusTrueHeroTextYPc;
     extern f32 StatusTrueHeroNextSoundPercentPc;
     extern f32 StatusTrueHeroSpDelayPc;
-    extern const char StatusTrueHeroPercentFormatPc[5];
-    extern const char StatusTrueHeroFullPercentTextPc[5];
     extern f32 StatusTitleYPc;
     extern f32 StatusSecondaryTitleYPc;
     extern i16 TextIdPc8806e8;
@@ -68,7 +66,6 @@ extern "C" {
     extern f32 StatusAllMiniKitsQuestionYOffsetPc;
     extern f32 StatusAllMiniKitsCompleteScalePc;
     extern f32 StatusAllMiniKitsCompleteYOffsetPc;
-    extern const char GameAudioName00758838Pc[12];
 #ifdef __cplusplus
 }
 #endif

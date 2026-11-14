@@ -175,7 +175,6 @@ extern "C" {
     void APIObjectDestroyAll(APIOBJECTSYS_PC *system);
     extern void (*APIObjPlaySfxByIdFn)(i32, NUVEC *);
     extern const char WorldGrassFormat[7];
-    extern const char APIObjectPakExtension[5];
     extern void *RedirectAnimList;
     extern char RedirectAnimDir[64];
     STATIC_ASSERT(offsetof(APIOBJECTSYS_PC, flags_word) == 0x210);

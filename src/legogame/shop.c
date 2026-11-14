@@ -645,7 +645,7 @@ i32 BuyShopItem(shopitem_s *items, i32 index, i32 charge) {
     } else if (items[index].type == 4) {
         bits = save->gold_brick_purchased_bits;
     } else if (items[index].type == 5) {
-        PlaySfx((char *)GameAudioName0075c36cPc, NULL);
+        PlaySfx("MenuSelect", NULL);
         return 1;
     }
     if (bits != NULL) {
@@ -742,7 +742,7 @@ i32 SelectShopItem(shopitem_s *items, i32 index) {
             goto buy;
         case 5:
             if (CutScenePlayer_CanStart(index) == 0) {
-                PlaySfx((char *)GameAudioName0075c354Pc, NULL);
+                PlaySfx("MenuNoEntry", NULL);
                 ShopLockedScalePc = 1.5f;
                 return 0;
             }

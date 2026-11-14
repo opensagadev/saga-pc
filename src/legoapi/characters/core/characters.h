@@ -52,7 +52,6 @@ extern "C" {
     void HeadMovement(struct gameobject_s *);
     void HairMovement(struct gameobject_s *);
     void CharScenes_LevelDump(struct WORLDINFO_s *);
-    extern const char PCContextName_ZipUp[6];
 
     typedef struct char_category_record_pc_s {
         char *name;

@@ -59,7 +59,8 @@ PC_TEXTURE_ANIM_ENV *NuTexAnimEnvCreate(VARIPTR *buffer, NUMTL *material, u16 *t
         environment = (PC_TEXTURE_ANIM_ENV *)((buffer->addr + 3) & ~3u);
         buffer->void_ptr = environment + 1;
     } else {
-        environment = NuAlloc(sizeof(PC_TEXTURE_ANIM_ENV), NuTextureAnimationSourcePathPC, 548);
+        environment =
+            NuAlloc(sizeof(PC_TEXTURE_ANIM_ENV), "d:\\projects\\game_saga\\nu2api.saga\\nu3d\\nutexanm.c", 548);
     }
     if (environment != NULL) {
         environment->program = program;
@@ -464,10 +465,10 @@ TEXTURE_ANIMATION_PC *NuTexAnimFind(TEXTURE_ANIMATION_PC *animation, const char 
 
 void NuTexAnimDestroy(TEXTURE_ANIMATION_PC *animation) {
     if (animation->environment != NULL && (animation->environment->flags & 1) != 0) {
-        NuFree(animation->environment, NuTextureAnimationSourcePathPC, 520);
+        NuFree(animation->environment, "d:\\projects\\game_saga\\nu2api.saga\\nu3d\\nutexanm.c", 520);
     }
     if (animation->flags != 0) {
-        NuFree(animation, NuTextureAnimationSourcePathPC, 1690);
+        NuFree(animation, "d:\\projects\\game_saga\\nu2api.saga\\nu3d\\nutexanm.c", 1690);
     }
 }
 
@@ -516,7 +517,7 @@ void NuTexAnimProgDestroy(TEXTURE_ANIM_PROGRAM_PC *program) {
         program->next->previous = program->previous;
     }
     if ((program->flags & 1) != 0) {
-        NuFree(program, NuTextureAnimationSourcePathPC, 337);
+        NuFree(program, "d:\\projects\\game_saga\\nu2api.saga\\nu3d\\nutexanm.c", 337);
     }
 }
 
@@ -813,7 +814,8 @@ TEXTURE_ANIM_PROGRAM_PC *NuTexAnimProgCreate(VARIPTR *buffer, i32 extra_bytes, c
         program = (TEXTURE_ANIM_PROGRAM_PC *)buffer->addr;
         buffer->addr += sizeof(*program) + extra_bytes;
     } else {
-        program = NuAlloc(sizeof(*program) + extra_bytes, NuTextureAnimationSourcePathPC, 386);
+        program =
+            NuAlloc(sizeof(*program) + extra_bytes, "d:\\projects\\game_saga\\nu2api.saga\\nu3d\\nutexanm.c", 386);
     }
     if (program != NULL) {
         NuTexAnimProgInit(program);
@@ -845,7 +847,7 @@ TEXTURE_ANIM_PROGRAM_PC *NuTexAnimProgRead(VARIPTR *buffer, char *path) {
             program = (TEXTURE_ANIM_PROGRAM_PC *)((buffer->addr + 3) & ~3u);
             buffer->addr = (u32)program + size;
         } else {
-            program = NuAlloc(size, NuTextureAnimationSourcePathPC, 444);
+            program = NuAlloc(size, "d:\\projects\\game_saga\\nu2api.saga\\nu3d\\nutexanm.c", 444);
         }
         NuFileRead(file, program, size);
         NuFileClose(file);
@@ -926,7 +928,7 @@ void NuTexAnimProgAssembleEnd(TEXTURE_ANIM_PROGRAM_PC *program) {
 
 void NuTexAnimEnvDestroy(PC_TEXTURE_ANIM_ENV *environment) {
     if ((environment->flags & 1) != 0) {
-        NuFree(environment, NuTextureAnimationSourcePathPC, 520);
+        NuFree(environment, "d:\\projects\\game_saga\\nu2api.saga\\nu3d\\nutexanm.c", 520);
     }
 }
 
@@ -940,7 +942,7 @@ TEXTURE_ANIM_PROGRAM_PC *NuTexAnimProgParseFile(NUFILE file, VARIPTR *buffer, VA
     if (buffer != NULL) {
         program = (TEXTURE_ANIM_PROGRAM_PC *)((buffer->addr + 3) & ~3u);
     } else {
-        program = NuAlloc(1024, NuTextureAnimationSourcePathPC, 962);
+        program = NuAlloc(1024, "d:\\projects\\game_saga\\nu2api.saga\\nu3d\\nutexanm.c", 962);
         end.addr = (u32)program + 1023;
     }
     memset(TextureAnimationLabelsPrivatePc, 0, sizeof(TextureAnimationLabelsPrivatePc));
@@ -1120,7 +1122,8 @@ TEXTURE_ANIMATION_PC *NuTexAnimCreate(VARIPTR *buffer, TEXTURE_ANIM_PROGRAM_PC *
         animation = (TEXTURE_ANIMATION_PC *)((buffer->addr + 3) & ~3u);
         buffer->addr = (u32)(animation + 1) + texture_count * 2;
     } else {
-        animation = NuAlloc(sizeof(*animation) + texture_count * 2, NuTextureAnimationSourcePathPC, 1720);
+        animation = NuAlloc(sizeof(*animation) + texture_count * 2,
+                            "d:\\projects\\game_saga\\nu2api.saga\\nu3d\\nutexanm.c", 1720);
     }
     animation->previous = NULL;
     animation->next = NULL;

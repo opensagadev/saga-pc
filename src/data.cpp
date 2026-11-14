@@ -67,15 +67,11 @@ extern "C" {
 }
 
 extern "C" {
-    static const char ShaderUniformTextPc007e8e78[17] = "layer_kOpacities";
-    static const char ShaderUniformTextPc007e8ebc[15] = "layer0_diffuse";
-    static const char ShaderUniformTextPc007e9250[17] = "incandescentGlow";
-    static const char ShaderUniformTextPc007e9290[13] = "ambientColor";
 
     ShaderUniformRecordPc ShaderUniformRecordsPc[100] = {
-        {ShaderUniformTextPc007e9290, ShaderUniformTextPc007e9290, 1, 1, 7, -1, 0, {0}},
+        {"ambientColor", "ambientColor", 1, 1, 7, -1, 0, {0}},
         {"vs_sceneAmbientColor", "sceneAmbientColor", 1, 1, 3, 28, 2, {0}},
-        {ShaderUniformTextPc007e9250, ShaderUniformTextPc007e9250, 1, 1, 7, -1, 0, {0}},
+        {"incandescentGlow", "incandescentGlow", 1, 1, 7, -1, 0, {0}},
         {"vs_lightColor0", "lightColor0", 1, 1, 3, 29, 2, {0}},
         {"vs_lightColor1", "lightColor1", 1, 1, 3, 30, 2, {0}},
         {"vs_lightColor2", "lightColor2", 1, 1, 3, 31, 2, {0}},
@@ -124,11 +120,11 @@ extern "C" {
         {NULL, "ps2_shinemap_sampler", 0, 0, 2, -1, 0, {0}},
         {NULL, "vtfNormal_sampler", 0, 0, 2, -1, 0, {0}},
         {NULL, "fragmentUniforms_sampler", 0, 0, 2, -1, 0, {0}},
-        {ShaderUniformTextPc007e8ebc, ShaderUniformTextPc007e8ebc, 1, 1, 6, -1, 0, {0}},
+        {"layer0_diffuse", "layer0_diffuse", 1, 1, 6, -1, 0, {0}},
         {NULL, "layer1_diffuse", 1, 1, 6, -1, 0, {0}},
         {NULL, "layer2_diffuse", 1, 1, 6, -1, 0, {0}},
         {NULL, "layer3_diffuse", 1, 1, 6, -1, 0, {0}},
-        {ShaderUniformTextPc007e8e78, ShaderUniformTextPc007e8e78, 1, 1, 6, -1, 0, {0}},
+        {"layer_kOpacities", "layer_kOpacities", 1, 1, 6, -1, 0, {0}},
         {"kTint", NULL, 1, 1, 1, 40, 2, {0}},
         {NULL, "specular_specular", 1, 1, 6, -1, 0, {0}},
         {NULL, "specular2_specular", 1, 1, 6, -1, 0, {0}},
@@ -136,7 +132,7 @@ extern "C" {
         {NULL, "refraction_kIndex", 1, 1, 6, -1, 0, {0}},
         {NULL, "backBuffer_sampler", 0, 0, 2, -1, 0, {0}},
         {"vs_screenSize", "fs_screenSize", 1, 1, 3, 45, 1, {0}},
-        {NULL, AIActionTimeName, 1, 1, 2, 46, 1, {0}},
+        {NULL, "time", 1, 1, 2, 46, 1, {0}},
         {"uvOffset0", NULL, 1, 1, 1, -1, 0, {0}},
         {"uvOffset1", NULL, 1, 1, 1, -1, 0, {0}},
         {"uvOffset2", NULL, 1, 1, 1, -1, 0, {0}},
@@ -324,9 +320,8 @@ extern "C" {
 }
 
 extern "C" {
-    extern const char MenuTechnicalDefaultTextPc75f310[5] = "Game";
-    char *apiGameName = (char *)MenuTechnicalDefaultTextPc75f310;
-    char *apiGameTitle = (char *)MenuTechnicalDefaultTextPc75f310;
+    char *apiGameName = "Game";
+    char *apiGameTitle = "Game";
     extern char TextInputKeyNameTextPc7516c0[];
     char *apiGameSubTitle = TextInputKeyNameTextPc7516c0;
     char *apitxt_YES = "Yes";
@@ -335,8 +330,7 @@ extern "C" {
     char *apitxt_CANCEL = "Cancel";
     char *apitxt_RETRY = "Retry";
     char *apitxt_SLOT = "Profile";
-    extern const char MenuTechnicalDefaultTextPc75f29c[8] = "Present";
-    char *apitxt_PRESENT = (char *)MenuTechnicalDefaultTextPc75f29c;
+    char *apitxt_PRESENT = "Present";
     char *apitxt_EMPTY = "Empty";
     char *apitxt_NOSPACE = "No Space";
     char *apitxt_CONTINUE = "Continue";
@@ -403,154 +397,32 @@ extern "C" {
 }
 
 extern "C" {
-    extern const char PermanentDebrisNamePc755934[9] = "EXPLO_06";
-    char *debris_name[147] = {"BULLET_SPARK",
-                              "SABER_RED",
-                              "SABER_GREEN",
-                              "SABER_BLUE",
-                              "SABER_PURPLE",
-                              "EXPLD_1A",
-                              "JS_THRUST",
-                              "S1_THRUST",
-                              "COIN_BLUE",
-                              "COIN_GOLD",
-                              "COIN_SILVER",
-                              "R2D2THRUSTER",
-                              "R2Q5THRUSTER",
-                              "SPLASH",
-                              "RIPPLE",
-                              "HEART",
-                              "HEART_BIG",
-                              "EXPLOSION",
-                              "MINI_01",
-                              "MINI_02",
-                              "MINI_03",
-                              "TER_SPARK",
-                              "TER_SPARK2",
-                              "EXPOL_02",
-                              "SPEEDERDUST",
-                              "POD_DUST",
-                              "CAVE_DUST",
-                              "JANGOTHRUSTER",
-                              "EXPLO_DROID",
-                              "EXPLO_NAB",
-                              "NAB_SMOKE",
-                              "NAB_BOOST",
-                              "MIKESMOKE",
-                              "EXPLO_05",
-                              (char *)PermanentDebrisNamePc755934,
-                              "EXPLO_07",
-                              "EXPLO_11",
-                              "MIKESTALL",
-                              "TRAINING_01",
-                              "TAG_BLUE",
-                              "TAG_GREEN",
-                              "ZIP_TARGET",
-                              "DOOKU_BALL",
-                              "WALKER_01",
-                              "WALKER_02",
-                              "ENG_BLOW",
-                              "DogImpact",
-                              "DogEngine",
-                              "DogSmoke",
-                              "DogTrail",
-                              "YODA_HOVER_01",
-                              "K_Bolt",
-                              "DUK_P2",
-                              "PodHaze",
-                              "PodDust10",
-                              "rock_pop1",
-                              "BlueTrail",
-                              "PurpleTrail",
-                              "LavaDie",
-                              "ComboRed",
-                              "ComboGreen",
-                              "ComboBlue",
-                              "ComboPurple",
-                              "REPAIR",
-                              "SABER_RED1",
-                              "SABER_GREEN1",
-                              "SABER_BLUE1",
-                              "SABER_PURPLE1",
-                              "XWING_1",
-                              "MOUSE_POP",
-                              "PHOTON",
-                              "PHOTON_EXPLO",
-                              "PHOTON_EXPLO_S",
-                              "EXPLO_ORAN_2A",
-                              "EXPLO_ORAN_2B",
-                              "EXPLO_ORAN_2C",
-                              "BUILD_IT1",
-                              "BUILD_IT2",
-                              "BUILD_IT3",
-                              "BUILD_IT4",
-                              "BUILD_IT5",
-                              "BUILD_IT6",
-                              "DRAG_POP_1",
-                              "DRAG_POP_2",
-                              "DRAG_POP_4",
-                              "GenoGun",
-                              "SNOW_SPEEDER1",
-                              "LEVER_SPARK",
-                              "ZAPPER_1",
-                              "V_BOLT_RED",
-                              "V_BOLT_GREEN",
-                              "CHAR_SMOKE1",
-                              "CHAR_SMOKE2",
-                              "POWER_P_1",
-                              "POWER_P_2",
-                              "POWER_P_3",
-                              "TIE_HIT1",
-                              "BRICK_01",
-                              "BRICK_02",
-                              "BRICK_03",
-                              "BUMP_01",
-                              "BUMP_02",
-                              "LAND_S_DUST1",
-                              "LAND_S_DUST2",
-                              "LAND_S_THRUST",
-                              "LAND_S_HAZE",
-                              (char *)PermanentDebrisNamePc755934,
-                              "EXPLO_06b",
-                              "BUMP_03",
-                              "FORCE_BLUE",
-                              "FORCE_RED",
-                              "SCAN3",
-                              "REPULSOR",
-                              "WEE_POP",
-                              "EXIT_FIRE_1",
-                              "EXIT_FIRE_2",
-                              "EWOK_POP1",
-                              "EXPLO_02",
-                              "ATAT_POP_1",
-                              "ATAT_POP_2",
-                              "ATAT_POP_3",
-                              "FIRE_1",
-                              "RAIN_1",
-                              "CHAR_BUBBLE",
-                              "CHAR_GHOST",
-                              "DEATH_1",
-                              "DEATH_2",
-                              "BOULDER_2",
-                              "DISH_1",
-                              "DISH_2",
-                              "SNOW_POP_1",
-                              "SNOW_POP_2",
-                              "TREE_POP_1",
-                              "TREE_POP_4",
-                              "SPEEDER_HIT",
-                              "FALCONGLOW",
-                              "FALCONTHRUSTER",
-                              "SPEED_SPARK",
-                              (char *)AIGamePunch1Name,
-                              (char *)AIGamePunch2Name,
-                              "GUNSHIP_01",
-                              "GUNSHIP_02",
-                              "SandBlast",
-                              "BULLET1",
-                              "BULLET2",
-                              "BULLET_HIT",
-                              "POD_SPARK"};
+    char *debris_name[147] = {
+        "BULLET_SPARK",   "SABER_RED",     "SABER_GREEN",   "SABER_BLUE",    "SABER_PURPLE",   "EXPLD_1A",
+        "JS_THRUST",      "S1_THRUST",     "COIN_BLUE",     "COIN_GOLD",     "COIN_SILVER",    "R2D2THRUSTER",
+        "R2Q5THRUSTER",   "SPLASH",        "RIPPLE",        "HEART",         "HEART_BIG",      "EXPLOSION",
+        "MINI_01",        "MINI_02",       "MINI_03",       "TER_SPARK",     "TER_SPARK2",     "EXPOL_02",
+        "SPEEDERDUST",    "POD_DUST",      "CAVE_DUST",     "JANGOTHRUSTER", "EXPLO_DROID",    "EXPLO_NAB",
+        "NAB_SMOKE",      "NAB_BOOST",     "MIKESMOKE",     "EXPLO_05",      "EXPLO_06",       "EXPLO_07",
+        "EXPLO_11",       "MIKESTALL",     "TRAINING_01",   "TAG_BLUE",      "TAG_GREEN",      "ZIP_TARGET",
+        "DOOKU_BALL",     "WALKER_01",     "WALKER_02",     "ENG_BLOW",      "DogImpact",      "DogEngine",
+        "DogSmoke",       "DogTrail",      "YODA_HOVER_01", "K_Bolt",        "DUK_P2",         "PodHaze",
+        "PodDust10",      "rock_pop1",     "BlueTrail",     "PurpleTrail",   "LavaDie",        "ComboRed",
+        "ComboGreen",     "ComboBlue",     "ComboPurple",   "REPAIR",        "SABER_RED1",     "SABER_GREEN1",
+        "SABER_BLUE1",    "SABER_PURPLE1", "XWING_1",       "MOUSE_POP",     "PHOTON",         "PHOTON_EXPLO",
+        "PHOTON_EXPLO_S", "EXPLO_ORAN_2A", "EXPLO_ORAN_2B", "EXPLO_ORAN_2C", "BUILD_IT1",      "BUILD_IT2",
+        "BUILD_IT3",      "BUILD_IT4",     "BUILD_IT5",     "BUILD_IT6",     "DRAG_POP_1",     "DRAG_POP_2",
+        "DRAG_POP_4",     "GenoGun",       "SNOW_SPEEDER1", "LEVER_SPARK",   "ZAPPER_1",       "V_BOLT_RED",
+        "V_BOLT_GREEN",   "CHAR_SMOKE1",   "CHAR_SMOKE2",   "POWER_P_1",     "POWER_P_2",      "POWER_P_3",
+        "TIE_HIT1",       "BRICK_01",      "BRICK_02",      "BRICK_03",      "BUMP_01",        "BUMP_02",
+        "LAND_S_DUST1",   "LAND_S_DUST2",  "LAND_S_THRUST", "LAND_S_HAZE",   "EXPLO_06",       "EXPLO_06b",
+        "BUMP_03",        "FORCE_BLUE",    "FORCE_RED",     "SCAN3",         "REPULSOR",       "WEE_POP",
+        "EXIT_FIRE_1",    "EXIT_FIRE_2",   "EWOK_POP1",     "EXPLO_02",      "ATAT_POP_1",     "ATAT_POP_2",
+        "ATAT_POP_3",     "FIRE_1",        "RAIN_1",        "CHAR_BUBBLE",   "CHAR_GHOST",     "DEATH_1",
+        "DEATH_2",        "BOULDER_2",     "DISH_1",        "DISH_2",        "SNOW_POP_1",     "SNOW_POP_2",
+        "TREE_POP_1",     "TREE_POP_4",    "SPEEDER_HIT",   "FALCONGLOW",    "FALCONTHRUSTER", "SPEED_SPARK",
+        "PUNCH_1",        "PUNCH_2",       "GUNSHIP_01",    "GUNSHIP_02",    "SandBlast",      "BULLET1",
+        "BULLET2",        "BULLET_HIT",    "POD_SPARK"};
     NUMTL *PermanentEffectsMaterialPc = NULL;
     NUMTL *PermanentShadowMaterialPc = NULL;
     void *things_scene_terrain = NULL;
@@ -558,8 +430,6 @@ extern "C" {
 }
 
 extern "C" {
-    extern const char InitOnceEmptyConfigPc[27] = "LUCASARTS\\LEGOSTARWARSSAGA";
-    extern const char NuHwAllocSourcePc[12] = ".\\pcapi.cpp";
     extern const GUID PcPlatformPolicyClassId = {
         0x9a5ea990, 0x3034, 0x4d6f, {0x91, 0x28, 0x1, 0xf3, 0xc6, 0x10, 0x22, 0xbc}};
     extern const GUID PcPlatformPolicyInterfaceId = {
@@ -659,428 +529,277 @@ extern "C" {
 
 extern "C" {
     i32 PCOptionsFileVersion = 2;
-    extern const char PCGraphicsGpuName00777bac[9] = "RIVA TNT";
-    extern const char PCGraphicsGpuName00777b98[19] = "RIVA TNT2/TNT2 Pro";
-    extern const char PCGraphicsGpuName00777b88[16] = "RIVA TNT2 Ultra";
-    extern const char PCGraphicsGpuName00777b78[15] = "Vanta/Vanta LT";
-    extern const char PCGraphicsGpuName00777b58[32] = "RIVA TNT2 Model 64/Model 64 Pro";
-    extern const char PCGraphicsGpuName00777b48[13] = "Aladdin TNT2";
-    extern const char PCGraphicsGpuName00777b3c[12] = "GeForce 256";
-    extern const char PCGraphicsGpuName00777b30[12] = "GeForce DDR";
-    extern const char PCGraphicsGpuName00777b1c[19] = "GeForce2 MX/MX 400";
-    extern const char PCGraphicsGpuName00777b08[20] = "GeForce2 MX 100/200";
-    extern const char PCGraphicsGpuName00777af0[24] = "GeForce2 Integrated GPU";
-    extern const char PCGraphicsGpuName00777ad4[26] = "GeForce2 GTS/GeForce2 Pro";
-    extern const char PCGraphicsGpuName00777ac8[12] = "GeForce2 Ti";
-    extern const char PCGraphicsGpuName00777ab8[15] = "GeForce2 Ultra";
-    extern const char PCGraphicsGpuName00777ab0[7] = "Quadro";
-    extern const char PCGraphicsGpuName00777aa4[12] = "Quadro2 Pro";
-    extern const char PCGraphicsGpuName00777a90[18] = "Quadro2 MXR/EX/Go";
-    extern const char PCGraphicsGpuName00777a84[12] = "GeForce2 Go";
-    extern const char PCGraphicsGpuName00777a74[16] = "GeForce4 MX 460";
-    extern const char PCGraphicsGpuName00777a64[16] = "GeForce4 MX 440";
-    extern const char PCGraphicsGpuName00777a54[16] = "GeForce4 MX 420";
-    extern const char PCGraphicsGpuName00777a40[19] = "GeForce4 MX 440-SE";
-    extern const char PCGraphicsGpuName00777a24[27] = "GeForce4 MX 440 with AGP8X";
-    extern const char PCGraphicsGpuName00777a04[29] = "GeForce4 MX 440SE with AGP8X";
-    extern const char PCGraphicsGpuName007779e8[27] = "GeForce4 MX 420 with AGP8X";
-    extern const char PCGraphicsGpuName007779cc[27] = "GeForce4 MX Integrated GPU";
-    extern const char PCGraphicsGpuName007779bc[16] = "Quadro4 380 XGL";
-    extern const char PCGraphicsGpuName007779ac[16] = "Quadro4 550 XGL";
-    extern const char PCGraphicsGpuName0077799c[16] = "Quadro4 580 XGL";
-    extern const char PCGraphicsGpuName00777990[11] = "Quadro NVS";
-    extern const char PCGraphicsGpuName00777978[22] = "Quadro NVS with AGP8X";
-    extern const char PCGraphicsGpuName00777964[18] = "Quadro NVS 50 PCI";
-    extern const char PCGraphicsGpuName0077794c[22] = "NVIDIA Quadro NVS 285";
-    extern const char PCGraphicsGpuName00777940[9] = "GeForce3";
-    extern const char PCGraphicsGpuName00777930[16] = "GeForce3 Ti 200";
-    extern const char PCGraphicsGpuName00777920[16] = "GeForce3 Ti 500";
-    extern const char PCGraphicsGpuName00777914[11] = "Quadro DCC";
-    extern const char PCGraphicsGpuName0077790c[5] = "NV25";
-    extern const char PCGraphicsGpuName007778f8[17] = "GeForce4 Ti 4200";
-    extern const char PCGraphicsGpuName007778e4[17] = "GeForce4 Ti 4800";
-    extern const char PCGraphicsGpuName007778c8[28] = "GeForce4 Ti 4200 with AGP8X";
-    extern const char PCGraphicsGpuName007778b4[20] = "GeForce4 Ti 4800 SE";
-    extern const char PCGraphicsGpuName007778a0[17] = "GeForce4 Ti 4600";
-    extern const char PCGraphicsGpuName0077788c[17] = "GeForce4 Ti 4400";
-    extern const char PCGraphicsGpuName0077787c[16] = "Quadro4 900 XGL";
-    extern const char PCGraphicsGpuName0077786c[16] = "Quadro4 750 XGL";
-    extern const char PCGraphicsGpuName0077785c[16] = "Quadro4 700 XGL";
-    extern const char PCGraphicsGpuName0077784c[16] = "Quadro4 980 XGL";
-    extern const char PCGraphicsGpuName0077783c[16] = "Quadro4 780 XGL";
-    extern const char PCGraphicsGpuName00777824[22] = "GeForce FX 5800 Ultra";
-    extern const char PCGraphicsGpuName00777814[16] = "GeForce FX 5800";
-    extern const char PCGraphicsGpuName00777804[15] = "Quadro FX 2000";
-    extern const char PCGraphicsGpuName007777f4[15] = "Quadro FX 1000";
-    extern const char PCGraphicsGpuName007777e8[12] = "ICE FX 2000";
-    extern const char PCGraphicsGpuName007777d0[22] = "GeForce FX 5600 Ultra";
-    extern const char PCGraphicsGpuName007777c0[16] = "GeForce FX 5600";
-    extern const char PCGraphicsGpuName007777b8[5] = "NV31";
-    extern const char PCGraphicsGpuName007777a4[18] = "GeForce FX 5600SE";
-    extern const char PCGraphicsGpuName0077778c[22] = "GeForce FX 5200 Ultra";
-    extern const char PCGraphicsGpuName0077777c[16] = "GeForce FX 5200";
-    extern const char PCGraphicsGpuName00777768[18] = "GeForce FX 5200LE";
-    extern const char PCGraphicsGpuName00777750[22] = "GeForce FX 5700 Ultra";
-    extern const char PCGraphicsGpuName00777740[16] = "GeForce FX 5700";
-    extern const char PCGraphicsGpuName0077772c[18] = "GeForce FX 5700LE";
-    extern const char PCGraphicsGpuName00777718[18] = "GeForce FX 5700VE";
-    extern const char PCGraphicsGpuName00777710[5] = "NV36";
-    extern const char PCGraphicsGpuName007776fc[18] = "GeForce FX Go5700";
-    extern const char PCGraphicsGpuName007776f0[10] = "NV36M Pro";
-    extern const char PCGraphicsGpuName007776e8[8] = "NV36MAP";
-    extern const char PCGraphicsGpuName007776e0[7] = "NV36GL";
-    extern const char PCGraphicsGpuName007776d8[7] = "NV34GL";
-    extern const char PCGraphicsGpuName007776c0[22] = "GeForce FX 5900 Ultra";
-    extern const char PCGraphicsGpuName007776b0[16] = "GeForce FX 5900";
-    extern const char PCGraphicsGpuName0077769c[18] = "GeForce FX 5900XT";
-    extern const char PCGraphicsGpuName00777684[22] = "GeForce FX 5950 Ultra";
-    extern const char PCGraphicsGpuName00777670[18] = "GeForce FX 5900ZT";
-    extern const char PCGraphicsGpuName00777660[14] = "Quadro FX 500";
-    extern const char PCGraphicsGpuName00777650[14] = "Quadro FX 700";
-    extern const char PCGraphicsGpuName00777648[8] = "NV34MAP";
-    extern const char PCGraphicsGpuName00777638[15] = "Quadro FX 3000";
-    extern const char PCGraphicsGpuName00777628[16] = "GeForce4 440 Go";
-    extern const char PCGraphicsGpuName00777618[16] = "GeForce4 420 Go";
-    extern const char PCGraphicsGpuName00777604[20] = "GeForce4 420 Go 32M";
-    extern const char PCGraphicsGpuName007775f4[16] = "GeForce4 460 Go";
-    extern const char PCGraphicsGpuName007775e0[20] = "GeForce4 440 Go 64M";
-    extern const char PCGraphicsGpuName007775cc[20] = "GeForce4 410 Go 16M";
-    extern const char PCGraphicsGpuName007775b8[17] = "GeForce4 MX 4000";
-    extern const char PCGraphicsGpuName007775a8[16] = "GeForce4 448 Go";
-    extern const char PCGraphicsGpuName00777598[16] = "GeForce4 488 Go";
-    extern const char PCGraphicsGpuName00777584[17] = "GeForce4 4200 Go";
-    extern const char PCGraphicsGpuName00777570[17] = "Quadro4 500 GoGL";
-    extern const char PCGraphicsGpuName0077755c[17] = "Quadro4 700 GoGL";
-    extern const char PCGraphicsGpuName00777548[18] = "GeForce FX Go5600";
-    extern const char PCGraphicsGpuName00777534[18] = "GeForce FX Go5650";
-    extern const char PCGraphicsGpuName00777520[18] = "GeForce FX Go5200";
-    extern const char PCGraphicsGpuName0077750c[18] = "GeForce FX Go5250";
-    extern const char PCGraphicsGpuName007774fc[16] = "GeForce FX 5500";
-    extern const char PCGraphicsGpuName007774ec[16] = "GeForce FX 5100";
-    extern const char PCGraphicsGpuName007774d0[26] = "GeForce FX Go5200 32M/64M";
-    extern const char PCGraphicsGpuName007774bc[18] = "GeForce FX Go53xx";
-    extern const char PCGraphicsGpuName007774a8[18] = "GeForce FX Go5100";
-    extern const char PCGraphicsGpuName00777498[16] = "Quadro FX Go700";
-    extern const char PCGraphicsGpuName00777484[17] = "Quadro FX Go1000";
-    extern const char PCGraphicsGpuName00777474[15] = "Quadro FX 1100";
-    extern const char PCGraphicsGpuName0077746c[6] = "NV31M";
-    extern const char PCGraphicsGpuName00777460[10] = "NV31M Pro";
-    extern const char PCGraphicsGpuName00777458[8] = "NV31GLM";
-    extern const char PCGraphicsGpuName0077744c[12] = "NV31GLM Pro";
-    extern const char PCGraphicsGpuName00777434[21] = "NVIDIA Quadro FX 540";
-    extern const char PCGraphicsGpuName0077741c[22] = "NVIDIA Quadro FX 4000";
-    extern const char PCGraphicsGpuName00777404[24] = "NVIDIA Quadro FX Go1400";
-    extern const char PCGraphicsGpuName007773ec[22] = "NVIDIA Quadro FX 1400";
-    extern const char PCGraphicsGpuName007773cc[31] = "NVIDIA Quadro FX 3450/4000 SDI";
-    extern const char PCGraphicsGpuName007773b0[27] = "NVIDIA Quadro FX 3400/4400";
-    extern const char PCGraphicsGpuName00777398[24] = "NVIDIA GeForce PCX 5750";
-    extern const char PCGraphicsGpuName00777380[24] = "NVIDIA GeForce PCX 5900";
-    extern const char PCGraphicsGpuName00777368[24] = "NVIDIA GeForce PCX 5300";
-    extern const char PCGraphicsGpuName0077734c[27] = "NVIDIA Quadro PCI-E Series";
-    extern const char PCGraphicsGpuName00777334[22] = "NVIDIA Quadro FX 1300";
-    extern const char PCGraphicsGpuName0077731c[24] = "NVIDIA GeForce PCX 4300";
-    extern const char PCGraphicsGpuName00777300[26] = "NVIDIA GeForce 6800 Ultra";
-    extern const char PCGraphicsGpuName007772ec[20] = "NVIDIA GeForce 6800";
-    extern const char PCGraphicsGpuName007772d4[23] = "NVIDIA GeForce 6800 LE";
-    extern const char PCGraphicsGpuName007772bc[23] = "NVIDIA GeForce 6800 GT";
-    extern const char PCGraphicsGpuName00777288[21] = "NVIDIA GeForce 6800 ";
-    extern const char PCGraphicsGpuName00777270[23] = "NVIDIA GeForce 6600 GT";
-    extern const char PCGraphicsGpuName0077725c[20] = "NVIDIA GeForce 6600";
-    extern const char PCGraphicsGpuName00777244[23] = "NVIDIA GeForce 6600 LE";
-    extern const char PCGraphicsGpuName00777238[12] = "NVIDIA NV43";
-    extern const char PCGraphicsGpuName00777220[23] = "NVIDIA GeForce 6610 XL";
-    extern const char PCGraphicsGpuName00777210[14] = "NVIDIA NV43GL";
-    extern const char PCGraphicsGpuName007771fc[20] = "NVIDIA GeForce 6200";
-    extern const char PCGraphicsGpuName007771e4[24] = "NVIDIA GeForce 6600 GT ";
-    extern const char PCGraphicsGpuName007771cc[21] = "NVIDIA GeForce 6600 ";
-    extern const char PCGraphicsGpuName00777194[31] = "NVIDIA GeForce 6800 Series GPU";
-    extern const char PCGraphicsGpuName00777174[29] = "NVIDIA GeForce Go 6800 Ultra";
-    extern const char PCGraphicsGpuName0077715c[23] = "NVIDIA GeForce Go 6800";
-    extern const char PCGraphicsGpuName00777144[23] = "NVIDIA GeForce Go 6600";
-    extern const char PCGraphicsGpuName00777128[26] = "NVIDIA GeForce Go 6600 TE";
-    extern const char PCGraphicsGpuName0077710c[26] = "NVIDIA GeForce Go 6200 TE";
-    extern const char PCGraphicsGpuName007770f4[23] = "NVIDIA GeForce Go 6200";
-    extern const char PCGraphicsGpuName007770d0[35] = "NVIDIA GeForce 6200 TurboCache(TM)";
-    extern const char PCGraphicsGpuName007770c8[5] = "NV44";
-    extern const char PCGraphicsGpuName00777098[23] = "NVIDIA GeForce Go 6400";
-    extern const char PCGraphicsGpuName00777088[13] = "GeForce 6200";
-    extern const char PCGraphicsGpuName00777080[6] = "NV44M";
-    extern const char PCGraphicsGpuName00777078[8] = "NV44GLM";
-    extern const char PCGraphicsGpuName00777070[7] = "NV44GL";
-    extern const char PCGraphicsGpuName00777060[13] = "NVIDIA Other";
-    extern const char PCGraphicsGpuName00777054[11] = "NVIDIA NEW";
     PC_GRAPHICS_GPU_RECORD_PC PCGraphicsGpuRecords[268] = {
-        {32u, 0u, PCGraphicsGpuName00777bac, PCGraphicsGpuName00777bac},
-        {40u, 0u, PCGraphicsGpuName00777b98, PCGraphicsGpuName00777b98},
-        {41u, 0u, PCGraphicsGpuName00777b88, PCGraphicsGpuName00777b88},
-        {44u, 0u, PCGraphicsGpuName00777b78, PCGraphicsGpuName00777b78},
-        {45u, 0u, PCGraphicsGpuName00777b58, PCGraphicsGpuName00777b58},
-        {160u, 0u, PCGraphicsGpuName00777b48, PCGraphicsGpuName00777b48},
-        {256u, 0u, PCGraphicsGpuName00777b3c, PCGraphicsGpuName00777b3c},
-        {257u, 0u, PCGraphicsGpuName00777b30, PCGraphicsGpuName00777b30},
-        {272u, 0u, PCGraphicsGpuName00777b1c, PCGraphicsGpuName00777b1c},
-        {273u, 0u, PCGraphicsGpuName00777b08, PCGraphicsGpuName00777b08},
-        {416u, 0u, PCGraphicsGpuName00777af0, PCGraphicsGpuName00777af0},
-        {336u, 0u, PCGraphicsGpuName00777ad4, PCGraphicsGpuName00777ad4},
-        {337u, 0u, PCGraphicsGpuName00777ac8, PCGraphicsGpuName00777ac8},
-        {338u, 0u, PCGraphicsGpuName00777ab8, PCGraphicsGpuName00777ab8},
-        {259u, 0u, PCGraphicsGpuName00777ab0, PCGraphicsGpuName00777ab0},
-        {339u, 0u, PCGraphicsGpuName00777aa4, PCGraphicsGpuName00777aa4},
-        {275u, 0u, PCGraphicsGpuName00777a90, PCGraphicsGpuName00777a90},
-        {274u, 0u, PCGraphicsGpuName00777a84, PCGraphicsGpuName00777a84},
-        {368u, 0u, PCGraphicsGpuName00777a74, PCGraphicsGpuName00777a74},
-        {369u, 0u, PCGraphicsGpuName00777a64, PCGraphicsGpuName00777a64},
-        {370u, 0u, PCGraphicsGpuName00777a54, PCGraphicsGpuName00777a54},
-        {371u, 0u, PCGraphicsGpuName00777a40, PCGraphicsGpuName00777a40},
-        {385u, 0u, PCGraphicsGpuName00777a24, PCGraphicsGpuName00777a24},
-        {386u, 0u, PCGraphicsGpuName00777a04, PCGraphicsGpuName00777a04},
-        {387u, 0u, PCGraphicsGpuName007779e8, PCGraphicsGpuName007779e8},
-        {496u, 0u, PCGraphicsGpuName007779cc, PCGraphicsGpuName007779cc},
-        {395u, 0u, PCGraphicsGpuName007779bc, PCGraphicsGpuName007779bc},
-        {376u, 0u, PCGraphicsGpuName007779ac, PCGraphicsGpuName007779ac},
-        {392u, 0u, PCGraphicsGpuName0077799c, PCGraphicsGpuName0077799c},
-        {378u, 0u, PCGraphicsGpuName00777990, PCGraphicsGpuName00777990},
-        {394u, 0u, PCGraphicsGpuName00777978, PCGraphicsGpuName00777978},
-        {396u, 0u, PCGraphicsGpuName00777964, PCGraphicsGpuName00777964},
-        {357u, 0u, PCGraphicsGpuName0077794c, PCGraphicsGpuName0077794c},
-        {512u, 0u, PCGraphicsGpuName00777940, PCGraphicsGpuName00777940},
-        {513u, 0u, PCGraphicsGpuName00777930, PCGraphicsGpuName00777930},
-        {514u, 0u, PCGraphicsGpuName00777920, PCGraphicsGpuName00777920},
-        {515u, 0u, PCGraphicsGpuName00777914, PCGraphicsGpuName00777914},
-        {594u, 0u, PCGraphicsGpuName0077790c, PCGraphicsGpuName0077790c},
-        {595u, 0u, PCGraphicsGpuName007778f8, PCGraphicsGpuName007778f8},
-        {640u, 0u, PCGraphicsGpuName007778e4, PCGraphicsGpuName007778e4},
-        {641u, 0u, PCGraphicsGpuName007778c8, PCGraphicsGpuName007778c8},
-        {642u, 0u, PCGraphicsGpuName007778b4, PCGraphicsGpuName007778b4},
-        {592u, 0u, PCGraphicsGpuName007778a0, PCGraphicsGpuName007778a0},
-        {593u, 0u, PCGraphicsGpuName0077788c, PCGraphicsGpuName0077788c},
-        {600u, 0u, PCGraphicsGpuName0077787c, PCGraphicsGpuName0077787c},
-        {601u, 0u, PCGraphicsGpuName0077786c, PCGraphicsGpuName0077786c},
-        {603u, 0u, PCGraphicsGpuName0077785c, PCGraphicsGpuName0077785c},
-        {648u, 0u, PCGraphicsGpuName0077784c, PCGraphicsGpuName0077784c},
-        {649u, 0u, PCGraphicsGpuName0077783c, PCGraphicsGpuName0077783c},
-        {769u, 3u, PCGraphicsGpuName00777824, PCGraphicsGpuName00777824},
-        {770u, 3u, PCGraphicsGpuName00777814, PCGraphicsGpuName00777814},
-        {776u, 3u, PCGraphicsGpuName00777804, PCGraphicsGpuName00777804},
-        {777u, 3u, PCGraphicsGpuName007777f4, PCGraphicsGpuName007777f4},
-        {778u, 3u, PCGraphicsGpuName007777e8, PCGraphicsGpuName007777e8},
-        {785u, 3u, PCGraphicsGpuName007777d0, PCGraphicsGpuName007777d0},
-        {786u, 1u, PCGraphicsGpuName007777c0, PCGraphicsGpuName007777c0},
-        {787u, 1u, PCGraphicsGpuName007777b8, PCGraphicsGpuName007777b8},
-        {788u, 1u, PCGraphicsGpuName007777a4, PCGraphicsGpuName007777a4},
-        {801u, 1u, PCGraphicsGpuName0077778c, PCGraphicsGpuName0077778c},
-        {802u, 1u, PCGraphicsGpuName0077777c, PCGraphicsGpuName0077777c},
-        {803u, 1u, PCGraphicsGpuName00777768, PCGraphicsGpuName00777768},
-        {833u, 3u, PCGraphicsGpuName00777750, PCGraphicsGpuName00777750},
-        {834u, 3u, PCGraphicsGpuName00777740, PCGraphicsGpuName00777740},
-        {835u, 1u, PCGraphicsGpuName0077772c, PCGraphicsGpuName0077772c},
-        {836u, 1u, PCGraphicsGpuName00777718, PCGraphicsGpuName00777718},
-        {837u, 3u, PCGraphicsGpuName00777710, PCGraphicsGpuName00777710},
-        {839u, 3u, PCGraphicsGpuName007776fc, PCGraphicsGpuName007776fc},
-        {840u, 3u, PCGraphicsGpuName007776fc, PCGraphicsGpuName007776fc},
-        {841u, 3u, PCGraphicsGpuName007776f0, PCGraphicsGpuName007776f0},
-        {843u, 3u, PCGraphicsGpuName007776e8, PCGraphicsGpuName007776e8},
-        {847u, 3u, PCGraphicsGpuName007776e0, PCGraphicsGpuName007776e0},
-        {810u, 3u, PCGraphicsGpuName007776d8, PCGraphicsGpuName007776d8},
-        {815u, 3u, PCGraphicsGpuName007776d8, PCGraphicsGpuName007776d8},
-        {816u, 3u, PCGraphicsGpuName007776c0, PCGraphicsGpuName007776c0},
-        {817u, 3u, PCGraphicsGpuName007776b0, PCGraphicsGpuName007776b0},
-        {818u, 3u, PCGraphicsGpuName0077769c, PCGraphicsGpuName0077769c},
-        {819u, 3u, PCGraphicsGpuName00777684, PCGraphicsGpuName00777684},
-        {818u, 3u, PCGraphicsGpuName00777670, PCGraphicsGpuName00777670},
-        {811u, 3u, PCGraphicsGpuName00777660, PCGraphicsGpuName00777660},
-        {815u, 3u, PCGraphicsGpuName00777650, PCGraphicsGpuName00777650},
-        {809u, 3u, PCGraphicsGpuName00777648, PCGraphicsGpuName00777648},
-        {824u, 3u, PCGraphicsGpuName00777638, PCGraphicsGpuName00777638},
-        {372u, 0u, PCGraphicsGpuName00777628, PCGraphicsGpuName00777628},
-        {373u, 0u, PCGraphicsGpuName00777618, PCGraphicsGpuName00777618},
-        {374u, 0u, PCGraphicsGpuName00777604, PCGraphicsGpuName00777604},
-        {375u, 0u, PCGraphicsGpuName007775f4, PCGraphicsGpuName007775f4},
-        {377u, 0u, PCGraphicsGpuName007775e0, PCGraphicsGpuName007775e0},
-        {381u, 0u, PCGraphicsGpuName007775cc, PCGraphicsGpuName007775cc},
-        {389u, 0u, PCGraphicsGpuName007775b8, PCGraphicsGpuName007775b8},
-        {390u, 0u, PCGraphicsGpuName007775a8, PCGraphicsGpuName007775a8},
-        {391u, 0u, PCGraphicsGpuName00777598, PCGraphicsGpuName00777598},
-        {397u, 0u, PCGraphicsGpuName007775a8, PCGraphicsGpuName007775a8},
-        {646u, 0u, PCGraphicsGpuName00777584, PCGraphicsGpuName00777584},
-        {380u, 0u, PCGraphicsGpuName00777570, PCGraphicsGpuName00777570},
-        {652u, 0u, PCGraphicsGpuName0077755c, PCGraphicsGpuName0077755c},
-        {794u, 1u, PCGraphicsGpuName00777548, PCGraphicsGpuName00777548},
-        {795u, 1u, PCGraphicsGpuName00777534, PCGraphicsGpuName00777534},
-        {804u, 1u, PCGraphicsGpuName00777520, PCGraphicsGpuName00777520},
-        {805u, 1u, PCGraphicsGpuName0077750c, PCGraphicsGpuName0077750c},
-        {806u, 1u, PCGraphicsGpuName007774fc, PCGraphicsGpuName007774fc},
-        {807u, 1u, PCGraphicsGpuName007774ec, PCGraphicsGpuName007774ec},
-        {808u, 1u, PCGraphicsGpuName007774d0, PCGraphicsGpuName007774d0},
-        {812u, 1u, PCGraphicsGpuName007774bc, PCGraphicsGpuName007774bc},
-        {813u, 1u, PCGraphicsGpuName007774a8, PCGraphicsGpuName007774a8},
-        {796u, 1u, PCGraphicsGpuName00777498, PCGraphicsGpuName00777498},
-        {844u, 1u, PCGraphicsGpuName00777484, PCGraphicsGpuName00777484},
-        {846u, 1u, PCGraphicsGpuName00777474, PCGraphicsGpuName00777474},
-        {790u, 3u, PCGraphicsGpuName0077746c, PCGraphicsGpuName0077746c},
-        {791u, 3u, PCGraphicsGpuName00777460, PCGraphicsGpuName00777460},
-        {797u, 3u, PCGraphicsGpuName00777458, PCGraphicsGpuName00777458},
-        {798u, 3u, PCGraphicsGpuName0077744c, PCGraphicsGpuName0077744c},
-        {799u, 3u, PCGraphicsGpuName0077744c, PCGraphicsGpuName0077744c},
-        {334u, 1u, PCGraphicsGpuName00777434, PCGraphicsGpuName00777434},
-        {78u, 3u, PCGraphicsGpuName0077741c, PCGraphicsGpuName0077741c},
-        {204u, 3u, PCGraphicsGpuName00777404, PCGraphicsGpuName00777404},
-        {205u, 3u, PCGraphicsGpuName007773ec, PCGraphicsGpuName007773ec},
-        {206u, 3u, PCGraphicsGpuName007773cc, PCGraphicsGpuName007773cc},
-        {248u, 3u, PCGraphicsGpuName007773b0, PCGraphicsGpuName007773b0},
-        {250u, 3u, PCGraphicsGpuName00777398, PCGraphicsGpuName00777398},
-        {251u, 3u, PCGraphicsGpuName00777380, PCGraphicsGpuName00777380},
-        {252u, 1u, PCGraphicsGpuName00777368, PCGraphicsGpuName00777368},
-        {253u, 3u, PCGraphicsGpuName0077734c, PCGraphicsGpuName0077734c},
-        {254u, 1u, PCGraphicsGpuName00777334, PCGraphicsGpuName00777334},
-        {255u, 3u, PCGraphicsGpuName0077731c, PCGraphicsGpuName0077731c},
-        {240u, 67u, PCGraphicsGpuName00777300, PCGraphicsGpuName00777300},
-        {64u, 67u, PCGraphicsGpuName00777300, PCGraphicsGpuName00777300},
-        {528u, 67u, PCGraphicsGpuName007772ec, PCGraphicsGpuName007772ec},
-        {529u, 67u, PCGraphicsGpuName007772ec, PCGraphicsGpuName007772ec},
-        {530u, 67u, PCGraphicsGpuName007772d4, PCGraphicsGpuName007772d4},
-        {533u, 67u, PCGraphicsGpuName007772bc, PCGraphicsGpuName007772bc},
-        {65u, 67u, PCGraphicsGpuName007772ec, PCGraphicsGpuName007772ec},
-        {66u, 67u, PCGraphicsGpuName007772d4, PCGraphicsGpuName007772d4},
-        {67u, 67u, "NVIDIA NV40", PCGraphicsGpuName007772d4},
-        {69u, 67u, PCGraphicsGpuName007772bc, PCGraphicsGpuName007772bc},
-        {73u, 67u, "NVIDIA NV40GL", PCGraphicsGpuName007772d4},
-        {192u, 67u, PCGraphicsGpuName00777288, PCGraphicsGpuName00777288},
-        {193u, 67u, PCGraphicsGpuName00777288, PCGraphicsGpuName00777288},
-        {194u, 67u, PCGraphicsGpuName007772d4, PCGraphicsGpuName007772d4},
-        {320u, 67u, PCGraphicsGpuName00777270, PCGraphicsGpuName00777270},
-        {321u, 67u, PCGraphicsGpuName0077725c, PCGraphicsGpuName0077725c},
-        {322u, 67u, PCGraphicsGpuName00777244, PCGraphicsGpuName00777244},
-        {323u, 67u, PCGraphicsGpuName00777238, PCGraphicsGpuName00777238},
-        {325u, 67u, PCGraphicsGpuName00777220, PCGraphicsGpuName00777220},
-        {331u, 67u, PCGraphicsGpuName00777238, PCGraphicsGpuName00777238},
-        {332u, 67u, PCGraphicsGpuName00777210, PCGraphicsGpuName00777210},
-        {333u, 67u, PCGraphicsGpuName00777210, PCGraphicsGpuName00777210},
-        {335u, 67u, PCGraphicsGpuName007771fc, PCGraphicsGpuName007771fc},
-        {241u, 67u, PCGraphicsGpuName007771e4, PCGraphicsGpuName007771e4},
-        {242u, 67u, PCGraphicsGpuName007771cc, PCGraphicsGpuName007771cc},
-        {242u, 67u, "NVIDIA GeForce 6200 ", PCGraphicsGpuName007771cc},
-        {249u, 67u, PCGraphicsGpuName00777194, PCGraphicsGpuName00777194},
-        {201u, 67u, PCGraphicsGpuName00777174, PCGraphicsGpuName00777174},
-        {200u, 67u, PCGraphicsGpuName0077715c, PCGraphicsGpuName0077715c},
-        {324u, 67u, PCGraphicsGpuName00777144, PCGraphicsGpuName00777144},
-        {326u, 67u, PCGraphicsGpuName00777128, PCGraphicsGpuName00777128},
-        {327u, 67u, PCGraphicsGpuName0077710c, PCGraphicsGpuName0077710c},
-        {328u, 67u, PCGraphicsGpuName00777144, PCGraphicsGpuName00777144},
-        {329u, 67u, PCGraphicsGpuName0077710c, PCGraphicsGpuName0077710c},
-        {352u, 67u, PCGraphicsGpuName007770f4, PCGraphicsGpuName007770f4},
-        {353u, 67u, PCGraphicsGpuName007770d0, PCGraphicsGpuName007770d0},
-        {354u, 67u, PCGraphicsGpuName007770d0, PCGraphicsGpuName007770d0},
-        {355u, 67u, PCGraphicsGpuName007770c8, PCGraphicsGpuName007770c8},
-        {356u, 67u, "NVIDIA GeForce Go 6290", PCGraphicsGpuName007770f4},
-        {358u, 67u, PCGraphicsGpuName00777098, PCGraphicsGpuName00777098},
-        {359u, 67u, PCGraphicsGpuName007770f4, PCGraphicsGpuName007770f4},
-        {360u, 67u, PCGraphicsGpuName00777098, PCGraphicsGpuName00777098},
-        {544u, 67u, PCGraphicsGpuName007770c8, PCGraphicsGpuName007770c8},
-        {545u, 67u, PCGraphicsGpuName00777088, PCGraphicsGpuName00777088},
-        {546u, 67u, PCGraphicsGpuName007770c8, PCGraphicsGpuName007770c8},
-        {552u, 67u, PCGraphicsGpuName00777080, PCGraphicsGpuName00777080},
-        {361u, 67u, PCGraphicsGpuName00777080, PCGraphicsGpuName00777080},
-        {362u, 67u, PCGraphicsGpuName00777078, PCGraphicsGpuName00777078},
-        {363u, 67u, PCGraphicsGpuName00777078, PCGraphicsGpuName00777078},
-        {364u, 67u, PCGraphicsGpuName00777078, PCGraphicsGpuName00777078},
-        {365u, 67u, PCGraphicsGpuName00777078, PCGraphicsGpuName00777078},
-        {366u, 67u, PCGraphicsGpuName00777070, PCGraphicsGpuName00777070},
-        {367u, 67u, PCGraphicsGpuName00777078, PCGraphicsGpuName00777078},
-        {248u, 67u, PCGraphicsGpuName00777060, PCGraphicsGpuName00777060},
-        {248u, 67u, PCGraphicsGpuName00777060, PCGraphicsGpuName00777060},
-        {249u, 67u, PCGraphicsGpuName00777060, PCGraphicsGpuName00777060},
-        {249u, 67u, PCGraphicsGpuName00777060, PCGraphicsGpuName00777060},
-        {288u, 67u, PCGraphicsGpuName00777060, PCGraphicsGpuName00777060},
-        {289u, 67u, PCGraphicsGpuName00777060, PCGraphicsGpuName00777060},
-        {290u, 67u, PCGraphicsGpuName00777060, PCGraphicsGpuName00777060},
-        {291u, 67u, PCGraphicsGpuName00777060, PCGraphicsGpuName00777060},
-        {292u, 67u, PCGraphicsGpuName00777060, PCGraphicsGpuName00777060},
-        {293u, 67u, PCGraphicsGpuName00777060, PCGraphicsGpuName00777060},
-        {294u, 67u, PCGraphicsGpuName00777060, PCGraphicsGpuName00777060},
-        {295u, 67u, PCGraphicsGpuName00777060, PCGraphicsGpuName00777060},
-        {296u, 67u, PCGraphicsGpuName00777060, PCGraphicsGpuName00777060},
-        {297u, 67u, PCGraphicsGpuName00777060, PCGraphicsGpuName00777060},
-        {298u, 67u, PCGraphicsGpuName00777060, PCGraphicsGpuName00777060},
-        {299u, 67u, PCGraphicsGpuName00777060, PCGraphicsGpuName00777060},
-        {300u, 67u, PCGraphicsGpuName00777060, PCGraphicsGpuName00777060},
-        {301u, 67u, PCGraphicsGpuName00777060, PCGraphicsGpuName00777060},
-        {302u, 67u, PCGraphicsGpuName00777060, PCGraphicsGpuName00777060},
-        {303u, 67u, PCGraphicsGpuName00777060, PCGraphicsGpuName00777060},
-        {144u, 67u, PCGraphicsGpuName00777060, PCGraphicsGpuName00777060},
-        {145u, 67u, PCGraphicsGpuName00777060, PCGraphicsGpuName00777060},
-        {146u, 67u, PCGraphicsGpuName00777060, PCGraphicsGpuName00777060},
-        {147u, 67u, PCGraphicsGpuName00777060, PCGraphicsGpuName00777060},
-        {148u, 67u, PCGraphicsGpuName00777060, PCGraphicsGpuName00777060},
-        {149u, 67u, PCGraphicsGpuName00777060, PCGraphicsGpuName00777060},
-        {150u, 67u, PCGraphicsGpuName00777060, PCGraphicsGpuName00777060},
-        {151u, 67u, PCGraphicsGpuName00777060, PCGraphicsGpuName00777060},
-        {152u, 67u, PCGraphicsGpuName00777060, PCGraphicsGpuName00777060},
-        {153u, 67u, PCGraphicsGpuName00777060, PCGraphicsGpuName00777060},
-        {156u, 67u, PCGraphicsGpuName00777060, PCGraphicsGpuName00777060},
-        {157u, 67u, PCGraphicsGpuName00777060, PCGraphicsGpuName00777060},
-        {158u, 67u, PCGraphicsGpuName00777060, PCGraphicsGpuName00777060},
-        {159u, 67u, PCGraphicsGpuName00777060, PCGraphicsGpuName00777060},
-        {400u, 67u, PCGraphicsGpuName00777060, PCGraphicsGpuName00777060},
-        {401u, 67u, PCGraphicsGpuName00777060, PCGraphicsGpuName00777060},
-        {402u, 67u, PCGraphicsGpuName00777060, PCGraphicsGpuName00777060},
-        {403u, 67u, PCGraphicsGpuName00777060, PCGraphicsGpuName00777060},
-        {404u, 67u, PCGraphicsGpuName00777060, PCGraphicsGpuName00777060},
-        {413u, 67u, PCGraphicsGpuName00777060, PCGraphicsGpuName00777060},
-        {414u, 67u, PCGraphicsGpuName00777060, PCGraphicsGpuName00777060},
-        {415u, 67u, PCGraphicsGpuName00777060, PCGraphicsGpuName00777060},
-        {656u, 67u, PCGraphicsGpuName00777060, PCGraphicsGpuName00777060},
-        {657u, 67u, PCGraphicsGpuName00777060, PCGraphicsGpuName00777060},
-        {658u, 67u, PCGraphicsGpuName00777060, PCGraphicsGpuName00777060},
-        {659u, 67u, PCGraphicsGpuName00777060, PCGraphicsGpuName00777060},
-        {660u, 67u, PCGraphicsGpuName00777060, PCGraphicsGpuName00777060},
-        {669u, 67u, PCGraphicsGpuName00777060, PCGraphicsGpuName00777060},
-        {670u, 67u, PCGraphicsGpuName00777060, PCGraphicsGpuName00777060},
-        {671u, 67u, PCGraphicsGpuName00777060, PCGraphicsGpuName00777060},
-        {912u, 67u, PCGraphicsGpuName00777060, PCGraphicsGpuName00777060},
-        {913u, 67u, PCGraphicsGpuName00777060, PCGraphicsGpuName00777060},
-        {914u, 67u, PCGraphicsGpuName00777060, PCGraphicsGpuName00777060},
-        {915u, 67u, PCGraphicsGpuName00777060, PCGraphicsGpuName00777060},
-        {916u, 67u, PCGraphicsGpuName00777060, PCGraphicsGpuName00777060},
-        {925u, 67u, PCGraphicsGpuName00777060, PCGraphicsGpuName00777060},
-        {926u, 67u, PCGraphicsGpuName00777060, PCGraphicsGpuName00777060},
-        {927u, 67u, PCGraphicsGpuName00777060, PCGraphicsGpuName00777060},
-        {464u, 3u, PCGraphicsGpuName00777060, PCGraphicsGpuName00777060},
-        {465u, 3u, PCGraphicsGpuName00777060, PCGraphicsGpuName00777060},
-        {466u, 3u, PCGraphicsGpuName00777060, PCGraphicsGpuName00777060},
-        {467u, 3u, PCGraphicsGpuName00777060, PCGraphicsGpuName00777060},
-        {468u, 3u, PCGraphicsGpuName00777060, PCGraphicsGpuName00777060},
-        {469u, 3u, PCGraphicsGpuName00777060, PCGraphicsGpuName00777060},
-        {470u, 3u, PCGraphicsGpuName00777060, PCGraphicsGpuName00777060},
-        {471u, 3u, PCGraphicsGpuName00777060, PCGraphicsGpuName00777060},
-        {472u, 3u, PCGraphicsGpuName00777060, PCGraphicsGpuName00777060},
-        {473u, 3u, PCGraphicsGpuName00777060, PCGraphicsGpuName00777060},
-        {474u, 3u, PCGraphicsGpuName00777060, PCGraphicsGpuName00777060},
-        {475u, 3u, PCGraphicsGpuName00777060, PCGraphicsGpuName00777060},
-        {476u, 3u, PCGraphicsGpuName00777060, PCGraphicsGpuName00777060},
-        {477u, 3u, PCGraphicsGpuName00777060, PCGraphicsGpuName00777060},
-        {478u, 3u, PCGraphicsGpuName00777060, PCGraphicsGpuName00777060},
-        {479u, 3u, PCGraphicsGpuName00777060, PCGraphicsGpuName00777060},
-        {576u, 3u, PCGraphicsGpuName00777060, PCGraphicsGpuName00777060},
-        {577u, 3u, PCGraphicsGpuName00777060, PCGraphicsGpuName00777060},
-        {578u, 3u, PCGraphicsGpuName00777060, PCGraphicsGpuName00777060},
-        {579u, 3u, PCGraphicsGpuName00777060, PCGraphicsGpuName00777060},
-        {580u, 3u, PCGraphicsGpuName00777060, PCGraphicsGpuName00777060},
-        {581u, 3u, PCGraphicsGpuName00777060, PCGraphicsGpuName00777060},
-        {582u, 3u, PCGraphicsGpuName00777060, PCGraphicsGpuName00777060},
-        {583u, 3u, PCGraphicsGpuName00777060, PCGraphicsGpuName00777060},
-        {584u, 3u, PCGraphicsGpuName00777060, PCGraphicsGpuName00777060},
-        {585u, 3u, PCGraphicsGpuName00777060, PCGraphicsGpuName00777060},
-        {586u, 3u, PCGraphicsGpuName00777060, PCGraphicsGpuName00777060},
-        {587u, 3u, PCGraphicsGpuName00777060, PCGraphicsGpuName00777060},
-        {588u, 3u, PCGraphicsGpuName00777060, PCGraphicsGpuName00777060},
-        {589u, 3u, PCGraphicsGpuName00777060, PCGraphicsGpuName00777060},
-        {590u, 3u, PCGraphicsGpuName00777060, PCGraphicsGpuName00777060},
-        {591u, 3u, PCGraphicsGpuName00777060, PCGraphicsGpuName00777060},
-        {4294967295u, 67u, PCGraphicsGpuName00777054, PCGraphicsGpuName00777054},
+        {32u, 0u, "RIVA TNT", "RIVA TNT"},
+        {40u, 0u, "RIVA TNT2/TNT2 Pro", "RIVA TNT2/TNT2 Pro"},
+        {41u, 0u, "RIVA TNT2 Ultra", "RIVA TNT2 Ultra"},
+        {44u, 0u, "Vanta/Vanta LT", "Vanta/Vanta LT"},
+        {45u, 0u, "RIVA TNT2 Model 64/Model 64 Pro", "RIVA TNT2 Model 64/Model 64 Pro"},
+        {160u, 0u, "Aladdin TNT2", "Aladdin TNT2"},
+        {256u, 0u, "GeForce 256", "GeForce 256"},
+        {257u, 0u, "GeForce DDR", "GeForce DDR"},
+        {272u, 0u, "GeForce2 MX/MX 400", "GeForce2 MX/MX 400"},
+        {273u, 0u, "GeForce2 MX 100/200", "GeForce2 MX 100/200"},
+        {416u, 0u, "GeForce2 Integrated GPU", "GeForce2 Integrated GPU"},
+        {336u, 0u, "GeForce2 GTS/GeForce2 Pro", "GeForce2 GTS/GeForce2 Pro"},
+        {337u, 0u, "GeForce2 Ti", "GeForce2 Ti"},
+        {338u, 0u, "GeForce2 Ultra", "GeForce2 Ultra"},
+        {259u, 0u, "Quadro", "Quadro"},
+        {339u, 0u, "Quadro2 Pro", "Quadro2 Pro"},
+        {275u, 0u, "Quadro2 MXR/EX/Go", "Quadro2 MXR/EX/Go"},
+        {274u, 0u, "GeForce2 Go", "GeForce2 Go"},
+        {368u, 0u, "GeForce4 MX 460", "GeForce4 MX 460"},
+        {369u, 0u, "GeForce4 MX 440", "GeForce4 MX 440"},
+        {370u, 0u, "GeForce4 MX 420", "GeForce4 MX 420"},
+        {371u, 0u, "GeForce4 MX 440-SE", "GeForce4 MX 440-SE"},
+        {385u, 0u, "GeForce4 MX 440 with AGP8X", "GeForce4 MX 440 with AGP8X"},
+        {386u, 0u, "GeForce4 MX 440SE with AGP8X", "GeForce4 MX 440SE with AGP8X"},
+        {387u, 0u, "GeForce4 MX 420 with AGP8X", "GeForce4 MX 420 with AGP8X"},
+        {496u, 0u, "GeForce4 MX Integrated GPU", "GeForce4 MX Integrated GPU"},
+        {395u, 0u, "Quadro4 380 XGL", "Quadro4 380 XGL"},
+        {376u, 0u, "Quadro4 550 XGL", "Quadro4 550 XGL"},
+        {392u, 0u, "Quadro4 580 XGL", "Quadro4 580 XGL"},
+        {378u, 0u, "Quadro NVS", "Quadro NVS"},
+        {394u, 0u, "Quadro NVS with AGP8X", "Quadro NVS with AGP8X"},
+        {396u, 0u, "Quadro NVS 50 PCI", "Quadro NVS 50 PCI"},
+        {357u, 0u, "NVIDIA Quadro NVS 285", "NVIDIA Quadro NVS 285"},
+        {512u, 0u, "GeForce3", "GeForce3"},
+        {513u, 0u, "GeForce3 Ti 200", "GeForce3 Ti 200"},
+        {514u, 0u, "GeForce3 Ti 500", "GeForce3 Ti 500"},
+        {515u, 0u, "Quadro DCC", "Quadro DCC"},
+        {594u, 0u, "NV25", "NV25"},
+        {595u, 0u, "GeForce4 Ti 4200", "GeForce4 Ti 4200"},
+        {640u, 0u, "GeForce4 Ti 4800", "GeForce4 Ti 4800"},
+        {641u, 0u, "GeForce4 Ti 4200 with AGP8X", "GeForce4 Ti 4200 with AGP8X"},
+        {642u, 0u, "GeForce4 Ti 4800 SE", "GeForce4 Ti 4800 SE"},
+        {592u, 0u, "GeForce4 Ti 4600", "GeForce4 Ti 4600"},
+        {593u, 0u, "GeForce4 Ti 4400", "GeForce4 Ti 4400"},
+        {600u, 0u, "Quadro4 900 XGL", "Quadro4 900 XGL"},
+        {601u, 0u, "Quadro4 750 XGL", "Quadro4 750 XGL"},
+        {603u, 0u, "Quadro4 700 XGL", "Quadro4 700 XGL"},
+        {648u, 0u, "Quadro4 980 XGL", "Quadro4 980 XGL"},
+        {649u, 0u, "Quadro4 780 XGL", "Quadro4 780 XGL"},
+        {769u, 3u, "GeForce FX 5800 Ultra", "GeForce FX 5800 Ultra"},
+        {770u, 3u, "GeForce FX 5800", "GeForce FX 5800"},
+        {776u, 3u, "Quadro FX 2000", "Quadro FX 2000"},
+        {777u, 3u, "Quadro FX 1000", "Quadro FX 1000"},
+        {778u, 3u, "ICE FX 2000", "ICE FX 2000"},
+        {785u, 3u, "GeForce FX 5600 Ultra", "GeForce FX 5600 Ultra"},
+        {786u, 1u, "GeForce FX 5600", "GeForce FX 5600"},
+        {787u, 1u, "NV31", "NV31"},
+        {788u, 1u, "GeForce FX 5600SE", "GeForce FX 5600SE"},
+        {801u, 1u, "GeForce FX 5200 Ultra", "GeForce FX 5200 Ultra"},
+        {802u, 1u, "GeForce FX 5200", "GeForce FX 5200"},
+        {803u, 1u, "GeForce FX 5200LE", "GeForce FX 5200LE"},
+        {833u, 3u, "GeForce FX 5700 Ultra", "GeForce FX 5700 Ultra"},
+        {834u, 3u, "GeForce FX 5700", "GeForce FX 5700"},
+        {835u, 1u, "GeForce FX 5700LE", "GeForce FX 5700LE"},
+        {836u, 1u, "GeForce FX 5700VE", "GeForce FX 5700VE"},
+        {837u, 3u, "NV36", "NV36"},
+        {839u, 3u, "GeForce FX Go5700", "GeForce FX Go5700"},
+        {840u, 3u, "GeForce FX Go5700", "GeForce FX Go5700"},
+        {841u, 3u, "NV36M Pro", "NV36M Pro"},
+        {843u, 3u, "NV36MAP", "NV36MAP"},
+        {847u, 3u, "NV36GL", "NV36GL"},
+        {810u, 3u, "NV34GL", "NV34GL"},
+        {815u, 3u, "NV34GL", "NV34GL"},
+        {816u, 3u, "GeForce FX 5900 Ultra", "GeForce FX 5900 Ultra"},
+        {817u, 3u, "GeForce FX 5900", "GeForce FX 5900"},
+        {818u, 3u, "GeForce FX 5900XT", "GeForce FX 5900XT"},
+        {819u, 3u, "GeForce FX 5950 Ultra", "GeForce FX 5950 Ultra"},
+        {818u, 3u, "GeForce FX 5900ZT", "GeForce FX 5900ZT"},
+        {811u, 3u, "Quadro FX 500", "Quadro FX 500"},
+        {815u, 3u, "Quadro FX 700", "Quadro FX 700"},
+        {809u, 3u, "NV34MAP", "NV34MAP"},
+        {824u, 3u, "Quadro FX 3000", "Quadro FX 3000"},
+        {372u, 0u, "GeForce4 440 Go", "GeForce4 440 Go"},
+        {373u, 0u, "GeForce4 420 Go", "GeForce4 420 Go"},
+        {374u, 0u, "GeForce4 420 Go 32M", "GeForce4 420 Go 32M"},
+        {375u, 0u, "GeForce4 460 Go", "GeForce4 460 Go"},
+        {377u, 0u, "GeForce4 440 Go 64M", "GeForce4 440 Go 64M"},
+        {381u, 0u, "GeForce4 410 Go 16M", "GeForce4 410 Go 16M"},
+        {389u, 0u, "GeForce4 MX 4000", "GeForce4 MX 4000"},
+        {390u, 0u, "GeForce4 448 Go", "GeForce4 448 Go"},
+        {391u, 0u, "GeForce4 488 Go", "GeForce4 488 Go"},
+        {397u, 0u, "GeForce4 448 Go", "GeForce4 448 Go"},
+        {646u, 0u, "GeForce4 4200 Go", "GeForce4 4200 Go"},
+        {380u, 0u, "Quadro4 500 GoGL", "Quadro4 500 GoGL"},
+        {652u, 0u, "Quadro4 700 GoGL", "Quadro4 700 GoGL"},
+        {794u, 1u, "GeForce FX Go5600", "GeForce FX Go5600"},
+        {795u, 1u, "GeForce FX Go5650", "GeForce FX Go5650"},
+        {804u, 1u, "GeForce FX Go5200", "GeForce FX Go5200"},
+        {805u, 1u, "GeForce FX Go5250", "GeForce FX Go5250"},
+        {806u, 1u, "GeForce FX 5500", "GeForce FX 5500"},
+        {807u, 1u, "GeForce FX 5100", "GeForce FX 5100"},
+        {808u, 1u, "GeForce FX Go5200 32M/64M", "GeForce FX Go5200 32M/64M"},
+        {812u, 1u, "GeForce FX Go53xx", "GeForce FX Go53xx"},
+        {813u, 1u, "GeForce FX Go5100", "GeForce FX Go5100"},
+        {796u, 1u, "Quadro FX Go700", "Quadro FX Go700"},
+        {844u, 1u, "Quadro FX Go1000", "Quadro FX Go1000"},
+        {846u, 1u, "Quadro FX 1100", "Quadro FX 1100"},
+        {790u, 3u, "NV31M", "NV31M"},
+        {791u, 3u, "NV31M Pro", "NV31M Pro"},
+        {797u, 3u, "NV31GLM", "NV31GLM"},
+        {798u, 3u, "NV31GLM Pro", "NV31GLM Pro"},
+        {799u, 3u, "NV31GLM Pro", "NV31GLM Pro"},
+        {334u, 1u, "NVIDIA Quadro FX 540", "NVIDIA Quadro FX 540"},
+        {78u, 3u, "NVIDIA Quadro FX 4000", "NVIDIA Quadro FX 4000"},
+        {204u, 3u, "NVIDIA Quadro FX Go1400", "NVIDIA Quadro FX Go1400"},
+        {205u, 3u, "NVIDIA Quadro FX 1400", "NVIDIA Quadro FX 1400"},
+        {206u, 3u, "NVIDIA Quadro FX 3450/4000 SDI", "NVIDIA Quadro FX 3450/4000 SDI"},
+        {248u, 3u, "NVIDIA Quadro FX 3400/4400", "NVIDIA Quadro FX 3400/4400"},
+        {250u, 3u, "NVIDIA GeForce PCX 5750", "NVIDIA GeForce PCX 5750"},
+        {251u, 3u, "NVIDIA GeForce PCX 5900", "NVIDIA GeForce PCX 5900"},
+        {252u, 1u, "NVIDIA GeForce PCX 5300", "NVIDIA GeForce PCX 5300"},
+        {253u, 3u, "NVIDIA Quadro PCI-E Series", "NVIDIA Quadro PCI-E Series"},
+        {254u, 1u, "NVIDIA Quadro FX 1300", "NVIDIA Quadro FX 1300"},
+        {255u, 3u, "NVIDIA GeForce PCX 4300", "NVIDIA GeForce PCX 4300"},
+        {240u, 67u, "NVIDIA GeForce 6800 Ultra", "NVIDIA GeForce 6800 Ultra"},
+        {64u, 67u, "NVIDIA GeForce 6800 Ultra", "NVIDIA GeForce 6800 Ultra"},
+        {528u, 67u, "NVIDIA GeForce 6800", "NVIDIA GeForce 6800"},
+        {529u, 67u, "NVIDIA GeForce 6800", "NVIDIA GeForce 6800"},
+        {530u, 67u, "NVIDIA GeForce 6800 LE", "NVIDIA GeForce 6800 LE"},
+        {533u, 67u, "NVIDIA GeForce 6800 GT", "NVIDIA GeForce 6800 GT"},
+        {65u, 67u, "NVIDIA GeForce 6800", "NVIDIA GeForce 6800"},
+        {66u, 67u, "NVIDIA GeForce 6800 LE", "NVIDIA GeForce 6800 LE"},
+        {67u, 67u, "NVIDIA NV40", "NVIDIA GeForce 6800 LE"},
+        {69u, 67u, "NVIDIA GeForce 6800 GT", "NVIDIA GeForce 6800 GT"},
+        {73u, 67u, "NVIDIA NV40GL", "NVIDIA GeForce 6800 LE"},
+        {192u, 67u, "NVIDIA GeForce 6800 ", "NVIDIA GeForce 6800 "},
+        {193u, 67u, "NVIDIA GeForce 6800 ", "NVIDIA GeForce 6800 "},
+        {194u, 67u, "NVIDIA GeForce 6800 LE", "NVIDIA GeForce 6800 LE"},
+        {320u, 67u, "NVIDIA GeForce 6600 GT", "NVIDIA GeForce 6600 GT"},
+        {321u, 67u, "NVIDIA GeForce 6600", "NVIDIA GeForce 6600"},
+        {322u, 67u, "NVIDIA GeForce 6600 LE", "NVIDIA GeForce 6600 LE"},
+        {323u, 67u, "NVIDIA NV43", "NVIDIA NV43"},
+        {325u, 67u, "NVIDIA GeForce 6610 XL", "NVIDIA GeForce 6610 XL"},
+        {331u, 67u, "NVIDIA NV43", "NVIDIA NV43"},
+        {332u, 67u, "NVIDIA NV43GL", "NVIDIA NV43GL"},
+        {333u, 67u, "NVIDIA NV43GL", "NVIDIA NV43GL"},
+        {335u, 67u, "NVIDIA GeForce 6200", "NVIDIA GeForce 6200"},
+        {241u, 67u, "NVIDIA GeForce 6600 GT ", "NVIDIA GeForce 6600 GT "},
+        {242u, 67u, "NVIDIA GeForce 6600 ", "NVIDIA GeForce 6600 "},
+        {242u, 67u, "NVIDIA GeForce 6200 ", "NVIDIA GeForce 6600 "},
+        {249u, 67u, "NVIDIA GeForce 6800 Series GPU", "NVIDIA GeForce 6800 Series GPU"},
+        {201u, 67u, "NVIDIA GeForce Go 6800 Ultra", "NVIDIA GeForce Go 6800 Ultra"},
+        {200u, 67u, "NVIDIA GeForce Go 6800", "NVIDIA GeForce Go 6800"},
+        {324u, 67u, "NVIDIA GeForce Go 6600", "NVIDIA GeForce Go 6600"},
+        {326u, 67u, "NVIDIA GeForce Go 6600 TE", "NVIDIA GeForce Go 6600 TE"},
+        {327u, 67u, "NVIDIA GeForce Go 6200 TE", "NVIDIA GeForce Go 6200 TE"},
+        {328u, 67u, "NVIDIA GeForce Go 6600", "NVIDIA GeForce Go 6600"},
+        {329u, 67u, "NVIDIA GeForce Go 6200 TE", "NVIDIA GeForce Go 6200 TE"},
+        {352u, 67u, "NVIDIA GeForce Go 6200", "NVIDIA GeForce Go 6200"},
+        {353u, 67u, "NVIDIA GeForce 6200 TurboCache(TM)", "NVIDIA GeForce 6200 TurboCache(TM)"},
+        {354u, 67u, "NVIDIA GeForce 6200 TurboCache(TM)", "NVIDIA GeForce 6200 TurboCache(TM)"},
+        {355u, 67u, "NV44", "NV44"},
+        {356u, 67u, "NVIDIA GeForce Go 6290", "NVIDIA GeForce Go 6200"},
+        {358u, 67u, "NVIDIA GeForce Go 6400", "NVIDIA GeForce Go 6400"},
+        {359u, 67u, "NVIDIA GeForce Go 6200", "NVIDIA GeForce Go 6200"},
+        {360u, 67u, "NVIDIA GeForce Go 6400", "NVIDIA GeForce Go 6400"},
+        {544u, 67u, "NV44", "NV44"},
+        {545u, 67u, "GeForce 6200", "GeForce 6200"},
+        {546u, 67u, "NV44", "NV44"},
+        {552u, 67u, "NV44M", "NV44M"},
+        {361u, 67u, "NV44M", "NV44M"},
+        {362u, 67u, "NV44GLM", "NV44GLM"},
+        {363u, 67u, "NV44GLM", "NV44GLM"},
+        {364u, 67u, "NV44GLM", "NV44GLM"},
+        {365u, 67u, "NV44GLM", "NV44GLM"},
+        {366u, 67u, "NV44GL", "NV44GL"},
+        {367u, 67u, "NV44GLM", "NV44GLM"},
+        {248u, 67u, "NVIDIA Other", "NVIDIA Other"},
+        {248u, 67u, "NVIDIA Other", "NVIDIA Other"},
+        {249u, 67u, "NVIDIA Other", "NVIDIA Other"},
+        {249u, 67u, "NVIDIA Other", "NVIDIA Other"},
+        {288u, 67u, "NVIDIA Other", "NVIDIA Other"},
+        {289u, 67u, "NVIDIA Other", "NVIDIA Other"},
+        {290u, 67u, "NVIDIA Other", "NVIDIA Other"},
+        {291u, 67u, "NVIDIA Other", "NVIDIA Other"},
+        {292u, 67u, "NVIDIA Other", "NVIDIA Other"},
+        {293u, 67u, "NVIDIA Other", "NVIDIA Other"},
+        {294u, 67u, "NVIDIA Other", "NVIDIA Other"},
+        {295u, 67u, "NVIDIA Other", "NVIDIA Other"},
+        {296u, 67u, "NVIDIA Other", "NVIDIA Other"},
+        {297u, 67u, "NVIDIA Other", "NVIDIA Other"},
+        {298u, 67u, "NVIDIA Other", "NVIDIA Other"},
+        {299u, 67u, "NVIDIA Other", "NVIDIA Other"},
+        {300u, 67u, "NVIDIA Other", "NVIDIA Other"},
+        {301u, 67u, "NVIDIA Other", "NVIDIA Other"},
+        {302u, 67u, "NVIDIA Other", "NVIDIA Other"},
+        {303u, 67u, "NVIDIA Other", "NVIDIA Other"},
+        {144u, 67u, "NVIDIA Other", "NVIDIA Other"},
+        {145u, 67u, "NVIDIA Other", "NVIDIA Other"},
+        {146u, 67u, "NVIDIA Other", "NVIDIA Other"},
+        {147u, 67u, "NVIDIA Other", "NVIDIA Other"},
+        {148u, 67u, "NVIDIA Other", "NVIDIA Other"},
+        {149u, 67u, "NVIDIA Other", "NVIDIA Other"},
+        {150u, 67u, "NVIDIA Other", "NVIDIA Other"},
+        {151u, 67u, "NVIDIA Other", "NVIDIA Other"},
+        {152u, 67u, "NVIDIA Other", "NVIDIA Other"},
+        {153u, 67u, "NVIDIA Other", "NVIDIA Other"},
+        {156u, 67u, "NVIDIA Other", "NVIDIA Other"},
+        {157u, 67u, "NVIDIA Other", "NVIDIA Other"},
+        {158u, 67u, "NVIDIA Other", "NVIDIA Other"},
+        {159u, 67u, "NVIDIA Other", "NVIDIA Other"},
+        {400u, 67u, "NVIDIA Other", "NVIDIA Other"},
+        {401u, 67u, "NVIDIA Other", "NVIDIA Other"},
+        {402u, 67u, "NVIDIA Other", "NVIDIA Other"},
+        {403u, 67u, "NVIDIA Other", "NVIDIA Other"},
+        {404u, 67u, "NVIDIA Other", "NVIDIA Other"},
+        {413u, 67u, "NVIDIA Other", "NVIDIA Other"},
+        {414u, 67u, "NVIDIA Other", "NVIDIA Other"},
+        {415u, 67u, "NVIDIA Other", "NVIDIA Other"},
+        {656u, 67u, "NVIDIA Other", "NVIDIA Other"},
+        {657u, 67u, "NVIDIA Other", "NVIDIA Other"},
+        {658u, 67u, "NVIDIA Other", "NVIDIA Other"},
+        {659u, 67u, "NVIDIA Other", "NVIDIA Other"},
+        {660u, 67u, "NVIDIA Other", "NVIDIA Other"},
+        {669u, 67u, "NVIDIA Other", "NVIDIA Other"},
+        {670u, 67u, "NVIDIA Other", "NVIDIA Other"},
+        {671u, 67u, "NVIDIA Other", "NVIDIA Other"},
+        {912u, 67u, "NVIDIA Other", "NVIDIA Other"},
+        {913u, 67u, "NVIDIA Other", "NVIDIA Other"},
+        {914u, 67u, "NVIDIA Other", "NVIDIA Other"},
+        {915u, 67u, "NVIDIA Other", "NVIDIA Other"},
+        {916u, 67u, "NVIDIA Other", "NVIDIA Other"},
+        {925u, 67u, "NVIDIA Other", "NVIDIA Other"},
+        {926u, 67u, "NVIDIA Other", "NVIDIA Other"},
+        {927u, 67u, "NVIDIA Other", "NVIDIA Other"},
+        {464u, 3u, "NVIDIA Other", "NVIDIA Other"},
+        {465u, 3u, "NVIDIA Other", "NVIDIA Other"},
+        {466u, 3u, "NVIDIA Other", "NVIDIA Other"},
+        {467u, 3u, "NVIDIA Other", "NVIDIA Other"},
+        {468u, 3u, "NVIDIA Other", "NVIDIA Other"},
+        {469u, 3u, "NVIDIA Other", "NVIDIA Other"},
+        {470u, 3u, "NVIDIA Other", "NVIDIA Other"},
+        {471u, 3u, "NVIDIA Other", "NVIDIA Other"},
+        {472u, 3u, "NVIDIA Other", "NVIDIA Other"},
+        {473u, 3u, "NVIDIA Other", "NVIDIA Other"},
+        {474u, 3u, "NVIDIA Other", "NVIDIA Other"},
+        {475u, 3u, "NVIDIA Other", "NVIDIA Other"},
+        {476u, 3u, "NVIDIA Other", "NVIDIA Other"},
+        {477u, 3u, "NVIDIA Other", "NVIDIA Other"},
+        {478u, 3u, "NVIDIA Other", "NVIDIA Other"},
+        {479u, 3u, "NVIDIA Other", "NVIDIA Other"},
+        {576u, 3u, "NVIDIA Other", "NVIDIA Other"},
+        {577u, 3u, "NVIDIA Other", "NVIDIA Other"},
+        {578u, 3u, "NVIDIA Other", "NVIDIA Other"},
+        {579u, 3u, "NVIDIA Other", "NVIDIA Other"},
+        {580u, 3u, "NVIDIA Other", "NVIDIA Other"},
+        {581u, 3u, "NVIDIA Other", "NVIDIA Other"},
+        {582u, 3u, "NVIDIA Other", "NVIDIA Other"},
+        {583u, 3u, "NVIDIA Other", "NVIDIA Other"},
+        {584u, 3u, "NVIDIA Other", "NVIDIA Other"},
+        {585u, 3u, "NVIDIA Other", "NVIDIA Other"},
+        {586u, 3u, "NVIDIA Other", "NVIDIA Other"},
+        {587u, 3u, "NVIDIA Other", "NVIDIA Other"},
+        {588u, 3u, "NVIDIA Other", "NVIDIA Other"},
+        {589u, 3u, "NVIDIA Other", "NVIDIA Other"},
+        {590u, 3u, "NVIDIA Other", "NVIDIA Other"},
+        {591u, 3u, "NVIDIA Other", "NVIDIA Other"},
+        {4294967295u, 67u, "NVIDIA NEW", "NVIDIA NEW"},
     };
-    PC_GRAPHICS_GPU_RECORD_PC PCGraphicsGpuFallback = {4294967295u, 67u, PCGraphicsGpuName00777054,
-                                                       PCGraphicsGpuName00777054};
+    PC_GRAPHICS_GPU_RECORD_PC PCGraphicsGpuFallback = {4294967295u, 67u, "NVIDIA NEW", "NVIDIA NEW"};
     PC_GRAPHICS_QUERIED_GPU_PC PCGraphicsQueriedGpu = {0xffffffffu, 0xffffffffu};
     i32 PCGraphicsGpuSelectionEnabled = 0;
     PC_GRAPHICS_GPU_RECORD_PC *PCGraphicsSelectedGpuRecord = NULL;
@@ -2107,11 +1826,8 @@ extern "C" {
 extern "C" char TextInputKeyNameTextPc7516c0[];
 extern "C" char TextInputKeyNameTextPc753370[];
 extern "C" char TextInputKeyNameTextPc753374[];
-extern "C" const char Text_UnknownText[];
 extern "C" char TextInputKeyNameTextPc759770[];
-extern "C" const char WorldPathSeparator[];
 extern "C" char TextInputKeyNameTextPc75ac34[];
-extern "C" const char PermLegalSeparator[];
 extern "C" char UiBackPromptLiteralPc[];
 extern "C" char TextInputKeyNameTextPc76fde8[];
 extern "C" char TextInputKeyNameTextPc7719bc[];
@@ -3694,87 +3410,244 @@ TEXT_INPUT_LABELS_PC PcInputLabels8208e0 = {
     PcInputText7742b8,
     PcInputText7742a8};
 /* Entries past the end of a 222-entry table read the next table. */
-char *PcInputKeyNames821558[238] = {
-    TextInputKeyNameTextPc771d80, TextInputKeyNameTextPc771d7c, "1",
-    TextInputKeyNameTextPc771d78, TextInputKeyNameTextPc771d74, TextInputKeyNameTextPc771d70,
-    TextInputKeyNameTextPc771d6c, TextInputKeyNameTextPc771d68, TextInputKeyNameTextPc771d64,
-    TextInputKeyNameTextPc771d60, TextInputKeyNameTextPc771d5c, TextInputKeyNameTextPc771d58,
-    TextInputKeyNameTextPc771d50, TextInputKeyNameTextPc771d48, TextInputKeyNameTextPc771d3c,
-    TextInputKeyNameTextPc771d38, TextInputKeyNameTextPc771d34, TextInputKeyNameTextPc771d30,
-    TextInputKeyNameTextPc771d2c, TextInputKeyNameTextPc771d28, TextInputKeyNameTextPc771d24,
-    TextInputKeyNameTextPc774184, TextInputKeyNameTextPc771d20, TextInputKeyNameTextPc771d1c,
-    TextInputKeyNameTextPc771d18, TextInputKeyNameTextPc771d14, TextInputKeyNameTextPc753374,
-    TextInputKeyNameTextPc753370, TextInputKeyNameTextPc771d0c, TextInputKeyNameTextPc771d04,
-    TextInputKeyNameTextPc771d00, TextInputKeyNameTextPc771cfc, TextInputKeyNameTextPc771cf8,
-    TextInputKeyNameTextPc771cf4, TextInputKeyNameTextPc771cf0, TextInputKeyNameTextPc771cec,
-    TextInputKeyNameTextPc771ce8, TextInputKeyNameTextPc771ce4, TextInputKeyNameTextPc771ce0,
-    TextInputKeyNameTextPc771cd4, TextInputKeyNameTextPc771cc8, TextInputKeyNameTextPc771cc0,
-    TextInputKeyNameTextPc771cb4, (char *)WorldPathSeparator,   TextInputKeyNameTextPc774180,
-    TextInputKeyNameTextPc759770, TextInputKeyNameTextPc771cac, TextInputKeyNameTextPc771ca8,
-    TextInputKeyNameTextPc771ca4, TextInputKeyNameTextPc771ca0, TextInputKeyNameTextPc771c9c,
-    TextInputKeyNameTextPc771c94, TextInputKeyNameTextPc771c8c, TextInputKeyNameTextPc771c80,
-    TextInputKeyNameTextPc771c74, TextInputKeyNameTextPc771c6c, TextInputKeyNameTextPc771c64,
-    TextInputKeyNameTextPc771c5c, TextInputKeyNameTextPc771c50, TextInputKeyNameTextPc771c4c,
-    TextInputKeyNameTextPc771c48, TextInputKeyNameTextPc771c44, TextInputKeyNameTextPc771c40,
-    TextInputKeyNameTextPc771c3c, TextInputKeyNameTextPc771c38, TextInputKeyNameTextPc771c34,
-    TextInputKeyNameTextPc771c30, TextInputKeyNameTextPc771c2c, TextInputKeyNameTextPc771c28,
-    TextInputKeyNameTextPc771c1c, TextInputKeyNameTextPc771c10, TextInputKeyNameTextPc771c08,
-    TextInputKeyNameTextPc771c00, TextInputKeyNameTextPc771bf8, TextInputKeyNameTextPc771bf0,
-    TextInputKeyNameTextPc771be8, TextInputKeyNameTextPc771be0, TextInputKeyNameTextPc771bd8,
-    TextInputKeyNameTextPc771bd0, TextInputKeyNameTextPc771bc8, TextInputKeyNameTextPc771bc0,
-    TextInputKeyNameTextPc771bb8, TextInputKeyNameTextPc771bb0, PcInputText7719b0,
-    TextInputKeyNameTextPc7516c0, TextInputKeyNameTextPc7516c0, PcInputText7719a8,
-    TextInputKeyNameTextPc771ba0, TextInputKeyNameTextPc771b9c, TextInputKeyNameTextPc7516c0,
-    TextInputKeyNameTextPc7516c0, TextInputKeyNameTextPc7516c0, TextInputKeyNameTextPc7516c0,
-    TextInputKeyNameTextPc7516c0, TextInputKeyNameTextPc7516c0, TextInputKeyNameTextPc7516c0,
-    TextInputKeyNameTextPc7516c0, TextInputKeyNameTextPc7516c0, TextInputKeyNameTextPc7516c0,
-    TextInputKeyNameTextPc7516c0, TextInputKeyNameTextPc771b98, TextInputKeyNameTextPc771b94,
-    TextInputKeyNameTextPc771b90, TextInputKeyNameTextPc7516c0, TextInputKeyNameTextPc7516c0,
-    TextInputKeyNameTextPc7516c0, TextInputKeyNameTextPc7516c0, TextInputKeyNameTextPc7516c0,
-    TextInputKeyNameTextPc7516c0, TextInputKeyNameTextPc7516c0, TextInputKeyNameTextPc7516c0,
-    TextInputKeyNameTextPc7516c0, TextInputKeyNameTextPc771b88, TextInputKeyNameTextPc7516c0,
-    TextInputKeyNameTextPc7516c0, TextInputKeyNameTextPc771b80, TextInputKeyNameTextPc7516c0,
-    TextInputKeyNameTextPc7516c0, TextInputKeyNameTextPc7516c0, TextInputKeyNameTextPc7516c0,
-    TextInputKeyNameTextPc7516c0, TextInputKeyNameTextPc771b78, TextInputKeyNameTextPc7516c0,
-    TextInputKeyNameTextPc771b6c, TextInputKeyNameTextPc7516c0, TextInputKeyNameTextPc771b68,
-    TextInputKeyNameTextPc771b60, TextInputKeyNameTextPc7516c0, TextInputKeyNameTextPc7516c0,
-    TextInputKeyNameTextPc7516c0, TextInputKeyNameTextPc7516c0, TextInputKeyNameTextPc7516c0,
-    TextInputKeyNameTextPc7516c0, TextInputKeyNameTextPc7516c0, TextInputKeyNameTextPc7516c0,
-    TextInputKeyNameTextPc7516c0, TextInputKeyNameTextPc7516c0, TextInputKeyNameTextPc7516c0,
-    TextInputKeyNameTextPc7516c0, TextInputKeyNameTextPc7516c0, TextInputKeyNameTextPc7516c0,
-    TextInputKeyNameTextPc771b58, TextInputKeyNameTextPc7516c0, TextInputKeyNameTextPc7516c0,
-    TextInputKeyNameTextPc771b4c, TextInputKeyNameTextPc771b48, TextInputKeyNameTextPc771b40,
-    TextInputKeyNameTextPc771b34, TextInputKeyNameTextPc771b2c, TextInputKeyNameTextPc771b24,
-    TextInputKeyNameTextPc771b20, TextInputKeyNameTextPc771b14, TextInputKeyNameTextPc7516c0,
-    TextInputKeyNameTextPc771b08, TextInputKeyNameTextPc7516c0, TextInputKeyNameTextPc7516c0,
-    TextInputKeyNameTextPc771afc, TextInputKeyNameTextPc771af4, TextInputKeyNameTextPc7516c0,
-    TextInputKeyNameTextPc7516c0, TextInputKeyNameTextPc771aec, TextInputKeyNameTextPc771ae4,
-    TextInputKeyNameTextPc771adc, TextInputKeyNameTextPc7516c0, TextInputKeyNameTextPc771ad0,
-    TextInputKeyNameTextPc7516c0, TextInputKeyNameTextPc7516c0, TextInputKeyNameTextPc7516c0,
-    TextInputKeyNameTextPc7516c0, TextInputKeyNameTextPc7516c0, TextInputKeyNameTextPc7516c0,
-    TextInputKeyNameTextPc7516c0, TextInputKeyNameTextPc7516c0, TextInputKeyNameTextPc7516c0,
-    TextInputKeyNameTextPc771ac8, TextInputKeyNameTextPc7516c0, TextInputKeyNameTextPc771ac0,
-    TextInputKeyNameTextPc7516c0, TextInputKeyNameTextPc771ab8, PcInputText77199c,
-    TextInputKeyNameTextPc7516c0, TextInputKeyNameTextPc771aa4, TextInputKeyNameTextPc7516c0,
-    TextInputKeyNameTextPc771a9c, TextInputKeyNameTextPc771a94, TextInputKeyNameTextPc7516c0,
-    TextInputKeyNameTextPc7516c0, TextInputKeyNameTextPc7516c0, TextInputKeyNameTextPc7516c0,
-    TextInputKeyNameTextPc7516c0, TextInputKeyNameTextPc7516c0, TextInputKeyNameTextPc7516c0,
-    TextInputKeyNameTextPc7516c0, TextInputKeyNameTextPc7516c0, TextInputKeyNameTextPc7516c0,
-    TextInputKeyNameTextPc7516c0, TextInputKeyNameTextPc7516c0, TextInputKeyNameTextPc771a8c,
-    TextInputKeyNameTextPc7516c0, TextInputKeyNameTextPc771a84, TextInputKeyNameTextPc771a80,
-    TextInputKeyNameTextPc771a78, TextInputKeyNameTextPc7516c0, TextInputKeyNameTextPc771a70,
-    TextInputKeyNameTextPc7516c0, TextInputKeyNameTextPc771a68, TextInputKeyNameTextPc7516c0,
-    TextInputKeyNameTextPc771a64, TextInputKeyNameTextPc75ac34, TextInputKeyNameTextPc771a58,
-    TextInputKeyNameTextPc771a50, TextInputKeyNameTextPc76fde8, TextInputKeyNameTextPc7516c0,
-    TextInputKeyNameTextPc7516c0, TextInputKeyNameTextPc7516c0, TextInputKeyNameTextPc7516c0,
-    TextInputKeyNameTextPc7516c0, TextInputKeyNameTextPc7516c0, TextInputKeyNameTextPc7516c0,
-    TextInputKeyNameTextPc771a48, TextInputKeyNameTextPc771a40, TextInputKeyNameTextPc771a38,
-    TextInputKeyNameTextPc771a30, TextInputKeyNameTextPc771a28, TextInputKeyNameTextPc7516c0,
-    TextInputKeyNameTextPc7516c0, TextInputKeyNameTextPc7516c0, TextInputKeyNameTextPc771a20,
-    TextInputKeyNameTextPc7516c0, TextInputKeyNameTextPc771a14, TextInputKeyNameTextPc771a04,
-    TextInputKeyNameTextPc7719f8, TextInputKeyNameTextPc7719f0, TextInputKeyNameTextPc7719e4,
-    TextInputKeyNameTextPc7719dc, TextInputKeyNameTextPc7719d0, TextInputKeyNameTextPc7719c8,
-    TextInputKeyNameTextPc7719bc};
+char *PcInputKeyNames821558[238] = {TextInputKeyNameTextPc771d80,
+                                    TextInputKeyNameTextPc771d7c,
+                                    "1",
+                                    TextInputKeyNameTextPc771d78,
+                                    TextInputKeyNameTextPc771d74,
+                                    TextInputKeyNameTextPc771d70,
+                                    TextInputKeyNameTextPc771d6c,
+                                    TextInputKeyNameTextPc771d68,
+                                    TextInputKeyNameTextPc771d64,
+                                    TextInputKeyNameTextPc771d60,
+                                    TextInputKeyNameTextPc771d5c,
+                                    TextInputKeyNameTextPc771d58,
+                                    TextInputKeyNameTextPc771d50,
+                                    TextInputKeyNameTextPc771d48,
+                                    TextInputKeyNameTextPc771d3c,
+                                    TextInputKeyNameTextPc771d38,
+                                    TextInputKeyNameTextPc771d34,
+                                    TextInputKeyNameTextPc771d30,
+                                    TextInputKeyNameTextPc771d2c,
+                                    TextInputKeyNameTextPc771d28,
+                                    TextInputKeyNameTextPc771d24,
+                                    TextInputKeyNameTextPc774184,
+                                    TextInputKeyNameTextPc771d20,
+                                    TextInputKeyNameTextPc771d1c,
+                                    TextInputKeyNameTextPc771d18,
+                                    TextInputKeyNameTextPc771d14,
+                                    TextInputKeyNameTextPc753374,
+                                    TextInputKeyNameTextPc753370,
+                                    TextInputKeyNameTextPc771d0c,
+                                    TextInputKeyNameTextPc771d04,
+                                    TextInputKeyNameTextPc771d00,
+                                    TextInputKeyNameTextPc771cfc,
+                                    TextInputKeyNameTextPc771cf8,
+                                    TextInputKeyNameTextPc771cf4,
+                                    TextInputKeyNameTextPc771cf0,
+                                    TextInputKeyNameTextPc771cec,
+                                    TextInputKeyNameTextPc771ce8,
+                                    TextInputKeyNameTextPc771ce4,
+                                    TextInputKeyNameTextPc771ce0,
+                                    TextInputKeyNameTextPc771cd4,
+                                    TextInputKeyNameTextPc771cc8,
+                                    TextInputKeyNameTextPc771cc0,
+                                    TextInputKeyNameTextPc771cb4,
+                                    "\\",
+                                    TextInputKeyNameTextPc774180,
+                                    TextInputKeyNameTextPc759770,
+                                    TextInputKeyNameTextPc771cac,
+                                    TextInputKeyNameTextPc771ca8,
+                                    TextInputKeyNameTextPc771ca4,
+                                    TextInputKeyNameTextPc771ca0,
+                                    TextInputKeyNameTextPc771c9c,
+                                    TextInputKeyNameTextPc771c94,
+                                    TextInputKeyNameTextPc771c8c,
+                                    TextInputKeyNameTextPc771c80,
+                                    TextInputKeyNameTextPc771c74,
+                                    TextInputKeyNameTextPc771c6c,
+                                    TextInputKeyNameTextPc771c64,
+                                    TextInputKeyNameTextPc771c5c,
+                                    TextInputKeyNameTextPc771c50,
+                                    TextInputKeyNameTextPc771c4c,
+                                    TextInputKeyNameTextPc771c48,
+                                    TextInputKeyNameTextPc771c44,
+                                    TextInputKeyNameTextPc771c40,
+                                    TextInputKeyNameTextPc771c3c,
+                                    TextInputKeyNameTextPc771c38,
+                                    TextInputKeyNameTextPc771c34,
+                                    TextInputKeyNameTextPc771c30,
+                                    TextInputKeyNameTextPc771c2c,
+                                    TextInputKeyNameTextPc771c28,
+                                    TextInputKeyNameTextPc771c1c,
+                                    TextInputKeyNameTextPc771c10,
+                                    TextInputKeyNameTextPc771c08,
+                                    TextInputKeyNameTextPc771c00,
+                                    TextInputKeyNameTextPc771bf8,
+                                    TextInputKeyNameTextPc771bf0,
+                                    TextInputKeyNameTextPc771be8,
+                                    TextInputKeyNameTextPc771be0,
+                                    TextInputKeyNameTextPc771bd8,
+                                    TextInputKeyNameTextPc771bd0,
+                                    TextInputKeyNameTextPc771bc8,
+                                    TextInputKeyNameTextPc771bc0,
+                                    TextInputKeyNameTextPc771bb8,
+                                    TextInputKeyNameTextPc771bb0,
+                                    PcInputText7719b0,
+                                    TextInputKeyNameTextPc7516c0,
+                                    TextInputKeyNameTextPc7516c0,
+                                    PcInputText7719a8,
+                                    TextInputKeyNameTextPc771ba0,
+                                    TextInputKeyNameTextPc771b9c,
+                                    TextInputKeyNameTextPc7516c0,
+                                    TextInputKeyNameTextPc7516c0,
+                                    TextInputKeyNameTextPc7516c0,
+                                    TextInputKeyNameTextPc7516c0,
+                                    TextInputKeyNameTextPc7516c0,
+                                    TextInputKeyNameTextPc7516c0,
+                                    TextInputKeyNameTextPc7516c0,
+                                    TextInputKeyNameTextPc7516c0,
+                                    TextInputKeyNameTextPc7516c0,
+                                    TextInputKeyNameTextPc7516c0,
+                                    TextInputKeyNameTextPc7516c0,
+                                    TextInputKeyNameTextPc771b98,
+                                    TextInputKeyNameTextPc771b94,
+                                    TextInputKeyNameTextPc771b90,
+                                    TextInputKeyNameTextPc7516c0,
+                                    TextInputKeyNameTextPc7516c0,
+                                    TextInputKeyNameTextPc7516c0,
+                                    TextInputKeyNameTextPc7516c0,
+                                    TextInputKeyNameTextPc7516c0,
+                                    TextInputKeyNameTextPc7516c0,
+                                    TextInputKeyNameTextPc7516c0,
+                                    TextInputKeyNameTextPc7516c0,
+                                    TextInputKeyNameTextPc7516c0,
+                                    TextInputKeyNameTextPc771b88,
+                                    TextInputKeyNameTextPc7516c0,
+                                    TextInputKeyNameTextPc7516c0,
+                                    TextInputKeyNameTextPc771b80,
+                                    TextInputKeyNameTextPc7516c0,
+                                    TextInputKeyNameTextPc7516c0,
+                                    TextInputKeyNameTextPc7516c0,
+                                    TextInputKeyNameTextPc7516c0,
+                                    TextInputKeyNameTextPc7516c0,
+                                    TextInputKeyNameTextPc771b78,
+                                    TextInputKeyNameTextPc7516c0,
+                                    TextInputKeyNameTextPc771b6c,
+                                    TextInputKeyNameTextPc7516c0,
+                                    TextInputKeyNameTextPc771b68,
+                                    TextInputKeyNameTextPc771b60,
+                                    TextInputKeyNameTextPc7516c0,
+                                    TextInputKeyNameTextPc7516c0,
+                                    TextInputKeyNameTextPc7516c0,
+                                    TextInputKeyNameTextPc7516c0,
+                                    TextInputKeyNameTextPc7516c0,
+                                    TextInputKeyNameTextPc7516c0,
+                                    TextInputKeyNameTextPc7516c0,
+                                    TextInputKeyNameTextPc7516c0,
+                                    TextInputKeyNameTextPc7516c0,
+                                    TextInputKeyNameTextPc7516c0,
+                                    TextInputKeyNameTextPc7516c0,
+                                    TextInputKeyNameTextPc7516c0,
+                                    TextInputKeyNameTextPc7516c0,
+                                    TextInputKeyNameTextPc7516c0,
+                                    TextInputKeyNameTextPc771b58,
+                                    TextInputKeyNameTextPc7516c0,
+                                    TextInputKeyNameTextPc7516c0,
+                                    TextInputKeyNameTextPc771b4c,
+                                    TextInputKeyNameTextPc771b48,
+                                    TextInputKeyNameTextPc771b40,
+                                    TextInputKeyNameTextPc771b34,
+                                    TextInputKeyNameTextPc771b2c,
+                                    TextInputKeyNameTextPc771b24,
+                                    TextInputKeyNameTextPc771b20,
+                                    TextInputKeyNameTextPc771b14,
+                                    TextInputKeyNameTextPc7516c0,
+                                    TextInputKeyNameTextPc771b08,
+                                    TextInputKeyNameTextPc7516c0,
+                                    TextInputKeyNameTextPc7516c0,
+                                    TextInputKeyNameTextPc771afc,
+                                    TextInputKeyNameTextPc771af4,
+                                    TextInputKeyNameTextPc7516c0,
+                                    TextInputKeyNameTextPc7516c0,
+                                    TextInputKeyNameTextPc771aec,
+                                    TextInputKeyNameTextPc771ae4,
+                                    TextInputKeyNameTextPc771adc,
+                                    TextInputKeyNameTextPc7516c0,
+                                    TextInputKeyNameTextPc771ad0,
+                                    TextInputKeyNameTextPc7516c0,
+                                    TextInputKeyNameTextPc7516c0,
+                                    TextInputKeyNameTextPc7516c0,
+                                    TextInputKeyNameTextPc7516c0,
+                                    TextInputKeyNameTextPc7516c0,
+                                    TextInputKeyNameTextPc7516c0,
+                                    TextInputKeyNameTextPc7516c0,
+                                    TextInputKeyNameTextPc7516c0,
+                                    TextInputKeyNameTextPc7516c0,
+                                    TextInputKeyNameTextPc771ac8,
+                                    TextInputKeyNameTextPc7516c0,
+                                    TextInputKeyNameTextPc771ac0,
+                                    TextInputKeyNameTextPc7516c0,
+                                    TextInputKeyNameTextPc771ab8,
+                                    PcInputText77199c,
+                                    TextInputKeyNameTextPc7516c0,
+                                    TextInputKeyNameTextPc771aa4,
+                                    TextInputKeyNameTextPc7516c0,
+                                    TextInputKeyNameTextPc771a9c,
+                                    TextInputKeyNameTextPc771a94,
+                                    TextInputKeyNameTextPc7516c0,
+                                    TextInputKeyNameTextPc7516c0,
+                                    TextInputKeyNameTextPc7516c0,
+                                    TextInputKeyNameTextPc7516c0,
+                                    TextInputKeyNameTextPc7516c0,
+                                    TextInputKeyNameTextPc7516c0,
+                                    TextInputKeyNameTextPc7516c0,
+                                    TextInputKeyNameTextPc7516c0,
+                                    TextInputKeyNameTextPc7516c0,
+                                    TextInputKeyNameTextPc7516c0,
+                                    TextInputKeyNameTextPc7516c0,
+                                    TextInputKeyNameTextPc7516c0,
+                                    TextInputKeyNameTextPc771a8c,
+                                    TextInputKeyNameTextPc7516c0,
+                                    TextInputKeyNameTextPc771a84,
+                                    TextInputKeyNameTextPc771a80,
+                                    TextInputKeyNameTextPc771a78,
+                                    TextInputKeyNameTextPc7516c0,
+                                    TextInputKeyNameTextPc771a70,
+                                    TextInputKeyNameTextPc7516c0,
+                                    TextInputKeyNameTextPc771a68,
+                                    TextInputKeyNameTextPc7516c0,
+                                    TextInputKeyNameTextPc771a64,
+                                    TextInputKeyNameTextPc75ac34,
+                                    TextInputKeyNameTextPc771a58,
+                                    TextInputKeyNameTextPc771a50,
+                                    TextInputKeyNameTextPc76fde8,
+                                    TextInputKeyNameTextPc7516c0,
+                                    TextInputKeyNameTextPc7516c0,
+                                    TextInputKeyNameTextPc7516c0,
+                                    TextInputKeyNameTextPc7516c0,
+                                    TextInputKeyNameTextPc7516c0,
+                                    TextInputKeyNameTextPc7516c0,
+                                    TextInputKeyNameTextPc7516c0,
+                                    TextInputKeyNameTextPc771a48,
+                                    TextInputKeyNameTextPc771a40,
+                                    TextInputKeyNameTextPc771a38,
+                                    TextInputKeyNameTextPc771a30,
+                                    TextInputKeyNameTextPc771a28,
+                                    TextInputKeyNameTextPc7516c0,
+                                    TextInputKeyNameTextPc7516c0,
+                                    TextInputKeyNameTextPc7516c0,
+                                    TextInputKeyNameTextPc771a20,
+                                    TextInputKeyNameTextPc7516c0,
+                                    TextInputKeyNameTextPc771a14,
+                                    TextInputKeyNameTextPc771a04,
+                                    TextInputKeyNameTextPc7719f8,
+                                    TextInputKeyNameTextPc7719f0,
+                                    TextInputKeyNameTextPc7719e4,
+                                    TextInputKeyNameTextPc7719dc,
+                                    TextInputKeyNameTextPc7719d0,
+                                    TextInputKeyNameTextPc7719c8,
+                                    TextInputKeyNameTextPc7719bc};
 char *PcInputKeyNames821910[238] = {TextInputKeyNameTextPc771d80,
                                     TextInputKeyNameTextPc771d7c,
                                     "1",
@@ -3818,7 +3691,7 @@ char *PcInputKeyNames821910[238] = {TextInputKeyNameTextPc771d80,
                                     PcInputText77195c,
                                     PcInputText77194c,
                                     PcInputText771940,
-                                    (char *)WorldPathSeparator,
+                                    "\\",
                                     TextInputKeyNameTextPc774180,
                                     TextInputKeyNameTextPc759770,
                                     TextInputKeyNameTextPc771cac,
@@ -4099,7 +3972,7 @@ char *PcInputKeyNames821cc8[238] = {PcInputText7716d4,
                                     PcInputText7715c8,
                                     TextInputKeyNameTextPc7516c0,
                                     TextInputKeyNameTextPc7516c0,
-                                    (char *)WorldPathSeparator,
+                                    "\\",
                                     TextInputKeyNameTextPc771ba0,
                                     TextInputKeyNameTextPc771b9c,
                                     TextInputKeyNameTextPc7516c0,
@@ -4514,7 +4387,7 @@ char *PcInputKeyNames8223f8[222] = {PcInputText7716d4,
                                     TextInputKeyNameTextPc771ce0,
                                     PcInputText7712dc,
                                     PcInputText7712d8,
-                                    (char *)WorldPathSeparator,
+                                    "\\",
                                     PcInputText7712cc,
                                     PcInputText7712c8,
                                     TextInputKeyNameTextPc774180,
@@ -4620,7 +4493,7 @@ char *PcInputKeyNames8223f8[222] = {PcInputText7716d4,
                                     TextInputKeyNameTextPc771b4c,
                                     TextInputKeyNameTextPc771b48,
                                     PcInputText75c044,
-                                    (char *)PermLegalSeparator,
+                                    "_",
                                     TextInputKeyNameTextPc771b2c,
                                     TextInputKeyNameTextPc771b24,
                                     TextInputKeyNameTextPc771b20,
@@ -4842,7 +4715,7 @@ char *PcInputKeyNames822770[222] = {PcInputText7710c8,
                                     TextInputKeyNameTextPc771b4c,
                                     PcInputText771040,
                                     PcInputText77103c,
-                                    (char *)Text_UnknownText,
+                                    "?",
                                     TextInputKeyNameTextPc771b2c,
                                     TextInputKeyNameTextPc771b24,
                                     TextInputKeyNameTextPc771b20,
@@ -5685,7 +5558,7 @@ char *PcInputKeyNames823590[238] = {TextInputKeyNameTextPc771d80,
                                     PcInputText770b58,
                                     TextInputKeyNameTextPc7516c0,
                                     TextInputKeyNameTextPc7516c0,
-                                    (char *)WorldPathSeparator,
+                                    "\\",
                                     TextInputKeyNameTextPc771ba0,
                                     TextInputKeyNameTextPc771b9c,
                                     TextInputKeyNameTextPc7516c0,
@@ -5880,7 +5753,7 @@ char *PcInputKeyNames823948[238] = {TextInputKeyNameTextPc771d80,
                                     PcInputText770ab4,
                                     PcInputText770f54,
                                     PcInputText770aa4,
-                                    (char *)WorldPathSeparator,
+                                    "\\",
                                     PcInputText770aa0,
                                     PcInputText770a9c,
                                     PcInputText770a98,
@@ -6161,7 +6034,7 @@ char *PcInputKeyNames823d00[238] = {TextInputKeyNameTextPc771d80,
                                     PcInputText7707d4,
                                     TextInputKeyNameTextPc7516c0,
                                     TextInputKeyNameTextPc7516c0,
-                                    (char *)WorldPathSeparator,
+                                    "\\",
                                     TextInputKeyNameTextPc771ba0,
                                     TextInputKeyNameTextPc771b9c,
                                     TextInputKeyNameTextPc7516c0,
@@ -6399,7 +6272,7 @@ char *PcInputKeyNames8240b8[238] = {TextInputKeyNameTextPc771d80,
                                     PcInputText7707d4,
                                     TextInputKeyNameTextPc7516c0,
                                     TextInputKeyNameTextPc7516c0,
-                                    (char *)WorldPathSeparator,
+                                    "\\",
                                     TextInputKeyNameTextPc771ba0,
                                     TextInputKeyNameTextPc771b9c,
                                     TextInputKeyNameTextPc7516c0,
@@ -6564,7 +6437,7 @@ char *PcInputKeyNames824470[238] = {TextInputKeyNameTextPc771d80,
                                     TextInputKeyNameTextPc771d5c,
                                     TextInputKeyNameTextPc771d58,
                                     PcInputText7712f4,
-                                    (char *)WorldPathSeparator,
+                                    "\\",
                                     TextInputKeyNameTextPc771d3c,
                                     TextInputKeyNameTextPc771d38,
                                     TextInputKeyNameTextPc771d34,
@@ -7475,13 +7348,6 @@ extern "C" {
 #pragma bss_seg()
 }
 extern "C" {
-#pragma const_seg(".rdata$GizmoSpecialErrorTabPc")
-    extern const char GizmoSpecialErrorTabPc[3] = "\t\t";
-#pragma const_seg()
-
-#pragma const_seg(".rdata$GizObstacleTypeNamePc")
-    extern const char GizObstacleTypeNamePc[12] = "GizObstacle";
-#pragma const_seg()
 
 #pragma bss_seg(".bss$GizmoBlowupNameCountPc")
     i32 GizmoBlowupNameCountPc = 0;
@@ -8000,19 +7866,6 @@ extern "C" {
     u16 temp_zrot = 0;
 #pragma bss_seg()
     i32 VehicleArea = 0;
-    extern const char NuAnimSourceFileName[48] = "d:\\projects\\game_saga\\nu2api.saga\\nu3d\\nuanim.c";
-#pragma const_seg(".rdata$AIScriptKeywordEnd")
-    extern const char AIScriptKeywordEnd[2] = "}";
-#pragma const_seg()
-#pragma const_seg(".rdata$AIScriptKeywordReferenceScript")
-    extern const char AIScriptKeywordReferenceScript[16] = "REFERENCESCRIPT";
-#pragma const_seg()
-#pragma const_seg(".rdata$AIScriptKeywordBase")
-    extern const char AIScriptKeywordBase[5] = "Base";
-#pragma const_seg()
-#pragma const_seg(".rdata$AIScriptKeywordLevel")
-    extern const char AIScriptKeywordLevel[6] = "Level";
-#pragma const_seg()
     char *NuBlankString = (char *)NuBlankStringValue;
     extern const f64 GameObjectNearFloorNoFloorHeight = 2000000.0;
 #pragma const_seg(".rdata$AIPathAngularScale")
@@ -8032,24 +7885,6 @@ extern "C" {
 #pragma const_seg()
 #pragma const_seg(".rdata$PCPathArcSineCoefficient9")
     extern const f64 PCPathArcSineCoefficient9 = -0.0303819f;
-#pragma const_seg()
-#pragma const_seg(".rdata$AIScriptFileExtension")
-    extern const char AIScriptFileExtension[5] = ".scp";
-#pragma const_seg()
-#pragma const_seg(".rdata$AIScriptActionNameArgPrefix")
-    extern const char AIScriptActionNameArgPrefix[6] = "name=";
-#pragma const_seg()
-#pragma const_seg(".rdata$XArgPrefix")
-    extern const char XArgPrefix[3] = "x=";
-#pragma const_seg()
-#pragma const_seg(".rdata$YArgPrefix")
-    extern const char YArgPrefix[3] = "y=";
-#pragma const_seg()
-#pragma const_seg(".rdata$ZArgPrefix")
-    extern const char ZArgPrefix[3] = "z=";
-#pragma const_seg()
-#pragma const_seg(".rdata$AIScriptParamPrefix")
-    extern const char AIScriptParamPrefix[6] = "param";
 #pragma const_seg()
 #pragma const_seg(".rdata$NuBlankStringValue")
     extern const char NuBlankStringValue[2] = " ";
@@ -8203,9 +8038,6 @@ extern "C" {
     f32 nusound_fade_start = 2.0f;
     f32 nusound_fade_end = 15.0f;
     u32 nusound_seed = 0x20558057;
-#pragma const_seg(".rdata$GizmoDefaultOutputName")
-    extern const char GizmoDefaultOutputName[8] = "default";
-#pragma const_seg()
 #pragma const_seg(".rdata$AIScriptFalse")
     extern const char AIScriptFalse[6] = "false";
 #pragma const_seg()
@@ -8219,12 +8051,6 @@ extern "C" {
     GAMEANIMPROGRESS gameanimsysprogress = {0};
     VARIPTR original_permbuffer_base = {0};
     char InitOnceCurrentDirectory[1] = {0};
-#pragma const_seg(".rdata$InitOnceWindowTitle")
-    extern const char InitOnceWindowTitle[36] = "LEGO\xae Star Wars\x99: The Complete Saga";
-#pragma const_seg()
-#pragma const_seg(".rdata$InitOnceHalf")
-    extern const f32 InitOnceHalf = 0.5f;
-#pragma const_seg()
     void *Game_NuPad_Store[2] = {0};
     void **Game_NuPad = 0;
     void *NuTimeBar_SetList[16] = {0};
@@ -8263,8 +8089,6 @@ extern "C" {
     extern const f32 NuPrimPS2XScale = 0.003125f;
 #pragma const_seg(".rdata$NuPrimPS2YScale")
     extern const f32 NuPrimPS2YScale = -1.0f / 112.0f;
-#pragma const_seg(".rdata$NuPrimTwo")
-    extern const f32 NuPrimTwo = 2.0f;
 #pragma const_seg()
     NUFPAR_PC NuFParRecords[4] = {0};
     char NuFParBuffers[4][0x1000] = {0};
@@ -8287,7 +8111,6 @@ extern "C" {
     f32 qfnt_offscale_y = 0;
     f32 qfnt_rezscale_w = 1.0f;
     f32 qfnt_rezscale_h = 1.0f;
-    extern const f32 nu_fsign_minus_one = -1.0f;
 #pragma const_seg(".rdata$PCKeyboardMouse2Name_candidate")
     extern const char PCKeyboardMouse2Name[16] = "KeyboardMouse2";
 #pragma const_seg()
@@ -8312,12 +8135,6 @@ extern "C" {
     i32 LoadPerm_StringsLoaded = 0;
 #pragma const_seg(".rdata$PermLegalScale")
     extern const f32 PermLegalScale = 2.2f;
-#pragma const_seg()
-#pragma const_seg(".rdata$PermLegalBase")
-    extern const char PermLegalBase[6] = "legal";
-#pragma const_seg()
-#pragma const_seg(".rdata$PermLegalSeparator")
-    extern const char PermLegalSeparator[2] = "_";
 #pragma const_seg()
     i32 readpads_always = 0;
     TIMER GlobalTimer = {0};
@@ -8350,8 +8167,8 @@ extern "C" {
     LEVELSPLINE_PC *LevSplList = 0;
 #pragma data_seg(".data$LevelSplinesTable")
     LEVELSPLINE_PC LevelSplinesTable[26] = {
-        {NULL, LevelSplinesStartName, 2, 0, -1, -1},
-        {NULL, LevelSplinesStartCamName, 2, 0, -1, -1},
+        {NULL, "start", 2, 0, -1, -1},
+        {NULL, "start_cam", 2, 0, -1, -1},
         {NULL, "point_cam", 2, 2, -1, -1},
         {NULL, "finish_line", 2, 2, -1, -1},
         {NULL, "cam_start", 2, 2, -1, -1},
@@ -8541,9 +8358,6 @@ extern "C" {
     void *NuAllocPeakEnd0 = 0;
     u32 NuAllocHeaderMetadata[3] = {0x424d454d, 0x45484b4c, 0x52454441};
     u32 NuAllocTailMetadata[3] = {0x424d454d, 0x41544b4c, 0x31304c49};
-#pragma const_seg(".rdata$NuFileDiscSuffix")
-    extern const char nufile_disc_suffix[3] = ";1";
-#pragma const_seg()
     DAT_HANDLES_PC NuDatHandles = {0};
     i32 finishloop_backdroponly = 0;
 #pragma data_seg(".data$StartupDatNames")
@@ -8557,9 +8371,6 @@ extern "C" {
     f32 INTROTEXT_Y = 0.175f;
     f32 INTROTEXT_SCALE = 0.79f;
     void (*Text_GameSetLanguageFn)(i32) = 0;
-#pragma const_seg(".rdata$Text_TimeS")
-    extern const char Text_TimeS[3] = "%i";
-#pragma const_seg()
     i32 dat_00806b84 = 1;
     i32 dat_00806b88 = 1;
     i32 dat_00806b8c = 1;
@@ -8656,7 +8467,6 @@ extern "C" {
 #pragma bss_seg()
 
     // PC NuSound3 state and loop-hold conversion constants.
-    extern const f64 NuScale1000 = 1000.0;
     i32 NuSound3LoopHoldTime = 133;
     i32 NuSound3VolumeOffset = -300;
 #pragma data_seg(".data$PCSoundVolumeMultiplier")
@@ -9207,9 +9017,6 @@ extern "C" {
         {NULL, NULL},
     };
 #pragma const_seg()
-#pragma const_seg(".rdata$NuTimeBarSource")
-    extern const char NuTimeBarSource[51] = "d:\\projects\\game_saga\\nu2api.saga\\nu3d\\nutimebar.c";
-#pragma const_seg()
 #pragma const_seg(".rdata$NuTimeBarEngineColours")
     extern const u32 NuTimeBar_EngineColours[7] = {0x7f00007f, 0x7f007f00, 0x7f007f50, 0x7f507f50,
                                                    0x7f000050, 0x7f40407f, 0x7f7f0000};
@@ -9219,9 +9026,6 @@ extern "C" {
         0x00000040, 0x22222240, 0x00004440, 0x00008840, 0x44000040, 0x88000040, 0x44004440, 0x88008840,
         0x00440040, 0x00880040, 0x00444440, 0x00888840, 0x44440040, 0x88880040, 0x44444440, 0x88888840,
     };
-#pragma const_seg()
-#pragma const_seg(".rdata$NuTimeBarQuarter")
-    extern const f64 NuTimeBarQuarter = 0.25;
 #pragma const_seg()
 #pragma const_seg(".rdata$NuTimeBarQFontSize")
     extern const f32 NuTimeBarQFontSize = 16.0f;
@@ -9234,9 +9038,6 @@ extern "C" {
 #pragma const_seg()
 #pragma const_seg(".rdata$NuTimeBarSlotWidth")
     extern const f64 NuTimeBarSlotWidth = 0.02500000037252903;
-#pragma const_seg()
-#pragma const_seg(".rdata$NuTimeBarValueFormat")
-    extern const char NuTimeBarValueFormat[3] = "%d";
 #pragma const_seg()
 #pragma const_seg(".rdata$NuTimeBarFontScale")
     extern const f32 NuTimeBarFontScale = 0.8500000238418579f;
@@ -9265,9 +9066,6 @@ extern "C" {
 #pragma bss_seg(".bss$NuTimeBar_PeakReset")
     i32 NuTimeBar_PeakReset = 0;
 #pragma bss_seg()
-#pragma const_seg(".rdata$TextLoadPermTextDirectory")
-    extern const char TextLoadPermTextDirectory[12] = "stuff\\text\\";
-#pragma const_seg()
 
 #pragma bss_seg(".bss$tALONGTIMEAGO")
     i16 tALONGTIMEAGO = 0;
@@ -9369,14 +9167,11 @@ extern "C" {
     i32 INTROTEXT_ID = -1;
     void *Text_AppFont = 0;
     char **TTab = 0;
-#pragma const_seg(".rdata$Text_UnknownText")
-    extern const char Text_UnknownText[2] = "?";
-#pragma const_seg()
     void (*buttonmapfn)(char *, char *) = 0;
     i32 smarttext_fwn = 0;
     i32 MessageMtlInit = 0;
-    char *txt_NULL = const_cast<char *>(Text_UnknownText);
-    char *txt_UNKNOWN = const_cast<char *>(Text_UnknownText);
+    char *txt_NULL = const_cast<char *>("?");
+    char *txt_UNKNOWN = const_cast<char *>("?");
     char *Text_PathEnglish = const_cast<char *>("english");
     char *Text_PathFrench = const_cast<char *>("french");
     char *Text_PathGerman = const_cast<char *>("german");
@@ -9503,26 +9298,9 @@ extern "C" {
         {1.0f, 4160, 0xffff},  {1.0f, 0, 0xffff},    {1.0f, 5184, 0xffff},   {1.0f, 256, 0xffff}, {1.0f, 320, 0xffff},
         {1.0f, 64, 0xffff},    {1.0f, 64, 0xffff},
     };
-#pragma const_seg(".rdata$LevelConfigKeywordFile")
-    extern const char LevelConfigKeywordFile[5] = "file";
-#pragma const_seg(".rdata$LevelConfigKeywordDir")
-    extern const char LevelConfigKeywordDir[4] = "dir";
-#pragma const_seg(".rdata$NuCameraAllocSource")
-    extern const char NuCameraAllocSource[54] = "d:\\projects\\game_saga\\nu2api.saga\\nu3d\\nucamera_gen.c";
 
-#pragma const_seg(".rdata$LevelSplinesStartName")
-    extern const char LevelSplinesStartName[6] = "start";
-#pragma const_seg()
-#pragma const_seg(".rdata$LevelSplinesStartCamName")
-    extern const char LevelSplinesStartCamName[10] = "start_cam";
-
-#pragma const_seg(".rdata$NuLstCreateTag")
-    extern const char NuLstCreateTag[52] = "d:\\projects\\game_saga\\nu2api.saga\\gamelib\\listman.c";
-#pragma const_seg()
 #pragma const_seg(".rdata$LevelConfigFarDistance")
     extern const f32 LevelConfigFarDistance = 2000000.0f;
-#pragma const_seg(".rdata$LevelConfigOff")
-    extern const char LevelConfigOff[4] = "off";
 #pragma const_seg()
 #pragma data_seg(".data$LevelConfigKeywords_BeforeLoad")
     NUFPCOMJMP LevelConfigKeywords_BeforeLoad[45] = {
@@ -9641,15 +9419,6 @@ extern "C" {
     };
 #pragma data_seg()
 
-#pragma const_seg(".rdata$AreaResidentsExtension")
-    extern const char AreaResidentsExtension[5] = ".txt";
-#pragma const_seg(".rdata$AreaConfigKeyword_character")
-    extern const char AreaConfigKeyword_character[10] = "character";
-#pragma const_seg(".rdata$AreaConfigKeyword_text_id")
-    extern const char AreaConfigKeyword_text_id[8] = "text_id";
-#pragma const_seg(".rdata$AreaConfigKeyword_name_id")
-    extern const char AreaConfigKeyword_name_id[8] = "name_id";
-#pragma const_seg()
 #pragma bss_seg(".bss$SfxBits")
     u16 SfxBits[100] = {0};
 #pragma bss_seg()
@@ -10038,37 +9807,10 @@ extern "C" {
 #pragma bss_seg(".bss$ForcePush_SuperPush")
     i32 ForcePush_SuperPush = 0;
 #pragma bss_seg()
-#pragma const_seg(".rdata$PCContextName_Jump")
-    extern const char PCContextName_Jump[5] = "Jump";
-#pragma const_seg()
-#pragma const_seg(".rdata$PCContextName_Teleport")
-    extern const char PCContextName_Teleport[9] = "Teleport";
-#pragma const_seg()
-#pragma const_seg(".rdata$PCContextName_Tube")
-    extern const char PCContextName_Tube[5] = "Tube";
-#pragma const_seg()
-#pragma const_seg(".rdata$PCContextName_Punch")
-    extern const char PCContextName_Punch[6] = "Punch";
-#pragma const_seg()
-#pragma const_seg(".rdata$PCContextName_Grapple")
-    extern const char PCContextName_Grapple[8] = "Grapple";
-#pragma const_seg()
-#pragma const_seg(".rdata$PCContextName_ZipUp")
-    extern const char PCContextName_ZipUp[6] = "ZipUp";
-#pragma const_seg()
-#pragma const_seg(".rdata$PCContextName_Signal")
-    extern const char PCContextName_Signal[7] = "Signal";
-#pragma const_seg()
-#pragma const_seg(".rdata$PCContextName_Techno")
-    extern const char PCContextName_Techno[7] = "Techno";
-#pragma const_seg()
-#pragma const_seg(".rdata$PCContextName_Ledge")
-    extern const char PCContextName_Ledge[6] = "Ledge";
-#pragma const_seg()
 #pragma data_seg(".data$PCContextInfoTable")
     CHARACTER_CONTEXT_INFO_PC PCContextInfoTable[101] = {
         {"NoContext", -1, 0x1000, 0},
-        {PCContextName_Jump, -1, 0x1000000, 0},
+        {"Jump", -1, 0x1000000, 0},
         {"LandJump", -1, 0x15, 0},
         {"LandJump2", -1, 0x15, 0},
         {"LandFlip", -1, 0x15, 0},
@@ -10083,9 +9825,9 @@ extern "C" {
         {"Block", -1, 0x4000010, 0},
         {"LandLunge", -1, 0x800011, 0},
         {"LandSlam", -1, 0x800011, 0},
-        {PCContextName_Teleport, -1, 0x1b3, 12},
+        {"Teleport", -1, 0x1b3, 12},
         {"Swipe", -1, 0x800010, 0},
-        {PCContextName_Tube, -1, 0x408, 0},
+        {"Tube", -1, 0x408, 0},
         {"ForceThrow", -1, 0x12, 0},
         {"HoverUp", -1, 0x30, 0},
         {"Rocket", -1, 0x11, 0},
@@ -10106,7 +9848,7 @@ extern "C" {
         {"DropIn", -1, 0x40113, 0},
         {"DropOut", -1, 0x40113, 0},
         {"Dodge", -1, 0x92, 1},
-        {PCContextName_Punch, -1, 0x10032, 1},
+        {"Punch", -1, 0x10032, 1},
         {"Push", -1, 0x2030, 0},
         {"PushSpinner", -1, 0x3010, 0},
         {"LandCombatRoll", -1, 0xb4, 0},
@@ -10138,18 +9880,18 @@ extern "C" {
         {"Climb", -1, 0x431, 0},
         {"Tightrope", -1, 0x80431, 0},
         {"WallShuffle", -1, 0x3031, 0},
-        {PCContextName_Grapple, -1, 0x40000430, 0},
-        {PCContextName_ZipUp, -1, 0x40000430, 0},
+        {"Grapple", -1, 0x40000430, 0},
+        {"ZipUp", -1, 0x40000430, 0},
         {"PlaceDetonator", -1, 0x33, 0},
         {"PickUpDetonator", -1, 0x31, 0},
         {"PullLever", -1, 0x31, 0},
         {"Float", -1, 0x30, 2},
-        {PCContextName_Signal, -1, 0x4000433, 0},
+        {"Signal", -1, 0x4000433, 0},
         {"Batarang", -1, 0x8000033, 0},
         {"Hang", -1, 0x430, 0},
         {"Glide", -1, 0x430, 0},
         {"Catch", -1, 0x13, 0},
-        {PCContextName_Techno, -1, 0x84000031, 0},
+        {"Techno", -1, 0x84000031, 0},
         {"AttractoTarget", -1, 0x4000033, 0},
         {"AttractoDeposit", -1, 0x33, 0},
         {"Sonar", -1, 0x33, 0},
@@ -10159,7 +9901,7 @@ extern "C" {
         {"SuperCarry", -1, 0x33, 0},
         {"PushObstacle", -1, 0x3010, 0},
         {"Stunned", -1, 0x10000031, 0},
-        {PCContextName_Ledge, -1, 0x431, 0},
+        {"Ledge", -1, 0x431, 0},
         {"Security", -1, 0x33, 0},
         {"Ballooning", -1, 0x100010, 0},
         {"ThrowQuick", -1, 0x33, 0},
@@ -10500,9 +10242,6 @@ extern "C" {
 #pragma data_seg(".data$TURNTIME")
     f32 TURNTIME = 1.0f;
 #pragma data_seg()
-#pragma const_seg(".rdata$TurnLoopSfx")
-    extern const char TurnLoopSfx[17] = "XWing_LoopDeLoop";
-#pragma const_seg()
 }
 
 extern "C" {
@@ -10548,17 +10287,9 @@ extern "C" {
 #pragma bss_seg(".bss$SaberSparksTimer")
     f32 SaberSparksTimer = 0;
 #pragma bss_seg()
-#pragma const_seg(".rdata$SaberSparksName")
-    extern const char SaberSparksName[12] = "SaberSparks";
-#pragma const_seg()
 #pragma bss_seg(".bss$GameParamToFloatFn")
     AI_GAME_PARAM_TO_FLOAT_PC GameParamToFloatFn = 0;
 #pragma bss_seg()
-#pragma const_seg(".rdata$AIExpressionMaxName")
-    extern const char AIExpressionMaxName[4] = "max";
-#pragma const_seg(".rdata$AIActionDistName")
-    extern const char AIActionDistName[5] = "Dist";
-#pragma const_seg()
 #pragma data_seg(".data$rocket_speed")
     f32 rocket_speed = 1.2000000476837158f;
 #pragma data_seg()
@@ -10635,69 +10366,6 @@ extern "C" {
 }
 
 extern "C" {
-#pragma const_seg(".rdata$AIActionRandomName")
-    const char AIActionRandomName[7] = "Random";
-#pragma const_seg()
-#pragma const_seg(".rdata$AIActionMinTimeName")
-    const char AIActionMinTimeName[8] = "mintime";
-#pragma const_seg()
-#pragma const_seg(".rdata$AIActionMaxTimeName")
-    const char AIActionMaxTimeName[8] = "maxtime";
-#pragma const_seg()
-#pragma const_seg(".rdata$AIActionTimeName")
-    const char AIActionTimeName[5] = "time";
-#pragma const_seg()
-#pragma const_seg(".rdata$AIActionFramesName")
-    const char AIActionFramesName[7] = "frames";
-#pragma const_seg()
-#pragma const_seg(".rdata$AIActionIncrementName")
-    const char AIActionIncrementName[5] = "inc=";
-#pragma const_seg()
-#pragma const_seg(".rdata$AIActionDecrementName")
-    const char AIActionDecrementName[5] = "dec=";
-#pragma const_seg()
-#pragma const_seg(".rdata$AIActionStateName")
-    const char AIActionStateName[6] = "state";
-#pragma const_seg()
-#pragma const_seg(".rdata$AIPathAnticlockwiseName")
-    const char AIPathAnticlockwiseName[14] = "ANTICLOCKWISE";
-#pragma const_seg()
-#pragma const_seg(".rdata$AIPathClockwiseName")
-    const char AIPathClockwiseName[10] = "CLOCKWISE";
-#pragma const_seg()
-#pragma const_seg(".rdata$AIPathReverseName")
-    const char AIPathReverseName[8] = "REVERSE";
-#pragma const_seg()
-#pragma const_seg(".rdata$AIPathFacingName")
-    const char AIPathFacingName[7] = "facing";
-#pragma const_seg()
-#pragma const_seg(".rdata$AIPathCurrentDistanceName")
-    const char AIPathCurrentDistanceName[12] = "currentdist";
-#pragma const_seg()
-#pragma const_seg(".rdata$AIPathLocatorName")
-    const char AIPathLocatorName[9] = "locator=";
-#pragma const_seg()
-#pragma const_seg(".rdata$AIPathOriginName")
-    const char AIPathOriginName[7] = "origin";
-#pragma const_seg()
-#pragma const_seg(".rdata$AIPathCanGoOffPathName")
-    const char AIPathCanGoOffPathName[16] = "can_go_off_path";
-#pragma const_seg()
-#pragma const_seg(".rdata$AIPathFaceName")
-    const char AIPathFaceName[5] = "face";
-#pragma const_seg()
-#pragma const_seg(".rdata$AIPathWaitTimeName")
-    const char AIPathWaitTimeName[9] = "waittime";
-#pragma const_seg()
-#pragma const_seg(".rdata$AIPathXZRangeCheckName")
-    const char AIPathXZRangeCheckName[14] = "xz_rangecheck";
-#pragma const_seg()
-#pragma const_seg(".rdata$AIPathGoalRangeName")
-    const char AIPathGoalRangeName[10] = "goalrange";
-#pragma const_seg()
-#pragma const_seg(".rdata$AIActionFalseName")
-    const char AIActionFalseName[6] = "FALSE";
-#pragma const_seg()
 #pragma bss_seg(".bss$AIActionDiagnosticMode")
     i32 AIActionDiagnosticMode = 0;
 #pragma bss_seg()
@@ -10827,39 +10495,9 @@ extern "C" {
 #pragma bss_seg(".bss$players_cannot_exit_speeder")
     i32 players_cannot_exit_speeder = 0;
 #pragma bss_seg()
-#pragma const_seg(".rdata$TakeOverState_ReleasedTakeOver")
-    const char TakeOverState_ReleasedTakeOver[17] = "ReleasedTakeOver";
-#pragma const_seg()
 }
 
 extern "C" {
-#pragma const_seg(".rdata$AILocatorPersonalFormat")
-    const char AILocatorPersonalFormat[6] = "%s_%s";
-#pragma const_seg()
-#pragma const_seg(".rdata$AILocatorIndexedFormat")
-    const char AILocatorIndexedFormat[6] = "%s_%d";
-#pragma const_seg()
-#pragma const_seg(".rdata$AIActionIndexedName")
-    const char AIActionIndexedName[8] = "indexed";
-#pragma const_seg()
-#pragma const_seg(".rdata$AIActionPersonalName")
-    const char AIActionPersonalName[9] = "personal";
-#pragma const_seg()
-#pragma const_seg(".rdata$AIActionIDName")
-    const char AIActionIDName[3] = "id";
-#pragma const_seg()
-#pragma const_seg(".rdata$AIActionToName")
-    const char AIActionToName[3] = "to";
-#pragma const_seg()
-#pragma const_seg(".rdata$AIActionFromName")
-    const char AIActionFromName[5] = "from";
-#pragma const_seg()
-#pragma const_seg(".rdata$AIActionIgnoreRadiusName")
-    const char AIActionIgnoreRadiusName[14] = "ignore_radius";
-#pragma const_seg()
-#pragma const_seg(".rdata$AIActionOpenName")
-    const char AIActionOpenName[5] = "open";
-#pragma const_seg()
 #pragma bss_seg(".bss$AIBigJumpToDestinationFn")
     AI_BIG_JUMP_TO_DESTINATION_PC AIBigJumpToDestinationFn = 0;
 #pragma bss_seg()
@@ -10941,9 +10579,6 @@ extern "C" {
 #pragma bss_seg(".bss$NEGOTIATIONSC_LDATA")
     LEVELDATA_PC *NEGOTIATIONSC_LDATA = 0;
 #pragma bss_seg()
-#pragma const_seg(".rdata$GameObjectState_InActive")
-    const char GameObjectState_InActive[9] = "InActive";
-#pragma const_seg()
 }
 
 extern "C" {
@@ -10990,50 +10625,7 @@ extern "C" {
 #pragma bss_seg()
 }
 
-extern "C" {
-#pragma const_seg(".rdata$AIGamePunch2Name")
-    const char AIGamePunch2Name[8] = "PUNCH_2";
-#pragma const_seg()
-#pragma const_seg(".rdata$AIGamePunch1Name")
-    const char AIGamePunch1Name[8] = "PUNCH_1";
-#pragma const_seg()
-#pragma const_seg(".rdata$AIGameSetName")
-    const char AIGameSetName[5] = "set=";
-#pragma const_seg()
-#pragma const_seg(".rdata$AIGameCharacterName")
-    const char AIGameCharacterName[11] = "character=";
-#pragma const_seg()
-#pragma const_seg(".rdata$AIGameNearestName")
-    const char AIGameNearestName[8] = "nearest";
-#pragma const_seg()
-#pragma const_seg(".rdata$AIGameShootName")
-    const char AIGameShootName[6] = "SHOOT";
-#pragma const_seg()
-#pragma const_seg(".rdata$AIGameBlockName")
-    const char AIGameBlockName[6] = "BLOCK";
-#pragma const_seg()
-#pragma const_seg(".rdata$AIGamePunchSpecialName")
-    const char AIGamePunchSpecialName[14] = "PUNCH_SPECIAL";
-#pragma const_seg()
-#pragma const_seg(".rdata$AIGamePunchBehindName")
-    const char AIGamePunchBehindName[13] = "PUNCH_BEHIND";
-#pragma const_seg()
-#pragma const_seg(".rdata$AIGamePunch3Name")
-    const char AIGamePunch3Name[8] = "PUNCH_3";
-#pragma const_seg()
-#pragma const_seg(".rdata$AIGameAttackOverrideName")
-    const char AIGameAttackOverrideName[16] = "attack_override";
-#pragma const_seg()
-#pragma const_seg(".rdata$AIGameFireIntervalName")
-    const char AIGameFireIntervalName[13] = "fireinterval";
-#pragma const_seg()
-#pragma const_seg(".rdata$AIGameFireRangeName")
-    const char AIGameFireRangeName[10] = "firerange";
-#pragma const_seg()
-#pragma const_seg(".rdata$AIGameOpponentName")
-    const char AIGameOpponentName[9] = "Opponent";
-#pragma const_seg()
-}
+extern "C" {}
 
 extern "C" {
 #pragma data_seg(".data$CircleLeanDegrees")
@@ -11112,18 +10704,6 @@ extern "C" {
 #pragma bss_seg(".bss$LevelCharacterGlobalIDFn")
     AI_LEVEL_CHARACTER_GLOBAL_ID_PC LevelCharacterGlobalIDFn = 0;
 #pragma bss_seg()
-#pragma const_seg(".rdata$AICombatOffscreenName")
-    const char AICombatOffscreenName[10] = "offscreen";
-#pragma const_seg()
-#pragma const_seg(".rdata$AICombatNoFireInMiniCutName")
-    const char AICombatNoFireInMiniCutName[19] = "no_fire_in_minicut";
-#pragma const_seg()
-#pragma const_seg(".rdata$AICombatOpponentName")
-    const char AICombatOpponentName[10] = "opponent=";
-#pragma const_seg()
-#pragma const_seg(".rdata$AICombatInstantName")
-    const char AICombatInstantName[8] = "instant";
-#pragma const_seg()
 }
 
 extern "C" {
@@ -11218,15 +10798,6 @@ extern "C" {
 #pragma data_seg(".data$AdaptiveDifficultyRecoveryTimePc")
     f32 AdaptiveDifficultyRecoveryTimePc = 30.0f;
 #pragma data_seg()
-#pragma const_seg(".rdata$AIControlMinimumName")
-    const char AIControlMinimumName[5] = "min=";
-#pragma const_seg()
-#pragma const_seg(".rdata$AIControlMaximumName")
-    const char AIControlMaximumName[5] = "max=";
-#pragma const_seg()
-#pragma const_seg(".rdata$GameAIPlayerName")
-    const char GameAIPlayerName[7] = "player";
-#pragma const_seg()
 #pragma data_seg(".data$id_YWING")
     i16 id_YWING = -1;
 #pragma data_seg()
@@ -11264,12 +10835,6 @@ extern "C" {
 #pragma bss_seg(".bss$LevelCompletionFallbackFlagPC")
     u32 LevelCompletionFallbackFlagPC = 0;
 #pragma bss_seg()
-#pragma const_seg(".rdata$AIAnimSpeedValueName")
-    const char AIAnimSpeedValueName[7] = "value=";
-#pragma const_seg()
-#pragma const_seg(".rdata$AIScaleOverrideResetName")
-    const char AIScaleOverrideResetName[6] = "reset";
-#pragma const_seg()
 #pragma bss_seg(".bss$SurfaceInfo_ExtraReflectFn")
     void (*SurfaceInfo_ExtraReflectFn)(GAMEOBJECT *object) = 0;
 #pragma bss_seg()
@@ -11414,20 +10979,6 @@ extern "C" {
 }
 
 extern "C" {
-#pragma const_seg(".rdata$ActionSnapPlayer1Name")
-    extern const char ActionSnapPlayer1Name[8] = "player1";
-#pragma const_seg(".rdata$ActionSnapPlayer2Name")
-    extern const char ActionSnapPlayer2Name[8] = "player2";
-#pragma const_seg(".rdata$ActionSnapRotationYName")
-    extern const char ActionSnapRotationYName[5] = "roty";
-#pragma const_seg(".rdata$ActionSnapXName")
-    extern const char ActionSnapXName[2] = "x";
-#pragma const_seg(".rdata$ActionSnapZName")
-    extern const char ActionSnapZName[2] = "z";
-#pragma const_seg(".rdata$ActionSnapDontCheckTerrainName")
-    extern const char ActionSnapDontCheckTerrainName[19] = "dont_check_terrain";
-#pragma const_seg(".rdata$ActionSnapPartyName")
-    extern const char ActionSnapPartyName[6] = "party";
 #pragma const_seg(".rdata$ActionSnapWeightedRandomZeroPc")
     extern const f64 ActionSnapWeightedRandomZeroPc = 0.0;
 #pragma const_seg()
@@ -11498,38 +11049,8 @@ extern "C" {
 }
 
 extern "C" {
-#pragma const_seg(".rdata$WorldPathSeparator")
-    extern const char WorldPathSeparator[2] = "\\";
-#pragma const_seg()
-#pragma const_seg(".rdata$NuFileSourcePathPC")
-    extern const char NuFileSourcePathPC[50] = "d:\\projects\\game_saga\\nu2api.saga\\nucore\\nufile.c";
-#pragma const_seg()
-#pragma const_seg(".rdata$AITransferLiteral757834")
-    extern const char AITransferLiteral757834[13] = "jump_factor=";
-#pragma const_seg()
-#pragma const_seg(".rdata$AITransferLiteral757874")
-    extern const char AITransferLiteral757874[15] = "tgt_character=";
-#pragma const_seg()
-#pragma const_seg(".rdata$AITransferLiteral75786c")
-    extern const char AITransferLiteral75786c[5] = "slam";
-#pragma const_seg()
-#pragma const_seg(".rdata$AITransferLiteral757ebc")
-    extern const char AITransferLiteral757ebc[5] = "TRUE";
-#pragma const_seg()
-#pragma const_seg(".rdata$AITransferLiteral757ee0")
-    extern const char AITransferLiteral757ee0[8] = "tag_to=";
-#pragma const_seg()
 #pragma const_seg(".rdata$AITransferLiteral757a7c")
     extern const char AITransferLiteral757a7c[8] = "looping";
-#pragma const_seg()
-#pragma const_seg(".rdata$AITransferLiteral757a84")
-    extern const char AITransferLiteral757a84[8] = "spline=";
-#pragma const_seg()
-#pragma const_seg(".rdata$AITransferLiteral757cd0")
-    extern const char AITransferLiteral757cd0[6] = "time=";
-#pragma const_seg()
-#pragma const_seg(".rdata$AITransferLiteral75772c")
-    extern const char AITransferLiteral75772c[5] = "type";
 #pragma const_seg()
 }
 
@@ -11564,36 +11085,6 @@ extern "C" {
 }
 
 extern "C" {
-#pragma const_seg(".rdata$AITransferLiteral7576b8")
-    extern const char AITransferLiteral7576b8[7] = "baddie";
-#pragma const_seg()
-#pragma const_seg(".rdata$AITransferLiteral7576a8")
-    extern const char AITransferLiteral7576a8[7] = "goodie";
-#pragma const_seg()
-#pragma const_seg(".rdata$AITransferLiteral7576b0")
-    extern const char AITransferLiteral7576b0[6] = "goody";
-#pragma const_seg()
-#pragma const_seg(".rdata$AITransferLiteral757724")
-    extern const char AITransferLiteral757724[7] = "range=";
-#pragma const_seg()
-#pragma const_seg(".rdata$AITransferLiteral75768c")
-    extern const char AITransferLiteral75768c[13] = "goodiebaddie";
-#pragma const_seg()
-#pragma const_seg(".rdata$AITransferLiteral75769c")
-    extern const char AITransferLiteral75769c[11] = "goodybaddy";
-#pragma const_seg()
-#pragma const_seg(".rdata$AITransferLiteral7576c0")
-    extern const char AITransferLiteral7576c0[6] = "baddy";
-#pragma const_seg()
-#pragma const_seg(".rdata$AITransferLiteral7576f8")
-    extern const char AITransferLiteral7576f8[6] = "type=";
-#pragma const_seg()
-#pragma const_seg(".rdata$AITransferLiteral757a20")
-    extern const char AITransferLiteral757a20[8] = "victim=";
-#pragma const_seg()
-#pragma const_seg(".rdata$AITransferLiteral757f7c")
-    extern const char AITransferLiteral757f7c[7] = "myself";
-#pragma const_seg()
 #pragma data_seg(".data$gizspecial_gizmotype_id")
     i32 gizspecial_gizmotype_id = -1;
 #pragma data_seg(".data$gizbuildit_gizmotype_id")
@@ -11638,54 +11129,6 @@ extern "C" {
 }
 
 extern "C" {
-#pragma const_seg(".rdata$NuFileExt_dds_PC")
-    extern const char NuFileExt_dds_PC[5] = ".dds";
-#pragma const_seg()
-#pragma const_seg(".rdata$NuFileExt_pss_PC")
-    extern const char NuFileExt_pss_PC[5] = ".pss";
-#pragma const_seg()
-#pragma const_seg(".rdata$NuFileExt_vag_PC")
-    extern const char NuFileExt_vag_PC[5] = ".vag";
-#pragma const_seg()
-#pragma const_seg(".rdata$NuFileExt_pnt_PC")
-    extern const char NuFileExt_pnt_PC[5] = ".pnt";
-#pragma const_seg()
-#pragma const_seg(".rdata$NuFileExt_ghg_PC")
-    extern const char NuFileExt_ghg_PC[5] = ".ghg";
-#pragma const_seg()
-#pragma const_seg(".rdata$NuFileExt_wav_PC")
-    extern const char NuFileExt_wav_PC[5] = ".wav";
-#pragma const_seg()
-#pragma const_seg(".rdata$NuFileExt_cu2_PC")
-    extern const char NuFileExt_cu2_PC[5] = ".cu2";
-#pragma const_seg()
-#pragma const_seg(".rdata$NuFileExt_bsa_PC")
-    extern const char NuFileExt_bsa_PC[5] = ".bsa";
-#pragma const_seg()
-#pragma const_seg(".rdata$NuFileExt_an3_PC")
-    extern const char NuFileExt_an3_PC[5] = ".an3";
-#pragma const_seg()
-#pragma const_seg(".rdata$NuFileExt_mib_PC")
-    extern const char NuFileExt_mib_PC[5] = ".mib";
-#pragma const_seg()
-#pragma const_seg(".rdata$NuFileExt_wmv_PC")
-    extern const char NuFileExt_wmv_PC[5] = ".wmv";
-#pragma const_seg()
-#pragma const_seg(".rdata$NuFileExt_wavm_PC")
-    extern const char NuFileExt_wavm_PC[6] = ".wavm";
-#pragma const_seg()
-#pragma const_seg(".rdata$NuFileExt_wavx_PC")
-    extern const char NuFileExt_wavx_PC[6] = ".wavx";
-#pragma const_seg()
-#pragma const_seg(".rdata$NuFileExt_cc2_PC")
-    extern const char NuFileExt_cc2_PC[5] = ".cc2";
-#pragma const_seg()
-#pragma const_seg(".rdata$NuFileExt_cbs_PC")
-    extern const char NuFileExt_cbs_PC[5] = ".cbs";
-#pragma const_seg()
-#pragma const_seg(".rdata$NuFileExt_ca3_PC")
-    extern const char NuFileExt_ca3_PC[5] = ".ca3";
-#pragma const_seg()
 #pragma bss_seg(".bss$extensions")
     PC_FILEEXTINFO extensions[64] = {0};
 #pragma bss_seg()
@@ -11701,9 +11144,6 @@ extern "C" {
 }
 
 extern "C" {
-#pragma const_seg(".rdata$APIObjectPakExtension")
-    extern const char APIObjectPakExtension[5] = ".fpk";
-#pragma const_seg()
 #pragma bss_seg(".bss$append")
     i32 append = 0;
 #pragma bss_seg()
@@ -11808,9 +11248,6 @@ extern "C" {
 }
 
 extern "C" {
-#pragma const_seg(".rdata$AITransferLiteral75782c")
-    extern const char AITransferLiteral75782c[5] = "name";
-#pragma const_seg()
 #pragma bss_seg(".bss$BeenAttacked")
     i32 BeenAttacked = 0;
 #pragma bss_seg()
@@ -11862,15 +11299,6 @@ extern "C" {
 #pragma const_seg(".rdata$AITransferLiteral757824")
     extern const char AITransferLiteral757824[7] = "random";
 #pragma const_seg()
-#pragma const_seg(".rdata$AITransferLiteral75781c")
-    extern const char AITransferLiteral75781c[8] = "player=";
-#pragma const_seg()
-#pragma const_seg(".rdata$AITransferLiteral757a68")
-    extern const char AITransferLiteral757a68[6] = "Reset";
-#pragma const_seg()
-#pragma const_seg(".rdata$AITransferLiteral757c20")
-    extern const char AITransferLiteral757c20[12] = "messageval=";
-#pragma const_seg()
 #pragma const_seg(".rdata$GizObstacleActionNamePC")
     extern const char GizObstacleActionNamePC[5] = "Name";
 #pragma const_seg()
@@ -11906,18 +11334,6 @@ extern "C" {
 }
 
 extern "C" {
-#pragma const_seg(".rdata$AITransferLiteral757c64")
-    extern const char AITransferLiteral757c64[4] = "dx=";
-#pragma const_seg()
-#pragma const_seg(".rdata$AITransferLiteral757c60")
-    extern const char AITransferLiteral757c60[4] = "dy=";
-#pragma const_seg()
-#pragma const_seg(".rdata$AITransferLiteral757c5c")
-    extern const char AITransferLiteral757c5c[4] = "dz=";
-#pragma const_seg()
-#pragma const_seg(".rdata$AITransferLiteral757f28")
-    extern const char AITransferLiteral757f28[8] = "target=";
-#pragma const_seg()
 #pragma bss_seg(".bss$part_types")
     PARTTYPE_LOOKUP_PC part_types[128] = {0};
 #pragma bss_seg()
@@ -12152,9 +11568,6 @@ extern "C" {
 #pragma bss_seg(".bss$DmaDebTypes")
     DEBRIS_PART_HEADER_PC **DmaDebTypes = 0;
 #pragma bss_seg()
-#pragma const_seg(".rdata$ForceThrowExplodeNamePc")
-    extern const char ForceThrowExplodeNamePc[9] = "Explode1";
-#pragma const_seg()
 #pragma data_seg(".data$gensorttab")
     DEBRISGENERATOR_PC gensorttab[13] = {
         GenDebIndex,          GenDebDummy,        GenDebDummy,         GenDebDummy,
@@ -12299,15 +11712,6 @@ extern "C" {
 #pragma data_seg(".data$NuUnresolvedTextureIDPC")
     i32 NuUnresolvedTextureIDPC = -1;
 #pragma data_seg()
-#pragma const_seg(".rdata$NuQFntSourcePathPC")
-    extern const char NuQFntSourcePathPC[56] = "d:\\projects\\game_saga\\nu2api.saga\\nu3d\\pc\\nuqfnt_PC.cpp";
-#pragma const_seg()
-#pragma const_seg(".rdata$NuTextureSourcePathPC")
-    extern const char NuTextureSourcePathPC[55] = "d:\\projects\\game_saga\\nu2api.saga\\nu3d\\pc\\nutex_pc.cpp";
-#pragma const_seg()
-#pragma const_seg(".rdata$NuTextureAnimationSourcePathPC")
-    extern const char NuTextureAnimationSourcePathPC[50] = "d:\\projects\\game_saga\\nu2api.saga\\nu3d\\nutexanm.c";
-#pragma const_seg()
 #pragma bss_seg(".bss$PCDisplayMaterialDeleteQueue")
     NUMTL **PCDisplayMaterialDeleteQueue = 0;
 #pragma bss_seg()
@@ -12434,9 +11838,6 @@ extern "C" {
 #pragma bss_seg(".bss$nuwarning_handler")
     void (*nuwarning_handler)(char *) = 0;
 #pragma bss_seg()
-#pragma const_seg(".rdata$PCWarningSuffix")
-    extern const char PCWarningSuffix[2] = "\n";
-#pragma const_seg()
 }
 
 extern "C" {
@@ -12478,9 +11879,6 @@ extern "C" {
 #pragma const_seg()
 #pragma const_seg(".rdata$TerrainBoundsMaximumPc")
     extern const f32 TerrainBoundsMaximumPc = 200000000.0f;
-#pragma const_seg()
-#pragma const_seg(".rdata$TerrainSourcePathPc")
-    extern const char TerrainSourcePathPc[53] = "d:\\projects\\game_saga\\gameapi.saga\\gamelib\\terrain.c";
 #pragma const_seg()
 #pragma data_seg(".data$LEGOACT_CLIMB_UP")
     i16 LEGOACT_CLIMB_UP = -1;
@@ -12545,12 +11943,6 @@ extern "C" {
 #pragma const_seg(".rdata$PlayerStepOuterActionPc")
     extern const f64 PlayerStepOuterActionPc = 2.25;
 #pragma const_seg()
-#pragma const_seg(".rdata$PlayerStepInnerPc")
-    extern const f64 PlayerStepInnerPc = 0.75;
-#pragma const_seg()
-#pragma const_seg(".rdata$PlayerStepOuterPc")
-    extern const f64 PlayerStepOuterPc = 1.25;
-#pragma const_seg()
 #pragma const_seg(".rdata$PlayerBuildItNegativeLimitPc")
     extern const f32 PlayerBuildItNegativeLimitPc = -1000000000.0f;
 #pragma const_seg()
@@ -12566,12 +11958,6 @@ extern "C" {
 #pragma bss_seg(".bss$PlayerSpecialMoveDataPc")
     struct specialmove_pc_s *SpecialMove = 0;
 #pragma bss_seg()
-#pragma const_seg(".rdata$EpisodeVI_ShowHearts")
-    extern const char EpisodeVI_ShowHearts[11] = "ShowHearts";
-#pragma const_seg()
-#pragma const_seg(".rdata$EpisodeVI_ElectricFloor")
-    extern const char EpisodeVI_ElectricFloor[14] = "ElectricFloor";
-#pragma const_seg()
 #pragma data_seg(".data$force_gizmotype_id")
     i32 force_gizmotype_id = -1;
 #pragma data_seg()
@@ -12602,12 +11988,6 @@ extern "C" {
 #pragma bss_seg(".bss$SarlaccTargetShieldPc")
     i32 SarlaccTargetShieldPc[2] = {0};
 #pragma bss_seg()
-#pragma const_seg(".rdata$EpisodeVI_ffieldoff")
-    extern const char EpisodeVI_ffieldoff[10] = "ffieldoff";
-#pragma const_seg()
-#pragma const_seg(".rdata$EpisodeVI_ffield")
-    extern const char EpisodeVI_ffield[7] = "ffield";
-#pragma const_seg()
 #pragma data_seg(".data$gizpanel_gizmotype_id")
     i32 gizpanel_gizmotype_id = -1;
 #pragma data_seg()
@@ -12714,17 +12094,8 @@ CRC16 CRC16InstancePC;
 #pragma bss_seg()
 
 extern "C" {
-#pragma const_seg(".rdata$PlayerActionNamePc_109")
-    extern const char PlayerActionNamePc_109[5] = "ride";
-#pragma const_seg()
-#pragma const_seg(".rdata$PlayerActionNamePc_145")
-    extern const char PlayerActionNamePc_145[7] = "target";
-#pragma const_seg()
-#pragma const_seg(".rdata$PlayerActionNamePc_233")
-    extern const char PlayerActionNamePc_233[6] = "winch";
-#pragma const_seg()
 #pragma data_seg(".data$PlayerActionInfoListPc")
-    API_ACTION_INFO_PC PlayerActionInfoListPc[234] = {{Text_UnknownText, 0U},
+    API_ACTION_INFO_PC PlayerActionInfoListPc[234] = {{"?", 0U},
                                                       {"walk", 2U},
                                                       {"idle", 0U},
                                                       {"fire", 0U},
@@ -12758,9 +12129,9 @@ extern "C" {
                                                       {"crawl", 0U},
                                                       {"lunge", 0U},
                                                       {"lungeland", 0U},
-                                                      {AITransferLiteral75786c, 0U},
+                                                      {"slam", 0U},
                                                       {"slamland", 0U},
-                                                      {AIActionOpenName, 0U},
+                                                      {"open", 0U},
                                                       {"hover", 0U},
                                                       {"fly", 0U},
                                                       {"left", 0U},
@@ -12833,7 +12204,7 @@ extern "C" {
                                                       {"attacked", 0U},
                                                       {"slide", 0U},
                                                       {"communicate", 0U},
-                                                      {PlayerActionNamePc_109, 0U},
+                                                      {"ride", 0U},
                                                       {"helmeton2", 0U},
                                                       {"throw2", 0U},
                                                       {"throw3", 0U},
@@ -12869,7 +12240,7 @@ extern "C" {
                                                       {"putdown", 0U},
                                                       {"float", 0U},
                                                       {"tightrope_geton", 0U},
-                                                      {PlayerActionNamePc_145, 0U},
+                                                      {"target", 0U},
                                                       {"hang_idle", 0U},
                                                       {"hang_move", 0U},
                                                       {"glide", 0U},
@@ -12957,7 +12328,7 @@ extern "C" {
                                                       {"swim", 0U},
                                                       {"wade", 0U},
                                                       {"dig", 0U},
-                                                      {PlayerActionNamePc_233, 0U}};
+                                                      {"winch", 0U}};
 #pragma data_seg()
 #pragma data_seg(".data$PlayerBlockActionInfoPc")
     void *PlayerBlockActionInfoPc = &PlayerActionInfoListPc[1];
@@ -13001,9 +12372,6 @@ extern "C" {
 #pragma data_seg(".data$PlayerGrappleSwingModePc")
     i32 PlayerGrappleSwingModePc = 1;
 #pragma data_seg()
-#pragma const_seg(".rdata$PlayerGrappleWindSoundPc")
-    extern const char PlayerGrappleWindSoundPc[11] = "GrapWindLp";
-#pragma const_seg()
 }
 
 extern "C" {
@@ -13258,9 +12626,6 @@ extern "C" {
 #pragma data_seg(".data$ScorePanelName")
     char ScorePanelName[9] = "MK-Panel";
 #pragma data_seg()
-#pragma const_seg(".rdata$TerrainWaterJumpSoundNamePc")
-    extern const char TerrainWaterJumpSoundNamePc[13] = "FS_WaterJump";
-#pragma const_seg()
 #pragma data_seg(".data$ScoreCounterName")
     char ScoreCounterName[8] = "Counter";
 #pragma data_seg()
@@ -13607,11 +12972,7 @@ extern "C" {
 }
 extern "C" {}
 extern "C" {}
-extern "C" {
-#pragma const_seg(".rdata$PowerUpLoopSfx_PC")
-    extern const char PowerUpLoopSfx_PC[18] = "Grv_GuardWeaponLp";
-#pragma const_seg()
-}
+extern "C" {}
 extern "C" {
 #pragma data_seg(".data$id_BOBAFETT")
     i16 id_BOBAFETT = -1;
@@ -13778,11 +13139,7 @@ extern "C" {
 #pragma bss_seg()
 }
 
-extern "C" {
-#pragma const_seg(".rdata$ArcadeAiKilledSoundNamePc")
-    extern const char ArcadeAiKilledSoundNamePc[16] = "env_padLight_on";
-#pragma const_seg()
-}
+extern "C" {}
 
 extern "C" {
 
@@ -14979,7 +14336,7 @@ extern "C" {
         TextInputKeyNameTextPc771be8, TextInputKeyNameTextPc771be0, TextInputKeyNameTextPc771bd8,
         TextInputKeyNameTextPc771bd0, TextInputKeyNameTextPc771bc8, TextInputKeyNameTextPc771bc0,
         TextInputKeyNameTextPc771bb8, TextInputKeyNameTextPc771bb0, TextInputKeyNameTextPc771ba4,
-        TextInputKeyNameTextPc7516c0, TextInputKeyNameTextPc7516c0, (char *)WorldPathSeparator,
+        TextInputKeyNameTextPc7516c0, TextInputKeyNameTextPc7516c0, "\\",
         TextInputKeyNameTextPc771ba0, TextInputKeyNameTextPc771b9c, TextInputKeyNameTextPc7516c0,
         TextInputKeyNameTextPc7516c0, TextInputKeyNameTextPc7516c0, TextInputKeyNameTextPc7516c0,
         TextInputKeyNameTextPc7516c0, TextInputKeyNameTextPc7516c0, TextInputKeyNameTextPc7516c0,
@@ -15399,10 +14756,6 @@ extern "C" {
     f32 TorpedoGrabRangeSquaredPc = 36.0f;
 #pragma data_seg()
 
-#pragma const_seg(".rdata$TorpedoFireSfxPc")
-    const char TorpedoFireSfxPc[14] = "XWing_Torpedo";
-#pragma const_seg()
-
 #pragma data_seg(".data$TorpedoStealTimerPc")
     f32 TorpedoStealTimerPc = 2.0f;
 #pragma data_seg()
@@ -15443,9 +14796,6 @@ extern "C" {
 }
 
 extern "C" {
-#pragma const_seg(".rdata$ForcePushSoundNamePc")
-    const char ForcePushSoundNamePc[11] = "JForcePush";
-#pragma const_seg()
 
 #pragma data_seg(".data$id_DODGEM")
     i16 id_DODGEM = -1;
@@ -16350,7 +15700,7 @@ extern "C" {
     NUMTL *ZipUpLineMaterialPc = 0;
 #pragma bss_seg()
 #pragma data_seg(".data$ZipUpTypeNamePtrPc")
-    char *ZipUpTypeNamePtrPc = (char *)PCContextName_ZipUp;
+    char *ZipUpTypeNamePtrPc = "ZipUp";
 #pragma data_seg()
 #pragma data_seg(".data$zipup_gizmotype_id")
     i32 zipup_gizmotype_id = -1;
@@ -16427,66 +15777,6 @@ extern "C" {
 #pragma bss_seg(".bss$CutBorderScale")
     f32 CutBorderScale = 0;
 #pragma bss_seg()
-#pragma const_seg(".rdata$AICameraLiteral758090")
-    const char AICameraLiteral758090[19] = "use_current_campos";
-#pragma const_seg()
-#pragma const_seg(".rdata$AICameraLiteral758084")
-    const char AICameraLiteral758084[12] = "start_time=";
-#pragma const_seg()
-#pragma const_seg(".rdata$AICameraLiteral758064")
-    const char AICameraLiteral758064[10] = "end_time=";
-#pragma const_seg()
-#pragma const_seg(".rdata$AICameraLiteral758054")
-    const char AICameraLiteral758054[15] = "blend_in_time=";
-#pragma const_seg()
-#pragma const_seg(".rdata$AICameraLiteral758044")
-    const char AICameraLiteral758044[16] = "blend_out_time=";
-#pragma const_seg()
-#pragma const_seg(".rdata$AICameraLiteral758034")
-    const char AICameraLiteral758034[13] = "tgt_locator=";
-#pragma const_seg()
-#pragma const_seg(".rdata$AICameraLiteral758028")
-    const char AICameraLiteral758028[9] = "tgt_obj=";
-#pragma const_seg()
-#pragma const_seg(".rdata$AICameraLiteral758018")
-    const char AICameraLiteral758018[13] = "cam_locator=";
-#pragma const_seg()
-#pragma const_seg(".rdata$AICameraLiteral758010")
-    const char AICameraLiteral758010[6] = "roty=";
-#pragma const_seg()
-#pragma const_seg(".rdata$AICameraLiteral758008")
-    const char AICameraLiteral758008[6] = "rotx=";
-#pragma const_seg()
-#pragma const_seg(".rdata$AICameraLiteral757ff0")
-    const char AICameraLiteral757ff0[11] = "dcampos_x=";
-#pragma const_seg()
-#pragma const_seg(".rdata$AICameraLiteral757fe4")
-    const char AICameraLiteral757fe4[11] = "dcampos_y=";
-#pragma const_seg()
-#pragma const_seg(".rdata$AICameraLiteral757fd8")
-    const char AICameraLiteral757fd8[11] = "dcampos_z=";
-#pragma const_seg()
-#pragma const_seg(".rdata$AICameraLiteral757fcc")
-    const char AICameraLiteral757fcc[10] = "campos_x=";
-#pragma const_seg()
-#pragma const_seg(".rdata$AICameraLiteral757fc0")
-    const char AICameraLiteral757fc0[10] = "campos_y=";
-#pragma const_seg()
-#pragma const_seg(".rdata$AICameraLiteral757fb4")
-    const char AICameraLiteral757fb4[10] = "campos_z=";
-#pragma const_seg()
-#pragma const_seg(".rdata$AICameraLiteral757fa8")
-    const char AICameraLiteral757fa8[10] = "tgtpos_x=";
-#pragma const_seg()
-#pragma const_seg(".rdata$AICameraLiteral757f9c")
-    const char AICameraLiteral757f9c[10] = "tgtpos_y=";
-#pragma const_seg()
-#pragma const_seg(".rdata$AICameraLiteral757f90")
-    const char AICameraLiteral757f90[10] = "tgtpos_z=";
-#pragma const_seg()
-#pragma const_seg(".rdata$AICameraLiteral757f84")
-    const char AICameraLiteral757f84[11] = "no_borders";
-#pragma const_seg()
 }
 
 extern "C" {
@@ -16863,9 +16153,6 @@ extern "C" {
 #pragma data_seg(".data$NuTexturePhongCubePc")
     PC_TEXTURE_RESOURCE_PC *NuTexturePhongCubePc = NULL;
 #pragma data_seg()
-#pragma const_seg(".rdata$PCDeviceTextureCubeSourcePathPc")
-    const char PCDeviceTextureCubeSourcePathPc[15] = ".\\d3dCalls.cpp";
-#pragma const_seg()
 }
 
 extern "C" {
@@ -17297,8 +16584,8 @@ extern "C" {
 }
 
 extern "C" {
-    const char *GizObstacleRegistrationNamePtrPc = GizObstacleTypeNamePc;
-    const char *TubeGizmoNamePc = PCContextName_Tube;
+    const char *GizObstacleRegistrationNamePtrPc = "GizObstacle";
+    const char *TubeGizmoNamePc = "Tube";
     const char *Tube_OutputName = "Active";
     const char *PlugGizmoNamePc = "Plug";
     const char *PlugOutputNamePc = "Plugged";
@@ -17422,7 +16709,7 @@ extern "C" {
 }
 
 extern "C" {
-    const char *TechnoRegistrationNamePc = PCContextName_Techno;
+    const char *TechnoRegistrationNamePc = "Techno";
     TECHNO_CONFIG_PC TechnoSysPc = {
         0.20000000298023224f,
         {85, 44, -1, -1},
@@ -26193,7 +25480,6 @@ extern "C" {
     i32 NuGobjRegistryInitializedPc = 0;
     PC_GOBJ_REGISTRY_ENTRY_PC *NuGobjRegistryFirstPc = 0;
     i32 NuGobjRegistryCountPc = 0;
-    extern const char NuGobjSourcePathPc[51] = "d:\\projects\\game_saga\\nu2api.saga\\nu3d\\pc\\nugobj.c";
 }
 
 extern "C" {
@@ -26218,12 +25504,12 @@ extern "C" {
     char SfxFilenameSlotsPc[1601][64] = {0};
     i32 SfxRefCountsPc[1601] = {0};
     char SfxConfigFilenamePc[256] = "Audio/audio.cfg";
-    const char *SfxMusicExtensionPc = NuFileExt_vag_PC;
+    const char *SfxMusicExtensionPc = ".vag";
     f32 SfxAudioVersionPc = 0;
     CRITICAL_SECTION SoundSampleCriticalSectionPc = {0};
     HANDLE PCSoundSampleWorkerHandlePc = 0;
     volatile u8 PCSoundSampleWorkerStopPc = 0;
-    char *PCSampleFilenameExtensionPc = (char *)NuFileExt_wav_PC;
+    char *PCSampleFilenameExtensionPc = ".wav";
 }
 
 extern "C" {
@@ -26248,9 +25534,7 @@ extern "C" {
     f32 PcMouseInterpolationPc = 0;
 }
 
-extern "C" {
-    extern const char PermLegalDirectoryPc[] = "stuff\\legal\\";
-}
+extern "C" {}
 
 extern "C" {
     /* User-approved Debug save-location exception; the game requires the res cwd. */
@@ -27572,7 +26856,6 @@ extern "C" {
 
 extern "C" {
 #pragma const_seg(".rdata$EduiSourcePathPc")
-    extern const char EduiSourcePathPc[52] = "d:\\projects\\game_saga\\gameapi.saga\\edtools\\edui.cpp";
 }
 
 extern "C" {
@@ -28126,75 +27409,92 @@ extern "C" {
 #pragma data_seg()
     // Frontend strings: language-selected index/string tables.
 
-    extern const char MenuPcString75f0b0[5] = "Back";
-    extern const char MenuPcString75f2b4[7] = "Cancel";
-    extern const char MenuPcString75f2bc[3] = "OK";
     extern const char MenuPcString75f2c0[3] = "No";
     extern const char MenuPcString75f2c4[4] = "Yes";
     extern const char MenuPcString76b274[4] = "Off";
-    extern const char MenuPcString76f660[3] = "On";
-    extern const char MenuPcString773934[5] = "Alta";
-    extern const char MenuPcString77565c[5] = "High";
-    extern const char MenuPcString775664[4] = "Low";
-    extern const char MenuPcString775b04[5] = "FSAA";
-    extern const char MenuPcString776404[4] = "S\303\255";
-    extern const char MenuPcString77641c[8] = "Aceptar";
-    extern const char MenuPcString776608[8] = "Annulla";
-    extern const char MenuPcString776624[6] = "Media";
-    extern const char MenuPcString776874[3] = "Ja";
-    extern const char MenuPcString776af0[9] = "Accepter";
-    extern const char MenuPcString776b6c[19] = "Show Game Controls";
-    extern const char MenuPcString776b80[8] = "Edge AA";
-    extern const char MenuPcString776b88[22] = "Dynamic Light Quality";
-    extern const char MenuPcString776ba0[11] = "Speed Blur";
-    extern const char MenuPcString776bac[15] = "Depth of Field";
-    extern const char MenuPcString776bbc[6] = "Bloom";
-    extern const char MenuPcString776bc4[8] = "Shadows";
-    extern const char MenuPcString776bcc[15] = "Externally Set";
-    extern const char MenuPcString776bdc[17] = "Effects Settings";
-    extern const char MenuPcString776bf0[60] = "You must restart the game for these changes to take effect!";
-    extern const char MenuPcString776c2c[7] = "Revert";
-    extern const char MenuPcString776c34[16] = "Texture Quality";
-    extern const char MenuPcString776c44[21] = "Use current settings";
-    extern const char MenuPcString776c5c[16] = "From Screen-Res";
-    extern const char MenuPcString776c6c[18] = "Enhanced Graphics";
-    extern const char MenuPcString776c80[13] = "Aspect Ratio";
-    extern const char MenuPcString776c90[14] = "Vertical Sync";
-    extern const char MenuPcString776ca0[13] = "Refresh Rate";
-    extern const char MenuPcString776cb0[18] = "Screen Resolution";
-    extern const char MenuPcString776cc4[15] = "Video Settings";
-    extern const char MenuPcString776cd4[18] = "Reset To Defaults";
-    extern const char MenuPcString776ce8[8] = "Decline";
-    extern const char MenuPcString776cf0[7] = "Accept";
-    extern const char MenuPcString776cf8[7] = "Resume";
-    extern const char MenuPcString776d00[7] = "Medium";
-    extern const char MenuPcString776d08[15] = "Return to game";
-    extern const char MenuPcString776d18[19] = "Quit to Demos Menu";
-    extern const char MenuPcString776d2c[16] = "Quit to Windows";
-    extern const char MenuPcString776d3c[5] = "Quit";
     MENU_PC_STRING_ENTRY MenuPcStringTable827800[40] = {
-        {0, MenuPcString776d3c},  {1, MenuPcString776d2c},  {2, MenuPcString776d18},  {3, MenuPcString776d08},
-        {4, MenuPcString775664},  {5, MenuPcString776d00},  {6, MenuPcString77565c},  {7, MenuPcString776cf8},
-        {8, MenuPcString776cf0},  {10, MenuPcString75f0b0}, {9, MenuPcString776ce8},  {11, MenuPcString75f2c4},
-        {12, MenuPcString75f2c0}, {13, MenuPcString75f2bc}, {14, MenuPcString75f2b4}, {15, MenuPcString76f660},
-        {16, MenuPcString76b274}, {17, MenuPcString776cd4}, {18, MenuPcString776cc4}, {19, MenuPcString776cb0},
-        {20, MenuPcString776ca0}, {21, MenuPcString776c90}, {22, MenuPcString776c80}, {23, MenuPcString776c6c},
-        {24, MenuPcString776c5c}, {25, MenuPcString776c44}, {26, MenuPcString776c34}, {27, MenuPcString776c2c},
-        {28, MenuPcString776bf0}, {29, MenuPcString776bdc}, {30, MenuPcString775b04}, {31, MenuPcString776bcc},
-        {32, MenuPcString776bc4}, {33, MenuPcString776bbc}, {34, MenuPcString776bac}, {35, MenuPcString776ba0},
-        {36, MenuPcString776b88}, {37, MenuPcString776b80}, {38, MenuPcString776b6c}, {39, NULL},
+        {0, "Quit"},
+        {1, "Quit to Windows"},
+        {2, "Quit to Demos Menu"},
+        {3, "Return to game"},
+        {4, "Low"},
+        {5, "Medium"},
+        {6, "High"},
+        {7, "Resume"},
+        {8, "Accept"},
+        {10, "Back"},
+        {9, "Decline"},
+        {11, MenuPcString75f2c4},
+        {12, MenuPcString75f2c0},
+        {13, "OK"},
+        {14, "Cancel"},
+        {15, "On"},
+        {16, MenuPcString76b274},
+        {17, "Reset To Defaults"},
+        {18, "Video Settings"},
+        {19, "Screen Resolution"},
+        {20, "Refresh Rate"},
+        {21, "Vertical Sync"},
+        {22, "Aspect Ratio"},
+        {23, "Enhanced Graphics"},
+        {24, "From Screen-Res"},
+        {25, "Use current settings"},
+        {26, "Texture Quality"},
+        {27, "Revert"},
+        {28, "You must restart the game for these changes to take effect!"},
+        {29, "Effects Settings"},
+        {30, "FSAA"},
+        {31, "Externally Set"},
+        {32, "Shadows"},
+        {33, "Bloom"},
+        {34, "Depth of Field"},
+        {35, "Speed Blur"},
+        {36, "Dynamic Light Quality"},
+        {37, "Edge AA"},
+        {38, "Show Game Controls"},
+        {39, NULL},
     };
     MENU_PC_STRING_ENTRY MenuPcStringTable827940[40] = {
-        {0, MenuPcString776d3c},  {1, MenuPcString776d2c},  {2, MenuPcString776d18},  {3, MenuPcString776d08},
-        {4, MenuPcString775664},  {5, MenuPcString776d00},  {6, MenuPcString77565c},  {7, MenuPcString776cf8},
-        {8, MenuPcString776cf0},  {9, MenuPcString776ce8},  {10, MenuPcString75f0b0}, {11, MenuPcString75f2c4},
-        {12, MenuPcString75f2c0}, {13, MenuPcString75f2bc}, {14, MenuPcString75f2b4}, {15, MenuPcString76f660},
-        {16, MenuPcString76b274}, {17, MenuPcString776cd4}, {18, MenuPcString776cc4}, {19, MenuPcString776cb0},
-        {20, MenuPcString776ca0}, {21, MenuPcString776c90}, {22, MenuPcString776c80}, {23, MenuPcString776c6c},
-        {24, MenuPcString776c5c}, {25, MenuPcString776c44}, {26, MenuPcString776c34}, {27, MenuPcString776c2c},
-        {28, MenuPcString776bf0}, {29, MenuPcString776bdc}, {30, MenuPcString775b04}, {31, MenuPcString776bcc},
-        {32, MenuPcString776bc4}, {33, MenuPcString776bbc}, {34, MenuPcString776bac}, {35, MenuPcString776ba0},
-        {36, MenuPcString776b88}, {37, MenuPcString776b80}, {38, MenuPcString776b6c}, {39, NULL},
+        {0, "Quit"},
+        {1, "Quit to Windows"},
+        {2, "Quit to Demos Menu"},
+        {3, "Return to game"},
+        {4, "Low"},
+        {5, "Medium"},
+        {6, "High"},
+        {7, "Resume"},
+        {8, "Accept"},
+        {9, "Decline"},
+        {10, "Back"},
+        {11, MenuPcString75f2c4},
+        {12, MenuPcString75f2c0},
+        {13, "OK"},
+        {14, "Cancel"},
+        {15, "On"},
+        {16, MenuPcString76b274},
+        {17, "Reset To Defaults"},
+        {18, "Video Settings"},
+        {19, "Screen Resolution"},
+        {20, "Refresh Rate"},
+        {21, "Vertical Sync"},
+        {22, "Aspect Ratio"},
+        {23, "Enhanced Graphics"},
+        {24, "From Screen-Res"},
+        {25, "Use current settings"},
+        {26, "Texture Quality"},
+        {27, "Revert"},
+        {28, "You must restart the game for these changes to take effect!"},
+        {29, "Effects Settings"},
+        {30, "FSAA"},
+        {31, "Externally Set"},
+        {32, "Shadows"},
+        {33, "Bloom"},
+        {34, "Depth of Field"},
+        {35, "Speed Blur"},
+        {36, "Dynamic Light Quality"},
+        {37, "Edge AA"},
+        {38, "Show Game Controls"},
+        {39, NULL},
     };
     MENU_PC_STRING_ENTRY MenuPcStringTable827a80[40] = {
         {0, "Quitter"},
@@ -28205,12 +27505,12 @@ extern "C" {
         {5, "Moyenne"},
         {6, "Elev\303\251e"},
         {7, "Reprendre"},
-        {8, MenuPcString776af0},
+        {8, "Accepter"},
         {9, "Refuser"},
         {10, "Retour"},
         {11, "Oui"},
         {12, "Non"},
-        {13, MenuPcString75f2bc},
+        {13, "OK"},
         {14, "Annuler"},
         {15, "Avec"},
         {16, "Sans"},
@@ -28227,7 +27527,7 @@ extern "C" {
         {27, "Inverser"},
         {28, "Vous devez red\303\251marrer le jeu pour que ces changements prennent effet."},
         {29, "Param\303\250tres d'effets"},
-        {30, MenuPcString775b04},
+        {30, "FSAA"},
         {31, "D\303\251fini en externe"},
         {32, "Ombres"},
         {33, "Luminosit\303\251"},
@@ -28235,7 +27535,7 @@ extern "C" {
         {35, "Flou (effet de vitesse)"},
         {36, "Qualit\303\251 lumi\303\250re dynamique"},
         {37, "Lissage des ar\303\252tes"},
-        {38, MenuPcString776b6c},
+        {38, "Show Game Controls"},
         {39, NULL},
     };
     MENU_PC_STRING_ENTRY MenuPcStringTable827bc0[40] = {
@@ -28250,9 +27550,9 @@ extern "C" {
         {8, "Annehmen"},
         {9, "Ablehnen"},
         {10, "Zur\303\274ck"},
-        {11, MenuPcString776874},
+        {11, "Ja"},
         {12, "Nein"},
-        {13, MenuPcString75f2bc},
+        {13, "OK"},
         {14, "Abbrechen"},
         {15, "Ein"},
         {16, "Aus"},
@@ -28269,7 +27569,7 @@ extern "C" {
         {27, "Umkehren"},
         {28, "Du musst das Spiel erneut starten, damit diese \303\204nderungen in Kraft treten."},
         {29, "Effekteinstellungen"},
-        {30, MenuPcString775b04},
+        {30, "FSAA"},
         {31, "Extern konfiguriert"},
         {32, "Schatten"},
         {33, "Bloomeffekt"},
@@ -28277,7 +27577,7 @@ extern "C" {
         {35, "Geschwindigkeitsunsch\303\244rfe"},
         {36, "Qualit\303\244t der dynamischen Beleuchtungsverh\303\244ltnisse"},
         {37, "Kantengl\303\244ttung"},
-        {38, MenuPcString776b6c},
+        {38, "Show Game Controls"},
         {39, NULL},
     };
     MENU_PC_STRING_ENTRY MenuPcStringTable827d00[40] = {
@@ -28286,17 +27586,17 @@ extern "C" {
         {2, "Esci al Menu Demo"},
         {3, "Torna al gioco"},
         {4, "Bassa"},
-        {5, MenuPcString776624},
-        {6, MenuPcString773934},
+        {5, "Media"},
+        {6, "Alta"},
         {7, "Riprendi"},
         {8, "Accetta"},
-        {9, MenuPcString776608},
+        {9, "Annulla"},
         {10, "Indietro"},
         {11, "S\303\254"},
         {12, MenuPcString75f2c0},
-        {13, MenuPcString75f2bc},
-        {14, MenuPcString776608},
-        {15, MenuPcString76f660},
+        {13, "OK"},
+        {14, "Annulla"},
+        {15, "On"},
         {16, MenuPcString76b274},
         {17, "Impostazioni predefinite"},
         {18, "Video"},
@@ -28311,15 +27611,15 @@ extern "C" {
         {27, "Ripristina"},
         {28, "Devi riavviare il gioco affinch\303\251 le modifiche abbiano effetto."},
         {29, "Effetti"},
-        {30, MenuPcString775b04},
+        {30, "FSAA"},
         {31, "Impostato esternamente"},
         {32, "Ombre"},
         {33, "Luminosit\303\240"},
         {34, "Profondit\303\240 di campo"},
         {35, "Sfumatura movimento"},
         {36, "Qualit\303\240 luci dinamiche"},
-        {37, MenuPcString776b80},
-        {38, MenuPcString776b6c},
+        {37, "Edge AA"},
+        {38, "Show Game Controls"},
         {39, NULL},
     };
     MENU_PC_STRING_ENTRY MenuPcStringTable827e40[40] = {
@@ -28328,17 +27628,17 @@ extern "C" {
         {2, "Salir al menu del demo"},
         {3, "Volver al juego"},
         {4, "Baja"},
-        {5, MenuPcString776624},
-        {6, MenuPcString773934},
+        {5, "Media"},
+        {6, "Alta"},
         {7, "Reanudar"},
-        {8, MenuPcString77641c},
+        {8, "Aceptar"},
         {9, "Rechazar"},
         {10, "Atr\303\241s"},
-        {11, MenuPcString776404},
+        {11, "S\303\255"},
         {12, MenuPcString75f2c0},
-        {13, MenuPcString77641c},
+        {13, "Aceptar"},
         {14, "Cancelar"},
-        {15, MenuPcString776404},
+        {15, "S\303\255"},
         {16, MenuPcString75f2c0},
         {17, "Restablecer predeterminados"},
         {18, "Ajustes de v\303\255deo"},
@@ -28356,12 +27656,12 @@ extern "C" {
         {30, "AAPC"},
         {31, "Ajustado externamente"},
         {32, "Sombras"},
-        {33, MenuPcString776bbc},
+        {33, "Bloom"},
         {34, "Profundidad de campo"},
         {35, "Distorsi\303\263n de velocidad"},
         {36, "Calidad de luz din\303\241mica"},
         {37, "Suavizado de bordes"},
-        {38, MenuPcString776b6c},
+        {38, "Show Game Controls"},
         {39, NULL},
     };
     MENU_PC_STRING_ENTRY MenuPcStringTable827f80[40] = {
@@ -28373,12 +27673,12 @@ extern "C" {
         {5, "Mellem"},
         {6, "H\303\270j"},
         {7, "Genoptag"},
-        {8, MenuPcString776af0},
+        {8, "Accepter"},
         {9, "Afsl\303\245"},
         {10, "Tilbage"},
-        {11, MenuPcString776874},
+        {11, "Ja"},
         {12, "Nej"},
-        {13, MenuPcString75f2bc},
+        {13, "OK"},
         {14, "Annuller"},
         {15, "Til"},
         {16, "Fra"},
@@ -28398,12 +27698,12 @@ extern "C" {
         {30, "Anti-aliasing, fuld sk\303\246rm"},
         {31, "Ekstern"},
         {32, "Skygger"},
-        {33, MenuPcString776bbc},
+        {33, "Bloom"},
         {34, "Synsdybde"},
         {35, "Sl\303\270ring"},
         {36, "Dynamisk lys-kvalitet"},
         {37, "Kant-AA"},
-        {38, MenuPcString776b6c},
+        {38, "Show Game Controls"},
         {39, NULL},
     };
     const char *MenuPcStrings[39] = {0};
@@ -28417,71 +27717,6 @@ extern "C" {}
 extern "C" {}
 
 extern "C" {
-#pragma const_seg(".rdata$GameAudioName00753354Pc")
-    extern const char GameAudioName00753354Pc[11] = "ToggleChar";
-#pragma const_seg(".rdata$GameAudioName00758838Pc")
-    extern const char GameAudioName00758838Pc[12] = "PickupHeart";
-#pragma const_seg(".rdata$GameAudioName00758be8Pc")
-    extern const char GameAudioName00758be8Pc[9] = "LegoForm";
-#pragma const_seg(".rdata$GameAudioName0075c240Pc")
-    extern const char GameAudioName0075c240Pc[5] = "Land";
-#pragma const_seg(".rdata$GameAudioName0075c248Pc")
-    extern const char GameAudioName0075c248Pc[12] = "PowerUp_Off";
-#pragma const_seg(".rdata$GameAudioName0075c254Pc")
-    extern const char GameAudioName0075c254Pc[13] = "PowerUp_Loop";
-#pragma const_seg(".rdata$GameAudioName0075c264Pc")
-    extern const char GameAudioName0075c264Pc[11] = "PowerUp_On";
-#pragma const_seg(".rdata$GameAudioName0075c270Pc")
-    extern const char GameAudioName0075c270Pc[12] = "FallApart01";
-#pragma const_seg(".rdata$GameAudioName0075c27cPc")
-    extern const char GameAudioName0075c27cPc[5] = "Honk";
-#pragma const_seg(".rdata$GameAudioName0075c2acPc")
-    extern const char GameAudioName0075c2acPc[12] = "FS_WaterOut";
-#pragma const_seg(".rdata$GameAudioName0075c2b8Pc")
-    extern const char GameAudioName0075c2b8Pc[12] = "BlasterDraw";
-#pragma const_seg(".rdata$GameAudioName0075c2c4Pc")
-    extern const char GameAudioName0075c2c4Pc[15] = "BlasterHolster";
-#pragma const_seg(".rdata$GameAudioName0075c2d4Pc")
-    extern const char GameAudioName0075c2d4Pc[13] = "SaberSmack01";
-#pragma const_seg(".rdata$GameAudioName0075c2e4Pc")
-    extern const char GameAudioName0075c2e4Pc[12] = "SaberMove01";
-#pragma const_seg(".rdata$GameAudioName0075c2f0Pc")
-    extern const char GameAudioName0075c2f0Pc[13] = "SaberSaber01";
-#pragma const_seg(".rdata$GameAudioName0075c300Pc")
-    extern const char GameAudioName0075c300Pc[8] = "SaberOn";
-#pragma const_seg(".rdata$GameAudioName0075c308Pc")
-    extern const char GameAudioName0075c308Pc[9] = "SaberOff";
-#pragma const_seg(".rdata$GameAudioName0075c348Pc")
-    extern const char GameAudioName0075c348Pc[10] = "imp_punch";
-#pragma const_seg(".rdata$GameAudioName0075c354Pc")
-    extern const char GameAudioName0075c354Pc[12] = "MenuNoEntry";
-#pragma const_seg(".rdata$GameAudioName0075c360Pc")
-    extern const char GameAudioName0075c360Pc[9] = "MenuBack";
-#pragma const_seg(".rdata$GameAudioName0075c36cPc")
-    extern const char GameAudioName0075c36cPc[11] = "MenuSelect";
-#pragma const_seg(".rdata$GameAudioName0075c378Pc")
-    extern const char GameAudioName0075c378Pc[9] = "MenuMove";
-#pragma const_seg(".rdata$GameAudioName0075c3a0Pc")
-    extern const char GameAudioName0075c3a0Pc[11] = "SabDefBlas";
-#pragma const_seg(".rdata$GameAudioName0075c3b8Pc")
-    extern const char GameAudioName0075c3b8Pc[9] = "BlastHit";
-#pragma const_seg(".rdata$GameAudioName0075c3c4Pc")
-    extern const char GameAudioName0075c3c4Pc[8] = "MK-Loop";
-#pragma const_seg(".rdata$GameAudioName0075c3ccPc")
-    extern const char GameAudioName0075c3ccPc[7] = "SwChar";
-#pragma const_seg(".rdata$GameAudioName0075c414Pc")
-    extern const char GameAudioName0075c414Pc[11] = "DroidDie01";
-#pragma const_seg(".rdata$GameAudioName0075c450Pc")
-    extern const char GameAudioName0075c450Pc[13] = "FS_WaterWade";
-#pragma const_seg(".rdata$GameAudioName0075c460Pc")
-    extern const char GameAudioName0075c460Pc[10] = "FS_DWalkM";
-#pragma const_seg(".rdata$GameAudioName0075c46cPc")
-    extern const char GameAudioName0075c46cPc[10] = "FS_DWalkS";
-#pragma const_seg(".rdata$GameAudioName0075c478Pc")
-    extern const char GameAudioName0075c478Pc[10] = "FS_JWalkM";
-#pragma const_seg(".rdata$GameAudioName0075c484Pc")
-    extern const char GameAudioName0075c484Pc[10] = "FS_JWalkS";
-#pragma const_seg()
 #pragma data_seg(".data$GameAudioLswPc")
     GAMEAUDIO_PC GameAudioLswPc = {GameAudio_OverrideFootStep_LSW,
                                    GameAudio_CheckReverb_LSW,
@@ -28500,75 +27735,75 @@ extern "C" {
                                     "JediSlam",
                                     "Grv_GrievAngryJump",
                                     NULL,
-                                    (char *)GameAudioName0075c484Pc,
-                                    (char *)GameAudioName0075c478Pc,
-                                    (char *)GameAudioName0075c46cPc,
-                                    (char *)GameAudioName0075c460Pc,
-                                    (char *)GameAudioName0075c450Pc,
+                                    "FS_JWalkS",
+                                    "FS_JWalkM",
+                                    "FS_DWalkS",
+                                    "FS_DWalkM",
+                                    "FS_WaterWade",
                                     "Leia_grunt",
                                     "Rebel_grunt",
                                     "Leia_Hurt",
                                     "Luke_Hurt",
-                                    (char *)ForceThrowExplodeNamePc,
+                                    "Explode1",
                                     "exp_thermalDet",
-                                    (char *)GameAudioName0075c414Pc,
+                                    "DroidDie01",
                                     "Leia_Death",
                                     "Luke_Death",
                                     "CountdownTimerTick",
                                     "CountdownTimerTock",
-                                    (char *)GameAudioName0075c3ccPc,
+                                    "SwChar",
                                     NULL,
-                                    (char *)GameAudioName0075c3ccPc,
-                                    (char *)GameAudioName0075c3ccPc,
-                                    (char *)GameAudioName00753354Pc,
-                                    (char *)GameAudioName00753354Pc,
-                                    (char *)GameAudioName0075c3c4Pc,
+                                    "SwChar",
+                                    "SwChar",
+                                    "ToggleChar",
+                                    "ToggleChar",
+                                    "MK-Loop",
                                     ScorePanelName,
-                                    (char *)GameAudioName00758838Pc,
-                                    (char *)GameAudioName0075c3b8Pc,
+                                    "PickupHeart",
+                                    "BlastHit",
                                     "BlastRic",
-                                    (char *)GameAudioName0075c3a0Pc,
+                                    "SabDefBlas",
                                     "StatusAward",
                                     "TrueJedi_100pc",
                                     "WipeScreen",
                                     "NegC_MagnetCoil",
-                                    (char *)GameAudioName0075c378Pc,
-                                    (char *)GameAudioName0075c36cPc,
-                                    (char *)GameAudioName0075c360Pc,
-                                    (char *)GameAudioName0075c354Pc,
-                                    (char *)ForceThrowExplodeNamePc,
-                                    (char *)GameAudioName0075c348Pc,
+                                    "MenuMove",
+                                    "MenuSelect",
+                                    "MenuBack",
+                                    "MenuNoEntry",
+                                    "Explode1",
+                                    "imp_punch",
                                     "ui_DoubleScoreText",
-                                    (char *)GameAudioName0075c36cPc,
-                                    (char *)GameAudioName0075c360Pc,
+                                    "MenuSelect",
+                                    "MenuBack",
                                     "fly_paddle_rotate_lp",
                                     "fly_paddle_stuck",
                                     PickupTypeLiteral758c14,
-                                    (char *)GameAudioName00758be8Pc,
+                                    "LegoForm",
                                     KillPartsLegoSingleTextPc,
-                                    (char *)GameAudioName0075c308Pc,
-                                    (char *)GameAudioName0075c300Pc,
-                                    (char *)GameAudioName0075c2f0Pc,
-                                    (char *)GameAudioName0075c2e4Pc,
-                                    (char *)GameAudioName0075c2d4Pc,
-                                    (char *)GameAudioName0075c2c4Pc,
-                                    (char *)GameAudioName0075c2b8Pc,
+                                    "SaberOff",
+                                    "SaberOn",
+                                    "SaberSaber01",
+                                    "SaberMove01",
+                                    "SaberSmack01",
+                                    "BlasterHolster",
+                                    "BlasterDraw",
                                     NULL,
                                     NULL,
-                                    (char *)GameAudioName0075c2acPc,
+                                    "FS_WaterOut",
                                     "Block_Shove",
                                     "Block_Push_Lp",
                                     "Blaster",
                                     "wpn_punch",
-                                    (char *)GameAudioName0075c27cPc,
+                                    "Honk",
                                     "WhipSwish",
                                     "WhipHit",
                                     "WhipNowt",
-                                    (char *)GameAudioName0075c270Pc,
-                                    (char *)GameAudioName0075c264Pc,
-                                    (char *)GameAudioName0075c254Pc,
-                                    (char *)GameAudioName0075c248Pc,
-                                    (char *)ArcadeAiKilledSoundNamePc},
+                                    "FallApart01",
+                                    "PowerUp_On",
+                                    "PowerUp_Loop",
+                                    "PowerUp_Off",
+                                    "env_padLight_on"},
                                    {-1, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0,
                                     0,  0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0,
                                     0,  0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0,
@@ -28576,89 +27811,89 @@ extern "C" {
 #pragma data_seg(".data$GameAudioAlternatePc")
     GAMEAUDIO_PC GameAudioAlternatePc = {NULL,
                                          NULL,
-                                         {(char *)PCContextName_Jump,
+                                         {"Jump",
                                           NULL,
                                           NULL,
                                           NULL,
                                           NULL,
                                           NULL,
                                           NULL,
-                                          (char *)GameAudioName0075c240Pc,
-                                          (char *)GameAudioName0075c240Pc,
-                                          (char *)GameAudioName0075c240Pc,
-                                          (char *)GameAudioName0075c240Pc,
-                                          (char *)GameAudioName0075c240Pc,
-                                          (char *)GameAudioName0075c240Pc,
-                                          (char *)GameAudioName0075c240Pc,
-                                          (char *)GameAudioName0075c240Pc,
-                                          (char *)GameAudioName0075c484Pc,
-                                          (char *)GameAudioName0075c478Pc,
-                                          (char *)GameAudioName0075c46cPc,
-                                          (char *)GameAudioName0075c460Pc,
-                                          (char *)GameAudioName0075c450Pc,
+                                          "Land",
+                                          "Land",
+                                          "Land",
+                                          "Land",
+                                          "Land",
+                                          "Land",
+                                          "Land",
+                                          "Land",
+                                          "FS_JWalkS",
+                                          "FS_JWalkM",
+                                          "FS_DWalkS",
+                                          "FS_DWalkM",
+                                          "FS_WaterWade",
                                           "Girl_Grunt",
                                           "Boy_Grunt",
                                           "Girl_Hurt",
                                           "Boy_Hurt",
-                                          (char *)ForceThrowExplodeNamePc,
+                                          "Explode1",
                                           "exp_thermalDet",
-                                          (char *)GameAudioName0075c414Pc,
+                                          "DroidDie01",
                                           "Girl_Death",
                                           "Boy_Death",
                                           NULL,
                                           NULL,
-                                          (char *)GameAudioName0075c3ccPc,
-                                          (char *)GameAudioName0075c354Pc,
-                                          (char *)GameAudioName0075c3ccPc,
-                                          (char *)GameAudioName0075c3ccPc,
-                                          (char *)GameAudioName00753354Pc,
-                                          (char *)GameAudioName00753354Pc,
-                                          (char *)GameAudioName0075c3c4Pc,
+                                          "SwChar",
+                                          "MenuNoEntry",
+                                          "SwChar",
+                                          "SwChar",
+                                          "ToggleChar",
+                                          "ToggleChar",
+                                          "MK-Loop",
                                           ScorePanelName,
-                                          (char *)GameAudioName00758838Pc,
-                                          (char *)GameAudioName0075c3b8Pc,
+                                          "PickupHeart",
+                                          "BlastHit",
                                           "ricochet",
-                                          (char *)GameAudioName0075c3a0Pc,
+                                          "SabDefBlas",
                                           "StatusAward",
                                           "TrueJedi_100pc",
                                           "WipeScreen",
                                           "NegC_MagnetCoil",
-                                          (char *)GameAudioName0075c378Pc,
-                                          (char *)GameAudioName0075c36cPc,
-                                          (char *)GameAudioName0075c360Pc,
-                                          (char *)GameAudioName0075c354Pc,
-                                          (char *)ForceThrowExplodeNamePc,
-                                          (char *)GameAudioName0075c348Pc,
+                                          "MenuMove",
+                                          "MenuSelect",
+                                          "MenuBack",
+                                          "MenuNoEntry",
+                                          "Explode1",
+                                          "imp_punch",
                                           "ui_DoubleScoreText",
-                                          (char *)GameAudioName0075c36cPc,
-                                          (char *)GameAudioName0075c360Pc,
+                                          "MenuSelect",
+                                          "MenuBack",
                                           "fly_paddle_rotate_lp",
                                           "fly_paddle_stuck",
                                           PickupTypeLiteral758c14,
-                                          (char *)GameAudioName00758be8Pc,
-                                          (char *)GameAudioName0075c308Pc,
-                                          (char *)GameAudioName0075c300Pc,
-                                          (char *)GameAudioName0075c2f0Pc,
-                                          (char *)GameAudioName0075c2e4Pc,
-                                          (char *)GameAudioName0075c2d4Pc,
-                                          (char *)GameAudioName0075c2c4Pc,
-                                          (char *)GameAudioName0075c2b8Pc,
+                                          "LegoForm",
+                                          "SaberOff",
+                                          "SaberOn",
+                                          "SaberSaber01",
+                                          "SaberMove01",
+                                          "SaberSmack01",
+                                          "BlasterHolster",
+                                          "BlasterDraw",
                                           GrapAttach_text,
                                           GrapDetach_text,
-                                          (char *)GameAudioName0075c2acPc,
+                                          "FS_WaterOut",
                                           "Block_Shove",
                                           "Block_Push_Lp",
                                           "Blaster",
-                                          (char *)PCContextName_Punch,
-                                          (char *)GameAudioName0075c27cPc,
+                                          "Punch",
+                                          "Honk",
                                           "WhipSwish",
                                           "WhipHit",
                                           "WhipNowt",
-                                          (char *)GameAudioName0075c270Pc,
-                                          (char *)GameAudioName0075c264Pc,
-                                          (char *)GameAudioName0075c254Pc,
-                                          (char *)GameAudioName0075c248Pc,
-                                          (char *)ArcadeAiKilledSoundNamePc,
+                                          "FallApart01",
+                                          "PowerUp_On",
+                                          "PowerUp_Loop",
+                                          "PowerUp_Off",
+                                          "env_padLight_on",
                                           NULL},
                                          {-1, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0,
                                           0,  0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0,
@@ -28668,22 +27903,11 @@ extern "C" {
 }
 
 extern "C" {
-#pragma const_seg(".rdata$LevelObjectNamePc007542d0")
-    extern const char LevelObjectNamePc007542d0[17] = "blasterbolt_blue";
-#pragma const_seg(".rdata$LevelObjectNamePc00754324")
-    extern const char LevelObjectNamePc00754324[16] = "blasterbolt_red";
-#pragma const_seg(".rdata$LevelObjectNamePc00754344")
-    extern const char LevelObjectNamePc00754344[12] = "blasterbolt";
-#pragma const_seg(".rdata$LevelObjectNamePc00754364")
-    extern const char LevelObjectNamePc00754364[20] = "Spinner_default_Arm";
-#pragma const_seg(".rdata$LevelObjectNamePc00754378")
-    extern const char LevelObjectNamePc00754378[21] = "Spinner_default_Base";
-#pragma const_seg()
 #pragma data_seg(".data$ObjTab")
     LEVEL_OBJECT_CONFIG_PC ObjTab[750] = {
         {4, 0, 0, const_cast<char *>("save_icon")},
         {1, 0, 0, const_cast<char *>("parallax")},
-        {1, 0, 0, const_cast<char *>(PermLegalBase)},
+        {1, 0, 0, const_cast<char *>("legal")},
         {1, 0, 0, const_cast<char *>("status_01")},
         {1, 0, 0, const_cast<char *>("status_02")},
         {1, 0, 0, const_cast<char *>("status_03")},
@@ -28730,7 +27954,7 @@ extern "C" {
         {0, 0, 0, const_cast<char *>("hack_door2")},
         {0, 0, 0, const_cast<char *>("winch_base")},
         {0, 0, 0, const_cast<char *>("winch_bracket")},
-        {0, 0, 0, const_cast<char *>(PlayerActionNamePc_233)},
+        {0, 0, 0, const_cast<char *>("winch")},
         {0, 0, 0, const_cast<char *>("batarang")},
         {0, 0, 0, const_cast<char *>("robinarang")},
         {0, 0, 0, const_cast<char *>("bullet")},
@@ -28767,18 +27991,18 @@ extern "C" {
         {0, 0, 0, const_cast<char *>("zipup_hook")},
         {0, 0, 0, const_cast<char *>("zipup_hook1")},
         {0, 0, 0, const_cast<char *>("zipup_target")},
-        {0, 0, 0, const_cast<char *>(PlayerActionNamePc_145)},
-        {0, 0, 0, const_cast<char *>(LevelObjectNamePc00754378)},
-        {0, 0, 0, const_cast<char *>(LevelObjectNamePc00754364)},
+        {0, 0, 0, const_cast<char *>("target")},
+        {0, 0, 0, const_cast<char *>("Spinner_default_Base")},
+        {0, 0, 0, const_cast<char *>("Spinner_default_Arm")},
         {0, 0, 0, const_cast<char *>("carrot")},
         {1, 0, 0, const_cast<char *>("basketball")},
-        {0, 0, 1, const_cast<char *>(LevelObjectNamePc00754344)},
+        {0, 0, 1, const_cast<char *>("blasterbolt")},
         {0, 0, 1, const_cast<char *>("blasterboltglow")},
-        {0, 0, 1, const_cast<char *>(LevelObjectNamePc00754324)},
+        {0, 0, 1, const_cast<char *>("blasterbolt_red")},
         {0, 0, 1, const_cast<char *>("blasterboltglow_red")},
         {0, 0, 1, const_cast<char *>("blasterbolt_green")},
         {0, 0, 1, const_cast<char *>("blasterboltglow_green")},
-        {0, 0, 1, const_cast<char *>(LevelObjectNamePc007542d0)},
+        {0, 0, 1, const_cast<char *>("blasterbolt_blue")},
         {0, 0, 1, const_cast<char *>("blasterboltglow_blue")},
         {0, 0, 1, const_cast<char *>("double_blasterBolt")},
         {0, 0, 1, const_cast<char *>("double_blasterBoltglow")},
@@ -28982,11 +28206,11 @@ extern "C" {
         {1, 0, 0, const_cast<char *>("bvd")},
         {1, 0, 0, const_cast<char *>("dtf")},
         {1, 0, 0, const_cast<char *>("ca")},
-        {1, 0, 0, const_cast<char *>(LevelObjectNamePc00754344)},
+        {1, 0, 0, const_cast<char *>("blasterbolt")},
         {1, 0, 0, const_cast<char *>("blasterglow")},
-        {1, 0, 0, const_cast<char *>(LevelObjectNamePc00754324)},
+        {1, 0, 0, const_cast<char *>("blasterbolt_red")},
         {1, 0, 0, const_cast<char *>("blasterglow_red")},
-        {1, 0, 0, const_cast<char *>(LevelObjectNamePc007542d0)},
+        {1, 0, 0, const_cast<char *>("blasterbolt_blue")},
         {1, 0, 0, const_cast<char *>("blasterglow_blue")},
         {1, 0, 0, const_cast<char *>("missile")},
         {5, 0, 0, const_cast<char *>("arrow")},
@@ -29002,13 +28226,6 @@ extern "C" {
 }
 
 extern "C" {
-#pragma const_seg(".rdata$CharacterFixupNamePc00752dfc")
-    extern const char CharacterFixupNamePc00752dfc[9] = "dragbomb";
-#pragma const_seg(".rdata$CharacterFixupNamePc00753154")
-    extern const char CharacterFixupNamePc00753154[8] = "weirdo2";
-#pragma const_seg(".rdata$CharacterFixupNamePc0075315c")
-    extern const char CharacterFixupNamePc0075315c[8] = "weirdo1";
-#pragma const_seg()
 #pragma data_seg(".data$CharacterFixupIdPc007f1810")
     i16 CharacterFixupIdPc007f1810 = -1;
 #pragma data_seg(".data$CharacterFixupIdPc007f1820")
@@ -29076,11 +28293,9 @@ extern "C" {
 #pragma data_seg(".data$CharacterFixupIdPc007f1b48")
     i16 CharacterFixupIdPc007f1b48 = -1;
 #pragma data_seg(".data$CharacterFixupTablePc")
-    extern const char HubTableTextPc00752d20[9];
-    extern const char HubTableTextPc00752d48[6];
     CHARFIXUP_PC CharacterFixupTablePc[219] = {
-        {const_cast<char *>(CharacterFixupNamePc0075315c), &PermanentWeirdo1IdPc},
-        {const_cast<char *>(CharacterFixupNamePc00753154), &PermanentWeirdo2IdPc},
+        {const_cast<char *>("weirdo1"), &PermanentWeirdo1IdPc},
+        {const_cast<char *>("weirdo2"), &PermanentWeirdo2IdPc},
         {const_cast<char *>(SuitMetadataName0075314cPc), &ID_DEFAULTCHARACTER_A},
         {const_cast<char *>(SuitMetadataName00753144Pc), &ID_DEFAULTCHARACTER_B},
         {"henchman", &CharacterFixupIdPc007f1810},
@@ -29141,8 +28356,8 @@ extern "C" {
         {const_cast<char *>("cloudcitycitizen"), &id_CLOUDCITYCITIZEN},
         {const_cast<char *>("geonosian"), &id_GEONOSIAN},
         {const_cast<char *>("watto"), &id_WATTO},
-        {const_cast<char *>(CharacterFixupNamePc0075315c), &PermanentWeirdo1IdPc},
-        {const_cast<char *>(CharacterFixupNamePc00753154), &PermanentWeirdo2IdPc},
+        {const_cast<char *>("weirdo1"), &PermanentWeirdo1IdPc},
+        {const_cast<char *>("weirdo2"), &PermanentWeirdo2IdPc},
         {const_cast<char *>("chewbacca"), &id_CHEWBACCA},
         {const_cast<char *>("wookie"), &id_WOOKIEE},
         {"atst", reinterpret_cast<i16 *>(&GameObjectRotationAtstId)},
@@ -29155,7 +28370,7 @@ extern "C" {
         {const_cast<char *>("trainingremote"), &VehicleBoltId7f1910Pc},
         {const_cast<char *>("atat"), &id_ATAT},
         {const_cast<char *>("service_car"), &id_SERVICECAR},
-        {const_cast<char *>(CharacterFixupNamePc00752dfc), reinterpret_cast<i16 *>(&id_DRAGBOMB)},
+        {const_cast<char *>("dragbomb"), reinterpret_cast<i16 *>(&id_DRAGBOMB)},
         {"clonewalker", &id_CLONEWALKER},
         {const_cast<char *>("ewok"), &VehicleBoltId7f1924Pc},
         {const_cast<char *>("wicket"), &VehicleBoltId7f1928Pc},
@@ -29170,11 +28385,11 @@ extern "C" {
         {const_cast<char *>("heavyrepeatingcannon"), &id_HEAVYREPEATINGCANNON},
         {const_cast<char *>("biggun"), &id_BIGGUN},
         {const_cast<char *>("troopercannon"), &id_TROOPERCANNON},
-        {const_cast<char *>(HubTableTextPc00752d48), &DefaultAnimationJabbaIdPc},
+        {const_cast<char *>("jabba"), &DefaultAnimationJabbaIdPc},
         {const_cast<char *>("slave1"), &VehicleBoltId7f195cPc},
         {const_cast<char *>("ywing"), &id_YWING},
         {const_cast<char *>("tiebomber"), &id_TIEBOMBER},
-        {const_cast<char *>(HubTableTextPc00752d20), &id_GRIEVOUS},
+        {const_cast<char *>("grievous"), &id_GRIEVOUS},
         {const_cast<char *>("tiefighterdarth"), &VehicleBoltId7f196cPc},
         {const_cast<char *>("tiefighter"), &id_TIEFIGHTER},
         {const_cast<char *>("grabberControl"), &id_GRABCONTROL},
@@ -30169,9 +29384,6 @@ extern "C" {
     };
     f32 ExtrasFadeStartPc = 0.15f;
     f32 ExtrasFadeEndPc = 0.6f;
-#pragma const_seg(".rdata$ExtrasNameFormatPc")
-    extern const char ExtrasNameFormatPc[] = "%s: %s";
-#pragma const_seg()
 }
 
 extern "C" {
@@ -30644,9 +29856,6 @@ extern "C" {
 }
 
 extern "C" {
-#pragma const_seg(".rdata$HubAIServingCustomerPc")
-    extern const char HubAIServingCustomerPc[16] = "ServingCustomer";
-#pragma const_seg()
     const char *HubAreaNamesPc[10] = {"MAINROOM", "EPISODE1", "EPISODE2", "EPISODE3", "EPISODE4",
                                       "EPISODE5", "EPISODE6", "JUNKYARD", "BONUS",    "BOUNTY"};
 }
@@ -30772,7 +29981,7 @@ extern "C" {
                                                        {"hunteraccess", 70},
                                                        {"stun1", 167},
                                                        {"stunned1", 170},
-                                                       {PlayerActionNamePc_109, 108},
+                                                       {"ride", 108},
                                                        {"ride_buggy", 112},
                                                        {"ride_gyrocopter", 131},
                                                        {"ride_bantha", 112},
@@ -31036,11 +30245,7 @@ extern "C" {
 #pragma data_seg()
 }
 
-extern "C" {
-#pragma const_seg(".rdata$CutPlayerTextSeparatorPc")
-    extern const char CutPlayerTextSeparatorPc[4] = " - ";
-#pragma const_seg()
-}
+extern "C" {}
 
 extern "C" f32 ExplosionKnockbackScalePc = 2.0f;
 
@@ -31344,8 +30549,8 @@ extern "C" {
 #pragma data_seg(".data$AIScriptStateCommandsPc")
     NUFPCOMJMP AIScriptStateCommandsPc[5] = {{"CONDITIONS", xConditions},
                                              {"ACTIONS", xActions},
-                                             {(char *)AIScriptKeywordReferenceScript, xRefScript},
-                                             {(char *)AIScriptKeywordEnd, xEndState},
+                                             {"REFERENCESCRIPT", xRefScript},
+                                             {"}", xEndState},
                                              {NULL, NULL}};
 #pragma data_seg()
 }

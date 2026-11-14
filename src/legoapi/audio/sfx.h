@@ -27,12 +27,6 @@ extern "C" {
     extern i32 CruiserD_LiftChase;
     i32 GameAudio_OverrideFootStep_LSW(GAMEOBJECT *object, i32 on_platform);
     i32 GameAudio_CheckReverb_LSW(void);
-    extern const char GameAudioName0075c414Pc[11];
-    extern const char GameAudioName0075c450Pc[13];
-    extern const char GameAudioName0075c460Pc[10];
-    extern const char GameAudioName0075c46cPc[10];
-    extern const char GameAudioName0075c478Pc[10];
-    extern const char GameAudioName0075c484Pc[10];
 #ifdef __cplusplus
 }
 #endif

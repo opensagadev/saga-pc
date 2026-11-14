@@ -386,8 +386,8 @@ void EmperorFightA_Reset(WORLDINFO *world) {
     GIZMO_PC *gizmo;
     i32 i;
     char name[32];
-    LevAIMessage[0] = CheckGizAIMessage(gizaimessagesys, EpisodeVI_ShowHearts, NULL);
-    LevAIMessage[1] = CheckGizAIMessage(gizaimessagesys, EpisodeVI_ElectricFloor, NULL);
+    LevAIMessage[0] = CheckGizAIMessage(gizaimessagesys, "ShowHearts", NULL);
+    LevAIMessage[1] = CheckGizAIMessage(gizaimessagesys, "ElectricFloor", NULL);
     gizmo = GizmoFindByName(world->gizmo_sys, obstacle_gizmotype_id, "obstacle21");
     if (gizmo != NULL && gizmo->object != NULL) {
         LevGizObst[0] = gizmo->object;
@@ -397,7 +397,7 @@ void EmperorFightA_Reset(WORLDINFO *world) {
     NuSpecialFind(world->current_gscn, &LevHSpecial[0], "lift_force_lnull1", 1);
     NuSpecialFind(world->current_gscn, &LevHSpecial[1], "lift_force_rnull1", 1);
     NuSpecialFind(world->current_gscn, &LevHSpecial[2], "lift_main1", 1);
-    LevArea[0] = AISysFindArea(world->ai_sys, (char *)EpisodeVI_ElectricFloor);
+    LevArea[0] = AISysFindArea(world->ai_sys, "ElectricFloor");
     eFloor_timer = 0.0f;
     ((EMPEROR_FIGHT_PACKET_PC *)emperorfighta_netpacket)->state = 0;
     routemask_efloor_on = 0;
@@ -1439,19 +1439,19 @@ void SarlaccPitC_Update(WORLDINFO *world) {
     if (!SarlaccTargetShieldPc[0]) {
         GIZMOBLOWUP_PC *target = SarlaccBlowUpTargetsPc[0];
         if (target != NULL && !(target->status_flags & 0x4000)) {
-            PlaySfx((char *)EpisodeVI_ffieldoff, NuSpecialGetDrawPos(&LevHSpecial[16]));
+            PlaySfx("ffieldoff", NuSpecialGetDrawPos(&LevHSpecial[16]));
             SarlaccTargetShieldPc[0] = 1;
         } else {
-            PlaySfx((char *)EpisodeVI_ffield, NuSpecialGetDrawPos(&LevHSpecial[16]));
+            PlaySfx("ffield", NuSpecialGetDrawPos(&LevHSpecial[16]));
         }
     }
     if (!SarlaccTargetShieldPc[1]) {
         GIZMOBLOWUP_PC *target = SarlaccBlowUpTargetsPc[1];
         if (target != NULL && !(target->status_flags & 0x4000)) {
-            PlaySfx((char *)EpisodeVI_ffieldoff, NuSpecialGetDrawPos(&LevHSpecial[17]));
+            PlaySfx("ffieldoff", NuSpecialGetDrawPos(&LevHSpecial[17]));
             SarlaccTargetShieldPc[1] = 1;
         } else {
-            PlaySfx((char *)EpisodeVI_ffield, NuSpecialGetDrawPos(&LevHSpecial[17]));
+            PlaySfx("ffield", NuSpecialGetDrawPos(&LevHSpecial[17]));
         }
     }
 }

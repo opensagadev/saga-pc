@@ -43,8 +43,6 @@ typedef struct bombgen_activation_flags_pc_s {
     u16 unknown : 14;
 } BOMBGEN_ACTIVATION_FLAGS_PC;
 
-extern const char CharacterFixupNamePc00752dfc[9];
-
 typedef struct bomb_generator_runtime_pc_s {
     char name[16];
     NUVEC position;
@@ -78,8 +76,6 @@ typedef struct bomb_generator_progress_pc_s {
     u32 active[3];
     u32 visible[3];
 } BOMB_GENERATOR_PROGRESS_PC;
-
-extern char AIRegistryTextPc007575bc[7];
 
 i32 GizBombGens_Load(void *world_ptr, void *system_ptr) {
     const u8 version = (u8)(EdFileReadChar());
@@ -206,8 +202,7 @@ static void BombGeneratorsApplyResetPc(BOMB_GENERATOR_SYSTEM_RUNTIME_PC *system,
             position.z = -2.0f;
             NuVecRotateY(&position, &position, ((GAMEOBJECT *)Player[index])->field_0x276);
             NuVecAdd(&position, &position, &((GAMEOBJECT *)Player[index])->collision_position);
-            bomb = AddDynamicCreature((i16)id_DRAGBOMB, &position, 0, (char *)CharacterFixupNamePc00752dfc, NULL, NULL,
-                                      0, NULL, NULL, 0, 0);
+            bomb = AddDynamicCreature((i16)id_DRAGBOMB, &position, 0, "dragbomb", NULL, NULL, 0, NULL, NULL, 0, 0);
         }
         if (bomb != NULL) {
             CABLE_RECORD_PC *created = CreateCable(Player[index], bomb, 0);
@@ -256,9 +251,8 @@ void GizBombGens_Update(void *world_pointer, void *system_pointer, f32 delta_tim
                     NUVEC position;
                     GameAnimSet_GetAveragePos(generator->anim_set, &position, 2, 1, 1);
                     if (netclient == 0) {
-                        generator->generated_bomb =
-                            AddDynamicCreature((i16)id_DRAGBOMB, &position, 0, (char *)CharacterFixupNamePc00752dfc,
-                                               NULL, NULL, 1, NULL, NULL, 0, 0);
+                        generator->generated_bomb = AddDynamicCreature((i16)id_DRAGBOMB, &position, 0, "dragbomb", NULL,
+                                                                       NULL, 1, NULL, NULL, 0, 0);
                         if (Cheat_IsOn(5) != 0) {
                             AddGameDebris(world->game_debris_sys, 0x7d, &position);
                             AddGameDebris(world->game_debris_sys, 0x7e, &position);
@@ -323,7 +317,7 @@ i32 GizmoBombGen_GetOutput(GIZMO_PC *gizmo, i32 output, i32 mode) {
 }
 
 char *GizmoBombGen_GetOutputName(GIZMO_PC *gizmo, i32 output) {
-    return AIRegistryTextPc007575bc;
+    return "Active";
 }
 
 i32 GizmoBombGen_GetNumOutputs(GIZMO_PC *gizmo) {

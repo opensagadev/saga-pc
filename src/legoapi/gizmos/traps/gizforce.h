@@ -34,7 +34,6 @@ typedef struct addgizmotype_pc_s *(*REGISTER_GIZMO_CONFIG_TYPE_FN)(i32 type_id);
 extern "C" {
 #endif
 
-    extern const char ForcePushSoundNamePc[11];
     extern const char VehicleSmartBombChargeNamePc[10];
     extern const char VehicleShieldOnNamePc[10];
     i32 GizForce_UpdateHint(HINT_PC *);
@@ -51,7 +50,6 @@ extern "C" {
     extern f32 lightning_sizel[2];
     extern f32 lightning_sizew[2];
     extern f32 lightning_sizewab[2];
-    extern const char GameAudioName00758be8Pc[9];
 #ifdef __cplusplus
 }
 #endif

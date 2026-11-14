@@ -394,7 +394,6 @@ extern "C" {
     void Game_KillPart(struct PART_PC *part, i32 reason);
     extern GAMEAUDIO_PC GameAudioLswPc;
     extern GAMEAUDIO_PC GameAudioAlternatePc;
-    extern const char ForceThrowExplodeNamePc[9];
     extern struct area_data_pc_s *UTAPAU_ADATA;
     extern struct area_data_pc_s *HOTH_ADATA;
     extern struct area_data_pc_s *BONUSDAGOBAH_ADATA;

@@ -249,9 +249,6 @@ static f32 HubFabsPc(f32 value) {
     return *(f32 *)&bits;
 }
 
-extern "C" const char HubTableTextPc00752d20[] = "grievous";
-extern "C" const char HubTableTextPc00752d48[] = "jabba";
-
 static void MiniKitSetRotationX(NUMTX *m, NUANG a) {
     const f32 cosine = NuTrigTable[((a + 0x4000) >> 1) & 0x7fff];
     const f32 sine = NuTrigTable[(a >> 1) & 0x7fff];
@@ -521,7 +518,7 @@ static HUB_AREA_INFO_PC HubAreaInfoPc[51] = {
      {NULL, NULL, 0},
      NULL,
      NULL},
-    {HubTableTextPc00752d20,
+    {"grievous",
      "de3_3",
      "lock_3_3_on",
      NULL,
@@ -1244,9 +1241,9 @@ extern "C" {
             GameAudio_PlaySfx(0x26, NULL, 0, 0);
         }
         if (reset_score != 0) {
-            NuSPrintf(text, Text_TimeS, Arcade_Score[player_index]);
+            NuSPrintf(text, "%i", Arcade_Score[player_index]);
         } else {
-            NuSPrintf(text, Text_TimeS, Arcade_Points[player_index]);
+            NuSPrintf(text, "%i", Arcade_Points[player_index]);
         }
         if (player_index == 0) {
             position.x = -0.015f;
@@ -1316,7 +1313,7 @@ extern "C" {
         }
         if (Arcade_BothPlayersActive()) {
             ++AreaGlobals_PC.arcade_ai_kills[player_index];
-            PlaySfx((char *)ArcadeAiKilledSoundNamePc, NULL);
+            PlaySfx("env_padLight_on", NULL);
             object = (GAMEOBJECT *)Player[player_index];
             if (object != NULL && object->coin_packet != NULL) {
                 ((ARCADE_COIN_PACKET_PC *)object->coin_packet)->scale = 1.5f;
@@ -2198,7 +2195,7 @@ extern "C" void Hub_UpdateMiniKits(WORLDINFO *world) {
                 --kit->displayed_piece_count;
             }
             if (i == HubMiniKitAreaPc) {
-                PlaySfx((char *)GameAudioName00758be8Pc, &kit->position);
+                PlaySfx("LegoForm", &kit->position);
             }
             NewRumbleAllPlayers(0.0f, 0.0f, 1, 0);
         }
@@ -2515,7 +2512,7 @@ extern "C" void Hub_UpdateKit(void) {
     if (hub_minikitviewer_area != previous) {
         HubMiniKitViewerAlphaPc = 0.0f;
         hub_minikitviewer_movewait = 1.0f;
-        PlaySfx((char *)ForcePushSoundNamePc, &hub_minikitviewer_pos);
+        PlaySfx("JForcePush", &hub_minikitviewer_pos);
     }
     if (cancel != 0) {
         GameAudio_PlaySfx(0x31, NULL, 0, 0);
@@ -2537,7 +2534,7 @@ static HUB_EPISODE_INFO_PC HubEpisodeInfoPc[10] = {
     {5, 1, "DE6", "lock_6_on", 0, 0, NULL, NULL, {NULL, NULL, 0}},
     {8, 1, "DE7", "lock_7_on", 1, 0, NULL, NULL, {NULL, NULL, 0}},
     {6, 2, "hologram", "lock_8_on", 0, 0, NULL, NULL, {NULL, NULL, 0}},
-    {7, 2, HubTableTextPc00752d48, "lock_B_on", 0, 0, NULL, NULL, {NULL, NULL, 0}},
+    {7, 2, "jabba", "lock_B_on", 0, 0, NULL, NULL, {NULL, NULL, 0}},
     {-1, 0, NULL, NULL, 0, 0, NULL, NULL, {NULL, NULL, 0}},
 };
 

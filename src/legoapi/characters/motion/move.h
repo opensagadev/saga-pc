@@ -133,13 +133,11 @@ extern "C" {
     void ResetForceGlow(void *packet);
     i32 Dodge_UpdateHint(HINT_PC *);
     extern i16 id_SNAKE;
-    extern const f64 NuTimeBarQuarter;
     extern const f64 NuTimeBarColumnStep;
     extern const f64 NuQFntHalfScale;
     extern const f64 PlayerRandomScalePc;
     extern const f32 PlayerPanelVariantZeroX;
     extern const f32 PlayerPanelVariantZeroZ;
-    extern const char PlayerGrappleWindSoundPc[11];
     extern i16 id_MINIATST;
     extern i16 id_MINIATTE;
     extern const f64 VehicleTurnPhaseScale;
@@ -163,7 +161,6 @@ extern "C" {
     extern i32 TwistScaleLean;
     extern i32 CircleLeanDegrees;
     extern f32 TURNTIME;
-    extern const char TurnLoopSfx[17];
     extern f32 GameDeflectPartGravity;
     extern f32 GameDeflectPartSpeed;
     extern f32 MaulF_ForceThrowGravity;
@@ -171,7 +168,6 @@ extern "C" {
     extern f32 DookuC_ForceThrowGravity;
     extern f32 DookuC_ForceThrowSpeed;
     extern f32 SaberSparksTimer;
-    extern const char SaberSparksName[12];
     extern f32 rocket_speed;
     extern f32 ForcePush_Speed;
     extern f32 ForcePushDurationPc;
@@ -204,7 +200,6 @@ extern "C" {
     extern f32 speeder_smoke_rate;
     extern f32 speeder_offset_speed;
 
-    extern const char PCContextName_Tube[5];
     extern i16 id_BAT;
     extern i16 id_NAFFDROID1;
     extern i16 id_NAFFDROID2;
@@ -231,7 +226,6 @@ extern "C" {
     extern i32 testlaser_type;
     extern i32 ForceBackType;
     extern i32 lightning_type;
-    extern const char PCContextName_Punch[6];
 #ifdef __cplusplus
 }
 #endif

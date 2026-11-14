@@ -38,11 +38,6 @@ extern "C" {
     extern char GrapDetach_text[11];
     extern char GrapDetach_text[11];
     extern char GrapAttach_text[11];
-    extern const char GameAudioName0075c240Pc[5];
-    extern const char GameAudioName0075c248Pc[12];
-    extern const char GameAudioName0075c254Pc[13];
-    extern const char GameAudioName0075c264Pc[11];
-    extern const char GameAudioName0075c270Pc[12];
 #ifdef __cplusplus
 }
 #endif

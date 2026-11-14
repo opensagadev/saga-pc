@@ -78,7 +78,6 @@ extern "C" {
     STATIC_ASSERT(offsetof(PC_GLOBAL_LIGHTING_STATE, specular_intensity_present) == 0x74);
     STATIC_ASSERT(offsetof(PC_GLOBAL_LIGHTING_STATE, direction) == 0xc);
     STATIC_ASSERT(offsetof(PC_GLOBAL_LIGHTING_STATE, intensity) == 0x30);
-    extern const char TerrainWaterJumpSoundNamePc[13];
     void DebrisDraw(i32, i32);
     extern i32 g_renderingDebris;
     extern i32 DebrisSuspendDrawObjectSwitch;

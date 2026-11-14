@@ -37,7 +37,6 @@ extern "C" {
     void Text_InsertCommasIntoNumber(char *number, char *text, i32 length);
     void IntroText_SetTextID(i32 id);
     void Text_LoadAndFixUpStrings(char *path, u8 **buffer, char **table, i32 count);
-    extern const char TextLoadPermTextDirectory[12];
     extern const char TextLoadPermAPIExtension[9];
     extern const char TextLoadPermTRCPath[19];
     extern i16 tALONGTIMEAGO;

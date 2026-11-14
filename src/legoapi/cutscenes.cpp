@@ -381,8 +381,6 @@ typedef struct cut_player_config_pc_s {
 
 extern "C" {
     extern i32 (*CutScenePlayer_AcceptFn)(CUT_PLAYER_CLIP_CONFIG_PC *);
-    extern const char Text_UnknownText[2];
-    extern const char CutPlayerTextSeparatorPc[4];
 }
 
 extern "C" {
@@ -1056,14 +1054,14 @@ extern "C" {
             cut = entries[sys->count];
             NuStrCpy(path, "cut\\");
             NuStrCat(path, CutList[i].directory);
-            NuStrCat(path, WorldPathSeparator);
+            NuStrCat(path, "\\");
             NuStrCat(path, CutList[i].name);
             NuStrCpy(config_path, path);
-            NuStrCat(config_path, AreaResidentsExtension);
+            NuStrCat(config_path, ".txt");
             CutScene_Configure(cut, config_path, buf, buf_end);
             if ((cut->flags & 0x800) != 0 || InStory() != 0 || (LDataList[level].flags & 0xe0) != 0) {
                 NuStrCpy(config_path, path);
-                NuStrCat(config_path, NuFileExt_cu2_PC);
+                NuStrCat(config_path, ".cu2");
                 cut->scene = NuGCutSceneLoad(config_path, buf, buf_end, 0);
                 if (cut->scene != NULL) {
                     NuStrCpy(cut->name, CutList[i].name);
@@ -1152,17 +1150,17 @@ extern "C" CUT_LOAD_SYS_PC *CutScenes_Load(char *config, NUGSCN *gscn1, NUGSCN *
         }
         NuStrCpy(full_path, "cut\\");
         NuStrCat(full_path, config_name);
-        NuStrCat(full_path, AreaResidentsExtension);
+        NuStrCat(full_path, ".txt");
         CutScene_Configure(cut, full_path, buf, buf_end);
         NuStrCpy(full_path, "cut\\");
         NuStrCat(full_path, name);
-        NuStrCat(full_path, AreaResidentsExtension);
+        NuStrCat(full_path, ".txt");
 
         if ((cut->flags & 0x800) != 0 || InStory() != 0 || (LDataList[param3].flags & 0xe0) != 0) {
             buf->void_ptr = (char *)((buf->addr + 63) & ~63U);
             NuStrCpy(full_path, "cut\\");
             NuStrCat(full_path, name);
-            NuStrCat(full_path, NuFileExt_cu2_PC);
+            NuStrCat(full_path, ".cu2");
             cut->scene = NuGCutSceneLoad(full_path, buf, buf_end, 0);
             if (cut->scene == NULL) {
                 NuStrCpy(full_path, "cut\\");
@@ -2162,10 +2160,10 @@ extern "C" {
         i32 episode;
         if (CutScenePlayer == NULL) {
             if (title != NULL) {
-                NuStrCpy(title, Text_UnknownText);
+                NuStrCpy(title, "?");
             }
             if (subtitle != NULL) {
-                NuStrCpy(subtitle, Text_UnknownText);
+                NuStrCpy(subtitle, "?");
             }
             return;
         }
@@ -2180,25 +2178,25 @@ extern "C" {
                 switch (clips[id].type) {
                     case 0:
                         if (CutScenePlayer->intro_text != NULL) {
-                            NuStrCat(title, CutPlayerTextSeparatorPc);
+                            NuStrCat(title, " - ");
                             NuStrCat(title, TTab[*CutScenePlayer->intro_text]);
                         }
                         break;
                     case 1:
                         if (CutScenePlayer->midtro_text != NULL) {
-                            NuStrCat(title, CutPlayerTextSeparatorPc);
+                            NuStrCat(title, " - ");
                             NuStrCat(title, TTab[*CutScenePlayer->midtro_text]);
                         }
                         break;
                     case 2:
                         if (CutScenePlayer->outro_text != NULL) {
-                            NuStrCat(title, CutPlayerTextSeparatorPc);
+                            NuStrCat(title, " - ");
                             NuStrCat(title, TTab[*CutScenePlayer->outro_text]);
                         }
                         break;
                     case 3:
                         if (CutScenePlayer->ending_text != NULL) {
-                            NuStrCat(title, CutPlayerTextSeparatorPc);
+                            NuStrCat(title, " - ");
                             NuStrCat(title, TTab[*CutScenePlayer->ending_text]);
                         }
                         break;
@@ -2210,13 +2208,13 @@ extern "C" {
             level = &LDataList[clips[id].level_id];
             area_id = level->area_index;
             if (area_id == -1) {
-                NuStrCpy(subtitle, Text_UnknownText);
+                NuStrCpy(subtitle, "?");
                 return;
             }
             if ((ADataList[area_id].flags & 2) != 0) {
                 episode = (i8)level->episode;
                 if (episode == -1) {
-                    NuStrCpy(subtitle, Text_UnknownText);
+                    NuStrCpy(subtitle, "?");
                     return;
                 }
                 NuStrCpy(subtitle, TTab[EDataList[episode].text_id]);

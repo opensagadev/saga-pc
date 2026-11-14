@@ -286,7 +286,7 @@ static void edgracbClumpDistMenu(eduimenu_s *parent, eduiitem_s *unused1, u32 un
     eduiMenuAddItem(edgra_clumpdist_menu, eduiItemCheckCreate(1, colours, GrassClumps[edgra_nearest].unknown_26 == 1, 1,
                                                               edgracbSetClumpDist, "Legacy"));
     eduiMenuAddItem(edgra_clumpdist_menu, eduiItemCheckCreate(2, colours, GrassClumps[edgra_nearest].unknown_26 == 2, 1,
-                                                              edgracbSetClumpDist, (char *)AIActionRandomName));
+                                                              edgracbSetClumpDist, "Random"));
     eduiMenuAddItem(edgra_clumpdist_menu, eduiItemCheckCreate(3, colours, GrassClumps[edgra_nearest].unknown_26 == 3, 1,
                                                               edgracbSetClumpDist, "Linear"));
     eduiMenuAddItem(edgra_clumpdist_menu, eduiItemCheckCreate(4, colours, GrassClumps[edgra_nearest].unknown_26 == 4, 1,

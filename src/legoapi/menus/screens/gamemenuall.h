@@ -203,7 +203,6 @@ extern "C" {
     extern char *apitxt_NOTENOUGHSPACE;
     extern i32 newgamefade;
     void MenuRegisterSoundFX(i32 move, i32 select, i32 back, i32 no_entry);
-    extern const char ExtrasNameFormatPc[7];
     extern MENU_VIDEO_OPTIONS_PC MenuVideoOptionsPc;
     extern i32 MenuAppliedAspectPc;
 #ifdef __cplusplus

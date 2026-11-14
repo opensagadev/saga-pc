@@ -77,7 +77,7 @@ static void NuErrorFunction(char *format, ...) {
     vsprintf(PCWarningFormatBuffer, format, args);
     va_end(args);
     NuStrCat(PCWarningOutputBuffer, PCWarningFormatBuffer);
-    NuStrCat(PCWarningOutputBuffer, PCWarningSuffix);
+    NuStrCat(PCWarningOutputBuffer, "\n");
     if (nuerror_handler != NULL) {
         nuerror_handler(PCWarningOutputBuffer);
     }
@@ -100,7 +100,7 @@ static void NuWarningFunction(char *format, ...) {
         vsprintf(PCWarningFormatBuffer, format, args);
         va_end(args);
         NuStrCat(PCWarningOutputBuffer, PCWarningFormatBuffer);
-        NuStrCat(PCWarningOutputBuffer, PCWarningSuffix);
+        NuStrCat(PCWarningOutputBuffer, "\n");
         if (nuwarning_handler != NULL) {
             nuwarning_handler(PCWarningOutputBuffer);
         }
@@ -132,7 +132,7 @@ static void NuDebugMsgFunction(char *format, ...) {
             vsprintf(PCWarningFormatBuffer, format, args);
             va_end(args);
             NuStrCat(captxt, PCWarningFormatBuffer);
-            NuStrCat(captxt, PCWarningSuffix);
+            NuStrCat(captxt, "\n");
             if (PCWarningHandler != NULL) {
                 PCWarningHandler(captxt);
             }

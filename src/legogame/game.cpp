@@ -177,7 +177,6 @@ extern "C" {
     void SetSoundFadeDist(WORLDINFO *world, OPTIONSSAVE *options);
     void CutScene_StartAudio(void);
     void Tag_SetMode(i32 mode);
-    extern const char ActionSnapPartyName[6];
     extern char AreaFixUpName_Jedi[8];
     extern i32 makebaddiesforgetinresetbits;
     extern i32 FalconDebKey[2];
@@ -1818,16 +1817,16 @@ extern "C" void CheckResetBits(void) {
             if (FreePlay != 0) {
                 if (AIScriptFind(WORLD->ai_sys, "Freeplay", 0, 1, 0) != NULL) {
                     sprintf(script_name, "Freeplay");
-                } else if (AIScriptFind(WORLD->ai_sys, ActionSnapPartyName, 0, 1, 0) != NULL) {
-                    sprintf(script_name, ActionSnapPartyName);
+                } else if (AIScriptFind(WORLD->ai_sys, "party", 0, 1, 0) != NULL) {
+                    sprintf(script_name, "party");
                 } else {
                     sprintf(script_name, "GeneralParty");
                 }
             } else if (Mission_Active(NULL) != NULL) {
                 if (AIScriptFind(WORLD->ai_sys, "Mission", 0, 1, 0) != NULL) {
                     sprintf(script_name, "Mission");
-                } else if (AIScriptFind(WORLD->ai_sys, ActionSnapPartyName, 0, 1, 0) != NULL) {
-                    sprintf(script_name, ActionSnapPartyName);
+                } else if (AIScriptFind(WORLD->ai_sys, "party", 0, 1, 0) != NULL) {
+                    sprintf(script_name, "party");
                 } else {
                     sprintf(script_name, "GeneralParty");
                 }
@@ -1842,8 +1841,8 @@ extern "C" void CheckResetBits(void) {
                     sprintf(script_name, "NoWeapon");
                 }
                 if (AIScriptFind(WORLD->ai_sys, script_name, 0, 1, 0) == NULL) {
-                    if (AIScriptFind(WORLD->ai_sys, ActionSnapPartyName, 0, 1, 0) != NULL) {
-                        sprintf(script_name, ActionSnapPartyName);
+                    if (AIScriptFind(WORLD->ai_sys, "party", 0, 1, 0) != NULL) {
+                        sprintf(script_name, "party");
                     } else {
                         sprintf(script_name, "GeneralParty");
                     }
@@ -1852,8 +1851,7 @@ extern "C" void CheckResetBits(void) {
             AIScriptProcessorInit(WORLD->ai_sys, &(*player_slot)->ai_packet,
                                   &(*player_slot)->ai_packet.script_processor, NULL, script_name, NULL, 1, NULL, NULL);
             if (FreePlay == 0 && Mission_Active(NULL) == NULL && (*player_slot)->rider == NULL &&
-                AIScriptSetBaseScriptStateByName(&(*player_slot)->ai_packet.script_processor,
-                                                 (char *)GameObjectState_InActive) != 0) {
+                AIScriptSetBaseScriptStateByName(&(*player_slot)->ai_packet.script_processor, "InActive") != 0) {
                 (*player_slot)->flags_1fc_word &= ~0x1000;
             }
         }
@@ -2260,7 +2258,7 @@ extern "C" {
         NewRumbleAllPlayers(0.7f, 0.0f, 0, 0);
         GameCam_Judder(GameCam, qrand() < 0x8000 ? 0.4f : -0.4f, 2, NULL);
         GameCam_NewShake(GameCam, 0.6f, 0.6f, 1.0f);
-        PlaySfx((char *)ForceThrowExplodeNamePc, &part->position);
+        PlaySfx("Explode1", &part->position);
     }
 
     void Areas_OpenAll(i32 mode) {

@@ -310,7 +310,7 @@ void AddSurfaceDebris(GAMEOBJECT *object) {
 
 void AddWaterSplash(GAMEOBJECT *object, NUVEC *position) {
     AddGameDebrisXYZ(WORLD->game_debris_sys, 13, position->x, object->water_height, position->z);
-    PlaySfx((char *)TerrainWaterJumpSoundNamePc, &object->collision_position);
+    PlaySfx("FS_WaterJump", &object->collision_position);
     NewRumble(object->pad->bound_pad, 0.5f, 0);
     NewBuzzFrames(object->pad->bound_pad, 1, 0);
 }

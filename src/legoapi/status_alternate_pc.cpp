@@ -9,7 +9,6 @@ extern "C" {
 
     void Text_FillInExtendedSaveInfo(void);
     i32 TriggerAutoSave(void);
-    extern const char Text_UnknownText[];
     void DrawStatusTextFraction(i32, i32, f32, f32, u16, f32, u32, f32, f32);
     extern f32 CoinTotalScoreSizePc;
     extern f32 CoinTotalCoinOffsetPc;
@@ -865,7 +864,7 @@ extern "C" {
                     message_id = ((i16 *)packet->field_0x12c)[packet->displayed_gold_bricks];
                     if (message_id == TextIdPc880818) {
                         NuStrCpy(text, TTab[message_id]);
-                        NuStrCat(text, CutPlayerTextSeparatorPc);
+                        NuStrCat(text, " - ");
                         NuStrCat(text, TTab[(packet->field_0xb0 & 0x40) != 0 ? TextIdPc8808a8 : TextIdPc8808a4]);
                         message = text;
                     } else {
@@ -1231,7 +1230,7 @@ extern "C" {
                     stage->field_0x18 = 0.0f;
                     stage->field_0x1c = StatusAlt7f8248Pc;
                     stage->field_0x14 = 3;
-                    PlaySfx((char *)PCContextName_Jump, NULL);
+                    PlaySfx("Jump", NULL);
                 }
                 break;
             }
@@ -1294,7 +1293,7 @@ extern "C" {
                     if (previous < stage->field_0x1c) {
                         AddStatusMiniKitParts();
                         NewStatusRumbleBuzz(-1, 1.0f, 0.1f, 0);
-                        PlaySfx((char *)ForceThrowExplodeNamePc, NULL);
+                        PlaySfx("Explode1", NULL);
                     } else if (FindGameMsgsWithID(1, 0, -1, NULL) == 0) {
                         PlaySfx("Shop_BuyCheat", NULL);
                         NextStatusStage(packet);
@@ -1490,16 +1489,14 @@ extern "C" {
                        mode_scale, colour, 0);
         if (stage->field_0x14 == 6) {
             colour = ((u8)((1.0f - full_fade) * 64.0) << 24) | 0xbfff;
-            DrawStatusText((char *)StatusTrueHeroFullPercentTextPc, 0, 0.0f, -0.2f, StatusAltScalePc * full_scale_in,
-                           colour, 0);
-            DrawStatusText((char *)StatusTrueHeroFullPercentTextPc, 0, 0.0f, -0.2f, StatusAltScalePc * full_scale_out,
-                           colour, 0);
+            DrawStatusText("100%", 0, 0.0f, -0.2f, StatusAltScalePc * full_scale_in, colour, 0);
+            DrawStatusText("100%", 0, 0.0f, -0.2f, StatusAltScalePc * full_scale_out, colour, 0);
         } else if (stage->field_0x14 == 7) {
-            sprintf(text, StatusTrueHeroPercentFormatPc, (i32)packet->true_hero_percent);
+            sprintf(text, "%i%%", (i32)packet->true_hero_percent);
             DrawStatusText(text, percent_angle, 0.0f, -0.2f, percent_scale,
                            ((u8)(percent_alpha * 255.0) << 24) | 0xbfff, 0);
         } else if (stage->field_0x14 < 6) {
-            sprintf(text, StatusTrueHeroPercentFormatPc, (i32)packet->true_hero_percent);
+            sprintf(text, "%i%%", (i32)packet->true_hero_percent);
             DrawStatusText(text, percent_angle, 0.0f, -0.2f, percent_scale, ((u8)(title_alpha * 255.0) << 24) | 0xbfff,
                            0);
         }
@@ -1772,8 +1769,8 @@ extern "C" {
         DrawStatusText(TTab[TextIdPc8808d0], StatusAltSpinPc, 0.0f, size * StatusCoinsTitleYPc, StatusAltScalePc * size,
                        colour, 0);
         if (currentminikit == 0) {
-            DrawStatusText((char *)Text_UnknownText, 0, 0.0f, 0.0f, StatusAlt7f8214Pc * size,
-                           ((u8)(count_alpha * 255.0) << 24) | 0xffffff, 0);
+            DrawStatusText("?", 0, 0.0f, 0.0f, StatusAlt7f8214Pc * size, ((u8)(count_alpha * 255.0) << 24) | 0xffffff,
+                           0);
         } else {
             DrawStatusMiniKit(0.0f, 0.0f, 1.0f, StatusAlt7f8228Pc * StatusAlt7f8274Pc, 0.0f, currentminikit, packet,
                               0.0f);

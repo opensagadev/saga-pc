@@ -1,7 +1,6 @@
 #include "saga.h"
 
 extern "C" void NuRndrConfigureLeafPc(f32, f32, i32);
-extern "C" const f32 InitOnceHalf;
 
 extern "C" void InitGameBeforeConfig(void);
 
@@ -25,7 +24,7 @@ extern "C" {
 }
 
 extern "C" void InitOnce(i32 argc, char **argv) {
-    PcNativeSelectLanguage(InitOnceEmptyConfigPc);
+    PcNativeSelectLanguage("LUCASARTS\\LEGOSTARWARSSAGA");
     permbuffer_base.void_ptr = NuAlloc(SUPERBUFFERSIZE, ".\\pcbatman.cpp", 0x112);
     superbuffer_end.addr = permbuffer_base.addr + (u32)SUPERBUFFERSIZE;
     original_permbuffer_base = permbuffer_base;
@@ -33,7 +32,7 @@ extern "C" void InitOnce(i32 argc, char **argv) {
     InitGameBeforeConfig();
     StartupParseArguments(argc - 1, argv + 1);
     NuFileSetCurrentDirectory(InitOnceCurrentDirectory);
-    NuRndrConfigureLeafPc(1.0f, InitOnceHalf, 0);
+    NuRndrConfigureLeafPc(1.0f, 0.5f, 0);
     Game_NuPad = &Game_NuPad_Store[0];
     i16 first[] = {0x1e, 0x20, 0x11, 0x1f, -1, -1, -1,   -1, -1, -1, 0x1d, 0x39, 0x25,
                    0x24, 0x16, 0x23, -1,   -1, -1, 0x1c, -1, -1, -1, -1,   -1};
@@ -47,9 +46,9 @@ extern "C" void InitOnce(i32 argc, char **argv) {
     NuInitHardwarePc(&permbuffer_base, &superbuffer_end, 0, 4, InitOnceHostFsPc, 24, StartupDatNames, 7, 6,
                      InitOnceFileModePc, 7, InitOnceEjectPc, 8, 0x500000, 18, PAL ? 8 : 0, 33, 512, PAL ? 256 : 224, 26,
                      0x1000, 21, 1, 5, &InitOnceDvdPc, NOSOUND ? 28 : 10, 0, 0x640, 0, 0, 11, 5, 0x1fff, 14, Game_NuPad,
-                     15, Game_NuPad + 1, 46, InitOnceWindowTitle, 45, InitOnceWindowTitle, 47, InitOnceEmptyConfigPc,
-                     48, "LucasArts", 49, "LEGO Star Wars - The Complete Saga", 52, InitOnceSelector34Pc, 70, 1, 71, 1,
-                     73, 1, 75, 1, 0);
+                     15, Game_NuPad + 1, 46, "LEGO\xae Star Wars\x99: The Complete Saga", 45,
+                     "LEGO\xae Star Wars\x99: The Complete Saga", 47, "LUCASARTS\\LEGOSTARWARSSAGA", 48, "LucasArts",
+                     49, "LEGO Star Wars - The Complete Saga", 52, InitOnceSelector34Pc, 70, 1, 71, 1, 73, 1, 75, 1, 0);
     NuTimeBarInit();
     pNuCam = NuCameraCreate();
     InitPanel(Game.options_save.widescreen);

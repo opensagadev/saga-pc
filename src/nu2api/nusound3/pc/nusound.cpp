@@ -929,7 +929,7 @@ extern "C" {
                             continue;
                         }
                         name = PCStereoSampleMetadata[i].filename;
-                        if (NuStrICmp(NuFileExt_wav_PC, PCSampleFilenameExtensionPc) == 0) {
+                        if (NuStrICmp(".wav", PCSampleFilenameExtensionPc) == 0) {
                             SoundVoiceManager.LoadWavSamplePc(name, i);
                         } else {
                             PCSoundAlreadyPlayingHook(PCSampleFilenameExtensionPc);

@@ -10,7 +10,7 @@ void NuSevereWarning(const char *format, ...) {
     vsprintf(PCWarningFormatBuffer, format, args);
     va_end(args);
     NuStrCat(PCWarningOutputBuffer, PCWarningFormatBuffer);
-    NuStrCat(PCWarningOutputBuffer, PCWarningSuffix);
+    NuStrCat(PCWarningOutputBuffer, "\n");
     if (PCWarningHandler != NULL) {
         PCWarningHandler(PCWarningOutputBuffer);
     }

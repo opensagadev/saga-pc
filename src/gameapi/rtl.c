@@ -3935,8 +3935,6 @@ static i32 rtlCmp(RTL_LIGHT_PC *first, RTL_LIGHT_PC *second) {
     return different;
 }
 
-#pragma section(".rdata$RtlFilePathFormat", read)
-__declspec(allocate(".rdata$RtlFilePathFormat")) const char RtlFilePathFormatPc[7] = "%s%s%s";
 #pragma section(".data$RtlExtensionPointer", read, write)
 __declspec(allocate(".data$RtlExtensionPointer")) char *rtl_ext = ".rtl";
 
@@ -3993,7 +3991,7 @@ void cbLoad(eduimenu_s *menu, eduiitem_s *item, u32 buttons) {
     char path[256];
     VARIPTR buffer;
     buffer.void_ptr = curr_set;
-    sprintf(path, RtlFilePathFormatPc, rtlGetEnvPath(), rtlGetEnvSceneName(), rtl_ext);
+    sprintf(path, "%s%s%s", rtlGetEnvPath(), rtlGetEnvSceneName(), rtl_ext);
     curr_set = rtlLoadSet(path, &buffer, 0x7fffffff);
     curr_rtl = NULL;
     base_rtl = NULL;
@@ -4005,7 +4003,7 @@ void cbSave(eduimenu_s *menu, eduiitem_s *item, u32 buttons) {
     char path[256];
     RTL_SET_PC *set;
     NUFILE file;
-    sprintf(path, RtlFilePathFormatPc, rtlGetEnvPath(), rtlGetEnvSceneName(), rtl_ext);
+    sprintf(path, "%s%s%s", rtlGetEnvPath(), rtlGetEnvSceneName(), rtl_ext);
     set = curr_set;
     file = NuFileOpen(path, 1);
     if (file != 0) {

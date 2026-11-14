@@ -28,7 +28,6 @@ STATIC_ASSERT(offsetof(WORLDINFO, giz_buffer) == 0x104);
 STATIC_ASSERT(offsetof(WORLDINFO, current_level) == 0x128);
 STATIC_ASSERT(offsetof(LEVELDATA_PC, max_guidelines) == 0xf8);
 STATIC_ASSERT(offsetof(GIZMO_PC, object) == 0);
-extern char AIRegistryTextPc007575bc[7];
 extern char TextInputKeyNameTextPc7516c0[1];
 
 STATIC_ASSERT(offsetof(CLIMB_SYSTEM_PC, objects) == 0);
@@ -150,7 +149,7 @@ i32 GuideLine_GetOutput(GIZMO_PC *gizmo, i32 output, i32 mode) {
 }
 
 char *GuideLine_GetOutputName(GIZMO_PC *gizmo, i32 output) {
-    return AIRegistryTextPc007575bc;
+    return "Active";
 }
 
 i32 GuideLine_GetNumOutputs(GIZMO_PC *gizmo) {
