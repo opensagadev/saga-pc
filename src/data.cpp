@@ -9047,8 +9047,7 @@ extern "C" {
     i32 i_explosion = 0;
     i32 ShadowMode = 0;
     CHECK_LOST_DATA_PC CheckLostDataFn = 0;
-    // Existing complete working bytes view retained, including the native utility WORD at +0x10000.
-    // The original owner capacity remains unknown; the CSV extent intentionally stays blank.
+    // Includes the utility WORD at +0x10000.
     CONFIG_BUFFER_PC ConfigBuffer = {0};
 }
 
@@ -13192,7 +13191,7 @@ extern "C" {
     i32 TrooperGameDebrisPc[4] = {-1, -1, -1, -1};
     i32 LEGOHINT_SHOOTCAMERAS = -1;
     i32 LEGOHINT_BUILD = -1;
-    /* The Android build names these bytes MENUEXITR, MENUEXITG and the MENULOST* blend
+    /* These bytes are MENUEXITR, MENUEXITG and the MENULOST* blend
        endpoints; MenuDrawPauseRestart/Exit and InitGameAfterConfig address all eight. */
     u8 AlternateHudColourBytesPc[8] = {255, 191, 191, 95, 128, 255, 31, 128};
     i32 LEGOTHINGSSCENE_TER_SPINBASE = -1;
@@ -21561,7 +21560,6 @@ char uberShader2[158576] = {
 STATIC_ASSERT(sizeof(uberShader2) == 158576);
 
 #pragma data_seg(".data$FrameRenderCaptureStatePc")
-/* Native pre-initialization state; original owning extents remain unknown. */
 extern "C" {
     NUFILE nudlist_field_988 = 0;
     char *PCDisplayCaptureCursorPc = NULL;
@@ -22527,7 +22525,7 @@ extern "C" {
 
 #pragma data_seg(".data$CamDewbackLiftPc")
 
-    // Native PC frontend strings: language-selected index/string tables.
+    // Frontend strings: language-selected index/string tables.
 
     extern const char MenuPcString75f0b0[5] = "Back";
     extern const char MenuPcString75f2b4[7] = "Cancel";
@@ -24526,9 +24524,6 @@ extern "C" {
 extern "C" {
     MENU_VIDEO_OPTIONS_PC MenuVideoOptionsPc = {0};
     i32 MenuAppliedAspectPc = 0;
-    // Replace existing MenuInfo rows exactly (native row metadata is unchanged):
-    // {1025, MenuEnterVideoPc, MenuDrawVideoPc, MenuUpdateVideoPc, MenuExitVideoPc, -1, -1, 0, 0, 0, 0},
-    // {1026, MenuEnterEffectsPc, MenuDrawEffectsPc, MenuUpdateEffectsPc, MenuExitEffectsPc, -1, -1, 0, 0, 0, 0},
     f32 MenuVideoConfirmDurationPc = 0;
     i32 MenuVideoConfirmWaitPc = 0;
     // {1027, MenuEnterVideoConfirmPc, MenuDrawVideoConfirmPc, MenuUpdateVideoConfirmPc, MenuExitVideoConfirmPc, -1, -1,
@@ -24572,8 +24567,6 @@ extern "C" {
     u8 HubEpisodeGreenPc = 191;
 #pragma data_seg()
     char TextInputActionLabelBufferPc[128] = {0};
-/* Exact address-backed native span [8016a8,8016f0), not a claim about original logical array capacity. Reader remains
- * unsized. */
 #pragma data_seg(".data$HubButtonStringBufferPc")
     char HubButtonStringBufferPc[72] = "???";
 #pragma data_seg()
@@ -24816,7 +24809,7 @@ extern "C" {
     NURND_VERTEX3D_PC NuRndrShadowVerticesPc[4] = {0};
 }
 
-/* Native static-shadow frustum topology and mutable extrusion distance. */
+/* Static-shadow frustum topology and mutable extrusion distance. */
 /* Mutable half-texel terms read by PostBlur7x7HighPc (input -0.5, output +1.0). */
 
 extern "C" {

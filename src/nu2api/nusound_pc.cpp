@@ -27,7 +27,7 @@ NUDATHDR *NuSoundDat = 0;
 PC_SOUND_COMMIT_PC *PCSoundCommitTarget = 0;
 NUMTX *NuSound3Listener = 0;
 i32 NuSound3LoadingSfxPc = 0;
-// Plain .bss like retail: VC8 drops the constructor's memset only for an object it knows is zero-filled.
+// Plain .bss: VC8 drops the constructor's memset only for an object it knows is zero-filled.
 SoundVoiceManagerPC SoundVoiceManager;
 
 extern "C" void PCSoundAlreadyPlayingHook(...) {

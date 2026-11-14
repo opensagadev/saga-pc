@@ -709,7 +709,7 @@ void PodRaceAUpdate(void) {
     }
 }
 
-/* Original episodeI.cpp private owner of the active PodRace block (PC 0x00882a8c). */
+/* Private owner of the active PodRace block. */
 
 static RACEPOD_RESOURCE_PC *RacePodAllocatePrivatePc(void) {
     PODRACE_RESOURCE_PC *race = PodRacePc;
@@ -1046,7 +1046,7 @@ void PodRaceUpdate(WORLDINFO *world, f32 dt) {
     }
 }
 
-/* PC 0x007ffd1c..0x007ffd24 and 0x007ffd88..0x007ffd94: pod sprint HUD and boulder tuning. */
+/* Pod sprint HUD and boulder tuning. */
 
 void PodRacePanel(WORLDINFO *world) {
     char text[256];
@@ -1200,7 +1200,7 @@ void PodRaceADrawPc(WORLDINFO *world) {
     PodRaceADraw(world);
 }
 
-/* PC 0x007ffd34/0x007ffd38/0x007ffd3c: mushroom collapse retry window. */
+/* Mushroom collapse retry window. */
 
 i32 Action_MushroomCollapse(AISYS_PC *system, AISCRIPTPROCESS_PC *processor, AIPACKET_PC *packet, char **params,
                             i32 count, i32 first_time, f32 elapsed) {

@@ -1132,7 +1132,7 @@ extern "C" {
         }
     }
 
-    /* PC 0x0087b950 / 0x0087b970 / 0x0087b980 / 0x0087b99c / 0x0087b9a4: melee target counter state. */
+    /* Melee target counter state. */
 
     void DrawMeleeTargetsNumber(i16 *targets, u8 *counts, i32 count, u8 reset, NUSPECIALHANDLE *special) {
         char text[4];

@@ -1,7 +1,5 @@
 #include "saga.h"
 
-/* Retail unit 0x58bc60-0x58d311 (legoapi/animation.c): definitions in retail address order. */
-
 f32 HeadMovementThresholdPc = 0.0017453293548896909f;
 f32 CloakMovementRecoverRatePc = 2.0f;
 f32 CloakMovementFallRatePc = 2.0f;

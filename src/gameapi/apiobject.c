@@ -2,8 +2,6 @@
 #include <float.h>
 #include <string.h>
 
-/* Retail unit 0x62a5e0-0x630d61 (gameapi/apiobject.c): definitions in retail address order. */
-
 i32 (*RedirectAnimFn)(char *, void *, CHARACTERANIM_CONFIG_PC *, char *) = 0;
 void *RedirectAnimList = 0;
 i32 drawcharactermodel_nobsa = 0;

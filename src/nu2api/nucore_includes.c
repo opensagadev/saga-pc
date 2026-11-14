@@ -31,7 +31,6 @@ char NuFParBuffers[4][0x1000] = {0};
 FILEINFO file_info[33] = {0};
 static i32 decode_buffer_pos = 0;
 static u8 decode_buffer[262144] = {0};
-/* Preserve the existing canonical working view; this is not a PC capacity claim. */
 i64 unpack_file_pos = 0;
 i32 file_criticalsection = 0;
 static u8 read_buffer[0x40000] = {0};

@@ -205,8 +205,6 @@ i32 fun_004c9230(void) {
     return 0;
 }
 
-/* PC 0x0088056c / 0x00880588. */
-
 static void SpeederChase_SetMode(AISCRIPTPROCESS_PC *processor, i32 mode) {
     set_speedermode = mode;
     processor->action_timer = 0.0f;
@@ -215,7 +213,7 @@ static void SpeederChase_SetMode(AISCRIPTPROCESS_PC *processor, i32 mode) {
     speeder_hitpoints_lost = 0;
 }
 
-/* PC 0x007fcd88..0x007fce1c: speeder chase pursuit tuning. */
+/* Speeder chase pursuit tuning. */
 i32 players_going_forward = 1;
 f32 speeder_ahead_time = 15.0f;
 f32 speeder_midrange_time = 10.0f;

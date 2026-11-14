@@ -636,14 +636,6 @@ STATIC_ASSERT(offsetof(EDANTINODE_s, type) == 0x49);
 
 STATIC_ASSERT(offsetof(EDANTINODE_s, link) == 0);
 
-/* Form2: append these genuine editor-owned mutable scalar definitions in
- * existing src/gameapi/aisys.c before the six-function draft. This TU already
- * owns editor behavior, and both cells have process-static lifetime in Native.
- * Translation-unit placement is an ordinary owner choice; source spelling and
- * initialization are unchanged. Native allocation extents unknown; zero credit.
- * src/data.cpp is retained byte-for-byte from baseline, avoiding its measured
- * constructor/data region displacement. All old aisys complete spans remain a
- * hard measured gate. No section attributes, extra helpers, aliases or bank. */
 i32 aisys_maxnumcreaturesets = 32;
 f32 AiEditorPickHeightTolerancePc = 0.1f;
 

@@ -1,7 +1,6 @@
 #include "saga.h"
 #include <stdio.h>
 
-/* Retail unit 0x57a810-0x57f647: definitions in retail address order. */
 static i32 CS_area = 0;
 static VARIPTR *CS_buffend = 0;
 void *CutStopInfo = 0;

@@ -1584,7 +1584,7 @@ void NewTown_Init(WORLDINFO *world) {
     LevGizmo[0] = GizmoFindByName(world->gizmo_sys, blowup_gizmotype_id, "dummy_exp8");
 }
 
-/* PC 0x0088a58c..0x0088a58f and 0x0088a6ec/0x0088a6ed: bonus level vehicle ride flags. */
+/* Bonus level vehicle ride flags. */
 f32 runningTotalPos = 0;
 static u8 prevOnFireTruck = 0;
 static u8 prevOnLifeBoat = 0;

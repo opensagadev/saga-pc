@@ -375,7 +375,6 @@ void Asteroid_AddParts(GIZMOBLOWUP_PC *blowup) {
 
 ASTEROID_PC asteroids[128] = {0};
 i32 nasteroids = 0;
-/* PC 0x00800290. */
 #pragma data_seg(".data$melee_wavePhase")
 i8 melee_wavePhase = -1;
 #pragma data_seg()
@@ -485,7 +484,7 @@ void Asteroids_Update(void) {
     }
 }
 
-/* PC 0x0088a554 / 0x0088a55c / 0x00800214 / 0x0080021c: Falcon spotlight phases. */
+/* Falcon spotlight phases. */
 u8 turretAliveCount = 0;
 f32 spotLightA_yrot[2] = {0};
 f32 spotLightA_zrot[2] = {0};
@@ -701,7 +700,6 @@ void AsteroidChaseC_Update(WORLDINFO *world) {
     }
 }
 
-/* PC 0x0088a310 / 0x0088a314. */
 u8 minikitCounter_A = 0;
 u8 minikitCounter_C = 0;
 nuhspecial_s escape[8] = {0};
