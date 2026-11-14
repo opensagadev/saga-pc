@@ -83,15 +83,8 @@ def write_fixtures(directory):
 
 
 def write_file_constants(directory):
-    """Reuse production file literals and writer state in the isolated fixture."""
+    """Reuse production writer state in the isolated fixture (the file sources write their literals inline)."""
     production = (ROOT / "src/data.cpp").read_text()
-    definitions = re.findall(
-        r'extern const char ((?:NuFileExt_\w+|NuFileSourcePathPC))'
-        r'\[(\d+)\]\s*=\s*("(?:\\.|[^"\\])*")\s*;',
-        production)
-    required = {"NuFileSourcePathPC"}
-    if not required.issubset({name for name, _, _ in definitions}):
-        raise ValueError("DAT fixture is missing the production file source literals")
     writer_state = re.findall(r"^\s*i32 NuFile_SwapEndianOnWrite\s*=\s*0;\s*$",
                               production, re.MULTILINE)
     if len(writer_state) != 1:
@@ -101,9 +94,7 @@ def write_file_constants(directory):
     if len(image_name) != 1:
         raise ValueError("DAT fixture needs the production IOP image-name pointer")
     source = directory / "file_constants.c"
-    source.write_text('#include "saga.h"\n' + writer_state[0].strip() + "\n" + "".join(
-        f"const char {name}[{size}] = {value};\n" for name, size, value in definitions) +
-        image_name[0].strip() + "\n")
+    source.write_text('#include "saga.h"\n' + writer_state[0].strip() + "\n" + image_name[0].strip() + "\n")
     return source
 
 
