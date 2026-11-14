@@ -137,7 +137,7 @@ casts; the 135 with ten or more casts explain 4,540, the 335 with five or more
 | 34 | 27 | record-pun | `NUVEC4 <-> VuVec` (src/saga.h:101, 27156) |  | 1 |
 | 35 | 27 | byte-pointer | `variable WORLD: WORLDINFO * -> void *` | src/saga.h:16151 | 3 |
 | 36 | 26 | duplicate-type | `carry_basis_pc_s <-> gameobject_s` (src/legoapi/carrying.c:55) |  | 1 |
-| 37 | 26 | duplicate-type | `nuqfnt_atlas_material_pc_s <-> numtl_s` (src/nu2api/nu3d_platform_pc.cpp:1151) |  | 1 |
+| 37 | 26 | duplicate-type | `nuqfnt_atlas_material_pc_s <-> numtl_s` (src/nu2api/nu3d_platform.cpp:1151) |  | 1 |
 | 38 | 26 | declaration-type | `variable EdLevelFnt: i32 -> void *` | src/legoapi/rtlhelper.cpp:18 | 2 |
 | 39 | 26 | declaration-type | `variable id_SPEEDERBIKE: i16 -> unsigned short` | src/saga.h:12951 | 8 |
 | 40 | 25 | duplicate-type | `techno_callback_pc_s <-> techno_pc_s` (src/legogame/techno.c:115) |  | 1 |

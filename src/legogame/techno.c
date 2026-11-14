@@ -40,7 +40,7 @@ TECHNO_PC *Technos_FindControllingTechno(GAMEOBJECT *object) {
 }
 
 /* A call to this empty diagnostic is kept for each failed target lookup; it
- * is defined in techno_diagnostic_pc.c because VC8 drops calls to an empty
+ * is defined in techno_diagnostic.c because VC8 drops calls to an empty
  * body it can see. */
 void TechnoTargetDiagnosticPc(char *name);
 void TechnoMoveSpecialTargetPc(void);

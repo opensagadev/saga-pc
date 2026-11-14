@@ -24,7 +24,7 @@ start,end,android_unit,evidence,marker
 0x4398c0,0x43ff91,src/legoapi/gameai.c,marker,ret 28
 0x43ffa0,0x457e93,src/gameapi/gameaiscript.c,marker,ret fabs 54 28
 0x457ec0,0x458461,src/legoapi/gamehint.c,file,
-0x458470,0x45e345,src/legoapi/status_alternate_pc.cpp,marker,fabs 54 28
+0x458470,0x45e345,src/legoapi/status_alternate.cpp,marker,fabs 54 28
 0x45e350,0x46433e,src/legoapi/gamestatus_lsw.cpp,marker,fabs 54 28
 0x464360,0x465dcc,src/legoapi/gizactions.c,file,
 0x465dd0,0x4667eb,src/legoapi/gizbombgen.c,marker,ret 28

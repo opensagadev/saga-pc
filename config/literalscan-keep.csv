@@ -1,5 +1,5 @@
 file,name,reason
-src/legoapi/dogfight_reset_constants_pc.c,DogfightOriginStartXPc,"inline, VC8 stores the value through a double constant (__real@c096c399a0000000) that retail does not have: DogfightResetSpacePc reads the named float"
+src/legoapi/dogfight_reset_constants.c,DogfightOriginStartXPc,"inline, VC8 stores the value through a double constant (__real@c096c399a0000000) that retail does not have: DogfightResetSpacePc reads the named float"
 src/data.cpp,LightingSurfaceFadeSlopePc,"inline, VC8 folds the negative factor into x * 0.334 subtracted (__real@3fd5604180000000, which retail does not have): fun_005954e0 reads the named negative double"
 src/data.cpp,MenuPcString75f2c0,"inline, the uses sit under different #pragma const_seg settings (the frontend string table in data.cpp, the editor prompts in aisysall.c), so ""No"" would be two literals where retail has one object"
 src/data.cpp,MenuPcString75f2c4,"inline, the uses sit under different #pragma const_seg settings (the frontend string table in data.cpp, the editor prompts in aisysall.c), so ""Yes"" would be two literals where retail has one object"

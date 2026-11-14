@@ -159,7 +159,7 @@ What changed:
    X;` costs VC8 no symbol id (checked on the fragile units; one `typedef`
    in the same place moves `InitGameAfterConfig`). `levels.h` and
    `nu3d_includes.h` keep their typedef spellings: rewriting either one
-   moves `NuRndrParticleGroup` (`nu3d_platform_pc.cpp`) from 95.9% to 94.6%
+   moves `NuRndrParticleGroup` (`nu3d_platform.cpp`) from 95.9% to 94.6%
    (where the declarations sit, not how many there are).
 4. `nuvec.h`, `nufile_pc.h` and `common.h` are one part each.
 
@@ -845,7 +845,7 @@ all the same declarations with 0 clang errors on both sides:
 
 - the six fragile units: `legogame/episodeIII.c`, `legogame/shop.c`,
   `legogame/game.cpp`, `legogame/episodeIV.c`, `legoapi/parts.c`,
-  `nu2api/nu3d_platform_pc.cpp`;
+  `nu2api/nu3d_platform.cpp`;
 - `nu2api/shader_parser.cpp`, `gameapi/aisysall.c`, `data.cpp` (45,614
   declarations), `batman.cpp`;
 - `lib/ogg-vorbis/vorbis_smallft.c`;
@@ -937,7 +937,7 @@ those go last.
    - `legogame/game.cpp` (`InitGameAfterConfig`)
    - `legogame/episodeIV.c` (`BlockadeRunnerDEjectCreaturePc`)
    - `legoapi/parts.c` (`DebrisSetup2`, `NuRndrParticleGroup`)
-   - `nu2api/nu3d_platform_pc.cpp`
+   - `nu2api/nu3d_platform.cpp`
 
 Batch size: 15-25 units per build, fewer for the unity files, one unit per
 batch for the six fragile units.
@@ -1000,7 +1000,7 @@ prototypes are not header material.
     changes (`InitGameAfterConfig`). The file is the cause.
   - N empty files included at the top of saga.h gave the same object
     signatures as N `typedef int t_i;`, for N = 0..70. Checked on
-    `legogame/shop.c` (C) and `nu2api/nu3d_platform_pc.cpp` (C++). The
+    `legogame/shop.c` (C) and `nu2api/nu3d_platform.cpp` (C++). The
     period is 64: N = 64, 128 and 448 at the top, or 64 at the end, leave
     all six test objects identical.
   - Including an already-opened file again costs nothing. This holds for a
@@ -1013,7 +1013,7 @@ prototypes are not header material.
     reproduces the split's objects. The match is exact for
     `episodeIII.obj` (`BoulderSpawnPc`), `game.obj`, `nu3d_includes.obj`
     (`NuDeferredFilterGen::render`), `edlevelall.obj` and
-    `nu3d_platform_pc.obj`. For `shop.obj` it is one id off (`SubItemMenu`
+    `nu3d_platform.obj`. For `shop.obj` it is one id off (`SubItemMenu`
     there, `DrawSubItems` in the split).
 
   `#pragma once` instead of guards changes nothing. A byte-neutral step 1

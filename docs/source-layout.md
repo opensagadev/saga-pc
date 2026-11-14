@@ -337,7 +337,7 @@ into a target file in retail order and rewrites `config/*.json` owners.
    set did not change. Rules learnt:
    - An empty function that retail folded onto a compiland's leading RET
      (the `*_diagnostic_pc.c`/`*_diagnostic.c` files, `texanim_scripts.c`,
-     `rtl_empty_pc.c`, the `nudebug.c` and `pc_fmv_leaves.cpp` leaves,
+     `rtl_empty.c`, the `nudebug.c` and `pc_fmv_leaves.cpp` leaves,
      `NuMainTrailerLeafPc`) must stay in another file: visible to its callers,
      VC8 drops the calls (`Levels_ConfigureList` 83.9% -> 76.8%).
    - VC8 inlines a function defined later in the same file, so a stray of

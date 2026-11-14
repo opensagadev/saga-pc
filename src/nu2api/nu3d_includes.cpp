@@ -2,8 +2,8 @@
 // nuportal, numtl, nutimebar, nudlist, nupostfilter, nulgtlaser, nutex_pc, nuframe, nuvport, nuprim, nudlist_pc,
 // nutrig, posteffect_ports_pc, nudynamiclight, nuspline, nutex, nuspecial_shadow_pc, nuqfnt_print, nughg,
 // nuocclusion, nuvisibility, nuspecial, nucore, nuhgobj, nupostdeferred, nufrustum_pc, the nuqfnt system font
-// block and the nu3d post-blur helpers of nudlist_material_pc.
-// The PS/Pc halves live in the platform unit, nu3d_platform_pc.cpp.
+// block and the nu3d post-blur helpers of nudlist_material.
+// The PS/Pc halves live in the platform unit, nu3d_platform.cpp.
 // nufloat, numtx, nuhtml and nustateanim stay separate: merged, their small leaves inline into nu3d callers
 // that the original compiles as calls (NuFsqrt, NuMtxMulH, NuHtmlFlushPc, StateAnimEvaluate2).
 // StateAnimEvaluate itself is defined here: it keeps x87 and edx live across its call to
@@ -9587,7 +9587,7 @@ extern "C" {
 
 } // extern "C"
 
-// ---- nudlist (generic display-list code; the PS/Pc half is in nu3d_platform_pc.cpp) ----
+// ---- nudlist (generic display-list code; the PS/Pc half is in nu3d_platform.cpp) ----
 
 extern "C" {
     static i32 PCMaterialBlockItemCount = 8;
@@ -11682,7 +11682,7 @@ extern "C" void NuDisplayListBurstRndrSpecial(nuhspecial_s *handle, u32 count, N
     }
 }
 
-// ---- nupostfilter (generic post-filter code; the PC members are in nu3d_platform_pc.cpp) ----
+// ---- nupostfilter (generic post-filter code; the PC members are in nu3d_platform.cpp) ----
 
 /* The reset clears these three adjacent flags together. */
 STATIC_ASSERT(offsetof(NuMainFilterGen, bloom_enabled) == offsetof(NuMainFilterGen, dof_enabled) + sizeof(bool));
@@ -13319,7 +13319,7 @@ extern "C" f32 NuPostEffectTiming(i32 *last_frame) {
     return 0.0f;
 }
 
-/* nulgtlaser's nu3d forwarders; the laser renderer itself is in nu3d_platform_pc.cpp. */
+/* nulgtlaser's nu3d forwarders; the laser renderer itself is in nu3d_platform.cpp. */
 extern "C" {
     void NuVec4ScaleXYZVU0(NUVEC4 *, NUVEC4 *, f32);
     i32 NuRndrBeginSceneEx(i32, i32, i32);
@@ -13345,7 +13345,7 @@ extern "C" {
     }
 } // extern "C"
 
-/* nutex_pc's two nu3d texture helpers; the rest of nutex_pc is in nu3d_platform_pc.cpp. */
+/* nutex_pc's two nu3d texture helpers; the rest of nutex_pc is in nu3d_platform.cpp. */
 
 extern "C" {
     extern u32 PCGraphicsPostEffectWidthPc;
@@ -13440,7 +13440,7 @@ extern "C" {
 } // extern "C"
 
 /* nuvport's nu3d half; the grab tiles, scaling template and NuVpInit/NuVpUpdate are in
- * nu3d_platform_pc.cpp. */
+ * nu3d_platform.cpp. */
 extern "C" {
     void NuVpSetIdentityPc(NUMTX *matrix) {
         if (matrix != NULL) {
@@ -13667,7 +13667,7 @@ extern "C" {
     }
 } // extern "C"
 
-/* nuprim's nu3d material linker; the packet builders are in nu3d_platform_pc.cpp. */
+/* nuprim's nu3d material linker; the packet builders are in nu3d_platform.cpp. */
 typedef struct nuprim_command_pc_s { // size 0x10
     u8 type;                         // 0x0
     u8 id;                           // 0x1
@@ -19413,7 +19413,7 @@ extern "C" PC_DISPLAY_ITEM_HANDLER_PC PCDisplayShadowItemHandlersPc[49] = {NuDis
                                                                            NULL};
 #pragma data_seg()
 
-/* nudlist_material_pc */
+/* nudlist_material */
 extern "C" {
     extern POST_SHADER_PROGRAM_PC *PostBlur7x7ProgramPc;
     extern POST_SHADER_PROGRAM_PC *PostCopyAuxProgramPc;

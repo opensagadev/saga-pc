@@ -54,7 +54,7 @@ the globals live in their owning compilands (layout migration, then batch 9).
 | `noinline` | 367 | 66 | chris.cpp 61, move.c 39, aisysall.c 36, pc_device.cpp 24, cutscene_lifecycle.c 20 | sensitive |
 | `forceinline` | 36 | 23 | aisysall.c 8 | sensitive |
 | `inline-keyword` (`__inline`) | 29 | 16 | edpp.c 9 | ok (VC8 C has no `inline`) |
-| `asm` | 3 | 2 | cpu_features.cpp (cpuid, `orps`), nu3d_platform_pc.cpp | ok (retail CPU checks) |
+| `asm` | 3 | 2 | cpu_features.cpp (cpuid, `orps`), nu3d_platform.cpp | ok (retail CPU checks) |
 | `volatile-local` | 4 | 3 | screen.cpp 2 (`volatile f32` pulse), panel.c (`time_spill`), shader_dictionary.cpp | stays (marked) |
 | `volatile-other` | 37 | 9 | saga.h 11, data.cpp 10, debug units | ok (thread-shared data, Debug) |
 | `register` | 0 | | | |
@@ -79,19 +79,19 @@ dropping it is codegen-neutral cosmetics and low priority.
 | `dummy` (dummy/sink names, `x = x;`) | 26 | 7 | dsplay_bink.cpp 7, edanim_load.c 6, move.c 6 | sensitive |
 | `void-cast` (`(void)name;`) | 1,254 | 121 | aisysall.c 301, gameaiscript.c 247 | block (unused-parameter noise; neutral) |
 | `ptr-int-cast` | 55 | 15 | nu3d_includes.cpp 16, gcutscn.c 7 | sensitive |
-| `raw-offset` (`(u8 *)p + 0x50`) | 11 | 7 | aisysall.c 4, nu3d_platform_pc.cpp 2 | block (CONTRIBUTING forbids byte-offset casts) |
+| `raw-offset` (`(u8 *)p + 0x50`) | 11 | 7 | aisysall.c 4, nu3d_platform.cpp 2 | block (CONTRIBUTING forbids byte-offset casts) |
 | `view-type` / `view-use` (`*_VIEW_PC`, `*_VIEW`) | 198 / 1,465 | 54 / 80 | saga.h 48/246, nu3d_includes.cpp 13/206, menu.c, players.c | sensitive |
 | `assert-offsetof-header` | 4,714 | 2 | saga.h 4,698, pc_fmv_native.h 16 | see section 6 |
-| `assert-offsetof-unit` | 6,609 | 203 | nu3d_includes.cpp 384, players.c 368, aisysall.c 328, nu3d_platform_pc.cpp 286 | block (overlay scaffolding) |
+| `assert-offsetof-unit` | 6,609 | 203 | nu3d_includes.cpp 384, players.c 368, aisysall.c 328, nu3d_platform.cpp 286 | block (overlay scaffolding) |
 | `assert-sizeof` | 1,804 | 180 | saga.h 751, nu3d_includes.cpp 74, edlevelall.cpp 55 | see section 6 |
 | `placeholder-field` (`field_0x14`, `unknown_102`, `pad_`) | 9,785 | 232 | saga.h 1,689, move.c 737, rtl.c 531 | block (naming; neutral) |
 | `hex-name` (`TextIdPc8808e4`, `FUN_`, `data_0x`) | 12,063 | 110 | data.cpp 8,105, text_tables.cpp 1,482, ai_registry_pc.c 717, saga.h 335 | block (naming; neutral) |
-| `candidate-name` (`_candidate`) | 439 | 63 | nu3d_includes.cpp 45, saga.h 41, nu3d_platform_pc.cpp 31 | block (naming; neutral) |
+| `candidate-name` (`_candidate`) | 439 | 63 | nu3d_includes.cpp 45, saga.h 41, nu3d_platform.cpp 31 | block (naming; neutral) |
 | `pc-suffix` (accepted, count only) | 52,581 | 323 | saga.h 8,981 | ok |
 | `comment-draft` (`SOURCE DRAFT ONLY`) | 2 | 2 | aisysall.c, rtl.c | block |
 | `comment-todo` | 1 | 1 | pc_input.cpp | ok |
 | `comment-retail` | 459 | 202 | nu3d_includes.cpp 23, edlevelall.cpp 20 | block where it narrates matching; ok as rationale |
-| `comment-address` | 813 | 148 | levels.cpp 588 (a table), nu3d_platform_pc.cpp 9 | block (addresses belong in config/symbols.csv) |
+| `comment-address` | 813 | 148 | levels.cpp 588 (a table), nu3d_platform.cpp 9 | block (addresses belong in config/symbols.csv) |
 
 ### d. Macros and declarations
 
@@ -474,8 +474,8 @@ House rule:
 
 Today: 13,127 assert lines. `offsetof` 11,323 (saga.h 4,698 = 41%; units
 6,609 in 203 files, top nu3d_includes.cpp 384, players.c 368, aisysall.c 328,
-nu3d_platform_pc.cpp 286); `sizeof` 1,804 (saga.h 751 = 42%; nu3d_includes.cpp
-74, edlevelall.cpp 55, nu3d_platform_pc.cpp 50). saga.h holds 5,454 (42%).
+nu3d_platform.cpp 286); `sizeof` 1,804 (saga.h 751 = 42%; nu3d_includes.cpp
+74, edlevelall.cpp 55, nu3d_platform.cpp 50). saga.h holds 5,454 (42%).
 
 Grammar (one required comment per field and per struct, checked by a tool;
 format revised 2026-11-14, see below):

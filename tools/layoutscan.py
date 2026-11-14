@@ -122,7 +122,7 @@ REVIEW = {
                    why="TCS only; Android customise.c; alphabetical position fits; the three CustomiserMtx* "
                    "statics are called only by CustomiserMenu_Update, so customise starts with them"),
     0x4238d0: dict(name="customise", join=True, why="continues 0x423670"),
-    0x458470: dict(name=None, why="marker; status screen code (Android status_alternate_pc invented); "
+    0x458470: dict(name=None, why="marker; status screen code (Android status_alternate invented); "
                    "alphabetically gamehint < ? < gamestatus"),
     0x45e350: dict(name="gamestatus", conf="medium",
                    why="marker; Batman gamestatus_batman (1 vote); TCS name assumed without the _batman suffix"),
