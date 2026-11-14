@@ -23,3 +23,4 @@ config/oddscan-budget.json magic-bound 1639 existing literals the textual scan s
 config/oddscan-budget.json magic-flag 7501 existing literals the textual scan sees once the redundant cast in front of the field access is gone (docs/cast-audit.md)
 config/oddscan-budget.json magic-mask 1185 existing literals the textual scan sees once the redundant cast in front of the field access is gone (docs/cast-audit.md)
 config/oddscan-budget.json magic-state 8625 existing literals the textual scan sees once the redundant cast in front of the field access is gone (docs/cast-audit.md)
+config/castscan-budget.json declaration-type 1727 15 casts change class (int-pointer -7, signedness -6, byte-pointer -2): the offsetof asserts of the unit layout conversion no longer count as uses of their declarations
