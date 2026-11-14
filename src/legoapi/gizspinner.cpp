@@ -102,8 +102,6 @@ extern "C" {
     extern const char GizmoRegistrySpinnerNamePc[8];
     extern char TextInputKeyNameTextPc7516c0[1];
     extern char SpinnerOutputBufferPc[14];
-    extern const char SpinnerCompleteSuffixPc[12];
-    extern const char SpinnerAllCompletePc[15];
     extern const f64 GameObjectNearFloorNoFloorHeight;
     i32 MatrixReflectionVU0_AXISY(NUMTX *, f32, f32, NUMTX *);
     nuhspecial_s thingsSceneArm = {0};
@@ -539,11 +537,11 @@ extern "C" char *GizSpinner_GetOutputName(void *gizmo, i32 output) {
         f32 fraction = (f32)output / (spinner->output_count - 1);
         f32 percentage = (f64)fraction * 100.0;
         NuIToA((i32)percentage, SpinnerOutputBufferPc, 10);
-        NuStrCat(SpinnerOutputBufferPc, (char *)SpinnerCompleteSuffixPc);
+        NuStrCat(SpinnerOutputBufferPc, "%% Complete");
         return SpinnerOutputBufferPc;
     }
     if (spinner->output_count != 0) {
-        NuStrCpy(SpinnerOutputBufferPc, (char *)SpinnerAllCompletePc);
+        NuStrCpy(SpinnerOutputBufferPc, "100%% Complete");
         return SpinnerOutputBufferPc;
     }
     NuStrCpy(SpinnerOutputBufferPc, TextInputKeyNameTextPc7516c0);

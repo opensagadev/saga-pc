@@ -574,8 +574,6 @@ extern u16 TerrainWaterCastIndexPc;
 extern u16 TerrainRoofValidPc;
 extern i16 TerrainRoofIndexPc;
 extern NUVEC TerrainRoofNormalPc;
-extern const f64 TerrainScanRadiusEpsilon;
-extern const f32 TerrainScanTriangleSentinel;
 extern const f32 TerrainCastLowerSentinel;
 /* Existing canonical globals: CurrentTerrain(void*), ShadPoly,
  * EShadPoly, ShadRoofPoly, EShadY,
@@ -922,7 +920,7 @@ void NewScanRot(NUVEC *position, i32 terrain_mask) {
                 }
                 dz = (min_z + max_z) * NuQFntHalfScale - group->origin.z;
                 dx = (max_x + min_x) * NuQFntHalfScale - group->origin.x;
-                reach = group->radius + TerrainScanRadiusEpsilon;
+                reach = group->radius + 9.999999747378752e-06;
                 distance_squared = dx * dx + dz * dz;
                 if (!(reach * reach > distance_squared)) {
                     continue;
@@ -1025,7 +1023,7 @@ void NewScanRot(NUVEC *position, i32 terrain_mask) {
                             transformed->normals[1].y *= inverse;
                             transformed->normals[1].z *= inverse;
                         } else {
-                            transformed->normals[1].y = TerrainScanTriangleSentinel;
+                            transformed->normals[1].y = 65536.0f;
                         }
                         vertices[0].x = transformed->vertices[2].x - transformed->vertices[0].x;
                         vertices[0].y = transformed->vertices[2].y - transformed->vertices[0].y;
@@ -1646,7 +1644,7 @@ void *TerrainInitEx(i32 level_num, void *buf, void *buf_end, i32 options, char *
 
     kBoundsMinimum = -200000000.0f;
     kBoundsMaximum = 200000000.0f;
-    kSteepNormalY = TerrainSteepNormalYPc;
+    kSteepNormalY = 0.707f;
 
     terrain->minimum_height = INT_MAX;
 

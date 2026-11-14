@@ -85,11 +85,7 @@ typedef struct tightrope_movement_pc_s {
     u16 rotation;
 } TIGHTROPE_MOVEMENT_PC;
 
-extern "C" {
-#pragma const_seg(".rdata$PCContextName_TightRope")
-    const char PCContextName_TightRope[10] = "TightRope";
-#pragma const_seg()
-}
+extern "C" {}
 extern "C" {
 
     i32 TightRopes_Load(WORLDINFO *world, void *unused) {
@@ -394,7 +390,7 @@ extern "C" {
     }
 
 #pragma data_seg(".data$TightRopeRegistryNamePc")
-    char *TightRopeRegistryNamePc = (char *)PCContextName_TightRope;
+    char *TightRopeRegistryNamePc = "TightRope";
 #pragma data_seg()
 #pragma data_seg(".data$TightRopeAddTypePc")
     ADDGIZMOTYPE_PC TightRopeAddTypePc = {0};
@@ -716,7 +712,7 @@ extern "C" {
         if (fraction > 1.0f) {
             fraction = 1.0f;
         }
-        amplitude = NuQFntHalfScale * NuTrigTable[(((i32)(fraction * PlayerTightRopePhasePc)) >> 1) & 0x7fff];
+        amplitude = NuQFntHalfScale * NuTrigTable[(((i32)(fraction * 32768.0)) >> 1) & 0x7fff];
         object->target_velocity.x +=
             (qrand() * PlayerRandomScalePc - NuQFntHalfScale) * amplitude * NuTrigTable[rotation >> 1];
         object->target_velocity.y -= qrand() * PlayerRandomScalePc * amplitude;

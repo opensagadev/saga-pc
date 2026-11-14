@@ -2649,14 +2649,6 @@ extern "C" {
         return 0;
     }
 
-    const char BlowupSpawnWompratScriptPc[16] = "spawned_womprat";
-    const char BlowupBinNamePc[4] = "bin";
-    const char BlowupBinLidNamePc[8] = "bin_lid";
-    const char BlowupSpawnSpiderScriptPc[14] = "blowup_spider";
-    const char BlowupWebNamePc[4] = "web";
-    const char BlowupBushNamePc[5] = "bush";
-    const char BlowupWompratGeneratorNamePc[9] = "womp_gen";
-
     void GameBlowUpBlownUpFn_LSW(void *blowup_pointer) {
         GIZMOBLOWUP_PC *blowup = (GIZMOBLOWUP_PC *)blowup_pointer;
         char *name;
@@ -2665,13 +2657,13 @@ extern "C" {
         }
         if (WORLD->area == MOSEISLEY_ADATA || WORLD->area == HUB_ADATA) {
             name = NuSpecialGetName(&blowup->type->animated_special);
-            if (name == NULL || NuStrIStr(name, (char *)BlowupBinLidNamePc) != NULL ||
-                NuStrIStr(name, (char *)BlowupBinNamePc) == NULL || qrand() / 656 >= 75) {
+            if (name == NULL || NuStrIStr(name, "bin_lid") != NULL || NuStrIStr(name, "bin") == NULL ||
+                qrand() / 656 >= 75) {
                 return;
             }
         } else if (WORLD->area == TATOOINE_ADATA) {
             name = NuSpecialGetName(&blowup->type->animated_special);
-            if (name == NULL || NuStrIStr(name, (char *)BlowupWompratGeneratorNamePc) == NULL) {
+            if (name == NULL || NuStrIStr(name, "womp_gen") == NULL) {
                 return;
             }
         } else if (WORLD->area == LOSTTEMPLE_ADATA) {
@@ -2679,23 +2671,22 @@ extern "C" {
                 return;
             }
             name = NuSpecialGetName(&blowup->type->animated_special);
-            if (name == NULL || (NuStrIStr(name, (char *)BlowupBushNamePc) == NULL &&
-                                 NuStrIStr(name, (char *)BlowupWebNamePc) == NULL)) {
+            if (name == NULL || (NuStrIStr(name, "bush") == NULL && NuStrIStr(name, "web") == NULL)) {
                 return;
             }
-            AddDynamicCreature(ZipUpLineCharacterIdPc, &blowup->position, 0, (char *)BlowupSpawnSpiderScriptPc, NULL,
-                               NULL, 1, NULL, NULL, 0, 16);
+            AddDynamicCreature(ZipUpLineCharacterIdPc, &blowup->position, 0, "blowup_spider", NULL, NULL, 1, NULL, NULL,
+                               0, 16);
             return;
         } else {
             return;
         }
-        AddDynamicCreature(CharacterFixupIdPc007f18c4, &blowup->position, 0, (char *)BlowupSpawnWompratScriptPc, NULL,
-                           NULL, 1, NULL, NULL, 0, 16);
+        AddDynamicCreature(CharacterFixupIdPc007f18c4, &blowup->position, 0, "spawned_womprat", NULL, NULL, 1, NULL,
+                           NULL, 0, 16);
     }
 
     void GizObstacle_SetDefaultSFXFn_LSW(void *world, GIZOBSTACLE *obstacle) {
         if (obstacle->mode == 2 && obstacle->trigger_radius < 0.25f) {
-            obstacle->start_sfx_id = (i16)GetSfxId((char *)GetSfxSwPPadName);
+            obstacle->start_sfx_id = (i16)GetSfxId("SwPPad");
         }
     }
 

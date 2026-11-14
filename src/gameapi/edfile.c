@@ -3988,7 +3988,6 @@ char FileSelFilterOutBlocksPc[8][12] = {0};
 i32 FileSelFilterBlockCountPc = 0;
 i32 FileSelFilterOutBlockCountPc = 0;
 char FileSelVolumeNamesPc[1024] = {0};
-const char FileSelParentNamePc[3] = "..";
 char FS_ParentEntry[8] = "D######";
 char *FS_FileListEnd = FS_FileList;
 
@@ -4380,7 +4379,7 @@ void FS_GetDirList(char *path, char *filter, char *filter_out) {
     } else {
         directory = NuFileOpenDir(path);
         PCByteCopy(FS_FileList, FS_ParentEntry, 7);
-        NuStrCpy(FS_FileList + 7, FileSelParentNamePc);
+        NuStrCpy(FS_FileList + 7, "..");
         ++FS_NumFiles;
         next = FS_FileList + 10;
         if (directory != 0) {

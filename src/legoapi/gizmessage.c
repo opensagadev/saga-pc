@@ -44,7 +44,7 @@ GIZAIMESSAGE *CheckGizAIMessage(GIZAIMESSAGESYS *sys, const char *name, GIZAIMES
                 if (NuStrLen(name) + NuStrLen(gizaimessage_prefix) + 1 >= (i32)sizeof(local)) {
                     return NULL;
                 }
-                sprintf(local, GizAIMessage_PrefixedNameFormat, gizaimessage_prefix, name);
+                sprintf(local, "%s%s", gizaimessage_prefix, name);
             }
 
             for (node = NuLinkedListGetHead(&sys->active_list); node != NULL;

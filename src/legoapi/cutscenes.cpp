@@ -374,7 +374,6 @@ typedef struct cut_player_config_pc_s {
 extern "C" {
     extern i32 (*CutScenePlayer_AcceptFn)(CUT_PLAYER_CLIP_CONFIG_PC *);
     extern const char Text_UnknownText[2];
-    extern const char CutPlayerClipFormatPc[8];
     extern const char CutPlayerTextSeparatorPc[4];
 }
 
@@ -2169,7 +2168,7 @@ extern "C" {
             if (CutScenePlayer->clip_text != NULL) {
                 sprintf(title, TTab[*CutScenePlayer->clip_text], id + 1);
             } else {
-                sprintf(title, CutPlayerClipFormatPc, id + 1);
+                sprintf(title, "Clip %i", id + 1);
             }
             if (mode != 0) {
                 clips = (CUT_PLAYER_CLIP_CONFIG_PC *)CutScenePlayer->clips;

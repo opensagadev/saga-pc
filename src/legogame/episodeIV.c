@@ -95,10 +95,10 @@ void DeathStarEscapeB_Init(WORLDINFO *world) {
     void *data[2];
     i32 index;
     DeathStarEscapeBNetPacketPc = SetLevelHack(4);
-    LevAIMessage[0] = CheckGizAIMessage(gizaimessagesys, DeathStarEscapeBWindowCleanPc, NULL);
-    NuSpecialFind(world->current_gscn, &LevHSpecial[0], (char *)DeathStarEscapeBLiftUpPc, 1);
-    NuSpecialFind(world->current_gscn, &LevHSpecial[1], (char *)DeathStarEscapeBLiftDownPc, 1);
-    NuSpecialFind(world->current_gscn, &LevHSpecial[2], (char *)DeathStarEscapeBSpongePc, 1);
+    LevAIMessage[0] = CheckGizAIMessage(gizaimessagesys, "WindowClean", NULL);
+    NuSpecialFind(world->current_gscn, &LevHSpecial[0], "lift_up", 1);
+    NuSpecialFind(world->current_gscn, &LevHSpecial[1], "lift_down", 1);
+    NuSpecialFind(world->current_gscn, &LevHSpecial[2], "sponge", 1);
     fakeanimendframe[0] = 0.0f;
     for (index = 0; index < 2; ++index) {
         animation[index] = NuSpecialGetInstAnim(&LevHSpecial[index]);
@@ -121,10 +121,10 @@ void DeathStarEscapeB_Update(WORLDINFO *world) {
         DeathStarEscapeBNetPacketPc[0] = (i8)LevAIMessage[0]->value;
     }
     if (LevGameObject[0] == NULL && DeathStarEscapeBNetPacketPc[0] == 0) {
-        LevGameObject[0] = GetNamedGameObject(world->ai_sys, (char *)DeathStarEscapeBWasher1Pc);
+        LevGameObject[0] = GetNamedGameObject(world->ai_sys, "WASHER_1");
     }
     if (LevGameObject[1] == NULL && DeathStarEscapeBNetPacketPc[0] == 0) {
-        LevGameObject[1] = GetNamedGameObject(world->ai_sys, (char *)DeathStarEscapeBWasher2Pc);
+        LevGameObject[1] = GetNamedGameObject(world->ai_sys, "WASHER_2");
     }
     for (index = 0; index < 2; ++index) {
         animation[index] = NuSpecialGetInstAnim(&LevHSpecial[index]);

@@ -28,7 +28,6 @@ class Fade;
 class FadeWipe;
 class FadeStillWipe;
 class FadeStill;
-extern "C" const char MoviesListPathPc[18];
 extern "C" {
     extern FADEINFO_s *pFadeInfo;
     extern Fade fade;
@@ -99,11 +98,11 @@ extern "C" {
             i32 pal = NuRegionGet() != 2;
             NuStrCpy(name, PermLegalBase);
             if (!pal && (Text_Language == 1 || Text_Language == 0x12)) {
-                NuStrCat(name, PermLegalUS);
+                NuStrCat(name, "_us");
             } else if (!pal && Text_Language == 2) {
-                NuStrCat(name, PermLegalFrench);
+                NuStrCat(name, "_usfrench");
             } else if (!pal && Text_Language == 3) {
-                NuStrCat(name, PermLegalSpanish);
+                NuStrCat(name, "_usspanish");
             } else {
                 NuStrCat(name, PermLegalSeparator);
                 NuStrCat(name, Text_GetLanguagePath(Text_Language));
@@ -131,7 +130,7 @@ extern "C" {
                 NuStrCat(path, name);
             } else {
                 NuStrCpy(path, PermLegalDirectoryPc);
-                NuStrCat(path, PermLegalPcPrefixPc);
+                NuStrCat(path, "pc\\pc_");
                 NuStrCat(path, PermLegalBase);
                 if (PAL != 0 || (Text_Language != 1 && Text_Language != 0x12)) {
                     NuStrCat(path, PermLegalSeparator);
@@ -314,7 +313,7 @@ extern "C" {
                 Alt_registerStatusScreenExtraPc();
             }
 
-            Movies_ConfigureList((char *)MoviesListPathPc, &permbuffer_ptr, &permbuffer_end);
+            Movies_ConfigureList("movies\\movies.txt", &permbuffer_ptr, &permbuffer_end);
             SetProceduralAnimationFn(NuAnimBuffProceduralAnimation);
             CDataList = ConfigureCharacterList("chars\\chars.txt", &permbuffer_ptr, &permbuffer_end, 0x154, &CHARCOUNT,
                                                0x120, &GCDataList);
@@ -338,16 +337,15 @@ extern "C" {
             PlayerID[1] = id_DEFAULTCHARACTER[1];
             CharVariants_Init(StartupCharVariantNamesPc, 0x17);
 
-            LDataList = Levels_ConfigureList((char *)LoadPermLevelsPath, &permbuffer_ptr, &permbuffer_end, 0x16d,
-                                             &LEVELCOUNT, Level_SetDefaults);
+            LDataList = Levels_ConfigureList("levels\\levels.txt", &permbuffer_ptr, &permbuffer_end, 0x16d, &LEVELCOUNT,
+                                             Level_SetDefaults);
             FixUpLevels(LevelFixupStartupPc);
 
-            ADataList =
-                Areas_ConfigureList((char *)LoadPermAreasPath, &permbuffer_ptr, &permbuffer_end, 0x48, &AREACOUNT);
+            ADataList = Areas_ConfigureList("levels\\areas.txt", &permbuffer_ptr, &permbuffer_end, 0x48, &AREACOUNT);
             FixUpAreas();
 
-            EDataList = Episodes_ConfigureList((char *)LoadPermEpisodesPath, &permbuffer_ptr, &permbuffer_end, 6,
-                                               &EPISODECOUNT);
+            EDataList =
+                Episodes_ConfigureList("levels\\episodes.txt", &permbuffer_ptr, &permbuffer_end, 6, &EPISODECOUNT);
 
             NewGame();
             InitGameAfterConfig();

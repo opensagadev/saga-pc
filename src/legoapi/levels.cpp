@@ -87,7 +87,7 @@ extern "C" {
             }
 
             if (in_level_config) {
-                if (NuStrICmp(parser->word_buffer_ptr, LevelConfigKeywordEnd) == 0) {
+                if (NuStrICmp(parser->word_buffer_ptr, "level_end") == 0) {
                     in_level_config = 0;
                     if (current_level->dir[0] == '\0' || current_level->name[0] == '\0' ||
                         (current_level->flags & 0x200) != 0) {
@@ -116,24 +116,24 @@ extern "C" {
                     }
                 }
 
-                if (NuStrICmp(parser->word_buffer_ptr, LevelConfigKeywordTest) == 0) {
+                if (NuStrICmp(parser->word_buffer_ptr, "test_level") == 0) {
                     current_level->flags |= 0x200;
-                } else if (NuStrICmp(parser->word_buffer_ptr, LevelConfigKeywordIntro) == 0) {
+                } else if (NuStrICmp(parser->word_buffer_ptr, "intro_level") == 0) {
                     current_level->flags |= 0x20;
-                } else if (NuStrICmp(parser->word_buffer_ptr, LevelConfigKeywordMidtro) == 0 ||
-                           NuStrICmp(parser->word_buffer_ptr, LevelConfigKeywordCutscene) == 0) {
+                } else if (NuStrICmp(parser->word_buffer_ptr, "midtro_level") == 0 ||
+                           NuStrICmp(parser->word_buffer_ptr, "cutscene_level") == 0) {
                     current_level->flags |= 0x40;
-                } else if (NuStrICmp(parser->word_buffer_ptr, LevelConfigKeywordOutro) == 0) {
+                } else if (NuStrICmp(parser->word_buffer_ptr, "outro_level") == 0) {
                     current_level->flags |= 0x80;
-                } else if (NuStrICmp(parser->word_buffer_ptr, LevelConfigKeywordStatus) == 0) {
+                } else if (NuStrICmp(parser->word_buffer_ptr, "status_level") == 0) {
                     current_level->flags &= ~0x2u;
                     current_level->flags &= ~0x8u;
                     current_level->flags |= 0x400;
-                } else if (NuStrICmp(parser->word_buffer_ptr, LevelConfigKeywordNewGame) == 0) {
+                } else if (NuStrICmp(parser->word_buffer_ptr, "newgame_level") == 0) {
                     if (NEWGAME_LDATA == NULL) {
                         current_level->flags |= 0x10000;
                     }
-                } else if (NuStrICmp(parser->word_buffer_ptr, LevelConfigKeywordLoadGame) == 0) {
+                } else if (NuStrICmp(parser->word_buffer_ptr, "loadgame_level") == 0) {
                     if (LOADGAME_LDATA == NULL) {
                         current_level->flags |= 0x20000;
                     }
@@ -141,7 +141,7 @@ extern "C" {
                 continue;
             }
 
-            if (NuStrICmp(parser->word_buffer_ptr, LevelConfigKeywordStart) == 0 && level_count < MAXLDATA) {
+            if (NuStrICmp(parser->word_buffer_ptr, "level_start") == 0 && level_count < MAXLDATA) {
                 i32 i;
 
                 current_level->dir[0] = '\0';
@@ -298,7 +298,7 @@ extern "C" {
     }
 
     void LevelConfig_BeforeLoad(LEVELDATA_PC *level, char *buffer, NUFPCOMJMP *keywords) {
-        NUFPAR_PC *parser = NuFParCreateMem((char *)LevelBeforeLoadName, buffer, 0xffff);
+        NUFPAR_PC *parser = NuFParCreateMem("levelbeforeload", buffer, 0xffff);
 
         if (parser == NULL) {
             return;
@@ -432,7 +432,7 @@ extern "C" {
 
     void LC_AL_hidden_icons(NUFPAR_PC *parser) {
         if (NuFParGetWord(parser) != 0) {
-            if (NuStrICmp(parser->word_buffer_ptr, LevelConfigOn) == 0) {
+            if (NuStrICmp(parser->word_buffer_ptr, "on") == 0) {
                 levelconfig_ldata->flags &= ~0x800000u;
                 return;
             }
@@ -581,16 +581,16 @@ extern "C" {
 
     void LC_AL_conveyor(NUFPAR_PC *parser) {
         while (NuFParGetWord(parser) != 0) {
-            if (NuStrICmp(parser->word_buffer_ptr, LevelConfigKeyword_xspeed) == 0) {
+            if (NuStrICmp(parser->word_buffer_ptr, "xspeed") == 0) {
                 levelconfig_ldata->conveyor_x_speed = NuFParGetFloat(parser);
-            } else if (NuStrICmp(parser->word_buffer_ptr, LevelConfigKeyword_zspeed) == 0) {
+            } else if (NuStrICmp(parser->word_buffer_ptr, "zspeed") == 0) {
                 levelconfig_ldata->conveyor_z_speed = NuFParGetFloat(parser);
             }
         }
     }
 
     void LevelConfig_AfterLoad(LEVELDATA_PC *level, char *buffer, NUFPCOMJMP *keywords) {
-        NUFPAR_PC *parser = NuFParCreateMem((char *)LevelAfterLoadName, buffer, 0xffff);
+        NUFPAR_PC *parser = NuFParCreateMem("levelafterload", buffer, 0xffff);
 
         if (parser == NULL) {
             return;
@@ -663,10 +663,10 @@ extern "C" {
             if (levspl_i_start != -1) {
                 name[0] = '\0';
                 if (Mission_Active(NULL) != NULL) {
-                    NuStrCpy(name, RenderSplineBountyStartPc);
+                    NuStrCpy(name, "bounty_start");
                 } else if (world->area_index != -1 && (ADataList[world->area_index].flags & 0x40) &&
                            RenderHubFromCutscenePlayerPc != 0) {
-                    NuStrCpy(name, RenderSplineShopStartPc);
+                    NuStrCpy(name, "shop_start");
                 }
                 if (name[0] != '\0') {
                     spline = NuSplineFind(scene, name);
@@ -912,7 +912,7 @@ extern "C" {
         i32 bytes_read;
 
         ConfigBuffer.bytes[0] = '\0';
-        sprintf(name, WorldLevelConfigFormat, world->config_file);
+        sprintf(name, "%s.txt", world->config_file);
         world->giz_buffer.addr = (world->giz_buffer.addr + 3) & ~3U;
         bytes_read = NuFileLoadBuffer(name, world->giz_buffer.void_ptr, 0x10000);
         world->config_count = bytes_read;

@@ -337,13 +337,9 @@ void PC_SHADER_PARAMETER_LOCAL_PC::SetValues(i32 first_element, i32 count, const
 }
 
 extern "C" const f32 PCSamplerBiasMinimum;
-extern "C" const f32 PCSamplerBiasMaximum;
-extern "C" const f64 PCSamplerBiasMaximumComparison;
 
 extern "C" u32 PCShaderSamplerBiasBitsPc(f32 bias) {
-    f32 value = PCSamplerBiasMinimum > bias             ? PCSamplerBiasMinimum
-                : bias > PCSamplerBiasMaximumComparison ? PCSamplerBiasMaximum
-                                                        : bias;
+    f32 value = PCSamplerBiasMinimum > bias ? PCSamplerBiasMinimum : bias > 15.96875 ? 15.96875f : bias;
     return *reinterpret_cast<u32 *>(&value);
 }
 

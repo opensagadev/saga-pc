@@ -2,8 +2,6 @@
 
 /* Retail unit 0x4cadb0-0x4cc8bc: definitions in retail address order. */
 
-extern const char StarWarsStairsTopPc[11];
-extern const char StarWarsStairsTop2Pc[12];
 extern f32 StarWarsJumpDistancePc[3];
 STATIC_ASSERT(offsetof(GAMEOBJECT, ai_jump_destination_distance_pc) == 0xed0);
 STATIC_ASSERT(offsetof(GAMEOBJECT, ai_packet) == 0x2c8);
@@ -318,8 +316,8 @@ i32 StarWars_PrepareBigJump(AIPACKET_PC *packet, APIOBJECT_PC *object, i32 check
         return 1;
     }
     if (WORLD->current_level == LevelFixupSlotPc0087b148 && destination->name != NULL &&
-        NuStrICmp(destination->name, (char *)StarWarsStairsTopPc) == 0) {
-        alternate = AIPathFindNode(WORLD->ai_sys, NULL, (char *)StarWarsStairsTop2Pc);
+        NuStrICmp(destination->name, "stairs_top") == 0) {
+        alternate = AIPathFindNode(WORLD->ai_sys, NULL, "stairs_top2");
         if (alternate != NULL) {
             destination = alternate;
         }
@@ -818,8 +816,6 @@ check:
     return 0;
 }
 
-const char StarWarsStairsTopPc[11] = "stairs_top";
-const char StarWarsStairsTop2Pc[12] = "stairs_top2";
 f32 StarWarsJumpDistancePc[3] = {0.8f, 1.2f, 1.5f};
 AI_MID_SPECIAL_MOVE_PC starwars_midspecialmovefns[4] = {
     StarWars_MidSpecialMove_Default,

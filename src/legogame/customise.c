@@ -616,7 +616,6 @@ i32 Customise_GetToggleString(i32 index) {
 static i32 CustomiseMenuYPc[2] = {0};
 static i32 CustomiseNameXPc[2] = {0};
 static i32 CustomiseNameYPc[2] = {0};
-static const char CustomiserBadWordReplacementPc[9] = "Stranger";
 
 /* 00424810..004252bc: PC control returns its quit decision to the wrapper. */
 i32 CustomiserMenu_Update(void) {
@@ -852,8 +851,7 @@ i32 CustomiserMenu_Update(void) {
                             Game.customiser_start[side].name[last + 1] = 0;
                         }
                         if (NuStringFilterBadWords((u8 *)Game.customiser_start[side].name,
-                                                   (u8 *)Game.customiser_start[side].name,
-                                                   (u8 *)CustomiserBadWordReplacementPc) != 0) {
+                                                   (u8 *)Game.customiser_start[side].name, (u8 *)"Stranger") != 0) {
                             NuStrCpy(Game.customiser_start[side].name, Game.customiser_start[side].name + 16);
                         }
                     } else {
@@ -1299,8 +1297,6 @@ void Customiser_Draw3D(CUSTOMISER_LAYERS_PC *input) {
     SetLevelLights(world->rtl_set, 1.0f);
 }
 
-static const char CustomiserMenuBackSfxPc[9] = "menuBack";
-
 void MenuUpdateCustomiserPc(MENU *menu) {
     i32 quit;
     (void)menu;
@@ -1318,7 +1314,7 @@ void MenuUpdateCustomiserPc(MENU *menu) {
     if (quit == 0) {
         return;
     }
-    PlaySfx((char *)CustomiserMenuBackSfxPc, NULL);
+    PlaySfx("menuBack", NULL);
     customiser_quit = 1;
     if (GAMEDEMO == 0 && customiser_changed != 0) {
         Hub_ClearStats();

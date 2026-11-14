@@ -1765,20 +1765,9 @@ extern "C" void PcInputStageAuxiliaryConfigPc(i32 port, i32 bank, i32 key) {
 // Append input_runtime.cpp. Native strings/table definitions and mappings in B-save-data.json.
 extern u8 PcInputWriteTextProfiles;
 extern const char *PcInputBindingKindNames[14];
-extern const char PcInputProfileHeader[];
-extern const char PcInputProfileGuidChar[];
-extern const char PcInputProfileGuidEnd[];
-extern const char PcInputProfileNumbers[];
 extern const char PcInputProfileTab[];
 extern const char PcInputProfileAxis[];
-extern const char PcInputProfileAxesEnd[];
-extern const char PcInputProfileUnknownAxesEnd[];
 extern const char PcInputProfileButton[];
-extern const char PcInputProfileButtonsEnd0[];
-extern const char PcInputProfileButtonsEnd1[];
-extern const char PcInputProfileButtonsEnd2[];
-extern const char PcInputProfileButtonsEnd3[];
-extern const char PcInputProfileFileFormat[];
 
 void PC_INPUT_RUNTIME_PC::SanitizeConfigNamePc(const char *name, char *destination) {
     PCByteCopy(destination, name, 63);
@@ -1797,7 +1786,7 @@ void PC_INPUT_RUNTIME_PC::FormatConfigTextPc(char *destination, PC_INPUT_CONFIG_
     char text[256];
     char part[256];
     char character[4];
-    sprintf(text, PcInputProfileHeader, config->name, config->product_id, config->guid_data2, config->guid_data3);
+    sprintf(text, "\t\"%s\",\t0x%x,%d,%d, {", config->name, config->product_id, config->guid_data2, config->guid_data3);
     for (i32 i = 0; i < 8; ++i) {
         u32 c = config->guid_data4[i];
         if (c < 32) {
@@ -1805,14 +1794,14 @@ void PC_INPUT_RUNTIME_PC::FormatConfigTextPc(char *destination, PC_INPUT_CONFIG_
         } else {
             character[0] = (char)c;
             character[1] = 0;
-            sprintf(part, PcInputProfileGuidChar, character);
+            sprintf(part, "'%s'", character);
         }
         strcat(text, part);
-        strcat(text, i < 7 ? "," : PcInputProfileGuidEnd);
+        strcat(text, i < 7 ? "," : "}, //Guid stuff\n");
     }
     NuStrCpy(destination, text);
-    sprintf(text, PcInputProfileNumbers, config->button_count, config->pov_count, config->axis_count,
-            (i16)((u16)config->deadzone | ((u16)config->unknown_5b << 8)),
+    sprintf(text, "\t%d,%d,%d,%d,%d,%d,0,0,\t//NumButtons etc.\n", config->button_count, config->pov_count,
+            config->axis_count, (i16)((u16)config->deadzone | ((u16)config->unknown_5b << 8)),
             (i16)((u16)config->alternate_deadzone | ((u16)config->unknown_5d << 8)), config->key);
     NuStrCat(destination, text);
     NuStrCpy(text, PcInputProfileTab);
@@ -1821,7 +1810,7 @@ void PC_INPUT_RUNTIME_PC::FormatConfigTextPc(char *destination, PC_INPUT_CONFIG_
                 config->axes[i][2]);
         NuStrCat(text, part);
     }
-    NuStrCat(text, PcInputProfileAxesEnd);
+    NuStrCat(text, "//analogue thumb sticks\n");
     NuStrCat(destination, text);
     NuStrCpy(text, PcInputProfileTab);
     for (i32 i = 0; i < 4; ++i) {
@@ -1829,35 +1818,35 @@ void PC_INPUT_RUNTIME_PC::FormatConfigTextPc(char *destination, PC_INPUT_CONFIG_
                 config->unknown_axes[i][1], config->unknown_axes[i][2]);
         NuStrCat(text, part);
     }
-    NuStrCat(text, PcInputProfileUnknownAxesEnd);
+    NuStrCat(text, "//analogue shoulder buttons\n");
     NuStrCat(destination, text);
     NuStrCpy(text, PcInputProfileTab);
     for (i32 i = 0; i < 4; ++i) {
         sprintf(part, PcInputProfileButton, PcInputBindingKindNames[config->buttons[i][0]], config->buttons[i][1]);
         NuStrCat(text, part);
     }
-    NuStrCat(text, PcInputProfileButtonsEnd0);
+    NuStrCat(text, "//l2,r2,l1,r1\n");
     NuStrCat(destination, text);
     NuStrCpy(text, PcInputProfileTab);
     for (i32 i = 4; i < 8; ++i) {
         sprintf(part, PcInputProfileButton, PcInputBindingKindNames[config->buttons[i][0]], config->buttons[i][1]);
         NuStrCat(text, part);
     }
-    NuStrCat(text, PcInputProfileButtonsEnd1);
+    NuStrCat(text, "//rup,rright,rdown,rleft\n");
     NuStrCat(destination, text);
     NuStrCpy(text, PcInputProfileTab);
     for (i32 i = 8; i < 12; ++i) {
         sprintf(part, PcInputProfileButton, PcInputBindingKindNames[config->buttons[i][0]], config->buttons[i][1]);
         NuStrCat(text, part);
     }
-    NuStrCat(text, PcInputProfileButtonsEnd2);
+    NuStrCat(text, "//select,l3,r3,start\n");
     NuStrCat(destination, text);
     NuStrCpy(text, PcInputProfileTab);
     for (i32 i = 12; i < 16; ++i) {
         sprintf(part, PcInputProfileButton, PcInputBindingKindNames[config->buttons[i][0]], config->buttons[i][1]);
         NuStrCat(text, part);
     }
-    NuStrCat(text, PcInputProfileButtonsEnd3);
+    NuStrCat(text, "//lup,lright,ldown,lleft\n");
     NuStrCat(destination, text);
 }
 
@@ -1869,7 +1858,7 @@ void PC_INPUT_RUNTIME_PC::WriteConfigTextPc(const char *directory, PC_INPUT_CONF
         return;
     }
     SanitizeConfigNamePc(config->name, name);
-    sprintf(path, PcInputProfileFileFormat, directory, name, config->key);
+    sprintf(path, "%s%s_v%d.txt", directory, name, config->key);
     FILE *file = PcOpenPlatformFile(path, "", 0, "w");
     if (file != NULL) {
         FormatConfigTextPc(text, config);
@@ -1912,37 +1901,11 @@ extern "C" void PcInputSaveConfigurationPc() {
 
 u8 PcInputAxisRemap[16] = {0};
 u32 PcInputAxisRemapInitialized = 0;
-extern const char PcInputProfileHeader[21] = "\t\"%s\",\t0x%x,%d,%d, {";
-extern const char PcInputProfileGuidChar[5] = "'%s'";
-extern const char PcInputProfileGuidEnd[17] = "}, //Guid stuff\n";
-extern const char PcInputProfileNumbers[43] = "\t%d,%d,%d,%d,%d,%d,0,0,\t//NumButtons etc.\n";
 extern const char PcInputProfileTab[2] = "\t";
 extern const char PcInputProfileAxis[11] = "%s,%d,%d, ";
-extern const char PcInputProfileAxesEnd[25] = "//analogue thumb sticks\n";
-extern const char PcInputProfileUnknownAxesEnd[29] = "//analogue shoulder buttons\n";
 extern const char PcInputProfileButton[8] = "%s,%d, ";
-extern const char PcInputProfileButtonsEnd0[15] = "//l2,r2,l1,r1\n";
-extern const char PcInputProfileButtonsEnd1[26] = "//rup,rright,rdown,rleft\n";
-extern const char PcInputProfileButtonsEnd2[22] = "//select,l3,r3,start\n";
-extern const char PcInputProfileButtonsEnd3[26] = "//lup,lright,ldown,lleft\n";
-extern const char PcInputProfileFileFormat[13] = "%s%s_v%d.txt";
-extern const char PcInputBindingKindName0[7] = "NOTSET";
-extern const char PcInputBindingKindName1[11] = "PADDIGITAL";
-extern const char PcInputBindingKindName2[15] = "PADANALOGUEPOS";
-extern const char PcInputBindingKindName3[15] = "PADANALOGUENEG";
-extern const char PcInputBindingKindName4[13] = "MOUSEDIGITAL";
-extern const char PcInputBindingKindName5[13] = "MOUSEMOVEPOS";
-extern const char PcInputBindingKindName6[13] = "MOUSEMOVENEG";
-extern const char PcInputBindingKindName7[11] = "KEYDIGITAL";
-extern const char PcInputBindingKindName8[14] = "KEYDIGITALPOS";
-extern const char PcInputBindingKindName9[14] = "KEYDIGITALNEG";
-extern const char PcInputBindingKindName10[16] = "KEYANALOGUEPAIR";
-extern const char PcInputBindingKindName11[16] = "PADANALOGUEPAIR";
-extern const char PcInputBindingKindName12[13] = "FORCEDMOUSEX";
-extern const char PcInputBindingKindName13[13] = "FORCEDMOUSEY";
-const char *PcInputBindingKindNames[14] = {PcInputBindingKindName0,  PcInputBindingKindName1,  PcInputBindingKindName2,
-                                           PcInputBindingKindName3,  PcInputBindingKindName4,  PcInputBindingKindName5,
-                                           PcInputBindingKindName6,  PcInputBindingKindName7,  PcInputBindingKindName8,
-                                           PcInputBindingKindName9,  PcInputBindingKindName10, PcInputBindingKindName11,
-                                           PcInputBindingKindName12, PcInputBindingKindName13};
+const char *PcInputBindingKindNames[14] = {"NOTSET",        "PADDIGITAL",    "PADANALOGUEPOS",  "PADANALOGUENEG",
+                                           "MOUSEDIGITAL",  "MOUSEMOVEPOS",  "MOUSEMOVENEG",    "KEYDIGITAL",
+                                           "KEYDIGITALPOS", "KEYDIGITALNEG", "KEYANALOGUEPAIR", "PADANALOGUEPAIR",
+                                           "FORCEDMOUSEX",  "FORCEDMOUSEY"};
 u8 PcInputWriteTextProfiles = 0;

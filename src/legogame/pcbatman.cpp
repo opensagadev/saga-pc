@@ -19,7 +19,7 @@ extern "C" {
 
 extern "C" void InitOnce(i32 argc, char **argv) {
     PcNativeSelectLanguage(InitOnceEmptyConfigPc);
-    permbuffer_base.void_ptr = NuAlloc(SUPERBUFFERSIZE, InitOnceAllocSource, 0x112);
+    permbuffer_base.void_ptr = NuAlloc(SUPERBUFFERSIZE, ".\\pcbatman.cpp", 0x112);
     superbuffer_end.addr = permbuffer_base.addr + (u32)SUPERBUFFERSIZE;
     original_permbuffer_base = permbuffer_base;
     /* Native uses the permanent arena without an allocation-failure branch here. */
@@ -41,8 +41,8 @@ extern "C" void InitOnce(i32 argc, char **argv) {
                      InitOnceFileModePc, 7, InitOnceEjectPc, 8, 0x500000, 18, PAL ? 8 : 0, 33, 512, PAL ? 256 : 224, 26,
                      0x1000, 21, 1, 5, &InitOnceDvdPc, NOSOUND ? 28 : 10, 0, 0x640, 0, 0, 11, 5, 0x1fff, 14, Game_NuPad,
                      15, Game_NuPad + 1, 46, InitOnceWindowTitle, 45, InitOnceWindowTitle, 47, InitOnceEmptyConfigPc,
-                     48, InitOnceCompanyPc, 49, InitOnceProductPc, 52, InitOnceSelector34Pc, 70, 1, 71, 1, 73, 1, 75, 1,
-                     0);
+                     48, "LucasArts", 49, "LEGO Star Wars - The Complete Saga", 52, InitOnceSelector34Pc, 70, 1, 71, 1,
+                     73, 1, 75, 1, 0);
     NuTimeBarInit();
     pNuCam = NuCameraCreate();
     InitPanel(Game.options_save.widescreen);

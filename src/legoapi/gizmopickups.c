@@ -178,13 +178,6 @@ STATIC_ASSERT(offsetof(PICKUP_VISIBILITY_VIEW_PC, flags) == offsetof(GIZMOPICKUP
 STATIC_ASSERT(sizeof(((PICKUP_VISIBILITY_VIEW_PC *)0)->flags) == 1);
 STATIC_ASSERT(offsetof(GIZMOPICKUP_PC, filter_byte) == 0x14);
 
-#pragma const_seg(".rdata$PickupCollectedOutputTextPc")
-const char PickupCollectedOutputTextPc[10] = "Collected";
-#pragma const_seg()
-#pragma const_seg(".rdata$GizmoRegistryGizmoPickupsNamePc")
-const char GizmoRegistryGizmoPickupsNamePc[] = "GizmoPickup";
-#pragma const_seg()
-
 static NUMTX *PickupSetRotationXPc(NUMTX *matrix, i32 angle) {
     f32 cosine = NuTrigTable[((angle + 0x4000) >> 1) & 0x7fff];
     f32 sine = NuTrigTable[(angle >> 1) & 0x7fff];
@@ -415,7 +408,7 @@ i32 GizmoPickup_GetOutput(GIZMO_PC *gizmo, i32 output, i32 mode) {
 }
 
 #pragma data_seg(".data$PickupOutputNamePc")
-char *GizmoPickup_OutputName = (char *)PickupCollectedOutputTextPc;
+char *GizmoPickup_OutputName = "Collected";
 #pragma data_seg()
 
 char *GizmoPickup_GetOutputName(GIZMO_PC *gizmo, i32 output) {
@@ -1437,7 +1430,7 @@ void GizmoPickups_Update(void *world_pointer, void *unused_system, f32 unused_ti
     GizmoPickups_UpdateList(world, system->temporary_pickups, 64, 0);
 }
 
-char *GizmoRegistryGizmoPickupsNamePtrPc = (char *)GizmoRegistryGizmoPickupsNamePc;
+char *GizmoRegistryGizmoPickupsNamePtrPc = "GizmoPickup";
 static ADDGIZMOTYPE_PC GizmoRegistryGizmoPickupsAddTypePc = {0};
 
 ADDGIZMOTYPE_PC *GizmoPickups_RegisterGizmo(i32 type_id) {

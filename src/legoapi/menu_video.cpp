@@ -228,31 +228,31 @@ extern "C" void MenuDrawVideoPc(MENU *menu) {
     if (!MenuPcStringsInitialized) {
         MenuPcStringsInit();
     }
-    NuSPrintf(text, MenuVideoResolutionFormatPc, MenuPcStrings[19], mode->width, mode->height);
+    NuSPrintf(text, "%s: %d x %d", MenuPcStrings[19], mode->width, mode->height);
     DrawMenuEntryEx(menu, text, (u8)MenuA);
     if (!MenuPcStringsInitialized) {
         MenuPcStringsInit();
     }
-    NuSPrintf(text, MenuVideoRefreshFormatPc, MenuPcStrings[20], mode->refresh_rate);
+    NuSPrintf(text, "%s: %dHz", MenuPcStrings[20], mode->refresh_rate);
     DrawMenuEntryEx(menu, text, (u8)MenuA);
     switch (MenuVideoOptionsPc.aspect_mode) {
         case 0:
             if (!MenuPcStringsInitialized) {
                 MenuPcStringsInit();
             }
-            NuSPrintf(text, MenuVideoAspect43FormatPc, MenuPcStrings[22]);
+            NuSPrintf(text, "%s: 4:3", MenuPcStrings[22]);
             break;
         case 1:
             if (!MenuPcStringsInitialized) {
                 MenuPcStringsInit();
             }
-            NuSPrintf(text, MenuVideoAspect169FormatPc, MenuPcStrings[22]);
+            NuSPrintf(text, "%s: 16:9", MenuPcStrings[22]);
             break;
         case 2:
             if (!MenuPcStringsInitialized) {
                 MenuPcStringsInit();
             }
-            NuSPrintf(text, MenuVideoAspect1610FormatPc, MenuPcStrings[22]);
+            NuSPrintf(text, "%s: 16:10", MenuPcStrings[22]);
             break;
         case 3: {
             if (!MenuPcStringsInitialized) {
@@ -269,7 +269,7 @@ extern "C" void MenuDrawVideoPc(MENU *menu) {
             if (!MenuPcStringsInitialized) {
                 MenuPcStringsInit();
             }
-            NuSPrintf(text, MenuVideoAspectErrorFormatPc, MenuPcStrings[22]);
+            NuSPrintf(text, "%s: ERROR", MenuPcStrings[22]);
             break;
     }
     DrawMenuEntryEx(menu, text, (u8)MenuA);
@@ -335,25 +335,25 @@ extern "C" void MenuDrawEffectsPc(MENU *menu) {
                 if (!MenuPcStringsInitialized) {
                     MenuPcStringsInit();
                 }
-                NuSPrintf(text, MenuEffects2xFormatPc, MenuPcStrings[30]);
+                NuSPrintf(text, "%s: 2X", MenuPcStrings[30]);
                 break;
             case 2:
                 if (!MenuPcStringsInitialized) {
                     MenuPcStringsInit();
                 }
-                NuSPrintf(text, MenuEffects4xFormatPc, MenuPcStrings[30]);
+                NuSPrintf(text, "%s: 4X", MenuPcStrings[30]);
                 break;
             case 3:
                 if (!MenuPcStringsInitialized) {
                     MenuPcStringsInit();
                 }
-                NuSPrintf(text, MenuEffects8xFormatPc, MenuPcStrings[30]);
+                NuSPrintf(text, "%s: 8X", MenuPcStrings[30]);
                 break;
             case 4:
                 if (!MenuPcStringsInitialized) {
                     MenuPcStringsInit();
                 }
-                NuSPrintf(text, MenuEffects16xFormatPc, MenuPcStrings[30]);
+                NuSPrintf(text, "%s: 16X", MenuPcStrings[30]);
                 break;
             case 6:
                 if (!MenuPcStringsInitialized) {
@@ -476,8 +476,7 @@ extern "C" void MenuDrawVideoConfirmPc(MENU *menu) {
     if (!MenuPcStringsInitialized) {
         MenuPcStringsInit();
     }
-    NuSPrintf(text, MenuVideoCountdownFormatPc, MenuPcStrings[27],
-              (i32)(MenuVideoConfirmDurationPc - menu->menu_time) + 1);
+    NuSPrintf(text, "%s (%ds)", MenuPcStrings[27], (i32)(MenuVideoConfirmDurationPc - menu->menu_time) + 1);
     DrawMenuEntryEx(menu, text, (u8)MenuA);
 }
 

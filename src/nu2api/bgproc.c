@@ -182,8 +182,8 @@ void bgProcInit(void) {
         bgproc_initialized = 1;
         bgproc_procinfo_pool = NuLstCreate(0x10, sizeof(BGPROCINFO));
         InitializeCriticalSection(&bgproc_critical_section);
-        bgproc_work_event = CreateEventA(NULL, FALSE, FALSE, bgproc_work_event_name);
-        bgproc_resume_event = CreateEventA(NULL, TRUE, TRUE, bgproc_resume_event_name);
+        bgproc_work_event = CreateEventA(NULL, FALSE, FALSE, "BGWorkToDo");
+        bgproc_resume_event = CreateEventA(NULL, TRUE, TRUE, "BGFreeze");
         bgproc_active = NULL;
         bgproc_thread_handle_pc =
             CreateThread(NULL, 0x10000, bgProcWorkerPc, NULL, CREATE_SUSPENDED, &bgproc_thread_id);

@@ -14,7 +14,6 @@ extern "C" {
     extern i16 TextIdPc880708;
     extern i16 TextIdPc880764;
     extern const char ExtrasNameFormatPc[];
-    extern const char ExtrasLockedNumberFormatPc[];
 }
 
 struct EXTRAS_AREA_SAVE_READER_PC {
@@ -319,12 +318,12 @@ extern "C" {
         i32 changed;
         menu->item_scale = 1.0f;
 
-        sprintf(text, Menu_OptionsVolumeFormat, TTab[tAUDIOVOLUME], TempOptions.master_volume, 10);
+        sprintf(text, "%s: %i/%i", TTab[tAUDIOVOLUME], TempOptions.master_volume, 10);
         dme_sy = menu->item_scale;
         GameDrawMenuEntry(menu, text);
 
         NuStrCpy(text, TTab[tMUSIC]);
-        NuStrCat(text, Menu_ColonSeparator);
+        NuStrCat(text, ": ");
         NuStrCat(text, TempOptions.music_enabled != 0 ? TTab[tON] : TTab[tOFF]);
         dme_sy = menu->item_scale;
         GameDrawMenuEntry(menu, text);
@@ -380,7 +379,7 @@ extern "C" void MenuDrawExtras(MENU *menu) {
             !save->areas[ExtrasCheatsPc[index].area_index].red_brick_unlocked) {
             alpha = 0.5f;
             NuStrCpy(text, TTab[TextIdPc88074c]);
-            sprintf(number, ExtrasLockedNumberFormatPc, index - 7);
+            sprintf(number, " %i: ", index - 7);
             NuStrCat(text, number);
             NuStrCat(text, TTab[TextIdPc880708]);
         } else {

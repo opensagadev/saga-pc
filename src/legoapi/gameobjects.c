@@ -11,7 +11,6 @@ typedef struct grapple_rotation_pc_s {
 } GRAPPLE_ROTATION_PC;   // size 0x3c
 
 extern const f64 GameObjectNearFloorNoFloorHeight;
-extern const f64 GameObjectNearFloorRadiusDivisor;
 
 STATIC_ASSERT(offsetof(GAMEOBJECT, locator_matrices) + 2 * sizeof(NUMTX) == 0x884);
 STATIC_ASSERT(offsetof(CHARACTER_MODEL_LAYERS_PC, points_of_interest) + 2 * sizeof(void *) == 0x1c);
@@ -341,7 +340,7 @@ i32 GameObjectNearFloor(GAMEOBJECT *object, f32 height, f32 *distance) {
     height = (f32)((f64)height * NuTimeBarSlotWidth);
     if ((f64)object->floor_height != GameObjectNearFloorNoFloorHeight) {
         tolerance = height;
-        height = (f32)(((f64)object->collision_radius / GameObjectNearFloorRadiusDivisor) * tolerance);
+        height = (f32)(((f64)object->collision_radius / 0.22499999403953552) * tolerance);
         if (height < tolerance) {
             height = tolerance;
         }

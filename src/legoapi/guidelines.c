@@ -41,9 +41,6 @@ STATIC_ASSERT(offsetof(GIZMOFNS_PC, get_max_gizmos_fn) == 4);
 STATIC_ASSERT(offsetof(GIZMOFNS_PC, load_fn) == 0x64);
 
 void GuideLines_Draw(void *world, void *unused, f32 delta_time);
-#pragma const_seg(".rdata$PCContextName_GuideLine")
-const char PCContextName_GuideLine[10] = "GuideLine";
-#pragma const_seg()
 
 i32 GuideLines_Load(void *world_ptr, void *unused) {
     WORLDINFO *world = world_ptr;
@@ -198,7 +195,7 @@ void GuideLines_StoreProgress(WORLDINFO *world, void *unused, GUIDELINE_PROGRESS
 }
 
 #pragma data_seg(".data$GuideLineRegistryNamePc")
-char *GuideLineRegistryNamePc = (char *)PCContextName_GuideLine;
+char *GuideLineRegistryNamePc = "GuideLine";
 #pragma data_seg()
 #pragma data_seg(".data$GuideLineAddTypePc")
 ADDGIZMOTYPE_PC GuideLineAddTypePc = {0};

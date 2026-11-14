@@ -170,7 +170,7 @@ extern "C" {
     void WorldInfo_LoadObjectAnimFile(WORLDINFO *world) {
         if (world->page_anim == -1) {
             char path[256];
-            sprintf(path, WorldObjectAnimFormat, world->config_file);
+            sprintf(path, "%s.anm", world->config_file);
             if (NuFileExists(path)) {
                 world->page_anim = edanimLoadPage(path, world->current_gscn);
             }
@@ -490,7 +490,7 @@ extern "C" {
 
         world->page_grass = -1;
         if (Grass_Available != 0) {
-            sprintf(path, WorldGrassFormat, world->config_file);
+            sprintf(path, "%s.gra", world->config_file);
             if (NuFileExists(path) != 0) {
                 world->page_grass = edgraLoadPage(path, world->current_gscn, (i32)world->terrain, &world->giz_buffer,
                                                   &world->buffer_end);
@@ -502,7 +502,7 @@ extern "C" {
         char path[256];
 
         world->page_bridge = -1;
-        sprintf(path, WorldBridgeFormat, world->config_file);
+        sprintf(path, "%s.bri", world->config_file);
         if (NuFileExists(path) != 0) {
             world->page_bridge = edbriLoadPage(path, world->current_gscn);
         }

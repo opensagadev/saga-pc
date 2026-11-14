@@ -14,8 +14,6 @@ extern "C" {
     extern const f32 DogfightOriginEndYPc;
     extern const f32 DogfightOriginEndZPc;
     extern const f32 DogfightOriginStartXPc;
-    extern const f32 DogfightOriginStartYPc;
-    extern const f32 DogfightOriginStartZPc;
 
     /* The PC keeps eight additional bytes at the end of each fighter record. */
     typedef struct DOGFIGHT_FIGHTER_PC {
@@ -156,8 +154,6 @@ extern "C" {
         f32 distance;      // 0x0
         f32 speed;         // 0x4
     } DOGFIGHT_SPEEDUP_PC; // size 0x8
-
-    extern const f64 GrappleMomentumNearScalePc;
 
 #pragma data_seg(".data$DogfightSpeedRatePc")
     f32 DogfightSpeedRatePc = 0.25f;
@@ -324,9 +320,6 @@ extern "C" {
 #pragma data_seg(".data$DogfightCollisionRadiusSquaredPc")
     f32 DogfightCollisionRadiusSquaredPc = 2.0f;
 #pragma data_seg()
-#pragma const_seg(".rdata$DogfightPartTypeNamePc")
-    extern const char DogfightPartTypeNamePc[8] = "DogBits";
-#pragma const_seg()
     STATIC_ASSERT(offsetof(BOLT, owner) == 4);
     STATIC_ASSERT(offsetof(BOLT, velocity) == 0xa0);
     STATIC_ASSERT(offsetof(BOLT, flags) == 0xf0);
@@ -1734,8 +1727,8 @@ extern "C" {
         space->origin_end.z = DogfightOriginEndZPc;
         space->origin_end.w = 0.0f;
         space->origin_start.x = DogfightOriginStartXPc;
-        space->origin_start.y = DogfightOriginStartYPc;
-        space->origin_start.z = DogfightOriginStartZPc;
+        space->origin_start.y = 326.5f;
+        space->origin_start.z = -394.0f;
         space->origin_start.w = 0.0f;
         direction = &space->direction;
         direction->x = space->origin_end.x - space->origin_start.x;
@@ -1981,7 +1974,7 @@ extern "C" {
                 space->value_one_b = space->value_one_a;
             }
         }
-        world->sock_sys->socks[0].current_speed = space->value_one_b * GrappleMomentumNearScalePc;
+        world->sock_sys->socks[0].current_speed = space->value_one_b * 20.0;
         if (world->current_level == DOGFIGHTA_LDATA && world->sock_sys->socks[0].current_speed != 0.0f) {
             space->normalized_speed = world->sock_sys->socks[0].current_speed / 11.0;
         }
@@ -2169,7 +2162,7 @@ extern "C" {
             player_index = bolt->owner != NULL ? (i8)((GAMEOBJECT *)bolt->owner)->field_280 : -1;
             AddPickups(coins, ReleaseHearts(), 0, 0, ship_position, NULL, 2.0f, player_index, 1.0f, 2000000.0f, NULL, 1,
                        1);
-            AddFiniteShotPART(PARTLookupType((char *)DogfightPartTypeNamePc), ship_position, 1);
+            AddFiniteShotPART(PARTLookupType("DogBits"), ship_position, 1);
             dy = (f64)fighter->matrix.m31 - global_camera.mtx.m31;
             dx = (f64)fighter->matrix.m30 - global_camera.mtx.m30;
             dz = (f64)fighter->matrix.m32 - global_camera.mtx.m32;

@@ -146,7 +146,6 @@ typedef struct OPPONENT_LOS_PC {
 #define OPPONENT_LOS(p) ((OPPONENT_LOS_PC *)(p))
 void __movsd(unsigned long *, unsigned long const *, unsigned int);
 void LevelScriptReStoreProgress(WORLDINFO *, LEVEL_SCRIPT_PROCESS_PC *);
-extern const char GameAILevelScriptFormatPc[8];
 
 typedef struct ai_frame_world_pc_s {
     u8 unknown_0000[0x2aec];
@@ -179,10 +178,6 @@ typedef struct AIONCEATTACKER_PC {
     GAMEOBJECT *object;
     f32 distance;
 } AIONCEATTACKER_PC;
-
-const char GameAIBatmanPc[7] = "Batman";
-const char GameAIRobinPc[6] = "Robin";
-const char GameAIGlidePackPc[11] = "Glide_Pack";
 
 typedef struct bulk_ai_full_object_pc_s {
     APIOBJECT_PC object;                       // 0x000
@@ -1011,7 +1006,7 @@ u8 LevelCharacterTypeID(char *name) {
     return -1;
 }
 
-const char *GameAISkipCharactersPc[4] = {GameAIBatmanPc, GameAIRobinPc, GameAIGlidePackPc, NULL};
+const char *GameAISkipCharactersPc[4] = {"Batman", "Robin", "Glide_Pack", NULL};
 
 static i32 IsSpecialRouteCharacterSkippedPc(char *name) {
     i32 index;
@@ -1244,14 +1239,14 @@ APIOBJECT_PC *GetNamedAPIObject(void *system_pointer, char *name) {
     }
     if (NuStrICmp(name, (char *)GameAIPlayerName) == 0) {
         object = player;
-    } else if (NuStrICmp(name, (char *)GameAIPlayer2Name) == 0) {
+    } else if (NuStrICmp(name, "player_2") == 0) {
         object = player != Player[0] ? Player[0] : Player[1];
     } else {
         for (index = 0; index < 8; index++) {
             if (Player[index] == NULL) {
                 continue;
             }
-            sprintf(player_name, GameAIPlayerFormat, index);
+            sprintf(player_name, "Player%d", index);
             if (NuStrICmp(player_name, name) == 0) {
                 object = Player[index];
                 break;
@@ -2246,12 +2241,6 @@ void AI_Activate(void *input, i32 active) {
 }
 
 static ADDGIZMOTYPE_PC GizmoRegistryAIAddTypePc = {0};
-#pragma const_seg(".rdata$GizmoRegistryAINamePc")
-const char GizmoRegistryAINamePc[] = "AIProcessor";
-#pragma const_seg()
-#pragma const_seg(".rdata$GizmoRegistryAIPrefixPc")
-const char GizmoRegistryAIPrefixPc[] = "ai_";
-#pragma const_seg()
 
 ADDGIZMOTYPE_PC *AI_RegisterGizmo(i32 type_id) {
     ADDGIZMOTYPE_PC *addtype = &GizmoRegistryAIAddTypePc;
@@ -2277,8 +2266,8 @@ ADDGIZMOTYPE_PC *AI_RegisterGizmo(i32 type_id) {
     addtype->fns.load_fn = NULL;
     addtype->fns.post_load_fn = NULL;
     addtype->fns.add_level_sfx_fn = NULL;
-    addtype->name = (char *)GizmoRegistryAINamePc;
-    addtype->prefix = (char *)GizmoRegistryAIPrefixPc;
+    addtype->name = "AIProcessor";
+    addtype->prefix = "ai_";
     addtype->fns.get_max_gizmos_fn = (i32(*)(void *))AI_GetMaxGizmos;
     addtype->fns.add_gizmos_fn = (void *)AI_AddGizmos;
     addtype->fns.get_gizmo_name_fn = (char *(*)(GIZMO_PC *))AI_GetGizmoName;
@@ -2915,7 +2904,7 @@ void GameAISysReset(AISYS_PC *system) {
     WORLD->script_processor_count = 0;
     for (script_index = 0; script_index < 32; ++script_index) {
         if (script_index != 0) {
-            sprintf(script_name, GameAILevelScriptFormatPc, script_index);
+            sprintf(script_name, "Level%d", script_index);
         } else {
             sprintf(script_name, AIScriptKeywordLevel);
         }

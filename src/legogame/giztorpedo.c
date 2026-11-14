@@ -266,9 +266,6 @@ i32 GizTorp_GetNumOutputs(void *unused) {
 
 static ADDGIZMOTYPE_PC GizmoRegistryGizTorpMachineAddTypePc = {0};
 i32 giztorpmachine_gizmotype_id = 0;
-#pragma const_seg(".rdata$GizmoRegistryGizTorpMachineNamePc")
-const char GizmoRegistryGizTorpMachineNamePc[] = "Torp Machine";
-#pragma const_seg()
 
 ADDGIZMOTYPE_PC *GizTorpMachine_RegisterGizmo(i32 type_id) {
     ADDGIZMOTYPE_PC *addtype = &GizmoRegistryGizTorpMachineAddTypePc;
@@ -287,7 +284,7 @@ ADDGIZMOTYPE_PC *GizTorpMachine_RegisterGizmo(i32 type_id) {
     addtype->fns.clear_progress_fn = NULL;
     addtype->fns.store_progress_fn = NULL;
     giztorpmachine_gizmotype_id = type_id;
-    addtype->name = (char *)GizmoRegistryGizTorpMachineNamePc;
+    addtype->name = "Torp Machine";
     addtype->prefix = "";
     addtype->fns.get_max_gizmos_fn = (i32(*)(void *))GizTorp_GetMaxGizmos;
     addtype->fns.add_gizmos_fn = (void *)GizTorp_AddGizmos;

@@ -355,32 +355,32 @@ void EmperorFightA_Init(WORLDINFO *world) {
     emperorfighta_netpacket = SetLevelHack(8);
     ((EMPEROR_FIGHT_PACKET_PC *)emperorfighta_netpacket)->enabled = 1;
     ((EMPEROR_FIGHT_PACKET_PC *)emperorfighta_netpacket)->enabled = 1;
-    NuSpecialFind(world->current_gscn, &LevHSpecial[3], (char *)EpisodeVI_liftrlightbon1, 1);
-    NuSpecialFind(world->current_gscn, &LevHSpecial[4], (char *)EpisodeVI_liftrlightbon2, 1);
-    NuSpecialFind(world->current_gscn, &LevHSpecial[5], (char *)EpisodeVI_liftrlightbon3, 1);
-    NuSpecialFind(world->current_gscn, &LevHSpecial[6], (char *)EpisodeVI_liftrlightbon4, 1);
+    NuSpecialFind(world->current_gscn, &LevHSpecial[3], "lift_rlight_bon1", 1);
+    NuSpecialFind(world->current_gscn, &LevHSpecial[4], "lift_rlight_bon2", 1);
+    NuSpecialFind(world->current_gscn, &LevHSpecial[5], "lift_rlight_bon3", 1);
+    NuSpecialFind(world->current_gscn, &LevHSpecial[6], "lift_rlight_bon4", 1);
     for (i = 0; i < 4; ++i) {
         flags->light_flags[i] = 0;
     }
-    NuSpecialFind(world->current_gscn, &LevHSpecial[7], (char *)EpisodeVI_liftrarron1, 1);
-    NuSpecialFind(world->current_gscn, &LevHSpecial[8], (char *)EpisodeVI_liftrarron2, 1);
-    NuSpecialFind(world->current_gscn, &LevHSpecial[9], (char *)EpisodeVI_liftrarron3, 1);
-    NuSpecialFind(world->current_gscn, &LevHSpecial[10], (char *)EpisodeVI_liftrarron4, 1);
+    NuSpecialFind(world->current_gscn, &LevHSpecial[7], "lift_rarr_on1", 1);
+    NuSpecialFind(world->current_gscn, &LevHSpecial[8], "lift_rarr_on2", 1);
+    NuSpecialFind(world->current_gscn, &LevHSpecial[9], "lift_rarr_on3", 1);
+    NuSpecialFind(world->current_gscn, &LevHSpecial[10], "lift_rarr_on4", 1);
     for (i = 0; i < 4; ++i) {
         flags->arrow_flags[i] = 0;
     }
-    NuSpecialFind(world->current_gscn, &LevHSpecial[30], (char *)EpisodeVI_doton01, 1);
-    NuSpecialFind(world->current_gscn, &LevHSpecial[31], (char *)EpisodeVI_doton02, 1);
-    NuSpecialFind(world->current_gscn, &LevHSpecial[32], (char *)EpisodeVI_doton03, 1);
-    NuSpecialFind(world->current_gscn, &LevHSpecial[33], (char *)EpisodeVI_doton04, 1);
-    NuSpecialFind(world->current_gscn, &LevHSpecial[34], (char *)EpisodeVI_doton05, 1);
-    NuSpecialFind(world->current_gscn, &LevHSpecial[35], (char *)EpisodeVI_doton06, 1);
-    NuSpecialFind(world->current_gscn, &LevHSpecial[36], (char *)EpisodeVI_doton07, 1);
-    NuSpecialFind(world->current_gscn, &LevHSpecial[37], (char *)EpisodeVI_doton08, 1);
-    NuSpecialFind(world->current_gscn, &LevHSpecial[38], (char *)EpisodeVI_doton09, 1);
-    NuSpecialFind(world->current_gscn, &LevHSpecial[39], (char *)EpisodeVI_doton10, 1);
-    NuSpecialFind(world->current_gscn, &LevHSpecial[40], (char *)EpisodeVI_doton11, 1);
-    NuSpecialFind(world->current_gscn, &LevHSpecial[41], (char *)EpisodeVI_doton12, 1);
+    NuSpecialFind(world->current_gscn, &LevHSpecial[30], "dot_on_01", 1);
+    NuSpecialFind(world->current_gscn, &LevHSpecial[31], "dot_on_02", 1);
+    NuSpecialFind(world->current_gscn, &LevHSpecial[32], "dot_on_03", 1);
+    NuSpecialFind(world->current_gscn, &LevHSpecial[33], "dot_on_04", 1);
+    NuSpecialFind(world->current_gscn, &LevHSpecial[34], "dot_on_05", 1);
+    NuSpecialFind(world->current_gscn, &LevHSpecial[35], "dot_on_06", 1);
+    NuSpecialFind(world->current_gscn, &LevHSpecial[36], "dot_on_07", 1);
+    NuSpecialFind(world->current_gscn, &LevHSpecial[37], "dot_on_08", 1);
+    NuSpecialFind(world->current_gscn, &LevHSpecial[38], "dot_on_09", 1);
+    NuSpecialFind(world->current_gscn, &LevHSpecial[39], "dot_on_10", 1);
+    NuSpecialFind(world->current_gscn, &LevHSpecial[40], "dot_on_11", 1);
+    NuSpecialFind(world->current_gscn, &LevHSpecial[41], "dot_on_12", 1);
     memset(LevSfxFlag, 0, 3 * sizeof(LevSfxFlag[0]));
 }
 
@@ -390,25 +390,24 @@ void EmperorFightA_Reset(WORLDINFO *world) {
     char name[32];
     LevAIMessage[0] = CheckGizAIMessage(gizaimessagesys, EpisodeVI_ShowHearts, NULL);
     LevAIMessage[1] = CheckGizAIMessage(gizaimessagesys, EpisodeVI_ElectricFloor, NULL);
-    gizmo = GizmoFindByName(world->gizmo_sys, obstacle_gizmotype_id, (char *)EpisodeVI_obstacle21);
+    gizmo = GizmoFindByName(world->gizmo_sys, obstacle_gizmotype_id, "obstacle21");
     if (gizmo != NULL && gizmo->object != NULL) {
         LevGizObst[0] = gizmo->object;
     }
-    LevGizmo[0] = GizmoFindByName(world->gizmo_sys, force_gizmotype_id, (char *)EpisodeVI_force15);
-    LevGizmo[1] = GizmoFindByName(world->gizmo_sys, force_gizmotype_id, (char *)EpisodeVI_force16);
-    NuSpecialFind(world->current_gscn, &LevHSpecial[0], (char *)EpisodeVI_lift_force_lnull1, 1);
-    NuSpecialFind(world->current_gscn, &LevHSpecial[1], (char *)EpisodeVI_lift_force_rnull1, 1);
-    NuSpecialFind(world->current_gscn, &LevHSpecial[2], (char *)EpisodeVI_lift_main1, 1);
+    LevGizmo[0] = GizmoFindByName(world->gizmo_sys, force_gizmotype_id, "force15");
+    LevGizmo[1] = GizmoFindByName(world->gizmo_sys, force_gizmotype_id, "force16");
+    NuSpecialFind(world->current_gscn, &LevHSpecial[0], "lift_force_lnull1", 1);
+    NuSpecialFind(world->current_gscn, &LevHSpecial[1], "lift_force_rnull1", 1);
+    NuSpecialFind(world->current_gscn, &LevHSpecial[2], "lift_main1", 1);
     LevArea[0] = AISysFindArea(world->ai_sys, (char *)EpisodeVI_ElectricFloor);
     eFloor_timer = 0.0f;
     ((EMPEROR_FIGHT_PACKET_PC *)emperorfighta_netpacket)->state = 0;
     routemask_efloor_on = 0;
     routemask_efloor_off = 0;
     for (i = 0; i < world->ai_sys->path_sys->active_path->route_count; ++i) {
-        if (NuStrICmp(world->ai_sys->path_sys->active_path->routes[i].name, (char *)EpisodeVI_electric_on) == 0) {
+        if (NuStrICmp(world->ai_sys->path_sys->active_path->routes[i].name, "electric_on") == 0) {
             routemask_efloor_on = (u64)1 << i;
-        } else if (NuStrICmp(world->ai_sys->path_sys->active_path->routes[i].name, (char *)EpisodeVI_electric_off) ==
-                   0) {
+        } else if (NuStrICmp(world->ai_sys->path_sys->active_path->routes[i].name, "electric_off") == 0) {
             routemask_efloor_off = (u64)1 << i;
         }
         if (routemask_efloor_on != 0 && routemask_efloor_off != 0) {
@@ -418,21 +417,21 @@ void EmperorFightA_Reset(WORLDINFO *world) {
     hspecial_efloor = &LevHSpecial[67];
     for (i = 0; i < 20; ++i) {
         if (i < 9) {
-            sprintf(name, EpisodeVI_elecpad_zero_format, i + 1);
+            sprintf(name, "elecpad_0%d_on", i + 1);
         } else {
-            sprintf(name, EpisodeVI_elecpad_format, i + 1);
+            sprintf(name, "elecpad_%d_on", i + 1);
         }
         NuSpecialFind(world->current_gscn, &hspecial_efloor[i], name, 1);
     }
-    gizmo = GizmoFindByName(world->gizmo_sys, obstacle_gizmotype_id, (char *)EpisodeVI_eFloor_AlwaysOn);
+    gizmo = GizmoFindByName(world->gizmo_sys, obstacle_gizmotype_id, "eFloor_AlwaysOn");
     if (gizmo != NULL && gizmo->object != NULL) {
         LevGizObst[1] = gizmo->object;
     }
-    gizmo = GizmoFindByName(world->gizmo_sys, obstacle_gizmotype_id, (char *)EpisodeVI_eFloor_AlwaysOf);
+    gizmo = GizmoFindByName(world->gizmo_sys, obstacle_gizmotype_id, "eFloor_AlwaysOf");
     if (gizmo != NULL && gizmo->object != NULL) {
         LevGizObst[2] = gizmo->object;
     }
-    gizmo = GizmoFindByName(world->gizmo_sys, obstacle_gizmotype_id, (char *)EpisodeVI_eFloor_OnOff);
+    gizmo = GizmoFindByName(world->gizmo_sys, obstacle_gizmotype_id, "eFloor_OnOff");
     if (gizmo != NULL && gizmo->object != NULL) {
         LevGizObst[3] = gizmo->object;
     }
@@ -1347,11 +1346,11 @@ void SarlaccPitC_Reset(WORLDINFO *world) {
     i32 i;
     SarlaccTakenOverPc = 0;
     SarlaccBlowUpTargetCountPc = 0;
-    LevGameObject[0] = GetNamedGameObject(world->ai_sys, (char *)EpisodeVI_cannon_1);
+    LevGameObject[0] = GetNamedGameObject(world->ai_sys, "cannon_1");
     for (i = 0; i < 2; ++i) {
-        sprintf(name, EpisodeVI_cover_format, i + 1);
+        sprintf(name, "cover_%d", i + 1);
         NuSpecialFind(world->current_gscn, &LevHSpecial[i + 16], name, 1);
-        sprintf(name, EpisodeVI_cover_gizmo_format, i + 1);
+        sprintf(name, "cover_%d1", i + 1);
         gizmo = GizmoFindByName(world->gizmo_sys, blowup_gizmotype_id, name);
         if (gizmo != NULL) {
             SarlaccBlowUpTargetsPc[SarlaccBlowUpTargetCountPc] = gizmo->object;
@@ -1361,7 +1360,7 @@ void SarlaccPitC_Reset(WORLDINFO *world) {
         }
     }
     for (i = 0; i < 2; ++i) {
-        sprintf(name, EpisodeVI_spinner_format, i + 1);
+        sprintf(name, "spinner%d_null_1", i + 1);
         gizmo = GizmoFindByName(world->gizmo_sys, blowup_gizmotype_id, name);
         if (gizmo != NULL) {
             SarlaccBlowUpTargetsPc[SarlaccBlowUpTargetCountPc] = gizmo->object;
@@ -1370,14 +1369,14 @@ void SarlaccPitC_Reset(WORLDINFO *world) {
         }
     }
     for (i = 0; i < 8; ++i) {
-        sprintf(name, EpisodeVI_shot_format, i + 1);
+        sprintf(name, "shot_0%d", i + 1);
         NuSpecialFind(world->current_gscn, &LevHSpecial[i], name, 1);
     }
     for (i = 0; i < 8; ++i) {
-        sprintf(name, EpisodeVI_shot_a_format, i + 1);
+        sprintf(name, "shot_0%da", i + 1);
         NuSpecialFind(world->current_gscn, &LevHSpecial[i + 8], name, 1);
     }
-    LevGizmo[0] = GizmoFindByName(world->gizmo_sys, gizpanel_gizmotype_id, (char *)EpisodeVI_panel2);
+    LevGizmo[0] = GizmoFindByName(world->gizmo_sys, gizpanel_gizmotype_id, "panel2");
     for (i = 0; i < 8; ++i) {
         NuSpecialSetVisibility(&LevHSpecial[i], i >= SarlaccPowerPc);
         NuSpecialSetVisibility(&LevHSpecial[i + 8], i < SarlaccPowerPc);
@@ -1428,11 +1427,11 @@ void SarlaccPitC_Update(WORLDINFO *world) {
                 LevGameObject[0]->portal_flags |= 8;
                 NuSpecialSetVisibility(&LevHSpecial[SarlaccPowerPc], 0);
                 NuSpecialSetVisibility(&LevHSpecial[SarlaccPowerPc + 8], 1);
-                PlaySfx((char *)EpisodeVI_magnet_drop, NuSpecialGetDrawPos(&LevHSpecial[SarlaccPowerPc + 8]));
+                PlaySfx("imp_c3po_magnet_drop", NuSpecialGetDrawPos(&LevHSpecial[SarlaccPowerPc + 8]));
                 ++SarlaccPowerPc;
                 if (SarlaccPowerPc == 8) {
                     SarlaccRechargingPc = 0;
-                    PlaySfx((char *)EpisodeVI_magnet_on, NuSpecialGetDrawPos(&LevHSpecial[16]));
+                    PlaySfx("env_magnet_on", NuSpecialGetDrawPos(&LevHSpecial[16]));
                 } else {
                     SarlaccRechargeTimerPc = 0.25f;
                 }

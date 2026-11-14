@@ -97,22 +97,6 @@ STATIC_ASSERT(offsetof(GAMEOBJECT, tag_flags) == 0x7c5);
 
 STATIC_ASSERT(offsetof(GAMEOBJECT, takeover_source) == 0xcd0);
 
-extern const char AIActionBluePrefixPc[6];
-
-extern const char AIActionGreenPrefixPc[7];
-
-extern const char AIActionRedPrefixPc[5];
-
-extern const char AIActionCountPrefixPc[7];
-
-extern const char AIActionTotalPrefixPc[7];
-
-extern const char AIActionMyPosNamePc[6];
-
-extern const char AIActionCanBeStolenNamePc[12];
-
-extern const char AIActionTorpedoNamePc[8];
-
 typedef struct torpedo_action_packet_pc_s {
     u8 count;                  // 0x00
     u8 flags;                  // 0x01
@@ -388,23 +372,9 @@ extern const char ActionSnapRotationYName[5];
 
 extern const char ActionSnapPartyName[6];
 
-extern const char ActionSnapDistanceFromEndName[18];
-
-extern const char ActionSnapSockName[5];
-
-extern const char ActionSnapDxName[3];
-
-extern const char ActionSnapDyName[3];
-
-extern const f64 ActionSnapRotationFactorPc;
-
 extern const f64 ActionSnapWeightedRandomZeroPc;
 
 typedef NUVEC *(*AI_GET_CREATURE_ORIGIN_PC)(AISYS_PC *, AIPACKET_PC *);
-
-extern const char AISetLayerKeywordPc[11];
-
-extern const char AIClearLayerKeywordPc[13];
 
 typedef struct ai_force_platform_record_pc_s {
     u8 unknown_00[0x40];       // 0x00
@@ -545,8 +515,6 @@ const char GizActionLiteral758360[];
 const char GizActionLiteral758374[];
 const char AITransferLiteral757824[];
 const char AITransferLiteral757a7c[];
-extern const char AIConditionMySetNamePc[6];
-extern const char AIConditionTakeoverTargetNamePc[15];
 
 GAMEOBJECT *GetNamedGameObject(void *sys, char *name) {
     APIOBJECT_PC *result;
@@ -1843,7 +1811,7 @@ void *Condition_IsSetAliveInit(AISYS_PC *unused0, char *arg, AISCRIPT_PC *unused
     if (arg == NULL) {
         return NULL;
     }
-    if (NuStrICmp(arg, AIConditionMySetNamePc) == 0) {
+    if (NuStrICmp(arg, "myset") == 0) {
         return (void *)(-1);
     }
     set = NuAToI(arg);
@@ -2588,7 +2556,7 @@ f32 Condition_TakenOver(AISYS_PC *unused0, AISCRIPTPROCESS_PC *unused1, AIPACKET
                 if (opponent != NULL) {
                     object = opponent->objptr;
                 }
-            } else if (NuStrICmp(name, AIConditionTakeoverTargetNamePc) == 0) {
+            } else if (NuStrICmp(name, "TakeoverTarget") == 0) {
                 object = packet->owner->objptr;
                 if (object == NULL || object->takeover_target == NULL) {
                     return 0.0f;
@@ -3254,10 +3222,10 @@ i32 Action_SetTakeOverTarget(AISYS_PC *system, AISCRIPTPROCESS_PC *processor, AI
                 type_name = value + 5;
             } else if ((value = NuStrIStr(params[index], (char *)AICombatOpponentName)) != NULL) {
                 target = GetNamedGameObject(system, value + 9);
-            } else if ((value = NuStrIStr(params[index], (char *)AITransferLiteral7576e0)) != NULL) {
+            } else if ((value = NuStrIStr(params[index], "maxrange=")) != NULL) {
                 range = AIParamToFloat(processor, value + 9);
                 nearest = range * range;
-            } else if (NuStrICmp(params[index], (char *)AITransferLiteral7576d0) != 0) {
+            } else if (NuStrICmp(params[index], "ifCanTakeover") != 0) {
                 check_takeover = 1;
             }
         }
@@ -3611,7 +3579,7 @@ i32 Action_SetSide(AISYS_PC *sys, AISCRIPTPROCESS_PC *processor, AIPACKET_PC *pa
         }
 
         for (index = 0; index < param_4; ++index) {
-            if (NuStrICmp(params[index], (char *)AITransferLiteral75773c) == 0) {
+            if (NuStrICmp(params[index], "neutral") == 0) {
                 side = 0;
             } else if (NuStrICmp(params[index], (char *)AITransferLiteral7576a8) == 0 ||
                        NuStrICmp(params[index], (char *)AITransferLiteral7576b0) == 0) {
@@ -3789,7 +3757,7 @@ i32 Action_SetStateArea(AISYS_PC *sys, AISCRIPTPROCESS_PC *processor, AIPACKET_P
                     }
                 }
             }
-        } else if ((value = NuStrIStr(params[index], (char *)AITransferLiteral757744)) != NULL) {
+        } else if ((value = NuStrIStr(params[index], "State=")) != NULL) {
             state_name = value + 6;
         }
     }
@@ -3999,7 +3967,7 @@ i32 Action_SetScriptState(AISYS_PC *system, AISCRIPTPROCESS_PC *processor, AIPAC
             if (creature_set < 0 || creature_set > 16) {
                 creature_set = 0;
             }
-        } else if ((value = NuStrIStr(params[index], (char *)AIGameStateName)) != NULL) {
+        } else if ((value = NuStrIStr(params[index], "state=")) != NULL) {
             state_name = value + 6;
         }
     }
@@ -4224,7 +4192,7 @@ i32 Action_GameSetLocator(AISYS_PC *sys, AISCRIPTPROCESS_PC *processor, AIPACKET
             indexed = 1;
         } else if (NuStrICmp(params[index], (char *)AIGameNearestName) == 0) {
             nearest = 1;
-        } else if ((value = NuStrIStr(params[index], (char *)AITransferLiteral7577dc)) != NULL) {
+        } else if ((value = NuStrIStr(params[index], "random=")) != NULL) {
             random_count = (i32)(AIParamToFloat(processor, value + 7));
         } else if ((value = NuStrIStr(params[index], (char *)AIGameCharacterName)) != NULL &&
                    GetNamedGameObjectCallback != NULL) {
@@ -4483,7 +4451,7 @@ i32 Action_BigJump(AISYS_PC *sys, AISCRIPTPROCESS_PC *processor, AIPACKET_PC *pa
                 }
             } else if (NuStrICmp(params[index], (char *)AITransferLiteral75786c) == 0) {
                 slam = 1;
-            } else if (NuStrICmp(params[index], (char *)AITransferLiteral757860) == 0) {
+            } else if (NuStrICmp(params[index], "to_origin") == 0) {
                 to_origin = 1;
             } else if ((value = NuStrIStr(params[index], (char *)AITransferLiteral757834)) != NULL) {
                 jump_factor = AIParamToFloat(processor, value + 12);
@@ -4496,7 +4464,7 @@ i32 Action_BigJump(AISYS_PC *sys, AISCRIPTPROCESS_PC *processor, AIPACKET_PC *pa
                 destination.y = AIParamToFloat(processor, value + 2);
             } else if ((value = NuStrIStr(params[index], (char *)ZArgPrefix)) != NULL) {
                 destination.z = AIParamToFloat(processor, value + 2);
-            } else if (NuStrICmp(params[index], (char *)AITransferLiteral757844) == 0) {
+            } else if (NuStrICmp(params[index], "check_terrain") == 0) {
                 check_terrain = 1;
             }
         }
@@ -4560,7 +4528,7 @@ i32 Action_SetDoomedEscapeLocator(AISYS_PC *system, AISCRIPTPROCESS_PC *processo
             personal = 1;
         } else if (NuStrIStr(params[index], (char *)AIActionIndexedName) != NULL) {
             indexed = 1;
-        } else if (NuStrIStr(params[index], (char *)AITransferLiteral757884) != NULL) {
+        } else if (NuStrIStr(params[index], "take_damage") != NULL) {
             take_damage = 1;
         } else if ((value = NuStrIStr(params[index], (char *)AITransferLiteral757824)) != NULL) {
             random_count = (i32)(AIParamToFloat(processor, value + 9));
@@ -4612,7 +4580,7 @@ i32 Action_SnapToPosition(AISYS_PC *system, AISCRIPTPROCESS_PC *processor, AIPAC
         } else if (NuStrIStr(params[index], (char *)ActionSnapPlayer2Name) != NULL) {
             object = player2;
         } else if ((value = NuStrIStr(params[index], (char *)ActionSnapRotationYName)) != NULL) {
-            facing = (i32)((f64)(i32)AIParamToFloat(processor, value + 5) * ActionSnapRotationFactorPc);
+            facing = (i32)((f64)(i32)AIParamToFloat(processor, value + 5) * 182.04444885253906);
         } else if ((value = NuStrIStr(params[index], (char *)ActionSnapXName)) != NULL) {
             position.x = AIParamToFloat(processor, value + 2);
         } else if ((value = NuStrIStr(params[index], "y")) != NULL) {
@@ -4732,16 +4700,16 @@ i32 Action_SnapToSockPosition(AISYS_PC *system, AISCRIPTPROCESS_PC *processor, A
                 party = 1;
             } else if ((value = NuStrIStr(params[index], (char *)ActionSnapRotationYName)) != NULL) {
                 AIParamToFloat(processor, value + 5);
-            } else if ((value = NuStrIStr(params[index], (char *)ActionSnapDistanceFromEndName)) != NULL) {
+            } else if ((value = NuStrIStr(params[index], "distance_from_end")) != NULL) {
                 distance = AIParamToFloat(processor, value + 18);
                 from_end = 1;
             } else if ((value = NuStrIStr(params[index], (char *)RaceOpponentDistancePrefix)) != NULL) {
                 distance = AIParamToFloat(processor, value + 9);
-            } else if ((value = NuStrIStr(params[index], (char *)ActionSnapSockName)) != NULL) {
+            } else if ((value = NuStrIStr(params[index], "sock")) != NULL) {
                 sock_index = (i32)AIParamToFloat(processor, value + 5);
-            } else if ((value = NuStrIStr(params[index], (char *)ActionSnapDxName)) != NULL) {
+            } else if ((value = NuStrIStr(params[index], "dx")) != NULL) {
                 AIParamToFloat(processor, value + 3);
-            } else if ((value = NuStrIStr(params[index], (char *)ActionSnapDyName)) != NULL) {
+            } else if ((value = NuStrIStr(params[index], "dy")) != NULL) {
                 AIParamToFloat(processor, value + 3);
             }
         }
@@ -4836,7 +4804,7 @@ i32 Action_SetOpponent(AISYS_PC *system, AISCRIPTPROCESS_PC *processor, AIPACKET
     if (first_time != 0) {
         droid_count = 0;
         for (index = 0; index < count; index++) {
-            if (NuStrIStr(params[index], (char *)AICombatDroidName) != NULL) {
+            if (NuStrIStr(params[index], "opponent=droid") != NULL) {
                 for (player_index = 0; player_index < 8; player_index++) {
                     candidate = Player[player_index];
                     if (candidate != NULL && (candidate->flags_1fc_word & 1) != 0 &&
@@ -4850,13 +4818,13 @@ i32 Action_SetOpponent(AISYS_PC *system, AISCRIPTPROCESS_PC *processor, AIPACKET
                     prev_droid_ix = (prev_droid_ix + 1) % droid_count;
                     opponent = droids[prev_droid_ix];
                 }
-            } else if (NuStrIStr(params[index], (char *)AICombatNearestEnemyName) != NULL) {
+            } else if (NuStrIStr(params[index], "opponent=nearest_enemy") != NULL) {
                 object->opponent = NULL;
             } else if ((value = NuStrIStr(params[index], (char *)AICombatOpponentName)) != NULL) {
                 opponent = GetNamedGameObject(system, value + 9);
-            } else if (NuStrICmp(params[index], (char *)AICombatLastAttackerName) == 0) {
+            } else if (NuStrICmp(params[index], "last_attacker") == 0) {
                 opponent = object->last_attacker;
-            } else if ((value = NuStrIStr(params[index], (char *)AICombatOpponentTypeName)) != NULL) {
+            } else if ((value = NuStrIStr(params[index], "opponentType")) != NULL) {
                 type = 255;
                 if (LevelCharacterTypeIDFn != NULL && LevelCharacterGlobalIDFn != NULL) {
                     type = LevelCharacterTypeIDFn(value + 13);
@@ -4902,9 +4870,9 @@ i32 Action_AttackOpponent(AISYS_PC *system, AISCRIPTPROCESS_PC *processor, AIPAC
             value = NuStrIStr(params[index], (char *)AIPathGoalRangeName);
             if (value != NULL) {
                 packet->movement_instruction_parameter = AIParamToFloat(processor, value + 10);
-            } else if ((value = NuStrIStr(params[index], (char *)AIGameRangeName)) != NULL) {
+            } else if ((value = NuStrIStr(params[index], "range")) != NULL) {
                 packet->movement_instruction_parameter = AIParamToFloat(processor, value + 6);
-            } else if (NuStrICmp(params[index], (char *)AIGameJediGoodieAttackName) == 0) {
+            } else if (NuStrICmp(params[index], "jediGoodie_attack") == 0) {
                 processor->action_data_2 = 1;
             } else if ((value = NuStrIStr(params[index], (char *)AIGameAttackOverrideName)) != NULL) {
                 value += 16;
@@ -5032,16 +5000,16 @@ i32 Action_EngageOpponent(AISYS_PC *sys, AISCRIPTPROCESS_PC *processor, AIPACKET
                 explicit_fire_range = 1;
             } else if ((value = NuStrIStr(params[index], (char *)AIPathGoalRangeName)) != NULL) {
                 packet->movement_instruction_parameter = AIParamToFloat(processor, value + 10);
-            } else if ((value = NuStrIStr(params[index], (char *)AICombatMinimumRangeName)) != NULL) {
+            } else if ((value = NuStrIStr(params[index], "minrange=")) != NULL) {
                 packet->movement_instruction_parameter = AIParamToFloat(processor, value + 9);
                 processor->action_data_1 |= 2;
-            } else if (NuStrIStr(params[index], (char *)AICombatStaticName) != NULL) {
+            } else if (NuStrIStr(params[index], "static") != NULL) {
                 packet->movement_instruction_parameter = 0.0f;
             } else if (NuStrIStr(params[index], (char *)AICombatOffscreenName) != NULL) {
                 processor->action_data_1 |= 1;
             } else if (NuStrIStr(params[index], (char *)AICombatNoFireInMiniCutName) != NULL) {
                 processor->action_data_1 |= 4;
-            } else if (NuStrIStr(params[index], (char *)AICombatCircleName) != NULL) {
+            } else if (NuStrIStr(params[index], "circle") != NULL) {
                 typedef union AI_ENGAGE_CIRCLE_FLAGS_PC {
                     u32 raw;
 
@@ -5272,7 +5240,7 @@ i32 Action_ShootAtOpponent(AISYS_PC *sys, AISCRIPTPROCESS_PC *processor, AIPACKE
                 processor->action_data_3 = GetNamedGameObject(sys, value + 9);
             } else if (NuStrIStr(params[index], (char *)AICombatInstantName) != NULL) {
                 fraction = 0.0f;
-            } else if (NuStrICmp(params[index], (char *)AICombatFrontArcOnlyName) == 0) {
+            } else if (NuStrICmp(params[index], "frontArcOnly") == 0) {
                 processor->action_data_2 = 1;
             }
         }
@@ -5498,10 +5466,10 @@ i32 Action_FollowDirection(AISYS_PC *system, AISCRIPTPROCESS_PC *processor, AIPA
         processor->action_pos.z = 1.0f;
         random = NuRandFloat();
         for (index = 0; index < count; index++) {
-            value = NuStrIStr(params[index], (char *)AIGameStartName);
+            value = NuStrIStr(params[index], "start=");
             if (value != NULL) {
                 start = AIPathFindLocator(system, value + 6);
-            } else if ((value = NuStrIStr(params[index], (char *)AIGameEndName)) != NULL) {
+            } else if ((value = NuStrIStr(params[index], "end=")) != NULL) {
                 end = AIPathFindLocator(system, value + 4);
             } else if ((value = NuStrIStr(params[index], (char *)AIGameFireRangeName)) != NULL) {
                 processor->action_data_4 = AIParamToFloat(processor, value + 10);
@@ -5554,7 +5522,7 @@ i32 Action_PressSpecialButton(AISYS_PC *sys, AISCRIPTPROCESS_PC *processor, AIPA
     }
     if (first_time) {
         for (index = 0; index < param_count; ++index) {
-            if (NuStrICmp(params[index], (char *)AITransferLiteral757a38) == 0) {
+            if (NuStrICmp(params[index], "hold_button") == 0) {
                 processor->action_data_1 = 1;
             }
         }
@@ -5651,7 +5619,7 @@ i32 Action_SetInvulnerable(AISYS_PC *sys, AISCRIPTPROCESS_PC *processor, AIPACKE
             object = GetNamedGameObject(sys, value + 10);
         } else if (NuStrICmp(params[index], (char *)AIActionFalseName) == 0) {
             enabled = 0;
-        } else if (NuStrICmp(params[index], (char *)AITransferLiteral757a44) == 0) {
+        } else if (NuStrICmp(params[index], "still_do_take_hit_anim") == 0) {
             still_take_hit = 1;
         }
     }
@@ -5707,7 +5675,7 @@ i32 Action_DontAvoidCharacter(AISYS_PC *system, AISCRIPTPROCESS_PC *processor, A
                 object = GetNamedGameObject(system, value + 10);
                 continue;
             }
-            value = NuStrIStr(params[index], (char *)AITransferLiteral757a5c);
+            value = NuStrIStr(params[index], "dont_avoid=");
             if (value != NULL) {
                 dont_avoid = GetNamedGameObject(system, value + 11);
                 continue;
@@ -5852,7 +5820,7 @@ i32 Action_SetControlSystem(AISYS_PC *sys, AISCRIPTPROCESS_PC *processor, AIPACK
     if (param_5 != 0) {
         object->ai_packet.movement_stopped = 0;
         for (index = 0; index < param_4; ++index) {
-            if (NuStrICmp(params[index], (char *)AITransferLiteral757a70) == 0) {
+            if (NuStrICmp(params[index], "rotational") == 0) {
                 object->ai_packet.movement_stopped = 1;
             }
         }
@@ -6049,7 +6017,7 @@ i32 Action_SelectRandomSpline(AISYS_PC *sys, AISCRIPTPROCESS_PC *processor, AIPA
     if (first_time) {
         script_spline_selected = NULL;
         for (index = 0; index < param_count; ++index) {
-            value = NuStrIStr(params[index], (char *)AITransferLiteral757a94);
+            value = NuStrIStr(params[index], "splines=");
             if (value != NULL) {
                 count += NuSplineFindAllBeg(WORLD->current_gscn, value + 8, &splines[count], 32 - count);
             } else if ((value = NuStrIStr(params[index], (char *)AITransferLiteral757a84)) != NULL) {
@@ -6057,7 +6025,7 @@ i32 Action_SelectRandomSpline(AISYS_PC *sys, AISCRIPTPROCESS_PC *processor, AIPA
                 if (spline != NULL && count < 32) {
                     splines[count++] = spline;
                 }
-            } else if (NuStrIStr(params[index], (char *)AITransferLiteral757a8c) != NULL) {
+            } else if (NuStrIStr(params[index], "unused") != NULL) {
                 unused = 1;
             }
         }
@@ -6275,11 +6243,11 @@ i32 Action_SetCurrentSpeed(AISYS_PC *sys, AISCRIPTPROCESS_PC *processor, AIPACKE
         if (value != NULL) {
             named = GetNamedGameObjectCallback != NULL ? GetNamedGameObjectCallback(sys, value + 10) : NULL;
             object = named != NULL ? (GAMEOBJECT *)named->owner : NULL;
-        } else if (NuStrICmp((char *)AITransferLiteral757bb4, params[i]) == 0) {
+        } else if (NuStrICmp("speed=TIPTOE", params[i]) == 0) {
             speed_mode = 2;
-        } else if (NuStrICmp((char *)AITransferLiteral757ba8, params[i]) == 0) {
+        } else if (NuStrICmp("speed=WALK", params[i]) == 0) {
             speed_mode = 1;
-        } else if (NuStrICmp((char *)AITransferLiteral757b9c, params[i]) == 0) {
+        } else if (NuStrICmp("speed=RUN", params[i]) == 0) {
             speed_mode = 0;
         } else {
             speed = AIParamToFloat(processor, params[i]);
@@ -6326,22 +6294,22 @@ i32 Action_SetRunSpeed(AISYS_PC *system, AISCRIPTPROCESS_PC *processor, AIPACKET
         speed = 1000000000.0f;
         if (num_params != 0) {
             for (i = 0; i < num_params; i++) {
-                value = NuStrIStr(params[i], (char *)AIControlMultiplyName);
+                value = NuStrIStr(params[i], "multiply=");
                 if (value != NULL) {
                     multiplier = AIParamToFloat(processor, value + 9);
                     multiply = 1;
-                } else if (NuStrICmp(params[i], (char *)AIControlMaximumDefaultName) == 0) {
+                } else if (NuStrICmp(params[i], "max=default") == 0) {
                     maximum = object->character_data->game_character->run_speed;
                 } else if (NuStrICmp(params[i], (char *)GizmoDefaultOutputName) == 0) {
                     speed = object->character_data->game_character->run_speed;
-                } else if (NuStrICmp(params[i], (char *)AIControlClearName) == 0) {
+                } else if (NuStrICmp(params[i], "clear") == 0) {
                 } else if ((value = NuStrIStr(params[i], (char *)AIControlMaximumName)) != NULL) {
                     maximum = AIParamToFloat(processor, value + 4);
                 } else if ((value = NuStrIStr(params[i], (char *)AIControlMinimumName)) != NULL) {
                     minimum = AIParamToFloat(processor, value + 4);
-                } else if ((value = NuStrIStr(params[i], (char *)AIControlSeekName)) != NULL) {
+                } else if ((value = NuStrIStr(params[i], "seek=")) != NULL) {
                     processor->action_data_4 = AIParamToFloat(processor, value + 5);
-                } else if (NuStrIStr(params[i], (char *)AIControlPlayerRunSpeedName) != NULL) {
+                } else if (NuStrIStr(params[i], "player_run_speed") != NULL) {
                     speed = player->character_data->game_character->run_speed;
                 } else {
                     speed = AIParamToFloat(processor, params[i]);
@@ -6459,7 +6427,7 @@ i32 Action_SetHitPoints(AISYS_PC *sys, AISCRIPTPROCESS_PC *processor, AIPACKET_P
             if (message != NULL) {
                 hitpoints = (i32)message->value;
             }
-        } else if (NuStrICmp(params[i], (char *)AITransferLiteral757c10) == 0) {
+        } else if (NuStrICmp(params[i], "dont_set_max") == 0) {
             set_max = 0;
         } else if (NuStrICmp(params[i], (char *)GizmoDefaultOutputName) != 0) {
             hitpoints = (i32)AIParamToFloat(processor, params[i]);
@@ -6903,9 +6871,9 @@ i32 Action_UseCurrentSpeed(AISYS_PC *system, AISCRIPTPROCESS_PC *processor, AIPA
         for (; index < num_params; index++) {
             if (NuStrICmp(params[index], (char *)AIActionFalseName) == 0) {
                 object->flags_ef4 &= ~0x200000u;
-            } else if ((value = NuStrIStr(params[index], (char *)AIUseCurrentSpeedMultiplierName)) != NULL) {
+            } else if ((value = NuStrIStr(params[index], "multiplier")) != NULL) {
                 object->movement_speed_scale_pc = AIParamToFloat(processor, value + 11);
-            } else if (NuStrICmp(params[index], (char *)AIUseCurrentSpeedSnapName) == 0) {
+            } else if (NuStrICmp(params[index], "snaptospeed") == 0) {
                 snap = 1;
             }
         }
@@ -6938,11 +6906,11 @@ i32 Action_SetMaxMovementRange(AISYS_PC *system, AISCRIPTPROCESS_PC *processor, 
     range_type = 1;
     if (first_time != 0) {
         for (; index < count; index++) {
-            if (NuStrICmp((char *)AIControlDefaultTitleName, params[index]) == 0) {
+            if (NuStrICmp("Default", params[index]) == 0) {
                 range = DEFAULT_MOVE_RANGE;
-            } else if (NuStrICmp((char *)AIControlAllNonPartyName, params[index]) == 0) {
+            } else if (NuStrICmp("All_Non_Party", params[index]) == 0) {
                 all_non_party = 1;
-            } else if (NuStrICmp((char *)AIControlLocatorName, params[index]) == 0) {
+            } else if (NuStrICmp("Locator", params[index]) == 0) {
                 range_type = 2;
             } else {
                 range = AIParamToFloat(processor, params[index]);
@@ -7379,12 +7347,12 @@ i32 Action_CameraShake(AISYS_PC *sys, AISCRIPTPROCESS_PC *processor, AIPACKET_PC
     speed = 1.0f;
     if (param_5 != 0) {
         for (index = 0; index < param_4; ++index) {
-            value = NuStrIStr(params[index], (char *)AITransferLiteral757cd8);
+            value = NuStrIStr(params[index], "mul=");
             if (value != NULL) {
                 amount = AIParamToFloat(processor, value + 4);
             } else if ((value = NuStrIStr(params[index], (char *)AITransferLiteral757cd0)) != NULL) {
                 duration = AIParamToFloat(processor, value + 5);
-            } else if ((value = NuStrIStr(params[index], (char *)AITransferLiteral757cc8)) != NULL) {
+            } else if ((value = NuStrIStr(params[index], "speed=")) != NULL) {
                 speed = AIParamToFloat(processor, value + 6);
             }
         }
@@ -7468,7 +7436,7 @@ i32 Action_SetHint(AISYS_PC *sys, AISCRIPTPROCESS_PC *processor, AIPACKET_PC *pa
             value = NuStrIStr(params[index], (char *)AIActionIDName);
             if (value != NULL) {
                 hint_id = (i32)AIParamToFloat(processor, value + 3);
-            } else if (NuStrIStr(params[index], (char *)AIActionIgnoreDoneFlagNamePc) != NULL) {
+            } else if (NuStrIStr(params[index], "ignore_done_flag") != NULL) {
                 ignore_done = 1;
             }
         }
@@ -7938,9 +7906,9 @@ i32 Action_SetPath(AISYS_PC *sys, AISCRIPTPROCESS_PC *processor, AIPACKET_PC *pa
             if (value != NULL) {
                 named = GetNamedGameObjectCallback != NULL ? GetNamedGameObjectCallback(sys, value + 10) : NULL;
                 object = named != NULL ? (GAMEOBJECT *)named->owner : NULL;
-            } else if (NuStrIStr(params[index], (char *)AITransferLiteral757e70) != NULL) {
+            } else if (NuStrIStr(params[index], "path=LevelPath") != NULL) {
                 path = sys->path_sys->active_path;
-            } else if ((value = NuStrIStr(params[index], (char *)AITransferLiteral757e68)) != NULL) {
+            } else if ((value = NuStrIStr(params[index], "path")) != NULL) {
                 value += 5;
                 for (path_index = 0; path_index < path_system->path_count; ++path_index) {
                     if (NuStrICmp(path_system->paths[path_index]->name, value) == 0) {
@@ -8283,11 +8251,11 @@ i32 Action_PlayGizSpecial(AISYS_PC *sys, AISCRIPTPROCESS_PC *processor, AIPACKET
                 if (gizmo != NULL) {
                     special = gizmo->object;
                 }
-            } else if (NuStrICmp(params[index], (char *)AITransferLiteral757ea8) == 0) {
+            } else if (NuStrICmp(params[index], "backwards") == 0) {
                 backwards = 1;
             } else if (NuStrICmp(params[index], (char *)GizmoSnapOptionNamePc) == 0) {
                 snap = 1;
-            } else if (NuStrICmp(params[index], (char *)AITransferLiteral757eb4) == 0) {
+            } else if (NuStrICmp(params[index], "Restart") == 0) {
                 restart = 1;
             }
         }
@@ -8439,7 +8407,7 @@ i32 Action_SnapWeaponOut(AISYS_PC *sys, AISCRIPTPROCESS_PC *processor, AIPACKET_
                 value = NuStrIStr(params[index], (char *)AIGameCharacterName);
                 if (value != NULL) {
                     object = GetNamedGameObject(sys, value + 10);
-                } else if ((value = NuStrIStr(params[index], (char *)AITransferLiteral757ec4)) != NULL) {
+                } else if ((value = NuStrIStr(params[index], "keep_out=")) != NULL) {
                     keep_out = NuStrICmp(value + 9, (char *)AITransferLiteral757ebc) == 0;
                 } else if (NuStrICmp(params[index], (char *)AIActionFalseName) == 0) {
                     enabled = 0;
@@ -8736,7 +8704,7 @@ i32 Action_SetAnimSpeedMul(AISYS_PC *system, AISCRIPTPROCESS_PC *processor, AIPA
                 value = NuStrIStr(params[index], (char *)AIAnimSpeedValueName);
                 if (value != NULL) {
                     object->animation_speed_multiplier = AIParamToFloat(processor, value + 6);
-                } else if ((value = NuStrIStr(params[index], (char *)AIAnimSpeedMultiplyByName)) != NULL) {
+                } else if ((value = NuStrIStr(params[index], "multiply_by=")) != NULL) {
                     multiplier = AIParamToFloat(processor, value + 12);
                 } else if ((value = NuStrIStr(params[index], (char *)AIControlMaximumName)) != NULL) {
                     maximum = AIParamToFloat(processor, value + 4);
@@ -9329,17 +9297,17 @@ i32 Action_PlaySfx(AISYS_PC *sys, AISCRIPTPROCESS_PC *processor, AIPACKET_PC *pa
             name = value + 5;
             continue;
         }
-        value = NuStrIStr(params[index], (char *)PlayCountArgPrefix);
+        value = NuStrIStr(params[index], "playcount=");
         if (value != NULL) {
             play_count = (char)AIParamToFloat(processor, value + 10);
             continue;
         }
-        value = NuStrIStr(params[index], (char *)RepeatDelayArgPrefix);
+        value = NuStrIStr(params[index], "repdelay=");
         if (value != NULL) {
             repeat_delay = AIParamToFloat(processor, value + 9);
             continue;
         }
-        value = NuStrIStr(params[index], (char *)StartDelayArgPrefix);
+        value = NuStrIStr(params[index], "startdelay=");
         if (value != NULL) {
             start_delay = AIParamToFloat(processor, value + 11);
             continue;
@@ -9359,7 +9327,7 @@ i32 Action_PlaySfx(AISYS_PC *sys, AISCRIPTPROCESS_PC *processor, AIPACKET_PC *pa
             position.z = AIParamToFloat(processor, value + 2);
             continue;
         }
-        value = NuStrIStr(params[index], (char *)CharacterPosArgPrefix);
+        value = NuStrIStr(params[index], "character_pos=");
         if (value != NULL) {
             GAMEOBJECT *object;
             object = GetNamedGameObject(sys, value + 14);
@@ -9436,7 +9404,7 @@ i32 Action_CameraCut(AISYS_PC *system, AISCRIPTPROCESS_PC *processor, AIPACKET_P
                 use_current_camera = 1;
             } else if ((value = NuStrIStr(params[index], (char *)AICameraLiteral758084)) != NULL) {
                 start = AIParamToFloat(processor, value + 11);
-            } else if (NuStrICmp((char *)AICameraLiteral758070, params[index]) == 0) {
+            } else if (NuStrICmp("end_time=infinite", params[index]) == 0) {
                 end = 1000000000.0f;
             } else if ((value = NuStrIStr(params[index], (char *)AICameraLiteral758064)) != NULL) {
                 end = AIParamToFloat(processor, value + 9);
@@ -9458,7 +9426,7 @@ i32 Action_CameraCut(AISYS_PC *system, AISCRIPTPROCESS_PC *processor, AIPACKET_P
                 rotation_y = (i32)AIParamToFloat(processor, value + 5) * (65536 / 360.0f);
             } else if ((value = NuStrIStr(params[index], (char *)AICameraLiteral758008)) != NULL) {
                 rotation_x = -(i32)AIParamToFloat(processor, value + 5) * (65536 / 360.0f);
-            } else if (NuStrICmp(params[index], (char *)AICameraLiteral757ffc) == 0) {
+            } else if (NuStrICmp(params[index], "FollowTgt") == 0) {
                 follow_target = 1;
             } else if ((value = NuStrIStr(params[index], (char *)AICameraLiteral757ff0)) != NULL) {
                 camera_delta.x = AIParamToFloat(processor, value + 10);
@@ -9629,16 +9597,16 @@ i32 Action_DynamicCameraCut(AISYS_PC *system, AISCRIPTPROCESS_PC *processor, AIP
             if (NuStrICmp((char *)AICameraLiteral758090, params[index]) == 0) {
                 use_current_position = 1;
                 flags |= 0x100;
-            } else if ((value = NuStrIStr(params[index], (char *)AICameraLiteral758160)) != NULL) {
+            } else if ((value = NuStrIStr(params[index], "attach_to_spline=")) != NULL) {
                 flags |= 0x2000;
                 spline = NuSplineFind(WORLD->current_gscn, value + 17);
-            } else if ((value = NuStrIStr(params[index], (char *)AICameraLiteral75814c)) != NULL) {
+            } else if ((value = NuStrIStr(params[index], "spline_dist_offset=")) != NULL) {
                 flags |= 0x4000;
                 range = AIParamToFloat(processor, value + 17);
             } else if ((value = NuStrIStr(params[index], (char *)AICameraLiteral758084)) != NULL) {
                 flags |= 0x200;
                 start_time = AIParamToFloat(processor, value + 11);
-            } else if ((value = NuStrIStr(params[index], (char *)AICameraLiteral758140)) != NULL) {
+            } else if ((value = NuStrIStr(params[index], "blend_time=")) != NULL) {
                 flags |= 0x800;
                 blend_time = AIParamToFloat(processor, value + 11);
             } else if ((value = NuStrIStr(params[index], (char *)AICameraLiteral758054)) != NULL) {
@@ -9648,9 +9616,9 @@ i32 Action_DynamicCameraCut(AISYS_PC *system, AISCRIPTPROCESS_PC *processor, AIP
             } else if ((value = NuStrIStr(params[index], (char *)AICameraLiteral758064)) != NULL) {
                 flags |= 0x400;
                 end_time = AIParamToFloat(processor, value + 9);
-            } else if ((value = NuStrIStr(params[index], (char *)AICameraLiteral758134)) != NULL) {
+            } else if ((value = NuStrIStr(params[index], "max_time=")) != NULL) {
                 max_time = AIParamToFloat(processor, value + 9);
-            } else if ((value = NuStrIStr(params[index], (char *)AICameraLiteral758128)) != NULL) {
+            } else if ((value = NuStrIStr(params[index], "hold_time=")) != NULL) {
                 flags |= 0x1000;
                 hold_time = AIParamToFloat(processor, value + 10);
             } else if ((value = NuStrIStr(params[index], (char *)AICameraLiteral758034)) != NULL) {
@@ -9664,22 +9632,22 @@ i32 Action_DynamicCameraCut(AISYS_PC *system, AISCRIPTPROCESS_PC *processor, AIP
             } else if ((value = NuStrIStr(params[index], (char *)AITransferLiteral757724)) != NULL) {
                 flags |= 1;
                 range = AIParamToFloat(processor, value + 6);
-            } else if ((value = NuStrIStr(params[index], (char *)AICameraLiteral75811c)) != NULL) {
+            } else if ((value = NuStrIStr(params[index], "cont_roty=")) != NULL) {
                 flags |= 0x20;
                 rotation_y = (i32)((i32)AIParamToFloat(processor, value + 10) * 182.0444488525390625f);
             } else if ((value = NuStrIStr(params[index], (char *)AICameraLiteral758010)) != NULL) {
                 flags |= 0x4;
                 rotation_y = (i32)((i32)AIParamToFloat(processor, value + 5) * 182.0444488525390625f);
-            } else if ((value = NuStrIStr(params[index], (char *)AICameraLiteral758110)) != NULL) {
+            } else if ((value = NuStrIStr(params[index], "cont_rotx=")) != NULL) {
                 flags |= 0x10;
                 rotation_x = (i32)((i32)AIParamToFloat(processor, value + 10) * 182.0444488525390625f);
             } else if ((value = NuStrIStr(params[index], (char *)AICameraLiteral758008)) != NULL) {
                 flags |= 0x2;
                 rotation_x = (i32)(-(i32)AIParamToFloat(processor, value + 5) * 182.0444488525390625f);
-            } else if ((value = NuStrIStr(params[index], (char *)AICameraLiteral758104)) != NULL) {
+            } else if ((value = NuStrIStr(params[index], "cont_rotz=")) != NULL) {
                 flags |= 0x40;
                 rotation_z = (i32)((i32)AIParamToFloat(processor, value + 10) * 182.0444488525390625f);
-            } else if ((value = NuStrIStr(params[index], (char *)AICameraLiteral7580fc)) != NULL) {
+            } else if ((value = NuStrIStr(params[index], "rotz=")) != NULL) {
                 flags |= 0x8;
                 rotation_z = (i32)(-(i32)AIParamToFloat(processor, value + 5) * 182.0444488525390625f);
             } else if ((value = NuStrIStr(params[index], (char *)AICameraLiteral757fcc)) != NULL) {
@@ -9702,19 +9670,19 @@ i32 Action_DynamicCameraCut(AISYS_PC *system, AISCRIPTPROCESS_PC *processor, AIP
                 camera_offset.z = AIParamToFloat(processor, value + 10);
             } else if (NuStrICmp((char *)AICameraLiteral757f84, params[index]) == 0) {
                 borders = 0;
-            } else if (NuStrICmp((char *)AICameraLiteral7580f0, params[index]) == 0) {
+            } else if (NuStrICmp("mode=follow", params[index]) == 0) {
                 mode = 0;
-            } else if (NuStrICmp((char *)AICameraLiteral7580e4, params[index]) == 0) {
+            } else if (NuStrICmp("mode=static", params[index]) == 0) {
                 mode = 1;
-            } else if (NuStrICmp((char *)AICameraLiteral7580dc, params[index]) == 0) {
+            } else if (NuStrICmp("linear", params[index]) == 0) {
                 interpolation = 0;
-            } else if (NuStrICmp((char *)AICameraLiteral7580cc, params[index]) == 0) {
+            } else if (NuStrICmp("slowfastslow", params[index]) == 0) {
                 interpolation = 2;
-            } else if (NuStrICmp((char *)AICameraLiteral7580c0, params[index]) == 0) {
+            } else if (NuStrICmp("slowfast", params[index]) == 0) {
                 interpolation = 1;
-            } else if (NuStrICmp((char *)AICameraLiteral7580b0, params[index]) == 0) {
+            } else if (NuStrICmp("fastslowfast", params[index]) == 0) {
                 interpolation = 4;
-            } else if (NuStrICmp((char *)AICameraLiteral7580a4, params[index]) == 0) {
+            } else if (NuStrICmp("fastslow", params[index]) == 0) {
                 interpolation = 3;
             }
         }
@@ -9871,15 +9839,15 @@ i32 Action_SetForceBack(AISYS_PC *sys, AISCRIPTPROCESS_PC *processor, AIPACKET_P
             if (locator != NULL) {
                 position = &locator->position;
             }
-        } else if ((value = NuStrIStr(params[index], (char *)AITransferLiteral7581a0)) != NULL) {
+        } else if ((value = NuStrIStr(params[index], "radius=")) != NULL) {
             radius = AIParamToFloat(processor, value + 7);
         } else if (NuStrICmp(params[index], (char *)AIActionFalseName) == 0) {
             enabled = 0;
-        } else if (NuStrICmp(params[index], (char *)AITransferLiteral758194) == 0) {
+        } else if (NuStrICmp(params[index], "type=CHOKE") == 0) {
             type = 1;
-        } else if (NuStrICmp(params[index], (char *)AITransferLiteral758188) == 0) {
+        } else if (NuStrICmp(params[index], "type=DROID") == 0) {
             type = 2;
-        } else if (NuStrICmp(params[index], (char *)AITransferLiteral758174) == 0) {
+        } else if (NuStrICmp(params[index], "type=ComboOpponent") == 0) {
             type = 3;
         }
     }
@@ -9985,11 +9953,11 @@ i32 Action_SpinOnSpot(AISYS_PC *sys, AISCRIPTPROCESS_PC *processor, AIPACKET_PC 
     object = packet->owner->objptr;
     if (param_5 != 0) {
         for (index = 0; index < param_4; ++index) {
-            value = NuStrIStr(params[index], (char *)AITransferLiteral7581ec);
+            value = NuStrIStr(params[index], "mintime=");
             if (value != NULL) {
                 min_time = AIParamToFloatEx(packet, processor, value + 8);
             } else {
-                value = NuStrIStr(params[index], (char *)AITransferLiteral7581e0);
+                value = NuStrIStr(params[index], "maxtime=");
                 if (value != NULL) {
                     max_time = AIParamToFloatEx(packet, processor, value + 8);
                 } else {
@@ -9997,7 +9965,7 @@ i32 Action_SpinOnSpot(AISYS_PC *sys, AISCRIPTPROCESS_PC *processor, AIPACKET_PC 
                     if (value != NULL) {
                         processor->action_timer = AIParamToFloatEx(packet, processor, value + 5);
                     } else {
-                        value = NuStrIStr(params[index], (char *)AITransferLiteral7581d4);
+                        value = NuStrIStr(params[index], "rot_rate=");
                         if (value != NULL) {
                             processor->action_data_4 =
                                 (f32)((i32)(AIParamToFloatEx(packet, processor, value + 9) * 182.04444885253906));
@@ -10055,7 +10023,7 @@ i32 Action_FollowCharacter(AISYS_PC *system, AISCRIPTPROCESS_PC *processor, AIPA
                 processor->action_data_1 |= 1;
             } else if (NuStrICmp(params[index], (char *)AIGameOpponentName) == 0) {
                 processor->action_data_3 = packet->opponent;
-            } else if (NuStrICmp(params[index], (char *)AIGameTakeOverTargetName) == 0) {
+            } else if (NuStrICmp(params[index], "TakeOverTarget") == 0) {
                 owner = ((APIOBJECT_PC *)packet->owner)->owner;
                 processor->action_data_3 = owner->takeover_target;
             } else {
@@ -10091,7 +10059,7 @@ i32 Action_GameFollowPlayer(AISYS_PC *system, AISCRIPTPROCESS_PC *processor, AIP
                 processor->action_data_1 |= 2;
             } else if (NuStrICmp(params[index], (char *)AIPathCanGoOffPathName) == 0) {
                 processor->action_data_1 |= 1;
-            } else if (NuStrICmp(params[index], (char *)AIGameHoldSpecialButtonName) == 0) {
+            } else if (NuStrICmp(params[index], "hold_special_button") == 0) {
                 processor->action_data_2 = 1;
             } else if (NuStrICmp(params[index], (char *)AIGameNearestName) == 0) {
                 if (player != NULL && player2 != NULL) {
@@ -10153,21 +10121,21 @@ i32 Action_MoveForward(AISYS_PC *system, AISCRIPTPROCESS_PC *processor, AIPACKET
                     AIActionParseSpeedFn(params[index], &packet->goal_speed_mode) != 0) {
                     continue;
                 }
-                value = NuStrIStr(params[index], (char *)AIGameMinimumTurnName);
+                value = NuStrIStr(params[index], "min_turn");
                 if (value != NULL) {
                     minimum_turn = (i32)((i32)AIParamToFloat(processor, value + 9) * (f64)(65536.0f / 360.0f));
                     continue;
                 }
-                value = NuStrIStr(params[index], (char *)AIGameMaximumTurnName);
+                value = NuStrIStr(params[index], "max_turn");
                 if (value != NULL) {
                     maximum_turn = (i32)((i32)AIParamToFloat(processor, value + 9) * (f64)(65536.0f / 360.0f));
                     continue;
                 }
-                if (NuStrIStr(params[index], (char *)AIGameRandomTurnDirectionName) != NULL) {
+                if (NuStrIStr(params[index], "rand_turn_dir") != NULL) {
                     random_direction = 1;
                     continue;
                 }
-                value = NuStrIStr(params[index], (char *)AIGameTurnName);
+                value = NuStrIStr(params[index], "turn");
                 if (value != NULL) {
                     turn = (i32)((i32)AIParamToFloat(processor, value + 5) * (f64)(65536.0f / 360.0f));
                 }
@@ -10922,16 +10890,16 @@ i32 Action_SetLastAttacker(AISYS_PC *sys, AISCRIPTPROCESS_PC *processor, AIPACKE
             victim = GetNamedGameObject(sys, value + 7);
             continue;
         }
-        if (NuStrICmp(params[index], (char *)AITransferLiteral7583d0) == 0) {
+        if (NuStrICmp(params[index], "attacker=opponent") == 0) {
             if (packet != NULL && packet->opponent != NULL) {
                 attacker = ((APIOBJECT_PC *)packet->opponent)->owner;
             }
             continue;
         }
-        value = NuStrIStr(params[index], (char *)AITransferLiteral7583c4);
+        value = NuStrIStr(params[index], "attacker=");
         if (value != NULL) {
             attacker = GetNamedGameObject(sys, value + 9);
-        } else if (NuStrICmp(params[index], (char *)AITransferLiteral7583b4) == 0) {
+        } else if (NuStrICmp(params[index], "attacker=player") == 0) {
             attacker = sys->player_1->owner;
         }
     }
@@ -10956,13 +10924,13 @@ i32 Action_LinkTurretToController(AISYS_PC *system, AISCRIPTPROCESS_PC *processo
         return 1;
     }
     for (index = 0; index < param_count; ++index) {
-        value = NuStrIStr(params[index], (char *)AITransferLiteral7583f0);
+        value = NuStrIStr(params[index], "turret=");
         if (value != NULL) {
             gizmo = GizmoFindByName(WORLD->gizmo_sys, turret_gizmotype_id, value + 7);
             if (gizmo != NULL && gizmo->object != NULL) {
                 turret = gizmo->object;
             }
-        } else if ((value = NuStrIStr(params[index], (char *)AITransferLiteral7583e4)) != NULL) {
+        } else if ((value = NuStrIStr(params[index], "controller=")) != NULL) {
             {
                 lookup = GetNamedGameObjectCallback != NULL ? GetNamedGameObjectCallback(system, value + 11) : NULL;
                 controller = lookup != NULL ? (GAMEOBJECT *)lookup->owner : NULL;
@@ -11025,7 +10993,7 @@ i32 Action_TakeOver(AISYS_PC *sys, AISCRIPTPROCESS_PC *processor, AIPACKET_PC *p
                     if (packet->opponent != NULL) {
                         target = ((APIOBJECT_PC *)packet->opponent)->owner;
                     }
-                } else if (NuStrIStr(params[index], (char *)AITransferLiteral7583f8) != NULL) {
+                } else if (NuStrIStr(params[index], "release") != NULL) {
                     release = 1;
                 }
             }
@@ -11127,22 +11095,22 @@ i32 Action_AddGameMsgCount(AISYS_PC *unused0, AISCRIPTPROCESS_PC *processor, AIP
             object = packet->owner->objptr;
         }
         for (index = 0; index < param_count; ++index) {
-            if (NuStrICmp(AIActionMyPosNamePc, params[index]) == 0 && object != NULL) {
+            if (NuStrICmp("mypos", params[index]) == 0 && object != NULL) {
                 position = &object->collision_position;
-            } else if ((value = NuStrIStr(params[index], (char *)AIActionTotalPrefixPc)) != NULL) {
+            } else if ((value = NuStrIStr(params[index], "total=")) != NULL) {
                 total = (i32)AIParamToFloat(processor, value + 6);
-            } else if ((value = NuStrIStr(params[index], (char *)AIActionCountPrefixPc)) != NULL) {
+            } else if ((value = NuStrIStr(params[index], "count=")) != NULL) {
                 count = (i32)AIParamToFloat(processor, value + 6);
             } else if ((value = NuStrIStr(params[index], (char *)AITransferLiteral757c20)) != NULL) {
                 message = CheckGizAIMessage(gizaimessagesys, value + 11, NULL);
                 if (message != NULL) {
                     count = (i32)message->value;
                 }
-            } else if ((value = NuStrIStr(params[index], (char *)AIActionRedPrefixPc)) != NULL) {
+            } else if ((value = NuStrIStr(params[index], "Red=")) != NULL) {
                 red = (u8)AIParamToFloat(processor, value + 4);
-            } else if ((value = NuStrIStr(params[index], (char *)AIActionGreenPrefixPc)) != NULL) {
+            } else if ((value = NuStrIStr(params[index], "Green=")) != NULL) {
                 green = (u8)AIParamToFloat(processor, value + 6);
-            } else if ((value = NuStrIStr(params[index], (char *)AIActionBluePrefixPc)) != NULL) {
+            } else if ((value = NuStrIStr(params[index], "Blue=")) != NULL) {
                 blue = (u8)AIParamToFloat(processor, value + 5);
             }
         }
@@ -11166,7 +11134,7 @@ i32 Action_SetCanTakeOver(AISYS_PC *sys, AISCRIPTPROCESS_PC *processor, AIPACKET
     }
     if (object != NULL) {
         for (index = 0; index < param_4; ++index) {
-            if (NuStrICmp((char *)AITransferLiteral758430, params[index]) == 0) {
+            if (NuStrICmp("True", params[index]) == 0) {
                 object->flags_ef0 |= 0x40000000u;
             } else if (NuStrIStr(params[index], (char *)AIScriptFalse) != NULL) {
                 object->flags_ef0 &= ~0x40000000u;
@@ -11377,7 +11345,7 @@ i32 Action_AddMiscPickups(AISYS_PC *system, AISCRIPTPROCESS_PC *processor, AIPAC
                 object = named != NULL ? named->owner : NULL;
             } else if ((parameter = NuStrIStr(params[index], (char *)AIAnimSpeedValueName)) != NULL) {
                 value = (i32)AIParamToFloat(processor, parameter + 6);
-            } else if ((parameter = NuStrIStr(params[index], (char *)AIActionTorpedoPrefixPc)) != NULL) {
+            } else if ((parameter = NuStrIStr(params[index], "torpedo=")) != NULL) {
                 torpedo = (i32)AIParamToFloat(processor, parameter + 8);
             }
         }
@@ -11417,7 +11385,7 @@ i32 Action_SetLayer(AISYS_PC *system, AISCRIPTPROCESS_PC *process, AIPACKET_PC *
             }
             continue;
         }
-        value = NuStrIStr(params[index], (char *)AISetLayerKeywordPc);
+        value = NuStrIStr(params[index], "set_layer=");
         if (value != NULL) {
             layer = (i32)AIParamToFloat(process, value + 10);
             if (layer >= 1 && layer <= 32) {
@@ -11425,7 +11393,7 @@ i32 Action_SetLayer(AISYS_PC *system, AISCRIPTPROCESS_PC *process, AIPACKET_PC *
             }
             continue;
         }
-        value = NuStrIStr(params[index], (char *)AIClearLayerKeywordPc);
+        value = NuStrIStr(params[index], "clear_layer=");
         if (value != NULL) {
             layer = (i32)AIParamToFloat(process, value + 12);
             if (layer >= 1 && layer <= 32) {
@@ -11771,7 +11739,7 @@ i32 Action_SetAO_AttackersPerRow(AISYS_PC *unused0, AISCRIPTPROCESS_PC *processo
     if (first_time != 0) {
         if (count != 0) {
             for (index = 0; index < count; ++index) {
-                value = NuStrIStr(params[index], (char *)AIActionNumName);
+                value = NuStrIStr(params[index], "num");
                 if (value != NULL) {
                     oneAtOnce_SetAttackersPerRow((i32)AIParamToFloat(processor, value + 4));
                 }
@@ -11965,18 +11933,18 @@ i32 Action_CircleLocator(AISYS_PC *sys, AISCRIPTPROCESS_PC *processor, AIPACKET_
                     continue;
                 }
                 value = NuStrIStr(params[index], (char *)AIScriptActionNameArgPrefix);
-                if (value != NULL || (value = NuStrIStr(params[index], (char *)AIActionCircleTeleportName)) != NULL) {
+                if (value != NULL || (value = NuStrIStr(params[index], "teleport")) != NULL) {
                     value += NuStrLen((char *)AIScriptActionNameArgPrefix);
                     processor->action_data_3 = AIPathFindLocator(sys, value);
                 } else if ((value = NuStrIStr(params[index], (char *)AIPathGoalRangeName)) != NULL) {
                     value += NuStrLen((char *)AIPathGoalRangeName) + 1;
                     packet->movement_instruction_parameter = AIParamToFloatEx(packet, processor, value);
-                } else if (NuStrICmp(params[index], (char *)AIActionCircleReverseName) == 0) {
+                } else if (NuStrICmp(params[index], "reverse") == 0) {
                     packet->flags = (packet->flags & ~0x200u) |
                                     (~packet->flags & 0x200u); // MATCH-EXCEPTION: retail toggles a one-bit bitfield
-                } else if (NuStrICmp(params[index], (char *)AIActionCircleAnticlockwiseName) == 0) {
+                } else if (NuStrICmp(params[index], "anticlockwise") == 0) {
                     packet->flags &= ~0x200u;
-                } else if (NuStrICmp(params[index], (char *)AIActionCircleClockwiseName) == 0) {
+                } else if (NuStrICmp(params[index], "clockwise") == 0) {
                     packet->flags |= 0x200;
                 } else {
                     packet->movement_instruction_parameter = AIParamToFloatEx(packet, processor, params[index]);
@@ -12109,7 +12077,7 @@ i32 Action_AddTorpedoPacket(AISYS_PC *unused0, AISCRIPTPROCESS_PC *unused1, AIPA
     }
     if (first_time != 0) {
         for (index = 0; index < param_count; ++index) {
-            value = NuStrIStr(params[index], (char *)AIActionTorpedoNamePc);
+            value = NuStrIStr(params[index], "torpedo");
             if (value != NULL) {
                 count = (i32)AIParamToFloat(&packet->script_processor, value + 8);
                 if (count < 0) {
@@ -12117,7 +12085,7 @@ i32 Action_AddTorpedoPacket(AISYS_PC *unused0, AISCRIPTPROCESS_PC *unused1, AIPA
                 } else if (count > getMaxTorpedos(NULL)) {
                     count = getMaxTorpedos(NULL);
                 }
-            } else if (NuStrICmp(params[index], AIActionCanBeStolenNamePc) == 0) {
+            } else if (NuStrICmp(params[index], "CANBESTOLEN") == 0) {
                 flags |= 0x20;
             }
         }

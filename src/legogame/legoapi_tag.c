@@ -374,8 +374,7 @@ i32 TagCode(GAMEOBJECT *source, GAMEOBJECT *destination, i32 takeover, i32 blend
             do_player_tag = 0;
         }
         if (takeover != 0) {
-            if (AIScriptSetBaseScriptStateByName(&destination->ai_packet.script_processor,
-                                                 (char *)TakeOverState_JustBeenTakenOver) != 0) {
+            if (AIScriptSetBaseScriptStateByName(&destination->ai_packet.script_processor, "JustBeenTakenOver") != 0) {
                 AIScriptProcess(WORLD->ai_sys, (APIOBJECT_PC *)destination, &destination->ai_packet,
                                 &destination->ai_packet.script_processor, FRAMETIME);
             }
@@ -489,7 +488,7 @@ void Tag_Check(GAMEOBJECT *object) {
                                     GameAudio_PlaySfx(0x32, &object->collision_position, 0, 0);
                                     NewRumble(object->pad->bound_pad, 0.5f, 0.0f);
                                     if (AIScriptSetBaseScriptStateByName(&target->ai_packet.script_processor,
-                                                                         (char *)TakeOverState_MapRunAway) != 0) {
+                                                                         "MapRunAway") != 0) {
                                         AIScriptProcess(WORLD->ai_sys, (APIOBJECT_PC *)target, &target->ai_packet,
                                                         &target->ai_packet.script_processor, FRAMETIME);
                                     }

@@ -346,7 +346,6 @@ typedef union DRAW_ATTACHMENTS_PACKET_PC {
  * Retail private ABI: object=EAX; f32 result=ST0.
  * The two calculated return paths require a final f32 store/reload.
  */
-extern const f32 CharacterWeaponScaleUpperBoundPc;
 f32 DropInOutScale(GAMEOBJECT *object);
 
 /* Private native PC 41cb50/2038 draft; integrate only after source review. */
@@ -398,133 +397,6 @@ typedef struct ai_creature_init_packet_pc_s {
     void *area;
     void *locator;
 } AI_CREATURE_INIT_PACKET_PC;
-
-#pragma const_seg(".rdata$SpecialLayerName_bombbackpack")
-static const char SpecialLayerName_bombbackpack[13] = "bombbackpack";
-#pragma const_seg()
-#pragma const_seg(".rdata$SpecialLayerName_sonargun")
-static const char SpecialLayerName_sonargun[9] = "sonargun";
-#pragma const_seg()
-#pragma const_seg(".rdata$SpecialLayerName_infrared_goggles")
-static const char SpecialLayerName_infrared_goggles[17] = "infrared_goggles";
-#pragma const_seg()
-#pragma const_seg(".rdata$SpecialLayerName_mask_black")
-static const char SpecialLayerName_mask_black[11] = "mask_black";
-#pragma const_seg()
-#pragma const_seg(".rdata$SpecialLayerName_mask_blue")
-static const char SpecialLayerName_mask_blue[10] = "mask_blue";
-#pragma const_seg()
-#pragma const_seg(".rdata$SpecialLayerName_mask_red")
-static const char SpecialLayerName_mask_red[9] = "mask_red";
-#pragma const_seg()
-#pragma const_seg(".rdata$SpecialLayerName_cape_black")
-static const char SpecialLayerName_cape_black[11] = "cape_black";
-#pragma const_seg()
-#pragma const_seg(".rdata$SpecialLayerName_cape_blue")
-static const char SpecialLayerName_cape_blue[10] = "cape_blue";
-#pragma const_seg()
-#pragma const_seg(".rdata$SpecialLayerName_body_grey_nextgen")
-static const char SpecialLayerName_body_grey_nextgen[18] = "body_grey_nextgen";
-#pragma const_seg()
-#pragma const_seg(".rdata$SpecialLayerName_body_grey_high")
-static const char SpecialLayerName_body_grey_high[15] = "body_grey_high";
-#pragma const_seg()
-#pragma const_seg(".rdata$SpecialLayerName_body_grey_low")
-static const char SpecialLayerName_body_grey_low[14] = "body_grey_low";
-#pragma const_seg()
-#pragma const_seg(".rdata$SpecialLayerName_body_black_nextgen")
-static const char SpecialLayerName_body_black_nextgen[19] = "body_black_nextgen";
-#pragma const_seg()
-#pragma const_seg(".rdata$SpecialLayerName_body_black_high")
-static const char SpecialLayerName_body_black_high[16] = "body_black_high";
-#pragma const_seg()
-#pragma const_seg(".rdata$SpecialLayerName_body_black_low")
-static const char SpecialLayerName_body_black_low[15] = "body_black_low";
-#pragma const_seg()
-#pragma const_seg(".rdata$SpecialLayerName_body_blue_nextgen")
-static const char SpecialLayerName_body_blue_nextgen[18] = "body_blue_nextgen";
-#pragma const_seg()
-#pragma const_seg(".rdata$SpecialLayerName_body_blue_high")
-static const char SpecialLayerName_body_blue_high[15] = "body_blue_high";
-#pragma const_seg()
-#pragma const_seg(".rdata$SpecialLayerName_body_blue_low")
-static const char SpecialLayerName_body_blue_low[14] = "body_blue_low";
-#pragma const_seg()
-#pragma const_seg(".rdata$SpecialLayerName_face_hands_black")
-static const char SpecialLayerName_face_hands_black[17] = "face_hands_black";
-#pragma const_seg()
-#pragma const_seg(".rdata$SpecialLayerName_face_hands_blue")
-static const char SpecialLayerName_face_hands_blue[16] = "face_hands_blue";
-#pragma const_seg()
-#pragma const_seg(".rdata$SpecialLayerName_face_hands_red")
-static const char SpecialLayerName_face_hands_red[15] = "face_hands_red";
-#pragma const_seg()
-#pragma const_seg(".rdata$SpecialLayerName_hips_black_nextgen")
-static const char SpecialLayerName_hips_black_nextgen[19] = "hips_black_nextgen";
-#pragma const_seg()
-#pragma const_seg(".rdata$SpecialLayerName_hips_black_high")
-static const char SpecialLayerName_hips_black_high[16] = "hips_black_high";
-#pragma const_seg()
-#pragma const_seg(".rdata$SpecialLayerName_hips_blue_nextgen")
-static const char SpecialLayerName_hips_blue_nextgen[18] = "hips_blue_nextgen";
-#pragma const_seg()
-#pragma const_seg(".rdata$SpecialLayerName_hips_blue_high")
-static const char SpecialLayerName_hips_blue_high[15] = "hips_blue_high";
-#pragma const_seg()
-#pragma const_seg(".rdata$SpecialLayerName_hips_red_nextgen")
-static const char SpecialLayerName_hips_red_nextgen[17] = "hips_red_nextgen";
-#pragma const_seg()
-#pragma const_seg(".rdata$SpecialLayerName_hips_red_high")
-static const char SpecialLayerName_hips_red_high[14] = "hips_red_high";
-#pragma const_seg()
-#pragma const_seg(".rdata$SpecialLayerName_magnetic_boots")
-static const char SpecialLayerName_magnetic_boots[15] = "magnetic_boots";
-#pragma const_seg()
-#pragma const_seg(".rdata$SpecialLayerName_scuba_gear")
-static const char SpecialLayerName_scuba_gear[11] = "scuba_gear";
-#pragma const_seg()
-#pragma const_seg(".rdata$SpecialLayerName_hack_pack")
-static const char SpecialLayerName_hack_pack[10] = "hack_pack";
-#pragma const_seg()
-#pragma const_seg(".rdata$SpecialLayerName_vacuum_gun")
-static const char SpecialLayerName_vacuum_gun[11] = "vacuum_gun";
-#pragma const_seg()
-#pragma const_seg(".rdata$SpecialLayerName_nextgen_limbs_green")
-static const char SpecialLayerName_nextgen_limbs_green[20] = "nextgen_limbs_green";
-#pragma const_seg()
-#pragma const_seg(".rdata$SpecialLayerName_hires_limbs_green")
-static const char SpecialLayerName_hires_limbs_green[18] = "hires_limbs_green";
-#pragma const_seg()
-#pragma const_seg(".rdata$SpecialLayerName_lowres_limbs_green")
-static const char SpecialLayerName_lowres_limbs_green[19] = "lowres_limbs_green";
-#pragma const_seg()
-#pragma const_seg(".rdata$SpecialLayerName_nextgen_limbs_white")
-static const char SpecialLayerName_nextgen_limbs_white[20] = "nextgen_limbs_white";
-#pragma const_seg()
-#pragma const_seg(".rdata$SpecialLayerName_hires_limbs_white")
-static const char SpecialLayerName_hires_limbs_white[18] = "hires_limbs_white";
-#pragma const_seg()
-#pragma const_seg(".rdata$SpecialLayerName_lowres_limbs_white")
-static const char SpecialLayerName_lowres_limbs_white[19] = "lowres_limbs_white";
-#pragma const_seg()
-#pragma const_seg(".rdata$SpecialLayerName_nextgen_limbs_grey")
-static const char SpecialLayerName_nextgen_limbs_grey[19] = "nextgen_limbs_grey";
-#pragma const_seg()
-#pragma const_seg(".rdata$SpecialLayerName_hires_limbs_grey")
-static const char SpecialLayerName_hires_limbs_grey[17] = "hires_limbs_grey";
-#pragma const_seg()
-#pragma const_seg(".rdata$SpecialLayerName_lowres_limbs_grey")
-static const char SpecialLayerName_lowres_limbs_grey[18] = "lowres_limbs_grey";
-#pragma const_seg()
-#pragma const_seg(".rdata$SpecialLayerName_nextgen_limbs_blue")
-static const char SpecialLayerName_nextgen_limbs_blue[19] = "nextgen_limbs_blue";
-#pragma const_seg()
-#pragma const_seg(".rdata$SpecialLayerName_hires_limbs_blue")
-static const char SpecialLayerName_hires_limbs_blue[17] = "hires_limbs_blue";
-#pragma const_seg()
-#pragma const_seg(".rdata$SpecialLayerName_lowres_limbs_blue")
-static const char SpecialLayerName_lowres_limbs_blue[18] = "lowres_limbs_blue";
-#pragma const_seg()
 
 /* Private source fragment for src/legoapi/players.c; not a standalone TU.
  * Retail private ABI: Copy src=EAX,dst=ECX; other helpers matrix=EAX,angle=ECX.
@@ -1411,7 +1283,7 @@ void MovePlayerSpline(GAMEOBJECT *object) {
         } else if (target_roll > 0x2000) {
             target_roll = 0x2000;
         }
-        object->movement_lean_angle = SeekRot(object->movement_lean_angle, target_roll, MoveSplineTurnRate);
+        object->movement_lean_angle = SeekRot(object->movement_lean_angle, target_roll, 8.0f);
     }
     APIObjectVelocities(object);
     GameObjectOrigin(object);
@@ -2676,7 +2548,7 @@ static f32 ParaphernaliaWeaponScalePc(GAMEOBJECT *object) {
     f32 *frame;
     if (object->character_data->game_character->hover_fall_mode == 9) {
         frame = AnimPlaying(&object->anim_packet, 0x5e, 1, 0);
-        if (frame != NULL && *frame >= 18.0f && *frame <= CharacterWeaponScaleUpperBoundPc) {
+        if (frame != NULL && *frame >= 18.0f && *frame <= 65.0f) {
             if (*frame <= 27.0) {
                 return (f32)(((f64)*frame - 18.0) / 9.0);
             }
@@ -3183,48 +3055,27 @@ GAMEOBJECT *GetOtherActivePlayer(GAMEOBJECT *object) {
 
 #pragma data_seg(".data$SpecialLayer")
 static SPECIAL_LAYER_PC SpecialLayer[42] = {
-    {&ID_DEFAULTCHARACTER_A, SpecialLayerName_bombbackpack, 0},
-    {&ID_DEFAULTCHARACTER_A, SpecialLayerName_sonargun, 0},
-    {&ID_DEFAULTCHARACTER_A, SpecialLayerName_infrared_goggles, 0},
-    {&ID_DEFAULTCHARACTER_A, SpecialLayerName_mask_black, 0},
-    {&ID_DEFAULTCHARACTER_A, SpecialLayerName_mask_blue, 0},
-    {&ID_DEFAULTCHARACTER_A, SpecialLayerName_mask_red, 0},
-    {&ID_DEFAULTCHARACTER_A, SpecialLayerName_cape_black, 0},
-    {&ID_DEFAULTCHARACTER_A, SpecialLayerName_cape_blue, 0},
-    {&ID_DEFAULTCHARACTER_A, SpecialLayerName_body_grey_nextgen, 0},
-    {&ID_DEFAULTCHARACTER_A, SpecialLayerName_body_grey_high, 0},
-    {&ID_DEFAULTCHARACTER_A, SpecialLayerName_body_grey_low, 0},
-    {&ID_DEFAULTCHARACTER_A, SpecialLayerName_body_black_nextgen, 0},
-    {&ID_DEFAULTCHARACTER_A, SpecialLayerName_body_black_high, 0},
-    {&ID_DEFAULTCHARACTER_A, SpecialLayerName_body_black_low, 0},
-    {&ID_DEFAULTCHARACTER_A, SpecialLayerName_body_blue_nextgen, 0},
-    {&ID_DEFAULTCHARACTER_A, SpecialLayerName_body_blue_high, 0},
-    {&ID_DEFAULTCHARACTER_A, SpecialLayerName_body_blue_low, 0},
-    {&ID_DEFAULTCHARACTER_A, SpecialLayerName_face_hands_black, 0},
-    {&ID_DEFAULTCHARACTER_A, SpecialLayerName_face_hands_blue, 0},
-    {&ID_DEFAULTCHARACTER_A, SpecialLayerName_face_hands_red, 0},
-    {&ID_DEFAULTCHARACTER_A, SpecialLayerName_hips_black_nextgen, 0},
-    {&ID_DEFAULTCHARACTER_A, SpecialLayerName_hips_black_high, 0},
-    {&ID_DEFAULTCHARACTER_A, SpecialLayerName_hips_blue_nextgen, 0},
-    {&ID_DEFAULTCHARACTER_A, SpecialLayerName_hips_blue_high, 0},
-    {&ID_DEFAULTCHARACTER_A, SpecialLayerName_hips_red_nextgen, 0},
-    {&ID_DEFAULTCHARACTER_A, SpecialLayerName_hips_red_high, 0},
-    {&ID_DEFAULTCHARACTER_B, SpecialLayerName_magnetic_boots, 0},
-    {&ID_DEFAULTCHARACTER_B, SpecialLayerName_scuba_gear, 0},
-    {&ID_DEFAULTCHARACTER_B, SpecialLayerName_hack_pack, 0},
-    {&ID_DEFAULTCHARACTER_B, SpecialLayerName_vacuum_gun, 0},
-    {&ID_DEFAULTCHARACTER_B, SpecialLayerName_nextgen_limbs_green, 0},
-    {&ID_DEFAULTCHARACTER_B, SpecialLayerName_hires_limbs_green, 0},
-    {&ID_DEFAULTCHARACTER_B, SpecialLayerName_lowres_limbs_green, 0},
-    {&ID_DEFAULTCHARACTER_B, SpecialLayerName_nextgen_limbs_white, 0},
-    {&ID_DEFAULTCHARACTER_B, SpecialLayerName_hires_limbs_white, 0},
-    {&ID_DEFAULTCHARACTER_B, SpecialLayerName_lowres_limbs_white, 0},
-    {&ID_DEFAULTCHARACTER_B, SpecialLayerName_nextgen_limbs_grey, 0},
-    {&ID_DEFAULTCHARACTER_B, SpecialLayerName_hires_limbs_grey, 0},
-    {&ID_DEFAULTCHARACTER_B, SpecialLayerName_lowres_limbs_grey, 0},
-    {&ID_DEFAULTCHARACTER_B, SpecialLayerName_nextgen_limbs_blue, 0},
-    {&ID_DEFAULTCHARACTER_B, SpecialLayerName_hires_limbs_blue, 0},
-    {&ID_DEFAULTCHARACTER_B, SpecialLayerName_lowres_limbs_blue, 0},
+    {&ID_DEFAULTCHARACTER_A, "bombbackpack", 0},        {&ID_DEFAULTCHARACTER_A, "sonargun", 0},
+    {&ID_DEFAULTCHARACTER_A, "infrared_goggles", 0},    {&ID_DEFAULTCHARACTER_A, "mask_black", 0},
+    {&ID_DEFAULTCHARACTER_A, "mask_blue", 0},           {&ID_DEFAULTCHARACTER_A, "mask_red", 0},
+    {&ID_DEFAULTCHARACTER_A, "cape_black", 0},          {&ID_DEFAULTCHARACTER_A, "cape_blue", 0},
+    {&ID_DEFAULTCHARACTER_A, "body_grey_nextgen", 0},   {&ID_DEFAULTCHARACTER_A, "body_grey_high", 0},
+    {&ID_DEFAULTCHARACTER_A, "body_grey_low", 0},       {&ID_DEFAULTCHARACTER_A, "body_black_nextgen", 0},
+    {&ID_DEFAULTCHARACTER_A, "body_black_high", 0},     {&ID_DEFAULTCHARACTER_A, "body_black_low", 0},
+    {&ID_DEFAULTCHARACTER_A, "body_blue_nextgen", 0},   {&ID_DEFAULTCHARACTER_A, "body_blue_high", 0},
+    {&ID_DEFAULTCHARACTER_A, "body_blue_low", 0},       {&ID_DEFAULTCHARACTER_A, "face_hands_black", 0},
+    {&ID_DEFAULTCHARACTER_A, "face_hands_blue", 0},     {&ID_DEFAULTCHARACTER_A, "face_hands_red", 0},
+    {&ID_DEFAULTCHARACTER_A, "hips_black_nextgen", 0},  {&ID_DEFAULTCHARACTER_A, "hips_black_high", 0},
+    {&ID_DEFAULTCHARACTER_A, "hips_blue_nextgen", 0},   {&ID_DEFAULTCHARACTER_A, "hips_blue_high", 0},
+    {&ID_DEFAULTCHARACTER_A, "hips_red_nextgen", 0},    {&ID_DEFAULTCHARACTER_A, "hips_red_high", 0},
+    {&ID_DEFAULTCHARACTER_B, "magnetic_boots", 0},      {&ID_DEFAULTCHARACTER_B, "scuba_gear", 0},
+    {&ID_DEFAULTCHARACTER_B, "hack_pack", 0},           {&ID_DEFAULTCHARACTER_B, "vacuum_gun", 0},
+    {&ID_DEFAULTCHARACTER_B, "nextgen_limbs_green", 0}, {&ID_DEFAULTCHARACTER_B, "hires_limbs_green", 0},
+    {&ID_DEFAULTCHARACTER_B, "lowres_limbs_green", 0},  {&ID_DEFAULTCHARACTER_B, "nextgen_limbs_white", 0},
+    {&ID_DEFAULTCHARACTER_B, "hires_limbs_white", 0},   {&ID_DEFAULTCHARACTER_B, "lowres_limbs_white", 0},
+    {&ID_DEFAULTCHARACTER_B, "nextgen_limbs_grey", 0},  {&ID_DEFAULTCHARACTER_B, "hires_limbs_grey", 0},
+    {&ID_DEFAULTCHARACTER_B, "lowres_limbs_grey", 0},   {&ID_DEFAULTCHARACTER_B, "nextgen_limbs_blue", 0},
+    {&ID_DEFAULTCHARACTER_B, "hires_limbs_blue", 0},    {&ID_DEFAULTCHARACTER_B, "lowres_limbs_blue", 0},
 };
 #pragma data_seg()
 

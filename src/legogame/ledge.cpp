@@ -531,11 +531,8 @@ extern "C" {
 }
 
 extern "C" {
-#pragma const_seg(".rdata$PCLedgeOutputTextPc")
-    extern const char PCLedgeOutputTextPc[7] = "CanUse";
-#pragma const_seg()
 #pragma data_seg(".data$LedgeOutputNamePc")
-    char *LedgeOutputNamePc = (char *)PCLedgeOutputTextPc;
+    char *LedgeOutputNamePc = "CanUse";
 #pragma data_seg()
 #pragma data_seg(".data$LedgeRegistryNamePc")
     char *LedgeRegistryNamePc = (char *)PCContextName_Ledge;

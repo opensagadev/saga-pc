@@ -1,5 +1,4 @@
 #include "saga.h"
-extern const f32 DebrisGlassMaterialOpacity;
 
 typedef struct debris_material_flags_pc_s {
     u32 alpha_mode : 4;       // 0x0:0
@@ -48,7 +47,7 @@ NUMTL *CreateAlphaBlendTexture(VARIPTR *buffer, VARIPTR buffer_end, char *name, 
     material->diffuse.x = 1.0f;
     material->diffuse.y = 1.0f;
     material->diffuse.z = 1.0f;
-    material->opacity = DebrisGlassMaterialOpacity;
+    material->opacity = 0.999f;
     material->attribs.cull_mode = 2;
     material->attribs.z_mode = (u32)depth_mode & 3;
     material->attribs.unknown_2_1_2 = 2;

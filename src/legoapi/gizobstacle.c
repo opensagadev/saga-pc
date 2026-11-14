@@ -845,8 +845,8 @@ void GizObstacles_AddTrigger(NUVEC *position) {
         GizObstacleTriggersPc[ngizobstacletriggers++] = position;
     } else {
         message_position = v001;
-        AddGameMessage((char *)GizObstacleTriggerLimitMessagePc, &message_position, 0.4f, NULL, 0.4f, 200, 200, 200,
-                       0x2080, 0.0f);
+        AddGameMessage("MAXGIZOBSTACLETRIGGERS needs increasing, ask a programmer!", &message_position, 0.4f, NULL,
+                       0.4f, 200, 200, 200, 0x2080, 0.0f);
     }
 }
 

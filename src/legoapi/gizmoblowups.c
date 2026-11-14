@@ -129,8 +129,6 @@ STATIC_ASSERT(offsetof(GAMEANIMOBJ, special) == 4);
 extern char TextInputKeyNameTextPc7516c0[1];
 extern char *BlowupOutputNamesPc[3];
 extern char SpinnerOutputBufferPc[14];
-extern const char SpinnerCompleteSuffixPc[12];
-extern const char SpinnerAllCompletePc[15];
 
 typedef struct {
     u32 built[2];        // 0x00
@@ -266,8 +264,6 @@ STATIC_ASSERT(offsetof(GIZSPINNER_s, rotation) == 0x7c);
 STATIC_ASSERT(offsetof(GIZSPINNER_s, target_rotation) == 0x7e);
 STATIC_ASSERT(offsetof(GIZSPINNER_s, primary_anim_obj) == 0x6c);
 STATIC_ASSERT(offsetof(GAMEANIMSET, state) == 0xc);
-#pragma const_seg(".rdata$GizmoRegistryGizPanelNamePc")
-#pragma const_seg()
 void GizmoBlowupCreateStuff(GIZMOBLOWUP_PC *);
 STATIC_ASSERT(offsetof(GIZMOBLOWUPTYPE_PC, anti_node_data) == 0xb4);
 STATIC_ASSERT(offsetof(GIZMOBLOWUP_PC, anti_node) == 0xd8);
@@ -411,39 +407,12 @@ STATIC_ASSERT(offsetof(NUGSCN, instance_animation_data) == 0x54);
 STATIC_ASSERT(offsetof(NUINSTANIM, flags) == 0x50);
 STATIC_ASSERT(offsetof(WORLDINFO, game_antinode_sys) == 0x510c);
 
-#pragma const_seg(".rdata$BlowupBlownupOutputTextPc")
-const char BlowupBlownupOutputTextPc[8] = "Blownup";
-#pragma const_seg()
-#pragma const_seg(".rdata$BlowupPunchedOutputTextPc")
-const char BlowupPunchedOutputTextPc[8] = "Punched";
-#pragma const_seg()
-#pragma const_seg(".rdata$BlowupPluggingOutputTextPc")
-const char BlowupPluggingOutputTextPc[9] = "Plugging";
-#pragma const_seg()
-#pragma const_seg(".rdata$SpinnerCompleteSuffixPc")
-const char SpinnerCompleteSuffixPc[12] = "%% Complete";
-#pragma const_seg()
-#pragma const_seg(".rdata$SpinnerAllCompletePc")
-const char SpinnerAllCompletePc[15] = "100%% Complete";
-#pragma const_seg()
-#pragma const_seg(".rdata$TurretDestroyedOutputTextPc")
-const char TurretDestroyedOutputTextPc[10] = "destroyed";
-#pragma const_seg()
-#pragma const_seg(".rdata$TurretFiredOutputTextPc")
-const char TurretFiredOutputTextPc[6] = "fired";
-#pragma const_seg()
-#pragma const_seg(".rdata$TurretFiredShotsFormatPc")
-const char TurretFiredShotsFormatPc[15] = "Fired %d Shots";
-#pragma const_seg()
 #pragma data_seg(".data$SpinnerOutputBufferPc")
 char SpinnerOutputBufferPc[14] = "100% Complete";
 #pragma data_seg()
 #pragma data_seg(".data$TurretOutputBufferPc")
 char TurretOutputBufferPc[32] = {0};
 #pragma data_seg()
-#pragma const_seg(".rdata$GizmoRegistryNewBlowupNamePc")
-const char GizmoRegistryNewBlowupNamePc[] = "blowup";
-#pragma const_seg()
 #pragma const_seg(".rdata$GizmoRegistrySpinnerNamePc")
 const char GizmoRegistrySpinnerNamePc[] = "Spinner";
 #pragma const_seg()
@@ -580,8 +549,7 @@ i32 Blowup_GetOutput(GIZMO_PC *gizmo, i32 output, i32 ignored) {
 }
 
 #pragma data_seg(".data$BlowupOutputNamesPc")
-char *BlowupOutputNamesPc[3] = {(char *)BlowupBlownupOutputTextPc, (char *)BlowupPunchedOutputTextPc,
-                                (char *)BlowupPluggingOutputTextPc};
+char *BlowupOutputNamesPc[3] = {"Blownup", "Punched", "Plugging"};
 #pragma data_seg()
 
 char *Blowup_GetOutputName(GIZMO_PC *gizmo, i32 output) {
@@ -2667,7 +2635,7 @@ void GizmoBlowupBurstDraw(void *world_pointer, void *data, f32 frame_time) {
     ResetShadowMapRendering();
 }
 
-char *GizmoRegistryNewBlowupNamePtrPc = (char *)GizmoRegistryNewBlowupNamePc;
+char *GizmoRegistryNewBlowupNamePtrPc = "blowup";
 static ADDGIZMOTYPE_PC GizmoRegistryNewBlowupAddTypePc = {0};
 
 ADDGIZMOTYPE_PC *NewBlowup_RegisterGizmo(i32 type_id) {

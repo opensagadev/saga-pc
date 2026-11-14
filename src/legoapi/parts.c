@@ -2136,7 +2136,7 @@ void DebrisDraw(i32 unused, i32 pass) {
     if (debris_suspended != 0) {
         return;
     }
-    _NuTimeBarSlotBegin(0, 12, DebrisTimeBarName);
+    _NuTimeBarSlotBegin(0, 12, "deb");
     DebMat[7]->texture_id = (i16)debris_rt;
     for (chunk = ParticleChunkRenderStack[pass]; chunk != NULL; chunk = chunk->next) {
         DEBRIS_INFO_PC *effect;

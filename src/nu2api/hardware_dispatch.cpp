@@ -38,7 +38,7 @@ extern "C" i32 NuInitHardwarePc(VARIPTR *buffer, VARIPTR *end, i32 allocate, ...
     void **pads[4] = {NULL, NULL, NULL, NULL};
     const char **dat_names = NULL;
     const char *parameter_2e = NuHwDefaultParameterPc;
-    const char *config_name = NuHwDefaultConfigNamePc;
+    const char *config_name = "TTalesKey";
     void *parameter_2d = NULL;
     void *parameter_30 = NULL;
     void *parameter_31 = NULL;

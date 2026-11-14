@@ -450,7 +450,7 @@ void AddSurfaceRipples(GAMEOBJECT *object) {
             }
             /* The native sound position remains unwritten when no particles are emitted. */
             if (contact_timer->timer <= 0) {
-                PlaySfx((char *)RippleForceFieldSoundNamePc, &position);
+                PlaySfx("SabFField", &position);
                 contact_timer->timer = RippleSfxCooldownPc;
             }
         }

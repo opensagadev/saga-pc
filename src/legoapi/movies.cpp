@@ -19,17 +19,10 @@ extern "C" {
     i32 NuFmvPlayV(i32 tag, ...);
 }
 
-extern "C" {
-#pragma const_seg(".rdata$MoviesListPathPc")
-    extern const char MoviesListPathPc[18] = "movies\\movies.txt";
-#pragma const_seg()
-}
+extern "C" {}
 extern "C" {
     i32 MovieCountPc = 0;
     char (*MovieListPc)[32] = NULL;
-#pragma const_seg(".rdata$MoviesListKeywordPc")
-    const char MoviesListKeywordPc[6] = "movie";
-#pragma const_seg()
 
     void Movies_ConfigureList(char *path, VARIPTR *buffer, VARIPTR *buffer_end) {
         NUFPAR_PC *parser;
@@ -46,7 +39,7 @@ extern "C" {
         MovieCountPc = 0;
         while (NuFParGetLine(parser) != 0) {
             NuFParGetWord(parser);
-            if (NuStrICmp(parser->word_buffer_ptr, (char *)MoviesListKeywordPc) != 0) {
+            if (NuStrICmp(parser->word_buffer_ptr, "movie") != 0) {
                 continue;
             }
             if (NuFParGetWord(parser) == 0) {

@@ -603,12 +603,12 @@ extern "C" int NuMain(int argc, char **argv) {
     edGraInitTerrainSwapProtection();
 
     NuDatHandles.previous = NuDatGet();
-    NuDatHandles.episode[0] = NuDatOpen(EpisodeIDat, &permbuffer_base, NULL);
-    NuDatHandles.episode[1] = NuDatOpen(EpisodeIIDat, &permbuffer_base, NULL);
-    NuDatHandles.episode[2] = NuDatOpen(EpisodeIIIDat, &permbuffer_base, NULL);
-    NuDatHandles.episode[3] = NuDatOpen(EpisodeIVDat, &permbuffer_base, NULL);
-    NuDatHandles.episode[4] = NuDatOpen(EpisodeVDat, &permbuffer_base, NULL);
-    NuDatHandles.episode[5] = NuDatOpen(EpisodeVIDat, &permbuffer_base, NULL);
+    NuDatHandles.episode[0] = NuDatOpen("Episode_I.dat", &permbuffer_base, NULL);
+    NuDatHandles.episode[1] = NuDatOpen("Episode_II.dat", &permbuffer_base, NULL);
+    NuDatHandles.episode[2] = NuDatOpen("Episode_III.dat", &permbuffer_base, NULL);
+    NuDatHandles.episode[3] = NuDatOpen("Episode_IV.dat", &permbuffer_base, NULL);
+    NuDatHandles.episode[4] = NuDatOpen("Episode_V.dat", &permbuffer_base, NULL);
+    NuDatHandles.episode[5] = NuDatOpen("Episode_VI.dat", &permbuffer_base, NULL);
     NuDatSet(NuDatHandles.previous);
     NuHGobjReversibleCharacters(1);
     NuHGobjForceShadowsOnCharacters(1);

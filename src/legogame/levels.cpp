@@ -1075,7 +1075,7 @@ void LoadPerm1(void) {
     }
     perm_debrissys = InitGameDebris(&permbuffer_ptr, native_end_address, 0x190, 0x93, debris_name, 0);
     permbuffer_ptr.addr = (permbuffer_ptr.addr + 3) & ~3u;
-    InitStreaks(&permbuffer_ptr, permbuffer_end, (char *)StreakTextureNamePc);
+    InitStreaks(&permbuffer_ptr, permbuffer_end, "stuff\\streak.pnt");
     permbuffer_ptr.addr = (permbuffer_ptr.addr + 3) & ~3u;
     InitRopeMtl("rope", &permbuffer_ptr, &permbuffer_end);
     InitRipples(&RippleSetPc, &permbuffer_ptr, &permbuffer_end, 0x40);

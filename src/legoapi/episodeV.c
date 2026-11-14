@@ -143,11 +143,6 @@ void InitTrooperCannons(WORLDINFO *unused) {
     memset(troopercannons, 0, sizeof(troopercannons));
 }
 
-const char TrooperCannonBuilditFormatPc[17] = "trooper_cannon%d";
-const char TrooperCannonCharacterFormatPc[17] = "troopercannon_%d";
-const char TrooperCannonBaseFormatPc[7] = "BASE%d";
-const char TrooperCannonAINamePc[14] = "CannonTrooper";
-
 void ResetTrooperCannons(WORLDINFO *world, i32 trooper_id) {
     i32 cannon;
     i32 index = 0;
@@ -158,16 +153,16 @@ void ResetTrooperCannons(WORLDINFO *world, i32 trooper_id) {
     }
     for (cannon = 0; cannon < 4; ++cannon) {
         memset(&troopercannons[index], 0, sizeof(troopercannons[index]));
-        sprintf(name, TrooperCannonBuilditFormatPc, cannon + 1);
+        sprintf(name, "trooper_cannon%d", cannon + 1);
         troopercannons[index].buildit = GizBuildIt_Find(world, name);
         if (troopercannons[index].buildit != NULL) {
-            sprintf(name, TrooperCannonCharacterFormatPc, cannon + 1);
+            sprintf(name, "troopercannon_%d", cannon + 1);
             troopercannons[index].object = GetNamedGameObject(world->ai_sys, name);
             if (troopercannons[index].object != NULL) {
                 NuStrCpy(troopercannons[index].character_name, name);
             }
         }
-        sprintf(name, TrooperCannonBaseFormatPc, cannon + 1);
+        sprintf(name, "BASE%d", cannon + 1);
         troopercannons[index].base = GizmoFindByName(world->gizmo_sys, obstacle_gizmotype_id, name);
         if (netclient != 0) {
             if (troopercannons[index].object != NULL) {
@@ -188,7 +183,7 @@ void ResetTrooperCannons(WORLDINFO *world, i32 trooper_id) {
                 AddGameDebris(world->game_debris_sys, 0x5c, &troopercannons[index].object->collision_position);
                 trooper =
                     AddDynamicCreature(trooper_id, &troopercannons[index].object->collision_position,
-                                       troopercannons[index].object->field_0x276, (char *)TrooperCannonAINamePc,
+                                       troopercannons[index].object->field_0x276, "CannonTrooper",
                                        &troopercannons[index].object->ai_packet.path_info, NULL, 0, NULL, NULL, 0, 0);
                 if (trooper != NULL) {
                     TakeOverGameObject(trooper, troopercannons[index].object, 0, 1);
@@ -804,14 +799,12 @@ void AsteroidChaseD_Panel(WORLDINFO *world) {
     DrawMeleeTargetsNumber(&targets, &turretAliveCount, 1, 0, &specialIcon);
 }
 
-static const char CloudCityTrapAForceNamePc[7] = "force3";
-
 void CloudCityTrapA_Init(WORLDINFO *world) {
     if (netclient == 0) {
         memset(troopercannons, 0, sizeof(troopercannons));
     }
     LevAIMessage[0] = CheckGizAIMessage(gizaimessagesys, EpisodeVI_ShowHearts, NULL);
-    LevGizmo[0] = GizmoFindByName(world->gizmo_sys, force_gizmotype_id, (char *)CloudCityTrapAForceNamePc);
+    LevGizmo[0] = GizmoFindByName(world->gizmo_sys, force_gizmotype_id, "force3");
 }
 
 void CloudCityTrapA_Reset(WORLDINFO *world) {
@@ -1156,7 +1149,6 @@ void HothBattleB_Init(WORLDINFO *world) {
     NuSpecialFind(world->current_gscn, &LevHSpecial[3], "snow_ball_4", 1);
 }
 
-static const char HothBattleCBombMessagePc[20] = "BombGen_ATAT_Killed";
 static const char HothBattleCIceBPc[8] = "ice_b";
 static const char HothBattleCIceAPc[8] = "ice_a";
 static const char HothBattleCObstaclePc[12] = "obstacle3";
@@ -1165,7 +1157,7 @@ static const char HothBattleCPickupPc[8] = "m_pup7";
 void HothBattleC_Init(WORLDINFO *world) {
     i32 direction;
     i32 count;
-    LevAIMessage[0] = CheckGizAIMessage(gizaimessagesys, (char *)HothBattleCBombMessagePc, NULL);
+    LevAIMessage[0] = CheckGizAIMessage(gizaimessagesys, "BombGen_ATAT_Killed", NULL);
     LevPathCnx[0] = AIPAthFindPathCnx(world->ai_sys, world->ai_sys->path_sys->active_path, (char *)HothBattleCIceAPc,
                                       (char *)HothBattleCIceBPc, &direction);
     LevGizmo[0] = GizmoFindByName(world->gizmo_sys, obstacle_gizmotype_id, (char *)HothBattleCObstaclePc);

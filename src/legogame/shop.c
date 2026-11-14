@@ -150,7 +150,6 @@ extern f32 ShopPurchasePulseDurationPc;
     positions[i].y = SubShelfPos[i].y + (SubShelfPos[j].y - SubShelfPos[i].y) * t;                                     \
     positions[i].z = SubShelfPos[i].z + (SubShelfPos[j].z - SubShelfPos[i].z) * t;
 extern f32 ShopCheatTimerPc;
-extern const f64 ShopCheatBlinkCutoffPc;
 extern AREA_DATA_PC *ANEWHOPE_ADATA;
 extern AREA_DATA_PC *ANAKINSFLIGHT_ADATA;
 extern i32 ShopCodeCharacterPc;
@@ -160,7 +159,6 @@ extern i32 ShopCodeItemChangedPc;
 extern f32 ShopCodeRepeatTimerPc;
 extern f32 ShopCodeRepeatIntervalPc;
 extern f32 ShopCodeExitPushPc;
-extern const f32 ShopCodeCheatDisplayTimePc;
 extern char ShopCodeCharactersPc[37];
 extern i16 TextIdPc880708;
 extern i16 TextIdPc88074c;
@@ -1331,7 +1329,7 @@ i32 CodeMenu(void *menu) {
                     ShopCheatNamePc = ExtrasCheatsPc[i].text_id ? TTab[*ExtrasCheatsPc[i].text_id] : TTab[tUNKNOWN];
                 }
                 ShopPurchasePulsePc = ShopPurchasePulseDurationPc;
-                ShopCheatTimerPc = ShopCodeCheatDisplayTimePc;
+                ShopCheatTimerPc = 3.1499998569488525f;
             }
         }
     } else {
@@ -1404,7 +1402,7 @@ i32 CodeMenu(void *menu) {
  * separate integer code column is at0087c564. */
 void DrawCodeMenu(void) {
     if (ShopCheatTimerPc > 0.0f) {
-        if (ShopCheatNamePc != NULL && (f64)ShopCheatTimerPc < ShopCheatBlinkCutoffPc &&
+        if (ShopCheatNamePc != NULL && (f64)ShopCheatTimerPc < 3.1499998569488525 &&
             NuFmod(ShopCheatTimerPc, 0.35f) < 0.175f) {
             SmartTextEx(ShopCheatNamePc, 0.0f, (f32)(((f64)HubEpisodeTitleYPc + HubEpisodeSubtitleYPc) * 0.5), 1.0f,
                         0.8f, 0.8f, 0.8f, 0, 0, 255, 0, 1.7f, 1, NULL, 0, 128);
@@ -1724,7 +1722,7 @@ void DrawSubItems(void) {
                                                  0x4000) >>
                                                 1) &
                                                0x7fff] *
-                               ShopCharacterAmplitudePc);
+                               4369.0);
                 if (item->unlocked != 1) {
                     rotation = 0;
                 }

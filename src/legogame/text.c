@@ -52,8 +52,8 @@ void Text_InitDefaultStrings(void) {
 }
 
 void Text_DecodeButtons(char *source, char *destination) {
-    if (NuStrICmp(source, Text_WibbleCodeword) == 0) {
-        NuStrCpy(destination, Text_CrossCodeword);
+    if (NuStrICmp(source, "wibble") == 0) {
+        NuStrCpy(destination, "cross");
     }
 }
 
@@ -77,7 +77,7 @@ void Text_LoadStrings(VARIPTR *buffer, VARIPTR *buffer_end) {
     } else {
         NuStrCpy(path, TextLoadPermTextDirectory);
         NuStrCat(path, language);
-        NuStrCat(path, TextLoadPermAPIExtension);
+        NuStrCat(path, "_api.txt");
         Text_LoadAndFixUpStrings(path, &string_buffer, TTab, 0x70d);
     }
 
@@ -91,5 +91,5 @@ void Text_LoadStrings(VARIPTR *buffer, VARIPTR *buffer_end) {
     }
     FinishWeirdoNames(-1);
     Customiser_InitNames(CharacterCustomiser);
-    MenuLoadTechnicalStrings((char *)TextLoadPermTRCPath, language, buffer, *buffer_end);
+    MenuLoadTechnicalStrings("stuff\\text\\trc.csv", language, buffer, *buffer_end);
 }

@@ -3,8 +3,7 @@
 #include <string.h>
 
 static char **TTab_Original = 0;
-extern const char Text_ErrorText[7];
-static char *Text_ErrorString = (char *)Text_ErrorText;
+static char *Text_ErrorString = "Err...";
 static i32 Text_MaxStrings_Overall = 0;
 static u32 *Text_StringBits = 0;
 
@@ -168,29 +167,29 @@ void IntroText_SetTextID(i32 id) {
 }
 
 static i32 Text_IsOtherPlatformWord(NUFPAR_PC *parser) {
-    if (NuStrICmp(parser->word_buffer_ptr, TextPlatform360) == 0) {
+    if (NuStrICmp(parser->word_buffer_ptr, "360") == 0) {
         return 1;
     }
-    if (NuStrICmp(parser->word_buffer_ptr, TextPlatformGameCube) == 0) {
+    if (NuStrICmp(parser->word_buffer_ptr, "gc") == 0) {
         return 1;
     }
-    if (NuStrICmp(parser->word_buffer_ptr, TextPlatformPS2) == 0) {
+    if (NuStrICmp(parser->word_buffer_ptr, "ps2") == 0) {
         return 1;
     }
-    if (NuStrICmp(parser->word_buffer_ptr, TextPlatformPS3) == 0) {
+    if (NuStrICmp(parser->word_buffer_ptr, "ps3") == 0) {
         return 1;
     }
-    if (NuStrICmp(parser->word_buffer_ptr, TextPlatformPSP) == 0) {
+    if (NuStrICmp(parser->word_buffer_ptr, "psp") == 0) {
         return 1;
     }
-    if (NuStrICmp(parser->word_buffer_ptr, TextPlatformPC) == 0) {
+    if (NuStrICmp(parser->word_buffer_ptr, "pc") == 0) {
         NuFParGetWord(parser);
         return 0;
     }
-    if (NuStrICmp(parser->word_buffer_ptr, TextPlatformWii) == 0) {
+    if (NuStrICmp(parser->word_buffer_ptr, "wii") == 0) {
         return 1;
     }
-    if (NuStrICmp(parser->word_buffer_ptr, TextPlatformXbox) == 0) {
+    if (NuStrICmp(parser->word_buffer_ptr, "xbox") == 0) {
         return 1;
     }
     return 0;
@@ -425,18 +424,18 @@ void Text_MakeTime(f32 time, i32 show_hours, i32 show_minutes, i32 show_centisec
     }
     if (show_hours != 0) {
         if (show_centiseconds != 0) {
-            sprintf(text, Text_TimeHMSC, hours, minutes, seconds, centiseconds);
+            sprintf(text, "%i:%.2i:%.2i.%.2i", hours, minutes, seconds, centiseconds);
         } else {
-            sprintf(text, Text_TimeHMS, hours, minutes, seconds);
+            sprintf(text, "%i:%.2i:%.2i", hours, minutes, seconds);
         }
     } else if (show_minutes != 0) {
         if (show_centiseconds != 0) {
-            sprintf(text, Text_TimeMSC, minutes, seconds, centiseconds);
+            sprintf(text, "%i:%.2i.%.2i", minutes, seconds, centiseconds);
         } else {
-            sprintf(text, Text_TimeMS, minutes, seconds);
+            sprintf(text, "%i:%.2i", minutes, seconds);
         }
     } else if (show_centiseconds != 0) {
-        sprintf(text, Text_TimeSC, seconds, centiseconds);
+        sprintf(text, "%i.%.2i", seconds, centiseconds);
     } else {
         sprintf(text, Text_TimeS, seconds);
     }

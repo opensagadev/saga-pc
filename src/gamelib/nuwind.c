@@ -6,7 +6,7 @@ void NuWindAnimate(NUWIND *wind, f32 frame_time) {
         if (wind->phase >= 1.0f) {
             wind->phase = NuFmod(wind->phase, 1.0f);
         }
-        wind->scaled_accumulated_time = nu_wind_scaled_time_multiplier * frame_time + wind->scaled_accumulated_time;
+        wind->scaled_accumulated_time = 5.0 * frame_time + wind->scaled_accumulated_time;
         wind->accumulated_time = frame_time + wind->accumulated_time;
     }
 }

@@ -7909,7 +7909,7 @@ extern "C" {
             return;
         }
         if (set == -1 && slot == 6) {
-            value = (i32)(u32)((f32)(u32)value * NuTimeBarScanlineMicroseconds);
+            value = (i32)(u32)((f32)(u32)value * 63.556);
         }
         timebar = (TimeBarSet *)NuTimeBar_SetList[set + 1];
         timebar->accumulators[1 - timebar->toggle_flags[slot]][slot] = value;
@@ -7924,7 +7924,7 @@ extern "C" {
     i32 NuTimeBarSlotLastValue(i32 set, i32 slot) {
         u32 elapsed = (u32)NuTimeBarSlotLastValueMicroseconds(set, slot);
         f32 frames = (f32)elapsed * NuTime_RefreshRate / NuTime_MicroScale;
-        return (i32)((f64)frames * NuTimeBarScanlinesPerFrame);
+        return (i32)((f64)frames * 262.5);
     }
 
     void NuTimeBarResetPeaks(void) {
@@ -8076,7 +8076,7 @@ extern "C" {
         NuQFntSet(system_qfont);
         NuQFntSetColour(system_qfont, 0xe0e0e0e0);
         NuQFntSetScale(system_qfont, NuTimeBarFontScale, NuTimeBarFontScale);
-        vertical_scale = (f32)(NuTimeBarVerticalScale / PS2_VREZ_H);
+        vertical_scale = (f32)(120.0 / PS2_VREZ_H);
         timebar = (TimeBarSet *)NuTimeBar_SetList[set + 1];
         for (slot = 0; slot < timebar->slot_count; ++slot) {
             if (timebar->slot_names[slot] != NULL) {
@@ -8110,8 +8110,8 @@ extern "C" {
             }
 
             if (timebar->field_18[slot] != 0) {
-                f32 left = (f32)(name_width + NuTimeBarNameMargin);
-                f32 top = (f32)((slot + 1) * NuTimeBarSlotWidth * 2.0 + NuTimeBarHorizontalTop);
+                f32 left = (f32)(name_width + 0.044999999925494194);
+                f32 top = (f32)((slot + 1) * NuTimeBarSlotWidth * 2.0 + 0.15000000596046448);
                 f32 elapsed_frames = (f32)((f64)(u32)timebar->field_18[slot] * NuTime_RefreshRate / NuTime_MicroScale);
                 f32 right = left + elapsed_frames * vertical_scale;
                 f32 bottom = (f32)(top + NuTimeBarSlotWidth);
@@ -8147,7 +8147,7 @@ extern "C" {
                 if (system_qfont != NULL) {
                     system_qfont->platform_data->colour = 0xe0e0e0e0;
                     *system_qfont->x_scale = NuTimeBarFontScale;
-                    *system_qfont->y_scale = (NuQFntMode & 4) != 0 ? NuTimeBarFontScale : NuTimeBarHalfFontScale;
+                    *system_qfont->y_scale = (NuQFntMode & 4) != 0 ? NuTimeBarFontScale : 0.42500001192092896f;
                 }
                 text_y = y + height - (i32)(NuQFntHeight(system_qfont) * NuTimeBarQuarter);
                 if (timebar->slot_names[slot] != NULL) {
@@ -8160,7 +8160,7 @@ extern "C" {
                 }
                 if (timebar->field_14[slot] != 0) {
                     f32 lines = (f32)((f64)(u32)timebar->field_14[slot] * NuTimeBarLinesPerSecond / NuTime_MicroScale);
-                    NuQFntPrintEx(system_qfont, (i32)(NuTimeBarRight * (PS2_VREZ_W << 4)), text_y, 0x20, Text_TimeS,
+                    NuQFntPrintEx(system_qfont, (i32)(0.974999999627471 * (PS2_VREZ_W << 4)), text_y, 0x20, Text_TimeS,
                                   (i32)lines);
                 }
                 {
@@ -13177,11 +13177,6 @@ extern "C" {
 
     void NuGScnFixupPS(NUGSCN *);
 
-    static const char SceneIngestCharacterVersionWarningPc[] =
-        "Your Character version is %d, whereas the Engine only accepts Character versions from %d to %d";
-    static const char SceneIngestSceneVersionWarningPc[] =
-        "Your Scene version is %d, whereas the Engine only accepts Scene versions from %d to %d";
-
     static NUGSCN *NuReadGraphicsData(VARIPTR *buffer, VARIPTR *buffer_end, char *path,
                                       SCENE_INGEST_FILE_PC *scene_data) {
         NUGSCN *scene;
@@ -13216,10 +13211,13 @@ extern "C" {
         scene = *(NUGSCN **)NuPtrBlockFix(&scene_data->pointer_block);
         if (scene->character_version_selector > 0) {
             if (version < 0 || version > 2) {
-                NuSevereWarning(SceneIngestCharacterVersionWarningPc, version, 0, 2);
+                NuSevereWarning(
+                    "Your Character version is %d, whereas the Engine only accepts Character versions from %d to %d",
+                    version, 0, 2);
             }
         } else if (version < 0 || version > 2) {
-            NuSevereWarning(SceneIngestSceneVersionWarningPc, version, 0, 2);
+            NuSevereWarning("Your Scene version is %d, whereas the Engine only accepts Scene versions from %d to %d",
+                            version, 0, 2);
         }
         if (version < 2) {
             scene->legacy_format = 1;

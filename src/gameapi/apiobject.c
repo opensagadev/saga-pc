@@ -1377,7 +1377,7 @@ void APILoadCharacterModels(APICHARACTERMODELLIST *list, i32 area_animation, VAR
     }
     while ((model_id = list->model_id) != -1 && apicharsys->loaded_model_count < apicharsys->model_capacity) {
         character = (CHARACTERDATA_PC *)&apicharsys->char_data[model_id];
-        NuStrCpy(directory, APIObjectCharsDirectory);
+        NuStrCpy(directory, "chars\\");
         NuStrCat(directory, character->dir);
         NuStrCat(directory, WorldPathSeparator);
         loaded = 0;

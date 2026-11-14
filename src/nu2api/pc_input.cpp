@@ -1,10 +1,7 @@
 #include "saga.h"
 #include <string.h>
 
-extern "C" const char PCKeyboardMouse1Name[15];
 extern "C" const char PCKeyboardMouse2Name[16];
-extern "C" const char PCKeyboard1Name[10];
-extern "C" const char PCKeyboard2Name[10];
 static i32 PcXInputDeviceCount; // XInput pads found by the current device enumeration
 
 PC_INPUT_CONFIG_PC *PC_INPUT_RUNTIME_PC::FindConfig(u8 mask, i32 port, i32 key) {
@@ -151,7 +148,7 @@ void PC_INPUT_RUNTIME_PC::InstallConfig(PC_INPUT_CONFIG_PC *config, i32 port, i3
 
 void PC_INPUT_RUNTIME_PC::InitKeyboardProfiles() {
     PC_INPUT_CONFIG_PC *config;
-    NuStrCpy(devices[10].name, PCKeyboardMouse1Name);
+    NuStrCpy(devices[10].name, "KeyboardMouse1");
     devices[10].kind = 1;
     devices[10].product.Data1 = 1;
     devices[10].config_dirty = 1;
@@ -165,7 +162,7 @@ void PC_INPUT_RUNTIME_PC::InitKeyboardProfiles() {
         InstallConfig(config, 10, config->key, 0, 0);
     }
     devices[11].device = nu_keyboard_owner.device;
-    NuStrCpy(devices[11].name, PCKeyboard1Name);
+    NuStrCpy(devices[11].name, "Keyboard1");
     devices[11].kind = 3;
     devices[11].product.Data1 = 3;
     devices[11].config_dirty = 1;
@@ -192,7 +189,7 @@ void PC_INPUT_RUNTIME_PC::InitKeyboardProfiles() {
         InstallConfig(config, 12, config->key, 0, 0);
     }
     devices[13].device = nu_keyboard_owner.device;
-    NuStrCpy(devices[13].name, PCKeyboard2Name);
+    NuStrCpy(devices[13].name, "Keyboard2");
     devices[13].kind = 4;
     devices[13].product.Data1 = 4;
     devices[13].config_dirty = 1;

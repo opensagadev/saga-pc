@@ -1169,7 +1169,6 @@ extern "C" {
     f32 TimerBaseScalePc = 0.75f;
     f32 TimerScalePc = 1.0f;
     f32 TimerAlphaPc = 1.0f;
-    static const char DrawTimerFormatPc[3] = "%d";
 
     void DrawTimer(i32 time, i32 expanded, i32 reset) {
         char text[16];
@@ -1192,7 +1191,7 @@ extern "C" {
                 TimerAlphaPc = 1.0f;
             }
         }
-        sprintf(text, DrawTimerFormatPc, time);
+        sprintf(text, "%d", time);
         scale = TimerBaseScalePc * TimerScalePc;
         Text3DEx(text, 0.0f, HudBossIconYPc, 1.0f, scale, scale, scale, 0, 255, 0, 255,
                  (u8)((f64)TimerAlphaPc * 128.0));

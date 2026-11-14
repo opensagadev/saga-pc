@@ -11,7 +11,6 @@ typedef struct {
 extern "C" {
     extern char AIRegistryTextPc007575bc[7];
     extern const char GrappleOccupiedOutputTextPc[9];
-    extern const char GrappleOccupiedByTwoOutputTextPc[14];
 }
 
 typedef struct {
@@ -107,9 +106,7 @@ extern "C" {
     extern i32 GrappleCurvedRopeEnabledPc;
 }
 STATIC_ASSERT(sizeof(NURND_VERTEX3D_PC) == 0x24);
-extern "C" {
-    extern const f64 GrappleMomentumNearScalePc;
-}
+extern "C" {}
 
 typedef struct grapple_movement_pc_s {
     u8 unknown_00[0x3c];
@@ -639,16 +636,13 @@ extern "C" {
 #pragma const_seg(".rdata$GrappleOccupiedOutputTextPc")
     const char GrappleOccupiedOutputTextPc[9] = "Occupied";
 #pragma const_seg()
-#pragma const_seg(".rdata$GrappleOccupiedByTwoOutputTextPc")
-    const char GrappleOccupiedByTwoOutputTextPc[14] = "Occupied By 2";
-#pragma const_seg()
 
     char *Grapple_GetOutputName(GIZMO_PC *gizmo, i32 output) {
         switch (output) {
             case 1:
                 return (char *)GrappleOccupiedOutputTextPc;
             case 2:
-                return (char *)GrappleOccupiedByTwoOutputTextPc;
+                return "Occupied By 2";
         }
         return AIRegistryTextPc007575bc;
     }

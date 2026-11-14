@@ -76,10 +76,6 @@ extern const f64 PanelVariantTwoTargetY;
 extern const f64 PanelVariantTwoTargetZ;
 extern const f64 PanelVariantThreeTargetY;
 extern const f64 PanelVariantThreeTargetZ;
-extern const f32 PanelTrackEnterDistanceSquared;
-extern const f32 PanelTrackLeaveDistanceSquared;
-extern const char PanelDeactivateSfxPc[10];
-extern const char PanelActivateSfxPc[10];
 /* Private append to gizpanel_pc.c; reuse canonical PANEL_MOVEMENT_PC144/PANEL_SYSTEM_PC8. */
 extern f32 GizPanelPictureYPc;
 extern f32 GizPanelPictureZPc;
@@ -308,13 +304,13 @@ void GizPanel_GetAbsTargetPos(void *context, NUVEC *target, i32 player_position)
         return;
     }
     if (player_position != 0 && panel->model_variant == 0) {
-        offset.x = PlayerPanelVariantZeroX;
+        offset.x = -0.03999999910593033f;
         offset.y = panel->target_offset.y;
-        offset.z = PlayerPanelVariantZeroZ;
+        offset.z = -0.30000001192092896f;
     } else if (player_position != 0 && panel->model_variant == 1) {
-        offset.x = PlayerPanelVariantOneX;
+        offset.x = 0.03500000014901161f;
         offset.y = panel->target_offset.y;
-        offset.z = PlayerPanelVariantOneZ;
+        offset.z = -0.25f;
     } else {
         offset = panel->target_offset;
     }
@@ -436,8 +432,7 @@ void GizPanel_Update(void *world_pointer, void *unused, f32 delta_time) {
             f32 maximum_distance;
             i32 player_index;
             nearest_player = NULL;
-            maximum_distance =
-                (panel->flags & 0x10) != 0 ? PanelTrackLeaveDistanceSquared : PanelTrackEnterDistanceSquared;
+            maximum_distance = (panel->flags & 0x10) != 0 ? 1.2100000381469727f : 0.809999942779541f;
             for (player_index = 0; player_index < 8; ++player_index) {
                 GAMEOBJECT *player = Player[player_index];
                 if (player != NULL && (player->flags_1fc_word & 0x1000) != 0 && player->dead == 0) {
@@ -476,7 +471,7 @@ void GizPanel_Update(void *world_pointer, void *unused, f32 delta_time) {
             if ((panel->flags & 0x10) == 0) {
                 panel->activation_time = 0.0f;
                 panel->flags |= 0x10;
-                PlaySfx((char *)PanelActivateSfxPc, &panel->position);
+                PlaySfx("DPanelAct", &panel->position);
             } else {
                 f32 time = panel->activation_time + FRAMETIME;
                 panel->activation_time = time;
@@ -488,7 +483,7 @@ void GizPanel_Update(void *world_pointer, void *unused, f32 delta_time) {
             panel->field_7c = SeekRot(panel->field_7c, 0xe000, 10.0f);
             panel->field_7e = SeekRot(panel->field_7e, 0, 10.0f);
             if ((panel->flags & 0x10) != 0) {
-                PlaySfx((char *)PanelDeactivateSfxPc, &panel->position);
+                PlaySfx("DPanelDis", &panel->position);
             }
             panel->flags &= (u8)~0x10;
             if (panel->activation_time > 0.0f) {
@@ -1151,7 +1146,6 @@ void GizPanel_Activate(void *input, i32 active) {
 }
 
 static ADDGIZMOTYPE_PC GizmoRegistryGizPanelAddTypePc = {0};
-const char GizmoRegistryGizPanelNamePc[] = "Panel";
 
 ADDGIZMOTYPE_PC *GizPanel_RegisterGizmo(i32 type_id) {
     ADDGIZMOTYPE_PC *addtype = &GizmoRegistryGizPanelAddTypePc;
@@ -1168,7 +1162,7 @@ ADDGIZMOTYPE_PC *GizPanel_RegisterGizmo(i32 type_id) {
     addtype->fns.post_load_fn = NULL;
     addtype->fns.add_level_sfx_fn = NULL;
     gizpanel_gizmotype_id = type_id;
-    addtype->name = (char *)GizmoRegistryGizPanelNamePc;
+    addtype->name = "Panel";
     addtype->prefix = "";
     addtype->fns.options = 0xc;
     addtype->fns.get_max_gizmos_fn = (i32(*)(void *))GizPanel_GetMaxGizmos;

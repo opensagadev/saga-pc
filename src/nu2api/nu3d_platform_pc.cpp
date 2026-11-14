@@ -652,8 +652,6 @@ extern "C" {
             0xb2, 0x71, 0x6a, 0x63, 0xbe, 0x2a, 0xaa, 0x7f, 0xb1, 0x72, 0x09, 0x5d, 0x7a, 0xe2, 0x0a, 0x0a, 0xd0, 0x63,
             0xd0, 0x72, 0x02, 0x56, 0x5e, 0x5e, 0x4f, 0x6b, 0x6f, 0x6b, 0xaa, 0xab, 0xab, 0xab,
         };
-
-        extern const char NuMaterialSourcePathPc[] = "d:\\projects\\game_saga\\nu2api.saga\\nu3d\\pc\\numtl_dlist.c";
     }
 
     extern "C" void Nu360MtlInit(void) {
@@ -677,7 +675,8 @@ extern "C" {
         PCDeviceCreateVertexDeclaration(NuMaterialFaceOnElementsPc, &NuDisplayMaterialFaceOnDeclarationPc);
         PCDeviceCreateVertexDeclaration(NuMaterialDebrisElementsPc, &NuDisplayMaterialDebrisDeclarationPc);
         PCDeviceCreateVertexDeclaration(NuMaterialDefaultElementsPc, &NuDisplayMaterialDefaultDeclarationPc);
-        NUTEXDIM_PC *texture = static_cast<NUTEXDIM_PC *>(NuAlloc(0x28, NuMaterialSourcePathPc, 0x159));
+        NUTEXDIM_PC *texture = static_cast<NUTEXDIM_PC *>(
+            NuAlloc(0x28, "d:\\projects\\game_saga\\nu2api.saga\\nu3d\\pc\\numtl_dlist.c", 0x159));
         memset(texture, 0, sizeof(*texture));
         texture->image_data = const_cast<u8 *>(NuMaterialDistortImagePc);
         texture->image_size = 0x338;
@@ -1763,7 +1762,7 @@ extern "C" {
         void *data;
         NUTEXDIM_PC *texture;
         (void)end;
-        NuStrFixExt(filename, name, (char *)NuTextureDdsExtensionPc, sizeof(filename));
+        NuStrFixExt(filename, name, "dds", sizeof(filename));
         file = NuFileOpen(filename, 0);
         if (file == 0) {
             return 0;
@@ -1835,8 +1834,8 @@ extern "C" {
 
     void NuTexInitExPS(VARIPTR *buffer) {
         (void)buffer;
-        PCDeviceCreateCubeTextureFromFile((char *)NuTextureEnvironmentCubePathPc, &NuTextureEnvironmentCubePc);
-        PCDeviceCreateCubeTextureFromFile((char *)NuTexturePhongCubePathPc, &NuTexturePhongCubePc);
+        PCDeviceCreateCubeTextureFromFile("pc\\stuff\\LegoCubeMap_PC.dds", &NuTextureEnvironmentCubePc);
+        PCDeviceCreateCubeTextureFromFile("pc\\stuff\\PhongMap_PC.dds", &NuTexturePhongCubePc);
     }
 
     /* Native PC entries 0x005f8fb0 and 0x005f8fc0 are RET-only; the D3D release and
@@ -3749,7 +3748,7 @@ extern "C" {
         NuCameraScalingTemplate.m13 = 0.0f;
         NuCameraScalingTemplate.m20 = 0.0f;
         NuCameraScalingTemplate.m21 = 0.0f;
-        NuCameraScalingTemplate.m22 = (f32)(NuVpDepthRangePc - (f64)min_z);
+        NuCameraScalingTemplate.m22 = (f32)(16777215.0 - (f64)min_z);
         NuCameraScalingTemplate.m23 = 0.0f;
         NuCameraScalingTemplate.m30 = (f32)((f64)width * NuQFntHalfScale + 0.0);
         NuCameraScalingTemplate.m31 = (f32)(0.0 + (f64)height * NuQFntHalfScale);
@@ -4256,7 +4255,7 @@ extern "C" {
                 break;
             case 2:
                 NuPrimXScale = NuPrimTwo;
-                NuPrimYScale = NuPrimMinusTwo;
+                NuPrimYScale = -2.0f;
                 NuPrimXBias = nu_fsign_minus_one;
                 NuPrimYBias = 1.0f;
                 break;
@@ -4646,7 +4645,8 @@ extern "C" {
         (void)end;
         section_size = 0;
         if (SceneUploadBufferStartPC.addr == 0) {
-            SceneUploadBufferStartPC.void_ptr = NuAlloc(SceneUploadBufferSizePC, SceneUploadSourcePathPC, 0x3f);
+            SceneUploadBufferStartPC.void_ptr = NuAlloc(
+                SceneUploadBufferSizePC, "d:\\projects\\game_saga\\nu2api.saga\\nu3d\\pc\\nugscn_dlist.c", 0x3f);
             SceneUploadBufferEndPC.addr = SceneUploadBufferStartPC.addr + SceneUploadBufferSizePC;
         }
         SceneUploadBufferCursorPC = SceneUploadBufferStartPC;

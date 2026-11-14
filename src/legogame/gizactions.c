@@ -50,29 +50,6 @@ const char GizActionLiteral758a3c[];
 const char GizActionLiteral758a48[];
 const char GizActionLiteral758a54[];
 void *Technos_FindTgt(TECHNO_s *techno);
-extern const char GizActionNameSetVisibilityPc[14];
-extern const char GizActionNameSetGizmoVisibilityPc[19];
-extern const char GizActionNameSetPickupVisibilityPc[20];
-extern const char GizActionNameActivateGizmoPc[14];
-extern const char GizActionNameActivateCharPc[13];
-extern const char GizActionNameTurnOnFlowBoxPc[14];
-extern const char GizActionNameActivateEffectPc[15];
-extern const char GizActionNameActivatePartEffectPc[19];
-extern const char GizActionNameChangeTechnoTargetPc[19];
-extern const char GizActionNameSetAIMessagePc[13];
-extern const char GizActionNameSetAIStatePc[11];
-extern const char GizActionNameCompleteLevelPc[14];
-extern const char GizActionNameGoToNewLevelPc[13];
-extern const char GizActionNameGoThroughDoorPc[14];
-extern const char GizActionNamePlayObstaclePc[13];
-extern const char GizActionNamePlaySpecialPc[12];
-extern const char GizActionNamePlayForcePc[10];
-extern const char GizActionNameChangeObstTriggerTypePc[22];
-extern const char GizActionNamePlayRadioPc[10];
-extern const char GizActionNamePlayCutscenePc[13];
-extern const char GizActionNameHitBlowupPc[10];
-extern const char GizActionNameActivateBeltPc[13];
-extern const char GizActionNameEnableSockPc[11];
 
 typedef struct ACTIVATE_CHAR_BUILDIT_VIEW_PC {
     u8 unknown_00[0x34];
@@ -850,29 +827,29 @@ void GizActions_EnableSock(GIZFLOW_PC *unused0, FLOWBOX_PC *unused1, char **para
 }
 
 GIZACTIONDEF_PC game_gizactiondefs[24] = {
-    {GizActionNameSetVisibilityPc, GizActions_SetVisibilityPc},
-    {GizActionNameSetGizmoVisibilityPc, GizActions_SetGizmoVisibilityPc},
-    {GizActionNameSetPickupVisibilityPc, GizActions_SetPickupVisibilityPc},
-    {GizActionNameActivateGizmoPc, GizActions_ActivateGizmoPc},
-    {GizActionNameActivateCharPc, GizActions_ActivateCharPc},
-    {GizActionNameTurnOnFlowBoxPc, GizActions_TurnOnFlowBoxPc},
-    {GizActionNameActivateEffectPc, GizAction_ActivateEffect},
-    {GizActionNameActivatePartEffectPc, GizAction_ActivatePartEffect},
-    {GizActionNameChangeTechnoTargetPc, GizAction_ChangeTechnoTgt},
-    {GizActionNameSetAIMessagePc, GizAction_SetAIMessage},
-    {GizActionNameSetAIStatePc, GizAction_SetAIState},
-    {GizActionNameCompleteLevelPc, GizActions_CompleteLevel},
-    {GizActionNameGoToNewLevelPc, GizActions_GoToNewLevel},
-    {GizActionNameGoThroughDoorPc, GizActions_GoThroughDoor},
-    {GizActionNamePlayObstaclePc, GizActions_PlayObstacle},
-    {GizActionNamePlaySpecialPc, GizActions_PlaySpecial},
-    {GizActionNamePlayForcePc, GizActions_PlayForce},
-    {GizActionNameChangeObstTriggerTypePc, GizActions_ChangeObstTriggerType},
-    {GizActionNamePlayRadioPc, GizActions_PlayRadio},
-    {GizActionNamePlayCutscenePc, GizActions_PlayCutscene},
-    {GizActionNameHitBlowupPc, GizActions_HitBlowup},
-    {GizActionNameActivateBeltPc, GizActions_ActivateBelt},
-    {GizActionNameEnableSockPc, GizActions_EnableSock},
+    {"SetVisibility", GizActions_SetVisibilityPc},
+    {"SetGizmoVisibility", GizActions_SetGizmoVisibilityPc},
+    {"SetPickupVisibility", GizActions_SetPickupVisibilityPc},
+    {"ActivateGizmo", GizActions_ActivateGizmoPc},
+    {"ActivateChar", GizActions_ActivateCharPc},
+    {"TurnOnFlowBox", GizActions_TurnOnFlowBoxPc},
+    {"ActivateEffect", GizAction_ActivateEffect},
+    {"ActivatePartEffect", GizAction_ActivatePartEffect},
+    {"ChangeTechnoTarget", GizAction_ChangeTechnoTgt},
+    {"SetAIMessage", GizAction_SetAIMessage},
+    {"SetAIState", GizAction_SetAIState},
+    {"CompleteLevel", GizActions_CompleteLevel},
+    {"GoToNewLevel", GizActions_GoToNewLevel},
+    {"GoThroughDoor", GizActions_GoThroughDoor},
+    {"PlayObstacle", GizActions_PlayObstacle},
+    {"PlaySpecial", GizActions_PlaySpecial},
+    {"PlayForce", GizActions_PlayForce},
+    {"ChangeObstTriggerType", GizActions_ChangeObstTriggerType},
+    {"PlayRadio", GizActions_PlayRadio},
+    {"PlayCutscene", GizActions_PlayCutscene},
+    {"HitBlowup", GizActions_HitBlowup},
+    {"ActivateBelt", GizActions_ActivateBelt},
+    {"EnableSock", GizActions_EnableSock},
     {NULL, NULL},
 };
 

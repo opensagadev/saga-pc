@@ -46,13 +46,6 @@ typedef struct WORLD_SHARDS_READER_PC {
     i32 shard_count;
 } WORLD_SHARDS_READER_PC;
 
-#pragma const_seg(".rdata$PCContextName_Shard")
-const char PCContextName_Shard[6] = "Shard";
-#pragma const_seg()
-#pragma const_seg(".rdata$PCShardOutputTextPc")
-const char PCShardOutputTextPc[4] = "Got";
-#pragma const_seg()
-
 i32 Shards_Load(WORLDINFO *world, void *unused) {
     i32 index;
     i32 version;
@@ -299,7 +292,7 @@ i32 Shard_GetOutput(GIZMO_PC *gizmo, i32 output, i32 mode) {
 }
 
 #pragma data_seg(".data$ShardOutputNamePc")
-char *Shard_OutputName = (char *)PCShardOutputTextPc;
+char *Shard_OutputName = "Got";
 #pragma data_seg()
 
 char *Shard_GetOutputName(GIZMO_PC *gizmo, i32 output) {
@@ -349,7 +342,7 @@ void Shards_StoreProgress(WORLDINFO *world, void *unused, SHARD_PROGRESS_PC *pro
 }
 
 #pragma data_seg(".data$ShardRegistryNamePc")
-char *ShardRegistryNamePc = (char *)PCContextName_Shard;
+char *ShardRegistryNamePc = "Shard";
 #pragma data_seg()
 #pragma data_seg(".data$ShardAddTypePc")
 ADDGIZMOTYPE_PC ShardAddTypePc = {0};

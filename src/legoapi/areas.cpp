@@ -76,7 +76,7 @@ void Areas_ConfigureResidents(VARIPTR *buffer, VARIPTR *buffer_end) {
             continue;
         }
 
-        NuStrCpy(path, AreaResidentsDirectory);
+        NuStrCpy(path, "levels\\");
         NuStrCat(path, area->dir);
         NuStrCat(path, "\\");
         NuStrCat(path, area->file);
@@ -98,7 +98,7 @@ void Areas_ConfigureResidents(VARIPTR *buffer, VARIPTR *buffer_end) {
             }
             character_id = CharIDFromName(parser->word_buffer_ptr);
             if (character_id == -1 || NuFParGetWord(parser) == 0 ||
-                NuStrICmp(parser->word_buffer_ptr, AreaConfigKeyword_resident) != 0) {
+                NuStrICmp(parser->word_buffer_ptr, "resident") != 0) {
                 continue;
             }
 
@@ -243,7 +243,7 @@ AREA_DATA_PC *Areas_ConfigureList(char *path, VARIPTR *buffer, VARIPTR *buffer_e
         }
 
         if (in_area != 0) {
-            if (NuStrICmp(parser->word_buffer_ptr, AreaConfigKeyword_area_end) == 0) {
+            if (NuStrICmp(parser->word_buffer_ptr, "area_end") == 0) {
                 in_area = 0;
                 if (area->dir[0] != '\0' && area->file[0] != '\0' && area->level_count > 0 &&
                     (area->flags & 0x20) == 0) {
@@ -258,7 +258,7 @@ AREA_DATA_PC *Areas_ConfigureList(char *path, VARIPTR *buffer, VARIPTR *buffer_e
                 if (NuFParGetWord(parser) != 0 && NuStrLen(parser->word_buffer_ptr) < 0x20) {
                     NuStrCpy(area->file, parser->word_buffer_ptr);
                 }
-            } else if (NuStrICmp(parser->word_buffer_ptr, AreaConfigKeyword_level) == 0) {
+            } else if (NuStrICmp(parser->word_buffer_ptr, "level") == 0) {
                 if (area->level_count >= 12 || NuFParGetWord(parser) == 0) {
                     continue;
                 }
@@ -276,39 +276,39 @@ AREA_DATA_PC *Areas_ConfigureList(char *path, VARIPTR *buffer, VARIPTR *buffer_e
                         ++area->level_count;
                     }
                 }
-            } else if (NuStrICmp(parser->word_buffer_ptr, AreaConfigKeyword_single_buffer) == 0) {
+            } else if (NuStrICmp(parser->word_buffer_ptr, "single_buffer") == 0) {
                 area->flags |= 0x0008;
-            } else if (NuStrICmp(parser->word_buffer_ptr, AreaConfigKeyword_minikit) == 0) {
+            } else if (NuStrICmp(parser->word_buffer_ptr, "minikit") == 0) {
                 area->flags |= 0x0010;
                 if (NuFParGetWord(parser) != 0) {
                     area->minikit_id = (i16)CharIDFromName(parser->word_buffer_ptr);
                 }
-            } else if (NuStrICmp(parser->word_buffer_ptr, AreaConfigKeyword_test_area) == 0) {
+            } else if (NuStrICmp(parser->word_buffer_ptr, "test_area") == 0) {
                 area->flags |= 0x0020;
-            } else if (NuStrICmp(parser->word_buffer_ptr, AreaConfigKeyword_hub_area) == 0) {
+            } else if (NuStrICmp(parser->word_buffer_ptr, "hub_area") == 0) {
                 area->flags |= 0x0040;
-            } else if (NuStrICmp(parser->word_buffer_ptr, AreaConfigKeyword_override_things_scene) == 0) {
+            } else if (NuStrICmp(parser->word_buffer_ptr, "override_things_scene") == 0) {
                 area->flags |= 0x0400;
-            } else if (NuStrICmp(parser->word_buffer_ptr, AreaConfigKeyword_vehicle_area) == 0) {
+            } else if (NuStrICmp(parser->word_buffer_ptr, "vehicle_area") == 0) {
                 area->flags |= 0x0001;
-            } else if (NuStrICmp(parser->word_buffer_ptr, AreaConfigKeyword_ending_area) == 0) {
+            } else if (NuStrICmp(parser->word_buffer_ptr, "ending_area") == 0) {
                 area->flags |= 0x0002;
-            } else if (NuStrICmp(parser->word_buffer_ptr, AreaConfigKeyword_bonus_area) == 0) {
+            } else if (NuStrICmp(parser->word_buffer_ptr, "bonus_area") == 0) {
                 area->flags |= 0x0004;
-            } else if (NuStrICmp(parser->word_buffer_ptr, AreaConfigKeyword_super_bonus_area) == 0) {
+            } else if (NuStrICmp(parser->word_buffer_ptr, "super_bonus_area") == 0) {
                 area->flags |= 0x0104;
-            } else if (NuStrICmp(parser->word_buffer_ptr, AreaConfigKeyword_nocharactercollision) == 0 ||
-                       NuStrICmp(parser->word_buffer_ptr, AreaConfigKeyword_nocharactercollisions) == 0 ||
-                       NuStrICmp(parser->word_buffer_ptr, AreaConfigKeyword_no_character_collision) == 0 ||
-                       NuStrICmp(parser->word_buffer_ptr, AreaConfigKeyword_no_character_collisions) == 0) {
+            } else if (NuStrICmp(parser->word_buffer_ptr, "nocharactercollision") == 0 ||
+                       NuStrICmp(parser->word_buffer_ptr, "nocharactercollisions") == 0 ||
+                       NuStrICmp(parser->word_buffer_ptr, "no_character_collision") == 0 ||
+                       NuStrICmp(parser->word_buffer_ptr, "no_character_collisions") == 0) {
                 area->flags |= 0x0080;
-            } else if (NuStrICmp(parser->word_buffer_ptr, AreaConfigKeyword_nopickupgravity) == 0) {
+            } else if (NuStrICmp(parser->word_buffer_ptr, "nopickupgravity") == 0) {
                 area->flags |= 0x0200;
-            } else if (NuStrICmp(parser->word_buffer_ptr, AreaConfigKeyword_no_gold_brick) == 0) {
+            } else if (NuStrICmp(parser->word_buffer_ptr, "no_gold_brick") == 0) {
                 area->flags |= 0x0800;
-            } else if (NuStrICmp(parser->word_buffer_ptr, AreaConfigKeyword_no_completion_points) == 0) {
+            } else if (NuStrICmp(parser->word_buffer_ptr, "no_completion_points") == 0) {
                 area->flags |= 0x2000;
-            } else if (NuStrICmp(parser->word_buffer_ptr, AreaConfigKeyword_no_freeplay) == 0) {
+            } else if (NuStrICmp(parser->word_buffer_ptr, "no_freeplay") == 0) {
                 area->flags |= 0x1000;
             } else if (NuStrICmp(parser->word_buffer_ptr, AreaConfigKeyword_name_id) == 0) {
                 area->name_id = (i16)NuFParGetInt(parser);
@@ -317,10 +317,10 @@ AREA_DATA_PC *Areas_ConfigureList(char *path, VARIPTR *buffer, VARIPTR *buffer_e
                 if (NuFParGetWord(parser) != 0) {
                     area->text_id_value = (u8)abs(NuAToI(parser->word_buffer_ptr));
                 }
-            } else if (NuStrICmp(parser->word_buffer_ptr, AreaConfigKeyword_timetrial_time) == 0) {
+            } else if (NuStrICmp(parser->word_buffer_ptr, "timetrial_time") == 0) {
                 area->challenge_trial_time = (u16)NuFParGetInt(parser);
-            } else if (NuStrICmp(parser->word_buffer_ptr, AreaConfigKeyword_redbrick_cheat) == 0 ||
-                       NuStrICmp(parser->word_buffer_ptr, AreaConfigKeyword_redbrick_extra) == 0) {
+            } else if (NuStrICmp(parser->word_buffer_ptr, "redbrick_cheat") == 0 ||
+                       NuStrICmp(parser->word_buffer_ptr, "redbrick_extra") == 0) {
                 if (NuFParGetWord(parser) != 0) {
                     area->cheat = (i8)Cheat_FindByName(parser->word_buffer_ptr);
                 }
@@ -328,7 +328,7 @@ AREA_DATA_PC *Areas_ConfigureList(char *path, VARIPTR *buffer, VARIPTR *buffer_e
             continue;
         }
 
-        if (NuStrICmp(parser->word_buffer_ptr, AreaConfigKeyword_area_start) == 0 && area_count < max_count) {
+        if (NuStrICmp(parser->word_buffer_ptr, "area_start") == 0 && area_count < max_count) {
             in_area = 1;
             area->dir[0] = '\0';
             area->file[0] = '\0';

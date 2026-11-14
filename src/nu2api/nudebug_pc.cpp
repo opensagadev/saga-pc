@@ -21,7 +21,7 @@ void PCNativeDebugPrint(PC_NATIVE_DEBUG_STATE_PC *state, const char *format, ...
         vsprintf(PCNativeDebugFormatBuffer, format, args);
         va_end(args);
     }
-    sprintf(PCNativeDebugOutputBuffer, PCNativeDebugPrefix, PCNativeDebugFormatBuffer);
+    sprintf(PCNativeDebugOutputBuffer, "NUDEBUG: %s", PCNativeDebugFormatBuffer);
     if (state->enabled != 0) {
         OutputDebugStringA(PCNativeDebugOutputBuffer);
     }

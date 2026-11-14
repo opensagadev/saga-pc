@@ -57,9 +57,6 @@ extern "C" {
     extern char *GizmoRegistryGizTurretsNamePtrPc;
     extern i32 turret_gizmotype_id;
     extern char TurretOutputBufferPc[32];
-    extern const char TurretDestroyedOutputTextPc[10];
-    extern const char TurretFiredOutputTextPc[6];
-    extern const char TurretFiredShotsFormatPc[15];
     i32 GizTurretAnimDataVersionPc = 7;
     ADDGIZMOTYPE_PC GizmoRegistryGizTurretsAddTypePc = {0};
 
@@ -1065,13 +1062,13 @@ extern "C" {
     char *GizmoTurret_GetOutputName(GIZMO_PC *gizmo, i32 output) {
         switch (output) {
             case 0:
-                return (char *)TurretDestroyedOutputTextPc;
+                return "destroyed";
             case 1:
-                return (char *)TurretFiredOutputTextPc;
+                return "fired";
             case 2: {
                 GIZTURRET_s *turret = (GIZTURRET_s *)gizmo->object;
                 if (turret != NULL) {
-                    sprintf(TurretOutputBufferPc, TurretFiredShotsFormatPc, turret->shots_required);
+                    sprintf(TurretOutputBufferPc, "Fired %d Shots", turret->shots_required);
                     return TurretOutputBufferPc;
                 }
             }

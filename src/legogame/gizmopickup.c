@@ -401,7 +401,7 @@ void GizmoPickup_CollectCoin(WORLDINFO *world, NUVEC *position, i32 type_index, 
     message.end_fn = EndScoreMessage;
     AddGameMsg(&message);
     if (multiplier > 0) {
-        sprintf(text, PickupMultiplierFormat, multiplier);
+        sprintf(text, "x%i", multiplier);
         message = AddGameMsg_Default;
         message.scale = message.target_scale = 2.0f;
         message.duration = 0.25f;
@@ -520,9 +520,9 @@ static void PartImpact_Coin(PART_PC *part) {
         PlaySfxAndSetVolume((char *)PickupCoinSfx_PC, &part->position, volume);
         coinimpactwait = 0.1f;
     } else if (part->part_id >= 0xb7 && part->part_id <= 0xba) {
-        PlaySfxAndSetVolume((char *)CoinDropSilverSfx_PC, &part->position, volume);
+        PlaySfxAndSetVolume("CoinDropS", &part->position, volume);
     } else {
-        PlaySfxAndSetVolume((char *)CoinDropGoldSfx_PC, &part->position, volume);
+        PlaySfxAndSetVolume("CoinDropG", &part->position, volume);
     }
 }
 
@@ -701,7 +701,7 @@ static void PowerUp_ImpactPart(PART_PC *part) {
         volume = (speed - minimum) / (maximum - minimum);
     }
     if (volume > 0.0f) {
-        PlaySfxAndSetVolume((char *)PowerUpBounceSfx_PC, &part->position, volume);
+        PlaySfxAndSetVolume("Gungan_BlueOrbBounce", &part->position, volume);
     }
 }
 

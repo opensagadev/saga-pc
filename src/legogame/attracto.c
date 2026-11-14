@@ -104,12 +104,6 @@ STATIC_ASSERT(offsetof(GAMEOBJECT, grapple) == 0x798);
 extern char TextInputKeyNameTextPc7516c0[1];
 extern void Shard_Collect(SHARD_s *, GAMEOBJECT *);
 extern void Batarang_GetSightInfo(i32, i32 *, i32 *, i32 *, char *);
-#pragma const_seg(".rdata$PCContextName_Attracto")
-const char PCContextName_Attracto[9] = "Attracto";
-#pragma const_seg()
-#pragma const_seg(".rdata$PCAttractoOutputTextPc")
-const char PCAttractoOutputTextPc[7] = "Filled";
-#pragma const_seg()
 
 /* The SDK's inline NuFabs (nufloat.h): a masked copy of the float bits. */
 static f32 AttractoFabsPc(f32 f) {
@@ -360,7 +354,7 @@ i32 Attracto_GetOutput(GIZMO_PC *gizmo, i32 output, i32 mode) {
 }
 
 #pragma data_seg(".data$AttractoOutputNamePc")
-char *Attracto_OutputName = (char *)PCAttractoOutputTextPc;
+char *Attracto_OutputName = "Filled";
 #pragma data_seg()
 
 char *Attracto_GetOutputName(GIZMO_PC *gizmo, i32 output) {
@@ -427,7 +421,7 @@ void Attracto_GetPos_Top(ATTRACTO_PC *attracto, NUVEC *position) {
 }
 
 #pragma data_seg(".data$AttractoRegistryNamePc")
-char *AttractoRegistryNamePc = (char *)PCContextName_Attracto;
+char *AttractoRegistryNamePc = "Attracto";
 #pragma data_seg()
 #pragma data_seg(".data$AttractoAddTypePc")
 ADDGIZMOTYPE_PC AttractoAddTypePc = {0};

@@ -15,7 +15,7 @@ void MenuInitialiseEx(MENUFNINFO *menu_info, i32 menu_id_count, i32 language_cou
         MenuInfo[31 + i] = menu_info[i];
     }
     MenusUsed = menu_ids_used + 31;
-    sprintf(menus_used_str, Menu_UsedFormat, MenusUsed);
+    sprintf(menus_used_str, "Menus used: %d", MenusUsed);
     MenuLanguages = language_count;
     MenuHeader[0] = '\0';
     header_r = MENUHEADERR;

@@ -543,7 +543,7 @@ void rtlApplySetScale(void *set, RTL_DATA_PC *data, NUVEC *position, NUMTX *rota
     RTL_DATA_PC local_data;
     RTL_DATA_PC *lighting_data;
 
-    _NuTimeBarSlotBegin(0, 6, RtlSearchTimebarNamePc);
+    _NuTimeBarSlotBegin(0, 6, "RTL srch");
     if (data == NULL) {
         lighting_data = &local_data;
         rtlResetEx(lighting_data, 1);
@@ -3945,11 +3945,11 @@ static i32 rtlCmp(RTL_LIGHT_PC *first, RTL_LIGHT_PC *second) {
 }
 
 #pragma section(".rdata$RtlExtensionText", read)
-__declspec(allocate(".rdata$RtlExtensionText")) const char RtlFileExtensionTextPc[5] = ".rtl";
+__declspec(allocate(".rdata$RtlExtensionText"))
 #pragma section(".rdata$RtlFilePathFormat", read)
 __declspec(allocate(".rdata$RtlFilePathFormat")) const char RtlFilePathFormatPc[7] = "%s%s%s";
 #pragma section(".data$RtlExtensionPointer", read, write)
-__declspec(allocate(".data$RtlExtensionPointer")) char *rtl_ext = (char *)RtlFileExtensionTextPc;
+__declspec(allocate(".data$RtlExtensionPointer")) char *rtl_ext = ".rtl";
 
 void edrtlUndo(void) {
     if (maxundo != 0 && curr_set != NULL && rtl_undo_cnt != 0) {

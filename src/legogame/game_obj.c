@@ -32,8 +32,6 @@ extern i32 FalconDebKey[2];
 void DieRumble(GAMEOBJECT *);
 void GetTakeOverPos(GAMEOBJECT *, NUVEC *);
 extern i16 CharacterFixupIdPc007f18c4;
-extern const char BeenKilledPc[11];
-extern const char EP3DogfightDiePc[17];
 
 typedef struct kill_zipup_pc_s {
     u8 unknown_00[0x68];
@@ -1091,8 +1089,7 @@ i32 DeactivatePlayer(GAMEOBJECT *object, f32 duration, GAMEOBJECT *source) {
             Player_ResetContexts(object->ai_player_packet_pc);
             object->character_context = 0x17;
             object->origin_scale_override = model_state;
-            if (AIScriptSetBaseScriptStateByName((AISCRIPTPROCESS_PC *)&object->ai_packet,
-                                                 (char *)PlayerBeenDeactivatedPc)) {
+            if (AIScriptSetBaseScriptStateByName((AISCRIPTPROCESS_PC *)&object->ai_packet, "BeenDeactivated")) {
                 AIScriptProcess(WORLD->ai_sys, (APIOBJECT_PC *)object, &object->ai_packet,
                                 (AISCRIPTPROCESS_PC *)&object->ai_packet, FRAMETIME);
             }
@@ -1545,14 +1542,14 @@ void ObjHitShield(GAMEOBJECT *attacker, GAMEOBJECT *target, i32 damage, void *un
         }
         health = target->shield_hitpoints - damage;
         if (health <= 0) {
-            PlaySfx((char *)ShieldFlickerSfxPc, &target->collision_position);
+            PlaySfx("DDekaFlicker", &target->collision_position);
             shield->shield_timer = 0.5f;
             target->shield_hitpoints = 0;
             shield->shield_enabled = 0.0f;
             first_rumble = 0.8f;
             second_rumble = 0.3f;
         } else {
-            PlaySfx((char *)ShieldHitSfxPc, &target->collision_position);
+            PlaySfx("DDekaHit", &target->collision_position);
             first_rumble = 0.5f;
             target->shield_hitpoints = (u8)health;
             second_rumble = 0.0f;
@@ -2766,8 +2763,7 @@ i32 KillGameObject(GAMEOBJECT *object, i32 reason, i32 unused) {
     if (object->death_delay <= 0.0f) {
         object->movement_lean_angle = 0;
     }
-    if (terminal_kill == 0 &&
-        AIScriptSetBaseScriptStateByName(&object->ai_packet.script_processor, (char *)BeenKilledPc)) {
+    if (terminal_kill == 0 && AIScriptSetBaseScriptStateByName(&object->ai_packet.script_processor, "BeenKilled")) {
         AIScriptProcess(WORLD->ai_sys, (APIOBJECT_PC *)object, &object->ai_packet, &object->ai_packet.script_processor,
                         FRAMETIME);
     }
@@ -2890,7 +2886,7 @@ i32 KillGameObject(GAMEOBJECT *object, i32 reason, i32 unused) {
     }
     if (DOGFIGHTA_LDATA != NULL && WorldInfo_CurrentlyActive()->current_level == DOGFIGHTA_LDATA && BonusWinner == -1 &&
         (0x40000 & object->flags_1f8) == 0) {
-        ResetLevel(WorldInfo_CurrentlyActive(), (char *)EP3DogfightDiePc, 1);
+        ResetLevel(WorldInfo_CurrentlyActive(), "EP3_DOGFIGHT_DIE", 1);
     }
     if (0 != terminal_kill && object->field_280 == 0xff) {
         AICREATURE_PC *creature;

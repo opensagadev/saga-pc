@@ -67,220 +67,112 @@ extern "C" {
 }
 
 extern "C" {
-    static const char ShaderUniformTextPc007e8b50[20] = "shadowCastingObject";
-    static const char ShaderUniformTextPc007e8b64[22] = "texAnimCurves_sampler";
-    static const char ShaderUniformTextPc007e8b7c[19] = "texAnimMap_sampler";
-    static const char ShaderUniformTextPc007e8b90[15] = "lightmapOffset";
-    static const char ShaderUniformTextPc007e8ba0[18] = "specularDirection";
-    static const char ShaderUniformTextPc007e8bb4[17] = "permgrad_sampler";
-    static const char ShaderUniformTextPc007e8bc8[13] = "perm_sampler";
-    static const char ShaderUniformTextPc007e8bd8[15] = "fractal_params";
-    static const char ShaderUniformTextPc007e8be8[15] = "edgelit_params";
-    static const char ShaderUniformTextPc007e8bf8[12] = "worldCamPos";
-    static const char ShaderUniformTextPc007e8c04[24] = "fs_viewInverseTranspose";
-    static const char ShaderUniformTextPc007e8c1c[24] = "vs_viewInverseTranspose";
-    static const char ShaderUniformTextPc007e8c34[26] = "worldViewInverseTranspose";
-    static const char ShaderUniformTextPc007e8c50[12] = "wind_params";
-    static const char ShaderUniformTextPc007e8c5c[13] = "wind_sampler";
-    static const char ShaderUniformTextPc007e8c6c[12] = "worldParams";
-    static const char ShaderUniformTextPc007e8c78[15] = "carpaint_tints";
-    static const char ShaderUniformTextPc007e8c88[16] = "carpaint_params";
-    static const char ShaderUniformTextPc007e8c98[23] = "diffenvmap_samplerCube";
-    static const char ShaderUniformTextPc007e8cb0[12] = "dappleLimit";
-    static const char ShaderUniformTextPc007e8cbc[13] = "fxAttributes";
-    static const char ShaderUniformTextPc007e8ccc[18] = "vertexGroupStates";
-    static const char ShaderUniformTextPc007e8ce0[12] = "offsetTable";
-    static const char ShaderUniformTextPc007e8cec[17] = "lightRotationMtx";
-    static const char ShaderUniformTextPc007e8d00[16] = "averageLightDir";
-    static const char ShaderUniformTextPc007e8d10[18] = "averageLightColor";
-    static const char ShaderUniformTextPc007e8d24[13] = "noiseTexSize";
-    static const char ShaderUniformTextPc007e8d34[12] = "ps2ShineMtx";
-    static const char ShaderUniformTextPc007e8d40[12] = "lego_params";
-    static const char ShaderUniformTextPc007e8d4c[18] = "fs_frustum_params";
-    static const char ShaderUniformTextPc007e8d60[18] = "vs_frustum_params";
-    static const char ShaderUniformTextPc007e8d74[21] = "fs_projection_params";
-    static const char ShaderUniformTextPc007e8d8c[21] = "vs_projection_params";
-    static const char ShaderUniformTextPc007e8da4[11] = "fog_params";
-    static const char ShaderUniformTextPc007e8db0[10] = "fog_color";
-    static const char ShaderUniformTextPc007e8dbc[10] = "uvOffset3";
-    static const char ShaderUniformTextPc007e8dc8[10] = "uvOffset2";
-    static const char ShaderUniformTextPc007e8dd4[10] = "uvOffset1";
-    static const char ShaderUniformTextPc007e8de0[10] = "uvOffset0";
-    static const char ShaderUniformTextPc007e8dec[14] = "fs_screenSize";
-    static const char ShaderUniformTextPc007e8dfc[14] = "vs_screenSize";
-    static const char ShaderUniformTextPc007e8e0c[19] = "backBuffer_sampler";
-    static const char ShaderUniformTextPc007e8e20[18] = "refraction_kIndex";
-    static const char ShaderUniformTextPc007e8e34[17] = "refraction_color";
-    static const char ShaderUniformTextPc007e8e48[19] = "specular2_specular";
-    static const char ShaderUniformTextPc007e8e5c[18] = "specular_specular";
-    static const char ShaderUniformTextPc007e8e70[6] = "kTint";
     static const char ShaderUniformTextPc007e8e78[17] = "layer_kOpacities";
-    static const char ShaderUniformTextPc007e8e8c[15] = "layer3_diffuse";
-    static const char ShaderUniformTextPc007e8e9c[15] = "layer2_diffuse";
-    static const char ShaderUniformTextPc007e8eac[15] = "layer1_diffuse";
     static const char ShaderUniformTextPc007e8ebc[15] = "layer0_diffuse";
-    static const char ShaderUniformTextPc007e8ecc[25] = "fragmentUniforms_sampler";
-    static const char ShaderUniformTextPc007e8ee8[18] = "vtfNormal_sampler";
-    static const char ShaderUniformTextPc007e8efc[21] = "ps2_shinemap_sampler";
-    static const char ShaderUniformTextPc007e8f14[21] = "envmap_samplerSphere";
-    static const char ShaderUniformTextPc007e8f2c[19] = "envmap_samplerCube";
-    static const char ShaderUniformTextPc007e8f40[20] = "vertexFetch_sampler";
-    static const char ShaderUniformTextPc007e8f54[22] = "detailSurface_sampler";
-    static const char ShaderUniformTextPc007e8f6c[17] = "surface2_sampler";
-    static const char ShaderUniformTextPc007e8f80[16] = "surface_sampler";
-    static const char ShaderUniformTextPc007e8f90[18] = "specular2_sampler";
-    static const char ShaderUniformTextPc007e8fa4[17] = "specular_sampler";
-    static const char ShaderUniformTextPc007e8fb8[15] = "layer3_sampler";
-    static const char ShaderUniformTextPc007e8fc8[15] = "layer2_sampler";
-    static const char ShaderUniformTextPc007e8fd8[15] = "layer1_sampler";
-    static const char ShaderUniformTextPc007e8fe8[15] = "layer0_sampler";
-    static const char ShaderUniformTextPc007e8ff8[15] = "fs_lightParams";
-    static const char ShaderUniformTextPc007e9008[15] = "vs_lightParams";
-    static const char ShaderUniformTextPc007e9018[15] = "blendShapes[7]";
-    static const char ShaderUniformTextPc007e9028[15] = "blendShapes[6]";
-    static const char ShaderUniformTextPc007e9038[15] = "blendShapes[5]";
-    static const char ShaderUniformTextPc007e9048[15] = "blendShapes[4]";
-    static const char ShaderUniformTextPc007e9058[15] = "blendShapes[3]";
-    static const char ShaderUniformTextPc007e9068[15] = "blendShapes[2]";
-    static const char ShaderUniformTextPc007e9078[15] = "blendShapes[1]";
-    static const char ShaderUniformTextPc007e9088[15] = "blendShapes[0]";
-    static const char ShaderUniformTextPc007e9098[12] = "blendShapes";
-    static const char ShaderUniformTextPc007e90a4[17] = "blendShapesCount";
-    static const char ShaderUniformTextPc007e90b8[11] = "skinMatrix";
-    static const char ShaderUniformTextPc007e90c4[11] = "waterTable";
-    static const char ShaderUniformTextPc007e90d0[7] = "motion";
-    static const char ShaderUniformTextPc007e90d8[10] = "worldView";
-    static const char ShaderUniformTextPc007e90e4[14] = "worldViewProj";
-    static const char ShaderUniformTextPc007e90f4[9] = "viewProj";
-    static const char ShaderUniformTextPc007e9100[5] = "view";
-    static const char ShaderUniformTextPc007e9108[8] = "vs_view";
-    static const char ShaderUniformTextPc007e9110[6] = "world";
-    static const char ShaderUniformTextPc007e9118[13] = "gooch_params";
-    static const char ShaderUniformTextPc007e9128[12] = "vtf_kNormal";
-    static const char ShaderUniformTextPc007e9134[12] = "vtf_kHeight";
-    static const char ShaderUniformTextPc007e9140[14] = "envmap_params";
-    static const char ShaderUniformTextPc007e9150[16] = "specular_params";
-    static const char ShaderUniformTextPc007e9160[16] = "surface_params2";
-    static const char ShaderUniformTextPc007e9170[15] = "surface_params";
-    static const char ShaderUniformTextPc007e9180[14] = "bitangentFlip";
-    static const char ShaderUniformTextPc007e9190[15] = "lightPosition2";
-    static const char ShaderUniformTextPc007e91a0[18] = "vs_lightPosition2";
-    static const char ShaderUniformTextPc007e91b4[15] = "lightPosition1";
-    static const char ShaderUniformTextPc007e91c4[18] = "vs_lightPosition1";
-    static const char ShaderUniformTextPc007e91d8[15] = "lightPosition0";
-    static const char ShaderUniformTextPc007e91e8[18] = "vs_lightPosition0";
-    static const char ShaderUniformTextPc007e91fc[12] = "lightColor2";
-    static const char ShaderUniformTextPc007e9208[15] = "vs_lightColor2";
-    static const char ShaderUniformTextPc007e9218[12] = "lightColor1";
-    static const char ShaderUniformTextPc007e9224[15] = "vs_lightColor1";
-    static const char ShaderUniformTextPc007e9234[12] = "lightColor0";
-    static const char ShaderUniformTextPc007e9240[15] = "vs_lightColor0";
     static const char ShaderUniformTextPc007e9250[17] = "incandescentGlow";
-    static const char ShaderUniformTextPc007e9264[18] = "sceneAmbientColor";
-    static const char ShaderUniformTextPc007e9278[21] = "vs_sceneAmbientColor";
     static const char ShaderUniformTextPc007e9290[13] = "ambientColor";
 
     ShaderUniformRecordPc ShaderUniformRecordsPc[100] = {
         {ShaderUniformTextPc007e9290, ShaderUniformTextPc007e9290, 1, 1, 7, -1, 0, {0}},
-        {ShaderUniformTextPc007e9278, ShaderUniformTextPc007e9264, 1, 1, 3, 28, 2, {0}},
+        {"vs_sceneAmbientColor", "sceneAmbientColor", 1, 1, 3, 28, 2, {0}},
         {ShaderUniformTextPc007e9250, ShaderUniformTextPc007e9250, 1, 1, 7, -1, 0, {0}},
-        {ShaderUniformTextPc007e9240, ShaderUniformTextPc007e9234, 1, 1, 3, 29, 2, {0}},
-        {ShaderUniformTextPc007e9224, ShaderUniformTextPc007e9218, 1, 1, 3, 30, 2, {0}},
-        {ShaderUniformTextPc007e9208, ShaderUniformTextPc007e91fc, 1, 1, 3, 31, 2, {0}},
-        {ShaderUniformTextPc007e91e8, ShaderUniformTextPc007e91d8, 1, 1, 3, 32, 2, {0}},
-        {ShaderUniformTextPc007e91c4, ShaderUniformTextPc007e91b4, 1, 1, 3, 33, 2, {0}},
-        {ShaderUniformTextPc007e91a0, ShaderUniformTextPc007e9190, 1, 1, 3, 34, 2, {0}},
-        {ShaderUniformTextPc007e9180, NULL, 1, 1, 1, -1, 0, {0}},
-        {NULL, ShaderUniformTextPc007e9170, 1, 1, 6, -1, 0, {0}},
-        {NULL, ShaderUniformTextPc007e9160, 1, 1, 6, -1, 0, {0}},
-        {NULL, ShaderUniformTextPc007e9150, 1, 1, 2, -1, 0, {0}},
-        {NULL, ShaderUniformTextPc007e9140, 1, 1, 6, -1, 0, {0}},
-        {ShaderUniformTextPc007e9134, NULL, 1, 1, 5, -1, 0, {0}},
-        {NULL, ShaderUniformTextPc007e9128, 1, 1, 6, -1, 0, {0}},
-        {NULL, ShaderUniformTextPc007e9118, 1, 1, 2, -1, 0, {0}},
-        {ShaderUniformTextPc007e9110, NULL, 4, 4, 1, 16, 0, {0}},
-        {ShaderUniformTextPc007e9108, ShaderUniformTextPc007e9100, 4, 4, 3, 12, 1, {0}},
-        {ShaderUniformTextPc007e90f4, NULL, 4, 4, 1, 0, 2, {0}},
-        {ShaderUniformTextPc007e90e4, NULL, 4, 4, 1, 20, 0, {0}},
-        {ShaderUniformTextPc007e90d8, NULL, 4, 4, 1, 24, 0, {0}},
-        {ShaderUniformTextPc007e90d0, NULL, 4, 4, 1, 41, 0, {0}},
-        {ShaderUniformTextPc007e90c4, NULL, 32, 1, 1, -1, 0, {0}},
-        {ShaderUniformTextPc007e90b8, NULL, 32, 4, 1, -1, 0, {0}},
-        {ShaderUniformTextPc007e90a4, NULL, 1, 1, 1, 55, 0, {0}},
-        {ShaderUniformTextPc007e9098, NULL, 16, 1, 1, -1, 0, {0}},
-        {ShaderUniformTextPc007e9088, NULL, 1, 1, 1, 56, 0, {0}},
-        {ShaderUniformTextPc007e9078, NULL, 1, 1, 1, 57, 0, {0}},
-        {ShaderUniformTextPc007e9068, NULL, 1, 1, 1, 58, 0, {0}},
-        {ShaderUniformTextPc007e9058, NULL, 1, 1, 1, 69, 0, {0}},
-        {ShaderUniformTextPc007e9048, NULL, 1, 1, 1, 60, 0, {0}},
-        {ShaderUniformTextPc007e9038, NULL, 1, 1, 1, 61, 0, {0}},
-        {ShaderUniformTextPc007e9028, NULL, 1, 1, 1, 62, 0, {0}},
-        {ShaderUniformTextPc007e9018, NULL, 1, 1, 1, 63, 0, {0}},
-        {ShaderUniformTextPc007e9008, ShaderUniformTextPc007e8ff8, 11, 1, 3, 28, 1, {0}},
-        {NULL, ShaderUniformTextPc007e8fe8, 0, 0, 2, -1, 0, {0}},
-        {NULL, ShaderUniformTextPc007e8fd8, 0, 0, 2, -1, 0, {0}},
-        {NULL, ShaderUniformTextPc007e8fc8, 0, 0, 2, -1, 0, {0}},
-        {NULL, ShaderUniformTextPc007e8fb8, 0, 0, 2, -1, 0, {0}},
-        {NULL, ShaderUniformTextPc007e8fa4, 0, 0, 2, -1, 0, {0}},
-        {NULL, ShaderUniformTextPc007e8f90, 0, 0, 2, -1, 0, {0}},
-        {NULL, ShaderUniformTextPc007e8f80, 0, 0, 2, -1, 0, {0}},
-        {NULL, ShaderUniformTextPc007e8f6c, 0, 0, 2, -1, 0, {0}},
-        {NULL, ShaderUniformTextPc007e8f54, 0, 0, 2, -1, 0, {0}},
-        {ShaderUniformTextPc007e8f40, NULL, 0, 0, 1, -1, 0, {0}},
-        {NULL, ShaderUniformTextPc007e8f2c, 0, 0, 2, -1, 0, {0}},
-        {NULL, ShaderUniformTextPc007e8f14, 0, 0, 2, -1, 0, {0}},
-        {NULL, ShaderUniformTextPc007e8efc, 0, 0, 2, -1, 0, {0}},
-        {NULL, ShaderUniformTextPc007e8ee8, 0, 0, 2, -1, 0, {0}},
-        {NULL, ShaderUniformTextPc007e8ecc, 0, 0, 2, -1, 0, {0}},
+        {"vs_lightColor0", "lightColor0", 1, 1, 3, 29, 2, {0}},
+        {"vs_lightColor1", "lightColor1", 1, 1, 3, 30, 2, {0}},
+        {"vs_lightColor2", "lightColor2", 1, 1, 3, 31, 2, {0}},
+        {"vs_lightPosition0", "lightPosition0", 1, 1, 3, 32, 2, {0}},
+        {"vs_lightPosition1", "lightPosition1", 1, 1, 3, 33, 2, {0}},
+        {"vs_lightPosition2", "lightPosition2", 1, 1, 3, 34, 2, {0}},
+        {"bitangentFlip", NULL, 1, 1, 1, -1, 0, {0}},
+        {NULL, "surface_params", 1, 1, 6, -1, 0, {0}},
+        {NULL, "surface_params2", 1, 1, 6, -1, 0, {0}},
+        {NULL, "specular_params", 1, 1, 2, -1, 0, {0}},
+        {NULL, "envmap_params", 1, 1, 6, -1, 0, {0}},
+        {"vtf_kHeight", NULL, 1, 1, 5, -1, 0, {0}},
+        {NULL, "vtf_kNormal", 1, 1, 6, -1, 0, {0}},
+        {NULL, "gooch_params", 1, 1, 2, -1, 0, {0}},
+        {"world", NULL, 4, 4, 1, 16, 0, {0}},
+        {"vs_view", "view", 4, 4, 3, 12, 1, {0}},
+        {"viewProj", NULL, 4, 4, 1, 0, 2, {0}},
+        {"worldViewProj", NULL, 4, 4, 1, 20, 0, {0}},
+        {"worldView", NULL, 4, 4, 1, 24, 0, {0}},
+        {"motion", NULL, 4, 4, 1, 41, 0, {0}},
+        {"waterTable", NULL, 32, 1, 1, -1, 0, {0}},
+        {"skinMatrix", NULL, 32, 4, 1, -1, 0, {0}},
+        {"blendShapesCount", NULL, 1, 1, 1, 55, 0, {0}},
+        {"blendShapes", NULL, 16, 1, 1, -1, 0, {0}},
+        {"blendShapes[0]", NULL, 1, 1, 1, 56, 0, {0}},
+        {"blendShapes[1]", NULL, 1, 1, 1, 57, 0, {0}},
+        {"blendShapes[2]", NULL, 1, 1, 1, 58, 0, {0}},
+        {"blendShapes[3]", NULL, 1, 1, 1, 69, 0, {0}},
+        {"blendShapes[4]", NULL, 1, 1, 1, 60, 0, {0}},
+        {"blendShapes[5]", NULL, 1, 1, 1, 61, 0, {0}},
+        {"blendShapes[6]", NULL, 1, 1, 1, 62, 0, {0}},
+        {"blendShapes[7]", NULL, 1, 1, 1, 63, 0, {0}},
+        {"vs_lightParams", "fs_lightParams", 11, 1, 3, 28, 1, {0}},
+        {NULL, "layer0_sampler", 0, 0, 2, -1, 0, {0}},
+        {NULL, "layer1_sampler", 0, 0, 2, -1, 0, {0}},
+        {NULL, "layer2_sampler", 0, 0, 2, -1, 0, {0}},
+        {NULL, "layer3_sampler", 0, 0, 2, -1, 0, {0}},
+        {NULL, "specular_sampler", 0, 0, 2, -1, 0, {0}},
+        {NULL, "specular2_sampler", 0, 0, 2, -1, 0, {0}},
+        {NULL, "surface_sampler", 0, 0, 2, -1, 0, {0}},
+        {NULL, "surface2_sampler", 0, 0, 2, -1, 0, {0}},
+        {NULL, "detailSurface_sampler", 0, 0, 2, -1, 0, {0}},
+        {"vertexFetch_sampler", NULL, 0, 0, 1, -1, 0, {0}},
+        {NULL, "envmap_samplerCube", 0, 0, 2, -1, 0, {0}},
+        {NULL, "envmap_samplerSphere", 0, 0, 2, -1, 0, {0}},
+        {NULL, "ps2_shinemap_sampler", 0, 0, 2, -1, 0, {0}},
+        {NULL, "vtfNormal_sampler", 0, 0, 2, -1, 0, {0}},
+        {NULL, "fragmentUniforms_sampler", 0, 0, 2, -1, 0, {0}},
         {ShaderUniformTextPc007e8ebc, ShaderUniformTextPc007e8ebc, 1, 1, 6, -1, 0, {0}},
-        {NULL, ShaderUniformTextPc007e8eac, 1, 1, 6, -1, 0, {0}},
-        {NULL, ShaderUniformTextPc007e8e9c, 1, 1, 6, -1, 0, {0}},
-        {NULL, ShaderUniformTextPc007e8e8c, 1, 1, 6, -1, 0, {0}},
+        {NULL, "layer1_diffuse", 1, 1, 6, -1, 0, {0}},
+        {NULL, "layer2_diffuse", 1, 1, 6, -1, 0, {0}},
+        {NULL, "layer3_diffuse", 1, 1, 6, -1, 0, {0}},
         {ShaderUniformTextPc007e8e78, ShaderUniformTextPc007e8e78, 1, 1, 6, -1, 0, {0}},
-        {ShaderUniformTextPc007e8e70, NULL, 1, 1, 1, 40, 2, {0}},
-        {NULL, ShaderUniformTextPc007e8e5c, 1, 1, 6, -1, 0, {0}},
-        {NULL, ShaderUniformTextPc007e8e48, 1, 1, 6, -1, 0, {0}},
-        {NULL, ShaderUniformTextPc007e8e34, 1, 1, 6, -1, 0, {0}},
-        {NULL, ShaderUniformTextPc007e8e20, 1, 1, 6, -1, 0, {0}},
-        {NULL, ShaderUniformTextPc007e8e0c, 0, 0, 2, -1, 0, {0}},
-        {ShaderUniformTextPc007e8dfc, ShaderUniformTextPc007e8dec, 1, 1, 3, 45, 1, {0}},
+        {"kTint", NULL, 1, 1, 1, 40, 2, {0}},
+        {NULL, "specular_specular", 1, 1, 6, -1, 0, {0}},
+        {NULL, "specular2_specular", 1, 1, 6, -1, 0, {0}},
+        {NULL, "refraction_color", 1, 1, 6, -1, 0, {0}},
+        {NULL, "refraction_kIndex", 1, 1, 6, -1, 0, {0}},
+        {NULL, "backBuffer_sampler", 0, 0, 2, -1, 0, {0}},
+        {"vs_screenSize", "fs_screenSize", 1, 1, 3, 45, 1, {0}},
         {NULL, AIActionTimeName, 1, 1, 2, 46, 1, {0}},
-        {ShaderUniformTextPc007e8de0, NULL, 1, 1, 1, -1, 0, {0}},
-        {ShaderUniformTextPc007e8dd4, NULL, 1, 1, 1, -1, 0, {0}},
-        {ShaderUniformTextPc007e8dc8, NULL, 1, 1, 1, -1, 0, {0}},
-        {ShaderUniformTextPc007e8dbc, NULL, 1, 1, 1, -1, 0, {0}},
-        {NULL, ShaderUniformTextPc007e8db0, 1, 1, 2, 47, 1, {0}},
-        {ShaderUniformTextPc007e8da4, NULL, 1, 1, 1, 48, 1, {0}},
-        {ShaderUniformTextPc007e8d8c, ShaderUniformTextPc007e8d74, 1, 1, 3, 49, 1, {0}},
-        {ShaderUniformTextPc007e8d60, ShaderUniformTextPc007e8d4c, 1, 1, 3, 50, 1, {0}},
-        {NULL, ShaderUniformTextPc007e8d40, 1, 1, 2, -1, 0, {0}},
-        {ShaderUniformTextPc007e8d34, NULL, 4, 4, 1, 35, 1, {0}},
-        {NULL, ShaderUniformTextPc007e8d24, 1, 1, 2, 64, 1, {0}},
-        {NULL, ShaderUniformTextPc007e8d10, 1, 1, 2, 0, 2, {0}},
-        {NULL, ShaderUniformTextPc007e8d00, 1, 1, 2, 1, 2, {0}},
-        {ShaderUniformTextPc007e8cec, NULL, 4, 4, 1, 67, 1, {0}},
-        {ShaderUniformTextPc007e8ce0, NULL, 8, 1, 1, 71, 0, {0}},
-        {ShaderUniformTextPc007e8ccc, NULL, 32, 1, 1, 79, 0, {0}},
-        {ShaderUniformTextPc007e8cbc, NULL, 1, 1, 1, -1, 0, {0}},
-        {ShaderUniformTextPc007e8cb0, NULL, 1, 1, 1, -1, 0, {0}},
-        {NULL, ShaderUniformTextPc007e8c98, 0, 0, 2, -1, 0, {0}},
-        {NULL, ShaderUniformTextPc007e8c88, 1, 1, 2, -1, 0, {0}},
-        {NULL, ShaderUniformTextPc007e8c78, 4, 1, 2, -1, 0, {0}},
-        {ShaderUniformTextPc007e8c6c, NULL, 12, 4, 1, 16, 0, {0}},
-        {ShaderUniformTextPc007e8c5c, NULL, 0, 0, 1, -1, 0, {0}},
-        {ShaderUniformTextPc007e8c50, NULL, 1, 1, 1, -1, 0, {0}},
-        {ShaderUniformTextPc007e8c34, NULL, 4, 4, 1, 24, 1, {0}},
-        {ShaderUniformTextPc007e8c1c, ShaderUniformTextPc007e8c04, 4, 4, 3, 12, 1, {0}},
-        {ShaderUniformTextPc007e8bf8, NULL, 1, 1, 1, 39, 0, {0}},
-        {NULL, ShaderUniformTextPc007e8be8, 1, 1, 2, -1, 0, {0}},
-        {NULL, ShaderUniformTextPc007e8bd8, 1, 1, 2, -1, 0, {0}},
-        {NULL, ShaderUniformTextPc007e8bc8, 0, 0, 2, -1, 0, {0}},
-        {NULL, ShaderUniformTextPc007e8bb4, 0, 0, 2, -1, 0, {0}},
-        {NULL, ShaderUniformTextPc007e8ba0, 1, 1, 2, 51, 2, {0}},
-        {ShaderUniformTextPc007e8b90, NULL, 1, 1, 1, 52, 0, {0}},
-        {NULL, ShaderUniformTextPc007e8b7c, 0, 0, 2, -1, 0, {0}},
-        {NULL, ShaderUniformTextPc007e8b64, 0, 0, 2, -1, 0, {0}},
-        {ShaderUniformTextPc007e8b50, NULL, 1, 1, 1, 111, 0, {0}},
+        {"uvOffset0", NULL, 1, 1, 1, -1, 0, {0}},
+        {"uvOffset1", NULL, 1, 1, 1, -1, 0, {0}},
+        {"uvOffset2", NULL, 1, 1, 1, -1, 0, {0}},
+        {"uvOffset3", NULL, 1, 1, 1, -1, 0, {0}},
+        {NULL, "fog_color", 1, 1, 2, 47, 1, {0}},
+        {"fog_params", NULL, 1, 1, 1, 48, 1, {0}},
+        {"vs_projection_params", "fs_projection_params", 1, 1, 3, 49, 1, {0}},
+        {"vs_frustum_params", "fs_frustum_params", 1, 1, 3, 50, 1, {0}},
+        {NULL, "lego_params", 1, 1, 2, -1, 0, {0}},
+        {"ps2ShineMtx", NULL, 4, 4, 1, 35, 1, {0}},
+        {NULL, "noiseTexSize", 1, 1, 2, 64, 1, {0}},
+        {NULL, "averageLightColor", 1, 1, 2, 0, 2, {0}},
+        {NULL, "averageLightDir", 1, 1, 2, 1, 2, {0}},
+        {"lightRotationMtx", NULL, 4, 4, 1, 67, 1, {0}},
+        {"offsetTable", NULL, 8, 1, 1, 71, 0, {0}},
+        {"vertexGroupStates", NULL, 32, 1, 1, 79, 0, {0}},
+        {"fxAttributes", NULL, 1, 1, 1, -1, 0, {0}},
+        {"dappleLimit", NULL, 1, 1, 1, -1, 0, {0}},
+        {NULL, "diffenvmap_samplerCube", 0, 0, 2, -1, 0, {0}},
+        {NULL, "carpaint_params", 1, 1, 2, -1, 0, {0}},
+        {NULL, "carpaint_tints", 4, 1, 2, -1, 0, {0}},
+        {"worldParams", NULL, 12, 4, 1, 16, 0, {0}},
+        {"wind_sampler", NULL, 0, 0, 1, -1, 0, {0}},
+        {"wind_params", NULL, 1, 1, 1, -1, 0, {0}},
+        {"worldViewInverseTranspose", NULL, 4, 4, 1, 24, 1, {0}},
+        {"vs_viewInverseTranspose", "fs_viewInverseTranspose", 4, 4, 3, 12, 1, {0}},
+        {"worldCamPos", NULL, 1, 1, 1, 39, 0, {0}},
+        {NULL, "edgelit_params", 1, 1, 2, -1, 0, {0}},
+        {NULL, "fractal_params", 1, 1, 2, -1, 0, {0}},
+        {NULL, "perm_sampler", 0, 0, 2, -1, 0, {0}},
+        {NULL, "permgrad_sampler", 0, 0, 2, -1, 0, {0}},
+        {NULL, "specularDirection", 1, 1, 2, 51, 2, {0}},
+        {"lightmapOffset", NULL, 1, 1, 1, 52, 0, {0}},
+        {NULL, "texAnimMap_sampler", 0, 0, 2, -1, 0, {0}},
+        {NULL, "texAnimCurves_sampler", 0, 0, 2, -1, 0, {0}},
+        {"shadowCastingObject", NULL, 1, 1, 1, 111, 0, {0}},
     };
 }
 
@@ -437,105 +329,58 @@ extern "C" {
     char *apiGameTitle = (char *)MenuTechnicalDefaultTextPc75f310;
     extern char TextInputKeyNameTextPc7516c0[];
     char *apiGameSubTitle = TextInputKeyNameTextPc7516c0;
-    extern const char MenuTechnicalDefaultTextPc75f2c4[4] = "Yes";
-    char *apitxt_YES = (char *)MenuTechnicalDefaultTextPc75f2c4;
-    extern const char MenuTechnicalDefaultTextPc75f2c0[3] = "No";
-    char *apitxt_NO = (char *)MenuTechnicalDefaultTextPc75f2c0;
-    extern const char MenuTechnicalDefaultTextPc75f2bc[3] = "OK";
-    char *apitxt_OK = (char *)MenuTechnicalDefaultTextPc75f2bc;
-    extern const char MenuTechnicalDefaultTextPc75f2b4[7] = "Cancel";
-    char *apitxt_CANCEL = (char *)MenuTechnicalDefaultTextPc75f2b4;
-    extern const char MenuTechnicalDefaultTextPc75f2ac[6] = "Retry";
-    char *apitxt_RETRY = (char *)MenuTechnicalDefaultTextPc75f2ac;
-    extern const char MenuTechnicalDefaultTextPc75f2a4[8] = "Profile";
-    char *apitxt_SLOT = (char *)MenuTechnicalDefaultTextPc75f2a4;
+    char *apitxt_YES = "Yes";
+    char *apitxt_NO = "No";
+    char *apitxt_OK = "OK";
+    char *apitxt_CANCEL = "Cancel";
+    char *apitxt_RETRY = "Retry";
+    char *apitxt_SLOT = "Profile";
     extern const char MenuTechnicalDefaultTextPc75f29c[8] = "Present";
     char *apitxt_PRESENT = (char *)MenuTechnicalDefaultTextPc75f29c;
-    extern const char MenuTechnicalDefaultTextPc75f294[6] = "Empty";
-    char *apitxt_EMPTY = (char *)MenuTechnicalDefaultTextPc75f294;
-    extern const char MenuTechnicalDefaultTextPc75f288[9] = "No Space";
-    char *apitxt_NOSPACE = (char *)MenuTechnicalDefaultTextPc75f288;
-    extern const char MenuTechnicalDefaultTextPc75f27c[9] = "Continue";
-    char *apitxt_CONTINUE = (char *)MenuTechnicalDefaultTextPc75f27c;
-    extern const char MenuTechnicalDefaultTextPc75f270[10] = "Save Game";
-    char *apitxt_SAVEGAME = (char *)MenuTechnicalDefaultTextPc75f270;
-    extern const char MenuTechnicalDefaultTextPc75f264[10] = "Load Game";
-    char *apitxt_LOADGAME = (char *)MenuTechnicalDefaultTextPc75f264;
-    extern const char MenuTechnicalDefaultTextPc75f258[12] = "Delete Game";
-    char *apitxt_DELETEGAME = (char *)MenuTechnicalDefaultTextPc75f258;
-    extern const char MenuTechnicalDefaultTextPc75f248[16] = "Save Successful";
-    char *apitxt_GAMESAVED = (char *)MenuTechnicalDefaultTextPc75f248;
-    extern const char MenuTechnicalDefaultTextPc75f230[21] = "Overwrite Successful";
-    char *apitxt_GAMEOVERWRITTEN = (char *)MenuTechnicalDefaultTextPc75f230;
-    extern const char MenuTechnicalDefaultTextPc75f224[12] = "Game Loaded";
-    char *apitxt_GAMELOADED = (char *)MenuTechnicalDefaultTextPc75f224;
-    extern const char MenuTechnicalDefaultTextPc75f214[15] = "Deleting data.";
-    char *apitxt_DELETING = (char *)MenuTechnicalDefaultTextPc75f214;
-    extern const char MenuTechnicalDefaultTextPc75f208[12] = "Formatting.";
-    char *apitxt_FORMATTING = (char *)MenuTechnicalDefaultTextPc75f208;
-    extern const char MenuTechnicalDefaultTextPc75f1e4[15] = "Load Corrupted";
-    char *apitxt_CORRUPTLOAD = (char *)MenuTechnicalDefaultTextPc75f1e4;
-    extern const char MenuTechnicalDefaultTextPc75f1d4[14] = "Confirm Load?";
-    char *apitxt_CONFIRMLOAD = (char *)MenuTechnicalDefaultTextPc75f1d4;
-    extern const char MenuTechnicalDefaultTextPc75f1c4[14] = "Confirm Save?";
-    char *apitxt_CONFIRMSAVE = (char *)MenuTechnicalDefaultTextPc75f1c4;
-    extern const char MenuTechnicalDefaultTextPc75f190[51] = "Are you sure you wish to overwrite this save file?";
-    char *apitxt_CONFIRMOVERWRITE = (char *)MenuTechnicalDefaultTextPc75f190;
-    extern const char MenuTechnicalDefaultTextPc75f170[31] = "Do you want to start the game?";
-    char *apitxt_DOYOUWANTTOSTART = (char *)MenuTechnicalDefaultTextPc75f170;
-    extern const char MenuTechnicalDefaultTextPc75f150[32] = "Do you want to cancel the Save?";
-    char *apitxt_DOYOUWANTTOABORT = (char *)MenuTechnicalDefaultTextPc75f150;
-    extern const char MenuTechnicalDefaultTextPc75f130[32] = "Do you want to cancel the Load?";
-    char *apitxt_DOYOUWANTTOABORTLOAD = (char *)MenuTechnicalDefaultTextPc75f130;
-    extern const char MenuTechnicalDefaultTextPc75f10c[34] = "Do you want to cancel the Format?";
-    char *apitxt_DOYOUWANTTOABORTFORMAT = (char *)MenuTechnicalDefaultTextPc75f10c;
-    extern const char MenuTechnicalDefaultTextPc75f0f4[24] = "Continue without Saving";
-    char *apitxt_CONTINUEWITHOUTSAVING = (char *)MenuTechnicalDefaultTextPc75f0f4;
-    extern const char MenuTechnicalDefaultTextPc75f1f4[18] = "Overwriting data.";
-    char *apitxt_GAMEOVERWRITING = (char *)MenuTechnicalDefaultTextPc75f1f4;
-    extern const char MenuTechnicalDefaultTextPc75f0e8[9] = "New Save";
-    char *apitxt_NEWSAVE = (char *)MenuTechnicalDefaultTextPc75f0e8;
-    extern const char MenuTechnicalDefaultTextPc75f0cc[25] = "Continue without loading";
-    char *apitxt_CONTINUEWITHOUTLOADING = (char *)MenuTechnicalDefaultTextPc75f0cc;
-    extern const char MenuTechnicalDefaultTextPc75f0c0[10] = "Completed";
-    char *apitxt_COMPLETED = (char *)MenuTechnicalDefaultTextPc75f0c0;
+    char *apitxt_EMPTY = "Empty";
+    char *apitxt_NOSPACE = "No Space";
+    char *apitxt_CONTINUE = "Continue";
+    char *apitxt_SAVEGAME = "Save Game";
+    char *apitxt_LOADGAME = "Load Game";
+    char *apitxt_DELETEGAME = "Delete Game";
+    char *apitxt_GAMESAVED = "Save Successful";
+    char *apitxt_GAMEOVERWRITTEN = "Overwrite Successful";
+    char *apitxt_GAMELOADED = "Game Loaded";
+    char *apitxt_DELETING = "Deleting data.";
+    char *apitxt_FORMATTING = "Formatting.";
+    char *apitxt_CORRUPTLOAD = "Load Corrupted";
+    char *apitxt_CONFIRMLOAD = "Confirm Load?";
+    char *apitxt_CONFIRMSAVE = "Confirm Save?";
+    char *apitxt_CONFIRMOVERWRITE = "Are you sure you wish to overwrite this save file?";
+    char *apitxt_DOYOUWANTTOSTART = "Do you want to start the game?";
+    char *apitxt_DOYOUWANTTOABORT = "Do you want to cancel the Save?";
+    char *apitxt_DOYOUWANTTOABORTLOAD = "Do you want to cancel the Load?";
+    char *apitxt_DOYOUWANTTOABORTFORMAT = "Do you want to cancel the Format?";
+    char *apitxt_CONTINUEWITHOUTSAVING = "Continue without Saving";
+    char *apitxt_GAMEOVERWRITING = "Overwriting data.";
+    char *apitxt_NEWSAVE = "New Save";
+    char *apitxt_CONTINUEWITHOUTLOADING = "Continue without loading";
+    char *apitxt_COMPLETED = "Completed";
     char *apitxt_VIBRATION = "Vibration";
-    extern const char MenuTechnicalDefaultTextPc75f074[48] = "Are you sure you wish to delete this save file?";
-    char *apitxt_CONFIRMDELETE = (char *)MenuTechnicalDefaultTextPc75f074;
-    extern const char MenuTechnicalDefaultTextPc75f060[17] = "Progress: %.1f%%";
-    char *apitxt_PROGRESS = (char *)MenuTechnicalDefaultTextPc75f060;
-    extern const char MenuTechnicalDefaultTextPc75f050[16] = "Time Played: %s";
-    char *apitxt_TIMEPLAYED = (char *)MenuTechnicalDefaultTextPc75f050;
-    extern const char MenuTechnicalDefaultTextPc75efac[10] = "FE Start?";
-    char *apitxt_PCPRESSSTARTFE = (char *)MenuTechnicalDefaultTextPc75efac;
-    extern const char MenuTechnicalDefaultTextPc75efa4[5] = "P1 ?";
-    char *apitxt_PCPRESSSTARTP1 = (char *)MenuTechnicalDefaultTextPc75efa4;
-    extern const char MenuTechnicalDefaultTextPc75ef9c[5] = "P2 ?";
-    char *apitxt_PCPRESSSTARTP2 = (char *)MenuTechnicalDefaultTextPc75ef9c;
-    extern const char MenuTechnicalDefaultTextPc75ef8c[15] = "Saving game...";
-    char *apitxt_GAMESAVING = (char *)MenuTechnicalDefaultTextPc75ef8c;
-    extern const char MenuTechnicalDefaultTextPc75ef7c[16] = "Loading game...";
-    char *apitxt_GAMELOADING = (char *)MenuTechnicalDefaultTextPc75ef7c;
-    extern const char MenuTechnicalDefaultTextPc75ef6c[15] = "Failed to Load";
-    char *apitxt_FAILEDTOLOAD = (char *)MenuTechnicalDefaultTextPc75ef6c;
-    extern const char MenuTechnicalDefaultTextPc75ef5c[15] = "Failed to Save";
-    char *apitxt_FAILEDTOSAVE = (char *)MenuTechnicalDefaultTextPc75ef5c;
-    extern const char MenuTechnicalDefaultTextPc75ef48[20] = "Failed to Overwrite";
-    char *apitxt_FAILEDTOOVERWRITE = (char *)MenuTechnicalDefaultTextPc75ef48;
-    extern const char MenuTechnicalDefaultTextPc75ef34[19] = "No %s data present";
-    char *apitxt_NODATAAVAILABLE = (char *)MenuTechnicalDefaultTextPc75ef34;
-    extern const char MenuTechnicalDefaultTextPc75ef14[30] = "Autosave will now use Game %i";
-    char *apitxt_AUTOSAVE_ENABLED = (char *)MenuTechnicalDefaultTextPc75ef14;
-    extern const char MenuTechnicalDefaultTextPc75ef00[20] = "Formatting complete";
-    char *apitxt_FORMATTINGCOMPLETE = (char *)MenuTechnicalDefaultTextPc75ef00;
-    extern const char MenuTechnicalDefaultTextPc75eef0[16] = "Delete complete";
-    char *apitxt_DELETECOMPLETE = (char *)MenuTechnicalDefaultTextPc75eef0;
-    extern const char MenuTechnicalDefaultTextPc75eec8[40] = "Insufficient drive space to save games.";
-    char *apitxt_NOTENOUGHSPACE = (char *)MenuTechnicalDefaultTextPc75eec8;
-    extern const char MenuTechnicalDefaultTextPc75efc8[133] =
+    char *apitxt_CONFIRMDELETE = "Are you sure you wish to delete this save file?";
+    char *apitxt_PROGRESS = "Progress: %.1f%%";
+    char *apitxt_TIMEPLAYED = "Time Played: %s";
+    char *apitxt_PCPRESSSTARTFE = "FE Start?";
+    char *apitxt_PCPRESSSTARTP1 = "P1 ?";
+    char *apitxt_PCPRESSSTARTP2 = "P2 ?";
+    char *apitxt_GAMESAVING = "Saving game...";
+    char *apitxt_GAMELOADING = "Loading game...";
+    char *apitxt_FAILEDTOLOAD = "Failed to Load";
+    char *apitxt_FAILEDTOSAVE = "Failed to Save";
+    char *apitxt_FAILEDTOOVERWRITE = "Failed to Overwrite";
+    char *apitxt_NODATAAVAILABLE = "No %s data present";
+    char *apitxt_AUTOSAVE_ENABLED = "Autosave will now use Game %i";
+    char *apitxt_FORMATTINGCOMPLETE = "Formatting complete";
+    char *apitxt_DELETECOMPLETE = "Delete complete";
+    char *apitxt_NOTENOUGHSPACE = "Insufficient drive space to save games.";
+    char *apitxt_CONTROLLERREMOVED =
         "The controller in controller port %i has been removed. Please insert a controller into controller port %i to "
         "continue with the game.";
-    char *apitxt_CONTROLLERREMOVED = (char *)MenuTechnicalDefaultTextPc75efc8;
 }
 
 extern "C" {
@@ -558,297 +403,154 @@ extern "C" {
 }
 
 extern "C" {
-    extern const char PermanentDebrisNamePc755ac4[13] = "BULLET_SPARK";
-    extern const char PermanentDebrisNamePc755ab8[10] = "SABER_RED";
-    extern const char PermanentDebrisNamePc755aac[12] = "SABER_GREEN";
-    extern const char PermanentDebrisNamePc755aa0[11] = "SABER_BLUE";
-    extern const char PermanentDebrisNamePc755a90[13] = "SABER_PURPLE";
-    extern const char PermanentDebrisNamePc755a84[9] = "EXPLD_1A";
-    extern const char PermanentDebrisNamePc755a78[10] = "JS_THRUST";
-    extern const char PermanentDebrisNamePc755a6c[10] = "S1_THRUST";
-    extern const char PermanentDebrisNamePc755a60[10] = "COIN_BLUE";
-    extern const char PermanentDebrisNamePc755a54[10] = "COIN_GOLD";
-    extern const char PermanentDebrisNamePc755a48[12] = "COIN_SILVER";
-    extern const char PermanentDebrisNamePc755a38[13] = "R2D2THRUSTER";
-    extern const char PermanentDebrisNamePc755a28[13] = "R2Q5THRUSTER";
-    extern const char PermanentDebrisNamePc755a20[7] = "SPLASH";
-    extern const char PermanentDebrisNamePc755a18[7] = "RIPPLE";
-    extern const char PermanentDebrisNamePc755a10[6] = "HEART";
-    extern const char PermanentDebrisNamePc755a04[10] = "HEART_BIG";
-    extern const char PermanentDebrisNamePc7559f8[10] = "EXPLOSION";
-    extern const char PermanentDebrisNamePc7559f0[8] = "MINI_01";
-    extern const char PermanentDebrisNamePc7559e8[8] = "MINI_02";
-    extern const char PermanentDebrisNamePc7559e0[8] = "MINI_03";
-    extern const char PermanentDebrisNamePc7559d4[10] = "TER_SPARK";
-    extern const char PermanentDebrisNamePc7559c8[11] = "TER_SPARK2";
-    extern const char PermanentDebrisNamePc7559bc[9] = "EXPOL_02";
-    extern const char PermanentDebrisNamePc7559b0[12] = "SPEEDERDUST";
-    extern const char PermanentDebrisNamePc7559a4[9] = "POD_DUST";
-    extern const char PermanentDebrisNamePc755998[10] = "CAVE_DUST";
-    extern const char PermanentDebrisNamePc755988[14] = "JANGOTHRUSTER";
-    extern const char PermanentDebrisNamePc75597c[12] = "EXPLO_DROID";
-    extern const char PermanentDebrisNamePc755970[10] = "EXPLO_NAB";
-    extern const char PermanentDebrisNamePc755964[10] = "NAB_SMOKE";
-    extern const char PermanentDebrisNamePc755958[10] = "NAB_BOOST";
-    extern const char PermanentDebrisNamePc75594c[10] = "MIKESMOKE";
-    extern const char PermanentDebrisNamePc755940[9] = "EXPLO_05";
     extern const char PermanentDebrisNamePc755934[9] = "EXPLO_06";
-    extern const char PermanentDebrisNamePc755928[9] = "EXPLO_07";
-    extern const char PermanentDebrisNamePc75591c[9] = "EXPLO_11";
-    extern const char PermanentDebrisNamePc755910[10] = "MIKESTALL";
-    extern const char PermanentDebrisNamePc755904[12] = "TRAINING_01";
-    extern const char PermanentDebrisNamePc7558f8[9] = "TAG_BLUE";
-    extern const char PermanentDebrisNamePc7558ec[10] = "TAG_GREEN";
-    extern const char PermanentDebrisNamePc7558e0[11] = "ZIP_TARGET";
-    extern const char PermanentDebrisNamePc7558d4[11] = "DOOKU_BALL";
-    extern const char PermanentDebrisNamePc7558c8[10] = "WALKER_01";
-    extern const char PermanentDebrisNamePc7558bc[10] = "WALKER_02";
-    extern const char PermanentDebrisNamePc7558b0[9] = "ENG_BLOW";
-    extern const char PermanentDebrisNamePc7558a4[10] = "DogImpact";
-    extern const char PermanentDebrisNamePc755898[10] = "DogEngine";
-    extern const char PermanentDebrisNamePc75588c[9] = "DogSmoke";
-    extern const char PermanentDebrisNamePc755880[9] = "DogTrail";
-    extern const char PermanentDebrisNamePc755870[14] = "YODA_HOVER_01";
-    extern const char PermanentDebrisNamePc755868[7] = "K_Bolt";
-    extern const char PermanentDebrisNamePc755860[7] = "DUK_P2";
-    extern const char PermanentDebrisNamePc755858[8] = "PodHaze";
-    extern const char PermanentDebrisNamePc75584c[10] = "PodDust10";
-    extern const char PermanentDebrisNamePc755840[10] = "rock_pop1";
-    extern const char PermanentDebrisNamePc755834[10] = "BlueTrail";
-    extern const char PermanentDebrisNamePc755828[12] = "PurpleTrail";
-    extern const char PermanentDebrisNamePc755820[8] = "LavaDie";
-    extern const char PermanentDebrisNamePc755814[9] = "ComboRed";
-    extern const char PermanentDebrisNamePc755808[11] = "ComboGreen";
-    extern const char PermanentDebrisNamePc7557fc[10] = "ComboBlue";
-    extern const char PermanentDebrisNamePc7557f0[12] = "ComboPurple";
-    extern const char PermanentDebrisNamePc7557e8[7] = "REPAIR";
-    extern const char PermanentDebrisNamePc7557dc[11] = "SABER_RED1";
-    extern const char PermanentDebrisNamePc7557cc[13] = "SABER_GREEN1";
-    extern const char PermanentDebrisNamePc7557c0[12] = "SABER_BLUE1";
-    extern const char PermanentDebrisNamePc7557b0[14] = "SABER_PURPLE1";
-    extern const char PermanentDebrisNamePc7557a8[8] = "XWING_1";
-    extern const char PermanentDebrisNamePc75579c[10] = "MOUSE_POP";
-    extern const char PermanentDebrisNamePc755794[7] = "PHOTON";
-    extern const char PermanentDebrisNamePc755784[13] = "PHOTON_EXPLO";
-    extern const char PermanentDebrisNamePc755774[15] = "PHOTON_EXPLO_S";
-    extern const char PermanentDebrisNamePc755764[14] = "EXPLO_ORAN_2A";
-    extern const char PermanentDebrisNamePc755754[14] = "EXPLO_ORAN_2B";
-    extern const char PermanentDebrisNamePc755744[14] = "EXPLO_ORAN_2C";
-    extern const char PermanentDebrisNamePc755738[10] = "BUILD_IT1";
-    extern const char PermanentDebrisNamePc75572c[10] = "BUILD_IT2";
-    extern const char PermanentDebrisNamePc755720[10] = "BUILD_IT3";
-    extern const char PermanentDebrisNamePc755714[10] = "BUILD_IT4";
-    extern const char PermanentDebrisNamePc755708[10] = "BUILD_IT5";
-    extern const char PermanentDebrisNamePc7556fc[10] = "BUILD_IT6";
-    extern const char PermanentDebrisNamePc7556f0[11] = "DRAG_POP_1";
-    extern const char PermanentDebrisNamePc7556e4[11] = "DRAG_POP_2";
-    extern const char PermanentDebrisNamePc7556d8[11] = "DRAG_POP_4";
-    extern const char PermanentDebrisNamePc7556d0[8] = "GenoGun";
-    extern const char PermanentDebrisNamePc7556c0[14] = "SNOW_SPEEDER1";
-    extern const char PermanentDebrisNamePc7556b4[12] = "LEVER_SPARK";
-    extern const char PermanentDebrisNamePc7556a8[9] = "ZAPPER_1";
-    extern const char PermanentDebrisNamePc75569c[11] = "V_BOLT_RED";
-    extern const char PermanentDebrisNamePc75568c[13] = "V_BOLT_GREEN";
-    extern const char PermanentDebrisNamePc755680[12] = "CHAR_SMOKE1";
-    extern const char PermanentDebrisNamePc755674[12] = "CHAR_SMOKE2";
-    extern const char PermanentDebrisNamePc755668[10] = "POWER_P_1";
-    extern const char PermanentDebrisNamePc75565c[10] = "POWER_P_2";
-    extern const char PermanentDebrisNamePc755650[10] = "POWER_P_3";
-    extern const char PermanentDebrisNamePc755644[9] = "TIE_HIT1";
-    extern const char PermanentDebrisNamePc755638[9] = "BRICK_01";
-    extern const char PermanentDebrisNamePc75562c[9] = "BRICK_02";
-    extern const char PermanentDebrisNamePc755620[9] = "BRICK_03";
-    extern const char PermanentDebrisNamePc755618[8] = "BUMP_01";
-    extern const char PermanentDebrisNamePc755610[8] = "BUMP_02";
-    extern const char PermanentDebrisNamePc755600[13] = "LAND_S_DUST1";
-    extern const char PermanentDebrisNamePc7555f0[13] = "LAND_S_DUST2";
-    extern const char PermanentDebrisNamePc7555e0[14] = "LAND_S_THRUST";
-    extern const char PermanentDebrisNamePc7555d4[12] = "LAND_S_HAZE";
-    extern const char PermanentDebrisNamePc7555c8[10] = "EXPLO_06b";
-    extern const char PermanentDebrisNamePc7555c0[8] = "BUMP_03";
-    extern const char PermanentDebrisNamePc7555b4[11] = "FORCE_BLUE";
-    extern const char PermanentDebrisNamePc7555a8[10] = "FORCE_RED";
-    extern const char PermanentDebrisNamePc7555a0[6] = "SCAN3";
-    extern const char PermanentDebrisNamePc755594[9] = "REPULSOR";
-    extern const char PermanentDebrisNamePc75558c[8] = "WEE_POP";
-    extern const char PermanentDebrisNamePc755580[12] = "EXIT_FIRE_1";
-    extern const char PermanentDebrisNamePc755574[12] = "EXIT_FIRE_2";
-    extern const char PermanentDebrisNamePc755568[10] = "EWOK_POP1";
-    extern const char PermanentDebrisNamePc75555c[9] = "EXPLO_02";
-    extern const char PermanentDebrisNamePc755550[11] = "ATAT_POP_1";
-    extern const char PermanentDebrisNamePc755544[11] = "ATAT_POP_2";
-    extern const char PermanentDebrisNamePc755538[11] = "ATAT_POP_3";
-    extern const char PermanentDebrisNamePc755530[7] = "FIRE_1";
-    extern const char PermanentDebrisNamePc755528[7] = "RAIN_1";
-    extern const char PermanentDebrisNamePc75551c[12] = "CHAR_BUBBLE";
-    extern const char PermanentDebrisNamePc755510[11] = "CHAR_GHOST";
-    extern const char PermanentDebrisNamePc755508[8] = "DEATH_1";
-    extern const char PermanentDebrisNamePc755500[8] = "DEATH_2";
-    extern const char PermanentDebrisNamePc7554f4[10] = "BOULDER_2";
-    extern const char PermanentDebrisNamePc7554ec[7] = "DISH_1";
-    extern const char PermanentDebrisNamePc7554e4[7] = "DISH_2";
-    extern const char PermanentDebrisNamePc7554d8[11] = "SNOW_POP_1";
-    extern const char PermanentDebrisNamePc7554cc[11] = "SNOW_POP_2";
-    extern const char PermanentDebrisNamePc7554c0[11] = "TREE_POP_1";
-    extern const char PermanentDebrisNamePc7554b4[11] = "TREE_POP_4";
-    extern const char PermanentDebrisNamePc7554a8[12] = "SPEEDER_HIT";
-    extern const char PermanentDebrisNamePc75549c[11] = "FALCONGLOW";
-    extern const char PermanentDebrisNamePc75548c[15] = "FALCONTHRUSTER";
-    extern const char PermanentDebrisNamePc755480[12] = "SPEED_SPARK";
-    extern const char PermanentDebrisNamePc755464[11] = "GUNSHIP_01";
-    extern const char PermanentDebrisNamePc755458[11] = "GUNSHIP_02";
-    extern const char PermanentDebrisNamePc75544c[10] = "SandBlast";
-    extern const char PermanentDebrisNamePc755444[8] = "BULLET1";
-    extern const char PermanentDebrisNamePc75543c[8] = "BULLET2";
-    extern const char PermanentDebrisNamePc755430[11] = "BULLET_HIT";
-    extern const char PermanentDebrisNamePc755424[10] = "POD_SPARK";
-    char *debris_name[147] = {(char *)PermanentDebrisNamePc755ac4,
-                              (char *)PermanentDebrisNamePc755ab8,
-                              (char *)PermanentDebrisNamePc755aac,
-                              (char *)PermanentDebrisNamePc755aa0,
-                              (char *)PermanentDebrisNamePc755a90,
-                              (char *)PermanentDebrisNamePc755a84,
-                              (char *)PermanentDebrisNamePc755a78,
-                              (char *)PermanentDebrisNamePc755a6c,
-                              (char *)PermanentDebrisNamePc755a60,
-                              (char *)PermanentDebrisNamePc755a54,
-                              (char *)PermanentDebrisNamePc755a48,
-                              (char *)PermanentDebrisNamePc755a38,
-                              (char *)PermanentDebrisNamePc755a28,
-                              (char *)PermanentDebrisNamePc755a20,
-                              (char *)PermanentDebrisNamePc755a18,
-                              (char *)PermanentDebrisNamePc755a10,
-                              (char *)PermanentDebrisNamePc755a04,
-                              (char *)PermanentDebrisNamePc7559f8,
-                              (char *)PermanentDebrisNamePc7559f0,
-                              (char *)PermanentDebrisNamePc7559e8,
-                              (char *)PermanentDebrisNamePc7559e0,
-                              (char *)PermanentDebrisNamePc7559d4,
-                              (char *)PermanentDebrisNamePc7559c8,
-                              (char *)PermanentDebrisNamePc7559bc,
-                              (char *)PermanentDebrisNamePc7559b0,
-                              (char *)PermanentDebrisNamePc7559a4,
-                              (char *)PermanentDebrisNamePc755998,
-                              (char *)PermanentDebrisNamePc755988,
-                              (char *)PermanentDebrisNamePc75597c,
-                              (char *)PermanentDebrisNamePc755970,
-                              (char *)PermanentDebrisNamePc755964,
-                              (char *)PermanentDebrisNamePc755958,
-                              (char *)PermanentDebrisNamePc75594c,
-                              (char *)PermanentDebrisNamePc755940,
+    char *debris_name[147] = {"BULLET_SPARK",
+                              "SABER_RED",
+                              "SABER_GREEN",
+                              "SABER_BLUE",
+                              "SABER_PURPLE",
+                              "EXPLD_1A",
+                              "JS_THRUST",
+                              "S1_THRUST",
+                              "COIN_BLUE",
+                              "COIN_GOLD",
+                              "COIN_SILVER",
+                              "R2D2THRUSTER",
+                              "R2Q5THRUSTER",
+                              "SPLASH",
+                              "RIPPLE",
+                              "HEART",
+                              "HEART_BIG",
+                              "EXPLOSION",
+                              "MINI_01",
+                              "MINI_02",
+                              "MINI_03",
+                              "TER_SPARK",
+                              "TER_SPARK2",
+                              "EXPOL_02",
+                              "SPEEDERDUST",
+                              "POD_DUST",
+                              "CAVE_DUST",
+                              "JANGOTHRUSTER",
+                              "EXPLO_DROID",
+                              "EXPLO_NAB",
+                              "NAB_SMOKE",
+                              "NAB_BOOST",
+                              "MIKESMOKE",
+                              "EXPLO_05",
                               (char *)PermanentDebrisNamePc755934,
-                              (char *)PermanentDebrisNamePc755928,
-                              (char *)PermanentDebrisNamePc75591c,
-                              (char *)PermanentDebrisNamePc755910,
-                              (char *)PermanentDebrisNamePc755904,
-                              (char *)PermanentDebrisNamePc7558f8,
-                              (char *)PermanentDebrisNamePc7558ec,
-                              (char *)PermanentDebrisNamePc7558e0,
-                              (char *)PermanentDebrisNamePc7558d4,
-                              (char *)PermanentDebrisNamePc7558c8,
-                              (char *)PermanentDebrisNamePc7558bc,
-                              (char *)PermanentDebrisNamePc7558b0,
-                              (char *)PermanentDebrisNamePc7558a4,
-                              (char *)PermanentDebrisNamePc755898,
-                              (char *)PermanentDebrisNamePc75588c,
-                              (char *)PermanentDebrisNamePc755880,
-                              (char *)PermanentDebrisNamePc755870,
-                              (char *)PermanentDebrisNamePc755868,
-                              (char *)PermanentDebrisNamePc755860,
-                              (char *)PermanentDebrisNamePc755858,
-                              (char *)PermanentDebrisNamePc75584c,
-                              (char *)PermanentDebrisNamePc755840,
-                              (char *)PermanentDebrisNamePc755834,
-                              (char *)PermanentDebrisNamePc755828,
-                              (char *)PermanentDebrisNamePc755820,
-                              (char *)PermanentDebrisNamePc755814,
-                              (char *)PermanentDebrisNamePc755808,
-                              (char *)PermanentDebrisNamePc7557fc,
-                              (char *)PermanentDebrisNamePc7557f0,
-                              (char *)PermanentDebrisNamePc7557e8,
-                              (char *)PermanentDebrisNamePc7557dc,
-                              (char *)PermanentDebrisNamePc7557cc,
-                              (char *)PermanentDebrisNamePc7557c0,
-                              (char *)PermanentDebrisNamePc7557b0,
-                              (char *)PermanentDebrisNamePc7557a8,
-                              (char *)PermanentDebrisNamePc75579c,
-                              (char *)PermanentDebrisNamePc755794,
-                              (char *)PermanentDebrisNamePc755784,
-                              (char *)PermanentDebrisNamePc755774,
-                              (char *)PermanentDebrisNamePc755764,
-                              (char *)PermanentDebrisNamePc755754,
-                              (char *)PermanentDebrisNamePc755744,
-                              (char *)PermanentDebrisNamePc755738,
-                              (char *)PermanentDebrisNamePc75572c,
-                              (char *)PermanentDebrisNamePc755720,
-                              (char *)PermanentDebrisNamePc755714,
-                              (char *)PermanentDebrisNamePc755708,
-                              (char *)PermanentDebrisNamePc7556fc,
-                              (char *)PermanentDebrisNamePc7556f0,
-                              (char *)PermanentDebrisNamePc7556e4,
-                              (char *)PermanentDebrisNamePc7556d8,
-                              (char *)PermanentDebrisNamePc7556d0,
-                              (char *)PermanentDebrisNamePc7556c0,
-                              (char *)PermanentDebrisNamePc7556b4,
-                              (char *)PermanentDebrisNamePc7556a8,
-                              (char *)PermanentDebrisNamePc75569c,
-                              (char *)PermanentDebrisNamePc75568c,
-                              (char *)PermanentDebrisNamePc755680,
-                              (char *)PermanentDebrisNamePc755674,
-                              (char *)PermanentDebrisNamePc755668,
-                              (char *)PermanentDebrisNamePc75565c,
-                              (char *)PermanentDebrisNamePc755650,
-                              (char *)PermanentDebrisNamePc755644,
-                              (char *)PermanentDebrisNamePc755638,
-                              (char *)PermanentDebrisNamePc75562c,
-                              (char *)PermanentDebrisNamePc755620,
-                              (char *)PermanentDebrisNamePc755618,
-                              (char *)PermanentDebrisNamePc755610,
-                              (char *)PermanentDebrisNamePc755600,
-                              (char *)PermanentDebrisNamePc7555f0,
-                              (char *)PermanentDebrisNamePc7555e0,
-                              (char *)PermanentDebrisNamePc7555d4,
+                              "EXPLO_07",
+                              "EXPLO_11",
+                              "MIKESTALL",
+                              "TRAINING_01",
+                              "TAG_BLUE",
+                              "TAG_GREEN",
+                              "ZIP_TARGET",
+                              "DOOKU_BALL",
+                              "WALKER_01",
+                              "WALKER_02",
+                              "ENG_BLOW",
+                              "DogImpact",
+                              "DogEngine",
+                              "DogSmoke",
+                              "DogTrail",
+                              "YODA_HOVER_01",
+                              "K_Bolt",
+                              "DUK_P2",
+                              "PodHaze",
+                              "PodDust10",
+                              "rock_pop1",
+                              "BlueTrail",
+                              "PurpleTrail",
+                              "LavaDie",
+                              "ComboRed",
+                              "ComboGreen",
+                              "ComboBlue",
+                              "ComboPurple",
+                              "REPAIR",
+                              "SABER_RED1",
+                              "SABER_GREEN1",
+                              "SABER_BLUE1",
+                              "SABER_PURPLE1",
+                              "XWING_1",
+                              "MOUSE_POP",
+                              "PHOTON",
+                              "PHOTON_EXPLO",
+                              "PHOTON_EXPLO_S",
+                              "EXPLO_ORAN_2A",
+                              "EXPLO_ORAN_2B",
+                              "EXPLO_ORAN_2C",
+                              "BUILD_IT1",
+                              "BUILD_IT2",
+                              "BUILD_IT3",
+                              "BUILD_IT4",
+                              "BUILD_IT5",
+                              "BUILD_IT6",
+                              "DRAG_POP_1",
+                              "DRAG_POP_2",
+                              "DRAG_POP_4",
+                              "GenoGun",
+                              "SNOW_SPEEDER1",
+                              "LEVER_SPARK",
+                              "ZAPPER_1",
+                              "V_BOLT_RED",
+                              "V_BOLT_GREEN",
+                              "CHAR_SMOKE1",
+                              "CHAR_SMOKE2",
+                              "POWER_P_1",
+                              "POWER_P_2",
+                              "POWER_P_3",
+                              "TIE_HIT1",
+                              "BRICK_01",
+                              "BRICK_02",
+                              "BRICK_03",
+                              "BUMP_01",
+                              "BUMP_02",
+                              "LAND_S_DUST1",
+                              "LAND_S_DUST2",
+                              "LAND_S_THRUST",
+                              "LAND_S_HAZE",
                               (char *)PermanentDebrisNamePc755934,
-                              (char *)PermanentDebrisNamePc7555c8,
-                              (char *)PermanentDebrisNamePc7555c0,
-                              (char *)PermanentDebrisNamePc7555b4,
-                              (char *)PermanentDebrisNamePc7555a8,
-                              (char *)PermanentDebrisNamePc7555a0,
-                              (char *)PermanentDebrisNamePc755594,
-                              (char *)PermanentDebrisNamePc75558c,
-                              (char *)PermanentDebrisNamePc755580,
-                              (char *)PermanentDebrisNamePc755574,
-                              (char *)PermanentDebrisNamePc755568,
-                              (char *)PermanentDebrisNamePc75555c,
-                              (char *)PermanentDebrisNamePc755550,
-                              (char *)PermanentDebrisNamePc755544,
-                              (char *)PermanentDebrisNamePc755538,
-                              (char *)PermanentDebrisNamePc755530,
-                              (char *)PermanentDebrisNamePc755528,
-                              (char *)PermanentDebrisNamePc75551c,
-                              (char *)PermanentDebrisNamePc755510,
-                              (char *)PermanentDebrisNamePc755508,
-                              (char *)PermanentDebrisNamePc755500,
-                              (char *)PermanentDebrisNamePc7554f4,
-                              (char *)PermanentDebrisNamePc7554ec,
-                              (char *)PermanentDebrisNamePc7554e4,
-                              (char *)PermanentDebrisNamePc7554d8,
-                              (char *)PermanentDebrisNamePc7554cc,
-                              (char *)PermanentDebrisNamePc7554c0,
-                              (char *)PermanentDebrisNamePc7554b4,
-                              (char *)PermanentDebrisNamePc7554a8,
-                              (char *)PermanentDebrisNamePc75549c,
-                              (char *)PermanentDebrisNamePc75548c,
-                              (char *)PermanentDebrisNamePc755480,
+                              "EXPLO_06b",
+                              "BUMP_03",
+                              "FORCE_BLUE",
+                              "FORCE_RED",
+                              "SCAN3",
+                              "REPULSOR",
+                              "WEE_POP",
+                              "EXIT_FIRE_1",
+                              "EXIT_FIRE_2",
+                              "EWOK_POP1",
+                              "EXPLO_02",
+                              "ATAT_POP_1",
+                              "ATAT_POP_2",
+                              "ATAT_POP_3",
+                              "FIRE_1",
+                              "RAIN_1",
+                              "CHAR_BUBBLE",
+                              "CHAR_GHOST",
+                              "DEATH_1",
+                              "DEATH_2",
+                              "BOULDER_2",
+                              "DISH_1",
+                              "DISH_2",
+                              "SNOW_POP_1",
+                              "SNOW_POP_2",
+                              "TREE_POP_1",
+                              "TREE_POP_4",
+                              "SPEEDER_HIT",
+                              "FALCONGLOW",
+                              "FALCONTHRUSTER",
+                              "SPEED_SPARK",
                               (char *)AIGamePunch1Name,
                               (char *)AIGamePunch2Name,
-                              (char *)PermanentDebrisNamePc755464,
-                              (char *)PermanentDebrisNamePc755458,
-                              (char *)PermanentDebrisNamePc75544c,
-                              (char *)PermanentDebrisNamePc755444,
-                              (char *)PermanentDebrisNamePc75543c,
-                              (char *)PermanentDebrisNamePc755430,
-                              (char *)PermanentDebrisNamePc755424};
+                              "GUNSHIP_01",
+                              "GUNSHIP_02",
+                              "SandBlast",
+                              "BULLET1",
+                              "BULLET2",
+                              "BULLET_HIT",
+                              "POD_SPARK"};
     NUMTL *PermanentEffectsMaterialPc = NULL;
     NUMTL *PermanentShadowMaterialPc = NULL;
     void *things_scene_terrain = NULL;
@@ -856,12 +558,8 @@ extern "C" {
 }
 
 extern "C" {
-    extern const char InitOnceCompanyPc[10] = "LucasArts";
-    extern const char InitOnceProductPc[35] = "LEGO Star Wars - The Complete Saga";
     extern const char InitOnceEmptyConfigPc[27] = "LUCASARTS\\LEGOSTARWARSSAGA";
     extern const char NuHwAllocSourcePc[12] = ".\\pcapi.cpp";
-    extern const char NuHwDefaultConfigNamePc[10] = "TTalesKey";
-    extern const char NuHwDefaultTitlePc[12] = "TitleNotSet";
     extern const GUID PcPlatformPolicyClassId = {
         0x9a5ea990, 0x3034, 0x4d6f, {0x91, 0x28, 0x1, 0xf3, 0xc6, 0x10, 0x22, 0xbc}};
     extern const GUID PcPlatformPolicyInterfaceId = {
@@ -869,7 +567,7 @@ extern "C" {
     i32 InitOnceFileModePc = 1;
     const char *NuHwSoundDfsNamePc = TextInputKeyNameTextPc7516c0;
     const char *NuHwDfsNamePc = TextInputKeyNameTextPc7516c0;
-    const char *NuHwDefaultParameterPc = NuHwDefaultTitlePc;
+    const char *NuHwDefaultParameterPc = "TitleNotSet";
     u32 PcClientWidth = 800;
     u32 PcClientHeight = 600;
     STICKYKEYS PcStickyKeys = {8, 0};
@@ -1086,8 +784,6 @@ extern "C" {
     extern const char PCGraphicsGpuName007772ec[20] = "NVIDIA GeForce 6800";
     extern const char PCGraphicsGpuName007772d4[23] = "NVIDIA GeForce 6800 LE";
     extern const char PCGraphicsGpuName007772bc[23] = "NVIDIA GeForce 6800 GT";
-    extern const char PCGraphicsGpuName007772b0[12] = "NVIDIA NV40";
-    extern const char PCGraphicsGpuName007772a0[14] = "NVIDIA NV40GL";
     extern const char PCGraphicsGpuName00777288[21] = "NVIDIA GeForce 6800 ";
     extern const char PCGraphicsGpuName00777270[23] = "NVIDIA GeForce 6600 GT";
     extern const char PCGraphicsGpuName0077725c[20] = "NVIDIA GeForce 6600";
@@ -1098,7 +794,6 @@ extern "C" {
     extern const char PCGraphicsGpuName007771fc[20] = "NVIDIA GeForce 6200";
     extern const char PCGraphicsGpuName007771e4[24] = "NVIDIA GeForce 6600 GT ";
     extern const char PCGraphicsGpuName007771cc[21] = "NVIDIA GeForce 6600 ";
-    extern const char PCGraphicsGpuName007771b4[21] = "NVIDIA GeForce 6200 ";
     extern const char PCGraphicsGpuName00777194[31] = "NVIDIA GeForce 6800 Series GPU";
     extern const char PCGraphicsGpuName00777174[29] = "NVIDIA GeForce Go 6800 Ultra";
     extern const char PCGraphicsGpuName0077715c[23] = "NVIDIA GeForce Go 6800";
@@ -1108,7 +803,6 @@ extern "C" {
     extern const char PCGraphicsGpuName007770f4[23] = "NVIDIA GeForce Go 6200";
     extern const char PCGraphicsGpuName007770d0[35] = "NVIDIA GeForce 6200 TurboCache(TM)";
     extern const char PCGraphicsGpuName007770c8[5] = "NV44";
-    extern const char PCGraphicsGpuName007770b0[23] = "NVIDIA GeForce Go 6290";
     extern const char PCGraphicsGpuName00777098[23] = "NVIDIA GeForce Go 6400";
     extern const char PCGraphicsGpuName00777088[13] = "GeForce 6200";
     extern const char PCGraphicsGpuName00777080[6] = "NV44M";
@@ -1249,9 +943,9 @@ extern "C" {
         {533u, 67u, PCGraphicsGpuName007772bc, PCGraphicsGpuName007772bc},
         {65u, 67u, PCGraphicsGpuName007772ec, PCGraphicsGpuName007772ec},
         {66u, 67u, PCGraphicsGpuName007772d4, PCGraphicsGpuName007772d4},
-        {67u, 67u, PCGraphicsGpuName007772b0, PCGraphicsGpuName007772d4},
+        {67u, 67u, "NVIDIA NV40", PCGraphicsGpuName007772d4},
         {69u, 67u, PCGraphicsGpuName007772bc, PCGraphicsGpuName007772bc},
-        {73u, 67u, PCGraphicsGpuName007772a0, PCGraphicsGpuName007772d4},
+        {73u, 67u, "NVIDIA NV40GL", PCGraphicsGpuName007772d4},
         {192u, 67u, PCGraphicsGpuName00777288, PCGraphicsGpuName00777288},
         {193u, 67u, PCGraphicsGpuName00777288, PCGraphicsGpuName00777288},
         {194u, 67u, PCGraphicsGpuName007772d4, PCGraphicsGpuName007772d4},
@@ -1266,7 +960,7 @@ extern "C" {
         {335u, 67u, PCGraphicsGpuName007771fc, PCGraphicsGpuName007771fc},
         {241u, 67u, PCGraphicsGpuName007771e4, PCGraphicsGpuName007771e4},
         {242u, 67u, PCGraphicsGpuName007771cc, PCGraphicsGpuName007771cc},
-        {242u, 67u, PCGraphicsGpuName007771b4, PCGraphicsGpuName007771cc},
+        {242u, 67u, "NVIDIA GeForce 6200 ", PCGraphicsGpuName007771cc},
         {249u, 67u, PCGraphicsGpuName00777194, PCGraphicsGpuName00777194},
         {201u, 67u, PCGraphicsGpuName00777174, PCGraphicsGpuName00777174},
         {200u, 67u, PCGraphicsGpuName0077715c, PCGraphicsGpuName0077715c},
@@ -1279,7 +973,7 @@ extern "C" {
         {353u, 67u, PCGraphicsGpuName007770d0, PCGraphicsGpuName007770d0},
         {354u, 67u, PCGraphicsGpuName007770d0, PCGraphicsGpuName007770d0},
         {355u, 67u, PCGraphicsGpuName007770c8, PCGraphicsGpuName007770c8},
-        {356u, 67u, PCGraphicsGpuName007770b0, PCGraphicsGpuName007770f4},
+        {356u, 67u, "NVIDIA GeForce Go 6290", PCGraphicsGpuName007770f4},
         {358u, 67u, PCGraphicsGpuName00777098, PCGraphicsGpuName00777098},
         {359u, 67u, PCGraphicsGpuName007770f4, PCGraphicsGpuName007770f4},
         {360u, 67u, PCGraphicsGpuName00777098, PCGraphicsGpuName00777098},
@@ -7890,16 +7584,9 @@ extern "C" {
 }
 
 extern "C" {
-#pragma const_seg(".rdata$PCDynamicDisplaySceneNameText")
-    extern const char PCDynamicDisplaySceneNameText[31] = "Dynamic Material Display Scene";
-#pragma const_seg()
-
-#pragma const_seg(".rdata$NuTextureDdsExtensionPc")
-    extern const char NuTextureDdsExtensionPc[4] = "dds";
-#pragma const_seg()
 
 #pragma data_seg(".data$PCDynamicDisplaySceneNamePointer")
-    const char *PCDynamicDisplaySceneNamePointer = PCDynamicDisplaySceneNameText;
+    const char *PCDynamicDisplaySceneNamePointer = "Dynamic Material Display Scene";
 #pragma data_seg()
 
 #pragma data_seg(".data$DebrisNullEffectPc")
@@ -8264,8 +7951,6 @@ extern "C" {
     extern const f64 VehicleTurnPhaseScale = 65536.0;
     extern const f64 VehicleTurnPhaseOffset = 16384.0;
     extern const f64 MoveSplineRunSpeedSentinel = 1000000000.0;
-    extern const f32 MoveSplineTurnRate = 8.0f;
-    extern const f64 BoltRayAccelerationTimeSquared = 0.04000000283122063;
     extern const f64 BoltTargetRandomDenominator = 65535.0;
     extern const f64 NuAnimDataFloatMax = 3.4028234663852886e+38;
 #pragma data_seg(".data$GameObjectRotationBuggyId")
@@ -8291,58 +7976,20 @@ extern "C" {
 #pragma bss_seg()
     i32 VehicleArea = 0;
     extern const char NuAnimSourceFileName[48] = "d:\\projects\\game_saga\\nu2api.saga\\nu3d\\nuanim.c";
-#pragma const_seg(".rdata$AIScriptKeywordInclude")
-    extern const char AIScriptKeywordInclude[8] = "INCLUDE";
-#pragma const_seg()
-#pragma const_seg(".rdata$AIScriptKeywordDeriveFromScript")
-    extern const char AIScriptKeywordDeriveFromScript[17] = "DERIVEFROMSCRIPT";
-#pragma const_seg()
-#pragma const_seg(".rdata$AIScriptKeywordActionMacro")
-    extern const char AIScriptKeywordActionMacro[12] = "ACTIONMACRO";
-#pragma const_seg()
-#pragma const_seg(".rdata$AIScriptKeywordConditionMacro")
-    extern const char AIScriptKeywordConditionMacro[15] = "CONDITIONMACRO";
-#pragma const_seg()
-#pragma const_seg(".rdata$AIScriptKeywordConst")
-    extern const char AIScriptKeywordConst[6] = "CONST";
-#pragma const_seg()
-#pragma const_seg(".rdata$AIScriptKeywordParam")
-    extern const char AIScriptKeywordParam[6] = "PARAM";
-#pragma const_seg()
-#pragma const_seg(".rdata$AIScriptKeywordState")
-    extern const char AIScriptKeywordState[6] = "STATE";
-#pragma const_seg()
 #pragma const_seg(".rdata$AIScriptKeywordEnd")
     extern const char AIScriptKeywordEnd[2] = "}";
 #pragma const_seg()
 #pragma const_seg(".rdata$AIScriptKeywordReferenceScript")
     extern const char AIScriptKeywordReferenceScript[16] = "REFERENCESCRIPT";
 #pragma const_seg()
-#pragma const_seg(".rdata$AIScriptKeywordActions")
-    extern const char AIScriptKeywordActions[8] = "ACTIONS";
-#pragma const_seg()
-#pragma const_seg(".rdata$AIScriptKeywordConditions")
-    extern const char AIScriptKeywordConditions[11] = "CONDITIONS";
-#pragma const_seg()
 #pragma const_seg(".rdata$AIScriptKeywordBase")
     extern const char AIScriptKeywordBase[5] = "Base";
-#pragma const_seg()
-#pragma const_seg(".rdata$AIScriptKeywordGlobal")
-    extern const char AIScriptKeywordGlobal[7] = "Global";
-#pragma const_seg()
-#pragma const_seg(".rdata$AIScriptKeywordSource")
-    extern const char AIScriptKeywordSource[7] = "Source";
-#pragma const_seg()
-#pragma const_seg(".rdata$AIScriptKeywordScript")
-    extern const char AIScriptKeywordScript[7] = "Script";
 #pragma const_seg()
 #pragma const_seg(".rdata$AIScriptKeywordLevel")
     extern const char AIScriptKeywordLevel[6] = "Level";
 #pragma const_seg()
     char *NuBlankString = (char *)NuBlankStringValue;
     extern const f64 GameObjectNearFloorNoFloorHeight = 2000000.0;
-    extern const f64 GameObjectNearFloorRadiusDivisor = 0.22499999403953552;
-    extern const f64 VehicleHoverHeightSeparationScale = 0.6000000238418579;
 #pragma const_seg(".rdata$AIPathAngularScale")
     extern const f64 AIPathAngularScale = 10430.3779296875;
 #pragma const_seg()
@@ -8361,26 +8008,11 @@ extern "C" {
 #pragma const_seg(".rdata$PCPathArcSineCoefficient9")
     extern const f64 PCPathArcSineCoefficient9 = -0.0303819f;
 #pragma const_seg()
-#pragma const_seg(".rdata$AIScriptListFilename")
-    extern const char AIScriptListFilename[11] = "script.txt";
-#pragma const_seg()
-#pragma const_seg(".rdata$AIScriptListPathFormat")
-    extern const char AIScriptListPathFormat[14] = "%s\\script.txt";
-#pragma const_seg()
 #pragma const_seg(".rdata$AIScriptFileExtension")
     extern const char AIScriptFileExtension[5] = ".scp";
 #pragma const_seg()
 #pragma const_seg(".rdata$AIScriptActionNameArgPrefix")
     extern const char AIScriptActionNameArgPrefix[6] = "name=";
-#pragma const_seg()
-#pragma const_seg(".rdata$PlayCountArgPrefix")
-    extern const char PlayCountArgPrefix[11] = "playcount=";
-#pragma const_seg()
-#pragma const_seg(".rdata$RepeatDelayArgPrefix")
-    extern const char RepeatDelayArgPrefix[10] = "repdelay=";
-#pragma const_seg()
-#pragma const_seg(".rdata$StartDelayArgPrefix")
-    extern const char StartDelayArgPrefix[12] = "startdelay=";
 #pragma const_seg()
 #pragma const_seg(".rdata$XArgPrefix")
     extern const char XArgPrefix[3] = "x=";
@@ -8390,9 +8022,6 @@ extern "C" {
 #pragma const_seg()
 #pragma const_seg(".rdata$ZArgPrefix")
     extern const char ZArgPrefix[3] = "z=";
-#pragma const_seg()
-#pragma const_seg(".rdata$CharacterPosArgPrefix")
-    extern const char CharacterPosArgPrefix[15] = "character_pos=";
 #pragma const_seg()
 #pragma const_seg(".rdata$AIScriptParamPrefix")
     extern const char AIScriptParamPrefix[6] = "param";
@@ -8562,9 +8191,6 @@ extern "C" {
     GAMEANIMPROGRESS gameanimsysprogress = {0};
     VARIPTR original_permbuffer_base = {0};
     char InitOnceCurrentDirectory[1] = {0};
-#pragma const_seg(".rdata$InitOnceAllocSource")
-    extern const char InitOnceAllocSource[15] = ".\\pcbatman.cpp";
-#pragma const_seg()
 #pragma const_seg(".rdata$InitOnceWindowTitle")
     extern const char InitOnceWindowTitle[36] = "LEGO\xae Star Wars\x99: The Complete Saga";
 #pragma const_seg()
@@ -8611,8 +8237,6 @@ extern "C" {
     extern const f32 NuPrimPS2YScale = -1.0f / 112.0f;
 #pragma const_seg(".rdata$NuPrimTwo")
     extern const f32 NuPrimTwo = 2.0f;
-#pragma const_seg(".rdata$NuPrimMinusTwo")
-    extern const f32 NuPrimMinusTwo = -2.0f;
 #pragma const_seg()
     NUFPAR_PC NuFParRecords[4] = {0};
     char NuFParBuffers[4][0x1000] = {0};
@@ -8636,14 +8260,8 @@ extern "C" {
     f32 qfnt_rezscale_w = 1.0f;
     f32 qfnt_rezscale_h = 1.0f;
     extern const f32 nu_fsign_minus_one = -1.0f;
-#pragma const_seg(".rdata$PCKeyboard2Name_candidate")
-    extern const char PCKeyboard2Name[10] = "Keyboard2";
 #pragma const_seg(".rdata$PCKeyboardMouse2Name_candidate")
     extern const char PCKeyboardMouse2Name[16] = "KeyboardMouse2";
-#pragma const_seg(".rdata$PCKeyboard1Name_candidate")
-    extern const char PCKeyboard1Name[10] = "Keyboard1";
-#pragma const_seg(".rdata$PCKeyboardMouse1Name_candidate")
-    extern const char PCKeyboardMouse1Name[15] = "KeyboardMouse1";
 #pragma const_seg()
 #pragma const_seg(".rdata$NuQFntHalfScale")
     extern const f64 NuQFntHalfScale = 0.5;
@@ -8672,15 +8290,6 @@ extern "C" {
 #pragma const_seg()
 #pragma const_seg(".rdata$PermLegalSeparator")
     extern const char PermLegalSeparator[2] = "_";
-#pragma const_seg()
-#pragma const_seg(".rdata$PermLegalSpanish")
-    extern const char PermLegalSpanish[11] = "_usspanish";
-#pragma const_seg()
-#pragma const_seg(".rdata$PermLegalFrench")
-    extern const char PermLegalFrench[10] = "_usfrench";
-#pragma const_seg()
-#pragma const_seg(".rdata$PermLegalUS")
-    extern const char PermLegalUS[4] = "_us";
 #pragma const_seg()
     i32 readpads_always = 0;
     TIMER GlobalTimer = {0};
@@ -8711,68 +8320,34 @@ extern "C" {
     f32 PodAvalancheShakeRange = 750.0f;
     LEVEL_PROGRESS *LevelProgressData = 0;
     LEVELSPLINE_PC *LevSplList = 0;
-#pragma const_seg(".rdata$LevelSplineNamePointCamPc")
-    extern const char LevelSplineNamePointCamPc[10] = "point_cam";
-#pragma const_seg(".rdata$LevelSplineNameFinishLinePc")
-    extern const char LevelSplineNameFinishLinePc[12] = "finish_line";
-#pragma const_seg(".rdata$LevelSplineNameCamStartPc")
-    extern const char LevelSplineNameCamStartPc[10] = "cam_start";
-#pragma const_seg(".rdata$LevelSplineNameSplitPc")
-    extern const char LevelSplineNameSplitPc[6] = "split";
-#pragma const_seg(".rdata$LevelSplineNameMapCamPc")
-    extern const char LevelSplineNameMapCamPc[8] = "map_cam";
-#pragma const_seg(".rdata$LevelSplineNameMapLookPc")
-    extern const char LevelSplineNameMapLookPc[9] = "map_look";
-#pragma const_seg(".rdata$LevelSplineNameE1EntrancePc")
-    extern const char LevelSplineNameE1EntrancePc[12] = "e1_entrance";
-#pragma const_seg(".rdata$LevelSplineNameE2EntrancePc")
-    extern const char LevelSplineNameE2EntrancePc[12] = "e2_entrance";
-#pragma const_seg(".rdata$LevelSplineNameE3EntrancePc")
-    extern const char LevelSplineNameE3EntrancePc[12] = "e3_entrance";
-#pragma const_seg(".rdata$LevelSplineNameE4EntrancePc")
-    extern const char LevelSplineNameE4EntrancePc[12] = "e4_entrance";
-#pragma const_seg(".rdata$LevelSplineNameE5EntrancePc")
-    extern const char LevelSplineNameE5EntrancePc[12] = "e5_entrance";
-#pragma const_seg(".rdata$LevelSplineNameE6EntrancePc")
-    extern const char LevelSplineNameE6EntrancePc[12] = "e6_entrance";
-#pragma const_seg(".rdata$LevelSplineNameJabbaEntrance1Pc")
-    extern const char LevelSplineNameJabbaEntrance1Pc[16] = "jabba_entrance1";
-#pragma const_seg(".rdata$LevelSplineNameCharCamPc")
-    extern const char LevelSplineNameCharCamPc[9] = "char_cam";
-#pragma const_seg(".rdata$LevelSplineNameTurnAround1Pc")
-    extern const char LevelSplineNameTurnAround1Pc[14] = "Turn_Around_1";
-#pragma const_seg(".rdata$LevelSplineNameTurnAround2Pc")
-    extern const char LevelSplineNameTurnAround2Pc[14] = "Turn_Around_2";
-#pragma const_seg(".rdata$LevelSplineNameCustardPc")
-    extern const char LevelSplineNameCustardPc[8] = "custard";
-#pragma const_seg(".rdata$LevelSplineNameBonusZone1Pc")
-    extern const char LevelSplineNameBonusZone1Pc[13] = "bonus_zone_1";
-#pragma const_seg(".rdata$LevelSplineNameBonusZone2Pc")
-    extern const char LevelSplineNameBonusZone2Pc[13] = "bonus_zone_2";
-#pragma const_seg(".rdata$LevelSplineNameBonusZone3Pc")
-    extern const char LevelSplineNameBonusZone3Pc[13] = "bonus_zone_3";
-#pragma const_seg(".rdata$LevelSplineNameBonusZone4Pc")
-    extern const char LevelSplineNameBonusZone4Pc[13] = "bonus_zone_4";
-#pragma const_seg(".rdata$LevelSplineNameBonusZone5Pc")
-    extern const char LevelSplineNameBonusZone5Pc[13] = "bonus_zone_5";
-#pragma const_seg(".rdata$LevelSplineNameMissionCamPc")
-    extern const char LevelSplineNameMissionCamPc[12] = "mission_cam";
-#pragma const_seg()
 #pragma data_seg(".data$LevelSplinesTable")
     LEVELSPLINE_PC LevelSplinesTable[26] = {
-        {NULL, LevelSplinesStartName, 2, 0, -1, -1},           {NULL, LevelSplinesStartCamName, 2, 0, -1, -1},
-        {NULL, LevelSplineNamePointCamPc, 2, 2, -1, -1},       {NULL, LevelSplineNameFinishLinePc, 2, 2, -1, -1},
-        {NULL, LevelSplineNameCamStartPc, 2, 2, -1, -1},       {NULL, LevelSplineNameSplitPc, 2, 2, -1, -1},
-        {NULL, LevelSplineNameMapCamPc, 2, 0, -1, -1},         {NULL, LevelSplineNameMapLookPc, 2, 0, -1, -1},
-        {NULL, LevelSplineNameE1EntrancePc, 2, 2, -1, -1},     {NULL, LevelSplineNameE2EntrancePc, 2, 2, -1, -1},
-        {NULL, LevelSplineNameE3EntrancePc, 2, 2, -1, -1},     {NULL, LevelSplineNameE4EntrancePc, 2, 2, -1, -1},
-        {NULL, LevelSplineNameE5EntrancePc, 2, 2, -1, -1},     {NULL, LevelSplineNameE6EntrancePc, 2, 2, -1, -1},
-        {NULL, LevelSplineNameJabbaEntrance1Pc, 2, 2, -1, -1}, {NULL, LevelSplineNameCharCamPc, 2, 2, -1, -1},
-        {NULL, LevelSplineNameTurnAround1Pc, 2, 1024, -1, -1}, {NULL, LevelSplineNameTurnAround2Pc, 2, 1024, -1, -1},
-        {NULL, LevelSplineNameCustardPc, 4, 4, -1, -1},        {NULL, LevelSplineNameBonusZone1Pc, 3, 0, -1, -1},
-        {NULL, LevelSplineNameBonusZone2Pc, 3, 0, -1, -1},     {NULL, LevelSplineNameBonusZone3Pc, 3, 0, -1, -1},
-        {NULL, LevelSplineNameBonusZone4Pc, 3, 0, -1, -1},     {NULL, LevelSplineNameBonusZone5Pc, 3, 0, -1, -1},
-        {NULL, LevelSplineNameMissionCamPc, 2, 2, -1, -1},     {NULL, NULL, 0, 0, 0, 0},
+        {NULL, LevelSplinesStartName, 2, 0, -1, -1},
+        {NULL, LevelSplinesStartCamName, 2, 0, -1, -1},
+        {NULL, "point_cam", 2, 2, -1, -1},
+        {NULL, "finish_line", 2, 2, -1, -1},
+        {NULL, "cam_start", 2, 2, -1, -1},
+        {NULL, "split", 2, 2, -1, -1},
+        {NULL, "map_cam", 2, 0, -1, -1},
+        {NULL, "map_look", 2, 0, -1, -1},
+        {NULL, "e1_entrance", 2, 2, -1, -1},
+        {NULL, "e2_entrance", 2, 2, -1, -1},
+        {NULL, "e3_entrance", 2, 2, -1, -1},
+        {NULL, "e4_entrance", 2, 2, -1, -1},
+        {NULL, "e5_entrance", 2, 2, -1, -1},
+        {NULL, "e6_entrance", 2, 2, -1, -1},
+        {NULL, "jabba_entrance1", 2, 2, -1, -1},
+        {NULL, "char_cam", 2, 2, -1, -1},
+        {NULL, "Turn_Around_1", 2, 1024, -1, -1},
+        {NULL, "Turn_Around_2", 2, 1024, -1, -1},
+        {NULL, "custard", 4, 4, -1, -1},
+        {NULL, "bonus_zone_1", 3, 0, -1, -1},
+        {NULL, "bonus_zone_2", 3, 0, -1, -1},
+        {NULL, "bonus_zone_3", 3, 0, -1, -1},
+        {NULL, "bonus_zone_4", 3, 0, -1, -1},
+        {NULL, "bonus_zone_5", 3, 0, -1, -1},
+        {NULL, "mission_cam", 2, 2, -1, -1},
+        {NULL, NULL, 0, 0, 0, 0},
     };
 #pragma data_seg()
     STATIC_ASSERT(sizeof(LevelSplinesTable) == 0x1a0);
@@ -8907,8 +8482,7 @@ extern "C" {
         DEV_FormatName,
         DEVHOST_Interrogate,
     };
-    extern const char NuFileIopImageNamePc[13] = "ioprp300.img";
-    char *iop_image_name = (char *)NuFileIopImageNamePc;
+    char *iop_image_name = "ioprp300.img";
     NUFILE_DEVICE *default_device = &host_device;
     i32 DontDoFileUpperCaseHack = 0;
     NuKeyboardState_PC *nu_input_state = 0;
@@ -8942,60 +8516,17 @@ extern "C" {
 #pragma const_seg()
     DAT_HANDLES_PC NuDatHandles = {0};
     i32 finishloop_backdroponly = 0;
-#pragma const_seg(".rdata$StartupGameDat")
-    extern const char StartupGameDat[9] = "GAME.DAT";
-#pragma const_seg(".rdata$StartupEpisodeIDat")
-    extern const char StartupEpisodeIDat[14] = "Episode_I.DAT";
-#pragma const_seg(".rdata$StartupEpisodeIIDat")
-    extern const char StartupEpisodeIIDat[15] = "Episode_II.DAT";
-#pragma const_seg(".rdata$StartupEpisodeIIIDat")
-    extern const char StartupEpisodeIIIDat[16] = "Episode_III.DAT";
-#pragma const_seg(".rdata$StartupEpisodeIVDat")
-    extern const char StartupEpisodeIVDat[15] = "Episode_IV.DAT";
-#pragma const_seg(".rdata$StartupEpisodeVDat")
-    extern const char StartupEpisodeVDat[14] = "Episode_V.DAT";
-#pragma const_seg(".rdata$StartupEpisodeVIDat")
-    extern const char StartupEpisodeVIDat[15] = "Episode_VI.DAT";
-#pragma const_seg()
 #pragma data_seg(".data$StartupDatNames")
     const char *StartupDatNames[7] = {
-        StartupGameDat,      StartupEpisodeIDat, StartupEpisodeIIDat, StartupEpisodeIIIDat,
-        StartupEpisodeIVDat, StartupEpisodeVDat, StartupEpisodeVIDat,
+        "GAME.DAT",       "Episode_I.DAT", "Episode_II.DAT", "Episode_III.DAT",
+        "Episode_IV.DAT", "Episode_V.DAT", "Episode_VI.DAT",
     };
 #pragma data_seg()
-#pragma const_seg(".rdata$EpisodeIDat")
-    extern const char EpisodeIDat[14] = "Episode_I.dat";
-#pragma const_seg(".rdata$EpisodeIIDat")
-    extern const char EpisodeIIDat[15] = "Episode_II.dat";
-#pragma const_seg(".rdata$EpisodeIIIDat")
-    extern const char EpisodeIIIDat[16] = "Episode_III.dat";
-#pragma const_seg(".rdata$EpisodeIVDat")
-    extern const char EpisodeIVDat[15] = "Episode_IV.dat";
-#pragma const_seg(".rdata$EpisodeVDat")
-    extern const char EpisodeVDat[14] = "Episode_V.dat";
-#pragma const_seg(".rdata$EpisodeVIDat")
-    extern const char EpisodeVIDat[15] = "Episode_VI.dat";
-#pragma const_seg()
-#pragma const_seg(".rdata$bgproc_resume_event_name")
-    extern const char bgproc_resume_event_name[9] = "BGFreeze";
-#pragma const_seg(".rdata$bgproc_work_event_name")
-    extern const char bgproc_work_event_name[11] = "BGWorkToDo";
-#pragma const_seg()
     VUFNT *QFont3DZ = 0;
     VUFNT *SmartTextFont = 0;
     f32 INTROTEXT_Y = 0.175f;
     f32 INTROTEXT_SCALE = 0.79f;
     void (*Text_GameSetLanguageFn)(i32) = 0;
-#pragma const_seg(".rdata$Text_TimeHMSC")
-    extern const char Text_TimeHMSC[18] = "%i:%.2i:%.2i.%.2i";
-#pragma const_seg(".rdata$Text_TimeHMS")
-    extern const char Text_TimeHMS[13] = "%i:%.2i:%.2i";
-#pragma const_seg(".rdata$Text_TimeMSC")
-    extern const char Text_TimeMSC[13] = "%i:%.2i.%.2i";
-#pragma const_seg(".rdata$Text_TimeMS")
-    extern const char Text_TimeMS[8] = "%i:%.2i";
-#pragma const_seg(".rdata$Text_TimeSC")
-    extern const char Text_TimeSC[8] = "%i.%.2i";
 #pragma const_seg(".rdata$Text_TimeS")
     extern const char Text_TimeS[3] = "%i";
 #pragma const_seg()
@@ -9096,11 +8627,8 @@ extern "C" {
 #pragma data_seg(".data$PCSoundVolumeMultiplier")
     i32 PCSoundVolumeMultiplier = 0x4000;
 #pragma data_seg()
-#pragma const_seg(".rdata$PCSoundOggExtensionText")
-    extern const char PCSoundOggExtensionText[5] = ".ogg";
-#pragma const_seg()
 #pragma data_seg(".data$PCSoundOggExtension")
-    const char *PCSoundOggExtension = PCSoundOggExtensionText;
+    const char *PCSoundOggExtension = ".ogg";
 #pragma data_seg()
 #pragma data_seg(".data$SoundVoiceVolumeOffset")
     i32 SoundVoiceVolumeOffset = -300;
@@ -9647,12 +9175,6 @@ extern "C" {
 #pragma const_seg(".rdata$NuTimeBarSource")
     extern const char NuTimeBarSource[51] = "d:\\projects\\game_saga\\nu2api.saga\\nu3d\\nutimebar.c";
 #pragma const_seg()
-#pragma const_seg(".rdata$NuTimeBarScanlineMicroseconds")
-    extern const f64 NuTimeBarScanlineMicroseconds = 63.556;
-#pragma const_seg()
-#pragma const_seg(".rdata$NuTimeBarScanlinesPerFrame")
-    extern const f64 NuTimeBarScanlinesPerFrame = 262.5;
-#pragma const_seg()
 #pragma const_seg(".rdata$NuTimeBarEngineColours")
     extern const u32 NuTimeBar_EngineColours[7] = {0x7f00007f, 0x7f007f00, 0x7f007f50, 0x7f507f50,
                                                    0x7f000050, 0x7f40407f, 0x7f7f0000};
@@ -9678,29 +9200,14 @@ extern "C" {
 #pragma const_seg(".rdata$NuTimeBarSlotWidth")
     extern const f64 NuTimeBarSlotWidth = 0.02500000037252903;
 #pragma const_seg()
-#pragma const_seg(".rdata$NuTimeBarHorizontalTop")
-    extern const f64 NuTimeBarHorizontalTop = 0.15000000596046448;
-#pragma const_seg()
 #pragma const_seg(".rdata$NuTimeBarValueFormat")
     extern const char NuTimeBarValueFormat[3] = "%d";
 #pragma const_seg()
 #pragma const_seg(".rdata$NuTimeBarFontScale")
     extern const f32 NuTimeBarFontScale = 0.8500000238418579f;
 #pragma const_seg()
-#pragma const_seg(".rdata$NuTimeBarVerticalScale")
-    extern const f64 NuTimeBarVerticalScale = 120.0;
-#pragma const_seg()
 #pragma const_seg(".rdata$NuTimeBarNegativeSlotWidth")
     extern const f64 NuTimeBarNegativeSlotWidth = -0.02500000037252903;
-#pragma const_seg()
-#pragma const_seg(".rdata$NuTimeBarRight")
-    extern const f64 NuTimeBarRight = 0.974999999627471;
-#pragma const_seg()
-#pragma const_seg(".rdata$NuTimeBarNameMargin")
-    extern const f64 NuTimeBarNameMargin = 0.044999999925494194;
-#pragma const_seg()
-#pragma const_seg(".rdata$NuTimeBarHalfFontScale")
-    extern const f32 NuTimeBarHalfFontScale = 0.42500001192092896f;
 #pragma const_seg()
 #pragma const_seg(".rdata$NuTimeBarLinesPerSecond")
     extern const f64 NuTimeBarLinesPerSecond = 15734.0;
@@ -9723,38 +9230,8 @@ extern "C" {
 #pragma bss_seg(".bss$NuTimeBar_PeakReset")
     i32 NuTimeBar_PeakReset = 0;
 #pragma bss_seg()
-#pragma const_seg(".rdata$TextLoadPermTRCPath")
-    extern const char TextLoadPermTRCPath[19] = "stuff\\text\\trc.csv";
-#pragma const_seg()
-#pragma const_seg(".rdata$TextLoadPermAPIExtension")
-    extern const char TextLoadPermAPIExtension[9] = "_api.txt";
-#pragma const_seg()
 #pragma const_seg(".rdata$TextLoadPermTextDirectory")
     extern const char TextLoadPermTextDirectory[12] = "stuff\\text\\";
-#pragma const_seg()
-#pragma const_seg(".rdata$TextPlatformXbox")
-    extern const char TextPlatformXbox[5] = "xbox";
-#pragma const_seg()
-#pragma const_seg(".rdata$TextPlatformPC")
-    extern const char TextPlatformPC[3] = "pc";
-#pragma const_seg()
-#pragma const_seg(".rdata$TextPlatformPSP")
-    extern const char TextPlatformPSP[4] = "psp";
-#pragma const_seg()
-#pragma const_seg(".rdata$TextPlatformPS3")
-    extern const char TextPlatformPS3[4] = "ps3";
-#pragma const_seg()
-#pragma const_seg(".rdata$TextPlatformPS2")
-    extern const char TextPlatformPS2[4] = "ps2";
-#pragma const_seg()
-#pragma const_seg(".rdata$TextPlatformGameCube")
-    extern const char TextPlatformGameCube[3] = "gc";
-#pragma const_seg()
-#pragma const_seg(".rdata$TextPlatform360")
-    extern const char TextPlatform360[4] = "360";
-#pragma const_seg()
-#pragma const_seg(".rdata$TextPlatformWii")
-    extern const char TextPlatformWii[4] = "wii";
 #pragma const_seg()
 
 #pragma bss_seg(".bss$tALONGTIMEAGO")
@@ -9823,8 +9300,6 @@ extern "C" {
 #pragma data_seg()
 #pragma const_seg(".rdata$GizAIMessage_NameFormat")
     extern const char GizAIMessage_NameFormat[3] = "%s";
-#pragma const_seg(".rdata$GizAIMessage_PrefixedNameFormat")
-    extern const char GizAIMessage_PrefixedNameFormat[5] = "%s%s";
 #pragma const_seg()
     GIZAIMESSAGESYS *gizaimessagesys = 0;
     f32 PanelProjectionX = 1222.0f;
@@ -9851,76 +9326,28 @@ extern "C" {
     i32 INTROTEXT_ID = -1;
     void *Text_AppFont = 0;
     char **TTab = 0;
-#pragma const_seg(".rdata$Text_ErrorText")
-    extern const char Text_ErrorText[7] = "Err...";
-#pragma const_seg()
 #pragma const_seg(".rdata$Text_UnknownText")
     extern const char Text_UnknownText[2] = "?";
 #pragma const_seg()
-#pragma const_seg(".rdata$Text_WibbleCodeword")
-    extern const char Text_WibbleCodeword[7] = "wibble";
-#pragma const_seg()
-#pragma const_seg(".rdata$Text_CrossCodeword")
-    extern const char Text_CrossCodeword[6] = "cross";
-#pragma const_seg()
     void (*buttonmapfn)(char *, char *) = 0;
     i32 smarttext_fwn = 0;
-#pragma const_seg(".rdata$Text_PathEnglishText")
-    extern const char Text_PathEnglishText[8] = "english";
-#pragma const_seg()
-#pragma const_seg(".rdata$Text_PathFrenchText")
-    extern const char Text_PathFrenchText[7] = "french";
-#pragma const_seg()
-#pragma const_seg(".rdata$Text_PathGermanText")
-    extern const char Text_PathGermanText[7] = "german";
-#pragma const_seg()
-#pragma const_seg(".rdata$Text_PathItalianText")
-    extern const char Text_PathItalianText[8] = "italian";
-#pragma const_seg()
-#pragma const_seg(".rdata$Text_PathSpanishText")
-    extern const char Text_PathSpanishText[8] = "spanish";
-#pragma const_seg()
-#pragma const_seg(".rdata$Text_PathDanishText")
-    extern const char Text_PathDanishText[7] = "danish";
-#pragma const_seg()
-#pragma const_seg(".rdata$Text_PathJapaneseText")
-    extern const char Text_PathJapaneseText[9] = "japanese";
-#pragma const_seg()
-#pragma const_seg(".rdata$Text_EnglishName")
-    extern const char Text_EnglishName[8] = "English";
-#pragma const_seg()
-#pragma const_seg(".rdata$Text_FrenchName")
-    extern const char Text_FrenchName[10] = "Fran\xc3\xa7"
-                                            "ais";
-#pragma const_seg()
-#pragma const_seg(".rdata$Text_GermanName")
-    extern const char Text_GermanName[8] = "Deutsch";
-#pragma const_seg()
-#pragma const_seg(".rdata$Text_ItalianName")
-    extern const char Text_ItalianName[9] = "Italiano";
-#pragma const_seg()
-#pragma const_seg(".rdata$Text_SpanishName")
-    extern const char Text_SpanishName[9] = "Espa\xc3\xb1"
-                                            "ol";
-#pragma const_seg()
-#pragma const_seg(".rdata$Text_DanishName")
-    extern const char Text_DanishName[6] = "Dansk";
-#pragma const_seg()
     char *txt_NULL = const_cast<char *>(Text_UnknownText);
     char *txt_UNKNOWN = const_cast<char *>(Text_UnknownText);
-    char *Text_PathEnglish = const_cast<char *>(Text_PathEnglishText);
-    char *Text_PathFrench = const_cast<char *>(Text_PathFrenchText);
-    char *Text_PathGerman = const_cast<char *>(Text_PathGermanText);
-    char *Text_PathItalian = const_cast<char *>(Text_PathItalianText);
-    char *Text_PathSpanish = const_cast<char *>(Text_PathSpanishText);
-    char *Text_PathDanish = const_cast<char *>(Text_PathDanishText);
-    char *Text_PathJapanese = const_cast<char *>(Text_PathJapaneseText);
-    char *apitxt_ENGLISH = const_cast<char *>(Text_EnglishName);
-    char *apitxt_FRENCH = const_cast<char *>(Text_FrenchName);
-    char *apitxt_GERMAN = const_cast<char *>(Text_GermanName);
-    char *apitxt_ITALIAN = const_cast<char *>(Text_ItalianName);
-    char *apitxt_SPANISH = const_cast<char *>(Text_SpanishName);
-    char *apitxt_DANISH = const_cast<char *>(Text_DanishName);
+    char *Text_PathEnglish = const_cast<char *>("english");
+    char *Text_PathFrench = const_cast<char *>("french");
+    char *Text_PathGerman = const_cast<char *>("german");
+    char *Text_PathItalian = const_cast<char *>("italian");
+    char *Text_PathSpanish = const_cast<char *>("spanish");
+    char *Text_PathDanish = const_cast<char *>("danish");
+    char *Text_PathJapanese = const_cast<char *>("japanese");
+    char *apitxt_ENGLISH = const_cast<char *>("English");
+    char *apitxt_FRENCH = const_cast<char *>("Fran\xc3\xa7"
+                                             "ais");
+    char *apitxt_GERMAN = const_cast<char *>("Deutsch");
+    char *apitxt_ITALIAN = const_cast<char *>("Italiano");
+    char *apitxt_SPANISH = const_cast<char *>("Espa\xc3\xb1"
+                                              "ol");
+    char *apitxt_DANISH = const_cast<char *>("Dansk");
 #pragma bss_seg(".bss$tNULL")
     i16 tNULL = 0;
 #pragma bss_seg()
@@ -9967,9 +9394,6 @@ extern "C" {
 #pragma const_seg()
 #pragma const_seg(".rdata$NuTimeMicroScale")
     extern const f64 NuTime_MicroScale = 1000000.0;
-#pragma const_seg()
-#pragma const_seg(".rdata$NuTimeScanlineScale")
-    extern const f64 NuTime_ScanlineScale = 272.0;
 #pragma const_seg()
 #pragma const_seg(".rdata$NuTimeRefreshRate")
     extern const f64 NuTime_RefreshRate = 60.0;
@@ -10035,162 +9459,12 @@ extern "C" {
         {1.0f, 4160, 0xffff},  {1.0f, 0, 0xffff},    {1.0f, 5184, 0xffff},   {1.0f, 256, 0xffff}, {1.0f, 320, 0xffff},
         {1.0f, 64, 0xffff},    {1.0f, 64, 0xffff},
     };
-#pragma const_seg(".rdata$GetSfxSwPPadName")
-    extern const char GetSfxSwPPadName[7] = "SwPPad";
 #pragma const_seg(".rdata$LevelConfigKeywordFile")
     extern const char LevelConfigKeywordFile[5] = "file";
 #pragma const_seg(".rdata$LevelConfigKeywordDir")
     extern const char LevelConfigKeywordDir[4] = "dir";
-#pragma const_seg(".rdata$LevelConfigKeywordStart")
-    extern const char LevelConfigKeywordStart[12] = "level_start";
-#pragma const_seg(".rdata$LevelConfigKeywordEnd")
-    extern const char LevelConfigKeywordEnd[10] = "level_end";
-#pragma const_seg(".rdata$LevelBeforeLoadName")
-    extern const char LevelBeforeLoadName[16] = "levelbeforeload";
 #pragma const_seg(".rdata$NuCameraAllocSource")
     extern const char NuCameraAllocSource[54] = "d:\\projects\\game_saga\\nu2api.saga\\nu3d\\nucamera_gen.c";
-#pragma const_seg(".rdata$LoadPermEpisodesPath")
-    extern const char LoadPermEpisodesPath[20] = "levels\\episodes.txt";
-#pragma const_seg(".rdata$LoadPermAreasPath")
-    extern const char LoadPermAreasPath[17] = "levels\\areas.txt";
-#pragma const_seg(".rdata$LoadPermLevelsPath")
-    extern const char LoadPermLevelsPath[18] = "levels\\levels.txt";
-#pragma const_seg(".rdata$EpisodeConfigKeyword_area")
-    extern const char EpisodeConfigKeyword_area[5] = "area";
-#pragma const_seg(".rdata$EpisodeConfigKeyword_episode_start")
-    extern const char EpisodeConfigKeyword_episode_start[14] = "episode_start";
-#pragma const_seg(".rdata$EpisodeConfigKeyword_episode_end")
-    extern const char EpisodeConfigKeyword_episode_end[12] = "episode_end";
-#pragma const_seg(".rdata$LevelAfterLoadName")
-    extern const char LevelAfterLoadName[15] = "levelafterload";
-#pragma const_seg(".rdata$LevelConfigKeywordTest")
-    extern const char LevelConfigKeywordTest[11] = "test_level";
-#pragma const_seg(".rdata$LevelConfigKeywordIntro")
-    extern const char LevelConfigKeywordIntro[12] = "intro_level";
-#pragma const_seg(".rdata$LevelConfigKeywordMidtro")
-    extern const char LevelConfigKeywordMidtro[13] = "midtro_level";
-#pragma const_seg(".rdata$LevelConfigKeywordCutscene")
-    extern const char LevelConfigKeywordCutscene[15] = "cutscene_level";
-#pragma const_seg(".rdata$LevelConfigKeywordOutro")
-    extern const char LevelConfigKeywordOutro[12] = "outro_level";
-#pragma const_seg(".rdata$LevelConfigKeywordStatus")
-    extern const char LevelConfigKeywordStatus[13] = "status_level";
-#pragma const_seg(".rdata$LevelConfigKeywordNewGame")
-    extern const char LevelConfigKeywordNewGame[14] = "newgame_level";
-#pragma const_seg(".rdata$LevelConfigKeywordLoadGame")
-    extern const char LevelConfigKeywordLoadGame[15] = "loadgame_level";
-#pragma const_seg(".rdata$LevelConfigGenericKeyword_mipmapmode")
-    extern const char LevelConfigGenericKeyword_mipmapmode[11] = "mipmapmode";
-#pragma const_seg(".rdata$LevelConfigGenericKeyword_fix_strobing_anims")
-    extern const char LevelConfigGenericKeyword_fix_strobing_anims[19] = "fix_strobing_anims";
-#pragma const_seg(".rdata$LevelConfigGenericKeyword_max_ter_groups")
-    extern const char LevelConfigGenericKeyword_max_ter_groups[15] = "max_ter_groups";
-#pragma const_seg(".rdata$LevelConfigGenericKeyword_max_ter_platforms")
-    extern const char LevelConfigGenericKeyword_max_ter_platforms[18] = "max_ter_platforms";
-#pragma const_seg(".rdata$LevelConfigGenericKeyword_backr")
-    extern const char LevelConfigGenericKeyword_backr[6] = "backr";
-#pragma const_seg(".rdata$LevelConfigGenericKeyword_backg")
-    extern const char LevelConfigGenericKeyword_backg[6] = "backg";
-#pragma const_seg(".rdata$LevelConfigGenericKeyword_backb")
-    extern const char LevelConfigGenericKeyword_backb[6] = "backb";
-#pragma const_seg(".rdata$LevelConfigGenericKeyword_backr_top")
-    extern const char LevelConfigGenericKeyword_backr_top[10] = "backr_top";
-#pragma const_seg(".rdata$LevelConfigGenericKeyword_backg_top")
-    extern const char LevelConfigGenericKeyword_backg_top[10] = "backg_top";
-#pragma const_seg(".rdata$LevelConfigGenericKeyword_backb_top")
-    extern const char LevelConfigGenericKeyword_backb_top[10] = "backb_top";
-#pragma const_seg(".rdata$LevelConfigGenericKeyword_backr_bottom")
-    extern const char LevelConfigGenericKeyword_backr_bottom[13] = "backr_bottom";
-#pragma const_seg(".rdata$LevelConfigGenericKeyword_backg_bottom")
-    extern const char LevelConfigGenericKeyword_backg_bottom[13] = "backg_bottom";
-#pragma const_seg(".rdata$LevelConfigGenericKeyword_backb_bottom")
-    extern const char LevelConfigGenericKeyword_backb_bottom[13] = "backb_bottom";
-#pragma const_seg(".rdata$LevelConfigGenericKeyword_farclip_hack")
-    extern const char LevelConfigGenericKeyword_farclip_hack[13] = "farclip_hack";
-#pragma const_seg(".rdata$LevelConfigGenericKeyword_farclip")
-    extern const char LevelConfigGenericKeyword_farclip[8] = "farclip";
-#pragma const_seg(".rdata$LevelConfigGenericKeyword_nearclip")
-    extern const char LevelConfigGenericKeyword_nearclip[9] = "nearclip";
-#pragma const_seg(".rdata$LevelConfigGenericKeyword_farclip_pc")
-    extern const char LevelConfigGenericKeyword_farclip_pc[11] = "farclip_pc";
-#pragma const_seg(".rdata$LevelConfigGenericKeyword_nearclip_pc")
-    extern const char LevelConfigGenericKeyword_nearclip_pc[12] = "nearclip_pc";
-#pragma const_seg(".rdata$LevelConfigGenericKeyword_hover_height")
-    extern const char LevelConfigGenericKeyword_hover_height[13] = "hover_height";
-#pragma const_seg(".rdata$LevelConfigGenericKeyword_blobshadow_alpha")
-    extern const char LevelConfigGenericKeyword_blobshadow_alpha[17] = "blobshadow_alpha";
-#pragma const_seg(".rdata$LevelConfigGenericKeyword_blobshadow_fadenear")
-    extern const char LevelConfigGenericKeyword_blobshadow_fadenear[20] = "blobshadow_fadenear";
-#pragma const_seg(".rdata$LevelConfigGenericKeyword_blobshadow_fadefar")
-    extern const char LevelConfigGenericKeyword_blobshadow_fadefar[19] = "blobshadow_fadefar";
-#pragma const_seg(".rdata$LevelConfigGenericKeyword_reflect_range")
-    extern const char LevelConfigGenericKeyword_reflect_range[14] = "reflect_range";
-#pragma const_seg(".rdata$LevelConfigGenericKeyword_reflect_y")
-    extern const char LevelConfigGenericKeyword_reflect_y[10] = "reflect_y";
-#pragma const_seg(".rdata$LevelConfigGenericKeyword_metal")
-    extern const char LevelConfigGenericKeyword_metal[6] = "metal";
-#pragma const_seg(".rdata$LevelConfigGenericKeyword_in_space")
-    extern const char LevelConfigGenericKeyword_in_space[9] = "in_space";
-#pragma const_seg(".rdata$LevelConfigGenericKeyword_override_nopickupgravity")
-    extern const char LevelConfigGenericKeyword_override_nopickupgravity[25] = "override_nopickupgravity";
-#pragma const_seg(".rdata$LevelConfigGenericKeyword_hidden_icons")
-    extern const char LevelConfigGenericKeyword_hidden_icons[13] = "hidden_icons";
-#pragma const_seg(".rdata$LevelConfigGenericKeyword_pickups_to_panel")
-    extern const char LevelConfigGenericKeyword_pickups_to_panel[17] = "pickups_to_panel";
-#pragma const_seg(".rdata$LevelConfigGenericKeyword_forget_takeovers")
-    extern const char LevelConfigGenericKeyword_forget_takeovers[17] = "forget_takeovers";
-#pragma const_seg(".rdata$LevelConfigGenericKeyword_narrow_socks")
-    extern const char LevelConfigGenericKeyword_narrow_socks[13] = "narrow_socks";
-#pragma const_seg(".rdata$LevelConfigGenericKeyword_camera_rain")
-    extern const char LevelConfigGenericKeyword_camera_rain[12] = "camera_rain";
-#pragma const_seg(".rdata$LevelConfigGenericKeyword_terrain_rain")
-    extern const char LevelConfigGenericKeyword_terrain_rain[13] = "terrain_rain";
-#pragma const_seg(".rdata$LevelConfigGenericKeyword_double_score")
-    extern const char LevelConfigGenericKeyword_double_score[13] = "double_score";
-#pragma const_seg(".rdata$LevelConfigGenericKeyword_flat_terrain")
-    extern const char LevelConfigGenericKeyword_flat_terrain[13] = "flat_terrain";
-#pragma const_seg(".rdata$LevelConfigGenericKeyword_cam_tilt")
-    extern const char LevelConfigGenericKeyword_cam_tilt[9] = "cam_tilt";
-#pragma const_seg(".rdata$LevelConfigGenericKeyword_raycaststep")
-    extern const char LevelConfigGenericKeyword_raycaststep[12] = "raycaststep";
-#pragma const_seg(".rdata$LevelConfigGenericKeyword_plat_scan_dist")
-    extern const char LevelConfigGenericKeyword_plat_scan_dist[15] = "plat_scan_dist";
-#pragma const_seg(".rdata$LevelConfigGenericKeyword_waterripple_startcol_r")
-    extern const char LevelConfigGenericKeyword_waterripple_startcol_r[23] = "waterripple_startcol_r";
-#pragma const_seg(".rdata$LevelConfigGenericKeyword_waterripple_startcol_g")
-    extern const char LevelConfigGenericKeyword_waterripple_startcol_g[23] = "waterripple_startcol_g";
-#pragma const_seg(".rdata$LevelConfigGenericKeyword_waterripple_startcol_b")
-    extern const char LevelConfigGenericKeyword_waterripple_startcol_b[23] = "waterripple_startcol_b";
-#pragma const_seg(".rdata$LevelConfigGenericKeyword_waterripple_startcol_a")
-    extern const char LevelConfigGenericKeyword_waterripple_startcol_a[23] = "waterripple_startcol_a";
-#pragma const_seg(".rdata$LevelConfigGenericKeyword_waterripple_endcol_r")
-    extern const char LevelConfigGenericKeyword_waterripple_endcol_r[21] = "waterripple_endcol_r";
-#pragma const_seg(".rdata$LevelConfigGenericKeyword_waterripple_endcol_g")
-    extern const char LevelConfigGenericKeyword_waterripple_endcol_g[21] = "waterripple_endcol_g";
-#pragma const_seg(".rdata$LevelConfigGenericKeyword_waterripple_endcol_b")
-    extern const char LevelConfigGenericKeyword_waterripple_endcol_b[21] = "waterripple_endcol_b";
-#pragma const_seg(".rdata$LevelConfigGenericKeyword_waterripple_endcol_a")
-    extern const char LevelConfigGenericKeyword_waterripple_endcol_a[21] = "waterripple_endcol_a";
-#pragma const_seg(".rdata$LevelConfigGenericKeyword_waterripple_life")
-    extern const char LevelConfigGenericKeyword_waterripple_life[17] = "waterripple_life";
-#pragma const_seg(".rdata$LevelConfigGenericKeyword_cam_pullback_dist")
-    extern const char LevelConfigGenericKeyword_cam_pullback_dist[18] = "cam_pullback_dist";
-#pragma const_seg(".rdata$LevelConfigGenericKeyword_cam_lateral_dist")
-    extern const char LevelConfigGenericKeyword_cam_lateral_dist[17] = "cam_lateral_dist";
-#pragma const_seg(".rdata$LevelConfigGenericKeyword_campos_seek")
-    extern const char LevelConfigGenericKeyword_campos_seek[12] = "campos_seek";
-#pragma const_seg(".rdata$LevelConfigGenericKeyword_camang_seek")
-    extern const char LevelConfigGenericKeyword_camang_seek[12] = "camang_seek";
-#pragma const_seg(".rdata$LevelConfigGenericKeyword_shadowtype")
-    extern const char LevelConfigGenericKeyword_shadowtype[11] = "shadowtype";
-#pragma const_seg(".rdata$LevelConfigGenericKeyword_music")
-    extern const char LevelConfigGenericKeyword_music[6] = "music";
-#pragma const_seg(".rdata$LevelConfigGenericKeyword_music_other")
-    extern const char LevelConfigGenericKeyword_music_other[12] = "music_other";
-#pragma const_seg(".rdata$LevelConfigGenericKeyword_sfx_ambient")
-    extern const char LevelConfigGenericKeyword_sfx_ambient[12] = "sfx_ambient";
-#pragma const_seg(".rdata$LevelConfigGenericKeyword_conveyor")
-    extern const char LevelConfigGenericKeyword_conveyor[9] = "conveyor";
 
 #pragma const_seg(".rdata$LevelSplinesStartName")
     extern const char LevelSplinesStartName[6] = "start";
@@ -10205,276 +9479,132 @@ extern "C" {
     extern const f32 LevelConfigFarDistance = 2000000.0f;
 #pragma const_seg(".rdata$LevelConfigOff")
     extern const char LevelConfigOff[4] = "off";
-#pragma const_seg(".rdata$LevelConfigOn")
-    extern const char LevelConfigOn[3] = "on";
 #pragma const_seg()
 #pragma data_seg(".data$LevelConfigKeywords_BeforeLoad")
     NUFPCOMJMP LevelConfigKeywords_BeforeLoad[45] = {
-        {const_cast<char *>(LevelConfigGameKeyword_max_tightropes), LC_BL_max_tightropes},
-        {const_cast<char *>(LevelConfigGameKeyword_max_signals), LC_BL_max_signals},
-        {const_cast<char *>(LevelConfigGameKeyword_max_levers), LC_BL_max_levers},
-        {const_cast<char *>(LevelConfigGameKeyword_max_technos), LC_BL_max_technos},
-        {const_cast<char *>(LevelConfigGameKeyword_max_zipups), LC_BL_max_zipups},
-        {const_cast<char *>(LevelConfigGameKeyword_max_grapples), LC_BL_max_grapples},
-        {const_cast<char *>(LevelConfigGameKeyword_max_obstacles), LC_BL_max_obstacles},
-        {const_cast<char *>(LevelConfigGameKeyword_max_obstacle_objects), LC_BL_max_obstacle_objects},
-        {const_cast<char *>(LevelConfigGameKeyword_max_turrets), LC_BL_max_turrets},
-        {const_cast<char *>(LevelConfigGameKeyword_max_buildits), LC_BL_max_buildits},
-        {const_cast<char *>(LevelConfigGameKeyword_max_buildit_objects), LC_BL_max_buildit_objects},
-        {const_cast<char *>(LevelConfigGameKeyword_max_spinneranim_objs), LC_BL_max_spinneranim_objs},
-        {const_cast<char *>(LevelConfigGameKeyword_max_shards), LC_BL_max_shards},
-        {const_cast<char *>(LevelConfigGameKeyword_max_spinners), LC_BL_max_spinners},
-        {const_cast<char *>(LevelConfigGameKeyword_max_minicuts), LC_BL_max_minicuts},
-        {const_cast<char *>(LevelConfigGameKeyword_max_minicut_stages), LC_BL_max_minicutParts},
-        {const_cast<char *>(LevelConfigGameKeyword_maxgizmoblowuptypes), LC_BL_max_gizmoblowuptypes},
-        {const_cast<char *>(LevelConfigGameKeyword_maxgizmoblowups), LC_BL_max_gizmoblowups},
-        {const_cast<char *>(LevelConfigGameKeyword_max_climb_objects), LC_BL_max_climb_objects},
-        {const_cast<char *>(LevelConfigGameKeyword_max_attractos), LC_BL_max_attractos},
-        {const_cast<char *>(LevelConfigGameKeyword_max_timers), LC_BL_max_timers},
-        {const_cast<char *>(LevelConfigGameKeyword_max_guidelines), LC_BL_max_guidelines},
-        {const_cast<char *>(LevelConfigGameKeyword_max_ledges), LC_BL_max_ledges},
-        {const_cast<char *>(LevelConfigGameKeyword_max_securitydoors), LC_BL_max_securitydoors},
-        {const_cast<char *>(LevelConfigGameKeyword_max_tubes), LC_BL_max_tubes},
-        {const_cast<char *>(LevelConfigGameKeyword_max_pickups), LC_BL_max_pickups},
-        {const_cast<char *>(LevelConfigGameKeyword_max_gameantinodes), LC_BL_max_gameantinodes},
-        {const_cast<char *>(LevelConfigGameKeyword_max_gizpanels), LC_BL_max_gizpanels},
-        {const_cast<char *>(LevelConfigGameKeyword_max_force), LC_BL_max_force},
-        {const_cast<char *>(LevelConfigGameKeyword_max_force_objects), LC_BL_max_force_objects},
-        {const_cast<char *>(LevelConfigGameKeyword_max_pushblocks), LC_BL_max_pushblocks},
-        {const_cast<char *>(LevelConfigGameKeyword_max_pushblock_endpos), LC_BL_max_pushblock_endpos},
-        {const_cast<char *>(LevelConfigGameKeyword_max_gizspecials), LC_BL_max_gizspecials},
-        {const_cast<char *>(LevelConfigGameKeyword_max_hatmachines), LC_BL_max_hatmachines},
-        {const_cast<char *>(LevelConfigGameKeyword_max_doors), LC_BL_max_doors},
-        {const_cast<char *>(LevelConfigGameKeyword_max_teleports), LC_BL_max_teleports},
-        {const_cast<char *>(LevelConfigGameKeyword_max_gizrandoms), LC_BL_max_gizrandoms},
-        {const_cast<char *>(LevelConfigGameKeyword_max_torpmachines), LC_BL_max_torpmachines},
-        {const_cast<char *>(LevelConfigGameKeyword_max_bridges), LC_BL_max_bridges},
-        {const_cast<char *>(LevelConfigGameKeyword_max_plugs), LC_BL_max_plugs},
-        {const_cast<char *>(LevelConfigGameKeyword_max_bombgen_objects), LC_BL_max_bombgen_objects},
-        {const_cast<char *>(LevelConfigGameKeyword_max_bombgens), LC_BL_max_bombgens},
-        {const_cast<char *>(LevelConfigGameKeyword_windspeed), LC_BL_wind_speed},
-        {const_cast<char *>(LevelConfigGameKeyword_windsize), LC_BL_wind_size},
+        {const_cast<char *>("max_tightropes"), LC_BL_max_tightropes},
+        {const_cast<char *>("max_signals"), LC_BL_max_signals},
+        {const_cast<char *>("max_levers"), LC_BL_max_levers},
+        {const_cast<char *>("max_technos"), LC_BL_max_technos},
+        {const_cast<char *>("max_zipups"), LC_BL_max_zipups},
+        {const_cast<char *>("max_grapples"), LC_BL_max_grapples},
+        {const_cast<char *>("max_obstacles"), LC_BL_max_obstacles},
+        {const_cast<char *>("max_obstacle_objects"), LC_BL_max_obstacle_objects},
+        {const_cast<char *>("max_turrets"), LC_BL_max_turrets},
+        {const_cast<char *>("max_buildits"), LC_BL_max_buildits},
+        {const_cast<char *>("max_buildit_objects"), LC_BL_max_buildit_objects},
+        {const_cast<char *>("max_spinneranim_objs"), LC_BL_max_spinneranim_objs},
+        {const_cast<char *>("max_shards"), LC_BL_max_shards},
+        {const_cast<char *>("max_spinners"), LC_BL_max_spinners},
+        {const_cast<char *>("max_minicuts"), LC_BL_max_minicuts},
+        {const_cast<char *>("max_minicut_stages"), LC_BL_max_minicutParts},
+        {const_cast<char *>("maxgizmoblowuptypes"), LC_BL_max_gizmoblowuptypes},
+        {const_cast<char *>("maxgizmoblowups"), LC_BL_max_gizmoblowups},
+        {const_cast<char *>("max_climb_objects"), LC_BL_max_climb_objects},
+        {const_cast<char *>("max_attractos"), LC_BL_max_attractos},
+        {const_cast<char *>("max_timers"), LC_BL_max_timers},
+        {const_cast<char *>("max_guidelines"), LC_BL_max_guidelines},
+        {const_cast<char *>("max_ledges"), LC_BL_max_ledges},
+        {const_cast<char *>("max_securitydoors"), LC_BL_max_securitydoors},
+        {const_cast<char *>("max_tubes"), LC_BL_max_tubes},
+        {const_cast<char *>("max_pickups"), LC_BL_max_pickups},
+        {const_cast<char *>("max_gameantinodes"), LC_BL_max_gameantinodes},
+        {const_cast<char *>("max_gizpanels"), LC_BL_max_gizpanels},
+        {const_cast<char *>("max_force"), LC_BL_max_force},
+        {const_cast<char *>("max_force_objects"), LC_BL_max_force_objects},
+        {const_cast<char *>("max_pushblocks"), LC_BL_max_pushblocks},
+        {const_cast<char *>("max_pushblock_endpos"), LC_BL_max_pushblock_endpos},
+        {const_cast<char *>("max_gizspecials"), LC_BL_max_gizspecials},
+        {const_cast<char *>("max_hatmachines"), LC_BL_max_hatmachines},
+        {const_cast<char *>("max_doors"), LC_BL_max_doors},
+        {const_cast<char *>("max_teleports"), LC_BL_max_teleports},
+        {const_cast<char *>("max_gizrandoms"), LC_BL_max_gizrandoms},
+        {const_cast<char *>("max_torpmachines"), LC_BL_max_torpmachines},
+        {const_cast<char *>("max_bridges"), LC_BL_max_bridges},
+        {const_cast<char *>("max_plugs"), LC_BL_max_plugs},
+        {const_cast<char *>("max_bombgen_objects"), LC_BL_max_bombgen_objects},
+        {const_cast<char *>("max_bombgens"), LC_BL_max_bombgens},
+        {const_cast<char *>("windspeed"), LC_BL_wind_speed},
+        {const_cast<char *>("windsize"), LC_BL_wind_size},
         {NULL, NULL},
     };
 #pragma data_seg()
 #pragma data_seg(".data$LevelConfig_BeforeLoad_GenericKeywords")
     NUFPCOMJMP LevelConfig_BeforeLoad_GenericKeywords[5] = {
-        {const_cast<char *>(LevelConfigGenericKeyword_mipmapmode), LC_BL_mipmapmode},
-        {const_cast<char *>(LevelConfigGenericKeyword_fix_strobing_anims), LC_BL_fix_strobing_anims},
-        {const_cast<char *>(LevelConfigGenericKeyword_max_ter_groups), LC_BL_max_ter_groups},
-        {const_cast<char *>(LevelConfigGenericKeyword_max_ter_platforms), LC_BL_max_ter_platforms},
+        {const_cast<char *>("mipmapmode"), LC_BL_mipmapmode},
+        {const_cast<char *>("fix_strobing_anims"), LC_BL_fix_strobing_anims},
+        {const_cast<char *>("max_ter_groups"), LC_BL_max_ter_groups},
+        {const_cast<char *>("max_ter_platforms"), LC_BL_max_ter_platforms},
         {NULL, NULL},
     };
 #pragma data_seg()
 
 #pragma data_seg(".data$LevelConfig_AfterLoad_GenericKeywords")
     NUFPCOMJMP LevelConfig_AfterLoad_GenericKeywords[53] = {
-        {const_cast<char *>(LevelConfigGenericKeyword_backr), LC_AL_backr},
-        {const_cast<char *>(LevelConfigGenericKeyword_backg), LC_AL_backg},
-        {const_cast<char *>(LevelConfigGenericKeyword_backb), LC_AL_backb},
-        {const_cast<char *>(LevelConfigGenericKeyword_backr_top), LC_AL_backr_top},
-        {const_cast<char *>(LevelConfigGenericKeyword_backg_top), LC_AL_backg_top},
-        {const_cast<char *>(LevelConfigGenericKeyword_backb_top), LC_AL_backb_top},
-        {const_cast<char *>(LevelConfigGenericKeyword_backr_bottom), LC_AL_backr_bottom},
-        {const_cast<char *>(LevelConfigGenericKeyword_backg_bottom), LC_AL_backg_bottom},
-        {const_cast<char *>(LevelConfigGenericKeyword_backb_bottom), LC_AL_backb_bottom},
-        {const_cast<char *>(LevelConfigGenericKeyword_farclip_hack), LC_AL_farclip_hack},
-        {const_cast<char *>(LevelConfigGenericKeyword_farclip), LC_AL_farclip},
-        {const_cast<char *>(LevelConfigGenericKeyword_nearclip), LC_AL_nearclip},
-        {const_cast<char *>(LevelConfigGenericKeyword_farclip_pc), LC_AL_farclip},
-        {const_cast<char *>(LevelConfigGenericKeyword_nearclip_pc), LC_AL_nearclip},
-        {const_cast<char *>(LevelConfigGenericKeyword_hover_height), LC_AL_hover_height},
-        {const_cast<char *>(LevelConfigGenericKeyword_blobshadow_alpha), LC_AL_blobshadow_alpha},
-        {const_cast<char *>(LevelConfigGenericKeyword_blobshadow_fadenear), LC_AL_blobshadow_fadenear},
-        {const_cast<char *>(LevelConfigGenericKeyword_blobshadow_fadefar), LC_AL_blobshadow_fadefar},
-        {const_cast<char *>(LevelConfigGenericKeyword_reflect_range), LC_AL_reflect_range},
-        {const_cast<char *>(LevelConfigGenericKeyword_reflect_y), LC_AL_reflect_y},
-        {const_cast<char *>(LevelConfigGenericKeyword_metal), LC_AL_metal},
-        {const_cast<char *>(LevelConfigGenericKeyword_in_space), LC_AL_in_space},
-        {const_cast<char *>(LevelConfigGenericKeyword_override_nopickupgravity), LC_AL_override_nopickupgravity},
-        {const_cast<char *>(LevelConfigGenericKeyword_hidden_icons), LC_AL_hidden_icons},
-        {const_cast<char *>(LevelConfigGenericKeyword_pickups_to_panel), LC_AL_pickups_to_panel},
-        {const_cast<char *>(LevelConfigGenericKeyword_forget_takeovers), LC_AL_forget_takeovers},
-        {const_cast<char *>(LevelConfigGenericKeyword_narrow_socks), LC_AL_narrow_socks},
-        {const_cast<char *>(LevelConfigGenericKeyword_camera_rain), LC_AL_camera_rain},
-        {const_cast<char *>(LevelConfigGenericKeyword_terrain_rain), LC_AL_terrain_rain},
-        {const_cast<char *>(LevelConfigGenericKeyword_double_score), LC_AL_double_score},
-        {const_cast<char *>(LevelConfigGenericKeyword_flat_terrain), LC_AL_flat_terrain},
-        {const_cast<char *>(LevelConfigGenericKeyword_cam_tilt), LC_AL_cam_tilt},
-        {const_cast<char *>(LevelConfigGenericKeyword_raycaststep), LC_AL_raycaststep},
-        {const_cast<char *>(LevelConfigGenericKeyword_plat_scan_dist), LC_AL_plat_scan_dist},
-        {const_cast<char *>(LevelConfigGenericKeyword_waterripple_startcol_r), LC_AL_waterripple_startcol_r},
-        {const_cast<char *>(LevelConfigGenericKeyword_waterripple_startcol_g), LC_AL_waterripple_startcol_g},
-        {const_cast<char *>(LevelConfigGenericKeyword_waterripple_startcol_b), LC_AL_waterripple_startcol_b},
-        {const_cast<char *>(LevelConfigGenericKeyword_waterripple_startcol_a), LC_AL_waterripple_startcol_a},
-        {const_cast<char *>(LevelConfigGenericKeyword_waterripple_endcol_r), LC_AL_waterripple_endcol_r},
-        {const_cast<char *>(LevelConfigGenericKeyword_waterripple_endcol_g), LC_AL_waterripple_endcol_g},
-        {const_cast<char *>(LevelConfigGenericKeyword_waterripple_endcol_b), LC_AL_waterripple_endcol_b},
-        {const_cast<char *>(LevelConfigGenericKeyword_waterripple_endcol_a), LC_AL_waterripple_endcol_a},
-        {const_cast<char *>(LevelConfigGenericKeyword_waterripple_life), LC_AL_waterripple_life},
-        {const_cast<char *>(LevelConfigGenericKeyword_cam_pullback_dist), LC_AL_cam_pullback_dist},
-        {const_cast<char *>(LevelConfigGenericKeyword_cam_lateral_dist), LC_AL_cam_lateral_dist},
-        {const_cast<char *>(LevelConfigGenericKeyword_campos_seek), LC_AL_campos_seek},
-        {const_cast<char *>(LevelConfigGenericKeyword_camang_seek), LC_AL_camang_seek},
-        {const_cast<char *>(LevelConfigGenericKeyword_shadowtype), LC_AL_shadowtype},
-        {const_cast<char *>(LevelConfigGenericKeyword_music), LC_AL_music},
-        {const_cast<char *>(LevelConfigGenericKeyword_music_other), LC_AL_music_other},
-        {const_cast<char *>(LevelConfigGenericKeyword_sfx_ambient), LC_AL_sfx_ambient},
-        {const_cast<char *>(LevelConfigGenericKeyword_conveyor), LC_AL_conveyor},
+        {const_cast<char *>("backr"), LC_AL_backr},
+        {const_cast<char *>("backg"), LC_AL_backg},
+        {const_cast<char *>("backb"), LC_AL_backb},
+        {const_cast<char *>("backr_top"), LC_AL_backr_top},
+        {const_cast<char *>("backg_top"), LC_AL_backg_top},
+        {const_cast<char *>("backb_top"), LC_AL_backb_top},
+        {const_cast<char *>("backr_bottom"), LC_AL_backr_bottom},
+        {const_cast<char *>("backg_bottom"), LC_AL_backg_bottom},
+        {const_cast<char *>("backb_bottom"), LC_AL_backb_bottom},
+        {const_cast<char *>("farclip_hack"), LC_AL_farclip_hack},
+        {const_cast<char *>("farclip"), LC_AL_farclip},
+        {const_cast<char *>("nearclip"), LC_AL_nearclip},
+        {const_cast<char *>("farclip_pc"), LC_AL_farclip},
+        {const_cast<char *>("nearclip_pc"), LC_AL_nearclip},
+        {const_cast<char *>("hover_height"), LC_AL_hover_height},
+        {const_cast<char *>("blobshadow_alpha"), LC_AL_blobshadow_alpha},
+        {const_cast<char *>("blobshadow_fadenear"), LC_AL_blobshadow_fadenear},
+        {const_cast<char *>("blobshadow_fadefar"), LC_AL_blobshadow_fadefar},
+        {const_cast<char *>("reflect_range"), LC_AL_reflect_range},
+        {const_cast<char *>("reflect_y"), LC_AL_reflect_y},
+        {const_cast<char *>("metal"), LC_AL_metal},
+        {const_cast<char *>("in_space"), LC_AL_in_space},
+        {const_cast<char *>("override_nopickupgravity"), LC_AL_override_nopickupgravity},
+        {const_cast<char *>("hidden_icons"), LC_AL_hidden_icons},
+        {const_cast<char *>("pickups_to_panel"), LC_AL_pickups_to_panel},
+        {const_cast<char *>("forget_takeovers"), LC_AL_forget_takeovers},
+        {const_cast<char *>("narrow_socks"), LC_AL_narrow_socks},
+        {const_cast<char *>("camera_rain"), LC_AL_camera_rain},
+        {const_cast<char *>("terrain_rain"), LC_AL_terrain_rain},
+        {const_cast<char *>("double_score"), LC_AL_double_score},
+        {const_cast<char *>("flat_terrain"), LC_AL_flat_terrain},
+        {const_cast<char *>("cam_tilt"), LC_AL_cam_tilt},
+        {const_cast<char *>("raycaststep"), LC_AL_raycaststep},
+        {const_cast<char *>("plat_scan_dist"), LC_AL_plat_scan_dist},
+        {const_cast<char *>("waterripple_startcol_r"), LC_AL_waterripple_startcol_r},
+        {const_cast<char *>("waterripple_startcol_g"), LC_AL_waterripple_startcol_g},
+        {const_cast<char *>("waterripple_startcol_b"), LC_AL_waterripple_startcol_b},
+        {const_cast<char *>("waterripple_startcol_a"), LC_AL_waterripple_startcol_a},
+        {const_cast<char *>("waterripple_endcol_r"), LC_AL_waterripple_endcol_r},
+        {const_cast<char *>("waterripple_endcol_g"), LC_AL_waterripple_endcol_g},
+        {const_cast<char *>("waterripple_endcol_b"), LC_AL_waterripple_endcol_b},
+        {const_cast<char *>("waterripple_endcol_a"), LC_AL_waterripple_endcol_a},
+        {const_cast<char *>("waterripple_life"), LC_AL_waterripple_life},
+        {const_cast<char *>("cam_pullback_dist"), LC_AL_cam_pullback_dist},
+        {const_cast<char *>("cam_lateral_dist"), LC_AL_cam_lateral_dist},
+        {const_cast<char *>("campos_seek"), LC_AL_campos_seek},
+        {const_cast<char *>("camang_seek"), LC_AL_camang_seek},
+        {const_cast<char *>("shadowtype"), LC_AL_shadowtype},
+        {const_cast<char *>("music"), LC_AL_music},
+        {const_cast<char *>("music_other"), LC_AL_music_other},
+        {const_cast<char *>("sfx_ambient"), LC_AL_sfx_ambient},
+        {const_cast<char *>("conveyor"), LC_AL_conveyor},
         {NULL, NULL},
     };
 #pragma data_seg()
 
-#pragma const_seg(".rdata$LevelConfigGameKeyword_windsize")
-    extern const char LevelConfigGameKeyword_windsize[9] = "windsize";
-#pragma const_seg(".rdata$LevelConfigGameKeyword_windspeed")
-    extern const char LevelConfigGameKeyword_windspeed[10] = "windspeed";
-#pragma const_seg(".rdata$LevelConfigGameKeyword_max_bombgens")
-    extern const char LevelConfigGameKeyword_max_bombgens[13] = "max_bombgens";
-#pragma const_seg(".rdata$LevelConfigGameKeyword_max_bombgen_objects")
-    extern const char LevelConfigGameKeyword_max_bombgen_objects[20] = "max_bombgen_objects";
-#pragma const_seg(".rdata$LevelConfigGameKeyword_max_plugs")
-    extern const char LevelConfigGameKeyword_max_plugs[10] = "max_plugs";
-#pragma const_seg(".rdata$LevelConfigGameKeyword_max_bridges")
-    extern const char LevelConfigGameKeyword_max_bridges[12] = "max_bridges";
-#pragma const_seg(".rdata$LevelConfigGameKeyword_max_torpmachines")
-    extern const char LevelConfigGameKeyword_max_torpmachines[17] = "max_torpmachines";
-#pragma const_seg(".rdata$LevelConfigGameKeyword_max_gizrandoms")
-    extern const char LevelConfigGameKeyword_max_gizrandoms[15] = "max_gizrandoms";
-#pragma const_seg(".rdata$LevelConfigGameKeyword_max_teleports")
-    extern const char LevelConfigGameKeyword_max_teleports[14] = "max_teleports";
-#pragma const_seg(".rdata$LevelConfigGameKeyword_max_doors")
-    extern const char LevelConfigGameKeyword_max_doors[10] = "max_doors";
-#pragma const_seg(".rdata$LevelConfigGameKeyword_max_hatmachines")
-    extern const char LevelConfigGameKeyword_max_hatmachines[16] = "max_hatmachines";
-#pragma const_seg(".rdata$LevelConfigGameKeyword_max_gizspecials")
-    extern const char LevelConfigGameKeyword_max_gizspecials[16] = "max_gizspecials";
-#pragma const_seg(".rdata$LevelConfigGameKeyword_max_pushblock_endpos")
-    extern const char LevelConfigGameKeyword_max_pushblock_endpos[21] = "max_pushblock_endpos";
-#pragma const_seg(".rdata$LevelConfigGameKeyword_max_pushblocks")
-    extern const char LevelConfigGameKeyword_max_pushblocks[15] = "max_pushblocks";
-#pragma const_seg(".rdata$LevelConfigGameKeyword_max_force_objects")
-    extern const char LevelConfigGameKeyword_max_force_objects[18] = "max_force_objects";
-#pragma const_seg(".rdata$LevelConfigGameKeyword_max_force")
-    extern const char LevelConfigGameKeyword_max_force[10] = "max_force";
-#pragma const_seg(".rdata$LevelConfigGameKeyword_max_gizpanels")
-    extern const char LevelConfigGameKeyword_max_gizpanels[14] = "max_gizpanels";
-#pragma const_seg(".rdata$LevelConfigGameKeyword_max_gameantinodes")
-    extern const char LevelConfigGameKeyword_max_gameantinodes[18] = "max_gameantinodes";
-#pragma const_seg(".rdata$LevelConfigGameKeyword_max_pickups")
-    extern const char LevelConfigGameKeyword_max_pickups[12] = "max_pickups";
-#pragma const_seg(".rdata$LevelConfigGameKeyword_max_tubes")
-    extern const char LevelConfigGameKeyword_max_tubes[10] = "max_tubes";
-#pragma const_seg(".rdata$LevelConfigGameKeyword_max_securitydoors")
-    extern const char LevelConfigGameKeyword_max_securitydoors[18] = "max_securitydoors";
-#pragma const_seg(".rdata$LevelConfigGameKeyword_max_ledges")
-    extern const char LevelConfigGameKeyword_max_ledges[11] = "max_ledges";
-#pragma const_seg(".rdata$LevelConfigGameKeyword_max_guidelines")
-    extern const char LevelConfigGameKeyword_max_guidelines[15] = "max_guidelines";
-#pragma const_seg(".rdata$LevelConfigGameKeyword_max_timers")
-    extern const char LevelConfigGameKeyword_max_timers[11] = "max_timers";
-#pragma const_seg(".rdata$LevelConfigGameKeyword_max_attractos")
-    extern const char LevelConfigGameKeyword_max_attractos[14] = "max_attractos";
-#pragma const_seg(".rdata$LevelConfigGameKeyword_max_climb_objects")
-    extern const char LevelConfigGameKeyword_max_climb_objects[18] = "max_climb_objects";
-#pragma const_seg(".rdata$LevelConfigGameKeyword_maxgizmoblowups")
-    extern const char LevelConfigGameKeyword_maxgizmoblowups[16] = "maxgizmoblowups";
-#pragma const_seg(".rdata$LevelConfigGameKeyword_maxgizmoblowuptypes")
-    extern const char LevelConfigGameKeyword_maxgizmoblowuptypes[20] = "maxgizmoblowuptypes";
-#pragma const_seg(".rdata$LevelConfigGameKeyword_max_minicut_stages")
-    extern const char LevelConfigGameKeyword_max_minicut_stages[19] = "max_minicut_stages";
-#pragma const_seg(".rdata$LevelConfigGameKeyword_max_minicuts")
-    extern const char LevelConfigGameKeyword_max_minicuts[13] = "max_minicuts";
-#pragma const_seg(".rdata$LevelConfigGameKeyword_max_spinners")
-    extern const char LevelConfigGameKeyword_max_spinners[13] = "max_spinners";
-#pragma const_seg(".rdata$LevelConfigGameKeyword_max_shards")
-    extern const char LevelConfigGameKeyword_max_shards[11] = "max_shards";
-#pragma const_seg(".rdata$LevelConfigGameKeyword_max_spinneranim_objs")
-    extern const char LevelConfigGameKeyword_max_spinneranim_objs[21] = "max_spinneranim_objs";
-#pragma const_seg(".rdata$LevelConfigGameKeyword_max_buildit_objects")
-    extern const char LevelConfigGameKeyword_max_buildit_objects[20] = "max_buildit_objects";
-#pragma const_seg(".rdata$LevelConfigGameKeyword_max_buildits")
-    extern const char LevelConfigGameKeyword_max_buildits[13] = "max_buildits";
-#pragma const_seg(".rdata$LevelConfigGameKeyword_max_turrets")
-    extern const char LevelConfigGameKeyword_max_turrets[12] = "max_turrets";
-#pragma const_seg(".rdata$LevelConfigGameKeyword_max_obstacle_objects")
-    extern const char LevelConfigGameKeyword_max_obstacle_objects[21] = "max_obstacle_objects";
-#pragma const_seg(".rdata$LevelConfigGameKeyword_max_obstacles")
-    extern const char LevelConfigGameKeyword_max_obstacles[14] = "max_obstacles";
-#pragma const_seg(".rdata$LevelConfigGameKeyword_max_grapples")
-    extern const char LevelConfigGameKeyword_max_grapples[13] = "max_grapples";
-#pragma const_seg(".rdata$LevelConfigGameKeyword_max_zipups")
-    extern const char LevelConfigGameKeyword_max_zipups[11] = "max_zipups";
-#pragma const_seg(".rdata$LevelConfigGameKeyword_max_technos")
-    extern const char LevelConfigGameKeyword_max_technos[12] = "max_technos";
-#pragma const_seg(".rdata$LevelConfigGameKeyword_max_levers")
-    extern const char LevelConfigGameKeyword_max_levers[11] = "max_levers";
-#pragma const_seg(".rdata$LevelConfigGameKeyword_max_signals")
-    extern const char LevelConfigGameKeyword_max_signals[12] = "max_signals";
-#pragma const_seg(".rdata$LevelConfigGameKeyword_max_tightropes")
-    extern const char LevelConfigGameKeyword_max_tightropes[15] = "max_tightropes";
-#pragma const_seg(".rdata$AreaResidentsDirectory")
-    extern const char AreaResidentsDirectory[8] = "levels\\";
 #pragma const_seg(".rdata$AreaResidentsExtension")
     extern const char AreaResidentsExtension[5] = ".txt";
 #pragma const_seg(".rdata$AreaConfigKeyword_character")
     extern const char AreaConfigKeyword_character[10] = "character";
-#pragma const_seg(".rdata$AreaConfigKeyword_area_start")
-    extern const char AreaConfigKeyword_area_start[11] = "area_start";
-#pragma const_seg(".rdata$AreaConfigKeyword_redbrick_extra")
-    extern const char AreaConfigKeyword_redbrick_extra[15] = "redbrick_extra";
-#pragma const_seg(".rdata$AreaConfigKeyword_redbrick_cheat")
-    extern const char AreaConfigKeyword_redbrick_cheat[15] = "redbrick_cheat";
-#pragma const_seg(".rdata$AreaConfigKeyword_timetrial_time")
-    extern const char AreaConfigKeyword_timetrial_time[15] = "timetrial_time";
 #pragma const_seg(".rdata$AreaConfigKeyword_text_id")
     extern const char AreaConfigKeyword_text_id[8] = "text_id";
 #pragma const_seg(".rdata$AreaConfigKeyword_name_id")
     extern const char AreaConfigKeyword_name_id[8] = "name_id";
-#pragma const_seg(".rdata$AreaConfigKeyword_no_freeplay")
-    extern const char AreaConfigKeyword_no_freeplay[12] = "no_freeplay";
-#pragma const_seg(".rdata$AreaConfigKeyword_no_completion_points")
-    extern const char AreaConfigKeyword_no_completion_points[21] = "no_completion_points";
-#pragma const_seg(".rdata$AreaConfigKeyword_no_gold_brick")
-    extern const char AreaConfigKeyword_no_gold_brick[14] = "no_gold_brick";
-#pragma const_seg(".rdata$AreaConfigKeyword_nopickupgravity")
-    extern const char AreaConfigKeyword_nopickupgravity[16] = "nopickupgravity";
-#pragma const_seg(".rdata$AreaConfigKeyword_no_character_collisions")
-    extern const char AreaConfigKeyword_no_character_collisions[24] = "no_character_collisions";
-#pragma const_seg(".rdata$AreaConfigKeyword_no_character_collision")
-    extern const char AreaConfigKeyword_no_character_collision[23] = "no_character_collision";
-#pragma const_seg(".rdata$AreaConfigKeyword_nocharactercollisions")
-    extern const char AreaConfigKeyword_nocharactercollisions[22] = "nocharactercollisions";
-#pragma const_seg(".rdata$AreaConfigKeyword_nocharactercollision")
-    extern const char AreaConfigKeyword_nocharactercollision[21] = "nocharactercollision";
-#pragma const_seg(".rdata$AreaConfigKeyword_super_bonus_area")
-    extern const char AreaConfigKeyword_super_bonus_area[17] = "super_bonus_area";
-#pragma const_seg(".rdata$AreaConfigKeyword_bonus_area")
-    extern const char AreaConfigKeyword_bonus_area[11] = "bonus_area";
-#pragma const_seg(".rdata$AreaConfigKeyword_ending_area")
-    extern const char AreaConfigKeyword_ending_area[12] = "ending_area";
-#pragma const_seg(".rdata$AreaConfigKeyword_vehicle_area")
-    extern const char AreaConfigKeyword_vehicle_area[13] = "vehicle_area";
-#pragma const_seg(".rdata$AreaConfigKeyword_override_things_scene")
-    extern const char AreaConfigKeyword_override_things_scene[22] = "override_things_scene";
-#pragma const_seg(".rdata$AreaConfigKeyword_hub_area")
-    extern const char AreaConfigKeyword_hub_area[9] = "hub_area";
-#pragma const_seg(".rdata$AreaConfigKeyword_test_area")
-    extern const char AreaConfigKeyword_test_area[10] = "test_area";
-#pragma const_seg(".rdata$AreaConfigKeyword_minikit")
-    extern const char AreaConfigKeyword_minikit[8] = "minikit";
-#pragma const_seg(".rdata$AreaConfigKeyword_single_buffer")
-    extern const char AreaConfigKeyword_single_buffer[14] = "single_buffer";
-#pragma const_seg(".rdata$AreaConfigKeyword_level")
-    extern const char AreaConfigKeyword_level[6] = "level";
-#pragma const_seg(".rdata$AreaConfigKeyword_area_end")
-    extern const char AreaConfigKeyword_area_end[9] = "area_end";
-#pragma const_seg(".rdata$AreaConfigKeyword_resident")
-    extern const char AreaConfigKeyword_resident[9] = "resident";
-#pragma const_seg(".rdata$LevelConfigKeyword_zspeed")
-    extern const char LevelConfigKeyword_zspeed[7] = "zspeed";
-#pragma const_seg(".rdata$LevelConfigKeyword_xspeed")
-    extern const char LevelConfigKeyword_xspeed[7] = "xspeed";
 #pragma const_seg()
 #pragma bss_seg(".bss$SfxBits")
     u16 SfxBits[100] = {0};
@@ -10582,18 +9712,8 @@ extern "C" {
 #pragma data_seg(".data$MENUHEADERB")
     u8 MENUHEADERB = 0xff;
 #pragma data_seg()
-#pragma const_seg(".rdata$Menu_UsedFormat")
-    extern const char Menu_UsedFormat[15] = "Menus used: %d";
-#pragma const_seg()
-#pragma const_seg(".rdata$Menu_OptionsVolumeFormat")
-    extern const char Menu_OptionsVolumeFormat[10] = "%s: %i/%i";
-#pragma const_seg(".rdata$Menu_ColonSeparator")
-    extern const char Menu_ColonSeparator[3] = ": ";
-#pragma const_seg()
 #pragma const_seg(".rdata$nu_wind_phase_scale")
     extern const f64 nu_wind_phase_scale = 1.0 / 256.0;
-#pragma const_seg(".rdata$nu_wind_scaled_time_multiplier")
-    extern const f64 nu_wind_scaled_time_multiplier = 5.0;
 #pragma const_seg()
 #pragma const_seg(".rdata$PCKeyboardDefaultValue_candidate")
     extern const f32 PCKeyboardDefaultValue = 0.1f;
@@ -10713,8 +9833,6 @@ extern "C" {
 #pragma data_seg(".data$PS2_VCNTR_Y")
     i32 PS2_VCNTR_Y = 240;
 #pragma data_seg()
-
-    extern const f32 DebrisGlassMaterialOpacity = 0.999f;
 }
 i32 app_tbgameset = 0;
 i32 app_tbplayerset = 0;
@@ -10877,218 +9995,17 @@ extern "C" {
 #pragma bss_seg(".bss$ForcePush_SuperPush")
     i32 ForcePush_SuperPush = 0;
 #pragma bss_seg()
-#pragma const_seg(".rdata$PCContextName_NoContext")
-    extern const char PCContextName_NoContext[10] = "NoContext";
-#pragma const_seg()
 #pragma const_seg(".rdata$PCContextName_Jump")
     extern const char PCContextName_Jump[5] = "Jump";
-#pragma const_seg()
-#pragma const_seg(".rdata$PCContextName_LandJump")
-    extern const char PCContextName_LandJump[9] = "LandJump";
-#pragma const_seg()
-#pragma const_seg(".rdata$PCContextName_LandJump2")
-    extern const char PCContextName_LandJump2[10] = "LandJump2";
-#pragma const_seg()
-#pragma const_seg(".rdata$PCContextName_LandFlip")
-    extern const char PCContextName_LandFlip[9] = "LandFlip";
-#pragma const_seg()
-#pragma const_seg(".rdata$PCContextName_LandComboJump")
-    extern const char PCContextName_LandComboJump[14] = "LandComboJump";
-#pragma const_seg()
-#pragma const_seg(".rdata$PCContextName_Combo")
-    extern const char PCContextName_Combo[6] = "Combo";
-#pragma const_seg()
-#pragma const_seg(".rdata$PCContextName_WeaponIn")
-    extern const char PCContextName_WeaponIn[9] = "WeaponIn";
-#pragma const_seg()
-#pragma const_seg(".rdata$PCContextName_WeaponOut")
-    extern const char PCContextName_WeaponOut[10] = "WeaponOut";
-#pragma const_seg()
-#pragma const_seg(".rdata$PCContextName_Force")
-    extern const char PCContextName_Force[6] = "Force";
-#pragma const_seg()
-#pragma const_seg(".rdata$PCContextName_ComboRotate")
-    extern const char PCContextName_ComboRotate[12] = "ComboRotate";
-#pragma const_seg()
-#pragma const_seg(".rdata$PCContextName_Shoot")
-    extern const char PCContextName_Shoot[6] = "Shoot";
-#pragma const_seg()
-#pragma const_seg(".rdata$PCContextName_Interface")
-    extern const char PCContextName_Interface[10] = "Interface";
-#pragma const_seg()
-#pragma const_seg(".rdata$PCContextName_Block")
-    extern const char PCContextName_Block[6] = "Block";
-#pragma const_seg()
-#pragma const_seg(".rdata$PCContextName_LandLunge")
-    extern const char PCContextName_LandLunge[10] = "LandLunge";
-#pragma const_seg()
-#pragma const_seg(".rdata$PCContextName_LandSlam")
-    extern const char PCContextName_LandSlam[9] = "LandSlam";
 #pragma const_seg()
 #pragma const_seg(".rdata$PCContextName_Teleport")
     extern const char PCContextName_Teleport[9] = "Teleport";
 #pragma const_seg()
-#pragma const_seg(".rdata$PCContextName_Swipe")
-    extern const char PCContextName_Swipe[6] = "Swipe";
-#pragma const_seg()
 #pragma const_seg(".rdata$PCContextName_Tube")
     extern const char PCContextName_Tube[5] = "Tube";
 #pragma const_seg()
-#pragma const_seg(".rdata$PCContextName_ForceThrow")
-    extern const char PCContextName_ForceThrow[11] = "ForceThrow";
-#pragma const_seg()
-#pragma const_seg(".rdata$PCContextName_HoverUp")
-    extern const char PCContextName_HoverUp[8] = "HoverUp";
-#pragma const_seg()
-#pragma const_seg(".rdata$PCContextName_Rocket")
-    extern const char PCContextName_Rocket[7] = "Rocket";
-#pragma const_seg()
-#pragma const_seg(".rdata$PCContextName_TakeHit")
-    extern const char PCContextName_TakeHit[8] = "TakeHit";
-#pragma const_seg()
-#pragma const_seg(".rdata$PCContextName_Zap")
-    extern const char PCContextName_Zap[4] = "Zap";
-#pragma const_seg()
-#pragma const_seg(".rdata$PCContextName_Deactivated")
-    extern const char PCContextName_Deactivated[12] = "Deactivated";
-#pragma const_seg()
-#pragma const_seg(".rdata$PCContextName_Hold")
-    extern const char PCContextName_Hold[5] = "Hold";
-#pragma const_seg()
-#pragma const_seg(".rdata$PCContextName_LandSpecial")
-    extern const char PCContextName_LandSpecial[12] = "LandSpecial";
-#pragma const_seg()
-#pragma const_seg(".rdata$PCContextName_Communicate")
-    extern const char PCContextName_Communicate[12] = "Communicate";
-#pragma const_seg()
-#pragma const_seg(".rdata$PCContextName_ForcePush")
-    extern const char PCContextName_ForcePush[10] = "ForcePush";
-#pragma const_seg()
-#pragma const_seg(".rdata$PCContextName_ForcePushed")
-    extern const char PCContextName_ForcePushed[12] = "ForcePushed";
-#pragma const_seg()
-#pragma const_seg(".rdata$PCContextName_ForceDeflect")
-    extern const char PCContextName_ForceDeflect[13] = "ForceDeflect";
-#pragma const_seg()
-#pragma const_seg(".rdata$PCContextName_ForceFrozen")
-    extern const char PCContextName_ForceFrozen[12] = "ForceFrozen";
-#pragma const_seg()
-#pragma const_seg(".rdata$PCContextName_BigJump")
-    extern const char PCContextName_BigJump[8] = "BigJump";
-#pragma const_seg()
-#pragma const_seg(".rdata$PCContextName_BackFlip")
-    extern const char PCContextName_BackFlip[9] = "BackFlip";
-#pragma const_seg()
-#pragma const_seg(".rdata$PCContextName_Recoil")
-    extern const char PCContextName_Recoil[7] = "Recoil";
-#pragma const_seg()
-#pragma const_seg(".rdata$PCContextName_ForcedBack")
-    extern const char PCContextName_ForcedBack[11] = "ForcedBack";
-#pragma const_seg()
-#pragma const_seg(".rdata$PCContextName_DropIn")
-    extern const char PCContextName_DropIn[7] = "DropIn";
-#pragma const_seg()
-#pragma const_seg(".rdata$PCContextName_DropOut")
-    extern const char PCContextName_DropOut[8] = "DropOut";
-#pragma const_seg()
-#pragma const_seg(".rdata$PCContextName_Dodge")
-    extern const char PCContextName_Dodge[6] = "Dodge";
-#pragma const_seg()
 #pragma const_seg(".rdata$PCContextName_Punch")
     extern const char PCContextName_Punch[6] = "Punch";
-#pragma const_seg()
-#pragma const_seg(".rdata$PCContextName_Push")
-    extern const char PCContextName_Push[5] = "Push";
-#pragma const_seg()
-#pragma const_seg(".rdata$PCContextName_PushSpinner")
-    extern const char PCContextName_PushSpinner[12] = "PushSpinner";
-#pragma const_seg()
-#pragma const_seg(".rdata$PCContextName_LandCombatRoll")
-    extern const char PCContextName_LandCombatRoll[15] = "LandCombatRoll";
-#pragma const_seg()
-#pragma const_seg(".rdata$PCContextName_Turn")
-    extern const char PCContextName_Turn[5] = "Turn";
-#pragma const_seg()
-#pragma const_seg(".rdata$PCContextName_Doomed")
-    extern const char PCContextName_Doomed[7] = "Doomed";
-#pragma const_seg()
-#pragma const_seg(".rdata$PCContextName_Launch")
-    extern const char PCContextName_Launch[7] = "Launch";
-#pragma const_seg()
-#pragma const_seg(".rdata$PCContextName_BuildIt")
-    extern const char PCContextName_BuildIt[8] = "BuildIt";
-#pragma const_seg()
-#pragma const_seg(".rdata$PCContextName_ThrowDetonator")
-    extern const char PCContextName_ThrowDetonator[15] = "ThrowDetonator";
-#pragma const_seg()
-#pragma const_seg(".rdata$PCContextName_Grabbed")
-    extern const char PCContextName_Grabbed[8] = "Grabbed";
-#pragma const_seg()
-#pragma const_seg(".rdata$PCContextName_SpecialMoveVictim")
-    extern const char PCContextName_SpecialMoveVictim[18] = "SpecialMoveVictim";
-#pragma const_seg()
-#pragma const_seg(".rdata$PCContextName_Roll")
-    extern const char PCContextName_Roll[5] = "Roll";
-#pragma const_seg()
-#pragma const_seg(".rdata$PCContextName_UnRoll")
-    extern const char PCContextName_UnRoll[7] = "UnRoll";
-#pragma const_seg()
-#pragma const_seg(".rdata$PCContextName_Slide")
-    extern const char PCContextName_Slide[6] = "Slide";
-#pragma const_seg()
-#pragma const_seg(".rdata$PCContextName_BeenDragged")
-    extern const char PCContextName_BeenDragged[12] = "BeenDragged";
-#pragma const_seg()
-#pragma const_seg(".rdata$PCContextName_ZipDown")
-    extern const char PCContextName_ZipDown[8] = "ZipDown";
-#pragma const_seg()
-#pragma const_seg(".rdata$PCContextName_Loop")
-    extern const char PCContextName_Loop[5] = "Loop";
-#pragma const_seg()
-#pragma const_seg(".rdata$PCContextName_Poo")
-    extern const char PCContextName_Poo[4] = "Poo";
-#pragma const_seg()
-#pragma const_seg(".rdata$PCContextName_Grab")
-    extern const char PCContextName_Grab[5] = "Grab";
-#pragma const_seg()
-#pragma const_seg(".rdata$PCContextName_Eaten")
-    extern const char PCContextName_Eaten[6] = "Eaten";
-#pragma const_seg()
-#pragma const_seg(".rdata$PCContextName_BarrelRoll")
-    extern const char PCContextName_BarrelRoll[11] = "BarrelRoll";
-#pragma const_seg()
-#pragma const_seg(".rdata$PCContextName_BeenTakenOver")
-    extern const char PCContextName_BeenTakenOver[14] = "BeenTakenOver";
-#pragma const_seg()
-#pragma const_seg(".rdata$PCContextName_GetIn")
-    extern const char PCContextName_GetIn[6] = "GetIn";
-#pragma const_seg()
-#pragma const_seg(".rdata$PCContextName_Flatten")
-    extern const char PCContextName_Flatten[8] = "Flatten";
-#pragma const_seg()
-#pragma const_seg(".rdata$PCContextName_Buck")
-    extern const char PCContextName_Buck[5] = "Buck";
-#pragma const_seg()
-#pragma const_seg(".rdata$PCContextName_Eat")
-    extern const char PCContextName_Eat[4] = "Eat";
-#pragma const_seg()
-#pragma const_seg(".rdata$PCContextName_Disorientate")
-    extern const char PCContextName_Disorientate[13] = "Disorientate";
-#pragma const_seg()
-#pragma const_seg(".rdata$PCContextName_Activate")
-    extern const char PCContextName_Activate[9] = "Activate";
-#pragma const_seg()
-#pragma const_seg(".rdata$PCContextName_ZappedByFloor")
-    extern const char PCContextName_ZappedByFloor[14] = "ZappedByFloor";
-#pragma const_seg()
-#pragma const_seg(".rdata$PCContextName_Climb")
-    extern const char PCContextName_Climb[6] = "Climb";
-#pragma const_seg()
-#pragma const_seg(".rdata$PCContextName_Tightrope")
-    extern const char PCContextName_Tightrope[10] = "Tightrope";
-#pragma const_seg()
-#pragma const_seg(".rdata$PCContextName_WallShuffle")
-    extern const char PCContextName_WallShuffle[12] = "WallShuffle";
 #pragma const_seg()
 #pragma const_seg(".rdata$PCContextName_Grapple")
     extern const char PCContextName_Grapple[8] = "Grapple";
@@ -11096,193 +10013,118 @@ extern "C" {
 #pragma const_seg(".rdata$PCContextName_ZipUp")
     extern const char PCContextName_ZipUp[6] = "ZipUp";
 #pragma const_seg()
-#pragma const_seg(".rdata$PCContextName_PlaceDetonator")
-    extern const char PCContextName_PlaceDetonator[15] = "PlaceDetonator";
-#pragma const_seg()
-#pragma const_seg(".rdata$PCContextName_PickUpDetonator")
-    extern const char PCContextName_PickUpDetonator[16] = "PickUpDetonator";
-#pragma const_seg()
-#pragma const_seg(".rdata$PCContextName_PullLever")
-    extern const char PCContextName_PullLever[10] = "PullLever";
-#pragma const_seg()
-#pragma const_seg(".rdata$PCContextName_Float")
-    extern const char PCContextName_Float[6] = "Float";
-#pragma const_seg()
 #pragma const_seg(".rdata$PCContextName_Signal")
     extern const char PCContextName_Signal[7] = "Signal";
-#pragma const_seg()
-#pragma const_seg(".rdata$PCContextName_Batarang")
-    extern const char PCContextName_Batarang[9] = "Batarang";
-#pragma const_seg()
-#pragma const_seg(".rdata$PCContextName_Hang")
-    extern const char PCContextName_Hang[5] = "Hang";
-#pragma const_seg()
-#pragma const_seg(".rdata$PCContextName_Glide")
-    extern const char PCContextName_Glide[6] = "Glide";
-#pragma const_seg()
-#pragma const_seg(".rdata$PCContextName_Catch")
-    extern const char PCContextName_Catch[6] = "Catch";
 #pragma const_seg()
 #pragma const_seg(".rdata$PCContextName_Techno")
     extern const char PCContextName_Techno[7] = "Techno";
 #pragma const_seg()
-#pragma const_seg(".rdata$PCContextName_AttractoTarget")
-    extern const char PCContextName_AttractoTarget[15] = "AttractoTarget";
-#pragma const_seg()
-#pragma const_seg(".rdata$PCContextName_AttractoDeposit")
-    extern const char PCContextName_AttractoDeposit[16] = "AttractoDeposit";
-#pragma const_seg()
-#pragma const_seg(".rdata$PCContextName_Sonar")
-    extern const char PCContextName_Sonar[6] = "Sonar";
-#pragma const_seg()
-#pragma const_seg(".rdata$PCContextName_LedgeTerrain")
-    extern const char PCContextName_LedgeTerrain[13] = "LedgeTerrain";
-#pragma const_seg()
-#pragma const_seg(".rdata$PCContextName_Transform")
-    extern const char PCContextName_Transform[10] = "Transform";
-#pragma const_seg()
-#pragma const_seg(".rdata$PCContextName_WallJumpWait")
-    extern const char PCContextName_WallJumpWait[13] = "WallJumpWait";
-#pragma const_seg()
-#pragma const_seg(".rdata$PCContextName_SuperCarry")
-    extern const char PCContextName_SuperCarry[11] = "SuperCarry";
-#pragma const_seg()
-#pragma const_seg(".rdata$PCContextName_PushObstacle")
-    extern const char PCContextName_PushObstacle[13] = "PushObstacle";
-#pragma const_seg()
-#pragma const_seg(".rdata$PCContextName_Stunned")
-    extern const char PCContextName_Stunned[8] = "Stunned";
-#pragma const_seg()
 #pragma const_seg(".rdata$PCContextName_Ledge")
     extern const char PCContextName_Ledge[6] = "Ledge";
 #pragma const_seg()
-#pragma const_seg(".rdata$PCContextName_Security")
-    extern const char PCContextName_Security[9] = "Security";
-#pragma const_seg()
-#pragma const_seg(".rdata$PCContextName_Ballooning")
-    extern const char PCContextName_Ballooning[11] = "Ballooning";
-#pragma const_seg()
-#pragma const_seg(".rdata$PCContextName_ThrowQuick")
-    extern const char PCContextName_ThrowQuick[11] = "ThrowQuick";
-#pragma const_seg()
-#pragma const_seg(".rdata$PCContextName_DieAir")
-    extern const char PCContextName_DieAir[7] = "DieAir";
-#pragma const_seg()
-#pragma const_seg(".rdata$PCContextName_DieGround")
-    extern const char PCContextName_DieGround[10] = "DieGround";
-#pragma const_seg()
-#pragma const_seg(".rdata$PCContextName_HatMachine")
-    extern const char PCContextName_HatMachine[11] = "HatMachine";
-#pragma const_seg()
-#pragma const_seg(".rdata$PCContextName_Whip")
-    extern const char PCContextName_Whip[5] = "Whip";
-#pragma const_seg()
-#pragma const_seg(".rdata$PCContextName_NetWait")
-    extern const char PCContextName_NetWait[8] = "NetWait";
-#pragma const_seg()
 #pragma data_seg(".data$PCContextInfoTable")
     CHARACTER_CONTEXT_INFO_PC PCContextInfoTable[101] = {
-        {PCContextName_NoContext, -1, 0x1000, 0},
+        {"NoContext", -1, 0x1000, 0},
         {PCContextName_Jump, -1, 0x1000000, 0},
-        {PCContextName_LandJump, -1, 0x15, 0},
-        {PCContextName_LandJump2, -1, 0x15, 0},
-        {PCContextName_LandFlip, -1, 0x15, 0},
-        {PCContextName_LandComboJump, -1, 0x15, 0},
-        {PCContextName_Combo, -1, 0x800010, 1},
-        {PCContextName_WeaponIn, -1, 0x1013, 0},
-        {PCContextName_WeaponOut, -1, 0x1013, 0},
-        {PCContextName_Force, -1, 0x222, 0},
-        {PCContextName_ComboRotate, -1, 0x11, 0},
-        {PCContextName_Shoot, -1, 0x11, 0},
-        {PCContextName_Interface, -1, 0x33, 0},
-        {PCContextName_Block, -1, 0x4000010, 0},
-        {PCContextName_LandLunge, -1, 0x800011, 0},
-        {PCContextName_LandSlam, -1, 0x800011, 0},
+        {"LandJump", -1, 0x15, 0},
+        {"LandJump2", -1, 0x15, 0},
+        {"LandFlip", -1, 0x15, 0},
+        {"LandComboJump", -1, 0x15, 0},
+        {"Combo", -1, 0x800010, 1},
+        {"WeaponIn", -1, 0x1013, 0},
+        {"WeaponOut", -1, 0x1013, 0},
+        {"Force", -1, 0x222, 0},
+        {"ComboRotate", -1, 0x11, 0},
+        {"Shoot", -1, 0x11, 0},
+        {"Interface", -1, 0x33, 0},
+        {"Block", -1, 0x4000010, 0},
+        {"LandLunge", -1, 0x800011, 0},
+        {"LandSlam", -1, 0x800011, 0},
         {PCContextName_Teleport, -1, 0x1b3, 12},
-        {PCContextName_Swipe, -1, 0x800010, 0},
+        {"Swipe", -1, 0x800010, 0},
         {PCContextName_Tube, -1, 0x408, 0},
-        {PCContextName_ForceThrow, -1, 0x12, 0},
-        {PCContextName_HoverUp, -1, 0x30, 0},
-        {PCContextName_Rocket, -1, 0x11, 0},
-        {PCContextName_TakeHit, -1, 0x10000031, 0},
-        {PCContextName_Zap, -1, 0x10, 0},
-        {PCContextName_Deactivated, -1, 0x10200031, 0},
-        {PCContextName_Hold, -1, 0x4000010, 0},
-        {PCContextName_LandSpecial, -1, 0x15, 0},
-        {PCContextName_Communicate, -1, 0x33, 0},
-        {PCContextName_ForcePush, -1, 0x2, 0},
-        {PCContextName_ForcePushed, -1, 0x231, 0},
-        {PCContextName_ForceDeflect, -1, 0x2, 0},
-        {PCContextName_ForceFrozen, -1, 0xb, 0},
-        {PCContextName_BigJump, -1, 0x2400111, 0},
-        {PCContextName_BackFlip, -1, 0x91, 0},
-        {PCContextName_Recoil, -1, 0x9, 0},
-        {PCContextName_ForcedBack, -1, 0x8, 0},
-        {PCContextName_DropIn, -1, 0x40113, 0},
-        {PCContextName_DropOut, -1, 0x40113, 0},
-        {PCContextName_Dodge, -1, 0x92, 1},
+        {"ForceThrow", -1, 0x12, 0},
+        {"HoverUp", -1, 0x30, 0},
+        {"Rocket", -1, 0x11, 0},
+        {"TakeHit", -1, 0x10000031, 0},
+        {"Zap", -1, 0x10, 0},
+        {"Deactivated", -1, 0x10200031, 0},
+        {"Hold", -1, 0x4000010, 0},
+        {"LandSpecial", -1, 0x15, 0},
+        {"Communicate", -1, 0x33, 0},
+        {"ForcePush", -1, 0x2, 0},
+        {"ForcePushed", -1, 0x231, 0},
+        {"ForceDeflect", -1, 0x2, 0},
+        {"ForceFrozen", -1, 0xb, 0},
+        {"BigJump", -1, 0x2400111, 0},
+        {"BackFlip", -1, 0x91, 0},
+        {"Recoil", -1, 0x9, 0},
+        {"ForcedBack", -1, 0x8, 0},
+        {"DropIn", -1, 0x40113, 0},
+        {"DropOut", -1, 0x40113, 0},
+        {"Dodge", -1, 0x92, 1},
         {PCContextName_Punch, -1, 0x10032, 1},
-        {PCContextName_Push, -1, 0x2030, 0},
-        {PCContextName_PushSpinner, -1, 0x3010, 0},
-        {PCContextName_LandCombatRoll, -1, 0xb4, 0},
-        {PCContextName_Turn, -1, 0x190, 0},
-        {PCContextName_Doomed, -1, 0x400110, 0},
-        {PCContextName_Launch, -1, 0x0, 0},
-        {PCContextName_BuildIt, -1, 0x10, 0},
-        {PCContextName_ThrowDetonator, -1, 0x33, 0},
-        {PCContextName_Grabbed, -1, 0x13, 0},
-        {PCContextName_SpecialMoveVictim, -1, 0x33, 0},
-        {PCContextName_Roll, -1, 0x10, 16},
-        {PCContextName_UnRoll, -1, 0x13, 16},
-        {PCContextName_Slide, -1, 0x40000030, 0},
-        {PCContextName_BeenDragged, -1, 0x0, 0},
-        {PCContextName_ZipDown, -1, 0x30, 0},
-        {PCContextName_Loop, -1, 0x190, 0},
-        {PCContextName_Poo, -1, 0x33, 0},
-        {PCContextName_Grab, -1, 0x33, 0},
-        {PCContextName_Eaten, -1, 0x60020933, 0},
-        {PCContextName_BarrelRoll, -1, 0x190, 0},
-        {PCContextName_BeenTakenOver, -1, 0x600209b0, 0},
-        {PCContextName_GetIn, -1, 0x60400130, 0},
-        {PCContextName_Flatten, -1, 0x33, 0},
-        {PCContextName_Buck, -1, 0x33, 0},
-        {PCContextName_Eat, -1, 0x33, 0},
-        {PCContextName_Disorientate, -1, 0x100, 0},
-        {PCContextName_Activate, -1, 0x200033, 0},
-        {PCContextName_ZappedByFloor, -1, 0x31, 0},
-        {PCContextName_Climb, -1, 0x431, 0},
-        {PCContextName_Tightrope, -1, 0x80431, 0},
-        {PCContextName_WallShuffle, -1, 0x3031, 0},
+        {"Push", -1, 0x2030, 0},
+        {"PushSpinner", -1, 0x3010, 0},
+        {"LandCombatRoll", -1, 0xb4, 0},
+        {"Turn", -1, 0x190, 0},
+        {"Doomed", -1, 0x400110, 0},
+        {"Launch", -1, 0x0, 0},
+        {"BuildIt", -1, 0x10, 0},
+        {"ThrowDetonator", -1, 0x33, 0},
+        {"Grabbed", -1, 0x13, 0},
+        {"SpecialMoveVictim", -1, 0x33, 0},
+        {"Roll", -1, 0x10, 16},
+        {"UnRoll", -1, 0x13, 16},
+        {"Slide", -1, 0x40000030, 0},
+        {"BeenDragged", -1, 0x0, 0},
+        {"ZipDown", -1, 0x30, 0},
+        {"Loop", -1, 0x190, 0},
+        {"Poo", -1, 0x33, 0},
+        {"Grab", -1, 0x33, 0},
+        {"Eaten", -1, 0x60020933, 0},
+        {"BarrelRoll", -1, 0x190, 0},
+        {"BeenTakenOver", -1, 0x600209b0, 0},
+        {"GetIn", -1, 0x60400130, 0},
+        {"Flatten", -1, 0x33, 0},
+        {"Buck", -1, 0x33, 0},
+        {"Eat", -1, 0x33, 0},
+        {"Disorientate", -1, 0x100, 0},
+        {"Activate", -1, 0x200033, 0},
+        {"ZappedByFloor", -1, 0x31, 0},
+        {"Climb", -1, 0x431, 0},
+        {"Tightrope", -1, 0x80431, 0},
+        {"WallShuffle", -1, 0x3031, 0},
         {PCContextName_Grapple, -1, 0x40000430, 0},
         {PCContextName_ZipUp, -1, 0x40000430, 0},
-        {PCContextName_PlaceDetonator, -1, 0x33, 0},
-        {PCContextName_PickUpDetonator, -1, 0x31, 0},
-        {PCContextName_PullLever, -1, 0x31, 0},
-        {PCContextName_Float, -1, 0x30, 2},
+        {"PlaceDetonator", -1, 0x33, 0},
+        {"PickUpDetonator", -1, 0x31, 0},
+        {"PullLever", -1, 0x31, 0},
+        {"Float", -1, 0x30, 2},
         {PCContextName_Signal, -1, 0x4000433, 0},
-        {PCContextName_Batarang, -1, 0x8000033, 0},
-        {PCContextName_Hang, -1, 0x430, 0},
-        {PCContextName_Glide, -1, 0x430, 0},
-        {PCContextName_Catch, -1, 0x13, 0},
+        {"Batarang", -1, 0x8000033, 0},
+        {"Hang", -1, 0x430, 0},
+        {"Glide", -1, 0x430, 0},
+        {"Catch", -1, 0x13, 0},
         {PCContextName_Techno, -1, 0x84000031, 0},
-        {PCContextName_AttractoTarget, -1, 0x4000033, 0},
-        {PCContextName_AttractoDeposit, -1, 0x33, 0},
-        {PCContextName_Sonar, -1, 0x33, 0},
-        {PCContextName_LedgeTerrain, -1, 0x431, 0},
-        {PCContextName_Transform, -1, 0x33, 0},
-        {PCContextName_WallJumpWait, -1, 0x2431, 0},
-        {PCContextName_SuperCarry, -1, 0x33, 0},
-        {PCContextName_PushObstacle, -1, 0x3010, 0},
-        {PCContextName_Stunned, -1, 0x10000031, 0},
+        {"AttractoTarget", -1, 0x4000033, 0},
+        {"AttractoDeposit", -1, 0x33, 0},
+        {"Sonar", -1, 0x33, 0},
+        {"LedgeTerrain", -1, 0x431, 0},
+        {"Transform", -1, 0x33, 0},
+        {"WallJumpWait", -1, 0x2431, 0},
+        {"SuperCarry", -1, 0x33, 0},
+        {"PushObstacle", -1, 0x3010, 0},
+        {"Stunned", -1, 0x10000031, 0},
         {PCContextName_Ledge, -1, 0x431, 0},
-        {PCContextName_Security, -1, 0x33, 0},
-        {PCContextName_Ballooning, -1, 0x100010, 0},
-        {PCContextName_ThrowQuick, -1, 0x33, 0},
-        {PCContextName_DieAir, -1, 0x80b1, 0},
-        {PCContextName_DieGround, -1, 0x80b1, 0},
-        {PCContextName_HatMachine, -1, 0x33, 0},
-        {PCContextName_Whip, -1, 0x33, 1},
-        {PCContextName_NetWait, -1, 0x23, 0},
+        {"Security", -1, 0x33, 0},
+        {"Ballooning", -1, 0x100010, 0},
+        {"ThrowQuick", -1, 0x33, 0},
+        {"DieAir", -1, 0x80b1, 0},
+        {"DieGround", -1, 0x80b1, 0},
+        {"HatMachine", -1, 0x33, 0},
+        {"Whip", -1, 0x33, 1},
+        {"NetWait", -1, 0x23, 0},
     };
 #pragma data_seg()
 #pragma data_seg(".data$CInfo")
@@ -11320,9 +10162,6 @@ extern "C" {
 #pragma bss_seg(".bss$DEATHSTARRESCUEA_LDATA")
     LEVELDATA_PC *DEATHSTARRESCUEA_LDATA = 0;
 #pragma bss_seg()
-#pragma const_seg(".rdata$ForcePushSeekRate")
-    extern const f32 ForcePushSeekRate = 20.0f;
-#pragma const_seg()
 #pragma const_seg(".rdata$ForcePushApproachInnerSquare")
     extern const f32 ForcePushApproachInnerSquare = 0.010000000707805157f;
 #pragma const_seg()
@@ -11422,9 +10261,6 @@ extern "C" {
 #pragma const_seg()
 #pragma const_seg(".rdata$ApplyGravityMinimumFrameTime")
     extern const f32 ApplyGravityMinimumFrameTime = 0.01666666753590107f;
-#pragma const_seg()
-#pragma const_seg(".rdata$GizmoConfigPathFormat")
-    extern const char GizmoConfigPathFormat[7] = "%s.giz";
 #pragma const_seg()
 }
 
@@ -11672,16 +10508,8 @@ extern "C" {
 #pragma bss_seg(".bss$GameParamToFloatFn")
     AI_GAME_PARAM_TO_FLOAT_PC GameParamToFloatFn = 0;
 #pragma bss_seg()
-#pragma const_seg(".rdata$AIExpressionRandName")
-    extern const char AIExpressionRandName[5] = "Rand";
-#pragma const_seg()
-#pragma const_seg(".rdata$AIExpressionTrueName")
-    extern const char AIExpressionTrueName[5] = "true";
-#pragma const_seg()
 #pragma const_seg(".rdata$AIExpressionMaxName")
     extern const char AIExpressionMaxName[4] = "max";
-#pragma const_seg(".rdata$AIActionNumName")
-    extern const char AIActionNumName[4] = "num";
 #pragma const_seg(".rdata$AIActionDistName")
     extern const char AIActionDistName[5] = "Dist";
 #pragma const_seg()
@@ -11691,9 +10519,6 @@ extern "C" {
 #pragma bss_seg(".bss$GUNSHIPA_LDATA")
     LEVELDATA_PC *GUNSHIPA_LDATA = 0;
 #pragma bss_seg()
-#pragma const_seg(".rdata$AICharacterInitialiseName")
-    extern const char AICharacterInitialiseName[11] = "Initialise";
-#pragma const_seg()
 #pragma bss_seg(".bss$perm_debrissys")
     APIDEBRISSYS_PC *perm_debrissys = 0;
 #pragma bss_seg()
@@ -11789,18 +10614,6 @@ extern "C" {
 #pragma const_seg(".rdata$AIActionStateName")
     const char AIActionStateName[6] = "state";
 #pragma const_seg()
-#pragma const_seg(".rdata$AIActionCircleTeleportName")
-    extern const char AIActionCircleTeleportName[9] = "teleport";
-#pragma const_seg()
-#pragma const_seg(".rdata$AIActionCircleReverseName")
-    extern const char AIActionCircleReverseName[8] = "reverse";
-#pragma const_seg()
-#pragma const_seg(".rdata$AIActionCircleAnticlockwiseName")
-    extern const char AIActionCircleAnticlockwiseName[14] = "anticlockwise";
-#pragma const_seg()
-#pragma const_seg(".rdata$AIActionCircleClockwiseName")
-    extern const char AIActionCircleClockwiseName[10] = "clockwise";
-#pragma const_seg()
 #pragma const_seg(".rdata$AIPathAnticlockwiseName")
     const char AIPathAnticlockwiseName[14] = "ANTICLOCKWISE";
 #pragma const_seg()
@@ -11810,17 +10623,11 @@ extern "C" {
 #pragma const_seg(".rdata$AIPathReverseName")
     const char AIPathReverseName[8] = "REVERSE";
 #pragma const_seg()
-#pragma const_seg(".rdata$AIPathRandomName")
-    const char AIPathRandomName[7] = "RANDOM";
-#pragma const_seg()
 #pragma const_seg(".rdata$AIPathFacingName")
     const char AIPathFacingName[7] = "facing";
 #pragma const_seg()
 #pragma const_seg(".rdata$AIPathCurrentDistanceName")
     const char AIPathCurrentDistanceName[12] = "currentdist";
-#pragma const_seg()
-#pragma const_seg(".rdata$AIPathCurrentPositionName")
-    const char AIPathCurrentPositionName[17] = "current_position";
 #pragma const_seg()
 #pragma const_seg(".rdata$AIPathLocatorName")
     const char AIPathLocatorName[9] = "locator=";
@@ -11842,21 +10649,6 @@ extern "C" {
 #pragma const_seg()
 #pragma const_seg(".rdata$AIPathGoalRangeName")
     const char AIPathGoalRangeName[10] = "goalrange";
-#pragma const_seg()
-#pragma const_seg(".rdata$AIActionFaceOffsetName")
-    const char AIActionFaceOffsetName[11] = "faceoffset";
-#pragma const_seg()
-#pragma const_seg(".rdata$AIActionNearestOpponentName")
-    const char AIActionNearestOpponentName[17] = "nearest_opponent";
-#pragma const_seg()
-#pragma const_seg(".rdata$AIActionClockwiseName")
-    const char AIActionClockwiseName[10] = "Clockwise";
-#pragma const_seg()
-#pragma const_seg(".rdata$AIActionAnticlockwiseName")
-    const char AIActionAnticlockwiseName[14] = "AntiClockwise";
-#pragma const_seg()
-#pragma const_seg(".rdata$AIActionReverseName")
-    const char AIActionReverseName[8] = "Reverse";
 #pragma const_seg()
 #pragma const_seg(".rdata$AIActionFalseName")
     const char AIActionFalseName[6] = "FALSE";
@@ -11990,12 +10782,6 @@ extern "C" {
 #pragma bss_seg(".bss$players_cannot_exit_speeder")
     i32 players_cannot_exit_speeder = 0;
 #pragma bss_seg()
-#pragma const_seg(".rdata$TakeOverState_JustBeenTakenOver")
-    const char TakeOverState_JustBeenTakenOver[18] = "JustBeenTakenOver";
-#pragma const_seg()
-#pragma const_seg(".rdata$TakeOverState_MapRunAway")
-    const char TakeOverState_MapRunAway[11] = "MapRunAway";
-#pragma const_seg()
 #pragma const_seg(".rdata$TakeOverState_ReleasedTakeOver")
     const char TakeOverState_ReleasedTakeOver[17] = "ReleasedTakeOver";
 #pragma const_seg()
@@ -12014,16 +10800,11 @@ extern "C" {
 #pragma const_seg(".rdata$AIActionPersonalName")
     const char AIActionPersonalName[9] = "personal";
 #pragma const_seg()
-#pragma const_seg(".rdata$AIActionIgnoreDoneFlagNamePc")
-    const char AIActionIgnoreDoneFlagNamePc[17] = "ignore_done_flag";
 #pragma const_seg(".rdata$AIActionIDName")
     const char AIActionIDName[3] = "id";
 #pragma const_seg()
 #pragma const_seg(".rdata$AIActionToName")
     const char AIActionToName[3] = "to";
-#pragma const_seg()
-#pragma const_seg(".rdata$AIActionBothWaysName")
-    const char AIActionBothWaysName[9] = "bothways";
 #pragma const_seg()
 #pragma const_seg(".rdata$AIActionFromName")
     const char AIActionFromName[5] = "from";
@@ -12033,18 +10814,6 @@ extern "C" {
 #pragma const_seg()
 #pragma const_seg(".rdata$AIActionOpenName")
     const char AIActionOpenName[5] = "open";
-#pragma const_seg()
-#pragma const_seg(".rdata$AIActionLengthName")
-    const char AIActionLengthName[7] = "length";
-#pragma const_seg()
-#pragma const_seg(".rdata$AIPathMustReachDestinationName")
-    const char AIPathMustReachDestinationName[23] = "must_reach_destination";
-#pragma const_seg()
-#pragma const_seg(".rdata$AIPathIgnorePathName")
-    const char AIPathIgnorePathName[12] = "ignore_path";
-#pragma const_seg()
-#pragma const_seg(".rdata$AIPathFaceOpponentName")
-    const char AIPathFaceOpponentName[14] = "face_opponent";
 #pragma const_seg()
 #pragma bss_seg(".bss$AIBigJumpToDestinationFn")
     AI_BIG_JUMP_TO_DESTINATION_PC AIBigJumpToDestinationFn = 0;
@@ -12189,9 +10958,6 @@ extern "C" {
 #pragma const_seg(".rdata$AIGameCharacterName")
     const char AIGameCharacterName[11] = "character=";
 #pragma const_seg()
-#pragma const_seg(".rdata$AIGameStateName")
-    const char AIGameStateName[7] = "state=";
-#pragma const_seg()
 #pragma const_seg(".rdata$AIGameNearestName")
     const char AIGameNearestName[8] = "nearest";
 #pragma const_seg()
@@ -12213,44 +10979,14 @@ extern "C" {
 #pragma const_seg(".rdata$AIGameAttackOverrideName")
     const char AIGameAttackOverrideName[16] = "attack_override";
 #pragma const_seg()
-#pragma const_seg(".rdata$AIGameJediGoodieAttackName")
-    const char AIGameJediGoodieAttackName[18] = "jediGoodie_attack";
-#pragma const_seg()
-#pragma const_seg(".rdata$AIGameRangeName")
-    const char AIGameRangeName[6] = "range";
-#pragma const_seg()
 #pragma const_seg(".rdata$AIGameFireIntervalName")
     const char AIGameFireIntervalName[13] = "fireinterval";
 #pragma const_seg()
 #pragma const_seg(".rdata$AIGameFireRangeName")
     const char AIGameFireRangeName[10] = "firerange";
 #pragma const_seg()
-#pragma const_seg(".rdata$AIGameEndName")
-    const char AIGameEndName[5] = "end=";
-#pragma const_seg()
-#pragma const_seg(".rdata$AIGameStartName")
-    const char AIGameStartName[7] = "start=";
-#pragma const_seg()
-#pragma const_seg(".rdata$AIGameHoldSpecialButtonName")
-    const char AIGameHoldSpecialButtonName[20] = "hold_special_button";
-#pragma const_seg()
-#pragma const_seg(".rdata$AIGameTurnName")
-    const char AIGameTurnName[5] = "turn";
-#pragma const_seg()
-#pragma const_seg(".rdata$AIGameRandomTurnDirectionName")
-    const char AIGameRandomTurnDirectionName[14] = "rand_turn_dir";
-#pragma const_seg()
-#pragma const_seg(".rdata$AIGameMaximumTurnName")
-    const char AIGameMaximumTurnName[9] = "max_turn";
-#pragma const_seg()
-#pragma const_seg(".rdata$AIGameMinimumTurnName")
-    const char AIGameMinimumTurnName[9] = "min_turn";
-#pragma const_seg()
 #pragma const_seg(".rdata$AIGameOpponentName")
     const char AIGameOpponentName[9] = "Opponent";
-#pragma const_seg()
-#pragma const_seg(".rdata$AIGameTakeOverTargetName")
-    const char AIGameTakeOverTargetName[15] = "TakeOverTarget";
 #pragma const_seg()
 }
 
@@ -12331,41 +11067,17 @@ extern "C" {
 #pragma bss_seg(".bss$LevelCharacterGlobalIDFn")
     AI_LEVEL_CHARACTER_GLOBAL_ID_PC LevelCharacterGlobalIDFn = 0;
 #pragma bss_seg()
-#pragma const_seg(".rdata$AICombatMinimumRangeName")
-    const char AICombatMinimumRangeName[10] = "minrange=";
-#pragma const_seg()
-#pragma const_seg(".rdata$AICombatStaticName")
-    const char AICombatStaticName[7] = "static";
-#pragma const_seg()
 #pragma const_seg(".rdata$AICombatOffscreenName")
     const char AICombatOffscreenName[10] = "offscreen";
 #pragma const_seg()
 #pragma const_seg(".rdata$AICombatNoFireInMiniCutName")
     const char AICombatNoFireInMiniCutName[19] = "no_fire_in_minicut";
 #pragma const_seg()
-#pragma const_seg(".rdata$AICombatCircleName")
-    const char AICombatCircleName[7] = "circle";
-#pragma const_seg()
 #pragma const_seg(".rdata$AICombatOpponentName")
     const char AICombatOpponentName[10] = "opponent=";
 #pragma const_seg()
 #pragma const_seg(".rdata$AICombatInstantName")
     const char AICombatInstantName[8] = "instant";
-#pragma const_seg()
-#pragma const_seg(".rdata$AICombatFrontArcOnlyName")
-    const char AICombatFrontArcOnlyName[13] = "frontArcOnly";
-#pragma const_seg()
-#pragma const_seg(".rdata$AICombatDroidName")
-    const char AICombatDroidName[15] = "opponent=droid";
-#pragma const_seg()
-#pragma const_seg(".rdata$AICombatNearestEnemyName")
-    const char AICombatNearestEnemyName[23] = "opponent=nearest_enemy";
-#pragma const_seg()
-#pragma const_seg(".rdata$AICombatLastAttackerName")
-    const char AICombatLastAttackerName[14] = "last_attacker";
-#pragma const_seg()
-#pragma const_seg(".rdata$AICombatOpponentTypeName")
-    const char AICombatOpponentTypeName[13] = "opponentType";
 #pragma const_seg()
 }
 
@@ -12461,44 +11173,14 @@ extern "C" {
 #pragma data_seg(".data$AdaptiveDifficultyRecoveryTimePc")
     f32 AdaptiveDifficultyRecoveryTimePc = 30.0f;
 #pragma data_seg()
-#pragma const_seg(".rdata$AIControlPlayerRunSpeedName")
-    const char AIControlPlayerRunSpeedName[17] = "player_run_speed";
-#pragma const_seg()
-#pragma const_seg(".rdata$AIControlSeekName")
-    const char AIControlSeekName[6] = "seek=";
-#pragma const_seg()
 #pragma const_seg(".rdata$AIControlMinimumName")
     const char AIControlMinimumName[5] = "min=";
 #pragma const_seg()
 #pragma const_seg(".rdata$AIControlMaximumName")
     const char AIControlMaximumName[5] = "max=";
 #pragma const_seg()
-#pragma const_seg(".rdata$AIControlClearName")
-    const char AIControlClearName[6] = "clear";
-#pragma const_seg()
-#pragma const_seg(".rdata$AIControlMaximumDefaultName")
-    const char AIControlMaximumDefaultName[12] = "max=default";
-#pragma const_seg()
-#pragma const_seg(".rdata$AIControlMultiplyName")
-    const char AIControlMultiplyName[10] = "multiply=";
-#pragma const_seg()
-#pragma const_seg(".rdata$AIControlLocatorName")
-    const char AIControlLocatorName[8] = "Locator";
-#pragma const_seg()
-#pragma const_seg(".rdata$AIControlAllNonPartyName")
-    const char AIControlAllNonPartyName[14] = "All_Non_Party";
-#pragma const_seg()
-#pragma const_seg(".rdata$AIControlDefaultTitleName")
-    const char AIControlDefaultTitleName[8] = "Default";
-#pragma const_seg()
 #pragma const_seg(".rdata$GameAIPlayerName")
     const char GameAIPlayerName[7] = "player";
-#pragma const_seg()
-#pragma const_seg(".rdata$GameAIPlayer2Name")
-    const char GameAIPlayer2Name[9] = "player_2";
-#pragma const_seg()
-#pragma const_seg(".rdata$GameAIPlayerFormat")
-    const char GameAIPlayerFormat[9] = "Player%d";
 #pragma const_seg()
 #pragma data_seg(".data$id_YWING")
     i16 id_YWING = -1;
@@ -12539,15 +11221,6 @@ extern "C" {
 #pragma bss_seg()
 #pragma const_seg(".rdata$AIAnimSpeedValueName")
     const char AIAnimSpeedValueName[7] = "value=";
-#pragma const_seg()
-#pragma const_seg(".rdata$AIAnimSpeedMultiplyByName")
-    const char AIAnimSpeedMultiplyByName[13] = "multiply_by=";
-#pragma const_seg()
-#pragma const_seg(".rdata$AIUseCurrentSpeedMultiplierName")
-    const char AIUseCurrentSpeedMultiplierName[11] = "multiplier";
-#pragma const_seg()
-#pragma const_seg(".rdata$AIUseCurrentSpeedSnapName")
-    const char AIUseCurrentSpeedSnapName[12] = "snaptospeed";
 #pragma const_seg()
 #pragma const_seg(".rdata$AIScaleOverrideResetName")
     const char AIScaleOverrideResetName[6] = "reset";
@@ -12678,12 +11351,6 @@ extern "C" {
 #pragma bss_seg(".bss$TerrainSkinPoolBasePc")
     u8 *PlatSkinMem = 0;
 #pragma bss_seg()
-#pragma const_seg(".rdata$TerrainScanRadiusEpsilon")
-    extern const f64 TerrainScanRadiusEpsilon = 9.999999747378752e-06;
-#pragma const_seg()
-#pragma const_seg(".rdata$TerrainScanTriangleSentinel")
-    extern const f32 TerrainScanTriangleSentinel = 65536.0f;
-#pragma const_seg()
 #pragma const_seg(".rdata$TerrainCastLowerSentinel")
     extern const f32 TerrainCastLowerSentinel = -2000000.0f;
 #pragma const_seg()
@@ -12716,16 +11383,6 @@ extern "C" {
     extern const char ActionSnapDontCheckTerrainName[19] = "dont_check_terrain";
 #pragma const_seg(".rdata$ActionSnapPartyName")
     extern const char ActionSnapPartyName[6] = "party";
-#pragma const_seg(".rdata$ActionSnapDistanceFromEndName")
-    extern const char ActionSnapDistanceFromEndName[18] = "distance_from_end";
-#pragma const_seg(".rdata$ActionSnapSockName")
-    extern const char ActionSnapSockName[5] = "sock";
-#pragma const_seg(".rdata$ActionSnapDxName")
-    extern const char ActionSnapDxName[3] = "dx";
-#pragma const_seg(".rdata$ActionSnapDyName")
-    extern const char ActionSnapDyName[3] = "dy";
-#pragma const_seg(".rdata$ActionSnapRotationFactorPc")
-    extern const f64 ActionSnapRotationFactorPc = 182.04444885253906;
 #pragma const_seg(".rdata$ActionSnapWeightedRandomZeroPc")
     extern const f64 ActionSnapWeightedRandomZeroPc = 0.0;
 #pragma const_seg()
@@ -12793,20 +11450,11 @@ extern "C" {
 #pragma const_seg(".rdata$NuVpFixed16ScalePc")
     extern const f64 NuVpFixed16ScalePc = 1.0 / 65536.0;
 #pragma const_seg()
-#pragma const_seg(".rdata$NuVpDepthRangePc")
-    extern const f64 NuVpDepthRangePc = 16777215.0;
-#pragma const_seg()
 }
 
 extern "C" {
 #pragma const_seg(".rdata$WorldPathSeparator")
     extern const char WorldPathSeparator[2] = "\\";
-#pragma const_seg()
-#pragma const_seg(".rdata$WorldObjectAnimFormat")
-    extern const char WorldObjectAnimFormat[7] = "%s.anm";
-#pragma const_seg()
-#pragma const_seg(".rdata$WorldLevelConfigFormat")
-    extern const char WorldLevelConfigFormat[7] = "%s.txt";
 #pragma const_seg()
 #pragma const_seg(".rdata$NuFileSourcePathPC")
     extern const char NuFileSourcePathPC[50] = "d:\\projects\\game_saga\\nu2api.saga\\nucore\\nufile.c";
@@ -12817,32 +11465,11 @@ extern "C" {
 #pragma const_seg(".rdata$AITransferLiteral757874")
     extern const char AITransferLiteral757874[15] = "tgt_character=";
 #pragma const_seg()
-#pragma const_seg(".rdata$AITransferLiteral757844")
-    extern const char AITransferLiteral757844[14] = "check_terrain";
-#pragma const_seg()
 #pragma const_seg(".rdata$AITransferLiteral75786c")
     extern const char AITransferLiteral75786c[5] = "slam";
 #pragma const_seg()
-#pragma const_seg(".rdata$AITransferLiteral757860")
-    extern const char AITransferLiteral757860[10] = "to_origin";
-#pragma const_seg()
-#pragma const_seg(".rdata$AITransferLiteral757bb4")
-    extern const char AITransferLiteral757bb4[13] = "speed=TIPTOE";
-#pragma const_seg()
-#pragma const_seg(".rdata$AITransferLiteral757ba8")
-    extern const char AITransferLiteral757ba8[11] = "speed=WALK";
-#pragma const_seg()
-#pragma const_seg(".rdata$AITransferLiteral757b9c")
-    extern const char AITransferLiteral757b9c[10] = "speed=RUN";
-#pragma const_seg()
-#pragma const_seg(".rdata$AITransferLiteral757ec4")
-    extern const char AITransferLiteral757ec4[10] = "keep_out=";
-#pragma const_seg()
 #pragma const_seg(".rdata$AITransferLiteral757ebc")
     extern const char AITransferLiteral757ebc[5] = "TRUE";
-#pragma const_seg()
-#pragma const_seg(".rdata$AITransferLiteral757a5c")
-    extern const char AITransferLiteral757a5c[12] = "dont_avoid=";
 #pragma const_seg()
 #pragma const_seg(".rdata$AITransferLiteral757ee0")
     extern const char AITransferLiteral757ee0[8] = "tag_to=";
@@ -12853,26 +11480,11 @@ extern "C" {
 #pragma const_seg(".rdata$AITransferLiteral757a84")
     extern const char AITransferLiteral757a84[8] = "spline=";
 #pragma const_seg()
-#pragma const_seg(".rdata$AITransferLiteral757cd8")
-    extern const char AITransferLiteral757cd8[5] = "mul=";
-#pragma const_seg()
 #pragma const_seg(".rdata$AITransferLiteral757cd0")
     extern const char AITransferLiteral757cd0[6] = "time=";
 #pragma const_seg()
-#pragma const_seg(".rdata$AITransferLiteral757cc8")
-    extern const char AITransferLiteral757cc8[7] = "speed=";
-#pragma const_seg()
-#pragma const_seg(".rdata$AITransferLiteral757e68")
-    extern const char AITransferLiteral757e68[5] = "path";
-#pragma const_seg()
-#pragma const_seg(".rdata$AITransferLiteral757e70")
-    extern const char AITransferLiteral757e70[15] = "path=LevelPath";
-#pragma const_seg()
 #pragma const_seg(".rdata$AITransferLiteral75772c")
     extern const char AITransferLiteral75772c[5] = "type";
-#pragma const_seg()
-#pragma const_seg(".rdata$AITransferLiteral757a44")
-    extern const char AITransferLiteral757a44[23] = "still_do_take_hit_anim";
 #pragma const_seg()
 }
 
@@ -12925,38 +11537,11 @@ extern "C" {
 #pragma const_seg(".rdata$AITransferLiteral75769c")
     extern const char AITransferLiteral75769c[11] = "goodybaddy";
 #pragma const_seg()
-#pragma const_seg(".rdata$AITransferLiteral75773c")
-    extern const char AITransferLiteral75773c[8] = "neutral";
-#pragma const_seg()
 #pragma const_seg(".rdata$AITransferLiteral7576c0")
     extern const char AITransferLiteral7576c0[6] = "baddy";
 #pragma const_seg()
-#pragma const_seg(".rdata$AITransferLiteral7576e0")
-    extern const char AITransferLiteral7576e0[10] = "maxrange=";
-#pragma const_seg()
 #pragma const_seg(".rdata$AITransferLiteral7576f8")
     extern const char AITransferLiteral7576f8[6] = "type=";
-#pragma const_seg()
-#pragma const_seg(".rdata$AITransferLiteral7576d0")
-    extern const char AITransferLiteral7576d0[14] = "ifCanTakeover";
-#pragma const_seg()
-#pragma const_seg(".rdata$AITransferLiteral757744")
-    extern const char AITransferLiteral757744[7] = "State=";
-#pragma const_seg()
-#pragma const_seg(".rdata$AITransferLiteral757eb4")
-    extern const char AITransferLiteral757eb4[8] = "Restart";
-#pragma const_seg()
-#pragma const_seg(".rdata$AITransferLiteral757ea8")
-    extern const char AITransferLiteral757ea8[10] = "backwards";
-#pragma const_seg()
-#pragma const_seg(".rdata$AITransferLiteral7583d0")
-    extern const char AITransferLiteral7583d0[18] = "attacker=opponent";
-#pragma const_seg()
-#pragma const_seg(".rdata$AITransferLiteral7583c4")
-    extern const char AITransferLiteral7583c4[10] = "attacker=";
-#pragma const_seg()
-#pragma const_seg(".rdata$AITransferLiteral7583b4")
-    extern const char AITransferLiteral7583b4[16] = "attacker=player";
 #pragma const_seg()
 #pragma const_seg(".rdata$AITransferLiteral757a20")
     extern const char AITransferLiteral757a20[8] = "victim=";
@@ -12975,12 +11560,6 @@ extern "C" {
 }
 
 extern "C" {
-#pragma const_seg(".rdata$WorldGrassFormat")
-    extern const char WorldGrassFormat[7] = "%s.gra";
-#pragma const_seg()
-#pragma const_seg(".rdata$WorldBridgeFormat")
-    extern const char WorldBridgeFormat[7] = "%s.bri";
-#pragma const_seg()
 #pragma bss_seg(".bss$Grass_Available")
     i32 Grass_Available = 0;
 #pragma bss_seg()
@@ -13014,44 +11593,8 @@ extern "C" {
 }
 
 extern "C" {
-#pragma const_seg(".rdata$SceneFileExtensionPc")
-    extern const char SceneFileExtensionPc[5] = ".gsc";
-#pragma const_seg()
 #pragma const_seg(".rdata$NuFileExt_dds_PC")
     extern const char NuFileExt_dds_PC[5] = ".dds";
-#pragma const_seg()
-#pragma const_seg(".rdata$NuFileExt_at3_PC")
-    extern const char NuFileExt_at3_PC[5] = ".at3";
-#pragma const_seg()
-#pragma const_seg(".rdata$NuFileExt_psc_PC")
-    extern const char NuFileExt_psc_PC[5] = ".psc";
-#pragma const_seg()
-#pragma const_seg(".rdata$NuFileExt_phg_PC")
-    extern const char NuFileExt_phg_PC[5] = ".phg";
-#pragma const_seg()
-#pragma const_seg(".rdata$NuFileExt_nx2_PC")
-    extern const char NuFileExt_nx2_PC[5] = ".nx2";
-#pragma const_seg()
-#pragma const_seg(".rdata$NuFileExt_hx2_PC")
-    extern const char NuFileExt_hx2_PC[5] = ".hx2";
-#pragma const_seg()
-#pragma const_seg(".rdata$NuFileExt_h4m_PC")
-    extern const char NuFileExt_h4m_PC[5] = ".h4m";
-#pragma const_seg()
-#pragma const_seg(".rdata$NuFileExt_gcm_PC")
-    extern const char NuFileExt_gcm_PC[5] = ".gcm";
-#pragma const_seg()
-#pragma const_seg(".rdata$NuFileExt_dsp_PC")
-    extern const char NuFileExt_dsp_PC[5] = ".dsp";
-#pragma const_seg()
-#pragma const_seg(".rdata$NuFileExt_ctx_PC")
-    extern const char NuFileExt_ctx_PC[5] = ".ctx";
-#pragma const_seg()
-#pragma const_seg(".rdata$NuFileExt_csc_PC")
-    extern const char NuFileExt_csc_PC[5] = ".csc";
-#pragma const_seg()
-#pragma const_seg(".rdata$NuFileExt_chg_PC")
-    extern const char NuFileExt_chg_PC[5] = ".chg";
 #pragma const_seg()
 #pragma const_seg(".rdata$NuFileExt_pss_PC")
     extern const char NuFileExt_pss_PC[5] = ".pss";
@@ -13065,26 +11608,11 @@ extern "C" {
 #pragma const_seg(".rdata$NuFileExt_ghg_PC")
     extern const char NuFileExt_ghg_PC[5] = ".ghg";
 #pragma const_seg()
-#pragma const_seg(".rdata$NuFileExt_pc_ghg_PC")
-    extern const char NuFileExt_pc_ghg_PC[8] = "_pc.ghg";
-#pragma const_seg()
-#pragma const_seg(".rdata$NuFileExt_lr_pc_ghg_PC")
-    extern const char NuFileExt_lr_pc_ghg_PC[11] = "_lr_pc.ghg";
-#pragma const_seg()
-#pragma const_seg(".rdata$NuFileExt_pc_gsc_PC")
-    extern const char NuFileExt_pc_gsc_PC[8] = "_pc.gsc";
-#pragma const_seg()
-#pragma const_seg(".rdata$NuFileExt_bik_PC")
-    extern const char NuFileExt_bik_PC[5] = ".bik";
-#pragma const_seg()
 #pragma const_seg(".rdata$NuFileExt_wav_PC")
     extern const char NuFileExt_wav_PC[5] = ".wav";
 #pragma const_seg()
 #pragma const_seg(".rdata$NuFileExt_cu2_PC")
     extern const char NuFileExt_cu2_PC[5] = ".cu2";
-#pragma const_seg()
-#pragma const_seg(".rdata$NuFileExt_pc_dds_PC")
-    extern const char NuFileExt_pc_dds_PC[8] = "_pc.dds";
 #pragma const_seg()
 #pragma const_seg(".rdata$NuFileExt_bsa_PC")
     extern const char NuFileExt_bsa_PC[5] = ".bsa";
@@ -13092,23 +11620,8 @@ extern "C" {
 #pragma const_seg(".rdata$NuFileExt_an3_PC")
     extern const char NuFileExt_an3_PC[5] = ".an3";
 #pragma const_seg()
-#pragma const_seg(".rdata$NuFileExt_pam_PC")
-    extern const char NuFileExt_pam_PC[5] = ".pam";
-#pragma const_seg()
 #pragma const_seg(".rdata$NuFileExt_mib_PC")
     extern const char NuFileExt_mib_PC[5] = ".mib";
-#pragma const_seg()
-#pragma const_seg(".rdata$NuFileExt_msf_PC")
-    extern const char NuFileExt_msf_PC[5] = ".msf";
-#pragma const_seg()
-#pragma const_seg(".rdata$NuFileExt_ps3_tex_PC")
-    extern const char NuFileExt_ps3_tex_PC[9] = "_ps3.tex";
-#pragma const_seg()
-#pragma const_seg(".rdata$NuFileExt_ps3_gsc_PC")
-    extern const char NuFileExt_ps3_gsc_PC[9] = "_ps3.gsc";
-#pragma const_seg()
-#pragma const_seg(".rdata$NuFileExt_ps3_ghg_PC")
-    extern const char NuFileExt_ps3_ghg_PC[9] = "_ps3.ghg";
 #pragma const_seg()
 #pragma const_seg(".rdata$NuFileExt_wmv_PC")
     extern const char NuFileExt_wmv_PC[5] = ".wmv";
@@ -13121,15 +11634,6 @@ extern "C" {
 #pragma const_seg()
 #pragma const_seg(".rdata$NuFileExt_cc2_PC")
     extern const char NuFileExt_cc2_PC[5] = ".cc2";
-#pragma const_seg()
-#pragma const_seg(".rdata$NuFileExt_360_tex_PC")
-    extern const char NuFileExt_360_tex_PC[9] = "_360.tex";
-#pragma const_seg()
-#pragma const_seg(".rdata$NuFileExt_360_gsc_PC")
-    extern const char NuFileExt_360_gsc_PC[9] = "_360.gsc";
-#pragma const_seg()
-#pragma const_seg(".rdata$NuFileExt_360_ghg_PC")
-    extern const char NuFileExt_360_ghg_PC[9] = "_360.ghg";
 #pragma const_seg()
 #pragma const_seg(".rdata$NuFileExt_cbs_PC")
     extern const char NuFileExt_cbs_PC[5] = ".cbs";
@@ -13152,9 +11656,6 @@ extern "C" {
 }
 
 extern "C" {
-#pragma const_seg(".rdata$APIObjectCharsDirectory")
-    extern const char APIObjectCharsDirectory[7] = "chars\\";
-#pragma const_seg()
 #pragma const_seg(".rdata$APIObjectPakExtension")
     extern const char APIObjectPakExtension[5] = ".fpk";
 #pragma const_seg()
@@ -13187,11 +11688,7 @@ extern "C" {
 #pragma data_seg()
 }
 
-extern "C" {
-#pragma const_seg(".rdata$AITransferLiteral758430")
-    extern const char AITransferLiteral758430[5] = "True";
-#pragma const_seg()
-}
+extern "C" {}
 
 extern "C" {
 #pragma bss_seg(".bss$LSW2")
@@ -13266,18 +11763,6 @@ extern "C" {
 #pragma const_seg(".rdata$AITransferLiteral75782c")
     extern const char AITransferLiteral75782c[5] = "name";
 #pragma const_seg()
-#pragma const_seg(".rdata$AITransferLiteral7583e4")
-    extern const char AITransferLiteral7583e4[12] = "controller=";
-#pragma const_seg()
-#pragma const_seg(".rdata$AITransferLiteral7583f0")
-    extern const char AITransferLiteral7583f0[8] = "turret=";
-#pragma const_seg()
-#pragma const_seg(".rdata$AITransferLiteral757a38")
-    extern const char AITransferLiteral757a38[12] = "hold_button";
-#pragma const_seg()
-#pragma const_seg(".rdata$AITransferLiteral757a70")
-    extern const char AITransferLiteral757a70[11] = "rotational";
-#pragma const_seg()
 #pragma bss_seg(".bss$BeenAttacked")
     i32 BeenAttacked = 0;
 #pragma bss_seg()
@@ -13326,47 +11811,17 @@ extern "C" {
 }
 
 extern "C" {
-#pragma const_seg(".rdata$AITransferLiteral7577dc")
-    extern const char AITransferLiteral7577dc[8] = "random=";
-#pragma const_seg()
 #pragma const_seg(".rdata$AITransferLiteral757824")
     extern const char AITransferLiteral757824[7] = "random";
 #pragma const_seg()
 #pragma const_seg(".rdata$AITransferLiteral75781c")
     extern const char AITransferLiteral75781c[8] = "player=";
 #pragma const_seg()
-#pragma const_seg(".rdata$AITransferLiteral757884")
-    extern const char AITransferLiteral757884[12] = "take_damage";
-#pragma const_seg()
 #pragma const_seg(".rdata$AITransferLiteral757a68")
     extern const char AITransferLiteral757a68[6] = "Reset";
 #pragma const_seg()
-#pragma const_seg(".rdata$AITransferLiteral757c10")
-    extern const char AITransferLiteral757c10[13] = "dont_set_max";
-#pragma const_seg()
 #pragma const_seg(".rdata$AITransferLiteral757c20")
     extern const char AITransferLiteral757c20[12] = "messageval=";
-#pragma const_seg()
-#pragma const_seg(".rdata$AITransferLiteral758194")
-    extern const char AITransferLiteral758194[11] = "type=CHOKE";
-#pragma const_seg()
-#pragma const_seg(".rdata$AITransferLiteral758188")
-    extern const char AITransferLiteral758188[11] = "type=DROID";
-#pragma const_seg()
-#pragma const_seg(".rdata$AITransferLiteral7581a0")
-    extern const char AITransferLiteral7581a0[8] = "radius=";
-#pragma const_seg()
-#pragma const_seg(".rdata$AITransferLiteral758174")
-    extern const char AITransferLiteral758174[19] = "type=ComboOpponent";
-#pragma const_seg()
-#pragma const_seg(".rdata$AITransferLiteral7581d4")
-    extern const char AITransferLiteral7581d4[10] = "rot_rate=";
-#pragma const_seg()
-#pragma const_seg(".rdata$AITransferLiteral7581ec")
-    extern const char AITransferLiteral7581ec[9] = "mintime=";
-#pragma const_seg()
-#pragma const_seg(".rdata$AITransferLiteral7581e0")
-    extern const char AITransferLiteral7581e0[9] = "maxtime=";
 #pragma const_seg()
 #pragma const_seg(".rdata$GizObstacleActionNamePC")
     extern const char GizObstacleActionNamePC[5] = "Name";
@@ -13383,82 +11838,9 @@ extern "C" {
 #pragma const_seg(".rdata$GizObstacleActionStayShutPC")
     extern const char GizObstacleActionStayShutPC[9] = "STAYSHUT";
 #pragma const_seg()
-#pragma const_seg(".rdata$NuMusicDebugClassInvalid")
-    extern const char NuMusicDebugClassInvalid[8] = "INVALID";
-#pragma const_seg()
-#pragma const_seg(".rdata$NuMusicDebugClassQuiet")
-    extern const char NuMusicDebugClassQuiet[6] = "QUIET";
-#pragma const_seg()
-#pragma const_seg(".rdata$NuMusicDebugClassAction")
-    extern const char NuMusicDebugClassAction[7] = "ACTION";
-#pragma const_seg()
-#pragma const_seg(".rdata$NuMusicDebugClassSignature")
-    extern const char NuMusicDebugClassSignature[10] = "SIGNATURE";
-#pragma const_seg()
-#pragma const_seg(".rdata$NuMusicDebugClassOverlay")
-    extern const char NuMusicDebugClassOverlay[8] = "OVERLAY";
-#pragma const_seg()
-#pragma const_seg(".rdata$NuMusicDebugClassCutscene")
-    extern const char NuMusicDebugClassCutscene[9] = "CUTSCENE";
-#pragma const_seg()
-#pragma const_seg(".rdata$NuMusicDebugClassNoMusic")
-    extern const char NuMusicDebugClassNoMusic[8] = "NOMUSIC";
-#pragma const_seg()
-#pragma const_seg(".rdata$NuMusicDebugVoiceFormat")
-    extern const char NuMusicDebugVoiceFormat[9] = "VOICE:%d";
-#pragma const_seg()
-#pragma const_seg(".rdata$NuMusicDebugTrackFormat")
-    extern const char NuMusicDebugTrackFormat[9] = "TRACK:%s";
-#pragma const_seg()
-#pragma const_seg(".rdata$NuMusicDebugClassFormat")
-    extern const char NuMusicDebugClassFormat[9] = "CLASS:%s";
-#pragma const_seg()
-#pragma const_seg(".rdata$NuMusicDebugTrackNone")
-    extern const char NuMusicDebugTrackNone[11] = "TRACK:NONE";
-#pragma const_seg()
-#pragma const_seg(".rdata$NuMusicDebugClassNone")
-    extern const char NuMusicDebugClassNone[11] = "CLASS:NONE";
-#pragma const_seg()
-#pragma const_seg(".rdata$NuMusicDebugStatusFormat")
-    extern const char NuMusicDebugStatusFormat[10] = "STATUS:%s";
-#pragma const_seg()
-#pragma const_seg(".rdata$NuMusicDebugVolumeFormat")
-    extern const char NuMusicDebugVolumeFormat[15] = "VOLUME:%f (%f)";
-#pragma const_seg()
-#pragma const_seg(".rdata$NuMusicDebugFadeFormat")
-    extern const char NuMusicDebugFadeFormat[8] = "FADE:%f";
-#pragma const_seg()
-#pragma const_seg(".rdata$NuMusicDebugPositionFormat")
-    extern const char NuMusicDebugPositionFormat[7] = "POS:%f";
-#pragma const_seg()
-#pragma const_seg(".rdata$NuMusicDebugStatus0")
-    extern const char NuMusicDebugStatus0[13] = "IDLE_PENDING";
-#pragma const_seg()
-#pragma const_seg(".rdata$NuMusicDebugStatus1")
-    extern const char NuMusicDebugStatus1[5] = "IDLE";
-#pragma const_seg()
-#pragma const_seg(".rdata$NuMusicDebugStatus2")
-    extern const char NuMusicDebugStatus2[15] = "PAUSED_PENDING";
-#pragma const_seg()
-#pragma const_seg(".rdata$NuMusicDebugStatus3")
-    extern const char NuMusicDebugStatus3[7] = "PAUSED";
-#pragma const_seg()
-#pragma const_seg(".rdata$NuMusicDebugStatus4")
-    extern const char NuMusicDebugStatus4[16] = "SEEKING_PENDING";
-#pragma const_seg()
-#pragma const_seg(".rdata$NuMusicDebugStatus5")
-    extern const char NuMusicDebugStatus5[8] = "SEEKING";
-#pragma const_seg()
-#pragma const_seg(".rdata$NuMusicDebugStatus6")
-    extern const char NuMusicDebugStatus6[12] = "PLAYPENDING";
-#pragma const_seg()
-#pragma const_seg(".rdata$NuMusicDebugStatus7")
-    extern const char NuMusicDebugStatus7[8] = "PLAYING";
-#pragma const_seg()
 #pragma data_seg(".data$NuMusicVoiceStatusText")
-    const char *NuMusicVoiceStatusText[8] = {NuMusicDebugStatus0, NuMusicDebugStatus1, NuMusicDebugStatus2,
-                                             NuMusicDebugStatus3, NuMusicDebugStatus4, NuMusicDebugStatus5,
-                                             NuMusicDebugStatus6, NuMusicDebugStatus7};
+    const char *NuMusicVoiceStatusText[8] = {"IDLE_PENDING",    "IDLE",    "PAUSED_PENDING", "PAUSED",
+                                             "SEEKING_PENDING", "SEEKING", "PLAYPENDING",    "PLAYING"};
 #pragma data_seg()
 #pragma data_seg(".data$NuMusicDebugColour")
     u32 NuMusicDebugColour = 0x80ffffff;
@@ -13476,12 +11858,6 @@ extern "C" {
 }
 
 extern "C" {
-#pragma const_seg(".rdata$AITransferLiteral757a94")
-    extern const char AITransferLiteral757a94[9] = "splines=";
-#pragma const_seg()
-#pragma const_seg(".rdata$AITransferLiteral757a8c")
-    extern const char AITransferLiteral757a8c[7] = "unused";
-#pragma const_seg()
 #pragma const_seg(".rdata$AITransferLiteral757c64")
     extern const char AITransferLiteral757c64[4] = "dx=";
 #pragma const_seg()
@@ -13493,9 +11869,6 @@ extern "C" {
 #pragma const_seg()
 #pragma const_seg(".rdata$AITransferLiteral757f28")
     extern const char AITransferLiteral757f28[8] = "target=";
-#pragma const_seg()
-#pragma const_seg(".rdata$AITransferLiteral7583f8")
-    extern const char AITransferLiteral7583f8[8] = "release";
 #pragma const_seg()
 #pragma bss_seg(".bss$part_types")
     PARTTYPE_LOOKUP_PC part_types[128] = {0};
@@ -13810,9 +12183,6 @@ extern "C" {
 #pragma bss_seg(".bss$PCFrameLoadingYieldEnabledPC")
     u8 PCFrameLoadingYieldEnabledPC = 0;
 #pragma bss_seg()
-#pragma const_seg(".rdata$SceneUploadSourcePathPC")
-    extern const char SceneUploadSourcePathPC[57] = "d:\\projects\\game_saga\\nu2api.saga\\nu3d\\pc\\nugscn_dlist.c";
-#pragma const_seg()
 }
 
 extern "C" {
@@ -13910,11 +12280,8 @@ extern "C" {
 #pragma bss_seg(".bss$numSplinesLoaded")
     i32 numSplinesLoaded = 0;
 #pragma bss_seg()
-#pragma const_seg(".rdata$EditorSplineFileCheckTextPc")
-    extern const char EditorSplineFileCheckTextPc[13] = "EDSPLINE v. ";
-#pragma const_seg()
 #pragma data_seg(".data$EDSPLINE_FILECHECK")
-    const char *EDSPLINE_FILECHECK = EditorSplineFileCheckTextPc;
+    const char *EDSPLINE_FILECHECK = "EDSPLINE v. ";
 #pragma data_seg()
 #pragma bss_seg(".bss$NuCutSceneDestroyCharacters")
     void (*NuCutSceneDestroyCharacters)(void *) = 0;
@@ -14009,9 +12376,6 @@ extern "C" {
 #pragma bss_seg(".bss$nuwarning_handler")
     void (*nuwarning_handler)(char *) = 0;
 #pragma bss_seg()
-#pragma const_seg(".rdata$PCNativeDebugPrefix")
-    extern const char PCNativeDebugPrefix[12] = "NUDEBUG: %s";
-#pragma const_seg()
 #pragma const_seg(".rdata$PCWarningSuffix")
     extern const char PCWarningSuffix[2] = "\n";
 #pragma const_seg()
@@ -14057,9 +12421,6 @@ extern "C" {
 #pragma const_seg(".rdata$TerrainBoundsMaximumPc")
     extern const f32 TerrainBoundsMaximumPc = 200000000.0f;
 #pragma const_seg()
-#pragma const_seg(".rdata$TerrainSteepNormalYPc")
-    extern const f32 TerrainSteepNormalYPc = 0.707f;
-#pragma const_seg()
 #pragma const_seg(".rdata$TerrainSourcePathPc")
     extern const char TerrainSourcePathPc[53] = "d:\\projects\\game_saga\\gameapi.saga\\gamelib\\terrain.c";
 #pragma const_seg()
@@ -14087,81 +12448,15 @@ extern "C" {
 #pragma data_seg(".data$LEGOACT_MAGNET_WALK_METAL")
     i16 LEGOACT_MAGNET_WALK_METAL = -1;
 #pragma data_seg()
-#pragma const_seg(".rdata$GrappleMomentumNearScalePc")
-    extern const f64 GrappleMomentumNearScalePc = 20.0;
-#pragma const_seg()
 #pragma bss_seg(".bss$LevelHackSendTimer")
     f32 LevelHackSendTimer = 0;
 #pragma bss_seg()
-#pragma const_seg(".rdata$NuTextureAnimationSlotsWarning")
-    extern const char NuTextureAnimationSlotsWarning[31] = "Ran out of texture anim slots!";
-#pragma const_seg()
 #pragma data_seg(".data$debris_detail_level")
     i32 debris_detail_level = 4;
 #pragma data_seg()
 }
 
 extern "C" {
-#pragma const_seg(".rdata$EpisodeVI_liftrlightbon1")
-    extern const char EpisodeVI_liftrlightbon1[17] = "lift_rlight_bon1";
-#pragma const_seg()
-#pragma const_seg(".rdata$EpisodeVI_liftrlightbon2")
-    extern const char EpisodeVI_liftrlightbon2[17] = "lift_rlight_bon2";
-#pragma const_seg()
-#pragma const_seg(".rdata$EpisodeVI_liftrlightbon3")
-    extern const char EpisodeVI_liftrlightbon3[17] = "lift_rlight_bon3";
-#pragma const_seg()
-#pragma const_seg(".rdata$EpisodeVI_liftrlightbon4")
-    extern const char EpisodeVI_liftrlightbon4[17] = "lift_rlight_bon4";
-#pragma const_seg()
-#pragma const_seg(".rdata$EpisodeVI_liftrarron1")
-    extern const char EpisodeVI_liftrarron1[14] = "lift_rarr_on1";
-#pragma const_seg()
-#pragma const_seg(".rdata$EpisodeVI_liftrarron2")
-    extern const char EpisodeVI_liftrarron2[14] = "lift_rarr_on2";
-#pragma const_seg()
-#pragma const_seg(".rdata$EpisodeVI_liftrarron3")
-    extern const char EpisodeVI_liftrarron3[14] = "lift_rarr_on3";
-#pragma const_seg()
-#pragma const_seg(".rdata$EpisodeVI_liftrarron4")
-    extern const char EpisodeVI_liftrarron4[14] = "lift_rarr_on4";
-#pragma const_seg()
-#pragma const_seg(".rdata$EpisodeVI_doton01")
-    extern const char EpisodeVI_doton01[10] = "dot_on_01";
-#pragma const_seg()
-#pragma const_seg(".rdata$EpisodeVI_doton02")
-    extern const char EpisodeVI_doton02[10] = "dot_on_02";
-#pragma const_seg()
-#pragma const_seg(".rdata$EpisodeVI_doton03")
-    extern const char EpisodeVI_doton03[10] = "dot_on_03";
-#pragma const_seg()
-#pragma const_seg(".rdata$EpisodeVI_doton04")
-    extern const char EpisodeVI_doton04[10] = "dot_on_04";
-#pragma const_seg()
-#pragma const_seg(".rdata$EpisodeVI_doton05")
-    extern const char EpisodeVI_doton05[10] = "dot_on_05";
-#pragma const_seg()
-#pragma const_seg(".rdata$EpisodeVI_doton06")
-    extern const char EpisodeVI_doton06[10] = "dot_on_06";
-#pragma const_seg()
-#pragma const_seg(".rdata$EpisodeVI_doton07")
-    extern const char EpisodeVI_doton07[10] = "dot_on_07";
-#pragma const_seg()
-#pragma const_seg(".rdata$EpisodeVI_doton08")
-    extern const char EpisodeVI_doton08[10] = "dot_on_08";
-#pragma const_seg()
-#pragma const_seg(".rdata$EpisodeVI_doton09")
-    extern const char EpisodeVI_doton09[10] = "dot_on_09";
-#pragma const_seg()
-#pragma const_seg(".rdata$EpisodeVI_doton10")
-    extern const char EpisodeVI_doton10[10] = "dot_on_10";
-#pragma const_seg()
-#pragma const_seg(".rdata$EpisodeVI_doton11")
-    extern const char EpisodeVI_doton11[10] = "dot_on_11";
-#pragma const_seg()
-#pragma const_seg(".rdata$EpisodeVI_doton12")
-    extern const char EpisodeVI_doton12[10] = "dot_on_12";
-#pragma const_seg()
 #pragma bss_seg(".bss$emperorfighta_netpacket")
     void *emperorfighta_netpacket = 0;
 #pragma bss_seg()
@@ -14180,23 +12475,8 @@ extern "C" {
 #pragma const_seg(".rdata$PlayerSlideSpeedPc")
     extern const f64 PlayerSlideSpeedPc = 1.2000000476837158;
 #pragma const_seg()
-#pragma const_seg(".rdata$PlayerTightRopePhasePc")
-    extern const f64 PlayerTightRopePhasePc = 32768.0;
-#pragma const_seg()
 #pragma const_seg(".rdata$PlayerRandomScalePc")
     extern const f64 PlayerRandomScalePc = 1.5259021893143654e-05;
-#pragma const_seg()
-#pragma const_seg(".rdata$PlayerPanelVariantZeroX")
-    extern const f32 PlayerPanelVariantZeroX = -0.03999999910593033f;
-#pragma const_seg()
-#pragma const_seg(".rdata$PlayerPanelVariantZeroZ")
-    extern const f32 PlayerPanelVariantZeroZ = -0.30000001192092896f;
-#pragma const_seg()
-#pragma const_seg(".rdata$PlayerPanelVariantOneX")
-    extern const f32 PlayerPanelVariantOneX = 0.03500000014901161f;
-#pragma const_seg()
-#pragma const_seg(".rdata$PlayerPanelVariantOneZ")
-    extern const f32 PlayerPanelVariantOneZ = -0.25f;
 #pragma const_seg()
 #pragma data_seg(".data$LEGOCONTEXT_COMBO")
     i32 LEGOCONTEXT_COMBO = -1;
@@ -14234,45 +12514,6 @@ extern "C" {
 #pragma const_seg(".rdata$EpisodeVI_ElectricFloor")
     extern const char EpisodeVI_ElectricFloor[14] = "ElectricFloor";
 #pragma const_seg()
-#pragma const_seg(".rdata$EpisodeVI_obstacle21")
-    extern const char EpisodeVI_obstacle21[11] = "obstacle21";
-#pragma const_seg()
-#pragma const_seg(".rdata$EpisodeVI_force15")
-    extern const char EpisodeVI_force15[8] = "force15";
-#pragma const_seg()
-#pragma const_seg(".rdata$EpisodeVI_force16")
-    extern const char EpisodeVI_force16[8] = "force16";
-#pragma const_seg()
-#pragma const_seg(".rdata$EpisodeVI_lift_force_lnull1")
-    extern const char EpisodeVI_lift_force_lnull1[18] = "lift_force_lnull1";
-#pragma const_seg()
-#pragma const_seg(".rdata$EpisodeVI_lift_force_rnull1")
-    extern const char EpisodeVI_lift_force_rnull1[18] = "lift_force_rnull1";
-#pragma const_seg()
-#pragma const_seg(".rdata$EpisodeVI_lift_main1")
-    extern const char EpisodeVI_lift_main1[11] = "lift_main1";
-#pragma const_seg()
-#pragma const_seg(".rdata$EpisodeVI_electric_on")
-    extern const char EpisodeVI_electric_on[12] = "electric_on";
-#pragma const_seg()
-#pragma const_seg(".rdata$EpisodeVI_electric_off")
-    extern const char EpisodeVI_electric_off[13] = "electric_off";
-#pragma const_seg()
-#pragma const_seg(".rdata$EpisodeVI_elecpad_zero_format")
-    extern const char EpisodeVI_elecpad_zero_format[15] = "elecpad_0%d_on";
-#pragma const_seg()
-#pragma const_seg(".rdata$EpisodeVI_elecpad_format")
-    extern const char EpisodeVI_elecpad_format[14] = "elecpad_%d_on";
-#pragma const_seg()
-#pragma const_seg(".rdata$EpisodeVI_eFloor_AlwaysOn")
-    extern const char EpisodeVI_eFloor_AlwaysOn[16] = "eFloor_AlwaysOn";
-#pragma const_seg()
-#pragma const_seg(".rdata$EpisodeVI_eFloor_AlwaysOf")
-    extern const char EpisodeVI_eFloor_AlwaysOf[16] = "eFloor_AlwaysOf";
-#pragma const_seg()
-#pragma const_seg(".rdata$EpisodeVI_eFloor_OnOff")
-    extern const char EpisodeVI_eFloor_OnOff[13] = "eFloor_OnOff";
-#pragma const_seg()
 #pragma data_seg(".data$force_gizmotype_id")
     i32 force_gizmotype_id = -1;
 #pragma data_seg()
@@ -14303,38 +12544,11 @@ extern "C" {
 #pragma bss_seg(".bss$SarlaccTargetShieldPc")
     i32 SarlaccTargetShieldPc[2] = {0};
 #pragma bss_seg()
-#pragma const_seg(".rdata$EpisodeVI_magnet_drop")
-    extern const char EpisodeVI_magnet_drop[21] = "imp_c3po_magnet_drop";
-#pragma const_seg()
-#pragma const_seg(".rdata$EpisodeVI_magnet_on")
-    extern const char EpisodeVI_magnet_on[14] = "env_magnet_on";
-#pragma const_seg()
 #pragma const_seg(".rdata$EpisodeVI_ffieldoff")
     extern const char EpisodeVI_ffieldoff[10] = "ffieldoff";
 #pragma const_seg()
 #pragma const_seg(".rdata$EpisodeVI_ffield")
     extern const char EpisodeVI_ffield[7] = "ffield";
-#pragma const_seg()
-#pragma const_seg(".rdata$EpisodeVI_cannon_1")
-    extern const char EpisodeVI_cannon_1[9] = "cannon_1";
-#pragma const_seg()
-#pragma const_seg(".rdata$EpisodeVI_cover_format")
-    extern const char EpisodeVI_cover_format[9] = "cover_%d";
-#pragma const_seg()
-#pragma const_seg(".rdata$EpisodeVI_cover_gizmo_format")
-    extern const char EpisodeVI_cover_gizmo_format[10] = "cover_%d1";
-#pragma const_seg()
-#pragma const_seg(".rdata$EpisodeVI_spinner_format")
-    extern const char EpisodeVI_spinner_format[17] = "spinner%d_null_1";
-#pragma const_seg()
-#pragma const_seg(".rdata$EpisodeVI_shot_format")
-    extern const char EpisodeVI_shot_format[9] = "shot_0%d";
-#pragma const_seg()
-#pragma const_seg(".rdata$EpisodeVI_shot_a_format")
-    extern const char EpisodeVI_shot_a_format[10] = "shot_0%da";
-#pragma const_seg()
-#pragma const_seg(".rdata$EpisodeVI_panel2")
-    extern const char EpisodeVI_panel2[7] = "panel2";
 #pragma const_seg()
 #pragma data_seg(".data$gizpanel_gizmotype_id")
     i32 gizpanel_gizmotype_id = -1;
@@ -14439,776 +12653,250 @@ CRC16 CRC16InstancePC;
 #pragma bss_seg()
 
 extern "C" {
-#pragma const_seg(".rdata$PlayerActionNamePc_001")
-    extern const char PlayerActionNamePc_001[5] = "walk";
-#pragma const_seg()
-#pragma const_seg(".rdata$PlayerActionNamePc_003")
-    extern const char PlayerActionNamePc_003[5] = "fire";
-#pragma const_seg()
-#pragma const_seg(".rdata$PlayerActionNamePc_004")
-    extern const char PlayerActionNamePc_004[4] = "run";
-#pragma const_seg()
-#pragma const_seg(".rdata$PlayerActionNamePc_005")
-    extern const char PlayerActionNamePc_005[7] = "tiptoe";
-#pragma const_seg()
-#pragma const_seg(".rdata$PlayerActionNamePc_006")
-    extern const char PlayerActionNamePc_006[5] = "fall";
-#pragma const_seg()
-#pragma const_seg(".rdata$PlayerActionNamePc_007")
-    extern const char PlayerActionNamePc_007[5] = "jump";
-#pragma const_seg()
-#pragma const_seg(".rdata$PlayerActionNamePc_008")
-    extern const char PlayerActionNamePc_008[5] = "land";
-#pragma const_seg()
-#pragma const_seg(".rdata$PlayerActionNamePc_009")
-    extern const char PlayerActionNamePc_009[6] = "idle4";
-#pragma const_seg()
-#pragma const_seg(".rdata$PlayerActionNamePc_010")
-    extern const char PlayerActionNamePc_010[6] = "jump2";
-#pragma const_seg()
-#pragma const_seg(".rdata$PlayerActionNamePc_011")
-    extern const char PlayerActionNamePc_011[6] = "land2";
-#pragma const_seg()
-#pragma const_seg(".rdata$PlayerActionNamePc_012")
-    extern const char PlayerActionNamePc_012[6] = "force";
-#pragma const_seg()
-#pragma const_seg(".rdata$PlayerActionNamePc_013")
-    extern const char PlayerActionNamePc_013[5] = "flip";
-#pragma const_seg()
-#pragma const_seg(".rdata$PlayerActionNamePc_014")
-    extern const char PlayerActionNamePc_014[9] = "flipland";
-#pragma const_seg()
-#pragma const_seg(".rdata$PlayerActionNamePc_015")
-    extern const char PlayerActionNamePc_015[6] = "jump3";
-#pragma const_seg()
-#pragma const_seg(".rdata$PlayerActionNamePc_016")
-    extern const char PlayerActionNamePc_016[6] = "idle2";
-#pragma const_seg()
-#pragma const_seg(".rdata$PlayerActionNamePc_017")
-    extern const char PlayerActionNamePc_017[9] = "weaponin";
-#pragma const_seg()
-#pragma const_seg(".rdata$PlayerActionNamePc_018")
-    extern const char PlayerActionNamePc_018[10] = "weaponout";
-#pragma const_seg()
-#pragma const_seg(".rdata$PlayerActionNamePc_019")
-    extern const char PlayerActionNamePc_019[10] = "combojump";
-#pragma const_seg()
-#pragma const_seg(".rdata$PlayerActionNamePc_020")
-    extern const char PlayerActionNamePc_020[10] = "comboland";
-#pragma const_seg()
-#pragma const_seg(".rdata$PlayerActionNamePc_021")
-    extern const char PlayerActionNamePc_021[6] = "idle3";
-#pragma const_seg()
-#pragma const_seg(".rdata$PlayerActionNamePc_022")
-    extern const char PlayerActionNamePc_022[6] = "land3";
-#pragma const_seg()
-#pragma const_seg(".rdata$PlayerActionNamePc_023")
-    extern const char PlayerActionNamePc_023[6] = "shoot";
-#pragma const_seg()
-#pragma const_seg(".rdata$PlayerActionNamePc_024")
-    extern const char PlayerActionNamePc_024[5] = "run2";
-#pragma const_seg()
-#pragma const_seg(".rdata$PlayerActionNamePc_025")
-    extern const char PlayerActionNamePc_025[10] = "interface";
-#pragma const_seg()
-#pragma const_seg(".rdata$PlayerActionNamePc_026")
-    extern const char PlayerActionNamePc_026[11] = "weaponidle";
-#pragma const_seg()
-#pragma const_seg(".rdata$PlayerActionNamePc_027")
-    extern const char PlayerActionNamePc_027[7] = "block1";
-#pragma const_seg()
-#pragma const_seg(".rdata$PlayerActionNamePc_028")
-    extern const char PlayerActionNamePc_028[7] = "block2";
-#pragma const_seg()
-#pragma const_seg(".rdata$PlayerActionNamePc_029")
-    extern const char PlayerActionNamePc_029[7] = "block3";
-#pragma const_seg()
-#pragma const_seg(".rdata$PlayerActionNamePc_030")
-    extern const char PlayerActionNamePc_030[5] = "run3";
-#pragma const_seg()
-#pragma const_seg(".rdata$PlayerActionNamePc_031")
-    extern const char PlayerActionNamePc_031[6] = "crawl";
-#pragma const_seg()
-#pragma const_seg(".rdata$PlayerActionNamePc_032")
-    extern const char PlayerActionNamePc_032[6] = "lunge";
-#pragma const_seg()
-#pragma const_seg(".rdata$PlayerActionNamePc_033")
-    extern const char PlayerActionNamePc_033[10] = "lungeland";
-#pragma const_seg()
-#pragma const_seg(".rdata$PlayerActionNamePc_035")
-    extern const char PlayerActionNamePc_035[9] = "slamland";
-#pragma const_seg()
-#pragma const_seg(".rdata$PlayerActionNamePc_037")
-    extern const char PlayerActionNamePc_037[6] = "hover";
-#pragma const_seg()
-#pragma const_seg(".rdata$PlayerActionNamePc_038")
-    extern const char PlayerActionNamePc_038[4] = "fly";
-#pragma const_seg()
-#pragma const_seg(".rdata$PlayerActionNamePc_039")
-    extern const char PlayerActionNamePc_039[5] = "left";
-#pragma const_seg()
-#pragma const_seg(".rdata$PlayerActionNamePc_040")
-    extern const char PlayerActionNamePc_040[7] = "force2";
-#pragma const_seg()
-#pragma const_seg(".rdata$PlayerActionNamePc_041")
-    extern const char PlayerActionNamePc_041[6] = "fall2";
-#pragma const_seg()
-#pragma const_seg(".rdata$PlayerActionNamePc_042")
-    extern const char PlayerActionNamePc_042[11] = "weaponback";
-#pragma const_seg()
-#pragma const_seg(".rdata$PlayerActionNamePc_043")
-    extern const char PlayerActionNamePc_043[3] = "up";
-#pragma const_seg()
-#pragma const_seg(".rdata$PlayerActionNamePc_044")
-    extern const char PlayerActionNamePc_044[7] = "pushed";
-#pragma const_seg()
-#pragma const_seg(".rdata$PlayerActionNamePc_045")
-    extern const char PlayerActionNamePc_045[3] = "in";
-#pragma const_seg()
-#pragma const_seg(".rdata$PlayerActionNamePc_046")
-    extern const char PlayerActionNamePc_046[4] = "out";
-#pragma const_seg()
-#pragma const_seg(".rdata$PlayerActionNamePc_047")
-    extern const char PlayerActionNamePc_047[9] = "combo1_1";
-#pragma const_seg()
-#pragma const_seg(".rdata$PlayerActionNamePc_048")
-    extern const char PlayerActionNamePc_048[10] = "combo1_2a";
-#pragma const_seg()
-#pragma const_seg(".rdata$PlayerActionNamePc_049")
-    extern const char PlayerActionNamePc_049[10] = "combo1_2b";
-#pragma const_seg()
-#pragma const_seg(".rdata$PlayerActionNamePc_050")
-    extern const char PlayerActionNamePc_050[10] = "combo1_3a";
-#pragma const_seg()
-#pragma const_seg(".rdata$PlayerActionNamePc_051")
-    extern const char PlayerActionNamePc_051[10] = "combo1_3b";
-#pragma const_seg()
-#pragma const_seg(".rdata$PlayerActionNamePc_052")
-    extern const char PlayerActionNamePc_052[10] = "combo1_3c";
-#pragma const_seg()
-#pragma const_seg(".rdata$PlayerActionNamePc_053")
-    extern const char PlayerActionNamePc_053[10] = "combo1_3d";
-#pragma const_seg()
-#pragma const_seg(".rdata$PlayerActionNamePc_054")
-    extern const char PlayerActionNamePc_054[9] = "combo2_1";
-#pragma const_seg()
-#pragma const_seg(".rdata$PlayerActionNamePc_055")
-    extern const char PlayerActionNamePc_055[10] = "combo2_2a";
-#pragma const_seg()
-#pragma const_seg(".rdata$PlayerActionNamePc_056")
-    extern const char PlayerActionNamePc_056[10] = "combo2_2b";
-#pragma const_seg()
-#pragma const_seg(".rdata$PlayerActionNamePc_057")
-    extern const char PlayerActionNamePc_057[10] = "combo2_3a";
-#pragma const_seg()
-#pragma const_seg(".rdata$PlayerActionNamePc_058")
-    extern const char PlayerActionNamePc_058[10] = "combo2_3b";
-#pragma const_seg()
-#pragma const_seg(".rdata$PlayerActionNamePc_059")
-    extern const char PlayerActionNamePc_059[10] = "combo2_3c";
-#pragma const_seg()
-#pragma const_seg(".rdata$PlayerActionNamePc_060")
-    extern const char PlayerActionNamePc_060[10] = "combo2_3d";
-#pragma const_seg()
-#pragma const_seg(".rdata$PlayerActionNamePc_061")
-    extern const char PlayerActionNamePc_061[7] = "shoot2";
-#pragma const_seg()
-#pragma const_seg(".rdata$PlayerActionNamePc_062")
-    extern const char PlayerActionNamePc_062[8] = "takehit";
-#pragma const_seg()
-#pragma const_seg(".rdata$PlayerActionNamePc_063")
-    extern const char PlayerActionNamePc_063[9] = "takehit2";
-#pragma const_seg()
-#pragma const_seg(".rdata$PlayerActionNamePc_064")
-    extern const char PlayerActionNamePc_064[8] = "tiptoe2";
-#pragma const_seg()
-#pragma const_seg(".rdata$PlayerActionNamePc_065")
-    extern const char PlayerActionNamePc_065[6] = "walk2";
-#pragma const_seg()
-#pragma const_seg(".rdata$PlayerActionNamePc_066")
-    extern const char PlayerActionNamePc_066[12] = "deactivated";
-#pragma const_seg()
-#pragma const_seg(".rdata$PlayerActionNamePc_067")
-    extern const char PlayerActionNamePc_067[13] = "deactivated2";
-#pragma const_seg()
-#pragma const_seg(".rdata$PlayerActionNamePc_068")
-    extern const char PlayerActionNamePc_068[13] = "deactivated3";
-#pragma const_seg()
-#pragma const_seg(".rdata$PlayerActionNamePc_069")
-    extern const char PlayerActionNamePc_069[13] = "deactivated4";
-#pragma const_seg()
-#pragma const_seg(".rdata$PlayerActionNamePc_070")
-    extern const char PlayerActionNamePc_070[11] = "interface2";
-#pragma const_seg()
-#pragma const_seg(".rdata$PlayerActionNamePc_071")
-    extern const char PlayerActionNamePc_071[11] = "interface3";
-#pragma const_seg()
-#pragma const_seg(".rdata$PlayerActionNamePc_072")
-    extern const char PlayerActionNamePc_072[11] = "interface4";
-#pragma const_seg()
-#pragma const_seg(".rdata$PlayerActionNamePc_073")
-    extern const char PlayerActionNamePc_073[8] = "hoverup";
-#pragma const_seg()
-#pragma const_seg(".rdata$PlayerActionNamePc_074")
-    extern const char PlayerActionNamePc_074[10] = "hoverdown";
-#pragma const_seg()
-#pragma const_seg(".rdata$PlayerActionNamePc_075")
-    extern const char PlayerActionNamePc_075[6] = "land4";
-#pragma const_seg()
-#pragma const_seg(".rdata$PlayerActionNamePc_076")
-    extern const char PlayerActionNamePc_076[6] = "fall3";
-#pragma const_seg()
-#pragma const_seg(".rdata$PlayerActionNamePc_077")
-    extern const char PlayerActionNamePc_077[6] = "fall4";
-#pragma const_seg()
-#pragma const_seg(".rdata$PlayerActionNamePc_078")
-    extern const char PlayerActionNamePc_078[6] = "fire2";
-#pragma const_seg()
-#pragma const_seg(".rdata$PlayerActionNamePc_079")
-    extern const char PlayerActionNamePc_079[4] = "eat";
-#pragma const_seg()
-#pragma const_seg(".rdata$PlayerActionNamePc_080")
-    extern const char PlayerActionNamePc_080[6] = "right";
-#pragma const_seg()
-#pragma const_seg(".rdata$PlayerActionNamePc_081")
-    extern const char PlayerActionNamePc_081[14] = "walkbackwards";
-#pragma const_seg()
-#pragma const_seg(".rdata$PlayerActionNamePc_082")
-    extern const char PlayerActionNamePc_082[6] = "punch";
-#pragma const_seg()
-#pragma const_seg(".rdata$PlayerActionNamePc_083")
-    extern const char PlayerActionNamePc_083[5] = "push";
-#pragma const_seg()
-#pragma const_seg(".rdata$PlayerActionNamePc_084")
-    extern const char PlayerActionNamePc_084[7] = "choked";
-#pragma const_seg()
-#pragma const_seg(".rdata$PlayerActionNamePc_085")
-    extern const char PlayerActionNamePc_085[7] = "zapped";
-#pragma const_seg()
-#pragma const_seg(".rdata$PlayerActionNamePc_086")
-    extern const char PlayerActionNamePc_086[7] = "punch2";
-#pragma const_seg()
-#pragma const_seg(".rdata$PlayerActionNamePc_087")
-    extern const char PlayerActionNamePc_087[7] = "punch3";
-#pragma const_seg()
-#pragma const_seg(".rdata$PlayerActionNamePc_088")
-    extern const char PlayerActionNamePc_088[16] = "combatroll_fire";
-#pragma const_seg()
-#pragma const_seg(".rdata$PlayerActionNamePc_089")
-    extern const char PlayerActionNamePc_089[9] = "forwards";
-#pragma const_seg()
-#pragma const_seg(".rdata$PlayerActionNamePc_090")
-    extern const char PlayerActionNamePc_090[9] = "fallland";
-#pragma const_seg()
-#pragma const_seg(".rdata$PlayerActionNamePc_091")
-    extern const char PlayerActionNamePc_091[10] = "shootleft";
-#pragma const_seg()
-#pragma const_seg(".rdata$PlayerActionNamePc_092")
-    extern const char PlayerActionNamePc_092[11] = "shootright";
-#pragma const_seg()
-#pragma const_seg(".rdata$PlayerActionNamePc_093")
-    extern const char PlayerActionNamePc_093[10] = "shootback";
-#pragma const_seg()
-#pragma const_seg(".rdata$PlayerActionNamePc_094")
-    extern const char PlayerActionNamePc_094[10] = "pulllever";
-#pragma const_seg()
-#pragma const_seg(".rdata$PlayerActionNamePc_095")
-    extern const char PlayerActionNamePc_095[9] = "helmeton";
-#pragma const_seg()
-#pragma const_seg(".rdata$PlayerActionNamePc_096")
-    extern const char PlayerActionNamePc_096[6] = "build";
-#pragma const_seg()
-#pragma const_seg(".rdata$PlayerActionNamePc_097")
-    extern const char PlayerActionNamePc_097[6] = "idle5";
-#pragma const_seg()
-#pragma const_seg(".rdata$PlayerActionNamePc_098")
-    extern const char PlayerActionNamePc_098[6] = "idle6";
-#pragma const_seg()
-#pragma const_seg(".rdata$PlayerActionNamePc_099")
-    extern const char PlayerActionNamePc_099[6] = "idle7";
-#pragma const_seg()
-#pragma const_seg(".rdata$PlayerActionNamePc_100")
-    extern const char PlayerActionNamePc_100[6] = "idle8";
-#pragma const_seg()
-#pragma const_seg(".rdata$PlayerActionNamePc_101")
-    extern const char PlayerActionNamePc_101[7] = "attack";
-#pragma const_seg()
-#pragma const_seg(".rdata$PlayerActionNamePc_102")
-    extern const char PlayerActionNamePc_102[6] = "throw";
-#pragma const_seg()
-#pragma const_seg(".rdata$PlayerActionNamePc_103")
-    extern const char PlayerActionNamePc_103[7] = "pickup";
-#pragma const_seg()
-#pragma const_seg(".rdata$PlayerActionNamePc_104")
-    extern const char PlayerActionNamePc_104[5] = "drop";
-#pragma const_seg()
-#pragma const_seg(".rdata$PlayerActionNamePc_105")
-    extern const char PlayerActionNamePc_105[8] = "grabbed";
-#pragma const_seg()
-#pragma const_seg(".rdata$PlayerActionNamePc_106")
-    extern const char PlayerActionNamePc_106[9] = "attacked";
-#pragma const_seg()
-#pragma const_seg(".rdata$PlayerActionNamePc_107")
-    extern const char PlayerActionNamePc_107[6] = "slide";
-#pragma const_seg()
-#pragma const_seg(".rdata$PlayerActionNamePc_108")
-    extern const char PlayerActionNamePc_108[12] = "communicate";
-#pragma const_seg()
 #pragma const_seg(".rdata$PlayerActionNamePc_109")
     extern const char PlayerActionNamePc_109[5] = "ride";
 #pragma const_seg()
-#pragma const_seg(".rdata$PlayerActionNamePc_110")
-    extern const char PlayerActionNamePc_110[10] = "helmeton2";
-#pragma const_seg()
-#pragma const_seg(".rdata$PlayerActionNamePc_111")
-    extern const char PlayerActionNamePc_111[7] = "throw2";
-#pragma const_seg()
-#pragma const_seg(".rdata$PlayerActionNamePc_112")
-    extern const char PlayerActionNamePc_112[7] = "throw3";
-#pragma const_seg()
-#pragma const_seg(".rdata$PlayerActionNamePc_113")
-    extern const char PlayerActionNamePc_113[6] = "ride2";
-#pragma const_seg()
-#pragma const_seg(".rdata$PlayerActionNamePc_114")
-    extern const char PlayerActionNamePc_114[13] = "extra_tiptoe";
-#pragma const_seg()
-#pragma const_seg(".rdata$PlayerActionNamePc_115")
-    extern const char PlayerActionNamePc_115[11] = "extra_walk";
-#pragma const_seg()
-#pragma const_seg(".rdata$PlayerActionNamePc_116")
-    extern const char PlayerActionNamePc_116[10] = "extra_run";
-#pragma const_seg()
-#pragma const_seg(".rdata$PlayerActionNamePc_117")
-    extern const char PlayerActionNamePc_117[11] = "extra_fall";
-#pragma const_seg()
-#pragma const_seg(".rdata$PlayerActionNamePc_118")
-    extern const char PlayerActionNamePc_118[11] = "extra_idle";
-#pragma const_seg()
-#pragma const_seg(".rdata$PlayerActionNamePc_119")
-    extern const char PlayerActionNamePc_119[17] = "extra_weaponidle";
-#pragma const_seg()
-#pragma const_seg(".rdata$PlayerActionNamePc_120")
-    extern const char PlayerActionNamePc_120[9] = "backflip";
-#pragma const_seg()
-#pragma const_seg(".rdata$PlayerActionNamePc_121")
-    extern const char PlayerActionNamePc_121[11] = "extra_jump";
-#pragma const_seg()
-#pragma const_seg(".rdata$PlayerActionNamePc_122")
-    extern const char PlayerActionNamePc_122[12] = "extra_jump2";
-#pragma const_seg()
-#pragma const_seg(".rdata$PlayerActionNamePc_123")
-    extern const char PlayerActionNamePc_123[11] = "extra_land";
-#pragma const_seg()
-#pragma const_seg(".rdata$PlayerActionNamePc_124")
-    extern const char PlayerActionNamePc_124[12] = "extra_land2";
-#pragma const_seg()
-#pragma const_seg(".rdata$PlayerActionNamePc_125")
-    extern const char PlayerActionNamePc_125[12] = "extra_lunge";
-#pragma const_seg()
-#pragma const_seg(".rdata$PlayerActionNamePc_126")
-    extern const char PlayerActionNamePc_126[16] = "extra_lungeland";
-#pragma const_seg()
-#pragma const_seg(".rdata$PlayerActionNamePc_127")
-    extern const char PlayerActionNamePc_127[15] = "extra_weaponin";
-#pragma const_seg()
-#pragma const_seg(".rdata$PlayerActionNamePc_128")
-    extern const char PlayerActionNamePc_128[16] = "extra_weaponout";
-#pragma const_seg()
-#pragma const_seg(".rdata$PlayerActionNamePc_129")
-    extern const char PlayerActionNamePc_129[9] = "activate";
-#pragma const_seg()
-#pragma const_seg(".rdata$PlayerActionNamePc_130")
-    extern const char PlayerActionNamePc_130[11] = "deactivate";
-#pragma const_seg()
-#pragma const_seg(".rdata$PlayerActionNamePc_131")
-    extern const char PlayerActionNamePc_131[6] = "walk3";
-#pragma const_seg()
-#pragma const_seg(".rdata$PlayerActionNamePc_132")
-    extern const char PlayerActionNamePc_132[6] = "ride3";
-#pragma const_seg()
-#pragma const_seg(".rdata$PlayerActionNamePc_133")
-    extern const char PlayerActionNamePc_133[6] = "ride4";
-#pragma const_seg()
-#pragma const_seg(".rdata$PlayerActionNamePc_134")
-    extern const char PlayerActionNamePc_134[6] = "splat";
-#pragma const_seg()
-#pragma const_seg(".rdata$PlayerActionNamePc_135")
-    extern const char PlayerActionNamePc_135[6] = "ride5";
-#pragma const_seg()
-#pragma const_seg(".rdata$PlayerActionNamePc_136")
-    extern const char PlayerActionNamePc_136[11] = "climb_idle";
-#pragma const_seg()
-#pragma const_seg(".rdata$PlayerActionNamePc_137")
-    extern const char PlayerActionNamePc_137[15] = "tightrope_idle";
-#pragma const_seg()
-#pragma const_seg(".rdata$PlayerActionNamePc_138")
-    extern const char PlayerActionNamePc_138[15] = "tightrope_move";
-#pragma const_seg()
-#pragma const_seg(".rdata$PlayerActionNamePc_139")
-    extern const char PlayerActionNamePc_139[17] = "wallshuffle_idle";
-#pragma const_seg()
-#pragma const_seg(".rdata$PlayerActionNamePc_140")
-    extern const char PlayerActionNamePc_140[17] = "wallshuffle_left";
-#pragma const_seg()
-#pragma const_seg(".rdata$PlayerActionNamePc_141")
-    extern const char PlayerActionNamePc_141[18] = "wallshuffle_right";
-#pragma const_seg()
-#pragma const_seg(".rdata$PlayerActionNamePc_142")
-    extern const char PlayerActionNamePc_142[8] = "putdown";
-#pragma const_seg()
-#pragma const_seg(".rdata$PlayerActionNamePc_143")
-    extern const char PlayerActionNamePc_143[6] = "float";
-#pragma const_seg()
-#pragma const_seg(".rdata$PlayerActionNamePc_144")
-    extern const char PlayerActionNamePc_144[16] = "tightrope_geton";
-#pragma const_seg()
 #pragma const_seg(".rdata$PlayerActionNamePc_145")
     extern const char PlayerActionNamePc_145[7] = "target";
-#pragma const_seg()
-#pragma const_seg(".rdata$PlayerActionNamePc_146")
-    extern const char PlayerActionNamePc_146[10] = "hang_idle";
-#pragma const_seg()
-#pragma const_seg(".rdata$PlayerActionNamePc_147")
-    extern const char PlayerActionNamePc_147[10] = "hang_move";
-#pragma const_seg()
-#pragma const_seg(".rdata$PlayerActionNamePc_148")
-    extern const char PlayerActionNamePc_148[6] = "glide";
-#pragma const_seg()
-#pragma const_seg(".rdata$PlayerActionNamePc_149")
-    extern const char PlayerActionNamePc_149[13] = "punch_behind";
-#pragma const_seg()
-#pragma const_seg(".rdata$PlayerActionNamePc_150")
-    extern const char PlayerActionNamePc_150[17] = "tightrope_getoff";
-#pragma const_seg()
-#pragma const_seg(".rdata$PlayerActionNamePc_151")
-    extern const char PlayerActionNamePc_151[7] = "change";
-#pragma const_seg()
-#pragma const_seg(".rdata$PlayerActionNamePc_152")
-    extern const char PlayerActionNamePc_152[11] = "throw_wait";
-#pragma const_seg()
-#pragma const_seg(".rdata$PlayerActionNamePc_153")
-    extern const char PlayerActionNamePc_153[6] = "catch";
-#pragma const_seg()
-#pragma const_seg(".rdata$PlayerActionNamePc_154")
-    extern const char PlayerActionNamePc_154[5] = "hack";
-#pragma const_seg()
-#pragma const_seg(".rdata$PlayerActionNamePc_155")
-    extern const char PlayerActionNamePc_155[8] = "attract";
-#pragma const_seg()
-#pragma const_seg(".rdata$PlayerActionNamePc_156")
-    extern const char PlayerActionNamePc_156[9] = "transfer";
-#pragma const_seg()
-#pragma const_seg(".rdata$PlayerActionNamePc_157")
-    extern const char PlayerActionNamePc_157[6] = "sonar";
-#pragma const_seg()
-#pragma const_seg(".rdata$PlayerActionNamePc_158")
-    extern const char PlayerActionNamePc_158[11] = "ledge_idle";
-#pragma const_seg()
-#pragma const_seg(".rdata$PlayerActionNamePc_159")
-    extern const char PlayerActionNamePc_159[11] = "ledge_left";
-#pragma const_seg()
-#pragma const_seg(".rdata$PlayerActionNamePc_160")
-    extern const char PlayerActionNamePc_160[12] = "ledge_right";
-#pragma const_seg()
-#pragma const_seg(".rdata$PlayerActionNamePc_161")
-    extern const char PlayerActionNamePc_161[10] = "transform";
-#pragma const_seg()
-#pragma const_seg(".rdata$PlayerActionNamePc_162")
-    extern const char PlayerActionNamePc_162[14] = "walljump_wait";
-#pragma const_seg()
-#pragma const_seg(".rdata$PlayerActionNamePc_163")
-    extern const char PlayerActionNamePc_163[9] = "walljump";
-#pragma const_seg()
-#pragma const_seg(".rdata$PlayerActionNamePc_164")
-    extern const char PlayerActionNamePc_164[18] = "supercarry_pickup";
-#pragma const_seg()
-#pragma const_seg(".rdata$PlayerActionNamePc_165")
-    extern const char PlayerActionNamePc_165[16] = "supercarry_idle";
-#pragma const_seg()
-#pragma const_seg(".rdata$PlayerActionNamePc_166")
-    extern const char PlayerActionNamePc_166[16] = "supercarry_walk";
-#pragma const_seg()
-#pragma const_seg(".rdata$PlayerActionNamePc_167")
-    extern const char PlayerActionNamePc_167[17] = "supercarry_throw";
-#pragma const_seg()
-#pragma const_seg(".rdata$PlayerActionNamePc_168")
-    extern const char PlayerActionNamePc_168[5] = "stun";
-#pragma const_seg()
-#pragma const_seg(".rdata$PlayerActionNamePc_169")
-    extern const char PlayerActionNamePc_169[6] = "stun2";
-#pragma const_seg()
-#pragma const_seg(".rdata$PlayerActionNamePc_170")
-    extern const char PlayerActionNamePc_170[6] = "stun3";
-#pragma const_seg()
-#pragma const_seg(".rdata$PlayerActionNamePc_171")
-    extern const char PlayerActionNamePc_171[8] = "stunned";
-#pragma const_seg()
-#pragma const_seg(".rdata$PlayerActionNamePc_172")
-    extern const char PlayerActionNamePc_172[9] = "stunned2";
-#pragma const_seg()
-#pragma const_seg(".rdata$PlayerActionNamePc_173")
-    extern const char PlayerActionNamePc_173[9] = "stunned3";
-#pragma const_seg()
-#pragma const_seg(".rdata$PlayerActionNamePc_174")
-    extern const char PlayerActionNamePc_174[9] = "security";
-#pragma const_seg()
-#pragma const_seg(".rdata$PlayerActionNamePc_175")
-    extern const char PlayerActionNamePc_175[15] = "superpush_idle";
-#pragma const_seg()
-#pragma const_seg(".rdata$PlayerActionNamePc_176")
-    extern const char PlayerActionNamePc_176[15] = "superpush_push";
-#pragma const_seg()
-#pragma const_seg(".rdata$PlayerActionNamePc_177")
-    extern const char PlayerActionNamePc_177[15] = "superpush_pull";
-#pragma const_seg()
-#pragma const_seg(".rdata$PlayerActionNamePc_178")
-    extern const char PlayerActionNamePc_178[11] = "ballooning";
-#pragma const_seg()
-#pragma const_seg(".rdata$PlayerActionNamePc_179")
-    extern const char PlayerActionNamePc_179[12] = "throw_quick";
-#pragma const_seg()
-#pragma const_seg(".rdata$PlayerActionNamePc_180")
-    extern const char PlayerActionNamePc_180[17] = "backpackfallland";
-#pragma const_seg()
-#pragma const_seg(".rdata$PlayerActionNamePc_181")
-    extern const char PlayerActionNamePc_181[16] = "combatroll_jump";
-#pragma const_seg()
-#pragma const_seg(".rdata$PlayerActionNamePc_182")
-    extern const char PlayerActionNamePc_182[16] = "combatroll_fall";
-#pragma const_seg()
-#pragma const_seg(".rdata$PlayerActionNamePc_183")
-    extern const char PlayerActionNamePc_183[16] = "combatroll_land";
-#pragma const_seg()
-#pragma const_seg(".rdata$PlayerActionNamePc_184")
-    extern const char PlayerActionNamePc_184[7] = "recoil";
-#pragma const_seg()
-#pragma const_seg(".rdata$PlayerActionNamePc_185")
-    extern const char PlayerActionNamePc_185[8] = "die_air";
-#pragma const_seg()
-#pragma const_seg(".rdata$PlayerActionNamePc_186")
-    extern const char PlayerActionNamePc_186[9] = "stun_die";
-#pragma const_seg()
-#pragma const_seg(".rdata$PlayerActionNamePc_187")
-    extern const char PlayerActionNamePc_187[13] = "grapple_idle";
-#pragma const_seg()
-#pragma const_seg(".rdata$PlayerActionNamePc_188")
-    extern const char PlayerActionNamePc_188[11] = "grapple_up";
-#pragma const_seg()
-#pragma const_seg(".rdata$PlayerActionNamePc_189")
-    extern const char PlayerActionNamePc_189[13] = "grapple_down";
-#pragma const_seg()
-#pragma const_seg(".rdata$PlayerActionNamePc_190")
-    extern const char PlayerActionNamePc_190[13] = "grapple_hang";
-#pragma const_seg()
-#pragma const_seg(".rdata$PlayerActionNamePc_191")
-    extern const char PlayerActionNamePc_191[6] = "idle9";
-#pragma const_seg()
-#pragma const_seg(".rdata$PlayerActionNamePc_192")
-    extern const char PlayerActionNamePc_192[7] = "idle10";
-#pragma const_seg()
-#pragma const_seg(".rdata$PlayerActionNamePc_193")
-    extern const char PlayerActionNamePc_193[6] = "ride6";
-#pragma const_seg()
-#pragma const_seg(".rdata$PlayerActionNamePc_194")
-    extern const char PlayerActionNamePc_194[6] = "ride7";
-#pragma const_seg()
-#pragma const_seg(".rdata$PlayerActionNamePc_195")
-    extern const char PlayerActionNamePc_195[6] = "ride8";
-#pragma const_seg()
-#pragma const_seg(".rdata$PlayerActionNamePc_196")
-    extern const char PlayerActionNamePc_196[6] = "ride9";
-#pragma const_seg()
-#pragma const_seg(".rdata$PlayerActionNamePc_197")
-    extern const char PlayerActionNamePc_197[7] = "ride10";
-#pragma const_seg()
-#pragma const_seg(".rdata$PlayerActionNamePc_198")
-    extern const char PlayerActionNamePc_198[18] = "magnet_walk_metal";
-#pragma const_seg()
-#pragma const_seg(".rdata$PlayerActionNamePc_199")
-    extern const char PlayerActionNamePc_199[14] = "magnet_tiptoe";
-#pragma const_seg()
-#pragma const_seg(".rdata$PlayerActionNamePc_200")
-    extern const char PlayerActionNamePc_200[12] = "magnet_walk";
-#pragma const_seg()
-#pragma const_seg(".rdata$PlayerActionNamePc_201")
-    extern const char PlayerActionNamePc_201[11] = "magnet_run";
-#pragma const_seg()
-#pragma const_seg(".rdata$PlayerActionNamePc_202")
-    extern const char PlayerActionNamePc_202[12] = "magnet_jump";
-#pragma const_seg()
-#pragma const_seg(".rdata$PlayerActionNamePc_203")
-    extern const char PlayerActionNamePc_203[12] = "magnet_land";
-#pragma const_seg()
-#pragma const_seg(".rdata$PlayerActionNamePc_204")
-    extern const char PlayerActionNamePc_204[7] = "dropin";
-#pragma const_seg()
-#pragma const_seg(".rdata$PlayerActionNamePc_205")
-    extern const char PlayerActionNamePc_205[8] = "dropout";
-#pragma const_seg()
-#pragma const_seg(".rdata$PlayerActionNamePc_206")
-    extern const char PlayerActionNamePc_206[9] = "climb_up";
-#pragma const_seg()
-#pragma const_seg(".rdata$PlayerActionNamePc_207")
-    extern const char PlayerActionNamePc_207[11] = "climb_down";
-#pragma const_seg()
-#pragma const_seg(".rdata$PlayerActionNamePc_208")
-    extern const char PlayerActionNamePc_208[11] = "climb_left";
-#pragma const_seg()
-#pragma const_seg(".rdata$PlayerActionNamePc_209")
-    extern const char PlayerActionNamePc_209[12] = "climb_right";
-#pragma const_seg()
-#pragma const_seg(".rdata$PlayerActionNamePc_210")
-    extern const char PlayerActionNamePc_210[13] = "ai_override1";
-#pragma const_seg()
-#pragma const_seg(".rdata$PlayerActionNamePc_211")
-    extern const char PlayerActionNamePc_211[13] = "ai_override2";
-#pragma const_seg()
-#pragma const_seg(".rdata$PlayerActionNamePc_212")
-    extern const char PlayerActionNamePc_212[13] = "ai_override3";
-#pragma const_seg()
-#pragma const_seg(".rdata$PlayerActionNamePc_213")
-    extern const char PlayerActionNamePc_213[13] = "ai_override4";
-#pragma const_seg()
-#pragma const_seg(".rdata$PlayerActionNamePc_214")
-    extern const char PlayerActionNamePc_214[19] = "supercarry_putdown";
-#pragma const_seg()
-#pragma const_seg(".rdata$PlayerActionNamePc_215")
-    extern const char PlayerActionNamePc_215[16] = "supercarry_bash";
-#pragma const_seg()
-#pragma const_seg(".rdata$PlayerActionNamePc_216")
-    extern const char PlayerActionNamePc_216[16] = "supercarry_jump";
-#pragma const_seg()
-#pragma const_seg(".rdata$PlayerActionNamePc_217")
-    extern const char PlayerActionNamePc_217[16] = "supercarry_land";
-#pragma const_seg()
-#pragma const_seg(".rdata$PlayerActionNamePc_218")
-    extern const char PlayerActionNamePc_218[20] = "supercarry_fallland";
-#pragma const_seg()
-#pragma const_seg(".rdata$PlayerActionNamePc_219")
-    extern const char PlayerActionNamePc_219[11] = "ledge_grab";
-#pragma const_seg()
-#pragma const_seg(".rdata$PlayerActionNamePc_220")
-    extern const char PlayerActionNamePc_220[7] = "teeter";
-#pragma const_seg()
-#pragma const_seg(".rdata$PlayerActionNamePc_221")
-    extern const char PlayerActionNamePc_221[11] = "whip_start";
-#pragma const_seg()
-#pragma const_seg(".rdata$PlayerActionNamePc_222")
-    extern const char PlayerActionNamePc_222[11] = "whip_crack";
-#pragma const_seg()
-#pragma const_seg(".rdata$PlayerActionNamePc_223")
-    extern const char PlayerActionNamePc_223[10] = "whip_grab";
-#pragma const_seg()
-#pragma const_seg(".rdata$PlayerActionNamePc_224")
-    extern const char PlayerActionNamePc_224[11] = "whip_break";
-#pragma const_seg()
-#pragma const_seg(".rdata$PlayerActionNamePc_225")
-    extern const char PlayerActionNamePc_225[17] = "whip_swing_start";
-#pragma const_seg()
-#pragma const_seg(".rdata$PlayerActionNamePc_226")
-    extern const char PlayerActionNamePc_226[17] = "whip_swing_swing";
-#pragma const_seg()
-#pragma const_seg(".rdata$PlayerActionNamePc_227")
-    extern const char PlayerActionNamePc_227[16] = "whip_swing_jump";
-#pragma const_seg()
-#pragma const_seg(".rdata$PlayerActionNamePc_228")
-    extern const char PlayerActionNamePc_228[11] = "crawl_idle";
-#pragma const_seg()
-#pragma const_seg(".rdata$PlayerActionNamePc_229")
-    extern const char PlayerActionNamePc_229[11] = "crawl_move";
-#pragma const_seg()
-#pragma const_seg(".rdata$PlayerActionNamePc_230")
-    extern const char PlayerActionNamePc_230[5] = "swim";
-#pragma const_seg()
-#pragma const_seg(".rdata$PlayerActionNamePc_231")
-    extern const char PlayerActionNamePc_231[5] = "wade";
-#pragma const_seg()
-#pragma const_seg(".rdata$PlayerActionNamePc_232")
-    extern const char PlayerActionNamePc_232[4] = "dig";
 #pragma const_seg()
 #pragma const_seg(".rdata$PlayerActionNamePc_233")
     extern const char PlayerActionNamePc_233[6] = "winch";
 #pragma const_seg()
 #pragma data_seg(".data$PlayerActionInfoListPc")
-    API_ACTION_INFO_PC PlayerActionInfoListPc[234] = {
-        {Text_UnknownText, 0U},       {PlayerActionNamePc_001, 2U},  {"idle", 0U},
-        {PlayerActionNamePc_003, 0U}, {PlayerActionNamePc_004, 4U},  {PlayerActionNamePc_005, 1U},
-        {PlayerActionNamePc_006, 0U}, {PlayerActionNamePc_007, 0U},  {PlayerActionNamePc_008, 0U},
-        {PlayerActionNamePc_009, 0U}, {PlayerActionNamePc_010, 0U},  {PlayerActionNamePc_011, 0U},
-        {PlayerActionNamePc_012, 0U}, {PlayerActionNamePc_013, 0U},  {PlayerActionNamePc_014, 0U},
-        {PlayerActionNamePc_015, 0U}, {PlayerActionNamePc_016, 0U},  {PlayerActionNamePc_017, 0U},
-        {PlayerActionNamePc_018, 0U}, {PlayerActionNamePc_019, 0U},  {PlayerActionNamePc_020, 0U},
-        {PlayerActionNamePc_021, 0U}, {PlayerActionNamePc_022, 0U},  {PlayerActionNamePc_023, 0U},
-        {PlayerActionNamePc_024, 4U}, {PlayerActionNamePc_025, 0U},  {PlayerActionNamePc_026, 0U},
-        {PlayerActionNamePc_027, 8U}, {PlayerActionNamePc_028, 8U},  {PlayerActionNamePc_029, 8U},
-        {PlayerActionNamePc_030, 4U}, {PlayerActionNamePc_031, 0U},  {PlayerActionNamePc_032, 0U},
-        {PlayerActionNamePc_033, 0U}, {AITransferLiteral75786c, 0U}, {PlayerActionNamePc_035, 0U},
-        {AIActionOpenName, 0U},       {PlayerActionNamePc_037, 0U},  {PlayerActionNamePc_038, 0U},
-        {PlayerActionNamePc_039, 0U}, {PlayerActionNamePc_040, 0U},  {PlayerActionNamePc_041, 0U},
-        {PlayerActionNamePc_042, 0U}, {PlayerActionNamePc_043, 0U},  {PlayerActionNamePc_044, 0U},
-        {PlayerActionNamePc_045, 0U}, {PlayerActionNamePc_046, 0U},  {PlayerActionNamePc_047, 0U},
-        {PlayerActionNamePc_048, 0U}, {PlayerActionNamePc_049, 0U},  {PlayerActionNamePc_050, 0U},
-        {PlayerActionNamePc_051, 0U}, {PlayerActionNamePc_052, 0U},  {PlayerActionNamePc_053, 0U},
-        {PlayerActionNamePc_054, 0U}, {PlayerActionNamePc_055, 0U},  {PlayerActionNamePc_056, 0U},
-        {PlayerActionNamePc_057, 0U}, {PlayerActionNamePc_058, 0U},  {PlayerActionNamePc_059, 0U},
-        {PlayerActionNamePc_060, 0U}, {PlayerActionNamePc_061, 0U},  {PlayerActionNamePc_062, 0U},
-        {PlayerActionNamePc_063, 0U}, {PlayerActionNamePc_064, 1U},  {PlayerActionNamePc_065, 2U},
-        {PlayerActionNamePc_066, 0U}, {PlayerActionNamePc_067, 0U},  {PlayerActionNamePc_068, 0U},
-        {PlayerActionNamePc_069, 0U}, {PlayerActionNamePc_070, 0U},  {PlayerActionNamePc_071, 0U},
-        {PlayerActionNamePc_072, 0U}, {PlayerActionNamePc_073, 0U},  {PlayerActionNamePc_074, 0U},
-        {PlayerActionNamePc_075, 0U}, {PlayerActionNamePc_076, 0U},  {PlayerActionNamePc_077, 0U},
-        {PlayerActionNamePc_078, 0U}, {PlayerActionNamePc_079, 0U},  {PlayerActionNamePc_080, 0U},
-        {PlayerActionNamePc_081, 0U}, {PlayerActionNamePc_082, 0U},  {PlayerActionNamePc_083, 0U},
-        {PlayerActionNamePc_084, 0U}, {PlayerActionNamePc_085, 0U},  {PlayerActionNamePc_086, 0U},
-        {PlayerActionNamePc_087, 0U}, {PlayerActionNamePc_088, 0U},  {PlayerActionNamePc_089, 0U},
-        {PlayerActionNamePc_090, 0U}, {PlayerActionNamePc_091, 0U},  {PlayerActionNamePc_092, 0U},
-        {PlayerActionNamePc_093, 0U}, {PlayerActionNamePc_094, 0U},  {PlayerActionNamePc_095, 0U},
-        {PlayerActionNamePc_096, 0U}, {PlayerActionNamePc_097, 0U},  {PlayerActionNamePc_098, 0U},
-        {PlayerActionNamePc_099, 0U}, {PlayerActionNamePc_100, 0U},  {PlayerActionNamePc_101, 0U},
-        {PlayerActionNamePc_102, 0U}, {PlayerActionNamePc_103, 0U},  {PlayerActionNamePc_104, 0U},
-        {PlayerActionNamePc_105, 0U}, {PlayerActionNamePc_106, 0U},  {PlayerActionNamePc_107, 0U},
-        {PlayerActionNamePc_108, 0U}, {PlayerActionNamePc_109, 0U},  {PlayerActionNamePc_110, 0U},
-        {PlayerActionNamePc_111, 0U}, {PlayerActionNamePc_112, 0U},  {PlayerActionNamePc_113, 0U},
-        {PlayerActionNamePc_114, 1U}, {PlayerActionNamePc_115, 2U},  {PlayerActionNamePc_116, 4U},
-        {PlayerActionNamePc_117, 0U}, {PlayerActionNamePc_118, 0U},  {PlayerActionNamePc_119, 0U},
-        {PlayerActionNamePc_120, 0U}, {PlayerActionNamePc_121, 0U},  {PlayerActionNamePc_122, 0U},
-        {PlayerActionNamePc_123, 0U}, {PlayerActionNamePc_124, 0U},  {PlayerActionNamePc_125, 0U},
-        {PlayerActionNamePc_126, 0U}, {PlayerActionNamePc_127, 0U},  {PlayerActionNamePc_128, 0U},
-        {PlayerActionNamePc_129, 0U}, {PlayerActionNamePc_130, 0U},  {PlayerActionNamePc_131, 2U},
-        {PlayerActionNamePc_132, 0U}, {PlayerActionNamePc_133, 0U},  {PlayerActionNamePc_134, 0U},
-        {PlayerActionNamePc_135, 0U}, {PlayerActionNamePc_136, 0U},  {PlayerActionNamePc_137, 0U},
-        {PlayerActionNamePc_138, 0U}, {PlayerActionNamePc_139, 0U},  {PlayerActionNamePc_140, 0U},
-        {PlayerActionNamePc_141, 0U}, {PlayerActionNamePc_142, 0U},  {PlayerActionNamePc_143, 0U},
-        {PlayerActionNamePc_144, 0U}, {PlayerActionNamePc_145, 0U},  {PlayerActionNamePc_146, 0U},
-        {PlayerActionNamePc_147, 0U}, {PlayerActionNamePc_148, 0U},  {PlayerActionNamePc_149, 0U},
-        {PlayerActionNamePc_150, 0U}, {PlayerActionNamePc_151, 0U},  {PlayerActionNamePc_152, 0U},
-        {PlayerActionNamePc_153, 0U}, {PlayerActionNamePc_154, 0U},  {PlayerActionNamePc_155, 0U},
-        {PlayerActionNamePc_156, 0U}, {PlayerActionNamePc_157, 0U},  {PlayerActionNamePc_158, 0U},
-        {PlayerActionNamePc_159, 0U}, {PlayerActionNamePc_160, 0U},  {PlayerActionNamePc_161, 0U},
-        {PlayerActionNamePc_162, 0U}, {PlayerActionNamePc_163, 0U},  {PlayerActionNamePc_164, 0U},
-        {PlayerActionNamePc_165, 0U}, {PlayerActionNamePc_166, 0U},  {PlayerActionNamePc_167, 0U},
-        {PlayerActionNamePc_168, 0U}, {PlayerActionNamePc_169, 0U},  {PlayerActionNamePc_170, 0U},
-        {PlayerActionNamePc_171, 0U}, {PlayerActionNamePc_172, 0U},  {PlayerActionNamePc_173, 0U},
-        {PlayerActionNamePc_174, 0U}, {PlayerActionNamePc_175, 0U},  {PlayerActionNamePc_176, 0U},
-        {PlayerActionNamePc_177, 0U}, {PlayerActionNamePc_178, 0U},  {PlayerActionNamePc_179, 0U},
-        {PlayerActionNamePc_180, 0U}, {PlayerActionNamePc_181, 0U},  {PlayerActionNamePc_182, 0U},
-        {PlayerActionNamePc_183, 0U}, {PlayerActionNamePc_184, 0U},  {PlayerActionNamePc_185, 0U},
-        {PlayerActionNamePc_186, 0U}, {PlayerActionNamePc_187, 0U},  {PlayerActionNamePc_188, 0U},
-        {PlayerActionNamePc_189, 0U}, {PlayerActionNamePc_190, 0U},  {PlayerActionNamePc_191, 0U},
-        {PlayerActionNamePc_192, 0U}, {PlayerActionNamePc_193, 0U},  {PlayerActionNamePc_194, 0U},
-        {PlayerActionNamePc_195, 0U}, {PlayerActionNamePc_196, 0U},  {PlayerActionNamePc_197, 0U},
-        {PlayerActionNamePc_198, 2U}, {PlayerActionNamePc_199, 1U},  {PlayerActionNamePc_200, 2U},
-        {PlayerActionNamePc_201, 4U}, {PlayerActionNamePc_202, 0U},  {PlayerActionNamePc_203, 0U},
-        {PlayerActionNamePc_204, 0U}, {PlayerActionNamePc_205, 0U},  {PlayerActionNamePc_206, 0U},
-        {PlayerActionNamePc_207, 0U}, {PlayerActionNamePc_208, 0U},  {PlayerActionNamePc_209, 0U},
-        {PlayerActionNamePc_210, 0U}, {PlayerActionNamePc_211, 0U},  {PlayerActionNamePc_212, 0U},
-        {PlayerActionNamePc_213, 0U}, {PlayerActionNamePc_214, 0U},  {PlayerActionNamePc_215, 0U},
-        {PlayerActionNamePc_216, 0U}, {PlayerActionNamePc_217, 0U},  {PlayerActionNamePc_218, 0U},
-        {PlayerActionNamePc_219, 0U}, {PlayerActionNamePc_220, 0U},  {PlayerActionNamePc_221, 0U},
-        {PlayerActionNamePc_222, 0U}, {PlayerActionNamePc_223, 0U},  {PlayerActionNamePc_224, 0U},
-        {PlayerActionNamePc_225, 0U}, {PlayerActionNamePc_226, 0U},  {PlayerActionNamePc_227, 0U},
-        {PlayerActionNamePc_228, 0U}, {PlayerActionNamePc_229, 0U},  {PlayerActionNamePc_230, 0U},
-        {PlayerActionNamePc_231, 0U}, {PlayerActionNamePc_232, 0U},  {PlayerActionNamePc_233, 0U}};
+    API_ACTION_INFO_PC PlayerActionInfoListPc[234] = {{Text_UnknownText, 0U},
+                                                      {"walk", 2U},
+                                                      {"idle", 0U},
+                                                      {"fire", 0U},
+                                                      {"run", 4U},
+                                                      {"tiptoe", 1U},
+                                                      {"fall", 0U},
+                                                      {"jump", 0U},
+                                                      {"land", 0U},
+                                                      {"idle4", 0U},
+                                                      {"jump2", 0U},
+                                                      {"land2", 0U},
+                                                      {"force", 0U},
+                                                      {"flip", 0U},
+                                                      {"flipland", 0U},
+                                                      {"jump3", 0U},
+                                                      {"idle2", 0U},
+                                                      {"weaponin", 0U},
+                                                      {"weaponout", 0U},
+                                                      {"combojump", 0U},
+                                                      {"comboland", 0U},
+                                                      {"idle3", 0U},
+                                                      {"land3", 0U},
+                                                      {"shoot", 0U},
+                                                      {"run2", 4U},
+                                                      {"interface", 0U},
+                                                      {"weaponidle", 0U},
+                                                      {"block1", 8U},
+                                                      {"block2", 8U},
+                                                      {"block3", 8U},
+                                                      {"run3", 4U},
+                                                      {"crawl", 0U},
+                                                      {"lunge", 0U},
+                                                      {"lungeland", 0U},
+                                                      {AITransferLiteral75786c, 0U},
+                                                      {"slamland", 0U},
+                                                      {AIActionOpenName, 0U},
+                                                      {"hover", 0U},
+                                                      {"fly", 0U},
+                                                      {"left", 0U},
+                                                      {"force2", 0U},
+                                                      {"fall2", 0U},
+                                                      {"weaponback", 0U},
+                                                      {"up", 0U},
+                                                      {"pushed", 0U},
+                                                      {"in", 0U},
+                                                      {"out", 0U},
+                                                      {"combo1_1", 0U},
+                                                      {"combo1_2a", 0U},
+                                                      {"combo1_2b", 0U},
+                                                      {"combo1_3a", 0U},
+                                                      {"combo1_3b", 0U},
+                                                      {"combo1_3c", 0U},
+                                                      {"combo1_3d", 0U},
+                                                      {"combo2_1", 0U},
+                                                      {"combo2_2a", 0U},
+                                                      {"combo2_2b", 0U},
+                                                      {"combo2_3a", 0U},
+                                                      {"combo2_3b", 0U},
+                                                      {"combo2_3c", 0U},
+                                                      {"combo2_3d", 0U},
+                                                      {"shoot2", 0U},
+                                                      {"takehit", 0U},
+                                                      {"takehit2", 0U},
+                                                      {"tiptoe2", 1U},
+                                                      {"walk2", 2U},
+                                                      {"deactivated", 0U},
+                                                      {"deactivated2", 0U},
+                                                      {"deactivated3", 0U},
+                                                      {"deactivated4", 0U},
+                                                      {"interface2", 0U},
+                                                      {"interface3", 0U},
+                                                      {"interface4", 0U},
+                                                      {"hoverup", 0U},
+                                                      {"hoverdown", 0U},
+                                                      {"land4", 0U},
+                                                      {"fall3", 0U},
+                                                      {"fall4", 0U},
+                                                      {"fire2", 0U},
+                                                      {"eat", 0U},
+                                                      {"right", 0U},
+                                                      {"walkbackwards", 0U},
+                                                      {"punch", 0U},
+                                                      {"push", 0U},
+                                                      {"choked", 0U},
+                                                      {"zapped", 0U},
+                                                      {"punch2", 0U},
+                                                      {"punch3", 0U},
+                                                      {"combatroll_fire", 0U},
+                                                      {"forwards", 0U},
+                                                      {"fallland", 0U},
+                                                      {"shootleft", 0U},
+                                                      {"shootright", 0U},
+                                                      {"shootback", 0U},
+                                                      {"pulllever", 0U},
+                                                      {"helmeton", 0U},
+                                                      {"build", 0U},
+                                                      {"idle5", 0U},
+                                                      {"idle6", 0U},
+                                                      {"idle7", 0U},
+                                                      {"idle8", 0U},
+                                                      {"attack", 0U},
+                                                      {"throw", 0U},
+                                                      {"pickup", 0U},
+                                                      {"drop", 0U},
+                                                      {"grabbed", 0U},
+                                                      {"attacked", 0U},
+                                                      {"slide", 0U},
+                                                      {"communicate", 0U},
+                                                      {PlayerActionNamePc_109, 0U},
+                                                      {"helmeton2", 0U},
+                                                      {"throw2", 0U},
+                                                      {"throw3", 0U},
+                                                      {"ride2", 0U},
+                                                      {"extra_tiptoe", 1U},
+                                                      {"extra_walk", 2U},
+                                                      {"extra_run", 4U},
+                                                      {"extra_fall", 0U},
+                                                      {"extra_idle", 0U},
+                                                      {"extra_weaponidle", 0U},
+                                                      {"backflip", 0U},
+                                                      {"extra_jump", 0U},
+                                                      {"extra_jump2", 0U},
+                                                      {"extra_land", 0U},
+                                                      {"extra_land2", 0U},
+                                                      {"extra_lunge", 0U},
+                                                      {"extra_lungeland", 0U},
+                                                      {"extra_weaponin", 0U},
+                                                      {"extra_weaponout", 0U},
+                                                      {"activate", 0U},
+                                                      {"deactivate", 0U},
+                                                      {"walk3", 2U},
+                                                      {"ride3", 0U},
+                                                      {"ride4", 0U},
+                                                      {"splat", 0U},
+                                                      {"ride5", 0U},
+                                                      {"climb_idle", 0U},
+                                                      {"tightrope_idle", 0U},
+                                                      {"tightrope_move", 0U},
+                                                      {"wallshuffle_idle", 0U},
+                                                      {"wallshuffle_left", 0U},
+                                                      {"wallshuffle_right", 0U},
+                                                      {"putdown", 0U},
+                                                      {"float", 0U},
+                                                      {"tightrope_geton", 0U},
+                                                      {PlayerActionNamePc_145, 0U},
+                                                      {"hang_idle", 0U},
+                                                      {"hang_move", 0U},
+                                                      {"glide", 0U},
+                                                      {"punch_behind", 0U},
+                                                      {"tightrope_getoff", 0U},
+                                                      {"change", 0U},
+                                                      {"throw_wait", 0U},
+                                                      {"catch", 0U},
+                                                      {"hack", 0U},
+                                                      {"attract", 0U},
+                                                      {"transfer", 0U},
+                                                      {"sonar", 0U},
+                                                      {"ledge_idle", 0U},
+                                                      {"ledge_left", 0U},
+                                                      {"ledge_right", 0U},
+                                                      {"transform", 0U},
+                                                      {"walljump_wait", 0U},
+                                                      {"walljump", 0U},
+                                                      {"supercarry_pickup", 0U},
+                                                      {"supercarry_idle", 0U},
+                                                      {"supercarry_walk", 0U},
+                                                      {"supercarry_throw", 0U},
+                                                      {"stun", 0U},
+                                                      {"stun2", 0U},
+                                                      {"stun3", 0U},
+                                                      {"stunned", 0U},
+                                                      {"stunned2", 0U},
+                                                      {"stunned3", 0U},
+                                                      {"security", 0U},
+                                                      {"superpush_idle", 0U},
+                                                      {"superpush_push", 0U},
+                                                      {"superpush_pull", 0U},
+                                                      {"ballooning", 0U},
+                                                      {"throw_quick", 0U},
+                                                      {"backpackfallland", 0U},
+                                                      {"combatroll_jump", 0U},
+                                                      {"combatroll_fall", 0U},
+                                                      {"combatroll_land", 0U},
+                                                      {"recoil", 0U},
+                                                      {"die_air", 0U},
+                                                      {"stun_die", 0U},
+                                                      {"grapple_idle", 0U},
+                                                      {"grapple_up", 0U},
+                                                      {"grapple_down", 0U},
+                                                      {"grapple_hang", 0U},
+                                                      {"idle9", 0U},
+                                                      {"idle10", 0U},
+                                                      {"ride6", 0U},
+                                                      {"ride7", 0U},
+                                                      {"ride8", 0U},
+                                                      {"ride9", 0U},
+                                                      {"ride10", 0U},
+                                                      {"magnet_walk_metal", 2U},
+                                                      {"magnet_tiptoe", 1U},
+                                                      {"magnet_walk", 2U},
+                                                      {"magnet_run", 4U},
+                                                      {"magnet_jump", 0U},
+                                                      {"magnet_land", 0U},
+                                                      {"dropin", 0U},
+                                                      {"dropout", 0U},
+                                                      {"climb_up", 0U},
+                                                      {"climb_down", 0U},
+                                                      {"climb_left", 0U},
+                                                      {"climb_right", 0U},
+                                                      {"ai_override1", 0U},
+                                                      {"ai_override2", 0U},
+                                                      {"ai_override3", 0U},
+                                                      {"ai_override4", 0U},
+                                                      {"supercarry_putdown", 0U},
+                                                      {"supercarry_bash", 0U},
+                                                      {"supercarry_jump", 0U},
+                                                      {"supercarry_land", 0U},
+                                                      {"supercarry_fallland", 0U},
+                                                      {"ledge_grab", 0U},
+                                                      {"teeter", 0U},
+                                                      {"whip_start", 0U},
+                                                      {"whip_crack", 0U},
+                                                      {"whip_grab", 0U},
+                                                      {"whip_break", 0U},
+                                                      {"whip_swing_start", 0U},
+                                                      {"whip_swing_swing", 0U},
+                                                      {"whip_swing_jump", 0U},
+                                                      {"crawl_idle", 0U},
+                                                      {"crawl_move", 0U},
+                                                      {"swim", 0U},
+                                                      {"wade", 0U},
+                                                      {"dig", 0U},
+                                                      {PlayerActionNamePc_233, 0U}};
 #pragma data_seg()
 #pragma data_seg(".data$PlayerBlockActionInfoPc")
     void *PlayerBlockActionInfoPc = &PlayerActionInfoListPc[1];
@@ -15398,9 +13086,6 @@ extern "C" {
 }
 
 extern "C" {
-#pragma const_seg(".rdata$DebrisTimeBarName")
-    extern const char DebrisTimeBarName[4] = "deb";
-#pragma const_seg()
 #pragma data_seg(".data$DebrisSuspendDrawObjectSwitch")
     i32 DebrisSuspendDrawObjectSwitch = -1;
 #pragma data_seg()
@@ -15850,26 +13535,14 @@ extern "C" {
     f32 coinimpactwait = 0;
 #pragma bss_seg()
 }
-extern "C" {
-#pragma const_seg(".rdata$PowerUpBounceSfx_PC")
-    extern const char PowerUpBounceSfx_PC[21] = "Gungan_BlueOrbBounce";
-#pragma const_seg()
-}
+extern "C" {}
 extern "C" {
 #pragma const_seg(".rdata$PickupCoinSfx_PC")
     extern const char PickupCoinSfx_PC[11] = "PickupCoin";
 #pragma const_seg()
 }
-extern "C" {
-#pragma const_seg(".rdata$CoinDropSilverSfx_PC")
-    extern const char CoinDropSilverSfx_PC[10] = "CoinDropS";
-#pragma const_seg()
-}
-extern "C" {
-#pragma const_seg(".rdata$CoinDropGoldSfx_PC")
-    extern const char CoinDropGoldSfx_PC[10] = "CoinDropG";
-#pragma const_seg()
-}
+extern "C" {}
+extern "C" {}
 extern "C" {
 #pragma const_seg(".rdata$PowerUpLoopSfx_PC")
     extern const char PowerUpLoopSfx_PC[18] = "Grv_GuardWeaponLp";
@@ -15955,9 +13628,6 @@ extern "C" {
 #pragma data_seg(".data$GizBuilditGDeb")
     i16 GizBuilditGDeb[6] = {-1, -1, -1, -1, -1, -1};
 #pragma data_seg()
-#pragma const_seg(".rdata$PickupMultiplierFormat")
-    extern const char PickupMultiplierFormat[4] = "x%i";
-#pragma const_seg()
 #pragma bss_seg(".bss$DrawCoinTotalTime")
     f32 DrawCoinTotalTime = 0;
 #pragma bss_seg()
@@ -16051,17 +13721,6 @@ extern "C" {
 }
 
 extern "C" {
-#pragma const_seg(".rdata$PlayerBeenDeactivatedPc")
-    extern const char PlayerBeenDeactivatedPc[16] = "BeenDeactivated";
-#pragma const_seg()
-
-#pragma const_seg(".rdata$ShieldHitSfxPc")
-    extern const char ShieldHitSfxPc[9] = "DDekaHit";
-#pragma const_seg()
-
-#pragma const_seg(".rdata$ShieldFlickerSfxPc")
-    extern const char ShieldFlickerSfxPc[13] = "DDekaFlicker";
-#pragma const_seg()
 
 #pragma data_seg(".data$id_GAMORREANGUARD")
     i16 id_GAMORREANGUARD = -1;
@@ -17695,18 +15354,6 @@ extern "C" {
     const char ForcePushSoundNamePc[11] = "JForcePush";
 #pragma const_seg()
 
-#pragma const_seg(".rdata$VehicleSmartBombChargeNamePc")
-    const char VehicleSmartBombChargeNamePc[10] = "JForceUse";
-#pragma const_seg()
-
-#pragma const_seg(".rdata$VehicleShieldOnNamePc")
-    const char VehicleShieldOnNamePc[10] = "DDekaShOn";
-#pragma const_seg()
-
-#pragma const_seg(".rdata$PodBoosterSoundNamePc")
-    const char PodBoosterSoundNamePc[13] = "PodX_Booster";
-#pragma const_seg()
-
 #pragma data_seg(".data$id_DODGEM")
     i16 id_DODGEM = -1;
 #pragma data_seg()
@@ -17853,13 +15500,6 @@ extern "C" {
 }
 
 extern "C" {
-#pragma const_seg(".rdata$RenderSplineShopStartPc")
-    const char RenderSplineShopStartPc[11] = "shop_start";
-#pragma const_seg()
-
-#pragma const_seg(".rdata$RenderSplineBountyStartPc")
-    const char RenderSplineBountyStartPc[13] = "bounty_start";
-#pragma const_seg()
 
 #pragma data_seg(".data$DrawStatusScaleXPc")
     f32 DrawStatusScaleXPc = 350.0f;
@@ -17923,9 +15563,6 @@ extern "C" {
 }
 
 extern "C" {
-#pragma const_seg(".rdata$RtlSearchTimebarNamePc")
-    const char RtlSearchTimebarNamePc[9] = "RTL srch";
-#pragma const_seg()
 
 #pragma data_seg(".data$LightingUnitDirectionPc")
     NUVEC LightingUnitDirectionPc = {1.0f, 0.0f, 0.0f};
@@ -18382,9 +16019,6 @@ extern "C" {
 }
 
 extern "C" {
-#pragma const_seg(".rdata$GizObstacleTriggerLimitMessagePc")
-    const char GizObstacleTriggerLimitMessagePc[59] = "MAXGIZOBSTACLETRIGGERS needs increasing, ask a programmer!";
-#pragma const_seg()
 
 #pragma data_seg(".data$ShoveMaximumSpeedPc")
     f32 ShoveMaximumSpeedPc = 2.0f;
@@ -18686,9 +16320,6 @@ extern "C" {
 #pragma const_seg(".rdata$AICameraLiteral758084")
     const char AICameraLiteral758084[12] = "start_time=";
 #pragma const_seg()
-#pragma const_seg(".rdata$AICameraLiteral758070")
-    const char AICameraLiteral758070[18] = "end_time=infinite";
-#pragma const_seg()
 #pragma const_seg(".rdata$AICameraLiteral758064")
     const char AICameraLiteral758064[10] = "end_time=";
 #pragma const_seg()
@@ -18712,9 +16343,6 @@ extern "C" {
 #pragma const_seg()
 #pragma const_seg(".rdata$AICameraLiteral758008")
     const char AICameraLiteral758008[6] = "rotx=";
-#pragma const_seg()
-#pragma const_seg(".rdata$AICameraLiteral757ffc")
-    const char AICameraLiteral757ffc[10] = "FollowTgt";
 #pragma const_seg()
 #pragma const_seg(".rdata$AICameraLiteral757ff0")
     const char AICameraLiteral757ff0[11] = "dcampos_x=";
@@ -18745,54 +16373,6 @@ extern "C" {
 #pragma const_seg()
 #pragma const_seg(".rdata$AICameraLiteral757f84")
     const char AICameraLiteral757f84[11] = "no_borders";
-#pragma const_seg()
-#pragma const_seg(".rdata$AICameraLiteral758160")
-    const char AICameraLiteral758160[18] = "attach_to_spline=";
-#pragma const_seg()
-#pragma const_seg(".rdata$AICameraLiteral75814c")
-    const char AICameraLiteral75814c[20] = "spline_dist_offset=";
-#pragma const_seg()
-#pragma const_seg(".rdata$AICameraLiteral758140")
-    const char AICameraLiteral758140[12] = "blend_time=";
-#pragma const_seg()
-#pragma const_seg(".rdata$AICameraLiteral758134")
-    const char AICameraLiteral758134[10] = "max_time=";
-#pragma const_seg()
-#pragma const_seg(".rdata$AICameraLiteral758128")
-    const char AICameraLiteral758128[11] = "hold_time=";
-#pragma const_seg()
-#pragma const_seg(".rdata$AICameraLiteral75811c")
-    const char AICameraLiteral75811c[11] = "cont_roty=";
-#pragma const_seg()
-#pragma const_seg(".rdata$AICameraLiteral758110")
-    const char AICameraLiteral758110[11] = "cont_rotx=";
-#pragma const_seg()
-#pragma const_seg(".rdata$AICameraLiteral758104")
-    const char AICameraLiteral758104[11] = "cont_rotz=";
-#pragma const_seg()
-#pragma const_seg(".rdata$AICameraLiteral7580fc")
-    const char AICameraLiteral7580fc[6] = "rotz=";
-#pragma const_seg()
-#pragma const_seg(".rdata$AICameraLiteral7580f0")
-    const char AICameraLiteral7580f0[12] = "mode=follow";
-#pragma const_seg()
-#pragma const_seg(".rdata$AICameraLiteral7580e4")
-    const char AICameraLiteral7580e4[12] = "mode=static";
-#pragma const_seg()
-#pragma const_seg(".rdata$AICameraLiteral7580dc")
-    const char AICameraLiteral7580dc[7] = "linear";
-#pragma const_seg()
-#pragma const_seg(".rdata$AICameraLiteral7580cc")
-    const char AICameraLiteral7580cc[13] = "slowfastslow";
-#pragma const_seg()
-#pragma const_seg(".rdata$AICameraLiteral7580c0")
-    const char AICameraLiteral7580c0[9] = "slowfast";
-#pragma const_seg()
-#pragma const_seg(".rdata$AICameraLiteral7580b0")
-    const char AICameraLiteral7580b0[13] = "fastslowfast";
-#pragma const_seg()
-#pragma const_seg(".rdata$AICameraLiteral7580a4")
-    const char AICameraLiteral7580a4[9] = "fastslow";
 #pragma const_seg()
 }
 
@@ -19155,12 +16735,6 @@ extern "C" {
 #pragma data_seg(".data$NuTexturePhongCubePc")
     PC_TEXTURE_RESOURCE_PC *NuTexturePhongCubePc = NULL;
 #pragma data_seg()
-#pragma const_seg(".rdata$NuTextureEnvironmentCubePathPc")
-    const char NuTextureEnvironmentCubePathPc[28] = "pc\\stuff\\LegoCubeMap_PC.dds";
-#pragma const_seg()
-#pragma const_seg(".rdata$NuTexturePhongCubePathPc")
-    const char NuTexturePhongCubePathPc[25] = "pc\\stuff\\PhongMap_PC.dds";
-#pragma const_seg()
 #pragma const_seg(".rdata$PCDeviceTextureCubeSourcePathPc")
     const char PCDeviceTextureCubeSourcePathPc[15] = ".\\d3dCalls.cpp";
 #pragma const_seg()
@@ -19197,9 +16771,6 @@ extern "C" {
 #pragma data_seg(".data$StreakAlphaScalePc")
     f32 StreakAlphaScalePc = 2.0f;
 #pragma data_seg()
-#pragma const_seg(".rdata$RippleForceFieldSoundNamePc")
-    const char RippleForceFieldSoundNamePc[10] = "SabFField";
-#pragma const_seg()
 #pragma data_seg(".data$PodDustLocatorIndicesPc")
     i32 PodDustLocatorIndicesPc[2] = {1, 2};
 #pragma data_seg()
@@ -19623,9 +17194,6 @@ extern "C" {
     i16 id_BATTLEDROIDSECURITY = -1;
     i16 id_CLONEEP3 = -1;
     i16 id_CLONEEP3SAND = -1;
-#pragma const_seg(".rdata$AIActionTorpedoPrefixPc")
-    extern const char AIActionTorpedoPrefixPc[9] = "torpedo=";
-#pragma const_seg()
 }
 
 // Sole-writer proposal only. Native working record 288; original owning extent remains unknown.
@@ -28391,8 +25959,6 @@ extern "C" {
 #pragma const_seg(".rdata$MaterialSamplerConstantsPc")
 extern "C" {
     extern const f32 PCSamplerBiasMinimum = -16.0f;
-    extern const f32 PCSamplerBiasMaximum = 15.96875f;
-    extern const f64 PCSamplerBiasMaximumComparison = 15.96875;
 }
 #pragma const_seg()
 
@@ -28553,7 +26119,6 @@ extern "C" {
 
 extern "C" {
     extern const char PermLegalDirectoryPc[] = "stuff\\legal\\";
-    extern const char PermLegalPcPrefixPc[] = "pc\\pc_";
 }
 
 extern "C" {
@@ -28571,8 +26136,7 @@ i32 PcSaveFolderRegisteredPc = 0;
 
 extern "C" {
     char SaveProductCodePc[12] = {0};
-    extern const char SaveIconFilenamePc[9] = "lego.ico";
-    const char *SaveIconNamePc = SaveIconFilenamePc;
+    const char *SaveIconNamePc = "lego.ico";
     char SaveUnicodeNamePc[20] = "LEGO Star Wars Saga";
     /* Special the save icon is drawn from (LoadPermLoadSaveIconScene). */
     char *lsw_memcard_objname = "mem_card";
@@ -30413,180 +27977,16 @@ extern "C" {
     extern const char MenuPcString75f2c4[4] = "Yes";
     extern const char MenuPcString76b274[4] = "Off";
     extern const char MenuPcString76f660[3] = "On";
-    extern const char MenuPcString770fbc[5] = "Ende";
-    extern const char MenuPcString772c44[8] = "Tilbage";
-    extern const char MenuPcString772dd4[5] = "H\303\270j";
-    extern const char MenuPcString773210[5] = "Baja";
-    extern const char MenuPcString7733f0[8] = "Zur\303\274ck";
-    extern const char MenuPcString773568[5] = "Hoch";
-    extern const char MenuPcString77375c[9] = "Indietro";
     extern const char MenuPcString773934[5] = "Alta";
-    extern const char MenuPcString77393c[6] = "Bassa";
-    extern const char MenuPcString773b98[7] = "Retour";
-    extern const char MenuPcString774bb4[4] = "Lav";
     extern const char MenuPcString77565c[5] = "High";
     extern const char MenuPcString775664[4] = "Low";
     extern const char MenuPcString775b04[5] = "FSAA";
-    extern const char MenuPcString77601c[8] = "Kant-AA";
-    extern const char MenuPcString776024[22] = "Dynamisk lys-kvalitet";
-    extern const char MenuPcString77603c[9] = "Sl\303\270ring";
-    extern const char MenuPcString776048[10] = "Synsdybde";
-    extern const char MenuPcString776054[8] = "Skygger";
-    extern const char MenuPcString77605c[8] = "Ekstern";
-    extern const char MenuPcString776064[27] = "Anti-aliasing, fuld sk\303\246rm";
-    extern const char MenuPcString776080[18] = "Effektindstilling";
-    extern const char MenuPcString776094[63] =
-        "Du skal genstarte spillet for at \303\246ndringerne tr\303\246der i kraft.";
-    extern const char MenuPcString7760d4[13] = "Vend tilbage";
-    extern const char MenuPcString7760e4[16] = "Teksturkvalitet";
-    extern const char MenuPcString7760f4[36] = "Brug nuv\303\246rende grafikindstillinger";
-    extern const char MenuPcString776118[21] = "Fra sk\303\246rmopl\303\270sning";
-    extern const char MenuPcString776130[17] = "Forbedret grafik";
-    extern const char MenuPcString776144[19] = "St\303\270rrelsesforhold";
-    extern const char MenuPcString776158[17] = "Sk\303\246rmopdatering";
-    extern const char MenuPcString77616c[15] = "Billedfrekvens";
-    extern const char MenuPcString77617c[17] = "Sk\303\246rmopl\303\270sning";
-    extern const char MenuPcString776190[20] = "Grafikindstillinger";
-    extern const char MenuPcString7761a4[8] = "Nulstil";
-    extern const char MenuPcString7761ac[4] = "Fra";
-    extern const char MenuPcString7761b0[4] = "Til";
-    extern const char MenuPcString7761b4[9] = "Annuller";
-    extern const char MenuPcString7761c0[4] = "Nej";
-    extern const char MenuPcString7761c4[7] = "Afsl\303\245";
-    extern const char MenuPcString7761cc[9] = "Genoptag";
-    extern const char MenuPcString7761d8[7] = "Mellem";
-    extern const char MenuPcString7761e0[25] = "Vend tilbage til spillet";
-    extern const char MenuPcString7761fc[28] = "Slut og g\303\245 til Demo-menuen";
-    extern const char MenuPcString776218[19] = "Forlad til Windows";
-    extern const char MenuPcString77622c[7] = "Forlad";
-    extern const char MenuPcString776234[20] = "Suavizado de bordes";
-    extern const char MenuPcString776248[25] = "Calidad de luz din\303\241mica";
-    extern const char MenuPcString776264[25] = "Distorsi\303\263n de velocidad";
-    extern const char MenuPcString776280[21] = "Profundidad de campo";
-    extern const char MenuPcString776298[8] = "Sombras";
-    extern const char MenuPcString7762a0[22] = "Ajustado externamente";
-    extern const char MenuPcString7762b8[5] = "AAPC";
-    extern const char MenuPcString7762c0[19] = "Ajustes de efectos";
-    extern const char MenuPcString7762d4[62] = "Debes reiniciar el juego para que estos cambios tengan efecto";
-    extern const char MenuPcString776314[9] = "Revertir";
-    extern const char MenuPcString776320[19] = "Calidad de textura";
-    extern const char MenuPcString776334[25] = "Usar ajustes de actuales";
-    extern const char MenuPcString776350[12] = "R. pantalla";
-    extern const char MenuPcString77635c[20] = "Gr\303\241ficos mejorados";
-    extern const char MenuPcString776370[21] = "Relaci\303\263n de aspecto";
-    extern const char MenuPcString776388[25] = "Sincronizaci\303\263n vertical";
-    extern const char MenuPcString7763a4[23] = "Tasa de actualizaci\303\263n";
-    extern const char MenuPcString7763bc[12] = "Resoluci\303\263n";
-    extern const char MenuPcString7763c8[18] = "Ajustes de v\303\255deo";
-    extern const char MenuPcString7763dc[28] = "Restablecer predeterminados";
-    extern const char MenuPcString7763f8[9] = "Cancelar";
     extern const char MenuPcString776404[4] = "S\303\255";
-    extern const char MenuPcString776408[7] = "Atr\303\241s";
-    extern const char MenuPcString776410[9] = "Rechazar";
     extern const char MenuPcString77641c[8] = "Aceptar";
-    extern const char MenuPcString776424[9] = "Reanudar";
-    extern const char MenuPcString776430[16] = "Volver al juego";
-    extern const char MenuPcString776440[23] = "Salir al menu del demo";
-    extern const char MenuPcString776458[16] = "Salir a Windows";
-    extern const char MenuPcString776468[6] = "Salir";
-    extern const char MenuPcString776470[24] = "Qualit\303\240 luci dinamiche";
-    extern const char MenuPcString776488[20] = "Sfumatura movimento";
-    extern const char MenuPcString77649c[21] = "Profondit\303\240 di campo";
-    extern const char MenuPcString7764b4[12] = "Luminosit\303\240";
-    extern const char MenuPcString7764c0[6] = "Ombre";
-    extern const char MenuPcString7764c8[23] = "Impostato esternamente";
-    extern const char MenuPcString7764e0[8] = "Effetti";
-    extern const char MenuPcString7764e8[64] = "Devi riavviare il gioco affinch\303\251 le modifiche abbiano effetto.";
-    extern const char MenuPcString776528[11] = "Ripristina";
-    extern const char MenuPcString776534[17] = "Qualit\303\240 texture";
-    extern const char MenuPcString776548[25] = "Usa impostazioni attuali";
-    extern const char MenuPcString776564[15] = "Da risoluzione";
-    extern const char MenuPcString776574[19] = "Grafica migliorata";
-    extern const char MenuPcString776588[9] = "Rapporto";
-    extern const char MenuPcString776594[27] = "Sincronizzazione verticale";
-    extern const char MenuPcString7765b0[27] = "Frequenza di aggiornamento";
-    extern const char MenuPcString7765cc[20] = "Risoluzione schermo";
-    extern const char MenuPcString7765e0[6] = "Video";
-    extern const char MenuPcString7765e8[25] = "Impostazioni predefinite";
-    extern const char MenuPcString776604[4] = "S\303\254";
     extern const char MenuPcString776608[8] = "Annulla";
-    extern const char MenuPcString776610[8] = "Accetta";
-    extern const char MenuPcString776618[9] = "Riprendi";
     extern const char MenuPcString776624[6] = "Media";
-    extern const char MenuPcString77662c[15] = "Torna al gioco";
-    extern const char MenuPcString77663c[18] = "Esci al Menu Demo";
-    extern const char MenuPcString776650[16] = "Torna a Windows";
-    extern const char MenuPcString776660[5] = "Esci";
-    extern const char MenuPcString776668[16] = "Kantengl\303\244ttung";
-    extern const char MenuPcString776678[52] = "Qualit\303\244t der dynamischen Beleuchtungsverh\303\244ltnisse";
-    extern const char MenuPcString7766ac[27] = "Geschwindigkeitsunsch\303\244rfe";
-    extern const char MenuPcString7766c8[15] = "Sch\303\244rfentiefe";
-    extern const char MenuPcString7766d8[12] = "Bloomeffekt";
-    extern const char MenuPcString7766e4[9] = "Schatten";
-    extern const char MenuPcString7766f0[20] = "Extern konfiguriert";
-    extern const char MenuPcString776704[20] = "Effekteinstellungen";
-    extern const char MenuPcString776718[76] =
-        "Du musst das Spiel erneut starten, damit diese \303\204nderungen in Kraft treten.";
-    extern const char MenuPcString776764[9] = "Umkehren";
-    extern const char MenuPcString776770[23] = "Qualit\303\244t der Texturen";
-    extern const char MenuPcString776788[33] = "Aktuelle Einstellungen verwenden";
-    extern const char MenuPcString7767ac[11] = "Aufl\303\266sung";
-    extern const char MenuPcString7767b8[18] = "Erh\303\266hte Grafiken";
-    extern const char MenuPcString7767cc[18] = "Seitenverh\303\244ltnis";
-    extern const char MenuPcString7767e0[19] = "Vertikales Synchr.";
-    extern const char MenuPcString7767f4[22] = "Bildwiederholfrequenz";
-    extern const char MenuPcString77680c[21] = "Bildschirmaufl\303\266sung";
-    extern const char MenuPcString776824[20] = "Grafikeinstellungen";
-    extern const char MenuPcString776838[32] = "Zur\303\274cksetzen auf Standardwerte";
-    extern const char MenuPcString776858[4] = "Aus";
-    extern const char MenuPcString77685c[4] = "Ein";
-    extern const char MenuPcString776860[10] = "Abbrechen";
-    extern const char MenuPcString77686c[5] = "Nein";
     extern const char MenuPcString776874[3] = "Ja";
-    extern const char MenuPcString776878[9] = "Ablehnen";
-    extern const char MenuPcString776884[9] = "Annehmen";
-    extern const char MenuPcString776890[11] = "Fortsetzen";
-    extern const char MenuPcString77689c[7] = "Mittel";
-    extern const char MenuPcString7768a4[7] = "Gering";
-    extern const char MenuPcString7768ac[18] = "Zur\303\274ck zum Spiel";
-    extern const char MenuPcString7768c0[30] = "Schlie\303\237en und zum Demo-Men\303\274";
-    extern const char MenuPcString7768e0[19] = "Zur\303\274ck zu Windows";
-    extern const char MenuPcString7768f4[20] = "Lissage des ar\303\252tes";
-    extern const char MenuPcString776908[28] = "Qualit\303\251 lumi\303\250re dynamique";
-    extern const char MenuPcString776924[24] = "Flou (effet de vitesse)";
-    extern const char MenuPcString77693c[21] = "Distance d'affichage";
-    extern const char MenuPcString776954[12] = "Luminosit\303\251";
-    extern const char MenuPcString776960[7] = "Ombres";
-    extern const char MenuPcString776968[19] = "D\303\251fini en externe";
-    extern const char MenuPcString77697c[21] = "Param\303\250tres d'effets";
-    extern const char MenuPcString776998[71] =
-        "Vous devez red\303\251marrer le jeu pour que ces changements prennent effet.";
-    extern const char MenuPcString7769e0[9] = "Inverser";
-    extern const char MenuPcString7769ec[18] = "Qualit\303\251 Textures";
-    extern const char MenuPcString776a00[33] = "Utiliser les param\303\250tres actuels";
-    extern const char MenuPcString776a24[19] = "R\303\251solution \303\251cran";
-    extern const char MenuPcString776a38[23] = "Graphismes am\303\251lior\303\251s";
-    extern const char MenuPcString776a50[7] = "Format";
-    extern const char MenuPcString776a58[26] = "Synchronisation verticale";
-    extern const char MenuPcString776a74[26] = "Taux de rafra\303\256chissement";
-    extern const char MenuPcString776a90[12] = "R\303\251solution";
-    extern const char MenuPcString776a9c[19] = "Param\303\250tres vid\303\251o";
-    extern const char MenuPcString776ab0[24] = "Param\303\250tres par d\303\251faut";
-    extern const char MenuPcString776ac8[5] = "Sans";
-    extern const char MenuPcString776ad0[5] = "Avec";
-    extern const char MenuPcString776ad8[8] = "Annuler";
-    extern const char MenuPcString776ae0[4] = "Non";
-    extern const char MenuPcString776ae4[4] = "Oui";
-    extern const char MenuPcString776ae8[8] = "Refuser";
     extern const char MenuPcString776af0[9] = "Accepter";
-    extern const char MenuPcString776afc[10] = "Reprendre";
-    extern const char MenuPcString776b08[8] = "Elev\303\251e";
-    extern const char MenuPcString776b10[8] = "Moyenne";
-    extern const char MenuPcString776b18[7] = "Faible";
-    extern const char MenuPcString776b20[20] = "Reprendre la partie";
-    extern const char MenuPcString776b34[22] = "Quitter au menu D\303\251mo";
-    extern const char MenuPcString776b4c[21] = "Revenir sous Windows";
-    extern const char MenuPcString776b64[8] = "Quitter";
     extern const char MenuPcString776b6c[19] = "Show Game Controls";
     extern const char MenuPcString776b80[8] = "Edge AA";
     extern const char MenuPcString776b88[22] = "Dynamic Light Quality";
@@ -30641,144 +28041,224 @@ extern "C" {
         {36, MenuPcString776b88}, {37, MenuPcString776b80}, {38, MenuPcString776b6c}, {39, NULL},
     };
     MENU_PC_STRING_ENTRY MenuPcStringTable827a80[40] = {
-        {0, MenuPcString776b64},  {1, MenuPcString776b4c},  {2, MenuPcString776b34},  {3, MenuPcString776b20},
-        {4, MenuPcString776b18},  {5, MenuPcString776b10},  {6, MenuPcString776b08},  {7, MenuPcString776afc},
-        {8, MenuPcString776af0},  {9, MenuPcString776ae8},  {10, MenuPcString773b98}, {11, MenuPcString776ae4},
-        {12, MenuPcString776ae0}, {13, MenuPcString75f2bc}, {14, MenuPcString776ad8}, {15, MenuPcString776ad0},
-        {16, MenuPcString776ac8}, {17, MenuPcString776ab0}, {18, MenuPcString776a9c}, {19, MenuPcString776a90},
-        {20, MenuPcString776a74}, {21, MenuPcString776a58}, {22, MenuPcString776a50}, {23, MenuPcString776a38},
-        {24, MenuPcString776a24}, {25, MenuPcString776a00}, {26, MenuPcString7769ec}, {27, MenuPcString7769e0},
-        {28, MenuPcString776998}, {29, MenuPcString77697c}, {30, MenuPcString775b04}, {31, MenuPcString776968},
-        {32, MenuPcString776960}, {33, MenuPcString776954}, {34, MenuPcString77693c}, {35, MenuPcString776924},
-        {36, MenuPcString776908}, {37, MenuPcString7768f4}, {38, MenuPcString776b6c}, {39, NULL},
+        {0, "Quitter"},
+        {1, "Revenir sous Windows"},
+        {2, "Quitter au menu D\303\251mo"},
+        {3, "Reprendre la partie"},
+        {4, "Faible"},
+        {5, "Moyenne"},
+        {6, "Elev\303\251e"},
+        {7, "Reprendre"},
+        {8, MenuPcString776af0},
+        {9, "Refuser"},
+        {10, "Retour"},
+        {11, "Oui"},
+        {12, "Non"},
+        {13, MenuPcString75f2bc},
+        {14, "Annuler"},
+        {15, "Avec"},
+        {16, "Sans"},
+        {17, "Param\303\250tres par d\303\251faut"},
+        {18, "Param\303\250tres vid\303\251o"},
+        {19, "R\303\251solution"},
+        {20, "Taux de rafra\303\256chissement"},
+        {21, "Synchronisation verticale"},
+        {22, "Format"},
+        {23, "Graphismes am\303\251lior\303\251s"},
+        {24, "R\303\251solution \303\251cran"},
+        {25, "Utiliser les param\303\250tres actuels"},
+        {26, "Qualit\303\251 Textures"},
+        {27, "Inverser"},
+        {28, "Vous devez red\303\251marrer le jeu pour que ces changements prennent effet."},
+        {29, "Param\303\250tres d'effets"},
+        {30, MenuPcString775b04},
+        {31, "D\303\251fini en externe"},
+        {32, "Ombres"},
+        {33, "Luminosit\303\251"},
+        {34, "Distance d'affichage"},
+        {35, "Flou (effet de vitesse)"},
+        {36, "Qualit\303\251 lumi\303\250re dynamique"},
+        {37, "Lissage des ar\303\252tes"},
+        {38, MenuPcString776b6c},
+        {39, NULL},
     };
     MENU_PC_STRING_ENTRY MenuPcStringTable827bc0[40] = {
-        {0, MenuPcString770fbc},  {1, MenuPcString7768e0},  {2, MenuPcString7768c0},  {3, MenuPcString7768ac},
-        {4, MenuPcString7768a4},  {5, MenuPcString77689c},  {6, MenuPcString773568},  {7, MenuPcString776890},
-        {8, MenuPcString776884},  {9, MenuPcString776878},  {10, MenuPcString7733f0}, {11, MenuPcString776874},
-        {12, MenuPcString77686c}, {13, MenuPcString75f2bc}, {14, MenuPcString776860}, {15, MenuPcString77685c},
-        {16, MenuPcString776858}, {17, MenuPcString776838}, {18, MenuPcString776824}, {19, MenuPcString77680c},
-        {20, MenuPcString7767f4}, {21, MenuPcString7767e0}, {22, MenuPcString7767cc}, {23, MenuPcString7767b8},
-        {24, MenuPcString7767ac}, {25, MenuPcString776788}, {26, MenuPcString776770}, {27, MenuPcString776764},
-        {28, MenuPcString776718}, {29, MenuPcString776704}, {30, MenuPcString775b04}, {31, MenuPcString7766f0},
-        {32, MenuPcString7766e4}, {33, MenuPcString7766d8}, {34, MenuPcString7766c8}, {35, MenuPcString7766ac},
-        {36, MenuPcString776678}, {37, MenuPcString776668}, {38, MenuPcString776b6c}, {39, NULL},
+        {0, "Ende"},
+        {1, "Zur\303\274ck zu Windows"},
+        {2, "Schlie\303\237en und zum Demo-Men\303\274"},
+        {3, "Zur\303\274ck zum Spiel"},
+        {4, "Gering"},
+        {5, "Mittel"},
+        {6, "Hoch"},
+        {7, "Fortsetzen"},
+        {8, "Annehmen"},
+        {9, "Ablehnen"},
+        {10, "Zur\303\274ck"},
+        {11, MenuPcString776874},
+        {12, "Nein"},
+        {13, MenuPcString75f2bc},
+        {14, "Abbrechen"},
+        {15, "Ein"},
+        {16, "Aus"},
+        {17, "Zur\303\274cksetzen auf Standardwerte"},
+        {18, "Grafikeinstellungen"},
+        {19, "Bildschirmaufl\303\266sung"},
+        {20, "Bildwiederholfrequenz"},
+        {21, "Vertikales Synchr."},
+        {22, "Seitenverh\303\244ltnis"},
+        {23, "Erh\303\266hte Grafiken"},
+        {24, "Aufl\303\266sung"},
+        {25, "Aktuelle Einstellungen verwenden"},
+        {26, "Qualit\303\244t der Texturen"},
+        {27, "Umkehren"},
+        {28, "Du musst das Spiel erneut starten, damit diese \303\204nderungen in Kraft treten."},
+        {29, "Effekteinstellungen"},
+        {30, MenuPcString775b04},
+        {31, "Extern konfiguriert"},
+        {32, "Schatten"},
+        {33, "Bloomeffekt"},
+        {34, "Sch\303\244rfentiefe"},
+        {35, "Geschwindigkeitsunsch\303\244rfe"},
+        {36, "Qualit\303\244t der dynamischen Beleuchtungsverh\303\244ltnisse"},
+        {37, "Kantengl\303\244ttung"},
+        {38, MenuPcString776b6c},
+        {39, NULL},
     };
     MENU_PC_STRING_ENTRY MenuPcStringTable827d00[40] = {
-        {0, MenuPcString776660},  {1, MenuPcString776650},  {2, MenuPcString77663c},  {3, MenuPcString77662c},
-        {4, MenuPcString77393c},  {5, MenuPcString776624},  {6, MenuPcString773934},  {7, MenuPcString776618},
-        {8, MenuPcString776610},  {9, MenuPcString776608},  {10, MenuPcString77375c}, {11, MenuPcString776604},
-        {12, MenuPcString75f2c0}, {13, MenuPcString75f2bc}, {14, MenuPcString776608}, {15, MenuPcString76f660},
-        {16, MenuPcString76b274}, {17, MenuPcString7765e8}, {18, MenuPcString7765e0}, {19, MenuPcString7765cc},
-        {20, MenuPcString7765b0}, {21, MenuPcString776594}, {22, MenuPcString776588}, {23, MenuPcString776574},
-        {24, MenuPcString776564}, {25, MenuPcString776548}, {26, MenuPcString776534}, {27, MenuPcString776528},
-        {28, MenuPcString7764e8}, {29, MenuPcString7764e0}, {30, MenuPcString775b04}, {31, MenuPcString7764c8},
-        {32, MenuPcString7764c0}, {33, MenuPcString7764b4}, {34, MenuPcString77649c}, {35, MenuPcString776488},
-        {36, MenuPcString776470}, {37, MenuPcString776b80}, {38, MenuPcString776b6c}, {39, NULL},
+        {0, "Esci"},
+        {1, "Torna a Windows"},
+        {2, "Esci al Menu Demo"},
+        {3, "Torna al gioco"},
+        {4, "Bassa"},
+        {5, MenuPcString776624},
+        {6, MenuPcString773934},
+        {7, "Riprendi"},
+        {8, "Accetta"},
+        {9, MenuPcString776608},
+        {10, "Indietro"},
+        {11, "S\303\254"},
+        {12, MenuPcString75f2c0},
+        {13, MenuPcString75f2bc},
+        {14, MenuPcString776608},
+        {15, MenuPcString76f660},
+        {16, MenuPcString76b274},
+        {17, "Impostazioni predefinite"},
+        {18, "Video"},
+        {19, "Risoluzione schermo"},
+        {20, "Frequenza di aggiornamento"},
+        {21, "Sincronizzazione verticale"},
+        {22, "Rapporto"},
+        {23, "Grafica migliorata"},
+        {24, "Da risoluzione"},
+        {25, "Usa impostazioni attuali"},
+        {26, "Qualit\303\240 texture"},
+        {27, "Ripristina"},
+        {28, "Devi riavviare il gioco affinch\303\251 le modifiche abbiano effetto."},
+        {29, "Effetti"},
+        {30, MenuPcString775b04},
+        {31, "Impostato esternamente"},
+        {32, "Ombre"},
+        {33, "Luminosit\303\240"},
+        {34, "Profondit\303\240 di campo"},
+        {35, "Sfumatura movimento"},
+        {36, "Qualit\303\240 luci dinamiche"},
+        {37, MenuPcString776b80},
+        {38, MenuPcString776b6c},
+        {39, NULL},
     };
     MENU_PC_STRING_ENTRY MenuPcStringTable827e40[40] = {
-        {0, MenuPcString776468},  {1, MenuPcString776458},  {2, MenuPcString776440},  {3, MenuPcString776430},
-        {4, MenuPcString773210},  {5, MenuPcString776624},  {6, MenuPcString773934},  {7, MenuPcString776424},
-        {8, MenuPcString77641c},  {9, MenuPcString776410},  {10, MenuPcString776408}, {11, MenuPcString776404},
-        {12, MenuPcString75f2c0}, {13, MenuPcString77641c}, {14, MenuPcString7763f8}, {15, MenuPcString776404},
-        {16, MenuPcString75f2c0}, {17, MenuPcString7763dc}, {18, MenuPcString7763c8}, {19, MenuPcString7763bc},
-        {20, MenuPcString7763a4}, {21, MenuPcString776388}, {22, MenuPcString776370}, {23, MenuPcString77635c},
-        {24, MenuPcString776350}, {25, MenuPcString776334}, {26, MenuPcString776320}, {27, MenuPcString776314},
-        {28, MenuPcString7762d4}, {29, MenuPcString7762c0}, {30, MenuPcString7762b8}, {31, MenuPcString7762a0},
-        {32, MenuPcString776298}, {33, MenuPcString776bbc}, {34, MenuPcString776280}, {35, MenuPcString776264},
-        {36, MenuPcString776248}, {37, MenuPcString776234}, {38, MenuPcString776b6c}, {39, NULL},
+        {0, "Salir"},
+        {1, "Salir a Windows"},
+        {2, "Salir al menu del demo"},
+        {3, "Volver al juego"},
+        {4, "Baja"},
+        {5, MenuPcString776624},
+        {6, MenuPcString773934},
+        {7, "Reanudar"},
+        {8, MenuPcString77641c},
+        {9, "Rechazar"},
+        {10, "Atr\303\241s"},
+        {11, MenuPcString776404},
+        {12, MenuPcString75f2c0},
+        {13, MenuPcString77641c},
+        {14, "Cancelar"},
+        {15, MenuPcString776404},
+        {16, MenuPcString75f2c0},
+        {17, "Restablecer predeterminados"},
+        {18, "Ajustes de v\303\255deo"},
+        {19, "Resoluci\303\263n"},
+        {20, "Tasa de actualizaci\303\263n"},
+        {21, "Sincronizaci\303\263n vertical"},
+        {22, "Relaci\303\263n de aspecto"},
+        {23, "Gr\303\241ficos mejorados"},
+        {24, "R. pantalla"},
+        {25, "Usar ajustes de actuales"},
+        {26, "Calidad de textura"},
+        {27, "Revertir"},
+        {28, "Debes reiniciar el juego para que estos cambios tengan efecto"},
+        {29, "Ajustes de efectos"},
+        {30, "AAPC"},
+        {31, "Ajustado externamente"},
+        {32, "Sombras"},
+        {33, MenuPcString776bbc},
+        {34, "Profundidad de campo"},
+        {35, "Distorsi\303\263n de velocidad"},
+        {36, "Calidad de luz din\303\241mica"},
+        {37, "Suavizado de bordes"},
+        {38, MenuPcString776b6c},
+        {39, NULL},
     };
     MENU_PC_STRING_ENTRY MenuPcStringTable827f80[40] = {
-        {0, MenuPcString77622c},  {1, MenuPcString776218},  {2, MenuPcString7761fc},  {3, MenuPcString7761e0},
-        {4, MenuPcString774bb4},  {5, MenuPcString7761d8},  {6, MenuPcString772dd4},  {7, MenuPcString7761cc},
-        {8, MenuPcString776af0},  {9, MenuPcString7761c4},  {10, MenuPcString772c44}, {11, MenuPcString776874},
-        {12, MenuPcString7761c0}, {13, MenuPcString75f2bc}, {14, MenuPcString7761b4}, {15, MenuPcString7761b0},
-        {16, MenuPcString7761ac}, {17, MenuPcString7761a4}, {18, MenuPcString776190}, {19, MenuPcString77617c},
-        {20, MenuPcString77616c}, {21, MenuPcString776158}, {22, MenuPcString776144}, {23, MenuPcString776130},
-        {24, MenuPcString776118}, {25, MenuPcString7760f4}, {26, MenuPcString7760e4}, {27, MenuPcString7760d4},
-        {28, MenuPcString776094}, {29, MenuPcString776080}, {30, MenuPcString776064}, {31, MenuPcString77605c},
-        {32, MenuPcString776054}, {33, MenuPcString776bbc}, {34, MenuPcString776048}, {35, MenuPcString77603c},
-        {36, MenuPcString776024}, {37, MenuPcString77601c}, {38, MenuPcString776b6c}, {39, NULL},
+        {0, "Forlad"},
+        {1, "Forlad til Windows"},
+        {2, "Slut og g\303\245 til Demo-menuen"},
+        {3, "Vend tilbage til spillet"},
+        {4, "Lav"},
+        {5, "Mellem"},
+        {6, "H\303\270j"},
+        {7, "Genoptag"},
+        {8, MenuPcString776af0},
+        {9, "Afsl\303\245"},
+        {10, "Tilbage"},
+        {11, MenuPcString776874},
+        {12, "Nej"},
+        {13, MenuPcString75f2bc},
+        {14, "Annuller"},
+        {15, "Til"},
+        {16, "Fra"},
+        {17, "Nulstil"},
+        {18, "Grafikindstillinger"},
+        {19, "Sk\303\246rmopl\303\270sning"},
+        {20, "Billedfrekvens"},
+        {21, "Sk\303\246rmopdatering"},
+        {22, "St\303\270rrelsesforhold"},
+        {23, "Forbedret grafik"},
+        {24, "Fra sk\303\246rmopl\303\270sning"},
+        {25, "Brug nuv\303\246rende grafikindstillinger"},
+        {26, "Teksturkvalitet"},
+        {27, "Vend tilbage"},
+        {28, "Du skal genstarte spillet for at \303\246ndringerne tr\303\246der i kraft."},
+        {29, "Effektindstilling"},
+        {30, "Anti-aliasing, fuld sk\303\246rm"},
+        {31, "Ekstern"},
+        {32, "Skygger"},
+        {33, MenuPcString776bbc},
+        {34, "Synsdybde"},
+        {35, "Sl\303\270ring"},
+        {36, "Dynamisk lys-kvalitet"},
+        {37, "Kant-AA"},
+        {38, MenuPcString776b6c},
+        {39, NULL},
     };
     const char *MenuPcStrings[39] = {0};
     i32 MenuPcStringsInitialized = 0;
     f32 MenuNewGameYPc = -0.5f;
-#pragma const_seg(".rdata$GizActionNameSetVisibilityPc")
-    extern const char GizActionNameSetVisibilityPc[14] = "SetVisibility";
-#pragma const_seg(".rdata$GizActionNameSetGizmoVisibilityPc")
-    extern const char GizActionNameSetGizmoVisibilityPc[19] = "SetGizmoVisibility";
-#pragma const_seg(".rdata$GizActionNameSetPickupVisibilityPc")
-    extern const char GizActionNameSetPickupVisibilityPc[20] = "SetPickupVisibility";
-#pragma const_seg(".rdata$GizActionNameActivateGizmoPc")
-    extern const char GizActionNameActivateGizmoPc[14] = "ActivateGizmo";
-#pragma const_seg(".rdata$GizActionNameActivateCharPc")
-    extern const char GizActionNameActivateCharPc[13] = "ActivateChar";
-#pragma const_seg(".rdata$GizActionNameTurnOnFlowBoxPc")
-    extern const char GizActionNameTurnOnFlowBoxPc[14] = "TurnOnFlowBox";
-#pragma const_seg(".rdata$GizActionNameActivateEffectPc")
-    extern const char GizActionNameActivateEffectPc[15] = "ActivateEffect";
-#pragma const_seg(".rdata$GizActionNameActivatePartEffectPc")
-    extern const char GizActionNameActivatePartEffectPc[19] = "ActivatePartEffect";
-#pragma const_seg(".rdata$GizActionNameChangeTechnoTargetPc")
-    extern const char GizActionNameChangeTechnoTargetPc[19] = "ChangeTechnoTarget";
-#pragma const_seg(".rdata$GizActionNameSetAIMessagePc")
-    extern const char GizActionNameSetAIMessagePc[13] = "SetAIMessage";
-#pragma const_seg(".rdata$GizActionNameSetAIStatePc")
-    extern const char GizActionNameSetAIStatePc[11] = "SetAIState";
-#pragma const_seg(".rdata$GizActionNameCompleteLevelPc")
-    extern const char GizActionNameCompleteLevelPc[14] = "CompleteLevel";
-#pragma const_seg(".rdata$GizActionNameGoToNewLevelPc")
-    extern const char GizActionNameGoToNewLevelPc[13] = "GoToNewLevel";
-#pragma const_seg(".rdata$GizActionNameGoThroughDoorPc")
-    extern const char GizActionNameGoThroughDoorPc[14] = "GoThroughDoor";
-#pragma const_seg(".rdata$GizActionNamePlayObstaclePc")
-    extern const char GizActionNamePlayObstaclePc[13] = "PlayObstacle";
-#pragma const_seg(".rdata$GizActionNamePlaySpecialPc")
-    extern const char GizActionNamePlaySpecialPc[12] = "PlaySpecial";
-#pragma const_seg(".rdata$GizActionNamePlayForcePc")
-    extern const char GizActionNamePlayForcePc[10] = "PlayForce";
-#pragma const_seg(".rdata$GizActionNameChangeObstTriggerTypePc")
-    extern const char GizActionNameChangeObstTriggerTypePc[22] = "ChangeObstTriggerType";
-#pragma const_seg(".rdata$GizActionNamePlayRadioPc")
-    extern const char GizActionNamePlayRadioPc[10] = "PlayRadio";
-#pragma const_seg(".rdata$GizActionNamePlayCutscenePc")
-    extern const char GizActionNamePlayCutscenePc[13] = "PlayCutscene";
-#pragma const_seg(".rdata$GizActionNameHitBlowupPc")
-    extern const char GizActionNameHitBlowupPc[10] = "HitBlowup";
-#pragma const_seg(".rdata$GizActionNameActivateBeltPc")
-    extern const char GizActionNameActivateBeltPc[13] = "ActivateBelt";
-#pragma const_seg(".rdata$GizActionNameEnableSockPc")
-    extern const char GizActionNameEnableSockPc[11] = "EnableSock";
 #pragma const_seg()
 }
 
-extern "C" {
-#pragma const_seg(".rdata$AIActionBluePrefixPc")
-    extern const char AIActionBluePrefixPc[6] = "Blue=";
-#pragma const_seg(".rdata$AIActionGreenPrefixPc")
-    extern const char AIActionGreenPrefixPc[7] = "Green=";
-#pragma const_seg(".rdata$AIActionRedPrefixPc")
-    extern const char AIActionRedPrefixPc[5] = "Red=";
-#pragma const_seg(".rdata$AIActionCountPrefixPc")
-    extern const char AIActionCountPrefixPc[7] = "count=";
-#pragma const_seg(".rdata$AIActionTotalPrefixPc")
-    extern const char AIActionTotalPrefixPc[7] = "total=";
-#pragma const_seg(".rdata$AIActionMyPosNamePc")
-    extern const char AIActionMyPosNamePc[6] = "mypos";
-#pragma const_seg(".rdata$AIActionCanBeStolenNamePc")
-    extern const char AIActionCanBeStolenNamePc[12] = "CANBESTOLEN";
-#pragma const_seg(".rdata$AIActionTorpedoNamePc")
-    extern const char AIActionTorpedoNamePc[8] = "torpedo";
-#pragma const_seg()
-}
+extern "C" {}
 
-extern "C" {
-#pragma const_seg(".rdata$AIConditionMySetNamePc")
-    extern const char AIConditionMySetNamePc[6] = "myset";
-#pragma const_seg(".rdata$AIConditionTakeoverTargetNamePc")
-    extern const char AIConditionTakeoverTargetNamePc[15] = "TakeoverTarget";
-#pragma const_seg()
-}
+extern "C" {}
 
 extern "C" {
 #pragma const_seg(".rdata$GameAudioName00753354Pc")
@@ -30787,20 +28267,6 @@ extern "C" {
     extern const char GameAudioName00758838Pc[12] = "PickupHeart";
 #pragma const_seg(".rdata$GameAudioName00758be8Pc")
     extern const char GameAudioName00758be8Pc[9] = "LegoForm";
-#pragma const_seg(".rdata$GameAudioName0075c1ecPc")
-    extern const char GameAudioName0075c1ecPc[9] = "ricochet";
-#pragma const_seg(".rdata$GameAudioName0075c1f8Pc")
-    extern const char GameAudioName0075c1f8Pc[10] = "Boy_Death";
-#pragma const_seg(".rdata$GameAudioName0075c204Pc")
-    extern const char GameAudioName0075c204Pc[11] = "Girl_Death";
-#pragma const_seg(".rdata$GameAudioName0075c210Pc")
-    extern const char GameAudioName0075c210Pc[9] = "Boy_Hurt";
-#pragma const_seg(".rdata$GameAudioName0075c21cPc")
-    extern const char GameAudioName0075c21cPc[10] = "Girl_Hurt";
-#pragma const_seg(".rdata$GameAudioName0075c228Pc")
-    extern const char GameAudioName0075c228Pc[10] = "Boy_Grunt";
-#pragma const_seg(".rdata$GameAudioName0075c234Pc")
-    extern const char GameAudioName0075c234Pc[11] = "Girl_Grunt";
 #pragma const_seg(".rdata$GameAudioName0075c240Pc")
     extern const char GameAudioName0075c240Pc[5] = "Land";
 #pragma const_seg(".rdata$GameAudioName0075c248Pc")
@@ -30813,8 +28279,6 @@ extern "C" {
     extern const char GameAudioName0075c270Pc[12] = "FallApart01";
 #pragma const_seg(".rdata$GameAudioName0075c27cPc")
     extern const char GameAudioName0075c27cPc[5] = "Honk";
-#pragma const_seg(".rdata$GameAudioName0075c284Pc")
-    extern const char GameAudioName0075c284Pc[10] = "wpn_punch";
 #pragma const_seg(".rdata$GameAudioName0075c2acPc")
     extern const char GameAudioName0075c2acPc[12] = "FS_WaterOut";
 #pragma const_seg(".rdata$GameAudioName0075c2b8Pc")
@@ -30843,28 +28307,14 @@ extern "C" {
     extern const char GameAudioName0075c378Pc[9] = "MenuMove";
 #pragma const_seg(".rdata$GameAudioName0075c3a0Pc")
     extern const char GameAudioName0075c3a0Pc[11] = "SabDefBlas";
-#pragma const_seg(".rdata$GameAudioName0075c3acPc")
-    extern const char GameAudioName0075c3acPc[9] = "BlastRic";
 #pragma const_seg(".rdata$GameAudioName0075c3b8Pc")
     extern const char GameAudioName0075c3b8Pc[9] = "BlastHit";
 #pragma const_seg(".rdata$GameAudioName0075c3c4Pc")
     extern const char GameAudioName0075c3c4Pc[8] = "MK-Loop";
 #pragma const_seg(".rdata$GameAudioName0075c3ccPc")
     extern const char GameAudioName0075c3ccPc[7] = "SwChar";
-#pragma const_seg(".rdata$GameAudioName0075c3fcPc")
-    extern const char GameAudioName0075c3fcPc[11] = "Luke_Death";
-#pragma const_seg(".rdata$GameAudioName0075c408Pc")
-    extern const char GameAudioName0075c408Pc[11] = "Leia_Death";
 #pragma const_seg(".rdata$GameAudioName0075c414Pc")
     extern const char GameAudioName0075c414Pc[11] = "DroidDie01";
-#pragma const_seg(".rdata$GameAudioName0075c420Pc")
-    extern const char GameAudioName0075c420Pc[10] = "Luke_Hurt";
-#pragma const_seg(".rdata$GameAudioName0075c42cPc")
-    extern const char GameAudioName0075c42cPc[10] = "Leia_Hurt";
-#pragma const_seg(".rdata$GameAudioName0075c438Pc")
-    extern const char GameAudioName0075c438Pc[12] = "Rebel_grunt";
-#pragma const_seg(".rdata$GameAudioName0075c444Pc")
-    extern const char GameAudioName0075c444Pc[11] = "Leia_grunt";
 #pragma const_seg(".rdata$GameAudioName0075c450Pc")
     extern const char GameAudioName0075c450Pc[13] = "FS_WaterWade";
 #pragma const_seg(".rdata$GameAudioName0075c460Pc")
@@ -30875,65 +28325,39 @@ extern "C" {
     extern const char GameAudioName0075c478Pc[10] = "FS_JWalkM";
 #pragma const_seg(".rdata$GameAudioName0075c484Pc")
     extern const char GameAudioName0075c484Pc[10] = "FS_JWalkS";
-#pragma const_seg(".rdata$GameAudioName0075c490Pc")
-    extern const char GameAudioName0075c490Pc[19] = "Grv_GrievAngryJump";
-#pragma const_seg(".rdata$GameAudioName0075c4a4Pc")
-    extern const char GameAudioName0075c4a4Pc[9] = "JediSlam";
-#pragma const_seg(".rdata$GameAudioName0075c4b0Pc")
-    extern const char GameAudioName0075c4b0Pc[10] = "JediLunge";
-#pragma const_seg(".rdata$GameAudioName0075c4bcPc")
-    extern const char GameAudioName0075c4bcPc[10] = "FS_DLandM";
-#pragma const_seg(".rdata$GameAudioName0075c4c8Pc")
-    extern const char GameAudioName0075c4c8Pc[10] = "FS_DLandS";
-#pragma const_seg(".rdata$GameAudioName0075c4d4Pc")
-    extern const char GameAudioName0075c4d4Pc[10] = "FS_JLandM";
-#pragma const_seg(".rdata$GameAudioName0075c4e0Pc")
-    extern const char GameAudioName0075c4e0Pc[10] = "FS_JLandS";
-#pragma const_seg(".rdata$GameAudioName0075c4ecPc")
-    extern const char GameAudioName0075c4ecPc[12] = "Jp_OQ_BackF";
-#pragma const_seg(".rdata$GameAudioName0075c4f8Pc")
-    extern const char GameAudioName0075c4f8Pc[9] = "JumpSlam";
-#pragma const_seg(".rdata$GameAudioName0075c504Pc")
-    extern const char GameAudioName0075c504Pc[10] = "JumpLunge";
-#pragma const_seg(".rdata$GameAudioName0075c510Pc")
-    extern const char GameAudioName0075c510Pc[12] = "Jp_OQ_DJump";
-#pragma const_seg(".rdata$GameAudioName0075c51cPc")
-    extern const char GameAudioName0075c51cPc[11] = "Jp_OQ_Jump";
-#pragma const_seg(".rdata$GameAudioName0075c528Pc")
-    extern const char GameAudioName0075c528Pc[12] = "Jp_Ami_Jump";
 #pragma const_seg()
 #pragma data_seg(".data$GameAudioLswPc")
     GAMEAUDIO_PC GameAudioLswPc = {GameAudio_OverrideFootStep_LSW,
                                    GameAudio_CheckReverb_LSW,
-                                   {(char *)GameAudioName0075c528Pc,
+                                   {"Jp_Ami_Jump",
                                     NULL,
-                                    (char *)GameAudioName0075c51cPc,
-                                    (char *)GameAudioName0075c510Pc,
-                                    (char *)GameAudioName0075c504Pc,
-                                    (char *)GameAudioName0075c4f8Pc,
-                                    (char *)GameAudioName0075c4ecPc,
-                                    (char *)GameAudioName0075c4e0Pc,
-                                    (char *)GameAudioName0075c4d4Pc,
-                                    (char *)GameAudioName0075c4c8Pc,
-                                    (char *)GameAudioName0075c4bcPc,
-                                    (char *)GameAudioName0075c4b0Pc,
-                                    (char *)GameAudioName0075c4a4Pc,
-                                    (char *)GameAudioName0075c490Pc,
+                                    "Jp_OQ_Jump",
+                                    "Jp_OQ_DJump",
+                                    "JumpLunge",
+                                    "JumpSlam",
+                                    "Jp_OQ_BackF",
+                                    "FS_JLandS",
+                                    "FS_JLandM",
+                                    "FS_DLandS",
+                                    "FS_DLandM",
+                                    "JediLunge",
+                                    "JediSlam",
+                                    "Grv_GrievAngryJump",
                                     NULL,
                                     (char *)GameAudioName0075c484Pc,
                                     (char *)GameAudioName0075c478Pc,
                                     (char *)GameAudioName0075c46cPc,
                                     (char *)GameAudioName0075c460Pc,
                                     (char *)GameAudioName0075c450Pc,
-                                    (char *)GameAudioName0075c444Pc,
-                                    (char *)GameAudioName0075c438Pc,
-                                    (char *)GameAudioName0075c42cPc,
-                                    (char *)GameAudioName0075c420Pc,
+                                    "Leia_grunt",
+                                    "Rebel_grunt",
+                                    "Leia_Hurt",
+                                    "Luke_Hurt",
                                     (char *)ForceThrowExplodeNamePc,
                                     "exp_thermalDet",
                                     (char *)GameAudioName0075c414Pc,
-                                    (char *)GameAudioName0075c408Pc,
-                                    (char *)GameAudioName0075c3fcPc,
+                                    "Leia_Death",
+                                    "Luke_Death",
                                     "CountdownTimerTick",
                                     "CountdownTimerTock",
                                     (char *)GameAudioName0075c3ccPc,
@@ -30946,7 +28370,7 @@ extern "C" {
                                     ScorePanelName,
                                     (char *)GameAudioName00758838Pc,
                                     (char *)GameAudioName0075c3b8Pc,
-                                    (char *)GameAudioName0075c3acPc,
+                                    "BlastRic",
                                     (char *)GameAudioName0075c3a0Pc,
                                     "StatusAward",
                                     "TrueJedi_100pc",
@@ -30979,7 +28403,7 @@ extern "C" {
                                     "Block_Shove",
                                     "Block_Push_Lp",
                                     "Blaster",
-                                    (char *)GameAudioName0075c284Pc,
+                                    "wpn_punch",
                                     (char *)GameAudioName0075c27cPc,
                                     "WhipSwish",
                                     "WhipHit",
@@ -31016,15 +28440,15 @@ extern "C" {
                                           (char *)GameAudioName0075c46cPc,
                                           (char *)GameAudioName0075c460Pc,
                                           (char *)GameAudioName0075c450Pc,
-                                          (char *)GameAudioName0075c234Pc,
-                                          (char *)GameAudioName0075c228Pc,
-                                          (char *)GameAudioName0075c21cPc,
-                                          (char *)GameAudioName0075c210Pc,
+                                          "Girl_Grunt",
+                                          "Boy_Grunt",
+                                          "Girl_Hurt",
+                                          "Boy_Hurt",
                                           (char *)ForceThrowExplodeNamePc,
                                           "exp_thermalDet",
                                           (char *)GameAudioName0075c414Pc,
-                                          (char *)GameAudioName0075c204Pc,
-                                          (char *)GameAudioName0075c1f8Pc,
+                                          "Girl_Death",
+                                          "Boy_Death",
                                           NULL,
                                           NULL,
                                           (char *)GameAudioName0075c3ccPc,
@@ -31037,7 +28461,7 @@ extern "C" {
                                           ScorePanelName,
                                           (char *)GameAudioName00758838Pc,
                                           (char *)GameAudioName0075c3b8Pc,
-                                          (char *)GameAudioName0075c1ecPc,
+                                          "ricochet",
                                           (char *)GameAudioName0075c3a0Pc,
                                           "StatusAward",
                                           "TrueJedi_100pc",
@@ -31084,1345 +28508,346 @@ extern "C" {
                                           0,  0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0,
                                           0,  0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0,
                                           0,  0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0}};
-#pragma const_seg()
 #pragma data_seg()
 }
 
 extern "C" {
-#pragma const_seg(".rdata$LevelObjectNamePc00753554")
-    extern const char LevelObjectNamePc00753554[18] = "Network_Icon_Glow";
-#pragma const_seg(".rdata$LevelObjectNamePc00753568")
-    extern const char LevelObjectNamePc00753568[13] = "Network_Icon";
-#pragma const_seg(".rdata$LevelObjectNamePc00753578")
-    extern const char LevelObjectNamePc00753578[5] = "lap3";
-#pragma const_seg(".rdata$LevelObjectNamePc00753580")
-    extern const char LevelObjectNamePc00753580[5] = "lap2";
-#pragma const_seg(".rdata$LevelObjectNamePc00753588")
-    extern const char LevelObjectNamePc00753588[5] = "lap1";
-#pragma const_seg(".rdata$LevelObjectNamePc00753590")
-    extern const char LevelObjectNamePc00753590[11] = "death_star";
-#pragma const_seg(".rdata$LevelObjectNamePc0075359c")
-    extern const char LevelObjectNamePc0075359c[6] = "arrow";
-#pragma const_seg(".rdata$LevelObjectNamePc007535a4")
-    extern const char LevelObjectNamePc007535a4[8] = "missile";
-#pragma const_seg(".rdata$LevelObjectNamePc007535ac")
-    extern const char LevelObjectNamePc007535ac[17] = "blasterglow_blue";
-#pragma const_seg(".rdata$LevelObjectNamePc007535c0")
-    extern const char LevelObjectNamePc007535c0[16] = "blasterglow_red";
-#pragma const_seg(".rdata$LevelObjectNamePc007535d0")
-    extern const char LevelObjectNamePc007535d0[12] = "blasterglow";
-#pragma const_seg(".rdata$LevelObjectNamePc007535dc")
-    extern const char LevelObjectNamePc007535dc[3] = "ca";
-#pragma const_seg(".rdata$LevelObjectNamePc007535e0")
-    extern const char LevelObjectNamePc007535e0[4] = "dtf";
-#pragma const_seg(".rdata$LevelObjectNamePc007535e4")
-    extern const char LevelObjectNamePc007535e4[4] = "bvd";
-#pragma const_seg(".rdata$LevelObjectNamePc007535e8")
-    extern const char LevelObjectNamePc007535e8[3] = "vd";
-#pragma const_seg(".rdata$LevelObjectNamePc007535ec")
-    extern const char LevelObjectNamePc007535ec[12] = "ATAT_PART_1";
-#pragma const_seg(".rdata$LevelObjectNamePc007535f8")
-    extern const char LevelObjectNamePc007535f8[11] = "FalconGlow";
-#pragma const_seg(".rdata$LevelObjectNamePc00753604")
-    extern const char LevelObjectNamePc00753604[12] = "zip_flower3";
-#pragma const_seg(".rdata$LevelObjectNamePc00753610")
-    extern const char LevelObjectNamePc00753610[12] = "zip_flower2";
-#pragma const_seg(".rdata$LevelObjectNamePc0075361c")
-    extern const char LevelObjectNamePc0075361c[12] = "zip_flower1";
-#pragma const_seg(".rdata$LevelObjectNamePc00753628")
-    extern const char LevelObjectNamePc00753628[8] = "photon1";
-#pragma const_seg(".rdata$LevelObjectNamePc00753630")
-    extern const char LevelObjectNamePc00753630[8] = "photon2";
-#pragma const_seg(".rdata$LevelObjectNamePc00753638")
-    extern const char LevelObjectNamePc00753638[18] = "Hat_machine_down1";
-#pragma const_seg(".rdata$LevelObjectNamePc0075364c")
-    extern const char LevelObjectNamePc0075364c[13] = "lever_helmet";
-#pragma const_seg(".rdata$LevelObjectNamePc0075365c")
-    extern const char LevelObjectNamePc0075365c[16] = "Hat_machine_off";
-#pragma const_seg(".rdata$LevelObjectNamePc0075366c")
-    extern const char LevelObjectNamePc0075366c[15] = "Hat_machine_on";
-#pragma const_seg(".rdata$LevelObjectNamePc0075367c")
-    extern const char LevelObjectNamePc0075367c[16] = "Hat_machine_out";
-#pragma const_seg(".rdata$LevelObjectNamePc0075368c")
-    extern const char LevelObjectNamePc0075368c[17] = "Hat_machine_down";
-#pragma const_seg(".rdata$LevelObjectNamePc007536a0")
-    extern const char LevelObjectNamePc007536a0[17] = "Hat_machine_base";
-#pragma const_seg(".rdata$LevelObjectNamePc007536b4")
-    extern const char LevelObjectNamePc007536b4[13] = "Storm_Target";
-#pragma const_seg(".rdata$LevelObjectNamePc007536c4")
-    extern const char LevelObjectNamePc007536c4[10] = "Storm_cam";
-#pragma const_seg(".rdata$LevelObjectNamePc007536d0")
-    extern const char LevelObjectNamePc007536d0[16] = "Storm_light_off";
-#pragma const_seg(".rdata$LevelObjectNamePc007536e0")
-    extern const char LevelObjectNamePc007536e0[15] = "Storm_light_on";
-#pragma const_seg(".rdata$LevelObjectNamePc007536f0")
-    extern const char LevelObjectNamePc007536f0[13] = "Storm_static";
-#pragma const_seg(".rdata$LevelObjectNamePc00753700")
-    extern const char LevelObjectNamePc00753700[10] = "Storm_pic";
-#pragma const_seg(".rdata$LevelObjectNamePc0075370c")
-    extern const char LevelObjectNamePc0075370c[11] = "Storm_base";
-#pragma const_seg(".rdata$LevelObjectNamePc00753718")
-    extern const char LevelObjectNamePc00753718[14] = "Bounty_Target";
-#pragma const_seg(".rdata$LevelObjectNamePc00753728")
-    extern const char LevelObjectNamePc00753728[11] = "Bounty_cam";
-#pragma const_seg(".rdata$LevelObjectNamePc00753734")
-    extern const char LevelObjectNamePc00753734[17] = "Bounty_light_off";
-#pragma const_seg(".rdata$LevelObjectNamePc00753748")
-    extern const char LevelObjectNamePc00753748[16] = "Bounty_light_on";
-#pragma const_seg(".rdata$LevelObjectNamePc00753758")
-    extern const char LevelObjectNamePc00753758[14] = "Bounty_static";
-#pragma const_seg(".rdata$LevelObjectNamePc00753768")
-    extern const char LevelObjectNamePc00753768[11] = "Bounty_pic";
-#pragma const_seg(".rdata$LevelObjectNamePc00753774")
-    extern const char LevelObjectNamePc00753774[12] = "Bounty_base";
-#pragma const_seg(".rdata$LevelObjectNamePc00753780")
-    extern const char LevelObjectNamePc00753780[13] = "R2_light_off";
-#pragma const_seg(".rdata$LevelObjectNamePc00753790")
-    extern const char LevelObjectNamePc00753790[12] = "R2_light_on";
-#pragma const_seg(".rdata$LevelObjectNamePc0075379c")
-    extern const char LevelObjectNamePc0075379c[10] = "R2_static";
-#pragma const_seg(".rdata$LevelObjectNamePc007537a8")
-    extern const char LevelObjectNamePc007537a8[7] = "R4_pic";
-#pragma const_seg(".rdata$LevelObjectNamePc007537b0")
-    extern const char LevelObjectNamePc007537b0[7] = "R2_pic";
-#pragma const_seg(".rdata$LevelObjectNamePc007537b8")
-    extern const char LevelObjectNamePc007537b8[9] = "R2_base1";
-#pragma const_seg(".rdata$LevelObjectNamePc007537c4")
-    extern const char LevelObjectNamePc007537c4[8] = "R2_base";
-#pragma const_seg(".rdata$LevelObjectNamePc007537cc")
-    extern const char LevelObjectNamePc007537cc[15] = "C3PO_light_off";
-#pragma const_seg(".rdata$LevelObjectNamePc007537dc")
-    extern const char LevelObjectNamePc007537dc[14] = "C3PO_light_on";
-#pragma const_seg(".rdata$LevelObjectNamePc007537ec")
-    extern const char LevelObjectNamePc007537ec[12] = "C3PO_static";
-#pragma const_seg(".rdata$LevelObjectNamePc007537f8")
-    extern const char LevelObjectNamePc007537f8[9] = "TC14_pic";
-#pragma const_seg(".rdata$LevelObjectNamePc00753804")
-    extern const char LevelObjectNamePc00753804[9] = "C3PO_pic";
-#pragma const_seg(".rdata$LevelObjectNamePc00753810")
-    extern const char LevelObjectNamePc00753810[10] = "C3PO_base";
-#pragma const_seg(".rdata$LevelObjectNamePc0075381c")
-    extern const char LevelObjectNamePc0075381c[13] = "bountyHelmet";
-#pragma const_seg(".rdata$LevelObjectNamePc0075382c")
-    extern const char LevelObjectNamePc0075382c[19] = "stormTrooperHelmet";
-#pragma const_seg(".rdata$LevelObjectNamePc00753840")
-    extern const char LevelObjectNamePc00753840[6] = "hat_5";
-#pragma const_seg(".rdata$LevelObjectNamePc00753848")
-    extern const char LevelObjectNamePc00753848[6] = "hat_4";
-#pragma const_seg(".rdata$LevelObjectNamePc00753850")
-    extern const char LevelObjectNamePc00753850[6] = "hat_3";
-#pragma const_seg(".rdata$LevelObjectNamePc00753858")
-    extern const char LevelObjectNamePc00753858[6] = "hat_1";
-#pragma const_seg(".rdata$LevelObjectNamePc00753860")
-    extern const char LevelObjectNamePc00753860[13] = "twoface_coin";
-#pragma const_seg(".rdata$LevelObjectNamePc00753870")
-    extern const char LevelObjectNamePc00753870[10] = "umbrella2";
-#pragma const_seg(".rdata$LevelObjectNamePc0075387c")
-    extern const char LevelObjectNamePc0075387c[10] = "umbrella1";
-#pragma const_seg(".rdata$LevelObjectNamePc00753888")
-    extern const char LevelObjectNamePc00753888[25] = "photontorpedoglow_wicket";
-#pragma const_seg(".rdata$LevelObjectNamePc007538a4")
-    extern const char LevelObjectNamePc007538a4[21] = "photontorpedo_wicket";
-#pragma const_seg(".rdata$LevelObjectNamePc007538bc")
-    extern const char LevelObjectNamePc007538bc[14] = "pebble_wicket";
-#pragma const_seg(".rdata$LevelObjectNamePc007538cc")
-    extern const char LevelObjectNamePc007538cc[23] = "photontorpedoglow_ewok";
-#pragma const_seg(".rdata$LevelObjectNamePc007538e4")
-    extern const char LevelObjectNamePc007538e4[19] = "photontorpedo_ewok";
-#pragma const_seg(".rdata$LevelObjectNamePc007538f8")
-    extern const char LevelObjectNamePc007538f8[12] = "pebble_ewok";
-#pragma const_seg(".rdata$LevelObjectNamePc00753904")
-    extern const char LevelObjectNamePc00753904[13] = "part_boulder";
-#pragma const_seg(".rdata$LevelObjectNamePc00753914")
-    extern const char LevelObjectNamePc00753914[12] = "bomb_red_on";
-#pragma const_seg(".rdata$LevelObjectNamePc00753920")
-    extern const char LevelObjectNamePc00753920[13] = "bomb_red_off";
-#pragma const_seg(".rdata$LevelObjectNamePc00753930")
-    extern const char LevelObjectNamePc00753930[9] = "bomb_off";
-#pragma const_seg(".rdata$LevelObjectNamePc0075393c")
-    extern const char LevelObjectNamePc0075393c[10] = "bomb_main";
-#pragma const_seg(".rdata$LevelObjectNamePc00753948")
-    extern const char LevelObjectNamePc00753948[15] = "thermal_red_on";
-#pragma const_seg(".rdata$LevelObjectNamePc00753958")
-    extern const char LevelObjectNamePc00753958[16] = "thermal_red_off";
-#pragma const_seg(".rdata$LevelObjectNamePc00753968")
-    extern const char LevelObjectNamePc00753968[8] = "thermal";
-#pragma const_seg(".rdata$LevelObjectNamePc00753970")
-    extern const char LevelObjectNamePc00753970[13] = "jango_rocket";
-#pragma const_seg(".rdata$LevelObjectNamePc00753980")
-    extern const char LevelObjectNamePc00753980[10] = "moustache";
-#pragma const_seg(".rdata$LevelObjectNamePc0075398c")
-    extern const char LevelObjectNamePc0075398c[6] = "crate";
-#pragma const_seg(".rdata$LevelObjectNamePc00753994")
-    extern const char LevelObjectNamePc00753994[9] = "zip_ring";
-#pragma const_seg(".rdata$LevelObjectNamePc007539a0")
-    extern const char LevelObjectNamePc007539a0[15] = "ripple_purple1";
-#pragma const_seg(".rdata$LevelObjectNamePc007539b0")
-    extern const char LevelObjectNamePc007539b0[14] = "ripple_purple";
-#pragma const_seg(".rdata$LevelObjectNamePc007539c0")
-    extern const char LevelObjectNamePc007539c0[13] = "ripple_blue1";
-#pragma const_seg(".rdata$LevelObjectNamePc007539d0")
-    extern const char LevelObjectNamePc007539d0[12] = "ripple_blue";
-#pragma const_seg(".rdata$LevelObjectNamePc007539dc")
-    extern const char LevelObjectNamePc007539dc[12] = "ripple_red1";
-#pragma const_seg(".rdata$LevelObjectNamePc007539e8")
-    extern const char LevelObjectNamePc007539e8[11] = "ripple_red";
-#pragma const_seg(".rdata$LevelObjectNamePc007539f4")
-    extern const char LevelObjectNamePc007539f4[14] = "ripple_green1";
-#pragma const_seg(".rdata$LevelObjectNamePc00753a04")
-    extern const char LevelObjectNamePc00753a04[13] = "ripple_green";
-#pragma const_seg(".rdata$LevelObjectNamePc00753a14")
-    extern const char LevelObjectNamePc00753a14[17] = "purple_pan_coin4";
-#pragma const_seg(".rdata$LevelObjectNamePc00753a28")
-    extern const char LevelObjectNamePc00753a28[17] = "purple_pan_coin3";
-#pragma const_seg(".rdata$LevelObjectNamePc00753a3c")
-    extern const char LevelObjectNamePc00753a3c[17] = "purple_pan_coin2";
-#pragma const_seg(".rdata$LevelObjectNamePc00753a50")
-    extern const char LevelObjectNamePc00753a50[17] = "purple_pan_coin1";
-#pragma const_seg(".rdata$LevelObjectNamePc00753a64")
-    extern const char LevelObjectNamePc00753a64[13] = "purple_coin4";
-#pragma const_seg(".rdata$LevelObjectNamePc00753a74")
-    extern const char LevelObjectNamePc00753a74[13] = "purple_coin3";
-#pragma const_seg(".rdata$LevelObjectNamePc00753a84")
-    extern const char LevelObjectNamePc00753a84[13] = "purple_coin2";
-#pragma const_seg(".rdata$LevelObjectNamePc00753a94")
-    extern const char LevelObjectNamePc00753a94[13] = "purple_coin1";
-#pragma const_seg(".rdata$LevelObjectNamePc00753aa4")
-    extern const char LevelObjectNamePc00753aa4[5] = "info";
-#pragma const_seg(".rdata$LevelObjectNamePc00753aac")
-    extern const char LevelObjectNamePc00753aac[11] = "gold_brick";
-#pragma const_seg(".rdata$LevelObjectNamePc00753ab8")
-    extern const char LevelObjectNamePc00753ab8[10] = "red_brick";
-#pragma const_seg(".rdata$LevelObjectNamePc00753ac4")
-    extern const char LevelObjectNamePc00753ac4[14] = "power_up_glow";
-#pragma const_seg(".rdata$LevelObjectNamePc00753ad4")
-    extern const char LevelObjectNamePc00753ad4[5] = "plop";
-#pragma const_seg(".rdata$LevelObjectNamePc00753adc")
-    extern const char LevelObjectNamePc00753adc[12] = "char_pickup";
-#pragma const_seg(".rdata$LevelObjectNamePc00753ae8")
-    extern const char LevelObjectNamePc00753ae8[16] = "mini_kit_pickup";
-#pragma const_seg(".rdata$LevelObjectNamePc00753af8")
-    extern const char LevelObjectNamePc00753af8[13] = "silver_heart";
-#pragma const_seg(".rdata$LevelObjectNamePc00753b08")
-    extern const char LevelObjectNamePc00753b08[11] = "flat_heart";
-#pragma const_seg(".rdata$LevelObjectNamePc00753b14")
-    extern const char LevelObjectNamePc00753b14[6] = "heart";
-#pragma const_seg(".rdata$LevelObjectNamePc00753b1c")
-    extern const char LevelObjectNamePc00753b1c[11] = "blue_coin4";
-#pragma const_seg(".rdata$LevelObjectNamePc00753b28")
-    extern const char LevelObjectNamePc00753b28[11] = "blue_coin3";
-#pragma const_seg(".rdata$LevelObjectNamePc00753b34")
-    extern const char LevelObjectNamePc00753b34[11] = "blue_coin2";
-#pragma const_seg(".rdata$LevelObjectNamePc00753b40")
-    extern const char LevelObjectNamePc00753b40[11] = "blue_coin1";
-#pragma const_seg(".rdata$LevelObjectNamePc00753b4c")
-    extern const char LevelObjectNamePc00753b4c[15] = "blue_pan_coin4";
-#pragma const_seg(".rdata$LevelObjectNamePc00753b5c")
-    extern const char LevelObjectNamePc00753b5c[15] = "blue_pan_coin3";
-#pragma const_seg(".rdata$LevelObjectNamePc00753b6c")
-    extern const char LevelObjectNamePc00753b6c[15] = "blue_pan_coin2";
-#pragma const_seg(".rdata$LevelObjectNamePc00753b7c")
-    extern const char LevelObjectNamePc00753b7c[15] = "blue_pan_coin1";
-#pragma const_seg(".rdata$LevelObjectNamePc00753b8c")
-    extern const char LevelObjectNamePc00753b8c[11] = "gold_coin4";
-#pragma const_seg(".rdata$LevelObjectNamePc00753b98")
-    extern const char LevelObjectNamePc00753b98[11] = "gold_coin3";
-#pragma const_seg(".rdata$LevelObjectNamePc00753ba4")
-    extern const char LevelObjectNamePc00753ba4[11] = "gold_coin2";
-#pragma const_seg(".rdata$LevelObjectNamePc00753bb0")
-    extern const char LevelObjectNamePc00753bb0[11] = "gold_coin1";
-#pragma const_seg(".rdata$LevelObjectNamePc00753bbc")
-    extern const char LevelObjectNamePc00753bbc[15] = "gold_pan_coin4";
-#pragma const_seg(".rdata$LevelObjectNamePc00753bcc")
-    extern const char LevelObjectNamePc00753bcc[15] = "gold_pan_coin3";
-#pragma const_seg(".rdata$LevelObjectNamePc00753bdc")
-    extern const char LevelObjectNamePc00753bdc[15] = "gold_pan_coin2";
-#pragma const_seg(".rdata$LevelObjectNamePc00753bec")
-    extern const char LevelObjectNamePc00753bec[15] = "gold_pan_coin1";
-#pragma const_seg(".rdata$LevelObjectNamePc00753bfc")
-    extern const char LevelObjectNamePc00753bfc[13] = "silver_coin4";
-#pragma const_seg(".rdata$LevelObjectNamePc00753c0c")
-    extern const char LevelObjectNamePc00753c0c[13] = "silver_coin3";
-#pragma const_seg(".rdata$LevelObjectNamePc00753c1c")
-    extern const char LevelObjectNamePc00753c1c[13] = "silver_coin2";
-#pragma const_seg(".rdata$LevelObjectNamePc00753c2c")
-    extern const char LevelObjectNamePc00753c2c[13] = "silver_coin1";
-#pragma const_seg(".rdata$LevelObjectNamePc00753c3c")
-    extern const char LevelObjectNamePc00753c3c[17] = "silver_pan_coin4";
-#pragma const_seg(".rdata$LevelObjectNamePc00753c50")
-    extern const char LevelObjectNamePc00753c50[17] = "silver_pan_coin3";
-#pragma const_seg(".rdata$LevelObjectNamePc00753c64")
-    extern const char LevelObjectNamePc00753c64[17] = "silver_pan_coin2";
-#pragma const_seg(".rdata$LevelObjectNamePc00753c78")
-    extern const char LevelObjectNamePc00753c78[17] = "silver_pan_coin1";
-#pragma const_seg(".rdata$LevelObjectNamePc00753c8c")
-    extern const char LevelObjectNamePc00753c8c[12] = "coin_side10";
-#pragma const_seg(".rdata$LevelObjectNamePc00753c98")
-    extern const char LevelObjectNamePc00753c98[11] = "coin_side9";
-#pragma const_seg(".rdata$LevelObjectNamePc00753ca4")
-    extern const char LevelObjectNamePc00753ca4[11] = "coin_side8";
-#pragma const_seg(".rdata$LevelObjectNamePc00753cb0")
-    extern const char LevelObjectNamePc00753cb0[11] = "coin_side7";
-#pragma const_seg(".rdata$LevelObjectNamePc00753cbc")
-    extern const char LevelObjectNamePc00753cbc[11] = "coin_side6";
-#pragma const_seg(".rdata$LevelObjectNamePc00753cc8")
-    extern const char LevelObjectNamePc00753cc8[11] = "coin_side5";
-#pragma const_seg(".rdata$LevelObjectNamePc00753cd4")
-    extern const char LevelObjectNamePc00753cd4[11] = "coin_side4";
-#pragma const_seg(".rdata$LevelObjectNamePc00753ce0")
-    extern const char LevelObjectNamePc00753ce0[11] = "coin_side3";
-#pragma const_seg(".rdata$LevelObjectNamePc00753cec")
-    extern const char LevelObjectNamePc00753cec[11] = "coin_side2";
-#pragma const_seg(".rdata$LevelObjectNamePc00753cf8")
-    extern const char LevelObjectNamePc00753cf8[11] = "coin_side1";
-#pragma const_seg(".rdata$LevelObjectNamePc00753d04")
-    extern const char LevelObjectNamePc00753d04[15] = "icon_back_gold";
-#pragma const_seg(".rdata$LevelObjectNamePc00753d14")
-    extern const char LevelObjectNamePc00753d14[18] = "icon_back_neutral";
-#pragma const_seg(".rdata$LevelObjectNamePc00753d28")
-    extern const char LevelObjectNamePc00753d28[15] = "icon_back_blue";
-#pragma const_seg(".rdata$LevelObjectNamePc00753d38")
-    extern const char LevelObjectNamePc00753d38[16] = "icon_back_green";
-#pragma const_seg(".rdata$LevelObjectNamePc00753d48")
-    extern const char LevelObjectNamePc00753d48[17] = "silhouette_icon1";
-#pragma const_seg(".rdata$LevelObjectNamePc00753d5c")
-    extern const char LevelObjectNamePc00753d5c[16] = "silhouette_icon";
-#pragma const_seg(".rdata$LevelObjectNamePc00753d6c")
-    extern const char LevelObjectNamePc00753d6c[11] = "mouse_glow";
-#pragma const_seg(".rdata$LevelObjectNamePc00753d78")
-    extern const char LevelObjectNamePc00753d78[14] = "question_icon";
-#pragma const_seg(".rdata$LevelObjectNamePc00753d88")
-    extern const char LevelObjectNamePc00753d88[37] = "jedi_starfighter_blasterBoltglow_ref";
-#pragma const_seg(".rdata$LevelObjectNamePc00753db0")
-    extern const char LevelObjectNamePc00753db0[33] = "jedi_starfighter_blasterBolt_ref";
-#pragma const_seg(".rdata$LevelObjectNamePc00753dd4")
-    extern const char LevelObjectNamePc00753dd4[24] = "photontorpedo_glow1_ref";
-#pragma const_seg(".rdata$LevelObjectNamePc00753dec")
-    extern const char LevelObjectNamePc00753dec[23] = "photontorpedo_glow_ref";
-#pragma const_seg(".rdata$LevelObjectNamePc00753e04")
-    extern const char LevelObjectNamePc00753e04[18] = "photontorpedo_ref";
-#pragma const_seg(".rdata$LevelObjectNamePc00753e18")
-    extern const char LevelObjectNamePc00753e18[24] = "xwing_thruster_glow_ref";
-#pragma const_seg(".rdata$LevelObjectNamePc00753e30")
-    extern const char LevelObjectNamePc00753e30[19] = "xwing_thruster_ref";
-#pragma const_seg(".rdata$LevelObjectNamePc00753e44")
-    extern const char LevelObjectNamePc00753e44[20] = "green_blob_glow_ref";
-#pragma const_seg(".rdata$LevelObjectNamePc00753e58")
-    extern const char LevelObjectNamePc00753e58[15] = "green_blob_ref";
-#pragma const_seg(".rdata$LevelObjectNamePc00753e68")
-    extern const char LevelObjectNamePc00753e68[20] = "laserglow_green_ref";
-#pragma const_seg(".rdata$LevelObjectNamePc00753e7c")
-    extern const char LevelObjectNamePc00753e7c[16] = "laser_green_ref";
-#pragma const_seg(".rdata$LevelObjectNamePc00753e8c")
-    extern const char LevelObjectNamePc00753e8c[18] = "xwingboltglow_ref";
-#pragma const_seg(".rdata$LevelObjectNamePc00753ea0")
-    extern const char LevelObjectNamePc00753ea0[14] = "xwingbolt_ref";
-#pragma const_seg(".rdata$LevelObjectNamePc00753eb0")
-    extern const char LevelObjectNamePc00753eb0[24] = "destroyershield_red_ref";
-#pragma const_seg(".rdata$LevelObjectNamePc00753ec8")
-    extern const char LevelObjectNamePc00753ec8[20] = "destroyershield_ref";
-#pragma const_seg(".rdata$LevelObjectNamePc00753edc")
-    extern const char LevelObjectNamePc00753edc[25] = "doublelightsabreglow_ref";
-#pragma const_seg(".rdata$LevelObjectNamePc00753ef8")
-    extern const char LevelObjectNamePc00753ef8[24] = "doublelightsabrered_ref";
-#pragma const_seg(".rdata$LevelObjectNamePc00753f10")
-    extern const char LevelObjectNamePc00753f10[25] = "lightsabreglowpurple_ref";
-#pragma const_seg(".rdata$LevelObjectNamePc00753f2c")
-    extern const char LevelObjectNamePc00753f2c[21] = "lightsabrepurple_ref";
-#pragma const_seg(".rdata$LevelObjectNamePc00753f44")
-    extern const char LevelObjectNamePc00753f44[19] = "lightsabreglow_ref";
-#pragma const_seg(".rdata$LevelObjectNamePc00753f58")
-    extern const char LevelObjectNamePc00753f58[19] = "lightsabreblue_ref";
-#pragma const_seg(".rdata$LevelObjectNamePc00753f6c")
-    extern const char LevelObjectNamePc00753f6c[24] = "lightsabreglowgreen_ref";
-#pragma const_seg(".rdata$LevelObjectNamePc00753f84")
-    extern const char LevelObjectNamePc00753f84[20] = "lightsabregreen_ref";
-#pragma const_seg(".rdata$LevelObjectNamePc00753f98")
-    extern const char LevelObjectNamePc00753f98[22] = "lightsabreglowred_ref";
-#pragma const_seg(".rdata$LevelObjectNamePc00753fb0")
-    extern const char LevelObjectNamePc00753fb0[18] = "lightsabrered_ref";
-#pragma const_seg(".rdata$LevelObjectNamePc00753fc4")
-    extern const char LevelObjectNamePc00753fc4[27] = "double_blasterboltGlow_ref";
-#pragma const_seg(".rdata$LevelObjectNamePc00753fe0")
-    extern const char LevelObjectNamePc00753fe0[23] = "double_blasterbolt_ref";
-#pragma const_seg(".rdata$LevelObjectNamePc00753ff8")
-    extern const char LevelObjectNamePc00753ff8[25] = "blasterboltglow_blue_ref";
-#pragma const_seg(".rdata$LevelObjectNamePc00754014")
-    extern const char LevelObjectNamePc00754014[21] = "blasterbolt_blue_ref";
-#pragma const_seg(".rdata$LevelObjectNamePc0075402c")
-    extern const char LevelObjectNamePc0075402c[26] = "blasterboltglow_green_ref";
-#pragma const_seg(".rdata$LevelObjectNamePc00754048")
-    extern const char LevelObjectNamePc00754048[22] = "blasterbolt_green_ref";
-#pragma const_seg(".rdata$LevelObjectNamePc00754060")
-    extern const char LevelObjectNamePc00754060[24] = "blasterboltglow_red_ref";
-#pragma const_seg(".rdata$LevelObjectNamePc00754078")
-    extern const char LevelObjectNamePc00754078[20] = "blasterbolt_red_ref";
-#pragma const_seg(".rdata$LevelObjectNamePc0075408c")
-    extern const char LevelObjectNamePc0075408c[20] = "blasterboltglow_ref";
-#pragma const_seg(".rdata$LevelObjectNamePc007540a0")
-    extern const char LevelObjectNamePc007540a0[16] = "blasterbolt_ref";
-#pragma const_seg(".rdata$LevelObjectNamePc007540b0")
-    extern const char LevelObjectNamePc007540b0[33] = "jedi_starfighter_blasterBoltglow";
-#pragma const_seg(".rdata$LevelObjectNamePc007540d4")
-    extern const char LevelObjectNamePc007540d4[29] = "jedi_starfighter_blasterBolt";
-#pragma const_seg(".rdata$LevelObjectNamePc007540f4")
-    extern const char LevelObjectNamePc007540f4[19] = "photontorpedoglow1";
-#pragma const_seg(".rdata$LevelObjectNamePc00754108")
-    extern const char LevelObjectNamePc00754108[18] = "photontorpedoglow";
-#pragma const_seg(".rdata$LevelObjectNamePc0075411c")
-    extern const char LevelObjectNamePc0075411c[14] = "photontorpedo";
-#pragma const_seg(".rdata$LevelObjectNamePc0075412c")
-    extern const char LevelObjectNamePc0075412c[20] = "xwing_thruster_glow";
-#pragma const_seg(".rdata$LevelObjectNamePc00754140")
-    extern const char LevelObjectNamePc00754140[15] = "xwing_thruster";
-#pragma const_seg(".rdata$LevelObjectNamePc00754150")
-    extern const char LevelObjectNamePc00754150[16] = "green_blob_glow";
-#pragma const_seg(".rdata$LevelObjectNamePc00754160")
-    extern const char LevelObjectNamePc00754160[11] = "green_blob";
-#pragma const_seg(".rdata$LevelObjectNamePc0075416c")
-    extern const char LevelObjectNamePc0075416c[17] = "laser_green_glow";
-#pragma const_seg(".rdata$LevelObjectNamePc00754180")
-    extern const char LevelObjectNamePc00754180[12] = "laser_green";
-#pragma const_seg(".rdata$LevelObjectNamePc0075418c")
-    extern const char LevelObjectNamePc0075418c[14] = "xwingboltglow";
-#pragma const_seg(".rdata$LevelObjectNamePc0075419c")
-    extern const char LevelObjectNamePc0075419c[10] = "xwingbolt";
-#pragma const_seg(".rdata$LevelObjectNamePc007541a8")
-    extern const char LevelObjectNamePc007541a8[20] = "destroyershield_red";
-#pragma const_seg(".rdata$LevelObjectNamePc007541bc")
-    extern const char LevelObjectNamePc007541bc[16] = "destroyershield";
-#pragma const_seg(".rdata$LevelObjectNamePc007541cc")
-    extern const char LevelObjectNamePc007541cc[21] = "doublelightsabreglow";
-#pragma const_seg(".rdata$LevelObjectNamePc007541e4")
-    extern const char LevelObjectNamePc007541e4[20] = "doublelightsabrered";
-#pragma const_seg(".rdata$LevelObjectNamePc007541f8")
-    extern const char LevelObjectNamePc007541f8[21] = "lightsabreglowpurple";
-#pragma const_seg(".rdata$LevelObjectNamePc00754210")
-    extern const char LevelObjectNamePc00754210[17] = "lightsabrepurple";
-#pragma const_seg(".rdata$LevelObjectNamePc00754224")
-    extern const char LevelObjectNamePc00754224[15] = "lightsabreglow";
-#pragma const_seg(".rdata$LevelObjectNamePc00754234")
-    extern const char LevelObjectNamePc00754234[15] = "lightsabreblue";
-#pragma const_seg(".rdata$LevelObjectNamePc00754244")
-    extern const char LevelObjectNamePc00754244[20] = "lightsabreglowgreen";
-#pragma const_seg(".rdata$LevelObjectNamePc00754258")
-    extern const char LevelObjectNamePc00754258[16] = "lightsabregreen";
-#pragma const_seg(".rdata$LevelObjectNamePc00754268")
-    extern const char LevelObjectNamePc00754268[18] = "lightsabreglowred";
-#pragma const_seg(".rdata$LevelObjectNamePc0075427c")
-    extern const char LevelObjectNamePc0075427c[14] = "lightsabrered";
-#pragma const_seg(".rdata$LevelObjectNamePc0075428c")
-    extern const char LevelObjectNamePc0075428c[23] = "double_blasterBoltglow";
-#pragma const_seg(".rdata$LevelObjectNamePc007542a4")
-    extern const char LevelObjectNamePc007542a4[19] = "double_blasterBolt";
-#pragma const_seg(".rdata$LevelObjectNamePc007542b8")
-    extern const char LevelObjectNamePc007542b8[21] = "blasterboltglow_blue";
 #pragma const_seg(".rdata$LevelObjectNamePc007542d0")
     extern const char LevelObjectNamePc007542d0[17] = "blasterbolt_blue";
-#pragma const_seg(".rdata$LevelObjectNamePc007542e4")
-    extern const char LevelObjectNamePc007542e4[22] = "blasterboltglow_green";
-#pragma const_seg(".rdata$LevelObjectNamePc007542fc")
-    extern const char LevelObjectNamePc007542fc[18] = "blasterbolt_green";
-#pragma const_seg(".rdata$LevelObjectNamePc00754310")
-    extern const char LevelObjectNamePc00754310[20] = "blasterboltglow_red";
 #pragma const_seg(".rdata$LevelObjectNamePc00754324")
     extern const char LevelObjectNamePc00754324[16] = "blasterbolt_red";
-#pragma const_seg(".rdata$LevelObjectNamePc00754334")
-    extern const char LevelObjectNamePc00754334[16] = "blasterboltglow";
 #pragma const_seg(".rdata$LevelObjectNamePc00754344")
     extern const char LevelObjectNamePc00754344[12] = "blasterbolt";
-#pragma const_seg(".rdata$LevelObjectNamePc00754350")
-    extern const char LevelObjectNamePc00754350[11] = "basketball";
-#pragma const_seg(".rdata$LevelObjectNamePc0075435c")
-    extern const char LevelObjectNamePc0075435c[7] = "carrot";
 #pragma const_seg(".rdata$LevelObjectNamePc00754364")
     extern const char LevelObjectNamePc00754364[20] = "Spinner_default_Arm";
 #pragma const_seg(".rdata$LevelObjectNamePc00754378")
     extern const char LevelObjectNamePc00754378[21] = "Spinner_default_Base";
-#pragma const_seg(".rdata$LevelObjectNamePc00754398")
-    extern const char LevelObjectNamePc00754398[13] = "zipup_target";
-#pragma const_seg(".rdata$LevelObjectNamePc007543a8")
-    extern const char LevelObjectNamePc007543a8[12] = "zipup_hook1";
-#pragma const_seg(".rdata$LevelObjectNamePc007543b4")
-    extern const char LevelObjectNamePc007543b4[11] = "zipup_hook";
-#pragma const_seg(".rdata$LevelObjectNamePc007543c0")
-    extern const char LevelObjectNamePc007543c0[9] = "door_1_r";
-#pragma const_seg(".rdata$LevelObjectNamePc007543cc")
-    extern const char LevelObjectNamePc007543cc[9] = "door_1_l";
-#pragma const_seg(".rdata$LevelObjectNamePc007543d8")
-    extern const char LevelObjectNamePc007543d8[8] = "ledge_6";
-#pragma const_seg(".rdata$LevelObjectNamePc007543e0")
-    extern const char LevelObjectNamePc007543e0[8] = "ledge_5";
-#pragma const_seg(".rdata$LevelObjectNamePc007543e8")
-    extern const char LevelObjectNamePc007543e8[8] = "ledge_4";
-#pragma const_seg(".rdata$LevelObjectNamePc007543f0")
-    extern const char LevelObjectNamePc007543f0[8] = "ledge_3";
-#pragma const_seg(".rdata$LevelObjectNamePc007543f8")
-    extern const char LevelObjectNamePc007543f8[8] = "ledge_2";
-#pragma const_seg(".rdata$LevelObjectNamePc00754400")
-    extern const char LevelObjectNamePc00754400[8] = "ledge_1";
-#pragma const_seg(".rdata$LevelObjectNamePc00754408")
-    extern const char LevelObjectNamePc00754408[12] = "transform1b";
-#pragma const_seg(".rdata$LevelObjectNamePc00754414")
-    extern const char LevelObjectNamePc00754414[12] = "transform1a";
-#pragma const_seg(".rdata$LevelObjectNamePc00754420")
-    extern const char LevelObjectNamePc00754420[16] = "attract_o_matic";
-#pragma const_seg(".rdata$LevelObjectNamePc00754430")
-    extern const char LevelObjectNamePc00754430[11] = "metal_bit7";
-#pragma const_seg(".rdata$LevelObjectNamePc0075443c")
-    extern const char LevelObjectNamePc0075443c[11] = "metal_bit6";
-#pragma const_seg(".rdata$LevelObjectNamePc00754448")
-    extern const char LevelObjectNamePc00754448[11] = "metal_bit5";
-#pragma const_seg(".rdata$LevelObjectNamePc00754454")
-    extern const char LevelObjectNamePc00754454[11] = "metal_bit4";
-#pragma const_seg(".rdata$LevelObjectNamePc00754460")
-    extern const char LevelObjectNamePc00754460[11] = "metal_bit3";
-#pragma const_seg(".rdata$LevelObjectNamePc0075446c")
-    extern const char LevelObjectNamePc0075446c[11] = "metal_bit2";
-#pragma const_seg(".rdata$LevelObjectNamePc00754478")
-    extern const char LevelObjectNamePc00754478[11] = "metal_bit1";
-#pragma const_seg(".rdata$LevelObjectNamePc00754484")
-    extern const char LevelObjectNamePc00754484[16] = "tightrope_base2";
-#pragma const_seg(".rdata$LevelObjectNamePc00754494")
-    extern const char LevelObjectNamePc00754494[16] = "tightrope_base1";
-#pragma const_seg(".rdata$LevelObjectNamePc007544a4")
-    extern const char LevelObjectNamePc007544a4[15] = "grapple_point1";
-#pragma const_seg(".rdata$LevelObjectNamePc007544b4")
-    extern const char LevelObjectNamePc007544b4[14] = "grapple_point";
-#pragma const_seg(".rdata$LevelObjectNamePc007544c4")
-    extern const char LevelObjectNamePc007544c4[19] = "robin_signal_light";
-#pragma const_seg(".rdata$LevelObjectNamePc007544d8")
-    extern const char LevelObjectNamePc007544d8[16] = "robin_signal_on";
-#pragma const_seg(".rdata$LevelObjectNamePc007544e8")
-    extern const char LevelObjectNamePc007544e8[17] = "robin_signal_off";
-#pragma const_seg(".rdata$LevelObjectNamePc007544fc")
-    extern const char LevelObjectNamePc007544fc[17] = "bat_signal_light";
-#pragma const_seg(".rdata$LevelObjectNamePc00754510")
-    extern const char LevelObjectNamePc00754510[14] = "bat_signal_on";
-#pragma const_seg(".rdata$LevelObjectNamePc00754520")
-    extern const char LevelObjectNamePc00754520[15] = "bat_signal_off";
-#pragma const_seg(".rdata$LevelObjectNamePc00754530")
-    extern const char LevelObjectNamePc00754530[12] = "signal_base";
-#pragma const_seg(".rdata$LevelObjectNamePc0075453c")
-    extern const char LevelObjectNamePc0075453c[12] = "pistolflash";
-#pragma const_seg(".rdata$LevelObjectNamePc00754548")
-    extern const char LevelObjectNamePc00754548[7] = "bullet";
-#pragma const_seg(".rdata$LevelObjectNamePc00754550")
-    extern const char LevelObjectNamePc00754550[11] = "robinarang";
-#pragma const_seg(".rdata$LevelObjectNamePc0075455c")
-    extern const char LevelObjectNamePc0075455c[9] = "batarang";
-#pragma const_seg(".rdata$LevelObjectNamePc00754570")
-    extern const char LevelObjectNamePc00754570[14] = "winch_bracket";
-#pragma const_seg(".rdata$LevelObjectNamePc00754580")
-    extern const char LevelObjectNamePc00754580[11] = "winch_base";
-#pragma const_seg(".rdata$LevelObjectNamePc0075458c")
-    extern const char LevelObjectNamePc0075458c[11] = "hack_door2";
-#pragma const_seg(".rdata$LevelObjectNamePc00754598")
-    extern const char LevelObjectNamePc00754598[11] = "hack_door1";
-#pragma const_seg(".rdata$LevelObjectNamePc007545a4")
-    extern const char LevelObjectNamePc007545a4[13] = "hack_control";
-#pragma const_seg(".rdata$LevelObjectNamePc007545b4")
-    extern const char LevelObjectNamePc007545b4[10] = "lever_off";
-#pragma const_seg(".rdata$LevelObjectNamePc007545c0")
-    extern const char LevelObjectNamePc007545c0[9] = "lever_on";
-#pragma const_seg(".rdata$LevelObjectNamePc007545cc")
-    extern const char LevelObjectNamePc007545cc[11] = "lever_glow";
-#pragma const_seg(".rdata$LevelObjectNamePc007545d8")
-    extern const char LevelObjectNamePc007545d8[11] = "lever_nob9";
-#pragma const_seg(".rdata$LevelObjectNamePc007545e4")
-    extern const char LevelObjectNamePc007545e4[11] = "lever_nob8";
-#pragma const_seg(".rdata$LevelObjectNamePc007545f0")
-    extern const char LevelObjectNamePc007545f0[11] = "lever_nob7";
-#pragma const_seg(".rdata$LevelObjectNamePc007545fc")
-    extern const char LevelObjectNamePc007545fc[11] = "lever_nob6";
-#pragma const_seg(".rdata$LevelObjectNamePc00754608")
-    extern const char LevelObjectNamePc00754608[11] = "lever_nob5";
-#pragma const_seg(".rdata$LevelObjectNamePc00754614")
-    extern const char LevelObjectNamePc00754614[11] = "lever_nob4";
-#pragma const_seg(".rdata$LevelObjectNamePc00754620")
-    extern const char LevelObjectNamePc00754620[11] = "lever_nob3";
-#pragma const_seg(".rdata$LevelObjectNamePc0075462c")
-    extern const char LevelObjectNamePc0075462c[11] = "lever_nob2";
-#pragma const_seg(".rdata$LevelObjectNamePc00754638")
-    extern const char LevelObjectNamePc00754638[11] = "lever_nob1";
-#pragma const_seg(".rdata$LevelObjectNamePc00754644")
-    extern const char LevelObjectNamePc00754644[11] = "lever_base";
-#pragma const_seg(".rdata$LevelObjectNamePc00754650")
-    extern const char LevelObjectNamePc00754650[6] = "lever";
-#pragma const_seg(".rdata$LevelObjectNamePc00754658")
-    extern const char LevelObjectNamePc00754658[14] = "bounty_target";
-#pragma const_seg(".rdata$LevelObjectNamePc00754668")
-    extern const char LevelObjectNamePc00754668[13] = "storm_target";
-#pragma const_seg(".rdata$LevelObjectNamePc00754678")
-    extern const char LevelObjectNamePc00754678[11] = "spearblack";
-#pragma const_seg(".rdata$LevelObjectNamePc00754684")
-    extern const char LevelObjectNamePc00754684[6] = "spear";
-#pragma const_seg(".rdata$LevelObjectNamePc0075468c")
-    extern const char LevelObjectNamePc0075468c[5] = "peri";
-#pragma const_seg(".rdata$LevelObjectNamePc00754694")
-    extern const char LevelObjectNamePc00754694[5] = "poop";
-#pragma const_seg(".rdata$LevelObjectNamePc0075469c")
-    extern const char LevelObjectNamePc0075469c[14] = "submachinegun";
-#pragma const_seg(".rdata$LevelObjectNamePc007546ac")
-    extern const char LevelObjectNamePc007546ac[13] = "blaster_blue";
-#pragma const_seg(".rdata$LevelObjectNamePc007546bc")
-    extern const char LevelObjectNamePc007546bc[10] = "bowcaster";
-#pragma const_seg(".rdata$LevelObjectNamePc007546cc")
-    extern const char LevelObjectNamePc007546cc[15] = "bentlightsabre";
-#pragma const_seg(".rdata$LevelObjectNamePc007546dc")
-    extern const char LevelObjectNamePc007546dc[23] = "doublelightsabrehandle";
-#pragma const_seg(".rdata$LevelObjectNamePc007546f4")
-    extern const char LevelObjectNamePc007546f4[17] = "lightsabrehandle";
-#pragma const_seg(".rdata$LevelObjectNamePc00754708")
-    extern const char LevelObjectNamePc00754708[13] = "pistolchrome";
-#pragma const_seg(".rdata$LevelObjectNamePc00754718")
-    extern const char LevelObjectNamePc00754718[11] = "pistolgrey";
-#pragma const_seg(".rdata$LevelObjectNamePc00754724")
-    extern const char LevelObjectNamePc00754724[14] = "walkie_talkie";
-#pragma const_seg(".rdata$LevelObjectNamePc00754734")
-    extern const char LevelObjectNamePc00754734[11] = "machinegun";
-#pragma const_seg(".rdata$LevelObjectNamePc00754740")
-    extern const char LevelObjectNamePc00754740[13] = "slave1_level";
-#pragma const_seg(".rdata$LevelObjectNamePc00754750")
-    extern const char LevelObjectNamePc00754750[6] = "phone";
-#pragma const_seg(".rdata$LevelObjectNamePc00754758")
-    extern const char LevelObjectNamePc00754758[4] = "rod";
-#pragma const_seg(".rdata$LevelObjectNamePc0075475c")
-    extern const char LevelObjectNamePc0075475c[10] = "status_06";
-#pragma const_seg(".rdata$LevelObjectNamePc00754768")
-    extern const char LevelObjectNamePc00754768[10] = "status_05";
-#pragma const_seg(".rdata$LevelObjectNamePc00754774")
-    extern const char LevelObjectNamePc00754774[10] = "status_04";
-#pragma const_seg(".rdata$LevelObjectNamePc00754780")
-    extern const char LevelObjectNamePc00754780[10] = "status_03";
-#pragma const_seg(".rdata$LevelObjectNamePc0075478c")
-    extern const char LevelObjectNamePc0075478c[10] = "status_02";
-#pragma const_seg(".rdata$LevelObjectNamePc00754798")
-    extern const char LevelObjectNamePc00754798[10] = "status_01";
-#pragma const_seg(".rdata$LevelObjectNamePc007547ac")
-    extern const char LevelObjectNamePc007547ac[9] = "parallax";
-#pragma const_seg(".rdata$LevelObjectNamePc007547b8")
-    extern const char LevelObjectNamePc007547b8[10] = "save_icon";
 #pragma const_seg()
 #pragma data_seg(".data$ObjTab")
     LEVEL_OBJECT_CONFIG_PC ObjTab[750] = {
-        {4, 0, 0, const_cast<char *>(LevelObjectNamePc007547b8)},
-        {1, 0, 0, const_cast<char *>(LevelObjectNamePc007547ac)},
+        {4, 0, 0, const_cast<char *>("save_icon")},
+        {1, 0, 0, const_cast<char *>("parallax")},
         {1, 0, 0, const_cast<char *>(PermLegalBase)},
-        {1, 0, 0, const_cast<char *>(LevelObjectNamePc00754798)},
-        {1, 0, 0, const_cast<char *>(LevelObjectNamePc0075478c)},
-        {1, 0, 0, const_cast<char *>(LevelObjectNamePc00754780)},
-        {1, 0, 0, const_cast<char *>(LevelObjectNamePc00754774)},
-        {1, 0, 0, const_cast<char *>(LevelObjectNamePc00754768)},
-        {1, 0, 0, const_cast<char *>(LevelObjectNamePc0075475c)},
-        {1, 0, 0, const_cast<char *>(LevelObjectNamePc00754758)},
-        {1, 0, 0, const_cast<char *>(LevelObjectNamePc00754750)},
-        {1, 0, 0, const_cast<char *>(LevelObjectNamePc00754740)},
-        {0, 0, 0, const_cast<char *>(LevelObjectNamePc00754734)},
+        {1, 0, 0, const_cast<char *>("status_01")},
+        {1, 0, 0, const_cast<char *>("status_02")},
+        {1, 0, 0, const_cast<char *>("status_03")},
+        {1, 0, 0, const_cast<char *>("status_04")},
+        {1, 0, 0, const_cast<char *>("status_05")},
+        {1, 0, 0, const_cast<char *>("status_06")},
+        {1, 0, 0, const_cast<char *>("rod")},
+        {1, 0, 0, const_cast<char *>("phone")},
+        {1, 0, 0, const_cast<char *>("slave1_level")},
+        {0, 0, 0, const_cast<char *>("machinegun")},
         {0, 0, 0, "blaster"},
-        {0, 0, 0, const_cast<char *>(LevelObjectNamePc00754724)},
-        {0, 0, 0, const_cast<char *>(LevelObjectNamePc00754718)},
-        {0, 0, 0, const_cast<char *>(LevelObjectNamePc00754708)},
-        {0, 0, 0, const_cast<char *>(LevelObjectNamePc007546f4)},
-        {0, 0, 0, const_cast<char *>(LevelObjectNamePc007546dc)},
-        {0, 0, 0, const_cast<char *>(LevelObjectNamePc007546cc)},
+        {0, 0, 0, const_cast<char *>("walkie_talkie")},
+        {0, 0, 0, const_cast<char *>("pistolgrey")},
+        {0, 0, 0, const_cast<char *>("pistolchrome")},
+        {0, 0, 0, const_cast<char *>("lightsabrehandle")},
+        {0, 0, 0, const_cast<char *>("doublelightsabrehandle")},
+        {0, 0, 0, const_cast<char *>("bentlightsabre")},
         {0, 0, 0, "gun"},
-        {0, 0, 0, const_cast<char *>(LevelObjectNamePc007546bc)},
-        {0, 0, 0, const_cast<char *>(LevelObjectNamePc007546ac)},
-        {0, 0, 0, const_cast<char *>(LevelObjectNamePc0075469c)},
-        {0, 0, 0, const_cast<char *>(LevelObjectNamePc00754694)},
-        {0, 0, 0, const_cast<char *>(LevelObjectNamePc0075468c)},
-        {0, 0, 0, const_cast<char *>(LevelObjectNamePc00754684)},
-        {0, 0, 0, const_cast<char *>(LevelObjectNamePc00754678)},
-        {0, 0, 0, const_cast<char *>(LevelObjectNamePc00754668)},
-        {0, 0, 0, const_cast<char *>(LevelObjectNamePc00754658)},
-        {0, 0, 0, const_cast<char *>(LevelObjectNamePc00754650)},
-        {0, 0, 0, const_cast<char *>(LevelObjectNamePc00754644)},
-        {0, 0, 0, const_cast<char *>(LevelObjectNamePc00754638)},
-        {0, 0, 0, const_cast<char *>(LevelObjectNamePc0075462c)},
-        {0, 0, 0, const_cast<char *>(LevelObjectNamePc00754620)},
-        {0, 0, 0, const_cast<char *>(LevelObjectNamePc00754614)},
-        {0, 0, 0, const_cast<char *>(LevelObjectNamePc00754608)},
-        {0, 0, 0, const_cast<char *>(LevelObjectNamePc007545fc)},
-        {0, 0, 0, const_cast<char *>(LevelObjectNamePc007545f0)},
-        {0, 0, 0, const_cast<char *>(LevelObjectNamePc007545e4)},
-        {0, 0, 0, const_cast<char *>(LevelObjectNamePc007545d8)},
-        {0, 0, 0, const_cast<char *>(LevelObjectNamePc007545cc)},
-        {0, 0, 0, const_cast<char *>(LevelObjectNamePc007545c0)},
-        {0, 0, 0, const_cast<char *>(LevelObjectNamePc007545b4)},
-        {0, 0, 0, const_cast<char *>(LevelObjectNamePc007545a4)},
-        {0, 0, 0, const_cast<char *>(LevelObjectNamePc00754598)},
-        {0, 0, 0, const_cast<char *>(LevelObjectNamePc0075458c)},
-        {0, 0, 0, const_cast<char *>(LevelObjectNamePc00754580)},
-        {0, 0, 0, const_cast<char *>(LevelObjectNamePc00754570)},
+        {0, 0, 0, const_cast<char *>("bowcaster")},
+        {0, 0, 0, const_cast<char *>("blaster_blue")},
+        {0, 0, 0, const_cast<char *>("submachinegun")},
+        {0, 0, 0, const_cast<char *>("poop")},
+        {0, 0, 0, const_cast<char *>("peri")},
+        {0, 0, 0, const_cast<char *>("spear")},
+        {0, 0, 0, const_cast<char *>("spearblack")},
+        {0, 0, 0, const_cast<char *>("storm_target")},
+        {0, 0, 0, const_cast<char *>("bounty_target")},
+        {0, 0, 0, const_cast<char *>("lever")},
+        {0, 0, 0, const_cast<char *>("lever_base")},
+        {0, 0, 0, const_cast<char *>("lever_nob1")},
+        {0, 0, 0, const_cast<char *>("lever_nob2")},
+        {0, 0, 0, const_cast<char *>("lever_nob3")},
+        {0, 0, 0, const_cast<char *>("lever_nob4")},
+        {0, 0, 0, const_cast<char *>("lever_nob5")},
+        {0, 0, 0, const_cast<char *>("lever_nob6")},
+        {0, 0, 0, const_cast<char *>("lever_nob7")},
+        {0, 0, 0, const_cast<char *>("lever_nob8")},
+        {0, 0, 0, const_cast<char *>("lever_nob9")},
+        {0, 0, 0, const_cast<char *>("lever_glow")},
+        {0, 0, 0, const_cast<char *>("lever_on")},
+        {0, 0, 0, const_cast<char *>("lever_off")},
+        {0, 0, 0, const_cast<char *>("hack_control")},
+        {0, 0, 0, const_cast<char *>("hack_door1")},
+        {0, 0, 0, const_cast<char *>("hack_door2")},
+        {0, 0, 0, const_cast<char *>("winch_base")},
+        {0, 0, 0, const_cast<char *>("winch_bracket")},
         {0, 0, 0, const_cast<char *>(PlayerActionNamePc_233)},
-        {0, 0, 0, const_cast<char *>(LevelObjectNamePc0075455c)},
-        {0, 0, 0, const_cast<char *>(LevelObjectNamePc00754550)},
-        {0, 0, 0, const_cast<char *>(LevelObjectNamePc00754548)},
-        {0, 1, 0, const_cast<char *>(LevelObjectNamePc0075453c)},
-        {0, 0, 0, const_cast<char *>(LevelObjectNamePc00754530)},
-        {0, 0, 0, const_cast<char *>(LevelObjectNamePc00754520)},
-        {0, 0, 0, const_cast<char *>(LevelObjectNamePc00754510)},
-        {0, 0, 0, const_cast<char *>(LevelObjectNamePc007544fc)},
-        {0, 0, 0, const_cast<char *>(LevelObjectNamePc007544e8)},
-        {0, 0, 0, const_cast<char *>(LevelObjectNamePc007544d8)},
-        {0, 0, 0, const_cast<char *>(LevelObjectNamePc007544c4)},
-        {0, 0, 0, const_cast<char *>(LevelObjectNamePc007544b4)},
-        {0, 0, 0, const_cast<char *>(LevelObjectNamePc007544a4)},
-        {0, 0, 0, const_cast<char *>(LevelObjectNamePc00754494)},
-        {0, 0, 0, const_cast<char *>(LevelObjectNamePc00754484)},
-        {0, 0, 0, const_cast<char *>(LevelObjectNamePc00754478)},
-        {0, 0, 0, const_cast<char *>(LevelObjectNamePc0075446c)},
-        {0, 0, 0, const_cast<char *>(LevelObjectNamePc00754460)},
-        {0, 0, 0, const_cast<char *>(LevelObjectNamePc00754454)},
-        {0, 0, 0, const_cast<char *>(LevelObjectNamePc00754448)},
-        {0, 0, 0, const_cast<char *>(LevelObjectNamePc0075443c)},
-        {0, 0, 0, const_cast<char *>(LevelObjectNamePc00754430)},
-        {0, 0, 0, const_cast<char *>(LevelObjectNamePc00754420)},
-        {0, 0, 0, const_cast<char *>(LevelObjectNamePc00754414)},
-        {0, 0, 0, const_cast<char *>(LevelObjectNamePc00754408)},
-        {0, 0, 0, const_cast<char *>(LevelObjectNamePc00754400)},
-        {0, 0, 0, const_cast<char *>(LevelObjectNamePc007543f8)},
-        {0, 0, 0, const_cast<char *>(LevelObjectNamePc007543f0)},
-        {0, 0, 0, const_cast<char *>(LevelObjectNamePc007543e8)},
-        {0, 0, 0, const_cast<char *>(LevelObjectNamePc007543e0)},
-        {0, 0, 0, const_cast<char *>(LevelObjectNamePc007543d8)},
-        {0, 0, 0, const_cast<char *>(LevelObjectNamePc007543cc)},
-        {0, 0, 0, const_cast<char *>(LevelObjectNamePc007543c0)},
-        {0, 0, 0, const_cast<char *>(LevelObjectNamePc007543b4)},
-        {0, 0, 0, const_cast<char *>(LevelObjectNamePc007543a8)},
-        {0, 0, 0, const_cast<char *>(LevelObjectNamePc00754398)},
+        {0, 0, 0, const_cast<char *>("batarang")},
+        {0, 0, 0, const_cast<char *>("robinarang")},
+        {0, 0, 0, const_cast<char *>("bullet")},
+        {0, 1, 0, const_cast<char *>("pistolflash")},
+        {0, 0, 0, const_cast<char *>("signal_base")},
+        {0, 0, 0, const_cast<char *>("bat_signal_off")},
+        {0, 0, 0, const_cast<char *>("bat_signal_on")},
+        {0, 0, 0, const_cast<char *>("bat_signal_light")},
+        {0, 0, 0, const_cast<char *>("robin_signal_off")},
+        {0, 0, 0, const_cast<char *>("robin_signal_on")},
+        {0, 0, 0, const_cast<char *>("robin_signal_light")},
+        {0, 0, 0, const_cast<char *>("grapple_point")},
+        {0, 0, 0, const_cast<char *>("grapple_point1")},
+        {0, 0, 0, const_cast<char *>("tightrope_base1")},
+        {0, 0, 0, const_cast<char *>("tightrope_base2")},
+        {0, 0, 0, const_cast<char *>("metal_bit1")},
+        {0, 0, 0, const_cast<char *>("metal_bit2")},
+        {0, 0, 0, const_cast<char *>("metal_bit3")},
+        {0, 0, 0, const_cast<char *>("metal_bit4")},
+        {0, 0, 0, const_cast<char *>("metal_bit5")},
+        {0, 0, 0, const_cast<char *>("metal_bit6")},
+        {0, 0, 0, const_cast<char *>("metal_bit7")},
+        {0, 0, 0, const_cast<char *>("attract_o_matic")},
+        {0, 0, 0, const_cast<char *>("transform1a")},
+        {0, 0, 0, const_cast<char *>("transform1b")},
+        {0, 0, 0, const_cast<char *>("ledge_1")},
+        {0, 0, 0, const_cast<char *>("ledge_2")},
+        {0, 0, 0, const_cast<char *>("ledge_3")},
+        {0, 0, 0, const_cast<char *>("ledge_4")},
+        {0, 0, 0, const_cast<char *>("ledge_5")},
+        {0, 0, 0, const_cast<char *>("ledge_6")},
+        {0, 0, 0, const_cast<char *>("door_1_l")},
+        {0, 0, 0, const_cast<char *>("door_1_r")},
+        {0, 0, 0, const_cast<char *>("zipup_hook")},
+        {0, 0, 0, const_cast<char *>("zipup_hook1")},
+        {0, 0, 0, const_cast<char *>("zipup_target")},
         {0, 0, 0, const_cast<char *>(PlayerActionNamePc_145)},
         {0, 0, 0, const_cast<char *>(LevelObjectNamePc00754378)},
         {0, 0, 0, const_cast<char *>(LevelObjectNamePc00754364)},
-        {0, 0, 0, const_cast<char *>(LevelObjectNamePc0075435c)},
-        {1, 0, 0, const_cast<char *>(LevelObjectNamePc00754350)},
+        {0, 0, 0, const_cast<char *>("carrot")},
+        {1, 0, 0, const_cast<char *>("basketball")},
         {0, 0, 1, const_cast<char *>(LevelObjectNamePc00754344)},
-        {0, 0, 1, const_cast<char *>(LevelObjectNamePc00754334)},
+        {0, 0, 1, const_cast<char *>("blasterboltglow")},
         {0, 0, 1, const_cast<char *>(LevelObjectNamePc00754324)},
-        {0, 0, 1, const_cast<char *>(LevelObjectNamePc00754310)},
-        {0, 0, 1, const_cast<char *>(LevelObjectNamePc007542fc)},
-        {0, 0, 1, const_cast<char *>(LevelObjectNamePc007542e4)},
+        {0, 0, 1, const_cast<char *>("blasterboltglow_red")},
+        {0, 0, 1, const_cast<char *>("blasterbolt_green")},
+        {0, 0, 1, const_cast<char *>("blasterboltglow_green")},
         {0, 0, 1, const_cast<char *>(LevelObjectNamePc007542d0)},
-        {0, 0, 1, const_cast<char *>(LevelObjectNamePc007542b8)},
-        {0, 0, 1, const_cast<char *>(LevelObjectNamePc007542a4)},
-        {0, 0, 1, const_cast<char *>(LevelObjectNamePc0075428c)},
-        {0, 0, 1, const_cast<char *>(LevelObjectNamePc0075427c)},
-        {0, 0, 1, const_cast<char *>(LevelObjectNamePc00754268)},
-        {0, 0, 1, const_cast<char *>(LevelObjectNamePc00754258)},
-        {0, 0, 1, const_cast<char *>(LevelObjectNamePc00754244)},
-        {0, 0, 1, const_cast<char *>(LevelObjectNamePc00754234)},
-        {0, 0, 1, const_cast<char *>(LevelObjectNamePc00754224)},
-        {0, 0, 1, const_cast<char *>(LevelObjectNamePc00754210)},
-        {0, 0, 1, const_cast<char *>(LevelObjectNamePc007541f8)},
-        {0, 0, 1, const_cast<char *>(LevelObjectNamePc007541e4)},
-        {0, 0, 1, const_cast<char *>(LevelObjectNamePc007541cc)},
-        {3, 0, 1, const_cast<char *>(LevelObjectNamePc007541bc)},
-        {3, 0, 1, const_cast<char *>(LevelObjectNamePc007541a8)},
-        {5, 0, 1, const_cast<char *>(LevelObjectNamePc0075419c)},
-        {5, 0, 1, const_cast<char *>(LevelObjectNamePc0075418c)},
-        {5, 0, 1, const_cast<char *>(LevelObjectNamePc00754180)},
-        {5, 0, 1, const_cast<char *>(LevelObjectNamePc0075416c)},
-        {0, 0, 1, const_cast<char *>(LevelObjectNamePc00754160)},
-        {0, 0, 1, const_cast<char *>(LevelObjectNamePc00754150)},
-        {5, 0, 1, const_cast<char *>(LevelObjectNamePc00754140)},
-        {5, 0, 1, const_cast<char *>(LevelObjectNamePc0075412c)},
-        {5, 0, 1, const_cast<char *>(LevelObjectNamePc0075411c)},
-        {5, 0, 1, const_cast<char *>(LevelObjectNamePc00754108)},
-        {5, 0, 1, const_cast<char *>(LevelObjectNamePc007540f4)},
-        {5, 0, 1, const_cast<char *>(LevelObjectNamePc007540d4)},
-        {5, 0, 1, const_cast<char *>(LevelObjectNamePc007540b0)},
-        {0, 0, 2, const_cast<char *>(LevelObjectNamePc007540a0)},
-        {0, 0, 2, const_cast<char *>(LevelObjectNamePc0075408c)},
-        {0, 0, 2, const_cast<char *>(LevelObjectNamePc00754078)},
-        {0, 0, 2, const_cast<char *>(LevelObjectNamePc00754060)},
-        {0, 0, 2, const_cast<char *>(LevelObjectNamePc00754048)},
-        {0, 0, 2, const_cast<char *>(LevelObjectNamePc0075402c)},
-        {0, 0, 2, const_cast<char *>(LevelObjectNamePc00754014)},
-        {0, 0, 2, const_cast<char *>(LevelObjectNamePc00753ff8)},
-        {0, 0, 2, const_cast<char *>(LevelObjectNamePc00753fe0)},
-        {0, 0, 2, const_cast<char *>(LevelObjectNamePc00753fc4)},
-        {0, 0, 2, const_cast<char *>(LevelObjectNamePc00753fb0)},
-        {0, 0, 2, const_cast<char *>(LevelObjectNamePc00753f98)},
-        {0, 0, 2, const_cast<char *>(LevelObjectNamePc00753f84)},
-        {0, 0, 2, const_cast<char *>(LevelObjectNamePc00753f6c)},
-        {0, 0, 2, const_cast<char *>(LevelObjectNamePc00753f58)},
-        {0, 0, 2, const_cast<char *>(LevelObjectNamePc00753f44)},
-        {0, 0, 2, const_cast<char *>(LevelObjectNamePc00753f2c)},
-        {0, 0, 2, const_cast<char *>(LevelObjectNamePc00753f10)},
-        {0, 0, 2, const_cast<char *>(LevelObjectNamePc00753ef8)},
-        {0, 0, 2, const_cast<char *>(LevelObjectNamePc00753edc)},
-        {3, 0, 2, const_cast<char *>(LevelObjectNamePc00753ec8)},
-        {3, 0, 2, const_cast<char *>(LevelObjectNamePc00753eb0)},
-        {0, 0, 2, const_cast<char *>(LevelObjectNamePc00753ea0)},
-        {0, 0, 2, const_cast<char *>(LevelObjectNamePc00753e8c)},
-        {0, 0, 2, const_cast<char *>(LevelObjectNamePc00753e7c)},
-        {0, 0, 2, const_cast<char *>(LevelObjectNamePc00753e68)},
-        {0, 0, 2, const_cast<char *>(LevelObjectNamePc00753e58)},
-        {0, 0, 2, const_cast<char *>(LevelObjectNamePc00753e44)},
-        {0, 0, 2, const_cast<char *>(LevelObjectNamePc00753e30)},
-        {0, 0, 2, const_cast<char *>(LevelObjectNamePc00753e18)},
-        {0, 0, 2, const_cast<char *>(LevelObjectNamePc00753e04)},
-        {0, 0, 2, const_cast<char *>(LevelObjectNamePc00753dec)},
-        {0, 0, 2, const_cast<char *>(LevelObjectNamePc00753dd4)},
-        {5, 0, 2, const_cast<char *>(LevelObjectNamePc00753db0)},
-        {5, 0, 2, const_cast<char *>(LevelObjectNamePc00753d88)},
-        {3, 0, 0, const_cast<char *>(LevelObjectNamePc00753d78)},
-        {3, 0, 0, const_cast<char *>(LevelObjectNamePc00753d6c)},
-        {3, 0, 0, const_cast<char *>(LevelObjectNamePc00753d5c)},
-        {3, 0, 0, const_cast<char *>(LevelObjectNamePc00753d48)},
-        {0, 0, 0, const_cast<char *>(LevelObjectNamePc00753d38)},
-        {0, 0, 0, const_cast<char *>(LevelObjectNamePc00753d28)},
-        {0, 0, 0, const_cast<char *>(LevelObjectNamePc00753d14)},
-        {0, 0, 0, const_cast<char *>(LevelObjectNamePc00753d04)},
-        {0, 0, 0, const_cast<char *>(LevelObjectNamePc00753cf8)},
-        {0, 0, 0, const_cast<char *>(LevelObjectNamePc00753cec)},
-        {0, 0, 0, const_cast<char *>(LevelObjectNamePc00753ce0)},
-        {0, 0, 0, const_cast<char *>(LevelObjectNamePc00753cd4)},
-        {0, 0, 0, const_cast<char *>(LevelObjectNamePc00753cc8)},
-        {0, 0, 0, const_cast<char *>(LevelObjectNamePc00753cbc)},
-        {0, 0, 0, const_cast<char *>(LevelObjectNamePc00753cb0)},
-        {0, 0, 0, const_cast<char *>(LevelObjectNamePc00753ca4)},
-        {0, 0, 0, const_cast<char *>(LevelObjectNamePc00753c98)},
-        {0, 0, 0, const_cast<char *>(LevelObjectNamePc00753c8c)},
-        {0, 0, 0, const_cast<char *>(LevelObjectNamePc00753c78)},
-        {0, 0, 0, const_cast<char *>(LevelObjectNamePc00753c64)},
-        {0, 0, 0, const_cast<char *>(LevelObjectNamePc00753c50)},
-        {0, 0, 0, const_cast<char *>(LevelObjectNamePc00753c3c)},
-        {0, 0, 0, const_cast<char *>(LevelObjectNamePc00753c2c)},
-        {0, 0, 0, const_cast<char *>(LevelObjectNamePc00753c1c)},
-        {0, 0, 0, const_cast<char *>(LevelObjectNamePc00753c0c)},
-        {0, 0, 0, const_cast<char *>(LevelObjectNamePc00753bfc)},
-        {0, 0, 0, const_cast<char *>(LevelObjectNamePc00753bec)},
-        {0, 0, 0, const_cast<char *>(LevelObjectNamePc00753bdc)},
-        {0, 0, 0, const_cast<char *>(LevelObjectNamePc00753bcc)},
-        {0, 0, 0, const_cast<char *>(LevelObjectNamePc00753bbc)},
-        {0, 0, 0, const_cast<char *>(LevelObjectNamePc00753bb0)},
-        {0, 0, 0, const_cast<char *>(LevelObjectNamePc00753ba4)},
-        {0, 0, 0, const_cast<char *>(LevelObjectNamePc00753b98)},
-        {0, 0, 0, const_cast<char *>(LevelObjectNamePc00753b8c)},
-        {0, 0, 0, const_cast<char *>(LevelObjectNamePc00753b7c)},
-        {0, 0, 0, const_cast<char *>(LevelObjectNamePc00753b6c)},
-        {0, 0, 0, const_cast<char *>(LevelObjectNamePc00753b5c)},
-        {0, 0, 0, const_cast<char *>(LevelObjectNamePc00753b4c)},
-        {0, 0, 0, const_cast<char *>(LevelObjectNamePc00753b40)},
-        {0, 0, 0, const_cast<char *>(LevelObjectNamePc00753b34)},
-        {0, 0, 0, const_cast<char *>(LevelObjectNamePc00753b28)},
-        {0, 0, 0, const_cast<char *>(LevelObjectNamePc00753b1c)},
-        {0, 0, 0, const_cast<char *>(LevelObjectNamePc00753b14)},
-        {0, 0, 0, const_cast<char *>(LevelObjectNamePc00753b08)},
-        {0, 0, 0, const_cast<char *>(LevelObjectNamePc00753af8)},
-        {0, 0, 0, const_cast<char *>(LevelObjectNamePc00753ae8)},
-        {0, 0, 0, const_cast<char *>(LevelObjectNamePc00753adc)},
-        {0, 0, 0, const_cast<char *>(LevelObjectNamePc00753ad4)},
-        {0, 0, 0, const_cast<char *>(LevelObjectNamePc00753ac4)},
-        {0, 0, 0, const_cast<char *>(LevelObjectNamePc00753ab8)},
-        {0, 0, 0, const_cast<char *>(LevelObjectNamePc00753aac)},
-        {0, 0, 0, const_cast<char *>(LevelObjectNamePc00753aa4)},
-        {0, 0, 0, const_cast<char *>(LevelObjectNamePc00753a94)},
-        {0, 0, 0, const_cast<char *>(LevelObjectNamePc00753a84)},
-        {0, 0, 0, const_cast<char *>(LevelObjectNamePc00753a74)},
-        {0, 0, 0, const_cast<char *>(LevelObjectNamePc00753a64)},
-        {0, 0, 0, const_cast<char *>(LevelObjectNamePc00753a50)},
-        {0, 0, 0, const_cast<char *>(LevelObjectNamePc00753a3c)},
-        {0, 0, 0, const_cast<char *>(LevelObjectNamePc00753a28)},
-        {0, 0, 0, const_cast<char *>(LevelObjectNamePc00753a14)},
-        {0, 0, 0, const_cast<char *>(LevelObjectNamePc00753a04)},
-        {0, 0, 0, const_cast<char *>(LevelObjectNamePc007539f4)},
-        {0, 0, 0, const_cast<char *>(LevelObjectNamePc007539e8)},
-        {0, 0, 0, const_cast<char *>(LevelObjectNamePc007539dc)},
-        {0, 0, 0, const_cast<char *>(LevelObjectNamePc007539d0)},
-        {0, 0, 0, const_cast<char *>(LevelObjectNamePc007539c0)},
-        {0, 0, 0, const_cast<char *>(LevelObjectNamePc007539b0)},
-        {0, 0, 0, const_cast<char *>(LevelObjectNamePc007539a0)},
-        {0, 0, 0, const_cast<char *>(LevelObjectNamePc00753994)},
-        {0, 0, 0, const_cast<char *>(LevelObjectNamePc0075398c)},
-        {0, 0, 0, const_cast<char *>(LevelObjectNamePc00753980)},
-        {0, 0, 0, const_cast<char *>(LevelObjectNamePc00753970)},
-        {0, 0, 0, const_cast<char *>(LevelObjectNamePc00753968)},
-        {0, 0, 0, const_cast<char *>(LevelObjectNamePc00753958)},
-        {0, 0, 0, const_cast<char *>(LevelObjectNamePc00753948)},
-        {0, 0, 0, const_cast<char *>(LevelObjectNamePc0075393c)},
-        {0, 0, 0, const_cast<char *>(LevelObjectNamePc00753930)},
-        {0, 0, 0, const_cast<char *>(LevelObjectNamePc00753920)},
-        {0, 0, 0, const_cast<char *>(LevelObjectNamePc00753914)},
-        {3, 0, 0, const_cast<char *>(LevelObjectNamePc00753904)},
-        {3, 0, 0, const_cast<char *>(LevelObjectNamePc007538f8)},
-        {3, 0, 0, const_cast<char *>(LevelObjectNamePc007538e4)},
-        {3, 0, 0, const_cast<char *>(LevelObjectNamePc007538cc)},
-        {3, 0, 0, const_cast<char *>(LevelObjectNamePc007538bc)},
-        {3, 0, 0, const_cast<char *>(LevelObjectNamePc007538a4)},
-        {3, 0, 0, const_cast<char *>(LevelObjectNamePc00753888)},
-        {3, 0, 0, const_cast<char *>(LevelObjectNamePc0075387c)},
-        {3, 0, 0, const_cast<char *>(LevelObjectNamePc00753870)},
-        {3, 0, 0, const_cast<char *>(LevelObjectNamePc00753860)},
-        {0, 0, 0, const_cast<char *>(LevelObjectNamePc00753858)},
-        {0, 0, 0, const_cast<char *>(LevelObjectNamePc00753850)},
-        {0, 0, 0, const_cast<char *>(LevelObjectNamePc00753848)},
-        {0, 0, 0, const_cast<char *>(LevelObjectNamePc00753840)},
-        {0, 0, 0, const_cast<char *>(LevelObjectNamePc0075382c)},
-        {0, 0, 0, const_cast<char *>(LevelObjectNamePc0075381c)},
-        {0, 0, 0, const_cast<char *>(LevelObjectNamePc00753810)},
-        {0, 0, 0, const_cast<char *>(LevelObjectNamePc00753804)},
-        {0, 0, 0, const_cast<char *>(LevelObjectNamePc007537f8)},
-        {0, 0, 0, const_cast<char *>(LevelObjectNamePc007537ec)},
-        {0, 0, 0, const_cast<char *>(LevelObjectNamePc007537dc)},
-        {0, 0, 0, const_cast<char *>(LevelObjectNamePc007537cc)},
-        {0, 0, 0, const_cast<char *>(LevelObjectNamePc007537c4)},
-        {0, 0, 0, const_cast<char *>(LevelObjectNamePc007537b8)},
-        {0, 0, 0, const_cast<char *>(LevelObjectNamePc007537b0)},
-        {0, 0, 0, const_cast<char *>(LevelObjectNamePc007537a8)},
-        {0, 0, 0, const_cast<char *>(LevelObjectNamePc0075379c)},
-        {0, 0, 0, const_cast<char *>(LevelObjectNamePc00753790)},
-        {0, 0, 0, const_cast<char *>(LevelObjectNamePc00753780)},
-        {0, 0, 0, const_cast<char *>(LevelObjectNamePc00753774)},
-        {0, 0, 0, const_cast<char *>(LevelObjectNamePc00753768)},
-        {0, 0, 0, const_cast<char *>(LevelObjectNamePc00753758)},
-        {0, 0, 0, const_cast<char *>(LevelObjectNamePc00753748)},
-        {0, 0, 0, const_cast<char *>(LevelObjectNamePc00753734)},
-        {0, 0, 0, const_cast<char *>(LevelObjectNamePc00753728)},
-        {0, 0, 0, const_cast<char *>(LevelObjectNamePc00753718)},
-        {0, 0, 0, const_cast<char *>(LevelObjectNamePc0075370c)},
-        {0, 0, 0, const_cast<char *>(LevelObjectNamePc00753700)},
-        {0, 0, 0, const_cast<char *>(LevelObjectNamePc007536f0)},
-        {0, 0, 0, const_cast<char *>(LevelObjectNamePc007536e0)},
-        {0, 0, 0, const_cast<char *>(LevelObjectNamePc007536d0)},
-        {0, 0, 0, const_cast<char *>(LevelObjectNamePc007536c4)},
-        {0, 0, 0, const_cast<char *>(LevelObjectNamePc007536b4)},
-        {0, 0, 0, const_cast<char *>(LevelObjectNamePc007536a0)},
-        {0, 0, 0, const_cast<char *>(LevelObjectNamePc0075368c)},
-        {0, 0, 0, const_cast<char *>(LevelObjectNamePc0075367c)},
-        {0, 0, 0, const_cast<char *>(LevelObjectNamePc0075366c)},
-        {0, 0, 0, const_cast<char *>(LevelObjectNamePc0075365c)},
-        {0, 0, 0, const_cast<char *>(LevelObjectNamePc0075364c)},
-        {0, 0, 0, const_cast<char *>(LevelObjectNamePc00753638)},
-        {0, 0, 0, const_cast<char *>(LevelObjectNamePc00753630)},
-        {0, 0, 0, const_cast<char *>(LevelObjectNamePc00753628)},
-        {0, 0, 0, const_cast<char *>(LevelObjectNamePc0075361c)},
-        {0, 0, 0, const_cast<char *>(LevelObjectNamePc00753610)},
-        {0, 0, 0, const_cast<char *>(LevelObjectNamePc00753604)},
-        {5, 0, 0, const_cast<char *>(LevelObjectNamePc007535f8)},
-        {5, 0, 0, const_cast<char *>(LevelObjectNamePc007535ec)},
-        {1, 0, 0, const_cast<char *>(LevelObjectNamePc007535e8)},
-        {1, 0, 0, const_cast<char *>(LevelObjectNamePc007535e4)},
-        {1, 0, 0, const_cast<char *>(LevelObjectNamePc007535e0)},
-        {1, 0, 0, const_cast<char *>(LevelObjectNamePc007535dc)},
+        {0, 0, 1, const_cast<char *>("blasterboltglow_blue")},
+        {0, 0, 1, const_cast<char *>("double_blasterBolt")},
+        {0, 0, 1, const_cast<char *>("double_blasterBoltglow")},
+        {0, 0, 1, const_cast<char *>("lightsabrered")},
+        {0, 0, 1, const_cast<char *>("lightsabreglowred")},
+        {0, 0, 1, const_cast<char *>("lightsabregreen")},
+        {0, 0, 1, const_cast<char *>("lightsabreglowgreen")},
+        {0, 0, 1, const_cast<char *>("lightsabreblue")},
+        {0, 0, 1, const_cast<char *>("lightsabreglow")},
+        {0, 0, 1, const_cast<char *>("lightsabrepurple")},
+        {0, 0, 1, const_cast<char *>("lightsabreglowpurple")},
+        {0, 0, 1, const_cast<char *>("doublelightsabrered")},
+        {0, 0, 1, const_cast<char *>("doublelightsabreglow")},
+        {3, 0, 1, const_cast<char *>("destroyershield")},
+        {3, 0, 1, const_cast<char *>("destroyershield_red")},
+        {5, 0, 1, const_cast<char *>("xwingbolt")},
+        {5, 0, 1, const_cast<char *>("xwingboltglow")},
+        {5, 0, 1, const_cast<char *>("laser_green")},
+        {5, 0, 1, const_cast<char *>("laser_green_glow")},
+        {0, 0, 1, const_cast<char *>("green_blob")},
+        {0, 0, 1, const_cast<char *>("green_blob_glow")},
+        {5, 0, 1, const_cast<char *>("xwing_thruster")},
+        {5, 0, 1, const_cast<char *>("xwing_thruster_glow")},
+        {5, 0, 1, const_cast<char *>("photontorpedo")},
+        {5, 0, 1, const_cast<char *>("photontorpedoglow")},
+        {5, 0, 1, const_cast<char *>("photontorpedoglow1")},
+        {5, 0, 1, const_cast<char *>("jedi_starfighter_blasterBolt")},
+        {5, 0, 1, const_cast<char *>("jedi_starfighter_blasterBoltglow")},
+        {0, 0, 2, const_cast<char *>("blasterbolt_ref")},
+        {0, 0, 2, const_cast<char *>("blasterboltglow_ref")},
+        {0, 0, 2, const_cast<char *>("blasterbolt_red_ref")},
+        {0, 0, 2, const_cast<char *>("blasterboltglow_red_ref")},
+        {0, 0, 2, const_cast<char *>("blasterbolt_green_ref")},
+        {0, 0, 2, const_cast<char *>("blasterboltglow_green_ref")},
+        {0, 0, 2, const_cast<char *>("blasterbolt_blue_ref")},
+        {0, 0, 2, const_cast<char *>("blasterboltglow_blue_ref")},
+        {0, 0, 2, const_cast<char *>("double_blasterbolt_ref")},
+        {0, 0, 2, const_cast<char *>("double_blasterboltGlow_ref")},
+        {0, 0, 2, const_cast<char *>("lightsabrered_ref")},
+        {0, 0, 2, const_cast<char *>("lightsabreglowred_ref")},
+        {0, 0, 2, const_cast<char *>("lightsabregreen_ref")},
+        {0, 0, 2, const_cast<char *>("lightsabreglowgreen_ref")},
+        {0, 0, 2, const_cast<char *>("lightsabreblue_ref")},
+        {0, 0, 2, const_cast<char *>("lightsabreglow_ref")},
+        {0, 0, 2, const_cast<char *>("lightsabrepurple_ref")},
+        {0, 0, 2, const_cast<char *>("lightsabreglowpurple_ref")},
+        {0, 0, 2, const_cast<char *>("doublelightsabrered_ref")},
+        {0, 0, 2, const_cast<char *>("doublelightsabreglow_ref")},
+        {3, 0, 2, const_cast<char *>("destroyershield_ref")},
+        {3, 0, 2, const_cast<char *>("destroyershield_red_ref")},
+        {0, 0, 2, const_cast<char *>("xwingbolt_ref")},
+        {0, 0, 2, const_cast<char *>("xwingboltglow_ref")},
+        {0, 0, 2, const_cast<char *>("laser_green_ref")},
+        {0, 0, 2, const_cast<char *>("laserglow_green_ref")},
+        {0, 0, 2, const_cast<char *>("green_blob_ref")},
+        {0, 0, 2, const_cast<char *>("green_blob_glow_ref")},
+        {0, 0, 2, const_cast<char *>("xwing_thruster_ref")},
+        {0, 0, 2, const_cast<char *>("xwing_thruster_glow_ref")},
+        {0, 0, 2, const_cast<char *>("photontorpedo_ref")},
+        {0, 0, 2, const_cast<char *>("photontorpedo_glow_ref")},
+        {0, 0, 2, const_cast<char *>("photontorpedo_glow1_ref")},
+        {5, 0, 2, const_cast<char *>("jedi_starfighter_blasterBolt_ref")},
+        {5, 0, 2, const_cast<char *>("jedi_starfighter_blasterBoltglow_ref")},
+        {3, 0, 0, const_cast<char *>("question_icon")},
+        {3, 0, 0, const_cast<char *>("mouse_glow")},
+        {3, 0, 0, const_cast<char *>("silhouette_icon")},
+        {3, 0, 0, const_cast<char *>("silhouette_icon1")},
+        {0, 0, 0, const_cast<char *>("icon_back_green")},
+        {0, 0, 0, const_cast<char *>("icon_back_blue")},
+        {0, 0, 0, const_cast<char *>("icon_back_neutral")},
+        {0, 0, 0, const_cast<char *>("icon_back_gold")},
+        {0, 0, 0, const_cast<char *>("coin_side1")},
+        {0, 0, 0, const_cast<char *>("coin_side2")},
+        {0, 0, 0, const_cast<char *>("coin_side3")},
+        {0, 0, 0, const_cast<char *>("coin_side4")},
+        {0, 0, 0, const_cast<char *>("coin_side5")},
+        {0, 0, 0, const_cast<char *>("coin_side6")},
+        {0, 0, 0, const_cast<char *>("coin_side7")},
+        {0, 0, 0, const_cast<char *>("coin_side8")},
+        {0, 0, 0, const_cast<char *>("coin_side9")},
+        {0, 0, 0, const_cast<char *>("coin_side10")},
+        {0, 0, 0, const_cast<char *>("silver_pan_coin1")},
+        {0, 0, 0, const_cast<char *>("silver_pan_coin2")},
+        {0, 0, 0, const_cast<char *>("silver_pan_coin3")},
+        {0, 0, 0, const_cast<char *>("silver_pan_coin4")},
+        {0, 0, 0, const_cast<char *>("silver_coin1")},
+        {0, 0, 0, const_cast<char *>("silver_coin2")},
+        {0, 0, 0, const_cast<char *>("silver_coin3")},
+        {0, 0, 0, const_cast<char *>("silver_coin4")},
+        {0, 0, 0, const_cast<char *>("gold_pan_coin1")},
+        {0, 0, 0, const_cast<char *>("gold_pan_coin2")},
+        {0, 0, 0, const_cast<char *>("gold_pan_coin3")},
+        {0, 0, 0, const_cast<char *>("gold_pan_coin4")},
+        {0, 0, 0, const_cast<char *>("gold_coin1")},
+        {0, 0, 0, const_cast<char *>("gold_coin2")},
+        {0, 0, 0, const_cast<char *>("gold_coin3")},
+        {0, 0, 0, const_cast<char *>("gold_coin4")},
+        {0, 0, 0, const_cast<char *>("blue_pan_coin1")},
+        {0, 0, 0, const_cast<char *>("blue_pan_coin2")},
+        {0, 0, 0, const_cast<char *>("blue_pan_coin3")},
+        {0, 0, 0, const_cast<char *>("blue_pan_coin4")},
+        {0, 0, 0, const_cast<char *>("blue_coin1")},
+        {0, 0, 0, const_cast<char *>("blue_coin2")},
+        {0, 0, 0, const_cast<char *>("blue_coin3")},
+        {0, 0, 0, const_cast<char *>("blue_coin4")},
+        {0, 0, 0, const_cast<char *>("heart")},
+        {0, 0, 0, const_cast<char *>("flat_heart")},
+        {0, 0, 0, const_cast<char *>("silver_heart")},
+        {0, 0, 0, const_cast<char *>("mini_kit_pickup")},
+        {0, 0, 0, const_cast<char *>("char_pickup")},
+        {0, 0, 0, const_cast<char *>("plop")},
+        {0, 0, 0, const_cast<char *>("power_up_glow")},
+        {0, 0, 0, const_cast<char *>("red_brick")},
+        {0, 0, 0, const_cast<char *>("gold_brick")},
+        {0, 0, 0, const_cast<char *>("info")},
+        {0, 0, 0, const_cast<char *>("purple_coin1")},
+        {0, 0, 0, const_cast<char *>("purple_coin2")},
+        {0, 0, 0, const_cast<char *>("purple_coin3")},
+        {0, 0, 0, const_cast<char *>("purple_coin4")},
+        {0, 0, 0, const_cast<char *>("purple_pan_coin1")},
+        {0, 0, 0, const_cast<char *>("purple_pan_coin2")},
+        {0, 0, 0, const_cast<char *>("purple_pan_coin3")},
+        {0, 0, 0, const_cast<char *>("purple_pan_coin4")},
+        {0, 0, 0, const_cast<char *>("ripple_green")},
+        {0, 0, 0, const_cast<char *>("ripple_green1")},
+        {0, 0, 0, const_cast<char *>("ripple_red")},
+        {0, 0, 0, const_cast<char *>("ripple_red1")},
+        {0, 0, 0, const_cast<char *>("ripple_blue")},
+        {0, 0, 0, const_cast<char *>("ripple_blue1")},
+        {0, 0, 0, const_cast<char *>("ripple_purple")},
+        {0, 0, 0, const_cast<char *>("ripple_purple1")},
+        {0, 0, 0, const_cast<char *>("zip_ring")},
+        {0, 0, 0, const_cast<char *>("crate")},
+        {0, 0, 0, const_cast<char *>("moustache")},
+        {0, 0, 0, const_cast<char *>("jango_rocket")},
+        {0, 0, 0, const_cast<char *>("thermal")},
+        {0, 0, 0, const_cast<char *>("thermal_red_off")},
+        {0, 0, 0, const_cast<char *>("thermal_red_on")},
+        {0, 0, 0, const_cast<char *>("bomb_main")},
+        {0, 0, 0, const_cast<char *>("bomb_off")},
+        {0, 0, 0, const_cast<char *>("bomb_red_off")},
+        {0, 0, 0, const_cast<char *>("bomb_red_on")},
+        {3, 0, 0, const_cast<char *>("part_boulder")},
+        {3, 0, 0, const_cast<char *>("pebble_ewok")},
+        {3, 0, 0, const_cast<char *>("photontorpedo_ewok")},
+        {3, 0, 0, const_cast<char *>("photontorpedoglow_ewok")},
+        {3, 0, 0, const_cast<char *>("pebble_wicket")},
+        {3, 0, 0, const_cast<char *>("photontorpedo_wicket")},
+        {3, 0, 0, const_cast<char *>("photontorpedoglow_wicket")},
+        {3, 0, 0, const_cast<char *>("umbrella1")},
+        {3, 0, 0, const_cast<char *>("umbrella2")},
+        {3, 0, 0, const_cast<char *>("twoface_coin")},
+        {0, 0, 0, const_cast<char *>("hat_1")},
+        {0, 0, 0, const_cast<char *>("hat_3")},
+        {0, 0, 0, const_cast<char *>("hat_4")},
+        {0, 0, 0, const_cast<char *>("hat_5")},
+        {0, 0, 0, const_cast<char *>("stormTrooperHelmet")},
+        {0, 0, 0, const_cast<char *>("bountyHelmet")},
+        {0, 0, 0, const_cast<char *>("C3PO_base")},
+        {0, 0, 0, const_cast<char *>("C3PO_pic")},
+        {0, 0, 0, const_cast<char *>("TC14_pic")},
+        {0, 0, 0, const_cast<char *>("C3PO_static")},
+        {0, 0, 0, const_cast<char *>("C3PO_light_on")},
+        {0, 0, 0, const_cast<char *>("C3PO_light_off")},
+        {0, 0, 0, const_cast<char *>("R2_base")},
+        {0, 0, 0, const_cast<char *>("R2_base1")},
+        {0, 0, 0, const_cast<char *>("R2_pic")},
+        {0, 0, 0, const_cast<char *>("R4_pic")},
+        {0, 0, 0, const_cast<char *>("R2_static")},
+        {0, 0, 0, const_cast<char *>("R2_light_on")},
+        {0, 0, 0, const_cast<char *>("R2_light_off")},
+        {0, 0, 0, const_cast<char *>("Bounty_base")},
+        {0, 0, 0, const_cast<char *>("Bounty_pic")},
+        {0, 0, 0, const_cast<char *>("Bounty_static")},
+        {0, 0, 0, const_cast<char *>("Bounty_light_on")},
+        {0, 0, 0, const_cast<char *>("Bounty_light_off")},
+        {0, 0, 0, const_cast<char *>("Bounty_cam")},
+        {0, 0, 0, const_cast<char *>("Bounty_Target")},
+        {0, 0, 0, const_cast<char *>("Storm_base")},
+        {0, 0, 0, const_cast<char *>("Storm_pic")},
+        {0, 0, 0, const_cast<char *>("Storm_static")},
+        {0, 0, 0, const_cast<char *>("Storm_light_on")},
+        {0, 0, 0, const_cast<char *>("Storm_light_off")},
+        {0, 0, 0, const_cast<char *>("Storm_cam")},
+        {0, 0, 0, const_cast<char *>("Storm_Target")},
+        {0, 0, 0, const_cast<char *>("Hat_machine_base")},
+        {0, 0, 0, const_cast<char *>("Hat_machine_down")},
+        {0, 0, 0, const_cast<char *>("Hat_machine_out")},
+        {0, 0, 0, const_cast<char *>("Hat_machine_on")},
+        {0, 0, 0, const_cast<char *>("Hat_machine_off")},
+        {0, 0, 0, const_cast<char *>("lever_helmet")},
+        {0, 0, 0, const_cast<char *>("Hat_machine_down1")},
+        {0, 0, 0, const_cast<char *>("photon2")},
+        {0, 0, 0, const_cast<char *>("photon1")},
+        {0, 0, 0, const_cast<char *>("zip_flower1")},
+        {0, 0, 0, const_cast<char *>("zip_flower2")},
+        {0, 0, 0, const_cast<char *>("zip_flower3")},
+        {5, 0, 0, const_cast<char *>("FalconGlow")},
+        {5, 0, 0, const_cast<char *>("ATAT_PART_1")},
+        {1, 0, 0, const_cast<char *>("vd")},
+        {1, 0, 0, const_cast<char *>("bvd")},
+        {1, 0, 0, const_cast<char *>("dtf")},
+        {1, 0, 0, const_cast<char *>("ca")},
         {1, 0, 0, const_cast<char *>(LevelObjectNamePc00754344)},
-        {1, 0, 0, const_cast<char *>(LevelObjectNamePc007535d0)},
+        {1, 0, 0, const_cast<char *>("blasterglow")},
         {1, 0, 0, const_cast<char *>(LevelObjectNamePc00754324)},
-        {1, 0, 0, const_cast<char *>(LevelObjectNamePc007535c0)},
+        {1, 0, 0, const_cast<char *>("blasterglow_red")},
         {1, 0, 0, const_cast<char *>(LevelObjectNamePc007542d0)},
-        {1, 0, 0, const_cast<char *>(LevelObjectNamePc007535ac)},
-        {1, 0, 0, const_cast<char *>(LevelObjectNamePc007535a4)},
-        {5, 0, 0, const_cast<char *>(LevelObjectNamePc0075359c)},
-        {5, 0, 0, const_cast<char *>(LevelObjectNamePc00753590)},
-        {5, 0, 0, const_cast<char *>(LevelObjectNamePc00753588)},
-        {5, 0, 0, const_cast<char *>(LevelObjectNamePc00753580)},
-        {5, 0, 0, const_cast<char *>(LevelObjectNamePc00753578)},
-        {0, 0, 0, const_cast<char *>(LevelObjectNamePc00753568)},
-        {0, 0, 0, const_cast<char *>(LevelObjectNamePc00753554)},
+        {1, 0, 0, const_cast<char *>("blasterglow_blue")},
+        {1, 0, 0, const_cast<char *>("missile")},
+        {5, 0, 0, const_cast<char *>("arrow")},
+        {5, 0, 0, const_cast<char *>("death_star")},
+        {5, 0, 0, const_cast<char *>("lap1")},
+        {5, 0, 0, const_cast<char *>("lap2")},
+        {5, 0, 0, const_cast<char *>("lap3")},
+        {0, 0, 0, const_cast<char *>("Network_Icon")},
+        {0, 0, 0, const_cast<char *>("Network_Icon_Glow")},
         {255, 0, 0, NULL},
     };
 #pragma data_seg()
 }
 
 extern "C" {
-#pragma const_seg(".rdata$CharacterFixupNamePc00752684")
-    extern const char CharacterFixupNamePc00752684[17] = "droidstarfighter";
-#pragma const_seg(".rdata$CharacterFixupNamePc00752698")
-    extern const char CharacterFixupNamePc00752698[16] = "droidtrifighter";
-#pragma const_seg(".rdata$CharacterFixupNamePc007526a8")
-    extern const char CharacterFixupNamePc007526a8[13] = "vulturedroid";
-#pragma const_seg(".rdata$CharacterFixupNamePc007526b8")
-    extern const char CharacterFixupNamePc007526b8[12] = "ZamsSpeeder";
-#pragma const_seg(".rdata$CharacterFixupNamePc007526c4")
-    extern const char CharacterFixupNamePc007526c4[21] = "anakinsspeeder_green";
-#pragma const_seg(".rdata$CharacterFixupNamePc007526dc")
-    extern const char CharacterFixupNamePc007526dc[15] = "anakinsspeeder";
-#pragma const_seg(".rdata$CharacterFixupNamePc007526ec")
-    extern const char CharacterFixupNamePc007526ec[20] = "newanakinspod_green";
-#pragma const_seg(".rdata$CharacterFixupNamePc00752700")
-    extern const char CharacterFixupNamePc00752700[14] = "newanakinspod";
-#pragma const_seg(".rdata$CharacterFixupNamePc00752710")
-    extern const char CharacterFixupNamePc00752710[16] = "anothermiscpod2";
-#pragma const_seg(".rdata$CharacterFixupNamePc00752720")
-    extern const char CharacterFixupNamePc00752720[15] = "anothermiscpod";
-#pragma const_seg(".rdata$CharacterFixupNamePc00752730")
-    extern const char CharacterFixupNamePc00752730[12] = "gasganospod";
-#pragma const_seg(".rdata$CharacterFixupNamePc0075273c")
-    extern const char CharacterFixupNamePc0075273c[12] = "sebulbaspod";
-#pragma const_seg(".rdata$CharacterFixupNamePc00752748")
-    extern const char CharacterFixupNamePc00752748[17] = "anakinspod_green";
-#pragma const_seg(".rdata$CharacterFixupNamePc0075275c")
-    extern const char CharacterFixupNamePc0075275c[11] = "anakinspod";
-#pragma const_seg(".rdata$CharacterFixupNamePc00752768")
-    extern const char CharacterFixupNamePc00752768[18] = "mini_sand_crawler";
-#pragma const_seg(".rdata$CharacterFixupNamePc0075277c")
-    extern const char CharacterFixupNamePc0075277c[18] = "mini_solar_sailor";
-#pragma const_seg(".rdata$CharacterFixupNamePc00752790")
-    extern const char CharacterFixupNamePc00752790[22] = "mini_sith_infiltrator";
-#pragma const_seg(".rdata$CharacterFixupNamePc007527a8")
-    extern const char CharacterFixupNamePc007527a8[18] = "mini_tie_advanced";
-#pragma const_seg(".rdata$CharacterFixupNamePc007527bc")
-    extern const char CharacterFixupNamePc007527bc[17] = "mini_tie_fighter";
-#pragma const_seg(".rdata$CharacterFixupNamePc007527d0")
-    extern const char CharacterFixupNamePc007527d0[14] = "mini_droideka";
-#pragma const_seg(".rdata$CharacterFixupNamePc007527e0")
-    extern const char CharacterFixupNamePc007527e0[12] = "mini_slave1";
-#pragma const_seg(".rdata$CharacterFixupNamePc007527ec")
-    extern const char CharacterFixupNamePc007527ec[10] = "mini_atte";
-#pragma const_seg(".rdata$CharacterFixupNamePc00752804")
-    extern const char CharacterFixupNamePc00752804[23] = "Mini_Millennium_Falcon";
-#pragma const_seg(".rdata$CharacterFixupNamePc0075281c")
-    extern const char CharacterFixupNamePc0075281c[22] = "mini_imperial_shuttle";
-#pragma const_seg(".rdata$CharacterFixupNamePc00752834")
-    extern const char CharacterFixupNamePc00752834[20] = "mini_royal_starship";
-#pragma const_seg(".rdata$CharacterFixupNamePc00752848")
-    extern const char CharacterFixupNamePc00752848[20] = "mini_star_destroyer";
-#pragma const_seg(".rdata$CharacterFixupNamePc0075285c")
-    extern const char CharacterFixupNamePc0075285c[10] = "mini_atat";
-#pragma const_seg(".rdata$CharacterFixupNamePc00752868")
-    extern const char CharacterFixupNamePc00752868[16] = "mini_tie_bomber";
-#pragma const_seg(".rdata$CharacterFixupNamePc00752878")
-    extern const char CharacterFixupNamePc00752878[21] = "mini_tie_interceptor";
-#pragma const_seg(".rdata$CharacterFixupNamePc00752890")
-    extern const char CharacterFixupNamePc00752890[12] = "mini_y_wing";
-#pragma const_seg(".rdata$CharacterFixupNamePc0075289c")
-    extern const char CharacterFixupNamePc0075289c[12] = "mini_x_wing";
-#pragma const_seg(".rdata$CharacterFixupNamePc007528a8")
-    extern const char CharacterFixupNamePc007528a8[10] = "indysnake";
-#pragma const_seg(".rdata$CharacterFixupNamePc007528b4")
-    extern const char CharacterFixupNamePc007528b4[11] = "indyspider";
-#pragma const_seg(".rdata$CharacterFixupNamePc007528c0")
-    extern const char CharacterFixupNamePc007528c0[10] = "crocodile";
-#pragma const_seg(".rdata$CharacterFixupNamePc007528cc")
-    extern const char CharacterFixupNamePc007528cc[9] = "barranca";
-#pragma const_seg(".rdata$CharacterFixupNamePc007528d8")
-    extern const char CharacterFixupNamePc007528d8[17] = "hovitostribesman";
-#pragma const_seg(".rdata$CharacterFixupNamePc007528ec")
-    extern const char CharacterFixupNamePc007528ec[7] = "belloq";
-#pragma const_seg(".rdata$CharacterFixupNamePc007528f4")
-    extern const char CharacterFixupNamePc007528f4[6] = "chuck";
-#pragma const_seg(".rdata$CharacterFixupNamePc007528fc")
-    extern const char CharacterFixupNamePc007528fc[7] = "satipo";
-#pragma const_seg(".rdata$CharacterFixupNamePc00752904")
-    extern const char CharacterFixupNamePc00752904[13] = "indianajones";
-#pragma const_seg(".rdata$CharacterFixupNamePc00752914")
-    extern const char CharacterFixupNamePc00752914[9] = "skeleton";
-#pragma const_seg(".rdata$CharacterFixupNamePc00752920")
-    extern const char CharacterFixupNamePc00752920[13] = "flashspeeder";
-#pragma const_seg(".rdata$CharacterFixupNamePc00752930")
-    extern const char CharacterFixupNamePc00752930[13] = "hansolo_indy";
-#pragma const_seg(".rdata$CharacterFixupNamePc00752940")
-    extern const char CharacterFixupNamePc00752940[22] = "naboostarfighter_lime";
-#pragma const_seg(".rdata$CharacterFixupNamePc00752958")
-    extern const char CharacterFixupNamePc00752958[9] = "clonearc";
-#pragma const_seg(".rdata$CharacterFixupNamePc00752964")
-    extern const char CharacterFixupNamePc00752964[10] = "buzzdroid";
-#pragma const_seg(".rdata$CharacterFixupNamePc00752970")
-    extern const char CharacterFixupNamePc00752970[7] = "taunwe";
-#pragma const_seg(".rdata$CharacterFixupNamePc00752978")
-    extern const char CharacterFixupNamePc00752978[7] = "lamasu";
-#pragma const_seg(".rdata$CharacterFixupNamePc00752980")
-    extern const char CharacterFixupNamePc00752980[9] = "lifeBoat";
-#pragma const_seg(".rdata$CharacterFixupNamePc0075298c")
-    extern const char CharacterFixupNamePc0075298c[10] = "fireTruck";
-#pragma const_seg(".rdata$CharacterFixupNamePc00752998")
-    extern const char CharacterFixupNamePc00752998[8] = "Tractor";
-#pragma const_seg(".rdata$CharacterFixupNamePc007529a0")
-    extern const char CharacterFixupNamePc007529a0[8] = "TownCar";
-#pragma const_seg(".rdata$CharacterFixupNamePc007529a8")
-    extern const char CharacterFixupNamePc007529a8[9] = "pitdroid";
-#pragma const_seg(".rdata$CharacterFixupNamePc007529b4")
-    extern const char CharacterFixupNamePc007529b4[12] = "cantinaband";
-#pragma const_seg(".rdata$CharacterFixupNamePc007529c0")
-    extern const char CharacterFixupNamePc007529c0[6] = "bossk";
-#pragma const_seg(".rdata$CharacterFixupNamePc007529c8")
-    extern const char CharacterFixupNamePc007529c8[7] = "greedo";
-#pragma const_seg(".rdata$CharacterFixupNamePc007529d0")
-    extern const char CharacterFixupNamePc007529d0[12] = "imperialspy";
-#pragma const_seg(".rdata$CharacterFixupNamePc007529dc")
-    extern const char CharacterFixupNamePc007529dc[12] = "wookieflyer";
-#pragma const_seg(".rdata$CharacterFixupNamePc007529e8")
-    extern const char CharacterFixupNamePc007529e8[7] = "mapcar";
-#pragma const_seg(".rdata$CharacterFixupNamePc007529f0")
-    extern const char CharacterFixupNamePc007529f0[8] = "mooncar";
-#pragma const_seg(".rdata$CharacterFixupNamePc007529f8")
-    extern const char CharacterFixupNamePc007529f8[5] = "tc14";
-#pragma const_seg(".rdata$CharacterFixupNamePc00752a00")
-    extern const char CharacterFixupNamePc00752a00[5] = "c3po";
-#pragma const_seg(".rdata$CharacterFixupNamePc00752a08")
-    extern const char CharacterFixupNamePc00752a08[10] = "gonkdroid";
-#pragma const_seg(".rdata$CharacterFixupNamePc00752a14")
-    extern const char CharacterFixupNamePc00752a14[16] = "grandmofftarkin";
-#pragma const_seg(".rdata$CharacterFixupNamePc00752a24")
-    extern const char CharacterFixupNamePc00752a24[16] = "imperialofficer";
-#pragma const_seg(".rdata$CharacterFixupNamePc00752a34")
-    extern const char CharacterFixupNamePc00752a34[21] = "ImperialShuttlePilot";
-#pragma const_seg(".rdata$CharacterFixupNamePc00752a4c")
-    extern const char CharacterFixupNamePc00752a4c[13] = "beachtrooper";
-#pragma const_seg(".rdata$CharacterFixupNamePc00752a5c")
-    extern const char CharacterFixupNamePc00752a5c[14] = "kaminoandroid";
-#pragma const_seg(".rdata$CharacterFixupNamePc00752a6c")
-    extern const char CharacterFixupNamePc00752a6c[12] = "sentrydroid";
-#pragma const_seg(".rdata$CharacterFixupNamePc00752a78")
-    extern const char CharacterFixupNamePc00752a78[9] = "ugnaught";
-#pragma const_seg(".rdata$CharacterFixupNamePc00752a84")
-    extern const char CharacterFixupNamePc00752a84[16] = "imperialshuttle";
-#pragma const_seg(".rdata$CharacterFixupNamePc00752a94")
-    extern const char CharacterFixupNamePc00752a94[15] = "tieinterceptor";
-#pragma const_seg(".rdata$CharacterFixupNamePc00752aa4")
-    extern const char CharacterFixupNamePc00752aa4[12] = "snowspeeder";
-#pragma const_seg(".rdata$CharacterFixupNamePc00752ab0")
-    extern const char CharacterFixupNamePc00752ab0[11] = "royalguard";
-#pragma const_seg(".rdata$CharacterFixupNamePc00752abc")
-    extern const char CharacterFixupNamePc00752abc[6] = "xwing";
-#pragma const_seg(".rdata$CharacterFixupNamePc00752ac4")
-    extern const char CharacterFixupNamePc00752ac4[5] = "r2q5";
-#pragma const_seg(".rdata$CharacterFixupNamePc00752acc")
-    extern const char CharacterFixupNamePc00752acc[5] = "r2d2";
-#pragma const_seg(".rdata$CharacterFixupNamePc00752ad4")
-    extern const char CharacterFixupNamePc00752ad4[9] = "kitfisto";
-#pragma const_seg(".rdata$CharacterFixupNamePc00752ae0")
-    extern const char CharacterFixupNamePc00752ae0[10] = "palpatine";
-#pragma const_seg(".rdata$CharacterFixupNamePc00752aec")
-    extern const char CharacterFixupNamePc00752aec[11] = "countdooku";
-#pragma const_seg(".rdata$CharacterFixupNamePc00752af8")
-    extern const char CharacterFixupNamePc00752af8[25] = "newrepublicgunship_green";
-#pragma const_seg(".rdata$CharacterFixupNamePc00752b14")
-    extern const char CharacterFixupNamePc00752b14[19] = "newrepublicgunship";
-#pragma const_seg(".rdata$CharacterFixupNamePc00752b28")
-    extern const char CharacterFixupNamePc00752b28[22] = "republicgunship_green";
-#pragma const_seg(".rdata$CharacterFixupNamePc00752b40")
-    extern const char CharacterFixupNamePc00752b40[12] = "anakin_jedi";
-#pragma const_seg(".rdata$CharacterFixupNamePc00752b4c")
-    extern const char CharacterFixupNamePc00752b4c[17] = "obiwankenobi_ep3";
-#pragma const_seg(".rdata$CharacterFixupNamePc00752b60")
-    extern const char CharacterFixupNamePc00752b60[7] = "Rancor";
-#pragma const_seg(".rdata$CharacterFixupNamePc00752b68")
-    extern const char CharacterFixupNamePc00752b68[24] = "JediStarfighter_Red_Ep3";
-#pragma const_seg(".rdata$CharacterFixupNamePc00752b80")
-    extern const char CharacterFixupNamePc00752b80[27] = "JediStarfighter_Yellow_Ep3";
-#pragma const_seg(".rdata$CharacterFixupNamePc00752b9c")
-    extern const char CharacterFixupNamePc00752b9c[10] = "JangoFett";
-#pragma const_seg(".rdata$CharacterFixupNamePc00752ba8")
-    extern const char CharacterFixupNamePc00752ba8[4] = "bob";
-#pragma const_seg(".rdata$CharacterFixupNamePc00752bac")
-    extern const char CharacterFixupNamePc00752bac[9] = "luminara";
-#pragma const_seg(".rdata$CharacterFixupNamePc00752bb8")
-    extern const char CharacterFixupNamePc00752bb8[8] = "shaakti";
-#pragma const_seg(".rdata$CharacterFixupNamePc00752bc0")
-    extern const char CharacterFixupNamePc00752bc0[24] = "ObiWanKenobi_JediMaster";
-#pragma const_seg(".rdata$CharacterFixupNamePc00752bd8")
-    extern const char CharacterFixupNamePc00752bd8[15] = "Anakin_padawan";
-#pragma const_seg(".rdata$CharacterFixupNamePc00752be8")
-    extern const char CharacterFixupNamePc00752be8[12] = "PadmeClawed";
-#pragma const_seg(".rdata$CharacterFixupNamePc00752bf4")
-    extern const char CharacterFixupNamePc00752bf4[12] = "JarJarBinks";
-#pragma const_seg(".rdata$CharacterFixupNamePc00752c00")
-    extern const char CharacterFixupNamePc00752c00[17] = "jumbohomingdroid";
-#pragma const_seg(".rdata$CharacterFixupNamePc00752c14")
-    extern const char CharacterFixupNamePc00752c14[6] = "Stap2";
-#pragma const_seg(".rdata$CharacterFixupNamePc00752c1c")
-    extern const char CharacterFixupNamePc00752c1c[5] = "Stap";
-#pragma const_seg(".rdata$CharacterFixupNamePc00752c24")
-    extern const char CharacterFixupNamePc00752c24[11] = "Falumpaset";
-#pragma const_seg(".rdata$CharacterFixupNamePc00752c38")
-    extern const char CharacterFixupNamePc00752c38[6] = "Kaadu";
-#pragma const_seg(".rdata$CharacterFixupNamePc00752c40")
-    extern const char CharacterFixupNamePc00752c40[16] = "speederbikesnow";
-#pragma const_seg(".rdata$CharacterFixupNamePc00752c50")
-    extern const char CharacterFixupNamePc00752c50[17] = "millenniumfalcon";
-#pragma const_seg(".rdata$CharacterFixupNamePc00752c64")
-    extern const char CharacterFixupNamePc00752c64[11] = "theemperor";
-#pragma const_seg(".rdata$CharacterFixupNamePc00752c70")
-    extern const char CharacterFixupNamePc00752c70[11] = "darthvader";
-#pragma const_seg(".rdata$CharacterFixupNamePc00752c7c")
-    extern const char CharacterFixupNamePc00752c7c[17] = "deathstartrooper";
-#pragma const_seg(".rdata$CharacterFixupNamePc00752c90")
-    extern const char CharacterFixupNamePc00752c90[12] = "snowtrooper";
-#pragma const_seg(".rdata$CharacterFixupNamePc00752c9c")
-    extern const char CharacterFixupNamePc00752c9c[8] = "SnowMob";
-#pragma const_seg(".rdata$CharacterFixupNamePc00752ca4")
-    extern const char CharacterFixupNamePc00752ca4[22] = "lukeskywalker_dagobah";
-#pragma const_seg(".rdata$CharacterFixupNamePc00752cbc")
-    extern const char CharacterFixupNamePc00752cbc[5] = "jawa";
-#pragma const_seg(".rdata$CharacterFixupNamePc00752cc4")
-    extern const char CharacterFixupNamePc00752cc4[11] = "robot_base";
-#pragma const_seg(".rdata$CharacterFixupNamePc00752cd0")
-    extern const char CharacterFixupNamePc00752cd0[7] = "magnet";
-#pragma const_seg(".rdata$CharacterFixupNamePc00752ce0")
-    extern const char CharacterFixupNamePc00752ce0[17] = "grabberr2control";
-#pragma const_seg(".rdata$CharacterFixupNamePc00752cf4")
-    extern const char CharacterFixupNamePc00752cf4[15] = "grabberControl";
-#pragma const_seg(".rdata$CharacterFixupNamePc00752d04")
-    extern const char CharacterFixupNamePc00752d04[11] = "tiefighter";
-#pragma const_seg(".rdata$CharacterFixupNamePc00752d10")
-    extern const char CharacterFixupNamePc00752d10[16] = "tiefighterdarth";
-#pragma const_seg(".rdata$CharacterFixupNamePc00752d2c")
-    extern const char CharacterFixupNamePc00752d2c[10] = "tiebomber";
-#pragma const_seg(".rdata$CharacterFixupNamePc00752d38")
-    extern const char CharacterFixupNamePc00752d38[6] = "ywing";
-#pragma const_seg(".rdata$CharacterFixupNamePc00752d40")
-    extern const char CharacterFixupNamePc00752d40[7] = "slave1";
-#pragma const_seg(".rdata$CharacterFixupNamePc00752d50")
-    extern const char CharacterFixupNamePc00752d50[14] = "troopercannon";
-#pragma const_seg(".rdata$CharacterFixupNamePc00752d60")
-    extern const char CharacterFixupNamePc00752d60[7] = "biggun";
-#pragma const_seg(".rdata$CharacterFixupNamePc00752d68")
-    extern const char CharacterFixupNamePc00752d68[21] = "heavyrepeatingcannon";
-#pragma const_seg(".rdata$CharacterFixupNamePc00752d80")
-    extern const char CharacterFixupNamePc00752d80[12] = "speederbike";
-#pragma const_seg(".rdata$CharacterFixupNamePc00752d8c")
-    extern const char CharacterFixupNamePc00752d8c[9] = "tauntaun";
-#pragma const_seg(".rdata$CharacterFixupNamePc00752d98")
-    extern const char CharacterFixupNamePc00752d98[13] = "speeder_land";
-#pragma const_seg(".rdata$CharacterFixupNamePc00752da8")
-    extern const char CharacterFixupNamePc00752da8[8] = "dewback";
-#pragma const_seg(".rdata$CharacterFixupNamePc00752db0")
-    extern const char CharacterFixupNamePc00752db0[11] = "bomarrmonk";
-#pragma const_seg(".rdata$CharacterFixupNamePc00752dbc")
-    extern const char CharacterFixupNamePc00752dbc[7] = "bantha";
-#pragma const_seg(".rdata$CharacterFixupNamePc00752dc4")
-    extern const char CharacterFixupNamePc00752dc4[13] = "basketcannon";
-#pragma const_seg(".rdata$CharacterFixupNamePc00752dd4")
-    extern const char CharacterFixupNamePc00752dd4[9] = "catapult";
-#pragma const_seg(".rdata$CharacterFixupNamePc00752de0")
-    extern const char CharacterFixupNamePc00752de0[7] = "wicket";
-#pragma const_seg(".rdata$CharacterFixupNamePc00752de8")
-    extern const char CharacterFixupNamePc00752de8[5] = "ewok";
 #pragma const_seg(".rdata$CharacterFixupNamePc00752dfc")
     extern const char CharacterFixupNamePc00752dfc[9] = "dragbomb";
-#pragma const_seg(".rdata$CharacterFixupNamePc00752e08")
-    extern const char CharacterFixupNamePc00752e08[12] = "service_car";
-#pragma const_seg(".rdata$CharacterFixupNamePc00752e14")
-    extern const char CharacterFixupNamePc00752e14[5] = "atat";
-#pragma const_seg(".rdata$CharacterFixupNamePc00752e1c")
-    extern const char CharacterFixupNamePc00752e1c[15] = "trainingremote";
-#pragma const_seg(".rdata$CharacterFixupNamePc00752e2c")
-    extern const char CharacterFixupNamePc00752e2c[5] = "4lom";
-#pragma const_seg(".rdata$CharacterFixupNamePc00752e34")
-    extern const char CharacterFixupNamePc00752e34[9] = "bobafett";
-#pragma const_seg(".rdata$CharacterFixupNamePc00752e40")
-    extern const char CharacterFixupNamePc00752e40[17] = "superbattledroid";
-#pragma const_seg(".rdata$CharacterFixupNamePc00752e54")
-    extern const char CharacterFixupNamePc00752e54[10] = "destroyer";
-#pragma const_seg(".rdata$CharacterFixupNamePc00752e60")
-    extern const char CharacterFixupNamePc00752e60[7] = "barman";
-#pragma const_seg(".rdata$CharacterFixupNamePc00752e7c")
-    extern const char CharacterFixupNamePc00752e7c[7] = "wookie";
-#pragma const_seg(".rdata$CharacterFixupNamePc00752e84")
-    extern const char CharacterFixupNamePc00752e84[10] = "chewbacca";
-#pragma const_seg(".rdata$CharacterFixupNamePc00752e90")
-    extern const char CharacterFixupNamePc00752e90[6] = "watto";
-#pragma const_seg(".rdata$CharacterFixupNamePc00752e98")
-    extern const char CharacterFixupNamePc00752e98[10] = "geonosian";
-#pragma const_seg(".rdata$CharacterFixupNamePc00752ea4")
-    extern const char CharacterFixupNamePc00752ea4[17] = "cloudcitycitizen";
-#pragma const_seg(".rdata$CharacterFixupNamePc00752eb8")
-    extern const char CharacterFixupNamePc00752eb8[14] = "cantinaaliens";
-#pragma const_seg(".rdata$CharacterFixupNamePc00752ec8")
-    extern const char CharacterFixupNamePc00752ec8[17] = "moseisleycitizen";
-#pragma const_seg(".rdata$CharacterFixupNamePc00752edc")
-    extern const char CharacterFixupNamePc00752edc[11] = "yoda_ghost";
-#pragma const_seg(".rdata$CharacterFixupNamePc00752ee8")
-    extern const char CharacterFixupNamePc00752ee8[5] = "yoda";
-#pragma const_seg(".rdata$CharacterFixupNamePc00752ef0")
-    extern const char CharacterFixupNamePc00752ef0[8] = "womprat";
-#pragma const_seg(".rdata$CharacterFixupNamePc00752ef8")
-    extern const char CharacterFixupNamePc00752ef8[4] = "bat";
-#pragma const_seg(".rdata$CharacterFixupNamePc00752efc")
-    extern const char CharacterFixupNamePc00752efc[6] = "snake";
-#pragma const_seg(".rdata$CharacterFixupNamePc00752f04")
-    extern const char CharacterFixupNamePc00752f04[8] = "pkdroid";
-#pragma const_seg(".rdata$CharacterFixupNamePc00752f0c")
-    extern const char CharacterFixupNamePc00752f0c[11] = "probedroid";
-#pragma const_seg(".rdata$CharacterFixupNamePc00752f18")
-    extern const char CharacterFixupNamePc00752f18[11] = "mousedroid";
-#pragma const_seg(".rdata$CharacterFixupNamePc00752f24")
-    extern const char CharacterFixupNamePc00752f24[11] = "naffdroid4";
-#pragma const_seg(".rdata$CharacterFixupNamePc00752f30")
-    extern const char CharacterFixupNamePc00752f30[11] = "naffdroid3";
-#pragma const_seg(".rdata$CharacterFixupNamePc00752f3c")
-    extern const char CharacterFixupNamePc00752f3c[11] = "naffdroid2";
-#pragma const_seg(".rdata$CharacterFixupNamePc00752f48")
-    extern const char CharacterFixupNamePc00752f48[11] = "naffdroid1";
-#pragma const_seg(".rdata$CharacterFixupNamePc00752f54")
-    extern const char CharacterFixupNamePc00752f54[15] = "Clone_Ep3_Sand";
-#pragma const_seg(".rdata$CharacterFixupNamePc00752f64")
-    extern const char CharacterFixupNamePc00752f64[10] = "Clone_Ep3";
-#pragma const_seg(".rdata$CharacterFixupNamePc00752f70")
-    extern const char CharacterFixupNamePc00752f70[21] = "battledroid_security";
-#pragma const_seg(".rdata$CharacterFixupNamePc00752f88")
-    extern const char CharacterFixupNamePc00752f88[22] = "battledroid_geonosian";
-#pragma const_seg(".rdata$CharacterFixupNamePc00752fa0")
-    extern const char CharacterFixupNamePc00752fa0[22] = "battledroid_commander";
-#pragma const_seg(".rdata$CharacterFixupNamePc00752fb8")
-    extern const char CharacterFixupNamePc00752fb8[15] = "gamorreanguard";
-#pragma const_seg(".rdata$CharacterFixupNamePc00752fc8")
-    extern const char CharacterFixupNamePc00752fc8[10] = "darthmaul";
-#pragma const_seg(".rdata$CharacterFixupNamePc00752fd4")
-    extern const char CharacterFixupNamePc00752fd4[10] = "bodyguard";
-#pragma const_seg(".rdata$CharacterFixupNamePc00752fe0")
-    extern const char CharacterFixupNamePc00752fe0[14] = "imperialguard";
-#pragma const_seg(".rdata$CharacterFixupNamePc00752ff0")
-    extern const char CharacterFixupNamePc00752ff0[15] = "captaintarpals";
-#pragma const_seg(".rdata$CharacterFixupNamePc00753000")
-    extern const char CharacterFixupNamePc00753000[16] = "captainantilles";
-#pragma const_seg(".rdata$CharacterFixupNamePc00753010")
-    extern const char CharacterFixupNamePc00753010[20] = "princessleia_Boushh";
-#pragma const_seg(".rdata$CharacterFixupNamePc00753024")
-    extern const char CharacterFixupNamePc00753024[19] = "princessleia_slave";
-#pragma const_seg(".rdata$CharacterFixupNamePc00753038")
-    extern const char CharacterFixupNamePc00753038[13] = "princessleia";
-#pragma const_seg(".rdata$CharacterFixupNamePc00753048")
-    extern const char CharacterFixupNamePc00753048[11] = "quigonjinn";
-#pragma const_seg(".rdata$CharacterFixupNamePc00753054")
-    extern const char CharacterFixupNamePc00753054[10] = "poisonivy";
-#pragma const_seg(".rdata$CharacterFixupNamePc00753060")
-    extern const char CharacterFixupNamePc00753060[9] = "umbrella";
-#pragma const_seg(".rdata$CharacterFixupNamePc0075306c")
-    extern const char CharacterFixupNamePc0075306c[8] = "penguin";
-#pragma const_seg(".rdata$CharacterFixupNamePc00753074")
-    extern const char CharacterFixupNamePc00753074[9] = "clayface";
-#pragma const_seg(".rdata$CharacterFixupNamePc00753080")
-    extern const char CharacterFixupNamePc00753080[11] = "gyrocopter";
-#pragma const_seg(".rdata$CharacterFixupNamePc0075308c")
-    extern const char CharacterFixupNamePc0075308c[7] = "dodgem";
-#pragma const_seg(".rdata$CharacterFixupNamePc00753094")
-    extern const char CharacterFixupNamePc00753094[6] = "mower";
-#pragma const_seg(".rdata$CharacterFixupNamePc0075309c")
-    extern const char CharacterFixupNamePc0075309c[11] = "jackinabox";
-#pragma const_seg(".rdata$CharacterFixupNamePc007530a8")
-    extern const char CharacterFixupNamePc007530a8[11] = "r_goon_gun";
-#pragma const_seg(".rdata$CharacterFixupNamePc007530b4")
-    extern const char CharacterFixupNamePc007530b4[7] = "r_goon";
-#pragma const_seg(".rdata$CharacterFixupNamePc007530bc")
-    extern const char CharacterFixupNamePc007530bc[11] = "j_goon_gun";
-#pragma const_seg(".rdata$CharacterFixupNamePc007530c8")
-    extern const char CharacterFixupNamePc007530c8[7] = "j_goon";
-#pragma const_seg(".rdata$CharacterFixupNamePc007530d0")
-    extern const char CharacterFixupNamePc007530d0[11] = "p_goon_gun";
-#pragma const_seg(".rdata$CharacterFixupNamePc007530dc")
-    extern const char CharacterFixupNamePc007530dc[7] = "p_goon";
-#pragma const_seg(".rdata$CharacterFixupNamePc007530e4")
-    extern const char CharacterFixupNamePc007530e4[12] = "PenguinBomb";
-#pragma const_seg(".rdata$CharacterFixupNamePc007530f0")
-    extern const char CharacterFixupNamePc007530f0[5] = "whip";
-#pragma const_seg(".rdata$CharacterFixupNamePc007530f8")
-    extern const char CharacterFixupNamePc007530f8[9] = "catwoman";
-#pragma const_seg(".rdata$CharacterFixupNamePc00753104")
-    extern const char CharacterFixupNamePc00753104[11] = "harlequinn";
-#pragma const_seg(".rdata$CharacterFixupNamePc00753110")
-    extern const char CharacterFixupNamePc00753110[8] = "twoface";
-#pragma const_seg(".rdata$CharacterFixupNamePc00753118")
-    extern const char CharacterFixupNamePc00753118[10] = "policecar";
-#pragma const_seg(".rdata$CharacterFixupNamePc00753124")
-    extern const char CharacterFixupNamePc00753124[9] = "radiocar";
-#pragma const_seg(".rdata$CharacterFixupNamePc00753130")
-    extern const char CharacterFixupNamePc00753130[11] = "glide_pack";
-#pragma const_seg(".rdata$CharacterFixupNamePc0075313c")
-    extern const char CharacterFixupNamePc0075313c[6] = "buggy";
 #pragma const_seg(".rdata$CharacterFixupNamePc00753154")
     extern const char CharacterFixupNamePc00753154[8] = "weirdo2";
 #pragma const_seg(".rdata$CharacterFixupNamePc0075315c")
@@ -32503,219 +28928,219 @@ extern "C" {
         {const_cast<char *>(SuitMetadataName0075314cPc), &ID_DEFAULTCHARACTER_A},
         {const_cast<char *>(SuitMetadataName00753144Pc), &ID_DEFAULTCHARACTER_B},
         {"henchman", &CharacterFixupIdPc007f1810},
-        {const_cast<char *>(CharacterFixupNamePc0075313c), reinterpret_cast<i16 *>(&GameObjectRotationBuggyId)},
-        {const_cast<char *>(CharacterFixupNamePc00753130), &AreaExtraTargetId7f17bcPc},
-        {const_cast<char *>(CharacterFixupNamePc00753124), reinterpret_cast<i16 *>(&GameObjectRotationRadioCarId)},
-        {const_cast<char *>(CharacterFixupNamePc00753118), reinterpret_cast<i16 *>(&GameObjectRotationPoliceCarId)},
-        {const_cast<char *>(CharacterFixupNamePc00753110), &CharacterFixupIdPc007f1820},
-        {const_cast<char *>(CharacterFixupNamePc00753104), &CharacterFixupIdPc007f1824},
-        {const_cast<char *>(CharacterFixupNamePc007530f8), &PunchRangeUnitIdPc},
-        {const_cast<char *>(CharacterFixupNamePc007530f0), &PunchRangeCompanionIdPc},
-        {const_cast<char *>(CharacterFixupNamePc007530e4), &CharacterFixupIdPc007f1828},
-        {const_cast<char *>(CharacterFixupNamePc007530dc), &id_PENGUIN_GOON},
-        {const_cast<char *>(CharacterFixupNamePc007530d0), &id_PENGUIN_GOON_GUN},
-        {const_cast<char *>(CharacterFixupNamePc007530c8), &id_JOKER_GOON},
-        {const_cast<char *>(CharacterFixupNamePc007530bc), &id_JOKER_GOON_GUN},
-        {const_cast<char *>(CharacterFixupNamePc007530b4), &id_RIDDLER_GOON},
-        {const_cast<char *>(CharacterFixupNamePc007530a8), &id_RIDDLER_GOON_GUN},
-        {const_cast<char *>(CharacterFixupNamePc0075309c), &CharacterFixupIdPc007f1844},
-        {const_cast<char *>(CharacterFixupNamePc00753094), reinterpret_cast<i16 *>(&GameObjectRotationMowerId)},
-        {const_cast<char *>(CharacterFixupNamePc0075308c), &id_DODGEM},
-        {const_cast<char *>(CharacterFixupNamePc00753080), &id_GYROCOPTER},
-        {const_cast<char *>(CharacterFixupNamePc00753074), &CharacterFixupIdPc007f1854},
-        {const_cast<char *>(CharacterFixupNamePc0075306c), &AreaExtraSourceId7f17c8Pc},
-        {const_cast<char *>(CharacterFixupNamePc00753060), &AreaExtraTargetId7f17ccPc},
-        {const_cast<char *>(CharacterFixupNamePc00753054), &CharacterFixupIdPc007f1858},
-        {const_cast<char *>(CharacterFixupNamePc00753048), &ID_DEFAULTCHARACTER_LSW_A},
+        {const_cast<char *>("buggy"), reinterpret_cast<i16 *>(&GameObjectRotationBuggyId)},
+        {const_cast<char *>("glide_pack"), &AreaExtraTargetId7f17bcPc},
+        {const_cast<char *>("radiocar"), reinterpret_cast<i16 *>(&GameObjectRotationRadioCarId)},
+        {const_cast<char *>("policecar"), reinterpret_cast<i16 *>(&GameObjectRotationPoliceCarId)},
+        {const_cast<char *>("twoface"), &CharacterFixupIdPc007f1820},
+        {const_cast<char *>("harlequinn"), &CharacterFixupIdPc007f1824},
+        {const_cast<char *>("catwoman"), &PunchRangeUnitIdPc},
+        {const_cast<char *>("whip"), &PunchRangeCompanionIdPc},
+        {const_cast<char *>("PenguinBomb"), &CharacterFixupIdPc007f1828},
+        {const_cast<char *>("p_goon"), &id_PENGUIN_GOON},
+        {const_cast<char *>("p_goon_gun"), &id_PENGUIN_GOON_GUN},
+        {const_cast<char *>("j_goon"), &id_JOKER_GOON},
+        {const_cast<char *>("j_goon_gun"), &id_JOKER_GOON_GUN},
+        {const_cast<char *>("r_goon"), &id_RIDDLER_GOON},
+        {const_cast<char *>("r_goon_gun"), &id_RIDDLER_GOON_GUN},
+        {const_cast<char *>("jackinabox"), &CharacterFixupIdPc007f1844},
+        {const_cast<char *>("mower"), reinterpret_cast<i16 *>(&GameObjectRotationMowerId)},
+        {const_cast<char *>("dodgem"), &id_DODGEM},
+        {const_cast<char *>("gyrocopter"), &id_GYROCOPTER},
+        {const_cast<char *>("clayface"), &CharacterFixupIdPc007f1854},
+        {const_cast<char *>("penguin"), &AreaExtraSourceId7f17c8Pc},
+        {const_cast<char *>("umbrella"), &AreaExtraTargetId7f17ccPc},
+        {const_cast<char *>("poisonivy"), &CharacterFixupIdPc007f1858},
+        {const_cast<char *>("quigonjinn"), &ID_DEFAULTCHARACTER_LSW_A},
         {"obiwankenobi", &ID_DEFAULTCHARACTER_LSW_B},
-        {const_cast<char *>(CharacterFixupNamePc00753038), &CharacterFixupIdPc007f1864},
-        {const_cast<char *>(CharacterFixupNamePc00753024), &DefaultAnimationLeiaSlaveIdPc},
-        {const_cast<char *>(CharacterFixupNamePc00753010), &id_PRINCESSLEIABOUSHH},
-        {const_cast<char *>(CharacterFixupNamePc00753000), &CharacterFixupIdPc007f1870},
-        {const_cast<char *>(CharacterFixupNamePc00752ff0), &id_CAPTAINTARPALS},
-        {const_cast<char *>(CharacterFixupNamePc00752fe0), &id_IMPERIALGUARD},
-        {const_cast<char *>(CharacterFixupNamePc00752fd4), &id_BODYGUARD},
-        {const_cast<char *>(CharacterFixupNamePc00752fc8), &id_DARTHMAUL},
-        {const_cast<char *>(CharacterFixupNamePc00752fb8), &id_GAMORREANGUARD},
+        {const_cast<char *>("princessleia"), &CharacterFixupIdPc007f1864},
+        {const_cast<char *>("princessleia_slave"), &DefaultAnimationLeiaSlaveIdPc},
+        {const_cast<char *>("princessleia_Boushh"), &id_PRINCESSLEIABOUSHH},
+        {const_cast<char *>("captainantilles"), &CharacterFixupIdPc007f1870},
+        {const_cast<char *>("captaintarpals"), &id_CAPTAINTARPALS},
+        {const_cast<char *>("imperialguard"), &id_IMPERIALGUARD},
+        {const_cast<char *>("bodyguard"), &id_BODYGUARD},
+        {const_cast<char *>("darthmaul"), &id_DARTHMAUL},
+        {const_cast<char *>("gamorreanguard"), &id_GAMORREANGUARD},
         {"battledroid", &id_BATTLEDROID},
-        {const_cast<char *>(CharacterFixupNamePc00752fa0), &id_BATTLEDROIDCOMMANDER},
-        {const_cast<char *>(CharacterFixupNamePc00752f88), &id_BATTLEDROIDGEONOSIAN},
-        {const_cast<char *>(CharacterFixupNamePc00752f70), &id_BATTLEDROIDSECURITY},
-        {const_cast<char *>(CharacterFixupNamePc00752f64), &id_CLONEEP3},
-        {const_cast<char *>(CharacterFixupNamePc00752f54), &id_CLONEEP3SAND},
-        {const_cast<char *>(CharacterFixupNamePc00752f48), &id_NAFFDROID1},
-        {const_cast<char *>(CharacterFixupNamePc00752f3c), &id_NAFFDROID2},
-        {const_cast<char *>(CharacterFixupNamePc00752f30), &CharacterFixupIdPc007f18a8},
-        {const_cast<char *>(CharacterFixupNamePc00752f24), &id_NAFFDROID4},
-        {const_cast<char *>(CharacterFixupNamePc00752f18), &id_MOUSEDROID},
-        {const_cast<char *>(CharacterFixupNamePc00752f0c), &VehicleBoltId7f18b4Pc},
-        {const_cast<char *>(CharacterFixupNamePc00752f04), &id_PKDROID},
-        {const_cast<char *>(CharacterFixupNamePc00752efc), &id_SNAKE},
-        {const_cast<char *>(CharacterFixupNamePc00752ef8), &id_BAT},
-        {const_cast<char *>(CharacterFixupNamePc00752ef0), &CharacterFixupIdPc007f18c4},
-        {const_cast<char *>(CharacterFixupNamePc00752ee8), &id_YODA},
-        {const_cast<char *>(CharacterFixupNamePc00752edc), &id_YODAGHOST},
-        {const_cast<char *>(CharacterFixupNamePc00752ec8), &id_MOSEISLEYCITIZEN},
-        {const_cast<char *>(CharacterFixupNamePc00752eb8), &id_CANTINAALIEN},
-        {const_cast<char *>(CharacterFixupNamePc00752ea4), &id_CLOUDCITYCITIZEN},
-        {const_cast<char *>(CharacterFixupNamePc00752e98), &id_GEONOSIAN},
-        {const_cast<char *>(CharacterFixupNamePc00752e90), &id_WATTO},
+        {const_cast<char *>("battledroid_commander"), &id_BATTLEDROIDCOMMANDER},
+        {const_cast<char *>("battledroid_geonosian"), &id_BATTLEDROIDGEONOSIAN},
+        {const_cast<char *>("battledroid_security"), &id_BATTLEDROIDSECURITY},
+        {const_cast<char *>("Clone_Ep3"), &id_CLONEEP3},
+        {const_cast<char *>("Clone_Ep3_Sand"), &id_CLONEEP3SAND},
+        {const_cast<char *>("naffdroid1"), &id_NAFFDROID1},
+        {const_cast<char *>("naffdroid2"), &id_NAFFDROID2},
+        {const_cast<char *>("naffdroid3"), &CharacterFixupIdPc007f18a8},
+        {const_cast<char *>("naffdroid4"), &id_NAFFDROID4},
+        {const_cast<char *>("mousedroid"), &id_MOUSEDROID},
+        {const_cast<char *>("probedroid"), &VehicleBoltId7f18b4Pc},
+        {const_cast<char *>("pkdroid"), &id_PKDROID},
+        {const_cast<char *>("snake"), &id_SNAKE},
+        {const_cast<char *>("bat"), &id_BAT},
+        {const_cast<char *>("womprat"), &CharacterFixupIdPc007f18c4},
+        {const_cast<char *>("yoda"), &id_YODA},
+        {const_cast<char *>("yoda_ghost"), &id_YODAGHOST},
+        {const_cast<char *>("moseisleycitizen"), &id_MOSEISLEYCITIZEN},
+        {const_cast<char *>("cantinaaliens"), &id_CANTINAALIEN},
+        {const_cast<char *>("cloudcitycitizen"), &id_CLOUDCITYCITIZEN},
+        {const_cast<char *>("geonosian"), &id_GEONOSIAN},
+        {const_cast<char *>("watto"), &id_WATTO},
         {const_cast<char *>(CharacterFixupNamePc0075315c), &PermanentWeirdo1IdPc},
         {const_cast<char *>(CharacterFixupNamePc00753154), &PermanentWeirdo2IdPc},
-        {const_cast<char *>(CharacterFixupNamePc00752e84), &id_CHEWBACCA},
-        {const_cast<char *>(CharacterFixupNamePc00752e7c), &id_WOOKIEE},
+        {const_cast<char *>("chewbacca"), &id_CHEWBACCA},
+        {const_cast<char *>("wookie"), &id_WOOKIEE},
         {"atst", reinterpret_cast<i16 *>(&GameObjectRotationAtstId)},
         {"atst_lowres", &id_ATST_LOWRES},
-        {const_cast<char *>(CharacterFixupNamePc00752e60), &id_BARMAN},
-        {const_cast<char *>(CharacterFixupNamePc00752e54), &id_DROIDEKA},
-        {const_cast<char *>(CharacterFixupNamePc00752e40), &id_SUPERBATTLEDROID},
-        {const_cast<char *>(CharacterFixupNamePc00752e34), &id_BOBAFETT},
-        {const_cast<char *>(CharacterFixupNamePc00752e2c), &VehicleBoltId7f190cPc},
-        {const_cast<char *>(CharacterFixupNamePc00752e1c), &VehicleBoltId7f1910Pc},
-        {const_cast<char *>(CharacterFixupNamePc00752e14), &id_ATAT},
-        {const_cast<char *>(CharacterFixupNamePc00752e08), &id_SERVICECAR},
+        {const_cast<char *>("barman"), &id_BARMAN},
+        {const_cast<char *>("destroyer"), &id_DROIDEKA},
+        {const_cast<char *>("superbattledroid"), &id_SUPERBATTLEDROID},
+        {const_cast<char *>("bobafett"), &id_BOBAFETT},
+        {const_cast<char *>("4lom"), &VehicleBoltId7f190cPc},
+        {const_cast<char *>("trainingremote"), &VehicleBoltId7f1910Pc},
+        {const_cast<char *>("atat"), &id_ATAT},
+        {const_cast<char *>("service_car"), &id_SERVICECAR},
         {const_cast<char *>(CharacterFixupNamePc00752dfc), reinterpret_cast<i16 *>(&id_DRAGBOMB)},
         {"clonewalker", &id_CLONEWALKER},
-        {const_cast<char *>(CharacterFixupNamePc00752de8), &VehicleBoltId7f1924Pc},
-        {const_cast<char *>(CharacterFixupNamePc00752de0), &VehicleBoltId7f1928Pc},
-        {const_cast<char *>(CharacterFixupNamePc00752dd4), &id_CATAPULT},
-        {const_cast<char *>(CharacterFixupNamePc00752dc4), &id_BASKETCANNON},
-        {const_cast<char *>(CharacterFixupNamePc00752dbc), &id_BANTHA},
-        {const_cast<char *>(CharacterFixupNamePc00752db0), &id_BOMARRMONK},
-        {const_cast<char *>(CharacterFixupNamePc00752da8), &id_DEWBACK},
-        {const_cast<char *>(CharacterFixupNamePc00752d98), &id_LANDSPEEDER},
-        {const_cast<char *>(CharacterFixupNamePc00752d8c), &id_TAUNTAUN},
-        {const_cast<char *>(CharacterFixupNamePc00752d80), &id_SPEEDERBIKE},
-        {const_cast<char *>(CharacterFixupNamePc00752d68), &id_HEAVYREPEATINGCANNON},
-        {const_cast<char *>(CharacterFixupNamePc00752d60), &id_BIGGUN},
-        {const_cast<char *>(CharacterFixupNamePc00752d50), &id_TROOPERCANNON},
+        {const_cast<char *>("ewok"), &VehicleBoltId7f1924Pc},
+        {const_cast<char *>("wicket"), &VehicleBoltId7f1928Pc},
+        {const_cast<char *>("catapult"), &id_CATAPULT},
+        {const_cast<char *>("basketcannon"), &id_BASKETCANNON},
+        {const_cast<char *>("bantha"), &id_BANTHA},
+        {const_cast<char *>("bomarrmonk"), &id_BOMARRMONK},
+        {const_cast<char *>("dewback"), &id_DEWBACK},
+        {const_cast<char *>("speeder_land"), &id_LANDSPEEDER},
+        {const_cast<char *>("tauntaun"), &id_TAUNTAUN},
+        {const_cast<char *>("speederbike"), &id_SPEEDERBIKE},
+        {const_cast<char *>("heavyrepeatingcannon"), &id_HEAVYREPEATINGCANNON},
+        {const_cast<char *>("biggun"), &id_BIGGUN},
+        {const_cast<char *>("troopercannon"), &id_TROOPERCANNON},
         {const_cast<char *>(HubTableTextPc00752d48), &DefaultAnimationJabbaIdPc},
-        {const_cast<char *>(CharacterFixupNamePc00752d40), &VehicleBoltId7f195cPc},
-        {const_cast<char *>(CharacterFixupNamePc00752d38), &id_YWING},
-        {const_cast<char *>(CharacterFixupNamePc00752d2c), &id_TIEBOMBER},
+        {const_cast<char *>("slave1"), &VehicleBoltId7f195cPc},
+        {const_cast<char *>("ywing"), &id_YWING},
+        {const_cast<char *>("tiebomber"), &id_TIEBOMBER},
         {const_cast<char *>(HubTableTextPc00752d20), &id_GRIEVOUS},
-        {const_cast<char *>(CharacterFixupNamePc00752d10), &VehicleBoltId7f196cPc},
-        {const_cast<char *>(CharacterFixupNamePc00752d04), &id_TIEFIGHTER},
-        {const_cast<char *>(CharacterFixupNamePc00752cf4), &id_GRABCONTROL},
-        {const_cast<char *>(CharacterFixupNamePc00752ce0), &id_GRABR2CONTROL},
+        {const_cast<char *>("tiefighterdarth"), &VehicleBoltId7f196cPc},
+        {const_cast<char *>("tiefighter"), &id_TIEFIGHTER},
+        {const_cast<char *>("grabberControl"), &id_GRABCONTROL},
+        {const_cast<char *>("grabberr2control"), &id_GRABR2CONTROL},
         {"grabber", &GrabMachineIdPc},
-        {const_cast<char *>(CharacterFixupNamePc00752cd0), &GrabMagnetIdPc},
-        {const_cast<char *>(CharacterFixupNamePc00752cc4), &RobotBaseIdPc},
-        {const_cast<char *>(CharacterFixupNamePc00752cbc), &id_JAWA},
-        {const_cast<char *>(CharacterFixupNamePc00752ca4), &id_LUKESKYWALKERDAGOBAH},
-        {const_cast<char *>(CharacterFixupNamePc00752c9c), &id_SNOWMOB},
-        {const_cast<char *>(CharacterFixupNamePc00752c90), &id_SNOWTROOPER},
-        {const_cast<char *>(CharacterFixupNamePc00752c7c), &id_DEATHSTARTROOPER},
-        {const_cast<char *>(CharacterFixupNamePc00752c70), &FreePlayId007f199cPc},
-        {const_cast<char *>(CharacterFixupNamePc00752c64), &id_THEEMPEROR},
-        {const_cast<char *>(CharacterFixupNamePc00752c50), &VehicleBoltId7f19a4Pc},
-        {const_cast<char *>(CharacterFixupNamePc00752c40), &VehicleBoltId7f19a8Pc},
-        {const_cast<char *>(CharacterFixupNamePc00752c38), &CharacterFixupIdPc007f19ac},
+        {const_cast<char *>("magnet"), &GrabMagnetIdPc},
+        {const_cast<char *>("robot_base"), &RobotBaseIdPc},
+        {const_cast<char *>("jawa"), &id_JAWA},
+        {const_cast<char *>("lukeskywalker_dagobah"), &id_LUKESKYWALKERDAGOBAH},
+        {const_cast<char *>("SnowMob"), &id_SNOWMOB},
+        {const_cast<char *>("snowtrooper"), &id_SNOWTROOPER},
+        {const_cast<char *>("deathstartrooper"), &id_DEATHSTARTROOPER},
+        {const_cast<char *>("darthvader"), &FreePlayId007f199cPc},
+        {const_cast<char *>("theemperor"), &id_THEEMPEROR},
+        {const_cast<char *>("millenniumfalcon"), &VehicleBoltId7f19a4Pc},
+        {const_cast<char *>("speederbikesnow"), &VehicleBoltId7f19a8Pc},
+        {const_cast<char *>("Kaadu"), &CharacterFixupIdPc007f19ac},
         {const_cast<char *>(AreaFixUpName_Gungan), &CharacterFixupIdPc007f19b0},
-        {const_cast<char *>(CharacterFixupNamePc00752c24), &CharacterFixupIdPc007f19b4},
-        {const_cast<char *>(CharacterFixupNamePc00752c1c), &id_STAP},
-        {const_cast<char *>(CharacterFixupNamePc00752c14), &id_STAP2},
-        {const_cast<char *>(CharacterFixupNamePc00752c00), &id_JUMBOHOMINGDROID},
-        {const_cast<char *>(CharacterFixupNamePc00752bf4), &CharacterFixupIdPc007f19c4},
-        {const_cast<char *>(CharacterFixupNamePc00752be8), &CharacterFixupIdPc007f19c8},
-        {const_cast<char *>(CharacterFixupNamePc00752bd8), &id_ANAKINPADAWAN},
-        {const_cast<char *>(CharacterFixupNamePc00752bc0), &CharacterFixupIdPc007f19d0},
-        {const_cast<char *>(CharacterFixupNamePc00752bb8), &CharacterFixupIdPc007f19d4},
-        {const_cast<char *>(CharacterFixupNamePc00752bac), &CharacterFixupIdPc007f19d8},
-        {const_cast<char *>(CharacterFixupNamePc00752ba8), &id_BOB},
-        {const_cast<char *>(CharacterFixupNamePc00752b9c), &id_JANGOFETT},
-        {const_cast<char *>(CharacterFixupNamePc00752b80), &id_JEDISTARFIGHTERYELLOWEP3},
-        {const_cast<char *>(CharacterFixupNamePc00752b68), &VehicleBoltId7f19e8Pc},
-        {const_cast<char *>(CharacterFixupNamePc00752b60), &id_RANCOR},
-        {const_cast<char *>(CharacterFixupNamePc00752b4c), &id_OBIWANKENOBIEP3},
-        {const_cast<char *>(CharacterFixupNamePc00752b40), &id_ANAKINJEDI},
+        {const_cast<char *>("Falumpaset"), &CharacterFixupIdPc007f19b4},
+        {const_cast<char *>("Stap"), &id_STAP},
+        {const_cast<char *>("Stap2"), &id_STAP2},
+        {const_cast<char *>("jumbohomingdroid"), &id_JUMBOHOMINGDROID},
+        {const_cast<char *>("JarJarBinks"), &CharacterFixupIdPc007f19c4},
+        {const_cast<char *>("PadmeClawed"), &CharacterFixupIdPc007f19c8},
+        {const_cast<char *>("Anakin_padawan"), &id_ANAKINPADAWAN},
+        {const_cast<char *>("ObiWanKenobi_JediMaster"), &CharacterFixupIdPc007f19d0},
+        {const_cast<char *>("shaakti"), &CharacterFixupIdPc007f19d4},
+        {const_cast<char *>("luminara"), &CharacterFixupIdPc007f19d8},
+        {const_cast<char *>("bob"), &id_BOB},
+        {const_cast<char *>("JangoFett"), &id_JANGOFETT},
+        {const_cast<char *>("JediStarfighter_Yellow_Ep3"), &id_JEDISTARFIGHTERYELLOWEP3},
+        {const_cast<char *>("JediStarfighter_Red_Ep3"), &VehicleBoltId7f19e8Pc},
+        {const_cast<char *>("Rancor"), &id_RANCOR},
+        {const_cast<char *>("obiwankenobi_ep3"), &id_OBIWANKENOBIEP3},
+        {const_cast<char *>("anakin_jedi"), &id_ANAKINJEDI},
         {"republicgunship", &id_REPUBLICGUNSHIP},
-        {const_cast<char *>(CharacterFixupNamePc00752b28), &id_REPUBLICGUNSHIP_GREEN},
-        {const_cast<char *>(CharacterFixupNamePc00752b14), &id_NEW_REPUBLIC_GUNSHIP},
-        {const_cast<char *>(CharacterFixupNamePc00752af8), &id_NEW_REPUBLIC_GUNSHIP_GREEN},
-        {const_cast<char *>(CharacterFixupNamePc00752aec), &id_DOOKU},
-        {const_cast<char *>(CharacterFixupNamePc00752ae0), &CharacterFixupIdPc007f1a0c},
-        {const_cast<char *>(CharacterFixupNamePc00752ad4), &CharacterFixupIdPc007f1a10},
-        {const_cast<char *>(CharacterFixupNamePc00752acc), &CharacterFixupIdPc007f1a14},
-        {const_cast<char *>(CharacterFixupNamePc00752ac4), &id_R2Q5},
-        {const_cast<char *>(CharacterFixupNamePc00752abc), &id_XWING},
-        {const_cast<char *>(CharacterFixupNamePc00752ab0), &id_ROYALGUARD},
-        {const_cast<char *>(CharacterFixupNamePc00752aa4), &VehicleBoltId7f1a24Pc},
-        {const_cast<char *>(CharacterFixupNamePc00752a94), &VehicleBoltId7f1a28Pc},
-        {const_cast<char *>(CharacterFixupNamePc00752a84), &VehicleBoltId7f1a2cPc},
-        {const_cast<char *>(CharacterFixupNamePc00752a78), &id_UGNAUGHT},
-        {const_cast<char *>(CharacterFixupNamePc00752a6c), &id_SENTRYDROID},
-        {const_cast<char *>(CharacterFixupNamePc00752a5c), &VehicleBoltId7f1a38Pc},
+        {const_cast<char *>("republicgunship_green"), &id_REPUBLICGUNSHIP_GREEN},
+        {const_cast<char *>("newrepublicgunship"), &id_NEW_REPUBLIC_GUNSHIP},
+        {const_cast<char *>("newrepublicgunship_green"), &id_NEW_REPUBLIC_GUNSHIP_GREEN},
+        {const_cast<char *>("countdooku"), &id_DOOKU},
+        {const_cast<char *>("palpatine"), &CharacterFixupIdPc007f1a0c},
+        {const_cast<char *>("kitfisto"), &CharacterFixupIdPc007f1a10},
+        {const_cast<char *>("r2d2"), &CharacterFixupIdPc007f1a14},
+        {const_cast<char *>("r2q5"), &id_R2Q5},
+        {const_cast<char *>("xwing"), &id_XWING},
+        {const_cast<char *>("royalguard"), &id_ROYALGUARD},
+        {const_cast<char *>("snowspeeder"), &VehicleBoltId7f1a24Pc},
+        {const_cast<char *>("tieinterceptor"), &VehicleBoltId7f1a28Pc},
+        {const_cast<char *>("imperialshuttle"), &VehicleBoltId7f1a2cPc},
+        {const_cast<char *>("ugnaught"), &id_UGNAUGHT},
+        {const_cast<char *>("sentrydroid"), &id_SENTRYDROID},
+        {const_cast<char *>("kaminoandroid"), &VehicleBoltId7f1a38Pc},
         {"stormtrooper", &CharacterFixupIdPc007f1a3c},
-        {const_cast<char *>(CharacterFixupNamePc00752a4c), &CharacterFixupIdPc007f1a40},
-        {const_cast<char *>(CharacterFixupNamePc00752a34), &FreePlayId007f1a44Pc},
-        {const_cast<char *>(CharacterFixupNamePc00752a24), &FreePlayId007f1a48Pc},
-        {const_cast<char *>(CharacterFixupNamePc00752a14), &FreePlayId007f1a4cPc},
-        {const_cast<char *>(CharacterFixupNamePc00752a08), reinterpret_cast<i16 *>(&id_GONKDROID)},
-        {const_cast<char *>(CharacterFixupNamePc00752a00), &id_C3PO},
-        {const_cast<char *>(CharacterFixupNamePc007529f8), &id_TC14},
-        {const_cast<char *>(CharacterFixupNamePc007529f0), &id_MOONCAR},
-        {const_cast<char *>(CharacterFixupNamePc007529e8), &id_MAPCAR},
-        {const_cast<char *>(CharacterFixupNamePc007529dc), &id_WOOKIEFLYER},
-        {const_cast<char *>(CharacterFixupNamePc007529d0), &id_IMPERIALSPY},
-        {const_cast<char *>(CharacterFixupNamePc007529c8), &id_GREEDO},
-        {const_cast<char *>(CharacterFixupNamePc007529c0), &id_BOSSK},
-        {const_cast<char *>(CharacterFixupNamePc007529b4), &id_CANTINABAND},
-        {const_cast<char *>(CharacterFixupNamePc007529a8), &CharacterFixupIdPc007f1a78},
-        {const_cast<char *>(CharacterFixupNamePc007529a0), &CharacterFixupIdPc007f1a7c},
-        {const_cast<char *>(CharacterFixupNamePc00752998), &id_TRACTOR},
-        {const_cast<char *>(CharacterFixupNamePc0075298c), &id_FIRETRUCK},
-        {const_cast<char *>(CharacterFixupNamePc00752980), &CharacterFixupIdPc007f1a88},
-        {const_cast<char *>(CharacterFixupNamePc00752978), &DefaultAnimationLamaSuIdPc},
-        {const_cast<char *>(CharacterFixupNamePc00752970), &DefaultAnimationTaunWeIdPc},
-        {const_cast<char *>(CharacterFixupNamePc00752964), &id_BUZZDROID},
-        {const_cast<char *>(CharacterFixupNamePc00752958), &FreePlayId007f1a98Pc},
+        {const_cast<char *>("beachtrooper"), &CharacterFixupIdPc007f1a40},
+        {const_cast<char *>("ImperialShuttlePilot"), &FreePlayId007f1a44Pc},
+        {const_cast<char *>("imperialofficer"), &FreePlayId007f1a48Pc},
+        {const_cast<char *>("grandmofftarkin"), &FreePlayId007f1a4cPc},
+        {const_cast<char *>("gonkdroid"), reinterpret_cast<i16 *>(&id_GONKDROID)},
+        {const_cast<char *>("c3po"), &id_C3PO},
+        {const_cast<char *>("tc14"), &id_TC14},
+        {const_cast<char *>("mooncar"), &id_MOONCAR},
+        {const_cast<char *>("mapcar"), &id_MAPCAR},
+        {const_cast<char *>("wookieflyer"), &id_WOOKIEFLYER},
+        {const_cast<char *>("imperialspy"), &id_IMPERIALSPY},
+        {const_cast<char *>("greedo"), &id_GREEDO},
+        {const_cast<char *>("bossk"), &id_BOSSK},
+        {const_cast<char *>("cantinaband"), &id_CANTINABAND},
+        {const_cast<char *>("pitdroid"), &CharacterFixupIdPc007f1a78},
+        {const_cast<char *>("TownCar"), &CharacterFixupIdPc007f1a7c},
+        {const_cast<char *>("Tractor"), &id_TRACTOR},
+        {const_cast<char *>("fireTruck"), &id_FIRETRUCK},
+        {const_cast<char *>("lifeBoat"), &CharacterFixupIdPc007f1a88},
+        {const_cast<char *>("lamasu"), &DefaultAnimationLamaSuIdPc},
+        {const_cast<char *>("taunwe"), &DefaultAnimationTaunWeIdPc},
+        {const_cast<char *>("buzzdroid"), &id_BUZZDROID},
+        {const_cast<char *>("clonearc"), &FreePlayId007f1a98Pc},
         {"naboostarfighter", &VehicleBoltId7f1a9cPc},
-        {const_cast<char *>(CharacterFixupNamePc00752940), &VehicleBoltId7f1aa0Pc},
-        {const_cast<char *>(CharacterFixupNamePc00752930), &VehicleBoltId7f17d4Pc},
-        {const_cast<char *>(CharacterFixupNamePc00752920), &id_FLASHSPEEDER},
-        {const_cast<char *>(CharacterFixupNamePc00752914), &DefaultMotionSkeletonIdPc},
-        {const_cast<char *>(CharacterFixupNamePc00752904), &VehicleBoltId7f17d0Pc},
-        {const_cast<char *>(CharacterFixupNamePc007528fc), &VehicleBoltId7f1aacPc},
-        {const_cast<char *>(CharacterFixupNamePc007528f4), &FreePlayId007f1ab0Pc},
-        {const_cast<char *>(CharacterFixupNamePc007528ec), &FreePlayId007f1ab4Pc},
-        {const_cast<char *>(CharacterFixupNamePc007528d8), &VehicleSpecialShooterIdPc},
-        {const_cast<char *>(CharacterFixupNamePc007528cc), &FreePlayId007f1abcPc},
-        {const_cast<char *>(CharacterFixupNamePc007528c0), &CharacterFixupIdPc007f1ac0},
-        {const_cast<char *>(CharacterFixupNamePc007528b4), &ZipUpLineCharacterIdPc},
-        {const_cast<char *>(CharacterFixupNamePc007528a8), &DefaultMotionIndySnakeIdPc},
-        {const_cast<char *>(CharacterFixupNamePc0075289c), &id_MINIXWING},
-        {const_cast<char *>(CharacterFixupNamePc00752890), &id_MINIYWING},
-        {const_cast<char *>(CharacterFixupNamePc00752878), &VehicleBoltId7f1ad8Pc},
-        {const_cast<char *>(CharacterFixupNamePc00752868), &id_MINITIEBOMBER},
-        {const_cast<char *>(CharacterFixupNamePc0075285c), &id_MINIATAT},
-        {const_cast<char *>(CharacterFixupNamePc00752848), &id_MINISTARDESTROYER},
-        {const_cast<char *>(CharacterFixupNamePc00752834), &id_MINIROYALSTARSHIP},
-        {const_cast<char *>(CharacterFixupNamePc0075281c), &VehicleBoltId7f1aecPc},
-        {const_cast<char *>(CharacterFixupNamePc00752804), &VehicleBoltId7f1af0Pc},
+        {const_cast<char *>("naboostarfighter_lime"), &VehicleBoltId7f1aa0Pc},
+        {const_cast<char *>("hansolo_indy"), &VehicleBoltId7f17d4Pc},
+        {const_cast<char *>("flashspeeder"), &id_FLASHSPEEDER},
+        {const_cast<char *>("skeleton"), &DefaultMotionSkeletonIdPc},
+        {const_cast<char *>("indianajones"), &VehicleBoltId7f17d0Pc},
+        {const_cast<char *>("satipo"), &VehicleBoltId7f1aacPc},
+        {const_cast<char *>("chuck"), &FreePlayId007f1ab0Pc},
+        {const_cast<char *>("belloq"), &FreePlayId007f1ab4Pc},
+        {const_cast<char *>("hovitostribesman"), &VehicleSpecialShooterIdPc},
+        {const_cast<char *>("barranca"), &FreePlayId007f1abcPc},
+        {const_cast<char *>("crocodile"), &CharacterFixupIdPc007f1ac0},
+        {const_cast<char *>("indyspider"), &ZipUpLineCharacterIdPc},
+        {const_cast<char *>("indysnake"), &DefaultMotionIndySnakeIdPc},
+        {const_cast<char *>("mini_x_wing"), &id_MINIXWING},
+        {const_cast<char *>("mini_y_wing"), &id_MINIYWING},
+        {const_cast<char *>("mini_tie_interceptor"), &VehicleBoltId7f1ad8Pc},
+        {const_cast<char *>("mini_tie_bomber"), &id_MINITIEBOMBER},
+        {const_cast<char *>("mini_atat"), &id_MINIATAT},
+        {const_cast<char *>("mini_star_destroyer"), &id_MINISTARDESTROYER},
+        {const_cast<char *>("mini_royal_starship"), &id_MINIROYALSTARSHIP},
+        {const_cast<char *>("mini_imperial_shuttle"), &VehicleBoltId7f1aecPc},
+        {const_cast<char *>("Mini_Millennium_Falcon"), &VehicleBoltId7f1af0Pc},
         {"mini_atst", &id_MINIATST},
-        {const_cast<char *>(CharacterFixupNamePc007527ec), &id_MINIATTE},
-        {const_cast<char *>(CharacterFixupNamePc007527e0), &id_MINISLAVE1},
-        {const_cast<char *>(CharacterFixupNamePc007527d0), &id_MINIDROIDEKA},
-        {const_cast<char *>(CharacterFixupNamePc007527bc), &VehicleBoltId7f1b00Pc},
-        {const_cast<char *>(CharacterFixupNamePc007527a8), &VehicleBoltId7f1b04Pc},
-        {const_cast<char *>(CharacterFixupNamePc00752790), &VehicleBoltId7f1b08Pc},
-        {const_cast<char *>(CharacterFixupNamePc0075277c), &VehicleBoltId7f1b0cPc},
-        {const_cast<char *>(CharacterFixupNamePc00752768), &CharacterFixupIdPc007f1b10},
-        {const_cast<char *>(CharacterFixupNamePc0075275c), &id_ANAKINSPOD},
-        {const_cast<char *>(CharacterFixupNamePc00752748), &id_ANAKINSPODGREEN},
-        {const_cast<char *>(CharacterFixupNamePc0075273c), &id_SEBULBASPOD},
-        {const_cast<char *>(CharacterFixupNamePc00752730), &CharacterFixupIdPc007f1b20},
-        {const_cast<char *>(CharacterFixupNamePc00752720), &CharacterFixupIdPc007f1b24},
-        {const_cast<char *>(CharacterFixupNamePc00752710), &CharacterFixupIdPc007f1b28},
-        {const_cast<char *>(CharacterFixupNamePc00752700), &id_ANAKINSNEWPOD},
-        {const_cast<char *>(CharacterFixupNamePc007526ec), &id_ANAKINSNEWPODGREEN},
-        {const_cast<char *>(CharacterFixupNamePc007526dc), &VehicleBoltId7f1b34Pc},
-        {const_cast<char *>(CharacterFixupNamePc007526c4), &VehicleBoltId7f1b38Pc},
-        {const_cast<char *>(CharacterFixupNamePc007526b8), &id_ZAMSSPEEDER},
-        {const_cast<char *>(CharacterFixupNamePc007526a8), &FreePlayId007f1b40Pc},
-        {const_cast<char *>(CharacterFixupNamePc00752698), &FreePlayId007f1b44Pc},
-        {const_cast<char *>(CharacterFixupNamePc00752684), &CharacterFixupIdPc007f1b48},
+        {const_cast<char *>("mini_atte"), &id_MINIATTE},
+        {const_cast<char *>("mini_slave1"), &id_MINISLAVE1},
+        {const_cast<char *>("mini_droideka"), &id_MINIDROIDEKA},
+        {const_cast<char *>("mini_tie_fighter"), &VehicleBoltId7f1b00Pc},
+        {const_cast<char *>("mini_tie_advanced"), &VehicleBoltId7f1b04Pc},
+        {const_cast<char *>("mini_sith_infiltrator"), &VehicleBoltId7f1b08Pc},
+        {const_cast<char *>("mini_solar_sailor"), &VehicleBoltId7f1b0cPc},
+        {const_cast<char *>("mini_sand_crawler"), &CharacterFixupIdPc007f1b10},
+        {const_cast<char *>("anakinspod"), &id_ANAKINSPOD},
+        {const_cast<char *>("anakinspod_green"), &id_ANAKINSPODGREEN},
+        {const_cast<char *>("sebulbaspod"), &id_SEBULBASPOD},
+        {const_cast<char *>("gasganospod"), &CharacterFixupIdPc007f1b20},
+        {const_cast<char *>("anothermiscpod"), &CharacterFixupIdPc007f1b24},
+        {const_cast<char *>("anothermiscpod2"), &CharacterFixupIdPc007f1b28},
+        {const_cast<char *>("newanakinspod"), &id_ANAKINSNEWPOD},
+        {const_cast<char *>("newanakinspod_green"), &id_ANAKINSNEWPODGREEN},
+        {const_cast<char *>("anakinsspeeder"), &VehicleBoltId7f1b34Pc},
+        {const_cast<char *>("anakinsspeeder_green"), &VehicleBoltId7f1b38Pc},
+        {const_cast<char *>("ZamsSpeeder"), &id_ZAMSSPEEDER},
+        {const_cast<char *>("vulturedroid"), &FreePlayId007f1b40Pc},
+        {const_cast<char *>("droidtrifighter"), &FreePlayId007f1b44Pc},
+        {const_cast<char *>("droidstarfighter"), &CharacterFixupIdPc007f1b48},
         {NULL, NULL},
     };
 #pragma data_seg()
@@ -32754,17 +29179,6 @@ extern "C" {
 #pragma const_seg()
 #pragma const_seg(".rdata$PanelVariantThreeTargetY")
     extern const f64 PanelVariantThreeTargetY = 0.34f;
-#pragma const_seg()
-#pragma const_seg(".rdata$PanelTrackEnterDistanceSquared")
-    extern const f32 PanelTrackEnterDistanceSquared = 0.809999942779541f;
-#pragma const_seg()
-#pragma const_seg(".rdata$PanelTrackLeaveDistanceSquared")
-    extern const f32 PanelTrackLeaveDistanceSquared = 1.2100000381469727f;
-#pragma const_seg()
-#pragma const_seg(".rdata$PanelDeactivateSfxPc")
-    extern const char PanelDeactivateSfxPc[10] = "DPanelDis";
-#pragma const_seg(".rdata$PanelActivateSfxPc")
-    extern const char PanelActivateSfxPc[10] = "DPanelAct";
 #pragma const_seg()
 }
 
@@ -32847,11 +29261,7 @@ extern "C" {
 #pragma data_seg()
 }
 
-extern "C" {
-#pragma const_seg(".rdata$CharacterWeaponScaleUpperBoundPc")
-    extern const f32 CharacterWeaponScaleUpperBoundPc = 65.0f;
-#pragma const_seg()
-}
+extern "C" {}
 
 extern "C" {
     /* Persistent native ControlSetup data proposals; include after types. */
@@ -32921,9 +29331,6 @@ extern "C" {
     };
     PC_CONTROL_ITEM_PC *PcControlRowsPc[2] = {PcControlItemsPc, NULL};
 
-#pragma const_seg(".rdata$PcControlMissingTextPc")
-    extern const char PcControlMissingTextPc[] = "????";
-#pragma const_seg()
     i16 PcControlTextIdPc = 0;
     u32 PcControlButtonsPc = 0;
     i32 PcControlPulseAnglePc = 0;
@@ -33610,9 +30017,6 @@ extern "C" {
 #pragma const_seg(".rdata$ExtrasNameFormatPc")
     extern const char ExtrasNameFormatPc[] = "%s: %s";
 #pragma const_seg()
-#pragma const_seg(".rdata$ExtrasLockedNumberFormatPc")
-    extern const char ExtrasLockedNumberFormatPc[] = " %i: ";
-#pragma const_seg()
 }
 
 extern "C" {
@@ -33621,27 +30025,6 @@ extern "C" {
 #pragma bss_seg(".bss$MenuAppliedAspectPc")
     i32 MenuAppliedAspectPc = 0;
 #pragma bss_seg()
-#pragma const_seg(".rdata$MenuVideoAspectErrorFormatPc")
-    extern const char MenuVideoAspectErrorFormatPc[10] = "%s: ERROR";
-#pragma const_seg(".rdata$MenuVideoAspect1610FormatPc")
-    extern const char MenuVideoAspect1610FormatPc[10] = "%s: 16:10";
-#pragma const_seg(".rdata$MenuVideoAspect169FormatPc")
-    extern const char MenuVideoAspect169FormatPc[9] = "%s: 16:9";
-#pragma const_seg(".rdata$MenuVideoAspect43FormatPc")
-    extern const char MenuVideoAspect43FormatPc[8] = "%s: 4:3";
-#pragma const_seg(".rdata$MenuVideoRefreshFormatPc")
-    extern const char MenuVideoRefreshFormatPc[9] = "%s: %dHz";
-#pragma const_seg(".rdata$MenuVideoResolutionFormatPc")
-    extern const char MenuVideoResolutionFormatPc[12] = "%s: %d x %d";
-#pragma const_seg(".rdata$MenuEffects16xFormatPc")
-    extern const char MenuEffects16xFormatPc[8] = "%s: 16X";
-#pragma const_seg(".rdata$MenuEffects8xFormatPc")
-    extern const char MenuEffects8xFormatPc[7] = "%s: 8X";
-#pragma const_seg(".rdata$MenuEffects4xFormatPc")
-    extern const char MenuEffects4xFormatPc[7] = "%s: 4X";
-#pragma const_seg(".rdata$MenuEffects2xFormatPc")
-    extern const char MenuEffects2xFormatPc[7] = "%s: 2X";
-#pragma const_seg()
 // Replace existing MenuInfo rows exactly (native row metadata is unchanged):
 // {1025, MenuEnterVideoPc, MenuDrawVideoPc, MenuUpdateVideoPc, MenuExitVideoPc, -1, -1, 0, 0, 0, 0},
 // {1026, MenuEnterEffectsPc, MenuDrawEffectsPc, MenuUpdateEffectsPc, MenuExitEffectsPc, -1, -1, 0, 0, 0, 0},
@@ -33650,9 +30033,6 @@ extern "C" {
 #pragma bss_seg(".bss$MenuVideoConfirmWaitPc")
     i32 MenuVideoConfirmWaitPc = 0;
 #pragma bss_seg()
-#pragma const_seg(".rdata$MenuVideoCountdownFormatPc")
-    extern const char MenuVideoCountdownFormatPc[9] = "%s (%ds)";
-#pragma const_seg()
     // {1027, MenuEnterVideoConfirmPc, MenuDrawVideoConfirmPc, MenuUpdateVideoConfirmPc, MenuExitVideoConfirmPc, -1, -1,
     // 0, 0, 0, 0}, {1028, MenuEnterHiresNoticePc, MenuDrawHiresNoticePc, MenuUpdateHiresNoticePc,
     // MenuExitHiresNoticePc, -1, -1, 0, 0, 0, 0},
@@ -34112,73 +30492,14 @@ extern "C" {
 #pragma bss_seg(".bss$AIPathCnxHelperSysInitFn")
     void (*AIPathCnxHelperSysInitFn)(WORLDINFO *) = 0;
 #pragma bss_seg()
-
-#pragma const_seg(".rdata$GameAILevelScriptFormatPc")
-    extern const char GameAILevelScriptFormatPc[8] = "Level%d";
-#pragma const_seg()
 }
 
 extern "C" {
-#pragma const_seg(".rdata$HubAILocatorFormatPc")
-    extern const char HubAILocatorFormatPc[6] = "%s_%d";
-#pragma const_seg()
-#pragma const_seg(".rdata$HubAIAreaMessagePc")
-    extern const char HubAIAreaMessagePc[5] = "Area";
-#pragma const_seg()
 #pragma const_seg(".rdata$HubAIServingCustomerPc")
     extern const char HubAIServingCustomerPc[16] = "ServingCustomer";
 #pragma const_seg()
-#pragma const_seg(".rdata$HubAICounterAFormatPc")
-    extern const char HubAICounterAFormatPc[12] = "CounterA_%d";
-#pragma const_seg()
-#pragma const_seg(".rdata$HubAICounterBFormatPc")
-    extern const char HubAICounterBFormatPc[12] = "CounterB_%d";
-#pragma const_seg()
-#pragma const_seg(".rdata$HubAIServePlayerPc")
-    extern const char HubAIServePlayerPc[12] = "ServePlayer";
-#pragma const_seg()
-#pragma const_seg(".rdata$HubAIBandDoorPc")
-    extern const char HubAIBandDoorPc[14] = "BandDoor_Open";
-#pragma const_seg()
-#pragma const_seg(".rdata$HubAITableFormatPc")
-    extern const char HubAITableFormatPc[9] = "Table_%d";
-#pragma const_seg()
-#pragma const_seg(".rdata$HubAITableAreaFormatPc")
-    extern const char HubAITableAreaFormatPc[11] = "Table%d_%d";
-#pragma const_seg()
-#pragma const_seg(".rdata$HubAIAreaNamePc0")
-    extern const char HubAIAreaNamePc0[9] = "MAINROOM";
-#pragma const_seg()
-#pragma const_seg(".rdata$HubAIAreaNamePc1")
-    extern const char HubAIAreaNamePc1[9] = "EPISODE1";
-#pragma const_seg()
-#pragma const_seg(".rdata$HubAIAreaNamePc2")
-    extern const char HubAIAreaNamePc2[9] = "EPISODE2";
-#pragma const_seg()
-#pragma const_seg(".rdata$HubAIAreaNamePc3")
-    extern const char HubAIAreaNamePc3[9] = "EPISODE3";
-#pragma const_seg()
-#pragma const_seg(".rdata$HubAIAreaNamePc4")
-    extern const char HubAIAreaNamePc4[9] = "EPISODE4";
-#pragma const_seg()
-#pragma const_seg(".rdata$HubAIAreaNamePc5")
-    extern const char HubAIAreaNamePc5[9] = "EPISODE5";
-#pragma const_seg()
-#pragma const_seg(".rdata$HubAIAreaNamePc6")
-    extern const char HubAIAreaNamePc6[9] = "EPISODE6";
-#pragma const_seg()
-#pragma const_seg(".rdata$HubAIAreaNamePc7")
-    extern const char HubAIAreaNamePc7[9] = "JUNKYARD";
-#pragma const_seg()
-#pragma const_seg(".rdata$HubAIAreaNamePc8")
-    extern const char HubAIAreaNamePc8[6] = "BONUS";
-#pragma const_seg()
-#pragma const_seg(".rdata$HubAIAreaNamePc9")
-    extern const char HubAIAreaNamePc9[7] = "BOUNTY";
-#pragma const_seg()
-    const char *HubAreaNamesPc[10] = {HubAIAreaNamePc0, HubAIAreaNamePc1, HubAIAreaNamePc2, HubAIAreaNamePc3,
-                                      HubAIAreaNamePc4, HubAIAreaNamePc5, HubAIAreaNamePc6, HubAIAreaNamePc7,
-                                      HubAIAreaNamePc8, HubAIAreaNamePc9};
+    const char *HubAreaNamesPc[10] = {"MAINROOM", "EPISODE1", "EPISODE2", "EPISODE3", "EPISODE4",
+                                      "EPISODE5", "EPISODE6", "JUNKYARD", "BONUS",    "BOUNTY"};
 }
 
 extern "C" {
@@ -34281,112 +30602,40 @@ extern "C" {
 }
 
 extern "C" {
-#pragma const_seg(".rdata$PlayerExtraActionNamePc_00")
-    extern const char PlayerExtraActionNamePc_00[5] = "run1";
-#pragma const_seg()
-#pragma const_seg(".rdata$PlayerExtraActionNamePc_01")
-    extern const char PlayerExtraActionNamePc_01[6] = "idle1";
-#pragma const_seg()
-#pragma const_seg(".rdata$PlayerExtraActionNamePc_02")
-    extern const char PlayerExtraActionNamePc_02[11] = "interface1";
-#pragma const_seg()
-#pragma const_seg(".rdata$PlayerExtraActionNamePc_03")
-    extern const char PlayerExtraActionNamePc_03[13] = "deactivated1";
-#pragma const_seg()
-#pragma const_seg(".rdata$PlayerExtraActionNamePc_04")
-    extern const char PlayerExtraActionNamePc_04[6] = "fall1";
-#pragma const_seg()
-#pragma const_seg(".rdata$PlayerExtraActionNamePc_05")
-    extern const char PlayerExtraActionNamePc_05[6] = "fire1";
-#pragma const_seg()
-#pragma const_seg(".rdata$PlayerExtraActionNamePc_06")
-    extern const char PlayerExtraActionNamePc_06[7] = "force1";
-#pragma const_seg()
-#pragma const_seg(".rdata$PlayerExtraActionNamePc_07")
-    extern const char PlayerExtraActionNamePc_07[6] = "walk1";
-#pragma const_seg()
-#pragma const_seg(".rdata$PlayerExtraActionNamePc_08")
-    extern const char PlayerExtraActionNamePc_08[8] = "tiptoe1";
-#pragma const_seg()
-#pragma const_seg(".rdata$PlayerExtraActionNamePc_09")
-    extern const char PlayerExtraActionNamePc_09[6] = "jump1";
-#pragma const_seg()
-#pragma const_seg(".rdata$PlayerExtraActionNamePc_10")
-    extern const char PlayerExtraActionNamePc_10[6] = "land1";
-#pragma const_seg()
-#pragma const_seg(".rdata$PlayerExtraActionNamePc_11")
-    extern const char PlayerExtraActionNamePc_11[7] = "shoot1";
-#pragma const_seg()
-#pragma const_seg(".rdata$PlayerExtraActionNamePc_12")
-    extern const char PlayerExtraActionNamePc_12[6] = "block";
-#pragma const_seg()
-#pragma const_seg(".rdata$PlayerExtraActionNamePc_13")
-    extern const char PlayerExtraActionNamePc_13[9] = "takehit1";
-#pragma const_seg()
-#pragma const_seg(".rdata$PlayerExtraActionNamePc_14")
-    extern const char PlayerExtraActionNamePc_14[7] = "punch1";
-#pragma const_seg()
-#pragma const_seg(".rdata$PlayerExtraActionNamePc_15")
-    extern const char PlayerExtraActionNamePc_15[14] = "trooperaccess";
-#pragma const_seg()
-#pragma const_seg(".rdata$PlayerExtraActionNamePc_16")
-    extern const char PlayerExtraActionNamePc_16[7] = "throw1";
-#pragma const_seg()
-#pragma const_seg(".rdata$PlayerExtraActionNamePc_17")
-    extern const char PlayerExtraActionNamePc_17[13] = "hunteraccess";
-#pragma const_seg()
-#pragma const_seg(".rdata$PlayerExtraActionNamePc_18")
-    extern const char PlayerExtraActionNamePc_18[6] = "stun1";
-#pragma const_seg()
-#pragma const_seg(".rdata$PlayerExtraActionNamePc_19")
-    extern const char PlayerExtraActionNamePc_19[9] = "stunned1";
-#pragma const_seg()
-#pragma const_seg(".rdata$PlayerExtraActionNamePc_21")
-    extern const char PlayerExtraActionNamePc_21[11] = "ride_buggy";
-#pragma const_seg()
-#pragma const_seg(".rdata$PlayerExtraActionNamePc_22")
-    extern const char PlayerExtraActionNamePc_22[16] = "ride_gyrocopter";
-#pragma const_seg()
-#pragma const_seg(".rdata$PlayerExtraActionNamePc_23")
-    extern const char PlayerExtraActionNamePc_23[12] = "ride_bantha";
-#pragma const_seg()
-#pragma const_seg(".rdata$PlayerExtraActionNamePc_24")
-    extern const char PlayerExtraActionNamePc_24[13] = "ride_dewback";
-#pragma const_seg()
-#pragma const_seg(".rdata$PlayerExtraActionNamePc_25")
-    extern const char PlayerExtraActionNamePc_25[17] = "ride_landspeeder";
-#pragma const_seg()
-#pragma const_seg(".rdata$PlayerExtraActionNamePc_26")
-    extern const char PlayerExtraActionNamePc_26[14] = "ride_tauntaun";
-#pragma const_seg()
-#pragma const_seg(".rdata$PlayerExtraActionNamePc_27")
-    extern const char PlayerExtraActionNamePc_27[17] = "ride_speederbike";
-#pragma const_seg()
-#pragma const_seg(".rdata$PlayerExtraActionNamePc_28")
-    extern const char PlayerExtraActionNamePc_28[26] = "ride_heavyrepeatingcannon";
-#pragma const_seg()
-#pragma const_seg(".rdata$PlayerExtraActionNamePc_29")
-    extern const char PlayerExtraActionNamePc_29[19] = "ride_troopercannon";
-#pragma const_seg()
-#pragma const_seg(".rdata$PlayerExtraActionNamePc_30")
-    extern const char PlayerExtraActionNamePc_30[9] = "rideluke";
-#pragma const_seg()
-#pragma const_seg(".rdata$PlayerExtraActionNamePc_31")
-    extern const char PlayerExtraActionNamePc_31[17] = "rideluke_running";
-#pragma const_seg()
 #pragma data_seg(".data$PlayerExtraActionInfoPc")
-    API_EXTRA_ACTION_PC PlayerExtraActionInfoPc[33] = {
-        {PlayerExtraActionNamePc_00, 3},   {PlayerExtraActionNamePc_01, 1},   {PlayerExtraActionNamePc_02, 24},
-        {PlayerExtraActionNamePc_03, 65},  {PlayerExtraActionNamePc_04, 5},   {PlayerExtraActionNamePc_05, 2},
-        {PlayerExtraActionNamePc_06, 11},  {PlayerExtraActionNamePc_07, 0},   {PlayerExtraActionNamePc_08, 4},
-        {PlayerExtraActionNamePc_09, 6},   {PlayerExtraActionNamePc_10, 7},   {PlayerExtraActionNamePc_11, 22},
-        {PlayerExtraActionNamePc_12, 26},  {PlayerExtraActionNamePc_13, 61},  {PlayerExtraActionNamePc_14, 81},
-        {PlayerExtraActionNamePc_15, 69},  {PlayerExtraActionNamePc_16, 101}, {PlayerExtraActionNamePc_17, 70},
-        {PlayerExtraActionNamePc_18, 167}, {PlayerExtraActionNamePc_19, 170}, {PlayerActionNamePc_109, 108},
-        {PlayerExtraActionNamePc_21, 112}, {PlayerExtraActionNamePc_22, 131}, {PlayerExtraActionNamePc_23, 112},
-        {PlayerExtraActionNamePc_24, 131}, {PlayerExtraActionNamePc_25, 132}, {PlayerExtraActionNamePc_26, 134},
-        {PlayerExtraActionNamePc_27, 192}, {PlayerExtraActionNamePc_28, 193}, {PlayerExtraActionNamePc_29, 194},
-        {PlayerExtraActionNamePc_30, 195}, {PlayerExtraActionNamePc_31, 196}, {NULL, 0}};
+    API_EXTRA_ACTION_PC PlayerExtraActionInfoPc[33] = {{"run1", 3},
+                                                       {"idle1", 1},
+                                                       {"interface1", 24},
+                                                       {"deactivated1", 65},
+                                                       {"fall1", 5},
+                                                       {"fire1", 2},
+                                                       {"force1", 11},
+                                                       {"walk1", 0},
+                                                       {"tiptoe1", 4},
+                                                       {"jump1", 6},
+                                                       {"land1", 7},
+                                                       {"shoot1", 22},
+                                                       {"block", 26},
+                                                       {"takehit1", 61},
+                                                       {"punch1", 81},
+                                                       {"trooperaccess", 69},
+                                                       {"throw1", 101},
+                                                       {"hunteraccess", 70},
+                                                       {"stun1", 167},
+                                                       {"stunned1", 170},
+                                                       {PlayerActionNamePc_109, 108},
+                                                       {"ride_buggy", 112},
+                                                       {"ride_gyrocopter", 131},
+                                                       {"ride_bantha", 112},
+                                                       {"ride_dewback", 131},
+                                                       {"ride_landspeeder", 132},
+                                                       {"ride_tauntaun", 134},
+                                                       {"ride_speederbike", 192},
+                                                       {"ride_heavyrepeatingcannon", 193},
+                                                       {"ride_troopercannon", 194},
+                                                       {"rideluke", 195},
+                                                       {"rideluke_running", 196},
+                                                       {NULL, 0}};
 #pragma data_seg()
 }
 
@@ -34457,28 +30706,12 @@ extern "C" {
 #pragma const_seg(".rdata$AIControllerLiteralPc00757df0")
     extern const char AIControllerLiteralPc00757df0[10] = "cutscene=";
 #pragma const_seg()
-#pragma const_seg(".rdata$AISetLayerKeywordPc")
-    extern const char AISetLayerKeywordPc[11] = "set_layer=";
-#pragma const_seg()
-#pragma const_seg(".rdata$AIClearLayerKeywordPc")
-    extern const char AIClearLayerKeywordPc[13] = "clear_layer=";
-#pragma const_seg()
-#pragma const_seg(".rdata$AIOverrideAllKeywordPc")
-    extern const char AIOverrideAllKeywordPc[9] = "from=All";
-#pragma const_seg()
 #pragma bss_seg(".bss$fakeanimendframe")
     f32 fakeanimendframe[1] = {0};
 #pragma bss_seg()
 }
 
-extern "C" {
-#pragma const_seg(".rdata$ComboSaber1NamePc")
-    extern const char ComboSaber1NamePc[12] = "ComboSaber1";
-#pragma const_seg()
-#pragma const_seg(".rdata$ComboSaber2NamePc")
-    extern const char ComboSaber2NamePc[12] = "ComboSaber2";
-#pragma const_seg()
-}
+extern "C" {}
 
 extern "C" {
 #pragma bss_seg(".bss$ShopMenuPc")
@@ -34623,9 +30856,6 @@ extern "C" {
 #pragma bss_seg(".bss$ShopCheatTimerPc")
     f32 ShopCheatTimerPc = 0;
 #pragma bss_seg()
-#pragma const_seg(".rdata$ShopCheatBlinkCutoffPc")
-    extern const f64 ShopCheatBlinkCutoffPc = 3.1499998569488525;
-#pragma const_seg()
 }
 
 extern "C" {
@@ -34647,14 +30877,9 @@ extern "C" {
 #pragma data_seg(".data$ShopCharacterPeriodPc")
     f32 ShopCharacterPeriodPc = 1.75f;
 #pragma data_seg()
-#pragma const_seg(".rdata$ShopCharacterAmplitudePc")
-    extern const f64 ShopCharacterAmplitudePc = 4369.0;
-#pragma const_seg()
 }
 
 extern "C" {
-#pragma const_seg(".rdata$CutPlayerClipFormatPc")
-    extern const char CutPlayerClipFormatPc[8] = "Clip %i";
 #pragma const_seg(".rdata$CutPlayerTextSeparatorPc")
     extern const char CutPlayerTextSeparatorPc[4] = " - ";
 #pragma const_seg()
@@ -34666,11 +30891,6 @@ extern "C" {
 #pragma bss_seg(".bss$speeder_hitpoints_lost")
     i32 speeder_hitpoints_lost = 0;
 #pragma bss_seg()
-#pragma const_seg(".rdata$BeenKilledPc")
-    extern const char BeenKilledPc[11] = "BeenKilled";
-#pragma const_seg(".rdata$EP3DogfightDiePc")
-    extern const char EP3DogfightDiePc[17] = "EP3_DOGFIGHT_DIE";
-#pragma const_seg()
 }
 
 extern "C" {
@@ -34689,9 +30909,6 @@ extern "C" {
 #pragma bss_seg(".bss$StreakHeadersPc")
     STREAK_HEADER_PC StreakHeadersPc[32] = {0};
 #pragma bss_seg()
-#pragma const_seg(".rdata$StreakTextureNamePc")
-    extern const char StreakTextureNamePc[17] = "stuff\\streak.pnt";
-#pragma const_seg()
 }
 
 extern "C" {
@@ -34716,24 +30933,6 @@ extern "C" {
 #pragma bss_seg(".bss$DeathStarEscapeBNetPacketPc")
     i8 *DeathStarEscapeBNetPacketPc = 0;
 #pragma bss_seg()
-#pragma const_seg(".rdata$DeathStarEscapeBSpongePc")
-    extern const char DeathStarEscapeBSpongePc[7] = "sponge";
-#pragma const_seg()
-#pragma const_seg(".rdata$DeathStarEscapeBLiftDownPc")
-    extern const char DeathStarEscapeBLiftDownPc[10] = "lift_down";
-#pragma const_seg()
-#pragma const_seg(".rdata$DeathStarEscapeBLiftUpPc")
-    extern const char DeathStarEscapeBLiftUpPc[8] = "lift_up";
-#pragma const_seg()
-#pragma const_seg(".rdata$DeathStarEscapeBWindowCleanPc")
-    extern const char DeathStarEscapeBWindowCleanPc[12] = "WindowClean";
-#pragma const_seg()
-#pragma const_seg(".rdata$DeathStarEscapeBWasher2Pc")
-    extern const char DeathStarEscapeBWasher2Pc[9] = "WASHER_2";
-#pragma const_seg()
-#pragma const_seg(".rdata$DeathStarEscapeBWasher1Pc")
-    extern const char DeathStarEscapeBWasher1Pc[9] = "WASHER_1";
-#pragma const_seg()
 }
 
 /* Native static-shadow frustum topology and mutable extrusion distance. */
@@ -34950,7 +31149,6 @@ extern "C" {
     i32 near_clip_at_cursor = 0;
     void (*AIPathNodeMovedFn)(struct EDAIPATHNODE_s *) = NULL;
     NUVEC edpath_addoffset = {0};
-    extern const char AiEditorDatedBackupFormatPc[32] = "ai_backups\\%s.%d_%d_%d_%d_%d_%d";
 }
 
 #pragma section(".bss$GameAISYSRebuildFromEditorDataFn", read, write)
@@ -34987,8 +31185,8 @@ extern "C" {
 extern "C" {
     void xEndState(NUFPAR_PC *parser);
 #pragma data_seg(".data$AIScriptStateCommandsPc")
-    NUFPCOMJMP AIScriptStateCommandsPc[5] = {{(char *)AIScriptKeywordConditions, xConditions},
-                                             {(char *)AIScriptKeywordActions, xActions},
+    NUFPCOMJMP AIScriptStateCommandsPc[5] = {{"CONDITIONS", xConditions},
+                                             {"ACTIONS", xActions},
                                              {(char *)AIScriptKeywordReferenceScript, xRefScript},
                                              {(char *)AIScriptKeywordEnd, xEndState},
                                              {NULL, NULL}};

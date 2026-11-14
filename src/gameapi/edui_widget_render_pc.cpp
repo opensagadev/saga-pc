@@ -1559,9 +1559,6 @@ extern "C" {
 #pragma data_seg(".data$EduiNominalFrameTime")
     f32 EduiNominalFrameTimePc = 1.0f / 60.0f;
 #pragma data_seg()
-#pragma const_seg(".rdata$EduiTextureValueFormat")
-    extern const char EduiTextureValueFormatPc[] = "%1.03f,%1.03f";
-#pragma const_seg()
 }
 
 extern "C" i32 eduicbRenderTexturePick(eduimenu_s *unused_menu, eduiitem_s *item, i32 x, i32 y, i32 width,
@@ -1620,7 +1617,7 @@ extern "C" i32 eduicbRenderTexturePick(eduimenu_s *unused_menu, eduiitem_s *item
             }
         }
     }
-    EduiPrintAlignedTextPc(edui_font, (x * 2 + width) << 3, (y << 3) + baseline, 64, (char *)EduiTextureValueFormatPc,
+    EduiPrintAlignedTextPc(edui_font, (x * 2 + width) << 3, (y << 3) + baseline, 64, "%1.03f,%1.03f",
                            picker->uv_x[picker->selected_corner] * 256.0,
                            picker->uv_y[picker->selected_corner] * 256.0);
     return width + height;
@@ -2164,11 +2161,8 @@ STATIC_ASSERT(offsetof(edui_textpicker_s, format) == 0x160);
 STATIC_ASSERT(offsetof(edui_textpicker_s, keyboard_flags) == 0x164);
 
 extern "C" {
-#pragma const_seg(".rdata$EduiTextCopyHelpString")
-    extern const char EduiTextCopyHelpStringPc[] = "Copy L2+R2 Paste L1+R1";
-#pragma const_seg()
 #pragma data_seg(".data$EduiTextCopyHelp")
-    char *EduiTextCopyHelpPc = (char *)EduiTextCopyHelpStringPc;
+    char *EduiTextCopyHelpPc = "Copy L2+R2 Paste L1+R1";
 #pragma data_seg(".data$EduiTextCursorPeriod")
     i32 EduiTextCursorPeriodPc = 32;
 #pragma data_seg()

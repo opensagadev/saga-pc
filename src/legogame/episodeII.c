@@ -1932,7 +1932,6 @@ void KaminoOutro_Init(WORLDINFO *world) {
 }
 
 static const char GunshipAGreenBoltPc[16] = "trooper_green";
-static const char GunshipARedBoltPc[12] = "trooper_red";
 static const char GunshipAPowerA11Pc[12] = "power_a11";
 static const char GunshipAPowerB11Pc[12] = "power_b11";
 static const char GunshipAPowerA21Pc[12] = "power_a21";
@@ -1940,7 +1939,7 @@ static const char GunshipAPowerB21Pc[12] = "power_b21";
 
 void GunshipA_Init(WORLDINFO *world) {
     gunship_bolts[1] = BoltType_FindIDByName(GunshipAGreenBoltPc, world);
-    gunship_bolts[0] = BoltType_FindIDByName(GunshipARedBoltPc, world);
+    gunship_bolts[0] = BoltType_FindIDByName("trooper_red", world);
     trooper_side[0] = 0;
     trooper_side[1] = 0;
     trooper_side[2] = 0;

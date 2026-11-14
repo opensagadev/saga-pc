@@ -334,7 +334,6 @@ void PC_CONTROL_SCREEN_PC::Initialize(i32 count, i32 player, i32 resolve_bank, u
 }
 
 extern "C" {
-    extern const char PcControlMissingTextPc[];
 
     void PcControlRegisterPc(PC_CONTROL_CONFIG_PC *config, VARIPTR *buffer, VARIPTR *end) {
         if (!config->rows) {
@@ -343,7 +342,7 @@ extern "C" {
         for (i32 i = 0; i < 45; ++i) {
             PcControlTextPc[i] = TTab[*PcControlTextIdsPc[i]];
             if (!PcControlTextPc[i]) {
-                PcControlTextPc[i] = (char *)PcControlMissingTextPc;
+                PcControlTextPc[i] = "????";
             }
         }
         PcControlScreenPc.Register(config, buffer, end);

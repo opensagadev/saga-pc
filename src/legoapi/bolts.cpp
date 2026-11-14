@@ -75,8 +75,6 @@ extern "C" {
     static NUGSCN *BT_scene = 0;
     static i32 BT_gdeb_moving_count = 0;
 
-    extern const char BoltAxeSwingSoundPc[14] = "wpn_axe_swing";
-    extern const char BoltGunShotSoundPc[8] = "GunShot";
     extern const char BoltImpactSoundPc[12] = "imp_impacts";
 
     /* Native 44-record owner; configuration publication remains in InitGameAfterConfig. */
@@ -1149,7 +1147,7 @@ extern "C" {
                                        NULL,
                                        NULL,
                                        NULL,
-                                       {BoltGunShotSoundPc},
+                                       {"GunShot"},
                                        {"Blast_Hit"},
                                        570425856,
                                        {0},
@@ -1174,7 +1172,7 @@ extern "C" {
                                        NULL,
                                        NULL,
                                        NULL,
-                                       {BoltAxeSwingSoundPc},
+                                       {"wpn_axe_swing"},
                                        {"wpn_bib_stab"},
                                        3258978304,
                                        {0},
@@ -2585,8 +2583,8 @@ extern "C" void Bolts_Update(WORLDINFO *world) {
                 NuVecScale(&movement, &bolt->direction, (f32)((f64)0.2f * bolt->speed));
                 bolt->ray_time = 0.2f;
                 if (bolt->acceleration_y != 0.0f) {
-                    movement.y = (f32)((f64)0.2f * bolt->velocity.y +
-                                       (f64)bolt->acceleration_y * .5 * BoltRayAccelerationTimeSquared);
+                    movement.y =
+                        (f32)((f64)0.2f * bolt->velocity.y + (f64)bolt->acceleration_y * .5 * 0.04000000283122063);
                 }
                 NuVecAdd(&offset, &bolt->position, &movement);
                 NuVecSub(&movement, &offset, &bolt->ray_end);

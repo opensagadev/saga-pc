@@ -79,10 +79,7 @@ typedef struct NuKeyboardProfileLayout_PC {
     NuKeyboardProfile_PC profiles[4]; // 0x5d00
 } NuKeyboardProfileLayout_PC;         // size 0x62f0
 
-extern const char PCKeyboardMouse1Name[15];
 extern const char PCKeyboardMouse2Name[16];
-extern const char PCKeyboard2Name[10];
-extern const char PCKeyboard1Name[10];
 
 void __fastcall NuKeyboardInitializeDefaultRecords_candidate(NuKeyboardState_PC *state);
 

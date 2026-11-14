@@ -51,13 +51,13 @@ extern "C" {
             }
 
             if (in_episode) {
-                if (NuStrICmp(parser->word_buffer_ptr, EpisodeConfigKeyword_episode_end) == 0) {
+                if (NuStrICmp(parser->word_buffer_ptr, "episode_end") == 0) {
                     in_episode = 0;
                     if (episode->area_count > 0) {
                         episode_count++;
                         episode++;
                     }
-                } else if (NuStrICmp(parser->word_buffer_ptr, EpisodeConfigKeyword_area) == 0) {
+                } else if (NuStrICmp(parser->word_buffer_ptr, "area") == 0) {
                     if (episode->area_count < 10 && NuFParGetWord(parser) != 0) {
                         AREA_DATA_PC *area;
                         i32 area_index;
@@ -102,8 +102,7 @@ extern "C" {
                 } else if (NuStrICmp(parser->word_buffer_ptr, AreaConfigKeyword_text_id) == 0) {
                     episode->text_id = (i16)NuFParGetInt(parser);
                 }
-            } else if (NuStrICmp(parser->word_buffer_ptr, EpisodeConfigKeyword_episode_start) == 0 &&
-                       episode_count < max_count) {
+            } else if (NuStrICmp(parser->word_buffer_ptr, "episode_start") == 0 && episode_count < max_count) {
                 in_episode = 1;
                 episode->name_id = -1;
                 episode->text_id = -1;

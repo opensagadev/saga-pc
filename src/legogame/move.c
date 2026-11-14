@@ -781,7 +781,7 @@ f32 GetVehicleHoverHeight(GAMEOBJECT *object, f32 *separation_offset) {
                    ((GAMEOBJECT *)Player[1])->character_context == 0x24)) {
         combined_height =
             (f32)((((GAMEOBJECT *)Player[1])->bounds_half_height + ((GAMEOBJECT *)Player[0])->bounds_half_height) *
-                  VehicleHoverHeightSeparationScale);
+                  0.6000000238418579);
         combined_radius = ((GAMEOBJECT *)Player[1])->bounds_radius + ((GAMEOBJECT *)Player[0])->bounds_radius;
         outer_distance = (f32)(NuTimeBarColumnStep * combined_radius);
         combined_radius = combined_radius * combined_radius;
@@ -4428,7 +4428,7 @@ static void LightSabreComboCode(GAMEOBJECT *object, i32 action_pressed, i32 acti
                             object->combo_branch = 2;
                             NewRumble(object->pad->bound_pad, 0.5f, 0);
                             if (object->id != (u16)id_IMPERIALGUARD) {
-                                PlaySabreSfx((char *)ComboSaber2NamePc, object, &object->collision_position, 0);
+                                PlaySabreSfx("ComboSaber2", object, &object->collision_position, 0);
                             }
                         } else {
                             object->combo_branch = 1;
@@ -4462,7 +4462,7 @@ static void LightSabreComboCode(GAMEOBJECT *object, i32 action_pressed, i32 acti
                                 object->combo_branch = 6;
                                 NewRumble(object->pad->bound_pad, 0.6f, 0);
                                 if (object->id != (u16)id_IMPERIALGUARD) {
-                                    PlaySabreSfx((char *)ComboSaber1NamePc, object, &object->collision_position, 0);
+                                    PlaySabreSfx("ComboSaber1", object, &object->collision_position, 0);
                                 }
                             } else {
                                 object->combo_branch = 5;
@@ -5553,7 +5553,7 @@ i32 ForcePushed_SetTargetMom(GAMEOBJECT *object, f32 *seek_rate) {
                         NuVecScale(&object->target_velocity, &direction, 1.0f);
                     }
                 }
-                *seek_rate = ForcePushSeekRate;
+                *seek_rate = 20.0f;
                 return 1;
             }
         } else {
@@ -7257,7 +7257,7 @@ static void SmartBombCode(GAMEOBJECT *object) {
         GameCam_NewShake(GameCam, 2.0f, 1.0f, 1.0f);
         PlaySfx((char *)ForceThrowExplodeNamePc, NULL);
     } else {
-        PlaySfxAndSetVolume((char *)VehicleSmartBombChargeNamePc, NULL, (f32)((f64)state->smartbomb_timer * 3.0 * 0.5));
+        PlaySfxAndSetVolume("JForceUse", NULL, (f32)((f64)state->smartbomb_timer * 3.0 * 0.5));
         if ((i32)((f64)state->smartbomb_timer / (f64)0.2f) != old_phase) {
             NewBuzzFrames(object->pad->bound_pad, 2, 0);
         }
@@ -8249,7 +8249,7 @@ static void ShieldCode(GAMEOBJECT *object) {
     object->origin_scale_override = SeekLinearF(object->origin_scale_override, target, (f32)((f64)FRAMETIME * 5.0));
     if ((previous == 0.0f && object->origin_scale_override > 0.0f) ||
         (previous == 1.0f && object->origin_scale_override < 1.0f)) {
-        PlaySfx((char *)VehicleShieldOnNamePc, &object->collision_position);
+        PlaySfx("DDekaShOn", &object->collision_position);
     }
 }
 
@@ -8372,7 +8372,7 @@ static void PodBoostCodePc(GAMEOBJECT *object) {
         }
         pod->boost_timer = 1.0f;
         if ((object->flags_e20 & 1) == 0) {
-            PlaySfx((char *)PodBoosterSoundNamePc, &object->collision_position);
+            PlaySfx("PodX_Booster", &object->collision_position);
             object->flags_e20 |= 1;
         }
     } else {

@@ -13,5 +13,4 @@ extern "C" {
     f32 ShopTopHintOffsetPc = -0.006f;
     f32 ShopCodeExitPushPc = 0.05f;
     char ShopCodeCharactersPc[37] = "ABCDEFGHIJKLMNOPQRSTUVWXYZ0123456789";
-    extern const f32 ShopCodeCheatDisplayTimePc = 3.1499998569488525f;
 }

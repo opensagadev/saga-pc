@@ -16,7 +16,7 @@ void NuTexAnimAddList(void *animation) {
     if (ntal_free != NULL) {
         node = ntal_free;
         if (node->next == NULL) {
-            NuSevereWarning(NuTextureAnimationSlotsWarning);
+            NuSevereWarning("Ran out of texture anim slots!");
         }
         ntal_free = ntal_free->next;
         node->previous = NULL;

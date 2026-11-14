@@ -32,7 +32,6 @@ extern "C" {
     extern i32 saveload_slotused[6];
     extern char *fullslotname(i32);
     extern char SaveSlotNamePc[256];
-    extern const char SaveSlotCaptionFormatPc[13] = "Save Slot %d";
 
     void PcRegisterSaveMetadataPc(const void *metadata) {
         if (metadata != NULL) {
@@ -78,7 +77,7 @@ extern "C" {
         strcat(date_time, time);
         MultiByteToWideChar(0, 0, date_time, 1024, header.date_time, 1024);
         MultiByteToWideChar(0, 0, NuHwDefaultParameterPc, 1024, header.title, 1024);
-        sprintf(date_time, SaveSlotCaptionFormatPc, slot);
+        sprintf(date_time, "Save Slot %d", slot);
         MultiByteToWideChar(0, 0, date_time, 1024, header.slot_caption, 1024);
         fwrite(&header, sizeof(header), 1, file);
         if (PcApiGetCallBuffer() != NULL) {

@@ -2448,9 +2448,9 @@ void NuFileExtInit(i32 low_resolution) {
 
     NuFileAddExtensionPC(NuFileExt_ca3_PC, 0, 6);
     NuFileAddExtensionPC(NuFileExt_cbs_PC, 1, 6);
-    NuFileAddExtensionPC(NuFileExt_360_ghg_PC, 2, 6);
-    NuFileAddExtensionPC(NuFileExt_360_gsc_PC, 3, 6);
-    NuFileAddExtensionPC(NuFileExt_360_tex_PC, 4, 6);
+    NuFileAddExtensionPC("_360.ghg", 2, 6);
+    NuFileAddExtensionPC("_360.gsc", 3, 6);
+    NuFileAddExtensionPC("_360.tex", 4, 6);
     NuFileAddExtensionPC(NuFileExt_cc2_PC, 5, 6);
     NuFileAddExtensionPC(NuFileExt_wavx_PC, 6, 6);
     NuFileAddExtensionPC(NuFileExt_wavm_PC, 7, 6);
@@ -2458,33 +2458,33 @@ void NuFileExtInit(i32 low_resolution) {
 
     NuFileAddExtensionPC(NuFileExt_ca3_PC, 0, 5);
     NuFileAddExtensionPC(NuFileExt_cbs_PC, 1, 5);
-    NuFileAddExtensionPC(NuFileExt_ps3_ghg_PC, 2, 5);
-    NuFileAddExtensionPC(NuFileExt_ps3_gsc_PC, 3, 5);
-    NuFileAddExtensionPC(NuFileExt_ps3_tex_PC, 4, 5);
+    NuFileAddExtensionPC("_ps3.ghg", 2, 5);
+    NuFileAddExtensionPC("_ps3.gsc", 3, 5);
+    NuFileAddExtensionPC("_ps3.tex", 4, 5);
     NuFileAddExtensionPC(NuFileExt_cc2_PC, 5, 5);
-    NuFileAddExtensionPC(NuFileExt_msf_PC, 6, 5);
+    NuFileAddExtensionPC(".msf", 6, 5);
     NuFileAddExtensionPC(NuFileExt_mib_PC, 7, 5);
-    NuFileAddExtensionPC(NuFileExt_pam_PC, 8, 5);
+    NuFileAddExtensionPC(".pam", 8, 5);
 
     NuFileAddExtensionPC(NuFileExt_an3_PC, 0, 4);
     NuFileAddExtensionPC(NuFileExt_bsa_PC, 1, 4);
 
-    NuFileAddExtensionPC(NuFileExt_pc_dds_PC, 4, 4);
+    NuFileAddExtensionPC("_pc.dds", 4, 4);
     NuFileAddExtensionPC(NuFileExt_cu2_PC, 5, 4);
     NuFileAddExtensionPC(NuFileExt_wav_PC, 6, 4);
     NuFileAddExtensionPC(NuFileExt_mib_PC, 7, 4);
-    NuFileAddExtensionPC(NuFileExt_bik_PC, 8, 4);
-    NuFileAddExtensionPC(NuFileExt_pc_gsc_PC, 3, 4);
+    NuFileAddExtensionPC(".bik", 8, 4);
+    NuFileAddExtensionPC("_pc.gsc", 3, 4);
     if (low_resolution) {
-        NuFileAddExtensionPC(NuFileExt_lr_pc_ghg_PC, 2, 4);
+        NuFileAddExtensionPC("_lr_pc.ghg", 2, 4);
     } else {
-        NuFileAddExtensionPC(NuFileExt_pc_ghg_PC, 2, 4);
+        NuFileAddExtensionPC("_pc.ghg", 2, 4);
     }
 
     NuFileAddExtensionPC(NuFileExt_an3_PC, 0, 0);
     NuFileAddExtensionPC(NuFileExt_bsa_PC, 1, 0);
     NuFileAddExtensionPC(NuFileExt_ghg_PC, 2, 0);
-    NuFileAddExtensionPC(SceneFileExtensionPc, 3, 0);
+    NuFileAddExtensionPC(".gsc", 3, 0);
     NuFileAddExtensionPC(NuFileExt_pnt_PC, 4, 0);
     NuFileAddExtensionPC(NuFileExt_cu2_PC, 5, 0);
     NuFileAddExtensionPC(NuFileExt_vag_PC, 6, 0);
@@ -2493,18 +2493,18 @@ void NuFileExtInit(i32 low_resolution) {
 
     NuFileAddExtensionPC(NuFileExt_ca3_PC, 0, 2);
     NuFileAddExtensionPC(NuFileExt_cbs_PC, 1, 2);
-    NuFileAddExtensionPC(NuFileExt_chg_PC, 2, 2);
-    NuFileAddExtensionPC(NuFileExt_csc_PC, 3, 2);
-    NuFileAddExtensionPC(NuFileExt_ctx_PC, 4, 2);
+    NuFileAddExtensionPC(".chg", 2, 2);
+    NuFileAddExtensionPC(".csc", 3, 2);
+    NuFileAddExtensionPC(".ctx", 4, 2);
     NuFileAddExtensionPC(NuFileExt_cc2_PC, 5, 2);
-    NuFileAddExtensionPC(NuFileExt_dsp_PC, 6, 2);
-    NuFileAddExtensionPC(NuFileExt_gcm_PC, 7, 2);
-    NuFileAddExtensionPC(NuFileExt_h4m_PC, 8, 2);
+    NuFileAddExtensionPC(".dsp", 6, 2);
+    NuFileAddExtensionPC(".gcm", 7, 2);
+    NuFileAddExtensionPC(".h4m", 8, 2);
 
     NuFileAddExtensionPC(NuFileExt_an3_PC, 0, 1);
     NuFileAddExtensionPC(NuFileExt_bsa_PC, 1, 1);
-    NuFileAddExtensionPC(NuFileExt_hx2_PC, 2, 1);
-    NuFileAddExtensionPC(NuFileExt_nx2_PC, 3, 1);
+    NuFileAddExtensionPC(".hx2", 2, 1);
+    NuFileAddExtensionPC(".nx2", 3, 1);
     NuFileAddExtensionPC(NuFileExt_dds_PC, 4, 1);
     NuFileAddExtensionPC(NuFileExt_cu2_PC, 5, 1);
     NuFileAddExtensionPC(NuFileExt_wavx_PC, 6, 1);
@@ -2513,12 +2513,12 @@ void NuFileExtInit(i32 low_resolution) {
 
     NuFileAddExtensionPC(NuFileExt_an3_PC, 0, 3);
     NuFileAddExtensionPC(NuFileExt_bsa_PC, 1, 3);
-    NuFileAddExtensionPC(NuFileExt_phg_PC, 2, 3);
-    NuFileAddExtensionPC(NuFileExt_psc_PC, 3, 3);
+    NuFileAddExtensionPC(".phg", 2, 3);
+    NuFileAddExtensionPC(".psc", 3, 3);
     NuFileAddExtensionPC(NuFileExt_pnt_PC, 4, 3);
     NuFileAddExtensionPC(NuFileExt_cu2_PC, 5, 3);
     NuFileAddExtensionPC(NuFileExt_vag_PC, 6, 3);
-    NuFileAddExtensionPC(NuFileExt_at3_PC, 7, 3);
+    NuFileAddExtensionPC(".at3", 7, 3);
     NuFileAddExtensionPC(NuFileExt_pss_PC, 8, 3);
 }
 
@@ -7503,7 +7503,7 @@ f32 NuTimeMilliSeconds(NuTime *time) {
 }
 
 f32 NuTimeScanlines(NuTime *time) {
-    return (f32)(NuTimeSeconds(time) * NuTime_ScanlineScale * 60.0);
+    return (f32)(NuTimeSeconds(time) * 272.0 * 60.0);
 }
 
 // __restrict: without it VC8 reloads through count and arguments after each store, unlike the original.

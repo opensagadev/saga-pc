@@ -1011,7 +1011,7 @@ void LoadGizmoSys(void *system_ptr, void *world, char *config_file) {
     }
     system->flags &= ~3;
     if (gizmotypes != NULL) {
-        sprintf(path, GizmoConfigPathFormat, config_file);
+        sprintf(path, "%s.giz", config_file);
         EdFileSetMedia(1);
         if (EdFileOpen(path, 0) != 0) {
             EdFileReadInt();

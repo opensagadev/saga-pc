@@ -76,7 +76,6 @@ extern "C" char AreaFixUpName_Podsprint[];
 extern "C" char AreaFixUpName_Negotiations[];
 extern "C" {
     void ClearSpecialMove(GAMEOBJECT *);
-    extern const char LostTempleExitObstacleNamePc[] = "obstacle1";
 }
 
 typedef struct ARCADE_COIN_PACKET_PC {
@@ -271,167 +270,6 @@ static f32 HubFabsPc(f32 value) {
 
 extern "C" const char HubTableTextPc00752d20[] = "grievous";
 extern "C" const char HubTableTextPc00752d48[] = "jabba";
-static const char HubTableTextPc00758fdc[] = "lock_B_on";
-static const char HubTableTextPc00758fe8[] = "lock_8_on";
-static const char HubTableTextPc00758ff4[] = "hologram";
-static const char HubTableTextPc00759000[] = "lock_7_on";
-static const char HubTableTextPc0075900c[] = "DE7";
-static const char HubTableTextPc00759010[] = "lock_6_on";
-static const char HubTableTextPc0075901c[] = "DE6";
-static const char HubTableTextPc00759020[] = "lock_5_on";
-static const char HubTableTextPc0075902c[] = "DE5";
-static const char HubTableTextPc00759030[] = "lock_4_on";
-static const char HubTableTextPc0075903c[] = "DE4";
-static const char HubTableTextPc00759040[] = "lock_3_on";
-static const char HubTableTextPc0075904c[] = "DE3";
-static const char HubTableTextPc00759050[] = "lock_2_on";
-static const char HubTableTextPc0075905c[] = "DE2";
-static const char HubTableTextPc00759060[] = "lock_1_on";
-static const char HubTableTextPc0075906c[] = "DE1";
-static const char HubTableTextPc00759070[] = "network_door";
-static const char HubTableTextPc00759088[] = "lock_7_7_on";
-static const char HubTableTextPc00759094[] = "de7_7";
-static const char HubTableTextPc007590a8[] = "frame_6";
-static const char HubTableTextPc007590b0[] = "lock_7_6_on";
-static const char HubTableTextPc007590bc[] = "de7_6";
-static const char HubTableTextPc007590c4[] = "bonus";
-static const char HubTableTextPc007590cc[] = "frame_5";
-static const char HubTableTextPc007590d4[] = "lock_7_5_on";
-static const char HubTableTextPc007590e0[] = "de7_5";
-static const char HubTableTextPc007590e8[] = "bonus2";
-static const char HubTableTextPc007590f0[] = "frame_4";
-static const char HubTableTextPc007590f8[] = "lock_7_4_on";
-static const char HubTableTextPc00759104[] = "de7_4";
-static const char HubTableTextPc0075910c[] = "anewhope";
-static const char HubTableTextPc00759118[] = "frame_3";
-static const char HubTableTextPc00759120[] = "lock_7_3_on";
-static const char HubTableTextPc0075912c[] = "de7_3";
-static const char HubTableTextPc00759134[] = "bonus_gunship";
-static const char HubTableTextPc00759144[] = "frame_2";
-static const char HubTableTextPc0075914c[] = "lock_7_2_on";
-static const char HubTableTextPc00759158[] = "de7_2";
-static const char HubTableTextPc00759160[] = "anakinsflight";
-static const char HubTableTextPc00759170[] = "frame_1";
-static const char HubTableTextPc00759178[] = "lock_7_1_on";
-static const char HubTableTextPc00759184[] = "de7_1";
-static const char HubTableTextPc0075918c[] = "podrace";
-static const char HubTableTextPc00759194[] = "lock_6_7_on";
-static const char HubTableTextPc007591a0[] = "de6_7";
-static const char HubTableTextPc007591a8[] = "e6vehiclebonus";
-static const char HubTableTextPc007591b8[] = "lock_6_6_on";
-static const char HubTableTextPc007591c4[] = "de6_6";
-static const char HubTableTextPc007591cc[] = "deathstar2battle";
-static const char HubTableTextPc007591e0[] = "lock_6_5_on";
-static const char HubTableTextPc007591ec[] = "de6_5";
-static const char HubTableTextPc00759204[] = "lock_6_4_on";
-static const char HubTableTextPc00759210[] = "de6_4";
-static const char HubTableTextPc00759218[] = "endorbattle";
-static const char HubTableTextPc00759224[] = "lock_6_3_on";
-static const char HubTableTextPc00759230[] = "de6_3";
-static const char HubTableTextPc00759238[] = "speederchase";
-static const char HubTableTextPc00759248[] = "lock_6_2_on";
-static const char HubTableTextPc00759254[] = "de6_2";
-static const char HubTableTextPc0075925c[] = "sarlaccpit";
-static const char HubTableTextPc00759268[] = "lock_6_1_on";
-static const char HubTableTextPc00759274[] = "de6_1";
-static const char HubTableTextPc0075927c[] = "jabbaspalace";
-static const char HubTableTextPc0075928c[] = "lock_5_7_on";
-static const char HubTableTextPc00759298[] = "de5_7";
-static const char HubTableTextPc007592a0[] = "e5vehiclebonus";
-static const char HubTableTextPc007592b0[] = "lock_5_6_on";
-static const char HubTableTextPc007592bc[] = "de5_6";
-static const char HubTableTextPc007592c4[] = "cloudcityescape";
-static const char HubTableTextPc007592d4[] = "lock_5_5_on";
-static const char HubTableTextPc007592e0[] = "de5_5";
-static const char HubTableTextPc007592e8[] = "cloudcitytrap";
-static const char HubTableTextPc007592f8[] = "lock_5_4_on";
-static const char HubTableTextPc00759304[] = "de5_4";
-static const char HubTableTextPc0075930c[] = "dagobah";
-static const char HubTableTextPc00759314[] = "lock_5_3_on";
-static const char HubTableTextPc00759320[] = "de5_3";
-static const char HubTableTextPc00759328[] = "asteroidchase";
-static const char HubTableTextPc00759338[] = "lock_5_2_on";
-static const char HubTableTextPc00759344[] = "de5_2";
-static const char HubTableTextPc0075934c[] = "hothescape";
-static const char HubTableTextPc00759358[] = "lock_5_1_on";
-static const char HubTableTextPc00759364[] = "de5_1";
-static const char HubTableTextPc0075936c[] = "hothbattle";
-static const char HubTableTextPc00759378[] = "lock_4_7_on";
-static const char HubTableTextPc00759384[] = "de4_7";
-static const char HubTableTextPc0075938c[] = "e4vehiclebonus";
-static const char HubTableTextPc0075939c[] = "lock_4_6_on";
-static const char HubTableTextPc007593a8[] = "de4_6";
-static const char HubTableTextPc007593b0[] = "deathstarbattle";
-static const char HubTableTextPc007593c0[] = "lock_4_5_on";
-static const char HubTableTextPc007593cc[] = "de4_5";
-static const char HubTableTextPc007593d4[] = "deathstarescape";
-static const char HubTableTextPc007593e4[] = "lock_4_4_on";
-static const char HubTableTextPc007593f0[] = "de4_4";
-static const char HubTableTextPc007593f8[] = "deathstarrescue";
-static const char HubTableTextPc00759408[] = "lock_4_3_on";
-static const char HubTableTextPc00759414[] = "de4_3";
-static const char HubTableTextPc00759428[] = "lock_4_2_on";
-static const char HubTableTextPc00759434[] = "de4_2";
-static const char HubTableTextPc00759448[] = "lock_4_1_on";
-static const char HubTableTextPc00759454[] = "de4_1";
-static const char HubTableTextPc0075945c[] = "blockaderunner";
-static const char HubTableTextPc0075946c[] = "lock_3_7_on";
-static const char HubTableTextPc00759478[] = "de3_7";
-static const char HubTableTextPc00759480[] = "e3vehiclebonus";
-static const char HubTableTextPc00759490[] = "lock_3_6_on";
-static const char HubTableTextPc0075949c[] = "de3_6";
-static const char HubTableTextPc007594a4[] = "vader";
-static const char HubTableTextPc007594ac[] = "lock_3_5_on";
-static const char HubTableTextPc007594b8[] = "de3_5";
-static const char HubTableTextPc007594c0[] = "temple";
-static const char HubTableTextPc007594c8[] = "lock_3_4_on";
-static const char HubTableTextPc007594d4[] = "de3_4";
-static const char HubTableTextPc007594dc[] = "kashyyyk";
-static const char HubTableTextPc007594e8[] = "lock_3_3_on";
-static const char HubTableTextPc007594f4[] = "de3_3";
-static const char HubTableTextPc007594fc[] = "lock_3_2_on";
-static const char HubTableTextPc00759508[] = "de3_2";
-static const char HubTableTextPc00759510[] = "cruiser";
-static const char HubTableTextPc00759518[] = "lock_3_1_on";
-static const char HubTableTextPc00759524[] = "de3_1";
-static const char HubTableTextPc0075952c[] = "dogfight";
-static const char HubTableTextPc00759538[] = "lock_2_7_on";
-static const char HubTableTextPc00759544[] = "de2_7";
-static const char HubTableTextPc0075954c[] = "e2vehiclebonus";
-static const char HubTableTextPc0075955c[] = "lock_2_6_on";
-static const char HubTableTextPc00759568[] = "de2_6";
-static const char HubTableTextPc00759570[] = "dooku";
-static const char HubTableTextPc00759578[] = "lock_2_5_on";
-static const char HubTableTextPc00759584[] = "de2_5";
-static const char HubTableTextPc00759594[] = "lock_2_4_on";
-static const char HubTableTextPc007595a0[] = "de2_4";
-static const char HubTableTextPc007595a8[] = "lock_2_3_on";
-static const char HubTableTextPc007595b4[] = "de2_3";
-static const char HubTableTextPc007595bc[] = "factory";
-static const char HubTableTextPc007595c4[] = "lock_2_2_on";
-static const char HubTableTextPc007595d0[] = "de2_2";
-static const char HubTableTextPc007595d8[] = "kamino";
-static const char HubTableTextPc007595e0[] = "lock_2_1_on";
-static const char HubTableTextPc007595ec[] = "de2_1";
-static const char HubTableTextPc007595fc[] = "lock_1_7_on";
-static const char HubTableTextPc00759608[] = "de1_7";
-static const char HubTableTextPc00759610[] = "e1vehiclebonus";
-static const char HubTableTextPc00759620[] = "lock_1_6_on";
-static const char HubTableTextPc0075962c[] = "de1_6";
-static const char HubTableTextPc00759634[] = "maul";
-static const char HubTableTextPc0075963c[] = "lock_1_5_on";
-static const char HubTableTextPc00759648[] = "de1_5";
-static const char HubTableTextPc00759650[] = "retakepalace";
-static const char HubTableTextPc00759660[] = "lock_1_4_on";
-static const char HubTableTextPc0075966c[] = "de1_4";
-static const char HubTableTextPc00759680[] = "lock_1_3_on";
-static const char HubTableTextPc0075968c[] = "de1_3";
-static const char HubTableTextPc00759694[] = "palacerescue";
-static const char HubTableTextPc007596a4[] = "lock_1_2_on";
-static const char HubTableTextPc007596b0[] = "de1_2";
-static const char HubTableTextPc007596b8[] = "gungan";
-static const char HubTableTextPc007596c0[] = "lock_1_1_on";
-static const char HubTableTextPc007596cc[] = "de1_1";
 
 static void MiniKitSetRotationX(NUMTX *m, NUANG a) {
     const f32 cosine = NuTrigTable[((a + 0x4000) >> 1) & 0x7fff];
@@ -543,8 +381,8 @@ static void HubResolveAreaInfoPc(HUB_AREA_INFO_PC *info, WORLDINFO *world) {
 
 static HUB_AREA_INFO_PC HubAreaInfoPc[51] = {
     {AreaFixUpName_Negotiations,
-     HubTableTextPc007596cc,
-     HubTableTextPc007596c0,
+     "de1_1",
+     "lock_1_1_on",
      NULL,
      NULL,
      0.10000000149011612f,
@@ -555,9 +393,9 @@ static HUB_AREA_INFO_PC HubAreaInfoPc[51] = {
      {NULL, NULL, 0},
      NULL,
      NULL},
-    {HubTableTextPc007596b8,
-     HubTableTextPc007596b0,
-     HubTableTextPc007596a4,
+    {"gungan",
+     "de1_2",
+     "lock_1_2_on",
      NULL,
      NULL,
      0.02500000037252903f,
@@ -568,22 +406,10 @@ static HUB_AREA_INFO_PC HubAreaInfoPc[51] = {
      {NULL, NULL, 0},
      NULL,
      NULL},
-    {HubTableTextPc00759694,
-     HubTableTextPc0075968c,
-     HubTableTextPc00759680,
-     NULL,
-     NULL,
-     0.0f,
-     0.5f,
-     1,
-     NULL,
-     NULL,
-     {NULL, NULL, 0},
-     NULL,
-     NULL},
+    {"palacerescue", "de1_3", "lock_1_3_on", NULL, NULL, 0.0f, 0.5f, 1, NULL, NULL, {NULL, NULL, 0}, NULL, NULL},
     {AreaFixUpName_Podsprint,
-     HubTableTextPc0075966c,
-     HubTableTextPc00759660,
+     "de1_4",
+     "lock_1_4_on",
      NULL,
      NULL,
      0.02500000037252903f,
@@ -594,9 +420,9 @@ static HUB_AREA_INFO_PC HubAreaInfoPc[51] = {
      {NULL, NULL, 0},
      NULL,
      NULL},
-    {HubTableTextPc00759650,
-     HubTableTextPc00759648,
-     HubTableTextPc0075963c,
+    {"retakepalace",
+     "de1_5",
+     "lock_1_5_on",
      NULL,
      NULL,
      0.07500000298023224f,
@@ -607,9 +433,9 @@ static HUB_AREA_INFO_PC HubAreaInfoPc[51] = {
      {NULL, NULL, 0},
      NULL,
      NULL},
-    {HubTableTextPc00759634,
-     HubTableTextPc0075962c,
-     HubTableTextPc00759620,
+    {"maul",
+     "de1_6",
+     "lock_1_6_on",
      NULL,
      NULL,
      0.22499999403953552f,
@@ -620,22 +446,10 @@ static HUB_AREA_INFO_PC HubAreaInfoPc[51] = {
      {NULL, NULL, 0},
      NULL,
      NULL},
-    {HubTableTextPc00759610,
-     HubTableTextPc00759608,
-     HubTableTextPc007595fc,
-     NULL,
-     NULL,
-     0.0f,
-     1.0f,
-     1,
-     NULL,
-     NULL,
-     {NULL, NULL, 0},
-     NULL,
-     NULL},
+    {"e1vehiclebonus", "de1_7", "lock_1_7_on", NULL, NULL, 0.0f, 1.0f, 1, NULL, NULL, {NULL, NULL, 0}, NULL, NULL},
     {AreaFixUpName_Pursuit,
-     HubTableTextPc007595ec,
-     HubTableTextPc007595e0,
+     "de2_1",
+     "lock_2_1_on",
      NULL,
      NULL,
      0.125f,
@@ -646,9 +460,9 @@ static HUB_AREA_INFO_PC HubAreaInfoPc[51] = {
      {NULL, NULL, 0},
      NULL,
      NULL},
-    {HubTableTextPc007595d8,
-     HubTableTextPc007595d0,
-     HubTableTextPc007595c4,
+    {"kamino",
+     "de2_2",
+     "lock_2_2_on",
      NULL,
      NULL,
      0.07500000298023224f,
@@ -659,22 +473,10 @@ static HUB_AREA_INFO_PC HubAreaInfoPc[51] = {
      {NULL, NULL, 0},
      NULL,
      NULL},
-    {HubTableTextPc007595bc,
-     HubTableTextPc007595b4,
-     HubTableTextPc007595a8,
-     NULL,
-     NULL,
-     0.25f,
-     1.0f,
-     1,
-     NULL,
-     NULL,
-     {NULL, NULL, 0},
-     NULL,
-     NULL},
+    {"factory", "de2_3", "lock_2_3_on", NULL, NULL, 0.25f, 1.0f, 1, NULL, NULL, {NULL, NULL, 0}, NULL, NULL},
     {"jedi",
-     HubTableTextPc007595a0,
-     HubTableTextPc00759594,
+     "de2_4",
+     "lock_2_4_on",
      NULL,
      NULL,
      0.012500000186264515f,
@@ -686,8 +488,8 @@ static HUB_AREA_INFO_PC HubAreaInfoPc[51] = {
      NULL,
      NULL},
     {AreaFixUpName_Gunship,
-     HubTableTextPc00759584,
-     HubTableTextPc00759578,
+     "de2_5",
+     "lock_2_5_on",
      NULL,
      NULL,
      0.10999999940395355f,
@@ -698,9 +500,9 @@ static HUB_AREA_INFO_PC HubAreaInfoPc[51] = {
      {NULL, NULL, 0},
      NULL,
      NULL},
-    {HubTableTextPc00759570,
-     HubTableTextPc00759568,
-     HubTableTextPc0075955c,
+    {"dooku",
+     "de2_6",
+     "lock_2_6_on",
      NULL,
      NULL,
      0.41999998688697815f,
@@ -711,22 +513,10 @@ static HUB_AREA_INFO_PC HubAreaInfoPc[51] = {
      {NULL, NULL, 0},
      NULL,
      NULL},
-    {HubTableTextPc0075954c,
-     HubTableTextPc00759544,
-     HubTableTextPc00759538,
-     NULL,
-     NULL,
-     0.0f,
-     1.0f,
-     1,
-     NULL,
-     NULL,
-     {NULL, NULL, 0},
-     NULL,
-     NULL},
-    {HubTableTextPc0075952c,
-     HubTableTextPc00759524,
-     HubTableTextPc00759518,
+    {"e2vehiclebonus", "de2_7", "lock_2_7_on", NULL, NULL, 0.0f, 1.0f, 1, NULL, NULL, {NULL, NULL, 0}, NULL, NULL},
+    {"dogfight",
+     "de3_1",
+     "lock_3_1_on",
      NULL,
      NULL,
      0.2750000059604645f,
@@ -737,9 +527,9 @@ static HUB_AREA_INFO_PC HubAreaInfoPc[51] = {
      {NULL, NULL, 0},
      NULL,
      NULL},
-    {HubTableTextPc00759510,
-     HubTableTextPc00759508,
-     HubTableTextPc007594fc,
+    {"cruiser",
+     "de3_2",
+     "lock_3_2_on",
      NULL,
      NULL,
      0.019999999552965164f,
@@ -751,8 +541,8 @@ static HUB_AREA_INFO_PC HubAreaInfoPc[51] = {
      NULL,
      NULL},
     {HubTableTextPc00752d20,
-     HubTableTextPc007594f4,
-     HubTableTextPc007594e8,
+     "de3_3",
+     "lock_3_3_on",
      NULL,
      NULL,
      0.13750000298023224f,
@@ -763,9 +553,9 @@ static HUB_AREA_INFO_PC HubAreaInfoPc[51] = {
      {NULL, NULL, 0},
      NULL,
      NULL},
-    {HubTableTextPc007594dc,
-     HubTableTextPc007594d4,
-     HubTableTextPc007594c8,
+    {"kashyyyk",
+     "de3_4",
+     "lock_3_4_on",
      NULL,
      NULL,
      0.009999999776482582f,
@@ -776,9 +566,9 @@ static HUB_AREA_INFO_PC HubAreaInfoPc[51] = {
      {NULL, NULL, 0},
      NULL,
      NULL},
-    {HubTableTextPc007594c0,
-     HubTableTextPc007594b8,
-     HubTableTextPc007594ac,
+    {"temple",
+     "de3_5",
+     "lock_3_5_on",
      NULL,
      NULL,
      0.02500000037252903f,
@@ -789,9 +579,9 @@ static HUB_AREA_INFO_PC HubAreaInfoPc[51] = {
      {NULL, NULL, 0},
      NULL,
      NULL},
-    {HubTableTextPc007594a4,
-     HubTableTextPc0075949c,
-     HubTableTextPc00759490,
+    {"vader",
+     "de3_6",
+     "lock_3_6_on",
      NULL,
      NULL,
      0.20999999344348907f,
@@ -802,22 +592,10 @@ static HUB_AREA_INFO_PC HubAreaInfoPc[51] = {
      {NULL, NULL, 0},
      NULL,
      NULL},
-    {HubTableTextPc00759480,
-     HubTableTextPc00759478,
-     HubTableTextPc0075946c,
-     NULL,
-     NULL,
-     0.0f,
-     1.0f,
-     1,
-     NULL,
-     NULL,
-     {NULL, NULL, 0},
-     NULL,
-     NULL},
-    {HubTableTextPc0075945c,
-     HubTableTextPc00759454,
-     HubTableTextPc00759448,
+    {"e3vehiclebonus", "de3_7", "lock_3_7_on", NULL, NULL, 0.0f, 1.0f, 1, NULL, NULL, {NULL, NULL, 0}, NULL, NULL},
+    {"blockaderunner",
+     "de4_1",
+     "lock_4_1_on",
      NULL,
      NULL,
      0.1599999964237213f,
@@ -829,8 +607,8 @@ static HUB_AREA_INFO_PC HubAreaInfoPc[51] = {
      NULL,
      NULL},
     {AreaFixUpName_Tatooine,
-     HubTableTextPc00759434,
-     HubTableTextPc00759428,
+     "de4_2",
+     "lock_4_2_on",
      NULL,
      NULL,
      0.009999999776482582f,
@@ -842,8 +620,8 @@ static HUB_AREA_INFO_PC HubAreaInfoPc[51] = {
      NULL,
      NULL},
     {AreaFixUpName_Moseisley,
-     HubTableTextPc00759414,
-     HubTableTextPc00759408,
+     "de4_3",
+     "lock_4_3_on",
      NULL,
      NULL,
      0.019999999552965164f,
@@ -854,9 +632,9 @@ static HUB_AREA_INFO_PC HubAreaInfoPc[51] = {
      {NULL, NULL, 0},
      NULL,
      NULL},
-    {HubTableTextPc007593f8,
-     HubTableTextPc007593f0,
-     HubTableTextPc007593e4,
+    {"deathstarrescue",
+     "de4_4",
+     "lock_4_4_on",
      NULL,
      NULL,
      0.17000000178813934f,
@@ -867,9 +645,9 @@ static HUB_AREA_INFO_PC HubAreaInfoPc[51] = {
      {NULL, NULL, 0},
      NULL,
      NULL},
-    {HubTableTextPc007593d4,
-     HubTableTextPc007593cc,
-     HubTableTextPc007593c0,
+    {"deathstarescape",
+     "de4_5",
+     "lock_4_5_on",
      NULL,
      NULL,
      0.02500000037252903f,
@@ -880,9 +658,9 @@ static HUB_AREA_INFO_PC HubAreaInfoPc[51] = {
      {NULL, NULL, 0},
      NULL,
      NULL},
-    {HubTableTextPc007593b0,
-     HubTableTextPc007593a8,
-     HubTableTextPc0075939c,
+    {"deathstarbattle",
+     "de4_6",
+     "lock_4_6_on",
      NULL,
      NULL,
      0.16500000655651093f,
@@ -893,35 +671,11 @@ static HUB_AREA_INFO_PC HubAreaInfoPc[51] = {
      {NULL, NULL, 0},
      NULL,
      NULL},
-    {HubTableTextPc0075938c,
-     HubTableTextPc00759384,
-     HubTableTextPc00759378,
-     NULL,
-     NULL,
-     0.0f,
-     1.0f,
-     1,
-     NULL,
-     NULL,
-     {NULL, NULL, 0},
-     NULL,
-     NULL},
-    {HubTableTextPc0075936c,
-     HubTableTextPc00759364,
-     HubTableTextPc00759358,
-     NULL,
-     NULL,
-     0.0f,
-     1.0f,
-     1,
-     NULL,
-     NULL,
-     {NULL, NULL, 0},
-     NULL,
-     NULL},
-    {HubTableTextPc0075934c,
-     HubTableTextPc00759344,
-     HubTableTextPc00759338,
+    {"e4vehiclebonus", "de4_7", "lock_4_7_on", NULL, NULL, 0.0f, 1.0f, 1, NULL, NULL, {NULL, NULL, 0}, NULL, NULL},
+    {"hothbattle", "de5_1", "lock_5_1_on", NULL, NULL, 0.0f, 1.0f, 1, NULL, NULL, {NULL, NULL, 0}, NULL, NULL},
+    {"hothescape",
+     "de5_2",
+     "lock_5_2_on",
      NULL,
      NULL,
      0.009999999776482582f,
@@ -932,9 +686,9 @@ static HUB_AREA_INFO_PC HubAreaInfoPc[51] = {
      {NULL, NULL, 0},
      NULL,
      NULL},
-    {HubTableTextPc00759328,
-     HubTableTextPc00759320,
-     HubTableTextPc00759314,
+    {"asteroidchase",
+     "de5_3",
+     "lock_5_3_on",
      NULL,
      NULL,
      0.18250000476837158f,
@@ -945,9 +699,9 @@ static HUB_AREA_INFO_PC HubAreaInfoPc[51] = {
      {NULL, NULL, 0},
      NULL,
      NULL},
-    {HubTableTextPc0075930c,
-     HubTableTextPc00759304,
-     HubTableTextPc007592f8,
+    {"dagobah",
+     "de5_4",
+     "lock_5_4_on",
      NULL,
      NULL,
      0.16500000655651093f,
@@ -958,9 +712,9 @@ static HUB_AREA_INFO_PC HubAreaInfoPc[51] = {
      {NULL, NULL, 0},
      NULL,
      NULL},
-    {HubTableTextPc007592e8,
-     HubTableTextPc007592e0,
-     HubTableTextPc007592d4,
+    {"cloudcitytrap",
+     "de5_5",
+     "lock_5_5_on",
      NULL,
      NULL,
      0.10000000149011612f,
@@ -971,9 +725,9 @@ static HUB_AREA_INFO_PC HubAreaInfoPc[51] = {
      {NULL, NULL, 0},
      NULL,
      NULL},
-    {HubTableTextPc007592c4,
-     HubTableTextPc007592bc,
-     HubTableTextPc007592b0,
+    {"cloudcityescape",
+     "de5_6",
+     "lock_5_6_on",
      NULL,
      NULL,
      0.012500000186264515f,
@@ -984,22 +738,10 @@ static HUB_AREA_INFO_PC HubAreaInfoPc[51] = {
      {NULL, NULL, 0},
      NULL,
      NULL},
-    {HubTableTextPc007592a0,
-     HubTableTextPc00759298,
-     HubTableTextPc0075928c,
-     NULL,
-     NULL,
-     0.0f,
-     1.0f,
-     1,
-     NULL,
-     NULL,
-     {NULL, NULL, 0},
-     NULL,
-     NULL},
-    {HubTableTextPc0075927c,
-     HubTableTextPc00759274,
-     HubTableTextPc00759268,
+    {"e5vehiclebonus", "de5_7", "lock_5_7_on", NULL, NULL, 0.0f, 1.0f, 1, NULL, NULL, {NULL, NULL, 0}, NULL, NULL},
+    {"jabbaspalace",
+     "de6_1",
+     "lock_6_1_on",
      NULL,
      NULL,
      0.009999999776482582f,
@@ -1010,9 +752,9 @@ static HUB_AREA_INFO_PC HubAreaInfoPc[51] = {
      {NULL, NULL, 0},
      NULL,
      NULL},
-    {HubTableTextPc0075925c,
-     HubTableTextPc00759254,
-     HubTableTextPc00759248,
+    {"sarlaccpit",
+     "de6_2",
+     "lock_6_2_on",
      NULL,
      NULL,
      0.009999999776482582f,
@@ -1023,9 +765,9 @@ static HUB_AREA_INFO_PC HubAreaInfoPc[51] = {
      {NULL, NULL, 0},
      NULL,
      NULL},
-    {HubTableTextPc00759238,
-     HubTableTextPc00759230,
-     HubTableTextPc00759224,
+    {"speederchase",
+     "de6_3",
+     "lock_6_3_on",
      NULL,
      NULL,
      0.16500000655651093f,
@@ -1036,9 +778,9 @@ static HUB_AREA_INFO_PC HubAreaInfoPc[51] = {
      {NULL, NULL, 0},
      NULL,
      NULL},
-    {HubTableTextPc00759218,
-     HubTableTextPc00759210,
-     HubTableTextPc00759204,
+    {"endorbattle",
+     "de6_4",
+     "lock_6_4_on",
      NULL,
      NULL,
      0.009999999776482582f,
@@ -1050,8 +792,8 @@ static HUB_AREA_INFO_PC HubAreaInfoPc[51] = {
      NULL,
      NULL},
     {AreaFixUpName_Emperorfight,
-     HubTableTextPc007591ec,
-     HubTableTextPc007591e0,
+     "de6_5",
+     "lock_6_5_on",
      NULL,
      NULL,
      0.24500000476837158f,
@@ -1062,9 +804,9 @@ static HUB_AREA_INFO_PC HubAreaInfoPc[51] = {
      {NULL, NULL, 0},
      NULL,
      NULL},
-    {HubTableTextPc007591cc,
-     HubTableTextPc007591c4,
-     HubTableTextPc007591b8,
+    {"deathstar2battle",
+     "de6_6",
+     "lock_6_6_on",
      NULL,
      NULL,
      0.18250000476837158f,
@@ -1075,100 +817,16 @@ static HUB_AREA_INFO_PC HubAreaInfoPc[51] = {
      {NULL, NULL, 0},
      NULL,
      NULL},
-    {HubTableTextPc007591a8,
-     HubTableTextPc007591a0,
-     HubTableTextPc00759194,
-     NULL,
-     NULL,
-     0.0f,
-     1.0f,
-     1,
-     NULL,
-     NULL,
-     {NULL, NULL, 0},
-     NULL,
-     NULL},
-    {HubTableTextPc0075918c,
-     HubTableTextPc00759184,
-     HubTableTextPc00759178,
-     HubTableTextPc00759170,
-     NULL,
-     0.0f,
-     0.0f,
-     1,
-     NULL,
-     NULL,
-     {NULL, NULL, 0},
-     NULL,
-     NULL},
-    {HubTableTextPc00759160,
-     HubTableTextPc00759158,
-     HubTableTextPc0075914c,
-     HubTableTextPc00759144,
-     NULL,
-     0.0f,
-     0.0f,
-     1,
-     NULL,
-     NULL,
-     {NULL, NULL, 0},
-     NULL,
-     NULL},
-    {HubTableTextPc00759134,
-     HubTableTextPc0075912c,
-     HubTableTextPc00759120,
-     HubTableTextPc00759118,
-     NULL,
-     0.0f,
-     0.0f,
-     1,
-     NULL,
-     NULL,
-     {NULL, NULL, 0},
-     NULL,
-     NULL},
-    {HubTableTextPc0075910c,
-     HubTableTextPc00759104,
-     HubTableTextPc007590f8,
-     HubTableTextPc007590f0,
-     NULL,
-     0.0f,
-     0.0f,
-     1,
-     NULL,
-     NULL,
-     {NULL, NULL, 0},
-     NULL,
-     NULL},
-    {HubTableTextPc007590e8,
-     HubTableTextPc007590e0,
-     HubTableTextPc007590d4,
-     HubTableTextPc007590cc,
-     NULL,
-     0.0f,
-     0.0f,
-     1,
-     NULL,
-     NULL,
-     {NULL, NULL, 0},
-     NULL,
-     NULL},
-    {HubTableTextPc007590c4,
-     HubTableTextPc007590bc,
-     HubTableTextPc007590b0,
-     HubTableTextPc007590a8,
-     NULL,
-     0.0f,
-     0.0f,
-     1,
-     NULL,
-     NULL,
-     {NULL, NULL, 0},
-     NULL,
-     NULL},
+    {"e6vehiclebonus", "de6_7", "lock_6_7_on", NULL, NULL, 0.0f, 1.0f, 1, NULL, NULL, {NULL, NULL, 0}, NULL, NULL},
+    {"podrace", "de7_1", "lock_7_1_on", "frame_1", NULL, 0.0f, 0.0f, 1, NULL, NULL, {NULL, NULL, 0}, NULL, NULL},
+    {"anakinsflight", "de7_2", "lock_7_2_on", "frame_2", NULL, 0.0f, 0.0f, 1, NULL, NULL, {NULL, NULL, 0}, NULL, NULL},
+    {"bonus_gunship", "de7_3", "lock_7_3_on", "frame_3", NULL, 0.0f, 0.0f, 1, NULL, NULL, {NULL, NULL, 0}, NULL, NULL},
+    {"anewhope", "de7_4", "lock_7_4_on", "frame_4", NULL, 0.0f, 0.0f, 1, NULL, NULL, {NULL, NULL, 0}, NULL, NULL},
+    {"bonus2", "de7_5", "lock_7_5_on", "frame_5", NULL, 0.0f, 0.0f, 1, NULL, NULL, {NULL, NULL, 0}, NULL, NULL},
+    {"bonus", "de7_6", "lock_7_6_on", "frame_6", NULL, 0.0f, 0.0f, 1, NULL, NULL, {NULL, NULL, 0}, NULL, NULL},
     {AreaFixUpName_Losttemple,
-     HubTableTextPc00759094,
-     HubTableTextPc00759088,
+     "de7_7",
+     "lock_7_7_on",
      NULL,
      NULL,
      0.0f,
@@ -1179,19 +837,7 @@ static HUB_AREA_INFO_PC HubAreaInfoPc[51] = {
      {NULL, NULL, 0},
      NULL,
      NULL},
-    {AreaFixUpName_Senate,
-     HubTableTextPc00759070,
-     NULL,
-     NULL,
-     NULL,
-     0.0f,
-     0.0f,
-     257,
-     NULL,
-     NULL,
-     {NULL, NULL, 0},
-     NULL,
-     NULL},
+    {AreaFixUpName_Senate, "network_door", NULL, NULL, NULL, 0.0f, 0.0f, 257, NULL, NULL, {NULL, NULL, 0}, NULL, NULL},
     {NULL, NULL, NULL, NULL, NULL, 0.0f, 0.0f, 0, NULL, NULL, {NULL, NULL, 0}, NULL, NULL},
 };
 
@@ -2922,15 +2568,15 @@ extern "C" void Hub_UpdateKit(void) {
 }
 
 static HUB_EPISODE_INFO_PC HubEpisodeInfoPc[10] = {
-    {0, 1, HubTableTextPc0075906c, HubTableTextPc00759060, 0, 0, NULL, NULL, {NULL, NULL, 0}},
-    {1, 1, HubTableTextPc0075905c, HubTableTextPc00759050, 0, 0, NULL, NULL, {NULL, NULL, 0}},
-    {2, 1, HubTableTextPc0075904c, HubTableTextPc00759040, 0, 0, NULL, NULL, {NULL, NULL, 0}},
-    {3, 1, HubTableTextPc0075903c, HubTableTextPc00759030, 0, 0, NULL, NULL, {NULL, NULL, 0}},
-    {4, 1, HubTableTextPc0075902c, HubTableTextPc00759020, 0, 0, NULL, NULL, {NULL, NULL, 0}},
-    {5, 1, HubTableTextPc0075901c, HubTableTextPc00759010, 0, 0, NULL, NULL, {NULL, NULL, 0}},
-    {8, 1, HubTableTextPc0075900c, HubTableTextPc00759000, 1, 0, NULL, NULL, {NULL, NULL, 0}},
-    {6, 2, HubTableTextPc00758ff4, HubTableTextPc00758fe8, 0, 0, NULL, NULL, {NULL, NULL, 0}},
-    {7, 2, HubTableTextPc00752d48, HubTableTextPc00758fdc, 0, 0, NULL, NULL, {NULL, NULL, 0}},
+    {0, 1, "DE1", "lock_1_on", 0, 0, NULL, NULL, {NULL, NULL, 0}},
+    {1, 1, "DE2", "lock_2_on", 0, 0, NULL, NULL, {NULL, NULL, 0}},
+    {2, 1, "DE3", "lock_3_on", 0, 0, NULL, NULL, {NULL, NULL, 0}},
+    {3, 1, "DE4", "lock_4_on", 0, 0, NULL, NULL, {NULL, NULL, 0}},
+    {4, 1, "DE5", "lock_5_on", 0, 0, NULL, NULL, {NULL, NULL, 0}},
+    {5, 1, "DE6", "lock_6_on", 0, 0, NULL, NULL, {NULL, NULL, 0}},
+    {8, 1, "DE7", "lock_7_on", 1, 0, NULL, NULL, {NULL, NULL, 0}},
+    {6, 2, "hologram", "lock_8_on", 0, 0, NULL, NULL, {NULL, NULL, 0}},
+    {7, 2, HubTableTextPc00752d48, "lock_B_on", 0, 0, NULL, NULL, {NULL, NULL, 0}},
     {-1, 0, NULL, NULL, 0, 0, NULL, NULL, {NULL, NULL, 0}},
 };
 
@@ -5929,8 +5575,7 @@ extern "C" {
 }
 
 extern "C" void LostTempleC_ResetPc(WORLDINFO *world) {
-    LevGizObst[0] =
-        GizObstacle_FindByName((GIZOBSTACLESYS_s *)world->giz_obstacle_sys, (char *)LostTempleExitObstacleNamePc);
+    LevGizObst[0] = GizObstacle_FindByName((GIZOBSTACLESYS_s *)world->giz_obstacle_sys, "obstacle1");
     LostTempleExitSockPositionPc.sock_index = -1;
     LostTempleExitSockPositionPc.segment = -1;
 }
