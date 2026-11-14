@@ -280,7 +280,6 @@ extern "C" {
     u32 GAMEPAD_MENUSELECT = 0x40;
     u32 GAMEPAD_MENUCANCEL = 0x10;
     u32 GAMEPAD_SELECT = 0x100;
-    i32 NuSound3LoadingSfxPc = 0;
     COLLECTION_BUILD_PC MiniKitCollection = {NULL, 0, 0, NULL, NULL, 0.0f};
 }
 
@@ -7458,8 +7457,6 @@ extern "C" {
 
     CRITICAL_SECTION PCSoundStorageLockPc = {0};
 
-    i32 PCSoundStorageLockReadyPc = 0;
-
     i32 PCSoundDrainStartPc = 0;
 
     i32 PCSoundDrainRemainingPc = 0;
@@ -7697,7 +7694,6 @@ struct PC_SOUND_COMMIT_PC;
 NuMusic music_man;
 #pragma bss_seg()
 NuMusic *the_music_player = 0;
-SoundQueue *NuSound3StereoStreams[2] = {0};
 
 // Startup and main-loop state; defaults follow the PC executable.
 i32 ChallengeMode = 0;
@@ -7970,7 +7966,6 @@ extern "C" {
     GAMEAUDIO_PC *GameAudio = &GameAudioStorage;
     SoundTable CurrentSFXTAB = {0};
     NUVEC nusound_special_positions[5] = {0};
-    NUMTX *NuSound3Listener = 0;
     f32 nusound_fade_start = 2.0f;
     f32 nusound_fade_end = 15.0f;
 #pragma const_seg(".rdata$GizmoDefaultOutputName")
@@ -7983,7 +7978,6 @@ extern "C" {
     PC_NUFILE_READBLOCK nufile_blkinfo[1024] = {0};
     NUDATHDR *StartupDatList[7] = {0};
     i32 StartupDatCount = 0;
-    NUDATHDR *NuSoundDat = 0;
     GAMEANIMPROGRESS gameanimsysprogress = {0};
     VARIPTR original_permbuffer_base = {0};
     char InitOnceCurrentDirectory[1] = {0};
@@ -8393,7 +8387,6 @@ extern "C" {
 #pragma data_seg(".data$SoundVoiceEnabledGate")
     i32 SoundVoiceEnabledGate = 1;
 #pragma data_seg()
-    CRITICAL_SECTION SoundVoiceCriticalSection = {0};
 #pragma const_seg(".rdata$SoundVoice3DBufferIID")
     extern const GUID SoundVoice3DBufferIID = {
         0x279afa86,
@@ -10460,15 +10453,7 @@ extern "C" {
 }
 
 extern "C" {
-    void *PCSoundMixSource = 0;
-    i32 PCSoundMixSampleCount = 0;
-    void *PCSoundMixDestination = 0;
-    i32 PCSoundStartedOneShotCountPc = 0;
-    i32 PCSoundStartedLoopCountPc = 0;
-    i32 PCSoundUpdatedLoopCountPc = 0;
     NUVEC PCSoundListenerLoopPositionPc = {0};
-    HANDLE PCSoundMixEvent = 0;
-    PC_SOUND_COMMIT_PC *PCSoundCommitTarget = 0;
 }
 
 extern "C" {
@@ -12144,8 +12129,6 @@ extern "C" {
 #pragma data_seg(".data$PCStereoChannel1B")
     i32 PCStereoChannel1B = 3;
 #pragma data_seg()
-
-    i32 PCStereoChannel0A = 0;
 }
 
 extern "C" {
@@ -13871,7 +13854,6 @@ extern "C" {
 #pragma data_seg(".data$PCSampleLoadEnabledPc")
     i32 PCSampleLoadEnabledPc = 1;
 #pragma data_seg()
-    i32 PCSoundSampleLimitPc = 0;
     i32 PCSoundStreamSerialPc = 0;
     struct PC_OGG_CACHE_RECORD_PC *PCOggCachePoolPc = 0;
     i32 PCOggCriticalSectionPc = 0;
@@ -23571,8 +23553,6 @@ extern "C" {
     i32 SfxRefCountsPc[1601] = {0};
     f32 SfxAudioVersionPc = 0;
     CRITICAL_SECTION SoundSampleCriticalSectionPc = {0};
-    HANDLE PCSoundSampleWorkerHandlePc = 0;
-    volatile u8 PCSoundSampleWorkerStopPc = 0;
     char *PCSampleFilenameExtensionPc = (char *)NuFileExt_wav_PC;
 }
 

@@ -4,11 +4,31 @@
 #include <float.h>
 #include <stdarg.h>
 #include <string.h>
+static SFX_FILE_INFO_PC *PCStereoSampleMetadata = 0;
+CRITICAL_SECTION SoundVoiceCriticalSection = {0};
+static i32 SoundSampleCountPc = 0;
+void *PCSoundMixSource = 0;
+i32 PCSoundMixSampleCount = 0;
+void *PCSoundMixDestination = 0;
+i32 PCStereoChannel0A = 0;
+i32 PCSoundSampleLimitPc = 0;
+SoundQueue *NuSound3StereoStreams[2] = {0};
+i32 PCSoundStorageLockReadyPc = 0;
+i32 PCSoundStartedOneShotCountPc = 0;
+i32 PCSoundStartedLoopCountPc = 0;
+i32 PCSoundUpdatedLoopCountPc = 0;
+static i32 PCSoundUpdateClock = 0;
 static i32 PCSoundLoopVoiceCount = 0;
 static i32 PCSoundOneShotVoiceCount = 0;
-static i32 PCSoundUpdateClock = 0;
-static SFX_FILE_INFO_PC *PCStereoSampleMetadata = 0;
-static i32 SoundSampleCountPc = 0;
+HANDLE PCSoundMixEvent = 0;
+HANDLE PCSoundSampleWorkerHandlePc = 0;
+volatile u8 PCSoundSampleWorkerStopPc = 0;
+NUDATHDR *NuSoundDat = 0;
+PC_SOUND_COMMIT_PC *PCSoundCommitTarget = 0;
+NUMTX *NuSound3Listener = 0;
+i32 NuSound3LoadingSfxPc = 0;
+// Plain .bss like retail: VC8 drops the constructor's memset only for an object it knows is zero-filled.
+SoundVoiceManagerPC SoundVoiceManager;
 
 extern "C" void PCSoundAlreadyPlayingHook(...) {
 }
@@ -652,9 +672,6 @@ SoundVoiceManagerPC::SoundVoiceManagerPC() {
         PCSoundStorageLockReadyPc = 1;
     }
 }
-
-// Plain .bss: VC8 drops the constructor's memset only for an object it knows is zero-filled.
-SoundVoiceManagerPC SoundVoiceManager;
 
 void SoundVoiceManagerPC::UnloadSample(i32 index) {
     EnterCriticalSection(&SoundVoiceCriticalSection);
