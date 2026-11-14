@@ -90,3 +90,6 @@ config/castscan-budget.json void-pointer-cpp 1270 port batch 2 (510 new function
 config/declscan-budget.json A 131 port batch 2: unit-local declarations of callees and globals the new functions need
 config/declscan-budget.json C 367 port batch 2: unit-local declarations of callees and globals the new functions need
 config/declscan-budget.json D 2602 port batch 2: unit-local declarations of callees and globals the new functions need
+config/oddscan-budget.json data-file 8 saga.h split (docs/header-plan.md): saga.h is now the generated include-all shim, a list of 602 includes
+config/oddscan-budget.json dup-type 956 saga.h split (docs/header-plan.md): names saga.h declared twice (PC and Android-transferred copies, function-pointer typedefs) now sit in two module headers, so they count as two files; no new declaration
+config/oddscan-budget.json nolint 71 saga.h split (docs/header-plan.md): the NOLINTBEGIN/NOLINTEND regions of saga.h open and close again in each module header that receives part of them
