@@ -38,7 +38,7 @@ typedef struct character_ai_capabilities_pc_s {
 } CHARACTER_AI_CAPABILITIES_PC;
 
 i32 __cdecl StarWars_MidSpecialMove_Default(AISYS_PC *system, AIPACKET_PC *packet, APIOBJECT_PC *object) {
-    GAMEOBJECT *owner = (GAMEOBJECT *)object->owner;
+    GAMEOBJECT *owner = object->owner;
     u32 capabilities =
         packet->path_info.connection->traversal_flags[packet->path_info.direction] & packet->capabilities;
     AIPATHNODE_PC *nodes = packet->path_info.path->nodes;
@@ -105,7 +105,7 @@ i32 __cdecl StarWars_MidSpecialMove_Default(AISYS_PC *system, AIPACKET_PC *packe
 }
 
 i32 __cdecl StarWars_MidSpecialMove_StartJump(AISYS_PC *system, AIPACKET_PC *packet, APIOBJECT_PC *object) {
-    GAMEOBJECT *owner = (GAMEOBJECT *)object->owner;
+    GAMEOBJECT *owner = object->owner;
     if (owner->character_context == 0) {
         SetSpecialMove(owner, owner->ai_packet.special_move_node, NULL, 0);
         owner->ai_packet.movement_destination = owner->ai_packet.special_move_node->position;
@@ -125,7 +125,7 @@ i32 __cdecl StarWars_PrepareR2D2Glide(AIPACKET_PC *packet, APIOBJECT_PC *object,
     NUVEC offset;
     f32 radius;
 
-    owner = (GAMEOBJECT *)object->owner;
+    owner = object->owner;
     connection = packet->path_info.connection;
     destination = &packet->path_info.path->nodes[connection->node_indices[packet->path_info.direction == 0]];
     source = &packet->path_info.path->nodes[connection->node_indices[packet->path_info.direction]];
@@ -178,7 +178,7 @@ i32 __cdecl StarWars_PrepareHatch(AIPACKET_PC *packet, APIOBJECT_PC *object, i32
     AIPATHNODE_PC *source;
     u32 capabilities;
 
-    owner = (GAMEOBJECT *)object->owner;
+    owner = object->owner;
     if (owner->special_move_timer_pc <= 0.0f) {
         destination = &packet->path_info.path
                            ->nodes[packet->path_info.connection->node_indices[packet->path_info.direction == 0]];
@@ -217,7 +217,7 @@ i32 __cdecl StarWars_PrepareHatch(AIPACKET_PC *packet, APIOBJECT_PC *object, i32
 }
 
 i32 __cdecl StarWars_MidSpecialMove_UseHatch(AISYS_PC *system, AIPACKET_PC *packet, APIOBJECT_PC *object) {
-    GAMEOBJECT *owner = (GAMEOBJECT *)object->owner;
+    GAMEOBJECT *owner = object->owner;
     switch ((i8)owner->field_1087) {
         case 0:
             if (owner->character_context == 0x0f || owner->character_context == 0x47 ||
@@ -251,7 +251,7 @@ i32 __cdecl StarWars_PrepareHoverTube(AIPACKET_PC *packet, APIOBJECT_PC *apiobje
     i32 to;
     AIPATHNODE_PC *target;
 
-    object = (GAMEOBJECT *)apiobject->owner;
+    object = apiobject->owner;
     connection = packet->path_info.connection;
     from = connection->node_indices[packet->path_info.direction];
     to = connection->node_indices[packet->path_info.direction == 0];
@@ -300,7 +300,7 @@ i32 __cdecl StarWars_PrepareBigJump(AIPACKET_PC *packet, APIOBJECT_PC *object, i
     AIPATHNODE_PC *destination;
     AIPATHNODE_PC *alternate;
 
-    owner = (GAMEOBJECT *)object->owner;
+    owner = object->owner;
     destination_index = packet->path_info.connection->node_indices[packet->path_info.direction == 0];
     destination = &packet->path_info.path->nodes[destination_index];
     if (owner->ai_packet.inside_path_node == destination_index || owner->character_context == 0x2b) {
@@ -331,7 +331,7 @@ i32 __cdecl StarWars_PrepareBigJump(AIPACKET_PC *packet, APIOBJECT_PC *object, i
 }
 
 i32 __cdecl StarWars_MidSpecialMove_BigJump(AISYS_PC *system, AIPACKET_PC *packet, APIOBJECT_PC *object) {
-    GAMEOBJECT *owner = (GAMEOBJECT *)object->owner;
+    GAMEOBJECT *owner = object->owner;
     if (owner->character_context == 0x1f) {
         owner->launch_origin = owner->ai_packet.special_move_node->position;
         ((GAMEOBJECT *)object)->ai_collision_priority_pc |= 0x4000;
@@ -346,7 +346,7 @@ i32 __cdecl StarWars_PrepareTakeOverJump(AIPACKET_PC *packet, APIOBJECT_PC *obje
     GAMEOBJECT *participant;
     AIPATHNODE_PC *destination;
 
-    owner = (GAMEOBJECT *)object->owner;
+    owner = object->owner;
     if ((owner->character_data->game_character->flags_090 & 0x40) != 0) {
         participant = owner->takeover_source;
         if (participant != NULL) {
@@ -420,7 +420,7 @@ i32 __cdecl StarWars_PrepareObstacle(AIPACKET_PC *packet, APIOBJECT_PC *object, 
                 break;
             case 1:
                 if (current->open != 0) {
-                    SetSpecialMove((GAMEOBJECT *)object->owner, far_node, NULL, 0);
+                    SetSpecialMove(object->owner, far_node, NULL, 0);
                 }
                 break;
         }
@@ -433,7 +433,7 @@ i32 __cdecl StarWars_PrepareObstacle(AIPACKET_PC *packet, APIOBJECT_PC *object, 
 }
 
 i32 __cdecl StarWars_PreparingForSpecialMove(AIPACKET_PC *packet, APIOBJECT_PC *apiobject, i32 checks) {
-    GAMEOBJECT *owner = (GAMEOBJECT *)apiobject->owner;
+    GAMEOBJECT *owner = apiobject->owner;
     u32 flags;
     u32 capabilities;
     STARWARS_PREPARE_PC *entry;
@@ -551,7 +551,7 @@ void __cdecl PlayerInitCapabilitiesVariant1Pc(GAMEOBJECT *object) {
     if (object->field_280 != 0xff) {
         object->ai_packet.capabilities |= 0x20000;
     }
-    if ((u16)object->id == (u16)id_SNAKE) {
+    if (object->id == (u16)id_SNAKE) {
         object->ai_packet.capabilities |= 0x4000;
     }
 }
@@ -633,7 +633,7 @@ i32 __cdecl StarWars_PrepareJump(AIPACKET_PC *packet, APIOBJECT_PC *object, i32 
     i32 skip_ahead;
     GAMEOBJECT *other;
 
-    owner = (GAMEOBJECT *)object->owner;
+    owner = object->owner;
     if ((owner->flags_ef4 & 0x40000000) != 0) {
         return StarWars_PrepareBigJump(packet, object, checks);
     }

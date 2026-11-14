@@ -108,7 +108,7 @@ static LONG CALLBACK fault_observe(EXCEPTION_POINTERS *pointers) {
     fault_value(" address=", (DWORD)fault_record.ExceptionAddress);
     fault_value(" flags=", fault_record.ExceptionFlags);
     for (i = 0; i < fault_record.NumberParameters && i < 3; ++i) {
-        fault_value(" info=", (DWORD)fault_record.ExceptionInformation[i]);
+        fault_value(" info=", fault_record.ExceptionInformation[i]);
     }
     fault_append("\r\nmodule-at-init=");
     for (i = 0; i < fault_module_count; ++i) {

@@ -105,7 +105,7 @@ static void GizPanel_CreateTerrain(PANEL_MOVEMENT_PC *panel) {
         return;
     }
     if (panel->platform_id != -1) {
-        DeletePlatinst((i16)panel->platform_id);
+        DeletePlatinst(panel->platform_id);
     }
     switch (panel->model_variant) {
         case 0:
@@ -123,7 +123,7 @@ static void GizPanel_CreateTerrain(PANEL_MOVEMENT_PC *panel) {
         default:
             break;
     }
-    PlatInstRotate((i16)panel->platform_id, 1);
+    PlatInstRotate(panel->platform_id, 1);
 }
 
 void GizPanel_InitTerrain(WORLDINFO *world) {
@@ -187,7 +187,7 @@ i32 __cdecl GizPanel_Load(void *world_pointer, void *unused) {
     STATIC_ASSERT(offsetof(PanelLoadStatePc, flags) == 0x62);
     STATIC_ASSERT(offsetof(PanelLoadStatePc, draw_flags) == 0x63);
     STATIC_ASSERT(sizeof(PanelLoadStatePc) == 0x64);
-    WORLDINFO *world = (WORLDINFO *)world_pointer;
+    WORLDINFO *world = world_pointer;
     PANEL_SYSTEM_PC *system;
     i32 version;
     i32 index;
@@ -248,17 +248,17 @@ i32 __cdecl GizPanel_Load(void *world_pointer, void *unused) {
 }
 
 void *__cdecl GizPanels_ReserveBufferSpace(void *pointer) {
-    WORLDINFO *world = (WORLDINFO *)pointer;
+    WORLDINFO *world = pointer;
     REGISTRY_PANEL_SYSTEM_PC *system;
     world->giz_panel_sys = NULL;
     if (world->current_level->max_levers > 0) {
         world->giz_buffer.addr = (world->giz_buffer.addr + 15) & ~15u;
-        world->giz_panel_sys = (GIZPANELSYS_s *)world->giz_buffer.void_ptr;
+        world->giz_panel_sys = world->giz_buffer.void_ptr;
         world->giz_buffer.addr += sizeof(REGISTRY_PANEL_SYSTEM_PC);
         memset(world->giz_panel_sys, 0, sizeof(REGISTRY_PANEL_SYSTEM_PC));
         world->giz_buffer.addr = (world->giz_buffer.addr + 15) & ~15u;
         system = (REGISTRY_PANEL_SYSTEM_PC *)world->giz_panel_sys;
-        system->panels = (REGISTRY_PANEL_RECORD_PC *)world->giz_buffer.void_ptr;
+        system->panels = world->giz_buffer.void_ptr;
         world->giz_buffer.addr += world->current_level->max_gizpanels * sizeof(REGISTRY_PANEL_RECORD_PC);
         memset(((REGISTRY_PANEL_SYSTEM_PC *)world->giz_panel_sys)->panels, 0,
                world->current_level->max_gizpanels * sizeof(REGISTRY_PANEL_RECORD_PC));
@@ -290,19 +290,19 @@ void __cdecl GizPanel_SetVisibility(GIZMO_PC *gizmo, i32 visible) {
     if (gizmo == NULL || gizmo->object == NULL) {
         return;
     }
-    panel = (PANEL_MOVEMENT_PC *)gizmo->object;
+    panel = gizmo->object;
     state = (PanelVisibleStatePc *)panel;
     was_visible = state->flags.bits.visible;
     state->flags.bits.visible = visible != 0;
     if (state->flags.bits.visible && !was_visible) {
         GizPanel_CreateTerrain(panel);
     } else if (!state->flags.bits.visible && was_visible) {
-        DeletePlatinst((i16)panel->platform_id);
+        DeletePlatinst(panel->platform_id);
     }
 }
 
 void __cdecl GizPanel_GetAbsTargetPos(void *context, NUVEC *target, i32 player_position) {
-    PANEL_MOVEMENT_PC *panel = (PANEL_MOVEMENT_PC *)context;
+    PANEL_MOVEMENT_PC *panel = context;
     NUVEC offset;
     if (panel == NULL || target == NULL) {
         return;
@@ -420,7 +420,7 @@ PANEL_MOVEMENT_PC *__cdecl GizPanel_FindNearest(WORLDINFO *world, NUVEC *positio
 }
 
 void __cdecl GizPanel_Update(void *world_pointer, void *unused, f32 delta_time) {
-    WORLDINFO *world = (WORLDINFO *)world_pointer;
+    WORLDINFO *world = world_pointer;
     PANEL_SYSTEM_PC *system = (PANEL_SYSTEM_PC *)world->giz_panel_sys;
     GAMEOBJECT *nearest_player = NULL;
     NUVEC nearest_direction;
@@ -509,7 +509,7 @@ f32 GizPanelPictureYPc = 0.0775f;
 f32 GizPanelFloorLiftPc = 0.001f;
 
 void __cdecl GizPanel_Draw(void *world_pointer, void *unused, f32 unused_time) {
-    WORLDINFO *world = (WORLDINFO *)world_pointer;
+    WORLDINFO *world = world_pointer;
     PANEL_SYSTEM_PC *system;
     u16 target_spin;
     f32 target_alpha;
@@ -701,7 +701,7 @@ void __cdecl GizPanel_Draw(void *world_pointer, void *unused, f32 unused_time) {
 }
 
 i32 __cdecl GizPanel_GetMaxGizmos(void *world_ptr) {
-    WORLDINFO *world = (WORLDINFO *)world_ptr;
+    WORLDINFO *world = world_ptr;
     if (world != NULL) {
         return world->current_level->max_gizpanels;
     }
@@ -709,7 +709,7 @@ i32 __cdecl GizPanel_GetMaxGizmos(void *world_ptr) {
 }
 
 void __cdecl GizPanel_AddGizmos(GIZMOSYS_PC *giz, i32 type, void *world_ptr, void *data) {
-    WORLDINFO *w = (WORLDINFO *)world_ptr;
+    WORLDINFO *w = world_ptr;
     i32 i;
     (void)data;
     if (w == NULL || w->giz_panel_sys == NULL) {
@@ -723,7 +723,7 @@ void __cdecl GizPanel_AddGizmos(GIZMOSYS_PC *giz, i32 type, void *world_ptr, voi
 }
 
 char *__cdecl GizPanel_GetGizmoName(void *input) {
-    GIZMO_PC *gizmo = (GIZMO_PC *)input;
+    GIZMO_PC *gizmo = input;
     if (gizmo != NULL && gizmo->object != NULL) {
         return ((PANEL_MOVEMENT_PC *)gizmo->object)->name;
     }
@@ -731,8 +731,8 @@ char *__cdecl GizPanel_GetGizmoName(void *input) {
 }
 
 i32 __cdecl GizPanel_GetOutput(void *input, i32 output, i32 mode) {
-    GIZMO_PC *gizmo = (GIZMO_PC *)input;
-    PANEL_MOVEMENT_PC *panel = (PANEL_MOVEMENT_PC *)gizmo->object;
+    GIZMO_PC *gizmo = input;
+    PANEL_MOVEMENT_PC *panel = gizmo->object;
     (void)output;
     (void)mode;
     if ((panel->flags & 8) != 0 && (panel->flags & 4) != 0) {
@@ -751,11 +751,11 @@ i32 __cdecl GizPanel_GetNumOutputs(void *unused) {
 }
 
 void *__cdecl GizPanels_AllocateProgressData(void *buffer, void *end) {
-    return GizmoBufferAlloc((VARIPTR *)buffer, (VARIPTR *)end, 0xc);
+    return GizmoBufferAlloc(buffer, end, 0xc);
 }
 
 void __cdecl GizPanels_ClearProgress(void *owner, void *progress_ptr) {
-    PANEL_PROGRESS_PC *progress = (PANEL_PROGRESS_PC *)progress_ptr;
+    PANEL_PROGRESS_PC *progress = progress_ptr;
     if (progress == NULL) {
         return;
     }
@@ -765,8 +765,8 @@ void __cdecl GizPanels_ClearProgress(void *owner, void *progress_ptr) {
 }
 
 void __cdecl GizPanels_StoreProgress(void *world_ptr, void *data, void *progress_ptr) {
-    PANEL_PROGRESS_PC *progress = (PANEL_PROGRESS_PC *)progress_ptr;
-    WORLDINFO *world = (WORLDINFO *)world_ptr;
+    PANEL_PROGRESS_PC *progress = progress_ptr;
+    WORLDINFO *world = world_ptr;
     PANEL_PROGRESS_SYSTEM_PC *system;
     PANEL_PROGRESS_RECORD_PC *record;
     i32 index;
@@ -914,7 +914,7 @@ void __cdecl GizPanel_MoveCode(WORLDINFO *world, GAMEOBJECT *object, i32 use) {
         object->field_7b3 = 0;
         FastWeaponIn(object, 0);
         object->flags_e24 |= 0x200;
-        panel = (PANEL_MOVEMENT_PC *)object->grapple;
+        panel = object->grapple;
         if (panel->model_variant == 2) {
             if (object->character_model->model_data_b[0x46] != NULL) {
                 object->field_7aa = 0x46;
@@ -974,7 +974,7 @@ i32 __cdecl GizPanel_UpdateHint(HINT_PC *hint) {
         return 0;
     }
     for (index = 0; index < 8; ++index) {
-        GAMEOBJECT *object = (GAMEOBJECT *)Player[index];
+        GAMEOBJECT *object = Player[index];
         if (object != NULL) {
             f32 distance;
             HINT_PANEL_PC *panel =
@@ -1029,7 +1029,7 @@ i32 __cdecl GizPanel_UpdateHint(HINT_PC *hint) {
 }
 
 void __cdecl GizPanel_Reset(void *context) {
-    PANEL_MOVEMENT_PC *panel = (PANEL_MOVEMENT_PC *)context;
+    PANEL_MOVEMENT_PC *panel = context;
     NUVEC offset;
     NUVEC probe_position;
     f32 height;
@@ -1077,10 +1077,10 @@ void __cdecl GizPanels_Reset(void *world_pointer, void *unused, void *progress_p
     STATIC_ASSERT(sizeof(PanelProgressFlagsPc) == 1);
     STATIC_ASSERT(offsetof(PanelProgressStatePc, flags) == 0x62);
     STATIC_ASSERT(sizeof(PanelProgressStatePc) == 0x63);
-    WORLDINFO *world = (WORLDINFO *)world_pointer;
+    WORLDINFO *world = world_pointer;
     PANEL_SYSTEM_PC *system;
     PANEL_MOVEMENT_PC *panel;
-    u32 *progress = (u32 *)progress_pointer;
+    u32 *progress = progress_pointer;
     i32 index;
     (void)unused;
     if (world == NULL) {
@@ -1125,10 +1125,10 @@ void __cdecl GizPanel_Activate(void *input, i32 active) {
     STATIC_ASSERT(sizeof(PanelActiveFlagsPc) == 1);
     STATIC_ASSERT(offsetof(PanelActiveStatePc, flags) == 0x62);
     STATIC_ASSERT(sizeof(PanelActiveStatePc) == 0x63);
-    GIZMO_PC *gizmo = (GIZMO_PC *)input;
+    GIZMO_PC *gizmo = input;
     PANEL_MOVEMENT_PC *panel;
     if (gizmo != NULL && gizmo->object != NULL) {
-        panel = (PANEL_MOVEMENT_PC *)gizmo->object;
+        panel = gizmo->object;
         ((PanelActiveStatePc *)panel)->flags.bits.active = active != 0;
         if (active != 0) {
             GizPanel_Reset(panel);

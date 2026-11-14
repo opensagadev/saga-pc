@@ -661,7 +661,7 @@ extern "C" {
                 time->time_mask = 1;
                 return;
             }
-            time->time = animation->duration - (f64)(f32)0.01f;
+            time->time = animation->duration - (f64)0.01f;
         } else if (frame < 1.0f) {
             time->time = 1.0f;
         } else {
@@ -896,7 +896,7 @@ extern "C" {
                 anim->node_flags = (u8 *)NUANIM_REBASE_POINTER(anim->node_flags, delta);
             }
             if (anim->field_38 != NULL) {
-                anim->field_38 = (void *)NUANIM_REBASE_POINTER(anim->field_38, delta);
+                anim->field_38 = NUANIM_REBASE_POINTER(anim->field_38, delta);
             }
             if (anim->next_block == 0) {
                 break;
@@ -965,7 +965,7 @@ extern "C" {
         if (animation->declared_end_frame != 0) {
             return (f32)animation->declared_end_frame;
         }
-        return (f32)((i32)animation->frame_count + (i32)animation->first_frame);
+        return (f32)(animation->frame_count + animation->first_frame);
     }
 
     i32 findrange(NUGSCN *scene, i32 first_joint) {
@@ -2599,15 +2599,15 @@ extern "C" {
 
         curve_count = anim->curve_count;
         if (ForcePlayEndFrame != 0 && anim->end_frame != 0) {
-            frame = (f32)(i32)(anim->key_count + anim->end_frame - 4);
+            frame = (f32)(anim->key_count + anim->end_frame - 4);
         } else if (anim->key_count == 1) {
             frame = 0.0f;
         } else {
             f32 last_key;
             frame -= (f32)(i32)anim->first_frame;
-            last_key = (f32)(i32)(anim->key_count - 1);
+            last_key = (f32)(anim->key_count - 1);
             frame *= last_key;
-            frame /= (i32)(anim->frame_count - 1);
+            frame /= (anim->frame_count - 1);
             if (frame < 0.0f) {
                 frame = 0.0f;
             }
@@ -2704,7 +2704,7 @@ extern "C" {
                     keys += 4;
                     break;
                 case 10:
-                    *(i32 *)values = (i32)constants[keys[quarter] + 1] | ((i32)constants[keys[quarter]] << 16);
+                    *(i32 *)values = constants[keys[quarter] + 1] | (constants[keys[quarter]] << 16);
                     keys += 4;
                     break;
                 default:
@@ -3110,7 +3110,7 @@ extern "C" {
             anim->curves = anim->curves != 0 ? anim->curves + (u32)delta : 0;
             anim->curve_types = anim->curve_types != 0 ? anim->curve_types + (u32)delta : 0;
             anim->node_flags = anim->node_flags != 0 ? anim->node_flags + (u32)delta : 0;
-            curve_count = (i32)anim->node_count * (i32)anim->curve_count;
+            curve_count = anim->node_count * anim->curve_count;
             for (curve_index = 0; curve_index < curve_count; ++curve_index) {
                 if (*((u8 *)(anim->curve_types + (u32)curve_index)) != 0) {
                     slot = (NuAnimData2RelocCurve_PC *)(anim->curves +
@@ -3282,8 +3282,8 @@ extern "C" {
         NUHGOBJ_EVAL_JOINT_PC *nodes;
 
         count = object->joint_count;
-        if ((i32)(u16)animation->node_count < count) {
-            count = (u16)animation->node_count;
+        if (animation->node_count < count) {
+            count = animation->node_count;
         }
         quaternions = (NUQUAT *)NuScratchAlloc32((count + 1) * sizeof(NUQUAT));
         scales = (NUVEC *)NuScratchAlloc32(count * sizeof(NUVEC));
@@ -3440,8 +3440,8 @@ extern "C" {
         ANI3_EVAL_SCALE_ARRAY[255].x = ANI3_EVAL_SCALE_ARRAY[255].y = ANI3_EVAL_SCALE_ARRAY[255].z = 1.0f;
         matrix = matrices;
         count = object->joint_count;
-        if ((i32)(u16)animation->node_count < count) {
-            count = (u16)animation->node_count;
+        if (animation->node_count < count) {
+            count = animation->node_count;
         }
         hierarchy_joint = object->joints;
         joint_flags = current->joint_flags;
@@ -3612,7 +3612,7 @@ extern "C" {
         NuAnimData2FileHeader_PC **file;
         u32 offset;
 
-        if ((i32)header[1] >= (i32)0x414e4935) {
+        if ((i32)header[1] >= 0x414e4935) {
             return NuPtrBlockFix(header);
         }
         if (magic == 0x414e4933 || magic == 0x414e4934) {
@@ -3675,7 +3675,7 @@ extern "C" {
             *result = NULL;
             return NULL;
         }
-        if (((ANIMATION_PACK_HEADER_PC *)cursor->void_ptr)->format_tag >= (i32)0x414e4935) {
+        if (((ANIMATION_PACK_HEADER_PC *)cursor->void_ptr)->format_tag >= 0x414e4935) {
             pointer_block = 1;
             cursor->void_ptr = NuPtrBlockFix(cursor->void_ptr);
         }
@@ -3715,7 +3715,7 @@ extern "C" {
         if (file_size == 0) {
             return NULL;
         }
-        if (((ANIMATION_PACK_HEADER_PC *)data)->format_tag >= (i32)0x414e4935) {
+        if (((ANIMATION_PACK_HEADER_PC *)data)->format_tag >= 0x414e4935) {
             use_autoptr_load = 1;
             result = NuPtrBlockFix(data);
         }
@@ -5326,7 +5326,7 @@ i32 OccluderSet::SortByDepth(void const *left, void const *right) {
     if (b == -1) {
         return -1;
     }
-    PC_OCCLUDER_RECORD *records = reinterpret_cast<OccluderSet *>(g_OcclusionManager.current_set)->occluders;
+    PC_OCCLUDER_RECORD *records = g_OcclusionManager.current_set->occluders;
     return records[a].depth < records[b].depth ? -1 : 1;
 }
 
@@ -7982,7 +7982,7 @@ extern "C" {
             NuFree(timebar->field_18, NuTimeBarSource, 0x16d);
             NuFree(timebar->colours, NuTimeBarSource, 0x16e);
             NuFree(timebar->toggle_flags, NuTimeBarSource, 0x16f);
-            NuFree((void *)timebar->slot_names, NuTimeBarSource, 0x170);
+            NuFree(timebar->slot_names, NuTimeBarSource, 0x170);
             NuFree(timebar, NuTimeBarSource, 0x172);
         }
         TimeBarRemoveSet(set);
@@ -8103,15 +8103,15 @@ extern "C" {
             timebar->slot_names = (const char **)NuAlloc(slot_count * sizeof(const char *), NuTimeBarSource, 0xfc);
             timebar->uses_buffer = 0;
         }
-        memset((void *)timebar->accumulators[0], 0, slot_count * sizeof(i32));
-        memset((void *)timebar->accumulators[1], 0, slot_count * sizeof(i32));
+        memset(timebar->accumulators[0], 0, slot_count * sizeof(i32));
+        memset(timebar->accumulators[1], 0, slot_count * sizeof(i32));
         /* PC clears four bytes per slot despite allocating an eight-byte NuTime. */
-        memset((void *)timebar->start_times, 0, slot_count * sizeof(i32));
-        memset((void *)timebar->field_14, 0, slot_count * sizeof(i32));
-        memset((void *)timebar->field_18, 0, slot_count * sizeof(i32));
-        memset((void *)timebar->colours, 0, slot_count * sizeof(i32));
-        memset((void *)timebar->toggle_flags, 0, slot_count * sizeof(i32));
-        memset((void *)timebar->slot_names, 0, slot_count * sizeof(const char *));
+        memset(timebar->start_times, 0, slot_count * sizeof(i32));
+        memset(timebar->field_14, 0, slot_count * sizeof(i32));
+        memset(timebar->field_18, 0, slot_count * sizeof(i32));
+        memset(timebar->colours, 0, slot_count * sizeof(i32));
+        memset(timebar->toggle_flags, 0, slot_count * sizeof(i32));
+        memset(timebar->slot_names, 0, slot_count * sizeof(const char *));
         set = TimeBarAddSet(timebar);
         if (colours != NULL) {
             memcpy(timebar->colours, colours, slot_count * sizeof(i32));
@@ -8343,8 +8343,8 @@ extern "C" {
                     f32 screen_height = (f32)(PS2_VREZ_H << 4);
                     f32 screen_width = (f32)(PS2_VREZ_W << 4);
                     f32 elapsed_frames = (f32)((f32)(u32)timebar->field_18[slot] * 60.0 / NuTime_MicroScale);
-                    f32 bottom = (f32)(elapsed_frames * vertical_scale + 0.05f);
-                    f32 right = (f32)(left + 0.025f);
+                    f32 bottom = elapsed_frames * vertical_scale + 0.05f;
+                    f32 right = left + 0.025f;
                     f32 vrez_w;
                     i32 text_x;
                     i32 text_y;
@@ -8469,7 +8469,7 @@ extern "C" {
             --nused_sort_pris;
         }
         if (scene->material_animations != NULL) {
-            PC_MATERIAL_ANIM_SET *scene_animation = (PC_MATERIAL_ANIM_SET *)scene->material_animations;
+            PC_MATERIAL_ANIM_SET *scene_animation = scene->material_animations;
             PC_MATERIAL_ANIM_SET *animation = (PC_MATERIAL_ANIM_SET *)nudlist_field_fc8;
             if (animation == scene_animation) {
                 nudlist_field_fc8 = (u32)scene_animation->next;
@@ -8778,7 +8778,7 @@ extern "C" {
                         if (PCDeviceHardwareVertexProcessingPC != 1) {
                             enabled = material->blend_operation[0] != 0xff;
                         } else {
-                            if (material->blend_operation[0] == 0xff || (i32)material->blend_operation[0] +
+                            if (material->blend_operation[0] == 0xff || material->blend_operation[0] +
                                                                                 material->blend_operation[1] +
                                                                                 material->blend_operation[2] ==
                                                                             0) {
@@ -9993,7 +9993,7 @@ extern "C" void __cdecl NuDisplayListCreateDynMtlList_candidate(VARIPTR *buffer,
     PCDisplayList2dPc.mtl_last = PCDisplayList2dPc.first;
     PCDisplayList2dPc.state = (NURNDRLIBSTATE *)((buffer->addr + 3) & ~3u);
     buffer->addr = ((buffer->addr + 3) & ~3u) + sizeof(NURNDRLIBSTATE);
-    NuDisplayListResetStateCache((NURNDRLIBSTATE *)PCDisplayList2dPc.state);
+    NuDisplayListResetStateCache(PCDisplayList2dPc.state);
     PCDynamicDisplayScene.render_flags |= 0x10;
     PCDisplayList2dPc.mtl_last = PCDisplayList2dPc.first;
 }
@@ -10108,8 +10108,7 @@ static void DisplayClipFallbackPC(NUDISPLAY_LIST_PC *scene, VISIBILITY_RESULT_RE
                 maximum.x = center[1].x + center->x;
                 maximum.y = center[1].y + center->y;
                 maximum.z = center[1].z + center->z;
-                if (reinterpret_cast<OcclusionManager *>(&g_OcclusionManager)
-                        ->IsOccludedOBB(&minimum, &maximum, NULL)) {
+                if ((&g_OcclusionManager)->IsOccludedOBB(&minimum, &maximum, NULL)) {
                     goto next;
                 }
             }
@@ -13076,7 +13075,7 @@ extern "C" {
         animations = (SCENE_INGEST_TEXTURE_ANIMATION_PC *)scene->texture_animations;
         texture_count = 0;
         for (i = 0; i < scene->num_texture_anims; ++i) {
-            end = (u32)animations[i].texture_ids + (i32)animations[i].texture_count;
+            end = (u32)animations[i].texture_ids + animations[i].texture_count;
             if (texture_count < end) {
                 texture_count = end;
             }
@@ -13136,7 +13135,7 @@ extern "C" {
                 clones[i]->display_list->gscene = clones[i];
             }
             clones[count - 1] = NULL;
-            scene->additional_scenes = (NUGSCN **)clones;
+            scene->additional_scenes = clones;
         }
         return scene;
     }
@@ -14205,7 +14204,7 @@ extern "C" {
         }
         VisibilityTreePreparePc();
         tree = (VISIBILITY_TREE_READER_PC *)result->instance_tree;
-        for (root = (i32)tree->root_count - 1; root >= 0; --root) {
+        for (root = tree->root_count - 1; root >= 0; --root) {
             VisibilityTreeWalkPc(root, (VISIBILITY_TREE_READER_PC *)result->instance_tree);
         }
     }
@@ -14264,7 +14263,7 @@ extern "C" {
         }
         legacy = (NUSPECIAL_LEGACY_PC *)special->special;
         if (legacy != NULL) {
-            legacy_instance = (NUINSTANCE *)legacy->instance;
+            legacy_instance = legacy->instance;
             animation = legacy_instance->animation;
         } else {
             display = (NUDISPLAY_SPECIAL_PC *)special->display_special;
@@ -14407,7 +14406,7 @@ extern "C" {
         NUMTX *draw_matrix;
         if (legacy != NULL) {
             instance = (NUMTX *)legacy->instance;
-            instance_view = (NUINSTANCE *)legacy->instance;
+            instance_view = legacy->instance;
             draw_matrix = &instance_view->animation->matrix;
             return draw_matrix != NULL ? draw_matrix : instance;
         }
@@ -14508,7 +14507,7 @@ extern "C" {
         }
         legacy = (NUSPECIAL_LEGACY_PC *)special->special;
         if (legacy != NULL) {
-            instance = (NUINSTANCE *)legacy->instance;
+            instance = legacy->instance;
             return (instance->flags >> 3) & 1;
         }
         display = (NUDISPLAY_SPECIAL_PC *)special->display_special;
@@ -14603,7 +14602,7 @@ extern "C" {
         NUINSTANCE *instance;
         if (special->scene != NULL && special->special != NULL) {
             legacy = (NUSPECIAL_LEGACY_PC *)special->special;
-            instance = (NUINSTANCE *)legacy->instance;
+            instance = legacy->instance;
             return (instance->flags >> 1) & 1;
         }
         return 1;
@@ -14618,7 +14617,7 @@ extern "C" {
         }
         legacy = (NUSPECIAL_LEGACY_PC *)special->special;
         if (legacy != NULL) {
-            instance = (NUINSTANCE *)legacy->instance;
+            instance = legacy->instance;
             return instance->flags & 1;
         }
         display = (NUDISPLAY_SPECIAL_PC *)special->display_special;
@@ -15203,7 +15202,7 @@ extern "C" {
         }
         legacy = (NUSPECIAL_LEGACY_PC *)special->special;
         if (legacy != NULL) {
-            ((NUINSTANCE *)legacy->instance)->matrix = *matrix;
+            legacy->instance->matrix = *matrix;
             return;
         }
         display = (NUDISPLAY_SPECIAL_PC *)special->display_special;
@@ -15250,9 +15249,9 @@ extern "C" {
             return;
         }
         if (special->special != NULL) {
-            ((NUINSTANCE *)((NUSPECIAL_LEGACY_PC *)special->special)->instance)->matrix.m30 = position->x;
-            ((NUINSTANCE *)((NUSPECIAL_LEGACY_PC *)special->special)->instance)->matrix.m31 = position->y;
-            ((NUINSTANCE *)((NUSPECIAL_LEGACY_PC *)special->special)->instance)->matrix.m32 = position->z;
+            ((NUSPECIAL_LEGACY_PC *)special->special)->instance->matrix.m30 = position->x;
+            ((NUSPECIAL_LEGACY_PC *)special->special)->instance->matrix.m31 = position->y;
+            ((NUSPECIAL_LEGACY_PC *)special->special)->instance->matrix.m32 = position->z;
         } else {
             ((NUDISPLAY_SPECIAL_PC *)special->display_special)->draw_matrix.m30 = position->x;
             ((NUDISPLAY_SPECIAL_PC *)special->display_special)->draw_matrix.m31 = position->y;
@@ -15700,7 +15699,7 @@ extern "C" {
         NUVEC translation;
         NUVEC locator_translation;
         u8 i;
-        if ((i32)animation->magic >= (i32)0x414e4934 && (i32)animation->magic <= (i32)0x414e4935) {
+        if ((i32)animation->magic >= 0x414e4934 && (i32)animation->magic <= 0x414e4935) {
             NuHGobjEvalAnim2Root_3(object, animation, time, override_count, overrides, matrices, root_fn, root_data);
             return;
         }
@@ -15714,8 +15713,8 @@ extern "C" {
         NuAnimData2CalcTime(&legacy->prefix, time, &anim_time);
         if (override_count != 0) {
             memset(joint_overrides, 0, object->joint_count * 4);
-            for (i = 0; (i32)i < override_count; ++i) {
-                if ((i32)overrides[i].joint_index < object->joint_override_map_count) {
+            for (i = 0; i < override_count; ++i) {
+                if (overrides[i].joint_index < object->joint_override_map_count) {
                     u8 index = object->joint_override_map[overrides[i].joint_index];
                     if (index != 255) {
                         joint_overrides[index] = &overrides[i];
@@ -15723,13 +15722,13 @@ extern "C" {
                 }
             }
         }
-        for (i = 0; (i32)i < object->joint_count; ++i) {
+        for (i = 0; i < object->joint_count; ++i) {
             NUMTX *output = &matrices[i];
             NUHGOBJ_JOINT_OVERRIDE_PC *override_anim;
             DWA_CURVE_CELL_PC *curves;
             i8 *types;
             i32 flags;
-            if ((i32)i >= legacy->prefix.node_count.legacy) {
+            if (i >= legacy->prefix.node_count.legacy) {
                 *output = NuMtxSetIdentityTemplate;
                 continue;
             }
@@ -16532,7 +16531,7 @@ void PC_SPECIAL_SHADOW_LIGHT::ComputeShadowMatrixPc(NURNDRLIGHTRECORD *set) {
     absolute.u = *(u32 *)&dot & 0x7fffffff;
     f32 product = near_plane * far_plane;
     f32 distance = NuFsqrt(product) + near_plane;
-    distance = set->parameter_110 * distance / (f32)(1.0f - absolute.f);
+    distance = set->parameter_110 * distance / (1.0f - absolute.f);
     camera_position.x = captured_inverse.m30;
     camera_position.y = captured_inverse.m31;
     camera_position.z = captured_inverse.m32;

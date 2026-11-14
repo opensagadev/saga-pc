@@ -143,7 +143,7 @@ void edpartWorldInstanceMenu(eduimenu_s *parent, eduiitem_s *unused1, u32 unused
     selected_first = 0;
     edpart_which_scene = 0;
     edpart_worldinstance_menu = eduiMenuCreate(70, 70, 250, 250, ed_fnt, edpartCancelWorldInstanceMenu,
-                                               ((char *)(edpart_filter ? "World Scene (Filtered)" : "World Scene")));
+                                               (edpart_filter ? "World Scene (Filtered)" : "World Scene"));
     if (edpart_worldinstance_menu == NULL || edbits_base_scene == NULL || edpart_nearest_type == NULL) {
         return;
     }
@@ -546,7 +546,7 @@ void edpartThingsInstanceMenu(eduimenu_s *parent, eduiitem_s *unused1, u32 unuse
     selected_first = 0;
     edpart_which_scene = 1;
     edpart_thingsinstance_menu = eduiMenuCreate(70, 70, 250, 250, ed_fnt, edpartCancelThingsInstanceMenu,
-                                                (char *)(edpart_filter ? "Things Scene (Filtered)" : "Things Scene"));
+                                                edpart_filter ? "Things Scene (Filtered)" : "Things Scene");
     if (edpart_thingsinstance_menu == NULL || edbits_things_scene == NULL || edpart_nearest_type == NULL) {
         return;
     }

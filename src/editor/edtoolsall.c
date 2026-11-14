@@ -18,7 +18,7 @@ extern "C" {
 eduimenu_s *submenu0 = NULL;
 
 void __cdecl cbTriggerSubMenu(eduimenu_s *menu, eduiitem_s *item, u32 buttons) {
-    eduimenu_s *submenu = (eduimenu_s *)item->data_ptr;
+    eduimenu_s *submenu = item->data_ptr;
     if (submenu != NULL) {
         eduiMenuAttach(menu, submenu);
         submenu->x = (i32)((u32)item->x + 10u);

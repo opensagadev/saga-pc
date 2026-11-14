@@ -26,7 +26,7 @@ i32 __cdecl MosEisleyC_PastBarrier(GAMEOBJECT *object) {
 
 void MosEisleyE_Update(WORLDINFO *unused0) {
     if ((texanimbits & 2) == 0 && LevGizmo[0] != NULL && LevGizmo[0]->object != NULL &&
-        GizForce_Complete(((GIZFORCE_s *)(LevGizmo[0]->object)))) {
+        GizForce_Complete(LevGizmo[0]->object)) {
         texanimbits |= 2;
     }
 }
@@ -54,12 +54,12 @@ i32 __cdecl DeathStarShieldDown(void) {
     GAMEOBJECT *player;
     TORPEDO_MUSIC_FLAGS_VIEW_PC *packet;
     if (LevGizmo[0] == NULL) {
-        LevGizmo[0] = (GIZMO_PC *)GizmoFindByName(WORLD->gizmo_sys, blowup_gizmotype_id, "bigbang1");
+        LevGizmo[0] = GizmoFindByName(WORLD->gizmo_sys, blowup_gizmotype_id, "bigbang1");
     }
     if (LevGizmo[0] == NULL || LevGizmo[0]->object == NULL) {
         return 0;
     }
-    blowup = (GIZMOBLOWUP_PC *)LevGizmo[0]->object;
+    blowup = LevGizmo[0]->object;
     if ((blowup->status_flags & 1) != 0) {
         return 1;
     }
@@ -92,14 +92,14 @@ void __cdecl DeathStarEscapeB_Init(WORLDINFO *world) {
     NUINSTANIM *animation[2];
     void *data[2];
     i32 index;
-    DeathStarEscapeBNetPacketPc = (i8 *)SetLevelHack(4);
+    DeathStarEscapeBNetPacketPc = SetLevelHack(4);
     LevAIMessage[0] = CheckGizAIMessage(gizaimessagesys, DeathStarEscapeBWindowCleanPc, NULL);
     NuSpecialFind(world->current_gscn, &LevHSpecial[0], (char *)DeathStarEscapeBLiftUpPc, 1);
     NuSpecialFind(world->current_gscn, &LevHSpecial[1], (char *)DeathStarEscapeBLiftDownPc, 1);
     NuSpecialFind(world->current_gscn, &LevHSpecial[2], (char *)DeathStarEscapeBSpongePc, 1);
     fakeanimendframe[0] = 0.0f;
     for (index = 0; index < 2; ++index) {
-        animation[index] = (NUINSTANIM *)NuSpecialGetInstAnim(&LevHSpecial[index]);
+        animation[index] = NuSpecialGetInstAnim(&LevHSpecial[index]);
         if (animation[index] != NULL) {
             data[index] =
                 ((NUGSCN *)LevHSpecial[index].scene)->instance_animation_data[animation[index]->animation_index];
@@ -125,7 +125,7 @@ void __cdecl DeathStarEscapeB_Update(WORLDINFO *world) {
         LevGameObject[1] = GetNamedGameObject(world->ai_sys, (char *)DeathStarEscapeBWasher2Pc);
     }
     for (index = 0; index < 2; ++index) {
-        animation[index] = (NUINSTANIM *)NuSpecialGetInstAnim(&LevHSpecial[index]);
+        animation[index] = NuSpecialGetInstAnim(&LevHSpecial[index]);
         if (animation[index] != NULL) {
             data[index] =
                 ((NUGSCN *)LevHSpecial[index].scene)->instance_animation_data[animation[index]->animation_index];
@@ -310,7 +310,7 @@ void __cdecl DeathStarRescueB_Update(WORLDINFO *world) {
     for (i = 0; i < 6; i++) {
         if (flags[i] == 0) {
             NUVEC *position = NuSpecialGetDrawPos(&LevHSpecial[i]);
-            NUINSTANIM *animation = (NUINSTANIM *)NuSpecialGetInstAnim(&LevHSpecial[i]);
+            NUINSTANIM *animation = NuSpecialGetInstAnim(&LevHSpecial[i]);
             if (animation != NULL) {
                 f64 frame = animation->ltime;
                 u16 index = animation->animation_index;

@@ -159,7 +159,7 @@ void __cdecl ResetTrooperCannons(WORLDINFO *world, i32 trooper_id) {
     for (cannon = 0; cannon < 4; ++cannon) {
         memset(&troopercannons[index], 0, sizeof(troopercannons[index]));
         sprintf(name, TrooperCannonBuilditFormatPc, cannon + 1);
-        troopercannons[index].buildit = (GIZBUILDIT_s *)GizBuildIt_Find(world, name);
+        troopercannons[index].buildit = GizBuildIt_Find(world, name);
         if (troopercannons[index].buildit != NULL) {
             sprintf(name, TrooperCannonCharacterFormatPc, cannon + 1);
             troopercannons[index].object = GetNamedGameObject(world->ai_sys, name);
@@ -179,7 +179,7 @@ void __cdecl ResetTrooperCannons(WORLDINFO *world, i32 trooper_id) {
             if ((world->level_progress->destroyed_trooper_cannon_mask & (1u << cannon)) == 0) {
                 if (troopercannons[index].base != NULL) {
                     GizmoSetVisibility(world->gizmo_sys, troopercannons[index].base, 1, 1);
-                    GizObstacle_PlayBackwards((GIZOBSTACLE *)troopercannons[index].base->object);
+                    GizObstacle_PlayBackwards(troopercannons[index].base->object);
                 }
                 GizBuildIt_Finish(troopercannons[index].buildit);
                 GizBuildit_SetVisibility(troopercannons[index].buildit, 0);
@@ -624,7 +624,7 @@ ASTEROIDC_NETPACKET_PC *asteroidc_netpacket = NULL;
 void __cdecl AsteroidChaseC_Init(WORLDINFO *world) {
     GIZMOBLOWUP_PC *blowup;
     i32 i;
-    asteroidc_netpacket = (ASTEROIDC_NETPACKET_PC *)SetLevelHack(8);
+    asteroidc_netpacket = SetLevelHack(8);
     memset(&finalAsteroid, 0, sizeof(finalAsteroid));
     AsteroidChase_FindPopBits(world);
     NuSpecialFind(world->current_gscn, &finalAsteroid.special, "blockrock", 1);
@@ -680,9 +680,9 @@ void __cdecl AsteroidChaseC_Update(WORLDINFO *world) {
     if (mtxOrig != NULL) {
         matrix = *mtxOrig;
         NuMtxGetTranslation(&matrix, &position);
-        NuMtxRotateY(&matrix, (i16)finalAsteroid.rotation_y);
-        NuMtxPreRotateX(&matrix, (i16)finalAsteroid.rotation_x);
-        NuMtxPreRotateY(&matrix, (i16)finalAsteroid.rotation_z);
+        NuMtxRotateY(&matrix, finalAsteroid.rotation_y);
+        NuMtxPreRotateX(&matrix, finalAsteroid.rotation_x);
+        NuMtxPreRotateY(&matrix, finalAsteroid.rotation_z);
         matrix.m30 = position.x;
         matrix.m31 = position.y;
         matrix.m32 = position.z;
@@ -722,9 +722,9 @@ void __cdecl AsteroidChaseD_Init(WORLDINFO *world) {
     NuSpecialFind(WORLD->current_gscn, &escape[6], "transport4", 0);
     for (index = 0; index < 16; index++) {
         sprintf(name, "turret%d", index + 1);
-        gizmo = (GIZMO_PC *)GizmoFindByName(world->gizmo_sys, turret_gizmotype_id, name);
+        gizmo = GizmoFindByName(world->gizmo_sys, turret_gizmotype_id, name);
         if (gizmo != NULL) {
-            StarDestroyerTurrets[index] = (GIZTURRET_s *)gizmo->object;
+            StarDestroyerTurrets[index] = gizmo->object;
         }
         if (StarDestroyerTurrets[index] != NULL) {
             turretAliveCount++;
@@ -885,12 +885,12 @@ void CloudCityTrapC_Reset(WORLDINFO *world) {
     gizmo = GizmoFindByName(world->gizmo_sys, obstacle_gizmotype_id, "obstacle3");
     LevGizmo[0] = gizmo;
     if (gizmo != NULL && gizmo->object != NULL) {
-        LevGizObst[0] = ((GIZOBSTACLE *)(gizmo->object));
+        LevGizObst[0] = gizmo->object;
     }
     gizmo = GizmoFindByName(world->gizmo_sys, obstacle_gizmotype_id, "???");
     LevGizmo[1] = gizmo;
     if (gizmo != NULL && gizmo->object != NULL) {
-        LevGizObst[1] = ((GIZOBSTACLE *)(gizmo->object));
+        LevGizObst[1] = gizmo->object;
     }
 }
 
@@ -945,8 +945,7 @@ static const char CloudCityEscapeBuiltMessagePc[12] = "Built_C3PO";
 void __cdecl CloudCityEscapeA_Reset(WORLDINFO *world) {
     LevAIMessage[0] = CheckGizAIMessage(gizaimessagesys, (char *)CloudCityEscapeFightMessagePc, NULL);
     LevAIMessage[1] = CheckGizAIMessage(gizaimessagesys, (char *)CloudCityEscapeBuiltMessagePc, NULL);
-    LevGizmo[0] =
-        (GIZMO_PC *)GizmoFindByName(world->gizmo_sys, gizbuildit_gizmotype_id, (char *)CloudCityEscapeBuilditNamePc);
+    LevGizmo[0] = GizmoFindByName(world->gizmo_sys, gizbuildit_gizmotype_id, (char *)CloudCityEscapeBuilditNamePc);
 }
 
 static const char CloudCityEscapeDeskSfxPc[20] = "env_ctrl_desk_on";
@@ -963,7 +962,7 @@ void __cdecl CloudCityEscapeA_Update(WORLDINFO *world) {
     if (LevGizPanel == NULL || (((CLOUDCITY_PANEL_FLAGS_VIEW_PC *)LevGizPanel)->flags & 2) == 0) {
         for (i = 1; i <= 3; ++i) {
             if (NuSpecialExistsFn(&LevHSpecial[i])) {
-                animation = (NUINSTANIM *)NuSpecialGetInstAnim(&LevHSpecial[i]);
+                animation = NuSpecialGetInstAnim(&LevHSpecial[i]);
                 if (animation != NULL && animation->ltime > 1.0f) {
                     PlaySfx((char *)CloudCityEscapeSteamSfxPc, NuSpecialGetDrawPos(&LevHSpecial[i]));
                     TerSurface[14].flags |= 0x4042;
@@ -1000,7 +999,7 @@ void __cdecl CloudCityEscapeC_Update(WORLDINFO *world) {
     TerSurface[14].flags = 0x2002;
     for (i = 0; i < 3; i++) {
         if (NuSpecialExistsFn(&LevHSpecial[i]) != 0) {
-            NUINSTANIM *animation = (NUINSTANIM *)NuSpecialGetInstAnim(&LevHSpecial[i]);
+            NUINSTANIM *animation = NuSpecialGetInstAnim(&LevHSpecial[i]);
             if (animation != NULL && animation->ltime == 1.0f) {
                 PlaySfx("env_steam_lp", NuSpecialGetDrawPos(&LevHSpecial[i]));
                 TerSurface[14].flags |= 0x4042;
@@ -1015,7 +1014,7 @@ i32 __cdecl TakeOverYodaSeekDistanceHack(GAMEOBJECT *object, GAMEOBJECT *luke, N
         !((f64)NuVecDistSqr(&object->position, &luke->position, offset) < (f64)(0.7f * 0.7f))) {
         return 0;
     }
-    NuVecRotateY(offset, offset, -(i32)luke->field_0x276);
+    NuVecRotateY(offset, offset, -luke->field_0x276);
     return offset->z > 0.0f;
 }
 
@@ -1045,21 +1044,21 @@ void __cdecl DagobahE_Init(WORLDINFO *world) {
     DOOR_s *door;
     if (FreePlay == 0 && completed != NULL && completed->value == 0.0f) {
         dagobah_training = 1;
-        door = (DOOR_s *)Door_FindByName(world, "door_e_to_b");
+        door = Door_FindByName(world, "door_e_to_b");
         if (door != NULL) {
             door->flags |= 4;
         }
-        door = (DOOR_s *)Door_FindByName(world, "door_b_to_e");
+        door = Door_FindByName(world, "door_b_to_e");
         if (door != NULL) {
             door->flags |= 4;
         }
     } else {
         dagobah_training = 0;
-        door = (DOOR_s *)Door_FindByName(world, "door_e_to_b");
+        door = Door_FindByName(world, "door_e_to_b");
         if (door != NULL) {
             door->flags &= ~4;
         }
-        door = (DOOR_s *)Door_FindByName(world, "door_b_to_e");
+        door = Door_FindByName(world, "door_b_to_e");
         if (door != NULL) {
             door->flags &= ~4;
         }
@@ -1110,7 +1109,7 @@ static const char HothBattleAPickupPc[8] = "m_pup3";
 
 void __cdecl HothBattleA_Init(WORLDINFO *world) {
     i32 count;
-    LevGizmo[0] = (GIZMO_PC *)GizmoFindByName(world->gizmo_sys, gizmopickup_typeid, (char *)HothBattleAPickupPc);
+    LevGizmo[0] = GizmoFindByName(world->gizmo_sys, gizmopickup_typeid, (char *)HothBattleAPickupPc);
     GizmoSetVisibility(world->gizmo_sys, LevGizmo[0], 0, 1);
     gunship_bolts[1] = BoltType_FindIDByName((char *)HothBattleCGreenBoltPc, world);
     gunship_bolts[0] = BoltType_FindIDByName((char *)HothBattleCRedBoltPc, world);
@@ -1134,7 +1133,7 @@ void __cdecl HothBattleA_Reset(WORLDINFO *world) {
     if (gizmo == NULL || gizmo->object == NULL) {
         return;
     }
-    pickup = (GIZMOPICKUP_PC *)gizmo->object;
+    pickup = gizmo->object;
     if (minikitCounter_A == 10 && (pickup->flags & 8) == 0) {
         GizmoActivate(world->gizmo_sys, gizmo, 1, 1);
         return;
@@ -1169,8 +1168,8 @@ void __cdecl HothBattleC_Init(WORLDINFO *world) {
     LevAIMessage[0] = CheckGizAIMessage(gizaimessagesys, (char *)HothBattleCBombMessagePc, NULL);
     LevPathCnx[0] = AIPAthFindPathCnx(world->ai_sys, world->ai_sys->path_sys->active_path, (char *)HothBattleCIceAPc,
                                       (char *)HothBattleCIceBPc, &direction);
-    LevGizmo[0] = (GIZMO_PC *)GizmoFindByName(world->gizmo_sys, obstacle_gizmotype_id, (char *)HothBattleCObstaclePc);
-    LevGizmo[1] = (GIZMO_PC *)GizmoFindByName(world->gizmo_sys, gizmopickup_typeid, (char *)HothBattleCPickupPc);
+    LevGizmo[0] = GizmoFindByName(world->gizmo_sys, obstacle_gizmotype_id, (char *)HothBattleCObstaclePc);
+    LevGizmo[1] = GizmoFindByName(world->gizmo_sys, gizmopickup_typeid, (char *)HothBattleCPickupPc);
     NuSpecialSetVisibility(&LevHSpecial[10], 0);
     gunship_bolts[1] = BoltType_FindIDByName((char *)HothBattleCGreenBoltPc, world);
     gunship_bolts[0] = BoltType_FindIDByName((char *)HothBattleCRedBoltPc, world);
@@ -1193,7 +1192,7 @@ void HothBattleC_Reset(WORLDINFO *world) {
     struct GIZMOPICKUP_PC *pickup;
     GIZMO_PC *bomb_generator = GizmoFindByName(world->gizmo_sys, bombgen_gizmotype_id, "bomb_generator1");
     if (bomb_generator != NULL && bomb_generator->object != NULL) {
-        HothBattleC_BombGenerator = ((GIZBOMBGEN_s *)(bomb_generator->object));
+        HothBattleC_BombGenerator = bomb_generator->object;
     }
 
     gizmo = LevGizmo[1];
@@ -1201,7 +1200,7 @@ void HothBattleC_Reset(WORLDINFO *world) {
         return;
     }
 
-    pickup = ((GIZMOPICKUP_PC *)(gizmo->object));
+    pickup = gizmo->object;
     if (minikitCounter_C == 10 && (pickup->flags & 8) == 0) {
         GizmoActivate(world->gizmo_sys, gizmo, 1, 1);
         return;
@@ -1502,7 +1501,7 @@ void __cdecl HothBattleE_Init(WORLDINFO *world) {
     if (netclient == 0) {
         HothBattle_ManageBackgroundCreatures();
     }
-    HothBattleENetPacketPc = (HOTHBATTLEE_NETPACKET_PC *)SetLevelHack(0x58);
+    HothBattleENetPacketPc = SetLevelHack(0x58);
 }
 
 i32 HothBattle_StartNewWave() {
@@ -1624,10 +1623,10 @@ void __cdecl HothBattleE_UpdateWave(void) {
     if (melee.current_wave == 3 && melee.waves[0].creatures[0] != NULL && melee.waves[0].creatures[1] != NULL) {
         radius = (f32)((f64)melee.waves[0].creatures[type]->bounds_radius * 3.0);
         node = (HOTH_ANTINODE_PC *)AIAntinodeCreateSingleFrame(&melee.waves[0].creatures[0]->position, radius);
-        node->excluded_character_types = (i64)(i32) ~(1u << melee.waves[0].creatures[1]->hostility_group);
+        node->excluded_character_types = (i32) ~(1u << melee.waves[0].creatures[1]->hostility_group);
         radius = (f32)((f64)melee.waves[0].creatures[type]->bounds_radius * 3.0);
         node = (HOTH_ANTINODE_PC *)AIAntinodeCreateSingleFrame(&melee.waves[0].creatures[1]->position, radius);
-        node->excluded_character_types = (i64)(i32) ~(1u << melee.waves[0].creatures[0]->hostility_group);
+        node->excluded_character_types = (i32) ~(1u << melee.waves[0].creatures[0]->hostility_group);
     }
     for (wave_index = 0; wave_index < 4; ++wave_index) {
         count = 0;

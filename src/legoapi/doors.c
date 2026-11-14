@@ -210,7 +210,7 @@ void *__cdecl Door_FindByIndex(WORLDINFO *world, i32 area, i32 level, NUVEC *pos
 }
 
 static i32 Door_GetMaxGizmos(void *door) {
-    WORLDINFO *world = ((WORLDINFO *)(door));
+    WORLDINFO *world = door;
     if (world != NULL) {
         return world->current_level->max_doors;
     }
@@ -218,7 +218,7 @@ static i32 Door_GetMaxGizmos(void *door) {
 }
 
 static void Door_AddGizmos(GIZMOSYS_PC *gizmo_sys, i32 type_id, void *world_ptr, void *unused3) {
-    WORLDINFO *world = ((WORLDINFO *)(world_ptr));
+    WORLDINFO *world = world_ptr;
     if (world != NULL && world->doors != NULL) {
         i32 i;
         for (i = 0; i < world->door_count; ++i) {
@@ -234,7 +234,7 @@ static char *Door_GetGizmoName(GIZMO_PC *gizmo) {
     if (gizmo == NULL || gizmo->object == NULL) {
         return NULL;
     }
-    door = ((DOOR_s *)(gizmo->object));
+    door = gizmo->object;
     return door->gizmo_name;
 }
 
@@ -243,7 +243,7 @@ static i32 Door_GetOutput(GIZMO_PC *gizmo, i32 unused1, i32 unused2) {
     if (gizmo == NULL || gizmo->object == NULL) {
         return 0;
     }
-    door = ((DOOR_s *)(gizmo->object));
+    door = gizmo->object;
     return door->active == 0;
 }
 
@@ -260,7 +260,7 @@ void Door_Activate(GIZMO_PC *gizmo, i32 value) {
     if (gizmo == NULL || gizmo->object == NULL) {
         return;
     }
-    door = ((DOOR_s *)(gizmo->object));
+    door = gizmo->object;
     door->active = value == 0;
 }
 
@@ -434,7 +434,7 @@ static void __cdecl D_vehicle(NUFPAR_PC *parser) {
             D_door->vehicle_mask_low = 0xffff;
             D_door->vehicle_mask_high = 0;
         } else {
-            i32 type = (u8)LevelCharacterTypeIDFn(parser->word_buffer_ptr);
+            i32 type = LevelCharacterTypeIDFn(parser->word_buffer_ptr);
             if (type < 64) {
                 D_door->vehicle_mask_low |= 1 << type;
             }
@@ -487,7 +487,7 @@ void __cdecl Doors_Configure(WORLDINFO *world_ptr, char *config) {
         return;
     }
     world->giz_buffer = (void *)(((u32)world->giz_buffer + 3) & ~3u);
-    world->doors = door = (DOOR_CONFIG_PC *)world->giz_buffer;
+    world->doors = door = world->giz_buffer;
     NuFParPushCom(parser, Door_ConfigKeywords);
     in_door = 0;
     while (NuFParGetLine(parser) != 0) {
@@ -597,7 +597,7 @@ void __cdecl Door_GoThrough(WORLDINFO *world, DOOR_s *door, i32 player_triggered
     }
     if (door->level != -1) {
         NuStrCpy(DoorExitNamePc, door->name);
-        if (door->cutscene == NULL || CutScene_HasPlayed((CUTINFO *)door->cutscene) != 0) {
+        if (door->cutscene == NULL || CutScene_HasPlayed(door->cutscene) != 0) {
             door_cutscenesnap = 0;
             cutscene = NULL;
         } else {
@@ -605,7 +605,7 @@ void __cdecl Door_GoThrough(WORLDINFO *world, DOOR_s *door, i32 player_triggered
         }
         if (cutscene != NULL) {
             if (door_cutscenesnap != 0) {
-                NewCutScene((CUTINFO *)cutscene, WorldInfo_CurrentlyActive()->cutscene_sys, NULL, 0);
+                NewCutScene(cutscene, WorldInfo_CurrentlyActive()->cutscene_sys, NULL, 0);
             } else {
                 newmode_cutinfo = cutscene;
                 StartDoorPositions();
@@ -628,7 +628,7 @@ void __cdecl Door_GoThrough(WORLDINFO *world, DOOR_s *door, i32 player_triggered
             StartDoorPositions();
             NewGameMode();
             for (index = 0; index < 8; ++index) {
-                GAMEOBJECT *object = (GAMEOBJECT *)Player[index];
+                GAMEOBJECT *object = Player[index];
                 if (object != NULL) {
                     PlayerProgress[index].field_b = object->jump_variant_state == 1;
                     PlayerProgress[index].field_9 = object->dead != 0 ? 4 : object->saved_hitpoints;
@@ -675,7 +675,7 @@ void __cdecl Doors_Check(WORLDINFO *world, GAMEOBJECT *object) {
     i32 two_players;
     f32 previous_abs;
     f32 current_abs;
-    if (object->dead != 0 || (LEGOCONTEXT_DOOMED != -1 && (i8)object->character_context == LEGOCONTEXT_DOOMED) ||
+    if (object->dead != 0 || (LEGOCONTEXT_DOOMED != -1 && object->character_context == LEGOCONTEXT_DOOMED) ||
         NewLData != NULL) {
         return;
     }

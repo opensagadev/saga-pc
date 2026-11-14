@@ -14,7 +14,7 @@ STATIC_ASSERT(offsetof(SPECIAL_RESOURCE_ENTRY_PC, special) == 4);
 STATIC_ASSERT(offsetof(SPECIAL_RESOURCE_ENTRY_PC, events) == 16);
 
 i32 __cdecl InitSpecialSfx(void *world_ptr) {
-    SPECIAL_RESOURCE_WORLD_PC *world = (SPECIAL_RESOURCE_WORLD_PC *)world_ptr;
+    SPECIAL_RESOURCE_WORLD_PC *world = world_ptr;
     if (!world) {
         return 0;
     }
@@ -32,7 +32,7 @@ i32 __cdecl InitSpecialSfx(void *world_ptr) {
 }
 
 i32 __cdecl SpecialSfxLoad(char *path, void *world_ptr) {
-    WORLDINFO *world = (WORLDINFO *)world_ptr;
+    WORLDINFO *world = world_ptr;
     i32 version;
     i32 count;
     i32 i;
@@ -147,7 +147,7 @@ void __cdecl UpdateSpecialSfx(WORLDINFO *world_info) {
         if (NuSpecialExistsFn(&entry->special) == 0 || NuSpecialGetVisibilityFn(&entry->special) == 0) {
             continue;
         }
-        animation = (NUINSTANIM *)NuSpecialGetInstAnim(&entry->special);
+        animation = NuSpecialGetInstAnim(&entry->special);
         if (animation == NULL) {
             continue;
         }
@@ -230,7 +230,7 @@ void __cdecl SetSpecialSfxBits(i32 *ids, i32 *count, WORLDINFO *world) {
 }
 
 void __cdecl LoadSpecialSfxFile(void *world_ptr) {
-    SPECIAL_RESOURCE_WORLD_PC *world = (SPECIAL_RESOURCE_WORLD_PC *)world_ptr;
+    SPECIAL_RESOURCE_WORLD_PC *world = world_ptr;
     char path[256];
     sprintf(path, "%s.sfx", world->config_file);
     if (NuFileExists(path)) {
@@ -437,7 +437,7 @@ void FileLoadSingleEffectType(DEBRIS_INFO_PC *destination, i32 version, i8 categ
         effect->process_spheres = 0;
     }
     if (version >= 17) {
-        effect->time_group = (i8)(EdFileReadChar());
+        effect->time_group = EdFileReadChar();
     } else {
         effect->time_group = 0;
     }
@@ -532,7 +532,7 @@ void FileLoadSingleEffectType(DEBRIS_INFO_PC *destination, i32 version, i8 categ
     }
     if (version >= 16) {
         if (version >= 41) {
-            effect->trail_count = (i8)EdFileReadChar();
+            effect->trail_count = EdFileReadChar();
         } else {
             effect->trail_count = (i8)EdFileReadInt();
         }

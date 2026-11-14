@@ -248,7 +248,7 @@ extern "C" i32 __cdecl NuInitHardwarePc(VARIPTR *buffer, VARIPTR *end, i32 alloc
     if (parameter_33) {
         NuHwSetParameter33Pc(parameter_33);
     }
-    PCDeviceBackend.requested_windowed = (u8)(show == 1);
+    PCDeviceBackend.requested_windowed = show == 1;
     NuFileInitEx(hostfs, file_mode, eject);
     NuFileExtInit(!NuFileUseHiresPC());
     PcWindowOptions.SetBloomMethod(2);

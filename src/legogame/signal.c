@@ -103,7 +103,7 @@ void *__cdecl Signals_ReserveBufferSpace(WORLDINFO *world) {
     world->signal_count = 0;
     if (level->max_signals > 0) {
         world->giz_buffer.addr = (world->giz_buffer.addr + 3) & ~3u;
-        world->signals = (SIGNAL_s *)world->giz_buffer.void_ptr;
+        world->signals = world->giz_buffer.void_ptr;
         world->giz_buffer.addr += level->max_signals * sizeof(SIGNAL_s);
     }
     return world->signals;
@@ -111,14 +111,14 @@ void *__cdecl Signals_ReserveBufferSpace(WORLDINFO *world) {
 
 void __cdecl Signal_Activate(GIZMO_PC *gizmo, i32 active) {
     if (gizmo != NULL) {
-        SIGNAL_s *signal = (SIGNAL_s *)gizmo->object;
+        SIGNAL_s *signal = gizmo->object;
         signal->active = active != 0;
     }
 }
 
 i32 __cdecl Signal_ActivateRev(GIZMO_PC *gizmo, i32 active, i32 reverse) {
     if (gizmo != NULL) {
-        SIGNAL_s *signal = (SIGNAL_s *)gizmo->object;
+        SIGNAL_s *signal = gizmo->object;
         if (signal != NULL) {
             if ((reverse & 1) != 0) {
                 return active == signal->active;
@@ -142,7 +142,7 @@ static void SignalSetVisiblePc(SIGNAL_s *signal, i32 visible) {
 
 void __cdecl Signal_SetGizmoVisibility(GIZMO_PC *gizmo, i32 visible) {
     if (gizmo != NULL) {
-        SignalSetVisiblePc((SIGNAL_s *)gizmo->object, visible);
+        SignalSetVisiblePc(gizmo->object, visible);
     }
 }
 
@@ -221,7 +221,7 @@ void __cdecl Signals_Update(WORLDINFO *world, void *unused, f32 unused_time) {
             if (signal->in_use) {
                 i32 player_index;
                 for (player_index = 0; player_index < 8; ++player_index) {
-                    GAMEOBJECT *player = (GAMEOBJECT *)Player[player_index];
+                    GAMEOBJECT *player = Player[player_index];
                     if (player != NULL && (player->flags_1fc_word & 1) != 0 && (player->flags_1fc_word & 0x1000) != 0 &&
                         player->id == (u16)signal->suit->character_id &&
                         (f64)NuVecDistSqr(&player->collision_position, &signal->target_position, NULL) <
@@ -373,7 +373,7 @@ char *__cdecl Signal_GetGizmoName(GIZMO_PC *gizmo) {
 }
 
 i32 __cdecl Signal_GetOutput(GIZMO_PC *gizmo, i32 unused_index, i32 unused_mode) {
-    SIGNAL_s *signal = (SIGNAL_s *)gizmo->object;
+    SIGNAL_s *signal = gizmo->object;
     if ((signal->flags & 1) != 0 && (signal->flags & 2) != 0) {
         return 1;
     }
@@ -505,7 +505,7 @@ void __cdecl Signal_MoveCode(WORLDINFO *world, GAMEOBJECT *object) {
             object->context_variant_flags |= 0x40;
             old_suit = (SUIT_INITIALIZER_RECORD_PC *)object->suit;
             object->ai_packet.capabilities &= ~old_suit->character_flags;
-            signal = (SIGNAL_s *)object->grapple;
+            signal = object->grapple;
             new_suit = signal->suit;
             object->suit = (SUIT_LAYERS_PC *)new_suit;
             signal->suit = old_suit;

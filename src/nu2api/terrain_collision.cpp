@@ -1759,7 +1759,7 @@ extern "C" {
         if (TerrainImpactPlatform(flags) != 0) {
             NuScratchRelease();
             NuScratchRelease();
-            ScaleTerrain = static_cast<TERRAIN_SHAPE *>(ScaleTerrainT1);
+            ScaleTerrain = ScaleTerrainT1;
             curSphereter = saved_sphere;
             TerI = old_query;
             return 1;
@@ -1810,7 +1810,7 @@ extern "C" {
         }
         NuScratchRelease();
         NuScratchRelease();
-        ScaleTerrain = static_cast<TERRAIN_SHAPE *>(ScaleTerrainT1);
+        ScaleTerrain = ScaleTerrainT1;
         TerI = old_query;
         curSphereter = saved_sphere;
         return 0;

@@ -141,7 +141,7 @@ static f32 ApplyAntilights(RTL_LIGHT_PC *light, RTL_DATA_PC *lighting_data, f32 
 static RTL_LIGHT_PC *GetNextRTL(void *set, RTL_LIGHT_PC *light, char *indices, int *index) {
     if (set != NULL) {
         if (indices != NULL && index != NULL) {
-            if (*index >= (i32)(*indices)) {
+            if (*index >= *indices) {
                 light = NULL;
             } else {
                 i32 light_index;
@@ -333,7 +333,7 @@ static void rtlApplySetScaleLoop(void *set, RTL_DATA_PC *lighting_data, NUVEC *p
     i32 index;
     lighting_data->specular_value = 0.0f;
     if (set != NULL) {
-        lights = (RTL_SET_PC *)(set);
+        lights = set;
         light = lights->lights;
         grid = (RTL_INDEX_PC *)(lights + 1);
         dbg_rtlindex = grid;
@@ -817,7 +817,7 @@ void __cdecl rtlProcessLights(void *set, f32 frame_time) {
         }
     }
     if (set != NULL) {
-        light_set = (RTL_SET_PC *)set;
+        light_set = set;
         light = light_set->lights;
         for (i = 0; i < 128; ++i) {
             if (light->type == 0) {
@@ -846,7 +846,7 @@ void IndexLights(RTL_SET_PC *set, VARIPTR *buffer, i32 buffer_end) {
     f32 size_z;
     char *indices;
 
-    grid = (RTL_INDEX_PC *)buffer->void_ptr;
+    grid = buffer->void_ptr;
     buffer->addr += sizeof(RTL_INDEX_PC);
     memset(grid, 0, sizeof(*grid));
     minimum_x = FLT_MAX;
@@ -890,7 +890,7 @@ void IndexLights(RTL_SET_PC *set, VARIPTR *buffer, i32 buffer_end) {
         minimum_z = (f32)(row) / grid->scale - grid->offset_z;
         maximum_z = (f32)(row + 1) / grid->scale - grid->offset_z;
         for (column = 0; column < grid->width; ++column) {
-            grid->cells[row * grid->width + column] = (i8 *)buffer->void_ptr;
+            grid->cells[row * grid->width + column] = buffer->void_ptr;
             ++buffer->addr;
             indices = (char *)grid->cells[row * grid->width + column];
             *indices = 0;
@@ -968,7 +968,7 @@ RTL_SET_PC *__cdecl rtlLoadSet(char *path, VARIPTR *buffer, i32 buffer_end) {
     RTL_SET_PC *set;
     i32 i;
     buffer->addr = (buffer->addr + 3) & ~3u;
-    set = (RTL_SET_PC *)buffer->void_ptr;
+    set = buffer->void_ptr;
     memset(set, 0, sizeof(*set));
     NuFileLoadBuffer(path, buffer->void_ptr, buffer_end - buffer->addr);
     switch (set->header) {
@@ -1619,7 +1619,7 @@ void __cdecl edrtlDrawRTLInfo(void) {
         y = 512;
         NuQFntSet(system_qfont);
         for (j = 0; j < modifier_cnt; j++) {
-            NuQFntPrintEx(system_qfont, x, y, 32, "%s = %.2f", modifier_names[j], (f64)(modifiers[j]));
+            NuQFntPrintEx(system_qfont, x, y, 32, "%s = %.2f", modifier_names[j], modifiers[j]);
             y += height;
         }
     }
@@ -1647,24 +1647,24 @@ void __cdecl edrtlDrawRTLInfo(void) {
         NuRndrRect2di(128, y - height, 4160, lines, 0x20404040, mtls[2]);
         NuQFntSet(system_qfont);
         if (base_rtl) {
-            NuQFntPrintEx(system_qfont, x, y, 16, "RTL Editor %d/%d (Parent %d)", (i32)(curr_rtl - curr_set->lights),
-                          128, (i32)(base_rtl - curr_set->lights));
+            NuQFntPrintEx(system_qfont, x, y, 16, "RTL Editor %d/%d (Parent %d)", (curr_rtl - curr_set->lights), 128,
+                          (base_rtl - curr_set->lights));
         } else {
-            NuQFntPrintEx(system_qfont, x, y, 16, "RTL Editor %d/%d", (i32)(curr_rtl - curr_set->lights), 128);
+            NuQFntPrintEx(system_qfont, x, y, 16, "RTL Editor %d/%d", (curr_rtl - curr_set->lights), 128);
         }
         y += height;
         NuQFntPrintEx(system_qfont, x, y, 16, base_rtl ? "MODE: Alternate Set (DPAD Left to exit)" : "MODE: Normal");
         y += height;
-        NuQFntPrintEx(system_qfont, x, y, 16, "POS: %.03f %.03f %.03f", (f64)(curr_rtl->position.x),
-                      (f64)(curr_rtl->position.y), (f64)(curr_rtl->position.z));
+        NuQFntPrintEx(system_qfont, x, y, 16, "POS: %.03f %.03f %.03f", curr_rtl->position.x, curr_rtl->position.y,
+                      curr_rtl->position.z);
         y += height;
         NuQFntPrintEx(system_qfont, x, y, 16, "TYPE: %s", light_types[MAX(0, MIN(9, curr_rtl->type))]);
         y += height;
-        NuQFntPrintEx(system_qfont, x, y, 16, "RADIUS: %.03f", (f64)(curr_rtl->inner_radius));
+        NuQFntPrintEx(system_qfont, x, y, 16, "RADIUS: %.03f", curr_rtl->inner_radius);
         y += height;
-        NuQFntPrintEx(system_qfont, x, y, 16, "FALL OFF: %.03f", (f64)(curr_rtl->outer_radius));
+        NuQFntPrintEx(system_qfont, x, y, 16, "FALL OFF: %.03f", curr_rtl->outer_radius);
         y += height;
-        NuQFntPrintEx(system_qfont, x, y, 16, "MULTIPLIER: %.0f", (f64)(curr_rtl->intensity));
+        NuQFntPrintEx(system_qfont, x, y, 16, "MULTIPLIER: %.0f", curr_rtl->intensity);
         y += height;
         NuQFntPrintEx(system_qfont, x, y, 16, "CAST SHADOW: %s", (curr_rtl->flags & 2) ? "YES" : "NO");
         y += height;
@@ -1724,8 +1724,8 @@ void __cdecl edrtlDrawRTLInfo(void) {
         y += height;
         NuQFntPrintEx(system_qfont, x, y, 16, base_rtl ? "MODE: Alternate Set (DPAD Left to exit)" : "MODE: Normal");
         y += height;
-        NuQFntPrintEx(system_qfont, x, y, 16, "POS: %.03f %.03f %.03f", (f64)(burn_editor_position_pc.x),
-                      (f64)(burn_editor_position_pc.y), (f64)(burn_editor_position_pc.z));
+        NuQFntPrintEx(system_qfont, x, y, 16, "POS: %.03f %.03f %.03f", burn_editor_position_pc.x,
+                      burn_editor_position_pc.y, burn_editor_position_pc.z);
         y += height;
     }
     if (maxundo) {
@@ -2614,12 +2614,12 @@ void __cdecl edrtlDrawFogInfo(void) {
             NuQFntPrintEx(system_qfont, x, y, 16, "FOGMODE: CAMERA POS");
         }
         y += height;
-        NuQFntPrintEx(system_qfont, x, y, 16, "POS: %.03f %.03f %.03f", (f64)curr_fog->position.x,
-                      (f64)curr_fog->position.y, (f64)curr_fog->position.z);
+        NuQFntPrintEx(system_qfont, x, y, 16, "POS: %.03f %.03f %.03f", curr_fog->position.x, curr_fog->position.y,
+                      curr_fog->position.z);
         y += height;
         NuQFntPrintEx(system_qfont, x, y, 16, "TYPE: %s", fog_types[curr_fog->type]);
         y += height;
-        NuQFntPrintEx(system_qfont, x, y, 16, "RADIUS: %.03f", (f64)curr_fog->radius);
+        NuQFntPrintEx(system_qfont, x, y, 16, "RADIUS: %.03f", curr_fog->radius);
     } else {
         NuRndrRect2di(128, y - height, 4800, height * 5 / 2, 0x20000080, mtls[2]);
         NuQFntSet(system_qfont);
@@ -2631,8 +2631,8 @@ void __cdecl edrtlDrawFogInfo(void) {
             NuQFntPrintEx(system_qfont, x, y, 16, "FOGMODE: CAMERA POS");
         }
         y += height;
-        NuQFntPrintEx(system_qfont, x, y, 16, "POS: %.03f %.03f %.03f", (f64)burn_editor_position_pc.x,
-                      (f64)burn_editor_position_pc.y, (f64)burn_editor_position_pc.z);
+        NuQFntPrintEx(system_qfont, x, y, 16, "POS: %.03f %.03f %.03f", burn_editor_position_pc.x,
+                      burn_editor_position_pc.y, burn_editor_position_pc.z);
     }
 }
 
@@ -2654,12 +2654,12 @@ void edrtlDrawBurnInfo(void) {
     if (edrtl_edit_burnset != NULL) {
         NuQFntPrintEx(system_qfont, x, y, 16, "Used: %d / %d", edrtl_edit_burnset->active_count, 32);
         y += height;
-        NuQFntPrintEx(system_qfont, x, y, 16, "Default Radius: %0.2f", (f64)edrtl_edit_burnset->field_558);
+        NuQFntPrintEx(system_qfont, x, y, 16, "Default Radius: %0.2f", edrtl_edit_burnset->field_558);
         y += height;
-        NuQFntPrintEx(system_qfont, x, y, 16, "Default Falloff: %0.2f", (f64)edrtl_edit_burnset->field_55c);
+        NuQFntPrintEx(system_qfont, x, y, 16, "Default Falloff: %0.2f", edrtl_edit_burnset->field_55c);
         y += 2 * height;
         NuQFntPrintEx(system_qfont, x, y, 16, "Current Global Scale/Intensity: %0.2f",
-                      (f64)edrtl_edit_burnset->parameters_copy.field_14);
+                      edrtl_edit_burnset->parameters_copy.field_14);
     } else {
         NuQFntPrintEx(system_qfont, x, y, 16, "NO BURNSET LOADED");
     }
@@ -3858,9 +3858,9 @@ void __cdecl cbLightType(eduimenu_s *menu, eduiitem_s *item, u32 buttons) {
 
 void __cdecl cbAssocID(eduimenu_s *menu, eduiitem_s *item, u32 buttons) {
     if (curr_rtl != NULL) {
-        curr_rtl->field_5e &= (i16) ~(1 << (i32)item->data);
+        curr_rtl->field_5e &= (i16) ~(1 << item->data);
         if (item->highlighted) {
-            curr_rtl->field_5e |= (i16)(1 << (i32)item->data);
+            curr_rtl->field_5e |= (i16)(1 << item->data);
         }
         curr_rtl->field_60 &= (i16) ~(u16)curr_rtl->field_5e;
         RefreshUI();
@@ -3869,9 +3869,9 @@ void __cdecl cbAssocID(eduimenu_s *menu, eduiitem_s *item, u32 buttons) {
 
 void __cdecl cbExcludeID(eduimenu_s *menu, eduiitem_s *item, u32 buttons) {
     if (curr_rtl != NULL) {
-        curr_rtl->field_60 &= (i16) ~(1 << (i32)item->data);
+        curr_rtl->field_60 &= (i16) ~(1 << item->data);
         if (item->highlighted) {
-            curr_rtl->field_60 |= (i16)(1 << (i32)item->data);
+            curr_rtl->field_60 |= (i16)(1 << item->data);
         }
         curr_rtl->field_5e &= (i16) ~(u16)curr_rtl->field_60;
         RefreshUI();
@@ -3886,42 +3886,42 @@ void __cdecl cbUserID(eduimenu_s *menu, eduiitem_s *item, u32 buttons) {
 }
 
 void __cdecl cbFogColour(eduimenu_s *menu, eduiitem_s *item, u32 buttons) {
-    RTL_FOG_MIGRATION_PC *fog = (RTL_FOG_MIGRATION_PC *)curr_fog;
+    RTL_FOG_MIGRATION_PC *fog = curr_fog;
     if (fog != NULL) {
         AddColourPick(menu, item, NULL, NULL, NULL, &fog->colour);
     }
 }
 
 void __cdecl cbHazeColour(eduimenu_s *menu, eduiitem_s *item, u32 buttons) {
-    RTL_FOG_MIGRATION_PC *fog = (RTL_FOG_MIGRATION_PC *)curr_fog;
+    RTL_FOG_MIGRATION_PC *fog = curr_fog;
     if (fog != NULL) {
         AddColourPick(menu, item, NULL, NULL, NULL, &fog->low_quality_colour);
     }
 }
 
 void __cdecl cbFogStart(eduimenu_s *menu, eduiitem_s *item, u32 buttons) {
-    RTL_FOG_MIGRATION_PC *fog = (RTL_FOG_MIGRATION_PC *)curr_fog;
+    RTL_FOG_MIGRATION_PC *fog = curr_fog;
     if (fog != NULL) {
         fog->start = ((edui_slider_s *)item)->value;
     }
 }
 
 void __cdecl cbFogEnd(eduimenu_s *menu, eduiitem_s *item, u32 buttons) {
-    RTL_FOG_MIGRATION_PC *fog = (RTL_FOG_MIGRATION_PC *)curr_fog;
+    RTL_FOG_MIGRATION_PC *fog = curr_fog;
     if (fog != NULL) {
         fog->end = ((edui_slider_s *)item)->value;
     }
 }
 
 void __cdecl cbFogStartPSP(eduimenu_s *menu, eduiitem_s *item, u32 buttons) {
-    RTL_FOG_MIGRATION_PC *fog = (RTL_FOG_MIGRATION_PC *)curr_fog;
+    RTL_FOG_MIGRATION_PC *fog = curr_fog;
     if (fog != NULL) {
         fog->start_psp = ((edui_slider_s *)item)->value;
     }
 }
 
 void __cdecl cbFogEndPSP(eduimenu_s *menu, eduiitem_s *item, u32 buttons) {
-    RTL_FOG_MIGRATION_PC *fog = (RTL_FOG_MIGRATION_PC *)curr_fog;
+    RTL_FOG_MIGRATION_PC *fog = curr_fog;
     if (fog != NULL) {
         fog->end_psp = ((edui_slider_s *)item)->value;
     }
@@ -4251,12 +4251,10 @@ i32 __cdecl edrtlProcRTL(f32 delta_time, FRAME_PAD_PC *pad) {
                 updated.direction.z = 1.0f;
                 NuVecRotateX(&updated.direction, &updated.direction, updated.pitch);
                 NuVecRotateY(&updated.direction, &updated.direction, updated.yaw);
-                updated.inner_radius += scale_rate *
-                                        ((i32)(pad->analog_left_pad_right) - (i32)(pad->analog_left_pad_left)) *
-                                        move_scale * delta_time;
-                updated.outer_radius += scale_rate *
-                                        ((i32)(pad->analog_left_pad_up) - (i32)(pad->analog_left_pad_down)) *
-                                        move_scale * delta_time;
+                updated.inner_radius +=
+                    scale_rate * (pad->analog_left_pad_right - pad->analog_left_pad_left) * move_scale * delta_time;
+                updated.outer_radius +=
+                    scale_rate * (pad->analog_left_pad_up - pad->analog_left_pad_down) * move_scale * delta_time;
                 updated.inner_radius = min_r > updated.inner_radius ? min_r : updated.inner_radius;
                 updated.outer_radius =
                     updated.inner_radius > updated.outer_radius ? updated.inner_radius : updated.outer_radius;
@@ -4512,9 +4510,8 @@ static i32 edrtlProcFog(f32 delta_time, FRAME_PAD_PC *pad) {
                 NuVecSub(&dragoff, &burn_editor_position_pc, &dragstart);
                 NuVecAdd(&drag_fog->position, &drag_fog->position, &dragoff);
                 dragstart = burn_editor_position_pc;
-                curr_fog->radius += scale_rate *
-                                    ((i32)(pad->analog_left_pad_right) - (i32)(pad->analog_left_pad_left)) *
-                                    camera_step * delta_time;
+                curr_fog->radius +=
+                    scale_rate * (pad->analog_left_pad_right - pad->analog_left_pad_left) * camera_step * delta_time;
                 curr_fog->radius = min_r > curr_fog->radius ? min_r : curr_fog->radius;
             }
         } else {
@@ -4558,8 +4555,7 @@ static i32 edrtlProcFog(f32 delta_time, FRAME_PAD_PC *pad) {
 
 static i32 edrtlProcBurn(f32 delta_time, FRAME_PAD_PC *pad) {
     if (edrtl_edit_burnset == NULL) {
-        edrtl_edit_burnset =
-            (BURN_SET_PC *)NuAlloc(sizeof(BURN_SET_PC), "d:\\projects\\game_saga\\gameapi.saga\\rtl\\rtl.c", 5092);
+        edrtl_edit_burnset = NuAlloc(sizeof(BURN_SET_PC), "d:\\projects\\game_saga\\gameapi.saga\\rtl\\rtl.c", 5092);
         edrtlInitBurnset(edrtl_edit_burnset);
     }
 

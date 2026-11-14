@@ -16,10 +16,9 @@ extern void(__cdecl *AIPathCnxHelperSysInitFn)(WORLDINFO *);
 void *__cdecl AIPathCnxHelperSysCreate(VARIPTR *buffer, VARIPTR *end, i32 count) {
     AI_HELPER_SYSTEM_PC *system = NULL;
     if (count != 0) {
-        system = (AI_HELPER_SYSTEM_PC *)AISysBufferAlloc(buffer, end, sizeof(*system));
+        system = AISysBufferAlloc(buffer, end, sizeof(*system));
         if (system != NULL) {
-            system->helpers =
-                (AI_HELPER_SLOT_PC *)AISysBufferAlloc(buffer, end, (u32)count * sizeof(AI_HELPER_SLOT_PC));
+            system->helpers = AISysBufferAlloc(buffer, end, (u32)count * sizeof(AI_HELPER_SLOT_PC));
             if (system->helpers != NULL) {
                 system->capacity = (i16)count;
             }
@@ -31,7 +30,7 @@ void *__cdecl AIPathCnxHelperSysCreate(VARIPTR *buffer, VARIPTR *end, i32 count)
 void __cdecl AIPathCnxHelperSysReset(WORLDINFO *world, AI_HELPER_SYSTEM_PC *system) {
     if (system != NULL) {
         if (system->count != 0) {
-            memset(system->helpers, 0, (i32)system->count * sizeof(AI_HELPER_SLOT_PC));
+            memset(system->helpers, 0, system->count * sizeof(AI_HELPER_SLOT_PC));
             system->count = 0;
         }
         if (AIPathCnxHelperSysInitFn != NULL) {

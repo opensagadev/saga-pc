@@ -380,7 +380,7 @@ static void GrabberGrabVictim(GAMEOBJECT *victim) {
 }
 
 NUVEC *__cdecl Grabber_GetGrabPos(void *context, NUMTX *matrix) {
-    GRABBER_PC *grabber = (GRABBER_PC *)context;
+    GRABBER_PC *grabber = context;
     if (grabber->character_model != NULL && (grabber->flags & 1) != 0 &&
         grabber->character_model->points_of_interest[0] != NULL) {
         if (matrix != NULL) {
@@ -429,7 +429,7 @@ void __cdecl Grabber_Draw(WORLDINFO *world) {
     NUMTX joints[256];
     f32 distance;
 
-    grabber = (GRABBER_PC *)world->grabber;
+    grabber = world->grabber;
     grab_position = NULL;
     if (grabber == NULL) {
         return;
@@ -567,7 +567,7 @@ void __cdecl Grabber_Reset(WORLDINFO *world) {
     GRABBER_PC *grabber;
     GIZOBSTACLE **gizmo;
 
-    grabber = (GRABBER_PC *)world->grabber;
+    grabber = world->grabber;
     if (grabber == NULL) {
         return;
     }
@@ -675,7 +675,7 @@ void __cdecl Grabber_Update(WORLDINFO *world) {
 
     pad = NULL;
     control = NULL;
-    grabber = (GRABBER_PC *)world->grabber;
+    grabber = world->grabber;
     if (grabber == NULL) {
         return;
     }

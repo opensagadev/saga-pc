@@ -51,7 +51,7 @@ void __cdecl Transform_MoveCode(WORLDINFO *world, GAMEOBJECT *object) {
                 return;
             }
         }
-        target = (GIZMOBLOWUP_PC *)object->grapple;
+        target = object->grapple;
         trigger = 0;
         object->movement_facing_angle = NuAtan2D(target->mid_position.x - object->collision_position.x,
                                                  target->mid_position.z - object->collision_position.z);
@@ -70,7 +70,7 @@ void __cdecl Transform_MoveCode(WORLDINFO *world, GAMEOBJECT *object) {
         }
         if (trigger) {
             object->context_variant_flags |= 0x40;
-            GizmoBlowupBlowup((GIZMOBLOWUP_PC *)object->grapple, 1, 8, 1, NULL, 1);
+            GizmoBlowupBlowup(object->grapple, 1, 8, 1, NULL, 1);
         }
     } else {
         GIZMOBLOWUP_PC *candidate;
@@ -135,7 +135,7 @@ void __cdecl Transform_MoveCode(WORLDINFO *world, GAMEOBJECT *object) {
                 if (object->context_duration <= 0.0f) {
                     object->context_duration = 1.0f;
                 }
-                target = (GIZMOBLOWUP_PC *)object->grapple;
+                target = object->grapple;
                 object->movement_facing_angle = NuAtan2D(target->mid_position.x - object->collision_position.x,
                                                          target->mid_position.z - object->collision_position.z);
             }

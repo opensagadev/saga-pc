@@ -1729,7 +1729,7 @@ extern "C" {
 
         const i32 character_id = model->model_id;
         CHARACTERDATA_PC *character_data = reinterpret_cast<CHARACTERDATA_PC *>(&apicharsys->char_data[character_id]);
-        PLAYERCHARACTERCONFIG_PC *game_data = static_cast<PLAYERCHARACTERCONFIG_PC *>(character_data->game_character);
+        PLAYERCHARACTERCONFIG_PC *game_data = character_data->game_character;
         NUMTX world_matrix;
         u32 animation_index;
         f32 animation_rate;
@@ -1816,11 +1816,11 @@ extern "C" {
         NUANIMDATA2_PC *dwa_animation_a;
         if (instance->animation_a == 0) {
             instance->animation_frame_a = frame;
-            animation_a = reinterpret_cast<ANI3_HEADER_PC *>(character->face_animation);
+            animation_a = character->face_animation;
             dwa_animation_a = character->extra_animation;
         } else {
             animation_a = static_cast<ANI3_HEADER_PC *>(model->model_data_b[instance->animation_a - 1]);
-            dwa_animation_a = static_cast<NUANIMDATA2_PC *>(model->model_data_c[instance->animation_a - 1]);
+            dwa_animation_a = model->model_data_c[instance->animation_a - 1];
         }
 
         NUMTX joint_matrices[256];
@@ -1830,11 +1830,11 @@ extern "C" {
             NUANIMDATA2_PC *dwa_animation_b;
             if (instance->animation_b == 0) {
                 instance->animation_frame_b = frame;
-                animation_b = reinterpret_cast<ANI3_HEADER_PC *>(character->face_animation);
+                animation_b = character->face_animation;
                 dwa_animation_b = character->extra_animation;
             } else {
                 animation_b = static_cast<ANI3_HEADER_PC *>(model->model_data_b[instance->animation_b - 1]);
-                dwa_animation_b = static_cast<NUANIMDATA2_PC *>(model->model_data_c[instance->animation_b - 1]);
+                dwa_animation_b = model->model_data_c[instance->animation_b - 1];
             }
             if (animation_a != NULL) {
                 if (animation_b != NULL) {
@@ -1863,8 +1863,7 @@ extern "C" {
                 const f32 end_frame = AnimEndFrame(model, current_animation);
                 instance->animation_frame_b += FRAMETIME * 60.0f * animation_rate;
                 if (instance->animation_frame_b > end_frame) {
-                    CHARACTERANIM_CONFIG_PC *animation_info =
-                        static_cast<CHARACTERANIM_CONFIG_PC *>(model->animation_configs[current_animation]);
+                    CHARACTERANIM_CONFIG_PC *animation_info = model->animation_configs[current_animation];
                     if ((animation_info->flags & 2) != 0) {
                         instance->animation_frame_b = instance->animation_frame_b - end_frame + 1.0f;
                     } else {
@@ -1896,8 +1895,7 @@ extern "C" {
             const f32 end_frame = AnimEndFrame(model, current_animation);
             instance->animation_frame_a += FRAMETIME * 60.0f * animation_rate;
             if (instance->animation_frame_a > end_frame) {
-                CHARACTERANIM_CONFIG_PC *animation_info =
-                    static_cast<CHARACTERANIM_CONFIG_PC *>(model->animation_configs[current_animation]);
+                CHARACTERANIM_CONFIG_PC *animation_info = model->animation_configs[current_animation];
                 if ((animation_info->flags & 2) != 0) {
                     instance->animation_frame_a = instance->animation_frame_a - end_frame + 1.0f;
                 } else {
@@ -2588,8 +2586,7 @@ extern "C" {
                 }
                 if (!wait) {
                     if (CutSceneMusicStartFramePc != -1) {
-                        if (static_cast<i32>(nuapi.frame_count) <
-                            static_cast<i32>(static_cast<u32>(CutSceneMusicStartFramePc) + 5U)) {
+                        if (nuapi.frame_count < static_cast<i32>(static_cast<u32>(CutSceneMusicStartFramePc) + 5U)) {
                             reinterpret_cast<CUT_CONTROLLER_INSTANCE_PC *>(cut->instance)->rate = 0.0f;
                             CutSceneWaiting = 1;
                             wait = true;

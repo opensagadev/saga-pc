@@ -185,7 +185,7 @@ void __cdecl SuperCarry_DrawObject(struct gameobject_s *object) {
             dco_locatorposonly = 1;
         }
         config = object->character_data->game_character;
-        blowup = ((GIZMOBLOWUP_PC *)(object->grapple));
+        blowup = object->grapple;
         DrawObjectOnCharacter(WORLD, object, -1, &blowup->type->animated_special, config->hand_locators[0],
                               config->hand_locators[1], object->locator_matrices, ((u8)object->field_107c),
                               object->layer_mask, &matrix, translation, 1.0f, 1.0f);
@@ -284,7 +284,7 @@ void __cdecl SuperCarry_Throw(GAMEOBJECT *object, i32 mode) {
     velocity.z = NuTrigTable[((object->facing_angle + 0x4000) >> 1) & 0x7fff] * speed;
     velocity.y = mode == 2 ? SUPERCARRY_DROPSPEED_Y : SUPERCARRY_THROWSPEED_Y;
     params.velocity = &velocity;
-    blowup = (CARRY_BLOWUP_PC *)object->grapple;
+    blowup = object->grapple;
     params.special = &((GIZMOBLOWUP_PC *)blowup)->type->animated_special;
     params.field_14 = params.field_18 = (f32)(0.5 * blowup->target_scale);
     params.flags = 0x8011;
@@ -300,8 +300,8 @@ void __cdecl SuperCarry_Throw(GAMEOBJECT *object, i32 mode) {
     params.lighting_data = &basis->lighting;
     part = AddPart(&params);
     if (part != NULL) {
-        part->force_flags = (u16)ObjHitObj_Flags(object);
-        ((CARRY_PART_PC *)part)->blowup = (GIZMOBLOWUP_PC *)object->grapple;
+        part->force_flags = ObjHitObj_Flags(object);
+        ((CARRY_PART_PC *)part)->blowup = object->grapple;
         part->rotation_y = object->takeover_start_angle + object->movement_facing_angle;
     }
 }
@@ -349,7 +349,7 @@ void __cdecl SuperCarry_Start(struct gameobject_s *object, GIZMOBLOWUP_PC *blowu
         NUVEC minimum;
         NUVEC maximum;
         NuSpecialGetBounds(&((GIZMOBLOWUP_PC *)object->grapple)->type->animated_special, &minimum, &maximum);
-        blowup = ((GIZMOBLOWUP_PC *)(object->grapple));
+        blowup = object->grapple;
         angle = NuAtan2D(blowup->transform.m20, blowup->transform.m22);
         difference = RotDiff(object->movement_facing_angle, angle);
         magnitude = abs(difference);
@@ -405,7 +405,7 @@ void __cdecl SuperCarry_MoveCode(WORLDINFO *world, struct gameobject_s *object) 
             case 0: {
                 i32 event = 0;
                 if ((object->context_variant_flags & 0x40) == 0) {
-                    GIZMOBLOWUP_PC *blowup = ((GIZMOBLOWUP_PC *)(object->grapple));
+                    GIZMOBLOWUP_PC *blowup = object->grapple;
                     object->movement_facing_angle = NuAtan2D(blowup->mid_position.x - object->collision_position.x,
                                                              blowup->mid_position.z - object->collision_position.z);
                     if (frame != NULL) {
@@ -425,7 +425,7 @@ void __cdecl SuperCarry_MoveCode(WORLDINFO *world, struct gameobject_s *object) 
                 }
                 if (event) {
                     object->context_variant_flags |= 0x40;
-                    GizmoBlowupBlowup(((GIZMOBLOWUP_PC *)(object->grapple)), 0, 7, -1, NULL, 1);
+                    GizmoBlowupBlowup(object->grapple, 0, 7, -1, NULL, 1);
                     NewBuzzFrames(object->pad->bound_pad, 1, 0);
                 }
                 return;
@@ -454,7 +454,7 @@ void __cdecl SuperCarry_MoveCode(WORLDINFO *world, struct gameobject_s *object) 
                     NUVEC *drop;
                     object->context_variant_flags |= 0x40;
                     NewBuzzFrames(object->pad->bound_pad, 1, 0);
-                    blowup = ((GIZMOBLOWUP_PC *)(object->grapple));
+                    blowup = object->grapple;
                     drop = &((CARRY_DROP_PC *)object)->drop_position;
                     if (SuperCarry_PutDownDrop != 0) {
                         if (!SuperCarry_TurnBlowupBackOn(
@@ -528,7 +528,7 @@ void __cdecl SuperCarry_MoveCode(WORLDINFO *world, struct gameobject_s *object) 
                             }
                             return;
                         }
-                        blowup = ((GIZMOBLOWUP_PC *)(object->grapple));
+                        blowup = object->grapple;
                         if (put_down && (blowup->secondary_flags & 4) != 0 && LEGOACT_SUPERCARRY_PUTDOWN != -1 &&
                             ((CARRY_MODEL_PC *)object->character_model)->model_data_b[LEGOACT_SUPERCARRY_PUTDOWN] !=
                                 NULL &&
@@ -640,7 +640,7 @@ void __cdecl SuperCarry_MoveCode(WORLDINFO *world, struct gameobject_s *object) 
                     NUVEC position;
                     i32 effect;
                     SuperCarry_GetObjectPos(object, &position, NULL);
-                    blowup = ((GIZMOBLOWUP_PC *)(object->grapple));
+                    blowup = object->grapple;
                     effect = 3;
                     if (blowup->effect_delay > 0.0f) {
                         effect = 11;

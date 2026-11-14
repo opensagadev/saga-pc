@@ -289,12 +289,12 @@ void __cdecl DebReAlloc2(DEBRISKEY_PC *key) {
         }
         if (effect->time_group == 4) {
             freechunkcontrols[freechunkcontrolsptr]->expiry_time =
-                (i8)debtab[key->effect_index]->trail_count * debtab[key->effect_index]->trail_time +
+                debtab[key->effect_index]->trail_count * debtab[key->effect_index]->trail_time +
                 (debtab[key->effect_index]->particle_lifetime + panelglobaltime);
             panel_time = 1;
         } else {
             freechunkcontrols[freechunkcontrolsptr]->expiry_time =
-                (i8)debtab[key->effect_index]->trail_count * debtab[key->effect_index]->trail_time +
+                debtab[key->effect_index]->trail_count * debtab[key->effect_index]->trail_time +
                 (debtab[key->effect_index]->particle_lifetime + globaltime);
             panel_time = 0;
         }
@@ -460,7 +460,7 @@ void __cdecl DebFreeOrphansInstantly(DEBRIS_INFO_PC *effect) {
                 AddChunkControlToStack(control, &debris_chunk_control_stack[panel_time]);
             }
             ++freechunkcontrolsptr;
-            RemoveChunkFromRenderStack(&ParticleChunkToRender[i], &ParticleChunkRenderStack[(i8)effect->time_group]);
+            RemoveChunkFromRenderStack(&ParticleChunkToRender[i], &ParticleChunkRenderStack[effect->time_group]);
             ParticleChunkToRender[i].particle_chunk = NULL;
             ParticleChunkToRender[i].effect = NULL;
         }
@@ -558,13 +558,13 @@ void __cdecl DebFree(i32 *handle) {
             freechunkcontrols[freechunkcontrolsptr]->owner = NULL;
             if (effect->time_group == 4) {
                 freechunkcontrols[freechunkcontrolsptr]->expiry_time =
-                    (i8)debtab[DEBRIS_ENGINE_KEYS_PC[*handle].effect_index]->trail_count *
+                    debtab[DEBRIS_ENGINE_KEYS_PC[*handle].effect_index]->trail_count *
                         debtab[DEBRIS_ENGINE_KEYS_PC[*handle].effect_index]->trail_time +
                     (debtab[DEBRIS_ENGINE_KEYS_PC[*handle].effect_index]->particle_lifetime + panelglobaltime);
                 panel_time = 1;
             } else {
                 freechunkcontrols[freechunkcontrolsptr]->expiry_time =
-                    (i8)debtab[DEBRIS_ENGINE_KEYS_PC[*handle].effect_index]->trail_count *
+                    debtab[DEBRIS_ENGINE_KEYS_PC[*handle].effect_index]->trail_count *
                         debtab[DEBRIS_ENGINE_KEYS_PC[*handle].effect_index]->trail_time +
                     (debtab[DEBRIS_ENGINE_KEYS_PC[*handle].effect_index]->particle_lifetime + globaltime);
                 panel_time = 0;
@@ -821,7 +821,7 @@ f32 __cdecl CameraEmitterDistance(NUVEC *position) {
     if (debris_cutoff_camera_vec == NULL) {
         return 0.0f;
     }
-    return NuVecDist(position, (NUVEC *)debris_cutoff_camera_vec, NULL);
+    return NuVecDist(position, debris_cutoff_camera_vec, NULL);
 }
 
 void __cdecl DebrisProcessAllocation(void) {
@@ -1175,7 +1175,7 @@ void __cdecl DebrisFreeOldestDmaDebTypeTable(void) {
 void __cdecl DebFreeAllCreatedEffects(void) {
     i32 i;
     for (i = 0; i < maxdebkeys; ++i) {
-        DEBRISKEY_PC *key = &((DEBRISKEY_PC *)debkeydata)[i];
+        DEBRISKEY_PC *key = &debkeydata[i];
         if (key->effect_index != 0 && key->field_2f9 != 0) {
             i32 handle = i;
             DebFreeInstantly(&handle);
@@ -1815,7 +1815,7 @@ void __cdecl UpdateDebrisRenderStackPriority(void) {
         DEBRISKEY_PC *key = chunk->key;
         if (key != NULL) {
             if (key->timed_flags != 0) {
-                f32 priority = (u16)key->render_priority + key->cutoff_distance * 25.0;
+                f32 priority = key->render_priority + key->cutoff_distance * 25.0;
                 if (priority > 65535.0) {
                     priority = 65535.0f;
                 }
@@ -1853,7 +1853,7 @@ void AddFiniteShotDebrisEffect2(i32 *handle, i32 effect, NUVEC *position, NUVEC 
     debkeydata[*handle].emission_epoch = debkeydata[*handle].last_update_time;
     debkeydata[*handle].finite = 1;
     debkeydata[*handle].cutoff_distance =
-        (debris_cutoff_camera_vec == NULL ? 0.0f : NuVecDist(position, (NUVEC *)debris_cutoff_camera_vec, NULL));
+        (debris_cutoff_camera_vec == NULL ? 0.0f : NuVecDist(position, debris_cutoff_camera_vec, NULL));
     if (debkeydata[*handle].process_collision_sound != 0) {
         DEBRIS_INFO_PC **effects = debtab;
         volume = 0.0f;
@@ -2118,6 +2118,6 @@ i32 __cdecl DebrisGetConeProperties(i32 handle, NUVEC *origin, NUVEC *end, f32 *
 
 void __cdecl DebrisStatusAlwaysOff(i32 *handle) {
     if (*handle != -1) {
-        ((DEBRISKEY_PC *)debkeydata)[*handle].field_2f4 = 0;
+        debkeydata[*handle].field_2f4 = 0;
     }
 }

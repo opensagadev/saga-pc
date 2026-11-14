@@ -2289,7 +2289,7 @@ void NuEulerXYZFromQuat(NUANG *x, NUANG *y, NUANG *z, NUQUAT *input) {
         sin_y = 1.0f;
     }
 
-    *y = (i16)NuASin(sin_y);
+    *y = NuASin(sin_y);
     *x = NuAtan2D(2.0f * (q.y * q.z + q.w * q.x), q.w * q.w - q.x * q.x - q.y * q.y + q.z * q.z);
     *z = NuAtan2D(2.0f * (q.x * q.y + q.w * q.z), q.w * q.w + q.x * q.x - q.y * q.y - q.z * q.z);
 }
@@ -3854,10 +3854,10 @@ i32 nugraphCalcCurve(nugraph_s *graph, i32 point_count) {
     }
     nugraphFreeTempCurveData();
     if (curve == NULL) {
-        curve = (NUVEC *)NuAlloc(100 * sizeof(NUVEC), NugraphSourcePathPc, 521);
+        curve = NuAlloc(100 * sizeof(NUVEC), NugraphSourcePathPc, 521);
     }
     if (control == NULL) {
-        control = (NUVEC *)NuAlloc(8 * sizeof(NUVEC), NugraphSourcePathPc, 526);
+        control = NuAlloc(8 * sizeof(NUVEC), NugraphSourcePathPc, 526);
     }
     if (curve == NULL || control == NULL) {
         return 0;
@@ -4255,7 +4255,7 @@ i32 __cdecl NuAtani(i32 dx, i32 dy) {
 
 static f32 NuAngAtanQuadrantRadI(u32 dx, u32 dy) {
     if (dx > dy) {
-        return (f32)((0x4000 - (i32)ang[(dy << 9) / dx]) * PCAtan2RadianScale);
+        return (f32)((0x4000 - ang[(dy << 9) / dx]) * PCAtan2RadianScale);
     }
     return (f32)((u32)ang[(dx << 9) / dy] * PCAtan2RadianScale);
 }
@@ -4302,8 +4302,8 @@ static u16 NuAngAtanQuadrantInterp(f32 dx, f32 dy) {
         fraction = dy * 512.0f / dx;
         index = (i32)fraction;
         fraction -= index;
-        result = (0x4000 - (i32)ang[index]) * (1.0f - fraction);
-        result += (0x4000 - (i32)ang[index + 1]) * fraction;
+        result = (0x4000 - ang[index]) * (1.0f - fraction);
+        result += (0x4000 - ang[index + 1]) * fraction;
         return (u16)result;
     }
     if (dx == dy) {
@@ -4312,8 +4312,8 @@ static u16 NuAngAtanQuadrantInterp(f32 dx, f32 dy) {
     fraction = dx * 512.0f / dy;
     index = (i32)fraction;
     fraction -= index;
-    result = (i32)ang[index] * (1.0f - fraction);
-    result += (i32)ang[index + 1] * fraction;
+    result = ang[index] * (1.0f - fraction);
+    result += ang[index + 1] * fraction;
     return (u16)result;
 }
 
@@ -4326,8 +4326,8 @@ static f32 NuAngAtanQuadrantInterpF(f32 dx, f32 dy) {
         fraction = dy * 512.0f / dx;
         index = (i32)fraction;
         fraction -= index;
-        result = (0x4000 - (i32)ang[index]) * (1.0f - fraction);
-        result += (0x4000 - (i32)ang[index + 1]) * fraction;
+        result = (0x4000 - ang[index]) * (1.0f - fraction);
+        result += (0x4000 - ang[index + 1]) * fraction;
         return result;
     }
     if (dx == dy) {
@@ -4336,8 +4336,8 @@ static f32 NuAngAtanQuadrantInterpF(f32 dx, f32 dy) {
     fraction = dx * 512.0f / dy;
     index = (i32)fraction;
     fraction -= index;
-    result = (i32)ang[index] * (1.0f - fraction);
-    result += (i32)ang[index + 1] * fraction;
+    result = ang[index] * (1.0f - fraction);
+    result += ang[index + 1] * fraction;
     return result;
 }
 
@@ -4452,7 +4452,7 @@ f32 __cdecl NuPow(f32 base, f32 exponent) {
             return NuPowResultsPc[i];
         }
     }
-    result = (f32)exp((double)exponent * log((double)base));
+    result = (f32)exp((double)exponent * log(base));
     NuPowBasesPc[NuPowCacheIndexPc] = base;
     NuPowExponentsPc[NuPowCacheIndexPc] = exponent;
     NuPowResultsPc[NuPowCacheIndexPc] = result;
@@ -4536,7 +4536,7 @@ f32 __cdecl RenderPostLogPc(f32 value) {
     f32 fraction;
     i32 index;
     if (RenderPostLogFirstPc) {
-        RenderPostLogTablePc = (f32 *)NuAlloc(36000, NuExp10SourcePathPc, 805);
+        RenderPostLogTablePc = NuAlloc(36000, NuExp10SourcePathPc, 805);
         if (RenderPostLogTablePc == NULL) {
             return 0.0f;
         }
@@ -4551,7 +4551,7 @@ f32 __cdecl RenderPostLogPc(f32 value) {
     exponent = 3.0f;
     if (value >= 10000.0f) {
         while (value > 10000.0f) {
-            value = (f32)(value * 0.1f);
+            value = value * 0.1f;
             exponent += 1.0f;
         }
     } else if (value < 1000.0f) {
@@ -4577,7 +4577,7 @@ f32 __cdecl NuExp10(f32 value) {
     i32 exponent;
     i32 index;
     if (NuExp10FirstTimePc) {
-        NuExp10TablePc = (f32 *)NuAlloc(40000, NuExp10SourcePathPc, 866);
+        NuExp10TablePc = NuAlloc(40000, NuExp10SourcePathPc, 866);
         if (NuExp10TablePc == NULL) {
             return 0.0f;
         }

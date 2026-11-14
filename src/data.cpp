@@ -8357,16 +8357,16 @@ extern "C" {
     extern const f64 PCAtan2RadianScale = 9.58738019107841e-05;
 #pragma const_seg()
 #pragma const_seg(".rdata$PCPathArcSineCoefficient3")
-    extern const f64 PCPathArcSineCoefficient3 = (f64)(f32)-0.166667f;
+    extern const f64 PCPathArcSineCoefficient3 = -0.166667f;
 #pragma const_seg()
 #pragma const_seg(".rdata$PCPathArcSineCoefficient5")
-    extern const f64 PCPathArcSineCoefficient5 = (f64)(f32)-0.075f;
+    extern const f64 PCPathArcSineCoefficient5 = -0.075f;
 #pragma const_seg()
 #pragma const_seg(".rdata$PCPathArcSineCoefficient7")
-    extern const f64 PCPathArcSineCoefficient7 = (f64)(f32)-0.0446429f;
+    extern const f64 PCPathArcSineCoefficient7 = -0.0446429f;
 #pragma const_seg()
 #pragma const_seg(".rdata$PCPathArcSineCoefficient9")
-    extern const f64 PCPathArcSineCoefficient9 = (f64)(f32)-0.0303819f;
+    extern const f64 PCPathArcSineCoefficient9 = -0.0303819f;
 #pragma const_seg()
 #pragma const_seg(".rdata$AIScriptListFilename")
     extern const char AIScriptListFilename[11] = "script.txt";
@@ -15327,7 +15327,7 @@ extern "C" {
 
 extern "C" {
 #pragma const_seg(".rdata$TerrainOpposingContactThresholdPc")
-    extern const f64 TerrainOpposingContactThresholdPc = (f64)-0.7f;
+    extern const f64 TerrainOpposingContactThresholdPc = -0.7f;
 #pragma const_seg()
 #pragma data_seg(".data$TerConTol")
     f32 TerConTol = 0.1f;
@@ -32740,16 +32740,16 @@ extern "C" {
 
 extern "C" {
 #pragma const_seg(".rdata$PanelVariantTwoTargetZ")
-    extern const f64 PanelVariantTwoTargetZ = (f64)0.19f;
+    extern const f64 PanelVariantTwoTargetZ = 0.19f;
 #pragma const_seg()
 #pragma const_seg(".rdata$PanelVariantTwoTargetY")
-    extern const f64 PanelVariantTwoTargetY = (f64)0.245f;
+    extern const f64 PanelVariantTwoTargetY = 0.245f;
 #pragma const_seg()
 #pragma const_seg(".rdata$PanelVariantThreeTargetZ")
-    extern const f64 PanelVariantThreeTargetZ = (f64)0.17f;
+    extern const f64 PanelVariantThreeTargetZ = 0.17f;
 #pragma const_seg()
 #pragma const_seg(".rdata$PanelVariantThreeTargetY")
-    extern const f64 PanelVariantThreeTargetY = (f64)0.34f;
+    extern const f64 PanelVariantThreeTargetY = 0.34f;
 #pragma const_seg()
 #pragma const_seg(".rdata$PanelTrackEnterDistanceSquared")
     extern const f32 PanelTrackEnterDistanceSquared = 0.809999942779541f;

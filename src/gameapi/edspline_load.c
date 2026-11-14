@@ -17,7 +17,7 @@ i32 __cdecl LoadEditorSplines(char *path, VARIPTR *buffer, VARIPTR *end) {
     u32 aligned_start;
     i32 failed = 0;
     aligned_start = (buffer->addr + 3) & ~3u;
-    splineStore = (NUGSPLINE *)buffer->void_ptr;
+    splineStore = buffer->void_ptr;
     buffer->addr = aligned_start;
     EdFileSetMedia(1);
     if (EdFileOpen(path, 0)) {

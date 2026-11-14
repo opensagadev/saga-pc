@@ -503,8 +503,8 @@ extern "C" {
         if ((level->flags & 8) != 0) {
             world->giz_buffer.addr = (world->giz_buffer.addr + 3) & ~3U;
             world->terrain = TerrainInitEx(world->level_idx, &world->giz_buffer, world->buffer_end.void_ptr, 0,
-                                           world->config_file, world->current_gscn, 0, (u32)(u16)level->max_ter_groups,
-                                           (u32)(u16)level->max_ter_groups, (u32)(u16)level->max_ter_platforms);
+                                           world->config_file, world->current_gscn, 0, (u16)level->max_ter_groups,
+                                           (u16)level->max_ter_groups, (u16)level->max_ter_platforms);
         }
     }
 
@@ -566,17 +566,17 @@ extern "C" {
         world->episode_index = -1;
         if (level_index != -1) {
             world->current_level = &LDataList[level_index];
-            world->area_index = (i8)world->current_level->area_index;
+            world->area_index = world->current_level->area_index;
             if (world->area_index != -1) {
                 world->area = &ADataList[world->area_index];
-                world->episode_index = (i8)ADataList[world->area_index].episode_index;
+                world->episode_index = ADataList[world->area_index].episode_index;
             }
             world->page_pp = -1;
             world->page_anim = -1;
             world->page_grass = -1;
             world->page_bridge = -1;
             world->page_part = -1;
-            progress_index = (i8)LDataList[level_index].area_level_index;
+            progress_index = LDataList[level_index].area_level_index;
             if (progress_index != -1 && progress_index < 12) {
                 world->level_progress = &LevelProgressData[progress_index];
             } else {
@@ -635,7 +635,7 @@ extern "C" {
         }
         noterraininit();
         TerrainSetCur(world->terrain);
-        TerrSetPlatScanDist((f32)(u8)world->current_level->platform_scan_distance);
+        TerrSetPlatScanDist((f32)world->current_level->platform_scan_distance);
         if (world->page_grass != -1) {
             edgraStartPage((u8)world->page_grass);
         }

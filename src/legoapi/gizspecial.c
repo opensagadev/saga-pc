@@ -173,12 +173,12 @@ STATIC_ASSERT(offsetof(GIZSPECIAL_PROGRESS_PC, active) == 0);
 STATIC_ASSERT(offsetof(GIZSPECIAL_PROGRESS_PC, reversed) == 0x20);
 
 static i32 __cdecl GizSpecial_GetMaxGizmos(void *world_ptr) {
-    GIZFLOW_LOAD_WORLD_PC *world = (GIZFLOW_LOAD_WORLD_PC *)world_ptr;
+    GIZFLOW_LOAD_WORLD_PC *world = world_ptr;
     return world->level->max_specials;
 }
 
 static void __cdecl GizSpecial_AddGizmos(void *gizmo_sys, i32 type_id, void *world_ptr, void *data) {
-    GIZFLOW_LOAD_WORLD_PC *world = (GIZFLOW_LOAD_WORLD_PC *)world_ptr;
+    GIZFLOW_LOAD_WORLD_PC *world = world_ptr;
     i32 index;
     if (world != NULL) {
         for (index = 0; index < world->specials->count; ++index) {
@@ -198,7 +198,7 @@ static i32 __cdecl GizSpecial_GetOutput(GIZMO_PC *gizmo, i32 output, i32 include
     if (gizmo == NULL || gizmo->object == NULL) {
         return 0;
     }
-    special = (GIZSPECIAL_CALLBACK_PC *)gizmo->object;
+    special = gizmo->object;
     if (special->anim_set->object_count == 0 || !NuSpecialExistsFn(&special->anim_set->objects->special) ||
         ((special->flags & 2) == 0 && include_inactive == 0)) {
         return 0;
@@ -234,7 +234,7 @@ static void __cdecl GizSpecial_Activate(GIZMO_PC *gizmo, i32 active) {
     if (gizmo == NULL || gizmo->object == NULL) {
         return;
     }
-    special = (GIZSPECIAL_CALLBACK_PC *)gizmo->object;
+    special = gizmo->object;
     if (active != 0) {
         GameAnimSet_JumpToStart(special->anim_set);
         GameAnimSet_Play(special->anim_set, 1.0f, 1);
@@ -253,7 +253,7 @@ static i32 __cdecl GizSpecial_ActivateRev(GIZMO_PC *gizmo, i32 reverse, i32 chec
     if (gizmo->object == NULL) {
         return 0;
     }
-    special = (GIZSPECIAL_CALLBACK_PC *)gizmo->object;
+    special = gizmo->object;
     if ((check & 1) != 0) {
         return (special->flags & 1) != reverse;
     }
@@ -276,7 +276,7 @@ static void __cdecl GizSpecial_SetVisibility(GIZMO_PC *gizmo, i32 visible) {
 static NUVEC *__cdecl GizSpecial_GetPos(GIZMO_PC *gizmo) {
     GIZSPECIAL_CALLBACK_PC *special;
     if (gizmo != NULL) {
-        special = (GIZSPECIAL_CALLBACK_PC *)gizmo->object;
+        special = gizmo->object;
         if (special == NULL || special->anim_set->object_count == 0 ||
             !NuSpecialExistsFn(&special->anim_set->objects->special)) {
             return NULL;
@@ -287,7 +287,7 @@ static NUVEC *__cdecl GizSpecial_GetPos(GIZMO_PC *gizmo) {
 }
 
 static i32 __cdecl GizSpecial_UsingSpecial(GIZMO_PC **results, void *world_ptr, i32 capacity, const char *name) {
-    GIZFLOW_LOAD_WORLD_PC *world = (GIZFLOW_LOAD_WORLD_PC *)world_ptr;
+    GIZFLOW_LOAD_WORLD_PC *world = world_ptr;
     i32 index;
     i32 count = 0;
     GIZFLOW_SPECIAL_PC *special;
@@ -313,7 +313,7 @@ static void *__cdecl GizSpecial_AllocateProgressData(VARIPTR *buffer, VARIPTR *e
 }
 
 static void __cdecl GizSpecial_ClearProgress(void *world_ptr, void *progress_ptr) {
-    GIZSPECIAL_PROGRESS_PC *progress = (GIZSPECIAL_PROGRESS_PC *)progress_ptr;
+    GIZSPECIAL_PROGRESS_PC *progress = progress_ptr;
     if (progress == NULL) {
         return;
     }
@@ -322,8 +322,8 @@ static void __cdecl GizSpecial_ClearProgress(void *world_ptr, void *progress_ptr
 }
 
 static void __cdecl GizSpecial_StoreProgress(void *world_ptr, void *data, void *progress_ptr) {
-    GIZFLOW_LOAD_WORLD_PC *world = (GIZFLOW_LOAD_WORLD_PC *)world_ptr;
-    GIZSPECIAL_PROGRESS_PC *progress = (GIZSPECIAL_PROGRESS_PC *)progress_ptr;
+    GIZFLOW_LOAD_WORLD_PC *world = world_ptr;
+    GIZSPECIAL_PROGRESS_PC *progress = progress_ptr;
     GIZSPECIAL_CALLBACK_PC *special;
     i32 index;
     i32 word;
@@ -349,8 +349,8 @@ static void __cdecl GizSpecial_StoreProgress(void *world_ptr, void *data, void *
 }
 
 static void __cdecl GizSpecial_Reset(void *world_ptr, void *data, void *progress_ptr) {
-    GIZFLOW_LOAD_WORLD_PC *world = (GIZFLOW_LOAD_WORLD_PC *)world_ptr;
-    GIZSPECIAL_PROGRESS_PC *progress = (GIZSPECIAL_PROGRESS_PC *)progress_ptr;
+    GIZFLOW_LOAD_WORLD_PC *world = world_ptr;
+    GIZSPECIAL_PROGRESS_PC *progress = progress_ptr;
     GIZSPECIAL_CALLBACK_PC *special;
     i32 index;
     i32 word;
@@ -372,8 +372,8 @@ static void __cdecl GizSpecial_Reset(void *world_ptr, void *data, void *progress
 }
 
 static void *__cdecl GizSpecial_ReserveBuffer(void *world_ptr) {
-    WORLDINFO *world = (WORLDINFO *)world_ptr;
-    GIZFLOW_LOAD_WORLD_PC *fields = (GIZFLOW_LOAD_WORLD_PC *)world_ptr;
+    WORLDINFO *world = world_ptr;
+    GIZFLOW_LOAD_WORLD_PC *fields = world_ptr;
     GIZSPECIAL_SYSTEM_CALLBACK_PC *system;
     i32 index;
     if (fields->level->max_specials != 0) {
@@ -482,14 +482,14 @@ void edbobs_DrawCoordinateInfo(NUVEC *position, i32 x, i32 y) {
 
 i32 __cdecl GizmoFileReadGameAnimSet(GAMEANIMSET *set, void *world_ptr, void(__cdecl *read_data)(GAMEANIMOBJ *, u8),
                                      u8 version, char *prefix, char *suffix) {
-    WORLDINFO *world = (WORLDINFO *)world_ptr;
+    WORLDINFO *world = world_ptr;
     i32 success = 1;
     i32 i;
     u8 file_version = EdFileReadChar();
     u8 count = EdFileReadChar();
     for (i = 0; i < count; ++i) {
         char name[64];
-        i32 length = (i8)EdFileReadChar();
+        i32 length = EdFileReadChar();
         f32 start_frame;
         f32 end_frame;
         u32 flags;

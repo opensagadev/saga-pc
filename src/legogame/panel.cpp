@@ -703,8 +703,8 @@ extern "C" {
             return;
         }
         arcade_mode = Arcade_GetMode(&arcade_flags);
-        status_y = (f32)((STATSPOSY - STATSPOS2YPc) * NuTrigTable[((i32)((f64)statstime * 16384.0) >> 1) & 0x7fff] +
-                         STATSPOS2YPc);
+        status_y =
+            (STATSPOSY - STATSPOS2YPc) * NuTrigTable[((i32)((f64)statstime * 16384.0) >> 1) & 0x7fff] + STATSPOS2YPc;
         raised_hearts = (WORLD->area != NULL && (WORLD->area == HUB_ADATA || (WORLD->area->flags & 0x100) != 0)) ||
                         SuperStory != 0 || ChallengeMode != 0 || Mission_Active(NULL) != NULL || arcade_mode == 0;
         GetMenuID();
@@ -775,7 +775,7 @@ extern "C" {
             if (StartupGameFlag1 != 0 && paused == 0 && FadeSys.fade == 0.0f && (object->flags_1fc & 0x80) != 0) {
                 if (ONEPLAYERPOWERUPS != 0 && object->powerup_time > 0.0f) {
                     if (FindGameMsgsWithID(7, 0, (i8)object->field_280, NULL) == 0 &&
-                        (object->powerup_time >= 3.0f || (u32)GameTimer.update_count % 6 < 3)) {
+                        (object->powerup_time >= 3.0f || GameTimer.update_count % 6 < 3)) {
                         DrawPanel3DObject(player == 0 ? -ICONX : ICONX, PowerUp_GetPanelY(player) + status_y, 1.0f,
                                           POWERUPOBJSIZE, POWERUPOBJSIZE, POWERUPOBJSIZE, 0, PowerUp_PanelYRot[player],
                                           0, &WORLD->level_objects[208].special, 0, 1.0f);
@@ -1395,9 +1395,9 @@ extern "C" {
         for (player_index = 0; player_index < 8; ++player_index) {
             if (Player[player_index] != NULL && (((GAMEOBJECT *)Player[player_index])->flags_1fc & 0x80) != 0 &&
                 ShowPlayerCoordinatePc != 0) {
-                sprintf(coordinate_text, "X:%.2f Y:%.2f Z:%.2f", (f64)((GAMEOBJECT *)Player[player_index])->position.x,
-                        (f64)((GAMEOBJECT *)Player[player_index])->position.y,
-                        (f64)((GAMEOBJECT *)Player[player_index])->position.z);
+                sprintf(coordinate_text, "X:%.2f Y:%.2f Z:%.2f", ((GAMEOBJECT *)Player[player_index])->position.x,
+                        ((GAMEOBJECT *)Player[player_index])->position.y,
+                        ((GAMEOBJECT *)Player[player_index])->position.z);
                 Text3DEx(coordinate_text, coordinate_positions[player_index].x, coordinate_positions[player_index].y,
                          1.0f, 0.4f, 0.5f, 0.5f, 0, 255, 191, 0, 48);
             }
@@ -1539,7 +1539,7 @@ void __cdecl Tag_DrawIcon_Batman(GAMEOBJECT *object) {
     message.special = &WORLD->level_objects[message.icon];
     AddGameMsg(&message);
     message.icon = object->field_280 != 0 ? 0xa5 : 0xa6;
-    message.special = &WORLD->level_objects[(i32)message.icon];
+    message.special = &WORLD->level_objects[message.icon];
     AddGameMsg(&message);
 }
 
@@ -1582,6 +1582,6 @@ void __cdecl Tag_DrawIcon_LSW(GAMEOBJECT *object) {
     message.special = &WORLD->level_objects[message.icon];
     AddGameMsg(&message);
     message.icon = object->field_280 != 0 ? 0xa5 : 0xa6;
-    message.special = &WORLD->level_objects[(i32)message.icon];
+    message.special = &WORLD->level_objects[message.icon];
     AddGameMsg(&message);
 }

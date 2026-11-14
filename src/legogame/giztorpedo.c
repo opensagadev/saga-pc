@@ -44,7 +44,7 @@ typedef struct {
 } ADD_TORP_SYS_PC;
 
 i32 __cdecl GizTorp_Load(void *world_pointer, void *unused) {
-    WORLDINFO *world = (WORLDINFO *)world_pointer;
+    WORLDINFO *world = world_pointer;
     TORPEDO_MACHINE_QUERY_SYS_PC *system;
     i32 version;
     i32 index;
@@ -80,15 +80,15 @@ i32 __cdecl GizTorp_Load(void *world_pointer, void *unused) {
 /* MATCH-EXCEPTION: retail re-reads world->torpedo_machine_sys at each use; the casts stand in for its
  * GIZTORPMACHINESYS_s type (saga.h has the narrower TORPEDO_MACHINE_SYS_PC view). */
 void *__cdecl GizTorps_ReserveBufferSpace(void *pointer) {
-    WORLDINFO *world = (WORLDINFO *)pointer;
+    WORLDINFO *world = pointer;
     world->torpedo_machine_sys = NULL;
     if (world->current_level->max_torpmachines > 0) {
         world->giz_buffer.addr = (world->giz_buffer.addr + 3) & ~3u;
-        world->torpedo_machine_sys = (TORPEDO_MACHINE_SYS_PC *)world->giz_buffer.void_ptr;
+        world->torpedo_machine_sys = world->giz_buffer.void_ptr;
         world->giz_buffer.addr += sizeof(GIZTORPMACHINESYS_s);
         memset(world->torpedo_machine_sys, 0, sizeof(GIZTORPMACHINESYS_s));
         world->giz_buffer.addr = (world->giz_buffer.addr + 3) & ~3u;
-        ((GIZTORPMACHINESYS_s *)world->torpedo_machine_sys)->machines = (GIZTORPMACHINE_s *)world->giz_buffer.void_ptr;
+        ((GIZTORPMACHINESYS_s *)world->torpedo_machine_sys)->machines = world->giz_buffer.void_ptr;
         world->giz_buffer.addr += world->current_level->max_torpmachines * sizeof(GIZTORPMACHINE_s);
         memset(((GIZTORPMACHINESYS_s *)world->torpedo_machine_sys)->machines, 0,
                world->current_level->max_torpmachines * sizeof(GIZTORPMACHINE_s));
@@ -98,25 +98,25 @@ void *__cdecl GizTorps_ReserveBufferSpace(void *pointer) {
 }
 
 void __cdecl GizTorp_SetVisibility(void *input, i32 visible) {
-    GIZMO_PC *gizmo = (GIZMO_PC *)input;
+    GIZMO_PC *gizmo = input;
     TORPEDO_MACHINE_QUERY_PC *machine;
     if (gizmo != NULL) {
-        machine = (TORPEDO_MACHINE_QUERY_PC *)gizmo->object;
+        machine = gizmo->object;
         machine->visible = visible != 0;
     }
 }
 
 void __cdecl GizTorp_Activate(void *input, i32 active) {
-    GIZMO_PC *gizmo = (GIZMO_PC *)input;
+    GIZMO_PC *gizmo = input;
     TORPEDO_MACHINE_QUERY_PC *machine;
     if (gizmo != NULL) {
-        machine = (TORPEDO_MACHINE_QUERY_PC *)gizmo->object;
+        machine = gizmo->object;
         machine->active = active != 0;
     }
 }
 
 void __cdecl GizTorps_Reset(void *world_ptr, void *data, void *progress) {
-    WORLDINFO *w = (WORLDINFO *)world_ptr;
+    WORLDINFO *w = world_ptr;
     ADD_TORP_SYS_PC *s;
     i32 i;
     (void)data;
@@ -161,7 +161,7 @@ void *__cdecl GizTorpMachine_FindNearest(WORLDINFO *world, NUVEC *position, f32 
 }
 
 void __cdecl GizTorp_Update(void *world_ptr, void *unused, f32 elapsed) {
-    WORLDINFO *world = (WORLDINFO *)world_ptr;
+    WORLDINFO *world = world_ptr;
     TORPEDO_MACHINE_QUERY_SYS_PC *system = (TORPEDO_MACHINE_QUERY_SYS_PC *)world->torpedo_machine_sys;
     i32 index;
     (void)unused;
@@ -182,7 +182,7 @@ void __cdecl GizTorp_Update(void *world_ptr, void *unused, f32 elapsed) {
 }
 
 void __cdecl GizTorp_Draw(void *world_ptr, void *unused, f32 elapsed) {
-    WORLDINFO *world = (WORLDINFO *)world_ptr;
+    WORLDINFO *world = world_ptr;
     TORPEDO_MACHINE_QUERY_SYS_PC *system;
     NUMTX matrix;
     i32 index;
@@ -226,7 +226,7 @@ void __cdecl GizTorp_Draw(void *world_ptr, void *unused, f32 elapsed) {
 }
 
 i32 __cdecl GizTorp_GetMaxGizmos(void *world_ptr) {
-    WORLDINFO *world = (WORLDINFO *)world_ptr;
+    WORLDINFO *world = world_ptr;
     if (world != NULL) {
         return world->current_level->max_torpmachines;
     }
@@ -234,7 +234,7 @@ i32 __cdecl GizTorp_GetMaxGizmos(void *world_ptr) {
 }
 
 void __cdecl GizTorp_AddGizmos(GIZMOSYS_PC *giz, i32 type, void *world_ptr, void *data) {
-    WORLDINFO *w = (WORLDINFO *)world_ptr;
+    WORLDINFO *w = world_ptr;
     ADD_TORP_SYS_PC *s;
     i32 i;
     (void)data;
@@ -251,7 +251,7 @@ void __cdecl GizTorp_AddGizmos(GIZMOSYS_PC *giz, i32 type, void *world_ptr, void
 }
 
 char *__cdecl GizTorp_GetGizmoName(void *input) {
-    GIZMO_PC *gizmo = (GIZMO_PC *)input;
+    GIZMO_PC *gizmo = input;
     if (gizmo != NULL && gizmo->object != NULL) {
         return ((TORPEDO_MACHINE_QUERY_PC *)gizmo->object)->name;
     }

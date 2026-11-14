@@ -200,13 +200,13 @@ i32 __cdecl edbriLoadPage(char *path, void *scene) {
             if (name[0] == '\0') {
                 edBridges[index].special_20 = -1;
             } else {
-                edBridges[index].special_20 = edbitsLookupInstance(name, (NUGSCN *)scene);
+                edBridges[index].special_20 = edbitsLookupInstance(name, scene);
             }
             EdFileRead(name, sizeof(name));
             if (name[0] == '\0') {
                 edBridges[index].special_24 = -1;
             } else {
-                edBridges[index].special_24 = edbitsLookupInstance(name, (NUGSCN *)scene);
+                edBridges[index].special_24 = edbitsLookupInstance(name, scene);
             }
             edBridges[index].field_28 = EdFileReadFloat();
             edBridges[index].field_2c = EdFileReadFloat();
@@ -225,7 +225,7 @@ i32 __cdecl edbriLoadPage(char *path, void *scene) {
     edbri_nearest = -1;
     edbriDetermineNearest(1.0f);
     edbri_page_used[page] = 1;
-    edbri_page_scene[page] = (NUGSCN *)scene;
+    edbri_page_scene[page] = scene;
     return page;
 }
 

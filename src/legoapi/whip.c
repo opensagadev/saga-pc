@@ -26,28 +26,28 @@ void __cdecl Whip_MoveCode(GAMEOBJECT *object) {
             if (object->context_timer >= object->context_duration) {
                 switch (object->whip_action) {
                     case 3:
-                        target = (GIZMOBLOWUP_PC *)object->grapple;
+                        target = object->grapple;
                         if (target != NULL && (target->status_flags & 0x4000) && (target->status_flags & 0x800000)) {
                             object->field_7aa = LEGOACT_WHIP_GRAB;
                             object->context_timer = 0.0f;
                             object->field_7b3 = 3;
                             object->context_duration = AnimDuration((i16)object->id, object->field_7aa, 0.0f, 0.0f, 1);
                             object->context_variant_flags &= ~0x40u;
-                            target = (GIZMOBLOWUP_PC *)object->grapple;
+                            target = object->grapple;
                             object->movement_facing_angle = NuAtan2D(target->position.x - object->position.x,
                                                                      target->position.z - object->position.z);
                             return;
                         }
                         break;
                     case 2:
-                        target = (GIZMOBLOWUP_PC *)object->grapple;
+                        target = object->grapple;
                         if (target != NULL && (target->status_flags & 0x4000) && (target->status_flags & 0x800000)) {
                             object->field_7aa = LEGOACT_WHIP_BREAK;
                             object->context_timer = 0.0f;
                             object->field_7b3 = 2;
                             object->context_duration = AnimDuration((i16)object->id, object->field_7aa, 0.0f, 0.0f, 1);
                             object->context_variant_flags &= ~0x40u;
-                            target = (GIZMOBLOWUP_PC *)object->grapple;
+                            target = object->grapple;
                             object->movement_facing_angle = NuAtan2D(target->position.x - object->position.x,
                                                                      target->position.z - object->position.z);
                             return;
@@ -97,11 +97,11 @@ void __cdecl Whip_MoveCode(GAMEOBJECT *object) {
             if (activate) {
                 switch (object->field_7b3) {
                     case 3:
-                        GizmoBlowupBlowup((GIZMOBLOWUP_PC *)object->grapple, 0, 7, -1, NULL, 1);
+                        GizmoBlowupBlowup(object->grapple, 0, 7, -1, NULL, 1);
                         activate = 2;
                         break;
                     case 2:
-                        if (GizmoBlowupBlowup((GIZMOBLOWUP_PC *)object->grapple, 1, 1, 1, NULL, 1)) {
+                        if (GizmoBlowupBlowup(object->grapple, 1, 1, 1, NULL, 1)) {
                             NewBuzz(object->pad->bound_pad, 0.1f, 0);
                         }
                         NewRumble(object->pad->bound_pad, 0.5f, 0);
@@ -118,7 +118,7 @@ void __cdecl Whip_MoveCode(GAMEOBJECT *object) {
             }
         }
         if (object->character_context == -1 && object->field_7b3 == 3 && object->grapple != NULL) {
-            SuperCarry_Start(object, (GIZMOBLOWUP_PC *)object->grapple, 1);
+            SuperCarry_Start(object, object->grapple, 1);
         }
     } else {
         i32 action;

@@ -45,7 +45,7 @@ void __cdecl CharPivot_Check(GAMEOBJECT *object, NUVEC *velocity) {
             object->movement_facing_angle = object->previous_movement_angle;
             object->facing_angle = object->previous_movement_angle;
         } else {
-            model = (CHARACTER_MODEL_LAYERS_PC *)object->character_model;
+            model = object->character_model;
             if (model->points_of_interest[pivot->point_of_interest] != NULL) {
                 rotation = RotDiff(object->previous_movement_angle, object->field_0x276);
                 point = *(NUVEC *)&object->locator_matrices[pivot->point_of_interest].m30;

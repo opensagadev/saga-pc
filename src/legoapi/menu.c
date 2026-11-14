@@ -938,7 +938,7 @@ void __cdecl DrawMenuEntryEx(MENU *menu, char *text, u8 alpha) {
         f32 offset_x = view->item_offsets[0];
         Text3DEx2(text, (f32)(view->draw_x + (f64)offset_x * view->item_offset_scale),
                   (f32)(view->draw_y + (f64)view->item_offsets[1] * view->item_offset_scale), view->draw_z,
-                  (f32)((f64)scale * dme_sx), scale, scale, dme_align, 0, 0, 0, (u8)alpha >> 2);
+                  (f32)((f64)scale * dme_sx), scale, scale, dme_align, 0, 0, 0, alpha >> 2);
     }
     if (view->draw_item >= view->first_row && view->draw_item <= view->last_row) {
         if (view->draw_item == menu->selected_row) {
@@ -970,7 +970,7 @@ void __cdecl DrawMenuEntryEx(MENU *menu, char *text, u8 alpha) {
                      dme_align, red.slot, green.slot, blue.slot, alpha);
         } else {
             MenuSmartTextEx(text, view->draw_x, view->draw_y, view->draw_z, (f32)((f64)scale * dme_sx), scale, scale,
-                            dme_align, red.slot, green.slot, blue.slot, MENUENTRYEXWIDTH, 1, NULL, 0, (u8)alpha);
+                            dme_align, red.slot, green.slot, blue.slot, MENUENTRYEXWIDTH, 1, NULL, 0, alpha);
         }
     }
     ++view->draw_item;

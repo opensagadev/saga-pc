@@ -322,7 +322,7 @@ void __cdecl CruiserDReset(WORLDINFO *world) {
             CruiserD_LiftAnim->tfactor = CruiserD_LiftSpeedPc;
         } else if (CruiserD_direction >= 0) {
             f32 *end_frame =
-                (f32 *)((NUGSCN *)CruiserD_Lift.scene)->instance_animation_data[CruiserD_LiftAnim->animation_index];
+                ((NUGSCN *)CruiserD_Lift.scene)->instance_animation_data[CruiserD_LiftAnim->animation_index];
             CruiserD_LiftAnim->ltime = *end_frame;
             CruiserD_LiftAnim->playing = 0;
             CruiserD_LiftAnim->tfactor = CruiserD_LiftSpeedPc;
@@ -359,7 +359,7 @@ void __cdecl CruiserDUpdate(WORLDINFO *world) {
             }
             lift_pos = NuSpecialGetDrawPos(&CruiserD_Lift);
             for (i = 0; i < 8; i++) {
-                GAMEOBJECT *victim = (GAMEOBJECT *)Player[i];
+                GAMEOBJECT *victim = Player[i];
                 if (victim != NULL && victim->dead == 0 &&
                     (victim->supporting_platform_id == CruiserD_Lift_plat_id ||
                      victim->collision_position.z > lift_pos->z)) {
@@ -416,9 +416,9 @@ void GrievousA_Update(WORLDINFO *world) {
     }
 
     if (FreePlay != 0) {
-        KillBossCompleteLevel((i32)(i16)id_GRIEVOUS, 0, 0.0f);
+        KillBossCompleteLevel(id_GRIEVOUS, 0, 0.0f);
     } else {
-        KillBossPlayCutScene((i32)(i16)id_GRIEVOUS, 0, 0.0f, "ep3_GeneralGrievous_Outro");
+        KillBossPlayCutScene(id_GRIEVOUS, 0, 0.0f, "ep3_GeneralGrievous_Outro");
     }
 }
 
@@ -471,7 +471,7 @@ void __cdecl KashyyykD_Reset(WORLDINFO *world) {
         sprintf(name, "ball%i", i + 1);
         if (NuSpecialFind(world->current_gscn, &LevHSpecial[i], name, 1)) {
             NuSpecialSetVisibility(&LevHSpecial[i], 0);
-            LevInstAnimResetPc.animations[i] = (NUINSTANIM *)NuSpecialGetInstAnim(&LevHSpecial[i]);
+            LevInstAnimResetPc.animations[i] = NuSpecialGetInstAnim(&LevHSpecial[i]);
             LevInstAnimResetPc.animations[i]->ltime = 0.0f;
             LevInstAnimResetPc.animations[i]->flags &= ~1u;
         }
@@ -711,7 +711,7 @@ void __cdecl VaderA_Update(WORLDINFO *world) {
         if (vader_a.collapse_started != 0) {
             vader_a.collapse_started = 0;
             for (i = 0; i < 8; i++) {
-                GAMEOBJECT *object = (GAMEOBJECT *)Player[i];
+                GAMEOBJECT *object = Player[i];
                 if (object != NULL && (object->flags_1fc & 1) != 0) {
                     SetObjOnSurface(object, 1);
                 }
@@ -752,11 +752,11 @@ void __cdecl VaderA_Update(WORLDINFO *world) {
                 TickTockSfx();
             }
         } else if (netclient == 0 && vader_a.timer <= 0.0f) {
-            GAMEOBJECT *object = (GAMEOBJECT *)Player[0];
+            GAMEOBJECT *object = Player[0];
             if (object != NULL && (object->flags_1fc & 0x80) != 0) {
                 LoseCoins(object, 1);
             }
-            object = (GAMEOBJECT *)Player[1];
+            object = Player[1];
             if (object != NULL && (object->flags_1fc & 0x80) != 0) {
                 LoseCoins(object, 1);
             }
@@ -782,7 +782,7 @@ void __cdecl VaderA_Update(WORLDINFO *world) {
 }
 
 void __cdecl VaderA_DrawPanel(WORLDINFO *world) {
-    if (vader_a.count != 0 && (i16)vader_a.count < 3) {
+    if (vader_a.count != 0 && vader_a.count < 3) {
         DrawTimer((i32)vader_a.timer + 1, vader_a.subtitle, 0);
         vader_a.subtitle = 0;
     }
@@ -900,8 +900,8 @@ void __cdecl VaderC_Update(WORLDINFO *world) {
         }
     }
     if (vader_c.players_dead == 0) {
-        first = (GAMEOBJECT *)Player[0];
-        second = (GAMEOBJECT *)Player[1];
+        first = Player[0];
+        second = Player[1];
         if (((first != NULL && (first->flags_1fc & 0x80) != 0 && first->dead != 0 &&
               (first->flags_1f8 & 0x40000) == 0) ||
              (second != NULL && (second->flags_1fc & 0x80) != 0 && second->dead != 0 &&
@@ -923,9 +923,9 @@ void __cdecl VaderC_DrawPanel(WORLDINFO *world) {
         if (player2 != NULL) {
             DrawBossHitPoints(NULL);
         } else {
-            GAMEOBJECT *opponent = (GAMEOBJECT *)Player[0];
+            GAMEOBJECT *opponent = Player[0];
             if (player == opponent) {
-                opponent = (GAMEOBJECT *)Player[1];
+                opponent = Player[1];
             }
             if (opponent != NULL) {
                 DrawBossHitPoints(opponent);

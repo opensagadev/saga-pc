@@ -51,7 +51,7 @@ const char PCContextName_GuideLine[10] = "GuideLine";
 #pragma const_seg()
 
 i32 __cdecl GuideLines_Load(void *world_ptr, void *unused) {
-    WORLDINFO *world = (WORLDINFO *)world_ptr;
+    WORLDINFO *world = world_ptr;
     i32 index;
     if (world->guideline_count == 0) {
         EdFileReadInt();
@@ -84,7 +84,7 @@ void __cdecl GuideLines_Reset(WORLDINFO *world, void *unused, GUIDELINE_PROGRESS
     if (world == NULL || world->guidelines == NULL) {
         return;
     }
-    guide = (GUIDELINE_RECORD_PC *)world->guidelines;
+    guide = world->guidelines;
     for (index = 0; index < world->guideline_count; ++index, ++guide) {
         guide->flags |= 3;
         if (progress != NULL && index < 32) {
@@ -98,7 +98,7 @@ void __cdecl GuideLines_Reset(WORLDINFO *world, void *unused, GUIDELINE_PROGRESS
 
 INDY_GUIDELINE_PC *__cdecl GuideLine_FindNearest(NUVEC *position, WORLDINFO *world, i32 *endpoint, f32 *distance) {
     INDY_GUIDELINE_PC *nearest = NULL;
-    INDY_GUIDELINE_PC *guide = (INDY_GUIDELINE_PC *)world->guidelines;
+    INDY_GUIDELINE_PC *guide = world->guidelines;
     i32 nearest_endpoint = -1;
     i32 index;
     i32 side;
@@ -125,14 +125,14 @@ INDY_GUIDELINE_PC *__cdecl GuideLine_FindNearest(NUVEC *position, WORLDINFO *wor
 
 void __cdecl GuideLine_Activate(GIZMO_PC *gizmo, i32 active) {
     if (gizmo != NULL) {
-        GUIDELINE_RECORD_PC *guide = (GUIDELINE_RECORD_PC *)gizmo->object;
+        GUIDELINE_RECORD_PC *guide = gizmo->object;
         guide->active = active != 0;
     }
 }
 
 void __cdecl GuideLine_SetVisibility(GIZMO_PC *gizmo, i32 visible) {
     if (gizmo != NULL) {
-        GUIDELINE_RECORD_PC *guide = (GUIDELINE_RECORD_PC *)gizmo->object;
+        GUIDELINE_RECORD_PC *guide = gizmo->object;
         guide->visible = visible != 0;
     }
 }
@@ -155,7 +155,7 @@ char *__cdecl GuideLine_GetGizmoName(GIZMO_PC *gizmo) {
 }
 
 i32 __cdecl GuideLine_GetOutput(GIZMO_PC *gizmo, i32 output, i32 mode) {
-    GUIDELINE_RECORD_PC *guide = (GUIDELINE_RECORD_PC *)gizmo->object;
+    GUIDELINE_RECORD_PC *guide = gizmo->object;
     return guide->visible && guide->active;
 }
 
@@ -189,7 +189,7 @@ void __cdecl GuideLines_StoreProgress(WORLDINFO *world, void *unused, GUIDELINE_
     if (world == NULL || world->guidelines == NULL) {
         return;
     }
-    guide = (GUIDELINE_RECORD_PC *)world->guidelines;
+    guide = world->guidelines;
     for (index = 0; index < world->guideline_count && index < 32; ++index, ++guide) {
         i32 word = index / 32;
         i32 bit = 1 << (index & 31);

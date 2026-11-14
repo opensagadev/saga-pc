@@ -225,11 +225,11 @@ extern "C" {
 
         if (hit_index >= 0) {
             group_header = TerI->scan_words;
-            max_x = (f32)(saved_position.x + 0.1f);
-            max_z = (f32)(saved_position.z + 0.1f);
+            max_x = saved_position.x + 0.1f;
+            max_z = saved_position.z + 0.1f;
             TERRAIN_NS_SET->index_levels[hit_index].cache_age = 8;
-            min_x = (f32)(saved_position.x - 0.1f);
-            min_z = (f32)(saved_position.z - 0.1f);
+            min_x = saved_position.x - 0.1f;
+            min_z = saved_position.z - 0.1f;
             entry = TERRAIN_NS_SET->index_levels[hit_index].scan_words;
             cursor = group_header + 1;
             shape_count = 0;
@@ -293,18 +293,18 @@ extern "C" {
             group_header = TerI->scan_words;
             cursor = group_header + 1;
             limit = cursor + 508;
-            max_x = (f32)(saved_position.x + 0.1f);
-            max_z = (f32)(saved_position.z + 0.1f);
-            min_x = (f32)(saved_position.x - 0.1f);
-            min_z = (f32)(saved_position.z - 0.1f);
+            max_x = saved_position.x + 0.1f;
+            max_z = saved_position.z + 0.1f;
+            min_x = saved_position.x - 0.1f;
+            min_z = saved_position.z - 0.1f;
             entry = TERRAIN_NS_SET->index_levels[oldest_index].scan_words;
             TERRAIN_NS_CACHED_SHAPES(entry);
         }
 
-        min_x = (f32)(min_x - 0.05f);
-        max_x = (f32)(max_x + 0.05f);
-        min_z = (f32)(min_z - 0.05f);
-        max_z = (f32)(max_z + 0.05f);
+        min_x = min_x - 0.05f;
+        max_x = max_x + 0.05f;
+        min_z = min_z - 0.05f;
+        max_z = max_z + 0.05f;
         if (scan_platforms != 0) {
             i16 *platform_groups = TERRAIN_NS_SET->group_indices + TERRAIN_NS_SET->platform_cell.first_group;
             for (i32 platform_index = 0; platform_index < TERRAIN_NS_SET->platform_cell.group_count;
@@ -464,7 +464,7 @@ extern "C" {
             default: {
                 const f32 movement_sq = query->movement.x * query->movement.x + query->movement.y * query->movement.y +
                                         query->movement.z * query->movement.z;
-                const f32 reach = (f32)(0.02f + query->collision_radius_sq + movement_sq);
+                const f32 reach = 0.02f + query->collision_radius_sq + movement_sq;
                 max_x = query->position.x + reach;
                 max_y = query->position.y + query->object_scale * reach;
                 max_z = query->position.z + reach;
@@ -477,25 +477,25 @@ extern "C" {
             case 1: {
                 f32 extent_sq;
                 if (query->movement.x > 0.0f) {
-                    min_x = (f32)(query->position.x - 0.02f - query->collision_radius);
-                    max_x = (f32)(query->movement.x + query->position.x + 0.02f + query->collision_radius);
+                    min_x = query->position.x - 0.02f - query->collision_radius;
+                    max_x = query->movement.x + query->position.x + 0.02f + query->collision_radius;
                 } else {
-                    min_x = (f32)(query->movement.x + query->position.x - 0.02f - query->collision_radius);
-                    max_x = (f32)(query->position.x + 0.02f + query->collision_radius);
+                    min_x = query->movement.x + query->position.x - 0.02f - query->collision_radius;
+                    max_x = query->position.x + 0.02f + query->collision_radius;
                 }
                 if (query->movement.y > 0.0f) {
-                    min_y = (f32)(query->position.y - 0.02f - query->collision_radius);
-                    max_y = (f32)(query->movement.y + query->position.y + 0.02f + query->collision_radius);
+                    min_y = query->position.y - 0.02f - query->collision_radius;
+                    max_y = query->movement.y + query->position.y + 0.02f + query->collision_radius;
                 } else {
-                    min_y = (f32)(query->movement.y + query->position.y - 0.02f - query->collision_radius);
-                    max_y = (f32)(query->position.y + 0.02f + query->collision_radius);
+                    min_y = query->movement.y + query->position.y - 0.02f - query->collision_radius;
+                    max_y = query->position.y + 0.02f + query->collision_radius;
                 }
                 if (query->movement.z > 0.0f) {
-                    min_z = (f32)(query->position.z - 0.02f - query->collision_radius);
-                    max_z = (f32)(query->movement.z + query->position.z + 0.02f + query->collision_radius);
+                    min_z = query->position.z - 0.02f - query->collision_radius;
+                    max_z = query->movement.z + query->position.z + 0.02f + query->collision_radius;
                 } else {
-                    min_z = (f32)(query->movement.z + query->position.z - 0.02f - query->collision_radius);
-                    max_z = (f32)(query->position.z + 0.02f + query->collision_radius);
+                    min_z = query->movement.z + query->position.z - 0.02f - query->collision_radius;
+                    max_z = query->position.z + 0.02f + query->collision_radius;
                 }
                 extent_sq = (min_x - max_x) * (min_x - max_x) + (min_y - max_y) * (min_y - max_y) +
                             (min_z - max_z) * (min_z - max_z);
@@ -597,10 +597,10 @@ extern "C" {
         WallSplCount = 0;
         wall_count = 0;
         walls = reinterpret_cast<TERRAIN_WALL_POINT **>(handle) + 1;
-        min_x = (f32)(min_x - 0.02f);
-        min_z = (f32)(min_z - 0.02f);
-        max_x = (f32)(max_x + 0.02f);
-        max_z = (f32)(max_z + 0.02f);
+        min_x = min_x - 0.02f;
+        min_z = min_z - 0.02f;
+        max_x = max_x + 0.02f;
+        max_z = max_z + 0.02f;
         wall_list = static_cast<TERRAIN_WALL_POINT *>(WallSplList);
         while (*walls != NULL) {
             if ((((*walls)[0].position.x >= min_x && (*walls)[1].position.x <= max_x) ||
@@ -655,7 +655,7 @@ extern "C" {
         TerrainQuery_s *query;
         scaled_count = 0;
         vertices = reinterpret_cast<NUVEC4 *>((reinterpret_cast<u32>(NuScratchAlloc32(0xd0)) + 31) & ~u32(15));
-        ScaleTerrain = static_cast<TERRAIN_SHAPE *>(ScaleTerrainT1);
+        ScaleTerrain = ScaleTerrainT1;
         query = TerI;
         group_header = query->scan_words;
         cursor = reinterpret_cast<TERRAIN_SCAN_WORD_PC *>(query->scan_list_storage) + 1;
@@ -667,7 +667,7 @@ extern "C" {
             default: {
                 const f32 movement_sq = query->movement.x * query->movement.x + query->movement.y * query->movement.y +
                                         query->movement.z * query->movement.z;
-                const f32 reach = (f32)(0.02f + query->collision_radius_sq + movement_sq);
+                const f32 reach = 0.02f + query->collision_radius_sq + movement_sq;
                 max_x = query->position.x + reach;
                 max_y = query->position.y + query->object_scale * reach;
                 max_z = query->position.z + reach;
@@ -680,25 +680,25 @@ extern "C" {
             case 1: {
                 f32 extent_sq;
                 if (query->movement.x > 0.0f) {
-                    min_x = (f32)(query->position.x - 0.02f - query->collision_radius);
-                    max_x = (f32)(query->movement.x + query->position.x + 0.02f + query->collision_radius);
+                    min_x = query->position.x - 0.02f - query->collision_radius;
+                    max_x = query->movement.x + query->position.x + 0.02f + query->collision_radius;
                 } else {
-                    min_x = (f32)(query->movement.x + query->position.x - 0.02f - query->collision_radius);
-                    max_x = (f32)(query->position.x + 0.02f + query->collision_radius);
+                    min_x = query->movement.x + query->position.x - 0.02f - query->collision_radius;
+                    max_x = query->position.x + 0.02f + query->collision_radius;
                 }
                 if (query->movement.y > 0.0f) {
-                    min_y = (f32)(query->position.y - 0.02f - query->collision_radius);
-                    max_y = (f32)(query->movement.y + query->position.y + 0.02f + query->collision_radius);
+                    min_y = query->position.y - 0.02f - query->collision_radius;
+                    max_y = query->movement.y + query->position.y + 0.02f + query->collision_radius;
                 } else {
-                    min_y = (f32)(query->movement.y + query->position.y - 0.02f - query->collision_radius);
-                    max_y = (f32)(query->position.y + 0.02f + query->collision_radius);
+                    min_y = query->movement.y + query->position.y - 0.02f - query->collision_radius;
+                    max_y = query->position.y + 0.02f + query->collision_radius;
                 }
                 if (query->movement.z > 0.0f) {
-                    min_z = (f32)(query->position.z - 0.02f - query->collision_radius);
-                    max_z = (f32)(query->movement.z + query->position.z + 0.02f + query->collision_radius);
+                    min_z = query->position.z - 0.02f - query->collision_radius;
+                    max_z = query->movement.z + query->position.z + 0.02f + query->collision_radius;
                 } else {
-                    min_z = (f32)(query->movement.z + query->position.z - 0.02f - query->collision_radius);
-                    max_z = (f32)(query->position.z + 0.02f + query->collision_radius);
+                    min_z = query->movement.z + query->position.z - 0.02f - query->collision_radius;
+                    max_z = query->position.z + 0.02f + query->collision_radius;
                 }
                 extent_sq = (min_x - max_x) * (min_x - max_x) + (min_y - max_y) * (min_y - max_y) +
                             (min_z - max_z) * (min_z - max_z);
@@ -708,12 +708,12 @@ extern "C" {
         }
         query = TerI;
         query->scan_list = group_header;
-        min_x = (f32)(min_x - 0.05f);
-        max_x = (f32)(max_x + 0.05f);
-        min_y = (f32)(min_y - 0.05f);
-        max_y = (f32)(max_y + 0.05f);
-        min_z = (f32)(min_z - 0.05f);
-        max_z = (f32)(max_z + 0.05f);
+        min_x = min_x - 0.05f;
+        max_x = max_x + 0.05f;
+        min_y = min_y - 0.05f;
+        max_y = max_y + 0.05f;
+        min_z = min_z - 0.05f;
+        max_z = max_z + 0.05f;
         group = &TERRAIN_STH_SET->groups[group_index];
         platform = &TERRAIN_STH_PLATFORM(group);
         if (platform->scene_object != NULL) {
@@ -1436,32 +1436,32 @@ i16 *NewScanHandelSubsetPc(i16 *subset, NUVEC *position, NUVEC *movement, f32 ra
         limit = reinterpret_cast<TERRAIN_SCAN_WORD_PC *>(reinterpret_cast<u8 *>(ScaleTerrainT1) + 0x63da8);
     }
     if (movement->x > 0.0f) {
-        min_x = (f32)(position->x - 0.02f - radius);
-        max_x = (f32)(position->x + movement->x + 0.02f + radius);
+        min_x = position->x - 0.02f - radius;
+        max_x = position->x + movement->x + 0.02f + radius;
     } else {
-        min_x = (f32)(position->x + movement->x - 0.02f - radius);
-        max_x = (f32)(position->x + 0.02f + radius);
+        min_x = position->x + movement->x - 0.02f - radius;
+        max_x = position->x + 0.02f + radius;
     }
     if (movement->y > 0.0f) {
-        min_y = (f32)(position->y - 0.02f - radius);
-        max_y = (f32)(position->y + movement->y + 0.02f + radius);
+        min_y = position->y - 0.02f - radius;
+        max_y = position->y + movement->y + 0.02f + radius;
     } else {
-        min_y = (f32)(position->y + movement->y - 0.02f - radius);
-        max_y = (f32)(position->y + 0.02f + radius);
+        min_y = position->y + movement->y - 0.02f - radius;
+        max_y = position->y + 0.02f + radius;
     }
     if (movement->z > 0.0f) {
-        min_z = (f32)(position->z - 0.02f - radius);
-        max_z = (f32)(position->z + movement->z + 0.02f + radius);
+        min_z = position->z - 0.02f - radius;
+        max_z = position->z + movement->z + 0.02f + radius;
     } else {
-        min_z = (f32)(position->z + movement->z - 0.02f - radius);
-        max_z = (f32)(position->z + 0.02f + radius);
+        min_z = position->z + movement->z - 0.02f - radius;
+        max_z = position->z + 0.02f + radius;
     }
     shape_count = 0;
     {
         const f32 extent_sq =
             (min_x - max_x) * (min_x - max_x) + (min_y - max_y) * (min_y - max_y) + (min_z - max_z) * (min_z - max_z);
         // Retail uses the squared extent plus the margin directly as the sphere radius.
-        scan_radius = (f32)(extent_sq + 0.05f);
+        scan_radius = extent_sq + 0.05f;
     }
     while (subset[0] > 0) {
         const i32 count = subset[0];
@@ -1552,10 +1552,10 @@ i16 *NewScanHandelSubsetPc(i16 *subset, NUVEC *position, NUVEC *movement, f32 ra
     }
     group_header->header.shape_count = 0;
     group_header->header.terrain_group = 0;
-    min_x = (f32)(min_x - 0.02f);
-    min_z = (f32)(min_z - 0.02f);
-    max_x = (f32)(max_x + 0.02f);
-    max_z = (f32)(max_z + 0.02f);
+    min_x = min_x - 0.02f;
+    min_z = min_z - 0.02f;
+    max_x = max_x + 0.02f;
+    max_z = max_z + 0.02f;
     walls = reinterpret_cast<TERRAIN_HANDLE_WALL_PAIR_PC *>(group_header + 1);
     source = reinterpret_cast<TERRAIN_HANDLE_WALL_PAIR_PC *>(subset + 2);
     while (static_cast<i32>(reinterpret_cast<usize>(source->first)) > 0) {
@@ -1658,7 +1658,7 @@ i16 *NewScanHandelFullPc(NUVEC *position, NUVEC *movement, f32 radius, i32 scan_
     group_header = reinterpret_cast<TERRAIN_SCAN_WORD_PC *>(TempStackPtrPc);
     cursor = group_header + 1;
     scaled_count = 0;
-    ScaleTerrain = static_cast<TERRAIN_SHAPE *>(ScaleTerrainT1);
+    ScaleTerrain = ScaleTerrainT1;
     result = group_header;
     limit = cursor + 508;
     if (reinterpret_cast<u8 *>(cursor) > reinterpret_cast<u8 *>(ScaleTerrainT1) + 0x63c18) {
@@ -1671,30 +1671,30 @@ i16 *NewScanHandelFullPc(NUVEC *position, NUVEC *movement, f32 radius, i32 scan_
     shape_count = 0;
     platinrange = 0;
     if (movement->x > 0.0f) {
-        scan->min_x = (f32)(position->x - 0.02f - radius);
-        scan->max_x = (f32)(position->x + movement->x + 0.02f + radius);
+        scan->min_x = position->x - 0.02f - radius;
+        scan->max_x = position->x + movement->x + 0.02f + radius;
     } else {
-        scan->min_x = (f32)(position->x + movement->x - 0.02f - radius);
-        scan->max_x = (f32)(position->x + 0.02f + radius);
+        scan->min_x = position->x + movement->x - 0.02f - radius;
+        scan->max_x = position->x + 0.02f + radius;
     }
     if (movement->y > 0.0f) {
-        scan->min_y = (f32)(position->y - 0.02f - radius);
-        scan->max_y = (f32)(position->y + movement->y + 0.02f + radius);
+        scan->min_y = position->y - 0.02f - radius;
+        scan->max_y = position->y + movement->y + 0.02f + radius;
     } else {
-        scan->min_y = (f32)(position->y + movement->y - 0.02f - radius);
-        scan->max_y = (f32)(position->y + 0.02f + radius);
+        scan->min_y = position->y + movement->y - 0.02f - radius;
+        scan->max_y = position->y + 0.02f + radius;
     }
     if (movement->z > 0.0f) {
-        scan->min_z = (f32)(position->z - 0.02f - radius);
-        scan->max_z = (f32)(position->z + movement->z + 0.02f + radius);
+        scan->min_z = position->z - 0.02f - radius;
+        scan->max_z = position->z + movement->z + 0.02f + radius;
     } else {
-        scan->min_z = (f32)(position->z + movement->z - 0.02f - radius);
-        scan->max_z = (f32)(position->z + 0.02f + radius);
+        scan->min_z = position->z + movement->z - 0.02f - radius;
+        scan->max_z = position->z + 0.02f + radius;
     }
     extent_sq = (scan->min_x - scan->max_x) * (scan->min_x - scan->max_x) +
                 (scan->min_y - scan->max_y) * (scan->min_y - scan->max_y) +
                 (scan->min_z - scan->max_z) * (scan->min_z - scan->max_z);
-    scan_radius = NuFsqrt((f32)(extent_sq + 0.05f));
+    scan_radius = NuFsqrt(extent_sq + 0.05f);
     for (i32 cell_index = 0; cell_index < TERRAIN_NSF_SET->used_cell_count; ++cell_index) {
         TERRAIN_CELL_PC *cell = &TERRAIN_NSF_SET->cells[cell_index];
         if (!(scan->max_x >= cell->min_x && scan->max_z >= cell->min_z && cell->max_x >= scan->min_x &&
@@ -1740,12 +1740,12 @@ i16 *NewScanHandelFullPc(NUVEC *position, NUVEC *movement, f32 radius, i32 scan_
         }
     }
     TerI->scan_list = group_header;
-    scan->min_x = (f32)(scan->min_x - 0.05f);
-    scan->max_x = (f32)(scan->max_x + 0.05f);
-    scan->min_y = (f32)(scan->min_y - 0.05f);
-    scan->max_y = (f32)(scan->max_y + 0.05f);
-    scan->min_z = (f32)(scan->min_z - 0.05f);
-    scan->max_z = (f32)(scan->max_z + 0.05f);
+    scan->min_x = scan->min_x - 0.05f;
+    scan->max_x = scan->max_x + 0.05f;
+    scan->min_y = scan->min_y - 0.05f;
+    scan->max_y = scan->max_y + 0.05f;
+    scan->min_z = scan->min_z - 0.05f;
+    scan->max_z = scan->max_z + 0.05f;
     if (scan_type != 0) {
         i16 *indices = TERRAIN_NSF_SET->group_indices + TERRAIN_NSF_SET->platform_cell.first_group;
         for (i32 i = 0; i < TERRAIN_NSF_SET->platform_cell.group_count; ++i, ++indices) {
@@ -1947,10 +1947,10 @@ i16 *NewScanHandelFullPc(NUVEC *position, NUVEC *movement, f32 radius, i32 scan_
     end_header = reinterpret_cast<TERRAIN_HANDLE_END_PC *>(group_header);
     end_header->terminator.header.shape_count = 0;
     end_header->terminator.header.terrain_group = 0;
-    scan->min_x = (f32)(scan->min_x - 0.02f);
-    scan->min_z = (f32)(scan->min_z - 0.02f);
-    scan->max_x = (f32)(scan->max_x + 0.02f);
-    scan->max_z = (f32)(scan->max_z + 0.02f);
+    scan->min_x = scan->min_x - 0.02f;
+    scan->min_z = scan->min_z - 0.02f;
+    scan->max_x = scan->max_x + 0.02f;
+    scan->max_z = scan->max_z + 0.02f;
     for (TERRAIN_SPATIAL_NODE *node = TERRAIN_NSF_SET->spatial_nodes; node != NULL;
          node = reinterpret_cast<TERRAIN_SPATIAL_CHUNK *>(reinterpret_cast<u8 *>(node) -
                                                           offsetof(TERRAIN_SPATIAL_CHUNK, node))

@@ -237,12 +237,12 @@ void __cdecl EndScoreMessage(GAME_MESSAGE_PC *message) {
         }
         CoinTotalScale = 1.5f;
         if (SuperStory != 0) {
-            IncreaseScore(&SuperStoryScore, (u64)message->score, 0);
+            IncreaseScore(&SuperStoryScore, message->score, 0);
         } else {
             world = WorldInfo_CurrentlyActive();
             if (world->area != NULL && (world->area->flags & 0x100)) {
                 if ((u32)BonusCoinTotal < BonusCoinTarget) {
-                    IncreaseScore((u32 *)&BonusCoinTotal, (u64)message->score, 0);
+                    IncreaseScore((u32 *)&BonusCoinTotal, message->score, 0);
                     if ((u32)BonusCoinTotal >= BonusCoinTarget) {
                         BonusCoinTotal = (i32)BonusCoinTarget;
                         SetBonusWinner(message->player_index);
@@ -253,14 +253,14 @@ void __cdecl EndScoreMessage(GAME_MESSAGE_PC *message) {
                     }
                 }
             } else {
-                IncreaseScore(&((GAME_SAVE_SCORE_PC *)&Game)->coins, (u64)message->score, 1);
+                IncreaseScore(&((GAME_SAVE_SCORE_PC *)&Game)->coins, message->score, 1);
             }
         }
     } else {
         if (message->player_index != 0 && message->player_index != 1) {
             goto counter_sound;
         }
-        player = (OBJECT_COIN_PACKET_PC *)Player[message->player_index];
+        player = Player[message->player_index];
         if (player == NULL || player->coin_packet == NULL) {
             goto counter_sound;
         }
@@ -269,7 +269,7 @@ void __cdecl EndScoreMessage(GAME_MESSAGE_PC *message) {
             player->coin_packet->last_coin = (i16)message->icon;
         }
         if (BonusWinner == -1) {
-            IncreaseScore(&player->coin_packet->coins, (u64)message->score, 1);
+            IncreaseScore(&player->coin_packet->coins, message->score, 1);
             player->coin_packet->scale = 1.5f;
         }
         if (BuildUpTotal == 0) {
@@ -820,7 +820,7 @@ void __cdecl CollectHitPoint(GAMEOBJECT *object, NUVEC *position, i32 flags) {
 }
 
 i32 __cdecl ReleaseHearts(void) {
-    GAMEOBJECT *player = (GAMEOBJECT *)Player[0];
+    GAMEOBJECT *player = Player[0];
     i32 missing_hitpoints = 0;
     i32 total_hitpoints = 0;
     i32 i;
@@ -835,7 +835,7 @@ i32 __cdecl ReleaseHearts(void) {
             total_hitpoints = hitpoints;
         }
     }
-    player = (GAMEOBJECT *)Player[1];
+    player = Player[1];
     if (player != NULL && player->dead == 0) {
         hitpoints = player->field_107e;
         if (hitpoints > 0) {
@@ -1098,7 +1098,7 @@ void __cdecl AddCoinsAsParts(i32 type_id, NUVEC *position, NUVEC *velocity, f32 
         part->time_remaining = 30.0f;
         if (params.gravity == 0.0f) {
             part->move_fn = PartMove_VehiclePickup;
-            part->initial_time = (f32)((f64)qrand() * (f64)(f32)(1.0f / 65535.0f) + 4.0);
+            part->initial_time = (f32)((f64)qrand() * (f64)(1.0f / 65535.0f) + 4.0);
         }
     }
 }
@@ -1326,16 +1326,16 @@ void __cdecl AddPickups(i32 coins, i32 hearts, i32 torpedoes, i32 powerups, NUVE
         }
         recipient = NULL;
         if (both_players) {
-            recipient = (GAMEOBJECT *)(i == 0 ? Player[0] : Player[1]);
+            recipient = i == 0 ? Player[0] : Player[1];
         } else if (owner != NULL) {
             recipient = owner;
         } else {
             count = 0;
             if (Player[0] != NULL && (((GAMEOBJECT *)Player[0])->flags_1fc_word & 0x80)) {
-                eligible[count++] = (GAMEOBJECT *)Player[0];
+                eligible[count++] = Player[0];
             }
             if (Player[1] != NULL && (((GAMEOBJECT *)Player[1])->flags_1fc_word & 0x80)) {
-                eligible[count++] = (GAMEOBJECT *)Player[1];
+                eligible[count++] = Player[1];
             }
             if (count > 0) {
                 recipient = eligible[count == 1 ? 0 : qrand() / 32768];

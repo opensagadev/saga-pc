@@ -13,8 +13,8 @@ STATIC_ASSERT(offsetof(SUIT_LAYERS_PC, flags) == 0xc);
 static void Shards_Draw(void *context, void *unused1, float unused2) {
     i32 i;
     NUMTX matrix;
-    WORLDINFO *world = ((WORLDINFO *)(context));
-    SHARD_s *shard = ((SHARD_s *)(world->shards));
+    WORLDINFO *world = context;
+    SHARD_s *shard = world->shards;
     if (shard == NULL) {
         return;
     }

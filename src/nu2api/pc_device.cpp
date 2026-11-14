@@ -731,7 +731,7 @@ void __thiscall PC_DEVICE_BACKEND_PC::CreateOrResetDevice(i32 reposition_window)
     saved_aspect = PcWindowOptions.aspect_mode;
     bool rebuild_resources = true;
     factory->methods->get_device_caps(factory, 0, 1, &caps);
-    parameters.window = reinterpret_cast<HWND>(PCInputInstance);
+    parameters.window = PCInputInstance;
     parameters.windowed = requested_windowed;
     parameters.enable_depth = 1;
     parameters.flags = 2;
@@ -754,7 +754,7 @@ void __thiscall PC_DEVICE_BACKEND_PC::CreateOrResetDevice(i32 reposition_window)
         if (y < 0) {
             y = (PCDeviceBackend.desktop_mode.height - height) >> 1;
         }
-        MoveWindow(reinterpret_cast<HWND>(PCInputInstance), x, y, width, height, TRUE);
+        MoveWindow(PCInputInstance, x, y, width, height, TRUE);
     }
     if (PCDeviceBackend.factory->methods->check_device_type(PCDeviceBackend.factory, 0, 1, modes[requested_mode].format,
                                                             21, parameters.windowed) < 0) {
@@ -868,10 +868,10 @@ void __thiscall PC_DEVICE_BACKEND_PC::CreateOrResetDevice(i32 reposition_window)
         if (cooperative < 0) {
             switch (cooperative) {
                 case static_cast<HRESULT>(0x88760827):
-                    SendMessageA(reinterpret_cast<HWND>(PCInputInstance), WM_CLOSE, 0, 0);
+                    SendMessageA(PCInputInstance, WM_CLOSE, 0, 0);
                     break;
                 default:
-                    SendMessageA(reinterpret_cast<HWND>(PCInputInstance), WM_CLOSE, 0, 0);
+                    SendMessageA(PCInputInstance, WM_CLOSE, 0, 0);
                     break;
                 case static_cast<HRESULT>(0x88760869):
                     PCDeviceEvictManagedResources();
@@ -986,9 +986,9 @@ void __thiscall PC_DEVICE_BACKEND_PC::Present(const RECT *source, const RECT *de
             }
         } else if (present_result != static_cast<HRESULT>(0x88760827)) {
             /* Retail closes the window through separate branches for an internal driver error and the rest. */
-            SendMessageA(reinterpret_cast<HWND>(PCInputInstance), WM_CLOSE, 0, 0);
+            SendMessageA(PCInputInstance, WM_CLOSE, 0, 0);
         } else {
-            SendMessageA(reinterpret_cast<HWND>(PCInputInstance), WM_CLOSE, 0, 0);
+            SendMessageA(PCInputInstance, WM_CLOSE, 0, 0);
         }
     }
     for (i32 i = 0; i != 4; ++i) {
@@ -1063,7 +1063,7 @@ extern "C" {
 void __thiscall PC_DEVICE_BACKEND_PC::SetRenderTarget(i32 index, PC_TEXTURE_RESOURCE_PC *surface) {
     u16 limit =
         multisample_index == 0 && PCDeviceHardwareVertexProcessingPC >= 2 ? (u16)caps.simultaneous_render_targets : 1;
-    if (index <= (i32)limit - 1 && target_cache[index] != surface) {
+    if (index <= limit - 1 && target_cache[index] != surface) {
         target_cache[index] = surface;
         GRAPHICS_DEVICE_PC *view = reinterpret_cast<GRAPHICS_DEVICE_PC *>(device);
         view->methods->set_render_target(view, index, surface);
@@ -1177,7 +1177,7 @@ void __thiscall PC_DEVICE_BACKEND_PC::ResetTargets() {
         u16 limit = multisample_index == 0 && PCDeviceHardwareVertexProcessingPC >= 2
                         ? (u16)caps.simultaneous_render_targets
                         : 1;
-        if (i <= (i32)limit - 1 && target_cache[i] != NULL) {
+        if (i <= limit - 1 && target_cache[i] != NULL) {
             target_cache[i] = NULL;
             GRAPHICS_DEVICE_PC *view = reinterpret_cast<GRAPHICS_DEVICE_PC *>(device);
             view->methods->set_render_target(view, i, NULL);
@@ -1865,13 +1865,13 @@ void PC_DEVICE_BACKEND_PC::CopyCurrentSurface(GRAPHICS_RENDER_TEXTURE_PC *textur
 extern "C" void __cdecl PCDeviceSetVertexShaderConstantsF(UINT start, const f32 *values, UINT count) {
     PCDeviceLastResult =
         PCDeviceBackend.device->methods->set_vertex_shader_constant_f(PCDeviceBackend.device, start, values, count);
-    SAGA_SKIN_CALL(skin_trace_upload, 0, start, count, values, (long)PCDeviceLastResult);
+    SAGA_SKIN_CALL(skin_trace_upload, 0, start, count, values, PCDeviceLastResult);
 }
 
 extern "C" void __cdecl PCDeviceSetPixelShaderConstantsF(UINT start, const f32 *values, UINT count) {
     PCDeviceLastResult =
         PCDeviceBackend.device->methods->set_pixel_shader_constant_f(PCDeviceBackend.device, start, values, count);
-    SAGA_SKIN_CALL(skin_trace_upload, 1, start, count, values, (long)PCDeviceLastResult);
+    SAGA_SKIN_CALL(skin_trace_upload, 1, start, count, values, PCDeviceLastResult);
 }
 
 HRESULT __thiscall PC_DEVICE_BACKEND_PC::CopySurfaceTargetPc(PC_EFFECT_SURFACE_PC *target, i32 filter, i32 unused) {
@@ -1947,12 +1947,12 @@ extern "C" __declspec(noinline) void __cdecl PCDeviceSetVertexDeclarationPc(PC_T
 
 extern "C" void __cdecl PCDeviceSetVertexShaderPc(PC_TEXTURE_RESOURCE_PC *shader) {
     PCDeviceLastResult = PCDeviceBackend.device->methods->set_vertex_shader(PCDeviceBackend.device, shader);
-    SAGA_SKIN_CALL(skin_trace_bind, 0, (unsigned)shader, (long)PCDeviceLastResult);
+    SAGA_SKIN_CALL(skin_trace_bind, 0, (unsigned)shader, PCDeviceLastResult);
 }
 
 extern "C" void __cdecl PCDeviceSetPixelShaderPc(PC_TEXTURE_RESOURCE_PC *shader) {
     PCDeviceLastResult = PCDeviceBackend.device->methods->set_pixel_shader(PCDeviceBackend.device, shader);
-    SAGA_SKIN_CALL(skin_trace_bind, 1, (unsigned)shader, (long)PCDeviceLastResult);
+    SAGA_SKIN_CALL(skin_trace_bind, 1, (unsigned)shader, PCDeviceLastResult);
 }
 
 void __thiscall PC_DEVICE_BACKEND_PC::SetColorWriteMaskPc(u8 colour_enabled, u8 alpha_enabled, i32 target) {
@@ -2144,8 +2144,7 @@ extern "C" void __cdecl PCDeviceGetScissorRectPc(RECT *rect) {
 }
 
 extern "C" i32 __cdecl PCDeviceGetSoftwareVertexProcessingPc(void) {
-    PCDeviceLastResult =
-        static_cast<HRESULT>(PCDeviceBackend.device->methods->get_software_vertex_processing(PCDeviceBackend.device));
+    PCDeviceLastResult = PCDeviceBackend.device->methods->get_software_vertex_processing(PCDeviceBackend.device);
     return 0;
 }
 

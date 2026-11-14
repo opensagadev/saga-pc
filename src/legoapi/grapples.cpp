@@ -755,14 +755,14 @@ extern "C" void __cdecl Grapples_Update(void *world_pointer, void *unused_system
         if (NuSpecialExistsFn((NUSPECIALHANDLE *)grapple->display_special)) {
             grapple->hook_position = *NuSpecialGetDrawPos((NUSPECIALHANDLE *)grapple->display_special);
             grapple->shadow_probe_position.x = grapple->hook_position.x;
-            grapple->shadow_probe_position.y = grapple->hook_position.y - (f64)(f32)0.1f;
+            grapple->shadow_probe_position.y = grapple->hook_position.y - (f64)0.1f;
             grapple->shadow_probe_position.z = grapple->hook_position.z;
             grapple->ground_position.x = grapple->hook_position.x;
             grapple->ground_position.z = grapple->hook_position.z;
             height = GameShadow(NULL, &grapple->hook_position, 5.0f, -1);
             grapple->ground_position.y = height;
             if ((f64)height != GameObjectNearFloorNoFloorHeight) {
-                grapple->ground_position.y = (f64)height + (f64)(f32)0.005f;
+                grapple->ground_position.y = (f64)height + (f64)0.005f;
                 FindAnglesZX(&ShadNorm, &grapple->ground_x_rotation, &grapple->ground_z_rotation);
             }
         }
@@ -774,15 +774,15 @@ extern "C" void __cdecl Grapples_Update(void *world_pointer, void *unused_system
             count = GrappleAttachmentPositionsPc(occupant, positions);
             attachment = *(count == 2 ? positions[1] : positions[0]);
         } else {
-            y_offset = (f64)grapple->rope_length * (f64)(f32)0.333f;
-            sway = (f64)grapple->rope_length * (f64)(f32)0.0125f;
+            y_offset = (f64)grapple->rope_length * (f64)0.333f;
+            sway = (f64)grapple->rope_length * (f64)0.0125f;
             attachment.x = (f64)NU_SIN_LUT((u16)(i32)((f64)NuFmod(GameTimer.time_elapsed, 1.5f) / 1.5 * 65536.0) +
                                            index * 0x2000) *
                                sway +
                            grapple->hook_position.x;
             attachment.y = grapple->hook_position.y - y_offset;
             attachment.z =
-                (f64)NU_SIN_LUT((u16)(i32)((f64)NuFmod(GameTimer.time_elapsed, 1.217f) / (f64)(f32)1.217f * 65536.0) +
+                (f64)NU_SIN_LUT((u16)(i32)((f64)NuFmod(GameTimer.time_elapsed, 1.217f) / (f64)1.217f * 65536.0) +
                                 index * 0x2666) *
                     sway +
                 grapple->hook_position.z;
@@ -805,16 +805,15 @@ extern "C" void __cdecl Grapples_Update(void *world_pointer, void *unused_system
             grapple->target_rope_points[point].y = (f64)direction.y * offset + attachment.y;
             grapple->target_rope_points[point].z = (f64)direction.z * offset + attachment.z;
             if (occupant != NULL && slack > 0.0f) {
-                wave_base = (f64)slack * (f64)(f32)0.1f;
+                wave_base = (f64)slack * (f64)0.1f;
                 wave_scale = ((f64)(point + 1) / 6.0) * wave_base;
                 grapple->target_rope_points[point].x +=
                     (f64)NU_SIN_LUT((u16)(i32)((f64)NuFmod(GameTimer.time_elapsed, 1.5f) / 1.5 * 65536.0) +
                                     index * 0x2000) *
                     wave_scale;
                 grapple->target_rope_points[point].z +=
-                    (f64)NU_SIN_LUT(
-                        (u16)(i32)((f64)NuFmod(GameTimer.time_elapsed, 1.217f) / (f64)(f32)1.217f * 65536.0) +
-                        index * 0x2666) *
+                    (f64)NU_SIN_LUT((u16)(i32)((f64)NuFmod(GameTimer.time_elapsed, 1.217f) / (f64)1.217f * 65536.0) +
+                                    index * 0x2666) *
                     wave_scale;
             }
         }
@@ -1001,7 +1000,7 @@ extern "C" void __cdecl Grapple_MoveCode(GAMEOBJECT *object) {
             object->field_7aa = LEGOACT_GRAPPLE_IDLE;
             object->context_duration = 0.0f;
             object->context_variant_flags &= ~0x100;
-            object->context_hover_target_y = (f64)0.1f;
+            object->context_hover_target_y = 0.1f;
             object->field_7a8 = 0x2000;
             object->big_jump_animation = 0;
             if (PlayerGrappleSwingModePc == 1) {
@@ -1123,7 +1122,7 @@ extern "C" void __cdecl Grapple_MoveCode(GAMEOBJECT *object) {
                 if (!GRAPPLE_CURRENT->disabled && object->context_hover_target_y < (f64)0.1f) {
                     object->context_hover_target_y += 0.75f * FRAMETIME;
                     if (object->context_hover_target_y > (f64)0.1f) {
-                        object->context_hover_target_y = (f64)0.1f;
+                        object->context_hover_target_y = 0.1f;
                     }
                 }
             } else if (down) {
@@ -1303,7 +1302,7 @@ extern "C" {
         target->x = 0.0f;
         target->y = -object->context_hover_target_y;
         target->z = 0.0f;
-        amplitude = ((i32)object->big_jump_animation << 16) / 360;
+        amplitude = (object->big_jump_animation << 16) / 360;
         angle = (i32)((f32)amplitude * NuTrigTable[object->field_7a8 >> 1] * GRAPPLE_CURRENT->swing_scale);
         NuVecRotateX(target, target, angle);
         NuVecRotateY(target, target, object->takeover_start_angle);

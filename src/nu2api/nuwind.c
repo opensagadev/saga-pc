@@ -4,7 +4,7 @@ void __cdecl NuWindSetup(VARIPTR *buffer, VARIPTR end, i32 matrix_count, i32 gro
     NuWindMaxMatsPC = matrix_count;
     NuWindMaxGroupsPC = group_count;
     buffer->addr = (buffer->addr + 15) & ~15u;
-    NuWindGroup = (PC_NUWINDGROUP *)buffer->void_ptr;
+    NuWindGroup = buffer->void_ptr;
     buffer->addr += group_count * sizeof(PC_NUWINDGROUP);
     (void)end;
 }
@@ -54,7 +54,7 @@ PC_NUWINDGROUP *NuWindCreateMtx(NUSPECIALHANDLE *source, NUMTX *matrices, i16 co
         return NULL;
     }
     group->matrices = matrices;
-    group->scene = (NUGSCN *)source->scene;
+    group->scene = source->scene;
     group->special = (NUDISPLAY_SPECIAL_PC *)source->display_special;
     group->matrix_count = count;
     group->value20 = value20;

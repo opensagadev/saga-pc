@@ -68,7 +68,7 @@ extern char *SecurityDoor_OutputName;
 
 static void SecurityDoorUpdateMatricesPc(SECURITY_DOOR_RECORD_PC *door, u16 angle) {
     NUVEC translation = {0.0f, 0.0f, 0.0f};
-    NuMtxSetRotationY(&door->leaf_matrix[0], -(i32)angle);
+    NuMtxSetRotationY(&door->leaf_matrix[0], -angle);
     translation.x = 0.2667f;
     NuMtxTranslate(&door->leaf_matrix[0], &translation);
     NuMtxRotateY(&door->leaf_matrix[0], door->yaw);
@@ -121,14 +121,14 @@ void *__cdecl SecurityDoors_ReserveBufferSpace(WORLDINFO *world) {
 
 void __cdecl SecurityDoor_Activate(GIZMO_PC *gizmo, i32 active) {
     if (gizmo != NULL) {
-        SECURITY_DOOR_RECORD_PC *door = (SECURITY_DOOR_RECORD_PC *)gizmo->object;
+        SECURITY_DOOR_RECORD_PC *door = gizmo->object;
         door->bits.active = active != 0;
     }
 }
 
 void __cdecl SecurityDoor_SetVisibility(GIZMO_PC *gizmo, i32 visible) {
     if (gizmo != NULL) {
-        SECURITY_DOOR_RECORD_PC *door = (SECURITY_DOOR_RECORD_PC *)gizmo->object;
+        SECURITY_DOOR_RECORD_PC *door = gizmo->object;
         door->bits.visible = visible != 0;
     }
 }

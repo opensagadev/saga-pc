@@ -301,7 +301,7 @@ extern "C" {
         }
         if (stage->field_0x18 >= stage->field_0x1c) {
             NextStatusStage(packet);
-            if ((i32)packet->current_gold_brick < (i32)packet->stage_count - 1) {
+            if (packet->current_gold_brick < packet->stage_count - 1) {
                 stage->field_0x1c = 0.1f;
             } else {
                 FinishStatusPacket(packet->prompt_choice);
@@ -384,7 +384,7 @@ extern "C" {
         u32 remaining;
         (void)stage;
         remaining = packet->coins_remaining[0] + packet->coins_remaining[1];
-        IncreaseScore(packet->score, (u64)remaining, 0);
+        IncreaseScore(packet->score, remaining, 0);
         packet->coins_remaining[0] = 0;
         packet->coins_remaining[1] = 0;
         NextStatusStage(packet);
@@ -940,7 +940,7 @@ extern "C" {
                             amount = 1;
                         }
                         packet->coins_remaining[player] = remaining - amount;
-                        IncreaseScore(packet->score, (i64)amount, 0);
+                        IncreaseScore(packet->score, amount, 0);
                         if (packet->coins_remaining[player] == 0) {
                             StatusAltCoinsDonePc++;
                         }
@@ -1303,7 +1303,7 @@ extern "C" {
                         NextStatusStage(packet);
                     }
                 } else {
-                    u32 frame = (u32)GameTimer.update_count;
+                    u32 frame = GameTimer.update_count;
                     if (frame % 6u < 3u && (frame - 1u) % 6u >= 3u) {
                         NewStatusRumbleBuzz(-1, 0.0f, 0.0f, 2);
                     }
@@ -2089,13 +2089,13 @@ extern "C" {
                     coin_slide = 1.0f;
                 }
                 score = packet->original_score;
-                IncreaseScore(&score, (i64)((u32)(packet->reward_score - packet->original_score) * progress), 0);
+                IncreaseScore(&score, (i64)((packet->reward_score - packet->original_score) * progress), 0);
                 CoinTotal_Draw((i32)score,
                                (STATSPOSY - STATSPOS2YPc) * NuTrigTable[((i32)(coin_slide * 16384.0f) >> 1) & 0x7fff] +
                                    STATSPOS2YPc,
                                CoinTotalScale, 1, 1.0f, 255, 191, 0);
                 if (stage->type == 26) {
-                    f32 remaining = (u16)packet->mission->time - packet->elapsed_time;
+                    f32 remaining = packet->mission->time - packet->elapsed_time;
                     if (remaining < 0.0f) {
                         remaining = 0.0f;
                     }
@@ -2106,7 +2106,7 @@ extern "C" {
                            1.0f, 0.6f, 0.6f, 0.6f, 0, 255, 191, 0);
                 }
                 if (stage->type == 23) {
-                    f32 remaining = (u16)ADataList[packet->area_id].challenge_trial_time - packet->elapsed_time;
+                    f32 remaining = ADataList[packet->area_id].challenge_trial_time - packet->elapsed_time;
                     if (remaining < 0.0f) {
                         remaining = 0.0f;
                     }

@@ -14,7 +14,7 @@ EXPLOSION_PC *__cdecl AddExplosion(NUVEC *position, f32 radius, f32 duration, GA
     explosion->random_angle = (u16)qrand();
     explosion->effect_id = (i16)effect;
     explosion->flags = flags;
-    explosion->hit_flags = (u16)ObjHitObj_Flags(owner);
+    explosion->hit_flags = ObjHitObj_Flags(owner);
     explosion->field_30 = 0;
     explosion->field_32 = 1;
     explosion->field_33 = -1;
@@ -76,7 +76,7 @@ void __cdecl UpdateExplosion_Generic(EXPLOSION_PC *explosion) {
             position.x = radius * NU_SIN_LUT(angle) + explosion->position.x;
             position.y = vertical_offset + explosion->position.y;
             position.z = radius * NU_COS_LUT(angle) + explosion->position.z;
-            AddGameDebrisRot(WORLD->game_debris_sys, (i16)explosion->effect_id, &position, count, 0, 0);
+            AddGameDebrisRot(WORLD->game_debris_sys, explosion->effect_id, &position, count, 0, 0);
             angle += 0x3333;
         }
     }
@@ -93,8 +93,8 @@ void __cdecl UpdateExplosion_Generic(EXPLOSION_PC *explosion) {
             if ((object->flags_1fc_word & 1) == 0 || (object->flags_1fc_word & 0x1000) == 0 || object->dead != 0) {
                 continue;
             }
-            if ((U64_PAIR(&CInfo[(i8)target->character_context].flags) & 0x8000) != 0 ||
-                (U64_PAIR(&CInfo[(i8)target->character_context].flags) & 0x20000000) != 0) {
+            if ((U64_PAIR(&CInfo[target->character_context].flags) & 0x8000) != 0 ||
+                (U64_PAIR(&CInfo[target->character_context].flags) & 0x20000000) != 0) {
                 continue;
             }
             if ((object->character_data->game_character->flags_090 & 0x8000) != 0) {
@@ -129,9 +129,9 @@ void __cdecl UpdateExplosion_Generic(EXPLOSION_PC *explosion) {
                 }
                 squared = x * x + z * z;
                 inverse = 1.0f / NuFsqrt(squared);
-                normalized = (f32)(x * inverse);
+                normalized = x * inverse;
                 object->movement_direction_x = normalized * ExplosionKnockbackScalePc;
-                normalized = (f32)(z * inverse);
+                normalized = z * inverse;
                 object->movement_direction_z = normalized * ExplosionKnockbackScalePc;
             }
             if (hit_character || (explosion->flags & 1) == 0) {
@@ -174,7 +174,7 @@ void __cdecl UpdateExplosion_Generic(EXPLOSION_PC *explosion) {
             } else if ((explosion->flags & 0x800) != 0 && (target->portal_flags & 0x8000000) == 0) {
                 damage = -1;
             } else if ((explosion->flags & 0x20) != 0 && (target->portal_flags & 0x8000000) == 0 &&
-                       (i8)target->current_hp > 0) {
+                       target->current_hp > 0) {
                 damage = -1;
             } else {
                 damage = explosion->field_32;
@@ -195,10 +195,10 @@ void __cdecl UpdateExplosion_Generic(EXPLOSION_PC *explosion) {
                 ++explosion->field_30;
                 if ((explosion->flags & 0x200) != 0 && (explosion->field_33 == 0 || explosion->field_33 == 1) &&
                     Arcade != 0) {
-                    if ((u8)object->field_280 <= 1) {
+                    if (object->field_280 <= 1) {
                         Arcade_PlayerKilled((object->field_280 ^ 1) & 1, 0);
                     } else if (object->field_280 == 0xff) {
-                        Arcade_AIKilled((i8)explosion->field_33);
+                        Arcade_AIKilled(explosion->field_33);
                     }
                 }
             }

@@ -793,7 +793,7 @@ void __cdecl ExtraCharacterFixUpAfterConfig(void) {
 }
 
 void __cdecl ResetPlayerPacket(void *opaque_packet, CHARACTERDATA_PC *character) {
-    PLAYER_PACKET_RESET_PC *packet = (PLAYER_PACKET_RESET_PC *)opaque_packet;
+    PLAYER_PACKET_RESET_PC *packet = opaque_packet;
     i32 i;
     (void)character;
     packet->context_state_flags &= (u8)~1;
@@ -936,7 +936,7 @@ static __declspec(noinline) void InitCreatureModelFlagsPc(GAMEOBJECT *object) {
    definition lives in its own unit. */
 void __cdecl PlayerSetCurrentHpPc(GAMEOBJECT *object, i8 hitpoints) {
     object->current_hp = hitpoints;
-    if ((i32)hitpoints > (i32)object->field_107e) {
+    if (hitpoints > object->field_107e) {
         object->current_hp = object->field_107e;
     }
 }
@@ -1681,7 +1681,7 @@ void __cdecl MovePlayer(GAMEOBJECT *object) {
             }
             object->movement_mode = 2;
             ShoveSystemCheckGameObject(object);
-            if (object->id == (u16)id_DRAGBOMB) {
+            if (object->id == id_DRAGBOMB) {
                 MovePlayer_ROLLING(object);
             } else if (!MovePlayer_TWIST(object) && !MovePlayer_CIRCLE(object) && !MovePlayer_GUNSHIPIN(object) &&
                        !MovePlayer_POD(object)) {
@@ -1804,7 +1804,7 @@ void __cdecl TerrainPlayer(GAMEOBJECT *object) {
                 terrain_mask |= GetSurfaceInfoRuntimeMaskPc.word;
             }
             ai_controlled = api->flags_1f8 & 0x400;
-            if (ai_controlled && object->id != (u16)id_DRAGBOMB &&
+            if (ai_controlled && object->id != id_DRAGBOMB &&
                 (WORLD->area != HOTHBATTLE_ADATA || api->character_data->game_character->field_028 != 0.0f)) {
                 terrain_mask |= 0x40;
             }
@@ -1906,7 +1906,7 @@ void __cdecl TerrainPlayer(GAMEOBJECT *object) {
                 object->ai_packet.path_target == NULL && !((api->flags_1fc_word & 0x80) != 0) &&
                 (object->flags_e20 & 0x10000000) == 0 && object->jump_variant_state == 0 &&
                 object->character_context != 0 && object->character_context != 0x1c && api->jump_animation_state != 8 &&
-                (((u32)(GameTimer.update_count)) >= 2 || (api->flags_1f8 & 5) != 0) && (api->field_281 & 3) != 0 &&
+                (GameTimer.update_count >= 2 || (api->flags_1f8 & 5) != 0) && (api->field_281 & 3) != 0 &&
                 api->supporting_platform_id == -1 && movement_threshold * movement_threshold >= speed_squared &&
                 object->character_context != 0x0f && object->character_context != 0x0b &&
                 object->character_context != 0x1e) {
@@ -2016,7 +2016,7 @@ void __cdecl TerrainPlayer(GAMEOBJECT *object) {
                     collision_position.x = api->position.x;
                     collision_position.y = api->origin_scale * object->character_bottom + api->position.y;
                     collision_position.z = api->position.z;
-                    object_index = ((u32)(((u32)(object)) - ((u32)(Obj)))) / sizeof(GAMEOBJECT);
+                    object_index = (((u32)(object)) - ((u32)(Obj))) / sizeof(GAMEOBJECT);
 
                     NuVecScale(&movement, &api->velocity, FRAMETIME);
 
@@ -2088,7 +2088,7 @@ void __cdecl TerrainPlayer(GAMEOBJECT *object) {
                     } else if (object->character_context == 0x58 && object->field_7b3 == 1) {
                         TERRAIN_PLAYER_BLOWUP_PC *blowup;
 
-                        blowup = ((TERRAIN_PLAYER_BLOWUP_PC *)(object->grapple));
+                        blowup = object->grapple;
                         if (blowup->platform_id != -1) {
                             excluded_platforms[excluded_count++] = blowup->platform_id;
                         }
@@ -2415,7 +2415,7 @@ void __cdecl TerrainPlayer(GAMEOBJECT *object) {
                         api->water_height != 2000000.0f) {
                         i32 layer;
 
-                        layer = ((i8)(api->field_283));
+                        layer = api->field_283;
                         if ((layer == 3 ||
                              (layer == 9 && object->id == (u16)id_TRACTOR && WORLD->area != NULL &&
                               WORLD->area == DAGOBAH_ADATA) ||
@@ -2425,7 +2425,7 @@ void __cdecl TerrainPlayer(GAMEOBJECT *object) {
                             NoLayerKill(object) == 0 && object->character_context != 0x5d) {
                             u32 layer_flags;
 
-                            layer_flags = TerLayer[((i8)(api->field_283))].flags;
+                            layer_flags = TerLayer[api->field_283].flags;
                             if ((((layer_flags & 1) != 0 || (api->field_283 == 9 && object->id == (u16)id_TRACTOR &&
                                                              WORLD->area != NULL && WORLD->area == DAGOBAH_ADATA)) &&
                                  api->position.y < api->water_height &&
@@ -2470,7 +2470,7 @@ void __cdecl TerrainPlayer(GAMEOBJECT *object) {
                                         }
                                         object->character_context = 0x2b;
                                         object->jump_variant_state = 0;
-                                        if ((TerLayer[((i8)(api->field_283))].flags & 0x20) != 0) {
+                                        if ((TerLayer[api->field_283].flags & 0x20) != 0) {
                                             object->wall_run_state = 3;
                                         } else if (saved_rescue_surface || api->field_283 == 6) {
                                             api->velocity.y = -0.25f;
@@ -2497,7 +2497,7 @@ void __cdecl TerrainPlayer(GAMEOBJECT *object) {
                                                 AddPickups(coins, 0, 0, 0, &api->collision_position, NULL, 2.0f,
                                                            ((i8)(api->field_280)), 1.0f,
                                                            api->water_height != 2000000.0f &&
-                                                                   (TerLayer[((i8)(api->field_283))].flags & 1) != 0
+                                                                   (TerLayer[api->field_283].flags & 1) != 0
                                                                ? api->water_height
                                                                : 2000000.0f,
                                                            NULL, 1, 0);
@@ -2621,7 +2621,7 @@ void __cdecl AnimatePlayer(GAMEOBJECT *object) {
         }
     } else {
         movement_speed = pad->animation_input_magnitude;
-        if (movement_speed > 0.0f && (u16)object->id == id_GONKDROID && Cheat_IsOn(8) == 0) {
+        if (movement_speed > 0.0f && object->id == id_GONKDROID && Cheat_IsOn(8) == 0) {
             movement_speed = object->character_data->game_character->walk_speed;
         }
     }
@@ -2844,7 +2844,7 @@ void __cdecl ParaphernaliaCommunicatePc(GAMEOBJECT *object, i32 reflection) {
         scaling.z = object->communicate_blend * object->origin_scale;
         scaling.x = scaling.y = scaling.z;
         NuMtxSetScale(&matrix, &scaling);
-        GameDrawMtxRotateYPc(&matrix, (NUANG)(object->field_0x276 + 0x8000));
+        GameDrawMtxRotateYPc(&matrix, object->field_0x276 + 0x8000);
         matrix.m30 = object->locator_matrices[locator].m30;
         matrix.m31 = object->locator_matrices[locator].m31;
         matrix.m32 = object->locator_matrices[locator].m32;
@@ -3121,8 +3121,7 @@ void __cdecl UpdateCharacterLoad(void) {
             if (id == id_DROIDEKA || (CDataList[id].model_flags & 0x04002000) != 0 || APICharacterLoaded(id) != NULL) {
                 continue;
             }
-            if ((i32)CDataList[id].animation_count + apicharsys->loaded_animation_count >
-                apicharsys->animation_capacity) {
+            if (CDataList[id].animation_count + apicharsys->loaded_animation_count > apicharsys->animation_capacity) {
                 continue;
             }
             if (InCollectList_Index(id, NULL, 0) == -1 || Collection_Got(id) == 0) {
@@ -3147,7 +3146,7 @@ void __cdecl UpdateCharacterLoad(void) {
 i32 __cdecl ActivePlayerInRange(NUVEC *position, f32 range_squared, f32 *distance_squared) {
     i32 index;
     for (index = 0; index < 8; ++index) {
-        GAMEOBJECT *object = (GAMEOBJECT *)Player[index];
+        GAMEOBJECT *object = Player[index];
         if (object != NULL && (object->flags_1fc & 0x80) != 0) {
             f32 distance = NuVecDistSqr(&object->collision_position, position, NULL);
             if (distance < range_squared) {
@@ -3164,7 +3163,7 @@ i32 __cdecl ActivePlayerInRange(NUVEC *position, f32 range_squared, f32 *distanc
 i32 __cdecl AvailableToPlayer(u32 character_flags, i32 weapon_action, i32 helmet, i32 require_all) {
     i32 index;
     for (index = 0; index < 8; ++index) {
-        GAMEOBJECT *object = (GAMEOBJECT *)Player[index];
+        GAMEOBJECT *object = Player[index];
         if (object == NULL || object->character_data == NULL) {
             continue;
         }
@@ -3228,9 +3227,9 @@ i32 __cdecl AvailableToPlayer(u32 character_flags, i32 weapon_action, i32 helmet
 GAMEOBJECT *__cdecl GetOtherActivePlayer(GAMEOBJECT *object) {
     GAMEOBJECT *other;
     if (object == Player[0]) {
-        other = (GAMEOBJECT *)Player[1];
+        other = Player[1];
     } else if (object == Player[1]) {
-        other = (GAMEOBJECT *)Player[0];
+        other = Player[0];
     } else {
         return NULL;
     }
@@ -3297,7 +3296,7 @@ u32 __cdecl AdjustLayerBits(u32 mask, GAMEOBJECT *object) {
     if (object->helmet != 0) {
         mask &= ~hair;
     }
-    suit = (SUIT_LAYERS_PC *)object->suit;
+    suit = object->suit;
     if (suit != NULL && object->id == (u16)ID_DEFAULTCHARACTER_A) {
         if ((suit->flags & 4) != 0) {
             mask = (mask & ~cape) | SpecialLayer[0].mask;
@@ -3703,7 +3702,7 @@ i32 __cdecl NewPlayerCharacter(GAMEOBJECT *object, i32 id, i32 old_id, i32 unuse
         AddGameDebris(WORLD->game_debris_sys, 0x5c, &object->collision_position);
     }
     context = object->character_context;
-    lean = (i16)object->movement_lean_angle;
+    lean = object->movement_lean_angle;
     lean_enabled = object->character_data->model_flags & 0x2000;
     LoseHelmet(object, 0, 1);
     DestroySnakeBody(object);
@@ -4252,17 +4251,17 @@ i32 __cdecl DrawGameObjectsProcess(void) {
                 break;
         }
         if (object->movement_lean_angle != 0) {
-            angle = (i16)object->movement_lean_angle;
+            angle = object->movement_lean_angle;
             if (PODSPRINT_ADATA != NULL && WORLD->area == PODSPRINT_ADATA) {
                 angle = (i32)((f64)PodSprint_RollMul(object) * angle);
             }
             NuMtxPreRotateZ(&matrix, angle);
         }
         if (object->secondary_lean_angle != 0) {
-            NuMtxPreRotateX(&matrix, (i16)object->secondary_lean_angle);
+            NuMtxPreRotateX(&matrix, object->secondary_lean_angle);
         }
         if (object->tertiary_lean_angle != 0) {
-            NuMtxPreRotateY(&matrix, (i16)object->tertiary_lean_angle);
+            NuMtxPreRotateY(&matrix, object->tertiary_lean_angle);
         }
         ApplyExtraRotation(object, &matrix);
         if ((u8)object->movement_mode != 4 &&
@@ -4648,7 +4647,7 @@ void __cdecl DrawParaphernaliaPc(GAMEOBJECT *object) {
             matrix.translation = carried_position;
         }
         if (carried->reflection_enabled != 0 && carried->reflection_height != 2000000.0 &&
-            object->ai_update_distance < ((u8)(WORLD->current_level->reflection_range)) &&
+            object->ai_update_distance < WORLD->current_level->reflection_range &&
             MatrixReflection(&matrix, carried->reflection_enabled, carried->reflection_height,
                              WORLD->current_level->reflection_y, &reflected)) {
             carried_reflection = &reflected;
@@ -4708,7 +4707,7 @@ void __cdecl DrawParaphernaliaPc(GAMEOBJECT *object) {
     } else if (((i16)(object->id)) == id_CATAPULT &&
                (object->character_context != 0x0a || (object->context_variant_flags & 0x40) == 0 ||
                 object->quick_shoot_bolt_id != -1 ||
-                (object->context_timer < 0.5f && ((u32)(GameTimer.update_count)) % 6 < 3))) {
+                (object->context_timer < 0.5f && GameTimer.update_count % 6 < 3))) {
         dco_prerotatez = 0xc000;
         DrawObjectOnCharacter(WORLD, object, 0xf0, NULL, object->character_data->game_character->weapon_shoot_joints[0],
                               -1, object->locator_matrices, 0, object->layer_mask, NULL, NULL, 1.0f, 1.0f);
@@ -4760,7 +4759,7 @@ void __cdecl DrawParaphernaliaPc(GAMEOBJECT *object) {
     } else if (extra->force_alpha > 0.0f && extra->force_radius > 0.0f &&
                WORLD->level_objects[object->field_e1e].active != 0 &&
                (object->character_data->game_character->flags_090 & 0x400) == 0) {
-        held_glow_alpha = ((f32)(extra->force_alpha / FORCEGLOWTIME));
+        held_glow_alpha = (extra->force_alpha / FORCEGLOWTIME);
         DrawForceGlowSprite(&extra->force_position, extra->force_radius, object->field_e1e, held_glow_alpha, object);
     }
     if (Cheat_IsOn(2)) {
@@ -4913,7 +4912,7 @@ void DrawGameObjectsDraw(i32 pass) {
                    WORLD->level_objects[object->field_e1e].active != 0 &&
                    (object->character_data->game_character->flags_090 & 0x400) == 0) {
             DrawForceGlowSprite(&((PARAPHERNALIA_EXTRA_PC *)object)->force_position, object->transform_target_scale,
-                                object->field_e1e, (f32)(object->transform_alpha / FORCEGLOWTIME), object);
+                                object->field_e1e, object->transform_alpha / FORCEGLOWTIME, object);
         }
         if (object->snake_body != NULL) {
             DrawSnakeBody(object);
@@ -5166,7 +5165,7 @@ void __cdecl InitAICreatures(AISYS_PC *system) {
             }
             ((AI_CREATURE_INIT_PACKET_PC *)&object->ai_packet)->area = creature->area;
             ((AI_CREATURE_INIT_PACKET_PC *)&object->ai_packet)->locator = creature->locator;
-            object->ai_packet.respawn_locator = (AILOCATOR_PC *)creature->respawn_locator;
+            object->ai_packet.respawn_locator = creature->respawn_locator;
             object->ai_packet.creature_set = creature->set;
         }
     }

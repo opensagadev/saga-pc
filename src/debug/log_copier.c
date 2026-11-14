@@ -26,7 +26,7 @@ static BOOL write_all(HANDLE output, const char *bytes, DWORD length) {
 }
 
 static DWORD WINAPI copy_stream(void *argument) {
-    CopyStream *stream = (CopyStream *)argument;
+    CopyStream *stream = argument;
     char buffer[4096];
     DWORD count;
     for (;;) {
@@ -54,7 +54,7 @@ static DWORD WINAPI copy_stream(void *argument) {
 }
 
 static HANDLE handle_argument(const char *text) {
-    return (HANDLE)(ULONG_PTR)strtoul(text, NULL, 16);
+    return (HANDLE)strtoul(text, NULL, 16);
 }
 
 int main(int argc, char **argv) {

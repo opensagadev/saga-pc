@@ -16,7 +16,7 @@ STATIC_ASSERT(offsetof(COLLECTID, field3_0x4) == 4);
 static i32 Signals_Load(void *world_info, void *unused1) {
     i32 version;
     i32 index;
-    WORLDINFO *world = ((WORLDINFO *)(world_info));
+    WORLDINFO *world = world_info;
     if (world->signal_count != 0) {
         return 0;
     }
@@ -39,7 +39,7 @@ static i32 Signals_Load(void *world_info, void *unused1) {
 
 static void Signals_Draw(void *world_info, void *unused1, float unused2) {
     i32 i;
-    WORLDINFO *world = ((WORLDINFO *)(world_info));
+    WORLDINFO *world = world_info;
     SIGNAL_s *signal = world->signals;
     for (i = 0; i < world->signal_count; i++, signal++) {
         NUMTX matrix;
@@ -98,7 +98,7 @@ static void Signals_Draw(void *world_info, void *unused1, float unused2) {
 
 static void Signal_SetGizmoVisibility(GIZMO_PC *gizmo, i32 visible) {
     if (gizmo != NULL) {
-        Signal_SetVisibility(((SIGNAL_s *)(gizmo->object)), visible);
+        Signal_SetVisibility(gizmo->object, visible);
     }
 }
 

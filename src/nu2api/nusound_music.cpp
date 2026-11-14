@@ -335,7 +335,7 @@ i32 NuMusic::SelectTrackByHandle(u32 class_mask, i32 handle) {
             if (handle != -1) {
                 i32 track_index = handle & 0x7ff;
                 i32 handle_album_index = handle >> 11;
-                if (handle_album_index == (i32)(album - albums)) {
+                if (handle_album_index == (album - albums)) {
                     if (track_index >= 0 && track_index < album->tracks_count) {
                         album->tracks[class_index] = &album->tracks_source[track_index];
                         return 1;
@@ -374,7 +374,7 @@ i32 NuMusic::GetTrackHandle(u32 class_mask, const char *name) {
             for (index = 0; index < album->tracks_count; index++) {
                 if (album->tracks_source[index].clazz == class_mask && album->tracks_source[index].ident != NULL &&
                     NuStrICmp(album->tracks_source[index].ident, name) == 0) {
-                    return ((i32)(album - albums) << 11) | index;
+                    return ((album - albums) << 11) | index;
                 }
             }
             PCMusicTrackNotFound(name);
@@ -383,7 +383,7 @@ i32 NuMusic::GetTrackHandle(u32 class_mask, const char *name) {
             if (index == -1 || album->tracks[index] == NULL) {
                 return -1;
             }
-            return (i32)(album->tracks[index] - album->tracks_source) | ((i32)(album - albums) << 11);
+            return (album->tracks[index] - album->tracks_source) | ((album - albums) << 11);
         }
     }
 
@@ -673,7 +673,7 @@ void NuMusic::Process(f32 delta) {
                         i32 result =
                             NuSound3PlayStereoV(2, voice->stream_index, 3,
                                                 current_track->file_indexes[voice->track_sub[voice->track_index]], 9, 0,
-                                                6, 0, 10, (f64)current_track->start_offset, 1);
+                                                6, 0, 10, current_track->start_offset, 1);
                         voice->last_volume = 0.0f;
                         current_track->ManageEntryTime();
                         if (result != 0 && voice->status != 4) {
@@ -933,7 +933,7 @@ void NuMusic::InitData(const char *file, VARIPTR *cursor, VARIPTR end) {
         if (extra_track_count != 0) {
             PCByteCopy(new_tracks, old_tracks, extra_track_count * sizeof(Track));
         }
-        i32 delta = (i32)((char *)new_tracks - (char *)old_tracks);
+        i32 delta = (char *)new_tracks - (char *)old_tracks;
         extra_tracks = new_tracks;
         for (i32 i = 0; i < album_count; ++i) {
             if (albums[i].tracks_source != NULL) {
@@ -947,7 +947,7 @@ void NuMusic::InitData(const char *file, VARIPTR *cursor, VARIPTR end) {
         if (index_count != 0) {
             PCByteCopy(new_indexes, old_indexes, index_count * sizeof(f32));
         }
-        i32 delta = (i32)((char *)new_indexes - (char *)old_indexes);
+        i32 delta = (char *)new_indexes - (char *)old_indexes;
         indexes = new_indexes;
         for (i32 i = 0; i < extra_track_count; ++i) {
             if (extra_tracks[i].entry_times != NULL) {
@@ -1337,7 +1337,7 @@ i32 NuMusic::Voice::Play(void) {
     }
     Track *track = tracks[track_index];
     i32 result = NuSound3PlayStereoV(2, stream_index, 3, track->file_indexes[track_sub[track_index]], 9, track->pitch,
-                                     6, 0, 10, (f64)track->start_offset, 1);
+                                     6, 0, 10, track->start_offset, 1);
     last_volume = 0.0f;
     tracks[track_index]->ManageEntryTime();
     if (result != 0) {

@@ -612,7 +612,7 @@ CUT_SCRIPT_NODE_PC *__cdecl CutScriptParseBlockPc(NUFPAR_PC *fp, VARIPTR *buffer
 static CUT_SCRIPT_PC *CutScriptReadPc(NUFPAR_PC *fp, VARIPTR *buffer, i32 unused) {
     CUT_SCRIPT_PC *script;
     buffer->addr = (buffer->addr + 0xf) & ~0xfU;
-    script = (CUT_SCRIPT_PC *)buffer->void_ptr;
+    script = buffer->void_ptr;
     buffer->addr += sizeof(CUT_SCRIPT_PC);
     memset(script, 0, sizeof(CUT_SCRIPT_PC));
     CUT_SCRIPT_READ_WORD(fp, buffer, script->name);
@@ -797,7 +797,7 @@ CUT_TRIGGER_SET_PC *__cdecl CutTriggerSetCreatePc(CUT_TRIGGER_FILE_PC *file, NUG
     (void)end;
     if (file != NULL && scene != NULL && scripts != NULL) {
         buffer->addr = (buffer->addr + 0xf) & ~0xfU;
-        set = (CUT_TRIGGER_SET_PC *)buffer->void_ptr;
+        set = buffer->void_ptr;
         buffer->addr += sizeof(CUT_TRIGGER_SET_PC);
         memset(set, 0, sizeof(CUT_TRIGGER_SET_PC));
         set->prev = NULL;
@@ -819,7 +819,7 @@ CUT_TRIGGER_SET_PC *__cdecl CutTriggerSetCreatePc(CUT_TRIGGER_FILE_PC *file, NUG
         set->scene = scene;
         set->file = file;
         set->scripts = scripts;
-        set->states = (CUT_TRIGGER_STATE_PC *)buffer->void_ptr;
+        set->states = buffer->void_ptr;
         buffer->addr += file->count * sizeof(CUT_TRIGGER_STATE_PC);
         memset(set->states, 0, file->count * sizeof(CUT_TRIGGER_STATE_PC));
         for (i = 0; i < file->count; ++i) {
@@ -860,7 +860,7 @@ CUT_TRIGGER_FILE_PC *__cdecl CutTriggerFileLoadPc(char *path, VARIPTR *buffer, V
     if (size == 0) {
         return NULL;
     }
-    file = (CUT_TRIGGER_FILE_PC *)buffer->void_ptr;
+    file = buffer->void_ptr;
     buffer->addr += size;
     if (file->version != 1) {
         CutSceneLoadDiagnosticPc(path, file->version);
@@ -992,14 +992,14 @@ i32 __cdecl CutTriggerEntryTestPc(CUT_TRIGGER_ENTRY_PC *entry, NUVEC *pos, f32 r
         shape = &entry->shapes[i];
         switch (shape->type) {
             case 1:
-                sphere = (CUT_TRIGGER_SPHERE_PC *)shape->data;
+                sphere = shape->data;
                 dist = NuVecDistSqr(pos, &sphere->centre, &delta);
                 if (dist < (sphere->radius + radius) * (sphere->radius + radius)) {
                     return 1;
                 }
                 break;
             case 2:
-                box = (CUT_TRIGGER_BOX_PC *)shape->data;
+                box = shape->data;
                 NuVecMtxTransform(&local_pos, pos, &box->matrix);
                 NuVecMtxTransform(&box_extent, &extent, &box->matrix);
                 NuVecSub(&box_extent, &box_extent, &box->matrix.translation);
@@ -1013,7 +1013,7 @@ i32 __cdecl CutTriggerEntryTestPc(CUT_TRIGGER_ENTRY_PC *entry, NUVEC *pos, f32 r
                 }
                 return 1;
             case 3:
-                cylinder = (CUT_TRIGGER_CYLINDER_PC *)shape->data;
+                cylinder = shape->data;
                 if (pos->y < cylinder->base.y - radius || pos->y > cylinder->height + cylinder->base.y + radius) {
                     break;
                 }
@@ -1063,7 +1063,7 @@ i32 __cdecl CutTriggerEntryTestMtxPc(CUT_TRIGGER_ENTRY_PC *entry, NUMTX *mtx, NU
         shape = &entry->shapes[i];
         switch (shape->type) {
             case 1:
-                sphere = (CUT_TRIGGER_SPHERE_PC *)shape->data;
+                sphere = shape->data;
                 NuVecMtxTransform(&centre, &sphere->centre, mtx);
                 dist = NuVecDistSqr(pos, &centre, &delta);
                 if (dist < (sphere->radius + radius) * (sphere->radius + radius)) {
@@ -1071,7 +1071,7 @@ i32 __cdecl CutTriggerEntryTestMtxPc(CUT_TRIGGER_ENTRY_PC *entry, NUMTX *mtx, NU
                 }
                 break;
             case 2:
-                box = (CUT_TRIGGER_BOX_PC *)shape->data;
+                box = shape->data;
                 NuVecMtxTransform(&box_pos, &local_pos, &box->matrix);
                 NuVecMtxTransform(&box_extent, &extent, &box->matrix);
                 NuVecSub(&box_extent, &box_extent, &box->matrix.translation);
@@ -1085,7 +1085,7 @@ i32 __cdecl CutTriggerEntryTestMtxPc(CUT_TRIGGER_ENTRY_PC *entry, NUMTX *mtx, NU
                 }
                 return 1;
             case 3:
-                cylinder = (CUT_TRIGGER_CYLINDER_PC *)shape->data;
+                cylinder = shape->data;
                 NuVecMtxTransform(&centre, &cylinder->base, mtx);
                 if (pos->y < centre.y - radius || pos->y > centre.y + cylinder->height + radius) {
                     break;

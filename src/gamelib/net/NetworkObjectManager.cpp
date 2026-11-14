@@ -457,7 +457,7 @@ void NetworkObjectManager::AddToLocalObjectList(NetworkObject *object) {
         }
     }
     if (i >= local_object_count) {
-        local_object_count = (i32)(slot - local_objects) + 1;
+        local_object_count = (slot - local_objects) + 1;
     }
     *slot = object;
 }
@@ -1154,7 +1154,7 @@ NOSContext &NOSContext::operator=(const NOSContext &other) {
 
 bool NOSContext::operator==(const NOSContext &other) const {
     // MATCH-EXCEPTION: the redundant bool cast gives retail's direct sete al.
-    return (bool)(memcmp(bytes, other.bytes, sizeof(bytes)) == 0);
+    return memcmp(bytes, other.bytes, sizeof(bytes)) == 0;
 }
 
 void NetworkObjectManager::ReceiveAcquireMessage(NETMESSAGE_PC &message, const V2Peer &peer) {

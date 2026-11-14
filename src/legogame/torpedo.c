@@ -324,13 +324,13 @@ static void TorpedoHitDispatchPc(void *target, NUVEC *position, i32 player, u8 t
     }
     switch (target_type) {
         case 0:
-            GizmoBlowupBlowup((GIZMOBLOWUP_PC *)target, 1, 11, 1, NULL, 1);
+            GizmoBlowupBlowup(target, 1, 11, 1, NULL, 1);
             break;
         case 1:
-            GizTurrets_Hit(WORLD, (GIZTURRET_s *)target, position, player, -1);
+            GizTurrets_Hit(WORLD, target, position, player, -1);
             break;
         case 2:
-            GizObstacles_Hit(WORLD, (GIZOBSTACLE *)target, position, player, -1);
+            GizObstacles_Hit(WORLD, target, position, player, -1);
             break;
     }
 }
@@ -843,8 +843,7 @@ void __cdecl TorpedoCode(GAMEOBJECT *object, i32 fire, f32 fire_cooldown) {
             TORPEDO_PACKET_PC(object)->pickup_timer = 0.0f;
             TORPEDO_PACKET_PC(object)->pickup_state = 0;
         } else if (TORPEDO_PACKET_PC(object)->count < maximum) {
-            machine =
-                (TORPEDO_MACHINE_READER_PC *)GizTorpMachine_FindNearest(WORLD, &object->collision_position, &distance);
+            machine = GizTorpMachine_FindNearest(WORLD, &object->collision_position, &distance);
             if (machine != NULL && (machine->flags & 1) != 0 && distance < TorpedoGrabRangeSquaredPc) {
                 NewRumble(object->pad->bound_pad, (f32)((f64)qrand() * PlayerRandomScalePc * (f64)0.4f), 0);
                 if (TORPEDO_PACKET_PC(object)->count < maximum) {

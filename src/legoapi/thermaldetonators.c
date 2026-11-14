@@ -170,9 +170,8 @@ void PartKill_ThermalDetonator(PART_PC *part, i32 unused1) {
     }
 
     explosion = Detonate(&part->position, flags);
-    if (explosion != NULL && part->owner != NULL &&
-        ((u8)part->owner->field_280 == 0 || (u8)part->owner->field_280 == 1)) {
-        explosion->field_0x33 = (u8)part->owner->field_280;
+    if (explosion != NULL && part->owner != NULL && (part->owner->field_280 == 0 || part->owner->field_280 == 1)) {
+        explosion->field_0x33 = part->owner->field_280;
     }
 }
 
@@ -246,7 +245,7 @@ void __cdecl ThermalDetonator_Throw(GAMEOBJECT *object) {
     params.collision_fn = PartCollide_3D;
     part = AddPart(&params);
     if (part != NULL) {
-        part->force_flags = (u16)ObjHitObj_Flags(object);
+        part->force_flags = ObjHitObj_Flags(object);
         part->field_206 = 0;
         part->update_fn = PartUpdate_ThermalDetonator;
         part->reflection_height = 2000000.0f;
@@ -307,7 +306,7 @@ void __cdecl ThermalDetonator_ThrowMom(GAMEOBJECT *object, NUVEC *velocity) {
     params.collision_fn = PartCollide_3D;
     part = AddPart(&params);
     if (part != NULL) {
-        part->force_flags = (u16)ObjHitObj_Flags(object);
+        part->force_flags = ObjHitObj_Flags(object);
         part->field_206 = 0;
         part->update_fn = PartUpdate_ThermalDetonator;
         part->reflection_height = 2000000.0f;
@@ -413,7 +412,7 @@ i32 __cdecl ShinyMetal_UpdateHint(HINT_PC *hint) {
 static i32 TightRopes_Load(void *world_info, void *unused1) {
     i32 version;
     i32 i;
-    WORLDINFO *world = ((WORLDINFO *)(world_info));
+    WORLDINFO *world = world_info;
     if (world->tightrope_count != 0) {
         return 0;
     }

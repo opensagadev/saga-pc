@@ -560,7 +560,7 @@ extern "C" {
                         trooper->state_flags = (trooper->state_flags & ~0xc) | 4;
                         trooper->rotation = SeekRot(trooper->rotation, trooper->target_rotation,
                                                     ((f32)qrand() * (MiniTrooperTurnRatePc / 65535.0f)));
-                        if (static_cast<i32>(trooper->rotation) - static_cast<i32>(trooper->target_rotation) <= 0x16c) {
+                        if (trooper->rotation - trooper->target_rotation <= 0x16c) {
                             if (shot != 0) {
                                 trooper->target_rotation = (u16)(qrand() / 73 + shot_angle);
                             } else {
@@ -592,8 +592,7 @@ extern "C" {
                             ++stopped_count;
                             trooper->rotation = SeekRot(trooper->rotation, trooper->target_rotation,
                                                         ((f32)qrand() * (MiniTrooperTurnRatePc / 65535.0f)));
-                            if (static_cast<i32>(trooper->rotation) - static_cast<i32>(trooper->target_rotation) <=
-                                0x16c) {
+                            if (trooper->rotation - trooper->target_rotation <= 0x16c) {
                                 if (shot != 0) {
                                     trooper->target_rotation = (u16)(qrand() / 73 + shot_angle);
                                 } else {
@@ -656,8 +655,7 @@ extern "C" {
                             ++stopped_count;
                             trooper->rotation = SeekRot(trooper->rotation, trooper->target_rotation,
                                                         ((f32)qrand() * (MiniTrooperTurnRatePc / 65535.0f)));
-                            if ((static_cast<i32>(trooper->rotation) - static_cast<i32>(trooper->target_rotation) <=
-                                 0x16c)) {
+                            if ((trooper->rotation - trooper->target_rotation <= 0x16c)) {
                                 if (shot != 0) {
                                     trooper->target_rotation = (u16)(qrand() / 73 + shot_angle);
                                 } else {
@@ -725,8 +723,7 @@ extern "C" {
                         } else {
                             trooper->rotation = SeekRot(trooper->rotation, trooper->target_rotation,
                                                         ((f32)qrand() * (MiniTrooperTurnRatePc / 65535.0f)));
-                            if ((static_cast<i32>(trooper->rotation) - static_cast<i32>(trooper->target_rotation) <=
-                                 0x16c)) {
+                            if ((trooper->rotation - trooper->target_rotation <= 0x16c)) {
                                 if (shot != 0) {
                                     trooper->target_rotation = (u16)(qrand() / 73 + shot_angle);
                                 } else {

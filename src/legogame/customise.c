@@ -249,7 +249,7 @@ static void UpdateCustomPieceAnim(CUSTOM_PIECE_ANIM_PC *anim, u16 minimum, u16 m
         difference = RotDiff(anim->start_angle, anim->target_angle);
         index = (i32)((f64)anim->elapsed / anim->duration * 32768.0 + 16384.0);
         blend = 1.0 - ((f64)NuTrigTable[(index >> 1) & 0x7fff] + 1.0) * 0.5;
-        anim->current_angle = (i32)((f64)difference * blend + anim->start_angle);
+        anim->current_angle = (i32)(difference * blend + anim->start_angle);
     } else {
         anim->hold_time -= FRAMETIME;
         if (anim->hold_time <= 0.0f) {
@@ -466,7 +466,7 @@ void __cdecl Customiser_Init(CUSTOMISER_LAYERS_PC *input) {
         for (category = 0; category < 9; ++category) {
             if (customiser->piece_counts[category] > 0) {
                 Game.customiser_start[side].pieces[category] =
-                    (u16)Customiser_NextPieceRight(input, (u16)Game.customiser_start[side].pieces[category] - 1,
+                    (u16)Customiser_NextPieceRight(input, Game.customiser_start[side].pieces[category] - 1,
                                                    customiser->piece_counts[category], side, category);
             }
         }
@@ -905,7 +905,7 @@ i32 __cdecl CustomiserMenu_Update(void) {
         MissionMenuPacketPc.customise_other_player[active_index] =
             MissionMenuPacketPc.customise_other_player[active_index] == 0;
         GameCam_Blend(GameCam, 1.0f, 0.0f, 1);
-        object = (GAMEOBJECT *)Player[active_index];
+        object = Player[active_index];
         NewBuzzFrames(object->pad->bound_pad, 1, 0);
     }
     return 0;

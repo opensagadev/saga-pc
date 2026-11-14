@@ -85,7 +85,7 @@ extern char AIRegistryTextPc007575bc[7];
 
 i32 GizBombGens_Load(void *world_ptr, void *system_ptr) {
     const u8 version = (u8)(EdFileReadChar());
-    GIZBOMBGENSYS_s *system = (GIZBOMBGENSYS_s *)(system_ptr);
+    GIZBOMBGENSYS_s *system = system_ptr;
     system->count = (u16)(EdFileReadShort());
     if (system->count != 0) {
         GIZBOMBGEN_s *bomb_generator = system->bomb_generators;
@@ -103,18 +103,18 @@ i32 GizBombGens_Load(void *world_ptr, void *system_ptr) {
 }
 
 void *__cdecl GizBombGens_ReserveBufferSpace(void *pointer) {
-    WORLDINFO *world = (WORLDINFO *)pointer;
+    WORLDINFO *world = pointer;
     GIZBOMBGENSYS_s *system;
     i32 i;
-    system = (GIZBOMBGENSYS_s *)GameBufferAlloc(&world->giz_buffer, &world->buffer_end, sizeof(*system));
+    system = GameBufferAlloc(&world->giz_buffer, &world->buffer_end, sizeof(*system));
     system->capacity = world->current_level->max_bombgens;
-    system->bomb_generators = (GIZBOMBGEN_s *)GameBufferAlloc(&world->giz_buffer, &world->buffer_end,
-                                                              system->capacity * sizeof(*system->bomb_generators));
+    system->bomb_generators =
+        GameBufferAlloc(&world->giz_buffer, &world->buffer_end, system->capacity * sizeof(*system->bomb_generators));
     system->anim_object_pool = GameAnimSet_CreateObjectPool(&world->giz_buffer, &world->buffer_end, 0,
                                                             (u16)world->current_level->max_bombgen_objects);
     for (i = 0; i < system->capacity; ++i) {
-        system->bomb_generators[i].anim_set = GameAnimSet_Create(
-            &world->giz_buffer, &world->buffer_end, (GAMEANIMOBJPOOL *)system->anim_object_pool, world->game_anim_sys);
+        system->bomb_generators[i].anim_set =
+            GameAnimSet_Create(&world->giz_buffer, &world->buffer_end, system->anim_object_pool, world->game_anim_sys);
     }
     world->giz_bombgen_sys = system;
     return system;
@@ -123,7 +123,7 @@ void *__cdecl GizBombGens_ReserveBufferSpace(void *pointer) {
 void __cdecl GizmoBombGen_Activate(GIZMO_PC *gizmo, i32 active) {
     BOMBGEN_ACTIVATION_READER_PC *generator;
     if (gizmo != NULL) {
-        generator = (BOMBGEN_ACTIVATION_READER_PC *)gizmo->object;
+        generator = gizmo->object;
         ((BOMBGEN_ACTIVATION_FLAGS_PC *)&generator->flags)->active = active != 0;
     }
 }
@@ -131,7 +131,7 @@ void __cdecl GizmoBombGen_Activate(GIZMO_PC *gizmo, i32 active) {
 void __cdecl GizmoBombGen_SetVisibility(GIZMO_PC *gizmo, i32 visible) {
     BOMBGEN_ACTIVATION_READER_PC *generator;
     if (gizmo != NULL && gizmo->object != NULL) {
-        generator = (BOMBGEN_ACTIVATION_READER_PC *)gizmo->object;
+        generator = gizmo->object;
         GameAnimSet_SetVisibility(generator->anim_set, visible);
         ((BOMBGEN_ACTIVATION_FLAGS_PC *)&generator->flags)->visible = visible != 0;
     }
@@ -145,8 +145,8 @@ NUVEC *__cdecl GizmoBombGen_GetPos(GIZMO_PC *gizmo) {
 }
 
 void __cdecl GizBombGens_SetResetFlag(void *world_ptr, void *data, void *progress) {
-    WORLDINFO *w = (WORLDINFO *)world_ptr;
-    ADD_BOMB_RESET_SYS_PC *s = (ADD_BOMB_RESET_SYS_PC *)data;
+    WORLDINFO *w = world_ptr;
+    ADD_BOMB_RESET_SYS_PC *s = data;
     s->reset = 1;
     if (come_from_an_editor != 0) {
         s->reset_saved = 0;
@@ -187,13 +187,13 @@ static void __cdecl BombGeneratorsApplyResetPc(BOMB_GENERATOR_SYSTEM_RUNTIME_PC 
         if (netclient != 0) {
             break;
         }
-        player = (GAMEOBJECT *)Player[index];
+        player = Player[index];
         if (player != NULL && BombGenerator_PlayerBomb[index] != NULL && player->cable != NULL &&
             ((CABLE_s *)player->cable)->target != NULL && ((CABLE_s *)player->cable)->target->id == id_DRAGBOMB) {
             KillGameObject(((CABLE_s *)player->cable)->target, 4, 0);
             ((GAMEOBJECT *)Player[index])->cable = NULL;
         }
-        player = (GAMEOBJECT *)Player[index];
+        player = Player[index];
         if (player == NULL || (player->flags_1fc_word & 0x80) == 0 || BombGenerator_PlayerBomb[index] == NULL ||
             player->cable != NULL) {
             continue;
@@ -213,9 +213,9 @@ static void __cdecl BombGeneratorsApplyResetPc(BOMB_GENERATOR_SYSTEM_RUNTIME_PC 
                                       0, NULL, NULL, 0, 0);
         }
         if (bomb != NULL) {
-            CABLE_RECORD_PC *created = CreateCable((GAMEOBJECT *)Player[index], bomb, 0);
+            CABLE_RECORD_PC *created = CreateCable(Player[index], bomb, 0);
             ((GAMEOBJECT *)Player[index])->cable = created;
-            cable = (CABLE_s *)((GAMEOBJECT *)Player[index])->cable;
+            cable = ((GAMEOBJECT *)Player[index])->cable;
             if (cable != NULL) {
                 cable->max_length = 1000000000.0f;
             }
@@ -224,8 +224,8 @@ static void __cdecl BombGeneratorsApplyResetPc(BOMB_GENERATOR_SYSTEM_RUNTIME_PC 
 }
 
 void __cdecl GizBombGens_Update(void *world_pointer, void *system_pointer, f32 delta_time) {
-    WORLDINFO *world = (WORLDINFO *)world_pointer;
-    BOMB_GENERATOR_SYSTEM_RUNTIME_PC *system = (BOMB_GENERATOR_SYSTEM_RUNTIME_PC *)system_pointer;
+    WORLDINFO *world = world_pointer;
+    BOMB_GENERATOR_SYSTEM_RUNTIME_PC *system = system_pointer;
     u16 model;
     GAMEOBJECT *player;
     CABLE_s *cable;
@@ -234,7 +234,7 @@ void __cdecl GizBombGens_Update(void *world_pointer, void *system_pointer, f32 d
         BOMB_GENERATOR_RUNTIME_PC *generator;
         i32 index;
         if ((system->flags & 1) != 0) {
-            BombGeneratorsApplyResetPc(system, (BOMB_GENERATOR_PROGRESS_PC *)system->progress);
+            BombGeneratorsApplyResetPc(system, system->progress);
             system->flags &= (u16)~1u;
         }
         generator = system->items;
@@ -271,19 +271,19 @@ void __cdecl GizBombGens_Update(void *world_pointer, void *system_pointer, f32 d
             }
         }
     }
-    player = (GAMEOBJECT *)Player[0];
+    player = Player[0];
     model = id_DRAGBOMB;
     BombGenerator_PlayerBomb[0] = NULL;
     if (player != NULL) {
-        cable = (CABLE_s *)player->cable;
+        cable = player->cable;
         if (cable != NULL && cable->target != NULL && cable->target->id == model) {
             BombGenerator_PlayerBomb[0] = cable->target;
         }
     }
-    player = (GAMEOBJECT *)Player[1];
+    player = Player[1];
     BombGenerator_PlayerBomb[1] = NULL;
     if (player != NULL) {
-        cable = (CABLE_s *)player->cable;
+        cable = player->cable;
         if (cable != NULL && cable->target != NULL && cable->target->id == model) {
             BombGenerator_PlayerBomb[1] = cable->target;
         }
@@ -291,7 +291,7 @@ void __cdecl GizBombGens_Update(void *world_pointer, void *system_pointer, f32 d
 }
 
 i32 __cdecl GizBombGens_GetMaxGizmos(void *world_ptr) {
-    WORLDINFO *world = (WORLDINFO *)world_ptr;
+    WORLDINFO *world = world_ptr;
     if (world != NULL) {
         return world->current_level->max_bombgens;
     }
@@ -299,7 +299,7 @@ i32 __cdecl GizBombGens_GetMaxGizmos(void *world_ptr) {
 }
 
 void __cdecl GizBombGens_AddGizmos(GIZMOSYS_PC *giz, i32 type, void *world, void *data) {
-    GIZBOMBGENSYS_s *s = (GIZBOMBGENSYS_s *)data;
+    GIZBOMBGENSYS_s *s = data;
     i32 i;
     (void)world;
     if (s == NULL) {
@@ -338,7 +338,7 @@ void *__cdecl GizBombGens_AllocateProgressData(VARIPTR *buffer, VARIPTR *end) {
 }
 
 void __cdecl GizBombGens_ClearProgress(void *owner, void *progress_ptr) {
-    BOMB_PROGRESS_PC *progress = (BOMB_PROGRESS_PC *)progress_ptr;
+    BOMB_PROGRESS_PC *progress = progress_ptr;
     if (progress == NULL) {
         return;
     }
@@ -347,8 +347,8 @@ void __cdecl GizBombGens_ClearProgress(void *owner, void *progress_ptr) {
 }
 
 void __cdecl GizBombGens_StoreProgress(void *world_ptr, void *data, void *progress_ptr) {
-    BOMB_PROGRESS_PC *progress = (BOMB_PROGRESS_PC *)progress_ptr;
-    BOMB_PROGRESS_SYSTEM_PC *system = (BOMB_PROGRESS_SYSTEM_PC *)data;
+    BOMB_PROGRESS_PC *progress = progress_ptr;
+    BOMB_PROGRESS_SYSTEM_PC *system = data;
     BOMB_PROGRESS_RECORD_PC *record;
     i32 index;
     i32 word;

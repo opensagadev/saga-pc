@@ -15,7 +15,7 @@ typedef struct bolt_gizmo_type_pc_s {
 i32 __cdecl GizmoSys_SetBestBoltTarget(void *system, WORLDINFO *world, GAMEOBJECT *object, NUVEC *position,
                                        NUVEC *direction, f32 radius, f32 range_squared, i32 directional, i32 planar,
                                        i32 bolt_id) {
-    GIZMOTYPES_PC *registry = (GIZMOTYPES_PC *)gizmotypes;
+    GIZMOTYPES_PC *registry = gizmotypes;
     GIZMOTYPE_PC *type;
     GIZMOSET_PC *set;
     void *best = NULL;
@@ -32,8 +32,8 @@ i32 __cdecl GizmoSys_SetBestBoltTarget(void *system, WORLDINFO *world, GAMEOBJEC
     i32 i;
     (void)world;
     if (registry != NULL && system != NULL && object != NULL && (ObjHitObj_Flags(object) & 0x800) != 0) {
-        registry = (GIZMOTYPES_PC *)gizmotypes;
-        type = (GIZMOTYPE_PC *)registry->types;
+        registry = gizmotypes;
+        type = registry->types;
         set = ((GIZMOSYS_PREFIX_PC *)system)->sets;
         for (i = 0; i < ((GIZMOTYPES_PC *)gizmotypes)->count; ++i, ++type, ++set) {
             if (type->fns.get_best_bolt_target_fn == NULL) {
@@ -92,8 +92,8 @@ i32 __cdecl GizmoSys_BoltHit(void *system, WORLDINFO *world, BOLT_PC *bolt, NUVE
         type = (BOLT_GIZMO_TYPE_PC *)((GIZMOTYPES_PC *)gizmotypes)->types;
         set = ((GIZMOSYS_PREFIX_PC *)system)->sets;
         for (i = 0; i < ((GIZMOTYPES_PC *)gizmotypes)->count; ++i, ++set, ++type) {
-            if (type->hit_bolt != NULL && type->hit_bolt(world, set->data, (GAMEOBJECT *)bolt->owner, hit_points, mode,
-                                                         radius, minimum, maximum, bolt, 1, hit_flags) != 0) {
+            if (type->hit_bolt != NULL && type->hit_bolt(world, set->data, bolt->owner, hit_points, mode, radius,
+                                                         minimum, maximum, bolt, 1, hit_flags) != 0) {
                 BoltSys->debris(bolt, points, -1, NULL, 0);
                 if (bolt->owner != NULL) {
                     NewRumble(((GAMEOBJECT *)bolt->owner)->pad->bound_pad, .6f, 0);

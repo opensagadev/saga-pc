@@ -1428,10 +1428,10 @@ extern "C" void __cdecl Bolt_AddDeflectedBolt(BOLT_PC *bolt, NUVEC *incoming, NU
     angles.x = i_temp_xrot;
     angles.y = temp_yrot;
     NuMtxSetRotationXYVU0(&matrix, &angles);
-    if ((i8)type->field_3d < 0 || (i8)type->field_3d >= BoltSys->count) {
+    if (type->field_3d < 0 || type->field_3d >= BoltSys->count) {
         type_id = bolt->type_id;
     } else {
-        type_id = (i8)type->field_3d;
+        type_id = type->field_3d;
     }
     offset = (f64)1.01f * bolt->ray_radius;
     position = bolt->position;
@@ -2105,7 +2105,7 @@ extern "C" void __cdecl Bolt_HitGameObjectRC(NETMESSAGE_PC &message) {
             (owner->flags_1f8 & 1) != 0 && (owner->flags_1f8 & 1) == (object->flags_1f8 & 1)) {
             goto owner_feedback;
         }
-        objhitobj_bolt = reinterpret_cast<BOLT *>(bolt);
+        objhitobj_bolt = bolt;
         ObjHitObj(owner, object, damage, bolt->hit_flags, 0, 0);
         if ((bolt->flags & 0x800000) != 0 &&
             (reinterpret_cast<BOLT_CONTEXT_INFO_PC *>(CInfo)[object->character_context].flags & 0x10000000) == 0 &&
@@ -2688,7 +2688,7 @@ extern "C" void __cdecl Bolts_Update(WORLDINFO *world) {
             }
             if ((bolt->flags & 0x13) != 0 ||
                 (bolt->owner != NULL && ((static_cast<GAMEOBJECT *>(bolt->owner)->portal_flags & 0x10000000) != 0 ||
-                                         static_cast<u8>(static_cast<GAMEOBJECT *>(bolt->owner)->field_f00) == 5))) {
+                                         static_cast<GAMEOBJECT *>(bolt->owner)->field_f00 == 5))) {
                 if (bolt->hit_platform != -1) {
                     if (Bolt_HitPlatFn == NULL || !Bolt_HitPlatFn(bolt)) {
                         Bolt_HitPlatPrivate(bolt, processed);
@@ -2729,10 +2729,10 @@ extern "C" void __cdecl Bolts_Update(WORLDINFO *world) {
                 Bolt_HitCustomFn(bolt, points);
             }
             for (i32 i = 0; i < 2; ++i) {
-                if (type->moving_debris[i] != -1 && (u16)type->moving_debris_counts[i] > 0) {
-                    AddVariableShotDebrisEffectTimed5(
-                        world->game_debris_sys->entries[type->moving_debris[i]].effect, &bolt->position, NULL,
-                        &bolt->velocity, (u16)type->moving_debris_counts[i], FRAMETIME, NULL, NULL, 20000, 0);
+                if (type->moving_debris[i] != -1 && type->moving_debris_counts[i] > 0) {
+                    AddVariableShotDebrisEffectTimed5(world->game_debris_sys->entries[type->moving_debris[i]].effect,
+                                                      &bolt->position, NULL, &bolt->velocity,
+                                                      type->moving_debris_counts[i], FRAMETIME, NULL, NULL, 20000, 0);
                 }
             }
             if ((bolt->flags & 0x10000) != 0) {
@@ -2781,7 +2781,7 @@ extern "C" void __cdecl Bolts_Update(WORLDINFO *world) {
             }
             if ((bolt->flags & 0x13) != 0 ||
                 (bolt->owner != NULL && ((static_cast<GAMEOBJECT *>(bolt->owner)->portal_flags & 0x10000000) != 0 ||
-                                         static_cast<u8>(static_cast<GAMEOBJECT *>(bolt->owner)->field_f00) == 5))) {
+                                         static_cast<GAMEOBJECT *>(bolt->owner)->field_f00 == 5))) {
                 if (GizmoSys_BoltHit(world->gizmo_sys, world, bolt, points, &bolt->bounds_min, &bolt->bounds_max,
                                      bolt->collision_radius, processed)) {
                     continue;

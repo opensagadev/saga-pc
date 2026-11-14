@@ -89,7 +89,7 @@ static f32 LedgeFabsPc(f32 value) {
 
 static LEDGE_MOTION_PC *LedgeAttachPointPc(WORLDINFO *world, NUVEC *position, NUVEC *bounds_min, NUVEC *bounds_max,
                                            u16 *angle) {
-    LEDGE_MOTION_PC *ledge = static_cast<LEDGE_MOTION_PC *>(((LEDGE_WORLD_PC *)world)->ledges);
+    LEDGE_MOTION_PC *ledge = ((LEDGE_WORLD_PC *)world)->ledges;
     LEDGE_MOTION_PC *nearest_segment;
     LEDGE_MOTION_PC *nearest_endpoint;
     f32 segment_distance;
@@ -260,8 +260,8 @@ extern "C" void __cdecl Ledge_MoveCode(WORLDINFO *world, GAMEOBJECT *object) {
             maximum.y = object->upper_position.y;
             minimum.z = object->collision_position.z - object->bounds_radius;
             maximum.z = object->bounds_radius + object->collision_position.z;
-            NUVEC offset = {NuTrigTable[((u16)(angle)) >> 1] * (FRAMETIME * speed), 0.0f,
-                            NuTrigTable[((((u16)(angle)) + 0x4000) >> 1) & 0x7fff] * (FRAMETIME * speed)};
+            NUVEC offset = {NuTrigTable[angle >> 1] * (FRAMETIME * speed), 0.0f,
+                            NuTrigTable[((angle + 0x4000) >> 1) & 0x7fff] * (FRAMETIME * speed)};
             NuVecAdd(&position, &object->external_force, &offset);
             if (LedgeAttachPointPc(world, &position, &minimum, &maximum, &angle) == NULL) {
                 object->field_7aa = 0x9d;

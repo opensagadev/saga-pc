@@ -587,7 +587,7 @@ void SoundVoiceManagerPC::Init(i32 unused, u8 option5_value, u8 option6_value) {
     if (FAILED(DirectSoundCreate8(NULL, &factory, NULL))) {
         return;
     }
-    factory->vtable->set_cooperative_level(factory, (HWND)PCInputInstance, 2);
+    factory->vtable->set_cooperative_level(factory, PCInputInstance, 2);
     caps.size = sizeof(caps);
     factory->vtable->get_caps(factory, &caps);
     factory->vtable->get_speaker_config(factory, &speaker_config);
@@ -845,7 +845,7 @@ extern "C" {
             PCSoundSampleWorkerHandlePc = CreateThread(NULL, 0, PCSoundSampleWorkerPc, NULL, CREATE_SUSPENDED, NULL);
             if (PCSoundSampleWorkerHandlePc == NULL) {
                 PCSoundFailure();
-                DeleteObject((HGDIOBJ)PCSoundMixEvent);
+                DeleteObject(PCSoundMixEvent);
                 PCSoundMixEvent = NULL;
             }
             SetThreadPriority(PCSoundSampleWorkerHandlePc, THREAD_PRIORITY_LOWEST);

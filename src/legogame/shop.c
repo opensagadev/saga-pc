@@ -336,9 +336,9 @@ void LoadShelfSplines(void) {
     if (splshelf == NULL || splcharshelf == NULL || splcodes == NULL) {
         return;
     }
-    shelf_count = (i16)splshelf->length;
-    character_count = (i16)splcharshelf->length;
-    code_count = (i16)splcodes->length;
+    shelf_count = splshelf->length;
+    character_count = splcharshelf->length;
+    code_count = splcodes->length;
     memset(SubShelfPos, 0, sizeof(SubShelfPos));
     memset(ShelfPos, 0, sizeof(ShelfPos));
     memset(CodePos, 0, 6 * sizeof(*CodePos));
@@ -415,11 +415,11 @@ void InitShop(WORLDINFO *world) {
     i32 code_count;
     i32 price;
     SHOP_SAVE_VIEW_PC *save = (SHOP_SAVE_VIEW_PC *)&Game;
-    CharItems = (shopitem_s *)GameBufferAlloc(&world->giz_buffer, &world->buffer_end, 100 * sizeof(shopitem_s));
-    HintItems = (shopitem_s *)GameBufferAlloc(&world->giz_buffer, &world->buffer_end, 64 * sizeof(shopitem_s));
-    ExtraItems = (shopitem_s *)GameBufferAlloc(&world->giz_buffer, &world->buffer_end, 64 * sizeof(shopitem_s));
-    CodeItems = (shopitem_s *)GameBufferAlloc(&world->giz_buffer, &world->buffer_end, 64 * sizeof(shopitem_s));
-    BrickItems = (shopitem_s *)GameBufferAlloc(&world->giz_buffer, &world->buffer_end, 14 * sizeof(shopitem_s));
+    CharItems = GameBufferAlloc(&world->giz_buffer, &world->buffer_end, 100 * sizeof(shopitem_s));
+    HintItems = GameBufferAlloc(&world->giz_buffer, &world->buffer_end, 64 * sizeof(shopitem_s));
+    ExtraItems = GameBufferAlloc(&world->giz_buffer, &world->buffer_end, 64 * sizeof(shopitem_s));
+    CodeItems = GameBufferAlloc(&world->giz_buffer, &world->buffer_end, 64 * sizeof(shopitem_s));
+    BrickItems = GameBufferAlloc(&world->giz_buffer, &world->buffer_end, 14 * sizeof(shopitem_s));
     if (CharItems == NULL || HintItems == NULL || ExtraItems == NULL || CodeItems == NULL || BrickItems == NULL) {
         return;
     }
@@ -1024,7 +1024,7 @@ i32 __cdecl SubItemMenu(void *menu) {
             ShopInOutScalePc = 0.0f + factor;
         } else if (ShopEaseSubInPc == -1) {
             factor = SHOP_CLAMP01(factor);
-            ShopInOutScalePc = (f32)(1.0f + (f64)(factor * -1.0));
+            ShopInOutScalePc = (f32)(1.0f + (factor * -1.0));
         }
     }
     if (ShopMoveItemsPc != 0) {
@@ -1181,7 +1181,7 @@ i32 __cdecl CodeMenu(void *menu) {
             ShopInOutScalePc = SHOP_LERP(0.0f, 1.0f, factor);
         } else if (ShopEaseSubInPc == -1) {
             factor = SHOP_CLAMP01(factor);
-            ShopInOutScalePc = (f32)(1.0f + (f64)(factor * -1.0));
+            ShopInOutScalePc = (f32)(1.0f + (factor * -1.0));
         }
     }
     if (ShopSlideTimerPc <= 0.0f) {

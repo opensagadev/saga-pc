@@ -278,7 +278,7 @@ i32 __cdecl edanimLoadPage(char *path, NUGSCN *scene) {
         NuGScnGetSpecial(&special, scene, AnimParams[slot].instance_id);
         instance = NuSpecialGetInstanceix(&special);
         AnimParams[slot].platform_id = -1;
-        terrain = (TERRAIN_SET_PC *)CurrentTerrain;
+        terrain = CurrentTerrain;
         if (instance != -1) {
             for (item = 0; item < terrain->max_platforms; ++item) {
                 platform = &terrain->platforms[item];
@@ -575,7 +575,7 @@ void __cdecl edanimRenderParticleEmitters(i32 parameter_index) {
                                base_position->z + AnimParams[parameter_index].effect_positions[particle][2],
                                definition->emitter_random_extent.x, definition->emitter_random_extent.y,
                                definition->emitter_random_extent.z, edanim_emitrotz, edanim_emitroty, 0, 0, 0,
-                               0xff008000, (NUMTL *)edanim_mtl);
+                               0xff008000, edanim_mtl);
             }
             colour = 0xff00ff00;
         } else {
@@ -584,7 +584,7 @@ void __cdecl edanimRenderParticleEmitters(i32 parameter_index) {
         edbitsDrawDiagonalCross(base_position->x + AnimParams[parameter_index].effect_positions[particle][0],
                                 base_position->y + AnimParams[parameter_index].effect_positions[particle][1],
                                 base_position->z + AnimParams[parameter_index].effect_positions[particle][2], 0.25f,
-                                colour, (struct PC_SCENE_MTL_VIEW *)edanim_mtl);
+                                colour, edanim_mtl);
     }
 }
 
@@ -603,7 +603,7 @@ void __cdecl edanimRenderSoundEmitters(i32 parameter_index) {
         edbitsDrawDiagonalCross(base_position->x + AnimParams[parameter_index].sound_positions[sound][0],
                                 base_position->y + AnimParams[parameter_index].sound_positions[sound][1],
                                 base_position->z + AnimParams[parameter_index].sound_positions[sound][2], 0.25f, colour,
-                                (struct PC_SCENE_MTL_VIEW *)edanim_mtl);
+                                edanim_mtl);
     }
 }
 
@@ -838,7 +838,7 @@ void __cdecl edanimDrawCursor(void) {
     line[1].position.x = edanim_cam_pos.x + 0.5f;
     line[1].position.y = edanim_cam_pos.y;
     line[1].position.z = edanim_cam_pos.z;
-    NuRndrLine3d(line, (NUMTL *)edanim_mtl, NULL);
+    NuRndrLine3d(line, edanim_mtl, NULL);
     line[0].colour = 0xffffffff;
     line[1].colour = 0xffffffff;
     line[0].position.x = edanim_cam_pos.x;
@@ -847,7 +847,7 @@ void __cdecl edanimDrawCursor(void) {
     line[1].position.x = edanim_cam_pos.x;
     line[1].position.y = edanim_cam_pos.y + 0.5f;
     line[1].position.z = edanim_cam_pos.z;
-    NuRndrLine3d(line, (NUMTL *)edanim_mtl, NULL);
+    NuRndrLine3d(line, edanim_mtl, NULL);
     line[0].colour = 0xffffffff;
     line[1].colour = 0xffffffff;
     line[0].position.x = edanim_cam_pos.x;
@@ -856,7 +856,7 @@ void __cdecl edanimDrawCursor(void) {
     line[1].position.x = edanim_cam_pos.x;
     line[1].position.y = edanim_cam_pos.y;
     line[1].position.z = edanim_cam_pos.z + 0.5f;
-    NuRndrLine3d(line, (NUMTL *)edanim_mtl, NULL);
+    NuRndrLine3d(line, edanim_mtl, NULL);
     if (edanim_particle_mode) {
         direction.x = 0.0f;
         direction.y = 0.375f;
@@ -871,7 +871,7 @@ void __cdecl edanimDrawCursor(void) {
         line[1].position.x = edanim_cam_pos.x + direction.x;
         line[1].position.y = edanim_cam_pos.y + direction.y;
         line[1].position.z = edanim_cam_pos.z + direction.z;
-        NuRndrLine3d(line, (NUMTL *)edanim_mtl, NULL);
+        NuRndrLine3d(line, edanim_mtl, NULL);
     }
     NuRndrRect2di(0x1720, 0xa50, 0xdc0, 0x370, 0x80808080, (NUMTL *)edanim_mtl_zoff);
     NuRndrRect2di(0x1710, 0x990, 0xde0, 0xc0, 0x80000000, (NUMTL *)edanim_mtl_zoff);
@@ -996,7 +996,7 @@ void edanimInit(void) {
     ((NUMTL *)edanim_mtl)->attribs.z_mode = 0;
     ((NUMTL *)edanim_mtl)->opacity = 1.0f;
     ((NUMTL *)edanim_mtl)->attribs.alpha_mode = 0;
-    NuMtlUpdate((NUMTL *)edanim_mtl);
+    NuMtlUpdate(edanim_mtl);
     edanim_mtl_zoff = (struct PC_SCENE_MTL_VIEW *)NuMtlCreate(1);
     ((NUMTL *)edanim_mtl_zoff)->diffuse_r = 0.5f;
     ((NUMTL *)edanim_mtl_zoff)->diffuse_g = 0.5f;

@@ -111,7 +111,7 @@ static void Traffic_animobj(NUFPAR_PC *parser) {
     if (NuSpecialFind(parse_worldinfo->current_gscn, &special, parser->word_buffer_ptr, 1) == 0) {
         return;
     }
-    instance = (NUINSTANIM *)NuSpecialGetInstAnim(&special);
+    instance = NuSpecialGetInstAnim(&special);
     if (instance == NULL || parse_trafficanimsys->animation_count >= 64) {
         return;
     }
@@ -157,8 +157,7 @@ void __cdecl TrafficAnimSys_Configure(WORLDINFO *world, char *config) {
     }
     old_buffer = world->giz_buffer;
     old_end = world->buffer_end;
-    view->trafficanim_sys =
-        (TRAFFICANIMSYS_PC *)GameBufferAlloc(&world->giz_buffer, &world->buffer_end, sizeof(TRAFFICANIMSYS_PC));
+    view->trafficanim_sys = GameBufferAlloc(&world->giz_buffer, &world->buffer_end, sizeof(TRAFFICANIMSYS_PC));
     if (view->trafficanim_sys == NULL) {
         return;
     }

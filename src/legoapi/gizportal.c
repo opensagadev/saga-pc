@@ -18,7 +18,7 @@ static char portal_output_name_pc[64] = "Active";
 static char portal_gizmo_name_pc[16] = {0};
 
 static i32 __cdecl Portal_GetMaxGizmos(void *world_ptr) {
-    WORLDINFO *world = (WORLDINFO *)world_ptr;
+    WORLDINFO *world = world_ptr;
     if (world == NULL || world->current_gscn == NULL) {
         return 0;
     }
@@ -26,7 +26,7 @@ static i32 __cdecl Portal_GetMaxGizmos(void *world_ptr) {
 }
 
 static void __cdecl Portal_AddGizmos(void *system, i32 type_id, void *world_ptr, void *data) {
-    WORLDINFO *world = (WORLDINFO *)world_ptr;
+    WORLDINFO *world = world_ptr;
     i32 index;
     if (world == NULL || world->current_gscn == NULL) {
         return;
@@ -63,7 +63,7 @@ static i32 __cdecl Portal_GetNumOutputs(GIZMO_PC *gizmo) {
 
 static void __cdecl Portal_Activate(GIZMO_PC *gizmo, i32 active) {
     if (gizmo != NULL && gizmo->object != NULL) {
-        NuPortalSetActiveDirect((NUPORTAL *)gizmo->object, active);
+        NuPortalSetActiveDirect(gizmo->object, active);
     }
 }
 
@@ -72,7 +72,7 @@ static i32 __cdecl Portal_ActivateRev(GIZMO_PC *gizmo, i32 inactive, i32 check) 
     if (gizmo == NULL || gizmo->object == NULL) {
         return 0;
     }
-    portal = (PORTAL_CALLBACK_PC *)gizmo->object;
+    portal = gizmo->object;
     if ((check & 1) != 0) {
         if (inactive != 0 && inactive != (portal->flags & 1)) {
             return 0;
@@ -94,8 +94,8 @@ static void __cdecl Portals_ClearProgress(void *world, void *progress_ptr) {
 }
 
 static void __cdecl Portals_StoreProgress(void *world_ptr, void *data, void *progress_ptr) {
-    WORLDINFO *world = (WORLDINFO *)world_ptr;
-    u32 *progress = (u32 *)progress_ptr;
+    WORLDINFO *world = world_ptr;
+    u32 *progress = progress_ptr;
     i32 index;
     i32 bit_index;
     if (progress != NULL) {
@@ -117,8 +117,8 @@ static void __cdecl Portals_StoreProgress(void *world_ptr, void *data, void *pro
 }
 
 static void __cdecl Portals_Reset(void *world_ptr, void *data, void *progress_ptr) {
-    WORLDINFO *world = (WORLDINFO *)world_ptr;
-    u32 *progress = (u32 *)progress_ptr;
+    WORLDINFO *world = world_ptr;
+    u32 *progress = progress_ptr;
     i32 index;
     i32 bit_index;
     if (world == NULL || world->current_gscn == NULL) {

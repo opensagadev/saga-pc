@@ -170,7 +170,7 @@ STATIC_ASSERT(offsetof(TUBE_PROGRESS_PC, visible_mask) == 0);
 STATIC_ASSERT(offsetof(TUBE_PROGRESS_PC, active_mask) == 4);
 
 static void *__cdecl Tubes_ReserveBufferSpace(void *world_ptr) {
-    WORLDINFO *world = (WORLDINFO *)world_ptr;
+    WORLDINFO *world = world_ptr;
     world->tubes = NULL;
     world->tube_count = 0;
     if (world->current_level->max_tubes > 0) {
@@ -183,7 +183,7 @@ static void *__cdecl Tubes_ReserveBufferSpace(void *world_ptr) {
 
 static void __cdecl Tube_Activate(GIZMO_PC *gizmo, i32 active) {
     if (gizmo != NULL) {
-        TUBE_CALLBACKS_PC *tube = (TUBE_CALLBACKS_PC *)gizmo->object;
+        TUBE_CALLBACKS_PC *tube = gizmo->object;
         tube->bits.active = active != 0;
     }
 }
@@ -193,7 +193,7 @@ static i32 __cdecl Tube_ActivateRev(GIZMO_PC *gizmo, i32 reverse, i32 check_only
     if (gizmo == NULL || gizmo->object == NULL) {
         return 0;
     }
-    tube = (TUBE_CALLBACKS_PC *)gizmo->object;
+    tube = gizmo->object;
     if (check_only & 1) {
         return reverse != (((tube->flags >> 3) & 1));
     }
@@ -207,7 +207,7 @@ static i32 __cdecl Tube_ActivateRev(GIZMO_PC *gizmo, i32 reverse, i32 check_only
 
 static void __cdecl Tube_SetVisibility(GIZMO_PC *gizmo, i32 visible) {
     if (gizmo != NULL) {
-        TUBE_CALLBACKS_PC *tube = (TUBE_CALLBACKS_PC *)gizmo->object;
+        TUBE_CALLBACKS_PC *tube = gizmo->object;
         tube->bits.visible = visible != 0;
     }
 }
@@ -220,8 +220,8 @@ static void Tube_ResetDerivedPc(TUBE_CALLBACKS_PC *tube) {
 }
 
 static void __cdecl Tubes_Reset(void *world_ptr, void *data, void *progress_ptr) {
-    WORLDINFO *world = (WORLDINFO *)world_ptr;
-    TUBE_PROGRESS_PC *progress = (TUBE_PROGRESS_PC *)progress_ptr;
+    WORLDINFO *world = world_ptr;
+    TUBE_PROGRESS_PC *progress = progress_ptr;
     TUBE_CALLBACKS_PC *tube;
     i32 i;
     (void)data;
@@ -247,7 +247,7 @@ static void __cdecl Tubes_Draw(void *world, void *data, f32 delta_time) {
 }
 
 static i32 __cdecl Tubes_GetMaxGizmos(void *world_ptr) {
-    WORLDINFO *world = (WORLDINFO *)world_ptr;
+    WORLDINFO *world = world_ptr;
     return world != NULL ? world->current_level->max_tubes : 0;
 }
 
@@ -256,7 +256,7 @@ static char *__cdecl Tube_GetGizmoName(GIZMO_PC *gizmo) {
 }
 
 static i32 __cdecl Tube_GetOutput(GIZMO_PC *gizmo, i32 output, i32 mode) {
-    TUBE_CALLBACKS_PC *tube = (TUBE_CALLBACKS_PC *)gizmo->object;
+    TUBE_CALLBACKS_PC *tube = gizmo->object;
     (void)output;
     (void)mode;
     return tube->bits.visible && tube->bits.active;
@@ -285,7 +285,7 @@ static void *__cdecl Tubes_AllocateProgressData(VARIPTR *buffer, VARIPTR *end) {
 }
 
 static void __cdecl Tubes_ClearProgress(void *world, void *progress_ptr) {
-    TUBE_PROGRESS_PC *progress = (TUBE_PROGRESS_PC *)progress_ptr;
+    TUBE_PROGRESS_PC *progress = progress_ptr;
     (void)world;
     if (progress != NULL) {
         progress->visible_mask[0] = 0xffffffff;
@@ -294,8 +294,8 @@ static void __cdecl Tubes_ClearProgress(void *world, void *progress_ptr) {
 }
 
 static void __cdecl Tubes_StoreProgress(void *world_ptr, void *data, void *progress_ptr) {
-    WORLDINFO *world = (WORLDINFO *)world_ptr;
-    TUBE_PROGRESS_PC *progress = (TUBE_PROGRESS_PC *)progress_ptr;
+    WORLDINFO *world = world_ptr;
+    TUBE_PROGRESS_PC *progress = progress_ptr;
     TUBE_CALLBACKS_PC *tube;
     i32 i;
     (void)data;
@@ -326,7 +326,7 @@ static void __cdecl Tubes_StoreProgress(void *world_ptr, void *data, void *progr
 }
 
 static void __cdecl Tubes_AddGizmos(void *system, i32 type_id, void *world_ptr, void *data) {
-    WORLDINFO *world = (WORLDINFO *)world_ptr;
+    WORLDINFO *world = world_ptr;
     i32 i;
     (void)data;
     for (i = 0; i < world->tube_count; ++i) {
@@ -337,7 +337,7 @@ static void __cdecl Tubes_AddGizmos(void *system, i32 type_id, void *world_ptr, 
 }
 
 static i32 __cdecl Tubes_Load(void *world_ptr, void *data) {
-    WORLDINFO *world = (WORLDINFO *)world_ptr;
+    WORLDINFO *world = world_ptr;
     TUBE_CALLBACKS_PC *tube;
     i32 version;
     i32 i;
@@ -372,7 +372,7 @@ i32 __cdecl Tube_IsObjBitSet(TUBE_CALLBACKS_PC *tube, i32 index) {
 }
 
 static void __cdecl Tubes_Update(void *world_ptr, void *data, f32 frame_time) {
-    WORLDINFO *world = (WORLDINFO *)world_ptr;
+    WORLDINFO *world = world_ptr;
     TUBE_CALLBACKS_PC *tube;
     i32 i;
     i32 j;

@@ -373,7 +373,7 @@ static void CC_ReadAnimEffect(NUFPAR_PC *parser, CHARACTERANIM_CONFIG_PC *animat
         if (NuStrICmp(parser->word_buffer_ptr, "deb_name") == 0) {
             if (NuFParGetWord(parser) != 0) {
                 if (perm_debrissys != NULL) {
-                    effect->debris_id = (i16)FindGameDebris((APIDEBRISSYS_PC *)perm_debrissys, parser->word_buffer_ptr);
+                    effect->debris_id = (i16)FindGameDebris(perm_debrissys, parser->word_buffer_ptr);
                 } else {
                     effect->debris_id = -1;
                 }
@@ -1853,7 +1853,7 @@ static i32 CharConfig(i32 character_id, char *directory, char *filename, VARIPTR
     memset(&charconfig, 0, sizeof(charconfig));
     charconfig.character_id = (i16)(character_id);
     charconfig.character = character;
-    charconfig.runtime = (PLAYERCHARACTERCONFIG_PC *)(character->game_character);
+    charconfig.runtime = character->game_character;
     charconfig.permanent = permanent;
     charconfig.named_layers = 0;
     charconfig.effect_scratch = effects;
@@ -1871,7 +1871,7 @@ static i32 CharConfig(i32 character_id, char *directory, char *filename, VARIPTR
     }
     if (charconfig.character->animations == NULL && charconfig.arena != NULL && charconfig.arena_end != NULL) {
         charconfig.arena->addr = (charconfig.arena->addr + 3) & ~3u;
-        charconfig.character->animations = (CHARACTERANIM_CONFIG_PC *)charconfig.arena->void_ptr;
+        charconfig.character->animations = charconfig.arena->void_ptr;
         charconfig.flags |= 0x20;
     }
     parser = NuFParCreateMem("character", buffer, 0xffff);
@@ -1912,7 +1912,7 @@ static i32 CharConfig(i32 character_id, char *directory, char *filename, VARIPTR
         if (charconfig.effect_count > 0) {
             effects[charconfig.effect_count++].character_id = -1;
             charconfig.arena->addr = (charconfig.arena->addr + 3) & ~3u;
-            charconfig.character->effects = (CHARACTER_EFFECT_CONFIG_PC *)charconfig.arena->void_ptr;
+            charconfig.character->effects = charconfig.arena->void_ptr;
             PCByteCopy(charconfig.character->effects, effects, charconfig.effect_count * sizeof(*effects));
             charconfig.arena->addr += charconfig.effect_count * sizeof(*effects);
         }
@@ -1923,11 +1923,11 @@ static i32 CharConfig(i32 character_id, char *directory, char *filename, VARIPTR
             charconfig.runtime->layer_count = 0;
         } else {
             charconfig.arena->addr = (charconfig.arena->addr + 3) & ~3u;
-            charconfig.runtime->layers = (GAMECHARACTERLAYER_PC *)charconfig.arena->void_ptr;
+            charconfig.runtime->layers = charconfig.arena->void_ptr;
             charconfig.arena->addr += charconfig.runtime->layer_count * sizeof(GAMECHARACTERLAYER_PC);
             PCByteCopy(charconfig.runtime->layers, charconfig.layer_scratch,
                        charconfig.runtime->layer_count * sizeof(GAMECHARACTERLAYER_PC));
-            charconfig.runtime->layer_lookup = (i8 *)charconfig.arena->void_ptr;
+            charconfig.runtime->layer_lookup = charconfig.arena->void_ptr;
             charconfig.arena->addr += 32;
             for (bit = 0; bit < 32; ++bit) {
                 for (layer = 0; layer < charconfig.runtime->layer_count; ++layer) {

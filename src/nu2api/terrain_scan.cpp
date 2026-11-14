@@ -609,7 +609,7 @@ extern "C" void ScanTerrain(i32 scan_type, i32 terrain_mask, i32 scan_flags) {
 extern "C" void ScanWallSplineTerrain(i32 scan_type, i32 terrain_mask, i32 scan_flags) {
     TerrainQuery_s *query = TerI;
     WallSplinesOnly = 0;
-    ScaleTerrain = ((TERRAIN_SHAPE *)(ScaleTerrainT1));
+    ScaleTerrain = ScaleTerrainT1;
     i16 *terminator = reinterpret_cast<i16 *>(query->scan_list_storage);
     platinrange = 0;
     query->scan_group_index = -1;

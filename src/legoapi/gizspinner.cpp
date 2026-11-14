@@ -246,11 +246,11 @@ extern "C" i32 __cdecl GizSpinner_Load(void *world_pointer, void *unused) {
                 anim_set = world->spinners[index].anim_set;
                 memset(&world->spinners[index], 0, sizeof(GIZSPINNER_s));
                 world->spinners[index].anim_set = anim_set;
-                name_length = (i8)EdFileReadChar();
+                name_length = EdFileReadChar();
                 EdFileRead(world->spinners[index].name, name_length);
                 EdFileReadNuVec(&world->spinners[index].position);
                 world->spinners[index].initial_rotation = EdFileReadShort();
-                name_length = (i8)EdFileReadChar();
+                name_length = EdFileReadChar();
                 EdFileRead(special_name, name_length);
                 // MATCH-EXCEPTION: the SpinnerFindSpecialPc lookup written out; retail tests each result in place here.
                 NuSpecialFind(world->current_gscn, (NUSPECIALHANDLE *)&special, special_name, 0);
@@ -261,16 +261,16 @@ extern "C" i32 __cdecl GizSpinner_Load(void *world_pointer, void *unused) {
                     }
                 }
                 world->spinners[index].special = special;
-                output_points = (i8)EdFileReadChar();
+                output_points = EdFileReadChar();
                 if (version >= 2) {
-                    spinner_type = (i8)EdFileReadChar();
+                    spinner_type = EdFileReadChar();
                     if (version >= 3) {
                         spinner_state_flags = (u32)EdFileReadInt() & ~0x360u;
                         world->spinners[index].field_0x2d8 = EdFileReadFloat();
                         if (version >= 4) {
                             animation_speed = EdFileReadFloat();
                             if (version >= 6) {
-                                spinner_flags = (i8)EdFileReadChar();
+                                spinner_flags = EdFileReadChar();
                             }
                         }
                     }
@@ -294,11 +294,11 @@ extern "C" i32 __cdecl GizSpinner_Load(void *world_pointer, void *unused) {
                         }
                     }
                 } else {
-                    object_count = (i8)EdFileReadChar();
+                    object_count = EdFileReadChar();
                     for (object_index = 0; object_index < object_count; ++object_index) {
                         start_frame = 1.0f;
                         end_frame = AIPositionUnsetPc;
-                        name_length = (i8)EdFileReadChar();
+                        name_length = EdFileReadChar();
                         EdFileRead(special_name, name_length);
                         SpinnerFindSpecialPc(world, (NUSPECIALHANDLE *)&special, special_name);
                         if (version >= 3) {
@@ -857,7 +857,7 @@ extern "C" void *__cdecl GizSpinner_AllocateProgressData(void *buffer, void *end
 }
 
 extern "C" void __cdecl GizSpinner_ClearProgress(void *owner, void *progress_ptr) {
-    void *progress = (void *)progress_ptr;
+    void *progress = progress_ptr;
     if (progress == NULL) {
         return;
     }
@@ -1019,7 +1019,7 @@ extern "C" i32 __cdecl GizSpinner_UsingSpecial(void *results_ptr, void *world_pt
             if (NuSpecialCompare(&special, &object->special) != 0) {
                 GIZMO_PC *gizmo = (GIZMO_PC *)GizmoFindByName(world->gizmo_sys, type_id, name);
                 if (gizmo != NULL) {
-                    type_id = (u8)gizmo->type_id;
+                    type_id = gizmo->type_id;
                     results[count++] = gizmo;
                     searching = 0;
                 }

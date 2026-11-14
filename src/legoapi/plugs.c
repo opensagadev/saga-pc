@@ -83,7 +83,7 @@ STATIC_ASSERT(offsetof(PLUG_PROGRESS_PC, active_mask) == 4);
 STATIC_ASSERT(offsetof(PLUG_PROGRESS_PC, plugged_mask) == 8);
 
 static void *__cdecl Plugs_ReserveBufferSpace(void *world_ptr) {
-    WORLDINFO *world = (WORLDINFO *)world_ptr;
+    WORLDINFO *world = world_ptr;
     PLUG_WORLD_CALLBACKS_PC *view = (PLUG_WORLD_CALLBACKS_PC *)world;
     CARRY_PLUG_PC *plugs;
     view->plug_system = NULL;
@@ -101,7 +101,7 @@ static void *__cdecl Plugs_ReserveBufferSpace(void *world_ptr) {
 }
 
 static i32 __cdecl Plugs_Load(void *world_ptr, void *data) {
-    PLUG_WORLD_CALLBACKS_PC *world = (PLUG_WORLD_CALLBACKS_PC *)world_ptr;
+    PLUG_WORLD_CALLBACKS_PC *world = world_ptr;
     CARRY_PLUG_PC *plug;
     i32 i;
     i32 version;
@@ -129,21 +129,21 @@ static i32 __cdecl Plugs_Load(void *world_ptr, void *data) {
 
 static void __cdecl Plug_Activate(GIZMO_PC *gizmo, i32 active) {
     if (gizmo != NULL) {
-        CARRY_PLUG_PC *plug = (CARRY_PLUG_PC *)gizmo->object;
+        CARRY_PLUG_PC *plug = gizmo->object;
         plug->active = active != 0;
     }
 }
 
 static void __cdecl Plug_SetVisibility(GIZMO_PC *gizmo, i32 visible) {
     if (gizmo != NULL) {
-        CARRY_PLUG_PC *plug = (CARRY_PLUG_PC *)gizmo->object;
+        CARRY_PLUG_PC *plug = gizmo->object;
         plug->visible = visible != 0;
     }
 }
 
 static void __cdecl Plugs_Reset(void *world_ptr, void *data, void *progress_ptr) {
-    PLUG_WORLD_CALLBACKS_PC *world = (PLUG_WORLD_CALLBACKS_PC *)world_ptr;
-    PLUG_PROGRESS_PC *progress = (PLUG_PROGRESS_PC *)progress_ptr;
+    PLUG_WORLD_CALLBACKS_PC *world = world_ptr;
+    PLUG_PROGRESS_PC *progress = progress_ptr;
     CARRY_PLUG_PC *plug;
     i32 i;
     (void)data;
@@ -181,12 +181,12 @@ static void __cdecl Plugs_Draw(void *world, void *data, f32 dt) {
 }
 
 static i32 __cdecl Plugs_GetMaxGizmos(void *world_ptr) {
-    WORLDINFO *world = (WORLDINFO *)world_ptr;
+    WORLDINFO *world = world_ptr;
     return world != NULL ? world->current_level->max_plugs : 0;
 }
 
 static void __cdecl Plugs_AddGizmos(void *system, i32 type_id, void *world_ptr, void *data) {
-    PLUG_WORLD_CALLBACKS_PC *world = (PLUG_WORLD_CALLBACKS_PC *)world_ptr;
+    PLUG_WORLD_CALLBACKS_PC *world = world_ptr;
     i32 i;
     (void)data;
     if (world == NULL || world->plug_system == NULL) {
@@ -204,7 +204,7 @@ static char *__cdecl Plug_GetGizmoName(GIZMO_PC *gizmo) {
 }
 
 static i32 __cdecl Plug_GetOutput(GIZMO_PC *gizmo, i32 output, i32 mode) {
-    CARRY_PLUG_PC *plug = (CARRY_PLUG_PC *)gizmo->object;
+    CARRY_PLUG_PC *plug = gizmo->object;
     (void)output;
     (void)mode;
     return plug->visible && plug->active && plug->plugged;
@@ -233,7 +233,7 @@ static void *__cdecl Plugs_AllocateProgressData(VARIPTR *buffer, VARIPTR *end) {
 }
 
 static void __cdecl Plugs_ClearProgress(void *world, void *progress_ptr) {
-    PLUG_PROGRESS_PC *progress = (PLUG_PROGRESS_PC *)progress_ptr;
+    PLUG_PROGRESS_PC *progress = progress_ptr;
     (void)world;
     if (progress != NULL) {
         progress->visible_mask[0] = 0xffffffff;
@@ -243,8 +243,8 @@ static void __cdecl Plugs_ClearProgress(void *world, void *progress_ptr) {
 }
 
 static void __cdecl Plugs_StoreProgress(void *world_ptr, void *data, void *progress_ptr) {
-    PLUG_WORLD_CALLBACKS_PC *world = (PLUG_WORLD_CALLBACKS_PC *)world_ptr;
-    PLUG_PROGRESS_PC *progress = (PLUG_PROGRESS_PC *)progress_ptr;
+    PLUG_WORLD_CALLBACKS_PC *world = world_ptr;
+    PLUG_PROGRESS_PC *progress = progress_ptr;
     CARRY_PLUG_PC *plug;
     i32 i;
     (void)data;

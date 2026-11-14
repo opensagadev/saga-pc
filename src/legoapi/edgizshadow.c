@@ -26,7 +26,7 @@ static i32 __cdecl Shadow_GetMaxGizmos(void *world) {
 }
 
 static void __cdecl Shadow_AddGizmos(void *system, i32 type_id, void *world_ptr, void *data) {
-    SHADOW_WORLD_VIEW_PC *world = (SHADOW_WORLD_VIEW_PC *)world_ptr;
+    SHADOW_WORLD_VIEW_PC *world = world_ptr;
     AddGizmo(system, type_id, NULL, &world->shadow_editor);
 }
 
@@ -47,8 +47,8 @@ static i32 __cdecl Shadow_GetNumOutputs(GIZMO_PC *gizmo) {
 }
 
 static void *__cdecl Shadow_ReserveBufferSpace(void *world_ptr) {
-    WORLDINFO *world = (WORLDINFO *)world_ptr;
-    SHADOW_WORLD_VIEW_PC *view = (SHADOW_WORLD_VIEW_PC *)world_ptr;
+    WORLDINFO *world = world_ptr;
+    SHADOW_WORLD_VIEW_PC *view = world_ptr;
     world->giz_buffer.addr = (world->giz_buffer.addr + 3u) & ~3u;
     view->shadow_editor = (EDGIZSHADOW_PC *)world->giz_buffer.addr;
     world->giz_buffer.addr += sizeof(EDGIZSHADOW_PC);
@@ -103,8 +103,8 @@ static void Shadow_ApplyPreset(EDGIZSHADOW_PC *shadow, i32 preset) {
 }
 
 static i32 __cdecl Shadow_Load(void *world_ptr, void *data) {
-    WORLDINFO *world = (WORLDINFO *)world_ptr;
-    SHADOW_WORLD_VIEW_PC *view = (SHADOW_WORLD_VIEW_PC *)world_ptr;
+    WORLDINFO *world = world_ptr;
+    SHADOW_WORLD_VIEW_PC *view = world_ptr;
     EDGIZSHADOW_PC *shadow;
     i32 version;
     i32 count;
@@ -113,8 +113,8 @@ static i32 __cdecl Shadow_Load(void *world_ptr, void *data) {
         return 0;
     }
     shadow = view->shadow_editor;
-    version = (i8)EdFileReadChar();
-    count = (i8)EdFileReadChar();
+    version = EdFileReadChar();
+    count = EdFileReadChar();
     for (record = 0; record < count; ++record) {
         EdFileReadNuVec(&shadow->direction);
         shadow->field_0c = EdFileReadFloat();

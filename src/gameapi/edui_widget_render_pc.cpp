@@ -2094,8 +2094,8 @@ extern "C" i32 __cdecl eduicbProcessSlider(eduimenu_s *menu, eduiitem_s *item, f
             if (buttons & 0x20) {
                 EduiSliderDynamicScalePc *= (f64)1.05f;
                 slider->normalized_value =
-                    (f32)MAX(0.0f, slider->normalized_value -
-                                       (u32)l2 * delta_time / EduiNominalFrameTimePc * EduiSliderDynamicScalePc);
+                    MAX(0.0f, slider->normalized_value -
+                                  (u32)l2 * delta_time / EduiNominalFrameTimePc * EduiSliderDynamicScalePc);
             } else {
                 EduiSliderDynamicScalePc = 1.627604291343232e-7f;
                 slider->normalized_value =
@@ -2114,8 +2114,8 @@ extern "C" i32 __cdecl eduicbProcessSlider(eduimenu_s *menu, eduiitem_s *item, f
             if (buttons & 0x20) {
                 EduiSliderDynamicScalePc *= (f64)1.05f;
                 slider->normalized_value =
-                    (f32)MIN(1.0f, slider->normalized_value +
-                                       (u32)r2 * delta_time / EduiNominalFrameTimePc * EduiSliderDynamicScalePc);
+                    MIN(1.0f, slider->normalized_value +
+                                  (u32)r2 * delta_time / EduiNominalFrameTimePc * EduiSliderDynamicScalePc);
             } else {
                 EduiSliderDynamicScalePc = 1.627604291343232e-7f;
                 slider->normalized_value =

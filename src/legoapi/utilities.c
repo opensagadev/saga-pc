@@ -188,7 +188,7 @@ void __cdecl FindAnglesZX(NUVEC *normal, u16 *x_rotation, u16 *z_rotation) {
         *x_rotation = x_angle;
     }
     temp_zrot = x_angle;
-    NuVecRotateX(&rotated, normal, (NUANG)(0 - x_angle));
+    NuVecRotateX(&rotated, normal, 0 - x_angle);
     z_angle = (u16)NuAtan2D(rotated.x, rotated.y);
     if (z_rotation != NULL) {
         *z_rotation = (u16)-z_angle;
@@ -214,13 +214,13 @@ void __cdecl GetRotationAngles(NUVEC *direction, u16 *x_rotation, u16 *y_rotatio
     NUVEC rotated;
     NUVEC copy = *direction;
     u16 y_angle = (u16)-NuAtan2D(copy.z, copy.x);
-    NuVecRotateY(&rotated, &copy, -(i32)y_angle);
+    NuVecRotateY(&rotated, &copy, -y_angle);
     *x_rotation = (u16)-NuAtan2D(rotated.x, rotated.y);
     *y_rotation = y_angle;
 }
 
 i32 __cdecl RotDiff(u16 current, u16 target) {
-    i32 difference = (i32)target - (i32)current;
+    i32 difference = target - current;
 
     if (difference > 0x8000) {
         difference -= 0x10000;
@@ -239,7 +239,7 @@ u16 __cdecl SeekRot(u16 current, u16 target, f32 rate) {
     if (blend > 1.0f) {
         blend = 1.0f;
     }
-    difference = (i32)target - (i32)current;
+    difference = target - current;
     if (difference > 0x8000) {
         difference -= 0x10000;
     } else if (difference < -0x8000) {
@@ -256,7 +256,7 @@ u16 __cdecl TurnRot(u16 current, u16 target, i32 speed, i32 *difference_out) {
         return target;
     }
     step = (i32)(speed * FRAMETIME);
-    difference = (i32)target - (i32)current;
+    difference = target - current;
     if (difference > 0x8000) {
         difference -= 0x10000;
     } else if (difference < -0x8000) {
@@ -1246,10 +1246,10 @@ void __cdecl EvalAnim(NUSPECIALHANDLE *special, f32 frame, NUMTX *matrix, i32 up
     if (special == NULL || matrix == NULL) {
         return;
     }
-    instance_animation = (NUINSTANIM *)NuSpecialGetInstAnim(special);
+    instance_animation = NuSpecialGetInstAnim(special);
     if (instance_animation != NULL) {
-        scene = (NUGSCN *)special->scene;
-        animation = (ANI3_HEADER_PC *)scene->instance_animation_data[instance_animation->animation_index];
+        scene = special->scene;
+        animation = scene->instance_animation_data[instance_animation->animation_index];
         if (animation == NULL) {
             return;
         }
@@ -1277,19 +1277,19 @@ void __cdecl EvalAnim2(NUSPECIALHANDLE *special, f32 frame) {
     NUMTX *instance_matrix;
     i32 animation_index;
 
-    instance_animation = (NUINSTANIM *)NuSpecialGetInstAnim(special);
+    instance_animation = NuSpecialGetInstAnim(special);
     if (instance_animation == NULL) {
         return;
     }
-    scene = (NUGSCN *)special->scene;
-    animation = (ANI3_HEADER_PC *)scene->instance_animation_data[instance_animation->animation_index];
+    scene = special->scene;
+    animation = scene->instance_animation_data[instance_animation->animation_index];
     if (animation == NULL || instance_animation->prev_eval_time == frame) {
         return;
     }
     instance_matrix = NuSpecialGetInstanceMtx(special);
     NuAnimData2CalcMatrix(animation, 0, frame, &instance_animation->matrix);
     instance_animation->prev_eval_time = frame;
-    animation_index = (i32)(instance_animation - scene->instance_animations);
+    animation_index = instance_animation - scene->instance_animations;
     scene->instance_animation_matrices[animation_index] = instance_animation->matrix;
     instance_animation->matrix.m30 += instance_matrix->m30;
     instance_animation->matrix.m31 += instance_matrix->m31;
@@ -1575,7 +1575,7 @@ void __cdecl CreateUsefulMaterials(void) {
     ((USEFUL_MATERIAL_PC *)ZipUpLineMaterialPc)->attributes &= 0xffff3fffu;
     ((USEFUL_MATERIAL_PC *)ZipUpLineMaterialPc)->attributes &= 0xfffffff0u;
     ((USEFUL_MATERIAL_PC *)ZipUpLineMaterialPc)->attributes |= 0x40000u;
-    NuMtlUpdate((NUMTL *)ZipUpLineMaterialPc);
+    NuMtlUpdate(ZipUpLineMaterialPc);
 }
 
 void __cdecl IncreaseScore(u32 *total, u64 amount, i32 apply_multiplier) {

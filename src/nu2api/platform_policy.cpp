@@ -47,7 +47,7 @@ extern "C" i32 PcPlatformPolicy(u8 report_error) {
     }
     if (!allowed && report_error) {
         NuLanguageGet();
-        MessageBoxA((HWND)PCInputInstance, "You do not have sufficient permissions to play this game.",
+        MessageBoxA(PCInputInstance, "You do not have sufficient permissions to play this game.",
                     "Insufficient Permissions", MB_ICONERROR);
     }
     return allowed == TRUE;

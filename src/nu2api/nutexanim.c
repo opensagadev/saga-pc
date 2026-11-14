@@ -59,7 +59,7 @@ PC_TEXTURE_ANIM_ENV *__cdecl NuTexAnimEnvCreate(VARIPTR *buffer, NUMTL *material
         environment = (PC_TEXTURE_ANIM_ENV *)((buffer->addr + 3) & ~3u);
         buffer->void_ptr = environment + 1;
     } else {
-        environment = (PC_TEXTURE_ANIM_ENV *)NuAlloc(sizeof(PC_TEXTURE_ANIM_ENV), NuTextureAnimationSourcePathPC, 548);
+        environment = NuAlloc(sizeof(PC_TEXTURE_ANIM_ENV), NuTextureAnimationSourcePathPC, 548);
     }
     if (environment != NULL) {
         environment->program = program;
@@ -207,14 +207,14 @@ static void TextureAnimationCrossReferencePrivatePc(i32 label, PC_TEXTURE_ANIM_E
     PC_TEXTURE_ANIM_LIST *list;
     for (list = ntal_first; list != NULL; list = list->next) {
         TEXTURE_ANIMATION_PC *animation;
-        for (animation = (TEXTURE_ANIMATION_PC *)list->first; animation != NULL; animation = animation->next) {
+        for (animation = list->first; animation != NULL; animation = animation->next) {
             PC_TEXTURE_ANIM_ENV *other = animation->environment;
             TEXTURE_ANIM_PROGRAM_PC *program;
             i32 i;
             if (other == NULL || other == current || other->program == NULL) {
                 continue;
             }
-            program = (TEXTURE_ANIM_PROGRAM_PC *)other->program;
+            program = other->program;
             for (i = 0; i < program->label_count; ++i) {
                 if (program->label_ids[i] == label) {
                     other->instruction_index = program->label_offsets[i];
@@ -229,7 +229,7 @@ static void TextureAnimationCrossReferencePrivatePc(i32 label, PC_TEXTURE_ANIM_E
 }
 
 void __cdecl NuTexAnimEnvProc(PC_TEXTURE_ANIM_ENV *environment) {
-    TEXTURE_ANIM_PROGRAM_PC *program = (TEXTURE_ANIM_PROGRAM_PC *)environment->program;
+    TEXTURE_ANIM_PROGRAM_PC *program = environment->program;
     TEXTURE_ANIM_MATERIAL_PC *material;
     i32 i;
     if (program == NULL || (program->mask & nta_script_mask) == 0) {
@@ -462,7 +462,7 @@ void __cdecl NuTexAnimProcess(f32 frame_time) {
     nta_iframetime = (i32)(frame_time * 4096.0);
     nta_script_mask = script_mask;
     for (list = ntal_first; list != NULL; list = list->next) {
-        TEXTURE_ANIMATION_PC *animation = (TEXTURE_ANIMATION_PC *)list->first;
+        TEXTURE_ANIMATION_PC *animation = list->first;
         while (animation != NULL) {
             if (animation->environment != NULL) {
                 NuTexAnimEnvProc(animation->environment);
@@ -476,7 +476,7 @@ void __cdecl NuTexAnimProcess(f32 frame_time) {
 void __cdecl NuTexAnimRestart(void) {
     PC_TEXTURE_ANIM_LIST *list;
     for (list = ntal_first; list != NULL; list = list->next) {
-        NuTexAnimResetList((TEXTURE_ANIMATION_PC *)list->first);
+        NuTexAnimResetList(list->first);
     }
 }
 
@@ -526,7 +526,7 @@ void __cdecl NuTexAnimProgSysInit(void) {
 
 TEXTURE_ANIM_PROGRAM_PC *__cdecl NuTexAnimProgFind(const char *name) {
     TEXTURE_ANIM_PROGRAM_PC *program;
-    for (program = (TEXTURE_ANIM_PROGRAM_PC *)GHGTextureProgramsPC; program != NULL; program = program->next) {
+    for (program = GHGTextureProgramsPC; program != NULL; program = program->next) {
         if (NuStrICmp(name, program->name) == 0) {
             break;
         }
@@ -841,8 +841,7 @@ TEXTURE_ANIM_PROGRAM_PC *__cdecl NuTexAnimProgCreate(VARIPTR *buffer, i32 extra_
         program = (TEXTURE_ANIM_PROGRAM_PC *)buffer->addr;
         buffer->addr += sizeof(*program) + extra_bytes;
     } else {
-        program =
-            (TEXTURE_ANIM_PROGRAM_PC *)NuAlloc(sizeof(*program) + extra_bytes, NuTextureAnimationSourcePathPC, 386);
+        program = NuAlloc(sizeof(*program) + extra_bytes, NuTextureAnimationSourcePathPC, 386);
     }
     if (program != NULL) {
         NuTexAnimProgInit(program);
@@ -874,11 +873,11 @@ TEXTURE_ANIM_PROGRAM_PC *__cdecl NuTexAnimProgRead(VARIPTR *buffer, char *path) 
             program = (TEXTURE_ANIM_PROGRAM_PC *)((buffer->addr + 3) & ~3u);
             buffer->addr = (u32)program + size;
         } else {
-            program = (TEXTURE_ANIM_PROGRAM_PC *)NuAlloc(size, NuTextureAnimationSourcePathPC, 444);
+            program = NuAlloc(size, NuTextureAnimationSourcePathPC, 444);
         }
         NuFileRead(file, program, size);
         NuFileClose(file);
-        head = (TEXTURE_ANIM_PROGRAM_PC *)GHGTextureProgramsPC;
+        head = GHGTextureProgramsPC;
         program->next = head;
         if (head != NULL) {
             head->previous = program;
@@ -963,7 +962,7 @@ TEXTURE_ANIM_PROGRAM_PC *__cdecl NuTexAnimProgParseFile(NUFILE file, VARIPTR *bu
     if (buffer != NULL) {
         program = (TEXTURE_ANIM_PROGRAM_PC *)((buffer->addr + 3) & ~3u);
     } else {
-        program = (TEXTURE_ANIM_PROGRAM_PC *)NuAlloc(1024, NuTextureAnimationSourcePathPC, 962);
+        program = NuAlloc(1024, NuTextureAnimationSourcePathPC, 962);
         end.addr = (u32)program + 1023;
     }
     memset(TextureAnimationLabelsPrivatePc, 0, sizeof(TextureAnimationLabelsPrivatePc));
@@ -995,7 +994,7 @@ TEXTURE_ANIM_PROGRAM_PC *__cdecl NuTexAnimProgParseFile(NUFILE file, VARIPTR *bu
         }
         NuFreeFPar(parser);
         NuTexAnimProgAssembleEnd(program);
-        head = (TEXTURE_ANIM_PROGRAM_PC *)GHGTextureProgramsPC;
+        head = GHGTextureProgramsPC;
         program->next = head;
         if (head != NULL) {
             head->previous = program;
@@ -1143,8 +1142,7 @@ TEXTURE_ANIMATION_PC *__cdecl NuTexAnimCreate(VARIPTR *buffer, TEXTURE_ANIM_PROG
         animation = (TEXTURE_ANIMATION_PC *)((buffer->addr + 3) & ~3u);
         buffer->addr = (u32)(animation + 1) + texture_count * 2;
     } else {
-        animation = (TEXTURE_ANIMATION_PC *)NuAlloc(sizeof(*animation) + texture_count * 2,
-                                                    NuTextureAnimationSourcePathPC, 1720);
+        animation = NuAlloc(sizeof(*animation) + texture_count * 2, NuTextureAnimationSourcePathPC, 1720);
     }
     animation->previous = NULL;
     animation->next = NULL;

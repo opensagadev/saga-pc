@@ -403,7 +403,7 @@ i32 PC_CONTROL_SCREEN_PC::Update(FRAME_PAD_PC *first, FRAME_PAD_PC *second, f32 
             active = 0;
             return 0;
         case 1:
-            fade = (f32)(fade + dt);
+            fade = fade + dt;
             if (fade > 1.0f) {
                 fade = 1.0f;
                 phase = 2;
@@ -414,7 +414,7 @@ i32 PC_CONTROL_SCREEN_PC::Update(FRAME_PAD_PC *first, FRAME_PAD_PC *second, f32 
             phase = 3;
             return 4;
         case 3:
-            fade = (f32)(fade - dt);
+            fade = fade - dt;
             if (fade < 0.0f) {
                 PcInputSuppressKeyOnePc(0);
                 fade = 0.0f;
@@ -459,7 +459,7 @@ i32 PC_CONTROL_SCREEN_PC::Update(FRAME_PAD_PC *first, FRAME_PAD_PC *second, f32 
                     buttons |= 0x8000;
                 }
                 if (buttons == PcControlHeldPc[i] && buttons) {
-                    PcControlRepeatPc[i] = (f32)(PcControlRepeatPc[i] - elapsed);
+                    PcControlRepeatPc[i] = PcControlRepeatPc[i] - elapsed;
                     if (PcControlRepeatPc[i] <= 0.0f) {
                         PcControlPressedPc[i] = PcControlHeldPc[i];
                         PcControlRepeatPc[i] = (f32)(PcControlRepeatPc[i] + 0.10000000149011612);
@@ -907,7 +907,7 @@ u32 PC_CONTROL_SCREEN_PC::HashString(const char *string) {
     }
     u32 hash = 0;
     for (i32 i = 0; i < prefix; ++i) {
-        hash = (hash << 8) | (i32)(i8)*string++;
+        hash = (hash << 8) | (i8)*string++;
     }
     count -= prefix;
     i32 tail = count & 3;
@@ -920,7 +920,7 @@ u32 PC_CONTROL_SCREEN_PC::HashString(const char *string) {
     if (tail) {
         u32 value = 0;
         for (i32 i = 0; i < tail; ++i) {
-            value = (value << 8) | (i32)(i8)*string++;
+            value = (value << 8) | (i8)*string++;
         }
         hash = ((hash & 0x80000000) ? (hash << 1) | 1 : hash << 1) ^ value;
     }

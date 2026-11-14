@@ -1066,14 +1066,14 @@ extern "C" {
                     direction.z = next->z - (f64)previous->z;
                 }
                 yaw = (i16)NuAtan2D(direction.x, direction.z);
-                NuVecRotateY((NUVEC *)&axis, (NUVEC *)&direction, -(i32)yaw);
+                NuVecRotateY((NUVEC *)&axis, (NUVEC *)&direction, -yaw);
                 pitch = (i16)NuAtan2D(axis.y, axis.z);
                 axis.x = 1.0f;
                 axis.y = 0.0f;
                 axis.z = 0.0f;
                 axis.w = 0.0f;
                 NuVecRotateZ((NUVEC *)&axis, (NUVEC *)&axis, (i16)(i32)points[i].w);
-                NuVecRotateX((NUVEC *)&axis, (NUVEC *)&axis, -(i32)pitch);
+                NuVecRotateX((NUVEC *)&axis, (NUVEC *)&axis, -pitch);
                 NuVecRotateY((NUVEC *)&axis, (NUVEC *)&axis, yaw);
             }
         }
@@ -1092,14 +1092,14 @@ extern "C" {
                 direction.z = next->z - (f64)previous->z;
             }
             yaw = (i16)NuAtan2D(direction.x, direction.z);
-            NuVecRotateY((NUVEC *)&axis, (NUVEC *)&direction, -(i32)yaw);
+            NuVecRotateY((NUVEC *)&axis, (NUVEC *)&direction, -yaw);
             pitch = (i16)NuAtan2D(axis.y, axis.z);
             axis.x = 2.0f;
             axis.y = 0.0f;
             axis.z = 0.0f;
             axis.w = 0.0f;
             NuVecRotateZ((NUVEC *)&axis, (NUVEC *)&axis, (i16)(i32)spline->points[i].w);
-            NuVecRotateX((NUVEC *)&axis, (NUVEC *)&axis, -(i32)pitch);
+            NuVecRotateX((NUVEC *)&axis, (NUVEC *)&axis, -pitch);
             NuVecRotateY((NUVEC *)&axis, (NUVEC *)&axis, yaw);
         }
     }
@@ -2488,7 +2488,7 @@ extern "C" {
         step = (u16)(qrand() / 21 + 0x2666);
         for (i = 0; i < 5; ++i) {
             starfighter_s *fighter = &group->fighters[i].fields;
-            NuVecRotateZ((NUVEC *)&fighter->parent_offset, (NUVEC *)&offset, (i32)(i16)angle);
+            NuVecRotateZ((NUVEC *)&fighter->parent_offset, (NUVEC *)&offset, (i16)angle);
             angle = (u16)(angle + step);
             fighter->active = 1;
             fighter->scale = 2.0f;

@@ -202,7 +202,7 @@ static void PlayerCamPos(GAMEOBJECT *object, NUVEC *position, NUVEC *reference) 
             break;
     }
     if ((object->id == (u16)id_GRABCONTROL || object->id == (u16)id_GRABR2CONTROL) && world->grabber != NULL) {
-        CAMERA_GRABBER_PC *grabber = (CAMERA_GRABBER_PC *)world->grabber;
+        CAMERA_GRABBER_PC *grabber = world->grabber;
         focus.x = (grabber->grab_position.x + position->x) * 0.5f;
         focus.y = position->y;
         focus.z = (grabber->grab_position.z + position->z) * 0.5f;
@@ -249,7 +249,7 @@ static void PlayersCamLookPos(NUVEC *target, NUVEC *reference) {
     target->x = target->y = target->z = 0.0f;
     count = 0;
     for (i = 0; i < 2; i++) {
-        GAMEOBJECT *object = (GAMEOBJECT *)Player[i];
+        GAMEOBJECT *object = Player[i];
         if (object != NULL && ((object->flags_1fc & 0x80) != 0 || LookAtBoth != 0)) {
             PlayerCamPos(object, &focus, reference);
             NuVecAdd(target, target, &focus);
@@ -510,8 +510,8 @@ mode_selected:
     }
     position = *PlayerStart[0].position;
 
-    position_seek = ((u32)(((u8)(WORLD->current_level->cam_pos_seek))));
-    angle_seek = ((u32)(((u8)(WORLD->current_level->cam_angle_seek))));
+    position_seek = WORLD->current_level->cam_pos_seek;
+    angle_seek = WORLD->current_level->cam_angle_seek;
     target = v000;
     pitch_override = -1, yaw_override = -1, roll_override = 0;
     roll_hint = 0;
@@ -569,12 +569,12 @@ mode_selected:
                         if (landspeeder_lookahead != 0.0f) {
                             landspeeder_lookahead =
                                 (landspeeder_lookahead + (object->horizontal_velocity_magnitude * 0.6f)) * 0.5f;
-                            landspeeder_yaw = (landspeeder_yaw + ((u16)(object->field_0x276))) * 0.5f;
+                            landspeeder_yaw = (landspeeder_yaw + object->field_0x276) * 0.5f;
                             landspeeder_speed = (landspeeder_speed + object->horizontal_velocity_magnitude) * 0.5f;
                         } else {
                             landspeeder_speed = object->horizontal_velocity_magnitude;
                             landspeeder_lookahead = object->horizontal_velocity_magnitude * 0.6f;
-                            landspeeder_yaw = ((u16)(object->field_0x276));
+                            landspeeder_yaw = object->field_0x276;
                         }
                     }
                 }
@@ -586,7 +586,7 @@ mode_selected:
                     (*pod_offset).y = 0.0f;
                     (*pod_offset).z = 2.0f;
                     NuVecRotateY(&(*pod_offset), &(*pod_offset),
-                                 ((i32)(((u16)(((GAMEOBJECT *)Player[i])->facing_angle)) + getPodRoll(i) * 5461.0f)));
+                                 ((i32)(((GAMEOBJECT *)Player[i])->facing_angle + getPodRoll(i) * 5461.0f)));
                     NuVecAdd(&player_focus[player_count], &player_focus[player_count], &(*pod_offset));
                 } else {
                     PlayerCamPos(object, &player_focus[player_count], &camera->position);

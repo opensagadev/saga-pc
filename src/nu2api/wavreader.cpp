@@ -85,7 +85,7 @@ i32 WavReader::FindChunkPc(HANDLE input, const char *name, PC_WAVE_CHUNK_PC *chu
             return 1;
         }
         move.QuadPart = chunk->bytes;
-        if (SetFilePointerEx(input, move, &position, FILE_CURRENT) == (BOOL)-1) {
+        if (SetFilePointerEx(input, move, &position, FILE_CURRENT) == -1) {
             return 0;
         }
     }
@@ -96,7 +96,7 @@ i32 WavReader::SkipChunkPc(HANDLE input, const PC_WAVE_CHUNK_PC *chunk) {
     LARGE_INTEGER move;
     LARGE_INTEGER position;
     move.QuadPart = base_position + (i64)(u32)chunk->offset + chunk->bytes;
-    return SetFilePointerEx(input, move, &position, FILE_BEGIN) != (BOOL)-1;
+    return SetFilePointerEx(input, move, &position, FILE_BEGIN) != -1;
 }
 
 HRESULT WavReader::Open(NUDATHDR *header, char *path, WAVEFORMATEX *output) {

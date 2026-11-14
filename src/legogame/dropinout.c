@@ -31,18 +31,18 @@ STATIC_ASSERT(offsetof(GAMEOBJECT, field_0x276) == 0x27a);
 void __cdecl CheckForPlayersTurnedOff(void) {
     i32 source_index;
     for (source_index = 0; source_index < 2; ++source_index) {
-        GAMEOBJECT *source = (GAMEOBJECT *)Player[source_index];
+        GAMEOBJECT *source = Player[source_index];
         if (source != NULL && !(source->flags_1fc_word & 0x1000)) {
             i32 target_index;
             for (target_index = 2; target_index < 8; ++target_index) {
-                GAMEOBJECT *target = (GAMEOBJECT *)Player[target_index];
+                GAMEOBJECT *target = Player[target_index];
                 if (target == NULL || (target->tag_flags & 2) || (target->portal_flags & 0x4000000) ||
                     target->character_context == 0x24 || target->character_context == 0x1f) {
                     continue;
                 }
                 if (target->field_281 != 0 ||
                     (target->jump_variant_state == 1 && target->character_data->game_character->field_028 > 0.0f)) {
-                    TagCharacter((GAMEOBJECT *)Player[source_index], target, 1);
+                    TagCharacter(Player[source_index], target, 1);
                 }
             }
         }
@@ -67,7 +67,7 @@ i32 __cdecl FreePlay_DropInToPlayerPos(GAMEOBJECT *object) {
     }
     if (player != NULL && FreePlay != 0 && drop_in_teleport >= 2 && VehicleArea == 0 &&
         (Arcade != 0 || teleport_all_freeplay_modes != 0) && object->takeover_source == NULL &&
-        (U64_PAIR(&CInfo[(i8)object->character_context].flags) & 0x8000) == 0 && object->character_context != 0x2b &&
+        (U64_PAIR(&CInfo[object->character_context].flags) & 0x8000) == 0 && object->character_context != 0x2b &&
         object->model_draw_result == 0 && (object->tag_flags & 2) == 0) {
         NUVEC position = player->last_safe_position;
         if (position.x == player->position.x && position.y == player->position.y && position.z == player->position.z) {
@@ -155,7 +155,7 @@ void StartDropOut(GAMEOBJECT *object) {
 }
 
 void __cdecl DropOut(i32 player, i32 resume, i32 silent, i32 unused) {
-    GAMEOBJECT *object = (GAMEOBJECT *)Player[player];
+    GAMEOBJECT *object = Player[player];
     i32 secondary;
     i32 movement;
     i32 tertiary;
@@ -171,9 +171,9 @@ void __cdecl DropOut(i32 player, i32 resume, i32 silent, i32 unused) {
     }
     ReleaseTakeOver(object, 1);
     /* The lean angles are signed in retail (loaded with movsx); the shared header has them as u16. */
-    secondary = (i16)object->secondary_lean_angle;
-    movement = (i16)object->movement_lean_angle;
-    tertiary = (i16)object->tertiary_lean_angle;
+    secondary = object->secondary_lean_angle;
+    movement = object->movement_lean_angle;
+    tertiary = object->tertiary_lean_angle;
     ReleaseEat(object);
     if (VehicleArea) {
         ResetPlayerPacket(object->unknown_06c4, object->character_data);
@@ -201,7 +201,7 @@ void __cdecl DropOut(i32 player, i32 resume, i32 silent, i32 unused) {
         ResumeGame(1);
         TextInputSetKeyboardOverridePc(0);
     }
-    other = (GAMEOBJECT *)Player[player == 0];
+    other = Player[player == 0];
     if (other) {
         NUVEC direction;
         NuVecSub(&direction, &other->collision_position, &GameCam->position);
@@ -247,7 +247,7 @@ i32 __cdecl PlayersDropInOut(void) {
         if (drop_back_in_timer < 0.0f) {
             drop_back_in_timer = 0.0f;
             for (index = 0; index < 8; ++index) {
-                object = (GAMEOBJECT *)Player[index];
+                object = Player[index];
                 if (object == NULL || (object->flags_1fc_word & 0x80)) {
                     continue;
                 }
@@ -270,7 +270,7 @@ i32 __cdecl PlayersDropInOut(void) {
         i32 port0;
         i32 port;
         u8 join;
-        object = (GAMEOBJECT *)Player[index];
+        object = Player[index];
         if (object == NULL) {
             continue;
         }
@@ -357,7 +357,7 @@ i32 __cdecl PlayersDropInOut(void) {
         if (!join) {
             i32 target_index;
             for (target_index = 2; target_index < 8; ++target_index) {
-                GAMEOBJECT *target = (GAMEOBJECT *)Player[target_index];
+                GAMEOBJECT *target = Player[target_index];
                 u8 tag;
                 if (target == NULL) {
                     continue;
@@ -418,7 +418,7 @@ i32 __cdecl PlayersDropInOut(void) {
     }
     drop_index = -1;
     for (index = 0; index < 2; ++index) {
-        object = (GAMEOBJECT *)Player[index];
+        object = Player[index];
         if (object == NULL || object->dead != 0 || object->character_context == 0x2b ||
             object->character_context == 0x51 || object->character_context == 0x1f) {
             continue;

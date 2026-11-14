@@ -93,7 +93,7 @@ void __cdecl SetPushAngle(GAMEOBJECT *object) {
     i32 adjustment;
     if (Pushing(object, &angle, NULL, NULL)) {
         adjustment = 0;
-        spinner = (SPINNER_MOVEMENT_PC *)object->grapple;
+        spinner = object->grapple;
         if (spinner != NULL && LEGOCONTEXT_PUSHSPINNER != -1 && object->character_context == LEGOCONTEXT_PUSHSPINNER &&
             (spinner->state_flags & 0x40)) {
             adjustment = PlayerPushSpinnerDegreesPc;
@@ -208,7 +208,7 @@ void __cdecl PushCode(GAMEOBJECT *object, i32 allow_push) {
                         spinner->spin_timer <= 0.0f) {
                         i32 player_index;
                         for (player_index = 0; player_index < 8; player_index++) {
-                            GAMEOBJECT *player = (GAMEOBJECT *)Player[player_index];
+                            GAMEOBJECT *player = Player[player_index];
                             if (player != NULL && player != object &&
                                 player->character_context == LEGOCONTEXT_PUSHSPINNER && player->grapple == spinner) {
                                 break;
@@ -311,7 +311,7 @@ void __cdecl PushCode(GAMEOBJECT *object, i32 allow_push) {
             } else {
                 moving = 1;
             }
-            GizObstacle_SetPushControlled((GIZOBSTACLE *)object->grapple, object, -1.0f);
+            GizObstacle_SetPushControlled(object->grapple, object, -1.0f);
             goto drive_done;
         push_obstacle:
             if (((GIZOBSTACLE *)object->grapple)->anim_set->state == 2) {
@@ -319,7 +319,7 @@ void __cdecl PushCode(GAMEOBJECT *object, i32 allow_push) {
             } else {
                 moving = 1;
             }
-            GizObstacle_SetPushControlled((GIZOBSTACLE *)object->grapple, object, 1.0f);
+            GizObstacle_SetPushControlled(object->grapple, object, 1.0f);
         drive_done:
             if (stopped) {
                 if (ParticlesPerSecond(3.0f, FRAMETIME) > 0) {
@@ -344,13 +344,13 @@ void __cdecl PushCode(GAMEOBJECT *object, i32 allow_push) {
             object->flags_e24 |= 0x1000;
             return;
         }
-        if (GizSpinner_Push((GIZSPINNER_s *)object->grapple, (i8)object->context_variant) != 0) {
+        if (GizSpinner_Push(object->grapple, (i8)object->context_variant) != 0) {
             if ((object->flags_1fc & 0x80) != 0) {
                 NewRumble(object->pad->bound_pad, qrand() * (f64)(1.0f / 65535.0f) * (f64)0.4f, 0);
             }
             GameAudio_PlaySfx(0x38, &object->collision_position, 0, 0);
         } else if (qrand() < 0x800) {
-            GizSpinner_PushFail(object, (GIZSPINNER_s *)object->grapple);
+            GizSpinner_PushFail(object, object->grapple);
         } else {
             ((GIZSPINNER_s *)object->grapple)->state_flags &= ~0x300u;
         }
@@ -391,17 +391,16 @@ i32 __cdecl WallShuffle_SetTargetMom(GAMEOBJECT *object, u16 input_angle) {
     direction = PushingTowardsAngle(input_angle, sideways_angle);
     if (direction > NuTrigTable[0x3555]) {
         if (LEGOACT_WALLSHUFFLE_RIGHT != -1 &&
-            ((CHARACTER_MODEL_LAYERS_PC *)object->character_model)->model_data_b[LEGOACT_WALLSHUFFLE_RIGHT] != NULL) {
+            object->character_model->model_data_b[LEGOACT_WALLSHUFFLE_RIGHT] != NULL) {
             object->field_7aa = LEGOACT_WALLSHUFFLE_RIGHT;
-            speed = AnimSpeed((CHARACTER_MODEL_LAYERS_PC *)object->character_model, LEGOACT_WALLSHUFFLE_RIGHT);
+            speed = AnimSpeed(object->character_model, LEGOACT_WALLSHUFFLE_RIGHT);
         } else {
             speed = 0.5f;
         }
     } else if (direction < -NuTrigTable[0x3555]) {
-        if (LEGOACT_WALLSHUFFLE_LEFT != -1 &&
-            ((CHARACTER_MODEL_LAYERS_PC *)object->character_model)->model_data_b[LEGOACT_WALLSHUFFLE_LEFT] != NULL) {
+        if (LEGOACT_WALLSHUFFLE_LEFT != -1 && object->character_model->model_data_b[LEGOACT_WALLSHUFFLE_LEFT] != NULL) {
             object->field_7aa = LEGOACT_WALLSHUFFLE_LEFT;
-            speed = -AnimSpeed((CHARACTER_MODEL_LAYERS_PC *)object->character_model, LEGOACT_WALLSHUFFLE_LEFT);
+            speed = -AnimSpeed(object->character_model, LEGOACT_WALLSHUFFLE_LEFT);
         } else {
             speed = -0.5f;
         }

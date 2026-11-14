@@ -45,7 +45,7 @@ void __cdecl edanimUpdateObjects(f32 elapsed) {
         animation = NULL;
         if (edanim_page_scene[AnimParams[index].page] != NULL) {
             NuGScnGetSpecial(&special, edanim_page_scene[AnimParams[index].page], AnimParams[index].instance_id);
-            animation = (NUINSTANIM *)NuSpecialGetInstAnim(&special);
+            animation = NuSpecialGetInstAnim(&special);
             NuSpecialGetInstanceix(&special);
         }
         if (animation != NULL) {

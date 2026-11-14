@@ -432,7 +432,7 @@ void __cdecl Customiser_AddPartAccessories(CUSTOMISER_LAYERS_PC *customiser, GAM
 }
 
 void __cdecl Customiser_DumpAccessories(void *input) {
-    CUSTOMISER_CONFIG_PC *customiser = (CUSTOMISER_CONFIG_PC *)input;
+    CUSTOMISER_CONFIG_PC *customiser = input;
     i32 side;
     i32 category;
     CUSTOM_ACCESSORY_RESOURCE_PC *resource;
@@ -535,7 +535,7 @@ void __cdecl Customiser_LoadAll(CUSTOMISER_LAYERS_PC *input, WORLDINFO *world) {
                     item = NuFilePakGetItem(texture_pack, converted_path);
                     if (item != -1 && NuFilePakGetItemInfo(texture_pack, item, &data, &size) != 0) {
                         data = NuPtrBlockFix(data);
-                        resource->texture_id = NuTexCreateNative((NUTEXDIM_PC *)data);
+                        resource->texture_id = NuTexCreateNative(data);
                         CustomiserLoadTracePc(path);
                     }
                 }
@@ -549,7 +549,7 @@ void __cdecl Customiser_LoadAll(CUSTOMISER_LAYERS_PC *input, WORLDINFO *world) {
 }
 
 void __cdecl Customiser_DumpAll(void *input, WORLDINFO *world) {
-    CUSTOMISER_CONFIG_PC *customiser = (CUSTOMISER_CONFIG_PC *)input;
+    CUSTOMISER_CONFIG_PC *customiser = input;
     i32 category;
     i32 piece;
     if (customiser == NULL) {
@@ -595,8 +595,8 @@ void __cdecl Customiser_ResetModelTextureIDs(CUSTOMISER_LAYERS_PC *input) {
 /* Append after existing CUSTOM_ACCESSORY_* types in src/legoapi/customise.c.
  * Retail 005935f0/179; no callees. Uses established local view types. */
 void __cdecl Customiser_SaveModelTextureIDs(void *input, CHARACTER_MODEL_LAYERS_PC *model) {
-    CUSTOMISER_CONFIG_PC *customiser = (CUSTOMISER_CONFIG_PC *)input;
-    CUSTOMISER_ANIMS_LOAD_PC *textures = (CUSTOMISER_ANIMS_LOAD_PC *)input;
+    CUSTOMISER_CONFIG_PC *customiser = input;
+    CUSTOMISER_ANIMS_LOAD_PC *textures = input;
     i32 side;
     i32 category;
     i32 material;
@@ -621,8 +621,8 @@ void __cdecl Customiser_SaveModelTextureIDs(void *input, CHARACTER_MODEL_LAYERS_
 }
 
 void __cdecl Customiser_RestoreModelTextureIDs(void *input) {
-    CUSTOMISER_CONFIG_PC *customiser = (CUSTOMISER_CONFIG_PC *)input;
-    CUSTOMISER_ANIMS_LOAD_PC *textures = (CUSTOMISER_ANIMS_LOAD_PC *)input;
+    CUSTOMISER_CONFIG_PC *customiser = input;
+    CUSTOMISER_ANIMS_LOAD_PC *textures = input;
     i32 side;
     i32 category;
     i32 material;
@@ -681,7 +681,7 @@ void __cdecl Customiser_CopyDefaultPiecesToSave(CUSTOMISER_LAYERS_PC *input, voi
     if (customiser == NULL) {
         return;
     }
-    save = (CUSTOM_SAVE_CONFIG_PC *)save_input;
+    save = save_input;
     if (save == NULL) {
         save = customiser->save;
         if (save == NULL) {
@@ -728,7 +728,7 @@ CUSTOMPIECE_LAYERS_PC *__cdecl Customiser_FindPieceByName(CUSTOMISER_LAYERS_PC *
 /* 00593920 / 120; retail does not check the customiser/save arguments. */
 i32 __cdecl Customiser_GetIcon(CUSTOMISER_LAYERS_PC *input, const void *save_input, i32 unused) {
     CUSTOMISER_CONFIG_PC *customiser = (CUSTOMISER_CONFIG_PC *)input;
-    const CUSTOM_SAVE_CONFIG_PC *save = (const CUSTOM_SAVE_CONFIG_PC *)save_input;
+    const CUSTOM_SAVE_CONFIG_PC *save = save_input;
     CUSTOM_PIECE_CONFIG_PC *hat = &customiser->piece_sets[0][save->pieces[0]];
     CUSTOM_PIECE_CONFIG_PC *head;
     i32 character;
@@ -777,7 +777,7 @@ CUSTOMISER_LAYERS_PC *__cdecl Customiser_Configure(char *filename, VARIPTR *buff
                                                    i32 (*weapon_from_name)(char *), void *save_input, i16 *animations) {
     NUFPAR_PC *parser;
     CUSTOMISER_CONFIG_PC *customiser;
-    CUSTOM_SAVE_CONFIG_PC *save = (CUSTOM_SAVE_CONFIG_PC *)save_input;
+    CUSTOM_SAVE_CONFIG_PC *save = save_input;
     i32 category;
     i32 index;
     i32 locators[9];
@@ -922,7 +922,7 @@ CUSTOMISER_LAYERS_PC *__cdecl Customiser_Configure(char *filename, VARIPTR *buff
     NuFParDestroy(parser);
     if (count > 0) {
         buffer->addr = ((u32)names + 3) & ~3u;
-        customiser = (CUSTOMISER_CONFIG_PC *)buffer->void_ptr;
+        customiser = buffer->void_ptr;
         memset(customiser, 0, sizeof(*customiser));
         buffer->addr = (buffer->addr + sizeof(*customiser) + 3) & ~3u;
         customiser->character_ids[0] = first_character;
@@ -933,7 +933,7 @@ CUSTOMISER_LAYERS_PC *__cdecl Customiser_Configure(char *filename, VARIPTR *buff
         for (category = 0; category < 9; ++category) {
             CUSTOM_PIECE_CONFIG_PC *output;
             customiser->categories[category] = &CustomiserSetDataPrivatePc[category];
-            customiser->piece_sets[category] = (CUSTOM_PIECE_CONFIG_PC *)buffer->void_ptr;
+            customiser->piece_sets[category] = buffer->void_ptr;
             customiser->piece_counts[category] = 0;
             customiser->locator_indices[category] = locators[category];
             customiser->layer_indices[category] = layers[category];
@@ -952,7 +952,7 @@ CUSTOMISER_LAYERS_PC *__cdecl Customiser_Configure(char *filename, VARIPTR *buff
             }
         }
         if (customiser->save == NULL) {
-            customiser->save = (CUSTOM_SAVE_CONFIG_PC *)buffer->void_ptr;
+            customiser->save = buffer->void_ptr;
             buffer->addr = (buffer->addr + 0x73) & ~3u;
         }
         for (category = 0; category < 9; ++category) {

@@ -959,69 +959,69 @@ static void DisguiseAdjust_LSW(i32 character_id, i32 hat, NUVEC *scale, NUVEC *o
     *scale = GizmoBlowupUnitScalePc;
     *offset = v000;
 
-    if (character_id == (i16)id_TAUNTAUN) {
+    if (character_id == id_TAUNTAUN) {
         scale->x = 2.2f;
-    } else if (character_id == (i16)id_DEWBACK) {
+    } else if (character_id == id_DEWBACK) {
         scale->x = 4.6f;
-    } else if (character_id == (i16)id_BANTHA) {
+    } else if (character_id == id_BANTHA) {
         scale->x = 3.8f;
     } else if (character_id == (i16)GameObjectRotationAtstId) {
         scale->x = 5.1f;
-    } else if (character_id == (i16)id_SNOWMOB) {
+    } else if (character_id == id_SNOWMOB) {
         scale->x = 2.25f;
-    } else if (character_id == (i16)id_MOONCAR) {
+    } else if (character_id == id_MOONCAR) {
         scale->x = 2.3f;
-    } else if (character_id == (i16)id_MAPCAR) {
+    } else if (character_id == id_MAPCAR) {
         scale->x = 2.3f;
-    } else if (character_id == (i16)id_ATAT) {
+    } else if (character_id == id_ATAT) {
         scale->x = 7.0f;
-    } else if (character_id == (i16)VehicleBoltId7f18b4Pc) {
+    } else if (character_id == VehicleBoltId7f18b4Pc) {
         scale->x = 3.0f;
-    } else if (character_id == (i16)id_XWING) {
+    } else if (character_id == id_XWING) {
         scale->x = 10.0f;
-    } else if (character_id == (i16)id_YWING) {
+    } else if (character_id == id_YWING) {
         scale->x = 6.5f;
-    } else if (character_id == (i16)VehicleBoltId7f1a24Pc) {
+    } else if (character_id == VehicleBoltId7f1a24Pc) {
         scale->x = 4.0f;
-    } else if (character_id == (i16)VehicleBoltId7f19a4Pc) {
+    } else if (character_id == VehicleBoltId7f19a4Pc) {
         scale->x = 10.0f;
-    } else if (character_id == (i16)id_TIEFIGHTER || character_id == (i16)VehicleBoltId7f1a28Pc ||
-               character_id == (i16)VehicleBoltId7f196cPc || character_id == (i16)id_TIEBOMBER) {
+    } else if (character_id == id_TIEFIGHTER || character_id == VehicleBoltId7f1a28Pc ||
+               character_id == VehicleBoltId7f196cPc || character_id == id_TIEBOMBER) {
         scale->x = 6.0f;
-    } else if (character_id == (i16)VehicleBoltId7f1a2cPc) {
+    } else if (character_id == VehicleBoltId7f1a2cPc) {
         scale->x = 8.0f;
-    } else if (character_id == (i16)VehicleBoltId7f195cPc) {
+    } else if (character_id == VehicleBoltId7f195cPc) {
         scale->x = 8.0f;
-    } else if (character_id == (i16)id_WOOKIEFLYER) {
+    } else if (character_id == id_WOOKIEFLYER) {
         scale->x = 6.0f;
-    } else if (character_id == (i16)FreePlayId007f1a98Pc) {
+    } else if (character_id == FreePlayId007f1a98Pc) {
         scale->x = 5.0f;
-    } else if (character_id == (i16)FreePlayId007f1b40Pc || character_id == (i16)FreePlayId007f1b44Pc ||
-               character_id == (i16)id_ANAKINSNEWPOD || character_id == (i16)id_ANAKINSNEWPODGREEN ||
-               character_id == (i16)id_NEW_REPUBLIC_GUNSHIP || character_id == (i16)id_NEW_REPUBLIC_GUNSHIP_GREEN) {
+    } else if (character_id == FreePlayId007f1b40Pc || character_id == FreePlayId007f1b44Pc ||
+               character_id == id_ANAKINSNEWPOD || character_id == id_ANAKINSNEWPODGREEN ||
+               character_id == id_NEW_REPUBLIC_GUNSHIP || character_id == id_NEW_REPUBLIC_GUNSHIP_GREEN) {
         scale->x = 6.0f;
-    } else if (character_id == (i16)VehicleBoltId7f1a9cPc || character_id == (i16)VehicleBoltId7f1aa0Pc) {
+    } else if (character_id == VehicleBoltId7f1a9cPc || character_id == VehicleBoltId7f1aa0Pc) {
         scale->x = 7.0f;
-    } else if (character_id == (i16)VehicleBoltId7f1b34Pc || character_id == (i16)VehicleBoltId7f1b38Pc) {
+    } else if (character_id == VehicleBoltId7f1b34Pc || character_id == VehicleBoltId7f1b38Pc) {
         scale->x = 5.0f;
-    } else if (character_id == (i16)id_SEBULBASPOD) {
+    } else if (character_id == id_SEBULBASPOD) {
         scale->x = 8.0f;
     }
 
     if (hat == 5 || hat == 6) {
         offset->z = -0.03f;
-    } else if (character_id == (i16)id_SNOWTROOPER || character_id == (i16)id_DEATHSTARTROOPER) {
+    } else if (character_id == id_SNOWTROOPER || character_id == id_DEATHSTARTROOPER) {
         offset->z = -0.00999f;
     } else if (GCDataList[character_id].weapon_action == 1) {
         offset->z = -0.03f;
     } else if (character_id == (i16)id_GONKDROID) {
         offset->z = -0.0075f;
-    } else if (character_id == (i16)id_IMPERIALSPY || character_id == (i16)FreePlayId007f199cPc ||
-               character_id == (i16)id_GREEDO || character_id == (i16)id_BOSSK || character_id == (i16)id_CANTINABAND) {
+    } else if (character_id == id_IMPERIALSPY || character_id == FreePlayId007f199cPc || character_id == id_GREEDO ||
+               character_id == id_BOSSK || character_id == id_CANTINABAND) {
         offset->z = -0.03f;
-    } else if (character_id == (i16)id_IMPERIALGUARD) {
+    } else if (character_id == id_IMPERIALGUARD) {
         offset->z = 0.015f;
-    } else if (character_id == (i16)id_UGNAUGHT) {
+    } else if (character_id == id_UGNAUGHT) {
         offset->z = -0.03f * 0.75f;
     }
 
@@ -2053,9 +2053,9 @@ extern "C" {
                 velocity.x = velocity.y = 0.0f;
                 velocity.z = 2.0f;
                 NuVecRotateX(&velocity, &velocity, (i32)((f64)qrand() * (f64)(1.0f / 65535.0f) * -5461.0));
-                NuVecRotateY(&velocity, &velocity,
-                             (i32)((f64)qrand() * (f64)(1.0f / 65535.0f) * 10922.0 +
-                                   ((i32)object->movement_facing_angle - 0x1555)));
+                NuVecRotateY(
+                    &velocity, &velocity,
+                    (i32)((f64)qrand() * (f64)(1.0f / 65535.0f) * 10922.0 + (object->movement_facing_angle - 0x1555)));
             }
             params = Default_ADDPART;
             params.matrix = &matrix;
@@ -2070,7 +2070,7 @@ extern "C" {
             params.time_step = FRAMETIME;
             deflected = AddPart(&params);
             if (deflected != NULL) {
-                deflected->force_flags = (u16)ObjHitObj_Flags(object);
+                deflected->force_flags = ObjHitObj_Flags(object);
                 if (part->deflect_fn != NULL) {
                     part->deflect_fn(deflected);
                 }
@@ -2118,7 +2118,7 @@ extern "C" {
             if ((api->flags_1fc_word & 1) == 0 || (api->flags_1fc_word & 0x1000) == 0 || api->dead != 0) {
                 continue;
             }
-            context = (i8)(object->character_context);
+            context = object->character_context;
             if ((U64_PAIR(&CInfo[context].flags) & 0x8000) != 0 || (object->flags_e20 & 0x20) != 0) {
                 continue;
             }
@@ -2155,7 +2155,7 @@ extern "C" {
                 }
             }
             if ((part->flags & 0x40) == 0) {
-                character = (PLAYERCHARACTERCONFIG_PC *)(api->character_data->game_character);
+                character = api->character_data->game_character;
                 if ((character->flags_090 & 0x8000) != 0) {
                     continue;
                 }
@@ -2169,7 +2169,7 @@ extern "C" {
                 }
                 if ((part->flags & 8) != 0 && !((part->flags & 0x1000000) != 0 && (part->active & 2) != 0) &&
                     ((api->flags_1fc_word & 0x80) != 0 || (part->flags & 0x800000) == 0)) {
-                    flags = U64_PAIR(&CInfo[(i8)(object->character_context)].flags);
+                    flags = U64_PAIR(&CInfo[(object->character_context)].flags);
                     if ((flags & 0x4000000) != 0 ||
                         ((flags & 0x8000000) != 0 && (object->context_variant_flags & 0x20000) != 0)) {
                         if (object->id == (u16)id_BOB) {
@@ -2210,16 +2210,15 @@ extern "C" {
                 if ((part->flags & 0x2000000) != 0 && ((part->flags & 0x4000000) == 0 || (part->active & 2) != 0)) {
                     angle = NuAtan2D(api->position.x - part->position.x, api->position.z - part->position.z);
                     api->movement_direction_x =
-                        NuTrigTable[(u16)angle >> 1] * api->character_data->game_character->run_speed;
-                    api->movement_direction_z = NuTrigTable[(((u16)angle + 0x4000) >> 1) & 0x7fff] *
-                                                api->character_data->game_character->run_speed;
+                        NuTrigTable[angle >> 1] * api->character_data->game_character->run_speed;
+                    api->movement_direction_z =
+                        NuTrigTable[((angle + 0x4000) >> 1) & 0x7fff] * api->character_data->game_character->run_speed;
                 }
             } else {
             collect_pickup:
                 if ((part->active & 2) == 0) {
                     if (part->part_id != 0xcb || !(part->scale_time >= 0.5f) ||
-                        (VehicleArea == 0 &&
-                         ((i8)(object->current_hp) <= 0 || (i8)(object->current_hp) >= object->field_107e))) {
+                        (VehicleArea == 0 && (object->current_hp <= 0 || object->current_hp >= object->field_107e))) {
                         if (part->part_id == 0xcb) {
                             continue;
                         }
@@ -2379,8 +2378,8 @@ extern "C" {
                 coins = 100;
             }
             direction = v010;
-            NuVecRotateX(&direction, &direction, (u16)(blowup->pickup_x_rotation));
-            NuVecRotateY(&direction, &direction, (u16)(blowup->pickup_y_rotation));
+            NuVecRotateX(&direction, &direction, blowup->pickup_x_rotation);
+            NuVecRotateY(&direction, &direction, blowup->pickup_y_rotation);
             AddPickups(coins, ReleaseHearts(), 0, 0, &blowup->mid_position, &direction, 0.0f, -1, 1.5f, 2000000.0f,
                        NULL, 1, 1);
             return;
@@ -2402,8 +2401,8 @@ extern "C" {
                         coins = 100;
                     }
                     direction = v010;
-                    NuVecRotateX(&direction, &direction, (u16)(blowup->pickup_x_rotation));
-                    NuVecRotateY(&direction, &direction, (u16)(blowup->pickup_y_rotation));
+                    NuVecRotateX(&direction, &direction, blowup->pickup_x_rotation);
+                    NuVecRotateY(&direction, &direction, blowup->pickup_y_rotation);
                     AddPickups(coins, ReleaseHearts(), 0, 0, &blowup->mid_position, &direction, 0.0f, -1, 1.5f,
                                2000000.0f, NULL, 1, 1);
                 }
@@ -2419,8 +2418,8 @@ extern "C" {
             coins = 100;
         }
         direction = v010;
-        NuVecRotateX(&direction, &direction, (u16)(blowup->pickup_x_rotation));
-        NuVecRotateY(&direction, &direction, (u16)(blowup->pickup_y_rotation));
+        NuVecRotateX(&direction, &direction, blowup->pickup_x_rotation);
+        NuVecRotateY(&direction, &direction, blowup->pickup_y_rotation);
         AddPickups(coins, ReleaseHearts(), 0, 0, &blowup->mid_position, &direction, 0.0f, -1, 1.5f, 2000000.0f, NULL, 1,
                    1);
     }
@@ -2856,7 +2855,7 @@ void __cdecl InitGameAfterConfig(void) {
             }
         }
         if ((u8)area->cheat != 0xff) {
-            Cheat_SetArea((i8)area->cheat, area_id);
+            Cheat_SetArea(area->cheat, area_id);
         }
     }
 
@@ -2869,14 +2868,14 @@ void __cdecl InitGameAfterConfig(void) {
         level->area_level_index = 0xff;
         for (i32 area_id = 0; level->area_index == -1 && area_id < AREACOUNT; ++area_id) {
             for (i32 child = 0; level->area_index == -1 && child < ADataList[area_id].level_count; ++child) {
-                if ((i16)ADataList[area_id].levels[child] == level_id) {
+                if (ADataList[area_id].levels[child] == level_id) {
                     level->area_index = (u8)area_id;
                     level->area_level_index = (u8)child;
                 }
             }
         }
         if (level->area_index != -1) {
-            i32 area_id = (i8)level->area_index;
+            i32 area_id = level->area_index;
             level->episode = ADataList[area_id].episode_index;
             if ((ADataList[area_id].flags & 1) != 0) {
                 level->reflection_range = 50;
@@ -2891,7 +2890,7 @@ void __cdecl InitGameAfterConfig(void) {
     Level_RegisterGameConfigKeywords(LevelConfigKeywords_BeforeLoad, WorldLoadAfterKeywordsPc);
     Suits_Init();
     Collection_Configure("chars\\collection.txt", &permbuffer_ptr, &permbuffer_end);
-    if ((u16)VehicleBoltId7f17d4Pc != 0xffff && InCollectList_Index((i16)VehicleBoltId7f17d4Pc, NULL, 0) != -1 &&
+    if ((u16)VehicleBoltId7f17d4Pc != 0xffff && InCollectList_Index(VehicleBoltId7f17d4Pc, NULL, 0) != -1 &&
         TempCollectID != NULL) {
         TempCollectID->selection_type = 0;
         TempCollectID->shop_enabled = 1;
@@ -3169,7 +3168,7 @@ void __cdecl InitGameAfterConfig(void) {
     CutScenePlayer_AcceptFn = CutScenePlayer_Accept;
     CutScenePlayer_Configure("cut\\clips.txt", &permbuffer_ptr, &permbuffer_end, &tCLIPi, &tINTRO, &tMIDTRO, &tOUTRO,
                              &tENDING);
-    i32 powerup_text = (i16)tPOWERUP;
+    i32 powerup_text = tPOWERUP;
     i32 startup_game = StartupGameFlag1;
     CanMagnetClimbFn = CanMagnetClimb_Game;
     CanPushObstaclesFn = CanPushObstacles_Game;

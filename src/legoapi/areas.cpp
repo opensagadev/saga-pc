@@ -516,19 +516,19 @@ extern "C" void __cdecl Area_Configure(i32 area, i32 param, AREA_EXTRA_MODEL_PC 
         }
         for (index = 0; index < ((AREA_MISSION_READER_PC *)MissionSys)->character_count; ++index) {
             if (Area_MissionModelCount < 0x30) {
-                Area_MissionModelList[Area_MissionModelCount].model_id = (i16)(mission_characters[index]);
+                Area_MissionModelList[Area_MissionModelCount].model_id = mission_characters[index];
                 Area_MissionModelList[Area_MissionModelCount].count = (i16)(1);
                 ++Area_MissionModelCount;
             }
             if (Area_PlayerModelCount < 8) {
-                Area_PlayerModelList[Area_PlayerModelCount].model_id = (i16)(mission_characters[index]);
+                Area_PlayerModelList[Area_PlayerModelCount].model_id = mission_characters[index];
                 Area_PlayerModelList[Area_PlayerModelCount].count = (i16)(1);
                 ++Area_PlayerModelCount;
             }
         }
         if (Area_MissionModelCount < 0x30) {
             Area_MissionModelList[Area_MissionModelCount].model_id =
-                (i16)(((AREA_MISSION_DATA_READER_PC *)MissionSys->active_mission)->find_char);
+                ((AREA_MISSION_DATA_READER_PC *)MissionSys->active_mission)->find_char;
             Area_MissionModelList[Area_MissionModelCount].count = (i16)(1);
             ++Area_MissionModelCount;
         }

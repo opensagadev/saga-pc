@@ -149,7 +149,7 @@ void __cdecl GameCam_UpdateLookRot(GAMECAMERA *camera) {
                 f32 x;
                 f32 y;
                 if (AlternateGameCallbackPc != NULL) {
-                    look = AlternateGameCallbackPc((GAMEOBJECT *)Player[i]);
+                    look = AlternateGameCallbackPc(Player[i]);
                 }
                 if (look == 2) {
                     GAMEPAD_PC *pad = ((GAMEOBJECT *)Player[i])->pad;
@@ -335,8 +335,8 @@ void __cdecl GameCam_Reset(GAMECAMERA *camera) {
     camera->blend_time = camera->blend_duration = 0.0f;
     ObstacleCamSpl = NULL;
     MiniCutCam = 0;
-    camera->position_seek = (f32)(u8)WORLD->current_level->cam_pos_seek;
-    camera->angle_seek = (f32)(u8)WORLD->current_level->cam_angle_seek;
+    camera->position_seek = (f32)WORLD->current_level->cam_pos_seek;
+    camera->angle_seek = (f32)WORLD->current_level->cam_angle_seek;
     camera->field_1b8 = 0;
     camera->field_1e8 = camera->field_1ec = 0.0f;
     camera->field_1f0 = camera->field_1f4 = 0.0f;

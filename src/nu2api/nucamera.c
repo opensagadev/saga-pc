@@ -8,7 +8,7 @@ static i32 force_camera_farclip = 0;
 static f32 NuCameraOrthoScale = 0.1f;
 
 NUCAMERA *__cdecl NuCameraCreate(void) {
-    NUCAMERA *camera = (NUCAMERA *)NuAlloc(sizeof(NUCAMERA), NuCameraAllocSource, 0x11e);
+    NUCAMERA *camera = NuAlloc(sizeof(NUCAMERA), NuCameraAllocSource, 0x11e);
 
     NuMtxSetIdentity(&camera->mtx);
     camera->fov = 0.75f;

@@ -250,7 +250,7 @@ extern "C" {
                     }
                     if (WORLD->level_objects[model].active != 0) {
                         NuMtxSetRotationX(&matrix, angle_x);
-                        NuMtxRotateY(&matrix, endpoint == 0 ? (NUANG)rope->field_0x2c : (NUANG)rope->field_0x2e);
+                        NuMtxRotateY(&matrix, endpoint == 0 ? rope->field_0x2c : rope->field_0x2e);
                         NuMtxTranslate(&matrix, position);
                         NuSpecialDrawAt(&WORLD->level_objects[model].special, &matrix);
                     }
@@ -553,8 +553,7 @@ extern "C" i32 TightRope_SnapTo(GAMEOBJECT *object, NUVEC *position) {
     if (TightRope_Attach(object, WORLD) != 0) {
         object->position.x = object->collision_position.x;
         object->position.z = object->collision_position.z;
-        if ((static_cast<PLAYERCHARACTERCONFIG_PC *>(object->character_data->game_character)->flags_090 & 0x80000) !=
-            0) {
+        if ((object->character_data->game_character->flags_090 & 0x80000) != 0) {
             object->position.y = object->launch_origin.y - object->character_bottom * object->origin_scale;
         } else {
             object->position.y = object->launch_origin.y - object->character_top * object->origin_scale;

@@ -106,7 +106,7 @@ static void write_record(enum log_level level, const char *record) {
     HANDLE output = log_original_out >= 0 ? (HANDLE)_get_osfhandle(log_original_out) : INVALID_HANDLE_VALUE;
     BOOL colored = FALSE;
     DWORD written;
-    DWORD length = (DWORD)strlen(record);
+    DWORD length = strlen(record);
     /* Console attributes give saga's severity colors without adding escapes to files or pipes. */
     if (GetConsoleScreenBufferInfo(output, &console)) {
         colored = SetConsoleTextAttribute(output, (console.wAttributes & 0xfff0) | colors[level]);

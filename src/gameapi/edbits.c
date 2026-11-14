@@ -661,9 +661,8 @@ void __cdecl edgracbInstanceMenu(eduimenu_s *parent, eduiitem_s *unused1, u32 un
     i32 count;
     char *name;
     i32 i;
-    edgra_instance_menu =
-        eduiMenuCreate(70, 70, 220, 250, ed_fnt, edgracbCancelInstanceMenu,
-                       (char *)(edgra_filter ? "Base Instance Select (Filtered)" : "Base Instance Select"));
+    edgra_instance_menu = eduiMenuCreate(70, 70, 220, 250, ed_fnt, edgracbCancelInstanceMenu,
+                                         edgra_filter ? "Base Instance Select (Filtered)" : "Base Instance Select");
     if (!edgra_instance_menu || !edbits_base_scene) {
         return;
     }

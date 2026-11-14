@@ -1015,7 +1015,7 @@ extern "C" void __cdecl MenuUpdatePauseExit(MENU *menu) {
                     NewLevelFromMenu(HUB_LDATA, -1, -1, 1);
                     if (Arcade && pause_i_pad != -1) {
                         i32 other = pause_i_pad == 0;
-                        if (PCArcadePointGoals[(i8)ArcadeItem.play] > 0 &&
+                        if (PCArcadePointGoals[ArcadeItem.play] > 0 &&
                             Arcade_Points[pause_i_pad] < Arcade_Points[other]) {
                             ++Arcade_Score[other];
                         }
@@ -1054,10 +1054,9 @@ extern "C" void __cdecl MenuDrawPauseExit(MENU *menu) {
             warning = NULL;
             if (pause_i_pad != -1) {
                 i32 other = pause_i_pad == 0;
-                warning =
-                    PCArcadePointGoals[(i8)ArcadeItem.play] > 0 && Arcade_Points[pause_i_pad] < Arcade_Points[other]
-                        ? TTab[TextIdPc8807d0]
-                        : TTab[TextIdPc8807d4];
+                warning = PCArcadePointGoals[ArcadeItem.play] > 0 && Arcade_Points[pause_i_pad] < Arcade_Points[other]
+                              ? TTab[TextIdPc8807d0]
+                              : TTab[TextIdPc8807d4];
             }
         } else {
             warning = SuperStory ? TTab[TextIdPc880914] : TTab[TextIdPc880910];

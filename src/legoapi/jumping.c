@@ -128,13 +128,13 @@ void __cdecl StartEndOfJump(GAMEOBJECT *object) {
 static i32 __cdecl BigJump_JumpAction_Default(GAMEOBJECT *object) {
     CHARACTER_MODEL_LAYERS_PC *model;
     if (LEGOACT_COMBOJUMP != -1) {
-        model = (CHARACTER_MODEL_LAYERS_PC *)object->character_model;
+        model = object->character_model;
         if (model->model_data_b[LEGOACT_COMBOJUMP] != NULL) {
             return LEGOACT_COMBOJUMP;
         }
     }
     if (LEGOACT_JUMP2 != -1) {
-        model = (CHARACTER_MODEL_LAYERS_PC *)object->character_model;
+        model = object->character_model;
         if (model->model_data_b[LEGOACT_JUMP2] != NULL) {
             return LEGOACT_JUMP2;
         }

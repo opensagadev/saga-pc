@@ -522,7 +522,7 @@ void __cdecl edmainReadConfig(void) {
 }
 
 void __cdecl cbMMRegSel(eduimenu_s *menu, eduiitem_s *selected, u32 buttons) {
-    ed_module_s *module = (ed_module_s *)selected->data_ptr;
+    ed_module_s *module = selected->data_ptr;
     ed_curr = module;
     if (module->reserved == NULL) {
         void(__cdecl * activate)(void) = module->activate;
@@ -578,7 +578,7 @@ eduimenu_s *__cdecl eduiMenuCreate(i32 x, i32 y, i32 width, i32 height, void *fo
     } else {
         bytes = sizeof(eduimenu_s) + 1;
     }
-    menu = (eduimenu_s *)NuAlloc(bytes, EduiSourcePathPc, 0x3dd);
+    menu = NuAlloc(bytes, EduiSourcePathPc, 0x3dd);
     if (menu != NULL) {
         memset(menu, 0, bytes);
         menu->x = x;
@@ -624,7 +624,7 @@ i32 __cdecl eduiItemSetText(eduiitem_s *item, char *text) {
         item->text = NULL;
     }
     if (item->text == NULL) {
-        item->text = (char *)NuAlloc(NuStrLen(text) + 1, EduiSourcePathPc, 0x51b);
+        item->text = NuAlloc(NuStrLen(text) + 1, EduiSourcePathPc, 0x51b);
     }
     if (item->text != NULL) {
         NuStrCpy(item->text, text);
@@ -883,7 +883,7 @@ edui_textpicker_s *eduiAddTextPickEntEx(eduimenu_s *menu, eduiitem_s *source, Ed
 }
 
 void cbgpcfgAdd(eduimenu_s *menu, eduiitem_s *item, u32 value) {
-    edui_gradient_pick_s *picker = ((edui_gradient_pick_s *)(item->data_ptr));
+    edui_gradient_pick_s *picker = item->data_ptr;
     f32 time;
     f32 hue;
     f32 saturation;
@@ -1178,7 +1178,7 @@ i32 eduiMenuProcessInput(eduimenu_s *menu, f32 delta_time, FRAME_PAD_PC *pad, i3
 }
 
 void cbSubMenu(eduimenu_s *menu, eduiitem_s *item) {
-    eduiMenuAttach(menu, ((eduimenu_s *)(item->data_ptr)));
+    eduiMenuAttach(menu, item->data_ptr);
 }
 
 void cbmcfgCameraSpeed(eduimenu_s *unused0, eduiitem_s *item, u32 unused2) {
@@ -1332,8 +1332,7 @@ void __cdecl eduiGradStageSetHSV(edui_gradient_node_s *stage, f32 hue, f32 satur
 
 edui_gradient_node_s *__cdecl eduiGradStageAdd(edui_gradient_pick_s *item, f32 time, f32 hue, f32 saturation,
                                                f32 value) {
-    edui_gradient_node_s *stage =
-        (edui_gradient_node_s *)NuAlloc(sizeof(edui_gradient_node_s), EduiSourcePathPc, 0xa37);
+    edui_gradient_node_s *stage = NuAlloc(sizeof(edui_gradient_node_s), EduiSourcePathPc, 0xa37);
     edui_gradient_node_s *previous;
     edui_gradient_node_s *next;
     if (stage) {
@@ -1365,7 +1364,7 @@ edui_gradient_node_s *__cdecl eduiGradStageAdd(edui_gradient_pick_s *item, f32 t
 i32 __cdecl eduicbProcessGradPickItem(eduimenu_s *menu, eduiitem_s *item, f32 delta_time, FRAME_PAD_PC *pad);
 
 eduiitem_s *__cdecl eduiItemGradPickCreate(u32 data, void *colours, void *callback, char *text) {
-    edui_gradient_pick_s *item = (edui_gradient_pick_s *)NuAlloc(sizeof(edui_gradient_pick_s), EduiSourcePathPc, 0xaa2);
+    edui_gradient_pick_s *item = NuAlloc(sizeof(edui_gradient_pick_s), EduiSourcePathPc, 0xaa2);
     if (item) {
         memset(item, 0, sizeof(edui_gradient_pick_s));
         item->base.data = data;
@@ -1565,7 +1564,7 @@ static void EduiClearInteractionsPc(eduimenu_s *menu, eduiitem_s *item) {
 }
 
 eduiitem_s *__cdecl eduiItemSelCreate(u32 data, void *colours, i32 selected, i32 group, void *callback, char *text) {
-    edui_sel_s *item = (edui_sel_s *)NuAlloc(sizeof(edui_sel_s), EduiSourcePathPc, 0x53b);
+    edui_sel_s *item = NuAlloc(sizeof(edui_sel_s), EduiSourcePathPc, 0x53b);
     if (item) {
         memset(item, 0, sizeof(edui_sel_s));
         item->base.data = data;
@@ -1617,9 +1616,9 @@ void __cdecl eduiItemSliderSetFmt(edui_slider_s *item, char *format) {
             goto copy;
         }
         NuFree(item->format, EduiSourcePathPc, 0xfa6);
-        item->format = (char *)NuAlloc(NuStrLen(format) + 1, EduiSourcePathPc, 0xfa7);
+        item->format = NuAlloc(NuStrLen(format) + 1, EduiSourcePathPc, 0xfa7);
     } else {
-        item->format = (char *)NuAlloc(NuStrLen(format) + 1, EduiSourcePathPc, 0xfab);
+        item->format = NuAlloc(NuStrLen(format) + 1, EduiSourcePathPc, 0xfab);
     }
 copy:
     NuStrCpy(item->format, format);
@@ -2133,7 +2132,7 @@ static void eduiFntPrintClipEx(void *font, f32 x, f32 y, i32 alignment, f32 clip
         va_start(args, format);
         NuVSPrintf(text, format, args);
         va_end(args);
-        width = (i32)NuQFntPrintLenU((VUFNT *)font, text);
+        width = (i32)NuQFntPrintLenU(font, text);
         switch (alignment) {
             case 16:
                 break;
@@ -2151,10 +2150,10 @@ static void eduiFntPrintClipEx(void *font, f32 x, f32 y, i32 alignment, f32 clip
         end = text + NuStrLen(text) - 1;
         while (width > clip_right && end > text) {
             *end-- = 0;
-            width = (i32)NuQFntPrintLenU((VUFNT *)font, text);
+            width = (i32)NuQFntPrintLenU(font, text);
         }
-        NuQFntMove((VUFNT *)font, (f32)text_x, (f32)top, 0.0f);
-        NuQFntPrintU((VUFNT *)font, text);
+        NuQFntMove(font, (f32)text_x, (f32)top, 0.0f);
+        NuQFntPrintU(font, text);
         NuQFntPopPrintMode();
     }
 }
@@ -2176,13 +2175,13 @@ static i32 __cdecl eduicbRenderExpander(eduimenu_s *menu, eduiitem_s *item, i32 
     item->y = y;
     expander->hover = EduiExpanderOverButtonPc(expander);
     if (edui_donotdraw == 0) {
-        NuQFntSet((VUFNT *)edui_font);
+        NuQFntSet(edui_font);
         if (edui_donotdraw == 0) {
-            NuQFntSetColour((VUFNT *)edui_font, item->colours[item->highlighted]);
+            NuQFntSetColour(edui_font, item->colours[item->highlighted]);
         }
     }
-    row_height = NuQFntHeight((VUFNT *)edui_font) * 1.25 * (1.0f / EduiScaleYPc);
-    baseline = (NuQFntHeight((VUFNT *)edui_font) * 0.125 + NuQFntBaseline((VUFNT *)edui_font)) * (1.0f / EduiScaleYPc);
+    row_height = NuQFntHeight(edui_font) * 1.25 * (1.0f / EduiScaleYPc);
+    baseline = (NuQFntHeight(edui_font) * 0.125 + NuQFntBaseline(edui_font)) * (1.0f / EduiScaleYPc);
     if (menu != NULL && EduiMenuChainActivePc(menu)) {
         EduiDrawRectPc(item_x, item_y, item_width, row_height, item->colours[2 + item->highlighted],
                        (NUMTL *)uimtls[ui_bgmtl]);
@@ -2215,7 +2214,7 @@ static i32 __cdecl eduicbRenderExpander(eduimenu_s *menu, eduiitem_s *item, i32 
 }
 
 eduiitem_s *__cdecl eduiItemExpanderCreate(u32 data, const void *colours, void *callback, char *text) {
-    EDUI_EXPANDER_PC *item = (EDUI_EXPANDER_PC *)NuAlloc(sizeof(EDUI_EXPANDER_PC), EduiSourcePathPc, 0x1473);
+    EDUI_EXPANDER_PC *item = NuAlloc(sizeof(EDUI_EXPANDER_PC), EduiSourcePathPc, 0x1473);
     if (item != NULL) {
         memset(item, 0, sizeof(EDUI_EXPANDER_PC));
         item->base.data = data;
@@ -2250,7 +2249,7 @@ i32 __cdecl eduiItemPropSetText(edui_prop_s *item, char *text) {
         item->property_text = NULL;
     }
     if (item->property_text == NULL) {
-        item->property_text = (char *)NuAlloc(NuStrLen(text) + 1, EduiSourcePathPc, 0x110d);
+        item->property_text = NuAlloc(NuStrLen(text) + 1, EduiSourcePathPc, 0x110d);
     }
     if (item->property_text) {
         NuStrCpy(item->property_text, text);
@@ -2513,36 +2512,36 @@ static i32 __cdecl eduicbRenderProp(eduimenu_s *menu, eduiitem_s *item, i32 x, i
         property->button_hover = 0;
     }
     if (edui_donotdraw == 0) {
-        NuQFntSet((VUFNT *)edui_font);
+        NuQFntSet(edui_font);
     }
     switch (item->unknown_10) {
         case 1:
             if (edui_donotdraw == 0) {
-                NuQFntSetColour((VUFNT *)edui_font, 0xff000060);
+                NuQFntSetColour(edui_font, 0xff000060);
             }
             break;
         case 2:
             if (edui_donotdraw == 0) {
-                NuQFntSetColour((VUFNT *)edui_font, 0xff006000);
+                NuQFntSetColour(edui_font, 0xff006000);
             }
             break;
         case 3:
             if (edui_donotdraw == 0) {
-                NuQFntSetColour((VUFNT *)edui_font, 0xff600000);
+                NuQFntSetColour(edui_font, 0xff600000);
             }
             break;
         default:
             if (edui_donotdraw == 0) {
-                NuQFntSetColour((VUFNT *)edui_font, item->colours[item->highlighted]);
+                NuQFntSetColour(edui_font, item->colours[item->highlighted]);
             }
             break;
     }
-    row_height = NuQFntHeight((VUFNT *)edui_font) * 1.25 * (1.0f / EduiScaleYPc);
-    baseline = (NuQFntHeight((VUFNT *)edui_font) * 0.125 + NuQFntBaseline((VUFNT *)edui_font)) * (1.0f / EduiScaleYPc);
+    row_height = NuQFntHeight(edui_font) * 1.25 * (1.0f / EduiScaleYPc);
+    baseline = (NuQFntHeight(edui_font) * 0.125 + NuQFntBaseline(edui_font)) * (1.0f / EduiScaleYPc);
     indent_width = row_height - 2.0;
     indentation = property->depth * indent_width;
     if (property->editing) {
-        f32 text_width = NuQFntPrintLenU((VUFNT *)edui_font, eduiPropTextEdit) * (1.0f / EduiScaleXPc);
+        f32 text_width = NuQFntPrintLenU(edui_font, eduiPropTextEdit) * (1.0f / EduiScaleXPc);
         f32 edit_width = draw_width - property->label_width - 4.0;
         f32 caret_x;
         text_width = EDUI_MAX(text_width, edit_width);
@@ -2572,8 +2571,7 @@ static i32 __cdecl eduicbRenderProp(eduimenu_s *menu, eduiitem_s *item, i32 x, i
         EduiFntPrintScaledPc(edui_font, draw_x + property->label_width + 2.0f, draw_y + baseline, 16, eduiPropTextEdit);
         NuStrNCpy(prefix, eduiPropTextEdit, eduiPropTextPos + 1);
         prefix[eduiPropTextPos + 1] = '\0';
-        caret_x =
-            draw_x + property->label_width + 2.0f + NuQFntPrintLenU((VUFNT *)edui_font, prefix) * (1.0f / EduiScaleXPc);
+        caret_x = draw_x + property->label_width + 2.0f + NuQFntPrintLenU(edui_font, prefix) * (1.0f / EduiScaleXPc);
         if (edui_donotdraw == 0) {
             NuRndrLine2di((i32)(caret_x * EduiScaleXPc), (i32)(draw_y * EduiScaleYPc), (i32)(caret_x * EduiScaleXPc),
                           (i32)((draw_y + row_height) * EduiScaleYPc), 0xff000000, (NUMTL *)uimtls[0]);
@@ -2649,7 +2647,7 @@ static i32 __cdecl eduicbRenderProp(eduimenu_s *menu, eduiitem_s *item, i32 x, i
 
 eduiitem_s *__cdecl eduiItemPropCreateEx(u32 data, void *colours, void *selected, void *changed, void *button,
                                          i32 button_type, char *text, char *value, i32 extra_data) {
-    edui_prop_s *item = (edui_prop_s *)NuAlloc(sizeof(edui_prop_s), EduiSourcePathPc, 0x1327);
+    edui_prop_s *item = NuAlloc(sizeof(edui_prop_s), EduiSourcePathPc, 0x1327);
     if (item) {
         memset(item, 0, sizeof(edui_prop_s));
         item->base.data = data;
@@ -2816,7 +2814,7 @@ static i32 __cdecl eduicbRenderFilter(eduimenu_s *menu, eduiitem_s *item, i32 x,
 }
 
 eduiitem_s *__cdecl eduiItemFilterCreate(u32 data, void *colours, char *text, char *value) {
-    edui_filter_s *item = (edui_filter_s *)NuAlloc(sizeof(edui_filter_s), EduiSourcePathPc, 0x151a);
+    edui_filter_s *item = NuAlloc(sizeof(edui_filter_s), EduiSourcePathPc, 0x151a);
     if (item) {
         memset(item, 0, sizeof(edui_filter_s));
         item->prop.base.data = data;
@@ -2922,7 +2920,7 @@ i32 __cdecl eduicbRenderColourPick(eduimenu_s *menu, eduiitem_s *item, i32 x, i3
 i32 __cdecl eduicbInteractColourPick(edui_interact_s *interact);
 
 eduiitem_s *__cdecl eduiItemColourPickCreate(u32 data, void *colours, void *callback, char *text) {
-    edui_colour_pick_s *item = (edui_colour_pick_s *)NuAlloc(sizeof(edui_colour_pick_s), EduiSourcePathPc, 0xb6c);
+    edui_colour_pick_s *item = NuAlloc(sizeof(edui_colour_pick_s), EduiSourcePathPc, 0xb6c);
     if (item) {
         memset(item, 0, sizeof(edui_colour_pick_s));
         item->base.data = data;
@@ -3023,7 +3021,7 @@ static i32 __cdecl eduicbProcessTexturePick(eduimenu_s *menu, eduiitem_s *item, 
 }
 
 eduiitem_s *__cdecl eduiItemTexturePickCreate(u32 data, void *colours, void *callback, char *text) {
-    edui_texture_pick_s *item = (edui_texture_pick_s *)NuAlloc(sizeof(edui_texture_pick_s), EduiSourcePathPc, 0xce1);
+    edui_texture_pick_s *item = NuAlloc(sizeof(edui_texture_pick_s), EduiSourcePathPc, 0xce1);
     if (item) {
         memset(item, 0, sizeof(edui_texture_pick_s));
         item->base.data = data;
@@ -3054,7 +3052,7 @@ i32 __cdecl nugraphCalcCurve(nugraph_s *graph, i32 point_count);
 
 eduiitem_s *__cdecl eduiItemGraphCreate(u32 data, void *colours, void *callback, nugraph_s *graph, i32 width,
                                         i32 height) {
-    edui_graph_s *item = (edui_graph_s *)NuAlloc(sizeof(edui_graph_s), EduiSourcePathPc, 0xd9f);
+    edui_graph_s *item = NuAlloc(sizeof(edui_graph_s), EduiSourcePathPc, 0xd9f);
     i32 i;
     if (item) {
         memset(item, 0, sizeof(edui_graph_s));
@@ -3089,7 +3087,7 @@ eduiitem_s *__cdecl eduiItemGraphCreate(u32 data, void *colours, void *callback,
 
 eduiitem_s *__cdecl eduiItemSliderCreate(u32 data, void *colours, i32 group, void *callback, f32 minimum, f32 range,
                                          f32 value, char *text) {
-    edui_slider_s *item = (edui_slider_s *)NuAlloc(sizeof(edui_slider_s), EduiSourcePathPc, 0xfd4);
+    edui_slider_s *item = NuAlloc(sizeof(edui_slider_s), EduiSourcePathPc, 0xfd4);
     if (item) {
         memset(item, 0, sizeof(edui_slider_s));
         item->base.data = data;
@@ -3128,8 +3126,7 @@ eduiitem_s *__cdecl eduiItemSliderCreateInt(u32 data, void *colours, i32 group, 
 
 eduiitem_s *__cdecl eduiItemColourSliderCreate(u32 data, void *colours, i32 group, void *callback, f32 minimum,
                                                f32 range, f32 value, u8 red, u8 green, u8 blue, char *text) {
-    edui_colour_slider_s *item =
-        (edui_colour_slider_s *)NuAlloc(sizeof(edui_colour_slider_s), EduiSourcePathPc, 0x1a53);
+    edui_colour_slider_s *item = NuAlloc(sizeof(edui_colour_slider_s), EduiSourcePathPc, 0x1a53);
     if (item) {
         memset(item, 0, sizeof(edui_colour_slider_s));
         item->base.base.data = data;
@@ -3288,7 +3285,7 @@ static i32 EduiTextPickKeyboardPc(edui_textpicker_s *picker, eduimenu_s *menu, F
 }
 
 static void tpentOnEnter(eduimenu_s *menu, eduiitem_s *item, u32 buttons) {
-    edui_textpicker_s *source = (edui_textpicker_s *)item->data_ptr;
+    edui_textpicker_s *source = item->data_ptr;
     NuStrCpy(source->value, ((edui_textpicker_s *)item)->value);
     if (source->callback) {
         source->callback(menu->parent, &source->base, buttons);
@@ -3311,7 +3308,7 @@ void eduiAddTextPickEnt(eduimenu_s *menu, eduiitem_s *item) {
 }
 
 static void tpentPropOnEnter(eduimenu_s *menu, eduiitem_s *item, u32 buttons) {
-    edui_prop_s *property = (edui_prop_s *)item->data_ptr;
+    edui_prop_s *property = item->data_ptr;
     eduimenu_s *parent;
     NuStrCpy(property->property_text, ((edui_textpicker_s *)item)->value);
     if (property->changed) {
@@ -3396,16 +3393,16 @@ void __cdecl eduiItemTextPickSetFmt(edui_textpicker_s *item, char *format) {
             goto copy;
         }
         NuFree(item->format, EduiSourcePathPc, 0x630);
-        item->format = (char *)NuAlloc(NuStrLen(format) + 1, EduiSourcePathPc, 0x631);
+        item->format = NuAlloc(NuStrLen(format) + 1, EduiSourcePathPc, 0x631);
     } else {
-        item->format = (char *)NuAlloc(NuStrLen(format) + 1, EduiSourcePathPc, 0x635);
+        item->format = NuAlloc(NuStrLen(format) + 1, EduiSourcePathPc, 0x635);
     }
 copy:
     NuStrCpy(item->format, format);
 }
 
 eduiitem_s *__cdecl eduiItemTextPickCreate(u32 data, void *colours, void *callback, char *text) {
-    edui_textpicker_s *item = (edui_textpicker_s *)NuAlloc(sizeof(edui_textpicker_s), EduiSourcePathPc, 0x63d);
+    edui_textpicker_s *item = NuAlloc(sizeof(edui_textpicker_s), EduiSourcePathPc, 0x63d);
     if (item) {
         memset(item, 0, sizeof(edui_textpicker_s));
         item->base.data = data;
@@ -3434,16 +3431,16 @@ void __cdecl eduiItemFilePickSetFmt(edui_file_pick_s *item, char *format) {
             goto copy;
         }
         NuFree(item->format, EduiSourcePathPc, 0x881);
-        item->format = (char *)NuAlloc(NuStrLen(format) + 1, EduiSourcePathPc, 0x882);
+        item->format = NuAlloc(NuStrLen(format) + 1, EduiSourcePathPc, 0x882);
     } else {
-        item->format = (char *)NuAlloc(NuStrLen(format) + 1, EduiSourcePathPc, 0x886);
+        item->format = NuAlloc(NuStrLen(format) + 1, EduiSourcePathPc, 0x886);
     }
 copy:
     NuStrCpy(item->format, format);
 }
 
 eduiitem_s *__cdecl eduiItemFilePickCreate(u32 data, void *colours, void *callback, char *text) {
-    edui_file_pick_s *item = (edui_file_pick_s *)NuAlloc(sizeof(edui_file_pick_s), EduiSourcePathPc, 0x950);
+    edui_file_pick_s *item = NuAlloc(sizeof(edui_file_pick_s), EduiSourcePathPc, 0x950);
     if (item) {
         memset(item, 0, sizeof(edui_file_pick_s));
         item->base.data = data;
@@ -3517,14 +3514,14 @@ u8 __cdecl EdFileReadUnsignedChar(void) {
 }
 
 void __cdecl EdFileSwapEndianess16(void *value) {
-    u8 *bytes = (u8 *)value;
+    u8 *bytes = value;
     u8 temp = bytes[0];
     bytes[0] = bytes[1];
     bytes[1] = temp;
 }
 
 void __cdecl EdFileSwapEndianess32(void *value) {
-    u8 *bytes = (u8 *)value;
+    u8 *bytes = value;
     u8 temp = bytes[0];
     bytes[0] = bytes[3];
     bytes[3] = temp;
@@ -3604,9 +3601,9 @@ void __cdecl eduiMenuFitWidth(eduimenu_s *menu, i32 padding) {
     i32 property_width;
     eduicbMenuOpenAllexpanders(menu);
     NuQFntPushCoordinateSystem(1);
-    NuQFntSetScale((VUFNT *)edui_font, edui_font_scale_x, edui_font_scale_y);
+    NuQFntSetScale(edui_font, edui_font_scale_x, edui_font_scale_y);
     if (menu->title != NULL) {
-        item_text_width = (i32)NuQFntPrintLenU((VUFNT *)edui_font, menu->title) >> 4;
+        item_text_width = (i32)NuQFntPrintLenU(edui_font, menu->title) >> 4;
         if (item_text_width > width) {
             width = item_text_width;
         }
@@ -3614,13 +3611,13 @@ void __cdecl eduiMenuFitWidth(eduimenu_s *menu, i32 padding) {
     for (item = first; item != NULL; item = item->next) {
         switch (item->type) {
             case 1:
-                item_text_width = ((i32)(NuQFntHeight((VUFNT *)edui_font) * 1.25) >> 3) * 10;
+                item_text_width = ((i32)(NuQFntHeight(edui_font) * 1.25) >> 3) * 10;
                 break;
             case 2:
             case 3:
                 if (item->text != NULL) {
-                    i32 icon_width = (i32)(NuQFntHeight((VUFNT *)edui_font) * 1.25) >> 3;
-                    i32 text_width = (i32)NuQFntPrintLenU((VUFNT *)edui_font, item->text) >> 4;
+                    i32 icon_width = (i32)(NuQFntHeight(edui_font) * 1.25) >> 3;
+                    i32 text_width = (i32)NuQFntPrintLenU(edui_font, item->text) >> 4;
                     item_text_width = icon_width + text_width;
                 }
                 break;
@@ -3631,17 +3628,17 @@ void __cdecl eduiMenuFitWidth(eduimenu_s *menu, i32 padding) {
                 NuStrCpy(format, item->text);
                 NuStrCat(format, slider->format);
                 NuSPrintf(text, format, -0.0);
-                item_text_width = (i32)NuQFntPrintLenU((VUFNT *)edui_font, text) >> 4;
+                item_text_width = (i32)NuQFntPrintLenU(edui_font, text) >> 4;
                 break;
             }
             case 17: {
                 edui_prop_s *property = (edui_prop_s *)item;
-                i32 label_width = item->text != NULL ? (i32)NuQFntPrintLenU((VUFNT *)edui_font, item->text) >> 4 : 30;
+                i32 label_width = item->text != NULL ? (i32)NuQFntPrintLenU(edui_font, item->text) >> 4 : 30;
                 if (label_width > property_label_width) {
                     property_label_width = label_width;
                 }
                 item_text_width = property->property_text != NULL
-                                      ? (i32)NuQFntPrintLenU((VUFNT *)edui_font, property->property_text) >> 4
+                                      ? (i32)NuQFntPrintLenU(edui_font, property->property_text) >> 4
                                       : 30;
                 if (item_text_width > property_value_width) {
                     property_value_width = item_text_width;
@@ -3650,7 +3647,7 @@ void __cdecl eduiMenuFitWidth(eduimenu_s *menu, i32 padding) {
             }
             default:
                 if (item->text != NULL) {
-                    item_text_width = (i32)NuQFntPrintLenU((VUFNT *)edui_font, item->text) >> 4;
+                    item_text_width = (i32)NuQFntPrintLenU(edui_font, item->text) >> 4;
                 }
                 break;
         }
@@ -3658,7 +3655,7 @@ void __cdecl eduiMenuFitWidth(eduimenu_s *menu, i32 padding) {
             width = item_text_width;
         }
     }
-    property_width = property_label_width + property_value_width + ((i32)NuQFntHeight((VUFNT *)edui_font) >> 3);
+    property_width = property_label_width + property_value_width + ((i32)NuQFntHeight(edui_font) >> 3);
     if (width < property_width) {
         width = property_width;
     }
@@ -4066,14 +4063,14 @@ static void eduiFilePickDateKeysPc(FILE_DIRECTORY_ENTRY_PC *a, FILE_DIRECTORY_EN
 i32 __cdecl eduiFilePickCompareDatePc(void *a, void *b) {
     i32 key_a;
     i32 key_b;
-    eduiFilePickDateKeysPc((FILE_DIRECTORY_ENTRY_PC *)a, (FILE_DIRECTORY_ENTRY_PC *)b, &key_a, &key_b);
+    eduiFilePickDateKeysPc(a, b, &key_a, &key_b);
     return key_a - key_b;
 }
 
 i32 __cdecl eduiFilePickCompareDateReversePc(void *a, void *b) {
     i32 key_a;
     i32 key_b;
-    eduiFilePickDateKeysPc((FILE_DIRECTORY_ENTRY_PC *)a, (FILE_DIRECTORY_ENTRY_PC *)b, &key_a, &key_b);
+    eduiFilePickDateKeysPc(a, b, &key_a, &key_b);
     return key_b - key_a;
 }
 
@@ -5001,8 +4998,8 @@ static i32 __cdecl eduicbRenderFileSelPc(eduimenu_s *menu, eduiitem_s *item, i32
 }
 
 eduiitem_s *__cdecl eduiItemFileSelCreatePc(u32 data, void *colours, void *callback, char *text) {
-    EDUI_FILE_SELECT_PC *item = (EDUI_FILE_SELECT_PC *)NuAlloc(
-        sizeof(EDUI_FILE_SELECT_PC), "d:\\projects\\game_saga\\gameapi.saga\\edtools\\fileselect.c", 0x54a);
+    EDUI_FILE_SELECT_PC *item =
+        NuAlloc(sizeof(EDUI_FILE_SELECT_PC), "d:\\projects\\game_saga\\gameapi.saga\\edtools\\fileselect.c", 0x54a);
     if (item) {
         memset(item, 0, sizeof(EDUI_FILE_SELECT_PC));
         item->base.data = data;

@@ -69,7 +69,7 @@ i32 ShaderCompilerBufferAllocatorPc::Find(const char *text, i32 start) {
     char *cursor = (char *)data + start;
     for (; start < length; ++start, ++cursor) {
         if (*match == 0) {
-            return start - (i32)(match - text);
+            return start - (match - text);
         }
         if (*cursor != *match) {
             if (match != text) {

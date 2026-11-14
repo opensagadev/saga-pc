@@ -103,10 +103,10 @@ extern "C" i32 CreateWindowPc(HINSTANCE instance, i32 show, u16 icon_resource) {
     i32 x = PcWindowOptions.window_x;
     i32 y = PcWindowOptions.window_y;
     if (x < 0) {
-        x = (i32)((u32)(PCDeviceBackend.desktop_mode.width - width) >> 1);
+        x = (i32)((PCDeviceBackend.desktop_mode.width - width) >> 1);
     }
     if (y < 0) {
-        y = (i32)((u32)(PCDeviceBackend.desktop_mode.height - height) >> 1);
+        y = (i32)((PCDeviceBackend.desktop_mode.height - height) >> 1);
     }
     HWND window = CreateWindowExA(0, "TTalesWindow", NuHwDefaultParameterPc, style, x, y, width, height, NULL, NULL,
                                   instance, NULL);
@@ -217,7 +217,7 @@ extern "C" i32 __stdcall WinMain(HINSTANCE instance, HINSTANCE previous, LPSTR c
     SetAccessibilityPc(0);
     SystemParametersInfoA(SPI_GETSCREENSAVEACTIVE, 0, &PcScreenSaverEnabled, 2);
     SystemParametersInfoA(SPI_SETSCREENSAVEACTIVE, 0, NULL, 2);
-    SetThreadExecutionState((EXECUTION_STATE)0x80000003);
+    SetThreadExecutionState(0x80000003);
     CpuDetectFeaturesPc();
     CoInitializeEx(NULL, 2);
     NuLanguageSet(1);
@@ -257,7 +257,7 @@ extern "C" void __cdecl PcShutdown(void) {
     SystemParametersInfoA(SPI_SETTOGGLEKEYS, sizeof(PcToggleKeys), &PcToggleKeys, 0);
     SystemParametersInfoA(SPI_SETFILTERKEYS, sizeof(PcFilterKeys), &PcFilterKeys, 0);
     PcRelaunchMediaCenter();
-    SetThreadExecutionState((EXECUTION_STATE)0x80000000);
+    SetThreadExecutionState(0x80000000);
 }
 
 extern "C" __declspec(noreturn) void __cdecl PcQuitToWindows(void) {

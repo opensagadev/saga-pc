@@ -396,8 +396,8 @@ void edgraInit(void) {
     NuMtlUpdate((NUMTL *)edgra_mtl_zoff);
     buffer = gra_ptr;
     if (buffer == NULL) {
-        edgra_mtxbuffer = (NUMTX *)NuAlloc(0xc0080, "d:\\projects\\game_saga\\gameapi.saga\\gamelib\\edgra.c", 0xb0a);
-        edgra_vecbuffer = (NUVEC *)NuAlloc(0x24000, "d:\\projects\\game_saga\\gameapi.saga\\gamelib\\edgra.c", 0xb0c);
+        edgra_mtxbuffer = NuAlloc(0xc0080, "d:\\projects\\game_saga\\gameapi.saga\\gamelib\\edgra.c", 0xb0a);
+        edgra_vecbuffer = NuAlloc(0x24000, "d:\\projects\\game_saga\\gameapi.saga\\gamelib\\edgra.c", 0xb0c);
     } else {
         edgra_mtxbuffer = (NUMTX *)((buffer->addr + 15) & ~15u);
         buffer->addr = ((buffer->addr + 15) & ~15u) + 0xc0080;

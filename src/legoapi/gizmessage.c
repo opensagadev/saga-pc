@@ -104,7 +104,7 @@ static char *GizAIMessage_GetGizmoName(GIZMO_PC *gizmo) {
     if (gizmo == NULL) {
         return NULL;
     }
-    return GizAIMessage_GetName((GIZAIMESSAGE *)gizmo->object);
+    return GizAIMessage_GetName(gizmo->object);
 }
 
 static i32 GizAIMessage_GetOutput(GIZMO_PC *gizmo, i32 output_index, i32 unused2) {
@@ -113,7 +113,7 @@ static i32 GizAIMessage_GetOutput(GIZMO_PC *gizmo, i32 output_index, i32 unused2
         return 0;
     }
 
-    message = (GIZAIMESSAGE *)gizmo->object;
+    message = gizmo->object;
     return message->value == (f32)message->output_values[output_index];
 }
 
@@ -125,8 +125,8 @@ static char *GizAIMessage_GetOutputName(GIZMO_PC *gizmo, i32 output_index) {
         return NULL;
     }
 
-    message = (GIZAIMESSAGE *)gizmo->object;
-    sprintf(returnstr, "%d", (i32)message->output_values[output_index]);
+    message = gizmo->object;
+    sprintf(returnstr, "%d", message->output_values[output_index]);
     return returnstr;
 }
 
@@ -177,10 +177,10 @@ ADDGIZMOTYPE_PC *GizAIMessage_RegisterGizmo(i32 type_id) {
 }
 
 GIZAIMESSAGESYS *CreateGizAIMessageSys(VARIPTR *buffer, VARIPTR *buffer_end, i32 count) {
-    GIZAIMESSAGESYS *sys = (GIZAIMESSAGESYS *)AISysBufferAlloc(buffer, buffer_end, sizeof(GIZAIMESSAGESYS));
+    GIZAIMESSAGESYS *sys = AISysBufferAlloc(buffer, buffer_end, sizeof(GIZAIMESSAGESYS));
     if (sys != NULL) {
         memset(sys, 0, sizeof(GIZAIMESSAGESYS));
-        sys->messages = (GIZAIMESSAGE *)AISysBufferAlloc(buffer, buffer_end, (u32)count * sizeof(GIZAIMESSAGE));
+        sys->messages = AISysBufferAlloc(buffer, buffer_end, (u32)count * sizeof(GIZAIMESSAGE));
         if (sys->messages != NULL) {
             sys->count = count;
             ResetGizAIMessageSys(sys);

@@ -142,7 +142,7 @@ static __inline f32 GizPushFabsPc(f32 value) {
 }
 
 extern "C" void __cdecl KnockPushBlock(PUSH_BLOCK_PC *opaque_block, NUVEC *direction) {
-    PUSH_BLOCK_PC *block = reinterpret_cast<PUSH_BLOCK_PC *>(opaque_block);
+    PUSH_BLOCK_PC *block = opaque_block;
     if (block != NULL) {
         block->velocity.x = -direction->x;
         block->velocity.y = -direction->y;
@@ -153,7 +153,7 @@ extern "C" void __cdecl KnockPushBlock(PUSH_BLOCK_PC *opaque_block, NUVEC *direc
 }
 
 extern "C" void __cdecl ResetSinglePushBlock(WORLDINFO *, struct pushblock_s *opaque, i32) {
-    PUSH_BLOCK_PC *block = reinterpret_cast<PUSH_BLOCK_PC *>(opaque);
+    PUSH_BLOCK_PC *block = opaque;
     block->platform_id = FindPlatInst(NuSpecialGetInstanceix(&block->special));
     SetAnimFrame(reinterpret_cast<struct nuhspecial_s *>(&block->special), 1.0f);
     block->packed_state_flags &= 0xfdfc70f2u;
@@ -174,7 +174,7 @@ extern "C" void __cdecl ResetSinglePushBlock(WORLDINFO *, struct pushblock_s *op
 }
 
 extern "C" void __cdecl ResetPushProgress(WORLDINFO *opaque, void *progress_data) {
-    WORLDINFO *world = reinterpret_cast<WORLDINFO *>(opaque);
+    WORLDINFO *world = opaque;
     PUSH_BLOCK_PC *block = world->push_blocks;
     if (block == NULL) {
         return;
@@ -230,7 +230,7 @@ extern "C" void __cdecl ResetPushProgress(WORLDINFO *opaque, void *progress_data
 }
 
 extern "C" PUSH_BLOCK_PC *__cdecl NearestFacingPushBlock(WORLDINFO *world, GAMEOBJECT *object, float range) {
-    WORLDINFO *push_world = (WORLDINFO *)world;
+    WORLDINFO *push_world = world;
     if (push_world == NULL || push_world->push_blocks == NULL || push_world->push_block_count == 0 ||
         LEGOCONTEXT_PUSH == -1 || object->character_context != LEGOCONTEXT_PUSH) {
         return NULL;
@@ -411,8 +411,8 @@ extern "C" {
 
     PUSH_BLOCK_PC *__cdecl BlockInBlock(WORLDINFO *opaque_world, PUSH_BLOCK_PC *opaque_block, i32 excluded,
                                         PUSH_BLOCK_PC **support) {
-        WORLDINFO *world = (WORLDINFO *)opaque_world;
-        PUSH_BLOCK_PC *block = (PUSH_BLOCK_PC *)opaque_block;
+        WORLDINFO *world = opaque_world;
+        PUSH_BLOCK_PC *block = opaque_block;
         NUVEC *position = block->position;
         i32 i;
         if (support != NULL) {
@@ -467,7 +467,7 @@ extern "C" {
                 f32 gap = offset.y - maximum.y;
                 if (gap > 0.0f) {
                     if (*support != NULL) {
-                        PUSH_BLOCK_PC *previous = (PUSH_BLOCK_PC *)*support;
+                        PUSH_BLOCK_PC *previous = *support;
                         f32 previous_gap;
                         offset = *position;
                         offset.y -= previous->position->y;
@@ -478,16 +478,16 @@ extern "C" {
                         }
                         previous_gap = offset.y - maximum.y;
                         if (previous_gap > gap) {
-                            other->supporting_block = (PUSH_BLOCK_PC *)previous;
-                            *support = (PUSH_BLOCK_PC *)other;
+                            other->supporting_block = previous;
+                            *support = other;
                         }
                     } else {
-                        *support = (PUSH_BLOCK_PC *)other;
+                        *support = other;
                     }
                 }
             }
             if (overlap_x && overlap_y && overlap_z) {
-                return (PUSH_BLOCK_PC *)other;
+                return other;
             }
         }
         return NULL;
@@ -638,8 +638,8 @@ extern "C" {
 
 extern "C" i32 __cdecl OtherBlockInRange(WORLDINFO *opaque_world, PUSH_BLOCK_PC *opaque_block, NUVEC *position,
                                          i32 excluded) {
-    WORLDINFO *world = (WORLDINFO *)opaque_world;
-    PUSH_BLOCK_PC *block = (PUSH_BLOCK_PC *)opaque_block;
+    WORLDINFO *world = opaque_world;
+    PUSH_BLOCK_PC *block = opaque_block;
     NUVEC centre;
     f32 radius;
     NuSpecialGetRadius(&block->special, &centre, &radius);
@@ -773,7 +773,7 @@ extern "C" void __cdecl UpdatePushBlocks(void *world_ptr, void *, f32) {
                     p->snap_timer += FRAMETIME;
                     continue;
                 }
-                PushSeekComplete(reinterpret_cast<PUSH_BLOCK_PC *>(p), 7 & ((p->packed_state_flags >> 15)));
+                PushSeekComplete(p, 7 & ((p->packed_state_flags >> 15)));
             } else {
                 for (i32 j = 1; j < static_cast<i32>((p->packed_state_flags >> 12) & 7); ++j) {
                     NUVEC *target = &p->snap_positions[j];
@@ -787,14 +787,11 @@ extern "C" void __cdecl UpdatePushBlocks(void *world_ptr, void *, f32) {
                           static_cast<f64>(p->snap_distance) * p->snap_distance)) {
                         continue;
                     }
-                    if (SnapPosTaken(reinterpret_cast<WORLDINFO *>(world), reinterpret_cast<PUSH_BLOCK_PC *>(p), target,
-                                     index) != 0) {
+                    if (SnapPosTaken(world, p, target, index) != 0) {
                         continue;
                     }
                     target_seen = 1;
-                    if ((p->packed_state_flags & 0x10000000u) != 0 ||
-                        OtherBlockInRange(reinterpret_cast<WORLDINFO *>(world), reinterpret_cast<PUSH_BLOCK_PC *>(p),
-                                          target, index) != 0) {
+                    if ((p->packed_state_flags & 0x10000000u) != 0 || OtherBlockInRange(world, p, target, index) != 0) {
                         continue;
                     }
                     p->packed_state_flags |= 0x200u;
@@ -885,7 +882,7 @@ extern "C" void __cdecl UpdatePushBlocks(void *world_ptr, void *, f32) {
         PUSH_BLOCK_PC *p = &world->push_blocks[index];
         if ((p->packed_state_flags & 0x40000u) != 0 && (p->packed_state_flags & 0x06000100u) == 0 &&
             (p->packed_state_flags & 0x69u) != 0) {
-            MoveBlocks(reinterpret_cast<WORLDINFO *>(world), reinterpret_cast<PUSH_BLOCK_PC *>(p), index, &p->velocity);
+            MoveBlocks(world, p, index, &p->velocity);
         }
     }
     for (i32 index = 0; index < world->push_block_count; ++index) {
@@ -948,14 +945,12 @@ extern "C" void __cdecl UpdatePushBlocks(void *world_ptr, void *, f32) {
         p->terrain_info[3] = static_cast<i8>(ShadowInfo());
         p->extra_terrain_info.bytes[3] = static_cast<i8>(EShadowInfo());
         PlatOnOff(p->platform_id, 1);
-        BlockInBlock(reinterpret_cast<WORLDINFO *>(world), reinterpret_cast<PUSH_BLOCK_PC *>(p), index,
-                     &p->supporting_block);
+        BlockInBlock(world, p, index, &p->supporting_block);
         struct pushblock_s *below = p->supporting_block;
         if (below != NULL || p->previous_supporting_block != NULL) {
             p->previous_supporting_block = below;
             f32 support[4];
-            TerrainBlockOnBlock(reinterpret_cast<WORLDINFO *>(world), reinterpret_cast<PUSH_BLOCK_PC *>(p), corners,
-                                support);
+            TerrainBlockOnBlock(world, p, corners, support);
             for (i32 j = 0; j < 4; ++j) {
                 if (support[j] != -10000.0f) {
                     heights[j] = support[j];
@@ -1078,7 +1073,7 @@ extern "C" void __cdecl UpdatePushBlocks(void *world_ptr, void *, f32) {
 }
 
 extern "C" PUSH_BLOCK_PC *__cdecl NearestPushBlock(WORLDINFO *opaque_world, NUVEC *position, f32 range) {
-    WORLDINFO *world = reinterpret_cast<WORLDINFO *>(opaque_world);
+    WORLDINFO *world = opaque_world;
     if (world == NULL || position == NULL) {
         return NULL;
     }
@@ -1103,7 +1098,7 @@ extern "C" PUSH_BLOCK_PC *__cdecl NearestPushBlock(WORLDINFO *opaque_world, NUVE
             nearest = block;
         }
     }
-    return reinterpret_cast<PUSH_BLOCK_PC *>(nearest);
+    return nearest;
 }
 
 extern "C" {
@@ -1304,7 +1299,7 @@ static i32 __cdecl edpush_Load(void *world_ptr, void *) {
             PUSH_BLOCK_PC *block = &world->push_blocks[valid_count];
             i32 missing = 0;
             memset(special_name, 0, sizeof(special_name));
-            EdFileRead(special_name, static_cast<i8>(EdFileReadChar()));
+            EdFileRead(special_name, EdFileReadChar());
             if (Gizmo_FindNuSpecial(world->current_gscn, &block->special, special_name, 1, world->gizmo_sys,
                                     const_cast<char *>("PushBlock"), block->name) == 0) {
                 missing = 1;
@@ -1354,7 +1349,7 @@ static i32 __cdecl edpush_Load(void *world_ptr, void *) {
                 block->end_position_count = count;
                 for (i32 index = 0; index < count; ++index) {
                     memset(special_name, 0, sizeof(special_name));
-                    EdFileRead(special_name, static_cast<i8>(EdFileReadChar()));
+                    EdFileRead(special_name, EdFileReadChar());
                     special_name[16] = '\0';
                     void *gizmo_sys = world->gizmo_sys;
                     if (Gizmo_FindNuSpecial(world->current_gscn, &block->end_position_specials[index], special_name, 1,
@@ -1404,7 +1399,7 @@ static i32 __cdecl Pushblocks_BoltHitPlat(void *world_ptr, void *blocks_ptr, BOL
                     direction.x = 0.0f;
                 }
                 NuVecNorm(&direction, &direction);
-                KnockPushBlock(reinterpret_cast<PUSH_BLOCK_PC *>(block), &direction);
+                KnockPushBlock(block, &direction);
             }
             return 1;
         }
@@ -1453,10 +1448,10 @@ extern "C" ADDGIZMOTYPE_PC *__cdecl Push_RegisterGizmo(i32 type_id) {
 }
 
 extern "C" void __cdecl ResetSinglePushBlockHeight(WORLDINFO *world, struct pushblock_s *opaque, i32 index) {
-    PUSH_BLOCK_PC *block = reinterpret_cast<PUSH_BLOCK_PC *>(opaque);
-    BlockInBlock(world, reinterpret_cast<PUSH_BLOCK_PC *>(block), index, &block->supporting_block);
+    PUSH_BLOCK_PC *block = opaque;
+    BlockInBlock(world, block, index, &block->supporting_block);
     if (block->supporting_block != NULL) {
-        PUSH_BLOCK_PC *support = reinterpret_cast<PUSH_BLOCK_PC *>(block->supporting_block);
+        PUSH_BLOCK_PC *support = block->supporting_block;
         block->ground_height = support->position->y + support->bounds_max.y + PushBlockGapEpsilonPc;
     }
     f32 height = block->bounds_min.y + block->position->y;
@@ -1469,7 +1464,7 @@ extern "C" void __cdecl ResetSinglePushBlockHeight(WORLDINFO *world, struct push
 }
 
 extern "C" void __cdecl GizmoPushBlockInitAndReset(WORLDINFO *opaque, void *progress) {
-    WORLDINFO *world = reinterpret_cast<WORLDINFO *>(opaque);
+    WORLDINFO *world = opaque;
     NUMTX evaluated;
     NUVEC centre;
     NUVEC corners[4];
@@ -1513,7 +1508,7 @@ extern "C" void __cdecl GizmoPushBlockInitAndReset(WORLDINFO *opaque, void *prog
                 }
             }
         }
-        ResetSinglePushBlock(opaque, reinterpret_cast<struct pushblock_s *>(block), index);
+        ResetSinglePushBlock(opaque, block, index);
     }
     block = world->push_blocks;
     for (i32 index = 0; index < world->push_block_count; ++index, ++block) {
@@ -1571,6 +1566,6 @@ extern "C" void __cdecl GizmoPushBlockInitAndReset(WORLDINFO *opaque, void *prog
         block->previous_extra_terrain_info = block->extra_terrain_info.word;
     }
     for (i32 index = 0; index < world->push_block_count; ++index) {
-        ResetSinglePushBlockHeight(opaque, reinterpret_cast<struct pushblock_s *>(&world->push_blocks[index]), index);
+        ResetSinglePushBlockHeight(opaque, &world->push_blocks[index], index);
     }
 }

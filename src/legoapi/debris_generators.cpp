@@ -53,7 +53,7 @@ extern "C" {
         particle->momentum.y += key->momentum.y;
         particle->momentum.z += key->momentum.z;
 
-        for (i32 trail = 0; trail < static_cast<i8>(effect->trail_count); ++trail) {
+        for (i32 trail = 0; trail < effect->trail_count; ++trail) {
             if (key->particle_cursor >= key->particle_count) {
                 key->particle_cursor = 0;
             }
@@ -113,7 +113,7 @@ extern "C" {
         particle->momentum.x += key->momentum.x;
         particle->momentum.y += key->momentum.y;
         particle->momentum.z += key->momentum.z;
-        for (i32 trail = 0; trail < static_cast<i8>(effect->trail_count); ++trail) {
+        for (i32 trail = 0; trail < effect->trail_count; ++trail) {
             if (key->particle_cursor >= key->particle_count) {
                 key->particle_cursor = 0;
             }
@@ -173,7 +173,7 @@ extern "C" {
         particle->momentum.x += key->momentum.x;
         particle->momentum.y += key->momentum.y;
         particle->momentum.z += key->momentum.z;
-        for (i32 trail = 0; trail < static_cast<i8>(effect->trail_count); ++trail) {
+        for (i32 trail = 0; trail < effect->trail_count; ++trail) {
             if (key->particle_cursor >= key->particle_count) {
                 key->particle_cursor = 0;
             }
@@ -248,7 +248,7 @@ extern "C" {
         particle->momentum.x += key->momentum.x;
         particle->momentum.y += key->momentum.y;
         particle->momentum.z += key->momentum.z;
-        for (i32 trail = 0; trail < static_cast<i8>(effect->trail_count); ++trail) {
+        for (i32 trail = 0; trail < effect->trail_count; ++trail) {
             if (key->particle_cursor >= key->particle_count) {
                 key->particle_cursor = 0;
             }
@@ -283,7 +283,7 @@ extern "C" {
         } else {
             vector.y = effect->emitter_random_extent.x;
         }
-        i32 segment_angle = 0x10000 / static_cast<i8>(effect->radial_segments);
+        i32 segment_angle = 0x10000 / effect->radial_segments;
         f32 fraction = static_cast<f32>((angle_y + 0x10000) % segment_angle) / segment_angle;
         i32 phase = static_cast<i32>(fraction * 32768.0);
         fraction = 1.0f - NuTrigTable[(phase >> 1) & 0x7fff];
@@ -315,7 +315,7 @@ extern "C" {
         particle->momentum.x += key->momentum.x;
         particle->momentum.y += key->momentum.y;
         particle->momentum.z += key->momentum.z;
-        for (i32 trail = 0; trail < static_cast<i8>(effect->trail_count); ++trail) {
+        for (i32 trail = 0; trail < effect->trail_count; ++trail) {
             if (key->particle_cursor >= key->particle_count) {
                 key->particle_cursor = 0;
             }

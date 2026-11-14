@@ -154,10 +154,10 @@ i32 __cdecl GroupBuffer_GetSample(i32 group_id, i32 sequential) {
     i32 sample_count = group->sample_count;
 
     if (sequential != 0) {
-        i32 cursor = (i16)group->cursor;
+        i32 cursor = group->cursor;
         i32 next_cursor = (u16)group->cursor + 1;
         group->cursor = (i16)next_cursor;
-        if ((i16)group->cursor >= sample_count) {
+        if (group->cursor >= sample_count) {
             group->cursor = 0;
         }
         return NuSound3GroupSampleIds[first_sample + cursor];
@@ -383,7 +383,7 @@ void __cdecl SfxBuildCRCTable(VARIPTR *buffer_cursor, VARIPTR end) {
 }
 
 u32 __cdecl CRC_Process(const void *data, u32 size) {
-    const u8 *bytes = (const u8 *)data;
+    const u8 *bytes = data;
     u32 hash = 0;
     u32 index;
 
@@ -633,7 +633,7 @@ static void MusicPlayStream(i32 stream, i32 track, i32 volume, f32 seek_offset, 
     if (NOSOUND == 0 && NOMUSIC == 0) {
         NuSound3StopStereoStream(stream);
         NuSound3Update();
-        NuSound3PlayStereoV(2, stream, 3, track, 6, volume, 10, (f64)seek_offset, one_shot != 0 ? 12 : 0, 1);
+        NuSound3PlayStereoV(2, stream, 3, track, 6, volume, 10, seek_offset, one_shot != 0 ? 12 : 0, 1);
         NuSound3Update();
         Music.secondary_stream = (i16)stream;
         Music.transition_frames = 0;
@@ -1237,7 +1237,7 @@ void __cdecl InitSfx(VARIPTR *cursor, VARIPTR end, const char *file) {
     i32 i;
     i32 sample;
     cursor->addr = (cursor->addr + 3) & ~3u;
-    SfxHashHeads = (i16 *)cursor->void_ptr;
+    SfxHashHeads = cursor->void_ptr;
     cursor->addr += 0x200;
     SfxFileInfoPc = (SFX_FILE_INFO_PC *)((cursor->addr + 3) & ~3u);
     cursor->addr = ((cursor->addr + 3) & ~3u) + 1600 * sizeof(SFX_FILE_INFO_PC);

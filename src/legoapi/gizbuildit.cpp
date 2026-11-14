@@ -970,9 +970,8 @@ extern "C" {
 
         if (world_ptr != NULL) {
             WORLDINFO *world = (WORLDINFO *)(world_ptr);
-            buildit->room_index = world->current_gscn != NULL
-                                      ? (i16)(NuPortalWhichRoom(world->current_gscn, &buildit->file_position))
-                                      : -1;
+            buildit->room_index =
+                world->current_gscn != NULL ? NuPortalWhichRoom(world->current_gscn, &buildit->file_position) : -1;
         }
     }
 
@@ -1260,7 +1259,7 @@ extern "C" {
             return;
         }
         if (keep_built_pieces && buildit->anim_object_count != 0) {
-            progress = (f32)buildit->built_object_count / (i32)buildit->anim_object_count;
+            progress = (f32)buildit->built_object_count / buildit->anim_object_count;
             if (progress < 0.5f) {
                 restored_count = 0;
             } else if (progress < (f64)0.9f) {
@@ -1373,7 +1372,7 @@ extern "C" {
                 buildit->blowup_type = -1;
                 if (version >= 7) {
                     if (version >= 8) {
-                        length = (i8)EdFileReadChar();
+                        length = EdFileReadChar();
                         if (length != 0) {
                             EdFileRead(blowup_name, length);
                             buildit->blowup_type = (i16)GizmoBlowupGetNameTableId(blowup_name);
@@ -1396,7 +1395,7 @@ extern "C" {
                     buildit->activation_radius = 1.75f;
                 }
                 if (version < 4) {
-                    buildit->state_flags = (i16)(i8)EdFileReadChar();
+                    buildit->state_flags = (i8)EdFileReadChar();
                     if (version >= 2) {
                         if (EdFileReadChar() != 0) {
                             buildit->state_flags |= 0x40;
@@ -1423,7 +1422,7 @@ extern "C" {
                     }
                 }
                 buildit->anim_object_count = 0;
-                buildit->anim_objects = (GAMEANIMOBJ **)&system->anim_objects[animation_index];
+                buildit->anim_objects = &system->anim_objects[animation_index];
                 for (object = buildit->anim_set->objects; object != NULL; object = object->next) {
                     if ((object->animation != NULL && object->instance_animation != NULL) ||
                         (buildit->state_flags & 0x40)) {
@@ -1590,7 +1589,7 @@ extern "C" {
                                 f32 sine = NU_SIN_LUT((f64)phase * 16384.0 + 32768.0 + 16384.0);
                                 f64 progress = (f64)sine + 1.0;
                                 f32 turns = progress * 5.0;
-                                angle = (u16)(i32)((f64)turns * 360.0 * 65536.0 / 360.0 + ((i32)facing - 0x4000));
+                                angle = (u16)(i32)((f64)turns * 360.0 * 65536.0 / 360.0 + (facing - 0x4000));
                                 angle_step = (u16)(i32)BuildItSafeRatioPc(65536.0f, buildit->anim_object_count);
                                 radius = 0.5 - progress * (f64)0.3f;
                             }
@@ -1695,13 +1694,12 @@ extern "C" {
                         }
                         if (builder != NULL) {
                             if (buzz_time > 0.0f) {
-                                NewBuzz(((GAMEPAD_PC *)builder->pad)->bound_pad, buzz_time, 0);
+                                NewBuzz(builder->pad->bound_pad, buzz_time, 0);
                             } else if (buzz_frames != 0) {
-                                NewBuzzFrames(((GAMEPAD_PC *)builder->pad)->bound_pad, buzz_frames, 0);
+                                NewBuzzFrames(builder->pad->bound_pad, buzz_frames, 0);
                             }
-                            if (buildit->build_state == 0 &&
-                                ((((GAMEPAD_PC *)builder->pad)->buttons_held & GAMEPAD_SPECIAL) != 0 ||
-                                 (builder->flags_1f8 & 0x40000) != 0)) {
+                            if (buildit->build_state == 0 && ((builder->pad->buttons_held & GAMEPAD_SPECIAL) != 0 ||
+                                                              (builder->flags_1f8 & 0x40000) != 0)) {
                                 builder->flags_e20 =
                                     ((~builder->flags_e20 ^ builder->flags_e20) & 0x4000) ^ builder->flags_e20;
                                 if (builder->big_jump_animation < 10) {

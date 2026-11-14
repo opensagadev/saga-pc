@@ -19,7 +19,7 @@ STATIC_ASSERT(offsetof(TERRAIN_PLAYER_PLATFORM_SYS_PC, count) == 4);
 STATIC_ASSERT(offsetof(TERRAIN_PLAYER_PLATFORM_SYS_PC, entries) == 8);
 
 GAMEOBJECT *__cdecl CharPlatform_FindObjFromPlatID(void *system, i32 id) {
-    TERRAIN_PLAYER_PLATFORM_SYS_PC *platforms = (TERRAIN_PLAYER_PLATFORM_SYS_PC *)system;
+    TERRAIN_PLAYER_PLATFORM_SYS_PC *platforms = system;
     i32 i;
     if (platforms == NULL) {
         return NULL;

@@ -431,7 +431,7 @@ extern "C" {
             for (i = 0; i < 2; ++i) {
                 GAMEOBJECT *object = (GAMEOBJECT *)Player[i];
                 if (object != NULL) {
-                    models->model[i] = (u16)object->id;
+                    models->model[i] = object->id;
                     p->player_active[i] = (u8)((object->flags_1fc_word >> 7) & 1);
                     if (object->coin_packet != NULL) {
                         p->coins_remaining[i] = ((PLAYER_COIN_PACKET_PC *)object->coin_packet)->coins;
@@ -479,7 +479,7 @@ extern "C" {
             p->episode_id = p->area->episode_index;
             episode = p->episode_id;
             if (episode != -1) {
-                p->episode = &EDataList[(i8)p->area->episode_index];
+                p->episode = &EDataList[p->area->episode_index];
             }
             p->chapter = p->area->area_index;
             if ((p->area->flags & 1) != 0) {
@@ -544,7 +544,7 @@ extern "C" {
                     IncreaseScore(&p->time_reward_score, reward, 0);
                 }
                 p->final_reward_score = p->time_reward_score;
-                IncreaseScore(&p->final_reward_score, (u64)p->superstory_score, 0);
+                IncreaseScore(&p->final_reward_score, p->superstory_score, 0);
                 STATUS_APPEND_STAGE_INLINE_PC(p, 14, gold);
                 STATUS_APPEND_STAGE_INLINE_PC(p, 15, 0);
                 STATUS_APPEND_STAGE_INLINE_PC(p, 16, 0);
@@ -555,7 +555,7 @@ extern "C" {
                     (p->new_best_time != 0.0f || p->new_best_score != 0 || p->superstory_score != 0)) {
                     AddStatusStage(p, 11, 0);
                 }
-                hub_from_superstory = (i8)p->area->episode_index;
+                hub_from_superstory = p->area->episode_index;
             }
             STATUS_APPEND_STAGE_INLINE_PC(p, 10, 0);
             p->stage_types[p->stage_count] = -1;
@@ -764,7 +764,7 @@ extern "C" {
                     gold = AddGoldBrickMessage(p, TextIdPc880728);
                 }
                 if (p->episode != NULL && Episode_IsComplete(p->episode, NULL) != 0) {
-                    completed_episode = (i8)p->area->episode_index;
+                    completed_episode = p->area->episode_index;
                 }
                 if (StartupGameFlag1 != 0 && p->area == NEGOTIATIONS_ADATA) {
                     for (i = 1; i < 6; ++i) {
@@ -1064,7 +1064,7 @@ void __cdecl AddStatusMiniKitParts(void) {
             message.position = &position;
             message.target_scale = 0.75f;
             message.player_index = (i8)(qrand() / 0x8000);
-            target_position.x = cointotal_x[(i32)message.player_index];
+            target_position.x = cointotal_x[message.player_index];
             message.target_position = &target_position;
             message.target_scale = COINTOTAL_COINSIZE;
             message.icon = GizmoPickupType[2].first_model_id;

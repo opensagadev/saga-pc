@@ -77,11 +77,11 @@ void __cdecl edgraSetup(VARIPTR *buffer, VARIPTR end, i32 clumps, i32 individual
         EDGRA_MAX_INDIVIDUAL_CLUMPS = 0;
     }
     buffer->addr = (buffer->addr + 15) & ~15u;
-    GrassClumps = (PC_EDGRACLUMP *)buffer->void_ptr;
+    GrassClumps = buffer->void_ptr;
     buffer->addr += EDGRA_MAX_CLUMPS * sizeof(PC_EDGRACLUMP);
-    IndGrassClumps = (PC_EDGRAINDIVIDUAL *)buffer->void_ptr;
+    IndGrassClumps = buffer->void_ptr;
     buffer->addr += EDGRA_MAX_INDIVIDUAL_CLUMPS * EDGRA_MAX_UNITS_PER_INDIVIDUAL_CLUMP * sizeof(PC_EDGRAINDIVIDUAL);
-    IndGrassClumpsUsed = (i32 *)buffer->void_ptr;
+    IndGrassClumpsUsed = buffer->void_ptr;
     buffer->addr += EDGRA_MAX_INDIVIDUAL_CLUMPS * sizeof(i32);
     NuWindSetup(buffer, end, 0x3000, clumps);
     NuFadeObjSetup(buffer, end, 0x3000, clumps);
@@ -195,9 +195,8 @@ static void edgracbChangeInstanceMenu(eduimenu_s *parent, eduiitem_s *unused1, u
     i32 count;
     char *name;
     i32 i;
-    edgra_changeinstance_menu =
-        eduiMenuCreate(70, 70, 220, 250, ed_fnt, edgracbCancelChangeInstanceMenu,
-                       ((char *)(edgra_filter ? "Change Instance (Filtered)" : "Change Instance")));
+    edgra_changeinstance_menu = eduiMenuCreate(70, 70, 220, 250, ed_fnt, edgracbCancelChangeInstanceMenu,
+                                               (edgra_filter ? "Change Instance (Filtered)" : "Change Instance"));
     if (!edgra_changeinstance_menu || !edbits_base_scene) {
         return;
     }
@@ -690,7 +689,7 @@ i32 __cdecl edgraLoadPage(char *path, void *scene, i32 terrain, VARIPTR *buffer,
             }
             clump = &GrassClumps[slot];
             EdFileRead(name, sizeof(name));
-            clump->special_index = edbitsLookupInstance(name, (NUGSCN *)scene);
+            clump->special_index = edbitsLookupInstance(name, scene);
             clump->element_count = EdFileReadInt();
             clump->position.x = EdFileReadFloat();
             clump->position.y = EdFileReadFloat();
@@ -829,7 +828,7 @@ i32 __cdecl edgraLoadPage(char *path, void *scene, i32 terrain, VARIPTR *buffer,
         EdFileClose();
         edgra_nearest = -1;
         edgraDetermineNearestClump(1.0f);
-        edgra_page_scene[page] = (NUGSCN *)scene;
+        edgra_page_scene[page] = scene;
         edgra_page_terrain[page] = (void *)terrain;
         edgra_page_used[page] = 1;
         if (edgra_page_vectors_valid[page]) {

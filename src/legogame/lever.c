@@ -274,7 +274,7 @@ static void Lever_Reset(GIZMO_LEVER_PC *lever) {
 }
 
 static i32 Levers_GetMaxGizmos(void *world_ptr) {
-    WORLDINFO *world = (WORLDINFO *)world_ptr;
+    WORLDINFO *world = world_ptr;
     if (world != NULL) {
         return world->current_level->max_levers;
     }
@@ -291,7 +291,7 @@ static char *Lever_GetGizmoName(GIZMO_PC *gizmo) {
 static i32 Lever_GetOutput(GIZMO_PC *gizmo, i32 output, i32 mode) {
     GIZMO_LEVER_PC *lever;
     (void)mode;
-    lever = (GIZMO_LEVER_PC *)gizmo->object;
+    lever = gizmo->object;
     if ((lever->flags & 0x80) != 0) {
         switch (output) {
             case 0:
@@ -337,7 +337,7 @@ static void Lever_Activate(GIZMO_PC *gizmo, i32 enabled) {
     if (gizmo == NULL || gizmo->object == NULL) {
         return;
     }
-    lever = (GIZMO_LEVER_PC *)gizmo->object;
+    lever = gizmo->object;
     LEVER_BITS(lever)->enabled = enabled != 0;
     if (enabled != 0) {
         Lever_Reset(lever);
@@ -349,7 +349,7 @@ static i32 Lever_ActivateRev(GIZMO_PC *gizmo, i32 value, i32 query) {
     if (gizmo == NULL || gizmo->object == NULL) {
         return 1;
     }
-    lever = (GIZMO_LEVER_PC *)gizmo->object;
+    lever = gizmo->object;
     if ((query & 1) != 0) {
         return LEVER_BITS(lever)->enabled ? value : value == 0;
     }
@@ -363,7 +363,7 @@ static void Lever_SetVisibility(GIZMO_PC *gizmo, i32 visible) {
     if (gizmo == NULL || gizmo->object == NULL) {
         return;
     }
-    lever = (GIZMO_LEVER_PC *)gizmo->object;
+    lever = gizmo->object;
     was_visible = LEVER_BITS(lever)->visible;
     LEVER_BITS(lever)->visible = visible != 0;
     if (LEVER_BITS(lever)->visible && was_visible == 0) {
@@ -379,7 +379,7 @@ static void *Levers_AllocateProgressData(VARIPTR *buffer, VARIPTR *end) {
 }
 
 static void Levers_ClearProgress(void *world, void *progress_ptr) {
-    LEVER_PROGRESS_PC *progress = (LEVER_PROGRESS_PC *)progress_ptr;
+    LEVER_PROGRESS_PC *progress = progress_ptr;
     (void)world;
     if (progress == NULL) {
         return;
@@ -390,8 +390,8 @@ static void Levers_ClearProgress(void *world, void *progress_ptr) {
 }
 
 static void Levers_StoreProgress(void *world_ptr, void *data, void *progress_ptr) {
-    WORLDINFO *world = (WORLDINFO *)world_ptr;
-    LEVER_PROGRESS_PC *progress = (LEVER_PROGRESS_PC *)progress_ptr;
+    WORLDINFO *world = world_ptr;
+    LEVER_PROGRESS_PC *progress = progress_ptr;
     GIZMO_LEVER_PC *lever;
     i32 index;
     (void)data;
@@ -422,8 +422,8 @@ static void Levers_StoreProgress(void *world_ptr, void *data, void *progress_ptr
 }
 
 static void Levers_Reset(void *world_ptr, void *data, void *progress_ptr) {
-    WORLDINFO *world = (WORLDINFO *)world_ptr;
-    LEVER_PROGRESS_PC *progress = (LEVER_PROGRESS_PC *)progress_ptr;
+    WORLDINFO *world = world_ptr;
+    LEVER_PROGRESS_PC *progress = progress_ptr;
     GIZMO_LEVER_PC *lever;
     i32 index;
     (void)data;
@@ -451,19 +451,19 @@ static void Levers_Reset(void *world_ptr, void *data, void *progress_ptr) {
 }
 
 static void *Levers_ReserveBufferSpace(void *world_ptr) {
-    WORLDINFO *world = (WORLDINFO *)world_ptr;
+    WORLDINFO *world = world_ptr;
     ((LEVER_WORLD_PC *)world)->levers = NULL;
     ((LEVER_WORLD_PC *)world)->lever_count = 0;
     if (world->current_level->max_levers > 0) {
         world->giz_buffer.addr = (world->giz_buffer.addr + 15) & ~15u;
-        ((LEVER_WORLD_PC *)world)->levers = (GIZMO_LEVER_PC *)world->giz_buffer.void_ptr;
+        ((LEVER_WORLD_PC *)world)->levers = world->giz_buffer.void_ptr;
         world->giz_buffer.addr += world->current_level->max_levers * sizeof(GIZMO_LEVER_PC);
     }
     return ((LEVER_WORLD_PC *)world)->levers;
 }
 
 static i32 Levers_Load(void *world_ptr, void *data) {
-    WORLDINFO *world = (WORLDINFO *)world_ptr;
+    WORLDINFO *world = world_ptr;
     i32 version;
     i32 index;
     (void)data;
@@ -514,7 +514,7 @@ static i32 Levers_Load(void *world_ptr, void *data) {
 }
 
 static void Levers_AddGizmos(void *system, i32 type_id, void *world_ptr, void *data) {
-    WORLDINFO *world = (WORLDINFO *)world_ptr;
+    WORLDINFO *world = world_ptr;
     i32 index;
     (void)data;
     for (index = 0; index < ((LEVER_WORLD_PC *)world)->lever_count; ++index) {
@@ -525,7 +525,7 @@ static void Levers_AddGizmos(void *system, i32 type_id, void *world_ptr, void *d
 }
 
 static void Levers_Update(void *world_ptr, void *data, f32 elapsed) {
-    WORLDINFO *world = (WORLDINFO *)world_ptr;
+    WORLDINFO *world = world_ptr;
     GIZMO_LEVER_PC *lever = ((LEVER_WORLD_PC *)world)->levers;
     i32 index;
     (void)data;
@@ -619,7 +619,7 @@ STATIC_ASSERT(offsetof(TIMER, time_elapsed_mod_seconds) == 8);
 STATIC_ASSERT(offsetof(LEVEL_OBJECT_RUNTIME_PC, special) == 0);
 
 static void __cdecl Levers_Draw(void *world_ptr, void *data, f32 delta_time) {
-    WORLDINFO *world = (WORLDINFO *)world_ptr;
+    WORLDINFO *world = world_ptr;
     LEVER_WORLD_PC *lever_world = (LEVER_WORLD_PC *)world;
     NUSPECIALHANDLE *animated_special;
     GIZMO_LEVER_PC *lever;
@@ -646,7 +646,7 @@ static void __cdecl Levers_Draw(void *world_ptr, void *data, f32 delta_time) {
     if (StartupGameFlag1 != 0 && world->level_objects[30].active != 0) {
         NUINSTANIM *animation;
         animated_special = &world->level_objects[30].special;
-        animation = (NUINSTANIM *)NuSpecialGetInstAnim(animated_special);
+        animation = NuSpecialGetInstAnim(animated_special);
         if (animated_special != NULL && animation != NULL) {
             NuAnimEndFrameOld(((NUGSCN *)animated_special->scene)->instance_animation_data[animation->animation_index]);
         }
@@ -673,13 +673,13 @@ static void __cdecl Levers_Draw(void *world_ptr, void *data, f32 delta_time) {
                 }
             } else if ((lever->flags & 0x83) == 0x80) {
                 if (lever->idle_animation_timer > 0.0f) {
-                    lever->idle_animation_timer = (f32)(lever->idle_animation_timer - FRAMETIME);
+                    lever->idle_animation_timer = lever->idle_animation_timer - FRAMETIME;
                     if (lever->idle_animation_timer < 0.0f) {
                         lever->idle_animation_timer = 0.0f;
                     } else {
                         f32 sine = NuTrigTable
                             [((i32)((f64)lever->idle_animation_timer / (f64)0.15f * 32768.0 + 16384.0) >> 1) & 0x7fff];
-                        animation_frame = (f32)((1.0 - fabs((f64)sine)) * 1.5 + 16.0);
+                        animation_frame = (f32)((1.0 - fabs(sine)) * 1.5 + 16.0);
                     }
                 } else if (qrand() < 0x800) {
                     lever->idle_animation_timer = 0.15f;

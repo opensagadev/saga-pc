@@ -406,7 +406,7 @@ extern "C" BOOL __stdcall InputEnumDevicesPc(const PC_DI_INSTANCE_PC *instance, 
             record->button_count -= 2;
         }
         ((PC_DI_DEVICE_INTERFACE_PC *)device)->SetDataFormat(&PcJoystickDataFormat);
-        ((PC_DI_DEVICE_INTERFACE_PC *)device)->SetCooperativeLevel((HWND)PCInputInstance, 9);
+        ((PC_DI_DEVICE_INTERFACE_PC *)device)->SetCooperativeLevel(PCInputInstance, 9);
         ((PC_DI_DEVICE_INTERFACE_PC *)device)->Acquire();
         ConfigureJoystickRangesPc(device);
         state->BindPreferredConfig(7, port);
@@ -418,7 +418,7 @@ extern "C" BOOL __stdcall InputEnumDevicesPc(const PC_DI_INSTANCE_PC *instance, 
         return TRUE;
     }
     PcKeyboardCapabilities.size = sizeof(PcKeyboardCapabilities);
-    nu_keyboard_owner.device->methods->set_cooperative_level(nu_keyboard_owner.device, (HWND)PCInputInstance, 22);
+    nu_keyboard_owner.device->methods->set_cooperative_level(nu_keyboard_owner.device, PCInputInstance, 22);
     nu_keyboard_owner.device->methods->set_format(nu_keyboard_owner.device, &PcKeyboardDataFormat);
     nu_keyboard_owner.device->methods->acquire(nu_keyboard_owner.device);
     nu_keyboard_owner.device->methods->get_caps(nu_keyboard_owner.device, &PcKeyboardCapabilities);

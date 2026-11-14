@@ -137,7 +137,7 @@ i32 AITriggerSetAddTrigger(AISYS_PC *system, AITRIGGERSET_s *set, GIZMO_PC *gizm
         locator = AIPathFindLocator(system, name);
     }
     if (gizmo->type_id == lever_gizmotype_id) {
-        GIZMO_LEVER_PC *lever = (GIZMO_LEVER_PC *)gizmo->object;
+        GIZMO_LEVER_PC *lever = gizmo->object;
         set->gizmos[set->trigger_count] = gizmo;
         if (locator != NULL) {
             set->locators[set->trigger_count] = *locator;
@@ -155,7 +155,7 @@ i32 AITriggerSetAddTrigger(AISYS_PC *system, AITRIGGERSET_s *set, GIZMO_PC *gizm
         ++set->trigger_count;
         return 1;
     } else if (gizmo->type_id == obstacle_gizmotype_id) {
-        GIZOBSTACLE *obstacle = ((GIZOBSTACLE *)(gizmo->object));
+        GIZOBSTACLE *obstacle = gizmo->object;
         if (obstacle->mode != 1 && obstacle->mode != 2 && obstacle->mode != 5 && obstacle->mode != 6 &&
             obstacle->mode != 7) {
             return 0;
@@ -175,7 +175,7 @@ i32 AITriggerSetAddTrigger(AISYS_PC *system, AITRIGGERSET_s *set, GIZMO_PC *gizm
         ++set->trigger_count;
         return 1;
     } else if (gizmo->type_id == spinner_gizmotype_id) {
-        GIZSPINNER_s *spinner = ((GIZSPINNER_s *)(gizmo->object));
+        GIZSPINNER_s *spinner = gizmo->object;
         set->gizmos[set->trigger_count] = gizmo;
         if (locator != NULL) {
             set->locators[set->trigger_count] = *locator;
@@ -191,7 +191,7 @@ i32 AITriggerSetAddTrigger(AISYS_PC *system, AITRIGGERSET_s *set, GIZMO_PC *gizm
         ++set->trigger_count;
         return 1;
     } else if (gizmo->type_id == force_gizmotype_id) {
-        GIZFORCE_s *force = ((GIZFORCE_s *)(gizmo->object));
+        GIZFORCE_s *force = gizmo->object;
         set->gizmos[set->trigger_count] = gizmo;
         if (locator != NULL) {
             set->locators[set->trigger_count] = *locator;
@@ -212,7 +212,7 @@ i32 AITriggerSetAddTrigger(AISYS_PC *system, AITRIGGERSET_s *set, GIZMO_PC *gizm
         ++set->trigger_count;
         return 1;
     } else if (gizmo->type_id == grapple_gizmotype_id) {
-        GRAPPLE_DYNAMIC_PC *grapple = ((GRAPPLE_DYNAMIC_PC *)(gizmo->object));
+        GRAPPLE_DYNAMIC_PC *grapple = gizmo->object;
         set->gizmos[set->trigger_count] = gizmo;
         if (locator != NULL) {
             set->locators[set->trigger_count] = *locator;
@@ -239,12 +239,12 @@ i32 AITriggerSetAddTrigger(AISYS_PC *system, AITRIGGERSET_s *set, GIZMO_PC *gizm
 
 static i32 TriggerGizmoAvailablePc(GIZMO_PC *gizmo) {
     if (gizmo->type_id == lever_gizmotype_id) {
-        TRIGGER_LEVER_PC *lever = (TRIGGER_LEVER_PC *)gizmo->object;
+        TRIGGER_LEVER_PC *lever = gizmo->object;
         if ((lever->flags & 0x80) && !(lever->flags & 2)) {
             return 1;
         }
     } else if (gizmo->type_id == obstacle_gizmotype_id) {
-        GIZOBSTACLE *obstacle = (GIZOBSTACLE *)gizmo->object;
+        GIZOBSTACLE *obstacle = gizmo->object;
         if ((obstacle->progress_flags & 1) && obstacle->anim_set->state != 2) {
             return 1;
         }
@@ -253,7 +253,7 @@ static i32 TriggerGizmoAvailablePc(GIZMO_PC *gizmo) {
             return 1;
         }
     } else if (gizmo->type_id == force_gizmotype_id) {
-        TRIGGER_FORCE_PC *force = (TRIGGER_FORCE_PC *)gizmo->object;
+        TRIGGER_FORCE_PC *force = gizmo->object;
         if ((force->progress_flags & 1) && force->using_object == NULL && force->active_state == 0) {
             return 1;
         }
@@ -303,7 +303,7 @@ void __cdecl AITriggerSetSysProcess(TRIGGER_SYSTEM_PC *system) {
             gizmo = set->gizmos[index];
             if (gizmo != NULL) {
                 if (gizmo->type_id == lever_gizmotype_id) {
-                    TRIGGER_LEVER_PC *lever = (TRIGGER_LEVER_PC *)gizmo->object;
+                    TRIGGER_LEVER_PC *lever = gizmo->object;
                     if (player->character_context == 0x4a && player->grapple == lever) {
                         set->occupied |= 1 << index;
                     } else if (player2 != NULL && player2->character_context == 0x4a && player2->grapple == lever) {
@@ -319,7 +319,7 @@ void __cdecl AITriggerSetSysProcess(TRIGGER_SYSTEM_PC *system) {
                         }
                     }
                 } else if (gizmo->type_id == obstacle_gizmotype_id) {
-                    GIZOBSTACLE *obstacle = (GIZOBSTACLE *)gizmo->object;
+                    GIZOBSTACLE *obstacle = gizmo->object;
                     if (player == obstacle->triggering_object) {
                         set->occupied |= 1 << index;
                     } else if (player2 != NULL && player2 == obstacle->triggering_object) {
@@ -334,7 +334,7 @@ void __cdecl AITriggerSetSysProcess(TRIGGER_SYSTEM_PC *system) {
                         AITRIGGER_RELEASE(system, set, index);
                     }
                 } else if (gizmo->type_id == spinner_gizmotype_id) {
-                    TRIGGER_SPINNER_PC *spinner = (TRIGGER_SPINNER_PC *)gizmo->object;
+                    TRIGGER_SPINNER_PC *spinner = gizmo->object;
                     if ((spinner->flags & 6) != 0 || ((spinner->flags & 8) != 0 && ShadowMode == 0) ||
                         spinner->progress == 1.0f || (spinner->state_flags & 0x20) != 0) {
                         set->occupied &= ~(1 << index);
@@ -346,7 +346,7 @@ void __cdecl AITriggerSetSysProcess(TRIGGER_SYSTEM_PC *system) {
                         set->occupied &= ~(1 << index);
                     }
                 } else if (gizmo->type_id == force_gizmotype_id) {
-                    GIZFORCE_PC *force = (GIZFORCE_PC *)gizmo->object;
+                    GIZFORCE_PC *force = gizmo->object;
                     if (GizForce_GameObjUsingForce(player, force)) {
                         set->occupied |= 1 << index;
                     } else if (GizForce_GameObjUsingForce(player2, force)) {
@@ -434,7 +434,7 @@ void __cdecl AITriggerSetSysProcess(TRIGGER_SYSTEM_PC *system) {
                                 continue;
                             }
                             if (gizmo->type_id == force_gizmotype_id) {
-                                TRIGGER_FORCE_PC *force = (TRIGGER_FORCE_PC *)gizmo->object;
+                                TRIGGER_FORCE_PC *force = gizmo->object;
                                 if ((force->config_flags & 0x10) != 0) {
                                     if (!CharCategory_IsCategory(object, 1)) {
                                         continue;
@@ -495,14 +495,14 @@ void __cdecl AITriggerSysAutoSetUp(WORLDINFO *world, AITRIGGERSETSYS_s *system) 
         for (index = 0; index < flow->flowbox_count; ++index, ++box) {
             if (box->type == 0 && box->ai_trigger_group != 0 && box->ai_trigger_group <= 32) {
                 group_index = box->ai_trigger_group - 1;
-                data = (FLOWBOXGIZMODATA_PC *)box->data;
+                data = box->data;
                 if (groups[group_index] == NULL) {
                     groups[group_index] = AITriggerSetCreate(system, NULL);
                 }
                 set = groups[group_index];
                 if (set != NULL) {
                     for (gizmo_index = 0; gizmo_index < data->gizmo_count; ++gizmo_index) {
-                        AITriggerSetAddTrigger(world->ai_sys, set, (GIZMO_PC *)data->gizmos[gizmo_index]->gizmo);
+                        AITriggerSetAddTrigger(world->ai_sys, set, data->gizmos[gizmo_index]->gizmo);
                     }
                 }
             }
@@ -511,7 +511,7 @@ void __cdecl AITriggerSysAutoSetUp(WORLDINFO *world, AITRIGGERSETSYS_s *system) 
 }
 
 void *__cdecl AITriggerSetSysCreate(VARIPTR *buffer, VARIPTR *end) {
-    TRIGGER_SYSTEM_PC *system = (TRIGGER_SYSTEM_PC *)AISysBufferAlloc(buffer, end, sizeof(*system));
+    TRIGGER_SYSTEM_PC *system = AISysBufferAlloc(buffer, end, sizeof(*system));
     AITriggerSetSysReset(system);
     return system;
 }
@@ -520,13 +520,13 @@ static i32 Attractos_Load(void *context, void *unused1) {
     i32 version;
     struct ATTRACTO_s *attracto;
     i32 i;
-    WORLDINFO *world = ((WORLDINFO *)(context));
+    WORLDINFO *world = context;
     if (world->attracto_count != 0) {
         return 0;
     }
     version = EdFileReadInt();
     world->attracto_count = EdFileReadInt();
-    attracto = ((ATTRACTO_s *)(world->attractos));
+    attracto = world->attractos;
     for (i = 0; i < world->attracto_count; ++i, ++attracto) {
         u8 capacity;
         EdFileRead(attracto->name, 0x10);
@@ -536,7 +536,7 @@ static i32 Attractos_Load(void *context, void *unused1) {
         attracto->capacity = capacity != 0 ? capacity : 1;
         if (version == 2) {
             char legacy_name[0x10];
-            i32 length = ((i8)(EdFileReadChar()));
+            i32 length = EdFileReadChar();
             EdFileRead(legacy_name, length);
         }
     }
@@ -548,7 +548,7 @@ static void Attracto_SetVisibility(GIZMO_PC *gizmo, i32 visible) {
     if (gizmo == NULL || gizmo->object == NULL) {
         return;
     }
-    attracto = ((ATTRACTO_s *)(gizmo->object));
+    attracto = gizmo->object;
     attracto->visible = visible != 0;
     if (attracto->visible && attracto->platform_id == -1) {
         NUMTX matrix;

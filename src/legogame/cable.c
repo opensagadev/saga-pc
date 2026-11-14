@@ -134,7 +134,7 @@ static void CableAtstToppled(GAMEOBJECT *target) {
     for (i = 0; i < HIGHGAMEOBJECT; ++i, ++object) {
         if ((object->flags_1fc_word & 0x1000) && object->dead == 0 && object->cable != NULL &&
             ((CABLE_RECORD_PC *)object->cable)->target == target) {
-            ReleaseCable((CABLE_RECORD_PC *)object->cable, 1);
+            ReleaseCable(object->cable, 1);
         }
     }
 }
@@ -558,7 +558,7 @@ void __cdecl DrawCables(void) {
                 }
                 NuVecSub(&step, &endpoint, &previous);
                 subdivisions = CableFdiv(cable->segment_lengths[segment], cable->total_length) * subdivision_scale;
-                subdivisions = (f32)ceil((f64)subdivisions);
+                subdivisions = (f32)ceil(subdivisions);
                 step_length = CableFdiv(cable->segment_lengths[segment], subdivisions);
                 NuVecScale(&step, &step, CableFdiv(step_length, cable->segment_lengths[segment]));
                 cursor = previous;

@@ -1027,7 +1027,7 @@ NUFILE __cdecl NuMemFileOpen(void *buffer, i32 buffer_size, i32 mode) {
     if (buffer_size > 0 && (mode == 0 || mode == 1)) {
         for (index = 0; index < 20; index++) {
             if (pc_memfiles[index].used == 0) {
-                pc_memfiles[index].buffer = (u8 *)buffer;
+                pc_memfiles[index].buffer = buffer;
                 pc_memfiles[index].end = (u8 *)buffer + buffer_size - 1;
                 pc_memfiles[index].position = pc_memfiles[index].buffer;
                 pc_memfiles[index].mode = mode;
@@ -1390,7 +1390,7 @@ i32 __cdecl NuFileRead(NUFILE file, void *destination, i32 size) {
             AquireFileBuffer(info);
         }
         bytes_read = 0;
-        output = (char *)destination;
+        output = destination;
 
         while (size > 0) {
             if (info->read_pos >= info->file_len) {
@@ -1512,8 +1512,8 @@ i32 __cdecl NuFileCopy(char *destination, char *source) {
 }
 
 void __cdecl PCByteCopy(void *destination, const void *source, u32 count) {
-    u8 *dst = (u8 *)destination;
-    const u8 *src = (const u8 *)source;
+    u8 *dst = destination;
+    const u8 *src = source;
 
     if (dst < src) {
         while (count != 0) {
@@ -1539,7 +1539,7 @@ static u32 CalcChecksum(void *data, i32 len) {
     u32 sum;
 
     sum = 0x12345678;
-    bytes = (unsigned char *)data;
+    bytes = data;
 
     while (len != 0) {
         len--;
@@ -1565,7 +1565,7 @@ static void NuFileEndianSwap16(void *value) {
     u16 swapped;
     u8 *swap_ptr;
 
-    value_ptr = (u8 *)value;
+    value_ptr = value;
     swap_ptr = (u8 *)&swapped;
     swap_ptr[0] = value_ptr[1];
     swap_ptr[1] = value_ptr[0];
@@ -1577,7 +1577,7 @@ static void NuFileEndianSwap32(void *value) {
     u32 swapped;
     u8 *swap_ptr;
 
-    value_ptr = (u8 *)value;
+    value_ptr = value;
     swap_ptr = (u8 *)&swapped;
     swap_ptr[0] = value_ptr[3];
     swap_ptr[1] = value_ptr[2];
@@ -1813,10 +1813,8 @@ void __cdecl NuFileInitAddress(i32 capacity) {
             NuFree(addr_pos, NuFileSourcePathPC, 0xa59);
         }
         MAX_FILE_ADDRESS = capacity;
-        addr_ref =
-            (NUFILE_ADDRESS_PC *)NuAlloc(MAX_FILE_ADDRESS * sizeof(NUFILE_ADDRESS_PC), NuFileSourcePathPC, 0xa5d);
-        addr_pos =
-            (NUFILE_ADDRESS_PC *)NuAlloc(MAX_FILE_ADDRESS * sizeof(NUFILE_ADDRESS_PC), NuFileSourcePathPC, 0xa5e);
+        addr_ref = NuAlloc(MAX_FILE_ADDRESS * sizeof(NUFILE_ADDRESS_PC), NuFileSourcePathPC, 0xa5d);
+        addr_pos = NuAlloc(MAX_FILE_ADDRESS * sizeof(NUFILE_ADDRESS_PC), NuFileSourcePathPC, 0xa5e);
     }
     ref_count = 0;
     pos_count = 0;
@@ -1934,7 +1932,7 @@ i32 __cdecl NuDatFileRead(NUFILE file, void *destination, i32 size) {
 
     if (info->compression_mode == 2) {
         i32 total_read = 0;
-        u8 *output = (u8 *)destination;
+        u8 *output = destination;
         while (size != 0) {
             if (decode_buffer_left == 0) {
                 NuDatFileDecodeNext();
@@ -2291,7 +2289,7 @@ NUDATHDR *__cdecl NuDatOpenEx(const char *filepath, VARIPTR *arena, i32 *size_ou
         allocation_size = sizeof(NUDATHDR) + name_storage + locator[1];
 
         if (arena != NULL) {
-            header = (NUDATHDR *)arena->void_ptr;
+            header = arena->void_ptr;
             arena->char_ptr += allocation_size;
             if (size_out != NULL) {
                 *size_out = allocation_size;
@@ -2544,7 +2542,7 @@ i32 __cdecl NuFileExtConvert(char *dest, char *path) {
         }
     }
     *out = '\0';
-    path_len = (i32)(out - dest);
+    path_len = out - dest;
     source = NuFileExtGetInfoPC(path, path_len);
     if (source != NULL) {
         i32 type = source->type;
@@ -2600,7 +2598,7 @@ i32 __cdecl NuFileExtRemove(char *dest, char *path) {
         }
     }
     *out = '\0';
-    length = (i32)(out - dest);
+    length = out - dest;
     info = NuFileExtGetInfoPC(path, length);
     if (info != NULL) {
         dest[length - info->len] = '\0';
@@ -2628,7 +2626,7 @@ void *__cdecl NuFilePakLoadKey(char *filepath, VARIPTR *buffer, VARIPTR end, i32
         alignment = 4;
     }
     buffer->addr = (buffer->addr + alignment - 1) & ~(alignment - 1);
-    header = (PC_FILEPAKHDR *)buffer->void_ptr;
+    header = buffer->void_ptr;
     length = NuFileLoadBufferVP(filepath, buffer, &end);
     if (length == 0) {
         fpk_err = 1;
@@ -2692,7 +2690,7 @@ void *__cdecl NuFilePakLoad(char *filepath, VARIPTR *buffer, VARIPTR end, i32 al
 }
 
 i32 __cdecl NuFilePakCondense(void *pak) {
-    PC_FILEPAKHDR_V0 *header = (PC_FILEPAKHDR_V0 *)pak;
+    PC_FILEPAKHDR_V0 *header = pak;
     PC_FILEPAKITEM *items;
     i32 removed_size;
     u32 index;
@@ -2725,7 +2723,7 @@ i32 __cdecl NuFilePakCondense(void *pak) {
 }
 
 void __cdecl NuFilePakRelocate(void *pak, void *destination) {
-    PC_FILEPAKHDR_V0 *header = (PC_FILEPAKHDR_V0 *)pak;
+    PC_FILEPAKHDR_V0 *header = pak;
     u32 size = header->file_size;
 
     fpk_err = 0;
@@ -2733,7 +2731,7 @@ void __cdecl NuFilePakRelocate(void *pak, void *destination) {
 }
 
 i32 __cdecl NuFilePakGetItem(void *pak, char *name) {
-    PC_FILEPAKHDR_V0 *header = (PC_FILEPAKHDR_V0 *)pak;
+    PC_FILEPAKHDR_V0 *header = pak;
     PC_FILEPAKITEM *items;
     u32 index;
 
@@ -2751,7 +2749,7 @@ i32 __cdecl NuFilePakGetItem(void *pak, char *name) {
 }
 
 i32 __cdecl NuFilePakGetItemInfo(void *pak, i32 handle, void **address, i32 *size) {
-    PC_FILEPAKHDR_V0 *header = (PC_FILEPAKHDR_V0 *)pak;
+    PC_FILEPAKHDR_V0 *header = pak;
     PC_FILEPAKITEM *item;
 
     fpk_err = 0;
@@ -2772,7 +2770,7 @@ i32 __cdecl NuFilePakGetItemInfo(void *pak, i32 handle, void **address, i32 *siz
 }
 
 i32 __cdecl NuFilePakSetItemRequired(void *pak, i32 handle, i32 required) {
-    PC_FILEPAKHDR_V0 *header = (PC_FILEPAKHDR_V0 *)pak;
+    PC_FILEPAKHDR_V0 *header = pak;
     PC_FILEPAKITEM *item;
 
     fpk_err = 0;
@@ -2788,7 +2786,7 @@ i32 __cdecl NuFilePakSetItemRequired(void *pak, i32 handle, i32 required) {
 }
 
 u32 __cdecl NuFilePakGetSize(void *pak) {
-    PC_FILEPAKHDR_V0 *header = (PC_FILEPAKHDR_V0 *)pak;
+    PC_FILEPAKHDR_V0 *header = pak;
     u32 size = header->file_size;
 
     fpk_err = 0;
@@ -4258,8 +4256,7 @@ NUMEMBLK *__cdecl NuMemBlkCreate(i32 element_size, i32 count, u32 alignment_mask
     }
     header_size = (sizeof(NUMEMBLK) + alignment_mask) & ~alignment_mask;
     stride = (element_size + alignment_mask) & ~alignment_mask;
-    pool = (NUMEMBLK *)NuAlloc(header_size + stride * count, "d:\\projects\\game_saga\\nu2api.saga\\nucore\\numemblk.c",
-                               111);
+    pool = NuAlloc(header_size + stride * count, "d:\\projects\\game_saga\\nu2api.saga\\nucore\\numemblk.c", 111);
     data = (u32)(pool + 1);
     data += alignment_mask;
     data &= ~alignment_mask;
@@ -4291,7 +4288,7 @@ NUMEMBLK *__cdecl NuMemBlkCreateEx(i32 element_size, i32 count, u32 alignment_ma
     }
     header_size = (sizeof(NUMEMBLK) + alignment_mask) & ~alignment_mask;
     stride = (element_size + alignment_mask) & ~alignment_mask;
-    pool = (NUMEMBLK *)storage;
+    pool = storage;
     data = (u32)pool;
     data += (sizeof(NUMEMBLK) + alignment_mask) & ~alignment_mask;
     pool->stride = stride;
@@ -4346,7 +4343,7 @@ void *__cdecl NuMemBlkAlloc(NUMEMBLK *pool) {
 }
 
 void __cdecl NuMemBlkFree(NUMEMBLK *pool, void *block) {
-    NUMEMBLKLINK *link = (NUMEMBLKLINK *)block;
+    NUMEMBLKLINK *link = block;
     pool->free_count++;
     memset(block, -2, pool->stride);
     link->next = pool->free_list;
@@ -4629,7 +4626,7 @@ i32 __cdecl NuQTCreate(i32 entry_capacity, i32 data_capacity, i32 element_size, 
                        f32 x0, f32 y1, f32 x1, VARIPTR *cursor, VARIPTR *end) {
     cursor->addr = (cursor->addr + 15) & ~15;
     if (cursor->addr + sizeof(NUQTHDR_PC) + sizeof(NUQTENTRY_PC) * entry_capacity + 16 + data_capacity <= end->addr) {
-        NUQTHDR_PC *header = (NUQTHDR_PC *)cursor->void_ptr;
+        NUQTHDR_PC *header = cursor->void_ptr;
 
         cursor->addr += sizeof(NUQTHDR_PC);
         header->flags = 0;
@@ -4644,10 +4641,10 @@ i32 __cdecl NuQTCreate(i32 entry_capacity, i32 data_capacity, i32 element_size, 
         header->element_size = element_size;
         header->max_depth = max_depth;
         header->split_count = split_count;
-        header->entries = (NUQTENTRY_PC *)cursor->void_ptr;
+        header->entries = cursor->void_ptr;
         cursor->addr += sizeof(NUQTENTRY_PC) * entry_capacity;
         cursor->addr = (cursor->addr + 15) & ~15;
-        header->data = (u8 *)cursor->void_ptr;
+        header->data = cursor->void_ptr;
         cursor->addr += data_capacity;
     }
     return 0;
@@ -4849,7 +4846,7 @@ NUALLOC_MANAGER_PREFIX_PC *__cdecl NuAllocManagerCreatePc(VARIPTR *buffer, VARIP
     if (size < 0x50) {
         return NULL;
     }
-    manager = (NUALLOC_MANAGER_PREFIX_PC *)buffer->void_ptr;
+    manager = buffer->void_ptr;
     buffer->addr += size;
     list = (NUALLOC_MANAGER_BLOCK_PC *)((u32)manager + 0x10);
     first = (NUALLOC_MANAGER_BLOCK_PC *)((u32)manager + 0x20);
@@ -5012,7 +5009,7 @@ void *__cdecl NuAllocManagerDefragPc(NUALLOC_MANAGER_PREFIX_PC *manager, void *p
     }
     next_size = NuAllocManagerGetSizePc(next);
     NuAllocManagerUnlinkPc(next);
-    src = (u8 *)payload;
+    src = payload;
     dst = (u8 *)payload + next_size + 0x1c;
     for (i = size - 1; i >= 0; i--) {
         dst[i] = src[i];
@@ -5024,7 +5021,7 @@ void *__cdecl NuAllocManagerDefragPc(NUALLOC_MANAGER_PREFIX_PC *manager, void *p
     moved->used = 1;
     NuAllocManagerSetTrailerPc(moved);
     new_payload = NuAllocManagerPayloadPc(moved);
-    free_block = (NUALLOC_MANAGER_BLOCK_PC *)payload;
+    free_block = payload;
     free_block->size_flags = next_size;
     NuAllocManagerSetNextPc(free_block, NULL);
     NuAllocManagerSetPreviousPc(free_block, NULL);
@@ -5199,7 +5196,7 @@ i32 __cdecl NuStrCpy(char *dst, const char *src) {
     }
 
     *dst = '\0';
-    return (i32)(dst - dst_start);
+    return dst - dst_start;
 }
 
 i32 __cdecl NuStrNCpy(char *dst, const char *src, i32 n) {
@@ -6650,7 +6647,7 @@ i32 __cdecl NuStringTableLoadCSV(char *filepath, VARIPTR *buf, VARIPTR buf_end, 
 
     mem_buf = (void *)(buf_end.addr - 0x100000);
     bytes_read = NuFileLoadBuffer(filepath, mem_buf, 0x100000);
-    if ((i32)(0x100000 - bytes_read) < 0x18000) {
+    if ((0x100000 - bytes_read) < 0x18000) {
         NuFileError();
     }
     word_buf = (char *)((u32)mem_buf + bytes_read);
@@ -6661,7 +6658,7 @@ i32 __cdecl NuStringTableLoadCSV(char *filepath, VARIPTR *buf, VARIPTR buf_end, 
     if (bytes_read > 0) {
         for (file_index = 0; file_index < 20; file_index++) {
             if (pc_memfiles[file_index].used == 0) {
-                pc_memfiles[file_index].buffer = (u8 *)mem_buf;
+                pc_memfiles[file_index].buffer = mem_buf;
                 pc_memfiles[file_index].end = (u8 *)mem_buf + bytes_read - 1;
                 pc_memfiles[file_index].position = pc_memfiles[file_index].buffer;
                 pc_memfiles[file_index].mode = 0;
@@ -6693,7 +6690,7 @@ i32 __cdecl NuStringTableLoadCSV(char *filepath, VARIPTR *buf, VARIPTR buf_end, 
     if (bytes_read > 0) {
         for (file_index = 0; file_index < 20; file_index++) {
             if (pc_memfiles[file_index].used == 0) {
-                pc_memfiles[file_index].buffer = (u8 *)mem_buf;
+                pc_memfiles[file_index].buffer = mem_buf;
                 pc_memfiles[file_index].end = (u8 *)mem_buf + bytes_read - 1;
                 pc_memfiles[file_index].position = pc_memfiles[file_index].buffer;
                 pc_memfiles[file_index].mode = 0;
@@ -6800,7 +6797,7 @@ i32 __cdecl NuStringTableLoadTXT(char *filepath, VARIPTR *buf, VARIPTR buf_end) 
     i = 0;
     mem_buf = (void *)(buf_end.addr - 0x100000);
     bytes_read = NuFileLoadBuffer(filepath, mem_buf, 0x100000);
-    if ((i32)(0x100000 - bytes_read) < 0x8000) {
+    if ((0x100000 - bytes_read) < 0x8000) {
         NuFileError();
     }
     tmp_buf = (char *)((u32)mem_buf + bytes_read);
@@ -6808,7 +6805,7 @@ i32 __cdecl NuStringTableLoadTXT(char *filepath, VARIPTR *buf, VARIPTR buf_end) 
     if (bytes_read > 0) {
         for (file_index = 0; file_index < 20; file_index++) {
             if (pc_memfiles[file_index].used == 0) {
-                pc_memfiles[file_index].buffer = (u8 *)mem_buf;
+                pc_memfiles[file_index].buffer = mem_buf;
                 pc_memfiles[file_index].end = (u8 *)mem_buf + bytes_read - 1;
                 pc_memfiles[file_index].position = pc_memfiles[file_index].buffer;
                 pc_memfiles[file_index].mode = 0;
@@ -6836,7 +6833,7 @@ i32 __cdecl NuStringTableLoadTXT(char *filepath, VARIPTR *buf, VARIPTR buf_end) 
     if (bytes_read > 0) {
         for (file_index = 0; file_index < 20; file_index++) {
             if (pc_memfiles[file_index].used == 0) {
-                pc_memfiles[file_index].buffer = (u8 *)mem_buf;
+                pc_memfiles[file_index].buffer = mem_buf;
                 pc_memfiles[file_index].end = (u8 *)mem_buf + bytes_read - 1;
                 pc_memfiles[file_index].position = pc_memfiles[file_index].buffer;
                 pc_memfiles[file_index].mode = 0;
@@ -7138,7 +7135,7 @@ void __cdecl NuStringFilterLoad(char *path, VARIPTR *buf, VARIPTR buf_end) {
     if (bytes_read > 0) {
         for (file_index = 0; file_index < 20; file_index++) {
             if (pc_memfiles[file_index].used == 0) {
-                pc_memfiles[file_index].buffer = (u8 *)mem_buf;
+                pc_memfiles[file_index].buffer = mem_buf;
                 pc_memfiles[file_index].end = (u8 *)mem_buf + bytes_read - 1;
                 pc_memfiles[file_index].position = pc_memfiles[file_index].buffer;
                 pc_memfiles[file_index].mode = 0;
@@ -7171,7 +7168,7 @@ void __cdecl NuStringFilterLoad(char *path, VARIPTR *buf, VARIPTR buf_end) {
     if (bytes_read > 0) {
         for (file_index = 0; file_index < 20; file_index++) {
             if (pc_memfiles[file_index].used == 0) {
-                pc_memfiles[file_index].buffer = (u8 *)mem_buf;
+                pc_memfiles[file_index].buffer = mem_buf;
                 pc_memfiles[file_index].end = (u8 *)mem_buf + bytes_read - 1;
                 pc_memfiles[file_index].position = pc_memfiles[file_index].buffer;
                 pc_memfiles[file_index].mode = 0;
@@ -7271,7 +7268,7 @@ u16 *__cdecl NuStringBadSubString(const u16 *text, const u16 *word, i32 *length,
                     is_fluff = NuStringIsFluffPc(cursor[1]);
                 }
                 if (is_fluff) {
-                    *length = (i32)(cursor - text);
+                    *length = cursor - text;
                     return (u16 *)text;
                 }
             }
@@ -7342,7 +7339,7 @@ i32 __cdecl NuPPLoadBuffer(NUFILE file, void *buf, i32 buf_size) {
     if (header.magic == 0x02434e52) {
         header.unpacked_size = NUPP_SWAP32(header.unpacked_size);
         header.packed_size = NUPP_SWAP32(header.packed_size) + 18;
-        source = (u8 *)buf;
+        source = buf;
         source += header.unpacked_size + 256;
         source -= header.packed_size;
         do {
@@ -7482,7 +7479,7 @@ void __cdecl NuAPIInit(void) {
     nuapi.pad_record.buf_size = NUAPI_PADREC_DEFAULT_BUFFERSIZE;
     nuapi.pad_record.end_record_buttons = 0;
     nuapi.pad_record.end_play_buttons = 0;
-    NuWindInitialise((NUWIND *)nuapi.wind);
+    NuWindInitialise(nuapi.wind);
 }
 
 void __cdecl NuFrameBegin(void) {
@@ -7709,7 +7706,7 @@ f32 __cdecl NuFrameEnd(void) {
         NuFileError();
     }
     NuTimeGetTicksPS(&nuapi.time2.low, &nuapi.time2.high);
-    if ((i32)nuapi.time2.high < 0) {
+    if (nuapi.time2.high < 0) {
         NuFileError();
     }
     bgprocFrameSleepPc(min_delay);
@@ -7887,8 +7884,8 @@ static void DeadZoneValueXY(i32 *x_value, i32 *y_value, i32 deadzone) {
 }
 
 FRAME_PAD_PC *NuPadOpen(i32 device, i32 slot) {
-    FRAME_PAD_PC *pad = (FRAME_PAD_PC *)NuAlloc(sizeof(FRAME_PAD_PC) + 0x800,
-                                                "d:\\projects\\game_saga\\nu2api.saga\\nucore\\nupad.cpp", 180);
+    FRAME_PAD_PC *pad =
+        NuAlloc(sizeof(FRAME_PAD_PC) + 0x800, "d:\\projects\\game_saga\\nu2api.saga\\nucore\\nupad.cpp", 180);
     if (pad != NULL) {
         memset(pad, 0, sizeof(*pad));
         pad->device = device;
@@ -9091,7 +9088,7 @@ void ImplodeMakeTable(i32 size, u8 *len, i32 unknown, u16 *table) {
         masks[i] = 1 << (0x10 - i);
     }
 
-    i = (i32)offsets[unknown + 1] >> shift;
+    i = offsets[unknown + 1] >> shift;
     if (i != 0) {
         for (j = 1 << unknown; i != j; i++) {
             table[i] = 0;

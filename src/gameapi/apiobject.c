@@ -2504,10 +2504,8 @@ i32 APIDrawCharacterModel(CHARACTER_MODEL_LAYERS_PC *model, APICHARACTERDATA *ch
                 model->model_data_b[animation->requested_animation] != NULL && animation->overlay_animation >= 0 &&
                 animation->overlay_animation < apicharsys->model_id_capacity &&
                 model->model_data_b[animation->overlay_animation] != NULL) {
-                if ((((CHARACTERANIM_CONFIG_PC *)(model->animation_configs[animation->requested_animation]))->flags &
-                     0x220) != 0 ||
-                    (((CHARACTERANIM_CONFIG_PC *)(model->animation_configs[animation->overlay_animation]))->flags &
-                     0x220) != 0) {
+                if ((model->animation_configs[animation->requested_animation]->flags & 0x220) != 0 ||
+                    (model->animation_configs[animation->overlay_animation]->flags & 0x220) != 0) {
                     evaluate_only = 1;
                 }
             }
@@ -2517,31 +2515,26 @@ i32 APIDrawCharacterModel(CHARACTER_MODEL_LAYERS_PC *model, APICHARACTERDATA *ch
                    animation->blend_target_animation >= 0 &&
                    animation->blend_target_animation < apicharsys->model_id_capacity &&
                    model->model_data_b[animation->blend_target_animation] != NULL) {
-            if ((((CHARACTERANIM_CONFIG_PC *)(model->animation_configs[animation->blend_source_animation]))->flags &
-                 0x220) != 0 ||
-                (((CHARACTERANIM_CONFIG_PC *)(model->animation_configs[animation->blend_target_animation]))->flags &
-                 0x220) != 0) {
+            if ((model->animation_configs[animation->blend_source_animation]->flags & 0x220) != 0 ||
+                (model->animation_configs[animation->blend_target_animation]->flags & 0x220) != 0) {
                 evaluate_only = 1;
             }
         } else if (animation->blending != 0 && animation->blend_target_animation >= 0 &&
                    animation->blend_target_animation < apicharsys->model_id_capacity &&
                    model->model_data_b[animation->blend_target_animation] != NULL) {
-            if ((((CHARACTERANIM_CONFIG_PC *)(model->animation_configs[animation->blend_target_animation]))->flags &
-                 0x220) != 0) {
+            if ((model->animation_configs[animation->blend_target_animation]->flags & 0x220) != 0) {
                 evaluate_only = 1;
             }
         } else if (animation->blending != 0 && animation->blend_source_animation >= 0 &&
                    animation->blend_source_animation < apicharsys->model_id_capacity &&
                    model->model_data_b[animation->blend_source_animation] != NULL) {
-            if ((((CHARACTERANIM_CONFIG_PC *)(model->animation_configs[animation->blend_source_animation]))->flags &
-                 0x220) != 0) {
+            if ((model->animation_configs[animation->blend_source_animation]->flags & 0x220) != 0) {
                 evaluate_only = 1;
             }
         } else if (animation->blending == 0 && animation->animation_index >= 0 &&
                    animation->animation_index < apicharsys->model_id_capacity &&
                    model->model_data_b[animation->animation_index] != NULL) {
-            if ((((CHARACTERANIM_CONFIG_PC *)(model->animation_configs[animation->animation_index]))->flags & 0x220) !=
-                0) {
+            if ((model->animation_configs[animation->animation_index]->flags & 0x220) != 0) {
                 evaluate_only = 1;
             }
         }
@@ -2637,10 +2630,8 @@ i32 APIDrawCharacterModel(CHARACTER_MODEL_LAYERS_PC *model, APICHARACTERDATA *ch
                        animation->blend_target_animation >= 0 &&
                        animation->blend_target_animation < apicharsys->model_id_capacity &&
                        model->model_data_b[animation->blend_target_animation] != NULL) {
-                if ((((CHARACTERANIM_CONFIG_PC *)(model->animation_configs[animation->blend_source_animation]))->flags &
-                     0x20) != 0 ||
-                    (((CHARACTERANIM_CONFIG_PC *)(model->animation_configs[animation->blend_target_animation]))->flags &
-                     0x20) != 0) {
+                if ((model->animation_configs[animation->blend_source_animation]->flags & 0x20) != 0 ||
+                    (model->animation_configs[animation->blend_target_animation]->flags & 0x20) != 0) {
                     NuHGobjEvalAnimBlend2Root(
                         model->hierarchy, model->model_data_b[animation->blend_source_animation],
                         animation->blend_source_time, model->model_data_b[animation->blend_target_animation],

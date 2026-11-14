@@ -94,12 +94,12 @@ STATIC_ASSERT(sizeof(OBSTACLE_RUNTIME_FLAGS_PC) == 4);
 STATIC_ASSERT(offsetof(GIZOBSTACLE, progress_flags) == 0x94);
 
 void __cdecl GizmoObstacle_Activate(GIZMO_PC *ptr, i32 activate) {
-    GIZMO_PC *gizmo = (GIZMO_PC *)ptr;
+    GIZMO_PC *gizmo = ptr;
     GIZOBSTACLE *obstacle;
     if (!gizmo) {
         return;
     }
-    obstacle = (GIZOBSTACLE *)gizmo->object;
+    obstacle = gizmo->object;
     if (activate && !(obstacle->progress_flags & 1)) {
         GameAnimSet_JumpToStart(obstacle->anim_set);
     }
@@ -113,7 +113,7 @@ void __cdecl GizmoObstacle_Activate(GIZMO_PC *ptr, i32 activate) {
 }
 
 void __cdecl GizmoObstacle_SetVisibility(GIZMO_PC *ptr, i32 visibility) {
-    GIZMO_PC *gizmo = (GIZMO_PC *)ptr;
+    GIZMO_PC *gizmo = ptr;
     GIZOBSTACLE *obstacle = gizmo ? (GIZOBSTACLE *)gizmo->object : NULL;
     if (!obstacle) {
         return;
@@ -137,7 +137,7 @@ i32 __cdecl GizmoObstacle_GetNumOutputs(GIZMO_PC *gizmo) {
 }
 
 i32 __cdecl GizmoObstacle_GetOutput(GIZMO_PC *gizmo, i32 output, i32 ignore_activation) {
-    GIZOBSTACLE *obstacle = (GIZOBSTACLE *)gizmo->object;
+    GIZOBSTACLE *obstacle = gizmo->object;
     if (!obstacle) {
         return 0;
     }
@@ -166,7 +166,7 @@ i32 __cdecl GizmoObstacle_ActivateRev(GIZMO_PC *gizmo, i32 activate, i32 flags) 
     if (!gizmo) {
         return 0;
     }
-    obstacle = (GIZOBSTACLE *)gizmo->object;
+    obstacle = gizmo->object;
     if (!obstacle) {
         return 0;
     }
@@ -201,7 +201,7 @@ void *__cdecl GizObstacles_AllocateProgressData(VARIPTR *buffer, VARIPTR *end) {
 }
 
 void __cdecl GizObstacles_ClearProgress(void *world, void *ptr) {
-    GIZOBSTACLE_PROGRESS_PC *progress = (GIZOBSTACLE_PROGRESS_PC *)ptr;
+    GIZOBSTACLE_PROGRESS_PC *progress = ptr;
     (void)world;
     if (!progress) {
         return;
@@ -230,8 +230,8 @@ GIZOBSTACLE *GizObstacle_FindByName(GIZOBSTACLESYS_s *system, char *name) {
 }
 
 void __cdecl GizObstacles_StoreProgress(void *world, void *ptr, void *progress_ptr) {
-    GIZOBSTACLE_SYSTEM_PC *system = (GIZOBSTACLE_SYSTEM_PC *)ptr;
-    GIZOBSTACLE_PROGRESS_PC *progress = (GIZOBSTACLE_PROGRESS_PC *)progress_ptr;
+    GIZOBSTACLE_SYSTEM_PC *system = ptr;
+    GIZOBSTACLE_PROGRESS_PC *progress = progress_ptr;
     i32 i;
     GIZOBSTACLE *obstacle;
     GizObstacles_ClearProgress(world, progress);
@@ -272,7 +272,7 @@ void __cdecl GizObstacles_StoreProgress(void *world, void *ptr, void *progress_p
 }
 
 void __cdecl GizObstacles_AddLevelSfx(void *world, void *ptr, i32 *ids, i32 *count, i32 maximum) {
-    GIZOBSTACLE_SYSTEM_PC *system = (GIZOBSTACLE_SYSTEM_PC *)ptr;
+    GIZOBSTACLE_SYSTEM_PC *system = ptr;
     i32 i;
     GIZOBSTACLE *obstacle;
     (void)world;
@@ -301,7 +301,7 @@ static void __cdecl Gizobstacle_ReadAnimSetData(GAMEANIMOBJ *object, u8 version)
     if (!object) {
         return;
     }
-    data = (u16 *)object->object_data;
+    data = object->object_data;
     if (!data) {
         fallback_data.storage = 0;
         data = &fallback_data.value;
@@ -314,14 +314,14 @@ static void __cdecl Gizobstacle_ReadAnimSetData(GAMEANIMOBJ *object, u8 version)
 }
 
 void *__cdecl GizObstacles_ReserveBufferSpace(void *world_ptr) {
-    WORLDINFO *world = (WORLDINFO *)world_ptr;
+    WORLDINFO *world = world_ptr;
     GIZOBSTACLE_SYSTEM_PC *system;
     i32 i;
-    system = (GIZOBSTACLE_SYSTEM_PC *)GameBufferAlloc(&world->giz_buffer, &world->buffer_end, sizeof(*system));
+    system = GameBufferAlloc(&world->giz_buffer, &world->buffer_end, sizeof(*system));
     system->capacity = world->current_level->max_obstacles;
-    system->obstacles = (GIZOBSTACLE *)GameBufferAlloc(&world->giz_buffer, &world->buffer_end, system->capacity * 0xa0);
-    system->active_gizmos = (GIZMO_PC **)GameBufferAlloc(&world->giz_buffer, &world->buffer_end,
-                                                         system->capacity * sizeof(*system->active_gizmos));
+    system->obstacles = GameBufferAlloc(&world->giz_buffer, &world->buffer_end, system->capacity * 0xa0);
+    system->active_gizmos =
+        GameBufferAlloc(&world->giz_buffer, &world->buffer_end, system->capacity * sizeof(*system->active_gizmos));
     system->anim_pool = GameAnimSet_CreateObjectPool(&world->giz_buffer, &world->buffer_end, 4,
                                                      (u16)world->current_level->max_obstacle_objects);
     for (i = 0; i < system->capacity; ++i) {
@@ -333,14 +333,14 @@ void *__cdecl GizObstacles_ReserveBufferSpace(void *world_ptr) {
 }
 
 i32 __cdecl GizObstacles_Load(void *world_ptr, void *data) {
-    WORLDINFO *world = (WORLDINFO *)world_ptr;
-    GIZOBSTACLE_SYSTEM_PC *system = (GIZOBSTACLE_SYSTEM_PC *)data;
+    WORLDINFO *world = world_ptr;
+    GIZOBSTACLE_SYSTEM_PC *system = data;
     u8 version = (u8)EdFileReadChar();
     i32 index;
     GIZOBSTACLE *obstacle;
     system->count = (u16)EdFileReadShort();
     if (system->count != 0) {
-        obstacle = (GIZOBSTACLE *)system->obstacles;
+        obstacle = system->obstacles;
         for (index = 0; index < system->count; ++index, ++obstacle) {
             char sfx_name[64];
             EdFileRead(obstacle->name, sizeof(obstacle->name));
@@ -394,7 +394,7 @@ i32 __cdecl GizObstacles_Load(void *world_ptr, void *data) {
             if (version >= 9) {
                 if (version >= 10) {
                     char name[32];
-                    i32 length = (i8)EdFileReadChar();
+                    i32 length = EdFileReadChar();
                     if (length) {
                         EdFileRead(name, length);
                         obstacle->blowup_type = (i16)GizmoBlowupGetNameTableId(name);
@@ -424,7 +424,7 @@ i32 __cdecl GizObstacles_Load(void *world_ptr, void *data) {
                     obstacle->start_sfx_id = (i16)GetSfxId(sfx_name);
                 }
             } else if (GizObstacle_SetDefaultSFXFn) {
-                GizObstacle_SetDefaultSFXFn(world, (GIZOBSTACLE *)obstacle);
+                GizObstacle_SetDefaultSFXFn(world, obstacle);
             }
             if (version >= 14) {
                 if (GizmoFileReadName(sfx_name)) {
@@ -437,16 +437,16 @@ i32 __cdecl GizObstacles_Load(void *world_ptr, void *data) {
 }
 
 void __cdecl GizObstacles_PostLoad(void *world, void *data) {
-    GIZOBSTACLE_SYSTEM_PC *system = (GIZOBSTACLE_SYSTEM_PC *)data;
+    GIZOBSTACLE_SYSTEM_PC *system = data;
     i32 i;
     GIZOBSTACLE *obstacle;
     if (!system) {
         return;
     }
-    obstacle = (GIZOBSTACLE *)system->obstacles;
+    obstacle = system->obstacles;
     for (i = 0; i < system->count; ++i, ++obstacle) {
         if (obstacle->runtime_flags & 2) {
-            obstacle->blowup_type = (i16)GizmoBlowupGetTypeFromNameTableId((WORLDINFO *)world, obstacle->blowup_type);
+            obstacle->blowup_type = (i16)GizmoBlowupGetTypeFromNameTableId(world, obstacle->blowup_type);
             obstacle->runtime_flags &= ~2u;
         }
     }
@@ -470,7 +470,7 @@ static void GizObstacle_ResetOnePrivate(WORLDINFO *world, GIZOBSTACLE *obstacle)
         return;
     }
     for (object = set->objects; object; object = object->next) {
-        i16 *object_data = (i16 *)object->object_data;
+        i16 *object_data = object->object_data;
         object_data[1] = -1;
         if (world->terrain && !(object_data[0] & 1) && NuSpecialExistsFn(&object->special)) {
             object_data[1] = (i16)FindPlatInst(NuSpecialGetInstanceix(&object->special));
@@ -482,7 +482,7 @@ static void GizObstacle_ResetOnePrivate(WORLDINFO *world, GIZOBSTACLE *obstacle)
             obstacle->runtime_flags |= 0x20;
         }
     }
-    obstacle->room_id = world->current_gscn ? (i16)NuPortalWhichRoom(world->current_gscn, &obstacle->position) : -1;
+    obstacle->room_id = world->current_gscn ? NuPortalWhichRoom(world->current_gscn, &obstacle->position) : -1;
     if (obstacle->config_flags & 2) {
         GameAnimSet_GetAveragePos(obstacle->anim_set, &obstacle->secondary_position, 0, 1, 1);
     }
@@ -491,11 +491,11 @@ static void GizObstacle_ResetOnePrivate(WORLDINFO *world, GIZOBSTACLE *obstacle)
 }
 
 void __cdecl GizObstacles_Reset(void *world_ptr, void *data, void *progress_ptr) {
-    WORLDINFO *world = (WORLDINFO *)world_ptr;
-    GIZOBSTACLE_SYSTEM_PC *system = (GIZOBSTACLE_SYSTEM_PC *)data;
-    GIZOBSTACLE_PROGRESS_PC *progress = (GIZOBSTACLE_PROGRESS_PC *)progress_ptr;
+    WORLDINFO *world = world_ptr;
+    GIZOBSTACLE_SYSTEM_PC *system = data;
+    GIZOBSTACLE_PROGRESS_PC *progress = progress_ptr;
     i32 i;
-    GIZOBSTACLE *obstacle = (GIZOBSTACLE *)system->obstacles;
+    GIZOBSTACLE *obstacle = system->obstacles;
     for (i = 0; i < system->count; ++i, ++obstacle) {
         GizObstacle_ResetOnePrivate(world, obstacle);
         if (progress && i < 128) {
@@ -733,8 +733,8 @@ static void(__cdecl *GizObstacleUpdateFnsPc[8])(GIZOBSTACLE *) = {
     GizObstacleUpdate_TechnoOnly, GizObstacleUpdate_Proximity, GizObstacleUpdate_Proximity, GizObstacleUpdate_PushOnly};
 
 void __cdecl GizObstacles_Update(void *world_ptr, void *data, f32 time) {
-    WORLDINFO *world = (WORLDINFO *)world_ptr;
-    GIZOBSTACLE_SYSTEM_PC *system = (GIZOBSTACLE_SYSTEM_PC *)data;
+    WORLDINFO *world = world_ptr;
+    GIZOBSTACLE_SYSTEM_PC *system = data;
     GIZMOSYS_PREFIX_PC *gizmo_sys;
     GIZMOSET_PC *set;
     GIZMO_PC *gizmo;
@@ -743,14 +743,14 @@ void __cdecl GizObstacles_Update(void *world_ptr, void *data, f32 time) {
     if (!world || !system) {
         return;
     }
-    gizmo_sys = (GIZMOSYS_PREFIX_PC *)world->gizmo_sys;
+    gizmo_sys = world->gizmo_sys;
     if (!gizmo_sys || !gizmo_sys->sets) {
         return;
     }
     system->active_gizmo_count = 0;
     set = &gizmo_sys->sets[obstacle_gizmotype_id];
     for (gizmo = set->gizmos, i = 0; i < set->count; ++i, ++gizmo) {
-        GIZOBSTACLE *obstacle = (GIZOBSTACLE *)gizmo->object;
+        GIZOBSTACLE *obstacle = gizmo->object;
         GAMEOBJECT *previous = obstacle->triggering_object;
         obstacle->triggering_object = NULL;
         if (!(obstacle->progress_flags & 2) || !(obstacle->progress_flags & 5) || !obstacle->anim_set ||
@@ -784,7 +784,7 @@ void __cdecl GizObstacles_Update(void *world_ptr, void *data, f32 time) {
             if (obstacle->runtime_flags & 0x20) {
                 GAMEANIMOBJ *object;
                 for (object = obstacle->anim_set->objects; object; object = object->next) {
-                    GIZOBSTACLE_OBJECT_DATA_PC *object_data = (GIZOBSTACLE_OBJECT_DATA_PC *)object->object_data;
+                    GIZOBSTACLE_OBJECT_DATA_PC *object_data = object->object_data;
                     if (object_data->flags & 2) {
                         AddShoveObject(&object->special, object_data->platform_id);
                     }
@@ -880,7 +880,7 @@ void __cdecl GizObstacle_SetPushControlled(GIZOBSTACLE *obstacle, GAMEOBJECT *ob
 
 GIZOBSTACLE *__cdecl GizObstacle_FindNearest(void *ptr, NUVEC *position, GAMEOBJECT *object, f32 *distance_squared,
                                              i32 mode) {
-    GIZOBSTACLE_SYSTEM_PC *system = (GIZOBSTACLE_SYSTEM_PC *)ptr;
+    GIZOBSTACLE_SYSTEM_PC *system = ptr;
     GIZOBSTACLE *nearest;
     GIZOBSTACLE *obstacle;
     f32 closest;
@@ -936,11 +936,11 @@ i32 __cdecl GizObstacles_Hit(void *world, GIZOBSTACLE *obstacle, NUVEC *position
             for (object = obstacle->anim_set ? obstacle->anim_set->objects : NULL; object; object = object->next) {
                 NUVEC *draw_position = NuSpecialGetDrawPos(&object->special);
                 if (draw_position) {
-                    GizmoBlowUpTypeBlowUp((WORLDINFO *)world, obstacle->blowup_type, draw_position);
+                    GizmoBlowUpTypeBlowUp(world, obstacle->blowup_type, draw_position);
                 }
             }
         } else {
-            GizmoBlowUpTypeBlowUp((WORLDINFO *)world, obstacle->blowup_type, &obstacle->evaluated_position);
+            GizmoBlowUpTypeBlowUp(world, obstacle->blowup_type, &obstacle->evaluated_position);
         }
     }
     GameAnimSet_JumpToEnd(obstacle->anim_set);
@@ -989,11 +989,11 @@ GIZMO_PC *__cdecl GizObstacles_GetBestBoltTarget(GIZMOSET_PC *set, f32 *result_d
             aim.y = 0.0f;
             NuVecNorm(&aim, &aim);
         }
-        system = (GIZOBSTACLE_SYSTEM_PC *)set->data;
-        object = (GAMEOBJECT *)object_ptr;
+        system = set->data;
+        object = object_ptr;
         for (i = 0; i < system->active_gizmo_count; ++i) {
             GIZMO_PC *gizmo = system->active_gizmos[i];
-            GIZOBSTACLE *obstacle = (GIZOBSTACLE *)gizmo->object;
+            GIZOBSTACLE *obstacle = gizmo->object;
             NUVEC *target;
             NUVEC delta;
             f32 distance;
@@ -1064,8 +1064,8 @@ GIZMO_PC *__cdecl GizObstacles_GetBestBoltTarget(GIZMOSET_PC *set, f32 *result_d
 }
 
 void __cdecl GizObstacles_Draw(void *world_ptr, void *data, f32 time) {
-    WORLDINFO *world = (WORLDINFO *)world_ptr;
-    GIZOBSTACLE_SYSTEM_PC *system = (GIZOBSTACLE_SYSTEM_PC *)data;
+    WORLDINFO *world = world_ptr;
+    GIZOBSTACLE_SYSTEM_PC *system = data;
     GIZOBSTACLE *obstacle;
     i32 i;
     (void)time;
@@ -1089,12 +1089,12 @@ STATIC_ASSERT(offsetof(BOLT_PC, hit_platform) == 0xfa);
 STATIC_ASSERT(offsetof(BOLT_PC, type_id) == 0x101);
 
 static i32 __cdecl GizObstacles_GetMaxGizmos(void *world_ptr) {
-    WORLDINFO *world = (WORLDINFO *)world_ptr;
+    WORLDINFO *world = world_ptr;
     return world ? world->current_level->max_obstacles : 0;
 }
 
 static void __cdecl GizObstacles_AddGizmos(void *gizmo_sys, i32 type_id, void *world, void *data) {
-    GIZOBSTACLE_SYSTEM_PC *system = (GIZOBSTACLE_SYSTEM_PC *)data;
+    GIZOBSTACLE_SYSTEM_PC *system = data;
     i32 i;
     (void)world;
     if (system) {
@@ -1125,14 +1125,14 @@ static char *__cdecl GizmoObstacle_GetOutputName(GIZMO_PC *gizmo, i32 output) {
 }
 
 static i32 __cdecl GizObstacles_BoltHitPlat(void *world, void *data, BOLT_PC *bolt, u8 *hit_flags) {
-    GIZOBSTACLE_SYSTEM_PC *system = (GIZOBSTACLE_SYSTEM_PC *)data;
+    GIZOBSTACLE_SYSTEM_PC *system = data;
     i32 i;
     i32 count;
     (void)hit_flags;
     if (system) {
         count = system->active_gizmo_count;
         for (i = 0; i < count; ++i) {
-            GIZOBSTACLE *obstacle = (GIZOBSTACLE *)system->active_gizmos[i]->object;
+            GIZOBSTACLE *obstacle = system->active_gizmos[i]->object;
             GAMEANIMOBJ *object;
             if (!(obstacle->progress_flags & 2) || !(obstacle->progress_flags & 1) ||
                 !(obstacle->runtime_flags & 0x10) || (obstacle->runtime_flags & 0x80)) {
@@ -1144,12 +1144,12 @@ static i32 __cdecl GizObstacles_BoltHitPlat(void *world, void *data, BOLT_PC *bo
                     i16 platform;
                 } OBSTACLE_ANIM_OBJECT_DATA_PC;
 
-                OBSTACLE_ANIM_OBJECT_DATA_PC *object_data = (OBSTACLE_ANIM_OBJECT_DATA_PC *)object->object_data;
+                OBSTACLE_ANIM_OBJECT_DATA_PC *object_data = object->object_data;
                 STATIC_ASSERT(sizeof(OBSTACLE_ANIM_OBJECT_DATA_PC) == 4);
                 STATIC_ASSERT(offsetof(OBSTACLE_ANIM_OBJECT_DATA_PC, platform) == 2);
                 if (object_data->platform == bolt->hit_platform) {
-                    BOLTTYPE_PC *type = BoltType_FindByID(bolt->type_id, (WORLDINFO *)world);
-                    GAMEOBJECT *owner = (GAMEOBJECT *)bolt->owner;
+                    BOLTTYPE_PC *type = BoltType_FindByID(bolt->type_id, world);
+                    GAMEOBJECT *owner = bolt->owner;
                     i32 player = owner ? (i8)owner->field_280 : -1;
                     GizObstacles_Hit(world, obstacle, &bolt->position, player, type->field_3c);
                     return 1;
@@ -1163,14 +1163,14 @@ static i32 __cdecl GizObstacles_BoltHitPlat(void *world, void *data, BOLT_PC *bo
 static i32 __cdecl GizObstacles_BoltHit(void *world, void *data, void *attacker_ptr, NUVEC *points, i32 point_count,
                                         f32 radius, NUVEC *minimum, NUVEC *maximum, BOLT_PC *bolt, u32 hit_type,
                                         u8 *hit_flags) {
-    GIZOBSTACLE_SYSTEM_PC *system = (GIZOBSTACLE_SYSTEM_PC *)data;
-    GAMEOBJECT *attacker = (GAMEOBJECT *)attacker_ptr;
+    GIZOBSTACLE_SYSTEM_PC *system = data;
+    GAMEOBJECT *attacker = attacker_ptr;
     GIZOBSTACLE *nearest = NULL;
     f32 nearest_distance = 1000000000.0f;
     i32 i;
     if (system) {
         for (i = 0; i < system->active_gizmo_count; ++i) {
-            GIZOBSTACLE *obstacle = (GIZOBSTACLE *)system->active_gizmos[i]->object;
+            GIZOBSTACLE *obstacle = system->active_gizmos[i]->object;
             NUVEC *position;
             i32 point_index;
             f32 obstacle_radius;
@@ -1211,8 +1211,8 @@ static i32 __cdecl GizObstacles_BoltHit(void *world, void *data, void *attacker_
                 BoltType_FindByID(bolt->type_id, WORLD);
                 Cheats_CheckFlags(2);
             }
-            type = BoltType_FindByID(bolt->type_id, (WORLDINFO *)world);
-            owner = (GAMEOBJECT *)bolt->owner;
+            type = BoltType_FindByID(bolt->type_id, world);
+            owner = bolt->owner;
             player = owner ? (i8)owner->field_280 : -1;
             if (GizObstacles_Hit(world, nearest, &bolt->position, player, type->field_3c)) {
                 if (attacker) {
@@ -1323,7 +1323,7 @@ u32 __cdecl GizObstacles_TotalScore(WORLDINFO *world) {
     GIZOBSTACLE *obstacle;
     u32 total = 0;
     i32 i;
-    system = (GIZOBSTACLESYS_s *)world->giz_obstacle_sys;
+    system = world->giz_obstacle_sys;
     if (system != NULL) {
         obstacle = system->obstacles;
         if (obstacle != NULL) {

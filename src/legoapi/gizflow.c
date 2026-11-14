@@ -37,7 +37,7 @@ void __cdecl ResetGizmoFlowBox(GIZFLOW_PC *system, FLOWBOX_PC *box) {
     FLOWBOXGIZMODATA_PC *data;
     i32 i;
 
-    data = (FLOWBOXGIZMODATA_PC *)box->data;
+    data = box->data;
     if ((box->state_flags & 0x1000) != 0) {
         return;
     }
@@ -51,7 +51,7 @@ i32 __cdecl CheckOutputGizmoFlowBox(GIZFLOW_PC *system, FLOWBOX_PC *box, u8 outp
     i32 result = 1;
     i32 i;
 
-    data = (FLOWBOXGIZMODATA_PC *)box->data;
+    data = box->data;
     if (((box->state_flags & 0x4000) == 0 && FreePlay == 0) || ((box->state_flags & 0x2000) == 0 && FreePlay != 0)) {
         return 1;
     }
@@ -96,7 +96,7 @@ static void ResetForLoopEx(GIZFLOW_PC *flow, FLOWBOX_PC *root, FLOWBOX_PC *box, 
     }
     box->loop_checksum = checksum;
     if (box->type == 0 && (box->state_flags & 0x1000) == 0 && box->data != NULL) {
-        data = (FLOWBOXGIZMODATA_PC *)box->data;
+        data = box->data;
         for (i = 0; i < data->gizmo_count; ++i) {
             GizmoActivate(flow->gizmo_sys, data->gizmos[i]->gizmo, 0, 1);
         }
@@ -107,7 +107,7 @@ static void ResetForLoopEx(GIZFLOW_PC *flow, FLOWBOX_PC *root, FLOWBOX_PC *box, 
 }
 
 i32 __cdecl ProcessConditionFlowBox(GIZFLOW_PC *flow, FLOWBOX_PC *box, u8 frame) {
-    FLOWBOXCONDITION_PC *condition = (FLOWBOXCONDITION_PC *)box->data;
+    FLOWBOXCONDITION_PC *condition = box->data;
     i32 i;
     FLOWBOX_PC **parents;
     u8 *outputs;
@@ -264,13 +264,13 @@ void __cdecl CheckIfParentsFinished(GIZFLOW_PC *system, FLOWBOX_PC *box) {
             continue;
         }
         if ((flags & 8) != 0) {
-            FLOWBOXGIZMODATA_PC *data = (FLOWBOXGIZMODATA_PC *)parent->data;
+            FLOWBOXGIZMODATA_PC *data = parent->data;
             i32 j;
             for (j = 0; j < data->gizmo_count; ++j) {
                 GizmoSetVisibility(system->gizmo_sys, data->gizmos[j]->gizmo, 0, 1);
             }
         } else if ((flags & 0x10) != 0) {
-            FLOWBOXGIZMODATA_PC *data = (FLOWBOXGIZMODATA_PC *)parent->data;
+            FLOWBOXGIZMODATA_PC *data = parent->data;
             i32 j;
             for (j = 0; j < data->gizmo_count; ++j) {
                 GizmoActivate(system->gizmo_sys, data->gizmos[j]->gizmo, 0, 1);
@@ -290,7 +290,7 @@ void __cdecl PerformActionFlowBox(GIZFLOW_PC *system, FLOWBOX_PC *box) {
     if (box == NULL || box->type != 2) {
         return;
     }
-    for (action = (FLOWBOXACTION_PC *)box->data; action != NULL; action = action->next) {
+    for (action = box->data; action != NULL; action = action->next) {
         if (action->definition != NULL && action->definition->action_fn != NULL) {
             LOG_INFO_IF(GameTimer.update_count < 2, "Giz action before: definition=%p function=%p",
                         (void *)action->definition, (void *)action->definition->action_fn);
@@ -325,7 +325,7 @@ i32 __cdecl ProcessGizmoFlowBox(GIZFLOW_PC *system, FLOWBOX_PC *box, u8 frame) {
     if ((flags & 0x1000) != 0 || ((flags & 0x4000) == 0 && FreePlay == 0) || ((flags & 0x2000) == 0 && FreePlay != 0)) {
         return 1;
     }
-    data = (FLOWBOXGIZMODATA_PC *)box->data;
+    data = box->data;
     for (i = 0; i < data->gizmo_count; ++i) {
         GizmoActivate(system->gizmo_sys, data->gizmos[i]->gizmo, 1, 1);
     }
@@ -373,14 +373,14 @@ static void FlowBoxActivationFeedback(GIZFLOW_PC *system, FLOWBOX_PC *box) {
             }
         }
     }
-    data = (FLOWBOXGIZMODATA_PC *)box->data;
+    data = box->data;
     for (i = 0; i < data->gizmo_count; ++i) {
         GizmoActivateReverse(system->gizmo_sys, data->gizmos[i]->gizmo, 0, (box->state_flags >> 7) & 1, 1);
     }
     return;
 
 parent_failed:
-    data = (FLOWBOXGIZMODATA_PC *)box->data;
+    data = box->data;
     for (i = 0; i < data->gizmo_count; ++i) {
         GizmoActivateReverse(system->gizmo_sys, data->gizmos[i]->gizmo, 1, (box->state_flags >> 7) & 1, 1);
     }
@@ -406,7 +406,7 @@ void __cdecl ProcessFlowBox(GIZFLOW_PC *system, FLOWBOX_PC *box, u8 frame) {
         u16 set_visibility = (box->state_flags >> 3) & 1;
         if (set_visibility || (box->state_flags & 0x10) != 0) {
             if (box->child_count == 0) {
-                data = (FLOWBOXGIZMODATA_PC *)box->data;
+                data = box->data;
                 if (set_visibility) {
                     for (i = 0; i < data->gizmo_count; ++i) {
                         GizmoSetVisibility(system->gizmo_sys, data->gizmos[i]->gizmo, 0, 1);
@@ -490,7 +490,7 @@ void __cdecl ResetGizFlowPointers(GIZFLOW_PC *system) {
         if (box->type != 0) {
             continue;
         }
-        data = (FLOWBOXGIZMODATA_PC *)box->data;
+        data = box->data;
         for (j = 0; j < data->gizmo_count; ++j) {
             if (data->gizmos[j]->gizmo != NULL) {
                 data->gizmos[j]->gizmo = GizmoFindByName(
@@ -581,13 +581,13 @@ void __cdecl ResetGizFlow(GIZFLOW_PC *system, GIZFLOWPROGRESS_PC *progress) {
         }
         if (box->type == 0 && (((box->state_flags & 0x4000) == 0 && FreePlay == 0) ||
                                ((box->state_flags & 0x2000) == 0 && FreePlay != 0))) {
-            FLOWBOXGIZMODATA_PC *data = (FLOWBOXGIZMODATA_PC *)box->data;
+            FLOWBOXGIZMODATA_PC *data = box->data;
             i32 j;
             for (j = 0; j < data->gizmo_count; ++j) {
                 GizmoSetVisibility(system->gizmo_sys, data->gizmos[j]->gizmo, 0, 1);
             }
         } else if ((box->state_flags & 1) == 0 && (box->state_flags & 4) != 0 && box->type == 0) {
-            FLOWBOXGIZMODATA_PC *data = (FLOWBOXGIZMODATA_PC *)box->data;
+            FLOWBOXGIZMODATA_PC *data = box->data;
             i32 j;
             for (j = 0; j < data->gizmo_count; ++j) {
                 GizmoSetVisibility(system->gizmo_sys, data->gizmos[j]->gizmo, 0, 1);
@@ -712,12 +712,10 @@ static void GizFlowConfigGizmoPc(NUFPAR_PC *parser) {
     load_g_flags = 0;
     load_t_randomTime = 0;
     if (data == NULL) {
-        load_flowbox->data =
-            (FLOWBOXGIZMODATA_PC *)(GizmoBufferAlloc(load_buff, load_endbuff, sizeof(FLOWBOXGIZMODATA_PC)));
+        load_flowbox->data = GizmoBufferAlloc(load_buff, load_endbuff, sizeof(FLOWBOXGIZMODATA_PC));
         data = load_flowbox->data;
         data->capacity = load_numgizmos;
-        data->gizmos = (FLOWBOXGIZMOREF_PC **)(GizmoBufferAlloc(load_buff, load_endbuff,
-                                                                load_numgizmos * sizeof(FLOWBOXGIZMOREF_PC *)));
+        data->gizmos = GizmoBufferAlloc(load_buff, load_endbuff, load_numgizmos * sizeof(FLOWBOXGIZMOREF_PC *));
         data->gizmo_count = 0;
     }
     NuStrCpy(load_gizmoname, "");
@@ -735,9 +733,8 @@ static void GizFlowConfigGizmoPc(NUFPAR_PC *parser) {
     }
     name_size = NuStrLen(load_gizmoname);
     name_size += NuStrLen(((GIZMOTYPES_PC *)gizmotypes)->types[load_gizmotype].prefix);
-    data->gizmos[data->gizmo_count] =
-        (FLOWBOXGIZMOREF_PC *)(GizmoBufferAlloc(load_buff, load_endbuff, sizeof(FLOWBOXGIZMOREF_PC)));
-    data->gizmos[data->gizmo_count]->name = (char *)(GizmoBufferAlloc(load_buff, load_endbuff, name_size + 1));
+    data->gizmos[data->gizmo_count] = GizmoBufferAlloc(load_buff, load_endbuff, sizeof(FLOWBOXGIZMOREF_PC));
+    data->gizmos[data->gizmo_count]->name = GizmoBufferAlloc(load_buff, load_endbuff, name_size + 1);
     NuStrCpy(data->gizmos[data->gizmo_count]->name, load_gizmoname);
     if (load_gizmotype == giztimer_gizmotype_id) {
         data->gizmos[data->gizmo_count]->gizmo = createGizTimer(NULL, load_t_time, load_t_randomTime, load_gizmoname);
@@ -1007,7 +1004,7 @@ static void GizFlowConfigConditionPc(NUFPAR_PC *parser) {
     }
     NuFParPopCom(parser);
     if (load_conditiontype >= 0) {
-        condition = (u8 *)(GizmoBufferAlloc(load_buff, load_endbuff, 4));
+        condition = GizmoBufferAlloc(load_buff, load_endbuff, 4);
         if (condition != NULL) {
             condition[0] = load_conditiontype;
             condition[1] = load_conditionParam;
@@ -1056,7 +1053,7 @@ static void GizFlowConfigActionPc(NUFPAR_PC *parser) {
         continue;
 
     action_found:
-        action = (FLOWBOXACTION_PC *)(GizmoBufferAlloc(load_buff, load_endbuff, sizeof(FLOWBOXACTION_PC)));
+        action = GizmoBufferAlloc(load_buff, load_endbuff, sizeof(FLOWBOXACTION_PC));
         if (action == NULL) {
             continue;
         }
@@ -1079,7 +1076,7 @@ static void GizFlowConfigActionPc(NUFPAR_PC *parser) {
             }
         }
         if (count != 0) {
-            action->parameters = (char **)(GizmoBufferAlloc(load_buff, load_endbuff, count * sizeof(char *)));
+            action->parameters = GizmoBufferAlloc(load_buff, load_endbuff, count * sizeof(char *));
             if (action->parameters != NULL) {
                 action->parameter_count = count;
                 parameter_text = parameters[0];
@@ -1090,7 +1087,7 @@ static void GizFlowConfigActionPc(NUFPAR_PC *parser) {
                     if (parameter_text != NULL) {
                         length = NuStrLen(parameter_text);
                         if (length != 0) {
-                            parameter = (char *)(GizmoBufferAlloc(buffer, end, length + 1));
+                            parameter = GizmoBufferAlloc(buffer, end, length + 1);
                             NuStrCpy(parameter, parameter_text);
                         }
                     }
@@ -1158,9 +1155,8 @@ static void GizFlowConfigFlowBoxPc(NUFPAR_PC *parser) {
     if (load_gizflow != NULL && load_flowbox != NULL) {
         if (load_nparents != 0) {
             load_flowbox->parent_count = load_nparents;
-            load_flowbox->parents =
-                (FLOWBOX_PC **)(GizmoBufferAlloc(load_buff, load_endbuff, load_nparents * sizeof(FLOWBOX_PC *)));
-            load_flowbox->output_indices = (u8 *)(GizmoBufferAlloc(load_buff, load_endbuff, load_nparents));
+            load_flowbox->parents = GizmoBufferAlloc(load_buff, load_endbuff, load_nparents * sizeof(FLOWBOX_PC *));
+            load_flowbox->output_indices = GizmoBufferAlloc(load_buff, load_endbuff, load_nparents);
             for (i = 0; i < load_flowbox->parent_count; ++i) {
                 load_flowbox->parents[i] = &load_gizflow->flowboxes[load_parents[i]];
                 load_flowbox->output_indices[i] = load_parent_output_ix[i];
@@ -1168,13 +1164,12 @@ static void GizFlowConfigFlowBoxPc(NUFPAR_PC *parser) {
         }
         if (load_nchildren != 0) {
             load_flowbox->child_count = load_nchildren;
-            load_flowbox->children =
-                (FLOWBOX_PC **)(GizmoBufferAlloc(load_buff, load_endbuff, load_nchildren * sizeof(FLOWBOX_PC *)));
+            load_flowbox->children = GizmoBufferAlloc(load_buff, load_endbuff, load_nchildren * sizeof(FLOWBOX_PC *));
             for (i = 0; i < load_flowbox->child_count; ++i) {
                 load_flowbox->children[i] = &load_gizflow->flowboxes[load_children[i]];
             }
         }
-        load_flowbox->name = (char *)(GizmoBufferAlloc(load_buff, load_endbuff, strlen(load_name) + 1));
+        load_flowbox->name = GizmoBufferAlloc(load_buff, load_endbuff, strlen(load_name) + 1);
         NuStrCpy(load_flowbox->name, load_name);
     }
     --load_nflowboxes;
@@ -1211,12 +1206,11 @@ void *LoadGizFlow(void *world, void *system, char *path, VARIPTR *buffer, VARIPT
         if (load_nflowboxes != 0) {
             parser = NuFParOpen(file);
             if (parser != NULL) {
-                flow = (GIZFLOW_PC *)(GizmoBufferAlloc(load_buff, load_endbuff, sizeof(GIZFLOW_PC)));
+                flow = GizmoBufferAlloc(load_buff, load_endbuff, sizeof(GIZFLOW_PC));
                 if (flow != NULL) {
                     flow->flowbox_count = load_nflowboxes;
                     flow->gizmo_sys = system;
-                    flow->flowboxes =
-                        (FLOWBOX_PC *)(GizmoBufferAlloc(load_buff, load_endbuff, load_nflowboxes * sizeof(FLOWBOX_PC)));
+                    flow->flowboxes = GizmoBufferAlloc(load_buff, load_endbuff, load_nflowboxes * sizeof(FLOWBOX_PC));
                     load_gizflow = flow;
                     load_flowbox = flow->flowboxes;
                     NuFParPushCom(parser, cfgtab_git_pc);
@@ -1253,7 +1247,7 @@ void __cdecl DynamicAddGizmoToFlow(GIZFLOW_PC *system, GIZMO_PC *gizmo) {
     }
     box = system->flowboxes;
     for (i = 0; i < system->flowbox_count; ++i, ++box) {
-        FLOWBOXGIZMODATA_PC *data = (FLOWBOXGIZMODATA_PC *)box->data;
+        FLOWBOXGIZMODATA_PC *data = box->data;
         i32 j;
         if (data == NULL) {
             continue;

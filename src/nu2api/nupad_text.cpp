@@ -76,8 +76,8 @@ i32 __thiscall TEXT_INPUT_MANAGER_PC::ButtonName(i32 device, i32 button, char *d
     }
     i32 simple = device < 4;
     if (delimiters != NULL && delimiters[0] != 0 && delimiters[1] != 0) {
-        open = (i8)delimiters[0];
-        close = (i8)delimiters[1];
+        open = delimiters[0];
+        close = delimiters[1];
         if (open != 0) {
             *destination++ = (char)open;
         }

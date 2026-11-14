@@ -115,7 +115,7 @@ void __cdecl Shards_Reset(WORLDINFO *world, void *unused, SHARD_PROGRESS_PC *pro
     if (world == NULL || world->shards == NULL) {
         return;
     }
-    progress_record = (SHARD_s *)world->shards;
+    progress_record = world->shards;
     for (index = 0; index < world->shard_count; ++index, ++progress_record) {
         ShardInitRecordPc(world, &((SHARD_s *)world->shards)[index]);
         if (progress != NULL && index < 128) {
@@ -130,20 +130,20 @@ void __cdecl Shards_Reset(WORLDINFO *world, void *unused, SHARD_PROGRESS_PC *pro
 
 void __cdecl Shard_Activate(GIZMO_PC *gizmo, i32 active) {
     if (gizmo != NULL) {
-        SHARD_s *shard = (SHARD_s *)gizmo->object;
+        SHARD_s *shard = gizmo->object;
         shard->active = active != 0;
     }
 }
 
 void __cdecl Shard_SetVisibility(GIZMO_PC *gizmo, i32 visible) {
     if (gizmo != NULL) {
-        SHARD_s *shard = (SHARD_s *)gizmo->object;
+        SHARD_s *shard = gizmo->object;
         shard->visible = visible != 0;
     }
 }
 
 void __cdecl Shards_UpdateBeforeCharacters(void *data, void *unused, f32 delta_time) {
-    WORLDINFO *world = (WORLDINFO *)data;
+    WORLDINFO *world = data;
     i32 index;
     for (index = 0; index < world->shard_count; ++index) {
         ((SHARD_s *)world->shards)[index].state_flags &= ~0x20u;
@@ -151,7 +151,7 @@ void __cdecl Shards_UpdateBeforeCharacters(void *data, void *unused, f32 delta_t
 }
 
 void __cdecl Shards_UpdateAfterCharacters(WORLDINFO *world, void *unused, f32 delta_time) {
-    SHARD_s *shard = (SHARD_s *)world->shards;
+    SHARD_s *shard = world->shards;
     NUVEC target;
     NUVEC velocity;
     NUVEC offset;
@@ -206,7 +206,7 @@ void __cdecl Shards_UpdateAfterCharacters(WORLDINFO *world, void *unused, f32 de
 }
 
 void __cdecl Shards_Draw(WORLDINFO *world, void *unused, f32 delta_time) {
-    SHARD_s *shard = (SHARD_s *)world->shards;
+    SHARD_s *shard = world->shards;
     NUMTX matrix;
     i32 index;
     if (shard == NULL) {
@@ -309,7 +309,7 @@ void __cdecl Shards_StoreProgress(WORLDINFO *world, void *unused, SHARD_PROGRESS
     if (world == NULL || world->shards == NULL) {
         return;
     }
-    shard = (SHARD_s *)world->shards;
+    shard = world->shards;
     for (index = 0; index < world->shard_count && index < 128; ++index, ++shard) {
         i32 word = index / 32;
         u32 mask = 1u << (index & 31);

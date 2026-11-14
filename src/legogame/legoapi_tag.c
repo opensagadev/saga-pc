@@ -85,7 +85,7 @@ static GAMEOBJECT *Tag_FindGameObject_TRANSFER(GAMEOBJECT *object) {
         }
         distance = NuVecDistSqr(&object->position, &candidate->position, &direction);
         if (distance < nearest_distance) {
-            NuVecRotateY(&direction, &direction, -(i32)object->field_0x276);
+            NuVecRotateY(&direction, &direction, -object->field_0x276);
             if (direction.z < 0.0f) {
                 nearest_distance = distance;
                 nearest = candidate;
@@ -97,7 +97,7 @@ static GAMEOBJECT *Tag_FindGameObject_TRANSFER(GAMEOBJECT *object) {
 
 void __cdecl GetTakeOverPos(GAMEOBJECT *object, NUVEC *position) {
     i32 locator = object->character_data->game_character->ride_locator;
-    CHARACTER_MODEL_LAYERS_PC *model = (CHARACTER_MODEL_LAYERS_PC *)object->character_model;
+    CHARACTER_MODEL_LAYERS_PC *model = object->character_model;
     if (locator != -1 && model->points_of_interest[locator] != NULL) {
         *position = object->locator_matrices[locator].translation;
     } else {
@@ -152,7 +152,7 @@ static void TakeOver_SetAction(GAMEOBJECT *rider, GAMEOBJECT *vehicle) {
         action = 0xc1;
     } else if (vehicle->id == (u16)id_TROOPERCANNON) {
         action = 0xc2;
-        if (((CHARACTER_MODEL_LAYERS_PC *)rider->character_model)->action_animations[0xc2] == NULL) {
+        if (rider->character_model->action_animations[0xc2] == NULL) {
             action = 0xc1;
         }
     } else if (vehicle->id == (u16)id_STAP2) {
@@ -162,7 +162,7 @@ static void TakeOver_SetAction(GAMEOBJECT *rider, GAMEOBJECT *vehicle) {
     } else {
         goto no_action;
     }
-    if (((CHARACTER_MODEL_LAYERS_PC *)rider->character_model)->action_animations[action] != NULL) {
+    if (rider->character_model->action_animations[action] != NULL) {
         rider->field_7aa = (i16)action;
         return;
     }
@@ -213,7 +213,7 @@ void __cdecl TakeOver2GetIn(GAMEOBJECT *rider, GAMEOBJECT *vehicle) {
         return;
     }
     rider->character_context = 0x3c;
-    model = (CHARACTER_MODEL_LAYERS_PC *)rider->character_model;
+    model = rider->character_model;
     if (model->action_animations[6] != NULL) {
         ResetAnimPacket(&rider->anim_packet, -1);
         rider->field_7aa = 6;
@@ -421,7 +421,7 @@ i32 __cdecl TagCharacter(GAMEOBJECT *source, GAMEOBJECT *target, i32 mode) {
     i32 result;
     if (!TAG_CAN_TARGET(source, target)) {
         for (index = 0; index < 8; ++index) {
-            target = (GAMEOBJECT *)Player[index];
+            target = Player[index];
             if (TAG_CAN_TARGET(source, target)) {
                 goto found;
             }
@@ -802,7 +802,7 @@ void __cdecl TakeOverCode(GAMEOBJECT *object, i32 tag_pressed) {
                 CurrentAnim(&object->anim_packet) == 3 || CurrentAnim(&object->anim_packet) == 0x17 ? 0xc4 : 0xc3;
             CHARACTER_MODEL_LAYERS_PC *model;
             target = object->rider;
-            model = (CHARACTER_MODEL_LAYERS_PC *)target->character_model;
+            model = target->character_model;
             if (model->action_animations[animation] != NULL) {
                 target->field_7aa = (i16)animation;
             }

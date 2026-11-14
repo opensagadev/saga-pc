@@ -89,7 +89,7 @@ STATIC_ASSERT(offsetof(GIZFLOW_SPECIAL_SYSTEM_PC, specials) == 0);
 STATIC_ASSERT(offsetof(GIZFLOW_SPECIAL_SYSTEM_PC, count) == 4);
 
 i32 GizTimer_GetMaxGizmos(void *world_info) {
-    WORLDINFO *world = (WORLDINFO *)world_info;
+    WORLDINFO *world = world_info;
 
     if (world == NULL || world->current_level == NULL) {
         return 0;
@@ -99,7 +99,7 @@ i32 GizTimer_GetMaxGizmos(void *world_info) {
 }
 
 void __cdecl GizTimer_AddGizmos(struct gizmosys_pc_s *gizmo_sys, i32 type_id, void *world_info, void *unused) {
-    GIZFLOW_LOAD_WORLD_PC *world = (GIZFLOW_LOAD_WORLD_PC *)world_info;
+    GIZFLOW_LOAD_WORLD_PC *world = world_info;
     i32 i;
     for (i = 0; i < world->timer_count; ++i) {
         if (NuStrLen(world->timers[i].name) != 0) {
@@ -109,7 +109,7 @@ void __cdecl GizTimer_AddGizmos(struct gizmosys_pc_s *gizmo_sys, i32 type_id, vo
 }
 
 void __cdecl GizTimer_Update(void *world_info, void *unused, f32 delta_time) {
-    GIZFLOW_LOAD_WORLD_PC *world = (GIZFLOW_LOAD_WORLD_PC *)world_info;
+    GIZFLOW_LOAD_WORLD_PC *world = world_info;
     i32 i;
     for (i = 0; i < world->timer_count; ++i) {
         GIZFLOW_TIMER_PC *timer = &world->timers[i];
@@ -124,7 +124,7 @@ char *__cdecl GizTimer_GetGizmoName(GIZMO_PC *gizmo) {
 }
 
 i32 __cdecl GizTimer_GetOutput(GIZMO_PC *gizmo, i32 unused1, i32 unused2) {
-    GIZFLOW_TIMER_PC *timer = (GIZFLOW_TIMER_PC *)gizmo->object;
+    GIZFLOW_TIMER_PC *timer = gizmo->object;
     if (timer->flags & 1) {
         return timer->time_remaining <= 0.0f;
     }
@@ -140,7 +140,7 @@ i32 GizTimer_GetNumOutputs(GIZMO_PC *gizmo) {
 }
 
 void __cdecl GizTimer_Activate(GIZMO_PC *gizmo, i32 active) {
-    GIZFLOW_TIMER_PC *timer = (GIZFLOW_TIMER_PC *)gizmo->object;
+    GIZFLOW_TIMER_PC *timer = gizmo->object;
     if (timer->flags & 2) {
         timer->time_remaining = (f32)((f64)qrand() * (f64)(1.0f / 65535.0f) * (f64)timer->start_time);
     } else {
@@ -154,7 +154,7 @@ void __cdecl GizTimer_Activate(GIZMO_PC *gizmo, i32 active) {
 }
 
 void *__cdecl GizTimer_ReserveBufferSpace(void *world_info) {
-    GIZFLOW_LOAD_WORLD_PC *world = (GIZFLOW_LOAD_WORLD_PC *)world_info;
+    GIZFLOW_LOAD_WORLD_PC *world = world_info;
     world->timers = NULL;
     world->timer_count = 0;
     if (world->level->max_timers > 0) {
@@ -184,7 +184,7 @@ i32 GizTimer_Load(void *world_info, void *unused1) {
     NUVEC vec;
     char buffer[16];
 
-    WORLDINFO *world = (WORLDINFO *)world_info;
+    WORLDINFO *world = world_info;
     if (world->giz_timers_count == 0) {
         i32 count;
         i32 i;

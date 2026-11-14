@@ -147,7 +147,7 @@ i32 __cdecl Attractos_Load(WORLDINFO *world, void *unused) {
     if (world->attracto_count == 0) {
         version = EdFileReadInt();
         world->attracto_count = EdFileReadInt();
-        attracto = (ATTRACTO_RECORD_PC *)world->attractos;
+        attracto = world->attractos;
         for (index = 0; index < world->attracto_count; ++index, ++attracto) {
             EdFileRead(attracto->name, 16);
             EdFileReadNuVec(&attracto->position);
@@ -159,7 +159,7 @@ i32 __cdecl Attractos_Load(WORLDINFO *world, void *unused) {
                 attracto->capacity = 255;
             }
             if (version == 2) {
-                i32 length = (i8)EdFileReadChar();
+                i32 length = EdFileReadChar();
                 EdFileRead(legacy_name, length);
             }
         }
@@ -190,7 +190,7 @@ void *__cdecl Attractos_ReserveBufferSpace(WORLDINFO *world) {
 
 void __cdecl Attracto_Activate(GIZMO_PC *gizmo, i32 active) {
     if (gizmo != NULL) {
-        ATTRACTO_RECORD_PC *attracto = (ATTRACTO_RECORD_PC *)gizmo->object;
+        ATTRACTO_RECORD_PC *attracto = gizmo->object;
         attracto->active = active != 0;
     }
 }
@@ -200,7 +200,7 @@ void __cdecl Attracto_SetVisibility(GIZMO_PC *gizmo, i32 visible) {
     if (gizmo == NULL || gizmo->object == NULL) {
         return;
     }
-    attracto = (ATTRACTO_RECORD_PC *)gizmo->object;
+    attracto = gizmo->object;
     attracto->visible = visible != 0;
     if (attracto->visible && attracto->platform_id == -1) {
         NUMTX matrix;
@@ -245,7 +245,7 @@ void __cdecl Attractos_Reset(WORLDINFO *world, void *unused, ATTRACTO_PROGRESS_P
     if (world == NULL || world->attractos == NULL) {
         return;
     }
-    attracto = (ATTRACTO_RECORD_PC *)world->attractos;
+    attracto = world->attractos;
     for (index = 0; index < world->attracto_count; ++index, ++attracto) {
         AttractoInitRecordPc(attracto);
         if (progress != NULL && index < 32) {
@@ -266,7 +266,7 @@ void __cdecl Attractos_Update(WORLDINFO *world, void *unused, f32 delta_time) {
         return;
     }
     alpha = (i32)(((f64)game_pulse * (f64)0.2f + (f64)0.6f) * 128.0);
-    attracto = (ATTRACTO_RECORD_PC *)world->attractos;
+    attracto = world->attractos;
     for (index = 0; index < world->attracto_count; ++index, ++attracto) {
         NUVEC position;
         GAME_MESSAGE_PC *message;
@@ -321,7 +321,7 @@ void __cdecl Attractos_Draw(WORLDINFO *world, void *unused, f32 delta_time) {
     if (world->level_objects[72].active == 0 || world->attractos == NULL) {
         return;
     }
-    attracto = (ATTRACTO_RECORD_PC *)world->attractos;
+    attracto = world->attractos;
     spin = (u16)(i32)((f64)NuFmod(GameTimer.time_elapsed, 5.0f) / 5.0 * 65536.0);
     phase = (i32)(((f64)NuFmod(GameTimer.time_elapsed_mod_seconds, 0.5f) * 2.0) * 65536.0);
     pulse = (f64)NuTrigTable[(phase >> 1) & 0x7fff] * (f64)0.2f + (f64)0.8f;
@@ -412,7 +412,7 @@ void __cdecl Attractos_StoreProgress(WORLDINFO *world, void *unused, ATTRACTO_PR
     }
     Attractos_ClearProgress(NULL, progress);
     if (world != NULL && world->attractos != NULL) {
-        attracto = (ATTRACTO_RECORD_PC *)world->attractos;
+        attracto = world->attractos;
         for (index = 0; index < world->attracto_count && index < 32; ++index, ++attracto) {
             i32 word;
             u32 mask;
@@ -500,7 +500,7 @@ static ATTRACTO_SHARD_READER_PC *AttractoSelectShardPc(WORLDINFO *world, GAMEOBJ
     f32 best;
     i32 index;
 
-    shard = (ATTRACTO_SHARD_READER_PC *)world->shards;
+    shard = world->shards;
     if (shard == NULL) {
         return NULL;
     }
@@ -589,12 +589,12 @@ void __cdecl Attracto_MoveCode(WORLDINFO *world, GAMEOBJECT *object) {
                 return;
             }
             if (object->field_1062 > 0) {
-                ATTRACTO_RECORD_PC *attracto = (ATTRACTO_RECORD_PC *)object->grapple;
+                ATTRACTO_RECORD_PC *attracto = object->grapple;
                 if (attracto->collected_count < attracto->capacity) {
                     --object->field_1062;
                     ++attracto->collected_count;
                     object->context_duration = 0.2f;
-                    attracto = (ATTRACTO_RECORD_PC *)object->grapple;
+                    attracto = object->grapple;
                     if (attracto->collected_count == attracto->capacity) {
                         attracto->filled = 1;
                     } else if (object->field_1062 != 0) {

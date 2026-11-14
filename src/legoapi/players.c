@@ -295,7 +295,7 @@ void __cdecl Players_InitPositions(WORLDINFO *world) {
             door = Door_FindByIndex(world, area, -1, NULL);
         }
         if (door != NULL) {
-            NuStrCpy(DoorExitNamePc, (char *)door);
+            NuStrCpy(DoorExitNamePc, door);
         }
     }
     StartDoorPositions();
@@ -369,7 +369,7 @@ i32 __cdecl Players_AveragePos(NUVEC *position, SOCKPOSITION_PC *socket_position
     f32 count = 0.0f;
     i32 i;
     for (i = 0; i < 2; ++i) {
-        GAMEOBJECT *player = (GAMEOBJECT *)Player[i];
+        GAMEOBJECT *player = Player[i];
         if (player != NULL && (player->flags_1fc_word & 0x80)) {
             NuVecAdd(&total, &total, &player->position);
             count += 1.0f;
@@ -424,7 +424,7 @@ void __cdecl Player_ClearContext(GAMEOBJECT *object, i32 mode) {
 }
 
 void __cdecl Player_ResetContexts(void *packet_ptr) {
-    PLAYER_RESET_PACKET_PC *packet = (PLAYER_RESET_PACKET_PC *)packet_ptr;
+    PLAYER_RESET_PACKET_PC *packet = packet_ptr;
     packet->context_animation_time = 0.0f;
     packet->context_target = -1;
     if ((packet->secondary_flags >> 16) & 1) {
@@ -555,14 +555,14 @@ u8 __cdecl FindNearestPlayerToVec(NUVEC *position, GAMEOBJECT **nearest_player, 
     *nearest_player = NULL;
     *distance_squared = 0.0f;
     for (index = 0; index < 8; ++index) {
-        GAMEOBJECT *candidate = (GAMEOBJECT *)Player[index];
+        GAMEOBJECT *candidate = Player[index];
         if (candidate != NULL && (candidate->flags_1fc & 0x80) != 0) {
             f32 candidate_distance = NuVecDistSqr(&candidate->position, position, NULL);
             if (candidate_distance < *distance_squared || *nearest_player == NULL) {
                 if (require_character_flags == 0 ||
                     (((GAMEOBJECT *)Player[index])->character_data->game_character->flags_090 & character_flags) != 0) {
                     *distance_squared = candidate_distance;
-                    *nearest_player = (GAMEOBJECT *)Player[index];
+                    *nearest_player = Player[index];
                 }
             }
         }
@@ -589,7 +589,7 @@ void __cdecl Player_ToggleCharacter(GAMEOBJECT *object, i32 direction, i32 sound
     u32 right_mask;
     FULLDEBUGTOGGLE = 0;
     if ((HUB_ADATA != NULL && world->area == HUB_ADATA) || FadeSys.fade != 0.0f ||
-        (U64_PAIR(&CInfo[(i8)object->character_context].flags) & 0x100) != 0 || object->takeover_source != NULL ||
+        (U64_PAIR(&CInfo[object->character_context].flags) & 0x100) != 0 || object->takeover_source != NULL ||
         FreePlay == 0) {
         return;
     }

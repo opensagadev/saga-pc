@@ -70,7 +70,7 @@ extern "C" i32 __cdecl refpack(u8 *source, i32 source_size, u8 *destination) {
         u32 hash = RefpackHashStringPc(input);
         i32 initial_candidate = RefpackHashTablePc[hash];
         i32 candidate_index = initial_candidate;
-        i32 input_index = (i32)(input - source);
+        i32 input_index = input - source;
         i32 chain_limit = input_index - 0x3fff > 0 ? input_index - 0x3fff : 0;
 
         if (candidate_index >= chain_limit) {
@@ -164,5 +164,5 @@ extern "C" i32 __cdecl refpack(u8 *source, i32 source_size, u8 *destination) {
         PCByteCopy(output, literal_start, literal_count);
         output += literal_count;
     }
-    return (i32)(output - destination);
+    return output - destination;
 }

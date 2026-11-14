@@ -67,14 +67,14 @@ void __cdecl GamePads_Init(void) {
     i32 i;
 
     memset(GamePadStorage, 0, sizeof(GamePadStorage));
-    GamePadStorage[0].pad = (NUPAD_INIT_STATE *)Game_NuPad[0];
+    GamePadStorage[0].pad = Game_NuPad[0];
     if (GamePadStorage[0].pad != NULL) {
         GamePadStorage[0].pad->init_type = 0x2a;
         GamePadStorage[0].pad->init_flags = 0x60;
         GamePadStorage[0].pad->init_port = 0x38;
     }
 
-    GamePadStorage[1].pad = (NUPAD_INIT_STATE *)Game_NuPad[1];
+    GamePadStorage[1].pad = Game_NuPad[1];
     if (GamePadStorage[1].pad != NULL) {
         GamePadStorage[1].pad->init_type = 0x2a;
         GamePadStorage[1].pad->init_flags = 0x60;
@@ -175,7 +175,7 @@ void __cdecl NewRumbleAllPlayers(f32 strength, f32 duration, i32 frames, i32 pla
         }
     }
     for (index = 0; index < 8; index++) {
-        object = (GAMEOBJECT *)Player[index];
+        object = Player[index];
         if (object != NULL && (object->flags_1fc & 0x80) != 0 && object->pad->bound_pad != NULL) {
             NuSound3AddRumble(object->pad->bound_pad, duration, (i32)((f64)strength * 255.0), 0.0f, strength);
         }
@@ -271,7 +271,7 @@ void __cdecl PadOutPause(i32 index, WORLDINFO *world) {
     if ((LEGOMENU_NEWGAME != -1 && menu == LEGOMENU_NEWGAME) || (LEGOMENU_CREDITS != -1 && menu == LEGOMENU_CREDITS)) {
         return;
     }
-    if (NewMode || NewLData || ((FADEINFO_PC *)&FadeSys)->fade != 0.0f) {
+    if (NewMode || NewLData || (&FadeSys)->fade != 0.0f) {
         return;
     }
     if (GamePads_IgnoreInputFn && GamePads_IgnoreInputFn()) {
@@ -289,7 +289,7 @@ void __cdecl PadOutPause(i32 index, WORLDINFO *world) {
     if (GetMenuID() != -1) {
         return;
     }
-    if (CUTSTOPGAME && !CutScene_IsSkippable((CUTINFO *)CutStopInfo)) {
+    if (CUTSTOPGAME && !CutScene_IsSkippable(CutStopInfo)) {
         return;
     }
     if (!CutSceneWaiting) {
@@ -408,7 +408,7 @@ void __cdecl DoInput(WORLDINFO *world) {
     changed = PlayersDropInOut();
     for (index = 0; index < 2; ++index) {
         pad = ((GAMEPAD_RUNTIME_INPUT_PC *)&GamePadStorage[index])->bound_pad;
-        player = (GAMEOBJECT *)Player[index];
+        player = Player[index];
         if (GamePads_IgnoreInputFn != NULL && GamePads_IgnoreInputFn()) {
             continue;
         }
@@ -425,7 +425,7 @@ void __cdecl DoInput(WORLDINFO *world) {
             if (!(player->flags_1fc_word & 0x80)) {
                 continue;
             }
-            if (LEGOCONTEXT_DROPIN != -1 && (i8)player->character_context == LEGOCONTEXT_DROPIN) {
+            if (LEGOCONTEXT_DROPIN != -1 && player->character_context == LEGOCONTEXT_DROPIN) {
                 continue;
             }
         }
@@ -452,14 +452,13 @@ void __cdecl DoInput(WORLDINFO *world) {
                 }
             }
         }
-        if (player == NULL || NewMode != 0 || NewLData != NULL || ((FADEINFO_PC *)&FadeSys)->fade != 0.0f ||
-            editor_active != 0 || !(GameTimer.time_elapsed > 0.0f) || world == NULL ||
-            world->current_level == TITLES_LDATA) {
+        if (player == NULL || NewMode != 0 || NewLData != NULL || (&FadeSys)->fade != 0.0f || editor_active != 0 ||
+            !(GameTimer.time_elapsed > 0.0f) || world == NULL || world->current_level == TITLES_LDATA) {
             continue;
         }
         if (Paused == 0) {
             if (GameMenu[GameMenuLevel].menu == -1 && CutSceneWaiting == 0) {
-                if ((CUTSTOPGAME == 0 || CutScene_IsSkippable((CUTINFO *)CutStopInfo)) && MiniCutCam == 0 &&
+                if ((CUTSTOPGAME == 0 || CutScene_IsSkippable(CutStopInfo)) && MiniCutCam == 0 &&
                     memcard_autosavestarted == 0 && !(memcard_autosavepostdelay > 0.0f) &&
                     !(memcard_autosavepredelay > 0.0f) && GameTimer.update_count != 0) {
                     PauseGame((GAMEPAD_INIT_RECORD *)player->pad - GamePadStorage);

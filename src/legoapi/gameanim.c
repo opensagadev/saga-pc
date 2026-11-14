@@ -12,10 +12,10 @@ void __cdecl GameAnimSys_AllocateLevelProgressData(VARIPTR *buf, VARIPTR *end, i
     }
     gameanimsysprogress.count = level_count;
     gameanimsysprogress.entry_size = capacity;
-    gameanimsysprogress.entries = (u8 **)GameBufferAlloc(buf, end, level_count * sizeof(u8 *));
+    gameanimsysprogress.entries = GameBufferAlloc(buf, end, level_count * sizeof(u8 *));
     if (gameanimsysprogress.entries != NULL) {
         for (i = 0; i < level_count; ++i) {
-            gameanimsysprogress.entries[i] = (u8 *)GameBufferAlloc(buf, end, capacity);
+            gameanimsysprogress.entries[i] = GameBufferAlloc(buf, end, capacity);
         }
     }
 }
@@ -54,11 +54,10 @@ void __cdecl GameAnimSys_ClearProgress(i32 index) {
 }
 
 GAMEANIMSYS *__cdecl GameAnimSys_Create(VARIPTR *buf, VARIPTR *end) {
-    GAMEANIMSYS *system = (GAMEANIMSYS *)GameBufferAlloc(buf, end, sizeof(GAMEANIMSYS));
+    GAMEANIMSYS *system = GameBufferAlloc(buf, end, sizeof(GAMEANIMSYS));
 
     if (system != NULL && gameanimsysprogress.entry_size != 0) {
-        system->sets =
-            (GAMEANIMSET **)GameBufferAlloc(buf, end, gameanimsysprogress.entry_size * sizeof(GAMEANIMSET *));
+        system->sets = GameBufferAlloc(buf, end, gameanimsysprogress.entry_size * sizeof(GAMEANIMSET *));
     }
     return system;
 }
@@ -68,7 +67,7 @@ GAMEANIMSET *__cdecl GameAnimSet_Create(VARIPTR *buf, VARIPTR *end, GAMEANIMOBJP
     i32 index;
 
     if (pool != NULL) {
-        set = (GAMEANIMSET *)GameBufferAlloc(buf, end, sizeof(GAMEANIMSET));
+        set = GameBufferAlloc(buf, end, sizeof(GAMEANIMSET));
         if (set != NULL) {
             set->object_pool = pool;
             set->system = system;
@@ -159,11 +158,11 @@ GAMEANIMOBJPOOL *__cdecl GameAnimSet_CreateObjectPool(VARIPTR *buf, VARIPTR *end
     i32 i;
 
     if (capacity != 0) {
-        pool = (GAMEANIMOBJPOOL *)GameBufferAlloc(buf, end, sizeof(GAMEANIMOBJPOOL));
+        pool = GameBufferAlloc(buf, end, sizeof(GAMEANIMOBJPOOL));
         if (pool != NULL) {
             pool->object_data_size = (u16)object_data_size;
             pool->capacity = (u16)capacity;
-            pool->objects = (GAMEANIMOBJ *)GameBufferAlloc(buf, end, (u16)capacity * sizeof(GAMEANIMOBJ));
+            pool->objects = GameBufferAlloc(buf, end, (u16)capacity * sizeof(GAMEANIMOBJ));
             if (object_data_size != 0) {
                 pool->object_data = GameBufferAlloc(buf, end, pool->object_data_size * pool->capacity);
             }
@@ -553,10 +552,10 @@ GAMEANIMOBJ *__cdecl GameAnimSet_AddObject(GAMEANIMSET *set, NUSPECIALHANDLE *sp
         }
 
         pool = set->object_pool;
-        object_index = (i32)(object - pool->objects);
+        object_index = object - pool->objects;
         object->object_data = (u8 *)pool->object_data + pool->object_data_size * object_index;
         object->special = *special;
-        object->instance_animation = (NUINSTANIM *)NuSpecialGetInstAnim(&object->special);
+        object->instance_animation = NuSpecialGetInstAnim(&object->special);
         if (object->instance_animation != NULL) {
             object->animation =
                 ((NUGSCN *)object->special.scene)->instance_animation_data[object->instance_animation->animation_index];

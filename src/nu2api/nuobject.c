@@ -7,10 +7,10 @@ void __cdecl NuFadeObjSetup(VARIPTR *buffer, VARIPTR end, i32 matrix_count, i32 
     NuFadeMaxDataPC = matrix_count;
     NuFadeMaxGroupsPC = group_count;
     buffer->addr = (buffer->addr + 15) & ~15u;
-    NuFadeObjGroup = (PC_NUFADEGROUP *)buffer->void_ptr;
+    NuFadeObjGroup = buffer->void_ptr;
     buffer->addr += group_count * sizeof(PC_NUFADEGROUP);
     buffer->addr = (buffer->addr + 15) & ~15u;
-    NuFadeData = (i16 *)buffer->void_ptr;
+    NuFadeData = buffer->void_ptr;
     buffer->addr += matrix_count * sizeof(i16);
     (void)end;
 }
@@ -81,7 +81,7 @@ PC_NUFADEGROUP *__cdecl NuFadeObjCreateMtx(NUSPECIALHANDLE *source, NUMTX *matri
     if (group != NULL && matrices != NULL && platform != NULL) {
         group->matrices = matrices;
         group->platforms = platform;
-        group->scene = (NUGSCN *)source->scene;
+        group->scene = source->scene;
         group->special = (NUDISPLAY_SPECIAL_PC *)source->display_special;
         group->instance_index = (i16)((NUDISPLAY_SPECIAL_PC *)source->display_special)->instance_ix;
         group->terrain = TerrainGetCur();

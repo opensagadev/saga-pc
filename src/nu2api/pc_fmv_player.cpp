@@ -113,7 +113,7 @@ extern "C" void __cdecl FmvDrawPc(PC_FMV_MOVIE_PC *movie) {
         device->methods->end_scene(device);
     }
     if (movie->fading != 0) {
-        movie->fade_remaining = (f32)(movie->fade_remaining - (f64)33.333335876464844);
+        movie->fade_remaining = (f32)(movie->fade_remaining - 33.333335876464844);
         if (movie->fade_remaining < 0.0f) {
             movie->playing = 0;
             movie->fading = 0;

@@ -530,7 +530,7 @@ static void CutSceneLocatorDebrisUpdatePc(CUT_LOAD_LOCATOR *locator, CUT_LOAD_LO
         return;
     }
     if (locator->animation != NULL) {
-        NuAnimData2CalcTime((NUANIMDATA2_PC *)locator->animation, frame, &time);
+        NuAnimData2CalcTime(locator->animation, frame, &time);
     }
     if (NuGCutLocatorIsVisble((CUT_LOCATOR_GENERIC_PC *)locator, frame, &time, &scale, &rate) != 0) {
         if (scale < 0.0f && (locator->flags & 0x10) == 0) {
@@ -618,7 +618,7 @@ static void CutSceneLocatorVfxUpdatePc(CUT_LOAD_LOCATOR *locator, CUT_LOAD_LOCAT
         return;
     }
     if (locator->animation != NULL) {
-        NuAnimData2CalcTime((NUANIMDATA2_PC *)locator->animation, frame, &time);
+        NuAnimData2CalcTime(locator->animation, frame, &time);
     }
     if (NuGCutLocatorIsVisble((CUT_LOCATOR_GENERIC_PC *)locator, frame, &time, &scale, NULL) != 0 &&
         (f64)scale > 0.10000000149011612) {
@@ -689,7 +689,7 @@ static void CutSceneLocatorLookAtUpdatePc(CUT_LOAD_LOCATOR_INSTANCE *instance, C
     f32 start;
     i32 layers;
     u32 magic = ((NUANIMDATA2_PC *)locator->animation)->header.magic;
-    if ((i32)magic < (i32)0x414e4934 || (i32)magic > (i32)0x414e4935) {
+    if ((i32)magic < 0x414e4934 || (i32)magic > 0x414e4935) {
         return;
     }
     state = (CUT_LOOKAT_STATE_PC *)instance->effect.index;
@@ -717,8 +717,7 @@ static void CutSceneLocatorLookAtUpdatePc(CUT_LOAD_LOCATOR_INSTANCE *instance, C
             if (visible == 0) {
                 return;
             }
-            NuHGobjEvalAnim2(hierarchy, (ANI3_HEADER_PC *)character->face_animation, character_instance->frame_a, 0,
-                             NULL, joints);
+            NuHGobjEvalAnim2(hierarchy, character->face_animation, character_instance->frame_a, 0, NULL, joints);
             CutGetJointOverrideMatrixPc(hierarchy, state->joint - 1, &joint_offset);
             NuMtxMulVU0(&joint_world, &joint_offset, &joints[state->joint - 1]);
             NuMtxMulVU0(&joint_world, &joint_world, &character_matrix);

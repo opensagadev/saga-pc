@@ -46,7 +46,7 @@ void *Text_IsFontLoaded(void) {
 }
 
 void Text_InitStringTable(i32 count, VARIPTR *buf, VARIPTR *buf_end) {
-    char **table = (char **)buf->void_ptr;
+    char **table = buf->void_ptr;
     u32 table_size = (count + 1) * sizeof(char *);
     (void)buf_end;
 
@@ -56,7 +56,7 @@ void Text_InitStringTable(i32 count, VARIPTR *buf, VARIPTR *buf_end) {
     table[0] = Text_ErrorString;
     TTab = table + 1;
     Text_MaxStrings_Overall = count;
-    Text_StringBits = (u32 *)buf->void_ptr;
+    Text_StringBits = buf->void_ptr;
     memset(Text_StringBits, 0, ((count + 31) / 32) * sizeof(u32));
     buf->addr += ((count + 31) / 32) * sizeof(u32);
 }
@@ -135,7 +135,7 @@ void Text_MakeScore(u32 score, char *text) {
         score /= 10;
     }
 
-    Text_InsertCommasIntoNumber(first, text, (i32)(end - first));
+    Text_InsertCommasIntoNumber(first, text, end - first);
 }
 
 i32 Text_StripComments(char *text, char *dest, i32 separators) {
@@ -684,7 +684,7 @@ f32 __cdecl TextPrintSubstring(u8 *text, f32 x, f32 y, f32 z, f32 x_scale, f32 y
 
 void __cdecl Text3DEx(char *text, f32 x, f32 y, f32 z, f32 x_scale, f32 y_scale, f32 z_scale, u32 alignment, u8 red,
                       u8 green, u8 blue, u8 alpha) {
-    u8 alpha_byte = (u8)alpha;
+    u8 alpha_byte = alpha;
     f32 width;
     f32 height;
     f32 baseline_y;
@@ -947,7 +947,7 @@ void SmartTextEx(char *text, f32 x, f32 y, f32 z, f32 x_scale, f32 y_scale, f32 
     STATIC_ASSERT(offsetof(BOX_GEOMETRY_PC, y) == 8);
     STATIC_ASSERT(offsetof(BOX_GEOMETRY_PC, width) == 0x10);
     STATIC_ASSERT(offsetof(BOX_GEOMETRY_PC, height) == 0x14);
-    BOX_GEOMETRY_PC *box = (BOX_GEOMETRY_PC *)message_box;
+    BOX_GEOMETRY_PC *box = message_box;
     i32 widest_line = -1;
     f32 saved_x_scale;
     f32 saved_y_scale;
@@ -1560,7 +1560,7 @@ void __cdecl MenuDrawViewTextStrings(MENU *menu) {
     menu->item_scale = 2.0f;
     menu->centre_offset = MENUDY * 2.0f;
     menu->draw_x = -0.75f;
-    menu->draw_y = (f32) - (i32)menu->selected_row * menu->centre_offset;
+    menu->draw_y = (f32)-menu->selected_row * menu->centre_offset;
     for (i = 0; i < Text_MaxStrings_Overall; ++i) {
         f32 y;
         i32 red;

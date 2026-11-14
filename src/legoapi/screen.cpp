@@ -264,8 +264,7 @@ extern "C" {
                 angle = (u16)qrand();
                 for (jitter_index = 0; jitter_index < 3; ++jitter_index) {
                     matrix.translation.x = (f32)(NuTrigTable[angle >> 1] * (f64)0.01f + position.x);
-                    matrix.translation.y =
-                        (f32)(NuTrigTable[((i32)angle + 0x4000) >> 1 & 0x7fff] * (f64)0.01f + position.y);
+                    matrix.translation.y = (f32)(NuTrigTable[(angle + 0x4000) >> 1 & 0x7fff] * (f64)0.01f + position.y);
                     matrix.translation.z = position.z;
                     NuSpecialDrawAtAlpha(special, &matrix, alpha);
                     angle = (u16)(angle + 0x5555);
@@ -878,7 +877,7 @@ extern "C" void __cdecl NoRender(void) {
         NuRndrGradClear(0xf00, back_rgba[0], back_rgba[1], 1.0f);
     }
     if (MainRenderTime != 1.0f) {
-        BackDrop_Draw((f32)(1.0f - MainRenderTime), 0);
+        BackDrop_Draw(1.0f - MainRenderTime, 0);
     }
     NuRndrEndScene();
 }

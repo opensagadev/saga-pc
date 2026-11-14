@@ -154,7 +154,7 @@ void __cdecl UpdateSnakeBody(GAMEOBJECT *object) {
         offset.x = 0.0f;
         offset.y = 0.0f;
         offset.z = -(reader->snake_body->scale * SnakeSegmentSpacingPc);
-        NuVecRotateY(&offset, &offset, (NUANG)reader->snake_body->segments[index].yaw);
+        NuVecRotateY(&offset, &offset, reader->snake_body->segments[index].yaw);
         NuVecAdd(&position, &reader->snake_body->segments[index].position, &offset);
         ground = GameShadow(NULL, &position, 5.0f, 0x1f);
         if (ground == 2000000.0f) {

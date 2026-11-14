@@ -288,7 +288,7 @@ void __cdecl RippleEffects_Configure(WORLDINFO *world, char *config) {
         return;
     }
     world->giz_buffer.addr = (world->giz_buffer.addr + 3) & ~3u;
-    effect = view->effects = (RIPPLE_EFFECT_PC *)world->giz_buffer.void_ptr;
+    effect = view->effects = world->giz_buffer.void_ptr;
     NuFParPushCom(parser, RippleEffectConfigKeywordsPc);
     active = 0;
     while (NuFParGetLine(parser)) {
@@ -457,15 +457,15 @@ void __cdecl UpdateRippleSet(RIPPLE_SET_PC *set) {
                     u8 *current = (u8 *)&node->start_color;
                     const u8 *initial = (const u8 *)&node->color;
                     const u8 *end = (const u8 *)&node->end_color;
-                    current[3] = (u8)(i32)((f64)initial[3] + (f64)((i32)end[3] - initial[3]) * ratio);
+                    current[3] = (u8)(i32)((f64)initial[3] + (f64)(end[3] - initial[3]) * ratio);
                 }
                 if ((node->flags & 4) != 0) {
                     u8 *current = (u8 *)&node->start_color;
                     const u8 *initial = (const u8 *)&node->color;
                     const u8 *end = (const u8 *)&node->end_color;
-                    current[0] = (u8)(i32)((f64)initial[0] + (f64)((i32)end[0] - initial[0]) * ratio);
-                    current[1] = (u8)(i32)((f64)initial[1] + (f64)((i32)end[1] - initial[1]) * ratio);
-                    current[2] = (u8)(i32)((f64)initial[2] + (f64)((i32)end[2] - initial[2]) * ratio);
+                    current[0] = (u8)(i32)((f64)initial[0] + (f64)(end[0] - initial[0]) * ratio);
+                    current[1] = (u8)(i32)((f64)initial[1] + (f64)(end[1] - initial[1]) * ratio);
+                    current[2] = (u8)(i32)((f64)initial[2] + (f64)(end[2] - initial[2]) * ratio);
                 }
                 if ((node->flags & 8) != 0) {
                     node->matrix.m30 += node->velocity.x;

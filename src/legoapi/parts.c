@@ -12,7 +12,7 @@ void __cdecl InitParts(i32 count, VARIPTR *buffer, VARIPTR end) {
     i32 j;
     MAXPARTS = count;
     buffer->addr = (buffer->addr + 15) & ~(u32)15;
-    Part = (PART_PC *)buffer->void_ptr;
+    Part = buffer->void_ptr;
     buffer->addr += MAXPARTS * sizeof(PART_PC);
     if (Part != NULL) {
         memset(Part, 0, MAXPARTS * sizeof(PART_PC));
@@ -252,7 +252,7 @@ PART_PC *__cdecl AddPart(ADDPART_PC *parameters) {
         matrix = *parameters->matrix;
         NuVecMtxRotate(&forward, &forward, &matrix);
         part->rotation_y = (u16)NuAtan2D(forward.x, forward.z);
-        NuVecRotateY(&forward, &forward, -(i32)part->rotation_y);
+        NuVecRotateY(&forward, &forward, -part->rotation_y);
         part->rotation_x = (u16)-NuAtan2D(forward.y, forward.z);
     } else if (parameters->position != NULL) {
         NuMtxSetTranslation(&part->transform, parameters->position);
@@ -1195,7 +1195,7 @@ void __cdecl PartStop_Flickerer(PART_PC *part) {
 
 i32 __cdecl PartDraw_Flickerer(PART_PC *part) {
     i32 draw = 1;
-    if (part->time_remaining > 0.0f && (u32)GameTimer.update_count % 6 >= 3) {
+    if (part->time_remaining > 0.0f && GameTimer.update_count % 6 >= 3) {
         f32 threshold = 2.0f;
         if ((part->flicker_flags & 1) != 0) {
             threshold = 1.0f;
@@ -1260,10 +1260,10 @@ void __cdecl MakePartVector(NUVEC *velocity, NUVEC *direction, f32 scale) {
         NuVecRotateX(velocity, velocity, (u16)(x_random + temp_zrot));
         NuVecScale(velocity, velocity, scale);
     } else {
-        f64 random = (f64)qrand() * (f64)(f32)(1.0f / 65535.0f);
+        f64 random = (f64)qrand() * (f64)(1.0f / 65535.0f);
         velocity->x = (f32)(random + random - 1.0);
-        velocity->y = AreaPickupGravity == 0.0f ? 0.0f : (f32)((f64)qrand() * (f64)(f32)(1.0f / 65535.0f) + 1.0);
-        random = (f64)qrand() * (f64)(f32)(1.0f / 65535.0f);
+        velocity->y = AreaPickupGravity == 0.0f ? 0.0f : (f32)((f64)qrand() * (f64)(1.0f / 65535.0f) + 1.0);
+        random = (f64)qrand() * (f64)(1.0f / 65535.0f);
         velocity->z = (f32)(random + random - 1.0);
         NuVecScale(velocity, velocity, AreaPickupScale);
     }
@@ -1325,7 +1325,7 @@ PART_PC *__cdecl TargetPart(GAMEOBJECT *object, NUVEC *position, NUVEC *directio
         if (!(dot > NuTrigTable[((angle + 0x4000) >> 1) & 0x7fff]) || !(nearest_distance > distance)) {
             continue;
         }
-        if ((PART_PC *)part == object->collision_target) {
+        if (part == object->collision_target) {
             previous = part;
         } else {
             nearest_distance = distance;
@@ -1649,8 +1649,8 @@ void AddDebrisEffect(i32 *handle, i32 effect_index, f32 x, f32 y, f32 z) {
     debkeydata[key_index].effect_index = (i16)(effect_index);
     debkeydata[key_index].finite = 0;
     DebrisStartOffset(key_index, effect->emission_start_offset);
-    debkeydata[key_index].generator = gensorttab[(i8)(effect->generator_type)];
-    debkeydata[key_index].momentum_adjuster = gencodetab[(i8)(effect->momentum_adjustment_type)];
+    debkeydata[key_index].generator = gensorttab[effect->generator_type];
+    debkeydata[key_index].momentum_adjuster = gencodetab[effect->momentum_adjustment_type];
     debkeydata[key_index].finite_count = 0;
     debkeydata[key_index].emitter_rotation_x = 0;
     debkeydata[key_index].emitter_rotation_y = 0;
@@ -1784,7 +1784,7 @@ DEBRISPARTICLE_PC *GenDebIndexSpheroid(DEBRISKEY_PC *key, DEBRIS_INFO_PC *effect
     particle->momentum.y = key->momentum.y + particle->momentum.y;
     particle->momentum.z = key->momentum.z + particle->momentum.z;
 
-    for (trail = 0; trail < (i8)(effect->trail_count); ++trail) {
+    for (trail = 0; trail < effect->trail_count; ++trail) {
         if (key->particle_cursor >= key->particle_count) {
             key->particle_cursor = 0;
         }
@@ -1915,7 +1915,7 @@ void __cdecl AddVariableShotDebrisEffectTimed5(i32 effect_index, NUVEC *position
     if (emission_count == 0) {
         return;
     }
-    particle_count = emission_count * ((i32)effect->trail_count + 1);
+    particle_count = emission_count * (effect->trail_count + 1);
     particle_key_slot = -1;
     key = NULL;
     for (i = 0; i < 8; ++i) {
@@ -2297,21 +2297,18 @@ void __cdecl DebrisDraw(i32 unused, i32 pass) {
         }
         NuMtxPreScaleX(&matrix, debris_render_scale);
         if (effect->particle_type == 7) {
-            NuRndrParticleGroup(chunk->particle_chunk, chunk->effect->native_data,
-                                DebMat[(i8)chunk->effect->particle_type], render_time, &matrix, 4,
-                                effect->particle_parameter_a, effect->particle_parameter_b, effect->clip_extent,
-                                effect->field_044);
+            NuRndrParticleGroup(chunk->particle_chunk, chunk->effect->native_data, DebMat[chunk->effect->particle_type],
+                                render_time, &matrix, 4, effect->particle_parameter_a, effect->particle_parameter_b,
+                                effect->clip_extent, effect->field_044);
         } else if (effect->use_explicit_clip_box != 0) {
             NuRndrSetDebBox(&effect->particle_box);
-            NuRndrParticleGroup(chunk->particle_chunk, chunk->effect->native_data,
-                                DebMat[(i8)chunk->effect->particle_type], render_time, &matrix, 6,
-                                effect->particle_parameter_a, effect->particle_parameter_b, effect->clip_extent,
-                                effect->field_044);
+            NuRndrParticleGroup(chunk->particle_chunk, chunk->effect->native_data, DebMat[chunk->effect->particle_type],
+                                render_time, &matrix, 6, effect->particle_parameter_a, effect->particle_parameter_b,
+                                effect->clip_extent, effect->field_044);
         } else {
-            NuRndrParticleGroup(chunk->particle_chunk, chunk->effect->native_data,
-                                DebMat[(i8)chunk->effect->particle_type], render_time, &matrix, 0,
-                                effect->particle_parameter_a, effect->particle_parameter_b, effect->clip_extent,
-                                effect->field_044);
+            NuRndrParticleGroup(chunk->particle_chunk, chunk->effect->native_data, DebMat[chunk->effect->particle_type],
+                                render_time, &matrix, 0, effect->particle_parameter_a, effect->particle_parameter_b,
+                                effect->clip_extent, effect->field_044);
         }
     }
     if (drawn != 0) {

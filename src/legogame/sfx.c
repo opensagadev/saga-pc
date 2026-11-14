@@ -470,7 +470,7 @@ void __cdecl SetLevelSfxBits(WORLDINFO *world) {
             continue;
         }
 
-        character = &((CHARACTERDATA_PC *)CDataList)[character_id];
+        character = &CDataList[character_id];
         game_character = character->game_character;
 
         if (game_character->sfx_die != -1) {
@@ -593,7 +593,7 @@ void __cdecl SetLevelSfxBits(WORLDINFO *world) {
         ADD_SFX("ui_DoubleScoreText");
     }
 
-    AddLevelSfxGizmoSys((GIZMOSYS_PREFIX_PC *)world->gizmo_sys, world, sfx_ids, &sfx_count, 0x400);
+    AddLevelSfxGizmoSys(world->gizmo_sys, world, sfx_ids, &sfx_count, 0x400);
     SetSpecialSfxBits(sfx_ids, &sfx_count, world);
     sfx_ids[sfx_count] = -1;
     if (sfx_count > 0) {

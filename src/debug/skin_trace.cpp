@@ -176,7 +176,7 @@ namespace {
     }
 
     void text(char *out, unsigned int &used, unsigned int capacity, const char *word) {
-        unsigned int n = (unsigned int)strlen(word);
+        unsigned int n = strlen(word);
         if (n >= capacity - used) {
             return;
         }

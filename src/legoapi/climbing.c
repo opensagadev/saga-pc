@@ -398,8 +398,8 @@ i32 __cdecl Climb_SetTargetMom(GAMEOBJECT *object, u16 input_angle) {
     if (animation != -1 &&
         (animation == LEGOACT_CLIMB_UP || animation == LEGOACT_CLIMB_DOWN || animation == LEGOACT_CLIMB_LEFT ||
          animation == LEGOACT_CLIMB_RIGHT || animation == LEGOACT_MAGNET_WALK_METAL)) {
-        if (((CHARACTER_MODEL_LAYERS_PC *)object->character_model)->model_data_b[animation] != NULL) {
-            raw_speed.value = AnimSpeed((CHARACTER_MODEL_LAYERS_PC *)object->character_model, animation);
+        if (object->character_model->model_data_b[animation] != NULL) {
+            raw_speed.value = AnimSpeed(object->character_model, animation);
             speed.bits = raw_speed.bits & 0x7fffffff;
         }
     }
@@ -480,7 +480,7 @@ i32 __cdecl Hang_SetTargetMom(GAMEOBJECT *object) {
         f32 speed;
         if (LEGOACT_HANG_MOVE != -1 &&
             ((MOVEMENT_MODEL_PC *)object->character_model)->model_data_b[LEGOACT_HANG_MOVE] != NULL) {
-            speed = AnimSpeed((CHARACTER_MODEL_LAYERS_PC *)object->character_model, LEGOACT_HANG_MOVE);
+            speed = AnimSpeed(object->character_model, LEGOACT_HANG_MOVE);
             if (speed < 0.25f) {
                 speed = 0.25f;
             }
@@ -499,10 +499,10 @@ i32 __cdecl Hang_SetTargetMom(GAMEOBJECT *object) {
 void *__cdecl CreateClimbObjectSys(VARIPTR *buffer, VARIPTR *end, i32 count) {
     CLIMB_SYSTEM_PC *system = NULL;
     if (count != 0) {
-        system = (CLIMB_SYSTEM_PC *)GameBufferAlloc(buffer, end, sizeof(*system));
+        system = GameBufferAlloc(buffer, end, sizeof(*system));
         if (system != NULL) {
             system->capacity = (u16)count;
-            system->objects = (CLIMB_SLOT_PC *)GameBufferAlloc(buffer, end, system->capacity * sizeof(CLIMB_SLOT_PC));
+            system->objects = GameBufferAlloc(buffer, end, system->capacity * sizeof(CLIMB_SLOT_PC));
         }
     }
     return system;

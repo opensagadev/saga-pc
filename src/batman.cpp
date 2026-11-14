@@ -195,7 +195,7 @@ static void NuMainUpdateFrame(WORLDINFO *world, i32 *frame_flag) {
                 for (i = 0; i < 2; ++i) {
                     object = (GAMEOBJECT *)Player[i];
                     if (object != NULL && (object->flags_1fc & 0x80) != 0) {
-                        PauseGame((i32)((GAMEPAD_INIT_RECORD *)object->pad - GamePadStorage));
+                        PauseGame((GAMEPAD_INIT_RECORD *)object->pad - GamePadStorage);
                         break;
                     }
                 }
@@ -401,7 +401,7 @@ static void NuMainUpdateFrame(WORLDINFO *world, i32 *frame_flag) {
     if (Paused != 0 && editor_active == 0) {
         NuWaterSpeed(0.0f);
     } else {
-        NuWaterSpeed((f32)((f64)FRAMETIME / (f64)(f32)(1.0f / 60.0f)));
+        NuWaterSpeed((f32)((f64)FRAMETIME / (f64)(1.0f / 60.0f)));
     }
     NuWaterReset();
     GameTiming(world, &Game.game_time);
@@ -984,8 +984,8 @@ extern "C" int __cdecl NuMain(int argc, char **argv) {
                 MusicClearAll();
                 SoundKillAll();
             }
-            if ((HUB_ADATA == NULL || last_area != (u8)HUB_ADATA->index) && Arcade != 0) {
-                if (HUB_ADATA != NULL && Area == (u8)HUB_ADATA->index) {
+            if ((HUB_ADATA == NULL || last_area != HUB_ADATA->index) && Arcade != 0) {
+                if (HUB_ADATA != NULL && Area == HUB_ADATA->index) {
                     hub_from_arcade = last_area;
                 }
                 Arcade = 0;
@@ -1021,7 +1021,7 @@ extern "C" int __cdecl NuMain(int argc, char **argv) {
                 FreePlay = 1;
             }
             if (new_level_from_menu != 0 && Area != last_area) {
-                if (HUB_ADATA != NULL && Area == (u8)HUB_ADATA->index) {
+                if (HUB_ADATA != NULL && Area == HUB_ADATA->index) {
                     NextArea_FreePlay = 0;
                 }
                 FreePlay = NextArea_FreePlay;
@@ -1050,9 +1050,9 @@ extern "C" int __cdecl NuMain(int argc, char **argv) {
                 PlayerProgress[player_index].field_7 = 0;
                 PlayerProgress[player_index].coins = 0;
             }
-            UsePlayerList = HUB_ADATA != NULL && Area == (u8)HUB_ADATA->index && LastLData != TITLES_LDATA ? 1 : 2;
+            UsePlayerList = HUB_ADATA != NULL && Area == HUB_ADATA->index && LastLData != TITLES_LDATA ? 1 : 2;
         }
-        if (HUB_ADATA != NULL && Area == (u8)HUB_ADATA->index && Area != last_area) {
+        if (HUB_ADATA != NULL && Area == HUB_ADATA->index && Area != last_area) {
             if (CREDITS_LDATA != NULL && LastLData == CREDITS_LDATA && status->status_flags != 0) {
                 RememberPlayerIDs(1, (i16)status->player_models[0], (i16)status->player_models[1]);
             }

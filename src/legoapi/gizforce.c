@@ -263,17 +263,16 @@ STATIC_ASSERT(offsetof(WORLD_FORCE_SFX_PC, force_system) == 0x46ac);
 
 static void *GizForces_ReserveBufferSpace(void *world_ptr) {
     i32 i;
-    WORLDINFO *world = ((WORLDINFO *)(world_ptr));
-    GIZFORCESYS_s *force_sys =
-        ((GIZFORCESYS_s *)(GameBufferAlloc(&world->giz_buffer, &world->buffer_end, sizeof(GIZFORCESYS_s))));
+    WORLDINFO *world = world_ptr;
+    GIZFORCESYS_s *force_sys = GameBufferAlloc(&world->giz_buffer, &world->buffer_end, sizeof(GIZFORCESYS_s));
 
     force_sys->capacity = world->current_level->max_force;
-    force_sys->forces = ((GIZFORCE_s *)(GameBufferAlloc(&world->giz_buffer, &world->buffer_end,
-                                                        force_sys->capacity * sizeof(GIZFORCE_s))));
-    force_sys->hit_test_gizmos = ((GIZMO_PC **)(GameBufferAlloc(&world->giz_buffer, &world->buffer_end,
-                                                                force_sys->capacity * sizeof(GIZMO_PC *))));
-    force_sys->visible_forces = ((GIZFORCE_s **)(GameBufferAlloc(&world->giz_buffer, &world->buffer_end,
-                                                                 force_sys->capacity * sizeof(GIZFORCE_s *))));
+    force_sys->forces =
+        GameBufferAlloc(&world->giz_buffer, &world->buffer_end, force_sys->capacity * sizeof(GIZFORCE_s));
+    force_sys->hit_test_gizmos =
+        GameBufferAlloc(&world->giz_buffer, &world->buffer_end, force_sys->capacity * sizeof(GIZMO_PC *));
+    force_sys->visible_forces =
+        GameBufferAlloc(&world->giz_buffer, &world->buffer_end, force_sys->capacity * sizeof(GIZFORCE_s *));
     force_sys->anim_pool = GameAnimSet_CreateObjectPool(&world->giz_buffer, &world->buffer_end, 8,
                                                         world->current_level->max_force_objects);
 

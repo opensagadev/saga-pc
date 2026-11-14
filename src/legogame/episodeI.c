@@ -464,7 +464,7 @@ static void PodRaceExplodeMinePc(MINE_ENTRY_PC *entry, GAMEOBJECT *object) {
     GameCam_NewShake(NULL, 0.75f, 1.0f, 1.0f);
     PlaySfx("Explode1", &object->collision_position);
     PodLoseSpeed(object, 1, 1);
-    mask = (u64)(i64) ~(1 << (i32)(entry - minesys.mines));
+    mask = (u64)(i64) ~(1 << (entry - minesys.mines));
     *(u64 *)pod_mines_bitfield &= mask;
     memset(entry, 0, sizeof(*entry));
     mine_count--;
@@ -511,7 +511,7 @@ void __cdecl UpdatePodRaceMines(void) {
             }
             NuVecSub(&delta, &entry->pos, &GameCam->position);
             if (GameCam->dir.x * delta.x + GameCam->dir.y * delta.y + GameCam->dir.z * delta.z < 0.0) {
-                *(u64 *)pod_mines_bitfield &= (u64)(i64) ~(1 << (i32)(entry - minesys.mines));
+                *(u64 *)pod_mines_bitfield &= (u64)(i64) ~(1 << (entry - minesys.mines));
                 memset(entry, 0, sizeof(*entry));
                 mine_count--;
                 continue;
@@ -629,7 +629,7 @@ void __cdecl PodRaceAUpdate(void) {
 static PODRACE_RESOURCE_PC *PodRacePc = NULL;
 
 static RACEPOD_RESOURCE_PC *RacePodAllocatePrivatePc(void) {
-    PODRACE_RESOURCE_PC *race = (PODRACE_RESOURCE_PC *)PodRacePc;
+    PODRACE_RESOURCE_PC *race = PodRacePc;
     i32 slot;
     for (slot = 0; slot < 16; ++slot) {
         if (race->lap_entries[slot].next == NULL) {
@@ -802,8 +802,8 @@ static i32 PodRaceUpdatePodPc(RACEPOD_RESOURCE_PC *pod, WORLDINFO *world) {
                     GAMEOBJECT *heading_player = player;
                     distance_sq = NuVecDistSqr(&player->collision_position, &object->collision_position, &difference);
                     if (distance_sq > 4.0 * PodSebulbaThrowAheadPc * PodSebulbaThrowAheadPc) {
-                        target.x = (f32)(PodSebulbaThrowSpreadPc -
-                                         (PodSebulbaThrowSpreadPc + PodSebulbaThrowSpreadPc) * NuRandFloat());
+                        target.x = PodSebulbaThrowSpreadPc -
+                                   (PodSebulbaThrowSpreadPc + PodSebulbaThrowSpreadPc) * NuRandFloat();
                         target.y = 0.0f;
                         target.z = PodSebulbaThrowAheadPc;
                         NuVecRotateY(&target, &target, heading_player->sock_heading);
@@ -928,10 +928,10 @@ void __cdecl PodRaceUpdate(WORLDINFO *world, f32 dt) {
             if (PodRacePc->lap_display < 0.0f && FadeSys.fade == 0.0f) {
                 PodRacePc->lap_display = 0.0f;
                 if (Player[0] != NULL && (((GAMEOBJECT *)Player[0])->flags_1fc & 0x80) != 0) {
-                    LoseCoins((GAMEOBJECT *)Player[0], 1);
+                    LoseCoins(Player[0], 1);
                 }
                 if (Player[1] != NULL && (((GAMEOBJECT *)Player[1])->flags_1fc & 0x80) != 0) {
-                    LoseCoins((GAMEOBJECT *)Player[1], 1);
+                    LoseCoins(Player[1], 1);
                 }
                 PodRacePc->flags |= 2;
                 KillPlayer(player, 2, 1, NULL);
@@ -1601,7 +1601,7 @@ void __cdecl PodSprintA_Reset(WORLDINFO *world) {
         }
         if (game_cutscenes_cutscene != NULL) {
             CutScene_SnapToEnd(game_cutscenes_cutscene);
-            CutScene_StoppedFn_LSW((CUTINFO *)game_cutscenes_cutscene);
+            CutScene_StoppedFn_LSW(game_cutscenes_cutscene);
         }
     }
     PodRaceSnipersReset();
@@ -1876,7 +1876,7 @@ i32 __cdecl Action_NewSebulba(AISYS_PC *sys, AISCRIPTPROCESS_PC *process, AIPACK
     if (packet == NULL || packet->owner == NULL || ((APIOBJECT_PC *)packet->owner)->owner == NULL) {
         return 1;
     }
-    object = (GAMEOBJECT *)((APIOBJECT_PC *)packet->owner)->owner;
+    object = ((APIOBJECT_PC *)packet->owner)->owner;
     if (first_time != 0) {
         object->run_speed_override = object->character_data->game_character->run_speed;
         object->movement_spline_offset.y = 0.0f;
@@ -1949,10 +1949,10 @@ i32 __cdecl Action_NewSebulba(AISYS_PC *sys, AISCRIPTPROCESS_PC *process, AIPACK
     }
     if (object->movement_spline_position.reached_end != 0 && (podsprint.flags & 4) == 0) {
         if (Player[0] != NULL && (((GAMEOBJECT *)Player[0])->flags_1fc & 0x80) != 0) {
-            LoseCoins((GAMEOBJECT *)Player[0], 1);
+            LoseCoins(Player[0], 1);
         }
         if (Player[1] != NULL && (((GAMEOBJECT *)Player[1])->flags_1fc & 0x80) != 0) {
-            LoseCoins((GAMEOBJECT *)Player[1], 1);
+            LoseCoins(Player[1], 1);
         }
         *(u16 *)&podsprint.flags |= 4;
         ResetLevel(WORLD, "Ep1_Podsprint_OutOfTime", 1);
@@ -2086,7 +2086,7 @@ void __cdecl PodRaceInit(WORLDINFO *world) {
     if (world->level_specific_data == NULL) {
         ChrisAllocLevelStuff(world);
     }
-    podrace = (PODRACE_RESOURCE_PC *)world->level_specific_data;
+    podrace = world->level_specific_data;
     PodRacePc = podrace;
     memset(podrace, 0, sizeof(*podrace));
     if (netclient == 0) {
@@ -2107,7 +2107,7 @@ void __cdecl PodRaceInit(WORLDINFO *world) {
 }
 
 void __cdecl PodRaceReset(void) {
-    PODRACE_RESOURCE_PC *podrace = (PODRACE_RESOURCE_PC *)PodRacePc;
+    PODRACE_RESOURCE_PC *podrace = PodRacePc;
     i32 i;
     podrace->mushroom_timer = 0.0f;
     memset(podrace->lap_entries, 0, sizeof(podrace->lap_entries));
@@ -2283,7 +2283,7 @@ i32 __cdecl Action_CreatePod(AISYS_PC *system, AISCRIPTPROCESS_PC *process, AIPA
     if ((u32)spline_id > 31 || model_id == 0xffff) {
         return 1;
     }
-    race = (PODRACE_RESOURCE_PC *)PodRacePc;
+    race = PodRacePc;
     for (spline_index = 0; spline_index < 32; ++spline_index) {
         spline = &race->splines[spline_index];
         if (race->splines[spline_index].id == spline_id) {
@@ -2333,7 +2333,7 @@ i32 __cdecl Action_CreatePod(AISYS_PC *system, AISCRIPTPROCESS_PC *process, AIPA
     pod->previous_axis.w = 1.0f;
     pod->previous_position = position;
     pod->distance = start;
-    pod->object = AddDynamicCreature((i32)pod->model_id, (NUVEC *)spline, 0, NULL, NULL, NULL, 1, NULL, NULL, 0, 0);
+    pod->object = AddDynamicCreature(pod->model_id, (NUVEC *)spline, 0, NULL, NULL, NULL, 1, NULL, NULL, 0, 0);
     if (pod->object == NULL) {
         return 1;
     }

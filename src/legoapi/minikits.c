@@ -27,7 +27,7 @@ STATIC_ASSERT(sizeof(CHARACTERDATA_PC) == 0x4c);
 void __cdecl MiniKits_Init(VARIPTR *buffer, VARIPTR *end) {
     (void)end;
     buffer->addr = (buffer->addr + 3) & ~3u;
-    Char_MiniKit = (i32 *)buffer->void_ptr;
+    Char_MiniKit = buffer->void_ptr;
     buffer->addr += (u32)CHARCOUNT * 4u;
 }
 
@@ -64,7 +64,7 @@ void __cdecl MiniKit_InitPieces(MINIKIT_PC *minikit, i32 count, VARIPTR *buffer,
             direction_counts[direction] = 0;
         }
         buffer->addr = (buffer->addr + 3) & ~3u;
-        minikit->pieces = (MINIKIT_PIECE_PC *)buffer->void_ptr;
+        minikit->pieces = buffer->void_ptr;
         minikit->piece_count = 0;
         for (index = 0; index < count; ++index) {
             for (direction = 0; direction < 6; ++direction) {
@@ -132,7 +132,7 @@ void __cdecl CharacterMiniKits_Load(COLLECTION_BUILD_PC *collection, WORLDINFO *
         Char_MiniKit[i] = 0;
     }
     buffer->addr = (buffer->addr + 3) & ~3u;
-    view->pieces_by_id = (MINIKIT_PC **)buffer->void_ptr;
+    view->pieces_by_id = buffer->void_ptr;
     table_size = CHARCOUNT * sizeof(MINIKIT_PC *);
     memset(view->pieces_by_id, 0, table_size);
     buffer->addr += table_size;
@@ -141,7 +141,7 @@ void __cdecl CharacterMiniKits_Load(COLLECTION_BUILD_PC *collection, WORLDINFO *
         if ((GCDataList[character_id].flags_094 & 0x400) != 0 || APICharacterLoaded(character_id) == NULL) {
             continue;
         }
-        view->pieces_by_id[character_id] = (MINIKIT_PC *)buffer->void_ptr;
+        view->pieces_by_id[character_id] = buffer->void_ptr;
         buffer->addr += 0x18;
         NuStrCpy(path, "chars\\minikits\\");
         NuStrCat(path, CDataList[character_id].name);

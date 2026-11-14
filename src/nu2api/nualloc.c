@@ -152,7 +152,7 @@ void *__cdecl NuAllocUntracked(i32 size) {
     }
     NuAllocTrackedBytes += (u32)size;
     if (NuAllocManager != NULL) {
-        user_data = NuAllocManagerAllocateAlignedPc((NUALLOC_MANAGER_PREFIX_PC *)NuAllocManager, (u32)size, 4);
+        user_data = NuAllocManagerAllocateAlignedPc(NuAllocManager, (u32)size, 4);
     } else {
         user_data = malloc((u32)size);
     }
@@ -169,7 +169,7 @@ void *__cdecl NuAllocUntracked(i32 size) {
 
 void __cdecl NuFreeUntracked(void *memory) {
     if (NuAllocManager != NULL) {
-        NuAllocManagerFreePc((NUALLOC_MANAGER_PREFIX_PC *)NuAllocManager, memory);
+        NuAllocManagerFreePc(NuAllocManager, memory);
         return;
     }
     free(memory);
@@ -216,14 +216,14 @@ void *__cdecl NuAlloc(i32 size, const char *file, i32 line) {
         }
         return NULL;
     }
-    manager = (NUALLOC_MANAGER_PREFIX_PC *)NuAllocManager;
-    allocation_size = (u32)strlen(file) + (u32)size + 0x2d;
+    manager = NuAllocManager;
+    allocation_size = strlen(file) + (u32)size + 0x2d;
     if (manager != NULL) {
-        record = (NUALLOC_RECORD *)NuAllocManagerAllocateAlignedPc(manager, allocation_size, 4);
+        record = NuAllocManagerAllocateAlignedPc(manager, allocation_size, 4);
     } else {
-        record = (NUALLOC_RECORD *)malloc(allocation_size);
+        record = malloc(allocation_size);
         if (record != NULL) {
-            allocation_size = (u32)strlen(file) + (u32)size + 0x2d;
+            allocation_size = strlen(file) + (u32)size + 0x2d;
             memset(record, 0, allocation_size);
         }
     }
@@ -232,7 +232,7 @@ void *__cdecl NuAlloc(i32 size, const char *file, i32 line) {
         NuAllocReport((const void *)(u32)size, file, line);
         NuAllocBadPointer();
     } else {
-        allocation_size = (u32)strlen(file) + (u32)size + 0x2d;
+        allocation_size = strlen(file) + (u32)size + 0x2d;
         memset(record, 0, allocation_size);
         NuAllocTrackedBytes += (u32)size;
         record->requested_size = (u32)size;
@@ -311,7 +311,7 @@ void __cdecl NuFree(void *user_data, const char *file, i32 line) {
     record->previous = NULL;
 
     if (NuAllocManager != NULL) {
-        NuAllocManagerFreePc((NUALLOC_MANAGER_PREFIX_PC *)NuAllocManager, record);
+        NuAllocManagerFreePc(NuAllocManager, record);
         return;
     }
 
@@ -368,7 +368,7 @@ void *__cdecl NuReAlloc(void *user_data, i32 size, const char *file, i32 line) {
         NuAllocRecordHead = old_head;
     }
 
-    record = (NUALLOC_RECORD *)realloc(record, strlen(file) + (u32)size + 0x2d);
+    record = realloc(record, strlen(file) + (u32)size + 0x2d);
     if (record == NULL) {
         NuAllocReport((const void *)(u32)size, file, line);
         user_data = NULL;

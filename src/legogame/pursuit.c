@@ -210,7 +210,7 @@ void __cdecl BountyHunterPursuitD_Update(WORLDINFO *world) {
     nearest = NULL;
     for (i = 0; i < 12; i++) {
         if (LevGizmo[i] != NULL) {
-            generator = (GIZMOBLOWUP_PC *)LevGizmo[i]->object;
+            generator = LevGizmo[i]->object;
             if ((generator->status_flags & 1) == 0) {
                 distance_sq = NuVecDistSqr(&generator->position, &LevGameObject[0]->collision_position, NULL);
                 if (distance_sq < nearest_distance_sq) {

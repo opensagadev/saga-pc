@@ -100,7 +100,7 @@ found:
     slot->text = NULL;
     text_index = 0;
     if (message->special != NULL) {
-        if (!NuSpecialExistsFn((NUSPECIALHANDLE *)message->special)) {
+        if (!NuSpecialExistsFn(message->special)) {
             return NULL;
         }
     } else {

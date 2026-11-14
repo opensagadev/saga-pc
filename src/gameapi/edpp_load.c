@@ -223,7 +223,7 @@ void cbPtlSelTextureType(eduimenu_s *menu, eduiitem_s *item, u32 unused2) {
     if (edpp_nearest != -1 && edpp_ptls[edpp_nearest].instance_id != -1) {
         i32 type = debkeydata[edpp_ptls[edpp_nearest].instance_id].effect_index;
         DEBRIS_INFO_PC *effect = debtab[type];
-        if ((i8)effect->particle_type != item->data) {
+        if (effect->particle_type != item->data) {
             if (item->data == 2) {
                 edpp_ptls[edpp_nearest].render_priority = 40000;
             } else if (item->data == 3) {
@@ -382,8 +382,8 @@ void cbPtlTextureMenu(eduimenu_s *menu, eduiitem_s *unused1, u32 unused2) {
                 eduiMenuAddItem(texturemenu,
                                 eduiItemSelCreate(1, colours, 0, 0, cbPtlTextureSelectMenu, "Texture Selector..."));
             }
-            eduiMenuAddItem(texturemenu, eduiItemToggleCreate(0, edblack, ((i8)(effect->camera_facing)), 2,
-                                                              cbPtlSetXZFacing, "Default to XZ Plane"));
+            eduiMenuAddItem(texturemenu, eduiItemToggleCreate(0, edblack, effect->camera_facing, 2, cbPtlSetXZFacing,
+                                                              "Default to XZ Plane"));
             eduiMenuAttach(menu, texturemenu);
             texturemenu->x = menu->x + 10;
             texturemenu->y = menu->y + 40;
@@ -492,7 +492,7 @@ i32 __cdecl edppLoadPage(char *path, i8 flag, NUGSCN *scene) {
         while (debtab[type_index] != NULL) {
             type_index++;
         }
-        FileLoadSingleEffectType(&effecttypes[type_index], version, (char)(flag));
+        FileLoadSingleEffectType(&effecttypes[type_index], version, flag);
         effecttypes[type_index].page = (u8)(page_index);
         effecttypes[type_index].native_data = NULL;
         effecttypes[type_index].last_render_time = 0.0f;

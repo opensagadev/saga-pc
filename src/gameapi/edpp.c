@@ -452,7 +452,7 @@ static void edptlcbStarMenu(eduimenu_s *parent, eduiitem_s *unused1, u32 unused2
             return;
         }
         eduiMenuAddItem(edptl_star_menu, eduiItemSliderCreateInt(0, colours, 0, edptlcbApplyStarPoints, 3, 17,
-                                                                 ((i8)(effect->radial_segments)), "Number of Points"));
+                                                                 effect->radial_segments, "Number of Points"));
         eduiMenuAddItem(edptl_star_menu, eduiItemSliderCreate(0, colours, 0, edptlcbApplyStarRatio, 0.1f, 0.8f,
                                                               effect->radial_floor, "Radius Ratio"));
         eduiMenuAttach(parent, edptl_star_menu);
@@ -1697,7 +1697,7 @@ void __cdecl edppHighlightNearest(void) {
                 edppFabs(delta.z) <= edpp_copy_size) {
                 ++edpp_copy_enclosed;
                 edbitsDrawDiagonalCross(edpp_ptls[index].position.x, edpp_ptls[index].position.y,
-                                        edpp_ptls[index].position.z, 0.05f, 0xffffffff, (PC_SCENE_MTL_VIEW *)edpp_mtl);
+                                        edpp_ptls[index].position.z, 0.05f, 0xffffffff, edpp_mtl);
             }
         }
         if (edpp_copy_source_count > 0) {
@@ -1705,8 +1705,7 @@ void __cdecl edppHighlightNearest(void) {
                 NuVecSub(&offset, &edpp_ptls[edpp_copy_source[source]].position, &edpp_copy_source_vec);
                 NuVecRotateY(&offset, &offset, edpp_copyroty);
                 NuVecAdd(&position, &edpp_cam_pos, &offset);
-                edbitsDrawDiagonalCross(position.x, position.y, position.z, 0.05f, 0xff808080,
-                                        (PC_SCENE_MTL_VIEW *)edpp_mtl);
+                edbitsDrawDiagonalCross(position.x, position.y, position.z, 0.05f, 0xff808080, edpp_mtl);
             }
         }
     } else {

@@ -95,7 +95,7 @@ STATIC_ASSERT(offsetof(GIZFLOW_SPECIAL_SYSTEM_PC, specials) == 0);
 STATIC_ASSERT(offsetof(GIZFLOW_SPECIAL_SYSTEM_PC, count) == 4);
 
 i32 GizRandom_GetMaxGizmos(void *world_ptr) {
-    WORLDINFO *world = ((WORLDINFO *)(world_ptr));
+    WORLDINFO *world = world_ptr;
     if (world == NULL || world->current_level == NULL) {
         return 0;
     }
@@ -103,7 +103,7 @@ i32 GizRandom_GetMaxGizmos(void *world_ptr) {
 }
 
 void __cdecl GizRandom_AddGizmos(struct gizmosys_pc_s *gizmo_sys, i32 type_id, void *world_ptr, void *unused) {
-    GIZFLOW_LOAD_WORLD_PC *world = (GIZFLOW_LOAD_WORLD_PC *)world_ptr;
+    GIZFLOW_LOAD_WORLD_PC *world = world_ptr;
     i32 i;
     for (i = 0; i < world->randoms->count; ++i) {
         if (NuStrLen(world->randoms->randoms[i].name) != 0) {
@@ -117,7 +117,7 @@ char *__cdecl GizRandom_GetGizmoName(GIZMO_PC *gizmo) {
 }
 
 i32 __cdecl GizRandom_GetOutput(GIZMO_PC *gizmo, i32 output_index, i32 unused) {
-    GIZFLOW_RANDOM_PC *random = (GIZFLOW_RANDOM_PC *)gizmo->object;
+    GIZFLOW_RANDOM_PC *random = gizmo->object;
     if ((random->flags & 1) == 0) {
         return 0;
     }
@@ -129,12 +129,12 @@ char *GizRandom_GetOutputName(GIZMO_PC *unused0, i32 unused1) {
 }
 
 i32 __cdecl GizRandom_GetNumOutputs(void *gizmo_pointer) {
-    GIZMO_PC *gizmo = (GIZMO_PC *)gizmo_pointer;
+    GIZMO_PC *gizmo = gizmo_pointer;
     return ((GIZFLOW_RANDOM_PC *)gizmo->object)->output_count;
 }
 
 void __cdecl GizRandom_Activate(GIZMO_PC *gizmo, i32 active) {
-    GIZFLOW_RANDOM_PC *random = (GIZFLOW_RANDOM_PC *)gizmo->object;
+    GIZFLOW_RANDOM_PC *random = gizmo->object;
     i32 roll;
     i32 cumulative_weight = 0;
     i32 i;
@@ -155,7 +155,7 @@ void __cdecl GizRandom_Activate(GIZMO_PC *gizmo, i32 active) {
 }
 
 void *__cdecl GizRandom_ReserveBufferSpace(void *world_ptr) {
-    GIZFLOW_LOAD_WORLD_PC *world = (GIZFLOW_LOAD_WORLD_PC *)world_ptr;
+    GIZFLOW_LOAD_WORLD_PC *world = world_ptr;
     world->randoms = NULL;
     if (world->level->max_randoms > 0) {
         world->giz_buffer.addr = (world->giz_buffer.addr + 3) & ~3u;

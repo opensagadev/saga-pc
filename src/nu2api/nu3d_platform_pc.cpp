@@ -2853,12 +2853,12 @@ extern "C" {
     }
 
     void PC_EFFECT_SURFACE_PC::Attach(GRAPHICS_RENDER_TEXTURE_PC *new_texture, i32 new_level, bool own) {
-        if (texture == new_texture && (i32)level == new_level) {
+        if (texture == new_texture && level == new_level) {
             return;
         }
         Reset();
         texture = new_texture;
-        owns_texture = (u8)own;
+        owns_texture = own;
         surface = NULL;
         level = (u16)new_level;
         field_10 = 0;
@@ -4019,7 +4019,7 @@ extern "C" {
         }
         *(u32 *)cursor = 0;
         cursor += sizeof(u32);
-        *size = (i32)(cursor - start);
+        *size = cursor - start;
         return (DEBRIS_PARTICLE_CHUNK_PC *)start;
     }
 
@@ -4032,7 +4032,7 @@ extern "C" {
         u8 *start = cursor;
         DEBRIS_PART_HEADER_PC *header = (DEBRIS_PART_HEADER_PC *)cursor;
         cursor = (u8 *)&header->frames[64];
-        *size = (i32)(cursor - start);
+        *size = cursor - start;
         return (DEBRIS_PART_HEADER_PC *)start;
     }
 
@@ -4170,14 +4170,12 @@ extern "C" {
                         blue = effect->colour_keys[i].blue;
                     } else {
                         red = effect->colour_keys[i].red +
-                              static_cast<i32>(effect->colour_keys[i + 1].red - effect->colour_keys[i].red) *
-                                  (elapsed / duration);
-                        green = effect->colour_keys[i].green +
-                                static_cast<i32>(effect->colour_keys[i + 1].green - effect->colour_keys[i].green) *
-                                    (elapsed / duration);
+                              (effect->colour_keys[i + 1].red - effect->colour_keys[i].red) * (elapsed / duration);
+                        green =
+                            effect->colour_keys[i].green +
+                            (effect->colour_keys[i + 1].green - effect->colour_keys[i].green) * (elapsed / duration);
                         blue = effect->colour_keys[i].blue +
-                               static_cast<i32>(effect->colour_keys[i + 1].blue - effect->colour_keys[i].blue) *
-                                   (elapsed / duration);
+                               (effect->colour_keys[i + 1].blue - effect->colour_keys[i].blue) * (elapsed / duration);
                     }
                     break;
                 }
@@ -5509,7 +5507,7 @@ extern "C" {
                 cursor = NuDisplayListStreamCursor;
                 global->camera_packet_cache = cursor->void_ptr;
                 *(i32 *)cursor->void_ptr =
-                    ((i32)(i16)global->camera_id + 5) * (global->counter_0020 + 13) + nuapi.frame_count;
+                    ((i16)global->camera_id + 5) * (global->counter_0020 + 13) + nuapi.frame_count;
                 cursor->addr += sizeof(i32);
                 *(NUMTX *)cursor->void_ptr = global->camera_matrix;
                 cursor->addr += sizeof(NUMTX);
@@ -6808,7 +6806,7 @@ STATIC_ASSERT(offsetof(PC_HG_SHADOW_GROUP, joint_index) == 15);
 
 extern "C" {
     NUHGOBJ_POI_PC *__cdecl NuHGobjGetPOI(NUHGOBJ_EVAL_PC *object, u8 index) {
-        if ((i32)index < object->point_index_count) {
+        if (index < object->point_index_count) {
             index = object->point_index_map[index];
             if (index != 0xff) {
                 return &object->points[index];

@@ -45,7 +45,7 @@ extern "C" void __cdecl InitOnce(i32 argc, char **argv) {
                      0);
     NuTimeBarInit();
     pNuCam = NuCameraCreate();
-    InitPanel((i32)Game.options_save.widescreen);
+    InitPanel(Game.options_save.widescreen);
     app_tbgameset = NuTimeBarCreateSet(NULL);
     app_tbplayerset = NuTimeBarCreateSet(NULL);
     app_tbaiset = NuTimeBarCreateSet(NULL);

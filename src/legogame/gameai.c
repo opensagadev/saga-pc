@@ -372,10 +372,10 @@ void GameCreatureOpponentSelection(AISYS_PC *system, i32 count, APIOBJECT_PC **o
                     if (!have_distance) {
                         distance = NuVecDist(&baddy->position, &goody->position, &difference);
                     }
-                    baddy_object = ((GAMEOBJECT *)baddy->owner);
+                    baddy_object = baddy->owner;
                     baddy_id = baddy_object->id;
                     if (baddy_id == (u16)id_JAWA || baddy_id == (u16)id_UGNAUGHT) {
-                        if (!ZapTarget(((GAMEOBJECT *)goody->owner))) {
+                        if (!ZapTarget(goody->owner)) {
                             OPPONENT_GAME(((GAMEOBJECT *)baddy->owner))->exclusion |= (u64)1 << goody->object_id;
                         }
                     } else if ((goody->character_data->model_flags & 0x80000) ||
@@ -615,7 +615,7 @@ void __cdecl MakeBaddiesForgetAboutParty(i32 check_hostility) {
     {
         i32 all_under_cover = 1;
         for (i = 0; i < 8; ++i) {
-            GAMEOBJECT *player = (GAMEOBJECT *)Player[i];
+            GAMEOBJECT *player = Player[i];
             if (player == NULL || (player->flags_1fc_word & 1) == 0 || (player->flags_1fc_word & 0x1000) == 0 ||
                 player->dead != 0 || (player->flags_ef3 & 1) != 0) {
                 continue;
@@ -853,7 +853,7 @@ static i32 GameAIWallShufflePc(GAMEOBJECT *object) {
         scale = (f32)((f64)scale * 2.0);
         NuVecScale(&movement, &movement, scale);
     }
-    NuVecRotateY(&movement, &movement, -(i32)angle);
+    NuVecRotateY(&movement, &movement, -angle);
     movement.z = 0.0f;
     NuVecRotateY(&movement, &movement, angle);
     NuVecScale(&wall_direction, &wall_direction, ai_moveradius);
@@ -890,7 +890,7 @@ void __cdecl GameAIResetPathConnectionsPc(AISYS_PC *system) {
 
 /* Native 0x0043b7c0, 376 bytes: private EDI-argument helper of frame owner. */
 static void GameAIUpdateAreaPc(AIAREA_PC *area) {
-    i32 area_index = (i32)(area - WORLD->ai_sys->areas);
+    i32 area_index = area - WORLD->ai_sys->areas;
     GAMEOBJECT *object = Obj;
     i32 index;
     NUVEC local;
@@ -1030,7 +1030,7 @@ u8 __cdecl SpecialRouteCharacterTypeID(char *name) {
         return 0x40;
     }
     for (suit = 0; suit < 10; ++suit) {
-        if (NuStrICmp(name, (char *)SuitRecordInitPc[suit].suit_character_name) == 0) {
+        if (NuStrICmp(name, SuitRecordInitPc[suit].suit_character_name) == 0) {
             return suit;
         }
     }
@@ -1069,7 +1069,7 @@ char *__cdecl SpecialRouteCharacterName(u8 id) {
     i32 skipped = 0;
     if (id != 0xff) {
         if (id < 10) {
-            return (char *)SuitRecordInitPc[id].suit_character_name;
+            return SuitRecordInitPc[id].suit_character_name;
         }
         route = 0;
         while (CurrentStoryCList[route + skipped].model_id != -1 && route + skipped < 64) {
@@ -1217,7 +1217,7 @@ APIOBJECT_PC *__cdecl GetNamedAPIObject(void *system_pointer, char *name) {
     AICREATURE_PC *creature;
     i32 index;
     char player_name[64];
-    system = (AISYS_PC *)system_pointer;
+    system = system_pointer;
     object = NULL;
     if (system != NULL) {
         for (index = 0; index < HIGHGAMEOBJECT; index++) {
@@ -1271,13 +1271,13 @@ NUVEC *__cdecl GetAICreatureOrigin(AISYS_PC *system, AIPACKET_PC *packet) {
     }
     if ((packet->navigation_flags & 8u) == 0) {
         creature = &system->creatures[packet->creature_index];
-        across = ((i32)packet->group_column + 1) / 2;
-        offset.x = (f32)(across * creature->x_spacing);
+        across = (packet->group_column + 1) / 2;
+        offset.x = across * creature->x_spacing;
         if ((packet->group_column & 1) != 0) {
             offset.x = -offset.x;
         }
         offset.y = 0.0f;
-        offset.z = (f32)(-creature->z_spacing * (i32)packet->group_row);
+        offset.z = -creature->z_spacing * packet->group_row;
         NuVecRotateY(&offset, &offset, creature->y_rotation);
         NuVecAdd(&packet->creature_origin, &offset, &creature->position);
         packet->navigation_flags |= 8u;
@@ -1307,7 +1307,7 @@ void GameAILoad(AISYS_PC *system, i32 version, NUGSCN *unused2, VARIPTR *buffer,
         }
     }
 
-    tag_length = (i8)EdFileReadChar();
+    tag_length = EdFileReadChar();
     if (tag_length != 0 && tag_length <= 8) {
         EdFileRead(tag, tag_length);
         if (NuStrICmp(tag, "LEGO") == 0) {
@@ -1364,7 +1364,7 @@ i32 __cdecl GameFindAlternativeSpecialObject(AISYS_PC *system, NUSPECIALHANDLE *
 APIOBJECT_PC *__cdecl GameAPIOBJECTFromObjID(u8 object_id) {
     GAMEOBJECT *object;
     u32 flags;
-    if ((i32)object_id < HIGHGAMEOBJECT) {
+    if (object_id < HIGHGAMEOBJECT) {
         object = &Obj[object_id];
         flags = object->flags_1fc_word;
         if ((flags & 1) == 0) {
@@ -1512,7 +1512,7 @@ struct AIPATHCNXCONTROLLER_s *__cdecl AIPathCnxControllerCreate(AI_CONTROL_SYSTE
     u8 index;
     memset(&special, 0, sizeof(special));
     if (system != NULL && from != NULL && to != NULL) {
-        connection = (AIPATHCNX_PC *)AIPAthFindPathCnx(ai, path, from, to, &direction);
+        connection = AIPAthFindPathCnx(ai, path, from, to, &direction);
         if (connection != NULL) {
             switch (target_type) {
                 case 0:
@@ -1530,7 +1530,7 @@ struct AIPATHCNXCONTROLLER_s *__cdecl AIPathCnxControllerCreate(AI_CONTROL_SYSTE
                     target = GizmoFindByName(WORLD->gizmo_sys, -1, target_name);
                     break;
                 case 4:
-                    gizmo = (GIZMO_PC *)GizmoFindByName(WORLD->gizmo_sys, blowup_gizmotype_id, target_name);
+                    gizmo = GizmoFindByName(WORLD->gizmo_sys, blowup_gizmotype_id, target_name);
                     if (gizmo != NULL) {
                         target = gizmo->object;
                     }
@@ -1544,19 +1544,19 @@ struct AIPATHCNXCONTROLLER_s *__cdecl AIPathCnxControllerCreate(AI_CONTROL_SYSTE
                     target = FlowBoxFindByName(WORLD->giz_flow, target_name);
                     break;
                 case 7:
-                    gizmo = (GIZMO_PC *)GizmoFindByName(WORLD->gizmo_sys, force_gizmotype_id, target_name);
+                    gizmo = GizmoFindByName(WORLD->gizmo_sys, force_gizmotype_id, target_name);
                     if (gizmo != NULL) {
                         target = gizmo->object;
                     }
                     break;
                 case 8:
-                    gizmo = (GIZMO_PC *)GizmoFindByName(WORLD->gizmo_sys, obstacle_gizmotype_id, target_name);
+                    gizmo = GizmoFindByName(WORLD->gizmo_sys, obstacle_gizmotype_id, target_name);
                     if (gizmo != NULL) {
                         target = gizmo->object;
                     }
                     break;
                 case 9:
-                    gizmo = (GIZMO_PC *)GizmoFindByName(WORLD->gizmo_sys, zipup_gizmotype_id, target_name);
+                    gizmo = GizmoFindByName(WORLD->gizmo_sys, zipup_gizmotype_id, target_name);
                     if (gizmo != NULL) {
                         target = gizmo->object;
                     }
@@ -1603,9 +1603,9 @@ void __cdecl AIPathCnxControllerSetOnRange(struct AIPATHCNXCONTROLLER_s *control
     end = 1;
     switch (controller->target_type) {
         case 0:
-            animation = (CONTROLLER_ANIMATION_VIEW_PC *)NuSpecialGetInstAnim(&controller->special);
+            animation = NuSpecialGetInstAnim(&controller->special);
             if (animation != NULL) {
-                scene = (NUGSCN *)controller->special.scene;
+                scene = controller->special.scene;
                 data = scene->instance_animation_data[animation->animation_index];
                 if (data != NULL) {
                     end = (i32)NuAnimEndFrameOld(data);
@@ -1672,7 +1672,7 @@ void __cdecl AIPathCnxControlSysUpdate(AI_CONTROL_SYSTEM_PC *system) {
                     active = 0;
                     break;
                 }
-                animation = (NUINSTANIM *)NuSpecialGetInstAnim(&controller->special);
+                animation = NuSpecialGetInstAnim(&controller->special);
                 if (animation == NULL) {
                     goto frame_one;
                 }
@@ -1695,7 +1695,7 @@ void __cdecl AIPathCnxControlSysUpdate(AI_CONTROL_SYSTEM_PC *system) {
                 active = controller->on_frames[frame / 32] & (1 << (frame % 32));
                 break;
             case 1:
-                cut = (CONTROLLER_CUT_VIEW_PC *)controller->target;
+                cut = controller->target;
                 end = (i32)cut->animation->end_frame;
                 if (end > 1024) {
                     end = 1024;
@@ -1748,7 +1748,7 @@ void __cdecl AIPathCnxControlSysUpdate(AI_CONTROL_SYSTEM_PC *system) {
                 active = controller->on_frames[frame / 32] & (1 << (frame % 32));
                 break;
             case 7:
-                if (GizForce_Complete((GIZFORCE_PC *)controller->target) == 0) {
+                if (GizForce_Complete(controller->target) == 0) {
                     active = 0;
                 }
                 break;
@@ -1901,7 +1901,7 @@ void __cdecl oneAtOnce_MaintainArray(void) {
         }
         object->one_at_once_player = 0xff;
         opponent_api = (APIOBJECT_PC *)object->ai_packet.opponent;
-        opponent = (GAMEOBJECT *)opponent_api->owner;
+        opponent = opponent_api->owner;
         for (player_index = 0; player_index < 8; ++player_index) {
             if (opponent == Player[player_index]) {
                 slot = attacker_count[player_index];
@@ -2008,7 +2008,7 @@ GAMEOBJECT *__cdecl AddDynamicCreature(i32 model, NUVEC *position, i32 angle, ch
         if (spline != NULL) {
             InitSplinePosition(&object->movement_spline_position, spline, 0.0f, spline_mode);
             PointAlongSpline(object->movement_spline_position.spline, object->movement_spline_position.along, &point,
-                             &yaw, &pitch, (i8)object->movement_spline_position.looping);
+                             &yaw, &pitch, object->movement_spline_position.looping);
             object->field_0x276 = object->facing_angle = object->movement_facing_angle = yaw;
             object->pitch_angle = (u16)-pitch;
             if (spline_offset != NULL) {
@@ -2052,8 +2052,8 @@ GAMEOBJECT *__cdecl AddDynamicCreature(i32 model, NUVEC *position, i32 angle, ch
             if (Door_NextSock != -1 && WORLD->sock_sys->socks[Door_NextSock].valid != 0) {
                 complexsockposition_forcesock = Door_NextSock;
             }
-            ComplexSockPosition(WORLD->sock_sys, &object->position, (i8)object->sock_position.sock_index,
-                                (i16)object->sock_position.segment, &object->sock_position);
+            ComplexSockPosition(WORLD->sock_sys, &object->position, object->sock_position.sock_index,
+                                object->sock_position.segment, &object->sock_position);
             ComplexSockAngles(&object->sock_angles);
         }
         NuVecRotateYValZ(&object->facing_direction, 1.0f, object->field_0x276);
@@ -2161,13 +2161,13 @@ void __cdecl AI_AddGizmos(GIZMOSYS_PC *giz, i32 type, void *world_ptr, void *dat
 }
 
 char *__cdecl AI_GetGizmoName(void *gizmo_pointer) {
-    GIZMO_PC *gizmo = (GIZMO_PC *)gizmo_pointer;
+    GIZMO_PC *gizmo = gizmo_pointer;
     AI_GIZMO_NAME_PROCESS_PC *process;
     i8 length;
     if (gizmo == NULL || gizmo->object == NULL) {
         return NULL;
     }
-    process = (AI_GIZMO_NAME_PROCESS_PC *)gizmo->object;
+    process = gizmo->object;
     if (NuStrLen(process->name) != 0) {
         return process->name;
     }
@@ -2206,7 +2206,7 @@ char *__cdecl AI_GetGizmoName(void *gizmo_pointer) {
 }
 
 i32 __cdecl AI_GetOutput(void *input, i32 output, i32 mode) {
-    GIZMO_PC *gizmo = (GIZMO_PC *)input;
+    GIZMO_PC *gizmo = input;
     (void)output;
     (void)mode;
     if (gizmo != NULL && gizmo->object != NULL) {
@@ -2228,10 +2228,10 @@ char *__cdecl AI_GetOutputName(void *gizmo, i32 output) {
 }
 
 void __cdecl AI_Activate(void *input, i32 active) {
-    GIZMO_PC *gizmo = (GIZMO_PC *)input;
+    GIZMO_PC *gizmo = input;
     LEVEL_SCRIPT_PROCESS_PC *process;
     if (gizmo != NULL && gizmo->object != NULL) {
-        process = (LEVEL_SCRIPT_PROCESS_PC *)gizmo->object;
+        process = gizmo->object;
         process->processor.flags ^= (((active == 0) << 1) ^ process->processor.flags) & 2;
     }
 }
@@ -2672,8 +2672,7 @@ void __cdecl GameAIProcess(void) {
                             object->route_frame_state != object->ai_packet.frame_state ||
                             object->route_character_id == id_DROIDEKA) {
                             object->route_character_id = object->id;
-                            object->route_suit_index =
-                                object->suit != NULL ? Suit_GetIndex((SUIT_LAYERS_PC *)(object->suit)) : -1;
+                            object->route_suit_index = object->suit != NULL ? Suit_GetIndex(object->suit) : -1;
                             object->input_toggle_hold_time = 0.0f;
                             object->route_frame_state = object->ai_packet.frame_state;
                             object->route_start_index = object->ai_packet.next_route;
@@ -2687,13 +2686,13 @@ void __cdecl GameAIProcess(void) {
                             }
                             object->input_toggle_hold_time = object->model_draw_result != 0 ? 0.25f : 0.0f;
                             if (object->id == object->route_character_id &&
-                                Suit_GetIndex((SUIT_LAYERS_PC *)(object->suit)) == object->route_suit_index) {
+                                Suit_GetIndex(object->suit) == object->route_suit_index) {
                                 Player_ToggleCharacter(object, -1, 0);
                                 if (object->id == (u16)id_DROIDEKA) {
                                     Player_ToggleCharacter(object, -1, 0);
                                 }
                                 object->route_character_id = object->id;
-                                object->route_suit_index = Suit_GetIndex((SUIT_LAYERS_PC *)(object->suit));
+                                object->route_suit_index = Suit_GetIndex(object->suit);
                                 object->ai_packet.next_route = object->route_search_index;
                                 AISysFindRoute(&object->ai_packet);
                                 object->route_search_index = object->ai_packet.next_route;
@@ -2724,8 +2723,7 @@ void __cdecl GameAIProcess(void) {
             if ((object->combat_flags & 0x80) != 0 && (APIOBJECT_PC *)object->ai_packet.opponent != NULL) {
                 bolt = BoltType_FindByID(0, WORLD);
                 if (bolt->field_10 * bolt->field_14 > object->ai_packet.opponent_metric) {
-                    NuVecSub(&direction, &((GAMEOBJECT *)object->ai_packet.opponent)->collision_position,
-                             &object->collision_position);
+                    NuVecSub(&direction, &object->ai_packet.opponent->collision_position, &object->collision_position);
                     scale = object->ai_packet.opponent_metric == 0.0f ? 0.0f : 1.0f / object->ai_packet.opponent_metric;
                     NuVecScale(&direction, &direction, scale);
                     NuVecRotateY(&forward, &v001, object->movement_facing_angle);
@@ -2735,7 +2733,7 @@ void __cdecl GameAIProcess(void) {
                                                                        : 0x2555;
                     if (dot > NuTrigTable[angle]) {
                         object->pad->buttons_pressed |= GAMEPAD_ACTION;
-                        object->script_fire_target = (GAMEOBJECT *)((APIOBJECT_PC *)object->ai_packet.opponent)->owner;
+                        object->script_fire_target = ((APIOBJECT_PC *)object->ai_packet.opponent)->owner;
                     }
                 }
                 defend = 1;
@@ -2802,8 +2800,7 @@ void __cdecl GameAIProcess(void) {
             }
         }
         if ((object->ai_packet.opponent != NULL)) {
-            SetObjAsHeadTarget(object, (GAMEOBJECT *)((APIOBJECT_PC *)object->ai_packet.opponent)->owner, 2, 1.0f, 0.0f,
-                               0.0f);
+            SetObjAsHeadTarget(object, ((APIOBJECT_PC *)object->ai_packet.opponent)->owner, 2, 1.0f, 0.0f, 0.0f);
         }
     interaction:
         if ((object->flags_1fc_word & 0x1000) != 0 && object->dead == 0 && object->context_target_position == NULL &&
@@ -2880,7 +2877,7 @@ void __cdecl GameAIProcess(void) {
     }
     timetogetlos = GameAiLosDivisorPc != 0 ? (f32)(los_count * los_count) * FRAMETIME / GameAiLosDivisorPc : 1.0e9f;
     APIObjectLOSChecks(WORLD->object_sys, GameAiLosDivisorPc, goody_count, goodies, los_count, baddies,
-                       (f32)(u8)(WORLD->current_level->raycast_step));
+                       (f32)WORLD->current_level->raycast_step);
     if (test_new_interaction != 0) {
         GameCreatureInteraction2D(WORLD->ai_sys, interactive_count, interactive_objects, NULL, FRAMETIME);
     } else {
@@ -2933,11 +2930,10 @@ void __cdecl GameAISysReset(AISYS_PC *system) {
 }
 
 void *__cdecl AIPathCnxControlSysCreate(VARIPTR *buffer, VARIPTR *end, i32 count) {
-    AI_CONTROL_SYSTEM_PC *system = (AI_CONTROL_SYSTEM_PC *)AISysBufferAlloc(buffer, end, sizeof(*system));
+    AI_CONTROL_SYSTEM_PC *system = AISysBufferAlloc(buffer, end, sizeof(*system));
     if (system != NULL) {
         memset(system, 0, sizeof(*system));
-        system->controllers =
-            (AI_CONTROL_SLOT_PC *)AISysBufferAlloc(buffer, end, (u32)count * sizeof(AI_CONTROL_SLOT_PC));
+        system->controllers = AISysBufferAlloc(buffer, end, (u32)count * sizeof(AI_CONTROL_SLOT_PC));
         if (system->controllers != NULL) {
             system->capacity = count;
             AIPathCnxControlSysReset(system);

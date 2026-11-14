@@ -1157,11 +1157,10 @@ extern "C" {
         Collection_CreateCustom("BountyHunters", &PermanentBountyTitleIdPc, &BountyHunterCollectionPc, 0x01000000, 0, 0,
                                 0, 4, &permbuffer_ptr, &permbuffer_end, 0, PermCollectionScalePc);
         Areas_ConfigureResidents(&permbuffer_ptr, &permbuffer_end);
-        CharacterCustomiser =
-            Customiser_Configure("chars\\customiser.txt", &permbuffer_ptr, &permbuffer_end, (i32)PermanentWeirdo1IdPc,
-                                 (i32)PermanentWeirdo2IdPc, PermanentCustomPieceAvailablePc,
-                                 PermanentCustomPieceConfigPc, LevelObject_FindIndexFromName,
-                                 &((PERMANENT_CUSTOMISER_GAME_PC *)&Game)->customiser, PermanentCustomiserActionsPc);
+        CharacterCustomiser = Customiser_Configure(
+            "chars\\customiser.txt", &permbuffer_ptr, &permbuffer_end, PermanentWeirdo1IdPc, PermanentWeirdo2IdPc,
+            PermanentCustomPieceAvailablePc, PermanentCustomPieceConfigPc, LevelObject_FindIndexFromName,
+            &((PERMANENT_CUSTOMISER_GAME_PC *)&Game)->customiser, PermanentCustomiserActionsPc);
         SpecialMoves_Configure("chars\\specialmoves.txt", &permbuffer_ptr, &permbuffer_end);
         for (i32 index = 0; index < LEVELCOUNT; ++index) {
             if ((LDataList[index].flags & 0x400) != 0) {
@@ -1216,7 +1215,7 @@ extern "C" {
                 NuStrCat(path, "\\");
                 NuStrCat(path, ADataList[area].file);
                 NuStrCat(path, ".gsc");
-                NuWin32SetDFS((i32)(i8)ADataList[area].episode_index + 1);
+                NuWin32SetDFS(ADataList[area].episode_index + 1);
                 area_scene = NuGScnRead(&characterbuffer_ptr, characterbuffer_end, path);
                 NuWin32SetDFS(0);
                 if (area_scene != NULL && area_scene->display_list != NULL) {
@@ -1270,7 +1269,7 @@ extern "C" {
         if (LOSTTEMPLE_ADATA != NULL && area == LOSTTEMPLE_ADATA->index) {
             Particles_LoadAreaPage("levels\\losttemple\\losttemple.ptl");
         } else if (area != -1 && (ADataList[area].flags & 0x62) == 0 &&
-                   (((i8)ADataList[area].episode_index >= 0 && (i8)ADataList[area].episode_index <= 2) ||
+                   ((ADataList[area].episode_index >= 0 && ADataList[area].episode_index <= 2) ||
                     (ANEWHOPE_ADATA != NULL && area == ANEWHOPE_ADATA->index) ||
                     (PODSPRINT_ADATA != NULL && area == PODSPRINT_ADATA->index) ||
                     (BONUS_GUNSHIP_ADATA != NULL && area == BONUS_GUNSHIP_ADATA->index))) {
@@ -1304,7 +1303,7 @@ extern "C" void ClearUpAreaData() {
 
     for (object_index = 0; object_index < HIGHGAMEOBJECT; object_index++) {
         if ((Obj[object_index].flags_1fc_half & 1) != 0) {
-            FreeTorpedoPacket((TORPEDOPACKET_PC **)&Obj[object_index].torpedo);
+            FreeTorpedoPacket(&Obj[object_index].torpedo);
             RemoveGameObject(&Obj[object_index], 1);
         }
     }
@@ -1406,8 +1405,8 @@ void __cdecl LoadAreaCharacters(void) {
     SetBackgroundMusic(1);
     if (load_type == 2 && AreaCrawlMusicEnabledPc != 0 && Game.options_save.music_enabled != 0 && NOSOUND == 0 &&
         0 == NOMUSIC) {
-        if (Arcade == 0 && Area != -1 && -1 != ((i8)ADataList[Area].episode_index)) {
-            i32 handle = music_man.GetTrackHandle(1, crawl_music[(i8)ADataList[Area].episode_index]);
+        if (Arcade == 0 && Area != -1 && -1 != ADataList[Area].episode_index) {
+            i32 handle = music_man.GetTrackHandle(1, crawl_music[ADataList[Area].episode_index]);
             music_man.SelectTrackByHandle(1, handle);
             if (music_man.GetTrackHandle(1, NULL) != -1) {
                 music_man.PlayTrack(1);
@@ -1704,7 +1703,7 @@ void __cdecl ResetScene(NUGSCN *scene, SCENEPROGRESS *progress) {
         if (data == NULL) {
             continue;
         }
-        animation->ltime = (f32)(u32)(progress->specials[i].flags & 0x7ff);
+        animation->ltime = (f32)(progress->specials[i].flags & 0x7ff);
         packed = progress->specials[i].flags;
         animation->flags = (animation->flags & ~1u) | ((packed >> 12) & 1);
         packed = progress->specials[i].flags;
@@ -1952,7 +1951,7 @@ void __cdecl WorldInfo_Load(WORLDINFO *world) {
             NuStrCpy(path, world->config_file);
         }
         NuStrCat(path, ".gsc");
-        numtl_force_mipmode = (i32)(u8)world->current_level->mipmap_mode + 1;
+        numtl_force_mipmode = world->current_level->mipmap_mode + 1;
         LOG_INFO("Scene load begin: path=%s shadowmethod=%d", path, PcWindowOptions.shadowmethod);
         for (index = 0; index != 11; ++index) {
             if (world->current_level == WorldArchiveOneLevelsPc[index]) {
@@ -1966,7 +1965,7 @@ void __cdecl WorldInfo_Load(WORLDINFO *world) {
                 goto archive_selected;
             }
         }
-        NuWin32SetDFS((i32)(i8)world->current_level->unknown_00a2 + 1);
+        NuWin32SetDFS((i8)world->current_level->unknown_00a2 + 1);
     archive_selected:
         if (PcWindowOptions.shadowmethod == 2) {
             world->current_gscn = PCGraphicsSceneReadClones(&world->giz_buffer, world->buffer_end, path, 2);
@@ -1986,7 +1985,7 @@ void __cdecl WorldInfo_Load(WORLDINFO *world) {
         }
     }
     if (world->current_level == TITLES_LDATA || world->current_level == CREDITS_LDATA) {
-        numtl_force_mipmode = (i32)(u8)world->current_level->mipmap_mode + 1;
+        numtl_force_mipmode = world->current_level->mipmap_mode + 1;
         world->secondary_gscn = NuGScnRead(&world->giz_buffer, world->buffer_end, "levels\\titles\\pictures.gsc");
         if (abort_load != 0) {
             goto abort;
@@ -2005,7 +2004,7 @@ void __cdecl WorldInfo_Load(WORLDINFO *world) {
         BoltTypes_Configure(world, ConfigBuffer.bytes);
     }
     world->game_antinode_sys = GameAntnode_CreateSys(world, &world->giz_buffer, &world->buffer_end,
-                                                     (i32)(u16)world->current_level->max_gameantinodes);
+                                                     (u16)world->current_level->max_gameantinodes);
     world->gizmo_sys = CreateGizmoSys(world, &world->giz_buffer, &world->buffer_end);
     sprintf(path, "%s%s", world->config_file, ".spl");
     LoadEditorSplines(path, &world->giz_buffer, &world->buffer_end);
@@ -2109,8 +2108,8 @@ void __cdecl WorldInfo_Load(WORLDINFO *world) {
         resource->ai_trigger_set = AITriggerSetSysCreate(&world->giz_buffer, &world->buffer_end);
         GameAIScriptAddLevelSfx(world, &global_aiscripts);
         GameAIScriptAddLevelSfx(world, &world->ai_sys->scripts);
-        resource->climb_object_system = CreateClimbObjectSys(&world->giz_buffer, &world->buffer_end,
-                                                             (i32)(u8)world->current_level->max_climb_objects);
+        resource->climb_object_system =
+            CreateClimbObjectSys(&world->giz_buffer, &world->buffer_end, world->current_level->max_climb_objects);
     }
     if (abort_load != 0) {
         goto abort;

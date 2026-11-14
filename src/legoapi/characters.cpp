@@ -536,7 +536,7 @@ extern "C" {
             if (game_mask != 0 && (GCDataList[index].flags_090 & game_mask) != game_value) {
                 continue;
             }
-            if (movement_type != -1 && (i32)(i8)GCDataList[index].weapon_action != movement_type) {
+            if (movement_type != -1 && GCDataList[index].weapon_action != movement_type) {
                 continue;
             }
             if (move != NULL) {

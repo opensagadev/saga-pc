@@ -15,7 +15,7 @@ void *__cdecl TerrainGetCur(void) {
 }
 
 i32 __cdecl PlatInstGetHit(i32 index) {
-    TERRAIN_SET_PC *terrain = (TERRAIN_SET_PC *)CurrentTerrain;
+    TERRAIN_SET_PC *terrain = CurrentTerrain;
     if (terrain == NULL || index < 0 || index >= terrain->max_platforms) {
         return 0;
     }
@@ -35,7 +35,7 @@ void __cdecl ScanTerrIDRemovePlat(i32 platform_index) {
 #define TERRAIN_NPI_SET ((TERRAIN_SET_PC *)CurrentTerrain)
 
 i32 __cdecl NewPlatInst(void *object, i32 instance) {
-    TERRAIN_SET_PC *terrain = (TERRAIN_SET_PC *)CurrentTerrain;
+    TERRAIN_SET_PC *terrain = CurrentTerrain;
     i32 new_index;
     i32 source_index;
     i32 i;
@@ -149,7 +149,7 @@ i32 __cdecl ShadowRoofInfo(void) {
 }
 
 i32 __cdecl NewShadowOnPlatform(void) {
-    TERRAIN_SET_PC *terrain = (TERRAIN_SET_PC *)CurrentTerrain;
+    TERRAIN_SET_PC *terrain = CurrentTerrain;
     TERRAIN_GROUP_PC *group;
     if (terrain == NULL || castnum == -1) {
         return -1;
@@ -1303,7 +1303,7 @@ f32 __cdecl NewShadowEx(NUVEC *position, f32 unused, f32 height_above, f32 roof_
 void PlatOnOff(i32 platform_index, i32 enabled) {
     TERRAIN_SET_PC *terrain;
     i32 group_index;
-    terrain = (TERRAIN_SET_PC *)CurrentTerrain;
+    terrain = CurrentTerrain;
     if (terrain == NULL || platform_index < 0 || platform_index >= terrain->max_platforms) {
         return;
     }
@@ -1489,9 +1489,9 @@ void *TerrainInitEx(i32 level_num, void *buf, void *buf_end, i32 options, char *
     (void)options;
     (void)scene_id;
 
-    cursor = ((VARIPTR *)(buf));
+    cursor = buf;
     saved_cursor = *cursor;
-    scene = ((TERRAIN_GSCENE *)(gscn));
+    scene = gscn;
 
     scratch = ((usize)(buf_end)) & ~((usize)(1));
     scratch -= max_groups * sizeof(i16);
@@ -1517,7 +1517,7 @@ void *TerrainInitEx(i32 level_num, void *buf, void *buf_end, i32 options, char *
         TempScanStack = NuAlloc(0x2000, TerrainSourcePathPc, 470);
     }
     if (WallSplList == NULL) {
-        WallSplList = ((TERRAIN_WALL_POINT *)(NuAlloc(0x600, TerrainSourcePathPc, 472)));
+        WallSplList = NuAlloc(0x600, TerrainSourcePathPc, 472);
     }
 
     terrain = ((TERRSET *)(cursor->char_ptr));
@@ -1578,7 +1578,7 @@ void *TerrainInitEx(i32 level_num, void *buf, void *buf_end, i32 options, char *
     PlatImpactId = -1;
 
     group_count = ((i16)(ReadTerrain(((unsigned char *)(path)), 0, ((i16 **)(cursor)), terrain)));
-    terrain->group_count = ((i16)(group_count));
+    terrain->group_count = group_count;
     if (group_count < 0) {
         *cursor = saved_cursor;
         return NULL;
@@ -1831,7 +1831,7 @@ void *TerrainInitEx(i32 level_num, void *buf, void *buf_end, i32 options, char *
             goto bad_platform;
         }
 
-        debug_index = (i16)group->scene_index;
+        debug_index = group->scene_index;
         if (scene != NULL && scene->object_map_present != NULL) {
             debug_index = scene->object_map[(u16)debug_index];
         }
@@ -1847,7 +1847,7 @@ void *TerrainInitEx(i32 level_num, void *buf, void *buf_end, i32 options, char *
             ++terrain->group_index_count;
             ++platform_cell->group_count;
 
-            platform = &(terrain->platforms[((i16)(group->scene_index))]);
+            platform = &(terrain->platforms[group->scene_index]);
             platform->flags = (platform->flags & ~1u) | (group->platform_flags & 1);
             platform->scene_object_index = scene_object_index;
             platform->terrain_group_index = ((i16)(group_index));
@@ -1880,7 +1880,7 @@ void *TerrainInitEx(i32 level_num, void *buf, void *buf_end, i32 options, char *
             ++terrain->group_index_count;
             ++platform_cell->group_count;
 
-            platform = &(terrain->platforms[((i16)(group->scene_index))]);
+            platform = &(terrain->platforms[group->scene_index]);
             platform->flags = (platform->flags & ~1u) | (group->platform_flags & 1);
             platform->scene_object_index = scene_object_index;
             platform->terrain_group_index = ((i16)(group_index));
@@ -1905,7 +1905,7 @@ void *TerrainInitEx(i32 level_num, void *buf, void *buf_end, i32 options, char *
 void __cdecl TerrainPlatGetMtx(i32 index, NUMTX **previous, NUMTX **current) {
     if (index > -1) {
         *previous = &((TERRAIN_SET_PC *)CurrentTerrain)->platforms[index].previous_matrix;
-        *current = (NUMTX *)((TERRAIN_SET_PC *)CurrentTerrain)->platforms[index].scene_object;
+        *current = ((TERRAIN_SET_PC *)CurrentTerrain)->platforms[index].scene_object;
     }
 }
 
@@ -2174,7 +2174,7 @@ i32 __cdecl FindPlatInst(i32 instance) {
     i32 index;
     i32 result = -1;
     if (instance != -1) {
-        terrain = (TERRAIN_SET_PC *)CurrentTerrain;
+        terrain = CurrentTerrain;
         for (index = 0; index < terrain->max_platforms; ++index) {
             if (terrain->platforms[index].scene_object != NULL &&
                 terrain->platforms[index].scene_object_index == instance) {
@@ -2189,7 +2189,7 @@ i32 __cdecl FindPlatInst(i32 instance) {
 void __cdecl PlatInstRotate(i32 platform_index, i32 enabled) {
     TERRAIN_SET_PC *terrain;
     if (platform_index >= 0) {
-        terrain = (TERRAIN_SET_PC *)CurrentTerrain;
+        terrain = CurrentTerrain;
         if (platform_index < terrain->max_platforms) {
             terrain->platforms[platform_index].flags = (terrain->platforms[platform_index].flags & ~1u) | (enabled & 1);
         }
@@ -2268,11 +2268,11 @@ i32 ReadTerrainPickup(unsigned char *base_path, i16 **buffer, TERRAIN_PICKUP_SET
 }
 
 void terrainpickupinit(char *path, void **buffer) {
-    TERRAIN_PICKUP_SET_PC *terrain = (TERRAIN_PICKUP_SET_PC *)*buffer;
+    TERRAIN_PICKUP_SET_PC *terrain = *buffer;
     TERRAIN_GROUP_PC *group;
     i32 i;
     *buffer = (u8 *)*buffer + sizeof(TERRAIN_PICKUP_SET_PC);
-    terrain->groups = (TERRAIN_GROUP_PC *)*buffer;
+    terrain->groups = *buffer;
     *buffer = (u8 *)*buffer + 32 * sizeof(TERRAIN_GROUP_PC);
     terrain->shape_data = *buffer;
     *buffer = (u8 *)*buffer + 0x1c00;
@@ -2380,7 +2380,7 @@ void terrainpickupinit(char *path, void **buffer) {
 }
 
 void AddPickupTerr(i32 type, NUVEC *position) {
-    TERRAIN_SET_PC *terrain = (TERRAIN_SET_PC *)CurrentTerrain;
+    TERRAIN_SET_PC *terrain = CurrentTerrain;
     i16 source;
     i32 count;
     if (terrain == NULL) {
@@ -2395,7 +2395,7 @@ void AddPickupTerr(i32 type, NUVEC *position) {
         return;
     }
     terrain->groups[terrain->max_groups + count] = PickupTerr->groups[source];
-    terrain = (TERRAIN_SET_PC *)CurrentTerrain;
+    terrain = CurrentTerrain;
     terrain->groups[terrain->max_groups + count].origin = *position;
     curPickInst = count + 1;
 }
@@ -2549,7 +2549,7 @@ i32 NewPlatPickupInst(void *object, i32 type) {
 #undef TERRAIN_NPPI_SET
 
 void ReassignPickupInst(i32 index, i32 type) {
-    TERRAIN_SET_PC *terrain = (TERRAIN_SET_PC *)CurrentTerrain;
+    TERRAIN_SET_PC *terrain = CurrentTerrain;
     TERRAIN_GROUP_PC *source;
     TERRAIN_GROUP_PC *group;
     i16 source_index;
@@ -3097,7 +3097,7 @@ void TerrainSkinPrepareGroupPc(i32 group_index, TERRAIN_SKIN_STREAM_PC *output, 
         }
         output->header.kind = -1;
         output->header.count = -1;
-        bytes = (i32)((u8 *)input - (u8 *)group->data) + 4;
+        bytes = ((u8 *)input - (u8 *)group->data) + 4;
     } else {
         bytes = 0;
     }
@@ -3208,7 +3208,7 @@ void TerrainSkinResetArenaPc(void) {
 /* Native 6816d0: temporary bounds and cell selectors are carved backwards
  * from the supplied end. Enough readable/writable arena is the native domain. */
 u8 *TerrainSkinRebuildIndexPc(i32 pool_slots) {
-    TERRAIN_SET_PC *terrain = (TERRAIN_SET_PC *)CurrentTerrain;
+    TERRAIN_SET_PC *terrain = CurrentTerrain;
     TERRAIN_GROUP_PC *group;
     TERRAIN_SKIN_USE_RECORD_PC *use;
     i16 *selectors;
@@ -3377,7 +3377,7 @@ STATIC_ASSERT(offsetof(TERRAIN_SPATIAL_CHUNK, node) == 4);
 
 void TerrainScanWallSpline(TERRAIN_SPATIAL_NODE *node) {
     u32 first = 0;
-    while ((i32)(node->point_count - 3) >= (i32)first) {
+    while ((node->point_count - 3) >= (i32)first) {
         NUVEC minimum;
         NUVEC maximum;
         i32 count = 16;

@@ -143,7 +143,7 @@ void __cdecl ReStoreStatusTakeOverObjectSys(i32 restore_progress) {
         if (object != NULL) {
             object->current_hp = takeoverobjects[index].hitpoints;
             if (!(takeoverobjects[index].contact_index != 0xff &&
-                  (controller = (GAMEOBJECT *)Player[takeoverobjects[index].contact_index]) != NULL)) {
+                  (controller = Player[takeoverobjects[index].contact_index]) != NULL)) {
                 SnapCreaturePos(takeoverobjects[index].object, &takeoverobjects[index].last_safe_position,
                                 takeoverobjects[index].heading, NULL, 1);
             } else {
@@ -264,7 +264,7 @@ void __cdecl Buck_StartRiderJump(GAMEOBJECT *rider, GAMEOBJECT *mount) {
     f32 clearance;
     PLAYERCHARACTERCONFIG_PC *character;
     rider->velocity.x = NuTrigTable[angle >> 1] * speed;
-    rider->velocity.z = speed * NuTrigTable[(((i32)angle + 0x4000) >> 1) & 0x7fff];
+    rider->velocity.z = speed * NuTrigTable[((angle + 0x4000) >> 1) & 0x7fff];
     StartJump(rider, 0);
     rider->airborne_collision_target = mount;
     rider->tag_flags |= 1;
@@ -289,7 +289,7 @@ void __cdecl Buck_Start(GAMEOBJECT *object, GAMEOBJECT *rider) {
     if (LEGOCONTEXT_BUCK == -1 || LEGOACT_BUCK == -1) {
         return;
     }
-    model = (CHARACTER_MODEL_LAYERS_PC *)object->character_model;
+    model = object->character_model;
     if (model->model_data_b[LEGOACT_BUCK] == NULL) {
         return;
     }

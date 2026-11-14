@@ -204,8 +204,7 @@ void __cdecl GameObjectDimensions(GAMEOBJECT *object) {
     if (object->use_model_origin > 0 && object->origin_scale_override == 1.0f) {
         config = object->character_data->game_character;
         if (config->collision_origin_joint != -1 &&
-            ((CHARACTER_MODEL_LAYERS_PC *)object->character_model)
-                    ->points_of_interest[config->collision_origin_joint] != NULL &&
+            object->character_model->points_of_interest[config->collision_origin_joint] != NULL &&
             object->origin_joint_ready != 0) {
             f32 radius = object->character_data->game_character->collision_origin_radius * object->collision_scale;
             object->bounds_half_height = radius;
@@ -411,8 +410,7 @@ void __cdecl GameObjectOrigin(GAMEOBJECT *object) {
     i32 joint;
     object->flags_1f8 |= 0x100;
     if (object->use_model_origin > 0 && (joint = object->character_data->game_character->model_origin_joint) != -1 &&
-        object->character_model != NULL &&
-        ((CHARACTER_MODEL_LAYERS_PC *)object->character_model)->points_of_interest[joint] != NULL) {
+        object->character_model != NULL && object->character_model->points_of_interest[joint] != NULL) {
         if ((object->flags_e24 & 8) != 0) {
             object->collision_position.x =
                 object->locator_matrices[joint].m30 + object->previous_velocity.x * FRAMETIME;
@@ -433,7 +431,7 @@ void __cdecl GameObjectOrigin(GAMEOBJECT *object) {
         object->collision_position.z += object->previous_velocity.z * FRAMETIME;
     } else if (object->use_model_origin > 0 && object->origin_scale_override == 1.0f &&
                object->character_data->game_character->collision_origin_joint != -1 &&
-               ((CHARACTER_MODEL_LAYERS_PC *)object->character_model)
+               object->character_model
                        ->points_of_interest[object->character_data->game_character->collision_origin_joint] != NULL &&
                object->origin_joint_ready != 0) {
         object->collision_position =

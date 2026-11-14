@@ -38,7 +38,7 @@ f32 SpeederChaseTime0Pc = 0.0f;
 f32 SpeederChaseTime1Pc = 0.0f;
 
 void __cdecl SpeederChaseA_Init(WORLDINFO *world) {
-    SpeederChaseNetPacketPc = (SPEEDERCHASE_NETPACKET_PC *)SetLevelHack(7);
+    SpeederChaseNetPacketPc = SetLevelHack(7);
     SetLevelExBlowupFlags(3);
     SetLevelBlowupCallbackPc(SpeederBlowupHack);
     InitTrooperCannons(world);
@@ -92,7 +92,7 @@ void __cdecl SpeederChaseA_Update(WORLDINFO *world) {
         }
     }
     for (i = 0; i < 2; ++i) {
-        object = (GAMEOBJECT *)Player[i];
+        object = Player[i];
         if (object != NULL) {
             if (WORLD->current_level == SPEEDERCHASEA_LDATA && disable_narrow_socks == 0 &&
                 object->id == (u16)id_SPEEDERBIKE && object->rider != NULL && (object->rider->flags_1fc & 0x80) != 0) {
@@ -104,7 +104,7 @@ void __cdecl SpeederChaseA_Update(WORLDINFO *world) {
     }
     players_going_forward = 1;
     for (i = 0; i < 2; ++i) {
-        object = (GAMEOBJECT *)Player[i];
+        object = Player[i];
         if (object != NULL && (object->flags_1fc & 0x80) != 0 && (object->flags_1f8 & 0x40000) == 0) {
             if (GoingForwardsAlongNarrowSock(object) == 0 || ((GAMEOBJECT *)Player[i])->character_context == 0x2a) {
                 players_going_forward = 0;
@@ -113,7 +113,7 @@ void __cdecl SpeederChaseA_Update(WORLDINFO *world) {
         }
     }
     for (i = 0; i < 9; ++i) {
-        animation = (NUINSTANIM *)NuSpecialGetInstAnim(&LevHSpecial[i]);
+        animation = NuSpecialGetInstAnim(&LevHSpecial[i]);
         position = NuSpecialGetDrawPos(&LevHSpecial[i]);
         if (animation != NULL) {
             animation_data = WORLD->current_gscn->instance_animation_data[animation->animation_index];
@@ -230,7 +230,7 @@ i32 __cdecl Action_SpeederBeingChased(AISYS_PC *system, AISCRIPTPROCESS_PC *proc
     i32 can_fire = 0;
 
     if (packet != NULL && packet->owner != NULL && ((APIOBJECT_PC *)packet->owner)->owner != NULL) {
-        object = (GAMEOBJECT *)((APIOBJECT_PC *)packet->owner)->owner;
+        object = ((APIOBJECT_PC *)packet->owner)->owner;
         if (first_time != 0) {
             object->run_speed_override = object->character_data->game_character->run_speed;
             set_speedermode = 0;

@@ -234,7 +234,7 @@ void __cdecl DebrisKillPlayers(void) {
     GAMEOBJECT *player;
     DebrisPreCheckCollisions(&GameCam->position, 50.0f);
     for (i = 0; i < 8; i++) {
-        player = (GAMEOBJECT *)Player[i];
+        player = Player[i];
         if (player != NULL && (player->flags_1fc_word & 0x1000) != 0 && player->dead == 0 &&
             player->vehicle_hit_timer <= 0.0f && !(player->spawn_protection_timer > 0.0f) &&
             (player->flags_ef0 & 0x400000) == 0 && CannotKill(player) == 0 && Player_HasInvincibility(player) == 0 &&

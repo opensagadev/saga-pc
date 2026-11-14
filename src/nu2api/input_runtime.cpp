@@ -669,7 +669,7 @@ u32 PC_INPUT_RUNTIME_PC::CombineUiButtonsPc(i32 port, u32 buttons) {
     if ((u32)(port - 10) <= 3) {
         buttons = 0;
     }
-    const u8 *keys = nu_keyboard_pages + (i32)(i8)nu_keyboard_page_index * 256;
+    const u8 *keys = nu_keyboard_pages + (i8)nu_keyboard_page_index * 256;
     if (keys[0x1c]) {
         buttons |= 0x40;
     }
@@ -857,7 +857,7 @@ i32 PC_INPUT_RUNTIME_PC::UpdateMousePc() {
                 mouse.position[1] = 0.5f;
             }
             for (i32 axis = 0; axis < 3; ++axis) {
-                f32 change = (f32)((i32)mouse.current[axis] - mouse.previous[axis]);
+                f32 change = (f32)(mouse.current[axis] - mouse.previous[axis]);
                 if (change > 32767.0) {
                     change = (f32)(change - 65536.0);
                 }
@@ -924,7 +924,7 @@ void PC_INPUT_RUNTIME_PC::ApplyMouseAxisPc(PC_INPUT_SAMPLE_PC *sample) {
     }
     f32 elapsed = NuTimeGetFrameTime();
     f32 exponent = (f32)(elapsed * 4.0);
-    PcMouseInterpolationPc = (f32)(1.0f - 1.0f / NuPow(2.0f, exponent));
+    PcMouseInterpolationPc = 1.0f - 1.0f / NuPow(2.0f, exponent);
     i32 difference = PcMouseTargetAnglePc - PcMouseCurrentAnglePc;
     f32 movement = PcMouseInterpolationPc * (f32)difference;
     f32 angle = movement + (f32)PcMouseCurrentAnglePc;
@@ -1123,10 +1123,10 @@ i32 PC_INPUT_RUNTIME_PC::TranslateBindingsPc(i32 port, PC_INPUT_SAMPLE_PC *out, 
         }
     }
     for (i32 axis = 0; axis < 4; ++axis) {
-        out->analog[axis] = (u8)(((i32)sums[axis] + 32768) >> 8);
+        out->analog[axis] = (u8)((sums[axis] + 32768) >> 8);
     }
     for (i32 axis = 4; axis < 8; ++axis) {
-        out->analog[axis] = (u8)((i32)sums[axis] >> 7);
+        out->analog[axis] = (u8)(sums[axis] >> 7);
     }
     out->buttons = buttons;
     return 1;
@@ -1553,7 +1553,7 @@ void PC_INPUT_RUNTIME_PC::AssignBindingPc(i32 action, i32 port, i32 kind, i32 va
     }
     if (kind != positive && kind != negative) {
         for (i32 i = 0; i < 32; ++i) {
-            if (bindings[i].kind == kind && (i32)(i16)bindings[i].value == value && !(excluded & (1u << i))) {
+            if (bindings[i].kind == kind && (i16)bindings[i].value == value && !(excluded & (1u << i))) {
                 bindings[i].kind = 0;
                 bindings[i].value = 0;
             }
@@ -1567,8 +1567,7 @@ void PC_INPUT_RUNTIME_PC::AssignBindingPc(i32 action, i32 port, i32 kind, i32 va
         bindings[action].value = (u16)value;
         for (i32 i = 0; i < 32; ++i) {
             i32 other_kind = bindings[i].kind;
-            if (i != action && (other_kind == positive || other_kind == negative) &&
-                (i32)(i16)bindings[i].value == value) {
+            if (i != action && (other_kind == positive || other_kind == negative) && (i16)bindings[i].value == value) {
                 i32 index = 0;
                 if (kind == positive) {
                     index = 4;
@@ -1597,7 +1596,7 @@ void PC_INPUT_RUNTIME_PC::AssignBindingPc(i32 action, i32 port, i32 kind, i32 va
         kind = negative;
     }
     for (i32 i = 0; i < 32; ++i) {
-        if ((bindings[i].kind == positive || bindings[i].kind == negative) && (i32)(i16)bindings[i].value == value &&
+        if ((bindings[i].kind == positive || bindings[i].kind == negative) && (i16)bindings[i].value == value &&
             !(excluded & (1u << i))) {
             bindings[i].kind = 0;
             bindings[i].value = 0;

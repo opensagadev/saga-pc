@@ -325,7 +325,7 @@ static i32 ZipUp_ActivateRev(GIZMO_PC *gizmo, i32 active, i32 query) {
     if (gizmo == NULL) {
         return 0;
     }
-    zipup = (ZIPUP_PC *)gizmo->object;
+    zipup = gizmo->object;
     if (zipup == NULL) {
         return 0;
     }
@@ -583,7 +583,7 @@ void ZipUp_MoveCode(GAMEOBJECT *object, i32 special_pressed) {
             }
             return;
         }
-        zipup = (ZIPUP_PC *)object->grapple;
+        zipup = object->grapple;
         hook = &zipup->hook_origin;
         destination = object->field_7b3 == 0 ? &zipup->upper_position : &zipup->lower_position;
         if ((zipup->flags_word & 1) == 0) {
@@ -605,7 +605,7 @@ void ZipUp_MoveCode(GAMEOBJECT *object, i32 special_pressed) {
                 return;
             }
         }
-        zipup = (ZIPUP_PC *)object->grapple;
+        zipup = object->grapple;
         if ((zipup->flags_word & 0x40) == 0 || (zipup->flags_word & 0x80) == 0 || (zipup->flags_word & 0x100) == 0 ||
             (object->context_variant_flags & 0x20) == 0) {
             object->context_variant_flags &= ~0x20u;
@@ -744,7 +744,7 @@ void ZipUp_MoveCode(GAMEOBJECT *object, i32 special_pressed) {
                 object->context_duration = 0.5f;
             }
             transport->entry = object->position;
-            current = (ZIPUP_PC *)object->grapple;
+            current = object->grapple;
             transport->start = current->endpoints[endpoint != 0 ? 2 : 0];
             transport->landing = current->endpoints[endpoint != 0 ? 0 : 2];
             transport->landing.y = endpoint == 0 ? zipup->upper_ground_height : zipup->lower_ground_height;
@@ -770,7 +770,7 @@ void ZipUp_MoveCode(GAMEOBJECT *object, i32 special_pressed) {
             f32 rider_height;
             f32 scale;
 
-            zipup = (ZIPUP_PC *)object->grapple;
+            zipup = object->grapple;
             object->action_movement_state = 0;
             object->field_7aa = 0x2a;
             hook = &zipup->hook_origin;
@@ -798,7 +798,7 @@ void ZipUp_MoveCode(GAMEOBJECT *object, i32 special_pressed) {
             angle = NuAtan2D(hook->y - start->y, NuFsqrt(dx * dx + dz * dz));
             pitch = 0x4000 - abs(angle);
             object->field_7a4 = angle < 0 ? -pitch : pitch;
-            zipup = (ZIPUP_PC *)object->grapple;
+            zipup = object->grapple;
             if ((zipup->flags_word & 1) == 0) {
                 return;
             }
@@ -1010,7 +1010,7 @@ static void ZipUps_Draw(WORLDINFO *world, void *unused, f32 time) {
 static void ZipUp_Activate(GIZMO_PC *gizmo, i32 active) {
     ZIPUP_PC *zipup;
 
-    zipup = ((ZIPUP_PC *)(gizmo->object));
+    zipup = gizmo->object;
     if (active) {
         zipup->direction = 0;
         zipup->flags_word |= 0x40;
@@ -1023,7 +1023,7 @@ static void ZipUp_SetVisibility(GIZMO_PC *gizmo, i32 visible) {
     if (gizmo) {
         ZIPUP_PC *zipup;
 
-        zipup = ((ZIPUP_PC *)(gizmo->object));
+        zipup = gizmo->object;
         zipup->state.visible = visible != 0;
     }
 }
@@ -1031,7 +1031,7 @@ static void ZipUp_SetVisibility(GIZMO_PC *gizmo, i32 visible) {
 static i32 ZipUps_GetMaxGizmos(void *world_ptr) {
     WORLDINFO *world;
 
-    world = ((WORLDINFO *)(world_ptr));
+    world = world_ptr;
     return world ? world->current_level->max_zipups : 0;
 }
 
@@ -1376,7 +1376,7 @@ void ZipUps_DrawLines() {
             start->colour = 0xffffffff;
             end->colour = 0xff808080;
             end->position = ((ZIPUP_TRANSPORT_VIEW_PC *)object)->entry;
-            if ((u16)object->id == (u16)ZipUpLineCharacterIdPc) {
+            if (object->id == (u16)ZipUpLineCharacterIdPc) {
                 start->position = object->position;
                 NuRndrLine3d((NURND_VERTEX3D_PC *)start, ZipUpLineMaterialPc, NULL);
                 continue;

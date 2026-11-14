@@ -1298,7 +1298,7 @@ extern "C" void __cdecl WipeBackToHub(void) {
 
 /* 475020/105. */
 static void HubInitSelectModePc(void) {
-    const i32 area = (i8)LDataList[HubDoorNewLevelPc].area_index;
+    const i32 area = LDataList[HubDoorNewLevelPc].area_index;
     if ((LOSTTEMPLE_ADATA != NULL && LOSTTEMPLE_ADATA->index == area) || (ADataList[area].flags & 0x1000) != 0 ||
         Game.area_save[area].area_complete == 0) {
         hub_selectmode = 0;
@@ -1598,7 +1598,7 @@ extern "C" {
             }
             if (Arcade_BothPlayersActive()) {
                 earned = 1;
-                goal = PCArcadePointGoals[(i8)ArcadeItem.play];
+                goal = PCArcadePointGoals[ArcadeItem.play];
                 Arcade_Points[player_index]++;
                 if (goal > 0 && Arcade_Points[player_index] >= goal) {
                     SetBonusWinner(player_index);
@@ -1687,7 +1687,7 @@ extern "C" {
 
     void __cdecl Arcade_AIKilled(i32 player_index) {
         GAMEOBJECT *object;
-        if ((player_index != 0 && player_index != 1) || (Arcade_Mode[(i8)ArcadeItem.mode].flags & 2) == 0) {
+        if ((player_index != 0 && player_index != 1) || (Arcade_Mode[ArcadeItem.mode].flags & 2) == 0) {
             return;
         }
         if (Arcade_BothPlayersActive()) {
@@ -1697,7 +1697,7 @@ extern "C" {
             if (object != NULL && object->coin_packet != NULL) {
                 ((ARCADE_COIN_PACKET_PC *)object->coin_packet)->scale = 1.5f;
             }
-            if (AreaGlobals_PC.arcade_ai_kills[player_index] >= (u32)Arcade_Mode[(i8)ArcadeItem.mode].target) {
+            if (AreaGlobals_PC.arcade_ai_kills[player_index] >= (u32)Arcade_Mode[ArcadeItem.mode].target) {
                 Arcade_AwardPoint(player_index, 0, 0);
                 AreaGlobals_PC.arcade_ai_kills[0] = 0;
                 AreaGlobals_PC.arcade_ai_kills[1] = 0;
@@ -1719,7 +1719,7 @@ extern "C" {
     void __cdecl Arcade_CoinCollected(i32 player_index, u32 *score, u32 previous_score) {
         GAMEOBJECT *object;
         ARCADE_COIN_PACKET_PC *packet;
-        if ((player_index != 0 && player_index != 1) || (Arcade_Mode[(i8)ArcadeItem.mode].flags & 4) == 0) {
+        if ((player_index != 0 && player_index != 1) || (Arcade_Mode[ArcadeItem.mode].flags & 4) == 0) {
             return;
         }
         if (Arcade_BothPlayersActive()) {
@@ -1728,7 +1728,7 @@ extern "C" {
                 return;
             }
             packet = (ARCADE_COIN_PACKET_PC *)object->coin_packet;
-            if (packet->coins < (u32)Arcade_Mode[(i8)ArcadeItem.mode].target) {
+            if (packet->coins < (u32)Arcade_Mode[ArcadeItem.mode].target) {
                 return;
             }
             Arcade_AwardPoint(player_index, 0, 0);
@@ -1781,11 +1781,10 @@ extern "C" void __cdecl Arcade_DrawEndMenu(MENU *menu) {
 /* 476360/110. */
 static void HubInitBonusModePc(void) {
     hub_bonusmode = 0;
-    hub_bonusarea = (i8)LDataList[HubDoorNewLevelPc].area_index;
-    hub_bonusepisode = (i8)ADataList[hub_bonusarea].episode_index;
+    hub_bonusarea = LDataList[HubDoorNewLevelPc].area_index;
+    hub_bonusepisode = ADataList[hub_bonusarea].episode_index;
     bonusmodemode = 0;
-    bonusmodearcade =
-        SENATE_ADATA != NULL && (i8)LDataList[HubDoorNewLevelPc].area_index == SENATE_ADATA->index ? 1 : 0;
+    bonusmodearcade = SENATE_ADATA != NULL && LDataList[HubDoorNewLevelPc].area_index == SENATE_ADATA->index ? 1 : 0;
 }
 
 static void HubDrawBonusModeMenuPc(i32 selected, f32 alpha) {
@@ -1872,7 +1871,7 @@ static inline COLLECTION_BUILD_PC *HubFreePlayCollectionPc(i32 area) {
  * Actual emittedname must map existing476840 Hub_MakeFreePlayList owner.
  */
 static void Hub_MakeFreePlayList(i32 first_model, i32 second_model) {
-    const i32 area = (i8)LDataList[HubDoorNewLevelPc].area_index;
+    const i32 area = LDataList[HubDoorNewLevelPc].area_index;
     fpcount = 0;
     MakeFreePlayModelList(first_model, second_model, area, -1, 1);
     if ((ADataList[area].flags & 5) == 5) {
@@ -2230,7 +2229,7 @@ extern "C" void __cdecl Hub_UpdateFreePlaySelect(void) {
                 FinishLoop_On = 0;
                 if (hub_freeplaysource == 0) {
                     if (hub_selectmode == 2) {
-                        InitChallenge((i8)NewLData->area_index);
+                        InitChallenge(NewLData->area_index);
                     }
                 } else if (hub_freeplaysource == 1 && bonusmodearcade != 0) {
                     Arcade = 1;
@@ -2297,10 +2296,9 @@ static void HubDrawIconCursorsPc(COLLECTION_BUILD_PC *collection, i32 active_cur
                 const f32 offset = (f32)(ratio * .009999999776482582);
                 const i32 wibble = player * 2;
                 DrawCharIcon(
-                    model,
-                    collection->list[index].grid_x + offset * NuTrigTable[(u16)HubIconWibbleAnglePc[wibble] >> 1],
-                    collection->list[index].grid_y + offset * NuTrigTable[(u16)HubIconWibbleAnglePc[wibble + 1] >> 1],
-                    z, size, frame, alpha, alpha, 1, NULL);
+                    model, collection->list[index].grid_x + offset * NuTrigTable[HubIconWibbleAnglePc[wibble] >> 1],
+                    collection->list[index].grid_y + offset * NuTrigTable[HubIconWibbleAnglePc[wibble + 1] >> 1], z,
+                    size, frame, alpha, alpha, 1, NULL);
             }
         } else {
             DrawCharIcon(model, collection->list[index].grid_x, collection->list[index].grid_y, 0.0f,
@@ -2751,7 +2749,7 @@ void HubDrawAreaStatsPc(f32 phase, i32 area_index, i32 mode) {
         return;
     }
     if (Game.area_save[area_index].area_complete != 0 && (area->flags & 4) == 0) {
-        Episode_CountOpenAreas((i8)area->episode_index, area_index, (COLLECTION_AREA_SAVE_PC *)Game.area_save);
+        Episode_CountOpenAreas(area->episode_index, area_index, (COLLECTION_AREA_SAVE_PC *)Game.area_save);
         char text[128];
         if (HubBothTrueJediGoldBricksPc != 0) {
             DrawBuildUpBar(HubAreaPanelXPc[1], HubEpisodeTitleYPc + PANEL_MINIKITY - PANEL_MINIKITCOUNTY, 100, 100,
@@ -2792,9 +2790,9 @@ void HubDrawAreaStatsPc(f32 phase, i32 area_index, i32 mode) {
         Hub_DrawImportantBrick(211, HubAreaPanelXPc[3], HubEpisodeTitleYPc, phase, EpGoldBrickCount, EpGoldBrickTotal);
         HubDrawMiniKitCharacterPc = 1;
         Hub_DrawMiniKitCount(HubAreaPanelXPc[5], HubEpisodeTitleYPc, EpCharKitCount, EpCharKitTotal, phase);
-    } else if ((i8)area->area_index != -1 && (area->flags & 0x14) == 0x10) {
+    } else if (area->area_index != -1 && (area->flags & 0x14) == 0x10) {
         char text[128];
-        sprintf(text, "%s %i", TTab[TextCrawlChapterIdPc], (i8)area->area_index + 1);
+        sprintf(text, "%s %i", TTab[TextCrawlChapterIdPc], area->area_index + 1);
         SmartTextEx(text, 0.0f, HubEpisodeTitleYPc, 1.0f, HubEpisodeTitleSizePc, HubEpisodeTitleSizePc,
                     HubEpisodeTitleSizePc, 0, HubEpisodeRedPc, HubEpisodeGreenPc, HubEpisodeBluePc, 1.7f, 1, NULL, 0,
                     alpha);
@@ -4056,7 +4054,7 @@ extern "C" void __cdecl Hub_Update(WORLDINFO *world) {
     } else {
         for (i32 i = 0; HubAreaInfoPc[i].area_name != NULL; ++i) {
             if (HubAreaInfoPc[i].door != NULL &&
-                (Episode_CountOpenAreas((i8)HubAreaInfoPc[i].area->episode_index, HubAreaInfoPc[i].area->index,
+                (Episode_CountOpenAreas(HubAreaInfoPc[i].area->episode_index, HubAreaInfoPc[i].area->index,
                                         Game_AreaSave) != 0 ||
                  (HubAreaInfoPc[i].bonus_gizmo != NULL &&
                   GizmoGetOutput(world->gizmo_sys, HubAreaInfoPc[i].bonus_gizmo, 0, 0) != 0) ||
@@ -4435,7 +4433,7 @@ static void HubUpdateSelectModePc(void) {
     if (((FADEINFO_PC *)&FadeSys)->fade > 0 || MainRenderTime > 0) {
         return;
     }
-    const i32 area = (i8)LDataList[HubDoorNewLevelPc].area_index;
+    const i32 area = LDataList[HubDoorNewLevelPc].area_index;
     LEVELDATA_PC *level = &LDataList[HubDoorNewLevelPc];
     const i32 lost_temple = LOSTTEMPLE_ADATA != NULL && LOSTTEMPLE_ADATA->index == area;
     switch (selectmodemode) {
@@ -4548,7 +4546,7 @@ static void HubUpdateSelectModePc(void) {
                 return;
             }
             MakeFreePlayModelList(MissionMenuPacketPc.player_model[0], MissionMenuPacketPc.player_model[1],
-                                  (i8)level->area_index, -1, 1);
+                                  level->area_index, -1, 1);
             makeplayerlist_freeplay = 2;
             NextArea_FreePlay = 1;
             FreePlay = 1;
@@ -4702,7 +4700,7 @@ static void HubUpdateBonusModePc(void) {
                             ArcadeItem.entries[3].index = 0;
                         }
                     } else if (hub_bonusmode == 4) {
-                        AREA_DATA_PC *area = *ArcadeLevelPc[(i8)ArcadeItem.level];
+                        AREA_DATA_PC *area = *ArcadeLevelPc[ArcadeItem.level];
                         if (area == NULL || Game.area_save[area->index].complete == 0) {
                             GameAudio_PlaySfx(0x32, NULL, 0, 0);
                         } else {
@@ -4764,7 +4762,7 @@ static void HubUpdateBonusModePc(void) {
                             bonusmodeduration = 0.6f;
                         } else {
                             hub_freeplaysource = 1;
-                            HubInitFreePlaySelectPc((i8)LDataList[HubDoorNewLevelPc].area_index, -1, -1);
+                            HubInitFreePlaySelectPc(LDataList[HubDoorNewLevelPc].area_index, -1, -1);
                             NewMenu(17, -1, -1);
                         }
                         return;
@@ -4774,7 +4772,7 @@ static void HubUpdateBonusModePc(void) {
                             if (area != -1) {
                                 HubDoorNewLevelPc = ADataList[area].levels[0];
                                 hub_freeplaysource = 1;
-                                HubInitFreePlaySelectPc((i8)LDataList[HubDoorNewLevelPc].area_index, -1, -1);
+                                HubInitFreePlaySelectPc(LDataList[HubDoorNewLevelPc].area_index, -1, -1);
                                 NewMenu(17, -1, -1);
                             }
                         }
@@ -4800,7 +4798,7 @@ static void HubUpdateBonusModePc(void) {
                         if (count > 1) {
                             HubDoorNewLevelPc = ADataList[area].levels[0];
                             hub_freeplaysource = 1;
-                            HubInitFreePlaySelectPc((i8)LDataList[HubDoorNewLevelPc].area_index, first, second);
+                            HubInitFreePlaySelectPc(LDataList[HubDoorNewLevelPc].area_index, first, second);
                             NewMenu(17, -1, -1);
                         } else if (first != -1) {
                             HubDoorNewLevelPc = ADataList[area].levels[0];
@@ -4866,7 +4864,7 @@ static void HubUpdateBonusModePc(void) {
                 return;
             }
             MakeFreePlayModelList(MissionMenuPacketPc.player_model[0], MissionMenuPacketPc.player_model[1],
-                                  (i8)LDataList[HubDoorNewLevelPc].area_index, -1, 1);
+                                  LDataList[HubDoorNewLevelPc].area_index, -1, 1);
             ((FADEINFO_PC *)&FadeSys)->fade = 1;
             NextArea_FreePlay = 1;
             FreePlay = 1;
@@ -5860,7 +5858,7 @@ extern "C" {
         if ((object->character_data->model_flags & 0x100000) != 0) {
             object->ai_packet.capabilities |= 8;
         }
-        if ((u16)object->id == (u16)VehicleBoltId7f17d0Pc) {
+        if (object->id == (u16)VehicleBoltId7f17d0Pc) {
             object->ai_packet.capabilities |= 0x400;
         }
         if (object->character_model->action_animations[0xcd] != NULL) {

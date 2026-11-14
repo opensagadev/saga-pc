@@ -166,7 +166,7 @@ extern "C" void __cdecl Detonators_Draw(void) {
         NuMtxRotateX(&matrix, detonator->rotation_x);
         NuMtxTranslate(&matrix, &detonator->position);
         NuSpecialDrawAt(&WORLD->level_objects[0xec].special, &matrix);
-        if ((u32)GameTimer.update_count % 6 < 3 &&
+        if (GameTimer.update_count % 6 < 3 &&
             (detonator->timer >= 10.0f ||
              (detonator->object != NULL && detonator->object->dead == 0 && detonator->object->field_de0 >= 0.3f))) {
             if (WORLD->level_objects[0xef].active) {

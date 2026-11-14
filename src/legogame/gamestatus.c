@@ -381,7 +381,7 @@ void __cdecl MiniKit_LSW_Update(STATUS_STAGE_s *stage, STATUSPACKET_s *packet, f
                     NextStatusStage(packet);
                 }
             } else {
-                u32 frame = (u32)GameTimer.update_count;
+                u32 frame = GameTimer.update_count;
                 if (frame % 6u < 3u && (frame - 1u) % 6u >= 3u) {
                     NewStatusRumbleBuzz(-1, 0.0f, 0.0f, 2);
                 }
@@ -773,7 +773,7 @@ void __cdecl Coins_LSW_Skip(STATUS_STAGE_s *stage, STATUSPACKET_s *packet) {
     (void)stage;
     StatusIconYPc = StatusIconsOnOff(1.0f);
     remaining = packet->coins_remaining[0] + packet->coins_remaining[1];
-    IncreaseScore(packet->score, (u64)remaining, 0);
+    IncreaseScore(packet->score, remaining, 0);
     packet->coins_remaining[0] = 0;
     packet->coins_remaining[1] = 0;
     NextStatusStage(packet);
@@ -817,7 +817,7 @@ void __cdecl Coins_LSW_Update(STATUS_STAGE_s *stage, STATUSPACKET_s *packet, f32
                         amount = 1;
                     }
                     packet->coins_remaining[player] = remaining - amount;
-                    IncreaseScore(packet->score, (u64)amount, 0);
+                    IncreaseScore(packet->score, amount, 0);
                 }
                 if (packet->coins_remaining[player] == 0) {
                     ++finished;
@@ -944,7 +944,7 @@ void __cdecl GoldBrick_LSW_Skip(STATUS_STAGE_s *stage, STATUSPACKET_s *packet) {
 }
 
 void __cdecl GoldBrick_LSW_Update(STATUS_STAGE_s *stage, STATUSPACKET_s *packet, f32 elapsed) {
-    i32 last = (i32)Game.gold_bricks - (i32)packet->previous_gold_bricks - 1;
+    i32 last = Game.gold_bricks - packet->previous_gold_bricks - 1;
     char text[256];
     NUVEC position;
     switch (stage->field_0x14) {
@@ -971,7 +971,7 @@ void __cdecl GoldBrick_LSW_Update(STATUS_STAGE_s *stage, STATUSPACKET_s *packet,
                     char *message;
                     PlaySfx("TrueJedi_100pc", NULL);
                     NewStatusRumbleBuzz(-1, 0.6f, 0.0f, 0);
-                    total = (i32)packet->previous_gold_bricks + index + 1;
+                    total = packet->previous_gold_bricks + index + 1;
                     sprintf(text, "%i/%i", total, GOLDBRICKPOINTS);
                     AddFancyMessage(text, 0.0f, 0.3f, 0.75f, 1.25f, 1, 1);
                     message_id = ((i16 *)packet->field_0x12c)[index];
@@ -1504,13 +1504,13 @@ void __cdecl LevelComplete_LSW_Draw(STATUS_STAGE_s *stage, STATUSPACKET_s *packe
             coin_slide = 1.0f;
         }
         score = packet->original_score;
-        IncreaseScore(&score, (i32)((u32)(packet->reward_score - packet->original_score) * progress), 0);
+        IncreaseScore(&score, (i32)((packet->reward_score - packet->original_score) * progress), 0);
         CoinTotal_Draw((i32)score,
                        (STATSPOSY - STATSPOS2YPc) * NuTrigTable[((i32)(coin_slide * 16384.0f) >> 1) & 0x7fff] +
                            STATSPOS2YPc,
                        CoinTotalScale, 1, 1.0f, 255, 191, 0);
         if (stage->type == 26) {
-            f32 remaining = (u16)packet->mission->time - packet->elapsed_time;
+            f32 remaining = packet->mission->time - packet->elapsed_time;
             if (remaining < 0.0f) {
                 remaining = 0.0f;
             }
@@ -1520,7 +1520,7 @@ void __cdecl LevelComplete_LSW_Draw(STATUS_STAGE_s *stage, STATUSPACKET_s *packe
                    1.0f, 0.6f, 0.6f, 0.6f, 0, 255, 191, 0);
         }
         if (stage->type == 23) {
-            f32 remaining = (u16)packet->area->challenge_trial_time - packet->elapsed_time;
+            f32 remaining = packet->area->challenge_trial_time - packet->elapsed_time;
             if (remaining < 0.0f) {
                 remaining = 0.0f;
             }
@@ -2006,7 +2006,7 @@ void __cdecl ChallangeCash_Update(STATUS_STAGE_s *stage, STATUSPACKET_s *packet,
                     message.position = &position;
                     message.target_scale = 0.75f;
                     message.player_index = (i8)(qrand() / 0x8000);
-                    target.x = cointotal_x[(i32)message.player_index];
+                    target.x = cointotal_x[message.player_index];
                     message.icon = GizmoPickupType[2].first_model_id;
                     message.target_scale = COINTOTAL_COINSIZE;
                     message.target_position = &target;
@@ -2070,7 +2070,7 @@ void __cdecl Exit_LSW_Update(STATUS_STAGE_s *stage, STATUSPACKET_s *packet, f32 
     }
     if (stage->field_0x18 >= stage->field_0x1c) {
         NextStatusStage(packet);
-        if ((i32)packet->current_gold_brick < (i32)packet->stage_count - 1) {
+        if (packet->current_gold_brick < packet->stage_count - 1) {
             stage->field_0x1c = 0.1f;
         } else {
             FinishStatusPacket(packet->prompt_choice);

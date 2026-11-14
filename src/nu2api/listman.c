@@ -198,7 +198,7 @@ NULSTHDR *__cdecl NuLstCreate(i32 element_count, i32 element_size) {
     NULNKHDR *next;
 
     element_size_total = element_size + sizeof(NULNKHDR);
-    list = (NULSTHDR *)NuAlloc(element_count * element_size_total + sizeof(NULSTHDR), NuLstCreateTag, 0x67);
+    list = NuAlloc(element_count * element_size_total + sizeof(NULSTHDR), NuLstCreateTag, 0x67);
     if (list != NULL) {
         list->free = (NULNKHDR *)(list + 1);
         list->head = NULL;
@@ -410,7 +410,7 @@ NULSTHDR *__cdecl NuLstCreateBuff(i32 count, i32 size, VARIPTR *buffer, VARIPTR 
     stride = (alignment + size + sizeof(NULNKHDR) - 1) & -(u32)alignment;
     bytes = count * stride + sizeof(NULSTHDR);
     if (bytes < end.addr - buffer->addr) {
-        list = (NULSTHDR *)buffer->void_ptr;
+        list = buffer->void_ptr;
         buffer->addr += bytes;
         list->free = (NULNKHDR *)(list + 1);
         list->head = NULL;

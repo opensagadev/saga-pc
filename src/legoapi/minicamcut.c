@@ -90,7 +90,7 @@ void Minicam_AddCommand(i32 type, f32 duration, i32 argument, void *target, NUVE
             MiniCam.commands[MiniCam.command_count].duration = 0.0f;
             MiniCam.commands[MiniCam.command_count].argument = 0;
             MiniCam.commands[MiniCam.command_count].position = v000;
-            MiniCam.commands[MiniCam.command_count].target = (NUVEC *)target;
+            MiniCam.commands[MiniCam.command_count].target = target;
             break;
         case 9:
             MiniCam.commands[MiniCam.command_count].type = 9;
@@ -153,7 +153,7 @@ void Minicam_AddCommand(i32 type, f32 duration, i32 argument, void *target, NUVE
             MiniCam.commands[MiniCam.command_count].duration = 0.0f;
             MiniCam.commands[MiniCam.command_count].argument = 0;
             MiniCam.commands[MiniCam.command_count].position = v000;
-            MiniCam.commands[MiniCam.command_count].target = (NUVEC *)target;
+            MiniCam.commands[MiniCam.command_count].target = target;
             break;
     }
     ++MiniCam.command_count;
@@ -556,7 +556,7 @@ void GameCameraMakeMiniCut3(u32 flags, float distance, i32 pitch, i32 yaw, i32 r
         Minicam_AddCommand(1, blend_in_time, 0, NULL, reset_origin);
         MiniCam.duration = max_time;
         if ((flags & 0x80) && focus != NULL) {
-            MiniCam.focus = (NUVEC *)focus;
+            MiniCam.focus = focus;
             MiniCam.focus_offset = reset_origin;
             MiniCam.target = *(NUVEC *)focus;
             MiniCam.position = *position;
