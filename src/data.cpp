@@ -7643,7 +7643,6 @@ i32 next_level = 0;
 volatile i32 abort_load = 0;
 i32 ResetOldFStop = 0;
 i32 new_level_from_menu = 0;
-i32 reset_restart = 0;
 i32 no_more_loads = 0;
 i32 BonusWinner = -1;
 i32 BonusCoinTotal = 0;
@@ -8003,12 +8002,6 @@ extern "C" {
     u32 nudlist_field_1598 = 0;
     LEVELDATA_PC *KAMINOE_LDATA = 0;
     LEVELDATA_PC *DOGFIGHTA_LDATA = 0;
-    void *game_cutscenes_cutscene = 0;
-    void *game_cutscenes_podrace_pod_explode = 0;
-    void *game_cutscenes_podrace_out_of_time = 0;
-    void *game_cutscenes_bonus_gunship_cavalry_explode = 0;
-    void *game_cutscenes_droid_factory_conveyor = 0;
-    void *game_cutscenes_podrace_avalanche = 0;
     NUVEC PodRaceADiePos = {350.0f, 0.25f, -15.0f};
     NUVEC PodRaceBDiePos = {138.0f, 0.15f, 178.0f};
     u16 PodRaceBDieAngle = 90;
@@ -8033,16 +8026,9 @@ extern "C" {
     GAMEOBJECT *player = 0;
     GAMEOBJECT *CutDeadVehiclePlayer = 0;
     APICHARSYS *apicharsys = 0;
-    void *game_cutscenes_podrace_sebulba = 0;
-    void *game_cutscenes_podsprint_out_of_time = 0;
-    void *game_cutscenes_podsprint_sebulba = 0;
-    void *game_cutscenes_dogfight_die = 0;
     LEVELDATA_PC *PODSPRINTA_LDATA = 0;
     LEVELDATA_PC *PODRACEB_LDATA = 0;
     LEVELDATA_PC *BONUS_GUNSHIPA_LDATA = 0;
-    u16 podrace_die_angle_a = 0;
-    u16 podrace_die_angle_b = 0;
-    u16 podrace_die_angle_c = 0;
     void *Player[8] = {0};
     f32 DEFAULTFPS = 0;
     void *LevelHackData = 0;
@@ -9925,9 +9911,6 @@ extern "C" {
     i8 (*adtab)[4] = &adtabentries[4];
 #pragma data_seg()
     ADAPTIVEDIFFICULTY_PC adaptivedifficulty = {0};
-#pragma data_seg(".data$AdaptiveDifficultyRecoveryTimePc")
-    f32 AdaptiveDifficultyRecoveryTimePc = 30.0f;
-#pragma data_seg()
 #pragma const_seg(".rdata$AIControlMinimumName")
     const char AIControlMinimumName[5] = "min=";
 #pragma const_seg()
@@ -13629,9 +13612,6 @@ extern "C" {
 #pragma data_seg(".data$PodDustHeightScalePc")
     f32 PodDustHeightScalePc = 2.0f;
 #pragma data_seg()
-#pragma data_seg(".data$GunshipDustEmissionRatePc")
-    f32 GunshipDustEmissionRatePc = 75.0f;
-#pragma data_seg()
 }
 
 extern "C" {
@@ -14119,7 +14099,6 @@ extern "C" {
 
 extern "C" {
     u8 CheatC3poBitsEnabledPc = 0;
-    i32 deathstar_hold_count = 0;
     i32 selectmodemode = 0;
     f32 selectmodetime = 0.0f;
     i32 (*CheckMusicOtherFn)(void) = NULL;
@@ -22928,15 +22907,8 @@ extern "C" {
     NUMTL *FadeMtl2 = 0;
 
     u64 CharacterMaskAllPc = ~(u64)0;
-    i32 FalconDebKey[2] = {-1, -1};
 
     TIMER PauseTimer = {0};
-
-    i32 makebaddiesforgetinresetbits = 0;
-
-    i32 reset_reimport = 0;
-
-    i32 come_from_an_editor = 0;
 }
 
 extern "C" {

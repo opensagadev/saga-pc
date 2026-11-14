@@ -365,6 +365,7 @@ extern "C" {
     }
 
 #pragma data_seg(".data$AdaptiveDifficultyRecoveryThresholdPc")
+    f32 AdaptiveDifficultyRecoveryTimePc = 30.0f;
     static f32 AdaptiveDifficultyRecoveryThresholdPc = 0.1f;
 #pragma data_seg()
 
@@ -427,7 +428,27 @@ static i32 MakeSaveHash(void) {
 extern "C" {
     u8 *Game_LevelSave = 0;
     MISSION_SAVE_READER_PC *Game_MissionSave = 0;
+    i32 makebaddiesforgetinresetbits = 0;
+    i32 reset_restart = 0;
+    i32 reset_reimport = 0;
+    i32 come_from_an_editor = 0;
+    void *game_cutscenes_podrace_pod_explode = 0;
+    void *game_cutscenes_podrace_out_of_time = 0;
+    void *game_cutscenes_bonus_gunship_cavalry_explode = 0;
+    void *game_cutscenes_droid_factory_conveyor = 0;
+    void *game_cutscenes_podrace_avalanche = 0;
+    void *game_cutscenes_dogfight_die = 0;
+    void *game_cutscenes_podrace_sebulba = 0;
+    void *game_cutscenes_cutscene = 0;
+    void *game_cutscenes_podsprint_out_of_time = 0;
+    void *game_cutscenes_podsprint_sebulba = 0;
+    u16 podrace_die_angle_a = 0;
+    u16 podrace_die_angle_b = 0;
+    u16 podrace_die_angle_c = 0;
+    i32 deathstar_hold_count = 0;
     TIMER OverallGamePlayTimer = {0};
+    i32 FalconDebKey[2] = {-1, -1};
+    f32 GunshipDustEmissionRatePc = 75.0f;
     i32 GameDrawCharacterModelFlagPc = 1;
     char *partdebris_name[] = {"TRAINING_P",   "PART_MOUSE", "PART_BLACK_3", "DRAG_PART_1", "SMALL_PART_2", "RAT_PART",
                                "BOULDER_PART", "POPCORN",    "PART_THROW",   "ENG_POP",     "DOOKU_PART",   "MAUL_P_1",
