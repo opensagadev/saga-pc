@@ -271,4 +271,16 @@ extern "C" {
 }
 #endif
 
+#ifndef TYPES_OFF_27
+typedef struct BURN_OUT_PC {
+    i32 active;     // 0x00
+    NUVEC position; // 0x04
+    f32 field_10;   // 0x10
+    f32 field_14;   // 0x14
+    f32 field_18;   // 0x18
+    f32 field_1c;   // 0x1c
+    f32 field_20;   // 0x20
+} BURN_OUT_PC;      // size 0x24
+
+#endif /* TYPES_OFF_27 */
 #endif

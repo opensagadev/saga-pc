@@ -227,6 +227,27 @@ STATIC_ASSERT(offsetof(GRAPHICS_FACTORY_METHODS_PC, check_multisample) == 0x2c);
 STATIC_ASSERT(offsetof(GRAPHICS_FACTORY_PC, methods) == 0x0);
 STATIC_ASSERT(sizeof(GRAPHICS_FACTORY_PC) == 4);
 STATIC_ASSERT(sizeof(GRAPHICS_FACTORY_METHODS_PC) == 0x44);
+#ifndef TYPES_OFF_39
+
+/* Bink's BINKREALTIME. */
+struct PC_FMV_REALTIME_PC {
+    u32 frame_number;      // 0x00
+    u32 frame_rate;        // 0x04
+    u32 frame_rate_div;    // 0x08
+    u32 frames;            // 0x0c
+    u32 frames_time;       // 0x10
+    u32 video_decomp_time; // 0x14
+    u32 audio_decomp_time; // 0x18
+    u32 read_time;         // 0x1c
+    u32 idle_time;         // 0x20
+    u32 thread_read_time;  // 0x24
+    u32 blit_time;         // 0x28
+    u32 read_buffer_size;  // 0x2c
+    u32 read_buffer_used;  // 0x30
+    u32 data_rate;         // 0x34
+}; // size 0x38
+
+#endif /* TYPES_OFF_39 */
 #undef SAGA_NU2API_NUFMV_PC_BINK_DSPLAY_BINK_H_PART
 #define SAGA_NU2API_NUFMV_PC_BINK_DSPLAY_BINK_H_PART 3
 #ifdef SAGA_SHIM

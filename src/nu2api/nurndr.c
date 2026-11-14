@@ -221,9 +221,6 @@ void NuDisplayListStreamAlloc(VARIPTR *cursor, i32 arg2, i32 count) {
     }
 }
 
-typedef struct PC_HG_SHADOW_PACKET PC_HG_SHADOW_PACKET;
-typedef struct PC_HG_SHADOW_STATE_VIEW PC_HG_SHADOW_STATE_VIEW;
-
 void NuRndrCalcRandEllipsePos(NUVEC4 *position, NUMTX *matrix, NUVEC *axes) {
     NUVEC random;
     f32 length;

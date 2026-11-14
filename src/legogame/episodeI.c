@@ -18,108 +18,16 @@ extern f32 sebulba_catchup_speed_mul;
 extern f32 sebulba_catchup_dist;
 extern f32 sebulba_fallback_speed_mul;
 
-typedef struct racepod_resource_pc_s {
-    NUMTX matrix;
-    NUVEC4 previous_axis;
-    NUVEC4 previous_position;
-    NUVEC4 previous_displacement;
-    i32 pitch;
-    i32 yaw;
-    i32 unknown_0078;
-    f32 speed;
-    FLIGHT_SPLINE_RESOURCE_PC *spline;
-    f32 start;
-    i16 model_id;
-    i16 unknown_008a;
-    f32 distance;
-    GAMEOBJECT *object;
-    void *next;
-    u8 unknown_0098[8];
-} RACEPOD_RESOURCE_PC;
-
-typedef struct podrace_resource_pc_s {
-    FLIGHT_SPLINE_RESOURCE_PC splines[32];
-    RACEPOD_RESOURCE_PC lap_entries[16];
-    f32 lap_countdown;
-    f32 mushroom_timer;
-    f32 lap_display;
-    f32 previous_lap_display;
-    f32 max_lap_time;
-    f32 lap_time_increment;
-    i32 attempts_per_increment;
-    i32 attempts;
-    u8 flags;
-    u8 unknown_b021[15];
-} PODRACE_RESOURCE_PC;
-
 extern NUSPECIALHANDLE SebulbaMineSpecialPc;
 extern f32 SebulbaDistanceBiasPc;
 extern f32 SebulbaThrowIntervalPc;
 static f32 PodSebulbaThrowSpeedPc;
 static f32 PodSebulbaThrowGravityPc;
 
-typedef struct pod_race_countdown_reader_pc_s {
-    u8 unknown_0000[0xb000];
-    f32 lap_countdown;
-} POD_RACE_COUNTDOWN_READER_PC;
-
-/* Episode I level callbacks installed by FixUpLevels. */
-typedef struct podrace_levflag_pc_s {
-    u8 podrace_state;
-    u8 mushroom_state;
-    u8 remaining[14];
-} PODRACE_LEVFLAG_PC;
-
-typedef struct gungan_a_pc_s {
-    i16 unknown_000;
-    i16 count;
-    AILOCATOR_PC *origins[32];
-    AILOCATOR_PC *targets[32];
-    f32 spawn_timer;
-    i16 model_index;
-    i16 unknown_10a;
-    i16 models[4];
-} GUNGAN_A_PC;
-
-typedef struct mine_entry_pc_s {
-    u32 active;
-    NUVEC pos;
-    f32 grow;
-    f32 grow_alpha;
-    u16 rotx;
-    u16 roty;
-} MINE_ENTRY_PC;
-
-typedef struct minesys_pc_s {
-    NUSPECIALHANDLE mine_special;
-    MINE_ENTRY_PC mines[64];
-    f32 mine_radius;
-    f32 spawn_timer;
-    AIAREA_PC *nomine_areas[10];
-    i16 nomine_count;
-    i16 mine_debris;
-    i32 mine_part;
-    f32 update_timer;
-} MINESYS_PC;
-
-typedef struct client_mines_pc_s {
-    NUVEC positions[64];
-    u32 present_words[2];
-    u32 exploded_words[2];
-    u32 unknown_310[2];
-} CLIENT_MINES_PC;
-
 typedef struct retakeg_netpacket_pc_s {
     i16 guard_a;
     i16 guard_b;
 } RETAKEG_NETPACKET_PC;
-
-typedef struct cut_instance_reader_pc_s {
-    u8 opaque_00_88[0x88];
-    u32 flags_88;
-    u32 unknown_8c;
-    f32 current_frame;
-} CUT_INSTANCE_READER_PC;
 
 extern i16 CharacterFixupIdPc007f19ac;
 extern i16 CharacterFixupIdPc007f19b0;
@@ -171,13 +79,6 @@ typedef struct PODSPRINT_VIEW_PC {
         } bits;
     };
 } PODSPRINT_VIEW_PC;
-
-typedef struct PODSPRINT_NETPACKET_PC {
-    i16 ai_state;
-    u8 unknown_02[4];
-    i16 countdown;
-    i16 lap_time;
-} PODSPRINT_NETPACKET_PC;
 
 #define PODSPRINT ((PODSPRINT_VIEW_PC *)&podsprint)
 #define PODSPRINT_NET ((PODSPRINT_NETPACKET_PC *)podsprint_netpacket)
@@ -1123,7 +1024,7 @@ void fun_004daa50(void) {
 }
 
 i32 PodRace_InStartCountdown(WORLDINFO *world) {
-    POD_RACE_COUNTDOWN_READER_PC *race = (POD_RACE_COUNTDOWN_READER_PC *)PodRacePc;
+    PODRACE_RESOURCE_PC *race = PodRacePc;
     return world->area != NULL && world->area == PODRACE_ADATA && race != NULL && race->lap_countdown > 0.0f;
 }
 
@@ -1234,7 +1135,7 @@ void PodRaceBUpdate(WORLDINFO *world) {
                 break;
             case 1:
                 if (mushroom0_cut != NULL &&
-                    (((CUT_INSTANCE_READER_PC *)mushroom0_cut->instance)->flags_88 & 0x1000) != 0) {
+                    (((CUT_INSTANCE_LOAD_PC *)mushroom0_cut->instance)->flags_88 & 0x1000) != 0) {
                     NewCutScene(NULL, world->cutscene_sys, "EP1_PODRACE_MUSHROOM1", 1);
                     mushroom_countdown = mushroom_time_available;
                     ((PODRACE_LEVFLAG_PC *)LevFlag)->mushroom_state = 2;
@@ -1283,7 +1184,7 @@ void PodRaceCUpdate(WORLDINFO *world) {
     PodRaceSnipersUpdate();
     if (((PODRACE_LEVFLAG_PC *)LevFlag)->podrace_state == 0) {
         CUTINFO *cutscene = CutScene_Find(world->cutscene_sys, "Ep1_Podrace_TuskenRaiders");
-        if (cutscene != NULL && (((CUT_INSTANCE_READER_PC *)cutscene->instance)->flags_88 & 0x1000) != 0) {
+        if (cutscene != NULL && (((CUT_INSTANCE_LOAD_PC *)cutscene->instance)->flags_88 & 0x1000) != 0) {
             ((PODRACE_LEVFLAG_PC *)LevFlag)->podrace_state = 1;
         }
     }

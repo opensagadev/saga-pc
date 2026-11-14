@@ -39,19 +39,6 @@ STATIC_ASSERT(offsetof(EXPLOSION_PC, owner) == 8);
 STATIC_ASSERT(offsetof(EXPLOSION_PC, flags) == 0x24);
 STATIC_ASSERT(offsetof(GAMEOBJECT, field_7aa) == 0x7aa);
 
-struct minianimpacket_pc_s {
-    f32 current_time;           // 0x00
-    f32 previous_time;          // 0x04
-    u8 unknown_08[0xc];         // 0x08
-    f32 blend_target_time;      // 0x14
-    u8 flags;                   // 0x18
-    u8 blending;                // 0x19
-    u8 unknown_1a[4];           // 0x1a
-    i16 current_animation_id;   // 0x1e
-    i16 previous_animation_id;  // 0x20
-    i16 requested_animation_id; // 0x22
-}; // size 0x24
-
 STATIC_ASSERT(offsetof(GAMEOBJECT, field_7a4) == 0x7a4);
 STATIC_ASSERT(offsetof(GAMEOBJECT, jump_animation_state) == 0x285);
 STATIC_ASSERT(offsetof(GAMEOBJECT, roof_height_pc) == 0x224);
@@ -148,23 +135,6 @@ typedef struct CREATURE_RESET_PACKET_VIEW_PC {
 
 STATIC_ASSERT(sizeof(((CREATURE_RESET_PACKET_VIEW_PC *)0)->packet) == 0x788);
 STATIC_ASSERT(offsetof(GAMEOBJECT, weapon_model_override_pc) == 0x7f4);
-
-typedef struct player_position_record_pc_s {
-    NUVEC *position;         // 0x0
-    i32 sock_location;       // 0x4
-    f32 sock_ratio;          // 0x8
-    i16 angle;               // 0xc
-    u8 unknown_0e[2];        // 0xe
-} PLAYER_POSITION_RECORD_PC; // size 0x10
-
-typedef union player_position_sock_pc_u {
-    SOCKPOSITION_PC sock; // 0x00
-
-    struct {          // 0x00
-        i32 location; // 0x00
-        f32 ratio;    // 0x04
-    } start;
-} PLAYER_POSITION_SOCK_PC; // size 0x38
 
 STATIC_ASSERT(sizeof(PlayerList) == sizeof(PLAYER_POSITION_RECORD_PC));
 STATIC_ASSERT(sizeof(PLAYER_ITEM_TYPE_RESET_PC) == 12);

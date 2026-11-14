@@ -67,18 +67,6 @@ STATIC_ASSERT(offsetof(ANTINODE_AI_OUTPUT_PC, user_data) + sizeof(u32) == 0x54);
 STATIC_ASSERT(offsetof(ANTINODE_PC, user_data) + sizeof(u32) == 0x28);
 STATIC_ASSERT(offsetof(ANTINODE_PC, user_data) + 2 * sizeof(u32) == 0x2c);
 
-typedef struct GAME_ANTI_NODE_DATA_PC {
-    NUVEC position;
-    f32 radius;
-    f32 min_y;
-    f32 max_y;
-    f32 extent_x;
-    f32 extent_z;
-    u16 angle;
-    u8 shape;
-    u8 mode;
-} GAME_ANTI_NODE_DATA_PC;
-
 #define GAME_ANTI_NODE_ABS(destination, expression)                                                                    \
     (temporary = (expression), *(u32 *)&(destination) = *(u32 *)&temporary & 0x7fffffff)
 

@@ -67,4 +67,19 @@ extern "C" {
 }
 #endif
 
+#ifndef TYPES_OFF_22
+struct minianimpacket_pc_s {
+    f32 current_time;           // 0x00
+    f32 previous_time;          // 0x04
+    u8 unknown_08[0xc];         // 0x08
+    f32 blend_target_time;      // 0x14
+    u8 flags;                   // 0x18
+    u8 blending;                // 0x19
+    u8 unknown_1a[4];           // 0x1a
+    i16 current_animation_id;   // 0x1e
+    i16 previous_animation_id;  // 0x20
+    i16 requested_animation_id; // 0x22
+}; // size 0x24
+
+#endif /* TYPES_OFF_22 */
 #endif

@@ -481,6 +481,21 @@ STATIC_ASSERT(offsetof(SoundQueue, serial) == 0x3f8);
 STATIC_ASSERT(offsetof(SoundQueue, factory) == 0x3fc);
 STATIC_ASSERT(sizeof(SoundQueue) == 0x400);
 #endif
+#ifndef TYPES_OFF_40
+
+struct PC_STEREO_PLAY_PACKET {
+    i32 option11;     // 0x00
+    i32 reserved;     // 0x04
+    i32 stream_index; // 0x08
+    i32 first_sample; // 0x0c
+    i32 last_sample;  // 0x10
+    i32 volume_left;  // 0x14
+    i32 volume_right; // 0x18
+    i32 option9_mode; // 0x1c
+    f32 start_offset; // 0x20
+}; // size 0x24
+
+#endif /* TYPES_OFF_40 */
 #undef SAGA_NU2API_NUSOUND_NUSOUND_H_PART
 #define SAGA_NU2API_NUSOUND_NUSOUND_H_PART 4
 #ifdef SAGA_SHIM

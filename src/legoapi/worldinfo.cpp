@@ -22,29 +22,10 @@ extern "C" {
     STATIC_ASSERT(offsetof(GIZMOTYPE_PC, fns.clear_progress_fn) == 0x7c);
     STATIC_ASSERT(offsetof(GIZMOTYPE_PC, progress) == 0x98);
 
-    typedef struct world_script_progress_pc_s {
-        char name[16];          // 0x00
-        f32 params[4];          // 0x10
-    } WORLD_SCRIPT_PROGRESS_PC; // size 0x20
-
     STATIC_ASSERT(offsetof(WORLDINFO, game_anim_sys) == 0x2960);
     STATIC_ASSERT(offsetof(WORLDINFO, giz_flow) == 0x2acc);
     STATIC_ASSERT(offsetof(WORLDINFO, script_processor_count) == 0x2aec);
     STATIC_ASSERT(offsetof(WORLDINFO, script_processors) == 0x2af0);
-
-    typedef struct level_progress_transfer_pc_s {
-        SCENEPROGRESS scene_progress;         // 0x0000
-        u32 flags;                            // 0x2800
-        u8 unknown_2804[0x20];                // 0x2804
-        WORLD_SCRIPT_PROGRESS_PC scripts[32]; // 0x2824
-        GIZFLOWPROGRESS_PC giz_flow_progress; // 0x2c24
-        char disabled_effect_names[12][16];   // 0x2d68
-    } LEVEL_PROGRESS_TRANSFER_PC;             // size 0x2e28
-
-    typedef struct world_persistence_flags_pc_s {
-        u8 unknown_0000[0x5170];  // 0x0000
-        u32 progress_flags;       // 0x5170
-    } WORLD_PERSISTENCE_FLAGS_PC; // size 0x5174
 
     typedef struct world_initial_progress_pc_s {
         SCENEPROGRESS scene;     // 0x0000
@@ -290,12 +271,6 @@ extern "C" {
     STATIC_ASSERT(sizeof(AREA_LEVEL_LOAD_PC) == 8);
     STATIC_ASSERT(offsetof(GAMEOBJECT, position) == 0x5c);
     STATIC_ASSERT(offsetof(GAMEOBJECT, flags_1fc_word) == 0x1fc);
-
-    typedef struct EQUIVALENTOBJECTGROUP_PC {
-        i16 object_count;
-        i16 byte_size;
-        NUSPECIALHANDLE objects[1];
-    } EQUIVALENTOBJECTGROUP_PC;
 
     typedef struct EQUIVALENT_GROUP_PC {
         i16 object_count;

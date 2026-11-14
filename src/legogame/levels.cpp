@@ -320,38 +320,9 @@ extern "C" void ChrisDogFightAReset(WORLDINFO *);
 extern "C" void ChrisDogFightAUpdate(WORLDINFO *);
 extern "C" void ChrisDogFightADraw(WORLDINFO *);
 
-typedef struct level_script_progress_pc_s {
-    char name[16];
-    f32 params[4];
-} LEVEL_SCRIPT_PROGRESS_PC;
-
-typedef struct ai_script_progress_view_pc_s {
-    u8 unknown_0000[0x2824];
-    LEVEL_SCRIPT_PROGRESS_PC scripts[32];
-} AI_SCRIPT_PROGRESS_VIEW_PC;
-
 #define WORLD_PORTAL_BOUNDS_PC(scene) ((NUVEC4 *)(scene)->portal_boxes)
 extern "C" {
     void SaveSceneObjectAnimTFactors(NUGSCN *scene);
-
-    typedef struct world_script_progress_pc_s {
-        char name[16];
-        f32 params[4];
-    } WORLD_SCRIPT_PROGRESS_PC;
-
-    typedef struct level_progress_transfer_pc_s {
-        SCENEPROGRESS scene_progress;
-        u32 flags;
-        u8 unknown_2804[0x20];
-        WORLD_SCRIPT_PROGRESS_PC scripts[32];
-        GIZFLOWPROGRESS_PC giz_flow_progress;
-        char disabled_effect_names[12][16];
-    } LEVEL_PROGRESS_TRANSFER_PC;
-
-    typedef struct world_persistence_flags_pc_s {
-        u8 unknown_0000[0x5170];
-        u32 progress_flags;
-    } WORLD_PERSISTENCE_FLAGS_PC;
 
     void GizmoSysStoreProgress(void *system, void *world, i32 index);
     void LoadGrassFile(WORLDINFO *world);

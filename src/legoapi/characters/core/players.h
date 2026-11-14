@@ -246,4 +246,23 @@ extern "C" {
 }
 #endif
 
+#ifndef TYPES_OFF_8
+typedef struct player_position_record_pc_s {
+    NUVEC *position;         // 0x0
+    i32 sock_location;       // 0x4
+    f32 sock_ratio;          // 0x8
+    i16 angle;               // 0xc
+    u8 unknown_0e[2];        // 0xe
+} PLAYER_POSITION_RECORD_PC; // size 0x10
+
+typedef union player_position_sock_pc_u {
+    SOCKPOSITION_PC sock; // 0x00
+
+    struct {          // 0x00
+        i32 location; // 0x00
+        f32 ratio;    // 0x04
+    } start;
+} PLAYER_POSITION_SOCK_PC; // size 0x38
+
+#endif /* TYPES_OFF_8 */
 #endif

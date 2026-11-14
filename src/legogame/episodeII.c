@@ -3,12 +3,6 @@
 #include <stdio.h>
 #include <math.h>
 
-typedef struct BONUS_GUNSHIP_FLAGS_PC {
-    u8 progress;
-    u8 secondary;
-    u8 reserved[14];
-} BONUS_GUNSHIP_FLAGS_PC;
-
 #define BONUS_GUNSHIP_FLAGS_PC_VIEW ((BONUS_GUNSHIP_FLAGS_PC *)LevFlag)
 
 typedef struct cutinfo_reader_pc_s {
@@ -18,51 +12,9 @@ typedef struct cutinfo_reader_pc_s {
     f32 previous_frame;
 } CUTINFO_READER_PC;
 
-typedef struct cut_instance_reader_pc_s {
-    u8 opaque_00_88[0x88];
-    u32 flags_88;
-    u32 unknown_8c;
-    f32 current_frame;
-} CUT_INSTANCE_READER_PC;
-
-typedef struct dooku_c_pc_s {
-    GIZAIMESSAGE *total_message;
-    GIZAIMESSAGE *hit_message;
-    NUSPECIALHANDLE node;
-} DOOKU_C_PC;
-
 void KillBossNewLevel(i32 id, i32 unused_4, f32 delay, i32 level_index);
 void DrawForceBackEffect(NUSPECIALHANDLE *special);
 void GizPanel_Reset(void *panel);
-
-typedef struct kaminodisco_pc_s {
-    AIAREA_PC *area;
-    NUSPECIALHANDLE off[16];
-    NUSPECIALHANDLE pending[16];
-    NUSPECIALHANDLE occupied[16];
-    NUSPECIALHANDLE complete[16];
-    NUSPECIALHANDLE final[16];
-    i8 tile_state[16];
-    i8 tile_count;
-    i8 phase;
-    i8 tile[2];
-    f32 timer;
-    u8 completion_sound;
-    u8 reserved_3dd[3];
-    GIZAIMESSAGE *next_tile_message;
-    GIZAIMESSAGE *complete_message;
-} KAMINODISCO_PC;
-
-typedef struct kaminoc_packet_pc_s {
-    i16 off_mask;
-    i16 pending_mask;
-    i16 occupied_mask;
-    i16 complete_mask;
-    i16 final_mask;
-    i16 sound_mask;
-    u8 complete;
-    u8 reserved_0d;
-} KAMINOC_PACKET_PC;
 
 typedef struct kamino_progress_gizmo_reader_pc_s {
     u8 opaque_00_94[0x94];
@@ -74,45 +26,6 @@ typedef struct gizforce_reader_pc_s {
     GAMEANIMSET *anim_set;
 } GIZFORCE_READER_PC;
 
-typedef struct kaminoe_turret_reader_pc_s {
-    u8 opaque_00_1c[0x1c];
-    GAMEANIMOBJ *primary_anim_obj;
-    u8 opaque_20_e4[0xc4];
-    NUVEC *target_position;
-    u8 opaque_e8_12c[0x44];
-    u8 field_12c;
-    u8 opaque_12d;
-    u8 field_12e;
-    u8 opaque_12f_13a[0xb];
-    u16 flags_13a;
-    u8 opaque_13c_140[0x4];
-} KAMINOE_TURRET_READER_PC;
-
-typedef struct kamino_e_pc_s {
-    GIZAIMESSAGE *jango_fight;
-    GIZAIMESSAGE *can_fire;
-    GIZAIMESSAGE *reset_turrets;
-    GIZAIMESSAGE *show_hearts;
-    GIZAIMESSAGE *minicut_started;
-    CUTINFO *intro_cutscene;
-    AIAREA_PC *landing_area;
-    NUSPECIALHANDLE slave1;
-    KAMINOE_TURRET_READER_PC *turrets[4];
-    KAMINOE_TURRET_READER_PC *active_turret;
-    void *panels[4];
-    NUVEC position;
-    i32 pitch;
-    i32 yaw;
-    i32 roll;
-    i32 orbit_pitch;
-    i32 orbit_yaw;
-    f32 departure_timer;
-    f32 elapsed_time;
-    i8 fire_index;
-    u8 departing;
-    i16 platform;
-} KAMINO_E_PC;
-
 extern i32 turret_gizmotype_id;
 void *GizmoFindByData(void *gizmo_sys, i32 type_id, void *data);
 void KaminoEGizmoMissingPc(char *name);
@@ -121,11 +34,6 @@ void KaminoEGizmoMissingPc(char *name);
       (u64)(i64)(1 << (i32)((area) - (world)->ai_sys->areas))) != 0)
 #define KAMINO_DISCO_PLAYER_IN_AREA_PC(world, who, area)                                                               \
     ((who) != NULL && (area) != NULL && KAMINO_DISCO_AREA_MASK_SET_PC(world, area))
-
-typedef struct KAMINO_SHIP_ZERO_ANGLES_PC {
-    u16 pitch;
-    i32 yaw;
-} KAMINO_SHIP_ZERO_ANGLES_PC;
 
 static i32 PaintMixColourPc(i32 first, i32 second) {
     if ((first == 0 && second == 1) || (first == 1 && second == 0)) {
@@ -1006,8 +914,8 @@ void FactoryB_Reset(WORLDINFO *world) {
     ResetPaintPuzzle(world);
     factoryb_cut = NewCutScene(NULL, world->cutscene_sys, "ep2_droidfactory_conveyor", 0);
     if (factoryb_cut != NULL && factoryb_cut->instance != NULL) {
-        ((CUT_INSTANCE_READER_PC *)factoryb_cut->instance)->flags_88 |= 2;
-        ((CUT_INSTANCE_READER_PC *)factoryb_cut->instance)->flags_88 |= 8;
+        ((CUT_INSTANCE_LOAD_PC *)factoryb_cut->instance)->flags_88 |= 2;
+        ((CUT_INSTANCE_LOAD_PC *)factoryb_cut->instance)->flags_88 |= 8;
     }
     factoryb_conveyor_stopped_msg = CheckGizAIMessage(gizaimessagesys, "conveyor_stop", NULL);
 }
@@ -1022,11 +930,11 @@ void FactoryB_Update(WORLDINFO *world) {
     message = factoryb_conveyor_stopped_msg;
     if (message != NULL && message->value != 0.0f && ((CUTINFO_READER_PC *)factoryb_cut)->previous_frame > 50.0 &&
         ((CUTINFO_READER_PC *)factoryb_cut)->previous_frame < 54.0) {
-        ((CUT_INSTANCE_READER_PC *)factoryb_cut->instance)->current_frame = 0.0f;
-        ((CUT_INSTANCE_READER_PC *)factoryb_cut->instance)->flags_88 &= ~2u;
+        ((CUT_INSTANCE_LOAD_PC *)factoryb_cut->instance)->current_frame = 0.0f;
+        ((CUT_INSTANCE_LOAD_PC *)factoryb_cut->instance)->flags_88 &= ~2u;
         world->current_level->conveyor_x_speed = 0.0f;
         world->current_level->conveyor_z_speed = 0.0f;
-    } else if (((CUT_INSTANCE_READER_PC *)factoryb_cut->instance)->current_frame > FactoryBConveyorStopFrame) {
+    } else if (((CUT_INSTANCE_LOAD_PC *)factoryb_cut->instance)->current_frame > FactoryBConveyorStopFrame) {
         world->current_level->conveyor_x_speed = FactoryBConveyorXSpeed;
         world->current_level->conveyor_z_speed = FactoryBConveyorZSpeed;
         PlaySfx("FacB_BeltLp", NULL);
@@ -1129,7 +1037,7 @@ void FactoryG_Update(WORLDINFO *world) {
         CompleteLevel(WORLD);
     } else {
         CUTINFO *cut = NewCutScene(NULL, world->cutscene_sys, "ep2_factory_outro", 1);
-        ((CUT_INSTANCE_READER_PC *)((CUTINFO_READER_PC *)cut)->instance)->flags_88 |= 2;
+        ((CUT_INSTANCE_LOAD_PC *)((CUTINFO_READER_PC *)cut)->instance)->flags_88 |= 2;
     }
 }
 

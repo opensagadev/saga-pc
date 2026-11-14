@@ -10,12 +10,6 @@ typedef struct startup_object_light_pc_s {
     u8 unknown_e08[0x2d0];
 } STARTUP_OBJECT_LIGHT_PC;
 
-typedef struct OBJECT_LIGHT_STATE_GAME_PC {
-    NUVEC ambient;
-    NUVEC intensity[3];
-    NUVEC direction[3];
-} OBJECT_LIGHT_STATE_GAME_PC;
-
 typedef struct GAME_LIGHT_VIEW_PC {
     u8 unknown000[0x285];
     i8 floor_surface;
@@ -23,16 +17,6 @@ typedef struct GAME_LIGHT_VIEW_PC {
     RTL_DATA_PC light_data;
     OBJECT_LIGHT_STATE_GAME_PC lighting_state;
 } GAME_LIGHT_VIEW_PC;
-
-typedef struct BURN_OUT_PC {
-    i32 active;
-    NUVEC position;
-    f32 field_10;
-    f32 field_14;
-    f32 field_18;
-    f32 field_1c;
-    f32 field_20;
-} BURN_OUT_PC;
 
 typedef struct BURN_SET_PC {
     BURN_PARAMETERS_PC parameters;

@@ -49,4 +49,15 @@ extern "C" {
 }
 #endif
 
+#ifndef TYPES_OFF_17
+typedef struct registry_panel_record_pc_s {
+    u8 storage[0x90];       // 0x00
+} REGISTRY_PANEL_RECORD_PC; // size 0x90
+
+typedef struct registry_panel_system_pc_s {
+    i32 count;                        // 0x0
+    REGISTRY_PANEL_RECORD_PC *panels; // 0x4
+} REGISTRY_PANEL_SYSTEM_PC;           // size 0x8
+
+#endif /* TYPES_OFF_17 */
 #endif

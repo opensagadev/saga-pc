@@ -86,14 +86,6 @@ void Doors_Init(WORLDINFO *world) {
     }
 }
 
-typedef struct player_position_record_pc_s {
-    NUVEC *position;         // 0x0
-    i32 sock_location;       // 0x4
-    f32 sock_ratio;          // 0x8
-    i16 angle;               // 0xc
-    u8 unknown_0e[2];        // 0xe
-} PLAYER_POSITION_RECORD_PC; // size 0x10
-
 typedef struct player_door_pc_s {
     char name[128];       // 0x000
     char camera_name[32]; // 0x080
@@ -116,15 +108,6 @@ typedef struct player_world_doors_pc_s {
     i32 door_count;             // 0x469c
     PLAYER_DOOR_PC *start_door; // 0x46a0
 } PLAYER_WORLD_DOORS_PC;        // size 0x46a4
-
-typedef union player_position_sock_pc_u {
-    SOCKPOSITION_PC sock; // 0x00
-
-    struct {          // 0x00
-        i32 location; // 0x00
-        f32 ratio;    // 0x04
-    } start;
-} PLAYER_POSITION_SOCK_PC; // size 0x38
 
 STATIC_ASSERT(sizeof(PlayerList) == sizeof(PLAYER_POSITION_RECORD_PC));
 

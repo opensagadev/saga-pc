@@ -13,10 +13,6 @@ typedef struct CLOUDCITY_PANEL_FLAGS_VIEW_PC {
 STATIC_ASSERT(offsetof(CLOUDCITY_PANEL_FLAGS_VIEW_PC, flags) == 0x62);
 STATIC_ASSERT(offsetof(GIZBUILDIT_PC, build_state) == 0x6d);
 
-typedef struct CLOUDCITY_LEVEL_FLAG_VIEW_PC {
-    u8 started;                 // 0x0
-} CLOUDCITY_LEVEL_FLAG_VIEW_PC; // size 0x1
-
 i32 MosEisleyC_PastBarrier(GAMEOBJECT *object) {
     if (WORLD->current_level == MOSEISLEYC_LDATA) {
         return object->position.z > 5.85f;
@@ -442,35 +438,6 @@ void DeathStarBattleDDraw(WORLDINFO *world) {
 
 void fun_004e5eb0(void) {
 }
-
-/* Asteroid field. */
-typedef struct ASTEROID_PC {
-    NUSPECIALHANDLE special; // 0x00
-    GIZMOBLOWUP_PC *blowup;  // 0x0c
-    i16 rotation_speed_x;    // 0x10
-    i16 rotation_speed_y;    // 0x12
-    i16 rotation_speed_z;    // 0x14
-    u8 activated;            // 0x16
-} ASTEROID_PC;               // size 0x18
-
-/* Rotating rock at the end of AsteroidChase C. */
-typedef struct FINAL_ASTEROID_PC {
-    NUSPECIALHANDLE special;    // 0x00
-    GIZMOBLOWUP_PC *blowups[8]; // 0x0c
-    i16 blowup_count;           // 0x2c
-    i16 rotation_speed_x;       // 0x2e
-    i16 rotation_speed_y;       // 0x30
-    i16 rotation_speed_z;       // 0x32
-    i16 rotation_x;             // 0x34
-    i16 rotation_y;             // 0x36
-    i16 rotation_z;             // 0x38
-} FINAL_ASTEROID_PC;            // size 0x3c
-
-typedef struct ASTEROIDC_NETPACKET_PC {
-    u16 rotation_x;
-    u16 rotation_y;
-    u16 rotation_z;
-} ASTEROIDC_NETPACKET_PC;
 
 STATIC_ASSERT(offsetof(GIZMOBLOWUP_PC, model_rotation_x) == 0xe8);
 STATIC_ASSERT(offsetof(GIZMOBLOWUP_PC, score) == 0xa0);

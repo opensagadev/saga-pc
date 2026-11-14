@@ -1874,6 +1874,42 @@ extern "C" {
 #ifdef __cplusplus
 }
 #endif
+#ifndef TYPES_OFF_36
+
+typedef struct PC_HG_SHADOW_PACKET PC_HG_SHADOW_PACKET;
+typedef struct PC_HG_SHADOW_STATE_VIEW PC_HG_SHADOW_STATE_VIEW;
+typedef struct PC_HG_SHADOW_SHAPE48 PC_HG_SHADOW_SHAPE48;
+typedef struct PC_HG_SHADOW_SHAPE64 PC_HG_SHADOW_SHAPE64;
+typedef struct PC_HG_SHADOW_GROUP PC_HG_SHADOW_GROUP;
+
+struct PC_HG_SHADOW_SHAPE48 {
+    union {            // 0x00
+        NUVEC axes[4]; // 0x00
+
+        struct {          // 0x00
+            f32 center_x; // 0x00
+            u32 flags;    // 0x04
+            u8 rest[40];  // 0x08
+        } filter;
+    };
+}; // size 0x30
+
+struct PC_HG_SHADOW_SHAPE64 {
+    PC_HG_SHADOW_SHAPE48 position; // 0x00
+    u8 unknown_30[16];             // 0x30
+}; // size 0x40
+
+struct PC_HG_SHADOW_GROUP {
+    PC_HG_SHADOW_SHAPE48 *ellipses;  // 0x0
+    PC_HG_SHADOW_SHAPE64 *cylinders; // 0x4
+    void *third_shape;               // 0x8
+    u8 ellipse_count;                // 0xc
+    u8 cylinder_count;               // 0xd
+    u8 third_count;                  // 0xe
+    u8 joint_index;                  // 0xf
+}; // size 0x10
+
+#endif /* TYPES_OFF_36 */
 #undef SAGA_NU2API_NU3D_NU3D_INCLUDES_H_PART
 #define SAGA_NU2API_NU3D_NU3D_INCLUDES_H_PART 10
 #ifdef SAGA_SHIM

@@ -110,13 +110,6 @@ extern "C" {
         FRAME_MTL_ANIM_DESC_PC animation[4]; // 0x1f8
     } FRAME_MTL_ANIM_PC;                     // size 0x248
 
-    typedef struct FRAME_MTL_ANIM_SET_PC {
-        NUDISPLAY_LIST_PC *scene;           // 0x0
-        i32 material_count;                 // 0x4
-        i32 *material_indices;              // 0x8
-        struct FRAME_MTL_ANIM_SET_PC *next; // 0xc
-    } FRAME_MTL_ANIM_SET_PC;                // size 0x10
-
     typedef struct FRAME_MTL_SCENE_PC {
         u8 reserved00[0x158];                 // 0x000
         i32 shader_texture_animation_enabled; // 0x158
@@ -1052,15 +1045,6 @@ extern "C" {
     typedef struct screengrab_tile_params_pc_s SCREENGRAB_TILE_PARAMS_PC;
     PC_BUFFER_RESOURCE_PC *NuWaterVertexBufferPc = 0;
 
-    typedef struct nuprimvertex_pc_s {
-        f32 x;         // 0x00
-        f32 y;         // 0x04
-        f32 z;         // 0x08
-        u32 colour;    // 0x0c
-        f32 u;         // 0x10
-        f32 v;         // 0x14
-    } NUPRIMVERTEX_PC; // size 0x18
-
     typedef struct nuprim_packet_pc_s {
         u32 primitive_type;    // 0x00
         u8 unknown_0004[0x14]; // 0x04
@@ -1075,14 +1059,6 @@ extern "C" {
         void *target;        // 0x4
         u32 unknown_0008[2]; // 0x8
     } NUPRIM_COMMAND_PC;     // size 0x10
-
-    typedef struct nuprim_material_state_pc_s {
-        u32 unknown_0000[2];    // 0x00
-        NUMTL *material;        // 0x08
-        u32 unknown_000c;       // 0x0c
-        u32 unknown_0010;       // 0x10
-        i32 texture_id;         // 0x14
-    } NUPRIM_MATERIAL_STATE_PC; // size 0x18
 
     typedef struct nuprim_transform_packet_pc_s {
         u8 unknown_0000[0x40];    // 0x00
@@ -6996,36 +6972,6 @@ extern "C" {
 } // extern "C"
 
 /* nuhgobj's platform members: the POI lookup and the hierarchy shadow-group packets. */
-typedef struct PC_HG_SHADOW_SHAPE48 PC_HG_SHADOW_SHAPE48;
-typedef struct PC_HG_SHADOW_SHAPE64 PC_HG_SHADOW_SHAPE64;
-typedef struct PC_HG_SHADOW_GROUP PC_HG_SHADOW_GROUP;
-
-struct PC_HG_SHADOW_SHAPE48 {
-    union {            // 0x00
-        NUVEC axes[4]; // 0x00
-
-        struct {          // 0x00
-            f32 center_x; // 0x00
-            u32 flags;    // 0x04
-            u8 rest[40];  // 0x08
-        } filter;
-    };
-}; // size 0x30
-
-struct PC_HG_SHADOW_SHAPE64 {
-    PC_HG_SHADOW_SHAPE48 position; // 0x00
-    u8 unknown_30[16];             // 0x30
-}; // size 0x40
-
-struct PC_HG_SHADOW_GROUP {
-    PC_HG_SHADOW_SHAPE48 *ellipses;  // 0x0
-    PC_HG_SHADOW_SHAPE64 *cylinders; // 0x4
-    void *third_shape;               // 0x8
-    u8 ellipse_count;                // 0xc
-    u8 cylinder_count;               // 0xd
-    u8 third_count;                  // 0xe
-    u8 joint_index;                  // 0xf
-}; // size 0x10
 
 extern "C" {
     NUHGOBJ_POI_PC *NuHGobjGetPOI(NUHGOBJ_EVAL_PC *object, u8 index) {

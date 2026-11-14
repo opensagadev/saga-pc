@@ -222,6 +222,40 @@ extern "C" {
 #ifdef __cplusplus
 }
 #endif
+#ifndef TYPES_OFF_13
+
+typedef struct area_gizmotype_pc_s {
+    u8 unknown_0000[0x44];                // 0x00
+    char *(*get_gizmo_name)(void *gizmo); // 0x44
+    u8 unknown_0048[0x54];                // 0x48
+} AREA_GIZMOTYPE_PC;                      // size 0x9c
+
+typedef struct area_gizmotypes_pc_s {
+    i32 count;                // 0x0
+    i32 unknown_0004;         // 0x4
+    AREA_GIZMOTYPE_PC *types; // 0x8
+} AREA_GIZMOTYPES_PC;         // size 0xc
+
+typedef struct area_gizmoset_pc_s {
+    void *type;         // 0x00
+    i32 count;          // 0x04
+    i32 max_count;      // 0x08
+    void *gizmos;       // 0x0c
+    void *unknown_0010; // 0x10
+} AREA_GIZMOSET_PC;     // size 0x14
+
+typedef struct area_gizmo_pc_s {
+    void *object;     // 0x0
+    i16 unknown_0004; // 0x4
+    u8 type_id;       // 0x6
+    u8 unknown_0007;  // 0x7
+} AREA_GIZMO_PC;      // size 0x8
+
+typedef struct area_gizmosys_prefix_pc_s {
+    AREA_GIZMOSET_PC *sets; // 0x0
+} AREA_GIZMOSYS_PREFIX_PC;  // size 0x4
+
+#endif /* TYPES_OFF_13 */
 #undef SAGA_LEGOAPI_GIZMO_BASE_GIZMO_H_PART
 #define SAGA_LEGOAPI_GIZMO_BASE_GIZMO_H_PART 5
 #ifdef SAGA_SHIM

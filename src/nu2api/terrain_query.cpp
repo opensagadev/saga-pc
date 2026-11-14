@@ -41,14 +41,6 @@ enum {
     TERRAIN_PLATFORM_FLAG_COLLIDED = 2
 };
 
-struct TERRAIN_IMPACT_RECORD {
-    NUVEC position;
-    NUVEC normal;
-    u8 material[2];
-    u8 flags;
-    u8 normal_flags;
-};
-
 typedef TERRAIN_SPHERE_PC TERRAIN_SPHERE;
 typedef TERRAIN_AXIS_FREEDOM_SHAPE_PC TERRAIN_AXIS_FREEDOM_SHAPE;
 

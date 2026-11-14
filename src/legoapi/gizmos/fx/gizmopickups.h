@@ -255,6 +255,22 @@ extern "C" {
 #ifdef __cplusplus
 }
 #endif
+#ifndef TYPES_OFF_16
+
+typedef struct coin_reset_packet_pc_s {
+    u8 unknown_00[4];       // 0x0
+    f32 scale;              // 0x4
+    u8 unknown_08[2];       // 0x8
+    u8 active;              // 0xa
+    u8 unknown_0b;          // 0xb
+    f32 double_score_timer; // 0xc
+} COIN_RESET_PACKET_PC;     // size 0x10
+
+typedef struct lose_coins_packet_pc_s {
+    u32 coins;          // 0x0
+} LOSE_COINS_PACKET_PC; // size 0x4
+
+#endif /* TYPES_OFF_16 */
 #undef SAGA_LEGOAPI_GIZMOS_FX_GIZMOPICKUPS_H_PART
 #define SAGA_LEGOAPI_GIZMOS_FX_GIZMOPICKUPS_H_PART 4
 #ifdef SAGA_SHIM

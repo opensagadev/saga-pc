@@ -8,38 +8,6 @@ static API_EXTRA_ACTION_PC *APIExtraActionData = 0;
 #define PC_WIND_SIN(radians) NuTrigTable[((i32)((radians) * 10430.3779296875) >> 1) & 0x7fff]
 #define PC_WIND_COS(radians) NuTrigTable[((0x4000 - (i32)((radians) * -10430.3779296875)) >> 1) & 0x7fff]
 typedef struct PC_ANIMATION_RENDER_VIEW PC_ANIMATION_RENDER_VIEW;
-typedef struct PC_HG_SHADOW_PACKET PC_HG_SHADOW_PACKET;
-typedef struct PC_HG_SHADOW_STATE_VIEW PC_HG_SHADOW_STATE_VIEW;
-typedef struct PC_HG_SHADOW_SHAPE48 PC_HG_SHADOW_SHAPE48;
-typedef struct PC_HG_SHADOW_SHAPE64 PC_HG_SHADOW_SHAPE64;
-typedef struct PC_HG_SHADOW_GROUP PC_HG_SHADOW_GROUP;
-
-struct PC_HG_SHADOW_SHAPE48 {
-    union {            // 0x00
-        NUVEC axes[4]; // 0x00
-
-        struct {          // 0x00
-            f32 center_x; // 0x00
-            u32 flags;    // 0x04
-            u8 rest[40];  // 0x08
-        } filter;
-    };
-}; // size 0x30
-
-struct PC_HG_SHADOW_SHAPE64 {
-    PC_HG_SHADOW_SHAPE48 position; // 0x00
-    u8 unknown_30[16];             // 0x30
-}; // size 0x40
-
-struct PC_HG_SHADOW_GROUP {
-    PC_HG_SHADOW_SHAPE48 *ellipses;  // 0x0
-    PC_HG_SHADOW_SHAPE64 *cylinders; // 0x4
-    void *third_shape;               // 0x8
-    u8 ellipse_count;                // 0xc
-    u8 cylinder_count;               // 0xd
-    u8 third_count;                  // 0xe
-    u8 joint_index;                  // 0xf
-}; // size 0x10
 
 STATIC_ASSERT(sizeof(PC_HG_SHADOW_PACKET) == 0x68);
 STATIC_ASSERT(offsetof(PC_HG_SHADOW_PACKET, ellipse) == 0x40);
@@ -77,19 +45,6 @@ struct PC_ANIMATION_RENDER_VIEW {
 STATIC_ASSERT(offsetof(GAMEOBJECT, surface_effect_count) == 0x28e);
 STATIC_ASSERT(offsetof(GAMEOBJECT, surface_effect_id) == 0x290);
 STATIC_ASSERT(offsetof(APICHARACTERDATA, effects) == 0x28);
-
-typedef struct minianimpacket_pc_s {
-    f32 current_time;           // 0x00
-    f32 previous_time;          // 0x04
-    u8 unknown_08[0xc];         // 0x08
-    f32 blend_target_time;      // 0x14
-    u8 flags;                   // 0x18
-    u8 blending;                // 0x19
-    u8 unknown_1a[4];           // 0x1a
-    i16 current_animation_id;   // 0x1e
-    i16 previous_animation_id;  // 0x20
-    i16 requested_animation_id; // 0x22
-} MINIANIMPACKET_PC;            // size 0x24
 
 STATIC_ASSERT(offsetof(GAMEOBJECT, initial_position) == 0x98);
 STATIC_ASSERT(offsetof(GAMEOBJECT, collision_identity_mask) == 0x1e8);

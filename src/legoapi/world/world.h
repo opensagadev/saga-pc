@@ -295,11 +295,11 @@ typedef struct WORLDINFO_s {
     void *minicuts;
     void *minicut_parts;
     i32 minicut_count;
-    void *giz_timers;
+    struct GIZFLOW_TIMER_PC *giz_timers;
     i32 giz_timers_count;
     struct TORPEDO_MACHINE_SYS_PC *torpedo_machine_sys;
-    void *giz_randoms;
-    void *giz_special_sys;
+    struct GIZFLOW_RANDOM_SYSTEM_PC *giz_randoms;
+    struct GIZFLOW_SPECIAL_SYSTEM_PC *giz_special_sys;
     void *game_antinode_sys;
     EDGIZSHADOW_PC *shadow_editor;
     struct GIZBOMBGENSYS_s *giz_bombgen_sys;

@@ -2,31 +2,22 @@
 
 /* Network statistics overlays: NetSmallStats::Draw and NetStats::Draw. */
 
-typedef struct NET_PRIM_VERTEX_PC {
-    f32 x;            // 0x00
-    f32 y;            // 0x04
-    f32 z;            // 0x08
-    u32 colour;       // 0x0c
-    f32 u;            // 0x10
-    f32 v;            // 0x14
-} NET_PRIM_VERTEX_PC; // size 0x18
-
 static void NetPrimSetColour(i32 colour) {
     if (NuPrimNeedsOverbrightening != 0) {
-        ((NET_PRIM_VERTEX_PC *)NuPrimStreamBufferPointer->void_ptr)->colour =
+        ((NUPRIMVERTEX_PC *)NuPrimStreamBufferPointer->void_ptr)->colour =
             ((colour >> 16) & 0xff) + ((colour & 0xff) << 16) + (colour & 0xff000000u) + (colour & 0xff00u);
     } else {
-        ((NET_PRIM_VERTEX_PC *)NuPrimStreamBufferPointer->void_ptr)->colour =
+        ((NUPRIMVERTEX_PC *)NuPrimStreamBufferPointer->void_ptr)->colour =
             (((colour & 0xff) >> 1) << 16) + ((((colour >> 8) & 0xff) >> 1) << 8) + (((colour >> 16) & 0xff) >> 1) +
             (colour & 0xff000000);
     }
 }
 
 static void NetPrimPosition(f32 x, f32 y, f32 z) {
-    ((NET_PRIM_VERTEX_PC *)NuPrimStreamBufferPointer->void_ptr)->x = x;
-    ((NET_PRIM_VERTEX_PC *)NuPrimStreamBufferPointer->void_ptr)->y = y;
-    ((NET_PRIM_VERTEX_PC *)NuPrimStreamBufferPointer->void_ptr)->z = z;
-    NuPrimStreamBufferPointer->void_ptr = (NET_PRIM_VERTEX_PC *)NuPrimStreamBufferPointer->void_ptr + 1;
+    ((NUPRIMVERTEX_PC *)NuPrimStreamBufferPointer->void_ptr)->x = x;
+    ((NUPRIMVERTEX_PC *)NuPrimStreamBufferPointer->void_ptr)->y = y;
+    ((NUPRIMVERTEX_PC *)NuPrimStreamBufferPointer->void_ptr)->z = z;
+    NuPrimStreamBufferPointer->void_ptr = (NUPRIMVERTEX_PC *)NuPrimStreamBufferPointer->void_ptr + 1;
     ++NuPrimVertexCount;
 }
 

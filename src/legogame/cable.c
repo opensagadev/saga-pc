@@ -2,24 +2,6 @@
 #include <math.h>
 #include <string.h>
 
-struct CABLE_RECORD_PC {
-    GAMEOBJECT *source;      // 0x000
-    GAMEOBJECT *target;      // 0x004
-    NUVEC points[16];        // 0x008
-    NUVEC velocities[16];    // 0x0c8
-    f32 segment_lengths[15]; // 0x188
-    f32 max_length;          // 0x1c4
-    f32 total_length;        // 0x1c8
-    u8 unused_01cc[4];       // 0x1cc
-    f32 slack;               // 0x1d0
-    f32 pull_time;           // 0x1d4
-    u8 wrap_indices[15];     // 0x1d8
-    u8 point_count;          // 0x1e7
-    u8 wrap_count;           // 0x1e8
-    u8 unused_01e9;          // 0x1e9
-    u16 flags;               // 0x1ea
-}; // size 0x1ec
-
 // The cable code tests the character context flags as a 64-bit field.
 typedef struct cable_context_info_pc_s {
     const char *name;    // 0x0

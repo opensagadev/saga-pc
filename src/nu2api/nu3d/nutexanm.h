@@ -86,4 +86,36 @@ extern "C" {
 }
 #endif
 
+#ifndef TYPES_OFF_37
+struct TEXTURE_ANIM_PROGRAM_PC {
+    TEXTURE_ANIM_PROGRAM_PC *next;     // 0x000
+    TEXTURE_ANIM_PROGRAM_PC *previous; // 0x004
+    char name[32];                     // 0x008
+    i32 on_signal[32];                 // 0x028
+    i32 off_signal[32];                // 0x0a8
+    u32 on_mask;                       // 0x128
+    u32 off_mask;                      // 0x12c
+    i16 label_ids[32];                 // 0x130
+    i16 label_offsets[32];             // 0x170
+    i32 label_count;                   // 0x1b0
+    i16 instruction_count;             // 0x1b4
+    u16 flags;                         // 0x1b6
+    u16 mask;                          // 0x1b8
+    i16 instructions[1];               // 0x1ba
+}; // size 0x1bc
+
+struct TEXTURE_ANIMATION_PC {
+    TEXTURE_ANIMATION_PC *next;       // 0x00
+    TEXTURE_ANIMATION_PC *previous;   // 0x04
+    u16 *texture_ids;                 // 0x08
+    i16 texture_count;                // 0x0c
+    u8 flags;                         // 0x0e
+    u8 reserved_0f;                   // 0x0f
+    NUMTL *material;                  // 0x10
+    PC_TEXTURE_ANIM_ENV *environment; // 0x14
+    char *name;                       // 0x18
+    char *program_name;               // 0x1c
+}; // size 0x20
+
+#endif /* TYPES_OFF_37 */
 #endif

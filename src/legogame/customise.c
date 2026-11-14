@@ -8,69 +8,11 @@ typedef struct customiser_names_pc_s {
     char display_names[2][128];
 } CUSTOMISER_NAMES_PC;
 
-typedef struct custom_piece_config_pc_s {
-    char *name;
-    i16 character_id;
-    i16 icon_character_id;
-    i16 weapon_model;
-    i16 unknown_indices_0a[3];
-    i8 field_10;
-    i8 collection_type;
-    u16 availability_flags;
-    u32 model_flags;
-    u32 gameplay_flags;
-    u8 unknown_1c[12];
-} CUSTOM_PIECE_CONFIG_PC;
-
-typedef struct custom_category_config_pc_s {
-    char *name;
-    u8 uses_special;
-    i8 material_tag;
-    u8 material_indices[2];
-    char *scene_file;
-} CUSTOM_CATEGORY_CONFIG_PC;
-
-typedef struct custom_save_config_pc_s {
-    u16 pieces[9];
-    u8 unknown_12[0x26];
-    u16 secondary_pieces[9];
-    u8 unknown_4a[0x26];
-} CUSTOM_SAVE_CONFIG_PC;
-
-typedef struct customiser_config_pc_s {
-    CUSTOM_CATEGORY_CONFIG_PC *categories[9];
-    CUSTOM_PIECE_CONFIG_PC *piece_sets[9];
-    i32 piece_counts[9];
-    i16 character_ids[2];
-    u8 unknown_70[0x100];
-    i32 (*piece_available)(CUSTOMPIECE_LAYERS_PC *);
-    CUSTOM_SAVE_CONFIG_PC *save;
-    u8 unknown_178[0xd8];
-    i8 locator_indices[9];
-    u8 unknown_259[3];
-    i8 layer_indices[9];
-    u8 unknown_265[0x803];
-    u16 *animation_ids_to_load;
-    u8 unknown_a6c[0x1bc];
-    u16 default_pieces[2][10];
-    f32 locator_x_offsets[9];
-    f32 locator_y_offsets[9];
-} CUSTOMISER_CONFIG_PC;
-
 typedef struct customiser_game_setting_pc_s {
     char *name;
     u32 model_flags;
     u32 gameplay_flags;
 } CUSTOMISER_GAME_SETTING_PC;
-
-typedef struct custom_accessory_resource_pc_s {
-    NUGSCN *scene;
-    NUSPECIALHANDLE special;
-    i32 original_texture_id;
-    i32 texture_id;
-    i32 material_index;
-    CHARACTER_MODEL_LAYERS_PC *character_model;
-} CUSTOM_ACCESSORY_RESOURCE_PC;
 
 /* Source-private views for customise.c. Config/piece/category types already defined there. */
 typedef struct custom_piece_anim_pc_s {

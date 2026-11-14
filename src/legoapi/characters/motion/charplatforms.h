@@ -19,4 +19,18 @@ extern "C" {
 }
 #endif
 
+#ifndef TYPES_OFF_9
+typedef struct terrain_player_platform_record_pc_s {
+    u8 unknown_0[0xe];               // 0x00
+    i16 platform_id;                 // 0x0e
+    GAMEOBJECT *object;              // 0x10
+} TERRAIN_PLAYER_PLATFORM_RECORD_PC; // size 0x14
+
+typedef struct terrain_player_platform_sys_pc_s {
+    u8 unknown_0[4];                              // 0x00
+    i32 count;                                    // 0x04
+    TERRAIN_PLAYER_PLATFORM_RECORD_PC entries[1]; // 0x08
+} TERRAIN_PLAYER_PLATFORM_SYS_PC;                 // size 0x1c
+
+#endif /* TYPES_OFF_9 */
 #endif

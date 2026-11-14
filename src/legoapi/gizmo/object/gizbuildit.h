@@ -46,4 +46,25 @@ STATIC_ASSERT(offsetof(GIZBUILDIT_PC, progress) == 0x71);
 STATIC_ASSERT(offsetof(GIZBUILDIT_PC, state_flags) == 0x72);
 STATIC_ASSERT(offsetof(GIZBUILDIT_PC, availability_flags) == 0x7a);
 
+#ifndef TYPES_OFF_14
+/* These allocation records use the native PC strides, rather than the larger imported views. */
+typedef struct registry_buildit_record_pc_s {
+    u8 unknown_00[0x10];      // 0x00
+    GAMEANIMSET *anim_set;    // 0x10
+    u8 unknown_14[0x64];      // 0x14
+    i16 blowup_type;          // 0x78
+    u16 flags;                // 0x7a
+} REGISTRY_BUILDIT_RECORD_PC; // size 0x7c
+
+typedef struct registry_buildit_system_pc_s {
+    REGISTRY_BUILDIT_RECORD_PC *buildits; // 0x00
+    u16 count;                            // 0x04
+    u16 capacity;                         // 0x06
+    u16 max_animation_objects;            // 0x08
+    u16 padding;                          // 0x0a
+    GAMEANIMOBJPOOL *anim_pool;           // 0x0c
+    GAMEANIMOBJ **anim_objects;           // 0x10
+} REGISTRY_BUILDIT_SYSTEM_PC;             // size 0x14
+
+#endif /* TYPES_OFF_14 */
 #endif

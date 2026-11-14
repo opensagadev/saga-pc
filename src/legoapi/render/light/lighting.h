@@ -58,4 +58,12 @@ extern "C" {
 }
 #endif
 
+#ifndef TYPES_OFF_29
+typedef struct OBJECT_LIGHT_STATE_GAME_PC {
+    NUVEC ambient;            // 0x00
+    NUVEC intensity[3];       // 0x0c
+    NUVEC direction[3];       // 0x30
+} OBJECT_LIGHT_STATE_GAME_PC; // size 0x54
+
+#endif /* TYPES_OFF_29 */
 #endif

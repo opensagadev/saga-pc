@@ -8,18 +8,6 @@ STATIC_ASSERT(offsetof(WORLDINFO, level_objects) == 0x2ac0);
 STATIC_ASSERT(offsetof(PART_PC, move_fn) == 0x1b0);
 STATIC_ASSERT(offsetof(PART_PC, draw_fn) == 0x1d0);
 
-typedef struct ai_control_slot_pc_s {
-    NULISTLNK links;
-    u8 unknown_08[0xa0];
-} AI_CONTROL_SLOT_PC;
-
-typedef struct ai_control_system_pc_s {
-    i32 capacity;
-    AI_CONTROL_SLOT_PC *controllers;
-    NULISTHDR available;
-    NULISTHDR active;
-} AI_CONTROL_SYSTEM_PC;
-
 typedef struct ai_controller_scene_view_pc_s {
     u8 unknown_0000[0x1394];
     NUGSCN *scene;
@@ -93,49 +81,6 @@ extern i32 complexsockposition_forcesock;
     (target)->ai->antinode_timer = (source)->ai->antinode_timer;                                                       \
     (target)->ai->flags ^= ((source)->ai->flags ^ (target)->ai->flags) & 0x8000
 
-typedef struct OPPONENT_PACKET_PC {
-    u8 unknown000[0xd4];
-    APIOBJECT_PC *nearest_opponent_object;
-    f32 nearest_opponent_metric;
-    APIOBJECT_PC *pending_nearest_opponent;
-    f32 pending_nearest_metric;
-    APIOBJECT_PC *opponent_object;
-    f32 opponent_metric;
-    APIOBJECT_PC *pending_opponent;
-    f32 pending_opponent_metric;
-    u8 unknown0f4[0xf4];
-    u32 flags;
-} OPPONENT_PACKET_PC;
-
-typedef struct OPPONENT_OBJECT_PC {
-    u8 unknown000[0x230];
-    f32 view_distance;
-    u8 unknown234[0xc];
-    f32 visibility_range_extension;
-    u8 unknown244[0x64];
-    u64 awareness;
-} OPPONENT_OBJECT_PC;
-
-typedef struct OPPONENT_GAME_PC {
-    u8 unknown000[0xeb0];
-    u64 seen;
-    u64 exclusion;
-    APIOBJECT_PC *alert_target;
-    f32 alert_timer;
-} OPPONENT_GAME_PC;
-
-typedef struct OPPONENT_SYS_PC {
-    u8 unknown000[0x1385];
-    u8 goody_cursor;
-    u16 assignment_flags;
-} OPPONENT_SYS_PC;
-
-typedef struct OPPONENT_LOS_PC {
-    u32 object_size;
-    GAMEOBJECT *objects;
-    u64 line_of_sight[64];
-} OPPONENT_LOS_PC;
-
 #define OPPONENT_PACKET(p) ((OPPONENT_PACKET_PC *)(p))
 #define OPPONENT_OBJECT(p) ((OPPONENT_OBJECT_PC *)(p))
 #define OPPONENT_GAME(p) ((OPPONENT_GAME_PC *)(p))
@@ -143,12 +88,6 @@ typedef struct OPPONENT_LOS_PC {
 #define OPPONENT_LOS(p) ((OPPONENT_LOS_PC *)(p))
 void __movsd(unsigned long *, unsigned long const *, unsigned int);
 void LevelScriptReStoreProgress(WORLDINFO *, LEVEL_SCRIPT_PROCESS_PC *);
-
-typedef struct ai_frame_world_pc_s {
-    u8 unknown_0000[0x2aec];
-    i32 processor_count;
-    LEVEL_SCRIPT_PROCESS_PC processors[32];
-} AI_FRAME_WORLD_PC;
 
 typedef struct {
     u8 opaque[0x2aec];
@@ -170,11 +109,6 @@ typedef struct ai_gizmo_name_process_pc_s {
 } AI_GIZMO_NAME_PROCESS_PC;
 
 extern char AIProcessingOutputTextPc[11];
-
-typedef struct AIONCEATTACKER_PC {
-    GAMEOBJECT *object;
-    f32 distance;
-} AIONCEATTACKER_PC;
 
 typedef struct bulk_ai_full_object_pc_s {
     APIOBJECT_PC object;                       // 0x000

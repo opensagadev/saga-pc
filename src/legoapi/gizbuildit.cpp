@@ -166,25 +166,6 @@ typedef struct {
     NUVEC position;
 } FLOW_BUILDIT_POSITION_PC;
 
-/* These allocation records use the PC strides, rather than the larger views. */
-typedef struct registry_buildit_record_pc_s {
-    u8 unknown_00[0x10];
-    GAMEANIMSET *anim_set;
-    u8 unknown_14[0x64];
-    i16 blowup_type;
-    u16 flags;
-} REGISTRY_BUILDIT_RECORD_PC;
-
-typedef struct registry_buildit_system_pc_s {
-    REGISTRY_BUILDIT_RECORD_PC *buildits;
-    u16 count;
-    u16 capacity;
-    u16 max_animation_objects;
-    u16 padding;
-    GAMEANIMOBJPOOL *anim_pool;
-    GAMEANIMOBJ **anim_objects;
-} REGISTRY_BUILDIT_SYSTEM_PC;
-
 typedef struct {
     u32 built[2];
     u32 enabled[2];

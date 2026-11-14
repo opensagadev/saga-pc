@@ -5,19 +5,6 @@ extern i32 (*FindSlamOrigin_UseCPosFn)(GAMEOBJECT *);
 extern void (*BigJump_EndOfLandFn)(GAMEOBJECT *);
 extern i32 (*BigJump_LandActionFn)(GAMEOBJECT *);
 
-struct minianimpacket_pc_s {
-    f32 current_time;           // 0x00
-    f32 previous_time;          // 0x04
-    u8 unknown_08[0xc];         // 0x08
-    f32 blend_target_time;      // 0x14
-    u8 flags;                   // 0x18
-    u8 blending;                // 0x19
-    u8 unknown_1a[4];           // 0x1a
-    i16 current_animation_id;   // 0x1e
-    i16 previous_animation_id;  // 0x20
-    i16 requested_animation_id; // 0x22
-}; // size 0x24
-
 typedef struct beast_fall_land_view_pc_s {
     u8 unknown_0[0x7d0];              // 0x000
     MINIANIMPACKET_PC mini_animation; // 0x7d0
@@ -27,11 +14,6 @@ typedef struct beast_fall_land_view_pc_s {
 
 extern i32 (*IsWearingBackPackFn)(GAMEOBJECT *);
 extern i32 (*UsingExtraActionsFn)(GAMEOBJECT *);
-
-typedef struct BALLOON_HEIGHT_VIEW_PC {
-    u8 unknown[0x778];    // 0x000
-    f32 height;           // 0x778
-} BALLOON_HEIGHT_VIEW_PC; // size 0x77c
 
 typedef struct jump_auxiliary_fields_pc_s {
     u8 unknown_000[0x7b1];

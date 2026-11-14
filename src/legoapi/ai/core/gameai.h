@@ -162,6 +162,81 @@ extern "C" {
 #ifdef __cplusplus
 }
 #endif
+#ifndef TYPES_OFF_2
+
+typedef struct OPPONENT_PACKET_PC {
+    u8 unknown000[0xd4];                    // 0x000
+    APIOBJECT_PC *nearest_opponent_object;  // 0x0d4
+    f32 nearest_opponent_metric;            // 0x0d8
+    APIOBJECT_PC *pending_nearest_opponent; // 0x0dc
+    f32 pending_nearest_metric;             // 0x0e0
+    APIOBJECT_PC *opponent_object;          // 0x0e4
+    f32 opponent_metric;                    // 0x0e8
+    APIOBJECT_PC *pending_opponent;         // 0x0ec
+    f32 pending_opponent_metric;            // 0x0f0
+    u8 unknown0f4[0xf4];                    // 0x0f4
+    u32 flags;                              // 0x1e8
+} OPPONENT_PACKET_PC;                       // size 0x1ec
+
+typedef struct OPPONENT_OBJECT_PC {
+    u8 unknown000[0x230];           // 0x000
+    f32 view_distance;              // 0x230
+    u8 unknown234[0xc];             // 0x234
+    f32 visibility_range_extension; // 0x240
+    u8 unknown244[0x64];            // 0x244
+    u64 awareness;                  // 0x2a8
+} OPPONENT_OBJECT_PC;               // size 0x2b0
+
+typedef struct OPPONENT_GAME_PC {
+    u8 unknown000[0xeb0];       // 0x000
+    u64 seen;                   // 0xeb0
+    u64 exclusion;              // 0xeb8
+    APIOBJECT_PC *alert_target; // 0xec0
+    f32 alert_timer;            // 0xec4
+} OPPONENT_GAME_PC;             // size 0xec8
+
+typedef struct OPPONENT_SYS_PC {
+    u8 unknown000[0x1385]; // 0x0000
+    u8 goody_cursor;       // 0x1385
+    u16 assignment_flags;  // 0x1386
+} OPPONENT_SYS_PC;         // size 0x1388
+
+typedef struct OPPONENT_LOS_PC {
+    u32 object_size;       // 0x000
+    GAMEOBJECT *objects;   // 0x004
+    u64 line_of_sight[64]; // 0x008
+} OPPONENT_LOS_PC;         // size 0x208
+
+typedef struct ai_frame_world_pc_s {
+    u8 unknown_0000[0x2aec];                // 0x0000
+    i32 processor_count;                    // 0x2aec
+    LEVEL_SCRIPT_PROCESS_PC processors[32]; // 0x2af0
+} AI_FRAME_WORLD_PC;                        // size 0x4670
+
+typedef struct ai_control_slot_pc_s {
+    NULISTLNK links;     // 0x00
+    u8 unknown_08[0xa0]; // 0x08
+} AI_CONTROL_SLOT_PC;    // size 0xa8
+
+typedef struct ai_control_system_pc_s {
+    i32 capacity;                    // 0x00
+    AI_CONTROL_SLOT_PC *controllers; // 0x04
+    NULISTHDR available;             // 0x08
+    NULISTHDR active;                // 0x10
+} AI_CONTROL_SYSTEM_PC;              // size 0x18
+
+typedef struct EQUIVALENTOBJECTGROUP_PC {
+    i16 object_count;           // 0x0
+    i16 byte_size;              // 0x2
+    NUSPECIALHANDLE objects[1]; // 0x4
+} EQUIVALENTOBJECTGROUP_PC;     // size 0x10
+
+typedef struct AIONCEATTACKER_PC {
+    GAMEOBJECT *object; // 0x0
+    f32 distance;       // 0x4
+} AIONCEATTACKER_PC;    // size 0x8
+
+#endif /* TYPES_OFF_2 */
 #undef SAGA_LEGOAPI_AI_CORE_GAMEAI_H_PART
 #define SAGA_LEGOAPI_AI_CORE_GAMEAI_H_PART 5
 #ifdef SAGA_SHIM

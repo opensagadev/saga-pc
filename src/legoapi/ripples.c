@@ -153,16 +153,6 @@ typedef struct world_ripple_view_pc_s {
     };
 } WORLD_RIPPLE_VIEW_PC; // size 0x4704
 
-typedef struct ripple_contact_timer_view_pc_s {
-    u8 unknown_0000[0xdc0];     // 0x000
-    f32 timer;                  // 0xdc0
-} RIPPLE_CONTACT_TIMER_VIEW_PC; // size 0xdc4
-
-typedef struct ripple_material_reader_pc_s {
-    u8 unknown_0000[0x70];   // 0x00
-    f32 opacity;             // 0x70
-} RIPPLE_MATERIAL_READER_PC; // size 0x74
-
 static WORLDINFO *RippleEffectsWorldInfoPc = 0;
 static RIPPLE_EFFECT_PC *RippleEffectsCurrentPc = 0;
 static const char *RippleEffectNamesPc[2] = {"water", "forcefield"};

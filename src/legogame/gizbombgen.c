@@ -45,35 +45,6 @@ typedef struct bombgen_activation_flags_pc_s {
 
 extern const char CharacterFixupNamePc00752dfc[9];
 
-typedef struct bomb_generator_runtime_pc_s {
-    char name[16];
-    NUVEC position;
-    GAMEANIMSET *anim_set;
-    i32 interval;
-    GAMEOBJECT *generated_bomb;
-    u16 unknown_28;
-
-    union {
-        u16 flags;
-
-        struct {
-            u16 active : 1;
-            u16 visible : 1;
-            u16 unknown_flags : 14;
-        };
-    };
-} BOMB_GENERATOR_RUNTIME_PC;
-
-typedef struct bomb_generator_system_runtime_pc_s {
-    BOMB_GENERATOR_RUNTIME_PC *items;
-    u16 count;
-    u16 capacity;
-    void *pool;
-    i16 flags;
-    u16 unknown_0e;
-    void *progress;
-} BOMB_GENERATOR_SYSTEM_RUNTIME_PC;
-
 typedef struct bomb_generator_progress_pc_s {
     u32 active[3];
     u32 visible[3];

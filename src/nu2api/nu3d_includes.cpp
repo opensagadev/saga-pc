@@ -10283,11 +10283,6 @@ typedef struct FRAME_MTL_ANIM_SET_PC {
     struct FRAME_MTL_ANIM_SET_PC *next; // 0xc
 } FRAME_MTL_ANIM_SET_PC;                // size 0x10
 
-typedef struct FRAME_MTL_SCENE_PC {
-    u8 reserved00[0x158];                 // 0x000
-    i32 shader_texture_animation_enabled; // 0x158
-} FRAME_MTL_SCENE_PC;                     // size 0x15c
-
 static f32 FrameMaterialAnimationTimePc = 0;
 
 void NuDisplayListAnimateMtls(f32 frame_time) {
@@ -16751,41 +16746,6 @@ extern "C" {
                           NUHGOBJ_JOINT_OVERRIDE_PC *overrides, NUMTX *matrices) {
         NuHGobjEvalAnim2Root(object, animation, time, override_count, overrides, matrices, NULL, NULL);
     }
-
-    typedef struct PC_HG_SHADOW_PACKET PC_HG_SHADOW_PACKET;
-    typedef struct PC_HG_SHADOW_STATE_VIEW PC_HG_SHADOW_STATE_VIEW;
-    typedef struct PC_HG_SHADOW_SHAPE48 PC_HG_SHADOW_SHAPE48;
-    typedef struct PC_HG_SHADOW_SHAPE64 PC_HG_SHADOW_SHAPE64;
-    typedef struct PC_HG_SHADOW_GROUP PC_HG_SHADOW_GROUP;
-    typedef struct PC_HG_SHADOW_PACKET PC_HG_SHADOW_PACKET;
-    typedef struct PC_HG_SHADOW_STATE_VIEW PC_HG_SHADOW_STATE_VIEW;
-
-    struct PC_HG_SHADOW_SHAPE48 {
-        union {            // 0x00
-            NUVEC axes[4]; // 0x00
-
-            struct {          // 0x00
-                f32 center_x; // 0x00
-                u32 flags;    // 0x04
-                u8 rest[40];  // 0x08
-            } filter;
-        };
-    }; // size 0x30
-
-    struct PC_HG_SHADOW_SHAPE64 {
-        PC_HG_SHADOW_SHAPE48 position; // 0x00
-        u8 unknown_30[16];             // 0x30
-    }; // size 0x40
-
-    struct PC_HG_SHADOW_GROUP {
-        PC_HG_SHADOW_SHAPE48 *ellipses;  // 0x0
-        PC_HG_SHADOW_SHAPE64 *cylinders; // 0x4
-        void *third_shape;               // 0x8
-        u8 ellipse_count;                // 0xc
-        u8 cylinder_count;               // 0xd
-        u8 third_count;                  // 0xe
-        u8 joint_index;                  // 0xf
-    }; // size 0x10
 
     STATIC_ASSERT(sizeof(PC_HG_SHADOW_PACKET) == 0x68);
     STATIC_ASSERT(offsetof(PC_HG_SHADOW_PACKET, ellipse) == 0x40);

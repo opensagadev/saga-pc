@@ -65,4 +65,38 @@ extern "C" {
 }
 #endif
 
+#ifndef TYPES_OFF_24
+typedef struct CAMERA_CONTEXT_PATH_PC {
+    u8 unknown_00[0x40];      // 0x00
+    struct nugspline_s *path; // 0x40
+    u8 unknown_44[8];         // 0x44
+    u8 flags;                 // 0x4c
+} CAMERA_CONTEXT_PATH_PC;     // size 0x50
+
+typedef struct CAMERA_CONTEXT_FOCUS_PC {
+    u8 unknown_00[0x28];   // 0x00
+    NUVEC focus;           // 0x28
+} CAMERA_CONTEXT_FOCUS_PC; // size 0x34
+
+typedef struct CAMERA_CONTEXT_BUILDIT_PC {
+    u8 unknown_00[0x34];     // 0x00
+    NUVEC position;          // 0x34
+} CAMERA_CONTEXT_BUILDIT_PC; // size 0x40
+
+typedef struct CAMERA_GIZFORCE_TARGET_PC {
+    u8 unknown_00[0x1c];     // 0x00
+    NUVEC position;          // 0x1c
+} CAMERA_GIZFORCE_TARGET_PC; // size 0x28
+
+typedef struct CAMERA_CABLE_PC {
+    GAMEOBJECT *source; // 0x0
+    GAMEOBJECT *target; // 0x4
+} CAMERA_CABLE_PC;      // size 0x8
+
+typedef struct CAMERA_GRABBER_PC {
+    u8 unknown_000[0x48c]; // 0x000
+    NUVEC grab_position;   // 0x48c
+} CAMERA_GRABBER_PC;       // size 0x498
+
+#endif /* TYPES_OFF_24 */
 #endif

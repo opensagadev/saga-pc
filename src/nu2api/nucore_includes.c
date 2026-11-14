@@ -131,31 +131,6 @@ enum {
 
 static i32 NuRDPIExpression(NURDPICTX_PC *context);
 
-/* PC manager prefix and block header touched by the allocator. */
-typedef struct nualloc_manager_block_pc_s {
-    union {             // 0x0
-        u32 size_flags; // 0x0
-
-        struct {           // 0x0
-            u32 size : 31; // 0x0:0
-            u32 used : 1;  // 0x0:31
-        };
-    };
-    struct nualloc_manager_block_pc_s *next;     // 0x4
-    struct nualloc_manager_block_pc_s *previous; // 0x8
-} NUALLOC_MANAGER_BLOCK_PC;                      // size 0xc
-
-typedef struct nualloc_manager_trailer_pc_s {
-    NUALLOC_MANAGER_BLOCK_PC *previous_block; // 0x0
-} NUALLOC_MANAGER_TRAILER_PC;                 // size 0x4
-
-typedef struct nualloc_manager_prefix_pc_s {
-    void *base;              // 0x0
-    u32 size;                // 0x4
-    u32 block_count;         // 0x8
-    u32 used_bytes;          // 0xc
-} NUALLOC_MANAGER_PREFIX_PC; // size 0x10
-
 #define NUGENERICPAD FRAME_SCANNED_PAD_PC
 #define ANALOG_CENTER 0x80
 #define NUPAD_PLAY 2
@@ -230,19 +205,6 @@ static u32 subbitbuf = 0;
 static u32 bitcount = 0;
 
 extern NUMTL *NuTimeBar_FrameOutMtl;
-
-typedef struct TimeBarSet {
-    i32 uses_buffer;         // 0x00
-    i32 slot_count;          // 0x04
-    i32 *accumulators[2];    // 0x08
-    NuTime *start_times;     // 0x10
-    i32 *field_14;           // 0x14
-    i32 *field_18;           // 0x18
-    i32 *colours;            // 0x1c
-    i32 *toggle_flags;       // 0x20
-    const char **slot_names; // 0x24
-    i32 field_28;            // 0x28
-} TimeBarSet;                // size 0x2c
 
 /* Original source: nu2api/nucore/nuapi.cpp; PC initializes only the fields
  * below after clearing the real 0x90-byte API record. */

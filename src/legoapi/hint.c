@@ -18,29 +18,7 @@ typedef struct HINT_COMPLETION_PC {
 
 STATIC_ASSERT(sizeof(HINT_COMPLETION_PC) == sizeof(CUSTOMISER_COMPLETION_READER_PC));
 
-typedef struct HINT_WORLD_TELEPORT_PC {
-    u8 reserved00[0x4684]; // 0x0000
-    i32 teleport_count;    // 0x4684
-} HINT_WORLD_TELEPORT_PC;  // size 0x4688
-
-/* Hint updater records keep their packed field offsets. */
-typedef struct HINT_PANEL_PC {
-    u8 reserved00[0x61]; // 0x00
-    u8 model_variant;    // 0x61
-    u8 flags;            // 0x62
-    u8 reserved63[0x29]; // 0x63
-    f32 target_scale;    // 0x8c
-} HINT_PANEL_PC;         // size 0x90
-
 struct panel_movement_pc_s;
-
-typedef struct HINT_ZIPUP_PC {
-    u8 name[16];          // 0x00
-    NUVEC lower_position; // 0x10
-    u8 reserved1c[0x4c];  // 0x1c
-    u8 flags;             // 0x68
-    u8 reserved69[0x13];  // 0x69
-} HINT_ZIPUP_PC;          // size 0x7c
 
 STATIC_ASSERT(offsetof(GAMEOBJECT, unknown_0e28) + 4 == 0xe2c);
 STATIC_ASSERT(offsetof(GAMESAVE, losttemple_trailer_watched) == 0x7c1d);

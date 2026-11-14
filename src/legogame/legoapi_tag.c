@@ -16,24 +16,8 @@ STATIC_ASSERT(sizeof(Player) == 32);
 
 /* A copy of the 33-DWORD script cohort (script processor plus takeover link), without extending the
    packet. Held as words so the copy is one block move and the local is not treated as a /GS buffer. */
-typedef union TAGSCRIPTSTATE_PC {
-    u32 words[0x33];
-
-    struct {
-        u32 unknown000[0x2c];
-        u8 creature_set;
-    } fields;
-} TAGSCRIPTSTATE_PC;
 
 #define TAG_SCRIPT_STATE(object) (*(TAGSCRIPTSTATE_PC *)&(object)->ai_packet.script_processor)
-
-/* Bitfield view of flags_1fc: bit 7 marks a player-controlled object, bit 8 an AI-driven one. */
-typedef struct TAGFLAGS1FC_PC {
-    u32 bits_0_6 : 7;
-    u32 player : 1;
-    u32 ai : 1;
-    u32 bits_9_31 : 23;
-} TAGFLAGS1FC_PC;
 
 #define TAG_FLAGS(object) ((TAGFLAGS1FC_PC *)&(object)->flags_1fc_word)
 /* Defined in render.c; an empty body in this unit would let the call be dropped. */

@@ -22,15 +22,6 @@ STATIC_ASSERT(offsetof(GAMEOBJECT, flags_e20) == 0xe20);
 STATIC_ASSERT(offsetof(GAMEOBJECT, flags_e24) == 0xe24);
 STATIC_ASSERT(sizeof(GAMEOBJECT) == 0x10d8);
 
-typedef struct coin_reset_packet_pc_s {
-    u8 unknown_00[4];
-    f32 scale;
-    u8 unknown_08[2];
-    u8 active;
-    u8 unknown_0b;
-    f32 double_score_timer;
-} COIN_RESET_PACKET_PC;
-
 extern char *GizmoPickup_OutputName;
 
 typedef struct {
@@ -41,10 +32,6 @@ typedef struct {
 } PICKUP_PROGRESS_PC;
 
 void GizmoPickups_PostLoad(void *, void *);
-
-typedef struct lose_coins_packet_pc_s {
-    u32 coins;          // 0x0
-} LOSE_COINS_PACKET_PC; // size 0x4
 
 STATIC_ASSERT(offsetof(GAMEOBJECT, coin_packet) == 0x7fc);
 STATIC_ASSERT(offsetof(CHARACTERDATA_PC, game_character) == 0x24);

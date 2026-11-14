@@ -13,30 +13,6 @@ typedef struct startup_object_light_pc_s {
 STATIC_ASSERT(sizeof(STARTUP_OBJECT_LIGHT_PC) == sizeof(GAMEOBJECT));
 STATIC_ASSERT(offsetof(NULNKHDR, id) == 0xc);
 
-typedef struct OBJECT_LIGHT_STATE_GAME_PC {
-    NUVEC ambient;            // 0x00
-    NUVEC intensity[3];       // 0x0c
-    NUVEC direction[3];       // 0x30
-} OBJECT_LIGHT_STATE_GAME_PC; // size 0x54
-
-typedef struct GAME_LIGHT_VIEW_PC {
-    u8 unknown000[0x285];                      // 0x000
-    i8 floor_surface;                          // 0x285
-    u8 unknown286[0x4d8 - 0x286];              // 0x286
-    RTL_DATA_PC light_data;                    // 0x4d8
-    OBJECT_LIGHT_STATE_GAME_PC lighting_state; // 0x61c
-} GAME_LIGHT_VIEW_PC;                          // size 0x670
-
-typedef struct BURN_OUT_PC {
-    i32 active;     // 0x00
-    NUVEC position; // 0x04
-    f32 field_10;   // 0x10
-    f32 field_14;   // 0x14
-    f32 field_18;   // 0x18
-    f32 field_1c;   // 0x1c
-    f32 field_20;   // 0x20
-} BURN_OUT_PC;      // size 0x24
-
 typedef struct BURN_SET_PC {
     BURN_PARAMETERS_PC parameters;      // 0x000
     BURN_PARAMETERS_PC parameters_copy; // 0x054
@@ -101,16 +77,6 @@ STATIC_ASSERT(sizeof(((BURN_PARAMETERS_PC *)0)->field_4c) == 4);
 STATIC_ASSERT(offsetof(BURN_PARAMETERS_PC, field_50) == 0x50);
 STATIC_ASSERT(sizeof(((BURN_PARAMETERS_PC *)0)->field_50) == 4);
 STATIC_ASSERT(sizeof(BURN_PARAMETERS_PC) == 0x54);
-
-typedef struct LIGHTING_LOAD_WORLD_PC {
-    u8 unknown_000[0x104];          // 0x0000
-    VARIPTR buffer;                 // 0x0104
-    VARIPTR end_buffer;             // 0x0108
-    u8 unknown_10c[0x2aac - 0x10c]; // 0x010c
-    BURN_SET_PC *burnset;           // 0x2aac
-    u8 unknown_2ab0[4];             // 0x2ab0
-    RTL_SET_PC *rtl_set;            // 0x2ab4
-} LIGHTING_LOAD_WORLD_PC;           // size 0x2ab8
 
 STATIC_ASSERT(offsetof(PC_GLOBAL_LIGHTING_STATE, specular_direction) == 0x54);
 STATIC_ASSERT(offsetof(PC_GLOBAL_LIGHTING_STATE, specular_direction_missing) == 0x60);

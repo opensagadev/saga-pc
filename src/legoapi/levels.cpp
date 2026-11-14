@@ -11,16 +11,6 @@ extern "C" {
     void LevelsConfigDiagnosticPc(char *message);
 }
 
-typedef struct level_script_progress_pc_s {
-    char name[16];          // 0x00
-    f32 params[4];          // 0x10
-} LEVEL_SCRIPT_PROGRESS_PC; // size 0x20
-
-typedef struct ai_script_progress_view_pc_s {
-    u8 unknown_0000[0x2824];              // 0x0000
-    LEVEL_SCRIPT_PROGRESS_PC scripts[32]; // 0x2824
-} AI_SCRIPT_PROGRESS_VIEW_PC;             // size 0x2c24
-
 extern "C" {
     void LevelObjectsArenaDiagnosticPc(i32 size);
 }

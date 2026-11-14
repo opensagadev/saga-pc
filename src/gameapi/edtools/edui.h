@@ -619,6 +619,21 @@ extern "C" {
 #ifdef __cplusplus
 }
 #endif
+#ifndef TYPES_OFF_0
+
+typedef struct edui_gradient_stage_pc_s {
+    f32 time;             // 0x00
+    f32 hue;              // 0x04
+    f32 saturation;       // 0x08
+    f32 value;            // 0x0c
+    f32 red;              // 0x10
+    f32 green;            // 0x14
+    f32 blue;             // 0x18
+    u32 colour;           // 0x1c
+    u32 metadata;         // 0x20
+} EDUI_GRADIENT_STAGE_PC; // size 0x24
+
+#endif /* TYPES_OFF_0 */
 #undef SAGA_GAMEAPI_EDTOOLS_EDUI_H_PART
 #define SAGA_GAMEAPI_EDTOOLS_EDUI_H_PART 4
 #ifdef SAGA_SHIM

@@ -40,4 +40,10 @@ extern "C" {
 }
 #endif
 
+#ifndef TYPES_OFF_5
+typedef struct footstep_audio_callbacks_pc_s {
+    i32 (*override_footstep)(GAMEOBJECT *, i32); // 0x0
+} FOOTSTEP_AUDIO_CALLBACKS_PC;                   // size 0x4
+
+#endif /* TYPES_OFF_5 */
 #endif

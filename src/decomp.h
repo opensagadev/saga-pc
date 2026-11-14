@@ -1,3 +1,4 @@
+#define TYPES_OFF_12
 #ifndef SAGA_DECOMP_H_PART
 #define SAGA_DECOMP_H_PART 1
 #endif

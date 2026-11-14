@@ -98,4 +98,35 @@ extern "C" {
 #endif
 STATIC_ASSERT(sizeof(troopercannons) == 0xc0);
 
+#ifndef TYPES_OFF_33
+/* Asteroid field. */
+typedef struct ASTEROID_PC {
+    NUSPECIALHANDLE special; // 0x00
+    GIZMOBLOWUP_PC *blowup;  // 0x0c
+    i16 rotation_speed_x;    // 0x10
+    i16 rotation_speed_y;    // 0x12
+    i16 rotation_speed_z;    // 0x14
+    u8 activated;            // 0x16
+} ASTEROID_PC;               // size 0x18
+
+/* Rotating rock at the end of AsteroidChase C. */
+typedef struct FINAL_ASTEROID_PC {
+    NUSPECIALHANDLE special;    // 0x00
+    GIZMOBLOWUP_PC *blowups[8]; // 0x0c
+    i16 blowup_count;           // 0x2c
+    i16 rotation_speed_x;       // 0x2e
+    i16 rotation_speed_y;       // 0x30
+    i16 rotation_speed_z;       // 0x32
+    i16 rotation_x;             // 0x34
+    i16 rotation_y;             // 0x36
+    i16 rotation_z;             // 0x38
+} FINAL_ASTEROID_PC;            // size 0x3c
+
+typedef struct ASTEROIDC_NETPACKET_PC {
+    u16 rotation_x;
+    u16 rotation_y;
+    u16 rotation_z;
+} ASTEROIDC_NETPACKET_PC;
+
+#endif /* TYPES_OFF_33 */
 #endif

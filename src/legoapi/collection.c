@@ -23,15 +23,6 @@ i32 InCollectList_Index(i32 id, COLLECTID_PC *list, i32 count) {
     return -1;
 }
 
-typedef struct coin_reset_packet_pc_s {
-    u8 unknown_00[4];       // 0x0
-    f32 scale;              // 0x4
-    u8 unknown_08[2];       // 0x8
-    u8 active;              // 0xa
-    u8 unknown_0b;          // 0xb
-    f32 double_score_timer; // 0xc
-} COIN_RESET_PACKET_PC;     // size 0x10
-
 i32 Collection_Got(i32 id) {
     i32 area;
     if (InCollectList_Index(id, NULL, 0) == -1) {

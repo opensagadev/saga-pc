@@ -23,4 +23,18 @@ extern "C" {
 }
 #endif
 
+#ifndef TYPES_OFF_3
+typedef struct GAME_ANTI_NODE_DATA_PC {
+    NUVEC position;       // 0x00
+    f32 radius;           // 0x0c
+    f32 min_y;            // 0x10
+    f32 max_y;            // 0x14
+    f32 extent_x;         // 0x18
+    f32 extent_z;         // 0x1c
+    u16 angle;            // 0x20
+    u8 shape;             // 0x22
+    u8 mode;              // 0x23
+} GAME_ANTI_NODE_DATA_PC; // size 0x24
+
+#endif /* TYPES_OFF_3 */
 #endif

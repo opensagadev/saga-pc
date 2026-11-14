@@ -48,23 +48,6 @@ extern "C" {
     extern const char GrappleOccupiedOutputTextPc[9];
 }
 
-typedef struct TELEPORT_MOTION_PC {
-    char name[0x40];                  // 0x00
-    NUGSPLINE *path;                  // 0x40
-    f32 duration;                     // 0x44
-    f32 range_squared;                // 0x48
-    u16 flags;                        // 0x4c
-    u8 enabled;                       // 0x4e
-    u8 active;                        // 0x4f
-    NUSPECIALHANDLE blocking_special; // 0x50
-    NUSPECIALHANDLE flap1_special;    // 0x5c
-    NUSPECIALHANDLE flap2_special;    // 0x68
-    u16 flap_angle[2];                // 0x74
-    u16 flap_target[2];               // 0x78
-    NUMTX flap1_matrix;               // 0x7c
-    NUMTX flap2_matrix;               // 0xbc
-} TELEPORT_MOTION_PC;                 // size 0xfc
-
 typedef struct TELEPORT_WORLD_PC {
     u8 unknown_000[0x4680];        // 0x0000
     TELEPORT_MOTION_PC *teleports; // 0x4680

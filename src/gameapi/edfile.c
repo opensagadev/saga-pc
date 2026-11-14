@@ -4341,31 +4341,6 @@ i32 eduicbProcessFilePick(eduimenu_s *menu, eduiitem_s *item, f32 delta_time, FR
     return 0;
 }
 
-typedef struct FILE_DIRECTORY_RAW_TIME_PC {
-    u8 second;
-    u8 minute;
-    u8 hour;
-    u8 day;
-    u8 month;
-    u8 year_low;
-    u8 year_high;
-} FILE_DIRECTORY_RAW_TIME_PC;
-
-typedef struct FILE_DIRECTORY_HOST_ENTRY_PC {
-    u32 flags;                           // 0x000
-    u8 reserved_04[4];                   // 0x004
-    u32 size;                            // 0x008
-    u8 reserved_0c;                      // 0x00c
-    FILE_DIRECTORY_RAW_TIME_PC created;  // 0x00d
-    u8 reserved_14;                      // 0x014
-    FILE_DIRECTORY_RAW_TIME_PC accessed; // 0x015
-    u8 reserved_1c;                      // 0x01c
-    FILE_DIRECTORY_RAW_TIME_PC modified; // 0x01d
-    u32 unused_24;                       // 0x024
-    u8 reserved_28[0x18];                // 0x028
-    char name[MAX_PATH];                 // 0x040
-} FILE_DIRECTORY_HOST_ENTRY_PC;          // size 0x144
-
 extern i32 NuFileReadDir(i32 file, FILE_DIRECTORY_ENTRY_PC *entry);
 
 typedef struct FS_PACKED_ENTRY_HEADER_PC {

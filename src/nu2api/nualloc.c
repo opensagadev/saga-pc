@@ -41,24 +41,6 @@ extern u32 NuAllocHeaderMetadata[3];
 void NuAllocBadPointer(void);
 void NuAllocReport(const void *message, ...);
 
-/* PC manager prefix and block header touched by the allocator. */
-typedef struct nualloc_manager_block_pc_s {
-    u32 size_flags;                              // 0x0
-    struct nualloc_manager_block_pc_s *next;     // 0x4
-    struct nualloc_manager_block_pc_s *previous; // 0x8
-} NUALLOC_MANAGER_BLOCK_PC;                      // size 0xc
-
-typedef struct nualloc_manager_trailer_pc_s {
-    NUALLOC_MANAGER_BLOCK_PC *previous_block; // 0x0
-} NUALLOC_MANAGER_TRAILER_PC;                 // size 0x4
-
-typedef struct nualloc_manager_prefix_pc_s {
-    void *base;              // 0x0
-    u32 size;                // 0x4
-    u32 block_count;         // 0x8
-    u32 used_bytes;          // 0xc
-} NUALLOC_MANAGER_PREFIX_PC; // size 0x10
-
 void *NuAllocManagerAllocateAlignedPc(NUALLOC_MANAGER_PREFIX_PC *manager, u32 size, u32 alignment);
 void NuAllocManagerFreePc(NUALLOC_MANAGER_PREFIX_PC *manager, void *memory);
 

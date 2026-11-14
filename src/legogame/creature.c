@@ -80,18 +80,6 @@ typedef struct TERRAIN_PLAYER_IMPACT_PC {
     u8 normal_flags;        // 0x1b
 } TERRAIN_PLAYER_IMPACT_PC; // size 0x1c
 
-typedef struct TERRAIN_PLAYER_PLATFORM_RECORD_PC {
-    u8 unknown_0[0xe];               // 0x00
-    i16 platform_id;                 // 0x0e
-    GAMEOBJECT *object;              // 0x10
-} TERRAIN_PLAYER_PLATFORM_RECORD_PC; // size 0x14
-
-typedef struct TERRAIN_PLAYER_PLATFORM_SYS_PC {
-    u8 unknown_0[4];                              // 0x00
-    i32 count;                                    // 0x04
-    TERRAIN_PLAYER_PLATFORM_RECORD_PC entries[1]; // 0x08
-} TERRAIN_PLAYER_PLATFORM_SYS_PC;                 // size 0x1c
-
 typedef struct TERRAIN_PLAYER_GRABBER_PC {
     u8 unknown_0[0x554];        // 0x000
     f32 platform_contact_timer; // 0x554

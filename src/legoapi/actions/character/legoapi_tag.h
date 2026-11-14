@@ -38,4 +38,23 @@ extern "C" {
 }
 #endif
 
+#ifndef TYPES_OFF_1
+typedef union TAGSCRIPTSTATE_PC {
+    u32 words[0x33]; // 0x00
+
+    struct {                  // 0x00
+        u32 unknown000[0x2c]; // 0x00
+        u8 creature_set;      // 0xb0
+    } fields;
+} TAGSCRIPTSTATE_PC; // size 0xcc
+
+/* Bitfield view of flags_1fc: bit 7 marks a player-controlled object, bit 8 an AI-driven one. */
+typedef struct TAGFLAGS1FC_PC {
+    u32 bits_0_6 : 7;
+    u32 player : 1;
+    u32 ai : 1;
+    u32 bits_9_31 : 23;
+} TAGFLAGS1FC_PC;
+
+#endif /* TYPES_OFF_1 */
 #endif

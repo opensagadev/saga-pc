@@ -122,6 +122,35 @@ extern "C" {
 #ifdef __cplusplus
 }
 #endif
+#ifndef TYPES_OFF_6
+
+typedef struct CHARCONFIG_PC {
+    CHARACTERDATA_PC *character;          // 0x000
+    PLAYERCHARACTERCONFIG_PC *runtime;    // 0x004
+    GAMECHARACTERLAYER_PC *layer_scratch; // 0x008
+
+    union {        // 0x00c
+        u32 flags; // 0x00c
+
+        struct {                 // 0x00c
+            u32 flags_low : 6;   // 0x00c:0
+            u32 permanent : 1;   // 0x00c:6
+            u32 flags_high : 25; // 0x00c:7
+        };
+    };
+
+    u8 named_layers;                                   // 0x010
+    u8 unknown_11[3];                                  // 0x011
+    i32 effect_count;                                  // 0x014
+    struct CHARACTER_EFFECT_CONFIG_PC *effect_scratch; // 0x018
+    i16 character_id;                                  // 0x01c
+    u16 animation_count;                               // 0x01e
+    VARIPTR *arena;                                    // 0x020
+    VARIPTR *arena_end;                                // 0x024
+    char animation_names[100][40];                     // 0x028
+} CHARCONFIG_PC;                                       // size 0xfc8
+
+#endif /* TYPES_OFF_6 */
 #undef SAGA_LEGOAPI_CHARACTERS_CORE_CHARCONFIG_H_PART
 #define SAGA_LEGOAPI_CHARACTERS_CORE_CHARCONFIG_H_PART 4
 #ifdef SAGA_SHIM

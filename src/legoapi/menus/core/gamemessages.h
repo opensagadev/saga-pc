@@ -59,6 +59,26 @@ extern "C" {
 #ifdef __cplusplus
 }
 #endif
+#ifndef TYPES_OFF_25
+
+typedef struct coin_packet_pc_s {
+    u32 coins;        // 0x0
+    f32 scale;        // 0x4
+    i16 last_coin;    // 0x8
+    u8 unknown_0a[2]; // 0xa
+} COIN_PACKET_PC;     // size 0xc
+
+typedef struct object_coin_packet_pc_s {
+    u8 unknown_000[0x7fc];       // 0x000
+    COIN_PACKET_PC *coin_packet; // 0x7fc
+} OBJECT_COIN_PACKET_PC;         // size 0x800
+
+typedef struct game_save_score_pc_s {
+    u8 unknown_0000[0x7c14]; // 0x0000
+    u32 coins;               // 0x7c14
+} GAME_SAVE_SCORE_PC;        // size 0x7c18
+
+#endif /* TYPES_OFF_25 */
 #undef SAGA_LEGOAPI_MENUS_CORE_GAMEMESSAGES_H_PART
 #define SAGA_LEGOAPI_MENUS_CORE_GAMEMESSAGES_H_PART 3
 #ifdef SAGA_SHIM

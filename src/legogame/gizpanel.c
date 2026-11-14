@@ -16,15 +16,6 @@ typedef struct {
     u8 opaque_50[0x90 - 0x50];
 } ADD_PANEL_PC;
 
-typedef struct registry_panel_record_pc_s {
-    u8 storage[0x90];
-} REGISTRY_PANEL_RECORD_PC;
-
-typedef struct registry_panel_system_pc_s {
-    i32 count;
-    REGISTRY_PANEL_RECORD_PC *panels;
-} REGISTRY_PANEL_SYSTEM_PC;
-
 typedef struct {
     u32 triggered[1];
     u32 enabled[1];

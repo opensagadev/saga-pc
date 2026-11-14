@@ -183,6 +183,44 @@ extern "C" {
 #ifdef __cplusplus
 }
 #endif
+#ifndef TYPES_OFF_12
+
+typedef struct GIZFLOW_TIMER_PC {
+    f32 time_remaining; // 0x00
+    f32 start_time;     // 0x04
+    u8 unknown_008[2];  // 0x08
+    u8 flags;           // 0x0a
+    u8 unknown_00b;     // 0x0b
+    char name[16];      // 0x0c
+} GIZFLOW_TIMER_PC;     // size 0x1c
+
+typedef struct GIZFLOW_RANDOM_PC {
+    char name[16];         // 0x00
+    i32 output_count;      // 0x10
+    i32 output_weights[8]; // 0x14
+    i32 selected_output;   // 0x34
+    u8 flags;              // 0x38
+    u8 unknown_039[3];     // 0x39
+} GIZFLOW_RANDOM_PC;       // size 0x3c
+
+typedef struct GIZFLOW_RANDOM_SYSTEM_PC {
+    GIZFLOW_RANDOM_PC *randoms; // 0x0
+    i32 count;                  // 0x4
+    i32 capacity;               // 0x8
+} GIZFLOW_RANDOM_SYSTEM_PC;     // size 0xc
+
+typedef struct GIZFLOW_SPECIAL_PC {
+    char name[32];         // 0x00
+    GAMEANIMSET *anim_set; // 0x20
+    u8 unknown_024[4];     // 0x24
+} GIZFLOW_SPECIAL_PC;      // size 0x28
+
+typedef struct GIZFLOW_SPECIAL_SYSTEM_PC {
+    GIZFLOW_SPECIAL_PC *specials; // 0x0
+    i32 count;                    // 0x4
+} GIZFLOW_SPECIAL_SYSTEM_PC;      // size 0x8
+
+#endif /* TYPES_OFF_12 */
 #undef SAGA_LEGOAPI_GIZMO_BASE_GIZFLOW_H_PART
 #define SAGA_LEGOAPI_GIZMO_BASE_GIZFLOW_H_PART 3
 #ifdef SAGA_SHIM

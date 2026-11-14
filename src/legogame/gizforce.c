@@ -1,97 +1,7 @@
 #include "saga.h"
 
-typedef struct GIZFORCE_ANIMATION_DATA_PC {
-    u8 unknown_00[2];
-    i16 platform_id;
-} GIZFORCE_ANIMATION_DATA_PC;
-
-typedef struct GIZFORCE_GROUP_BEST_PC {
-    GIZFORCE_PC *forces[9];
-    u8 flags;
-    u8 unknown_25;
-    u8 count;
-} GIZFORCE_GROUP_BEST_PC;
-
-typedef struct GIZFORCE_BEST_PC {
-    u8 unknown_000[0x1c];
-    NUVEC position;
-    GAMEANIMSET *anim_set;
-    u8 unknown_02c[0xc];
-    GAMEOBJECT *using_object;
-    u32 unavailable_flags;
-    GIZFORCE_GROUP_BEST_PC *group;
-    u8 unknown_044[0x10];
-    f32 interaction_radius;
-    u8 unknown_058[0x1c];
-    u32 config_flags;
-    u8 unknown_078[0x28];
-    u32 runtime_flags;
-} GIZFORCE_BEST_PC;
-
-typedef struct GIZFORCE_SYS_BEST_PC {
-    u8 unknown_000[4];
-    GIZFORCE_PC **visible_forces;
-    u8 unknown_008[8];
-    u16 visible_count;
-    u8 unknown_012[2];
-    GAMEANIMOBJPOOL *anim_pool;
-} GIZFORCE_SYS_BEST_PC;
-
-typedef struct GIZFORCE_LOS_BEST_PC {
-    u32 clear_bits[12];
-    u32 queried_at[1];
-} GIZFORCE_LOS_BEST_PC;
-
-typedef struct GIZFORCE_OBJECT_BEST_PC {
-    u8 unknown_000[0x10cc];
-    GIZFORCE_PC *target;
-    GAMEANIMOBJ *animation;
-} GIZFORCE_OBJECT_BEST_PC;
-
-typedef struct GIZFORCE_PLATFORM_BEST_PC {
-    u8 unknown_000[2];
-    i16 platform_id;
-} GIZFORCE_PLATFORM_BEST_PC;
-
-typedef struct force_sfx_config_pc_s {
-    u8 unknown_00[0x28];
-    GAMEANIMSET *anim_set;
-    u8 unknown_2c[0x82 - 0x2c];
-    i16 process_sfx;
-    i16 complete_sfx;
-    i16 return_sfx;
-    u8 unknown_88[0xa4 - 0x88];
-} FORCE_SFX_CONFIG_PC;
-
-typedef struct force_sfx_system_pc_s {
-    FORCE_SFX_CONFIG_PC *forces;
-    u8 unknown_04[0xe - 4];
-    u16 count;
-} FORCE_SFX_SYSTEM_PC;
-
-typedef struct world_force_sfx_pc_s {
-    u8 unknown_0000[0x46ac];
-    FORCE_SFX_SYSTEM_PC *force_system;
-} WORLD_FORCE_SFX_PC;
-
-typedef struct trigger_force_object_pc_s {
-    u8 unknown000[0x10cc];
-    GIZFORCE_PC *force;
-} TRIGGER_FORCE_OBJECT_PC;
-
 extern const char GizmoRegistryGizForceNamePc[];
 void GameAnimSet_SetOffset(GAMEANIMSET *, NUVEC *);
-
-typedef struct FORCE_RESET_PROGRESS_PC {
-    u32 enabled[4];
-    u32 visible[4];
-    u32 reward_released[4];
-    u32 socket_hidden[4];
-    u32 completion_released[4];
-    u32 completion_pending[4];
-    u32 destroyed[4];
-    u8 group_members[8][8];
-} FORCE_RESET_PROGRESS_PC;
 
 typedef struct {
     char name[16];
@@ -102,27 +12,6 @@ typedef struct {
     u8 unknown_00[0x1c];
     NUVEC position;
 } FLOW_FORCE_POSITION_PC;
-
-typedef struct registry_force_record_pc_s {
-    u8 unknown_00[0x28];
-    GAMEANIMSET *anim_set;
-    u8 unknown_2c[0x5c];
-    i16 blowup_type;
-    u8 unknown_8a[0x16];
-    u32 runtime_flags;
-} REGISTRY_FORCE_RECORD_PC;
-
-typedef struct registry_force_system_pc_s {
-    REGISTRY_FORCE_RECORD_PC *forces;
-    REGISTRY_FORCE_RECORD_PC **visible_forces;
-    GIZMO_PC **hit_test_gizmos;
-    u16 capacity;
-    u16 count;
-    u16 visible_force_count;
-    u16 hit_test_gizmo_count;
-    GAMEANIMOBJPOOL *anim_pool;
-    GIZFORCEGROUP_s groups[8];
-} REGISTRY_FORCE_SYSTEM_PC;
 
 typedef struct {
     u32 enabled[4];

@@ -52,15 +52,6 @@ extern "C" {
     extern "C" {
         extern NUMTL *FadeMtl;
 
-        typedef struct nuprimvertex_pc_s {
-            f32 x;         // 0x00
-            f32 y;         // 0x04
-            f32 z;         // 0x08
-            u32 colour;    // 0x0c
-            f32 u;         // 0x10
-            f32 v;         // 0x14
-        } NUPRIMVERTEX_PC; // size 0x18
-
         typedef struct LEGAL_MATERIAL_PC {
             u8 reserved00[0x40]; // 0x00
             u32 attributes;      // 0x40

@@ -30,35 +30,6 @@ extern i32 turret_gizmotype_id;
 void DrawMeleeTargetsNumber(i16 *targets, u8 *counts, i32 count, u8 reset, NUSPECIALHANDLE *special);
 #define FALCON_SLOT(object) ((i8)(object)->field_280)
 
-/* Asteroid field. */
-typedef struct ASTEROID_PC {
-    NUSPECIALHANDLE special;
-    GIZMOBLOWUP_PC *blowup;
-    i16 rotation_speed_x;
-    i16 rotation_speed_y;
-    i16 rotation_speed_z;
-    u8 activated;
-} ASTEROID_PC;
-
-/* Rotating rock at the end of AsteroidChase C. */
-typedef struct FINAL_ASTEROID_PC {
-    NUSPECIALHANDLE special;
-    GIZMOBLOWUP_PC *blowups[8];
-    i16 blowup_count;
-    i16 rotation_speed_x;
-    i16 rotation_speed_y;
-    i16 rotation_speed_z;
-    i16 rotation_x;
-    i16 rotation_y;
-    i16 rotation_z;
-} FINAL_ASTEROID_PC;
-
-typedef struct ASTEROIDC_NETPACKET_PC {
-    u16 rotation_x;
-    u16 rotation_y;
-    u16 rotation_z;
-} ASTEROIDC_NETPACKET_PC;
-
 #define PLAYER_OBJ(i) ((GAMEOBJECT *)Player[i])
 void LevelStreaming_DoorOverride(WORLDINFO *world, LEVELDATA_PC *level, f32 radius, f32 *distance);
 extern u32 LEGO_AIPATHCNX_BIGJUMP;

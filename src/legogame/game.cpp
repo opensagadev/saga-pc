@@ -314,15 +314,6 @@ typedef struct GAME_CUSTOMISER_REWARD_READER_PC {
 
 GAME_PUBLISHER_ASSERT(offsetof(GAME_CUSTOMISER_REWARD_READER_PC, save_pieces) == 0x174);
 
-struct MUSIC_PAIR_ARENA_PC {
-    i32 prefix_word;      // 0x00
-    u8 unknown_004[0x18]; // 0x04
-    i16 action_first;     // 0x1c
-    u8 unknown_01e[0x1a]; // 0x1e
-    i16 ambient_first;    // 0x38
-    u8 unknown_03a[2];    // 0x3a
-}; // size 0x3c
-
 STATIC_ASSERT(offsetof(CUTINFO, skip_level) == 0xec);
 STATIC_ASSERT(offsetof(GAMEOBJECT, ai_packet) + offsetof(AIPACKET_PC, nearest_opponent) == 0x39c);
 STATIC_ASSERT(offsetof(GAMEOBJECT, ai_packet) + offsetof(AIPACKET_PC, nearest_opponent_metric) == 0x3a0);

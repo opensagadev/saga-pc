@@ -44,38 +44,6 @@ i32 SockSysCamera(SOCKSYS_PC *sock_sys, struct nuvec_s *fallback_camera_position
 struct nuvec_s *Technos_TgtPos(struct TECHNO_s *techno);
 f32 getPodRoll(i32 arg0);
 
-typedef struct CAMERA_CONTEXT_PATH_PC {
-    u8 unknown_00[0x40];
-    struct nugspline_s *path;
-    u8 unknown_44[8];
-    u8 flags;
-} CAMERA_CONTEXT_PATH_PC;
-
-typedef struct CAMERA_CONTEXT_FOCUS_PC {
-    u8 unknown_00[0x28];
-    NUVEC focus;
-} CAMERA_CONTEXT_FOCUS_PC;
-
-typedef struct CAMERA_CONTEXT_BUILDIT_PC {
-    u8 unknown_00[0x34];
-    NUVEC position;
-} CAMERA_CONTEXT_BUILDIT_PC;
-
-typedef struct CAMERA_GIZFORCE_TARGET_PC {
-    u8 unknown_00[0x1c];
-    NUVEC position;
-} CAMERA_GIZFORCE_TARGET_PC;
-
-typedef struct CAMERA_CABLE_PC {
-    GAMEOBJECT *source;
-    GAMEOBJECT *target;
-} CAMERA_CABLE_PC;
-
-typedef struct CAMERA_GRABBER_PC {
-    u8 unknown_000[0x48c];
-    NUVEC grab_position;
-} CAMERA_GRABBER_PC;
-
 i32 Grapple_LookAtPos(GAMEOBJECT *object, NUVEC *position);
 f32 NuVecMagVU0(NUVEC *v);
 #define GAME_CAMERA_ABSOLUTE_PC(destination, source)                                                                   \

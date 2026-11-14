@@ -80,41 +80,11 @@ void fun_005004d0(void) {
 
 STATIC_ASSERT(offsetof(CUT_PLAYER_ACTIVE_PC, active) == 4);
 
-typedef struct CUT_PLAYER_STATE_PC {
-    NUSPECIALHANDLE special; // 0x0
-    u8 flags;                // 0xc
-    u8 unknown_0d[3];        // 0xd
-} CUT_PLAYER_STATE_PC;       // size 0x10
-
-typedef struct CUT_PLAYER_RECORD_PC {
-    u8 unknown_00[0x48];         // 0x00
-    CUT_PLAYER_STATE_PC *states; // 0x48
-    u8 state_count;              // 0x4c
-} CUT_PLAYER_RECORD_PC;          // size 0x50
-
-typedef struct CUT_PLAYER_INST_ANIM_PC {
-    u8 unknown_00[0x4c];   // 0x00
-    f32 time;              // 0x4c
-    u32 flags;             // 0x50
-} CUT_PLAYER_INST_ANIM_PC; // size 0x54
-
 STATIC_ASSERT(sizeof(CUT_PLAYER_CLIP_CONFIG_PC) == 0x44);
 STATIC_ASSERT(offsetof(CUT_PLAYER_CLIP_CONFIG_PC, level_id) == 0);
 STATIC_ASSERT(offsetof(CUT_PLAYER_CLIP_CONFIG_PC, type) == 2);
 STATIC_ASSERT(offsetof(CUT_PLAYER_CLIP_CONFIG_PC, guest_episode) == 3);
 STATIC_ASSERT(offsetof(CUT_PLAYER_CLIP_CONFIG_PC, name) == 4);
-
-typedef struct cut_player_config_pc_s {
-    CUT_PLAYER_CLIP_CONFIG_PC *clips;  // 0x00
-    CUT_PLAYER_CLIP_CONFIG_PC *active; // 0x04
-    u16 clip_count;                    // 0x08
-    i16 return_door;                   // 0x0a
-    i16 *clip_text;                    // 0x0c
-    i16 *intro_text;                   // 0x10
-    i16 *midtro_text;                  // 0x14
-    i16 *outro_text;                   // 0x18
-    i16 *ending_text;                  // 0x1c
-} CUT_PLAYER_CONFIG_PC;                // size 0x20
 
 STATIC_ASSERT(offsetof(AREA_DATA_PC, episode_index) == 0x86);
 STATIC_ASSERT(sizeof(EPISODEDATA_PC) == 0x1c);

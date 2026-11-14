@@ -8,15 +8,6 @@ STATIC_ASSERT(offsetof(MISSIONSYS_PC, active_mission) == 4);
 STATIC_ASSERT(offsetof(MISSIONSYS_PC, state) == 0x1d);
 STATIC_ASSERT(offsetof(TIMER, time_elapsed) == 0);
 
-typedef struct MISSION_END_DATA_VIEW_PC {
-    i16 find_character;     // 0x0
-} MISSION_END_DATA_VIEW_PC; // size 0x2
-
-typedef struct MISSION_END_SYSTEM_VIEW_PC {
-    u8 unknown_00[8];         // 0x0
-    f32 elapsed_time;         // 0x8
-} MISSION_END_SYSTEM_VIEW_PC; // size 0xc
-
 STATIC_ASSERT(offsetof(GAMEOBJECT, collision_identity_mask) == 0x1e8);
 STATIC_ASSERT(offsetof(GAMEOBJECT, collision_contact_mask) == 0x1f0);
 STATIC_ASSERT(offsetof(GAMEOBJECT, dead) == 0x28b);

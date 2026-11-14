@@ -3,27 +3,6 @@
 #include <string.h>
 #include <float.h>
 
-typedef struct coin_packet_pc_s {
-    u32 coins;
-    f32 scale;
-    i16 last_coin;
-    u8 unknown_0a[2];
-} COIN_PACKET_PC;
-
-typedef struct object_coin_packet_pc_s {
-    u8 unknown_000[0x7fc];
-    COIN_PACKET_PC *coin_packet;
-} OBJECT_COIN_PACKET_PC;
-
-typedef struct game_save_score_pc_s {
-    u8 unknown_0000[0x7c14];
-    u32 coins;
-} GAME_SAVE_SCORE_PC;
-
-typedef struct lose_coins_packet_pc_s {
-    u32 coins;
-} LOSE_COINS_PACKET_PC;
-
 void PartUpdate_Heart(PART_PC *part);
 
 typedef struct coinpacket_pickup_pc_s {

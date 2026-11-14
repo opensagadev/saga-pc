@@ -270,16 +270,6 @@ void MiniKit_GameMsg_End(GAME_MESSAGE_PC *message) {
     GameCam_Judder(GameCam, -0.2f, 0, NULL);
 }
 
-typedef struct HOTH_WORLD_SCRIPT_PC {
-    u8 reserved[0x2b00];          // 0x0000
-    AISCRIPTPROCESS_PC processor; // 0x2b00
-} HOTH_WORLD_SCRIPT_PC;           // size 0x2bc8
-
-typedef struct HOTH_ANTINODE_PC {
-    u8 reserved[0x50];            // 0x00
-    i64 excluded_character_types; // 0x50
-} HOTH_ANTINODE_PC;               // size 0x58
-
 STATIC_ASSERT(offsetof(GAMEOBJECT, portal_flags) == 0xeec);
 STATIC_ASSERT(offsetof(GAMEOBJECT, ai_packet.locator) == 0x36c);
 STATIC_ASSERT(offsetof(GAMEOBJECT, ai_packet.creature_set) == 0x378);
