@@ -78,9 +78,17 @@ extern "C" {
         } specials;
     } BOLT_CONFIG_PC; // size 0xa4
 
+    i32 BoltShootIdScratch = 0;
     static BOLT_CONFIG_PC *BT_bolttype = 0;
     static WORLDINFO *BT_worldinfo = 0;
+    NUVEC BoltShootPositionScratch = {0};
+    BOLT Bolt[32] = {0};
+    i32 BoltNoSfxPc = 0;
+    i32 BoltNoObjectMomentumPc = 0;
     static NUGSCN *BT_scene = 0;
+    i32 (*Bolt_HitPlatFn)(BOLT *bolt) = 0;
+    i32 i_bolt = 0;
+    i32 (*Bolt_HitCustomFn)(void *bolt, void *points) = 0;
     static i32 BT_gdeb_moving_count = 0;
 
     extern const char BoltImpactSoundPc[12] = "imp_impacts";
@@ -1671,6 +1679,8 @@ extern "C" {
         BT_bolttype->flags_60 |= 0x40000000;
     }
 
+    f32 BoltShootParameter = 0.1f;
+    BOLTSYS_PC *BoltSys = &GlobalBoltSystem_Default;
     static NUFPCOMJMP BoltType_ConfigKeywords[] = {
         {("name"), BT_name},
         {("speed"), BT_speed},

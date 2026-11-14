@@ -7684,7 +7684,6 @@ extern "C" {
         &GlobalBoltType_Default,        1,    NULL, Bolt_Debris_Default, Bolt_GetShootOrigin_Default,
         Bolt_GetShootDirection_Default, NULL, NULL,
     };
-    BOLTSYS_PC *BoltSys = &GlobalBoltSystem_Default;
 #pragma data_seg(".data$BoltShootClassId0")
     u16 BoltShootClassId0 = 0xffff;
 #pragma data_seg()
@@ -7694,14 +7693,9 @@ extern "C" {
 #pragma data_seg(".data$BoltShootClassId2")
     u16 BoltShootClassId2 = 0xffff;
 #pragma data_seg()
-#pragma data_seg(".data$BoltShootParameter")
-    f32 BoltShootParameter = 0.1f;
-#pragma data_seg()
     SFX_GROUP_PC NuSound3Groups[128] = {0};
     i32 NuSound3GroupSampleCount = 0;
     i32 NuSound3GroupCount = 0;
-    BOLT Bolt[32] = {0};
-    i32 i_bolt = 0;
     f32 spline_seek_pos = 10.0f;
     f32 spline_seek_ang = 10.0f;
     f32 spline_xoffset_speed_seek = 4.0f;
@@ -7851,8 +7845,6 @@ extern "C" {
     NUVEC ANI3_EVAL_SCALE_ARRAY[256] = {0};
     NUBRIDGE_PC Bridges[8] = {0};
     i32 NuBridgeProc = 0;
-    i32 BoltShootIdScratch = 0;
-    NUVEC BoltShootPositionScratch = {0};
     void *CurrentTerrain = 0;
     GAMEOBJECT_LOOKUP_CALLBACK_PC GetNamedGameObjectCallback = 0;
 #pragma data_seg(".data$TerLayer")
@@ -7976,8 +7968,6 @@ extern "C" {
     f32 TextScaleY = 1.0f;
     void *OldLevelHackData = 0;
     i32 (*InitBolt_AddMomentumType)(BOLT *bolt, GAMEOBJECT *object, NUVEC *momentum) = 0;
-    i32 (*Bolt_HitPlatFn)(BOLT *bolt) = 0;
-    i32 (*Bolt_HitCustomFn)(void *bolt, void *points) = 0;
     f32 PodAvalancheShakeFrames = 111.0f;
     NUVEC PodAvalanchePeakPos = {-110.0f, -10.0f, -455.0f};
     f32 PodAvalancheShakeRange = 750.0f;
@@ -13529,8 +13519,6 @@ extern "C" {
 }
 
 extern "C" {
-    i32 BoltNoSfxPc = 0;
-    i32 BoltNoObjectMomentumPc = 0;
     i32 (*BoltInitSfxFn)(GAMEOBJECT *) = 0;
 #pragma data_seg(".data$BoltBlockContextPc")
     i32 BoltBlockContextPc = -1;
