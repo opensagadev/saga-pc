@@ -22809,7 +22809,6 @@ STATIC_ASSERT(sizeof(uberShader2) == 158576);
 #pragma data_seg(".data$FrameRenderCaptureStatePc")
 /* Native pre-initialization state; original owning extents remain unknown. */
 extern "C" {
-    f32 RenderFrameShaderTimePc = 0.0f;
     i32 nuspecial_vertex_noffsets = 0;
     f32 (*nuspecial_vertex_offsets)[4] = NULL;
     i32 global_frame_count_paused = 0;

@@ -696,9 +696,10 @@ extern "C" void PostBlur7x7DispatchPc(GRAPHICS_RENDER_TEXTURE_PC *source, i32 so
 }
 
 extern "C" {
-    f32 PostBlurInputBiasPc = 0;
     f32 PostBlurDirectOutputBiasPc = 0;
     f32 PostBlurDirectInputBiasPc = 0;
+    f32 PostBlurInputBiasPc = 0;
+    f32 RenderFrameShaderTimePc = 0.0f;
 }
 
 extern "C" {
