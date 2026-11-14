@@ -7295,8 +7295,6 @@ extern "C" {
                                           "sebulbaspod",    "sidius",        "crowd",       0};
 #pragma data_seg()
 
-    i32 shop_from_cutsceneplayer = 0;
-
 #pragma data_seg(".data$PlayerMissionStartDoorPc")
     char PlayerMissionStartDoorPc[13] = "mission_door";
 #pragma data_seg()
@@ -14566,7 +14564,6 @@ extern "C" {
     i32 POINTS_PER_GOLDBRICK = 0;
     i32 GOLDBRICKPOINTS = 0;
     i32 SHOPGOLDBRICKS = 0;
-    i32 SHOPHINTCOUNT = 0;
     i16 ShopHintIdsPc[24] = {-1, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0};
     i16 ShopHintTextIdsPc[15] = {630, 631, 632, 633, 634, 635, 636, 637, 638, 639, 640, 641, 642, 643, -1};
     i32 PlayerHitPointsTwoHeartsPc = 1;
@@ -14586,7 +14583,6 @@ extern "C" {
     i32 CombatRollEnablePc = 0;
     i16 TechnoDefaultObjectPc = 85;
     i32 LEGOHINT_PUNCH = 1;
-    i32 CutScenePlayCountPc = 0;
 }
 
 extern "C" {
@@ -23373,12 +23369,6 @@ extern "C" {
 }
 
 extern "C" {
-    void (*drawptr)(void) = 0;
-
-    i32 picked = 0;
-}
-
-extern "C" {
 
     struct PC_SCENE_MTL_VIEW *edpp_boxmtl = 0;
 }
@@ -23389,15 +23379,6 @@ extern "C" {
 }
 
 extern "C" {
-    struct shopitem_s *HintItems = 0;
-
-    i32 HintShelfIds[7] = {0};
-
-    NUVEC SubShelfPos[7] = {0};
-
-    f32 ShopNameAlpha = 0;
-
-    shopitem_s CutItems[128] = {0};
 
 #pragma data_seg(".data$players_going_forward")
 }
@@ -23790,14 +23771,6 @@ extern "C" {
 }
 
 extern "C" {
-    nuhspecial_s iconback = {0};
-
-    i32 SHOPCHARCOUNT = 0;
-
-    shopitem_s TopShelf[6] = {0};
-}
-
-extern "C" {
 
     i32 edpp_readout = 0;
 }
@@ -24139,8 +24112,6 @@ extern "C" {
 
     f32 PodCamDist = 0;
 
-    struct nuvec_s *shopcampos = 0;
-
 #pragma data_seg(".data$HUB_MINIKITVIEWER_CAMDY")
     f32 HUB_MINIKITVIEWER_CAMDY = 0.30000001192092896f;
 
@@ -24154,10 +24125,6 @@ extern "C" {
 }
 
 extern "C" {
-    i32 SHOPACTIVE = 0;
-
-    NUVEC *shopcamlookat = 0;
-    i32 (*menuptr)(void *menu) = 0;
 
 #pragma data_seg(".data$testmovef")
 }
@@ -26228,7 +26195,6 @@ extern "C" {
     void (*HubUpdateAIFnPc)(WORLDINFO *) = 0;
     i32 shop_quit = 0;
     i32 shop_save_done = 0;
-    f32 ShopLockedScalePc = 0;
     GAMESAVE TempGame = {0};
     GAMESAVE OldCustomiseGame = {0};
 }
@@ -26372,59 +26338,9 @@ extern "C" {
 }
 
 extern "C" {
-    void (*ShopDrawPanelFnPc)(void) = 0;
-}
-
-extern "C" {
-    i32 charcheatix = 0;
-    i32 extracheatix = 0;
-    i32 SHOPEXTRACOUNT = 0;
-    shopitem_s *CharItems = NULL;
-    shopitem_s *ExtraItems = NULL;
-    shopitem_s *CodeItems = NULL;
-    shopitem_s *BrickItems = NULL;
-    nuhspecial_s extrasils[44] = {0};
-    nuhspecial_s atoz0to9icon[36] = {0};
-    u32 codelist[144] = {0};
-    nuhspecial_s infoblank = {0};
-    nuhspecial_s cutblank = {0};
-    nuhspecial_s cutfilm_unlocked = {0};
-    nuhspecial_s cutfilm_locked = {0};
-    nuhspecial_s toolblank = {0};
-    nuhspecial_s codeblank = {0};
-    nuhspecial_s question = {0};
-    nuhspecial_s arrow1 = {0};
-    nuhspecial_s arrow2 = {0};
-    nuhspecial_s arrow3 = {0};
-    nuhspecial_s arrow4 = {0};
-    struct nugspline_s *shopcamspline = NULL;
-    NUVEC CharCurPos[7] = {0};
-    NUVEC HintCurPos[7] = {0};
-    NUVEC ExtraCurPos[7] = {0};
-    NUVEC BrickCurPos[7] = {0};
-    NUVEC CutCurPos[7] = {0};
-    i32 CharShelfIds[7] = {0};
-    i32 ExtraShelfIds[7] = {0};
-    i32 BrickShelfIds[7] = {0};
-    i32 CutShelfIds[7] = {0};
 #pragma data_seg(".data$SHOPCUTCOUNT")
     i32 SHOPCUTCOUNT = 128;
 #pragma data_seg()
-    i32 oldpicked = 0;
-    i32 subpicked = 0;
-    f32 pickedbing = 0;
-    f32 TopShelfScale[6] = {0};
-    f32 topscale[6] = {0};
-    f32 TopBigScale[6] = {0};
-    f32 TopShelfPush[6] = {0};
-    f32 TopBigPush[6] = {0};
-    f32 toppush[6] = {0};
-    f32 ShopSubInitAPc = 0;
-    f32 ShopSubInitBPc = 0;
-    f32 codeshelfscale[6] = {0};
-    f32 codemenuscale[6] = {0};
-    f32 codebigscale[6] = {0};
-    struct CUT_PLAYER_ACTIVE_PC *shopcutsceneplayer = NULL;
 #pragma data_seg(".data$ShopNativeScalePc")
     f32 ShopNativeScalePc[6] = {0.9f, 0.9f, 0.28f, 0.95f, 0.8f, 0.9f};
 #pragma data_seg()
@@ -26665,30 +26581,6 @@ extern "C" {
 extern "C" {}
 
 extern "C" {
-    i32 ShopMenuPc = 0;
-    i32 ShopEaseSubInPc = 0;
-    f32 ShopInOutScalePc = 0;
-    f32 ShopScaleOverridePc[7] = {0};
-    f32 ShopHintDrawWaitPc = 0;
-    void (*ShopOldDrawFnPc)(void) = 0;
-    void (*ShopOldDrawPanelFnPc)(void) = 0;
-    f32 ShopOldPickedPushPc = 0;
-    void (*ShopDrawParentPc[3])(void) = {0};
-    i32 ShopOldMenuLevelPc = 0;
-    char *ShopCheatNamePc = 0;
-    i32 ShopEnteredPc = 0;
-    f32 ShopOldPickedScalePc = 0;
-    i32 ShopColumnPc = 0;
-    i32 (*ShopOldMenuFnPc)(void *) = 0;
-    i32 (*ShopOldMenuParentPc[3])(void *) = {0};
-    f32 ShopSlideTimerPc = 0;
-    i32 ShopOldDrawLevelPc = 0;
-    i32 ShopMenuLevelPc = 0;
-    void (*ShopOldDrawParentPc[3])(void) = {0};
-    i32 ShopDrawLevelPc = 0;
-    i32 (*ShopMenuParentPc[3])(void *) = {0};
-    i32 ShopLastItemPc = 0;
-    i32 ShopExitPc = 0;
     i32 ShopSubMenuPc = 0;
     i32 ShopMoveSfxLockPc = 0;
     i32 ShopItemChangedPc = 0;
@@ -26698,8 +26590,6 @@ extern "C" {
 }
 
 extern "C" {
-    i32 ShopMoveItemsPc = 0;
-    i32 ShopScrollKeyHitPc = 0;
     i32 ShopSubMoveSfxLockPc = 0;
 }
 
@@ -26727,7 +26617,6 @@ extern "C" {
 }
 
 extern "C" {
-    f32 ShopPurchasePulsePc = 0;
     i32 HubForceShopSavePc = 0;
 }
 
@@ -26735,10 +26624,6 @@ extern "C" {
 #pragma data_seg(".data$ShopPurchasePulseDurationPc")
     f32 ShopPurchasePulseDurationPc = 0.35f;
 #pragma data_seg()
-}
-
-extern "C" {
-    f32 ShopCheatTimerPc = 0;
 }
 
 extern "C" {
