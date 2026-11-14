@@ -3,14 +3,15 @@
 
 /* Split from saga.h (tools/headersplit.py, docs/header-plan.md). saga.h includes this header at the place of its
  * declarations. */
+
+#include "nu2api/nucore/common.h"
+
 /* Included via saga.h only for now: decomp.h, legoapi/gizmo/base/gizmo.h, legoapi/items/base/apiobject.h,
  * legoapi/legoapi_types.h, legoapi/lib/hub.h, nu2api/nu3d/nu3d_includes.h (not all of it earlier in the shim). */
 
 #include "gameapi/ai/aisys/aipath.h"
 #include "legoapi/world/world.h"
 #include "nu2api/nu3d/nuhspecial.h"
-#include "nu2api/nucore/common.h"
-#include "nu2api/nucore/fixed_width.h"
 #include "nu2api/numath/nuvec.h"
 
 #ifndef SAGA_SHIM

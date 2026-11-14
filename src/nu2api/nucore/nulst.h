@@ -5,7 +5,6 @@
  * declarations. */
 
 #include "nu2api/nucore/common.h"
-#include "nu2api/nucore/fixed_width.h"
 
 typedef struct nulsthdr_s NULSTHDR;
 

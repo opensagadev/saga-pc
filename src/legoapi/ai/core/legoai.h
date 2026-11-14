@@ -4,8 +4,9 @@
 /* Split from saga.h (tools/headersplit.py, docs/header-plan.md). saga.h includes this header at the place of its
  * declarations. */
 
+#include "nu2api/nucore/common.h"
+
 #include "legoapi/core/config/cheats.h"
-#include "nu2api/nucore/fixed_width.h"
 
 #ifdef __cplusplus
 extern "C" {

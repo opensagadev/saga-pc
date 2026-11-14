@@ -4,7 +4,7 @@
 /* Split from saga.h (tools/headersplit.py, docs/header-plan.md). saga.h includes this header at the place of its
  * declarations. */
 
-#include "nu2api/nucore/fixed_width.h"
+#include "nu2api/nucore/common.h"
 
 typedef struct nualloc_record_s NUALLOC_RECORD;
 typedef struct nualloc_pool_s NUALLOC_POOL;

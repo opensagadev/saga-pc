@@ -3,6 +3,9 @@
 
 /* Split from saga.h (tools/headersplit.py, docs/header-plan.md). saga.h includes this header at the place of its
  * declarations. */
+
+#include "nu2api/nucore/common.h"
+
 /* Included via saga.h only for now: gameapi/ai/aisys/aisys.h, gameapi/ai/aisys/gameaiscript.h,
  * legoapi/ai/core/gameai.h, legoapi/ai/game/aipathcnxhelper.h, legoapi/gizmo/object/gizmoblowups.h,
  * legoapi/gizmos/door/zipups.h, legoapi/gizmos/transport/tubes.h, legoapi/items/base/apiobject.h,
@@ -16,8 +19,6 @@
 #include "nu2api/nu3d/nugscn.h"
 #include "nu2api/nu3d/nuhspecial.h"
 #include "nu2api/nucore/bgproc.h"
-#include "nu2api/nucore/common.h"
-#include "nu2api/nucore/fixed_width.h"
 #include "nu2api/numath/numtx.h"
 #include "nu2api/numath/nuvec.h"
 

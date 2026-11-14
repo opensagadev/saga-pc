@@ -4,10 +4,12 @@
 
 /* Split from saga.h (tools/headersplit.py, docs/header-plan.md). saga.h includes this header at the place of its
  * declarations. */
+
+#include "nu2api/nucore/common.h"
+
 /* Included via saga.h only for now: editor/antinode_editor_private.h, editor/edpath.h, editor/edpath_types.h,
  * gameapi/ai/aisys/aisys.h, gameapi/edtools/edui.h, legoapi/ai/core/aisysall_types.h, nu2api/nu3d/nuhspecial.h,
- * nu2api/nucore/common.h, nu2api/nucore/fixed_width.h, nu2api/nucore/nulist.h, nu2api/numath/nuvec.h (not all of it
- * earlier in the shim). */
+ * nu2api/nucore/nulist.h, nu2api/numath/nuvec.h (not all of it earlier in the shim). */
 
 #ifndef SAGA_SHIM
 #include "editor/antinode_editor_private.h"
@@ -17,8 +19,6 @@
 #include "gameapi/edtools/edui.h"
 #include "legoapi/ai/core/aisysall_types.h"
 #include "nu2api/nu3d/nuhspecial.h"
-#include "nu2api/nucore/common.h"
-#include "nu2api/nucore/fixed_width.h"
 #include "nu2api/nucore/nulist.h"
 #include "nu2api/numath/nuvec.h"
 #endif

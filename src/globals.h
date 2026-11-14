@@ -4,12 +4,15 @@
 
 /* Split from saga.h (tools/headersplit.py, docs/header-plan.md). saga.h includes this header at the place of its
  * declarations. */
+
+#include "nu2api/nucore/common.h"
+
 /* Included via saga.h only for now: gamelib/util/Refpack.h, legoapi/characters/core/characters.h,
  * legoapi/core/input/timer.h, legoapi/core/input/timing.h, legoapi/items/base/apiobject.h, legoapi/legoapi_types.h,
  * legoapi/lib/hub.h, legoapi/menus/screens/customise.h, legoapi/world/level.h, legoapi/world/levels.h,
  * legoapi/world/world.h, legoapi/world/worldinfo.h, legogame/game.h, nu2api/nu3d/nucamera.h, nu2api/nu3d/nuqfnt.h,
- * nu2api/nu3d/nuspline.h, nu2api/nucore/common.h, nu2api/nucore/fixed_width.h, nu2api/nufile/nufpar.h,
- * nu2api/numath/nuvec.h, nu2api/nusound/nusound.h (not all of it earlier in the shim). */
+ * nu2api/nu3d/nuspline.h, nu2api/nufile/nufpar.h, nu2api/numath/nuvec.h, nu2api/nusound/nusound.h (not all of it
+ * earlier in the shim). */
 
 #ifndef SAGA_SHIM
 #include "gamelib/util/Refpack.h"
@@ -28,8 +31,6 @@
 #include "nu2api/nu3d/nucamera.h"
 #include "nu2api/nu3d/nuqfnt.h"
 #include "nu2api/nu3d/nuspline.h"
-#include "nu2api/nucore/common.h"
-#include "nu2api/nucore/fixed_width.h"
 #include "nu2api/nufile/nufpar.h"
 #include "nu2api/numath/nuvec.h"
 #include "nu2api/nusound/nusound.h"

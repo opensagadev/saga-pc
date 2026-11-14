@@ -4,6 +4,8 @@
 /* Split from saga.h (tools/headersplit.py, docs/header-plan.md). saga.h includes this header at the place of its
  * declarations. */
 
+#include "nu2api/nucore/common.h"
+
 STATIC_ASSERT(offsetof(IDirectSound8Vtbl, duplicate_sound_buffer) == 0x14);
 STATIC_ASSERT(offsetof(IDirectSound8Vtbl, create_sound_buffer) == 0xc);
 STATIC_ASSERT(offsetof(IDirectSoundBufferVtbl, get_current_position) == 0x10);

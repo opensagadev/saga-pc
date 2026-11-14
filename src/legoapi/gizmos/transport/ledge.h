@@ -3,6 +3,9 @@
 
 /* Split from saga.h (tools/headersplit.py, docs/header-plan.md). saga.h includes this header at the place of its
  * declarations. */
+
+#include "nu2api/nucore/common.h"
+
 /* Included via saga.h only for now: legoapi/items/base/apiobject.h (not all of it earlier in the shim). */
 
 #include "legoapi/world/world.h"

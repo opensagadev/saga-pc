@@ -3,10 +3,12 @@
 
 /* Split from saga.h (tools/headersplit.py, docs/header-plan.md). saga.h includes this header at the place of its
  * declarations. */
+
+#include "nu2api/nucore/common.h"
+
 /* Included via saga.h only for now: legoapi/legoapi_types.h (not all of it earlier in the shim). */
 
 #include "legoapi/core/config/cheat.h"
-#include "nu2api/nucore/fixed_width.h"
 
 #ifndef SAGA_SHIM
 #include "legoapi/legoapi_types.h"

@@ -4,13 +4,13 @@
 
 /* Split from saga.h (tools/headersplit.py, docs/header-plan.md). saga.h includes this header at the place of its
  * declarations. */
-/* Included via saga.h only for now: legoapi/menus/screens/movies.h, nu2api/nucore/common.h, nu2api/nucore/fixed_width.h
- * (not all of it earlier in the shim). */
+
+#include "nu2api/nucore/common.h"
+
+/* Included via saga.h only for now: legoapi/menus/screens/movies.h (not all of it earlier in the shim). */
 
 #ifndef SAGA_SHIM
 #include "legoapi/menus/screens/movies.h"
-#include "nu2api/nucore/common.h"
-#include "nu2api/nucore/fixed_width.h"
 #endif
 /* 2 parts: saga.h includes this header once per part, each where its declarations belong; included directly, it gives
  * all parts at once. */

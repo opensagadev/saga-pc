@@ -4,14 +4,17 @@
 
 /* Split from saga.h (tools/headersplit.py, docs/header-plan.md). saga.h includes this header at the place of its
  * declarations. */
+
+#include "nu2api/nucore/common.h"
+
 /* Included via saga.h only for now: gameapi/ai/aisys/aipath.h, gameapi/ai/aisys/aisys.h, gameapi/edtools/edgra.h,
  * legoapi/actions/movement/dropinout.h, legoapi/items/base/apiobject.h, legoapi/legoapi_types.h,
  * legoapi/menus/core/hint.h, legoapi/render/core/gameliball.h, legoapi/world/level.h, legoapi/world/missions.h,
  * legoapi/world/world.h, legogame/batman_gameai.h, nu2api/PCInput.h, nu2api/nu3d/ShaderManagerOpenGL.h,
  * nu2api/nu3d/android/nushaderobject.h, nu2api/nu3d/nu3d_includes.h, nu2api/nu3d/nudlist.h,
- * nu2api/nucore/NuDynamicLight.h, nu2api/nucore/common.h, nu2api/nucore/fixed_width.h, nu2api/nufile/nufile.h,
- * nu2api/numath/numtx.h, nu2api/numath/nuvec.h, nu2api/nuwin32/d3dCore.h, nu2api/shader_parser.h,
- * transitional/libogg/ogg.h, transitional/libvorbis/smallft.h (not all of it earlier in the shim). */
+ * nu2api/nucore/NuDynamicLight.h, nu2api/nufile/nufile.h, nu2api/numath/numtx.h, nu2api/numath/nuvec.h,
+ * nu2api/nuwin32/d3dCore.h, nu2api/shader_parser.h, transitional/libogg/ogg.h, transitional/libvorbis/smallft.h (not
+ * all of it earlier in the shim). */
 
 #ifndef SAGA_SHIM
 #include "gameapi/ai/aisys/aipath.h"
@@ -32,8 +35,6 @@
 #include "nu2api/nu3d/nu3d_includes.h"
 #include "nu2api/nu3d/nudlist.h"
 #include "nu2api/nucore/NuDynamicLight.h"
-#include "nu2api/nucore/common.h"
-#include "nu2api/nucore/fixed_width.h"
 #include "nu2api/nufile/nufile.h"
 #include "nu2api/numath/numtx.h"
 #include "nu2api/numath/nuvec.h"
@@ -47,43 +48,6 @@
 
 #if SAGA_DECOMP_H_PART == 1 && !defined(SAGA_DECOMP_H_STOP)
 
-#include <stddef.h>
-
-#ifndef _WIN32_WINNT
-#define _WIN32_WINNT 0x0501 // NOLINT(readability-identifier-naming): SDK-required Windows XP API selector.
-#endif
-#define WIN32_LEAN_AND_MEAN
-#define NOMINMAX
-#include <windows.h>
-#include <mmsystem.h>
-#include <shellapi.h>
-#include <shlobj.h>
-#include <objbase.h>
-#include <oleauto.h>
-#include <math.h>
-// The engine's SSE vector header (retail keeps its VuVec SSE helper copies in nu2api units) brought <xmmintrin.h>
-// into every engine unit. VC8 compiles that header's __inline __m128 wrappers, whose aligned frames keep EBX out of the
-// register arguments of every static function in the unit. The bundled Ogg Vorbis sources never included it.
-#ifndef SAGA_VENDORED_LIBRARY
-#include <xmmintrin.h>
-#endif
-
-#include "externals.h"
-
-#define SAGA_JOIN_IMPL(a, b) a##b
-#define SAGA_JOIN(a, b) SAGA_JOIN_IMPL(a, b)
-#define STATIC_ASSERT(expression) typedef char SAGA_JOIN(saga_static_assert_, __COUNTER__)[(expression) ? 1 : -1]
-// src/debug/diagnostics.h defines the Debug versions when a unit includes it first.
-#ifndef STUBBED
-#define STUBBED() ((void)0)
-#endif
-#ifndef STUBBED_NAMED
-#define STUBBED_NAMED(name) ((void)0)
-#endif
-// Retail reads several adjacent u32 pairs (bit masks, CInfo flags) as one 64-bit value.  The structs keep their u32
-// members so that their alignment stays at 4; this accesses such a pair in place as a u64.
-#define U64_PAIR(pair) (*(u64 *)(pair))
-STATIC_ASSERT(sizeof(void *) == 4);
 STATIC_ASSERT(sizeof(MSG) == 28);
 #ifdef __cplusplus
 extern "C" {

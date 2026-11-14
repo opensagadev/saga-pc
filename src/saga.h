@@ -6,8 +6,8 @@
  * mapped header (config/header-map.csv) stay here, at their place. */
 #define SAGA_SHIM
 
+#include "nu2api/nucore/common.h"
 #include "decomp.h"
-#include "nu2api/nucore/fixed_width.h"
 #include "externals/dsound.h"
 #include "nu2api/numath/nuang.h"
 #include "nu2api/nucore/nulist.h"
@@ -62,7 +62,6 @@
 #include "nu2api/nu3d/nuprim_internal.h"
 #include "nu2api/nuandroid/ios_graphics.h"
 #include "legoapi/items/objects/gameobjects_types.h"
-#include "nu2api/nucore/common.h"
 #include "nu2api/numath/nurand.h"
 #include "nu2api/nucore/bgproc.h"
 #include "legoapi/actions/character/specialmoves_types.h"
@@ -104,7 +103,6 @@
 #include "legoapi/render/core/gameliball.h"
 #include "legoapi/characters/motion/charshadows.h"
 #include "legoapi/gizmo/base/gizmo.h"
-#include "nu2api/nucore/common.h"
 #include "nu2api/nucore/nustring.h"
 #include "gameapi/gui/apimenu.h"
 #include "legoapi/gizmos/fx/edgizshadowmachine.h"

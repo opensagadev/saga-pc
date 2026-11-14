@@ -4,11 +4,13 @@
 
 /* Split from saga.h (tools/headersplit.py, docs/header-plan.md). saga.h includes this header at the place of its
  * declarations. */
+
+#include "nu2api/nucore/common.h"
+
 /* Included via saga.h only for now: decomp.h, legoapi/legoapi_types.h, legoapi/render/core/gameliball.h,
  * nu2api/nu3d/nu3d_includes.h, nu2api/nu3d/nucamera.h, nu2api/nu3d/nudlist.h, nu2api/nu3d/nugscn.h,
- * nu2api/nu3d/numtl.h, nu2api/nu3d/nurndr.h, nu2api/nucamera_dlist.h, nu2api/nucore/common.h,
- * nu2api/nucore/fixed_width.h, nu2api/nuhgo_dlist.h, nu2api/numath/numtx.h, nu2api/numath/nuvec.h,
- * nu2api/numath/nuvec4.h, nu2api/nuwin32/d3dCore.h (not all of it earlier in the shim). */
+ * nu2api/nu3d/numtl.h, nu2api/nu3d/nurndr.h, nu2api/nucamera_dlist.h, nu2api/nuhgo_dlist.h, nu2api/numath/numtx.h,
+ * nu2api/numath/nuvec.h, nu2api/numath/nuvec4.h, nu2api/nuwin32/d3dCore.h (not all of it earlier in the shim). */
 
 #ifndef SAGA_SHIM
 #include "decomp.h"
@@ -21,8 +23,6 @@
 #include "nu2api/nu3d/numtl.h"
 #include "nu2api/nu3d/nurndr.h"
 #include "nu2api/nucamera_dlist.h"
-#include "nu2api/nucore/common.h"
-#include "nu2api/nucore/fixed_width.h"
 #include "nu2api/nuhgo_dlist.h"
 #include "nu2api/numath/numtx.h"
 #include "nu2api/numath/nuvec.h"

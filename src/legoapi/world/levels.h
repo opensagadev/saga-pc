@@ -4,12 +4,14 @@
 
 /* Split from saga.h (tools/headersplit.py, docs/header-plan.md). saga.h includes this header at the place of its
  * declarations. */
+
+#include "nu2api/nucore/common.h"
+
 /* Included via saga.h only for now: gameapi/ai/aisys/aisys.h, gameapi/apitext.h, legoapi/audio/audio.h,
  * legoapi/gizmo/base/gizmo.h, legoapi/gizmo/object/gizmoblowups.h, legoapi/items/objects/objectsall.h,
  * legoapi/legoapi_types.h, legoapi/lib/hub.h, legoapi/world/area.h, legoapi/world/areas.h, legoapi/world/level.h,
  * legoapi/world/world.h, legogame/game.h, nu2api/nu3d/nu3d_includes.h, nu2api/nu3d/numtl.h, nu2api/nu3d/nuspline.h,
- * nu2api/nucore/common.h, nu2api/nucore/fixed_width.h, nu2api/nufile/nufpar.h, nu2api/numath/numtx.h (not all of it
- * earlier in the shim). */
+ * nu2api/nufile/nufpar.h, nu2api/numath/numtx.h (not all of it earlier in the shim). */
 
 #ifndef SAGA_SHIM
 #include "gameapi/ai/aisys/aisys.h"
@@ -28,8 +30,6 @@
 #include "nu2api/nu3d/nu3d_includes.h"
 #include "nu2api/nu3d/numtl.h"
 #include "nu2api/nu3d/nuspline.h"
-#include "nu2api/nucore/common.h"
-#include "nu2api/nucore/fixed_width.h"
 #include "nu2api/nufile/nufpar.h"
 #include "nu2api/numath/numtx.h"
 #endif

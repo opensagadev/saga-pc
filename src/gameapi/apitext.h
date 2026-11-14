@@ -3,14 +3,15 @@
 
 /* Split from saga.h (tools/headersplit.py, docs/header-plan.md). saga.h includes this header at the place of its
  * declarations. */
+
+#include "nu2api/nucore/common.h"
+
 /* Included via saga.h only for now: gameapi/edtools/edui.h, legoapi/legoapi_types.h (not all of it earlier in the
  * shim). */
 
 #include "gameapi/gui/apimenu.h"
 #include "nu2api/nu3d/numtl.h"
 #include "nu2api/nu3d/nuqfnt.h"
-#include "nu2api/nucore/common.h"
-#include "nu2api/nucore/fixed_width.h"
 
 #ifndef SAGA_SHIM
 #include "gameapi/edtools/edui.h"

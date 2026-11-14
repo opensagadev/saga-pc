@@ -4,16 +4,16 @@
 
 /* Split from saga.h (tools/headersplit.py, docs/header-plan.md). saga.h includes this header at the place of its
  * declarations. */
+
+#include "nu2api/nucore/common.h"
+
 /* Included via saga.h only for now: legoapi/gizmo/object/gizmopickup.h, legoapi/gizmos/fx/gizmopickups.h,
- * nu2api/nu3d/nu3d_includes.h, nu2api/nucore/common.h, nu2api/nucore/fixed_width.h, nu2api/numath/nuvec.h (not all of
- * it earlier in the shim). */
+ * nu2api/nu3d/nu3d_includes.h, nu2api/numath/nuvec.h (not all of it earlier in the shim). */
 
 #ifndef SAGA_SHIM
 #include "legoapi/gizmo/object/gizmopickup.h"
 #include "legoapi/gizmos/fx/gizmopickups.h"
 #include "nu2api/nu3d/nu3d_includes.h"
-#include "nu2api/nucore/common.h"
-#include "nu2api/nucore/fixed_width.h"
 #include "nu2api/numath/nuvec.h"
 #endif
 /* 2 parts: saga.h includes this header once per part, each where its declarations belong; included directly, it gives

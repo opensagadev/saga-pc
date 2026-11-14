@@ -4,9 +4,9 @@
 /* Split from saga.h (tools/headersplit.py, docs/header-plan.md). saga.h includes this header at the place of its
  * declarations. */
 
-#include "legoapi/gizmos/fx/gizmopickups.h"
 #include "nu2api/nucore/common.h"
-#include "nu2api/nucore/fixed_width.h"
+
+#include "legoapi/gizmos/fx/gizmopickups.h"
 #include "nu2api/numath/nuvec.h"
 
 #ifdef __cplusplus

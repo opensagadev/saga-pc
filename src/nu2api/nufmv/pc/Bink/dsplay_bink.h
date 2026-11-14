@@ -4,13 +4,14 @@
 
 /* Split from saga.h (tools/headersplit.py, docs/header-plan.md). saga.h includes this header at the place of its
  * declarations. */
-/* Included via saga.h only for now: nu2api/PCInput.h, nu2api/nucore/common.h, nu2api/nucore/fixed_width.h,
- * nu2api/numath/numtx.h, nu2api/nustencilshadows_PC.h, nu2api/nuwin32/d3dCore.h (not all of it earlier in the shim). */
+
+#include "nu2api/nucore/common.h"
+
+/* Included via saga.h only for now: nu2api/PCInput.h, nu2api/numath/numtx.h, nu2api/nustencilshadows_PC.h,
+ * nu2api/nuwin32/d3dCore.h (not all of it earlier in the shim). */
 
 #ifndef SAGA_SHIM
 #include "nu2api/PCInput.h"
-#include "nu2api/nucore/common.h"
-#include "nu2api/nucore/fixed_width.h"
 #include "nu2api/numath/numtx.h"
 #include "nu2api/nustencilshadows_PC.h"
 #include "nu2api/nuwin32/d3dCore.h"

@@ -4,9 +4,12 @@
 
 /* Split from saga.h (tools/headersplit.py, docs/header-plan.md). saga.h includes this header at the place of its
  * declarations. */
+
+#include "nu2api/nucore/common.h"
+
 /* Included via saga.h only for now: legoapi/items/objects/game_obj.h, legoapi/legoapi_types.h, legoapi/lib/hub.h,
- * legoapi/menus/core/gamehint.h, legoapi/world/world.h, nu2api/nu3d/nu3d_includes.h, nu2api/nucore/common.h,
- * nu2api/nucore/fixed_width.h, nu2api/numath/numtx.h, nu2api/numath/nuvec.h (not all of it earlier in the shim). */
+ * legoapi/menus/core/gamehint.h, legoapi/world/world.h, nu2api/nu3d/nu3d_includes.h, nu2api/numath/numtx.h,
+ * nu2api/numath/nuvec.h (not all of it earlier in the shim). */
 
 #ifndef SAGA_SHIM
 #include "legoapi/items/objects/game_obj.h"
@@ -15,8 +18,6 @@
 #include "legoapi/menus/core/gamehint.h"
 #include "legoapi/world/world.h"
 #include "nu2api/nu3d/nu3d_includes.h"
-#include "nu2api/nucore/common.h"
-#include "nu2api/nucore/fixed_width.h"
 #include "nu2api/numath/numtx.h"
 #include "nu2api/numath/nuvec.h"
 #endif

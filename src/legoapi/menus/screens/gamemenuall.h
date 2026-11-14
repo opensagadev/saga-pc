@@ -4,11 +4,11 @@
 /* Split from saga.h (tools/headersplit.py, docs/header-plan.md). saga.h includes this header at the place of its
  * declarations. */
 
+#include "nu2api/nucore/common.h"
+
 #include "gameapi/gui/apimenu.h"
 #include "legogame/game.h"
 #include "nu2api/nu3d/nuqfnt.h"
-#include "nu2api/nucore/common.h"
-#include "nu2api/nucore/fixed_width.h"
 
 typedef struct MENU_VIDEO_OPTIONS_PC {
     i32 aspect_mode;

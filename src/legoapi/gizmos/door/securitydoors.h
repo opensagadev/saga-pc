@@ -5,7 +5,7 @@
  * declarations. */
 
 #include "nu2api/nucore/common.h"
-#include "nu2api/nucore/fixed_width.h"
+
 #include "nu2api/numath/numtx.h"
 #include "nu2api/numath/nuvec.h"
 

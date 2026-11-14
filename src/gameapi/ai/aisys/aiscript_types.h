@@ -4,14 +4,15 @@
 
 /* Split from saga.h (tools/headersplit.py, docs/header-plan.md). saga.h includes this header at the place of its
  * declarations. */
-/* Included via saga.h only for now: gameapi/ai/aisys/aipath.h, gameapi/ai/aisys/aisys.h, nu2api/nucore/common.h,
- * nu2api/nucore/fixed_width.h, nu2api/nucore/nulist.h, nu2api/numath/nuvec.h (not all of it earlier in the shim). */
+
+#include "nu2api/nucore/common.h"
+
+/* Included via saga.h only for now: gameapi/ai/aisys/aipath.h, gameapi/ai/aisys/aisys.h, nu2api/nucore/nulist.h,
+ * nu2api/numath/nuvec.h (not all of it earlier in the shim). */
 
 #ifndef SAGA_SHIM
 #include "gameapi/ai/aisys/aipath.h"
 #include "gameapi/ai/aisys/aisys.h"
-#include "nu2api/nucore/common.h"
-#include "nu2api/nucore/fixed_width.h"
 #include "nu2api/nucore/nulist.h"
 #include "nu2api/numath/nuvec.h"
 #endif

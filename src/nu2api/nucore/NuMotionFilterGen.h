@@ -4,8 +4,9 @@
 /* Split from saga.h (tools/headersplit.py, docs/header-plan.md). saga.h includes this header at the place of its
  * declarations. */
 
-#include "nu2api/nucore/NuPostFilter.h"
 #include "nu2api/nucore/common.h"
+
+#include "nu2api/nucore/NuPostFilter.h"
 #include "nu2api/numath/numtx.h"
 
 #ifdef __cplusplus

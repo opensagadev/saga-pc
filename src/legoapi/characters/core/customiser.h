@@ -4,9 +4,12 @@
 
 /* Split from saga.h (tools/headersplit.py, docs/header-plan.md). saga.h includes this header at the place of its
  * declarations. */
+
+#include "nu2api/nucore/common.h"
+
 /* Included via saga.h only for now: legoapi/characters/core/characters.h, legoapi/items/base/apiobject.h,
- * legoapi/menus/screens/customise.h, legoapi/world/world.h, nu2api/nu3d/nu3d_includes.h, nu2api/nucore/common.h,
- * nu2api/nucore/fixed_width.h, nu2api/nufile/nufpar.h (not all of it earlier in the shim). */
+ * legoapi/menus/screens/customise.h, legoapi/world/world.h, nu2api/nu3d/nu3d_includes.h, nu2api/nufile/nufpar.h (not
+ * all of it earlier in the shim). */
 
 #ifndef SAGA_SHIM
 #include "legoapi/characters/core/characters.h"
@@ -14,8 +17,6 @@
 #include "legoapi/menus/screens/customise.h"
 #include "legoapi/world/world.h"
 #include "nu2api/nu3d/nu3d_includes.h"
-#include "nu2api/nucore/common.h"
-#include "nu2api/nucore/fixed_width.h"
 #include "nu2api/nufile/nufpar.h"
 #endif
 /* 3 parts: saga.h includes this header once per part, each where its declarations belong; included directly, it gives

@@ -4,13 +4,15 @@
 
 /* Split from saga.h (tools/headersplit.py, docs/header-plan.md). saga.h includes this header at the place of its
  * declarations. */
+
+#include "nu2api/nucore/common.h"
+
 /* Included via saga.h only for now: decomp.h, legoapi/cutscenes/gcutscn.h, legoapi/render/fx/game_deb.h,
  * nu2api/nu3d/nucamera.h, nu2api/nu3d/nudlist.h, nu2api/nu3d/nugscn.h, nu2api/nu3d/nuhspecial.h, nu2api/nu3d/numtl.h,
- * nu2api/nu3d/nuqfnt.h, nu2api/nu3d/nutexanm.h, nu2api/nucore/common.h, nu2api/nucore/fixed_width.h,
- * nu2api/nucore/nuhgobj.h, nu2api/nucore/nulst.h, nu2api/nudynamiclight_gen.h, nu2api/nufile/nufile.h,
- * nu2api/numath/nuang.h, nu2api/numath/numtx.h, nu2api/numath/nuplane.h, nu2api/numath/nuquat.h, nu2api/numath/nuvec.h,
- * nu2api/numath/nuvec4.h, nu2api/nustencilshadows_PC.h, nu2api/nuwin32/d3dCore.h (not all of it earlier in the shim).
- */
+ * nu2api/nu3d/nuqfnt.h, nu2api/nu3d/nutexanm.h, nu2api/nucore/nuhgobj.h, nu2api/nucore/nulst.h,
+ * nu2api/nudynamiclight_gen.h, nu2api/nufile/nufile.h, nu2api/numath/nuang.h, nu2api/numath/numtx.h,
+ * nu2api/numath/nuplane.h, nu2api/numath/nuquat.h, nu2api/numath/nuvec.h, nu2api/numath/nuvec4.h,
+ * nu2api/nustencilshadows_PC.h, nu2api/nuwin32/d3dCore.h (not all of it earlier in the shim). */
 
 #ifndef SAGA_SHIM
 #include "decomp.h"
@@ -23,8 +25,6 @@
 #include "nu2api/nu3d/numtl.h"
 #include "nu2api/nu3d/nuqfnt.h"
 #include "nu2api/nu3d/nutexanm.h"
-#include "nu2api/nucore/common.h"
-#include "nu2api/nucore/fixed_width.h"
 #include "nu2api/nucore/nuhgobj.h"
 #include "nu2api/nucore/nulst.h"
 #include "nu2api/nudynamiclight_gen.h"

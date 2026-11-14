@@ -4,10 +4,10 @@
 /* Split from saga.h (tools/headersplit.py, docs/header-plan.md). saga.h includes this header at the place of its
  * declarations. */
 
+#include "nu2api/nucore/common.h"
+
 #include "gameapi/gui/apimenu.h"
 #include "nu2api/nu3d/numtl.h"
-#include "nu2api/nucore/common.h"
-#include "nu2api/nucore/fixed_width.h"
 
 #ifdef __cplusplus
 extern "C" {

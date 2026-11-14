@@ -4,6 +4,9 @@
 
 /* Split from saga.h (tools/headersplit.py, docs/header-plan.md). saga.h includes this header at the place of its
  * declarations. */
+
+#include "nu2api/nucore/common.h"
+
 /* Included via saga.h only for now: MechInputTouch/MechInputTouch_types.h, editor/edlevelall.h,
  * gameapi/ai/aisys/aipath.h, gameapi/ai/aisys/aisys.h, gameapi/edptl.h, gameapi/edtools/edgra.h,
  * gameapi/edtools/edui.h, gamelib/util/gamelib_util_types.h, legoapi/gizmo/base/gizactions.h,
@@ -13,8 +16,8 @@
  * legoapi/props/system/socksys.h, legoapi/render/core/gameliball.h, legoapi/world/levels/episode.h,
  * legoapi/world/mission.h, legoapi/world/world.h, nu2api/nu3d/nu3d_includes.h, nu2api/nu3d/nugscn.h,
  * nu2api/nu3d/nuhspecial.h, nu2api/nu3d/numtl.h, nu2api/nu3d/nuspline.h, nu2api/nucore/NuDynamicLight.h,
- * nu2api/nucore/common.h, nu2api/nucore/fixed_width.h, nu2api/nucore/nulist.h, nu2api/nufile/nufile.h,
- * nu2api/numath/numtx.h, nu2api/numath/nuvec.h, nu2api/nustencilshadows_PC.h (not all of it earlier in the shim). */
+ * nu2api/nucore/nulist.h, nu2api/nufile/nufile.h, nu2api/numath/numtx.h, nu2api/numath/nuvec.h,
+ * nu2api/nustencilshadows_PC.h (not all of it earlier in the shim). */
 
 #ifndef SAGA_SHIM
 #include "MechInputTouch/MechInputTouch_types.h"
@@ -46,8 +49,6 @@
 #include "nu2api/nu3d/numtl.h"
 #include "nu2api/nu3d/nuspline.h"
 #include "nu2api/nucore/NuDynamicLight.h"
-#include "nu2api/nucore/common.h"
-#include "nu2api/nucore/fixed_width.h"
 #include "nu2api/nucore/nulist.h"
 #include "nu2api/nufile/nufile.h"
 #include "nu2api/numath/numtx.h"

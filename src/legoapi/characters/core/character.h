@@ -4,12 +4,14 @@
 
 /* Split from saga.h (tools/headersplit.py, docs/header-plan.md). saga.h includes this header at the place of its
  * declarations. */
+
+#include "nu2api/nucore/common.h"
+
 /* Included via saga.h only for now: gameapi/ai/aisys/aisys.h, legoapi/ai/core/gameai.h,
  * legoapi/characters/core/characters.h, legoapi/characters/core/charconfig.h, legoapi/characters/core/players.h,
  * legoapi/characters/motion/action_info.h, legoapi/characters/motion/move.h, legoapi/items/base/animpacket.h,
  * legoapi/items/base/apiobject.h, nu2api/nu3d/nu3d_includes.h, nu2api/nu3d/nugscn.h, nu2api/nucore/bgproc.h,
- * nu2api/nucore/common.h, nu2api/nucore/fixed_width.h, nu2api/numath/numtx.h, nu2api/numath/nuvec.h (not all of it
- * earlier in the shim). */
+ * nu2api/numath/numtx.h, nu2api/numath/nuvec.h (not all of it earlier in the shim). */
 
 #ifndef SAGA_SHIM
 #include "gameapi/ai/aisys/aisys.h"
@@ -24,8 +26,6 @@
 #include "nu2api/nu3d/nu3d_includes.h"
 #include "nu2api/nu3d/nugscn.h"
 #include "nu2api/nucore/bgproc.h"
-#include "nu2api/nucore/common.h"
-#include "nu2api/nucore/fixed_width.h"
 #include "nu2api/numath/numtx.h"
 #include "nu2api/numath/nuvec.h"
 #endif
