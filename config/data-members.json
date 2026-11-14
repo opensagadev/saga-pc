@@ -577,7 +577,7 @@
       "kind": "data_member",
       "owner_symbol": "_CameraClipPlanesPc",
       "owner_identifier": "CameraClipPlanesPc",
-      "owner_unit": "src/data.cpp",
+      "owner_unit": "src/nu2api/nurndr.c",
       "owner_type": "CAMERA_CLIP_PLANES_PC",
       "member_path": "frustum",
       "original_address": "0x00963fc0",
