@@ -18,7 +18,7 @@ extern const char GameAIEveryonePc[];
 void AIScriptMissingStateDiagnostic(const char *format, ...);
 void AIScriptMissingStateDiagnosticAlternate(const char *format, ...);
 void AIScriptMissingConditionDiagnostic(const char *format, ...);
-/* MATCH-EXCEPTION: retail also calls the variadic script diagnostics with no arguments at all; C allows that
+/* MATCH-EXCEPTION: the original also calls the variadic script diagnostics with no arguments at all; C allows that
  * call only through a function type without a prototype. */
 #define AI_SCRIPT_DIAGNOSTIC_BARE(diagnostic) ((void (*)())(diagnostic))()
 
@@ -132,8 +132,8 @@ STATIC_ASSERT(offsetof(EDAIPATHNODE_s, special) == 0x98);
 static i32 iterator_count = 0;
 static f32 ***distance_tables = NULL;
 
-// Native inlined AISysBufferAlloc blocks retain the failure diagnostic and
-// publication after the allocation memset. Size arithmetic remains unsigned32.
+// Inlined AISysBufferAlloc: the failure diagnostic and publication follow the
+// allocation memset. Size arithmetic is unsigned 32-bit.
 #define PATH_BUILD_ALLOCATE(type, destination, input_cursor, input_end, input_size)                                    \
     do {                                                                                                               \
         u32 allocation_size = (input_size);                                                                            \
@@ -161,7 +161,7 @@ static f32 NuFdiv(f32 a, f32 b) {
     return a / b;
 }
 
-/* Float fabs by clearing the sign bit; retail inlines it this way. */
+/* Float fabs by clearing the sign bit. */
 static f32 AIPathFabs(f32 value) {
     union {
         f32 value;
@@ -217,7 +217,6 @@ typedef struct INTERACTION_ANTINODE_VIEW_PC {
 
 typedef void (*CHECK_ANTINODE_FN_PC)(APIOBJECT_PC *, AIANTINODE_PC *, NUVEC *, f32);
 
-/* The genuine callback definitions and initializer remain in the original aisys owner. */
 extern CHECK_ANTINODE_FN_PC checkantinodefns[3];
 
 typedef struct INTERACTION_ANTINODE_SHAPE_VIEW_PC {
@@ -232,7 +231,7 @@ typedef struct INTERACTION_ANTINODE_SHAPE_VIEW_PC {
 
 #define INTERACTION_COS(a) NuTrigTable[(((a) + 0x4000) >> 1) & 0x7fff]
 
-/* Forward declarations for functions used before their retail position. */
+/* Forward declarations for functions used before their definition. */
 
 void AiSysOnlyUsePakFile(i32 enabled);
 
@@ -349,8 +348,8 @@ typedef struct ai_path_system_load_pc_s {
     AIPATHSPECIALROUTE_PC *special_routes; // 0xc
 } AI_PATH_SYSTEM_LOAD_PC;                  // size 0x10
 
-// Native inlined AISysBufferAlloc blocks retain the failure diagnostic and
-// publication after the allocation memset. Size arithmetic remains unsigned32.
+// Inlined AISysBufferAlloc: the failure diagnostic and publication follow the
+// allocation memset. Size arithmetic is unsigned 32-bit.
 #define PATH_LOAD_ALLOCATE(type, destination, input_cursor, input_end, input_size)                                     \
     do {                                                                                                               \
         u32 allocation_size = (input_size);                                                                            \
@@ -389,7 +388,7 @@ STATIC_ASSERT(sizeof(GAMEOBJECT) == 0x10d8);
 
 STATIC_ASSERT(offsetof(GAMEOBJECT, ai_packet) + offsetof(AIPACKET_PC, creature_index) == 0x400);
 
-/* Original AISYS callback family; PC-native seven-argument callback ABI. */
+/* AISYS callback family: seven-argument callbacks. */
 extern i32 TagCharacter(GAMEOBJECT *, GAMEOBJECT *, i32);
 
 STATIC_ASSERT(offsetof(GAMEOBJECT, tag_flags) == 0x7c5);
@@ -475,7 +474,7 @@ STATIC_ASSERT(sizeof(AiEditorSaveMessageColoursPc) == 16);
         destination = (type)allocation_result;                                                                         \
     } while (0)
 
-/* The Native record has a four-byte mask, a five-word drawing callback,
+/* The record has a four-byte mask, a five-word drawing callback,
  * a bounded 64-byte name and a final four-byte options word. */
 typedef struct AI_PATH_CONNECTION_TYPE_PC {
     u32 connection_flag;                           // 0x00
@@ -629,19 +628,8 @@ STATIC_ASSERT(offsetof(EDANTINODE_s, type) == 0x49);
 
 STATIC_ASSERT(offsetof(EDANTINODE_s, link) == 0);
 
-/* Form2: append these genuine editor-owned mutable scalar definitions in
- * existing src/gameapi/aisys.c before the six-function draft. This TU already
- * owns editor behavior, and both cells have process-static lifetime in Native.
- * Translation-unit placement is an ordinary owner choice; source spelling and
- * initialization are unchanged. Native allocation extents unknown; zero credit.
- * src/data.cpp is retained byte-for-byte from baseline, avoiding its measured
- * constructor/data region displacement. All old aisys complete spans remain a
- * hard measured gate. No section attributes, extra helpers, aliases or bank. */
 f32 AiEditorPickHeightTolerancePc = 0.1f;
 
-/* SOURCE DRAFT ONLY. Append to existing src/gameapi/aisys.c, where the
- * existing genuine static set/menu helpers and asserted creature record live.
- * No caller registration/activation, header change, attributes or ABI forcing. */
 extern f32 AiEditorPickHeightTolerancePc;
 
 extern void *(*GlobalCharacterHGobjFn)(i32);
@@ -662,12 +650,11 @@ STATIC_ASSERT(offsetof(EDANTINODE_s, rotation_offset) == 0x38);
 
 STATIC_ASSERT(offsetof(EDANTINODE_s, flags) == 0x3c);
 
-/* Prospective src/gameapi/aisys.c append; existing typed state/shape contracts reused. */
 void NuRndrBoundingBox(NUVEC *minimum, NUVEC *maximum, NUMTX *matrix, i32 colour);
 
 STATIC_ASSERT(offsetof(AIEDITOR_RENDER_STATE, ai_system) == 0x64);
 
-/* Actual PC draw-family field views; no Native owning allocation is inferred. */
+/* Draw-family field views. */
 typedef struct AI_PATH_DRAW_FLAGS_PC {
     NULISTLNK link;      // 0x0
     u8 unknown_08[2];    // 0x8
@@ -712,12 +699,7 @@ STATIC_ASSERT(offsetof(EDAIPATHNODE_s, lower_height) == 0x28);
 
 STATIC_ASSERT(offsetof(EDAIPATHNODE_s, upper_height) == 0x2c);
 
-/* PRIVATE PROPOSAL: append to src/gameapi/aisys.c after existing definitions.
- * No changed registrations; no canonical edits. */
 extern void (*GlobalCharacterRenderFn)(NUVEC *, i16, i32, i32, void *);
-
-/* Four-byte observed mutable cell; Native owning allocation unknown, zero credit.
- * A distinct storage section preserves all existing owner comparison regions. */
 
 extern u8 default_ngroup;
 extern u8 default_nacross;
@@ -756,8 +738,7 @@ STATIC_ASSERT(offsetof(EDAIPATHCHECK_s, width) == 0x14);
 
 STATIC_ASSERT(offsetof(EDAIPATHCHECK_s, angle) == 0x18);
 
-/* Independently observed NUL-terminated Native instruction strings.
- * Separate sections preserve all existing Source data comparison spans. */
+/* NUL-terminated instruction strings, each in its own section to keep the data layout. */
 #pragma const_seg(".rdata$AiAntinodeRenderNearestPc")
 const char AiAntinodeRenderNearestPc[] = "SELECT - Select nearest";
 #pragma const_seg()
@@ -938,7 +919,7 @@ i32 AiParseExpressionFailed = 0;
 
 enum { EQ = 0, LT = 1, GT = 2, LT_EQ = 3, GT_EQ = 4, NEQ = 5 };
 
-/* Early-out guards: retail returns 1 through one shared epilogue. */
+/* Early-out guards return 1 through one shared epilogue. */
 #define AISCRIPT_SET_OWNER_FLAG(packet, params, count, first_time, field, mask, initially_set, set_on_false)           \
     do {                                                                                                               \
         i32 i;                                                                                                         \
@@ -975,7 +956,7 @@ enum { EQ = 0, LT = 1, GT = 2, LT_EQ = 3, GT_EQ = 4, NEQ = 5 };
 
 extern IMAGE_DOS_HEADER __ImageBase;
 
-/* Game-side AI callback registration; retail keeps these in the AI script unit so
+/* Game-side AI callback registration; kept in the AI script unit so
    GameAISysInit calls them out of line. */
 typedef char *(*AI_CHARACTER_NAME_PC)(u8);
 
@@ -1057,7 +1038,7 @@ static f32 AIPathSafeDivide(f32 numerator, f32 denominator) {
     return numerator / denominator;
 }
 
-/* Native 0x5128e0: signed 16-bit angle difference; emitted out of line
+/* Signed 16-bit angle difference; emitted out of line
  * although every use is inlined. */
 static i32 AiAngDiffPc(i32 a, i32 b) {
     i32 difference = (a - b) & 0xffff;
@@ -1102,8 +1083,7 @@ i16 PCPathArcSine(f32 sin) {
            MAX_SHORT_OVER_PI;
 }
 
-/* Native 0x512a40..0x512afa: small helpers that retail emits out of line
- * although every use is inlined. */
+/* Small helpers emitted out of line although every use is inlined. */
 static i16 PCPathArcCos(f32 cos) {
     return 0x4000 - PCPathArcSine(cos);
 }
@@ -1214,7 +1194,7 @@ static AICONDITIONDEF_PC *AIConditionFind(char *name) {
 
     if (game_aiconditiondefs != NULL) {
         definition = game_aiconditiondefs;
-        // MATCH-EXCEPTION: guarded do-while instead of the for loop used by AIActionFind; retail tests
+        // MATCH-EXCEPTION: guarded do-while instead of the for loop used by AIActionFind; the original tests
         // the first name in memory before loading it for the compare, which only this loop shape gives.
         if (definition->name != NULL) {
             do {
@@ -1338,7 +1318,7 @@ static char *AIScriptCopyString(char *text, VARIPTR *buffer, VARIPTR *end) {
         length = NuStrLen(text);
         if (length != 0) {
             copy = AIScriptBufferAllocOrWarn(buffer, end, length + 1);
-            /* Native copies even after failed allocation; the NULL destination hazard is retained. */
+            /* Copies even after a failed allocation; the NULL destination hazard is kept. */
             NuStrCpy(copy, text);
         }
     }
@@ -2454,7 +2434,7 @@ f32 Condition_EitherPlayerInTriggerArea(AISYS_PC *system, AISCRIPTPROCESS_PC *pr
             if (system->player_1 != NULL && area->system != NULL) {
                 object = (GAMEOBJECT *)system->player_1;
                 index = area - area->system->areas;
-                /* Retail sign-extends a 32-bit shift into the 64-bit mask. */
+                /* Sign-extends a 32-bit shift into the 64-bit mask. */
                 mask = (i32)(1u << index);
                 if ((((CONDITION_TRIGGER_PLAYER_READER_PC *)object)->membership & mask) != 0) {
                     return 1.0f;
@@ -2573,7 +2553,7 @@ f32 Condition_YawToOpponent(AISYS_PC *system, AISCRIPTPROCESS_PC *process, AIPAC
         NUVEC difference;
         difference.x = packet->opponent->position.x - packet->owner->position.x;
         difference.z = packet->opponent->position.z - packet->owner->position.z;
-        /* Retail leaves difference.y unwritten before this in-place rotation. */
+        /* difference.y is left unwritten before this in-place rotation. */
         NuVecRotateY(&difference, &difference, -packet->owner->field_0x276);
         return (f32)((f64)NuAtan2D(difference.x, difference.z) * (360.0 / 65536.0));
     }
@@ -2947,7 +2927,7 @@ i32 Action_FacePlayer(AISYS_PC *sys, AISCRIPTPROCESS_PC *processor, AIPACKET_PC 
     return 0;
 }
 
-/* Native 0x515df0: unreferenced in retail. Tests whether target lies within a
+/* Unreferenced. Tests whether target lies within a
  * cone of the given total width in degrees around the facing angle. */
 i32 AIPointWithinFacingAnglePc(NUVEC *target, NUVEC *origin, i32 facing, i32 degrees) {
     NUVEC direction;
@@ -3865,7 +3845,6 @@ static AIPATHSYS_PC *AISysLoadPathsPc(VARIPTR *cursor, i32 version, NUGSCN *scen
     return (AIPATHSYS_PC *)system;
 }
 
-/* Native 0x00517fd0, 105 bytes. */
 AIGROUP_PC *CreateAIGroup(AISYS_PC *system, i32 count_across, f32 x_spacing, f32 z_spacing, f32 max_speed) {
     i32 index;
     AIGROUP_PC *group;
@@ -4339,9 +4318,6 @@ static void AISysCheckAntinode_Rectangle(APIOBJECT_PC *object, AIANTINODE_PC *an
     }
 }
 
-/* Prospective src/gameapi/aisys.c additions. Existing map row at0x5191f0
- * must be renamed to this genuine private helper; Android-named wrapper is0x519680.
- * No compile or compiler-ABI claim. */
 static void AISysDrawBoxPc(NUVEC *minimum, NUVEC *maximum, NUMTX *matrix, u32 colour) {
     NURND_VERTEX3D_PC corners[8];
     i32 i;
@@ -4463,7 +4439,7 @@ void AISysCreatureAntinodeInteraction(AISYS_PC *system, i32 object_count, APIOBJ
                         INTERACTION_GEOMETRY(object)->collision_min.y > antinode->max_y) {
                         continue;
                     }
-                    /* Native unordered min-height comparison continues to callback. */
+                    /* An unordered min-height comparison continues to the callback. */
                     if (!(antinode->min_y > INTERACTION_GEOMETRY(object)->collision_max.y)) {
                         checkantinodefns[antinode->type](object, antinode, &difference, radius);
                     }
@@ -5478,7 +5454,7 @@ void AISysGetPathPosEx(AISYS_PC *system, NUVEC *position, AIPATHINFO_PC *info, A
         u8 start_path;
         u16 start_node;
         i32 inside_extents;
-        // MATCH-EXCEPTION: retail tests the u8 index against both -1 (never true) and 0xff.
+        // MATCH-EXCEPTION: the original tests the u8 index against both -1 (never true) and 0xff.
         if (info->path_index == -1 || info->path_index == 0xff) {
             info->path_index = saved_path->index;
         }
@@ -6583,7 +6559,7 @@ void AIMoveToDestination(AISYS_PC *system, AIPACKET_PC *packet, APIOBJECT_PC *ob
                     next = GetNextConnection(packet, &direction);
                 } while (next != NULL);
             } else {
-                // MATCH-EXCEPTION: retail tests the signed flags as a 64-bit value (cdq) here and below.
+                // MATCH-EXCEPTION: the original tests the signed flags as a 64-bit value (cdq) here and below.
                 flags = (destination_connection->traversal_flags[0] | destination_connection->traversal_flags[1]) &
                         0xdfffffff;
                 if (((u64)flags & 0xd8000000) == 0 && (flags == 0 || (packet->capabilities & flags) != 0) &&
@@ -7512,9 +7488,9 @@ void InitFn_GetAICreatureOrigin(AI_GET_CREATURE_ORIGIN_PC function) {
     GetOriginPositionFn = function;
 }
 
-/* Native 0x520480: unreferenced in retail; callers inline the same
- * registration through AIEDITOR_REGISTER_PC. Retail tail-jumps to the
- * diagnostic with EAX already -1, which needs it in this unit. */
+/* Unreferenced; callers inline the same registration through
+ * AIEDITOR_REGISTER_PC. It tail-jumps to the diagnostic with EAX
+ * already -1, which needs it in this unit. */
 i32 aieditor_Register(char *name, void (*enter)(void), eduimenu_s *(*process)(FRAME_PAD_PC *),
                       void (*draw)(i32, i32, f32, f32), void (*leave)(void)) {
     AI_EDITOR_MODE_ENTRY_PC *entry;
@@ -7736,7 +7712,6 @@ void FindAIDirectionedRandomPointOnNetwork2D(AIPACKET_PC *packet, NUVEC *positio
     result->z = start->position.z + along * delta.z - delta.x * offset;
 }
 
-/* Native 520e10..520e93: private position argument EDI. */
 static EDAIAREA_s *areaEditorCreateArea(NUVEC *position, NUVEC *size, i32 rotation, i32 flags) {
     EDAIAREA_s *area = (EDAIAREA_s *)NuLinkedListGetHead(&aieditor->free_areas);
     if (area != NULL) {
@@ -7752,7 +7727,6 @@ static EDAIAREA_s *areaEditorCreateArea(NUVEC *position, NUVEC *size, i32 rotati
     return area;
 }
 
-/* Native 520ea0..520ed6: private area argument ESI. */
 // noinline: the original calls areaEditorDestroyArea out of line from areaEditor_cbDeleteArea; VC8 would inline it
 // there.
 static __declspec(noinline) void areaEditorDestroyArea(EDAIAREA_s *area) {
@@ -7790,7 +7764,6 @@ void areaEditorSaveData(void) {
     }
 }
 
-/* Native 520fe0..521155. */
 static EDAIAREA_s *areaEditorFindHover(i32 check_inside) {
     EDAIAREA_s *area;
     EDAIAREA_s *nearest = NULL;
@@ -8028,7 +8001,6 @@ static i32 AiEditorAddLocatorToSetPc(EDLOCATORSET_s *set, EDLOCATOR_s *locator, 
     return 0;
 }
 
-/* Native 521c50..521ca4: private name argument EDI. */
 static EDLOCATORSET_s *locatorEditor_FindLocatorSet(char *name) {
     EDLOCATORSET_s *set;
     for (set = (EDLOCATORSET_s *)NuLinkedListGetHead(&aieditor->locator_sets); set != NULL;
@@ -8426,7 +8398,6 @@ static EDAIPATHNODE_s *pathEditor_CreateNode(EDAIPATH_s *path) {
     return node;
 }
 
-/* Native 522a00: private path EAX. */
 static EDAIPATHNODE_s *pathEditor_GetNearestNode(EDAIPATH_s *path, i32 require_radius) {
     EDAIPATHNODE_s *nearest = NULL;
     f32 nearest_distance = FLT_MAX;
@@ -8976,7 +8947,6 @@ void pathEditorDrawPaths(void) {
     }
 }
 
-/* Native 5242b0..52431a. */
 static void pathEditor_CalcNodeIXs(void) {
     EDAIPATH_s *path;
     EDAIPATHNODE_s *node;
@@ -9004,7 +8974,7 @@ void pathEditor_UpdateNodesOnPlatforms(void) {
     }
 }
 
-/* Native 0x5243b0: geometric outputs only; validation belongs to the caller. */
+/* Geometric outputs only; validation belongs to the caller. */
 static void TestPointPathCheck(NUVEC *point, EDAIPATHNODE_s *first, EDAIPATHNODE_s *second, f32 *fraction, f32 *width,
                                i32 *angle, f32 tolerance) {
     NUVEC direction;
@@ -9053,8 +9023,8 @@ static void TestPointPathCheck(NUVEC *point, EDAIPATHNODE_s *first, EDAIPATHNODE
     }
 }
 
-/* Native 0x5245c0: establish a temporary runtime connection, validate it,
- * then calculate editor-space outputs. Ordinary static compiler-private ABI. */
+/* Establishes a temporary runtime connection, validates it,
+ * then calculates editor-space outputs. */
 static i32 TestPointWithinPathCheckPc(NUVEC *point, EDAIPATHNODE_s *first, EDAIPATHNODE_s *second, f32 *fraction,
                                       f32 *width, i32 *angle, f32 tolerance) {
     AIPATH_PC path;
@@ -9091,7 +9061,7 @@ static i32 TestPointWithinPathCheckPc(NUVEC *point, EDAIPATHNODE_s *first, EDAIP
     return 0;
 }
 
-/* Native 0x524810: retest the previous edge, then the edges through each of
+/* Retests the previous edge, then the edges through each of
  * its endpoints' connections in slot order. */
 void pathEditor_QuickOnPathCheck(NUVEC *point, EDAIPATHCHECK_s *previous, EDAIPATHCHECK_s *result) {
     i32 slot;
@@ -9156,7 +9126,6 @@ void pathEditor_OnPathCheck(NUVEC *point, EDAIPATHCHECK_s *result, EDAIPATH_s *p
     }
 }
 
-/* Native 524b00..524b62. */
 EDAIPATH_s *pathEditor_GetPath(char *name) {
     EDAIPATH_s *path = (EDAIPATH_s *)NuLinkedListGetHead(&aieditor->paths);
     while (name != NULL && path != NULL) {
@@ -10308,7 +10277,6 @@ eduimenu_s *aieditor_AddMessage(char *title, char *message) {
     return outer;
 }
 
-/* Native 5274f0..5275e0: private position argument EDI. */
 static EDANTINODE_s *CreateAntinode(NUVEC *position) {
     EDANTINODE_s *node = (EDANTINODE_s *)NuLinkedListGetHead(&aieditor->free_antinodes);
     if (node != NULL) {
@@ -10340,7 +10308,6 @@ static void AiEditorFreeAntinodePc(EDANTINODE_s *node) {
     NuLinkedListAppend(&aieditor->free_antinodes, &node->link);
 }
 
-/* Native 527620..5276d9: private node argument ESI. */
 static void antinodeEditor_AntinodeMoved(EDANTINODE_s *node) {
     NUVEC forward = {0.0f, 0.0f, 1.0f};
     NUVEC rotated;
@@ -10442,7 +10409,6 @@ static void AiEditorAntinodeTypeMenuPc(eduimenu_s *parent, eduiitem_s *item, u32
     }
 }
 
-/* Native 527960: private node ESI, position ECX. */
 static i32 antinodeEditor_InsideEllipse(EDANTINODE_s *node, NUVEC *position) {
     f32 extent;
     NUVEC offset;
@@ -10477,7 +10443,6 @@ static i32 antinodeEditor_InsideEllipse(EDANTINODE_s *node, NUVEC *position) {
     return 1;
 }
 
-/* Native 527ad0: private node ESI, position EDI. */
 static i32 antinodeEditor_InsideRectangle(EDANTINODE_s *node, NUVEC *position) {
     f32 diagonal;
     NUVEC offset;
@@ -10655,8 +10620,8 @@ void antinodeEditorDrawAntinodes(void) {
     }
 }
 
-/* Native 539050..5398fa. Input values are deliberately reread after callbacks
- * where the PC reloads them; publication uses the shared selected/nearest slots. */
+/* Input values are deliberately reread after callbacks;
+ * publication uses the shared selected/nearest slots. */
 void antinodeEditor_Enter(void) {
     i32 i;
     memset(&aieditor->antinodes, 0, sizeof(aieditor->antinodes));
@@ -10744,7 +10709,6 @@ void antinodeEditorSaveData(void) {
     }
 }
 
-/* Native 528450..5285ae: private type argument EDI. */
 static EDAICREATURE_s *CreateCreature(i32 type, NUVEC *position, i32 angle) {
     EDAICREATURE_s *creature = NULL;
     if (type != -1) {
@@ -10793,7 +10757,6 @@ static EDAICREATURE_s *CreateCreature(i32 type, NUVEC *position, i32 angle) {
     return creature;
 }
 
-/* Native 5285b0..5285e9: private creature argument ESI. */
 static void creatureEditorDestroyCreature(EDAICREATURE_s *creature) {
     if (creature != NULL) {
         NuLinkedListRemove(&aieditor->creatures, &creature->link);
@@ -11151,7 +11114,7 @@ static void AiEditorSetRespawnLocatorPc(eduimenu_s *menu, eduiitem_s *item, u32 
         return;
     }
     if (item->data == -1) {
-        /* Native clears the base locator, not the respawn locator. */
+        /* Clears the base locator, not the respawn locator. */
         aieditor->selected_creature->locator = NULL;
         return;
     }
@@ -11703,7 +11666,6 @@ i32 creatureEditor_CalculatePos(EDAICREATURE_s *creature, i32 index, NUVEC *posi
     return 1;
 }
 
-/* Native 52a710: private creature ESI. */
 static void creatureEditor_Updated(EDAICREATURE_s *creature) {
     i32 index;
     NUVEC position;
@@ -14038,7 +14000,7 @@ void AISysGetCharacterPathPos(AISYS_PC *system, APIOBJECT_PC *object, AIPACKET_P
     original_connection = packet->path_info.connection;
     original_path = packet->path_info.path;
 
-    // MATCH-EXCEPTION: retail tests the u8 index against -1 (never true after promotion) and then 0xff.
+    // MATCH-EXCEPTION: the original tests the u8 index against -1 (never true after promotion) and then 0xff.
     if (packet->path_info.path_index == -1 || packet->path_info.path_index == 0xff) {
         packet->path_info.path_index = original_path->index;
     }
@@ -15895,7 +15857,6 @@ void creatureEditor_cbResetParams(eduimenu_s *menu, eduiitem_s *item, u32 event)
     creatureEditor_ResetParamsItem = NULL;
 }
 
-/* Native 534740..534777: private menu argument ESI. */
 static void creatureEditorAddResetParamsItem(eduimenu_s *menu) {
     if (menu != NULL && creatureEditor_ResetParamsItem == NULL) {
         creatureEditor_ResetParamsItem =
@@ -16169,8 +16130,8 @@ i32 Action_Circle(AISYS_PC *sys, AISCRIPTPROCESS_PC *processor, AIPACKET_PC *pac
             } else if (NuStrICmp(params[i], AIPathClockwiseName) == 0) {
                 packet->flags |= 0x200u;
             } else if (NuStrICmp(params[i], AIPathReverseName) == 0) {
-                // MATCH-EXCEPTION: retail flips the clockwise bit as a 1-bit field (x ^ ((~x ^ x) & 0x200)); flags has
-                // no bitfield view, so the flip is a masked merge.
+                // MATCH-EXCEPTION: the original flips the clockwise bit as a 1-bit field (x ^ ((~x ^ x) & 0x200));
+                // flags has no bitfield view, so the flip is a masked merge.
                 packet->flags = (packet->flags & ~0x200u) | (~packet->flags & 0x200u);
             } else if (NuStrICmp(params[i], AIPathFacingName) == 0) {
                 processor->action_data_1 |= 1;
@@ -16245,8 +16206,8 @@ i32 Action_CirclePlayer(AISYS_PC *sys, AISCRIPTPROCESS_PC *processor, AIPACKET_P
             } else if (NuStrICmp(params[i], AIPathClockwiseName) == 0) {
                 packet->flags |= 0x200u;
             } else if (NuStrICmp(params[i], AIPathReverseName) == 0) {
-                // MATCH-EXCEPTION: retail flips the clockwise bit as a 1-bit field (x ^ ((~x ^ x) & 0x200)); flags has
-                // no bitfield view, so the flip is a masked merge.
+                // MATCH-EXCEPTION: the original flips the clockwise bit as a 1-bit field (x ^ ((~x ^ x) & 0x200));
+                // flags has no bitfield view, so the flip is a masked merge.
                 packet->flags = (packet->flags & ~0x200u) | (~packet->flags & 0x200u);
             } else if (NuStrICmp(params[i], AIPathFacingName) == 0) {
                 processor->action_data_1 |= 1;
@@ -16294,8 +16255,8 @@ i32 Action_CircleOpponent(AISYS_PC *system, AISCRIPTPROCESS_PC *processor, AIPAC
             } else if (NuStrICmp(params[i], AIPathClockwiseName) == 0) {
                 packet->flags |= 0x200u;
             } else if (NuStrICmp(params[i], AIPathReverseName) == 0) {
-                // MATCH-EXCEPTION: retail flips the clockwise bit as a 1-bit field (x ^ ((~x ^ x) & 0x200)); flags has
-                // no bitfield view, so the flip is a masked merge.
+                // MATCH-EXCEPTION: the original flips the clockwise bit as a 1-bit field (x ^ ((~x ^ x) & 0x200));
+                // flags has no bitfield view, so the flip is a masked merge.
                 packet->flags = (packet->flags & ~0x200u) | (~packet->flags & 0x200u);
             } else if (NuStrICmp(params[i], "RANDOM") == 0) {
                 if (NuRandFloat() < 0.5f) {
@@ -17830,7 +17791,7 @@ eduimenu_s *antinodeEditor_Process(FRAME_PAD_PC *pad) {
                 }
             } else {
                 aieditorsettings.locator_rotation = aieditor->selected_antinode->flags;
-                /* Crossed Native pressed bits are intentional. */
+                /* Crossed pressed bits are intentional. */
                 if (pad->digital_buttons_pressed & 0x2000) {
                     aieditor->rotation_repeat = 20;
                 } else {
