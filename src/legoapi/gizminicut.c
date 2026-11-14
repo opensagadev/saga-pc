@@ -14,34 +14,34 @@ typedef struct minicut_part_s { // size 0x44
     u16 padding;                // 0x3a
     f32 duration;               // 0x3c
     f32 field_of_view;          // 0x40
-} MINICUT_PART_PC;
+} MINICUT_PART;
 
-typedef struct minicut_s {  // size 0x30
-    char name[16];          // 0x00
-    MINICUT_PART_PC *parts; // 0x10
-    i32 part_count;         // 0x14
-    u8 played;              // 0x18
-    u8 padding[3];          // 0x19
-    f32 blend_in;           // 0x1c
-    f32 tracking_speed;     // 0x20
-    f32 blend_out;          // 0x24
-    f32 hold_time;          // 0x28
-    f32 end_time;           // 0x2c
-} MINICUT_PC;
+typedef struct minicut_s { // size 0x30
+    char name[16];         // 0x00
+    MINICUT_PART *parts;   // 0x10
+    i32 part_count;        // 0x14
+    u8 played;             // 0x18
+    u8 padding[3];         // 0x19
+    f32 blend_in;          // 0x1c
+    f32 tracking_speed;    // 0x20
+    f32 blend_out;         // 0x24
+    f32 hold_time;         // 0x28
+    f32 end_time;          // 0x2c
+} MINICUT;
 
 typedef struct minicut_world_s { // size 0x50f8
     u8 unknown[0x50ec];          // 0x0000
-    MINICUT_PC *minicuts;        // 0x50ec
-    MINICUT_PART_PC *parts;      // 0x50f0
+    MINICUT *minicuts;           // 0x50ec
+    MINICUT_PART *parts;         // 0x50f0
     i32 count;                   // 0x50f4
-} MINICUT_WORLD_PC;
+} MINICUT_WORLD;
 
 static i32 GizMiniCut_GetMaxGizmos(void *world) {
     return ((WORLDINFO *)world)->current_level->max_minicuts;
 }
 
 static void GizMiniCut_AddGizmos(void *system, i32 type_id, void *world_ptr, void *data) {
-    MINICUT_WORLD_PC *world = world_ptr;
+    MINICUT_WORLD *world = world_ptr;
     i32 i;
     (void)data;
     if (world->minicuts == NULL) {
@@ -53,11 +53,11 @@ static void GizMiniCut_AddGizmos(void *system, i32 type_id, void *world_ptr, voi
 }
 
 static char *GizMiniCut_GetGizmoName(GIZMO_PC *gizmo) {
-    return gizmo != NULL ? ((MINICUT_PC *)gizmo->object)->name : NULL;
+    return gizmo != NULL ? ((MINICUT *)gizmo->object)->name : NULL;
 }
 
 static i32 GizMiniCut_GetOutput(GIZMO_PC *gizmo, i32 output, i32 mode) {
-    MINICUT_PC *cut;
+    MINICUT *cut;
     (void)mode;
     if (gizmo == NULL || gizmo->object == NULL) {
         return 0;
@@ -91,10 +91,10 @@ static i32 GizMiniCut_GetNumOutputs(GIZMO_PC *gizmo) {
     return 2;
 }
 
-static void GizMiniCut_Play(MINICUT_PC *cut) {
+static void GizMiniCut_Play(MINICUT *cut) {
     i32 i;
     for (i = 0; i < cut->part_count; ++i) {
-        MINICUT_PART_PC *part = &cut->parts[i];
+        MINICUT_PART *part = &cut->parts[i];
         NUVEC position;
         u32 flags;
         position.x = 0.0f;
@@ -132,7 +132,7 @@ void GizMiniCut_Activate(GIZMO_PC *gizmo, i32 active) {
 }
 
 static NUVEC *GizMiniCut_GetPos(GIZMO_PC *gizmo) {
-    MINICUT_PC *cut;
+    MINICUT *cut;
     if (gizmo == NULL || gizmo->object == NULL) {
         return NULL;
     }
@@ -141,7 +141,7 @@ static NUVEC *GizMiniCut_GetPos(GIZMO_PC *gizmo) {
 }
 
 static i32 GizMiniCut_UsingSpecial(GIZMO_PC **results, void *world_ptr, i32 capacity, char *name) {
-    MINICUT_WORLD_PC *world = world_ptr;
+    MINICUT_WORLD *world = world_ptr;
     i32 i;
     i32 j;
     i32 count = 0;
@@ -149,7 +149,7 @@ static i32 GizMiniCut_UsingSpecial(GIZMO_PC **results, void *world_ptr, i32 capa
         return 0;
     }
     for (i = 0; i < world->count; ++i) {
-        MINICUT_PC *cut = &world->minicuts[i];
+        MINICUT *cut = &world->minicuts[i];
         for (j = 0; j < cut->part_count; ++j) {
             if (NuStrICmp(cut->parts[j].name, name) == 0) {
                 results[count++] = GizmoFindByName(((WORLDINFO *)world)->gizmo_sys, -1, cut->name);
@@ -164,15 +164,15 @@ static i32 GizMiniCut_UsingSpecial(GIZMO_PC **results, void *world_ptr, i32 capa
 
 void GizMiniCut_Reset(void *world_ptr, void *data, void *progress) {
     WORLDINFO *world = world_ptr;
-    MINICUT_WORLD_PC *view = (MINICUT_WORLD_PC *)world;
+    MINICUT_WORLD *view = (MINICUT_WORLD *)world;
     i32 i;
     i32 j;
     (void)data;
     (void)progress;
     for (i = 0; i < view->count; ++i) {
-        MINICUT_PC *cut = &view->minicuts[i];
+        MINICUT *cut = &view->minicuts[i];
         for (j = 0; j < cut->part_count; ++j) {
-            MINICUT_PART_PC *part = &cut->parts[j];
+            MINICUT_PART *part = &cut->parts[j];
             GAMEOBJECT *object = GetNamedGameObject(world->ai_sys, part->name);
             if (object == NULL) {
                 NUSPECIALHANDLE special;
@@ -197,19 +197,19 @@ void GizMiniCut_Reset(void *world_ptr, void *data, void *progress) {
 }
 
 static void *GizMiniCut_ReserveBufferSpace(WORLDINFO *world) {
-    MINICUT_WORLD_PC *view = (MINICUT_WORLD_PC *)world;
+    MINICUT_WORLD *view = (MINICUT_WORLD *)world;
     i32 i;
     view->minicuts = NULL;
     view->count = 0;
     if (world->current_level->max_minicuts != 0) {
         world->giz_buffer.addr = (world->giz_buffer.addr + 3) & ~3u;
-        view->minicuts = (MINICUT_PC *)world->giz_buffer.addr;
-        world->giz_buffer.addr += world->current_level->max_minicuts * sizeof(MINICUT_PC);
-        memset(view->minicuts, 0, world->current_level->max_minicuts * sizeof(MINICUT_PC));
+        view->minicuts = (MINICUT *)world->giz_buffer.addr;
+        world->giz_buffer.addr += world->current_level->max_minicuts * sizeof(MINICUT);
+        memset(view->minicuts, 0, world->current_level->max_minicuts * sizeof(MINICUT));
         world->giz_buffer.addr = (world->giz_buffer.addr + 3) & ~3u;
-        view->parts = (MINICUT_PART_PC *)world->giz_buffer.addr;
-        world->giz_buffer.addr += world->current_level->max_minicut_stages * world->current_level->max_minicuts * sizeof(MINICUT_PART_PC);
-        memset(view->parts, 0, world->current_level->max_minicut_stages * world->current_level->max_minicuts * sizeof(MINICUT_PART_PC));
+        view->parts = (MINICUT_PART *)world->giz_buffer.addr;
+        world->giz_buffer.addr += world->current_level->max_minicut_stages * world->current_level->max_minicuts * sizeof(MINICUT_PART);
+        memset(view->parts, 0, world->current_level->max_minicut_stages * world->current_level->max_minicuts * sizeof(MINICUT_PART));
         for (i = 0; i < world->current_level->max_minicuts; ++i) {
             view->minicuts[i].parts = &view->parts[i * world->current_level->max_minicut_stages];
             view->minicuts[i].blend_out = 2.5f;
@@ -226,7 +226,7 @@ static void *GizMiniCut_ReserveBufferSpace(WORLDINFO *world) {
 
 i32 GizMiniCut_Load(void *world_ptr, void *data) {
     WORLDINFO *world = world_ptr;
-    MINICUT_WORLD_PC *view = (MINICUT_WORLD_PC *)world;
+    MINICUT_WORLD *view = (MINICUT_WORLD *)world;
     i32 i;
     i32 j;
     (void)data;
@@ -236,7 +236,7 @@ i32 GizMiniCut_Load(void *world_ptr, void *data) {
         view->count = world->current_level->max_minicuts;
     }
     for (i = 0; i < view->count; ++i) {
-        MINICUT_PC *cut = &view->minicuts[i];
+        MINICUT *cut = &view->minicuts[i];
         EdFileRead(cut->name, EdFileReadChar());
         cut->blend_in = EdFileReadFloat();
         cut->tracking_speed = EdFileReadFloat();
@@ -245,7 +245,7 @@ i32 GizMiniCut_Load(void *world_ptr, void *data) {
         cut->end_time = EdFileReadFloat();
         cut->part_count = EdFileReadChar();
         for (j = 0; j < cut->part_count; ++j) {
-            MINICUT_PART_PC *part = &cut->parts[j];
+            MINICUT_PART *part = &cut->parts[j];
             EdFileRead(part->name, EdFileReadChar());
             part->position.x = EdFileReadFloat();
             part->position.y = EdFileReadFloat();

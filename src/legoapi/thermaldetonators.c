@@ -6,7 +6,7 @@ void PartImpact_ThermalDetonator(PART_PC *part) {
     u32 shadow;
     i32 layer;
     f32 water;
-    PART_ACTION_PC stop;
+    PART_ACTION stop;
     NUVEC trail;
     if ((part->active & 0x8000) != 0) {
         KillPart(part, 0);

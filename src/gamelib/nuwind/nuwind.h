@@ -27,27 +27,27 @@ typedef struct nuwind_s {        // size 0x38
 extern "C" {
 #endif
 
-    typedef struct PC_NUWINDGROUP {    // size 0x4c
-        u16 in_use;                    // 0x00
-        u16 flags;                     // 0x02
-        NUGSCN *scene;                 // 0x04
-        NUDISPLAY_SPECIAL_PC *special; // 0x08
-        NUMTX *matrices;               // 0x0c
-        NUVEC center;                  // 0x10
-        u8 drawn;                      // 0x1c
-        u8 visible;                    // 0x1d
-        i16 matrix_count;              // 0x1e
-        f32 value20;                   // 0x20
-        f32 value24;                   // 0x24
-        f32 radius_squared;            // 0x28
-        f32 radius;                    // 0x2c
-        f32 near_distance;             // 0x30
-        f32 far_distance;              // 0x34
-        f32 extended_radius_squared;   // 0x38
-        f32 distance_range;            // 0x3c
-        f32 field_40;                  // 0x40
-        f32 field_44;                  // 0x44
-        f32 field_48;                  // 0x48
+    typedef struct PC_NUWINDGROUP {  // size 0x4c
+        u16 in_use;                  // 0x00
+        u16 flags;                   // 0x02
+        NUGSCN *scene;               // 0x04
+        NUDISPLAY_SPECIAL *special;  // 0x08
+        NUMTX *matrices;             // 0x0c
+        NUVEC center;                // 0x10
+        u8 drawn;                    // 0x1c
+        u8 visible;                  // 0x1d
+        i16 matrix_count;            // 0x1e
+        f32 value20;                 // 0x20
+        f32 value24;                 // 0x24
+        f32 radius_squared;          // 0x28
+        f32 radius;                  // 0x2c
+        f32 near_distance;           // 0x30
+        f32 far_distance;            // 0x34
+        f32 extended_radius_squared; // 0x38
+        f32 distance_range;          // 0x3c
+        f32 field_40;                // 0x40
+        f32 field_44;                // 0x44
+        f32 field_48;                // 0x48
     } PC_NUWINDGROUP;
 
     extern PC_NUWINDGROUP *NuWindGroup;

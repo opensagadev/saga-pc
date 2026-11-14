@@ -10,38 +10,38 @@ typedef struct startup_door_spline_s { // size 0xc
     i16 point_count;                   // 0x0
     u8 unknown_02[6];                  // 0x2
     NUVEC *points;                     // 0x8
-} STARTUP_DOOR_SPLINE_PC;
+} STARTUP_DOOR_SPLINE;
 
-typedef struct startup_door_s {     // size 0x128
-    u8 unknown_00[0xa0];            // 0x000
-    STARTUP_DOOR_SPLINE_PC *spline; // 0x0a0
-    NUVEC point0;                   // 0x0a4
-    NUVEC point1;                   // 0x0b0
-    NUVEC opposite_midpoint;        // 0x0bc
-    NUVEC point3;                   // 0x0c8
-    NUVEC position;                 // 0x0d4
-    f32 radius;                     // 0x0e0
-    NUVEC normal;                   // 0x0e4
-    u8 unknown_f0[4];               // 0x0f0
-    u8 next_sock;                   // 0x0f4
-    u8 flags;                       // 0x0f5
-    u8 vehicle;                     // 0x0f6
-    u8 active;                      // 0x0f7
-    u8 unknown_f8[0x18];            // 0x0f8
-    NUPLANE plane;                  // 0x110
-    u8 unknown_120[8];              // 0x120
-} STARTUP_DOOR_PC;
+typedef struct startup_door_s {  // size 0x128
+    u8 unknown_00[0xa0];         // 0x000
+    STARTUP_DOOR_SPLINE *spline; // 0x0a0
+    NUVEC point0;                // 0x0a4
+    NUVEC point1;                // 0x0b0
+    NUVEC opposite_midpoint;     // 0x0bc
+    NUVEC point3;                // 0x0c8
+    NUVEC position;              // 0x0d4
+    f32 radius;                  // 0x0e0
+    NUVEC normal;                // 0x0e4
+    u8 unknown_f0[4];            // 0x0f0
+    u8 next_sock;                // 0x0f4
+    u8 flags;                    // 0x0f5
+    u8 vehicle;                  // 0x0f6
+    u8 active;                   // 0x0f7
+    u8 unknown_f8[0x18];         // 0x0f8
+    NUPLANE plane;               // 0x110
+    u8 unknown_120[8];           // 0x120
+} STARTUP_DOOR;
 
 typedef struct startup_world_doors_s { // size 0x46a4
     u8 unknown_00[0x4698];             // 0x0000
-    STARTUP_DOOR_PC *doors;            // 0x4698
+    STARTUP_DOOR *doors;               // 0x4698
     i32 door_count;                    // 0x469c
-    STARTUP_DOOR_PC *start_door;       // 0x46a0
-} STARTUP_WORLD_DOORS_PC;
+    STARTUP_DOOR *start_door;          // 0x46a0
+} STARTUP_WORLD_DOORS;
 
 void Doors_Init(WORLDINFO *world) {
-    STARTUP_WORLD_DOORS_PC *view = (STARTUP_WORLD_DOORS_PC *)world;
-    STARTUP_DOOR_PC *door;
+    STARTUP_WORLD_DOORS *view = (STARTUP_WORLD_DOORS *)world;
+    STARTUP_DOOR *door;
     i32 index;
     LastDoorPointer = NULL;
     view->start_door = NULL;
@@ -92,7 +92,7 @@ typedef struct player_position_record_s { // size 0x10
     f32 sock_ratio;                       // 0x8
     i16 angle;                            // 0xc
     u8 unknown_0e[2];                     // 0xe
-} PLAYER_POSITION_RECORD_PC;
+} PLAYER_POSITION_RECORD;
 
 typedef struct player_door_s { // size 0x128
     char name[128];            // 0x000
@@ -108,14 +108,14 @@ typedef struct player_door_s { // size 0x128
     u8 vehicle;                // 0x0f6
     u8 active;                 // 0x0f7
     u8 unknown_f8[0x30];       // 0x0f8
-} PLAYER_DOOR_PC;
+} PLAYER_DOOR;
 
 typedef struct player_world_doors_s { // size 0x46a4
     u8 unknown_00[0x4698];            // 0x0000
-    PLAYER_DOOR_PC *doors;            // 0x4698
+    PLAYER_DOOR *doors;               // 0x4698
     i32 door_count;                   // 0x469c
-    PLAYER_DOOR_PC *start_door;       // 0x46a0
-} PLAYER_WORLD_DOORS_PC;
+    PLAYER_DOOR *start_door;          // 0x46a0
+} PLAYER_WORLD_DOORS;
 
 typedef union player_position_sock_pc_u { // size 0x38
     SOCKPOSITION_PC sock;
@@ -124,11 +124,11 @@ typedef union player_position_sock_pc_u { // size 0x38
         i32 location; // 0x00
         f32 ratio;    // 0x04
     } start;
-} PLAYER_POSITION_SOCK_PC;
+} PLAYER_POSITION_SOCK;
 
 void *Door_FindByName(WORLDINFO *world, char *name) {
-    PLAYER_WORLD_DOORS_PC *view = (PLAYER_WORLD_DOORS_PC *)world;
-    PLAYER_DOOR_PC *door = view->doors;
+    PLAYER_WORLD_DOORS *view = (PLAYER_WORLD_DOORS *)world;
+    PLAYER_DOOR *door = view->doors;
     i32 index;
     if (door != NULL) {
         for (index = 0; index < view->door_count; ++index, ++door) {
@@ -141,17 +141,17 @@ void *Door_FindByName(WORLDINFO *world, char *name) {
 }
 
 i32 StartDoorPositions(void) {
-    PLAYER_DOOR_PC *door;
-    PLAYER_POSITION_RECORD_PC *start;
+    PLAYER_DOOR *door;
+    PLAYER_POSITION_RECORD *start;
     i32 index;
     i32 point;
     Door_Start = 0;
     if (DoorExitName[0] != '\0') {
-        door = ((PLAYER_WORLD_DOORS_PC *)WORLD)->doors;
+        door = ((PLAYER_WORLD_DOORS *)WORLD)->doors;
         if (door != NULL) {
-            for (index = 0; index < ((PLAYER_WORLD_DOORS_PC *)WORLD)->door_count; ++index, ++door) {
+            for (index = 0; index < ((PLAYER_WORLD_DOORS *)WORLD)->door_count; ++index, ++door) {
                 if (door->spline != NULL && NuStrICmp(door->name, DoorExitName) == 0) {
-                    start = (PLAYER_POSITION_RECORD_PC *)PlayerStart;
+                    start = (PLAYER_POSITION_RECORD *)PlayerStart;
                     for (point = 5; point < 21; point += 2, ++start) {
                         NUANG angle;
                         if (door->spline->length > point) {
@@ -163,7 +163,7 @@ i32 StartDoorPositions(void) {
                             /* Reads start[-1] here, which in the original data layout is
                                PlayerList. PlayerList is not placed before PlayerStart here,
                                so it is named explicitly. */
-                            PLAYER_POSITION_RECORD_PC *previous = point == 5 ? (PLAYER_POSITION_RECORD_PC *)PlayerList : start - 1;
+                            PLAYER_POSITION_RECORD *previous = point == 5 ? (PLAYER_POSITION_RECORD *)PlayerList : start - 1;
                             start->position = previous->position;
                             angle = previous->angle;
                         }
@@ -180,8 +180,8 @@ i32 StartDoorPositions(void) {
 }
 
 void *Door_FindByIndex(WORLDINFO *world, i32 area, i32 level, NUVEC *position) {
-    PLAYER_DOOR_PC *door = ((PLAYER_WORLD_DOORS_PC *)world)->doors;
-    PLAYER_DOOR_PC *nearest;
+    PLAYER_DOOR *door = ((PLAYER_WORLD_DOORS *)world)->doors;
+    PLAYER_DOOR *nearest;
     f32 nearest_distance;
     f32 distance;
     i32 index;
@@ -190,7 +190,7 @@ void *Door_FindByIndex(WORLDINFO *world, i32 area, i32 level, NUVEC *position) {
     }
     nearest_distance = 1000000.0f;
     nearest = NULL;
-    for (index = 0; index < ((PLAYER_WORLD_DOORS_PC *)world)->door_count; ++index, ++door) {
+    for (index = 0; index < ((PLAYER_WORLD_DOORS *)world)->door_count; ++index, ++door) {
         if ((door->flags & 4) == 0 && door->level != -1 &&
             ((level != -1 && door->level == level) || (area != -1 && LDataList[door->level].area_index == area))) {
             if (position == NULL) {
@@ -323,7 +323,7 @@ typedef struct door_config_s {  // size 0x128
     u8 unknown_110[0x10];       // 0x110
     CUTINFO *cutscene;          // 0x120
     u8 unknown_124[4];          // 0x124
-} DOOR_CONFIG_PC;
+} DOOR_CONFIG;
 
 typedef struct world_door_config_s { // size 0x46a0
     u8 unknown_000[0x104];           // 0x0000
@@ -331,12 +331,12 @@ typedef struct world_door_config_s { // size 0x46a0
     u8 unknown_108[0x13c - 0x108];   // 0x0108
     NUGSCN *scene;                   // 0x013c
     u8 unknown_140[0x4698 - 0x140];  // 0x0140
-    DOOR_CONFIG_PC *doors;           // 0x4698
+    DOOR_CONFIG *doors;              // 0x4698
     i32 door_count;                  // 0x469c
-} WORLD_DOOR_CONFIG_PC;
+} WORLD_DOOR_CONFIG;
 
-static WORLD_DOOR_CONFIG_PC *D_worldinfo = 0;
-static DOOR_CONFIG_PC *D_door = 0;
+static WORLD_DOOR_CONFIG *D_worldinfo = 0;
+static DOOR_CONFIG *D_door = 0;
 
 static void D_spline(NUFPAR_PC *parser) {
     i32 i;
@@ -473,9 +473,9 @@ static NUFPCOMJMP Door_ConfigKeywords[] = {
 };
 
 void Doors_Configure(WORLDINFO *world_ptr, char *config) {
-    WORLD_DOOR_CONFIG_PC *world = (WORLD_DOOR_CONFIG_PC *)world_ptr;
+    WORLD_DOOR_CONFIG *world = (WORLD_DOOR_CONFIG *)world_ptr;
     NUFPAR_PC *parser;
-    DOOR_CONFIG_PC *door;
+    DOOR_CONFIG *door;
     i32 in_door;
     world->doors = NULL;
     if (world->scene == NULL) {

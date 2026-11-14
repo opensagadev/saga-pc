@@ -17,25 +17,25 @@
 extern "C" {
 #endif
 
-    typedef struct PC_NUFADEGROUP {    // size 0x40
-        i16 active;                    // 0x00
-        i16 flags;                     // 0x02
-        NUGSCN *scene;                 // 0x04
-        NUDISPLAY_SPECIAL_PC *special; // 0x08
-        void *terrain;                 // 0x0c
-        i16 instance_index;            // 0x10
-        u8 unknown_12[2];              // 0x12
-        NUMTX *matrices;               // 0x14
-        i16 *platforms;                // 0x18
-        NUVEC centre;                  // 0x1c
-        u8 drawn;                      // 0x28
-        u8 in_range;                   // 0x29
-        i16 count;                     // 0x2a
-        f32 radius_squared;            // 0x2c
-        f32 near_distance;             // 0x30
-        f32 far_distance;              // 0x34
-        f32 cull_distance_squared;     // 0x38
-        f32 fade_range;                // 0x3c
+    typedef struct PC_NUFADEGROUP { // size 0x40
+        i16 active;                 // 0x00
+        i16 flags;                  // 0x02
+        NUGSCN *scene;              // 0x04
+        NUDISPLAY_SPECIAL *special; // 0x08
+        void *terrain;              // 0x0c
+        i16 instance_index;         // 0x10
+        u8 unknown_12[2];           // 0x12
+        NUMTX *matrices;            // 0x14
+        i16 *platforms;             // 0x18
+        NUVEC centre;               // 0x1c
+        u8 drawn;                   // 0x28
+        u8 in_range;                // 0x29
+        i16 count;                  // 0x2a
+        f32 radius_squared;         // 0x2c
+        f32 near_distance;          // 0x30
+        f32 far_distance;           // 0x34
+        f32 cull_distance_squared;  // 0x38
+        f32 fade_range;             // 0x3c
     } PC_NUFADEGROUP;
 
     extern PC_NUFADEGROUP *NuFadeObjGroup;

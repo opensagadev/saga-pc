@@ -2,26 +2,26 @@
 #include <string.h>
 #include <stdio.h>
 
-STATIC_ASSERT(offsetof(LEVEL_SCRIPT_PROCESS_PC, processor) + offsetof(AISCRIPTPROCESS, flags) == 0x60);
+STATIC_ASSERT(offsetof(LEVEL_SCRIPT_PROCESS, processor) + offsetof(AISCRIPTPROCESS, flags) == 0x60);
 
 /* Native PC startup and callback providers; insert in gameai.c before GameAISysSetGame. */
-typedef char *(*AI_CHARACTER_NAME_PC)(u8);
-typedef char *(*AI_GLOBAL_CHARACTER_NAME_PC)(i32);
-typedef void *(*AI_GLOBAL_CHARACTER_HGOBJ_PC)(i32);
-typedef void (*AI_GLOBAL_CHARACTER_RENDER_PC)(NUVEC *, i16, i32, i32, void *);
-typedef void (*AI_CLEAR_CREATURES_PC)(void);
-typedef APIOBJECT *(*AI_GET_NAMED_OBJECT_PC)(void *, char *);
-typedef NUVEC *(*AI_GET_CREATURE_ORIGIN_PC)(AISYS_PC *, AIPACKET *);
+typedef char *(*AI_CHARACTER_NAME)(u8);
+typedef char *(*AI_GLOBAL_CHARACTER_NAME)(i32);
+typedef void *(*AI_GLOBAL_CHARACTER_HGOBJ)(i32);
+typedef void (*AI_GLOBAL_CHARACTER_RENDER)(NUVEC *, i16, i32, i32, void *);
+typedef void (*AI_CLEAR_CREATURES)(void);
+typedef APIOBJECT *(*AI_GET_NAMED_OBJECT)(void *, char *);
+typedef NUVEC *(*AI_GET_CREATURE_ORIGIN)(AISYS_PC *, AIPACKET *);
 
 i32 StarWars_PreparingForSpecialMove(AIPACKET *, APIOBJECT *, i32);
 i32 StarWars_MidSpecialMove(AISYS_PC *, AIPACKET *, APIOBJECT *);
 
-AI_CHARACTER_NAME_PC LevelCharacterNameFn = 0;
-AI_CHARACTER_NAME_PC SpecialRouteCharacterNameFn = 0;
-AI_GLOBAL_CHARACTER_NAME_PC GlobalCharacterNameFn = 0;
-AI_GLOBAL_CHARACTER_HGOBJ_PC GlobalCharacterHGobjFn = 0;
-AI_GLOBAL_CHARACTER_RENDER_PC GlobalCharacterRenderFn = 0;
-AI_CLEAR_CREATURES_PC ClearAICreaturesFn = 0;
+AI_CHARACTER_NAME LevelCharacterNameFn = 0;
+AI_CHARACTER_NAME SpecialRouteCharacterNameFn = 0;
+AI_GLOBAL_CHARACTER_NAME GlobalCharacterNameFn = 0;
+AI_GLOBAL_CHARACTER_HGOBJ GlobalCharacterHGobjFn = 0;
+AI_GLOBAL_CHARACTER_RENDER GlobalCharacterRenderFn = 0;
+AI_CLEAR_CREATURES ClearAICreaturesFn = 0;
 
 typedef struct EQUIVALENTOBJECTGROUP { // size 0x10
     i16 object_count;                  // 0x0

@@ -106,7 +106,7 @@ typedef struct zipup_transport_view_s { // size 0xdb0
     NUVEC landing;                      // 0x76c
     u8 unknown_778[0x634];              // 0x778
     f32 detach_fall_delay;              // 0xdac
-} ZIPUP_TRANSPORT_VIEW_PC;
+} ZIPUP_TRANSPORT_VIEW;
 
 #define ASIN_NEG_1_OVER_6 PCPathArcSineCoefficient3
 #define ASIN_NEG_3_OVER_40 PCPathArcSineCoefficient5
@@ -120,7 +120,7 @@ typedef struct zipup_transport_view_s { // size 0xdb0
 typedef struct zipup_progress_s { // size 0x8
     u32 active_mask[1];           // 0x0
     u32 visible_mask[1];          // 0x4
-} ZIPUP_PROGRESS_PC;
+} ZIPUP_PROGRESS;
 
 enum ZIPUP_FLAGS {
     ZIPUP_FLAG_CONFIG_0 = 1,
@@ -139,12 +139,12 @@ typedef struct zipup_rope_vertex_s { // size 0x24
     u32 colour;                      // 0x18
     f32 u;                           // 0x1c
     f32 v;                           // 0x20
-} ZIPUP_ROPE_VERTEX_PC;
+} ZIPUP_ROPE_VERTEX;
 
 typedef struct zipup_rope_material_s { // size 0x74
     u8 unknown_0[0x70];                // 0x00
     f32 opacity;                       // 0x70
-} ZIPUP_ROPE_MATERIAL_PC;
+} ZIPUP_ROPE_MATERIAL;
 
 static f32 ZipUpFabs(f32 value);
 
@@ -368,7 +368,7 @@ static void ZipUpResetSingle(ZIPUP_PC *zipup) {
     zipup->flags_word = (zipup->flags_word & ~0x100) | 0xc0;
 }
 
-extern void ZipUps_Reset(WORLDINFO *world, void *unused, ZIPUP_PROGRESS_PC *progress) {
+extern void ZipUps_Reset(WORLDINFO *world, void *unused, ZIPUP_PROGRESS *progress) {
     ZIPUP_PC *zipup;
 
     (void)unused;
@@ -448,7 +448,7 @@ ZIPUP_PC *ZipUp_FindNearest(WORLDINFO *world, NUVEC *position, f32 radius, f32 *
 }
 
 void ZipUp_MoveCode(GAMEOBJECT *object, i32 special_pressed) {
-    ZIPUP_TRANSPORT_VIEW_PC *transport;
+    ZIPUP_TRANSPORT_VIEW *transport;
     ZIPUP_PC *zipup;
     NUVEC *hook;
     NUVEC *destination;
@@ -456,7 +456,7 @@ void ZipUp_MoveCode(GAMEOBJECT *object, i32 special_pressed) {
     i32 player_active;
     NUVEC end_offset;
 
-    transport = (ZIPUP_TRANSPORT_VIEW_PC *)object;
+    transport = (ZIPUP_TRANSPORT_VIEW *)object;
     if (object->character_context == 0x47) {
         if (object->action_movement_state == 1) {
             NUVEC delta;
@@ -996,17 +996,17 @@ static char *ZipUp_GetGizmoName(GIZMO_PC *gizmo) {
 }
 
 static void *ZipUps_AllocateProgressData(VARIPTR *buffer, VARIPTR *end) {
-    return GizmoBufferAlloc(buffer, end, sizeof(ZIPUP_PROGRESS_PC));
+    return GizmoBufferAlloc(buffer, end, sizeof(ZIPUP_PROGRESS));
 }
 
-static void ZipUps_ClearProgress(void *unused, ZIPUP_PROGRESS_PC *progress) {
+static void ZipUps_ClearProgress(void *unused, ZIPUP_PROGRESS *progress) {
     if (progress) {
         progress->active_mask[0] = ~0u;
         progress->visible_mask[0] = ~0u;
     }
 }
 
-static void ZipUps_StoreProgress(WORLDINFO *world, void *unused, ZIPUP_PROGRESS_PC *progress) {
+static void ZipUps_StoreProgress(WORLDINFO *world, void *unused, ZIPUP_PROGRESS *progress) {
     ZIPUP_PC *zipup;
     i32 i;
     i32 word;
@@ -1095,7 +1095,7 @@ void InitRopeMtl(char *name, VARIPTR *buffer, VARIPTR *buffer_end) {
         ropemtl = NuMtlCreate3D(1);
         ropemtl->attribs.unknown_1_1_2 = 0;
         ropemtl->attribs.unknown_1_4_8 = 0;
-        ((ZIPUP_ROPE_MATERIAL_PC *)ropemtl)->opacity = 1.0f;
+        ((ZIPUP_ROPE_MATERIAL *)ropemtl)->opacity = 1.0f;
         ropemtl->attribs.z_mode = 0;
         ropemtl->attribs.alpha_mode = 0;
         ropemtl->attribs.filter_mode = 1;
@@ -1118,7 +1118,7 @@ void DrawRopeSingle(NUVEC *start, NUVEC *end, float amount, NUMTL *material, flo
     NUVEC direction;
     f32 length;
     f32 repeats;
-    ZIPUP_ROPE_VERTEX_PC vertices[10];
+    ZIPUP_ROPE_VERTEX vertices[10];
     u16 x_rotation;
     u16 z_rotation;
     NUMTX matrix;
@@ -1294,9 +1294,9 @@ void ZipUps_DrawLines() {
     GAMEOBJECT *object = Obj;
 
     for (i = 0; i < HIGHGAMEOBJECT; ++i, ++object) {
-        ZIPUP_ROPE_VERTEX_PC vertices[3];
-        ZIPUP_ROPE_VERTEX_PC *start;
-        ZIPUP_ROPE_VERTEX_PC *end;
+        ZIPUP_ROPE_VERTEX vertices[3];
+        ZIPUP_ROPE_VERTEX *start;
+        ZIPUP_ROPE_VERTEX *end;
 
         start = &vertices[0];
         end = &vertices[1];
@@ -1319,7 +1319,7 @@ void ZipUps_DrawLines() {
         } else if (object->character_context == 0x35) {
             start->colour = 0xffffffff;
             end->colour = 0xff808080;
-            end->position = ((ZIPUP_TRANSPORT_VIEW_PC *)object)->entry;
+            end->position = ((ZIPUP_TRANSPORT_VIEW *)object)->entry;
             if (object->id == (u16)ZipUpLineCharacterId) {
                 start->position = object->position;
                 NuRndrLine3d((NURND_VERTEX3D_PC *)start, ZipUpLineMaterial, NULL);

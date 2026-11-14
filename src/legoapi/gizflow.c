@@ -754,7 +754,7 @@ static void GizFlowConfigGizmo(NUFPAR_PC *parser) {
         return;
     }
     name_size = NuStrLen(load_gizmoname);
-    name_size += NuStrLen(((GIZMOTYPES_PC *)gizmotypes)->types[load_gizmotype].prefix);
+    name_size += NuStrLen(((GIZMOTYPES *)gizmotypes)->types[load_gizmotype].prefix);
     data->gizmos[data->gizmo_count] = GizmoBufferAlloc(load_buff, load_endbuff, sizeof(FLOWBOXGIZMOREF));
     data->gizmos[data->gizmo_count]->name = GizmoBufferAlloc(load_buff, load_endbuff, name_size + 1);
     NuStrCpy(data->gizmos[data->gizmo_count]->name, load_gizmoname);
@@ -765,9 +765,9 @@ static void GizFlowConfigGizmo(NUFPAR_PC *parser) {
     } else if (load_gizmotype == gizspecial_gizmotype_id) {
         data->gizmos[data->gizmo_count]->gizmo = createGizSpecial(NULL, load_gizmoname);
         if (data->gizmos[data->gizmo_count]->gizmo != NULL) {
-            NuStrCpy(data->gizmos[data->gizmo_count]->name, ((GIZMOTYPES_PC *)gizmotypes)->types[load_gizmotype].prefix);
+            NuStrCpy(data->gizmos[data->gizmo_count]->name, ((GIZMOTYPES *)gizmotypes)->types[load_gizmotype].prefix);
             NuStrNCat(data->gizmos[data->gizmo_count]->name, load_gizmoname,
-                      32 - NuStrLen(((GIZMOTYPES_PC *)gizmotypes)->types[load_gizmotype].prefix));
+                      32 - NuStrLen(((GIZMOTYPES *)gizmotypes)->types[load_gizmotype].prefix));
         }
     } else {
         data->gizmos[data->gizmo_count]->gizmo = GizmoFindByName(load_gizflow->gizmo_sys, load_gizmotype, load_gizmoname);
@@ -1272,8 +1272,8 @@ void *LoadGizFlow(void *world, void *system, char *path, VARIPTR *buffer, VARIPT
 void DynamicAddGizmoToFlow(GIZFLOW *system, GIZMO_PC *gizmo) {
     FLOWBOX *box;
     i32 i;
-    if (system == NULL || gizmo == NULL || gizmotypes == NULL || gizmo->type_id >= ((GIZMOTYPES_PC *)gizmotypes)->count ||
-        ((GIZMOTYPES_PC *)gizmotypes)->types[gizmo->type_id].fns.get_gizmo_name_fn == NULL) {
+    if (system == NULL || gizmo == NULL || gizmotypes == NULL || gizmo->type_id >= ((GIZMOTYPES *)gizmotypes)->count ||
+        ((GIZMOTYPES *)gizmotypes)->types[gizmo->type_id].fns.get_gizmo_name_fn == NULL) {
         return;
     }
     box = system->flowboxes;
@@ -1287,7 +1287,7 @@ void DynamicAddGizmoToFlow(GIZFLOW *system, GIZMO_PC *gizmo) {
             if (data->gizmos[j]->gizmo != NULL) {
                 continue;
             }
-            if (NuStrICmp(data->gizmos[j]->name, ((GIZMOTYPES_PC *)gizmotypes)->types[gizmo->type_id].fns.get_gizmo_name_fn(gizmo)) != 0) {
+            if (NuStrICmp(data->gizmos[j]->name, ((GIZMOTYPES *)gizmotypes)->types[gizmo->type_id].fns.get_gizmo_name_fn(gizmo)) != 0) {
                 continue;
             }
             data->gizmos[j]->gizmo = gizmo;

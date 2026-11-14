@@ -37,17 +37,17 @@ extern "C" {
     extern const char PermLegalSpanish[11];
     extern const char PermLegalFrench[10];
     extern const char PermLegalUS[4];
-    extern const char PermLegalPcPrefixPc[];
+    extern const char PermLegalPcPrefix[];
     void LoadPermLoadLegalTexture(void);
     void StartPerm(void);
     void EndPerm(void);
     void LoadPermData(void *process);
-    extern const char NuFileExt_at3_PC[5];
-    extern const char NuFileExt_psc_PC[5];
-    extern const char NuFileExt_phg_PC[5];
-    extern const char NuFileExt_nx2_PC[5];
-    extern const char NuFileExt_hx2_PC[5];
-    extern const char NuFileExt_h4m_PC[5];
+    extern const char NuFileExt_at3[5];
+    extern const char NuFileExt_psc[5];
+    extern const char NuFileExt_phg[5];
+    extern const char NuFileExt_nx2[5];
+    extern const char NuFileExt_hx2[5];
+    extern const char NuFileExt_h4m[5];
 #ifdef __cplusplus
     void PcControlRegister(PC_CONTROL_CONFIG *, VARIPTR *, VARIPTR *);
     void LoadPermProgressDraw(f32, f32, f32);

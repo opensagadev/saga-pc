@@ -8,7 +8,7 @@
 #ifdef __cplusplus
 extern "C" {
 #endif
-    extern const char NuHwDefaultTitlePc[12];
+    extern const char NuHwDefaultTitle[12];
     extern const GUID PcPlatformPolicyClassId;
     extern const GUID PcPlatformPolicyInterfaceId;
 #ifdef __cplusplus

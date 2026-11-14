@@ -128,11 +128,11 @@ typedef struct nualloc_manager_block_s { // size 0xc
     }; // 0x0
     struct nualloc_manager_block_s *next;     // 0x4
     struct nualloc_manager_block_s *previous; // 0x8
-} NUALLOC_MANAGER_BLOCK_PC;
+} NUALLOC_MANAGER_BLOCK;
 
-typedef struct nualloc_manager_trailer_s {    // size 0x4
-    NUALLOC_MANAGER_BLOCK_PC *previous_block; // 0x0
-} NUALLOC_MANAGER_TRAILER_PC;
+typedef struct nualloc_manager_trailer_s { // size 0x4
+    NUALLOC_MANAGER_BLOCK *previous_block; // 0x0
+} NUALLOC_MANAGER_TRAILER;
 
 typedef struct nualloc_manager_prefix_s { // size 0x10
     void *base;                           // 0x0
@@ -262,7 +262,7 @@ extern void FmvPlatformUpdatePc(void);
 
 extern void (*NuApiEndFrameCallback)(void);
 
-typedef void (*NUDEBUGMSGFUNCTION_PC)(char *, ...);
+typedef void (*NUDEBUGMSGFUNCTION)(char *, ...);
 
 static void DecryptData(PC_FILEPAKHDR *header, u32 length, const u8 *key, i32 key_length);
 static void AquireFileBuffer(FILEINFO *info);
@@ -279,8 +279,8 @@ static void NuRDPFGetToken(NURDPFCTX_PC *context);
 static f32 NuRDPFPrimary(NURDPFCTX_PC *context);
 static f32 NuRDPFTerm(NURDPFCTX_PC *context);
 static NUFPAR_PC *NuAllocFPar(void);
-static void NuAllocManagerUnlink(NUALLOC_MANAGER_BLOCK_PC *block);
-static void NuAllocManagerSplit(NUALLOC_MANAGER_BLOCK_PC **allocated, NUALLOC_MANAGER_BLOCK_PC **remainder, NUALLOC_MANAGER_BLOCK_PC *block,
+static void NuAllocManagerUnlink(NUALLOC_MANAGER_BLOCK *block);
+static void NuAllocManagerSplit(NUALLOC_MANAGER_BLOCK **allocated, NUALLOC_MANAGER_BLOCK **remainder, NUALLOC_MANAGER_BLOCK *block,
                                 u32 *size, u32 alignment);
 static i32 NuStringCharEquivalent(u16 a, u16 b);
 static i32 NuStringIsFluff(u16 character);
@@ -4849,35 +4849,35 @@ void NuStringTableSaveCharacterList(char *filepath, char *scratch, i32 report_mi
 
 /* Block helpers of the heap manager. Every call is inlined, but VC8 keeps a copy of each static that is
    defined before its callers. */
-static u32 NuAllocManagerIsUsed(NUALLOC_MANAGER_BLOCK_PC *block) {
+static u32 NuAllocManagerIsUsed(NUALLOC_MANAGER_BLOCK *block) {
     return block->used;
 }
 
-static u32 NuAllocManagerGetSize(NUALLOC_MANAGER_BLOCK_PC *block) {
+static u32 NuAllocManagerGetSize(NUALLOC_MANAGER_BLOCK *block) {
     return block->size;
 }
 
-static void NuAllocManagerSetNext(NUALLOC_MANAGER_BLOCK_PC *block, NUALLOC_MANAGER_BLOCK_PC *next) {
+static void NuAllocManagerSetNext(NUALLOC_MANAGER_BLOCK *block, NUALLOC_MANAGER_BLOCK *next) {
     block->next = next;
 }
 
-static NUALLOC_MANAGER_BLOCK_PC *NuAllocManagerGetNext(NUALLOC_MANAGER_BLOCK_PC *block) {
+static NUALLOC_MANAGER_BLOCK *NuAllocManagerGetNext(NUALLOC_MANAGER_BLOCK *block) {
     return block->next;
 }
 
-static void NuAllocManagerSetPrevious(NUALLOC_MANAGER_BLOCK_PC *block, NUALLOC_MANAGER_BLOCK_PC *previous) {
+static void NuAllocManagerSetPrevious(NUALLOC_MANAGER_BLOCK *block, NUALLOC_MANAGER_BLOCK *previous) {
     block->previous = previous;
 }
 
-static void *NuAllocManagerPayload(NUALLOC_MANAGER_BLOCK_PC *block) {
-    return (void *)((u32)block + sizeof(NUALLOC_MANAGER_BLOCK_PC));
+static void *NuAllocManagerPayload(NUALLOC_MANAGER_BLOCK *block) {
+    return (void *)((u32)block + sizeof(NUALLOC_MANAGER_BLOCK));
 }
 
-static void NuAllocManagerSetTrailer(NUALLOC_MANAGER_BLOCK_PC *block) {
-    ((NUALLOC_MANAGER_TRAILER_PC *)((u32)block + NuAllocManagerGetSize(block) + sizeof(NUALLOC_MANAGER_BLOCK_PC)))->previous_block = block;
+static void NuAllocManagerSetTrailer(NUALLOC_MANAGER_BLOCK *block) {
+    ((NUALLOC_MANAGER_TRAILER *)((u32)block + NuAllocManagerGetSize(block) + sizeof(NUALLOC_MANAGER_BLOCK)))->previous_block = block;
 }
 
-static void NuAllocManagerUnlink(NUALLOC_MANAGER_BLOCK_PC *block) {
+static void NuAllocManagerUnlink(NUALLOC_MANAGER_BLOCK *block) {
     if (block->previous != NULL) {
         block->previous->next = block->next;
     }
@@ -4890,15 +4890,15 @@ static void NuAllocManagerUnlink(NUALLOC_MANAGER_BLOCK_PC *block) {
 static void NuAllocManagerCheck(NUALLOC_MANAGER_PREFIX_PC *manager) {
 }
 
-static void NuAllocManagerSplit(NUALLOC_MANAGER_BLOCK_PC **allocated, NUALLOC_MANAGER_BLOCK_PC **remainder, NUALLOC_MANAGER_BLOCK_PC *block,
+static void NuAllocManagerSplit(NUALLOC_MANAGER_BLOCK **allocated, NUALLOC_MANAGER_BLOCK **remainder, NUALLOC_MANAGER_BLOCK *block,
                                 u32 *size, u32 alignment) {
     u32 remainder_size = (block->size_flags & 0x7fffffffU) - *size - 16;
     *remainder = block;
-    *allocated = (NUALLOC_MANAGER_BLOCK_PC *)((u32)block + remainder_size + 16);
+    *allocated = (NUALLOC_MANAGER_BLOCK *)((u32)block + remainder_size + 16);
     if (alignment > 0) {
         u32 payload = (u32)*allocated + 12;
         u32 aligned_payload = (payload + alignment - 1) & ~(alignment - 1);
-        *allocated = (NUALLOC_MANAGER_BLOCK_PC *)((u32)*allocated + aligned_payload - payload);
+        *allocated = (NUALLOC_MANAGER_BLOCK *)((u32)*allocated + aligned_payload - payload);
         *size -= aligned_payload - payload;
         remainder_size += aligned_payload - payload;
     }
@@ -4906,37 +4906,37 @@ static void NuAllocManagerSplit(NUALLOC_MANAGER_BLOCK_PC **allocated, NUALLOC_MA
     (*allocated)->size_flags = ((*allocated)->size_flags & 0x80000000U) | *size;
     (*allocated)->next = NULL;
     (*allocated)->previous = NULL;
-    ((NUALLOC_MANAGER_TRAILER_PC *)((u32)*allocated + ((*allocated)->size_flags & 0x7fffffffU) + sizeof(NUALLOC_MANAGER_BLOCK_PC)))
+    ((NUALLOC_MANAGER_TRAILER *)((u32)*allocated + ((*allocated)->size_flags & 0x7fffffffU) + sizeof(NUALLOC_MANAGER_BLOCK)))
         ->previous_block = *allocated;
     (*remainder)->size_flags &= 0x7fffffffU;
     (*remainder)->size_flags = ((*remainder)->size_flags & 0x80000000U) | remainder_size;
     (*remainder)->next = NULL;
     (*remainder)->previous = NULL;
-    ((NUALLOC_MANAGER_TRAILER_PC *)((u32)*remainder + ((*remainder)->size_flags & 0x7fffffffU) + sizeof(NUALLOC_MANAGER_BLOCK_PC)))
+    ((NUALLOC_MANAGER_TRAILER *)((u32)*remainder + ((*remainder)->size_flags & 0x7fffffffU) + sizeof(NUALLOC_MANAGER_BLOCK)))
         ->previous_block = *remainder;
 }
 
-static NUALLOC_MANAGER_BLOCK_PC *NuAllocManagerNextBlock(NUALLOC_MANAGER_BLOCK_PC *block) {
-    return (NUALLOC_MANAGER_BLOCK_PC *)((u32)block + NuAllocManagerGetSize(block) + 16);
+static NUALLOC_MANAGER_BLOCK *NuAllocManagerNextBlock(NUALLOC_MANAGER_BLOCK *block) {
+    return (NUALLOC_MANAGER_BLOCK *)((u32)block + NuAllocManagerGetSize(block) + 16);
 }
 
 /* Carves a heap of size bytes from *buffer: a free-list sentinel, two used guard blocks and one free block. */
 NUALLOC_MANAGER_PREFIX_PC *NuAllocManagerCreate(VARIPTR *buffer, VARIPTR buffer_end, u32 size) {
     NUALLOC_MANAGER_PREFIX_PC *manager;
-    NUALLOC_MANAGER_BLOCK_PC *list;
-    NUALLOC_MANAGER_BLOCK_PC *first;
-    NUALLOC_MANAGER_BLOCK_PC *last;
-    NUALLOC_MANAGER_BLOCK_PC *free_block;
+    NUALLOC_MANAGER_BLOCK *list;
+    NUALLOC_MANAGER_BLOCK *first;
+    NUALLOC_MANAGER_BLOCK *last;
+    NUALLOC_MANAGER_BLOCK *free_block;
 
     if (size < 0x50) {
         return NULL;
     }
     manager = buffer->void_ptr;
     buffer->addr += size;
-    list = (NUALLOC_MANAGER_BLOCK_PC *)((u32)manager + 0x10);
-    first = (NUALLOC_MANAGER_BLOCK_PC *)((u32)manager + 0x20);
-    last = (NUALLOC_MANAGER_BLOCK_PC *)((u32)manager + size - 0x10);
-    free_block = (NUALLOC_MANAGER_BLOCK_PC *)((u32)manager + 0x30);
+    list = (NUALLOC_MANAGER_BLOCK *)((u32)manager + 0x10);
+    first = (NUALLOC_MANAGER_BLOCK *)((u32)manager + 0x20);
+    last = (NUALLOC_MANAGER_BLOCK *)((u32)manager + size - 0x10);
+    free_block = (NUALLOC_MANAGER_BLOCK *)((u32)manager + 0x30);
     NuAllocManagerSetPrevious(list, NULL);
     list->size = 0;
     list->used = 0;
@@ -4970,10 +4970,10 @@ void NuAllocManagerDump(NUALLOC_MANAGER_PREFIX_PC *manager) {
 }
 
 void *NuAllocManagerAllocate(NUALLOC_MANAGER_PREFIX_PC *manager, u32 size, u32 alignment, u32 unused) {
-    NUALLOC_MANAGER_BLOCK_PC *list = (NUALLOC_MANAGER_BLOCK_PC *)((u32)manager->base + 16);
-    NUALLOC_MANAGER_BLOCK_PC *block;
-    NUALLOC_MANAGER_BLOCK_PC *allocated;
-    NUALLOC_MANAGER_BLOCK_PC *remainder;
+    NUALLOC_MANAGER_BLOCK *list = (NUALLOC_MANAGER_BLOCK *)((u32)manager->base + 16);
+    NUALLOC_MANAGER_BLOCK *block;
+    NUALLOC_MANAGER_BLOCK *allocated;
+    NUALLOC_MANAGER_BLOCK *remainder;
     (void)unused;
     NuAllocManagerCheck(manager);
     if (size == 0) {
@@ -5003,14 +5003,14 @@ void *NuAllocManagerAllocate(NUALLOC_MANAGER_PREFIX_PC *manager, u32 size, u32 a
 
 void NuAllocManagerFree(NUALLOC_MANAGER_PREFIX_PC *manager, void *payload) {
     void *base = manager->base;
-    NUALLOC_MANAGER_BLOCK_PC *sentinel = (NUALLOC_MANAGER_BLOCK_PC *)((u32)base + 16);
-    NUALLOC_MANAGER_BLOCK_PC *block;
-    NUALLOC_MANAGER_BLOCK_PC *next;
-    NUALLOC_MANAGER_BLOCK_PC *previous;
+    NUALLOC_MANAGER_BLOCK *sentinel = (NUALLOC_MANAGER_BLOCK *)((u32)base + 16);
+    NUALLOC_MANAGER_BLOCK *block;
+    NUALLOC_MANAGER_BLOCK *next;
+    NUALLOC_MANAGER_BLOCK *previous;
     if (payload == NULL || (u32)payload < (u32)base || (u32)payload > (u32)base + manager->size) {
         return;
     }
-    block = (NUALLOC_MANAGER_BLOCK_PC *)((u32)payload - 12);
+    block = (NUALLOC_MANAGER_BLOCK *)((u32)payload - 12);
     block->size_flags &= 0x7fffffffU;
     manager->block_count -= 1;
     manager->used_bytes -= (block->size_flags & 0x7fffffffU) + 16;
@@ -5020,19 +5020,19 @@ void NuAllocManagerFree(NUALLOC_MANAGER_PREFIX_PC *manager, void *payload) {
     block->next = sentinel->next;
     block->previous = sentinel;
     sentinel->next = block;
-    next = (NUALLOC_MANAGER_BLOCK_PC *)((u32)block + (block->size_flags & 0x7fffffffU) + 16);
+    next = (NUALLOC_MANAGER_BLOCK *)((u32)block + (block->size_flags & 0x7fffffffU) + 16);
     if (!(next->size_flags & 0x80000000U)) {
         NuAllocManagerUnlink(next);
         block->size_flags = (block->size_flags & 0x80000000U) | ((next->size_flags & 0x7fffffffU) + (block->size_flags & 0x7fffffffU) + 16);
-        ((NUALLOC_MANAGER_TRAILER_PC *)((u32)block + (block->size_flags & 0x7fffffffU) + sizeof(NUALLOC_MANAGER_BLOCK_PC)))
-            ->previous_block = block;
+        ((NUALLOC_MANAGER_TRAILER *)((u32)block + (block->size_flags & 0x7fffffffU) + sizeof(NUALLOC_MANAGER_BLOCK)))->previous_block =
+            block;
     }
-    previous = ((NUALLOC_MANAGER_TRAILER_PC *)block)[-1].previous_block;
+    previous = ((NUALLOC_MANAGER_TRAILER *)block)[-1].previous_block;
     if (!(previous->size_flags & 0x80000000U)) {
         NuAllocManagerUnlink(block);
         previous->size_flags =
             (previous->size_flags & 0x80000000U) | ((block->size_flags & 0x7fffffffU) + (previous->size_flags & 0x7fffffffU) + 16);
-        ((NUALLOC_MANAGER_TRAILER_PC *)((u32)previous + (previous->size_flags & 0x7fffffffU) + sizeof(NUALLOC_MANAGER_BLOCK_PC)))
+        ((NUALLOC_MANAGER_TRAILER *)((u32)previous + (previous->size_flags & 0x7fffffffU) + sizeof(NUALLOC_MANAGER_BLOCK)))
             ->previous_block = previous;
     }
 }
@@ -5042,7 +5042,7 @@ u32 NuAllocManagerGetBlockCount(NUALLOC_MANAGER_PREFIX_PC *manager) {
 }
 
 u32 NuAllocManagerGetFreeBlockCount(NUALLOC_MANAGER_PREFIX_PC *manager) {
-    NUALLOC_MANAGER_BLOCK_PC *block = (NUALLOC_MANAGER_BLOCK_PC *)((u32)manager->base + 16);
+    NUALLOC_MANAGER_BLOCK *block = (NUALLOC_MANAGER_BLOCK *)((u32)manager->base + 16);
     u32 count = 0;
     while (block != NULL) {
         block = NuAllocManagerGetNext(block);
@@ -5056,7 +5056,7 @@ u32 NuAllocManagerGetUsedBytes(NUALLOC_MANAGER_PREFIX_PC *manager) {
 }
 
 u32 NuAllocManagerGetFreeBytes(NUALLOC_MANAGER_PREFIX_PC *manager) {
-    NUALLOC_MANAGER_BLOCK_PC *block = (NUALLOC_MANAGER_BLOCK_PC *)((u32)manager->base + 16);
+    NUALLOC_MANAGER_BLOCK *block = (NUALLOC_MANAGER_BLOCK *)((u32)manager->base + 16);
     u32 total = 0;
     while (block != NULL) {
         total += NuAllocManagerGetSize(block);
@@ -5068,11 +5068,11 @@ u32 NuAllocManagerGetFreeBytes(NUALLOC_MANAGER_PREFIX_PC *manager) {
 /* Moves an allocation above the free block that follows it and returns its new payload. The free block is
    rebuilt at the old payload address, 12 bytes past the old header. No caller. */
 void *NuAllocManagerDefrag(NUALLOC_MANAGER_PREFIX_PC *manager, void *payload) {
-    NUALLOC_MANAGER_BLOCK_PC *block;
-    NUALLOC_MANAGER_BLOCK_PC *next;
-    NUALLOC_MANAGER_BLOCK_PC *list;
-    NUALLOC_MANAGER_BLOCK_PC *moved;
-    NUALLOC_MANAGER_BLOCK_PC *free_block;
+    NUALLOC_MANAGER_BLOCK *block;
+    NUALLOC_MANAGER_BLOCK *next;
+    NUALLOC_MANAGER_BLOCK *list;
+    NUALLOC_MANAGER_BLOCK *moved;
+    NUALLOC_MANAGER_BLOCK *free_block;
     void *new_payload;
     u8 *src;
     u8 *dst;
@@ -5083,7 +5083,7 @@ void *NuAllocManagerDefrag(NUALLOC_MANAGER_PREFIX_PC *manager, void *payload) {
     if (payload == NULL) {
         return NULL;
     }
-    block = (NUALLOC_MANAGER_BLOCK_PC *)((u32)payload - 12);
+    block = (NUALLOC_MANAGER_BLOCK *)((u32)payload - 12);
     size = NuAllocManagerGetSize(block);
     next = NuAllocManagerNextBlock(block);
     if (NuAllocManagerIsUsed(next)) {
@@ -5096,7 +5096,7 @@ void *NuAllocManagerDefrag(NUALLOC_MANAGER_PREFIX_PC *manager, void *payload) {
     for (i = size - 1; i >= 0; i--) {
         dst[i] = src[i];
     }
-    moved = (NUALLOC_MANAGER_BLOCK_PC *)((u32)payload + next_size + 0x10);
+    moved = (NUALLOC_MANAGER_BLOCK *)((u32)payload + next_size + 0x10);
     NuAllocManagerSetNext(moved, NULL);
     NuAllocManagerSetPrevious(moved, NULL);
     moved->size = size;
@@ -5108,7 +5108,7 @@ void *NuAllocManagerDefrag(NUALLOC_MANAGER_PREFIX_PC *manager, void *payload) {
     NuAllocManagerSetNext(free_block, NULL);
     NuAllocManagerSetPrevious(free_block, NULL);
     NuAllocManagerSetTrailer(free_block);
-    list = (NUALLOC_MANAGER_BLOCK_PC *)((u32)manager->base + 16);
+    list = (NUALLOC_MANAGER_BLOCK *)((u32)manager->base + 16);
     if (NuAllocManagerGetNext(list) != NULL) {
         NuAllocManagerSetPrevious(NuAllocManagerGetNext(list), free_block);
     }
@@ -8806,19 +8806,19 @@ void NuVideoSetBrightness(f32 brightness) {
     NuVideoSetBrightnessPS();
 }
 
-typedef void (*NUONLINEACHIEVEMENTCALLBACK_PC)(i32, i32);
+typedef void (*NUONLINEACHIEVEMENTCALLBACK)(i32, i32);
 
-i32 NuOnlineAchievementAchievedPS(i32 achievement, NUONLINEACHIEVEMENTCALLBACK_PC callback);
-i32 NuOnlineAchievementAchievedExPS(i32 player, i32 achievement, NUONLINEACHIEVEMENTCALLBACK_PC callback);
+i32 NuOnlineAchievementAchievedPS(i32 achievement, NUONLINEACHIEVEMENTCALLBACK callback);
+i32 NuOnlineAchievementAchievedExPS(i32 player, i32 achievement, NUONLINEACHIEVEMENTCALLBACK callback);
 void NuOnlineInitPS(void);
 i32 NuOnlineHasPlayerSignedInPS(void);
 i32 NuOnlineHasPlayerDownloadedPS(u32 argument);
 
-i32 NuOnlineAchievementAchieved(i32 achievement, NUONLINEACHIEVEMENTCALLBACK_PC callback) {
+i32 NuOnlineAchievementAchieved(i32 achievement, NUONLINEACHIEVEMENTCALLBACK callback) {
     return NuOnlineAchievementAchievedPS(achievement, callback);
 }
 
-i32 NuOnlineAchievementAchievedEx(i32 player, i32 achievement, NUONLINEACHIEVEMENTCALLBACK_PC callback) {
+i32 NuOnlineAchievementAchievedEx(i32 player, i32 achievement, NUONLINEACHIEVEMENTCALLBACK callback) {
     return NuOnlineAchievementAchievedExPS(player, achievement, callback);
 }
 

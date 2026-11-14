@@ -19,7 +19,7 @@ void edanimSoundDestroy(i32 parameter_index, i32 sound_index) {
 }
 
 /* Float fabs by clearing the sign bit. */
-static f32 EdAnimFabsPc(f32 value) {
+static f32 EdAnimFabs(f32 value) {
     f32 result;
     *(u32 *)&result = *(u32 *)&value & 0x7fffffff;
     return result;
@@ -143,7 +143,7 @@ void edanimUpdateObjects(f32 elapsed) {
                             play = AnimParams[index].sound_ids[sound_index];
                         }
                         if ((animation->flags & 0x10) != 0 && animation->ltime <= AnimParams[index].sound_values[sound_index] &&
-                            AnimParams[index].sound_values[sound_index] < EdAnimFabsPc(AnimParams[index].field_17c)) {
+                            AnimParams[index].sound_values[sound_index] < EdAnimFabs(AnimParams[index].field_17c)) {
                             play = AnimParams[index].sound_ids[sound_index];
                         }
                     }

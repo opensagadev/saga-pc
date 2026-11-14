@@ -184,8 +184,8 @@ stamp ignored); the Debug kind of each touched unit compiles.
 | Redundant casts of `legogame/bolt.c` (56), `legogame/gizforce.c` (55), `gameapi/apiobject.c` (39 of 48) | 150 | identical |
 | `TerI` declared `TerrainQuery_s *` in `data.cpp` and the four unit externs; five alias macros (`TERRAIN_QUERY_PC`, `TERI`, ...) gone; one `static_cast` added for the C++ scratch allocation | 125 − 1 | identical (data, terrain_scan, terrain_collision, terrain_query, nuterrain) |
 | `dir_list` declared `struct FILE_DIRECTORY_ENTRY_PC *` (`data.cpp`, `edfile.c`); its directory bit named `FILE_DIRECTORY_FLAG_DIRECTORY_PC` | 16 | identical |
-| `podrace_netpacket` typed; the two local Pod race packet structs, which differed only in the word at 0x0c (`u32 unknown_0c` / `f32 lap_alpha`), merged into `PODRACE_NETPACKET_PC` | 10 | identical |
-| `vadera_netpacket` typed `VADERA_NETPACKET_PC *` | 6 | identical |
+| `podrace_netpacket` typed; the two local Pod race packet structs, which differed only in the word at 0x0c (`u32 unknown_0c` / `f32 lap_alpha`), merged into `PODRACE_NETPACKET` | 10 | identical |
+| `vadera_netpacket` typed `VADERA_NETPACKET *` | 6 | identical |
 
 Total 309 casts (28,114 to 27,805), four declarations and one duplicate type
 fixed. Nine redundant casts in the animation-flag tests of

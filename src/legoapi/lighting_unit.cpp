@@ -8,7 +8,7 @@ typedef struct startup_object_light_s {
     u8 unknown_200[0xc04];
     i32 dynamic_light_id;
     u8 unknown_e08[0x2d0];
-} STARTUP_OBJECT_LIGHT_PC;
+} STARTUP_OBJECT_LIGHT;
 
 typedef struct OBJECT_LIGHT_STATE_GAME {
     NUVEC ambient;
@@ -142,10 +142,10 @@ void PC_SPECIAL_SHADOW_LIGHT::LookAtPc(NUVEC *eye, NUVEC *target, NUVEC *up) {
     fun_00595220(*direction, *direction);
     f32 position_y = eye->y;
     f32 position_z = eye->z;
-    light_position_pc.x = eye->x;
-    light_position_pc.y = position_y;
-    light_position_pc.z = position_z;
-    light_position_pc.w = 1.0f;
+    light_position.x = eye->x;
+    light_position.y = position_y;
+    light_position.z = position_z;
+    light_position.w = 1.0f;
     NuMtxLookAtD3D(&view, eye, target, up);
 }
 
@@ -332,12 +332,12 @@ extern "C" {
     }
 
     void InitGameObjectLights(void) {
-        STARTUP_OBJECT_LIGHT_PC *objects;
+        STARTUP_OBJECT_LIGHT *objects;
         i32 index;
         for (index = 0; index < 64; ++index) {
-            ((STARTUP_OBJECT_LIGHT_PC *)Obj)[index].dynamic_light_id = -1;
+            ((STARTUP_OBJECT_LIGHT *)Obj)[index].dynamic_light_id = -1;
         }
-        objects = (STARTUP_OBJECT_LIGHT_PC *)Obj;
+        objects = (STARTUP_OBJECT_LIGHT *)Obj;
         for (index = 0; index < HIGHGAMEOBJECT; ++index) {
             if ((objects[index].flags & 1) && (objects[index].flags & 0x1000)) {
                 objects[index].dynamic_light_id = rtlDynamicAlloc();
@@ -350,7 +350,7 @@ extern "C" {
     }
 
     void FreeGameObjectLights(void) {
-        STARTUP_OBJECT_LIGHT_PC *objects = (STARTUP_OBJECT_LIGHT_PC *)Obj;
+        STARTUP_OBJECT_LIGHT *objects = (STARTUP_OBJECT_LIGHT *)Obj;
         i32 i;
         for (i = 0; i < HIGHGAMEOBJECT; ++i) {
             if ((objects[i].flags & 1) && (objects[i].flags & 0x1000) && objects[i].dynamic_light_id != -1) {
@@ -368,9 +368,9 @@ extern "C" {
         rtlApplySetScale(set, &view->light_data, &object->collision_position, NULL, -1, 1.0f);
         surface_fade = object->floor_height != 2000000.0f && (TerSurface[view->floor_surface].flags & 8) != 0 ? 1.0f : 0.0f;
         if (object->flags_ef0 & 0x80) {
-            object->surface_flag8_scale_pc = surface_fade;
+            object->surface_flag8_scale = surface_fade;
         } else {
-            object->surface_flag8_scale_pc = SeekLinearF(object->surface_flag8_scale_pc, surface_fade, (f32)((f64)FRAMETIME * 3.0));
+            object->surface_flag8_scale = SeekLinearF(object->surface_flag8_scale, surface_fade, (f32)((f64)FRAMETIME * 3.0));
         }
         if (object->flags_ef0 & 0x80) {
             view->lighting_state.ambient = view->light_data.ambient;
@@ -481,8 +481,8 @@ extern "C" {
             u16 angle = (u16)(i32)((f64)NuFmod((f32)(2.5 - owner->spawn_protection_timer), 0.5f) * 2.0 * 65536.0);
             red = green = blue = NuTrigTable[angle >> 1] + 1.0f;
         }
-        if (owner->surface_flag8_scale_pc > 0.0f) {
-            f32 scale = (f32)((f64)owner->surface_flag8_scale_pc * LightingSurfaceFadeSlope + 1.0);
+        if (owner->surface_flag8_scale > 0.0f) {
+            f32 scale = (f32)((f64)owner->surface_flag8_scale * LightingSurfaceFadeSlope + 1.0);
             red *= scale;
             green *= scale;
             blue *= scale;
@@ -528,8 +528,8 @@ extern "C" {
         if (enabled != 0 && light->enabled == 0) {
             i32 i;
             for (i = 0; i < light->render_set_count; ++i) {
-                light->render_sets[i].shadow_lists_pc[0].material_last = light->render_sets[i].shadow_lists_pc[0].first;
-                light->render_sets[i].shadow_lists_pc[1].material_last = light->render_sets[i].shadow_lists_pc[1].first;
+                light->render_sets[i].shadow_lists[0].material_last = light->render_sets[i].shadow_lists[0].first;
+                light->render_sets[i].shadow_lists[1].material_last = light->render_sets[i].shadow_lists[1].first;
             }
         }
         light->enabled = enabled;

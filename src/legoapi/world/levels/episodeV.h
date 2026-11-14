@@ -18,7 +18,7 @@ struct gameobject_s;
 struct gizmo_s;
 struct level_data_s;
 
-typedef void (*PART_KILL_PC)(struct PART_PC *, i32);
+typedef void (*PART_KILL)(struct PART_PC *, i32);
 #ifdef __cplusplus
 extern "C" {
 #endif

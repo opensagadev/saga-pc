@@ -5,7 +5,7 @@ void Status_DrawPromptMenu(STATUSPACKET_s *packet, i32 selected, f32 alpha);
 void Text_FillInExtendedSaveInfo(void);
 i32 TriggerAutoSave(void);
 
-static f32 StatusLerpPc(f32 to, f32 from, f32 blend) {
+static f32 StatusLerp(f32 to, f32 from, f32 blend) {
     f32 result = (to - from) * blend + from;
     return result;
 }
@@ -419,7 +419,7 @@ void MiniKit_LSW_Draw(STATUS_STAGE_s *stage, STATUSPACKET_s *packet, i32 current
                 }
                 blend = 1.0 - (NuTrigTable[((i32)(blend * 32768.0 + 16384.0) >> 1) & 0x7fff] + 1.0f) * 0.5;
                 if (stage->field_0x18 <= stage->field_0x1c) {
-                    DrawStatusMiniKit(StatusMiniKitX, StatusLerpPc(StatusMiniKitY, StatusMiniKitEntranceHeight, blend), StatusAllMiniKitsZ,
+                    DrawStatusMiniKit(StatusMiniKitX, StatusLerp(StatusMiniKitY, StatusMiniKitEntranceHeight, blend), StatusAllMiniKitsZ,
                                       StatusMiniKitScale, 0.0f, currentminikit, packet, 0.0f);
                 } else {
                     DrawStatusMiniKit(StatusMiniKitX, StatusMiniKitY, StatusAllMiniKitsZ, StatusMiniKitScale, 0.0f, currentminikit, packet,
@@ -483,9 +483,9 @@ void MiniKit_LSW_Draw(STATUS_STAGE_s *stage, STATUSPACKET_s *packet, i32 current
                     1.0 - (NuTrigTable[((i32)(StatusCoinsRatio(stage->field_0x18, stage->field_0x1c) * 32768.0 + 16384.0) >> 1) & 0x7fff] +
                            1.0f) *
                               0.5;
-                DrawStatusMiniKit(StatusLerpPc(StatusAllMiniKitsX, StatusMiniKitX, blend),
-                                  StatusLerpPc(StatusAllMiniKitsY, StatusMiniKitY, blend), StatusAllMiniKitsZ,
-                                  StatusLerpPc(StatusAllMiniKitsScale, StatusMiniKitScale, blend), 1.0f,
+                DrawStatusMiniKit(StatusLerp(StatusAllMiniKitsX, StatusMiniKitX, blend),
+                                  StatusLerp(StatusAllMiniKitsY, StatusMiniKitY, blend), StatusAllMiniKitsZ,
+                                  StatusLerp(StatusAllMiniKitsScale, StatusMiniKitScale, blend), 1.0f,
                                   Game.area_save[packet->area->index].minikit_count, packet, 0.0f);
                 if (stage->field_0x18 < 1.0f) {
                     blend = 1.0f - stage->field_0x18;

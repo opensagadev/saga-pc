@@ -21,7 +21,7 @@ typedef float f32;
 typedef struct debris_material_flags_s {
     u32 alpha_mode : 4, filter_mode : 2, unknown_0_64_128 : 2,
         z_mode : 2, alpha_test : 2, unknown_22_31 : 20; // flag word
-} DEBRIS_MATERIAL_FLAGS_PC;
+} DEBRIS_MATERIAL_FLAGS;
 
 typedef struct X {
     int *a, b[4], (*f)(void); /* mixed */

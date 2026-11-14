@@ -3,7 +3,7 @@
 #include <stdio.h>
 
 #define SPLINE_POINT(spline, index) ((NUVEC *)((u8 *)(spline)->pts + (index) * (i16)(spline)->pt_size))
-typedef void (*LEVELSETDEFAULTS_PC)(LEVELDATA_PC *level);
+typedef void (*LEVELSETDEFAULTS)(LEVELDATA_PC *level);
 extern "C" {
     void LevelsConfigDiagnostic(char *message);
 }
@@ -11,12 +11,12 @@ extern "C" {
 typedef struct level_script_progress_s { // size 0x20
     char name[16];                       // 0x00
     f32 params[4];                       // 0x10
-} LEVEL_SCRIPT_PROGRESS_PC;
+} LEVEL_SCRIPT_PROGRESS;
 
 typedef struct ai_script_progress_view_s { // size 0x2c24
     u8 unknown_0000[0x2824];               // 0x0000
-    LEVEL_SCRIPT_PROGRESS_PC scripts[32];  // 0x2824
-} AI_SCRIPT_PROGRESS_VIEW_PC;
+    LEVEL_SCRIPT_PROGRESS scripts[32];     // 0x2824
+} AI_SCRIPT_PROGRESS_VIEW;
 
 extern "C" {
     void LevelObjectsArenaDiagnostic(i32 size);
@@ -27,7 +27,7 @@ typedef struct startup_level_object_s { // size 0x10
     i16 platform_id;                    // 0xc
     u8 active;                          // 0xe
     u8 unknown_f;                       // 0xf
-} STARTUP_LEVEL_OBJECT_PC;
+} STARTUP_LEVEL_OBJECT;
 
 typedef struct WORLD_OBJECT_SETUP_READER { // size 0x2968
     u8 unknown_0000[0x2964];               // 0x0000
@@ -37,7 +37,7 @@ typedef struct WORLD_OBJECT_SETUP_READER { // size 0x2968
 typedef struct menu_mission_reader_s { // size 0x13
     u8 unknown_00[0x12];               // 0x00
     i8 active_count;                   // 0x12
-} MENU_MISSION_READER_PC;
+} MENU_MISSION_READER;
 
 extern "C" {
 
@@ -197,7 +197,7 @@ extern "C" {
 
                 in_level_config = 1;
                 if (set_defaults_fn != NULL) {
-                    ((LEVELSETDEFAULTS_PC)set_defaults_fn)(current_level);
+                    ((LEVELSETDEFAULTS)set_defaults_fn)(current_level);
                 }
             }
         }
@@ -834,17 +834,17 @@ extern "C" {
             return;
         }
         for (index = 0; index < LEVELOBJECTCOUNT; ++index) {
-            ((STARTUP_LEVEL_OBJECT_PC *)world->level_objects)[index].platform_id = -1;
-            if (world->terrain != NULL && NuSpecialExistsFn(&((STARTUP_LEVEL_OBJECT_PC *)world->level_objects)[index].special) &&
+            ((STARTUP_LEVEL_OBJECT *)world->level_objects)[index].platform_id = -1;
+            if (world->terrain != NULL && NuSpecialExistsFn(&((STARTUP_LEVEL_OBJECT *)world->level_objects)[index].special) &&
                 ObjTabList[index].kind == 1) {
-                ((STARTUP_LEVEL_OBJECT_PC *)world->level_objects)[index].platform_id =
-                    (i16)FindPlatInst(NuSpecialGetInstanceix(&((STARTUP_LEVEL_OBJECT_PC *)world->level_objects)[index].special));
+                ((STARTUP_LEVEL_OBJECT *)world->level_objects)[index].platform_id =
+                    (i16)FindPlatInst(NuSpecialGetInstanceix(&((STARTUP_LEVEL_OBJECT *)world->level_objects)[index].special));
             }
         }
     }
 
     void *LevObj_FindByPlatID(WORLDINFO *world, i32 platform_id) {
-        STARTUP_LEVEL_OBJECT_PC *object = (STARTUP_LEVEL_OBJECT_PC *)world->level_objects;
+        STARTUP_LEVEL_OBJECT *object = (STARTUP_LEVEL_OBJECT *)world->level_objects;
         i32 i;
         for (i = 0; i < LEVELOBJECTCOUNT; ++i, ++object) {
             if (object->platform_id == platform_id) {
@@ -993,7 +993,7 @@ extern "C" {
         }
         mission = Mission_Active(NULL);
         if (mission != NULL && NewLData != NULL && NewLData == HUB_LDATA) {
-            hub_from_mission = ((MENU_MISSION_READER_PC *)mission)->active_count;
+            hub_from_mission = ((MENU_MISSION_READER *)mission)->active_count;
         }
     }
 

@@ -17,17 +17,17 @@ typedef struct level_sfx_world_view_s { // size 0x5078
     i32 nlevers;                        // 0x506c
     u8 unknown_5070[4];                 // 0x5070
     i32 *hat_machine_sys;               // 0x5074
-} LEVEL_SFX_WORLD_VIEW_PC;
+} LEVEL_SFX_WORLD_VIEW;
 
 typedef struct level_sfx_cut_slot_s { // size 0x14
     i16 id;                           // 0x00
     u8 unknown_02[0x12];              // 0x02
-} LEVEL_SFX_CUT_SLOT_PC;
+} LEVEL_SFX_CUT_SLOT;
 
-typedef struct level_sfx_cut_s {  // size 0xe8
-    u8 unknown_00[0x70];          // 0x00
-    LEVEL_SFX_CUT_SLOT_PC sfx[6]; // 0x70
-} LEVEL_SFX_CUT_PC;
+typedef struct level_sfx_cut_s { // size 0xe8
+    u8 unknown_00[0x70];         // 0x00
+    LEVEL_SFX_CUT_SLOT sfx[6];   // 0x70
+} LEVEL_SFX_CUT;
 
 AREA_DATA_PC *DEATHSTARRESCUE_ADATA;
 
@@ -72,7 +72,7 @@ i32 GameAudio_CheckReverb_LSW(void) {
 }
 
 void SetLevelSfxBits(WORLDINFO *world) {
-    LEVEL_SFX_WORLD_VIEW_PC *view = (LEVEL_SFX_WORLD_VIEW_PC *)world;
+    LEVEL_SFX_WORLD_VIEW *view = (LEVEL_SFX_WORLD_VIEW *)world;
     i32 i;
     i32 j;
     i32 character_id;
@@ -129,7 +129,7 @@ void SetLevelSfxBits(WORLDINFO *world) {
     if (world->cutscene_sys != NULL) {
         for (i = 0; i < world->cutscene_sys->count; ++i) {
             for (j = 0; j < 6; ++j) {
-                LEVEL_SFX_CUT_PC *cut = (LEVEL_SFX_CUT_PC *)world->cutscene_sys->records[i];
+                LEVEL_SFX_CUT *cut = (LEVEL_SFX_CUT *)world->cutscene_sys->records[i];
                 i32 id = cut->sfx[j].id;
                 if (id != -1) {
                     sfx_ids[sfx_count++] = id;

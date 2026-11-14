@@ -17,8 +17,8 @@ typedef struct NuMtxIndexedView { // size 0x40
 
 STATIC_ASSERT(sizeof(NuMtxIndexedView) == sizeof(NUMTX));
 STATIC_ASSERT(2 * sizeof(((NuMtxIndexedView *)0)->elements[0]) + 2 * sizeof(f32) == offsetof(NUMTX, m22));
-#define NU_SIN_PC(angle) NuTrigTable[((angle) >> 1) & 0x7fff]
-#define NU_COS_PC(angle) NuTrigTable[(((angle) + 0x4000) >> 1) & 0x7fff]
+#define NU_SIN(angle) NuTrigTable[((angle) >> 1) & 0x7fff]
+#define NU_COS(angle) NuTrigTable[(((angle) + 0x4000) >> 1) & 0x7fff]
 
 static f32 NumathIncludesFdiv(f32 a, f32 b) {
     if (a == 0.0f || b == 0.0f) {
@@ -1172,12 +1172,12 @@ void NuMtxPreRotateZ(NUMTX *m, NUANG angle) {
 }
 
 void NuMtxSetRotateXYZ(NUMTX *m, NUANGVEC *a) {
-    f32 cosx = NU_COS_PC(a->x);
-    f32 sinx = NU_SIN_PC(a->x);
-    f32 cosy = NU_COS_PC(a->y);
-    f32 siny = NU_SIN_PC(a->y);
-    f32 cosz = NU_COS_PC(a->z);
-    f32 sinz = NU_SIN_PC(a->z);
+    f32 cosx = NU_COS(a->x);
+    f32 sinx = NU_SIN(a->x);
+    f32 cosy = NU_COS(a->y);
+    f32 siny = NU_SIN(a->y);
+    f32 cosz = NU_COS(a->z);
+    f32 sinz = NU_SIN(a->z);
 
     m->m00 = cosy * cosz;
     m->m01 = cosy * sinz;

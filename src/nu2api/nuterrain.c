@@ -2936,7 +2936,7 @@ void TerrDrawPlatCol(TERRAIN_POLYGON_INFO *terrain, i16 index, i32 colour) {
 
 typedef struct terrain_debug_source_link_s { // size 0x4
     TERRAIN_POLYGON_INFO *source_polygon;    // 0x0
-} TERRAIN_DEBUG_SOURCE_LINK_PC;
+} TERRAIN_DEBUG_SOURCE_LINK;
 
 void TerrDrawImpactPol(void) {
     TerrainQuery_s *query = TerI;
@@ -2948,7 +2948,7 @@ void TerrDrawImpactPol(void) {
     surface = query->surface;
     scaled = ScaleTerrain;
     if ((u32)surface >= (u32)scaled && (u32)surface < (u32)scaled + 0xc800) {
-        surface = ((TERRAIN_DEBUG_SOURCE_LINK_PC *)surface)->source_polygon;
+        surface = ((TERRAIN_DEBUG_SOURCE_LINK *)surface)->source_polygon;
     }
     TerrDraw(surface, query->terrain_group_index);
 }

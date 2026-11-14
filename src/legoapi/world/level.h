@@ -48,7 +48,7 @@ typedef struct level_progress_s { // size 0x2e28
         u8 unknown_2818[8];
 
         struct {                               // size 0x8
-            u8 unknown_2818_prefix_pc[4];      // 0x2818
+            u8 unknown_2818_prefix[4];         // 0x2818
             u32 destroyed_trooper_cannon_mask; // 0x281c
         };
     }; // 0x2818

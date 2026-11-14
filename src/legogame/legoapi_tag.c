@@ -163,7 +163,7 @@ i32 TakeOverYoda(GAMEOBJECT *rider, GAMEOBJECT *vehicle, i32 blend_camera, i32 u
     ReleaseForce(rider, 0);
     ReleaseBuildIt(rider, 0);
     ReleasePush(rider);
-    Player_ResetContexts(rider->ai_player_packet_pc);
+    Player_ResetContexts(rider->ai_player_packet);
     if ((rider->portal_flags & 0x10) == 0) {
         SetWeaponIn(rider);
     }
@@ -260,8 +260,8 @@ i32 TagCode(GAMEOBJECT *source, GAMEOBJECT *destination, i32 takeover, i32 blend
             source_ai = TAG_FLAGS(source)->ai;
             destination_ai = TAG_FLAGS(destination)->ai;
         }
-        ResetForceGlow(source->ai_player_packet_pc);
-        ResetForceGlow(destination->ai_player_packet_pc);
+        ResetForceGlow(source->ai_player_packet);
+        ResetForceGlow(destination->ai_player_packet);
         destination->pad = source_pad;
         source->pad = destination_pad;
         TAG_FLAGS(source)->player = destination_player;
@@ -376,7 +376,7 @@ i32 TagCode(GAMEOBJECT *source, GAMEOBJECT *destination, i32 takeover, i32 blend
             ReleaseForce(source, 0);
             ReleaseBuildIt(source, 0);
             ReleasePush(source);
-            Player_ResetContexts(source->ai_player_packet_pc);
+            Player_ResetContexts(source->ai_player_packet);
             if ((source->portal_flags & 0x10) == 0) {
                 SetWeaponIn(source);
             }

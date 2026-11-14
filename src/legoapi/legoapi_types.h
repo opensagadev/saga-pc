@@ -55,7 +55,7 @@ struct gameobject_s;
 struct mission_data_s;
 struct numtl_s;
 
-typedef void (*GIZACTIONFN_PC)(struct GIZFLOW *, struct FLOWBOX *, char **, i32);
+typedef void (*GIZACTIONFN)(struct GIZFLOW *, struct FLOWBOX *, char **, i32);
 
 typedef struct TERRAIN_TRACK_SLOT { // size 0x18
     void *id;                       // 0x00
@@ -286,7 +286,7 @@ typedef struct debris_particle_frame_s { // size 0x28
     NUVEC texture_offset;                // 0x0c
     NUVEC extent;                        // 0x18
     u32 colour;                          // 0x24
-} DEBRIS_PARTICLE_FRAME_PC;
+} DEBRIS_PARTICLE_FRAME;
 
 typedef struct SoundTable { // size 0xc8
     u16 bits[100];          // 0x00
@@ -383,7 +383,7 @@ extern "C" {
         NUVEC position;                      // 0x00
         NUVEC momentum;                      // 0x0c
         f32 time;                            // 0x18
-    } DEBRIS_PROCESS_SPHERE_PC;
+    } DEBRIS_PROCESS_SPHERE;
 
     typedef struct edpp_particle_s { // size 0x58
         NUVEC position;              // 0x00
@@ -1200,7 +1200,7 @@ struct cutsys_s {      // size 0x8
 };
 
 typedef struct gameanimobjpool_s GAMEANIMOBJPOOL;
-typedef void (*PICKUP_UPDATE_FN_PC)(struct WORLDINFO_s *, struct GIZMOPICKUP *);
+typedef void (*PICKUP_UPDATE_FN)(struct WORLDINFO_s *, struct GIZMOPICKUP *);
 #ifdef __cplusplus
 extern "C" {
 #endif
@@ -1454,28 +1454,28 @@ typedef struct gizobstacle_s {              // size 0xa0
     u32 runtime_flags;                      // 0x9c
 } GIZOBSTACLE;
 
-typedef void (*PICKUP_COLLECT_FN_PC)(struct WORLDINFO_s *, struct GIZMOPICKUP *, i32, struct gameobject_s *, i32);
+typedef void (*PICKUP_COLLECT_FN)(struct WORLDINFO_s *, struct GIZMOPICKUP *, i32, struct gameobject_s *, i32);
 
-typedef struct GIZMO_PICKUP_TYPE {   // size 0x38
-    char *name;                      // 0x00
-    char *activation_sfx_name;       // 0x04
-    char *collection_sfx_name;       // 0x08
-    u8 field_c;                      // 0x0c
-    u8 random_model_count;           // 0x0d
-    u8 flags;                        // 0x0e
-    u8 field_0f;                     // 0x0f
-    i16 first_model_id;              // 0x10
-    u16 score;                       // 0x12
-    f32 shadow_radius_x;             // 0x14
-    f32 shadow_radius_z;             // 0x18
-    f32 draw_distance;               // 0x1c
-    f32 bob_height;                  // 0x20
-    PICKUP_UPDATE_FN_PC update_fn;   // 0x24
-    PICKUP_COLLECT_FN_PC collect_fn; // 0x28
-    i16 debris_id;                   // 0x2c
-    i16 overlay_model_id;            // 0x2e
-    f32 shadow_extent_x;             // 0x30
-    f32 shadow_extent_z;             // 0x34
+typedef struct GIZMO_PICKUP_TYPE { // size 0x38
+    char *name;                    // 0x00
+    char *activation_sfx_name;     // 0x04
+    char *collection_sfx_name;     // 0x08
+    u8 field_c;                    // 0x0c
+    u8 random_model_count;         // 0x0d
+    u8 flags;                      // 0x0e
+    u8 field_0f;                   // 0x0f
+    i16 first_model_id;            // 0x10
+    u16 score;                     // 0x12
+    f32 shadow_radius_x;           // 0x14
+    f32 shadow_radius_z;           // 0x18
+    f32 draw_distance;             // 0x1c
+    f32 bob_height;                // 0x20
+    PICKUP_UPDATE_FN update_fn;    // 0x24
+    PICKUP_COLLECT_FN collect_fn;  // 0x28
+    i16 debris_id;                 // 0x2c
+    i16 overlay_model_id;          // 0x2e
+    f32 shadow_extent_x;           // 0x30
+    f32 shadow_extent_z;           // 0x34
 } GIZMO_PICKUP_TYPE;
 
 struct gizforce_s {                    // size 0xa4

@@ -1223,7 +1223,7 @@ extern "C" void AddColourPick(eduimenu_s *parent, eduiitem_s *item, f32 *red, f3
 typedef union edui_gradient_colour_pc_u { // size 0x4
     u32 word;
     u8 channel[4];
-} EDUI_GRADIENT_COLOUR_PC;
+} EDUI_GRADIENT_COLOUR;
 
 static void EduiDrawGradientGrid(i32 x, i32 y, i32 width, i32 height, f32 start, f32 end, u32 top_left, u32 top_right, u32 bottom_left,
                                  u32 bottom_right, i32 steps) {
@@ -1233,15 +1233,15 @@ static void EduiDrawGradientGrid(i32 x, i32 y, i32 width, i32 height, f32 start,
     x <<= 4;
     i32 left = x + (i32)(width * start);
     i32 right = x + (i32)(width * end);
-    EDUI_GRADIENT_COLOUR_PC first;
-    EDUI_GRADIENT_COLOUR_PC second;
-    EDUI_GRADIENT_COLOUR_PC last_first;
-    EDUI_GRADIENT_COLOUR_PC last_second;
+    EDUI_GRADIENT_COLOUR first;
+    EDUI_GRADIENT_COLOUR second;
+    EDUI_GRADIENT_COLOUR last_first;
+    EDUI_GRADIENT_COLOUR last_second;
     first.word = top_left;
     second.word = top_right;
     last_first.word = bottom_left;
     last_second.word = bottom_right;
-    EDUI_GRADIENT_COLOUR_PC colours[4];
+    EDUI_GRADIENT_COLOUR colours[4];
     colours[0] = first;
     colours[1] = second;
     for (i32 strip = 0; strip < steps; ++strip) {
@@ -1348,10 +1348,10 @@ typedef struct edui_colour_pick_flags_s { // size 0x74
     }; // 0x6c
 
     void (*changed)(eduimenu_s *, eduiitem_s *, u32); // 0x70
-} EDUI_COLOUR_PICK_FLAGS_PC;
+} EDUI_COLOUR_PICK_FLAGS;
 
 extern "C" i32 eduicbProcessColourPick(eduimenu_s *menu, eduiitem_s *item, f32 delta_time, FRAME_PAD_PC *pad) {
-    EDUI_COLOUR_PICK_FLAGS_PC *pick = (EDUI_COLOUR_PICK_FLAGS_PC *)item;
+    EDUI_COLOUR_PICK_FLAGS *pick = (EDUI_COLOUR_PICK_FLAGS *)item;
     if (!edui_cursor_buttons) {
         pick->dragging_colour = 0;
         pick->dragging_saturation = 0;
@@ -1422,7 +1422,7 @@ static i32 EduiColourPickWithinConfirm(edui_interact_s *interact) {
 }
 
 extern "C" i32 eduicbInteractColourPick(edui_interact_s *interact) {
-    EDUI_COLOUR_PICK_FLAGS_PC *pick = (EDUI_COLOUR_PICK_FLAGS_PC *)interact->item;
+    EDUI_COLOUR_PICK_FLAGS *pick = (EDUI_COLOUR_PICK_FLAGS *)interact->item;
     if ((EduiColourPickWithinHue(interact) || pick->dragging_colour) && !pick->dragging_saturation) {
         pick->cursor_x = (edui_cursor_x - interact->x) / interact->width;
         pick->cursor_y = (f32)((edui_cursor_y - interact->y) / (interact->height * 0.75));
@@ -1728,7 +1728,7 @@ extern "C" {
 }
 
 /* Float fabs by clearing the sign bit. */
-static f32 EduiFabsPc(f32 value) {
+static f32 EduiFabs(f32 value) {
     *(u32 *)&value &= 0x7fffffff;
     return value;
 }
@@ -1846,7 +1846,7 @@ extern "C" i32 eduicbRenderGraph(eduimenu_s *unused_menu, eduiitem_s *item, i32 
         }
         f32 dx = picker->cursor_x - picker->graph->x[point];
         f32 dy = picker->cursor_y - picker->graph->y[point];
-        f32 distance = EduiFabsPc(dx) + EduiFabsPc(dy);
+        f32 distance = EduiFabs(dx) + EduiFabs(dy);
         if (distance < closest && distance < 0.05f) {
             picker->selected_point = point;
             closest = distance;
@@ -2261,7 +2261,7 @@ typedef struct edui_gradient_stage_s { // size 0x24
     f32 blue;                          // 0x18
     u32 colour;                        // 0x1c
     u32 metadata;                      // 0x20
-} EDUI_GRADIENT_STAGE_PC;
+} EDUI_GRADIENT_STAGE;
 
 extern "C" edui_gradient_node_s *eduiGradStageAddRGB(edui_gradient_pick_s *item, f32 time, f32 red, f32 green, f32 blue) {
     f32 hue;
@@ -2271,7 +2271,7 @@ extern "C" edui_gradient_node_s *eduiGradStageAddRGB(edui_gradient_pick_s *item,
     return eduiGradStageAdd(item, time, hue, saturation, value);
 }
 
-extern "C" i32 eduiGradPickRead(eduiitem_s *item, EDUI_GRADIENT_STAGE_PC *stages, i32 capacity) {
+extern "C" i32 eduiGradPickRead(eduiitem_s *item, EDUI_GRADIENT_STAGE *stages, i32 capacity) {
     edui_gradient_node_s *node = ((edui_gradient_pick_s *)item)->first_stage;
     f32 red;
     f32 green;
@@ -2279,7 +2279,7 @@ extern "C" i32 eduiGradPickRead(eduiitem_s *item, EDUI_GRADIENT_STAGE_PC *stages
     i32 count = 0;
     for (; node; node = node->next, ++count) {
         if (count < capacity) {
-            EDUI_GRADIENT_STAGE_PC *stage = &stages[count];
+            EDUI_GRADIENT_STAGE *stage = &stages[count];
             stage->time = node->time;
             stage->hue = node->hue;
             stage->saturation = node->saturation;

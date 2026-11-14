@@ -21,7 +21,7 @@ extern "C" {
      * pickup_offset70, pickup_scatter_height7c, pickup_direction_x80/y82,
      * trigger_box_yaw84, blowup_type88, pickup_count8a, trigger_mode92.
      * Others remain opaque; production-local SYSTEM14/PROGRESS70 retained.
-     * Exact full local source cohort is obstacle-load-local.hfrag, typed GIZOBSTACLE_RUNTIME_PC used only in scratch.
+     * Exact full local source cohort is obstacle-load-local.hfrag, typed GIZOBSTACLE_RUNTIME used only in scratch.
      */
     void *GizObstacles_ReserveBufferSpace(void *);
     i32 GizObstacles_Load(void *, void *);

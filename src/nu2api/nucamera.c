@@ -414,28 +414,26 @@ i32 NuCameraClipTestExtentsAxisAligned(NUVEC *center, NUVEC *extent, f32 far_cli
     } distance;
     struct BoundProjection radius;
 
-    f32 saved_far = AxisClipNearFarPlanesPc.m30;
+    f32 saved_far = AxisClipNearFarPlanes.m30;
     if (far_clip != 0.0f) {
-        AxisClipNearFarPlanesPc.m30 -= global_camera.far_clip;
-        AxisClipNearFarPlanesPc.m30 += far_clip;
+        AxisClipNearFarPlanes.m30 -= global_camera.far_clip;
+        AxisClipNearFarPlanes.m30 += far_clip;
     }
-    NuVecMtxTransform(&distance.sides, center, &AxisClipFrustumPlanesPc);
-    distance.fourth = AxisClipFrustumPlanesPc.m33 + (center->z * AxisClipFrustumPlanesPc.m23 +
-                                                     (center->x * AxisClipFrustumPlanesPc.m03 + center->y * AxisClipFrustumPlanesPc.m13));
-    distance.far_plane =
-        AxisClipNearFarPlanesPc.m30 +
-        (center->z * AxisClipNearFarPlanesPc.m20 + (center->x * AxisClipNearFarPlanesPc.m00 + center->y * AxisClipNearFarPlanesPc.m10));
-    distance.near_plane =
-        AxisClipNearFarPlanesPc.m31 +
-        (center->z * AxisClipNearFarPlanesPc.m21 + (center->x * AxisClipNearFarPlanesPc.m01 + center->y * AxisClipNearFarPlanesPc.m11));
-    NuVecMtxTransform(&radius.sides, extent, &AxisClipAbsFrustumPlanesPc);
-    radius.fourth = extent->x * AxisClipAbsFrustumPlanesPc.m03 + extent->y * AxisClipAbsFrustumPlanesPc.m13 +
-                    extent->z * AxisClipAbsFrustumPlanesPc.m23;
+    NuVecMtxTransform(&distance.sides, center, &AxisClipFrustumPlanes);
+    distance.fourth = AxisClipFrustumPlanes.m33 + (center->z * AxisClipFrustumPlanes.m23 +
+                                                   (center->x * AxisClipFrustumPlanes.m03 + center->y * AxisClipFrustumPlanes.m13));
+    distance.far_plane = AxisClipNearFarPlanes.m30 + (center->z * AxisClipNearFarPlanes.m20 +
+                                                      (center->x * AxisClipNearFarPlanes.m00 + center->y * AxisClipNearFarPlanes.m10));
+    distance.near_plane = AxisClipNearFarPlanes.m31 + (center->z * AxisClipNearFarPlanes.m21 +
+                                                       (center->x * AxisClipNearFarPlanes.m01 + center->y * AxisClipNearFarPlanes.m11));
+    NuVecMtxTransform(&radius.sides, extent, &AxisClipAbsFrustumPlanes);
+    radius.fourth =
+        extent->x * AxisClipAbsFrustumPlanes.m03 + extent->y * AxisClipAbsFrustumPlanes.m13 + extent->z * AxisClipAbsFrustumPlanes.m23;
     radius.far_plane =
-        extent->x * AxisClipNearFarPlanesPc.m02 + extent->y * AxisClipNearFarPlanesPc.m12 + extent->z * AxisClipNearFarPlanesPc.m22;
+        extent->x * AxisClipNearFarPlanes.m02 + extent->y * AxisClipNearFarPlanes.m12 + extent->z * AxisClipNearFarPlanes.m22;
     radius.near_plane =
-        extent->x * AxisClipNearFarPlanesPc.m03 + extent->y * AxisClipNearFarPlanesPc.m13 + extent->z * AxisClipNearFarPlanesPc.m23;
-    AxisClipNearFarPlanesPc.m30 = saved_far;
+        extent->x * AxisClipNearFarPlanes.m03 + extent->y * AxisClipNearFarPlanes.m13 + extent->z * AxisClipNearFarPlanes.m23;
+    AxisClipNearFarPlanes.m30 = saved_far;
 
     if (distance.sides.x < -radius.sides.x || distance.sides.y < -radius.sides.y || distance.sides.z < -radius.sides.z ||
         distance.fourth < -radius.fourth || distance.far_plane < -radius.far_plane || distance.near_plane < -radius.near_plane) {
@@ -443,14 +441,13 @@ i32 NuCameraClipTestExtentsAxisAligned(NUVEC *center, NUVEC *extent, f32 far_cli
     }
     if (distance.sides.x < radius.sides.x || distance.sides.y < radius.sides.y || distance.sides.z < radius.sides.z ||
         distance.fourth < radius.fourth) {
-        NuVecMtxTransform(&distance.sides, center, &AxisClipScissorPlanesPc);
-        distance.fourth =
-            AxisClipScissorPlanesPc.m33 +
-            (center->z * AxisClipScissorPlanesPc.m23 + (center->x * AxisClipScissorPlanesPc.m03 + center->y * AxisClipScissorPlanesPc.m13));
-        NuVecMtxTransform(&radius.sides, extent, &AxisClipAbsScissorPlanesPc);
+        NuVecMtxTransform(&distance.sides, center, &AxisClipScissorPlanes);
+        distance.fourth = AxisClipScissorPlanes.m33 + (center->z * AxisClipScissorPlanes.m23 +
+                                                       (center->x * AxisClipScissorPlanes.m03 + center->y * AxisClipScissorPlanes.m13));
+        NuVecMtxTransform(&radius.sides, extent, &AxisClipAbsScissorPlanes);
         radius.fourth =
-            AxisClipAbsScissorPlanesPc.m33 + (extent->z * AxisClipAbsScissorPlanesPc.m23 +
-                                              (extent->y * AxisClipAbsScissorPlanesPc.m13 + extent->x * AxisClipAbsScissorPlanesPc.m03));
+            AxisClipAbsScissorPlanes.m33 + (extent->z * AxisClipAbsScissorPlanes.m23 +
+                                            (extent->y * AxisClipAbsScissorPlanes.m13 + extent->x * AxisClipAbsScissorPlanes.m03));
         if (distance.sides.x < radius.sides.x || distance.sides.y < radius.sides.y || distance.sides.z < radius.sides.z ||
             distance.fourth < radius.fourth) {
             return 2;
@@ -682,10 +679,10 @@ i32 NuCameraClipTestExtentsGeneric(NUVEC *min, NUVEC *max, NUMTX *world_mtx, f32
     }
     memset(results, 0, sizeof(results));
     for (i = 0; i < 8; i += 4) {
-        NUCAMERA_CLIP_CODE_EX(results[i], view[i], (flags & 2) == 0, VISIBILITY_ALTERNATE_WIDTH_PC, zys);
-        NUCAMERA_CLIP_CODE_EX(results[i + 1], view[i + 1], (flags & 2) == 0, VISIBILITY_ALTERNATE_WIDTH_PC, zys);
-        NUCAMERA_CLIP_CODE_EX(results[i + 2], view[i + 2], (flags & 2) == 0, VISIBILITY_ALTERNATE_WIDTH_PC, zys);
-        NUCAMERA_CLIP_CODE_EX(results[i + 3], view[i + 3], (flags & 2) == 0, VISIBILITY_ALTERNATE_WIDTH_PC, zys);
+        NUCAMERA_CLIP_CODE_EX(results[i], view[i], (flags & 2) == 0, VISIBILITY_ALTERNATE_WIDTH, zys);
+        NUCAMERA_CLIP_CODE_EX(results[i + 1], view[i + 1], (flags & 2) == 0, VISIBILITY_ALTERNATE_WIDTH, zys);
+        NUCAMERA_CLIP_CODE_EX(results[i + 2], view[i + 2], (flags & 2) == 0, VISIBILITY_ALTERNATE_WIDTH, zys);
+        NUCAMERA_CLIP_CODE_EX(results[i + 3], view[i + 3], (flags & 2) == 0, VISIBILITY_ALTERNATE_WIDTH, zys);
     }
     if ((results[0] & results[1] & results[2] & results[3] & results[4] & results[5] & results[6] & results[7]) != 0 ||
         (results[0] | results[1] | results[2] | results[3] | results[4] | results[5] | results[6] | results[7]) == 0) {
@@ -795,7 +792,7 @@ i32 NuCameraSaveState(void) {
         state->zx = zx;
         state->camera = global_camera;
         state->zy = zy;
-        state->zxs = VISIBILITY_ALTERNATE_WIDTH_PC;
+        state->zxs = VISIBILITY_ALTERNATE_WIDTH;
         state->zys = zys;
         state->view = vmtx;
         state->projection = pmtx;

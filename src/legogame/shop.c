@@ -93,15 +93,15 @@ typedef struct SHOP_INPUT_PC {
     i32 cancel;
 } SHOP_INPUT_PC;
 
-typedef i32 (*SHOP_MENU_CALLBACK_PC)(void *);
-typedef void (*SHOP_DRAW_CALLBACK_PC)(void);
-extern SHOP_MENU_CALLBACK_PC ShopMenuParent[3];
-extern SHOP_MENU_CALLBACK_PC ShopOldMenuParent[3];
-extern SHOP_MENU_CALLBACK_PC ShopOldMenuFn;
-extern SHOP_DRAW_CALLBACK_PC ShopDrawParent[3];
-extern SHOP_DRAW_CALLBACK_PC ShopOldDrawParent[3];
-extern SHOP_DRAW_CALLBACK_PC ShopOldDrawPanelFn;
-extern SHOP_DRAW_CALLBACK_PC ShopOldDrawFn;
+typedef i32 (*SHOP_MENU_CALLBACK)(void *);
+typedef void (*SHOP_DRAW_CALLBACK)(void);
+extern SHOP_MENU_CALLBACK ShopMenuParent[3];
+extern SHOP_MENU_CALLBACK ShopOldMenuParent[3];
+extern SHOP_MENU_CALLBACK ShopOldMenuFn;
+extern SHOP_DRAW_CALLBACK ShopDrawParent[3];
+extern SHOP_DRAW_CALLBACK ShopOldDrawParent[3];
+extern SHOP_DRAW_CALLBACK ShopOldDrawPanelFn;
+extern SHOP_DRAW_CALLBACK ShopOldDrawFn;
 extern i32 ShopMenuLevel;
 extern i32 ShopDrawLevel;
 extern i32 ShopOldMenuLevel;
@@ -1747,7 +1747,7 @@ void DrawSubItems(void) {
                 id = (u16)item->item_id;
                 if (shopcutsceneplayer != NULL && CutScenePlayer_CanStart(id) != 0) {
                     blank = &toolblank;
-                    level = &LDataList[((CUT_PLAYER_CLIP_CONFIG_PC *)shopcutsceneplayer->clips)[id].level_id];
+                    level = &LDataList[((CUT_PLAYER_CLIP_CONFIG *)shopcutsceneplayer->clips)[id].level_id];
                     area = level->area_index;
                     episode = (i8)level->episode;
                     if (episode != -1) {

@@ -17,7 +17,7 @@ typedef struct StartupExtended {
     void *attributes;
 } StartupExtended;
 
-int SagaDebugCaptureStreamsPc(HANDLE log_file, int saved_out, int saved_err) {
+int SagaDebugCaptureStreams(HANDLE log_file, int saved_out, int saved_err) {
     HANDLE ro = NULL;
     HANDLE wo = NULL;
     HANDLE re = NULL;

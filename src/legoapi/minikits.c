@@ -11,7 +11,7 @@ typedef struct world_minikit_reader_s { // size 0x2ae4
     MINIKIT_PC **pieces_by_id;          // 0x2984
     u8 unknown_2988[0x158];             // 0x2988
     u8 *hub_minikits;                   // 0x2ae0
-} WORLD_MINIKIT_READER_PC;
+} WORLD_MINIKIT_READER;
 
 #ifdef __cplusplus
 #endif
@@ -72,7 +72,7 @@ void MiniKit_InitPieces(MINIKIT_PC *minikit, i32 count, VARIPTR *buffer, VARIPTR
         sprintf(name, "%s_shadow", CDataList[minikit->model_id].name);
         NuSpecialFind(minikit->scene, &minikit->shadow, name, 1);
         if (minikit->piece_count > 0) {
-            buffer->addr += minikit->piece_count * sizeof(MINIKIT_PIECE_PC);
+            buffer->addr += minikit->piece_count * sizeof(MINIKIT_PIECE);
         } else {
             minikit->pieces = NULL;
         }
@@ -110,7 +110,7 @@ void CharMiniKit_Draw(i32 id, NUMTX *matrix, i32 reflection_axis, f32 reflection
 }
 
 void CharacterMiniKits_Load(COLLECTION_BUILD_PC *collection, WORLDINFO *world, VARIPTR *buffer, VARIPTR *end) {
-    WORLD_MINIKIT_READER_PC *view = (WORLD_MINIKIT_READER_PC *)world;
+    WORLD_MINIKIT_READER *view = (WORLD_MINIKIT_READER *)world;
     i32 i;
     i32 character_id;
     u32 table_size;
@@ -157,7 +157,7 @@ void CharacterMiniKits_Load(COLLECTION_BUILD_PC *collection, WORLDINFO *world, V
 }
 
 void CharacterMiniKits_Dump(WORLDINFO *world) {
-    WORLD_MINIKIT_READER_PC *view = (WORLD_MINIKIT_READER_PC *)world;
+    WORLD_MINIKIT_READER *view = (WORLD_MINIKIT_READER *)world;
     i32 i;
     if (view->minikit.scene != NULL) {
         NuGScnRemove(view->minikit.scene);

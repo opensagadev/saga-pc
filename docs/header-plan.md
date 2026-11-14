@@ -594,14 +594,14 @@ Transferred, by proposed owner:
 PC declarations, with their owner:
 
 - `PAD_INPUT_PC` (struct, line 5329): `legoapi/misc/legoapi_status.h`
-- `PlayerCarryRotationScalePc` (macro, line 10251): `nu2api/nuerror_gen.h`
-- `EdppUnresolvedInstancesPc` (variable, line 12050): `gameapi/edptl.h`
+- `PlayerCarryRotationScale` (macro, line 10251): `nu2api/nuerror_gen.h`
+- `EdppUnresolvedInstances` (variable, line 12050): `gameapi/edptl.h`
 - `PC_STEREO_SAMPLE_METADATA` (forward, line 12272): `nu2api/numusic_gen.h`
 - `PickupCoinName` (macro, line 12509): `legoapi/gizmo/object/gizmopickup.h`
 - `PickupCoinBName` (macro, line 12510): `legoapi/gizmo/object/gizmopickup.h`
-- `ScoreBuildUpDonePc` (macro, line 12591): `legoapi/lib/hub.h`
+- `ScoreBuildUpDone` (macro, line 12591): `legoapi/lib/hub.h`
 - `NuUnresolvedTextureDDS` (variable, line 17750): `nu2api/nustencilshadows_PC.h`
-- `ExBlowupFlagsPc` (variable, line 18719): `legoapi/characters/motion/animation_ids.h`
+- `ExBlowupFlags` (variable, line 18719): `legoapi/characters/motion/animation_ids.h`
 - `PcPrepareTiming` (function, line 21204): `nu2api/PCInput.h`
 
 ### 1.6 The 16 globals blocked in the rename batch

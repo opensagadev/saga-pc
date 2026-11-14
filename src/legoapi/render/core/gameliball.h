@@ -293,7 +293,7 @@ extern "C" {
     extern const f32 TerrainUnusedSpatialBlock;
     extern const f32 TerrainBoundsMinimum;
     extern const f32 TerrainBoundsMaximum;
-    extern const f32 TerrainSteepNormalYPc;
+    extern const f32 TerrainSteepNormalY;
     extern void *ScaleTerrainT2;
     extern void *TempScanStack;
     extern void *WallSplList;

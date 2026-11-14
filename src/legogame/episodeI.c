@@ -43,7 +43,7 @@ typedef struct podrace_resource_s {
     i32 attempts;
     u8 flags;
     u8 unknown_b021[15];
-} PODRACE_RESOURCE_PC;
+} PODRACE_RESOURCE;
 
 extern NUSPECIALHANDLE SebulbaMineSpecial;
 extern f32 SebulbaDistanceBias;
@@ -54,14 +54,14 @@ static f32 PodSebulbaThrowGravity;
 typedef struct pod_race_countdown_reader_s {
     u8 unknown_0000[0xb000];
     f32 lap_countdown;
-} POD_RACE_COUNTDOWN_READER_PC;
+} POD_RACE_COUNTDOWN_READER;
 
 /* Episode I level callbacks installed by FixUpLevels. */
 typedef struct podrace_levflag_s {
     u8 podrace_state;
     u8 mushroom_state;
     u8 remaining[14];
-} PODRACE_LEVFLAG_PC;
+} PODRACE_LEVFLAG;
 
 typedef struct gungan_a_s {
     i16 unknown_000;
@@ -112,7 +112,7 @@ typedef struct cut_instance_reader_s {
     u32 flags_88;
     u32 unknown_8c;
     f32 current_frame;
-} CUT_INSTANCE_READER_PC;
+} CUT_INSTANCE_READER;
 
 extern i16 dat_007f19ac;
 extern i16 dat_007f19b0;
@@ -129,7 +129,7 @@ typedef struct podrace_netpacket_s {
     f32 available_time;
     f32 lap_alpha;
     i32 lap;
-} PODRACE_NETPACKET_PC;
+} PODRACE_NETPACKET;
 
 i32 NuSpecialClipTestExtents(NUSPECIALHANDLE *special, NUMTX *matrix);
 
@@ -636,10 +636,10 @@ void PodRaceAUpdate(void) {
 }
 
 /* Private owner of the active PodRace block. */
-static PODRACE_RESOURCE_PC *PodRacePc = NULL;
+static PODRACE_RESOURCE *PodRacePc = NULL;
 
 static RACEPOD_RESOURCE_PC *RacePodAllocatePrivate(void) {
-    PODRACE_RESOURCE_PC *race = PodRacePc;
+    PODRACE_RESOURCE *race = PodRacePc;
     i32 slot;
     for (slot = 0; slot < 16; ++slot) {
         if (race->lap_entries[slot].next == NULL) {
@@ -802,8 +802,8 @@ static i32 PodRaceUpdatePod(RACEPOD_RESOURCE_PC *pod, WORLDINFO *world) {
         }
         if (world->current_level == PODRACEA_LDATA && pod->object != NULL && pod->model_id == id_SEBULBASPOD &&
             NuSpecialExistsFn(&minesys.mine_special) != 0) {
-            pod->object->special_move_timer_pc -= FRAMETIME;
-            if (pod->object->special_move_timer_pc < 0.0f) {
+            pod->object->special_move_timer -= FRAMETIME;
+            if (pod->object->special_move_timer < 0.0f) {
                 object = pod->object;
                 origin.x = object->position.x;
                 origin.y = (f32)(object->position.y + 1.0);
@@ -849,7 +849,7 @@ static i32 PodRaceUpdatePod(RACEPOD_RESOURCE_PC *pod, WORLDINFO *world) {
                     AddPart(&part);
                     {
                         const f64 random = NuRandFloat();
-                        pod->object->special_move_timer_pc =
+                        pod->object->special_move_timer =
                             (PodSebulbaThrowJitter + PodSebulbaThrowJitter) * random + (PodSebulbaThrowTime - PodSebulbaThrowJitter);
                     }
                 }
@@ -888,7 +888,7 @@ void PodRace_IncreaseLap(void) {
     Lap = (i32)((u32)Lap + 1u);
 }
 
-PODRACE_NETPACKET_PC *podrace_netpacket = NULL;
+PODRACE_NETPACKET *podrace_netpacket = NULL;
 
 void PodRaceUpdate(WORLDINFO *world, f32 dt) {
     char reason[128];
@@ -896,7 +896,7 @@ void PodRaceUpdate(WORLDINFO *world, f32 dt) {
     i32 i;
     // MATCH-EXCEPTION: race caches PodRacePc for the first countdown test only; it changes the operand order of the
     // later mushroom_timer add (fld dt; fadd timer), which no other rewrite reproduced.
-    PODRACE_RESOURCE_PC *race = PodRacePc;
+    PODRACE_RESOURCE *race = PodRacePc;
     if (netclient != 0) {
         PodRacePc->lap_countdown = podrace_netpacket->start_countdown;
         PodRacePc->lap_display = podrace_netpacket->remaining_time;
@@ -1104,7 +1104,7 @@ void fun_004daa50(void) {
 }
 
 i32 PodRace_InStartCountdown(WORLDINFO *world) {
-    POD_RACE_COUNTDOWN_READER_PC *race = (POD_RACE_COUNTDOWN_READER_PC *)PodRacePc;
+    POD_RACE_COUNTDOWN_READER *race = (POD_RACE_COUNTDOWN_READER *)PodRacePc;
     return world->area != NULL && world->area == PODRACE_ADATA && race != NULL && race->lap_countdown > 0.0f;
 }
 
@@ -1202,18 +1202,18 @@ static f32 mushroom_countdown = 15.0f;
 
 void PodRaceBUpdate(WORLDINFO *world) {
     if (Lap == 2 && PodRacePc->mushroom_timer > 1.0f && mushroom_collapse != 0) {
-        switch (((PODRACE_LEVFLAG_PC *)LevFlag)->mushroom_state) {
+        switch (((PODRACE_LEVFLAG *)LevFlag)->mushroom_state) {
             case 0:
                 if (GameCam->sock_position.distance > mushroom0_along) {
                     NewCutScene(NULL, world->cutscene_sys, "ep1_podrace_mushroom0", 1);
-                    ((PODRACE_LEVFLAG_PC *)LevFlag)->mushroom_state = 1;
+                    ((PODRACE_LEVFLAG *)LevFlag)->mushroom_state = 1;
                 }
                 break;
             case 1:
-                if (mushroom0_cut != NULL && (((CUT_INSTANCE_READER_PC *)mushroom0_cut->instance)->flags_88 & 0x1000) != 0) {
+                if (mushroom0_cut != NULL && (((CUT_INSTANCE_READER *)mushroom0_cut->instance)->flags_88 & 0x1000) != 0) {
                     NewCutScene(NULL, world->cutscene_sys, "EP1_PODRACE_MUSHROOM1", 1);
                     mushroom_countdown = mushroom_time_available;
-                    ((PODRACE_LEVFLAG_PC *)LevFlag)->mushroom_state = 2;
+                    ((PODRACE_LEVFLAG *)LevFlag)->mushroom_state = 2;
                 }
                 break;
             case 2:
@@ -1227,15 +1227,15 @@ void PodRaceBUpdate(WORLDINFO *world) {
                             mushroom_time_available = mushroom_max_time_available;
                         }
                     }
-                    ((PODRACE_LEVFLAG_PC *)LevFlag)->mushroom_state = 4;
+                    ((PODRACE_LEVFLAG *)LevFlag)->mushroom_state = 4;
                 } else if (GameCam->sock_position.distance > mushroom2_along) {
-                    ((PODRACE_LEVFLAG_PC *)LevFlag)->mushroom_state = 3;
+                    ((PODRACE_LEVFLAG *)LevFlag)->mushroom_state = 3;
                 }
                 break;
             case 3:
                 if (NuSpecialExistsFn(&LevHSpecial[0]) != 0 &&
                     NuSpecialClipTestExtents(&LevHSpecial[0], NuSpecialGetDrawMtx(&LevHSpecial[0])) == 0) {
-                    ((PODRACE_LEVFLAG_PC *)LevFlag)->mushroom_state = 4;
+                    ((PODRACE_LEVFLAG *)LevFlag)->mushroom_state = 4;
                 }
                 break;
         }
@@ -1243,10 +1243,10 @@ void PodRaceBUpdate(WORLDINFO *world) {
     UpdatePacemakerDisplay(world);
     UpdatePodRaceLapDisplay(FRAMETIME);
     PodRaceUpdate(world, FRAMETIME);
-    if (Lap == 1 && ((PODRACE_LEVFLAG_PC *)LevFlag)->podrace_state == 0 && PODRACE_ADATA != NULL &&
+    if (Lap == 1 && ((PODRACE_LEVFLAG *)LevFlag)->podrace_state == 0 && PODRACE_ADATA != NULL &&
         Game.area_save[PODRACE_ADATA->index].area_complete == 0 && GameTimer.time_elapsed >= 3.0f) {
         Hint_SetComplete(0x27e);
-        ((PODRACE_LEVFLAG_PC *)LevFlag)->podrace_state = 1;
+        ((PODRACE_LEVFLAG *)LevFlag)->podrace_state = 1;
     }
 }
 
@@ -1256,19 +1256,19 @@ void PodRaceCUpdate(WORLDINFO *world) {
     UpdatePodRaceLapDisplay(FRAMETIME);
     PodRaceUpdate(world, FRAMETIME);
     PodRaceSnipersUpdate();
-    if (((PODRACE_LEVFLAG_PC *)LevFlag)->podrace_state == 0) {
+    if (((PODRACE_LEVFLAG *)LevFlag)->podrace_state == 0) {
         CUTINFO *cutscene = CutScene_Find(world->cutscene_sys, "Ep1_Podrace_TuskenRaiders");
-        if (cutscene != NULL && (((CUT_INSTANCE_READER_PC *)cutscene->instance)->flags_88 & 0x1000) != 0) {
-            ((PODRACE_LEVFLAG_PC *)LevFlag)->podrace_state = 1;
+        if (cutscene != NULL && (((CUT_INSTANCE_READER *)cutscene->instance)->flags_88 & 0x1000) != 0) {
+            ((PODRACE_LEVFLAG *)LevFlag)->podrace_state = 1;
         }
     }
-    if (((PODRACE_LEVFLAG_PC *)LevFlag)->podrace_state == 1) {
+    if (((PODRACE_LEVFLAG *)LevFlag)->podrace_state == 1) {
         for (i = 0; i < 10; i++) {
             if (NuSpecialExistsFn(&LevHSpecial[i]) != 0) {
                 NuSpecialSetVisibility(&LevHSpecial[i], 1);
             }
         }
-        ((PODRACE_LEVFLAG_PC *)LevFlag)->podrace_state = 2;
+        ((PODRACE_LEVFLAG *)LevFlag)->podrace_state = 2;
     }
 }
 
@@ -1320,7 +1320,7 @@ i32 Action_Sebulba(AISYS_PC *unused0, AISCRIPTPROCESS *process, AIPACKET *packet
         object->portal_flags |= 0x4000;
         object->flags_ef4 |= 0x200000;
         object->ai_packet.movement_stopped = 1;
-        object->movement_speed_scale_pc = 1.0f;
+        object->movement_speed_scale = 1.0f;
     }
 
     target = NULL;
@@ -1354,12 +1354,12 @@ i32 Action_Sebulba(AISYS_PC *unused0, AISCRIPTPROCESS *process, AIPACKET *packet
         (void)MidDistanceFromSockStart(WORLD->sock_sys, &object->sock_position);
         (void)MidDistanceFromSockStart(WORLD->sock_sys, &target->sock_position);
         wanted = (difference / test_factor + 1.0f) * avg_currentspeed_mul;
-        speed = SeekLinearF(object->movement_speed_scale_pc, wanted, test_seek_rate);
-        object->movement_speed_scale_pc = speed;
+        speed = SeekLinearF(object->movement_speed_scale, wanted, test_seek_rate);
+        object->movement_speed_scale = speed;
         if (speed > max_speed_mul) {
-            object->movement_speed_scale_pc = max_speed_mul;
+            object->movement_speed_scale = max_speed_mul;
         } else if (speed < min_speed_mul) {
-            object->movement_speed_scale_pc = min_speed_mul;
+            object->movement_speed_scale = min_speed_mul;
         }
 
         NuVecSub(&target_offset, &target->position, &target->sock_position.midpoint);
@@ -1407,7 +1407,7 @@ i32 Action_Sebulba(AISYS_PC *unused0, AISCRIPTPROCESS *process, AIPACKET *packet
         }
     } else {
         goal = ahead.midpoint;
-        object->movement_speed_scale_pc = 1.0f;
+        object->movement_speed_scale = 1.0f;
     }
 
     AIMoveInstruction(packet, &goal, 0.0f, NULL, 1, 0.0f);
@@ -2101,7 +2101,7 @@ void AnakinsFlightB_Init(WORLDINFO *world) {
 }
 
 void PodRaceInit(WORLDINFO *world) {
-    PODRACE_RESOURCE_PC *podrace;
+    PODRACE_RESOURCE *podrace;
     i32 id;
     i32 i;
     podrace_netpacket = SetLevelHack(0x14);
@@ -2129,7 +2129,7 @@ void PodRaceInit(WORLDINFO *world) {
 }
 
 void PodRaceReset(void) {
-    PODRACE_RESOURCE_PC *podrace = PodRacePc;
+    PODRACE_RESOURCE *podrace = PodRacePc;
     i32 i;
     podrace->mushroom_timer = 0.0f;
     memset(podrace->lap_entries, 0, sizeof(podrace->lap_entries));
@@ -2192,8 +2192,8 @@ void PodRaceBReset(WORLDINFO *world) {
             break;
     }
     PodPacemaker = NULL;
-    ((PODRACE_LEVFLAG_PC *)LevFlag)->podrace_state = 0;
-    ((PODRACE_LEVFLAG_PC *)LevFlag)->mushroom_state = 0;
+    ((PODRACE_LEVFLAG *)LevFlag)->podrace_state = 0;
+    ((PODRACE_LEVFLAG *)LevFlag)->mushroom_state = 0;
     mushroom0_cut = CutScene_Find(world->cutscene_sys, "EP1_PODRACE_MUSHROOM0");
     NuSpecialFind(world->current_gscn, &LevHSpecial[0], "collapsing_mush", 1);
 }
@@ -2202,7 +2202,7 @@ void PodRaceCInit(WORLDINFO *world) {
     char name[256];
     i32 i;
     PodRaceInit(world);
-    ((PODRACE_LEVFLAG_PC *)LevFlag)->podrace_state = 0;
+    ((PODRACE_LEVFLAG *)LevFlag)->podrace_state = 0;
     for (i = 0; i < 10; i++) {
         sprintf(name, "boost0%i", i + 1);
         NuSpecialFind(world->current_gscn, &LevHSpecial[i], name, 1);
@@ -2213,7 +2213,7 @@ void PodRaceCInit(WORLDINFO *world) {
                 NuSpecialSetVisibility(&LevHSpecial[i], 1);
             }
         }
-        ((PODRACE_LEVFLAG_PC *)LevFlag)->podrace_state = 2;
+        ((PODRACE_LEVFLAG *)LevFlag)->podrace_state = 2;
     } else {
         for (i = 0; i < 17; i++) {
             if (NuSpecialExistsFn(&LevHSpecial[i]) != 0) {
@@ -2265,7 +2265,7 @@ i32 Action_CreatePod(AISYS_PC *system, AISCRIPTPROCESS *process, AIPACKET *packe
     f32 time_factor = 1.0f;
     i32 i;
     i32 spline_index;
-    PODRACE_RESOURCE_PC *race;
+    PODRACE_RESOURCE *race;
     FLIGHT_SPLINE_RESOURCE_PC *spline;
     RACEPOD_RESOURCE_PC *pod;
     f64 duration;

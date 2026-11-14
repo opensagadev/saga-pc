@@ -3,7 +3,7 @@
 typedef struct whip_basis_s { // size 0x76c
     u8 unknown_000[0x748];    // 0x000
     NUVEC basis[3];           // 0x748
-} WHIP_BASIS_PC;
+} WHIP_BASIS;
 
 i32 SuperCarry_Possible(GAMEOBJECT *, i32);
 void SuperCarry_Start(GAMEOBJECT *, GIZMOBLOWUP_PC *, i32);
@@ -153,7 +153,7 @@ void Whip_MoveCode(GAMEOBJECT *object) {
 }
 
 void Whip_Release(GAMEOBJECT *object) {
-    WHIP_BASIS_PC *view = (WHIP_BASIS_PC *)object;
+    WHIP_BASIS *view = (WHIP_BASIS *)object;
     if (LEGOCONTEXT_WHIP != -1 && object->character_context == LEGOCONTEXT_WHIP && object->grapple != NULL) {
         view->basis[0] = v100;
         view->basis[1] = v010;

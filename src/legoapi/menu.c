@@ -270,7 +270,7 @@ typedef struct menu_draw_state_s { // size 0xb0
     f32 centre_offset;             // 0xa4
     u8 unknown_a8[4];              // 0xa8
     i32 paused;                    // 0xac
-} MENU_DRAW_STATE_PC;
+} MENU_DRAW_STATE;
 
 extern void (*memcard_drawasiconfn)(void);
 extern void (*predrawfn)(MENU *);
@@ -278,7 +278,7 @@ extern void (*headerdrawfn)(void);
 
 void DrawMenu(i32 paused) {
     MENU *menu;
-    MENU_DRAW_STATE_PC *view;
+    MENU_DRAW_STATE *view;
     f32 saved_baseline = 0.0f;
     f32 saved_button_baseline = 0.0f;
     f32 centre;
@@ -289,7 +289,7 @@ void DrawMenu(i32 paused) {
         return;
     }
     menu = &GameMenu[GameMenuLevel];
-    view = (MENU_DRAW_STATE_PC *)menu;
+    view = (MENU_DRAW_STATE *)menu;
     if (view->menu == -1) {
         return;
     }

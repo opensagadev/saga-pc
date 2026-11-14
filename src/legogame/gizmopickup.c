@@ -8,21 +8,21 @@ typedef struct coin_packet_s {
     f32 scale;
     i16 last_coin;
     u8 unknown_0a[2];
-} COIN_PACKET_PC;
+} COIN_PACKET;
 
 typedef struct object_coin_packet_s {
     u8 unknown_000[0x7fc];
-    COIN_PACKET_PC *coin_packet;
-} OBJECT_COIN_PACKET_PC;
+    COIN_PACKET *coin_packet;
+} OBJECT_COIN_PACKET;
 
 typedef struct game_save_score_s {
     u8 unknown_0000[0x7c14];
     u32 coins;
-} GAME_SAVE_SCORE_PC;
+} GAME_SAVE_SCORE;
 
 typedef struct lose_coins_packet_s {
     u32 coins;
-} LOSE_COINS_PACKET_PC;
+} LOSE_COINS_PACKET;
 
 void PartUpdate_Heart(PART_PC *part);
 
@@ -31,7 +31,7 @@ typedef struct coinpacket_pickup_s {
     u8 multiplier;
     u8 unknown_b;
     f32 timer;
-} COINPACKET_PICKUP_PC;
+} COINPACKET_PICKUP;
 
 u32 GizmoPickups_TotalScore(WORLDINFO *world);
 u32 GizmoBlowups_TotalScore(WORLDINFO *world);
@@ -215,7 +215,7 @@ void GameMsg_DrawAdjustNewPos_CoinToTotal(GAME_MESSAGE_PC *message) {
 
 void EndScoreMessage(GAME_MESSAGE_PC *message) {
     i32 icon;
-    OBJECT_COIN_PACKET_PC *player;
+    OBJECT_COIN_PACKET *player;
     u32 old_coins;
     WORLDINFO *world;
     if (CoinsGoToMainTotal()) {
@@ -250,7 +250,7 @@ void EndScoreMessage(GAME_MESSAGE_PC *message) {
                     }
                 }
             } else {
-                IncreaseScore(&((GAME_SAVE_SCORE_PC *)&Game)->coins, message->score, 1);
+                IncreaseScore(&((GAME_SAVE_SCORE *)&Game)->coins, message->score, 1);
             }
         }
     } else {
@@ -370,13 +370,13 @@ void GizmoPickup_CollectCoin(WORLDINFO *world, NUVEC *position, i32 type_index, 
                 score += score;
                 message.score = score;
             } else {
-                multiplier = ((COINPACKET_PICKUP_PC *)object->coin_packet)->multiplier;
+                multiplier = ((COINPACKET_PICKUP *)object->coin_packet)->multiplier;
                 score *= multiplier;
                 message.score = score;
-                if (((COINPACKET_PICKUP_PC *)object->coin_packet)->multiplier < 10) {
-                    ++((COINPACKET_PICKUP_PC *)object->coin_packet)->multiplier;
+                if (((COINPACKET_PICKUP *)object->coin_packet)->multiplier < 10) {
+                    ++((COINPACKET_PICKUP *)object->coin_packet)->multiplier;
                 }
-                ((COINPACKET_PICKUP_PC *)object->coin_packet)->timer = 0.5f;
+                ((COINPACKET_PICKUP *)object->coin_packet)->timer = 0.5f;
                 score = message.score;
             }
         }
@@ -939,11 +939,11 @@ i32 LoseCoins(GAMEOBJECT *object, i32 cause) {
             lost >>= 1;
         }
     }
-    if (lost > ((LOSE_COINS_PACKET_PC *)object->coin_packet)->coins) {
-        lost = ((LOSE_COINS_PACKET_PC *)object->coin_packet)->coins;
-        ((LOSE_COINS_PACKET_PC *)object->coin_packet)->coins = 0;
+    if (lost > ((LOSE_COINS_PACKET *)object->coin_packet)->coins) {
+        lost = ((LOSE_COINS_PACKET *)object->coin_packet)->coins;
+        ((LOSE_COINS_PACKET *)object->coin_packet)->coins = 0;
     } else if (lost > 0) {
-        ((LOSE_COINS_PACKET_PC *)object->coin_packet)->coins -= lost;
+        ((LOSE_COINS_PACKET *)object->coin_packet)->coins -= lost;
     }
     if (Cheats_CheckFlags(0x7c) || DoubleScoreTime > 0.0f) {
         lost = 0;

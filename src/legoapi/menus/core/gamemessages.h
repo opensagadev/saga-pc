@@ -26,7 +26,7 @@
 
 struct nuspecial_handle_s;
 
-typedef void (*GAME_MESSAGE_CALLBACK_PC)(GAME_MESSAGE_PC *);
+typedef void (*GAME_MESSAGE_CALLBACK)(GAME_MESSAGE_PC *);
 #ifdef __cplusplus
 extern "C" {
 #endif

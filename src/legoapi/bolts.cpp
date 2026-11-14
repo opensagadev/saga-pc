@@ -18,7 +18,7 @@ static f32 BoltsFdiv(f32 a, f32 b) {
 
 extern "C" {
 
-    typedef i32 (*BOLT_HIT_PART_FN_PC)(BOLT_PC *, PART_PC *);
+    typedef i32 (*BOLT_HIT_PART_FN)(BOLT_PC *, PART_PC *);
 
     typedef struct BOLT_CONFIG {     // size 0xa4
         char name[16];               // 0x00
@@ -211,14 +211,14 @@ typedef struct bolt_context_info_s { // size 0x10
     const char *name;                // 0x0
     i32 action;                      // 0x4
     u64 flags;                       // 0x8
-} BOLT_CONTEXT_INFO_PC;
+} BOLT_CONTEXT_INFO;
 
 typedef struct BOLT_UPDATE_TYPE_PC_s { // size 0xa4
     u8 unknown_000[0x98];              // 0x00
     NUSPECIALHANDLE shadow_special;    // 0x98
-} BOLT_UPDATE_TYPE_PC;
+} BOLT_UPDATE_TYPE;
 
-STATIC_ASSERT(sizeof(BOLT_UPDATE_TYPE_PC) == sizeof(BOLTTYPE_PC));
+STATIC_ASSERT(sizeof(BOLT_UPDATE_TYPE) == sizeof(BOLTTYPE_PC));
 
 extern "C" i32 MatrixReflectionVU0_AXISY(NUMTX *, f32, f32, NUMTX *);
 
@@ -963,11 +963,11 @@ extern "C" void Bolt_HitGameObjectRC(NETMESSAGE &message) {
     }
     NewRumble(object->pad->bound_pad, 0.5f, 0);
     if (((bolt->flags & 0x100) == 0 || deflect) &&
-        ((reinterpret_cast<BOLT_CONTEXT_INFO_PC *>(CInfo)[object->character_context].flags & 0x4000000) != 0 ||
-         ((reinterpret_cast<BOLT_CONTEXT_INFO_PC *>(CInfo)[object->character_context].flags & 0x8000000) != 0 &&
+        ((reinterpret_cast<BOLT_CONTEXT_INFO *>(CInfo)[object->character_context].flags & 0x4000000) != 0 ||
+         ((reinterpret_cast<BOLT_CONTEXT_INFO *>(CInfo)[object->character_context].flags & 0x8000000) != 0 &&
           (object->context_variant_flags & 0x20000) != 0) ||
-         deflect || (reinterpret_cast<BOLT_CONTEXT_INFO_PC *>(CInfo)[object->character_context].flags & 0x800000) != 0 ||
-         ((reinterpret_cast<BOLT_CONTEXT_INFO_PC *>(CInfo)[object->character_context].flags & 0x1000000) != 0 &&
+         deflect || (reinterpret_cast<BOLT_CONTEXT_INFO *>(CInfo)[object->character_context].flags & 0x800000) != 0 ||
+         ((reinterpret_cast<BOLT_CONTEXT_INFO *>(CInfo)[object->character_context].flags & 0x1000000) != 0 &&
           (object->jump_flags & 1) != 0) ||
          CannotKill(object))) {
         BoltSys->debris(bolt, points, hit, &object->velocity, 1);
@@ -1063,8 +1063,8 @@ extern "C" void Bolt_HitGameObjectRC(NETMESSAGE &message) {
         objhitobj_bolt = bolt;
         ObjHitObj(owner, object, damage, bolt->hit_flags, 0, 0);
         if ((bolt->flags & 0x800000) != 0 &&
-            (reinterpret_cast<BOLT_CONTEXT_INFO_PC *>(CInfo)[object->character_context].flags & 0x10000000) == 0 &&
-            (reinterpret_cast<BOLT_CONTEXT_INFO_PC *>(CInfo)[object->character_context].flags & 0x8000) == 0 &&
+            (reinterpret_cast<BOLT_CONTEXT_INFO *>(CInfo)[object->character_context].flags & 0x10000000) == 0 &&
+            (reinterpret_cast<BOLT_CONTEXT_INFO *>(CInfo)[object->character_context].flags & 0x8000) == 0 &&
             (object->character_data->model_flags & 0x10) != 0 && BoltDeactivatedAction != -1 &&
             object->character_model->model_data_b[BoltDeactivatedAction] != NULL) {
             DeactivatePlayer(object, DEACTIVATEDTIME, NULL);
@@ -1254,7 +1254,7 @@ extern "C" i32 Bolt_HitGameObjects(BOLT_PC *bolt, NUVEC *points, NUVEC *minimum,
         if ((flags & 0x80) != 0 && object->field_280 == 0xff && (object->rider == NULL || object->rider->field_280 == 0xff)) {
             continue;
         }
-        if ((reinterpret_cast<BOLT_CONTEXT_INFO_PC *>(CInfo)[object->character_context].flags & 0x8080) != 0 ||
+        if ((reinterpret_cast<BOLT_CONTEXT_INFO *>(CInfo)[object->character_context].flags & 0x8080) != 0 ||
             (object->flags_e24 & 0x8000) != 0) {
             continue;
         }
@@ -1563,7 +1563,7 @@ extern "C" void Bolts_Update(WORLDINFO *world) {
                 bolt->reflection_height = 2000000.0f;
                 f32 height = GameShadow(NULL, &bolt->position, 5.0f, -1);
                 if (height != 2000000.0f) {
-                    if (NuSpecialExistsFn(&reinterpret_cast<BOLT_UPDATE_TYPE_PC *>(type)->shadow_special)) {
+                    if (NuSpecialExistsFn(&reinterpret_cast<BOLT_UPDATE_TYPE *>(type)->shadow_special)) {
                         bolt->field_e4 = height;
                         FindAnglesZX(&ShadNorm, &bolt->surface_x_rotation, &bolt->surface_z_rotation);
                     }
@@ -1691,7 +1691,7 @@ extern "C" void Bolts_Update(WORLDINFO *world) {
                 if ((flags & 0x80) != 0 && object->field_280 == 0xff && (object->rider == NULL || object->rider->field_280 == 0xff)) {
                     continue;
                 }
-                if ((reinterpret_cast<BOLT_CONTEXT_INFO_PC *>(CInfo)[object->character_context].flags & 0x8080) != 0 ||
+                if ((reinterpret_cast<BOLT_CONTEXT_INFO *>(CInfo)[object->character_context].flags & 0x8080) != 0 ||
                     (object->flags_e24 & 0x8000) != 0) {
                     continue;
                 }

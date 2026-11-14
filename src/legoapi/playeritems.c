@@ -29,7 +29,7 @@ void PlayerItemTypes_Reset(WORLDINFO *world) {
     }
 }
 
-void PlayerItem_Set(WEAPON_AMMO_PC *item, VEHICLE_WEAPON_ITEM_PC *type) {
+void PlayerItem_Set(WEAPON_AMMO_PC *item, VEHICLE_WEAPON_ITEM *type) {
     item->type = type;
     if (type != NULL) {
         item->ammo = type->start_ammo;

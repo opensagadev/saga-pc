@@ -36,7 +36,7 @@ extern "C" {
 #endif
     void edppStartPage(i32);
     extern i32 EdppTypesError;
-    extern i32 EdppUnresolvedInstancesPc;
+    extern i32 EdppUnresolvedInstances;
     extern i32 debris_rt;
     extern i32 debinf_count;
     void edanimUpdateObjects(f32 elapsed);
@@ -150,7 +150,7 @@ extern "C" {
         f32 previous_emission_time;                          // 0x1dc
         f32 emission_time;                                   // 0x1e0
         f32 emission_end_time;                               // 0x1e4
-        DEBRIS_PROCESS_SPHERE_PC process_spheres[8];         // 0x1e8
+        DEBRIS_PROCESS_SPHERE process_spheres[8];            // 0x1e8
         i16 sphere_index;                                    // 0x2c8
         i16 sphere_skip_count;                               // 0x2ca
         f32 sphere_next_time;                                // 0x2cc

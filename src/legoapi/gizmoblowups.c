@@ -3,52 +3,52 @@
 typedef struct {          // size 0x7c
     char name[16];        // 0x00
     u8 opaque[0x7c - 16]; // 0x10
-} ADD_BUILDIT_PC;
+} ADD_BUILDIT;
 
 typedef struct {          // size 0xa4
     char name[16];        // 0x00
     u8 opaque[0xa4 - 16]; // 0x10
-} ADD_FORCE_PC;
+} ADD_FORCE;
 
 typedef struct {               // size 0x90
     u8 opaque_00[0x40];        // 0x00
     char name[16];             // 0x40
     u8 opaque_50[0x90 - 0x50]; // 0x50
-} ADD_PANEL_PC;
+} ADD_PANEL;
 
 typedef struct {          // size 0xfc
     char name[16];        // 0x00
     u8 opaque[0xfc - 16]; // 0x10
-} ADD_TELEPORT_PC;
+} ADD_TELEPORT;
 
 typedef struct {          // size 0x2c
     char name[16];        // 0x00
     u8 opaque[0x2b - 16]; // 0x10
     u8 flags;             // 0x2b
-} ADD_TORP_PC;
+} ADD_TORP;
 
 typedef struct {          // size 0xf8
     char name[16];        // 0x00
     u8 opaque[0xf8 - 16]; // 0x10
-} ADD_GRAPPLE_PC;
+} ADD_GRAPPLE;
 
-typedef struct {        // size 0xc
-    ADD_TORP_PC *items; // 0x0
-    i32 count;          // 0x4
-    f32 scale;          // 0x8
-} ADD_TORP_SYS_PC;
+typedef struct {     // size 0xc
+    ADD_TORP *items; // 0x0
+    i32 count;       // 0x4
+    f32 scale;       // 0x8
+} ADD_TORP_SYS;
 
-typedef struct {            // size 0x4688
-    u8 opaque[0x4680];      // 0x0000
-    ADD_TELEPORT_PC *items; // 0x4680
-    i32 count;              // 0x4684
-} ADD_TELEPORT_WORLD_PC;
+typedef struct {         // size 0x4688
+    u8 opaque[0x4680];   // 0x0000
+    ADD_TELEPORT *items; // 0x4680
+    i32 count;           // 0x4684
+} ADD_TELEPORT_WORLD;
 
 typedef struct {                           // size 0x4670
     u8 opaque[0x2aec];                     // 0x0000
     i32 count;                             // 0x2aec
     struct LEVELSCRIPTPROCESS_s items[32]; // 0x2af0
-} ADD_AI_WORLD_PC;
+} ADD_AI_WORLD;
 
 typedef struct {                 // size 0x14
     GIZBOMBGEN_s *items;         // 0x00
@@ -60,22 +60,22 @@ typedef struct {                 // size 0x14
     i16 reset_flags_unused : 14; // 0x0c:2
     u16 opaque_0e;               // 0x0e
     void *progress;              // 0x10
-} ADD_BOMB_RESET_SYS_PC;
+} ADD_BOMB_RESET_SYS;
 
 typedef struct {         // size 0x28
     u8 unknown_00[0x1c]; // 0x00
     NUVEC position;      // 0x1c
-} FLOW_FORCE_POSITION_PC;
+} FLOW_FORCE_POSITION;
 
 typedef struct {         // size 0x40
     u8 unknown_00[0x34]; // 0x00
     NUVEC position;      // 0x34
-} FLOW_BUILDIT_POSITION_PC;
+} FLOW_BUILDIT_POSITION;
 
 typedef struct {         // size 0x3c
     u8 unknown_00[0x30]; // 0x00
     NUVEC position;      // 0x30
-} FLOW_BLOWUP_POSITION_PC;
+} FLOW_BLOWUP_POSITION;
 
 typedef struct ai_gizmo_name_process_s { // size 0xdc
     char name[16];                       // 0x00
@@ -86,7 +86,7 @@ typedef struct ai_gizmo_name_process_s { // size 0xdc
     char *locator_name;                  // 0xb4
     char *locator_set_name;              // 0xb8
     u8 unknown_bc[0x20];                 // 0xbc
-} AI_GIZMO_NAME_PROCESS_PC;
+} AI_GIZMO_NAME_PROCESS;
 
 extern char dat_007516c0[1];
 extern char *BlowupOutputNames[3];
@@ -98,7 +98,7 @@ typedef struct {         // size 0x60
     u32 visible[2];      // 0x10
     u32 completed[2];    // 0x18
     u8 object_count[64]; // 0x20
-} BUILD_PROGRESS_PC;
+} BUILD_PROGRESS;
 
 typedef struct {            // size 0xb0
     u32 enabled[4];         // 0x00
@@ -109,37 +109,37 @@ typedef struct {            // size 0xb0
     u32 pending[4];         // 0x50
     u32 destroyed[4];       // 0x60
     u8 group_members[8][8]; // 0x70
-} FORCE_PROGRESS_PC;
+} FORCE_PROGRESS;
 
 typedef struct {       // size 0x100
     u32 triggered[16]; // 0x00
     u32 enabled[16];   // 0x40
     u32 visible[16];   // 0x80
     u32 completed[16]; // 0xc0
-} BLOWUP_PROGRESS_PC;
+} BLOWUP_PROGRESS;
 
 typedef struct {       // size 0x100
     u32 collected[16]; // 0x00
     u32 enabled[16];   // 0x40
     u32 visible[16];   // 0x80
     u32 reserved[16];  // 0xc0
-} PICKUP_PROGRESS_PC;
+} PICKUP_PROGRESS;
 
 typedef struct {    // size 0x18
     u32 enabled[3]; // 0x00
     u32 visible[3]; // 0x0c
-} BOMB_PROGRESS_PC;
+} BOMB_PROGRESS;
 
 typedef struct {   // size 0xc
     u32 triggered; // 0x0
     u32 enabled;   // 0x4
     u32 visible;   // 0x8
-} PANEL_PROGRESS_PC;
+} PANEL_PROGRESS;
 
 typedef struct { // size 0x8
     u32 enabled; // 0x0
     u32 visible; // 0x4
-} GRAPPLE_PROGRESS_PC;
+} GRAPPLE_PROGRESS;
 
 typedef struct {           // size 0x7c
     u8 unused00[0x6d];     // 0x00
@@ -148,12 +148,12 @@ typedef struct {           // size 0x7c
     u8 built_object_count; // 0x6f
     u8 unused70[10];       // 0x70
     u16 flags;             // 0x7a
-} BUILD_PROGRESS_RECORD_PC;
+} BUILD_PROGRESS_RECORD;
 
-typedef struct {                       // size 0x8
-    BUILD_PROGRESS_RECORD_PC *records; // 0x0
-    u16 count;                         // 0x4
-} BUILD_PROGRESS_SYSTEM_PC;
+typedef struct {                    // size 0x8
+    BUILD_PROGRESS_RECORD *records; // 0x0
+    u16 count;                      // 0x4
+} BUILD_PROGRESS_SYSTEM;
 
 typedef struct {       // size 0xa4
     u8 unused00[0xa0]; // 0x00
@@ -175,44 +175,44 @@ typedef struct {       // size 0xa4
             u32 : 15;                    // 0xa0:17
         };
     }; // 0xa0
-} FORCE_PROGRESS_RECORD_PC;
+} FORCE_PROGRESS_RECORD;
 
-typedef struct {                          // size 0x28
-    FORCE_PROGRESS_RECORD_PC *members[8]; // 0x00
-    u8 unused20[6];                       // 0x20
-    u8 member_count;                      // 0x26
-    u8 configured_count;                  // 0x27
-} FORCE_PROGRESS_GROUP_PC;
+typedef struct {                       // size 0x28
+    FORCE_PROGRESS_RECORD *members[8]; // 0x00
+    u8 unused20[6];                    // 0x20
+    u8 member_count;                   // 0x26
+    u8 configured_count;               // 0x27
+} FORCE_PROGRESS_GROUP;
 
-typedef struct {                       // size 0x158
-    FORCE_PROGRESS_RECORD_PC *records; // 0x000
-    u8 unused04[10];                   // 0x004
-    u16 count;                         // 0x00e
-    u8 unused10[8];                    // 0x010
-    FORCE_PROGRESS_GROUP_PC groups[8]; // 0x018
-} FORCE_PROGRESS_SYSTEM_PC;
+typedef struct {                    // size 0x158
+    FORCE_PROGRESS_RECORD *records; // 0x000
+    u8 unused04[10];                // 0x004
+    u16 count;                      // 0x00e
+    u8 unused10[8];                 // 0x010
+    FORCE_PROGRESS_GROUP groups[8]; // 0x018
+} FORCE_PROGRESS_SYSTEM;
 
 typedef struct {       // size 0x2c
     u8 unused00[0x2a]; // 0x00
     u8 flags;          // 0x2a
     u8 unused2b;       // 0x2b
-} BOMB_PROGRESS_RECORD_PC;
+} BOMB_PROGRESS_RECORD;
 
-typedef struct {                      // size 0x8
-    BOMB_PROGRESS_RECORD_PC *records; // 0x0
-    u16 count;                        // 0x4
-} BOMB_PROGRESS_SYSTEM_PC;
+typedef struct {                   // size 0x8
+    BOMB_PROGRESS_RECORD *records; // 0x0
+    u16 count;                     // 0x4
+} BOMB_PROGRESS_SYSTEM;
 
 typedef struct {       // size 0x90
     u8 unused00[0x62]; // 0x00
     u8 flags;          // 0x62
     u8 unused63[0x2d]; // 0x63
-} PANEL_PROGRESS_RECORD_PC;
+} PANEL_PROGRESS_RECORD;
 
-typedef struct {                       // size 0x8
-    i32 count;                         // 0x0
-    PANEL_PROGRESS_RECORD_PC *records; // 0x4
-} PANEL_PROGRESS_SYSTEM_PC;
+typedef struct {                    // size 0x8
+    i32 count;                      // 0x0
+    PANEL_PROGRESS_RECORD *records; // 0x4
+} PANEL_PROGRESS_SYSTEM;
 
 void GizmoBlowupCreateStuff(GIZMOBLOWUP_PC *);
 
@@ -221,12 +221,12 @@ typedef struct respawn_initial_s { // size 0x112
     u8 initial_damage;             // 0x10f
     u8 remaining_health;           // 0x110
     u8 initial_health;             // 0x111
-} RESPAWN_INITIAL_PC;
+} RESPAWN_INITIAL;
 
 typedef struct respawn_particle_types_s { // size 0xa8
     u8 unknown_000[0xa4];                 // 0x00
     i16 initial_particle_types[2];        // 0xa4
-} RESPAWN_PARTICLE_TYPES_PC;
+} RESPAWN_PARTICLE_TYPES;
 
 typedef struct blowup_effect_instance_s { // size 0x110
     u8 unknown_00[0x7c];                  // 0x000
@@ -238,7 +238,7 @@ typedef struct blowup_effect_instance_s { // size 0x110
     u16 launch_yaw;                       // 0x0f0
     u8 unknown_f2[0x10d - 0xf2];          // 0x0f2
     i8 pickup_multiplier;                 // 0x10d
-} BLOWUP_EFFECT_INSTANCE_PC;
+} BLOWUP_EFFECT_INSTANCE;
 
 typedef struct blowup_effect_type_s {      // size 0xfc
     NUSPECIALHANDLE alternate_specials[4]; // 0x00
@@ -249,7 +249,7 @@ typedef struct blowup_effect_type_s {      // size 0xfc
     i16 particle_types[7];                 // 0xa0
     u8 unknown_ae[0xfa - 0xae];            // 0xae
     u8 fragment_count;                     // 0xfa
-} BLOWUP_EFFECT_TYPE_PC;
+} BLOWUP_EFFECT_TYPE;
 
 extern void (*GizmoBlowUp_SfxFn)(GIZMOBLOWUP_PC *, NUVEC *);
 extern i32 (*BlowupExFunc)(GIZMOBLOWUP_PC *, i32);
@@ -274,17 +274,17 @@ typedef struct {              // size 0x100
     u32 activated[16];        // 0x40
     u32 visible[16];          // 0x80
     u32 secondary_output[16]; // 0xc0
-} BLOWUP_RESET_PROGRESS_PC;
+} BLOWUP_RESET_PROGRESS;
 
 typedef struct {           // size 0x4c
     u8 unknown00[0x40];    // 0x00
     NUVEC screen_position; // 0x40
-} BLOWUP_SCREEN_DRAW_PC;
+} BLOWUP_SCREEN_DRAW;
 
 typedef struct {        // size 0x48
     u8 unknown00[0x44]; // 0x00
     f32 first_frame;    // 0x44
-} BLOWUP_ANIM_FIRST_DRAW_PC;
+} BLOWUP_ANIM_FIRST_DRAW;
 
 #pragma data_seg(".data$SpinnerOutputBufferPc")
 char SpinnerOutputBuffer[14] = "100% Complete";
@@ -487,7 +487,7 @@ NUVEC *GizmoBlowup_GetPos(GIZMO_PC *gizmo) {
     if (gizmo == NULL) {
         return NULL;
     }
-    return &((FLOW_BLOWUP_POSITION_PC *)gizmo->object)->position;
+    return &((FLOW_BLOWUP_POSITION *)gizmo->object)->position;
 }
 
 void *Blowup_AllocateProgressData(VARIPTR *buffer, VARIPTR *end) {
@@ -495,7 +495,7 @@ void *Blowup_AllocateProgressData(VARIPTR *buffer, VARIPTR *end) {
 }
 
 void Blowup_ClearProgress(void *owner, void *progress_ptr) {
-    BLOWUP_PROGRESS_PC *progress = progress_ptr;
+    BLOWUP_PROGRESS *progress = progress_ptr;
     if (progress == NULL) {
         return;
     }
@@ -506,7 +506,7 @@ void Blowup_ClearProgress(void *owner, void *progress_ptr) {
 }
 
 void Blowup_StoreProgress(void *world_ptr, void *data, void *progress_ptr) {
-    BLOWUP_PROGRESS_PC *progress = progress_ptr;
+    BLOWUP_PROGRESS *progress = progress_ptr;
     WORLDINFO *world = world_ptr;
     GIZMOBLOWUP_PC *record;
     i32 index;
@@ -546,7 +546,7 @@ void Blowup_StoreProgress(void *world_ptr, void *data, void *progress_ptr) {
 }
 
 static void Blowup_Reset(GIZMOBLOWUP_PC *blowup) {
-    RESPAWN_INITIAL_PC *initial = (RESPAWN_INITIAL_PC *)blowup;
+    RESPAWN_INITIAL *initial = (RESPAWN_INITIAL *)blowup;
     NUINSTANIM *animation;
     blowup->status_flags = (blowup->status_flags & 0xfeff7ffe) | 0x804000;
     blowup->remaining_health = initial->initial_health;
@@ -562,7 +562,7 @@ static void Blowup_Reset(GIZMOBLOWUP_PC *blowup) {
 }
 
 void GizBlowup_Respawn(GIZMOBLOWUP_PC *blowup) {
-    RESPAWN_INITIAL_PC *initial = (RESPAWN_INITIAL_PC *)blowup;
+    RESPAWN_INITIAL *initial = (RESPAWN_INITIAL *)blowup;
     NUINSTANIM *animation;
     i32 i;
     i32 key;
@@ -752,8 +752,8 @@ void GizmoSortBlowups(WORLDINFO *world) {
 }
 
 void GizmoBlowUp_AddEffects(NUVEC *position, GIZMOBLOWUP_PC *blowup, i32 offset, i32 flags, GAMEOBJECT *object) {
-    BLOWUP_EFFECT_TYPE_PC *type = (BLOWUP_EFFECT_TYPE_PC *)blowup->type;
-    BLOWUP_EFFECT_INSTANCE_PC *instance = (BLOWUP_EFFECT_INSTANCE_PC *)blowup;
+    BLOWUP_EFFECT_TYPE *type = (BLOWUP_EFFECT_TYPE *)blowup->type;
+    BLOWUP_EFFECT_INSTANCE *instance = (BLOWUP_EFFECT_INSTANCE *)blowup;
     NUVEC effect_position = *position;
     i32 i;
     i32 j;
@@ -2321,7 +2321,7 @@ void Blowup_Activate(GIZMO_PC *gizmo, i32 active) {
 
 void Blowups_Reset(void *world_ptr, void *unused, void *progress_ptr) {
     WORLDINFO *world = world_ptr;
-    BLOWUP_RESET_PROGRESS_PC *progress = progress_ptr;
+    BLOWUP_RESET_PROGRESS *progress = progress_ptr;
     GIZMOBLOWUP_PC *blowup;
     i32 index;
     i32 word;
@@ -2372,7 +2372,7 @@ void GizmoBlowupDraw(void *world_ptr, void *data, f32 delta_time) {
             i32 drawn = NuSpecialDrawAt(&blowup->type->animated_special, &blowup->transform);
             blowup->status_flags = (blowup->status_flags & ~0x8000u) | (((u32)drawn << 15) & 0x8000u);
             if ((blowup->status_flags & 0x8000) != 0) {
-                NuCameraTransformScreenClip(&((BLOWUP_SCREEN_DRAW_PC *)blowup)->screen_position, &blowup->position, 1, NULL);
+                NuCameraTransformScreenClip(&((BLOWUP_SCREEN_DRAW *)blowup)->screen_position, &blowup->position, 1, NULL);
             }
             if ((blowup->status_flags & 0x800000) != 0 && (blowup->status_flags & 0x8000) != 0 && (blowup->draw_flags & 0x10) != 0 &&
                 GizmoBlowup_TransformDrawFn != NULL) {
@@ -2421,7 +2421,7 @@ void GizmoBlowupBurstDraw(void *world_pointer, void *data, f32 frame_time) {
             for (instance_index = 0; instance_index < type->instance_count; ++instance_index, ++blowup) {
                 if (blowup->draw_flags & 0x800000) {
                     blowup->status_flags |= 0x8000;
-                    NuCameraTransformScreenClip(&((BLOWUP_SCREEN_DRAW_PC *)blowup)->screen_position, &blowup->position, 1, NULL);
+                    NuCameraTransformScreenClip(&((BLOWUP_SCREEN_DRAW *)blowup)->screen_position, &blowup->position, 1, NULL);
                     continue;
                 }
                 if (!(blowup->status_flags & 0x4000)) {
@@ -2440,7 +2440,7 @@ void GizmoBlowupBurstDraw(void *world_pointer, void *data, f32 frame_time) {
                     frame = blowup->type->animation_base_frame;
                     if (blowup->animation_offset + frame > end_frame) {
                         end_frame = blowup->animation_offset + frame - end_frame;
-                        frame = end_frame + ((BLOWUP_ANIM_FIRST_DRAW_PC *)animation)->first_frame;
+                        frame = end_frame + ((BLOWUP_ANIM_FIRST_DRAW *)animation)->first_frame;
                     } else {
                         frame = blowup->animation_offset + frame;
                     }
@@ -2454,7 +2454,7 @@ void GizmoBlowupBurstDraw(void *world_pointer, void *data, f32 frame_time) {
                     blowup->status_flags = (blowup->status_flags & ~0x8000u) | (((u32)drawn << 15) & 0x8000u);
                     draw_matrix = animated_matrix;
                     if (blowup->status_flags & 0x8000) {
-                        NuCameraTransformScreenClip(&((BLOWUP_SCREEN_DRAW_PC *)blowup)->screen_position,
+                        NuCameraTransformScreenClip(&((BLOWUP_SCREEN_DRAW *)blowup)->screen_position,
                                                     NUMTX_GET_ROW_VEC(&animated_matrix, 3), 1, NULL);
                     }
                 } else {
@@ -2462,7 +2462,7 @@ void GizmoBlowupBurstDraw(void *world_pointer, void *data, f32 frame_time) {
                     blowup->status_flags = (blowup->status_flags & ~0x8000u) | (((u32)drawn << 15) & 0x8000u);
                     draw_matrix = blowup->transform;
                     if (blowup->status_flags & 0x8000) {
-                        NuCameraTransformScreenClip(&((BLOWUP_SCREEN_DRAW_PC *)blowup)->screen_position, &blowup->position, 1, NULL);
+                        NuCameraTransformScreenClip(&((BLOWUP_SCREEN_DRAW *)blowup)->screen_position, &blowup->position, 1, NULL);
                     }
                 }
                 ResetShadowMapRendering();

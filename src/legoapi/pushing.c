@@ -29,7 +29,7 @@ typedef struct PUSH_OBSTACLE_WORLD { // size 0x46a8
 typedef struct spinner_movement_s {
     u8 unknown_00[0x84];
     u32 state_flags;
-} SPINNER_MOVEMENT_PC;
+} SPINNER_MOVEMENT;
 
 static __inline f32 PushingFabs(f32 value) {
     u32 bits = *(u32 *)&value & 0x7fffffff;
@@ -75,7 +75,7 @@ i32 Pushing(GAMEOBJECT *object, u16 *normal_angle, i32 *surface, i32 *angle_diff
 }
 
 void SetPushAngle(GAMEOBJECT *object) {
-    SPINNER_MOVEMENT_PC *spinner;
+    SPINNER_MOVEMENT *spinner;
     u16 angle;
     i32 adjustment;
     if (Pushing(object, &angle, NULL, NULL)) {

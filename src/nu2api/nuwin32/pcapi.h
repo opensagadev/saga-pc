@@ -112,7 +112,7 @@ extern "C" {
 #ifdef __cplusplus
 extern "C" {
 #endif
-    extern const char NuHwDefaultConfigNamePc[10];
+    extern const char NuHwDefaultConfigName[10];
     extern const char *NuHwSoundDfsName;
     extern const char *NuHwDfsName;
     extern i32 NuHwShowCommand;

@@ -38,7 +38,7 @@
  * all parts at once. */
 
 #if SAGA_LEGOAPI_WORLD_LEVELS_H_PART == 1 && !defined(SAGA_LEGOAPI_WORLD_LEVELS_H_STOP)
-#define AREA_GLOBALS_PROGRESS_FLAGS_PC (AreaGlobals.progress_flags)
+#define AREA_GLOBALS_PROGRESS_FLAGS (AreaGlobals.progress_flags)
 
 typedef struct scene_special_progress_s { // size 0x8
 
@@ -56,10 +56,10 @@ typedef struct scene_special_progress_s { // size 0x8
     }; // 0x0
 
     f32 tfactor; // 0x4
-} SCENESPECIALPROGRESS_PC;
+} SCENESPECIALPROGRESS;
 
-typedef struct scene_progress_s {           // size 0x2800
-    SCENESPECIALPROGRESS_PC specials[1280]; // 0x0000
+typedef struct scene_progress_s {        // size 0x2800
+    SCENESPECIALPROGRESS specials[1280]; // 0x0000
 } SCENEPROGRESS;
 
 typedef struct LEVEL_OBJECT_CONFIG { // size 0x8
@@ -73,7 +73,7 @@ typedef struct LEVEL_OBJECT_CONFIG { // size 0x8
 extern "C" {
 #endif
     /* LevelCompletionFallbackFlagPC: reuse existing canonical u32 declaration. */
-    extern const char PlayerBeenDeactivatedPc[16];
+    extern const char PlayerBeenDeactivated[16];
     extern i16 VehicleSpecialShooterId;
     void NuWin32SetDFS(i32);
     extern const char LevelAfterLoadName[15];
@@ -124,13 +124,13 @@ extern "C" {
     extern i32 loadareacharacters_loadedlevel;
     extern const char LevelConfigOn[3];
     extern u32 areaSuitBits;
-    extern const char SceneFileExtensionPc[5];
+    extern const char SceneFileExtension[5];
     extern i32 nopakfile;
     void ClearAreaProgress(i32, i32);
     extern i32 LSW2;
     void NewArea_ResetGlobalsPC(void);
     void NewArea(void);
-    extern const char GizObstacleTriggerLimitMessagePc[59];
+    extern const char GizObstacleTriggerLimitMessage[59];
 
     extern i32 LevPathNodes[8];
     extern void *LevPathCnx[16];

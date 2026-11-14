@@ -4,21 +4,21 @@
 typedef struct ripple_effect_cleanup_s { // size 0x28
     u8 unknown_00[0x24];                 // 0x00
     NUMTL *material;                     // 0x24
-} RIPPLE_EFFECT_CLEANUP_PC;
+} RIPPLE_EFFECT_CLEANUP;
 
 typedef struct world_ripple_cleanup_s { // size 0x46fc
     u8 unknown_0000[0x46f4];            // 0x0000
-    RIPPLE_EFFECT_CLEANUP_PC *effects;  // 0x46f4
+    RIPPLE_EFFECT_CLEANUP *effects;     // 0x46f4
     i32 count;                          // 0x46f8
-} WORLD_RIPPLE_CLEANUP_PC;
+} WORLD_RIPPLE_CLEANUP;
 
 void DestroyRippleMtls(WORLDINFO *world) {
     // MATCH-EXCEPTION: the cast is repeated at each use; a cast local gives the other SIB order (U1)
     i32 i;
-    for (i = 0; i < ((WORLD_RIPPLE_CLEANUP_PC *)world)->count; ++i) {
-        if (((WORLD_RIPPLE_CLEANUP_PC *)world)->effects[i].material != NULL) {
-            NuTexDestroy(((WORLD_RIPPLE_CLEANUP_PC *)world)->effects[i].material->texture_id);
-            NuMtlDestroy(((WORLD_RIPPLE_CLEANUP_PC *)world)->effects[i].material);
+    for (i = 0; i < ((WORLD_RIPPLE_CLEANUP *)world)->count; ++i) {
+        if (((WORLD_RIPPLE_CLEANUP *)world)->effects[i].material != NULL) {
+            NuTexDestroy(((WORLD_RIPPLE_CLEANUP *)world)->effects[i].material->texture_id);
+            NuMtlDestroy(((WORLD_RIPPLE_CLEANUP *)world)->effects[i].material);
         }
     }
 }
@@ -136,11 +136,11 @@ typedef struct ripple_effect_s { // size 0x28
     f32 end_size;          // 0x10
     char texture_name[16]; // 0x14
     NUMTL *material;       // 0x24
-} RIPPLE_EFFECT_PC;
+} RIPPLE_EFFECT;
 
 typedef struct world_ripple_view_s { // size 0x4704
     u8 unknown_0000[0x46f4];         // 0x0000
-    RIPPLE_EFFECT_PC *effects;       // 0x46f4
+    RIPPLE_EFFECT *effects;          // 0x46f4
     i32 count;                       // 0x46f8
 
     union { // size 0x8
@@ -152,23 +152,23 @@ typedef struct world_ripple_view_s { // size 0x4704
 
         i32 effect_of_type[2]; /* indexed by LookupRippleEffectIndex */
     }; // 0x46fc
-} WORLD_RIPPLE_VIEW_PC;
+} WORLD_RIPPLE_VIEW;
 
 typedef struct ripple_contact_timer_view_s { // size 0xdc4
     u8 unknown_0000[0xdc0];                  // 0x000
     f32 timer;                               // 0xdc0
-} RIPPLE_CONTACT_TIMER_VIEW_PC;
+} RIPPLE_CONTACT_TIMER_VIEW;
 
-#define RIPPLE_WORLD ((WORLD_RIPPLE_VIEW_PC *)WORLD)
+#define RIPPLE_WORLD ((WORLD_RIPPLE_VIEW *)WORLD)
 #undef RIPPLE_WORLD
 
 typedef struct ripple_material_reader_s { // size 0x74
     u8 unknown_0000[0x70];                // 0x00
     f32 opacity;                          // 0x70
-} RIPPLE_MATERIAL_READER_PC;
+} RIPPLE_MATERIAL_READER;
 
 static WORLDINFO *RippleEffectsWorldInfo = 0;
-static RIPPLE_EFFECT_PC *RippleEffectsCurrent = 0;
+static RIPPLE_EFFECT *RippleEffectsCurrent = 0;
 static const char *RippleEffectNames[2] = {"water", "forcefield"};
 
 i32 LookupRippleEffectIndex(char *name) {
@@ -217,7 +217,7 @@ static void RippleEffectType(NUFPAR_PC *parser) {
     if (NuFParGetWord(parser)) {
         i32 index = LookupRippleEffectIndex(parser->word_buffer_ptr);
         if (index != -1) {
-            WORLD_RIPPLE_VIEW_PC *world = (WORLD_RIPPLE_VIEW_PC *)RippleEffectsWorldInfo;
+            WORLD_RIPPLE_VIEW *world = (WORLD_RIPPLE_VIEW *)RippleEffectsWorldInfo;
             world->effect_of_type[index] = world->count;
         }
     }
@@ -235,9 +235,9 @@ static NUFPCOMJMP RippleEffectConfigKeywordsPc[8] = {
 };
 
 void RippleEffects_Configure(WORLDINFO *world, char *config) {
-    WORLD_RIPPLE_VIEW_PC *view = (WORLD_RIPPLE_VIEW_PC *)world;
+    WORLD_RIPPLE_VIEW *view = (WORLD_RIPPLE_VIEW *)world;
     NUFPAR_PC *parser;
-    RIPPLE_EFFECT_PC *effect;
+    RIPPLE_EFFECT *effect;
     i32 active;
     i32 i;
     view->effects = NULL;

@@ -1130,10 +1130,9 @@ u32 PC_DEVICE_BACKEND_PC::CaptureScreenshotPc(u32 width, u32 height, void **data
     target = NULL;
     copy = NULL;
     // Typing this slot in saga.h perturbs unrelated C units (episodeIII BoulderSpawn), so it is typed here.
-    typedef HRESULT(__stdcall * CREATE_RENDER_TARGET_PC)(PC_D3D9_DEVICE_PC *, u32, u32, i32, i32, u32, BOOL, PC_TEXTURE_RESOURCE **,
-                                                         HANDLE *);
-    if (SUCCEEDED(reinterpret_cast<CREATE_RENDER_TARGET_PC>(device->methods->create_render_target)(device, width, height, 0x15, 0, 0, FALSE,
-                                                                                                   &target, NULL))) {
+    typedef HRESULT(__stdcall * CREATE_RENDER_TARGET)(PC_D3D9_DEVICE_PC *, u32, u32, i32, i32, u32, BOOL, PC_TEXTURE_RESOURCE **, HANDLE *);
+    if (SUCCEEDED(reinterpret_cast<CREATE_RENDER_TARGET>(device->methods->create_render_target)(device, width, height, 0x15, 0, 0, FALSE,
+                                                                                                &target, NULL))) {
         if (target != NULL) {
             if (SUCCEEDED(device->methods->create_offscreen_plain_surface(device, width, height, 0x15, 2, &copy, NULL)) && copy != NULL &&
                 SUCCEEDED(device->methods->stretch_rect(device, current_surface, NULL, target, NULL, 2)) &&
@@ -1454,7 +1453,7 @@ struct PC_SURFACE {
 /* Copies a render-target surface to system memory and writes it as the first free "<prefix>_pcNNN.bmp".
    No caller. */
 extern "C" void PCDeviceSaveSurfaceBmpPc(const char *prefix, PC_SURFACE *surface) {
-    typedef HRESULT(__stdcall * CREATE_TEXTURE_PC)(PC_D3D9_DEVICE_PC *, u32, u32, u32, u32, u32, i32, PC_TEXTURE_RESOURCE **, HANDLE *);
+    typedef HRESULT(__stdcall * CREATE_TEXTURE)(PC_D3D9_DEVICE_PC *, u32, u32, u32, u32, u32, i32, PC_TEXTURE_RESOURCE **, HANDLE *);
     PC_SURFACE *copy;
     PC_TEXTURE_RESOURCE *texture;
     PC_TEXTURE_LEVEL_DESC desc;
@@ -1477,7 +1476,7 @@ extern "C" void PCDeviceSaveSurfaceBmpPc(const char *prefix, PC_SURFACE *surface
     height = desc.height;
     device = PCDeviceBackend.device;
     PCDeviceLastResult =
-        reinterpret_cast<CREATE_TEXTURE_PC>(device->methods->create_texture)(device, width, height, 1, 0, desc.format, 2, &texture, NULL);
+        reinterpret_cast<CREATE_TEXTURE>(device->methods->create_texture)(device, width, height, 1, 0, desc.format, 2, &texture, NULL);
     texture->methods->get_surface_level(texture, 0, reinterpret_cast<PC_TEXTURE_RESOURCE **>(&copy));
     index = 0;
     sprintf(path, "%s_pc%03d.bmp", prefix, index++);

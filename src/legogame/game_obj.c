@@ -8,7 +8,7 @@
 typedef struct creature_crate_part_view_s {
     u8 unknown_000[0x20c];
     f32 spawn_delay;
-} CREATURE_CRATE_PART_VIEW_PC;
+} CREATURE_CRATE_PART_VIEW;
 
 i32 TagCode(GAMEOBJECT *source, GAMEOBJECT *destination, i32 takeover, i32 blend_camera, i32 unused);
 void MovePlayer_NETWORK(GAMEOBJECT *);
@@ -17,7 +17,7 @@ GAMEOBJECT *fun_0055e2b0(i32 id);
 typedef struct grapple_rotation_s {
     u8 unknown_00[0x30];
     NUVEC hook_position;
-} GRAPPLE_ROTATION_PC;
+} GRAPPLE_ROTATION;
 
 extern const f64 GameObjectNearFloorNoFloorHeight;
 extern u8 SuperCarryPlayerRgb[2][3];
@@ -29,17 +29,17 @@ extern i16 dat_007f18c4;
 typedef struct kill_zipup_s {
     u8 unknown_00[0x68];
     u16 runtime_flags;
-} KILL_ZIPUP_PC;
+} KILL_ZIPUP;
 
 typedef struct combat_coinpacket_s {
     u32 coins;
-} COMBAT_COINPACKET_PC;
+} COMBAT_COINPACKET;
 
 typedef struct shield_state_s {
     u8 unknown_000[0xd30];
     f32 shield_enabled;
     f32 shield_timer;
-} SHIELD_STATE_PC;
+} SHIELD_STATE;
 
 typedef struct reaction_fields_s {
     u8 unknown_00[0x6c4];
@@ -48,7 +48,7 @@ typedef struct reaction_fields_s {
     f32 animation_speed;
     u8 unknown_754[0x778 - 0x754];
     f32 reaction_duration;
-} REACTION_FIELDS_PC;
+} REACTION_FIELDS;
 
 /* Full PC ObjHitObj source contract: complete 5764-byte original interval,
    physical calling convention and finite reader cohorts independently reviewed.
@@ -57,19 +57,19 @@ typedef struct reaction_fields_s {
 typedef struct combat_reaction_owner_s {
     u8 unknown_000[0x7bb];
     i8 attacker_slot;
-} COMBAT_REACTION_OWNER_PC;
+} COMBAT_REACTION_OWNER;
 
 typedef struct combat_attack_counter_s {
     u8 unknown_000[0x1083];
     u8 attack_count;
-} COMBAT_ATTACK_COUNTER_PC;
+} COMBAT_ATTACK_COUNTER;
 
 typedef struct collision_exclusion_view_s {
     u8 unknown_0000[0x298];
     GAMEOBJECT *excluded_object;
     u8 unknown_029c[4];
     u64 exclusion_mask;
-} COLLISION_EXCLUSION_VIEW_PC;
+} COLLISION_EXCLUSION_VIEW;
 
 typedef struct collision_platform_push_view_pc_s {
     u8 unknown_0000[0xdc4];
@@ -79,13 +79,13 @@ typedef struct collision_platform_push_view_pc_s {
 typedef struct collision_techno_view_s {
     u8 unknown_0000[0x68];
     u8 flags;
-} COLLISION_TECHNO_VIEW_PC;
+} COLLISION_TECHNO_VIEW;
 
 typedef struct collision_masks_view_s {
     u8 unknown_0000[0x1e8];
     u64 collision_identity_mask;
     u64 collision_contact_mask;
-} COLLISION_MASKS_VIEW_PC;
+} COLLISION_MASKS_VIEW;
 
 #define PANEL_PLAYER_ACTIVE(flags) (((flags) & 0x1000) != 0 && ((flags) & 0x80) != 0)
 
@@ -161,7 +161,7 @@ static void CreatureCrate_Stop(PART_PC *part) {
 }
 
 static void CreatureCrate_MoveFn(PART_PC *part, f32 elapsed) {
-    CREATURE_CRATE_PART_VIEW_PC *crate = (CREATURE_CRATE_PART_VIEW_PC *)part;
+    CREATURE_CRATE_PART_VIEW *crate = (CREATURE_CRATE_PART_VIEW *)part;
     crate->spawn_delay -= elapsed;
     if (crate->spawn_delay <= 0.0f) {
         part->move_fn = NULL;
@@ -170,7 +170,7 @@ static void CreatureCrate_MoveFn(PART_PC *part, f32 elapsed) {
 }
 
 static i32 CreatureCrate_DrawFn(PART_PC *part) {
-    if (((CREATURE_CRATE_PART_VIEW_PC *)part)->spawn_delay > 0.0f) {
+    if (((CREATURE_CRATE_PART_VIEW *)part)->spawn_delay > 0.0f) {
         return 0;
     }
     return 1;
@@ -205,11 +205,11 @@ void SpawnCreatureFromCrate(GAMEOBJECT *object, f32 height, f32 delay) {
     }
     part->force_flags = ObjHitObj_Flags(object);
     if (delay > 0.0f) {
-        ((CREATURE_CRATE_PART_VIEW_PC *)part)->spawn_delay = delay;
+        ((CREATURE_CRATE_PART_VIEW *)part)->spawn_delay = delay;
     } else {
         part->move_fn = NULL;
         part->draw_fn = NULL;
-        ((CREATURE_CRATE_PART_VIEW_PC *)part)->spawn_delay = 0.0f;
+        ((CREATURE_CRATE_PART_VIEW *)part)->spawn_delay = 0.0f;
     }
     object->flags_1fc_word &= ~0x1000u;
     object->ai_packet.reset_mode = 3;
@@ -518,14 +518,14 @@ static i32 Collide2Objects(APIOBJECT *first, APIOBJECT *second) {
     f32 scale;
     i32 collision_result = ForcePushed_SuperPush_Occurring(first_object, second_object);
     if (collision_result != 0) {
-        collision_result = ((COLLISION_MASKS_VIEW_PC *)second_object)->collision_identity_mask &
-                                       ((COLLISION_MASKS_VIEW_PC *)first_object)->collision_contact_mask ||
-                                   ((COLLISION_MASKS_VIEW_PC *)second_object)->collision_contact_mask &
-                                       ((COLLISION_MASKS_VIEW_PC *)first_object)->collision_identity_mask
+        collision_result = ((COLLISION_MASKS_VIEW *)second_object)->collision_identity_mask &
+                                       ((COLLISION_MASKS_VIEW *)first_object)->collision_contact_mask ||
+                                   ((COLLISION_MASKS_VIEW *)second_object)->collision_contact_mask &
+                                       ((COLLISION_MASKS_VIEW *)first_object)->collision_identity_mask
                                ? 1
                                : 2;
-        ((COLLISION_MASKS_VIEW_PC *)first)->collision_contact_mask |= ((COLLISION_MASKS_VIEW_PC *)second)->collision_identity_mask;
-        ((COLLISION_MASKS_VIEW_PC *)second)->collision_contact_mask |= ((COLLISION_MASKS_VIEW_PC *)first)->collision_identity_mask;
+        ((COLLISION_MASKS_VIEW *)first)->collision_contact_mask |= ((COLLISION_MASKS_VIEW *)second)->collision_identity_mask;
+        ((COLLISION_MASKS_VIEW *)second)->collision_contact_mask |= ((COLLISION_MASKS_VIEW *)first)->collision_identity_mask;
         return collision_result;
     }
     if (WORLD->current_level == DOGFIGHTA_LDATA) {
@@ -594,7 +594,7 @@ void CollideGameObjects(WORLDINFO *world) {
     NUVEC *maximum_cursor;
     NUVEC direction;
     PLAYERCHARACTERCONFIG *data;
-    COLLISION_EXCLUSION_VIEW_PC *exclusion;
+    COLLISION_EXCLUSION_VIEW *exclusion;
     u64 bit;
     u32 flags;
     u32 is_player;
@@ -649,14 +649,14 @@ void CollideGameObjects(WORLDINFO *world) {
         }
         data = object->character_data->game_character;
         if ((data->flags_090 & 0x8000) || (object->flags_e20 & 0x20) ||
-            (context == 0x47 && (((COLLISION_TECHNO_VIEW_PC *)object->techno)->flags & 1))) {
+            (context == 0x47 && (((COLLISION_TECHNO_VIEW *)object->techno)->flags & 1))) {
             continue;
         }
         *minimum_cursor++ = object->collision_min;
         *maximum_cursor++ = object->collision_max;
         *object_cursor++ = (APIOBJECT *)object;
         ++collision_count;
-        exclusion = (COLLISION_EXCLUSION_VIEW_PC *)object;
+        exclusion = (COLLISION_EXCLUSION_VIEW *)object;
         exclusion->exclusion_mask = 0;
         data = object->character_data->game_character;
         if (data->flags_090 & 0x1000) {
@@ -877,7 +877,7 @@ void GameObjectRotation(GAMEOBJECT *object, i32 mode) {
                 object->roll_angle = object->field_7a8;
             }
         } else if (grapple) {
-            GRAPPLE_ROTATION_PC *hook = object->grapple;
+            GRAPPLE_ROTATION *hook = object->grapple;
             NuVecSub(&direction, &hook->hook_position, &object->collision_position);
             FindAnglesZX(&direction, &object->pitch_angle, &object->roll_angle);
         } else if (reflection) {
@@ -911,7 +911,7 @@ void GameObjectRotation(GAMEOBJECT *object, i32 mode) {
                     target_z = object->field_7a8;
                 }
             } else if (grapple) {
-                GRAPPLE_ROTATION_PC *hook = object->grapple;
+                GRAPPLE_ROTATION *hook = object->grapple;
                 NuVecSub(&direction, &hook->hook_position, &object->collision_position);
                 FindAnglesZX(&direction, &target_x, &target_z);
             } else if (reflection) {
@@ -951,7 +951,7 @@ void PlayerTakeHit(GAMEOBJECT *object, GAMEOBJECT *attacker) {
         if (object->portal_flags & 0x08000000) {
             ResetAnimPacket(&object->anim_packet, -1);
             Player_ClearContext(object, 1);
-            Player_ResetContexts(object->ai_player_packet_pc);
+            Player_ResetContexts(object->ai_player_packet);
         }
         return;
     }
@@ -962,7 +962,7 @@ void PlayerTakeHit(GAMEOBJECT *object, GAMEOBJECT *attacker) {
     object->field_7aa = (i16)animation;
     ResetAnimPacket(&object->anim_packet, -1);
     Player_ClearContext(object, 1);
-    Player_ResetContexts(object->ai_player_packet_pc);
+    Player_ResetContexts(object->ai_player_packet);
     object->character_context = 0x15;
     duration = AnimDuration((i16)object->id, object->field_7aa, 0.0f, 0.0f, 1);
     object->context_timer = duration;
@@ -978,7 +978,7 @@ void PlayerTakeHit(GAMEOBJECT *object, GAMEOBJECT *attacker) {
 }
 
 i32 PlayerTakeHitReaction(GAMEOBJECT *target, GAMEOBJECT *attacker, f32 duration, u32 flags) {
-    REACTION_FIELDS_PC *view = (REACTION_FIELDS_PC *)target;
+    REACTION_FIELDS *view = (REACTION_FIELDS *)target;
     void **animations;
     i32 choices[16];
     i32 count = 0;
@@ -1064,7 +1064,7 @@ i32 DeactivatePlayer(GAMEOBJECT *object, f32 duration, GAMEOBJECT *source) {
         model_state = object->origin_scale_override;
         Player_ClearContext(object, 1);
         if (object->character_context != 0x3e) {
-            Player_ResetContexts(object->ai_player_packet_pc);
+            Player_ResetContexts(object->ai_player_packet);
             object->character_context = 0x17;
             object->origin_scale_override = model_state;
             if (AIScriptSetBaseScriptStateByName((AISCRIPTPROCESS *)&object->ai_packet, "BeenDeactivated")) {
@@ -1495,7 +1495,7 @@ static f32 SHIELDFLICKERTIME = 0.1f;
 #pragma data_seg()
 
 void ObjHitShield(GAMEOBJECT *attacker, GAMEOBJECT *target, i32 damage, void *unused_bolt) {
-    SHIELD_STATE_PC *shield = (SHIELD_STATE_PC *)target;
+    SHIELD_STATE *shield = (SHIELD_STATE *)target;
     i32 health;
     f32 first_rumble;
     f32 second_rumble;
@@ -2660,7 +2660,7 @@ i32 KillGameObject(GAMEOBJECT *object, i32 reason, i32 unused) {
         KillGameObject(rider, 4, 0);
     }
     ReleaseLever(object);
-    Player_ResetContexts(object->ai_player_packet_pc);
+    Player_ResetContexts(object->ai_player_packet);
     if ((object->flags_1fc_word & 0x80) != 0) {
         if (object->torpedo != NULL) {
             while (object->torpedo->count != 0) {
@@ -2765,7 +2765,7 @@ i32 KillGameObject(GAMEOBJECT *object, i32 reason, i32 unused) {
         object->reciprocal_target = NULL;
     }
     if (object->character_context == 71 && object->grapple != NULL) {
-        ((KILL_ZIPUP_PC *)object->grapple)->runtime_flags &= ~0x100;
+        ((KILL_ZIPUP *)object->grapple)->runtime_flags &= ~0x100;
         object->grapple = NULL;
     }
     Batarangs_CheckLostData(object);
@@ -3353,7 +3353,7 @@ i32 ObjHitObj(GAMEOBJECT *attacker, GAMEOBJECT *target, i32 damage, u16 flags, i
         if ((flags & 2) && !(0x80 & target->flags_1fc_word) && WORLD->current_level != HUB_LDATA) {
             if (!StartupGameFlag1 && !(target->portal_flags & 0x08000000) && CombatHitReactionInterval != 0 && attacker != NULL &&
                 attacker->field_280 != 0xff && target->field_280 == 0xff && !(target->flags_1fc_word & 2)) {
-                COMBAT_ATTACK_COUNTER_PC *counter = (COMBAT_ATTACK_COUNTER_PC *)attacker;
+                COMBAT_ATTACK_COUNTER *counter = (COMBAT_ATTACK_COUNTER *)attacker;
                 counter->attack_count = (u8)((counter->attack_count + 1) % CombatHitReactionInterval);
                 if (counter->attack_count == 0) {
                     reaction_trigger = 1;
@@ -3380,7 +3380,7 @@ i32 ObjHitObj(GAMEOBJECT *attacker, GAMEOBJECT *target, i32 damage, u16 flags, i
             damage = 0;
         } else if ((flags & 4) && !(target->flags_1fc_word & 0x80) && !(target->portal_flags & 0x08000000) && !StartupGameFlag1 &&
                    CombatHitReactionInterval != 0 && attacker != NULL && !(2 & target->flags_1fc_word)) {
-            COMBAT_ATTACK_COUNTER_PC *counter = (COMBAT_ATTACK_COUNTER_PC *)attacker;
+            COMBAT_ATTACK_COUNTER *counter = (COMBAT_ATTACK_COUNTER *)attacker;
             counter->attack_count = (u8)((counter->attack_count + 1) % CombatHitReactionInterval);
             if (counter->attack_count == 0) {
                 reaction_trigger = 1;
@@ -3474,7 +3474,7 @@ impact:
         no_impact = players_cannot_exit_speeder && target->id == (u16)id_SPEEDERBIKE && target->rider && target->field_280 != 0xff;
         if ((target->character_data->model_flags & 0x20000000) && !ObjIsTargetSpeeder(target) && !no_impact) {
             coins = 0;
-            if (((target->flags_1fc_word & 0x80)) && target->coin_packet && ((COMBAT_COINPACKET_PC *)target->coin_packet)->coins &&
+            if (((target->flags_1fc_word & 0x80)) && target->coin_packet && ((COMBAT_COINPACKET *)target->coin_packet)->coins &&
                 BonusWinner == -1) {
                 coins = LoseCoins(target, 1);
             }
@@ -3502,7 +3502,7 @@ impact:
         if (!StartupGameFlag1) {
             u16 angle;
             f32 speed;
-            COMBAT_REACTION_OWNER_PC *reaction = (COMBAT_REACTION_OWNER_PC *)target;
+            COMBAT_REACTION_OWNER *reaction = (COMBAT_REACTION_OWNER *)target;
             if (reaction_trigger) {
                 i32 reaction_result = PlayerTakeHitReaction(target, attacker, CombatReactionDuration, flags);
                 if (reaction_result != 0) {
@@ -3557,7 +3557,7 @@ impact:
         coins = 0;
         if (target->field_280 != 0xff) {
             if ((target->flags_1fc_word & 0x80)) {
-                if (target->coin_packet && ((COMBAT_COINPACKET_PC *)target->coin_packet)->coins && BonusWinner == -1) {
+                if (target->coin_packet && ((COMBAT_COINPACKET *)target->coin_packet)->coins && BonusWinner == -1) {
                     coins = LoseCoins(target, 1);
                 }
                 if (!BuildUpTotal) {
@@ -3684,7 +3684,7 @@ finish:
     return result;
 refill:
     coins = 0;
-    if (((target->flags_1fc_word & 0x80)) && target->coin_packet && ((COMBAT_COINPACKET_PC *)target->coin_packet)->coins &&
+    if (((target->flags_1fc_word & 0x80)) && target->coin_packet && ((COMBAT_COINPACKET *)target->coin_packet)->coins &&
         BonusWinner == -1) {
         coins = LoseCoins(target, 1);
     }

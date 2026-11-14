@@ -977,13 +977,13 @@ void SmartTextEx(char *text, f32 x, f32 y, f32 z, f32 x_scale, f32 y_scale, f32 
         f32 z;
         f32 width;
         f32 height;
-    } BOX_GEOMETRY_PC;
+    } BOX_GEOMETRY;
 
-    STATIC_ASSERT(offsetof(BOX_GEOMETRY_PC, x) == 4);
-    STATIC_ASSERT(offsetof(BOX_GEOMETRY_PC, y) == 8);
-    STATIC_ASSERT(offsetof(BOX_GEOMETRY_PC, width) == 0x10);
-    STATIC_ASSERT(offsetof(BOX_GEOMETRY_PC, height) == 0x14);
-    BOX_GEOMETRY_PC *box = message_box;
+    STATIC_ASSERT(offsetof(BOX_GEOMETRY, x) == 4);
+    STATIC_ASSERT(offsetof(BOX_GEOMETRY, y) == 8);
+    STATIC_ASSERT(offsetof(BOX_GEOMETRY, width) == 0x10);
+    STATIC_ASSERT(offsetof(BOX_GEOMETRY, height) == 0x14);
+    BOX_GEOMETRY *box = message_box;
     i32 widest_line = -1;
     f32 saved_x_scale;
     f32 saved_y_scale;
@@ -1268,7 +1268,7 @@ typedef struct text_crawl_mission_view_s { // size 0x8
     u8 unknown_00[4];                      // 0x0
     i16 name_id;                           // 0x4
     i16 text_id;                           // 0x6
-} TEXT_CRAWL_MISSION_VIEW_PC;
+} TEXT_CRAWL_MISSION_VIEW;
 
 static TEXT_CRAWL_VIEW_PC *TextCrawlCurrent = 0;
 static NUMTX TextCrawlMatrix = {0};
@@ -1291,7 +1291,7 @@ void TextCrawl_Init(TEXT_CRAWL_VIEW_PC *crawl, i32 id, i32 reset) {
 
 void TextCrawl_Draw(f32 dt, i32 paragraphs, f32 alpha, char *text) {
     AREA_DATA_PC *area;
-    TEXT_CRAWL_MISSION_VIEW_PC *mission;
+    TEXT_CRAWL_MISSION_VIEW *mission;
     i32 body_text_id;
     i32 episode_index;
     i32 area_index;
@@ -1341,7 +1341,7 @@ void TextCrawl_Draw(f32 dt, i32 paragraphs, f32 alpha, char *text) {
         episode_name = text;
         body_text_id = -1;
     } else {
-        mission = (TEXT_CRAWL_MISSION_VIEW_PC *)Mission_Active(NULL);
+        mission = (TEXT_CRAWL_MISSION_VIEW *)Mission_Active(NULL);
         if (mission != NULL) {
             i32 name_id = mission->name_id;
             if (name_id != -1 && TTab[name_id] != NULL) {

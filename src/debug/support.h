@@ -10,13 +10,13 @@ extern "C" {
 #endif
     /* Exact VC8 intrinsic signature; avoid intrin.h C++ vector overloads. */
     LONG _InterlockedExchange(LONG volatile *target, LONG value);
-    int SagaDebugCaptureStreamsPc(HANDLE file, int saved_out, int saved_err);
-    void SagaDebugCrashInitPc(HANDLE existing_log_file, const char *build_id, const char *log_path);
+    int SagaDebugCaptureStreams(HANDLE file, int saved_out, int saved_err);
+    void SagaDebugCrashInit(HANDLE existing_log_file, const char *build_id, const char *log_path);
     void *_ReturnAddress(void);
-    void SagaDebugSoundSetterBeginPc(void);
-    void SagaDebugSoundSetterEndPc(const void *source, int count, const void *destination, const void *caller);
-    void SagaDebugSoundCheckpointPc(const char *stage, void *volatile const *source, volatile const int *count,
-                                    void *volatile const *destination);
+    void SagaDebugSoundSetterBegin(void);
+    void SagaDebugSoundSetterEnd(const void *source, int count, const void *destination, const void *caller);
+    void SagaDebugSoundCheckpoint(const char *stage, void *volatile const *source, volatile const int *count,
+                                  void *volatile const *destination);
     void _saga_log(enum log_level level, const char *file, int line, const char *function, const char *format, ...);
 #ifdef __cplusplus
 }

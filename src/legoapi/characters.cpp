@@ -28,7 +28,7 @@ typedef struct character_callback_writer_s {
     CHARACTER_UPDATE_CALLBACK_PC move;
     CHARACTER_UPDATE_CALLBACK_PC animate;
     CHARACTER_UPDATE_CALLBACK_PC post_animate;
-} CHARACTER_CALLBACK_WRITER_PC;
+} CHARACTER_CALLBACK_WRITER;
 
 struct KILLPARTS_WORLD_SCENES {
     u8 unknown_0[0x2980];
@@ -447,13 +447,13 @@ extern "C" {
                 continue;
             }
             if (move != NULL) {
-                ((CHARACTER_CALLBACK_WRITER_PC *)&CDataList[index])->move = move;
+                ((CHARACTER_CALLBACK_WRITER *)&CDataList[index])->move = move;
             }
             if (animate != NULL) {
-                ((CHARACTER_CALLBACK_WRITER_PC *)&CDataList[index])->animate = animate;
+                ((CHARACTER_CALLBACK_WRITER *)&CDataList[index])->animate = animate;
             }
             if (post_animate != NULL) {
-                ((CHARACTER_CALLBACK_WRITER_PC *)&CDataList[index])->post_animate = post_animate;
+                ((CHARACTER_CALLBACK_WRITER *)&CDataList[index])->post_animate = post_animate;
             }
         }
     }

@@ -37,14 +37,14 @@ typedef struct hub_minikit_runtime_s {
     f32 offset_z;
     f32 velocity_x;
     f32 velocity_z;
-} HUB_MINIKIT_RUNTIME_PC;
+} HUB_MINIKIT_RUNTIME;
 
 typedef struct hub_world_reader_s {
     u8 unknown_0000[0x2984];
     struct hub_minikit_pieces_s **pieces;
     u8 unknown_2988[0x158];
-    HUB_MINIKIT_RUNTIME_PC *minikits;
-} HUB_WORLD_READER_PC;
+    HUB_MINIKIT_RUNTIME *minikits;
+} HUB_WORLD_READER;
 
 typedef struct hub_area_info_s {
     const char *area_name;
@@ -105,18 +105,18 @@ typedef struct hub_minikit_piece_s {
     u8 unknown_4c[0x1a];
     u8 enabled;
     u8 direction_index;
-} HUB_MINIKIT_PIECE_PC;
+} HUB_MINIKIT_PIECE;
 
 typedef struct hub_minikit_pieces_s {
     NUGSCN *scene;
-    HUB_MINIKIT_PIECE_PC *pieces;
+    HUB_MINIKIT_PIECE *pieces;
     u8 piece_count;
     i8 area_index;
     i16 model_id;
     NUSPECIALHANDLE base;
-} HUB_MINIKIT_PIECES_PC;
+} HUB_MINIKIT_PIECES;
 
-#define HUB_SIN_LUT_PC(a) (NuTrigTable[(((i32)(a)) >> 1) & 0x7fff])
+#define HUB_SIN_LUT(a) (NuTrigTable[(((i32)(a)) >> 1) & 0x7fff])
 
 typedef struct hub_pad_reader_pc_s {
     void *pad;
@@ -130,7 +130,7 @@ typedef struct hub_game_stats_reader_s {
     u16 completion;
     u8 unknown_7c1a[6];
     f32 elapsed;
-} HUB_GAME_STATS_READER_PC;
+} HUB_GAME_STATS_READER;
 
 typedef struct hub_episode_info_s {
     i16 episode;
@@ -149,18 +149,18 @@ typedef struct hub_init_world_reader_s {
     NUGSCN *scene;
     u8 unknown_140[0x2988];
     void *gizmo_system;
-} HUB_INIT_WORLD_READER_PC;
+} HUB_INIT_WORLD_READER;
 
 extern void (*HubInitAIFn)(WORLDINFO *);
 
 typedef struct hub_door_object_reader_s {
     u8 unknown_00[0x9c];
     u32 flags;
-} HUB_DOOR_OBJECT_READER_PC;
+} HUB_DOOR_OBJECT_READER;
 
 typedef struct hub_door_reader_s {
-    HUB_DOOR_OBJECT_READER_PC *object;
-} HUB_DOOR_READER_PC;
+    HUB_DOOR_OBJECT_READER *object;
+} HUB_DOOR_READER;
 
 extern void (*HubResetAIFn)(WORLDINFO *);
 struct GIZBUILDIT;
@@ -242,7 +242,7 @@ typedef struct world_minikit_reader_s {
     MINIKIT_PC **pieces_by_id;
     u8 unknown_2988[0x158];
     u8 *hub_minikits;
-} WORLD_MINIKIT_READER_PC;
+} WORLD_MINIKIT_READER;
 
 static f32 HubFabs(f32 value) {
     u32 bits = *(u32 *)&value & 0x7fffffff;
@@ -347,7 +347,7 @@ static void MiniKitRotateZ(NUMTX *m, NUANG a) {
 }
 
 static void HubResolveAreaInfo(HUB_AREA_INFO_PC *info, WORLDINFO *world) {
-    HUB_INIT_WORLD_READER_PC *w = (HUB_INIT_WORLD_READER_PC *)world;
+    HUB_INIT_WORLD_READER *w = (HUB_INIT_WORLD_READER *)world;
     for (; info->area_name != NULL; ++info) {
         info->door = GizmoFindByName(w->gizmo_system, -1, (char *)info->door_name);
         info->bonus_gizmo = GizmoFindByName(w->gizmo_system, -1, (char *)info->bonus_name);
@@ -484,7 +484,7 @@ static void HubUpdateBonusBuildIts(WORLDINFO *world) {
 }
 
 static void HubResolveEpisodeInfo(HUB_EPISODE_INFO_PC *info, WORLDINFO *world) {
-    HUB_INIT_WORLD_READER_PC *w = (HUB_INIT_WORLD_READER_PC *)world;
+    HUB_INIT_WORLD_READER *w = (HUB_INIT_WORLD_READER *)world;
     for (; info->episode != -1; ++info) {
         if (info->episode >= 0 && info->episode < EPISODECOUNT) {
             info->data = &EDataList[info->episode];
@@ -1517,7 +1517,7 @@ extern "C" void Hub_Load(WORLDINFO *world, VARIPTR *, VARIPTR *) {
 extern "C" {
 
     void Hub_LoadAndFixUpMiniKits(WORLDINFO *world, VARIPTR *buffer, VARIPTR *end) {
-        WORLD_MINIKIT_READER_PC *view = (WORLD_MINIKIT_READER_PC *)world;
+        WORLD_MINIKIT_READER *view = (WORLD_MINIKIT_READER *)world;
         i32 i;
         i32 size;
         buffer->addr = (buffer->addr + 3) & ~3u;
@@ -1550,7 +1550,7 @@ extern "C" {
 }
 
 extern "C" void Hub_InitMiniKits(WORLDINFO *world) {
-    HUB_MINIKIT_RUNTIME_PC *kit = ((HUB_WORLD_READER_PC *)world)->minikits;
+    HUB_MINIKIT_RUNTIME *kit = ((HUB_WORLD_READER *)world)->minikits;
     i32 i;
     if (kit != NULL) {
         for (i = 0; i < AREACOUNT; ++i, ++kit) {
@@ -1592,11 +1592,11 @@ extern "C" void Hub_InitMiniKits(WORLDINFO *world) {
 
 static i32 Hub_UpdateMiniKitBounds(i32 area_index, WORLDINFO *world) {
     const i32 model = ADataList[area_index].minikit_id;
-    HUB_WORLD_READER_PC *w = (HUB_WORLD_READER_PC *)world;
+    HUB_WORLD_READER *w = (HUB_WORLD_READER *)world;
     if (model == -1 || w->minikits == NULL) {
         return 0;
     }
-    HUB_MINIKIT_RUNTIME_PC *kit = &w->minikits[area_index];
+    HUB_MINIKIT_RUNTIME *kit = &w->minikits[area_index];
     HUB_AREA_INFO_PC *info = NULL;
     for (HUB_AREA_INFO_PC *entry = HubAreaInfo; entry->area_name != NULL; ++entry) {
         if (entry->area != NULL && entry->area->index == area_index) {
@@ -1615,8 +1615,8 @@ static i32 Hub_UpdateMiniKitBounds(i32 area_index, WORLDINFO *world) {
     kit->collision_center.z = kit->position.z + kit->offset_z;
     kit->collision_center.y = (top + bottom) * 0.5 + kit->position.y;
     const f32 scale = kit->scale;
-    kit->collision_center.y += (1.0 - (1.0 + (f64)HUB_SIN_LUT_PC((i32)((f64)scale * 32768.0 + 16384.0))) * 0.5) * (f64)0.333f;
-    kit->collision_center.y += (f64)HUB_SIN_LUT_PC(kit->phase_rotation) * (f64)0.025f * scale;
+    kit->collision_center.y += (1.0 - (1.0 + (f64)HUB_SIN_LUT((i32)((f64)scale * 32768.0 + 16384.0))) * 0.5) * (f64)0.333f;
+    kit->collision_center.y += (f64)HUB_SIN_LUT(kit->phase_rotation) * (f64)0.025f * scale;
     const f32 panel_offset = info ? info->panel_offset : 0.0f;
     kit->collision_center.y += panel_offset;
     kit->bounds_min.x = kit->collision_center.x - radius;
@@ -1651,7 +1651,7 @@ extern "C" void Hub_UpdateMiniKits(WORLDINFO *world) {
             angle = Hub_PadAngle[1] + GameCam->yaw;
         }
     }
-    HUB_WORLD_READER_PC *w = (HUB_WORLD_READER_PC *)world;
+    HUB_WORLD_READER *w = (HUB_WORLD_READER *)world;
     if (w->pieces == NULL || w->minikits == NULL) {
         return;
     }
@@ -1672,9 +1672,9 @@ extern "C" void Hub_UpdateMiniKits(WORLDINFO *world) {
         }
     }
     PlaySfx("ui_hover_lp", &hub_minikitviewer_pos);
-    HUB_MINIKIT_RUNTIME_PC *kit = w->minikits;
+    HUB_MINIKIT_RUNTIME *kit = w->minikits;
     for (i32 i = 0; i < AREACOUNT; ++i, ++kit) {
-        HUB_MINIKIT_PIECES_PC *pieces = w->pieces[i];
+        HUB_MINIKIT_PIECES *pieces = w->pieces[i];
         if (pieces == NULL) {
             continue;
         }
@@ -1785,7 +1785,7 @@ static f32 HubMiniKitViewerStep = 2.0f;
 static f32 HubMiniKitViewerBaseY = 0.143f;
 
 extern "C" void Hub_DrawMiniKits(WORLDINFO *world) {
-    if (((HUB_WORLD_READER_PC *)world)->pieces == NULL || ((HUB_WORLD_READER_PC *)world)->minikits == NULL) {
+    if (((HUB_WORLD_READER *)world)->pieces == NULL || ((HUB_WORLD_READER *)world)->minikits == NULL) {
         return;
     }
     i32 areas[72];
@@ -1802,8 +1802,8 @@ extern "C" void Hub_DrawMiniKits(WORLDINFO *world) {
     }
     for (i32 index = 0; index < count; ++index) {
         const i32 area = areas[index];
-        HUB_MINIKIT_RUNTIME_PC *kit = &((HUB_WORLD_READER_PC *)world)->minikits[area];
-        if (((HUB_WORLD_READER_PC *)world)->pieces[area] == NULL || ADataList[area].minikit_id == -1) {
+        HUB_MINIKIT_RUNTIME *kit = &((HUB_WORLD_READER *)world)->minikits[area];
+        if (((HUB_WORLD_READER *)world)->pieces[area] == NULL || ADataList[area].minikit_id == -1) {
             continue;
         }
         HUB_AREA_INFO_PC *info = NULL;
@@ -1829,17 +1829,17 @@ extern "C" void Hub_DrawMiniKits(WORLDINFO *world) {
         }
         f32 x = hub_minikitviewer_pos.x + offset;
         if (hub_minikitviewer_movewait > 0.0f) {
-            const f32 wait_ease = (f32)(1.0 - (1.0 + (f64)HUB_SIN_LUT_PC((i32)(hub_minikitviewer_movewait * 32768.0f + 16384.0f))) * 0.5);
+            const f32 wait_ease = (f32)(1.0 - (1.0 + (f64)HUB_SIN_LUT((i32)(hub_minikitviewer_movewait * 32768.0f + 16384.0f))) * 0.5);
             x += (f64)wait_ease * 2.0 * (f64)hub_minikitviewer_move;
         }
-        HUB_MINIKIT_PIECES_PC *pieces = ((HUB_WORLD_READER_PC *)world)->pieces[area];
+        HUB_MINIKIT_PIECES *pieces = ((HUB_WORLD_READER *)world)->pieces[area];
         const f32 scale = kit->scale;
-        const f32 lift = (f32)((1.0 - (1.0 + (f64)HUB_SIN_LUT_PC((i32)(scale * 32768.0f + 16384.0f))) * 0.5) * (f64)0.333f);
-        const u16 phase_x = (i32)(HUB_SIN_LUT_PC(kit->phase_x) * 910.0f);
-        const u16 phase_y = (i32)(HUB_SIN_LUT_PC(kit->phase_y) * 910.0f);
-        const u16 phase_z = (i32)(HUB_SIN_LUT_PC(kit->phase_z) * 910.0f);
+        const f32 lift = (f32)((1.0 - (1.0 + (f64)HUB_SIN_LUT((i32)(scale * 32768.0f + 16384.0f))) * 0.5) * (f64)0.333f);
+        const u16 phase_x = (i32)(HUB_SIN_LUT(kit->phase_x) * 910.0f);
+        const u16 phase_y = (i32)(HUB_SIN_LUT(kit->phase_y) * 910.0f);
+        const u16 phase_z = (i32)(HUB_SIN_LUT(kit->phase_z) * 910.0f);
         const u16 rotation = (i32)(RotDiff(0, phase_y) * scale) + kit->rotation;
-        const f32 bob = HUB_SIN_LUT_PC(kit->phase_rotation) * 0.025f * scale;
+        const f32 bob = HUB_SIN_LUT(kit->phase_rotation) * 0.025f * scale;
         const f32 tilt_scale = (info ? info->panel_scale : 1.0f) * scale;
         NUMTX matrix;
         MiniKitSetRotationX(&matrix, (i32)(RotDiff(0, kit->tilt) * tilt_scale));
@@ -2118,10 +2118,10 @@ extern "C" void Hub_Reset(WORLDINFO *world) {
     for (i32 i = 0; HubAreaInfo[i].area_name != NULL; i++) {
         if (HubAreaInfo[i].door != NULL) {
             if (Episode_CountOpenAreas(HubAreaInfo[i].area->episode_index, HubAreaInfo[i].area->index, Game_AreaSave) != 0) {
-                ((HUB_DOOR_READER_PC *)HubAreaInfo[i].door)->object->flags &= ~8U;
+                ((HUB_DOOR_READER *)HubAreaInfo[i].door)->object->flags &= ~8U;
                 NuSpecialSetVisibility(&HubAreaInfo[i].lock, 1);
             } else {
-                ((HUB_DOOR_READER_PC *)HubAreaInfo[i].door)->object->flags |= 8U;
+                ((HUB_DOOR_READER *)HubAreaInfo[i].door)->object->flags |= 8U;
                 NuSpecialSetVisibility(&HubAreaInfo[i].lock, 0);
             }
         }
@@ -2129,10 +2129,10 @@ extern "C" void Hub_Reset(WORLDINFO *world) {
     for (i32 i = 0; HubEpisodeInfo[i].episode >= 0 && HubEpisodeInfo[i].episode < 9; i++) {
         if (HubEpisodeInfo[i].door != NULL) {
             if (Episode_CountOpenAreas(HubEpisodeInfo[i].episode, -1, Game_AreaSave) == 0 && (u8)HubEpisodeInfo[i].force_open == 0) {
-                ((HUB_DOOR_READER_PC *)HubEpisodeInfo[i].door)->object->flags |= 8U;
+                ((HUB_DOOR_READER *)HubEpisodeInfo[i].door)->object->flags |= 8U;
                 NuSpecialSetVisibility(&HubEpisodeInfo[i].lock_on, 0);
             } else {
-                ((HUB_DOOR_READER_PC *)HubEpisodeInfo[i].door)->object->flags &= ~8U;
+                ((HUB_DOOR_READER *)HubEpisodeInfo[i].door)->object->flags &= ~8U;
                 NuSpecialSetVisibility(&HubEpisodeInfo[i].lock_on, 1);
             }
         }
@@ -2201,7 +2201,7 @@ extern "C" void Hub_Draw3D(WORLDINFO *world) {
         const i32 pulse = (i32)((f64)NuFmod(GameTimer.time_elapsed, 3.21f) / (f64)3.21f * 65536.0);
         const f32 bob = NuTrigTable[(pulse >> 1) & 0x7fff] * HubStatsBobAmplitude;
         const i32 alpha = (i32)((f64)HubHologramAlpha * 15.0 + 56.0);
-        const HUB_GAME_STATS_READER_PC *save = (const HUB_GAME_STATS_READER_PC *)&Game;
+        const HUB_GAME_STATS_READER *save = (const HUB_GAME_STATS_READER *)&Game;
         char text[128];
         NUMTX matrix;
         u32 colour;
@@ -2974,7 +2974,7 @@ static void Hub_DrawFreePlaySelect(void) {
 static void *HubMiniKitViewerGizmo = NULL;
 
 extern "C" void Hub_Init(WORLDINFO *world) {
-    HUB_INIT_WORLD_READER_PC *w = (HUB_INIT_WORLD_READER_PC *)world;
+    HUB_INIT_WORLD_READER *w = (HUB_INIT_WORLD_READER *)world;
     HubAreaPanelX = HubBothTrueJediGoldBricks != 0 ? HubAreaPanelOne : HubAreaPanelTwo;
     HubResolveAreaInfo(HubAreaInfo, world);
     HubResolveEpisodeInfo(HubEpisodeInfo, world);
@@ -3158,10 +3158,10 @@ extern "C" void Hub_Update(WORLDINFO *world) {
         for (episode_index = 0; HubEpisodeInfo[episode_index].episode >= 0 && HubEpisodeInfo[episode_index].episode < 9; ++episode_index) {
             if (HubEpisodeInfo[episode_index].door != NULL) {
                 if (HubEpisodeInfo[episode_index].episode != selected && selected != -1) {
-                    ((HUB_DOOR_READER_PC *)HubEpisodeInfo[episode_index].door)->object->flags |= 8;
+                    ((HUB_DOOR_READER *)HubEpisodeInfo[episode_index].door)->object->flags |= 8;
                 } else if ((u8)HubEpisodeInfo[episode_index].force_open != 0 ||
                            Episode_CountOpenAreas(HubEpisodeInfo[episode_index].episode, -1, Game_AreaSave) != 0) {
-                    ((HUB_DOOR_READER_PC *)HubEpisodeInfo[episode_index].door)->object->flags &= ~8U;
+                    ((HUB_DOOR_READER *)HubEpisodeInfo[episode_index].door)->object->flags &= ~8U;
                 }
             }
         }
@@ -3193,7 +3193,7 @@ extern "C" void Hub_Update(WORLDINFO *world) {
     if (selected_area != -1) {
         for (i32 i = 0; HubAreaInfo[i].area_name != NULL; ++i) {
             if (HubAreaInfo[i].door != NULL && HubAreaInfo[i].area != NULL && HubAreaInfo[i].area->index != selected_area) {
-                ((HUB_DOOR_READER_PC *)HubAreaInfo[i].door)->object->flags |= 8;
+                ((HUB_DOOR_READER *)HubAreaInfo[i].door)->object->flags |= 8;
             }
         }
     } else {
@@ -3202,7 +3202,7 @@ extern "C" void Hub_Update(WORLDINFO *world) {
                 (Episode_CountOpenAreas(HubAreaInfo[i].area->episode_index, HubAreaInfo[i].area->index, Game_AreaSave) != 0 ||
                  (HubAreaInfo[i].bonus_gizmo != NULL && GizmoGetOutput(world->gizmo_sys, HubAreaInfo[i].bonus_gizmo, 0, 0) != 0) ||
                  ((HubAreaInfo[i].flags >> 8) & 255) == 1)) {
-                ((HUB_DOOR_READER_PC *)HubAreaInfo[i].door)->object->flags &= ~8U;
+                ((HUB_DOOR_READER *)HubAreaInfo[i].door)->object->flags &= ~8U;
                 NuSpecialSetVisibility(&HubAreaInfo[i].lock, 1);
             }
         }
@@ -4038,10 +4038,10 @@ extern "C" {
         i32 skip_inside;
         i32 index;
         i32 instance;
-        NuVecSub(&owner->special_move_look_position_pc, &destination->position, &source->position);
-        NuVecNorm(&owner->special_move_look_position_pc, &owner->special_move_look_position_pc);
-        NuVecAdd(&owner->special_move_look_position_pc, &owner->special_move_look_position_pc, &destination->position);
-        packet->movement_look_target = &owner->special_move_look_position_pc;
+        NuVecSub(&owner->special_move_look_position, &destination->position, &source->position);
+        NuVecNorm(&owner->special_move_look_position, &owner->special_move_look_position);
+        NuVecAdd(&owner->special_move_look_position, &owner->special_move_look_position, &destination->position);
+        packet->movement_look_target = &owner->special_move_look_position;
         if (owner->character_context == 0x5b || owner->character_context == 0x55) {
             owner->pad->buttons_pressed |= GAMEPAD_JUMP;
         } else {
@@ -4059,8 +4059,7 @@ extern "C" {
             }
             if (owner->field_281 != 0 && owner->supporting_platform_id != -1 && CurrentTerrain != NULL) {
                 instance = NuSpecialGetInstanceix(&owner->ai_packet.special_move_node->special_handle);
-                if (instance ==
-                    ((AI_SPECIAL_TERRAIN_VIEW_PC *)CurrentTerrain)->platforms[owner->supporting_platform_id].scene_object_index) {
+                if (instance == ((AI_SPECIAL_TERRAIN_VIEW *)CurrentTerrain)->platforms[owner->supporting_platform_id].scene_object_index) {
                     skip_inside = 0;
                 }
             }
@@ -4074,7 +4073,7 @@ extern "C" {
         } else if (owner->character_context != 0 && owner->character_context != 0x5b && owner->character_context != 0x55 &&
                    (owner->position.y < owner->ai_packet.special_move_node->min_height ||
                     (packet->path_info.connection->traversal_flags[packet->path_info.direction] & 0x80000000) != 0 ||
-                    owner->special_move_timer_pc < -5.0f)) {
+                    owner->special_move_timer < -5.0f)) {
             ClearSpecialMove(owner);
         }
         if (owner->ai_packet.special_move_node != NULL) {
@@ -4084,7 +4083,7 @@ extern "C" {
             }
             owner->ai_packet.movement_destination = owner->ai_packet.special_move_node->position;
             owner->ai_packet.movement_stopping_distance = 0.0f;
-            ((GAMEOBJECT *)object)->ai_collision_priority_pc |= 0x4000;
+            ((GAMEOBJECT *)object)->ai_collision_priority |= 0x4000;
             return 1;
         }
         return 0;
@@ -4212,7 +4211,7 @@ extern "C" {
                 packet->movement_stopping_distance = 0.0f;
             }
         } else {
-            if (owner->field_281 && owner->position.y < owner->special_move_source_pc->min_height) {
+            if (owner->field_281 && owner->position.y < owner->special_move_source->min_height) {
                 ClearSpecialMove(owner);
                 return 0;
             }
@@ -4310,14 +4309,14 @@ extern "C" {
         if (owner->character_context == LEGOCONTEXT_GRAPPLE && owner->grapple == grapple) {
             owner->ai_packet.movement_destination = owner->position;
             owner->ai_packet.movement_stopping_distance = 0;
-            SetSpecialMove(owner, owner->ai_packet.special_move_node, owner->special_move_source_pc, 7);
+            SetSpecialMove(owner, owner->ai_packet.special_move_node, owner->special_move_source, 7);
             return 1;
         }
-        if (owner->special_move_timer_pc < -1.0f && owner->character_context != 0) {
+        if (owner->special_move_timer < -1.0f && owner->character_context != 0) {
             ClearSpecialMove(owner);
             return 0;
         }
-        if (owner->special_move_timer_pc < IndyGrappleTimeout && owner->character_context != LEGOCONTEXT_GRAPPLE) {
+        if (owner->special_move_timer < IndyGrappleTimeout && owner->character_context != LEGOCONTEXT_GRAPPLE) {
             ClearSpecialMove(owner);
             return 0;
         }
@@ -4375,7 +4374,7 @@ extern "C" {
         }
         owner->ai_packet.movement_destination = owner->position;
         owner->ai_packet.movement_stopping_distance = 0;
-        SetSpecialMove(owner, owner->ai_packet.special_move_node, owner->special_move_source_pc, 8);
+        SetSpecialMove(owner, owner->ai_packet.special_move_node, owner->special_move_source, 8);
         return 1;
     }
 
@@ -4399,12 +4398,12 @@ extern "C" {
         }
         if (grapple->field_4c == 0.0f) {
             owner->pad->buttons_pressed |= GAMEPAD_JUMP;
-            ((GAMEOBJECT *)object)->ai_collision_priority_pc |= 0x4000;
+            ((GAMEOBJECT *)object)->ai_collision_priority |= 0x4000;
         } else {
             distance = NuVecXZDistSqr(&owner->ai_packet.special_move_node->position, &owner->position, NULL);
             if (distance < IndyGrappleReleaseRadius * IndyGrappleReleaseRadius) {
                 owner->pad->buttons_pressed |= GAMEPAD_JUMP;
-                ((GAMEOBJECT *)object)->ai_collision_priority_pc |= 0x4000;
+                ((GAMEOBJECT *)object)->ai_collision_priority |= 0x4000;
             }
         }
         return 1;
@@ -4413,7 +4412,7 @@ extern "C" {
     i32 Indy_MidSpecialMove_SwingPc(AISYS_PC *system, AIPACKET *packet, APIOBJECT *object) {
         GAMEOBJECT *owner = (GAMEOBJECT *)object->owner;
         if (owner->character_context == 0x46) {
-            if (owner->ai_packet.special_move_node->position.y > owner->special_move_source_pc->position.y) {
+            if (owner->ai_packet.special_move_node->position.y > owner->special_move_source->position.y) {
                 if (IndyGrappleCanJump(owner)) {
                     owner->ai_packet.movement_destination = owner->ai_packet.special_move_node->position;
                     owner->ai_packet.movement_stopping_distance = 0;
@@ -4449,7 +4448,7 @@ extern "C" {
             owner->ai_packet.movement_stopping_distance = 0.0f;
         } else {
             owner->pad->buttons_pressed |= GAMEPAD_JUMP;
-            ((GAMEOBJECT *)object)->ai_collision_priority_pc |= 0x4000;
+            ((GAMEOBJECT *)object)->ai_collision_priority |= 0x4000;
         }
         return 1;
     }
@@ -4556,9 +4555,9 @@ extern "C" {
                             distance - destination->radius > jump_distance) {
                             packet->path_connection_state = 3;
                             if ((destination->runtime_flags & 2) == 0) {
-                                owner->ai_jump_destination_distance_pc = distance;
+                                owner->ai_jump_destination_distance = distance;
                             } else {
-                                owner->ai_jump_destination_distance_pc = 0.0f;
+                                owner->ai_jump_destination_distance = 0.0f;
                             }
                         }
                     }
@@ -4573,13 +4572,13 @@ extern "C" {
                                 break;
                             }
                         } else {
-                            owner->ai_jump_destination_distance_pc = 0.0f;
+                            owner->ai_jump_destination_distance = 0.0f;
                         }
-                        if (owner->ai_jump_destination_distance_pc < distance) {
+                        if (owner->ai_jump_destination_distance < distance) {
                             packet->path_connection_state = 4;
-                            owner->ai_jump_destination_distance_pc = 0.0f;
+                            owner->ai_jump_destination_distance = 0.0f;
                         } else {
-                            owner->ai_jump_destination_distance_pc = distance;
+                            owner->ai_jump_destination_distance = distance;
                         }
                     }
                     break;
@@ -4634,7 +4633,7 @@ extern "C" {
                                 continue;
                             }
                             packet->path_connection_state = 1;
-                            ((GAMEOBJECT *)object)->ai_collision_priority_pc |= 0x2000;
+                            ((GAMEOBJECT *)object)->ai_collision_priority |= 0x2000;
                             return 1;
                         }
                     }
@@ -4642,7 +4641,7 @@ extern "C" {
                     owner->pad->buttons_pressed |= GAMEPAD_JUMP;
                     break;
             }
-            ((GAMEOBJECT *)object)->ai_collision_priority_pc |= 0x2000;
+            ((GAMEOBJECT *)object)->ai_collision_priority |= 0x2000;
             return 1;
         }
         return 0;
@@ -4657,7 +4656,7 @@ extern "C" {
                 packet->path_info.path->nodes[packet->path_info.connection->node_indices[packet->path_info.direction]].position;
             packet->flags |= 0x800000;
             packet->movement_stopping_distance = 0.0f;
-            ((GAMEOBJECT *)apiobject)->ai_collision_priority_pc |= 0x2000;
+            ((GAMEOBJECT *)apiobject)->ai_collision_priority |= 0x2000;
             return 1;
         }
         if (TryToTeleportToNextNode(owner, destination, 0) != 0) {
@@ -4672,7 +4671,7 @@ extern "C" {
         GAMEOBJECT *owner = (GAMEOBJECT *)object->owner;
         if (owner->character_context == 0x1f) {
             owner->launch_origin = owner->ai_packet.special_move_node->position;
-            ((GAMEOBJECT *)object)->ai_collision_priority_pc |= 0x4000;
+            ((GAMEOBJECT *)object)->ai_collision_priority |= 0x4000;
             return 1;
         }
         ClearSpecialMove(owner);
@@ -4746,7 +4745,7 @@ extern "C" {
         reset_connection:
             packet->path_connection_state = 0;
         }
-        ((GAMEOBJECT *)object)->ai_collision_priority_pc |= 0x2000;
+        ((GAMEOBJECT *)object)->ai_collision_priority |= 0x2000;
         return 1;
     }
 
@@ -4757,13 +4756,13 @@ extern "C" {
         AIPATHNODE *source;
 
         owner = (GAMEOBJECT *)object->owner;
-        if (owner->special_move_timer_pc <= 0.0f) {
+        if (owner->special_move_timer <= 0.0f) {
             destination = &packet->path_info.path->nodes[packet->path_info.connection->node_indices[packet->path_info.direction == 0]];
             if (owner->character_context == 0x47) {
                 packet->movement_destination = destination->position;
                 packet->movement_stopping_distance = 0.0f;
                 SetSpecialMove(owner, destination, NULL, 9);
-                ((GAMEOBJECT *)object)->ai_collision_priority_pc |= 0x2000;
+                ((GAMEOBJECT *)object)->ai_collision_priority |= 0x2000;
                 return 1;
             }
             if (TryToTeleportToNextNode(owner, destination, 0) != 0) {
@@ -4776,12 +4775,12 @@ extern "C" {
             owner->pad->buttons_held |= GAMEPAD_SPECIAL;
             owner->pad->buttons_pressed |= GAMEPAD_SPECIAL;
             GameObjectSetCanUse(owner, NULL, 4, 1, 0.0f);
-            ((GAMEOBJECT *)object)->ai_collision_priority_pc |= 0x2000;
+            ((GAMEOBJECT *)object)->ai_collision_priority |= 0x2000;
             return 1;
         } else {
             packet->movement_destination = object->position;
             packet->movement_stopping_distance = 0.0f;
-            ((GAMEOBJECT *)object)->ai_collision_priority_pc |= 0x2000;
+            ((GAMEOBJECT *)object)->ai_collision_priority |= 0x2000;
             return 1;
         }
     }
@@ -4793,20 +4792,20 @@ extern "C" {
                 if (owner->character_context == 0x47) {
                     owner->ai_packet.movement_destination = owner->ai_packet.special_move_node->position;
                     owner->ai_packet.movement_stopping_distance = 0.0f;
-                    ((GAMEOBJECT *)object)->ai_collision_priority_pc |= 0x4000;
+                    ((GAMEOBJECT *)object)->ai_collision_priority |= 0x4000;
                     return 1;
                 }
                 owner->field_1087 = 1;
-                owner->special_move_timer_pc = 1.0f;
+                owner->special_move_timer = 1.0f;
             case 1:
                 owner->ai_packet.movement_destination = owner->ai_packet.special_move_node->position;
                 owner->ai_packet.movement_stopping_distance = 0.0f;
                 if (owner->ai_packet.inside_path_node == owner->ai_packet.special_move_node - owner->ai_packet.path_info.path->nodes ||
-                    owner->special_move_timer_pc <= 0.0f) {
+                    owner->special_move_timer <= 0.0f) {
                     ClearSpecialMove(owner);
                     return 0;
                 }
-                ((GAMEOBJECT *)object)->ai_collision_priority_pc |= 0x4000;
+                ((GAMEOBJECT *)object)->ai_collision_priority |= 0x4000;
                 return 1;
         }
         return 0;
@@ -4845,7 +4844,7 @@ extern "C" {
             } else {
                 packet->movement_destination = apiobject->position;
                 packet->movement_stopping_distance = 0.0f;
-                ((GAMEOBJECT *)apiobject)->ai_collision_priority_pc |= 0x2000;
+                ((GAMEOBJECT *)apiobject)->ai_collision_priority |= 0x2000;
                 packet->path_connection_state = 0;
                 return 1;
             }
@@ -4866,7 +4865,7 @@ extern "C" {
     i32 Indy_MidSpecialMove(AISYS_PC *system, AIPACKET *packet, APIOBJECT *apiobject) {
         GAMEOBJECT *owner = (GAMEOBJECT *)apiobject->owner;
         AI_MID_SPECIAL_MOVE_PC callback;
-        owner->special_move_timer_pc -= FRAMETIME;
+        owner->special_move_timer -= FRAMETIME;
         if (owner->ai_packet.special_move_node != NULL) {
             if (TryToTeleportToNextNode(owner, owner->ai_packet.special_move_node, 0) != 0) {
                 ClearSpecialMove(owner);

@@ -14,4 +14,4 @@ typedef struct specialmove_s {
     i16 victim_animation;
     u16 flags;
     f32 distance_apart;
-} SPECIALMOVE_PC;
+} SPECIALMOVE;

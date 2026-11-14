@@ -40,7 +40,7 @@ typedef struct socksegment_s { // size 0x80
     NUVEC next_midpoint;       // 0x6c
     f32 length;                // 0x78
     f32 distance_from_start;   // 0x7c
-} SOCKSEGMENT_PC;
+} SOCKSEGMENT;
 
 typedef struct sockposition_s { // size 0x38
     u8 unknown_00;              // 0x00

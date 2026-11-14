@@ -23,7 +23,7 @@ typedef struct beast_fall_land_view_s { // size 0xdb0
     MINIANIMPACKET_PC mini_animation;   // 0x7d0
     u8 unknown_7f4[0xdac - 0x7f4];      // 0x7f4
     f32 fall_animation_time;            // 0xdac
-} BEAST_FALL_LAND_VIEW_PC;
+} BEAST_FALL_LAND_VIEW;
 
 extern i32 (*IsWearingBackPackFn)(GAMEOBJECT *);
 extern i32 (*UsingExtraActionsFn)(GAMEOBJECT *);
@@ -49,7 +49,7 @@ typedef struct jump_auxiliary_fields_s {
     f32 fall_animation_timer;
     u8 unknown_db0[0x8b];
     u8 action_suppressed;
-} JUMP_AUXILIARY_FIELDS_PC;
+} JUMP_AUXILIARY_FIELDS;
 
 extern i32 (*Jump_PreventJumpFn)(GAMEOBJECT *);
 extern void (*Jump_EndOfLandContextFn)(GAMEOBJECT *);
@@ -147,7 +147,7 @@ i32 StartBigJump(GAMEOBJECT *object, NUVEC *destination, i32 mode, f32 height, f
         return 0;
     }
     Player_ClearContext(object, 0);
-    Player_ResetContexts(object->ai_player_packet_pc);
+    Player_ResetContexts(object->ai_player_packet);
     object->big_jump_animation = (u8)animation;
     object->character_context = (i8)LEGOCONTEXT_BIGJUMP;
     object->field_7b3 = 1;
@@ -227,7 +227,7 @@ i32 UseFallAnim(GAMEOBJECT *object) {
 }
 
 i32 StartFallLand(GAMEOBJECT *object, i32 action) {
-    BEAST_FALL_LAND_VIEW_PC *view = (BEAST_FALL_LAND_VIEW_PC *)object;
+    BEAST_FALL_LAND_VIEW *view = (BEAST_FALL_LAND_VIEW *)object;
     PlayLandSfx(object, 0, 0);
     if (LEGOCONTEXT_LAND_JUMP != -1) {
         if (action != -1 && object->character_model->model_data_b[action] != NULL) {
@@ -321,7 +321,7 @@ i32 Slam_Start(GAMEOBJECT *object, f32 speed) {
 }
 
 void JumpCode(GAMEOBJECT *object, i32 jump_pressed, i32 jump_held, u32 animation_set, i32 action_pressed, i32 action_held, i32 hit_effect) {
-    JUMP_AUXILIARY_FIELDS_PC *aux = (JUMP_AUXILIARY_FIELDS_PC *)object;
+    JUMP_AUXILIARY_FIELDS *aux = (JUMP_AUXILIARY_FIELDS *)object;
     WORLDINFO *world;
     i32 player_flag;
     i32 flip_kind;

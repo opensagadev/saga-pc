@@ -4,7 +4,7 @@ typedef struct shard_progress_recovered_s { // size 0x30
     u32 collected[4];                       // 0x00
     u32 active[4];                          // 0x10
     u32 visible[4];                         // 0x20
-} SHARD_PROGRESS_PC;
+} SHARD_PROGRESS;
 
 extern char dat_007516c0[1];
 extern char *Shard_OutputName;
@@ -80,7 +80,7 @@ static void ShardInitRecord(WORLDINFO *world, SHARD_s *shard) {
     shard->collector = NULL;
 }
 
-void Shards_Reset(WORLDINFO *world, void *unused, SHARD_PROGRESS_PC *progress) {
+void Shards_Reset(WORLDINFO *world, void *unused, SHARD_PROGRESS *progress) {
     SHARD_s *progress_record;
     i32 index;
     if (world == NULL || world->shards == NULL) {
@@ -280,10 +280,10 @@ i32 Shard_GetNumOutputs(GIZMO_PC *gizmo) {
 }
 
 void *Shards_AllocateProgressData(VARIPTR *start, VARIPTR *end) {
-    return GizmoBufferAlloc(start, end, sizeof(SHARD_PROGRESS_PC));
+    return GizmoBufferAlloc(start, end, sizeof(SHARD_PROGRESS));
 }
 
-void Shards_ClearProgress(void *world, SHARD_PROGRESS_PC *progress) {
+void Shards_ClearProgress(void *world, SHARD_PROGRESS *progress) {
     if (progress != NULL) {
         memset(progress->collected, 0, 16);
         memset(progress->active, 0xff, 16);
@@ -291,7 +291,7 @@ void Shards_ClearProgress(void *world, SHARD_PROGRESS_PC *progress) {
     }
 }
 
-void Shards_StoreProgress(WORLDINFO *world, void *unused, SHARD_PROGRESS_PC *progress) {
+void Shards_StoreProgress(WORLDINFO *world, void *unused, SHARD_PROGRESS *progress) {
     SHARD_s *shard;
     i32 index;
     if (progress == NULL) {

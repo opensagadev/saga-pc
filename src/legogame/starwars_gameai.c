@@ -21,7 +21,7 @@ void InitFn_MidSpecialMove(AI_MID_SPECIAL_MOVE_PC);
 typedef struct character_ai_capabilities_s {
     u8 unknown_00[0x44];
     u32 path_capabilities;
-} CHARACTER_AI_CAPABILITIES_PC;
+} CHARACTER_AI_CAPABILITIES;
 
 i32 StarWars_MidSpecialMove_Default(AISYS_PC *system, AIPACKET *packet, APIOBJECT *object) {
     GAMEOBJECT *owner = object->owner;
@@ -33,10 +33,10 @@ i32 StarWars_MidSpecialMove_Default(AISYS_PC *system, AIPACKET *packet, APIOBJEC
     AIPATH *path;
     i32 skip_inside;
     i32 index;
-    NuVecSub(&owner->special_move_look_position_pc, &destination->position, &source->position);
-    NuVecNorm(&owner->special_move_look_position_pc, &owner->special_move_look_position_pc);
-    NuVecAdd(&owner->special_move_look_position_pc, &owner->special_move_look_position_pc, &destination->position);
-    packet->movement_look_target = &owner->special_move_look_position_pc;
+    NuVecSub(&owner->special_move_look_position, &destination->position, &source->position);
+    NuVecNorm(&owner->special_move_look_position, &owner->special_move_look_position);
+    NuVecAdd(&owner->special_move_look_position, &owner->special_move_look_position, &destination->position);
+    packet->movement_look_target = &owner->special_move_look_position;
     node = owner->ai_packet.special_move_node;
     if (node->has_special != 0 && (node->runtime_flags & 2) != 0) {
         path = owner->ai_packet.path_info.path;
@@ -49,7 +49,7 @@ i32 StarWars_MidSpecialMove_Default(AISYS_PC *system, AIPACKET *packet, APIOBJEC
         }
         if (owner->field_281 != 0 && owner->supporting_platform_id != -1 && CurrentTerrain != NULL &&
             NuSpecialGetInstanceix(&owner->ai_packet.special_move_node->special_handle) ==
-                ((AI_SPECIAL_TERRAIN_VIEW_PC *)CurrentTerrain)->platforms[owner->supporting_platform_id].scene_object_index) {
+                ((AI_SPECIAL_TERRAIN_VIEW *)CurrentTerrain)->platforms[owner->supporting_platform_id].scene_object_index) {
             skip_inside = 0;
         }
     } else {
@@ -81,7 +81,7 @@ i32 StarWars_MidSpecialMove_Default(AISYS_PC *system, AIPACKET *packet, APIOBJEC
         }
         owner->ai_packet.movement_destination = owner->ai_packet.special_move_node->position;
         owner->ai_packet.movement_stopping_distance = 0.0f;
-        ((GAMEOBJECT *)object)->ai_collision_priority_pc |= 0x4000;
+        ((GAMEOBJECT *)object)->ai_collision_priority |= 0x4000;
         return 1;
     }
     return 0;
@@ -95,7 +95,7 @@ i32 StarWars_MidSpecialMove_StartJump(AISYS_PC *system, AIPACKET *packet, APIOBJ
         owner->ai_packet.movement_stopping_distance = 0.0f;
     } else {
         owner->pad->buttons_pressed |= GAMEPAD_JUMP;
-        ((GAMEOBJECT *)object)->ai_collision_priority_pc |= 0x4000;
+        ((GAMEOBJECT *)object)->ai_collision_priority |= 0x4000;
     }
     return 1;
 }
@@ -125,7 +125,7 @@ i32 StarWars_PrepareR2D2Glide(AIPACKET *packet, APIOBJECT *object, i32 checks_un
         NuVecAdd(&packet->movement_destination, &source->position, &offset);
         packet->movement_stopping_distance = 0.0f;
         packet->flags |= 0x800000;
-        ((GAMEOBJECT *)object)->ai_collision_priority_pc |= 0x2000;
+        ((GAMEOBJECT *)object)->ai_collision_priority |= 0x2000;
         return 1;
     }
     // MATCH-EXCEPTION: the original rounds the distance through the radius local before the compare
@@ -149,7 +149,7 @@ i32 StarWars_PrepareR2D2Glide(AIPACKET *packet, APIOBJECT *object, i32 checks_un
     }
     packet->movement_destination = packet->special_move_node->position;
     packet->movement_stopping_distance = 0.0f;
-    ((GAMEOBJECT *)object)->ai_collision_priority_pc |= 0x2000;
+    ((GAMEOBJECT *)object)->ai_collision_priority |= 0x2000;
     return 1;
 }
 
@@ -161,14 +161,14 @@ i32 StarWars_PrepareHatch(AIPACKET *packet, APIOBJECT *object, i32 checks_unused
     u32 capabilities;
 
     owner = object->owner;
-    if (owner->special_move_timer_pc <= 0.0f) {
+    if (owner->special_move_timer <= 0.0f) {
         destination = &packet->path_info.path->nodes[packet->path_info.connection->node_indices[packet->path_info.direction == 0]];
         if (owner->character_context == 0x0f || owner->character_context == 0x47 ||
             (owner->character_context == 0 && owner->action_movement_state == 6)) {
             packet->movement_destination = destination->position;
             packet->movement_stopping_distance = 0.0f;
             SetSpecialMove(owner, destination, NULL, 2);
-            ((GAMEOBJECT *)object)->ai_collision_priority_pc |= 0x2000;
+            ((GAMEOBJECT *)object)->ai_collision_priority |= 0x2000;
             return 1;
         }
         if (TryToTeleportToNextNode(owner, destination, 0) != 0) {
@@ -186,12 +186,12 @@ i32 StarWars_PrepareHatch(AIPACKET *packet, APIOBJECT *object, i32 checks_unused
         } else if ((capabilities & 8) != 0) {
             GameObjectSetCanUse(owner, NULL, 4, 1, 0.0f);
         }
-        ((GAMEOBJECT *)object)->ai_collision_priority_pc |= 0x2000;
+        ((GAMEOBJECT *)object)->ai_collision_priority |= 0x2000;
         return 1;
     } else {
         packet->movement_destination = object->position;
         packet->movement_stopping_distance = 0.0f;
-        ((GAMEOBJECT *)object)->ai_collision_priority_pc |= 0x2000;
+        ((GAMEOBJECT *)object)->ai_collision_priority |= 0x2000;
         return 1;
     }
 }
@@ -204,20 +204,20 @@ i32 StarWars_MidSpecialMove_UseHatch(AISYS_PC *system, AIPACKET *packet, APIOBJE
                 (owner->character_context == 0 && owner->action_movement_state == 6)) {
                 owner->ai_packet.movement_destination = owner->ai_packet.special_move_node->position;
                 owner->ai_packet.movement_stopping_distance = 0.0f;
-                ((GAMEOBJECT *)object)->ai_collision_priority_pc |= 0x4000;
+                ((GAMEOBJECT *)object)->ai_collision_priority |= 0x4000;
                 return 1;
             }
             owner->field_1087 = 1;
-            owner->special_move_timer_pc = 1.0f;
+            owner->special_move_timer = 1.0f;
         case 1:
             owner->ai_packet.movement_destination = owner->ai_packet.special_move_node->position;
             owner->ai_packet.movement_stopping_distance = 0.0f;
             if (owner->ai_packet.inside_path_node == owner->ai_packet.special_move_node - owner->ai_packet.path_info.path->nodes ||
-                owner->special_move_timer_pc <= 0.0f) {
+                owner->special_move_timer <= 0.0f) {
                 ClearSpecialMove(owner);
                 return 0;
             }
-            ((GAMEOBJECT *)object)->ai_collision_priority_pc |= 0x4000;
+            ((GAMEOBJECT *)object)->ai_collision_priority |= 0x4000;
             return 1;
     }
     return 0;
@@ -255,7 +255,7 @@ i32 StarWars_PrepareHoverTube(AIPACKET *packet, APIOBJECT *apiobject, i32 checks
                 packet->path_connection_state = 1;
                 // Fall through.
             case 1:
-                if (ObjInTube(object) != 0 && !(object->collision_min.y > object->attached_tube_pc->top && object->velocity.y > 0.0f)) {
+                if (ObjInTube(object) != 0 && !(object->collision_min.y > object->attached_tube->top && object->velocity.y > 0.0f)) {
                     break;
                 }
                 packet->path_connection_state = 2;
@@ -268,7 +268,7 @@ i32 StarWars_PrepareHoverTube(AIPACKET *packet, APIOBJECT *apiobject, i32 checks
                 break;
         }
     }
-    ((GAMEOBJECT *)apiobject)->ai_collision_priority_pc |= 0x2000;
+    ((GAMEOBJECT *)apiobject)->ai_collision_priority |= 0x2000;
     return 1;
 }
 
@@ -289,7 +289,7 @@ i32 StarWars_PrepareBigJump(AIPACKET *packet, APIOBJECT *object, i32 checks_unus
             packet->path_info.path->nodes[packet->path_info.connection->node_indices[packet->path_info.direction]].position;
         packet->flags |= 0x800000;
         packet->movement_stopping_distance = 0.0f;
-        ((GAMEOBJECT *)object)->ai_collision_priority_pc |= 0x2000;
+        ((GAMEOBJECT *)object)->ai_collision_priority |= 0x2000;
         return 1;
     }
     if (TryToTeleportToNextNode(owner, destination, 0) != 0) {
@@ -310,7 +310,7 @@ i32 StarWars_MidSpecialMove_BigJump(AISYS_PC *system, AIPACKET *packet, APIOBJEC
     GAMEOBJECT *owner = object->owner;
     if (owner->character_context == 0x1f) {
         owner->launch_origin = owner->ai_packet.special_move_node->position;
-        ((GAMEOBJECT *)object)->ai_collision_priority_pc |= 0x4000;
+        ((GAMEOBJECT *)object)->ai_collision_priority |= 0x4000;
         return 1;
     }
     ClearSpecialMove(owner);
@@ -403,7 +403,7 @@ i32 StarWars_PrepareObstacle(AIPACKET *packet, APIOBJECT *object, i32 checks_unu
     reset_connection:
         packet->path_connection_state = 0;
     }
-    ((GAMEOBJECT *)object)->ai_collision_priority_pc |= 0x2000;
+    ((GAMEOBJECT *)object)->ai_collision_priority |= 0x2000;
     return 1;
 }
 
@@ -435,7 +435,7 @@ i32 StarWars_PreparingForSpecialMove(AIPACKET *packet, APIOBJECT *apiobject, i32
         } else {
             packet->movement_destination = ((GAMEOBJECT *)apiobject)->position;
             packet->movement_stopping_distance = 0.0f;
-            ((GAMEOBJECT *)apiobject)->ai_collision_priority_pc |= 0x2000;
+            ((GAMEOBJECT *)apiobject)->ai_collision_priority |= 0x2000;
             return 1;
         }
     }
@@ -451,7 +451,7 @@ i32 StarWars_MidSpecialMove(AISYS_PC *system, AIPACKET *packet, APIOBJECT *apiob
     GAMEOBJECT *object = (GAMEOBJECT *)apiobject;
     GAMEOBJECT *owner = object->objptr;
     AI_MID_SPECIAL_MOVE_PC function;
-    owner->special_move_timer_pc -= FRAMETIME;
+    owner->special_move_timer -= FRAMETIME;
     if (owner->ai_packet.special_move_node != NULL) {
         if (TryToTeleportToNextNode(owner, owner->ai_packet.special_move_node, 0) != 0) {
             ClearSpecialMove(owner);
@@ -487,7 +487,7 @@ void StarWars_GameAISysInit(void) {
 
 void PlayerInitCapabilitiesVariant1(GAMEOBJECT *object) {
     CHARACTERDATA_PC *character = object->character_data;
-    object->ai_packet.capabilities = ((CHARACTER_AI_CAPABILITIES_PC *)character)->path_capabilities | 0x20180040;
+    object->ai_packet.capabilities = ((CHARACTER_AI_CAPABILITIES *)character)->path_capabilities | 0x20180040;
     if ((object->flags_1f8 & 1) != 0) {
         object->ai_packet.capabilities |= 0x100;
     } else if ((object->flags_1f8 & 4) == 0) {
@@ -692,9 +692,9 @@ check:
                     if (((destination->runtime_flags | source->runtime_flags) & 2) == 0 || distance - destination->radius > jump_distance) {
                         packet->path_connection_state = 3;
                         if ((destination->runtime_flags & 2) == 0) {
-                            owner->ai_jump_destination_distance_pc = distance;
+                            owner->ai_jump_destination_distance = distance;
                         } else {
-                            owner->ai_jump_destination_distance_pc = 0.0f;
+                            owner->ai_jump_destination_distance = 0.0f;
                         }
                     }
                 }
@@ -706,13 +706,13 @@ check:
                     distance = NuVecDist(&object->position, &destination->position, &offset);
                     if (((destination->runtime_flags | source->runtime_flags) & 2) == 0 || distance - destination->radius < jump_distance) {
                         if (((destination->runtime_flags | source->runtime_flags) & 2) == 0) {
-                            owner->ai_jump_destination_distance_pc = 0.0f;
+                            owner->ai_jump_destination_distance = 0.0f;
                         }
-                        if (distance > owner->ai_jump_destination_distance_pc) {
+                        if (distance > owner->ai_jump_destination_distance) {
                             packet->path_connection_state = 4;
-                            owner->ai_jump_destination_distance_pc = 0.0f;
+                            owner->ai_jump_destination_distance = 0.0f;
                         } else {
-                            owner->ai_jump_destination_distance_pc = distance;
+                            owner->ai_jump_destination_distance = distance;
                         }
                     }
                 }
@@ -769,7 +769,7 @@ check:
                             continue;
                         }
                         packet->path_connection_state = 1;
-                        ((GAMEOBJECT *)object)->ai_collision_priority_pc |= 0x2000;
+                        ((GAMEOBJECT *)object)->ai_collision_priority |= 0x2000;
                         return 1;
                     }
                 }
@@ -777,7 +777,7 @@ check:
                 owner->pad->buttons_pressed |= GAMEPAD_JUMP;
                 break;
         }
-        ((GAMEOBJECT *)object)->ai_collision_priority_pc |= 0x2000;
+        ((GAMEOBJECT *)object)->ai_collision_priority |= 0x2000;
         return 1;
     }
     return 0;

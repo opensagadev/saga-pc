@@ -165,7 +165,7 @@ typedef struct ai_area_load_s { // size 0x40
     u8 unknown_2c[12];          // 0x2c
     AISYS_PC *system;           // 0x38
     u8 unknown_3c[4];           // 0x3c
-} AI_AREA_LOAD_PC;
+} AI_AREA_LOAD;
 
 typedef struct ai_creature_load_s { // size 0xa4
     char name[16];                  // 0x00
@@ -199,7 +199,7 @@ typedef struct ai_creature_load_s { // size 0xa4
     f32 hear_distance;              // 0x98
     f32 max_view_height;            // 0x9c
     f32 min_view_height;            // 0xa0
-} AI_CREATURE_LOAD_PC;
+} AI_CREATURE_LOAD;
 
 typedef struct ai_antinode_load_s { // size 0x58
     NUVEC position;                 // 0x00
@@ -219,31 +219,31 @@ typedef struct ai_antinode_load_s { // size 0x58
     u8 type;                        // 0x4a
     u8 has_special;                 // 0x4b
     u8 unknown_4c[12];              // 0x4c
-} AI_ANTINODE_LOAD_PC;
+} AI_ANTINODE_LOAD;
 
-typedef struct ai_system_load_s {   // size 0x1398
-    void *storage;                  // 0x0000
-    VARIPTR storage_end;            // 0x0004
-    VARIPTR storage_cursor;         // 0x0008
-    i32 storage_size;               // 0x000c
-    AIPATHSYS *path_sys;            // 0x0010
-    i32 creature_count;             // 0x0014
-    AI_CREATURE_LOAD_PC *creatures; // 0x0018
-    NULISTHDR scripts;              // 0x001c
-    i32 locator_count;              // 0x0024
-    AILOCATOR *locators;            // 0x0028
-    i32 locator_set_count;          // 0x002c
-    AILOCATORSET *locator_sets;     // 0x0030
-    i32 area_count;                 // 0x0034
-    AI_AREA_LOAD_PC *areas;         // 0x0038
-    AIGROUP groups[16];             // 0x003c
-    i32 antinode_count;             // 0x137c
-    AI_ANTINODE_LOAD_PC *antinodes; // 0x1380
-    u8 unknown_1384[8];             // 0x1384
-    APIOBJECT *player_1;            // 0x138c
-    APIOBJECT *player_2;            // 0x1390
-    NUGSCN *scene;                  // 0x1394
-} AI_SYSTEM_LOAD_PC;
+typedef struct ai_system_load_s { // size 0x1398
+    void *storage;                // 0x0000
+    VARIPTR storage_end;          // 0x0004
+    VARIPTR storage_cursor;       // 0x0008
+    i32 storage_size;             // 0x000c
+    AIPATHSYS *path_sys;          // 0x0010
+    i32 creature_count;           // 0x0014
+    AI_CREATURE_LOAD *creatures;  // 0x0018
+    NULISTHDR scripts;            // 0x001c
+    i32 locator_count;            // 0x0024
+    AILOCATOR *locators;          // 0x0028
+    i32 locator_set_count;        // 0x002c
+    AILOCATORSET *locator_sets;   // 0x0030
+    i32 area_count;               // 0x0034
+    AI_AREA_LOAD *areas;          // 0x0038
+    AIGROUP groups[16];           // 0x003c
+    i32 antinode_count;           // 0x137c
+    AI_ANTINODE_LOAD *antinodes;  // 0x1380
+    u8 unknown_1384[8];           // 0x1384
+    APIOBJECT *player_1;          // 0x138c
+    APIOBJECT *player_2;          // 0x1390
+    NUGSCN *scene;                // 0x1394
+} AI_SYSTEM_LOAD;
 
 static f32 AiLoadStartStagger = 0.0f;
 
@@ -258,7 +258,7 @@ typedef struct ai_path_system_load_s {  // size 0x10
     AIPATH **paths;                     // 0x4
     AIPATH *active_path;                // 0x8
     AIPATHSPECIALROUTE *special_routes; // 0xc
-} AI_PATH_SYSTEM_LOAD_PC;
+} AI_PATH_SYSTEM_LOAD;
 
 // Inlined AISysBufferAlloc: the failure diagnostic and publication follow the
 // allocation memset. Size arithmetic is unsigned 32-bit.
@@ -292,7 +292,7 @@ extern i32 TagCharacter(GAMEOBJECT *, GAMEOBJECT *, i32);
 typedef struct condition_trigger_process_s { // size 0xa4
     u8 unknown_000[0xa0];                    // 0x00
     AIAREA *trigger_area;                    // 0xa0
-} CONDITION_TRIGGER_PROCESS_PC;
+} CONDITION_TRIGGER_PROCESS;
 
 extern char *(*GlobalCharacterNameFn)(i32);
 
@@ -410,7 +410,7 @@ extern void pathEditor_OnPathCheck(NUVEC *, EDAIPATHCHECK_s *, EDAIPATH_s *, f32
 
 extern NUVEC edpath_addoffset;
 
-#define PATH_EDITOR_FIND_CONNECTION_PC(result, from, to)                                                                                   \
+#define PATH_EDITOR_FIND_CONNECTION(result, from, to)                                                                                      \
     do {                                                                                                                                   \
         i32 find_index_;                                                                                                                   \
         (result) = NULL;                                                                                                                   \
@@ -497,7 +497,7 @@ void areaEditor_Render(i32 x, i32 y, f32 xscale, f32 yscale);
 
 eduimenu_s *locatorEditor_Process(FRAME_PAD_PC *pad);
 
-#define AIEDITOR_REGISTER_PC(id, mode_name, enter_fn, process_fn, draw_fn)                                                                 \
+#define AIEDITOR_REGISTER(id, mode_name, enter_fn, process_fn, draw_fn)                                                                    \
     do {                                                                                                                                   \
         AI_EDITOR_MODE_ENTRY *entry_;                                                                                                      \
         i32 index_ = -1;                                                                                                                   \
@@ -673,24 +673,24 @@ extern IMAGE_DOS_HEADER __ImageBase;
 
 /* Game-side AI callback registration; kept in the AI script unit so
    GameAISysInit calls them out of line. */
-typedef char *(*AI_CHARACTER_NAME_PC)(u8);
+typedef char *(*AI_CHARACTER_NAME)(u8);
 
-typedef char *(*AI_GLOBAL_CHARACTER_NAME_PC)(i32);
+typedef char *(*AI_GLOBAL_CHARACTER_NAME)(i32);
 
-typedef void *(*AI_GLOBAL_CHARACTER_HGOBJ_PC)(i32);
+typedef void *(*AI_GLOBAL_CHARACTER_HGOBJ)(i32);
 
-typedef void (*AI_GLOBAL_CHARACTER_RENDER_PC)(NUVEC *, i16, i32, i32, void *);
+typedef void (*AI_GLOBAL_CHARACTER_RENDER)(NUVEC *, i16, i32, i32, void *);
 
-typedef void (*AI_CLEAR_CREATURES_PC)(void);
+typedef void (*AI_CLEAR_CREATURES)(void);
 
-typedef APIOBJECT *(*AI_GET_NAMED_OBJECT_PC)(void *, char *);
+typedef APIOBJECT *(*AI_GET_NAMED_OBJECT)(void *, char *);
 
-typedef NUVEC *(*AI_GET_CREATURE_ORIGIN_PC)(AISYS_PC *, AIPACKET *);
+typedef NUVEC *(*AI_GET_CREATURE_ORIGIN)(AISYS_PC *, AIPACKET *);
 
-extern AI_CHARACTER_NAME_PC LevelCharacterNameFn;
-extern AI_CHARACTER_NAME_PC SpecialRouteCharacterNameFn;
+extern AI_CHARACTER_NAME LevelCharacterNameFn;
+extern AI_CHARACTER_NAME SpecialRouteCharacterNameFn;
 
-typedef void (*AI_LOAD_PC)(AISYS_PC *, i32, NUGSCN *, VARIPTR *, VARIPTR *);
+typedef void (*AI_LOAD)(AISYS_PC *, i32, NUGSCN *, VARIPTR *, VARIPTR *);
 
 struct GIZSPINNER_s *GizSpinner_FindBySpecialName(void *world_ptr, char *name);
 
@@ -705,12 +705,12 @@ STATIC_ASSERT(offsetof(GAMEOBJECT, ai_packet) + offsetof(AIPACKET, flags) == 0x4
 typedef struct condition_trigger_process_reader_s { // size 0xa4
     u8 unknown_00[0xa0];                            // 0x00
     AIAREA *trigger_area;                           // 0xa0
-} CONDITION_TRIGGER_PROCESS_READER_PC;
+} CONDITION_TRIGGER_PROCESS_READER;
 
 typedef struct condition_trigger_player_reader_s { // size 0x2b8
     u8 unknown_00[0x2b0];                          // 0x000
     u64 membership;                                // 0x2b0
-} CONDITION_TRIGGER_PLAYER_READER_PC;
+} CONDITION_TRIGGER_PLAYER_READER;
 
 STATIC_ASSERT(offsetof(GAMEOBJECT, position) + offsetof(NUVEC, y) == 0x60);
 
@@ -1917,7 +1917,7 @@ f32 Condition_InTriggerArea(AISYS_PC *system, AISCRIPTPROCESS *process, AIPACKET
         GAMEOBJECT *object = packet->owner;
         AIAREA *area = argument;
         if (area == NULL) {
-            area = ((CONDITION_TRIGGER_PROCESS_PC *)process)->trigger_area;
+            area = ((CONDITION_TRIGGER_PROCESS *)process)->trigger_area;
         }
         if (area != NULL && area->system != NULL) {
             if (((1 << (area - area->system->areas)) & *(u64 *)object->ai_area_mask) != 0) {
@@ -2025,7 +2025,7 @@ f32 Condition_PlayerInTriggerArea(AISYS_PC *system, AISCRIPTPROCESS *process, AI
         GAMEOBJECT *object = (GAMEOBJECT *)system->player_1;
         AIAREA *area = argument;
         if (area == NULL) {
-            area = ((CONDITION_TRIGGER_PROCESS_PC *)process)->trigger_area;
+            area = ((CONDITION_TRIGGER_PROCESS *)process)->trigger_area;
         }
         if (area != NULL && area->system != NULL) {
             if (((1 << (area - area->system->areas)) & *(u64 *)object->ai_area_mask) != 0) {
@@ -2042,12 +2042,12 @@ f32 Condition_Player2InTriggerArea(AISYS_PC *system, AISCRIPTPROCESS *process, A
         if (object != NULL) {
             AIAREA *area = argument;
             if (area == NULL) {
-                area = ((CONDITION_TRIGGER_PROCESS_READER_PC *)process)->trigger_area;
+                area = ((CONDITION_TRIGGER_PROCESS_READER *)process)->trigger_area;
             }
             if (area != NULL && area->system != NULL) {
                 i32 index = area - area->system->areas;
                 i64 mask = (i32)(1u << index);
-                u64 membership = ((CONDITION_TRIGGER_PLAYER_READER_PC *)object)->membership;
+                u64 membership = ((CONDITION_TRIGGER_PLAYER_READER *)object)->membership;
                 if ((membership & mask) != 0) {
                     return 1.0f;
                 }
@@ -2065,7 +2065,7 @@ f32 Condition_EitherPlayerInTriggerArea(AISYS_PC *system, AISCRIPTPROCESS *proce
     if (system != NULL) {
         area = argument;
         if (area == NULL) {
-            area = ((CONDITION_TRIGGER_PROCESS_READER_PC *)process)->trigger_area;
+            area = ((CONDITION_TRIGGER_PROCESS_READER *)process)->trigger_area;
         }
         if (area != NULL) {
             if (system->player_1 != NULL && area->system != NULL) {
@@ -2073,7 +2073,7 @@ f32 Condition_EitherPlayerInTriggerArea(AISYS_PC *system, AISCRIPTPROCESS *proce
                 index = area - area->system->areas;
                 /* Sign-extends a 32-bit shift into the 64-bit mask. */
                 mask = (i32)(1u << index);
-                if ((((CONDITION_TRIGGER_PLAYER_READER_PC *)object)->membership & mask) != 0) {
+                if ((((CONDITION_TRIGGER_PLAYER_READER *)object)->membership & mask) != 0) {
                     return 1.0f;
                 }
             }
@@ -2081,7 +2081,7 @@ f32 Condition_EitherPlayerInTriggerArea(AISYS_PC *system, AISCRIPTPROCESS *proce
                 object = (GAMEOBJECT *)system->player_2;
                 index = area - area->system->areas;
                 mask = (i32)(1u << index);
-                if ((((CONDITION_TRIGGER_PLAYER_READER_PC *)object)->membership & mask) != 0) {
+                if ((((CONDITION_TRIGGER_PLAYER_READER *)object)->membership & mask) != 0) {
                     return 1.0f;
                 }
             }
@@ -2117,7 +2117,7 @@ f32 Condition_OpponentInTriggerArea(AISYS_PC *system, AISCRIPTPROCESS *process, 
         GAMEOBJECT *object = packet->opponent;
         AIAREA *area = argument;
         if (area == NULL) {
-            area = ((CONDITION_TRIGGER_PROCESS_PC *)process)->trigger_area;
+            area = ((CONDITION_TRIGGER_PROCESS *)process)->trigger_area;
         }
         if (area != NULL && area->system != NULL) {
             if (((1 << (area - area->system->areas)) & *(u64 *)object->ai_area_mask) != 0) {
@@ -3023,12 +3023,12 @@ void InitFn_SpecialRouteCharacterTypeID(AI_LEVEL_CHARACTER_TYPE_ID_PC function) 
     SpecialRouteCharacterTypeIDFn = function;
 }
 
-void InitFn_LevelCharacterName(AI_CHARACTER_NAME_PC function) {
+void InitFn_LevelCharacterName(AI_CHARACTER_NAME function) {
     LevelCharacterNameFn = function;
     SpecialRouteCharacterNameFn = function;
 }
 
-void InitFn_SpecialRouteCharacterName(AI_CHARACTER_NAME_PC function) {
+void InitFn_SpecialRouteCharacterName(AI_CHARACTER_NAME function) {
     SpecialRouteCharacterNameFn = function;
 }
 
@@ -3040,19 +3040,19 @@ void InitFn_GlobalCharacterTypeID(i32 (*function)(char *)) {
     GlobalCharacterTypeIDFn = function;
 }
 
-void InitFn_GlobalCharacterName(AI_GLOBAL_CHARACTER_NAME_PC function) {
+void InitFn_GlobalCharacterName(AI_GLOBAL_CHARACTER_NAME function) {
     GlobalCharacterNameFn = function;
 }
 
-void InitFn_GlobalCharacterRender(AI_GLOBAL_CHARACTER_RENDER_PC function) {
+void InitFn_GlobalCharacterRender(AI_GLOBAL_CHARACTER_RENDER function) {
     GlobalCharacterRenderFn = function;
 }
 
-void InitFn_GlobalCharacterHGobj(AI_GLOBAL_CHARACTER_HGOBJ_PC function) {
+void InitFn_GlobalCharacterHGobj(AI_GLOBAL_CHARACTER_HGOBJ function) {
     GlobalCharacterHGobjFn = function;
 }
 
-void InitFn_ClearAICreatures(AI_CLEAR_CREATURES_PC function) {
+void InitFn_ClearAICreatures(AI_CLEAR_CREATURES function) {
     ClearAICreaturesFn = function;
 }
 
@@ -3068,7 +3068,7 @@ void InitFn_APIOBJECTFromObjIDFn(APIOBJECT_FROM_ID_PC callback) {
     APIOBJECTFromObjIDFn = callback;
 }
 
-void InitFn_GameAILoad(AI_LOAD_PC function) {
+void InitFn_GameAILoad(AI_LOAD function) {
     GameAILoadFn = function;
 }
 
@@ -3231,7 +3231,7 @@ i32 AIPathCheckExtents(AIPATH *path, NUVEC *position) {
 }
 
 static AIPATHSYS *AISysLoadPaths(VARIPTR *cursor, i32 version, NUGSCN *scene, VARIPTR *end) {
-    AI_PATH_SYSTEM_LOAD_PC *system = NULL;
+    AI_PATH_SYSTEM_LOAD *system = NULL;
     i32 count = EdFileReadInt();
     i32 path_index;
     i32 index;
@@ -3241,7 +3241,7 @@ static AIPATHSYS *AISysLoadPaths(VARIPTR *cursor, i32 version, NUGSCN *scene, VA
     i32 character_count;
     char special_name[256];
     if (count != 0) {
-        PATH_LOAD_ALLOCATE(AI_PATH_SYSTEM_LOAD_PC *, system, cursor, end, sizeof(*system));
+        PATH_LOAD_ALLOCATE(AI_PATH_SYSTEM_LOAD *, system, cursor, end, sizeof(*system));
         if (system != NULL) {
             system->path_count = (u8)count;
             system->paths = AISysBufferAlloc(cursor, end, system->path_count * sizeof(AIPATH *));
@@ -4184,9 +4184,9 @@ void LEGO_AISysCreatureInteraction2D(AISYS_PC *system, i32 object_count, APIOBJE
             if (second->flags_low & 0x80) {
                 second_fixed = 1;
             }
-            if (second->ai_collision_priority_pc < first->ai_collision_priority_pc) {
+            if (second->ai_collision_priority < first->ai_collision_priority) {
                 first_fixed = 1;
-            } else if (second->ai_collision_priority_pc > first->ai_collision_priority_pc) {
+            } else if (second->ai_collision_priority > first->ai_collision_priority) {
                 second_fixed = 1;
             } else {
                 continue;
@@ -4201,16 +4201,16 @@ void LEGO_AISysCreatureInteraction2D(AISYS_PC *system, i32 object_count, APIOBJE
             difference.y = 0.0f;
             overlap = radius - distance;
             if (first_fixed) {
-                if (first->ai_collision_priority_pc > second->ai_resolved_collision_priority_pc) {
+                if (first->ai_collision_priority > second->ai_resolved_collision_priority) {
                     NuVecScale(&difference, &difference, AIPathSafeDivide(overlap, distance));
                     NuVecSub(&second->ai->movement_position, &second->ai->movement_position, &difference);
-                    second->ai_resolved_collision_priority_pc = first->ai_collision_priority_pc;
+                    second->ai_resolved_collision_priority = first->ai_collision_priority;
                 }
             } else if (second_fixed) {
-                if (second->ai_collision_priority_pc > first->ai_resolved_collision_priority_pc) {
+                if (second->ai_collision_priority > first->ai_resolved_collision_priority) {
                     NuVecScale(&difference, &difference, AIPathSafeDivide(overlap, distance));
                     NuVecAdd(&first->ai->movement_position, &first->ai->movement_position, &difference);
-                    first->ai_resolved_collision_priority_pc = second->ai_collision_priority_pc;
+                    first->ai_resolved_collision_priority = second->ai_collision_priority;
                 }
             } else {
                 AI_SCRIPT_DIAGNOSTIC_BARE(AIScriptMissingStateDiagnostic);
@@ -6990,16 +6990,16 @@ void InitFn_MidSpecialMove(AI_MID_SPECIAL_MOVE_PC function) {
     MidSpecialMoveFn = function;
 }
 
-void InitFn_GetNamedAPIObject(AI_GET_NAMED_OBJECT_PC function) {
+void InitFn_GetNamedAPIObject(AI_GET_NAMED_OBJECT function) {
     GetNamedGameObjectCallback = function;
 }
 
-void InitFn_GetAICreatureOrigin(AI_GET_CREATURE_ORIGIN_PC function) {
+void InitFn_GetAICreatureOrigin(AI_GET_CREATURE_ORIGIN function) {
     GetOriginPositionFn = function;
 }
 
 /* Unreferenced; callers inline the same registration through
- * AIEDITOR_REGISTER_PC. It tail-jumps to the diagnostic with EAX
+ * AIEDITOR_REGISTER. It tail-jumps to the diagnostic with EAX
  * already -1, which needs it in this unit. */
 i32 aieditor_Register(char *name, void (*enter)(void), eduimenu_s *(*process)(FRAME_PAD_PC *), void (*draw)(i32, i32, f32, f32),
                       void (*leave)(void)) {
@@ -8784,7 +8784,7 @@ static void pathEditorPopulateRouteMatrix(AIPATH *path, i32 route_mask, f32 **di
 }
 
 void pathEditorSaveData(AIPATHSYS *path_system) {
-    AI_PATH_SYSTEM_LOAD_PC *system = (AI_PATH_SYSTEM_LOAD_PC *)path_system;
+    AI_PATH_SYSTEM_LOAD *system = (AI_PATH_SYSTEM_LOAD *)path_system;
     i32 path_index;
     i32 index;
     i32 row;
@@ -9281,10 +9281,10 @@ void pathEditor_Enter(void) {
                                 cnx = source->connections[connection];
                                 direction = cnx->node_indices[0] != index;
                                 other = &aieditor->node_storage[node_base + cnx->node_indices[direction == 0]];
-                                PATH_EDITOR_FIND_CONNECTION_PC(found, node, other);
+                                PATH_EDITOR_FIND_CONNECTION(found, node, other);
                                 if (found == NULL) {
                                     pathEditor_ConnectNodes(node, other);
-                                    PATH_EDITOR_FIND_CONNECTION_PC(found, node, other);
+                                    PATH_EDITOR_FIND_CONNECTION(found, node, other);
                                     if (found == NULL) {
                                         continue;
                                     }
@@ -12013,7 +12013,7 @@ static AICONDITION *AIScriptProcessStateConditions(AISYS_PC *system, NULISTHDR *
     AICONDITION *condition;
     f32 condition_value = 0.0f;
     f32 comparison_value;
-    AICONDITION_EVAL_PC comparison_fn;
+    AICONDITION_EVAL comparison_fn;
     i32 comparison_passed;
     if (processor != NULL && conditions != NULL) {
         condition = (AICONDITION *)NuLinkedListGetHead(conditions);
@@ -12680,14 +12680,14 @@ static AISYS_PC *AISysLoadPrivate(void *pak, NUGSCN *scene, char *directory, VAR
     char member_path[32];
     char character_name[32];
     char reference_name[16];
-    AI_SYSTEM_LOAD_PC *system;
+    AI_SYSTEM_LOAD *system;
     i32 is_open;
     i32 version;
     i32 index;
     i32 search;
     u16 connection_index;
     sprintf(ai2_path, "%sLevels\\%s\\%s\\%s.ai2", AiLevelPathName, load_directory, parameter, name);
-    PATH_LOAD_ALLOCATE(AI_SYSTEM_LOAD_PC *, system, buffer, buffer_end, sizeof(AI_SYSTEM_LOAD_PC));
+    PATH_LOAD_ALLOCATE(AI_SYSTEM_LOAD *, system, buffer, buffer_end, sizeof(AI_SYSTEM_LOAD));
     if (system != NULL) {
         memset(system, 0, sizeof(*system));
         system->storage_size = storage_size;
@@ -12714,9 +12714,9 @@ static AISYS_PC *AISysLoadPrivate(void *pak, NUGSCN *scene, char *directory, VAR
                 system->area_count = EdFileReadInt();
                 if (system->area_count != 0) {
                     system->areas =
-                        AISysBufferAlloc(&system->storage_cursor, &system->storage_end, system->area_count * sizeof(AI_AREA_LOAD_PC));
+                        AISysBufferAlloc(&system->storage_cursor, &system->storage_end, system->area_count * sizeof(AI_AREA_LOAD));
                     for (index = 0; index < system->area_count; ++index) {
-                        AI_AREA_LOAD_PC *area = &system->areas[index];
+                        AI_AREA_LOAD *area = &system->areas[index];
                         EdFileRead(area->name, 16);
                         area->minimum.x = EdFileReadFloat();
                         area->minimum.y = EdFileReadFloat();
@@ -12781,10 +12781,10 @@ static AISYS_PC *AISysLoadPrivate(void *pak, NUGSCN *scene, char *directory, VAR
                 }
                 system->creature_count = EdFileReadInt();
                 if (system->creature_count != 0) {
-                    system->creatures = AISysBufferAlloc(&system->storage_cursor, &system->storage_end,
-                                                         system->creature_count * sizeof(AI_CREATURE_LOAD_PC));
+                    system->creatures =
+                        AISysBufferAlloc(&system->storage_cursor, &system->storage_end, system->creature_count * sizeof(AI_CREATURE_LOAD));
                     for (index = 0; index < system->creature_count; ++index) {
-                        AI_CREATURE_LOAD_PC *creature = &system->creatures[index];
+                        AI_CREATURE_LOAD *creature = &system->creatures[index];
                         EdFileRead(creature->name, 16);
                         EdFileRead(creature->script_name, 16);
                         if (strlen(creature->script_name) == 0) {
@@ -12824,7 +12824,7 @@ static AISYS_PC *AISysLoadPrivate(void *pak, NUGSCN *scene, char *directory, VAR
                         if (version >= 4 && EdFileReadInt() != 0) {
                             EdFileRead(reference_name, 16);
                             for (search = 0; search < system->area_count; ++search) {
-                                AI_AREA_LOAD_PC *entry = &system->areas[search];
+                                AI_AREA_LOAD *entry = &system->areas[search];
                                 if (NuStrICmp(reference_name, entry->name) == 0) {
                                     creature->area = (AIAREA *)entry;
                                     break;
@@ -12874,7 +12874,7 @@ static AISYS_PC *AISysLoadPrivate(void *pak, NUGSCN *scene, char *directory, VAR
                             case 1:
                                 EdFileRead(reference_name, 16);
                                 for (search = 0; search < system->area_count; ++search) {
-                                    AI_AREA_LOAD_PC *entry = &system->areas[search];
+                                    AI_AREA_LOAD *entry = &system->areas[search];
                                     if (NuStrICmp(reference_name, entry->name) == 0) {
                                         creature->activate_area = (AIAREA *)entry;
                                         break;
@@ -12927,10 +12927,10 @@ static AISYS_PC *AISysLoadPrivate(void *pak, NUGSCN *scene, char *directory, VAR
                 if (version > 12) {
                     system->antinode_count = EdFileReadInt();
                     if (system->antinode_count != 0) {
-                        PATH_LOAD_ALLOCATE(AI_ANTINODE_LOAD_PC *, system->antinodes, &system->storage_cursor, &system->storage_end,
-                                           system->antinode_count * sizeof(AI_ANTINODE_LOAD_PC));
+                        PATH_LOAD_ALLOCATE(AI_ANTINODE_LOAD *, system->antinodes, &system->storage_cursor, &system->storage_end,
+                                           system->antinode_count * sizeof(AI_ANTINODE_LOAD));
                         for (index = 0; index < system->antinode_count; ++index) {
-                            AI_ANTINODE_LOAD_PC *antinode = &system->antinodes[index];
+                            AI_ANTINODE_LOAD *antinode = &system->antinodes[index];
                             i32 length;
                             antinode->enabled = 1;
                             antinode->position.x = EdFileReadFloat();
@@ -18332,13 +18332,12 @@ void aieditor_Init(AIEDITOR_RENDER_STATE *state, void **scratch_cursor, void **s
     aieditorsettings.script_flags = 0;
     aieditorsettings.modes.count = 0;
     memset(aieditorsettings.modes.entries, 0, sizeof(aieditorsettings.modes.entries));
-    AIEDITOR_REGISTER_PC(AiEditorPathsModeId, "AIEDITOR_PATHS", pathEditor_Enter, pathEditor_Process, pathEditor_Render);
-    AIEDITOR_REGISTER_PC(AiEditorRouteModeId, "AIEDITOR_ROUTES", NULL, routeEditor_Process, routeEditor_Render);
-    AIEDITOR_REGISTER_PC(AiEditorAreasModeId, "AIEDITOR_AREAS", areaEditor_Enter, areaEditor_Process, areaEditor_Render);
-    AIEDITOR_REGISTER_PC(AiEditorLocatorsModeId, "AIEDITOR_LOCATORS", locatorEditor_Enter, locatorEditor_Process, locatorEditor_Render);
-    AIEDITOR_REGISTER_PC(AiEditorCreaturesModeId, "AIEDITOR_CREATURES", creatureEditor_Enter, creatureEditor_Process,
-                         creatureEditor_Render);
-    AIEDITOR_REGISTER_PC(AiEditorAntinodeModeId, "AIEDITOR_ANTINODES", antinodeEditor_Enter, antinodeEditor_Process, antinodeEditor_Render);
+    AIEDITOR_REGISTER(AiEditorPathsModeId, "AIEDITOR_PATHS", pathEditor_Enter, pathEditor_Process, pathEditor_Render);
+    AIEDITOR_REGISTER(AiEditorRouteModeId, "AIEDITOR_ROUTES", NULL, routeEditor_Process, routeEditor_Render);
+    AIEDITOR_REGISTER(AiEditorAreasModeId, "AIEDITOR_AREAS", areaEditor_Enter, areaEditor_Process, areaEditor_Render);
+    AIEDITOR_REGISTER(AiEditorLocatorsModeId, "AIEDITOR_LOCATORS", locatorEditor_Enter, locatorEditor_Process, locatorEditor_Render);
+    AIEDITOR_REGISTER(AiEditorCreaturesModeId, "AIEDITOR_CREATURES", creatureEditor_Enter, creatureEditor_Process, creatureEditor_Render);
+    AIEDITOR_REGISTER(AiEditorAntinodeModeId, "AIEDITOR_ANTINODES", antinodeEditor_Enter, antinodeEditor_Process, antinodeEditor_Render);
     aieditor_RegisterDefaultPathCnxTypes();
     aieditorsettings.path_scratch_cursor = *scratch_cursor;
     aieditorsettings.path_scratch_end = *scratch_end;

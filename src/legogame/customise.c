@@ -6,7 +6,7 @@ typedef struct customiser_names_s {
     u8 unknown_00[0x6c];
     i16 character_ids[2];
     char display_names[2][128];
-} CUSTOMISER_NAMES_PC;
+} CUSTOMISER_NAMES;
 
 typedef struct custom_piece_config_s {
     char *name;
@@ -20,7 +20,7 @@ typedef struct custom_piece_config_s {
     u32 model_flags;
     u32 gameplay_flags;
     u8 unknown_1c[12];
-} CUSTOM_PIECE_CONFIG_PC;
+} CUSTOM_PIECE_CONFIG;
 
 typedef struct custom_category_config_s {
     char *name;
@@ -35,16 +35,16 @@ typedef struct custom_save_config_s {
     u8 unknown_12[0x26];
     u16 secondary_pieces[9];
     u8 unknown_4a[0x26];
-} CUSTOM_SAVE_CONFIG_PC;
+} CUSTOM_SAVE_CONFIG;
 
 typedef struct customiser_config_s {
     CUSTOM_CATEGORY_CONFIG_PC *categories[9];
-    CUSTOM_PIECE_CONFIG_PC *piece_sets[9];
+    CUSTOM_PIECE_CONFIG *piece_sets[9];
     i32 piece_counts[9];
     i16 character_ids[2];
     u8 unknown_70[0x100];
     i32 (*piece_available)(CUSTOMPIECE_LAYERS *);
-    CUSTOM_SAVE_CONFIG_PC *save;
+    CUSTOM_SAVE_CONFIG *save;
     u8 unknown_178[0xd8];
     i8 locator_indices[9];
     u8 unknown_259[3];
@@ -55,7 +55,7 @@ typedef struct customiser_config_s {
     u16 default_pieces[2][10];
     f32 locator_x_offsets[9];
     f32 locator_y_offsets[9];
-} CUSTOMISER_CONFIG_PC;
+} CUSTOMISER_CONFIG;
 
 typedef struct customiser_game_setting_s {
     char *name;
@@ -70,7 +70,7 @@ typedef struct custom_accessory_resource_s {
     i32 texture_id;
     i32 material_index;
     CHARACTER_MODEL_LAYERS *character_model;
-} CUSTOM_ACCESSORY_RESOURCE_PC;
+} CUSTOM_ACCESSORY_RESOURCE;
 
 /* Source-private views for customise.c. Config/piece/category types already defined there. */
 typedef struct custom_piece_anim_s {
@@ -88,35 +88,35 @@ typedef struct custom_piece_anim_s {
 typedef struct customiser_anim_packet_s {
     ANIMPACKET_PC packet;
     u8 unknown_44[4];
-} CUSTOMISER_ANIM_PACKET_PC;
+} CUSTOMISER_ANIM_PACKET;
 
 typedef struct customiser_update_s {
     u8 unknown_00[0x178];
-    CUSTOMISER_ANIM_PACKET_PC animation_packets[2];
+    CUSTOMISER_ANIM_PACKET animation_packets[2];
     u8 unknown_208[0x60];
     NUMTX joint_matrices[2][16];
     u8 unknown_a68[4];
     u8 animation_active[2];
     u8 animation_state[2];
     f32 animation_values[2];
-} CUSTOMISER_UPDATE_PC;
+} CUSTOMISER_UPDATE;
 
 typedef struct custom_resource_update_s {
     u8 unknown_00[0x14];
     u32 texture_id;
     u8 unknown_18[8];
-} CUSTOM_RESOURCE_UPDATE_PC;
+} CUSTOM_RESOURCE_UPDATE;
 
 typedef struct custom_hierarchy_update_s {
     u8 unknown_00[0xc];
     NUMTL **materials;
     i32 material_count;
-} CUSTOM_HIERARCHY_UPDATE_PC;
+} CUSTOM_HIERARCHY_UPDATE;
 
 typedef struct custom_material_update_s {
     u8 unknown_00[0x9a];
     u8 material_tag;
-} CUSTOM_MATERIAL_UPDATE_PC;
+} CUSTOM_MATERIAL_UPDATE;
 
 extern NUVEC CustomisePos[2];
 i32 Customiser_NextPieceRight(CUSTOMISER_LAYERS *input, i32 index, i32 count, i32 unused, i32 category);
@@ -143,7 +143,7 @@ typedef struct hub_customiser_menu_reader_s {
     i16 first_animation;
     u8 unknown_1b4[0x46];
     i16 second_animation;
-} HUB_CUSTOMISER_MENU_READER_PC;
+} HUB_CUSTOMISER_MENU_READER;
 
 static void CustomiserMtxSetRotateZ(NUMTX *matrix, i32 angle) {
     const f32 cosine = NuTrigTable[((angle + 0x4000) >> 1) & 0x7fff];
@@ -272,7 +272,7 @@ static CUSTOMISER_GAME_SETTING_PC CustomiserGameSettingsPrivate[] = {
 };
 
 void PermanentCustomPieceConfig(CUSTOMPIECE_LAYERS *input, NUFPAR_PC *parser) {
-    CUSTOM_PIECE_CONFIG_PC *piece = (CUSTOM_PIECE_CONFIG_PC *)input;
+    CUSTOM_PIECE_CONFIG *piece = (CUSTOM_PIECE_CONFIG *)input;
     CUSTOMISER_GAME_SETTING_PC *setting;
     for (setting = CustomiserGameSettingsPrivate; setting->name != NULL; ++setting) {
         if (NuStrICmp(parser->word_buffer_ptr, setting->name) == 0) {
@@ -284,7 +284,7 @@ void PermanentCustomPieceConfig(CUSTOMPIECE_LAYERS *input, NUFPAR_PC *parser) {
 }
 
 void Customiser_InitNames(CUSTOMISER_LAYERS *customiser) {
-    CUSTOMISER_NAMES_PC *view = (CUSTOMISER_NAMES_PC *)customiser;
+    CUSTOMISER_NAMES *view = (CUSTOMISER_NAMES *)customiser;
     i32 index;
     if (customiser == NULL) {
         return;
@@ -303,8 +303,8 @@ void Customiser_InitNames(CUSTOMISER_LAYERS *customiser) {
 /* 00423c30 / 874. Native contains class/name-part accumulation even though
  * the final displayed name is the generic stranger label. */
 void Customiser_SetNameAndIcon(CUSTOMISER_LAYERS *input, i32 index) {
-    CUSTOMISER_CONFIG_PC *customiser = (CUSTOMISER_CONFIG_PC *)input;
-    CUSTOMISER_NAMES_PC *names = (CUSTOMISER_NAMES_PC *)input;
+    CUSTOMISER_CONFIG *customiser = (CUSTOMISER_CONFIG *)input;
+    CUSTOMISER_NAMES *names = (CUSTOMISER_NAMES *)input;
     i32 best = -1;
     i32 side;
     i32 category;
@@ -317,10 +317,10 @@ void Customiser_SetNameAndIcon(CUSTOMISER_LAYERS *input, i32 index) {
 
         struct {
             char name[64];
-            CUSTOM_PIECE_CONFIG_PC *piece;
+            CUSTOM_PIECE_CONFIG *piece;
         } parts[2];
 
-        CUSTOM_PIECE_CONFIG_PC *third;
+        CUSTOM_PIECE_CONFIG *third;
         const u16 *selection = Game.customiser_start[side].pieces;
         if (index != -1 && side != index) {
             continue;
@@ -334,7 +334,7 @@ void Customiser_SetNameAndIcon(CUSTOMISER_LAYERS *input, i32 index) {
         }
 
         for (category = 0; category < 9; ++category) {
-            CUSTOM_PIECE_CONFIG_PC *piece;
+            CUSTOM_PIECE_CONFIG *piece;
             if (customiser->piece_counts[category] <= 0) {
                 continue;
             }
@@ -368,7 +368,7 @@ void Customiser_SetNameAndIcon(CUSTOMISER_LAYERS *input, i32 index) {
 }
 
 i32 PermanentCustomPieceAvailable(CUSTOMPIECE_LAYERS *input) {
-    CUSTOM_PIECE_CONFIG_PC *piece = (CUSTOM_PIECE_CONFIG_PC *)input;
+    CUSTOM_PIECE_CONFIG *piece = (CUSTOM_PIECE_CONFIG *)input;
     if (GAMEDEMO != 0) {
         if ((piece->availability_flags & 0x10) != 0) {
             return 0;
@@ -412,8 +412,8 @@ static f32 CustomiseNameLetterBlipScale[2] = {0};
 
 /* 00424040 / 775 */
 void Customiser_Init(CUSTOMISER_LAYERS *input) {
-    CUSTOMISER_CONFIG_PC *customiser = (CUSTOMISER_CONFIG_PC *)input;
-    CUSTOMISER_UPDATE_PC *runtime = (CUSTOMISER_UPDATE_PC *)input;
+    CUSTOMISER_CONFIG *customiser = (CUSTOMISER_CONFIG *)input;
+    CUSTOMISER_UPDATE *runtime = (CUSTOMISER_UPDATE *)input;
     i32 side;
     i32 category;
     if (customiser == NULL) {
@@ -479,7 +479,7 @@ void Customiser_Init(CUSTOMISER_LAYERS *input) {
 static f32 CustomiseMenuTime[2] = {0};
 
 void Customiser_Reset(CUSTOMISER_LAYERS *customiser) {
-    CUSTOMISER_UPDATE_PC *runtime = (CUSTOMISER_UPDATE_PC *)customiser;
+    CUSTOMISER_UPDATE *runtime = (CUSTOMISER_UPDATE *)customiser;
     i32 side;
     if (customiser == NULL) {
         return;
@@ -505,8 +505,7 @@ void Customiser_TransformToPanel(CUSTOMISER_LAYERS *unused) {
 i32 customiser_quit = 0;
 
 /* 004243e0 / 273; static native callee receives customiser in EDI. */
-static u32 CustomiserPreviewLayerMask(CUSTOMISER_CONFIG_PC *customiser, const u16 *selection, i32 selected,
-                                      PLAYERCHARACTERCONFIG *character) {
+static u32 CustomiserPreviewLayerMask(CUSTOMISER_CONFIG *customiser, const u16 *selection, i32 selected, PLAYERCHARACTERCONFIG *character) {
     u32 mask = 0;
     i32 category;
     for (category = 0; category < 9; ++category) {
@@ -530,7 +529,7 @@ static u32 CustomiserPreviewLayerMask(CUSTOMISER_CONFIG_PC *customiser, const u1
 /* 00424500 / 491: applies both saved customisations to their characters'
  * layer masks, model and gameplay flags, weapon and blade colour. */
 void Customiser_SetUpCharacterData(CUSTOMISER_LAYERS *input) {
-    CUSTOMISER_CONFIG_PC *customiser = (CUSTOMISER_CONFIG_PC *)input;
+    CUSTOMISER_CONFIG *customiser = (CUSTOMISER_CONFIG *)input;
     u32 side;
     i32 category;
     if (customiser == NULL) {
@@ -586,7 +585,7 @@ void Customiser_GetActiveWeirdoIndex(i32 *index, i32 *count) {
 }
 
 i32 Customiser_MenuAvailable(CUSTOMISER_LAYERS *customiser) {
-    HUB_CUSTOMISER_MENU_READER_PC *c = (HUB_CUSTOMISER_MENU_READER_PC *)customiser;
+    HUB_CUSTOMISER_MENU_READER *c = (HUB_CUSTOMISER_MENU_READER *)customiser;
     if (c == NULL || APICharacterLoaded(c->character_ids[0]) == NULL) {
         return 0;
     }
@@ -621,7 +620,7 @@ i32 CustomiserMenu_Update(void) {
     i32 quit = 0;
     i32 cancel_name = 0;
     i32 toggle = 0;
-    CUSTOMISER_CONFIG_PC *customiser = (CUSTOMISER_CONFIG_PC *)CharacterCustomiser;
+    CUSTOMISER_CONFIG *customiser = (CUSTOMISER_CONFIG *)CharacterCustomiser;
     i32 active_index;
     i32 active_count;
     i32 select[2];
@@ -924,7 +923,7 @@ static f32 CustomiseNameBracketOffsetX = 0.01f;
 static f32 CustomiseNameBracketOffsetY = 0.0075f;
 
 static void CustomiserDrawNameEditor(CUSTOMISER_LAYERS *input) {
-    CUSTOMISER_CONFIG_PC *customiser = (CUSTOMISER_CONFIG_PC *)input;
+    CUSTOMISER_CONFIG *customiser = (CUSTOMISER_CONFIG *)input;
     i32 side;
     i32 active_count;
     i32 index;
@@ -1021,8 +1020,8 @@ static NUVEC CustomiseNoHatPos[2] = {0};
 static f32 CustomiseHeadOffset = 0.21f;
 
 void Customiser_Update(CUSTOMISER_LAYERS *input, WORLDINFO *world) {
-    CUSTOMISER_CONFIG_PC *customiser = (CUSTOMISER_CONFIG_PC *)input;
-    CUSTOMISER_UPDATE_PC *runtime = (CUSTOMISER_UPDATE_PC *)input;
+    CUSTOMISER_CONFIG *customiser = (CUSTOMISER_CONFIG *)input;
+    CUSTOMISER_UPDATE *runtime = (CUSTOMISER_UPDATE *)input;
     /* Native conversions must all happen before the NULL test. */
     const i32 rotation_step = (i32)(10922.0 * FRAMETIME);
     const i32 tilt_x_step = (i32)(12379.0 * FRAMETIME);
@@ -1116,7 +1115,7 @@ void Customiser_Update(CUSTOMISER_LAYERS *input, WORLDINFO *world) {
         angle = CustomiseYRot[side] + 0xc000;
         for (category = 0; category < 9; ++category) {
             i32 locator;
-            CUSTOM_RESOURCE_UPDATE_PC *resources;
+            CUSTOM_RESOURCE_UPDATE *resources;
             i32 material;
             if (category == CustomiseMenuY[side] && GetMenuID() == 12 && customiser_quit == 0 &&
                 (active_count == 2 || side == preview_side) && control_side != -1 &&
@@ -1140,7 +1139,7 @@ void Customiser_Update(CUSTOMISER_LAYERS *input, WORLDINFO *world) {
                 message.flags = 0x87;
                 AddGameMsg(&message);
             }
-            resources = (CUSTOM_RESOURCE_UPDATE_PC *)world->customiser_resources[category];
+            resources = (CUSTOM_RESOURCE_UPDATE *)world->customiser_resources[category];
             if (resources == NULL || customiser->piece_counts[category] <= 0) {
                 continue;
             }
@@ -1151,11 +1150,11 @@ void Customiser_Update(CUSTOMISER_LAYERS *input, WORLDINFO *world) {
             if (resources->texture_id == 0) {
                 continue;
             }
-            for (material = 0; material < ((CUSTOM_HIERARCHY_UPDATE_PC *)model->hierarchy)->material_count; ++material) {
-                if (((CUSTOM_MATERIAL_UPDATE_PC *)((CUSTOM_HIERARCHY_UPDATE_PC *)model->hierarchy)->materials[material])->material_tag ==
+            for (material = 0; material < ((CUSTOM_HIERARCHY_UPDATE *)model->hierarchy)->material_count; ++material) {
+                if (((CUSTOM_MATERIAL_UPDATE *)((CUSTOM_HIERARCHY_UPDATE *)model->hierarchy)->materials[material])->material_tag ==
                     customiser->categories[category]->material_tag) {
-                    ((CUSTOM_HIERARCHY_UPDATE_PC *)model->hierarchy)->materials[material]->texture_id = (u16)resources->texture_id;
-                    NuMtlUpdate(((CUSTOM_HIERARCHY_UPDATE_PC *)model->hierarchy)->materials[material]);
+                    ((CUSTOM_HIERARCHY_UPDATE *)model->hierarchy)->materials[material]->texture_id = (u16)resources->texture_id;
+                    NuMtlUpdate(((CUSTOM_HIERARCHY_UPDATE *)model->hierarchy)->materials[material]);
                 }
             }
         }
@@ -1169,8 +1168,8 @@ void Customiser_Update(CUSTOMISER_LAYERS *input, WORLDINFO *world) {
 /* 00425fa0 / 1087 */
 void Customiser_Draw3D(CUSTOMISER_LAYERS *input) {
     WORLDINFO *world = WorldInfo_CurrentlyActive();
-    CUSTOMISER_CONFIG_PC *customiser = (CUSTOMISER_CONFIG_PC *)input;
-    CUSTOMISER_UPDATE_PC *runtime = (CUSTOMISER_UPDATE_PC *)input;
+    CUSTOMISER_CONFIG *customiser = (CUSTOMISER_CONFIG *)input;
+    CUSTOMISER_UPDATE *runtime = (CUSTOMISER_UPDATE *)input;
     i32 active_side;
     i32 active_count;
     i32 preview_side;
@@ -1214,9 +1213,9 @@ void Customiser_Draw3D(CUSTOMISER_LAYERS *input) {
         }
         if (helmet != -1) {
             for (category = 0; category < 9; ++category) {
-                CUSTOM_ACCESSORY_RESOURCE_PC *resources = (CUSTOM_ACCESSORY_RESOURCE_PC *)world->customiser_resources[category];
-                CUSTOM_ACCESSORY_RESOURCE_PC *resource;
-                CUSTOM_PIECE_CONFIG_PC *piece;
+                CUSTOM_ACCESSORY_RESOURCE *resources = (CUSTOM_ACCESSORY_RESOURCE *)world->customiser_resources[category];
+                CUSTOM_ACCESSORY_RESOURCE *resource;
+                CUSTOM_PIECE_CONFIG *piece;
                 if (resources == NULL || customiser->piece_counts[category] <= 0 || customiser->categories[category]->uses_special == 0) {
                     continue;
                 }
@@ -1239,7 +1238,7 @@ void Customiser_Draw3D(CUSTOMISER_LAYERS *input) {
         }
         if (customiser->piece_counts[2] > 0) {
             i32 hand = character->weapon_joints[0];
-            CUSTOM_PIECE_CONFIG_PC *weapon;
+            CUSTOM_PIECE_CONFIG *weapon;
             LEVEL_OBJECT_RUNTIME *object;
             if (hand == -1 || model->points_of_interest[hand] == NULL) {
                 continue;

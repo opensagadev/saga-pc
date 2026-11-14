@@ -7,12 +7,12 @@ typedef struct bolt_gizmo_type_s {
     u8 unknown_70[4];
     i32 (*hit_bolt)(WORLDINFO *, void *, GAMEOBJECT *, NUVEC *, i32, f32, NUVEC *, NUVEC *, BOLT_PC *, i32, u8 *);
     u8 unknown_78[0x24];
-} BOLT_GIZMO_TYPE_PC;
+} BOLT_GIZMO_TYPE;
 
 i32 GizmoSys_SetBestBoltTarget(void *system, WORLDINFO *world, GAMEOBJECT *object, NUVEC *position, NUVEC *direction, f32 radius,
                                f32 range_squared, i32 directional, i32 planar, i32 bolt_id) {
-    GIZMOTYPES_PC *registry = gizmotypes;
-    GIZMOTYPE_PC *type;
+    GIZMOTYPES *registry = gizmotypes;
+    GIZMOTYPE *type;
     GIZMOSET_PC *set;
     void *best = NULL;
     void *previous = NULL;
@@ -31,7 +31,7 @@ i32 GizmoSys_SetBestBoltTarget(void *system, WORLDINFO *world, GAMEOBJECT *objec
         registry = gizmotypes;
         type = registry->types;
         set = ((GIZMOSYS_PREFIX_PC *)system)->sets;
-        for (i = 0; i < ((GIZMOTYPES_PC *)gizmotypes)->count; ++i, ++type, ++set) {
+        for (i = 0; i < ((GIZMOTYPES *)gizmotypes)->count; ++i, ++type, ++set) {
             if (type->fns.get_best_bolt_target_fn == NULL) {
                 continue;
             }
@@ -74,7 +74,7 @@ i32 GizmoSys_BoltHit(void *system, WORLDINFO *world, BOLT_PC *bolt, NUVEC *point
     NUVEC *hit_points;
     i32 mode;
     i32 i;
-    BOLT_GIZMO_TYPE_PC *type;
+    BOLT_GIZMO_TYPE *type;
     GIZMOSET_PC *set;
     if (bolt->flags & 0x200) {
         hit_points = points + 1;
@@ -84,9 +84,9 @@ i32 GizmoSys_BoltHit(void *system, WORLDINFO *world, BOLT_PC *bolt, NUVEC *point
         mode = 3;
     }
     if (gizmotypes != NULL && system != NULL && (bolt->hit_flags & 0x800) != 0) {
-        type = (BOLT_GIZMO_TYPE_PC *)((GIZMOTYPES_PC *)gizmotypes)->types;
+        type = (BOLT_GIZMO_TYPE *)((GIZMOTYPES *)gizmotypes)->types;
         set = ((GIZMOSYS_PREFIX_PC *)system)->sets;
-        for (i = 0; i < ((GIZMOTYPES_PC *)gizmotypes)->count; ++i, ++set, ++type) {
+        for (i = 0; i < ((GIZMOTYPES *)gizmotypes)->count; ++i, ++set, ++type) {
             if (type->hit_bolt != NULL &&
                 type->hit_bolt(world, set->data, bolt->owner, hit_points, mode, radius, minimum, maximum, bolt, 1, hit_flags) != 0) {
                 BoltSys->debris(bolt, points, -1, NULL, 0);

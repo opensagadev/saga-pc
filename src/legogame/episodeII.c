@@ -16,14 +16,14 @@ typedef struct cutinfo_reader_s {
     void *instance;
     u8 opaque_08_54[0x4c];
     f32 previous_frame;
-} CUTINFO_READER_PC;
+} CUTINFO_READER;
 
 typedef struct cut_instance_reader_s {
     u8 opaque_00_88[0x88];
     u32 flags_88;
     u32 unknown_8c;
     f32 current_frame;
-} CUT_INSTANCE_READER_PC;
+} CUT_INSTANCE_READER;
 
 typedef struct dooku_c_s {
     GIZAIMESSAGE *total_message;
@@ -67,12 +67,12 @@ typedef struct kaminoc_packet_s {
 typedef struct kamino_progress_gizmo_reader_s {
     u8 opaque_00_94[0x94];
     u8 flags;
-} KAMINO_PROGRESS_GIZMO_READER_PC;
+} KAMINO_PROGRESS_GIZMO_READER;
 
 typedef struct gizforce_reader_s {
     u8 opaque_00_28[0x28];
     GAMEANIMSET *anim_set;
-} GIZFORCE_READER_PC;
+} GIZFORCE_READER;
 
 typedef struct kaminoe_turret_reader_s {
     u8 opaque_00_1c[0x1c];
@@ -86,7 +86,7 @@ typedef struct kaminoe_turret_reader_s {
     u8 opaque_12f_13a[0xb];
     u16 flags_13a;
     u8 opaque_13c_140[0x4];
-} KAMINOE_TURRET_READER_PC;
+} KAMINOE_TURRET_READER;
 
 typedef struct kamino_e_s {
     GIZAIMESSAGE *jango_fight;
@@ -97,8 +97,8 @@ typedef struct kamino_e_s {
     CUTINFO *intro_cutscene;
     AIAREA *landing_area;
     NUSPECIALHANDLE slave1;
-    KAMINOE_TURRET_READER_PC *turrets[4];
-    KAMINOE_TURRET_READER_PC *active_turret;
+    KAMINOE_TURRET_READER *turrets[4];
+    KAMINOE_TURRET_READER *active_turret;
     void *panels[4];
     NUVEC position;
     i32 pitch;
@@ -116,9 +116,9 @@ typedef struct kamino_e_s {
 extern i32 turret_gizmotype_id;
 void *GizmoFindByData(void *gizmo_sys, i32 type_id, void *data);
 void KaminoEGizmoMissing(char *name);
-#define KAMINO_DISCO_AREA_MASK_SET_PC(world, area)                                                                                         \
+#define KAMINO_DISCO_AREA_MASK_SET(world, area)                                                                                            \
     ((*(u64 *)((GAMEOBJECT *)(world)->ai_sys->player_1)->ai_area_mask & (u64)(i64)(1 << (i32)((area) - (world)->ai_sys->areas))) != 0)
-#define KAMINO_DISCO_PLAYER_IN_AREA_PC(world, who, area) ((who) != NULL && (area) != NULL && KAMINO_DISCO_AREA_MASK_SET_PC(world, area))
+#define KAMINO_DISCO_PLAYER_IN_AREA(world, who, area) ((who) != NULL && (area) != NULL && KAMINO_DISCO_AREA_MASK_SET(world, area))
 
 typedef struct KAMINO_SHIP_ZERO_ANGLES {
     u16 pitch;
@@ -988,8 +988,8 @@ void FactoryB_Reset(WORLDINFO *world) {
     ResetPaintPuzzle(world);
     factoryb_cut = NewCutScene(NULL, world->cutscene_sys, "ep2_droidfactory_conveyor", 0);
     if (factoryb_cut != NULL && factoryb_cut->instance != NULL) {
-        ((CUT_INSTANCE_READER_PC *)factoryb_cut->instance)->flags_88 |= 2;
-        ((CUT_INSTANCE_READER_PC *)factoryb_cut->instance)->flags_88 |= 8;
+        ((CUT_INSTANCE_READER *)factoryb_cut->instance)->flags_88 |= 2;
+        ((CUT_INSTANCE_READER *)factoryb_cut->instance)->flags_88 |= 8;
     }
     factoryb_conveyor_stopped_msg = CheckGizAIMessage(gizaimessagesys, "conveyor_stop", NULL);
 }
@@ -1002,13 +1002,13 @@ void FactoryB_Update(WORLDINFO *world) {
     GIZAIMESSAGE *message;
     UpdatePaintPuzzle(world);
     message = factoryb_conveyor_stopped_msg;
-    if (message != NULL && message->value != 0.0f && ((CUTINFO_READER_PC *)factoryb_cut)->previous_frame > 50.0 &&
-        ((CUTINFO_READER_PC *)factoryb_cut)->previous_frame < 54.0) {
-        ((CUT_INSTANCE_READER_PC *)factoryb_cut->instance)->current_frame = 0.0f;
-        ((CUT_INSTANCE_READER_PC *)factoryb_cut->instance)->flags_88 &= ~2u;
+    if (message != NULL && message->value != 0.0f && ((CUTINFO_READER *)factoryb_cut)->previous_frame > 50.0 &&
+        ((CUTINFO_READER *)factoryb_cut)->previous_frame < 54.0) {
+        ((CUT_INSTANCE_READER *)factoryb_cut->instance)->current_frame = 0.0f;
+        ((CUT_INSTANCE_READER *)factoryb_cut->instance)->flags_88 &= ~2u;
         world->current_level->conveyor_x_speed = 0.0f;
         world->current_level->conveyor_z_speed = 0.0f;
-    } else if (((CUT_INSTANCE_READER_PC *)factoryb_cut->instance)->current_frame > FactoryBConveyorStopFrame) {
+    } else if (((CUT_INSTANCE_READER *)factoryb_cut->instance)->current_frame > FactoryBConveyorStopFrame) {
         world->current_level->conveyor_x_speed = FactoryBConveyorXSpeed;
         world->current_level->conveyor_z_speed = FactoryBConveyorZSpeed;
         PlaySfx("FacB_BeltLp", NULL);
@@ -1109,7 +1109,7 @@ void FactoryG_Update(WORLDINFO *world) {
         CompleteLevel(WORLD);
     } else {
         CUTINFO *cut = NewCutScene(NULL, world->cutscene_sys, "ep2_factory_outro", 1);
-        ((CUT_INSTANCE_READER_PC *)((CUTINFO_READER_PC *)cut)->instance)->flags_88 |= 2;
+        ((CUT_INSTANCE_READER *)((CUTINFO_READER *)cut)->instance)->flags_88 |= 2;
     }
 }
 
@@ -1228,7 +1228,7 @@ void KaminoC_Reset(WORLDINFO *world) {
         NuSpecialSetVisibility(&disco_on_spin[i], 0);
         if (netclient == 0) {
             GizmoSetVisibility(world->gizmo_sys, disco_off_spina[i], 1, 0);
-            if (((GIZFORCE_READER_PC *)disco_off_spina[i]->object)->anim_set->state == 0) {
+            if (((GIZFORCE_READER *)disco_off_spina[i]->object)->anim_set->state == 0) {
                 GizmoActivate(world->gizmo_sys, disco_off_spina[i], 1, 0);
             }
         }
@@ -1301,7 +1301,7 @@ static f32 KaminoDiscoTileTime = 2.5f;
 static f32 KaminoDiscoTileRadius = 0.2f;
 
 void KaminoC_Update(WORLDINFO *world) {
-    KAMINO_PROGRESS_GIZMO_READER_PC *progress = LevGizmo[0]->object;
+    KAMINO_PROGRESS_GIZMO_READER *progress = LevGizmo[0]->object;
     i32 i;
     if (GizmoGetOutput(world->gizmo_sys, LevGizmo[0], 0, 0) == 0) {
         if ((progress->flags & 1) == 0) {
@@ -1318,8 +1318,8 @@ void KaminoC_Update(WORLDINFO *world) {
     SetGizAIMessage(gizaimessagesys, "DiscoComplete", 0.0f, kaminodisco.complete_message);
     switch (kaminodisco.phase) {
         case 0:
-            if (KAMINO_DISCO_PLAYER_IN_AREA_PC(world, world->ai_sys->player_1, kaminodisco.area) ||
-                KAMINO_DISCO_PLAYER_IN_AREA_PC(world, world->ai_sys->player_2, kaminodisco.area)) {
+            if (KAMINO_DISCO_PLAYER_IN_AREA(world, world->ai_sys->player_1, kaminodisco.area) ||
+                KAMINO_DISCO_PLAYER_IN_AREA(world, world->ai_sys->player_2, kaminodisco.area)) {
                 kaminoc_netpacket->complete = 0;
                 kaminodisco.timer = 0.0f;
                 kaminodisco.phase = 1;
@@ -1408,8 +1408,8 @@ void KaminoC_Update(WORLDINFO *world) {
         case 2:
             SetGizAIMessage(gizaimessagesys, "DiscoComplete", 1.0f, kaminodisco.complete_message);
             kaminoc_netpacket->complete = 1;
-            if (!(KAMINO_DISCO_PLAYER_IN_AREA_PC(world, world->ai_sys->player_1, kaminodisco.area) ||
-                  KAMINO_DISCO_PLAYER_IN_AREA_PC(world, world->ai_sys->player_2, kaminodisco.area))) {
+            if (!(KAMINO_DISCO_PLAYER_IN_AREA(world, world->ai_sys->player_1, kaminodisco.area) ||
+                  KAMINO_DISCO_PLAYER_IN_AREA(world, world->ai_sys->player_2, kaminodisco.area))) {
                 KaminoC_Reset(world);
                 return;
             }
@@ -1824,7 +1824,7 @@ void KaminoE_UpdatePc(WORLDINFO *world) {
         }
     }
     if (kamino_e.jango_fight->value == 0.0f && FreePlay == 0 && kamino_e.intro_cutscene != NULL &&
-        instNuGCutSceneIsFinished(((CUTINFO_READER_PC *)kamino_e.intro_cutscene)->instance) != 0) {
+        instNuGCutSceneIsFinished(((CUTINFO_READER *)kamino_e.intro_cutscene)->instance) != 0) {
         kamino_e.jango_fight->value = 1.0f;
     }
     KaminoE_Update(world);

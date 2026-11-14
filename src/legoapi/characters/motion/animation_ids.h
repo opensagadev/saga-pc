@@ -26,7 +26,7 @@ extern "C" {
     extern u16 BoltShootClassId2;
     extern i16 LEGOACT_HANG_MOVE;
     extern i16 BoltDeactivatedAction;
-    extern u32 ExBlowupFlagsPc;
+    extern u32 ExBlowupFlags;
     extern i16 BigJumpLandFallback;
     extern i16 BigJumpLandPreferred;
     extern i16 BigJumpLandSecondary;

@@ -32,8 +32,8 @@ extern "C" {
 #ifdef __cplusplus
 extern "C" {
 #endif
-    extern const char InitOnceCompanyPc[10];
-    extern const char InitOnceProductPc[35];
+    extern const char InitOnceCompany[10];
+    extern const char InitOnceProduct[35];
     extern i32 InitOnceFileMode;
     extern i32 InitOnceSelector34;
     extern i32 InitOnceDvd;

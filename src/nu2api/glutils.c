@@ -13,37 +13,37 @@ typedef struct debris_material_flags_s { // size 0x4
     u32 unknown_19 : 1;                  // 0x0:19
     u32 alpha_test : 2;                  // 0x0:20
     u32 unknown_22_31 : 10;              // 0x0:22
-} DEBRIS_MATERIAL_FLAGS_PC;
+} DEBRIS_MATERIAL_FLAGS;
 
 typedef struct debris_material_secondary_s { // size 0x4
     u32 alpha_fail : 2;                      // 0x0:0
     u32 disable_depth_write : 1;             // 0x0:2
     u32 unknown_03_31 : 29;                  // 0x0:3
-} DEBRIS_MATERIAL_SECONDARY_PC;
+} DEBRIS_MATERIAL_SECONDARY;
 
-typedef struct debris_material_s {          // size 0x1f4
-    u8 unknown_000[0x40];                   // 0x000
-    DEBRIS_MATERIAL_FLAGS_PC attribs;       // 0x040
-    DEBRIS_MATERIAL_SECONDARY_PC secondary; // 0x044
-    u8 unknown_048[0xc];                    // 0x048
-    NUVEC diffuse;                          // 0x054
-    f32 glass_parameter;                    // 0x060
-    u8 unknown_064[0xc];                    // 0x064
-    f32 opacity;                            // 0x070
-    i16 texture_id;                         // 0x074
-    i16 sort_priority;                      // 0x076
-    u8 unknown_078[0x21];                   // 0x078
-    i8 particle_type_tag;                   // 0x099
-    u8 unknown_09a[0x156];                  // 0x09a
-    u32 vertex_flags;                       // 0x1f0
-} DEBRIS_MATERIAL_PC;
+typedef struct debris_material_s {       // size 0x1f4
+    u8 unknown_000[0x40];                // 0x000
+    DEBRIS_MATERIAL_FLAGS attribs;       // 0x040
+    DEBRIS_MATERIAL_SECONDARY secondary; // 0x044
+    u8 unknown_048[0xc];                 // 0x048
+    NUVEC diffuse;                       // 0x054
+    f32 glass_parameter;                 // 0x060
+    u8 unknown_064[0xc];                 // 0x064
+    f32 opacity;                         // 0x070
+    i16 texture_id;                      // 0x074
+    i16 sort_priority;                   // 0x076
+    u8 unknown_078[0x21];                // 0x078
+    i8 particle_type_tag;                // 0x099
+    u8 unknown_09a[0x156];               // 0x09a
+    u32 vertex_flags;                    // 0x1f0
+} DEBRIS_MATERIAL;
 
 NUMTL *CreateAlphaBlendTexture(VARIPTR *buffer, VARIPTR buffer_end, char *name, i32 disable_depth_write, i32 alpha_mode, i32 sort_priority,
                                i32 depth_mode) {
     i32 texture_id = NuTexRead(name, buffer, buffer_end);
-    DEBRIS_MATERIAL_PC *material;
+    DEBRIS_MATERIAL *material;
     buffer->addr = (buffer->addr + 15) & ~15u;
-    material = (DEBRIS_MATERIAL_PC *)NuMtlCreate3D(1);
+    material = (DEBRIS_MATERIAL *)NuMtlCreate3D(1);
     material->diffuse.x = 1.0f;
     material->diffuse.y = 1.0f;
     material->diffuse.z = 1.0f;

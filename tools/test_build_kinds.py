@@ -544,7 +544,7 @@ int main(int argc, char **argv) {
     }
     errno = EDOM;
     SetLastError(0x1234);
-    SagaDebugCrashInitPc(file, "fixture-build", path);
+    SagaDebugCrashInit(file, "fixture-build", path);
     if (GetLastError() != 0x1234 || errno != EDOM) return 3;
     CloseHandle(file);
     for (i = 0; i < 11; ++i) {

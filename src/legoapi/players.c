@@ -81,7 +81,7 @@ typedef struct player_reset_packet_s { // size 0x780
     u8 unknown_76f;                    // 0x76f
     u8 unknown_770[0xd];               // 0x770
     i8 random_context;                 // 0x77d
-} PLAYER_RESET_PACKET_PC;
+} PLAYER_RESET_PACKET;
 
 /* Two-DWORD view of the default mask. */
 GAMEOBJECT *AddCreature(i32 model, i32 mode);
@@ -97,7 +97,7 @@ typedef struct player_position_record_s { // size 0x10
     f32 sock_ratio;                       // 0x8
     i16 angle;                            // 0xc
     u8 unknown_0e[2];                     // 0xe
-} PLAYER_POSITION_RECORD_PC;
+} PLAYER_POSITION_RECORD;
 
 typedef union player_position_sock_pc_u { // size 0x38
     SOCKPOSITION_PC sock;
@@ -106,7 +106,7 @@ typedef union player_position_sock_pc_u { // size 0x38
         i32 location; // 0x00
         f32 ratio;    // 0x04
     } start;
-} PLAYER_POSITION_SOCK_PC;
+} PLAYER_POSITION_SOCK;
 
 extern i32 (*Player_ToggleSubCharacterFn)(GAMEOBJECT *, i32, i32);
 extern void (*Player_ToggledCharacterFn)(GAMEOBJECT *, i32);
@@ -197,7 +197,7 @@ void Players_InitPositions(WORLDINFO *world) {
     }
     DoorExitCameraSplineName[0] = '\0';
     for (index = 0; index < 8; ++index) {
-        PLAYER_POSITION_SOCK_PC position;
+        PLAYER_POSITION_SOCK position;
         ComplexSockPosition(world->sock_sys, PlayerStart[index].position, -1, -1, &position.sock);
         PlayerStart[index].sock_location = position.start.location;
         PlayerStart[index].sock_ratio = position.start.ratio;
@@ -320,7 +320,7 @@ void Player_ClearContext(GAMEOBJECT *object, i32 mode) {
 }
 
 void Player_ResetContexts(void *packet_ptr) {
-    PLAYER_RESET_PACKET_PC *packet = packet_ptr;
+    PLAYER_RESET_PACKET *packet = packet_ptr;
     packet->context_animation_time = 0.0f;
     packet->context_target = -1;
     if ((packet->secondary_flags >> 16) & 1) {
@@ -748,7 +748,7 @@ void ResetPlayer(GAMEOBJECT *object, i32 reset_moves, NUVEC *position, i32 snap_
     i32 restore_hitpoints;
     i32 player_index;
     u16 facing;
-    PLAYER_POSITION_RECORD_PC *starts = (PLAYER_POSITION_RECORD_PC *)PlayerStart;
+    PLAYER_POSITION_RECORD *starts = (PLAYER_POSITION_RECORD *)PlayerStart;
     if (object == NULL) {
         return;
     }

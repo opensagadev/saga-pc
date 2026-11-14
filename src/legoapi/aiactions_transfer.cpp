@@ -21,7 +21,7 @@ extern "C" {
 
 static i32 NuSpecialFindMultiDisplay(NUGSCN *scene, NUSPECIALHANDLE *dest, char *name, i32 capacity, i32 flags) {
     i32 count = 0;
-    NUDISPLAY_SPECIAL_PC *special = scene->display_list->specials;
+    NUDISPLAY_SPECIAL *special = scene->display_list->specials;
     for (i32 index = 0; index < scene->display_list->special_count; ++index, ++special) {
         if (NuStrIStr(special->name, name) != NULL) {
             dest->scene = scene;
@@ -40,13 +40,13 @@ static i32 NuSpecialFindMultiDisplay(NUGSCN *scene, NUSPECIALHANDLE *dest, char 
 }
 
 extern "C" i32 NuSpecialFindMulti(NUGSCN *scene, NUSPECIALHANDLE *dest, char *name, i32 capacity, i32 flags) {
-    NUDISPLAY_SPECIAL_PC *display_special = NULL;
+    NUDISPLAY_SPECIAL *display_special = NULL;
     i32 count = 0;
     if (scene != NULL) {
         if (scene->display_list != NULL) {
             return NuSpecialFindMultiDisplay(scene, dest, name, capacity, flags);
         }
-        NUSPECIAL_LEGACY_PC *special = scene->specials;
+        NUSPECIAL_LEGACY *special = scene->specials;
         for (i32 index = 0; index < scene->special_count; ++index, ++special, ++display_special) {
             if (NuStrIStr(special->name, name) != NULL) {
                 dest->scene = scene;

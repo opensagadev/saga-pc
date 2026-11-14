@@ -4,7 +4,7 @@
 typedef struct trigger_lever_s { // size 0x96
     u8 unknown000[0x94];         // 0x00
     u16 flags;                   // 0x94
-} TRIGGER_LEVER_PC;
+} TRIGGER_LEVER;
 
 typedef struct trigger_spinner_s { // size 0xb0
     u8 unknown000[0x70];           // 0x00
@@ -15,7 +15,7 @@ typedef struct trigger_spinner_s { // size 0xb0
     i8 room_index;                 // 0x89
     u8 unknown08a[0x22];           // 0x8a
     u8 flags;                      // 0xac
-} TRIGGER_SPINNER_PC;
+} TRIGGER_SPINNER;
 
 typedef struct trigger_force_s { // size 0xa4
     u8 unknown000[0x38];         // 0x00
@@ -25,7 +25,7 @@ typedef struct trigger_force_s { // size 0xa4
     u32 config_flags;            // 0x74
     u8 unknown078[0x28];         // 0x78
     u32 progress_flags;          // 0xa0
-} TRIGGER_FORCE_PC;
+} TRIGGER_FORCE;
 
 typedef struct trigger_set_s { // size 0x214
     FLOWBOX *flowbox;          // 0x000
@@ -37,10 +37,10 @@ typedef struct trigger_set_s { // size 0x214
     u16 occupied;              // 0x20e
     u16 flags;                 // 0x210
     u8 unknown212[2];          // 0x212
-} TRIGGER_SET_PC;
+} TRIGGER_SET;
 
 typedef struct trigger_system_s { // size 0x4304
-    TRIGGER_SET_PC sets[32];      // 0x0000
+    TRIGGER_SET sets[32];         // 0x0000
     i8 assigned_set[64];          // 0x4280
     i8 assigned_trigger[64];      // 0x42c0
     i32 unknown4300;              // 0x4300
@@ -49,7 +49,7 @@ typedef struct trigger_system_s { // size 0x4304
 typedef struct trigger_object_force_s { // size 0x10d0
     u8 unknown000[0x10cc];              // 0x0000
     GIZFORCE_PC *force;                 // 0x10cc
-} TRIGGER_OBJECT_FORCE_PC;
+} TRIGGER_OBJECT_FORCE;
 
 STATIC_ASSERT(offsetof(GAMEOBJECT, ai_packet) + offsetof(AIPACKET, route_mask_low) == 0x3f8);
 STATIC_ASSERT(offsetof(GAMEOBJECT, ai_packet) + offsetof(AIPACKET, terrain_origin) == 0x414);
@@ -199,7 +199,7 @@ i32 AITriggerSetAddTrigger(AISYS_PC *system, AITRIGGERSET_s *set, GIZMO_PC *gizm
 
 static i32 TriggerGizmoAvailable(GIZMO_PC *gizmo) {
     if (gizmo->type_id == lever_gizmotype_id) {
-        TRIGGER_LEVER_PC *lever = gizmo->object;
+        TRIGGER_LEVER *lever = gizmo->object;
         if ((lever->flags & 0x80) && !(lever->flags & 2)) {
             return 1;
         }
@@ -209,11 +209,11 @@ static i32 TriggerGizmoAvailable(GIZMO_PC *gizmo) {
             return 1;
         }
     } else if (gizmo->type_id == spinner_gizmotype_id) {
-        if (((TRIGGER_SPINNER_PC *)gizmo->object)->room_index == -1) {
+        if (((TRIGGER_SPINNER *)gizmo->object)->room_index == -1) {
             return 1;
         }
     } else if (gizmo->type_id == force_gizmotype_id) {
-        TRIGGER_FORCE_PC *force = gizmo->object;
+        TRIGGER_FORCE *force = gizmo->object;
         if ((force->progress_flags & 1) && force->using_object == NULL && force->active_state == 0) {
             return 1;
         }
@@ -232,7 +232,7 @@ i32 GameObjectUsingLever(GAMEOBJECT *object, void *lever) {
 
 void AITriggerSetSysProcess(TRIGGER_SYSTEM_PC *system) {
     u64 character_mask = 0;
-    TRIGGER_SET_PC *set;
+    TRIGGER_SET *set;
     i32 set_index;
     i32 complete;
     i32 has_assignments;
@@ -263,7 +263,7 @@ void AITriggerSetSysProcess(TRIGGER_SYSTEM_PC *system) {
             gizmo = set->gizmos[index];
             if (gizmo != NULL) {
                 if (gizmo->type_id == lever_gizmotype_id) {
-                    TRIGGER_LEVER_PC *lever = gizmo->object;
+                    TRIGGER_LEVER *lever = gizmo->object;
                     if (player->character_context == 0x4a && player->grapple == lever) {
                         set->occupied |= 1 << index;
                     } else if (player2 != NULL && player2->character_context == 0x4a && player2->grapple == lever) {
@@ -293,7 +293,7 @@ void AITriggerSetSysProcess(TRIGGER_SYSTEM_PC *system) {
                         AITRIGGER_RELEASE(system, set, index);
                     }
                 } else if (gizmo->type_id == spinner_gizmotype_id) {
-                    TRIGGER_SPINNER_PC *spinner = gizmo->object;
+                    TRIGGER_SPINNER *spinner = gizmo->object;
                     if ((spinner->flags & 6) != 0 || ((spinner->flags & 8) != 0 && ShadowMode == 0) || spinner->progress == 1.0f ||
                         (spinner->state_flags & 0x20) != 0) {
                         set->occupied &= ~(1 << index);
@@ -389,7 +389,7 @@ void AITriggerSetSysProcess(TRIGGER_SYSTEM_PC *system) {
                                 continue;
                             }
                             if (gizmo->type_id == force_gizmotype_id) {
-                                TRIGGER_FORCE_PC *force = gizmo->object;
+                                TRIGGER_FORCE *force = gizmo->object;
                                 if ((force->config_flags & 0x10) != 0) {
                                     if (!CharCategory_IsCategory(object, 1)) {
                                         continue;

@@ -34,8 +34,8 @@ typedef struct addgizmotype_s *(*REGISTER_GIZMO_CONFIG_TYPE_FN)(i32 type_id);
 extern "C" {
 #endif
 
-    extern const char VehicleSmartBombChargeNamePc[10];
-    extern const char VehicleShieldOnNamePc[10];
+    extern const char VehicleSmartBombChargeName[10];
+    extern const char VehicleShieldOnName[10];
     i32 GizForce_UpdateHint(HINT *);
     extern const char EpisodeVI_electric_off[13];
     extern const char EpisodeVI_elecpad_zero_format[15];

@@ -10,7 +10,7 @@ typedef struct episode_area_save_reader_s { // size 0xc
     u8 red_brick_complete;                  // 0x6
     u8 challenge_complete;                  // 0x7
     f32 challenge_time;                     // 0x8
-} EPISODE_AREA_SAVE_READER_PC;
+} EPISODE_AREA_SAVE_READER;
 
 extern "C" {
     void EpisodesConfigDiagnostic(char *path);
@@ -237,12 +237,12 @@ i32 Episode_CountOpenAreas(i32 episode_index, i32 area_index, COLLECTION_AREA_SA
         }
         if ((ADataList[id].flags & 4) != 0) {
             ++EpGoldBrickTotal;
-            if ((f64)((EPISODE_AREA_SAVE_READER_PC *)&saves[id])->challenge_time < (f64)ADataList[id].challenge_trial_time) {
+            if ((f64)((EPISODE_AREA_SAVE_READER *)&saves[id])->challenge_time < (f64)ADataList[id].challenge_trial_time) {
                 ++EpGoldBrickCount;
             }
             continue;
         }
-        EPISODE_AREA_SAVE_READER_PC *save = (EPISODE_AREA_SAVE_READER_PC *)&saves[id];
+        EPISODE_AREA_SAVE_READER *save = (EPISODE_AREA_SAVE_READER *)&saves[id];
         ++EpCompleteTotal;
         EpMiniKitTotal += 10;
         if (save->complete != 0) {

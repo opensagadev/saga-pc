@@ -78,7 +78,7 @@ extern "C" {
     extern f32 PCArcadeIconMessageY;
 #define PCArcadePointMessageY STATSPOSY            // NOLINT(readability-identifier-naming)
 #define PCArcadeMessageTemplate AddGameMsg_Default // NOLINT(readability-identifier-naming)
-#define ScoreBuildUpDonePc BuildUpTotal            // NOLINT(readability-identifier-naming)
+#define ScoreBuildUpDone BuildUpTotal              // NOLINT(readability-identifier-naming)
     extern i16 tBACK;
     extern const char Text_TimeMS[8];
     extern const char Text_TimeSC[8];

@@ -7,7 +7,7 @@ extern i32 LEGO_AIPATHCNX_VARIANT_FLAG1;
 typedef struct movement_model_s {
     u8 unknown_00[0xc];
     void **model_data_b;
-} MOVEMENT_MODEL_PC;
+} MOVEMENT_MODEL;
 
 extern i32 (*CanMagnetClimbFn)(GAMEOBJECT *);
 
@@ -426,7 +426,7 @@ void Hang_MoveCode(GAMEOBJECT *object) {
             return;
         }
         variant = object->context_variant;
-        if ((u8)object->roof_surface_id_pc != variant) {
+        if ((u8)object->roof_surface_id != variant) {
             object->character_context = -1;
             object->velocity.y = 0.0f;
             return;
@@ -464,7 +464,7 @@ void Hang_MoveCode(GAMEOBJECT *object) {
 i32 Hang_SetTargetMom(GAMEOBJECT *object) {
     if (object->pad->input_magnitude > 0.0f) {
         f32 speed;
-        if (LEGOACT_HANG_MOVE != -1 && ((MOVEMENT_MODEL_PC *)object->character_model)->model_data_b[LEGOACT_HANG_MOVE] != NULL) {
+        if (LEGOACT_HANG_MOVE != -1 && ((MOVEMENT_MODEL *)object->character_model)->model_data_b[LEGOACT_HANG_MOVE] != NULL) {
             speed = AnimSpeed(object->character_model, LEGOACT_HANG_MOVE);
             if (speed < 0.25f) {
                 speed = 0.25f;

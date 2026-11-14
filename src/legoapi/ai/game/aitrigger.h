@@ -27,8 +27,8 @@ typedef struct trigger_system_s TRIGGER_SYSTEM_PC;
 extern "C" {
 #endif
     extern const char DeathStarEscapeBWindowCleanPc[12];
-    extern const char DeathStarEscapeBWasher2Pc[9];
-    extern const char DeathStarEscapeBWasher1Pc[9];
+    extern const char DeathStarEscapeBWasher2[9];
+    extern const char DeathStarEscapeBWasher1[9];
     void AITriggerSetSysReset(TRIGGER_SYSTEM_PC *);
     AITRIGGERSET_s *AITriggerSetCreate(AITRIGGERSETSYS_s *, FLOWBOX *);
     void AITriggerSysAutoSetUp(WORLDINFO *, AITRIGGERSETSYS_s *);

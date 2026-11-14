@@ -89,7 +89,7 @@ extern "C" i32 NuRndrSwapScreen(i32 mode) {
         }
         if (scene->unknown_58 != 0 && NuPostEffectIsInitialised(4)) {
             NuPostEffectEnable(4);
-            NuPostEffectBloom(reinterpret_cast<const NU_POST_BLOOM_PARAMETERS *>(&scene->burnout_parameters_pc));
+            NuPostEffectBloom(reinterpret_cast<const NU_POST_BLOOM_PARAMETERS *>(&scene->burnout_parameters));
             scene->unknown_58 = 0;
             rendered_effect = 1;
         }

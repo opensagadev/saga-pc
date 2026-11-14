@@ -44,7 +44,7 @@ typedef struct level_sfx_entry_s { // size 0x10
     i16 id;                        // 0xc
     u8 references;                 // 0xe
     u8 unknown_000f;               // 0xf
-} LEVELSFXENTRY_PC;
+} LEVELSFXENTRY;
 
 typedef struct BOLTTYPE_PC_s { // size 0xa4
     char name[16];             // 0x00
@@ -169,7 +169,7 @@ typedef struct WORLDINFO_s { // size 0x51ac
     i32 ai_loaded;                                             // 0x2ae4
     struct AISYS_PC *ai_sys;                                   // 0x2ae8
     i32 script_processor_count;                                // 0x2aec
-    LEVEL_SCRIPT_PROCESS_PC script_processors[32];             // 0x2af0
+    LEVEL_SCRIPT_PROCESS script_processors[32];                // 0x2af0
     struct ai_control_system_s *ai_path_cnx_control_sys;       // 0x4670
     struct ai_helper_system_s *ai_connection_helpers;          // 0x4674
     void *ai_trigger_set;                                      // 0x4678
@@ -207,7 +207,7 @@ typedef struct WORLDINFO_s { // size 0x51ac
     i32 water_ripple_effect;                                   // 0x46fc
     i32 sabre_ripple_effect;                                   // 0x4700
     u8 unknown_4704[0xc];                                      // 0x4704
-    LEVELSFXENTRY_PC level_sfx[64];                            // 0x4710
+    LEVELSFXENTRY level_sfx[64];                               // 0x4710
     i32 level_sfx_count;                                       // 0x4b10
     BOLTTYPE_PC bolt_types[8];                                 // 0x4b14
     struct FADER_s *faders;                                    // 0x5034

@@ -52,7 +52,7 @@ extern "C" {
     extern struct nugspline_s *splineStore;
     extern i32 numSplinesLoaded;
     extern const char *EDSPLINE_FILECHECK;
-    extern const char EditorSplineFileCheckTextPc[13];
+    extern const char EditorSplineFileCheckText[13];
     void GameAntiNodeData_Init(void *, struct nuspecial_handle_s *);
     void GameAntiNodeData_Read(void *);
     struct nugspline_s *edSpline_SplineFind(struct NUGSCN_s *, char *);

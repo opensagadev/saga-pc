@@ -43,7 +43,7 @@ typedef struct tightrope_movement_s {
     u8 unknown_00[0x40];
     f32 horizontal_length;
     u16 rotation;
-} TIGHTROPE_MOVEMENT_PC;
+} TIGHTROPE_MOVEMENT;
 
 extern "C" {}
 extern "C" {
@@ -654,7 +654,7 @@ extern "C" {
 
     i32 TightRope_SetTargetMom(GAMEOBJECT *object) {
         NUVEC *anchor;
-        TIGHTROPE_MOVEMENT_PC *rope;
+        TIGHTROPE_MOVEMENT *rope;
         u16 rotation;
         f32 fraction;
         f32 amplitude;
@@ -662,7 +662,7 @@ extern "C" {
         object->target_velocity.x = (object->launch_origin.x - anchor->x) * 3.0f;
         object->target_velocity.y = (object->launch_origin.y - anchor->y) * 3.0f;
         object->target_velocity.z = (object->launch_origin.z - anchor->z) * 3.0f;
-        rope = (TIGHTROPE_MOVEMENT_PC *)object->grapple;
+        rope = (TIGHTROPE_MOVEMENT *)object->grapple;
         rotation = rope->rotation + 0x4000;
         fraction = object->context_hover_target_y / rope->horizontal_length;
         if (fraction > 1.0f) {

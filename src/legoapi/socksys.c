@@ -833,7 +833,7 @@ void SockSys_GenerateData(SOCKSYS_PC *sock_sys, VARIPTR *buf, VARIPTR buf_end) {
 
     sock = sock_sys->socks;
     for (sock_index = 0; sock_index < 0x40; ++sock_index, ++sock) {
-        SOCKSEGMENT_PC *segment;
+        SOCKSEGMENT *segment;
         i32 segment_index;
         f32 distance_from_start;
 
@@ -853,7 +853,7 @@ void SockSys_GenerateData(SOCKSYS_PC *sock_sys, VARIPTR *buf, VARIPTR buf_end) {
         sock->mid_rotations = buf->void_ptr;
         buf->void_ptr = SockRailAngles(sock, sock->mid, sock->mid_rotations);
 
-        if (buf->addr + sock->cam->length * sizeof(SOCKSEGMENT_PC) >= buf_end.addr) {
+        if (buf->addr + sock->cam->length * sizeof(SOCKSEGMENT) >= buf_end.addr) {
             return;
         }
         sock->segments = buf->void_ptr;
@@ -1129,7 +1129,7 @@ static f32 BestSockPosition(SOCKSYS_PC *sock_sys, NUVEC *point, SOCKPOSITION_PC 
     i32 segment_count = 0;
     SOCK_PC *sock = NULL;
     f32 distance_squared = 0.0f;
-    SOCKSEGMENT_PC *segment_data = NULL;
+    SOCKSEGMENT *segment_data = NULL;
     i32 inside;
     sock = &sock_sys->socks[sock_index];
     result->sock_index = -1;
@@ -1423,7 +1423,7 @@ i32 SockBitSet(SOCK_PC *sock, i32 index) {
 
 f32 MidDistanceFromSockStart(SOCKSYS_PC *system, SOCKPOSITION_PC *position) {
     if (system != NULL && position->sock_index != -1) {
-        SOCKSEGMENT_PC *segment;
+        SOCKSEGMENT *segment;
 
         segment = &system->socks[position->sock_index].segments[position->segment];
         return segment->distance_from_start + segment->length * position->ratio;
@@ -1567,7 +1567,7 @@ void SockRotationMatrix(SOCKSYS_PC *system, SOCKPOSITION_PC *position, NUMTX *ou
     f32 first_height;
     f32 second_height;
     f32 height;
-    SOCKSEGMENT_PC *segments[4];
+    SOCKSEGMENT *segments[4];
     i32 samples[4];
     NUVEC right;
     NUVEC up;

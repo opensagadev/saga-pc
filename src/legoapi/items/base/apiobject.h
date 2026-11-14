@@ -414,8 +414,8 @@ typedef struct APIOBJECT {                          // size 0x29c
     u8 unknown_28c;                                               // 0x28c
     u8 object_id;                                                 // 0x28d
     u8 unknown_28e[0x4];                                          // 0x28e
-    u16 ai_collision_priority_pc;                                 // 0x292
-    u16 ai_resolved_collision_priority_pc;                        // 0x294
+    u16 ai_collision_priority;                                    // 0x292
+    u16 ai_resolved_collision_priority;                           // 0x294
     u8 unknown_296[0x2];                                          // 0x296
     struct APIOBJECT *collision_link;                             // 0x298
 } APIOBJECT;
@@ -710,7 +710,7 @@ typedef struct gameobject_s { // size 0x10d8
 
     union { // size 0x1
         u8 unknown_0284;
-        i8 roof_surface_id_pc;
+        i8 roof_surface_id;
     }; // 0x0284
 
     u8 jump_animation_state; // 0x0285
@@ -739,12 +739,12 @@ typedef struct gameobject_s { // size 0x10d8
     union { // size 0xa
         u8 unknown_028e[0xa];
 
-        struct {                                   // size 0xa
-            u16 surface_effect_count;              // 0x028e
-            u16 surface_effect_id;                 // 0x0290
-            u16 ai_collision_priority_pc;          // 0x0292
-            u16 ai_resolved_collision_priority_pc; // 0x0294
-            u8 ai_priority_reserved_296[0x2];      // 0x0296
+        struct {                                // size 0xa
+            u16 surface_effect_count;           // 0x028e
+            u16 surface_effect_id;              // 0x0290
+            u16 ai_collision_priority;          // 0x0292
+            u16 ai_resolved_collision_priority; // 0x0294
+            u8 ai_priority_reserved_296[0x2];   // 0x0296
         };
     }; // 0x028e
     struct APIOBJECT *collision_link; // 0x0298
@@ -809,7 +809,7 @@ typedef struct gameobject_s { // size 0x10d8
 
     union { // size 0x64
         u8 unknown_06c4[0x64];
-        u8 ai_player_packet_pc[0x64];
+        u8 ai_player_packet[0x64];
     }; // 0x06c4
 
     struct {          // size 0x8
@@ -837,7 +837,7 @@ typedef struct gameobject_s { // size 0x10d8
         struct PART_PC *force_throw_part;
         struct techno_s *techno;
         struct ZIPUP_s *attached_zipup;
-        struct TUBE *attached_tube_pc;
+        struct TUBE *attached_tube;
     }; // 0x0798
 
     i32 panel_use_request; // 0x079c
@@ -879,11 +879,11 @@ typedef struct gameobject_s { // size 0x10d8
     union { // size 0x4
         u32 context_variant_flags;
 
-        struct {                        // size 0x4
-            u8 context_flags_pc;        // 0x07bc
-            i8 context_variant_bits_pc; // 0x07bd
-            u8 jump_flags;              // 0x07be
-            u8 unknown_7bf[0x1];        // 0x07bf
+        struct {                     // size 0x4
+            u8 context_flags_pc;     // 0x07bc
+            i8 context_variant_bits; // 0x07bd
+            u8 jump_flags;           // 0x07be
+            u8 unknown_7bf[0x1];     // 0x07bf
         };
     }; // 0x07bc
 
@@ -916,15 +916,15 @@ typedef struct gameobject_s { // size 0x10d8
         };
     }; // 0x07d0
 
-    i16 *weapon_model_override_pc; // 0x07f4
-    u8 unknown_7f8[0x4];           // 0x07f8
-    void *coin_packet;             // 0x07fc
-    void *gizforce_los_info;       // 0x0800
-    NUMTX locator_matrices[16];    // 0x0804
-    NUMTX vehicle_orientation;     // 0x0c04
-    f32 current_speed_mul;         // 0x0c44
-    f32 current_speed_bias;        // 0x0c48
-    f32 socket_current_speed_pc;   // 0x0c4c
+    i16 *weapon_model_override; // 0x07f4
+    u8 unknown_7f8[0x4];        // 0x07f8
+    void *coin_packet;          // 0x07fc
+    void *gizforce_los_info;    // 0x0800
+    NUMTX locator_matrices[16]; // 0x0804
+    NUMTX vehicle_orientation;  // 0x0c04
+    f32 current_speed_mul;      // 0x0c44
+    f32 current_speed_bias;     // 0x0c48
+    f32 socket_current_speed;   // 0x0c4c
 
     union { // size 0x24
         u8 unknown_c50[0x4];
@@ -1025,7 +1025,7 @@ typedef struct gameobject_s { // size 0x10d8
     f32 hud_icon_timer;                             // 0x0d60
     f32 jump_variant_timer;                         // 0x0d64
     f32 jump_chain_timer;                           // 0x0d68
-    f32 surface_flag8_scale_pc;                     // 0x0d6c
+    f32 surface_flag8_scale;                        // 0x0d6c
     f32 movement_animation_hold_timer;              // 0x0d70
     f32 movement_animation_release_timer;           // 0x0d74
     f32 directional_seek_multiplier;                // 0x0d78
@@ -1142,7 +1142,7 @@ typedef struct gameobject_s { // size 0x10d8
     i8 quick_shoot_bolt_id;             // 0x0e3f
     i8 slam_effect;                     // 0x0e40
     u8 unknown_0e41;                    // 0x0e41
-    u8 raw_surface_id_pc;               // 0x0e42
+    u8 raw_surface_id;                  // 0x0e42
     i8 blade_index;                     // 0x0e43
     i8 blade_states[4];                 // 0x0e44
     u8 unknown_0e48[4];                 // 0x0e48
@@ -1175,12 +1175,12 @@ typedef struct gameobject_s { // size 0x10d8
     u32 ai_opponent_exclusion_mask[2]; // 0x0eb8
     struct gameobject_s *alert_target; // 0x0ec0
     f32 field_ec4;                     // 0x0ec4
-    f32 movement_speed_scale_pc;       // 0x0ec8
+    f32 movement_speed_scale;          // 0x0ec8
     f32 timer_ecc;                     // 0x0ecc
 
     union { // size 0x4
         f32 alert_target_timer;
-        f32 ai_jump_destination_distance_pc;
+        f32 ai_jump_destination_distance;
     }; // 0x0ed0
 
     f32 run_speed_override;        // 0x0ed4
@@ -1339,7 +1339,7 @@ typedef struct gameobject_s { // size 0x10d8
     union { // size 0x6
         u8 unknown_1072[6];
         u8 ai_frame_event;
-        AI_SPECIAL_PROGRESS special_move_progress_view_pc;
+        AI_SPECIAL_PROGRESS special_move_progress_view;
         INDY_GUIDELINE_STATE indy_guideline_state;
     }; // 0x1072
 
@@ -1396,7 +1396,7 @@ typedef struct gameobject_s { // size 0x10d8
             u8 field_1093;      // 0x1093
         };
 
-        f32 special_move_timer_pc;
+        f32 special_move_timer;
     }; // 0x1090
 
     union { // size 0x4
@@ -1407,7 +1407,7 @@ typedef struct gameobject_s { // size 0x10d8
             u8 unknown_1096[2]; // 0x1096
         };
 
-        struct AIPATHNODE *special_move_source_pc;
+        struct AIPATHNODE *special_move_source;
     }; // 0x1094
 
     union { // size 0xc
@@ -1418,7 +1418,7 @@ typedef struct gameobject_s { // size 0x10d8
             u8 unknown_10a0[0x4]; // 0x10a0
         };
 
-        NUVEC special_move_look_position_pc;
+        NUVEC special_move_look_position;
     }; // 0x1098
     struct gameobject_s *opponent;                // 0x10a4
     struct gameobject_s *last_attacker;           // 0x10a8
@@ -1463,8 +1463,8 @@ extern "C" {
 }
 #endif
 
-STATIC_ASSERT(offsetof(GAMEOBJECT, special_move_progress_view_pc) + offsetof(AI_SPECIAL_PROGRESS, flags) == 0x1073);
-STATIC_ASSERT(offsetof(GAMEOBJECT, special_move_progress_view_pc) + offsetof(AI_SPECIAL_PROGRESS, progress) == 0x1074);
+STATIC_ASSERT(offsetof(GAMEOBJECT, special_move_progress_view) + offsetof(AI_SPECIAL_PROGRESS, flags) == 0x1073);
+STATIC_ASSERT(offsetof(GAMEOBJECT, special_move_progress_view) + offsetof(AI_SPECIAL_PROGRESS, progress) == 0x1074);
 #ifdef __cplusplus
 extern "C" {
 #endif

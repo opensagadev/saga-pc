@@ -11,37 +11,37 @@ extern "C" {
     typedef struct world_script_progress_s { // size 0x20
         char name[16];                       // 0x00
         f32 params[4];                       // 0x10
-    } WORLD_SCRIPT_PROGRESS_PC;
+    } WORLD_SCRIPT_PROGRESS;
 
     typedef struct level_progress_transfer_s { // size 0x2e28
         SCENEPROGRESS scene_progress;          // 0x0000
         u32 flags;                             // 0x2800
         u8 unknown_2804[0x20];                 // 0x2804
-        WORLD_SCRIPT_PROGRESS_PC scripts[32];  // 0x2824
+        WORLD_SCRIPT_PROGRESS scripts[32];     // 0x2824
         GIZFLOWPROGRESS giz_flow_progress;     // 0x2c24
         char disabled_effect_names[12][16];    // 0x2d68
-    } LEVEL_PROGRESS_TRANSFER_PC;
+    } LEVEL_PROGRESS_TRANSFER;
 
     typedef struct world_persistence_flags_s { // size 0x5174
         u8 unknown_0000[0x5170];               // 0x0000
         u32 progress_flags;                    // 0x5170
-    } WORLD_PERSISTENCE_FLAGS_PC;
+    } WORLD_PERSISTENCE_FLAGS;
 
     typedef struct world_initial_progress_s { // size 0x2804
         SCENEPROGRESS scene;                  // 0x0000
         u32 initialized_flags;                // 0x2800
-    } WORLD_INITIAL_PROGRESS_PC;
+    } WORLD_INITIAL_PROGRESS;
 
     typedef struct world_initial_final_s { // size 0x5174
         u8 unknown_0000[0x5170];           // 0x0000
         i32 initialized;                   // 0x5170
-    } WORLD_INITIAL_FINAL_PC;
+    } WORLD_INITIAL_FINAL;
 
     typedef struct world_initial_reset_s { // size 0x11c
         u8 unknown_0000[0x114];            // 0x000
         u32 initialized;                   // 0x114
         u32 reset_flags;                   // 0x118
-    } WORLD_INITIAL_RESET_PC;
+    } WORLD_INITIAL_RESET;
 
     void ResetSounds(void);
     i32 AmbientFromQuiet(i32);
@@ -49,14 +49,14 @@ extern "C" {
     typedef struct world_resource_icons_reader_s { // size 0x2968
         u8 unknown_0000[0x2964];                   // 0x0000
         NUGSCN *icons_scene;                       // 0x2964
-    } WORLD_RESOURCE_ICONS_READER_PC;
+    } WORLD_RESOURCE_ICONS_READER;
 
     void PC_SPECIAL_SHADOW_LIGHT::SetEnabledPc(i32 enabled) {
         if (enabled != 0 && this->enabled == 0) {
             i32 index;
             for (index = 0; index < render_set_count; ++index) {
-                render_sets[index].shadow_lists_pc[0].material_last = render_sets[index].shadow_lists_pc[0].first;
-                render_sets[index].shadow_lists_pc[1].material_last = render_sets[index].shadow_lists_pc[1].first;
+                render_sets[index].shadow_lists[0].material_last = render_sets[index].shadow_lists[0].first;
+                render_sets[index].shadow_lists[1].material_last = render_sets[index].shadow_lists[1].first;
             }
         }
         this->enabled = enabled;
@@ -174,7 +174,7 @@ extern "C" {
 
     void WorldInfo_Dump(WORLDINFO *world) {
         i32 index;
-        WORLD_RESOURCE_ICONS_READER_PC *resource = (WORLD_RESOURCE_ICONS_READER_PC *)world;
+        WORLD_RESOURCE_ICONS_READER *resource = (WORLD_RESOURCE_ICONS_READER *)world;
         Customiser_DumpAll(Game_Customiser, world);
         if (world->cutscene_sys != NULL) {
             for (index = 0; index < world->cutscene_sys->count; ++index) {
@@ -532,7 +532,7 @@ extern "C" {
         void (*init_fn)(WORLDINFO *);
         i32 menu_id = -1;
         i32 menu_y = -1;
-        ((WORLD_INITIAL_RESET_PC *)world)->reset_flags = 0;
+        ((WORLD_INITIAL_RESET *)world)->reset_flags = 0;
         disable_narrow_socks = 0;
         script_spline_selected = NULL;
         switch (world->current_level->shadow_type) {
@@ -591,9 +591,9 @@ extern "C" {
         if (NOSOUND == 0) {
             NuSound3Update();
         }
-        if (world->level_progress != NULL && (((WORLD_INITIAL_PROGRESS_PC *)world->level_progress)->initialized_flags & 1) == 0) {
-            memcpy(&((WORLD_INITIAL_PROGRESS_PC *)world->level_progress)->scene, &world->scene_progress, sizeof(SCENEPROGRESS));
-            ((WORLD_INITIAL_PROGRESS_PC *)world->level_progress)->initialized_flags |= 1;
+        if (world->level_progress != NULL && (((WORLD_INITIAL_PROGRESS *)world->level_progress)->initialized_flags & 1) == 0) {
+            memcpy(&((WORLD_INITIAL_PROGRESS *)world->level_progress)->scene, &world->scene_progress, sizeof(SCENEPROGRESS));
+            ((WORLD_INITIAL_PROGRESS *)world->level_progress)->initialized_flags |= 1;
         }
         Doors_Init(world);
         Players_InitPositions(world);
@@ -646,10 +646,10 @@ extern "C" {
         if ((world->current_level->flags & 0xe0) == 0) {
             WorldInfo_LoadObjectAnimFile(world);
         }
-        ((WORLD_INITIAL_RESET_PC *)world)->initialized = 1;
+        ((WORLD_INITIAL_RESET *)world)->initialized = 1;
         reset_restart = 1;
         InitGameObjectLights();
-        ((WORLD_INITIAL_FINAL_PC *)world)->initialized = 1;
+        ((WORLD_INITIAL_FINAL *)world)->initialized = 1;
         TerSurface[14].movement_scale = 1.0f;
         TerSurface[14].flags = 0x2000;
         TerSurface[15].movement_scale = 1.0f;

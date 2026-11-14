@@ -18,31 +18,31 @@ typedef struct ARCADE_MENU_ENTRY_PC_s { // size 0x8
     i8 index;                           // 0x4
     u8 count;                           // 0x5
     u16 unknown_06;                     // 0x6
-} ARCADE_MENU_ENTRY_PC;
+} ARCADE_MENU_ENTRY;
 
 /* REPLACE existing ARCADE_ITEM_PC24-byte declaration, preserve every old field. */
 typedef struct ARCADE_ITEM_PC_s { // size 0x28
 
     union { // size 0x28
 
-        struct {                                     // size 0x28
-            i16 *level_text;                         // 0x00
-            i8 level;                                // 0x04
-            u8 level_count;                          // 0x05
-            u16 unknown_06;                          // 0x06
-            i16 *mode_text;                          // 0x08
-            i8 mode;                                 // 0x0c
-            u8 mode_count;                           // 0x0d
-            u16 unknown_0e;                          // 0x0e
-            i16 *play_text;                          // 0x10
-            i8 play;                                 // 0x14
-            u8 play_count;                           // 0x15
-            u16 unknown_16;                          // 0x16
-            ARCADE_MENU_ENTRY_PC reset_points_entry; // 0x18
-            ARCADE_MENU_ENTRY_PC launch_entry;       // 0x20
+        struct {                                  // size 0x28
+            i16 *level_text;                      // 0x00
+            i8 level;                             // 0x04
+            u8 level_count;                       // 0x05
+            u16 unknown_06;                       // 0x06
+            i16 *mode_text;                       // 0x08
+            i8 mode;                              // 0x0c
+            u8 mode_count;                        // 0x0d
+            u16 unknown_0e;                       // 0x0e
+            i16 *play_text;                       // 0x10
+            i8 play;                              // 0x14
+            u8 play_count;                        // 0x15
+            u16 unknown_16;                       // 0x16
+            ARCADE_MENU_ENTRY reset_points_entry; // 0x18
+            ARCADE_MENU_ENTRY launch_entry;       // 0x20
         };
 
-        ARCADE_MENU_ENTRY_PC entries[5];
+        ARCADE_MENU_ENTRY entries[5];
     }; // 0x00
 } ARCADE_ITEM_PC;
 

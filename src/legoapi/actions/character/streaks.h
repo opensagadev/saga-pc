@@ -49,7 +49,7 @@ extern "C" {
     extern STREAK_HEADER *streakhdrs_free;
     extern NUMTL *streakmtl;
     extern NUMTL *streakmtl_ref;
-    extern const char StreakTextureNamePc[17];
+    extern const char StreakTextureName[17];
     void InitStreaks(VARIPTR *, VARIPTR, char *);
     void AddStreakPoints(NUVEC *, f32, u32, void **, i32, GAMEOBJECT *);
     void UpdateStreaks(f32);

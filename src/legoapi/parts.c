@@ -828,30 +828,30 @@ typedef struct debris_material_flags_s { // size 0x4
     u32 unknown_19 : 1;                  // 0x0:19
     u32 alpha_test : 3;                  // 0x0:20
     u32 unknown_23_31 : 9;               // 0x0:23
-} DEBRIS_MATERIAL_FLAGS_PC;
+} DEBRIS_MATERIAL_FLAGS;
 
 typedef struct debris_material_secondary_s { // size 0x4
     u32 alpha_fail : 2;                      // 0x0:0
     u32 disable_depth_write : 1;             // 0x0:2
     u32 unknown_03_31 : 29;                  // 0x0:3
-} DEBRIS_MATERIAL_SECONDARY_PC;
+} DEBRIS_MATERIAL_SECONDARY;
 
-typedef struct debris_material_s {          // size 0x1f4
-    u8 unknown_000[0x40];                   // 0x000
-    DEBRIS_MATERIAL_FLAGS_PC attribs;       // 0x040
-    DEBRIS_MATERIAL_SECONDARY_PC secondary; // 0x044
-    u8 unknown_048[0xc];                    // 0x048
-    NUVEC diffuse;                          // 0x054
-    f32 glass_parameter;                    // 0x060
-    u8 unknown_064[0xc];                    // 0x064
-    f32 opacity;                            // 0x070
-    i16 texture_id;                         // 0x074
-    i16 sort_priority;                      // 0x076
-    u8 unknown_078[0x21];                   // 0x078
-    i8 particle_type_tag;                   // 0x099
-    u8 unknown_09a[0x156];                  // 0x09a
-    u32 vertex_flags;                       // 0x1f0
-} DEBRIS_MATERIAL_PC;
+typedef struct debris_material_s {       // size 0x1f4
+    u8 unknown_000[0x40];                // 0x000
+    DEBRIS_MATERIAL_FLAGS attribs;       // 0x040
+    DEBRIS_MATERIAL_SECONDARY secondary; // 0x044
+    u8 unknown_048[0xc];                 // 0x048
+    NUVEC diffuse;                       // 0x054
+    f32 glass_parameter;                 // 0x060
+    u8 unknown_064[0xc];                 // 0x064
+    f32 opacity;                         // 0x070
+    i16 texture_id;                      // 0x074
+    i16 sort_priority;                   // 0x076
+    u8 unknown_078[0x21];                // 0x078
+    i8 particle_type_tag;                // 0x099
+    u8 unknown_09a[0x156];               // 0x09a
+    u32 vertex_flags;                    // 0x1f0
+} DEBRIS_MATERIAL;
 
 typedef struct debris_animation_effect_s { // size 0xb0
     u8 unknown_000[0xa8];                  // 0x00
@@ -863,7 +863,7 @@ typedef struct debris_animation_effect_s { // size 0xb0
         f32 rate;
         u32 packed_rate;
     } animation_rate; // 0xac
-} DEBRIS_ANIMATION_EFFECT_PC;
+} DEBRIS_ANIMATION_EFFECT;
 
 typedef struct part_runtime_type_s { // size 0x178
     char name[16];                   // 0x000
@@ -908,7 +908,7 @@ typedef struct part_runtime_type_s { // size 0x178
     f32 last_used_time;              // 0x16c
     f32 scale;                       // 0x170
     u32 field_174;                   // 0x174
-} PART_RUNTIME_TYPE_PC;
+} PART_RUNTIME_TYPE;
 
 void edpartChangeMaxLifeMenu(eduimenu_s *menu, eduiitem_s *unused1, u32 unused2);
 void edpartInstanceOrientMenu(eduimenu_s *menu, eduiitem_s *unused1, u32 unused2);
@@ -2443,12 +2443,12 @@ i32 AddScaledVariableShotDebrisEffect5(i32 effect, NUVEC *position, NUVEC *momen
 }
 
 NUMTL *CreateCopyMat(NUMTL *source, i32 enable_uv_mode, i32 alpha_mode, i32 depth_mode, i32 filter_mode) {
-    DEBRIS_MATERIAL_PC *material;
-    DEBRIS_MATERIAL_PC *original = (DEBRIS_MATERIAL_PC *)source;
+    DEBRIS_MATERIAL *material;
+    DEBRIS_MATERIAL *original = (DEBRIS_MATERIAL *)source;
     if (source == NULL) {
         return NULL;
     }
-    material = (DEBRIS_MATERIAL_PC *)NuMtlCreate3D(1);
+    material = (DEBRIS_MATERIAL *)NuMtlCreate3D(1);
     material->diffuse.x = 1.0f;
     material->diffuse.y = 1.0f;
     material->diffuse.z = 1.0f;
@@ -2527,9 +2527,9 @@ void DebrisSetup2(VARIPTR *buffer, VARIPTR buffer_end, VARIPTR *trash_buffer, VA
     numspherecolldata = maxdebkeys;
     numtoruscolldata = maxdebkeys;
     DebMat[0] = CreateAlphaBlendTexture(buffer, buffer_end, texture_name, 1, 2, 256, 0);
-    texture_id = ((DEBRIS_MATERIAL_PC *)DebMat[0])->texture_id;
-    ((DEBRIS_MATERIAL_PC *)DebMat[0])->attribs.z_mode = 1;
-    ((DEBRIS_MATERIAL_PC *)DebMat[0])->attribs.alpha_test = 1;
+    texture_id = ((DEBRIS_MATERIAL *)DebMat[0])->texture_id;
+    ((DEBRIS_MATERIAL *)DebMat[0])->attribs.z_mode = 1;
+    ((DEBRIS_MATERIAL *)DebMat[0])->attribs.alpha_test = 1;
     NuMtlUpdate(DebMat[0]);
     DebMat[1] = CreateCopyMat(DebMat[0], 0, 0, 3, 0);
     DebMat[2] = CreateCopyMat(DebMat[0], 1, 1, 1, 1);
@@ -2537,13 +2537,13 @@ void DebrisSetup2(VARIPTR *buffer, VARIPTR buffer_end, VARIPTR *trash_buffer, VA
     DebMat[4] = CreateCopyMat(DebMat[0], 0, 1, 1, 1);
     DebMat[5] = CreateCopyMat(DebMat[0], 0, 2, 1, 1);
     DebMat[6] = CreateCopyMat(DebMat[0], 0, 0, 0, 1);
-    ((DEBRIS_MATERIAL_PC *)DebMat[0])->vertex_flags |= 0x100000;
-    ((DEBRIS_MATERIAL_PC *)DebMat[1])->vertex_flags |= 0x100000;
-    ((DEBRIS_MATERIAL_PC *)DebMat[2])->vertex_flags |= 0x100000;
-    ((DEBRIS_MATERIAL_PC *)DebMat[3])->vertex_flags |= 0x100000;
-    ((DEBRIS_MATERIAL_PC *)DebMat[4])->vertex_flags |= 0x100000;
-    ((DEBRIS_MATERIAL_PC *)DebMat[5])->vertex_flags |= 0x100000;
-    ((DEBRIS_MATERIAL_PC *)DebMat[6])->vertex_flags |= 0x100000;
+    ((DEBRIS_MATERIAL *)DebMat[0])->vertex_flags |= 0x100000;
+    ((DEBRIS_MATERIAL *)DebMat[1])->vertex_flags |= 0x100000;
+    ((DEBRIS_MATERIAL *)DebMat[2])->vertex_flags |= 0x100000;
+    ((DEBRIS_MATERIAL *)DebMat[3])->vertex_flags |= 0x100000;
+    ((DEBRIS_MATERIAL *)DebMat[4])->vertex_flags |= 0x100000;
+    ((DEBRIS_MATERIAL *)DebMat[5])->vertex_flags |= 0x100000;
+    ((DEBRIS_MATERIAL *)DebMat[6])->vertex_flags |= 0x100000;
     DebMat[6]->texture_id = texture_id;
     DebMat[5]->texture_id = texture_id;
     DebMat[4]->texture_id = texture_id;
@@ -2552,37 +2552,35 @@ void DebrisSetup2(VARIPTR *buffer, VARIPTR buffer_end, VARIPTR *trash_buffer, VA
     DebMat[1]->texture_id = texture_id;
     DebMat[0]->texture_id = texture_id;
     DebMat[7] = NuMtlCreateEx3D(1, 2);
-    ((DEBRIS_MATERIAL_PC *)DebMat[7])->diffuse.x = 1.0f;
-    ((DEBRIS_MATERIAL_PC *)DebMat[7])->diffuse.y = 1.0f;
-    ((DEBRIS_MATERIAL_PC *)DebMat[7])->diffuse.z = 1.0f;
-    ((DEBRIS_MATERIAL_PC *)DebMat[7])->attribs.cull_mode = 2;
-    ((DEBRIS_MATERIAL_PC *)DebMat[7])->attribs.z_mode = 1;
-    ((DEBRIS_MATERIAL_PC *)DebMat[7])->attribs.filter_mode = 0;
-    ((DEBRIS_MATERIAL_PC *)DebMat[7])->attribs.unknown_2_1_2 = 2;
-    ((DEBRIS_MATERIAL_PC *)DebMat[7])->attribs.unknown_2_4 = 1;
-    ((DEBRIS_MATERIAL_PC *)DebMat[7])->attribs.unknown_1_1_2 = 1;
-    ((DEBRIS_MATERIAL_PC *)DebMat[7])->attribs.unknown_1_4_8 = 1;
-    ((DEBRIS_MATERIAL_PC *)DebMat[7])->opacity = 0.999f;
-    ((DEBRIS_MATERIAL_PC *)DebMat[7])->attribs.alpha_mode = 1;
-    ((DEBRIS_MATERIAL_PC *)DebMat[7])->secondary.alpha_fail = 1;
-    ((DEBRIS_MATERIAL_PC *)DebMat[7])->texture_id = 1;
-    ((DEBRIS_MATERIAL_PC *)DebMat[7])->sort_priority = 128;
-    ((DEBRIS_MATERIAL_PC *)DebMat[7])->vertex_flags |= 0x100000;
-    ((DEBRIS_MATERIAL_PC *)DebMat[7])->glass_parameter = 0.25f;
-    ((DEBRIS_MATERIAL_PC *)DebMat[7])->particle_type_tag = -105;
+    ((DEBRIS_MATERIAL *)DebMat[7])->diffuse.x = 1.0f;
+    ((DEBRIS_MATERIAL *)DebMat[7])->diffuse.y = 1.0f;
+    ((DEBRIS_MATERIAL *)DebMat[7])->diffuse.z = 1.0f;
+    ((DEBRIS_MATERIAL *)DebMat[7])->attribs.cull_mode = 2;
+    ((DEBRIS_MATERIAL *)DebMat[7])->attribs.z_mode = 1;
+    ((DEBRIS_MATERIAL *)DebMat[7])->attribs.filter_mode = 0;
+    ((DEBRIS_MATERIAL *)DebMat[7])->attribs.unknown_2_1_2 = 2;
+    ((DEBRIS_MATERIAL *)DebMat[7])->attribs.unknown_2_4 = 1;
+    ((DEBRIS_MATERIAL *)DebMat[7])->attribs.unknown_1_1_2 = 1;
+    ((DEBRIS_MATERIAL *)DebMat[7])->attribs.unknown_1_4_8 = 1;
+    ((DEBRIS_MATERIAL *)DebMat[7])->opacity = 0.999f;
+    ((DEBRIS_MATERIAL *)DebMat[7])->attribs.alpha_mode = 1;
+    ((DEBRIS_MATERIAL *)DebMat[7])->secondary.alpha_fail = 1;
+    ((DEBRIS_MATERIAL *)DebMat[7])->texture_id = 1;
+    ((DEBRIS_MATERIAL *)DebMat[7])->sort_priority = 128;
+    ((DEBRIS_MATERIAL *)DebMat[7])->vertex_flags |= 0x100000;
+    ((DEBRIS_MATERIAL *)DebMat[7])->glass_parameter = 0.25f;
+    ((DEBRIS_MATERIAL *)DebMat[7])->particle_type_tag = -105;
     NuMtlUpdate(DebMat[7]);
     DebMat[8] = CreateCopyMat(DebMat[0], 0, 6, 0, 1);
     for (i = 0; debtab[i] != NULL; ++i) {
-        if (((DEBRIS_ANIMATION_EFFECT_PC *)debtab[i])->frame_divisor == 0) {
-            ((DEBRIS_ANIMATION_EFFECT_PC *)debtab[i])->frame_divisor = 1;
+        if (((DEBRIS_ANIMATION_EFFECT *)debtab[i])->frame_divisor == 0) {
+            ((DEBRIS_ANIMATION_EFFECT *)debtab[i])->frame_divisor = 1;
         }
-        ((DEBRIS_ANIMATION_EFFECT_PC *)debtab[i])->animation_rate.rate =
-            (f32)((((DEBRIS_ANIMATION_EFFECT_PC *)debtab[i])->texture_frames * 60) /
-                  ((DEBRIS_ANIMATION_EFFECT_PC *)debtab[i])->frame_divisor);
-        ((DEBRIS_ANIMATION_EFFECT_PC *)debtab[i])->animation_rate.packed_rate =
-            (((DEBRIS_ANIMATION_EFFECT_PC *)debtab[i])->animation_rate.packed_rate & 0xfffff800) +
-            (((u16)((DEBRIS_ANIMATION_EFFECT_PC *)debtab[i])->texture_frames *
-              (((DEBRIS_ANIMATION_EFFECT_PC *)debtab[i])->texture_rows - 1)) &
+        ((DEBRIS_ANIMATION_EFFECT *)debtab[i])->animation_rate.rate =
+            (f32)((((DEBRIS_ANIMATION_EFFECT *)debtab[i])->texture_frames * 60) / ((DEBRIS_ANIMATION_EFFECT *)debtab[i])->frame_divisor);
+        ((DEBRIS_ANIMATION_EFFECT *)debtab[i])->animation_rate.packed_rate =
+            (((DEBRIS_ANIMATION_EFFECT *)debtab[i])->animation_rate.packed_rate & 0xfffff800) +
+            (((u16)((DEBRIS_ANIMATION_EFFECT *)debtab[i])->texture_frames * (((DEBRIS_ANIMATION_EFFECT *)debtab[i])->texture_rows - 1)) &
              0x3ff);
         debtab[i]->alpha_keys[0].value /= debtab[i]->particle_lifetime;
         debtab[i]->texture_u0 += 524288.0;
@@ -2634,7 +2632,7 @@ void DebrisSetup2(VARIPTR *buffer, VARIPTR buffer_end, VARIPTR *trash_buffer, VA
 
 void PartTimeSlip(void) {
     i32 i;
-    PART_RUNTIME_TYPE_PC *types = (PART_RUNTIME_TYPE_PC *)part_types;
+    PART_RUNTIME_TYPE *types = (PART_RUNTIME_TYPE *)part_types;
     for (i = 0; i < 40; ++i) {
         if (part_emits[i].effect_id != -1) {
             part_emits[i].time_20 -= 800.0f;
@@ -2688,13 +2686,13 @@ i32 CreateScaledPARTEffect(i32 effect_index, f32 requested_scale) {
     if (effect_index > 128) {
         return -1;
     }
-    if (((PART_RUNTIME_TYPE_PC *)part_types)[effect_index].effect_ids[0] == -1) {
+    if (((PART_RUNTIME_TYPE *)part_types)[effect_index].effect_ids[0] == -1) {
         return -1;
     }
-    if (((PART_RUNTIME_TYPE_PC *)part_types)[effect_index].scale != 1.0f) {
+    if (((PART_RUNTIME_TYPE *)part_types)[effect_index].scale != 1.0f) {
         // The final word identifies the original, unscaled type.
-        effect_index = ((PART_RUNTIME_TYPE_PC *)part_types)[effect_index].field_174;
-        if (((PART_RUNTIME_TYPE_PC *)part_types)[effect_index].effect_ids[0] == -1) {
+        effect_index = ((PART_RUNTIME_TYPE *)part_types)[effect_index].field_174;
+        if (((PART_RUNTIME_TYPE *)part_types)[effect_index].effect_ids[0] == -1) {
             return -1;
         }
     }
@@ -2706,7 +2704,7 @@ i32 CreateScaledPARTEffect(i32 effect_index, f32 requested_scale) {
     }
 
     if (result == 0) {
-        ratio = requested_scale / ((PART_RUNTIME_TYPE_PC *)part_types)[effect_index].scale;
+        ratio = requested_scale / ((PART_RUNTIME_TYPE *)part_types)[effect_index].scale;
         if (ratio <= 1.0f) {
             ratio = 1.0f - ratio;
         } else {
@@ -2715,9 +2713,9 @@ i32 CreateScaledPARTEffect(i32 effect_index, f32 requested_scale) {
         closest_index = effect_index;
         closest_distance = ratio;
         for (i = 0; i < 128; ++i) {
-            if (((PART_RUNTIME_TYPE_PC *)part_types)[i].effect_ids[0] != -1 &&
-                ((PART_RUNTIME_TYPE_PC *)part_types)[i].field_174 == (u32)effect_index) {
-                ratio = requested_scale / ((PART_RUNTIME_TYPE_PC *)part_types)[i].scale;
+            if (((PART_RUNTIME_TYPE *)part_types)[i].effect_ids[0] != -1 &&
+                ((PART_RUNTIME_TYPE *)part_types)[i].field_174 == (u32)effect_index) {
+                ratio = requested_scale / ((PART_RUNTIME_TYPE *)part_types)[i].scale;
                 ratio = ratio <= 1.0f ? 1.0f - ratio : ratio - 1.0f;
                 if (ratio < closest_distance) {
                     closest_index = i;
@@ -2729,13 +2727,13 @@ i32 CreateScaledPARTEffect(i32 effect_index, f32 requested_scale) {
             return closest_index;
         }
         for (i = 0; i < 128; ++i) {
-            PART_RUNTIME_TYPE_PC *scaled;
-            PART_RUNTIME_TYPE_PC *source;
-            if (((PART_RUNTIME_TYPE_PC *)part_types)[i].effect_ids[0] != -1) {
+            PART_RUNTIME_TYPE *scaled;
+            PART_RUNTIME_TYPE *source;
+            if (((PART_RUNTIME_TYPE *)part_types)[i].effect_ids[0] != -1) {
                 continue;
             }
-            scaled = &((PART_RUNTIME_TYPE_PC *)part_types)[i];
-            source = &((PART_RUNTIME_TYPE_PC *)part_types)[effect_index];
+            scaled = &((PART_RUNTIME_TYPE *)part_types)[i];
+            source = &((PART_RUNTIME_TYPE *)part_types)[effect_index];
             *scaled = *source;
             edpartScaleType(i, requested_scale);
             scaled->last_used_time = partglobaltime;
@@ -2803,7 +2801,7 @@ i32 fun_006489a0(char *name) {
 }
 
 void edpartLoadSingleType(PARTTYPE_LOOKUP_PC *record, i32 version, i32 page) {
-    PART_RUNTIME_TYPE_PC *type = (PART_RUNTIME_TYPE_PC *)record;
+    PART_RUNTIME_TYPE *type = (PART_RUNTIME_TYPE *)record;
     char name[16];
     i32 i;
     i32 scene;
@@ -3359,7 +3357,7 @@ i32 edpartLoadPageEx(char *path, i8 mode, NUGSCN **scenes, i32 scene_count) {
     i32 emitter_count;
     i32 emitter_slot;
     i32 sound;
-    PART_RUNTIME_TYPE_PC discarded_type;
+    PART_RUNTIME_TYPE discarded_type;
     if (mode == 0) {
         page = 0;
     } else {
@@ -3410,8 +3408,8 @@ i32 edpartLoadPageEx(char *path, i8 mode, NUGSCN **scenes, i32 scene_count) {
                 }
                 edpartLoadSingleType(&part_types[type_slot], version, page);
                 if (part_types[type_slot].name[0] != 0) {
-                    ((PART_RUNTIME_TYPE_PC *)part_types)[type_slot].page = page;
-                    ((PART_RUNTIME_TYPE_PC *)part_types)[type_slot].field_b3 = mode;
+                    ((PART_RUNTIME_TYPE *)part_types)[type_slot].page = page;
+                    ((PART_RUNTIME_TYPE *)part_types)[type_slot].field_b3 = mode;
                     ++part_types_used;
                 }
             }
@@ -3445,8 +3443,8 @@ i32 edpartLoadPageEx(char *path, i8 mode, NUGSCN **scenes, i32 scene_count) {
                 part_emits[emitter_slot].page = page;
                 part_emits[emitter_slot].field_3c = 0;
                 for (sound = 0; sound < 4; ++sound) {
-                    if (((PART_RUNTIME_TYPE_PC *)part_types)[part_emits[emitter_slot].effect_id].sounds[sound] != -1 &&
-                        ((PART_RUNTIME_TYPE_PC *)part_types)[part_emits[emitter_slot].effect_id].sound_modes[sound] != 0) {
+                    if (((PART_RUNTIME_TYPE *)part_types)[part_emits[emitter_slot].effect_id].sounds[sound] != -1 &&
+                        ((PART_RUNTIME_TYPE *)part_types)[part_emits[emitter_slot].effect_id].sound_modes[sound] != 0) {
                         part_emits[emitter_slot].field_3c = 1;
                         break;
                     }
@@ -3507,7 +3505,7 @@ void UpdatePartEmits(f32 time) {
     i32 remaining;
     i32 variant;
     PART_EMIT_PC *emitter;
-    PART_RUNTIME_TYPE_PC *type;
+    PART_RUNTIME_TYPE *type;
     ADDPART params;
     NUVEC position;
     NUVEC velocity;
@@ -3528,7 +3526,7 @@ void UpdatePartEmits(f32 time) {
         if (part_page_on[emitter->page] == 0 || emitter->effect_id == -1) {
             continue;
         }
-        type = &((PART_RUNTIME_TYPE_PC *)part_types)[emitter->effect_id];
+        type = &((PART_RUNTIME_TYPE *)part_types)[emitter->effect_id];
         if (type->effect_ids[0] == -1) {
             continue;
         }

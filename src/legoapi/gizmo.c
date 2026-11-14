@@ -1,20 +1,20 @@
 #include "saga.h"
 #include <stdio.h>
 
-STATIC_ASSERT(offsetof(GIZMOTYPE_PC, fns) + offsetof(GIZMOFNS_PC, get_gizmo_name_fn) == 0x44);
-STATIC_ASSERT(offsetof(GIZMOTYPE_PC, fns) + offsetof(GIZMOFNS_PC, get_num_outputs_fn) == 0x50);
+STATIC_ASSERT(offsetof(GIZMOTYPE, fns) + offsetof(GIZMOFNS, get_gizmo_name_fn) == 0x44);
+STATIC_ASSERT(offsetof(GIZMOTYPE, fns) + offsetof(GIZMOFNS, get_num_outputs_fn) == 0x50);
 
 typedef struct area_gizmotype_s {
     u8 unknown_0000[0x44];
     char *(*get_gizmo_name)(void *gizmo);
     u8 unknown_0048[0x54];
-} AREA_GIZMOTYPE_PC;
+} AREA_GIZMOTYPE;
 
 typedef struct area_gizmotypes_s {
     i32 count;
     i32 unknown_0004;
-    AREA_GIZMOTYPE_PC *types;
-} AREA_GIZMOTYPES_PC;
+    AREA_GIZMOTYPE *types;
+} AREA_GIZMOTYPES;
 
 typedef struct area_gizmoset_s {
     void *type;
@@ -22,18 +22,18 @@ typedef struct area_gizmoset_s {
     i32 max_count;
     void *gizmos;
     void *unknown_0010;
-} AREA_GIZMOSET_PC;
+} AREA_GIZMOSET;
 
 typedef struct area_gizmo_s {
     void *object;
     i16 unknown_0004;
     u8 type_id;
     u8 unknown_0007;
-} AREA_GIZMO_PC;
+} AREA_GIZMO;
 
 typedef struct area_gizmosys_prefix_s {
-    AREA_GIZMOSET_PC *sets;
-} AREA_GIZMOSYS_PREFIX_PC;
+    AREA_GIZMOSET *sets;
+} AREA_GIZMOSYS_PREFIX;
 
 /* One empty diagnostic entry is called with varying arguments (none, or the clashing prefix names); it is
  * defined varargs at the end of this unit, so VC8 keeps the calls but knows they preserve every register. */
@@ -56,8 +56,8 @@ void GizmoNameDiagnostic(char *name);
         }                                                                                                                                  \
         (result) = (type)allocation_;                                                                                                      \
     } while (0)
-STATIC_ASSERT(offsetof(GIZMOTYPE_PC, fns) + offsetof(GIZMOFNS_PC, clear_progress_fn) == 0x7c);
-STATIC_ASSERT(offsetof(GIZMOTYPE_PC, fns) + offsetof(GIZMOFNS_PC, store_progress_fn) == 0x80);
+STATIC_ASSERT(offsetof(GIZMOTYPE, fns) + offsetof(GIZMOFNS, clear_progress_fn) == 0x7c);
+STATIC_ASSERT(offsetof(GIZMOTYPE, fns) + offsetof(GIZMOFNS, store_progress_fn) == 0x80);
 
 typedef struct bolt_gizmo_type_s {                             // size 0x9c
     u8 unknown_00[0x6c];                                       // 0x00
@@ -66,9 +66,9 @@ typedef struct bolt_gizmo_type_s {                             // size 0x9c
     i32 (*hit_bolt)(WORLDINFO *, void *, GAMEOBJECT *, NUVEC *, i32, f32, NUVEC *, NUVEC *, BOLT_PC *, i32,
                     u8 *); // 0x74
     u8 unknown_78[0x24];   // 0x78
-} BOLT_GIZMO_TYPE_PC;
+} BOLT_GIZMO_TYPE;
 
-typedef NUVEC *(*GIZMO_GET_POS_FN_PC)(GIZMO_PC *gizmo);
+typedef NUVEC *(*GIZMO_GET_POS_FN)(GIZMO_PC *gizmo);
 void EdFileWrite(void *data, i32 len);
 void EdFileWriteInt(i32 value);
 void EdFileWriteChar(char value);
@@ -86,7 +86,7 @@ typedef struct level_sfx_gizmotype_s {
     u8 unknown_00[0x94];
     void (*add_level_sfx)(WORLDINFO *, void *, i32 *, i32 *, i32);
     u8 unknown_98[4];
-} LEVEL_SFX_GIZMOTYPE_PC;
+} LEVEL_SFX_GIZMOTYPE;
 
 static i32 DefaultGizmo_GetNumOutputs(GIZMO_PC *gizmo);
 static i32 DefaultGizmo_GetOutput(GIZMO_PC *gizmo, i32 output, i32 mode);
@@ -136,7 +136,7 @@ void *GizmoBufferAlloc(VARIPTR *buffer, VARIPTR *end, i32 size) {
 }
 
 void RegisterGizmoTypes(VARIPTR *buffer, VARIPTR *end, REGISTER_GIZMO_CONFIG_TYPE_FN *register_functions, i32 max_levels) {
-    GIZMOTYPE_PC *type;
+    GIZMOTYPE *type;
     ADDGIZMOTYPE_PC *definition;
     i32 count = 0;
     i32 index;
@@ -156,22 +156,22 @@ void RegisterGizmoTypes(VARIPTR *buffer, VARIPTR *end, REGISTER_GIZMO_CONFIG_TYP
     if (count == 0) {
         return;
     }
-    gizmotypes = GizmoBufferAlloc(buffer, end, sizeof(GIZMOTYPES_PC));
+    gizmotypes = GizmoBufferAlloc(buffer, end, sizeof(GIZMOTYPES));
     if (gizmotypes == NULL) {
         return;
     }
-    ((GIZMOTYPES_PC *)gizmotypes)->max_levels = max_levels;
-    ((GIZMOTYPES_PC *)gizmotypes)->types = GizmoBufferAlloc(buffer, end, count * sizeof(GIZMOTYPE_PC));
-    if (((GIZMOTYPES_PC *)gizmotypes)->types == NULL) {
+    ((GIZMOTYPES *)gizmotypes)->max_levels = max_levels;
+    ((GIZMOTYPES *)gizmotypes)->types = GizmoBufferAlloc(buffer, end, count * sizeof(GIZMOTYPE));
+    if (((GIZMOTYPES *)gizmotypes)->types == NULL) {
         return;
     }
-    ((GIZMOTYPES_PC *)gizmotypes)->count = count;
-    type = ((GIZMOTYPES_PC *)gizmotypes)->types;
-    for (index = 0; index < ((GIZMOTYPES_PC *)gizmotypes)->count; ++index, ++type) {
+    ((GIZMOTYPES *)gizmotypes)->count = count;
+    type = ((GIZMOTYPES *)gizmotypes)->types;
+    for (index = 0; index < ((GIZMOTYPES *)gizmotypes)->count; ++index, ++type) {
         definition = register_functions[index](index);
         if (definition->prefix[0] != '\0') {
             for (previous = 0; previous < index; ++previous) {
-                GIZMOTYPE_PC *other = &((GIZMOTYPES_PC *)gizmotypes)->types[previous];
+                GIZMOTYPE *other = &((GIZMOTYPES *)gizmotypes)->types[previous];
                 if (other->prefix[0] != '\0' && NuStrICmp(definition->prefix, other->prefix) == 0) {
                     GizmoDiagnostic(definition->name, other->name);
                 }
@@ -207,10 +207,10 @@ void RegisterGizmoTypes(VARIPTR *buffer, VARIPTR *end, REGISTER_GIZMO_CONFIG_TYP
         type->fns.load_fn = definition->fns.load_fn;
         type->fns.post_load_fn = definition->fns.post_load_fn;
         type->fns.add_level_sfx_fn = definition->fns.add_level_sfx_fn;
-        if (type->fns.allocate_progress_data_fn != NULL && ((GIZMOTYPES_PC *)gizmotypes)->max_levels != 0) {
-            type->progress = GizmoBufferAlloc(buffer, end, ((GIZMOTYPES_PC *)gizmotypes)->max_levels * sizeof(void *));
+        if (type->fns.allocate_progress_data_fn != NULL && ((GIZMOTYPES *)gizmotypes)->max_levels != 0) {
+            type->progress = GizmoBufferAlloc(buffer, end, ((GIZMOTYPES *)gizmotypes)->max_levels * sizeof(void *));
             if (type->progress != NULL) {
-                for (level = 0; level < ((GIZMOTYPES_PC *)gizmotypes)->max_levels; ++level) {
+                for (level = 0; level < ((GIZMOTYPES *)gizmotypes)->max_levels; ++level) {
                     type->progress[level] = type->fns.allocate_progress_data_fn(buffer, end);
                 }
             }
@@ -221,17 +221,17 @@ void RegisterGizmoTypes(VARIPTR *buffer, VARIPTR *end, REGISTER_GIZMO_CONFIG_TYP
 void *CreateGizmoSys(void *world, VARIPTR *buffer, VARIPTR *end) {
     GIZMOSYS_PC *system = NULL;
     GIZMOSET_PC *set;
-    GIZMOTYPE_PC *type;
+    GIZMOTYPE *type;
     i32 index;
 
     if (gizmotypes != NULL) {
         GIZMO_BUFFER_ALLOC_CHECKED(system, GIZMOSYS_PC *, buffer, end, sizeof(GIZMOSYS_PC));
         if (system != NULL) {
-            system->sets = GizmoBufferAlloc(buffer, end, ((GIZMOTYPES_PC *)gizmotypes)->count * sizeof(GIZMOSET_PC));
+            system->sets = GizmoBufferAlloc(buffer, end, ((GIZMOTYPES *)gizmotypes)->count * sizeof(GIZMOSET_PC));
             if (system->sets != NULL) {
                 set = system->sets;
-                type = ((GIZMOTYPES_PC *)gizmotypes)->types;
-                for (index = 0; index < ((GIZMOTYPES_PC *)gizmotypes)->count; ++index, ++set, ++type) {
+                type = ((GIZMOTYPES *)gizmotypes)->types;
+                for (index = 0; index < ((GIZMOTYPES *)gizmotypes)->count; ++index, ++set, ++type) {
                     set->type = type;
                     if (type->fns.get_max_gizmos_fn != NULL) {
                         set->max_count = type->fns.get_max_gizmos_fn(world);
@@ -257,15 +257,15 @@ i32 fun_00559a10(void) {
 }
 
 static void GizmoSysPostLoad(GIZMOSYS_PC *system, void *world) {
-    GIZMOTYPE_PC *type;
+    GIZMOTYPE *type;
     GIZMOSET_PC *set;
     i32 index;
     if (gizmotypes == NULL || system == NULL) {
         return;
     }
-    type = ((GIZMOTYPES_PC *)gizmotypes)->types;
+    type = ((GIZMOTYPES *)gizmotypes)->types;
     set = system->sets;
-    for (index = 0; index < ((GIZMOTYPES_PC *)gizmotypes)->count; ++index, ++set, ++type) {
+    for (index = 0; index < ((GIZMOTYPES *)gizmotypes)->count; ++index, ++set, ++type) {
         if (type->fns.post_load_fn != NULL) {
             type->fns.post_load_fn(world, set->data);
         }
@@ -273,15 +273,15 @@ static void GizmoSysPostLoad(GIZMOSYS_PC *system, void *world) {
 }
 
 void AddLevelSfxGizmoSys(GIZMOSYS_PREFIX_PC *system, WORLDINFO *world, i32 *ids, i32 *count, i32 capacity) {
-    LEVEL_SFX_GIZMOTYPE_PC *type;
+    LEVEL_SFX_GIZMOTYPE *type;
     GIZMOSET_PC *set;
     i32 i;
     if (gizmotypes == NULL || system == NULL) {
         return;
     }
-    type = (LEVEL_SFX_GIZMOTYPE_PC *)((GIZMOTYPES_PC *)gizmotypes)->types;
+    type = (LEVEL_SFX_GIZMOTYPE *)((GIZMOTYPES *)gizmotypes)->types;
     set = system->sets;
-    for (i = 0; i < ((GIZMOTYPES_PC *)gizmotypes)->count; ++i, ++set, ++type) {
+    for (i = 0; i < ((GIZMOTYPES *)gizmotypes)->count; ++i, ++set, ++type) {
         if (type->add_level_sfx != NULL) {
             type->add_level_sfx(world, set->data, ids, count, capacity);
         }
@@ -290,15 +290,15 @@ void AddLevelSfxGizmoSys(GIZMOSYS_PREFIX_PC *system, WORLDINFO *world, i32 *ids,
 
 /* MATCH-EXCEPTION: the original reads the typed gizmotypes global at each use (saga.h declares it void *). */
 void GizmoSysClearLevelProgress(void *owner, i32 index) {
-    GIZMOTYPE_PC *type;
+    GIZMOTYPE *type;
     i32 i;
 
     if (gizmotypes != NULL) {
-        type = ((GIZMOTYPES_PC *)gizmotypes)->types;
-        for (i = 0; i < ((GIZMOTYPES_PC *)gizmotypes)->count; ++i, ++type) {
+        type = ((GIZMOTYPES *)gizmotypes)->types;
+        for (i = 0; i < ((GIZMOTYPES *)gizmotypes)->count; ++i, ++type) {
             if (type->fns.clear_progress_fn != NULL) {
                 void *progress;
-                if (type->progress != NULL && index >= 0 && index < ((GIZMOTYPES_PC *)gizmotypes)->max_levels) {
+                if (type->progress != NULL && index >= 0 && index < ((GIZMOTYPES *)gizmotypes)->max_levels) {
                     progress = type->progress[index];
                 } else {
                     progress = NULL;
@@ -311,16 +311,16 @@ void GizmoSysClearLevelProgress(void *owner, i32 index) {
 
 void GizmoSysStoreProgress(void *system_ptr, void *world, i32 progress_index) {
     GIZMOSYS_PC *system = system_ptr;
-    GIZMOTYPE_PC *type;
+    GIZMOTYPE *type;
     GIZMOSET_PC *set;
     i32 index;
     GizmoSysClearLevelProgress(world, progress_index);
     if (gizmotypes == NULL || system == NULL) {
         return;
     }
-    type = ((GIZMOTYPES_PC *)gizmotypes)->types;
+    type = ((GIZMOTYPES *)gizmotypes)->types;
     set = system->sets;
-    for (index = 0; index < ((GIZMOTYPES_PC *)gizmotypes)->count; ++index, ++set, ++type) {
+    for (index = 0; index < ((GIZMOTYPES *)gizmotypes)->count; ++index, ++set, ++type) {
         if (type->fns.store_progress_fn != NULL) {
             if (type->progress != NULL && progress_index >= 0) {
                 type->fns.store_progress_fn(world, set->data, type->progress[progress_index]);
@@ -333,16 +333,16 @@ void GizmoSysStoreProgress(void *system_ptr, void *world, i32 progress_index) {
 
 void GizmoSysReset(void *system_ptr, void *world, i32 progress_index) {
     GIZMOSYS_PC *system = system_ptr;
-    GIZMOTYPE_PC *type;
+    GIZMOTYPE *type;
     GIZMOSET_PC *set;
     i32 index;
 
     if (gizmotypes == NULL || system == NULL) {
         return;
     }
-    type = ((GIZMOTYPES_PC *)gizmotypes)->types;
+    type = ((GIZMOTYPES *)gizmotypes)->types;
     set = system->sets;
-    for (index = 0; index < ((GIZMOTYPES_PC *)gizmotypes)->count; ++index, ++set, ++type) {
+    for (index = 0; index < ((GIZMOTYPES *)gizmotypes)->count; ++index, ++set, ++type) {
         if (type->fns.reset_fn != NULL) {
             if (type->progress != NULL && progress_index >= 0) {
                 type->fns.reset_fn(world, set->data, type->progress[progress_index]);
@@ -355,15 +355,15 @@ void GizmoSysReset(void *system_ptr, void *world, i32 progress_index) {
 
 void GizmoSysEarlyUpdate(void *system_ptr, void *world, f32 delta_time) {
     GIZMOSYS_PC *system = system_ptr;
-    GIZMOTYPE_PC *type;
+    GIZMOTYPE *type;
     GIZMOSET_PC *set;
     i32 index;
     if (gizmotypes == NULL || system == NULL) {
         return;
     }
-    type = ((GIZMOTYPES_PC *)gizmotypes)->types;
+    type = ((GIZMOTYPES *)gizmotypes)->types;
     set = system->sets;
-    for (index = 0; index < ((GIZMOTYPES_PC *)gizmotypes)->count; ++index, ++set, ++type) {
+    for (index = 0; index < ((GIZMOTYPES *)gizmotypes)->count; ++index, ++set, ++type) {
         if (type->fns.early_update_fn != NULL) {
             type->fns.early_update_fn(world, set->data, delta_time);
         }
@@ -372,15 +372,15 @@ void GizmoSysEarlyUpdate(void *system_ptr, void *world, f32 delta_time) {
 
 void GizmoSysLateUpdate(void *system_ptr, void *world, f32 delta_time) {
     GIZMOSYS_PC *system = system_ptr;
-    GIZMOTYPE_PC *type;
+    GIZMOTYPE *type;
     GIZMOSET_PC *set;
     i32 index;
     if (gizmotypes == NULL || system == NULL) {
         return;
     }
-    type = ((GIZMOTYPES_PC *)gizmotypes)->types;
+    type = ((GIZMOTYPES *)gizmotypes)->types;
     set = system->sets;
-    for (index = 0; index < ((GIZMOTYPES_PC *)gizmotypes)->count; ++index, ++set, ++type) {
+    for (index = 0; index < ((GIZMOTYPES *)gizmotypes)->count; ++index, ++set, ++type) {
         if (type->fns.late_update_fn != NULL) {
             type->fns.late_update_fn(world, set->data, delta_time);
         }
@@ -389,15 +389,15 @@ void GizmoSysLateUpdate(void *system_ptr, void *world, f32 delta_time) {
 
 void GizmoSysDraw(void *system_ptr, void *world, f32 delta_time) {
     GIZMOSYS_PC *system = system_ptr;
-    GIZMOTYPE_PC *type;
+    GIZMOTYPE *type;
     GIZMOSET_PC *set;
     i32 index;
     if (gizmotypes == NULL || system == NULL) {
         return;
     }
-    type = ((GIZMOTYPES_PC *)gizmotypes)->types;
+    type = ((GIZMOTYPES *)gizmotypes)->types;
     set = system->sets;
-    for (index = 0; index < ((GIZMOTYPES_PC *)gizmotypes)->count; ++index, ++set, ++type) {
+    for (index = 0; index < ((GIZMOTYPES *)gizmotypes)->count; ++index, ++set, ++type) {
         if (type->fns.draw_fn != NULL) {
             type->fns.draw_fn(world, set->data, delta_time);
         }
@@ -406,15 +406,15 @@ void GizmoSysDraw(void *system_ptr, void *world, f32 delta_time) {
 
 void GizmoSysPanelDraw(void *system_ptr, void *world, f32 delta_time) {
     GIZMOSYS_PC *system = system_ptr;
-    GIZMOTYPE_PC *type;
+    GIZMOTYPE *type;
     GIZMOSET_PC *set;
     i32 index;
     if (gizmotypes == NULL || system == NULL) {
         return;
     }
-    type = ((GIZMOTYPES_PC *)gizmotypes)->types;
+    type = ((GIZMOTYPES *)gizmotypes)->types;
     set = system->sets;
-    for (index = 0; index < ((GIZMOTYPES_PC *)gizmotypes)->count; ++index, ++set, ++type) {
+    for (index = 0; index < ((GIZMOTYPES *)gizmotypes)->count; ++index, ++set, ++type) {
         if (type->fns.panel_draw_fn != NULL) {
             type->fns.panel_draw_fn(world, set->data, delta_time);
         }
@@ -424,8 +424,8 @@ void GizmoSysPanelDraw(void *system_ptr, void *world, f32 delta_time) {
 i32 GizmoGetTypeIDByName(void *system, char *name) {
     i32 index;
     if (gizmotypes != NULL && system != NULL && name != NULL) {
-        for (index = 0; index < ((GIZMOTYPES_PC *)gizmotypes)->count; ++index) {
-            if (NuStrCmp(((GIZMOTYPES_PC *)gizmotypes)->types[index].name, name) == 0) {
+        for (index = 0; index < ((GIZMOTYPES *)gizmotypes)->count; ++index) {
+            if (NuStrCmp(((GIZMOTYPES *)gizmotypes)->types[index].name, name) == 0) {
                 return index;
             }
         }
@@ -449,7 +449,7 @@ i32 ResetGizmoType(GIZMOSYS_PC *system, i32 type_id, char *name) {
 
 GIZMO_PC *AddGizmo(void *system_ptr, i32 type_id, char *name, void *object) {
     GIZMOSYS_PC *system = system_ptr;
-    GIZMOTYPES_PC *registry;
+    GIZMOTYPES *registry;
     GIZMOSET_PC *set;
     GIZMO_PC *gizmo;
     if (gizmotypes == NULL || system == NULL) {
@@ -480,9 +480,9 @@ GIZMO_PC *AddGizmo(void *system_ptr, i32 type_id, char *name, void *object) {
 }
 
 GIZMO_PC *GizmoFindByData(void *system_ptr, i32 type_id, void *data) {
-    GIZMOTYPES_PC *types = gizmotypes;
+    GIZMOTYPES *types = gizmotypes;
     GIZMOSYS_PC *system = system_ptr;
-    GIZMOTYPE_PC *type;
+    GIZMOTYPE *type;
     GIZMOSET_PC *set;
     GIZMO_PC *gizmo;
     i32 i;
@@ -518,17 +518,17 @@ GIZMO_PC *GizmoFindByData(void *system_ptr, i32 type_id, void *data) {
 }
 
 void *GizmoFindByName(void *gizmo_sys, i32 type_id, char *name) {
-    AREA_GIZMOTYPES_PC *types = gizmotypes;
+    AREA_GIZMOTYPES *types = gizmotypes;
 
     if (types != NULL && gizmo_sys != NULL && name != NULL) {
         if (type_id >= 0 && type_id <= types->count) {
-            AREA_GIZMOTYPE_PC *type;
-            AREA_GIZMOSET_PC *set;
-            AREA_GIZMO_PC *gizmo;
+            AREA_GIZMOTYPE *type;
+            AREA_GIZMOSET *set;
+            AREA_GIZMO *gizmo;
             i32 index;
 
             type = &types->types[type_id];
-            set = &((AREA_GIZMOSYS_PREFIX_PC *)gizmo_sys)->sets[type_id];
+            set = &((AREA_GIZMOSYS_PREFIX *)gizmo_sys)->sets[type_id];
             if (type->get_gizmo_name == NULL) {
                 return NULL;
             }
@@ -543,14 +543,14 @@ void *GizmoFindByName(void *gizmo_sys, i32 type_id, char *name) {
         }
 
         {
-            AREA_GIZMOTYPE_PC *type;
-            AREA_GIZMOSET_PC *set;
+            AREA_GIZMOTYPE *type;
+            AREA_GIZMOSET *set;
             i32 type_index;
 
             type = types->types;
-            set = ((AREA_GIZMOSYS_PREFIX_PC *)gizmo_sys)->sets;
-            for (type_index = 0; type_index < ((AREA_GIZMOTYPES_PC *)gizmotypes)->count; ++type_index, ++type, ++set) {
-                AREA_GIZMO_PC *gizmo;
+            set = ((AREA_GIZMOSYS_PREFIX *)gizmo_sys)->sets;
+            for (type_index = 0; type_index < ((AREA_GIZMOTYPES *)gizmotypes)->count; ++type_index, ++type, ++set) {
+                AREA_GIZMO *gizmo;
                 i32 gizmo_index;
 
                 if (type->get_gizmo_name == NULL) {
@@ -570,7 +570,7 @@ void *GizmoFindByName(void *gizmo_sys, i32 type_id, char *name) {
 }
 
 char *GizmoGetName(GIZMO_PC *gizmo) {
-    GIZMOTYPES_PC *types = gizmotypes;
+    GIZMOTYPES *types = gizmotypes;
     if (types != NULL && gizmo != NULL && gizmo->type_id < types->count) {
         char *(*get_name)(GIZMO_PC *) = types->types[gizmo->type_id].fns.get_gizmo_name_fn;
         if (get_name != NULL) {
@@ -581,7 +581,7 @@ char *GizmoGetName(GIZMO_PC *gizmo) {
 }
 
 i32 GizmoGetNumOutputs(void *system, GIZMO_PC *gizmo) {
-    GIZMOTYPES_PC *types = gizmotypes;
+    GIZMOTYPES *types = gizmotypes;
     i32 (*get_count)(GIZMO_PC *);
     if (types == NULL || system == NULL || gizmo == NULL) {
         return 0;
@@ -596,7 +596,7 @@ i32 GizmoGetNumOutputs(void *system, GIZMO_PC *gizmo) {
 }
 
 i32 GizmoGetOutput(void *system, void *gizmo_ptr, i32 output, i32 mode) {
-    GIZMOTYPES_PC *registry;
+    GIZMOTYPES *registry;
     i32 (*get_output)(GIZMO_PC *, i32, i32);
     GIZMO_PC *gizmo = gizmo_ptr;
     if (gizmotypes == NULL || system == NULL || gizmo == NULL) {
@@ -614,7 +614,7 @@ i32 GizmoGetOutput(void *system, void *gizmo_ptr, i32 output, i32 mode) {
 }
 
 char *GizmoGetOutputName(void *system, void *gizmo_ptr, i32 output) {
-    GIZMOTYPES_PC *registry = gizmotypes;
+    GIZMOTYPES *registry = gizmotypes;
     GIZMO_PC *gizmo = gizmo_ptr;
     char *(*get_name)(GIZMO_PC *, i32);
     if (registry == NULL || system == NULL || gizmo == NULL) {
@@ -630,8 +630,8 @@ char *GizmoGetOutputName(void *system, void *gizmo_ptr, i32 output) {
 }
 
 void GizmoActivate(void *system, void *gizmo_ptr, i32 active, i32 mode) {
-    GIZMOTYPES_PC *registry;
-    GIZMOTYPE_PC *type;
+    GIZMOTYPES *registry;
+    GIZMOTYPE *type;
     GIZMO_PC *gizmo = gizmo_ptr;
 
     if (gizmotypes == NULL || system == NULL || gizmo == NULL) {
@@ -657,8 +657,8 @@ void GizmoActivate(void *system, void *gizmo_ptr, i32 active, i32 mode) {
 }
 
 void GizmoSetVisibility(void *system, void *gizmo_ptr, i32 visible, i32 mode) {
-    GIZMOTYPES_PC *registry;
-    GIZMOTYPE_PC *type;
+    GIZMOTYPES *registry;
+    GIZMOTYPE *type;
     GIZMO_PC *gizmo = gizmo_ptr;
 
     if (gizmotypes == NULL || system == NULL || gizmo == NULL) {
@@ -679,13 +679,13 @@ void GizmoSetVisibility(void *system, void *gizmo_ptr, i32 visible, i32 mode) {
         type->fns.activate_fn(gizmo, visible);
     }
 
-    ((GIZMOTYPES_PC *)gizmotypes)->types[gizmo->type_id].fns.set_visibility_fn(gizmo, visible);
+    ((GIZMOTYPES *)gizmotypes)->types[gizmo->type_id].fns.set_visibility_fn(gizmo, visible);
     (void)mode;
 }
 
 i32 GizmoGetVisibility(void *system, void *pointer) {
     GIZMO_PC *gizmo = pointer;
-    GIZMOTYPES_PC *registry;
+    GIZMOTYPES *registry;
     i32 (*get_visibility)(GIZMO_PC *);
     if (gizmotypes == NULL || system == NULL || gizmo == NULL) {
         return 0;
@@ -703,11 +703,11 @@ i32 GizmoGetVisibility(void *system, void *pointer) {
 
 NUVEC *GizmoGetPos(GIZMOSYS_PC *system, void *pointer) {
     GIZMO_PC *gizmo = pointer;
-    GIZMO_GET_POS_FN_PC get_pos_fn;
+    GIZMO_GET_POS_FN get_pos_fn;
     if (gizmotypes == NULL || gizmo == NULL) {
         return NULL;
     }
-    get_pos_fn = (GIZMO_GET_POS_FN_PC)((GIZMOTYPES_PC *)gizmotypes)->types[gizmo->type_id].fns.get_pos_fn;
+    get_pos_fn = (GIZMO_GET_POS_FN)((GIZMOTYPES *)gizmotypes)->types[gizmo->type_id].fns.get_pos_fn;
     if (get_pos_fn == NULL) {
         return NULL;
     }
@@ -720,8 +720,8 @@ i32 GizmoGetGizmosUsingSpecial(GIZMOSYS_PC *system, void *world, GIZMO_PC **resu
     i32 added;
     i32 i;
     if (system != NULL && gizmotypes != NULL && results != NULL) {
-        for (i = 0; i < ((GIZMOTYPES_PC *)gizmotypes)->count && count < capacity; ++i) {
-            using_special = ((GIZMOTYPES_PC *)gizmotypes)->types[i].fns.using_special_fn;
+        for (i = 0; i < ((GIZMOTYPES *)gizmotypes)->count && count < capacity; ++i) {
+            using_special = ((GIZMOTYPES *)gizmotypes)->types[i].fns.using_special_fn;
             if (using_special != NULL) {
                 added = using_special(&results[count], world, capacity - count, name);
                 if (added == -1) {
@@ -749,8 +749,8 @@ i32 GizmoSysWriteInfo(GIZMOSYS_PC *gizmo_sys, char *path, NUGSCN *scene) {
     NUSPECIALHANDLE special;
     GIZMO_PC gizmo;
     char backup[256];
-    GIZMOTYPES_PC *types;
-    GIZMOTYPE_PC *type;
+    GIZMOTYPES *types;
+    GIZMOTYPE *type;
     GIZMOSET_PC *set;
     GIZMO_PC *entry;
     GIZACTIONDEF *definition;
@@ -775,7 +775,7 @@ i32 GizmoSysWriteInfo(GIZMOSYS_PC *gizmo_sys, char *path, NUGSCN *scene) {
             if (types->count != 0) {
                 type = types->types;
                 set = gizmo_sys->sets;
-                for (type_index = 0; type_index < ((GIZMOTYPES_PC *)gizmotypes)->count; ++type_index, ++type, ++set) {
+                for (type_index = 0; type_index < ((GIZMOTYPES *)gizmotypes)->count; ++type_index, ++type, ++set) {
                     length = strlen(type->name) + 1;
                     EdFileWriteInt(length);
                     if (length != 0) {
@@ -832,7 +832,7 @@ i32 GizmoSysWriteInfo(GIZMOSYS_PC *gizmo_sys, char *path, NUGSCN *scene) {
             }
             if (GizmoInfoVersion >= 3) {
                 if (GizmoInfoVersion >= 4 && gizspecial_gizmotype_id != -1) {
-                    type = &((GIZMOTYPES_PC *)gizmotypes)->types[gizspecial_gizmotype_id];
+                    type = &((GIZMOTYPES *)gizmotypes)->types[gizspecial_gizmotype_id];
                     length = NuStrLen(type->prefix) + 1;
                     EdFileWriteChar((char)length);
                     if (length != 0) {
@@ -868,13 +868,13 @@ i32 GizmoSysWriteInfo(GIZMOSYS_PC *gizmo_sys, char *path, NUGSCN *scene) {
 }
 
 i32 GizmoIsNameUnique(GIZMOSYS_PREFIX_PC *system, char *name) {
-    GIZMOTYPE_PC *type;
+    GIZMOTYPE *type;
     GIZMOSET_PC *set;
     i32 type_index;
     if (system != NULL && name != NULL) {
-        type = (GIZMO_NAME_TYPE *)((GIZMOTYPES_PC *)gizmotypes)->types;
+        type = (GIZMO_NAME_TYPE *)((GIZMOTYPES *)gizmotypes)->types;
         set = system->sets;
-        for (type_index = 0; type_index < ((GIZMOTYPES_PC *)gizmotypes)->count; ++type_index, ++type, ++set) {
+        for (type_index = 0; type_index < ((GIZMOTYPES *)gizmotypes)->count; ++type_index, ++type, ++set) {
             GIZMO_PC *gizmo;
             i32 index;
             if (type->fns.get_gizmo_name_fn == NULL) {
@@ -912,9 +912,9 @@ i32 GizmoGetUniqueName(GIZMOSYS_PREFIX_PC *system, char *prefix, char *name, cha
     i32 suffix_number = 1;
     i32 name_length;
     if (system != NULL && name != NULL && result != NULL) {
-        for (type_index = 0; type_index < ((GIZMOTYPES_PC *)gizmotypes)->count; ++type_index) {
-            if (NuStrICmp(prefix, ((GIZMOTYPES_PC *)gizmotypes)->types[type_index].prefix) != 0 &&
-                GizmoNameUsesPrefix(name, ((GIZMOTYPES_PC *)gizmotypes)->types[type_index].prefix)) {
+        for (type_index = 0; type_index < ((GIZMOTYPES *)gizmotypes)->count; ++type_index) {
+            if (NuStrICmp(prefix, ((GIZMOTYPES *)gizmotypes)->types[type_index].prefix) != 0 &&
+                GizmoNameUsesPrefix(name, ((GIZMOTYPES *)gizmotypes)->types[type_index].prefix)) {
                 return 0;
             }
         }
@@ -941,13 +941,13 @@ i32 GizmoGetUniqueName(GIZMOSYS_PREFIX_PC *system, char *prefix, char *name, cha
 }
 
 i32 GizmoSys_BoltHitPlat(void *system, WORLDINFO *world, BOLT_PC *bolt, u8 *hit_flags) {
-    BOLT_GIZMO_TYPE_PC *type;
+    BOLT_GIZMO_TYPE *type;
     GIZMOSET_PC *set;
     i32 i;
     if (gizmotypes != NULL && system != NULL && bolt != NULL) {
-        type = (BOLT_GIZMO_TYPE_PC *)((GIZMOTYPES_PC *)gizmotypes)->types;
+        type = (BOLT_GIZMO_TYPE *)((GIZMOTYPES *)gizmotypes)->types;
         set = ((GIZMOSYS_PREFIX_PC *)system)->sets;
-        for (i = 0; i < ((GIZMOTYPES_PC *)gizmotypes)->count; ++i, ++set, ++type) {
+        for (i = 0; i < ((GIZMOTYPES *)gizmotypes)->count; ++i, ++set, ++type) {
             if (type->hit_platform != NULL && type->hit_platform(world, set->data, bolt, hit_flags) != 0) {
                 return 1;
             }
@@ -1020,9 +1020,9 @@ void LoadGizmoSys(void *system_ptr, void *world, char *config_file) {
                 GizmoNameDiagnostic(gizmo_name);
                 data_length = EdFileReadInt();
                 type_id = GizmoGetTypeIDByName(system, gizmo_name);
-                if (type_id >= 0 && data_length > 0 && type_id < ((GIZMOTYPES_PC *)gizmotypes)->count &&
-                    ((GIZMOTYPES_PC *)gizmotypes)->types[type_id].fns.load_fn != NULL &&
-                    ((GIZMOTYPES_PC *)gizmotypes)->types[type_id].fns.load_fn(world, system->sets[type_id].data) != 0) {
+                if (type_id >= 0 && data_length > 0 && type_id < ((GIZMOTYPES *)gizmotypes)->count &&
+                    ((GIZMOTYPES *)gizmotypes)->types[type_id].fns.load_fn != NULL &&
+                    ((GIZMOTYPES *)gizmotypes)->types[type_id].fns.load_fn(world, system->sets[type_id].data) != 0) {
                     GizmoNameDiagnostic(gizmo_name);
                 } else {
                     GizmoNameDiagnostic(gizmo_name);
@@ -1042,13 +1042,13 @@ void LoadGizmoSys(void *system_ptr, void *world, char *config_file) {
 
 void GizmoSysAddGizmos(void *system_ptr, GIZFLOW *flow, void *world) {
     GIZMOSYS_PC *system = system_ptr;
-    GIZMOTYPE_PC *type;
+    GIZMOTYPE *type;
     GIZMOSET_PC *set;
     i32 index;
     if (gizmotypes != NULL && system != NULL) {
-        type = ((GIZMOTYPES_PC *)gizmotypes)->types;
+        type = ((GIZMOTYPES *)gizmotypes)->types;
         set = system->sets;
-        for (index = 0; index < ((GIZMOTYPES_PC *)gizmotypes)->count; ++index, ++set, ++type) {
+        for (index = 0; index < ((GIZMOTYPES *)gizmotypes)->count; ++index, ++set, ++type) {
             ResetGizmoType(system, index, NULL);
             if (type->fns.add_gizmos_fn != NULL) {
                 ((void (*)(void *, i32, void *, void *))type->fns.add_gizmos_fn)(system, index, world, set->data);
@@ -1061,7 +1061,7 @@ void GizmoSysAddGizmos(void *system_ptr, GIZFLOW *flow, void *world) {
 }
 
 i32 GizmoTypeGetProgress(GIZMOSYS_PC *system, void *world, i32 progress_index, i32 type_id, char *name, void **result) {
-    GIZMOTYPE_PC *type;
+    GIZMOTYPE *type;
     if (type_id == -1) {
         if (name == NULL) {
             return 0;
@@ -1071,8 +1071,8 @@ i32 GizmoTypeGetProgress(GIZMOSYS_PC *system, void *world, i32 progress_index, i
             return 0;
         }
     }
-    type = &((GIZMOTYPES_PC *)gizmotypes)->types[type_id];
-    if (type->progress != NULL && progress_index >= 0 && progress_index < ((GIZMOTYPES_PC *)gizmotypes)->max_levels) {
+    type = &((GIZMOTYPES *)gizmotypes)->types[type_id];
+    if (type->progress != NULL && progress_index >= 0 && progress_index < ((GIZMOTYPES *)gizmotypes)->max_levels) {
         *result = type->progress[progress_index];
     } else {
         *result = NULL;
@@ -1085,7 +1085,7 @@ i32 GizmoTypeGetProgress(GIZMOSYS_PC *system, void *world, i32 progress_index, i
 }
 
 void GizmoTypeStoreProgress(GIZMOSYS_PC *system, void *world, i32 progress_index, i32 type_id, char *name) {
-    GIZMOTYPE_PC *type;
+    GIZMOTYPE *type;
     GIZMOSET_PC *set;
     void *progress;
     if (type_id == -1) {
@@ -1097,9 +1097,9 @@ void GizmoTypeStoreProgress(GIZMOSYS_PC *system, void *world, i32 progress_index
             return;
         }
     }
-    type = &((GIZMOTYPES_PC *)gizmotypes)->types[type_id];
+    type = &((GIZMOTYPES *)gizmotypes)->types[type_id];
     set = &system->sets[type_id];
-    if (type->progress != NULL && progress_index >= 0 && progress_index < ((GIZMOTYPES_PC *)gizmotypes)->max_levels) {
+    if (type->progress != NULL && progress_index >= 0 && progress_index < ((GIZMOTYPES *)gizmotypes)->max_levels) {
         progress = type->progress[progress_index];
     } else {
         progress = NULL;
@@ -1122,7 +1122,7 @@ void GizmoActivateReverse(void *system, void *gizmo_ptr, i32 reverse, i32 visibi
     if (gizmo == NULL || gizmotypes == NULL) {
         return;
     }
-    activate_rev = ((GIZMOTYPES_PC *)gizmotypes)->types[gizmo->type_id].fns.activate_rev_fn;
+    activate_rev = ((GIZMOTYPES *)gizmotypes)->types[gizmo->type_id].fns.activate_rev_fn;
     if (activate_rev == NULL) {
         return;
     }
@@ -1131,7 +1131,7 @@ void GizmoActivateReverse(void *system, void *gizmo_ptr, i32 reverse, i32 visibi
         return;
     }
     command &= ~1;
-    ((GIZMOTYPES_PC *)gizmotypes)->types[gizmo->type_id].fns.activate_rev_fn(gizmo, reverse, command);
+    ((GIZMOTYPES *)gizmotypes)->types[gizmo->type_id].fns.activate_rev_fn(gizmo, reverse, command);
     if (visibility != 0) {
         GizmoSetVisibility(system, gizmo, reverse == 0, 1);
     }

@@ -15,7 +15,7 @@ extern "C" void (*ExtraDieSfxFn)(GAMEOBJECT *);
 extern "C" {
     typedef struct footstep_audio_callbacks_s {
         i32 (*override_footstep)(GAMEOBJECT *, i32);
-    } FOOTSTEP_AUDIO_CALLBACKS_PC;
+    } FOOTSTEP_AUDIO_CALLBACKS;
 }
 extern i32 (*CheckMusicOtherFn)(void);
 extern i32 (*GameAudio_ActionMusicFn)(void);
@@ -356,7 +356,7 @@ extern "C" {
         if (object->character_data->game_character->sfx_footstep != -1) {
             sound = object->character_data->game_character->sfx_footstep;
         } else {
-            i32 (*override_footstep)(GAMEOBJECT *, i32) = ((FOOTSTEP_AUDIO_CALLBACKS_PC *)GameAudio)->override_footstep;
+            i32 (*override_footstep)(GAMEOBJECT *, i32) = ((FOOTSTEP_AUDIO_CALLBACKS *)GameAudio)->override_footstep;
             if (override_footstep == NULL || (sound = override_footstep(object, on_platform)) == -1) {
                 if (object->is_underwater == 0 && object->water_intersects == 0) {
                     alternate = WorldInfo_CurrentlyActive()->current_level->flags & 0x1000;

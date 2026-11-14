@@ -787,7 +787,7 @@ extern "C" {
     extern i16 tMAP;
     extern i16 tNEXTCHAPTERLOCKED;
     extern i16 tRESTART;
-    extern const f64 ShopCharacterAmplitudePc;
+    extern const f64 ShopCharacterAmplitude;
     extern struct level_data_s *DAGOBAHA_LDATA;
     extern struct level_data_s *DAGOBAHD_LDATA;
     extern struct level_data_s *DAGOBAHE_LDATA;
@@ -828,7 +828,7 @@ extern "C" {
     extern u8 hub_makefreeplaylist_addotherid;
     extern i32 hub_new_level;
     void edpartRemoveInstance(struct parttype_lookup_s *type, i32 index);
-    extern const char NuFileIopImageNamePc[13];
+    extern const char NuFileIopImageName[13];
     void MakePlayCorner(struct gamecamera_s *camera, f32 screen_x, f32 screen_y, struct nuvec_s *near_corner, struct nuvec_s *far_corner);
     void SetPlayPlane(struct KEEP_SCREEN_PLANE *plane, struct nuvec_s *a, struct nuvec_s *b, struct nuvec_s *c, struct nuvec_s *d,
                       struct nuvec_s *edge_a0, struct nuvec_s *edge_a1, struct nuvec_s *edge_b0, struct nuvec_s *edge_b1);
@@ -989,48 +989,48 @@ enum { NUQFNT_CSMODE_NORMALISED = 3 };
 #ifdef __cplusplus
 extern "C" {
 #endif
-    extern const char GameAudioName0075c1ecPc[9];
-    extern const char GameAudioName0075c1f8Pc[10];
-    extern const char GameAudioName0075c204Pc[11];
-    extern const char GameAudioName0075c210Pc[9];
-    extern const char GameAudioName0075c21cPc[10];
-    extern const char GameAudioName0075c228Pc[10];
-    extern const char GameAudioName0075c234Pc[11];
-    extern const char GameAudioName0075c284Pc[10];
-    extern const char GameAudioName0075c3acPc[9];
-    extern const char GameAudioName0075c3fcPc[11];
-    extern const char GameAudioName0075c408Pc[11];
-    extern const char GameAudioName0075c420Pc[10];
-    extern const char GameAudioName0075c42cPc[10];
-    extern const char GameAudioName0075c438Pc[12];
-    extern const char GameAudioName0075c444Pc[11];
-    extern const char GameAudioName0075c490Pc[19];
-    extern const char GameAudioName0075c4a4Pc[9];
-    extern const char GameAudioName0075c4b0Pc[10];
-    extern const char GameAudioName0075c4bcPc[10];
-    extern const char GameAudioName0075c4c8Pc[10];
-    extern const char GameAudioName0075c4d4Pc[10];
-    extern const char GameAudioName0075c4e0Pc[10];
-    extern const char GameAudioName0075c4ecPc[12];
-    extern const char GameAudioName0075c4f8Pc[9];
-    extern const char GameAudioName0075c504Pc[10];
-    extern const char GameAudioName0075c510Pc[12];
-    extern const char GameAudioName0075c51cPc[11];
-    extern const char GameAudioName0075c528Pc[12];
-    extern const char MenuVideoAspectErrorFormatPc[10];
-    extern const char MenuVideoAspect1610FormatPc[10];
-    extern const char MenuVideoAspect169FormatPc[9];
-    extern const char MenuVideoAspect43FormatPc[8];
-    extern const char MenuVideoRefreshFormatPc[9];
-    extern const char MenuVideoResolutionFormatPc[12];
-    extern const char MenuEffects16xFormatPc[8];
-    extern const char MenuEffects8xFormatPc[7];
-    extern const char MenuEffects4xFormatPc[7];
-    extern const char MenuEffects2xFormatPc[7];
-    extern const char MenuVideoCountdownFormatPc[9];
+    extern const char GameAudioName0075c1ec[9];
+    extern const char GameAudioName0075c1f8[10];
+    extern const char GameAudioName0075c204[11];
+    extern const char GameAudioName0075c210[9];
+    extern const char GameAudioName0075c21c[10];
+    extern const char GameAudioName0075c228[10];
+    extern const char GameAudioName0075c234[11];
+    extern const char GameAudioName0075c284[10];
+    extern const char GameAudioName0075c3ac[9];
+    extern const char GameAudioName0075c3fc[11];
+    extern const char GameAudioName0075c408[11];
+    extern const char GameAudioName0075c420[10];
+    extern const char GameAudioName0075c42c[10];
+    extern const char GameAudioName0075c438[12];
+    extern const char GameAudioName0075c444[11];
+    extern const char GameAudioName0075c490[19];
+    extern const char GameAudioName0075c4a4[9];
+    extern const char GameAudioName0075c4b0[10];
+    extern const char GameAudioName0075c4bc[10];
+    extern const char GameAudioName0075c4c8[10];
+    extern const char GameAudioName0075c4d4[10];
+    extern const char GameAudioName0075c4e0[10];
+    extern const char GameAudioName0075c4ec[12];
+    extern const char GameAudioName0075c4f8[9];
+    extern const char GameAudioName0075c504[10];
+    extern const char GameAudioName0075c510[12];
+    extern const char GameAudioName0075c51c[11];
+    extern const char GameAudioName0075c528[12];
+    extern const char MenuVideoAspectErrorFormat[10];
+    extern const char MenuVideoAspect1610Format[10];
+    extern const char MenuVideoAspect169Format[9];
+    extern const char MenuVideoAspect43Format[8];
+    extern const char MenuVideoRefreshFormat[9];
+    extern const char MenuVideoResolutionFormat[12];
+    extern const char MenuEffects16xFormat[8];
+    extern const char MenuEffects8xFormat[7];
+    extern const char MenuEffects4xFormat[7];
+    extern const char MenuEffects2xFormat[7];
+    extern const char MenuVideoCountdownFormat[9];
 
-    extern const char ComboSaber1NamePc[12];
-    extern const char ComboSaber2NamePc[12];
+    extern const char ComboSaber1Name[12];
+    extern const char ComboSaber2Name[12];
 #ifdef __cplusplus
 }
 #endif

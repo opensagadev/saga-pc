@@ -9,7 +9,7 @@ typedef struct portal_callback_s { // size 0x20
     u8 reserved_1b;                // 0x1b
     u8 flags;                      // 0x1c
     u8 reserved_1d[3];             // 0x1d
-} PORTAL_CALLBACK_PC;
+} PORTAL_CALLBACK;
 
 static char portal_output_name[64] = "Active";
 static char portal_gizmo_name[16] = {0};
@@ -39,12 +39,12 @@ static char *Portal_GetGizmoName(GIZMO_PC *gizmo) {
     if (gizmo == NULL || gizmo->object == NULL) {
         return NULL;
     }
-    sprintf(portal_gizmo_name, "%s%d", PortalRegistrationPrefix, ((PORTAL_CALLBACK_PC *)gizmo->object)->id);
+    sprintf(portal_gizmo_name, "%s%d", PortalRegistrationPrefix, ((PORTAL_CALLBACK *)gizmo->object)->id);
     return portal_gizmo_name;
 }
 
 static i32 Portal_GetOutput(GIZMO_PC *gizmo, i32 output, i32 include_inactive) {
-    if (gizmo != NULL && gizmo->object != NULL && (((PORTAL_CALLBACK_PC *)gizmo->object)->flags & 1) != 0) {
+    if (gizmo != NULL && gizmo->object != NULL && (((PORTAL_CALLBACK *)gizmo->object)->flags & 1) != 0) {
         return 1;
     }
     return 0;
@@ -65,7 +65,7 @@ static void Portal_Activate(GIZMO_PC *gizmo, i32 active) {
 }
 
 static i32 Portal_ActivateRev(GIZMO_PC *gizmo, i32 inactive, i32 check) {
-    PORTAL_CALLBACK_PC *portal;
+    PORTAL_CALLBACK *portal;
     if (gizmo == NULL || gizmo->object == NULL) {
         return 0;
     }

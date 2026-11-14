@@ -5,7 +5,7 @@ typedef struct transform_glow_s {  // size 0xe30
     NUVEC glow_position;           // 0xc68
     u8 unused_0c74[0xe2c - 0xc74]; // 0xc74
     u8 glow_kind;                  // 0xe2c
-} TRANSFORM_GLOW_PC;
+} TRANSFORM_GLOW;
 
 // The target draw keeps a private copy of this numtx-style Z rotation.
 static void RotateTargetMatrix(NUMTX *matrix, i32 angle) {
@@ -26,9 +26,9 @@ static void RotateTargetMatrix(NUMTX *matrix, i32 angle) {
 }
 
 void Transform_MoveCode(WORLDINFO *world, GAMEOBJECT *object) {
-    TRANSFORM_GLOW_PC *glow = (TRANSFORM_GLOW_PC *)object;
+    TRANSFORM_GLOW *glow = (TRANSFORM_GLOW *)object;
     GIZMOBLOWUP_PC *target;
-    ResetForceGlow(object->ai_player_packet_pc);
+    ResetForceGlow(object->ai_player_packet);
     if (object->character_context == 86) {
         i32 trigger;
         f32 *frame = NULL;

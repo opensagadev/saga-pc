@@ -49,10 +49,10 @@ typedef struct part_runtime_type_s { // size 0x178
     f32 last_used_time;              // 0x16c
     f32 scale;                       // 0x170
     u32 field_174;                   // 0x174
-} PART_RUNTIME_TYPE_PC;
+} PART_RUNTIME_TYPE;
 
 void edpartScaleType(i32 index, f32 scale) {
-    PART_RUNTIME_TYPE_PC *type = &((PART_RUNTIME_TYPE_PC *)part_types)[index];
+    PART_RUNTIME_TYPE *type = &((PART_RUNTIME_TYPE *)part_types)[index];
     type->particle_scale *= scale;
     type->effect_scale *= scale;
     type->speed *= scale;
@@ -253,34 +253,34 @@ extern i8 edpart_effect_list;
 void edpartInitType(i32 index) {
     i32 i;
     for (i = 0; i < 8; ++i) {
-        ((PART_RUNTIME_TYPE_PC *)part_types)[index].effect_ids[i] = -1;
-        ((PART_RUNTIME_TYPE_PC *)part_types)[index].effect_pages[i] = 1;
+        ((PART_RUNTIME_TYPE *)part_types)[index].effect_ids[i] = -1;
+        ((PART_RUNTIME_TYPE *)part_types)[index].effect_pages[i] = 1;
     }
-    ((PART_RUNTIME_TYPE_PC *)part_types)[index].variant_count = 0;
-    ((PART_RUNTIME_TYPE_PC *)part_types)[index].lifetime = 0.0f;
-    ((PART_RUNTIME_TYPE_PC *)part_types)[index].speed = 1.0f;
-    ((PART_RUNTIME_TYPE_PC *)part_types)[index].gravity = 0.0f;
-    ((PART_RUNTIME_TYPE_PC *)part_types)[index].emission_rate = 1.0f;
-    ((PART_RUNTIME_TYPE_PC *)part_types)[index].emission_period = 1.0f;
-    ((PART_RUNTIME_TYPE_PC *)part_types)[index].emission_period_random = 0.0f;
-    ((PART_RUNTIME_TYPE_PC *)part_types)[index].emission_pause = 0.0f;
-    ((PART_RUNTIME_TYPE_PC *)part_types)[index].emission_pause_random = 0.0f;
-    ((PART_RUNTIME_TYPE_PC *)part_types)[index].rotation[0] = 0;
-    ((PART_RUNTIME_TYPE_PC *)part_types)[index].rotation[1] = 0;
-    ((PART_RUNTIME_TYPE_PC *)part_types)[index].rotation[2] = 0;
-    ((PART_RUNTIME_TYPE_PC *)part_types)[index].flags = 0;
-    ((PART_RUNTIME_TYPE_PC *)part_types)[index].trail_effects[0] = -1;
-    ((PART_RUNTIME_TYPE_PC *)part_types)[index].trail_effects[1] = -1;
-    ((PART_RUNTIME_TYPE_PC *)part_types)[index].attached_effect = -1;
-    ((PART_RUNTIME_TYPE_PC *)part_types)[index].kill_effect = -1;
-    ((PART_RUNTIME_TYPE_PC *)part_types)[index].impact_effect = -1;
-    ((PART_RUNTIME_TYPE_PC *)part_types)[index].impact_part = -1;
-    ((PART_RUNTIME_TYPE_PC *)part_types)[index].last_used_time = 0.0f;
-    ((PART_RUNTIME_TYPE_PC *)part_types)[index].field_174 = -1;
-    ((PART_RUNTIME_TYPE_PC *)part_types)[index].scale = 1.0f;
+    ((PART_RUNTIME_TYPE *)part_types)[index].variant_count = 0;
+    ((PART_RUNTIME_TYPE *)part_types)[index].lifetime = 0.0f;
+    ((PART_RUNTIME_TYPE *)part_types)[index].speed = 1.0f;
+    ((PART_RUNTIME_TYPE *)part_types)[index].gravity = 0.0f;
+    ((PART_RUNTIME_TYPE *)part_types)[index].emission_rate = 1.0f;
+    ((PART_RUNTIME_TYPE *)part_types)[index].emission_period = 1.0f;
+    ((PART_RUNTIME_TYPE *)part_types)[index].emission_period_random = 0.0f;
+    ((PART_RUNTIME_TYPE *)part_types)[index].emission_pause = 0.0f;
+    ((PART_RUNTIME_TYPE *)part_types)[index].emission_pause_random = 0.0f;
+    ((PART_RUNTIME_TYPE *)part_types)[index].rotation[0] = 0;
+    ((PART_RUNTIME_TYPE *)part_types)[index].rotation[1] = 0;
+    ((PART_RUNTIME_TYPE *)part_types)[index].rotation[2] = 0;
+    ((PART_RUNTIME_TYPE *)part_types)[index].flags = 0;
+    ((PART_RUNTIME_TYPE *)part_types)[index].trail_effects[0] = -1;
+    ((PART_RUNTIME_TYPE *)part_types)[index].trail_effects[1] = -1;
+    ((PART_RUNTIME_TYPE *)part_types)[index].attached_effect = -1;
+    ((PART_RUNTIME_TYPE *)part_types)[index].kill_effect = -1;
+    ((PART_RUNTIME_TYPE *)part_types)[index].impact_effect = -1;
+    ((PART_RUNTIME_TYPE *)part_types)[index].impact_part = -1;
+    ((PART_RUNTIME_TYPE *)part_types)[index].last_used_time = 0.0f;
+    ((PART_RUNTIME_TYPE *)part_types)[index].field_174 = -1;
+    ((PART_RUNTIME_TYPE *)part_types)[index].scale = 1.0f;
     for (i = 0; i < 4; ++i) {
-        ((PART_RUNTIME_TYPE_PC *)part_types)[index].sounds[i] = -1;
-        ((PART_RUNTIME_TYPE_PC *)part_types)[index].sound_modes[i] = 0;
+        ((PART_RUNTIME_TYPE *)part_types)[index].sounds[i] = -1;
+        ((PART_RUNTIME_TYPE *)part_types)[index].sound_modes[i] = 0;
     }
 }
 
@@ -291,24 +291,24 @@ void edpartInitType(i32 index) {
         i32 i;                                                                                                                             \
         if (part_types_used < 128) {                                                                                                       \
             for (index = 0; index < 128; ++index) {                                                                                        \
-                if (((PART_RUNTIME_TYPE_PC *)part_types)[index].name[0] == 0) {                                                            \
-                    sprintf(((PART_RUNTIME_TYPE_PC *)part_types)[index].name, "New%d", index);                                             \
+                if (((PART_RUNTIME_TYPE *)part_types)[index].name[0] == 0) {                                                               \
+                    sprintf(((PART_RUNTIME_TYPE *)part_types)[index].name, "New%d", index);                                                \
                     edpartInitType(index);                                                                                                 \
                     ++part_types_used;                                                                                                     \
                     part_scene[(list)] = (list) == 0 ? edbits_things_scene : edbits_base_scene;                                            \
-                    ((PART_RUNTIME_TYPE_PC *)part_types)[index].field_b3 = (list);                                                         \
-                    ((PART_RUNTIME_TYPE_PC *)part_types)[index].page = (list);                                                             \
+                    ((PART_RUNTIME_TYPE *)part_types)[index].field_b3 = (list);                                                            \
+                    ((PART_RUNTIME_TYPE *)part_types)[index].page = (list);                                                                \
                     part_page_on[(list)] = 1;                                                                                              \
                     part_page_used[(list)] = 1;                                                                                            \
                     part_scene_pageid[(list)] = (list);                                                                                    \
                     edpart_create_type = index;                                                                                            \
                     for (i = 0; i < 8; ++i) {                                                                                              \
-                        ((PART_RUNTIME_TYPE_PC *)part_types)[index].effect_ids[i] = -1;                                                    \
-                        ((PART_RUNTIME_TYPE_PC *)part_types)[index].effect_pages[i] = -1;                                                  \
+                        ((PART_RUNTIME_TYPE *)part_types)[index].effect_ids[i] = -1;                                                       \
+                        ((PART_RUNTIME_TYPE *)part_types)[index].effect_pages[i] = -1;                                                     \
                     }                                                                                                                      \
-                    ((PART_RUNTIME_TYPE_PC *)part_types)[index].field_160 = 1.0f;                                                          \
-                    ((PART_RUNTIME_TYPE_PC *)part_types)[index].field_164 = 1.0f;                                                          \
-                    ((PART_RUNTIME_TYPE_PC *)part_types)[index].field_168 = 1.0f;                                                          \
+                    ((PART_RUNTIME_TYPE *)part_types)[index].field_160 = 1.0f;                                                             \
+                    ((PART_RUNTIME_TYPE *)part_types)[index].field_164 = 1.0f;                                                             \
+                    ((PART_RUNTIME_TYPE *)part_types)[index].field_168 = 1.0f;                                                             \
                     break;                                                                                                                 \
                 }                                                                                                                          \
             }                                                                                                                              \
@@ -334,7 +334,7 @@ void edpartSelType(eduimenu_s *menu, eduiitem_s *item, u32 unused2) {
     edpart_type_menu = NULL;
     edpart_active_menu = NULL;
     edpart_create_type = item->data;
-    edpart_effect_list = ((PART_RUNTIME_TYPE_PC *)part_types)[edpart_create_type].field_b3;
+    edpart_effect_list = ((PART_RUNTIME_TYPE *)part_types)[edpart_create_type].field_b3;
     eduiMenuDetach(menu);
     eduiMenuDestroy(menu);
 }
@@ -352,10 +352,10 @@ void edpartGeneralTypeMenu(eduimenu_s *menu, eduiitem_s *unused1, u32 unused2) {
         eduiMenuAddItem(edpart_generaltype_menu, eduiItemSelCreate(1, edgrey, 0, 0, NULL, "Add Type"));
     }
     for (index = 0; index < 128; ++index) {
-        if (((PART_RUNTIME_TYPE_PC *)part_types)[index].name[0] != 0 && ((PART_RUNTIME_TYPE_PC *)part_types)[index].field_b3 == 0) {
+        if (((PART_RUNTIME_TYPE *)part_types)[index].name[0] != 0 && ((PART_RUNTIME_TYPE *)part_types)[index].field_b3 == 0) {
             selected = edpart_create_type == index;
-            eduiMenuAddItem(edpart_generaltype_menu, eduiItemCheckCreate(index, edblack, selected, 1, edpartSelType,
-                                                                         ((PART_RUNTIME_TYPE_PC *)part_types)[index].name));
+            eduiMenuAddItem(edpart_generaltype_menu,
+                            eduiItemCheckCreate(index, edblack, selected, 1, edpartSelType, ((PART_RUNTIME_TYPE *)part_types)[index].name));
             if (selected == 1) {
                 edpart_generaltype_menu->selected = edui_last_item;
             }
@@ -388,10 +388,10 @@ void edpartLevelTypeMenu(eduimenu_s *menu, eduiitem_s *unused1, u32 unused2) {
         eduiMenuAddItem(edpart_leveltype_menu, eduiItemSelCreate(1, edgrey, 0, 0, NULL, "Add Type"));
     }
     for (index = 0; index < 128; ++index) {
-        if (((PART_RUNTIME_TYPE_PC *)part_types)[index].name[0] != 0 && ((PART_RUNTIME_TYPE_PC *)part_types)[index].field_b3 == 1) {
+        if (((PART_RUNTIME_TYPE *)part_types)[index].name[0] != 0 && ((PART_RUNTIME_TYPE *)part_types)[index].field_b3 == 1) {
             selected = edpart_create_type == index;
-            eduiMenuAddItem(edpart_leveltype_menu, eduiItemCheckCreate(index, edblack, selected, 1, edpartSelType,
-                                                                       ((PART_RUNTIME_TYPE_PC *)part_types)[index].name));
+            eduiMenuAddItem(edpart_leveltype_menu,
+                            eduiItemCheckCreate(index, edblack, selected, 1, edpartSelType, ((PART_RUNTIME_TYPE *)part_types)[index].name));
             if (selected == 1) {
                 edpart_leveltype_menu->selected = edui_last_item;
             }
@@ -558,7 +558,7 @@ extern struct eduimenu_s *edpart_instanceorphans_menu;
 extern i32 edpart_nearest_orphans;
 extern i32 edpart_nearest_duplicates;
 
-#define EDPART_RUNTIME_NEAREST ((PART_RUNTIME_TYPE_PC *)edpart_nearest_type)
+#define EDPART_RUNTIME_NEAREST ((PART_RUNTIME_TYPE *)edpart_nearest_type)
 #define EDPART_REMOVE_INSTANCE(first)                                                                                                      \
     for (slot = (first); slot < 7; ++slot) {                                                                                               \
         edpart_nearest_type->effect_ids[slot] = edpart_nearest_type->effect_ids[slot + 1];                                                 \
@@ -1358,7 +1358,7 @@ i32 edpartSaveEffects(char *filename, u8 page) {
     i32 emitter_count = 0;
     memset(empty_name, 0, sizeof(empty_name));
     for (index = 0; index < 128; ++index) {
-        if (((PART_RUNTIME_TYPE_PC *)part_types)[index].name[0] != '\0' && ((PART_RUNTIME_TYPE_PC *)part_types)[index].field_b3 == page) {
+        if (((PART_RUNTIME_TYPE *)part_types)[index].name[0] != '\0' && ((PART_RUNTIME_TYPE *)part_types)[index].field_b3 == page) {
             ++type_count;
         }
     }
@@ -1370,103 +1370,102 @@ i32 edpartSaveEffects(char *filename, u8 page) {
         EdFileWriteInt(type_count);
 
         for (index = 0; index < 128; ++index) {
-            if (((PART_RUNTIME_TYPE_PC *)part_types)[index].name[0] == '\0' ||
-                ((PART_RUNTIME_TYPE_PC *)part_types)[index].field_b3 != page) {
+            if (((PART_RUNTIME_TYPE *)part_types)[index].name[0] == '\0' || ((PART_RUNTIME_TYPE *)part_types)[index].field_b3 != page) {
                 continue;
             }
 
-            EdFileWrite(((PART_RUNTIME_TYPE_PC *)part_types)[index].name, 16);
+            EdFileWrite(((PART_RUNTIME_TYPE *)part_types)[index].name, 16);
             for (variant = 0; variant < 8; ++variant) {
-                EdFileWriteChar((u8)((PART_RUNTIME_TYPE_PC *)part_types)[index].effect_pages[variant]);
+                EdFileWriteChar((u8)((PART_RUNTIME_TYPE *)part_types)[index].effect_pages[variant]);
             }
             for (variant = 0; variant < 8; ++variant) {
-                i16 effect_id = ((PART_RUNTIME_TYPE_PC *)part_types)[index].effect_ids[variant];
+                i16 effect_id = ((PART_RUNTIME_TYPE *)part_types)[index].effect_ids[variant];
                 NUSPECIALHANDLE special;
                 if (effect_id == -1) {
                     EdFileWrite(empty_name, 16);
                 } else if (effect_id == 9999) {
                     EdFileWrite(PartNullInstanceName, 16);
                 } else if (effect_id == 9998) {
-                    EdFileWrite(((PART_RUNTIME_TYPE_PC *)part_types)[index].object_names[variant], 16);
-                } else if (((PART_RUNTIME_TYPE_PC *)part_types)[index].effect_pages[variant] == 0) {
+                    EdFileWrite(((PART_RUNTIME_TYPE *)part_types)[index].object_names[variant], 16);
+                } else if (((PART_RUNTIME_TYPE *)part_types)[index].effect_pages[variant] == 0) {
                     NuGScnGetSpecial(&special, edbits_base_scene, effect_id);
                     EdFileWrite(NuSpecialGetName(&special), 16);
-                } else if (((PART_RUNTIME_TYPE_PC *)part_types)[index].effect_pages[variant] == 1) {
+                } else if (((PART_RUNTIME_TYPE *)part_types)[index].effect_pages[variant] == 1) {
                     NuGScnGetSpecial(&special, edbits_things_scene, effect_id);
                     EdFileWrite(NuSpecialGetName(&special), 16);
                 } else {
                     EdFileWrite(empty_name, 16);
                 }
             }
-            EdFileWriteChar(((PART_RUNTIME_TYPE_PC *)part_types)[index].variant_mode);
-            EdFileWriteFloat(((PART_RUNTIME_TYPE_PC *)part_types)[index].particle_scale);
-            EdFileWriteFloat(((PART_RUNTIME_TYPE_PC *)part_types)[index].effect_scale);
-            EdFileWriteFloat(((PART_RUNTIME_TYPE_PC *)part_types)[index].lifetime);
-            EdFileWriteFloat(((PART_RUNTIME_TYPE_PC *)part_types)[index].lifetime_random);
-            EdFileWriteFloat(((PART_RUNTIME_TYPE_PC *)part_types)[index].speed);
-            EdFileWriteFloat(((PART_RUNTIME_TYPE_PC *)part_types)[index].gravity);
-            EdFileWriteFloat(((PART_RUNTIME_TYPE_PC *)part_types)[index].emission_rate);
-            EdFileWriteFloat(((PART_RUNTIME_TYPE_PC *)part_types)[index].bounce);
-            EdFileWriteNuVec(&((PART_RUNTIME_TYPE_PC *)part_types)[index].position_random);
-            EdFileWriteNuVec(&((PART_RUNTIME_TYPE_PC *)part_types)[index].velocity_random);
-            EdFileWriteFloat(((PART_RUNTIME_TYPE_PC *)part_types)[index].emission_period);
-            EdFileWriteFloat(((PART_RUNTIME_TYPE_PC *)part_types)[index].emission_period_random);
-            EdFileWriteFloat(((PART_RUNTIME_TYPE_PC *)part_types)[index].emission_pause);
-            EdFileWriteFloat(((PART_RUNTIME_TYPE_PC *)part_types)[index].emission_pause_random);
-            EdFileWriteInt(((PART_RUNTIME_TYPE_PC *)part_types)[index].rotation[0]);
-            EdFileWriteInt(((PART_RUNTIME_TYPE_PC *)part_types)[index].rotation[1]);
-            EdFileWriteInt(((PART_RUNTIME_TYPE_PC *)part_types)[index].rotation[2]);
-            EdFileWriteInt(((PART_RUNTIME_TYPE_PC *)part_types)[index].rotation_random[0]);
-            EdFileWriteInt(((PART_RUNTIME_TYPE_PC *)part_types)[index].rotation_random[1]);
-            EdFileWriteInt(((PART_RUNTIME_TYPE_PC *)part_types)[index].rotation_random[2]);
-            EdFileWriteUnsignedInt(((PART_RUNTIME_TYPE_PC *)part_types)[index].flags);
+            EdFileWriteChar(((PART_RUNTIME_TYPE *)part_types)[index].variant_mode);
+            EdFileWriteFloat(((PART_RUNTIME_TYPE *)part_types)[index].particle_scale);
+            EdFileWriteFloat(((PART_RUNTIME_TYPE *)part_types)[index].effect_scale);
+            EdFileWriteFloat(((PART_RUNTIME_TYPE *)part_types)[index].lifetime);
+            EdFileWriteFloat(((PART_RUNTIME_TYPE *)part_types)[index].lifetime_random);
+            EdFileWriteFloat(((PART_RUNTIME_TYPE *)part_types)[index].speed);
+            EdFileWriteFloat(((PART_RUNTIME_TYPE *)part_types)[index].gravity);
+            EdFileWriteFloat(((PART_RUNTIME_TYPE *)part_types)[index].emission_rate);
+            EdFileWriteFloat(((PART_RUNTIME_TYPE *)part_types)[index].bounce);
+            EdFileWriteNuVec(&((PART_RUNTIME_TYPE *)part_types)[index].position_random);
+            EdFileWriteNuVec(&((PART_RUNTIME_TYPE *)part_types)[index].velocity_random);
+            EdFileWriteFloat(((PART_RUNTIME_TYPE *)part_types)[index].emission_period);
+            EdFileWriteFloat(((PART_RUNTIME_TYPE *)part_types)[index].emission_period_random);
+            EdFileWriteFloat(((PART_RUNTIME_TYPE *)part_types)[index].emission_pause);
+            EdFileWriteFloat(((PART_RUNTIME_TYPE *)part_types)[index].emission_pause_random);
+            EdFileWriteInt(((PART_RUNTIME_TYPE *)part_types)[index].rotation[0]);
+            EdFileWriteInt(((PART_RUNTIME_TYPE *)part_types)[index].rotation[1]);
+            EdFileWriteInt(((PART_RUNTIME_TYPE *)part_types)[index].rotation[2]);
+            EdFileWriteInt(((PART_RUNTIME_TYPE *)part_types)[index].rotation_random[0]);
+            EdFileWriteInt(((PART_RUNTIME_TYPE *)part_types)[index].rotation_random[1]);
+            EdFileWriteInt(((PART_RUNTIME_TYPE *)part_types)[index].rotation_random[2]);
+            EdFileWriteUnsignedInt(((PART_RUNTIME_TYPE *)part_types)[index].flags);
 
-            if (((PART_RUNTIME_TYPE_PC *)part_types)[index].trail_effects[0] != -1) {
-                EdFileWrite(debtab[((PART_RUNTIME_TYPE_PC *)part_types)[index].trail_effects[0]]->name, 16);
+            if (((PART_RUNTIME_TYPE *)part_types)[index].trail_effects[0] != -1) {
+                EdFileWrite(debtab[((PART_RUNTIME_TYPE *)part_types)[index].trail_effects[0]]->name, 16);
             } else {
                 EdFileWrite(empty_name, 16);
             }
-            if (((PART_RUNTIME_TYPE_PC *)part_types)[index].trail_effects[1] != -1) {
-                EdFileWrite(debtab[((PART_RUNTIME_TYPE_PC *)part_types)[index].trail_effects[1]]->name, 16);
+            if (((PART_RUNTIME_TYPE *)part_types)[index].trail_effects[1] != -1) {
+                EdFileWrite(debtab[((PART_RUNTIME_TYPE *)part_types)[index].trail_effects[1]]->name, 16);
             } else {
                 EdFileWrite(empty_name, 16);
             }
-            if (((PART_RUNTIME_TYPE_PC *)part_types)[index].attached_effect != -1) {
-                EdFileWrite(debtab[((PART_RUNTIME_TYPE_PC *)part_types)[index].attached_effect]->name, 16);
+            if (((PART_RUNTIME_TYPE *)part_types)[index].attached_effect != -1) {
+                EdFileWrite(debtab[((PART_RUNTIME_TYPE *)part_types)[index].attached_effect]->name, 16);
             } else {
                 EdFileWrite(empty_name, 16);
             }
-            EdFileWriteFloat(((PART_RUNTIME_TYPE_PC *)part_types)[index].trail_rates[0]);
-            EdFileWriteFloat(((PART_RUNTIME_TYPE_PC *)part_types)[index].trail_rates[1]);
-            if (((PART_RUNTIME_TYPE_PC *)part_types)[index].kill_effect != -1) {
-                EdFileWrite(debtab[((PART_RUNTIME_TYPE_PC *)part_types)[index].kill_effect]->name, 16);
+            EdFileWriteFloat(((PART_RUNTIME_TYPE *)part_types)[index].trail_rates[0]);
+            EdFileWriteFloat(((PART_RUNTIME_TYPE *)part_types)[index].trail_rates[1]);
+            if (((PART_RUNTIME_TYPE *)part_types)[index].kill_effect != -1) {
+                EdFileWrite(debtab[((PART_RUNTIME_TYPE *)part_types)[index].kill_effect]->name, 16);
             } else {
                 EdFileWrite(empty_name, 16);
             }
-            if (((PART_RUNTIME_TYPE_PC *)part_types)[index].impact_effect != -1) {
-                EdFileWrite(debtab[((PART_RUNTIME_TYPE_PC *)part_types)[index].impact_effect]->name, 16);
+            if (((PART_RUNTIME_TYPE *)part_types)[index].impact_effect != -1) {
+                EdFileWrite(debtab[((PART_RUNTIME_TYPE *)part_types)[index].impact_effect]->name, 16);
             } else {
                 EdFileWrite(empty_name, 16);
             }
-            if (((PART_RUNTIME_TYPE_PC *)part_types)[index].impact_part != -1) {
-                EdFileWrite(((PART_RUNTIME_TYPE_PC *)part_types)[((PART_RUNTIME_TYPE_PC *)part_types)[index].impact_part].name, 16);
+            if (((PART_RUNTIME_TYPE *)part_types)[index].impact_part != -1) {
+                EdFileWrite(((PART_RUNTIME_TYPE *)part_types)[((PART_RUNTIME_TYPE *)part_types)[index].impact_part].name, 16);
             } else {
                 EdFileWrite(empty_name, 16);
             }
             for (variant = 0; variant < 4; ++variant) {
-                if (((PART_RUNTIME_TYPE_PC *)part_types)[index].sounds[variant] != -1) {
-                    EdFileWrite(SfxInfo[((PART_RUNTIME_TYPE_PC *)part_types)[index].sounds[variant]].name, 16);
+                if (((PART_RUNTIME_TYPE *)part_types)[index].sounds[variant] != -1) {
+                    EdFileWrite(SfxInfo[((PART_RUNTIME_TYPE *)part_types)[index].sounds[variant]].name, 16);
                 } else {
                     EdFileWrite(empty_name, 16);
                 }
             }
             for (variant = 0; variant < 4; ++variant) {
-                EdFileWriteChar(((PART_RUNTIME_TYPE_PC *)part_types)[index].sound_modes[variant]);
+                EdFileWriteChar(((PART_RUNTIME_TYPE *)part_types)[index].sound_modes[variant]);
             }
-            EdFileWriteFloat(((PART_RUNTIME_TYPE_PC *)part_types)[index].maximum_distance);
-            EdFileWriteFloat(((PART_RUNTIME_TYPE_PC *)part_types)[index].field_160);
-            EdFileWriteFloat(((PART_RUNTIME_TYPE_PC *)part_types)[index].field_164);
-            EdFileWriteFloat(((PART_RUNTIME_TYPE_PC *)part_types)[index].field_168);
+            EdFileWriteFloat(((PART_RUNTIME_TYPE *)part_types)[index].maximum_distance);
+            EdFileWriteFloat(((PART_RUNTIME_TYPE *)part_types)[index].field_160);
+            EdFileWriteFloat(((PART_RUNTIME_TYPE *)part_types)[index].field_164);
+            EdFileWriteFloat(((PART_RUNTIME_TYPE *)part_types)[index].field_168);
         }
 
         if (page == 1) {
@@ -1731,8 +1730,8 @@ void edpartFileLoadEffects(eduimenu_s *parent, eduiitem_s *unused1, u32 unused2)
     memset(part_types, 0, sizeof(part_types));
     for (index = 0; index < 128; ++index) {
         for (variant = 0; variant < 8; ++variant) {
-            ((PART_RUNTIME_TYPE_PC *)part_types)[index].effect_ids[variant] = -1;
-            ((PART_RUNTIME_TYPE_PC *)part_types)[index].effect_pages[variant] = -1;
+            ((PART_RUNTIME_TYPE *)part_types)[index].effect_ids[variant] = -1;
+            ((PART_RUNTIME_TYPE *)part_types)[index].effect_pages[variant] = -1;
         }
     }
     part_types_used = 0;

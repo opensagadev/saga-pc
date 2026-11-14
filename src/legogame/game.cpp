@@ -96,11 +96,11 @@ GAME_PUBLISHER_ASSERT(offsetof(PLAYERCHARACTERCONFIG, weapon_action) == 0x116);
 GAME_PUBLISHER_ASSERT(offsetof(GAMEOBJECT, flags_e20) == 0xe20);
 GAME_PUBLISHER_ASSERT(offsetof(GAMEOBJECT, field_e33) == 0xe33);
 GAME_PUBLISHER_ASSERT(offsetof(GAMEOBJECT, id) == 0x1064);
-GAME_PUBLISHER_ASSERT(sizeof(CUT_PLAYER_CLIP_CONFIG_PC) == 0x44);
-GAME_PUBLISHER_ASSERT(offsetof(CUT_PLAYER_CLIP_CONFIG_PC, level_id) == 0);
-GAME_PUBLISHER_ASSERT(offsetof(CUT_PLAYER_CLIP_CONFIG_PC, type) == 2);
-GAME_PUBLISHER_ASSERT(offsetof(CUT_PLAYER_CLIP_CONFIG_PC, guest_episode) == 3);
-GAME_PUBLISHER_ASSERT(offsetof(CUT_PLAYER_CLIP_CONFIG_PC, name) == 4);
+GAME_PUBLISHER_ASSERT(sizeof(CUT_PLAYER_CLIP_CONFIG) == 0x44);
+GAME_PUBLISHER_ASSERT(offsetof(CUT_PLAYER_CLIP_CONFIG, level_id) == 0);
+GAME_PUBLISHER_ASSERT(offsetof(CUT_PLAYER_CLIP_CONFIG, type) == 2);
+GAME_PUBLISHER_ASSERT(offsetof(CUT_PLAYER_CLIP_CONFIG, guest_episode) == 3);
+GAME_PUBLISHER_ASSERT(offsetof(CUT_PLAYER_CLIP_CONFIG, name) == 4);
 GAME_PUBLISHER_ASSERT(sizeof(LEVELDATA_PC) == 0x130);
 GAME_PUBLISHER_ASSERT(offsetof(LEVELDATA_PC, area_index) == 0xa3);
 GAME_PUBLISHER_ASSERT(offsetof(AREA_DATA_PC, index) == 0x7c);
@@ -122,9 +122,9 @@ GAME_PUBLISHER_ASSERT(offsetof(NUMTX, translation) == 0x30);
 typedef struct buck_rotation_reader_s {
     u8 unknown_0000[0x27a];
     u16 rotation;
-} BUCK_ROTATION_READER_PC;
+} BUCK_ROTATION_READER;
 
-GAME_PUBLISHER_ASSERT(offsetof(BUCK_ROTATION_READER_PC, rotation) == 0x27a);
+GAME_PUBLISHER_ASSERT(offsetof(BUCK_ROTATION_READER, rotation) == 0x27a);
 GAME_PUBLISHER_ASSERT(offsetof(GAMEOBJECT, pad) == 0xca4);
 GAME_PUBLISHER_ASSERT(offsetof(GAMEPAD_PC, bound_pad) == 0);
 GAME_PUBLISHER_ASSERT(offsetof(WORLDINFO, current_level) == 0x128);
@@ -132,9 +132,9 @@ GAME_PUBLISHER_ASSERT(offsetof(WORLDINFO, current_level) == 0x128);
 typedef struct game_callback_weapon_flags_s {
     u8 unknown_00[0xe22];
     u8 weapon_flags;
-} GAME_CALLBACK_WEAPON_FLAGS_PC;
+} GAME_CALLBACK_WEAPON_FLAGS;
 
-GAME_PUBLISHER_ASSERT(offsetof(GAME_CALLBACK_WEAPON_FLAGS_PC, weapon_flags) == 0xe22);
+GAME_PUBLISHER_ASSERT(offsetof(GAME_CALLBACK_WEAPON_FLAGS, weapon_flags) == 0xe22);
 GAME_PUBLISHER_ASSERT(offsetof(GAMEOBJECT, anim_packet) == 8);
 GAME_PUBLISHER_ASSERT(offsetof(GAMEOBJECT, flags_1fc) == 0x1fc);
 GAME_PUBLISHER_ASSERT(offsetof(GAMEOBJECT, floor_height) == 0x21c);
@@ -193,11 +193,11 @@ extern "C" {
 typedef struct game_door_callback_s {
     u8 unknown_00[0xf0];
     u16 level_id;
-} GAME_DOOR_CALLBACK_PC;
+} GAME_DOOR_CALLBACK;
 
-GAME_PUBLISHER_ASSERT(offsetof(GAME_DOOR_CALLBACK_PC, level_id) == 0xf0);
+GAME_PUBLISHER_ASSERT(offsetof(GAME_DOOR_CALLBACK, level_id) == 0xf0);
 GAME_PUBLISHER_ASSERT(offsetof(LEVELDATA_PC, index) == 0x62);
-GAME_PUBLISHER_ASSERT(offsetof(DOOR_s, level) == offsetof(GAME_DOOR_CALLBACK_PC, level_id));
+GAME_PUBLISHER_ASSERT(offsetof(DOOR_s, level) == offsetof(GAME_DOOR_CALLBACK, level_id));
 GAME_PUBLISHER_ASSERT(offsetof(GAMEOBJECT, doomed_escape_locator) == 0xf14);
 GAME_PUBLISHER_ASSERT(offsetof(GAMEOBJECT, ai_packet) + offsetof(AIPACKET, current_route) == 0x404);
 GAME_PUBLISHER_ASSERT(offsetof(GAMEOBJECT, ai_packet) + offsetof(AIPACKET, next_route) == 0x405);
@@ -477,7 +477,7 @@ extern "C" void InitGameBeforeConfig(void) {
     }
 }
 
-static void GoThroughDoor_ExtraCode(WORLDINFO *world, GAME_DOOR_CALLBACK_PC *door) {
+static void GoThroughDoor_ExtraCode(WORLDINFO *world, GAME_DOOR_CALLBACK *door) {
     VehicleAreaRememberSpeed = GetVehicleAreaRememberSpeed();
     if (world->current_level == VADERA_LDATA) {
         VaderA_GoneThroughDoor(world, reinterpret_cast<DOOR_s *>(door));
@@ -858,7 +858,7 @@ static void BuckStartExtra_LSW(GAMEOBJECT *object) {
             f32 distance = delta.x * delta.x + delta.z * delta.z;
             if (distance < radius * radius) {
                 NUVEC destination;
-                NuVecRotateY(&destination, &BuckSnowmobForward, ((BUCK_ROTATION_READER_PC *)object)->rotation);
+                NuVecRotateY(&destination, &BuckSnowmobForward, ((BUCK_ROTATION_READER *)object)->rotation);
                 NuVecAdd(&destination, &destination, &((GAMEOBJECT *)Player[i])->collision_position);
                 f32 height = GameShadow(NULL, &destination, 5.0f, -1);
                 if (height != 2000000.0f) {
@@ -1168,7 +1168,7 @@ static i32 MatrixReflection_CanOverride(void) {
     return 1;
 }
 
-static i32 CutScenePlayer_Accept(CUT_PLAYER_CLIP_CONFIG_PC *clip) {
+static i32 CutScenePlayer_Accept(CUT_PLAYER_CLIP_CONFIG *clip) {
     if (LOSTTEMPLE_ADATA != NULL && LDataList[clip->level_id].area_index == LOSTTEMPLE_ADATA->index) {
         return 0;
     }
@@ -1262,7 +1262,7 @@ static NUSPECIALHANDLE *GameMsg_GetExtraObj(GAME_MESSAGE_PC *message) {
 }
 
 static void Jump_EndOfLandContext(GAMEOBJECT *object) {
-    GAME_CALLBACK_WEAPON_FLAGS_PC *weapon = (GAME_CALLBACK_WEAPON_FLAGS_PC *)object;
+    GAME_CALLBACK_WEAPON_FLAGS *weapon = (GAME_CALLBACK_WEAPON_FLAGS *)object;
     if ((i16)object->id == id_THEEMPEROR && object->character_context == LEGOCONTEXT_LAND_COMBOJUMP && BigJumpLandPreferred != -1 &&
         object->field_7aa == BigJumpLandPreferred && ((weapon->weapon_flags & 1) == 0 || object->field_e33 == 2)) {
         ResetAnimPacket(&object->anim_packet, -1);
@@ -1270,7 +1270,7 @@ static void Jump_EndOfLandContext(GAMEOBJECT *object) {
 }
 
 static void BigJump_EndOfLand(GAMEOBJECT *object) {
-    GAME_CALLBACK_WEAPON_FLAGS_PC *weapon = (GAME_CALLBACK_WEAPON_FLAGS_PC *)object;
+    GAME_CALLBACK_WEAPON_FLAGS *weapon = (GAME_CALLBACK_WEAPON_FLAGS *)object;
     if ((i16)object->id == id_THEEMPEROR && BigJumpLandPreferred != -1 && object->field_7aa == BigJumpLandPreferred &&
         ((weapon->weapon_flags & 1) == 0 || object->field_e33 == 2)) {
         ResetAnimPacket(&object->anim_packet, -1);

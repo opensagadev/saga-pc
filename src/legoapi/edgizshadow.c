@@ -3,15 +3,15 @@
 
 typedef struct shadow_world_view_s { // size 0x5114
     u8 reserved_0000[0x5110];        // 0x0000
-    EDGIZSHADOW_PC *shadow_editor;   // 0x5110
-} SHADOW_WORLD_VIEW_PC;
+    EDGIZSHADOW *shadow_editor;      // 0x5110
+} SHADOW_WORLD_VIEW;
 
 static i32 Shadow_GetMaxGizmos(void *world) {
     return 1;
 }
 
 static void Shadow_AddGizmos(void *system, i32 type_id, void *world_ptr, void *data) {
-    SHADOW_WORLD_VIEW_PC *world = world_ptr;
+    SHADOW_WORLD_VIEW *world = world_ptr;
     AddGizmo(system, type_id, NULL, &world->shadow_editor);
 }
 
@@ -33,11 +33,11 @@ static i32 Shadow_GetNumOutputs(GIZMO_PC *gizmo) {
 
 static void *Shadow_ReserveBufferSpace(void *world_ptr) {
     WORLDINFO *world = world_ptr;
-    SHADOW_WORLD_VIEW_PC *view = world_ptr;
+    SHADOW_WORLD_VIEW *view = world_ptr;
     world->giz_buffer.addr = (world->giz_buffer.addr + 3u) & ~3u;
-    view->shadow_editor = (EDGIZSHADOW_PC *)world->giz_buffer.addr;
-    world->giz_buffer.addr += sizeof(EDGIZSHADOW_PC);
-    memset(view->shadow_editor, 0, sizeof(EDGIZSHADOW_PC));
+    view->shadow_editor = (EDGIZSHADOW *)world->giz_buffer.addr;
+    world->giz_buffer.addr += sizeof(EDGIZSHADOW);
+    memset(view->shadow_editor, 0, sizeof(EDGIZSHADOW));
     view->shadow_editor->direction.x = -2.0f;
     view->shadow_editor->direction.y = -10.0f;
     view->shadow_editor->direction.z = -2.0f;
@@ -55,7 +55,7 @@ static void *Shadow_ReserveBufferSpace(void *world_ptr) {
     return view->shadow_editor;
 }
 
-static void Shadow_ApplyPreset(EDGIZSHADOW_PC *shadow, i32 preset) {
+static void Shadow_ApplyPreset(EDGIZSHADOW *shadow, i32 preset) {
     switch (preset) {
         case 0:
             shadow->preset = 0;
@@ -89,8 +89,8 @@ static void Shadow_ApplyPreset(EDGIZSHADOW_PC *shadow, i32 preset) {
 
 static i32 Shadow_Load(void *world_ptr, void *data) {
     WORLDINFO *world = world_ptr;
-    SHADOW_WORLD_VIEW_PC *view = world_ptr;
-    EDGIZSHADOW_PC *shadow;
+    SHADOW_WORLD_VIEW *view = world_ptr;
+    EDGIZSHADOW *shadow;
     i32 version;
     i32 count;
     i32 record;

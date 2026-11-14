@@ -49,25 +49,25 @@ typedef struct emperor_fight_packet_s { // size 0x8
     u8 zap;                             // 0x5
     u8 player_floor_mask;               // 0x6
     u8 reserved;                        // 0x7
-} EMPEROR_FIGHT_PACKET_PC;
+} EMPEROR_FIGHT_PACKET;
 
 typedef struct level_script_flags_s { // size 0x10
     u8 first;                         // 0x0
     u8 light_flags[4];                // 0x1
     u8 arrow_flags[4];                // 0x5
     u8 remaining[7];                  // 0x9
-} LEVEL_SCRIPT_FLAGS_PC;
+} LEVEL_SCRIPT_FLAGS;
 
 typedef struct sarlacc_world_s {     // size 0x50d4
     u8 unknown_0000[0x50cc];         // 0x0000
     i32 blowup_target_count;         // 0x50cc
     GIZMOBLOWUP_PC **blowup_targets; // 0x50d0
-} SARLACC_WORLD_PC;
+} SARLACC_WORLD;
 
 typedef struct sarlacc_panel_s { // size 0x63
     u8 unknown_00[0x62];         // 0x00
     u8 state_flags;              // 0x62
-} SARLACC_PANEL_PC;
+} SARLACC_PANEL;
 
 extern i32 DrawBossHitPointsTwoRows;
 
@@ -78,10 +78,10 @@ typedef struct emperor_update_packet_s { // size 0x8
     u8 zap;                              // 0x5
     i8 player_floor_mask;                // 0x6
     u8 reserved;                         // 0x7
-} EMPEROR_UPDATE_PACKET_PC;
+} EMPEROR_UPDATE_PACKET;
 
 void KillBossNewLevel(i32 id, i32 unused_4, f32 delay, i32 level_index);
-#define RANCOR_PLAYER_IN_AREA_PC(player, world, n) (U64_PAIR((player)->ai_area_mask) & (1 << (LevArea[n] - (world)->ai_sys->areas)))
+#define RANCOR_PLAYER_IN_AREA(player, world, n) (U64_PAIR((player)->ai_area_mask) & (1 << (LevArea[n] - (world)->ai_sys->areas)))
 /* Fairground party split locator. */
 static AILOCATOR *FairgroundSplitPartyLocator;
 
@@ -103,7 +103,7 @@ extern f32 EmperorFloorRadius;
 extern f32 EmperorFloorJitter;
 extern f32 EmperorFloorPush;
 extern f32 EmperorFloorSafeXMinimum;
-#define EMPEROR_PACKET ((EMPEROR_UPDATE_PACKET_PC *)emperorfighta_netpacket)
+#define EMPEROR_PACKET ((EMPEROR_UPDATE_PACKET *)emperorfighta_netpacket)
 #define EMPEROR_FLOOR_AREA_MASK(world, area) (1 << ((area) - (world)->ai_sys->areas))
 
 void DeathStar2BattleA_AlwaysUpdate(WORLDINFO *world) {
@@ -331,11 +331,11 @@ f32 DeathStar2BattleFire_GetSlowDownMul(GAMEOBJECT *object) {
 }
 
 void EmperorFightA_Init(WORLDINFO *world) {
-    LEVEL_SCRIPT_FLAGS_PC *flags = (LEVEL_SCRIPT_FLAGS_PC *)&LevFlag;
+    LEVEL_SCRIPT_FLAGS *flags = (LEVEL_SCRIPT_FLAGS *)&LevFlag;
     i32 i;
     emperorfighta_netpacket = SetLevelHack(8);
-    ((EMPEROR_FIGHT_PACKET_PC *)emperorfighta_netpacket)->enabled = 1;
-    ((EMPEROR_FIGHT_PACKET_PC *)emperorfighta_netpacket)->enabled = 1;
+    ((EMPEROR_FIGHT_PACKET *)emperorfighta_netpacket)->enabled = 1;
+    ((EMPEROR_FIGHT_PACKET *)emperorfighta_netpacket)->enabled = 1;
     NuSpecialFind(world->current_gscn, &LevHSpecial[3], "lift_rlight_bon1", 1);
     NuSpecialFind(world->current_gscn, &LevHSpecial[4], "lift_rlight_bon2", 1);
     NuSpecialFind(world->current_gscn, &LevHSpecial[5], "lift_rlight_bon3", 1);
@@ -382,7 +382,7 @@ void EmperorFightA_Reset(WORLDINFO *world) {
     NuSpecialFind(world->current_gscn, &LevHSpecial[2], "lift_main1", 1);
     LevArea[0] = AISysFindArea(world->ai_sys, "ElectricFloor");
     eFloor_timer = 0.0f;
-    ((EMPEROR_FIGHT_PACKET_PC *)emperorfighta_netpacket)->state = 0;
+    ((EMPEROR_FIGHT_PACKET *)emperorfighta_netpacket)->state = 0;
     routemask_efloor_on = 0;
     routemask_efloor_off = 0;
     for (i = 0; i < world->ai_sys->path_sys->active_path->route_count; ++i) {
@@ -419,7 +419,7 @@ void EmperorFightA_Reset(WORLDINFO *world) {
 }
 
 void EmperorFightA_UpdateFloorObstacles(void) {
-    EMPEROR_UPDATE_PACKET_PC *packet = emperorfighta_netpacket;
+    EMPEROR_UPDATE_PACKET *packet = emperorfighta_netpacket;
     switch (packet->state) {
         case 1:
             GizObstacle_PlayForwards(LevGizObst[1]);
@@ -827,9 +827,9 @@ void JabbasPalaceE_Update(WORLDINFO *world) {
         } else {
             for (i = 0; i < 8; ++i) {
                 player = Player[i];
-                if (player != NULL && ((LevArea[0] != NULL && RANCOR_PLAYER_IN_AREA_PC(player, world, 0)) ||
-                                       (LevArea[1] != NULL && RANCOR_PLAYER_IN_AREA_PC(player, world, 1)) ||
-                                       (LevArea[2] != NULL && RANCOR_PLAYER_IN_AREA_PC(player, world, 2)))) {
+                if (player != NULL && ((LevArea[0] != NULL && RANCOR_PLAYER_IN_AREA(player, world, 0)) ||
+                                       (LevArea[1] != NULL && RANCOR_PLAYER_IN_AREA(player, world, 1)) ||
+                                       (LevArea[2] != NULL && RANCOR_PLAYER_IN_AREA(player, world, 2)))) {
                     U64_PAIR(LevGameObject[0]->ai_opponent_exclusion_mask) |= (u64)1 << player->hostility_group;
                 }
             }
@@ -909,7 +909,7 @@ void SarlaccPitB_SpecialUpdate(WORLDINFO *world) {
         }
         bit = 1u << index;
         /* Expands the show-and-raise code separately in each branch. */
-#define SARLACC_SHOW_PANEL_PC(handle)                                                                                                      \
+#define SARLACC_SHOW_PANEL(handle)                                                                                                         \
     do {                                                                                                                                   \
         NuSpecialSetVisibility(handle, 1);                                                                                                 \
         position = NuSpecialGetDrawPos(handle);                                                                                            \
@@ -919,17 +919,17 @@ void SarlaccPitB_SpecialUpdate(WORLDINFO *world) {
         }                                                                                                                                  \
     } while (0)
         if (sarlaccb_netpacket->off_mask & bit) {
-            SARLACC_SHOW_PANEL_PC(&sarlaccdisco.off[index]);
+            SARLACC_SHOW_PANEL(&sarlaccdisco.off[index]);
         } else if (sarlaccb_netpacket->flash_mask & bit) {
-            SARLACC_SHOW_PANEL_PC(&sarlaccdisco.flash[index]);
+            SARLACC_SHOW_PANEL(&sarlaccdisco.flash[index]);
         } else if (sarlaccb_netpacket->select_mask & bit) {
-            SARLACC_SHOW_PANEL_PC(&sarlaccdisco.select[index]);
+            SARLACC_SHOW_PANEL(&sarlaccdisco.select[index]);
         } else if (sarlaccb_netpacket->on_mask & bit) {
-            SARLACC_SHOW_PANEL_PC(&sarlaccdisco.on[index]);
+            SARLACC_SHOW_PANEL(&sarlaccdisco.on[index]);
         } else if (sarlaccb_netpacket->finish_mask & bit) {
-            SARLACC_SHOW_PANEL_PC(&sarlaccdisco.finish[index]);
+            SARLACC_SHOW_PANEL(&sarlaccdisco.finish[index]);
         }
-#undef SARLACC_SHOW_PANEL_PC
+#undef SARLACC_SHOW_PANEL
         position = NuSpecialGetDrawPos(&LevHSpecial[1]);
         if (position != NULL) {
             position->y = SarlaccDiscoBaseOffset + sarlaccdisco.height;
@@ -1358,7 +1358,7 @@ static f32 SarlaccRechargeTimer = 0;
 #pragma bss_seg()
 
 void SarlaccPitC_Update(WORLDINFO *world) {
-    SARLACC_WORLD_PC *script_world = (SARLACC_WORLD_PC *)world;
+    SARLACC_WORLD *script_world = (SARLACC_WORLD *)world;
     if (LevGameObject[0] != NULL && SarlaccBlowUpTargetCount == 4) {
         if (LevGameObject[0]->rider != NULL) {
             script_world->blowup_target_count = 4;
@@ -1368,7 +1368,7 @@ void SarlaccPitC_Update(WORLDINFO *world) {
             }
             if ((u32)SarlaccPower > 0) {
                 if (LevGameObject[0]->quick_shoot_bolt_id >= 0) {
-                    SARLACC_PANEL_PC *panel;
+                    SARLACC_PANEL *panel;
                     --SarlaccPower;
                     NuSpecialSetVisibility(&LevHSpecial[SarlaccPower], 1);
                     NuSpecialSetVisibility(&LevHSpecial[SarlaccPower + 8], 0);

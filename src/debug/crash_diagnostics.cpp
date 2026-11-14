@@ -191,7 +191,7 @@ finished:
     return EXCEPTION_CONTINUE_SEARCH;
 }
 
-extern "C" void SagaDebugCrashInitPc(HANDLE existing_log_file, const char *build_id, const char *log_path) {
+extern "C" void SagaDebugCrashInit(HANDLE existing_log_file, const char *build_id, const char *log_path) {
     DWORD saved_error = GetLastError();
     HANDLE modules;
     MODULEENTRY32 entry;

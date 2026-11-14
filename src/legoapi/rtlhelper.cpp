@@ -271,7 +271,7 @@ class EdFloatControl : public EdValueControl<f32> {
 void cbEdLevelDestroy(eduimenu_s *menu, eduimenu_s *);
 i32 LineToPlaneIntersecion(VuVec &origin, VuVec &direction, VuVec &plane, VuVec *intersection);
 
-STATIC_ASSERT(RTL_EDITOR_SET_SIZE_PC == 0x6fac);
+STATIC_ASSERT(RTL_EDITOR_SET_SIZE == 0x6fac);
 
 class RTLHelper : public EdClassInterface { // size 0xc
   public:
@@ -527,7 +527,7 @@ void RTLHelper::EnterEditor() {
     if (curr_set == NULL) {
         curr_set = set;
     }
-    RTL_SET_INDEX_PC(curr_set)->enabled = 0;
+    RTL_SET_INDEX(curr_set)->enabled = 0;
 }
 
 /* The 16-byte-aligned permanent-buffer carve is the inline allocator also
@@ -536,17 +536,17 @@ void RTLHelper::PreLoadInitialisation(MemoryBuffer *, MemoryBuffer *) {
     if (set == NULL) {
         MEMORYMANAGER *manager = &theMemoryManager;
         RTL_SET *fresh = NULL;
-        if (RTL_EDITOR_SET_SIZE_PC < *manager->end_anchor - *manager->start_anchor) {
+        if (RTL_EDITOR_SET_SIZE < *manager->end_anchor - *manager->start_anchor) {
             *manager->start_anchor = (*manager->start_anchor + 15) & ~15;
             fresh = reinterpret_cast<RTL_SET *>(*manager->start_anchor);
-            *manager->start_anchor += RTL_EDITOR_SET_SIZE_PC;
-            memset(fresh, 0, RTL_EDITOR_SET_SIZE_PC);
-            manager->unknown_14 += RTL_EDITOR_SET_SIZE_PC;
-            manager->size -= RTL_EDITOR_SET_SIZE_PC;
+            *manager->start_anchor += RTL_EDITOR_SET_SIZE;
+            memset(fresh, 0, RTL_EDITOR_SET_SIZE);
+            manager->unknown_14 += RTL_EDITOR_SET_SIZE;
+            manager->size -= RTL_EDITOR_SET_SIZE;
             manager->unknown_10 = *manager->start_anchor;
         }
         set = fresh;
-        RTL_SET_INDEX_PC(set)->enabled = 0;
+        RTL_SET_INDEX(set)->enabled = 0;
     }
     curr_set = set;
 }
@@ -623,11 +623,11 @@ RTL_SET *RTLHelper::GetIndexedSet() {
     if (set != NULL) {
         curr_set = set;
         if (GetNumObjects() > 0) {
-            RTL_INDEX *index = RTL_SET_INDEX_PC(set);
+            RTL_INDEX *index = RTL_SET_INDEX(set);
             if (index->enabled == 0) {
                 VARIPTR buffer;
                 buffer.void_ptr = index;
-                IndexLights(set, &buffer, buffer.addr + RTL_SET_INDEX_AREA_SIZE_PC);
+                IndexLights(set, &buffer, buffer.addr + RTL_SET_INDEX_AREA_SIZE);
             }
             return set;
         }

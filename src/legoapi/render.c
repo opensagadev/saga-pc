@@ -17,7 +17,7 @@ typedef struct render_post_prim_vertex_s { // size 0x18
     u32 colour;                            // 0x0c
     f32 u;                                 // 0x10
     f32 v;                                 // 0x14
-} RENDER_POST_PRIM_VERTEX_PC;
+} RENDER_POST_PRIM_VERTEX;
 
 #define GRID_TAN_HALF_FOV(half_fov)                                                                                                        \
     (NuTrigTable[(i32)((half_fov) * 10430.378f) >> 1 & 0x7fff] / NuTrigTable[(16384 - (i32)((half_fov) * -10430.378f)) >> 1 & 0x7fff])
@@ -73,7 +73,7 @@ typedef struct render_post_prim_vertex_s { // size 0x18
         } else {                                                                                                                           \
             converted = ((colour >> 1) & 0x7f00) + ((colour & 0xfe) << 15) + ((colour >> 17) & 0x7f) + (colour & 0xff000000u);             \
         }                                                                                                                                  \
-        ((RENDER_POST_PRIM_VERTEX_PC *)NuPrimStreamBufferPointer->void_ptr)->colour = converted;                                           \
+        ((RENDER_POST_PRIM_VERTEX *)NuPrimStreamBufferPointer->void_ptr)->colour = converted;                                              \
         NuPrim2DAddXYZ((vx), (vy), 0.0f);                                                                                                  \
     } while (0)
 
@@ -165,14 +165,14 @@ typedef struct StatusPlayerModelPair { // size 0x4
     u16 model[2];                      // 0x0
 } StatusPlayerModelPair;
 
-#define STATUS_APPEND_STAGE_INLINE_PC(packet_arg, type_arg, gold_arg)                                                                      \
+#define STATUS_APPEND_STAGE_INLINE(packet_arg, type_arg, gold_arg)                                                                         \
     do {                                                                                                                                   \
         (packet_arg)->stage_types[(packet_arg)->stage_count] = (i8)(type_arg);                                                             \
         (packet_arg)->gold_brick_enabled[(packet_arg)->stage_count] = (u8)(gold_arg);                                                      \
         ++(packet_arg)->stage_count;                                                                                                       \
     } while (0)
 
-#undef STATUS_APPEND_STAGE_INLINE_PC
+#undef STATUS_APPEND_STAGE_INLINE
 
 void BonusTime_LSW_Skip(STATUS_STAGE_s *stage, STATUSPACKET_s *packet) {
     (void)stage;

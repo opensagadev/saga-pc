@@ -46,11 +46,11 @@ typedef struct nualloc_manager_block_s {      // size 0xc
     u32 size_flags;                           // 0x0
     struct nualloc_manager_block_s *next;     // 0x4
     struct nualloc_manager_block_s *previous; // 0x8
-} NUALLOC_MANAGER_BLOCK_PC;
+} NUALLOC_MANAGER_BLOCK;
 
-typedef struct nualloc_manager_trailer_s {    // size 0x4
-    NUALLOC_MANAGER_BLOCK_PC *previous_block; // 0x0
-} NUALLOC_MANAGER_TRAILER_PC;
+typedef struct nualloc_manager_trailer_s { // size 0x4
+    NUALLOC_MANAGER_BLOCK *previous_block; // 0x0
+} NUALLOC_MANAGER_TRAILER;
 
 typedef struct nualloc_manager_prefix_s { // size 0x10
     void *base;                           // 0x0

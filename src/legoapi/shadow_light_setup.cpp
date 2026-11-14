@@ -36,15 +36,15 @@ void PC_SPECIAL_SHADOW_LIGHT::SetupCustomCameraFrustumPc(NUCAMERA *camera, const
         f32 x = camera->mtx.m20;
         f32 y = camera->mtx.m21;
         f32 z = camera->mtx.m22;
-        camera_forward_pc.x = x;
-        camera_forward_pc.y = y;
-        camera_forward_pc.z = z;
+        camera_forward.x = x;
+        camera_forward.y = y;
+        camera_forward.z = z;
     }
     i32 set_count = split_count - 1;
     active_render_set_count = set_count;
-    camera_forward_pc.w = 0.0f;
+    camera_forward.w = 0.0f;
     for (i32 i = 0; i < split_count; ++i) {
-        split_distances_pc[i] = splits[i];
+        split_distances[i] = splits[i];
     }
     f32 near_clip = camera->near_clip;
     f32 far_clip = camera->far_clip;
@@ -59,10 +59,10 @@ void PC_SPECIAL_SHADOW_LIGHT::SetupCustomCameraFrustumPc(NUCAMERA *camera, const
         PostShadowComputeCapsule(&light_direction4_pc, set.corners_pc, &set.endpoint0_pc, &set.endpoint1_pc, &set.shadow_radius_pc);
     }
     for (i32 i = 0; i < set_count; ++i) {
-        split_planes_pc[i].x = 0.0f;
-        split_planes_pc[i].y = 0.0f;
-        split_planes_pc[i].z = 1.0f / splits[i + 1];
-        split_planes_pc[i].w = -1.0f;
+        split_planes[i].x = 0.0f;
+        split_planes[i].y = 0.0f;
+        split_planes[i].z = 1.0f / splits[i + 1];
+        split_planes[i].w = -1.0f;
     }
     camera->near_clip = near_clip;
     camera->far_clip = far_clip;

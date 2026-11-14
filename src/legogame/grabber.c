@@ -7,19 +7,19 @@ typedef struct grabber_progress_source_s { // size 0x498
     f32 stored_frame;                      // 0x48c
     u8 unknown_0490[4];                    // 0x490
     f32 stored_parameter;                  // 0x494
-} GRABBER_PROGRESS_SOURCE_PC;
+} GRABBER_PROGRESS_SOURCE;
 
 typedef struct world_grabber_progress_s { // size 0x46f0
     u8 unknown_0000[0x46ec];              // 0x0000
-    GRABBER_PROGRESS_SOURCE_PC *grabber;  // 0x46ec
-} WORLD_GRABBER_PROGRESS_PC;
+    GRABBER_PROGRESS_SOURCE *grabber;     // 0x46ec
+} WORLD_GRABBER_PROGRESS;
 
 typedef struct level_grabber_progress_s { // size 0x281c
     u8 unknown_0000[0x2810];              // 0x0000
     f32 stored_frame;                     // 0x2810
     f32 stored_tfactor;                   // 0x2814
     f32 stored_parameter;                 // 0x2818
-} LEVEL_GRABBER_PROGRESS_PC;
+} LEVEL_GRABBER_PROGRESS;
 
 typedef struct grabber_s {                   // size 0x568
     NUMTX matrix;                            // 0x000
@@ -81,23 +81,23 @@ typedef struct world_grabber_config_s { // size 0x46f0
     NUGSCN *scene;                      // 0x013c
     u8 unknown_140[0x46ec - 0x140];     // 0x0140
     GRABBER_PC *grabber;                // 0x46ec
-} WORLD_GRABBER_PC;
+} WORLD_GRABBER;
 
 typedef struct grab_config_data_s { // size 0x4c
     f32 level_y_offset;             // 0x00
     NUFPCOMJMP keywords[9];         // 0x04
-} GRAB_CONFIG_DATA_PC;
+} GRAB_CONFIG_DATA;
 
 typedef struct grabber_hg_view_s { // size 0x1a4
     u8 unknown_000[0x19c];         // 0x000
     i32 shadow_surface_points;     // 0x19c
     u8 suppress_shadow_points;     // 0x1a0
-} GRABBER_HG_VIEW_PC;
+} GRABBER_HG_VIEW;
 
 typedef struct grabber_antinode_view_s { // size 0x58
     u8 unknown_00[0x50];                 // 0x00
     i64 object_mask;                     // 0x50
-} GRABBER_ANTINODE_VIEW_PC;
+} GRABBER_ANTINODE_VIEW;
 
 GIZMOPICKUP *GizmoPickup_InBox(WORLDINFO *world, i32 type_index, NUVEC *minimum, NUVEC *maximum);
 extern i32 CharacterBlobShadowsOn;
@@ -209,7 +209,7 @@ static void Grab_shadow(NUFPAR_PC *parser) {
     }
 }
 
-static GRAB_CONFIG_DATA_PC GrabConfigData = {
+static GRAB_CONFIG_DATA GrabConfigData = {
     -0.3f,
     {{"radius", Grab_radius},
           {"speed", Grab_speed},
@@ -223,7 +223,7 @@ static GRAB_CONFIG_DATA_PC GrabConfigData = {
 };
 
 void Grabber_Configure(WORLDINFO *world_ptr, char *config) {
-    WORLD_GRABBER_PC *world = (WORLD_GRABBER_PC *)world_ptr;
+    WORLD_GRABBER *world = (WORLD_GRABBER *)world_ptr;
     NUSPECIALHANDLE special;
     NUFPAR_PC *parser;
     u8 active;
@@ -396,7 +396,7 @@ void Grabber_Draw(WORLDINFO *world) {
     }
     if (grabber->shadow_height != 2000000.0f) {
         if ((grabber->flags & 0x10) != 0 && CharacterBlobShadowsOn != 0 &&
-            (grabber->character_model == NULL || ((GRABBER_HG_VIEW_PC *)grabber->character_model->hierarchy)->shadow_surface_points == 0)) {
+            (grabber->character_model == NULL || ((GRABBER_HG_VIEW *)grabber->character_model->hierarchy)->shadow_surface_points == 0)) {
             position.x = grabber->grab_position.x;
             position.y = grabber->shadow_height + 0.005f;
             if (WORLD->current_level == CLOUDCITYTRAPA_LDATA) {
@@ -420,10 +420,10 @@ void Grabber_Draw(WORLDINFO *world) {
         grabber->flags &= ~1;
         MakeLayerList = GCDataList[grabber->character_model->model_id].make_layer_list;
         if ((grabber->flags & 0x10) != 0) {
-            ((GRABBER_HG_VIEW_PC *)grabber->character_model->hierarchy)->suppress_shadow_points = 0;
+            ((GRABBER_HG_VIEW *)grabber->character_model->hierarchy)->suppress_shadow_points = 0;
             EnableShadowMapRendering(0);
         } else {
-            ((GRABBER_HG_VIEW_PC *)grabber->character_model->hierarchy)->suppress_shadow_points = 1;
+            ((GRABBER_HG_VIEW *)grabber->character_model->hierarchy)->suppress_shadow_points = 1;
             ResetShadowMapRendering();
         }
         if (APIDrawCharacterModel(grabber->character_model, (APICHARACTERDATA *)&CDataList[grabber->character_model->model_id],
@@ -435,7 +435,7 @@ void Grabber_Draw(WORLDINFO *world) {
         if ((grabber->flags & 0x10) != 0) {
             ResetShadowMapRendering();
         }
-        ((GRABBER_HG_VIEW_PC *)grabber->character_model->hierarchy)->suppress_shadow_points = 0;
+        ((GRABBER_HG_VIEW *)grabber->character_model->hierarchy)->suppress_shadow_points = 0;
     } else if (grabber->floor_height != 2000000.0f) {
         NuSpecialDrawAt(&grabber->special, &reflection);
     }
@@ -453,8 +453,8 @@ void Grabber_Draw(WORLDINFO *world) {
 
 void Grabber_StoreProgress(WORLDINFO *world, LEVEL_PROGRESS *progress) {
     if (world != NULL && progress != NULL) {
-        GRABBER_PROGRESS_SOURCE_PC *grabber = ((WORLD_GRABBER_PROGRESS_PC *)world)->grabber;
-        LEVEL_GRABBER_PROGRESS_PC *saved = (LEVEL_GRABBER_PROGRESS_PC *)progress;
+        GRABBER_PROGRESS_SOURCE *grabber = ((WORLD_GRABBER_PROGRESS *)world)->grabber;
+        LEVEL_GRABBER_PROGRESS *saved = (LEVEL_GRABBER_PROGRESS *)progress;
         if (grabber != NULL) {
             saved->stored_frame = grabber->stored_frame;
             saved->stored_tfactor = grabber->stored_tfactor;
@@ -519,9 +519,9 @@ void Grabber_Reset(WORLDINFO *world) {
     GRABBER_FIND_SWITCH(direction_switches[2], "pad_e");
     GRABBER_FIND_SWITCH(direction_switches[3], "pad_w");
     grabber->grab_position.y = grabber->initial_position.y;
-    if (world->level_progress != NULL && ((LEVEL_GRABBER_PROGRESS_PC *)world->level_progress)->stored_tfactor != 2000000.0f) {
-        grabber->grab_position.x = ((LEVEL_GRABBER_PROGRESS_PC *)world->level_progress)->stored_frame;
-        grabber->grab_position.z = ((LEVEL_GRABBER_PROGRESS_PC *)world->level_progress)->stored_parameter;
+    if (world->level_progress != NULL && ((LEVEL_GRABBER_PROGRESS *)world->level_progress)->stored_tfactor != 2000000.0f) {
+        grabber->grab_position.x = ((LEVEL_GRABBER_PROGRESS *)world->level_progress)->stored_frame;
+        grabber->grab_position.z = ((LEVEL_GRABBER_PROGRESS *)world->level_progress)->stored_parameter;
     } else {
         grabber->grab_position.x = grabber->initial_position.x;
         grabber->grab_position.z = grabber->initial_position.z;
@@ -985,7 +985,7 @@ void Grabber_Update(WORLDINFO *world) {
             node = AIAntinodeCreateSingleFrame(&grabber->grab_position, 0.25f);
             if (node != NULL) {
                 node->min_y = node->position.y - 4.0f;
-                ((GRABBER_ANTINODE_VIEW_PC *)node)->object_mask = mask;
+                ((GRABBER_ANTINODE_VIEW *)node)->object_mask = mask;
             }
         }
     }

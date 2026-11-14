@@ -34,8 +34,8 @@ struct numtx_s;
 struct nuspecial_handle_s;
 
 typedef struct PART_LIGHTING_DATA PART_LIGHTING_DATA;
-typedef void (*PART_MOVE_PC)(struct PART_PC *, f32);
-typedef i32 (*PART_DRAW_PC)(struct PART_PC *);
+typedef void (*PART_MOVE)(struct PART_PC *, f32);
+typedef i32 (*PART_DRAW)(struct PART_PC *);
 
 struct PART_LIGHTING_DATA { // size 0xcc
     u8 unknown_0[0x78];     // 0x00
@@ -56,8 +56,8 @@ extern "C" {
     extern f32 CombatPlayerDeathDifficultyAmount;
     extern i16 id_OBIWANKENOBIEP3;
     extern i16 id_ANAKINJEDI;
-    extern const char ShieldHitSfxPc[9];
-    extern const char ShieldFlickerSfxPc[13];
+    extern const char ShieldHitSfx[9];
+    extern const char ShieldFlickerSfx[13];
     extern i32 KillPartsPreviousVariant;
     extern char KillPartsTieSpinsText[10];
     extern f32 KillPartsTieTrailScale;
@@ -126,16 +126,16 @@ typedef struct ADDPART {                // size 0xc8
     struct nuspecial_handle_s *special; // 0x24
     i32 part_id;                        // 0x28
     u32 flags;                          // 0x2c
-    PART_ACTION_PC callback_30;         // 0x30
-    PART_MOVE_PC move_fn;               // 0x34
-    PART_ACTION_PC deflect_fn;          // 0x38
-    PART_ACTION_PC impact_fn;           // 0x3c
-    PART_ACTION_PC collision_fn;        // 0x40
-    PART_KILL_PC kill_fn;               // 0x44
-    PART_ACTION_PC update_fn;           // 0x48
-    PART_ACTION_PC stop_fn;             // 0x4c
-    PART_ACTION_PC destroy_fn;          // 0x50
-    PART_DRAW_PC draw_fn;               // 0x54
+    PART_ACTION callback_30;            // 0x30
+    PART_MOVE move_fn;                  // 0x34
+    PART_ACTION deflect_fn;             // 0x38
+    PART_ACTION impact_fn;              // 0x3c
+    PART_ACTION collision_fn;           // 0x40
+    PART_KILL kill_fn;                  // 0x44
+    PART_ACTION update_fn;              // 0x48
+    PART_ACTION stop_fn;                // 0x4c
+    PART_ACTION destroy_fn;             // 0x50
+    PART_DRAW draw_fn;                  // 0x54
     i32 effect_id_58;                   // 0x58
     i32 *debris_handle;                 // 0x5c
     i32 effect_id_60;                   // 0x60

@@ -25,7 +25,7 @@ typedef struct cable_context_info_s { // size 0x10
     const char *name;                 // 0x0
     i32 action;                       // 0x4
     u64 flags;                        // 0x8
-} CABLE_CONTEXT_INFO_PC;
+} CABLE_CONTEXT_INFO;
 
 extern const f64 GameObjectNearFloorNoFloorHeight;
 i32 XZLinesIntersect(NUVEC *a, NUVEC *b, NUVEC *c, NUVEC *d, float *first, float *second);
@@ -359,7 +359,7 @@ void UpdateCables(void) {
                                         FaceOpponent(cable->target, &cable->source->collision_position);
                                         target = cable->target;
                                         if ((target->flags_ef0 & 0x8000) &&
-                                            !(((CABLE_CONTEXT_INFO_PC *)CInfo)[target->character_context].flags & 1)) {
+                                            !(((CABLE_CONTEXT_INFO *)CInfo)[target->character_context].flags & 1)) {
                                             target->movement_facing_angle += 0x8000;
                                         }
                                         cable->target->ai_packet.goal_speed_mode = 1;

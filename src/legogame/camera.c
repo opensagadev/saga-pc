@@ -77,7 +77,7 @@ typedef struct CAMERA_GRABBER {
 
 i32 Grapple_LookAtPos(GAMEOBJECT *object, NUVEC *position);
 f32 NuVecMagVU0(NUVEC *v);
-#define GAME_CAMERA_ABSOLUTE_PC(destination, source)                                                                                       \
+#define GAME_CAMERA_ABSOLUTE(destination, source)                                                                                          \
     do {                                                                                                                                   \
         union {                                                                                                                            \
             f32 value;                                                                                                                     \
@@ -149,9 +149,9 @@ static void PlayerCamPos(GAMEOBJECT *object, NUVEC *position, NUVEC *reference) 
         scale = 1.0f / NuVecMagVU0(&direction);
         direction.x = CameraFabs(points[3].x - points[0].x);
         direction.x *= scale;
-        GAME_CAMERA_ABSOLUTE_PC(direction.y, points[3].y - points[0].y);
+        GAME_CAMERA_ABSOLUTE(direction.y, points[3].y - points[0].y);
         direction.y *= scale;
-        GAME_CAMERA_ABSOLUTE_PC(direction.z, points[3].z - points[0].z);
+        GAME_CAMERA_ABSOLUTE(direction.z, points[3].z - points[0].z);
         direction.z *= scale;
         position->x = points[0].x - direction.x * focus.x;
         position->y = points[0].y - direction.y * focus.y;
@@ -523,25 +523,25 @@ mode_selected:
     blend_duration = 0.5f;
     selected_pad = camera->mode == 5 ? ViewCam.gamepad : (GAMEPAD_PC *)&GamePadStorage[0];
     left_y = ((f32)(((i32)(selected_pad->bound_pad->analog_left_y)))) - 127.5f;
-    GAME_CAMERA_ABSOLUTE_PC(magnitude, left_y);
+    GAME_CAMERA_ABSOLUTE(magnitude, left_y);
     if (magnitude < 34.0f) {
         left_y = 0.0f;
     }
     left_y /= 127.5f;
     left_x = ((f32)(((i32)(selected_pad->bound_pad->analog_left_x)))) - 127.5f;
-    GAME_CAMERA_ABSOLUTE_PC(magnitude, left_x);
+    GAME_CAMERA_ABSOLUTE(magnitude, left_x);
     if (magnitude < 34.0f) {
         left_x = 0.0f;
     }
     left_x /= 127.5f;
     right_y = ((f32)(((i32)(selected_pad->bound_pad->analog_right_y)))) - 127.5f;
-    GAME_CAMERA_ABSOLUTE_PC(magnitude, right_y);
+    GAME_CAMERA_ABSOLUTE(magnitude, right_y);
     if (magnitude < 34.0f) {
         right_y = 0.0f;
     }
     right_y /= 127.5f;
     right_x = ((f32)(((i32)(selected_pad->bound_pad->analog_right_x)))) - 127.5f;
-    GAME_CAMERA_ABSOLUTE_PC(magnitude, right_x);
+    GAME_CAMERA_ABSOLUTE(magnitude, right_x);
     if (magnitude < 34.0f) {
         right_x = 0.0f;
     }
@@ -968,7 +968,7 @@ mode_selected:
         case 5: {
             f32 speed;
             f32 distance;
-            GAME_CAMERA_ABSOLUTE_PC(distance, ViewCam.distance);
+            GAME_CAMERA_ABSOLUTE(distance, ViewCam.distance);
             speed = distance * testmovef * FRAMETIME;
             if (ViewCam.gamepad != NULL) {
                 offset.x = (left_x * 127.5f) * speed;

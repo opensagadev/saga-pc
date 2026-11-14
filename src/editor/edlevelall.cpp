@@ -515,17 +515,17 @@ extern "C" {
         } else {
             converted = ((colour >> 1) & 0x7f00) + ((colour & 0xfe) << 15) + ((colour >> 17) & 0x7f) + (colour & 0xff000000u);
         }
-        ((NULGTVERTEX_PC *)NuPrimStreamBufferPointer->void_ptr)->colour = converted;
+        ((NULGTVERTEX *)NuPrimStreamBufferPointer->void_ptr)->colour = converted;
     }
 
     void EdDrawMtx(NUMTX *matrix);
 
     /* Appends a vertex position and moves the stream to the next vertex. */
     static inline void EdDrawAddXYZ(f32 x, f32 y, f32 z) {
-        ((NULGTVERTEX_PC *)NuPrimStreamBufferPointer->void_ptr)->x = x;
-        ((NULGTVERTEX_PC *)NuPrimStreamBufferPointer->void_ptr)->y = y;
-        ((NULGTVERTEX_PC *)NuPrimStreamBufferPointer->void_ptr)->z = z;
-        NuPrimStreamBufferPointer->addr += sizeof(NULGTVERTEX_PC);
+        ((NULGTVERTEX *)NuPrimStreamBufferPointer->void_ptr)->x = x;
+        ((NULGTVERTEX *)NuPrimStreamBufferPointer->void_ptr)->y = y;
+        ((NULGTVERTEX *)NuPrimStreamBufferPointer->void_ptr)->z = z;
+        NuPrimStreamBufferPointer->addr += sizeof(NULGTVERTEX);
         NuPrimVertexCount++;
     }
 

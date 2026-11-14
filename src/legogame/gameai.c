@@ -8,11 +8,11 @@ STATIC_ASSERT(offsetof(GAMEOBJECT, ai_packet) + offsetof(AIPACKET, reset_mode) =
 typedef struct ai_control_slot_s {
     NULISTLNK links;
     u8 unknown_08[0xa0];
-} AI_CONTROL_SLOT_PC;
+} AI_CONTROL_SLOT;
 
 typedef struct ai_control_system_s {
     i32 capacity;
-    AI_CONTROL_SLOT_PC *controllers;
+    AI_CONTROL_SLOT *controllers;
     NULISTHDR available;
     NULISTHDR active;
 } AI_CONTROL_SYSTEM_PC;
@@ -20,34 +20,34 @@ typedef struct ai_control_system_s {
 typedef struct ai_controller_scene_view_s {
     u8 unknown_0000[0x1394];
     NUGSCN *scene;
-} AI_CONTROLLER_SCENE_VIEW_PC;
+} AI_CONTROLLER_SCENE_VIEW;
 
 void *CutScene_FindInst(void *, char *);
 
 typedef struct controller_animation_view_s {
     u8 unknown_00[0x5c];
     u16 animation_index;
-} CONTROLLER_ANIMATION_VIEW_PC;
+} CONTROLLER_ANIMATION_VIEW;
 
 typedef struct controller_cut_animation_s {
     u8 unknown_00[8];
     f32 end_frame;
-} CONTROLLER_CUT_ANIMATION_PC;
+} CONTROLLER_CUT_ANIMATION;
 
 typedef struct controller_cut_view_s {
     u8 unknown_00[0x58];
-    CONTROLLER_CUT_ANIMATION_PC *animation;
+    CONTROLLER_CUT_ANIMATION *animation;
     u8 unknown_5c[0x34];
     f32 current_frame;
-} CONTROLLER_CUT_VIEW_PC;
+} CONTROLLER_CUT_VIEW;
 
-typedef char *(*AI_CHARACTER_NAME_PC)(u8);
-typedef char *(*AI_GLOBAL_CHARACTER_NAME_PC)(i32);
-typedef void *(*AI_GLOBAL_CHARACTER_HGOBJ_PC)(i32);
-typedef void (*AI_GLOBAL_CHARACTER_RENDER_PC)(NUVEC *, i16, i32, i32, void *);
-typedef void (*AI_CLEAR_CREATURES_PC)(void);
-typedef APIOBJECT *(*AI_GET_NAMED_OBJECT_PC)(void *, char *);
-typedef NUVEC *(*AI_GET_CREATURE_ORIGIN_PC)(AISYS_PC *, AIPACKET *);
+typedef char *(*AI_CHARACTER_NAME)(u8);
+typedef char *(*AI_GLOBAL_CHARACTER_NAME)(i32);
+typedef void *(*AI_GLOBAL_CHARACTER_HGOBJ)(i32);
+typedef void (*AI_GLOBAL_CHARACTER_RENDER)(NUVEC *, i16, i32, i32, void *);
+typedef void (*AI_CLEAR_CREATURES)(void);
+typedef APIOBJECT *(*AI_GET_NAMED_OBJECT)(void *, char *);
+typedef NUVEC *(*AI_GET_CREATURE_ORIGIN)(AISYS_PC *, AIPACKET *);
 extern void (*AIPathCnxHelperSysInitFn)(WORLDINFO *);
 extern AIACTIONDEF lego_aiactiondefs[];
 extern AIACTIONDEF api_aiactiondefs[];
@@ -60,14 +60,14 @@ void RegisterAIScriptConditions(AICONDITIONDEF *);
 void SetScriptErrorLevel(i32);
 void InitFn_LevelCharacterTypeID(AI_LEVEL_CHARACTER_TYPE_ID_PC);
 void InitFn_SpecialRouteCharacterTypeID(AI_LEVEL_CHARACTER_TYPE_ID_PC);
-void InitFn_LevelCharacterName(AI_CHARACTER_NAME_PC);
-void InitFn_SpecialRouteCharacterName(AI_CHARACTER_NAME_PC);
+void InitFn_LevelCharacterName(AI_CHARACTER_NAME);
+void InitFn_SpecialRouteCharacterName(AI_CHARACTER_NAME);
 void InitFn_LevelCharacterGlobalID(AI_LEVEL_CHARACTER_GLOBAL_ID_PC);
 void InitFn_GlobalCharacterTypeID(i32 (*)(char *));
-void InitFn_GlobalCharacterName(AI_GLOBAL_CHARACTER_NAME_PC);
-void InitFn_GlobalCharacterRender(AI_GLOBAL_CHARACTER_RENDER_PC);
-void InitFn_GlobalCharacterHGobj(AI_GLOBAL_CHARACTER_HGOBJ_PC);
-void InitFn_ClearAICreatures(AI_CLEAR_CREATURES_PC);
+void InitFn_GlobalCharacterName(AI_GLOBAL_CHARACTER_NAME);
+void InitFn_GlobalCharacterRender(AI_GLOBAL_CHARACTER_RENDER);
+void InitFn_GlobalCharacterHGobj(AI_GLOBAL_CHARACTER_HGOBJ);
+void InitFn_ClearAICreatures(AI_CLEAR_CREATURES);
 void InitFn_GameAILoad(void (*)(AISYS_PC *, i32, NUGSCN *, VARIPTR *, VARIPTR *));
 void InitFn_AIActionParseSpeed(AI_PARSE_SPEED_PC);
 void InitFn_AIRespawnOnPath(AI_RESPAWN_ON_PATH_PC);
@@ -75,8 +75,8 @@ void InitFn_GetViewRange(AI_CHARACTER_DISTANCE_PC);
 void InitFn_GetHearDistance(AI_CHARACTER_DISTANCE_PC);
 void InitFn_GlobalGetMaxViewHeight(AI_CHARACTER_DISTANCE_PC);
 void InitFn_GlobalGetMinViewHeight(AI_CHARACTER_DISTANCE_PC);
-void InitFn_GetNamedAPIObject(AI_GET_NAMED_OBJECT_PC);
-void InitFn_GetAICreatureOrigin(AI_GET_CREATURE_ORIGIN_PC);
+void InitFn_GetNamedAPIObject(AI_GET_NAMED_OBJECT);
+void InitFn_GetAICreatureOrigin(AI_GET_CREATURE_ORIGIN);
 void InitFn_AIBigJumpToDestination(AI_BIG_JUMP_TO_DESTINATION_PC);
 void InitFn_FindAlternativeSpecialObjectFn(AIFINDALTERNATIVESPECIALOBJECT *);
 i32 EquivalentObject_Find(WORLDINFO *, NUSPECIALHANDLE *);
@@ -140,19 +140,19 @@ typedef struct OPPONENT_LOS_PC {
 #define OPPONENT_SYS(p) ((OPPONENT_SYS_PC *)(p))
 #define OPPONENT_LOS(p) ((OPPONENT_LOS_PC *)(p))
 void __movsd(unsigned long *, unsigned long const *, unsigned int);
-void LevelScriptReStoreProgress(WORLDINFO *, LEVEL_SCRIPT_PROCESS_PC *);
+void LevelScriptReStoreProgress(WORLDINFO *, LEVEL_SCRIPT_PROCESS *);
 
 typedef struct ai_frame_world_s {
     u8 unknown_0000[0x2aec];
     i32 processor_count;
-    LEVEL_SCRIPT_PROCESS_PC processors[32];
-} AI_FRAME_WORLD_PC;
+    LEVEL_SCRIPT_PROCESS processors[32];
+} AI_FRAME_WORLD;
 
 typedef struct {
     u8 opaque[0x2aec];
     i32 count;
     struct LEVELSCRIPTPROCESS_s items[32];
-} ADD_AI_WORLD_PC;
+} ADD_AI_WORLD;
 
 extern char AIGizmoNameBuffer[16];
 
@@ -165,7 +165,7 @@ typedef struct ai_gizmo_name_process_s {
     char *locator_name;
     char *locator_set_name;
     u8 unknown_bc[0x20];
-} AI_GIZMO_NAME_PROCESS_PC;
+} AI_GIZMO_NAME_PROCESS;
 
 extern char AIProcessingOutputText[11];
 
@@ -177,7 +177,7 @@ typedef struct AIONCEATTACKER {
 typedef struct bulk_ai_full_object_s {      // size 0x2b8
     APIOBJECT object;                       // 0x000
     u8 trailing[0x2b8 - sizeof(APIOBJECT)]; // 0x29c
-} BULK_AI_FULL_OBJECT_PC;
+} BULK_AI_FULL_OBJECT;
 
 i32 OpponentCanAcquire(APIOBJECT *observer, APIOBJECT *target, f32 distance, u64 awareness, f32 dx, f32 dz) {
     f32 facing_dot;
@@ -698,12 +698,12 @@ void GameCreatureInteraction2D(AISYS_PC *system, i32 object_count, APIOBJECT **o
             if (second->flags_low & 0x80) {
                 second_fixed = 1;
             }
-            if (second->ai_collision_priority_pc < first->ai_collision_priority_pc) {
+            if (second->ai_collision_priority < first->ai_collision_priority) {
                 first_fixed = 1;
                 if (second_fixed) {
                     continue;
                 }
-            } else if (second->ai_collision_priority_pc > first->ai_collision_priority_pc) {
+            } else if (second->ai_collision_priority > first->ai_collision_priority) {
                 second_fixed = 1;
                 if (first_fixed) {
                     continue;
@@ -716,19 +716,19 @@ void GameCreatureInteraction2D(AISYS_PC *system, i32 object_count, APIOBJECT **o
             }
             difference.y = 0.0f;
             if (first_fixed) {
-                if (first->ai_collision_priority_pc > second->ai_resolved_collision_priority_pc) {
-                    second->ai_resolved_collision_priority_pc = first->ai_collision_priority_pc;
+                if (first->ai_collision_priority > second->ai_resolved_collision_priority) {
+                    second->ai_resolved_collision_priority = first->ai_collision_priority;
                     difference.x = -difference.x;
                     difference.z = -difference.z;
                     CreatureInteractionOrbit(second, &difference, first, radius);
                 }
             } else if (second_fixed) {
-                if (second->ai_collision_priority_pc > first->ai_resolved_collision_priority_pc) {
-                    first->ai_resolved_collision_priority_pc = second->ai_collision_priority_pc;
+                if (second->ai_collision_priority > first->ai_resolved_collision_priority) {
+                    first->ai_resolved_collision_priority = second->ai_collision_priority;
                     CreatureInteractionOrbit(first, &difference, second, radius);
                 }
             } else {
-                first->ai_resolved_collision_priority_pc = second->ai_collision_priority_pc;
+                first->ai_resolved_collision_priority = second->ai_collision_priority;
                 difference.x = -difference.x;
                 difference.z = -difference.z;
                 CreatureInteractionOrbit(second, &difference, first, radius);
@@ -897,7 +897,7 @@ void GameAISysStartFrame(AISYS_PC *system) {
     AIPATH *path;
     AIPATHCNX *connection;
     AIPATHNODE *node;
-    AI_FRAME_WORLD_PC *world;
+    AI_FRAME_WORLD *world;
     if (system == NULL || netclient != 0) {
         return;
     }
@@ -931,8 +931,8 @@ void GameAISysStartFrame(AISYS_PC *system) {
             system->next_area_check = 0;
         }
     }
-    for (script_index = 0; script_index < ((AI_FRAME_WORLD_PC *)WORLD)->processor_count; ++script_index) {
-        world = (AI_FRAME_WORLD_PC *)WORLD;
+    for (script_index = 0; script_index < ((AI_FRAME_WORLD *)WORLD)->processor_count; ++script_index) {
+        world = (AI_FRAME_WORLD *)WORLD;
         if ((world->processors[script_index].processor.flags & 2) == 0) {
             AIScriptProcess(system, NULL, NULL, &world->processors[script_index].processor, FRAMETIME);
         }
@@ -1396,7 +1396,7 @@ i32 TryToTeleportToNextNode(GAMEOBJECT *object, AIPATHNODE *node, i32 tightrope)
             if (tightrope != 0) {
                 if (TightRope_SnapTo(object, &node->position) != 0) {
                     object->field_1086 = 0;
-                    object->special_move_timer_pc = 0.0f;
+                    object->special_move_timer = 0.0f;
                     object->field_1087 = 0;
                     object->ai_packet.path_update_flag = 0;
                     return 1;
@@ -1410,13 +1410,13 @@ i32 TryToTeleportToNextNode(GAMEOBJECT *object, AIPATHNODE *node, i32 tightrope)
                 object->velocity = v000;
                 InitSurfaceInfo(object);
                 SetObjOnSurface(object, 0);
-                object->special_move_timer_pc = 0.0f;
+                object->special_move_timer = 0.0f;
                 object->field_1086 = 0;
                 object->field_1087 = 0;
                 object->ai_packet.path_update_flag = 0;
                 if (object->takeover_source == NULL) {
                     Player_ClearContext(object, 0);
-                    Player_ResetContexts(&object->ai_player_packet_pc);
+                    Player_ResetContexts(&object->ai_player_packet);
                 }
                 return 1;
             }
@@ -1426,19 +1426,19 @@ i32 TryToTeleportToNextNode(GAMEOBJECT *object, AIPATHNODE *node, i32 tightrope)
 }
 
 void SetSpecialMove(GAMEOBJECT *object, AIPATHNODE *node, AIPATHNODE *source, i8 type) {
-    object->special_move_timer_pc = 0.0f;
+    object->special_move_timer = 0.0f;
     object->ai_packet.special_move_node = node;
     object->field_1086 = (u8)type;
     object->field_1087 = 0;
-    object->special_move_source_pc = source;
+    object->special_move_source = source;
 }
 
 void ClearSpecialMove(GAMEOBJECT *object) {
-    object->special_move_timer_pc = 1.0f;
+    object->special_move_timer = 1.0f;
     object->ai_packet.special_move_node = NULL;
     object->field_1086 = 0;
     object->field_1087 = 0;
-    object->special_move_source_pc = NULL;
+    object->special_move_source = NULL;
     object->indy_guideline_state.guideline = NULL;
     object->indy_guideline_state.endpoint = 0;
 }
@@ -1450,7 +1450,7 @@ void AIPathCnxControlSysReset(AI_CONTROL_SYSTEM_PC *system) {
     }
     memset(&system->available, 0, sizeof(system->available));
     memset(&system->active, 0, sizeof(system->active));
-    memset(system->controllers, 0, (u32)system->capacity * sizeof(AI_CONTROL_SLOT_PC));
+    memset(system->controllers, 0, (u32)system->capacity * sizeof(AI_CONTROL_SLOT));
     for (index = 0; index < system->capacity; ++index) {
         NuLinkedListAppend(&system->available, &system->controllers[index].links);
     }
@@ -1472,7 +1472,7 @@ struct AIPATHCNXCONTROLLER_s *AIPathCnxControllerCreate(AI_CONTROL_SYSTEM_PC *sy
             switch (target_type) {
                 case 0:
                     if (target_name != NULL) {
-                        NuSpecialFind(((AI_CONTROLLER_SCENE_VIEW_PC *)ai)->scene, &special, target_name, 1);
+                        NuSpecialFind(((AI_CONTROLLER_SCENE_VIEW *)ai)->scene, &special, target_name, 1);
                     }
                     break;
                 case 1:
@@ -1546,7 +1546,7 @@ struct AIPATHCNXCONTROLLER_s *AIPathCnxControllerCreate(AI_CONTROL_SYSTEM_PC *sy
     return controller;
 }
 
-void fun_0043cf70(AI_CONTROL_SYSTEM_PC *system, AI_CONTROL_SLOT_PC *controller) {
+void fun_0043cf70(AI_CONTROL_SYSTEM_PC *system, AI_CONTROL_SLOT *controller) {
     if (system != NULL && controller != NULL) {
         NuLinkedListRemove(&system->active, &controller->links);
         memset(controller, 0, sizeof(*controller));
@@ -1557,7 +1557,7 @@ void fun_0043cf70(AI_CONTROL_SYSTEM_PC *system, AI_CONTROL_SLOT_PC *controller) 
 void AIPathCnxControllerSetOnRange(struct AIPATHCNXCONTROLLER_s *controller, i32 first, i32 last) {
     i32 end;
     i32 frame;
-    CONTROLLER_ANIMATION_VIEW_PC *animation;
+    CONTROLLER_ANIMATION_VIEW *animation;
     void *data;
     NUGSCN *scene;
     if (controller == NULL) {
@@ -1576,7 +1576,7 @@ void AIPathCnxControllerSetOnRange(struct AIPATHCNXCONTROLLER_s *controller, i32
             }
             break;
         case 1:
-            end = (i32)((CONTROLLER_CUT_VIEW_PC *)controller->target)->animation->end_frame;
+            end = (i32)((CONTROLLER_CUT_VIEW *)controller->target)->animation->end_frame;
             break;
         case 2:
         case 3:
@@ -1615,7 +1615,7 @@ void AIPathCnxControllerSetOnRange(struct AIPATHCNXCONTROLLER_s *controller, i32
 void AIPathCnxControlSysUpdate(AI_CONTROL_SYSTEM_PC *system) {
     struct AIPATHCNXCONTROLLER_s *controller;
     NUINSTANIM *animation;
-    CONTROLLER_CUT_VIEW_PC *cut;
+    CONTROLLER_CUT_VIEW *cut;
     void *data;
     i32 end;
     i32 frame;
@@ -2085,7 +2085,7 @@ void AISysGetPathPos2(AISYS_PC *system, NUVEC *position, AIPATHINFO *path_info, 
         /* The packet is a raw byte buffer (placed above the object as a /GS buffer). */
         u8 packet_data[0x210];
         AIPACKET *packet = (AIPACKET *)packet_data;
-        BULK_AI_FULL_OBJECT_PC object;
+        BULK_AI_FULL_OBJECT object;
         memset(&object, 0, sizeof(object));
         memset(packet_data, 0, sizeof(packet_data));
         object.object.ai = packet;
@@ -2105,20 +2105,20 @@ i32 AI_GetMaxGizmos(void *world_ptr) {
 }
 
 void AI_AddGizmos(GIZMOSYS_PC *giz, i32 type, void *world_ptr, void *data) {
-    struct LEVELSCRIPTPROCESS_s *item = ((ADD_AI_WORLD_PC *)world_ptr)->items;
+    struct LEVELSCRIPTPROCESS_s *item = ((ADD_AI_WORLD *)world_ptr)->items;
     i32 i;
     (void)data;
     if (item == NULL) {
         return;
     }
-    for (i = 0; i < ((ADD_AI_WORLD_PC *)WORLD)->count; ++i, ++item) {
+    for (i = 0; i < ((ADD_AI_WORLD *)WORLD)->count; ++i, ++item) {
         AddGizmo(giz, type, NULL, item);
     }
 }
 
 char *AI_GetGizmoName(void *gizmo_pointer) {
     GIZMO_PC *gizmo = gizmo_pointer;
-    AI_GIZMO_NAME_PROCESS_PC *process;
+    AI_GIZMO_NAME_PROCESS *process;
     i8 length;
     if (gizmo == NULL || gizmo->object == NULL) {
         return NULL;
@@ -2166,7 +2166,7 @@ i32 AI_GetOutput(void *input, i32 output, i32 mode) {
     (void)output;
     (void)mode;
     if (gizmo != NULL && gizmo->object != NULL) {
-        return (~(((LEVEL_SCRIPT_PROCESS_PC *)gizmo->object)->processor.flags >> 1)) & 1;
+        return (~(((LEVEL_SCRIPT_PROCESS *)gizmo->object)->processor.flags >> 1)) & 1;
     }
     return 0;
 }
@@ -2185,7 +2185,7 @@ char *AI_GetOutputName(void *gizmo, i32 output) {
 
 void AI_Activate(void *input, i32 active) {
     GIZMO_PC *gizmo = input;
-    LEVEL_SCRIPT_PROCESS_PC *process;
+    LEVEL_SCRIPT_PROCESS *process;
     if (gizmo != NULL && gizmo->object != NULL) {
         process = gizmo->object;
         process->processor.flags ^= (((active == 0) << 1) ^ process->processor.flags) & 2;
@@ -2467,8 +2467,8 @@ void GameAIProcess(void) {
                 ++interactive_count;
                 *interactive_cursor++ = (APIOBJECT *)object;
                 object->ai_packet.flags |= 0x2000;
-                object->ai_collision_priority_pc = HIGHGAMEOBJECT - object->hostility_group;
-                object->ai_resolved_collision_priority_pc = 0;
+                object->ai_collision_priority = HIGHGAMEOBJECT - object->hostility_group;
+                object->ai_resolved_collision_priority = 0;
             } else if (object->field_1010 > 0.0f) {
                 object->ai_packet.flags |= 0x2000;
             } else {
@@ -2737,32 +2737,32 @@ void GameAIProcess(void) {
             (object->character_data->game_character->flags_090 & 0x8000) == 0) {
             ++interactive_count;
             *interactive_cursor++ = (APIOBJECT *)object;
-            object->ai_collision_priority_pc = HIGHGAMEOBJECT - object->hostility_group;
-            object->ai_resolved_collision_priority_pc = 0;
+            object->ai_collision_priority = HIGHGAMEOBJECT - object->hostility_group;
+            object->ai_resolved_collision_priority = 0;
             if ((object->flags_1fc_word & 2) != 0 || (object->flags_ef0 & 0x80000000u) != 0) {
-                object->ai_collision_priority_pc = 0x8000;
+                object->ai_collision_priority = 0x8000;
             } else if ((object->flags_1fc_word & 0x80) == 0) {
                 if ((object->ai_packet.flags & 0x80000000u) != 0) {
-                    object->ai_collision_priority_pc |= 0x4000;
+                    object->ai_collision_priority |= 0x4000;
                 }
                 if ((object->ai_packet.flags & 0x40000000u) != 0) {
-                    object->ai_collision_priority_pc |= 0x2000;
+                    object->ai_collision_priority |= 0x2000;
                 }
                 if ((object->ai_packet.navigation_flags & 1) != 0) {
-                    object->ai_collision_priority_pc |= 0x1000;
+                    object->ai_collision_priority |= 0x1000;
                 }
                 if ((object->pad->runtime_flags & 2) != 0) {
-                    object->ai_collision_priority_pc |= 0x800;
+                    object->ai_collision_priority |= 0x800;
                 }
                 if ((object->ai_packet.path_info.flags_word & 1) == 0 || object->ai_packet.path_info.connection == NULL) {
-                    object->ai_collision_priority_pc |= 0x400;
+                    object->ai_collision_priority |= 0x400;
                 }
                 if (object->ai_packet.movement_parameter == 0.0f) {
                     x = object->ai_packet.fallback_destination.x - object->position.x;
                     z = object->ai_packet.fallback_destination.z - object->position.z;
                     radius = (f64)object->ai_packet.mover_height + 1.0;
                     if (x * x + z * z < radius * radius) {
-                        object->ai_collision_priority_pc |= 0x200;
+                        object->ai_collision_priority |= 0x200;
                     }
                 }
             }
@@ -2860,7 +2860,7 @@ void *AIPathCnxControlSysCreate(VARIPTR *buffer, VARIPTR *end, i32 count) {
     AI_CONTROL_SYSTEM_PC *system = AISysBufferAlloc(buffer, end, sizeof(*system));
     if (system != NULL) {
         memset(system, 0, sizeof(*system));
-        system->controllers = AISysBufferAlloc(buffer, end, (u32)count * sizeof(AI_CONTROL_SLOT_PC));
+        system->controllers = AISysBufferAlloc(buffer, end, (u32)count * sizeof(AI_CONTROL_SLOT));
         if (system->controllers != NULL) {
             system->capacity = count;
             AIPathCnxControlSysReset(system);

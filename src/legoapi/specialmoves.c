@@ -22,7 +22,7 @@ static void SpecialMove_ConfigParticipant(NUFPAR_PC *parser, i16 *character, i8 
 
 void SpecialMoves_Configure(char *filename, VARIPTR *buffer, VARIPTR *end) {
     NUFPAR_PC *parser;
-    SPECIALMOVE_PC *move;
+    SPECIALMOVE *move;
     SpecialMove = NULL;
     SpecialMoveCount = 0;
     parser = NuFParCreate(filename);
@@ -32,7 +32,7 @@ void SpecialMoves_Configure(char *filename, VARIPTR *buffer, VARIPTR *end) {
     }
 
     buffer->addr = (buffer->addr + 3) & ~3u;
-    SpecialMove = (SPECIALMOVE_PC *)buffer->addr;
+    SpecialMove = (SPECIALMOVE *)buffer->addr;
     while (NuFParGetLine(parser)) {
         if (!NuFParGetWord(parser) || NuStrICmp(parser->word_buffer_ptr, "specialmove_start") != 0) {
             continue;
@@ -113,7 +113,7 @@ u32 SpecialMove_GetFlags(i32 index, u32 mask) {
 }
 
 i32 SpecialMove_Check(GAMEOBJECT *attacker, GAMEOBJECT *victim) {
-    SPECIALMOVE_PC *moves = SpecialMove;
+    SPECIALMOVE *moves = SpecialMove;
     i32 i;
     if (moves == NULL) {
         return -1;
@@ -125,7 +125,7 @@ i32 SpecialMove_Check(GAMEOBJECT *attacker, GAMEOBJECT *victim) {
         return -1;
     }
     for (i = 0; i < SpecialMoveCount; ++i) {
-        SPECIALMOVE_PC *move = &moves[i];
+        SPECIALMOVE *move = &moves[i];
         if ((attacker->id == (u16)move->attacker_id ||
              (move->attacker_action_type != -1 && attacker->character_data->game_character->weapon_action == move->attacker_action_type)) &&
             attacker->character_model->model_data_b[move->attacker_animation] != NULL &&

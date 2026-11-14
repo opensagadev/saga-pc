@@ -25,17 +25,17 @@ void NuDebugMsgPrint(char *text) {
     PCNativeDebugPrint(&PCNativeWarningDebugState, PCWarningNativeFormat, text);
 }
 
-typedef void (*NUONLINEACHIEVEMENTCALLBACK_PC)(i32, i32);
+typedef void (*NUONLINEACHIEVEMENTCALLBACK)(i32, i32);
 
 /* The PC build has no online service: achievements report success and no
  * player is ever signed in. */
-i32 NuOnlineAchievementAchievedPS(i32 achievement, NUONLINEACHIEVEMENTCALLBACK_PC callback) {
+i32 NuOnlineAchievementAchievedPS(i32 achievement, NUONLINEACHIEVEMENTCALLBACK callback) {
     (void)achievement;
     (void)callback;
     return 1;
 }
 
-i32 NuOnlineAchievementAchievedExPS(i32 player, i32 achievement, NUONLINEACHIEVEMENTCALLBACK_PC callback) {
+i32 NuOnlineAchievementAchievedExPS(i32 player, i32 achievement, NUONLINEACHIEVEMENTCALLBACK callback) {
     (void)player;
     (void)achievement;
     (void)callback;
@@ -84,9 +84,9 @@ static void NuErrorFunction(char *format, ...) {
     NuErrorPrint(PCWarningOutputBuffer);
 }
 
-typedef void (*NUERRORFUNCTION_PC)(char *, ...);
+typedef void (*NUERRORFUNCTION)(char *, ...);
 
-NUERRORFUNCTION_PC NuErrorProlog(char *file, i32 line) {
+NUERRORFUNCTION NuErrorProlog(char *file, i32 line) {
     nufile = file;
     nuline = line;
     return NuErrorFunction;
@@ -108,7 +108,7 @@ static void NuWarningFunction(char *format, ...) {
     }
 }
 
-NUERRORFUNCTION_PC NuWarningProlog(char *file, i32 line) {
+NUERRORFUNCTION NuWarningProlog(char *file, i32 line) {
     nufile = file;
     nuline = line;
     return NuWarningFunction;
@@ -144,17 +144,17 @@ static void NuDebugMsgFunction(char *format, ...) {
 static void NuDebugMsgFunctionTTY(i32 channel, char *format, ...) {
 }
 
-typedef void (*NUDEBUGMSGFUNCTION_PC)(char *, ...);
+typedef void (*NUDEBUGMSGFUNCTION)(char *, ...);
 
-NUDEBUGMSGFUNCTION_PC NuDebugMsgProlog(char *file, i32 line) {
+NUDEBUGMSGFUNCTION NuDebugMsgProlog(char *file, i32 line) {
     nufile = file;
     nuline = line;
     return NuDebugMsgFunction;
 }
 
-typedef void (*NUDEBUGTTYFUNCTION_PC)(i32 channel, char *format, ...);
+typedef void (*NUDEBUGTTYFUNCTION)(i32 channel, char *format, ...);
 
-NUDEBUGTTYFUNCTION_PC NuDebugMsgPrologTTY(char *file, i32 line) {
+NUDEBUGTTYFUNCTION NuDebugMsgPrologTTY(char *file, i32 line) {
     nufile = file;
     nuline = line;
     return NuDebugMsgFunctionTTY;

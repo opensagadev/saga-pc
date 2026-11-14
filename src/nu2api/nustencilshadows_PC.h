@@ -86,7 +86,7 @@ typedef struct nulgtvertex_s { // size 0x18
     u32 colour;                // 0x0c
     f32 u;                     // 0x10
     f32 v;                     // 0x14
-} NULGTVERTEX_PC;
+} NULGTVERTEX;
 
 typedef struct PC_BUFFER_RESOURCE PC_BUFFER_RESOURCE;
 
@@ -162,7 +162,7 @@ extern "C" {
     extern i32 nu_water_flow_state;
     extern u8 NuPortalVisibilityBits[625];
     extern const f64 NuVpFixed16Scale;
-    extern const f64 NuVpDepthRangePc;
+    extern const f64 NuVpDepthRange;
     extern f32 NuCameraProjectionGlobalScaleX;
     extern f32 NuCameraProjectionGlobalScaleY;
     extern f32 NuCameraProjectionGlobalOffsetX;
@@ -195,7 +195,7 @@ extern "C" {
 #define nudlist_flags (PCDynamicDisplayScene.render_flags)    // NOLINT(readability-identifier-naming)
 #define nudlist_field_e58 (PCDynamicDisplayScene.native_word) // NOLINT(readability-identifier-naming)
     void PCDeviceDrawPrimitiveUPPc(i32, u32, const void *, u32);
-    extern const char NuTexturePhongCubePathPc[];
+    extern const char NuTexturePhongCubePath[];
     extern RENDER_POST_VIEWPORT_PREFIX_PC RenderPostViewportPrefix;
     extern u32 NuDebrisIdealDynamicVBSize;
     extern u8 PCGraphicsRenderTextureActive[32];
@@ -285,17 +285,17 @@ extern "C" {
 
 #if SAGA_NU2API_NUSTENCILSHADOWS_PC_H_PART == 2 && !defined(SAGA_NU2API_NUSTENCILSHADOWS_PC_H_STOP)
 
-typedef struct debris_part_header_s {    // size 0xa4c
-    u8 fields_000[16];                   // 0x000
-    f32 gravity;                         // 0x010
-    f32 last_render_time;                // 0x014
-    u8 fields_018[16];                   // 0x018
-    f32 texture_u0;                      // 0x028
-    f32 texture_v0;                      // 0x02c
-    f32 texture_u1;                      // 0x030
-    f32 texture_v1;                      // 0x034
-    u8 fields_038[20];                   // 0x038
-    DEBRIS_PARTICLE_FRAME_PC frames[64]; // 0x04c
+typedef struct debris_part_header_s { // size 0xa4c
+    u8 fields_000[16];                // 0x000
+    f32 gravity;                      // 0x010
+    f32 last_render_time;             // 0x014
+    u8 fields_018[16];                // 0x018
+    f32 texture_u0;                   // 0x028
+    f32 texture_v0;                   // 0x02c
+    f32 texture_u1;                   // 0x030
+    f32 texture_v1;                   // 0x034
+    u8 fields_038[20];                // 0x038
+    DEBRIS_PARTICLE_FRAME frames[64]; // 0x04c
 } DEBRIS_PART_HEADER_PC;
 
 typedef struct SCENE_VIDEO_RESOURCE_HEADER { // size 0x18

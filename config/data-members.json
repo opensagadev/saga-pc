@@ -583,7 +583,7 @@
       "original_address": "0x00963fc0",
       "original_size": null,
       "ctype": "NUMTX",
-      "historical_symbol": "_AxisClipFrustumPlanesPc",
+      "historical_symbol": "_AxisClipFrustumPlanes",
       "qualification": "Existing complete typed initializer comparison retained through native SaveState 0x150-byte working view; original field and parent owning allocation extents remain unknown, no new native byte coverage credit."
     },
     {
@@ -597,7 +597,7 @@
       "original_address": "0x00964000",
       "original_size": null,
       "ctype": "NUMTX",
-      "historical_symbol": "_AxisClipScissorPlanesPc",
+      "historical_symbol": "_AxisClipScissorPlanes",
       "qualification": "Existing complete typed initializer comparison retained through native SaveState 0x150-byte working view; original field and parent owning allocation extents remain unknown, no new native byte coverage credit."
     },
     {
@@ -611,7 +611,7 @@
       "original_address": "0x00964040",
       "original_size": null,
       "ctype": "NUMTX",
-      "historical_symbol": "_AxisClipNearFarPlanesPc",
+      "historical_symbol": "_AxisClipNearFarPlanes",
       "qualification": "Existing complete typed initializer comparison retained through native SaveState 0x150-byte working view; original field and parent owning allocation extents remain unknown, no new native byte coverage credit."
     },
     {
@@ -625,7 +625,7 @@
       "original_address": "0x00964080",
       "original_size": null,
       "ctype": "NUVEC4",
-      "historical_symbol": "_CameraNearClipPlanePc",
+      "historical_symbol": "_CameraNearClipPlane",
       "qualification": "Existing complete typed initializer comparison retained through native SaveState 0x150-byte working view; original field and parent owning allocation extents remain unknown, no new native byte coverage credit."
     },
     {
@@ -639,7 +639,7 @@
       "original_address": "0x00964090",
       "original_size": null,
       "ctype": "NUMTX",
-      "historical_symbol": "_AxisClipAbsFrustumPlanesPc",
+      "historical_symbol": "_AxisClipAbsFrustumPlanes",
       "qualification": "Existing complete typed initializer comparison retained through native SaveState 0x150-byte working view; original field and parent owning allocation extents remain unknown, no new native byte coverage credit."
     },
     {
@@ -653,7 +653,7 @@
       "original_address": "0x009640d0",
       "original_size": null,
       "ctype": "NUMTX",
-      "historical_symbol": "_AxisClipAbsScissorPlanesPc",
+      "historical_symbol": "_AxisClipAbsScissorPlanes",
       "qualification": "Existing complete typed initializer comparison retained through native SaveState 0x150-byte working view; original field and parent owning allocation extents remain unknown, no new native byte coverage credit."
     }
   ]

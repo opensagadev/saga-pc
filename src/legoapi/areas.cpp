@@ -10,13 +10,13 @@ typedef struct area_gizmotype_s {         // size 0x9c
     u8 unknown_0000[0x44];                // 0x00
     char *(*get_gizmo_name)(void *gizmo); // 0x44
     u8 unknown_0048[0x54];                // 0x48
-} AREA_GIZMOTYPE_PC;
+} AREA_GIZMOTYPE;
 
 typedef struct area_gizmotypes_s { // size 0xc
     i32 count;                     // 0x0
     i32 unknown_0004;              // 0x4
-    AREA_GIZMOTYPE_PC *types;      // 0x8
-} AREA_GIZMOTYPES_PC;
+    AREA_GIZMOTYPE *types;         // 0x8
+} AREA_GIZMOTYPES;
 
 typedef struct area_gizmoset_s { // size 0x14
     void *type;                  // 0x00
@@ -24,18 +24,18 @@ typedef struct area_gizmoset_s { // size 0x14
     i32 max_count;               // 0x08
     void *gizmos;                // 0x0c
     void *unknown_0010;          // 0x10
-} AREA_GIZMOSET_PC;
+} AREA_GIZMOSET;
 
 typedef struct area_gizmo_s { // size 0x8
     void *object;             // 0x0
     i16 unknown_0004;         // 0x4
     u8 type_id;               // 0x6
     u8 unknown_0007;          // 0x7
-} AREA_GIZMO_PC;
+} AREA_GIZMO;
 
 typedef struct area_gizmosys_prefix_s { // size 0x4
-    AREA_GIZMOSET_PC *sets;             // 0x0
-} AREA_GIZMOSYS_PREFIX_PC;
+    AREA_GIZMOSET *sets;                // 0x0
+} AREA_GIZMOSYS_PREFIX;
 
 AREA_DATA_PC *Area_FindByName(char *name, i32 *index_out) {
     i32 index;
@@ -382,7 +382,7 @@ typedef struct player_progress_hp_s { // size 0x10
     u8 unknown_0000[8];               // 0x0
     u8 hitpoints;                     // 0x8
     u8 unknown_0009[7];               // 0x9
-} PLAYER_PROGRESS_HP_PC;
+} PLAYER_PROGRESS_HP;
 
 i32 AreaFromMiniKitID(i32 id) {
     i32 index;
@@ -429,7 +429,7 @@ typedef struct AREA_MISSION_DATA_READER { // size 0x2
     i16 find_char;                        // 0x0
 } AREA_MISSION_DATA_READER;
 
-#define AREA_STORY_MODELS_PC Area_StoryModelList
+#define AREA_STORY_MODELS Area_StoryModelList
 
 static void AreaAddModelListPrivate(APICHARACTERMODELLIST *list, i32 *count, i32 capacity, i32 character_id, i32 load_model,
                                     AREA_EXTRA_MODEL *extras) {
@@ -462,7 +462,7 @@ extern "C" void Area_Configure(i32 area, i32 param, AREA_EXTRA_MODEL *models, i1
     Area_PlayerModelCount = 0;
     Area_PlayerModelList[0].model_id = -1;
     Area_StoryModelCount = 0;
-    AREA_STORY_MODELS_PC[0].model_id = -1;
+    AREA_STORY_MODELS[0].model_id = -1;
     Area_FreePlayModelCount = 0;
     Area_FreePlayModelList[0].model_id = -1;
     Area_MissionModelCount = 0;
@@ -534,11 +534,11 @@ extern "C" void Area_Configure(i32 area, i32 param, AREA_EXTRA_MODEL *models, i1
         Area_PlayerModelList[1].count = 1;
         Area_PlayerModelList[2].model_id = -1;
         Area_PlayerModelCount = 2;
-        AREA_STORY_MODELS_PC[0].model_id = Area_PlayerModelList[0].model_id;
-        AREA_STORY_MODELS_PC[0].count = 1;
-        AREA_STORY_MODELS_PC[1].model_id = Area_PlayerModelList[1].model_id;
-        AREA_STORY_MODELS_PC[1].count = 1;
-        AREA_STORY_MODELS_PC[2].model_id = -1;
+        AREA_STORY_MODELS[0].model_id = Area_PlayerModelList[0].model_id;
+        AREA_STORY_MODELS[0].count = 1;
+        AREA_STORY_MODELS[1].model_id = Area_PlayerModelList[1].model_id;
+        AREA_STORY_MODELS[1].count = 1;
+        AREA_STORY_MODELS[2].model_id = -1;
         Area_StoryModelCount = 2;
         Area_PlayerIDList[0] = Area_PlayerModelList[0].model_id;
         Area_PlayerIDList[1] = Area_PlayerModelList[1].model_id;
@@ -620,18 +620,18 @@ extern "C" void Area_Configure(i32 area, i32 param, AREA_EXTRA_MODEL *models, i1
                     AreaAddModelListPrivate(reinterpret_cast<APICHARACTERMODELLIST *>(Area_PlayerModelList), &Area_PlayerModelCount, 8,
                                             character_id, 1, models);
                 }
-                AreaAddModelListPrivate(AREA_STORY_MODELS_PC, &Area_StoryModelCount, 0x30, character_id, 1, models);
+                AreaAddModelListPrivate(AREA_STORY_MODELS, &Area_StoryModelCount, 0x30, character_id, 1, models);
             } else if (NuStrICmp(fp->word_buffer_ptr, "resident") == 0) {
-                AreaAddModelListPrivate(AREA_STORY_MODELS_PC, &Area_StoryModelCount, 0x30, character_id, 1, models);
+                AreaAddModelListPrivate(AREA_STORY_MODELS, &Area_StoryModelCount, 0x30, character_id, 1, models);
                 AreaAddModelListPrivate(reinterpret_cast<APICHARACTERMODELLIST *>(Area_FreePlayModelList), &Area_FreePlayModelCount, 0x30,
                                         character_id, 1, models);
                 AreaAddModelListPrivate(Area_MissionModelList, &Area_MissionModelCount, 0x30, character_id, 1, models);
             } else if (NuStrICmp(fp->word_buffer_ptr, "cutscene") == 0) {
-                if (Area_StoryModelCount < 0x30 && InModelList(AREA_STORY_MODELS_PC, character_id, NULL) == 0) {
-                    AREA_STORY_MODELS_PC[Area_StoryModelCount].model_id = static_cast<i16>(character_id);
-                    AREA_STORY_MODELS_PC[Area_StoryModelCount].count = 0;
+                if (Area_StoryModelCount < 0x30 && InModelList(AREA_STORY_MODELS, character_id, NULL) == 0) {
+                    AREA_STORY_MODELS[Area_StoryModelCount].model_id = static_cast<i16>(character_id);
+                    AREA_STORY_MODELS[Area_StoryModelCount].count = 0;
                     ++Area_StoryModelCount;
-                    AREA_STORY_MODELS_PC[Area_StoryModelCount].model_id = -1;
+                    AREA_STORY_MODELS[Area_StoryModelCount].model_id = -1;
                 }
             }
         } else if (NuStrICmp(fp->word_buffer_ptr, "streaming") == 0) {
@@ -741,8 +741,8 @@ extern "C" void Area_Configure(i32 area, i32 param, AREA_EXTRA_MODEL *models, i1
 
     if (Area_PlayerModelCount == 0) {
         i32 player_id;
-        if (AREA_STORY_MODELS_PC[0].model_id != -1) {
-            player_id = AREA_STORY_MODELS_PC[0].model_id;
+        if (AREA_STORY_MODELS[0].model_id != -1) {
+            player_id = AREA_STORY_MODELS[0].model_id;
         } else if (Area_FreePlayModelList[0].model_id != -1) {
             player_id = Area_FreePlayModelList[0].model_id;
         } else {
@@ -762,7 +762,7 @@ extern "C" void Area_Configure(i32 area, i32 param, AREA_EXTRA_MODEL *models, i1
         Area_PlayerModelCount = 2;
     }
 
-    AREA_STORY_MODELS_PC[Area_StoryModelCount].model_id = -1;
+    AREA_STORY_MODELS[Area_StoryModelCount].model_id = -1;
     Area_FreePlayModelList[Area_FreePlayModelCount].model_id = -1;
     Area_MissionModelList[Area_MissionModelCount].model_id = -1;
     Area_PlayerModelList[Area_PlayerModelCount].model_id = -1;
@@ -807,7 +807,7 @@ extern "C" void DumpAreaData(i32 mode, i32) {
 typedef struct area_loading_clock_reader_s { // size 0x7c24
     u8 unknown_0000[0x7c20];                 // 0x0000
     f32 elapsed_time;                        // 0x7c20
-} AREA_LOADING_CLOCK_READER_PC;
+} AREA_LOADING_CLOCK_READER;
 
 typedef struct area_loading_pad_reader_pc_s { // size 0x60
     u8 unknown_0000[8];                       // 0x00

@@ -16,34 +16,34 @@
 struct WORLDINFO_s;
 struct gameobject_s;
 
-typedef struct add_game_message_s {     // size 0x50
-    const char *text;                   // 0x00
-    NUVEC *position;                    // 0x04
-    NUVEC *target_position;             // 0x08
-    f32 scale;                          // 0x0c
-    f32 target_scale;                   // 0x10
-    u8 red;                             // 0x14
-    u8 green;                           // 0x15
-    u8 blue;                            // 0x16
-    u8 alpha;                           // 0x17
-    u32 flags;                          // 0x18
-    f32 duration;                       // 0x1c
-    f32 delay;                          // 0x20
-    u16 unknown_24;                     // 0x24
-    i16 icon;                           // 0x26
-    void *special;                      // 0x28
-    u32 score;                          // 0x2c
-    f32 unknown_30;                     // 0x30
-    f32 unknown_34;                     // 0x34
-    GAME_MESSAGE_CALLBACK_PC delay_fn;  // 0x38
-    GAME_MESSAGE_CALLBACK_PC tick_fn;   // 0x3c
-    GAME_MESSAGE_CALLBACK_PC update_fn; // 0x40
-    void *unknown_44;                   // 0x44
-    GAME_MESSAGE_CALLBACK_PC end_fn;    // 0x48
-    i8 player_index;                    // 0x4c
-    u8 allow_temporary;                 // 0x4d
-    u8 target_is_coin_total;            // 0x4e
-    u8 unknown_4f;                      // 0x4f
+typedef struct add_game_message_s {  // size 0x50
+    const char *text;                // 0x00
+    NUVEC *position;                 // 0x04
+    NUVEC *target_position;          // 0x08
+    f32 scale;                       // 0x0c
+    f32 target_scale;                // 0x10
+    u8 red;                          // 0x14
+    u8 green;                        // 0x15
+    u8 blue;                         // 0x16
+    u8 alpha;                        // 0x17
+    u32 flags;                       // 0x18
+    f32 duration;                    // 0x1c
+    f32 delay;                       // 0x20
+    u16 unknown_24;                  // 0x24
+    i16 icon;                        // 0x26
+    void *special;                   // 0x28
+    u32 score;                       // 0x2c
+    f32 unknown_30;                  // 0x30
+    f32 unknown_34;                  // 0x34
+    GAME_MESSAGE_CALLBACK delay_fn;  // 0x38
+    GAME_MESSAGE_CALLBACK tick_fn;   // 0x3c
+    GAME_MESSAGE_CALLBACK update_fn; // 0x40
+    void *unknown_44;                // 0x44
+    GAME_MESSAGE_CALLBACK end_fn;    // 0x48
+    i8 player_index;                 // 0x4c
+    u8 allow_temporary;              // 0x4d
+    u8 target_is_coin_total;         // 0x4e
+    u8 unknown_4f;                   // 0x4f
 } ADD_GAME_MESSAGE_PC;
 
 #ifdef __cplusplus
@@ -90,8 +90,8 @@ extern "C" {
     extern f32 PartVehicleHeartGunshipScale;
     extern f32 PartVehicleHeartScale;
     extern f32 coinimpactwait;
-    extern const char PowerUpBounceSfx_PC[21];
-    extern const char CoinDropGoldSfx_PC[10];
+    extern const char PowerUpBounceSfx[21];
+    extern const char CoinDropGoldSfx[10];
     void AddTorpedoAsPart(NUVEC *, NUVEC *, f32, f32);
     void AddHeartAsPart(struct gameobject_s *, NUVEC *, NUVEC *, f32, f32);
     void PowerUp_AddPart(NUVEC *, NUVEC *, f32, f32);
@@ -106,7 +106,7 @@ extern "C" {
     extern u8 CoinTab[4];
     extern f32 AddCoinDelay[2];
     extern const f64 PlayerSlideSpeed;
-    extern const f64 PlayerTightRopePhasePc;
+    extern const f64 PlayerTightRopePhase;
     void PowerUp_Update(struct gameobject_s *);
     extern PICKUP_TYPE_SYSTEM GizmoPickupSys_Game;
     extern char ScorePanelName[9];

@@ -28,7 +28,7 @@ typedef struct edpp_file_particle_s { // size 0x58
     u8 facing_mode;                   // 0x53
     i16 facing_rotation_x;            // 0x54
     i16 facing_rotation_y;            // 0x56
-} EDPP_FILE_PARTICLE_PC;
+} EDPP_FILE_PARTICLE;
 
 extern const f64 ActionSnapWeightedRandomZero;
 

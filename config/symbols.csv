@@ -5466,7 +5466,7 @@ address,symbol,size,ctype
 0x5706b0,_GameMsg_Draw_MiniKitDetector,841,"void __cdecl(GAME_MESSAGE_PC *, NUVEC *, f32)"
 0x570a00,_MiniKitDetector,93,
 0x570a60,_ResetCoinPacket,23,void __cdecl(void *)
-0x570a80,_UpdateCoinPacket,298,"void __cdecl(PLAYER_COIN_PACKET_PC*,i32,i32)"
+0x570a80,_UpdateCoinPacket,298,"void __cdecl(PLAYER_COIN_PACKET*,i32,i32)"
 0x570bb0,_CoinsGoToMainTotal,78,i32 __cdecl (void)
 0x570c00,_PartUpdate_Heart,129,void __cdecl (PART_PC *)
 0x570c90,_SpecialMiniKits_Configure,786,"void __cdecl(WORLDINFO *, char *)"
@@ -39389,7 +39389,7 @@ address,symbol,size,ctype
 00855f2c,_MasterCollection,20,COLLECTION_BUILD_PC
 0x855f40,_PermanentShadowMaterial,4,NUMTL *
 0x855f44,_MiniKitCollection,20,COLLECTION_BUILD_PC
-0x855f58,_CoinPacket,32,PLAYER_COIN_PACKET_PC[2]
+0x855f58,_CoinPacket,32,PLAYER_COIN_PACKET[2]
 00855f78,_BlasterCollection,20,COLLECTION_BUILD_PC
 0x855f8c,_AnimRedirectList_Batman,8,ANIM_REDIRECT_VIEW_PC[1]
 0x00855f94,_DEFAULT_MOVE_RANGE,4,f32
@@ -41179,7 +41179,7 @@ address,symbol,size,ctype
 0x009212b0,_bgproc_initialized,4,i32
 0x9212b8,_CutSceneCameraMatrix,64,NUMTX
 0x9212f8,_CutSceneBackgroundInstances,4,INSTNUGCUTSCENE *
-0x9212fc,_CutTriggerSetList,4,CUT_TRIGGER_SET_PC *
+0x9212fc,_CutTriggerSetList,4,CUT_TRIGGER_SET *
 0x921320,_DefragCreateInstFn,4,void *
 0x921324,_UpdateLocatorVfxFn,4,"void (__cdecl *)(i32,NUMTX *)"
 0x921328,_DefragCutSceneListBase,4,CUT_MEMORY_ENTRY_PC *
@@ -41187,7 +41187,7 @@ address,symbol,size,ctype
 0x921330,_DefragCutSceneEndMem,4,void *
 0x921334,_ReleaseLocatorVfxFn,4,void (__cdecl *)(i32)
 0x921338,_CutSceneFocusLocation,12,NUVEC
-0x921344,_CutTriggerPendingSetList,4,CUT_TRIGGER_SET_PC *
+0x921344,_CutTriggerPendingSetList,4,CUT_TRIGGER_SET *
 0x921348,_LookupLocatorVfxFn,4,i32 (__cdecl *)(char *)
 0x92134c,_DefragInstEndMem,4,void *
 0x921350,_DefragCutSceneBaseMem,4,void *

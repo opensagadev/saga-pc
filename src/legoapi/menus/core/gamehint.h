@@ -21,7 +21,7 @@ extern "C" {
     void DrawHint_LSW(HINT *, i32);
     void initGameHintSys_LSW(void);
     extern const char PickupCoinSfx[11];
-    extern const char CoinDropSilverSfx_PC[10];
+    extern const char CoinDropSilverSfx[10];
 #ifdef __cplusplus
 }
 #endif

@@ -1393,18 +1393,18 @@ typedef struct debris_collision_effect_s { // size 0x428
     DEBRIS_FLOAT_KEY_PC torus_keys2[8];    // 0x350
     DEBRIS_FLOAT_KEY_PC torus_keys3[8];    // 0x390
     u8 unknown_3d0[0x58];                  // 0x3d0
-} DEBRIS_COLLISION_EFFECT_PC;
+} DEBRIS_COLLISION_EFFECT;
 
 i32 DebrisSingleCollisionCheckScaleYFlag(i32 key_index, NUVEC *position, f32 radius, f32 y_scale, u8 flags) {
     DEBRIS_INFO_PC *effect;
-    DEBRIS_COLLISION_EFFECT_PC *collision;
+    DEBRIS_COLLISION_EFFECT *collision;
     i32 i;
     if (DEBRIS_ENGINE_KEYS_PC[key_index].effect_index != 0 && DEBRIS_ENGINE_KEYS_PC[key_index].effect_index != -1) {
         effect = debtab[DEBRIS_ENGINE_KEYS_PC[key_index].effect_index];
         if (effect != NULL && (effect->collision_flags & flags) != 0 && effect->process_spheres != 0) {
-            collision = (DEBRIS_COLLISION_EFFECT_PC *)effect;
+            collision = (DEBRIS_COLLISION_EFFECT *)effect;
             for (i = 0; i < effect->process_spheres; ++i) {
-                DEBRIS_PROCESS_SPHERE_PC *sphere = &DEBRIS_ENGINE_KEYS_PC[key_index].process_spheres[i];
+                DEBRIS_PROCESS_SPHERE *sphere = &DEBRIS_ENGINE_KEYS_PC[key_index].process_spheres[i];
                 f32 age = globaltime - sphere->time;
                 f32 time;
                 f32 effect_radius;
@@ -1458,7 +1458,7 @@ i32 DebrisSingleCollisionCheckScaleYFlag(i32 key_index, NUVEC *position, f32 rad
 
 i32 DebrisSingleTorusCollisionCheckScaleYFlag(i32 key_index, NUVEC *position, f32 radius, f32 y_scale, u8 flags) {
     DEBRIS_INFO_PC *effect;
-    DEBRIS_COLLISION_EFFECT_PC *collision;
+    DEBRIS_COLLISION_EFFECT *collision;
     f32 age;
     f32 time;
     f32 ring_radius;
@@ -1474,7 +1474,7 @@ i32 DebrisSingleTorusCollisionCheckScaleYFlag(i32 key_index, NUVEC *position, f3
     if (effect == NULL || (effect->collision_flags & flags) == 0) {
         return 0;
     }
-    collision = (DEBRIS_COLLISION_EFFECT_PC *)effect;
+    collision = (DEBRIS_COLLISION_EFFECT *)effect;
     if (collision->torus_lifetime == 0.0f) {
         return 0;
     }

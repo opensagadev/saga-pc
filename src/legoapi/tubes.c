@@ -145,7 +145,7 @@ typedef struct tube_progress_s { // size 0x8
     /* Indexes both masks by tube / 32, although only 32 tubes are stored. */
     u32 visible_mask[1]; // 0x0
     u32 active_mask[1];  // 0x4
-} TUBE_PROGRESS_PC;
+} TUBE_PROGRESS;
 
 static void *Tubes_ReserveBufferSpace(void *world_ptr) {
     WORLDINFO *world = world_ptr;
@@ -199,7 +199,7 @@ static void Tube_ResetDerived(TUBE_CALLBACKS_PC *tube) {
 
 static void Tubes_Reset(void *world_ptr, void *data, void *progress_ptr) {
     WORLDINFO *world = world_ptr;
-    TUBE_PROGRESS_PC *progress = progress_ptr;
+    TUBE_PROGRESS *progress = progress_ptr;
     TUBE_CALLBACKS_PC *tube;
     i32 i;
     (void)data;
@@ -263,7 +263,7 @@ static void *Tubes_AllocateProgressData(VARIPTR *buffer, VARIPTR *end) {
 }
 
 static void Tubes_ClearProgress(void *world, void *progress_ptr) {
-    TUBE_PROGRESS_PC *progress = progress_ptr;
+    TUBE_PROGRESS *progress = progress_ptr;
     (void)world;
     if (progress != NULL) {
         progress->visible_mask[0] = 0xffffffff;
@@ -273,7 +273,7 @@ static void Tubes_ClearProgress(void *world, void *progress_ptr) {
 
 static void Tubes_StoreProgress(void *world_ptr, void *data, void *progress_ptr) {
     WORLDINFO *world = world_ptr;
-    TUBE_PROGRESS_PC *progress = progress_ptr;
+    TUBE_PROGRESS *progress = progress_ptr;
     TUBE_CALLBACKS_PC *tube;
     i32 i;
     (void)data;

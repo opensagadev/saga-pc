@@ -44,7 +44,7 @@ typedef void (*CHECK_ANTINODE_FN_PC)(APIOBJECT *, AIANTINODE *, NUVEC *, f32);
 typedef struct ai_context_reset_view_s { // size 0x6c5
     u8 unknown_000[0x6c4];               // 0x000
     u8 reset_contexts;                   // 0x6c4
-} AI_CONTEXT_RESET_VIEW_PC;
+} AI_CONTEXT_RESET_VIEW;
 
 STATIC_ASSERT(offsetof(GAMEOBJECT, ai_packet) + offsetof(AIPACKET, creature_set) == 0x378);
 
@@ -57,12 +57,12 @@ typedef struct ai_force_fields_s { // size 0xa4
     u32 config_flags;              // 0x74
     u8 unknown078[0xa0 - 0x78];    // 0x78
     u32 runtime_flags;             // 0xa0
-} AI_FORCE_FIELDS_PC;
+} AI_FORCE_FIELDS;
 
 typedef struct ai_force_object_s { // size 0x10d0
     u8 unknown000[0x10cc];         // 0x0000
     GIZFORCE_PC *force;            // 0x10cc
-} AI_FORCE_OBJECT_PC;
+} AI_FORCE_OBJECT;
 
 /* AISYS callback family: seven-argument callbacks. */
 extern i32 TagCharacter(GAMEOBJECT *, GAMEOBJECT *, i32);
@@ -77,7 +77,7 @@ typedef struct torpedo_action_packet_s { // size 0x88
     u8 unknown_0c[0x30];                 // 0x0c
     NUVEC pickup_positions[5];           // 0x3c
     u8 unknown_78[0x10];                 // 0x78
-} TORPEDO_ACTION_PACKET_PC;
+} TORPEDO_ACTION_PACKET;
 
 void NuRndrBoundingBox(NUVEC *minimum, NUVEC *maximum, NUMTX *matrix, i32 colour);
 
@@ -93,7 +93,7 @@ void FollowAPIObject(APIOBJECT *, APIOBJECT *, i32, f32);
 static i32 prev_droid_ix = 0;
 #pragma bss_seg()
 
-void LevelScriptReStoreProgress(WORLDINFO *, LEVEL_SCRIPT_PROCESS_PC *);
+void LevelScriptReStoreProgress(WORLDINFO *, LEVEL_SCRIPT_PROCESS *);
 
 GIZMOPICKUP *GizmoPickup_FindByName(WORLDINFO *, char *);
 
@@ -112,12 +112,12 @@ extern i32 GizmoGetTypeIDByName(void *, char *);
 typedef struct ai_cable_head_s { // size 0x8
     GAMEOBJECT *source;          // 0x0
     GAMEOBJECT *target;          // 0x4
-} AI_CABLE_HEAD_PC;
+} AI_CABLE_HEAD;
 
 typedef struct ai_cable_object_s { // size 0x1044
     u8 unknown000[0x1040];         // 0x0000
     CABLE_RECORD *cable;           // 0x1040
-} AI_CABLE_OBJECT_PC;
+} AI_CABLE_OBJECT;
 
 STATIC_ASSERT(offsetof(GAMEOBJECT, ai_packet) + offsetof(AIPACKET, locator) == 0x36c);
 
@@ -157,7 +157,7 @@ i32 Hint_isCompleteById(i32 hint_id);
 typedef struct ai_global_trigger_world_s { // size 0x467c
     u8 unknown_0000[0x4678];               // 0x0000
     AITRIGGERSETSYS_s *trigger_system;     // 0x4678
-} AI_GLOBAL_TRIGGER_WORLD_PC;
+} AI_GLOBAL_TRIGGER_WORLD;
 
 STATIC_ASSERT(offsetof(GAMEOBJECT, ai_packet) + offsetof(AIPACKET, opponent) == 0x3ac);
 
@@ -170,20 +170,20 @@ i32 ForceAnimationDone(GIZFORCE_PC *force);
 typedef struct condition_trigger_process_reader_s { // size 0xa4
     u8 unknown_00[0xa0];                            // 0x00
     AIAREA *trigger_area;                           // 0xa0
-} CONDITION_TRIGGER_PROCESS_READER_PC;
+} CONDITION_TRIGGER_PROCESS_READER;
 
 typedef struct condition_trigger_player_reader_s { // size 0x2b8
     u8 unknown_00[0x2b0];                          // 0x000
     u64 membership;                                // 0x2b0
-} CONDITION_TRIGGER_PLAYER_READER_PC;
+} CONDITION_TRIGGER_PLAYER_READER;
 
 typedef struct ai_been_to_level_progress_s { // size 0x2e28
     u8 unknown_0000[0x2800];                 // 0x0000
     u32 visited_flags;                       // 0x2800
     u8 unknown_2804[0x624];                  // 0x2804
-} AI_BEEN_TO_LEVEL_PROGRESS_PC;
+} AI_BEEN_TO_LEVEL_PROGRESS;
 
-STATIC_ASSERT(sizeof(AI_BEEN_TO_LEVEL_PROGRESS_PC) == sizeof(LEVEL_PROGRESS));
+STATIC_ASSERT(sizeof(AI_BEEN_TO_LEVEL_PROGRESS) == sizeof(LEVEL_PROGRESS));
 
 typedef struct ai_on_object_platform_pc_s { // size 0x6c
     u8 unknown_00[0x40];                    // 0x00
@@ -194,7 +194,7 @@ typedef struct ai_on_object_platform_pc_s { // size 0x6c
 typedef struct ai_on_object_terrain_s {  // size 0x6c
     u8 unknown_00[0x68];                 // 0x00
     AI_ON_OBJECT_PLATFORM_PC *platforms; // 0x68
-} AI_ON_OBJECT_TERRAIN_PC;
+} AI_ON_OBJECT_TERRAIN;
 
 STATIC_ASSERT(offsetof(GAMEOBJECT, position) + offsetof(NUVEC, y) == 0x60);
 
@@ -202,12 +202,12 @@ STATIC_ASSERT(offsetof(GAMEOBJECT, position) + offsetof(NUVEC, y) == 0x60);
 typedef struct condition_cut_instance_reader_s { // size 0x8c
     u8 opaque_00_88[0x88];                       // 0x00
     u32 flags;                                   // 0x88
-} CONDITION_CUT_INSTANCE_READER_PC;
+} CONDITION_CUT_INSTANCE_READER;
 
 typedef struct condition_hat_name_reader_s { // size 0x50
     u8 unknown_00[0x40];                     // 0x00
     char name[16];                           // 0x40
-} CONDITION_HAT_NAME_READER_PC;
+} CONDITION_HAT_NAME_READER;
 
 SOCK_PC *FindSock(SOCKSYS_PC *system, char *name);
 
@@ -215,7 +215,7 @@ void AINetReplicateAction(AIACTION *action, AIPACKET *packet);
 
 extern const f64 ActionSnapWeightedRandomZero;
 
-typedef NUVEC *(*AI_GET_CREATURE_ORIGIN_PC)(AISYS_PC *, AIPACKET *);
+typedef NUVEC *(*AI_GET_CREATURE_ORIGIN)(AISYS_PC *, AIPACKET *);
 
 typedef struct ai_force_platform_record_pc_s { // size 0x6c
     u8 unknown_00[0x40];                       // 0x00
@@ -236,24 +236,24 @@ typedef struct ai_force_platform_object_data_pc_s { // size 0x4
 typedef struct ai_trigger_world_s {    // size 0x467c
     u8 unknown_0000[0x4678];           // 0x0000
     AITRIGGERSETSYS_s *trigger_system; // 0x4678
-} AI_TRIGGER_WORLD_PC;
+} AI_TRIGGER_WORLD;
 
 typedef struct ai_trigger_grapple_s { // size 0x30
     u8 unknown_00[0x24];              // 0x00
     NUVEC ground_position;            // 0x24
-} AI_TRIGGER_GRAPPLE_PC;
+} AI_TRIGGER_GRAPPLE;
 
 typedef struct ai_trigger_object_s { // size 0x1073
     u8 unknown_0000[0x1072];         // 0x0000
     u8 grapple_direction;            // 0x1072
-} AI_TRIGGER_OBJECT_PC;
+} AI_TRIGGER_OBJECT;
 
 typedef struct ai_trigger_force_s { // size 0x78
     u8 unknown_00[0x1c];            // 0x00
     NUVEC position;                 // 0x1c
     u8 unknown_28[0x4c];            // 0x28
     u32 config_flags;               // 0x74
-} AI_TRIGGER_FORCE_PC;
+} AI_TRIGGER_FORCE;
 
 void ClearSpecialMove(GAMEOBJECT *object);
 f32 GizSpinner_GetNearestTargetPoint(GIZSPINNER_s *, NUVEC *, NUVEC *, NUVEC *, i32);
@@ -277,7 +277,7 @@ typedef struct bulk_ai_lever_s { // size 0x98
     u16 animation_frame;         // 0x8e
     u8 unknown_90[4];            // 0x90
     u16 flags;                   // 0x94
-} BULK_AI_LEVER_PC;
+} BULK_AI_LEVER;
 
 typedef struct bulk_ai_panel_s {
     u8 unknown_00[0x50];
@@ -287,7 +287,7 @@ typedef struct bulk_ai_panel_s {
     u8 flags;
     u8 unknown_63;
     NUVEC floor_position;
-} BULK_AI_PANEL_PC;
+} BULK_AI_PANEL;
 
 typedef struct bulk_ai_techno_s { // size 0x40
     u8 unknown_00[0x10];          // 0x00
@@ -295,14 +295,14 @@ typedef struct bulk_ai_techno_s { // size 0x40
     NUVEC ground_position;        // 0x1c
     u8 unknown_28[0x14];          // 0x28
     u8 flags;                     // 0x3c
-} BULK_AI_TECHNO_PC;
+} BULK_AI_TECHNO;
 
-i32 GizTechno_CanUseTechno(GAMEOBJECT *object, BULK_AI_TECHNO_PC *techno);
+i32 GizTechno_CanUseTechno(GAMEOBJECT *object, BULK_AI_TECHNO *techno);
 
 typedef struct ai_action_controller_world_s { // size 0x4674
     u8 unknown_0000[0x4670];                  // 0x0000
     AI_CONTROL_SYSTEM_PC *control_system;     // 0x4670
-} AI_ACTION_CONTROLLER_WORLD_PC;
+} AI_ACTION_CONTROLLER_WORLD;
 struct AIPATHCNXCONTROLLER_s *AIPathCnxControllerCreate(AI_CONTROL_SYSTEM_PC *, AISYS_PC *, AIPATH *, char *, char *, i32, char *, i32,
                                                         i32);
 void AIPathCnxControllerSetOnRange(struct AIPATHCNXCONTROLLER_s *, i32, i32);
@@ -1101,7 +1101,7 @@ f32 Condition_EitherPlayerPullingLever(AISYS_PC *system, AISCRIPTPROCESS *proces
 }
 
 f32 Condition_EitherPlayerUsingHatMachine(AISYS_PC *system, AISCRIPTPROCESS *process, AIPACKET *packet, char *name, void *argument) {
-    CONDITION_HAT_NAME_READER_PC *target;
+    CONDITION_HAT_NAME_READER *target;
     if (player != NULL && player->character_context == 0x61 && (target = player->grapple) != NULL &&
         (name == NULL || NuStrICmp(target->name, name) == 0)) {
         return 1.0f;
@@ -1323,7 +1323,7 @@ f32 Condition_PlayerOnObject(AISYS_PC *system, AISCRIPTPROCESS *process, AIPACKE
     i32 platform = (i32)argument;
     if (player != NULL && platform != -1 && (player->field_281 != 0 || player->field_282 != 0) &&
         player->supporting_platform_id == platform) {
-        NUMTX *transform = ((AI_ON_OBJECT_TERRAIN_PC *)CurrentTerrain)->platforms[player->supporting_platform_id].scene_object;
+        NUMTX *transform = ((AI_ON_OBJECT_TERRAIN *)CurrentTerrain)->platforms[player->supporting_platform_id].scene_object;
         if (player->position.y >= transform->m31) {
             return 1.0f;
         }
@@ -1336,14 +1336,14 @@ f32 Condition_EitherPlayerOnObject(AISYS_PC *system, AISCRIPTPROCESS *process, A
 
     if (player != NULL && platform != -1 && (player->field_281 != 0 || player->field_282 != 0) &&
         player->supporting_platform_id == platform) {
-        NUMTX *transform = ((AI_ON_OBJECT_TERRAIN_PC *)CurrentTerrain)->platforms[player->supporting_platform_id].scene_object;
+        NUMTX *transform = ((AI_ON_OBJECT_TERRAIN *)CurrentTerrain)->platforms[player->supporting_platform_id].scene_object;
         if (player->position.y >= transform->m31) {
             return 1.0f;
         }
     }
     if (player2 != NULL && platform != -1 && (player2->field_281 != 0 || player2->field_282 != 0) &&
         player2->supporting_platform_id == platform) {
-        NUMTX *transform = ((AI_ON_OBJECT_TERRAIN_PC *)CurrentTerrain)->platforms[player2->supporting_platform_id].scene_object;
+        NUMTX *transform = ((AI_ON_OBJECT_TERRAIN *)CurrentTerrain)->platforms[player2->supporting_platform_id].scene_object;
         if (player2->position.y >= transform->m31) {
             return 1.0f;
         }
@@ -1383,7 +1383,7 @@ f32 Condition_OnObject(AISYS_PC *system, AISCRIPTPROCESS *process, AIPACKET *pac
         i32 platform = (i32)argument;
         if (object != NULL && platform != -1 && (object->field_281 != 0 || object->field_282 != 0) &&
             object->supporting_platform_id == platform) {
-            NUMTX *transform = ((AI_ON_OBJECT_TERRAIN_PC *)CurrentTerrain)->platforms[object->supporting_platform_id].scene_object;
+            NUMTX *transform = ((AI_ON_OBJECT_TERRAIN *)CurrentTerrain)->platforms[object->supporting_platform_id].scene_object;
             if (object->position.y >= transform->m31) {
                 return 1.0f;
             }
@@ -1742,7 +1742,7 @@ void *Condition_BeenToLevelInit(AISYS_PC *system, char *name, AISCRIPT *script) 
 f32 Condition_BeenToLevel(AISYS_PC *system, AISCRIPTPROCESS *process, AIPACKET *packet, char *name, void *argument) {
     i32 index = (i32)argument;
     if (index != -1) {
-        return (f32)(((AI_BEEN_TO_LEVEL_PROGRESS_PC *)LevelProgressData)[index].visited_flags & 1u);
+        return (f32)(((AI_BEEN_TO_LEVEL_PROGRESS *)LevelProgressData)[index].visited_flags & 1u);
     }
     return 0.0f;
 }
@@ -1853,7 +1853,7 @@ void *Condition_CutSceneStartedInit(AISYS_PC *system, char *name, AISCRIPT *scri
 
 f32 Condition_CutSceneStarted(AISYS_PC *system, AISCRIPTPROCESS *process, AIPACKET *packet, char *name, void *argument) {
     CUTINFO *cutscene = argument;
-    if (cutscene != NULL && cutscene->instance != NULL && (((CONDITION_CUT_INSTANCE_READER_PC *)cutscene->instance)->flags & 2) != 0) {
+    if (cutscene != NULL && cutscene->instance != NULL && (((CONDITION_CUT_INSTANCE_READER *)cutscene->instance)->flags & 2) != 0) {
         return 1.0f;
     }
     return 0.0f;
@@ -2118,11 +2118,11 @@ f32 Condition_NumBaddiesThatCanSeePlayers(AISYS_PC *system, AISCRIPTPROCESS *pro
 }
 
 f32 Condition_HelpWithTriggers(AISYS_PC *system, AISCRIPTPROCESS *process, AIPACKET *packet, char *name, void *argument) {
-    if (((AI_GLOBAL_TRIGGER_WORLD_PC *)WORLD)->trigger_system != NULL && packet != NULL && packet->owner != NULL) {
+    if (((AI_GLOBAL_TRIGGER_WORLD *)WORLD)->trigger_system != NULL && packet != NULL && packet->owner != NULL) {
         i32 index = packet->owner->hostility_group;
-        if (((AI_GLOBAL_TRIGGER_WORLD_PC *)WORLD)->trigger_system->field_0x42c0[index] != -1 &&
-            ((AI_GLOBAL_TRIGGER_WORLD_PC *)WORLD)
-                    ->trigger_system->sets[((AI_GLOBAL_TRIGGER_WORLD_PC *)WORLD)->trigger_system->field_0x4280[index]]
+        if (((AI_GLOBAL_TRIGGER_WORLD *)WORLD)->trigger_system->field_0x42c0[index] != -1 &&
+            ((AI_GLOBAL_TRIGGER_WORLD *)WORLD)
+                    ->trigger_system->sets[((AI_GLOBAL_TRIGGER_WORLD *)WORLD)->trigger_system->field_0x4280[index]]
                     .field_0x20e != 0) {
             return 1.0f;
         }
@@ -2201,7 +2201,7 @@ f32 Condition_TakeOverTargetInTriggerArea(AISYS_PC *system, AISCRIPTPROCESS *pro
         i32 index;
         u64 mask;
         if (area == NULL) {
-            area = ((CONDITION_TRIGGER_PROCESS_READER_PC *)process)->trigger_area;
+            area = ((CONDITION_TRIGGER_PROCESS_READER *)process)->trigger_area;
         }
         index = (i32)((u32)area - (u32)WORLD->ai_sys->areas) >> 6;
         if (packet->owner->objptr != NULL) {
@@ -2210,7 +2210,7 @@ f32 Condition_TakeOverTargetInTriggerArea(AISYS_PC *system, AISCRIPTPROCESS *pro
         if (system->player_1 != NULL && target != NULL) {
             /* The compiler's shift helper consumes CL, including its out-of-range zero cases. */
             mask = (u64)1 << index;
-            if ((((CONDITION_TRIGGER_PLAYER_READER_PC *)target)->membership & mask) != 0) {
+            if ((((CONDITION_TRIGGER_PLAYER_READER *)target)->membership & mask) != 0) {
                 return 1.0f;
             }
         }
@@ -2224,14 +2224,14 @@ f32 Condition_EitherPlayerInMyTriggerArea(AISYS_PC *system, AISCRIPTPROCESS *pro
     i32 index;
     i64 mask;
     if (system != NULL) {
-        area = ((CONDITION_TRIGGER_PROCESS_READER_PC *)process)->trigger_area;
+        area = ((CONDITION_TRIGGER_PROCESS_READER *)process)->trigger_area;
         if (area != NULL) {
             if (system->player_1 != NULL && area->system != NULL) {
                 object = (GAMEOBJECT *)system->player_1;
                 index = (i32)((u32)area - (u32)area->system->areas) >> 6;
                 /* Wraps the 32-bit shift and sign-extends bit 31. */
                 mask = (i32)(1u << ((u32)index & 31));
-                if ((((CONDITION_TRIGGER_PLAYER_READER_PC *)object)->membership & mask) != 0) {
+                if ((((CONDITION_TRIGGER_PLAYER_READER *)object)->membership & mask) != 0) {
                     return 1.0f;
                 }
             }
@@ -2239,7 +2239,7 @@ f32 Condition_EitherPlayerInMyTriggerArea(AISYS_PC *system, AISCRIPTPROCESS *pro
                 object = (GAMEOBJECT *)system->player_2;
                 index = (i32)((u32)area - (u32)area->system->areas) >> 6;
                 mask = (i32)(1u << ((u32)index & 31));
-                if ((((CONDITION_TRIGGER_PLAYER_READER_PC *)object)->membership & mask) != 0) {
+                if ((((CONDITION_TRIGGER_PLAYER_READER *)object)->membership & mask) != 0) {
                     return 1.0f;
                 }
             }
@@ -6471,12 +6471,12 @@ i32 Action_UseCurrentSpeed(AISYS_PC *system, AISCRIPTPROCESS *processor, AIPACKE
             return 1;
         }
         object->flags_ef4 |= 0x200000u;
-        object->movement_speed_scale_pc = 1.0f;
+        object->movement_speed_scale = 1.0f;
         for (; index < num_params; index++) {
             if (NuStrICmp(params[index], "FALSE") == 0) {
                 object->flags_ef4 &= ~0x200000u;
             } else if ((value = NuStrIStr(params[index], "multiplier")) != NULL) {
-                object->movement_speed_scale_pc = AIParamToFloat(processor, value + 11);
+                object->movement_speed_scale = AIParamToFloat(processor, value + 11);
             } else if (NuStrICmp(params[index], "snaptospeed") == 0) {
                 snap = 1;
             }
@@ -7348,7 +7348,7 @@ i32 Action_CnxController(struct AISYS_PC *sys, struct AISCRIPTPROCESS *processor
         }
     }
 
-    controller = AIPathCnxControllerCreate(((AI_ACTION_CONTROLLER_WORLD_PC *)WORLD)->control_system, WORLD->ai_sys, path, from, to,
+    controller = AIPathCnxControllerCreate(((AI_ACTION_CONTROLLER_WORLD *)WORLD)->control_system, WORLD->ai_sys, path, from, to,
                                            target_type, target_name, fake_animation_id, gizmo_output);
     if (controller == NULL) {
         return 1;
@@ -8034,7 +8034,7 @@ i32 Action_ResetContext(AISYS_PC *system, AISCRIPTPROCESS *processor, AIPACKET *
     }
     if (object != NULL) {
         Player_ClearContext(object, 1);
-        Player_ResetContexts(&((AI_CONTEXT_RESET_VIEW_PC *)object)->reset_contexts);
+        Player_ResetContexts(&((AI_CONTEXT_RESET_VIEW *)object)->reset_contexts);
     }
     return 1;
 }
@@ -8568,7 +8568,7 @@ i32 Action_UseForce(AISYS_PC *system, AISCRIPTPROCESS *processor, AIPACKET *pack
     GAMEOBJECT *object;
     GIZFORCE_PC *force;
     GIZFORCE_PC *candidates[16];
-    AI_FORCE_FIELDS_PC *view;
+    AI_FORCE_FIELDS *view;
     GIZMO_PC *gizmo;
     char *name;
     i32 index;
@@ -8597,7 +8597,7 @@ i32 Action_UseForce(AISYS_PC *system, AISCRIPTPROCESS *processor, AIPACKET *pack
                     if (gizmo != NULL && gizmo->object != NULL) {
                         force = gizmo->object;
                         candidates[candidate_count] = force;
-                        view = (AI_FORCE_FIELDS_PC *)force;
+                        view = (AI_FORCE_FIELDS *)force;
                         if ((view->runtime_flags & 2) && !(view->runtime_flags & 0x10000)) {
                             ++candidate_count;
                         }
@@ -8613,7 +8613,7 @@ i32 Action_UseForce(AISYS_PC *system, AISCRIPTPROCESS *processor, AIPACKET *pack
     if (force == NULL) {
         return 1;
     }
-    view = (AI_FORCE_FIELDS_PC *)force;
+    view = (AI_FORCE_FIELDS *)force;
     if (!(view->runtime_flags & 1)) {
         return 0;
     }
@@ -8630,11 +8630,11 @@ i32 Action_UseForce(AISYS_PC *system, AISCRIPTPROCESS *processor, AIPACKET *pack
     } else if (valid_category) {
         packet->movement_look_target = &view->position;
         object->pad->runtime_flags |= 4;
-        ((AI_FORCE_OBJECT_PC *)object)->force = force;
+        ((AI_FORCE_OBJECT *)object)->force = force;
         if (processor->action_data_1 != 0) {
             if (packet->nearest_opponent == NULL) {
                 object->pad->runtime_flags &= ~4;
-                ((AI_FORCE_OBJECT_PC *)object)->force = NULL;
+                ((AI_FORCE_OBJECT *)object)->force = NULL;
             }
             return 1;
         }
@@ -9728,9 +9728,8 @@ i32 Action_HelpWithTriggers(AISYS_PC *unused0, AISCRIPTPROCESS *processor, AIPAC
     f32 dist;
     NUVEC spinner_position;
     NUVEC spinner_direction;
-    if (((AI_TRIGGER_WORLD_PC *)WORLD)->trigger_system != NULL && packet != NULL && packet->owner != NULL &&
-        packet->owner->objptr != NULL) {
-        system = ((AI_TRIGGER_WORLD_PC *)WORLD)->trigger_system;
+    if (((AI_TRIGGER_WORLD *)WORLD)->trigger_system != NULL && packet != NULL && packet->owner != NULL && packet->owner->objptr != NULL) {
+        system = ((AI_TRIGGER_WORLD *)WORLD)->trigger_system;
         if (system->field_0x42c0[packet->owner->hostility_group] == -1) {
             return 0;
         }
@@ -9752,7 +9751,7 @@ i32 Action_HelpWithTriggers(AISYS_PC *unused0, AISCRIPTPROCESS *processor, AIPAC
                 AIMoveInstruction(packet, &spinner_position, 0.0f, &target->path, 1, 0.0f);
             }
         } else if (gizmo->type_id == grapple_gizmotype_id) {
-            AI_TRIGGER_GRAPPLE_PC *grapple = gizmo->object;
+            AI_TRIGGER_GRAPPLE *grapple = gizmo->object;
             if (object->character_context == LEGOCONTEXT_GRAPPLE && object->grapple == grapple) {
                 GAMEOBJECT *found;
                 i32 i;
@@ -9776,9 +9775,9 @@ i32 Action_HelpWithTriggers(AISYS_PC *unused0, AISCRIPTPROCESS *processor, AIPAC
                 }
                 if (found != NULL) {
                     if (player->position.y > object->position.y + (double)0.05f) {
-                        ((AI_TRIGGER_OBJECT_PC *)object)->grapple_direction = 1;
+                        ((AI_TRIGGER_OBJECT *)object)->grapple_direction = 1;
                     } else if (object->position.y - (double)0.05f > player->position.y) {
-                        ((AI_TRIGGER_OBJECT_PC *)object)->grapple_direction = 2;
+                        ((AI_TRIGGER_OBJECT *)object)->grapple_direction = 2;
                     }
                 }
                 return 0;
@@ -9815,7 +9814,7 @@ i32 Action_HelpWithTriggers(AISYS_PC *unused0, AISCRIPTPROCESS *processor, AIPAC
                 object->respawn_timer = 0.0f;
             }
         } else if (gizmo->type_id == force_gizmotype_id) {
-            AI_TRIGGER_FORCE_PC *force = gizmo->object;
+            AI_TRIGGER_FORCE *force = gizmo->object;
             i32 is_category;
             if ((force->config_flags & 0x10) != 0) {
                 is_category = CharCategory_IsCategory(object, 1);
@@ -9839,7 +9838,7 @@ i32 Action_HelpWithTriggers(AISYS_PC *unused0, AISCRIPTPROCESS *processor, AIPAC
                 object->gizforce_target = force;
             }
         } else if (gizmo->type_id == grapple_gizmotype_id) {
-            AI_TRIGGER_GRAPPLE_PC *grapple = gizmo->object;
+            AI_TRIGGER_GRAPPLE *grapple = gizmo->object;
             if (processor->action_data_1 != 0) {
                 if (object->character_context != 0) {
                     processor->action_data_1 = 1;
@@ -9894,7 +9893,7 @@ i32 Action_UseTriggerSet(AISYS_PC *system, AISCRIPTPROCESS *processor, AIPACKET 
 
 i32 Action_PullLever(AISYS_PC *system, AISCRIPTPROCESS *processor, AIPACKET *packet, char **params, i32 param_count, i32 first_time,
                      f32 elapsed) {
-    BULK_AI_LEVER_PC *lever;
+    BULK_AI_LEVER *lever;
     GAMEOBJECT *object;
     i32 instant = 0;
     if (first_time != 0) {
@@ -9902,7 +9901,7 @@ i32 Action_PullLever(AISYS_PC *system, AISCRIPTPROCESS *processor, AIPACKET *pac
         for (index = 0; index < param_count; ++index) {
             char *name = NuStrIStr(params[index], (char *)"lever=");
             if (name != NULL) {
-                BULK_AI_LEVER_PC *lever;
+                BULK_AI_LEVER *lever;
                 f32 height;
                 GIZMO_PC *gizmo = GizmoFindByName(WORLD->gizmo_sys, lever_gizmotype_id, name + 6);
                 if (gizmo == NULL || gizmo->object == NULL) {
@@ -9960,7 +9959,7 @@ i32 Action_PullLever(AISYS_PC *system, AISCRIPTPROCESS *processor, AIPACKET *pac
 i32 Action_UsePanel(AISYS_PC *system, AISCRIPTPROCESS *processor, AIPACKET *packet, char **params, i32 param_count, i32 first_time,
                     f32 elapsed) {
     GAMEOBJECT *object;
-    BULK_AI_PANEL_PC *panel;
+    BULK_AI_PANEL *panel;
     if (packet == NULL || packet->owner == NULL || (GAMEOBJECT *)((APIOBJECT *)packet->owner)->owner == NULL) {
         return 1;
     }
@@ -9969,7 +9968,7 @@ i32 Action_UsePanel(AISYS_PC *system, AISCRIPTPROCESS *processor, AIPACKET *pack
         i32 index;
         for (index = 0; index < param_count; ++index) {
             GIZMO_PC *gizmo;
-            BULK_AI_PANEL_PC *panel;
+            BULK_AI_PANEL *panel;
             f32 height;
             char *name = NuStrIStr(params[index], (char *)"name=");
             if (name == NULL) {
@@ -10018,7 +10017,7 @@ i32 Action_UsePanel(AISYS_PC *system, AISCRIPTPROCESS *processor, AIPACKET *pack
 i32 Action_UseTechno(AISYS_PC *system, AISCRIPTPROCESS *processor, AIPACKET *packet, char **params, i32 param_count, i32 first_time,
                      f32 elapsed) {
     GAMEOBJECT *object;
-    BULK_AI_TECHNO_PC *techno;
+    BULK_AI_TECHNO *techno;
     if (packet == NULL || packet->owner == NULL || (GAMEOBJECT *)((APIOBJECT *)packet->owner)->owner == NULL) {
         return 1;
     }
@@ -10027,7 +10026,7 @@ i32 Action_UseTechno(AISYS_PC *system, AISCRIPTPROCESS *processor, AIPACKET *pac
         i32 index;
         for (index = 0; index < param_count; ++index) {
             GIZMO_PC *gizmo;
-            BULK_AI_TECHNO_PC *techno;
+            BULK_AI_TECHNO *techno;
             f32 height;
             char *name = NuStrIStr(params[index], (char *)"name=");
             if (name == NULL) {
@@ -10317,9 +10316,9 @@ i32 Action_ProbeDroid(AISYS_PC *system, AISCRIPTPROCESS *processor, AIPACKET *pa
     GAMEOBJECT *object;
     GAMEOBJECT *towing_player;
     GAMEOBJECT *bomb;
-    AI_CABLE_OBJECT_PC *view;
-    AI_CABLE_OBJECT_PC *player_view;
-    AI_CABLE_HEAD_PC *cable;
+    AI_CABLE_OBJECT *view;
+    AI_CABLE_OBJECT *player_view;
+    AI_CABLE_HEAD *cable;
     AILOCATOR *locator;
     NUVEC difference;
     f32 distance;
@@ -10330,20 +10329,20 @@ i32 Action_ProbeDroid(AISYS_PC *system, AISCRIPTPROCESS *processor, AIPACKET *pa
         return 1;
     }
     object = packet->owner->objptr;
-    if (((AI_CABLE_OBJECT_PC *)player)->cable != NULL &&
-        (bomb = ((AI_CABLE_HEAD_PC *)((AI_CABLE_OBJECT_PC *)player)->cable)->target) != NULL && bomb->id == id_DRAGBOMB) {
+    if (((AI_CABLE_OBJECT *)player)->cable != NULL && (bomb = ((AI_CABLE_HEAD *)((AI_CABLE_OBJECT *)player)->cable)->target) != NULL &&
+        bomb->id == id_DRAGBOMB) {
         towing_player = player;
-    } else if (player2 != NULL && ((AI_CABLE_OBJECT_PC *)player2)->cable != NULL &&
-               (bomb = ((AI_CABLE_HEAD_PC *)((AI_CABLE_OBJECT_PC *)player2)->cable)->target) != NULL && bomb->id == id_DRAGBOMB) {
+    } else if (player2 != NULL && ((AI_CABLE_OBJECT *)player2)->cable != NULL &&
+               (bomb = ((AI_CABLE_HEAD *)((AI_CABLE_OBJECT *)player2)->cable)->target) != NULL && bomb->id == id_DRAGBOMB) {
         towing_player = player2;
     } else {
         bomb = NULL;
         towing_player = NULL;
     }
-    view = (AI_CABLE_OBJECT_PC *)object;
+    view = (AI_CABLE_OBJECT *)object;
     if (bomb != NULL && towing_player != NULL) {
-        if (view->cable != NULL && ((AI_CABLE_HEAD_PC *)view->cable)->target != bomb) {
-            ((AI_CABLE_HEAD_PC *)view->cable)->source = NULL;
+        if (view->cable != NULL && ((AI_CABLE_HEAD *)view->cable)->target != bomb) {
+            ((AI_CABLE_HEAD *)view->cable)->source = NULL;
             view->cable = NULL;
         }
         if (view->cable == NULL) {
@@ -10366,7 +10365,7 @@ i32 Action_ProbeDroid(AISYS_PC *system, AISCRIPTPROCESS *processor, AIPACKET *pa
         }
     } else {
         if (view->cable != NULL) {
-            ((AI_CABLE_HEAD_PC *)view->cable)->source = NULL;
+            ((AI_CABLE_HEAD *)view->cable)->source = NULL;
             view->cable = NULL;
         }
         AIMoveInstruction(packet, NULL, 0.0f, NULL, 4, packet->movement_instruction_parameter);
@@ -11630,12 +11629,12 @@ i32 Action_AddTorpedoPacket(AISYS_PC *unused0, AISCRIPTPROCESS *unused1, AIPACKE
         }
         object->torpedo = GetTorpedoPacket();
         if (object->torpedo != NULL && count != 0) {
-            ((TORPEDO_ACTION_PACKET_PC *)object->torpedo)->count = (u8)count;
-            ((TORPEDO_ACTION_PACKET_PC *)object->torpedo)->flags |= flags;
+            ((TORPEDO_ACTION_PACKET *)object->torpedo)->count = (u8)count;
+            ((TORPEDO_ACTION_PACKET *)object->torpedo)->flags |= flags;
             for (index = 0; index < count; ++index) {
-                ((TORPEDO_ACTION_PACKET_PC *)object->torpedo)->pickup_positions[index] = object->collision_position;
-                ((TORPEDO_ACTION_PACKET_PC *)object->torpedo)->timer = 0.8f;
-                ((TORPEDO_ACTION_PACKET_PC *)object->torpedo)->state = 0;
+                ((TORPEDO_ACTION_PACKET *)object->torpedo)->pickup_positions[index] = object->collision_position;
+                ((TORPEDO_ACTION_PACKET *)object->torpedo)->timer = 0.8f;
+                ((TORPEDO_ACTION_PACKET *)object->torpedo)->state = 0;
             }
         }
     }
@@ -11734,7 +11733,7 @@ i32 Action_RaceOpponent(AISYS_PC *system, AISCRIPTPROCESS *processor, AIPACKET *
     if (first_time != 0) {
         actor->portal_flags |= 0x4000u;
         actor->flags_ef4 |= 0x200000u;
-        actor->movement_speed_scale_pc = 1.0f;
+        actor->movement_speed_scale = 1.0f;
         actor->ai_packet.movement_stopped = 1;
         processor->action_data_4 = 10.0f;
         for (index = 0; index < count; ++index) {
@@ -11752,11 +11751,11 @@ i32 Action_RaceOpponent(AISYS_PC *system, AISCRIPTPROCESS *processor, AIPACKET *
         distance_delta = (f32)(actor_distance - MidDistanceFromSockStart(WORLD->sock_sys, &opponent->sock_position));
         distance_delta = distance_delta - processor->action_data_4;
         if ((f64)distance_delta > (f64)processor->action_data_4 * 0.5) {
-            actor->movement_speed_scale_pc = 0.9f;
+            actor->movement_speed_scale = 0.9f;
         } else if ((f64)distance_delta < -((f64)processor->action_data_4 * 0.5)) {
-            actor->movement_speed_scale_pc = 1.1f;
+            actor->movement_speed_scale = 1.1f;
         } else {
-            actor->movement_speed_scale_pc = 1.0f;
+            actor->movement_speed_scale = 1.0f;
         }
 
         NuVecSub(&opponent_offset, &opponent->position, &opponent->sock_position.midpoint);
@@ -11768,7 +11767,7 @@ i32 Action_RaceOpponent(AISYS_PC *system, AISCRIPTPROCESS *processor, AIPACKET *
         destination.x = (f32)((f64)opponent_offset.x * 0.5 + (f64)actor_offset.x * 0.5);
         NuVecAdd(&destination, &destination, &projected_position.midpoint);
     } else {
-        actor->movement_speed_scale_pc = 1.0f;
+        actor->movement_speed_scale = 1.0f;
         destination = projected_position.midpoint;
     }
 

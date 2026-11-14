@@ -38,7 +38,7 @@ typedef struct game_antinode_data_s { // size 0x24
     u16 angle;                        // 0x20
     u8 shape;                         // 0x22
     u8 mode;                          // 0x23
-} GAMEANTINODEDATA_PC;
+} GAMEANTINODEDATA;
 #ifdef __cplusplus
 extern "C" {
 #endif
@@ -88,7 +88,7 @@ typedef struct GIZMOBLOWUPTYPE {           // size 0x100
     f32 field_09c;                         // 0x9c
     i16 particle_types[9];                 // 0xa0
     u16 instance_count;                    // 0xb2
-    GAMEANTINODEDATA_PC anti_node_data;    // 0xb4
+    GAMEANTINODEDATA anti_node_data;       // 0xb4
     char name[32];                         // 0xd8
     u8 field_0f8;                          // 0xf8
     u8 field_0f9;                          // 0xf9

@@ -21,14 +21,14 @@ typedef struct PUNCH_BLOWUP_VIEW { // size 0x114
 typedef struct weapon_rate_s {
     u8 unknown_000[0xd40];
     f32 weapon_scale_rate;
-} WEAPON_RATE_PC;
+} WEAPON_RATE;
 
 typedef struct blowup_movement_s {
     u8 unknown_00[0x4c];
     NUVEC mid_position;
     u8 unknown_58[0x50];
     f32 target_radius;
-} BLOWUP_MOVEMENT_PC;
+} BLOWUP_MOVEMENT;
 
 typedef struct HOLD_RUNTIME_VIEW { // size 0xde8
     u8 unknown_000[0xde4];         // 0x000
@@ -88,7 +88,7 @@ void FastWeaponOut(GAMEOBJECT *object, i32 force_sound) {
             }
         }
     }
-    ((WEAPON_RATE_PC *)object)->weapon_scale_rate = 5.0f;
+    ((WEAPON_RATE *)object)->weapon_scale_rate = 5.0f;
     object->field_e33 = 1;
 }
 
@@ -160,7 +160,7 @@ void WeaponOutCode(GAMEOBJECT *object) {
     }
     end = AnimListFrame(object->character_model, object->field_7aa, 1);
     object->field_e33 = 1;
-    ((WEAPON_RATE_PC *)object)->weapon_scale_rate = 1.0f / AnimDuration((i16)object->id, object->field_7aa, start, end, 0);
+    ((WEAPON_RATE *)object)->weapon_scale_rate = 1.0f / AnimDuration((i16)object->id, object->field_7aa, start, end, 0);
     if ((object->character_data->model_flags & 8) != 0) {
         if (object->field_280 != 0xff || WeaponInOut_NoAIJediSfx == 0) {
             GameAudio_PlaySfx(0x3e, &object->collision_position, GameAudio_GetPlrSfxBits(object), 1);
@@ -207,7 +207,7 @@ void FastWeaponIn(GAMEOBJECT *object, i32 force_sound) {
             }
         }
     }
-    ((WEAPON_RATE_PC *)object)->weapon_scale_rate = 5.0f;
+    ((WEAPON_RATE *)object)->weapon_scale_rate = 5.0f;
     object->field_e33 = 2;
 }
 
@@ -282,7 +282,7 @@ void WeaponInCode(GAMEOBJECT *object) {
     }
     end = AnimListFrame(object->character_model, object->field_7aa, 1);
     object->field_e33 = 2;
-    ((WEAPON_RATE_PC *)object)->weapon_scale_rate = 1.0f / AnimDuration((i16)object->id, object->field_7aa, start, end, 0);
+    ((WEAPON_RATE *)object)->weapon_scale_rate = 1.0f / AnimDuration((i16)object->id, object->field_7aa, start, end, 0);
     if ((object->character_data->model_flags & 8) != 0) {
         if (object->field_280 != 0xff || WeaponInOut_NoAIJediSfx == 0) {
             GameAudio_PlaySfx(0x3d, &object->collision_position, GameAudio_GetPlrSfxBits(object), 1);
@@ -340,14 +340,14 @@ void AutoWeaponOnOff(GAMEOBJECT *object) {
 void WeaponScalingCode(GAMEOBJECT *object) {
     switch (object->field_e33) {
         case 1:
-            object->weapon_scale = SeekLinearF(object->weapon_scale, 1.0f, ((WEAPON_RATE_PC *)object)->weapon_scale_rate * FRAMETIME);
+            object->weapon_scale = SeekLinearF(object->weapon_scale, 1.0f, ((WEAPON_RATE *)object)->weapon_scale_rate * FRAMETIME);
             if (object->weapon_scale >= 1.0f) {
                 object->field_e33 = 0;
                 object->flags_e20 |= 0x10000;
             }
             break;
         case 2:
-            object->weapon_scale = SeekLinearF(object->weapon_scale, 0.0f, ((WEAPON_RATE_PC *)object)->weapon_scale_rate * FRAMETIME);
+            object->weapon_scale = SeekLinearF(object->weapon_scale, 0.0f, ((WEAPON_RATE *)object)->weapon_scale_rate * FRAMETIME);
             if (object->weapon_scale <= 0.0f) {
                 object->field_e33 = 0;
                 object->flags_e20 &= ~0x10000;
@@ -406,7 +406,7 @@ i32 CanStepBack(GAMEOBJECT *object) {
 
 i32 StepBackFromTarget(GAMEOBJECT *object) {
     NUVEC *target_position;
-    BLOWUP_MOVEMENT_PC *blowup = (BLOWUP_MOVEMENT_PC *)object->blowup_target;
+    BLOWUP_MOVEMENT *blowup = (BLOWUP_MOVEMENT *)object->blowup_target;
     f32 inner_distance;
     f32 outer_distance;
     f32 speed;

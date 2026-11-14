@@ -10,38 +10,38 @@ typedef struct {
     i16 reset_flags_unused : 14;
     u16 opaque_0e;
     void *progress;
-} ADD_BOMB_RESET_SYS_PC;
+} ADD_BOMB_RESET_SYS;
 
 extern i32 come_from_an_editor;
 
 typedef struct {
     u32 enabled[3];
     u32 visible[3];
-} BOMB_PROGRESS_PC;
+} BOMB_PROGRESS;
 
 typedef struct {
     u8 unused00[0x2a];
     u8 flags;
     u8 unused2b;
-} BOMB_PROGRESS_RECORD_PC;
+} BOMB_PROGRESS_RECORD;
 
 typedef struct {
-    BOMB_PROGRESS_RECORD_PC *records;
+    BOMB_PROGRESS_RECORD *records;
     u16 count;
-} BOMB_PROGRESS_SYSTEM_PC;
+} BOMB_PROGRESS_SYSTEM;
 
 typedef struct bombgen_activation_reader_s {
     u8 unknown_00[0x1c];
     GAMEANIMSET *anim_set;
     u8 unknown_20[0xa];
     u16 flags;
-} BOMBGEN_ACTIVATION_READER_PC;
+} BOMBGEN_ACTIVATION_READER;
 
 typedef struct bombgen_activation_flags_s {
     u16 active : 1;
     u16 visible : 1;
     u16 unknown : 14;
-} BOMBGEN_ACTIVATION_FLAGS_PC;
+} BOMBGEN_ACTIVATION_FLAGS;
 
 typedef struct bomb_generator_runtime_s {
     char name[16];
@@ -60,22 +60,22 @@ typedef struct bomb_generator_runtime_s {
             u16 unknown_flags : 14;
         };
     };
-} BOMB_GENERATOR_RUNTIME_PC;
+} BOMB_GENERATOR_RUNTIME;
 
 typedef struct bomb_generator_system_runtime_s {
-    BOMB_GENERATOR_RUNTIME_PC *items;
+    BOMB_GENERATOR_RUNTIME *items;
     u16 count;
     u16 capacity;
     void *pool;
     i16 flags;
     u16 unknown_0e;
     void *progress;
-} BOMB_GENERATOR_SYSTEM_RUNTIME_PC;
+} BOMB_GENERATOR_SYSTEM_RUNTIME;
 
 typedef struct bomb_generator_progress_s {
     u32 active[3];
     u32 visible[3];
-} BOMB_GENERATOR_PROGRESS_PC;
+} BOMB_GENERATOR_PROGRESS;
 
 i32 GizBombGens_Load(void *world_ptr, void *system_ptr) {
     const u8 version = (u8)(EdFileReadChar());
@@ -113,19 +113,19 @@ void *GizBombGens_ReserveBufferSpace(void *pointer) {
 }
 
 void GizmoBombGen_Activate(GIZMO_PC *gizmo, i32 active) {
-    BOMBGEN_ACTIVATION_READER_PC *generator;
+    BOMBGEN_ACTIVATION_READER *generator;
     if (gizmo != NULL) {
         generator = gizmo->object;
-        ((BOMBGEN_ACTIVATION_FLAGS_PC *)&generator->flags)->active = active != 0;
+        ((BOMBGEN_ACTIVATION_FLAGS *)&generator->flags)->active = active != 0;
     }
 }
 
 void GizmoBombGen_SetVisibility(GIZMO_PC *gizmo, i32 visible) {
-    BOMBGEN_ACTIVATION_READER_PC *generator;
+    BOMBGEN_ACTIVATION_READER *generator;
     if (gizmo != NULL && gizmo->object != NULL) {
         generator = gizmo->object;
         GameAnimSet_SetVisibility(generator->anim_set, visible);
-        ((BOMBGEN_ACTIVATION_FLAGS_PC *)&generator->flags)->visible = visible != 0;
+        ((BOMBGEN_ACTIVATION_FLAGS *)&generator->flags)->visible = visible != 0;
     }
 }
 
@@ -138,7 +138,7 @@ NUVEC *GizmoBombGen_GetPos(GIZMO_PC *gizmo) {
 
 void GizBombGens_SetResetFlag(void *world_ptr, void *data, void *progress) {
     WORLDINFO *w = world_ptr;
-    ADD_BOMB_RESET_SYS_PC *s = data;
+    ADD_BOMB_RESET_SYS *s = data;
     s->reset = 1;
     if (come_from_an_editor != 0) {
         s->reset_saved = 0;
@@ -148,8 +148,8 @@ void GizBombGens_SetResetFlag(void *world_ptr, void *data, void *progress) {
     s->progress = progress;
 }
 
-static void BombGeneratorsApplyReset(BOMB_GENERATOR_SYSTEM_RUNTIME_PC *system, BOMB_GENERATOR_PROGRESS_PC *progress) {
-    BOMB_GENERATOR_RUNTIME_PC *generator = system->items;
+static void BombGeneratorsApplyReset(BOMB_GENERATOR_SYSTEM_RUNTIME *system, BOMB_GENERATOR_PROGRESS *progress) {
+    BOMB_GENERATOR_RUNTIME *generator = system->items;
     i32 index;
     i32 shared_bomb;
     for (index = 0; index < system->count; ++index, ++generator) {
@@ -213,13 +213,13 @@ static void BombGeneratorsApplyReset(BOMB_GENERATOR_SYSTEM_RUNTIME_PC *system, B
 
 void GizBombGens_Update(void *world_pointer, void *system_pointer, f32 delta_time) {
     WORLDINFO *world = world_pointer;
-    BOMB_GENERATOR_SYSTEM_RUNTIME_PC *system = system_pointer;
+    BOMB_GENERATOR_SYSTEM_RUNTIME *system = system_pointer;
     u16 model;
     GAMEOBJECT *player;
     CABLE_s *cable;
     (void)delta_time;
     if (system != NULL) {
-        BOMB_GENERATOR_RUNTIME_PC *generator;
+        BOMB_GENERATOR_RUNTIME *generator;
         i32 index;
         if ((system->flags & 1) != 0) {
             BombGeneratorsApplyReset(system, system->progress);
@@ -325,7 +325,7 @@ void *GizBombGens_AllocateProgressData(VARIPTR *buffer, VARIPTR *end) {
 }
 
 void GizBombGens_ClearProgress(void *owner, void *progress_ptr) {
-    BOMB_PROGRESS_PC *progress = progress_ptr;
+    BOMB_PROGRESS *progress = progress_ptr;
     if (progress == NULL) {
         return;
     }
@@ -349,9 +349,9 @@ GIZBOMBGEN_s *GizBombGen_FindByName(GIZBOMBGENSYS_s *system, char *name) {
 }
 
 void GizBombGens_StoreProgress(void *world_ptr, void *data, void *progress_ptr) {
-    BOMB_PROGRESS_PC *progress = progress_ptr;
-    BOMB_PROGRESS_SYSTEM_PC *system = data;
-    BOMB_PROGRESS_RECORD_PC *record;
+    BOMB_PROGRESS *progress = progress_ptr;
+    BOMB_PROGRESS_SYSTEM *system = data;
+    BOMB_PROGRESS_RECORD *record;
     i32 index;
     i32 word;
     u32 bit;

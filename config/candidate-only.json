@@ -218,7 +218,7 @@
   },
   {
    "unit": "src/legogame/gamestatus.c",
-   "symbol": "_StatusLerpPc",
+   "symbol": "_StatusLerp",
    "kind": "function"
   },
   {
@@ -228,12 +228,12 @@
   },
   {
    "unit": "src/gameapi/edanim_update.c",
-   "symbol": "_EdAnimFabsPc",
+   "symbol": "_EdAnimFabs",
    "kind": "function"
   },
   {
    "unit": "src/gameapi/edui_widget_render.cpp",
-   "symbol": "?EduiFabsPc@@YAMM@Z",
+   "symbol": "?EduiFabs@@YAMM@Z",
    "kind": "function"
   },
   {
@@ -243,7 +243,7 @@
   },
   {
    "unit": "src/nu2api/nu3d_includes.cpp",
-   "symbol": "?PostFilterBindProgramPc@@YAXPBUPOST_SHADER_PROGRAM_PC@@@Z",
+   "symbol": "?PostFilterBindProgram@@YAXPBUPOST_SHADER_PROGRAM_PC@@@Z",
    "kind": "function"
   },
   {
@@ -253,7 +253,7 @@
   },
   {
    "unit": "src/nu2api/nu3d_platform.cpp",
-   "symbol": "_PCGraphicsAllocRenderTexturePc",
+   "symbol": "_PCGraphicsAllocRenderTexture",
    "kind": "function"
   },
   {

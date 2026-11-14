@@ -24,7 +24,7 @@ struct gameobject_s;
  * all parts at once. */
 
 #if SAGA_LEGOAPI_ITEMS_COLLECT_THERMALDETONATORS_H_PART == 1 && !defined(SAGA_LEGOAPI_ITEMS_COLLECT_THERMALDETONATORS_H_STOP)
-typedef void (*PART_ACTION_PC)(struct PART_PC *);
+typedef void (*PART_ACTION)(struct PART_PC *);
 #ifdef __cplusplus
 extern "C" {
 #endif

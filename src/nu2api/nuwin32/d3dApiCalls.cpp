@@ -364,7 +364,7 @@ extern "C" {
 
 extern "C" void PCDeviceResetSamplerDefaultsPc(void) {
     u32 stage = 0;
-    if (PCDeviceBackend.caps.sampler_count_pc == 0) {
+    if (PCDeviceBackend.caps.sampler_count == 0) {
         return;
     }
     do {
@@ -373,7 +373,7 @@ extern "C" void PCDeviceResetSamplerDefaultsPc(void) {
         PCDeviceSetSamplerState(stage, 7, 2);
         PCDeviceSetSamplerState(stage, 9, 0);
         ++stage;
-    } while (stage != PCDeviceBackend.caps.sampler_count_pc);
+    } while (stage != PCDeviceBackend.caps.sampler_count);
 }
 
 extern "C" void fun_006dfa70(f32 gamma) {

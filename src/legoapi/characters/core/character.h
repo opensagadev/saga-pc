@@ -84,7 +84,7 @@ extern "C" {
     extern i16 dat_007f1b34;
     extern i16 dat_007f1b38;
     extern i16 id_ZAMSSPEEDER;
-    extern const char PodBoosterSoundNamePc[13];
+    extern const char PodBoosterSoundName[13];
     extern i16 id_DODGEM;
     extern i16 id_SNOWMOB;
     extern i16 id_TRACTOR;

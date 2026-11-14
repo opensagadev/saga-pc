@@ -14,7 +14,7 @@ typedef struct player_progress_hp_s {
     u8 unknown_0000[8];
     u8 hitpoints;
     u8 unknown_0009[7];
-} PLAYER_PROGRESS_HP_PC;
+} PLAYER_PROGRESS_HP;
 
 extern "C" {
     extern AREA_DATA_PC *ANEWHOPE_ADATA;
@@ -23,7 +23,7 @@ extern "C" {
 typedef struct area_loading_clock_reader_s {
     u8 unknown_0000[0x7c20];
     f32 elapsed_time;
-} AREA_LOADING_CLOCK_READER_PC;
+} AREA_LOADING_CLOCK_READER;
 
 typedef struct area_loading_pad_reader_pc_s {
     u8 unknown_0000[8];
@@ -60,7 +60,7 @@ typedef struct permanent_material_reader_s {
     f32 opacity;
     i16 texture_id;
     u16 sort_priority;
-} PERMANENT_MATERIAL_READER_PC;
+} PERMANENT_MATERIAL_READER;
 
 extern "C" void DebrisSetup(VARIPTR *, VARIPTR, char *, i32, i32, i32);
 
@@ -69,12 +69,12 @@ typedef struct permanent_customiser_save_s {
     u8 unknown_12[0x26];
     u16 secondary_pieces[9];
     u8 unknown_4a[0x26];
-} PERMANENT_CUSTOMISER_SAVE_PC;
+} PERMANENT_CUSTOMISER_SAVE;
 
 typedef struct permanent_customiser_game_s {
     u8 unknown_0000[0x7c24];
-    PERMANENT_CUSTOMISER_SAVE_PC customiser;
-} PERMANENT_CUSTOMISER_GAME_PC;
+    PERMANENT_CUSTOMISER_SAVE customiser;
+} PERMANENT_CUSTOMISER_GAME;
 
 extern "C" {
     extern NUFPCOMJMP ConfigChar_GameKeywords[2];
@@ -323,35 +323,35 @@ extern "C" void ChrisDogFightADraw(WORLDINFO *);
 typedef struct level_script_progress_s {
     char name[16];
     f32 params[4];
-} LEVEL_SCRIPT_PROGRESS_PC;
+} LEVEL_SCRIPT_PROGRESS;
 
 typedef struct ai_script_progress_view_s {
     u8 unknown_0000[0x2824];
-    LEVEL_SCRIPT_PROGRESS_PC scripts[32];
-} AI_SCRIPT_PROGRESS_VIEW_PC;
+    LEVEL_SCRIPT_PROGRESS scripts[32];
+} AI_SCRIPT_PROGRESS_VIEW;
 
-#define WORLD_PORTAL_BOUNDS_PC(scene) ((NUVEC4 *)(scene)->portal_boxes)
+#define WORLD_PORTAL_BOUNDS(scene) ((NUVEC4 *)(scene)->portal_boxes)
 extern "C" {
     void SaveSceneObjectAnimTFactors(NUGSCN *scene);
 
     typedef struct world_script_progress_s {
         char name[16];
         f32 params[4];
-    } WORLD_SCRIPT_PROGRESS_PC;
+    } WORLD_SCRIPT_PROGRESS;
 
     typedef struct level_progress_transfer_s {
         SCENEPROGRESS scene_progress;
         u32 flags;
         u8 unknown_2804[0x20];
-        WORLD_SCRIPT_PROGRESS_PC scripts[32];
+        WORLD_SCRIPT_PROGRESS scripts[32];
         GIZFLOWPROGRESS giz_flow_progress;
         char disabled_effect_names[12][16];
-    } LEVEL_PROGRESS_TRANSFER_PC;
+    } LEVEL_PROGRESS_TRANSFER;
 
     typedef struct world_persistence_flags_s {
         u8 unknown_0000[0x5170];
         u32 progress_flags;
-    } WORLD_PERSISTENCE_FLAGS_PC;
+    } WORLD_PERSISTENCE_FLAGS;
 
     void GizmoSysStoreProgress(void *system, void *world, i32 index);
     void LoadGrassFile(WORLDINFO *world);
@@ -362,12 +362,12 @@ extern "C" {
 typedef struct world_minikit_load_s {
     NUGSCN *scene;
     u8 unknown_04[0x14];
-} WORLD_MINIKIT_LOAD_PC;
+} WORLD_MINIKIT_LOAD;
 
 typedef struct world_load_reader_s {
     u8 unknown_0000[0x2964];
     NUGSCN *icons_scene;
-    WORLD_MINIKIT_LOAD_PC minikit;
+    WORLD_MINIKIT_LOAD minikit;
     void *character_scenes;
     u8 unknown_2984[0x2ab8 - 0x2984];
     i32 light_index;
@@ -381,7 +381,7 @@ typedef struct world_load_reader_s {
     void *ai_connection_helper;
     void *ai_trigger_set;
     void *climb_object_system;
-} WORLD_LOAD_READER_PC;
+} WORLD_LOAD_READER;
 
 extern "C" {
     void Level_LoadConfigFile(WORLDINFO *);
@@ -908,7 +908,7 @@ extern "C" {
         GameAnimSys_ClearProgress(index);
     }
 
-    static void WorldStoreScriptProgressPC(WORLDINFO *world, LEVEL_SCRIPT_PROCESS_PC *processor, LEVEL_PROGRESS *progress) {
+    static void WorldStoreScriptProgressPC(WORLDINFO *world, LEVEL_SCRIPT_PROCESS *processor, LEVEL_PROGRESS *progress) {
         i32 index;
         i32 parameter;
 
@@ -916,35 +916,35 @@ extern "C" {
             return;
         }
         for (index = 0; index < 32; ++index) {
-            if (NuStrLen(((LEVEL_PROGRESS_TRANSFER_PC *)progress)->scripts[index].name) == 0) {
-                NuStrCpy(((LEVEL_PROGRESS_TRANSFER_PC *)world->level_progress)->scripts[index].name, processor->name);
+            if (NuStrLen(((LEVEL_PROGRESS_TRANSFER *)progress)->scripts[index].name) == 0) {
+                NuStrCpy(((LEVEL_PROGRESS_TRANSFER *)world->level_progress)->scripts[index].name, processor->name);
                 for (parameter = 0; parameter < 4; ++parameter) {
-                    ((LEVEL_PROGRESS_TRANSFER_PC *)progress)->scripts[index].params[parameter] = processor->processor.params[parameter];
+                    ((LEVEL_PROGRESS_TRANSFER *)progress)->scripts[index].params[parameter] = processor->processor.params[parameter];
                 }
                 break;
-            } else if (NuStrICmp(((LEVEL_PROGRESS_TRANSFER_PC *)progress)->scripts[index].name, processor->name) == 0) {
+            } else if (NuStrICmp(((LEVEL_PROGRESS_TRANSFER *)progress)->scripts[index].name, processor->name) == 0) {
                 for (parameter = 0; parameter < 4; ++parameter) {
-                    ((LEVEL_PROGRESS_TRANSFER_PC *)progress)->scripts[index].params[parameter] = processor->processor.params[parameter];
+                    ((LEVEL_PROGRESS_TRANSFER *)progress)->scripts[index].params[parameter] = processor->processor.params[parameter];
                 }
                 break;
             }
         }
     }
 
-    void LevelScriptReStoreProgress(WORLDINFO *world, LEVEL_SCRIPT_PROCESS_PC *process) {
+    void LevelScriptReStoreProgress(WORLDINFO *world, LEVEL_SCRIPT_PROCESS *process) {
         i32 index;
         i32 parameter;
         if (world->level_progress == NULL || process == NULL || NuStrLen(process->name) == 0) {
             return;
         }
         for (index = 0; index < 32; ++index) {
-            if (NuStrLen(((AI_SCRIPT_PROGRESS_VIEW_PC *)world->level_progress)->scripts[index].name) == 0) {
+            if (NuStrLen(((AI_SCRIPT_PROGRESS_VIEW *)world->level_progress)->scripts[index].name) == 0) {
                 break;
             }
-            if (NuStrICmp(((AI_SCRIPT_PROGRESS_VIEW_PC *)world->level_progress)->scripts[index].name, process->name) == 0) {
+            if (NuStrICmp(((AI_SCRIPT_PROGRESS_VIEW *)world->level_progress)->scripts[index].name, process->name) == 0) {
                 for (parameter = 0; parameter < 4; ++parameter) {
                     process->processor.params[parameter] =
-                        ((AI_SCRIPT_PROGRESS_VIEW_PC *)world->level_progress)->scripts[index].params[parameter];
+                        ((AI_SCRIPT_PROGRESS_VIEW *)world->level_progress)->scripts[index].params[parameter];
                 }
                 break;
             }
@@ -1020,7 +1020,7 @@ void LoadPerm1(void) {
     u8 shadow_random[0x800];
     i32 index;
     i32 texture_id;
-    PERMANENT_MATERIAL_READER_PC *material;
+    PERMANENT_MATERIAL_READER *material;
     NUGSCN *terrain_scene;
     VARIPTR native_end_address;
     rtlInitDynamic(&permbuffer_ptr, superbuffer_end, 0x40);
@@ -1031,7 +1031,7 @@ void LoadPerm1(void) {
         edgraSetup(&permbuffer_ptr, permbuffer_end, 0x200, 0x20, 0x40);
     }
     PermanentEffectsMaterial = NuMtlCreateEx(1, 10);
-    material = (PERMANENT_MATERIAL_READER_PC *)PermanentEffectsMaterial;
+    material = (PERMANENT_MATERIAL_READER *)PermanentEffectsMaterial;
     material->diffuse[2] = 1.0f;
     material->diffuse[1] = 1.0f;
     material->diffuse[0] = 1.0f;
@@ -1042,7 +1042,7 @@ void LoadPerm1(void) {
     material->attributes = (material->attributes & ~0xdu) | 2u;
     material->attributes = (material->attributes & ~0x200u) | 0x100u;
     material->attributes = (material->attributes & ~0x800u) | 0x400u;
-    material->texture_id = ((PERMANENT_MATERIAL_READER_PC *)DebMat[5])->texture_id;
+    material->texture_id = ((PERMANENT_MATERIAL_READER *)DebMat[5])->texture_id;
     material->shader_flags = (material->shader_flags & ~2u) | 1u;
     NuMtlUpdate(PermanentEffectsMaterial);
     NuLgtSetArcMat(PermanentEffectsMaterial, 0.0f, 0.50390625f, 0.25f, 0.5625f);
@@ -1067,7 +1067,7 @@ void LoadPerm1(void) {
     InitRipples(&RippleSet, &permbuffer_ptr, &permbuffer_end, 0x40);
     permbuffer_ptr.addr = (permbuffer_ptr.addr + 0xff) & ~0xffu;
     PermanentShadowMaterial = NuMtlCreate3D(1);
-    material = (PERMANENT_MATERIAL_READER_PC *)PermanentShadowMaterial;
+    material = (PERMANENT_MATERIAL_READER *)PermanentShadowMaterial;
     material->diffuse[0] = 1.0f;
     material->diffuse[1] = 1.0f;
     material->diffuse[2] = 1.0f;
@@ -1079,7 +1079,7 @@ void LoadPerm1(void) {
     material->sort_priority = 0xff;
     material->attributes = (material->attributes & ~0x10000u) | 0x20000u;
     texture_id = NuTexRead("stuff\\gradient", &permbuffer_ptr, permbuffer_end);
-    ((PERMANENT_MATERIAL_READER_PC *)PermanentShadowMaterial)->texture_id = (i16)texture_id;
+    ((PERMANENT_MATERIAL_READER *)PermanentShadowMaterial)->texture_id = (i16)texture_id;
     NuMtlUpdate(PermanentShadowMaterial);
     for (index = 0; index < 0x800; ++index) {
         shadow_random[index] = (u8)(qrand() >> 8);
@@ -1145,7 +1145,7 @@ extern "C" {
         CharacterCustomiser =
             Customiser_Configure("chars\\customiser.txt", &permbuffer_ptr, &permbuffer_end, PermanentWeirdo1Id, PermanentWeirdo2Id,
                                  PermanentCustomPieceAvailable, PermanentCustomPieceConfig, LevelObject_FindIndexFromName,
-                                 &((PERMANENT_CUSTOMISER_GAME_PC *)&Game)->customiser, PermanentCustomiserActions);
+                                 &((PERMANENT_CUSTOMISER_GAME *)&Game)->customiser, PermanentCustomiserActions);
         SpecialMoves_Configure("chars\\specialmoves.txt", &permbuffer_ptr, &permbuffer_end);
         for (i32 index = 0; index < LEVELCOUNT; ++index) {
             if ((LDataList[index].flags & 0x400) != 0) {
@@ -1422,7 +1422,7 @@ void LoadAreaCharacters(void) {
             touch_prompt_time += FRAMETIME;
         }
         UpdateTimer(&GlobalTimer);
-        ((AREA_LOADING_CLOCK_READER_PC *)&Game)->elapsed_time = ((AREA_LOADING_CLOCK_READER_PC *)&Game)->elapsed_time + FRAMETIME;
+        ((AREA_LOADING_CLOCK_READER *)&Game)->elapsed_time = ((AREA_LOADING_CLOCK_READER *)&Game)->elapsed_time + FRAMETIME;
         LoadTime += FRAMETIME;
         if (icon_stage == 0) {
             if (CharacterDataLoad == 2 ||
@@ -1585,7 +1585,7 @@ void LoadAreaCharacters(void) {
 
 extern "C" {
 
-    /* Bitfield view of SCENESPECIALPROGRESS_PC.flags. */
+    /* Bitfield view of SCENESPECIALPROGRESS.flags. */
     typedef struct scene_special_state_s {
         u32 frame : 11;
         u32 visible : 1;
@@ -1594,11 +1594,11 @@ extern "C" {
         u32 repeating : 1;
         u32 unused : 17;
         f32 tfactor;
-    } SCENE_SPECIAL_STATE_PC;
+    } SCENE_SPECIAL_STATE;
 
-    STATIC_ASSERT(sizeof(SCENE_SPECIAL_STATE_PC) == sizeof(SCENESPECIALPROGRESS_PC));
+    STATIC_ASSERT(sizeof(SCENE_SPECIAL_STATE) == sizeof(SCENESPECIALPROGRESS));
     /* progress->specials[i] read through the bitfield view (stands in for the header field). */
-#define SCENE_STATE(progress, i) (((SCENE_SPECIAL_STATE_PC *)(progress)->specials)[i])
+#define SCENE_STATE(progress, i) (((SCENE_SPECIAL_STATE *)(progress)->specials)[i])
 
     void StoreSceneProgress(NUGSCN *scene, SCENEPROGRESS *progress, i32 copy_tfactor) {
         NUSPECIALHANDLE special;
@@ -1695,7 +1695,7 @@ void ResetScene(NUGSCN *scene, SCENEPROGRESS *progress) {
     }
 }
 
-extern "C" SCENESPECIALPROGRESS_PC *FindSceneStateObj(NUGSCN *scene, SCENEPROGRESS *progress, NUSPECIALHANDLE *target) {
+extern "C" SCENESPECIALPROGRESS *FindSceneStateObj(NUGSCN *scene, SCENEPROGRESS *progress, NUSPECIALHANDLE *target) {
     i32 count;
     i32 i;
     NUSPECIALHANDLE special;
@@ -1733,25 +1733,19 @@ extern "C" {
             NUVEC box_maximum;
 
             if (world->current_gscn->display_list != NULL && (world->current_gscn->display_list->render_flags & 0x4000) > 0) {
-                box_minimum.x =
-                    WORLD_PORTAL_BOUNDS_PC(world->current_gscn)[index].x - WORLD_PORTAL_BOUNDS_PC(world->current_gscn)[index + 1].x;
-                box_minimum.y =
-                    WORLD_PORTAL_BOUNDS_PC(world->current_gscn)[index].y - WORLD_PORTAL_BOUNDS_PC(world->current_gscn)[index + 1].y;
-                box_minimum.z =
-                    WORLD_PORTAL_BOUNDS_PC(world->current_gscn)[index].z - WORLD_PORTAL_BOUNDS_PC(world->current_gscn)[index + 1].z;
-                box_maximum.x =
-                    WORLD_PORTAL_BOUNDS_PC(world->current_gscn)[index].x + WORLD_PORTAL_BOUNDS_PC(world->current_gscn)[index + 1].x;
-                box_maximum.y =
-                    WORLD_PORTAL_BOUNDS_PC(world->current_gscn)[index].y + WORLD_PORTAL_BOUNDS_PC(world->current_gscn)[index + 1].y;
-                box_maximum.z =
-                    WORLD_PORTAL_BOUNDS_PC(world->current_gscn)[index + 1].z + WORLD_PORTAL_BOUNDS_PC(world->current_gscn)[index].z;
+                box_minimum.x = WORLD_PORTAL_BOUNDS(world->current_gscn)[index].x - WORLD_PORTAL_BOUNDS(world->current_gscn)[index + 1].x;
+                box_minimum.y = WORLD_PORTAL_BOUNDS(world->current_gscn)[index].y - WORLD_PORTAL_BOUNDS(world->current_gscn)[index + 1].y;
+                box_minimum.z = WORLD_PORTAL_BOUNDS(world->current_gscn)[index].z - WORLD_PORTAL_BOUNDS(world->current_gscn)[index + 1].z;
+                box_maximum.x = WORLD_PORTAL_BOUNDS(world->current_gscn)[index].x + WORLD_PORTAL_BOUNDS(world->current_gscn)[index + 1].x;
+                box_maximum.y = WORLD_PORTAL_BOUNDS(world->current_gscn)[index].y + WORLD_PORTAL_BOUNDS(world->current_gscn)[index + 1].y;
+                box_maximum.z = WORLD_PORTAL_BOUNDS(world->current_gscn)[index + 1].z + WORLD_PORTAL_BOUNDS(world->current_gscn)[index].z;
             } else {
-                box_minimum.x = WORLD_PORTAL_BOUNDS_PC(world->current_gscn)[index].x;
-                box_minimum.y = WORLD_PORTAL_BOUNDS_PC(world->current_gscn)[index].y;
-                box_minimum.z = WORLD_PORTAL_BOUNDS_PC(world->current_gscn)[index].z;
-                box_maximum.x = WORLD_PORTAL_BOUNDS_PC(world->current_gscn)[index + 1].x;
-                box_maximum.y = WORLD_PORTAL_BOUNDS_PC(world->current_gscn)[index + 1].y;
-                box_maximum.z = WORLD_PORTAL_BOUNDS_PC(world->current_gscn)[index + 1].z;
+                box_minimum.x = WORLD_PORTAL_BOUNDS(world->current_gscn)[index].x;
+                box_minimum.y = WORLD_PORTAL_BOUNDS(world->current_gscn)[index].y;
+                box_minimum.z = WORLD_PORTAL_BOUNDS(world->current_gscn)[index].z;
+                box_maximum.x = WORLD_PORTAL_BOUNDS(world->current_gscn)[index + 1].x;
+                box_maximum.y = WORLD_PORTAL_BOUNDS(world->current_gscn)[index + 1].y;
+                box_maximum.z = WORLD_PORTAL_BOUNDS(world->current_gscn)[index + 1].z;
             }
             if (box_minimum.x < minimum.x) {
                 minimum.x = box_minimum.x;
@@ -1900,7 +1894,7 @@ void WorldInfo_Load(WORLDINFO *world) {
     char ai_name[32];
     char title_light_path[] = "levels\\titles\\titles";
     NUGSCN *cutscene_scene;
-    WORLD_LOAD_READER_PC *resource = (WORLD_LOAD_READER_PC *)world;
+    WORLD_LOAD_READER *resource = (WORLD_LOAD_READER *)world;
     i32 index;
     LOG_INFO("World load begin: world=%p area=%d level=%d config=%s", (void *)world, world->area_index, world->level_idx,
              world->config_file);
@@ -3164,7 +3158,7 @@ extern "C" {
         areaSuitBits = Game.initial_store_pack_flags;
         if (restore != 0 && area_index != -1) {
             Game.area_save[area_index] = BackupGame.area_save[area_index];
-            AREA_GLOBALS_PROGRESS_FLAGS_PC = 0;
+            AREA_GLOBALS_PROGRESS_FLAGS = 0;
             for (index = 0; index < ADataList[area_index].level_count; ++index) {
                 i32 level = ADataList[area_index].levels[index];
                 memcpy(&Game.level_save[level * sizeof(struct LEVELSAVE_s)], &BackupGame.level_save[level * sizeof(struct LEVELSAVE_s)],
@@ -3205,8 +3199,8 @@ extern "C" {
             }
             GizmoSysStoreProgress(world->gizmo_sys, world, index);
             if (progress != NULL) {
-                GizFlowStoreProgress(world->giz_flow, &((LEVEL_PROGRESS_TRANSFER_PC *)progress)->giz_flow_progress);
-                StoreSceneProgress(world->current_gscn, &((LEVEL_PROGRESS_TRANSFER_PC *)progress)->scene_progress, 0);
+                GizFlowStoreProgress(world->giz_flow, &((LEVEL_PROGRESS_TRANSFER *)progress)->giz_flow_progress);
+                StoreSceneProgress(world->current_gscn, &((LEVEL_PROGRESS_TRANSFER *)progress)->scene_progress, 0);
             }
             GameAnimSys_StoreProgress(world->game_anim_sys, index);
             WorldStoreScriptsProgressPC(world, progress);
@@ -3214,11 +3208,11 @@ extern "C" {
     store_flags:
         if (progress != NULL) {
             if (progress != world->level_progress) {
-                PCByteCopy(((LEVEL_PROGRESS_TRANSFER_PC *)progress)->disabled_effect_names, world->level_progress->disabled_effect_names,
-                           sizeof(((LEVEL_PROGRESS_TRANSFER_PC *)progress)->disabled_effect_names));
+                PCByteCopy(((LEVEL_PROGRESS_TRANSFER *)progress)->disabled_effect_names, world->level_progress->disabled_effect_names,
+                           sizeof(((LEVEL_PROGRESS_TRANSFER *)progress)->disabled_effect_names));
             }
-            ((LEVEL_PROGRESS_TRANSFER_PC *)progress)->flags = (((LEVEL_PROGRESS_TRANSFER_PC *)progress)->flags & ~4U) |
-                                                              ((((WORLD_PERSISTENCE_FLAGS_PC *)world)->progress_flags << 2) & 4) | 2;
+            ((LEVEL_PROGRESS_TRANSFER *)progress)->flags =
+                (((LEVEL_PROGRESS_TRANSFER *)progress)->flags & ~4U) | ((((WORLD_PERSISTENCE_FLAGS *)world)->progress_flags << 2) & 4) | 2;
         }
     }
 
@@ -3250,7 +3244,7 @@ void NewArea(void) {
     SuperCounters_Reset(Area);
     NewArea_ResetGlobalsPC();
     for (i = 0; i < 8; ++i) {
-        ((PLAYER_PROGRESS_HP_PC *)PlayerProgress)[i].hitpoints = (u8)DEFAULT_PLAYERHITPOINTS;
+        ((PLAYER_PROGRESS_HP *)PlayerProgress)[i].hitpoints = (u8)DEFAULT_PLAYERHITPOINTS;
         if (Player[i] != NULL) {
             ((GAMEOBJECT *)Player[i])->current_hp = (i8)((GAMEOBJECT *)Player[i])->field_107e;
         }

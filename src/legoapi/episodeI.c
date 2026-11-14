@@ -35,12 +35,12 @@ typedef struct podrace_resource_s {        // size 0xb030
     i32 attempts;                          // 0xb01c
     u8 flags;                              // 0xb020
     u8 unknown_b021[15];                   // 0xb021
-} PODRACE_RESOURCE_PC;
+} PODRACE_RESOURCE;
 
 typedef struct pod_race_countdown_reader_s { // size 0xb004
     u8 unknown_0000[0xb000];                 // 0x0000
     f32 lap_countdown;                       // 0xb000
-} POD_RACE_COUNTDOWN_READER_PC;
+} POD_RACE_COUNTDOWN_READER;
 
 typedef struct pod_merge_packet_reader_s { // size 0x48
     u8 unknown_00[0x10];                   // 0x00
@@ -51,14 +51,14 @@ typedef struct pod_merge_packet_reader_s { // size 0x48
     u8 unknown_3c[6];                      // 0x3c
     i16 overlay_animation;                 // 0x42
     f32 overlay_weight;                    // 0x44
-} POD_MERGE_PACKET_READER_PC;
+} POD_MERGE_PACKET_READER;
 
 /* Episode I level callbacks installed by FixUpLevels. */
 typedef struct podrace_levflag_s { // size 0x10
     u8 podrace_state;              // 0x0
     u8 mushroom_state;             // 0x1
     u8 remaining[14];              // 0x2
-} PODRACE_LEVFLAG_PC;
+} PODRACE_LEVFLAG;
 
 typedef struct gungan_a_s { // size 0x114
     i16 unknown_000;        // 0x000
@@ -104,7 +104,7 @@ typedef struct cut_instance_reader_s { // size 0x94
     u32 flags_88;                      // 0x88
     u32 unknown_8c;                    // 0x8c
     f32 current_frame;                 // 0x90
-} CUT_INSTANCE_READER_PC;
+} CUT_INSTANCE_READER;
 
 void RetakeG_Reset(WORLDINFO *world) {
 }
@@ -143,7 +143,7 @@ typedef struct podrace_netpacket_reader_s { // size 0x14
     f32 available_time;                     // 0x08
     u32 unknown_0c;                         // 0x0c
     i32 lap;                                // 0x10
-} PODRACE_NETPACKET_READER_PC;
+} PODRACE_NETPACKET_READER;
 
 /* Pod sprint (Episode I bonus) level callbacks. */
 typedef struct PODSPRINT_VIEW {   // size 0x94
@@ -192,4 +192,4 @@ typedef struct pod_race_panel_netpacket_s { // size 0x14
     f32 available_time;                     // 0x08
     f32 lap_alpha;                          // 0x0c
     i32 lap;                                // 0x10
-} POD_RACE_PANEL_NETPACKET_PC;
+} POD_RACE_PANEL_NETPACKET;

@@ -55,9 +55,9 @@ extern "C" {
             LOG_WARN_ONCE(__VA_ARGS__);                                                                                                    \
         }                                                                                                                                  \
     } while (0)
-#define SAGA_SOUND_SETTER_BEGIN() SagaDebugSoundSetterBeginPc()
-#define SAGA_SOUND_SETTER_END(source, count, destination) SagaDebugSoundSetterEndPc(source, count, destination, _ReturnAddress())
-#define SAGA_SOUND_CHECK(stage) SagaDebugSoundCheckpointPc(stage, &PCSoundMixSource, &PCSoundMixSampleCount, &PCSoundMixDestination)
+#define SAGA_SOUND_SETTER_BEGIN() SagaDebugSoundSetterBegin()
+#define SAGA_SOUND_SETTER_END(source, count, destination) SagaDebugSoundSetterEnd(source, count, destination, _ReturnAddress())
+#define SAGA_SOUND_CHECK(stage) SagaDebugSoundCheckpoint(stage, &PCSoundMixSource, &PCSoundMixSampleCount, &PCSoundMixDestination)
 #undef STUBBED
 #undef STUBBED_NAMED
 #define STUBBED() LOG_WARN_ONCE("STUBBED: %s", __FUNCTION__)

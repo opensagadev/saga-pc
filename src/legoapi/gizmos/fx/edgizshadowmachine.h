@@ -25,7 +25,7 @@ typedef struct edgizshadow_s { // size 0x38
     f32 field_2c;              // 0x2c
     f32 field_30;              // 0x30
     i32 preset;                // 0x34
-} EDGIZSHADOW_PC;
+} EDGIZSHADOW;
 
 #ifdef __cplusplus
 extern "C" {

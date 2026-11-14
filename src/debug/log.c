@@ -55,7 +55,7 @@ static void save_original_streams(void) {
 /* Private Debug support; setup owns readiness, restricted inheritance and rollback. */
 static void capture_standard_streams(void) {
     if (log_file != INVALID_HANDLE_VALUE && log_capture_eligible && log_original_out >= 0 && log_original_err >= 0) {
-        log_capture = SagaDebugCaptureStreamsPc(log_file, log_original_out, log_original_err);
+        log_capture = SagaDebugCaptureStreams(log_file, log_original_out, log_original_err);
     }
 }
 
@@ -151,7 +151,7 @@ void _saga_log(enum log_level level, const char *file, int line, const char *fun
         save_original_streams();
         open_log_file(&time);
         capture_standard_streams();
-        SagaDebugCrashInitPc(log_file, SAGA_BUILD_ID, log_file == INVALID_HANDLE_VALUE ? NULL : log_filename);
+        SagaDebugCrashInit(log_file, SAGA_BUILD_ID, log_file == INVALID_HANDLE_VALUE ? NULL : log_filename);
         _snprintf(record, sizeof(record),
                   "%04u-%02u-%02u %02u:%02u:%02u.%03u [INFO] Debug build %s; pid %lu; file logging %s; standard-stream "
                   "capture %s\n",

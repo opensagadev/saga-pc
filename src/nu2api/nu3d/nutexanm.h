@@ -72,7 +72,7 @@ extern "C" {
 
     extern NURAND texanim_rand;
     extern u16 script_mask;
-    extern const char NuTextureEnvironmentCubePathPc[];
+    extern const char NuTextureEnvironmentCubePath[];
 #ifdef __cplusplus
 }
 #endif

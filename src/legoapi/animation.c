@@ -9,7 +9,7 @@ typedef struct character_joint_movement_s { // size 0x1080
     NUHGOBJ_JOINT_OVERRIDE overrides[3];    // 0x0f3c
     u8 unknown_fd8[0x107d - 0xfd8];         // 0x0fd8
     u8 count;                               // 0x107d
-} CHARACTER_JOINT_MOVEMENT_PC;
+} CHARACTER_JOINT_MOVEMENT;
 
 #define FOOTSTEP_CHECK(index)                                                                                                              \
     frame = config->event_frames[index];                                                                                                   \
@@ -112,7 +112,7 @@ void SetObjAsHeadTarget(GAMEOBJECT *object, GAMEOBJECT *target, i8 unused_priori
 }
 
 static void HeadMovementLegacy(GAMEOBJECT *object) {
-    CHARACTER_JOINT_MOVEMENT_PC *joints = (CHARACTER_JOINT_MOVEMENT_PC *)object;
+    CHARACTER_JOINT_MOVEMENT *joints = (CHARACTER_JOINT_MOVEMENT *)object;
     f32 first;
     f32 second;
     f32 blend;
@@ -177,11 +177,11 @@ static void HeadMovementLegacy(GAMEOBJECT *object) {
         blend = 1.0f;
     }
     joints->overrides[joints->count].rotation.x = first * blend + joints->overrides[joints->count].rotation.x * (1.0f - blend);
-    joints->overrides[joints->count].rotation_max_pc[0] = (i32)(object->character_data->game_character->field_050 * 10430.3779296875);
-    joints->overrides[joints->count].rotation_min_pc[0] = (i32)(object->character_data->game_character->field_050 * -10430.3779296875);
+    joints->overrides[joints->count].rotation_max[0] = (i32)(object->character_data->game_character->field_050 * 10430.3779296875);
+    joints->overrides[joints->count].rotation_min[0] = (i32)(object->character_data->game_character->field_050 * -10430.3779296875);
     joints->overrides[joints->count].rotation.y = second * blend + joints->overrides[joints->count].rotation.y * (1.0f - blend);
-    joints->overrides[joints->count].rotation_max_pc[1] = (i32)(object->character_data->game_character->field_054 * 10430.3779296875);
-    joints->overrides[joints->count].rotation_min_pc[1] = (i32)(object->character_data->game_character->field_054 * -10430.3779296875);
+    joints->overrides[joints->count].rotation_max[1] = (i32)(object->character_data->game_character->field_054 * 10430.3779296875);
+    joints->overrides[joints->count].rotation_min[1] = (i32)(object->character_data->game_character->field_054 * -10430.3779296875);
     joints->overrides[joints->count].rotation.z = 0.0f;
     if (joints->overrides[joints->count].rotation.x > HeadMovementThreshold ||
         joints->overrides[joints->count].rotation.x < -HeadMovementThreshold ||
@@ -210,7 +210,7 @@ static void HeadMovementLegacy(GAMEOBJECT *object) {
 }
 
 static void HeadMovementAlternate(GAMEOBJECT *object) {
-    CHARACTER_JOINT_MOVEMENT_PC *joints = (CHARACTER_JOINT_MOVEMENT_PC *)object;
+    CHARACTER_JOINT_MOVEMENT *joints = (CHARACTER_JOINT_MOVEMENT *)object;
     f32 first;
     f32 second;
     f32 blend;
@@ -280,11 +280,11 @@ static void HeadMovementAlternate(GAMEOBJECT *object) {
         }
         joints->overrides[joints->count].rotation.x = 0.0f;
         joints->overrides[joints->count].rotation.y = first * blend + joints->overrides[joints->count].rotation.y * (1.0f - blend);
-        joints->overrides[joints->count].rotation_max_pc[1] = (i32)(object->character_data->game_character->field_054 * 10430.3779296875);
-        joints->overrides[joints->count].rotation_min_pc[1] = (i32)(object->character_data->game_character->field_054 * -10430.3779296875);
+        joints->overrides[joints->count].rotation_max[1] = (i32)(object->character_data->game_character->field_054 * 10430.3779296875);
+        joints->overrides[joints->count].rotation_min[1] = (i32)(object->character_data->game_character->field_054 * -10430.3779296875);
         joints->overrides[joints->count].rotation.z = second * blend + joints->overrides[joints->count].rotation.z * (1.0f - blend);
-        joints->overrides[joints->count].rotation_max_pc[2] = (i32)(object->character_data->game_character->field_050 * 10430.3779296875);
-        joints->overrides[joints->count].rotation_min_pc[2] = (i32)(object->character_data->game_character->field_050 * -10430.3779296875);
+        joints->overrides[joints->count].rotation_max[2] = (i32)(object->character_data->game_character->field_050 * 10430.3779296875);
+        joints->overrides[joints->count].rotation_min[2] = (i32)(object->character_data->game_character->field_050 * -10430.3779296875);
         if (joints->overrides[joints->count].rotation.y > HeadMovementThreshold ||
             joints->overrides[joints->count].rotation.y < -HeadMovementThreshold ||
             joints->overrides[joints->count].rotation.z > HeadMovementThreshold ||
@@ -313,7 +313,7 @@ static void HeadMovementAlternate(GAMEOBJECT *object) {
 }
 
 static void HeadMovementOrdinary(GAMEOBJECT *object) {
-    CHARACTER_JOINT_MOVEMENT_PC *joints = (CHARACTER_JOINT_MOVEMENT_PC *)object;
+    CHARACTER_JOINT_MOVEMENT *joints = (CHARACTER_JOINT_MOVEMENT *)object;
     f32 first;
     f32 second;
     f32 blend;
@@ -383,11 +383,11 @@ static void HeadMovementOrdinary(GAMEOBJECT *object) {
         }
         joints->overrides[joints->count].rotation.x = 0.0f;
         joints->overrides[joints->count].rotation.y = first * blend + joints->overrides[joints->count].rotation.y * (1.0f - blend);
-        joints->overrides[joints->count].rotation_max_pc[1] = (i32)(object->character_data->game_character->field_054 * 10430.3779296875);
-        joints->overrides[joints->count].rotation_min_pc[1] = (i32)(object->character_data->game_character->field_054 * -10430.3779296875);
+        joints->overrides[joints->count].rotation_max[1] = (i32)(object->character_data->game_character->field_054 * 10430.3779296875);
+        joints->overrides[joints->count].rotation_min[1] = (i32)(object->character_data->game_character->field_054 * -10430.3779296875);
         joints->overrides[joints->count].rotation.z = second * blend + joints->overrides[joints->count].rotation.z * (1.0f - blend);
-        joints->overrides[joints->count].rotation_max_pc[2] = (i32)(object->character_data->game_character->field_050 * 10430.3779296875);
-        joints->overrides[joints->count].rotation_min_pc[2] = (i32)(object->character_data->game_character->field_050 * -10430.3779296875);
+        joints->overrides[joints->count].rotation_max[2] = (i32)(object->character_data->game_character->field_050 * 10430.3779296875);
+        joints->overrides[joints->count].rotation_min[2] = (i32)(object->character_data->game_character->field_050 * -10430.3779296875);
         if (joints->overrides[joints->count].rotation.y > HeadMovementThreshold ||
             joints->overrides[joints->count].rotation.y < -HeadMovementThreshold ||
             joints->overrides[joints->count].rotation.z > HeadMovementThreshold ||
@@ -429,7 +429,7 @@ void HeadMovement(GAMEOBJECT *object) {
 }
 
 void CloakMovement(GAMEOBJECT *object) {
-    CHARACTER_JOINT_MOVEMENT_PC *joints = (CHARACTER_JOINT_MOVEMENT_PC *)object;
+    CHARACTER_JOINT_MOVEMENT *joints = (CHARACTER_JOINT_MOVEMENT *)object;
     f32 phase;
 
     if (joints->count >= 3 || object->character_data->game_character->cloak_joint == -1) {
@@ -456,14 +456,14 @@ void CloakMovement(GAMEOBJECT *object) {
     if (joints->overrides[joints->count].rotation.z != 0.0f) {
         joints->overrides[joints->count].flags_pc = 0x21;
         if (object->character_data->game_character->field_05c < object->character_data->game_character->field_060) {
-            joints->overrides[joints->count].rotation_max_pc[2] =
+            joints->overrides[joints->count].rotation_max[2] =
                 (i32)((f64)object->character_data->game_character->field_060 * AIPathAngularScale);
-            joints->overrides[joints->count].rotation_min_pc[2] =
+            joints->overrides[joints->count].rotation_min[2] =
                 (i32)((f64)object->character_data->game_character->field_05c * AIPathAngularScale);
         } else {
-            joints->overrides[joints->count].rotation_max_pc[2] =
+            joints->overrides[joints->count].rotation_max[2] =
                 (i32)((f64)object->character_data->game_character->field_05c * AIPathAngularScale);
-            joints->overrides[joints->count].rotation_min_pc[2] =
+            joints->overrides[joints->count].rotation_min[2] =
                 (i32)((f64)object->character_data->game_character->field_060 * AIPathAngularScale);
         }
     } else {
@@ -473,7 +473,7 @@ void CloakMovement(GAMEOBJECT *object) {
 }
 
 void HairMovement(GAMEOBJECT *object) {
-    CHARACTER_JOINT_MOVEMENT_PC *joints = (CHARACTER_JOINT_MOVEMENT_PC *)object;
+    CHARACTER_JOINT_MOVEMENT *joints = (CHARACTER_JOINT_MOVEMENT *)object;
     f32 phase;
 
     if (joints->count >= 3 || object->character_data->game_character->cloak_joint_2 == -1) {
@@ -500,11 +500,11 @@ void HairMovement(GAMEOBJECT *object) {
     if (joints->overrides[joints->count].rotation.z != 0.0f) {
         joints->overrides[joints->count].flags_pc = 0x21;
         if (HairMovementRestAngle > HairMovementFallAngle) {
-            joints->overrides[joints->count].rotation_max_pc[2] = (i32)((f64)HairMovementRestAngle * AIPathAngularScale);
-            joints->overrides[joints->count].rotation_min_pc[2] = (i32)((f64)HairMovementFallAngle * AIPathAngularScale);
+            joints->overrides[joints->count].rotation_max[2] = (i32)((f64)HairMovementRestAngle * AIPathAngularScale);
+            joints->overrides[joints->count].rotation_min[2] = (i32)((f64)HairMovementFallAngle * AIPathAngularScale);
         } else {
-            joints->overrides[joints->count].rotation_max_pc[2] = (i32)((f64)HairMovementFallAngle * AIPathAngularScale);
-            joints->overrides[joints->count].rotation_min_pc[2] = (i32)((f64)HairMovementRestAngle * AIPathAngularScale);
+            joints->overrides[joints->count].rotation_max[2] = (i32)((f64)HairMovementFallAngle * AIPathAngularScale);
+            joints->overrides[joints->count].rotation_min[2] = (i32)((f64)HairMovementRestAngle * AIPathAngularScale);
         }
     }
     joints->count++;

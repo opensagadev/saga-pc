@@ -36,7 +36,7 @@ void CharShadows_Update(void) {
         } else {
             object->shadow_radius = object->character_data->collision_radius;
         }
-        packet = (CHARACTER_SHADOW_PACKET *)object->ai_player_packet_pc;
+        packet = (CHARACTER_SHADOW_PACKET *)object->ai_player_packet;
         count = 0;
         for (locator = 0; locator < 16; ++locator) {
             if (count >= 5) {
@@ -125,7 +125,7 @@ void CharShadows_Draw(void) {
         alpha = (f32)level_alpha * object->shadow_opacity;
         radius *= object->origin_scale;
         radius *= DropInOutScale(object);
-        packet = (CHARACTER_SHADOW_PACKET *)object->ai_player_packet_pc;
+        packet = (CHARACTER_SHADOW_PACKET *)object->ai_player_packet;
         slot = packet->shadows;
         count = 0;
         for (locator = 0; locator < 16; ++locator) {

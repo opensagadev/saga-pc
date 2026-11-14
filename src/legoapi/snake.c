@@ -17,21 +17,21 @@ typedef struct snake_segment_s { // size 0x18
     f32 ground_height;           // 0x0c
     NUANG yaw;                   // 0x10
     NUANG pitch;                 // 0x14
-} SNAKE_SEGMENT_PC;
+} SNAKE_SEGMENT;
 
-typedef struct snake_body_s {      // size 0x110
-    SNAKE_SEGMENT_PC segments[11]; // 0x000
-    f32 scale;                     // 0x108
-    u16 segment_count;             // 0x10c
-    u16 flags;                     // 0x10e
-} SNAKE_BODY_PC;
+typedef struct snake_body_s {   // size 0x110
+    SNAKE_SEGMENT segments[11]; // 0x000
+    f32 scale;                  // 0x108
+    u16 segment_count;          // 0x10c
+    u16 flags;                  // 0x10e
+} SNAKE_BODY;
 
 typedef struct snake_object_reader_s { // size 0x10b0
     u8 unknown_000[0x4d8];             // 0x0000
     PART_LIGHTING_DATA lighting;       // 0x04d8
     u8 unknown_5a4[0x10ac - 0x5a4];    // 0x05a4
-    SNAKE_BODY_PC *snake_body;         // 0x10ac
-} SNAKE_OBJECT_READER_PC;
+    SNAKE_BODY *snake_body;            // 0x10ac
+} SNAKE_OBJECT_READER;
 
 extern f32 SnakeSegmentSpacing;
 extern f32 SnakeHeadHeight;
@@ -102,15 +102,15 @@ i32 SnakeASin(f32 sin) {
 
 static f32 SnakeBodyDefaultScale = 1.0f;
 
-SNAKE_BODY_PC *CreateSnakeBody(GAMEOBJECT *object, i32 segment_count) {
-    SNAKE_BODY_PC *body;
+SNAKE_BODY *CreateSnakeBody(GAMEOBJECT *object, i32 segment_count) {
+    SNAKE_BODY *body;
     i32 slot;
     i32 index;
 
     for (slot = 0; slot < 4; slot++) {
-        body = &((SNAKE_BODY_PC *)snakebodies)[slot];
+        body = &((SNAKE_BODY *)snakebodies)[slot];
         if ((body->flags & 1) == 0) {
-            ((SNAKE_OBJECT_READER_PC *)object)->snake_body = body;
+            ((SNAKE_OBJECT_READER *)object)->snake_body = body;
             body->scale = SnakeBodyDefaultScale;
             body->flags |= 1;
             body->segment_count = (u16)segment_count;
@@ -126,7 +126,7 @@ SNAKE_BODY_PC *CreateSnakeBody(GAMEOBJECT *object, i32 segment_count) {
 }
 
 void UpdateSnakeBody(GAMEOBJECT *object) {
-    SNAKE_OBJECT_READER_PC *reader = (SNAKE_OBJECT_READER_PC *)object;
+    SNAKE_OBJECT_READER *reader = (SNAKE_OBJECT_READER *)object;
     NUVEC position;
     NUVEC offset;
     i32 index;
@@ -169,7 +169,7 @@ void UpdateSnakeBody(GAMEOBJECT *object) {
 }
 
 void SnakeBeenHit(GAMEOBJECT *object) {
-    SNAKE_OBJECT_READER_PC *reader = (SNAKE_OBJECT_READER_PC *)object;
+    SNAKE_OBJECT_READER *reader = (SNAKE_OBJECT_READER *)object;
     i32 i;
     i32 index;
     i32 special_index;
@@ -219,7 +219,7 @@ void SnakeBeenHit(GAMEOBJECT *object) {
 }
 
 void DestroySnakeBody(GAMEOBJECT *object) {
-    SNAKE_OBJECT_READER_PC *reader = (SNAKE_OBJECT_READER_PC *)object;
+    SNAKE_OBJECT_READER *reader = (SNAKE_OBJECT_READER *)object;
     if (object != NULL && reader->snake_body != NULL) {
         memset(reader->snake_body, 0, sizeof(*reader->snake_body));
         reader->snake_body = NULL;
@@ -227,7 +227,7 @@ void DestroySnakeBody(GAMEOBJECT *object) {
 }
 
 void BlowUpSnakeBody(GAMEOBJECT *object) {
-    SNAKE_OBJECT_READER_PC *reader = (SNAKE_OBJECT_READER_PC *)object;
+    SNAKE_OBJECT_READER *reader = (SNAKE_OBJECT_READER *)object;
     i32 index;
     i32 special_index;
     NUMTX matrix;
@@ -278,7 +278,7 @@ void BlowUpSnakeBody(GAMEOBJECT *object) {
 }
 
 void DrawSnakeBody(GAMEOBJECT *object) {
-    SNAKE_OBJECT_READER_PC *reader = (SNAKE_OBJECT_READER_PC *)object;
+    SNAKE_OBJECT_READER *reader = (SNAKE_OBJECT_READER *)object;
     i32 segment_index;
     i32 special_index;
     NUVEC scale;

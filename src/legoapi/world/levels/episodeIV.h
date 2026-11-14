@@ -16,9 +16,9 @@ extern "C" {
     i32 MosEisleyC_PastBarrier(GAMEOBJECT *);
     extern f32 VehicleLoopTime;
     extern i8 *DeathStarEscapeBNetPacket;
-    extern const char DeathStarEscapeBSpongePc[7];
-    extern const char DeathStarEscapeBLiftDownPc[10];
-    extern const char DeathStarEscapeBLiftUpPc[8];
+    extern const char DeathStarEscapeBSponge[7];
+    extern const char DeathStarEscapeBLiftDown[10];
+    extern const char DeathStarEscapeBLiftUp[8];
     i32 DeathStarShieldDown(void);
 #ifdef __cplusplus
 }

@@ -665,8 +665,8 @@ i32 rtlDynamicAllocTemplate(RTL_SET *set, i32 user_id) {
     return -1;
 }
 
-#define RTL_MIN_PC(a, b) ((a) < (b) ? (a) : (b))
-#define RTL_MAX_PC(a, b) ((a) > (b) ? (a) : (b))
+#define RTL_MIN(a, b) ((a) < (b) ? (a) : (b))
+#define RTL_MAX(a, b) ((a) > (b) ? (a) : (b))
 
 static void RtlApplyModifiersToChainPrivate(RTL_LIGHT *light) {
     const NUVEC zero = {0.0f, 0.0f, 0.0f};
@@ -740,7 +740,7 @@ static void RtlProcessLightPrivate(RTL_LIGHT *light, f32 elapsed) {
             }
             if (light->field_64 > 0.0f) {
                 light->parameter_54 += elapsed;
-                blend = RTL_MIN_PC(1.0f, RTL_MAX_PC(0.0f, light->parameter_54 / light->field_64));
+                blend = RTL_MIN(1.0f, RTL_MAX(0.0f, light->parameter_54 / light->field_64));
                 light->ambient.x = light->colour.x * blend + light->secondary_colour.x * (1.0f - blend);
                 light->ambient.y = light->colour.y * blend + light->secondary_colour.y * (1.0f - blend);
                 light->ambient.z = light->colour.z * blend + light->secondary_colour.z * (1.0f - blend);
@@ -750,7 +750,7 @@ static void RtlProcessLightPrivate(RTL_LIGHT *light, f32 elapsed) {
                 }
             } else {
                 light->parameter_54 -= elapsed;
-                blend = RTL_MIN_PC(1.0f, RTL_MAX_PC(0.0f, light->parameter_54 / light->field_64));
+                blend = RTL_MIN(1.0f, RTL_MAX(0.0f, light->parameter_54 / light->field_64));
                 light->ambient.x = light->secondary_colour.x * blend + light->colour.x * (1.0f - blend);
                 light->ambient.y = light->secondary_colour.y * blend + light->colour.y * (1.0f - blend);
                 light->ambient.z = light->secondary_colour.z * blend + light->colour.z * (1.0f - blend);
@@ -765,7 +765,7 @@ static void RtlProcessLightPrivate(RTL_LIGHT *light, f32 elapsed) {
             light->ambient.y = light->secondary_colour.y * light->blend + light->colour.y * (1.0f - light->blend);
             light->ambient.z = light->secondary_colour.z * light->blend + light->colour.z * (1.0f - light->blend);
             light->blend += light->blend_rate * elapsed;
-            light->blend = RTL_MAX_PC(0.0f, RTL_MIN_PC(1.0f, light->blend));
+            light->blend = RTL_MAX(0.0f, RTL_MIN(1.0f, light->blend));
             light->parameter_54 -= elapsed;
             if (light->parameter_54 <= 0.0f) {
                 light->parameter_54 = light->parameters[2];
@@ -836,10 +836,10 @@ void IndexLights(RTL_SET *set, VARIPTR *buffer, i32 buffer_end) {
     minimum_z = FLT_MAX;
     maximum_z = -FLT_MAX;
     for (light = set->lights; light->type != 0; ++light) {
-        minimum_x = RTL_MIN_PC(minimum_x, light->position.x - light->outer_radius);
-        maximum_x = RTL_MAX_PC(maximum_x, light->position.x + light->outer_radius);
-        minimum_z = RTL_MIN_PC(minimum_z, light->position.z - light->outer_radius);
-        maximum_z = RTL_MAX_PC(maximum_z, light->position.z + light->outer_radius);
+        minimum_x = RTL_MIN(minimum_x, light->position.x - light->outer_radius);
+        maximum_x = RTL_MAX(maximum_x, light->position.x + light->outer_radius);
+        minimum_z = RTL_MIN(minimum_z, light->position.z - light->outer_radius);
+        maximum_z = RTL_MAX(maximum_z, light->position.z + light->outer_radius);
     }
 
     if (minimum_x > maximum_x || minimum_z > maximum_z) {
@@ -893,8 +893,8 @@ void IndexLights(RTL_SET *set, VARIPTR *buffer, i32 buffer_end) {
     grid->enabled = 1;
 }
 
-#undef RTL_MIN_PC
-#undef RTL_MAX_PC
+#undef RTL_MIN
+#undef RTL_MAX
 
 i32 rtlDynamicSetRadii(i32 id, f32 inner, f32 outer) {
     RTL_LIGHT *light;
@@ -942,8 +942,8 @@ i32 rtlDynamicSetDirection(i32 id, NUVEC *direction) {
 }
 
 // Version 2/3 sets kept their fog table in the light slots from 64 onwards.
-#define RTL_OLD_FOG_PC(set) ((RTL_FOG_MIGRATION_PC *)&(set)->lights[64])
-#define RTL_FOG_PC(set) ((RTL_FOG_MIGRATION_PC *)(set)->fog)
+#define RTL_OLD_FOG(set) ((RTL_FOG_MIGRATION_PC *)&(set)->lights[64])
+#define RTL_FOG(set) ((RTL_FOG_MIGRATION_PC *)(set)->fog)
 
 RTL_SET *rtlLoadSet(char *path, VARIPTR *buffer, i32 buffer_end) {
     RTL_SET *set;
@@ -957,16 +957,16 @@ RTL_SET *rtlLoadSet(char *path, VARIPTR *buffer, i32 buffer_end) {
             rtlSwapSetEndianess(path);
             break;
         case 2:
-            RTL_OLD_FOG_PC(set)[0].radius = 10.0f;
-            NuVecClear(&RTL_OLD_FOG_PC(set)[0].position);
-            RTL_OLD_FOG_PC(set)[0].type = 1;
+            RTL_OLD_FOG(set)[0].radius = 10.0f;
+            NuVecClear(&RTL_OLD_FOG(set)[0].position);
+            RTL_OLD_FOG(set)[0].type = 1;
             for (i = 1; i < 32; ++i) {
-                RTL_OLD_FOG_PC(set)[i].type = 0;
+                RTL_OLD_FOG(set)[i].type = 0;
             }
         case 3:
             i = 32;
             while (i--) {
-                RTL_FOG_PC(set)[i] = RTL_OLD_FOG_PC(set)[i];
+                RTL_FOG(set)[i] = RTL_OLD_FOG(set)[i];
             }
             for (i = 64; i < 128; ++i) {
                 set->lights[i].type = 0;
@@ -4151,17 +4151,17 @@ static RTL_FOG_MIGRATION_PC *FindNearestFog(NUVEC *position) {
         if (hide_types[curr_set->lights[i].type]) {
             continue;
         }
-        distance = ((RTL_FOG_PC(curr_set)[i].position.x - position->x) * (RTL_FOG_PC(curr_set)[i].position.x - position->x)) +
-                   (RTL_FOG_PC(curr_set)[i].position.y - position->y) * (RTL_FOG_PC(curr_set)[i].position.y - position->y) +
-                   (RTL_FOG_PC(curr_set)[i].position.z - position->z) * (RTL_FOG_PC(curr_set)[i].position.z - position->z);
-        if (distance < RTL_FOG_PC(curr_set)[i].radius * RTL_FOG_PC(curr_set)[i].radius && distance < nearest_distance) {
+        distance = ((RTL_FOG(curr_set)[i].position.x - position->x) * (RTL_FOG(curr_set)[i].position.x - position->x)) +
+                   (RTL_FOG(curr_set)[i].position.y - position->y) * (RTL_FOG(curr_set)[i].position.y - position->y) +
+                   (RTL_FOG(curr_set)[i].position.z - position->z) * (RTL_FOG(curr_set)[i].position.z - position->z);
+        if (distance < RTL_FOG(curr_set)[i].radius * RTL_FOG(curr_set)[i].radius && distance < nearest_distance) {
             nearest_distance = distance;
             nearest = i;
         }
     }
     if (nearest != -1) {
         curFogLoc = nearest;
-        return &RTL_FOG_PC(curr_set)[nearest];
+        return &RTL_FOG(curr_set)[nearest];
     }
     return NULL;
 }
@@ -4182,9 +4182,9 @@ static RTL_FOG_MIGRATION_PC *SelectPrevFog(void) {
     }
     if (curr_set != NULL) {
         while (index != curFogLoc) {
-            if (RTL_FOG_PC(curr_set)[index].type != 0) {
+            if (RTL_FOG(curr_set)[index].type != 0) {
                 curFogLoc = index;
-                return &RTL_FOG_PC(curr_set)[index];
+                return &RTL_FOG(curr_set)[index];
             }
             if (index == 0) {
                 index = 32;
@@ -4209,9 +4209,9 @@ static RTL_FOG_MIGRATION_PC *SelectNextFog(void) {
     }
     if (curr_set != NULL) {
         while (index != curFogLoc) {
-            if (RTL_FOG_PC(curr_set)[index].type != 0) {
+            if (RTL_FOG(curr_set)[index].type != 0) {
                 curFogLoc = index;
-                return &RTL_FOG_PC(curr_set)[index];
+                return &RTL_FOG(curr_set)[index];
             }
             if (index >= 32) {
                 index = -1;
@@ -4425,7 +4425,7 @@ void edrtlDrawFog(RTL_FOG_MIGRATION_PC *fog) {
 void edrtlDrawFogs(void) {
     i32 index;
     for (index = 0; index < 32; ++index) {
-        edrtlDrawFog(&RTL_FOG_PC(curr_set)[index]);
+        edrtlDrawFog(&RTL_FOG(curr_set)[index]);
     }
 }
 
@@ -4504,7 +4504,7 @@ static void edrtlEnter(void) {
     ed_just_entered = 1;
     edmainExtCamera(usr_cam);
     curr_set = rtlGetEnvSet();
-    RTL_SET_INDEX_PC(curr_set)->enabled = 0;
+    RTL_SET_INDEX(curr_set)->enabled = 0;
     game_nearclip = global_camera.near_clip;
     game_farclip = global_camera.far_clip;
     rtl_locked = NULL;

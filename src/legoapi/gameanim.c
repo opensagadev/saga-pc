@@ -1541,9 +1541,9 @@ typedef struct gameanim_reflection_matrix_s { // size 0x40
     f32 m21;                                  // 0x24
     f32 m22;                                  // 0x28
     f32 axis_coordinates[5];                  // 0x2c
-} GAMEANIM_REFLECTION_MATRIX_PC;
+} GAMEANIM_REFLECTION_MATRIX;
 
-STATIC_ASSERT(sizeof(GAMEANIM_REFLECTION_MATRIX_PC) == sizeof(NUMTX));
+STATIC_ASSERT(sizeof(GAMEANIM_REFLECTION_MATRIX) == sizeof(NUMTX));
 
 void GameAnimSet_DrawReflection(GAMEANIMSET *set, i32 axis, f32 offset, NUMTX *matrix) {
     f32 plane;
@@ -1555,7 +1555,7 @@ void GameAnimSet_DrawReflection(GAMEANIMSET *set, i32 axis, f32 offset, NUMTX *m
     if (!matrix) {
         matrix = NuSpecialGetMtx(&set->objects->special);
     }
-    plane = offset + ((GAMEANIM_REFLECTION_MATRIX_PC *)matrix)->axis_coordinates[axis];
+    plane = offset + ((GAMEANIM_REFLECTION_MATRIX *)matrix)->axis_coordinates[axis];
     NuRndrStartReflectionRender(0);
     for (object = set->objects; object; object = object->next) {
         if (!(object->flags & 2) && NuSpecialGetVisibilityFn(&object->special)) {

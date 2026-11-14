@@ -4,14 +4,14 @@
 typedef struct {
     char name[16];
     u8 opaque[0xf8 - 16];
-} ADD_GRAPPLE_PC;
+} ADD_GRAPPLE;
 
 extern "C" {}
 
 typedef struct {
     u32 enabled[1];
     u32 visible[1];
-} GRAPPLE_PROGRESS_PC;
+} GRAPPLE_PROGRESS;
 
 extern "C" {}
 STATIC_ASSERT(offsetof(GAMEOBJECT, ai_packet) + offsetof(AIPACKET, path_info) + offsetof(AIPATHINFO, connection) == 0x424);
@@ -39,7 +39,7 @@ typedef struct grapple_load_extra_s { // size 0xf8
     NUVEC file_position;              // 0x10
     u8 unknown_1c[0xd0];              // 0x1c
     NUSPECIALHANDLE special;          // 0xec
-} GRAPPLE_LOAD_EXTRA_PC;
+} GRAPPLE_LOAD_EXTRA;
 
 extern "C" const f64 GameObjectNearFloorNoFloorHeight;
 extern "C" {
@@ -54,7 +54,7 @@ typedef struct grapple_movement_s {
     NUVEC shadow_probe_position;
     u8 unknown_48[4];
     f32 swing_scale;
-} GRAPPLE_MOVEMENT_PC;
+} GRAPPLE_MOVEMENT;
 
 extern "C" {
     static inline f32 GrapplesFabs(f32 value);
@@ -72,8 +72,8 @@ extern "C" i32 Grapples_Load(void *world_pointer, void *unused) {
         version = EdFileReadInt();
         world->grapple_count = EdFileReadInt();
         for (index = 0; index < world->grapple_count; ++index) {
-            EdFileRead(((GRAPPLE_LOAD_EXTRA_PC *)world->grapples)[index].name, 16);
-            EdFileReadNuVec(&((GRAPPLE_LOAD_EXTRA_PC *)world->grapples)[index].file_position);
+            EdFileRead(((GRAPPLE_LOAD_EXTRA *)world->grapples)[index].name, 16);
+            EdFileReadNuVec(&((GRAPPLE_LOAD_EXTRA *)world->grapples)[index].file_position);
             if (version >= 2) {
                 world->grapples[index].y_rotation = EdFileReadUnsignedShort();
             } else {
@@ -102,13 +102,13 @@ extern "C" i32 Grapples_Load(void *world_pointer, void *unused) {
             } else {
                 world->grapples[index].flags &= ~8u;
             }
-            memset(&((GRAPPLE_LOAD_EXTRA_PC *)world->grapples)[index].special, 0, sizeof(NUSPECIALHANDLE));
+            memset(&((GRAPPLE_LOAD_EXTRA *)world->grapples)[index].special, 0, sizeof(NUSPECIALHANDLE));
             if (version >= 7) {
                 length = EdFileReadUnsignedChar();
                 if (length > 0) {
                     EdFileRead(name, length);
                     name[length] = '\0';
-                    NuSpecialFind(world->current_gscn, &((GRAPPLE_LOAD_EXTRA_PC *)world->grapples)[index].special, name, 1);
+                    NuSpecialFind(world->current_gscn, &((GRAPPLE_LOAD_EXTRA *)world->grapples)[index].special, name, 1);
                 }
             }
         }
@@ -197,7 +197,7 @@ static void Grapple_Reset(GRAPPLE_MOTION *grapple) {
 
 extern "C" void Grapples_Reset(void *world_pointer, void *unused, void *progress_pointer) {
     WORLDINFO *world = (WORLDINFO *)world_pointer;
-    GRAPPLE_PROGRESS_PC *progress = (GRAPPLE_PROGRESS_PC *)progress_pointer;
+    GRAPPLE_PROGRESS *progress = (GRAPPLE_PROGRESS *)progress_pointer;
     GRAPPLE_MOTION *grapple;
     i32 index;
     i32 word;
@@ -528,8 +528,8 @@ extern "C" {
         i32 i;
         (void)data;
         for (i = 0; i < w->grapple_count; ++i) {
-            if (NuStrLen(((ADD_GRAPPLE_PC *)w->grapples)[i].name) != 0) {
-                AddGizmo(giz, type, NULL, &((ADD_GRAPPLE_PC *)w->grapples)[i]);
+            if (NuStrLen(((ADD_GRAPPLE *)w->grapples)[i].name) != 0) {
+                AddGizmo(giz, type, NULL, &((ADD_GRAPPLE *)w->grapples)[i]);
             }
         }
     }
@@ -590,7 +590,7 @@ extern "C" {
     }
 
     void Grapples_ClearProgress(void *owner, void *progress_ptr) {
-        GRAPPLE_PROGRESS_PC *progress = (GRAPPLE_PROGRESS_PC *)progress_ptr;
+        GRAPPLE_PROGRESS *progress = (GRAPPLE_PROGRESS *)progress_ptr;
         if (progress == NULL) {
             return;
         }
@@ -599,7 +599,7 @@ extern "C" {
     }
 
     void Grapples_StoreProgress(void *world_ptr, void *data, void *progress_ptr) {
-        GRAPPLE_PROGRESS_PC *progress = (GRAPPLE_PROGRESS_PC *)progress_ptr;
+        GRAPPLE_PROGRESS *progress = (GRAPPLE_PROGRESS *)progress_ptr;
         WORLDINFO *world = (WORLDINFO *)world_ptr;
         GRAPPLE_DYNAMIC *record;
         i32 index;

@@ -199,20 +199,20 @@ extern "C" {
 
 #if SAGA_GAMEAPI_AI_AISYS_AISYS_H_PART == 2 && !defined(SAGA_GAMEAPI_AI_AISYS_AISYS_H_STOP)
 
-typedef f32 (*AICONDITION_EVAL_PC)(AISYS_PC *, struct AISCRIPTPROCESS *, struct AIPACKET *, char *, void *);
-typedef void *(*AICONDITION_INIT_PC)(AISYS_PC *, char *, struct AISCRIPT *);
+typedef f32 (*AICONDITION_EVAL)(AISYS_PC *, struct AISCRIPTPROCESS *, struct AIPACKET *, char *, void *);
+typedef void *(*AICONDITION_INIT)(AISYS_PC *, char *, struct AISCRIPT *);
 
-typedef struct AICONDITIONDEF {  // size 0xc
-    const char *name;            // 0x0
-    AICONDITION_EVAL_PC eval_fn; // 0x4
-    AICONDITION_INIT_PC init_fn; // 0x8
+typedef struct AICONDITIONDEF { // size 0xc
+    const char *name;           // 0x0
+    AICONDITION_EVAL eval_fn;   // 0x4
+    AICONDITION_INIT init_fn;   // 0x8
 } AICONDITIONDEF;
 
-typedef i32 (*AIACTION_EVAL_PC)(AISYS_PC *, struct AISCRIPTPROCESS *, struct AIPACKET *, char **, i32, i32, f32);
+typedef i32 (*AIACTION_EVAL)(AISYS_PC *, struct AISCRIPTPROCESS *, struct AIPACKET *, char **, i32, i32, f32);
 
 typedef struct AIACTIONDEF {      // size 0xc
     const char *name;             // 0x0
-    AIACTION_EVAL_PC eval_fn;     // 0x4
+    AIACTION_EVAL eval_fn;        // 0x4
     u8 replicate_on_first_action; // 0x8
     u8 is_game_action;            // 0x9
     i16 index;                    // 0xa

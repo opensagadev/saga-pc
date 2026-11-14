@@ -59,7 +59,7 @@ PC_NUWINDGROUP *NuWindCreateMtx(NUSPECIALHANDLE *source, NUMTX *matrices, i16 co
     }
     group->matrices = matrices;
     group->scene = source->scene;
-    group->special = (NUDISPLAY_SPECIAL_PC *)source->display_special;
+    group->special = (NUDISPLAY_SPECIAL *)source->display_special;
     group->matrix_count = count;
     group->value20 = value20;
     group->value24 = value24;

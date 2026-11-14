@@ -15,14 +15,14 @@ typedef struct cutinfo_reader_s { // size 0x58
     void *instance;               // 0x04
     u8 opaque_08_54[0x4c];        // 0x08
     f32 previous_frame;           // 0x54
-} CUTINFO_READER_PC;
+} CUTINFO_READER;
 
 typedef struct cut_instance_reader_s { // size 0x94
     u8 opaque_00_88[0x88];             // 0x00
     u32 flags_88;                      // 0x88
     u32 unknown_8c;                    // 0x8c
     f32 current_frame;                 // 0x90
-} CUT_INSTANCE_READER_PC;
+} CUT_INSTANCE_READER;
 
 typedef struct dooku_c_s {       // size 0x14
     GIZAIMESSAGE *total_message; // 0x00
@@ -71,34 +71,34 @@ typedef struct kaminoe_turret_reader_s { // size 0x140
     u8 opaque_12f_13a[0xb];              // 0x12f
     u16 flags_13a;                       // 0x13a
     u8 opaque_13c_140[0x4];              // 0x13c
-} KAMINOE_TURRET_READER_PC;
+} KAMINOE_TURRET_READER;
 
-typedef struct kamino_e_s {                  // size 0x78
-    GIZAIMESSAGE *jango_fight;               // 0x00
-    GIZAIMESSAGE *can_fire;                  // 0x04
-    GIZAIMESSAGE *reset_turrets;             // 0x08
-    GIZAIMESSAGE *show_hearts;               // 0x0c
-    GIZAIMESSAGE *minicut_started;           // 0x10
-    CUTINFO *intro_cutscene;                 // 0x14
-    AIAREA *landing_area;                    // 0x18
-    NUSPECIALHANDLE slave1;                  // 0x1c
-    KAMINOE_TURRET_READER_PC *turrets[4];    // 0x28
-    KAMINOE_TURRET_READER_PC *active_turret; // 0x38
-    void *panels[4];                         // 0x3c
-    NUVEC position;                          // 0x4c
-    i32 pitch;                               // 0x58
-    i32 yaw;                                 // 0x5c
-    i32 roll;                                // 0x60
-    i32 orbit_pitch;                         // 0x64
-    i32 orbit_yaw;                           // 0x68
-    f32 departure_timer;                     // 0x6c
-    f32 elapsed_time;                        // 0x70
-    i8 fire_index;                           // 0x74
-    u8 departing;                            // 0x75
-    i16 platform;                            // 0x76
+typedef struct kamino_e_s {               // size 0x78
+    GIZAIMESSAGE *jango_fight;            // 0x00
+    GIZAIMESSAGE *can_fire;               // 0x04
+    GIZAIMESSAGE *reset_turrets;          // 0x08
+    GIZAIMESSAGE *show_hearts;            // 0x0c
+    GIZAIMESSAGE *minicut_started;        // 0x10
+    CUTINFO *intro_cutscene;              // 0x14
+    AIAREA *landing_area;                 // 0x18
+    NUSPECIALHANDLE slave1;               // 0x1c
+    KAMINOE_TURRET_READER *turrets[4];    // 0x28
+    KAMINOE_TURRET_READER *active_turret; // 0x38
+    void *panels[4];                      // 0x3c
+    NUVEC position;                       // 0x4c
+    i32 pitch;                            // 0x58
+    i32 yaw;                              // 0x5c
+    i32 roll;                             // 0x60
+    i32 orbit_pitch;                      // 0x64
+    i32 orbit_yaw;                        // 0x68
+    f32 departure_timer;                  // 0x6c
+    f32 elapsed_time;                     // 0x70
+    i8 fire_index;                        // 0x74
+    u8 departing;                         // 0x75
+    i16 platform;                         // 0x76
 } KAMINO_E_PC;
 
-#define KAMINO_DISCO_AREA_MASK_SET_PC(world, area)                                                                                         \
+#define KAMINO_DISCO_AREA_MASK_SET(world, area)                                                                                            \
     ((*(u64 *)((GAMEOBJECT *)(world)->ai_sys->player_1)->ai_area_mask & (u64)(i64)(1 << (i32)((area) - (world)->ai_sys->areas))) != 0)
 
 typedef struct KAMINO_SHIP_ZERO_ANGLES { // size 0x8
@@ -114,7 +114,7 @@ extern i32 boulder_blowup_type;
 
 typedef struct cruisera_levflag_s {
     u8 starfighter_state;
-} CRUISERA_LEVFLAG_PC;
+} CRUISERA_LEVFLAG;
 
 typedef struct cruiserc_s {
     GIZAIMESSAGE *dooku_fight;
@@ -151,7 +151,7 @@ typedef struct vadera_netpacket_s {
     u16 count;
     i16 subtitle;
     f32 timer;
-} VADERA_NETPACKET_PC;
+} VADERA_NETPACKET;
 
 typedef struct vaderc_s {
     GIZAIMESSAGE *final_fight_message;
@@ -172,23 +172,23 @@ typedef struct terrain_platform_reader_pc_s {
 typedef struct terrain_set_reader_s {
     u8 opaque_00_68[0x68];
     TERRAIN_PLATFORM_READER_PC *platforms;
-} TERRAIN_SET_READER_PC;
+} TERRAIN_SET_READER;
 
 extern i16 dat_007f1a0c;
 GIZFORCE_PC *GizForces_FindForce(WORLDINFO *world, char *name);
 
 void CruiserAInit(WORLDINFO *world) {
-    ((CRUISERA_LEVFLAG_PC *)LevFlag)->starfighter_state = 0;
+    ((CRUISERA_LEVFLAG *)LevFlag)->starfighter_state = 0;
     NuSpecialFind(world->current_gscn, &LevHSpecial[0], "starfighter1", 1);
     NuSpecialFind(world->current_gscn, &LevHSpecial[1], "starfighter2", 1);
     if (FreePlay != 0) {
-        ((CRUISERA_LEVFLAG_PC *)LevFlag)->starfighter_state = 2;
+        ((CRUISERA_LEVFLAG *)LevFlag)->starfighter_state = 2;
     }
 }
 
 void CruiserAUpdate(WORLDINFO *world) {
-    if (((CRUISERA_LEVFLAG_PC *)LevFlag)->starfighter_state == 1) {
-        ((CRUISERA_LEVFLAG_PC *)LevFlag)->starfighter_state = 2;
+    if (((CRUISERA_LEVFLAG *)LevFlag)->starfighter_state == 1) {
+        ((CRUISERA_LEVFLAG *)LevFlag)->starfighter_state = 2;
         if (NuSpecialExistsFn(&LevHSpecial[0]) != 0) {
             NuSpecialSetVisibility(&LevHSpecial[0], 1);
         }
@@ -631,7 +631,7 @@ static void VaderA_StartCollapseStage(WORLDINFO *world) {
     }
 }
 
-VADERA_NETPACKET_PC *vadera_netpacket = NULL;
+VADERA_NETPACKET *vadera_netpacket = NULL;
 
 void VaderA_Init(WORLDINFO *world) {
     memset(&vader_a, 0, sizeof(vader_a));
@@ -809,14 +809,14 @@ void VaderC_Update(WORLDINFO *world) {
             for (i = 0; i < 10; i++) {
                 if (Player[0] != NULL && vader_c.platform_ids[i] != -1 && ((GAMEOBJECT *)Player[0])->field_281 != 0 &&
                     ((GAMEOBJECT *)Player[0])->supporting_platform_id == vader_c.platform_ids[i] &&
-                    ((GAMEOBJECT *)Player[0])->position.y >= ((TERRAIN_SET_READER_PC *)CurTerr)
+                    ((GAMEOBJECT *)Player[0])->position.y >= ((TERRAIN_SET_READER *)CurTerr)
                                                                  ->platforms[((GAMEOBJECT *)Player[0])->supporting_platform_id]
                                                                  .scene_object->translation.y) {
                     vader_c.progress_mask |= 1;
                 }
                 if (Player[1] != NULL && vader_c.platform_ids[i] != -1 && ((GAMEOBJECT *)Player[1])->field_281 != 0 &&
                     ((GAMEOBJECT *)Player[1])->supporting_platform_id == vader_c.platform_ids[i] &&
-                    ((GAMEOBJECT *)Player[1])->position.y >= ((TERRAIN_SET_READER_PC *)CurTerr)
+                    ((GAMEOBJECT *)Player[1])->position.y >= ((TERRAIN_SET_READER *)CurTerr)
                                                                  ->platforms[((GAMEOBJECT *)Player[1])->supporting_platform_id]
                                                                  .scene_object->translation.y) {
                     vader_c.progress_mask |= 2;

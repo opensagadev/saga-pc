@@ -112,8 +112,8 @@ PC_NUFADEGROUP *NuFadeObjCreateMtx(NUSPECIALHANDLE *source, NUMTX *matrices, i16
         group->matrices = matrices;
         group->platforms = platform;
         group->scene = source->scene;
-        group->special = (NUDISPLAY_SPECIAL_PC *)source->display_special;
-        group->instance_index = (i16)((NUDISPLAY_SPECIAL_PC *)source->display_special)->instance_ix;
+        group->special = (NUDISPLAY_SPECIAL *)source->display_special;
+        group->instance_index = (i16)((NUDISPLAY_SPECIAL *)source->display_special)->instance_ix;
         group->terrain = TerrainGetCur();
         group->count = count;
         group->flags = (i16)flags;

@@ -4,7 +4,7 @@ typedef struct force_glow_reader_s {  // size 0xd1c
     u8 unknown_0000[0xd14];           // 0x000
     GAMEOBJECT *force_glow_object;    // 0xd14
     GAMEOBJECT *force_glow_candidate; // 0xd18
-} FORCE_GLOW_READER_PC;
+} FORCE_GLOW_READER;
 
 static void DrawLightningBolts(GAMEOBJECT *object, GAMEOBJECT *target, i32 lightning_index) {
     f32 height;
@@ -83,7 +83,7 @@ typedef struct force_glow_packet_s { // size 0x6d0
     f32 recovery;                    // 0x6c4
     f32 unknown6c8;                  // 0x6c8
     f32 hold;                        // 0x6cc
-} FORCE_GLOW_PACKET_PC;
+} FORCE_GLOW_PACKET;
 
 typedef struct GIZFORCE_ANIMATION_DATA { // size 0x4
     u8 unknown_00[2];                    // 0x0
@@ -146,18 +146,18 @@ typedef struct force_sfx_config_s { // size 0xa4
     i16 complete_sfx;               // 0x84
     i16 return_sfx;                 // 0x86
     u8 unknown_88[0xa4 - 0x88];     // 0x88
-} FORCE_SFX_CONFIG_PC;
+} FORCE_SFX_CONFIG;
 
 typedef struct force_sfx_system_s { // size 0x10
-    FORCE_SFX_CONFIG_PC *forces;    // 0x0
+    FORCE_SFX_CONFIG *forces;       // 0x0
     u8 unknown_04[0xe - 4];         // 0x4
     u16 count;                      // 0xe
-} FORCE_SFX_SYSTEM_PC;
+} FORCE_SFX_SYSTEM;
 
-typedef struct world_force_sfx_s {     // size 0x46b0
-    u8 unknown_0000[0x46ac];           // 0x0000
-    FORCE_SFX_SYSTEM_PC *force_system; // 0x46ac
-} WORLD_FORCE_SFX_PC;
+typedef struct world_force_sfx_s {  // size 0x46b0
+    u8 unknown_0000[0x46ac];        // 0x0000
+    FORCE_SFX_SYSTEM *force_system; // 0x46ac
+} WORLD_FORCE_SFX;
 
 static void *GizForces_ReserveBufferSpace(void *world_ptr) {
     i32 i;
@@ -181,7 +181,7 @@ static void *GizForces_ReserveBufferSpace(void *world_ptr) {
 typedef struct trigger_force_object_s { // size 0x10d0
     u8 unknown000[0x10cc];              // 0x0000
     GIZFORCE_PC *force;                 // 0x10cc
-} TRIGGER_FORCE_OBJECT_PC;
+} TRIGGER_FORCE_OBJECT;
 
 typedef struct FORCE_RESET_PROGRESS { // size 0xb0
     u32 enabled[4];                   // 0x00

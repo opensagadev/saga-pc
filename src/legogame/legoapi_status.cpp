@@ -12,7 +12,7 @@ typedef struct StatusPlayerModelPair {
     u16 model[2];
 } StatusPlayerModelPair;
 
-#define STATUS_APPEND_STAGE_INLINE_PC(packet_arg, type_arg, gold_arg)                                                                      \
+#define STATUS_APPEND_STAGE_INLINE(packet_arg, type_arg, gold_arg)                                                                         \
     do {                                                                                                                                   \
         (packet_arg)->stage_types[(packet_arg)->stage_count] = (i8)(type_arg);                                                             \
         (packet_arg)->gold_brick_enabled[(packet_arg)->stage_count] = (u8)(gold_arg);                                                      \
@@ -22,7 +22,7 @@ typedef struct StatusPlayerModelPair {
 typedef struct status_world_minikit_reader_s {
     u8 unknown_0000[0x2968];
     MINIKIT_PC minikit;
-} STATUS_WORLD_MINIKIT_READER_PC;
+} STATUS_WORLD_MINIKIT_READER;
 
 extern "C" i16 dat_00880bc0;
 extern "C" {
@@ -537,9 +537,9 @@ extern "C" {
                 }
                 p->final_reward_score = p->time_reward_score;
                 IncreaseScore(&p->final_reward_score, p->superstory_score, 0);
-                STATUS_APPEND_STAGE_INLINE_PC(p, 14, gold);
-                STATUS_APPEND_STAGE_INLINE_PC(p, 15, 0);
-                STATUS_APPEND_STAGE_INLINE_PC(p, 16, 0);
+                STATUS_APPEND_STAGE_INLINE(p, 14, gold);
+                STATUS_APPEND_STAGE_INLINE(p, 15, 0);
+                STATUS_APPEND_STAGE_INLINE(p, 16, 0);
                 if (Game.gold_bricks > p->previous_gold_bricks) {
                     AddStatusStage(p, 19, 0);
                 }
@@ -548,7 +548,7 @@ extern "C" {
                 }
                 hub_from_superstory = p->area->episode_index;
             }
-            STATUS_APPEND_STAGE_INLINE_PC(p, 10, 0);
+            STATUS_APPEND_STAGE_INLINE(p, 10, 0);
             p->stage_types[p->stage_count] = -1;
             p->current_gold_brick = -1;
             p->next_stage = FindStatusStage(p->stage_types[0]);
@@ -639,12 +639,12 @@ extern "C" {
             if (Game.gold_bricks > p->previous_gold_bricks) {
                 AddStatusStage(p, 19, 0);
             }
-            STATUS_APPEND_STAGE_INLINE_PC(p, 9, 0);
-            STATUS_APPEND_STAGE_INLINE_PC(p, 10, 0);
+            STATUS_APPEND_STAGE_INLINE(p, 9, 0);
+            STATUS_APPEND_STAGE_INLINE(p, 10, 0);
             if (netclient == 0) {
                 AddStatusStage(p, 11, 0);
             }
-            STATUS_APPEND_STAGE_INLINE_PC(p, 12, 0);
+            STATUS_APPEND_STAGE_INLINE(p, 12, 0);
             p->stage_types[p->stage_count] = -1;
             p->current_gold_brick = -1;
             p->next_stage = FindStatusStage(p->stage_types[0]);
@@ -852,11 +852,11 @@ extern "C" {
         if ((p->flags_word & 0x800) == 0) {
             AddStatusStage(p, 9, 0);
         }
-        STATUS_APPEND_STAGE_INLINE_PC(p, 10, 0);
+        STATUS_APPEND_STAGE_INLINE(p, 10, 0);
         if (netclient == 0) {
             AddStatusStage(p, 11, 0);
         }
-        STATUS_APPEND_STAGE_INLINE_PC(p, 12, 0);
+        STATUS_APPEND_STAGE_INLINE(p, 12, 0);
         p->stage_types[p->stage_count] = -1;
         p->current_gold_brick = -1;
         p->next_stage = FindStatusStage(p->stage_types[0]);
@@ -924,7 +924,7 @@ extern "C" {
 }
 
 void DrawStatusMiniKit(f32 x, f32 y, f32 z, f32 scale, f32 collected_scale, i32 max_pieces, STATUSPACKET_s *packet, f32 phase) {
-    STATUS_WORLD_MINIKIT_READER_PC *view = (STATUS_WORLD_MINIKIT_READER_PC *)WORLD;
+    STATUS_WORLD_MINIKIT_READER *view = (STATUS_WORLD_MINIKIT_READER *)WORLD;
     if (view->minikit.scene == NULL || view->minikit.pieces == NULL) {
         return;
     }
@@ -954,7 +954,7 @@ void DrawStatusMiniKit(f32 x, f32 y, f32 z, f32 scale, f32 collected_scale, i32 
             break;
     }
     for (i32 index = 0; index < packet->minikit_max; index++) {
-        view = (STATUS_WORLD_MINIKIT_READER_PC *)WORLD;
+        view = (STATUS_WORLD_MINIKIT_READER *)WORLD;
         if (index >= view->minikit.piece_count || index >= max_pieces) {
             break;
         }
@@ -963,7 +963,7 @@ void DrawStatusMiniKit(f32 x, f32 y, f32 z, f32 scale, f32 collected_scale, i32 
             NuMtxScale(&matrix, &growing);
             f32 reveal = index == currentminikit ? slideseek : 1.0f;
             reveal = NuTrigTable[((i32)(reveal * 16384.0 + 49152.0 + 16384.0) >> 1) & 0x7fff];
-            MINIKIT_PIECE_PC *piece = &((STATUS_WORLD_MINIKIT_READER_PC *)WORLD)->minikit.pieces[index];
+            MINIKIT_PIECE *piece = &((STATUS_WORLD_MINIKIT_READER *)WORLD)->minikit.pieces[index];
             switch ((i8)piece->direction) {
                 case 0:
                     matrix.m30 -= (piece->direction_index * 0.025f + 0.25) * reveal;
@@ -1002,11 +1002,11 @@ void DrawStatusMiniKit(f32 x, f32 y, f32 z, f32 scale, f32 collected_scale, i32 
         matrix.m32 += z;
         if (index < 10) {
             StatusMiniKitDrawCache[index].matrix = matrix;
-            StatusMiniKitDrawCache[index].piece = &((STATUS_WORLD_MINIKIT_READER_PC *)world)->minikit.pieces[index];
+            StatusMiniKitDrawCache[index].piece = &((STATUS_WORLD_MINIKIT_READER *)world)->minikit.pieces[index];
             StatusMiniKitDrawCache[index].active = 1;
         }
         if (world->level_objects[206].active != 0) {
-            DrawPanel3DObjectMtxNoAlpha((nuhspecial_s *)&((STATUS_WORLD_MINIKIT_READER_PC *)world)->minikit.pieces[index].special, &matrix);
+            DrawPanel3DObjectMtxNoAlpha((nuhspecial_s *)&((STATUS_WORLD_MINIKIT_READER *)world)->minikit.pieces[index].special, &matrix);
         }
     }
 }

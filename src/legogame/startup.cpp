@@ -58,7 +58,7 @@ extern "C" {
             u32 colour;                 // 0x0c
             f32 u;                      // 0x10
             f32 v;                      // 0x14
-        } NUPRIMVERTEX_PC;
+        } NUPRIMVERTEX;
 
         typedef struct LEGAL_MATERIAL { // size 0xb8
             u8 reserved00[0x40];        // 0x00
@@ -82,11 +82,11 @@ extern "C" {
             } else {
                 converted = ((colour >> 1) & 0x7f00) + ((colour & 0xfe) << 15) + ((colour >> 17) & 0x7f) + (colour & 0xff000000u);
             }
-            ((NUPRIMVERTEX_PC *)NuPrimStreamBufferPointer->void_ptr)->colour = converted;
+            ((NUPRIMVERTEX *)NuPrimStreamBufferPointer->void_ptr)->colour = converted;
         }
 
         static void NuPrim2DSetUV(f32 u, f32 v) {
-            NUPRIMVERTEX_PC *vertex = (NUPRIMVERTEX_PC *)NuPrimStreamBufferPointer->void_ptr;
+            NUPRIMVERTEX *vertex = (NUPRIMVERTEX *)NuPrimStreamBufferPointer->void_ptr;
             vertex->u = u;
             vertex->v = v;
         }

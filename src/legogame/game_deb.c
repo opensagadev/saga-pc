@@ -8,9 +8,9 @@ typedef struct startup_object_light_s { // size 0x10d8
     u8 unknown_200[0xc04];              // 0x0200
     i32 dynamic_light_id;               // 0x0e04
     u8 unknown_e08[0x2d0];              // 0x0e08
-} STARTUP_OBJECT_LIGHT_PC;
+} STARTUP_OBJECT_LIGHT;
 
-STATIC_ASSERT(sizeof(STARTUP_OBJECT_LIGHT_PC) == sizeof(GAMEOBJECT));
+STATIC_ASSERT(sizeof(STARTUP_OBJECT_LIGHT) == sizeof(GAMEOBJECT));
 
 typedef struct OBJECT_LIGHT_STATE_GAME { // size 0x54
     NUVEC ambient;                       // 0x00
@@ -89,11 +89,11 @@ typedef struct ripple_effect_s {
     f32 end_size;
     char texture_name[16];
     NUMTL *material;
-} RIPPLE_EFFECT_PC;
+} RIPPLE_EFFECT;
 
 typedef struct world_ripple_view_s {
     u8 unknown_0000[0x46f4];
-    RIPPLE_EFFECT_PC *effects;
+    RIPPLE_EFFECT *effects;
     i32 count;
 
     union {
@@ -104,19 +104,19 @@ typedef struct world_ripple_view_s {
 
         i32 effect_of_type[2]; /* indexed by LookupRippleEffectIndex */
     };
-} WORLD_RIPPLE_VIEW_PC;
+} WORLD_RIPPLE_VIEW;
 
 typedef struct ripple_contact_timer_view_s {
     u8 unknown_0000[0xdc0];
     f32 timer;
-} RIPPLE_CONTACT_TIMER_VIEW_PC;
+} RIPPLE_CONTACT_TIMER_VIEW;
 
-#define RIPPLE_WORLD ((WORLD_RIPPLE_VIEW_PC *)WORLD)
+#define RIPPLE_WORLD ((WORLD_RIPPLE_VIEW *)WORLD)
 
 typedef struct ripple_material_reader_s {
     u8 unknown_0000[0x70];
     f32 opacity;
-} RIPPLE_MATERIAL_READER_PC;
+} RIPPLE_MATERIAL_READER;
 
 void DebrisKillPlayers(void) {
     i32 i;
@@ -282,7 +282,7 @@ void InitRippleMtl(char *name, NUMTL **result, VARIPTR *buffer, VARIPTR *end) {
             *result = NuMtlCreateEx3D(1, 1);
             (*result)->attribs.unknown_1_1_2 = 0;
             (*result)->attribs.unknown_1_4_8 = 0;
-            ((RIPPLE_MATERIAL_READER_PC *)*result)->opacity = 1.0f;
+            ((RIPPLE_MATERIAL_READER *)*result)->opacity = 1.0f;
             (*result)->attribs.z_mode = 1;
             (*result)->attribs.alpha_mode = 2;
             (*result)->attribs.filter_mode = 1;
@@ -326,7 +326,7 @@ void BurnoutApply(i32 view) {
 static f32 RippleRandomRadius = 0.15f;
 
 void AddSurfaceRipples(GAMEOBJECT *object) {
-    RIPPLE_CONTACT_TIMER_VIEW_PC *contact_timer = (RIPPLE_CONTACT_TIMER_VIEW_PC *)object;
+    RIPPLE_CONTACT_TIMER_VIEW *contact_timer = (RIPPLE_CONTACT_TIMER_VIEW *)object;
     NUVEC position;
     NUVEC normal;
     NUVEC seed;

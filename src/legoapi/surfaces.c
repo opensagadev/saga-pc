@@ -8,7 +8,7 @@ typedef struct world_conveyor_s {
     LEVELDATA_PC *current_level;
     u8 unknown_12c[0x5044];
     void *conveyor;
-} WORLD_CONVEYOR_PC;
+} WORLD_CONVEYOR;
 
 void SurfaceMaskOn(u32 *surface_mask) {
     *surface_mask = 0x20;
@@ -63,7 +63,7 @@ void GetSurfaceInfo(GAMEOBJECT *object, i32 update_fields, f32 floor_height) {
     }
 
     if (update_fields != 0) {
-        object->raw_surface_id_pc = (u8)raw_surface;
+        object->raw_surface_id = (u8)raw_surface;
         object->jump_animation_state = (u8)surface_index;
         if (object->floor_height == GameObjectNearFloorNoFloorHeight) {
             object->surface_normal = v010;
@@ -100,12 +100,12 @@ void GetSurfaceInfo(GAMEOBJECT *object, i32 update_fields, f32 floor_height) {
     object->roof_height_pc = GetSurfaceInfoRoofHeight;
     if (object->roof_height_pc != GameObjectNearFloorNoFloorHeight) {
         roof_surface = (i8)ShadowRoofInfo();
-        object->roof_surface_id_pc = (u8)roof_surface;
+        object->roof_surface_id = (u8)roof_surface;
         if (roof_surface < 0 || roof_surface >= 32) {
-            object->roof_surface_id_pc = 0;
+            object->roof_surface_id = 0;
         }
     } else {
-        object->roof_surface_id_pc = 0xff;
+        object->roof_surface_id = 0xff;
     }
 
     extra_reflect = SurfaceInfo_ExtraReflectFn;
@@ -140,7 +140,7 @@ i32 SetObjOnSurface(GAMEOBJECT *object, i32 mode) {
 }
 
 i32 Conveyor_AdjustSpeed(NUVEC *velocity) {
-    WORLD_CONVEYOR_PC *world = (WORLD_CONVEYOR_PC *)WorldInfo_CurrentlyActive();
+    WORLD_CONVEYOR *world = (WORLD_CONVEYOR *)WorldInfo_CurrentlyActive();
     if (world != NULL && world->conveyor != NULL) {
         velocity->x += world->current_level->conveyor_x_speed;
         velocity->z += world->current_level->conveyor_z_speed;
@@ -185,9 +185,9 @@ void InitSurfaceInfo(GAMEOBJECT *object) {
     if (object->floor_height != GameObjectNearFloorNoFloorHeight) {
         GetSurfaceInfo(object, 1, object->floor_height);
         if (TerSurface[(i8)object->jump_animation_state].flags & 8) {
-            object->surface_flag8_scale_pc = 1.0f;
+            object->surface_flag8_scale = 1.0f;
         } else {
-            object->surface_flag8_scale_pc = 0.0f;
+            object->surface_flag8_scale = 0.0f;
         }
         FindAnglesZX(&object->surface_normal, NULL, NULL);
         object->field_1056 = temp_zrot;
@@ -196,9 +196,9 @@ void InitSurfaceInfo(GAMEOBJECT *object) {
         object->field_1054 = temp_xrot;
     } else {
         GetSurfaceInfo(object, 0, object->floor_height);
-        object->surface_flag8_scale_pc = 0.0f;
+        object->surface_flag8_scale = 0.0f;
         object->jump_animation_state = 0;
-        object->raw_surface_id_pc = 0;
+        object->raw_surface_id = 0;
         object->surface_normal = v010;
     }
 
@@ -209,7 +209,7 @@ void InitSurfaceInfo(GAMEOBJECT *object) {
     object->water_height = LevelConfigFarDistance;
     object->roof_height_pc = LevelConfigFarDistance;
     object->field_283 = -1;
-    object->roof_surface_id_pc = 0xff;
+    object->roof_surface_id = 0xff;
     GetSurfaceInfo(object, 1, object->floor_height);
 
     if (!(object->character_data->game_character->flags_090 & 0x8000) && object->reflection_height == GameObjectNearFloorNoFloorHeight &&

@@ -47,7 +47,7 @@ extern "C" {
     extern const char AIActionClockwiseName[10];
     extern const char AIActionAnticlockwiseName[14];
     extern const char AIActionReverseName[8];
-    extern const char AIActionIgnoreDoneFlagNamePc[17];
+    extern const char AIActionIgnoreDoneFlagName[17];
     extern f32 party_follow_offsets[8];
     extern f32 aitol;
     extern f32 direction_scale;
@@ -136,7 +136,7 @@ extern "C" {
     extern i16 id_BATTLEDROIDCOMMANDER;
     extern i16 id_CLONEEP3;
     extern i16 id_CLONEEP3SAND;
-    extern const char AIActionTorpedoPrefixPc[9];
+    extern const char AIActionTorpedoPrefix[9];
 
     extern i16 id_JOKER_GOON;
     extern i16 id_JOKER_GOON_GUN;

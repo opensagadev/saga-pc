@@ -73,7 +73,7 @@ typedef struct GRAPHICS_CAPS {       // size 0x130
     u32 unknown_020[7];              // 0x020
     u32 texture_caps;                // 0x03c
     u32 unknown_040[0x16];           // 0x040
-    u32 sampler_count_pc;            // 0x098
+    u32 sampler_count;               // 0x098
     u32 unknown_09c[0xa];            // 0x09c
     u32 vertex_shader_version;       // 0x0c4
     u32 unknown_0c8[1];              // 0x0c8

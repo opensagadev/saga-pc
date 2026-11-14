@@ -357,8 +357,8 @@ void Asteroid_AddParts(GIZMOBLOWUP_PC *blowup) {
             params.flags = 0x800019b;
         }
         params.time_step = FRAMETIME;
-        params.collision_fn = (PART_ACTION_PC)PartCollide_3D;
-        params.kill_fn = (PART_KILL_PC)Asteroid_PartKill;
+        params.collision_fn = (PART_ACTION)PartCollide_3D;
+        params.kill_fn = (PART_KILL)Asteroid_PartKill;
         params.field_a4 = (f32)(qrand() * PlayerRandomScale * NuTimeBarColumnStep + 7.0);
         part = AddPart(&params);
         if (part != NULL) {

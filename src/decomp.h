@@ -141,7 +141,7 @@ extern "C" {
     typedef struct ai_special_terrain_view_s {     // size 0x6c
         u8 unknown_00[0x68];                       // 0x00
         AI_SPECIAL_TERRAIN_PLATFORM_PC *platforms; // 0x68
-    } AI_SPECIAL_TERRAIN_VIEW_PC;
+    } AI_SPECIAL_TERRAIN_VIEW;
 
     typedef struct PC_GSCN_GEOMETRY_VIEW {    // size 0x34
         u8 unknown_0[0x28];                   // 0x00

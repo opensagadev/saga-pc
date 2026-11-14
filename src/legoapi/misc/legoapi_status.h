@@ -63,7 +63,7 @@ extern "C" {
 #undef DrawStatusText
 #endif
     void DrawStatusText(char *, u16, f32, f32, f32, u32, i32);
-    extern const char RenderSplineBountyStartPc[13];
+    extern const char RenderSplineBountyStart[13];
     extern f32 DrawStatusScaleX;
     extern f32 DrawStatusScaleY;
 
@@ -114,11 +114,11 @@ typedef struct minikit_piece_s { // size 0x68
     u8 unknown_65_b[0x1];        // 0x65
     u8 enabled;                  // 0x66
     u8 direction_index;          // 0x67
-} MINIKIT_PIECE_PC;
+} MINIKIT_PIECE;
 
 typedef struct status_minikit_draw_cache_s { // size 0x48
     NUMTX matrix;                            // 0x00
-    MINIKIT_PIECE_PC *piece;                 // 0x40
+    MINIKIT_PIECE *piece;                    // 0x40
     i32 active;                              // 0x44
 } STATUS_MINIKIT_DRAW_CACHE_PC;
 

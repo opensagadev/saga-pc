@@ -63,7 +63,7 @@ typedef struct GAMEPAD_PC {         // size 0x5c
 typedef struct blowup_target_s { // size 0x58
     u8 unknown_00[0x4c];         // 0x00
     NUVEC mid_position;          // 0x4c
-} BLOWUP_TARGET_PC;
+} BLOWUP_TARGET;
 
 typedef struct awkward_shape_sphere_s { // size 0xc
     i16 *character_id;                  // 0x0

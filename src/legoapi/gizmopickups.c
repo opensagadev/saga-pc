@@ -11,7 +11,7 @@ typedef struct coin_reset_packet_s {
     u8 active;
     u8 unknown_0b;
     f32 double_score_timer;
-} COIN_RESET_PACKET_PC;
+} COIN_RESET_PACKET;
 
 extern char *GizmoPickup_OutputName;
 
@@ -20,13 +20,13 @@ typedef struct {
     u32 enabled[16];
     u32 visible[16];
     u32 reserved[16];
-} PICKUP_PROGRESS_PC;
+} PICKUP_PROGRESS;
 
 void GizmoPickups_PostLoad(void *, void *);
 
 typedef struct lose_coins_packet_s { // size 0x4
     u32 coins;                       // 0x0
-} LOSE_COINS_PACKET_PC;
+} LOSE_COINS_PACKET;
 
 typedef struct SPECIAL_MINIKIT {    // size 0x3c
     NUSPECIALHANDLE special;        // 0x00
@@ -98,17 +98,17 @@ i32 SuperCounter_AnyCollected(AREA_SUPERCOUNTER_PC *, WORLDINFO *);
 typedef struct pickup_counter_turret_s { // size 0x13c
     u8 unknown_000[0x13a];               // 0x000
     u16 flags;                           // 0x13a
-} PICKUP_COUNTER_TURRET_PC;
+} PICKUP_COUNTER_TURRET;
 
 typedef struct pickup_counter_blowup_s { // size 0x95
     u8 unknown_00[0x94];                 // 0x00
     u8 output_flags;                     // 0x94
-} PICKUP_COUNTER_BLOWUP_PC;
+} PICKUP_COUNTER_BLOWUP;
 
 typedef struct pickup_counter_buildit_s { // size 0x6e
     u8 unknown_00[0x6d];                  // 0x00
     u8 build_state;                       // 0x6d
-} PICKUP_COUNTER_BUILDIT_PC;
+} PICKUP_COUNTER_BUILDIT;
 
 void SuperCounter_ActivateGizmoPickup(GIZMO_PC *, GIZMOPICKUP *);
 
@@ -418,7 +418,7 @@ void *GizmoPickups_AllocateProgressData(VARIPTR *buffer, VARIPTR *end) {
 }
 
 void GizmoPickups_ClearProgress(void *owner, void *progress_ptr) {
-    PICKUP_PROGRESS_PC *progress = progress_ptr;
+    PICKUP_PROGRESS *progress = progress_ptr;
     if (progress == NULL) {
         return;
     }
@@ -429,7 +429,7 @@ void GizmoPickups_ClearProgress(void *owner, void *progress_ptr) {
 }
 
 void GizmoPickups_StoreProgress(void *world_ptr, void *data, void *progress_ptr) {
-    PICKUP_PROGRESS_PC *progress = progress_ptr;
+    PICKUP_PROGRESS *progress = progress_ptr;
     WORLDINFO *world = world_ptr;
     GIZMOPICKUP *record;
     i32 index;
@@ -993,7 +993,7 @@ void MiniKitDetector(NUVEC *position) {
 }
 
 void ResetCoinPacket(void *packet) {
-    COIN_RESET_PACKET_PC *view = packet;
+    COIN_RESET_PACKET *view = packet;
     if (packet != NULL) {
         view->scale = 1.0f;
         view->double_score_timer = 0.0f;
@@ -1290,15 +1290,15 @@ static void GizmoPickups_UpdateList(WORLDINFO *world, GIZMOPICKUP *pickup, i32 c
                         counter_pickup->position_gizmo != NULL) {
                         gizmo = counter_pickup->position_gizmo;
                         if (gizmo->type_id == turret_gizmotype_id) {
-                            if (((PICKUP_COUNTER_TURRET_PC *)gizmo->object)->flags & 0x20) {
+                            if (((PICKUP_COUNTER_TURRET *)gizmo->object)->flags & 0x20) {
                                 complete = 1;
                             }
                         } else if (gizmo->type_id == blowup_gizmotype_id) {
-                            if (((PICKUP_COUNTER_BLOWUP_PC *)gizmo->object)->output_flags & 1) {
+                            if (((PICKUP_COUNTER_BLOWUP *)gizmo->object)->output_flags & 1) {
                                 complete = 1;
                             }
                         } else if (gizmo->type_id == gizbuildit_gizmotype_id) {
-                            if (((PICKUP_COUNTER_BUILDIT_PC *)gizmo->object)->build_state == 2) {
+                            if (((PICKUP_COUNTER_BUILDIT *)gizmo->object)->build_state == 2) {
                                 complete = 1;
                             }
                         }

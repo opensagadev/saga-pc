@@ -205,7 +205,7 @@ typedef struct credits_completion_reader_s { // size 0x4
     u16 points;                              // 0x0
     u8 unknown_02;                           // 0x2
     u8 flags;                                // 0x3
-} CREDITS_COMPLETION_READER_PC;
+} CREDITS_COMPLETION_READER;
 
 static void CreditsDrawList(CREDIT_RECORD_PC *credit, f32 time) {
     char percentage[32];
@@ -224,7 +224,7 @@ static void CreditsDrawList(CREDIT_RECORD_PC *credit, f32 time) {
             ++credit;
         }
     } else {
-        CREDITS_COMPLETION_READER_PC *completion = (CREDITS_COMPLETION_READER_PC *)CustomiserCompletionSave;
+        CREDITS_COMPLETION_READER *completion = (CREDITS_COMPLETION_READER *)CustomiserCompletionSave;
         points = completion != NULL ? completion->points : 0;
         sprintf(percentage, "%.1f%%", (f64)(points * 100) / HubCompletionPoints);
         x = 0.0f;

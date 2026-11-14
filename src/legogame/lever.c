@@ -3,7 +3,7 @@
 typedef struct lever_trigger_flags_s { // size 0x95
     u8 unknown000[0x94];               // 0x00
     u8 flags;                          // 0x94
-} LEVER_TRIGGER_FLAGS_PC;
+} LEVER_TRIGGER_FLAGS;
 
 /* The SDK's inline NuFabs (nufloat.h): a masked copy of the float bits. */
 static f32 LeverFabs(f32 f) {
@@ -14,7 +14,7 @@ static f32 LeverFabs(f32 f) {
 }
 
 i32 Lever_BeingPulled(void *lever) {
-    return (((LEVER_TRIGGER_FLAGS_PC *)lever)->flags >> 1) & 1;
+    return (((LEVER_TRIGGER_FLAGS *)lever)->flags >> 1) & 1;
 }
 
 /* GIZMO_LEVER.flags as the u16 bitfields that are read and stored (belongs in saga.h). */
@@ -33,9 +33,9 @@ typedef struct lever_flag_bits_s { // size 0x2
     u16 interaction_finished : 1;  // 0x0:11
     u16 pulled_down : 1;           // 0x0:12
     u16 unused_13 : 3;             // 0x0:13
-} LEVER_FLAG_BITS_PC;
+} LEVER_FLAG_BITS;
 
-#define LEVER_BITS(lever) ((LEVER_FLAG_BITS_PC *)&(lever)->flags)
+#define LEVER_BITS(lever) ((LEVER_FLAG_BITS *)&(lever)->flags)
 
 typedef struct LEVER_WORLD { // size 0x5070
     u8 unknown_000[0x5068];  // 0x0000

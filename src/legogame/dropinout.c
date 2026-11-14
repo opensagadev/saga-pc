@@ -59,7 +59,7 @@ i32 FreePlay_DropInToPlayerPos(GAMEOBJECT *object) {
         if (NuCameraClipTestSphere(&position, object->bounds_half_height, &NuMtxSetIdentityTemplate) == 0) {
             ResetPlayerMoves(object);
             Player_ClearContext(object, 1);
-            Player_ResetContexts(object->ai_player_packet_pc);
+            Player_ResetContexts(object->ai_player_packet);
             object->start_position = position;
             object->position = position;
             object->velocity = v000;

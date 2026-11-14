@@ -367,7 +367,7 @@ typedef struct CAMERA_GRABBER { // size 0x498
     NUVEC grab_position;        // 0x48c
 } CAMERA_GRABBER;
 
-#define GAME_CAMERA_ABSOLUTE_PC(destination, source)                                                                                       \
+#define GAME_CAMERA_ABSOLUTE(destination, source)                                                                                          \
     do {                                                                                                                                   \
         union {                                                                                                                            \
             f32 value;                                                                                                                     \
@@ -406,7 +406,7 @@ void SetCameraMatrices(void) {
     SetCameraEffectMatrix();
 }
 
-#undef GAME_CAMERA_ABSOLUTE_PC
+#undef GAME_CAMERA_ABSOLUTE
 
 static i32 NarrowSockPositionAllowed(SOCKSYS_PC *system, SOCKPOSITION_PC *position, i32 level_index) {
     NARROWSOCKEXCEPTION_PC *exception;

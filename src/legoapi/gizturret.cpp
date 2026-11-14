@@ -15,7 +15,7 @@ typedef struct {      // size 0x70
     u32 stopped[2];   // 0x20
     u32 completed[2]; // 0x28
     u8 timers[64];    // 0x30
-} TURRET_PROGRESS_PC;
+} TURRET_PROGRESS;
 
 extern "C" {
     extern char *GizmoRegistryGizTurretsNamePtrPc;
@@ -314,7 +314,7 @@ extern "C" {
 
     void GizTurrets_ResetPc(WORLDINFO *world, GIZTURRETSYS_s *system, void *progress_pointer) {
         i32 index;
-        TURRET_PROGRESS_PC *progress = (TURRET_PROGRESS_PC *)progress_pointer;
+        TURRET_PROGRESS *progress = (TURRET_PROGRESS *)progress_pointer;
         GAMEANIMOBJ *object;
         TURRET_ANIM_DATA *data;
         GIZTURRET_s *turret = system->turrets;
@@ -1017,7 +1017,7 @@ extern "C" {
     }
 
     void GizTurrets_ClearProgress(void *owner, void *progress_ptr) {
-        TURRET_PROGRESS_PC *progress = (TURRET_PROGRESS_PC *)progress_ptr;
+        TURRET_PROGRESS *progress = (TURRET_PROGRESS *)progress_ptr;
         if (progress == NULL) {
             return;
         }
@@ -1044,7 +1044,7 @@ extern "C" {
     }
 
     void GizTurrets_StoreProgress(void *world_ptr, void *data, void *progress_ptr) {
-        TURRET_PROGRESS_PC *progress = (TURRET_PROGRESS_PC *)progress_ptr;
+        TURRET_PROGRESS *progress = (TURRET_PROGRESS *)progress_ptr;
         GIZTURRETSYS_s *system = (GIZTURRETSYS_s *)data;
         GIZTURRET_s *record;
         i32 index;

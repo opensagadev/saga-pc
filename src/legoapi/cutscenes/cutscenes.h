@@ -15,7 +15,7 @@ struct WORLDINFO_s;
 struct cutinfo_s;
 struct cutsys_s;
 
-typedef NUANIMDATA2_SKELETAL CUT_ANIMATION_PC;
+typedef NUANIMDATA2_SKELETAL CUT_ANIMATION;
 
 typedef struct CUT_LOAD_RECORD CUT_LOAD_RECORD;
 
@@ -74,7 +74,7 @@ typedef struct cut_player_clip_config_s { // size 0x44
     u8 type;                              // 0x02
     i8 guest_episode;                     // 0x03
     char name[64];                        // 0x04
-} CUT_PLAYER_CLIP_CONFIG_PC;
+} CUT_PLAYER_CLIP_CONFIG;
 
 typedef struct CUT_PLAYER_ACTIVE { // size 0x20
     void *clips;                   // 0x00

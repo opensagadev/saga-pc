@@ -44,7 +44,7 @@ extern "C" void PauseGameCut(void);
 typedef struct cut_record_cleanup_s { // size 0x8
     void *scene;                      // 0x0
     INSTNUGCUTSCENE *instance;        // 0x4
-} CUT_RECORD_CLEANUP_PC;
+} CUT_RECORD_CLEANUP;
 
 typedef struct CUT_LOAD_STATE { // size 0x10
     NUSPECIALHANDLE special;    // 0x0
@@ -171,7 +171,7 @@ typedef struct CUT_DRAW_LOCATOR CUT_DRAW_LOCATOR;
 typedef struct CUT_DRAW_CHARACTER { // size 0x64
     NUMTX base_matrix;              // 0x00
     char *name;                     // 0x40
-    CUT_ANIMATION_PC *animation;    // 0x44
+    CUT_ANIMATION *animation;       // 0x44
     ANI3_HEADER *face_animation;    // 0x48
     NUANIMDATA2 *extra_animation;   // 0x4c
     void *character_model;          // 0x50
@@ -357,8 +357,8 @@ typedef struct CUT_PLAYER_INST_ANIM {
 } CUT_PLAYER_INST_ANIM;
 
 typedef struct cut_player_config_s {
-    CUT_PLAYER_CLIP_CONFIG_PC *clips;
-    CUT_PLAYER_CLIP_CONFIG_PC *active;
+    CUT_PLAYER_CLIP_CONFIG *clips;
+    CUT_PLAYER_CLIP_CONFIG *active;
     u16 clip_count;
     i16 return_door;
     i16 *clip_text;
@@ -366,10 +366,10 @@ typedef struct cut_player_config_s {
     i16 *midtro_text;
     i16 *outro_text;
     i16 *ending_text;
-} CUT_PLAYER_CONFIG_PC;
+} CUT_PLAYER_CONFIG;
 
 extern "C" {
-    extern i32 (*CutScenePlayer_AcceptFn)(CUT_PLAYER_CLIP_CONFIG_PC *);
+    extern i32 (*CutScenePlayer_AcceptFn)(CUT_PLAYER_CLIP_CONFIG *);
 }
 
 extern "C" {
@@ -1408,15 +1408,15 @@ void CutScenes_Destroy(CUTSYS_PC *system) {
         return;
     }
     for (i = 0; i < system->count; ++i) {
-        if (((CUT_RECORD_CLEANUP_PC *)system->records[i])->instance != NULL) {
-            instNuGCutSceneDestroy(((CUT_RECORD_CLEANUP_PC *)system->records[i])->instance);
-            ((CUT_RECORD_CLEANUP_PC *)system->records[i])->instance = NULL;
+        if (((CUT_RECORD_CLEANUP *)system->records[i])->instance != NULL) {
+            instNuGCutSceneDestroy(((CUT_RECORD_CLEANUP *)system->records[i])->instance);
+            ((CUT_RECORD_CLEANUP *)system->records[i])->instance = NULL;
         }
     }
     for (i = 0; i < system->count; ++i) {
-        if (((CUT_RECORD_CLEANUP_PC *)system->records[i])->scene != NULL) {
-            NuGCutSceneDestroy(((CUT_RECORD_CLEANUP_PC *)system->records[i])->scene);
-            ((CUT_RECORD_CLEANUP_PC *)system->records[i])->scene = NULL;
+        if (((CUT_RECORD_CLEANUP *)system->records[i])->scene != NULL) {
+            NuGCutSceneDestroy(((CUT_RECORD_CLEANUP *)system->records[i])->scene);
+            ((CUT_RECORD_CLEANUP *)system->records[i])->scene = NULL;
         }
     }
 }
@@ -1997,8 +1997,8 @@ extern "C" {
     void CutScenePlayer_Configure(char *file, VARIPTR *buffer, VARIPTR *end, i16 *clip_text, i16 *intro, i16 *midtro, i16 *outro,
                                   i16 *ending) {
         NUFPAR_PC *fp;
-        CUT_PLAYER_CONFIG_PC player;
-        CUT_PLAYER_CLIP_CONFIG_PC *clip;
+        CUT_PLAYER_CONFIG player;
+        CUT_PLAYER_CLIP_CONFIG *clip;
         i32 level;
 
         fp = NuFParCreate(file);
@@ -2007,7 +2007,7 @@ extern "C" {
             return;
         }
         buffer->addr = (buffer->addr + 3) & ~3U;
-        player.clips = (CUT_PLAYER_CLIP_CONFIG_PC *)buffer->void_ptr;
+        player.clips = (CUT_PLAYER_CLIP_CONFIG *)buffer->void_ptr;
         player.active = NULL;
         player.clip_count = 0;
         player.clip_text = clip_text;
@@ -2076,11 +2076,11 @@ extern "C" {
     }
 
     i32 CutScenePlayer_CanStart(i32 clip_id) {
-        CUT_PLAYER_CLIP_CONFIG_PC *clips;
+        CUT_PLAYER_CLIP_CONFIG *clips;
         i32 area_id;
         i32 episode;
         if (CutScenePlayer != NULL && clip_id >= 0 && clip_id < CutScenePlayer->clip_count) {
-            clips = (CUT_PLAYER_CLIP_CONFIG_PC *)CutScenePlayer->clips;
+            clips = (CUT_PLAYER_CLIP_CONFIG *)CutScenePlayer->clips;
             area_id = LDataList[clips[clip_id].level_id].area_index;
             if (area_id != -1) {
                 if ((ADataList[area_id].flags & 2) != 0) {
@@ -2098,11 +2098,11 @@ extern "C" {
 
     /* Accepts one argument and does not write return_door. */
     void CutScenePlayer_Start(i32 clip_id) {
-        CUT_PLAYER_CLIP_CONFIG_PC *clips;
+        CUT_PLAYER_CLIP_CONFIG *clips;
         if (CutScenePlayer != NULL && clip_id >= 0 && clip_id < CutScenePlayer->clip_count) {
-            clips = (CUT_PLAYER_CLIP_CONFIG_PC *)CutScenePlayer->clips;
+            clips = (CUT_PLAYER_CLIP_CONFIG *)CutScenePlayer->clips;
             NewLevelFromMenu(&LDataList[clips[clip_id].level_id], -1, -1, 1);
-            CutScenePlayer->active = &((CUT_PLAYER_CLIP_CONFIG_PC *)CutScenePlayer->clips)[clip_id];
+            CutScenePlayer->active = &((CUT_PLAYER_CLIP_CONFIG *)CutScenePlayer->clips)[clip_id];
             NextArea_FreePlay = 0;
             FreePlay = 0;
         }
@@ -2110,7 +2110,7 @@ extern "C" {
 
     /* Mode is only a boolean controlling the type suffix. */
     void CutScenePlayer_GetText(i32 id, char *title, char *subtitle, i32 mode) {
-        CUT_PLAYER_CLIP_CONFIG_PC *clips;
+        CUT_PLAYER_CLIP_CONFIG *clips;
         LEVELDATA_PC *level;
         i32 area_id;
         i32 episode;
@@ -2130,7 +2130,7 @@ extern "C" {
                 sprintf(title, "Clip %i", id + 1);
             }
             if (mode != 0) {
-                clips = (CUT_PLAYER_CLIP_CONFIG_PC *)CutScenePlayer->clips;
+                clips = (CUT_PLAYER_CLIP_CONFIG *)CutScenePlayer->clips;
                 switch (clips[id].type) {
                     case 0:
                         if (CutScenePlayer->intro_text != NULL) {
@@ -2160,7 +2160,7 @@ extern "C" {
             }
         }
         if (subtitle != NULL) {
-            clips = (CUT_PLAYER_CLIP_CONFIG_PC *)CutScenePlayer->clips;
+            clips = (CUT_PLAYER_CLIP_CONFIG *)CutScenePlayer->clips;
             level = &LDataList[clips[id].level_id];
             area_id = level->area_index;
             if (area_id == -1) {

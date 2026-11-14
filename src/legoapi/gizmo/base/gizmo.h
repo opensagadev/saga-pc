@@ -69,23 +69,23 @@ typedef struct gizmofns_s {                                                     
     i32 (*load_fn)(void *world, void *data);                                           // 0x64
     void (*post_load_fn)(void *world, void *data);                                     // 0x68
     void *add_level_sfx_fn;                                                            // 0x6c
-} GIZMOFNS_PC;
+} GIZMOFNS;
 
 typedef struct gizmotype_s { // size 0x9c
     char name[32];           // 0x00
     char prefix[8];          // 0x20
-    GIZMOFNS_PC fns;         // 0x28
+    GIZMOFNS fns;            // 0x28
     void **progress;         // 0x98
-} GIZMOTYPE_PC;
+} GIZMOTYPE;
 
 typedef struct gizmotypes_s { // size 0xc
     i32 count;                // 0x0
     i32 max_levels;           // 0x4
-    GIZMOTYPE_PC *types;      // 0x8
-} GIZMOTYPES_PC;
+    GIZMOTYPE *types;         // 0x8
+} GIZMOTYPES;
 
 typedef struct gizmoset_s { // size 0x14
-    GIZMOTYPE_PC *type;     // 0x00
+    GIZMOTYPE *type;        // 0x00
     i32 count;              // 0x04
     i32 max_count;          // 0x08
     GIZMO_PC *gizmos;       // 0x0c
@@ -102,7 +102,7 @@ typedef struct gizmosys_s {
 typedef struct addgizmotype_s { // size 0x78
     char *name;                 // 0x00
     char *prefix;               // 0x04
-    GIZMOFNS_PC fns;            // 0x08
+    GIZMOFNS fns;               // 0x08
 } ADDGIZMOTYPE_PC;
 
 #ifdef __cplusplus
@@ -163,7 +163,7 @@ extern "C" {
 
 typedef struct GIZACTIONDEF { // size 0x8
     const char *name;         // 0x0
-    GIZACTIONFN_PC action_fn; // 0x4
+    GIZACTIONFN action_fn;    // 0x4
 } GIZACTIONDEF;
 
 #ifdef __cplusplus

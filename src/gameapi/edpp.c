@@ -2822,9 +2822,9 @@ typedef struct edui_gradient_stage_s { // size 0x24
     f32 blue;                          // 0x18
     u32 colour;                        // 0x1c
     u32 metadata;                      // 0x20
-} EDUI_GRADIENT_STAGE_PC;
+} EDUI_GRADIENT_STAGE;
 
-i32 eduiGradPickRead(eduiitem_s *item, EDUI_GRADIENT_STAGE_PC *stages, i32 capacity);
+i32 eduiGradPickRead(eduiitem_s *item, EDUI_GRADIENT_STAGE *stages, i32 capacity);
 struct edui_gradient_node_s *eduiGradStageAddRGB(edui_gradient_pick_s *item, f32 time, f32 red, f32 green, f32 blue);
 
 void edppClose(void) {
@@ -3004,7 +3004,7 @@ static void cbChangeTorusRad2(eduimenu_s *unused0, eduiitem_s *item, u32 unused2
 }
 
 static void cbPtlApplyTorusEnv1(eduimenu_s *unused0, eduiitem_s *unused1, u32 unused2) {
-    EDUI_GRADIENT_STAGE_PC stages[8];
+    EDUI_GRADIENT_STAGE stages[8];
     DEBRIS_INFO_PC *effect;
     i32 count;
     i32 instance;
@@ -3028,7 +3028,7 @@ static void cbPtlApplyTorusEnv1(eduimenu_s *unused0, eduiitem_s *unused1, u32 un
 }
 
 static void cbPtlApplyTorusEnv2(eduimenu_s *unused0, eduiitem_s *unused1, u32 unused2) {
-    EDUI_GRADIENT_STAGE_PC stages[8];
+    EDUI_GRADIENT_STAGE stages[8];
     DEBRIS_INFO_PC *effect;
     i32 count;
     i32 instance;
@@ -3052,7 +3052,7 @@ static void cbPtlApplyTorusEnv2(eduimenu_s *unused0, eduiitem_s *unused1, u32 un
 }
 
 static void cbPtlApplyTorusEnv3(eduimenu_s *unused0, eduiitem_s *unused1, u32 unused2) {
-    EDUI_GRADIENT_STAGE_PC stages[8];
+    EDUI_GRADIENT_STAGE stages[8];
     DEBRIS_INFO_PC *effect;
     i32 count;
     i32 instance;
@@ -3076,7 +3076,7 @@ static void cbPtlApplyTorusEnv3(eduimenu_s *unused0, eduiitem_s *unused1, u32 un
 }
 
 static void cbPtlApplyCollEnv(eduimenu_s *unused0, eduiitem_s *unused1, u32 unused2) {
-    EDUI_GRADIENT_STAGE_PC stages[8];
+    EDUI_GRADIENT_STAGE stages[8];
     DEBRIS_INFO_PC *effect;
     i32 count;
     i32 instance;
@@ -3103,7 +3103,7 @@ static void cbPtlApplyCollEnv(eduimenu_s *unused0, eduiitem_s *unused1, u32 unus
 }
 
 static void cbPtlApplyRot(eduimenu_s *unused0, eduiitem_s *unused1, u32 unused2) {
-    EDUI_GRADIENT_STAGE_PC stages[8];
+    EDUI_GRADIENT_STAGE stages[8];
     DEBRIS_INFO_PC *effect;
     i32 count;
     i32 instance;
@@ -3410,7 +3410,7 @@ static void cbPtlCancelSizeMenu(eduimenu_s *unused0, eduimenu_s *unused1) {
 }
 
 static void cbPtlApplySize(eduimenu_s *unused0, eduiitem_s *unused1, u32 unused2) {
-    EDUI_GRADIENT_STAGE_PC stages[8];
+    EDUI_GRADIENT_STAGE stages[8];
     DEBRIS_INFO_PC *effect;
     i32 count;
     i32 instance;
@@ -3820,7 +3820,7 @@ extern struct eduiitem_s *grad_item;
 extern struct eduiitem_s *grad_alpha_item;
 
 void cbPtlApplyGrad(eduimenu_s *unused0, eduiitem_s *unused1, u32 unused2) {
-    EDUI_GRADIENT_STAGE_PC stages[8];
+    EDUI_GRADIENT_STAGE stages[8];
     DEBRIS_INFO_PC *effect;
     i32 count;
     i32 instance;

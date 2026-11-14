@@ -82,7 +82,7 @@ typedef struct pc_display_clip_object_s { // size 0xc
     i32 material_count;                   // 0x0
     i32 *material_ids;                    // 0x4
     i32 *item_indices;                    // 0x8
-} PC_DISPLAY_CLIP_OBJECT_PC;
+} PC_DISPLAY_CLIP_OBJECT;
 
 typedef struct NUPORTAL_FRUSTUM { // size 0xa0
     f32 transposed_planes[32];    // 0x00
@@ -98,14 +98,14 @@ typedef struct nugscn_anim_lookup_s { // size 0xc
     u16 end_frame;                    // 0x2
     f32 *times;                       // 0x4
     u8 *values;                       // 0x8
-} NUGSCN_ANIM_LOOKUP_PC;
+} NUGSCN_ANIM_LOOKUP;
 
 typedef struct NUHGOBJ_JOINT_OVERRIDE { // size 0x34
     NUVEC rotation;                     // 0x00
     NUVEC translation;                  // 0x0c
     NUVEC scale_pc;                     // 0x18
-    i16 rotation_max_pc[3];             // 0x24
-    i16 rotation_min_pc[3];             // 0x2a
+    i16 rotation_max[3];                // 0x24
+    i16 rotation_min[3];                // 0x2a
     u8 joint_index;                     // 0x30
     u8 flags_pc;                        // 0x31
     u8 unknown_32[2];                   // 0x32
@@ -223,7 +223,7 @@ extern "C" {
         u32 unknown10;                 // 0x10
     } FONT_LEGACY_GLYPH;
 
-    extern const char RenderSplineShopStartPc[11];
+    extern const char RenderSplineShopStart[11];
 
     void NuBackbufferCopy(i32);
     extern i32 PCPortalsEnabled;
@@ -288,17 +288,17 @@ extern "C" {
 // Native SaveState copies this complete 0x150-byte working view.
 // The original allocation extent remains unknown.
 // NOLINTNEXTLINE(readability-identifier-naming)
-#define AxisClipFrustumPlanesPc CameraClipPlanes.frustum
+#define AxisClipFrustumPlanes CameraClipPlanes.frustum
 // NOLINTNEXTLINE(readability-identifier-naming)
-#define AxisClipScissorPlanesPc CameraClipPlanes.scissor
+#define AxisClipScissorPlanes CameraClipPlanes.scissor
 // NOLINTNEXTLINE(readability-identifier-naming)
-#define AxisClipNearFarPlanesPc CameraClipPlanes.near_far
+#define AxisClipNearFarPlanes CameraClipPlanes.near_far
 // NOLINTNEXTLINE(readability-identifier-naming)
-#define CameraNearClipPlanePc CameraClipPlanes.near_plane
+#define CameraNearClipPlane CameraClipPlanes.near_plane
 // NOLINTNEXTLINE(readability-identifier-naming)
-#define AxisClipAbsFrustumPlanesPc CameraClipPlanes.abs_frustum
+#define AxisClipAbsFrustumPlanes CameraClipPlanes.abs_frustum
 // NOLINTNEXTLINE(readability-identifier-naming)
-#define AxisClipAbsScissorPlanesPc CameraClipPlanes.abs_scissor
+#define AxisClipAbsScissorPlanes CameraClipPlanes.abs_scissor
     extern i32 NuTextureCapacityPC;
     extern i32 NuTextureLoadCountPC;
     extern i32 *NuTextureLoadOrderPC;
@@ -353,8 +353,8 @@ extern "C" {
     extern NUPLANE VisibilityAbsoluteDepthPlane;
     extern u8 cacheValues[256];
     extern u8 OcclusionBitArray[0x320];
-#define VISIBILITY_ALTERNATE_WIDTH_PC zxs
-#define VISIBILITY_OCCLUSION_OUTPUT_PC OcclusionBitArray
+#define VISIBILITY_ALTERNATE_WIDTH zxs
+#define VISIBILITY_OCCLUSION_OUTPUT OcclusionBitArray
     void NuCameraLock(i32);
     extern i32 DisplaySceneRenderDisabled;
     extern i32 noscenespecials;
@@ -401,7 +401,7 @@ extern "C" {
         f32 y_offset;                              // 0x2c
     } RENDER_POST_VIEWPORT_PREFIX_PC;
 
-#define RENDER_POST_ALPHA_CACHE_PC cacheValues
+#define RENDER_POST_ALPHA_CACHE cacheValues
 
     /* Verified game-local light views may remain source-local: light_data4d8/current61c. No new shared fields or
      * storage.
@@ -662,7 +662,7 @@ typedef struct nuspecial_legacy_s { // size 0x4c
     struct nuinstance_s *instance;  // 0x40
     char *name;                     // 0x44
     u32 flags;                      // 0x48
-} NUSPECIAL_LEGACY_PC;
+} NUSPECIAL_LEGACY;
 
 typedef struct nudisplay_special_s {         // size 0xd0
     NUMTX instance_matrix;                   // 0x00
@@ -678,7 +678,7 @@ typedef struct nudisplay_special_s {         // size 0xd0
     u32 instance_ix;                         // 0xc0
     struct nuinstanim_s *instance_animation; // 0xc4
     u8 unknown_00c8[8];                      // 0xc8
-} NUDISPLAY_SPECIAL_PC;
+} NUDISPLAY_SPECIAL;
 
 typedef struct nuinstance_s { // size 0x50
     NUMTX matrix;             // 0x00
@@ -765,14 +765,14 @@ typedef struct nuqfnt_render_data_s { // size 0x50
     f32 y;                            // 0x08
     f32 z;                            // 0x0c
     NUMTX matrix;                     // 0x10
-} NUQFNT_RENDER_DATA_PC;
+} NUQFNT_RENDER_DATA;
 
 #ifdef __cplusplus
 class PCFrustumClipSet { // size 0x714
   public:
-    PC_FRUSTUM_GROUP_PC first_group; // 0x000
-    u8 unknown_0380[0x390];          // 0x380
-    i32 active_render_set_count;     // 0x710
+    PC_FRUSTUM_GROUP first_group; // 0x000
+    u8 unknown_0380[0x390];       // 0x380
+    i32 active_render_set_count;  // 0x710
     i32 TestBoxes(const NUVEC *, const NUVEC *);
     bool TestBox(const NUVEC *minimum, const NUVEC *maximum, i32 group_index);
     i32 fun_005e66b0(NUSPECIALHANDLE *special, NUMTX *matrix);
@@ -943,7 +943,7 @@ typedef struct nudisplay_list_s {            // size 0x90
     void *items;                             // 0x08
     f32 *fade_ranges;                        // 0x0c
     i32 clip_count;                          // 0x10
-    PC_DISPLAY_CLIP_OBJECT_PC *clip_objects; // 0x14
+    PC_DISPLAY_CLIP_OBJECT *clip_objects;    // 0x14
     u16 *clip_counts;                        // 0x18
     u8 unknown_001c[0xc];                    // 0x1c
     f32 *fade_levels;                        // 0x28
@@ -960,7 +960,7 @@ typedef struct nudisplay_list_s {            // size 0x90
     struct nusortpri_s *sort_pris;           // 0x64
     f32 *alpha_values;                       // 0x68
     i32 special_count;                       // 0x6c
-    NUDISPLAY_SPECIAL_PC *specials;          // 0x70
+    NUDISPLAY_SPECIAL *specials;             // 0x70
 
     union { // size 0x4
         u32 render_flags;
@@ -1009,32 +1009,32 @@ typedef struct NUHGOBJ_EVAL {                 // size 0x1c4
 } NUHGOBJ_EVAL;
 
 /* PC NuDynamicLight::RenderSet. */
-typedef struct nurndrlightrecord_s {              // size 0x380
-    NUMTX view_pc;                                // 0x000
-    NUMTX projection_pc;                          // 0x040
-    NUMTX shadow_matrix_pc;                       // 0x080
-    NUMTX texture_matrix_pc;                      // 0x0c0
-    f32 parameter_100;                            // 0x100
-    f32 parameter_104;                            // 0x104
-    i32 enabled;                                  // 0x108
-    f32 parameter_10c;                            // 0x10c
-    f32 parameter_110;                            // 0x110
-    u8 opaque_114_120[0xc];                       // 0x114
-    NUVEC4 corners_pc[8];                         // 0x120
-    NUVEC4 planes_pc[12];                         // 0x1a0
-    i32 shadow_plane_count;                       // 0x260
-    u8 opaque_264_270[0xc];                       // 0x264
-    NUVEC4 far_plane_pc;                          // 0x270
-    NUVEC4 endpoint0_pc;                          // 0x280
-    NUVEC4 endpoint1_pc;                          // 0x290
-    f32 shadow_radius_pc;                         // 0x2a0
-    NU_LIGHT_SHADOW_LIST_VIEW shadow_lists_pc[2]; // 0x2a4
-    NURNDRLIBSTATE *render_states[2];             // 0x32c
-    NUDISPLAYLISTITEM *list_items[2];             // 0x334
-    u32 unknown_33c[6];                           // 0x33c
-    i32 pending[8];                               // 0x354
-    i32 count;                                    // 0x374
-    u8 opaque_378_380[0x8];                       // 0x378
+typedef struct nurndrlightrecord_s {           // size 0x380
+    NUMTX view_pc;                             // 0x000
+    NUMTX projection_pc;                       // 0x040
+    NUMTX shadow_matrix_pc;                    // 0x080
+    NUMTX texture_matrix;                      // 0x0c0
+    f32 parameter_100;                         // 0x100
+    f32 parameter_104;                         // 0x104
+    i32 enabled;                               // 0x108
+    f32 parameter_10c;                         // 0x10c
+    f32 parameter_110;                         // 0x110
+    u8 opaque_114_120[0xc];                    // 0x114
+    NUVEC4 corners_pc[8];                      // 0x120
+    NUVEC4 planes_pc[12];                      // 0x1a0
+    i32 shadow_plane_count;                    // 0x260
+    u8 opaque_264_270[0xc];                    // 0x264
+    NUVEC4 far_plane_pc;                       // 0x270
+    NUVEC4 endpoint0_pc;                       // 0x280
+    NUVEC4 endpoint1_pc;                       // 0x290
+    f32 shadow_radius_pc;                      // 0x2a0
+    NU_LIGHT_SHADOW_LIST_VIEW shadow_lists[2]; // 0x2a4
+    NURNDRLIBSTATE *render_states[2];          // 0x32c
+    NUDISPLAYLISTITEM *list_items[2];          // 0x334
+    u32 unknown_33c[6];                        // 0x33c
+    i32 pending[8];                            // 0x354
+    i32 count;                                 // 0x374
+    u8 opaque_378_380[0x8];                    // 0x378
 #ifdef __cplusplus
     nurndrlightrecord_s();
     nurndrlightrecord_s &operator=(const nurndrlightrecord_s &other);
@@ -1091,7 +1091,7 @@ extern "C" {
 #ifdef __cplusplus
 }
 #endif
-STATIC_ASSERT(offsetof(NURNDRLIGHTRECORD, shadow_lists_pc) + sizeof(NU_LIGHT_SHADOW_LIST_VIEW) == 0x2e8);
+STATIC_ASSERT(offsetof(NURNDRLIGHTRECORD, shadow_lists) + sizeof(NU_LIGHT_SHADOW_LIST_VIEW) == 0x2e8);
 #ifdef __cplusplus
 extern "C" {
 #endif
@@ -1139,7 +1139,7 @@ typedef struct nurndrlibscene_s { // size 0x218
             u8 opaque_50_58[0x8]; // 0x050
         };
 
-        f32 shadow_coefficients_pc[3];
+        f32 shadow_coefficients[3];
     }; // 0x04c
 
     union { // size 0x54
@@ -1149,7 +1149,7 @@ typedef struct nurndrlibscene_s { // size 0x218
             u8 opaque_5c_ac[0x50]; // 0x05c
         };
 
-        BURN_PARAMETERS burnout_parameters_pc;
+        BURN_PARAMETERS burnout_parameters;
     }; // 0x058
 
     u32 unknown_ac;          // 0x0ac
@@ -1310,22 +1310,22 @@ struct PC_SPECIAL_SHADOW_LIGHT {      // size 0x828
     NURNDRLIGHTRECORD render_sets[2]; // 0x000
 
     union { // size 0xc
-        f32 split_distances_pc[3];
+        f32 split_distances[3];
 
-        struct {                    // size 0xc
-            u8 unknown_700[4];      // 0x700
-            f32 shadow_distance_pc; // 0x704
-            u8 unknown_708[4];      // 0x708
+        struct {                 // size 0xc
+            u8 unknown_700[4];   // 0x700
+            f32 shadow_distance; // 0x704
+            u8 unknown_708[4];   // 0x708
         };
     }; // 0x700
 
     i32 render_set_count;        // 0x70c
     i32 active_render_set_count; // 0x710
     u8 unknown_714[0xc];         // 0x714
-    NUVEC4 split_planes_pc[2];   // 0x720
+    NUVEC4 split_planes[2];      // 0x720
     NUVEC4 camera_position_pc;   // 0x740
-    NUVEC4 camera_forward_pc;    // 0x750
-    NUVEC4 light_position_pc;    // 0x760
+    NUVEC4 camera_forward;       // 0x750
+    NUVEC4 light_position;       // 0x760
 
     union { // size 0x10
         NUVEC4 light_direction4_pc;

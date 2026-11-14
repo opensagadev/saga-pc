@@ -277,16 +277,16 @@ struct PART_PC { // size 0x220
     NUSPECIALHANDLE special;         // 0x148
     NUSPECIALHANDLE *source_special; // 0x154
     NUVEC lighting[7];               // 0x158
-    PART_ACTION_PC callback_1ac;     // 0x1ac
-    PART_MOVE_PC move_fn;            // 0x1b0
-    PART_ACTION_PC deflect_fn;       // 0x1b4
-    PART_ACTION_PC impact_fn;        // 0x1b8
-    PART_ACTION_PC collision_fn;     // 0x1bc
-    PART_KILL_PC kill_fn;            // 0x1c0
-    PART_ACTION_PC update_fn;        // 0x1c4
-    PART_ACTION_PC stop_fn;          // 0x1c8
-    PART_ACTION_PC destroy_fn;       // 0x1cc
-    PART_DRAW_PC draw_fn;            // 0x1d0
+    PART_ACTION callback_1ac;        // 0x1ac
+    PART_MOVE move_fn;               // 0x1b0
+    PART_ACTION deflect_fn;          // 0x1b4
+    PART_ACTION impact_fn;           // 0x1b8
+    PART_ACTION collision_fn;        // 0x1bc
+    PART_KILL kill_fn;               // 0x1c0
+    PART_ACTION update_fn;           // 0x1c4
+    PART_ACTION stop_fn;             // 0x1c8
+    PART_ACTION destroy_fn;          // 0x1cc
+    PART_DRAW draw_fn;               // 0x1d0
     i32 inline_debris_handle;        // 0x1d4
     i32 *debris_handle;              // 0x1d8
     i32 *lighting_handle;            // 0x1dc

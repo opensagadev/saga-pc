@@ -9,11 +9,11 @@ typedef struct shove_object_s { // size 0x18
     f32 radius;                 // 0x10
     i16 platform_id;            // 0x14
     i16 padding;                // 0x16
-} SHOVE_OBJECT_PC;
+} SHOVE_OBJECT;
 
-typedef struct shove_system_s {  // size 0x184
-    SHOVE_OBJECT_PC objects[16]; // 0x000
-    i32 count;                   // 0x180
+typedef struct shove_system_s { // size 0x184
+    SHOVE_OBJECT objects[16];   // 0x000
+    i32 count;                  // 0x180
 } SHOVE_SYSTEM_PC;
 
 static SHOVE_SYSTEM_PC ShoveSystem = {0};
@@ -44,7 +44,7 @@ void ShoveObjectSysReset(void) {
 
 void ShoveSystemCheckGameObject(GAMEOBJECT *object) {
     f32 best_penetration = 0.0f;
-    SHOVE_OBJECT_PC *shove;
+    SHOVE_OBJECT *shove;
     i32 i;
     if (object->flags_ef0 & 1) {
         return;

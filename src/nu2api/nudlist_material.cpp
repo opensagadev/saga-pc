@@ -517,7 +517,7 @@ extern "C" void PostBlur7x7High(GRAPHICS_RENDER_TEXTURE *source, i32 source_lod,
     } while (0)
 
 // One vertex-shader tap offset; rounds both coordinates through f32 temporaries.
-struct __declspec(align(16)) POST_BLUR_LOW_OFFSET_PC {
+struct __declspec(align(16)) POST_BLUR_LOW_OFFSET {
     f32 x;
     f32 y;
     f32 z;
@@ -564,8 +564,8 @@ extern "C" void PostBlur7x7Low(GRAPHICS_RENDER_TEXTURE *source, i32 source_lod, 
             i32 output_height = (output->height >> ((u16)output_lod & 31)) & ~1;
             f32 dx = radius / (f32)width;
             f32 dy = radius / (f32)height;
-            POST_BLUR_LOW_OFFSET_PC horizontal[4];
-            POST_BLUR_LOW_OFFSET_PC vertical[4];
+            POST_BLUR_LOW_OFFSET horizontal[4];
+            POST_BLUR_LOW_OFFSET vertical[4];
             horizontal[0].z = 0;
             horizontal[0].w = 0;
             horizontal[1].z = 0;

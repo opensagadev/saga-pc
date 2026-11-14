@@ -8,17 +8,17 @@ typedef struct coin_packet_s { // size 0xc
     f32 scale;                 // 0x4
     i16 last_coin;             // 0x8
     u8 unknown_0a[2];          // 0xa
-} COIN_PACKET_PC;
+} COIN_PACKET;
 
 typedef struct object_coin_packet_s { // size 0x800
     u8 unknown_000[0x7fc];            // 0x000
-    COIN_PACKET_PC *coin_packet;      // 0x7fc
-} OBJECT_COIN_PACKET_PC;
+    COIN_PACKET *coin_packet;         // 0x7fc
+} OBJECT_COIN_PACKET;
 
 typedef struct game_save_score_s { // size 0x7c18
     u8 unknown_0000[0x7c14];       // 0x0000
     u32 coins;                     // 0x7c14
-} GAME_SAVE_SCORE_PC;
+} GAME_SAVE_SCORE;
 
 /* Out-of-line copies of the SDK's static float helpers (nufloat.h). */
 static f32 GameMessagesFabs(f32 f) {
@@ -196,7 +196,7 @@ GAME_MESSAGE_PC *AddGameMessage(char *text, NUVEC *position, f32 scale, NUVEC *t
 
 void UpdateGameMessages(void) {
     GAME_MESSAGE_PC *message = GameMessage;
-    GAME_MESSAGE_CALLBACK_PC callback;
+    GAME_MESSAGE_CALLBACK callback;
     f32 rounded_time;
     f32 ratio;
     f32 progress;

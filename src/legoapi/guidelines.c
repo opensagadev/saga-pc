@@ -15,7 +15,7 @@ typedef struct guideline_record_s { // size 0x24
     }; // 0x20
 
     u8 unknown_21[3]; // 0x21
-} GUIDELINE_RECORD_PC;
+} GUIDELINE_RECORD;
 
 typedef struct guideline_progress_s { // size 0x8
     u32 active_mask[1];               // 0x0
@@ -33,9 +33,9 @@ i32 GuideLines_Load(void *world_ptr, void *unused) {
         EdFileReadInt();
         world->guideline_count = EdFileReadInt();
         for (index = 0; index < world->guideline_count; ++index) {
-            EdFileRead(((GUIDELINE_RECORD_PC *)world->guidelines)[index].name, 8);
-            EdFileReadNuVec(&((GUIDELINE_RECORD_PC *)world->guidelines)[index].start_position);
-            EdFileReadNuVec(&((GUIDELINE_RECORD_PC *)world->guidelines)[index].end_position);
+            EdFileRead(((GUIDELINE_RECORD *)world->guidelines)[index].name, 8);
+            EdFileReadNuVec(&((GUIDELINE_RECORD *)world->guidelines)[index].start_position);
+            EdFileReadNuVec(&((GUIDELINE_RECORD *)world->guidelines)[index].end_position);
         }
         return 1;
     }
@@ -49,13 +49,13 @@ void *GuideLines_ReserveBufferSpace(WORLDINFO *world) {
     if (level->max_guidelines > 0) {
         world->giz_buffer.addr = (world->giz_buffer.addr + 3) & ~3u;
         world->guidelines = world->giz_buffer.void_ptr;
-        world->giz_buffer.addr += level->max_guidelines * sizeof(GUIDELINE_RECORD_PC);
+        world->giz_buffer.addr += level->max_guidelines * sizeof(GUIDELINE_RECORD);
     }
     return world->guidelines;
 }
 
 void GuideLines_Reset(WORLDINFO *world, void *unused, GUIDELINE_PROGRESS_PC *progress) {
-    GUIDELINE_RECORD_PC *guide;
+    GUIDELINE_RECORD *guide;
     i32 index;
     if (world == NULL || world->guidelines == NULL) {
         return;
@@ -101,14 +101,14 @@ INDY_GUIDELINE_PC *GuideLine_FindNearest(NUVEC *position, WORLDINFO *world, i32 
 
 void GuideLine_Activate(GIZMO_PC *gizmo, i32 active) {
     if (gizmo != NULL) {
-        GUIDELINE_RECORD_PC *guide = gizmo->object;
+        GUIDELINE_RECORD *guide = gizmo->object;
         guide->active = active != 0;
     }
 }
 
 void GuideLine_SetVisibility(GIZMO_PC *gizmo, i32 visible) {
     if (gizmo != NULL) {
-        GUIDELINE_RECORD_PC *guide = gizmo->object;
+        GUIDELINE_RECORD *guide = gizmo->object;
         guide->visible = visible != 0;
     }
 }
@@ -120,8 +120,8 @@ i32 GuideLines_GetMaxGizmos(WORLDINFO *world) {
 void GuideLines_AddGizmos(GIZMOSYS_PC *system, i32 type_id, WORLDINFO *world, void *unused) {
     i32 index;
     for (index = 0; index < world->guideline_count; ++index) {
-        if (NuStrLen(((GUIDELINE_RECORD_PC *)world->guidelines)[index].name) != 0) {
-            AddGizmo(system, type_id, NULL, &((GUIDELINE_RECORD_PC *)world->guidelines)[index]);
+        if (NuStrLen(((GUIDELINE_RECORD *)world->guidelines)[index].name) != 0) {
+            AddGizmo(system, type_id, NULL, &((GUIDELINE_RECORD *)world->guidelines)[index]);
         }
     }
 }
@@ -131,7 +131,7 @@ char *GuideLine_GetGizmoName(GIZMO_PC *gizmo) {
 }
 
 i32 GuideLine_GetOutput(GIZMO_PC *gizmo, i32 output, i32 mode) {
-    GUIDELINE_RECORD_PC *guide = gizmo->object;
+    GUIDELINE_RECORD *guide = gizmo->object;
     return guide->visible && guide->active;
 }
 
@@ -155,7 +155,7 @@ void GuideLines_ClearProgress(void *world, GUIDELINE_PROGRESS_PC *progress) {
 }
 
 void GuideLines_StoreProgress(WORLDINFO *world, void *unused, GUIDELINE_PROGRESS_PC *progress) {
-    GUIDELINE_RECORD_PC *guide;
+    GUIDELINE_RECORD *guide;
     i32 index;
     if (progress == NULL) {
         return;

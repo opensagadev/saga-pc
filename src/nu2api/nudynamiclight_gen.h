@@ -15,4 +15,4 @@ typedef struct pc_frustum_group_s { // size 0x380
     NUPLANE planes[12];             // 0x1a0
     i32 plane_count;                // 0x260
     u8 unknown_0264[0x11c];         // 0x264
-} PC_FRUSTUM_GROUP_PC;
+} PC_FRUSTUM_GROUP;

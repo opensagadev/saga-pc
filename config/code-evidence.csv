@@ -1741,7 +1741,7 @@ address,size,symbol,evidence,proposed,compiland,signals,port
 0x00642370,54,?ObjectsallFdiv@@YAMMM@Z,copy,,gameapi/objectsall.cpp,bytes equal ?NuFdiv@@YAMMM@Z,
 0x00642470,36,_fun_00642470,extent,,gameapi/objectsall.cpp,unreferenced,
 0x006424a0,28,?ObjectsallVuVecMake@@YA?AUVuVec@@MMMM@Z,copy,,gameapi/objectsall.cpp,bytes equal ?VuVecMake@@YA?AUVuVec@@MMMM@Z,
-0x00642520,1,_fun_00642520,extent,,gameapi/objectsall.cpp,pointer in ??_C@_07JJDDADFP@fps?3?5?$CFd?$AA@ at 0x75c0b4; pointer in _MenuVideoResolutionFormatPc at 0x75f874; pointer in ??_C@_0BA@GPFDCODM@total?5b?5?$CFd?5?3?5?$CFd?$AA@ at 0x76a9e4; pointer in ??_C@_0BA@EKFCEIIF@max?5pps?5?$CFd?5?3?5?$CFd?$AA@ at 0x76a9f4 (+9),
+0x00642520,1,_fun_00642520,extent,,gameapi/objectsall.cpp,pointer in ??_C@_07JJDDADFP@fps?3?5?$CFd?$AA@ at 0x75c0b4; pointer in _MenuVideoResolutionFormat at 0x75f874; pointer in ??_C@_0BA@GPFDCODM@total?5b?5?$CFd?5?3?5?$CFd?$AA@ at 0x76a9e4; pointer in ??_C@_0BA@EKFCEIIF@max?5pps?5?$CFd?5?3?5?$CFd?$AA@ at 0x76a9f4 (+9),
 0x006489a0,30,_fun_006489a0,sibling,edpartLookupDebrisEffect(char*),gameapi/objectsall.cpp,position between edpartLookupObjectInScene and edpartSetParticlePage in libgameapi.a(objectsall.o); calls LookupDebrisEffectPageOnly,android:src/legoapi/items/objects/objectsall.cpp
 0x0064a1a0,120,_fun_0064a1a0,extent,,gameapi/objectsall.cpp,111 of 120 bytes decoded; unreferenced,
 0x0064a380,13,_edpartClose,extent,,gameapi/objectsall.cpp,pointer in unmapped data at 0x8101e4,

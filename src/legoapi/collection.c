@@ -30,7 +30,7 @@ typedef struct coin_reset_packet_s { // size 0x10
     u8 active;                       // 0xa
     u8 unknown_0b;                   // 0xb
     f32 double_score_timer;          // 0xc
-} COIN_RESET_PACKET_PC;
+} COIN_RESET_PACKET;
 
 i32 Collection_Got(i32 id) {
     i32 area;
@@ -54,7 +54,7 @@ typedef struct collection_variant_reader_s { // size 0x120
     u8 unknown_00[0x116];                    // 0x000
     i8 variant_type;                         // 0x116
     u8 unknown_117[9];                       // 0x117
-} COLLECTION_VARIANT_READER_PC;
+} COLLECTION_VARIANT_READER;
 
 i32 Collection_GotAnyOfType(i32 type, u32 flags) {
     i32 index;
@@ -63,7 +63,7 @@ i32 Collection_GotAnyOfType(i32 type, u32 flags) {
     }
     for (index = 0; index < CollectCount; ++index) {
         i32 id = CollectList[index].id;
-        if (type != -1 && ((COLLECTION_VARIANT_READER_PC *)GCDataList)[id].variant_type != type) {
+        if (type != -1 && ((COLLECTION_VARIANT_READER *)GCDataList)[id].variant_type != type) {
             continue;
         }
         if (flags != 0 && (CDataList[id].model_flags & flags) != flags) {
@@ -108,9 +108,9 @@ typedef struct collection_buyable_reader_s { // size 0x1c
     u8 unknown_02[6];                        // 0x02
     u8 can_buy;                              // 0x08
     u8 unknown_09[0x13];                     // 0x09
-} COLLECTION_BUYABLE_READER_PC;
+} COLLECTION_BUYABLE_READER;
 
-STATIC_ASSERT(sizeof(COLLECTION_BUYABLE_READER_PC) == sizeof(COLLECTID_PC));
+STATIC_ASSERT(sizeof(COLLECTION_BUYABLE_READER) == sizeof(COLLECTID_PC));
 
 void Collection_CreateMaster(char *name, i16 *title_id, COLLECTION_BUILD_PC *collection, i32 columns, f32 scale) {
     collection->list = CollectList;
@@ -139,7 +139,7 @@ void Collection_CreateCustom(char *name, i16 *title_id, COLLECTION_BUILD_PC *col
             if (excluded_model_flags != 0 && (apicharsys->char_data[id].model_flags & excluded_model_flags) != 0) {
                 continue;
             }
-            if (require_buyable != 0 && ((COLLECTION_BUYABLE_READER_PC *)source)->can_buy == 0) {
+            if (require_buyable != 0 && ((COLLECTION_BUYABLE_READER *)source)->can_buy == 0) {
                 continue;
             }
             if (required_game_flags != 0 && (GCDataList[id].flags_090 & required_game_flags) != required_game_flags) {
@@ -229,9 +229,9 @@ typedef struct collection_config_entry_s { // size 0x1c
     u8 counts_towards_completion;          // 0x09
     u16 gold_bricks;                       // 0x0a
     char cheat_code[16];                   // 0x0c
-} COLLECTION_CONFIG_ENTRY_PC;
+} COLLECTION_CONFIG_ENTRY;
 
-STATIC_ASSERT(sizeof(COLLECTION_CONFIG_ENTRY_PC) == sizeof(COLLECTID_PC));
+STATIC_ASSERT(sizeof(COLLECTION_CONFIG_ENTRY) == sizeof(COLLECTID_PC));
 
 /* Native 594220 is an actual RET with no argument reads. */
 void CollectionConfigDiagnostic(char *file, ...) {
@@ -240,7 +240,7 @@ void CollectionConfigDiagnostic(char *file, ...) {
 
 void Collection_Configure(char *file, VARIPTR *buffer, VARIPTR *end) {
     NUFPAR_PC *parser = NuFParCreate(file);
-    COLLECTION_CONFIG_ENTRY_PC *entry;
+    COLLECTION_CONFIG_ENTRY *entry;
     i32 area;
     (void)end;
     if (parser == NULL) {
@@ -248,7 +248,7 @@ void Collection_Configure(char *file, VARIPTR *buffer, VARIPTR *end) {
         return;
     }
 
-    entry = (COLLECTION_CONFIG_ENTRY_PC *)((buffer->addr + 3) & ~3u);
+    entry = (COLLECTION_CONFIG_ENTRY *)((buffer->addr + 3) & ~3u);
     buffer->void_ptr = entry;
     CollectList = (COLLECTID_PC *)entry;
     CollectCount = 0;

@@ -81,13 +81,13 @@ typedef struct TELEPORT_VARIANT_VIEW { // size 0x7c0
 typedef struct {
     char name[16];
     u8 opaque[0xfc - 16];
-} ADD_TELEPORT_PC;
+} ADD_TELEPORT;
 
 typedef struct {
     u8 opaque[0x4680];
-    ADD_TELEPORT_PC *items;
+    ADD_TELEPORT *items;
     i32 count;
-} ADD_TELEPORT_WORLD_PC;
+} ADD_TELEPORT_WORLD;
 
 typedef struct HINT_WORLD_TELEPORT {
     u8 reserved00[0x4684];
@@ -689,7 +689,7 @@ extern "C" {
     }
 
     void Teleport_AddGizmos(GIZMOSYS_PC *giz, i32 type, void *world_ptr, void *data) {
-        ADD_TELEPORT_WORLD_PC *w = (ADD_TELEPORT_WORLD_PC *)world_ptr;
+        ADD_TELEPORT_WORLD *w = (ADD_TELEPORT_WORLD *)world_ptr;
         i32 i;
         (void)data;
         if (w == NULL || w->items == NULL) {

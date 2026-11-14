@@ -4,7 +4,7 @@
 typedef struct grapple_rotation_s { // size 0x3c
     u8 unknown_00[0x30];            // 0x00
     NUVEC hook_position;            // 0x30
-} GRAPPLE_ROTATION_PC;
+} GRAPPLE_ROTATION;
 
 extern const f64 GameObjectNearFloorNoFloorHeight;
 
@@ -14,7 +14,7 @@ STATIC_ASSERT(offsetof(CHARACTER_MODEL_LAYERS, points_of_interest) + 2 * sizeof(
 typedef struct kill_zipup_s { // size 0x6a
     u8 unknown_00[0x68];      // 0x00
     u16 runtime_flags;        // 0x68
-} KILL_ZIPUP_PC;
+} KILL_ZIPUP;
 
 /* A copy of the 33-DWORD script cohort (script processor plus takeover link), without extending the
    packet. Held as words so the copy is one block move and the local is not treated as a /GS buffer. */
@@ -53,7 +53,7 @@ typedef struct gameobject_collision_reset_s { // size 0x2b8
     u8 unknown_000[0x2b0];                    // 0x000
     u32 collision_overlap_low;                // 0x2b0
     u32 collision_overlap_high;               // 0x2b4
-} GAMEOBJECT_COLLISION_RESET_PC;
+} GAMEOBJECT_COLLISION_RESET;
 
 typedef struct GAME_ANTI_NODE_DATA { // size 0x24
     NUVEC position;                  // 0x00
@@ -100,15 +100,15 @@ GAMEOBJECT *AddGameObject(void) {
         object->water_height = 2000000.0f;
         object->layer_mask = 1;
         object->floor_height = 2000000.0f;
-        object->roof_surface_id_pc = 0xff;
+        object->roof_surface_id = 0xff;
         object->field_283 = -1;
         object->jump_animation_state = 0xff;
         RecomputeHighGameObject();
         ((APIOBJECT *)object)->owner = object;
         object->ai_packet.owner = object;
         ((APIOBJECT *)object)->ai = &object->ai_packet;
-        ((GAMEOBJECT_COLLISION_RESET_PC *)object)->collision_overlap_low = 0;
-        ((GAMEOBJECT_COLLISION_RESET_PC *)object)->collision_overlap_high = 0;
+        ((GAMEOBJECT_COLLISION_RESET *)object)->collision_overlap_low = 0;
+        ((GAMEOBJECT_COLLISION_RESET *)object)->collision_overlap_high = 0;
         return object;
     }
     return NULL;
@@ -613,8 +613,8 @@ typedef struct OPPONENT_LOS_PC { // size 0x208
     u64 line_of_sight[64];       // 0x008
 } OPPONENT_LOS_PC;
 
-typedef struct ai_frame_world_s {           // size 0x4670
-    u8 unknown_0000[0x2aec];                // 0x0000
-    i32 processor_count;                    // 0x2aec
-    LEVEL_SCRIPT_PROCESS_PC processors[32]; // 0x2af0
-} AI_FRAME_WORLD_PC;
+typedef struct ai_frame_world_s {        // size 0x4670
+    u8 unknown_0000[0x2aec];             // 0x0000
+    i32 processor_count;                 // 0x2aec
+    LEVEL_SCRIPT_PROCESS processors[32]; // 0x2af0
+} AI_FRAME_WORLD;

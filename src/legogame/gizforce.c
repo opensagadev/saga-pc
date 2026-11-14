@@ -61,23 +61,23 @@ typedef struct force_sfx_config_s {
     i16 complete_sfx;
     i16 return_sfx;
     u8 unknown_88[0xa4 - 0x88];
-} FORCE_SFX_CONFIG_PC;
+} FORCE_SFX_CONFIG;
 
 typedef struct force_sfx_system_s {
-    FORCE_SFX_CONFIG_PC *forces;
+    FORCE_SFX_CONFIG *forces;
     u8 unknown_04[0xe - 4];
     u16 count;
-} FORCE_SFX_SYSTEM_PC;
+} FORCE_SFX_SYSTEM;
 
 typedef struct world_force_sfx_s {
     u8 unknown_0000[0x46ac];
-    FORCE_SFX_SYSTEM_PC *force_system;
-} WORLD_FORCE_SFX_PC;
+    FORCE_SFX_SYSTEM *force_system;
+} WORLD_FORCE_SFX;
 
 typedef struct trigger_force_object_s {
     u8 unknown000[0x10cc];
     GIZFORCE_PC *force;
-} TRIGGER_FORCE_OBJECT_PC;
+} TRIGGER_FORCE_OBJECT;
 
 void GameAnimSet_SetOffset(GAMEANIMSET *, NUVEC *);
 
@@ -95,12 +95,12 @@ typedef struct FORCE_RESET_PROGRESS {
 typedef struct {
     char name[16];
     u8 opaque[0xa4 - 16];
-} ADD_FORCE_PC;
+} ADD_FORCE;
 
 typedef struct {
     u8 unknown_00[0x1c];
     NUVEC position;
-} FLOW_FORCE_POSITION_PC;
+} FLOW_FORCE_POSITION;
 
 typedef struct registry_force_record_pc_s {
     u8 unknown_00[0x28];
@@ -132,7 +132,7 @@ typedef struct {
     u32 pending[4];
     u32 destroyed[4];
     u8 group_members[8][8];
-} FORCE_PROGRESS_PC;
+} FORCE_PROGRESS;
 
 typedef struct {
     u8 unused00[0xa0];
@@ -154,22 +154,22 @@ typedef struct {
             u32 : 15;
         };
     };
-} FORCE_PROGRESS_RECORD_PC;
+} FORCE_PROGRESS_RECORD;
 
 typedef struct {
-    FORCE_PROGRESS_RECORD_PC *members[8];
+    FORCE_PROGRESS_RECORD *members[8];
     u8 unused20[6];
     u8 member_count;
     u8 configured_count;
-} FORCE_PROGRESS_GROUP_PC;
+} FORCE_PROGRESS_GROUP;
 
 typedef struct {
-    FORCE_PROGRESS_RECORD_PC *records;
+    FORCE_PROGRESS_RECORD *records;
     u8 unused04[10];
     u16 count;
     u8 unused10[8];
-    FORCE_PROGRESS_GROUP_PC groups[8];
-} FORCE_PROGRESS_SYSTEM_PC;
+    FORCE_PROGRESS_GROUP groups[8];
+} FORCE_PROGRESS_SYSTEM;
 
 STATIC_ASSERT(sizeof(REGISTER_GIZMO_CONFIG_TYPE_FN) == 4);
 void RegisterGizmoTypes(VARIPTR *, VARIPTR *, REGISTER_GIZMO_CONFIG_TYPE_FN *, i32);
@@ -203,9 +203,9 @@ void GizForce_ResetLOS(GAMEOBJECT *object) {
     }
 }
 
-static FORCE_SFX_CONFIG_PC *FindForceForSfx(WORLD_FORCE_SFX_PC *world, char *name) {
-    FORCE_SFX_SYSTEM_PC *system = world->force_system;
-    FORCE_SFX_CONFIG_PC *force;
+static FORCE_SFX_CONFIG *FindForceForSfx(WORLD_FORCE_SFX *world, char *name) {
+    FORCE_SFX_SYSTEM *system = world->force_system;
+    FORCE_SFX_CONFIG *force;
     i32 i;
     if (system != NULL) {
         force = system->forces;
@@ -225,8 +225,8 @@ static FORCE_SFX_CONFIG_PC *FindForceForSfx(WORLD_FORCE_SFX_PC *world, char *nam
     return NULL;
 }
 
-static FORCE_SFX_CONFIG_PC *GizForceSFX_force = 0;
-static WORLD_FORCE_SFX_PC *GizForceSFX_worldinfo = 0;
+static FORCE_SFX_CONFIG *GizForceSFX_force = 0;
+static WORLD_FORCE_SFX *GizForceSFX_worldinfo = 0;
 
 static void GizForceSFX_forcename(NUFPAR_PC *parser) {
     GizForceSFX_force = NULL;
@@ -263,7 +263,7 @@ static NUFPCOMJMP GizForceSFX_ConfigKeywords[] = {
 };
 
 void GizForceSFX_Configure(WORLDINFO *world_ptr, char *config) {
-    WORLD_FORCE_SFX_PC *world = (WORLD_FORCE_SFX_PC *)world_ptr;
+    WORLD_FORCE_SFX *world = (WORLD_FORCE_SFX *)world_ptr;
     NUFPAR_PC *parser;
     i32 inside;
     if (GizForceSFX_load_version >= 16 || world == NULL || world->force_system == NULL || world->force_system->count == 0) {
@@ -549,7 +549,7 @@ NUVEC *GizmoForce_GetPos(GIZMO_PC *gizmo) {
     if (gizmo == NULL || gizmo->object == NULL) {
         return NULL;
     }
-    return &((FLOW_FORCE_POSITION_PC *)gizmo->object)->position;
+    return &((FLOW_FORCE_POSITION *)gizmo->object)->position;
 }
 
 static i32 ForceUpdateCentre(GIZFORCE_PC *force, i32 frame_selection) {
@@ -812,7 +812,7 @@ i32 GizForce_Complete(GIZFORCE_PC *force) {
 }
 
 i32 GizForce_GameObjUsingForce(GAMEOBJECT *object, GIZFORCE_PC *force) {
-    return force != NULL && object != NULL && object->character_context == 8 && ((TRIGGER_FORCE_OBJECT_PC *)object)->force == force;
+    return force != NULL && object != NULL && object->character_context == 8 && ((TRIGGER_FORCE_OBJECT *)object)->force == force;
 }
 
 PART_PC *GizForce_Throw(GAMEOBJECT *object, GIZFORCE_PC *force, f32 speed, f32 gravity, i32 unused) {
@@ -870,8 +870,8 @@ void GizForces_AddGizmos(GIZMOSYS_PC *giz, i32 type, void *world, void *data) {
         return;
     }
     for (i = 0; i < s->count; ++i) {
-        if (NuStrLen(((ADD_FORCE_PC *)s->forces)[i].name) != 0) {
-            AddGizmo(giz, type, NULL, &((ADD_FORCE_PC *)s->forces)[i]);
+        if (NuStrLen(((ADD_FORCE *)s->forces)[i].name) != 0) {
+            AddGizmo(giz, type, NULL, &((ADD_FORCE *)s->forces)[i]);
         }
     }
 }
@@ -960,7 +960,7 @@ void *GizForces_AllocateProgressData(VARIPTR *buffer, VARIPTR *end) {
 }
 
 void GizForces_ClearProgress(void *owner, void *progress_ptr) {
-    FORCE_PROGRESS_PC *progress = progress_ptr;
+    FORCE_PROGRESS *progress = progress_ptr;
     if (progress == NULL) {
         return;
     }
@@ -975,10 +975,10 @@ void GizForces_ClearProgress(void *owner, void *progress_ptr) {
 }
 
 void GizForces_StoreProgress(void *world_ptr, void *data, void *progress_ptr) {
-    FORCE_PROGRESS_PC *progress = progress_ptr;
-    FORCE_PROGRESS_SYSTEM_PC *system = data;
-    FORCE_PROGRESS_RECORD_PC *record;
-    FORCE_PROGRESS_GROUP_PC *force_group;
+    FORCE_PROGRESS *progress = progress_ptr;
+    FORCE_PROGRESS_SYSTEM *system = data;
+    FORCE_PROGRESS_RECORD *record;
+    FORCE_PROGRESS_GROUP *force_group;
     i32 index;
     i32 group;
     i32 slot;

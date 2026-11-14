@@ -36,7 +36,7 @@ STATIC_ASSERT(sizeof(BURNOUTON) == 4);
 typedef struct main_controller_world_view_s { // size 0x4674
     u8 unknown_0000[0x4670];                  // 0x0000
     AI_CONTROL_SYSTEM_PC *control_system;     // 0x4670
-} MAIN_CONTROLLER_WORLD_VIEW_PC;
+} MAIN_CONTROLLER_WORLD_VIEW;
 
 extern "C" void DrawSaveSlots(MENU *, f32);
 
@@ -256,8 +256,8 @@ static void NuMainUpdateFrame(WORLDINFO *world, i32 *frame_flag) {
         ProcessGizFlow(world->giz_flow, FRAMETIME);
         SAGA_SOUND_CHECK("after ProcessGizFlow");
         LOG_INFO_IF(GameTimer.update_count < 2, "Update stage: after ProcessGizFlow world=%p", (void *)WORLD);
-        if (((MAIN_CONTROLLER_WORLD_VIEW_PC *)world)->control_system != NULL) {
-            AIPathCnxControlSysUpdate(((MAIN_CONTROLLER_WORLD_VIEW_PC *)world)->control_system);
+        if (((MAIN_CONTROLLER_WORLD_VIEW *)world)->control_system != NULL) {
+            AIPathCnxControlSysUpdate(((MAIN_CONTROLLER_WORLD_VIEW *)world)->control_system);
         }
         if (world->current_gscn != NULL) {
             NuGScnUpdate(world->current_gscn, FRAMETIME * 60.0f);

@@ -39,12 +39,12 @@ typedef struct vehicle_weapon_item_s { // size 0xa
     u8 unknown_04[4];                  // 0x4
     u8 type;                           // 0x8
     i8 bolt_override;                  // 0x9
-} VEHICLE_WEAPON_ITEM_PC;
+} VEHICLE_WEAPON_ITEM;
 
-typedef struct weapon_ammo_s {    // size 0x8
-    VEHICLE_WEAPON_ITEM_PC *type; // 0x0
-    u8 ammo;                      // 0x4
-    u8 field_05;                  // 0x5
+typedef struct weapon_ammo_s { // size 0x8
+    VEHICLE_WEAPON_ITEM *type; // 0x0
+    u8 ammo;                   // 0x4
+    u8 field_05;               // 0x5
 } WEAPON_AMMO_PC;
 
 #ifdef __cplusplus

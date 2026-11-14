@@ -132,9 +132,9 @@ extern "C" {
      * RTL_INDEX header, then IndexLights' cell table and index lists, in
      * one 0x2028-byte area (0x6fac bytes with the set). rtlLoadSet still advances by sizeof(RTL_SET)
      * only; the game builds the index from its own buffer. */
-#define RTL_SET_INDEX_PC(set) ((RTL_INDEX *)((set) + 1))
-#define RTL_SET_INDEX_AREA_SIZE_PC 0x2028
-#define RTL_EDITOR_SET_SIZE_PC (sizeof(RTL_SET) + RTL_SET_INDEX_AREA_SIZE_PC)
+#define RTL_SET_INDEX(set) ((RTL_INDEX *)((set) + 1))
+#define RTL_SET_INDEX_AREA_SIZE 0x2028
+#define RTL_EDITOR_SET_SIZE (sizeof(RTL_SET) + RTL_SET_INDEX_AREA_SIZE)
 
     struct RTL_DATA;
     struct RTL_INDEX;
@@ -155,7 +155,7 @@ extern "C" {
     extern f32 rtltimer1adv;
     void rtlFrameUpdate(f32 frame_time);
     extern struct RTL_INDEX *dbg_rtlindex;
-    extern const char RtlSearchTimebarNamePc[];
+    extern const char RtlSearchTimebarName[];
     i32 rtlDynamicEnable(i32 id, i32 enabled);
     extern NULSTHDR *rtl_dynamic_pool;
     extern i32 rtl_dynamic_max;

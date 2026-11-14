@@ -25,34 +25,34 @@ typedef struct carry_blowup_s { // size 0xac
     u8 secondary_flags;         // 0x9c
     u8 unknown_9d[0xa8 - 0x9d]; // 0x9d
     f32 target_scale;           // 0xa8
-} CARRY_BLOWUP_PC;
+} CARRY_BLOWUP;
 
 typedef struct carry_world_s {   // size 0x5170
     u8 unknown_0000[0x516c];     // 0x0000
     CARRY_PLUG_SYS_PC *plug_sys; // 0x516c
-} CARRY_WORLD_PC;
+} CARRY_WORLD;
 
 typedef struct carry_model_s { // size 0x10
     u8 unknown_00[0xc];        // 0x0
     void **model_data_b;       // 0xc
-} CARRY_MODEL_PC;
+} CARRY_MODEL;
 
 typedef struct carry_basis_s {     // size 0x76c
     u8 unknown_000[0x4d8];         // 0x000
     PART_LIGHTING_DATA lighting;   // 0x4d8
     u8 unknown_5a4[0x748 - 0x5a4]; // 0x5a4
     NUVEC basis[3];                // 0x748
-} CARRY_BASIS_PC;
+} CARRY_BASIS;
 
 typedef struct carry_part_s { // size 0x21c
     u8 unknown_000[0x218];    // 0x000
     GIZMOBLOWUP_PC *blowup;   // 0x218
-} CARRY_PART_PC;
+} CARRY_PART;
 
 typedef struct carry_drop_s { // size 0x778
     u8 unknown_000[0x76c];    // 0x000
     NUVEC drop_position;      // 0x76c
-} CARRY_DROP_PC;
+} CARRY_DROP;
 
 extern i32 SuperCarry_PutDownDrop;
 extern f32 SUPERCARRY_JUMPSPEED;
@@ -69,13 +69,13 @@ extern u8 SuperCarryPlayerRgb[2][3];
     } while (0)
 
 i32 SuperCarry_TurnBlowupBackOn(GIZMOBLOWUP_PC *blowup, NUVEC *position, u16 angle, i32 keep_matrix) {
-    CARRY_BLOWUP_PC *view = (CARRY_BLOWUP_PC *)blowup;
+    CARRY_BLOWUP *view = (CARRY_BLOWUP *)blowup;
     CARRY_PLUG_PC *plug;
     f32 distance;
     blowup->status_flags |= 0x804000;
     GizBlowup_Respawn(blowup);
     blowup->status_flags |= 0x10000;
-    plug = Plug_FindNearest(((CARRY_WORLD_PC *)WORLD)->plug_sys, position, &distance, 1);
+    plug = Plug_FindNearest(((CARRY_WORLD *)WORLD)->plug_sys, position, &distance, 1);
     if (plug != NULL && distance < 0.5625f) {
         Plug_MakeDrawMtx(plug, &view->transform);
         plug->plugged = 1;
@@ -106,8 +106,8 @@ void SuperCarry_PartImpact(PART_PC *part) {
 }
 
 static void SuperCarry_PartKill(PART_PC *part, i32 unused) {
-    GIZMOBLOWUP_PC *blowup = ((CARRY_PART_PC *)part)->blowup;
-    CARRY_BLOWUP_PC *view = (CARRY_BLOWUP_PC *)blowup;
+    GIZMOBLOWUP_PC *blowup = ((CARRY_PART *)part)->blowup;
+    CARRY_BLOWUP *view = (CARRY_BLOWUP *)blowup;
     (void)unused;
     if (view->secondary_flags & 4) {
         SuperCarry_TurnBlowupBackOn(blowup, &part->position, part->rotation_y, 0);
@@ -130,14 +130,14 @@ void SuperCarry_DrawObject(struct gameobject_s *object) {
           (object->field_7b3 == 5 && (object->context_variant_flags & 0x40) == 0)))) {
         translation = NULL;
         if (SuperCarry_AlignObject != 0) {
-            NuVecRotateY(&offset, &((CARRY_BASIS_PC *)object)->basis[0], object->field_0x276);
+            NuVecRotateY(&offset, &((CARRY_BASIS *)object)->basis[0], object->field_0x276);
             translation = &offset;
             NuMtxSetRotationY(&matrix, object->takeover_start_angle);
         } else {
             matrix = NuMtxSetIdentityTemplate;
-            *NUMTX_GET_ROW_VEC(&matrix, 0) = ((CARRY_BASIS_PC *)object)->basis[0];
-            *NUMTX_GET_ROW_VEC(&matrix, 1) = ((CARRY_BASIS_PC *)object)->basis[1];
-            *NUMTX_GET_ROW_VEC(&matrix, 2) = ((CARRY_BASIS_PC *)object)->basis[2];
+            *NUMTX_GET_ROW_VEC(&matrix, 0) = ((CARRY_BASIS *)object)->basis[0];
+            *NUMTX_GET_ROW_VEC(&matrix, 1) = ((CARRY_BASIS *)object)->basis[1];
+            *NUMTX_GET_ROW_VEC(&matrix, 2) = ((CARRY_BASIS *)object)->basis[2];
         }
         if (SuperCarry_KeepObjectLevel != 0) {
             NuMtxRotateY(&matrix, object->field_0x276);
@@ -177,8 +177,8 @@ void SuperCarry_GetObjectPos(GAMEOBJECT *object, NUVEC *position, NUVEC *seconda
 
 void SuperCarry_Throw(GAMEOBJECT *object, i32 mode) {
     PLAYERCHARACTERCONFIG *config = object->character_data->game_character;
-    CARRY_BASIS_PC *basis = (CARRY_BASIS_PC *)object;
-    CARRY_BLOWUP_PC *blowup;
+    CARRY_BASIS *basis = (CARRY_BASIS *)object;
+    CARRY_BLOWUP *blowup;
     NUMTX matrix;
     NUVEC position;
     NUVEC offset;
@@ -259,7 +259,7 @@ void SuperCarry_Throw(GAMEOBJECT *object, i32 mode) {
     part = AddPart(&params);
     if (part != NULL) {
         part->force_flags = ObjHitObj_Flags(object);
-        ((CARRY_PART_PC *)part)->blowup = object->grapple;
+        ((CARRY_PART *)part)->blowup = object->grapple;
         part->rotation_y = object->takeover_start_angle + object->movement_facing_angle;
     }
 }
@@ -312,35 +312,35 @@ void SuperCarry_Start(struct gameobject_s *object, GIZMOBLOWUP_PC *blowup, i32 i
         magnitude = abs(difference);
         if (magnitude < 0x2000) {
             object->takeover_start_angle = 0;
-            ((CARRY_BASIS_PC *)object)->basis[0].x = 0.0f;
-            ((CARRY_BASIS_PC *)object)->basis[0].y = -minimum.y;
-            ((CARRY_BASIS_PC *)object)->basis[0].z = -minimum.z;
+            ((CARRY_BASIS *)object)->basis[0].x = 0.0f;
+            ((CARRY_BASIS *)object)->basis[0].y = -minimum.y;
+            ((CARRY_BASIS *)object)->basis[0].z = -minimum.z;
         } else if (magnitude > 0x6000) {
             object->takeover_start_angle = 0x8000;
-            ((CARRY_BASIS_PC *)object)->basis[0].x = 0.0f;
-            ((CARRY_BASIS_PC *)object)->basis[0].y = -minimum.y;
-            ((CARRY_BASIS_PC *)object)->basis[0].z = maximum.z;
+            ((CARRY_BASIS *)object)->basis[0].x = 0.0f;
+            ((CARRY_BASIS *)object)->basis[0].y = -minimum.y;
+            ((CARRY_BASIS *)object)->basis[0].z = maximum.z;
         } else if (difference < 0) {
             object->takeover_start_angle = 0xc000;
-            ((CARRY_BASIS_PC *)object)->basis[0].x = 0.0f;
-            ((CARRY_BASIS_PC *)object)->basis[0].y = -minimum.y;
-            ((CARRY_BASIS_PC *)object)->basis[0].z = maximum.x;
+            ((CARRY_BASIS *)object)->basis[0].x = 0.0f;
+            ((CARRY_BASIS *)object)->basis[0].y = -minimum.y;
+            ((CARRY_BASIS *)object)->basis[0].z = maximum.x;
         } else {
             object->takeover_start_angle = 0x4000;
-            ((CARRY_BASIS_PC *)object)->basis[0].x = 0.0f;
-            ((CARRY_BASIS_PC *)object)->basis[0].y = -minimum.y;
-            ((CARRY_BASIS_PC *)object)->basis[0].z = -minimum.x;
+            ((CARRY_BASIS *)object)->basis[0].x = 0.0f;
+            ((CARRY_BASIS *)object)->basis[0].y = -minimum.y;
+            ((CARRY_BASIS *)object)->basis[0].z = -minimum.x;
         }
-        ((CARRY_BASIS_PC *)object)->basis[1].x = 0.0f;
-        ((CARRY_BASIS_PC *)object)->basis[1].y = ((CARRY_BASIS_PC *)object)->basis[0].y + (maximum.y - minimum.y) * 0.5f;
-        ((CARRY_BASIS_PC *)object)->basis[1].z = ((CARRY_BASIS_PC *)object)->basis[0].z;
+        ((CARRY_BASIS *)object)->basis[1].x = 0.0f;
+        ((CARRY_BASIS *)object)->basis[1].y = ((CARRY_BASIS *)object)->basis[0].y + (maximum.y - minimum.y) * 0.5f;
+        ((CARRY_BASIS *)object)->basis[1].z = ((CARRY_BASIS *)object)->basis[0].z;
         object->movement_facing_angle = angle - object->takeover_start_angle;
     } else {
         NUMTX matrix = ((GIZMOBLOWUP_PC *)object->grapple)->transform;
         NuMtxRotateY(&matrix, 0x8000 - object->movement_facing_angle);
-        ((CARRY_BASIS_PC *)object)->basis[0] = *NUMTX_GET_ROW_VEC(&matrix, 0);
-        ((CARRY_BASIS_PC *)object)->basis[1] = *NUMTX_GET_ROW_VEC(&matrix, 1);
-        ((CARRY_BASIS_PC *)object)->basis[2] = *NUMTX_GET_ROW_VEC(&matrix, 2);
+        ((CARRY_BASIS *)object)->basis[0] = *NUMTX_GET_ROW_VEC(&matrix, 0);
+        ((CARRY_BASIS *)object)->basis[1] = *NUMTX_GET_ROW_VEC(&matrix, 1);
+        ((CARRY_BASIS *)object)->basis[2] = *NUMTX_GET_ROW_VEC(&matrix, 2);
     }
     object->context_hover_target_y = 0.5f;
 }
@@ -411,7 +411,7 @@ void SuperCarry_MoveCode(WORLDINFO *world, struct gameobject_s *object) {
                     object->context_variant_flags |= 0x40;
                     NewBuzzFrames(object->pad->bound_pad, 1, 0);
                     blowup = object->grapple;
-                    drop = &((CARRY_DROP_PC *)object)->drop_position;
+                    drop = &((CARRY_DROP *)object)->drop_position;
                     if (SuperCarry_PutDownDrop != 0) {
                         if (!SuperCarry_TurnBlowupBackOn(blowup, drop, object->takeover_start_angle + object->movement_facing_angle, 1)) {
                             SuperCarry_Throw(object, 2);
@@ -444,7 +444,7 @@ void SuperCarry_MoveCode(WORLDINFO *world, struct gameobject_s *object) {
                     if (throw_object || put_down) {
                         struct GIZMOBLOWUP_PC *blowup;
                         if ((throw_object || SuperCarry_UseActionButton == 0) && SuperCarryEnable != 0 && LEGOACT_SUPERCARRY_BASH != -1 &&
-                            ((CARRY_MODEL_PC *)object->character_model)->model_data_b[LEGOACT_SUPERCARRY_BASH] != NULL) {
+                            ((CARRY_MODEL *)object->character_model)->model_data_b[LEGOACT_SUPERCARRY_BASH] != NULL) {
                             objopponent_ignoreaiopponent = 1;
                             object->force_target = ObjOpponent(object, 1.0f, PUNCHGAP, 1, 0, 1);
                             if (object->force_target == NULL) {
@@ -464,7 +464,7 @@ void SuperCarry_MoveCode(WORLDINFO *world, struct gameobject_s *object) {
                         }
                         if (throw_object) {
                             if (LEGOACT_SUPERCARRY_THROW != -1 &&
-                                ((CARRY_MODEL_PC *)object->character_model)->model_data_b[LEGOACT_SUPERCARRY_THROW] != NULL) {
+                                ((CARRY_MODEL *)object->character_model)->model_data_b[LEGOACT_SUPERCARRY_THROW] != NULL) {
                                 object->field_7b3 = 4;
                                 object->field_7aa = LEGOACT_SUPERCARRY_THROW;
                                 object->context_variant_flags &= ~0x40u;
@@ -481,7 +481,7 @@ void SuperCarry_MoveCode(WORLDINFO *world, struct gameobject_s *object) {
                         }
                         blowup = object->grapple;
                         if (put_down && (blowup->secondary_flags & 4) != 0 && LEGOACT_SUPERCARRY_PUTDOWN != -1 &&
-                            ((CARRY_MODEL_PC *)object->character_model)->model_data_b[LEGOACT_SUPERCARRY_PUTDOWN] != NULL &&
+                            ((CARRY_MODEL *)object->character_model)->model_data_b[LEGOACT_SUPERCARRY_PUTDOWN] != NULL &&
                             object->floor_height != 2000000.0f && object->lower_position.y - object->floor_height < 0.1f) {
                             NUVEC offset;
                             object->field_7b3 = 1;
@@ -491,12 +491,12 @@ void SuperCarry_MoveCode(WORLDINFO *world, struct gameobject_s *object) {
                             if (object->context_timer <= 0.0f) {
                                 object->context_timer = 0.5f;
                             }
-                            ((CARRY_DROP_PC *)object)->drop_position.x = object->lower_position.x;
-                            ((CARRY_DROP_PC *)object)->drop_position.y = object->floor_height;
-                            ((CARRY_DROP_PC *)object)->drop_position.z = object->lower_position.z;
-                            NuVecRotateY(&offset, &((CARRY_BASIS_PC *)object)->basis[0], object->field_0x276);
-                            ((CARRY_DROP_PC *)object)->drop_position.x = ((CARRY_DROP_PC *)object)->drop_position.x + offset.x;
-                            ((CARRY_DROP_PC *)object)->drop_position.z = ((CARRY_DROP_PC *)object)->drop_position.z + offset.z;
+                            ((CARRY_DROP *)object)->drop_position.x = object->lower_position.x;
+                            ((CARRY_DROP *)object)->drop_position.y = object->floor_height;
+                            ((CARRY_DROP *)object)->drop_position.z = object->lower_position.z;
+                            NuVecRotateY(&offset, &((CARRY_BASIS *)object)->basis[0], object->field_0x276);
+                            ((CARRY_DROP *)object)->drop_position.x = ((CARRY_DROP *)object)->drop_position.x + offset.x;
+                            ((CARRY_DROP *)object)->drop_position.z = ((CARRY_DROP *)object)->drop_position.z + offset.z;
                             return;
                         }
                     }
@@ -607,7 +607,7 @@ void SuperCarry_MoveCode(WORLDINFO *world, struct gameobject_s *object) {
                     if (fell || object->pad->input_magnitude == 0.0f) {
                         object->field_7b3 = 7;
                         if (fell && LEGOACT_SUPERCARRY_FALLLAND != -1 &&
-                            ((CARRY_MODEL_PC *)object->character_model)->model_data_b[LEGOACT_SUPERCARRY_FALLLAND] != NULL) {
+                            ((CARRY_MODEL *)object->character_model)->model_data_b[LEGOACT_SUPERCARRY_FALLLAND] != NULL) {
                             object->field_7aa = LEGOACT_SUPERCARRY_FALLLAND;
                         } else {
                             object->field_7aa = LEGOACT_SUPERCARRY_LAND;
