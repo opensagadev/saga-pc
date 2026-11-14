@@ -14,7 +14,7 @@
   "function-pointer": 805,
   "field-address": 334,
   "byte-pointer": 1046,
-  "record-pun": 625,
+  "record-pun": 628,
   "scalar-pun": 303,
   "int-pointer": 814,
   "const": 868,

@@ -22,7 +22,9 @@ typedef struct GIZFLOW_RANDOM { // size 0x3c
     char name[16];              // 0x00
     i32 output_count;           // 0x10
     i32 output_weights[8];      // 0x14
-    u8 unknown_034[8];          // 0x34
+    i32 selected_output;        // 0x34
+    u8 flags;                   // 0x38
+    u8 unknown_039[3];          // 0x39
 } GIZFLOW_RANDOM;
 
 typedef struct GIZFLOW_RANDOM_SYSTEM { // size 0x8

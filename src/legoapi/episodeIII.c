@@ -21,11 +21,6 @@ typedef struct vaderc_s {              // size 0x98
     u8 reserved_96[2];                 // 0x96
 } VADERC_PC;
 
-typedef struct terrain_set_reader_s {      // size 0x6c
-    u8 opaque_00_68[0x68];                 // 0x00
-    TERRAIN_PLATFORM_READER_PC *platforms; // 0x68
-} TERRAIN_SET_READER;
-
 void GrievousA_Init(WORLDINFO *world) {
 }
 

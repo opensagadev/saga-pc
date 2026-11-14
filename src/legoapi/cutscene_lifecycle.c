@@ -576,7 +576,9 @@ typedef struct cut_load_rigid_instance_system_s {
 
 struct cut_load_character_instance_s { // size 0x18
     void *model;                       // 0x00
-    u8 unknown_04[0x11];               // 0x04
+    u8 unknown_04[8];                  // 0x04
+    f32 frame_a;                       // 0x0c
+    u8 unknown_10[5];                  // 0x10
     u8 animation_a;                    // 0x15
     u8 animation_b;                    // 0x16
     u8 unknown_17;                     // 0x17

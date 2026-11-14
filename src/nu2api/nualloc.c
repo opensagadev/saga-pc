@@ -42,11 +42,6 @@ void NuAllocBadPointer(void);
 void NuAllocReport(const void *message, ...);
 
 /* PC manager prefix and block header touched by the allocator. */
-typedef struct nualloc_manager_block_s {      // size 0xc
-    u32 size_flags;                           // 0x0
-    struct nualloc_manager_block_s *next;     // 0x4
-    struct nualloc_manager_block_s *previous; // 0x8
-} NUALLOC_MANAGER_BLOCK;
 
 typedef struct nualloc_manager_trailer_s { // size 0x4
     NUALLOC_MANAGER_BLOCK *previous_block; // 0x0

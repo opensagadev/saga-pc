@@ -236,3 +236,17 @@ typedef struct nualloc_manager_prefix_s { // size 0x10
     u32 block_count;                      // 0x8
     u32 used_bytes;                       // 0xc
 } NUALLOC_MANAGER_PREFIX_PC;
+
+typedef struct nualloc_manager_block_s { // size 0xc
+
+    union { // size 0x4
+        u32 size_flags;
+
+        struct {           // size 0x4
+            u32 size : 31; // 0x0:0
+            u32 used : 1;  // 0x0:31
+        };
+    }; // 0x0
+    struct nualloc_manager_block_s *next;     // 0x4
+    struct nualloc_manager_block_s *previous; // 0x8
+} NUALLOC_MANAGER_BLOCK;

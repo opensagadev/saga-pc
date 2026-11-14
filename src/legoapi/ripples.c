@@ -119,22 +119,6 @@ void AddRipple(RIPPLE_SET_PC *set, NUMTX *matrix, f32 size, f32 growth, f32 life
     }
 }
 
-typedef struct world_ripple_view_s { // size 0x4704
-    u8 unknown_0000[0x46f4];         // 0x0000
-    RIPPLE_EFFECT *effects;          // 0x46f4
-    i32 count;                       // 0x46f8
-
-    union { // size 0x8
-
-        struct {              // size 0x8
-            i32 water_effect; // 0x46fc
-            i32 sabre_effect; // 0x4700
-        };
-
-        i32 effect_of_type[2]; /* indexed by LookupRippleEffectIndex */
-    }; // 0x46fc
-} WORLD_RIPPLE_VIEW;
-
 typedef struct ripple_contact_timer_view_s { // size 0xdc4
     u8 unknown_0000[0xdc0];                  // 0x000
     f32 timer;                               // 0xdc0

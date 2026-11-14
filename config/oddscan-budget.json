@@ -12,7 +12,7 @@
   "naked": 0,
   "asm": 3,
   "volatile-local": 3,
-  "volatile-other": 40,
+  "volatile-other": 41,
   "register": 0,
   "fastcall": 3,
   "thiscall": 8,

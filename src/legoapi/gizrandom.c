@@ -10,7 +10,7 @@ typedef struct GIZFLOW_LOAD_LEVEL { // size 0x104
 } GIZFLOW_LOAD_LEVEL;
 
 typedef struct GIZFLOW_TIMER { // size 0x1c
-    u8 unknown_000[4];         // 0x00
+    f32 time_remaining;        // 0x00
     f32 start_time;            // 0x04
     u8 unknown_008[2];         // 0x08
     u8 flags;                  // 0x0a

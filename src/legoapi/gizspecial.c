@@ -11,7 +11,7 @@ typedef struct GIZFLOW_LOAD_LEVEL { // size 0x104
 } GIZFLOW_LOAD_LEVEL;
 
 typedef struct GIZFLOW_TIMER { // size 0x1c
-    u8 unknown_000[4];         // 0x00
+    f32 time_remaining;        // 0x00
     f32 start_time;            // 0x04
     u8 unknown_008[2];         // 0x08
     u8 flags;                  // 0x0a
@@ -23,7 +23,9 @@ typedef struct GIZFLOW_RANDOM { // size 0x3c
     char name[16];              // 0x00
     i32 output_count;           // 0x10
     i32 output_weights[8];      // 0x14
-    u8 unknown_034[8];          // 0x34
+    i32 selected_output;        // 0x34
+    u8 flags;                   // 0x38
+    u8 unknown_039[3];          // 0x39
 } GIZFLOW_RANDOM;
 
 typedef struct GIZFLOW_RANDOM_SYSTEM { // size 0x8
@@ -43,7 +45,9 @@ typedef struct GIZFLOW_SPECIAL_SYSTEM { // size 0x8
 } GIZFLOW_SPECIAL_SYSTEM;
 
 typedef struct GIZFLOW_LOAD_WORLD {   // size 0x510c
-    u8 unknown_000[0x128];            // 0x0000
+    u8 unknown_000[0x104];            // 0x0000
+    VARIPTR giz_buffer;               // 0x0104
+    u8 unknown_108[0x20];             // 0x0108
     GIZFLOW_LOAD_LEVEL *level;        // 0x0128
     u8 unknown_12c[0x10];             // 0x012c
     NUGSCN *current_gscn;             // 0x013c

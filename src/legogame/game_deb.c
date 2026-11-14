@@ -49,21 +49,6 @@ typedef struct BURNOUT_CUT_PREFIX { // size 0x54
     u32 flags;                      // 0x50
 } BURNOUT_CUT_PREFIX;
 
-typedef struct world_ripple_view_s {
-    u8 unknown_0000[0x46f4];
-    RIPPLE_EFFECT *effects;
-    i32 count;
-
-    union {
-        struct {
-            i32 water_effect;
-            i32 sabre_effect;
-        };
-
-        i32 effect_of_type[2]; /* indexed by LookupRippleEffectIndex */
-    };
-} WORLD_RIPPLE_VIEW;
-
 typedef struct ripple_contact_timer_view_s {
     u8 unknown_0000[0xdc0];
     f32 timer;

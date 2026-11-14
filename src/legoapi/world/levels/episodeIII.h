@@ -48,3 +48,8 @@ typedef struct terrain_platform_reader_pc_s { // size 0x6c
     NUMTX *scene_object;                      // 0x40
     u8 opaque_44_6c[0x28];                    // 0x44
 } TERRAIN_PLATFORM_READER_PC;
+
+typedef struct terrain_set_reader_s {      // size 0x6c
+    u8 opaque_00_68[0x68];                 // 0x00
+    TERRAIN_PLATFORM_READER_PC *platforms; // 0x68
+} TERRAIN_SET_READER;

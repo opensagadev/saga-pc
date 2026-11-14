@@ -151,11 +151,6 @@ typedef struct vaderc_s {
     u8 reserved_96[2];
 } VADERC_PC;
 
-typedef struct terrain_set_reader_s {
-    u8 opaque_00_68[0x68];
-    TERRAIN_PLATFORM_READER_PC *platforms;
-} TERRAIN_SET_READER;
-
 extern i16 dat_007f1a0c;
 GIZFORCE_PC *GizForces_FindForce(WORLDINFO *world, char *name);
 

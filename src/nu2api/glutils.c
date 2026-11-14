@@ -11,8 +11,8 @@ typedef struct debris_material_flags_s { // size 0x4
     u32 unknown_2_1_2 : 2;               // 0x0:16
     u32 unknown_2_4 : 1;                 // 0x0:18
     u32 unknown_19 : 1;                  // 0x0:19
-    u32 alpha_test : 2;                  // 0x0:20
-    u32 unknown_22_31 : 10;              // 0x0:22
+    u32 alpha_test : 3;                  // 0x0:20
+    u32 unknown_23_31 : 9;               // 0x0:23
 } DEBRIS_MATERIAL_FLAGS;
 
 typedef struct debris_material_secondary_s { // size 0x4

@@ -12,7 +12,7 @@ struct PC_OGG_CACHE_RECORD { // size 0x114
     u8 *data;                // 0x104
     i32 bytes;               // 0x108
     u32 last_used;           // 0x10c
-    i32 references;          // 0x110
+    volatile i32 references; // 0x110 shared with the streaming thread: every update is a separate load and store
 };
 
 #pragma pack(push, 4)

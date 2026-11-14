@@ -152,3 +152,5 @@ config/oddscan-budget.json view-use 886 locals named ...ViewPc read as views onc
 config/oddscan-budget.json placeholder-field 8998 placeholder names the class did not recognise (padding_12, field_c0 spellings) take its unknown_<hex>/pad_<hex> form (no new placeholder)
 config/castscan-budget.json layout-compatible 301 15 casts between unit copies of one type become casts between distinct types once the copies merge (duplicate-type 1647 -> 1632; same casts)
 config/castscan-budget.json record-pun 625 see layout-compatible 301 (same 15 casts)
+config/castscan-budget.json record-pun 628 three casts between unit copies of a type become casts between distinct types once the copies are unified (same casts)
+config/oddscan-budget.json volatile-other 41 the unified copy of a cache record keeps its volatile reference count (shared with the streaming thread), which the other unit's copy did not spell
