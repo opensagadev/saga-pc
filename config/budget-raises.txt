@@ -93,3 +93,28 @@ config/declscan-budget.json D 2602 port batch 2: unit-local declarations of call
 config/oddscan-budget.json data-file 8 saga.h split (docs/header-plan.md): saga.h is now the generated include-all shim, a list of 602 includes
 config/oddscan-budget.json dup-type 956 saga.h split (docs/header-plan.md): names saga.h declared twice (PC and Android-transferred copies, function-pointer typedefs) now sit in two module headers, so they count as two files; no new declaration
 config/oddscan-budget.json nolint 71 saga.h split (docs/header-plan.md): the NOLINTBEGIN/NOLINTEND regions of saga.h open and close again in each module header that receives part of them
+config/oddscan-budget.json address-name 3471 port batch 3 (helper copies, compiler-generated initializers, remaining address-named functions): address names, literal flags and states, Pc and placeholder member names, unit-local helpers
+config/oddscan-budget.json assert-offsetof-header 4449 port batch 3: one more slot asserted in a not yet converted vtable view
+config/oddscan-budget.json declspec-align 170 port batch 3: aligned locals of new functions whose removal changes the object
+config/oddscan-budget.json define-in-unit 538 port batch 3 (helper copies, compiler-generated initializers, remaining address-named functions): address names, literal flags and states, Pc and placeholder member names, unit-local helpers
+config/oddscan-budget.json dup-macro 160 port batch 3: _ov_header_fseek_wrap renames vorbisfile.h's static seek callback per unit (oggreader.cpp, nustream.cpp), each to its own map row
+config/oddscan-budget.json dup-macro-conflict 8 port batch 3: _ov_header_fseek_wrap renames vorbisfile.h's static seek callback per unit (oggreader.cpp, nustream.cpp), each to its own map row
+config/oddscan-budget.json hex-name 9691 port batch 3 (helper copies, compiler-generated initializers, remaining address-named functions): address names, literal flags and states, Pc and placeholder member names, unit-local helpers
+config/oddscan-budget.json magic-bound 1667 port batch 3 (helper copies, compiler-generated initializers, remaining address-named functions): address names, literal flags and states, Pc and placeholder member names, unit-local helpers
+config/oddscan-budget.json magic-flag 7563 port batch 3 (helper copies, compiler-generated initializers, remaining address-named functions): address names, literal flags and states, Pc and placeholder member names, unit-local helpers
+config/oddscan-budget.json magic-mask 1230 port batch 3 (helper copies, compiler-generated initializers, remaining address-named functions): address names, literal flags and states, Pc and placeholder member names, unit-local helpers
+config/oddscan-budget.json nolint 73 port batch 3: the per-unit rename of vorbisfile.h's static seek callback (2) and SDK spellings
+config/oddscan-budget.json pc-suffix 46560 port batch 3 (helper copies, compiler-generated initializers, remaining address-named functions): address names, literal flags and states, Pc and placeholder member names, unit-local helpers
+config/oddscan-budget.json placeholder-field 9605 port batch 3 (helper copies, compiler-generated initializers, remaining address-named functions): address names, literal flags and states, Pc and placeholder member names, unit-local helpers
+config/oddscan-budget.json pragma-seg 6493 port batch 3 (and the message pool in its own .bss subsection so theTTNetwork keeps its extent): new data rows defined in data.cpp under the per-variable section pragmas of their neighbours
+config/oddscan-budget.json stdcall 291 port batch 3: COM release slots of the sound and effect vtable views (SoundVoiceManagerPC destructor, effect SetTexture)
+config/oddscan-budget.json undef-in-unit 222 port batch 3 (helper copies, compiler-generated initializers, remaining address-named functions): address names, literal flags and states, Pc and placeholder member names, unit-local helpers
+config/oddscan-budget.json view-use 1054 port batch 3 (helper copies, compiler-generated initializers, remaining address-named functions): address names, literal flags and states, Pc and placeholder member names, unit-local helpers
+config/castscan-budget.json duplicate-type 1653 port batch 3: casts the new code keeps where saga.h types the member void * or as an overlay view
+config/castscan-budget.json float-int 3080 port batch 3: casts the new code keeps where saga.h types the member void * or as an overlay view
+config/castscan-budget.json int-pointer 809 port batch 3: casts the new code keeps where saga.h types the member void * or as an overlay view
+config/castscan-budget.json record-pun 616 port batch 3: VuVec helper copies called on NUVEC/NUVEC4 locals (C++ VuVec& parameters) and the gamepad storage view
+config/castscan-budget.json scalar-pun 305 port batch 3: the header-static Fabs copies retail emits per compiland clear the sign bit through an i32 view, like the existing copies
+config/castscan-budget.json view-type 532 port batch 3: casts the new code keeps where saga.h types the member void * or as an overlay view
+config/castscan-budget.json void-pointer-cpp 1274 port batch 3: casts the new code keeps where saga.h types the member void * or as an overlay view
+config/declscan-budget.json D 2615 port batch 3: unit-local declarations of callees and globals the new functions need
