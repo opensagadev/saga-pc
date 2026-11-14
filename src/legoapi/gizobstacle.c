@@ -5,6 +5,11 @@ STATIC_ASSERT(offsetof(GIZBOMBGEN_s, name) == 0);
 STATIC_ASSERT(offsetof(GIZBOMBGEN_s, position) == 0x10);
 extern const char GizmoSnapOptionNamePc[5];
 
+NUVEC *GizObstacleTriggersPc[16] = {0};
+i32 ngizobstacletriggers = 0;
+i32 (*GizObstacleExcludeFnPc)(GIZOBSTACLE *, GAMEOBJECT *) = 0;
+void (*GizObstacle_SetDefaultSFXFn)(void *world, GIZOBSTACLE *obstacle) = 0;
+
 void GizObstacle_JumpToStart(GIZOBSTACLE *obstacle) {
     if (obstacle && obstacle->anim_set) {
         GameAnimSet_JumpToStart(obstacle->anim_set);
@@ -717,6 +722,7 @@ static void GizObstacleUpdate_AutoStart(GIZOBSTACLE *obstacle) {
 static void (*GizObstacleUpdateFnsPc[8])(GIZOBSTACLE *) = {
     GizObstacleUpdate_AutoStart,  GizObstacleUpdate_Proximity, GizObstacleUpdate_Proximity, GizObstacleUpdate_NoTrigger,
     GizObstacleUpdate_TechnoOnly, GizObstacleUpdate_Proximity, GizObstacleUpdate_Proximity, GizObstacleUpdate_PushOnly};
+const char *GizObstacleRegistrationNamePtrPc = GizObstacleTypeNamePc;
 
 void GizObstacles_Update(void *world_ptr, void *data, f32 time) {
     WORLDINFO *world = world_ptr;

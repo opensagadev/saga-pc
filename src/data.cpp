@@ -7352,9 +7352,6 @@ extern "C" {
     LEVEL_INST_ANIM_RESET_VIEW_PC LevInstAnimResetPc = {0};
 }
 extern "C" {
-    i32 ngizobstacletriggers = 0;
-}
-extern "C" {
 #pragma const_seg(".rdata$GizmoSpecialErrorTabPc")
     extern const char GizmoSpecialErrorTabPc[3] = "\t\t";
 #pragma const_seg()
@@ -7981,7 +7978,6 @@ extern "C" {
     i32 (*InitBolt_AddMomentumType)(BOLT *bolt, GAMEOBJECT *object, NUVEC *momentum) = 0;
     i32 (*Bolt_HitPlatFn)(BOLT *bolt) = 0;
     i32 (*Bolt_HitCustomFn)(void *bolt, void *points) = 0;
-    void (*GizObstacle_SetDefaultSFXFn)(void *world, GIZOBSTACLE *obstacle) = 0;
     f32 PodAvalancheShakeFrames = 111.0f;
     NUVEC PodAvalanchePeakPos = {-110.0f, -10.0f, -455.0f};
     f32 PodAvalancheShakeRange = 750.0f;
@@ -13298,10 +13294,6 @@ extern "C" {
 extern "C" {
 
     LEVELDATA_PC *ObstacleReturnLevelPc = 0;
-
-    NUVEC *GizObstacleTriggersPc[16] = {0};
-
-    i32 (*GizObstacleExcludeFnPc)(GIZOBSTACLE *, GAMEOBJECT *) = 0;
 }
 
 extern "C" {
@@ -14102,7 +14094,6 @@ extern "C" {
 }
 
 extern "C" {
-    const char *GizObstacleRegistrationNamePtrPc = GizObstacleTypeNamePc;
     const char *TubeGizmoNamePc = PCContextName_Tube;
     const char *Tube_OutputName = "Active";
     const char *PlugGizmoNamePc = "Plug";
