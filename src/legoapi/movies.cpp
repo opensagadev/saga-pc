@@ -20,6 +20,7 @@ extern "C" {
 extern "C" {}
 extern "C" {
     i32 MovieCountPc = 0;
+    f32 MovieFrameTime = 0;
     char (*MovieListPc)[32] = NULL;
 
     void Movies_ConfigureList(char *path, VARIPTR *buffer, VARIPTR *buffer_end) {

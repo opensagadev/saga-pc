@@ -24073,8 +24073,6 @@ extern "C" {
 
     i32 (*MovieInputFn)(void) = 0;
 
-    f32 MovieFrameTime = 0;
-
 #pragma data_seg(".data$last_currentmusicpair_quiet")
     i32 last_currentmusicpair_quiet = -1;
 
