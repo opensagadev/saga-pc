@@ -135,6 +135,15 @@ class LiteralScanTests(unittest.TestCase):
         text, _ = literalscan.apply_edits(source.text, edits["src/f.c"])
         self.assertIn("*x = -0.5f * *x;", text)
 
+    def test_allocate_declaration_goes_with_its_section(self):
+        text = ('#pragma section(".rdata$A", read)\n__declspec(allocate(".rdata$A")) const char APc[3] = "ab";\n'
+                'char *Name = (char *)APc;\n')
+        source = literalscan.Source("src/a.c", text)
+        decl = next(literalscan.declarations(source))
+        decl["uses"] = literalscan.uses([source], decl)
+        new, _ = literalscan.apply_edits(text, literalscan.source_edits([source], decl)["src/a.c"])
+        self.assertEqual(new, 'char *Name = "ab";\n')
+
     def test_tidy_segments(self):
         text = ('#pragma const_seg(".rdata$A")\n#pragma const_seg(".rdata$B")\nconst char B[] = "b";\n'
                 '#pragma const_seg()\n#pragma const_seg()\n')

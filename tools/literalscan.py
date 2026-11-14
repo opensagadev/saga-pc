@@ -372,6 +372,16 @@ def source_edits(sources, decl):
                        r'"\s*\)[ \t]*\n\Z', source.text[:start], re.MULTILINE)
     if before:
         start = before.start()
+    allocate = re.search(r'(?:^[ \t]*#\s*pragma\s+section\s*\(\s*"([^"\n]*)"[^\n]*\n)?'
+                         r'^[ \t]*__declspec\s*\(\s*allocate\s*\(\s*"([^"\n]*)"\s*\)\s*\)\s*\Z',
+                         source.text[:decl["span"][0]], re.MULTILINE)
+    if allocate:  # `__declspec(allocate("S")) const char NAME[] = ...` and its `#pragma section("S")`
+        if allocate.group(1) is not None and allocate.group(1) != allocate.group(2):
+            start = source.text.index("__declspec", allocate.start())
+            start = source.text.rfind("\n", 0, start) + 1
+        else:
+            start = allocate.start()
+        end = remove_line_span(source.text, start, decl["span"][1])[1]
     edits.setdefault(source.path, []).append((start, end, "", None))
     use_source, use_start, use_end, kind = decl["uses"][0]
     if kind == "cast":
