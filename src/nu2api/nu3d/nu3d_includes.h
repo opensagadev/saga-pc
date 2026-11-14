@@ -1009,6 +1009,15 @@ typedef struct NUHGOBJ_EVAL {                 // size 0x1c4
 } NUHGOBJ_EVAL;
 
 /* PC NuDynamicLight::RenderSet. */
+typedef struct NU_LIGHT_SHADOW_LIST_VIEW {     // size 0x44
+    u8 unknown_000[8];                         // 0x00
+    struct nurndrlibstate_s *state;            // 0x08
+    u8 unknown_00c[4];                         // 0x0c
+    struct nudisplaylistitem_s *first;         // 0x10
+    struct nudisplaylistitem_s *material_last; // 0x14
+    u8 unknown_018[0x2c];                      // 0x18
+} NU_LIGHT_SHADOW_LIST_VIEW;
+
 typedef struct nurndrlightrecord_s {           // size 0x380
     NUMTX view_pc;                             // 0x000
     NUMTX projection_pc;                       // 0x040
@@ -1083,6 +1092,59 @@ extern "C" {
 extern "C" {
 #endif
     i32 NuDynamicLightIsEnabled(NURNDRLIGHTRECORD *records);
+
+    typedef struct NU_POST_MAIN_VIEW {                // size 0x128
+        void *vtable;                                 // 0x000
+        u8 enabled;                                   // 0x004
+        u8 unknown_005[0x63];                         // 0x005
+        const struct NU_POST_BLOOM_PARAMETERS *bloom; // 0x068
+        f32 blur_radius;                              // 0x06c
+        f32 dof_strength;                             // 0x070
+        f32 dof_near;                                 // 0x074
+        f32 dof_far;                                  // 0x078
+        f32 dof_blur;                                 // 0x07c
+        i32 dof_mode;                                 // 0x080
+        i32 dof_bias;                                 // 0x084
+        u8 dof_enabled;                               // 0x088
+        u8 bloom_enabled;                             // 0x089
+        u8 unknown_08a[2];                            // 0x08a
+        i32 active_filter_count;                      // 0x08c
+        NUMTX motion_previous;                        // 0x090
+        NUMTX motion_current;                         // 0x0d0
+        f32 motion_scale;                             // 0x110
+        f32 motion_maximum;                           // 0x114
+        f32 motion_falloff;                           // 0x118
+        i32 accumulation_frames;                      // 0x11c
+        f32 accumulation_blend;                       // 0x120
+        f32 accumulation_mode_pc;                     // 0x124
+    } NU_POST_MAIN_VIEW;
+
+    typedef struct NU_POST_MOTION_VIEW { // size 0xa0
+        void *vtable;                    // 0x00
+        u8 enabled;                      // 0x04
+        u8 unknown_005[0xf];             // 0x05
+        NUMTX previous;                  // 0x14
+        NUMTX current;                   // 0x54
+        f32 scale;                       // 0x94
+        f32 maximum;                     // 0x98
+        f32 falloff;                     // 0x9c
+    } NU_POST_MOTION_VIEW;
+
+    typedef struct NU_POST_ACCUM_VIEW { // size 0x24
+        void *vtable;                   // 0x00
+        u8 enabled;                     // 0x04
+        u8 unknown_005[0x13];           // 0x05
+        i32 frames;                     // 0x18
+        f32 blend;                      // 0x1c
+        f32 mode_pc;                    // 0x20
+    } NU_POST_ACCUM_VIEW;
+
+    typedef struct NU_POST_SPEED_VIEW {                    // size 0x20
+        void *vtable;                                      // 0x00
+        u8 enabled;                                        // 0x04
+        u8 unknown_005[0x17];                              // 0x05
+        const struct NU_POST_SPEED_PARAMETERS *parameters; // 0x1c
+    } NU_POST_SPEED_VIEW;
 
     extern NU_POST_MAIN_VIEW *mainFilter;
     extern NU_POST_MOTION_VIEW *motionFilter;

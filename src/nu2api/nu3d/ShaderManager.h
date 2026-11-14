@@ -24,7 +24,45 @@
 
 #if SAGA_NU2API_NU3D_SHADERMANAGER_H_PART == 1 && !defined(SAGA_NU2API_NU3D_SHADERMANAGER_H_STOP)
 
+typedef struct PC_SHADER_FILTER_DESC_VIEW PC_SHADER_FILTER_DESC_VIEW;
+typedef struct PC_SHADER_FILTER_MATERIAL_VIEW PC_SHADER_FILTER_MATERIAL_VIEW;
+
+struct PC_SHADER_FILTER_DESC_VIEW {
+    u32 flags;
+    i32 diffuse_maps[4];
+    u8 unknown_014[0x20];
+    i32 surface_threshold;
+    i32 normal_threshold;
+    u8 unknown_03c[8];
+    u8 blend_ops[3];
+    u8 unknown_047;
+    i32 specular_threshold;
+    u8 unknown_04c[0x3c];
+    f32 shininess;
+    u8 unknown_08c[0x1c];
+    u8 texture_units;
+    u8 sampler_indices[6];
+    u8 unknown_0af[0x8d];
+    u32 vertex_format;
+    u8 unknown_140[0x74];
+    u8 override_mode;
+    u8 unknown_1b5[3];
+    u32 layer_flags;
+    u32 selectors;
+    u8 unknown_1c0[0x24];
+    i32 extra_texture;
+    i32 environment_texture;
+};
+
 struct PC_SHADER_FILTER_DESC_VIEW;
+
+struct PC_SHADER_FILTER_MATERIAL_VIEW {
+    u8 unknown_000[0x40];
+    u32 blend_flags;
+    u8 unknown_044[0xbc];
+    i32 texture_id;
+};
+
 struct PC_SHADER_FILTER_MATERIAL_VIEW;
 struct PC_SHADER_MATERIAL_FILTER_VIEW;
 struct PC_TEXTURE_RESOURCE;

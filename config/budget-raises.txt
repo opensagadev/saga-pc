@@ -161,3 +161,5 @@ config/castscan-budget.json declaration-type 1924 154 casts between unit copies 
 config/castscan-budget.json record-pun 738 see declaration-type 1924
 config/castscan-budget.json field-address 335 see declaration-type 1924
 config/standalone-budget.json non-standalone 233 module headers that now hold moved unit types compile with saga.h; standalone with the header pass
+config/oddscan-budget.json decomp-type 20 new class: game and engine types still defined in src/decomp.h (target 0; budget only goes down)
+config/oddscan-budget.json view-type 181 two view typedefs moved from decomp.h, which view-type does not scan, to ShaderManager.h (no new view)

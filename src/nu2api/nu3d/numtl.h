@@ -6,6 +6,21 @@
 #include "nu2api/nucore/common.h"
 
 struct PC_MATERIAL_CREATE_SHADER;
+
+typedef struct PC_MATERIAL_SHADER_DESC_VIEW { // size 0x208
+    u32 flags;                                // 0x000
+    i32 diffuse_map_id;                       // 0x004
+    u8 unknown_08[0xc];                       // 0x008
+    u32 packed_diffuse_colour;                // 0x014
+    u8 unknown_18[0x90];                      // 0x018
+    u8 texture_unit_count;                    // 0x0a8
+    u8 unknown_a9[0x93];                      // 0x0a9
+    u32 vertex_format;                        // 0x13c
+    i16 shader_handle;                        // 0x140
+    i16 shader_variant_handle;                // 0x142
+    u8 unknown_144[0xc4];                     // 0x144
+} PC_MATERIAL_SHADER_DESC_VIEW;
+
 struct PC_MATERIAL_SHADER_DESC_VIEW;
 struct nudisplaylist_pc_s;
 

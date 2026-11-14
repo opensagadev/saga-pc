@@ -426,6 +426,11 @@ extern "C" {
         struct numtl_s *material;           // 0x10
     } NATIVE_PARTICLE_PACKET;
 
+    typedef union PC_GRAPHICS_FRAME_SCRATCH_VIEW { // size 0x4
+        i32 reset_word;
+        void *lightmap_packet;
+    } PC_GRAPHICS_FRAME_SCRATCH_VIEW;
+
     extern struct NUGSCN_s *PCRegisteredNativeScenes[100];
     extern struct numtl_s *PCStartupMaterial1;
     extern struct numtl_s *PCStartupMaterial2;

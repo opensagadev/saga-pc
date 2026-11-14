@@ -113,6 +113,7 @@ CLASSES = [
     ("dup-macro-conflict", "d", "macro defined in more than one file with different bodies"),
     ("dup-type", "d", "struct/union/enum/typedef defined in more than one file"),
     ("dup-type-conflict", "d", "struct/union/enum defined in more than one file with different bodies"),
+    ("decomp-type", "d", "struct/union/enum definition in src/decomp.h (debug and helper scaffolding only)"),
     ("local-extern", "d", "extern declaration inside a function body"),
     ("magic-state", "g", "literal state/mode/type value (==, !=, case, assignment), not 0/1/-1"),
     ("magic-flag", "g", "single-bit literal in a bit operation"),
@@ -170,6 +171,7 @@ PRAGMA_KIND = {
     "pack": "pragma-pack", "warning": "pragma-warning", "comment": "pragma-comment",
     "push_macro": "pragma-macro", "pop_macro": "pragma-macro",
 }
+DECOMP_TYPE = re.compile(r"^[ \t]*(?:typedef\s+)?(?:struct|union|enum)\b[^;(]*\{", re.M)
 OTHER_PLATFORM = re.compile(r'(?i:android)|\biOS\b|IOS_|OpenGL|\bGLES\d*\b')
 CODE_PATTERNS = [
     ("noinline", re.compile(r'__declspec\s*\(\s*noinline\s*\)')),
@@ -338,6 +340,9 @@ class FileScan:
         self.top_level_statements = []                   # (line, text) at file or extern "C" scope
         self.functions = []                              # (first line, last line) of function definitions
         self.first_code_line = None                      # first ; { } outside extern "C"/namespace braces
+        if relative == "src/decomp.h":
+            for match in DECOMP_TYPE.finditer(text):
+                self.add("decomp-type", text.count("\n", 0, match.start()) + 1, match.group(0))
         if OTHER_PLATFORM.search(relative):
             self.add("other-platform", 1, relative)
         self.scan(text)

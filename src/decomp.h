@@ -53,8 +53,6 @@ struct nurndrlibstate_s;
 #ifdef __cplusplus
 extern "C" {
 #endif
-    typedef struct PC_SHADER_FILTER_DESC_VIEW PC_SHADER_FILTER_DESC_VIEW;
-    typedef struct PC_SHADER_FILTER_MATERIAL_VIEW PC_SHADER_FILTER_MATERIAL_VIEW;
     typedef struct PC_SHADER_MATERIAL_FILTER_VIEW PC_SHADER_MATERIAL_FILTER_VIEW;
 
 #ifdef __cplusplus
@@ -80,29 +78,6 @@ STATIC_ASSERT(sizeof(LARGE_INTEGER) == 8);
 #endif
 
 #if SAGA_DECOMP_H_PART == 2 && !defined(SAGA_DECOMP_H_STOP)
-
-typedef struct NU_LIGHT_SHADOW_LIST_VIEW {     // size 0x44
-    u8 unknown_000[8];                         // 0x00
-    struct nurndrlibstate_s *state;            // 0x08
-    u8 unknown_00c[4];                         // 0x0c
-    struct nudisplaylistitem_s *first;         // 0x10
-    struct nudisplaylistitem_s *material_last; // 0x14
-    u8 unknown_018[0x2c];                      // 0x18
-} NU_LIGHT_SHADOW_LIST_VIEW;
-
-typedef struct PC_MATERIAL_SHADER_DESC_VIEW { // size 0x208
-    u32 flags;                                // 0x000
-    i32 diffuse_map_id;                       // 0x004
-    u8 unknown_08[0xc];                       // 0x008
-    u32 packed_diffuse_colour;                // 0x014
-    u8 unknown_18[0x90];                      // 0x018
-    u8 texture_unit_count;                    // 0x0a8
-    u8 unknown_a9[0x93];                      // 0x0a9
-    u32 vertex_format;                        // 0x13c
-    i16 shader_handle;                        // 0x140
-    i16 shader_variant_handle;                // 0x142
-    u8 unknown_144[0xc4];                     // 0x144
-} PC_MATERIAL_SHADER_DESC_VIEW;
 
 struct PC_HG_SHADOW_STATE_VIEW { // size 0x10
 
@@ -179,62 +154,9 @@ extern "C" {
 #endif
 #ifdef __cplusplus
 
-struct PC_SHADER_FILTER_DESC_VIEW {
-    u32 flags;
-    i32 diffuse_maps[4];
-    u8 unknown_014[0x20];
-    i32 surface_threshold;
-    i32 normal_threshold;
-    u8 unknown_03c[8];
-    u8 blend_ops[3];
-    u8 unknown_047;
-    i32 specular_threshold;
-    u8 unknown_04c[0x3c];
-    f32 shininess;
-    u8 unknown_08c[0x1c];
-    u8 texture_units;
-    u8 sampler_indices[6];
-    u8 unknown_0af[0x8d];
-    u32 vertex_format;
-    u8 unknown_140[0x74];
-    u8 override_mode;
-    u8 unknown_1b5[3];
-    u32 layer_flags;
-    u32 selectors;
-    u8 unknown_1c0[0x24];
-    i32 extra_texture;
-    i32 environment_texture;
-};
-
-STATIC_ASSERT(offsetof(PC_SHADER_FILTER_DESC_VIEW, diffuse_maps) == 4);
-STATIC_ASSERT(offsetof(PC_SHADER_FILTER_DESC_VIEW, flags) == 0);
-STATIC_ASSERT(offsetof(PC_SHADER_FILTER_DESC_VIEW, sampler_indices) == 0xa9);
-STATIC_ASSERT(offsetof(PC_SHADER_FILTER_DESC_VIEW, surface_threshold) == 0x34);
-STATIC_ASSERT(offsetof(PC_SHADER_FILTER_DESC_VIEW, normal_threshold) == 0x38);
-STATIC_ASSERT(offsetof(PC_SHADER_FILTER_DESC_VIEW, blend_ops) == 0x44);
-STATIC_ASSERT(offsetof(PC_SHADER_FILTER_DESC_VIEW, specular_threshold) == 0x48);
-STATIC_ASSERT(offsetof(PC_SHADER_FILTER_DESC_VIEW, shininess) == 0x88);
-STATIC_ASSERT(offsetof(PC_SHADER_FILTER_DESC_VIEW, texture_units) == 0xa8);
-STATIC_ASSERT(offsetof(PC_SHADER_FILTER_DESC_VIEW, vertex_format) == 0x13c);
-STATIC_ASSERT(offsetof(PC_SHADER_FILTER_DESC_VIEW, override_mode) == 0x1b4);
-STATIC_ASSERT(offsetof(PC_SHADER_FILTER_DESC_VIEW, layer_flags) == 0x1b8);
-STATIC_ASSERT(offsetof(PC_SHADER_FILTER_DESC_VIEW, selectors) == 0x1bc);
-STATIC_ASSERT(offsetof(PC_SHADER_FILTER_DESC_VIEW, extra_texture) == 0x1e4);
-STATIC_ASSERT(offsetof(PC_SHADER_FILTER_DESC_VIEW, environment_texture) == 0x1e8);
-
-struct PC_SHADER_FILTER_MATERIAL_VIEW {
-    u8 unknown_000[0x40];
-    u32 blend_flags;
-    u8 unknown_044[0xbc];
-    i32 texture_id;
-};
-
-STATIC_ASSERT(offsetof(PC_SHADER_FILTER_MATERIAL_VIEW, blend_flags) == 0x40);
-STATIC_ASSERT(offsetof(PC_SHADER_FILTER_MATERIAL_VIEW, texture_id) == 0x100);
-
 struct PC_SHADER_MATERIAL_FILTER_VIEW {
-    const PC_SHADER_FILTER_DESC_VIEW *descriptor;
-    const PC_SHADER_FILTER_MATERIAL_VIEW *material;
+    const struct PC_SHADER_FILTER_DESC_VIEW *descriptor;
+    const struct PC_SHADER_FILTER_MATERIAL_VIEW *material;
     i32 flags;
     i32 variant;
     i32 first_path;
@@ -358,65 +280,9 @@ typedef struct ANIM_REDIRECT_VIEW_PC { // size 0x8
 } ANIM_REDIRECT_VIEW_PC;
 
 /* Refine the existing single DWORD owner; do not create another address alias. */
-typedef union PC_GRAPHICS_FRAME_SCRATCH_VIEW { // size 0x4
-    i32 reset_word;
-    void *lightmap_packet;
-} PC_GRAPHICS_FRAME_SCRATCH_VIEW;
-
-typedef struct NU_POST_MAIN_VIEW {                // size 0x128
-    void *vtable;                                 // 0x000
-    u8 enabled;                                   // 0x004
-    u8 unknown_005[0x63];                         // 0x005
-    const struct NU_POST_BLOOM_PARAMETERS *bloom; // 0x068
-    f32 blur_radius;                              // 0x06c
-    f32 dof_strength;                             // 0x070
-    f32 dof_near;                                 // 0x074
-    f32 dof_far;                                  // 0x078
-    f32 dof_blur;                                 // 0x07c
-    i32 dof_mode;                                 // 0x080
-    i32 dof_bias;                                 // 0x084
-    u8 dof_enabled;                               // 0x088
-    u8 bloom_enabled;                             // 0x089
-    u8 unknown_08a[2];                            // 0x08a
-    i32 active_filter_count;                      // 0x08c
-    NUMTX motion_previous;                        // 0x090
-    NUMTX motion_current;                         // 0x0d0
-    f32 motion_scale;                             // 0x110
-    f32 motion_maximum;                           // 0x114
-    f32 motion_falloff;                           // 0x118
-    i32 accumulation_frames;                      // 0x11c
-    f32 accumulation_blend;                       // 0x120
-    f32 accumulation_mode_pc;                     // 0x124
-} NU_POST_MAIN_VIEW;
 
 /* 32 slots are the bounded pointer region58..d8; no native upper-bound
  * guard is added and no full class allocation/capacity is credited. */
-typedef struct NU_POST_MOTION_VIEW { // size 0xa0
-    void *vtable;                    // 0x00
-    u8 enabled;                      // 0x04
-    u8 unknown_005[0xf];             // 0x05
-    NUMTX previous;                  // 0x14
-    NUMTX current;                   // 0x54
-    f32 scale;                       // 0x94
-    f32 maximum;                     // 0x98
-    f32 falloff;                     // 0x9c
-} NU_POST_MOTION_VIEW;
-
-typedef struct NU_POST_ACCUM_VIEW { // size 0x24
-    void *vtable;                   // 0x00
-    u8 enabled;                     // 0x04
-    u8 unknown_005[0x13];           // 0x05
-    i32 frames;                     // 0x18
-    f32 blend;                      // 0x1c
-    f32 mode_pc;                    // 0x20
-} NU_POST_ACCUM_VIEW;
-
-typedef struct NU_POST_SPEED_VIEW {                    // size 0x20
-    void *vtable;                                      // 0x00
-    u8 enabled;                                        // 0x04
-    u8 unknown_005[0x17];                              // 0x05
-    const struct NU_POST_SPEED_PARAMETERS *parameters; // 0x1c
-} NU_POST_SPEED_VIEW;
 
 #include "debug/diagnostics.h"
 #undef SAGA_DECOMP_H_PART
