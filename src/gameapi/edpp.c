@@ -111,7 +111,9 @@ i32 edppProc(f32 delta_time, FRAME_PAD_PC *pad) {
 }
 
 void __cdecl edppStopPage(i8 page) {
-    i32 index, key, handle;
+    i32 index;
+    i32 key;
+    i32 handle;
     EDPP_PARTICLE_PC *particle;
     edpp_page_on[page] = 0;
     for (index = 0; index < 512; ++index) {
@@ -142,7 +144,9 @@ void __cdecl edppStopPage(i8 page) {
 }
 
 void __cdecl edppClearPage(i8 page) {
-    i32 index, key, handle;
+    i32 index;
+    i32 key;
+    i32 handle;
     edpp_page_on[page] = 0;
     edpp_page_used[page] = 0;
     for (index = 0; index < 512; ++index) {
@@ -788,7 +792,8 @@ void cbPtlDamageMenu(eduimenu_s *menu, eduiitem_s *unused1, u32 unused2) {
 }
 
 void __cdecl edppDeleteEffect(i32 index) {
-    i32 replacement, i;
+    i32 replacement;
+    i32 i;
     if (edpp_ptls[edpp_nearest].effect_index == index) {
         edpp_nearest = -1;
     }
@@ -876,8 +881,13 @@ void edptlcbEmptyClipboard(eduimenu_s *menu, eduiitem_s *unused1, u32 unused2) {
     edpp_create_type = create_type;
 }
 
-extern PC_SCENE_MTL_VIEW *edpp_mtl, *edpp_boxmtl;
-extern i32 edpp_copy_mode, edpp_copy_source_count, edpp_copy_enclosed, edpp_copyrotz, edpp_copyroty;
+extern PC_SCENE_MTL_VIEW *edpp_mtl;
+extern PC_SCENE_MTL_VIEW *edpp_boxmtl;
+extern i32 edpp_copy_mode;
+extern i32 edpp_copy_source_count;
+extern i32 edpp_copy_enclosed;
+extern i32 edpp_copyrotz;
+extern i32 edpp_copyroty;
 extern f32 edpp_offset;
 void __cdecl edbitsDrawCube(f32 x, f32 y, f32 z, f32 half_x, f32 half_y, f32 half_z, i32 rotation_z, i32 rotation_y,
                             i32 rotation_x, i32 outer_z, i32 outer_y, i32 colour, NUMTL *material);
@@ -888,8 +898,12 @@ void __cdecl edbitsDrawTorus(NUVEC *centre, f32 radius, f32 radial_extent, f32 v
                              NUMTL *material);
 
 void __cdecl edppDrawSpheres(DEBRIS_INFO_PC *effect, i32 key_index) {
-    i32 sphere_index, first;
-    f32 time, radius, delta, range;
+    i32 sphere_index;
+    i32 first;
+    f32 time;
+    f32 radius;
+    f32 delta;
+    f32 range;
     NUVEC position;
     if (effect->process_spheres == 0) {
         return;
@@ -920,7 +934,12 @@ void __cdecl edppDrawSpheres(DEBRIS_INFO_PC *effect, i32 key_index) {
 }
 
 void __cdecl edppDrawTorus(DEBRIS_INFO_PC *effect, i32 key_index) {
-    f32 time, radius, radial_extent, vertical_extent, delta, range;
+    f32 time;
+    f32 radius;
+    f32 radial_extent;
+    f32 vertical_extent;
+    f32 delta;
+    f32 range;
     i32 index;
     NUVEC position;
     if (effect->torus_lifetime == 0.0f) {
@@ -1026,7 +1045,8 @@ void __cdecl edppDrawTorus(DEBRIS_INFO_PC *effect, i32 key_index) {
     NuRndrLine3d(line, (NUMTL *)edpp_mtl, NULL)
 
 void __cdecl edppDrawCursor(void) {
-    i32 rotation_z, rotation_y;
+    i32 rotation_z;
+    i32 rotation_y;
     NUVEC vector;
     NURND_VERTEX3D_PC line[2];
     DEBRISKEY_PC *key;
@@ -1236,7 +1256,9 @@ void __cdecl edppDrawCursor(void) {
 
 extern i32 edpp_copy_source[8];
 extern NUVEC edpp_copy_source_vec;
-extern i32 edpp_snap_enabled, edpp_cam_ax, edpp_cam_ay;
+extern i32 edpp_snap_enabled;
+extern i32 edpp_cam_ax;
+extern i32 edpp_cam_ay;
 extern eduimenu_s *ptloptmenu;
 void __cdecl edcamMove(FRAME_PAD_PC *pad);
 void __cdecl edcamGetPosAng(NUVEC *position, i32 *angle_x, i32 *angle_y);
@@ -1465,8 +1487,10 @@ void __cdecl edppMultipleCopyCopy(void) {
 }
 
 void __cdecl edppMultipleCopyPaste(void) {
-    i32 source, index;
-    NUVEC offset, position;
+    i32 source;
+    i32 index;
+    NUVEC offset;
+    NUVEC position;
     if (edpp_copy_source_count == 0) {
         return;
     }
@@ -1654,8 +1678,11 @@ void __cdecl edppDoInput(FRAME_PAD_PC *pad) {
 }
 
 void __cdecl edppHighlightNearest(void) {
-    i32 index, source;
-    NUVEC delta, offset, position;
+    i32 index;
+    i32 source;
+    NUVEC delta;
+    NUVEC offset;
+    NUVEC position;
     if (edpp_copy_mode != 0) {
         edpp_copy_enclosed = 0;
         for (index = 0; index < 512; ++index) {
@@ -1713,7 +1740,9 @@ i32 __cdecl edppSaveEffects(char *filename, u8 page) {
     i32 effect_count = 0;
     i32 instance_count = 0;
     u8 list = page;
-    i32 index, key, sound_count;
+    i32 index;
+    i32 key;
+    i32 sound_count;
     if (page == 6) {
         page = 1;
     }
@@ -2865,13 +2894,27 @@ void __cdecl cbPtlStartVelMenu(eduimenu_s *parent, eduiitem_s *unused1, u32 unus
     }
 }
 
-extern struct eduimenu_s *edptl_torus_menu, *ptlrotmenu, *collmenu;
-extern struct eduiitem_s *torus_env1_item, *torus_env2_item, *torus_env3_item, *grad_rot_item, *coll_env_item;
-extern struct edui_slider_s *grad_rot_min_item, *grad_rot_max_item;
+extern struct eduimenu_s *edptl_torus_menu;
+extern struct eduimenu_s *ptlrotmenu;
+extern struct eduimenu_s *collmenu;
+extern struct eduiitem_s *torus_env1_item;
+extern struct eduiitem_s *torus_env2_item;
+extern struct eduiitem_s *torus_env3_item;
+extern struct eduiitem_s *grad_rot_item;
+extern struct eduiitem_s *coll_env_item;
+extern struct edui_slider_s *grad_rot_min_item;
+extern struct edui_slider_s *grad_rot_max_item;
 
 typedef struct edui_gradient_stage_pc_s {
-    f32 time, hue, saturation, value, red, green, blue;
-    u32 colour, metadata;
+    f32 time;
+    f32 hue;
+    f32 saturation;
+    f32 value;
+    f32 red;
+    f32 green;
+    f32 blue;
+    u32 colour;
+    u32 metadata;
 } EDUI_GRADIENT_STAGE_PC;
 
 STATIC_ASSERT(sizeof(EDUI_GRADIENT_STAGE_PC) == 0x24);
@@ -3059,7 +3102,9 @@ static void cbChangeTorusRad2(eduimenu_s *unused0, eduiitem_s *item, u32 unused2
 static void cbPtlApplyTorusEnv1(eduimenu_s *unused0, eduiitem_s *unused1, u32 unused2) {
     EDUI_GRADIENT_STAGE_PC stages[8];
     DEBRIS_INFO_PC *effect;
-    i32 count, instance, i;
+    i32 count;
+    i32 instance;
+    i32 i;
     if (torus_env1_item == NULL) {
         return;
     }
@@ -3081,7 +3126,9 @@ static void cbPtlApplyTorusEnv1(eduimenu_s *unused0, eduiitem_s *unused1, u32 un
 static void cbPtlApplyTorusEnv2(eduimenu_s *unused0, eduiitem_s *unused1, u32 unused2) {
     EDUI_GRADIENT_STAGE_PC stages[8];
     DEBRIS_INFO_PC *effect;
-    i32 count, instance, i;
+    i32 count;
+    i32 instance;
+    i32 i;
     if (torus_env2_item == NULL) {
         return;
     }
@@ -3103,7 +3150,9 @@ static void cbPtlApplyTorusEnv2(eduimenu_s *unused0, eduiitem_s *unused1, u32 un
 static void cbPtlApplyTorusEnv3(eduimenu_s *unused0, eduiitem_s *unused1, u32 unused2) {
     EDUI_GRADIENT_STAGE_PC stages[8];
     DEBRIS_INFO_PC *effect;
-    i32 count, instance, i;
+    i32 count;
+    i32 instance;
+    i32 i;
     if (torus_env3_item == NULL) {
         return;
     }
@@ -3125,8 +3174,11 @@ static void cbPtlApplyTorusEnv3(eduimenu_s *unused0, eduiitem_s *unused1, u32 un
 static void cbPtlApplyCollEnv(eduimenu_s *unused0, eduiitem_s *unused1, u32 unused2) {
     EDUI_GRADIENT_STAGE_PC stages[8];
     DEBRIS_INFO_PC *effect;
-    i32 count, instance, i;
-    f32 minimum, maximum;
+    i32 count;
+    i32 instance;
+    i32 i;
+    f32 minimum;
+    f32 maximum;
     if (coll_env_item) {
         count = eduiGradPickRead(coll_env_item, stages, 8);
         if (count < 2 || count > 8 || edpp_nearest == -1) {
@@ -3149,8 +3201,12 @@ static void cbPtlApplyCollEnv(eduimenu_s *unused0, eduiitem_s *unused1, u32 unus
 static void cbPtlApplyRot(eduimenu_s *unused0, eduiitem_s *unused1, u32 unused2) {
     EDUI_GRADIENT_STAGE_PC stages[8];
     DEBRIS_INFO_PC *effect;
-    i32 count, instance, i;
-    f32 minimum, maximum, angle;
+    i32 count;
+    i32 instance;
+    i32 i;
+    f32 minimum;
+    f32 maximum;
+    f32 angle;
     if (!(!grad_rot_min_item || !grad_rot_max_item || !grad_rot_item)) {
         count = eduiGradPickRead(grad_rot_item, stages, 8);
         minimum = grad_rot_min_item->value;
@@ -3180,7 +3236,8 @@ static void cbPtlApplyRot(eduimenu_s *unused0, eduiitem_s *unused1, u32 unused2)
 static void cbPtlDefaultCollEnv(eduimenu_s *menu, eduiitem_s *unused1, u32 unused2) {
     struct eduimenu_s *parent = NULL;
     DEBRIS_INFO_PC *effect;
-    i32 instance, i;
+    i32 instance;
+    i32 i;
     if (edpp_nearest != -1) {
         instance = edpp_ptls[edpp_nearest].instance_id;
         if (instance != -1) {
@@ -3450,8 +3507,10 @@ void __cdecl cbPtlRotMenu(eduimenu_s *parent, eduiitem_s *unused1, u32 unused2) 
 }
 
 extern struct eduimenu_s *ptlsizemenu;
-extern struct eduiitem_s *grad_size_w_item, *grad_size_h_item;
-extern struct edui_slider_s *grad_size_min_item, *grad_size_max_item;
+extern struct eduiitem_s *grad_size_w_item;
+extern struct eduiitem_s *grad_size_h_item;
+extern struct edui_slider_s *grad_size_min_item;
+extern struct edui_slider_s *grad_size_max_item;
 void __cdecl eduiGradStageDelete(edui_gradient_pick_s *item, struct edui_gradient_node_s *stage);
 
 static void cbPtlCancelSizeMenu(eduimenu_s *unused0, eduimenu_s *unused1) {
@@ -3466,8 +3525,11 @@ static void cbPtlCancelSizeMenu(eduimenu_s *unused0, eduimenu_s *unused1) {
 static void cbPtlApplySize(eduimenu_s *unused0, eduiitem_s *unused1, u32 unused2) {
     EDUI_GRADIENT_STAGE_PC stages[8];
     DEBRIS_INFO_PC *effect;
-    i32 count, instance, i;
-    f32 minimum, maximum;
+    i32 count;
+    i32 instance;
+    i32 i;
+    f32 minimum;
+    f32 maximum;
     if (!grad_size_min_item || !grad_size_max_item || !grad_size_h_item || !grad_size_w_item) {
         return;
     }
@@ -3506,7 +3568,8 @@ static void cbPtlApplySize(eduimenu_s *unused0, eduiitem_s *unused1, u32 unused2
 static void cbPtlCopySize(eduimenu_s *unused0, eduiitem_s *item, u32 unused2) {
     DEBRIS_INFO_PC *effect;
     edui_gradient_pick_s *gradient;
-    i32 instance, i;
+    i32 instance;
+    i32 i;
     f32 grey;
     if (edpp_nearest == -1) {
         return;
@@ -3798,7 +3861,8 @@ void edptlcbPageMenu(eduimenu_s *parent, eduiitem_s *unused1, u32 unused2) {
     edptl_page_menu->y = parent->y + 40;
 }
 
-extern struct eduimenu_s *edptl_switch_menu, *edptl_switchtype_menu;
+extern struct eduimenu_s *edptl_switch_menu;
+extern struct eduimenu_s *edptl_switchtype_menu;
 
 void edptlcbSetSwitchType(eduimenu_s *menu, eduiitem_s *item, u32 unused2) {
     if (edpp_nearest != -1 && edpp_ptls[edpp_nearest].instance_id != -1) {
@@ -3871,12 +3935,15 @@ void edptlcbSwitchMenu(eduimenu_s *parent, eduiitem_s *unused1, u32 unused2) {
 }
 
 extern struct eduimenu_s *ptlcolmenu;
-extern struct eduiitem_s *grad_item, *grad_alpha_item;
+extern struct eduiitem_s *grad_item;
+extern struct eduiitem_s *grad_alpha_item;
 
 void cbPtlApplyGrad(eduimenu_s *unused0, eduiitem_s *unused1, u32 unused2) {
     EDUI_GRADIENT_STAGE_PC stages[8];
     DEBRIS_INFO_PC *effect;
-    i32 count, instance, i;
+    i32 count;
+    i32 instance;
+    i32 i;
     if (grad_item != NULL) {
         count = eduiGradPickRead(grad_item, stages, 8);
         if (count >= 2 && count <= 8 && edpp_nearest != -1) {
@@ -3987,11 +4054,18 @@ void cbPtlColMenu(eduimenu_s *parent, eduiitem_s *unused1, u32 unused2) {
     ptlcolmenu->y = parent->y + 40;
 }
 
-extern struct eduimenu_s *edptl_sounds_menu, *edptl_soundx_menu, *edptl_soundid_menu, *edptl_soundcontrol_menu;
+extern struct eduimenu_s *edptl_sounds_menu;
+extern struct eduimenu_s *edptl_soundx_menu;
+extern struct eduimenu_s *edptl_soundid_menu;
+extern struct eduimenu_s *edptl_soundcontrol_menu;
 
 void edptlcbSetSoundID(eduimenu_s *menu, eduiitem_s *item, u32 unused2) {
-    u32 data, sound_index;
-    i32 sound_id, instance, index, slot;
+    u32 data;
+    u32 sound_index;
+    i32 sound_id;
+    i32 instance;
+    i32 index;
+    i32 slot;
     edptl_soundid_menu = NULL;
     data = item->data;
     sound_index = data >> 16;
@@ -4021,8 +4095,10 @@ void edptlcbSetSoundID(eduimenu_s *menu, eduiitem_s *item, u32 unused2) {
 }
 
 void edptlcbSetSoundControl(eduimenu_s *menu, eduiitem_s *item, u32 unused2) {
-    u32 data, sound_index;
-    i32 index, slot;
+    u32 data;
+    u32 sound_index;
+    i32 index;
+    i32 slot;
     edptl_soundcontrol_menu = NULL;
     data = item->data;
     sound_index = data >> 16;
@@ -4054,7 +4130,8 @@ void edptlcbCancelSoundIDMenu(eduimenu_s *unused0, eduimenu_s *unused1) {
 void edptlcbSoundIDMenu(eduimenu_s *parent, eduiitem_s *item, u32 unused2) {
     u32 colours[4] = {0x80000000, 0x80ff0000, 0x80808080, 0x80404040};
     DEBRIS_INFO_PC *effect = debtab[debkeydata[edpp_ptls[edpp_nearest].instance_id].effect_index];
-    i32 sound, selected;
+    i32 sound;
+    i32 selected;
     edptl_soundid_menu = eduiMenuCreate(70, 70, 180, 200, ed_fnt, edptlcbCancelSoundIDMenu, "Sound ID");
     if (edptl_soundid_menu == NULL) {
         return;

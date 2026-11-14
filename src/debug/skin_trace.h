@@ -22,14 +22,24 @@ struct TraceSaved {
 };
 
 struct TraceParameter {
-    int stage, first, count;
+    int stage;
+    int first;
+    int count;
     TraceWord metadata;
 };
 
 struct TraceDraw {
-    TraceWord geometry, material, shader_slot, shader_key, profile;
-    TraceWord expected_vertex_shader, expected_pixel_shader;
-    TraceWord vertex_buffer, index_buffer, base_vertex, start_index;
+    TraceWord geometry;
+    TraceWord material;
+    TraceWord shader_slot;
+    TraceWord shader_key;
+    TraceWord profile;
+    TraceWord expected_vertex_shader;
+    TraceWord expected_pixel_shader;
+    TraceWord vertex_buffer;
+    TraceWord index_buffer;
+    TraceWord base_vertex;
+    TraceWord start_index;
     TraceParameter parameter[14]; /* world11, lights6/7/8, specular49, palette18, ambient1 */
 };
 

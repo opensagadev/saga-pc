@@ -3,7 +3,8 @@
 
 /* Retail unit 0x56b6f0-0x56cd72: definitions in retail address order. */
 
-extern i32 LEGO_AIPATHCNX_VARIANT_FLAG0_PC, LEGO_AIPATHCNX_VARIANT_FLAG1_PC;
+extern i32 LEGO_AIPATHCNX_VARIANT_FLAG0_PC;
+extern i32 LEGO_AIPATHCNX_VARIANT_FLAG1_PC;
 
 typedef struct movement_model_pc_s {
     u8 unknown_00[0xc];
@@ -21,7 +22,9 @@ static i32 LedgeTerrain_Attach(GAMEOBJECT *object, u16 facing, NUVEC *position, 
     i8 surface;
     i32 difference;
     u16 inward_angle;
-    f32 distance, height, height_difference;
+    f32 distance;
+    f32 height;
+    f32 height_difference;
     if (object->contact_count == 0) {
         return 0;
     }
@@ -68,10 +71,13 @@ void __cdecl LedgeTerrain_MoveCode(GAMEOBJECT *object) {
     }
     if (object->character_context == LEGOCONTEXT_LEDGETERRAIN) {
         f32 travelled;
-        u16 input, sideways;
-        f32 push, speed;
+        u16 input;
+        u16 sideways;
+        f32 push;
+        f32 speed;
         NUVEC offset;
-        f32 anim_speed, magnitude;
+        f32 anim_speed;
+        f32 magnitude;
         if ((object->pad->buttons_pressed & GAMEPAD_JUMP) != 0) {
             f32 height;
             StartJump(object, 0);
@@ -324,7 +330,8 @@ void __cdecl Climb_MoveCode(GAMEOBJECT *object) {
         NUVEC normal;
         i32 surface;
         NUVEC forward;
-        f32 x, z;
+        f32 x;
+        f32 z;
         if (object->character_context == -1) {
             goto enter_climb;
         }
@@ -384,7 +391,8 @@ i32 __cdecl Climb_SetTargetMom(GAMEOBJECT *object, u16 input_angle) {
     } raw_speed, speed;
 
     i16 animation = object->field_7aa;
-    u16 angle, side_angle;
+    u16 angle;
+    u16 side_angle;
     f32 lateral;
     speed.value = 0.0f;
     if (animation != -1 &&
@@ -506,7 +514,8 @@ void __cdecl ClimbObject_FindNormalPc(CLIMB_SLOT_PC *object) {
     AIPATHNODE_PC *first = &object->path->nodes[object->connection->node_indices[0]];
     AIPATHNODE_PC *second = &object->path->nodes[object->connection->node_indices[1]];
     AIPATHNODE_PC *node = first->position.y < second->position.y ? first : second;
-    NUVEC displacement, origin;
+    NUVEC displacement;
+    NUVEC origin;
     i32 index;
     for (index = 0; index < ClimbNormalProbeCountPc; ++index) {
         displacement.x = (f32)(node->radius + 0.5);
@@ -529,7 +538,8 @@ void __cdecl ClimbObject_FindNormalPc(CLIMB_SLOT_PC *object) {
 }
 
 void __cdecl InitClimbObjectSys(WORLDINFO *world) {
-    i32 index, connection_index;
+    i32 index;
+    i32 connection_index;
     AIPATH_PC *path;
     AIPATHCNX_PC *connection;
     CLIMB_SLOT_PC *object;

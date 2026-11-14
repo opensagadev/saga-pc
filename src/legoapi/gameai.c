@@ -17,7 +17,8 @@ typedef NUVEC *(__cdecl *AI_GET_CREATURE_ORIGIN_PC)(AISYS_PC *, AIPACKET_PC *);
 i32 __cdecl StarWars_PreparingForSpecialMove(AIPACKET_PC *, APIOBJECT_PC *, i32);
 i32 __cdecl StarWars_MidSpecialMove(AISYS_PC *, AIPACKET_PC *, APIOBJECT_PC *);
 
-AI_CHARACTER_NAME_PC LevelCharacterNameFn = 0, SpecialRouteCharacterNameFn = 0;
+AI_CHARACTER_NAME_PC LevelCharacterNameFn = 0;
+AI_CHARACTER_NAME_PC SpecialRouteCharacterNameFn = 0;
 AI_GLOBAL_CHARACTER_NAME_PC GlobalCharacterNameFn = 0;
 AI_GLOBAL_CHARACTER_HGOBJ_PC GlobalCharacterHGobjFn = 0;
 AI_GLOBAL_CHARACTER_RENDER_PC GlobalCharacterRenderFn = 0;

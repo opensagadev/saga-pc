@@ -78,7 +78,10 @@ extern const char HubAITableAreaFormatPc[11];
 
 /* 0x491380/481 */
 void __cdecl LSW_Hub_InitAI(WORLDINFO *world) {
-    i32 area, locator, counter, index;
+    i32 area;
+    i32 locator;
+    i32 counter;
+    i32 index;
     char name[32];
     memset(&HubAiMusicStatePc, 0, sizeof(HubAiMusicStatePc));
     for (area = 0; area < 10; ++area) {
@@ -151,7 +154,8 @@ i32 __cdecl Hub_GetRandomCharType(void) {
 
 /* 0x491840/595 */
 void HubGoneThroughDoorPc(WORLDINFO *world) {
-    i32 new_area, index;
+    i32 new_area;
+    i32 index;
     i16 characters[340];
     GAMEOBJECT *object;
     AIPATH_PC *path;

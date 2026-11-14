@@ -35,7 +35,9 @@ void __cdecl DrawMeleeTargetsNumber(i16 *targets, u8 *counts, i32 count, u8 rese
 typedef struct ASTEROID_PC {
     NUSPECIALHANDLE special;
     GIZMOBLOWUP_PC *blowup;
-    i16 rotation_speed_x, rotation_speed_y, rotation_speed_z;
+    i16 rotation_speed_x;
+    i16 rotation_speed_y;
+    i16 rotation_speed_z;
     u8 activated;
 } ASTEROID_PC;
 
@@ -44,12 +46,18 @@ typedef struct FINAL_ASTEROID_PC {
     NUSPECIALHANDLE special;
     GIZMOBLOWUP_PC *blowups[8];
     i16 blowup_count;
-    i16 rotation_speed_x, rotation_speed_y, rotation_speed_z;
-    i16 rotation_x, rotation_y, rotation_z;
+    i16 rotation_speed_x;
+    i16 rotation_speed_y;
+    i16 rotation_speed_z;
+    i16 rotation_x;
+    i16 rotation_y;
+    i16 rotation_z;
 } FINAL_ASTEROID_PC;
 
 typedef struct ASTEROIDC_NETPACKET_PC {
-    u16 rotation_x, rotation_y, rotation_z;
+    u16 rotation_x;
+    u16 rotation_y;
+    u16 rotation_z;
 } ASTEROIDC_NETPACKET_PC;
 
 #define PLAYER_OBJ(i) ((GAMEOBJECT *)Player[i])
@@ -141,7 +149,8 @@ const char TrooperCannonBaseFormatPc[7] = "BASE%d";
 const char TrooperCannonAINamePc[14] = "CannonTrooper";
 
 void __cdecl ResetTrooperCannons(WORLDINFO *world, i32 trooper_id) {
-    i32 cannon, index = 0;
+    i32 cannon;
+    i32 index = 0;
     char name[32];
     GAMEOBJECT *trooper;
     if (troopercannons_beenReset != 0 && (netclient == 0 || troopercannons[0].object != NULL)) {
@@ -1222,7 +1231,8 @@ HOTHBATTLEE_NETPACKET_PC *HothBattleENetPacketPc = NULL;
 void __cdecl HothBattleE_PanelPc(WORLDINFO *world) {
     i16 targets[16];
     char defeated[16];
-    i32 count, index;
+    i32 count;
+    i32 index;
     if (MiniCutCam != 0) {
         return;
     }
@@ -1295,9 +1305,12 @@ AILOCATOR_PC *getSpawnLocator(float clip_radius, char *name) {
 void __cdecl HothBattle_ManageBackgroundCreatures(void) {
     u8 wave_types = 0;
     AILOCATORSET_PC *set = AIPathFindLocatorSet(WORLD->ai_sys, "spawn");
-    i32 type, last, index;
+    i32 type;
+    i32 last;
+    i32 index;
     f32 radius;
-    AILOCATOR_PC *spawn, *entry;
+    AILOCATOR_PC *spawn;
+    AILOCATOR_PC *entry;
     GAMEOBJECT *object;
     if (NOAICREATURES != 0) {
         return;
@@ -1377,7 +1390,9 @@ void __cdecl HothBattle_ManageBackgroundCreatures(void) {
 }
 
 i32 __cdecl SpawnMeleeCreatureType(i32 type) {
-    i32 index, slot, attempts;
+    i32 index;
+    i32 slot;
+    i32 attempts;
     f32 radius = apicharsys->char_data[melee.waves[type].character_id].collision_radius;
     AILOCATOR_PC *locator;
     GAMEOBJECT *object;
@@ -1543,7 +1558,10 @@ i32 HothBattle_StartNewWave() {
 }
 
 void __cdecl HothBattleE_UpdateWave(void) {
-    i32 pending = 0, type, wave_index, index;
+    i32 pending = 0;
+    i32 type;
+    i32 wave_index;
+    i32 index;
     char state[16];
     GAMEOBJECT *object;
     HOTH_ANTINODE_PC *node;

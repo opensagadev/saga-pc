@@ -6,16 +6,25 @@ typedef struct minicut_part_pc_s {
     NUVEC *resolved_position;
     NUVEC position;
     f32 distance;
-    u16 pitch, yaw, roll, padding;
-    f32 duration, field_of_view;
+    u16 pitch;
+    u16 yaw;
+    u16 roll;
+    u16 padding;
+    f32 duration;
+    f32 field_of_view;
 } MINICUT_PART_PC;
 
 typedef struct minicut_pc_s {
     char name[16];
     MINICUT_PART_PC *parts;
     i32 part_count;
-    u8 played, padding[3];
-    f32 blend_in, tracking_speed, blend_out, hold_time, end_time;
+    u8 played;
+    u8 padding[3];
+    f32 blend_in;
+    f32 tracking_speed;
+    f32 blend_out;
+    f32 hold_time;
+    f32 end_time;
 } MINICUT_PC;
 
 typedef struct minicut_world_pc_s {
@@ -155,7 +164,9 @@ static NUVEC *__cdecl GizMiniCut_GetPos(GIZMO_PC *gizmo) {
 
 static i32 __cdecl GizMiniCut_UsingSpecial(GIZMO_PC **results, void *world_ptr, i32 capacity, char *name) {
     MINICUT_WORLD_PC *world = (MINICUT_WORLD_PC *)world_ptr;
-    i32 i, j, count = 0;
+    i32 i;
+    i32 j;
+    i32 count = 0;
     if (world == NULL) {
         return 0;
     }
@@ -176,7 +187,8 @@ static i32 __cdecl GizMiniCut_UsingSpecial(GIZMO_PC **results, void *world_ptr, 
 void __cdecl GizMiniCut_Reset(void *world_ptr, void *data, void *progress) {
     WORLDINFO *world = (WORLDINFO *)world_ptr;
     MINICUT_WORLD_PC *view = (MINICUT_WORLD_PC *)world;
-    i32 i, j;
+    i32 i;
+    i32 j;
     (void)data;
     (void)progress;
     for (i = 0; i < view->count; ++i) {
@@ -239,7 +251,8 @@ static void *__cdecl GizMiniCut_ReserveBufferSpace(WORLDINFO *world) {
 i32 __cdecl GizMiniCut_Load(void *world_ptr, void *data) {
     WORLDINFO *world = (WORLDINFO *)world_ptr;
     MINICUT_WORLD_PC *view = (MINICUT_WORLD_PC *)world;
-    i32 i, j;
+    i32 i;
+    i32 j;
     (void)data;
     EdFileReadInt();
     view->count = EdFileReadInt();

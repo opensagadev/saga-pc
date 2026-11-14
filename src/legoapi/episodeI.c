@@ -8,7 +8,9 @@ typedef struct racepod_resource_pc_s {
     NUVEC4 previous_axis;
     NUVEC4 previous_position;
     NUVEC4 previous_displacement;
-    i32 pitch, yaw, unknown_0078;
+    i32 pitch;
+    i32 yaw;
+    i32 unknown_0078;
     f32 speed;
     FLIGHT_SPLINE_RESOURCE_PC *spline;
     f32 start;
@@ -38,7 +40,8 @@ typedef struct podrace_resource_pc_s {
     f32 mushroom_timer;
     f32 lap_display;
     f32 previous_lap_display;
-    f32 max_lap_time, lap_time_increment;
+    f32 max_lap_time;
+    f32 lap_time_increment;
     i32 attempts_per_increment;
     i32 attempts;
     u8 flags;

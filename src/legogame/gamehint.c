@@ -28,10 +28,21 @@ f32 __cdecl CurrentHintAlpha(void) {
 const u8 HintRGB[5][3] = {{255, 0, 0}, {0, 255, 0}, {0, 127, 255}, {127, 0, 255}, {255, 255, 0}};
 
 void __cdecl DrawHint_LSW(HINT_PC *hint, i32 max_lines) {
-    f32 alpha, text_x, text_y, icon_x, pulse, base, wave_x;
-    i32 alignment, lines, colour_index;
-    u16 pulse_angle, rotation;
-    i32 red, green, blue;
+    f32 alpha;
+    f32 text_x;
+    f32 text_y;
+    f32 icon_x;
+    f32 pulse;
+    f32 base;
+    f32 wave_x;
+    i32 alignment;
+    i32 lines;
+    i32 colour_index;
+    u16 pulse_angle;
+    u16 rotation;
+    i32 red;
+    i32 green;
+    i32 blue;
     char expanded[1024];
     LEVEL_OBJECT_RUNTIME_PC *icon;
     if (hint == NULL || FadeSys.fade != 0.0f) {

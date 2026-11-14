@@ -17,7 +17,8 @@ STATIC_ASSERT(offsetof(HINT_CANCEL_PC, cooldown) == 0x18);
 
 typedef struct HINT_COMPLETION_PC {
     u16 points;
-    u8 reserved02, flags;
+    u8 reserved02;
+    u8 flags;
 } HINT_COMPLETION_PC;
 
 STATIC_ASSERT(sizeof(HINT_COMPLETION_PC) == sizeof(CUSTOMISER_COMPLETION_READER_PC));
@@ -34,7 +35,8 @@ STATIC_ASSERT(offsetof(HINT_WORLD_TELEPORT_PC, teleport_count) == 0x4684);
 /* Native PC hint updater records retain their original packed field offsets. */
 typedef struct HINT_PANEL_PC {
     u8 reserved00[0x61];
-    u8 model_variant, flags;
+    u8 model_variant;
+    u8 flags;
     u8 reserved63[0x29];
     f32 target_scale;
 } HINT_PANEL_PC;

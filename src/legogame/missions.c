@@ -11,7 +11,10 @@ typedef struct MISSION_END_SYSTEM_VIEW_PC {
 
 typedef struct MENU_INPUT_PAD_PC {
     FRAME_PAD_PC *bound_pad;
-    u32 held, pressed, alternate_held, alternate_pressed;
+    u32 held;
+    u32 pressed;
+    u32 alternate_held;
+    u32 alternate_pressed;
     u8 unknown14[0x4c];
 } MENU_INPUT_PAD_PC;
 
@@ -81,11 +84,24 @@ void __cdecl MenuInitMissions(MENU *menu) {
 f32 MissionBestBrickXPc = -0.15f;
 
 void __cdecl MenuDrawMissions(MENU *menu) {
-    f32 alpha, opacity, size, x, absolute_x, highlight, icon_size;
-    i32 i, appearance;
+    f32 alpha;
+    f32 opacity;
+    f32 size;
+    f32 x;
+    f32 absolute_x;
+    f32 highlight;
+    f32 icon_size;
+    i32 i;
+    i32 appearance;
     MISSION_SYSTEM_READER_PC *system;
-    char time[64], text[64];
-    i32 select0, back0, status0, select1, back1, status1;
+    char time[64];
+    char text[64];
+    i32 select0;
+    i32 back0;
+    i32 status0;
+    i32 select1;
+    i32 back1;
+    i32 status1;
     (void)menu;
     if (MenuStopDraw) {
         return;
@@ -192,7 +208,8 @@ void __cdecl MenuDrawEndMission(MENU *menu) {
             Text3D(text, 0.0f, STATSPOSY, 1.0f, 0.6f, 0.6f, 0.6f, 0, 255, 191, 0);
         }
     } else {
-        i32 colour_a = 255, colour_b = 63;
+        i32 colour_a = 255;
+        i32 colour_b = 63;
         if (menu_flash != 0) {
             colour_a = 191;
             colour_b = 31;
@@ -225,7 +242,8 @@ void __cdecl EndMission(MISSIONSYS_PC *system, i32 state, i32 show_message) {
 }
 
 void __cdecl CheckMissionEnd(MISSIONSYS_PC *system) {
-    GAMEOBJECT *target, *candidate;
+    GAMEOBJECT *target;
+    GAMEOBJECT *candidate;
     u64 mask;
     i32 index;
     target = FindGameObject(((MISSION_END_DATA_VIEW_PC *)system->active_mission)->find_character, 0, 0, 1, 0);
@@ -269,15 +287,20 @@ void __cdecl CheckMissionEnd(MISSIONSYS_PC *system) {
 
 void __cdecl MenuUpdateMissions(MENU *menu) {
     i32 previous = MissionMenuSelectionPc;
-    i32 start = 0, cancel = 0, left = 0, right = 0;
-    i32 player, index;
+    i32 start = 0;
+    i32 cancel = 0;
+    i32 left = 0;
+    i32 right = 0;
+    i32 player;
+    i32 index;
     MISSION_SYSTEM_READER_PC *system;
     if (MissionSys == NULL) {
         cancel = 1;
     }
     for (player = 0; player < 2; ++player) {
         MENU_INPUT_PAD_PC *pad;
-        u32 pressed, directions;
+        u32 pressed;
+        u32 directions;
         if (start != 0 || cancel != 0) {
             break;
         }

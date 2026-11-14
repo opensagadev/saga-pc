@@ -685,11 +685,28 @@ f32 __cdecl TextPrintSubstring(u8 *text, f32 x, f32 y, f32 z, f32 x_scale, f32 y
 void __cdecl Text3DEx(char *text, f32 x, f32 y, f32 z, f32 x_scale, f32 y_scale, f32 z_scale, u32 alignment, u8 red,
                       u8 green, u8 blue, u8 alpha) {
     u8 alpha_byte = (u8)alpha;
-    f32 width, height, baseline_y, button_scale, button_width, normal_width, ratio, scaled_width;
+    f32 width;
+    f32 height;
+    f32 baseline_y;
+    f32 button_scale;
+    f32 button_width;
+    f32 normal_width;
+    f32 ratio;
+    f32 scaled_width;
     f64 half_height;
-    u8 decoded[512], normal[512], buttons[512], fragment[512];
-    u16 encoded[512], button_encoded[512], normal_encoded[512];
-    i32 button_count, normal_count, count, button_font, preset, i;
+    u8 decoded[512];
+    u8 normal[512];
+    u8 buttons[512];
+    u8 fragment[512];
+    u16 encoded[512];
+    u16 button_encoded[512];
+    u16 normal_encoded[512];
+    i32 button_count;
+    i32 normal_count;
+    i32 count;
+    i32 button_font;
+    i32 preset;
+    i32 i;
     u32 colour;
 
     text3d_width = 0.0f;
@@ -918,7 +935,12 @@ void __cdecl MenuText3DEx(char *text, f32 x, f32 y, f32 z, f32 sx, f32 sy, f32 s
 void SmartTextEx(char *text, f32 x, f32 y, f32 z, f32 x_scale, f32 y_scale, f32 z_scale, u32 alignment, u8 red,
                  u8 green, u8 blue, f32 max_width, i32 max_lines, void *message_box, i32 suppress_draw, i32 alpha) {
     typedef struct box_geometry_pc_s {
-        f32 reserved, x, y, z, width, height;
+        f32 reserved;
+        f32 x;
+        f32 y;
+        f32 z;
+        f32 width;
+        f32 height;
     } BOX_GEOMETRY_PC;
 
     STATIC_ASSERT(offsetof(BOX_GEOMETRY_PC, x) == 4);
@@ -1247,13 +1269,24 @@ void __cdecl TextCrawl_Init(TEXT_CRAWL_VIEW_PC *crawl, i32 id, i32 reset) {
 void __cdecl TextCrawl_Draw(f32 dt, i32 paragraphs, f32 alpha, char *text) {
     AREA_DATA_PC *area;
     TEXT_CRAWL_MISSION_VIEW_PC *mission;
-    i32 body_text_id, episode_index, area_index, paragraph_count;
+    i32 body_text_id;
+    i32 episode_index;
+    i32 area_index;
+    i32 paragraph_count;
     i8 crawl_area;
-    char *episode_name, *episode_text, *chapter_text, *area_name;
+    char *episode_name;
+    char *episode_text;
+    char *chapter_text;
+    char *area_name;
     char chapter_buffer[0x40];
     NUMTX matrix;
-    f32 colour_scale = 1.0f, alpha_scale = 128.0f, x_scale, y_scale, y;
-    i32 red, green;
+    f32 colour_scale = 1.0f;
+    f32 alpha_scale = 128.0f;
+    f32 x_scale;
+    f32 y_scale;
+    f32 y;
+    i32 red;
+    i32 green;
     u32 colour;
     u16 encoded[1024];
     i32 i;
@@ -1473,7 +1506,8 @@ f32 MatrixTextScalePc = 0.004f;
 void __cdecl MatrixText(VUFNT *font, unsigned char *text, f32 x, f32 y, f32 z, f32 x_scale, f32 y_scale, u32 alignment,
                         u32 colour, NUMTX *matrix, i32 camera_relative) {
     u16 encoded[512];
-    f32 width, height;
+    f32 width;
+    f32 height;
     NUMTX draw_matrix;
     if (text == NULL || text[0] == '\0' || MenuStopDraw != 0) {
         return;
@@ -1529,7 +1563,9 @@ void __cdecl MenuDrawViewTextStrings(MENU *menu) {
     menu->draw_y = (f32) - (i32)menu->selected_row * menu->centre_offset;
     for (i = 0; i < Text_MaxStrings_Overall; ++i) {
         f32 y;
-        i32 red, green, blue;
+        i32 red;
+        i32 green;
+        i32 blue;
         dme_sx = 0.6f;
         dme_sy = menu->item_scale;
         dme_align = 0;

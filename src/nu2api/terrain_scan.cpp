@@ -153,7 +153,13 @@ extern "C" void ScanTerrain(i32 scan_type, i32 terrain_mask, i32 scan_flags) {
     group_shape_count = 0;
 
     TERRAIN_GROUP *terrain_groups = TERRAIN_SET_CURRENT_PC->groups;
-    f32 min_x, min_y, min_z, max_x, max_y, max_z, scan_radius;
+    f32 min_x;
+    f32 min_y;
+    f32 min_z;
+    f32 max_x;
+    f32 max_y;
+    f32 max_z;
+    f32 scan_radius;
 
     TerrainQuery_s *query = TerI;
     TERRAIN_SCAN_BOUNDS_PC(query, query->scan_result);
@@ -302,7 +308,12 @@ extern "C" void ScanTerrain(i32 scan_type, i32 terrain_mask, i32 scan_flags) {
                     continue;
                 }
             }
-            f32 local_min_x, local_min_y, local_min_z, local_max_x, local_max_y, local_max_z;
+            f32 local_min_x;
+            f32 local_min_y;
+            f32 local_min_z;
+            f32 local_max_x;
+            f32 local_max_y;
+            f32 local_max_z;
             if (platform.scene_object != NULL) {
                 if (TERRAIN_PLATFORM_MATRIX_PC(group)->m30 > TERRAIN_PLATFORM_OF_PC(group).previous_matrix.m30) {
                     local_min_x = min_x - group.origin.x;
@@ -602,7 +613,13 @@ extern "C" void ScanWallSplineTerrain(i32 scan_type, i32 terrain_mask, i32 scan_
     i16 *terminator = reinterpret_cast<i16 *>(query->scan_list_storage);
     platinrange = 0;
     query->scan_group_index = -1;
-    f32 min_x, min_y, min_z, max_x, max_y, max_z, scan_radius;
+    f32 min_x;
+    f32 min_y;
+    f32 min_z;
+    f32 max_x;
+    f32 max_y;
+    f32 max_z;
+    f32 scan_radius;
     TERRAIN_SCAN_BOUNDS_PC(query, query->scan_result);
     terminator[0] = 0;
     terminator[1] = 0;

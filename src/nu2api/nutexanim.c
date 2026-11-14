@@ -84,11 +84,15 @@ PC_TEXTURE_ANIM_ENV *__cdecl NuTexAnimEnvCreate(VARIPTR *buffer, NUMTL *material
 typedef struct TEXTURE_ANIM_PROGRAM_PC TEXTURE_ANIM_PROGRAM_PC;
 
 struct TEXTURE_ANIM_PROGRAM_PC {
-    TEXTURE_ANIM_PROGRAM_PC *next, *previous;
+    TEXTURE_ANIM_PROGRAM_PC *next;
+    TEXTURE_ANIM_PROGRAM_PC *previous;
     char name[32];
-    i32 on_signal[32], off_signal[32];
-    u32 on_mask, off_mask;
-    i16 label_ids[32], label_offsets[32];
+    i32 on_signal[32];
+    i32 off_signal[32];
+    u32 on_mask;
+    u32 off_mask;
+    i16 label_ids[32];
+    i16 label_offsets[32];
     i32 label_count;
     i16 instruction_count;
     u16 flags;
@@ -114,13 +118,16 @@ STATIC_ASSERT(offsetof(TEXTURE_ANIM_PROGRAM_PC, instructions) == 0x1ba);
 typedef struct TEXTURE_ANIMATION_PC TEXTURE_ANIMATION_PC;
 
 struct TEXTURE_ANIMATION_PC {
-    TEXTURE_ANIMATION_PC *next, *previous;
+    TEXTURE_ANIMATION_PC *next;
+    TEXTURE_ANIMATION_PC *previous;
     u16 *texture_ids;
     i16 texture_count;
-    u8 flags, reserved_0f;
+    u8 flags;
+    u8 reserved_0f;
     NUMTL *material;
     PC_TEXTURE_ANIM_ENV *environment;
-    char *name, *program_name;
+    char *name;
+    char *program_name;
 };
 
 STATIC_ASSERT(sizeof(TEXTURE_ANIMATION_PC) == 0x20);
@@ -143,7 +150,8 @@ typedef struct TEXTURE_ANIM_MATERIAL_PC {
 STATIC_ASSERT(offsetof(TEXTURE_ANIM_MATERIAL_PC, texture_id) == 0x74);
 STATIC_ASSERT(offsetof(TEXTURE_ANIM_MATERIAL_PC, diffuse_texture_id) == 0xb8);
 
-static u32 nta_sig_off = 0, nta_sig_on = 0;
+static u32 nta_sig_off = 0;
+static u32 nta_sig_on = 0;
 static i32 nta_iframetime = 0;
 static u16 nta_script_mask = 0;
 static u32 nta_sig_old = 0;

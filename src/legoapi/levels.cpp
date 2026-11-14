@@ -898,7 +898,8 @@ extern "C" {
     }
 
     i32 __cdecl LevelObject_FindIndexFromName_RefOnly(char *name) {
-        i32 end, i;
+        i32 end;
+        i32 i;
         if (ObjTabList == NULL) {
             return -1;
         }

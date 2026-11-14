@@ -10,7 +10,8 @@ extern "C" {
     extern RTL_SET_PC *curr_set;
     extern f32 rtl_helper_radius;
     extern i32 rtl_helper_radius_mode;
-    extern f32 min_r, def_fr;
+    extern f32 min_r;
+    extern f32 def_fr;
     extern struct eduiiattr_s EdLevelAttr;
     eduiitem_s *__cdecl eduiItemSeparatorCreate(u32 data, const void *colours);
     void __cdecl cbRtlHelperModifiers(eduimenu_s *parent, eduiitem_s *item, u32 data);

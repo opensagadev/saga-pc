@@ -55,7 +55,8 @@ const char PCShardOutputTextPc[4] = "Got";
 #pragma const_seg()
 
 i32 __cdecl Shards_Load(WORLDINFO *world, void *unused) {
-    i32 index, version;
+    i32 index;
+    i32 version;
     if (world->shard_count == 0) {
         version = EdFileReadInt();
         world->shard_count = EdFileReadInt();
@@ -151,7 +152,9 @@ void __cdecl Shards_UpdateBeforeCharacters(void *data, void *unused, f32 delta_t
 
 void __cdecl Shards_UpdateAfterCharacters(WORLDINFO *world, void *unused, f32 delta_time) {
     SHARD_s *shard = (SHARD_s *)world->shards;
-    NUVEC target, velocity, offset;
+    NUVEC target;
+    NUVEC velocity;
+    NUVEC offset;
     i32 index;
     for (index = 0; index < world->shard_count; ++index, ++shard) {
         if ((shard->state_flags & 2) != 0) {
@@ -216,7 +219,9 @@ void __cdecl Shards_Draw(WORLDINFO *world, void *unused, f32 delta_time) {
         }
         if (shard->collecting) {
             u16 spin = (u16)(i32)((f64)shard->collection_time * 98304.0 + (f64)(i32)shard->spin_angle);
-            u16 tumble, angle_z, angle_x;
+            u16 tumble;
+            u16 angle_z;
+            u16 angle_x;
             NuMtxSetRotationY(&matrix, spin);
             tumble = (u16)(i32)((f64)shard->collection_time * 60620.0);
             angle_z = shard->angle_z;

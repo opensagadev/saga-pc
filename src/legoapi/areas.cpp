@@ -847,7 +847,8 @@ extern "C" u8 *Game_LevelSave;
 
 extern "C" i32 __cdecl SuperCounter_AnyCollected(AREA_SUPERCOUNTER_PC *counter, WORLDINFO *world) {
     AREA_SUPERCOUNTER_PICKUP_PC *pickup = counter->pickups;
-    i32 index, saved;
+    i32 index;
+    i32 saved;
     LEVELSAVE_s *save;
     for (index = 0; index < counter->pickup_count; ++index, ++pickup) {
         if (world->area_index != -1) {

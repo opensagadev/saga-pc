@@ -75,13 +75,18 @@ extern "C" {
 typedef struct TELEPORT_MOTION_PC {
     char name[0x40];
     NUGSPLINE *path;
-    f32 duration, range_squared;
+    f32 duration;
+    f32 range_squared;
     u16 flags;
-    u8 enabled, active;
-    NUSPECIALHANDLE blocking_special, flap1_special, flap2_special;
+    u8 enabled;
+    u8 active;
+    NUSPECIALHANDLE blocking_special;
+    NUSPECIALHANDLE flap1_special;
+    NUSPECIALHANDLE flap2_special;
     u16 flap_angle[2];
     u16 flap_target[2];
-    NUMTX flap1_matrix, flap2_matrix;
+    NUMTX flap1_matrix;
+    NUMTX flap2_matrix;
 } TELEPORT_MOTION_PC;
 
 typedef struct TELEPORT_WORLD_PC {

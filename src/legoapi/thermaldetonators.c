@@ -79,8 +79,10 @@ void __cdecl PartImpact_ThermalDetonator(PART_PC *part) {
 }
 
 void __cdecl PartUpdate_ThermalDetonator(PART_PC *part) {
-    f32 height, water;
-    i32 surface, layer;
+    f32 height;
+    f32 water;
+    i32 surface;
+    i32 layer;
     if ((part->active & 0x4000) == 0 && (part->active & 2) != 0 && part->time_remaining > 0.0f &&
         part->time_remaining < 1.0f) {
         PlaySfx("ThermalDet_Beep", &part->position);
@@ -175,7 +177,10 @@ void PartKill_ThermalDetonator(PART_PC *part, i32 unused1) {
 }
 
 void __cdecl ThermalDetonator_Throw(GAMEOBJECT *object) {
-    NUVEC movement, velocity, origin, centre;
+    NUVEC movement;
+    NUVEC velocity;
+    NUVEC origin;
+    NUVEC centre;
     ADDPART_PC params = Default_ADDPART;
     NUMTX matrix;
     i32 blocked;
@@ -252,7 +257,9 @@ void __cdecl ThermalDetonator_Throw(GAMEOBJECT *object) {
 }
 
 void __cdecl ThermalDetonator_ThrowMom(GAMEOBJECT *object, NUVEC *velocity) {
-    NUVEC movement, origin, centre;
+    NUVEC movement;
+    NUVEC origin;
+    NUVEC centre;
     ADDPART_PC params = Default_ADDPART;
     NUMTX matrix;
     i32 locator;

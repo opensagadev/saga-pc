@@ -55,17 +55,29 @@ void MenuReset(void) {
 }
 
 typedef struct PC_MENU_SERVICE_VIEW {
-    f32 menu_time, time_04;
-    i16 selected_column, selected_row;
-    i16 first_column, first_row, last_column, last_row, menu;
-    i8 previous_menu, flags;
-    f32 transition_18, transition_1c;
+    f32 menu_time;
+    f32 time_04;
+    i16 selected_column;
+    i16 selected_row;
+    i16 first_column;
+    i16 first_row;
+    i16 last_column;
+    i16 last_row;
+    i16 menu;
+    i8 previous_menu;
+    i8 flags;
+    f32 transition_18;
+    f32 transition_1c;
     u8 unknown_20[0x30];
     i32 state_50;
     u8 unknown_54[0x38];
     i32 draw_item;
     u8 unknown_90[0x20];
-    i32 state_b0, state_b4, state_b8, state_bc, state_c0;
+    i32 state_b0;
+    i32 state_b4;
+    i32 state_b8;
+    i32 state_bc;
+    i32 state_c0;
     u8 unknown_c4[0x18];
     i32 state_dc;
 } PC_MENU_SERVICE_VIEW;
@@ -96,7 +108,9 @@ STATIC_ASSERT(offsetof(PC_MENU_SERVICE_VIEW, state_c0) == 0xc0);
 MENU *__cdecl NewMenu(i32 menu_id, i32 menu_y, i32 unused) {
 #define NEWMENU_VIEW ((PC_MENU_SERVICE_VIEW *)GameMenu)
     PC_MENU_SERVICE_VIEW *menu = NULL;
-    i32 index, selected = -1, previous_index;
+    i32 index;
+    i32 selected = -1;
+    i32 previous_index;
     (void)unused;
     MenuSetPlatformState(1);
     CurrentMenuId = menu_id;
@@ -190,12 +204,18 @@ MENU *__cdecl NewMenu(i32 menu_id, i32 menu_y, i32 unused) {
 
 void __cdecl DrawMenuButtonPromptsEx(i32 confirm, i32 cancel, i32 flags, i32 enabled, u32 red, u32 green, u32 blue,
                                      u32 alpha) {
-    char accept_text[128], cancel_text[128], axes_text[128];
-    char *accept = "[[accept]]", *back = "[[back]]", *left = "[[padleft]]", *right = "[[padright]]";
+    char accept_text[128];
+    char cancel_text[128];
+    char axes_text[128];
+    char *accept = "[[accept]]";
+    char *back = "[[back]]";
+    char *left = "[[padleft]]";
+    char *right = "[[padright]]";
     char **keys;
     i32 device;
     f64 row_delta;
-    f32 y, scale;
+    f32 y;
+    f32 scale;
     f64 x;
     device = NuPadGetPort(PcInput_GetCtrlStringPlayer());
     if (PcInput_PortIsKeyboard(device)) {
@@ -264,7 +284,12 @@ typedef struct menu_draw_state_pc_s {
     i16 menu;
     u8 unknown_16[0x76];
     i32 draw_item;
-    f32 item_scale, draw_x, draw_y, draw_z, draw_offset, centre_offset;
+    f32 item_scale;
+    f32 draw_x;
+    f32 draw_y;
+    f32 draw_z;
+    f32 draw_offset;
+    f32 centre_offset;
     u8 unknown_a8[4];
     i32 paused;
 } MENU_DRAW_STATE_PC;
@@ -290,7 +315,9 @@ extern void(__cdecl *headerdrawfn)(void);
 void __cdecl DrawMenu(i32 paused) {
     MENU *menu;
     MENU_DRAW_STATE_PC *view;
-    f32 saved_baseline = 0.0f, saved_button_baseline = 0.0f, centre;
+    f32 saved_baseline = 0.0f;
+    f32 saved_button_baseline = 0.0f;
+    f32 centre;
     if (memcard_autosavestarted != 0 || memcard_autosavepostdelay > 0.0f || memcard_autosavepredelay > 0.0f) {
         if (memcard_drawasiconfn != NULL) {
             memcard_drawasiconfn();
@@ -525,14 +552,31 @@ i32 UpdateMenu(u32 primary_held, u32 primary_pressed, u32 alternate_held, u32 al
                u32 confirm_mask, u32 cancel_mask, u32 start_mask, u32 select_mask) {
     i32 previous_item = 0;
     PC_MENU_UPDATE_VIEW *menu;
-    u32 held, pressed;
-    i32 up_pressed, down_pressed, left_pressed, right_pressed;
-    i32 up_held, down_held, left_held, right_held;
-    i32 confirm_pressed, cancel_pressed;
-    u32 start_pressed, select_pressed, action_04_pressed, action_08_pressed;
-    i32 output_up_pressed, output_down_pressed;
-    i32 column_count, row_count, row_clamped;
-    i16 first_column, last_column, first_row, last_row;
+    u32 held;
+    u32 pressed;
+    i32 up_pressed;
+    i32 down_pressed;
+    i32 left_pressed;
+    i32 right_pressed;
+    i32 up_held;
+    i32 down_held;
+    i32 left_held;
+    i32 right_held;
+    i32 confirm_pressed;
+    i32 cancel_pressed;
+    u32 start_pressed;
+    u32 select_pressed;
+    u32 action_04_pressed;
+    u32 action_08_pressed;
+    i32 output_up_pressed;
+    i32 output_down_pressed;
+    i32 column_count;
+    i32 row_count;
+    i32 row_clamped;
+    i16 first_column;
+    i16 last_column;
+    i16 first_row;
+    i16 last_row;
 
     MenuResult = 0;
     if (MenuValidated == 0) {
@@ -851,7 +895,9 @@ typedef struct MENU_DRAW_VIEW_PC {
     u8 unknown_14[0x78];
     i32 draw_item;
     f32 item_scale;
-    f32 draw_x, draw_y, draw_z;
+    f32 draw_x;
+    f32 draw_y;
+    f32 draw_z;
     u8 unknown_a0[0x24];
     f32 *item_offsets;
     f32 item_offset_scale;
@@ -876,7 +922,8 @@ STATIC_ASSERT(offsetof(MENU_DRAW_VIEW_PC, item_spacing) == 0xd4);
 
 void __cdecl DrawMenuEntryEx(MENU *menu, char *text, u8 alpha) {
     MENU_DRAW_VIEW_PC *view = (MENU_DRAW_VIEW_PC *)menu;
-    f32 scale, spacing;
+    f32 scale;
+    f32 spacing;
 
     /* Retail writes low bytes, then forwards each partially written 32-bit color slot. */
     union {

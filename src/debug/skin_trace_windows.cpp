@@ -36,7 +36,9 @@ extern "C" int skin_trace_configuration(unsigned int *delay, unsigned int *ordin
     if (!count || count >= sizeof(text)) {
         return 0;
     }
-    unsigned int values[2] = {0, 0}, part = 0, digits = 0;
+    unsigned int values[2] = {0, 0};
+    unsigned int part = 0;
+    unsigned int digits = 0;
     for (unsigned int i = 0; i < count; ++i) {
         if (text[i] == ',' && part == 0 && digits) {
             part = 1;

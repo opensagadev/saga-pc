@@ -6,7 +6,10 @@ void __cdecl NuRndrSetParticleRotation(NUMTX *rotation) {
 
 void __cdecl NuRndrSetDebBox(NUVEC *range) {
     NUVEC size;
-    NUVEC corners[8], minimum, maximum, base;
+    NUVEC corners[8];
+    NUVEC minimum;
+    NUVEC maximum;
+    NUVEC base;
     i32 i;
     if (NuRndrStopUpdate == 0) {
         debris_box_camera_cache = global_camera.mtx;

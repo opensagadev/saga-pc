@@ -359,7 +359,8 @@ extern "C" {
         particle->momentum.y = vector.y;
         particle->momentum.z = vector.z;
 
-        f32 first, second;
+        f32 first;
+        f32 second;
         if (SolveQuadratic(effect->gravity, particle->momentum.y, particle->position.y - key->collision_plane, &first,
                            &second)) {
             if (MAX(first, second) > 0.0f && MAX(first, second) < effect->particle_lifetime) {
@@ -436,7 +437,8 @@ extern "C" {
         end_position.x = particle->position.x + particle->momentum.x * effect->particle_lifetime;
         end_position.y = 0.0f;
         end_position.z = particle->position.z + particle->momentum.z * effect->particle_lifetime;
-        NUVEC start_delta, end_delta;
+        NUVEC start_delta;
+        NUVEC end_delta;
         NuVecSub(&start_delta, &plane_position, &particle->position);
         NuVecSub(&end_delta, &plane_position, &end_position);
         f32 start_distance = start_delta.x * normal.x + start_delta.z * normal.z;

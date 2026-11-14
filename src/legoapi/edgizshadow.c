@@ -106,7 +106,9 @@ static i32 __cdecl Shadow_Load(void *world_ptr, void *data) {
     WORLDINFO *world = (WORLDINFO *)world_ptr;
     SHADOW_WORLD_VIEW_PC *view = (SHADOW_WORLD_VIEW_PC *)world_ptr;
     EDGIZSHADOW_PC *shadow;
-    i32 version, count, record;
+    i32 version;
+    i32 count;
+    i32 record;
     if (world == NULL || view->shadow_editor == NULL) {
         return 0;
     }

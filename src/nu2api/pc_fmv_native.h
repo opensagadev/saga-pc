@@ -24,18 +24,34 @@ struct RADFMV_CONTEXT_PC {
     GRAPHICS_FACTORY_PC *factory;
     PC_D3D9_DEVICE_PC *device;
     HWND window;
-    u32 alpha_format, opaque_format;
-    u32 alpha_bytes, opaque_bytes;
-    u32 alpha_bink_format, opaque_bink_format;
+    u32 alpha_format;
+    u32 opaque_format;
+    u32 alpha_bytes;
+    u32 opaque_bytes;
+    u32 alpha_bink_format;
+    u32 opaque_bink_format;
     u32 permits_nonpow2;
 };
 
 struct RADFMV_IMAGE_PC {
     PC_D3D9_DEVICE_PC *device;
-    u32 format, bink_format, alpha, bytes_per_pixel;
-    u32 width, height, lock_index, single_texture, pitch, texture_count;
-    u32 full_columns, full_rows, remainder_width, remainder_height;
-    u32 source_remainder_width, source_remainder_height, maximum_texture;
+    u32 format;
+    u32 bink_format;
+    u32 alpha;
+    u32 bytes_per_pixel;
+    u32 width;
+    u32 height;
+    u32 lock_index;
+    u32 single_texture;
+    u32 pitch;
+    u32 texture_count;
+    u32 full_columns;
+    u32 full_rows;
+    u32 remainder_width;
+    u32 remainder_height;
+    u32 source_remainder_width;
+    u32 source_remainder_height;
+    u32 maximum_texture;
     RADFMV_TEXTURE_PC **textures;
     RADFMV_TEXTURE_PC *texture;
 };
@@ -66,7 +82,10 @@ extern "C" {
 }
 
 struct PC_FMV_BINK_PC {
-    u32 width, height, frames, frame_number;
+    u32 width;
+    u32 height;
+    u32 frames;
+    u32 frame_number;
     u8 unknown_010[0xd0 - 0x10];
     u32 track_count;
     u8 unknown_0d4[0x250 - 0xd4];
@@ -81,12 +100,17 @@ struct PC_FMV_MOVIE_PC {
     i32 playing;
     u32 unknown_14;
     GRAPHICS_RENDER_TEXTURE_PC *target;
-    i32 width, height;
+    i32 width;
+    i32 height;
     u32 restore_image;
     i32 fading;
-    f32 fade_duration, fade_remaining;
+    f32 fade_duration;
+    f32 fade_remaining;
     i32 option;
-    f32 x, y, x_scale, y_scale;
+    f32 x;
+    f32 y;
+    f32 x_scale;
+    f32 y_scale;
 };
 
 STATIC_ASSERT(sizeof(PC_FMV_MOVIE_PC) == 0x48);
@@ -99,7 +123,9 @@ STATIC_ASSERT(offsetof(PC_FMV_BINK_PC, track_ids) == 0x250);
 
 extern "C" {
     extern PC_FMV_MOVIE_PC FmvMoviePc;
-    extern i32 FmvInitializedPc, FmvState1Pc, FmvState2Pc;
+    extern i32 FmvInitializedPc;
+    extern i32 FmvState1Pc;
+    extern i32 FmvState2Pc;
     i32 __cdecl FmvInitializePc(HWND, GRAPHICS_FACTORY_PC *, PC_D3D9_DEVICE_PC *, IDirectSound8 *);
     i32 __cdecl FmvOpenPc(PC_FMV_MOVIE_PC *, const char *, i32, f32, i32);
     void __cdecl FmvFramePc(PC_FMV_MOVIE_PC *);

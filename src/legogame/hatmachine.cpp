@@ -5,9 +5,11 @@ struct HATMACHINE_PC {
     char name[16];
     NUVEC position;
     u16 yaw;
-    u8 configured_hat, displayed_hat;
+    u8 configured_hat;
+    u8 displayed_hat;
     i8 animation_state;
-    u8 model_letter, model_special_index;
+    u8 model_letter;
+    u8 model_special_index;
 
     union {
         u8 flags;
@@ -21,16 +23,25 @@ struct HATMACHINE_PC {
         };
     };
 
-    NUVEC player_position, target_offset;
-    u16 terrain_pitch, terrain_roll;
+    NUVEC player_position;
+    NUVEC target_offset;
+    u16 terrain_pitch;
+    u16 terrain_roll;
     i16 platform_id;
     u16 reserved_82;
-    f32 hat_delay, state_duration, state_elapsed, scale, animation_time, idle_bounce_timer;
+    f32 hat_delay;
+    f32 state_duration;
+    f32 state_elapsed;
+    f32 scale;
+    f32 animation_time;
+    f32 idle_bounce_timer;
     u8 reserved_9c[4];
 };
 
 struct HATMACHINE_SYS_PC {
-    i32 count, reserved_04, reserved_08;
+    i32 count;
+    i32 reserved_04;
+    i32 reserved_08;
     HATMACHINE_PC *machines;
 };
 
@@ -294,7 +305,8 @@ extern "C" void __cdecl HatMachine_MoveCode(WORLDINFO *world, GAMEOBJECT *object
 
 struct HATMACHINE_PROGRESS_PC {
     i32 preserved_state;
-    u32 enabled_mask[1], visible_mask[1];
+    u32 enabled_mask[1];
+    u32 visible_mask[1];
 };
 
 STATIC_ASSERT(sizeof(HATMACHINE_PROGRESS_PC) == 12);

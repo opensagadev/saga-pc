@@ -15,7 +15,8 @@ extern "C" {
 }
 
 typedef struct {
-    u32 enabled[1], visible[1];
+    u32 enabled[1];
+    u32 visible[1];
 } GRAPPLE_PROGRESS_PC;
 
 extern "C" {
@@ -132,7 +133,8 @@ extern "C" void __cdecl DrawRopeCurved(NUVEC *start, NUVEC *points, i32 count, i
 
 extern "C" i32 __cdecl Grapples_Load(void *world_pointer, void *unused) {
     WORLDINFO *world = (WORLDINFO *)world_pointer;
-    i32 version, index;
+    i32 version;
+    i32 index;
     i32 length;
     char name[256];
     (void)unused;
@@ -269,7 +271,8 @@ extern "C" void __cdecl Grapples_Reset(void *world_pointer, void *unused, void *
     WORLDINFO *world = (WORLDINFO *)world_pointer;
     GRAPPLE_PROGRESS_PC *progress = (GRAPPLE_PROGRESS_PC *)progress_pointer;
     GRAPPLE_MOTION_PC *grapple;
-    i32 index, word;
+    i32 index;
+    i32 word;
     u32 bit;
     (void)unused;
     if (world == NULL) {
@@ -408,8 +411,10 @@ extern "C" GRAPPLE_MOTION_PC *__cdecl Grapple_FindNearest(WORLDINFO *world, NUVE
 extern "C" {
 
     GRAPPLE_DYNAMIC_PC *__cdecl Grapple_FindNearestToPos(WORLDINFO *world, NUVEC *position) {
-        GRAPPLE_DYNAMIC_PC *nearest = NULL, *grapple;
-        f32 nearest_distance = 1000000000.0f, distance;
+        GRAPPLE_DYNAMIC_PC *nearest = NULL;
+        GRAPPLE_DYNAMIC_PC *grapple;
+        f32 nearest_distance = 1000000000.0f;
+        f32 distance;
         NUVEC midpoint;
         i32 index;
         if (world->grapples == NULL) {
@@ -683,7 +688,8 @@ extern "C" {
         GRAPPLE_PROGRESS_PC *progress = (GRAPPLE_PROGRESS_PC *)progress_ptr;
         WORLDINFO *world = (WORLDINFO *)world_ptr;
         GRAPPLE_DYNAMIC_PC *record;
-        i32 index, word;
+        i32 index;
+        i32 word;
         u32 bit;
         if (progress == NULL) {
             return;
@@ -717,11 +723,26 @@ extern "C" void __cdecl Grapples_Update(void *world_pointer, void *unused_system
     WORLDINFO *world = (WORLDINFO *)world_pointer;
     WORLD_GRAPPLE_MOTION_VIEW_PC *view = (WORLD_GRAPPLE_MOTION_VIEW_PC *)world;
     GRAPPLE_MOTION_PC *grapple = view->grapples;
-    GAMEOBJECT *occupant, *attached, *linked;
-    NUVEC attachment, direction;
+    GAMEOBJECT *occupant;
+    GAMEOBJECT *attached;
+    GAMEOBJECT *linked;
+    NUVEC attachment;
+    NUVEC direction;
     NUVEC *positions[2];
-    f32 height, distance, sway, y_offset, inverse_distance, slack, segment, offset, wave_base, wave_scale;
-    i32 index, point, count, context;
+    f32 height;
+    f32 distance;
+    f32 sway;
+    f32 y_offset;
+    f32 inverse_distance;
+    f32 slack;
+    f32 segment;
+    f32 offset;
+    f32 wave_base;
+    f32 wave_scale;
+    i32 index;
+    i32 point;
+    i32 count;
+    i32 context;
     (void)unused_system;
     (void)unused_time;
     for (index = 0; index < view->grapple_count; ++index, ++grapple) {
@@ -1006,7 +1027,10 @@ extern "C" void __cdecl Grapple_MoveCode(GAMEOBJECT *object) {
             return;
         }
 
-        i32 down = 0, swing_positive = 0, swing_negative = 0, up = 0;
+        i32 down = 0;
+        i32 swing_positive = 0;
+        i32 swing_negative = 0;
+        i32 up = 0;
         const u16 input_angle = GamePad_InputAngle(object, object->pad);
         if (object->pad->input_magnitude == 0.0f && !GRAPPLE_CURRENT->disabled) {
             if ((object->pad->buttons_pressed & GAMEPAD_SPECIAL) != 0) {
@@ -1274,7 +1298,8 @@ extern "C" {
     }
 
     void __cdecl Grapple_SetPlayerTargetPoint(GAMEOBJECT *object, NUVEC *target) {
-        i32 amplitude, angle;
+        i32 amplitude;
+        i32 angle;
         target->x = 0.0f;
         target->y = -object->context_hover_target_y;
         target->z = 0.0f;

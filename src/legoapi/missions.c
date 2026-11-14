@@ -77,7 +77,8 @@ void __cdecl MissionsConfigMissingPc(char *filename);
 MISSIONSYS_PC *__cdecl Missions_Configure(char *file, VARIPTR *buffer_start, VARIPTR *buffer_end,
                                           MISSION_SAVE_READER_PC *save) {
     NUFPAR_PC *parser;
-    MISSION_SYSTEM_READER_PC temporary, *destination;
+    MISSION_SYSTEM_READER_PC temporary;
+    MISSION_SYSTEM_READER_PC *destination;
     MISSIONDATA_PC *mission;
     i32 character;
     parser = NuFParCreate(file);
@@ -218,7 +219,8 @@ i32 __cdecl Missions_PartyAvailable(MISSIONSYS_PC *system) {
 
 i32 __cdecl Missions_NumCompleted(MISSIONSYS_PC *system, MISSION_SAVE_READER_PC *save, i32 complete) {
     MISSION_SYSTEM_READER_PC *reader;
-    i32 index, total = 0;
+    i32 index;
+    i32 total = 0;
     if (system == NULL) {
         system = MissionSys;
     }

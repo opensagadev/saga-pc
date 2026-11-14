@@ -36,7 +36,10 @@ typedef struct coin_reset_packet_pc_s {
 extern char *GizmoPickup_OutputName;
 
 typedef struct {
-    u32 collected[16], enabled[16], visible[16], reserved[16];
+    u32 collected[16];
+    u32 enabled[16];
+    u32 visible[16];
+    u32 reserved[16];
 } PICKUP_PROGRESS_PC;
 
 void __cdecl GizmoPickups_PostLoad(void *, void *);
@@ -105,20 +108,29 @@ STATIC_ASSERT(offsetof(GIZMOPICKUP_PC, activation_group) == 0x18);
 typedef struct PICKUP_RESET_RECORD_PC {
     char name[8];
     NUVEC position;
-    u8 type_code, config_flags, model_variant;
+    u8 type_code;
+    u8 config_flags;
+    u8 model_variant;
 
     union {
         u8 flags;
 
         struct {
-            u8 active : 1, enabled : 1, visible : 1, collected : 1, drawn : 1, draw_visible : 1, alternate_type : 1,
-                activated : 1;
+            u8 active : 1;
+            u8 enabled : 1;
+            u8 visible : 1;
+            u8 collected : 1;
+            u8 drawn : 1;
+            u8 draw_visible : 1;
+            u8 alternate_type : 1;
+            u8 activated : 1;
         };
     };
 
     u8 unknown_18[4];
     f32 floor;
-    u16 shadow_x, shadow_z;
+    u16 shadow_x;
+    u16 shadow_z;
     i8 room;
     u8 type_index;
     u16 rotation;
@@ -126,7 +138,10 @@ typedef struct PICKUP_RESET_RECORD_PC {
 } PICKUP_RESET_RECORD_PC;
 
 typedef struct PICKUP_RESET_PROGRESS_PC {
-    u32 collected[16], enabled[16], visible[16], activated[16];
+    u32 collected[16];
+    u32 enabled[16];
+    u32 visible[16];
+    u32 activated[16];
 } PICKUP_RESET_PROGRESS_PC;
 
 STATIC_ASSERT(sizeof(PICKUP_RESET_RECORD_PC) == 0x2c);
@@ -152,7 +167,8 @@ STATIC_ASSERT(offsetof(WORLDINFO, pickup_runtime_sys) == 0x50b8);
 STATIC_ASSERT(offsetof(WORLDINFO, current_gscn) == 0x13c);
 extern u8 *Game_LevelSave;
 extern const f64 GameObjectNearFloorNoFloorHeight;
-extern i32 turret_gizmotype_id, gizbuildit_gizmotype_id;
+extern i32 turret_gizmotype_id;
+extern i32 gizbuildit_gizmotype_id;
 i32 __cdecl SuperCounter_AnyCollected(AREA_SUPERCOUNTER_PC *, WORLDINFO *);
 
 typedef struct pickup_counter_turret_pc_s {
@@ -252,7 +268,10 @@ static NUMTX *PickupSetRotationYPc(NUMTX *matrix, i32 angle) {
 static NUMTX *PickupRotateYPc(NUMTX *matrix, i32 angle) {
     f32 cosine = NuTrigTable[((angle + 0x4000) >> 1) & 0x7fff];
     f32 sine = NuTrigTable[(angle >> 1) & 0x7fff];
-    f32 m00 = matrix->m00, m10 = matrix->m10, m20 = matrix->m20, m30 = matrix->m30;
+    f32 m00 = matrix->m00;
+    f32 m10 = matrix->m10;
+    f32 m20 = matrix->m20;
+    f32 m30 = matrix->m30;
     matrix->m00 = m00 * cosine + matrix->m02 * sine;
     matrix->m02 = matrix->m02 * cosine - m00 * sine;
     matrix->m10 = m10 * cosine + matrix->m12 * sine;
@@ -281,11 +300,19 @@ static i32 FindPickupTypeIndex(u8 type_code) {
 }
 
 static void GizmoPickups_DrawList(WORLDINFO *world, GIZMOPICKUP_PC *pickup, i32 count) {
-    i32 index, angle, model_index, opacity;
+    i32 index;
+    i32 angle;
+    i32 model_index;
+    i32 opacity;
     GIZMO_PICKUP_TYPE_PC *type;
     NUMTX matrix;
     NUVEC shadow_position;
-    f32 maximum_distance_squared, shadow_distance_squared, dx, dz, distance_squared, factor;
+    f32 maximum_distance_squared;
+    f32 shadow_distance_squared;
+    f32 dx;
+    f32 dz;
+    f32 distance_squared;
+    f32 factor;
     if (pickup == NULL || Missions_PickupsOff(MissionSys)) {
         return;
     }
@@ -419,7 +446,8 @@ i32 __cdecl GizmoPickup_GetNumOutputs(GIZMO_PC *unused) {
 
 void __cdecl GizmoPickup_Activate(GIZMO_PC *gizmo, i32 active) {
     WORLDINFO *world = WorldInfo_CurrentlyActive();
-    GIZMOPICKUP_PC *pickup, *group_pickup;
+    GIZMOPICKUP_PC *pickup;
+    GIZMOPICKUP_PC *group_pickup;
     GIZMO_PICKUP_TYPE_PC *type;
     i32 index;
     if (gizmo == NULL) {
@@ -690,7 +718,8 @@ NUVEC *__cdecl GizmoPickup_GetPos(GIZMO_PC *gizmo) {
 i32 __cdecl GizmoPickups_Load(void *world_ptr, void *unused) {
     WORLDINFO *world = (WORLDINFO *)world_ptr;
     GIZMOPICKUP_PC *pickup;
-    i32 version, index;
+    i32 version;
+    i32 index;
     (void)unused;
     if (world->pickup_runtime_sys->pickup_count == 0) {
         version = EdFileReadInt();
@@ -800,7 +829,8 @@ GIZMOPICKUP_PC *__cdecl GizmoPickup_InBox(WORLDINFO *world, i32 type_index, NUVE
     GIZMOPICKUP_PC *pickup = runtime->pickups;
     GIZMO_PICKUP_TYPE_PC *type;
     f32 radius;
-    NUVEC low, high;
+    NUVEC low;
+    NUVEC high;
     i32 index;
     if (pickup == NULL) {
         return NULL;
@@ -839,8 +869,17 @@ GIZMOPICKUP_PC *__cdecl GizmoPickup_InBox(WORLDINFO *world, i32 type_index, NUVE
 }
 
 static GIZMOPICKUP_PC *GizmoPickups_CollideList(GAMEOBJECT *object, GIZMOPICKUP_PC *pickups, i32 count) {
-    i32 collide_2d, coin_magnet, index;
-    f32 collide_scale, scaled_pickup, normal_pickup, radius_x, radius_y, dx, dz, radius;
+    i32 collide_2d;
+    i32 coin_magnet;
+    i32 index;
+    f32 collide_scale;
+    f32 scaled_pickup;
+    f32 normal_pickup;
+    f32 radius_x;
+    f32 radius_y;
+    f32 dx;
+    f32 dz;
+    f32 radius;
     GIZMO_PICKUP_TYPE_PC *type;
     GIZMOPICKUP_PC *pickup;
     if (pickups == NULL) {
@@ -920,7 +959,8 @@ static GIZMOPICKUP_PC *GizmoPickups_CollideList(GAMEOBJECT *object, GIZMOPICKUP_
 
 GIZMOPICKUP_PC *__cdecl GizmoPickups_Collide(WORLDINFO *world, GAMEOBJECT *object, i32 unused) {
     GIZMOPICKUP_PC *pickup;
-    i32 temporary, type_index;
+    i32 temporary;
+    i32 type_index;
     (void)unused;
     if (world == NULL || (object->flags_1f8 & 0x40000) != 0) {
         return NULL;
@@ -1114,7 +1154,8 @@ void __cdecl PartUpdate_Heart(PART_PC *part) {
 
 void __cdecl SpecialMiniKits_Configure(WORLDINFO *world, char *config) {
     SPECIAL_MINIKIT_WORLD_PC *view = (SPECIAL_MINIKIT_WORLD_PC *)world;
-    SPECIAL_MINIKIT_PC *items, *cursor;
+    SPECIAL_MINIKIT_PC *items;
+    SPECIAL_MINIKIT_PC *cursor;
     SPECIAL_MINIKIT_SYSTEM_PC *system;
     i32 count;
     NUFPAR_PC *parser;
@@ -1214,9 +1255,11 @@ void __cdecl SpecialMiniKits_Draw(WORLDINFO *world) {
     GIZMOPICKUP_PC *pickup;
     GIZMO_PICKUP_TYPE_PC *type;
     NUINSTANIM *animation;
-    NUVEC scale, *position;
+    NUVEC scale;
+    NUVEC *position;
     NUMTX matrix;
-    u16 spin, tilt;
+    u16 spin;
+    u16 tilt;
     i32 index;
     scale.x = AreaPickupScale;
     scale.y = AreaPickupScale;
@@ -1284,7 +1327,10 @@ void __cdecl SpecialMiniKits_Draw(WORLDINFO *world) {
 }
 
 static void GizmoPickups_UpdateList(WORLDINFO *world, GIZMOPICKUP_PC *pickup, i32 count, i32 play_nearby) {
-    i32 detectors, index, eligible, complete;
+    i32 detectors;
+    i32 index;
+    i32 eligible;
+    i32 complete;
     f32 nearest_distance;
     NUVEC *nearest;
     GIZMO_PICKUP_TYPE_PC *type;
@@ -1293,7 +1339,8 @@ static void GizmoPickups_UpdateList(WORLDINFO *world, GIZMOPICKUP_PC *pickup, i3
     GIZMO_PC *gizmo;
     i32 effect_flags;
     NUVEC position;
-    f32 distance, timer;
+    f32 distance;
+    f32 timer;
     if (pickup == NULL || Missions_PickupsOff(MissionSys)) {
         return;
     }

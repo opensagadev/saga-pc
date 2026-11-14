@@ -288,7 +288,8 @@ static NUVEC *__cdecl GizSpecial_GetPos(GIZMO_PC *gizmo) {
 
 static i32 __cdecl GizSpecial_UsingSpecial(GIZMO_PC **results, void *world_ptr, i32 capacity, const char *name) {
     GIZFLOW_LOAD_WORLD_PC *world = (GIZFLOW_LOAD_WORLD_PC *)world_ptr;
-    i32 index, count = 0;
+    i32 index;
+    i32 count = 0;
     GIZFLOW_SPECIAL_PC *special;
     if (world == NULL || world->specials->specials == NULL) {
         return 0;
@@ -482,15 +483,18 @@ void edbobs_DrawCoordinateInfo(NUVEC *position, i32 x, i32 y) {
 i32 __cdecl GizmoFileReadGameAnimSet(GAMEANIMSET *set, void *world_ptr, void(__cdecl *read_data)(GAMEANIMOBJ *, u8),
                                      u8 version, char *prefix, char *suffix) {
     WORLDINFO *world = (WORLDINFO *)world_ptr;
-    i32 success = 1, i;
+    i32 success = 1;
+    i32 i;
     u8 file_version = EdFileReadChar();
     u8 count = EdFileReadChar();
     for (i = 0; i < count; ++i) {
         char name[64];
         i32 length = (i8)EdFileReadChar();
-        f32 start_frame, end_frame;
+        f32 start_frame;
+        f32 end_frame;
         u32 flags;
-        GAMEANIMOBJ *object, missing;
+        GAMEANIMOBJ *object;
+        GAMEANIMOBJ missing;
         if (length) {
             EdFileRead(name, length);
         }

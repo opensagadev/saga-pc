@@ -4,7 +4,9 @@
 typedef struct carry_plug_pc_s {
     char name[16];
     NUVEC position;
-    u16 rotation_x, rotation_y, rotation_z;
+    u16 rotation_x;
+    u16 rotation_y;
+    u16 rotation_z;
     u8 enabled;
     u8 active : 1;
     u8 visible : 1;
@@ -191,7 +193,8 @@ void __cdecl SuperCarry_DrawObject(struct gameobject_s *object) {
 }
 
 void __cdecl SuperCarry_GetObjectPos(GAMEOBJECT *object, NUVEC *position, NUVEC *secondary_position) {
-    i32 first, second;
+    i32 first;
+    i32 second;
     NUVEC offset;
     *position = object->collision_position;
     first = object->character_data->game_character->hand_locators[0];
@@ -219,10 +222,13 @@ void __cdecl SuperCarry_Throw(GAMEOBJECT *object, i32 mode) {
     CARRY_BASIS_PC *basis = (CARRY_BASIS_PC *)object;
     CARRY_BLOWUP_PC *blowup;
     NUMTX matrix;
-    NUVEC position, offset, velocity;
+    NUVEC position;
+    NUVEC offset;
+    NUVEC velocity;
     ADDPART_PC params;
     PART_PC *part;
-    i32 first = config->hand_locators[0], second;
+    i32 first = config->hand_locators[0];
+    i32 second;
     f32 speed;
     if (first == -1 || object->character_model->points_of_interest[first] == NULL) {
         return;
@@ -245,7 +251,8 @@ void __cdecl SuperCarry_Throw(GAMEOBJECT *object, i32 mode) {
     if (second != -1 && object->character_model->points_of_interest[second] != NULL) {
         position = *(NUVEC *)&matrix.m30;
         if (!SuperCarry_KeepObjectLevel) {
-            NUMTX left, right;
+            NUMTX left;
+            NUMTX right;
             left = matrix;
             right = object->locator_matrices[second];
             left.m30 = left.m31 = left.m32 = 0.0f;
@@ -339,7 +346,8 @@ void __cdecl SuperCarry_Start(struct gameobject_s *object, GIZMOBLOWUP_PC *blowu
         u16 angle;
         i32 difference;
         i32 magnitude;
-        NUVEC minimum, maximum;
+        NUVEC minimum;
+        NUVEC maximum;
         NuSpecialGetBounds(&((GIZMOBLOWUP_PC *)object->grapple)->type->animated_special, &minimum, &maximum);
         blowup = ((GIZMOBLOWUP_PC *)(object->grapple));
         angle = NuAtan2D(blowup->transform.m20, blowup->transform.m22);
@@ -462,7 +470,8 @@ void __cdecl SuperCarry_MoveCode(WORLDINFO *world, struct gameobject_s *object) 
             }
             case 2:
             case 3: {
-                i32 throw_object = 0, put_down = 0;
+                i32 throw_object = 0;
+                i32 put_down = 0;
                 object->context_timer = object->context_timer + FRAMETIME;
                 if (object->field_281 != 0) {
                     if (SuperCarry_UseActionButton != 0) {

@@ -100,7 +100,13 @@ void __fastcall NuQuatMulAlignedPc(const NUQUAT *parent, const NUQUAT *rotation,
     __m128 q = _mm_load_ps(&rotation->x);
     __m128 p = _mm_load_ps(&parent->x);
     __m128 a = q;
-    __m128 b, c, d, lo0, lo1, hi1, sum;
+    __m128 b;
+    __m128 c;
+    __m128 d;
+    __m128 lo0;
+    __m128 lo1;
+    __m128 hi1;
+    __m128 sum;
     q = _mm_shuffle_ps(q, q, 0x1b);
     b = q;
     q = _mm_shuffle_ps(q, q, 0xb1);

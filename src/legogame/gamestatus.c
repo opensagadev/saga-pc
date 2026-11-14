@@ -803,7 +803,9 @@ void __cdecl Coins_LSW_Update(STATUS_STAGE_s *stage, STATUSPACKET_s *packet, f32
             for (player = 0; player < 2; ++player) {
                 u32 remaining = packet->coins_remaining[player];
                 if (remaining != 0) {
-                    u32 threshold = 100, rate = 35, amount;
+                    u32 threshold = 100;
+                    u32 rate = 35;
+                    u32 amount;
                     while (remaining >= threshold) {
                         threshold *= 10u;
                         rate *= 10u;
@@ -1181,7 +1183,8 @@ void __cdecl CollectCharcters_Draw(STATUS_STAGE_s *stage, STATUSPACKET_s *packet
         return;
     }
     if (stage->field_0x14 != 0) {
-        f32 target_x, target_y;
+        f32 target_x;
+        f32 target_y;
         f32 x;
         f32 y;
         f32 size;
@@ -1358,7 +1361,8 @@ f32 StatusSecondaryTitleYPc = -0.1f;
 void __cdecl LevelComplete_LSW_Draw(STATUS_STAGE_s *stage, STATUSPACKET_s *packet, i32 current) {
     char text[256];
     if (current != 0) {
-        f32 progress, slide;
+        f32 progress;
+        f32 slide;
         f32 coin_slide;
         u32 score;
         if (stage->field_0x14 > 0) {
@@ -1408,7 +1412,9 @@ void __cdecl LevelComplete_LSW_Draw(STATUS_STAGE_s *stage, STATUSPACKET_s *packe
                                 NULL, 0, opacity);
                 } else if (stage->type == 23) {
                     i16 label;
-                    u32 red, green, blue;
+                    u32 red;
+                    u32 green;
+                    u32 blue;
                     if (packet->challenge_state == 2) {
                         label = TextIdPc8806e8;
                         red = green = blue = 255;
@@ -1422,7 +1428,9 @@ void __cdecl LevelComplete_LSW_Draw(STATUS_STAGE_s *stage, STATUSPACKET_s *packe
                                 0, red, green, blue, 1.7f, 1, NULL, 0, opacity);
                 } else if (stage->type == 26) {
                     i16 label;
-                    u32 red, green, blue;
+                    u32 red;
+                    u32 green;
+                    u32 blue;
                     if (packet->mission_state == 2) {
                         label = TextIdPc8806e4;
                         red = green = blue = 255;
@@ -1626,7 +1634,8 @@ void __cdecl BonusTime_LSW_Update(STATUS_STAGE_s *stage, STATUSPACKET_s *packet,
 void __cdecl BonusTime_LSW_Draw(STATUS_STAGE_s *stage, STATUSPACKET_s *packet, i32 current) {
     if (current != 0) {
         if (stage->field_0x14 > 0) {
-            f32 alpha, time;
+            f32 alpha;
+            f32 time;
             if (stage->field_0x18 < 0.5f) {
                 alpha = (f64)stage->field_0x18 + (f64)stage->field_0x18;
                 time = 0.0f;
@@ -1711,11 +1720,14 @@ void __cdecl SuperStoryTime_LSW_Update(STATUS_STAGE_s *stage, STATUSPACKET_s *pa
 }
 
 void __cdecl SuperStoryTime_LSW_Draw(STATUS_STAGE_s *stage, STATUSPACKET_s *packet, i32 current) {
-    char text[256], previous[256];
-    f32 alpha, coin_progress;
+    char text[256];
+    char previous[256];
+    f32 alpha;
+    f32 coin_progress;
     i32 opacity;
     char *title;
-    i32 red, green;
+    i32 red;
+    i32 green;
     if (current == 0 || stage->field_0x14 <= 0) {
         return;
     }
@@ -1834,16 +1846,19 @@ void __cdecl SuperStoryScore_LSW_Update(STATUS_STAGE_s *stage, STATUSPACKET_s *p
 }
 
 void __cdecl SuperStoryScore_LSW_Draw(STATUS_STAGE_s *stage, STATUSPACKET_s *packet, i32 current) {
-    char text[256], previous[256];
+    char text[256];
+    char previous[256];
     f32 coin_progress;
     if (current == 0) {
         return;
     }
     if (stage->field_0x14 > 0) {
-        f32 alpha, blend;
+        f32 alpha;
+        f32 blend;
         i32 opacity;
         char *title;
-        u8 red, green;
+        u8 red;
+        u8 green;
         if (stage->field_0x18 < 0.5f) {
             alpha = (f64)stage->field_0x18 + (f64)stage->field_0x18;
             coin_progress = 1.0f;

@@ -86,7 +86,8 @@ extern "C" void SmartText(char *text, f32 x, f32 y, f32 z, f32 sx, f32 sy, f32 s
 }
 
 extern "C" char *TextButtonStringPc(i32 action, const char *player0, const char *player1) {
-    char first[32] = "", second[32] = "";
+    char first[32] = "";
+    char second[32] = "";
     const i32 device0 = NuPadGetPort(0);
     const i32 device1 = NuPadGetPort(1);
     if (player0 != NULL && device0 >= 0) {

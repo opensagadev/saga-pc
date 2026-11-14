@@ -346,15 +346,19 @@ void MoveGameCamera(GAMECAMERA *camera) {
     i32 i;
     i32 shared_count = 0;
 
-    NUVEC player_focus[2], player_positions[2];
+    NUVEC player_focus[2];
+    NUVEC player_positions[2];
     GAMEOBJECT *camera_players[2];
-    i32 player_roll[2], vehicle_player[2];
+    i32 player_roll[2];
+    i32 vehicle_player[2];
     u16 player_yaw[2];
     f32 walker_distance_sq = 0.0f;
     f32 roll_seek_override = 0.0f;
     f32 blend_duration = 0.5f;
     f32 camera_shake = 0.0f;
-    f32 landspeeder_lookahead = 0.0f, landspeeder_yaw = -1.0f, landspeeder_speed = 0.0f;
+    f32 landspeeder_lookahead = 0.0f;
+    f32 landspeeder_yaw = -1.0f;
+    f32 landspeeder_speed = 0.0f;
     MiniCutCam = 0;
     NuCameraProjectionFarClipBias = WORLD->current_level->display.farclip_hack;
     menu_id = GetMenuID();
@@ -546,7 +550,8 @@ mode_selected:
             i32 i;
             // Case 1 prefix. Original 0x111314..0x1129bf and its child branches.
 
-            i32 player_count = 0, vehicle_count = 0;
+            i32 player_count = 0;
+            i32 vehicle_count = 0;
             for (i = 0; i < 2; i++) {
                 struct nuvec_s *source_position;
                 i32 counts_as_vehicle;
@@ -966,7 +971,8 @@ mode_selected:
         // `selected_pad` is the GAMEPAD_s at the original esp+0x108.
         // left_x/left_y correspond to xmm7/xmm6; right_y/right_x to esp+0xfc/+0x104.
         case 5: {
-            f32 speed, distance;
+            f32 speed;
+            f32 distance;
             GAME_CAMERA_ABSOLUTE_PC(distance, ViewCam.distance);
             speed = distance * testmovef * FRAMETIME;
             if (ViewCam.gamepad != NULL) {

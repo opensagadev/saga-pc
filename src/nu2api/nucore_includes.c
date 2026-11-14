@@ -201,14 +201,16 @@ STATIC_ASSERT(offsetof(NUALLOC_MANAGER_PREFIX_PC, used_bytes) == 12);
 #define MAX(a, b) ((a) > (b) ? (a) : (b))
 
 typedef struct FRAME_PAD_RAMP_PC {
-    f32 threshold, value;
+    f32 threshold;
+    f32 value;
 } FRAME_PAD_RAMP_PC;
 
 static FRAME_SCANNED_PAD_PC g_nupadScannedPads[16] = {0};
 static f32 FramePadRampRatePc = 0.1f;
 static FRAME_PAD_RAMP_PC FramePadRampValuesPc[5] = {
     {0.0f, 0.0f}, {0.5f, 0.1f}, {0.75f, 0.25f}, {0.85f, 0.5f}, {1.0f, 1.0f}};
-static i32 FramePadDirectMappingPc = 0, FramePadActivatedPc = 0;
+static i32 FramePadDirectMappingPc = 0;
+static i32 FramePadActivatedPc = 0;
 
 enum {
     PAD_BUTTON_JUMP_SELECT = 1 << 0x6,
@@ -4995,7 +4997,8 @@ void *__cdecl NuAllocManagerDefragPc(NUALLOC_MANAGER_PREFIX_PC *manager, void *p
     void *new_payload;
     u8 *src;
     u8 *dst;
-    u32 size, next_size;
+    u32 size;
+    u32 next_size;
     i32 i;
 
     if (payload == NULL) {
@@ -5093,8 +5096,11 @@ i32 __cdecl NuStrCpyWC(char *dst, const char *src, const char *replacement) {
 
 i32 __cdecl NuStrICmpWC(char *pattern, char *text, char *wildcard) {
     i32 index;
-    char a, b;
-    i32 suffix_length, text_length, wildcard_length;
+    char a;
+    char b;
+    i32 suffix_length;
+    i32 text_length;
+    i32 wildcard_length;
     if (pattern == NULL) {
         return -1;
     }
@@ -5271,7 +5277,8 @@ i32 __cdecl NuStrLenU(u8 *str) {
 }
 
 i32 __cdecl NuStrFindPosU(u8 *text, i32 character_index) {
-    i32 index = 0, count = 0;
+    i32 index = 0;
+    i32 count = 0;
     if (character_index == 0) {
         return 0;
     }
@@ -7535,7 +7542,9 @@ void __cdecl PrintStartupString(u32 colour, const char *format, ...) {
  * button is pressed after the first second. */
 void __cdecl NuTimeWait(f32 milliseconds) {
     f32 waited = 0.0f;
-    NuTime start, now, elapsed;
+    NuTime start;
+    NuTime now;
+    NuTime elapsed;
     u32 rate_low;
     u32 rate_high;
     NuTimeGetTicksPS(&start.low, &start.high);
@@ -7561,7 +7570,9 @@ void __cdecl NuErrorSleep(void) {
     f32 y;
     char *message;
     FRAME_PAD_PC pad;
-    NuTime start, now, elapsed;
+    NuTime start;
+    NuTime now;
+    NuTime elapsed;
     u32 rate_low;
     u32 rate_high;
     memset(&pad, 0, sizeof(pad));

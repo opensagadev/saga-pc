@@ -94,8 +94,13 @@ extern "C" {
     /* numtl PS half (0x601210). */
 
     typedef struct FRAME_MTL_ANIM_DESC_PC {
-        u8 u_mode, v_mode, reserved02[2];
-        f32 u_amplitude, v_amplitude, u_frequency, v_frequency;
+        u8 u_mode;
+        u8 v_mode;
+        u8 reserved02[2];
+        f32 u_amplitude;
+        f32 v_amplitude;
+        f32 u_frequency;
+        f32 v_frequency;
     } FRAME_MTL_ANIM_DESC_PC;
 
     STATIC_ASSERT(sizeof(FRAME_MTL_ANIM_DESC_PC) == 0x14);
@@ -103,7 +108,8 @@ extern "C" {
 
     typedef struct FRAME_MTL_ANIM_PC {
         u8 reserved00[0x7b];
-        u8 disable_u_animation, disable_v_animation;
+        u8 disable_u_animation;
+        u8 disable_v_animation;
         u8 reserved7d[0x143];
         i32 texture_animation_data[4];
         f32 texture_animation_offsets[4][2];
@@ -396,7 +402,8 @@ extern "C" {
     } PC_DYNAMIC_GEOMETRY_PC;
 
     typedef struct PC_GEOMETRY_STRIP_VERTEX_PC {
-        f32 fraction, side;
+        f32 fraction;
+        f32 side;
         u8 unknown_08[8];
     } PC_GEOMETRY_STRIP_VERTEX_PC;
 
@@ -803,7 +810,8 @@ extern "C" {
         u16 vertex_stride;
         u8 joint_indices[8];
         u8 unknown_0012[2];
-        u32 base_vertex, vertex_count;
+        u32 base_vertex;
+        u32 vertex_count;
         u8 unknown_001c[8];
         PC_BUFFER_RESOURCE_PC *vertex_buffer;
         u32 morph_count;
@@ -885,7 +893,9 @@ extern "C" {
     typedef struct PC_DL_FOG_READER {
         i32 enabled;
         u32 colour;
-        f32 near_distance, far_distance, density;
+        f32 near_distance;
+        f32 far_distance;
+        f32 density;
     } PC_DL_FOG_READER;
 
     STATIC_ASSERT(sizeof(PC_DL_FOG_READER) == 0x14);
@@ -896,7 +906,8 @@ extern "C" {
 
     typedef struct PC_DL_LEGACY_LIGHTMAP_READER {
         i32 texture_id[3];
-        f32 x_offset, y_offset;
+        f32 x_offset;
+        f32 y_offset;
     } PC_DL_LEGACY_LIGHTMAP_READER;
 
     STATIC_ASSERT(offsetof(PC_DL_LEGACY_LIGHTMAP_READER, x_offset) == 0xc);
@@ -904,7 +915,8 @@ extern "C" {
 
     typedef struct PC_DL_CAMERA_READER {
         i32 id;
-        NUMTX view, projection;
+        NUMTX view;
+        NUMTX projection;
         f32 viewport[4];
     } PC_DL_CAMERA_READER;
 
@@ -960,8 +972,14 @@ extern "C" {
         u8 enabled;
         u8 unknown_0015[3];
         i32 segment_count;
-        f32 pixel_parameter, vertex_parameter_x, vertex_parameter_y, vertex_parameter_z;
-        f32 pixel_parameter_x, pixel_parameter_y, pixel_parameter_z, pixel_scalar;
+        f32 pixel_parameter;
+        f32 vertex_parameter_x;
+        f32 vertex_parameter_y;
+        f32 vertex_parameter_z;
+        f32 pixel_parameter_x;
+        f32 pixel_parameter_y;
+        f32 pixel_parameter_z;
+        f32 pixel_scalar;
         PC_DL_AD_COLOURS colours;
     } PC_DL_AD_RECORD;
 
@@ -992,7 +1010,9 @@ extern "C" {
         PC_DL_AD_RECORD_LIST *list;
         u32 instances;
         u8 unknown_0008[0xc];
-        PC_BUFFER_RESOURCE_PC *instance_buffer, *vertex_buffer, *index_buffer;
+        PC_BUFFER_RESOURCE_PC *instance_buffer;
+        PC_BUFFER_RESOURCE_PC *vertex_buffer;
+        PC_BUFFER_RESOURCE_PC *index_buffer;
     } PC_DL_AD_PACKET;
 
     STATIC_ASSERT(sizeof(PC_DL_AD_PACKET) == 0x20);
@@ -1003,12 +1023,15 @@ extern "C" {
     STATIC_ASSERT(offsetof(PC_DL_AD_PACKET, index_buffer) == 0x1c);
 
     typedef struct PC_DL_GEOMETRY_READER {
-        u32 kind, primitive_count;
+        u32 kind;
+        u32 primitive_count;
         u16 vertex_stride;
         u8 unknown_000a[0xa];
         i32 base_vertex;
-        u32 vertex_count, start_index;
-        PC_BUFFER_RESOURCE_PC *index_buffer, *vertex_buffer;
+        u32 vertex_count;
+        u32 start_index;
+        PC_BUFFER_RESOURCE_PC *index_buffer;
+        PC_BUFFER_RESOURCE_PC *vertex_buffer;
         u32 dynamic_count;
         void *morph_deltas;
         PC_BUFFER_RESOURCE_PC *dynamic_buffer;
@@ -1036,7 +1059,8 @@ extern "C" {
     STATIC_ASSERT(offsetof(PC_DL_GEOMETRY_MATERIAL_READER, lightmap_flags) == 0x26c);
 
     typedef struct PC_DL_FACEON_DRAW_READER {
-        u32 unknown_0000, primitive_count;
+        u32 unknown_0000;
+        u32 primitive_count;
         PC_BUFFER_RESOURCE_PC *vertex_buffer;
         u32 first_vertex;
     } PC_DL_FACEON_DRAW_READER;
@@ -1049,7 +1073,9 @@ extern "C" {
     typedef struct PC_DL_DEBRIS_DRAW_READER {
         u8 buffer_index;
         u8 unknown_0001[3];
-        u32 use_system_buffer, first_vertex, vertex_count;
+        u32 use_system_buffer;
+        u32 first_vertex;
+        u32 vertex_count;
     } PC_DL_DEBRIS_DRAW_READER;
 
     STATIC_ASSERT(sizeof(PC_DL_DEBRIS_DRAW_READER) == 0x10);
@@ -1059,9 +1085,11 @@ extern "C" {
     STATIC_ASSERT(offsetof(PC_DL_DEBRIS_DRAW_READER, vertex_count) == 0xc);
 
     typedef struct PC_DL_LIGHTMAP_UPDATE_READER {
-        i32 mode, texture_id;
+        i32 mode;
+        i32 texture_id;
         i32 texture_ids[3];
-        f32 x_offset, y_offset;
+        f32 x_offset;
+        f32 y_offset;
     } PC_DL_LIGHTMAP_UPDATE_READER;
 
     STATIC_ASSERT(sizeof(PC_DL_LIGHTMAP_UPDATE_READER) == 0x1c);
@@ -1905,7 +1933,8 @@ extern "C" {
     i32 __cdecl NuTexRead(char *name, VARIPTR *buffer, VARIPTR end) {
         char filename[1024];
         NUFILE file;
-        i32 size, id;
+        i32 size;
+        i32 id;
         void *data;
         NUTEXDIM_PC *texture;
         (void)end;
@@ -2033,8 +2062,11 @@ extern "C" {
         NUTEXBMP_FILE_HEADER_PC file_header;
         NUTEXBMP_INFO_HEADER_PC info_header;
         i32 palette_size;
-        i32 width, height, levels;
-        i32 row_size, size;
+        i32 width;
+        i32 height;
+        i32 levels;
+        i32 row_size;
+        i32 size;
         u8 *row;
         u8 *top;
         u8 *bottom;
@@ -2304,7 +2336,10 @@ extern "C" {
         NuShaderManagerSetfv(0x12, &PcGeometryViewMatrixPc.m00);
         NuShaderManagerSetfv(0x13, &PcGeometryViewProjectionMatrixPc.m00);
         NuShaderManagerSetfv(0x5a, &PcGeometryDistanceOriginPc.x);
-        f32 fovy, aspect, z_near, z_far;
+        f32 fovy;
+        f32 aspect;
+        f32 z_near;
+        f32 z_far;
         NuMtxGetPerspectiveD3D(&PcGeometryProjectionMatrixPc, &fovy, &aspect, &z_near, &z_far);
         NUVEC4 depth = {z_near, z_far, z_far - z_near, 1.0f / PcGeometryProjectionMatrixPc.m22};
         NuShaderManagerSetfv(0x46, &depth.x);
@@ -2574,7 +2609,9 @@ extern "C" {
     /* Builds a font from a BMP glyph strip, one cell per character of text in strip order. */
     VUFNT *__cdecl NuQFntCreateFromBmpPc(const char *path, i32 cell_height, i32 baseline, i32 key_colour, u16 *text,
                                          i32 flags, i32 plane, VARIPTR *buffer, VARIPTR end) {
-        f32 width, y, x;
+        f32 width;
+        f32 y;
+        f32 x;
         i32 max_count;
         i32 count;
         NUTEXBMP_PC *bitmap;
@@ -2584,9 +2621,14 @@ extern "C" {
         PC_TEXTURE_RESOURCE_PC *resource;
         NUTEXDIM_PC *texture;
         VUFNT *font;
-        u8 *source, *destination;
-        i32 row_size, row;
-        i32 index, next, c, size;
+        u8 *source;
+        u8 *destination;
+        i32 row_size;
+        i32 row;
+        i32 index;
+        i32 next;
+        i32 c;
+        i32 size;
         u16 glyph;
         i32 texture_id;
 
@@ -2946,19 +2988,31 @@ extern "C" {
             for (u32 element = 0; element < group->element_count; ++element) {
                 PC_GEOMETRY_INPUT_PC *input = &mesh->elements[group->first_element + element];
                 PC_GEOMETRY_OUTPUT_PC *output = &PcGeometryOutputPc[*output_index];
-                PC_GEOMETRY_BASIS_VECTOR_PC p00, p01, p02, partial0, row0;
+                PC_GEOMETRY_BASIS_VECTOR_PC p00;
+                PC_GEOMETRY_BASIS_VECTOR_PC p01;
+                PC_GEOMETRY_BASIS_VECTOR_PC p02;
+                PC_GEOMETRY_BASIS_VECTOR_PC partial0;
+                PC_GEOMETRY_BASIS_VECTOR_PC row0;
                 PC_GEOMETRY_SCALE(p02, basis->matrices[2].rows[0], input->basis_weights.z);
                 PC_GEOMETRY_SCALE(p01, basis->matrices[1].rows[0], input->basis_weights.y);
                 PC_GEOMETRY_SCALE(p00, basis->matrices[0].rows[0], input->basis_weights.x);
                 PC_GEOMETRY_ADD(partial0, p00, p01);
                 PC_GEOMETRY_ADD(row0, partial0, p02);
-                PC_GEOMETRY_BASIS_VECTOR_PC p10, p11, p12, partial1, row1;
+                PC_GEOMETRY_BASIS_VECTOR_PC p10;
+                PC_GEOMETRY_BASIS_VECTOR_PC p11;
+                PC_GEOMETRY_BASIS_VECTOR_PC p12;
+                PC_GEOMETRY_BASIS_VECTOR_PC partial1;
+                PC_GEOMETRY_BASIS_VECTOR_PC row1;
                 PC_GEOMETRY_SCALE(p12, basis->matrices[2].rows[1], input->basis_weights.z);
                 PC_GEOMETRY_SCALE(p11, basis->matrices[1].rows[1], input->basis_weights.y);
                 PC_GEOMETRY_SCALE(p10, basis->matrices[0].rows[1], input->basis_weights.x);
                 PC_GEOMETRY_ADD(partial1, p10, p11);
                 PC_GEOMETRY_ADD(row1, partial1, p12);
-                PC_GEOMETRY_BASIS_VECTOR_PC p20, p21, p22, partial2, row2;
+                PC_GEOMETRY_BASIS_VECTOR_PC p20;
+                PC_GEOMETRY_BASIS_VECTOR_PC p21;
+                PC_GEOMETRY_BASIS_VECTOR_PC p22;
+                PC_GEOMETRY_BASIS_VECTOR_PC partial2;
+                PC_GEOMETRY_BASIS_VECTOR_PC row2;
                 PC_GEOMETRY_SCALE(p22, basis->matrices[2].rows[2], input->basis_weights.z);
                 PC_GEOMETRY_SCALE(p21, basis->matrices[1].rows[2], input->basis_weights.y);
                 PC_GEOMETRY_SCALE(p20, basis->matrices[0].rows[2], input->basis_weights.x);
@@ -3082,7 +3136,8 @@ extern "C" {
     i32 __cdecl NuRndrStateUpdateCameraState(void) {
         NUMTX *projection = NuCameraGetProjectionMtx();
         NUMTX *view = NuCameraGetViewMtx();
-        f64 horizontal, vertical;
+        f64 horizontal;
+        f64 vertical;
         render_state.camera_matrix = *view;
         render_state.projection_0154 = projection->m00;
         render_state.projection_0158 = projection->m11;
@@ -3619,7 +3674,11 @@ extern "C" {
         PC_DL_AD_PACKET *packet = (PC_DL_AD_PACKET *)arg;
         PC_DL_AD_RECORD *record;
         NUVEC4 values;
-        NUVEC colour0, colour1, colour2, colour3, colour4;
+        NUVEC colour0;
+        NUVEC colour1;
+        NUVEC colour2;
+        NUVEC colour3;
+        NUVEC colour4;
         i32 segments;
         u32 vertex_count;
         u32 instances = packet->instances;
@@ -3721,7 +3780,14 @@ extern "C" {
 
     void __cdecl NuVpUpdate(void) {
         PC_VIEWPORT_PC viewport;
-        i32 x, y, width, height, right, bottom, limit_x, limit_y;
+        i32 x;
+        i32 y;
+        i32 width;
+        i32 height;
+        i32 right;
+        i32 bottom;
+        i32 limit_x;
+        i32 limit_y;
         i32 clipped_left;
         i32 clipped_top;
         f32 rounded_width;
@@ -4015,9 +4081,24 @@ extern "C" {
         header->texture_v1 =
             static_cast<f32>(static_cast<u32>(effect->texture_v1) & 0x1ffU) * static_cast<f64>(1.0f / 255.0f);
 
-        f32 width, height, rotation, alpha, red, green, blue;
-        f32 time, duration, elapsed, wave_x, wave_y;
-        f32 position_x, position_y, texture_x, texture_y, edge_x, edge_y;
+        f32 width;
+        f32 height;
+        f32 rotation;
+        f32 alpha;
+        f32 red;
+        f32 green;
+        f32 blue;
+        f32 time;
+        f32 duration;
+        f32 elapsed;
+        f32 wave_x;
+        f32 wave_y;
+        f32 position_x;
+        f32 position_y;
+        f32 texture_x;
+        f32 texture_y;
+        f32 edge_x;
+        f32 edge_y;
         i32 i;
         for (i32 frame_index = 0; frame_index < 64; ++frame_index) {
             width = height = rotation = 0.0f;
@@ -4325,7 +4406,8 @@ extern "C" {
     void __cdecl NuMtlUpdatePS(NUMTL *material) {
         PC_MATERIAL_UPDATE_VIEW *mtl = reinterpret_cast<PC_MATERIAL_UPDATE_VIEW *>(material);
         PC_MATERIAL_DEVICE_CAPS_VIEW *device = reinterpret_cast<PC_MATERIAL_DEVICE_CAPS_VIEW *>(&PCDeviceBackend);
-        PC_SHADER_HANDLE_VIEW *shader, *variant;
+        PC_SHADER_HANDLE_VIEW *shader;
+        PC_SHADER_HANDLE_VIEW *variant;
         NudxFw_D3DBeginCriticalSection();
         if (mtl->texture_id > 0) {
             mtl->shader.diffuse_map_id = mtl->texture_id;
@@ -4512,7 +4594,9 @@ extern "C" {
     }
 
     i32 __cdecl NuGScnUploadGfxDataFromFilePS(VARIPTR *cursor, VARIPTR end, NUFILE file) {
-        i32 section_size, bytes_read, i;
+        i32 section_size;
+        i32 bytes_read;
+        i32 i;
         void *data;
         i32 skip_texture;
         SCENE_FILE_TEXTURE_HEADER_PC texture;
@@ -4649,7 +4733,8 @@ extern "C" {
     }
 
     void __cdecl NuGScnFixupTIDsPS(NUGSCN *scene) {
-        i32 i, j;
+        i32 i;
+        i32 j;
         if (scene->display_list == NULL) {
             return;
         }
@@ -4675,7 +4760,8 @@ extern "C" {
     }
 
     void __cdecl NuGScnRestoreTIDsPS(NUGSCN *scene) {
-        i32 i, j;
+        i32 i;
+        i32 j;
         if (scene->display_list == NULL) {
             return;
         }
@@ -4706,7 +4792,8 @@ extern "C" {
         SCENE_FIXUP_VERTEX_STREAM_PC *stream;
         u32 i;
         u8 dynamic = 0;
-        i32 material_index, registry_index;
+        i32 material_index;
+        i32 registry_index;
         for (i = 0; i != native->geometry_count; ++i) {
             geometry = native->geometries[i];
             geometry->index_buffer = SceneVideoResourcesPC.index_buffers[(u32)geometry->index_buffer];
@@ -4746,7 +4833,8 @@ extern "C" {
     void __cdecl NuGScnDestroyPS(NUGSCN *scene) {
         PC_GSCN_NATIVE_VIEW *native = (PC_GSCN_NATIVE_VIEW *)scene->native_scene;
         PC_SCENE_MTL_VIEW *material;
-        i32 i, j;
+        i32 i;
+        i32 j;
         u8 released;
         for (i = 0; i != native->vertex_buffer_count; ++i) {
             NudxFw_D3DBeginCriticalSection();
@@ -4922,7 +5010,8 @@ extern "C" {
 
     void *__cdecl DisplayListCreateGeomTransformPS(VARIPTR *buffer, NUMTX *matrix, NUMTL *material, void *geometry,
                                                    void *existing) {
-        NUVEC translation, scale;
+        NUVEC translation;
+        NUVEC scale;
         NUMTX *result;
         (void)material;
         (void)geometry;
@@ -4945,7 +5034,8 @@ extern "C" {
     }
 
     void *__cdecl DisplayListCreateFaceonTransformPS(VARIPTR *buffer, NUMTX *matrix, NUMTL *material, void *faceon) {
-        NUMTX *result, *orientation;
+        NUMTX *result;
+        NUMTX *orientation;
         NUVEC direction;
         f32 magnitude;
         (void)material;
@@ -4978,7 +5068,8 @@ extern "C" {
                                                    void **render_geometry, void *unused) {
         PC_SPECIAL_GEOMETRY *geometry = (PC_SPECIAL_GEOMETRY *)geometry_ptr;
         i32 *matrix_count;
-        u32 vertex, morph;
+        u32 vertex;
+        u32 morph;
         u8 *destination;
         void *locked;
         PC_SPECIAL_GEOMETRY *copy;
@@ -5324,12 +5415,18 @@ extern "C" {
             matrices[0] = input->bones[0] < 0xff ? &palette[input->bones[0]] : &identity;
             matrices[1] = input->bones[1] < 0xff ? &palette[input->bones[1]] : &identity;
             matrices[2] = input->bones[2] < 0xff ? &palette[input->bones[2]] : &identity;
-            PC_GEOMETRY_BASIS_VECTOR_PC t0, t1, t2;
+            PC_GEOMETRY_BASIS_VECTOR_PC t0;
+            PC_GEOMETRY_BASIS_VECTOR_PC t1;
+            PC_GEOMETRY_BASIS_VECTOR_PC t2;
             NuVecMtxTransform((NUVEC *)&t0, (NUVEC *)&point, matrices[0]);
             NuVecMtxTransform((NUVEC *)&t1, (NUVEC *)&point, matrices[1]);
             NuVecMtxTransform((NUVEC *)&t2, (NUVEC *)&point, matrices[2]);
             {
-                PC_GEOMETRY_BASIS_VECTOR_PC p0, p1, p2, partial, sum;
+                PC_GEOMETRY_BASIS_VECTOR_PC p0;
+                PC_GEOMETRY_BASIS_VECTOR_PC p1;
+                PC_GEOMETRY_BASIS_VECTOR_PC p2;
+                PC_GEOMETRY_BASIS_VECTOR_PC partial;
+                PC_GEOMETRY_BASIS_VECTOR_PC sum;
                 PC_GEOMETRY_SCALE(p2, t2, input->weights.z);
                 PC_GEOMETRY_SCALE(p1, t1, input->weights.y);
                 PC_GEOMETRY_SCALE(p0, t0, input->weights.x);
@@ -5340,7 +5437,11 @@ extern "C" {
             PC_GEOMETRY_ROTATE(t0, input->rows[1], matrices[0])
             PC_GEOMETRY_ROTATE(t1, input->rows[1], matrices[1])
             PC_GEOMETRY_ROTATE(t2, input->rows[1], matrices[2]) {
-                PC_GEOMETRY_BASIS_VECTOR_PC p0, p1, p2, partial, sum;
+                PC_GEOMETRY_BASIS_VECTOR_PC p0;
+                PC_GEOMETRY_BASIS_VECTOR_PC p1;
+                PC_GEOMETRY_BASIS_VECTOR_PC p2;
+                PC_GEOMETRY_BASIS_VECTOR_PC partial;
+                PC_GEOMETRY_BASIS_VECTOR_PC sum;
                 PC_GEOMETRY_SCALE(p2, t2, input->weights.z);
                 PC_GEOMETRY_SCALE(p1, t1, input->weights.y);
                 PC_GEOMETRY_SCALE(p0, t0, input->weights.x);
@@ -5351,7 +5452,11 @@ extern "C" {
             PC_GEOMETRY_ROTATE(t0, input->rows[2], matrices[0])
             PC_GEOMETRY_ROTATE(t1, input->rows[2], matrices[1])
             PC_GEOMETRY_ROTATE(t2, input->rows[2], matrices[2]) {
-                PC_GEOMETRY_BASIS_VECTOR_PC p0, p1, p2, partial, sum;
+                PC_GEOMETRY_BASIS_VECTOR_PC p0;
+                PC_GEOMETRY_BASIS_VECTOR_PC p1;
+                PC_GEOMETRY_BASIS_VECTOR_PC p2;
+                PC_GEOMETRY_BASIS_VECTOR_PC partial;
+                PC_GEOMETRY_BASIS_VECTOR_PC sum;
                 PC_GEOMETRY_SCALE(p2, t2, input->weights.z);
                 PC_GEOMETRY_SCALE(p1, t1, input->weights.y);
                 PC_GEOMETRY_SCALE(p0, t0, input->weights.x);
@@ -5604,7 +5709,8 @@ extern "C" {
 
     void __cdecl NuPrim2DBegin(u32 primitive_type, u32 vertex_format, NUMTL *material) {
         NUDISPLAYLIST_PC *list;
-        VARIPTR *primitive_buffer, *cursor;
+        VARIPTR *primitive_buffer;
+        VARIPTR *cursor;
         NUPRIM_PACKET_PC *packet;
 
         (void)vertex_format;
@@ -5660,7 +5766,8 @@ extern "C" {
 
     void __cdecl NuPrim3DBegin(u32 primitive_type, u32 vertex_format, NUMTL *material, NUMTX *world_matrix) {
         NUDISPLAYLIST_PC *list;
-        VARIPTR *cursor, *primitive_buffer;
+        VARIPTR *cursor;
+        VARIPTR *primitive_buffer;
         void *transform;
         NUPRIM_PACKET_PC *geometry;
         (void)vertex_format;
@@ -6334,7 +6441,10 @@ extern "C" {
                                   f32 time, NUMTX *matrix, i32 particle_type, f32 unused_a, f32 unused_b, f32 unused_c,
                                   f32 near_clip) {
         u32 emitted = 0;
-        f32 u0, v0, u1, v1;
+        f32 u0;
+        f32 v0;
+        f32 u1;
+        f32 v1;
         i32 i;
         (void)unused_a;
         (void)unused_b;
@@ -6358,7 +6468,9 @@ extern "C" {
                 f32 fraction = age * particle->inverse_lifetime - (f32)frame_index;
                 f32 distance;
                 DEBRIS_PARTICLE_FRAME_PC *first = &header->frames[frame_index];
-                NUVEC position, rotated, corners[4];
+                NUVEC position;
+                NUVEC rotated;
+                NUVEC corners[4];
                 NUVEC *corner;
                 i32 count;
                 u32 colour;
@@ -6676,7 +6788,10 @@ struct PC_HG_SHADOW_GROUP {
     PC_HG_SHADOW_SHAPE48 *ellipses;
     PC_HG_SHADOW_SHAPE64 *cylinders;
     void *third_shape;
-    u8 ellipse_count, cylinder_count, third_count, joint_index;
+    u8 ellipse_count;
+    u8 cylinder_count;
+    u8 third_count;
+    u8 joint_index;
 };
 
 STATIC_ASSERT(sizeof(PC_HG_SHADOW_SHAPE48) == 48);
@@ -6753,7 +6868,8 @@ extern "C" void __cdecl PCGraphicsResolveFramebufferPc(i32) {
 
 extern "C" void __cdecl NuDisplayListShadowTransformPc(void *data) {
     NUMTX *matrix = (NUMTX *)data;
-    f32 saved33 = matrix->m33, saved23 = matrix->m23;
+    f32 saved33 = matrix->m33;
+    f32 saved23 = matrix->m23;
     matrix->m33 = 1.0f;
     matrix->m23 = 0.0f;
     NuShaderManagerSetfv(0x11, &matrix->m00);
@@ -6763,7 +6879,8 @@ extern "C" void __cdecl NuDisplayListShadowTransformPc(void *data) {
 
 extern "C" void __cdecl NuDisplayListShadowTransformTransposePc(void *data) {
     NUMTX *matrix = (NUMTX *)data;
-    f32 saved33 = matrix->m33, saved32 = matrix->m32;
+    f32 saved33 = matrix->m33;
+    f32 saved32 = matrix->m32;
     matrix->m33 = 1.0f;
     matrix->m32 = 0.0f;
     NuShaderManagerSetElementsfv_transpose(0x11, 0, 1, &matrix->m00);
@@ -6783,7 +6900,8 @@ typedef struct PC_SHADOW_MATERIAL_READER_PC {
 
     u8 unknown_09c[0x154];
     u32 vertex_format;
-    i16 shader_id, shadow_shader_id;
+    i16 shader_id;
+    i16 shadow_shader_id;
     u8 unknown_1f8[0xc4];
     PC_TEXTURE_RESOURCE_PC *vertex_declaration;
 } PC_SHADOW_MATERIAL_READER_PC;
@@ -6816,7 +6934,11 @@ extern "C" void __cdecl NuDisplayListShadowMaterialPc(void *data) {
 
 /* nurndr's platform members, in nurndr order. */
 extern "C" {
-    extern i32 DwaWeightCapacityPc, DwaPointerCapacityPc, DwaBlockCapacityPc, DwaEnabledPc, DwaStreamCapacityPc;
+    extern i32 DwaWeightCapacityPc;
+    extern i32 DwaPointerCapacityPc;
+    extern i32 DwaBlockCapacityPc;
+    extern i32 DwaEnabledPc;
+    extern i32 DwaStreamCapacityPc;
     extern i32 DwaBlockCountPc;
     extern u8 DwaBlockTablePc[0x400];
 
@@ -6949,7 +7071,11 @@ extern "C" {
         i32 index;
         PC_SHADOW_QUEUE_RECORD *record;
         NUVEC position;
-        f32 radius, left, right, front, back;
+        f32 radius;
+        f32 left;
+        f32 right;
+        f32 front;
+        f32 back;
         u32 colour;
         if (NuRndrShadowCnt == 0) {
             return;
@@ -7012,9 +7138,16 @@ extern "C" {
         static NUVEC rndrstream_specular_dir = {0.0f, 0.0f, 1.0f};
         static NUVEC4 rndrstream_specular_intensity = {1.0f, 1.0f, 1.0f, 1.0f};
         static NUVEC camvec = {0.0f, 0.0f, -1.0f};
-        NUVEC view_direction, half_direction, light_direction, eye_direction, axis;
+        NUVEC view_direction;
+        NUVEC half_direction;
+        NUVEC light_direction;
+        NUVEC eye_direction;
+        NUVEC axis;
         NUMTX matrix;
-        f32 horizontal, facing, weight, remainder;
+        f32 horizontal;
+        f32 facing;
+        f32 weight;
+        f32 remainder;
         if (direction != NULL) {
             rndrstream_specular_dir = *direction;
         }
@@ -7117,7 +7250,8 @@ extern "C" {
         NuRndrInit(buffer, end);
     }
 
-    static i32 RendererConfigEnabledPc = 0, RendererConfigSecondEnabledPc = 0;
+    static i32 RendererConfigEnabledPc = 0;
+    static i32 RendererConfigSecondEnabledPc = 0;
     static NUMTX RendererConfigMatrixPc = {0};
     static PC_BUFFER_RESOURCE_PC *RendererGeometryVertexBufferPc = 0;
     static PC_BUFFER_RESOURCE_PC *RendererGeometryIndexBufferPc = 0;
@@ -7143,7 +7277,9 @@ extern "C" {
     static RENDERER_CLEAR_RECORD_PC RendererClearRecordsPc[32] = {0};
 
     typedef struct RENDERER_SHADOW_DEFAULTS_PC {
-        f32 state0, state1, state2;
+        f32 state0;
+        f32 state1;
+        f32 state2;
         u32 packed_colour;
     } RENDERER_SHADOW_DEFAULTS_PC;
 
@@ -7154,7 +7290,10 @@ extern "C" {
     STATIC_ASSERT(offsetof(RENDERER_SHADOW_DEFAULTS_PC, packed_colour) == 12);
 
     typedef struct RENDERER_SCREEN_VERTEX_PC {
-        f32 x, y, z, w;
+        f32 x;
+        f32 y;
+        f32 z;
+        f32 w;
         u32 attribute_bits;
         u8 unknown_14[8];
     } RENDERER_SCREEN_VERTEX_PC;

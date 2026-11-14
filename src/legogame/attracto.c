@@ -141,7 +141,8 @@ static f32 AttractoFabsPc(f32 f) {
 
 i32 __cdecl Attractos_Load(WORLDINFO *world, void *unused) {
     ATTRACTO_RECORD_PC *attracto;
-    i32 version, index;
+    i32 version;
+    i32 index;
     char legacy_name[16];
     if (world->attracto_count == 0) {
         version = EdFileReadInt();
@@ -258,7 +259,8 @@ void __cdecl Attractos_Reset(WORLDINFO *world, void *unused, ATTRACTO_PROGRESS_P
 
 void __cdecl Attractos_Update(WORLDINFO *world, void *unused, f32 delta_time) {
     ATTRACTO_RECORD_PC *attracto;
-    i32 index, alpha;
+    i32 index;
+    i32 alpha;
     char text[32];
     if (world == NULL || world->attractos == NULL) {
         return;
@@ -312,7 +314,8 @@ ATTRACTO_PC *__cdecl Attracto_FindNearest(WORLDINFO *world, NUVEC *position, GAM
 void __cdecl Attractos_Draw(WORLDINFO *world, void *unused, f32 delta_time) {
     ATTRACTO_RECORD_PC *attracto;
     GAMEOBJECT *nearest_player = NULL;
-    i32 index, phase;
+    i32 index;
+    i32 phase;
     u16 spin;
     f32 pulse;
     if (world->level_objects[72].active == 0 || world->attractos == NULL) {
@@ -490,7 +493,10 @@ static ATTRACTO_SHARD_READER_PC *AttractoSelectShardPc(WORLDINFO *world, GAMEOBJ
     ATTRACTO_SHARD_READER_PC *shard;
     ATTRACTO_SHARD_READER_PC *nearest;
     ATTRACTO_SHARD_READER_PC *result;
-    NUVEC delta, origin, target, ray;
+    NUVEC delta;
+    NUVEC origin;
+    NUVEC target;
+    NUVEC ray;
     f32 best;
     i32 index;
 
@@ -502,7 +508,9 @@ static ATTRACTO_SHARD_READER_PC *AttractoSelectShardPc(WORLDINFO *world, GAMEOBJ
     nearest = NULL;
     for (index = 0; index < world->shard_count; ++index, ++shard) {
         if (shard->active && shard->visible && shard->drawn && !shard->collecting && !shard->collected) {
-            f32 dx, dy, distance;
+            f32 dx;
+            f32 dy;
+            f32 distance;
             dx = AttractoFabsPc(shard->screen_position.x - object->external_force.x);
             if (dx < (f64)0.2f) {
                 dy = AttractoFabsPc(shard->screen_position.y - object->external_force.y);
@@ -608,14 +616,17 @@ void __cdecl Attracto_MoveCode(WORLDINFO *world, GAMEOBJECT *object) {
         return;
     }
     if (object->character_context == 0x52) {
-        i32 red, green, blue;
+        i32 red;
+        i32 green;
+        i32 blue;
         if ((object->pad->buttons_held & GAMEPAD_SPECIAL) == 0 && !(object->context_timer < 0.3f)) {
             object->character_context = -1;
             return;
         }
         if (object->character_model->action_animations[object->field_7aa] == NULL ||
             AnimPlaying(&object->anim_packet, object->field_7aa, 1, 0) != NULL) {
-            f32 x, y;
+            f32 x;
+            f32 y;
             ATTRACTO_SHARD_READER_PC *nearest;
             object->context_timer = (f64)object->context_timer + (f64)FRAMETIME;
             x = (f64)object->pad->input_direction_z * 1.25;

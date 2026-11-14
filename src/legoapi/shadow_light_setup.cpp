@@ -1,7 +1,8 @@
 #include "saga.h"
 
 extern "C" {
-    extern NUMTX PostShadowProjectionPc, PostShadowViewPc;
+    extern NUMTX PostShadowProjectionPc;
+    extern NUMTX PostShadowViewPc;
     extern NUCAMERA *EdMainCurrentCameraPc;
 }
 
@@ -26,14 +27,18 @@ void PC_SPECIAL_SHADOW_LIGHT::SetupCustomCameraFrustumPc(NUCAMERA *camera, const
     // vec4 setter would (it also keeps that setter's redundant w stores, which a helper here
     // would reproduce but only with an out-of-line copy retail does not have).
     {
-        f32 x = camera->mtx.m30, y = camera->mtx.m31, z = camera->mtx.m32;
+        f32 x = camera->mtx.m30;
+        f32 y = camera->mtx.m31;
+        f32 z = camera->mtx.m32;
         camera_position_pc.x = x;
         camera_position_pc.y = y;
         camera_position_pc.z = z;
         camera_position_pc.w = 1.0f;
     }
     {
-        f32 x = camera->mtx.m20, y = camera->mtx.m21, z = camera->mtx.m22;
+        f32 x = camera->mtx.m20;
+        f32 y = camera->mtx.m21;
+        f32 z = camera->mtx.m22;
         camera_forward_pc.x = x;
         camera_forward_pc.y = y;
         camera_forward_pc.z = z;

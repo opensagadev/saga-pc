@@ -43,16 +43,29 @@ static void Explosion_Feedback(EXPLOSION_PC *explosion) {
 }
 
 void __cdecl UpdateExplosion_Generic(EXPLOSION_PC *explosion) {
-    f32 progress, radius, inverse;
+    f32 progress;
+    f32 radius;
+    f32 inverse;
     f64 vertical_offset;
-    f32 squared, normalized;
-    u16 angle, hit_flags;
-    i32 i, count, hit_character = 0, damage;
+    f32 squared;
+    f32 normalized;
+    u16 angle;
+    u16 hit_flags;
+    i32 i;
+    i32 count;
+    i32 hit_character = 0;
+    i32 damage;
     u32 hit_type;
-    NUVEC position, maximum, minimum, points[3];
-    GAMEOBJECT *target, *object, *source;
+    NUVEC position;
+    NUVEC maximum;
+    NUVEC minimum;
+    NUVEC points[3];
+    GAMEOBJECT *target;
+    GAMEOBJECT *object;
+    GAMEOBJECT *source;
     BOLT_PC bolt;
-    f32 x, z;
+    f32 x;
+    f32 z;
     progress = explosion->time / explosion->duration;
     radius = explosion->radius * progress;
     angle = explosion->random_angle;

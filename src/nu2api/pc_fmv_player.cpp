@@ -4,7 +4,8 @@
 extern "C" {
     PC_FMV_MOVIE_PC FmvMoviePc = {0};              // 0x02913198
     i32 FmvInitializedPc = 0;                      // 0x029131e0
-    i32 FmvState1Pc = 0, FmvState2Pc = 0;          // 0x029131e4, 0x029131e8
+    i32 FmvState1Pc = 0;                           // 0x029131e4
+    i32 FmvState2Pc = 0;                           // 0x029131e8
     RADFMV_CONTEXT_PC *FmvContextPc = NULL;        // 0x029131ec
     IDirectSound8 *FmvSoundPc = NULL;              // 0x029131f0
     u32 FmvFormatsPc[10] = {0};                    // 0x029131f4
@@ -12,7 +13,8 @@ extern "C" {
     i32 FmvMutedPc = 0;                            // 0x02913220
     i32 FmvCopyFlagsPc = 1;                        // 0x0080fc60
     f32 FmvVolumePc = 1.0f;                        // 0x0080fc64
-    i32 FmvSleepErrorPc = 0, FmvSleepCarryPc = 0;  // 0x02913240, 0x02913244
+    i32 FmvSleepErrorPc = 0;                       // 0x02913240
+    i32 FmvSleepCarryPc = 0;                       // 0x02913244
     i32 FmvFrequencyReadyPc = 0;                   // 0x02913248
     LARGE_INTEGER FmvFrequencyPc = {1000};         // 0x0080fcd0
     void(__cdecl *FmvDrawCallbackPc)(void) = NULL; // 0x02913170
@@ -33,7 +35,8 @@ extern "C" void __cdecl FmvInitializeFormatsPc(void) {
 }
 
 extern "C" void __cdecl FmvSleepPc(i32 duration) {
-    LARGE_INTEGER before, after;
+    LARGE_INTEGER before;
+    LARGE_INTEGER after;
     if (FmvFrequencyReadyPc == 0) {
         FmvFrequencyReadyPc = 1;
         QueryPerformanceFrequency(&FmvFrequencyPc);
@@ -53,7 +56,9 @@ extern "C" void __cdecl FmvSleepPc(i32 duration) {
 
 extern "C" void __cdecl FmvDrawPc(PC_FMV_MOVIE_PC *movie) {
     f32 opacity = 1.0f;
-    NUMTX world, view, projection;
+    NUMTX world;
+    NUMTX view;
+    NUMTX projection;
     if (SoundVoiceEnabledGate == 0) {
         return;
     }
@@ -118,7 +123,12 @@ extern "C" void __cdecl FmvDrawPc(PC_FMV_MOVIE_PC *movie) {
 
 extern "C" i32 __cdecl FmvDecodePc(PC_FMV_MOVIE_PC *movie, RADFMV_IMAGE_PC *image, u32 unused) {
     void *pixels;
-    u32 pitch, format, x, y, width, height;
+    u32 pitch;
+    u32 format;
+    u32 x;
+    u32 y;
+    u32 width;
+    u32 height;
     BinkDoFrame(movie->bink);
     if (RadFmvLockImagePc(image, &pixels, &pitch, &format, &x, &y, &width, &height, 1)) {
         do {

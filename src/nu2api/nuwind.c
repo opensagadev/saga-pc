@@ -43,7 +43,12 @@ PC_NUWINDGROUP *NuWindCreateMtx(NUSPECIALHANDLE *source, NUMTX *matrices, i16 co
     PC_NUWINDGROUP *group = NuWindAllocateGrp();
     NUMTX *matrix = matrices;
     i32 index;
-    f32 min_x, min_y, min_z, max_x, max_y, max_z;
+    f32 min_x;
+    f32 min_y;
+    f32 min_z;
+    f32 max_x;
+    f32 max_y;
+    f32 max_z;
     if (group == NULL || matrix == NULL) {
         NuWindFreeGrp(group);
         return NULL;
@@ -97,11 +102,22 @@ PC_NUWINDGROUP *NuWindCreateMtx(NUSPECIALHANDLE *source, NUMTX *matrices, i16 co
 }
 
 void __cdecl NuWindUpdateArray(NUVEC **positions) {
-    i32 instance, index, object, any_interaction, closest;
-    f32 scale, contact_height, contact_radius, contact_x, contact_z;
+    i32 instance;
+    i32 index;
+    i32 object;
+    i32 any_interaction;
+    i32 closest;
+    f32 scale;
+    f32 contact_height;
+    f32 contact_radius;
+    f32 contact_x;
+    f32 contact_z;
     NUMTX *matrix;
     PC_NUWINDGROUP *group;
-    f32 closest_squared, squared, target_x, target_z;
+    f32 closest_squared;
+    f32 squared;
+    f32 target_x;
+    f32 target_z;
     NUVEC wind;
     i32 nearby[8];
     group = NuWindGroup;
@@ -294,10 +310,15 @@ void __cdecl NuWindUpdate(NUVEC *wind) {
 }
 
 void __cdecl NuWindDraw(void) {
-    i32 instance, index;
+    i32 instance;
+    i32 index;
     NUMTX *matrix;
     PC_NUWINDGROUP *group;
-    f32 near_squared, far_squared, saved_m23, saved_m33, distance_squared;
+    f32 near_squared;
+    f32 far_squared;
+    f32 saved_m23;
+    f32 saved_m33;
+    f32 distance_squared;
     NUSPECIALHANDLE special;
     special.special = NULL;
     group = NuWindGroup;

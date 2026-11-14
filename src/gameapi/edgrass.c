@@ -35,7 +35,8 @@ void edgraEnter(void) {
 
 void __cdecl edgraDetermineNearestInstance(f32 distance) {
     NUVEC delta;
-    i32 individual, i;
+    i32 individual;
+    i32 i;
     f32 candidate;
     if (edgra_nearest == -1) {
         edgra_nearest_instance = -1;
@@ -632,8 +633,14 @@ void __cdecl edgraDetermineNearestClump(f32 distance) {
 }
 
 i32 __cdecl edgraLoadPage(char *path, void *scene, i32 terrain, VARIPTR *buffer, VARIPTR *buffer_end) {
-    i32 page, version, clump_count, matrix_count, slot, file_index;
-    u32 matrix_base, vector_cursor;
+    i32 page;
+    i32 version;
+    i32 clump_count;
+    i32 matrix_count;
+    i32 slot;
+    i32 file_index;
+    u32 matrix_base;
+    u32 vector_cursor;
     page = -1;
     for (slot = 0; slot < 8; ++slot) {
         if (edgra_page_used[slot] == 0) {
@@ -674,7 +681,9 @@ i32 __cdecl edgraLoadPage(char *path, void *scene, i32 terrain, VARIPTR *buffer,
         for (file_index = 0; file_index < clump_count; ++file_index) {
             PC_EDGRACLUMP *clump;
             char name[20];
-            i32 skipped_individuals, individual, element;
+            i32 skipped_individuals;
+            i32 individual;
+            i32 element;
             /* Retail proceeds with the limit record if no free slot was found. */
             while (GrassClumps[slot].element_count != 0 && slot < EDGRA_MAX_CLUMPS) {
                 ++slot;

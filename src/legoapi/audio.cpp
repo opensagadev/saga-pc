@@ -99,7 +99,8 @@ extern "C" {
     }
 
     void __cdecl GameAudio_AddSfx(i32 code, i32 *ids, i32 *count, i32 capacity) {
-        i32 id, i;
+        i32 id;
+        i32 i;
         if (ids == NULL || count == NULL || *count >= capacity) {
             return;
         }
@@ -227,7 +228,8 @@ extern "C" {
         PLAYERCHARACTERCONFIG_PC *character = object->character_data->game_character;
         i32 sfx_id = character->sfx_engine;
         f32 target;
-        f32 volume, pitch;
+        f32 volume;
+        f32 pitch;
         if (sfx_id == -1) {
             return;
         }
@@ -507,7 +509,8 @@ extern "C" void __cdecl PlaySabreSfx(char *name, GAMEOBJECT *object, NUVEC *posi
 extern "C" {
 
     void __cdecl AddLevelSfxFromName(char *name, i32 *ids, i32 *count, i32 capacity) {
-        i32 id, i;
+        i32 id;
+        i32 i;
         if (ids == NULL || count == NULL || *count >= capacity) {
             return;
         }

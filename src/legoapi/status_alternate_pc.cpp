@@ -13,7 +13,8 @@ extern "C" {
     i32 __cdecl TriggerAutoSave(void);
     extern const char Text_UnknownText[];
     void __cdecl DrawStatusTextFraction(i32, i32, f32, f32, u16, f32, u32, f32, f32);
-    extern f32 CoinTotalScoreSizePc, CoinTotalCoinOffsetPc;
+    extern f32 CoinTotalScoreSizePc;
+    extern f32 CoinTotalCoinOffsetPc;
     extern i16 TextIdPc880778;
 
     f32 StatusAlt7f8214Pc = 1.2f;
@@ -653,8 +654,14 @@ extern "C" {
 
     /* Stage type 19. Draws the gold-brick title, the spinning brick and the brick count. */
     void __cdecl GoldBrick_Alt_Draw(STATUS_STAGE_s *stage, STATUSPACKET_s *packet, i32 current) {
-        f32 title_alpha, count_alpha, title_scale, brick_scale, count_scale;
-        u16 title_angle, count_angle, rotation;
+        f32 title_alpha;
+        f32 count_alpha;
+        f32 title_scale;
+        f32 brick_scale;
+        f32 count_scale;
+        u16 title_angle;
+        u16 count_angle;
+        u16 rotation;
         i32 displayed;
         if (current == 0 || stage->field_0x14 <= 0) {
             return;
@@ -1312,8 +1319,14 @@ extern "C" {
         f32 full_fade = 1.0f;
         f32 full_scale_in = 1.0f;
         f32 full_scale_out = 1.0f;
-        f32 title_alpha, bar_alpha, percent_alpha, percent_scale, mode_scale, title_scale;
-        u16 title_angle, mode_angle;
+        f32 title_alpha;
+        f32 bar_alpha;
+        f32 percent_alpha;
+        f32 percent_scale;
+        f32 mode_scale;
+        f32 title_scale;
+        u16 title_angle;
+        u16 mode_angle;
         i32 percent_angle;
         u32 colour;
         if (current == 0) {
@@ -1618,7 +1631,11 @@ extern "C" {
         }
         if (stage->field_0x14 == 3) {
             char total[32];
-            f32 size, grow, shrink, coin_scale, coin_size;
+            f32 size;
+            f32 grow;
+            f32 shrink;
+            f32 coin_scale;
+            f32 coin_size;
             u8 alpha;
             Text_MakeScore(*packet->score, total);
             size = CoinTotalScoreSizePc * players_scale * StatusAltScalePc * total_scale * 1.5;
@@ -1775,7 +1792,11 @@ extern "C" {
 
     /* Stage type 5. Draws the suit icons on a ring and brings the newest one to the centre. */
     void __cdecl Stage5_Alt_Draw(STATUS_STAGE_s *stage, STATUSPACKET_s *packet, i32 current) {
-        f32 x, y, blend, radius, title_alpha;
+        f32 x;
+        f32 y;
+        f32 blend;
+        f32 radius;
+        f32 title_alpha;
         f64 angle;
         i32 i;
         (void)packet;
@@ -1949,8 +1970,12 @@ extern "C" {
             return;
         }
         if (stage->field_0x14 > 0) {
-            f32 alpha1, scale1, alpha2, scale2;
-            u16 angle1, angle2;
+            f32 alpha1;
+            f32 scale1;
+            f32 alpha2;
+            f32 scale2;
+            u16 angle1;
+            u16 angle2;
             if (stage->field_0x18 < StatusAlt7f8220Pc) {
                 scale1 = alpha1 = stage->field_0x18 / StatusAlt7f8220Pc;
                 angle1 = StatusAltSpinPc;
@@ -1987,7 +2012,8 @@ extern "C" {
                 scale1 = 1.0f;
             }
             if (alpha1 > 0.0f) {
-                i32 a1, a2;
+                i32 a1;
+                i32 a2;
                 scale1 = StatusAltScalePc * scale1;
                 scale2 = StatusAltScalePc * scale2;
                 a1 = alpha1 * 255.0;
@@ -2007,7 +2033,9 @@ extern "C" {
                                    (((((u8)StatusBluePc | (a2 << 8)) << 8) | (u8)StatusGreenPc) << 8) | (u8)StatusRedPc,
                                    0);
                 } else if (stage->type == 23) {
-                    i32 red, green, blue;
+                    i32 red;
+                    i32 green;
+                    i32 blue;
                     if (packet->challenge_state == 2) {
                         red = green = blue = 0xff;
                     } else {
@@ -2018,7 +2046,9 @@ extern "C" {
                     DrawStatusText(TTab[TextIdPc880864], angle2, 0.0f, scale2 * StatusCoinsTitleYPc, scale2,
                                    (((((u8)blue | (a2 << 8)) << 8) | (u8)green) << 8) | (u8)red, 0);
                 } else if (stage->type == 26) {
-                    i32 red, green, blue;
+                    i32 red;
+                    i32 green;
+                    i32 blue;
                     i16 id;
                     if (packet->mission_state == 2) {
                         id = TextIdPc8806e4;
@@ -2037,7 +2067,9 @@ extern "C" {
         if (stage->type == 23 || stage->type == 26) {
             if ((stage->type == 26 && packet->mission_state == 2) ||
                 (stage->type == 23 && packet->challenge_state == 2)) {
-                f32 progress, slide, coin_slide;
+                f32 progress;
+                f32 slide;
+                f32 coin_slide;
                 u32 score;
                 if (stage->field_0x18 < 0.75f) {
                     slide = stage->field_0x18 / 0.7f;
@@ -2202,8 +2234,14 @@ extern "C" {
 
     /* Stage type 18. Shows the red brick's cheat name, the spinning brick and the title. */
     void __cdecl RedBrick_Alt_Draw(STATUS_STAGE_s *stage, STATUSPACKET_s *packet, i32 current) {
-        f32 cheat_alpha, cheat_scale, title_alpha, title_scale, brick_scale;
-        u16 cheat_angle, title_angle, rotation;
+        f32 cheat_alpha;
+        f32 cheat_scale;
+        f32 title_alpha;
+        f32 title_scale;
+        f32 brick_scale;
+        u16 cheat_angle;
+        u16 title_angle;
+        u16 rotation;
         if (current == 0 || stage->field_0x14 <= 0) {
             return;
         }

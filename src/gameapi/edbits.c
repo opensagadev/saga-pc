@@ -269,7 +269,8 @@ void __cdecl edbitsDrawDiagonalCross(f32 x, f32 y, f32 z, f32 radius, i32 colour
 void __cdecl edbitsDrawOvalTilted(NUVEC *centre, f32 radius_x, f32 radius_z, i32 colour,
                                   struct PC_SCENE_MTL_VIEW *material, i32 rotation_z, i32 rotation_y) {
     NUVEC vertices[2];
-    i32 i, angle;
+    i32 i;
+    i32 angle;
     vertices[1].x = 0.0f;
     vertices[1].y = 0.0f;
     vertices[1].z = radius_z;
@@ -320,7 +321,8 @@ void __cdecl edbitsDrawTorus(NUVEC *centre, f32 radius, f32 radial_extent, f32 v
                              NUMTL *material) {
     NUVEC offset;
     NUVEC point;
-    i32 i, angle;
+    i32 i;
+    i32 angle;
     edbitsDrawCircleXY(centre, radius - radial_extent, colour, (struct PC_SCENE_MTL_VIEW *)material);
     edbitsDrawCircleXY(centre, radius + radial_extent, colour, (struct PC_SCENE_MTL_VIEW *)material);
     offset = *centre;
@@ -360,12 +362,25 @@ void edgraCalculatePage(i8 page, i32 calculate_vectors) {
 
     Sample samples[256];
     Sample *sample;
-    NUMTX *matrix, *matrix_start, *current_matrix;
-    i32 count, rows, columns, terrain_enabled, slope_enabled;
+    NUMTX *matrix;
+    NUMTX *matrix_start;
+    NUMTX *current_matrix;
+    i32 count;
+    i32 rows;
+    i32 columns;
+    i32 terrain_enabled;
+    i32 slope_enabled;
     u32 seed;
     i32 angle;
-    f32 distance, radius, random, computed_scale, limited, height_offset;
-    NUVEC offset, scale, position;
+    f32 distance;
+    f32 radius;
+    f32 random;
+    f32 computed_scale;
+    f32 limited;
+    f32 height_offset;
+    NUVEC offset;
+    NUVEC scale;
+    NUVEC position;
     i32 clump_index;
     i32 element;
     if (!edgra_page_used[page] || !edgra_page_scene[page] || !edgra_page_matrix_stack[page] || edgra_page_on[page]) {
@@ -443,7 +458,8 @@ void edgraCalculatePage(i8 page, i32 calculate_vectors) {
                         NuVecRotateY(&offset, &offset, GrassClumps[clump_index].rotation_y);
                         break;
                     case 4: {
-                        f32 spacing_x, spacing_z;
+                        f32 spacing_x;
+                        f32 spacing_z;
                         rows = (i32)NuFsqrt((f32)count);
                         columns = (count - 1 + rows) / rows;
                         spacing_x = (GrassClumps[clump_index].size + GrassClumps[clump_index].size) / (f32)(rows - 1);

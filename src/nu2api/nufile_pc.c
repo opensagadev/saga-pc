@@ -13,20 +13,33 @@ void __cdecl NuPSFileInitDevices(i32 device_id, i32 reboot_iop, i32 eject) {
 }
 
 typedef struct FILE_DIRECTORY_TIME_PC {
-    u8 second, minute, hour, day, month, reserved;
+    u8 second;
+    u8 minute;
+    u8 hour;
+    u8 day;
+    u8 month;
+    u8 reserved;
     u16 year;
 } FILE_DIRECTORY_TIME_PC;
 
 typedef struct FILE_DIRECTORY_ENTRY_PC {
-    u32 flags, size;
-    FILE_DIRECTORY_TIME_PC created, modified;
+    u32 flags;
+    u32 size;
+    FILE_DIRECTORY_TIME_PC created;
+    FILE_DIRECTORY_TIME_PC modified;
     char name[256];
 } FILE_DIRECTORY_ENTRY_PC;
 
 STATIC_ASSERT(offsetof(FILE_DIRECTORY_ENTRY_PC, name) == 0x18);
 
 typedef struct FILE_DIRECTORY_RAW_TIME_PC {
-    u8 second, minute, hour, day, month, year_low, year_high;
+    u8 second;
+    u8 minute;
+    u8 hour;
+    u8 day;
+    u8 month;
+    u8 year_low;
+    u8 year_high;
 } FILE_DIRECTORY_RAW_TIME_PC;
 
 typedef struct FILE_DIRECTORY_HOST_ENTRY_PC {

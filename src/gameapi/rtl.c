@@ -16,7 +16,8 @@ typedef union RTL_FRAME_TIMER_VIEW_PC {
     i32 value;
 
     struct {
-        u16 low, high;
+        u16 low;
+        u16 high;
     } words;
 } RTL_FRAME_TIMER_VIEW_PC;
 
@@ -89,7 +90,8 @@ void rtlResetEx(RTL_DATA_PC *data, i32 reset_cached) {
 }
 
 static void InsertLight(RTL_LIGHT_PC *light, RTL_DATA_PC *lighting_data, float strength) {
-    i32 slot, move;
+    i32 slot;
+    i32 move;
     switch (light->type) {
         case 1:
             for (slot = 0; slot < 3; ++slot) {
@@ -325,7 +327,8 @@ static void rtlApplySetScaleLoop(void *set, RTL_DATA_PC *lighting_data, NUVEC *p
     char *indices = NULL;
     RTL_SET_PC *lights;
     RTL_INDEX_PC *grid;
-    i32 x, z;
+    i32 x;
+    i32 z;
     f32 distance;
     i32 index;
     lighting_data->specular_value = 0.0f;
@@ -1040,16 +1043,31 @@ void __cdecl rtlSetShadowFlickerBlendTime(f32 time) {
 typedef struct BURN_OUT_PC {
     i32 active;
     NUVEC position;
-    f32 field_10, field_14, field_18, field_1c, field_20;
+    f32 field_10;
+    f32 field_14;
+    f32 field_18;
+    f32 field_1c;
+    f32 field_20;
 } BURN_OUT_PC;
 
 struct BURN_SET_PC {
-    BURN_PARAMETERS_PC parameters, parameters_copy;
-    i32 field_a8, field_ac, field_b0, field_b4;
-    f32 field_b8, field_bc, field_c0, field_c4, field_c8, field_cc;
+    BURN_PARAMETERS_PC parameters;
+    BURN_PARAMETERS_PC parameters_copy;
+    i32 field_a8;
+    i32 field_ac;
+    i32 field_b0;
+    i32 field_b4;
+    f32 field_b8;
+    f32 field_bc;
+    f32 field_c0;
+    f32 field_c4;
+    f32 field_c8;
+    f32 field_cc;
     BURN_OUT_PC burnouts[32];
-    i32 active_count, selected_index;
-    f32 field_558, field_55c;
+    i32 active_count;
+    i32 selected_index;
+    f32 field_558;
+    f32 field_55c;
     i32 field_560;
 };
 
@@ -2576,7 +2594,9 @@ void __cdecl edrtlDrawLightEx(i32 index, i32 style) {
 
 void __cdecl edrtlDrawFogInfo(void) {
     const char *fog_types[3] = {"INVALID", "SPHERICAL", "ALSO INVALID"};
-    i32 x, y, height;
+    i32 x;
+    i32 y;
+    i32 height;
     NuQFntSet(system_qfont);
     NuQFntSetScale(system_qfont, edrtl_text_scale, edrtl_text_scale);
     NuQFntSetColour(system_qfont, 0x80ffffff);
@@ -2617,7 +2637,9 @@ void __cdecl edrtlDrawFogInfo(void) {
 }
 
 void edrtlDrawBurnInfo(void) {
-    i32 x, y, height;
+    i32 x;
+    i32 y;
+    i32 height;
     NuQFntSet(system_qfont);
     NuQFntSetScale(system_qfont, 1.2f, 1.2f);
     NuQFntSetColour(system_qfont, 0x80ffffff);
@@ -2811,7 +2833,8 @@ static void edrtlInvalidateUndo(void) {
     redo_item->flags |= 2u;
 }
 
-extern f32 min_r, def_fr;
+extern f32 min_r;
+extern f32 def_fr;
 
 void __cdecl rtlSetMinR(f32 radius) {
     min_r = radius;
@@ -2914,7 +2937,8 @@ void __cdecl cbCopyToGroup(eduimenu_s *menu, eduiitem_s *item, u32 buttons) {
     i32 save_undo = 1;
     i32 i;
     NUVEC position;
-    u16 uid, user_id;
+    u16 uid;
+    u16 user_id;
     if (curr_rtl != NULL && curr_rtl->group_id != 0) {
         for (i = 0; i < 128; ++i) {
             if (&curr_set->lights[i] == curr_rtl) {
@@ -3186,7 +3210,8 @@ void __cdecl InitUI(void) {
     i32 i;
     eduimenu_s *menu;
     eduiitem_s *created;
-    edui_slider_s *fog_start_slider, *fog_end_slider;
+    edui_slider_s *fog_start_slider;
+    edui_slider_s *fog_end_slider;
     eduimenu_s *checked_menu;
     u32 colours[4] = {0x80000000, 0x800000ff, 0x80808080, 0x80f0f0f0};
     if (rtl_ui_initialised) {

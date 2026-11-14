@@ -7,7 +7,8 @@ extern "C" {
 }
 
 namespace {
-    const unsigned int max_lines = 42, max_log_bytes = 100 * 1024;
+    const unsigned int max_lines = 42;
+    const unsigned int max_log_bytes = 100 * 1024;
 
     struct Register {
         TraceWord value[4];
@@ -16,44 +17,79 @@ namespace {
 
     struct Stream {
         TraceWord base;
-        unsigned int size, epoch;
+        unsigned int size;
+        unsigned int epoch;
     };
 
     struct Owner {
-        TraceWord skin, hierarchy, joints, world[16];
-        unsigned int count, stream, epoch, ordinal;
+        TraceWord skin;
+        TraceWord hierarchy;
+        TraceWord joints;
+        TraceWord world[16];
+        unsigned int count;
+        unsigned int stream;
+        unsigned int epoch;
+        unsigned int ordinal;
     };
 
     struct Item {
-        TraceWord item, palette, geometry, hierarchy, joints, world[16];
-        unsigned int stream, epoch, ordinal;
+        TraceWord item;
+        TraceWord palette;
+        TraceWord geometry;
+        TraceWord hierarchy;
+        TraceWord joints;
+        TraceWord world[16];
+        unsigned int stream;
+        unsigned int epoch;
+        unsigned int ordinal;
     };
 
     struct Thread {
-        unsigned int id, depth;
-        TraceWord item[4], palette;
+        unsigned int id;
+        unsigned int depth;
+        TraceWord item[4];
+        TraceWord palette;
         int palette_count;
-        unsigned int palette_stream, palette_epoch;
+        unsigned int palette_stream;
+        unsigned int palette_epoch;
     };
 
     struct Instance {
-        TraceWord hierarchy, joints;
+        TraceWord hierarchy;
+        TraceWord joints;
         unsigned int ordinal;
     };
 
     struct State {
-        int configured, enabled, stopped, resetting;
-        unsigned int start, delay, selected, samples, last_tick, lines, bytes, next_owner, next_item, instances;
-        TraceWord device, shader[2];
-        unsigned int shader_valid[2], writer, multiple_writers;
-        TraceWord selected_geometry[4], selected_material;
+        int configured;
+        int enabled;
+        int stopped;
+        int resetting;
+        unsigned int start;
+        unsigned int delay;
+        unsigned int selected;
+        unsigned int samples;
+        unsigned int last_tick;
+        unsigned int lines;
+        unsigned int bytes;
+        unsigned int next_owner;
+        unsigned int next_item;
+        unsigned int instances;
+        TraceWord device;
+        TraceWord shader[2];
+        unsigned int shader_valid[2];
+        unsigned int writer;
+        unsigned int multiple_writers;
+        TraceWord selected_geometry[4];
+        TraceWord selected_material;
         unsigned int selected_draw;
         Stream stream[2];
         Owner owner[32];
         Item item[64];
         Thread thread[4];
         Instance instance[32];
-        Register vertex[256], pixel[224];
+        Register vertex[256];
+        Register pixel[224];
     };
 
     State state = {0};

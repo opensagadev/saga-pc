@@ -52,10 +52,17 @@ void __cdecl ShoveSystemCheckGameObject(GAMEOBJECT *object) {
     }
     for (i = 0, shove = ShoveSystemPc.objects; i < ShoveSystemPc.count; ++i, ++shove) {
         f64 reach;
-        f32 delta, absolute_x, absolute_z, distance, penetration, speed;
+        f32 delta;
+        f32 absolute_x;
+        f32 absolute_z;
+        f32 distance;
+        f32 penetration;
+        f32 speed;
         NUVEC offset;
         NUMTX *matrix;
-        NUVEC minimum, maximum, point;
+        NUVEC minimum;
+        NUVEC maximum;
+        NUVEC point;
         if (shove->platform_id != -1 && shove->platform_id == object->supporting_platform_id &&
             object->contact_normal.y > 0.707f) {
             continue;

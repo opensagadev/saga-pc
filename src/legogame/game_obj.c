@@ -209,13 +209,21 @@ void __cdecl SpawnCreatureFromCrate(GAMEOBJECT *object, f32 height, f32 delay) {
 }
 
 void __cdecl ManageGameObjects(void) {
-    i32 i, j, area, alive;
-    GAMEOBJECT *candidate, *other, *vehicle, *target;
+    i32 i;
+    i32 j;
+    i32 area;
+    i32 alive;
+    GAMEOBJECT *candidate;
+    GAMEOBJECT *other;
+    GAMEOBJECT *vehicle;
+    GAMEOBJECT *target;
     AICREATURE_PC *creature;
     AISYS_PC *system;
     AIGROUP_PC *group;
-    AILOCATOR_PC *locator, *respawn_locator;
-    u32 saved_flags, limit;
+    AILOCATOR_PC *locator;
+    AILOCATOR_PC *respawn_locator;
+    u32 saved_flags;
+    u32 limit;
     i64 mask;
     GAMEOBJECT *object = Obj;
     memset(aicreature_sets_alive, 0, sizeof(aicreature_sets_alive));
@@ -510,7 +518,10 @@ static i32 Collide2Objects(APIOBJECT_PC *first, APIOBJECT_PC *second) {
     f32 second_vertical_velocity = second->velocity.y;
     GAMEOBJECT *first_object = (GAMEOBJECT *)first->owner;
     GAMEOBJECT *second_object = (GAMEOBJECT *)second->owner;
-    f32 maximum_velocity, velocity_squared, maximum_squared, scale;
+    f32 maximum_velocity;
+    f32 velocity_squared;
+    f32 maximum_squared;
+    f32 scale;
     i32 collision_result = ForcePushed_SuperPush_Occurring(first_object, second_object);
     if (collision_result != 0) {
         collision_result = ((COLLISION_MASKS_VIEW_PC *)second_object)->collision_identity_mask &
@@ -574,16 +585,30 @@ static i32 Collide2Objects(APIOBJECT_PC *first, APIOBJECT_PC *second) {
 }
 
 void __cdecl CollideGameObjects(WORLDINFO *world) {
-    i32 object_count = HIGHGAMEOBJECT, index, player_index, collision_count = 0;
-    u32 player_slot_mask = 0, vertical_movement_mask = 0, no_vertical_movement_mask = 0, player_collision_mask = 0,
-        flattened_mask = 0, narrow_speeder_mask = 0;
-    GAMEOBJECT *object, *selected_player;
-    APIOBJECT_PC *collision_objects[64], **object_cursor;
-    NUVEC collision_minimums[64], collision_maximums[64], *minimum_cursor, *maximum_cursor, direction;
+    i32 object_count = HIGHGAMEOBJECT;
+    i32 index;
+    i32 player_index;
+    i32 collision_count = 0;
+    u32 player_slot_mask = 0;
+    u32 vertical_movement_mask = 0;
+    u32 no_vertical_movement_mask = 0;
+    u32 player_collision_mask = 0;
+    u32 flattened_mask = 0;
+    u32 narrow_speeder_mask = 0;
+    GAMEOBJECT *object;
+    GAMEOBJECT *selected_player;
+    APIOBJECT_PC *collision_objects[64];
+    APIOBJECT_PC **object_cursor;
+    NUVEC collision_minimums[64];
+    NUVEC collision_maximums[64];
+    NUVEC *minimum_cursor;
+    NUVEC *maximum_cursor;
+    NUVEC direction;
     PLAYERCHARACTERCONFIG_PC *data;
     COLLISION_EXCLUSION_VIEW_PC *exclusion;
     u64 bit;
-    u32 flags, is_player;
+    u32 flags;
+    u32 is_player;
     i8 context;
     if (world->area_index != -1 && (world->area->flags & 0x80)) {
         return;
@@ -894,7 +919,8 @@ void __cdecl GameObjectRotation(GAMEOBJECT *object, i32 mode) {
         }
         if (object->flags_107a == 2) {
             f32 speed;
-            u16 target_x, target_z;
+            u16 target_x;
+            u16 target_z;
             if (magnet) {
                 if (object->field_7aa == 6 || object->field_7aa == 5) {
                     object->pitch_angle = 0;
@@ -977,8 +1003,14 @@ void __cdecl PlayerTakeHit(GAMEOBJECT *object, GAMEOBJECT *attacker) {
 i32 __cdecl PlayerTakeHitReactionPc(GAMEOBJECT *target, GAMEOBJECT *attacker, f32 duration, u32 flags) {
     REACTION_FIELDS_PC *view = (REACTION_FIELDS_PC *)target;
     void **animations;
-    i32 choices[16], count = 0, animation, saved_jump_state;
-    f32 speed, timer, dx, dz;
+    i32 choices[16];
+    i32 count = 0;
+    i32 animation;
+    i32 saved_jump_state;
+    f32 speed;
+    f32 timer;
+    f32 dx;
+    f32 dz;
     i16 index;
     if (target->field_280 == 0xff) {
         animations = target->character_model->model_data_b;
@@ -1329,7 +1361,8 @@ void SpeederPart_Update(PART_PC *part) {
         f32 tilt;
         f32 tilt_magnitude;
         u16 spin;
-        u16 yaw, pitch;
+        u16 yaw;
+        u16 pitch;
         previous_position = bike->spline_position.position;
         MoveSplinePosition(&bike->spline_position, distance);
         PointAlongSpline(bike->spline_position.spline, bike->spline_position.along, &position, &yaw, &pitch, 1);
@@ -1482,7 +1515,8 @@ static f32 SHIELDFLICKERTIME = 0.10000000149011612f;
 void __cdecl ObjHitShield(GAMEOBJECT *attacker, GAMEOBJECT *target, i32 damage, void *unused_bolt) {
     SHIELD_STATE_PC *shield = (SHIELD_STATE_PC *)target;
     i32 health;
-    f32 first_rumble, second_rumble;
+    f32 first_rumble;
+    f32 second_rumble;
     (void)unused_bolt;
     if (target == NULL) {
         return;
@@ -1549,7 +1583,10 @@ GAMEOBJECT *__cdecl TargetGameObject(GAMEOBJECT *object, NUVEC *position, NUVEC 
     u16 far_angle = TargetDeg_Far;
     f32 near_distance = TargetDist_Near2;
     f32 mid_distance = TargetDist_Mid2;
-    f32 min_x, max_x, min_z, max_z;
+    f32 min_x;
+    f32 max_x;
+    f32 min_z;
+    f32 max_z;
     i32 arcade;
     GAMEOBJECT *target;
     GAMEOBJECT *best = NULL;
@@ -2522,7 +2559,8 @@ void __cdecl UpdateGameObjects(WORLDINFO *world) {
 }
 
 i32 __cdecl KillGameObject(GAMEOBJECT *object, i32 reason, i32 unused) {
-    NUVEC momentum, position;
+    NUVEC momentum;
+    NUVEC position;
     i32 debris[4];
     i32 part_debris;
     i32 requested_reason;
@@ -2919,7 +2957,8 @@ i32 __cdecl KillGameObject(GAMEOBJECT *object, i32 reason, i32 unused) {
 }
 
 i32 __cdecl KillPlayer(GAMEOBJECT *object, i32 reason, i32 ignore_spawn_protection, NUVEC *unused) {
-    i32 other, active;
+    i32 other;
+    i32 active;
     (void)unused;
     if (object->dead != 0) {
         return 0;
@@ -2967,7 +3006,8 @@ void __cdecl KillParts_SpeederBike(ADDPART_PC *params, i32 unused1, i32 unused2,
     f32 distance;
     NUVEC position;
     NUVEC velocity;
-    u16 yaw, pitch;
+    u16 yaw;
+    u16 pitch;
     params->flags = 0x400;
     velocity.x = object->velocity.x * 1.5f;
     velocity.y = 0.0f;
@@ -3240,7 +3280,16 @@ void __cdecl InstantKillParts(GAMEOBJECT *object, i32 mode, f32 vertical_scale) 
 i32 __cdecl ObjHitObj(GAMEOBJECT *attacker, GAMEOBJECT *target, i32 damage, u16 flags, i32 probe, i32 ignored) {
     i32 reaction_trigger;
 
-    i32 no_hurt, no_impact, no_rumble, throw_up, random, original_damage, result, health, coins, hearts;
+    i32 no_hurt;
+    i32 no_impact;
+    i32 no_rumble;
+    i32 throw_up;
+    i32 random;
+    i32 original_damage;
+    i32 result;
+    i32 health;
+    i32 coins;
+    i32 hearts;
     i16 *parts_angle;
     BOLT *bolt;
     u16 computed_angle;

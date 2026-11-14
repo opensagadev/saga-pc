@@ -27,21 +27,29 @@ struct zipup_pc_s {
         NUVEC endpoints[3];
 
         struct {
-            NUVEC lower_position, hook_origin, upper_position;
+            NUVEC lower_position;
+            NUVEC hook_origin;
+            NUVEC upper_position;
         };
     };
 
-    u16 hook_x_rotation, hook_y_rotation;
-    NUVEC hook_position, rider_start_offset, rider_target_position;
+    u16 hook_x_rotation;
+    u16 hook_y_rotation;
+    NUVEC hook_position;
+    NUVEC rider_start_offset;
+    NUVEC rider_target_position;
     GAMEOBJECT *occupant;
-    u16 pitch_adjustment, direction, facing_angle;
+    u16 pitch_adjustment;
+    u16 direction;
+    u16 facing_angle;
     u8 unknown_66[2];
 
     union {
         u16 flags_word;
 
         struct {
-            u8 flags, runtime_flags;
+            u8 flags;
+            u8 runtime_flags;
         };
 
         struct {
@@ -64,9 +72,12 @@ struct zipup_pc_s {
 
     union {
         struct {
-            f32 lower_ground_height, upper_ground_height;
-            u16 lower_ground_x_rotation, upper_ground_x_rotation;
-            u16 lower_ground_z_rotation, upper_ground_z_rotation;
+            f32 lower_ground_height;
+            f32 upper_ground_height;
+            u16 lower_ground_x_rotation;
+            u16 upper_ground_x_rotation;
+            u16 lower_ground_z_rotation;
+            u16 upper_ground_z_rotation;
         };
 
         struct {
@@ -113,7 +124,10 @@ typedef struct HINT_ZIPUP_PC {
 
 typedef struct zipup_transport_view_pc_s {
     u8 unknown_00[0x748];
-    NUVEC entry, start, swing, landing;
+    NUVEC entry;
+    NUVEC start;
+    NUVEC swing;
+    NUVEC landing;
     u8 unknown_778[0x634];
     f32 detach_fall_delay;
 } ZIPUP_TRANSPORT_VIEW_PC;
@@ -133,7 +147,8 @@ STATIC_ASSERT(offsetof(ZIPUP_TRANSPORT_VIEW_PC, landing) == 0x76c);
 #define ASIN_POW5(x) (ASIN_POW2(x) * ASIN_POW3(x))
 
 typedef struct zipup_progress_pc_s {
-    u32 active_mask[1], visible_mask[1];
+    u32 active_mask[1];
+    u32 visible_mask[1];
 } ZIPUP_PROGRESS_PC;
 
 STATIC_ASSERT(sizeof(ZIPUP_PROGRESS_PC) == 8);
@@ -152,9 +167,11 @@ enum ZIPUP_FLAGS {
 };
 
 typedef struct zipup_rope_vertex_pc_s {
-    NUVEC position, normal;
+    NUVEC position;
+    NUVEC normal;
     u32 colour;
-    f32 u, v;
+    f32 u;
+    f32 v;
 } ZIPUP_ROPE_VERTEX_PC;
 
 STATIC_ASSERT(sizeof(ZIPUP_ROPE_VERTEX_PC) == 36);
@@ -326,7 +343,8 @@ static i32 ZipUp_ActivateRev(GIZMO_PC *gizmo, i32 active, i32 query) {
 }
 
 extern i32 __cdecl ZipUps_Load(WORLDINFO *world) {
-    i32 version, index;
+    i32 version;
+    i32 index;
 
     if (world->zipup_count == 0) {
         version = EdFileReadInt();
@@ -422,8 +440,10 @@ extern void ZipUps_Reset(WORLDINFO *world, void *unused, ZIPUP_PROGRESS_PC *prog
 ZIPUP_PC *__cdecl ZipUp_FindNearest(WORLDINFO *world, NUVEC *position, f32 radius, f32 *distance, i32 *endpoint,
                                     GAMEOBJECT *object) {
     ZIPUP_PC *nearest;
-    i32 index, end;
-    f32 square_distance, best_distance;
+    i32 index;
+    i32 end;
+    f32 square_distance;
+    f32 best_distance;
 
     ZIPUP_PC *zipup = world->zipups;
 
@@ -742,7 +762,8 @@ void ZipUp_MoveCode(GAMEOBJECT *object, i32 special_pressed) {
             NUVEC start_offset;
             NUVEC *start;
             NUVEC *heading;
-            f32 dx, dz;
+            f32 dx;
+            f32 dz;
             i32 angle;
             i32 pitch;
             i32 yaw;
@@ -1153,7 +1174,8 @@ void DrawRopeSingle(NUVEC *start, NUVEC *end, float amount, NUMTL *material, flo
     f32 length;
     f32 repeats;
     ZIPUP_ROPE_VERTEX_PC vertices[10];
-    u16 x_rotation, z_rotation;
+    u16 x_rotation;
+    u16 z_rotation;
     NUMTX matrix;
     NUVEC position;
     NUVEC size;
@@ -1328,7 +1350,8 @@ void ZipUps_DrawLines() {
 
     for (i = 0; i < HIGHGAMEOBJECT; ++i, ++object) {
         ZIPUP_ROPE_VERTEX_PC vertices[3];
-        ZIPUP_ROPE_VERTEX_PC *start, *end;
+        ZIPUP_ROPE_VERTEX_PC *start;
+        ZIPUP_ROPE_VERTEX_PC *end;
 
         start = &vertices[0];
         end = &vertices[1];

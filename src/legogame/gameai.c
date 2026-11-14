@@ -53,8 +53,11 @@ typedef void(__cdecl *AI_CLEAR_CREATURES_PC)(void);
 typedef APIOBJECT_PC *(__cdecl *AI_GET_NAMED_OBJECT_PC)(void *, char *);
 typedef NUVEC *(__cdecl *AI_GET_CREATURE_ORIGIN_PC)(AISYS_PC *, AIPACKET_PC *);
 extern void(__cdecl *AIPathCnxHelperSysInitFn)(WORLDINFO *);
-extern AIACTIONDEF_PC lego_aiactiondefs[], api_aiactiondefs[], *game_aiactiondefs;
-extern AICONDITIONDEF_PC lego_aiconditiondefs[], *game_aiconditiondefs;
+extern AIACTIONDEF_PC lego_aiactiondefs[];
+extern AIACTIONDEF_PC api_aiactiondefs[];
+extern AIACTIONDEF_PC *game_aiactiondefs;
+extern AICONDITIONDEF_PC lego_aiconditiondefs[];
+extern AICONDITIONDEF_PC *game_aiconditiondefs;
 i32 __cdecl NuHGobjRndr(NUHGOBJ_EVAL_PC *, NUMTX *, i32, i16 *);
 void __cdecl RegisterAIScriptActions(AIACTIONDEF_PC *);
 void __cdecl RegisterAIScriptConditions(AICONDITIONDEF_PC *);
@@ -228,7 +231,8 @@ void __cdecl AlertSurroundingCreatures(GAMEOBJECT *object, NUVEC *position) {
 void GameCreatureOpponentSelection(AISYS_PC *system, i32 count, APIOBJECT_PC **objects, i32 goody_count,
                                    APIOBJECT_PC **goodies, i32 baddy_count, APIOBJECT_PC **baddies, u64 awareness,
                                    f32 unused) {
-    i32 i, j;
+    i32 i;
+    i32 j;
     f32 distance;
     i32 complete;
     APIOBJECT_PC *object;
@@ -550,7 +554,8 @@ void __cdecl MakeBaddiesForgetAboutParty(i32 check_hostility) {
     GAMEOBJECT **party_cursor = party;
     GAMEOBJECT *object = Obj;
     i32 count = HIGHGAMEOBJECT;
-    i32 i, j;
+    i32 i;
+    i32 j;
     for (i = 0; i < count; ++i, ++object) {
         if ((object->flags_1fc_word & 1) == 0 || (object->flags_1fc_word & 0x1000) == 0 || object->dead != 0) {
             continue;
@@ -644,8 +649,11 @@ i32 CanFightLikeAJedi(GAMEOBJECT *object) {
 }
 
 static void CreatureInteractionOrbitPc(APIOBJECT_PC *object, NUVEC *difference, APIOBJECT_PC *centre, f32 radius) {
-    f32 squared_distance, fraction;
-    i32 angle, turn, limit;
+    f32 squared_distance;
+    f32 fraction;
+    i32 angle;
+    i32 turn;
+    i32 limit;
     squared_distance = difference->x * difference->x + difference->z * difference->z;
     if (squared_distance < (f64)radius * radius) {
         difference->x = object->position.x - centre->position.x;
@@ -674,10 +682,16 @@ static void CreatureInteractionOrbitPc(APIOBJECT_PC *object, NUVEC *difference, 
 
 void __cdecl GameCreatureInteraction2D(AISYS_PC *system, i32 object_count, APIOBJECT_PC **objects, i32 *immovable,
                                        f32 delta_time) {
-    i32 index, first_index, second_index, first_fixed, second_fixed;
-    APIOBJECT_PC *first, *second;
+    i32 index;
+    i32 first_index;
+    i32 second_index;
+    i32 first_fixed;
+    i32 second_fixed;
+    APIOBJECT_PC *first;
+    APIOBJECT_PC *second;
     NUVEC difference;
-    f32 radius, minimum;
+    f32 radius;
+    f32 minimum;
     for (index = 0; index < object_count; ++index) {
         first = objects[index];
         first->ai->antinode_timer -= delta_time;
@@ -777,8 +791,15 @@ static i32 GameAIWallShufflePc(GAMEOBJECT *object) {
     AIPATHNODE_PC *node;
     AIPATHNODE_PC *other_node;
     u16 angle;
-    NUVEC wall_direction, lateral, ray, opposite, movement;
-    f32 first_distance, second_distance, distance, scale;
+    NUVEC wall_direction;
+    NUVEC lateral;
+    NUVEC ray;
+    NUVEC opposite;
+    NUVEC movement;
+    f32 first_distance;
+    f32 second_distance;
+    f32 distance;
+    f32 scale;
 
     object->flags_ef4 |= 0x10000;
     other_node =
@@ -847,7 +868,8 @@ static i32 GameAIWallShufflePc(GAMEOBJECT *object) {
 void __cdecl GameAIResetPathConnectionsPc(AISYS_PC *system) {
     AIPATH_PC *path;
     AIPATHCNX_PC *connection;
-    i32 path_index, connection_index;
+    i32 path_index;
+    i32 connection_index;
     if (system->path_sys != NULL) {
         for (path_index = 0; path_index < system->path_sys->path_count; ++path_index) {
             path = system->path_sys->paths[path_index];
@@ -907,7 +929,9 @@ static void GameAIUpdateAreaPc(AIAREA_PC *area) {
 
 /* Native 0x0043b940, 467 bytes. */
 void __cdecl GameAISysStartFrame(AISYS_PC *system) {
-    i32 path_index, connection_index, script_index;
+    i32 path_index;
+    i32 connection_index;
+    i32 script_index;
     AIPATH_PC *path;
     AIPATHCNX_PC *connection;
     AIPATHNODE_PC *node;
@@ -998,7 +1022,10 @@ static i32 __cdecl IsSpecialRouteCharacterSkippedPc(char *name) {
 }
 
 u8 __cdecl SpecialRouteCharacterTypeID(char *name) {
-    i32 route, skipped = 0, suit, index;
+    i32 route;
+    i32 skipped = 0;
+    i32 suit;
+    i32 index;
     if (NuStrICmp(name, (char *)GameAIEveryonePc) == 0) {
         return 0x40;
     }
@@ -1038,7 +1065,8 @@ char *__cdecl LevelCharacterName(u8 index) {
 }
 
 char *__cdecl SpecialRouteCharacterName(u8 id) {
-    i32 route, skipped = 0;
+    i32 route;
+    i32 skipped = 0;
     if (id != 0xff) {
         if (id < 10) {
             return (char *)SuitRecordInitPc[id].suit_character_name;
@@ -1626,7 +1654,8 @@ void __cdecl AIPathCnxControlSysUpdate(AI_CONTROL_SYSTEM_PC *system) {
     NUINSTANIM *animation;
     CONTROLLER_CUT_VIEW_PC *cut;
     void *data;
-    i32 end, frame;
+    i32 end;
+    i32 frame;
     i32 active;
     u16 flags;
     u16 zipup_flags;
@@ -1849,9 +1878,14 @@ void __cdecl oneAtOnce_MaintainArray(void) {
     /* Four explicit zeros: retail stores the first four counts from one register and zero-fills the rest. */
     i32 attacker_count[8] = {0, 0, 0, 0};
     i32 previous_count[8] = {0, 0, 0, 0};
-    GAMEOBJECT *object, *opponent;
+    GAMEOBJECT *object;
+    GAMEOBJECT *opponent;
     APIOBJECT_PC *opponent_api;
-    i32 index, player_index, slot, previous, sort_slot;
+    i32 index;
+    i32 player_index;
+    i32 slot;
+    i32 previous;
+    i32 sort_slot;
     u8 old_player;
     f32 distance;
 
@@ -1921,8 +1955,10 @@ GAMEOBJECT *__cdecl AddDynamicCreature(i32 model, NUVEC *position, i32 angle, ch
     GAMEOBJECT *object;
     APIOBJECT_PC *api;
     u32 flags;
-    NUVEC point, offset;
-    u16 yaw, pitch;
+    NUVEC point;
+    NUVEC offset;
+    u16 yaw;
+    u16 pitch;
     AIROW_PC *row;
     u32 column;
     if (position == NULL && spline == NULL) {
@@ -2282,7 +2318,8 @@ void __cdecl GameAIProcess(void) {
     APIOBJECT_PC **neutral_cursor;
     APIOBJECT_PC **goody_cursor;
     u64 awareness;
-    NUVEC direction, forward;
+    NUVEC direction;
+    NUVEC forward;
     u32 combat_flags;
     u32 saved_ai_flags;
     APIOBJECT_PC **interactive_cursor;

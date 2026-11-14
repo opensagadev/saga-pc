@@ -471,7 +471,9 @@ extern "C" {
 
     i32 __cdecl EquivalentObject_Find(WORLDINFO *world, NUSPECIALHANDLE *special) {
         EQUIVALENTOBJECTGROUP_PC *group;
-        i32 group_index, index, candidate;
+        i32 group_index;
+        i32 index;
+        i32 candidate;
         if (special != NULL && NuSpecialExistsFn(special)) {
             group = (EQUIVALENTOBJECTGROUP_PC *)world->equivalent_groups;
             if (group != NULL) {
@@ -763,8 +765,10 @@ extern "C" {
     void __cdecl LevelStreaming_Update(WORLDINFO *world) {
         CUTINFO *cut;
         NUVEC position;
-        i32 i, level;
-        f32 best_distance, distance;
+        i32 i;
+        i32 level;
+        f32 best_distance;
+        f32 distance;
         AREA_LEVEL_LOAD_PC *load;
         LEVELDATA_PC *status;
         if (LOADEROFF != 0 || BGLOAD == 0 || world->area == NULL || (world->area->flags & 8) || NewLData != NULL ||

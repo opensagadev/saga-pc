@@ -38,7 +38,8 @@ typedef struct PUSH_SUPPORT_BLOCK_VIEW_PC {
     u8 unknown_034[0x58 - 0x34];
     NUVEC *position;
     u8 unknown_05c[0xb0 - 0x5c];
-    NUVEC bounds_min, bounds_max;
+    NUVEC bounds_min;
+    NUVEC bounds_max;
     u32 packed_state_flags;
     u8 unknown_0cc[4];
     u8 completed_snap_positions;
@@ -54,11 +55,15 @@ typedef struct PUSH_SUPPORT_WORLD_VIEW_PC {
 } PUSH_SUPPORT_WORLD_VIEW_PC;
 
 typedef struct PUSH_RUNTIME_BOUNDS_PC {
-    NUVEC min, max;
+    NUVEC min;
+    NUVEC max;
 } PUSH_RUNTIME_BOUNDS_PC;
 
 typedef struct PUSH_RUNTIME_BLOCK_VIEW_PC {
-    f32 ground_offset, ground_height, snap_timer, settled_height;
+    f32 ground_offset;
+    f32 ground_height;
+    f32 snap_timer;
+    f32 settled_height;
     i8 terrain_info[4];
 
     union {
@@ -67,21 +72,26 @@ typedef struct PUSH_RUNTIME_BLOCK_VIEW_PC {
     } extra_terrain_info;
 
     i32 previous_extra_terrain_info;
-    PUSH_BLOCK_PC *supporting_block, *previous_supporting_block;
+    PUSH_BLOCK_PC *supporting_block;
+    PUSH_BLOCK_PC *previous_supporting_block;
     NUSPECIALHANDLE special;
     GAMEOBJECT *pushing_object;
     i32 platform_id;
     u8 unknown_038[8];
     f32 snap_distance;
     char name[16];
-    NUVEC *snap_positions, *position;
+    NUVEC *snap_positions;
+    NUVEC *position;
     NUSPECIALHANDLE end_position_specials[2];
     NUVEC end_position_origins[2];
-    NUVEC velocity, target_velocity, snap_origin;
+    NUVEC velocity;
+    NUVEC target_velocity;
+    NUVEC snap_origin;
 
     union {
         struct {
-            NUVEC bounds_min, bounds_max;
+            NUVEC bounds_min;
+            NUVEC bounds_max;
         };
 
         PUSH_RUNTIME_BOUNDS_PC bounds;
@@ -89,7 +99,10 @@ typedef struct PUSH_RUNTIME_BLOCK_VIEW_PC {
 
     u32 packed_state_flags;
     u8 unknown_0cc[4];
-    u8 completed_snap_positions, end_position_count, output_count, unknown_0d3;
+    u8 completed_snap_positions;
+    u8 end_position_count;
+    u8 output_count;
+    u8 unknown_0d3;
 } PUSH_RUNTIME_BLOCK_VIEW_PC;
 
 typedef struct PUSH_RUNTIME_LEVEL_VIEW_PC {
@@ -118,7 +131,8 @@ STATIC_ASSERT(offsetof(BOLT_PC, hit_platform) == 0xfa);
 extern "C" {
     extern NUVEC p000;
     extern i32 RunOutOfPosTabSpacePc;
-    extern f32 PushInitGroundOffsetPc, PushInitCornerInsetPc;
+    extern f32 PushInitGroundOffsetPc;
+    extern f32 PushInitCornerInsetPc;
 }
 
 static __inline f32 GizPushFabsPc(f32 value) {
@@ -406,9 +420,14 @@ extern "C" {
         }
         for (i = 0; i < world->push_block_count; ++i) {
             PUSH_BLOCK_PC *other;
-            NUVEC offset, minimum, maximum;
-            i32 overlap_x, overlap_y, overlap_z;
-            f32 shrink, epsilon;
+            NUVEC offset;
+            NUVEC minimum;
+            NUVEC maximum;
+            i32 overlap_x;
+            i32 overlap_y;
+            i32 overlap_z;
+            f32 shrink;
+            f32 epsilon;
             if (i == excluded) {
                 continue;
             }
@@ -494,7 +513,8 @@ extern "C" {
         for (index = 0; index < world->count; ++index) {
             PUSH_RUNTIME_BLOCK_VIEW_PC *other;
             NUVEC *other_position;
-            PUSH_RUNTIME_BOUNDS_PC other_box, test;
+            PUSH_RUNTIME_BOUNDS_PC other_box;
+            PUSH_RUNTIME_BOUNDS_PC test;
             if (index == excluded) {
                 continue;
             }
@@ -583,7 +603,8 @@ extern "C" {
     }
 
     i32 __cdecl TerrainBlockOnBlock(WORLDINFO *opaque_world, PUSH_BLOCK_PC *block, NUVEC *points, f32 *heights) {
-        i32 i, j;
+        i32 i;
+        i32 j;
         if (points == NULL || heights == NULL) {
             return 0;
         }
@@ -594,7 +615,8 @@ extern "C" {
         heights[3] = -10000.0f;
         for (i = 0; i < world->count; ++i) {
             PUSH_SUPPORT_BLOCK_VIEW_PC *other = &world->blocks[i];
-            NUVEC min, max;
+            NUVEC min;
+            NUVEC max;
             if ((PUSH_BLOCK_PC *)other == block) {
                 continue;
             }
@@ -624,8 +646,13 @@ extern "C" i32 __cdecl OtherBlockInRange(WORLDINFO *opaque_world, PUSH_BLOCK_PC 
     radius *= radius;
     for (i32 i = 0; i < world->push_block_count; ++i) {
         PUSH_BLOCK_PC *other;
-        NUVEC minimum, maximum;
-        f32 other_radius, x, z, sum, distance;
+        NUVEC minimum;
+        NUVEC maximum;
+        f32 other_radius;
+        f32 x;
+        f32 z;
+        f32 sum;
+        f32 distance;
         if (i == excluded) {
             continue;
         }
@@ -659,7 +686,9 @@ extern "C" {
         i32 i;
         for (i = 0; i < count; ++i) {
             PUSH_SUPPORT_BLOCK_VIEW_PC *other;
-            f32 x, y, z;
+            f32 x;
+            f32 y;
+            f32 z;
             if (i == excluded) {
                 continue;
             }

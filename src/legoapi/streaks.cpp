@@ -7,7 +7,10 @@ static STREAK_HEADER_PC *streakhdrs_used = 0;
 extern "C" {
     static void StreakBezierPointPrivate(NUVEC *result, NUVEC *start, NUVEC *end, NUVEC *start_tangent,
                                          NUVEC *end_tangent, i32 negate_start, i32 negate_end, f32 amount) {
-        NUVEC negative_start, negative_end, control_a, control_b;
+        NUVEC negative_start;
+        NUVEC negative_end;
+        NUVEC control_a;
+        NUVEC control_b;
         if (negate_start != 0) {
             NuVecScale(&negative_start, start_tangent, -1.0f);
             start_tangent = &negative_start;
@@ -35,7 +38,10 @@ extern "C" {
 
 extern "C" void __cdecl AddStreakPoints(NUVEC *points, f32 duration, u32 colour, void **handle, i32 mode,
                                         GAMEOBJECT *owner) {
-    NUVEC incoming, outgoing, edge_a, edge_b;
+    NUVEC incoming;
+    NUVEC outgoing;
+    NUVEC edge_a;
+    NUVEC edge_b;
     STREAK_HEADER_PC *header = static_cast<STREAK_HEADER_PC *>(*handle);
     if (header == NULL) {
         header = streakhdrs_free;

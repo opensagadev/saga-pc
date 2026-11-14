@@ -20,9 +20,12 @@ STATIC_ASSERT(sizeof(CUT_DRAW_SETTINGS_PC) == 8);
 /* Source-first scratch candidate; unclosed real leaf declarations only. */
 
 typedef struct render_post_prim_vertex_pc_s {
-    f32 x, y, z;
+    f32 x;
+    f32 y;
+    f32 z;
     u32 colour;
-    f32 u, v;
+    f32 u;
+    f32 v;
 } RENDER_POST_PRIM_VERTEX_PC;
 
 STATIC_ASSERT(sizeof(RENDER_POST_PRIM_VERTEX_PC) == 0x18);
@@ -113,7 +116,8 @@ void DrawAlphaGrid(i32 rows, i32 cols, RENDER_POST_BLOOM_READER_PC *parameters) 
     static i32 first = 1;
     static f32 saved_fov = 0;
     static f32 adjacent = 0;
-    static i32 row = 0, col = 0;
+    static i32 row = 0;
+    static i32 col = 0;
     camera = global_camera;
     if (first) {
         f32 half_fov = 0.5f * camera.fov;
@@ -134,7 +138,8 @@ void DrawAlphaGrid(i32 rows, i32 cols, RENDER_POST_BLOOM_READER_PC *parameters) 
     ++NuPrimCSPos;
     NuPrimSetCoordinateSystem(1);
     for (row = 0; row < rows - 1; ++row) {
-        f32 y0, y1;
+        f32 y0;
+        f32 y1;
         NuPrim2DBegin(14, 5, NULL);
         y0 = y_start;
         y1 = y_next;

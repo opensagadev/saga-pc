@@ -3,8 +3,14 @@
 /* Retail unit 0x59b330-0x59bb30 (legoapi/episodes.cpp): definitions in retail address order. */
 
 typedef struct episode_area_save_reader_pc_s {
-    u8 complete, area_complete, story_complete, freeplay_complete;
-    u8 minikit_complete, minikit_count, red_brick_complete, challenge_complete;
+    u8 complete;
+    u8 area_complete;
+    u8 story_complete;
+    u8 freeplay_complete;
+    u8 minikit_complete;
+    u8 minikit_count;
+    u8 red_brick_complete;
+    u8 challenge_complete;
     f32 challenge_time;
 } EPISODE_AREA_SAVE_READER_PC;
 
@@ -130,7 +136,8 @@ extern "C" {
 }
 
 i32 __cdecl Episode_ContainsArea(i32 area_id, i32 *area_index) {
-    i32 i, j;
+    i32 i;
+    i32 j;
     for (i = 0; i < EPISODECOUNT; ++i) {
         EPISODEDATA_PC *episode = &EDataList[i];
         for (j = 0; j < episode->area_count; ++j) {

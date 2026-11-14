@@ -376,7 +376,8 @@ void __cdecl NuVecInvScale(NUVEC *out, NUVEC *vector, f32 scale) {
 }
 
 void __cdecl NuVecCross(NUVEC *out, NUVEC *left, NUVEC *right) {
-    f32 y, z;
+    f32 y;
+    f32 z;
 
     y = (left->z * right->x) - (left->x * right->z);
     z = left->x * right->y - left->y * right->x;
@@ -386,7 +387,9 @@ void __cdecl NuVecCross(NUVEC *out, NUVEC *left, NUVEC *right) {
 }
 
 void __cdecl NuVecCrossRel(NUVEC *out, NUVEC *base, NUVEC *p0, NUVEC *p1) {
-    f32 x, y, z;
+    f32 x;
+    f32 y;
+    f32 z;
     y = (p0->z - base->z) * (p1->x - base->x) - (p1->z - base->z) * (p0->x - base->x);
     z = (p0->x - base->x) * (p1->y - base->y) - (p1->x - base->x) * (p0->y - base->y);
     x = (p0->y - base->y) * (p1->z - base->z) - (p1->y - base->y) * (p0->z - base->z);
@@ -598,8 +601,14 @@ i32 __cdecl NuLineLineIntersect(NUVEC *pnt0, NUVEC *v0, NUVEC *pnt1, NUVEC *v1, 
 
 i32 __cdecl BoundingBoxToLine(NUVEC *minimum, NUVEC *maximum, NUMTX *matrix, NUVEC *start, NUVEC *end, f32 expansion,
                               NUVEC *intersection) {
-    NUVEC a, b, direction, hit, lo, hi;
-    i32 ca, cb;
+    NUVEC a;
+    NUVEC b;
+    NUVEC direction;
+    NUVEC hit;
+    NUVEC lo;
+    NUVEC hi;
+    i32 ca;
+    i32 cb;
     lo.x = minimum->x - expansion;
     lo.y = minimum->y - expansion;
     lo.z = minimum->z - expansion;
@@ -800,7 +809,9 @@ i16 __cdecl NuFloatToHalf(f32 value) {
         u32 bits;
     } packed;
 
-    i32 exponent, mantissa, sign;
+    i32 exponent;
+    i32 mantissa;
+    i32 sign;
     memcpy(&packed.bits, &value, 4);
     sign = packed.bits >> 31;
     exponent = (packed.bits >> 23) & 0xff;
@@ -2582,7 +2593,16 @@ void NuQuatSlerpFast(NUQUAT *out, NUQUAT *from, NUQUAT *to, f32 t) {
         out->w = from->w * inverse_t + target->w * t;
         NuQuatNormalise(out, out);
     } else {
-        f32 a, b, angle, inverse_sine, u, v, sin_u, sin_v, from_factor, to_factor;
+        f32 a;
+        f32 b;
+        f32 angle;
+        f32 inverse_sine;
+        f32 u;
+        f32 v;
+        f32 sin_u;
+        f32 sin_v;
+        f32 from_factor;
+        f32 to_factor;
         dot = dot < 0.9950000047683716 ? dot : 0.995f;
         a = 2.2184808254241943 + (dot * 0.223403662443161) * dot;
         b = dot * 2.4418842792510986;
@@ -2780,7 +2800,9 @@ i32 __cdecl NuPtInPoly(NUVEC *pnt, NUVEC *t0, NUVEC *t1, NUVEC *t2, NUPLANE *pla
         u32 bits;
     } magnitude;
 
-    f32 abs_a, abs_b, abs_c;
+    f32 abs_a;
+    f32 abs_b;
+    f32 abs_c;
     magnitude.value = plane->a;
     magnitude.bits &= 0x7fffffff;
     abs_a = magnitude.value;
@@ -3186,10 +3208,12 @@ void NuBez3Subdiv(f32 *control, f32 t, f32 *left, f32 *right) {
 }
 
 NUVEC NuBezierCubicPatchEvaluate(NUVEC *control, f32 u, f32 v) {
-    u32 i, j;
+    u32 i;
+    u32 j;
     f32 remaining_u = 1.0f - u;
     f32 remaining_v = 1.0f - v;
-    f32 weights_u[4], weights_v[4];
+    f32 weights_u[4];
+    f32 weights_v[4];
     NUVEC result;
     weights_u[0] = remaining_u * remaining_u * remaining_u;
     weights_u[1] = 3.0f * remaining_u * remaining_u * u;
@@ -3211,10 +3235,12 @@ NUVEC NuBezierCubicPatchEvaluate(NUVEC *control, f32 u, f32 v) {
 }
 
 NUVEC NuBezierCubicPatchEvaluatePartials(NUVEC *control, f32 u, f32 v, i32 order_u, i32 order_v) {
-    u32 i, j;
+    u32 i;
+    u32 j;
     f32 remaining_u = 1.0f - u;
     f32 remaining_v = 1.0f - v;
-    f32 weights_u[4], weights_v[4];
+    f32 weights_u[4];
+    f32 weights_v[4];
     NUVEC result;
     switch (order_u) {
         case 0:
@@ -4504,7 +4530,10 @@ i32 NuPlnLine2(NUPLANE *plane, NUVEC *a, NUVEC *b, NUVEC *c, NUVEC *start, NUVEC
 }
 
 f32 __cdecl RenderPostLogPc(f32 value) {
-    f32 exponent, counter, position, fraction;
+    f32 exponent;
+    f32 counter;
+    f32 position;
+    f32 fraction;
     i32 index;
     if (RenderPostLogFirstPc) {
         RenderPostLogTablePc = (f32 *)NuAlloc(36000, NuExp10SourcePathPc, 805);
@@ -4541,8 +4570,12 @@ f32 __cdecl RenderPostLogPc(f32 value) {
 }
 
 f32 __cdecl NuExp10(f32 value) {
-    f32 result, counter, position, fraction;
-    i32 exponent, index;
+    f32 result;
+    f32 counter;
+    f32 position;
+    f32 fraction;
+    i32 exponent;
+    i32 index;
     if (NuExp10FirstTimePc) {
         NuExp10TablePc = (f32 *)NuAlloc(40000, NuExp10SourcePathPc, 866);
         if (NuExp10TablePc == NULL) {

@@ -39,7 +39,8 @@ STATIC_ASSERT(offsetof(VEHICLE_FIRE_STATE_PC, bolt_fire_phase) == 0xe3a);
 i32 __cdecl BoltType_FindIDByCreature(GAMEOBJECT *object, i32 fallback) {
     WORLDINFO *world = WorldInfo_CurrentlyActive();
     VEHICLE_FIRE_STATE_PC *state = (VEHICLE_FIRE_STATE_PC *)object;
-    i32 id, result;
+    i32 id;
+    i32 result;
     if (object == NULL) {
         return fallback;
     }

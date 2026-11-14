@@ -290,7 +290,9 @@ static void __cdecl Technos_Draw(void *world_ptr, void *data, f32 delta_time) {
     WORLDINFO *world = (WORLDINFO *)world_ptr;
     TECHNO_CALLBACK_PC *techno;
     NUMTX matrix;
-    i32 index, slot, hand_angle;
+    i32 index;
+    i32 slot;
+    i32 hand_angle;
     u16 spin_angle;
     f32 pulse;
     if (TechnoSysPc.idle_object_ids[1] == -1 || world->level_objects[TechnoSysPc.idle_object_ids[1]].active == 0) {
@@ -467,7 +469,8 @@ static void *__cdecl Technos_ReserveBufferSpace(void *world_ptr) {
 
 static i32 __cdecl Technos_Load(void *world_ptr, void *data) {
     WORLDINFO *world = (WORLDINFO *)world_ptr;
-    i32 version, index;
+    i32 version;
+    i32 index;
     if (world->techno_count == 0) {
         version = EdFileReadInt();
         world->techno_count = EdFileReadInt();

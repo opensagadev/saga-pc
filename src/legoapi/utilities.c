@@ -148,7 +148,8 @@ i32 __cdecl SphereSphereOverlapScaleY(NUVEC *position_a, f32 radius_a, f32 y_rad
 i32 __cdecl OnOrInsidePlane(NUVEC *point, NUVEC *plane_point, NUVEC *plane_normal, NUVEC *corrected_point,
                             f32 normal_offset, f32 *distance_out) {
     NUVEC test_point;
-    f32 distance, correction;
+    f32 distance;
+    f32 correction;
     if (normal_offset == 0.0f) {
         test_point = *point;
     } else {
@@ -210,7 +211,8 @@ void __cdecl FindAnglesXY(NUVEC *direction, u16 *x_rotation, u16 *y_rotation) {
 }
 
 void __cdecl GetRotationAngles(NUVEC *direction, u16 *x_rotation, u16 *y_rotation) {
-    NUVEC rotated, copy = *direction;
+    NUVEC rotated;
+    NUVEC copy = *direction;
     u16 y_angle = (u16)-NuAtan2D(copy.z, copy.x);
     NuVecRotateY(&rotated, &copy, -(i32)y_angle);
     *x_rotation = (u16)-NuAtan2D(rotated.x, rotated.y);
@@ -276,7 +278,8 @@ u16 __cdecl TurnRot(u16 current, u16 target, i32 speed, i32 *difference_out) {
 }
 
 f32 __cdecl PushingTowardsAngle(u16 input_angle, u16 direction) {
-    NUVEC input, target;
+    NUVEC input;
+    NUVEC target;
     NuVecRotateY(&input, &v001, input_angle);
     NuVecRotateY(&target, &v001, direction);
     return input.x * target.x + input.z * target.z;
@@ -295,7 +298,8 @@ void __cdecl CalculateInterceptVector(NUVEC *origin, NUVEC *target, NUVEC *veloc
     NUVEC prediction = *target;
     i32 i;
     for (i = 0; i < 3; ++i) {
-        f32 distance, time;
+        f32 distance;
+        f32 time;
         NuVecSub(direction, &prediction, origin);
         distance = NuVecMag(direction);
         if (distance == 0.0f || speed == 0.0f) {
@@ -415,7 +419,9 @@ void InterpolateRotationMatrix(NUMTX *result, NUMTX *first, NUMTX *second, float
 }
 
 void __cdecl QuatInterpolateRotationMatrix(NUMTX *out, NUMTX *left, NUMTX *right, f32 fraction) {
-    NUQUAT a, b, value;
+    NUQUAT a;
+    NUQUAT b;
+    NUQUAT value;
     NuMtxToQuat(right, &b);
     NuMtxToQuat(left, &a);
     NuQuatSlerp(&value, &a, &b, fraction);
@@ -857,7 +863,8 @@ i32 __cdecl LineIntersectCircle(NUVEC *origin, NUVEC *direction, NUVEC *center, 
 void __cdecl MoveSplinePosition(SPLINEPOS *position, f32 distance) {
     i32 points;
     NUVEC offset;
-    NUVEC *current, *next;
+    NUVEC *current;
+    NUVEC *next;
     f32 fraction;
 
     if (position == NULL || position->spline == NULL || position->spline->length <= 1) {
@@ -951,8 +958,11 @@ void __cdecl GetNearestSplinePos(NUVEC *origin, SPLINEPOS *result, NUGSPLINE *sp
                                  i16 last_point) {
     f32 nearest = 1000000000.0f;
     i16 point_count;
-    i32 logical_count, index;
-    NUVEC *point, *current, *next;
+    i32 logical_count;
+    i32 index;
+    NUVEC *point;
+    NUVEC *current;
+    NUVEC *next;
     NUVEC offset;
 
     if (result == NULL) {
@@ -1001,9 +1011,17 @@ void __cdecl GetNearestSplinePos(NUVEC *origin, SPLINEPOS *result, NUGSPLINE *sp
 void EvaluateSplineXZIntersection(NUGSPLINE *first, i32 first_looping, SPLINEPOS *first_position, NUGSPLINE *second,
                                   i32 second_looping, SPLINEPOS *second_position) {
     f32 closest = 1000000000.0f;
-    i32 first_count, second_count, i, j, first_segment, second_segment;
-    NUVEC *first_start, *first_end;
-    f32 distance, first_fraction, second_fraction;
+    i32 first_count;
+    i32 second_count;
+    i32 i;
+    i32 j;
+    i32 first_segment;
+    i32 second_segment;
+    NUVEC *first_start;
+    NUVEC *first_end;
+    f32 distance;
+    f32 first_fraction;
+    f32 second_fraction;
     NUVEC direction;
 
     memset(first_position, 0, sizeof(*first_position));
@@ -1057,16 +1075,21 @@ void EvaluateSplineXZIntersection(NUGSPLINE *first, i32 first_looping, SPLINEPOS
 
 i32 __cdecl OutSideSplineArea(NUVEC *position, NUGSPLINE *spline, NUVEC *edge_end, NUVEC *edge_start, i32 inside) {
     f32 best = 1000000000.0f;
-    i32 closest_index, count, i;
+    i32 closest_index;
+    i32 count;
+    i32 i;
     NUVEC closest;
 
     if (position == NULL || spline == NULL) {
         return 0;
     }
     {
-        NUVEC ray_start, ray_end, end;
+        NUVEC ray_start;
+        NUVEC ray_end;
+        NUVEC end;
         f32 end_y;
-        i32 intersections, odd;
+        i32 intersections;
+        i32 odd;
         ray_end = *position;
         ray_start = *position;
         end_y = ray_start.y;
@@ -1113,9 +1136,16 @@ i32 __cdecl OutSideSplineArea(NUVEC *position, NUGSPLINE *spline, NUVEC *edge_en
         }
     }
     {
-        NUVEC next_point, previous_point, end_point, start_point, a, b;
-        i32 previous, next;
-        f32 next_distance, previous_distance;
+        NUVEC next_point;
+        NUVEC previous_point;
+        NUVEC end_point;
+        NUVEC start_point;
+        NUVEC a;
+        NUVEC b;
+        i32 previous;
+        i32 next;
+        f32 next_distance;
+        f32 previous_distance;
         if (closest_index == 0) {
             next = closest_index + 1;
             previous = count - 2;
@@ -1152,9 +1182,20 @@ i32 __cdecl OutSideSplineArea(NUVEC *position, NUGSPLINE *spline, NUVEC *edge_en
 }
 
 void __cdecl VecRotateAxis(NUVEC *vector, u16 angle, NUVEC *axis) {
-    f32 cosine, sine, partial;
+    f32 cosine;
+    f32 sine;
+    f32 partial;
     NUVEC result;
-    f64 complement, tx, ty, tz, xy, xz, yz, sx, sy, sz;
+    f64 complement;
+    f64 tx;
+    f64 ty;
+    f64 tz;
+    f64 xy;
+    f64 xz;
+    f64 yz;
+    f64 sx;
+    f64 sy;
+    f64 sz;
     NuVecNorm(axis, axis);
     cosine = NuTrigTable[((angle + 0x4000) >> 1) & 0x7fff];
     sine = NuTrigTable[angle >> 1];
@@ -1412,10 +1453,14 @@ void DrawObjectOnCharacter(WORLDINFO *world, GAMEOBJECT *object, i32 object_id, 
                            NUVEC *translation, f32 alpha, f32 scale) {
     i32 position_only = dco_locatorposonly;
     u16 rotate_z;
-    i32 id, axis, hat, use_alpha;
+    i32 id;
+    i32 axis;
+    i32 hat;
+    i32 use_alpha;
     f32 plane;
     CHARACTER_MODEL_LAYERS_PC *model;
-    NUMTX matrix, reflected;
+    NUMTX matrix;
+    NUMTX reflected;
     dco_locatorposonly = 0;
     rotate_z = dco_prerotatez;
     dco_prerotatez = 0;
@@ -1476,7 +1521,8 @@ void DrawObjectOnCharacter(WORLDINFO *world, GAMEOBJECT *object, i32 object_id, 
         NuMtxPreRotateZ(&matrix, rotate_z);
     }
     if (object_id != -1 && CutSceneSys->object_id == object_id && DisguiseAdjustFn != NULL) {
-        NUVEC adjustment, offset;
+        NUVEC adjustment;
+        NUVEC offset;
         DisguiseAdjustFn(id, hat, &adjustment, &offset);
         if (adjustment.x != 1.0f || adjustment.y != 1.0f || adjustment.z != 1.0f) {
             NuMtxPreScale(&matrix, &adjustment);

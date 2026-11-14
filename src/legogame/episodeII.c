@@ -351,11 +351,19 @@ static f32 jedib_proximity = 0.5f;
 static i32 jedib_seed = 17;
 
 void __cdecl JediB_Init(WORLDINFO *world) {
-    NUVEC position, offset;
+    NUVEC position;
+    NUVEC offset;
     AILOCATOR_PC locator;
-    JEDIB_CREATURE_PC *goody, *baddie;
-    f32 step, x, z, distance, floor_y;
-    i32 angle, count, index;
+    JEDIB_CREATURE_PC *goody;
+    JEDIB_CREATURE_PC *baddie;
+    f32 step;
+    f32 x;
+    f32 z;
+    f32 distance;
+    f32 floor_y;
+    i32 angle;
+    i32 count;
+    i32 index;
     if (Mission_Active(MissionSys) != NULL) {
         return;
     }
@@ -416,7 +424,9 @@ void __cdecl JediB_Init(WORLDINFO *world) {
 }
 
 void __cdecl JediB_Reset(WORLDINFO *world) {
-    i32 index, hero, slot;
+    i32 index;
+    i32 hero;
+    i32 slot;
     char name[32];
     if (Mission_Active(MissionSys) != NULL || netclient != 0) {
         return;
@@ -461,7 +471,9 @@ void __cdecl JediB_Reset(WORLDINFO *world) {
 }
 
 static void __cdecl JediBKilledCallbackPc(GAMEOBJECT *object) {
-    i32 index, other, wave;
+    i32 index;
+    i32 other;
+    i32 wave;
     i32 alive = 0;
     if (object == NULL) {
         return;
@@ -503,7 +515,10 @@ static void JediBStartPhasePc(WORLDINFO *world) {
     AILOCATOR_PC *locator;
     GAMEOBJECT *spawned;
     char name[16];
-    i32 i, chosen, index, id;
+    i32 i;
+    i32 chosen;
+    i32 index;
+    i32 id;
     if (netclient != 0) {
         return;
     }
@@ -608,7 +623,9 @@ static void JediBStartPhasePc(WORLDINFO *world) {
 }
 
 static void JediBTickPhasePc(void) {
-    i32 done, i, release;
+    i32 done;
+    i32 i;
+    i32 release;
     GAMEOBJECT *boss;
     jedi_b.timer += FRAMETIME;
     done = 0;
@@ -685,10 +702,15 @@ static void JediBEndPhasePc(WORLDINFO *world) {
 }
 
 void __cdecl JediB_Update(WORLDINFO *world) {
-    i32 hero, spawn, slot, i, in_range;
+    i32 hero;
+    i32 spawn;
+    i32 slot;
+    i32 i;
+    i32 in_range;
     u32 shift;
     u64 mask;
-    GAMEOBJECT *target, *object;
+    GAMEOBJECT *target;
+    GAMEOBJECT *object;
     JEDIB_CREATURE_PC *baddie;
     NUVEC spawn_position;
     NUVEC *pos;
@@ -888,7 +910,8 @@ void __cdecl JediB_Update(WORLDINFO *world) {
 
 void __cdecl JediB_DrawPanelPc(WORLDINFO *world) {
     i16 ids[8];
-    i32 count, index;
+    i32 count;
+    i32 index;
     if (Mission_Active(MissionSys) != NULL) {
         return;
     }
@@ -1954,8 +1977,11 @@ f32 gunshipb_seekmomseek = 5.0f;
 void __cdecl GunShip_DragBombSeekBlowUp(GAMEOBJECT *object) {
     GIZMOBLOWUP_PC *nearest = NULL;
     f32 nearest_distance;
-    NUVEC offset, nearest_offset, direction;
-    f32 distance, factor;
+    NUVEC offset;
+    NUVEC nearest_offset;
+    NUVEC direction;
+    f32 distance;
+    f32 factor;
     i32 index;
     if (object->character_context != 0x34) {
         return;

@@ -1,7 +1,8 @@
 #include "saga.h"
 
 typedef struct FADER_PC {
-    NUSPECIALHANDLE special, while_animating;
+    NUSPECIALHANDLE special;
+    NUSPECIALHANDLE while_animating;
 } FADER_PC;
 
 STATIC_ASSERT(sizeof(FADER_PC) == 0x18);

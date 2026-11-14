@@ -204,7 +204,9 @@ void __cdecl Lever_MoveCode(WORLDINFO *world, GAMEOBJECT *object) {
 }
 
 typedef struct LEVER_PROGRESS_PC {
-    u32 pulled_down[1], enabled[1], visible[1];
+    u32 pulled_down[1];
+    u32 enabled[1];
+    u32 visible[1];
 } LEVER_PROGRESS_PC;
 
 STATIC_ASSERT(sizeof(LEVER_PROGRESS_PC) == 12);
@@ -462,7 +464,8 @@ static void *Levers_ReserveBufferSpace(void *world_ptr) {
 
 static i32 Levers_Load(void *world_ptr, void *data) {
     WORLDINFO *world = (WORLDINFO *)world_ptr;
-    i32 version, index;
+    i32 version;
+    i32 index;
     (void)data;
     if (((LEVER_WORLD_PC *)world)->lever_count == 0) {
         version = EdFileReadInt();
@@ -621,7 +624,8 @@ static void __cdecl Levers_Draw(void *world_ptr, void *data, f32 delta_time) {
     NUSPECIALHANDLE *animated_special;
     GIZMO_LEVER_PC *lever;
     u16 target_spin_angle;
-    f32 target_pulse, ready_alpha;
+    f32 target_pulse;
+    f32 ready_alpha;
     i32 index;
     if (world->level_objects[30].active == 0 || lever_world->levers == NULL) {
         return;
@@ -650,7 +654,9 @@ static void __cdecl Levers_Draw(void *world_ptr, void *data, f32 delta_time) {
         animated_special = NULL;
     }
     for (index = 0; index < lever_world->lever_count; ++index, ++lever) {
-        NUMTX animated_matrix, base_matrix, target_matrix;
+        NUMTX animated_matrix;
+        NUMTX base_matrix;
+        NUMTX target_matrix;
         i32 status_special;
         if ((lever->flags & 0x10) == 0) {
             continue;

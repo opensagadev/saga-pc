@@ -14,7 +14,10 @@
      ((text)[index] == '.' && (text)[(index) + 1] != '.') || (text)[index] == '-' || (text)[index] == ',')
 
 i32 __cdecl FindNextBreak(u8 *text, i32 index) {
-    i32 japanese = 0, ascii_start, length, count;
+    i32 japanese = 0;
+    i32 ascii_start;
+    i32 length;
+    i32 count;
     if (NuLanguageGet() == 0) {
         japanese = 1;
     }
@@ -50,7 +53,12 @@ i32 __cdecl FindNextBreak(u8 *text, i32 index) {
 }
 
 i32 __cdecl FindNearestBreak(u8 *text, i32 index) {
-    i32 japanese = 0, ascii_start, length, forward, backward, count;
+    i32 japanese = 0;
+    i32 ascii_start;
+    i32 length;
+    i32 forward;
+    i32 backward;
+    i32 count;
     if (NuLanguageGet() == 0) {
         japanese = 1;
     }

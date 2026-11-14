@@ -11,12 +11,32 @@ extern "C" {
 
 typedef struct hub_minikit_runtime_pc_s {
     NUVEC position;
-    f32 scale, scalar_10;
-    i32 phase_x, rate_x, phase_y, rate_y, phase_z, rate_z, phase_rotation, rate_rotation;
-    u16 rotation, rotation_velocity, tilt, target_rotation;
-    u8 displayed_piece_count, target_piece_count, unknown_3e[2];
-    NUVEC collision_center, bounds_min, bounds_max;
-    f32 radius, height_ratio, offset_x, offset_z, velocity_x, velocity_z;
+    f32 scale;
+    f32 scalar_10;
+    i32 phase_x;
+    i32 rate_x;
+    i32 phase_y;
+    i32 rate_y;
+    i32 phase_z;
+    i32 rate_z;
+    i32 phase_rotation;
+    i32 rate_rotation;
+    u16 rotation;
+    u16 rotation_velocity;
+    u16 tilt;
+    u16 target_rotation;
+    u8 displayed_piece_count;
+    u8 target_piece_count;
+    u8 unknown_3e[2];
+    NUVEC collision_center;
+    NUVEC bounds_min;
+    NUVEC bounds_max;
+    f32 radius;
+    f32 height_ratio;
+    f32 offset_x;
+    f32 offset_z;
+    f32 velocity_x;
+    f32 velocity_z;
 } HUB_MINIKIT_RUNTIME_PC;
 
 typedef struct hub_world_reader_pc_s {
@@ -27,13 +47,19 @@ typedef struct hub_world_reader_pc_s {
 } HUB_WORLD_READER_PC;
 
 typedef struct hub_area_info_pc_s {
-    const char *area_name, *door_name, *lock_name, *bonus_name, *second_bonus_name;
-    f32 panel_offset, panel_scale;
+    const char *area_name;
+    const char *door_name;
+    const char *lock_name;
+    const char *bonus_name;
+    const char *second_bonus_name;
+    f32 panel_offset;
+    f32 panel_scale;
     i32 flags;
     AREA_DATA_PC *area;
     void *door;
     NUSPECIALHANDLE lock;
-    void *bonus_gizmo, *second_bonus_gizmo;
+    void *bonus_gizmo;
+    void *second_bonus_gizmo;
 } HUB_AREA_INFO_PC;
 
 /* Research declaration only: original HubAreaInfo is source-private. Its
@@ -60,16 +86,21 @@ typedef struct ARCADE_COIN_PACKET_PC {
 
 extern "C" {
     extern void(__cdecl *AIPathCnxHelperSysInitFn)(WORLDINFO *);
-    extern i32 LEGO_AIPATHCNX_VARIANT_FLAG0_PC, LEGO_AIPATHCNX_VARIANT_FLAG1_PC;
-    extern u32 LEGO_AIPATHCNX_BIGJUMP, LEGO_AIPATHCNX_REQUIRESPERMISSION;
-    extern u32 LEGO_AIPATHCNX_NO_DESTINATION_CHECK, LEGO_AIPATHCNX_JUMP_NOW, LEGO_AIPATHCNX_DONT_JUMP_NOW;
+    extern i32 LEGO_AIPATHCNX_VARIANT_FLAG0_PC;
+    extern i32 LEGO_AIPATHCNX_VARIANT_FLAG1_PC;
+    extern u32 LEGO_AIPATHCNX_BIGJUMP;
+    extern u32 LEGO_AIPATHCNX_REQUIRESPERMISSION;
+    extern u32 LEGO_AIPATHCNX_NO_DESTINATION_CHECK;
+    extern u32 LEGO_AIPATHCNX_JUMP_NOW;
+    extern u32 LEGO_AIPATHCNX_DONT_JUMP_NOW;
     void __cdecl InitFn_PreparingForSpecialMove(AI_PREPARING_SPECIAL_MOVE_PC);
     void __cdecl InitFn_MidSpecialMove(AI_MID_SPECIAL_MOVE_PC);
 }
 
 typedef struct HINT_COMPLETION_PC {
     u16 points;
-    u8 reserved02, flags;
+    u8 reserved02;
+    u8 flags;
 } HINT_COMPLETION_PC;
 
 typedef struct hub_minikit_piece_pc_s {
@@ -108,7 +139,8 @@ typedef struct hub_game_stats_reader_pc_s {
 typedef struct hub_episode_info_pc_s {
     i16 episode;
     u16 flags;
-    const char *door_name, *lock_on_name;
+    const char *door_name;
+    const char *lock_on_name;
     i32 force_open;
     u32 unknown_10;
     EPISODEDATA_PC *data;
@@ -144,10 +176,16 @@ struct GIZBUILDIT_PC;
 /* Append to hub.cpp. Native PC extents: 478b00 544; 478d20 517. */
 extern "C" i32 HubDrawMiniKitCharacterPc;
 extern "C" i32 HubDoorNewLevelPc;
-extern "C" i16 TextIdPc8806f8, TextIdPc8807e4;
+extern "C" i16 TextIdPc8806f8;
+extern "C" i16 TextIdPc8807e4;
 /* Append to hub.cpp: PC 47af70, 494 bytes. area arrives ESI; alpha stack. */
-extern "C" f32 HubEpisodeTitleYPc, HubEpisodeTitleSizePc, HubEpisodeSubtitleYPc, HubEpisodeSubtitleSizePc;
-extern "C" u8 HubEpisodeRedPc, HubEpisodeGreenPc, HubEpisodeBluePc;
+extern "C" f32 HubEpisodeTitleYPc;
+extern "C" f32 HubEpisodeTitleSizePc;
+extern "C" f32 HubEpisodeSubtitleYPc;
+extern "C" f32 HubEpisodeSubtitleSizePc;
+extern "C" u8 HubEpisodeRedPc;
+extern "C" u8 HubEpisodeGreenPc;
+extern "C" u8 HubEpisodeBluePc;
 /* PC475090,676 bytes. selected and alpha full stack. Native PC has no hint/store/freeplay guards. */
 extern "C" i32 hub_selectmode;
 extern "C" f32 HubSelectMenuYPc;
@@ -155,31 +193,60 @@ extern "C" char *Trailer[6];
 /* PC475350 50 bytes, result EAX, optional flag pointer EDX. */
 extern "C" AREA_DATA_PC **ArcadeLevelPc[12];
 /* PC475390 1184 bytes (CFGextent475390..47582f), five rows. Fullstackselected/alpha. */
-extern "C" i32 Arcade_Score[2], PCArcadePointGoals[5];
+extern "C" i32 Arcade_Score[2];
+extern "C" i32 PCArcadePointGoals[5];
 extern "C" f32 HubArcadeMenuYPc; /*879b74 BSS0*/
 /* PC4763d0,1076 bytes. Full stack cdecl. PC has no Android hublevel flags guard. */
-extern "C" i32 bonusmodearcade, hub_bonusepisode, hub_bonusarea, hub_bonusmode;
+extern "C" i32 bonusmodearcade;
+extern "C" i32 hub_bonusepisode;
+extern "C" i32 hub_bonusarea;
+extern "C" i32 hub_bonusmode;
 extern "C" f32 HubBonusMenuYPc;
 /* PC478f30 2012bytes. mode native argument unused. */
-extern "C" f32 HubTrueJediLabelOffsetPc, HubTrueJediLabelScalePc, HubTrueJediLabelWidthPc;
-extern "C" u8 HubTrueJediLabelRedPc, HubTrueJediLabelGreenPc, HubTrueJediLabelBluePc;
+extern "C" f32 HubTrueJediLabelOffsetPc;
+extern "C" f32 HubTrueJediLabelScalePc;
+extern "C" f32 HubTrueJediLabelWidthPc;
+extern "C" u8 HubTrueJediLabelRedPc;
+extern "C" u8 HubTrueJediLabelGreenPc;
+extern "C" u8 HubTrueJediLabelBluePc;
 extern "C" i32 HubTrueJediTypeAlphaPc;
 /* PC47b160738bytes,47b4501466bytes. Private noargument native draw bodies. */
 extern "C" FADEINFO_s *pFadeInfo;
-extern "C" i32 HubDoorAreaPc, selectmodemode, bonusmodemode, hub_selectmode, hub_bonusmode, hub_bonusarea,
-    hub_bonusepisode, bonusmodearcade;
-extern "C" f32 selectmodetime, selectmodeduration, bonusmodetime, bonusmodeduration;
-extern "C" f32 BlipL[2], BlipR[2], BlipU[2], BlipD[2];
+extern "C" i32 HubDoorAreaPc;
+extern "C" i32 selectmodemode;
+extern "C" i32 bonusmodemode;
+extern "C" i32 hub_selectmode;
+extern "C" i32 hub_bonusmode;
+extern "C" i32 hub_bonusarea;
+extern "C" i32 hub_bonusepisode;
+extern "C" i32 bonusmodearcade;
+extern "C" f32 selectmodetime;
+extern "C" f32 selectmodeduration;
+extern "C" f32 bonusmodetime;
+extern "C" f32 bonusmodeduration;
+extern "C" f32 BlipL[2];
+extern "C" f32 BlipR[2];
+extern "C" f32 BlipU[2];
+extern "C" f32 BlipD[2];
 /* PC47bb70 3904bytes, complete private noargument body. No Android radar/hint/menugeometry paths. */
-extern "C" i32 freeplaymode, freeplay_selected[2], fpcount;
+extern "C" i32 freeplaymode;
+extern "C" i32 freeplay_selected[2];
+extern "C" i32 fpcount;
 /* Private whole native entry/update application fragment for existing hub.cpp.
  * No menu route activation; actual renderer/freeplay17 closure still separate.
  */
-extern i32 hub_selectmode, hub_bonusmode, hub_bonusarea, hub_bonusepisode;
+extern i32 hub_selectmode;
+extern i32 hub_bonusmode;
+extern i32 hub_bonusarea;
+extern i32 hub_bonusepisode;
 /* Whole PC 47ecb0/2344, private fragment for existing hub.cpp. */
-extern f32 bonusmodetime, bonusmodeduration;
+extern f32 bonusmodetime;
+extern f32 bonusmodeduration;
 /* Full two native Hub freeplay initialization helpers, no menu17 activation. */
-extern f32 uprepeattime[2], downrepeattime[2], leftrepeattime[2], rightrepeattime[2];
+extern f32 uprepeattime[2];
+extern f32 downrepeattime[2];
+extern f32 leftrepeattime[2];
+extern f32 rightrepeattime[2];
 /* Native full menu17 control owner, private sourcefragment. */
 extern i32 HubIconWibbleRatePc[4];
 
@@ -1270,7 +1337,9 @@ static void HubDrawSelectModeMenuPc(i32 selected, f32 alpha) {
     }
     f32 y = (f32)(HubSelectMenuYPc - (count - 1) * -0.20000000298023224 * 0.5);
     for (i32 i = 0; i < count; ++i) {
-        i32 red, green, blue;
+        i32 red;
+        i32 green;
+        i32 blue;
         if (selected != 0 && hub_selectmode == i) {
             if (menu_flash != 0) {
                 red = MENUFLASH0R;
@@ -1313,7 +1382,8 @@ static void HubDrawArcadeMenuPc(i32 selected, f32 alpha) {
     f32 y = (f32)(HubArcadeMenuYPc - -0.3499999940395355);
     for (i32 i = 0; i < 5; ++i) {
         i32 opacity = full_opacity;
-        char text[128], number[16];
+        char text[128];
+        char number[16];
         if (ArcadeItem.entries[i].text != NULL) {
             NuStrCpy(text, TTab[*ArcadeItem.entries[i].text]);
         } else {
@@ -1382,7 +1452,9 @@ static void HubDrawArcadeMenuPc(i32 selected, f32 alpha) {
                 break;
             }
         }
-        i32 red, green, blue;
+        i32 red;
+        i32 green;
+        i32 blue;
         if (selected != 0 && hub_bonusmode == i) {
             if (menu_flash != 0) {
                 red = MENUFLASH0R;
@@ -1431,7 +1503,8 @@ static void HubDrawArcadeStatsPc(f32 alpha) {
     SmartTextEx(TTab[TextIdPc8807b8], 0.0f, HubEpisodeSubtitleYPc, 1.0f, HubEpisodeSubtitleSizePc,
                 HubEpisodeSubtitleSizePc, HubEpisodeSubtitleSizePc, 0, HubEpisodeRedPc, HubEpisodeGreenPc,
                 HubEpisodeBluePc, 1.7f, 1, NULL, 0, (i32)alpha_scaled);
-    i32 first, second;
+    i32 first;
+    i32 second;
     if (menu == -1) {
         first = Player[0] != NULL && (((GAMEOBJECT *)Player[0])->flags_1fc & 0x80) != 0;
         second = Player[1] != NULL && (((GAMEOBJECT *)Player[1])->flags_1fc & 0x80) != 0;
@@ -1488,7 +1561,9 @@ extern "C" {
     }
 
     void __cdecl Arcade_DrawPanel(i32 paused) {
-        f32 alpha, scale, size;
+        f32 alpha;
+        f32 scale;
+        f32 size;
         if (Arcade == 0 || paused != 0 || Arcade_BothPlayersActive() != 0) {
             return;
         }
@@ -1508,7 +1583,11 @@ extern "C" {
         ADD_GAME_MESSAGE_PC message = PCArcadeMessageTemplate;
         NUVEC position;
         char text[32];
-        i32 earned, goal, icon, marker, character_id;
+        i32 earned;
+        i32 goal;
+        i32 icon;
+        i32 marker;
+        i32 character_id;
         (void)unused;
         if (reset_score != 0) {
             Arcade_Score[player_index] = 0;
@@ -1746,7 +1825,9 @@ static void HubDrawBonusModeMenuPc(i32 selected, f32 alpha) {
     const i32 full_opacity = (i32)(alpha * 128.0);
     f32 y = (f32)(HubBonusMenuYPc - (count - 1) * -0.10000000149011612);
     for (i32 i = 0; i < count; ++i) {
-        i32 red, green, blue;
+        i32 red;
+        i32 green;
+        i32 blue;
         if (selected != 0 && hub_bonusmode == i) {
             if (menu_flash != 0) {
                 red = MENUFLASH0R;
@@ -1997,12 +2078,15 @@ extern "C" void __cdecl Hub_UpdateFreePlaySelect(void) {
             }
             break;
         case 1: {
-            i32 active = 0, confirmed = 0, exit = 0;
+            i32 active = 0;
+            i32 confirmed = 0;
+            i32 exit = 0;
             for (i32 player = 0; player < 2; ++player) {
                 const i32 other = (player - 1) & 1;
                 const i32 previous = freeplay_i[player];
                 i32 index = previous;
-                i32 select = 0, cancel = 0;
+                i32 select = 0;
+                i32 cancel = 0;
                 if (MissionMenuPacketPc.active_player[player] == 0) {
                     continue;
                 }
@@ -2016,10 +2100,14 @@ extern "C" void __cdecl Hub_UpdateFreePlaySelect(void) {
                         GamePadStorage[player].menu_buttons_held | GamePadStorage[player].menu_directions_held;
                     const u32 pressed =
                         GamePadStorage[player].menu_buttons_pressed | GamePadStorage[player].menu_directions;
-                    i32 up_held = held & GAMEPAD_DUP, down_held = held & GAMEPAD_DDOWN;
-                    i32 left_held = held & GAMEPAD_DLEFT, right_held = held & GAMEPAD_DRIGHT;
-                    i32 up = pressed & GAMEPAD_DUP, down = pressed & GAMEPAD_DDOWN;
-                    i32 left = pressed & GAMEPAD_DLEFT, right = pressed & GAMEPAD_DRIGHT;
+                    i32 up_held = held & GAMEPAD_DUP;
+                    i32 down_held = held & GAMEPAD_DDOWN;
+                    i32 left_held = held & GAMEPAD_DLEFT;
+                    i32 right_held = held & GAMEPAD_DRIGHT;
+                    i32 up = pressed & GAMEPAD_DUP;
+                    i32 down = pressed & GAMEPAD_DDOWN;
+                    i32 left = pressed & GAMEPAD_DLEFT;
+                    i32 right = pressed & GAMEPAD_DRIGHT;
                     if (up && down) {
                         up = down = 0;
                     }
@@ -2751,7 +2839,9 @@ static void HubDrawMiniKitStatsPc(i32 index, f32 phase) {
 }
 
 extern "C" void __cdecl Hub_UpdateKit(void) {
-    i32 left = 0, right = 0, cancel = 0;
+    i32 left = 0;
+    i32 right = 0;
+    i32 cancel = 0;
     if (hub_minikitviewer_movewait <= 0.0f) {
         for (i32 player = 0; player < 2; ++player) {
             if (MissionMenuPacketPc.active_player[player] != 0) {
@@ -2887,7 +2977,9 @@ extern "C" {
         if (hint->completed == 0 && WORLD->current_level == HUB_LDATA && FadeSys.fade == 0.0f &&
             CustomiserCompletionSavePc != NULL &&
             ((HINT_COMPLETION_PC *)CustomiserCompletionSavePc)->points >= HubCompletionPointsPc) {
-            i32 nearby = 0, active = 0, index;
+            i32 nearby = 0;
+            i32 active = 0;
+            i32 index;
             for (index = 0; index < 2; ++index) {
                 GAMEOBJECT *object = (GAMEOBJECT *)Player[index];
                 if (object != NULL && (object->flags_1fc & 0x80) != 0) {
@@ -3365,7 +3457,8 @@ static void HubDrawBonusModePc(void) {
 /* 47ba10/340. Native copied collection data chooses default model pair. */
 void HubInitFreePlaySelectPc(i32 area, i32 first_model, i32 second_model) {
     COLLECTION_BUILD_PC *collection = HubFreePlayCollectionPc(area);
-    i32 first, second;
+    i32 first;
+    i32 second;
     if (collection == &VehicleCollectionPc) {
         first = first_model;
         if (first == -1) {
@@ -3547,7 +3640,8 @@ static void Hub_DrawFreePlaySelect(void) {
                 }
                 f32 target_y = STATSPOSY;
                 f32 target_size = COLLECTION_ICONSIZE;
-                f32 eased = 0.0f, progress = 1.0f;
+                f32 eased = 0.0f;
+                f32 progress = 1.0f;
                 if (freeplay_time[player] > 0.0f) {
                     progress = freeplay_time[player] / HubFreePlaySelectionWaitPc;
                     if (freeplay_selected[player] == 0) {
@@ -3592,7 +3686,9 @@ static void Hub_DrawFreePlaySelect(void) {
         list[2].model_id = -1;
         Collection_Draw(collection, 0.0f, COLLECTION_Y_HUB, collection->scale, list, 1.0f, 1);
         HubDrawIconCursorsPc(collection, 1, 1.0f, 1.0f);
-        i32 select[2], back[2], status[2];
+        i32 select[2];
+        i32 back[2];
+        i32 status[2];
         for (i32 player = 0; player < 2; ++player) {
             const i32 other = (player + 1) & 1;
             select[player] = -1;
@@ -3685,7 +3781,10 @@ static void Hub_DrawFreePlaySelect(void) {
             target_size = (f32)(target_size * .875);
         }
         if (freeplaymode == 3) {
-            f32 source_x, source_y, source_size, opacity;
+            f32 source_x;
+            f32 source_y;
+            f32 source_size;
+            f32 opacity;
             i32 frame;
             if (i == 0 || i == 1) {
                 source_x = i == 0 ? -ICONX : ICONX;
@@ -4151,9 +4250,18 @@ extern "C" void Hub_DrawPanel(WORLDINFO *) {
     if (HubAreaPc != -1 && HubAreaTimePc > 0.0f) {
         const i32 alpha = static_cast<i32>(128.0 * HubAreaTimePc);
         if (HubAreaPc == 6) {
-            i32 red_total = 0, red_count = 0, free_total = 0, free_count = 0;
-            i32 story_total = 0, story_count = 0, buildup_total = 0, buildup_count = 0;
-            i32 char_total = 0, char_count = 0, mini_total = 0, mini_count = 0;
+            i32 red_total = 0;
+            i32 red_count = 0;
+            i32 free_total = 0;
+            i32 free_count = 0;
+            i32 story_total = 0;
+            i32 story_count = 0;
+            i32 buildup_total = 0;
+            i32 buildup_count = 0;
+            i32 char_total = 0;
+            i32 char_count = 0;
+            i32 mini_total = 0;
+            i32 mini_count = 0;
             i32 i = 0;
             for (; i < EPISODECOUNT; ++i) {
                 Episode_CountOpenAreas(i, -1, (COLLECTION_AREA_SAVE_PC *)Game.area_save);
@@ -4215,7 +4323,8 @@ extern "C" void Hub_DrawPanel(WORLDINFO *) {
                 Hub_DrawImportantBrick(211, 0.0f, HubEpisodeSubtitleYPc, HubAreaTimePc, count, total);
             }
         } else if (HubAreaPc == 8) {
-            i32 gold_count = 0, gold_total = 0;
+            i32 gold_count = 0;
+            i32 gold_total = 0;
             i32 count = AREACOUNT;
             AREA_DATA_PC *area = ADataList;
             AREA_SAVE_PICKUP_PC *save = Game.area_save;
@@ -4331,7 +4440,10 @@ static void HubUpdateSelectModePc(void) {
     const i32 lost_temple = LOSTTEMPLE_ADATA != NULL && LOSTTEMPLE_ADATA->index == area;
     switch (selectmodemode) {
         case 0: {
-            i32 confirm = 0, cancel = 0, up = 0, down = 0;
+            i32 confirm = 0;
+            i32 cancel = 0;
+            i32 up = 0;
+            i32 down = 0;
             i32 last_choice;
             if (lost_temple) {
                 last_choice = 1;
@@ -4371,7 +4483,8 @@ static void HubUpdateSelectModePc(void) {
                             break;
                         case 1:
                             if ((ADataList[area].flags & 1) != 0) {
-                                i32 first, second;
+                                i32 first;
+                                i32 second;
                                 const i32 count = Collection_GetIDList(&VehicleCollectionPc, 0x4002000, 0x2000, ids,
                                                                        &first, &second, 0);
                                 if (count == 1) {
@@ -4499,7 +4612,8 @@ static void HubUpdateBonusModePc(void) {
     if (BlipD[0] > 0) {
         BlipD[0] -= FRAMETIME;
     }
-    i32 player_up[2] = {0, 0}, player_down[2] = {0, 0};
+    i32 player_up[2] = {0, 0};
+    i32 player_down[2] = {0, 0};
     if (BlipL[1] > 0) {
         BlipL[1] -= FRAMETIME;
     }
@@ -4512,10 +4626,16 @@ static void HubUpdateBonusModePc(void) {
     if (BlipD[1] > 0) {
         BlipD[1] -= FRAMETIME;
     }
-    i32 player_left[2] = {0, 0}, player_right[2] = {0, 0};
+    i32 player_left[2] = {0, 0};
+    i32 player_right[2] = {0, 0};
     switch (bonusmodemode) {
         case 0: {
-            i32 confirm = 0, cancel = 0, up = 0, down = 0, left = 0, right = 0;
+            i32 confirm = 0;
+            i32 cancel = 0;
+            i32 up = 0;
+            i32 down = 0;
+            i32 left = 0;
+            i32 right = 0;
             for (i32 player = 0; player < 2 && !confirm && !cancel; ++player) {
                 if (MissionMenuPacketPc.active_player[player] != 0) {
                     if ((GamePadStorage[player].menu_buttons_pressed & GAMEPAD_MENUSELECT) != 0) {
@@ -4664,7 +4784,8 @@ static void HubUpdateBonusModePc(void) {
                             GameAudio_PlaySfx(0x32, NULL, 0, 0);
                             return;
                         }
-                        i32 first, second;
+                        i32 first;
+                        i32 second;
                         const i32 count =
                             Collection_GetIDList(&MiniKitCollection, 0x4000000, 0x4000000, NULL, &first, &second, 0);
                         if (count < 1) {
@@ -4795,7 +4916,8 @@ extern "C" {
         AIPATHNODE_PC *node;
         AIPATH_PC *path;
         i32 skip_inside;
-        i32 index, instance;
+        i32 index;
+        i32 instance;
         NuVecSub(&owner->special_move_look_position_pc, &destination->position, &source->position);
         NuVecNorm(&owner->special_move_look_position_pc, &owner->special_move_look_position_pc);
         NuVecAdd(&owner->special_move_look_position_pc, &owner->special_move_look_position_pc, &destination->position);
@@ -4852,7 +4974,8 @@ extern "C" {
 
     i32 __cdecl Indy_PrepareClimbPc(AIPACKET_PC *packet, APIOBJECT_PC *object, i32 checks) {
         GAMEOBJECT *owner = (GAMEOBJECT *)object->owner;
-        AIPATHNODE_PC *source, *destination;
+        AIPATHNODE_PC *source;
+        AIPATHNODE_PC *destination;
         if (owner->indy_climb == NULL || owner->indy_climb->connection != packet->path_info.connection) {
             owner->indy_climb = FindClimbObject(WORLD->climb_objects, packet->path_info.connection);
         }
@@ -4880,7 +5003,8 @@ extern "C" {
         GAMEOBJECT *owner = (GAMEOBJECT *)object->owner;
         INDY_GUIDELINE_PC *guide;
         i32 endpoint;
-        f32 distance, height;
+        f32 distance;
+        f32 height;
         if (owner->indy_climb == NULL || owner->indy_climb->connection != packet->path_info.connection) {
             ClearSpecialMove(owner);
             return 0;
@@ -4934,7 +5058,8 @@ extern "C" {
         GAMEOBJECT *owner = (GAMEOBJECT *)object->owner;
         INDY_GUIDELINE_PC *guide;
         i32 endpoint;
-        f32 distance, height;
+        f32 distance;
+        f32 height;
         if (owner->indy_climb == NULL || owner->indy_climb->connection != packet->path_info.connection) {
             ClearSpecialMove(owner);
             return 0;
@@ -5003,7 +5128,8 @@ extern "C" {
         GRAPPLE_DYNAMIC_PC *grapple;
         GAMEOBJECT *occupant;
         NUVEC offset;
-        f32 radius, distance;
+        f32 radius;
+        f32 distance;
         if (TryToTeleportToNextNode(owner, destination, 0)) {
             return 1;
         }
@@ -5458,7 +5584,8 @@ extern "C" {
         AIPATHNODE_PC *near_node;
         AIPATHNODE_PC *far_node;
         NUVEC offset;
-        f32 radius, scale;
+        f32 radius;
+        f32 scale;
         f32 distance;
         f32 edge;
 
@@ -5597,7 +5724,8 @@ extern "C" {
     i32 __cdecl Indy_PreparingForSpecialMove(AIPACKET_PC *packet, APIOBJECT_PC *apiobject, i32 checks) {
         GAMEOBJECT *owner = (GAMEOBJECT *)apiobject->owner;
         INDY_PREPARE_SPECIAL_MOVE_PC *entry;
-        u32 flags, capabilities;
+        u32 flags;
+        u32 capabilities;
         if (owner->character_context == 0x5b) {
             owner->pad->buttons_pressed |= GAMEPAD_JUMP;
         }
@@ -5656,11 +5784,13 @@ extern "C" {
     }
 
     void __cdecl Indy_AIPathCnxHelperSysInit(WORLDINFO *world) {
-        i32 path_index, connection_index;
+        i32 path_index;
+        i32 connection_index;
         i16 direction;
         AIPATH_PC *path;
         AIPATHCNX_PC *connection;
-        AIPATHNODE_PC *first, *second;
+        AIPATHNODE_PC *first;
+        AIPATHNODE_PC *second;
         NUVEC midpoint;
         GRAPPLE_DYNAMIC_PC *grapple;
         if (world == NULL || world->ai_sys == NULL || world->ai_sys->path_sys == NULL) {
@@ -5694,7 +5824,8 @@ extern "C" {
         }
     }
 
-    i32 LEGO_AIPATHCNX_VARIANT_FLAG0_PC = 0, LEGO_AIPATHCNX_VARIANT_FLAG1_PC = 0;
+    i32 LEGO_AIPATHCNX_VARIANT_FLAG0_PC = 0;
+    i32 LEGO_AIPATHCNX_VARIANT_FLAG1_PC = 0;
 
     void __cdecl Indy_GameAISysInit(void) {
         LEGO_AIPATHCNX_JUMP = 0x1;

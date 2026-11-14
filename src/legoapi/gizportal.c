@@ -96,7 +96,8 @@ static void __cdecl Portals_ClearProgress(void *world, void *progress_ptr) {
 static void __cdecl Portals_StoreProgress(void *world_ptr, void *data, void *progress_ptr) {
     WORLDINFO *world = (WORLDINFO *)world_ptr;
     u32 *progress = (u32 *)progress_ptr;
-    i32 index, bit_index;
+    i32 index;
+    i32 bit_index;
     if (progress != NULL) {
         *progress = 0xffffffff;
     }
@@ -118,7 +119,8 @@ static void __cdecl Portals_StoreProgress(void *world_ptr, void *data, void *pro
 static void __cdecl Portals_Reset(void *world_ptr, void *data, void *progress_ptr) {
     WORLDINFO *world = (WORLDINFO *)world_ptr;
     u32 *progress = (u32 *)progress_ptr;
-    i32 index, bit_index;
+    i32 index;
+    i32 bit_index;
     if (world == NULL || world->current_gscn == NULL) {
         return;
     }

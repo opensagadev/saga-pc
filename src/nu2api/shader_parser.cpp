@@ -647,7 +647,8 @@ ShaderCompilerBufferAllocatorPc *ShaderCompilerParserPc::LoadInclude(const char 
             return &(*i)->buffer;
         }
     }
-    char directory[256], path[256];
+    char directory[256];
+    char path[256];
     i32 cursor = 0;
     NUFILE file = 0;
 

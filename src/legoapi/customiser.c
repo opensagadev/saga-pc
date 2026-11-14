@@ -254,10 +254,14 @@ i32 __cdecl Customiser_NextPieceRight(CUSTOMISER_LAYERS_PC *input, i32 index, i3
 
 void __cdecl Customiser_LoadAccessories(CUSTOMISER_LAYERS_PC *input, APICHARACTERMODELLIST *models) {
     CUSTOMISER_CONFIG_PC *customiser = (CUSTOMISER_CONFIG_PC *)input;
-    i32 side, category, material_index, id;
+    i32 side;
+    i32 category;
+    i32 material_index;
+    i32 id;
     CHARACTER_MODEL_LAYERS_PC *model;
     CUSTOM_ACCESSORY_RESOURCE_PC *resource;
-    char piece_name[0x80], path[0x80];
+    char piece_name[0x80];
+    char path[0x80];
     if (customiser == NULL) {
         return;
     }
@@ -429,7 +433,8 @@ void __cdecl Customiser_AddPartAccessories(CUSTOMISER_LAYERS_PC *customiser, GAM
 
 void __cdecl Customiser_DumpAccessories(void *input) {
     CUSTOMISER_CONFIG_PC *customiser = (CUSTOMISER_CONFIG_PC *)input;
-    i32 side, category;
+    i32 side;
+    i32 category;
     CUSTOM_ACCESSORY_RESOURCE_PC *resource;
     if (customiser == NULL || Customiser_AccessoriesLoaded != 1) {
         return;
@@ -469,7 +474,8 @@ void __cdecl Customiser_LoadAll(CUSTOMISER_LAYERS_PC *input, WORLDINFO *world) {
     char piece_name[0x80];
     char path[0x80];
     void *texture_pack;
-    i32 category, piece;
+    i32 category;
+    i32 piece;
     if (customiser == NULL) {
         return;
     }
@@ -522,7 +528,8 @@ void __cdecl Customiser_LoadAll(CUSTOMISER_LAYERS_PC *input, WORLDINFO *world) {
             } else if (customiser->categories[category]->material_tag != -1) {
                 NuStrCat(path, ".pnt");
                 if (texture_pack != NULL) {
-                    i32 item, size;
+                    i32 item;
+                    i32 size;
                     void *data;
                     ((i32(__cdecl *)(char *, char *, i32))NuFileExtConvert)(converted_path, path, 0x80);
                     item = NuFilePakGetItem(texture_pack, converted_path);
@@ -543,7 +550,8 @@ void __cdecl Customiser_LoadAll(CUSTOMISER_LAYERS_PC *input, WORLDINFO *world) {
 
 void __cdecl Customiser_DumpAll(void *input, WORLDINFO *world) {
     CUSTOMISER_CONFIG_PC *customiser = (CUSTOMISER_CONFIG_PC *)input;
-    i32 category, piece;
+    i32 category;
+    i32 piece;
     if (customiser == NULL) {
         return;
     }
@@ -572,7 +580,8 @@ void __cdecl Customiser_DumpAll(void *input, WORLDINFO *world) {
 
 void __cdecl Customiser_ResetModelTextureIDs(CUSTOMISER_LAYERS_PC *input) {
     CUSTOMISER_ANIMS_LOAD_PC *customiser = (CUSTOMISER_ANIMS_LOAD_PC *)input;
-    i32 side, category;
+    i32 side;
+    i32 category;
     if (customiser == NULL) {
         return;
     }
@@ -588,7 +597,9 @@ void __cdecl Customiser_ResetModelTextureIDs(CUSTOMISER_LAYERS_PC *input) {
 void __cdecl Customiser_SaveModelTextureIDs(void *input, CHARACTER_MODEL_LAYERS_PC *model) {
     CUSTOMISER_CONFIG_PC *customiser = (CUSTOMISER_CONFIG_PC *)input;
     CUSTOMISER_ANIMS_LOAD_PC *textures = (CUSTOMISER_ANIMS_LOAD_PC *)input;
-    i32 side, category, material;
+    i32 side;
+    i32 category;
+    i32 material;
     if (customiser == NULL || model == NULL) {
         return;
     }
@@ -612,7 +623,9 @@ void __cdecl Customiser_SaveModelTextureIDs(void *input, CHARACTER_MODEL_LAYERS_
 void __cdecl Customiser_RestoreModelTextureIDs(void *input) {
     CUSTOMISER_CONFIG_PC *customiser = (CUSTOMISER_CONFIG_PC *)input;
     CUSTOMISER_ANIMS_LOAD_PC *textures = (CUSTOMISER_ANIMS_LOAD_PC *)input;
-    i32 side, category, material;
+    i32 side;
+    i32 category;
+    i32 material;
     if (customiser == NULL) {
         return;
     }
@@ -642,7 +655,8 @@ void __cdecl Customiser_RestoreModelTextureIDs(void *input) {
 
 void __cdecl Customiser_Set100PercentPieces(CUSTOMISER_LAYERS_PC *input) {
     // MATCH-EXCEPTION: the cast is repeated at each use; a cast local changes register choice (U3)
-    i32 category, index;
+    i32 category;
+    i32 index;
     if (input == NULL || ((CUSTOMISER_CONFIG_PC *)input)->save == NULL) {
         return;
     }
@@ -675,7 +689,8 @@ void __cdecl Customiser_CopyDefaultPiecesToSave(CUSTOMISER_LAYERS_PC *input, voi
         }
     }
     {
-        i32 side, i;
+        i32 side;
+        i32 i;
         for (side = 0; side < 2; ++side) {
             for (i = 0; i < 9; ++i) {
                 save->pieces[side * (offsetof(CUSTOM_SAVE_CONFIG_PC, secondary_pieces) / sizeof(u16)) + i] =
@@ -688,7 +703,8 @@ void __cdecl Customiser_CopyDefaultPiecesToSave(CUSTOMISER_LAYERS_PC *input, voi
 CUSTOMPIECE_LAYERS_PC *__cdecl Customiser_FindPieceByName(CUSTOMISER_LAYERS_PC *input, char *name, i32 *category,
                                                           i32 *index) {
     CUSTOMISER_CONFIG_PC *customiser = (CUSTOMISER_CONFIG_PC *)input;
-    i32 category_index, piece_index;
+    i32 category_index;
+    i32 piece_index;
     i32 *index_local = index; // MATCH-EXCEPTION: parameter copied to a local; VC8 register choice (U20)
     if (customiser == NULL) {
         return NULL;
@@ -762,9 +778,12 @@ CUSTOMISER_LAYERS_PC *__cdecl Customiser_Configure(char *filename, VARIPTR *buff
     NUFPAR_PC *parser;
     CUSTOMISER_CONFIG_PC *customiser;
     CUSTOM_SAVE_CONFIG_PC *save = (CUSTOM_SAVE_CONFIG_PC *)save_input;
-    i32 category, index;
-    i32 locators[9], layers[9];
-    f32 x_offsets[9], y_offsets[9];
+    i32 category;
+    i32 index;
+    i32 locators[9];
+    i32 layers[9];
+    f32 x_offsets[9];
+    f32 y_offsets[9];
     u8 categories[440];
     CUSTOM_PIECE_CONFIG_PC pieces[440];
     char *names;
@@ -937,7 +956,8 @@ CUSTOMISER_LAYERS_PC *__cdecl Customiser_Configure(char *filename, VARIPTR *buff
             buffer->addr = (buffer->addr + 0x73) & ~3u;
         }
         for (category = 0; category < 9; ++category) {
-            i32 first_found = 0, second_found = 0;
+            i32 first_found = 0;
+            i32 second_found = 0;
             for (index = 0; index < customiser->piece_counts[category]; ++index) {
                 if (first_found && second_found) {
                     break;

@@ -46,7 +46,9 @@ typedef struct {
 i32 __cdecl GizTorp_Load(void *world_pointer, void *unused) {
     WORLDINFO *world = (WORLDINFO *)world_pointer;
     TORPEDO_MACHINE_QUERY_SYS_PC *system;
-    i32 version, index, length;
+    i32 version;
+    i32 index;
+    i32 length;
     (void)unused;
     if (world != NULL) {
         system = (TORPEDO_MACHINE_QUERY_SYS_PC *)world->torpedo_machine_sys;

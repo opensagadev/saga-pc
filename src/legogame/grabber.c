@@ -43,16 +43,20 @@ typedef struct grabber_pc_s {
     CHARACTER_MODEL_LAYERS_PC *character_model;
     ANIMPACKET_PC animation;
     u8 unknown_4f8[4];
-    NUSPECIALHANDLE special, shadow_special;
+    NUSPECIALHANDLE special;
+    NUSPECIALHANDLE shadow_special;
     GAMEOBJECT *victim;
     GIZOBSTACLE *action_switch;
     GIZOBSTACLE *direction_switches[4];
     GIZMOBLOWUP_PC *carried_blowup;
-    f32 scale, speed, radius;
+    f32 scale;
+    f32 speed;
+    f32 radius;
     f32 stuck_timer;
     f32 shadow_height;
     f32 carried_height_offset;
-    u16 shadow_z_angle, shadow_x_angle;
+    u16 shadow_z_angle;
+    u16 shadow_x_angle;
     f32 floor_height;
     f32 animation_timer;
     f32 platform_contact_timer;
@@ -69,9 +73,12 @@ typedef struct grabber_pc_s {
         } bits;
     };
 
-    u16 yaw, target_yaw;
-    i16 character_id, platform_id;
-    u8 move_xy, invert_x;
+    u16 yaw;
+    u16 target_yaw;
+    i16 character_id;
+    i16 platform_id;
+    u8 move_xy;
+    u8 invert_x;
     u8 unknown_564[4];
 } GRABBER_PC;
 

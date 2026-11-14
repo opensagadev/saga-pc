@@ -1,7 +1,11 @@
 #include "../saga.h"
 /* PC594c301198bytes,cdecl7args. Native rows=count/columns+1 always. */
-extern "C" f32 COLLECTION_DX, COLLECTION_DY, COLLECTION_ICONSIZE;
-extern "C" i32 LEGOOBJ_ICON_FRAME_NEUTRAL, LEGOOBJ_ICON_FRAME_GREEN, LEGOOBJ_ICON_FRAME_BLUE;
+extern "C" f32 COLLECTION_DX;
+extern "C" f32 COLLECTION_DY;
+extern "C" f32 COLLECTION_ICONSIZE;
+extern "C" i32 LEGOOBJ_ICON_FRAME_NEUTRAL;
+extern "C" i32 LEGOOBJ_ICON_FRAME_GREEN;
+extern "C" i32 LEGOOBJ_ICON_FRAME_BLUE;
 
 extern "C" void Collection_Draw(COLLECTION_BUILD_PC *collection, f32 x, f32 y, f32 scale, APICHARACTERMODELLIST *models,
                                 f32 alpha, i32 hide_selected) {
@@ -11,7 +15,8 @@ extern "C" void Collection_Draw(COLLECTION_BUILD_PC *collection, f32 x, f32 y, f
     if (collection->list == NULL || ((FADEINFO_PC *)&FadeSys)->fade > 0.0f) {
         return;
     }
-    const i32 count = collection->count, columns = collection->columns;
+    const i32 count = collection->count;
+    const i32 columns = collection->columns;
     if (columns <= 0 || count <= 0) {
         return;
     }
@@ -21,7 +26,8 @@ extern "C" void Collection_Draw(COLLECTION_BUILD_PC *collection, f32 x, f32 y, f
         size = (f32)(size * .875);
     }
     i32 found = 0;
-    i32 selected_x[2], selected_y[2];
+    i32 selected_x[2];
+    i32 selected_y[2];
     selected_x[0] = selected_x[1] = -1;
     selected_y[0] = selected_y[1] = -1;
     if (models != NULL && Collection_GetSelectingPlayerIDsFn != NULL) {

@@ -11,7 +11,8 @@ typedef struct STILL_RENDER_MATERIAL_PC {
     u32 attributes;
     u8 unknown_44[0x2c];
     f32 opacity;
-    i16 texture_id, sort_priority;
+    i16 texture_id;
+    i16 sort_priority;
     u8 unknown_78[0x3c];
     PC_MATERIAL_SHADER_DESC_VIEW shader;
 } STILL_RENDER_MATERIAL_PC;
@@ -34,7 +35,9 @@ typedef struct permanent_material_reader_pc_s {
     u16 sort_priority;
 } PERMANENT_MATERIAL_READER_PC;
 
-extern "C" NUMTL *FadeMtl, *FadeMtl2, *ScreenFadeMtl;
+extern "C" NUMTL *FadeMtl;
+extern "C" NUMTL *FadeMtl2;
+extern "C" NUMTL *ScreenFadeMtl;
 extern "C" {
     extern void(__cdecl *RenderBackdropAlphaFnPc)(f32 *);
 }
@@ -64,7 +67,10 @@ extern "C" {
 extern "C" u8 ScreenGrabNeeded;
 extern "C" f32 pause_fade;
 extern "C" NUVPCURRENT *__cdecl NuVpGetCurrentViewport(void);
-extern "C" i32 ScreenStillXPc, ScreenStillYPc, ScreenStillWidthPc, ScreenStillHeightPc;
+extern "C" i32 ScreenStillXPc;
+extern "C" i32 ScreenStillYPc;
+extern "C" i32 ScreenStillWidthPc;
+extern "C" i32 ScreenStillHeightPc;
 extern "C" f32 ScreenPauseFadeSpeedPc;
 
 extern "C" {
@@ -408,7 +414,12 @@ extern "C" {
 
 extern "C" void __cdecl GameDisplaySettings(LEVEL_DISPLAY_PC *display, i32 *colours) {
     CUT_DISPLAY_VIEW_PC *cut = (CUT_DISPLAY_VIEW_PC *)CutStopInfo;
-    i32 top_r, top_g, top_b, bottom_r, bottom_g, bottom_b;
+    i32 top_r;
+    i32 top_g;
+    i32 top_b;
+    i32 bottom_r;
+    i32 bottom_g;
+    i32 bottom_b;
     f32 alpha;
 
     if (cut != NULL && cut->camera_near_clip != 0.0f) {
@@ -570,8 +581,14 @@ extern "C" void __cdecl ResizeStillRenderPc(i32 width, i32 height) {
 }
 
 extern "C" void __cdecl DrawPauseScreenWipe(void) {
-    i32 x, y, width, height;
-    f32 u0, v0, u1, v1;
+    i32 x;
+    i32 y;
+    i32 width;
+    i32 height;
+    f32 u0;
+    f32 v0;
+    f32 u1;
+    f32 v1;
 
     NuRndrBeginScene(1);
     x = -0x20;

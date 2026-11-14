@@ -18,29 +18,65 @@ typedef struct SHOP_SAVE_VIEW_PC {
 #define SHOP_CLAMP01(x) SHOP_FMAX(0.0f, SHOP_FMIN(x, 1.0f))
 #define SHOP_LERP(a, b, t) ((a) + (t) * ((b) - (a)))
 extern shopitem_s *CodeItems;
-extern i32 SHOPEXTRACOUNT, SHOPCUTCOUNT;
-extern i32 oldpicked, subpicked, charcheatix, extracheatix;
+extern i32 SHOPEXTRACOUNT;
+extern i32 SHOPCUTCOUNT;
+extern i32 oldpicked;
+extern i32 subpicked;
+extern i32 charcheatix;
+extern i32 extracheatix;
 extern u32 codelist[144];
-extern nuhspecial_s extrasils[44], atoz0to9icon[36];
-extern nuhspecial_s infoblank, cutblank, cutfilm_unlocked, cutfilm_locked;
-extern nuhspecial_s toolblank, codeblank, question, arrow1, arrow2, arrow3, arrow4;
+extern nuhspecial_s extrasils[44];
+extern nuhspecial_s atoz0to9icon[36];
+extern nuhspecial_s infoblank;
+extern nuhspecial_s cutblank;
+extern nuhspecial_s cutfilm_unlocked;
+extern nuhspecial_s cutfilm_locked;
+extern nuhspecial_s toolblank;
+extern nuhspecial_s codeblank;
+extern nuhspecial_s question;
+extern nuhspecial_s arrow1;
+extern nuhspecial_s arrow2;
+extern nuhspecial_s arrow3;
+extern nuhspecial_s arrow4;
 extern struct nugspline_s *shopcamspline;
-extern NUVEC *shopcampos, *shopcamlookat;
-extern NUVEC CharCurPos[7], HintCurPos[7], ExtraCurPos[7], BrickCurPos[7], CutCurPos[7];
+extern NUVEC *shopcampos;
+extern NUVEC *shopcamlookat;
+extern NUVEC CharCurPos[7];
+extern NUVEC HintCurPos[7];
+extern NUVEC ExtraCurPos[7];
+extern NUVEC BrickCurPos[7];
+extern NUVEC CutCurPos[7];
 extern f32 pickedbing;
-static f32 scalenorm, scalepicked, scale2, scale3, scale4;
-extern f32 TopBigScale[6], TopShelfPush[6], TopBigPush[6];
-static f32 SubBigCharPush, SubNormCharPush, subpush[3];
+static f32 scalenorm;
+static f32 scalepicked;
+static f32 scale2;
+static f32 scale3;
+static f32 scale4;
+extern f32 TopBigScale[6];
+extern f32 TopShelfPush[6];
+extern f32 TopBigPush[6];
+static f32 SubBigCharPush;
+static f32 SubNormCharPush;
+static f32 subpush[3];
 static u16 shelfang;
-extern f32 codeshelfscale[6], codemenuscale[6], codebigscale[6];
+extern f32 codeshelfscale[6];
+extern f32 codemenuscale[6];
+extern f32 codebigscale[6];
 extern struct CUT_PLAYER_ACTIVE_PC *shopcutsceneplayer;
-extern f32 ShopNativeScalePc[6], ShopNativeBigFactorPc[6], ShopNativePushPc[6];
-extern f32 ShopNativeSubInitAPc, ShopNativeSubInitBPc;
-extern f32 ShopSubInitAPc, ShopSubInitBPc;
+extern f32 ShopNativeScalePc[6];
+extern f32 ShopNativeBigFactorPc[6];
+extern f32 ShopNativePushPc[6];
+extern f32 ShopNativeSubInitAPc;
+extern f32 ShopNativeSubInitBPc;
+extern f32 ShopSubInitAPc;
+extern f32 ShopSubInitBPc;
 extern f32 ShopCharTopOffsetPc;
 extern f32 ShopTopBrickOffsetPc;
-extern f32 ShopNativeSubNormCharPushPc, ShopCodeExitPushPc;
-extern f32 ShopTopCodeOffsetPc, ShopTopExtraOffsetPc, ShopTopHintOffsetPc;
+extern f32 ShopNativeSubNormCharPushPc;
+extern f32 ShopCodeExitPushPc;
+extern f32 ShopTopCodeOffsetPc;
+extern f32 ShopTopExtraOffsetPc;
+extern f32 ShopTopHintOffsetPc;
 extern i32(__cdecl *menuptr)(void *menu);
 /* PC4c6c50/21, append to shard.c (or retain C linkage in C++).
  * 880100 native callback BSS0, single owner; SHOPACTIVE existing880494. */
@@ -49,26 +85,53 @@ extern void(__cdecl *ShopDrawPanelFnPc)(void);
 /* Native PC shop state machine. Child callbacks remain real unresolved native
  * references until their complete functions are ported; menu ID 13 stays unwired. */
 typedef struct SHOP_INPUT_PC {
-    i32 left_pressed, right_pressed, up_pressed, down_pressed;
-    i32 left_held, right_held, up_held, down_held;
-    i32 confirm, cancel;
+    i32 left_pressed;
+    i32 right_pressed;
+    i32 up_pressed;
+    i32 down_pressed;
+    i32 left_held;
+    i32 right_held;
+    i32 up_held;
+    i32 down_held;
+    i32 confirm;
+    i32 cancel;
 } SHOP_INPUT_PC;
 
 typedef i32(__cdecl *SHOP_MENU_CALLBACK_PC)(void *);
 typedef void(__cdecl *SHOP_DRAW_CALLBACK_PC)(void);
-extern SHOP_MENU_CALLBACK_PC ShopMenuParentPc[3], ShopOldMenuParentPc[3], ShopOldMenuFnPc;
-extern SHOP_DRAW_CALLBACK_PC ShopDrawParentPc[3], ShopOldDrawParentPc[3];
-extern SHOP_DRAW_CALLBACK_PC ShopOldDrawPanelFnPc, ShopOldDrawFnPc;
-extern i32 ShopMenuLevelPc, ShopDrawLevelPc, ShopOldMenuLevelPc, ShopOldDrawLevelPc;
-extern i32 ShopExitPc, ShopLastItemPc, ShopEnteredPc, ShopItemChangedPc, ShopMoveSfxLockPc, ShopSubMenuPc;
-extern i32 ShopEaseSubInPc, ShopMenuPc, ShopColumnPc;
-extern f32 ShopSlideTimerPc, ShopHintDrawWaitPc, ShopOldPickedScalePc, ShopOldPickedPushPc;
-extern f32 ShopScaleOverridePc[7], ShopInOutScalePc;
+extern SHOP_MENU_CALLBACK_PC ShopMenuParentPc[3];
+extern SHOP_MENU_CALLBACK_PC ShopOldMenuParentPc[3];
+extern SHOP_MENU_CALLBACK_PC ShopOldMenuFnPc;
+extern SHOP_DRAW_CALLBACK_PC ShopDrawParentPc[3];
+extern SHOP_DRAW_CALLBACK_PC ShopOldDrawParentPc[3];
+extern SHOP_DRAW_CALLBACK_PC ShopOldDrawPanelFnPc;
+extern SHOP_DRAW_CALLBACK_PC ShopOldDrawFnPc;
+extern i32 ShopMenuLevelPc;
+extern i32 ShopDrawLevelPc;
+extern i32 ShopOldMenuLevelPc;
+extern i32 ShopOldDrawLevelPc;
+extern i32 ShopExitPc;
+extern i32 ShopLastItemPc;
+extern i32 ShopEnteredPc;
+extern i32 ShopItemChangedPc;
+extern i32 ShopMoveSfxLockPc;
+extern i32 ShopSubMenuPc;
+extern i32 ShopEaseSubInPc;
+extern i32 ShopMenuPc;
+extern i32 ShopColumnPc;
+extern f32 ShopSlideTimerPc;
+extern f32 ShopHintDrawWaitPc;
+extern f32 ShopOldPickedScalePc;
+extern f32 ShopOldPickedPushPc;
+extern f32 ShopScaleOverridePc[7];
+extern f32 ShopInOutScalePc;
 extern char *ShopCheatNamePc;
 extern char ShopUserCodePc[6];
 /* The interaction batch shares SHOP_INPUT_PC and the existing Shop*Pc state
  * contract above. Native movement mode is 1=left, 2=right (not Android's sign). */
-extern i32 ShopMoveItemsPc, ShopSubMoveSfxLockPc, ShopScrollKeyHitPc;
+extern i32 ShopMoveItemsPc;
+extern i32 ShopSubMoveSfxLockPc;
+extern i32 ShopScrollKeyHitPc;
 void __cdecl AddToCompletionPoints(u32 points);
 extern f32 ShopPurchasePulsePc;
 extern i32 HubForceShopSavePc;
@@ -88,12 +151,20 @@ extern f32 ShopPurchasePulseDurationPc;
     positions[i].z = SubShelfPos[i].z + (SubShelfPos[j].z - SubShelfPos[i].z) * t;
 extern f32 ShopCheatTimerPc;
 extern const f64 ShopCheatBlinkCutoffPc;
-extern AREA_DATA_PC *ANEWHOPE_ADATA, *ANAKINSFLIGHT_ADATA;
-extern i32 ShopCodeCharacterPc, ShopCodeValidPc, ShopCodeMoveSfxLockPc, ShopCodeItemChangedPc;
-extern f32 ShopCodeRepeatTimerPc, ShopCodeRepeatIntervalPc, ShopCodeExitPushPc;
+extern AREA_DATA_PC *ANEWHOPE_ADATA;
+extern AREA_DATA_PC *ANAKINSFLIGHT_ADATA;
+extern i32 ShopCodeCharacterPc;
+extern i32 ShopCodeValidPc;
+extern i32 ShopCodeMoveSfxLockPc;
+extern i32 ShopCodeItemChangedPc;
+extern f32 ShopCodeRepeatTimerPc;
+extern f32 ShopCodeRepeatIntervalPc;
+extern f32 ShopCodeExitPushPc;
 extern const f32 ShopCodeCheatDisplayTimePc;
 extern char ShopCodeCharactersPc[37];
-extern i16 TextIdPc880708, TextIdPc88074c, TextIdPc880778;
+extern i16 TextIdPc880708;
+extern i16 TextIdPc88074c;
+extern i16 TextIdPc880778;
 
 /* Same-TU matrix helpers; retail keeps their standalone copies (source in EAX, destination in ECX). */
 static void ShopMtxCopyPc(NUMTX *destination, const NUMTX *source) {
@@ -181,7 +252,8 @@ static i32 Shop_CharacterUnlockedPc(i32 character_id) {
 static void Shop_GetInput(SHOP_INPUT_PC *input) {
     i32 player;
     GAMEPAD_RUNTIME_INPUT_PC *pad;
-    u32 held, pressed;
+    u32 held;
+    u32 pressed;
     memset(input, 0, sizeof(*input));
     for (player = 0; player < 2; ++player) {
         if (MissionMenuPacketPc.active_player[player] == 0) {
@@ -251,8 +323,13 @@ static struct nugspline_s *splcodes = 0;
 static struct nugspline_s *splshelf = 0;
 
 void LoadShelfSplines(void) {
-    i32 i, shelf_count, character_count, code_count;
-    NUVEC start, end, diff;
+    i32 i;
+    i32 shelf_count;
+    i32 character_count;
+    i32 code_count;
+    NUVEC start;
+    NUVEC end;
+    NUVEC diff;
     splshelf = NuSplineFind(WORLD->current_gscn, "shelf_top1");
     splcharshelf = NuSplineFind(WORLD->current_gscn, "shelf_bottom");
     splcodes = NuSplineFind(WORLD->current_gscn, "shelf_6");
@@ -334,7 +411,9 @@ void UpdateCharacterIDs(void) {
 }
 
 void InitShop(WORLDINFO *world) {
-    i32 i, code_count, price;
+    i32 i;
+    i32 code_count;
+    i32 price;
     SHOP_SAVE_VIEW_PC *save = (SHOP_SAVE_VIEW_PC *)&Game;
     CharItems = (shopitem_s *)GameBufferAlloc(&world->giz_buffer, &world->buffer_end, 100 * sizeof(shopitem_s));
     HintItems = (shopitem_s *)GameBufferAlloc(&world->giz_buffer, &world->buffer_end, 64 * sizeof(shopitem_s));
@@ -595,7 +674,8 @@ i32 __cdecl BuyShopItem(shopitem_s *items, i32 index, i32 charge) {
 i32 __cdecl SelectShopItem(shopitem_s *items, i32 index) {
     SHOP_SAVE_VIEW_PC *save = (SHOP_SAVE_VIEW_PC *)&Game;
     HINT_PC *hint;
-    i32 id, i;
+    i32 id;
+    i32 i;
     switch (items[index].type) {
         case 1:
             if (items[index].unlocked == 1) {
@@ -711,8 +791,11 @@ i32 __cdecl SelectShopItem(shopitem_s *items, i32 index) {
 /* 004c2b00..004c31fd. Right moves IDs toward index zero, interpolates slots
  * 1..6 toward their previous shelf slot, and uses the PC scale2 owner. */
 i32 __cdecl MoveSubItemsRight(i32 *ids, NUVEC *positions, i32 count) {
-    i32 angle, i;
-    f32 phase, reverse_phase, t;
+    i32 angle;
+    i32 i;
+    f32 phase;
+    f32 reverse_phase;
+    f32 t;
     if (ShopSlideTimerPc <= 0.0f) {
         for (i = 0; i < 6; ++i) {
             ids[i] = ids[i + 1];
@@ -765,8 +848,11 @@ i32 __cdecl MoveSubItemsRight(i32 *ids, NUVEC *positions, i32 count) {
 /* 004c3200..004c38fc. Preserve the descending PC interpolation order and
  * the distinct scale4 owner, including when positions aliases SubShelfPos. */
 i32 __cdecl MoveSubItemsLeft(i32 *ids, NUVEC *positions, i32 count) {
-    i32 angle, i;
-    f32 phase, reverse_phase, t;
+    i32 angle;
+    i32 i;
+    f32 phase;
+    f32 reverse_phase;
+    f32 t;
     if (ShopSlideTimerPc <= 0.0f) {
         for (i = 6; i > 0; --i) {
             ids[i] = ids[i - 1];
@@ -819,7 +905,8 @@ i32 __cdecl MoveSubItemsLeft(i32 *ids, NUVEC *positions, i32 count) {
 /* 004c3900..004c3988 instructions; 004c3988..004c39a0 six-entry switch table. */
 void __cdecl SelectSubItem(void) {
     shopitem_s *items;
-    i32 index, result;
+    i32 index;
+    i32 result;
     switch (picked) {
         case 0:
             items = HintItems;
@@ -860,11 +947,17 @@ void __cdecl SelectSubItem(void) {
 i32 __cdecl SubItemMenu(void *menu) {
     SHOP_INPUT_PC input;
     shopitem_s *items = NULL;
-    i32 *ids, *count;
+    i32 *ids;
+    i32 *count;
     NUVEC *positions;
     NUVEC position;
-    i32 left = 0, right = 0, cancel = 0, scrolling = 0;
-    f32 ypush = 0.0f, phase, factor;
+    i32 left = 0;
+    i32 right = 0;
+    i32 cancel = 0;
+    i32 scrolling = 0;
+    f32 ypush = 0.0f;
+    f32 phase;
+    f32 factor;
     i32 angle;
     (void)menu;
     Shop_GetInput(&input);
@@ -1055,11 +1148,18 @@ i32 __cdecl DoShopMenu(void *menu) {
 
 /* 004c41a0..004c4f38. Same TU as the native EAX-argument input helper. */
 i32 __cdecl CodeMenu(void *menu) {
-    i32 down = 0, up = 0, left = 0, right = 0, confirm = 0, cancel = 0;
+    i32 down = 0;
+    i32 up = 0;
+    i32 left = 0;
+    i32 right = 0;
+    i32 confirm = 0;
+    i32 cancel = 0;
     SHOP_INPUT_PC input;
     SHOP_SAVE_VIEW_PC *save = (SHOP_SAVE_VIEW_PC *)&Game;
-    f32 factor, phase;
-    i32 i, angle;
+    f32 factor;
+    f32 phase;
+    i32 i;
+    i32 angle;
     i8 area;
     char code[7];
     u32 crc;
@@ -1455,10 +1555,13 @@ void DrawTopShelf(i32 unused) {
  * and updates the original arrow phase owner without Android's extra slot. */
 void __cdecl DrawCodeMenu3D(void) {
     i32 letters[6];
-    i32 i, angle;
+    i32 i;
+    i32 angle;
     i32 rotation = shelfang;
 
-    f32 bing = 0.0f, scale, push;
+    f32 bing = 0.0f;
+    f32 scale;
+    f32 push;
     for (i = 0; i < 6; ++i) {
         if (ShopUserCodePc[i] <= 'Z' && ShopUserCodePc[i] >= 'A') {
             letters[i] = ShopUserCodePc[i] - 'A';
@@ -1495,14 +1598,24 @@ void __cdecl DrawCodeMenu3D(void) {
 /* 004c58e0..004c63fc, including two six-entry native switch tables. */
 void __cdecl DrawSubItems(void) {
     f32 bing = 0.0f;
-    f32 bing_scale, item_scale, normal_push, scale, ypush;
-    shopitem_s *items, *item;
+    f32 bing_scale;
+    f32 item_scale;
+    f32 normal_push;
+    f32 scale;
+    f32 ypush;
+    shopitem_s *items;
+    shopitem_s *item;
     NUVEC *positions;
     i32 *shelf_ids;
-    i32 slot, phase_angle, id, area, episode;
+    i32 slot;
+    i32 phase_angle;
+    i32 id;
+    i32 area;
+    i32 episode;
     u16 rotation;
     i32 angle;
-    nuhspecial_s *blank, *film;
+    nuhspecial_s *blank;
+    nuhspecial_s *film;
     LEVELDATA_PC *level;
     SHOP_SAVE_VIEW_PC *save = (SHOP_SAVE_VIEW_PC *)&Game;
     if (ShopPurchasePulsePc > 0.0f) {
@@ -1721,10 +1834,16 @@ void __cdecl DrawItemMenu2D(void) {
 void __cdecl DrawSubItemMenu2D(void) {
     shopitem_s *items;
     i32 *ids;
-    char title[128], subtitle[128];
+    char title[128];
+    char subtitle[128];
     char *name;
-    i32 buyable = 0, show_name = 0, id, available, price;
-    f32 scale, y;
+    i32 buyable = 0;
+    i32 show_name = 0;
+    i32 id;
+    i32 available;
+    i32 price;
+    f32 scale;
+    f32 y;
     if (picked == 0) {
         items = HintItems;
         ids = HintShelfIds;
@@ -1876,7 +1995,8 @@ void __cdecl DrawShopPanel(void) {
 static i32 Shop_CanSelectPc(void) {
     shopitem_s *item;
     SHOP_SAVE_VIEW_PC *save = (SHOP_SAVE_VIEW_PC *)&Game;
-    i32 id, index;
+    i32 id;
+    i32 index;
     switch (picked) {
         case 1:
             if (Game.coins < (u32)CharItems[CharShelfIds[3]].price) {
@@ -1933,8 +2053,11 @@ i32 __cdecl ItemMenu(void *menu) {
     i32 candidate = picked;
     i32 selection = -1;
     i32 cancel = 0;
-    f32 reverse_phase, old_factor, forward_factor;
-    i32 old_angle, forward_angle;
+    f32 reverse_phase;
+    f32 old_factor;
+    f32 forward_factor;
+    i32 old_angle;
+    i32 forward_angle;
     (void)menu;
     Shop_GetInput(&input);
     if (ShopSlideTimerPc >= 0.0f) {
@@ -2129,7 +2252,8 @@ void DrawQuestion(NUVEC *position, f32 scale_value, f32 y_push) {
 /* 004c7750..004c7819. Keep the affordability predicate separate from actual
  * prompt drawing and preserve both players' native prompt arguments. */
 void __cdecl DrawShopPrompts(void) {
-    i32 select = -1, back = -1;
+    i32 select = -1;
+    i32 back = -1;
     f32 alpha = 1.0f;
     if (menuptr == ItemMenu) {
         back = TextIdPc880844;

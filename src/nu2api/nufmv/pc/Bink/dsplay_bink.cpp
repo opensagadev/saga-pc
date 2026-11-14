@@ -204,9 +204,14 @@ RADFMV_TEXTURE_PC *RadFmvCreateTexturePc(PC_D3D9_DEVICE_PC *device, u32 format, 
 }
 
 struct RADFMV_VERTEX_PC {
-    f32 x, y, z, rhw;
-    u32 diffuse, specular;
-    f32 u, v;
+    f32 x;
+    f32 y;
+    f32 z;
+    f32 rhw;
+    u32 diffuse;
+    u32 specular;
+    f32 u;
+    f32 v;
 };
 
 STATIC_ASSERT(sizeof(RADFMV_VERTEX_PC) == 32);
@@ -390,7 +395,8 @@ i32 RadFmvLockTiledPc(RADFMV_IMAGE_PC *image, void **pixels, u32 *pitch, u32 *su
         *surface = image->bink_format;
     }
     u32 columns = image->full_columns + (image->remainder_width != 0);
-    u32 row = image->lock_index / columns, col = image->lock_index - row * columns;
+    u32 row = image->lock_index / columns;
+    u32 col = image->lock_index - row * columns;
     if (x) {
         *x = col * image->maximum_texture;
     }
@@ -414,7 +420,8 @@ void RadFmvUnlockTiledPc(RADFMV_IMAGE_PC *image) {
 void RadFmvBlitTiledPc(RADFMV_IMAGE_PC *image, f32 x, f32 y, f32 xs, f32 ys, f32 alpha) {
     RadFmvSetDrawStatePc(image, alpha);
     RADFMV_TEXTURE_PC **texture = image->textures;
-    f32 x_step = (f32)image->maximum_texture * xs, y_step = (f32)image->maximum_texture * ys;
+    f32 x_step = (f32)image->maximum_texture * xs;
+    f32 y_step = (f32)image->maximum_texture * ys;
     f32 px;
     f32 py = y;
     for (u32 row = 0; row < image->full_rows; ++row) {
@@ -448,7 +455,8 @@ void RadFmvBlitTiledPc(RADFMV_IMAGE_PC *image, f32 x, f32 y, f32 xs, f32 ys, f32
 }
 
 void RadFmvOutlineTiledPc(RADFMV_IMAGE_PC *image, f32 x, f32 y, f32 xs, f32 ys) {
-    f32 x_step = (f32)image->maximum_texture * xs, y_step = (f32)image->maximum_texture * ys;
+    f32 x_step = (f32)image->maximum_texture * xs;
+    f32 y_step = (f32)image->maximum_texture * ys;
     f32 px;
     f32 py = y;
     for (u32 row = 0; row < image->full_rows; ++row) {

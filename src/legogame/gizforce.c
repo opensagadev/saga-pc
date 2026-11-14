@@ -57,7 +57,9 @@ typedef struct force_sfx_config_pc_s {
     u8 unknown_00[0x28];
     GAMEANIMSET *anim_set;
     u8 unknown_2c[0x82 - 0x2c];
-    i16 process_sfx, complete_sfx, return_sfx;
+    i16 process_sfx;
+    i16 complete_sfx;
+    i16 return_sfx;
     u8 unknown_88[0xa4 - 0x88];
 } FORCE_SFX_CONFIG_PC;
 
@@ -84,8 +86,13 @@ extern const char GizmoRegistryGizForceNamePc[];
 void __cdecl GameAnimSet_SetOffset(GAMEANIMSET *, NUVEC *);
 
 typedef struct FORCE_RESET_PROGRESS_PC {
-    u32 enabled[4], visible[4], reward_released[4], socket_hidden[4];
-    u32 completion_released[4], completion_pending[4], destroyed[4];
+    u32 enabled[4];
+    u32 visible[4];
+    u32 reward_released[4];
+    u32 socket_hidden[4];
+    u32 completion_released[4];
+    u32 completion_pending[4];
+    u32 destroyed[4];
     u8 group_members[8][8];
 } FORCE_RESET_PROGRESS_PC;
 
@@ -122,7 +129,13 @@ typedef struct registry_force_system_pc_s {
 } REGISTRY_FORCE_SYSTEM_PC;
 
 typedef struct {
-    u32 enabled[4], visible[4], reward[4], socket[4], released[4], pending[4], destroyed[4];
+    u32 enabled[4];
+    u32 visible[4];
+    u32 reward[4];
+    u32 socket[4];
+    u32 released[4];
+    u32 pending[4];
+    u32 destroyed[4];
     u8 group_members[8][8];
 } FORCE_PROGRESS_PC;
 
@@ -151,7 +164,8 @@ typedef struct {
 typedef struct {
     FORCE_PROGRESS_RECORD_PC *members[8];
     u8 unused20[6];
-    u8 member_count, configured_count;
+    u8 member_count;
+    u8 configured_count;
 } FORCE_PROGRESS_GROUP_PC;
 
 typedef struct {
@@ -354,7 +368,8 @@ i32 __cdecl GizForces_Load(void *world_pointer, void *system_pointer) {
     GIZFORCESYS_s *system = system_pointer;
     GIZFORCE_PC *force;
     u8 version;
-    i32 index, length;
+    i32 index;
+    i32 length;
     char blowup_name[32];
     char sfx_name[64];
     NUVEC unused;
@@ -640,7 +655,8 @@ void __cdecl GizForce_PlayBackwards(GIZFORCE_PC *force) {
 
 static f32 GizForce_GetHeight(GIZFORCE_PC *force) {
     GAMEANIMOBJ *object;
-    f32 minimum_y, maximum_y;
+    f32 minimum_y;
+    f32 maximum_y;
     f32 height;
     if (force == NULL || force->anim_set == NULL) {
         return 0.0f;
@@ -648,7 +664,8 @@ static f32 GizForce_GetHeight(GIZFORCE_PC *force) {
     minimum_y = 1.0e9f;
     maximum_y = -1.0e9f;
     for (object = force->anim_set->objects; object != NULL; object = object->next) {
-        NUVEC minimum, maximum;
+        NUVEC minimum;
+        NUVEC maximum;
         NuSpecialGetBounds(&object->special, &minimum, &maximum);
         if (minimum.y < minimum_y) {
             minimum_y = minimum.y;
@@ -709,7 +726,8 @@ void __cdecl GizForces_Draw(void *world_pointer, void *system_pointer, f32 unuse
     GIZFORCESYS_s *system = system_pointer;
     GIZFORCE_PC *force;
     GAMEANIMOBJ *object;
-    NUMTX *draw_matrix, reflection;
+    NUMTX *draw_matrix;
+    NUMTX reflection;
     f32 reflection_height;
     i32 index;
     (void)unused;
@@ -968,7 +986,10 @@ void __cdecl GizForces_StoreProgress(void *world_ptr, void *data, void *progress
     FORCE_PROGRESS_SYSTEM_PC *system = data;
     FORCE_PROGRESS_RECORD_PC *record;
     FORCE_PROGRESS_GROUP_PC *force_group;
-    i32 index, group, slot, word;
+    i32 index;
+    i32 group;
+    i32 slot;
+    i32 word;
     u32 bit;
     GizForces_ClearProgress(world_ptr, progress);
     if (progress == NULL) {
@@ -1117,10 +1138,18 @@ GIZMO_PC *__cdecl GizForces_GetBestBoltTarget(GIZMOSET_PC *set, f32 *output_dist
     NUVEC *best_position;
     NUVEC *previous_position;
     f32 best_distance;
-    NUVEC direction_copy, delta;
-    f32 minimum_x, minimum_z, maximum_x, maximum_z;
-    f32 distance_spill, dot_spill, dx_spill, dz_spill;
-    f32 distance, dot;
+    NUVEC direction_copy;
+    NUVEC delta;
+    f32 minimum_x;
+    f32 minimum_z;
+    f32 maximum_x;
+    f32 maximum_z;
+    f32 distance_spill;
+    f32 dot_spill;
+    f32 dx_spill;
+    f32 dz_spill;
+    f32 distance;
+    f32 dot;
     u16 target_angle;
     NUANG angle;
     i32 index;
@@ -1381,7 +1410,8 @@ void __cdecl GizForces_Reset(void *world_ptr, void *data_ptr, void *progress_ptr
         }
     }
     if (progress != NULL) {
-        i32 group_index, member_index;
+        i32 group_index;
+        i32 member_index;
         for (group_index = 0; group_index < 8; ++group_index) {
             for (member_index = 0; member_index < 8; ++member_index) {
                 u8 force_index = progress->group_members[group_index][member_index];
@@ -1426,7 +1456,8 @@ void __cdecl GizForces_Update(void *world_pointer, void *system_pointer, f32 unu
     GIZMOSYS_PC *gizmos;
     GIZMOSET_PC *set;
     GIZMO_PC *gizmo;
-    i32 index, group_index;
+    i32 index;
+    i32 group_index;
     (void)unused_time;
     if (world == NULL || system == NULL) {
         return;
@@ -1445,7 +1476,11 @@ void __cdecl GizForces_Update(void *world_pointer, void *system_pointer, f32 unu
     for (index = 0; index < set->count; ++index, ++gizmo) {
         GIZFORCE_PC *force = gizmo->object;
         GAMEOBJECT *user;
-        i32 was_moving, still_rising, playing_forwards, updating_animation, started_shaking = 0;
+        i32 was_moving;
+        i32 still_rising;
+        i32 playing_forwards;
+        i32 updating_animation;
+        i32 started_shaking = 0;
         GAMEANIMOBJ *object;
         FORCE_RESET_GROUP_PC *group;
         if (force->using_object != NULL && force->group != NULL && (force->runtime_flags & 0x20) == 0 &&
@@ -1727,10 +1762,18 @@ i32 __cdecl GizForce_FindBestForceTarget(void *system_ptr, GAMEOBJECT *object) {
     GIZFORCE_SYS_BEST_PC *system = system_ptr;
     GIZFORCE_OBJECT_BEST_PC *target = (GIZFORCE_OBJECT_BEST_PC *)object;
     GIZFORCE_LOS_BEST_PC *los;
-    GIZFORCE_TARGET_RECORD_PC *oldest = NULL, *best = NULL, *record;
-    f32 best_distance = 1000000000.0f, oldest_time = 1000000000.0f, distance;
-    i32 super_force, count = 0, i;
-    NUVEC delta, direction, facing;
+    GIZFORCE_TARGET_RECORD_PC *oldest = NULL;
+    GIZFORCE_TARGET_RECORD_PC *best = NULL;
+    GIZFORCE_TARGET_RECORD_PC *record;
+    f32 best_distance = 1000000000.0f;
+    f32 oldest_time = 1000000000.0f;
+    f32 distance;
+    i32 super_force;
+    i32 count = 0;
+    i32 i;
+    NUVEC delta;
+    NUVEC direction;
+    NUVEC facing;
     if (system == NULL || object == NULL) {
         return 0;
     }

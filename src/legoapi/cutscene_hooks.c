@@ -56,7 +56,8 @@ f32 *__cdecl PCCutLocatorAni3(CUT_LOCATOR_ANIMATION_PC *locator, NUMTX *matrix, 
 void __cdecl PCCutRigidAni3(CUT_RIGID_ANIMATION_PC *rigid, f32 frame, NUMTX *matrix) {
     f32 *values = NuAnimCurveExtractAllNodeCurves_3(rigid->animation, 0, frame, NULL);
     u32 flags = rigid->animation->node_flags[0];
-    NUVEC translation, scale;
+    NUVEC translation;
+    NUVEC scale;
     NUVEC rotation;
     if (flags & 1) {
         NUANGVEC angle;
@@ -209,7 +210,8 @@ void __cdecl NuGCutRigidCalcMtx(CUT_RIGID_GENERIC_PC *rigid, f32 frame, NUMTX *m
     DWA_CURVE_CELL_PC *curves;
     i8 *types;
     u8 flags;
-    NUVEC translation, scale;
+    NUVEC translation;
+    NUVEC scale;
     if (rigid->animation != NULL) {
         if ((i32)rigid->animation->prefix.header.magic >= (i32)0x414e4934 &&
             (i32)rigid->animation->prefix.header.magic <= (i32)0x414e4935) {
@@ -256,7 +258,8 @@ void __cdecl NuGCutCharAnimProcess(CUT_CHARACTER_GENERIC_PC *character, f32 fram
     DWA_CURVE_CELL_PC *curves;
     i8 *types;
     i32 flags;
-    NUVEC translation, scale;
+    NUVEC translation;
+    NUVEC scale;
     NUVEC rotation;
     if (character->animation != NULL) {
         if ((i32)character->animation->prefix.header.magic >= (i32)0x414e4934 &&

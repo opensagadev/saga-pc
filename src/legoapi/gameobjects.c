@@ -100,9 +100,14 @@ STATIC_ASSERT(offsetof(GAMEOBJECT_COLLISION_RESET_PC, collision_overlap_high) ==
 
 typedef struct GAME_ANTI_NODE_DATA_PC {
     NUVEC position;
-    f32 radius, min_y, max_y, extent_x, extent_z;
+    f32 radius;
+    f32 min_y;
+    f32 max_y;
+    f32 extent_x;
+    f32 extent_z;
     u16 angle;
-    u8 shape, mode;
+    u8 shape;
+    u8 mode;
 } GAME_ANTI_NODE_DATA_PC;
 
 STATIC_ASSERT(sizeof(GAME_ANTI_NODE_DATA_PC) == 0x24);
@@ -290,7 +295,10 @@ GAMEOBJECT *__cdecl FindNearestGameObject(NUVEC *position, GAMEOBJECT *exclude, 
     GAMEOBJECT *object = Obj;
     i32 i;
     for (i = 0; i < HIGHGAMEOBJECT; ++i, ++object) {
-        f32 x, y, z, distance;
+        f32 x;
+        f32 y;
+        f32 z;
+        f32 distance;
         if ((object->flags_1fc_word & 1) == 0 || (object->flags_1fc_word & 0x1000) == 0 || object->dead != 0 ||
             (object->flags_e20 & 0x20) || (U64_PAIR(&CInfo[object->character_context].flags) & 0x8000)) {
             continue;
@@ -515,8 +523,11 @@ void __cdecl SnapCreaturePos(GAMEOBJECT *object, NUVEC *position, i32 angle, AIP
 void __cdecl UpdateLastSafePosition(GAMEOBJECT *object) {
     GAMEOBJECT *terrain_object;
     i32 unsafe;
-    i8 surface, layer, context;
-    i16 platform, shadow_platform;
+    i8 surface;
+    i8 layer;
+    i8 context;
+    i16 platform;
+    i16 shadow_platform;
     u32 model_flags;
 
     object->flags_ef4 &= ~0x400000;

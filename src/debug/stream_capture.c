@@ -18,16 +18,29 @@ typedef struct StartupExtended {
 } StartupExtended;
 
 int __cdecl SagaDebugCaptureStreamsPc(HANDLE log_file, int saved_out, int saved_err) {
-    HANDLE ro = NULL, wo = NULL, re = NULL, we = NULL, to = NULL, te = NULL, file = NULL, ready = NULL, nul = NULL;
-    HANDLE inherit[7], waits[2];
+    HANDLE ro = NULL;
+    HANDLE wo = NULL;
+    HANDLE re = NULL;
+    HANDLE we = NULL;
+    HANDLE to = NULL;
+    HANDLE te = NULL;
+    HANDLE file = NULL;
+    HANDLE ready = NULL;
+    HANDLE nul = NULL;
+    HANDLE inherit[7];
+    HANDLE waits[2];
     PROCESS_INFORMATION copier = {0};
     SECURITY_ATTRIBUTES sa = {sizeof(sa), NULL, TRUE};
     StartupExtended startup;
     SIZE_T size = 0;
     void *attributes = NULL;
-    char command[2048], helper[MAX_PATH], *slash;
+    char command[2048];
+    char helper[MAX_PATH];
+    char *slash;
     DWORD path_length;
-    int fo = -1, fe = -1, success = 0;
+    int fo = -1;
+    int fe = -1;
+    int success = 0;
     BOOL attributes_ready = FALSE;
     DWORD original_error = GetLastError();
     int original_errno = errno;

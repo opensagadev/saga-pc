@@ -85,7 +85,11 @@ typedef struct cut_player_config_pc_s {
     CUT_PLAYER_CLIP_CONFIG_PC *active;
     u16 clip_count;
     i16 return_door;
-    i16 *clip_text, *intro_text, *midtro_text, *outro_text, *ending_text;
+    i16 *clip_text;
+    i16 *intro_text;
+    i16 *midtro_text;
+    i16 *outro_text;
+    i16 *ending_text;
 } CUT_PLAYER_CONFIG_PC;
 
 STATIC_ASSERT(sizeof(CUT_PLAYER_CONFIG_PC) == 0x20);
@@ -202,7 +206,9 @@ typedef struct cut_memory_entry_pc_s {
 } CUT_MEMORY_ENTRY_PC;
 
 typedef struct cut_memory_vertex_pc_s {
-    f32 x, y, z;
+    f32 x;
+    f32 y;
+    f32 z;
     u32 colour;
 } CUT_MEMORY_VERTEX_PC;
 
@@ -657,7 +663,8 @@ typedef struct cut_trigger_sphere_pc_s {
 
 typedef struct cut_trigger_box_pc_s {
     NUMTX matrix;
-    NUVEC min, max;
+    NUVEC min;
+    NUVEC max;
 } CUT_TRIGGER_BOX_PC;
 
 STATIC_ASSERT(offsetof(CUT_TRIGGER_BOX_PC, min) == 0x40);
@@ -665,7 +672,8 @@ STATIC_ASSERT(offsetof(CUT_TRIGGER_BOX_PC, max) == 0x4c);
 
 typedef struct cut_trigger_cylinder_pc_s {
     NUVEC base;
-    f32 height, radius;
+    f32 height;
+    f32 radius;
 } CUT_TRIGGER_CYLINDER_PC;
 
 STATIC_ASSERT(offsetof(CUT_TRIGGER_CYLINDER_PC, radius) == 0x10);
@@ -674,11 +682,15 @@ typedef struct cut_trigger_entry_pc_s {
     char *name;
     i32 kind;
     i16 threshold;
-    u8 initial_state, unknown_0b;
-    u8 flags, unknown_0d[3];
+    u8 initial_state;
+    u8 unknown_0b;
+    u8 flags;
+    u8 unknown_0d[3];
     f32 radius;
-    NUVEC min, max;
-    i16 shape_count, scene_instance;
+    NUVEC min;
+    NUVEC max;
+    i16 shape_count;
+    i16 scene_instance;
     CUT_TRIGGER_SHAPE_PC *shapes;
 } CUT_TRIGGER_ENTRY_PC;
 
@@ -689,13 +701,16 @@ STATIC_ASSERT(offsetof(CUT_TRIGGER_ENTRY_PC, shape_count) == 0x2c);
 STATIC_ASSERT(sizeof(CUT_TRIGGER_ENTRY_PC) == 0x34);
 
 typedef struct cut_trigger_file_pc_s {
-    i32 version, delta, count;
+    i32 version;
+    i32 delta;
+    i32 count;
     CUT_TRIGGER_ENTRY_PC *entries;
 } CUT_TRIGGER_FILE_PC;
 
 typedef struct cut_trigger_state_pc_s {
     i16 count;
-    u8 state, pulled;
+    u8 state;
+    u8 pulled;
 } CUT_TRIGGER_STATE_PC;
 
 STATIC_ASSERT(sizeof(CUT_TRIGGER_STATE_PC) == 4);
@@ -712,7 +727,8 @@ STATIC_ASSERT(sizeof(CUT_TRIGGER_SCENE_INSTANCE_PC) == 0x50);
 typedef struct cut_trigger_set_pc_s CUT_TRIGGER_SET_PC;
 
 struct cut_trigger_set_pc_s {
-    CUT_TRIGGER_SET_PC *next, *prev;
+    CUT_TRIGGER_SET_PC *next;
+    CUT_TRIGGER_SET_PC *prev;
     CUT_TRIGGER_FILE_PC *file;
     CUT_TRIGGER_STATE_PC *states;
     NUGSCN *scene;

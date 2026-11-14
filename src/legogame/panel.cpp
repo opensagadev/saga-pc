@@ -4,30 +4,50 @@
 
 extern "C" {
     extern f32 HudBossIconYPc;
-    extern f32 HudBossIconScalePc, MeleeRowsSpacingPc;
-    extern f32 MeleeRowsScalePc, MeleeRowsYOffsetPc;
+    extern f32 HudBossIconScalePc;
+    extern f32 MeleeRowsSpacingPc;
+    extern f32 MeleeRowsScalePc;
+    extern f32 MeleeRowsYOffsetPc;
 }
 /* PC475390 1184 bytes (CFGextent475390..47582f), five rows. Fullstackselected/alpha. */
-extern "C" i32 Arcade_Score[2], PCArcadePointGoals[5];
+extern "C" i32 Arcade_Score[2];
+extern "C" i32 PCArcadePointGoals[5];
 /* PC4b79a0,1846bytes. Selecting arguments are unused natively; local selecting IDs initialized-1. */
-extern "C" f32 HubPromptXPc, HubPromptSpacingPc, HubPromptLabelOffsetPc, HubPromptMaxWidthPc;
-extern "C" i32 HubPromptOffColourPc[3], HubPromptOnColourPc[3];
+extern "C" f32 HubPromptXPc;
+extern "C" f32 HubPromptSpacingPc;
+extern "C" f32 HubPromptLabelOffsetPc;
+extern "C" f32 HubPromptMaxWidthPc;
+extern "C" i32 HubPromptOffColourPc[3];
+extern "C" i32 HubPromptOnColourPc[3];
 /* PC4b86f0,444 bytes; x,y,count,total,scale_x,scale_y,alpha,angle full stack. */
 extern "C" i32 HubBuildBarSegmentsPc;
-extern "C" f32 HubBuildBarSpacingPc, HubBuildBarScalePc, HubBuildBarOverallScalePc;
+extern "C" f32 HubBuildBarSpacingPc;
+extern "C" f32 HubBuildBarScalePc;
+extern "C" f32 HubBuildBarOverallScalePc;
 extern "C" TIMER ChallengeTimer;
 extern "C" {
-    extern f32 STATSPOS2YPc, HudCoinAdjustYPc;
+    extern f32 STATSPOS2YPc;
+    extern f32 HudCoinAdjustYPc;
     /* Add to panel.c before DrawPlayerHudPc so VC8 can derive the native internal ABI. */
     extern i32 DrawBossHitPointsTwoRowsPc;
-    extern f32 PanelHeartSpacingPc, PanelHeartRowOffsetPc, PanelHeartWidescreenPc;
-    extern f32 DoubleScoreTextYPc, DoubleScoreTextScalePc;
+    extern f32 PanelHeartSpacingPc;
+    extern f32 PanelHeartRowOffsetPc;
+    extern f32 PanelHeartWidescreenPc;
+    extern f32 DoubleScoreTextYPc;
+    extern f32 DoubleScoreTextScalePc;
     extern i16 TextIdPc88098c;
-    extern f32 CoinTotalScoreSizePc, CoinTotalCoinOffsetPc, CoinTotalScoreOffsetYPc, CoinTotalTargetOffsetYPc,
-        DrawCoinTotalYPc;
-    extern f32 HudBossHeartYPc, HudBossHeartScalePc, HudBossIconYPc, HudBossIconScalePc;
+    extern f32 CoinTotalScoreSizePc;
+    extern f32 CoinTotalCoinOffsetPc;
+    extern f32 CoinTotalScoreOffsetYPc;
+    extern f32 CoinTotalTargetOffsetYPc;
+    extern f32 DrawCoinTotalYPc;
+    extern f32 HudBossHeartYPc;
+    extern f32 HudBossHeartScalePc;
+    extern f32 HudBossIconYPc;
+    extern f32 HudBossIconScalePc;
     i32 __cdecl PcInput_GetFirstKeyboardPort(void);
-    extern i32 NuMainSkipCutBordersPc, drawautosaveicon;
+    extern i32 NuMainSkipCutBordersPc;
+    extern i32 drawautosaveicon;
     extern f32 HudLevelTitleYPc;
     extern f32 HudLevelTitleScalePc;
     extern f32 HudLevelTitleScaleXPc;
@@ -60,7 +80,9 @@ extern "C" NUMTL *FadeMtl2;
 extern "C" void __cdecl DrawPauseFade(void);
 
 typedef struct PANEL_PRIM_VERTEX_PC {
-    f32 x, y, z;
+    f32 x;
+    f32 y;
+    f32 z;
     u32 colour;
 } PANEL_PRIM_VERTEX_PC;
 
@@ -323,7 +345,9 @@ extern "C" void DrawPlayerIconPrompts(i32 active0, i32 select0, f32 alpha0, i32 
         }
         if (alternate[player] != -1) {
             y -= spacing;
-            i32 red, green, blue;
+            i32 red;
+            i32 green;
+            i32 blue;
             if (menu_flash != 0) {
                 red = HubPromptOnColourPc[0];
                 green = HubPromptOnColourPc[1];
@@ -373,8 +397,11 @@ extern "C" {
     void __cdecl CoinTotal_Draw(i32 total, f32 y, f32 scale, i32 remember_positions, f32 icon_phase, i32 red, i32 green,
                                 i32 blue) {
         char text[32];
-        f32 score_scale, icon_scale, x;
-        i32 angle, object;
+        f32 score_scale;
+        f32 icon_scale;
+        f32 x;
+        i32 angle;
+        i32 object;
         Text_MakeScore((u32)total, text);
         score_scale = CoinTotalScoreSizePc * scale;
         Text3DEx(text, 0.0f, y + HudCoinAdjustYPc, 1.0f, score_scale, score_scale, score_scale, 0, red, green, blue,
@@ -403,7 +430,8 @@ extern "C" {
     }
 
     void DrawSuperStoryTime(f32 y, f32 timer, f32 target, i32 target_above, i32 show_hours) {
-        char text[256], auxiliary[256];
+        char text[256];
+        char auxiliary[256];
         i32 green;
         Text_MakeTime(timer, show_hours, 1, 1, text);
         if (!(target <= 0.0f) && !(target > timer)) {
@@ -424,9 +452,11 @@ extern "C" {
     }
 
     static void DrawCoinTotal(i32 source, i32 hide_super_story_target) {
-        f32 time, y;
+        f32 time;
+        f32 y;
         i32 total;
-        char text[64], auxiliary[64];
+        char text[64];
+        char auxiliary[64];
         if (FadeSys.fade != 0.0f || (WORLD->current_level->flags & 2) == 0) {
             return;
         }
@@ -434,7 +464,9 @@ extern "C" {
         y = (STATSPOSY - STATSPOS2YPc) * NuTrigTable[((i32)((f64)time * 16384.0) >> 1) & 0x7fff] + STATSPOS2YPc;
         y += CoinTotalScoreOffsetYPc;
         DrawCoinTotalYPc = y;
-        i32 red = 255, green = 191, blue = 0;
+        i32 red = 255;
+        i32 green = 191;
+        i32 blue = 0;
         if (source == 1) {
             DrawSuperStoryTime(-y, SuperStoryTimer.time_elapsed,
                                Game.episode_save[SuperStoryEpisode].superstory_time_limit, 0, 1);
@@ -494,8 +526,14 @@ extern "C" {
                                 i32 pulse_enabled) {
         i32 two_rows;
         i32 heart_object;
-        i32 hitpoints, current_hp, odd, transitioning, i;
-        f32 spacing, draw_y, start_x;
+        i32 hitpoints;
+        i32 current_hp;
+        i32 odd;
+        i32 transitioning;
+        i32 i;
+        f32 spacing;
+        f32 draw_y;
+        f32 start_x;
         if (SuperStory != 0 && WORLD->current_level == VADERC_LDATA && object->field_107e == 10) {
             two_rows = 1;
         } else if ((object->portal_flags & 0x08000000) != 0) {
@@ -553,7 +591,8 @@ extern "C" {
             NUVEC object_scale;
             NUVEC translation;
             NUMTX matrix;
-            f32 draw_alpha, pulse;
+            f32 draw_alpha;
+            f32 pulse;
             if (two_rows == 1 && i >= hitpoints / 2) {
                 two_rows = 2;
                 draw_y -= PanelHeartRowOffsetPc * scale;
@@ -596,7 +635,8 @@ extern "C" {
 
 /* PC4b8cf0,718bytes. Fiveargs y,active0,active1,alpha,scores. */
 void __cdecl DrawBonusScore(f32 y, i32 active0, i32 active1, f32 alpha, i32 *scores) {
-    i32 in_arcade, goal;
+    i32 in_arcade;
+    i32 goal;
     if (Arcade != 0 && (WORLD->area == NULL || WORLD->area != HUB_ADATA)) {
         goal = PCArcadePointGoals[ArcadeItem.entries[2].index];
         in_arcade = 1;
@@ -657,7 +697,8 @@ extern "C" {
         i32 flash_alpha;
         i32 old_input_device;
         i32 player;
-        char text[256], auxiliary[64];
+        char text[256];
+        char auxiliary[64];
         if (FadeSys.fade != 0.0f || (WORLD->current_level->flags & 2) == 0) {
             return;
         }
@@ -675,8 +716,14 @@ extern "C" {
         old_input_device = PcInput_GetCtrlStringPlayer();
         for (player = 0; player < 2; ++player) {
             GAMEOBJECT *object;
-            f32 base_alpha, alpha, icon_x, name_x;
-            i32 alignment, frame_model, visible, icon_alpha;
+            f32 base_alpha;
+            f32 alpha;
+            f32 icon_x;
+            f32 name_x;
+            i32 alignment;
+            i32 frame_model;
+            i32 visible;
+            i32 icon_alpha;
             PcInput_SetCtrlStringPlayer(player);
             object = (GAMEOBJECT *)Player[player];
             if (object == NULL) {
@@ -765,7 +812,10 @@ extern "C" {
             if (raised_hearts == 0) {
                 PLAYER_COIN_PACKET_PC *packet;
                 i32 model;
-                f32 coin_x, score_x, y, scale;
+                f32 coin_x;
+                f32 score_x;
+                f32 y;
+                f32 scale;
                 if ((arcade_flags & 2) != 0) {
                     sprintf(text, "%i/%i", AreaGlobals_PC.arcade_ai_kills[player], Arcade_Mode[ArcadeItem.mode].target);
                     score_x = player == 0 ? -HudScoreXPc : HudScoreXPc;
@@ -906,9 +956,16 @@ extern "C" {
     f32 MeleeRowsSpacingPc = 0.15f;
 
     void __cdecl DrawMeleeTargetsPc(i16 *targets, u8 *status, i32 count) {
-        f32 alpha, scale, spacing, time, half_count, left, right;
+        f32 alpha;
+        f32 scale;
+        f32 spacing;
+        f32 time;
+        f32 half_count;
+        f32 left;
+        f32 right;
         f64 wave;
-        i32 split, index;
+        i32 split;
+        i32 index;
         if (FadeSys.fade != 0.0f || count <= 0) {
             return;
         }
@@ -947,8 +1004,13 @@ extern "C" {
 
     void __cdecl DrawMeleeTargetsRowsPc(i16 *targets, char *defeated, f32 *values, i32 count) {
         i32 row_counts[3];
-        i32 row, i;
-        f32 size, spacing, offset, x, y;
+        i32 row;
+        i32 i;
+        f32 size;
+        f32 spacing;
+        f32 offset;
+        f32 x;
+        f32 y;
         if (FadeSys.fade != 0.0f || count <= 0) {
             return;
         }
@@ -992,11 +1054,18 @@ extern "C" {
     /* PC 0x004ba680. */
     void __cdecl DrawMeleeTargetsNumber(i16 *targets, u8 *counts, i32 count, u8 reset, NUSPECIALHANDLE *special) {
         char text[4];
-        f32 icon_scale, step, text_offset, x, y, alpha_target;
+        f32 icon_scale;
+        f32 step;
+        f32 text_offset;
+        f32 x;
+        f32 y;
+        f32 alpha_target;
         /* Retail keeps a stack copy of the flash time and re-reads the spilled one. */
         volatile f32 time_spill;
         f32 time;
-        i32 red, green, i;
+        i32 red;
+        i32 green;
+        i32 i;
         u8 target_count;
         if (count < 1 || count > 4) {
             return;
@@ -1073,7 +1142,10 @@ extern "C" {
     }
 
     void __cdecl DrawMeleeTargetsAlphaPc(i16 *targets, u8 *dimmed, f32 *values, i32 count) {
-        f32 size, spacing, offset, x;
+        f32 size;
+        f32 spacing;
+        f32 offset;
+        f32 x;
         i32 i;
         if (FadeSys.fade != 0.0f || count <= 0) {
             return;
@@ -1150,7 +1222,8 @@ extern "C" {
         i32 paused;
         i32 player_index;
         NUVEC coordinate_positions[8];
-        char coordinate_text[512], bonus_score[128];
+        char coordinate_text[512];
+        char bonus_score[128];
         SetQFont2D();
         if (CUTSTOPGAME == 0) {
             TransformGameMessages(&GameCam->position, &GameCam->shaken_right, &GameCam->dir);
@@ -1166,7 +1239,8 @@ extern "C" {
         if (loading_level != -1) {
             if (DRAWBGLOAD != 0 && bgGetProcActive() != NULL) {
                 char *loading_name = LDataList[loading_level].name;
-                i32 red, green;
+                i32 red;
+                i32 green;
                 if (abort_load != 0) {
                     sprintf(bonus_score, "Aborting ''%s''", loading_name);
                     red = 255;
@@ -1396,7 +1470,9 @@ extern "C" void __cdecl PanelRender(WORLDINFO *world) {
 void __cdecl Tag_DrawIcon_Batman(GAMEOBJECT *object) {
     ADD_GAME_MESSAGE_PC message;
     NUVEC position;
-    i32 first_red, first_green, first_blue;
+    i32 first_red;
+    i32 first_green;
+    i32 first_blue;
     i32 alpha;
     if (VehicleArea != 0 || FadeSys.fade != 0.0f || (object->flags_1fc & 0x80) == 0 ||
         !(object->pause_context_state > 0.0f)) {

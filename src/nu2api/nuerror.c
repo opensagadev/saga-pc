@@ -31,7 +31,8 @@ void __cdecl NuClearError(void) {
 }
 
 char *NuGetErrN(i32 entry) {
-    i32 offset = 0, current = 0;
+    i32 offset = 0;
+    i32 current = 0;
     while (current < entry && offset < bHaveErr) {
         if (PCWarningMessages[offset++] == '\0') {
             ++current;

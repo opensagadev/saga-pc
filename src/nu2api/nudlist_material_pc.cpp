@@ -113,7 +113,8 @@ extern "C" void __cdecl NuDisplayListTransformTransposePc(void *arg) {
 // Packet: NUMTX world, f32 magnitude, NUMTX face_on (0x84 bytes), read with a moving cursor.
 extern "C" void __cdecl NuDisplayListFaceOnTransformPc(void *arg) {
     VARIPTR packet;
-    NUVEC4 values, tint;
+    NUVEC4 values;
+    NUVEC4 tint;
     f32 opacity;
     packet.void_ptr = arg;
     NUMTX *matrix = (NUMTX *)packet.void_ptr;
@@ -179,7 +180,8 @@ STATIC_ASSERT(offsetof(PC_SHADER_OBJECT_FULL_VIEW, parameters) + 0x4f * sizeof(P
 
 /* New C++ material owner, not a replacement or migration of nudlist_pc.c. */
 struct PC_DL_SHADER_PROGRAM_PAIR_PC {
-    PC_TEXTURE_RESOURCE_PC *vertex_shader, *pixel_shader;
+    PC_TEXTURE_RESOURCE_PC *vertex_shader;
+    PC_TEXTURE_RESOURCE_PC *pixel_shader;
 };
 
 STATIC_ASSERT(sizeof(PC_DL_SHADER_PROGRAM_PAIR_PC) == 8);
@@ -357,7 +359,8 @@ STATIC_ASSERT(offsetof(PC_DL_MATERIAL_STATES_READER, variant_flags) == 0x1f0);
 /* PCDisplayHandlerSetZMode is the real private helper already in the BC cohort. */
 extern "C" void __cdecl NuMtlSetRenderStatesPS(NUMTL *arg) {
     PC_DL_MATERIAL_STATES_READER *material = (PC_DL_MATERIAL_STATES_READER *)arg;
-    i32 write_colour = 1, write_alpha = 1;
+    i32 write_colour = 1;
+    i32 write_alpha = 1;
     u32 alpha;
     PCDisplayHandlerSetZMode((material->attributes >> 14) & 3);
     if (material->variant_flags & 0x100000) {
@@ -454,7 +457,9 @@ extern "C" void __cdecl NuMtlSetRenderStatesPS(NUMTL *arg) {
 extern "C" {
     extern GRAPHICS_RENDER_TEXTURE_PC *PCGraphicsPostEffectWorkTexturePc;
     extern PC_FRAMEBUFFER_PC *PostBlurFramebufferPc;
-    extern POST_SHADER_PROGRAM_PC *PostBlur7x7ProgramPc, *PostCopyAuxProgramPc, *PostBlurAuxProgramPc;
+    extern POST_SHADER_PROGRAM_PC *PostBlur7x7ProgramPc;
+    extern POST_SHADER_PROGRAM_PC *PostCopyAuxProgramPc;
+    extern POST_SHADER_PROGRAM_PC *PostBlurAuxProgramPc;
     extern f32 PostBlurInputBiasPc;
     void __cdecl NuShaderProgramMakeCurrent(POST_SHADER_PROGRAM_PC *);
     void __cdecl PCGraphicsAttachFramebuffer(PC_FRAMEBUFFER_PC *, i32, GRAPHICS_RENDER_TEXTURE_PC *, i32);
@@ -515,7 +520,10 @@ extern "C" void __cdecl PostBlur7x7HighPc(GRAPHICS_RENDER_TEXTURE_PC *source, i3
 
 // One vertex-shader tap offset; retail rounds both coordinates through f32 temporaries.
 struct __declspec(align(16)) POST_BLUR_LOW_OFFSET_PC {
-    f32 x, y, z, w;
+    f32 x;
+    f32 y;
+    f32 z;
+    f32 w;
 };
 
 #define POST_BLUR_LOW_SET_OFFSET(offset, offset_x, offset_y)                                                           \
@@ -687,9 +695,11 @@ extern "C" {
 extern "C" {
     extern u8 PostBloomAttachPendingPc;
     extern const WCHAR PostEffectRenderLabelPc[];
-    extern u32 PCGraphicsPostEffectWidthPc, PCGraphicsPostEffectHeightPc;
+    extern u32 PCGraphicsPostEffectWidthPc;
+    extern u32 PCGraphicsPostEffectHeightPc;
     extern GRAPHICS_RENDER_TEXTURE_PC *PCGraphicsPostEffectBackBufferTexturePc;
-    extern POST_SHADER_PROGRAM_PC *PostCopyTexProgramPc, *PostBlur5x5ProgramPc;
+    extern POST_SHADER_PROGRAM_PC *PostCopyTexProgramPc;
+    extern POST_SHADER_PROGRAM_PC *PostBlur5x5ProgramPc;
     extern PC_EFFECT_SURFACE_PC *PcSurfaceRegistry[256];
 }
 
@@ -801,7 +811,10 @@ void NuMainFilter::RenderBloomPc() {
         NUMTX inverse_view;
         NuMtxInvH(&inverse_view, &PcGeometryViewMatrixPc);
         PCDeviceSetVertexShaderConstantsF(12, &inverse_view.m00, 4);
-        f32 fovy, aspect, z_near, z_far;
+        f32 fovy;
+        f32 aspect;
+        f32 z_near;
+        f32 z_far;
         NuMtxGetPerspectiveD3D(&PcGeometryProjectionMatrixPc, &fovy, &aspect, &z_near, &z_far);
         NUVEC4 depth = {z_near, z_far, z_far - z_near, 1.0f / PcGeometryProjectionMatrixPc.m22};
         PCDeviceSetVertexShaderConstantsF(49, &depth.x, 1);

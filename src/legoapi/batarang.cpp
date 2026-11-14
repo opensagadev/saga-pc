@@ -66,9 +66,13 @@ STATIC_ASSERT(offsetof(GAMEOBJECT, field_281) == 0x281);
 #define POW4(x) (POW2(x) * POW2(x))
 #define POW5(x) (POW2(x) * POW3(x))
 extern "C" {
-    extern i32 LEGO_AIPATHCNX_VARIANT_FLAG0_PC, LEGO_AIPATHCNX_VARIANT_FLAG1_PC;
-    extern u32 LEGO_AIPATHCNX_BIGJUMP, LEGO_AIPATHCNX_REQUIRESPERMISSION;
-    extern u32 LEGO_AIPATHCNX_NO_DESTINATION_CHECK, LEGO_AIPATHCNX_JUMP_NOW, LEGO_AIPATHCNX_DONT_JUMP_NOW;
+    extern i32 LEGO_AIPATHCNX_VARIANT_FLAG0_PC;
+    extern i32 LEGO_AIPATHCNX_VARIANT_FLAG1_PC;
+    extern u32 LEGO_AIPATHCNX_BIGJUMP;
+    extern u32 LEGO_AIPATHCNX_REQUIRESPERMISSION;
+    extern u32 LEGO_AIPATHCNX_NO_DESTINATION_CHECK;
+    extern u32 LEGO_AIPATHCNX_JUMP_NOW;
+    extern u32 LEGO_AIPATHCNX_DONT_JUMP_NOW;
     void __cdecl InitFn_PreparingForSpecialMove(AI_PREPARING_SPECIAL_MOVE_PC);
     void __cdecl InitFn_MidSpecialMove(AI_MID_SPECIAL_MOVE_PC);
 }
@@ -465,7 +469,8 @@ void Batarang_Ricochet(BATARANG_NATIVE_PC *batarang) {
 }
 
 static i32 Batarang_ShouldRicochet(BATARANG_NATIVE_PC *batarang) {
-    NUVEC travel, destination;
+    NUVEC travel;
+    NUVEC destination;
     NuVecScale(&travel, &batarang->velocity, FRAMETIME * 2.0f);
     NuVecAdd(&destination, &batarang->position, &travel);
     if (NewRayCastScaleYMask(&batarang->position, &travel, 0.0f, 1.0f, 0, 0x1f)) {
@@ -500,7 +505,9 @@ extern "C" void __cdecl Batarangs_Draw(void) {
 
 void __cdecl Batarangs_CheckLostData(void *data) {
     PLAYER_BATARANG_SLOT_PC *batarang = BatarangPacketsPc;
-    i32 i, j, k;
+    i32 i;
+    i32 j;
+    i32 k;
     for (i = 0; i < 8; ++i, ++batarang) {
         if (batarang->owner == data) {
             batarang->flight_state.in_flight = 0;
@@ -1305,7 +1312,8 @@ extern "C" {
 
     i32 __cdecl Batman_PrepareClimb(AIPACKET_PC *packet, APIOBJECT_PC *object, i32 checks) {
         GAMEOBJECT *owner = (GAMEOBJECT *)object->owner;
-        AIPATHNODE_PC *source, *destination;
+        AIPATHNODE_PC *source;
+        AIPATHNODE_PC *destination;
         if (owner->indy_climb == NULL || owner->indy_climb->connection != packet->path_info.connection) {
             owner->indy_climb = FindClimbObject(WORLD->climb_objects, packet->path_info.connection);
         }
@@ -1333,7 +1341,8 @@ extern "C" {
         GAMEOBJECT *owner = (GAMEOBJECT *)object->owner;
         INDY_GUIDELINE_PC *guide;
         i32 endpoint;
-        f32 distance, height;
+        f32 distance;
+        f32 height;
         if (owner->indy_climb != NULL && owner->indy_climb->connection == packet->path_info.connection) {
             if (owner->upper_position.y > owner->ai_packet.special_move_node->max_height) {
                 owner->pad->buttons_pressed |= GAMEPAD_JUMP;
@@ -1385,7 +1394,8 @@ extern "C" {
         GAMEOBJECT *owner = (GAMEOBJECT *)object->owner;
         INDY_GUIDELINE_PC *guide;
         i32 endpoint;
-        f32 distance, height;
+        f32 distance;
+        f32 height;
         if (owner->indy_climb != NULL && owner->indy_climb->connection == packet->path_info.connection) {
             if (owner->character_context == 0x43) {
                 guide = GuideLine_FindNearest(&owner->upper_position, WORLD, &endpoint, &distance);

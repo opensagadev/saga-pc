@@ -21,7 +21,8 @@ i32 __cdecl edgraFileSave(char *path) {
     char name[20];
     i32 clump_count = 0;
     i32 element_count = 0;
-    i32 i, j;
+    i32 i;
+    i32 j;
     for (i = 0; i < EDGRA_MAX_CLUMPS; ++i) {
         if (GrassClumps[i].element_count) {
             ++clump_count;
@@ -363,7 +364,8 @@ void __cdecl edgraRender(void) {
     }
 }
 
-extern VARIPTR *gra_ptr, *gra_end;
+extern VARIPTR *gra_ptr;
+extern VARIPTR *gra_end;
 
 void edgraSetMemoryBuffer(VARIPTR *start, VARIPTR *end) {
     gra_ptr = start;

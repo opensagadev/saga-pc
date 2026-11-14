@@ -84,7 +84,9 @@ void __cdecl GamePads_Init(void) {
 
 f32 __cdecl GamePad_Rotate(GAMEOBJECT *object) {
     GAMEPAD_PC *pad;
-    i32 index, current_delta, previous_delta;
+    i32 index;
+    i32 current_delta;
+    i32 previous_delta;
     if (object == Player[0]) {
         index = 0;
     } else if (object == Player[1]) {
@@ -300,7 +302,8 @@ i32 __cdecl ReadPad(i32 port) {
     FRAME_PAD_PC *pad = gamepad->bound_pad;
     WORLDINFO *world = WorldInfo_CurrentlyActive();
     i32 mode;
-    f32 axis_x, axis_y;
+    f32 axis_x;
+    f32 axis_y;
     if (GamePads_IgnoreInputFn != NULL && GamePads_IgnoreInputFn() != 0) {
         mode = 1;
     } else if (readpads_always != 0 || world == NULL || world->current_level == NULL ||
@@ -493,7 +496,9 @@ i32 __cdecl GamePads_SkipMovie(void) {
     WORLDINFO *world = WorldInfo_CurrentlyActive();
     i32 skipped = 0;
     i32 pressed_device = 0;
-    i32 kind, value, port;
+    i32 kind;
+    i32 value;
+    i32 port;
     for (port = 0; port < 2; ++port) {
         ReadPad(port);
     }

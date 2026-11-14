@@ -2,7 +2,8 @@
 
 /* Retail unit 0x4cadb0-0x4cc8bc: definitions in retail address order. */
 
-extern const char StarWarsStairsTopPc[11], StarWarsStairsTop2Pc[12];
+extern const char StarWarsStairsTopPc[11];
+extern const char StarWarsStairsTop2Pc[12];
 extern f32 StarWarsJumpDistancePc[3];
 STATIC_ASSERT(offsetof(GAMEOBJECT, ai_jump_destination_distance_pc) == 0xed0);
 STATIC_ASSERT(offsetof(GAMEOBJECT, ai_packet) == 0x2c8);
@@ -22,8 +23,11 @@ STATIC_ASSERT(sizeof(STARWARS_PREPARE_PC) == 8);
 extern STARWARS_PREPARE_PC starwars_prepareforspecialmove[8];
 extern AI_MID_SPECIAL_MOVE_PC starwars_midspecialmovefns[4];
 extern const char StarWarsTakeOverJumpPc[13];
-extern u32 LEGO_AIPATHCNX_BIGJUMP, LEGO_AIPATHCNX_REQUIRESPERMISSION;
-extern u32 LEGO_AIPATHCNX_NO_DESTINATION_CHECK, LEGO_AIPATHCNX_JUMP_NOW, LEGO_AIPATHCNX_DONT_JUMP_NOW;
+extern u32 LEGO_AIPATHCNX_BIGJUMP;
+extern u32 LEGO_AIPATHCNX_REQUIRESPERMISSION;
+extern u32 LEGO_AIPATHCNX_NO_DESTINATION_CHECK;
+extern u32 LEGO_AIPATHCNX_JUMP_NOW;
+extern u32 LEGO_AIPATHCNX_DONT_JUMP_NOW;
 void __cdecl ClearSpecialMove(GAMEOBJECT *);
 void __cdecl InitFn_PreparingForSpecialMove(AI_PREPARING_SPECIAL_MOVE_PC);
 void __cdecl InitFn_MidSpecialMove(AI_MID_SPECIAL_MOVE_PC);
@@ -430,7 +434,8 @@ i32 __cdecl StarWars_PrepareObstacle(AIPACKET_PC *packet, APIOBJECT_PC *object, 
 
 i32 __cdecl StarWars_PreparingForSpecialMove(AIPACKET_PC *packet, APIOBJECT_PC *apiobject, i32 checks) {
     GAMEOBJECT *owner = (GAMEOBJECT *)apiobject->owner;
-    u32 flags, capabilities;
+    u32 flags;
+    u32 capabilities;
     STARWARS_PREPARE_PC *entry;
     if (owner->character_context == 0x5b) {
         owner->pad->buttons_pressed |= GAMEPAD_JUMP;

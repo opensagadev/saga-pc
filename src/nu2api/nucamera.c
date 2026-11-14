@@ -214,7 +214,8 @@ void __cdecl NuMtxCalcDebrisFaceOn(NUMTX *m) {
    they do not assert historical declarations. */
 void __cdecl NuCameraSetVPortClipMtx(NUMTX *out, NUMTX *view, NUCAMERA *camera, i32 fast) {
     if (fast == 0) {
-        f32 far_clip, near_clip;
+        f32 far_clip;
+        f32 near_clip;
         f32 half_fov;
         f32 cotangent;
         f32 horizontal;
@@ -246,7 +247,8 @@ void __cdecl NuCameraSetVPortClipMtx(NUMTX *out, NUMTX *view, NUCAMERA *camera, 
 
 void __cdecl NuCameraSetScissorClipMtx(NUMTX *out, NUMTX *view, NUCAMERA *camera, i32 fast) {
     if (fast == 0) {
-        f32 far_clip, near_clip;
+        f32 far_clip;
+        f32 near_clip;
         f32 half_fov;
         f32 cotangent;
         f32 horizontal;
@@ -410,7 +412,8 @@ i32 __cdecl NuCameraClipTestExtentsAxisAligned(NUVEC *center, NUVEC *extent, f32
         f32 fourth;
         f32 far_plane;
         f32 near_plane;
-    } distance, radius;
+    } distance;
+    struct __declspec(align(16)) BoundProjection radius;
 
     f32 saved_far = AxisClipNearFarPlanesPc.m30;
     if (far_clip != 0.0f) {
@@ -699,7 +702,10 @@ void __cdecl NuCameraCalcClipMtx(CAMERA_CLIP_PACKET_PC *clip, NUCAMERA *camera, 
     static NUMTX clip_inverse = {0};
     if (use_cached_projection == 0 || (clip->flags & 1) == 0) {
         i32 angle;
-        f32 half_fov, cotangent, x, y;
+        f32 half_fov;
+        f32 cotangent;
+        f32 x;
+        f32 y;
         f32 far_clip = clip->far_clip;
         f32 near_clip = clip->near_clip;
         clip->flags |= 1;
@@ -850,7 +856,8 @@ void __cdecl NuCameraCalcRay(f32 screen_x, f32 screen_y, NUVEC *ray_start, NUVEC
     NUVEC far_point;
     f32 half_fov;
     f32 tangent;
-    f32 x, y;
+    f32 x;
+    f32 y;
     i32 angle;
 
     if (camera == NULL) {

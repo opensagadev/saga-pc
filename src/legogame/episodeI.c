@@ -25,7 +25,9 @@ typedef struct racepod_resource_pc_s {
     NUVEC4 previous_axis;
     NUVEC4 previous_position;
     NUVEC4 previous_displacement;
-    i32 pitch, yaw, unknown_0078;
+    i32 pitch;
+    i32 yaw;
+    i32 unknown_0078;
     f32 speed;
     FLIGHT_SPLINE_RESOURCE_PC *spline;
     f32 start;
@@ -44,7 +46,8 @@ typedef struct podrace_resource_pc_s {
     f32 mushroom_timer;
     f32 lap_display;
     f32 previous_lap_display;
-    f32 max_lap_time, lap_time_increment;
+    f32 max_lap_time;
+    f32 lap_time_increment;
     i32 attempts_per_increment;
     i32 attempts;
     u8 flags;
@@ -52,8 +55,10 @@ typedef struct podrace_resource_pc_s {
 } PODRACE_RESOURCE_PC;
 
 extern NUSPECIALHANDLE SebulbaMineSpecialPc;
-extern f32 SebulbaDistanceBiasPc, SebulbaThrowIntervalPc;
-static f32 PodSebulbaThrowSpeedPc, PodSebulbaThrowGravityPc;
+extern f32 SebulbaDistanceBiasPc;
+extern f32 SebulbaThrowIntervalPc;
+static f32 PodSebulbaThrowSpeedPc;
+static f32 PodSebulbaThrowGravityPc;
 
 typedef struct pod_race_countdown_reader_pc_s {
     u8 unknown_0000[0xb000];
@@ -637,7 +642,10 @@ static RACEPOD_RESOURCE_PC *RacePodAllocatePrivatePc(void) {
 static void RacePodAlignPrivatePc(RACEPOD_RESOURCE_PC *pod, NUVEC4 *direction, f32 blend, i32 alternate) {
     __declspec(align(16)) NUVEC4 axis;
     __declspec(align(16)) NUVEC4 local;
-    i16 yaw, pitch, direction_yaw, direction_pitch;
+    i16 yaw;
+    i16 pitch;
+    i16 direction_yaw;
+    i16 direction_pitch;
     f32 roll;
     i16 angle;
     NuVecInvMtxRotate((NUVEC *)&local, (NUVEC *)direction, &pod->matrix);
@@ -1391,10 +1399,18 @@ i32 Action_Sebulba(AISYS_PC *unused0, AISCRIPTPROCESS_PC *process, AIPACKET_PC *
 i32 PodRaceKeyPc[8] = {-1, -1, -1, -1, -1, -1, -1, -1};
 
 void __cdecl PodDust(WORLDINFO *world, GAMEOBJECT *object) {
-    NUVEC positions[2], previous[2], delta, position;
+    NUVEC positions[2];
+    NUVEC previous[2];
+    NUVEC delta;
+    NUVEC position;
     NUMTX matrix;
-    f32 rate, fraction;
-    i32 count, i, locator, key, particles;
+    f32 rate;
+    f32 fraction;
+    i32 count;
+    i32 i;
+    i32 locator;
+    i32 key;
+    i32 particles;
     if (object->floor_height == 2000000.0f) {
         return;
     }
@@ -2218,16 +2234,23 @@ void PodRaceCReset(WORLDINFO *world) {
 
 i32 __cdecl Action_CreatePod(AISYS_PC *system, AISCRIPTPROCESS_PC *process, AIPACKET_PC *packet, char **params,
                              i32 param_count, i32 first_time, f32 ignored) {
-    i32 spline_id = -1, pacemaker = 0, damaged = 0;
+    i32 spline_id = -1;
+    i32 pacemaker = 0;
+    i32 damaged = 0;
     u16 model_id = 0xffff;
-    f32 start = 0.0f, end = 1.0f, time_factor = 1.0f;
-    i32 i, spline_index;
+    f32 start = 0.0f;
+    f32 end = 1.0f;
+    f32 time_factor = 1.0f;
+    i32 i;
+    i32 spline_index;
     PODRACE_RESOURCE_PC *race;
     FLIGHT_SPLINE_RESOURCE_PC *spline;
     RACEPOD_RESOURCE_PC *pod;
     f64 duration;
     f32 difference;
-    __declspec(align(16)) NUVEC4 position, next_position, direction;
+    __declspec(align(16)) NUVEC4 position;
+    __declspec(align(16)) NUVEC4 next_position;
+    __declspec(align(16)) NUVEC4 direction;
     (void)system;
     (void)process;
     (void)ignored;

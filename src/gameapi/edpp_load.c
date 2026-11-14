@@ -5,21 +5,29 @@ typedef struct edpp_file_particle_pc_s {
     NUVEC position;
     i32 effect_index;
     i32 instance_id;
-    i16 rotation_z, rotation_y;
-    i16 emitter_rotation_z, emitter_rotation_y, emitter_rotation_x;
+    i16 rotation_z;
+    i16 rotation_y;
+    i16 emitter_rotation_z;
+    i16 emitter_rotation_y;
+    i16 emitter_rotation_x;
     u8 unknown_01e[2];
     f32 start_offset;
     char name[16];
-    i32 switch_type, switch_id;
+    i32 switch_type;
+    i32 switch_id;
     f32 switch_variable;
-    i16 reflection_rotation_z, reflection_rotation_y;
-    f32 reflection_offset, reflection_bounce;
+    i16 reflection_rotation_z;
+    i16 reflection_rotation_y;
+    f32 reflection_offset;
+    f32 reflection_bounce;
     i16 render_group;
     u16 render_priority;
     u8 dynamic_priority;
-    i8 page, detail_levels;
+    i8 page;
+    i8 detail_levels;
     u8 facing_mode;
-    i16 facing_rotation_x, facing_rotation_y;
+    i16 facing_rotation_x;
+    i16 facing_rotation_y;
 } EDPP_FILE_PARTICLE_PC;
 
 STATIC_ASSERT(sizeof(EDPP_FILE_PARTICLE_PC) == 0x58);
@@ -88,7 +96,8 @@ STATIC_ASSERT(sizeof(((EDPP_FILE_PARTICLE_PC *)0)->dynamic_priority) == 1);
 extern const f64 ActionSnapWeightedRandomZeroPc;
 
 static void UpdateTotalPtls(DEBRIS_INFO_PC *effect) {
-    f32 active = 0.0f, elapsed = 0.0f;
+    f32 active = 0.0f;
+    f32 elapsed = 0.0f;
     f64 emission;
     f32 ratio;
     i32 i;
@@ -387,7 +396,8 @@ void cbPtlQuickDeleteMenu(eduimenu_s *menu, eduiitem_s *unused1, u32 unused2) {
     if (edptl_quickdel_menu) {
         i32 type;
         for (type = 1; type < debinf_count; ++type) {
-            i32 index, used;
+            i32 index;
+            i32 used;
             DEBRIS_INFO_PC *effect;
             if (!debtab[type]) {
                 continue;
@@ -423,7 +433,10 @@ extern i32 edbits_particle_general_page;
 extern i32 edbits_particle_char_page;
 
 i32 __cdecl edppLoadPage(char *path, i8 flag, NUGSCN *scene) {
-    i32 page, n, version, requested;
+    i32 page;
+    i32 n;
+    i32 version;
+    i32 requested;
     i32 skipped = 0;
     i8 original_flag = flag;
     i32 type_index = 1;

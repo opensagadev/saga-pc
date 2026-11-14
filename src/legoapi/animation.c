@@ -84,7 +84,8 @@ void __cdecl AddFootSteps(GAMEOBJECT *object) {
 void __cdecl SetHeadTarget(GAMEOBJECT *object, NUVEC *position, i8 priority, f32 time, f32 minimum_delay,
                            f32 maximum_delay) {
     i32 random;
-    f32 fraction, delay;
+    f32 fraction;
+    f32 delay;
     if (position != NULL) {
         if (object->head_target == NULL ||
             (position != object->head_target && priority >= object->head_target_priority)) {
@@ -120,7 +121,10 @@ void __cdecl SetObjAsHeadTarget(GAMEOBJECT *object, GAMEOBJECT *target, i8 unuse
 
 static void HeadMovementLegacyPc(GAMEOBJECT *object) {
     CHARACTER_JOINT_MOVEMENT_PC *joints = (CHARACTER_JOINT_MOVEMENT_PC *)object;
-    f32 first, second, blend, angle;
+    f32 first;
+    f32 second;
+    f32 blend;
+    f32 angle;
     i32 allowed;
     i16 animation;
 
@@ -224,7 +228,10 @@ static void HeadMovementLegacyPc(GAMEOBJECT *object) {
 
 static void HeadMovementAlternatePc(GAMEOBJECT *object) {
     CHARACTER_JOINT_MOVEMENT_PC *joints = (CHARACTER_JOINT_MOVEMENT_PC *)object;
-    f32 first, second, blend, angle;
+    f32 first;
+    f32 second;
+    f32 blend;
+    f32 angle;
     i32 allowed;
     i16 animation;
 
@@ -332,7 +339,10 @@ static void HeadMovementAlternatePc(GAMEOBJECT *object) {
 
 static void HeadMovementOrdinaryPc(GAMEOBJECT *object) {
     CHARACTER_JOINT_MOVEMENT_PC *joints = (CHARACTER_JOINT_MOVEMENT_PC *)object;
-    f32 first, second, blend, angle;
+    f32 first;
+    f32 second;
+    f32 blend;
+    f32 angle;
     i32 allowed;
     i16 animation;
 

@@ -15,7 +15,10 @@ union PC_SHADER_KEY_BLOCK_PC {
     u8 bytes[104];
 
     struct {
-        u32 vertex_flags, layer_flags, layer_flags_copy, program_hash[2];
+        u32 vertex_flags;
+        u32 layer_flags;
+        u32 layer_flags_copy;
+        u32 program_hash[2];
     } words;
 };
 

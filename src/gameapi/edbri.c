@@ -155,7 +155,9 @@ void __cdecl edbriDetermineNearest(f32 distance) {
 
 i32 __cdecl edbriLoadPage(char *path, void *scene) {
     i32 page = -1;
-    i32 count, index, i;
+    i32 count;
+    i32 index;
+    i32 i;
     char name[20];
     for (i = 0; i < 8; i++) {
         if (!edbri_page_used[i]) {
@@ -236,8 +238,10 @@ STATIC_ASSERT(offsetof(PC_EDBRIDGE, green) == 0x41);
 STATIC_ASSERT(offsetof(PC_EDBRIDGE, blue) == 0x42);
 
 void __cdecl edbriBridgeUpdate(i32 index, NUGSCN *scene) {
-    NUVEC end, delta;
-    NUSPECIALHANDLE first, second;
+    NUVEC end;
+    NUVEC delta;
+    NUSPECIALHANDLE first;
+    NUSPECIALHANDLE second;
     u32 colour;
     if (edBridges[index].instance_id != -1) {
         NuBridgeRemove(edBridges[index].instance_id);
@@ -499,7 +503,9 @@ static void edbricbCancelPostInstanceMenu(eduimenu_s *unused0, eduimenu_s *unuse
 }
 
 void __cdecl edbricbPostInstanceMenu(eduimenu_s *parent, eduiitem_s *unused1, u32 unused2) {
-    i32 count, i, selected;
+    i32 count;
+    i32 i;
+    i32 selected;
     edbri_postinstance_menu = eduiMenuCreate(70, 70, 180, 250, ed_fnt, edbricbCancelPostInstanceMenu, "Post Select");
     if (!edbri_postinstance_menu || !edbits_base_scene) {
         return;
@@ -533,7 +539,9 @@ static void edbricbCancelPlankInstanceMenu(eduimenu_s *unused0, eduimenu_s *unus
 }
 
 void __cdecl edbricbPlankInstanceMenu(eduimenu_s *parent, eduiitem_s *unused1, u32 unused2) {
-    i32 count, i, selected;
+    i32 count;
+    i32 i;
+    i32 selected;
     edbri_plankinstance_menu = eduiMenuCreate(70, 70, 180, 250, ed_fnt, edbricbCancelPlankInstanceMenu, "Plank Select");
     if (!edbri_plankinstance_menu || !edbits_base_scene) {
         return;

@@ -37,14 +37,20 @@ STATIC_ASSERT(offsetof(GIZTURRETSYS_s, opponent_cursor) == 0xc);
 STATIC_ASSERT(offsetof(WORLDINFO, giz_turret_sys) == 0x46b8);
 
 typedef struct TURRET_ANIM_DATA_PC {
-    u8 flags, role;
+    u8 flags;
+    u8 role;
     i16 platform_id;
 } TURRET_ANIM_DATA_PC;
 
 STATIC_ASSERT(sizeof(TURRET_ANIM_DATA_PC) == 4);
 
 typedef struct {
-    u32 enabled[2], visible[2], reward[2], fired[2], stopped[2], completed[2];
+    u32 enabled[2];
+    u32 visible[2];
+    u32 reward[2];
+    u32 fired[2];
+    u32 stopped[2];
+    u32 completed[2];
     u8 timers[64];
 } TURRET_PROGRESS_PC;
 
@@ -110,7 +116,9 @@ extern "C" {
 
     i32 __cdecl GizTurrets_Load(WORLDINFO *world, GIZTURRETSYS_s *system) {
         u8 version = (u8)EdFileReadChar();
-        i32 index, vector_index, object_index;
+        i32 index;
+        i32 vector_index;
+        i32 object_index;
         GIZTURRET_s *turret;
         GAMEANIMOBJ *object;
         TURRET_ANIM_DATA_PC *data;
@@ -305,7 +313,8 @@ extern "C" {
     static void GizTurrets_Reset(GIZTURRET_s *turret, WORLDINFO *world) {
         GAMEANIMOBJ *object;
         TURRET_ANIM_DATA_PC *data;
-        NUMTX *primary, *secondary;
+        NUMTX *primary;
+        NUMTX *secondary;
         turret->flags |= 6;
         turret->state = turret->initial_state;
         turret->shots_fired = 0;
@@ -474,8 +483,13 @@ extern "C" {
                                                                            static_cast<WORLDINFO *>(context));
                                 GAMEOBJECT *autoaim_target = NULL;
                                 should_fire = 0;
-                                NUMTX fallback_draw, fallback_base;
-                                NUMTX *primary_draw, *primary_base, *secondary_draw, *secondary_base, *reference;
+                                NUMTX fallback_draw;
+                                NUMTX fallback_base;
+                                NUMTX *primary_draw;
+                                NUMTX *primary_base;
+                                NUMTX *secondary_draw;
+                                NUMTX *secondary_base;
+                                NUMTX *reference;
                                 u16 home_yaw = 0;
                                 if (turret->primary_anim_obj != NULL &&
                                     NuSpecialExistsFn(&turret->primary_anim_obj->special)) {
@@ -508,7 +522,8 @@ extern "C" {
                                 if (turret->fire_cooldown < 0.0f) {
                                     turret->fire_cooldown = 0.0f;
                                 }
-                                i32 desired_pitch = 0, desired_yaw = static_cast<i16>(home_yaw);
+                                i32 desired_pitch = 0;
+                                i32 desired_yaw = static_cast<i16>(home_yaw);
                                 if (turret->controller != NULL) {
                                     GAMEOBJECT *controller = turret->controller;
                                     if (controller->takeover_source != NULL && (controller->flags_1fc & 0x80) != 0) {
@@ -585,7 +600,8 @@ extern "C" {
                                         goto autonomous_apply;
                                     }
                                     if (turret->opponent != NULL) {
-                                        NUVEC *target_position, *target_velocity = NULL;
+                                        NUVEC *target_position;
+                                        NUVEC *target_velocity = NULL;
                                         NUVEC local_direction;
                                         f32 distance;
                                         switch (static_cast<i8>(turret->opponent_type)) {
@@ -745,7 +761,8 @@ extern "C" {
                                                               reinterpret_cast<NUVEC *>(&reference->m30), 0, 0);
                                         BoltNoSfxPc = 1;
                                     }
-                                    i32 scatter_pitch = 0, scatter_yaw = 0;
+                                    i32 scatter_pitch = 0;
+                                    i32 scatter_yaw = 0;
                                     if (bolt_type->field_40 != 0) {
                                         f32 spread = static_cast<f32>(static_cast<i32>(bolt_type->field_40));
                                         f32 random = NuRandFloat();
@@ -864,10 +881,14 @@ extern "C" {
                                               i32 baddy_count, APIOBJECT_PC **baddies) {
         GIZTURRET_s *turret;
         APIOBJECT_PC **candidates;
-        GAMEOBJECT *candidate, *selected;
-        i32 count, index;
-        f32 distance, selected_distance = 1000000000.0f;
-        u32 flags, candidate_flag;
+        GAMEOBJECT *candidate;
+        GAMEOBJECT *selected;
+        i32 count;
+        i32 index;
+        f32 distance;
+        f32 selected_distance = 1000000000.0f;
+        u32 flags;
+        u32 candidate_flag;
         if (system == NULL || system->count == 0) {
             return;
         }
@@ -1109,7 +1130,9 @@ extern "C" {
         f32 judder;
         GAMEANIMOBJ *object;
         TURRET_ANIM_DATA_PC *data;
-        NUVEC centre, position, direction;
+        NUVEC centre;
+        NUVEC position;
+        NUVEC direction;
         (void)hit_position;
         if ((i8)turret->state > 0) {
             if (damage == -1) {
@@ -1171,7 +1194,10 @@ extern "C" {
         GAMEANIMOBJ *animation;
         BOLTTYPE_PC *type;
         GAMEOBJECT *owner;
-        i32 count, index, damage, player;
+        i32 count;
+        i32 index;
+        i32 damage;
+        i32 player;
         if (system != NULL) {
             count = system->count;
             turret = system->turrets;
@@ -1223,9 +1249,14 @@ extern "C" {
         NUVEC *best_position;
         NUVEC *previous_position = NULL;
         f32 best_distance;
-        NUVEC direction_copy, delta;
-        f32 minimum_x, minimum_z, maximum_x, maximum_z;
-        f32 distance, dot;
+        NUVEC direction_copy;
+        NUVEC delta;
+        f32 minimum_x;
+        f32 minimum_z;
+        f32 maximum_x;
+        f32 maximum_z;
+        f32 distance;
+        f32 dot;
         u16 target_angle;
         i32 index;
         if (set != NULL && type != NULL) {
@@ -1319,11 +1350,15 @@ extern "C" {
         GIZTURRET_s *best = NULL;
         BOLTTYPE_PC *type;
         GAMEOBJECT *owner;
-        NUVEC *centre, *origin;
+        NUVEC *centre;
+        NUVEC *origin;
         NUVEC normal;
-        f32 turret_radius, distance;
+        f32 turret_radius;
+        f32 distance;
         f32 best_distance = 1000000000.0f;
-        i32 index, point, player;
+        i32 index;
+        i32 point;
+        i32 player;
         if (system != NULL) {
             turret = system->turrets;
             for (index = 0; index < system->count; ++index, ++turret) {

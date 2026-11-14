@@ -40,22 +40,33 @@ extern "C" {
 
     typedef struct BOLT_CONFIG_PC {
         char name[16];
-        f32 field_10, field_14, field_18, field_1c, field_20, field_24;
+        f32 field_10;
+        f32 field_14;
+        f32 field_18;
+        f32 field_1c;
+        f32 field_20;
+        f32 field_24;
         i16 object_ids[3];
         i16 debris_id;
         i16 moving_debris[2];
         i16 moving_debris_counts[2];
-        i16 field_38, field_3a;
-        u8 field_3c, field_3d;
+        i16 field_38;
+        i16 field_3a;
+        u8 field_3c;
+        u8 field_3d;
         u16 field_3e;
         i32 field_40;
         void *callbacks[7];
         u32 flags_60;
-        i16 shoot_sfx_id, hit_sfx_id;
+        i16 shoot_sfx_id;
+        i16 hit_sfx_id;
 
         struct {
-            NUSPECIALHANDLE object_special, glow_special, reference_object_special;
-            NUSPECIALHANDLE reference_glow_special, shadow_special;
+            NUSPECIALHANDLE object_special;
+            NUSPECIALHANDLE glow_special;
+            NUSPECIALHANDLE reference_object_special;
+            NUSPECIALHANDLE reference_glow_special;
+            NUSPECIALHANDLE shadow_special;
         } specials;
     } BOLT_CONFIG_PC;
 
@@ -1359,7 +1370,8 @@ static void Bolt_GeneratePointsPrivate(BOLT_PC *bolt, NUVEC *points) {
 }
 
 static void Bolt_OrientationPrivate(BOLT_PC *bolt) {
-    u16 x, y;
+    u16 x;
+    u16 y;
     FindAnglesXY(&bolt->direction, &x, &y);
     NuMtxSetRotationX(&bolt->effect_orientation, x + 0x4000);
     NuMtxRotateY(&bolt->effect_orientation, y);
@@ -1394,7 +1406,8 @@ extern "C" void __cdecl Bolt_Reflect(NUVEC *normal, NUVEC *incoming, NUVEC *out)
 
 extern "C" void __cdecl Bolt_AddDeflectedBolt(BOLT_PC *bolt, NUVEC *incoming, NUVEC *normal, u8 *processed) {
     BOLTTYPE_PC *type = bolt->type;
-    NUVEC reflected, position;
+    NUVEC reflected;
+    NUVEC position;
     NUMTX matrix;
     NUANGVEC angles;
     i32 type_id;
@@ -1804,7 +1817,8 @@ extern "C" {
     PART_PC *__cdecl Bolt_HitParts(BOLT_PC *bolt, NUVEC *points, NUVEC *minimum, NUVEC *maximum, f32 radius,
                                    i32 reason) {
         PART_PC *part = Part;
-        i32 i, point;
+        i32 i;
+        i32 point;
         for (i = 0; i < MAXPARTS; ++i, ++part) {
             if (!(part->active & 1)) {
                 continue;
@@ -1956,9 +1970,11 @@ static i32 Bolt_HitBlowupPrivate(BOLT_PC *bolt, NUVEC *points, NUVEC *minimum, N
 }
 
 extern "C" void __cdecl Bolt_HitGameObjectRC(NETMESSAGE_PC &message) {
-    u16 bolt_index, object_index;
+    u16 bolt_index;
+    u16 object_index;
     NUVEC points[3];
-    i32 hit, client;
+    i32 hit;
+    i32 client;
     NUVEC direction;
     message.Read16(bolt_index);
     message.Read16(object_index);
@@ -2318,7 +2334,8 @@ extern "C" void __cdecl Bolt_Init(void *storage, NETMESSAGE_PC &message) {
     i16 owner_index;
     NUVEC position;
     NUMTX orientation;
-    i32 type_id, hit_flags;
+    i32 type_id;
+    i32 hit_flags;
     NUVEC old_points[3];
     message.Read16(owner_index);
     message.Read(&position, 4, 3);
@@ -2487,7 +2504,8 @@ extern "C" void __cdecl Bolt_Init(void *storage, NETMESSAGE_PC &message) {
     } else {
         back_distance = 0.01f;
     }
-    NUVEC back, start;
+    NUVEC back;
+    NUVEC start;
     NuVecScale(&back, &bolt->direction, back_distance);
     NuVecSub(&start, &bolt->position, &back);
     NuVecAdd(&movement, &movement, &back);
@@ -2782,14 +2800,20 @@ extern "C" void __cdecl Bolts_Update(WORLDINFO *world) {
 
 extern "C" {
     void __cdecl Bolt_Shoot(GAMEOBJECT *object, i32 type_id, i32 fire_flags) {
-        i32 bolts[5], bolt_count = 0;
+        i32 bolts[5];
+        i32 bolt_count = 0;
         i32 used_locator = 0;
         BOLTTYPE_PC *type = BoltType_FindByID(type_id, WORLD);
         i32 sound_count = 0;
         u32 flags = type->flags_60;
         f32 speed = type->field_10;
         f32 duration = type->field_14;
-        NUVEC aimed_position, adjusted_position, delta, target_velocity, origin, direction;
+        NUVEC aimed_position;
+        NUVEC adjusted_position;
+        NUVEC delta;
+        NUVEC target_velocity;
+        NUVEC origin;
+        NUVEC direction;
         NUVEC *target_position;
         NUVEC *intercept_position;
         NUVEC *velocity;

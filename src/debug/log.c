@@ -24,7 +24,8 @@ static int log_capture = 0;
 static int log_capture_eligible = 0;
 
 static void save_original_streams(void) {
-    int out = _fileno(stdout), err = _fileno(stderr);
+    int out = _fileno(stdout);
+    int err = _fileno(stderr);
     HANDLE out_handle = out < 0 ? INVALID_HANDLE_VALUE : (HANDLE)_get_osfhandle(out);
     HANDLE err_handle = err < 0 ? INVALID_HANDLE_VALUE : (HANDLE)_get_osfhandle(err);
     DWORD flags;

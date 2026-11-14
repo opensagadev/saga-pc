@@ -57,8 +57,12 @@ extern "C" {
     }
 
     static void MiniTrooperRotateYawPc(NUMTX *matrix, i32 angle) {
-        f32 cosine = NU_COS_LUT(angle), sine = NU_SIN_LUT(angle);
-        f32 x0 = matrix->m00, x1 = matrix->m10, x2 = matrix->m20, x3 = matrix->m30;
+        f32 cosine = NU_COS_LUT(angle);
+        f32 sine = NU_SIN_LUT(angle);
+        f32 x0 = matrix->m00;
+        f32 x1 = matrix->m10;
+        f32 x2 = matrix->m20;
+        f32 x3 = matrix->m30;
         matrix->m00 = x0 * cosine + sine * matrix->m02;
         matrix->m02 = cosine * matrix->m02 - x0 * sine;
         matrix->m10 = x1 * cosine + sine * matrix->m12;
@@ -147,7 +151,8 @@ extern "C" {
 
     static GAMEOBJECT *MiniTrooperNearestPlayerPc(minitrooperteam_s *team) {
         if (player != NULL) {
-            NUVEC second, first;
+            NUVEC second;
+            NUVEC first;
             first.x = player->collision_position.x - team->position.x;
             first.z = player->collision_position.z - team->position.z;
             if (player2 != NULL) {

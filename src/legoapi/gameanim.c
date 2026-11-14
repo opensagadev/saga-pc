@@ -945,7 +945,9 @@ extern struct eduimenu_s *edanim_switch_menu;
 i32 edanimFileSave(char *path) {
     NUSPECIALHANDLE special;
     char name[20];
-    i32 count, i, index;
+    i32 count;
+    i32 i;
+    i32 index;
     count = 0;
     for (i = 0; i < 64; ++i) {
         if (AnimParams[i].instance_id != -1) {
@@ -1580,9 +1582,17 @@ void GameAnimSet_RemoveSpecial(GAMEANIMSET *set, nuhspecial_s *special) {
 }
 
 typedef struct gameanim_reflection_matrix_pc_s {
-    f32 m00, m01, m02, m03;
-    f32 m10, m11, m12, m13;
-    f32 m20, m21, m22;
+    f32 m00;
+    f32 m01;
+    f32 m02;
+    f32 m03;
+    f32 m10;
+    f32 m11;
+    f32 m12;
+    f32 m13;
+    f32 m20;
+    f32 m21;
+    f32 m22;
     f32 axis_coordinates[5];
 } GAMEANIM_REFLECTION_MATRIX_PC;
 

@@ -298,9 +298,12 @@ void __cdecl NuBackbufferCopy(i32 texture_id) {
 }
 
 typedef struct locator_prim_vertex_pc_s {
-    f32 x, y, z;
+    f32 x;
+    f32 y;
+    f32 z;
     u32 colour;
-    f32 u, v;
+    f32 u;
+    f32 v;
 } LOCATOR_PRIM_VERTEX_PC;
 
 STATIC_ASSERT(sizeof(LOCATOR_PRIM_VERTEX_PC) == 0x18);
@@ -557,7 +560,11 @@ i32 __cdecl NuRndrLine3d(NURND_VERTEX3D_PC *vertices, NUMTL *material, NUMTX *ma
     NuPrim3DBegin(14, 7, material, matrix);
     {
         LOCATOR_PRIM_VERTEX_PC *output;
-        f32 u, v, x, y, z;
+        f32 u;
+        f32 v;
+        f32 x;
+        f32 y;
+        f32 z;
         NuRndrPrimSetColourPrivate((i32)vertices[0].colour);
         u = vertices[0].u;
         v = vertices[0].v;
@@ -575,7 +582,11 @@ i32 __cdecl NuRndrLine3d(NURND_VERTEX3D_PC *vertices, NUMTL *material, NUMTX *ma
     }
     {
         LOCATOR_PRIM_VERTEX_PC *output;
-        f32 u, v, x, y, z;
+        f32 u;
+        f32 v;
+        f32 x;
+        f32 y;
+        f32 z;
         NuRndrPrimSetColourPrivate((i32)vertices[1].colour);
         u = vertices[1].u;
         v = vertices[1].v;
@@ -603,7 +614,11 @@ i32 __cdecl NuRndrStrip3d(NURND_VERTEX3D_PC *vertices, NUMTL *material, NUMTX *m
     NuPrim3DBegin(13, 7, material, matrix);
     for (i = 0; i < count; ++i) {
         LOCATOR_PRIM_VERTEX_PC *output;
-        f32 u, v, x, y, z;
+        f32 u;
+        f32 v;
+        f32 x;
+        f32 y;
+        f32 z;
         NuRndrPrimSetColourPrivate((i32)vertices[i].colour);
         u = vertices[i].u;
         v = vertices[i].v;
@@ -635,7 +650,11 @@ i32 __cdecl NuRndrTri3dClip(NURND_VERTEX3D_PC *vertices, i32 count, NUMTX *matri
     NuPrim3DBegin(12, 7, material, matrix);
     for (i = 0; i < count; ++i) {
         LOCATOR_PRIM_VERTEX_PC *output;
-        f32 u, v, x, y, z;
+        f32 u;
+        f32 v;
+        f32 x;
+        f32 y;
+        f32 z;
         NuRndrPrimSetColourPrivate((i32)vertices[i].colour);
         u = vertices[i].u;
         v = vertices[i].v;
@@ -825,7 +844,8 @@ i32 __cdecl NuRndrLineStrip2d(NURND_VERTEX2D_PC *vertices, NUMTL *material, i32 
     NuPrim2DBegin(14, 7, material);
     for (i = 0; i < count; ++i) {
         LOCATOR_PRIM_VERTEX_PC *output;
-        f32 x, y;
+        f32 x;
+        f32 y;
         NuRndrPrimSetColourPrivate(-1);
         output = (LOCATOR_PRIM_VERTEX_PC *)NuPrimStreamBufferPointer->void_ptr;
         output->u = 0.0f;
@@ -845,7 +865,8 @@ i32 __cdecl NuRndrLineStrip2d(NURND_VERTEX2D_PC *vertices, NUMTL *material, i32 
 
 void __cdecl NuRndrSphere(NUVEC *centre, f32 radius, i32 colour, f32 vertical_scale) {
     f64 radius_squared = (f64)radius * radius;
-    i32 band, angle;
+    i32 band;
+    i32 angle;
     for (band = 0; band < 8; ++band) {
         f32 lower_radius = radius * PORTAL_DEBUG_SIN((band < 4 ? band : 8 - band) * 4096);
         f32 upper_radius = radius * PORTAL_DEBUG_SIN((band < 3 ? band + 1 : 7 - band) * 4096);
@@ -874,9 +895,13 @@ void __cdecl NuRndrSphere(NUVEC *centre, f32 radius, i32 colour, f32 vertical_sc
 
 void __cdecl NuRndrSphereEx(NUVEC *centre, f32 radius, i32 colour, f32 vertical_scale, i32 angle_step) {
     f64 radius_squared = (f64)radius * radius;
-    i32 band, angle;
+    i32 band;
+    i32 angle;
     for (band = 0; band < 8; ++band) {
-        f32 lower_radius, upper_radius, lower_y, upper_y;
+        f32 lower_radius;
+        f32 upper_radius;
+        f32 lower_y;
+        f32 upper_y;
         if (band < 4) {
             lower_radius = radius * PORTAL_DEBUG_SIN(band * 4096);
         } else {
@@ -1002,10 +1027,13 @@ void DrawAlphaImage(i32 rows, i32 cols, NUMTL *material, i32 use_pixel_offsets,
     RENDER_POST_VIEWPORT_PREFIX_PC saved_prefix = RenderPostViewportPrefixPc;
     PC_SPECIAL_PROJECTION_ADJUST saved_adjust = PCSpecialProjectionAdjust;
     __declspec(align(16)) NUCAMERA camera;
-    static f32 pixelOffsetX = 0, pixelOffsetY = 0;
+    static f32 pixelOffsetX = 0;
+    static f32 pixelOffsetY = 0;
     static i32 first = 1;
-    static f32 camFov = 0, adjacent = 0;
-    static i32 row = 0, col = 0;
+    static f32 camFov = 0;
+    static f32 adjacent = 0;
+    static i32 row = 0;
+    static i32 col = 0;
     RenderPostViewportResetPc();
 
     camera = global_camera;

@@ -33,11 +33,15 @@ i32 __cdecl InitSpecialSfx(void *world_ptr) {
 
 i32 __cdecl SpecialSfxLoad(char *path, void *world_ptr) {
     WORLDINFO *world = (WORLDINFO *)world_ptr;
-    i32 version, count, i, j;
+    i32 version;
+    i32 count;
+    i32 i;
+    i32 j;
     char name[64];
     i32 length;
     SPECIAL_RESOURCE_ENTRY_PC *entry;
-    SPECIAL_RESOURCE_EVENT_PC *event, *previous;
+    SPECIAL_RESOURCE_EVENT_PC *event;
+    SPECIAL_RESOURCE_EVENT_PC *previous;
     if (!world) {
         return 0;
     }
@@ -126,12 +130,16 @@ i32 __cdecl SpecialSfxAdd(i32 special_index) {
 
 void __cdecl UpdateSpecialSfx(WORLDINFO *world_info) {
     WORLDINFO *world = world_info;
-    i32 i, j, direction, play;
+    i32 i;
+    i32 j;
+    i32 direction;
+    i32 play;
     SPECIAL_RESOURCE_ENTRY_PC *entry;
     SPECIAL_RESOURCE_EVENT_PC *event;
     NUINSTANIM *animation;
     NUVEC *position;
-    f32 end_frame, frame;
+    f32 end_frame;
+    f32 frame;
     u8 flags;
     for (i = 0; i < world->special_sfx_count; ++i) {
         entry = &world->special_sfx[i];

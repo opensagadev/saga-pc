@@ -146,7 +146,8 @@ void __cdecl GameCam_UpdateLookRot(GAMECAMERA *camera) {
             if (Player[i] != NULL && (((GAMEOBJECT *)Player[i])->flags_1fc & 0x80) != 0 &&
                 ((GAMEOBJECT *)Player[i])->pad->bound_pad != NULL) {
                 i32 look = 1;
-                f32 x, y;
+                f32 x;
+                f32 y;
                 if (AlternateGameCallbackPc != NULL) {
                     look = AlternateGameCallbackPc((GAMEOBJECT *)Player[i]);
                 }

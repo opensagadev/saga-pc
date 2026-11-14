@@ -60,14 +60,16 @@ extern "C" {
     void __cdecl AddToCompletionPoints(u32);
 }
 extern "C" {
-    extern u16 PodRaceBDieAngle, PodRaceCDieAngle;
+    extern u16 PodRaceBDieAngle;
+    extern u16 PodRaceCDieAngle;
     extern void *game_cutscenes_podrace_avalanche;
     extern NUVEC PodAvalanchePeakPos;
     extern f32 PodAvalancheShakeFrames;
     extern f32 PodAvalancheShakeRange;
     extern i32 __cdecl ChrisExtraBoltCollision(BOLT *bolt, NUVEC *points);
     extern i16 CharacterFixupIdPc007f18c4;
-    extern AREA_DATA_PC *MOSEISLEY_ADATA, *TATOOINE_ADATA;
+    extern AREA_DATA_PC *MOSEISLEY_ADATA;
+    extern AREA_DATA_PC *TATOOINE_ADATA;
 }
 extern "C" TIMER ChallengeTimer;
 extern "C" {
@@ -690,7 +692,8 @@ static void __cdecl GameMsg_EndDelay_Game(GAME_MESSAGE_PC *message) {
 }
 
 static i32 __cdecl Player_ToggleSubCharacter_Game(GAMEOBJECT *object, i32 left, i32 sound) {
-    i32 previous, selected;
+    i32 previous;
+    i32 selected;
     if (object->suit != NULL) {
         selected = Suit_GetIndex(object->suit);
         previous = selected;

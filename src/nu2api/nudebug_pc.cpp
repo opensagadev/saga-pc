@@ -150,7 +150,10 @@ void PC_NATIVE_DEBUG_STATE_PC::InitializeHeader() {
 
 // Retail builds each position in one shared 16-byte temporary (UpdateGeometry's position) and copies it in.
 struct PC_NATIVE_DEBUG_POSITION_PC {
-    f32 x, y, z, w;
+    f32 x;
+    f32 y;
+    f32 z;
+    f32 w;
 };
 
 #define DEBUG_POINT_PC(index, px, py)                                                                                  \

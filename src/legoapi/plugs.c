@@ -3,7 +3,9 @@
 typedef struct carry_plug_pc_s {
     char name[16];
     NUVEC position;
-    u16 rotation_x, rotation_y, rotation_z;
+    u16 rotation_x;
+    u16 rotation_y;
+    u16 rotation_z;
     u8 enabled;
     u8 active : 1;
     u8 visible : 1;
@@ -28,8 +30,10 @@ STATIC_ASSERT(offsetof(CARRY_PLUG_SYS_PC, count) == 4);
 
 CARRY_PLUG_PC *__cdecl Plug_FindNearest(CARRY_PLUG_SYS_PC *system, NUVEC *position, f32 *distance_squared,
                                         i32 only_unplugged) {
-    CARRY_PLUG_PC *nearest = NULL, *plug;
-    f32 best = 1000000000.0f, distance;
+    CARRY_PLUG_PC *nearest = NULL;
+    CARRY_PLUG_PC *plug;
+    f32 best = 1000000000.0f;
+    f32 distance;
     i32 i;
     if (system != NULL) {
         plug = system->plugs;
@@ -99,7 +103,8 @@ static void *__cdecl Plugs_ReserveBufferSpace(void *world_ptr) {
 static i32 __cdecl Plugs_Load(void *world_ptr, void *data) {
     PLUG_WORLD_CALLBACKS_PC *world = (PLUG_WORLD_CALLBACKS_PC *)world_ptr;
     CARRY_PLUG_PC *plug;
-    i32 i, version;
+    i32 i;
+    i32 version;
     (void)data;
     if (world == NULL || world->plug_system == NULL || world->plug_system->count != 0) {
         return 0;

@@ -8,9 +8,13 @@
 
 extern "C" {
     void __cdecl GameDrawMenuEntry(MENU *, char *);
-    extern f32 ExtrasFadeStartPc, ExtrasFadeEndPc;
-    extern i16 TextIdPc88074c, TextIdPc880708, TextIdPc880764;
-    extern const char ExtrasNameFormatPc[], ExtrasLockedNumberFormatPc[];
+    extern f32 ExtrasFadeStartPc;
+    extern f32 ExtrasFadeEndPc;
+    extern i16 TextIdPc88074c;
+    extern i16 TextIdPc880708;
+    extern i16 TextIdPc880764;
+    extern const char ExtrasNameFormatPc[];
+    extern const char ExtrasLockedNumberFormatPc[];
 }
 
 struct EXTRAS_AREA_SAVE_READER_PC {
@@ -38,16 +42,34 @@ extern "C" {
     i32 __cdecl TriggerAutoSave(void);
 }
 extern "C" {
-    extern f32 MenuTitlesPromptYPc, MenuTitlesWidePromptYPc;
+    extern f32 MenuTitlesPromptYPc;
+    extern f32 MenuTitlesWidePromptYPc;
     void __cdecl Hub_UpdateKit(void);
     extern i16 TextIdPc880fc4;
-    extern i16 TextIdPc880838, TextIdPc880850, TextIdPc880bc4, TextIdPc88090c;
-    extern i16 TextIdPc88089c, TextIdPc8808ec, TextIdPc8806f8, TextIdPc880860;
+    extern i16 TextIdPc880838;
+    extern i16 TextIdPc880850;
+    extern i16 TextIdPc880bc4;
+    extern i16 TextIdPc88090c;
+    extern i16 TextIdPc88089c;
+    extern i16 TextIdPc8808ec;
+    extern i16 TextIdPc8806f8;
+    extern i16 TextIdPc880860;
 }
 extern "C" {
-    extern i16 TextIdPc880840, TextIdPc880864, TextIdPc880874;
-    extern i16 TextIdPc8806fc, TextIdPc880910, TextIdPc8808f0, TextIdPc8807d0, TextIdPc8807d4;
-    extern i16 TextIdPc880914, TextIdPc88084c, TextIdPc880794, TextIdPc880700, TextIdPc880754, TextIdPc880890;
+    extern i16 TextIdPc880840;
+    extern i16 TextIdPc880864;
+    extern i16 TextIdPc880874;
+    extern i16 TextIdPc8806fc;
+    extern i16 TextIdPc880910;
+    extern i16 TextIdPc8808f0;
+    extern i16 TextIdPc8807d0;
+    extern i16 TextIdPc8807d4;
+    extern i16 TextIdPc880914;
+    extern i16 TextIdPc88084c;
+    extern i16 TextIdPc880794;
+    extern i16 TextIdPc880700;
+    extern i16 TextIdPc880754;
+    extern i16 TextIdPc880890;
 }
 void __cdecl legoSetMusicVolume(f32);
 extern "C" {
@@ -59,7 +81,8 @@ extern "C" {
 }
 extern "C" f32 MenuNewGameYPc;
 extern "C" {
-    extern i32 MenuOptionsPlayerFlagPc, pause_i_pad;
+    extern i32 MenuOptionsPlayerFlagPc;
+    extern i32 pause_i_pad;
 }
 
 typedef struct OPTIONS_MENU_READER_PC {
@@ -67,9 +90,13 @@ typedef struct OPTIONS_MENU_READER_PC {
 } OPTIONS_MENU_READER_PC;
 
 extern "C" {
-    extern i16 TextIdPc88081c, TextIdPc880820, TextIdPc8809ec, TextIdPc880b0c;
+    extern i16 TextIdPc88081c;
+    extern i16 TextIdPc880820;
+    extern i16 TextIdPc8809ec;
+    extern i16 TextIdPc880b0c;
     extern i32 saveload_slotcode[6];
-    extern f32 MenuSaveSlotsWidthPc, MenuSaveSlotsStepYPc;
+    extern f32 MenuSaveSlotsWidthPc;
+    extern f32 MenuSaveSlotsStepYPc;
 }
 
 typedef struct GAME_STATE_MENU_READER_PC {
@@ -79,12 +106,16 @@ typedef struct GAME_STATE_MENU_READER_PC {
 
 typedef struct MENU_INPUT_PAD_PC {
     FRAME_PAD_PC *bound_pad;
-    u32 held, pressed, alternate_held, alternate_pressed;
+    u32 held;
+    u32 pressed;
+    u32 alternate_held;
+    u32 alternate_pressed;
     u8 unknown14[0x4c];
 } MENU_INPUT_PAD_PC;
 
 extern "C" {
-    extern i8 DropInPendingPlayerPc, DropInConfigurationPlayerPc;
+    extern i8 DropInPendingPlayerPc;
+    extern i8 DropInConfigurationPlayerPc;
     void __cdecl PcControlInitializePc(i32, i32, i32, u8);
     i32 __cdecl PcControlUpdatePc(FRAME_PAD_PC *, FRAME_PAD_PC *, f32);
     void __cdecl PcControlDrawPc(void);
@@ -162,7 +193,8 @@ extern "C" void __cdecl DrawGameState(f32 x, f32 y, i32 highlight, i32 slot) {
     f32 scale = (f32)(MenuTextScalePc * 0.75);
     char progress[32];
     char game_name[256];
-    u8 red, green;
+    u8 red;
+    u8 green;
     if (slot == -1) {
         NuStrCpy(game_name, TTab[TextIdPc88081c]);
     } else {
@@ -339,7 +371,8 @@ extern "C" void __cdecl MenuUpdateExtras(MENU *menu) {
 }
 
 extern "C" void __cdecl MenuDrawExtras(MENU *menu) {
-    char text[256], number[64];
+    char text[256];
+    char number[64];
     EXTRAS_SAVE_READER_PC *save = (EXTRAS_SAVE_READER_PC *)&Game;
     menu->draw_y = -menu->selected_row * MENUDY * menu->item_scale;
     for (i32 i = 0; i < 45; ++i) {
@@ -608,8 +641,15 @@ extern "C" {
     void __cdecl UpdateGameMenu(GAMEPAD_PC *pad, i32 check_buttons) {
         MENU *menu;
         i32 menu_id = GetMenuID();
-        i32 menu_active, active_players, device, both_pads;
-        i32 first_active, second_active, previous_item, previous_column, result;
+        i32 menu_active;
+        i32 active_players;
+        i32 device;
+        i32 both_pads;
+        i32 first_active;
+        i32 second_active;
+        i32 previous_item;
+        i32 previous_column;
+        i32 result;
         i32 previous_menu;
         i32 widescreen;
         if (check_buttons != 0 && WORLD != NULL) {
@@ -709,7 +749,10 @@ extern "C" {
             Game.options_save.widescreen = widescreen;
         }
         if (!(((FADEINFO_PC *)&FadeSys)->fade > 0.0f) && NewMode == 0 && NewLData == NULL && editor_active == 0) {
-            u32 held, pressed, alternate_held, alternate_pressed;
+            u32 held;
+            u32 pressed;
+            u32 alternate_held;
+            u32 alternate_pressed;
             if (menu_id == 1 && GameTimer.time_elapsed < 4.0f) {
                 held = 0;
                 pressed = 0;
@@ -760,7 +803,8 @@ extern "C" {
 }
 
 extern "C" void __cdecl MenuUpdateTitles(MENU *menu) {
-    i32 kind, value;
+    i32 kind;
+    i32 value;
     if (UpdateTitleSequence(menu)) {
         return;
     }
@@ -995,7 +1039,8 @@ extern "C" void __cdecl MenuUpdatePauseExit(MENU *menu) {
 extern "C" void __cdecl MenuDrawPauseExit(MENU *menu) {
     LEVELDATA_PC *save_level = CanSaveAndExit(WORLD);
     f32 spacing = 1.5f;
-    char *warning, *title;
+    char *warning;
+    char *title;
     if (save_level) {
         spacing = 2.0f;
         title = TTab[TextIdPc8806fc];
@@ -1227,7 +1272,8 @@ extern "C" {
     }
 
     void __cdecl MenuDrawBonusComplete(MENU *menu) {
-        i32 red, green;
+        i32 red;
+        i32 green;
         (void)menu;
         if (MenuStopDraw != 0) {
             return;

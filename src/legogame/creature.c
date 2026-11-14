@@ -120,8 +120,11 @@ STATIC_ASSERT(offsetof(GAMEPAD_RESET_PC, operator_data) == 0x54);
 STATIC_ASSERT(offsetof(GAMEPAD_RESET_PC, runtime_flags) == 0x5a);
 
 typedef struct TERRAIN_PLAYER_IMPACT_PC {
-    NUVEC position, normal;
-    u8 material[2], flags, normal_flags;
+    NUVEC position;
+    NUVEC normal;
+    u8 material[2];
+    u8 flags;
+    u8 normal_flags;
 } TERRAIN_PLAYER_IMPACT_PC;
 
 STATIC_ASSERT(sizeof(TERRAIN_PLAYER_IMPACT_PC) == 0x1c);
@@ -364,7 +367,8 @@ typedef struct draw_objects_flags_pc_s {
     u32 locators_updated : 1;
 } DRAW_OBJECTS_FLAGS_PC;
 
-extern f32 DrawGameObjectsFarClipPc, DrawGameObjectsVehicleFarClipPc;
+extern f32 DrawGameObjectsFarClipPc;
+extern f32 DrawGameObjectsVehicleFarClipPc;
 
 typedef struct new_player_flags_pc_s {
     u8 unknown_000[0xef0];
@@ -377,9 +381,12 @@ typedef struct new_player_flags_pc_s {
 typedef struct player_init_progress_pc_s {
     u32 coins;
     i16 previous_state;
-    u8 active, stored_flag;
+    u8 active;
+    u8 stored_flag;
     i8 hitpoints;
-    u8 unknown_09, helmet, unknown_0b;
+    u8 unknown_09;
+    u8 helmet;
+    u8 unknown_0b;
     f32 powerup_time;
 } PLAYER_INIT_PROGRESS_PC;
 
@@ -1032,7 +1039,8 @@ i32 __cdecl GetDefaultIdle(GAMEOBJECT *object) {
     i32 animation;
     PLAYER_BATARANG_IDLE_PC *batarang;
     void **actions;
-    void *idle, *standard;
+    void *idle;
+    void *standard;
     if (((PLAYER_IDLE_CHARACTER_PC *)object->character_data->game_character)->use_standard_idle == 0 &&
         (object->character_data->model_flags & 0x80) != 0) {
         animation = 0x76;
@@ -1060,7 +1068,8 @@ i32 __cdecl GetDefaultIdle(GAMEOBJECT *object) {
 
 void __cdecl ResetCharacterIdle(GAMEOBJECT *object, i32 mode, i32 animation) {
     CHARACTERANIM_CONFIG_PC *info;
-    i32 minimum, maximum;
+    i32 minimum;
+    i32 maximum;
     if (animation == 0x97) {
         return;
     }
@@ -1099,7 +1108,10 @@ static void NewCharacterIdle(GAMEOBJECT *object, i32 default_idle) {
                         : 25;
     i32 candidates[233];
     i32 count = 0;
-    i32 animation, repetitions, minimum, maximum;
+    i32 animation;
+    i32 repetitions;
+    i32 minimum;
+    i32 maximum;
     CHARACTERANIM_CONFIG_PC *info;
     for (animation = 0; animation < 233; ++animation) {
         if (object->character_model->action_animations[animation] == NULL) {
@@ -1148,7 +1160,8 @@ static void NewCharacterIdle(GAMEOBJECT *object, i32 default_idle) {
 void __cdecl UpdateCharacterIdle(GAMEOBJECT *object) {
     CHARACTER_IDLE_STATE_PC *state = (CHARACTER_IDLE_STATE_PC *)object;
     CHARACTERDATA_PC *character;
-    i32 alternate, default_idle;
+    i32 alternate;
+    i32 default_idle;
     i16 requested;
     if (object->character_model == NULL) {
         return;
@@ -1204,7 +1217,8 @@ void __cdecl UpdateCharacterIdle(GAMEOBJECT *object) {
 static void GunshipKeepOnScreenPc(GAMEOBJECT *object) {
     f32 push_speed = (f32)((f64)object->character_data->game_character->run_speed * 5.0);
     f32 count = 0.0f;
-    NUVEC normal, response;
+    NUVEC normal;
+    NUVEC response;
     if (OnOrInsidePlane(&object->collision_position, &PlayPlanePc[3].point, &PlayPlanePc[3].normal, NULL, 0.0f, NULL)) {
         NuVecRotateY(&normal, &GunshipANorm, 0x6000);
         Surface_Deflect(&normal, &object->velocity, &response, 0);
@@ -1242,7 +1256,10 @@ static void GunshipKeepOnScreenPc(GAMEOBJECT *object) {
 
 void __cdecl KeepOnScreen(GAMEOBJECT *object) {
     f32 previous_keep_time = object->field_da8;
-    i32 controlled = 0, index, two_players, constrained;
+    i32 controlled = 0;
+    i32 index;
+    i32 two_players;
+    i32 constrained;
     PLAYERCHARACTERCONFIG_PC *character;
     f32 push_distance;
     NUVEC movement;
@@ -1462,10 +1479,18 @@ void __cdecl MovePlayer(GAMEOBJECT *object) {
     GAMEPAD_PC *pad = object->pad;
     i32 analog_x;
     i32 analog_y;
-    i32 menu_id, index, waggle;
+    i32 menu_id;
+    i32 index;
+    i32 waggle;
     u32 buttons;
-    f32 x, z, magnitude, inverse, run_speed, walk_speed;
-    NUVEC input, axis;
+    f32 x;
+    f32 z;
+    f32 magnitude;
+    f32 inverse;
+    f32 run_speed;
+    f32 walk_speed;
+    NUVEC input;
+    NUVEC axis;
     NUANG angle;
 
     object->flags_e20 &= ~0x200000;
@@ -2128,7 +2153,8 @@ void __cdecl TerrainPlayer(GAMEOBJECT *object) {
                         current = NULL;
                         TerrainPlatGetMtx(api->supporting_platform_id, &previous, &current);
                         if (previous != NULL && current != NULL) {
-                            NUVEC previous_forward, current_forward;
+                            NUVEC previous_forward;
+                            NUVEC current_forward;
                             NUANG previous_heading;
                             NUANG current_heading;
                             NUANG rotation;
@@ -2562,7 +2588,9 @@ void __cdecl AnimatePlayer(GAMEOBJECT *object) {
     GAMEPAD_PC *pad = object->pad;
     CHARACTER_MODEL_LAYERS_PC *model = object->character_model;
     i16 override_from;
-    f32 direction, movement_speed, multiplier;
+    f32 direction;
+    f32 movement_speed;
+    f32 multiplier;
     f32 *time;
     object->anim_packet.previous_animation = object->anim_packet.animation_index;
     object->mini_previous_animation = object->mini_current_animation;
@@ -2723,7 +2751,8 @@ static void ParaphernaliaShieldPc(GAMEOBJECT *object, i32 reflection) {
     PLAYERCHARACTERCONFIG_PC *config = object->character_data->game_character;
     i32 locator = config->shield_locator;
     NUVEC scaling;
-    NUMTX matrix, reflected;
+    NUMTX matrix;
+    NUMTX reflected;
     if (object->shield_hitpoints == 0 && config->shield_hitpoints > 0 && object->timer_d34 > 0.0f) {
         if ((GameTimer.update_count & 3u) >= 2) {
             return;
@@ -2752,7 +2781,8 @@ static void ParaphernaliaShieldPc(GAMEOBJECT *object, i32 reflection) {
 }
 
 static void ParaphernaliaThrustPc(GAMEOBJECT *object, i32 reflection) {
-    i32 locator, effect_index;
+    i32 locator;
+    i32 effect_index;
     if (WORLD->level_objects[0x77].active == 0 || WORLD->level_objects[0x78].active == 0) {
         return;
     }
@@ -2760,8 +2790,10 @@ static void ParaphernaliaThrustPc(GAMEOBJECT *object, i32 reflection) {
     for (locator = 0; locator < 16; ++locator) {
         f32 ratio;
         NUVEC scaling;
-        NUMTX matrix, reflected;
-        i32 first, second;
+        NUMTX matrix;
+        NUMTX reflected;
+        i32 first;
+        i32 second;
         if ((object->character_data->game_character->thrust_locators & (1u << locator)) == 0 ||
             object->character_model->points_of_interest[locator] == NULL) {
             continue;
@@ -2798,9 +2830,12 @@ static void ParaphernaliaThrustPc(GAMEOBJECT *object, i32 reflection) {
 void __cdecl ParaphernaliaCommunicatePc(GAMEOBJECT *object, i32 reflection) {
     PLAYERCHARACTERCONFIG_PC *config = object->character_data->game_character;
     i32 locator = config->thingy_locator;
-    i32 model, reflection_model;
-    NUMTX matrix, reflected;
-    NUVEC scaling, blend_scaling;
+    i32 model;
+    i32 reflection_model;
+    NUMTX matrix;
+    NUMTX reflected;
+    NUVEC scaling;
+    NUVEC blend_scaling;
     if (locator == -1 || object->character_model->points_of_interest[locator] == NULL) {
         return;
     }
@@ -3648,9 +3683,17 @@ i32 __cdecl NewPlayerCharacter(GAMEOBJECT *object, i32 id, i32 old_id, i32 unuse
     NUVEC velocity;
     AIPATHINFO_PC path;
     AILOCATOR_PC *saved_locator;
-    u32 saved_f08, saved_frame_state, saved_ai_flag, lean_enabled;
-    i32 saved_flag, lean, context, health, hitpoints;
-    u8 route, next_route;
+    u32 saved_f08;
+    u32 saved_frame_state;
+    u32 saved_ai_flag;
+    u32 lean_enabled;
+    i32 saved_flag;
+    i32 lean;
+    i32 context;
+    i32 health;
+    i32 hitpoints;
+    u8 route;
+    u8 next_route;
     i32 on_surface;
     if (id == old_id || id < 0 || id >= CHARCOUNT || apicharsys->playermodelids[id] == -1) {
         return 0;
@@ -4099,9 +4142,13 @@ i32 __cdecl DrawGameObjectsProcess(void) {
     GAMEOBJECT *object = Obj;
     i32 index;
     for (index = 0; index < HIGHGAMEOBJECT; ++index, ++object) {
-        NUVEC position, scale;
+        NUVEC position;
+        NUVEC scale;
         f32 drop_scale;
-        NUMTX matrix, orientation, reflected, shadow;
+        NUMTX matrix;
+        NUMTX orientation;
+        NUMTX reflected;
+        NUMTX shadow;
         i32 angle;
         object->flags_1f8 |= 0x800;
         if ((object->flags_1fc_word & 1) == 0 || (object->flags_1fc_word & 0x1000) == 0) {
@@ -4288,7 +4335,10 @@ void DrawWeapons(GAMEOBJECT *object, i32 reflection, f32 weapon_scale) {
     i32 passes;
     i32 model;
     i32 reflected_model;
-    i32 red, green, blue, purple;
+    i32 red;
+    i32 green;
+    i32 blue;
+    i32 purple;
     u16 rotation = 0;
     i32 models[4] = {-1, -1, -1, -1};
     i32 hilt = -1;
@@ -4464,7 +4514,8 @@ static void __cdecl DrawExtraCharacterLayerBits(GAMEOBJECT *object, i32 characte
                                                 ANIMPACKET_PC *animation, i32 locator, NUMTX *override_matrix) {
     i16 model_index;
     CHARACTER_MODEL_LAYERS_PC *model;
-    NUMTX matrix, reflected;
+    NUMTX matrix;
+    NUMTX reflected;
     NUMTX *reflection;
     if (override_matrix == NULL && (locator == -1 || object->character_model->points_of_interest[locator] == NULL)) {
         return;
@@ -4538,7 +4589,10 @@ void __cdecl DrawCharacterAttachments(GAMEOBJECT *object, NUMTX *joint_matrices)
 
 void __cdecl DrawParaphernaliaPc(GAMEOBJECT *object) {
     i32 i;
-    NUMTX matrix, reflected, special_reflected, attachments[16];
+    NUMTX matrix;
+    NUMTX reflected;
+    NUMTX special_reflected;
+    NUMTX attachments[16];
     PARAPHERNALIA_EXTRA_PC *extra;
     GAMEOBJECT *carried;
     PARAPHERNALIA_EXTRA_PC *carried_extra;
@@ -5064,7 +5118,9 @@ void __cdecl Players_Init(void) {
 }
 
 void __cdecl InitAICreatures(AISYS_PC *system) {
-    i32 creature_index, member, type;
+    i32 creature_index;
+    i32 member;
+    i32 type;
     AICREATURE_PC *creature;
     GAMEOBJECT *object;
     AIGROUP_PC *group;

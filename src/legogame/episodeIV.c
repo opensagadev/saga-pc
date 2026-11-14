@@ -36,7 +36,8 @@ void DeathStarEscapeC_Reset(WORLDINFO *unused0) {
 }
 
 typedef struct TORPEDO_MUSIC_FLAGS_VIEW_PC {
-    u8 count, flags;
+    u8 count;
+    u8 flags;
 } TORPEDO_MUSIC_FLAGS_VIEW_PC;
 
 STATIC_ASSERT(offsetof(TORPEDO_MUSIC_FLAGS_VIEW_PC, count) == 0);
@@ -445,7 +446,9 @@ void __cdecl DeathStarBattleDDraw(WORLDINFO *world) {
 typedef struct ASTEROID_PC {
     NUSPECIALHANDLE special;
     GIZMOBLOWUP_PC *blowup;
-    i16 rotation_speed_x, rotation_speed_y, rotation_speed_z;
+    i16 rotation_speed_x;
+    i16 rotation_speed_y;
+    i16 rotation_speed_z;
     u8 activated;
 } ASTEROID_PC;
 
@@ -457,15 +460,21 @@ typedef struct FINAL_ASTEROID_PC {
     NUSPECIALHANDLE special;
     GIZMOBLOWUP_PC *blowups[8];
     i16 blowup_count;
-    i16 rotation_speed_x, rotation_speed_y, rotation_speed_z;
-    i16 rotation_x, rotation_y, rotation_z;
+    i16 rotation_speed_x;
+    i16 rotation_speed_y;
+    i16 rotation_speed_z;
+    i16 rotation_x;
+    i16 rotation_y;
+    i16 rotation_z;
 } FINAL_ASTEROID_PC;
 
 STATIC_ASSERT(sizeof(FINAL_ASTEROID_PC) == 0x3c);
 STATIC_ASSERT(offsetof(FINAL_ASTEROID_PC, rotation_x) == 0x34);
 
 typedef struct ASTEROIDC_NETPACKET_PC {
-    u16 rotation_x, rotation_y, rotation_z;
+    u16 rotation_x;
+    u16 rotation_y;
+    u16 rotation_z;
 } ASTEROIDC_NETPACKET_PC;
 
 STATIC_ASSERT(offsetof(GIZMOBLOWUP_PC, model_rotation_x) == 0xe8);
@@ -489,8 +498,10 @@ f32 TrenchMaxHeightMovePc = 5.0f;
 
 void __cdecl TrenchMove(GAMEOBJECT *object) {
     NUVEC target;
-    f32 phase, height_difference;
-    i32 roll, target_roll;
+    f32 phase;
+    f32 height_difference;
+    i32 roll;
+    i32 target_roll;
     GAMEPAD_PC *pad;
     f32 input_magnitude;
     u16 input_angle;
@@ -613,10 +624,16 @@ static void __cdecl TrenchKilledCallback(GAMEOBJECT *object) {
 }
 
 void __cdecl DeathStarBattleDUpdate(WORLDINFO *world) {
-    GAMEOBJECT *trench_player, *ship;
-    NUVEC spawn, offset;
-    f32 lower, upper;
-    i32 index, model, left_present, free_play;
+    GAMEOBJECT *trench_player;
+    GAMEOBJECT *ship;
+    NUVEC spawn;
+    NUVEC offset;
+    f32 lower;
+    f32 upper;
+    i32 index;
+    i32 model;
+    i32 left_present;
+    i32 free_play;
     if (netclient == 0) {
         trench_player = player;
         trenchrun.position.x = trench_player->collision_position.x;

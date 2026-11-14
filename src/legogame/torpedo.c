@@ -70,12 +70,17 @@ STATIC_ASSERT(offsetof(TORPEDO_TARGET_WORLD_QUERY_PC, obstacles) == 0x46a4);
 STATIC_ASSERT(offsetof(TORPEDO_TARGET_WORLD_QUERY_PC, turrets) == 0x46b8);
 
 typedef struct torpedo_runtime_pc_s {
-    u8 count, flags, fire_index, pickup_state, target_type;
+    u8 count;
+    u8 flags;
+    u8 fire_index;
+    u8 pickup_state;
+    u8 target_type;
     u8 unknown_05[3];
     f32 pickup_timer;
     u8 unknown_0c[4];
     f32 steal_timer;
-    u32 pickup_data[5], pickup_flags[5];
+    u32 pickup_data[5];
+    u32 pickup_flags[5];
     NUVEC pickup_positions[5];
     u8 unknown_78[0xc];
     void *target;
@@ -131,7 +136,8 @@ STATIC_ASSERT(offsetof(TORPEDO_OBSTACLE_READER_PC, position) == 0x28);
 #define TORPEDO_PACKET_PC(object) ((TORPEDO_RUNTIME_PC *)(object)->torpedo)
 
 typedef struct torpedo_packet_alloc_pc_s {
-    u8 count, flags;
+    u8 count;
+    u8 flags;
     u8 unknown_02[0x86];
 } TORPEDO_PACKET_ALLOC_PC;
 
@@ -331,10 +337,15 @@ static void TorpedoHitDispatchPc(void *target, NUVEC *position, i32 player, u8 t
 
 void __cdecl Torpedo_UpdateJobbies(GAMEOBJECT *object) {
     GAMEOBJECT *player;
-    NUVEC position, direction;
-    f32 distance, scale, cos_y;
-    u16 target_z, target_y;
-    i32 index, phase;
+    NUVEC position;
+    NUVEC direction;
+    f32 distance;
+    f32 scale;
+    f32 cos_y;
+    u16 target_z;
+    u16 target_y;
+    i32 index;
+    i32 phase;
     if (TORPEDO_PACKET_PC(object)->steal_timer > 0.0f) {
         TORPEDO_PACKET_PC(object)->steal_timer -= FRAMETIME;
         if (TORPEDO_PACKET_PC(object)->steal_timer < 0.0f) {
@@ -494,11 +505,17 @@ void __cdecl HomeNearestTorpTarget(BOLT_PC *bolt, TORPEDOPACKET_PC *packet) {
     BOLTTYPE_PC *type = BoltType_FindByID(15, WORLD);
     void *target;
     u8 target_type;
-    f32 range, height, travel_time, seek;
+    f32 range;
+    f32 height;
+    f32 travel_time;
+    f32 seek;
     f64 lifetime;
     NUVEC delta;
     NUVEC *target_position = NULL;
-    u16 current_x, current_y, target_x, target_y;
+    u16 current_x;
+    u16 current_y;
+    u16 target_x;
+    u16 target_y;
     NUMTX matrix;
     NUANGVEC angles;
     if (bolt == NULL || packet == NULL || (packet->flags & 8) != 0) {
@@ -582,7 +599,9 @@ void __cdecl Torpedo_InitRicochet(BOLT_PC *bolt, NUVEC *position) {
 void __cdecl Torpedo_Ricochet(BOLT_PC *bolt, TORPEDOPACKET_PC *packet) {
     NUVEC axis;
     NUMTX matrix;
-    f32 lengths, dot, ratio;
+    f32 lengths;
+    f32 dot;
+    f32 ratio;
     f64 velocity_length;
     i32 angle;
     u8 flags;
@@ -687,7 +706,8 @@ void __cdecl Torpedo_UpdateBolt(BOLT_PC *bolt) {
     }
     if (bolt->time >= bolt->lifetime && ((GAMEOBJECT *)bolt->owner)->torpedo != NULL &&
         (((GAMEOBJECT *)bolt->owner)->torpedo->flags & 8) != 0) {
-        NUVEC offset, points;
+        NUVEC offset;
+        NUVEC points;
         offset.x = offset.y = 0.0f;
         offset.z = 2.0f * bolt->collision_radius;
         NuVecMtxRotate(&offset, &offset, &bolt->orientation);
@@ -751,7 +771,9 @@ void __cdecl TorpedoCode(GAMEOBJECT *object, i32 fire, f32 fire_cooldown) {
     GAME_MESSAGE_PC *message;
     NUVEC *target_position;
     void *target;
-    f32 distance, range, timer;
+    f32 distance;
+    f32 range;
+    f32 timer;
     i32 maximum;
     u8 target_type;
     if (packet == NULL) {

@@ -18,9 +18,17 @@ i32 __cdecl GizmoSys_SetBestBoltTarget(void *system, WORLDINFO *world, GAMEOBJEC
     GIZMOTYPES_PC *registry = (GIZMOTYPES_PC *)gizmotypes;
     GIZMOTYPE_PC *type;
     GIZMOSET_PC *set;
-    void *best = NULL, *previous = NULL, *target;
-    f32 best_distance = 1.0e9f, distance;
-    NUVEC best_position, best_velocity, previous_position, previous_velocity, target_position, target_velocity;
+    void *best = NULL;
+    void *previous = NULL;
+    void *target;
+    f32 best_distance = 1.0e9f;
+    f32 distance;
+    NUVEC best_position;
+    NUVEC best_velocity;
+    NUVEC previous_position;
+    NUVEC previous_velocity;
+    NUVEC target_position;
+    NUVEC target_velocity;
     i32 i;
     (void)world;
     if (registry != NULL && system != NULL && object != NULL && (ObjHitObj_Flags(object) & 0x800) != 0) {
@@ -69,7 +77,8 @@ i32 __cdecl GizmoSys_SetBestBoltTarget(void *system, WORLDINFO *world, GAMEOBJEC
 i32 __cdecl GizmoSys_BoltHit(void *system, WORLDINFO *world, BOLT_PC *bolt, NUVEC *points, NUVEC *minimum,
                              NUVEC *maximum, f32 radius, u8 *hit_flags) {
     NUVEC *hit_points;
-    i32 mode, i;
+    i32 mode;
+    i32 i;
     BOLT_GIZMO_TYPE_PC *type;
     GIZMOSET_PC *set;
     if (bolt->flags & 0x200) {

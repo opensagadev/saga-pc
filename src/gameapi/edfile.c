@@ -3964,8 +3964,11 @@ void __cdecl FS_BuildFilterOutBlocks(char *input) {
 
 i32 __cdecl FS_FileNameFilter(char *name) {
     char lower[256];
-    i32 i, slot, dots;
-    char *retry, *match;
+    i32 i;
+    i32 slot;
+    i32 dots;
+    char *retry;
+    char *match;
     NuStrCpy(lower, name);
     NuStrToLower(lower);
     for (i = 0; i < FileSelFilterOutBlockCountPc; ++i) {
@@ -4005,13 +4008,20 @@ i32 __cdecl FS_FileNameFilter(char *name) {
 }
 
 typedef struct FILE_DIRECTORY_TIME_PC {
-    i8 second, minute, hour, day, month, reserved;
+    i8 second;
+    i8 minute;
+    i8 hour;
+    i8 day;
+    i8 month;
+    i8 reserved;
     i16 year;
 } FILE_DIRECTORY_TIME_PC;
 
 typedef struct FILE_DIRECTORY_ENTRY_PC {
-    u32 flags, size;
-    FILE_DIRECTORY_TIME_PC created, modified;
+    u32 flags;
+    u32 size;
+    FILE_DIRECTORY_TIME_PC created;
+    FILE_DIRECTORY_TIME_PC modified;
     char name[256];
 } FILE_DIRECTORY_ENTRY_PC;
 
@@ -4213,7 +4223,13 @@ i32 __cdecl eduicbProcessFilePick(eduimenu_s *menu, eduiitem_s *item, f32 delta_
 }
 
 typedef struct FILE_DIRECTORY_RAW_TIME_PC {
-    u8 second, minute, hour, day, month, year_low, year_high;
+    u8 second;
+    u8 minute;
+    u8 hour;
+    u8 day;
+    u8 month;
+    u8 year_low;
+    u8 year_high;
 } FILE_DIRECTORY_RAW_TIME_PC;
 
 typedef struct FILE_DIRECTORY_HOST_ENTRY_PC {
@@ -4261,7 +4277,8 @@ void __cdecl FS_GetDirList(char *path, char *filter, char *filter_out) {
     char *next = FS_FileList;
     char *drive;
     char *file_begin;
-    i32 directory, length;
+    i32 directory;
+    i32 length;
     FS_BuildFilterBlocks(filter);
     FS_BuildFilterOutBlocks(filter_out);
     FS_CurrentCursorPos = FS_FileList;
@@ -4540,9 +4557,24 @@ extern void __cdecl NuRndrRect2d(f32 x, f32 y, f32 z, f32 width, f32 height, i32
 void __cdecl RenderFileSel3(i32 draw_title) {
     char buffer[256];
     char date_time[64];
-    char *text, *entry;
-    f32 x, y, width, height, baseline, full_width, box_height, box_width;
-    f32 text_x, line_height, path_y, list_box_height, line_y, footer_base, footer_y, sort_length;
+    char *text;
+    char *entry;
+    f32 x;
+    f32 y;
+    f32 width;
+    f32 height;
+    f32 baseline;
+    f32 full_width;
+    f32 box_height;
+    f32 box_width;
+    f32 text_x;
+    f32 line_height;
+    f32 path_y;
+    f32 list_box_height;
+    f32 line_y;
+    f32 footer_base;
+    f32 footer_y;
+    f32 sort_length;
     f64 list_height;
     i32 line;
     if (FS_Active == 0) {
@@ -4648,7 +4680,8 @@ void __cdecl RenderFileSel3(i32 draw_title) {
     list_box_height = list_height * 0.0625;
     NuRndrRect2d(x, y, 0.0f, width, list_box_height, 0x20202020, NULL);
     if (FS_NumFiles > 14) {
-        f32 thumb, thumb_offset;
+        f32 thumb;
+        f32 thumb_offset;
         NuRndrRect2d(width + x, y, 0.0f, 8.0f, list_box_height, 0xff646464, NULL);
         thumb = list_box_height / FS_NumFiles * 14.0;
         if (thumb < 5.0f) {
@@ -4736,8 +4769,10 @@ STATIC_ASSERT(offsetof(FRAME_PAD_PC, analog_r2) == 0x9f);
 i32 __cdecl eduicbProcessGradPickItem(eduimenu_s *menu, eduiitem_s *item, f32 delta_time, FRAME_PAD_PC *pad) {
     edui_gradient_pick_s *gradient = (edui_gradient_pick_s *)item;
     edui_gradient_node_s *stage;
-    f32 lower, upper;
-    i32 decrease, increase;
+    f32 lower;
+    f32 upper;
+    i32 decrease;
+    i32 increase;
     (void)delta_time;
     if (gradient->changed) {
         gradient->changed(menu, item, pad->digital_buttons);

@@ -29,22 +29,38 @@ typedef struct GAME_LIGHT_VIEW_PC {
 typedef struct BURN_OUT_PC {
     i32 active;
     NUVEC position;
-    f32 field_10, field_14, field_18, field_1c, field_20;
+    f32 field_10;
+    f32 field_14;
+    f32 field_18;
+    f32 field_1c;
+    f32 field_20;
 } BURN_OUT_PC;
 
 typedef struct BURN_SET_PC {
-    BURN_PARAMETERS_PC parameters, parameters_copy;
-    i32 field_a8, field_ac, field_b0, field_b4;
-    f32 field_b8, field_bc, field_c0, field_c4, field_c8, field_cc;
+    BURN_PARAMETERS_PC parameters;
+    BURN_PARAMETERS_PC parameters_copy;
+    i32 field_a8;
+    i32 field_ac;
+    i32 field_b0;
+    i32 field_b4;
+    f32 field_b8;
+    f32 field_bc;
+    f32 field_c0;
+    f32 field_c4;
+    f32 field_c8;
+    f32 field_cc;
     BURN_OUT_PC burnouts[32];
-    i32 active_count, selected_index;
-    f32 field_558, field_55c;
+    i32 active_count;
+    i32 selected_index;
+    f32 field_558;
+    f32 field_55c;
     i32 field_560;
 } BURN_SET_PC;
 
 typedef struct LIGHTING_LOAD_WORLD_PC {
     u8 unknown_000[0x104];
-    VARIPTR buffer, end_buffer;
+    VARIPTR buffer;
+    VARIPTR end_buffer;
     u8 unknown_10c[0x2aac - 0x10c];
     BURN_SET_PC *burnset;
     u8 unknown_2ab0[4];
@@ -53,8 +69,12 @@ typedef struct LIGHTING_LOAD_WORLD_PC {
 
 extern "C" {
     void __cdecl NuMtxSetOrthoBlend(NUMTX *, f32, f32, f32, f32, f32, f32);
-    extern f32 ShadowLightSplitScalePc, ShadowLightWarpPc, ShadowLightNearOffsetPc;
-    extern f32 ShadowLightBlendPowerPc, ShadowLightFallbackHeightPc, ShadowLightEyeDistancePc;
+    extern f32 ShadowLightSplitScalePc;
+    extern f32 ShadowLightWarpPc;
+    extern f32 ShadowLightNearOffsetPc;
+    extern f32 ShadowLightBlendPowerPc;
+    extern f32 ShadowLightFallbackHeightPc;
+    extern f32 ShadowLightEyeDistancePc;
     extern f32 ShadowLightFocusHeightPc;
     extern NUVEC ShadowLightUpPc;
     extern i32 ShadowLightSplitCountPc;
@@ -199,8 +219,10 @@ extern "C" {
     }
 
     void __cdecl SetPanelLights(f32 intensity) {
-        NUVEC colours[3], ambient;
-        NUVEC *selected_colours, *selected_ambient;
+        NUVEC colours[3];
+        NUVEC ambient;
+        NUVEC *selected_colours;
+        NUVEC *selected_ambient;
         intensity *= 0.5;
         if (intensity != 1.0f) {
             colours[0].x = PanelLightingColoursPc[0].x * intensity;
@@ -356,9 +378,13 @@ extern "C" {
     void __cdecl SetCreatureLights(APIOBJECT_PC *object) {
         GAMEOBJECT *owner = (GAMEOBJECT *)object->owner;
         GAME_LIGHT_VIEW_PC *view = (GAME_LIGHT_VIEW_PC *)owner;
-        NUVEC ambient, intensity[3], direction[3];
+        NUVEC ambient;
+        NUVEC intensity[3];
+        NUVEC direction[3];
         PLAYERCHARACTERCONFIG_PC *character;
-        f32 red, green, blue;
+        f32 red;
+        f32 green;
+        f32 blue;
         i32 index;
         if (Cheats_CheckFlags(1) != 0) {
             SetZeroLights();
@@ -577,10 +603,14 @@ void __cdecl EnableShadowMapRenderingFn(void) {
 
 extern "C" {
 #pragma data_seg(".data$ShadowLightParametersPc")
-    f32 ShadowLightSplitScalePc = 0.9f, ShadowLightWarpPc = 5.0f;
+    f32 ShadowLightSplitScalePc = 0.9f;
+    f32 ShadowLightWarpPc = 5.0f;
     NUVEC ShadowLightUpPc = {0.0f, 1.0f, 0.0f};
-    f32 ShadowLightNearOffsetPc = 1.5f, ShadowLightBlendPowerPc = 3.0f, ShadowLightFallbackHeightPc = 5.0f;
-    f32 ShadowLightEyeDistancePc = 20.0f, ShadowLightFocusHeightPc = -2.0f;
+    f32 ShadowLightNearOffsetPc = 1.5f;
+    f32 ShadowLightBlendPowerPc = 3.0f;
+    f32 ShadowLightFallbackHeightPc = 5.0f;
+    f32 ShadowLightEyeDistancePc = 20.0f;
+    f32 ShadowLightFocusHeightPc = -2.0f;
 #pragma data_seg()
 #pragma bss_seg(".bss$ShadowLightSplitCountPc")
     i32 ShadowLightSplitCountPc = 0;
@@ -590,7 +620,12 @@ extern "C" {
 }
 
 extern "C" void __cdecl SetShadowLight(void) {
-    NUVEC center, target, eye, secondary_eye, direction, camera_position;
+    NUVEC center;
+    NUVEC target;
+    NUVEC eye;
+    NUVEC secondary_eye;
+    NUVEC direction;
+    NUVEC camera_position;
     __declspec(align(16)) NUVEC4 view_direction;
     NUCAMERA *camera;
     f32 secondary_strength;

@@ -45,8 +45,11 @@ enum {
 };
 
 struct TERRAIN_IMPACT_RECORD {
-    NUVEC position, normal;
-    u8 material[2], flags, normal_flags;
+    NUVEC position;
+    NUVEC normal;
+    u8 material[2];
+    u8 flags;
+    u8 normal_flags;
 };
 
 typedef TERRAIN_SPHERE_PC TERRAIN_SPHERE;
@@ -192,8 +195,14 @@ extern "C" {
         TERRAIN_SCAN_WORD_PC *limit;
         TERRAIN_SCAN_WORD_PC *entry;
         i32 shape_count;
-        f32 max_x, max_z, min_x, min_z;
-        f32 local_max_x, local_max_z, local_min_x, local_min_z;
+        f32 max_x;
+        f32 max_z;
+        f32 min_x;
+        f32 min_z;
+        f32 local_max_x;
+        f32 local_max_z;
+        f32 local_min_x;
+        f32 local_min_z;
 
         for (i32 i = 0; i < 16; ++i) {
             TERRAIN_INDEX_LEVEL_PC *level = &TERRAIN_NS_SET->index_levels[i];
@@ -430,7 +439,12 @@ extern "C" {
         TERRAIN_SCAN_WORD_PC *cursor;
         TERRAIN_SCAN_WORD_PC *limit;
         i32 shape_count;
-        f32 max_x, min_x, max_z, min_z, max_y, min_y;
+        f32 max_x;
+        f32 min_x;
+        f32 max_z;
+        f32 min_z;
+        f32 max_y;
+        f32 min_y;
         f32 scan_radius;
         TERRAIN_WALL_POINT **walls;
         TERRAIN_WALL_POINT *wall_list;
@@ -494,7 +508,12 @@ extern "C" {
             const i32 group_index = handle[1];
             TERRAIN_SCAN_WORD_PC *shapes = reinterpret_cast<TERRAIN_SCAN_WORD_PC *>(handle) + 1;
             TERRAIN_GROUP_PC *group = &TERRAIN_STH_SET->groups[group_index];
-            f32 local_min_x, local_max_x, local_min_z, local_max_z, local_min_y, local_max_y;
+            f32 local_min_x;
+            f32 local_max_x;
+            f32 local_min_z;
+            f32 local_max_z;
+            f32 local_min_y;
+            f32 local_max_y;
             TERRAIN_PLATFORM_PC *platform;
             if (group->chunk_type == 1 && (platform = &TERRAIN_STH_PLATFORM(group))->scene_object != NULL) {
                 if (TERRAIN_STH_MATRIX(group)->m30 > TERRAIN_STH_PLATFORM(group).previous_matrix.m30) {
@@ -615,13 +634,23 @@ extern "C" {
         TERRAIN_SCAN_WORD_PC *limit;
         i32 shape_count;
         i32 scaled_count;
-        f32 max_x, min_x, max_z, min_z, max_y, min_y;
+        f32 max_x;
+        f32 min_x;
+        f32 max_z;
+        f32 min_z;
+        f32 max_y;
+        f32 min_y;
         f32 scan_radius_sq;
         f32 scan_radius;
         NUVEC4 *vertices;
         TERRAIN_GROUP_PC *group;
         TERRAIN_PLATFORM_PC *platform;
-        f32 local_min_x, local_max_x, local_min_z, local_max_z, local_min_y, local_max_y;
+        f32 local_min_x;
+        f32 local_max_x;
+        f32 local_min_z;
+        f32 local_max_z;
+        f32 local_min_y;
+        f32 local_max_y;
 
         TerrainQuery_s *query;
         scaled_count = 0;
@@ -1383,7 +1412,12 @@ i16 *NewScanHandelSubsetPc(i16 *subset, NUVEC *position, NUVEC *movement, f32 ra
     TERRAIN_SCAN_WORD_PC *limit;
     TERRAIN_SCAN_WORD_PC *result;
     i32 shape_count;
-    f32 max_x, min_x, max_z, min_z, max_y, min_y;
+    f32 max_x;
+    f32 min_x;
+    f32 max_z;
+    f32 min_z;
+    f32 max_y;
+    f32 min_y;
     f32 scan_radius;
     TERRAIN_HANDLE_WALL_PAIR_PC *walls;
     TERRAIN_HANDLE_WALL_PAIR_PC *source;
@@ -1434,7 +1468,12 @@ i16 *NewScanHandelSubsetPc(i16 *subset, NUVEC *position, NUVEC *movement, f32 ra
         const i32 group_index = subset[1];
         TERRAIN_SCAN_WORD_PC *shapes = reinterpret_cast<TERRAIN_SCAN_WORD_PC *>(subset) + 1;
         TERRAIN_GROUP_PC *group = &static_cast<TERRAIN_SET_PC *>(CurrentTerrain)->groups[group_index];
-        f32 local_min_x, local_max_x, local_min_z, local_max_z, local_min_y, local_max_y;
+        f32 local_min_x;
+        f32 local_max_x;
+        f32 local_min_z;
+        f32 local_max_z;
+        f32 local_min_y;
+        f32 local_max_y;
         TERRAIN_PLATFORM_PC *platform;
         if (group->chunk_type == 1 && (platform = &TERRAIN_NSS_PLATFORM(group))->scene_object != NULL) {
             if (TERRAIN_NSS_MATRIX(group)->m30 > TERRAIN_NSS_PLATFORM(group).previous_matrix.m30) {
@@ -1714,7 +1753,12 @@ i16 *NewScanHandelFullPc(NUVEC *position, NUVEC *movement, f32 radius, i32 scan_
             TERRAIN_PLATFORM_PC *platform = &TERRAIN_NSF_PLATFORM(group);
             u32 *scene_state = platform->instance_flags;
             if (scene_state == NULL || ((platform->flags & 4) != 0 ? (*scene_state & 2) : (*scene_state & 1))) {
-                f32 local_min_x, local_max_x, local_min_z, local_max_z, local_min_y, local_max_y;
+                f32 local_min_x;
+                f32 local_max_x;
+                f32 local_min_z;
+                f32 local_max_z;
+                f32 local_min_y;
+                f32 local_max_y;
                 if (platform->scene_object != NULL) {
                     if (TERRAIN_NSF_MATRIX(group)->m30 > TERRAIN_NSF_PLATFORM(group).previous_matrix.m30) {
                         local_min_x = scan->min_x - group->origin.x;
@@ -2113,7 +2157,9 @@ extern "C" i32 NewRayCastPlatForm(NUVEC *position, NUVEC *movement, f32 radius, 
 extern "C" {
     extern f32 TerrainShadowHeightPc;
     extern i16 TerrainShadowFloorIndexPc;
-    extern u16 TerrainWaterCastIndexPc, TerrainSurfaceClassPc, NuTerrPlatsOff;
+    extern u16 TerrainWaterCastIndexPc;
+    extern u16 TerrainSurfaceClassPc;
+    extern u16 NuTerrPlatsOff;
     extern TERRAIN_SHAPE *TerrainCastAuxPolygonPc;
     f32 NewCast(NUVEC *, f32, f32);
 }
@@ -2304,7 +2350,8 @@ extern "C" void CubeImpact(NUMTX *current, NUMTX *previous, NUVEC *normal, f32 s
         {-1.0f, -1.0f, -1.0f}, {1.0f, -1.0f, -1.0f}, {1.0f, 1.0f, -1.0f}, {-1.0f, 1.0f, -1.0f},
         {-1.0f, -1.0f, 1.0f},  {1.0f, -1.0f, 1.0f},  {1.0f, 1.0f, 1.0f},  {-1.0f, 1.0f, 1.0f},
     };
-    NUVEC4 transformed[8], old_position;
+    NUVEC4 transformed[8];
+    NUVEC4 old_position;
     f32 closest = 10000.0f;
     i32 selected = 0;
     for (i32 index = 0; index < 8; ++index) {

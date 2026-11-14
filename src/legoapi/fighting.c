@@ -56,8 +56,12 @@ typedef struct HOLD_RUNTIME_VIEW_PC {
 STATIC_ASSERT(offsetof(HOLD_RUNTIME_VIEW_PC, hold_timer) == 0xde4);
 
 i32 __cdecl ObjOpponentStillThere(GAMEOBJECT *object, GAMEOBJECT *opponent, f32 gap) {
-    NUVEC forward, difference;
-    f32 distance, dot, radius, radius_squared;
+    NUVEC forward;
+    NUVEC difference;
+    f32 distance;
+    f32 dot;
+    f32 radius;
+    f32 radius_squared;
     if (object->force_target == NULL) {
         return 0;
     }
@@ -111,7 +115,9 @@ void __cdecl FastWeaponOut(GAMEOBJECT *object, i32 force_sound) {
 
 void __cdecl SlowWeaponOut(GAMEOBJECT *object) {
     i32 action;
-    f32 end, start, finish;
+    f32 end;
+    f32 start;
+    f32 finish;
     if (LEGOCONTEXT_WEAPONOUT != -1 && Fighting_WeaponOutActionFn != NULL) {
         action = Fighting_WeaponOutActionFn(object);
         if (action != -1 && object->character_model->model_data_b[action] != NULL) {
@@ -139,7 +145,9 @@ void __cdecl SlowWeaponOut(GAMEOBJECT *object) {
 }
 
 void __cdecl WeaponOutCode(GAMEOBJECT *object) {
-    f32 start, end, *time;
+    f32 start;
+    f32 end;
+    f32 *time;
     if (LEGOCONTEXT_WEAPONOUT == -1 || object->character_context != LEGOCONTEXT_WEAPONOUT) {
         return;
     }
@@ -229,7 +237,9 @@ void __cdecl FastWeaponIn(GAMEOBJECT *object, i32 force_sound) {
 
 void __cdecl SlowWeaponIn(GAMEOBJECT *object) {
     i32 action = -1;
-    f32 end, start, finish;
+    f32 end;
+    f32 start;
+    f32 finish;
     if (LEGOCONTEXT_WEAPONIN != -1) {
         if (Fighting_WeaponInActionFn != NULL) {
             action = Fighting_WeaponInActionFn(object);
@@ -260,7 +270,9 @@ void __cdecl SlowWeaponIn(GAMEOBJECT *object) {
 }
 
 void __cdecl WeaponInCode(GAMEOBJECT *object) {
-    f32 start, end, *time;
+    f32 start;
+    f32 end;
+    f32 *time;
     if (LEGOCONTEXT_WEAPONIN == -1 || object->character_context != LEGOCONTEXT_WEAPONIN) {
         return;
     }
@@ -427,7 +439,11 @@ i32 __cdecl CanStepBack(GAMEOBJECT *object) {
 i32 __cdecl StepBackFromTarget(GAMEOBJECT *object) {
     NUVEC *target_position;
     BLOWUP_MOVEMENT_PC *blowup = (BLOWUP_MOVEMENT_PC *)object->blowup_target;
-    f32 inner_distance, outer_distance, speed, distance_squared, blend;
+    f32 inner_distance;
+    f32 outer_distance;
+    f32 speed;
+    f32 distance_squared;
+    f32 blend;
     if (blowup != NULL) {
         target_position = &blowup->mid_position;
         if ((LEGOCONTEXT_COMBO != -1 && object->character_context == LEGOCONTEXT_COMBO) ||

@@ -385,8 +385,10 @@ i32 SoundQueue::FillBufferPc(i32 bytes, u32 flags) {
     } else {
         decoded = decoder->vtable->get_size(decoder) - decoded_bytes;
     }
-    void *data, *second;
-    DWORD data_bytes, second_bytes;
+    void *data;
+    void *second;
+    DWORD data_bytes;
+    DWORD second_bytes;
     buffer = (IDirectSoundBuffer *)volume_sink;
     result =
         buffer->vtable->lock(buffer, buffer_write_position, requested, &data, &data_bytes, &second, &second_bytes, 0);

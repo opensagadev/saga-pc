@@ -57,7 +57,9 @@ GAME_MESSAGE_PC *__cdecl AddGameMsg(ADD_GAME_MESSAGE_PC *message) {
     f32 value;
     i32 index = GameMessageIndex;
     i32 slot_index = -1;
-    i32 count, text_index, length;
+    i32 count;
+    i32 text_index;
+    i32 length;
     for (count = 0; count < 128; ++count) {
         slot = &GameMessage[index];
         if (slot->active == 0) {
@@ -203,9 +205,12 @@ GAME_MESSAGE_PC *__cdecl AddGameMessage(char *text, NUVEC *position, f32 scale, 
 void __cdecl UpdateGameMessages(void) {
     GAME_MESSAGE_PC *message = GameMessage;
     GAME_MESSAGE_CALLBACK_PC callback;
-    f32 rounded_time, ratio, progress;
+    f32 rounded_time;
+    f32 ratio;
+    f32 progress;
     u32 flags;
-    i32 index, angle;
+    i32 index;
+    i32 angle;
     for (index = 0; index < 128; ++index, ++message) {
         if (message->active == 0) {
             continue;
@@ -301,7 +306,8 @@ void __cdecl TransformGameMessages(NUVEC *camera_position, NUVEC *camera_right, 
     GAME_MESSAGE_PC *end = message + 128;
     for (; message != end; ++message) {
         f32 width;
-        NUVEC target, transformed;
+        NUVEC target;
+        NUVEC transformed;
         if (message->active == 0 || message->has_start_position != 0) {
             continue;
         }
@@ -335,7 +341,8 @@ void __cdecl DrawGameMessages(void) {
     i32 index;
     for (index = 0; index < 128; ++index) {
         u32 flags;
-        f32 progress, scale;
+        f32 progress;
+        f32 scale;
         NUVEC position;
         message = &GameMessage[index];
         if (message->active == 0) {
@@ -435,7 +442,8 @@ void __cdecl DrawGameMessages(void) {
 
 i32 __cdecl FindGameMsgsWithID(i32 id, i32 remove, i32 player, GAME_MESSAGE_PC *exclude) {
     GAME_MESSAGE_PC *message = GameMessage;
-    i32 count = 0, index;
+    i32 count = 0;
+    i32 index;
     for (index = 0; index < 128; ++index, ++message) {
         if (message->active != 0 && (i8)message->target_is_coin_total == id && message != exclude &&
             (player == -1 || message->player_index == player)) {
@@ -484,7 +492,9 @@ void __cdecl AddFancyMessageRGB(char *text, f32 x, f32 y, f32 scale, f32 duratio
 }
 
 void AddFancyMessage(char *text, float x, float y, float scale, float duration, i32 message_id, i32 colour_type) {
-    u8 red, green, blue;
+    u8 red;
+    u8 green;
+    u8 blue;
     red = 0xff;
     if (colour_type != 0) {
         blue = 0xff;

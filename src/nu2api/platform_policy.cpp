@@ -4,9 +4,12 @@
 struct PC_PLATFORM_POLICY_PC;
 
 struct PC_PLATFORM_POLICY_METHODS_PC {
-    void *unknown_00, *unknown_04;
+    void *unknown_00;
+    void *unknown_04;
     ULONG(__stdcall *release)(PC_PLATFORM_POLICY_PC *);
-    void *unknown_0c, *unknown_10, *unknown_14;
+    void *unknown_0c;
+    void *unknown_10;
+    void *unknown_14;
     HRESULT(__stdcall *check)(PC_PLATFORM_POLICY_PC *, BSTR, BOOL *);
 };
 

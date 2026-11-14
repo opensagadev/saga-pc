@@ -941,9 +941,11 @@ extern void(__cdecl *GlobalCharacterRenderFn)(NUVEC *, i16, i32, i32, void *);
 /* Four-byte observed mutable cell; Native owning allocation unknown, zero credit.
  * A distinct storage section preserves all existing owner comparison regions. */
 
-extern u8 default_ngroup, default_nacross;
+extern u8 default_ngroup;
+extern u8 default_nacross;
 
-extern f32 default_xspacing, default_zspacing;
+extern f32 default_xspacing;
+extern f32 default_zspacing;
 
 eduiitem_s *creatureEditor_ResetParamsItem = NULL;
 
@@ -1287,7 +1289,8 @@ typedef APIOBJECT_PC *(__cdecl *AI_GET_NAMED_OBJECT_PC)(void *, char *);
 
 typedef NUVEC *(__cdecl *AI_GET_CREATURE_ORIGIN_PC)(AISYS_PC *, AIPACKET_PC *);
 
-extern AI_CHARACTER_NAME_PC LevelCharacterNameFn, SpecialRouteCharacterNameFn;
+extern AI_CHARACTER_NAME_PC LevelCharacterNameFn;
+extern AI_CHARACTER_NAME_PC SpecialRouteCharacterNameFn;
 
 typedef void(__cdecl *AI_LOAD_PC)(AISYS_PC *, i32, NUGSCN *, VARIPTR *, VARIPTR *);
 
@@ -4714,7 +4717,9 @@ void __cdecl AISysDrawAntinode_Rectangle(AIANTINODE_PC *node, u32 colour) {
 
 void __cdecl AISysCreatureAntinodeInteraction(AISYS_PC *system, i32 object_count, APIOBJECT_PC **objects, i32 *unused) {
     AIANTINODE_PC *active[192];
-    i32 count, index, obstacle;
+    i32 count;
+    i32 index;
+    i32 obstacle;
     AIANTINODE_PC *antinode;
     APIOBJECT_PC *object;
     NUVEC difference;
@@ -4778,10 +4783,17 @@ void __cdecl AISysCreatureAntinodeInteraction(AISYS_PC *system, i32 object_count
 
 void __cdecl AISysCreatureInteraction2D(AISYS_PC *system, i32 object_count, APIOBJECT_PC **objects, i32 *immovable,
                                         f32 delta_time) {
-    i32 index, first_index, second_index, first_fixed, second_fixed;
-    APIOBJECT_PC *first, *second;
+    i32 index;
+    i32 first_index;
+    i32 second_index;
+    i32 first_fixed;
+    i32 second_fixed;
+    APIOBJECT_PC *first;
+    APIOBJECT_PC *second;
     NUVEC difference;
-    f32 radius, distance, overlap;
+    f32 radius;
+    f32 distance;
+    f32 overlap;
 
     for (index = 0; index < object_count; ++index) {
         first = objects[index];
@@ -4864,10 +4876,17 @@ void __cdecl AISysCreatureInteraction2D(AISYS_PC *system, i32 object_count, APIO
 
 void __cdecl LEGO_AISysCreatureInteraction2D(AISYS_PC *system, i32 object_count, APIOBJECT_PC **objects, i32 *immovable,
                                              f32 delta_time) {
-    i32 index, first_index, second_index, first_fixed, second_fixed;
-    APIOBJECT_PC *first, *second;
+    i32 index;
+    i32 first_index;
+    i32 second_index;
+    i32 first_fixed;
+    i32 second_fixed;
+    APIOBJECT_PC *first;
+    APIOBJECT_PC *second;
     NUVEC difference;
-    f32 radius, distance, overlap;
+    f32 radius;
+    f32 distance;
+    f32 overlap;
 
     for (index = 0; index < object_count; ++index) {
         first = objects[index];
@@ -4974,10 +4993,17 @@ void __cdecl LEGO_AISysCreatureInteraction2D(AISYS_PC *system, i32 object_count,
 
 void __cdecl AISysCreatureInteraction3D(AISYS_PC *system, i32 object_count, APIOBJECT_PC **objects, i32 *immovable,
                                         f32 delta_time) {
-    i32 index, first_index, second_index, first_fixed, second_fixed;
-    APIOBJECT_PC *first, *second;
+    i32 index;
+    i32 first_index;
+    i32 second_index;
+    i32 first_fixed;
+    i32 second_fixed;
+    APIOBJECT_PC *first;
+    APIOBJECT_PC *second;
     NUVEC difference;
-    f32 radius, distance, overlap;
+    f32 radius;
+    f32 distance;
+    f32 overlap;
 
     for (index = 0; index < object_count; ++index) {
         first = objects[index];
@@ -8550,7 +8576,8 @@ void __cdecl aieditor_ClearAllPathCnxTypes(void) {
 
 void __cdecl aieditor_RegisterPathCnxType(const char *name, u32 connection_flag,
                                           void(__cdecl *draw)(NUVEC *, f32, NUVEC *, u32, i32), u32 flags) {
-    i32 i, count;
+    i32 i;
+    i32 count;
     AI_PATH_CONNECTION_TYPE_PC *type;
     if (name != NULL && strlen(name) < 64 && connection_flag != 0 && (count = AIPathConnectionTypeCountPc) < 32) {
         for (i = 0; i < count; ++i) {
@@ -8823,7 +8850,8 @@ static void AiPathDrawSolidEdgePc(EDAIPATHNODE_s *first, EDAIPATHNODE_s *second,
 }
 
 static void AiPathDrawWireEdgePc(EDAIPATHNODE_s *first, EDAIPATHNODE_s *second, u32 colour) {
-    NUVEC direction, side;
+    NUVEC direction;
+    NUVEC side;
     NURND_VERTEX3D_PC vertices[2];
     f32 distance;
     i32 angle;
@@ -8914,7 +8942,9 @@ void __cdecl pathEditorDrawNode(NUVEC *position, f32 radius, f32 lower_height, f
 
 void __cdecl pathEditorDrawConnectionInfo(NUVEC *position, f32 radius, NUVEC *other, u32 flags, i32 colour) {
     i32 i;
-    NUVEC start, end, direction;
+    NUVEC start;
+    NUVEC end;
+    NUVEC direction;
     f32 length;
     NURND_VERTEX3D_PC vertices[2];
     if (flags == 0) {
@@ -10983,7 +11013,9 @@ void __cdecl creatureEditorSaveData(AIPATHSYS_PC *system) {
          creature = (EDAICREATURE_s *)NuLinkedListGetNext(&aieditor->creatures, &creature->link)) {
         char *character_name = GlobalCharacterNameFn(creature->character_type);
         AIPATH_PC *path;
-        i32 index, connection_index, direction;
+        i32 index;
+        i32 connection_index;
+        i32 direction;
         f64 saved;
         if (creature->check.path == NULL || character_name == NULL) {
             continue;
@@ -11117,7 +11149,10 @@ EDAICREATURE_s *__cdecl creatureEditor_GetNearest(i32 use_radius) {
         for (creature = (EDAICREATURE_s *)NuLinkedListGetHead(&aieditor->creatures); creature != NULL;
              creature = (EDAICREATURE_s *)NuLinkedListGetNext(&aieditor->creatures, &creature->link)) {
             AI_CREATURE_MODEL_BOUNDS_PC *model;
-            f32 height, min_height, radius, distance;
+            f32 height;
+            f32 min_height;
+            f32 radius;
+            f32 distance;
             NUVEC delta;
             if (!creatureEditor_IsSelectable(creature)) {
                 continue;
@@ -11914,7 +11949,8 @@ void creatureEditor_RenderAllCreatures(void) {
 
 void creatureEditor_Render(i32 x, i32 y, f32 xscale, f32 yscale) {
     char set_name[16];
-    EDAICREATURE_s *display, *creature;
+    EDAICREATURE_s *display;
+    EDAICREATURE_s *creature;
     i32 text_x;
     i32 count;
     if (GlobalCharacterRenderFn == NULL) {

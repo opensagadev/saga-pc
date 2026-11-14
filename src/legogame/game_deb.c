@@ -42,16 +42,31 @@ STATIC_ASSERT(sizeof(OBJECT_LIGHT_STATE_GAME_PC) == 84);
 typedef struct BURN_OUT_PC {
     i32 active;
     NUVEC position;
-    f32 field_10, field_14, field_18, field_1c, field_20;
+    f32 field_10;
+    f32 field_14;
+    f32 field_18;
+    f32 field_1c;
+    f32 field_20;
 } BURN_OUT_PC;
 
 typedef struct BURN_SET_PC {
-    BURN_PARAMETERS_PC parameters, parameters_copy;
-    i32 field_a8, field_ac, field_b0, field_b4;
-    f32 field_b8, field_bc, field_c0, field_c4, field_c8, field_cc;
+    BURN_PARAMETERS_PC parameters;
+    BURN_PARAMETERS_PC parameters_copy;
+    i32 field_a8;
+    i32 field_ac;
+    i32 field_b0;
+    i32 field_b4;
+    f32 field_b8;
+    f32 field_bc;
+    f32 field_c0;
+    f32 field_c4;
+    f32 field_c8;
+    f32 field_cc;
     BURN_OUT_PC burnouts[32];
-    i32 active_count, selected_index;
-    f32 field_558, field_55c;
+    i32 active_count;
+    i32 selected_index;
+    f32 field_558;
+    f32 field_55c;
     i32 field_560;
 } BURN_SET_PC;
 
@@ -128,7 +143,8 @@ STATIC_ASSERT(offsetof(BURN_SET_PC, field_560) == 0x560);
 
 typedef struct LIGHTING_LOAD_WORLD_PC {
     u8 unknown_000[0x104];
-    VARIPTR buffer, end_buffer;
+    VARIPTR buffer;
+    VARIPTR end_buffer;
     u8 unknown_10c[0x2aac - 0x10c];
     BURN_SET_PC *burnset;
     u8 unknown_2ab0[4];
@@ -179,7 +195,9 @@ typedef struct ripple_effect_pc_s {
         u8 end_rgba[4];
     };
 
-    f32 lifetime, initial_size, end_size;
+    f32 lifetime;
+    f32 initial_size;
+    f32 end_size;
     char texture_name[16];
     NUMTL *material;
 } RIPPLE_EFFECT_PC;
@@ -191,7 +209,8 @@ typedef struct world_ripple_view_pc_s {
 
     union {
         struct {
-            i32 water_effect, sabre_effect;
+            i32 water_effect;
+            i32 sabre_effect;
         };
 
         i32 effect_of_type[2]; /* indexed by LookupRippleEffectIndex */
@@ -235,10 +254,22 @@ void __cdecl DebrisKillPlayers(void) {
 void __cdecl AddSurfaceDebris(GAMEOBJECT *object) {
     WORLDINFO *world = WorldInfo_CurrentlyActive();
     i8 layer;
-    i32 effect, count;
-    f32 speed, run_speed, rate, fraction, emission_rate, height_scale, height, minimum_rate;
-    f64 dx, dy, dz;
-    NUVEC current, previous, position;
+    i32 effect;
+    i32 count;
+    f32 speed;
+    f32 run_speed;
+    f32 rate;
+    f32 fraction;
+    f32 emission_rate;
+    f32 height_scale;
+    f32 height;
+    f32 minimum_rate;
+    f64 dx;
+    f64 dy;
+    f64 dz;
+    NUVEC current;
+    NUVEC previous;
+    NUVEC position;
     if (object->character_context == 0x2b) {
         return;
     }
@@ -412,10 +443,17 @@ static f32 RippleRandomRadiusPc = 0.15f;
 
 void __cdecl AddSurfaceRipples(GAMEOBJECT *object) {
     RIPPLE_CONTACT_TIMER_VIEW_PC *contact_timer = (RIPPLE_CONTACT_TIMER_VIEW_PC *)object;
-    NUVEC position, normal, seed, velocity;
+    NUVEC position;
+    NUVEC normal;
+    NUVEC seed;
+    NUVEC velocity;
     NUMTX matrix;
-    f32 rate, size, swap_y, swap_x;
-    i32 count, i;
+    f32 rate;
+    f32 size;
+    f32 swap_y;
+    f32 swap_x;
+    i32 count;
+    i32 i;
     if (RIPPLE_WORLD->effects == NULL || object->dead != 0) {
         return;
     }

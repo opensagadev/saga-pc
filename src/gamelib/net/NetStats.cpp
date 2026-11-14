@@ -4,9 +4,12 @@
  * NetStats::Draw (Android gamelib/util/Stats.cpp). */
 
 typedef struct NET_PRIM_VERTEX_PC {
-    f32 x, y, z;
+    f32 x;
+    f32 y;
+    f32 z;
     u32 colour;
-    f32 u, v;
+    f32 u;
+    f32 v;
 } NET_PRIM_VERTEX_PC;
 
 STATIC_ASSERT(sizeof(NET_PRIM_VERTEX_PC) == 0x18);
@@ -167,7 +170,8 @@ void NetStats::Draw(f32 x, f32 y, f32 width, f32 height, eInfo info) {
     NetPrimPosition(x + half_width, y - height + byte_scale * 4352.0, 0.0f);
     NuPrim2DEnd();
 
-    f32 sample_x, sample_y;
+    f32 sample_x;
+    f32 sample_y;
     NuPrim2DBegin(0xf, 5, NULL);
     i32 sample = history_index + 1;
     for (i32 i = 0; i < 30; ++i) {

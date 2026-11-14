@@ -1,7 +1,10 @@
 #include "saga.h"
 #include <string.h>
 
-extern "C" const char PCKeyboardMouse1Name[15], PCKeyboardMouse2Name[16], PCKeyboard1Name[10], PCKeyboard2Name[10];
+extern "C" const char PCKeyboardMouse1Name[15];
+extern "C" const char PCKeyboardMouse2Name[16];
+extern "C" const char PCKeyboard1Name[10];
+extern "C" const char PCKeyboard2Name[10];
 static i32 PcXInputDeviceCount; // XInput pads found by the current device enumeration
 
 PC_INPUT_CONFIG_PC *PC_INPUT_RUNTIME_PC::FindConfig(u8 mask, i32 port, i32 key) {
@@ -205,8 +208,12 @@ void PC_INPUT_RUNTIME_PC::InitKeyboardProfiles() {
 }
 
 struct PC_DI_RANGE_PC {
-    DWORD size, header_size, object, how;
-    LONG minimum, maximum;
+    DWORD size;
+    DWORD header_size;
+    DWORD object;
+    DWORD how;
+    LONG minimum;
+    LONG maximum;
 };
 
 STATIC_ASSERT(sizeof(PC_DI_RANGE_PC) == 24);

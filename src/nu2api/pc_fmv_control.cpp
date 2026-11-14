@@ -2,9 +2,20 @@
 
 /* Bink's BINKREALTIME. */
 struct PC_FMV_REALTIME_PC {
-    u32 frame_number, frame_rate, frame_rate_div, frames, frames_time;
-    u32 video_decomp_time, audio_decomp_time, read_time, idle_time, thread_read_time, blit_time;
-    u32 read_buffer_size, read_buffer_used, data_rate;
+    u32 frame_number;
+    u32 frame_rate;
+    u32 frame_rate_div;
+    u32 frames;
+    u32 frames_time;
+    u32 video_decomp_time;
+    u32 audio_decomp_time;
+    u32 read_time;
+    u32 idle_time;
+    u32 thread_read_time;
+    u32 blit_time;
+    u32 read_buffer_size;
+    u32 read_buffer_used;
+    u32 data_rate;
 };
 
 STATIC_ASSERT(sizeof(PC_FMV_REALTIME_PC) == 0x38);

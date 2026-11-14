@@ -613,10 +613,15 @@ extern "C" {
         __declspec(align(16)) NUVEC player0;
         __declspec(align(16)) NUVEC player1;
         __declspec(align(16)) NUVEC step;
-        DOGFIGHT_QUICK_BOLT_PC *bolt, *end;
-        NUVEC *position, *velocity;
-        i32 valid0, valid1;
-        f64 dx, dy, dz;
+        DOGFIGHT_QUICK_BOLT_PC *bolt;
+        DOGFIGHT_QUICK_BOLT_PC *end;
+        NUVEC *position;
+        NUVEC *velocity;
+        i32 valid0;
+        i32 valid1;
+        f64 dx;
+        f64 dy;
+        f64 dz;
         if (buffer == NULL || buffer->capacity == 0) {
             return;
         }
@@ -676,7 +681,8 @@ extern "C" {
     }
 
     static void DrawQuickBoltsPc(DOGFIGHT_QUICK_BUFFER_PC *buffer) {
-        DOGFIGHT_QUICK_BOLT_PC *bolt, *end;
+        DOGFIGHT_QUICK_BOLT_PC *bolt;
+        DOGFIGHT_QUICK_BOLT_PC *end;
         if (buffer == NULL || buffer->capacity == 0) {
             return;
         }
@@ -715,7 +721,9 @@ extern "C" {
     static i32 QuickBoltCreatePc(DOGFIGHT_QUICK_BUFFER_PC *buffer, NUMTX *matrix, NUVEC4 *velocity, f32 duration,
                                  i32 type, i32 model_id) {
         DOGFIGHT_QUICK_BOLT_PC *record = QuickBoltRecordAllocatePc(buffer);
-        f64 dx, dy, dz;
+        f64 dx;
+        f64 dy;
+        f64 dz;
         if (record != NULL) {
             dy = (f64)matrix->m31 - global_camera.mtx.m31;
             dx = (f64)matrix->m30 - global_camera.mtx.m30;
@@ -749,10 +757,20 @@ extern "C" {
         i32 index = (i32)scaled;
         f32 fraction = scaled - index;
         __declspec(align(16)) NUVEC4 direction;
-        __declspec(align(16)) NUVEC4 first, last;
-        __declspec(align(16)) NUVEC4 constant, linear, quadratic, coefficient, cubic;
-        NUVEC4 *previous, *current, *next, *following;
-        f32 squared, cubed, sum;
+        __declspec(align(16)) NUVEC4 first;
+        __declspec(align(16)) NUVEC4 last;
+        __declspec(align(16)) NUVEC4 constant;
+        __declspec(align(16)) NUVEC4 linear;
+        __declspec(align(16)) NUVEC4 quadratic;
+        __declspec(align(16)) NUVEC4 coefficient;
+        __declspec(align(16)) NUVEC4 cubic;
+        NUVEC4 *previous;
+        NUVEC4 *current;
+        NUVEC4 *next;
+        NUVEC4 *following;
+        f32 squared;
+        f32 cubed;
+        f32 sum;
         if (index <= 0) {
             direction.x = spline->points[0].x - spline->points[1].x;
             direction.y = spline->points[0].y - spline->points[1].y;
@@ -875,7 +893,8 @@ extern "C" {
     }
 
     static void SampleFlightSplinePc(FLIGHT_SPLINE_RESOURCE_PC *spline, NUVEC4 *points, i32 count) {
-        f32 step, along;
+        f32 step;
+        f32 along;
         i32 i;
         step = 1.0 / (f64)(count - 1);
         points[0] = spline->points[0];
@@ -890,7 +909,9 @@ extern "C" {
     static f32 FlightSplineLegacyLengthPc(FLIGHT_SPLINE_RESOURCE_PC *spline) {
         f32 distance = 0.0f;
         f32 along = 1.0f;
-        __declspec(align(16)) NUVEC4 current, previous, difference;
+        __declspec(align(16)) NUVEC4 current;
+        __declspec(align(16)) NUVEC4 previous;
+        __declspec(align(16)) NUVEC4 difference;
         f32 squared;
         if (spline->point_count != 0) {
             CalcSplinePoint(spline, &current, along);
@@ -918,9 +939,14 @@ extern "C" {
 
     static f32 FlightSplineCumulativeLengthPc(FLIGHT_SPLINE_RESOURCE_PC *spline) {
         f32 distance = 0.0f;
-        i32 point, sample;
-        f32 point_value, along, squared;
-        __declspec(align(16)) NUVEC4 previous, current, difference;
+        i32 point;
+        i32 sample;
+        f32 point_value;
+        f32 along;
+        f32 squared;
+        __declspec(align(16)) NUVEC4 previous;
+        __declspec(align(16)) NUVEC4 current;
+        __declspec(align(16)) NUVEC4 difference;
         for (point = 0; point < spline->point_count; ++point) {
             point_value = (f32)point;
             along = (f32)((f64)point_value / spline->point_count);
@@ -971,7 +997,9 @@ extern "C" {
 
     void __cdecl FlightSpline_Init(WORLDINFO *world, FLIGHT_SPLINE_RESOURCE_PC *splines, i32 capacity) {
         char filename[256];
-        i32 version, count, i;
+        i32 version;
+        i32 count;
+        i32 i;
         FLIGHT_SPLINE_FILE_PC *spline;
         sprintf(filename, "%s%s", world->config_file, FlightSplineExtensionPc);
         EdFileSetMedia(1);
@@ -1012,9 +1040,14 @@ extern "C" {
 
     /* Native debug paths retain these vector evaluations without line submission calls. */
     static void DrawFlightSplineDebugPc(FLIGHT_SPLINE_RESOURCE_PC *spline, i32 mode) {
-        __declspec(align(16)) NUVEC4 points[512], direction, axis;
-        i32 count, i, from;
-        i16 yaw, pitch;
+        __declspec(align(16)) NUVEC4 points[512];
+        __declspec(align(16)) NUVEC4 direction;
+        __declspec(align(16)) NUVEC4 axis;
+        i32 count;
+        i32 i;
+        i32 from;
+        i16 yaw;
+        i16 pitch;
         if (mode == 1 || (mode != 2 && mode != 3)) {
             return;
         }
@@ -1164,8 +1197,13 @@ extern "C" {
     }
 
     static void StarFighterAlignPc(starfighter_s *fighter, NUVEC4 *direction, f32 distance, i32 mode) {
-        __declspec(align(16)) NUVEC4 local, up;
-        i16 yaw, pitch, world_yaw, world_pitch, roll;
+        __declspec(align(16)) NUVEC4 local;
+        __declspec(align(16)) NUVEC4 up;
+        i16 yaw;
+        i16 pitch;
+        i16 world_yaw;
+        i16 world_pitch;
+        i16 roll;
         f64 limit;
         f32 adjustment;
         NuVecInvMtxRotate((NUVEC *)&local, (NUVEC *)direction, &fighter->matrix);
@@ -1209,11 +1247,26 @@ extern "C" {
 
     /* Return 0: prepared shot; 1: lost target; 2: target retained without a shot. */
     static i32 StarFighterFirePc(starfighter_s *fighter, NUVEC4 *velocity, NUMTX *aim_matrix, f32 shot_speed) {
-        __declspec(align(16)) NUVEC offset, local;
-        NUVEC *target_position, *target_velocity, *axis, *front, *right, *up;
+        __declspec(align(16)) NUVEC offset;
+        __declspec(align(16)) NUVEC local;
+        NUVEC *target_position;
+        NUVEC *target_velocity;
+        NUVEC *axis;
+        NUVEC *front;
+        NUVEC *right;
+        NUVEC *up;
         GAMEOBJECT *player;
-        f32 forward, square, ratio, closing_speed, travel_time, least, up_dot, front_dot, bias;
-        i16 yaw, pitch;
+        f32 forward;
+        f32 square;
+        f32 ratio;
+        f32 closing_speed;
+        f32 travel_time;
+        f32 least;
+        f32 up_dot;
+        f32 front_dot;
+        f32 bias;
+        i16 yaw;
+        i16 pitch;
 
         union {
             f32 value;
@@ -1323,7 +1376,8 @@ extern "C" {
         DOGFIGHT_SPACE_PC *space = (DOGFIGHT_SPACE_PC *)WORLD->level_specific_data;
         DOGFIGHT_TARGET_SPLINE_PC *spline = (DOGFIGHT_TARGET_SPLINE_PC *)fighter->spline;
         DOGFIGHT_FIGHTER_PC *record;
-        i32 target_id, i;
+        i32 target_id;
+        i32 i;
         if (spline == NULL) {
             return;
         }
@@ -1366,8 +1420,16 @@ extern "C" {
         NUVEC4 shot_velocity;
         __declspec(align(16)) NUVEC4 direction;
         NUMTX aim_matrix;
-        f32 magnitude, scale, distance_squared, camera_distance, pitch, distance, speed;
-        f64 dx, dy, dz;
+        f32 magnitude;
+        f32 scale;
+        f32 distance_squared;
+        f32 camera_distance;
+        f32 pitch;
+        f32 distance;
+        f32 speed;
+        f64 dx;
+        f64 dy;
+        f64 dz;
         i32 finished;
         i32 fire_result;
         if (Player[0] != NULL && ((GAMEOBJECT *)Player[0])->sock_position.distance > 435.0) {
@@ -1644,7 +1706,8 @@ extern "C" {
     static void ProcessFlightGroupPc(DOGFIGHT_GROUP_PC *group, DOGFIGHT_QUICK_BUFFER_PC *buffer) {
         __declspec(align(16)) NUVEC step;
         f32 speed;
-        i32 i, active = 0;
+        i32 i;
+        i32 active = 0;
         if (group->active == 0) {
             return;
         }
@@ -1720,7 +1783,8 @@ extern "C" {
         NUVEC4 *direction;
         f32 value;
         i32 i = 6;
-        GAMEOBJECT *first, *second;
+        GAMEOBJECT *first;
+        GAMEOBJECT *second;
         space->origin_end.x = DogfightOriginEndXPc;
         space->origin_end.y = DogfightOriginEndYPc;
         space->origin_end.z = DogfightOriginEndZPc;
@@ -1871,7 +1935,8 @@ extern "C" {
     static void DrawSpaceLevelPc(DOGFIGHT_SPACE_PC *space) {
         GAMEOBJECT *player;
         NUMTX matrix;
-        i32 i, j;
+        i32 i;
+        i32 j;
         if (DogfightHideGeometryPc == 0) {
             for (i = 0; i < 2; ++i) {
                 if (space->crosses[i].enabled != 0) {
@@ -2048,10 +2113,20 @@ extern "C" {
         __declspec(align(16)) NUVEC relative_velocity;
         __declspec(align(16)) NUVEC step;
         NUVEC *ship_position = (NUVEC *)&fighter->matrix.m30;
-        f32 a, dot, b, c, root, enter, leave, time;
+        f32 a;
+        f32 dot;
+        f32 b;
+        f32 c;
+        f32 root;
+        f32 enter;
+        f32 leave;
+        f32 time;
         f64 denominator;
-        f64 dx, dy, dz;
-        i32 coins, player_index;
+        f64 dx;
+        f64 dy;
+        f64 dz;
+        i32 coins;
+        i32 player_index;
         relative_position.x = position->x - ship_position->x;
         relative_position.y = position->y - ship_position->y;
         relative_position.z = position->z - ship_position->z;
@@ -2130,7 +2205,8 @@ extern "C" {
         DOGFIGHT_SPACE_PC *space;
         DOGFIGHT_COLLISION_VECTOR_PC position;
         DOGFIGHT_COLLISION_VECTOR_PC velocity;
-        i32 group, i;
+        i32 group;
+        i32 i;
         if (WORLD->has_level_specific_data == 0) {
             return 0;
         }
@@ -2162,8 +2238,13 @@ extern "C" {
 
     static void DrawSelectedSockPc(SOCKSYS_PC *system, i32 radius, SOCKPOSITION_PC *position, i32 mode, i32 count) {
         SOCK_PC *sock;
-        __declspec(align(16)) NUVEC a, b, c, d, difference;
-        i32 i, end;
+        __declspec(align(16)) NUVEC a;
+        __declspec(align(16)) NUVEC b;
+        __declspec(align(16)) NUVEC c;
+        __declspec(align(16)) NUVEC d;
+        __declspec(align(16)) NUVEC difference;
+        i32 i;
+        i32 end;
         f32 square;
         if (position->sock_index == -1 || mode != 5) {
             return;
@@ -2367,7 +2448,8 @@ extern "C" {
     void MakeWingFormation(NUVEC4 *start, NUVEC4 *target, f32 duration, i32 mode) {
         DOGFIGHT_GROUP_PC *group = SelectFreeFlightGroupPc();
         __declspec(align(16)) NUVEC4 offset;
-        u16 angle, step;
+        u16 angle;
+        u16 step;
         i32 i;
         f32 speed;
         NUVEC4 *velocity;
@@ -2420,7 +2502,8 @@ extern "C" {
     }
 
     static void ProcessFormationActionsPc(DOGFIGHT_ACTION_STATE_PC *state) {
-        __declspec(align(16)) NUVEC4 start, target;
+        __declspec(align(16)) NUVEC4 start;
+        __declspec(align(16)) NUVEC4 target;
         if (state->actions == NULL) {
             return;
         }
@@ -2474,9 +2557,11 @@ extern "C" {
 
     static void ProcessSpaceLevelPc(DOGFIGHT_SPACE_PC *space) {
         DOGFIGHT_QUICK_BUFFER_PC *buffer;
-        GAMEOBJECT *player0, *player1;
+        GAMEOBJECT *player0;
+        GAMEOBJECT *player1;
         DOOR_s *door;
-        i32 i, j;
+        i32 i;
+        i32 j;
         space->door_elapsed = space->door_countdown;
         space->door_time += FRAMETIME;
         space->door_countdown += (f64)space->normalized_speed * FRAMETIME;

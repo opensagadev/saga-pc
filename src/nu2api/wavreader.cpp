@@ -75,7 +75,8 @@ u32 WavReader::FourCcPc(const char *text) {
 i32 WavReader::FindChunkPc(HANDLE input, const char *name, PC_WAVE_CHUNK_PC *chunk) {
     u32 wanted = FourCcPc(name);
     DWORD bytes;
-    LARGE_INTEGER move, position;
+    LARGE_INTEGER move;
+    LARGE_INTEGER position;
     while (ReadFile(input, chunk, 8, &bytes, NULL) && bytes == 8) {
         if (chunk->kind == wanted) {
             move.QuadPart = 0;
@@ -92,7 +93,8 @@ i32 WavReader::FindChunkPc(HANDLE input, const char *name, PC_WAVE_CHUNK_PC *chu
 }
 
 i32 WavReader::SkipChunkPc(HANDLE input, const PC_WAVE_CHUNK_PC *chunk) {
-    LARGE_INTEGER move, position;
+    LARGE_INTEGER move;
+    LARGE_INTEGER position;
     move.QuadPart = base_position + (i64)(u32)chunk->offset + chunk->bytes;
     return SetFilePointerEx(input, move, &position, FILE_BEGIN) != (BOOL)-1;
 }
@@ -101,7 +103,8 @@ HRESULT WavReader::Open(NUDATHDR *header, char *path, WAVEFORMATEX *output) {
     file = NULL;
     base_position = 0;
     i32 archive_size;
-    LARGE_INTEGER move, position;
+    LARGE_INTEGER move;
+    LARGE_INTEGER position;
     if (header != NULL) {
         if (NuDatGetFileInfo(header, path, &base_position, &archive_size)) {
             file = CreateFileA(header->name, GENERIC_READ, FILE_SHARE_READ, NULL, OPEN_EXISTING, FILE_ATTRIBUTE_NORMAL,
@@ -177,7 +180,8 @@ HRESULT WavReader::Read(void *output, u32 requested, u32 *read_count) {
             PCDecoderDiagnosticNoOpPc();
             PCDecoderDiagnosticNoOpPc(requested, amount);
         }
-        LARGE_INTEGER move, position;
+        LARGE_INTEGER move;
+        LARGE_INTEGER position;
         move.QuadPart = base_position + (i64)offset + data_offset;
         DWORD bytes;
         if (SetFilePointerEx(file, move, &position, FILE_BEGIN)) {

@@ -33,7 +33,10 @@ void __cdecl edanimUpdateObjects(f32 elapsed) {
     NUSPECIALHANDLE special;
     f32 seconds;
     NUMTX orientation;
-    i32 index, particle_index, sound_index, play;
+    i32 index;
+    i32 particle_index;
+    i32 sound_index;
+    i32 play;
     seconds = NuVideoGetMode() == 3 ? elapsed / 50.0f : elapsed / 60.0f;
     for (index = 0; index < 64; ++index) {
         if (AnimParams[index].instance_id == -1 || edanim_page_on[AnimParams[index].page] == 0) {

@@ -143,7 +143,9 @@ void __cdecl SpeederChaseA_Update(WORLDINFO *world) {
 void __cdecl SpeederChaseA_Panel(WORLDINFO *world) {
     i16 targets[10];
     u8 defeated[10] = {0};
-    i32 count, killed, i;
+    i32 count;
+    i32 killed;
+    i32 i;
     (void)world;
     if (netclient != 0) {
         if (SpeederChaseNetPacketPc == NULL || SpeederChaseNetPacketPc->phase != 1 ||

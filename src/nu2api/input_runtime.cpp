@@ -284,7 +284,8 @@ extern void(__cdecl *PcInputStateInitializedCallback)(PC_INPUT_RUNTIME_PC *);
 
 void PC_INPUT_RUNTIME_PC::ReadConfiguration(PC_INPUT_CONFIG_PC *records, const char *directory) {
     char path[1024];
-    u32 version = 0, magic;
+    u32 version = 0;
+    u32 magic;
     NuStrCpy(path, directory);
     NuStrCat(path, "Mappings.dat");
     memset(records, 0, 0x2700);
@@ -1236,8 +1237,10 @@ void PC_INPUT_RUNTIME_PC::CaptureBindingPc(i32 port) {
 
 // Native input_runtime.cpp member.
 void PC_INPUT_RUNTIME_PC::NormalizeAxisPairPc(i16 *x, i16 *y) {
-    f32 vx = (f32)*x, vy = (f32)*y;
-    f32 ax = vx < 0 ? -vx : vx, ay = vy < 0 ? -vy : vy;
+    f32 vx = (f32)*x;
+    f32 vy = (f32)*y;
+    f32 ax = vx < 0 ? -vx : vx;
+    f32 ay = vy < 0 ? -vy : vy;
     f32 square = ax * ax + ay * ay;
     f32 magnitude = NuFsqrt(square);
     f32 ratio;
@@ -1763,10 +1766,20 @@ extern "C" void __cdecl PcInputStageAuxiliaryConfigPc(i32 port, i32 bank, i32 ke
 // Append input_runtime.cpp. Native strings/table definitions and mappings in B-save-data.json.
 extern u8 PcInputWriteTextProfiles;
 extern const char *PcInputBindingKindNames[14];
-extern const char PcInputProfileHeader[], PcInputProfileGuidChar[], PcInputProfileGuidEnd[], PcInputProfileNumbers[];
-extern const char PcInputProfileTab[], PcInputProfileAxis[], PcInputProfileAxesEnd[], PcInputProfileUnknownAxesEnd[];
-extern const char PcInputProfileButton[], PcInputProfileButtonsEnd0[], PcInputProfileButtonsEnd1[];
-extern const char PcInputProfileButtonsEnd2[], PcInputProfileButtonsEnd3[], PcInputProfileFileFormat[];
+extern const char PcInputProfileHeader[];
+extern const char PcInputProfileGuidChar[];
+extern const char PcInputProfileGuidEnd[];
+extern const char PcInputProfileNumbers[];
+extern const char PcInputProfileTab[];
+extern const char PcInputProfileAxis[];
+extern const char PcInputProfileAxesEnd[];
+extern const char PcInputProfileUnknownAxesEnd[];
+extern const char PcInputProfileButton[];
+extern const char PcInputProfileButtonsEnd0[];
+extern const char PcInputProfileButtonsEnd1[];
+extern const char PcInputProfileButtonsEnd2[];
+extern const char PcInputProfileButtonsEnd3[];
+extern const char PcInputProfileFileFormat[];
 
 void PC_INPUT_RUNTIME_PC::SanitizeConfigNamePc(const char *name, char *destination) {
     PCByteCopy(destination, name, 63);
@@ -1782,7 +1795,9 @@ void PC_INPUT_RUNTIME_PC::SanitizeConfigNamePc(const char *name, char *destinati
 }
 
 void PC_INPUT_RUNTIME_PC::FormatConfigTextPc(char *destination, PC_INPUT_CONFIG_PC *config) {
-    char text[256], part[256], character[4];
+    char text[256];
+    char part[256];
+    char character[4];
     sprintf(text, PcInputProfileHeader, config->name, config->product_id, config->guid_data2, config->guid_data3);
     for (i32 i = 0; i < 8; ++i) {
         u32 c = config->guid_data4[i];
@@ -1848,7 +1863,9 @@ void PC_INPUT_RUNTIME_PC::FormatConfigTextPc(char *destination, PC_INPUT_CONFIG_
 }
 
 void PC_INPUT_RUNTIME_PC::WriteConfigTextPc(const char *directory, PC_INPUT_CONFIG_PC *config) {
-    char name[64], path[1024], text[2036];
+    char name[64];
+    char path[1024];
+    char text[2036];
     if (!config->name[0]) {
         return;
     }

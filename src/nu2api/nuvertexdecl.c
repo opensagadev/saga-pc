@@ -20,7 +20,8 @@ PC_VERTEX_DECL_ENTRY_PC *__cdecl PCVertexDeclarationFindSlot(const PC_VERTEX_DEC
 }
 
 PC_TEXTURE_RESOURCE_PC *__cdecl NuGetVertexDeclaration(u32 descriptor) {
-    PC_VERTEX_DECL_ENTRY_PC key, *record;
+    PC_VERTEX_DECL_ENTRY_PC key;
+    PC_VERTEX_DECL_ENTRY_PC *record;
     i32 count = PCVertexDeclarationCountPC;
     u8 found = 0;
     key.key = descriptor;
@@ -28,8 +29,18 @@ PC_TEXTURE_RESOURCE_PC *__cdecl NuGetVertexDeclaration(u32 descriptor) {
     record = PCVertexDeclarationFindSlot(&key, PCVertexDeclarationCachePC, count, &found);
     if (!found) {
         PC_VERTEX_ELEMENT_PC elements[24];
-        i32 normal, tangent, binormal, diffuse, specular, texture_mode, half_texture_mode;
-        i32 weights, colour2, skinned, instanced, element_count;
+        i32 normal;
+        i32 tangent;
+        i32 binormal;
+        i32 diffuse;
+        i32 specular;
+        i32 texture_mode;
+        i32 half_texture_mode;
+        i32 weights;
+        i32 colour2;
+        i32 skinned;
+        i32 instanced;
+        i32 element_count;
         i32 offset;
         PCByteCopy(record + 1, record, (count - (record - PCVertexDeclarationCachePC)) * sizeof(*record));
         ++PCVertexDeclarationCountPC;

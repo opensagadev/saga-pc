@@ -16,10 +16,13 @@ typedef struct LEDGE_MOTION_PC {
         } state_bits;
     };
 
-    u8 type_index, flags;
+    u8 type_index;
+    u8 flags;
     u8 unknown_01a[2];
-    i16 field_1c, field_1e;
-    NUVEC bounds_min, bounds_max;
+    i16 field_1c;
+    i16 field_1e;
+    NUVEC bounds_min;
+    NUVEC bounds_max;
 } LEDGE_MOTION_PC;
 
 typedef struct LEDGE_WORLD_PC {
@@ -32,8 +35,10 @@ typedef struct LEDGEPIECE {
     i16 object_id;
     i8 type_code;
     u8 straight;
-    NUVEC start, end;
-    u16 exit_angle, arc_mid_angle;
+    NUVEC start;
+    NUVEC end;
+    u16 exit_angle;
+    u16 arc_mid_angle;
 } LEDGEPIECE;
 
 STATIC_ASSERT(sizeof(LEDGE_MOTION_PC) == 0x38);

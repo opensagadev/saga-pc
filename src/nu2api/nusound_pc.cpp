@@ -639,8 +639,10 @@ i32 SoundVoiceManagerPC::LoadWavSamplePc(const char *name, i32 index) {
     PC_DS_BUFFER_DESC_VIEW descriptor;
     char path[0x104];
     char directory[0x104];
-    void *first, *second;
-    DWORD first_bytes, second_bytes;
+    void *first;
+    void *second;
+    DWORD first_bytes;
+    DWORD second_bytes;
     u32 read_bytes;
     if (PCSampleLoadEnabledPc == 0) {
         return -1;
@@ -774,7 +776,8 @@ extern "C" {
         char directory[0x104];
         char filename[0x104];
         i32 i;
-        u8 requested, loaded;
+        u8 requested;
+        u8 loaded;
         const char *name;
         do {
             WaitForSingleObject(PCSoundMixEvent, INFINITE);

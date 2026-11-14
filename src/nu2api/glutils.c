@@ -2,12 +2,24 @@
 extern const f32 DebrisGlassMaterialOpacity;
 
 typedef struct debris_material_flags_pc_s {
-    u32 alpha_mode : 4, filter_mode : 2, unknown_0_64_128 : 2, unknown_1_1_2 : 2, unknown_1_4_8 : 2, cull_mode : 2,
-        z_mode : 2, unknown_2_1_2 : 2, unknown_2_4 : 1, unknown_19 : 1, alpha_test : 2, unknown_22_31 : 10;
+    u32 alpha_mode : 4;
+    u32 filter_mode : 2;
+    u32 unknown_0_64_128 : 2;
+    u32 unknown_1_1_2 : 2;
+    u32 unknown_1_4_8 : 2;
+    u32 cull_mode : 2;
+    u32 z_mode : 2;
+    u32 unknown_2_1_2 : 2;
+    u32 unknown_2_4 : 1;
+    u32 unknown_19 : 1;
+    u32 alpha_test : 2;
+    u32 unknown_22_31 : 10;
 } DEBRIS_MATERIAL_FLAGS_PC;
 
 typedef struct debris_material_secondary_pc_s {
-    u32 alpha_fail : 2, disable_depth_write : 1, unknown_03_31 : 29;
+    u32 alpha_fail : 2;
+    u32 disable_depth_write : 1;
+    u32 unknown_03_31 : 29;
 } DEBRIS_MATERIAL_SECONDARY_PC;
 
 typedef struct debris_material_pc_s {
@@ -19,7 +31,8 @@ typedef struct debris_material_pc_s {
     f32 glass_parameter;
     u8 unknown_064[0xc];
     f32 opacity;
-    i16 texture_id, sort_priority;
+    i16 texture_id;
+    i16 sort_priority;
     u8 unknown_078[0x21];
     i8 particle_type_tag;
     u8 unknown_09a[0x156];

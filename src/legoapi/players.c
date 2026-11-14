@@ -327,7 +327,8 @@ void __cdecl Players_InitPositions(WORLDINFO *world) {
 }
 
 void __cdecl RememberPlayerIDs(i32 force, i32 first_id, i32 second_id) {
-    i32 ids[2], index;
+    i32 ids[2];
+    i32 index;
     if (VehicleArea != 0 || GAMEDEMO != 0) {
         return;
     }
@@ -477,10 +478,15 @@ i32 __cdecl MovingBackwards(GAMEOBJECT *object) {
 
 void __cdecl PushAway(NUVEC *position, f32 radius, NUVEC *minimum, NUVEC *maximum, GAMEOBJECT *object,
                       GAMEOBJECT *excluded, f32 speed_multiplier, u32 flags) {
-    i32 count, i;
-    NUVEC bounds_min, bounds_max;
+    i32 count;
+    i32 i;
+    NUVEC bounds_min;
+    NUVEC bounds_max;
     NUVEC target;
-    f32 dx, dz, combined_radius, speed;
+    f32 dx;
+    f32 dz;
+    f32 combined_radius;
+    f32 speed;
     u16 angle;
     if (object == NULL) {
         object = Obj;
@@ -570,8 +576,17 @@ u8 __cdecl FindNearestPlayerToVec(NUVEC *position, GAMEOBJECT **nearest_player, 
 void __cdecl Player_ToggleCharacter(GAMEOBJECT *object, i32 direction, i32 sound) {
     f32 hold_time = object->input_toggle_hold_time;
     WORLDINFO *world = WorldInfo_CurrentlyActive();
-    i32 old_id, left, right, index, attempts, id, collected, area, allowed;
-    u32 left_mask, right_mask;
+    i32 old_id;
+    i32 left;
+    i32 right;
+    i32 index;
+    i32 attempts;
+    i32 id;
+    i32 collected;
+    i32 area;
+    i32 allowed;
+    u32 left_mask;
+    u32 right_mask;
     FULLDEBUGTOGGLE = 0;
     if ((HUB_ADATA != NULL && world->area == HUB_ADATA) || FadeSys.fade != 0.0f ||
         (U64_PAIR(&CInfo[(i8)object->character_context].flags) & 0x100) != 0 || object->takeover_source != NULL ||

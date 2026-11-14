@@ -84,9 +84,14 @@ static void DrawLightningBolts(GAMEOBJECT *object, GAMEOBJECT *target, i32 light
 
 typedef struct force_glow_packet_pc_s {
     u8 unknown000[0x650];
-    void *object, *candidate;
+    void *object;
+    void *candidate;
     u8 unknown658[0x6bc - 0x658];
-    f32 alpha, target, recovery, unknown6c8, hold;
+    f32 alpha;
+    f32 target;
+    f32 recovery;
+    f32 unknown6c8;
+    f32 hold;
 } FORCE_GLOW_PACKET_PC;
 
 STATIC_ASSERT(offsetof(FORCE_GLOW_PACKET_PC, object) == 0x650);
@@ -228,7 +233,9 @@ typedef struct force_sfx_config_pc_s {
     u8 unknown_00[0x28];
     GAMEANIMSET *anim_set;
     u8 unknown_2c[0x82 - 0x2c];
-    i16 process_sfx, complete_sfx, return_sfx;
+    i16 process_sfx;
+    i16 complete_sfx;
+    i16 return_sfx;
     u8 unknown_88[0xa4 - 0x88];
 } FORCE_SFX_CONFIG_PC;
 
@@ -286,8 +293,13 @@ typedef struct trigger_force_object_pc_s {
 STATIC_ASSERT(offsetof(TRIGGER_FORCE_OBJECT_PC, force) == 0x10cc);
 
 typedef struct FORCE_RESET_PROGRESS_PC {
-    u32 enabled[4], visible[4], reward_released[4], socket_hidden[4];
-    u32 completion_released[4], completion_pending[4], destroyed[4];
+    u32 enabled[4];
+    u32 visible[4];
+    u32 reward_released[4];
+    u32 socket_hidden[4];
+    u32 completion_released[4];
+    u32 completion_pending[4];
+    u32 destroyed[4];
     u8 group_members[8][8];
 } FORCE_RESET_PROGRESS_PC;
 

@@ -56,7 +56,9 @@ typedef struct CUT_LOAD_STATE_PC {
     u8 off : 1;
     u8 end_anim : 1;
     u8 unknown_0c_bits : 5;
-    u8 unknown_0d, unknown_0e, unknown_0f;
+    u8 unknown_0d;
+    u8 unknown_0e;
+    u8 unknown_0f;
 } CUT_LOAD_STATE_PC;
 
 STATIC_ASSERT(sizeof(CUT_LOAD_STATE_PC) == 0x10);
@@ -77,13 +79,28 @@ typedef struct CUT_LOAD_TEXANIM_PC {
 } CUT_LOAD_TEXANIM_PC;
 
 typedef struct CUT_LOAD_FADE_FOG_PC {
-    f32 frame, near_distance, far_distance, value;
+    f32 frame;
+    f32 near_distance;
+    f32 far_distance;
+    f32 value;
 } CUT_LOAD_FADE_FOG_PC;
 
 typedef struct CUT_LOAD_SUBTITLE_PC {
     i16 text_id;
-    u8 red, green, blue, alpha, alignment, unknown_07;
-    f32 start_frame, end_frame, x, y, x_scale, y_scale, max_width, fade_time;
+    u8 red;
+    u8 green;
+    u8 blue;
+    u8 alpha;
+    u8 alignment;
+    u8 unknown_07;
+    f32 start_frame;
+    f32 end_frame;
+    f32 x;
+    f32 y;
+    f32 x_scale;
+    f32 y_scale;
+    f32 max_width;
+    f32 fade_time;
 } CUT_LOAD_SUBTITLE_PC;
 
 STATIC_ASSERT(sizeof(CUT_LOAD_SUBTITLE_PC) == 0x28);
@@ -356,7 +373,9 @@ typedef struct CUT_DRAW_RIGID_PC {
 
 typedef struct CUT_DRAW_LOCATOR_ENTRY_PC {
     char *name;
-    u32 unknown_04, unknown_08, unknown_0c;
+    u32 unknown_04;
+    u32 unknown_08;
+    u32 unknown_0c;
     void(__cdecl *update)(INSTNUGCUTSCENE *, CUT_DRAW_LOCATOR_SYS_PC *, CUT_DRAW_LOCATOR_INSTANCE_PC *,
                           CUT_DRAW_LOCATOR_PC *, f32, NUMTX *, i32);
 } CUT_DRAW_LOCATOR_ENTRY_PC;
@@ -366,8 +385,11 @@ STATIC_ASSERT(offsetof(CUT_DRAW_LOCATOR_ENTRY_PC, update) == 0x10);
 
 typedef struct CUT_CONTROLLER_INSTANCE_PC {
     u8 unknown_00[0x88];
-    u32 flags_88, flags_8c;
-    f32 current_frame, render_frame, rate;
+    u32 flags_88;
+    u32 flags_8c;
+    f32 current_frame;
+    f32 render_frame;
+    f32 rate;
 } CUT_CONTROLLER_INSTANCE_PC;
 
 STATIC_ASSERT(offsetof(CUT_CONTROLLER_INSTANCE_PC, flags_88) == 0x88);
@@ -445,13 +467,18 @@ typedef struct cut_player_config_pc_s {
     CUT_PLAYER_CLIP_CONFIG_PC *active;
     u16 clip_count;
     i16 return_door;
-    i16 *clip_text, *intro_text, *midtro_text, *outro_text, *ending_text;
+    i16 *clip_text;
+    i16 *intro_text;
+    i16 *midtro_text;
+    i16 *outro_text;
+    i16 *ending_text;
 } CUT_PLAYER_CONFIG_PC;
 
 extern "C" {
     extern i32(__cdecl *CutScenePlayer_AcceptFn)(CUT_PLAYER_CLIP_CONFIG_PC *);
     extern const char Text_UnknownText[2];
-    extern const char CutPlayerClipFormatPc[8], CutPlayerTextSeparatorPc[4];
+    extern const char CutPlayerClipFormatPc[8];
+    extern const char CutPlayerTextSeparatorPc[4];
 }
 
 extern "C" {
@@ -2195,7 +2222,8 @@ extern "C" {
     /* 0057e720..0057e7d2, ordinary one-argument cdecl. */
     i32 __cdecl CutScenePlayer_CanStart(i32 clip_id) {
         CUT_PLAYER_CLIP_CONFIG_PC *clips;
-        i32 area_id, episode;
+        i32 area_id;
+        i32 episode;
         if (CutScenePlayer != NULL && clip_id >= 0 && clip_id < CutScenePlayer->clip_count) {
             clips = (CUT_PLAYER_CLIP_CONFIG_PC *)CutScenePlayer->clips;
             area_id = LDataList[clips[clip_id].level_id].area_index;
@@ -2231,7 +2259,8 @@ extern "C" {
     void __cdecl CutScenePlayer_GetText(i32 id, char *title, char *subtitle, i32 mode) {
         CUT_PLAYER_CLIP_CONFIG_PC *clips;
         LEVELDATA_PC *level;
-        i32 area_id, episode;
+        i32 area_id;
+        i32 episode;
         if (CutScenePlayer == NULL) {
             if (title != NULL) {
                 NuStrCpy(title, Text_UnknownText);

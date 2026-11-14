@@ -47,8 +47,10 @@ static __inline f32 PlayersFabsPc(f32 value) {
 }
 
 i32 __cdecl Pushing(GAMEOBJECT *object, u16 *normal_angle, i32 *surface, i32 *angle_difference) {
-    i32 pushing_obstacle, difference;
-    u16 input_angle, angle;
+    i32 pushing_obstacle;
+    i32 difference;
+    u16 input_angle;
+    u16 angle;
     if ((LEGOCONTEXT_PUSHOBSTACLE != -1 && object->character_context == LEGOCONTEXT_PUSHOBSTACLE) ||
         (LEGOCONTEXT_JUMP != -1 && object->character_context == LEGOCONTEXT_JUMP &&
          object->action_movement_state == 9)) {
@@ -381,7 +383,8 @@ finalize:
 
 i32 __cdecl WallShuffle_SetTargetMom(GAMEOBJECT *object, u16 input_angle) {
     u16 sideways_angle;
-    f32 direction, speed;
+    f32 direction;
+    f32 speed;
     object->target_velocity.x = NuTrigTable[object->movement_facing_angle >> 1];
     object->target_velocity.z = NuTrigTable[((object->movement_facing_angle + 0x4000) >> 1) & 0x7fff];
     sideways_angle = object->movement_facing_angle + 0x4000;

@@ -73,11 +73,14 @@ void __cdecl NuBrdigeDrawRope(NUMTL *material, NUVEC *first, NUVEC *second, i32 
 }
 
 void __cdecl NuBridgeDraw(NUMTL *material) {
-    i32 b, i;
+    i32 b;
+    i32 i;
     NUBRIDGE_PC *bridge;
-    i32 n, group;
+    i32 n;
+    i32 group;
     NUVEC4 point;
-    NUVEC first[512], second[512];
+    NUVEC first[512];
+    NUVEC second[512];
     NUMTX matrix;
     i32 boundaries[8]; /* retail size: boundaries[group + 1] can write one past the end with all 8 bridges */
     NUVEC4 offsets[2];
@@ -146,11 +149,14 @@ void __cdecl NuBridgeDraw(NUMTL *material) {
 }
 
 void NuBridgeUpdate(NUVEC *position) {
-    i32 b, i;
+    i32 b;
+    i32 i;
     NUBRIDGE_PC *bridge;
-    f32 t, side;
+    f32 t;
+    f32 side;
     i32 n;
-    f32 left, right;
+    f32 left;
+    f32 right;
     NUVEC delta;
     if (NuBridgeProc) {
         bridge = Bridges;
@@ -497,7 +503,8 @@ i32 __cdecl NuBridgeAlloc(void) {
 void __cdecl NuBridgeInit(void) {
     void *saved_terrain = TerrainGetCur();
     NUBRIDGE_PC *bridge = Bridges;
-    i32 i, j;
+    i32 i;
+    i32 j;
     for (i = 0; i < 8; ++i, ++bridge) {
         if (bridge->active) {
             TerrainSetCur(bridge->terrain);

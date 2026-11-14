@@ -11,10 +11,14 @@ struct sound_tuple_pc {
 static struct sound_tuple_pc sound_expected = {0};
 static const void *sound_setter_caller = NULL;
 static const char *sound_last_stage = "setter";
-static DWORD sound_last_thread = 0, sound_setter_thread = 0;
+static DWORD sound_last_thread = 0;
+static DWORD sound_setter_thread = 0;
 static volatile LONG sound_lock = 0;
-static volatile LONG sound_active_setters = 0, sound_generation = 0;
-static volatile LONG sound_baseline_valid = 0, sound_disabled = 0, sound_reported = 0;
+static volatile LONG sound_active_setters = 0;
+static volatile LONG sound_generation = 0;
+static volatile LONG sound_baseline_valid = 0;
+static volatile LONG sound_disabled = 0;
+static volatile LONG sound_reported = 0;
 static volatile LONG sound_skip_reported[5] = {0};
 static volatile LONG sound_ready_reported = 0;
 
@@ -81,10 +85,15 @@ void __cdecl SagaDebugSoundCheckpointPc(const char *stage, void *volatile const 
                                         void *volatile const *destination) {
     int saved_errno = errno;
     DWORD saved_error = GetLastError();
-    DWORD thread = GetCurrentThreadId(), setter_thread = 0, previous_thread = 0;
+    DWORD thread = GetCurrentThreadId();
+    DWORD setter_thread = 0;
+    DWORD previous_thread = 0;
     LONG generation = 0;
-    int skip = -1, diverged = 0, ready = 0;
-    struct sound_tuple_pc observed, expected;
+    int skip = -1;
+    int diverged = 0;
+    int ready = 0;
+    struct sound_tuple_pc observed;
+    struct sound_tuple_pc expected;
     const void *caller = NULL;
     const char *previous = NULL;
     if (sound_disabled != 0) {

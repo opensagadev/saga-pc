@@ -45,8 +45,11 @@ enum {
 };
 
 struct TERRAIN_IMPACT_RECORD {
-    NUVEC position, normal;
-    u8 material[2], flags, normal_flags;
+    NUVEC position;
+    NUVEC normal;
+    u8 material[2];
+    u8 flags;
+    u8 normal_flags;
 };
 
 typedef TERRAIN_SPHERE_PC TERRAIN_SPHERE;
@@ -554,7 +557,9 @@ extern "C" {
         f32 hit = 0.0f;
         NUVEC normal;
         NUVEC edge;
-        f32 temp, absolute_x, absolute_z;
+        f32 temp;
+        f32 absolute_x;
+        f32 absolute_z;
         normal.y = 0.0f;
         if (WallSplCount == 0) {
             return hit;
@@ -574,7 +579,9 @@ extern "C" {
             const f32 start_distance = (query->position.x - TERRAIN_HWS_A.x) * normal.x +
                                        (query->position.z - TERRAIN_HWS_A.z) * normal.z - query->collision_radius;
             if ((end_distance < 0.0f || start_distance < 0.0f) && start_distance > -query->collision_radius) {
-                f32 time, x, z;
+                f32 time;
+                f32 x;
+                f32 z;
                 edge.x = TERRAIN_HWS_B.x - TERRAIN_HWS_A.x;
                 edge.z = TERRAIN_HWS_B.z - TERRAIN_HWS_A.z;
                 if (start_distance < 0.0f) {

@@ -69,7 +69,8 @@ STATIC_ASSERT(offsetof(GIZMOSET_PC, gizmos) == 0xc);
 typedef struct SpinnerProgressEntryPc {
     f32 position;
     u16 rotation;
-    u8 flags, unused;
+    u8 flags;
+    u8 unused;
 } SpinnerProgressEntryPc;
 
 STATIC_ASSERT(sizeof(SpinnerProgressEntryPc) == 8);
@@ -142,8 +143,10 @@ static void SpinnerMatrixSetRotationYPc(NUMTX *matrix, i32 angle) {
 static void SpinnerMatrixRotateYPc(NUMTX *matrix, i32 angle) {
     f32 cosine = NuTrigTable[(((i32)((u32)angle + 0x4000u)) >> 1) & 0x7fff];
     f32 sine = NuTrigTable[(angle >> 1) & 0x7fff];
-    f32 m00 = matrix->m00, m10 = matrix->m10;
-    f32 m20 = matrix->m20, m30 = matrix->m30;
+    f32 m00 = matrix->m00;
+    f32 m10 = matrix->m10;
+    f32 m20 = matrix->m20;
+    f32 m30 = matrix->m30;
     matrix->m00 = (f64)m00 * cosine + (f64)matrix->m02 * sine;
     matrix->m02 = (f64)matrix->m02 * cosine - (f64)m00 * sine;
     matrix->m10 = (f64)matrix->m12 * sine + (f64)m10 * cosine;
@@ -169,8 +172,12 @@ static GAMEOBJECT *SpinnerOwnerPc(GIZSPINNER_s *spinner) {
 
 extern "C" {
     static void SpinnerBoundsResetPc(GIZSPINNER_s *spinner) {
-        NUVEC minimum, maximum, arm_minimum, arm_maximum;
-        f32 x_extent, z_extent;
+        NUVEC minimum;
+        NUVEC maximum;
+        NUVEC arm_minimum;
+        NUVEC arm_maximum;
+        f32 x_extent;
+        f32 z_extent;
         NuSpecialGetBounds((NUSPECIALHANDLE *)&spinner->special, &minimum, &maximum);
         if (NuSpecialCompare((NUSPECIALHANDLE *)&thingsSceneBase, (NUSPECIALHANDLE *)&spinner->special) != 0) {
             NuSpecialGetBounds((NUSPECIALHANDLE *)&thingsSceneArm, &arm_minimum, &arm_maximum);
@@ -203,13 +210,26 @@ extern "C" i32 __cdecl GizSpinner_Load(void *world_pointer, void *unused) {
     GAMEANIMSET *anim_set;
     GAMEANIMOBJ *object;
     nuhspecial_s special;
-    i32 version, index, name_length, output_points, object_count, object_index, point;
-    i32 special_missing, spinner_type, spinner_flags;
+    i32 version;
+    i32 index;
+    i32 name_length;
+    i32 output_points;
+    i32 object_count;
+    i32 object_index;
+    i32 point;
+    i32 special_missing;
+    i32 spinner_type;
+    i32 spinner_flags;
     u32 spinner_state_flags;
     char special_name[32];
     f32 longest_duration = 0.0f;
-    f32 animation_speed, initial_animation_point, spinner_field_98;
-    f32 start_frame, end_frame, frame_duration, rounded_point;
+    f32 animation_speed;
+    f32 initial_animation_point;
+    f32 spinner_field_98;
+    f32 start_frame;
+    f32 end_frame;
+    f32 frame_duration;
+    f32 rounded_point;
     (void)unused;
     if (world->spinners != NULL) {
         NuSpecialFind(things_scene, (NUSPECIALHANDLE *)&thingsSceneBase, (char *)LevelObjectNamePc00754378, 0);
@@ -437,8 +457,10 @@ extern "C" void __cdecl GizSpinner_Draw(void *world_pointer, void *data, f32 fra
     GIZSPINNER_s *spinner;
     GIZSPINNERARM_s *arm;
     NUMTX reflection;
-    f32 ground_height, override_height;
-    i32 index, arm_index;
+    f32 ground_height;
+    f32 override_height;
+    i32 index;
+    i32 arm_index;
     if (world->spinners == NULL || world->current_level->max_spinners == 0) {
         return;
     }
@@ -1057,7 +1079,8 @@ extern "C" i32 *__cdecl GizSpinner_GetBestBoltTarget(GIZMOSET_PC *, f32 *, NUVEC
         return NULL;
     }
     f32 best_alignment = 0.0f;
-    NUVEC minimum, maximum;
+    NUVEC minimum;
+    NUVEC maximum;
     minimum.x = position->x - radius;
     minimum.z = position->z - radius;
     maximum.x = position->x + radius;
@@ -1204,7 +1227,8 @@ extern "C" void __cdecl GizSpinner_Update(GIZSPINNER_s *spinner) {
         GameAnimSet_Stop(spinner->anim_set);
         stopped = 1;
     }
-    NUVEC minimum, maximum;
+    NUVEC minimum;
+    NUVEC maximum;
     minimum.x = spinner->position.x - spinner->field_0x09c;
     maximum.x = spinner->field_0x09c + spinner->position.x;
     minimum.z = spinner->position.z - spinner->field_0x09c;
@@ -1428,7 +1452,8 @@ extern "C" void __cdecl GizSpinners_Update(void *world_pointer, void *unused, f3
 
 extern "C" f32 GizSpinner_GetNearestTargetPoint(GIZSPINNER_s *spinner, NUVEC *origin, NUVEC *position, NUVEC *direction,
                                                 i32 check_direction) {
-    NUVEC positions[8], directions[8];
+    NUVEC positions[8];
+    NUVEC directions[8];
     f32 nearest_distance = 1000000000.0f;
     NUVEC *nearest_position = NULL;
     NUVEC *nearest_direction = NULL;

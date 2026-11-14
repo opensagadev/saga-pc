@@ -919,7 +919,8 @@ extern "C" {
 
     static void WorldStoreScriptProgressPC(WORLDINFO *world, LEVEL_SCRIPT_PROCESS_PC *processor,
                                            LEVEL_PROGRESS *progress) {
-        i32 index, parameter;
+        i32 index;
+        i32 parameter;
 
         if (progress == NULL || processor == NULL || NuStrLen(processor->name) == 0) {
             return;
@@ -944,7 +945,8 @@ extern "C" {
 
     /* Shared LEVEL_SCRIPT_PROCESS_PC is defined in saga.h in the final patch. */
     void __cdecl LevelScriptReStoreProgress(WORLDINFO *world, LEVEL_SCRIPT_PROCESS_PC *process) {
-        i32 index, parameter;
+        i32 index;
+        i32 parameter;
         if (world->level_progress == NULL || process == NULL || NuStrLen(process->name) == 0) {
             return;
         }
@@ -1666,7 +1668,8 @@ extern "C" {
 
 /* Append in existing world.cpp beside StoreSceneProgress. PC48c3f0..48c590 inclusive417. */
 void __cdecl ResetScene(NUGSCN *scene, SCENEPROGRESS *progress) {
-    i32 count, i;
+    i32 count;
+    i32 i;
     NUSPECIALHANDLE special;
     NUINSTANIM *animation;
     ANI3_HEADER_PC *data;
@@ -1720,7 +1723,8 @@ void __cdecl ResetScene(NUGSCN *scene, SCENEPROGRESS *progress) {
 
 extern "C" SCENESPECIALPROGRESS_PC *__cdecl FindSceneStateObj(NUGSCN *scene, SCENEPROGRESS *progress,
                                                               NUSPECIALHANDLE *target) {
-    i32 count, i;
+    i32 count;
+    i32 i;
     NUSPECIALHANDLE special;
     if (scene != NULL && progress != NULL && target != NULL) {
         count = NuSpecialGetNumSpecials(scene);

@@ -124,7 +124,12 @@ void __cdecl Tube_MoveCode(GAMEOBJECT *object, WORLDINFO *world) {
 typedef struct tube_callbacks_pc_s {
     char name[16];
     NUVEC position;
-    f32 height, radius, directional_speed, top, radius_squared, audio_cooldown;
+    f32 height;
+    f32 radius;
+    f32 directional_speed;
+    f32 top;
+    f32 radius_squared;
+    f32 audio_cooldown;
 
     union {
         u8 flags;
@@ -156,7 +161,8 @@ STATIC_ASSERT(offsetof(TUBE_CALLBACKS_PC, occupied_object_masks) == 0x38);
 
 typedef struct tube_progress_pc_s {
     /* Retail indexes both masks by tube / 32, although only 32 tubes are stored. */
-    u32 visible_mask[1], active_mask[1];
+    u32 visible_mask[1];
+    u32 active_mask[1];
 } TUBE_PROGRESS_PC;
 
 STATIC_ASSERT(sizeof(TUBE_PROGRESS_PC) == 8);
@@ -333,7 +339,8 @@ static void __cdecl Tubes_AddGizmos(void *system, i32 type_id, void *world_ptr, 
 static i32 __cdecl Tubes_Load(void *world_ptr, void *data) {
     WORLDINFO *world = (WORLDINFO *)world_ptr;
     TUBE_CALLBACKS_PC *tube;
-    i32 version, i;
+    i32 version;
+    i32 i;
     (void)data;
     if (world->tube_count == 0) {
         version = EdFileReadInt();
@@ -367,7 +374,8 @@ i32 __cdecl Tube_IsObjBitSet(TUBE_CALLBACKS_PC *tube, i32 index) {
 static void __cdecl Tubes_Update(void *world_ptr, void *data, f32 frame_time) {
     WORLDINFO *world = (WORLDINFO *)world_ptr;
     TUBE_CALLBACKS_PC *tube;
-    i32 i, j;
+    i32 i;
+    i32 j;
     (void)data;
     if (world == NULL || world->tubes == NULL) {
         return;
@@ -385,7 +393,10 @@ static void __cdecl Tubes_Update(void *world_ptr, void *data, f32 frame_time) {
             GameAudio_PlaySfx(0x2e, &tube->position, 0, 0);
             object = Obj;
             for (j = 0; j < HIGHGAMEOBJECT; ++j, ++object) {
-                f32 distance, tx, tz, inverse;
+                f32 distance;
+                f32 tx;
+                f32 tz;
+                f32 inverse;
                 u16 angle;
                 if ((object->flags_1fc_word & 1) == 0 || (object->flags_1fc_word & 0x1000) == 0 || object->dead != 0 ||
                     !(object->character_data->model_flags & 0x10) || (GCDataList[(i16)object->id].flags_094 & 0x100)) {

@@ -677,9 +677,12 @@ SOCKROT_PC *SockRailAngles(SOCK_PC *sock, NUGSPLINE *spline, SOCKROT_PC *rotatio
     for (point = 0; point < (length = sock->cam->length); ++point, ++rotations) {
         i32 previous;
         i32 next;
-        NUVEC previous_pos, position, next_pos;
+        NUVEC previous_pos;
+        NUVEC position;
+        NUVEC next_pos;
         f32 midpoint_scale;
-        u16 x[2], y[2];
+        u16 x[2];
+        u16 y[2];
         i32 edge_count;
 
         previous = point - 1;
@@ -1126,10 +1129,22 @@ static void FillSockPosition(SOCKSYS_PC *sock_sys, SOCKPOSITION_PC *position) {
 
 static f32 BestSockPosition(SOCKSYS_PC *sock_sys, NUVEC *point, SOCKPOSITION_PC *result, i32 sock_index,
                             i32 prior_segment) {
-    NUVEC *a0 = NULL, *b0 = NULL, *c0 = NULL, *d0 = NULL, *a1 = NULL, *b1 = NULL, *c1 = NULL, *d1 = NULL;
-    i32 segment = 0, next = 0, initial_segment = 0;
-    i32 ascending_segment = 0, descending_segment = 0;
-    i32 direction = 0, exhausted_directions = 0, segment_count = 0;
+    NUVEC *a0 = NULL;
+    NUVEC *b0 = NULL;
+    NUVEC *c0 = NULL;
+    NUVEC *d0 = NULL;
+    NUVEC *a1 = NULL;
+    NUVEC *b1 = NULL;
+    NUVEC *c1 = NULL;
+    NUVEC *d1 = NULL;
+    i32 segment = 0;
+    i32 next = 0;
+    i32 initial_segment = 0;
+    i32 ascending_segment = 0;
+    i32 descending_segment = 0;
+    i32 direction = 0;
+    i32 exhausted_directions = 0;
+    i32 segment_count = 0;
     SOCK_PC *sock = NULL;
     f32 distance_squared = 0.0f;
     SOCKSEGMENT_PC *segment_data = NULL;
@@ -1848,10 +1863,21 @@ i32 __cdecl SockSysCamera(SOCKSYS_PC *sock_sys, NUVEC *fallback_camera_position,
                           SOCKPOSITION_PC *camera_socket_position, NUVEC *camera_position, NUVEC *camera_target,
                           f32 *overlap_blend, f32 *position_seek, f32 *angle_seek, f32 *camera_shake,
                           f32 *separation_scale) {
-    NUVEC average_camera_position, average_player_position, accumulated_target;
-    NUVEC candidate_camera, look_position, displacement, local_right, local_x, local_y;
+    NUVEC average_camera_position;
+    NUVEC average_player_position;
+    NUVEC accumulated_target;
+    NUVEC candidate_camera;
+    NUVEC look_position;
+    NUVEC displacement;
+    NUVEC local_right;
+    NUVEC local_x;
+    NUVEC local_y;
     i32 i;
-    f32 magnitude, side, half_width, height_sum, pair_offset;
+    f32 magnitude;
+    f32 side;
+    f32 half_width;
+    f32 height_sum;
+    f32 pair_offset;
     f32 working_scale;
     f32 two_player_pullback;
     f32 single_player_pullback;
@@ -2254,16 +2280,35 @@ f32 __cdecl CalculateDistanceToNearestEnd(NUVEC *position, SOCKPOSITION_PC *reso
     NUVEC flat = *position;
     SOCK_PC *sock = &system->socks[resolved->sock_index];
     f32 distance = 0.0f;
-    NUVEC *first_a, *first_b, *last_a, *last_b;
-    f32 start_distance, along, ratio, end_distance, end_along;
-    f32 length, end_length;
+    NUVEC *first_a;
+    NUVEC *first_b;
+    NUVEC *last_a;
+    NUVEC *last_b;
+    f32 start_distance;
+    f32 along;
+    f32 ratio;
+    f32 end_distance;
+    f32 end_along;
+    f32 length;
+    f32 end_length;
 
     union {
         f32 value;
         u32 bits;
     } magnitude, end_magnitude;
 
-    NUVEC a, b, c, d, edge0, projected0, edge1, projected1, scaled0, scaled1, temporary, end_temporary;
+    NUVEC a;
+    NUVEC b;
+    NUVEC c;
+    NUVEC d;
+    NUVEC edge0;
+    NUVEC projected0;
+    NUVEC edge1;
+    NUVEC projected1;
+    NUVEC scaled0;
+    NUVEC scaled1;
+    NUVEC temporary;
+    NUVEC end_temporary;
     flat.y = 0.0f;
     first_a = sock->a->pts;
     first_b = (sock->flags & 1) ? sock->b->pts : sock->d->pts;
@@ -2354,11 +2399,19 @@ i32 LastSingleSockWeWereInPc = -1;
 f32 __cdecl CalculateDistanceToNearestSide(NUVEC *position, SOCKPOSITION_PC *resolved, i32 unused, SOCKSYS_PC *system) {
     SOCK_PC *sock;
     f32 distance;
-    NUVEC *a0, *a1, *b0, *b1;
-    f32 distance_a, distance_b;
-    NUVEC *d0, *d1;
+    NUVEC *a0;
+    NUVEC *a1;
+    NUVEC *b0;
+    NUVEC *b1;
+    f32 distance_a;
+    f32 distance_b;
+    NUVEC *d0;
+    NUVEC *d1;
     f32 distance_d;
-    NUVEC a, b, d, flat;
+    NUVEC a;
+    NUVEC b;
+    NUVEC d;
+    NUVEC flat;
     flat = *position;
     sock = &system->socks[resolved->sock_index];
     distance = 0.0f;
@@ -2413,8 +2466,10 @@ i32 __cdecl SockSysCameraWithOverlapBlend(SOCKSYS_PC *sock_sys, NUVEC *fallback_
                                           NUVEC *camera_target, f32 *overlap_blend, f32 *position_seek, f32 *angle_seek,
                                           f32 *camera_shake, f32 *separation_scale) {
     f32 blend;
-    SOCK_CAMERA_RESULT_PC *from, *to;
-    i32 i, j;
+    SOCK_CAMERA_RESULT_PC *from;
+    SOCK_CAMERA_RESULT_PC *to;
+    i32 i;
+    i32 j;
     ComplexSockPosition(sock_sys, player_camera_positions, camera_socket_position->sock_index,
                         camera_socket_position->segment, camera_socket_position);
     if (TempSPosCount > 1) {
@@ -2424,7 +2479,8 @@ i32 __cdecl SockSysCameraWithOverlapBlend(SOCKSYS_PC *sock_sys, NUVEC *fallback_
         SOCK_PC *second_sock = &sock_sys->socks[second_index];
         i32 reverse;
         f32 distances[2];
-        SOCK_CAMERA_RESULT_PC first, second;
+        SOCK_CAMERA_RESULT_PC first;
+        SOCK_CAMERA_RESULT_PC second;
         first.socket = second.socket = *camera_socket_position;
         for (i = 0; i < (i32)first_sock->blend_count; ++i) {
             if (first_sock->blend_entries[i].value == TempSPosList[1].sock_index) {

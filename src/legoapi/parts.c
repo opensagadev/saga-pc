@@ -8,7 +8,8 @@ static i32 PartVectorSpreadDegrees_PC = 30;
 #pragma data_seg()
 
 void __cdecl InitParts(i32 count, VARIPTR *buffer, VARIPTR end) {
-    i32 i, j;
+    i32 i;
+    i32 j;
     MAXPARTS = count;
     buffer->addr = (buffer->addr + 15) & ~(u32)15;
     Part = (PART_PC *)buffer->void_ptr;
@@ -138,7 +139,8 @@ i32 __cdecl PARTLookupTypePageOnly(char *name, i32 page) {
 }
 
 i32 __cdecl GetPartCount(void) {
-    i32 n, used = 0;
+    i32 n;
+    i32 used = 0;
     for (n = 0; n < 40; ++n) {
         if (part_emits[n].effect_id != -1) {
             ++used;
@@ -868,12 +870,24 @@ STATIC_ASSERT(offsetof(PARTTYPE_LOOKUP_PC, last_used_time) == 0x16c);
 STATIC_ASSERT(offsetof(PART_PC, field_206) == 0x206);
 
 typedef struct debris_material_flags_pc_s {
-    u32 alpha_mode : 4, filter_mode : 2, unknown_0_64_128 : 2, unknown_1_1_2 : 2, unknown_1_4_8 : 2, cull_mode : 2,
-        z_mode : 2, unknown_2_1_2 : 2, unknown_2_4 : 1, unknown_19 : 1, alpha_test : 3, unknown_23_31 : 9;
+    u32 alpha_mode : 4;
+    u32 filter_mode : 2;
+    u32 unknown_0_64_128 : 2;
+    u32 unknown_1_1_2 : 2;
+    u32 unknown_1_4_8 : 2;
+    u32 cull_mode : 2;
+    u32 z_mode : 2;
+    u32 unknown_2_1_2 : 2;
+    u32 unknown_2_4 : 1;
+    u32 unknown_19 : 1;
+    u32 alpha_test : 3;
+    u32 unknown_23_31 : 9;
 } DEBRIS_MATERIAL_FLAGS_PC;
 
 typedef struct debris_material_secondary_pc_s {
-    u32 alpha_fail : 2, disable_depth_write : 1, unknown_03_31 : 29;
+    u32 alpha_fail : 2;
+    u32 disable_depth_write : 1;
+    u32 unknown_03_31 : 29;
 } DEBRIS_MATERIAL_SECONDARY_PC;
 
 typedef struct debris_material_pc_s {
@@ -885,7 +899,8 @@ typedef struct debris_material_pc_s {
     f32 glass_parameter;
     u8 unknown_064[0xc];
     f32 opacity;
-    i16 texture_id, sort_priority;
+    i16 texture_id;
+    i16 sort_priority;
     u8 unknown_078[0x21];
     i8 particle_type_tag;
     u8 unknown_09a[0x156];
@@ -907,7 +922,8 @@ STATIC_ASSERT(offsetof(DEBRIS_MATERIAL_PC, vertex_flags) == 0x1f0);
 typedef struct debris_animation_effect_pc_s {
     u8 unknown_000[0xa8];
     i16 texture_frames;
-    i8 texture_rows, frame_divisor;
+    i8 texture_rows;
+    i8 frame_divisor;
 
     union {
         f32 rate;
@@ -957,7 +973,9 @@ typedef struct part_runtime_type_pc_s {
     i32 sounds[4];
     u8 sound_modes[4];
     f32 maximum_distance;
-    f32 field_160, field_164, field_168;
+    f32 field_160;
+    f32 field_164;
+    f32 field_168;
     f32 last_used_time;
     f32 scale;
     u32 field_174;
@@ -1075,7 +1093,8 @@ void __cdecl InitPartTable(char **names) {
 PARTDEBRISSYS *__cdecl InitPartDebris(VARIPTR *buffer, VARIPTR *end, i32 capacity, i32 named_count, char **names,
                                       i32 page) {
     PARTDEBRISSYS *system;
-    i32 i, type;
+    i32 i;
+    i32 type;
     system = (PARTDEBRISSYS *)((buffer->addr + 15) & ~(u32)15);
     buffer->addr = ((buffer->addr + 15) & ~(u32)15) + sizeof(PARTDEBRISSYS);
     if (system != NULL) {
@@ -1230,7 +1249,8 @@ PART_PC *__cdecl FindIncomingPart(void *owner, NUVEC *position, f32 radius, u32 
 void __cdecl MakePartVector(NUVEC *velocity, NUVEC *direction, f32 scale) {
     if (direction != NULL) {
         i32 divisor;
-        u16 z_random, x_random;
+        u16 z_random;
+        u16 x_random;
         FindAnglesZX(direction, NULL, NULL);
         *velocity = v010;
         divisor = 65535 / (((PartVectorSpreadDegrees_PC * 2 + 1) << 16) / 360) + 1;
@@ -2122,8 +2142,10 @@ i32 AddScaledVariableShotDebrisEffect(i32 effect, NUVEC *position, i32 count, f3
 
 void __cdecl DebrisDrawCalculateClipBoxes(DEBRIS_INFO_PC *effect, DEBRISKEY_PC *key) {
     NUMTX matrix;
-    f32 padding, radius;
-    NUVEC extent, minimum;
+    f32 padding;
+    f32 radius;
+    NUVEC extent;
+    NUVEC minimum;
     DebrisMtxCopyPrivate(&matrix, &key->effect_orientation);
     NuMtxTranslate(&matrix, &key->position);
     extent.x = (DebrisFabs(effect->emitter_velocity.x) * (effect->emission_period_random + effect->emission_period) +
@@ -2223,7 +2245,8 @@ void __cdecl DebrisDraw(i32 unused, i32 pass) {
             }
             if (pass != 4 && visible && effect->generator_type == 0 && effect->use_explicit_clip_box == 0 &&
                 !assigned) {
-                NUVEC minimum, maximum;
+                NUVEC minimum;
+                NUVEC maximum;
                 if (key->clip_radius == 0.0f || *edbits_editor_enabled != 0) {
                     DebrisDrawCalculateClipBoxes(effect, key);
                 }
@@ -2362,12 +2385,17 @@ void __cdecl AddVariableShotPARTEffect(i32 effect_index, NUVEC *position, f32 ra
     emission_time = aligned_time + interval;
     for (count = 0; end_time >= emission_time && ++count < 100;) {
         ADDPART_PC params = Default_ADDPART;
-        NUVEC part_position, velocity;
+        NUVEC part_position;
+        NUVEC velocity;
         NUSPECIALHANDLE special;
         NUMTX matrix;
         f32 range;
-        i16 angle_x, angle_y, angle_z;
-        i32 variant, axis, sound;
+        i16 angle_x;
+        i16 angle_y;
+        i16 angle_z;
+        i32 variant;
+        i32 axis;
+        i32 sound;
         part_position.x = NuRandFloatSeeded(&partseed) * 2.0f * type->position_random.x - type->position_random.x;
         part_position.y = NuRandFloatSeeded(&partseed) * 2.0f * type->position_random.y - type->position_random.y;
         part_position.z = NuRandFloatSeeded(&partseed) * 2.0f * type->position_random.z - type->position_random.z;
@@ -2576,7 +2604,8 @@ i32 AddScaledVariableShotDebrisEffect5(i32 effect, NUVEC *position, NUVEC *momen
 }
 
 NUMTL *__cdecl CreateCopyMat(NUMTL *source, i32 enable_uv_mode, i32 alpha_mode, i32 depth_mode, i32 filter_mode) {
-    DEBRIS_MATERIAL_PC *material, *original = (DEBRIS_MATERIAL_PC *)source;
+    DEBRIS_MATERIAL_PC *material;
+    DEBRIS_MATERIAL_PC *original = (DEBRIS_MATERIAL_PC *)source;
     if (source == NULL) {
         return NULL;
     }
@@ -2902,7 +2931,8 @@ i32 __cdecl AddScaledFiniteShotPART(i32 effect, NUVEC *position, i32 count, f32 
 
 i32 __cdecl edpartLookupObjectInScene(char *name, NUGSCN *scene) {
     NUSPECIALHANDLE special;
-    i32 count, i;
+    i32 count;
+    i32 i;
     char *special_name;
     if (name[0] == 0) {
         return -1;
@@ -2929,7 +2959,8 @@ i32 __cdecl edpartLookupObjectInScene(char *name, NUGSCN *scene) {
 void __cdecl edpartLoadSingleType(PARTTYPE_LOOKUP_PC *record, i32 version, i32 page) {
     PART_RUNTIME_TYPE_PC *type = (PART_RUNTIME_TYPE_PC *)record;
     char name[16];
-    i32 i, scene;
+    i32 i;
+    i32 scene;
     char mode;
     EdFileRead(type->name, 16);
     if (version >= 6) {
@@ -3399,7 +3430,9 @@ void edpartMultipleCopyCopy(void) {
 }
 
 void edpartHighlightNearest(void) {
-    extern i32 edpart_copy_mode, edpart_copyroty, edpart_copy_enclosed;
+    extern i32 edpart_copy_mode;
+    extern i32 edpart_copyroty;
+    extern i32 edpart_copy_enclosed;
     extern f32 edpart_copy_size;
     i32 index;
     NUVEC delta;
@@ -3487,7 +3520,15 @@ void edpartCancelChangeNameMenu(eduimenu_s *unused0, eduimenu_s *unused1) {
 
 i32 __cdecl edpartLoadPageEx(char *path, i8 mode, NUGSCN **scenes, i32 scene_count) {
     i32 page;
-    i32 scene_slot, i, version, type_count, skipped_types, type_slot, emitter_count, emitter_slot, sound;
+    i32 scene_slot;
+    i32 i;
+    i32 version;
+    i32 type_count;
+    i32 skipped_types;
+    i32 type_slot;
+    i32 emitter_count;
+    i32 emitter_slot;
+    i32 sound;
     PART_RUNTIME_TYPE_PC discarded_type;
     if (mode == 0) {
         page = 0;
@@ -3631,15 +3672,27 @@ void __cdecl PARTEmitterOrientation(i32 index, i16 emitrotz, i16 emitroty, i16 e
 
 void __cdecl UpdatePartEmits(f32 time) {
     i32 switch_changes[32][2];
-    i32 i, sound, axis, remaining, variant;
+    i32 i;
+    i32 sound;
+    i32 axis;
+    i32 remaining;
+    i32 variant;
     PART_EMIT_PC *emitter;
     PART_RUNTIME_TYPE_PC *type;
     ADDPART_PC params;
-    NUVEC position, velocity;
+    NUVEC position;
+    NUVEC velocity;
     NUMTX matrix;
     NUSPECIALHANDLE special;
-    f32 interval, shift, previous_distance, emission_time, pause, range;
-    i16 angle_x, angle_y, angle_z;
+    f32 interval;
+    f32 shift;
+    f32 previous_distance;
+    f32 emission_time;
+    f32 pause;
+    f32 range;
+    i16 angle_x;
+    i16 angle_y;
+    i16 angle_z;
     i32 last_switch_change = -1;
     for (i = 0; i < 40; ++i) {
         emitter = &part_emits[i];
@@ -3868,7 +3921,8 @@ i32 PartPlatId(void) {
 void __cdecl CastPart(PART_PC *part, f32 time) {
     PART_TERRAIN_STATE_PC *state = (PART_TERRAIN_STATE_PC *)part;
     i32 hit;
-    f32 distance, radius;
+    f32 distance;
+    f32 radius;
     NUVEC movement;
     NUVEC cast_movement;
     part->active &= ~4;
@@ -3987,12 +4041,25 @@ void edpartDestroyAllEffects(void) {
 }
 
 void edpartDoInput(FRAME_PAD_PC *pad) {
-    extern i32 edpart_copy_mode, edpart_copyroty, edpart_rotz, edpart_roty;
-    extern i32 edpart_emitrotz, edpart_emitroty, edpart_emitrotx, edpart_refrotz, edpart_refroty;
-    extern i32 edpart_dpad_mode, edpart_create_type, edpart_nearest_orphans, edpart_nearest_duplicates;
-    extern i32 edpart_snap_enabled, edpart_cam_ax, edpart_cam_ay;
+    extern i32 edpart_copy_mode;
+    extern i32 edpart_copyroty;
+    extern i32 edpart_rotz;
+    extern i32 edpart_roty;
+    extern i32 edpart_emitrotz;
+    extern i32 edpart_emitroty;
+    extern i32 edpart_emitrotx;
+    extern i32 edpart_refrotz;
+    extern i32 edpart_refroty;
+    extern i32 edpart_dpad_mode;
+    extern i32 edpart_create_type;
+    extern i32 edpart_nearest_orphans;
+    extern i32 edpart_nearest_duplicates;
+    extern i32 edpart_snap_enabled;
+    extern i32 edpart_cam_ax;
+    extern i32 edpart_cam_ay;
     extern i8 edpart_effect_list;
-    extern f32 edpart_copy_size, edpart_offset;
+    extern f32 edpart_copy_size;
+    extern f32 edpart_offset;
     i32 nearest;
     i32 variant;
     i32 previous;
@@ -4193,15 +4260,31 @@ i32 edpartPlace(i32 index, NUVEC *position) {
 }
 
 void edpartDrawCursor(void) {
-    extern i32 edpart_copy_mode, edpart_copyrotz, edpart_copyroty, edpart_rotz, edpart_roty;
-    extern i32 edpart_emitrotz, edpart_emitroty, edpart_emitrotx, edpart_refrotz, edpart_refroty;
-    extern i32 edpart_dpad_mode, edpart_readout, edpart_num_orphans;
-    extern i32 edpart_create_type, edpart_nearest_orphans, edpart_nearest_duplicates, edpart_copy_enclosed;
-    extern i32 part_types_used, part_emits_used;
+    extern i32 edpart_copy_mode;
+    extern i32 edpart_copyrotz;
+    extern i32 edpart_copyroty;
+    extern i32 edpart_rotz;
+    extern i32 edpart_roty;
+    extern i32 edpart_emitrotz;
+    extern i32 edpart_emitroty;
+    extern i32 edpart_emitrotx;
+    extern i32 edpart_refrotz;
+    extern i32 edpart_refroty;
+    extern i32 edpart_dpad_mode;
+    extern i32 edpart_readout;
+    extern i32 edpart_num_orphans;
+    extern i32 edpart_create_type;
+    extern i32 edpart_nearest_orphans;
+    extern i32 edpart_nearest_duplicates;
+    extern i32 edpart_copy_enclosed;
+    extern i32 part_types_used;
+    extern i32 part_emits_used;
     extern i8 edpart_effect_list;
     extern f32 edpart_copy_size;
-    extern NUMTL *edpart_mtl, *edpart_boxmtl;
-    i32 rotation_z, rotation_y;
+    extern NUMTL *edpart_mtl;
+    extern NUMTL *edpart_boxmtl;
+    i32 rotation_z;
+    i32 rotation_y;
     NUVEC vector;
     NURND_VERTEX3D_PC line[2];
 
@@ -4622,7 +4705,8 @@ static void PartRuntimeDirectionalLightsPrivate(NUVEC *direction0, NUVEC *colour
 void __cdecl DrawParts(i32 keep_offscreen) {
     PART_PC *part = Part;
     i32 i;
-    NUMTX scaled, *matrix;
+    NUMTX scaled;
+    NUMTX *matrix;
     NUVEC scale;
     for (i = 0; i < MAXPARTS; ++i, ++part) {
         if ((part->active & 1) == 0 || (part->flags & 0x1000) != 0) {
@@ -4685,7 +4769,9 @@ i32 edpartProc(float delta_time, FRAME_PAD_PC *pad) {
 }
 
 void UpdateParts(f32 time) {
-    i32 i, axis, angle;
+    i32 i;
+    i32 axis;
+    i32 angle;
     PART_PC *part;
     PART_TERRAIN_STATE_PC *state;
     NUVEC velocity;

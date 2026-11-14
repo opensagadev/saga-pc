@@ -45,7 +45,10 @@ STATIC_ASSERT(offsetof(GAMEOBJECT, ai_packet) + offsetof(AIPACKET_PC, creature_i
 typedef struct gizobstacle_system_pc_s {
     GIZOBSTACLE *obstacles;
     GIZMO_PC **active_gizmos;
-    u16 count, capacity, active_gizmo_count, unknown_00e;
+    u16 count;
+    u16 capacity;
+    u16 active_gizmo_count;
+    u16 unknown_00e;
     GAMEANIMOBJPOOL *anim_pool;
 } GIZOBSTACLE_SYSTEM_PC;
 
@@ -56,7 +59,13 @@ STATIC_ASSERT(offsetof(GIZOBSTACLE_SYSTEM_PC, active_gizmo_count) == 0xc);
 STATIC_ASSERT(offsetof(GIZOBSTACLE_SYSTEM_PC, anim_pool) == 0x10);
 
 typedef struct gizobstacle_progress_pc_s {
-    u32 enabled[4], visible[4], pickups_spawned[4], ai_active[4], blocked[4], trigger_latched[4], destroyed[4];
+    u32 enabled[4];
+    u32 visible[4];
+    u32 pickups_spawned[4];
+    u32 ai_active[4];
+    u32 blocked[4];
+    u32 trigger_latched[4];
+    u32 destroyed[4];
 } GIZOBSTACLE_PROGRESS_PC;
 
 STATIC_ASSERT(sizeof(GIZOBSTACLE_PROGRESS_PC) == 0x70);
@@ -815,7 +824,8 @@ void __cdecl GizObstacles_Update(void *world_ptr, void *data, f32 time) {
                     obstacle->runtime_flags |= 0x80;
                 }
                 if (obstacle->pickup_count && (!(obstacle->runtime_flags & 1) || (obstacle->config_flags & 0x80))) {
-                    NUVEC position, direction;
+                    NUVEC position;
+                    NUVEC direction;
                     NuVecAdd(&position, &obstacle->evaluated_position, &obstacle->pickup_offset);
                     NuVecRotateX(&direction, &v010, (u16)obstacle->pickup_direction_x);
                     NuVecRotateY(&direction, &direction, (u16)obstacle->pickup_direction_y);
@@ -871,7 +881,8 @@ void __cdecl GizObstacle_SetPushControlled(GIZOBSTACLE *obstacle, GAMEOBJECT *ob
 GIZOBSTACLE *__cdecl GizObstacle_FindNearest(void *ptr, NUVEC *position, GAMEOBJECT *object, f32 *distance_squared,
                                              i32 mode) {
     GIZOBSTACLE_SYSTEM_PC *system = (GIZOBSTACLE_SYSTEM_PC *)ptr;
-    GIZOBSTACLE *nearest, *obstacle;
+    GIZOBSTACLE *nearest;
+    GIZOBSTACLE *obstacle;
     f32 closest;
     i32 i;
     if (system) {
@@ -947,15 +958,21 @@ GIZMO_PC *__cdecl GizObstacles_GetBestBoltTarget(GIZMOSET_PC *set, f32 *result_d
                                                  NUVEC *direction, f32 radius, f32 range_squared, i32 directional,
                                                  i32 planar, i32 bolt_id) {
     BOLTTYPE_PC *type = BoltType_FindByID(bolt_id, WORLD);
-    u16 near_angle = TargetDeg_Near, mid_angle = TargetDeg_Mid, far_angle = TargetDeg_Far;
-    f32 near_distance = TargetDist_Near2, mid_distance = TargetDist_Mid2;
+    u16 near_angle = TargetDeg_Near;
+    u16 mid_angle = TargetDeg_Mid;
+    u16 far_angle = TargetDeg_Far;
+    f32 near_distance = TargetDist_Near2;
+    f32 mid_distance = TargetDist_Mid2;
     GIZOBSTACLE_SYSTEM_PC *system;
     NUVEC aim;
-    NUVEC min, max;
+    NUVEC min;
+    NUVEC max;
     f32 nearest_distance;
     GAMEOBJECT *object;
-    NUVEC *best_position, *previous_position;
-    GIZMO_PC *best, *previous;
+    NUVEC *best_position;
+    NUVEC *previous_position;
+    GIZMO_PC *best;
+    GIZMO_PC *previous;
     i32 i;
     if (set && set->data && type) {
         nearest_distance = 1.0e9f;
@@ -979,7 +996,8 @@ GIZMO_PC *__cdecl GizObstacles_GetBestBoltTarget(GIZMOSET_PC *set, f32 *result_d
             GIZOBSTACLE *obstacle = (GIZOBSTACLE *)gizmo->object;
             NUVEC *target;
             NUVEC delta;
-            f32 distance, dot;
+            f32 distance;
+            f32 dot;
             u16 angle;
             if (!(obstacle->progress_flags & 2) || !(obstacle->progress_flags & 1) ||
                 (obstacle->runtime_flags & 0x80)) {
@@ -1108,7 +1126,8 @@ static char *__cdecl GizmoObstacle_GetOutputName(GIZMO_PC *gizmo, i32 output) {
 
 static i32 __cdecl GizObstacles_BoltHitPlat(void *world, void *data, BOLT_PC *bolt, u8 *hit_flags) {
     GIZOBSTACLE_SYSTEM_PC *system = (GIZOBSTACLE_SYSTEM_PC *)data;
-    i32 i, count;
+    i32 i;
+    i32 count;
     (void)hit_flags;
     if (system) {
         count = system->active_gizmo_count;
@@ -1274,7 +1293,8 @@ typedef struct bomb_generator_runtime_pc_s {
 
 typedef struct bomb_generator_system_runtime_pc_s {
     BOMB_GENERATOR_RUNTIME_PC *items;
-    u16 count, capacity;
+    u16 count;
+    u16 capacity;
     void *pool;
     i16 flags;
     u16 unknown_0e;

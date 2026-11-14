@@ -210,7 +210,9 @@ void Minicam_AddDeltas(float duration) {
             break;
     }
     if (MiniCam.mode == 0) {
-        i32 pitch_delta, yaw_delta, roll_delta;
+        i32 pitch_delta;
+        i32 yaw_delta;
+        i32 roll_delta;
         pitch_delta = MiniCam.target_pitch - MiniCam.start_pitch;
         if (pitch_delta > 32768) {
             pitch_delta -= 65536;
@@ -339,7 +341,9 @@ void Minicam_Update(void) {
     i32 yaw = MiniCam.yaw;
     i32 roll = MiniCam.roll;
     NUVEC position = MiniCam.position;
-    i32 pitch_rate = 0, yaw_rate = 0, roll_rate = 0;
+    i32 pitch_rate = 0;
+    i32 yaw_rate = 0;
+    i32 roll_rate = 0;
     NUVEC *focus = MiniCam.focus;
     f32 command_duration = 0.0f;
     i32 type;
@@ -365,7 +369,8 @@ void Minicam_Update(void) {
                 break;
             case 6: {
                 i32 target_pitch;
-                i32 old_yaw, old_roll;
+                i32 old_yaw;
+                i32 old_roll;
                 f32 old_distance;
                 MiniCam_ChangeMode(MiniCam.commands[MiniCam.current_command].argument);
                 target_pitch = (u16)(pitch_rate == 0 ? pitch : (i32)(pitch_rate * 0.0f));

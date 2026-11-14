@@ -34,10 +34,22 @@ extern "C" void __cdecl NuPostEffectResizePc(void);
 
 /* The D3DX matrix type with its sixteen-float constructor (only the parts used here). */
 struct D3DXMATRIX {
-    FLOAT m11, m12, m13, m14;
-    FLOAT m21, m22, m23, m24;
-    FLOAT m31, m32, m33, m34;
-    FLOAT m41, m42, m43, m44;
+    FLOAT m11;
+    FLOAT m12;
+    FLOAT m13;
+    FLOAT m14;
+    FLOAT m21;
+    FLOAT m22;
+    FLOAT m23;
+    FLOAT m24;
+    FLOAT m31;
+    FLOAT m32;
+    FLOAT m33;
+    FLOAT m34;
+    FLOAT m41;
+    FLOAT m42;
+    FLOAT m43;
+    FLOAT m44;
 
     D3DXMATRIX(FLOAT f11, FLOAT f12, FLOAT f13, FLOAT f14, FLOAT f21, FLOAT f22, FLOAT f23, FLOAT f24, FLOAT f31,
                FLOAT f32, FLOAT f33, FLOAT f34, FLOAT f41, FLOAT f42, FLOAT f43, FLOAT f44) {

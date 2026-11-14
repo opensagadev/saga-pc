@@ -15,7 +15,8 @@ void __cdecl InitSnakes(WORLDINFO *world) {
 typedef struct snake_segment_pc_s {
     NUVEC position;
     f32 ground_height;
-    NUANG yaw, pitch;
+    NUANG yaw;
+    NUANG pitch;
 } SNAKE_SEGMENT_PC;
 
 typedef struct snake_body_pc_s {
@@ -40,7 +41,9 @@ STATIC_ASSERT(offsetof(SNAKE_BODY_PC, segment_count) == 0x10c);
 STATIC_ASSERT(sizeof(SNAKE_BODY_PC) == 0x110);
 STATIC_ASSERT(offsetof(SNAKE_OBJECT_READER_PC, lighting) == 0x4d8);
 STATIC_ASSERT(offsetof(SNAKE_OBJECT_READER_PC, snake_body) == 0x10ac);
-extern f32 SnakeSegmentSpacingPc, SnakeHeadHeightPc, SnakeYawSeekRatePc;
+extern f32 SnakeSegmentSpacingPc;
+extern f32 SnakeHeadHeightPc;
+extern f32 SnakeYawSeekRatePc;
 
 #define MIN(a, b) ((a) < (b) ? (a) : (b))
 #define MAX(a, b) ((a) > (b) ? (a) : (b))
@@ -131,9 +134,11 @@ SNAKE_BODY_PC *__cdecl CreateSnakeBody(GAMEOBJECT *object, i32 segment_count) {
 
 void __cdecl UpdateSnakeBody(GAMEOBJECT *object) {
     SNAKE_OBJECT_READER_PC *reader = (SNAKE_OBJECT_READER_PC *)object;
-    NUVEC position, offset;
+    NUVEC position;
+    NUVEC offset;
     i32 index;
-    f32 ground, length;
+    f32 ground;
+    f32 length;
     if (object == NULL || reader->snake_body == NULL) {
         return;
     }
@@ -174,10 +179,13 @@ void __cdecl UpdateSnakeBody(GAMEOBJECT *object) {
 
 void __cdecl SnakeBeenHit(GAMEOBJECT *object) {
     SNAKE_OBJECT_READER_PC *reader = (SNAKE_OBJECT_READER_PC *)object;
-    i32 i, index, special_index;
+    i32 i;
+    i32 index;
+    i32 special_index;
     NUMTX matrix;
     NUANGVEC angles;
-    NUVEC scale, momentum;
+    NUVEC scale;
+    NUVEC momentum;
     ADDPART_PC params;
     NUSPECIALHANDLE *special;
     if (object == NULL || reader->snake_body == NULL || reader->snake_body->segment_count <= 2) {
@@ -229,10 +237,12 @@ void __cdecl DestroySnakeBody(GAMEOBJECT *object) {
 
 void __cdecl BlowUpSnakeBody(GAMEOBJECT *object) {
     SNAKE_OBJECT_READER_PC *reader = (SNAKE_OBJECT_READER_PC *)object;
-    i32 index, special_index;
+    i32 index;
+    i32 special_index;
     NUMTX matrix;
     NUANGVEC angles;
-    NUVEC scale, momentum;
+    NUVEC scale;
+    NUVEC momentum;
     ADDPART_PC params;
     NUSPECIALHANDLE *special;
     if (object == NULL || reader->snake_body == NULL) {

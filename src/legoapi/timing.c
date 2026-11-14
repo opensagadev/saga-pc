@@ -60,7 +60,9 @@ void UpdateTimer(TIMER *timer) {
     timer->update_count++;
 }
 
-extern TIMER BonusTimer, OverallGamePlayTimer, ChallengeTimer;
+extern TIMER BonusTimer;
+extern TIMER OverallGamePlayTimer;
+extern TIMER ChallengeTimer;
 extern f32 global_pulse;
 
 typedef struct GAME_TIMING_MISSION_DATA_PC {

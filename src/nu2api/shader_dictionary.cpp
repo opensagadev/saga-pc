@@ -166,7 +166,8 @@ bool ShaderCompilerDictionaryPc::EvaluateCondition(ShaderConditionNodePc *node, 
         *result = *result == 0;
         return true;
     }
-    i32 left, right;
+    i32 left;
+    i32 right;
     if (strcmp(token, "&&") == 0) {
         if (!EvaluateCondition(node->left, &left) || !EvaluateCondition(node->right, &right)) {
             return false;

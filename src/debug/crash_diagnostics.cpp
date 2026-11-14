@@ -8,7 +8,8 @@
 #include <tlhelp32.h>
 
 struct FAULT_MODULE_PC {
-    DWORD base, size;
+    DWORD base;
+    DWORD size;
     char name[64];
 };
 

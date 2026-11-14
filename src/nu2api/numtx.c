@@ -109,7 +109,8 @@ void __cdecl NuMtxSetRotationXYVU0(NUMTX *matrix, NUANGVEC *angles) {
     f32 sx = NuTrigTable[(angles->x >> 1) & 0x7fff];
     f32 cy = NuTrigTable[((angles->y + 0x4000) >> 1) & 0x7fff];
     f32 sy = NuTrigTable[(angles->y >> 1) & 0x7fff];
-    f32 cz = NuTrigTable[0x2000], sz = NuTrigTable[0];
+    f32 cz = NuTrigTable[0x2000];
+    f32 sz = NuTrigTable[0];
     matrix->m00 = cy * cz;
     matrix->m01 = cy * sz;
     matrix->m02 = -sy;

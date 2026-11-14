@@ -1290,11 +1290,18 @@ extern "C" {
 }
 
 struct PC_GRAPHICS_CLIP_VERTEX_PC {
-    f32 x, y, z, u, v;
+    f32 x;
+    f32 y;
+    f32 z;
+    f32 u;
+    f32 v;
 };
 
 struct PC_GRAPHICS_SCREEN_VERTEX_PC {
-    f32 x, y, u, v;
+    f32 x;
+    f32 y;
+    f32 u;
+    f32 v;
 };
 
 STATIC_ASSERT(sizeof(PC_GRAPHICS_CLIP_VERTEX_PC) == 20);
@@ -1397,7 +1404,8 @@ extern "C" void __cdecl PCDeviceSaveSurfaceBmpPc(const char *prefix, PC_SURFACE_
     PC_D3D9_DEVICE_PC *device;
     NUFILE file;
     u8 *row;
-    i32 width, height;
+    i32 width;
+    i32 height;
     i32 pitch;
     i32 index;
     i32 y;

@@ -6,7 +6,10 @@ typedef struct cut_load_locator_s {
     f32 scale;
     void *animation;
     u32 unknown_54;
-    u8 flags, type_index, unknown_5a, tracks_self;
+    u8 flags;
+    u8 type_index;
+    u8 unknown_5a;
+    u8 tracks_self;
     u8 unknown_5c[8];
 } CUT_LOAD_LOCATOR;
 
@@ -18,7 +21,8 @@ STATIC_ASSERT(offsetof(CUT_LOAD_LOCATOR, tracks_self) == 0x5b);
 
 typedef struct cut_load_locator_type_s {
     char *name;
-    u8 flags, unknown_05;
+    u8 flags;
+    u8 unknown_05;
     u16 function_index;
     u32 unknown_08;
 } CUT_LOAD_LOCATOR_TYPE;
@@ -29,7 +33,8 @@ STATIC_ASSERT(offsetof(CUT_LOAD_LOCATOR_TYPE, function_index) == 6);
 typedef struct cut_load_locator_system_s {
     CUT_LOAD_LOCATOR *locators;
     CUT_LOAD_LOCATOR_TYPE *types;
-    u8 count, type_count;
+    u8 count;
+    u8 type_count;
     u8 unknown_0a[2];
 } CUT_LOAD_LOCATOR_SYSTEM;
 
@@ -49,7 +54,10 @@ typedef struct cut_load_rigid_s {
         CUT_LOAD_LOCATOR *pointer;
     } locator;
 
-    u8 flags, uses_locator, locator_index, unknown_5b;
+    u8 flags;
+    u8 uses_locator;
+    u8 locator_index;
+    u8 unknown_5b;
 } CUT_LOAD_RIGID;
 
 STATIC_ASSERT(sizeof(CUT_LOAD_RIGID) == 0x5c);
@@ -63,16 +71,20 @@ STATIC_ASSERT(offsetof(CUT_LOAD_RIGID, locator_index) == 0x5a);
 
 typedef struct cut_load_rigid_system_s {
     CUT_LOAD_RIGID *rigids;
-    u16 count, unused;
+    u16 count;
+    u16 unused;
 } CUT_LOAD_RIGID_SYSTEM;
 
 struct cut_load_character_s {
     NUMTX matrix;
     char *name;
-    void *animation, *face_animation, *extra_animation;
+    void *animation;
+    void *face_animation;
+    void *extra_animation;
     void *model;
     u8 unknown_54[8];
-    u8 flags, unknown_5d[7];
+    u8 flags;
+    u8 unknown_5d[7];
 };
 
 STATIC_ASSERT(sizeof(CUT_LOAD_CHARACTER) == 0x64);
@@ -107,7 +119,8 @@ STATIC_ASSERT(offsetof(CUT_LOAD_CAMERA_SYSTEM, focus_animation) == 0x1c);
 STATIC_ASSERT(offsetof(CUT_LOAD_CAMERA_SYSTEM, focus_state_animation) == 0x20);
 
 typedef struct cut_load_trigger_event_s {
-    u16 index, unknown_02;
+    u16 index;
+    u16 unknown_02;
     char *name;
     STATE_ANIM_PC *state_animation;
 } CUT_LOAD_TRIGGER_EVENT;
@@ -120,11 +133,13 @@ typedef struct cut_load_trigger_system_s {
 } CUT_LOAD_TRIGGER_SYSTEM;
 
 typedef struct cut_load_bounds_s {
-    NUVEC min, max;
+    NUVEC min;
+    NUVEC max;
 } CUT_LOAD_BOUNDS;
 
 struct cut_scene_load_pc_s {
-    i32 version, string_delta;
+    i32 version;
+    i32 string_delta;
     f32 duration;
     char *strings;
     CUT_LOAD_CAMERA_SYSTEM *camera_system;
@@ -135,7 +150,8 @@ struct cut_scene_load_pc_s {
     CUT_LOAD_TRIGGER_SYSTEM *trigger_system;
     i32 relocation_delta;
     char *filename;
-    void *stream_buffer_0, *stream_buffer_1;
+    void *stream_buffer_0;
+    void *stream_buffer_1;
     u32 flags;
     i32 stream_buffer_size;
     u32 unknown_40;
@@ -171,7 +187,9 @@ typedef struct cut_load_camera_instance_s {
 
 typedef struct cut_load_rigid_instance_s {
     NUSPECIALHANDLE special;
-    u8 state_index, visible, unknown_0e[2];
+    u8 state_index;
+    u8 visible;
+    u8 unknown_0e[2];
 } CUT_LOAD_RIGID_INSTANCE;
 
 STATIC_ASSERT(sizeof(CUT_LOAD_RIGID_INSTANCE) == 16);
@@ -185,7 +203,9 @@ struct cut_load_character_instance_s {
     u8 unknown_04[8];
     f32 frame_a;
     u8 unknown_10[5];
-    u8 animation_a, animation_b, unknown_17;
+    u8 animation_a;
+    u8 animation_b;
+    u8 unknown_17;
 };
 
 STATIC_ASSERT(sizeof(CUT_LOAD_CHARACTER_INSTANCE) == 0x18);
@@ -242,28 +262,37 @@ typedef struct cut_load_trigger_instance_s {
 } CUT_LOAD_TRIGGER_INSTANCE;
 
 typedef struct cut_instance_load_pc_s {
-    INSTNUGCUTSCENE *next, *previous;
+    INSTNUGCUTSCENE *next;
+    INSTNUGCUTSCENE *previous;
     char name[16];
     NUMTX matrix;
-    CUT_SCENE_LOAD_PC *scene, *saved_scene;
+    CUT_SCENE_LOAD_PC *scene;
+    CUT_SCENE_LOAD_PC *saved_scene;
     NUVEC center;
     u8 unknown_6c[0x1c];
-    u32 flags_88, flags_8c;
-    f32 current_frame, render_frame, rate;
+    u32 flags_88;
+    u32 flags_8c;
+    f32 current_frame;
+    f32 render_frame;
+    f32 rate;
     CUT_LOAD_CAMERA_INSTANCE *camera_instance;
     CUT_LOAD_RIGID_INSTANCE_SYSTEM *rigid_instance;
     CUT_LOAD_CHARACTER_INSTANCE_SYSTEM *character_instance;
     CUT_LOAD_LOCATOR_INSTANCE_SYSTEM *locator_instance;
     CUT_LOAD_TRIGGER_INSTANCE *trigger_instance;
     u8 unknown_b0[12];
-    void *stream_buffer_0, *stream_buffer_1;
+    void *stream_buffer_0;
+    void *stream_buffer_1;
     NUGSCN *scene_owner;
     CUT_LOAD_TRIGGER_OWNER *extra_scene_owner;
     u8 unknown_cc[19];
     u8 stream_index;
-    f32 accumulated_duration, elapsed, alpha;
+    f32 accumulated_duration;
+    f32 elapsed;
+    f32 alpha;
     void *pending_stream;
-    u32 allocation_size, unknown_f4;
+    u32 allocation_size;
+    u32 unknown_f4;
 } CUT_INSTANCE_LOAD_PC;
 
 STATIC_ASSERT(sizeof(CUT_INSTANCE_LOAD_PC) == 0xf8);
@@ -299,7 +328,8 @@ typedef struct CUT_LOOKAT_TEXTURE_PC {
     char *name;
     u32 unknown_04;
     i16 *frames;
-    i16 frame_count, unknown_0e;
+    i16 frame_count;
+    i16 unknown_0e;
     NUMTL *material;
     u8 unknown_14[12];
 } CUT_LOOKAT_TEXTURE_PC;
@@ -330,7 +360,10 @@ STATIC_ASSERT(offsetof(CUT_LOOKAT_MATERIAL_PC, type) == 0x9a);
 typedef struct CUT_LOOKAT_LOCATOR_INFO_PC {
     u8 unknown_00[0x5b];
     u8 character_id;
-    u8 joint, material, secondary_material, tertiary_material;
+    u8 joint;
+    u8 material;
+    u8 secondary_material;
+    u8 tertiary_material;
 } CUT_LOOKAT_LOCATOR_INFO_PC;
 
 STATIC_ASSERT(offsetof(CUT_LOOKAT_LOCATOR_INFO_PC, character_id) == 0x5b);
@@ -339,7 +372,12 @@ STATIC_ASSERT(offsetof(CUT_LOOKAT_LOCATOR_INFO_PC, joint) == 0x5c);
 typedef struct CUT_LOOKAT_STATE_PC {
     NUHGOBJ_EVAL_PC *hierarchy;
     f32 blend;
-    u16 character, material, texture, secondary_material, tertiary_material, joint;
+    u16 character;
+    u16 material;
+    u16 texture;
+    u16 secondary_material;
+    u16 tertiary_material;
+    u16 joint;
     CUT_LOOKAT_LOCATOR_INFO_PC *locator;
 } CUT_LOOKAT_STATE_PC;
 
@@ -390,7 +428,9 @@ void __cdecl instGetLookAtLocatorInfo(INSTNUGCUTSCENE *owner, CUT_LOOKAT_STATE_P
     CUT_SCENE_LOAD_PC *scene;
     CUT_LOAD_CHARACTER_ANIMATION *animations;
     NUHGOBJ_EVAL_PC *hierarchy;
-    i32 i, character_id, joint;
+    i32 i;
+    i32 character_id;
+    i32 joint;
     if (locator == NULL || NuCutSceneGetHGObj == NULL) {
         return;
     }
@@ -452,7 +492,10 @@ typedef struct CUT_UPDATE_LOCATOR_MATRIX_PC {
     f32 scale;
     NUANIMDATA2_PC *animation;
     u32 unknown_54;
-    u8 flags, type, joint, self;
+    u8 flags;
+    u8 type;
+    u8 joint;
+    u8 self;
     u8 unknown_5c[8];
 } CUT_UPDATE_LOCATOR_MATRIX_PC;
 
@@ -461,7 +504,9 @@ STATIC_ASSERT(offsetof(CUT_UPDATE_LOCATOR_MATRIX_PC, flags) == 0x58);
 
 typedef struct CUT_UPDATE_ENTRY_PC {
     char *name;
-    u32 unknown_04, unknown_08, unknown_0c;
+    u32 unknown_04;
+    u32 unknown_08;
+    u32 unknown_0c;
     void(__cdecl *update)(INSTNUGCUTSCENE *, CUT_LOAD_LOCATOR_SYSTEM *, CUT_LOAD_LOCATOR_INSTANCE *, CUT_LOAD_LOCATOR *,
                           f32, NUMTX *, i32);
 } CUT_UPDATE_ENTRY_PC;
@@ -476,7 +521,8 @@ static void CutSceneLocatorDebrisUpdatePc(CUT_LOAD_LOCATOR *locator, CUT_LOAD_LO
                                           CUT_LOAD_LOCATOR_INSTANCE *instance, f32 frame, NUMTX *parent) {
     u16 effect = system->types[locator->type_index].function_index;
     NUANIM_TIME2_PC time;
-    f32 scale, rate;
+    f32 scale;
+    f32 rate;
     NUMTX matrix;
     NUVEC *position;
     i32 finite;
@@ -599,7 +645,8 @@ static void CutSceneLocatorVfxUpdatePc(CUT_LOAD_LOCATOR *locator, CUT_LOAD_LOCAT
 
 typedef struct CUT_LOOKAT_MATERIAL_VALUES_PC {
     u8 unknown_00[0x80];
-    f32 look_x, look_y;
+    f32 look_x;
+    f32 look_y;
 } CUT_LOOKAT_MATERIAL_VALUES_PC;
 
 STATIC_ASSERT(offsetof(CUT_LOOKAT_MATERIAL_VALUES_PC, look_x) == 0x80);
@@ -616,14 +663,30 @@ static void CutSceneLocatorLookAtUpdatePc(CUT_LOAD_LOCATOR_INSTANCE *instance, C
     CUT_LOAD_CHARACTER_INSTANCE *character_instance;
     CUT_LOOKAT_TEXTURE_PC *texture;
     NUMTL *material;
-    NUMTX locator_matrix, character_matrix, joint_offset, joint_world, inverse;
+    NUMTX locator_matrix;
+    NUMTX character_matrix;
+    NUMTX joint_offset;
+    NUMTX joint_world;
+    NUMTX inverse;
     NUMTX joints[256];
-    NUVEC4 direction, local_direction;
-    f32 *values, x = 0.0f, y = 0.0f;
-    f32 amount, limit, dx, dy;
-    i32 visible, first, second, minimum_frame = 0, selected_frame;
+    NUVEC4 direction;
+    NUVEC4 local_direction;
+    f32 *values;
+    f32 x = 0.0f;
+    f32 y = 0.0f;
+    f32 amount;
+    f32 limit;
+    f32 dx;
+    f32 dy;
+    i32 visible;
+    i32 first;
+    i32 second;
+    i32 minimum_frame = 0;
+    i32 selected_frame;
     u32 animation_index;
-    f32 animation_rate, blend, start;
+    f32 animation_rate;
+    f32 blend;
+    f32 start;
     i32 layers;
     u32 magic = ((NUANIMDATA2_PC *)locator->animation)->header.magic;
     if ((i32)magic < (i32)0x414e4934 || (i32)magic > (i32)0x414e4935) {

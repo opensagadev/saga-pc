@@ -67,7 +67,9 @@ STATIC_ASSERT(offsetof(BUILDIT_MOVEMENT_PC, batch_size) == 0x70);
 STATIC_ASSERT(offsetof(BUILDIT_MOVEMENT_PC, state_flags) == 0x72);
 
 typedef struct buildit_reset_matrices_pc_s {
-    NUMTX start_mtx, end_mtx, draw_mtx;
+    NUMTX start_mtx;
+    NUMTX end_mtx;
+    NUMTX draw_mtx;
 } BUILDIT_RESET_MATRICES_PC;
 
 STATIC_ASSERT(offsetof(BUILDIT_RESET_MATRICES_PC, start_mtx) == 0);
@@ -79,17 +81,26 @@ typedef struct buildit_reset_pc_s {
     GAMEANIMSET *anim_set;
     GAMEANIMOBJ **anim_objects;
     struct buildit_reset_pc_s *linked_buildit;
-    NUVEC file_position, start_position, position;
+    NUVEC file_position;
+    NUVEC start_position;
+    NUVEC position;
     f32 bounds_radius;
-    f32 reset_step_timer, reset_step_duration;
-    f32 interaction_radius, field_50;
+    f32 reset_step_timer;
+    f32 reset_step_duration;
+    f32 interaction_radius;
+    f32 field_50;
     i16 wobble_parameter;
     i16 completion_score;
-    i16 field_58, field_5a;
+    i16 field_58;
+    i16 field_5a;
     NUVEC effect_position;
     f32 activation_radius;
-    u8 anim_object_count, build_state, builders_active, built_object_count;
-    u8 batch_size, progress;
+    u8 anim_object_count;
+    u8 build_state;
+    u8 builders_active;
+    u8 built_object_count;
+    u8 batch_size;
+    u8 progress;
     u16 state_flags;
     u16 linked_rotation;
     i16 room_index;
@@ -199,7 +210,8 @@ typedef struct buildit_attracto_reader_pc_s {
     u8 unknown_00[0x18];
     void *linked_buildit;
     u8 unknown_1c[0x28];
-    f32 step_timer, step_duration;
+    f32 step_timer;
+    f32 step_duration;
     u8 unknown_4c[0x30];
 } BUILDIT_ATTRACTO_READER_PC;
 
@@ -245,13 +257,18 @@ typedef struct registry_buildit_system_pc_s {
 } REGISTRY_BUILDIT_SYSTEM_PC;
 
 typedef struct {
-    u32 built[2], enabled[2], visible[2], completed[2];
+    u32 built[2];
+    u32 enabled[2];
+    u32 visible[2];
+    u32 completed[2];
     u8 object_count[64];
 } BUILD_PROGRESS_PC;
 
 typedef struct {
     u8 unused00[0x6d];
-    u8 build_state, unused6e, built_object_count;
+    u8 build_state;
+    u8 unused6e;
+    u8 built_object_count;
     u8 unused70[10];
     u16 flags;
 } BUILD_PROGRESS_RECORD_PC;
@@ -319,8 +336,10 @@ extern "C" {
 
     static f32 BuildItAxisWobbleFactorPc(NUVEC *axis) {
         NUVEC normal;
-        f32 dot, vertical;
-        f32 product, factor;
+        f32 dot;
+        f32 vertical;
+        f32 product;
+        f32 factor;
         f32 sine;
         NuVecNorm(&normal, axis);
         dot = NuVecDot(&normal, &v010);
@@ -426,9 +445,14 @@ extern "C" void GizMoveAttractoBuildItPiece(GIZBUILDIT_s *buildit_pointer, GAMEA
     GIZBUILDITANIMDATA_s *data = static_cast<GIZBUILDITANIMDATA_s *>(piece->object_data);
     f32 progress = 1.0f - buildit->step_timer / buildit->step_duration;
     NUMTX *draw = NuSpecialGetDrawMtx(&piece->special);
-    NUMTX result, from, to;
-    NUQUAT rotation, from_rotation, to_rotation;
-    NUVEC from_position, to_position;
+    NUMTX result;
+    NUMTX from;
+    NUMTX to;
+    NUQUAT rotation;
+    NUQUAT from_rotation;
+    NUQUAT to_rotation;
+    NUVEC from_position;
+    NUVEC to_position;
     if (progress > 0.0f) {
         from = *draw;
         from.m30 = from.m31 = from.m32 = 0.0f;
@@ -458,8 +482,14 @@ extern "C" void __cdecl GizDrawBuildItPiece(GAMEOBJECT *object, i32 draw_reflect
     GAMEANIMOBJ *piece;
     GIZBUILDITANIMDATA_s *data;
     f32 progress;
-    NUMTX matrix, from, to, result, reflected;
-    NUQUAT from_rotation, to_rotation, rotation;
+    NUMTX matrix;
+    NUMTX from;
+    NUMTX to;
+    NUMTX result;
+    NUMTX reflected;
+    NUQUAT from_rotation;
+    NUQUAT to_rotation;
+    NUQUAT rotation;
     NUVEC to_position;
     if (buildit == NULL || buildit->builders_active == 0 || buildit->build_state != 0 ||
         buildit->anim_object_count == 0) {
@@ -505,10 +535,15 @@ extern "C" {
 
     void __cdecl GizGetBuildItPlayerPos(GAMEOBJECT *player, NUVEC *position, NUVEC *target) {
         BUILDIT_MATRICES_PC *data;
-        i32 count, index, batch_count, end;
+        i32 count;
+        i32 index;
+        i32 batch_count;
+        i32 end;
         NUVEC total;
         NUVEC *end_position;
-        f32 dx, dz, inverse_distance;
+        f32 dx;
+        f32 dz;
+        f32 inverse_distance;
         if (PLAYER_BUILDIT(player) == NULL || PLAYER_BUILDIT(player)->anim_set == NULL ||
             PLAYER_BUILDIT(player)->anim_object_count == 0) {
             return;
@@ -556,9 +591,20 @@ extern "C" {
         BUILDIT_MOVEMENT_PC *buildit = (BUILDIT_MOVEMENT_PC *)context;
         BUILDIT_MATRICES_PC *data;
         BUILDIT_ANIMATION_PC *object;
-        NUVEC maximum = v000, minimum = v000, start_position, centre, radius_centre, player_position, position;
-        f32 radius, nearest_distance, dx, dz, distance;
-        i32 nearest = 0, i;
+        NUVEC maximum = v000;
+        NUVEC minimum = v000;
+        NUVEC start_position;
+        NUVEC centre;
+        NUVEC radius_centre;
+        NUVEC player_position;
+        NUVEC position;
+        f32 radius;
+        f32 nearest_distance;
+        f32 dx;
+        f32 dz;
+        f32 distance;
+        i32 nearest = 0;
+        i32 i;
         if (player == NULL || buildit == NULL || buildit->anim_set == NULL || buildit->anim_object_count == 0) {
             return;
         }
@@ -617,12 +663,23 @@ extern "C" {
     void __cdecl GizBuildItPushAwayFromEnd(GAMEOBJECT *player) {
         GIZBUILDIT_PC *buildit;
         GIZBUILDITANIMDATA_s *data;
-        NUVEC centre, end_position, minimum, maximum, radius_centre, player_position, position;
+        NUVEC centre;
+        NUVEC end_position;
+        NUVEC minimum;
+        NUVEC maximum;
+        NUVEC radius_centre;
+        NUVEC player_position;
+        NUVEC position;
         GAMEANIMOBJ *object;
         f32 radius;
         f32 radius_squared = -1.0e9f;
-        f32 nearest_distance, dx, dz, distance;
-        i32 i, j, nearest = 0;
+        f32 nearest_distance;
+        f32 dx;
+        f32 dz;
+        f32 distance;
+        i32 i;
+        i32 j;
+        i32 nearest = 0;
         if (WORLD->giz_buildit_sys == NULL) {
             return;
         }
@@ -698,7 +755,9 @@ extern "C" {
 
     f32 __cdecl GizBuildItMul(GAMEOBJECT *player) {
         BUILDIT_MOVEMENT_PC *buildit;
-        i32 amount, completed, total;
+        i32 amount;
+        i32 completed;
+        i32 total;
         if ((player->flags_1fc_word & 0x80) != 0 && Player_HasFastBuild(player)) {
             return 3.0f;
         }
@@ -801,8 +860,12 @@ extern "C" {
 
         if (buildit->anim_set != NULL && buildit->anim_set->objects != NULL) {
             struct gameanimobj_s *object;
-            f32 span, span_z;
-            NUVEC start_max, start_min, end_min, end_max;
+            f32 span;
+            f32 span_z;
+            NUVEC start_max;
+            NUVEC start_min;
+            NUVEC end_min;
+            NUVEC end_max;
             start_min.x = end_min.x = 1000000000.0f;
             start_max.x = end_max.x = -1000000000.0f;
             start_max.y = end_max.y = -1000000000.0f;
@@ -1190,7 +1253,8 @@ extern "C" {
 
     void __cdecl GizBuildIt_SetToStart(void *buildit_pointer, i32 emit_debris, i32 keep_built_pieces) {
         BUILDIT_RESET_PC *buildit = (BUILDIT_RESET_PC *)buildit_pointer;
-        i32 restored_count, i;
+        i32 restored_count;
+        i32 i;
         f32 progress;
         if (buildit == NULL || buildit->anim_set == NULL) {
             return;
@@ -1280,7 +1344,10 @@ extern "C" {
         BUILDIT_RESET_PC *buildit;
         GAMEANIMOBJ *object;
         u8 version;
-        i32 index, linked_index, animation_index = 0, length;
+        i32 index;
+        i32 linked_index;
+        i32 animation_index = 0;
+        i32 length;
         char linked_name[16];
         char blowup_name[32];
         version = (u8)EdFileReadChar();
@@ -1374,7 +1441,8 @@ extern "C" {
     void __cdecl GizmoBuildit_Activate(GIZMO_PC *gizmo, i32 active) {
         BUILDIT_RESET_PC *buildit;
         NUVEC scatter_position;
-        i32 reward_released, index;
+        i32 reward_released;
+        i32 index;
         GAMEANIMOBJ *object;
         GIZBUILDITANIMDATA_s *object_data;
         if (gizmo == NULL) {
@@ -1421,7 +1489,12 @@ extern "C" {
         WORLDINFO *world = (WORLDINFO *)world_pointer;
         BUILDIT_RESET_SYSTEM_PC *system = (BUILDIT_RESET_SYSTEM_PC *)system_pointer;
         BUILDIT_RESET_PC *buildit;
-        NUVEC displacement, reward_direction, finish_position, axis, centre, target;
+        NUVEC displacement;
+        NUVEC reward_direction;
+        NUVEC finish_position;
+        NUVEC axis;
+        NUVEC centre;
+        NUVEC target;
         NUMTX matrix;
         i32 index;
         (void)unused;
@@ -1498,13 +1571,15 @@ extern "C" {
             } else if (buildit->build_state == 0) {
                 f32 buzz_time = 0.0f;
                 i32 buzz_frames = 0;
-                f32 previous_timer, timer;
+                f32 previous_timer;
+                f32 timer;
                 if ((buildit->state_flags & 0x40) != 0) {
                     if (GizBuildit_AutoBuildPosFn != NULL) {
                         u16 facing;
                         if (GizBuildit_AutoBuildPosFn(world, &buildit->start_position, &centre, &facing) != 0) {
                             f32 radius;
-                            u16 angle, angle_step;
+                            u16 angle;
+                            u16 angle_step;
                             i32 piece_index;
                             angle = (u16)(facing - 0x4000);
                             if (buildit->reset_step_timer > 4.5f) {

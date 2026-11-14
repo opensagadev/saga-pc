@@ -5,13 +5,25 @@
 
 typedef struct SARLACC_DISCO_PC {
     AIAREA_PC *area;
-    NUSPECIALHANDLE off[16], flash[16], select[16], on[16], finish[16];
-    GIZOBSTACLE *off_obstacle, *on_obstacle;
+    NUSPECIALHANDLE off[16];
+    NUSPECIALHANDLE flash[16];
+    NUSPECIALHANDLE select[16];
+    NUSPECIALHANDLE on[16];
+    NUSPECIALHANDLE finish[16];
+    GIZOBSTACLE *off_obstacle;
+    GIZOBSTACLE *on_obstacle;
     u8 panel_state[16];
-    i8 count, phase, first_panel, second_panel;
-    f32 timer, initial_height, height;
+    i8 count;
+    i8 phase;
+    i8 first_panel;
+    i8 second_panel;
+    f32 timer;
+    f32 initial_height;
+    f32 height;
     u8 reserved_3ec[4];
-    GIZAIMESSAGE *help_message, *complete_message, *state_message;
+    GIZAIMESSAGE *help_message;
+    GIZAIMESSAGE *complete_message;
+    GIZAIMESSAGE *state_message;
     NUVEC *last_selected_position;
 } SARLACC_DISCO_PC;
 
@@ -95,7 +107,8 @@ extern i32 DrawBossHitPointsTwoRowsPc;
 /* Native Emperor floor packet and private controls. */
 typedef struct emperor_update_packet_pc_s {
     i32 state;
-    u8 enabled, zap;
+    u8 enabled;
+    u8 zap;
     i8 player_floor_mask;
     u8 reserved;
 } EMPEROR_UPDATE_PACKET_PC;
@@ -195,12 +208,19 @@ GIZMOBLOWUP_PC *__cdecl DeathStar2BattleD_InZapRange(GAMEOBJECT *object) {
 
 void __cdecl DeathStar2BattleD_Update(WORLDINFO *world) {
     GIZMO_PC *shield_gizmo;
-    GIZMOBLOWUP_PC *shield, *blowup;
+    GIZMOBLOWUP_PC *shield;
+    GIZMOBLOWUP_PC *blowup;
     GAMEOBJECT *player;
-    NUVEC shield_position, position, direction, colour, delta;
+    NUVEC shield_position;
+    NUVEC position;
+    NUVEC direction;
+    NUVEC colour;
+    NUVEC delta;
     NUVEC *mid;
-    f32 radius, length;
-    i32 angle, i;
+    f32 radius;
+    f32 length;
+    i32 angle;
+    i32 i;
     u8 *flags = (u8 *)LevFlag;
     (void)world;
     if (flags[0] > 0 && qrand() < 0x800) {
@@ -479,7 +499,9 @@ void __cdecl EmperorFightA_Update(WORLDINFO *world) {
     i32 i;
     i32 floor;
     i32 floor_active;
-    NUVEC hands[2], end, delta;
+    NUVEC hands[2];
+    NUVEC end;
+    NUVEC delta;
 
     if (LevGameObject[0] == NULL) {
         LevGameObject[0] = FindGameObject(id_THEEMPEROR, 1, 1, 0, 0);
@@ -581,7 +603,9 @@ void __cdecl EmperorFightA_Update(WORLDINFO *world) {
                 f32 negative_radius;
                 f32 dz;
                 f32 push;
-                NUVEC floor_end, player_end, floor_delta;
+                NUVEC floor_end;
+                NUVEC player_end;
+                NUVEC floor_delta;
                 f64 jitter;
                 f64 random;
                 f64 clamp_radius;
@@ -1497,8 +1521,14 @@ void LegoCity_Update(WORLDINFO *world) {
     GIZMOPICKUP_PC *pickup;
     GAMEOBJECT *object;
     i32 index;
-    u8 onTractor, onTaunTaun, onMoonCar, onTownCar;
-    u8 changedTractor, changedTaunTaun, changedMoonCar, changedTownCar;
+    u8 onTractor;
+    u8 onTaunTaun;
+    u8 onMoonCar;
+    u8 onTownCar;
+    u8 changedTractor;
+    u8 changedTaunTaun;
+    u8 changedMoonCar;
+    u8 changedTownCar;
     if (world == NULL) {
         return;
     }
@@ -1616,8 +1646,12 @@ void NewTown_Update(WORLDINFO *world) {
     GIZMOPICKUP_PC *pickup;
     GAMEOBJECT *object;
     i32 index;
-    u8 onTaunTaun, onFireTruck, onLifeBoat;
-    u8 changedTaunTaun, changedFireTruck, changedLifeBoat;
+    u8 onTaunTaun;
+    u8 onFireTruck;
+    u8 onLifeBoat;
+    u8 changedTaunTaun;
+    u8 changedFireTruck;
+    u8 changedLifeBoat;
     if (world == NULL) {
         return;
     }

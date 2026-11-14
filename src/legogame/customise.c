@@ -74,8 +74,12 @@ typedef struct custom_accessory_resource_pc_s {
 
 /* Source-private views for customise.c. Config/piece/category types already defined there. */
 typedef struct custom_piece_anim_pc_s {
-    f32 duration, elapsed, hold_time;
-    u16 start_angle, target_angle, current_angle;
+    f32 duration;
+    f32 elapsed;
+    f32 hold_time;
+    u16 start_angle;
+    u16 target_angle;
+    u16 current_angle;
     u8 unknown_12[2];
 } CUSTOM_PIECE_ANIM_PC;
 
@@ -92,7 +96,8 @@ typedef struct customiser_update_pc_s {
     u8 unknown_208[0x60];
     NUMTX joint_matrices[2][16];
     u8 unknown_a68[4];
-    u8 animation_active[2], animation_state[2];
+    u8 animation_active[2];
+    u8 animation_state[2];
     f32 animation_values[2];
 } CUSTOMISER_UPDATE_PC;
 
@@ -120,8 +125,13 @@ i32 __cdecl GameDrawCharacterModel(CHARACTER_MODEL_LAYERS_PC *, ANIMPACKET_PC *,
 i32 __cdecl Customiser_GetIcon(CUSTOMISER_LAYERS_PC *input, const void *save_input, i32 unused);
 extern i16 TextIdPc880fa0;
 /* Native customiser menu drawing and private matrix helpers; append to customise.c. */
-extern i16 TextIdPc880750, TextIdPc880754, TextIdPc880758, TextIdPc880760, TextIdPc880858;
-extern i16 TextIdPc880894, TextIdPc880898;
+extern i16 TextIdPc880750;
+extern i16 TextIdPc880754;
+extern i16 TextIdPc880758;
+extern i16 TextIdPc880760;
+extern i16 TextIdPc880858;
+extern i16 TextIdPc880894;
+extern i16 TextIdPc880898;
 void __cdecl Hub_ClearStats(void);
 void __cdecl Text_FillInExtendedSaveInfo(void);
 i32 __cdecl TriggerAutoSave(void);
@@ -160,7 +170,10 @@ static void CustomiserMtxSetRotateZPc(NUMTX *matrix, i32 angle) {
 static void CustomiserMtxRotateXPc(NUMTX *matrix, i32 angle) {
     const f32 cosine = NuTrigTable[((angle + 0x4000) >> 1) & 0x7fff];
     const f32 sine = NuTrigTable[(angle >> 1) & 0x7fff];
-    const f32 a = matrix->m01, b = matrix->m11, c = matrix->m21, d = matrix->m31;
+    const f32 a = matrix->m01;
+    const f32 b = matrix->m11;
+    const f32 c = matrix->m21;
+    const f32 d = matrix->m31;
     matrix->m01 = (a * cosine) - (matrix->m02 * sine);
     matrix->m02 = (matrix->m02 * cosine) + (a * sine);
     matrix->m11 = (b * cosine) - (matrix->m12 * sine);
@@ -174,7 +187,10 @@ static void CustomiserMtxRotateXPc(NUMTX *matrix, i32 angle) {
 static void CustomiserMtxRotateYPc(NUMTX *matrix, i32 angle) {
     const f32 cosine = NuTrigTable[((angle + 0x4000) >> 1) & 0x7fff];
     const f32 sine = NuTrigTable[(angle >> 1) & 0x7fff];
-    const f32 a = matrix->m00, b = matrix->m10, c = matrix->m20, d = matrix->m30;
+    const f32 a = matrix->m00;
+    const f32 b = matrix->m10;
+    const f32 c = matrix->m20;
+    const f32 d = matrix->m30;
     matrix->m00 = a * cosine + matrix->m02 * sine;
     matrix->m02 = matrix->m02 * cosine - a * sine;
     matrix->m10 = matrix->m12 * sine + b * cosine;
@@ -222,7 +238,8 @@ void __cdecl FinishWeirdoNames(i32 which) {
 
 static void UpdateCustomPieceAnim(CUSTOM_PIECE_ANIM_PC *anim, u16 minimum, u16 maximum) {
     i32 index;
-    f64 difference, blend;
+    f64 difference;
+    f64 blend;
     if (anim->elapsed < anim->duration) {
         anim->elapsed += FRAMETIME;
         if (anim->elapsed >= anim->duration) {
@@ -288,7 +305,9 @@ void __cdecl Customiser_SetNameAndIcon(CUSTOMISER_LAYERS_PC *input, i32 index) {
     CUSTOMISER_CONFIG_PC *customiser = (CUSTOMISER_CONFIG_PC *)input;
     CUSTOMISER_NAMES_PC *names = (CUSTOMISER_NAMES_PC *)input;
     i32 best = -1;
-    i32 side, category, group;
+    i32 side;
+    i32 category;
+    i32 group;
     if (customiser == NULL) {
         return;
     }
@@ -378,17 +397,25 @@ i32 __cdecl PermanentCustomPieceAvailablePc(CUSTOMPIECE_LAYERS_PC *input) {
     return 1;
 }
 
-static CUSTOM_PIECE_ANIM_PC CustomiseArmsAnimPc[2] = {0}, CustomiseLegsAnimPc[2] = {0}, CustomiseHeadAnimPc[2] = {0};
-static u16 CustomiseTiltXPc[2] = {0}, CustomiseBobPc[2] = {0}, CustomiseTiltZPc[2] = {0}, CustomiseRotYPc[2] = {0},
-           CustomiseYRotPc[2] = {0};
+static CUSTOM_PIECE_ANIM_PC CustomiseArmsAnimPc[2] = {0};
+static CUSTOM_PIECE_ANIM_PC CustomiseLegsAnimPc[2] = {0};
+static CUSTOM_PIECE_ANIM_PC CustomiseHeadAnimPc[2] = {0};
+static u16 CustomiseTiltXPc[2] = {0};
+static u16 CustomiseBobPc[2] = {0};
+static u16 CustomiseTiltZPc[2] = {0};
+static u16 CustomiseRotYPc[2] = {0};
+static u16 CustomiseYRotPc[2] = {0};
 static f32 CustomiseNameAlphaPc = 0;
-static f32 CustomiseNameBoardTMulPc[2] = {0}, CustomiseNameBoardMulPc[2] = {0}, CustomiseNameLetterBlipScalePc[2] = {0};
+static f32 CustomiseNameBoardTMulPc[2] = {0};
+static f32 CustomiseNameBoardMulPc[2] = {0};
+static f32 CustomiseNameLetterBlipScalePc[2] = {0};
 
 /* 00424040 / 775 */
 void __cdecl Customiser_Init(CUSTOMISER_LAYERS_PC *input) {
     CUSTOMISER_CONFIG_PC *customiser = (CUSTOMISER_CONFIG_PC *)input;
     CUSTOMISER_UPDATE_PC *runtime = (CUSTOMISER_UPDATE_PC *)input;
-    i32 side, category;
+    i32 side;
+    i32 category;
     if (customiser == NULL) {
         return;
     }
@@ -597,7 +624,11 @@ i32 __cdecl CustomiserMenu_Update(void) {
     i32 cancel_name = 0;
     i32 toggle = 0;
     CUSTOMISER_CONFIG_PC *customiser = (CUSTOMISER_CONFIG_PC *)CharacterCustomiser;
-    i32 active_index, active_count, select[2], cancel, player;
+    i32 active_index;
+    i32 active_count;
+    i32 select[2];
+    i32 cancel;
+    i32 player;
     if (customiser == NULL) {
         quit = 1;
     }
@@ -641,8 +672,12 @@ i32 __cdecl CustomiserMenu_Update(void) {
     } else {
         quit = 0;
         for (player = 0; player < 2; ++player) {
-            u32 pressed, held;
-            i32 side, old_mode, new_mode = -1, randomise = 0;
+            u32 pressed;
+            u32 held;
+            i32 side;
+            i32 old_mode;
+            i32 new_mode = -1;
+            i32 randomise = 0;
             if (MissionMenuPacketPc.active_player[player] == 0) {
                 continue;
             }
@@ -680,8 +715,16 @@ i32 __cdecl CustomiserMenu_Update(void) {
                 i32 piece_count = customiser->piece_counts[category];
                 i32 old_piece = Game.customiser_start[side].pieces[category];
                 u16 *slot = &Game.customiser_start[side].pieces[category];
-                i32 old_category = category, next_piece = old_piece;
-                i32 up, up_held, down, down_held, left, left_held, right, right_held;
+                i32 old_category = category;
+                i32 next_piece = old_piece;
+                i32 up;
+                i32 up_held;
+                i32 down;
+                i32 down_held;
+                i32 left;
+                i32 left_held;
+                i32 right;
+                i32 right_held;
                 up_held = held & GAMEPAD_DUP;
                 down_held = held & GAMEPAD_DDOWN;
                 down = pressed & GAMEPAD_DDOWN;
@@ -709,7 +752,8 @@ i32 __cdecl CustomiserMenu_Update(void) {
                 MenuRepeat(&right_held, &right, &rightrepeattime[player], &rightrepeatcount[player], repeat_delay,
                            FRAMETIME);
                 if (CustomiseMode[side] == 1) {
-                    i32 old_x = CustomiseNameXPc[side], old_y = CustomiseNameYPc[side];
+                    i32 old_x = CustomiseNameXPc[side];
+                    i32 old_y = CustomiseNameYPc[side];
                     if (left != 0) {
                         if (old_x > 0) {
                             Game.customiser_start[side].name[old_x] = CustomiseLetter[old_y];
@@ -822,7 +866,8 @@ i32 __cdecl CustomiserMenu_Update(void) {
                 NUVEC *position = &CustomisePos[side];
                 NUVEC debris_position;
                 NUMTX matrix;
-                i32 category, angle;
+                i32 category;
+                i32 angle;
                 PlaySfx((char *)GameAudioName00753354Pc, position);
                 NewBuzzFrames(((GAMEPAD_RUNTIME_INPUT_PC *)&GamePadStorage[player])->bound_pad, 1, 0);
                 for (category = 0; category < 9; ++category) {
@@ -894,7 +939,9 @@ static f32 CustomiseNameBracketOffsetYPc = 0.007499999832361937f;
 
 static void CustomiserDrawNameEditorPc(CUSTOMISER_LAYERS_PC *input) {
     CUSTOMISER_CONFIG_PC *customiser = (CUSTOMISER_CONFIG_PC *)input;
-    i32 side, active_count, index;
+    i32 side;
+    i32 active_count;
+    i32 index;
     char name[64];
     if (customiser == NULL || CustomiseNameAlphaPc <= 0.0f) {
         return;
@@ -907,12 +954,14 @@ static void CustomiserDrawNameEditorPc(CUSTOMISER_LAYERS_PC *input) {
         const i32 red = side == 0 ? 0 : 127;
         const i32 green = side == 0 ? 191 : 255;
         const i32 blue = side == 0 ? 255 : 0;
-        f32 x, alpha;
+        f32 x;
+        f32 alpha;
         i32 icon;
         if (CustomiseMode[side] == 1) {
             char letter[2];
             f32 gap = CustomiseNameGapPc;
-            i32 length, column;
+            i32 length;
+            i32 column;
             letter[1] = 0;
             if (Game.options_save.widescreen != 0) {
                 gap = (f32)(gap * 0.800000011920929);
@@ -928,7 +977,9 @@ static void CustomiserDrawNameEditorPc(CUSTOMISER_LAYERS_PC *input) {
             }
             for (column = 0; column < 15; ++column) {
                 f32 scale;
-                i32 letter_red, letter_green, letter_blue;
+                i32 letter_red;
+                i32 letter_green;
+                i32 letter_blue;
                 if (column == CustomiseNameXPc[side]) {
                     const i32 colour = menu_flash == 0 ? 255 : 191;
                     letter[0] = CustomiseLetter[CustomiseNameYPc[side]];
@@ -995,7 +1046,12 @@ void __cdecl Customiser_Update(CUSTOMISER_LAYERS_PC *input, WORLDINFO *world) {
     const i32 tilt_x_step = (i32)(12379.0 * FRAMETIME);
     const i32 tilt_z_step = (i32)(10376.0 * FRAMETIME);
     const i32 bob_step = (i32)(20206.0 * FRAMETIME);
-    i32 active_side, active_count, preview_side, colour, side, category;
+    i32 active_side;
+    i32 active_count;
+    i32 preview_side;
+    i32 colour;
+    i32 side;
+    i32 category;
     ADD_GAME_MESSAGE_PC message;
     if (customiser == NULL) {
         return;
@@ -1015,7 +1071,8 @@ void __cdecl Customiser_Update(CUSTOMISER_LAYERS_PC *input, WORLDINFO *world) {
         u32 torso_flags;
         CHARACTER_MODEL_LAYERS_PC *model;
         ANIMPACKET_PC *packet;
-        i32 saber_colour, intro;
+        i32 saber_colour;
+        i32 intro;
         u16 angle;
         f32 no_hat;
         CustomiseRotYPc[side] += rotation_step;
@@ -1138,7 +1195,10 @@ void __cdecl Customiser_Draw3D(CUSTOMISER_LAYERS_PC *input) {
     WORLDINFO *world = WorldInfo_CurrentlyActive();
     CUSTOMISER_CONFIG_PC *customiser = (CUSTOMISER_CONFIG_PC *)input;
     CUSTOMISER_UPDATE_PC *runtime = (CUSTOMISER_UPDATE_PC *)input;
-    i32 active_side, active_count, preview_side, side;
+    i32 active_side;
+    i32 active_count;
+    i32 preview_side;
+    i32 side;
     if (customiser == NULL || world->camera_splines[18] == NULL) {
         return;
     }
@@ -1151,7 +1211,9 @@ void __cdecl Customiser_Draw3D(CUSTOMISER_LAYERS_PC *input) {
         i32 character_id = customiser->character_ids[side];
         CHARACTER_MODEL_LAYERS_PC *model = APICharacterLoaded(character_id);
         PLAYERCHARACTERCONFIG_PC *character;
-        i32 helmet, selected, category;
+        i32 helmet;
+        i32 selected;
+        i32 category;
         RTL_DATA_PC light_data;
         NUMTX matrix;
         u32 mask;
@@ -1273,10 +1335,18 @@ void __cdecl MenuUpdateCustomiserPc(MENU *menu) {
 }
 
 void __cdecl MenuDrawCustomiserPc(MENU *menu) {
-    i32 active_index, active_count, player, side;
-    i32 select[2], action[2], cancel[2], toggle[2];
+    i32 active_index;
+    i32 active_count;
+    i32 player;
+    i32 side;
+    i32 select[2];
+    i32 action[2];
+    i32 cancel[2];
+    i32 toggle[2];
     i32 colour;
-    f32 x, y, alpha;
+    f32 x;
+    f32 y;
+    f32 alpha;
     (void)menu;
     if (MenuStopDraw != 0 || customiser_quit != 0 || CharacterCustomiser == NULL) {
         return;

@@ -950,7 +950,9 @@ HRESULT __cdecl PCSoundSetLinearVolume(IDirectSoundBuffer *buffer, f32 volume) {
 void __cdecl SetSoundBitsById(const i32 *ids, void(__cdecl *set_bit)(i32)) {
     i32 id;
     while ((id = *ids++) != -1) {
-        i32 group, i, samples;
+        i32 group;
+        i32 i;
+        i32 samples;
         if (id < 0) {
             continue;
         }
@@ -1000,9 +1002,18 @@ static void fnAudioSample(NUFPAR_PC *fpar) {
     u32 hash;
     i32 i;
     u32 filename_index;
-    f32 pan, pitch_rnd, volume_rnd, falloff_near, falloff_far;
-    f32 buzz_timer, rumble_sustain, rumble_release;
-    i32 priority, volume, rumble_strength, category;
+    f32 pan;
+    f32 pitch_rnd;
+    f32 volume_rnd;
+    f32 falloff_near;
+    f32 falloff_far;
+    f32 buzz_timer;
+    f32 rumble_sustain;
+    f32 rumble_release;
+    i32 priority;
+    i32 volume;
+    i32 rumble_strength;
+    i32 category;
     InitSoundInfo(NumSfxInst);
     while (NuFParGetWord(fpar) != 0) {
         if (NuStrICmp(fpar->word_buffer_ptr, "disable") == 0) {

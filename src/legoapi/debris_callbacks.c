@@ -66,7 +66,8 @@ i32 __cdecl DebrisNuASin(f32 sin) {
 #undef ASIN_POW5
 
 i32 __cdecl SolveQuadratic(f32 a, f32 b, f32 c, f32 *first, f32 *second) {
-    f64 four_ac, b_squared;
+    f64 four_ac;
+    f64 b_squared;
     f32 root;
     if (a == 0.0f) {
         if (b == 0.0f) {

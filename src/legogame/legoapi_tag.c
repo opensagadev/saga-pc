@@ -240,14 +240,20 @@ i32 __cdecl TagCode(GAMEOBJECT *source, GAMEOBJECT *destination, i32 takeover, i
     GAMEPAD_PC *source_pad;
     GAMEPAD_PC *destination_pad;
     f32 source_da8;
-    i32 source_hp, destination_hp;
-    u32 source_player, destination_player;
-    TAGSCRIPTSTATE_PC source_script, destination_script;
-    u32 source_ai, destination_ai;
+    i32 source_hp;
+    i32 destination_hp;
+    u32 source_player;
+    u32 destination_player;
+    TAGSCRIPTSTATE_PC source_script;
+    TAGSCRIPTSTATE_PC destination_script;
+    u32 source_ai;
+    u32 destination_ai;
     void *pointer;
     i32 player_index;
     f32 timer;
-    u32 source_flags, saved_flags, mask;
+    u32 source_flags;
+    u32 saved_flags;
+    u32 mask;
     void(__cdecl * callback)(GAMEOBJECT *);
     (void)unused;
     if (CUTSKIPLOCK == 0) {
@@ -410,7 +416,8 @@ i32 __cdecl TagCode(GAMEOBJECT *source, GAMEOBJECT *destination, i32 takeover, i
 
 i32 __cdecl TagCharacter(GAMEOBJECT *source, GAMEOBJECT *target, i32 mode) {
     i32 index;
-    u32 source_active, target_active;
+    u32 source_active;
+    u32 target_active;
     i32 result;
     if (!TAG_CAN_TARGET(source, target)) {
         for (index = 0; index < 8; ++index) {
@@ -584,8 +591,10 @@ draw_icon:
 void __cdecl ReleaseTakeOver(GAMEOBJECT *target, i32 unused) {
     GAMEOBJECT *rider;
     GAMEOBJECT *object;
-    TAGSCRIPTSTATE_PC rider_script, object_script;
-    u32 rider_flag, object_flag;
+    TAGSCRIPTSTATE_PC rider_script;
+    TAGSCRIPTSTATE_PC object_script;
+    u32 rider_flag;
+    u32 object_flag;
     PLAYERCHARACTERCONFIG_PC *character;
     (void)unused;
     if (target->rider == NULL) {
@@ -815,7 +824,11 @@ void __cdecl TakeOverCode(GAMEOBJECT *object, i32 tag_pressed) {
         GAMEOBJECT *nearest = NULL;
         GAMEOBJECT *candidate;
         i32 index;
-        f32 dx, dz, range, range_squared, distance;
+        f32 dx;
+        f32 dz;
+        f32 range;
+        f32 range_squared;
+        f32 distance;
         if (object->field_281 == 0) {
             return;
         }

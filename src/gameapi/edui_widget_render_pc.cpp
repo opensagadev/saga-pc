@@ -438,7 +438,9 @@ static void EduiDrawGradientSpanPc(i32 x, i32 y, i32 width, i32 height, u32 firs
 static void eduiHSVToRGB(f32 hue, f32 saturation, f32 value, f32 &red, f32 &green, f32 &blue);
 
 extern "C" void __cdecl eduiGradStageSetHSV(edui_gradient_node_s *stage, f32 hue, f32 saturation, f32 value) {
-    f32 red, green, blue;
+    f32 red;
+    f32 green;
+    f32 blue;
     eduiHSVToRGB(hue, saturation, value, red, green, blue);
     red = (f32)(red * 255.0);
     green = (f32)(green * 255.0);
@@ -1034,7 +1036,9 @@ extern "C" {
 }
 
 extern "C" void __cdecl eduiGradStageSetRGB(edui_gradient_node_s *stage, f32 red, f32 green, f32 blue) {
-    f32 hue, saturation, value;
+    f32 hue;
+    f32 saturation;
+    f32 value;
     EduiColourRgbToHsvPc(red, green, blue, &hue, &saturation, &value);
     stage->colour = (u32)red | ((u32)green << 8) | ((u32)blue << 16) | 0x80000000u;
     stage->hue = hue;
@@ -1206,7 +1210,9 @@ extern "C" void __cdecl AddColourPick(eduimenu_s *parent, eduiitem_s *item, f32 
     f32 *target_blue = blue;
     edui_colour_pick_s *picker;
     i32 bottom;
-    f32 red_value, green_value, blue_value;
+    f32 red_value;
+    f32 green_value;
+    f32 blue_value;
     char text[256];
     if (picker_menu->parent == NULL) {
         eduimenu_s *last = parent;
@@ -1273,7 +1279,10 @@ static void EduiDrawGradientGridPc(i32 x, i32 y, i32 width, i32 height, f32 star
     x <<= 4;
     i32 left = x + (i32)(width * start);
     i32 right = x + (i32)(width * end);
-    EDUI_GRADIENT_COLOUR_PC first, second, last_first, last_second;
+    EDUI_GRADIENT_COLOUR_PC first;
+    EDUI_GRADIENT_COLOUR_PC second;
+    EDUI_GRADIENT_COLOUR_PC last_first;
+    EDUI_GRADIENT_COLOUR_PC last_second;
     first.word = top_left;
     second.word = top_right;
     last_first.word = bottom_left;
@@ -1329,7 +1338,9 @@ extern "C" i32 __cdecl eduicbRenderColourPick(eduimenu_s *unused_menu, eduiitem_
     }
     i32 bar_height = width / 8;
     y += main_height;
-    f32 red, green, blue;
+    f32 red;
+    f32 green;
+    f32 blue;
     eduiHSVToRGB(picker->hue, 1.0f, picker->value, red, green, blue);
     u32 full = (u32)(red * 255.0) - (((((u32)(blue * -255.0) + 0x8000) << 8) + (u32)(green * -255.0)) << 8);
     eduiHSVToRGB(picker->hue, 0.0f, picker->value, red, green, blue);
@@ -1372,7 +1383,14 @@ extern "C" i32 __cdecl eduicbRenderColourPick(eduimenu_s *unused_menu, eduiitem_
 typedef struct edui_colour_pick_flags_pc_s {
     eduiitem_s base;
     i32(__cdecl *interact)(edui_interact_s *);
-    f32 cursor_x, cursor_y, hue, saturation, value, red, green, blue;
+    f32 cursor_x;
+    f32 cursor_y;
+    f32 hue;
+    f32 saturation;
+    f32 value;
+    f32 red;
+    f32 green;
+    f32 blue;
 
     union {
         u32 flags;
@@ -2377,8 +2395,15 @@ extern "C" i32 __cdecl eduicbProcessColourSlider(eduimenu_s *menu, eduiitem_s *i
 }
 
 typedef struct edui_gradient_stage_pc_s {
-    f32 time, hue, saturation, value, red, green, blue;
-    u32 colour, metadata;
+    f32 time;
+    f32 hue;
+    f32 saturation;
+    f32 value;
+    f32 red;
+    f32 green;
+    f32 blue;
+    u32 colour;
+    u32 metadata;
 } EDUI_GRADIENT_STAGE_PC;
 
 STATIC_ASSERT(sizeof(EDUI_GRADIENT_STAGE_PC) == 0x24);
@@ -2399,14 +2424,18 @@ STATIC_ASSERT(offsetof(edui_gradient_pick_s, first_stage) == 0x4c);
 
 extern "C" edui_gradient_node_s *__cdecl eduiGradStageAddRGB(edui_gradient_pick_s *item, f32 time, f32 red, f32 green,
                                                              f32 blue) {
-    f32 hue, saturation, value;
+    f32 hue;
+    f32 saturation;
+    f32 value;
     EduiColourRgbToHsvPc(red, green, blue, &hue, &saturation, &value);
     return eduiGradStageAdd(item, time, hue, saturation, value);
 }
 
 extern "C" i32 __cdecl eduiGradPickRead(eduiitem_s *item, EDUI_GRADIENT_STAGE_PC *stages, i32 capacity) {
     edui_gradient_node_s *node = ((edui_gradient_pick_s *)item)->first_stage;
-    f32 red, green, blue;
+    f32 red;
+    f32 green;
+    f32 blue;
     i32 count = 0;
     for (; node; node = node->next, ++count) {
         if (count < capacity) {
@@ -2468,7 +2497,9 @@ extern "C" i32 __cdecl eduicbRenderSelWithClipColour(eduimenu_s *menu, eduiitem_
         }
     }
     EduiPrintAlignedTextPc(edui_font, (x * 2 + width) << 3, (y << 3) + baseline, 64, item->text);
-    f32 red, green, blue;
+    f32 red;
+    f32 green;
+    f32 blue;
     if (item->type == 7) {
         eduiHSVToRGB(EduiColourClipboardPc.hue, EduiColourClipboardPc.saturation, EduiColourClipboardPc.value, red,
                      green, blue);

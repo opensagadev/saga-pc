@@ -401,8 +401,10 @@ STATIC_ASSERT(offsetof(NULNKHDR, id) == 0xc);
 
 NULSTHDR *__cdecl NuLstCreateBuff(i32 count, i32 size, VARIPTR *buffer, VARIPTR end, i32 alignment) {
     NULSTHDR *list = NULL;
-    u32 stride, bytes;
-    NULNKHDR *node, *next;
+    u32 stride;
+    u32 bytes;
+    NULNKHDR *node;
+    NULNKHDR *next;
     i32 i;
     buffer->addr = (buffer->addr + alignment - 1) & ~(alignment - 1);
     stride = (alignment + size + sizeof(NULNKHDR) - 1) & -(u32)alignment;

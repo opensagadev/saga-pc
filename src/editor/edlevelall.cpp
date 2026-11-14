@@ -2722,7 +2722,14 @@ void __cdecl EdDrawPolyCylinder(NUMTX *matrix, f32 half_height, f32 radius, f32 
     f32 scale = top_radius / radius;
     i32 dark = EDDRAW_DARKEN(colour);
     i32 tri_colour = 0;
-    f32 s0, c0, s1, c1, s2, c2, top_s, top_c;
+    f32 s0;
+    f32 c0;
+    f32 s1;
+    f32 c1;
+    f32 s2;
+    f32 c2;
+    f32 top_s;
+    f32 top_c;
     i32 i;
     i32 count;
 

@@ -24,7 +24,8 @@ NUVEC __cdecl NuFadeObjGetAngleTerrainValues(NUVEC *position) {
 }
 
 void __cdecl NuFadeObjInit(void) {
-    i32 group, i;
+    i32 group;
+    i32 i;
     i16 *platform;
     void *terrain;
     NuFadeObjDir = 0;
@@ -64,7 +65,12 @@ PC_NUFADEGROUP *__cdecl NuFadeObjCreateMtx(NUSPECIALHANDLE *source, NUMTX *matri
     NUMTX *matrix = matrices;
     i16 *platform;
     i32 i;
-    f32 min_x, max_x, min_y, max_y, min_z, max_z;
+    f32 min_x;
+    f32 max_x;
+    f32 min_y;
+    f32 max_y;
+    f32 min_z;
+    f32 max_z;
     group = NuFadeObjAllocateGrp();
     if (NuFadeObjDataIndex + count < NuFadeMaxDataPC) {
         NuFadeObjDataIndex += count;
@@ -139,7 +145,10 @@ void __cdecl NuFadeObjAngleTerrain(NUMTX *matrix) {
 }
 
 void __cdecl NuFadeObjUpdateArray(NUVEC **positions) {
-    i32 i, g, p, nearby;
+    i32 i;
+    i32 g;
+    i32 p;
+    i32 nearby;
     NUMTX *matrix;
     i16 *platform;
     PC_NUFADEGROUP *group = NuFadeObjGroup;
@@ -205,10 +214,13 @@ void __cdecl NuFadeObjUpdate(NUVEC *position) {
 }
 
 void __cdecl NuFadeObjDraw(void) {
-    i32 i, g;
+    i32 i;
+    i32 g;
     NUMTX *matrix;
     PC_NUFADEGROUP *group;
-    f32 near_squared, far_squared, distance_squared;
+    f32 near_squared;
+    f32 far_squared;
+    f32 distance_squared;
     NUSPECIALHANDLE special;
     special.special = NULL;
     if (NuFadeObjEnabledPc == 0) {

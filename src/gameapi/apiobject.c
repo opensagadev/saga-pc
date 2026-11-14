@@ -37,7 +37,10 @@ struct PC_HG_SHADOW_GROUP {
     PC_HG_SHADOW_SHAPE48 *ellipses;
     PC_HG_SHADOW_SHAPE64 *cylinders;
     void *third_shape;
-    u8 ellipse_count, cylinder_count, third_count, joint_index;
+    u8 ellipse_count;
+    u8 cylinder_count;
+    u8 third_count;
+    u8 joint_index;
 };
 
 STATIC_ASSERT(sizeof(PC_HG_SHADOW_SHAPE48) == 48);
@@ -285,7 +288,10 @@ void __cdecl APIObjectDestroyAll(APIOBJECTSYS_PC *system) {
 i32 __cdecl QuickNewRayCast(NUVEC *position, NUVEC *movement, f32 radius, i32 scan_flags, f32 max_distance, f32 step) {
     f32 distance;
     i32 hit;
-    NUVEC direction, travelled, current, segment;
+    NUVEC direction;
+    NUVEC travelled;
+    NUVEC current;
+    NUVEC segment;
     if (step > 0.0f) {
         distance = movement->x * movement->x + movement->y * movement->y + movement->z * movement->z;
         if (distance > max_distance * max_distance) {
@@ -326,10 +332,14 @@ void __cdecl APIObjectLOSChecks(APIOBJECTSYS_PC *system, i32 checks, i32 source_
     i32 target_visible;
     i32 initial_target;
     i32 initial_source;
-    APIOBJECT_PC *target, *source;
-    i32 target_index, source_index;
+    APIOBJECT_PC *target;
+    APIOBJECT_PC *source;
+    i32 target_index;
+    i32 source_index;
     NUVEC difference;
-    f32 distance_squared, source_range, target_range;
+    f32 distance_squared;
+    f32 source_range;
+    f32 target_range;
     if (system == NULL || checks == 0 || source_count == 0 || target_count == 0) {
         goto done;
     }
@@ -780,11 +790,21 @@ i32 __cdecl APIObjectCollision2D(APIOBJECT_PC *first_input, APIOBJECT_PC *second
 
 void __cdecl APIObjectCollisions(i32 count, APIOBJECT_PC **objects, NUVEC *minimums, NUVEC *maximums,
                                  i32(__cdecl *collide)(APIOBJECT_PC *, APIOBJECT_PC *)) {
-    i32 outer, inner;
-    GAMEOBJECT **first, **second;
-    NUVEC *first_min, *first_max, *second_min, *second_max;
-    NUVEC *first_position, *second_position;
-    f32 dx, dy, dz, distance_squared, radius;
+    i32 outer;
+    i32 inner;
+    GAMEOBJECT **first;
+    GAMEOBJECT **second;
+    NUVEC *first_min;
+    NUVEC *first_max;
+    NUVEC *second_min;
+    NUVEC *second_max;
+    NUVEC *first_position;
+    NUVEC *second_position;
+    f32 dx;
+    f32 dy;
+    f32 dz;
+    f32 distance_squared;
+    f32 radius;
     if (collide == NULL) {
         return;
     }
@@ -984,11 +1004,17 @@ void __cdecl AddAnimEffects(CHARACTER_MODEL_LAYERS_PC *model, APICHARACTERDATA *
     i32 animation_id;
     f32 animation_time;
     GAMEOBJECT *api;
-    i32 active, event, locator, i, locator_index;
+    i32 active;
+    i32 event;
+    i32 locator;
+    i32 i;
+    i32 locator_index;
     NUVEC position;
     NUVEC locator_positions[16];
     i32 locator_indices[16];
-    i32 locator_count, position_count, count;
+    i32 locator_count;
+    i32 position_count;
+    i32 count;
     NUVEC velocity;
     (void)character_data;
     if (paused != 0 || effects == NULL) {
@@ -1328,12 +1354,21 @@ void __cdecl APILoadCharacterModels(APICHARACTERMODELLIST *list, i32 area_animat
     char deformation_extension[5] = ".bsa";
     char path[0x100];
     char directory[0x40];
-    char directory_pack[0x100], model_pack[0x100], pak_path[0x100];
+    char directory_pack[0x100];
+    char model_pack[0x100];
+    char pak_path[0x100];
     CHARACTER_MODEL_LAYERS_PC *model;
     CHARACTERDATA_PC *character;
     CHARACTERANIM_CONFIG_PC *animation;
-    i32 model_index, animation_id, model_id, loaded, i, item, size;
-    void *pak, *data;
+    i32 model_index;
+    i32 animation_id;
+    i32 model_id;
+    i32 loaded;
+    i32 i;
+    i32 item;
+    i32 size;
+    void *pak;
+    void *data;
     if (append == 0) {
         APIResetCharacterRemap();
         model = apicharsys->models;
@@ -2170,8 +2205,10 @@ f32 *__cdecl AnimListFrameArray(CHARACTER_MODEL_LAYERS_PC *model, i32 animation)
 }
 
 i32 __cdecl AnimPacketModelsCompatiblePc(ANIMPACKET_PC *packet, i32 source_id, i32 target_id) {
-    CHARACTER_MODEL_LAYERS_PC *source, *target;
-    i32 source_model, target_model;
+    CHARACTER_MODEL_LAYERS_PC *source;
+    CHARACTER_MODEL_LAYERS_PC *target;
+    i32 source_model;
+    i32 target_model;
     if (source_id != -1) {
         source_model = apicharsys->playermodelids[source_id];
         if (source_model != -1) {
@@ -2792,10 +2829,16 @@ CHARACTERDATA_PC *__cdecl ConfigureCharacterList(char *file, VARIPTR *buffer_sta
                                                  i32 *count_out, i32 game_stride,
                                                  PLAYERCHARACTERCONFIG_PC **game_data_out) {
     NUFPAR_PC *parser;
-    CHARACTER_LIST_ENTRY_PC *first, *current;
-    i16 directory_offsets[500], filename_offsets[500];
+    CHARACTER_LIST_ENTRY_PC *first;
+    CHARACTER_LIST_ENTRY_PC *current;
+    i16 directory_offsets[500];
+    i16 filename_offsets[500];
     char strings[10000];
-    i32 count, offset, inside, index, length;
+    i32 count;
+    i32 offset;
+    i32 inside;
+    i32 index;
+    i32 length;
     (void)buffer_end; /* Genuine native formal is unused; no fabricated capacity. */
     parser = NuFParCreate(file);
     if (parser == NULL) {
@@ -2965,7 +3008,8 @@ static void __cdecl WindShearComponentsPC(f32 *shear_x, f32 *shear_z, i32 wind_s
 }
 
 void __cdecl WindShear(NUMTX *output, NUMTX *input, i32 wind_scale, i32 wind_speed) {
-    f32 shear_x, shear_z;
+    f32 shear_x;
+    f32 shear_z;
     WindShearComponentsPC(&shear_x, &shear_z, wind_scale, wind_speed);
     *output = *input;
     output->m10 = input->m00 * shear_x + input->m10 + input->m20 * shear_z;

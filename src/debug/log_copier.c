@@ -5,8 +5,11 @@
 #include <string.h>
 
 typedef struct CopyStream {
-    HANDLE input, terminal, file;
-    DWORD bytes, failures;
+    HANDLE input;
+    HANDLE terminal;
+    HANDLE file;
+    DWORD bytes;
+    DWORD failures;
     CRITICAL_SECTION *file_lock;
 } CopyStream;
 
@@ -55,7 +58,8 @@ static HANDLE handle_argument(const char *text) {
 }
 
 int main(int argc, char **argv) {
-    HANDLE threads[2], ready;
+    HANDLE threads[2];
+    HANDLE ready;
     CopyStream streams[2];
     CRITICAL_SECTION file_lock;
 

@@ -7,7 +7,10 @@ typedef void(__cdecl *FMV_DRAW_CALLBACK_PC)(void);
 
 extern "C" i32 __cdecl NuFmvPlayV(i32 option, ...) {
     va_list args;
-    i32 count = 0, stop_sound = 1, result = 0, mode = 0;
+    i32 count = 0;
+    i32 stop_sound = 1;
+    i32 result = 0;
+    i32 mode = 0;
     f32 volume = 1.0f;
     char *name = NULL;
     i32(__cdecl * callback)(void) = NULL;

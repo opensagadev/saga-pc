@@ -55,7 +55,8 @@ static const char *MiniKitDirectionNamesPc[6] = {"NegX", "PosX", "NegY", "PosY",
 
 void __cdecl MiniKit_InitPieces(MINIKIT_PC *minikit, i32 count, VARIPTR *buffer, VARIPTR *end) {
     i32 direction_counts[6];
-    i32 index, direction;
+    i32 index;
+    i32 direction;
     char name[64];
     (void)end;
     if (minikit->scene != NULL) {
@@ -100,7 +101,8 @@ void __cdecl CharMiniKit_Draw(i32 id, NUMTX *matrix, i32 reflection_axis, f32 re
         return;
     }
     for (i = 0; i < kit->piece_count; ++i) {
-        NUMTX draw_matrix, reflected;
+        NUMTX draw_matrix;
+        NUMTX reflected;
         if (NuSpecialExistsFn(&kit->pieces[i].special) == 0) {
             continue;
         }
@@ -118,7 +120,8 @@ void __cdecl CharMiniKit_Draw(i32 id, NUMTX *matrix, i32 reflection_axis, f32 re
 
 void __cdecl CharacterMiniKits_Load(COLLECTION_BUILD_PC *collection, WORLDINFO *world, VARIPTR *buffer, VARIPTR *end) {
     WORLD_MINIKIT_READER_PC *view = (WORLD_MINIKIT_READER_PC *)world;
-    i32 i, character_id;
+    i32 i;
+    i32 character_id;
     u32 table_size;
     char path[256];
     if (Char_MiniKit == NULL) {
@@ -224,7 +227,9 @@ i32 AllMiniKitsDone(AREASAVE_s *save) {
 /* Complete native0059a1e0..0059a414. */
 void __cdecl DrawMiniKitCount(f32 time, f32 scale, i32 amount, i32 total) {
     i32 model = ChallengeMode != 0 ? CharKitModelId_PC : MiniKitModelId_PC;
-    f32 factor, x, y;
+    f32 factor;
+    f32 x;
+    f32 y;
     WORLDINFO *world;
     char text[32];
     if (model == -1 || time <= 0.0f) {

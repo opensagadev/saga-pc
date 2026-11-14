@@ -603,7 +603,11 @@ void GizActions_GoThroughDoor(GIZFLOW_PC *unused0, FLOWBOX_PC *unused1, char **p
 }
 
 void __cdecl GizActions_PlayObstacle(GIZFLOW_PC *flow, FLOWBOX_PC *box, char **params, i32 count) {
-    i32 forwards = 1, snap = 0, stay_open = 0, stay_shut = 0, i;
+    i32 forwards = 1;
+    i32 snap = 0;
+    i32 stay_open = 0;
+    i32 stay_shut = 0;
+    i32 i;
     char *name = NULL;
     GIZMO_PC *gizmo;
     GIZOBSTACLE *obstacle;

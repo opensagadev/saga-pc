@@ -13,8 +13,12 @@ static f32 PulsesFabsPc(f32 f) {
 
 typedef struct PULSE_PC {
     NUSPECIALHANDLE special;
-    f32 on_time, off_time, timer, start_wait;
-    u16 active, disabled;
+    f32 on_time;
+    f32 off_time;
+    f32 timer;
+    f32 start_wait;
+    u16 active;
+    u16 disabled;
     char gizmo_name[16];
     void *gizmo;
 } PULSE_PC;
@@ -22,10 +26,17 @@ typedef struct PULSE_PC {
 struct level_sfx_pulse_prefix_s {
     PULSE_PC *pulses;
     u16 pulse_count;
-    i16 sfx_turn_on, sfx_turn_off, sfx_on_loop, sfx_off_loop, sfx_hit_player;
-    f32 collide_radius, hit_direction_line, hit_direction_radius_origin;
+    i16 sfx_turn_on;
+    i16 sfx_turn_off;
+    i16 sfx_on_loop;
+    i16 sfx_off_loop;
+    i16 sfx_hit_player;
+    f32 collide_radius;
+    f32 hit_direction_line;
+    f32 hit_direction_radius_origin;
     i16 debris_hit_player;
-    u8 radial_hit_direction, unknown_1f;
+    u8 radial_hit_direction;
+    u8 unknown_1f;
 };
 
 typedef struct PULSE_WORLD_VIEW_PC {

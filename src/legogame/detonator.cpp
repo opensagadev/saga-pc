@@ -83,7 +83,9 @@ extern "C" {
     }
 
     EXPLOSION_PC *__cdecl Detonate(NUVEC *position, u16 flags) {
-        f32 radius, duration, amount;
+        f32 radius;
+        f32 duration;
+        f32 amount;
         AddGameDebris(WORLD->game_debris_sys, 0x49, position);
         AddGameDebris(WORLD->game_debris_sys, 0x4a, position);
         AddGameDebris(WORLD->game_debris_sys, 0x4b, position);

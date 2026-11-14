@@ -94,8 +94,12 @@ void __cdecl StoreStatusTakeOverObjectSys(void) {
 }
 
 void __cdecl ReStoreStatusTakeOverObjectSys(i32 restore_progress) {
-    i32 level, index, object_index;
-    GAMEOBJECT *object, *controller, *candidate;
+    i32 level;
+    i32 index;
+    i32 object_index;
+    GAMEOBJECT *object;
+    GAMEOBJECT *controller;
+    GAMEOBJECT *candidate;
     if (netclient != 0) {
         return;
     }

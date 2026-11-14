@@ -89,7 +89,10 @@ i32 __cdecl GameAudio_CheckReverb_LSW(void) {
 
 void __cdecl SetLevelSfxBits(WORLDINFO *world) {
     LEVEL_SFX_WORLD_VIEW_PC *view = (LEVEL_SFX_WORLD_VIEW_PC *)world;
-    i32 i, j, character_id, portal;
+    i32 i;
+    i32 j;
+    i32 character_id;
+    i32 portal;
     LEVELDATA_PC *level;
     i16 model_id;
     CHARACTERDATA_PC *character;

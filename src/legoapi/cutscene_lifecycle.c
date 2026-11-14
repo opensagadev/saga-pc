@@ -464,7 +464,10 @@ typedef struct cut_load_locator_s {
     f32 scale;
     void *animation;
     u32 unknown_54;
-    u8 flags, type_index, unknown_5a, tracks_self;
+    u8 flags;
+    u8 type_index;
+    u8 unknown_5a;
+    u8 tracks_self;
     u8 unknown_5c[8];
 } CUT_LOAD_LOCATOR;
 
@@ -476,7 +479,8 @@ STATIC_ASSERT(offsetof(CUT_LOAD_LOCATOR, tracks_self) == 0x5b);
 
 typedef struct cut_load_locator_type_s {
     char *name;
-    u8 flags, unknown_05;
+    u8 flags;
+    u8 unknown_05;
     u16 function_index;
     u32 unknown_08;
 } CUT_LOAD_LOCATOR_TYPE;
@@ -487,7 +491,8 @@ STATIC_ASSERT(offsetof(CUT_LOAD_LOCATOR_TYPE, function_index) == 6);
 typedef struct cut_load_locator_system_s {
     CUT_LOAD_LOCATOR *locators;
     CUT_LOAD_LOCATOR_TYPE *types;
-    u8 count, type_count;
+    u8 count;
+    u8 type_count;
     u8 unknown_0a[2];
 } CUT_LOAD_LOCATOR_SYSTEM;
 
@@ -507,7 +512,10 @@ typedef struct cut_load_rigid_s {
         CUT_LOAD_LOCATOR *pointer;
     } locator;
 
-    u8 flags, uses_locator, locator_index, unknown_5b;
+    u8 flags;
+    u8 uses_locator;
+    u8 locator_index;
+    u8 unknown_5b;
 } CUT_LOAD_RIGID;
 
 STATIC_ASSERT(sizeof(CUT_LOAD_RIGID) == 0x5c);
@@ -521,17 +529,25 @@ STATIC_ASSERT(offsetof(CUT_LOAD_RIGID, locator_index) == 0x5a);
 
 typedef struct cut_load_rigid_system_s {
     CUT_LOAD_RIGID *rigids;
-    u16 count, unused;
+    u16 count;
+    u16 unused;
 } CUT_LOAD_RIGID_SYSTEM;
 
 struct cut_load_character_s {
     NUMTX matrix;
     char *name;
-    void *animation, *face_animation, *extra_animation;
+    void *animation;
+    void *face_animation;
+    void *extra_animation;
     void *model;
     CUT_LOAD_LOCATOR *locator;
     u32 unknown_58;
-    u8 flags, unknown_5d, uses_locator, unknown_5f, locator_index, unknown_61[3];
+    u8 flags;
+    u8 unknown_5d;
+    u8 uses_locator;
+    u8 unknown_5f;
+    u8 locator_index;
+    u8 unknown_61[3];
 };
 
 STATIC_ASSERT(sizeof(CUT_LOAD_CHARACTER) == 0x64);
@@ -554,7 +570,10 @@ STATIC_ASSERT(sizeof(CUT_LOAD_CHARACTER_ANIMATION) == 16);
 
 typedef struct cut_load_camera_pc_s {
     NUMTX matrix;
-    u8 flags, unknown_41, animation_node, focus_flags;
+    u8 flags;
+    u8 unknown_41;
+    u8 animation_node;
+    u8 focus_flags;
     u8 unknown_44[12];
 } CUT_LOAD_CAMERA_PC;
 
@@ -591,11 +610,13 @@ typedef struct cut_load_trigger_system_s {
 } CUT_LOAD_TRIGGER_SYSTEM;
 
 typedef struct cut_load_bounds_s {
-    NUVEC min, max;
+    NUVEC min;
+    NUVEC max;
 } CUT_LOAD_BOUNDS;
 
 struct cut_scene_load_pc_s {
-    i32 version, string_delta;
+    i32 version;
+    i32 string_delta;
     f32 duration;
     char *strings;
     CUT_LOAD_CAMERA_SYSTEM *camera_system;
@@ -606,7 +627,8 @@ struct cut_scene_load_pc_s {
     CUT_LOAD_TRIGGER_SYSTEM *trigger_system;
     i32 relocation_delta;
     char *filename;
-    void *stream_buffer_0, *stream_buffer_1;
+    void *stream_buffer_0;
+    void *stream_buffer_1;
     u32 flags;
     i32 stream_buffer_size;
     u32 unknown_40;
@@ -636,7 +658,8 @@ STATIC_ASSERT(offsetof(CUT_SCENE_LOAD_PC, loaded_size) == 0x58);
 
 typedef struct cut_load_camera_target_pc_s {
     NUVEC *target;
-    f32 start_frame, duration;
+    f32 start_frame;
+    f32 duration;
     i8 target_index;
     u8 unknown_0d[3];
 } CUT_LOAD_CAMERA_TARGET_PC;
@@ -644,7 +667,9 @@ typedef struct cut_load_camera_target_pc_s {
 STATIC_ASSERT(sizeof(CUT_LOAD_CAMERA_TARGET_PC) == 16);
 
 typedef struct cut_load_camera_state_pc_s {
-    u8 flags, event_index, unknown_02[2];
+    u8 flags;
+    u8 event_index;
+    u8 unknown_02[2];
 } CUT_LOAD_CAMERA_STATE_PC;
 
 STATIC_ASSERT(sizeof(CUT_LOAD_CAMERA_STATE_PC) == 4);
@@ -654,14 +679,19 @@ typedef struct cut_load_camera_instance_s {
     CUT_LOAD_CAMERA_STATE_PC *states;
     u8 state_index;
     i8 camera_index;
-    u8 next_target_index, target_capacity, target_count, focus_state_index;
+    u8 next_target_index;
+    u8 target_capacity;
+    u8 target_count;
+    u8 focus_state_index;
     i8 focus_index;
     u8 unknown_0f;
 } CUT_LOAD_CAMERA_INSTANCE;
 
 typedef struct cut_load_rigid_instance_s {
     NUSPECIALHANDLE special;
-    u8 state_index, visible, unknown_0e[2];
+    u8 state_index;
+    u8 visible;
+    u8 unknown_0e[2];
 } CUT_LOAD_RIGID_INSTANCE;
 
 STATIC_ASSERT(sizeof(CUT_LOAD_RIGID_INSTANCE) == 16);
@@ -673,7 +703,9 @@ typedef struct cut_load_rigid_instance_system_s {
 struct cut_load_character_instance_s {
     void *model;
     u8 unknown_04[0x11];
-    u8 animation_a, animation_b, unknown_17;
+    u8 animation_a;
+    u8 animation_b;
+    u8 unknown_17;
 };
 
 STATIC_ASSERT(sizeof(CUT_LOAD_CHARACTER_INSTANCE) == 0x18);
@@ -720,7 +752,8 @@ STATIC_ASSERT(sizeof(CUT_LOAD_TRIGGER_ENTRY) == 0x34);
 
 typedef struct cut_load_trigger_flag_pc_s {
     u16 unknown_00;
-    u8 flags, unknown_03;
+    u8 flags;
+    u8 unknown_03;
 } CUT_LOAD_TRIGGER_FLAG_PC;
 
 STATIC_ASSERT(sizeof(CUT_LOAD_TRIGGER_FLAG_PC) == 4);
@@ -736,7 +769,8 @@ typedef struct cut_load_trigger_owner_s {
 } CUT_LOAD_TRIGGER_OWNER;
 
 typedef struct cut_load_trigger_state_pc_s {
-    u8 state_index, unknown_01[3];
+    u8 state_index;
+    u8 unknown_01[3];
 } CUT_LOAD_TRIGGER_STATE_PC;
 
 STATIC_ASSERT(sizeof(CUT_LOAD_TRIGGER_STATE_PC) == 4);
@@ -747,12 +781,15 @@ typedef struct cut_load_trigger_instance_s {
 } CUT_LOAD_TRIGGER_INSTANCE;
 
 typedef struct cut_instance_load_pc_s {
-    INSTNUGCUTSCENE *next, *previous;
+    INSTNUGCUTSCENE *next;
+    INSTNUGCUTSCENE *previous;
     char name[16];
     NUMTX matrix;
-    CUT_SCENE_LOAD_PC *scene, *saved_scene;
+    CUT_SCENE_LOAD_PC *scene;
+    CUT_SCENE_LOAD_PC *saved_scene;
     NUVEC center;
-    NUVEC bounds_min, bounds_max;
+    NUVEC bounds_min;
+    NUVEC bounds_max;
     f32 radius_squared;
 
     union {
@@ -776,7 +813,9 @@ typedef struct cut_instance_load_pc_s {
         };
     };
 
-    f32 current_frame, render_frame, rate;
+    f32 current_frame;
+    f32 render_frame;
+    f32 rate;
     CUT_LOAD_CAMERA_INSTANCE *camera_instance;
     CUT_LOAD_RIGID_INSTANCE_SYSTEM *rigid_instance;
     CUT_LOAD_CHARACTER_INSTANCE_SYSTEM *character_instance;
@@ -788,7 +827,8 @@ typedef struct cut_instance_load_pc_s {
 
     union {
         struct {
-            void *stream_buffer_0, *stream_buffer_1;
+            void *stream_buffer_0;
+            void *stream_buffer_1;
         };
 
         void *stream_buffers[2];
@@ -800,7 +840,9 @@ typedef struct cut_instance_load_pc_s {
     u16 skip_countdown;
     u8 unknown_da[5];
     u8 stream_index;
-    f32 accumulated_duration, elapsed, alpha;
+    f32 accumulated_duration;
+    f32 elapsed;
+    f32 alpha;
     void *pending_stream;
     u32 allocation_size;
     INSTNUGCUTSCENE *queued_stream_instance;
@@ -1025,7 +1067,8 @@ void *__cdecl NuGCutSceneLoad(char *path, VARIPTR *buffer, VARIPTR *end, i32 no_
     char *filename_destination;
     CUT_SCENE_LOAD_PC *scene;
     u32 addr;
-    char *src = path, *dst = filename;
+    char *src = path;
+    char *dst = filename;
     do {
         *dst++ = *src;
     } while (*src++ != 0);
@@ -1232,7 +1275,8 @@ static void CutSceneLocatorFixUpPc(CUT_SCENE_LOAD_PC *scene, i32 page) {
 
 static void CutSceneTriggerFixUpPc(CUT_SCENE_LOAD_PC *scene, CUT_LOAD_TRIGGER_OWNER *owner) {
     CUT_LOAD_TRIGGER_SYSTEM *system = scene->trigger_system;
-    i32 i, j;
+    i32 i;
+    i32 j;
     for (i = 0; i < system->count; ++i) {
         CUT_LOAD_TRIGGER_EVENT *event = &system->events[i];
         for (j = 0; j < owner->count; ++j) {
@@ -1905,11 +1949,15 @@ static void CutSceneCameraSysUpdatePc(INSTNUGCUTSCENE *owner, f32 frame) {
     u8 value;
     u8 focus_value;
     i32 index;
-    f32 signed_duration, duration, blend;
+    f32 signed_duration;
+    f32 duration;
+    f32 blend;
     i32 reverse;
     NUMTX look_at;
     NUVEC translation;
-    NUQUAT target_rotation, camera_rotation, blended_rotation;
+    NUQUAT target_rotation;
+    NUQUAT camera_rotation;
+    NUQUAT blended_rotation;
     CutSceneCameraFocalLengthPc = 0.0f;
     CutSceneFocusDistancePc = 0.0f;
     CutSceneUseFocusLocationPc = 0;
@@ -2385,9 +2433,12 @@ void CutSceneSwapStreamAssetPc(CUT_INSTANCE_LOAD_PC *instance) {
     CUT_SCENE_LOAD_PC *saved = instance->saved_scene;
     // MATCH-EXCEPTION: retail reads the buffer select as a signed one-bit field and masks it to index the pair.
     CUT_SCENE_LOAD_PC *scene = (CUT_SCENE_LOAD_PC *)instance->stream_buffers[instance->active_stream_buffer & 1];
-    CUT_LOAD_LOCATOR_SYSTEM *locators, *saved_locators;
-    CUT_LOAD_RIGID_SYSTEM *rigids, *saved_rigids;
-    CUT_LOAD_CHARACTER_SYSTEM *characters, *saved_characters;
+    CUT_LOAD_LOCATOR_SYSTEM *locators;
+    CUT_LOAD_LOCATOR_SYSTEM *saved_locators;
+    CUT_LOAD_RIGID_SYSTEM *rigids;
+    CUT_LOAD_RIGID_SYSTEM *saved_rigids;
+    CUT_LOAD_CHARACTER_SYSTEM *characters;
+    CUT_LOAD_CHARACTER_SYSTEM *saved_characters;
     CUT_LOAD_TRIGGER_SYSTEM *triggers;
     i32 i;
     instance->scene = scene;
@@ -2970,8 +3021,10 @@ void __cdecl instNuGCutSceneServiceLoad(void) {
     char path[256];
     char extension[8];
     char *dot;
-    i32 tens, units;
-    VARIPTR buffer, buffer_end;
+    i32 tens;
+    i32 units;
+    VARIPTR buffer;
+    VARIPTR buffer_end;
     CUT_INSTANCE_LOAD_PC *instance;
     if (CutSceneLoadingInstancePc == NULL || CutSceneStreamLoadGuardPc != 0 ||
         ((CUT_INSTANCE_LOAD_PC *)CutSceneLoadingInstancePc)->scene == NULL) {

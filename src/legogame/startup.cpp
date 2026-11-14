@@ -126,8 +126,10 @@ extern "C" {
         }
 
         void __cdecl LoadPermLoadLegalTexture(void) {
-            VARIPTR texture_base, texture_end;
-            char path[128], name[64];
+            VARIPTR texture_base;
+            VARIPTR texture_end;
+            char path[128];
+            char name[64];
             if (legal_tid != 0 || loadlegal_done != 0) {
                 return;
             }

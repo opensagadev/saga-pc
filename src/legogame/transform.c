@@ -73,9 +73,14 @@ void __cdecl Transform_MoveCode(WORLDINFO *world, GAMEOBJECT *object) {
             GizmoBlowupBlowup((GIZMOBLOWUP_PC *)object->grapple, 1, 8, 1, NULL, 1);
         }
     } else {
-        GIZMOBLOWUP_PC *candidate, *nearest;
-        NUVEC forward, delta, min, max;
-        f32 nearest_distance, distance;
+        GIZMOBLOWUP_PC *candidate;
+        GIZMOBLOWUP_PC *nearest;
+        NUVEC forward;
+        NUVEC delta;
+        NUVEC min;
+        NUVEC max;
+        f32 nearest_distance;
+        f32 distance;
         i32 i;
         if (!(object->character_data->game_character->flags_090 & 0x01000000) || !(object->flags_1fc_low & 0x80) ||
             object->field_281 == 0 || !ObjLandReady(object)) {

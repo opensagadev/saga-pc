@@ -272,7 +272,8 @@ i32 PC_CONTROL_SCREEN_PC::WaitForRelease(void) {
         return 1;
     }
     PcInputResetMouseMotionPc();
-    i32 kind, value;
+    i32 kind;
+    i32 value;
     if (PcInput_ScanForAnyInput(0, 0x1a, &kind, &value, 0) < 0) {
         release_frames -= 1;
     } else {
@@ -383,7 +384,9 @@ extern "C" {
 
 /* Native421720; append to ControlSetup source after API declarations. */
 extern "C" {
-    extern u32 PcControlButtonsPc, PcControlHeldPc[2], PcControlPressedPc[2];
+    extern u32 PcControlButtonsPc;
+    extern u32 PcControlHeldPc[2];
+    extern u32 PcControlPressedPc[2];
     extern i32 PcControlPulseAnglePc;
     extern f32 PcControlRepeatPc[2];
 }
@@ -484,7 +487,8 @@ i32 PC_CONTROL_SCREEN_PC::Update(FRAME_PAD_PC *first, FRAME_PAD_PC *second, f32 
                         release_reset = release_frames = 3;
                         PcInputResetMouseMotionPc();
                     } else {
-                        i32 kind, value;
+                        i32 kind;
+                        i32 value;
                         i32 port = PcInput_ScanForAnyInput(0, 0x1a, &kind, &value, 1);
                         port = PcInput_RemapVirtualKeyboard(port, selected_player);
                         if (port >= 0) {
@@ -523,7 +527,8 @@ i32 PC_CONTROL_SCREEN_PC::Update(FRAME_PAD_PC *first, FRAME_PAD_PC *second, f32 
                         release_reset = release_frames = 3;
                         PcInputResetMouseMotionPc();
                     } else {
-                        i32 kind, value;
+                        i32 kind;
+                        i32 value;
                         i32 port = PcInput_ScanForAnyInput(0, 0x13, &kind, &value, 1);
                         port = PcInput_RemapVirtualKeyboard(port, selected_player);
                         if (port >= 0 && port == ports[selected_player]) {
@@ -828,9 +833,12 @@ i32 PC_CONTROL_SCREEN_PC::Update(FRAME_PAD_PC *first, FRAME_PAD_PC *second, f32 
 extern char *PcControlTextPc[45];
 
 struct PC_CONTROL_VERTEX_PC {
-    f32 x, y, z;
+    f32 x;
+    f32 y;
+    f32 z;
     u32 colour;
-    f32 u, v;
+    f32 u;
+    f32 v;
 };
 
 STATIC_ASSERT(offsetof(PC_CONTROL_VERTEX_PC, colour) == 0xc);
@@ -1007,9 +1015,11 @@ void PC_CONTROL_SCREEN_PC::DrawQueuedText(f32 delta) {
         if (!entry->key) {
             continue;
         }
-        f32 x = entry->x, y = entry->y;
+        f32 x = entry->x;
+        f32 y = entry->y;
         u32 colour = entry->colour;
-        f32 sx = entry->x_scale, sy = entry->y_scale;
+        f32 sx = entry->x_scale;
+        f32 sy = entry->y_scale;
         i32 alignment = entry->alignment;
         if (!entry->refreshed) {
             entry->fade -= delta;
@@ -1063,7 +1073,9 @@ void PC_CONTROL_SCREEN_PC::DrawDeadzone(f32 x, f32 y, f32 z, f32 width, f32 heig
     PcControlPrimColourPc(colour);
     NuPrim2DAddXYZ(x + width, y + height, z);
     NuPrim2DEnd();
-    f32 step = (f32)(width / 20.0), half_height = (f32)(height * 0.5), offset = 0.0f;
+    f32 step = (f32)(width / 20.0);
+    f32 half_height = (f32)(height * 0.5);
+    f32 offset = 0.0f;
     u32 a = (u32)(i32)(alpha * 96.0) << 24;
     NuPrim2DBegin(14, 5, material);
     colour = ScaleAlpha(opacity, a | 0xc8c8c8);
@@ -1111,8 +1123,10 @@ void PC_CONTROL_SCREEN_PC::Draw(void) {
     if (!active) {
         return;
     }
-    f32 left = 0.0f, right = 0.0f;
-    f32 old_x = TextScaleX, old_y = TextScaleY;
+    f32 left = 0.0f;
+    f32 right = 0.0f;
+    f32 old_x = TextScaleX;
+    f32 old_y = TextScaleY;
     TextScaleX = TextScaleY = 1.0f;
     SmartTextSetFWNMode(2);
     if (draw_background) {
@@ -1123,7 +1137,8 @@ void PC_CONTROL_SCREEN_PC::Draw(void) {
         left = (f32)(label_x - 0.6499999761581421);
         right = (f32)(label_x + 0.6499999761581421);
     }
-    f32 primary, secondary;
+    f32 primary;
+    f32 secondary;
     if (selected_player == 0) {
         primary = -0.6499999761581421f;
         secondary = 0.6499999761581421f;
@@ -1135,7 +1150,8 @@ void PC_CONTROL_SCREEN_PC::Draw(void) {
     NuQFntPushCoordinateSystem(3);
     ++NuPrimCSPos;
     NuPrimSetCoordinateSystem(1);
-    i32 port0 = ports[0], port1 = ports[1];
+    i32 port0 = ports[0];
+    i32 port1 = ports[1];
     if (player_count == 1) {
         label_x = 0.3f;
     }
@@ -1150,7 +1166,8 @@ void PC_CONTROL_SCREEN_PC::Draw(void) {
         PC_CONTROL_ROW_PC *row = &rows[r];
         PC_CONTROL_ITEM_PC *item = row->items;
         i32 previous_kind = -1;
-        u32 player0_colour, player1_colour;
+        u32 player0_colour;
+        u32 player1_colour;
         if (selected_player == 0) {
             player0_colour = 0x80a0a0a0;
             player1_colour = 0x80303030;
@@ -1168,7 +1185,8 @@ void PC_CONTROL_SCREEN_PC::Draw(void) {
                 player1_colour = capture_colour;
             }
         }
-        u32 heading0 = 0x80808020, heading1 = 0x80808020;
+        u32 heading0 = 0x80808020;
+        u32 heading1 = 0x80808020;
         if (!drop_in) {
             if (selected_player == 0) {
                 heading0 = ScaleColour(pulse, pulse, heading0);
@@ -1176,7 +1194,8 @@ void PC_CONTROL_SCREEN_PC::Draw(void) {
                 heading1 = ScaleColour(pulse, pulse, heading1);
             }
         }
-        f32 sx, sy;
+        f32 sx;
+        f32 sy;
         PcControlFontScalePc(font, x_scale, y_scale, &sx, &sy);
         NuQFntSetScale(font, sx, sy);
         NuQFntSetScale2d(font, sx, sy);
@@ -1200,12 +1219,14 @@ void PC_CONTROL_SCREEN_PC::Draw(void) {
                      0.0f);
         }
         PcInputSetMouseFieldPc(1);
-        i32 show_empty0 = 1, show_empty1 = 1;
+        i32 show_empty0 = 1;
+        i32 show_empty1 = 1;
         for (i32 index = 0; index < row->count; ++index, ++item) {
             if ((((item->flags >> 6) & 1) & ((item->flags >> 5) & 1)) != 0) {
                 continue;
             }
-            u32 binding0 = player0_colour, binding1 = player1_colour;
+            u32 binding0 = player0_colour;
+            u32 binding1 = player1_colour;
             u32 label_colour = item->kind == 4 ? 0x80408040 : 0x80408080;
             i32 capturing = 0;
             f32 brightness = pulse;
@@ -1315,7 +1336,8 @@ void PC_CONTROL_SCREEN_PC::Draw(void) {
             previous_kind = item->kind;
         }
         PcInputSetMouseFieldPc(0);
-        char *prompt_left = 0, *prompt_right = 0;
+        char *prompt_left = 0;
+        char *prompt_right = 0;
         switch (capture_state) {
             case 0:
                 if (!drop_in) {
@@ -1369,8 +1391,12 @@ void PC_CONTROL_SCREEN_PC::Draw(void) {
 
 extern "C" i32 __cdecl PcControlWrapTextPc(char *string, f32 max_width) {
     u8 *text = (u8 *)string;
-    i32 line_start = 0, line_count = 1, position = 0, previous_break = 0;
-    u8 substring[512], decoded[512];
+    i32 line_start = 0;
+    i32 line_count = 1;
+    i32 position = 0;
+    i32 previous_break = 0;
+    u8 substring[512];
+    u8 decoded[512];
     u16 encoded[512];
     f32 width;
     if (max_width <= 0.0f) {

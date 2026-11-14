@@ -4,7 +4,8 @@
 
 typedef struct {
     GIZBOMBGEN_s *items;
-    u16 count, capacity;
+    u16 count;
+    u16 capacity;
     void *pool;
     i16 reset : 1;
     i16 reset_saved : 1;
@@ -16,12 +17,14 @@ typedef struct {
 extern i32 come_from_an_editor;
 
 typedef struct {
-    u32 enabled[3], visible[3];
+    u32 enabled[3];
+    u32 visible[3];
 } BOMB_PROGRESS_PC;
 
 typedef struct {
     u8 unused00[0x2a];
-    u8 flags, unused2b;
+    u8 flags;
+    u8 unused2b;
 } BOMB_PROGRESS_RECORD_PC;
 
 typedef struct {
@@ -65,7 +68,8 @@ typedef struct bomb_generator_runtime_pc_s {
 
 typedef struct bomb_generator_system_runtime_pc_s {
     BOMB_GENERATOR_RUNTIME_PC *items;
-    u16 count, capacity;
+    u16 count;
+    u16 capacity;
     void *pool;
     i16 flags;
     u16 unknown_0e;
@@ -73,7 +77,8 @@ typedef struct bomb_generator_system_runtime_pc_s {
 } BOMB_GENERATOR_SYSTEM_RUNTIME_PC;
 
 typedef struct bomb_generator_progress_pc_s {
-    u32 active[3], visible[3];
+    u32 active[3];
+    u32 visible[3];
 } BOMB_GENERATOR_PROGRESS_PC;
 
 extern char AIRegistryTextPc007575bc[7];

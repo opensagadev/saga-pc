@@ -90,7 +90,9 @@ typedef struct nuvec_s {
 typedef i32 NUANG;
 
 typedef struct NUANGVEC {
-    NUANG x, y, z;
+    NUANG x;
+    NUANG y;
+    NUANG z;
 } NUANGVEC;
 
 STATIC_ASSERT(sizeof(NUANGVEC) == 12);
@@ -99,7 +101,10 @@ STATIC_ASSERT(offsetof(NUANGVEC, y) == 4);
 STATIC_ASSERT(offsetof(NUANGVEC, z) == 8);
 
 typedef struct NUVEC4 {
-    f32 x, y, z, w;
+    f32 x;
+    f32 y;
+    f32 z;
+    f32 w;
 #ifdef __cplusplus
     NUVEC operator-(const NUVEC4 &other) const {
         __declspec(align(16)) NUVEC result;
@@ -115,7 +120,10 @@ STATIC_ASSERT(sizeof(NUVEC4) == 16);
 STATIC_ASSERT(offsetof(NUVEC4, w) == 12);
 
 typedef struct NUHALFVEC4 {
-    i16 x, y, z, w;
+    i16 x;
+    i16 y;
+    i16 z;
+    i16 w;
 } NUHALFVEC4;
 
 STATIC_ASSERT(sizeof(NUHALFVEC4) == 8);
@@ -125,13 +133,24 @@ STATIC_ASSERT(offsetof(NUHALFVEC4, z) == 4);
 STATIC_ASSERT(offsetof(NUHALFVEC4, w) == 6);
 
 typedef struct numtx_s {
-    f32 m00, m01, m02, m03;
-    f32 m10, m11, m12, m13;
-    f32 m20, m21, m22, m23;
+    f32 m00;
+    f32 m01;
+    f32 m02;
+    f32 m03;
+    f32 m10;
+    f32 m11;
+    f32 m12;
+    f32 m13;
+    f32 m20;
+    f32 m21;
+    f32 m22;
+    f32 m23;
 
     union {
         struct {
-            f32 m30, m31, m32;
+            f32 m30;
+            f32 m31;
+            f32 m32;
         };
 
         NUVEC translation;
@@ -640,7 +659,12 @@ typedef struct terrain_layer_pc_s {
 typedef struct TERRAIN_POLYGON_INFO_PC TERRAIN_POLYGON_INFO_PC;
 
 struct TERRAIN_POLYGON_INFO_PC {
-    f32 min_x, max_x, min_y, max_y, min_z, max_z;
+    f32 min_x;
+    f32 max_x;
+    f32 min_y;
+    f32 max_y;
+    f32 min_z;
+    f32 max_z;
     NUVEC vertices[4];
     NUVEC normals[2];
 
@@ -684,7 +708,8 @@ STATIC_ASSERT(offsetof(TERRAIN_SPHERE_PC, radius) == 12);
 
 typedef struct TERRAIN_AXIS_FREEDOM_SHAPE_PC {
     NUVEC offset;
-    f32 angle, radius;
+    f32 angle;
+    f32 radius;
 } TERRAIN_AXIS_FREEDOM_SHAPE_PC;
 
 STATIC_ASSERT(sizeof(TERRAIN_AXIS_FREEDOM_SHAPE_PC) == 20);
@@ -925,12 +950,17 @@ STATIC_ASSERT(offsetof(TerrainQuery_s, scan_group_index) == 0x8a);
 STATIC_ASSERT(offsetof(TerrainQuery_s, scan_list) == 0x8c);
 
 struct TERRAIN_SHAPE_BATCH {
-    i16 marker, shape_count;
-    f32 min_x, max_x, min_z, max_z;
+    i16 marker;
+    i16 shape_count;
+    f32 min_x;
+    f32 max_x;
+    f32 min_z;
+    f32 max_z;
 };
 
 struct TERRAIN_SPATIAL_NODE {
-    u16 point_count, field_02;
+    u16 point_count;
+    u16 field_02;
     NUVEC points[1];
 };
 
@@ -953,7 +983,8 @@ struct TERRAIN_FILE_CHUNK {
     u16 field_16;
     u8 unknown_18[0x14];
     u32 platform_flags;
-    u16 field_30, group_info;
+    u16 field_30;
+    u16 group_info;
 };
 
 STATIC_ASSERT(sizeof(TERRAIN_SHAPE_BATCH) == 0x14);
@@ -1649,15 +1680,16 @@ typedef struct AIANTINODE_PC {
     NUVEC special_position;         // 0x2c
     i32 rotation;                   // 0x38
     i32 rotation_offset;            // 0x3c
-    f32 base_radius, base_height;   // 0x40
-    u8 enabled;                     // 0x48
-    u8 game_flags;                  // 0x49
-    u8 type;                        // 0x4a
-    u8 has_special;                 // 0x4b
-    u8 unknown_4c_b[0x4];           // 0x4c
-    u8 special_type;                // 0x50
-    u8 unknown_51[0x7];             // 0x51
-} AIANTINODE_PC;                    // size 0x58
+    f32 base_radius;
+    f32 base_height;      // 0x40
+    u8 enabled;           // 0x48
+    u8 game_flags;        // 0x49
+    u8 type;              // 0x4a
+    u8 has_special;       // 0x4b
+    u8 unknown_4c_b[0x4]; // 0x4c
+    u8 special_type;      // 0x50
+    u8 unknown_51[0x7];   // 0x51
+} AIANTINODE_PC;          // size 0x58
 
 typedef struct AIROW_PC {
     AIPATHINFO_PC path_info;       // 0x00
@@ -1872,7 +1904,8 @@ STATIC_ASSERT(offsetof(VUFNT, material) == 0x40);
 STATIC_ASSERT(offsetof(VUFNT, platform_data) == 0x48);
 
 typedef struct menu_s {
-    f32 menu_time, time_04;
+    f32 menu_time;
+    f32 time_04;
     i16 selected_column;
     i16 selected_row;
     i16 first_column;
@@ -1916,7 +1949,11 @@ typedef struct menu_s {
     u32 action_08_pressed;
     i32 draw_item;
     f32 item_scale;
-    f32 draw_x, draw_y, draw_z, draw_offset, centre_offset;
+    f32 draw_x;
+    f32 draw_y;
+    f32 draw_z;
+    f32 draw_offset;
+    f32 centre_offset;
     u8 unknown_00a8[0x34];
     i32 state;
 } MENU;
@@ -1999,7 +2036,8 @@ typedef struct AREA_SAVE_PICKUP_PC {
     union {
         struct {
             u8 unknown0[5];
-            u8 minikit_count, red_brick_collected;
+            u8 minikit_count;
+            u8 red_brick_collected;
             u8 unknown_07[5];
         };
 
@@ -2011,7 +2049,10 @@ typedef struct AREA_SAVE_PICKUP_PC {
                 u8 newgame_reserved_02[5];
 
                 struct {
-                    u8 true_hero_complete[2], minikit_complete, preserved_minikit_count, preserved_red_brick_collected;
+                    u8 true_hero_complete[2];
+                    u8 minikit_complete;
+                    u8 preserved_minikit_count;
+                    u8 preserved_red_brick_collected;
                 };
             };
 
@@ -2292,7 +2333,8 @@ STATIC_ASSERT(offsetof(NUDISPLAYLIST_PC, items) == 0x24);
 typedef struct PC_TEXTURE_LEVEL_DESC_PC {
     u32 format;
     u32 unknown_04[5];
-    u32 width, height;
+    u32 width;
+    u32 height;
 } PC_TEXTURE_LEVEL_DESC_PC;
 
 STATIC_ASSERT(sizeof(PC_TEXTURE_LEVEL_DESC_PC) == 0x20);
@@ -2328,8 +2370,12 @@ STATIC_ASSERT(offsetof(PC_TEXTURE_RESOURCE_METHODS_PC, lock_rect) == 0x4c);
 STATIC_ASSERT(offsetof(PC_TEXTURE_RESOURCE_PC, methods) == 0);
 
 typedef struct PC_VERTEX_ELEMENT_PC {
-    u16 stream, offset;
-    u8 type, method, usage, usage_index;
+    u16 stream;
+    u16 offset;
+    u8 type;
+    u8 method;
+    u8 usage;
+    u8 usage_index;
 } PC_VERTEX_ELEMENT_PC;
 
 STATIC_ASSERT(sizeof(PC_VERTEX_ELEMENT_PC) == 8);
@@ -2403,7 +2449,10 @@ typedef struct parttype_lookup_pc_s {
     f32 bounce;
     NUVEC position_random;
     NUVEC velocity_random;
-    f32 emission_period, emission_period_random, emission_pause, emission_pause_random;
+    f32 emission_period;
+    f32 emission_period_random;
+    f32 emission_pause;
+    f32 emission_pause_random;
     i32 rotation[3];
     i32 rotation_random[3];
     u32 flags;
@@ -2449,15 +2498,23 @@ typedef struct part_emit_pc_s {
     NUVEC position;
     i32 effect_id;
     char name[16];
-    f32 time_20, time_24, time_28;
-    i16 rotation_2c, rotation_2e, rotation_30;
+    f32 time_20;
+    f32 time_24;
+    f32 time_28;
+    i16 rotation_2c;
+    i16 rotation_2e;
+    i16 rotation_30;
     i8 page;
     u8 field_33;
     i32 shots_remaining;
     f32 time_38;
-    u8 field_3c, field_3d, field_3e, field_3f;
+    u8 field_3c;
+    u8 field_3d;
+    u8 field_3e;
+    u8 field_3f;
     f32 camera_distance;
-    i16 field_44, field_46;
+    i16 field_44;
+    i16 field_46;
     i32 instance_id;
     i32 trailing_state_words[8];
 } PART_EMIT_PC;
@@ -2503,7 +2560,10 @@ typedef struct gamepad_init_record_s {
         };
 
         struct {
-            u32 menu_buttons_held, menu_buttons_pressed, menu_directions_held, menu_directions;
+            u32 menu_buttons_held;
+            u32 menu_buttons_pressed;
+            u32 menu_directions_held;
+            u32 menu_directions;
             u8 unknown_14[0x4c];
         };
     };
@@ -2924,7 +2984,10 @@ STATIC_ASSERT(offsetof(PC_FILEEXTINFO, len) == 15);
 
 typedef union nuplane_s {
     struct {
-        f32 a, b, c, d;
+        f32 a;
+        f32 b;
+        f32 c;
+        f32 d;
     };
 
     struct {
@@ -3004,7 +3067,8 @@ STATIC_ASSERT(sizeof(PARTDEBRISENTRY) == 0x14);
 STATIC_ASSERT(offsetof(PARTDEBRISENTRY, name) == 4);
 
 typedef struct partdebrissys_s {
-    i32 named_count, capacity;
+    i32 named_count;
+    i32 capacity;
     PARTDEBRISENTRY *entries;
 } PARTDEBRISSYS;
 
@@ -3495,7 +3559,10 @@ typedef struct BOLTTYPE_PC_s {
 
     union {
         struct {
-            i32 field_28, field_2c, field_30, field_34;
+            i32 field_28;
+            i32 field_2c;
+            i32 field_30;
+            i32 field_34;
         };
 
         struct {
@@ -3728,7 +3795,9 @@ typedef struct animpacket_pc_s {
     u8 reversed_3c;
     u8 reversed_3d;
     u8 reversed_3e;
-    u8 unknown_3f, unknown_40, unknown_41;
+    u8 unknown_3f;
+    u8 unknown_40;
+    u8 unknown_41;
     i16 overlay_animation;
 } ANIMPACKET_PC;
 
@@ -3744,9 +3813,19 @@ STATIC_ASSERT(offsetof(ANIMPACKET_PC, blend_target_animation) == 0x34);
 STATIC_ASSERT(offsetof(ANIMPACKET_PC, animation_index) == 0x36);
 
 typedef struct DRAW_ATTACHMENTS_MINI_PC {
-    f32 current_time, previous_time, blend_elapsed, blend_duration, source_time, target_time;
-    u8 flags, blending;
-    i16 source_animation, target_animation, animation, previous_animation, requested_animation;
+    f32 current_time;
+    f32 previous_time;
+    f32 blend_elapsed;
+    f32 blend_duration;
+    f32 source_time;
+    f32 target_time;
+    u8 flags;
+    u8 blending;
+    i16 source_animation;
+    i16 target_animation;
+    i16 animation;
+    i16 previous_animation;
+    i16 requested_animation;
 } DRAW_ATTACHMENTS_MINI_PC;
 
 STATIC_ASSERT(sizeof(DRAW_ATTACHMENTS_MINI_PC) == 0x24);
@@ -3822,7 +3901,10 @@ typedef struct sock_pc_s {
 
     union {
         struct {
-            u8 unknown_70, unknown_71, unknown_72, unknown_73;
+            u8 unknown_70;
+            u8 unknown_71;
+            u8 unknown_72;
+            u8 unknown_73;
         };
 
         f32 current_speed;
@@ -4062,9 +4144,14 @@ STATIC_ASSERT(offsetof(LEVEL_OBJECT_RUNTIME_PC, special) == 0);
 
 typedef struct game_antinode_data_pc_s {
     NUVEC position;
-    f32 radius, min_y, max_y, extent_x, extent_z;
+    f32 radius;
+    f32 min_y;
+    f32 max_y;
+    f32 extent_x;
+    f32 extent_z;
     u16 angle;
-    u8 shape, mode;
+    u8 shape;
+    u8 mode;
 } GAMEANTINODEDATA_PC;
 
 typedef struct GIZMOBLOWUPTYPE_PC {
@@ -4081,12 +4168,17 @@ typedef struct GIZMOBLOWUPTYPE_PC {
     f32 animation_start_frame;
     f32 animation_end_frame;
     f32 animation_base_frame;
-    f32 field_094, field_098, field_09c;
+    f32 field_094;
+    f32 field_098;
+    f32 field_09c;
     i16 particle_types[9];
     u16 instance_count;
     GAMEANTINODEDATA_PC anti_node_data;
     char name[32];
-    u8 field_0f8, field_0f9, field_0fa, field_0fb;
+    u8 field_0f8;
+    u8 field_0f9;
+    u8 field_0fa;
+    u8 field_0fb;
     u8 animation_runtime_flags;
     u8 unknown_fd[3];
 } GIZMOBLOWUPTYPE_PC;
@@ -4110,7 +4202,9 @@ typedef struct GIZMOBLOWUP_PC {
     };
 
     NUVEC mid_position;
-    NUVEC bounds_min, bounds_max, decal_offset;
+    NUVEC bounds_min;
+    NUVEC bounds_max;
+    NUVEC decal_offset;
     NUVEC field_07c;
     NUVEC shadow_offset;
 
@@ -4130,7 +4224,8 @@ typedef struct GIZMOBLOWUP_PC {
     };
 
     u32 draw_flags;
-    u32 secondary_flags, score;
+    u32 secondary_flags;
+    u32 score;
     GIZMOBLOWUPTYPE_PC *type;
     f32 target_scale;
     f32 proximity_radius;
@@ -4139,28 +4234,38 @@ typedef struct GIZMOBLOWUP_PC {
     f32 proximity_delay;
     f32 animation_time;
     f32 decal_scale;
-    f32 field_0c4, animation_offset;
+    f32 field_0c4;
+    f32 animation_offset;
     f32 respawn_timer;
     f32 respawn_period;
     f32 reflection_height;
     void *anti_node;
-    u16 decal_rotation_x, decal_rotation_y, decal_rotation_z;
-    u16 shadow_rotation_x, shadow_rotation_y, shadow_rotation_z;
-    u16 model_rotation_x, model_rotation_y, model_rotation_z;
-    u16 pickup_x_rotation, pickup_y_rotation;
+    u16 decal_rotation_x;
+    u16 decal_rotation_y;
+    u16 decal_rotation_z;
+    u16 shadow_rotation_x;
+    u16 shadow_rotation_y;
+    u16 shadow_rotation_z;
+    u16 model_rotation_x;
+    u16 model_rotation_y;
+    u16 model_rotation_z;
+    u16 pickup_x_rotation;
+    u16 pickup_y_rotation;
     char name[16];
 
     union {
         i16 platform_id;
 
         struct {
-            u8 name_terminator, platform_high_byte;
+            u8 name_terminator;
+            u8 platform_high_byte;
         };
     };
 
     i16 burst_platform_id;
     u8 unknown_106[6];
-    u8 field_10c, score_multiplier;
+    u8 field_10c;
+    u8 score_multiplier;
     u8 damage;
     u8 initial_state;
     u8 remaining_health;
@@ -4241,19 +4346,22 @@ STATIC_ASSERT(sizeof(EDGIZSHADOW_PC) == 0x38);
 typedef struct ai_helper_slot_pc_s {
     AIPATHCNX_PC *connection;
     void *target;
-    u8 direction, type;
+    u8 direction;
+    u8 type;
     u8 padding[2];
     f32 jump_off_dy;
 } AI_HELPER_SLOT_PC;
 
 typedef struct ai_helper_system_pc_s {
-    i16 capacity, count;
+    i16 capacity;
+    i16 count;
     AI_HELPER_SLOT_PC *helpers;
 } AI_HELPER_SYSTEM_PC;
 
 typedef struct climb_slot_pc_s {
     NUVEC normal;
-    f32 impact_x, impact_z;
+    f32 impact_x;
+    f32 impact_z;
     AIPATHCNX_PC *connection;
     AIPATH_PC *path;
     u32 flags;
@@ -4261,7 +4369,8 @@ typedef struct climb_slot_pc_s {
 
 typedef struct climb_system_pc_s {
     CLIMB_SLOT_PC *objects;
-    u16 count, capacity;
+    u16 count;
+    u16 capacity;
 } CLIMB_SYSTEM_PC;
 
 typedef struct indy_guideline_pc_s {
@@ -4524,11 +4633,16 @@ typedef struct debris_float_key_pc_s {
 
 typedef struct debris_colour_key_pc_s {
     f32 time;
-    u8 red, green, blue, unknown_7;
+    u8 red;
+    u8 green;
+    u8 blue;
+    u8 unknown_7;
 } DEBRIS_COLOUR_KEY_PC;
 
 typedef struct debris_particle_frame_pc_s {
-    NUVEC position, texture_offset, extent;
+    NUVEC position;
+    NUVEC texture_offset;
+    NUVEC extent;
     u32 colour;
 } DEBRIS_PARTICLE_FRAME_PC;
 
@@ -4537,7 +4651,10 @@ typedef struct debris_part_header_pc_s {
     f32 gravity;
     f32 last_render_time;
     u8 fields_018[16];
-    f32 texture_u0, texture_v0, texture_u1, texture_v1;
+    f32 texture_u0;
+    f32 texture_v0;
+    f32 texture_u1;
+    f32 texture_v1;
     u8 fields_038[20];
     DEBRIS_PARTICLE_FRAME_PC frames[64];
 } DEBRIS_PART_HEADER_PC;
@@ -4584,31 +4701,46 @@ typedef struct debris_info_pc_s {
     f32 clip_extent;
     f32 sound_range;
     f32 sound_range_override;
-    f32 field_044, momentum_base, momentum_random_x;
-    f32 rotor_speed_x, rotor_speed_y;
-    NUVEC emitter_random_extent, emitter_velocity;
+    f32 field_044;
+    f32 momentum_base;
+    f32 momentum_random_x;
+    f32 rotor_speed_x;
+    f32 rotor_speed_y;
+    NUVEC emitter_random_extent;
+    NUVEC emitter_velocity;
 
     union {
         f32 unknown_070[12];
         f32 file_parameters[12];
     };
 
-    f32 gravity, particle_lifetime;
+    f32 gravity;
+    f32 particle_lifetime;
     i16 field_0a8;
-    i8 field_0aa, field_0ab;
+    i8 field_0aa;
+    i8 field_0ab;
     f32 field_0ac;
-    f32 jib_x_frequency, jib_x_amplitude, jib_y_frequency, jib_y_amplitude;
+    f32 jib_x_frequency;
+    f32 jib_x_amplitude;
+    f32 jib_y_frequency;
+    f32 jib_y_amplitude;
     DEBRIS_COLOUR_KEY_PC colour_keys[8];
     DEBRIS_FLOAT_KEY_PC alpha_keys[8];
     f32 particle_parameter_a;
     f32 particle_parameter_b;
     f32 min_size;
     f32 max_size;
-    DEBRIS_FLOAT_KEY_PC width_keys[8], height_keys[8];
-    f32 min_rotation, max_rotation;
+    DEBRIS_FLOAT_KEY_PC width_keys[8];
+    DEBRIS_FLOAT_KEY_PC height_keys[8];
+    f32 min_rotation;
+    f32 max_rotation;
     DEBRIS_FLOAT_KEY_PC rotation_keys[8];
-    DEBRIS_FLOAT_KEY_PC field_218_keys[8], field_258_keys[8];
-    f32 texture_u0, texture_v0, texture_u1, texture_v1;
+    DEBRIS_FLOAT_KEY_PC field_218_keys[8];
+    DEBRIS_FLOAT_KEY_PC field_258_keys[8];
+    f32 texture_u0;
+    f32 texture_v0;
+    f32 texture_u1;
+    f32 texture_v1;
     DEBRIS_PART_HEADER_PC *native_data;
     f32 last_render_time;
     DEBRIS_FLOAT_KEY_PC collision_keys[8];
@@ -4618,14 +4750,21 @@ typedef struct debris_info_pc_s {
     u8 use_explicit_clip_box;
     f32 thinning;
     NUVEC particle_box;
-    f32 torus_radius1, torus_radius2, torus_lifetime;
-    DEBRIS_FLOAT_KEY_PC torus_keys1[8], torus_keys2[8], torus_keys3[8];
+    f32 torus_radius1;
+    f32 torus_radius2;
+    f32 torus_lifetime;
+    DEBRIS_FLOAT_KEY_PC torus_keys1[8];
+    DEBRIS_FLOAT_KEY_PC torus_keys2[8];
+    DEBRIS_FLOAT_KEY_PC torus_keys3[8];
     i16 particle_keys[8];
     i32 sound_data[12];
-    i8 trail_count, radial_segments;
+    i8 trail_count;
+    i8 radial_segments;
     i8 camera_facing;
     u8 unknown_413;
-    f32 trail_time, scale_in_time, radial_floor;
+    f32 trail_time;
+    f32 scale_in_time;
+    f32 radial_floor;
     f32 scale;
     i32 base_effect_index;
 } DEBRIS_INFO_PC;
@@ -4732,7 +4871,8 @@ typedef struct area_data_pc_s {
 
     union {
         struct {
-            u32 unknown_008c, unknown_0090;
+            u32 unknown_008c;
+            u32 unknown_0090;
         };
 
         u32 true_hero_targets[2];
@@ -5221,10 +5361,13 @@ typedef struct RTL_DATA_PC {
     NUVEC shadow_direction;
     f32 cached_value;
     NUVEC previous_shadow_direction;
-    f32 previous_shadow_value, shadow_blend;
+    f32 previous_shadow_value;
+    f32 shadow_blend;
     u16 cached_light_uid;
     u16 unknown_76;
-    NUVEC intensity_vectors[3], direction[3], ambient;
+    NUVEC intensity_vectors[3];
+    NUVEC direction[3];
+    NUVEC ambient;
     u32 unknown_cc[0x15];
     f32 field_120;
     NUVEC blended_shadow_direction;
@@ -5483,7 +5626,8 @@ typedef struct ARCADE_ITEM_PC_s {
             i8 play;
             u8 play_count;
             u16 unknown_16;
-            ARCADE_MENU_ENTRY_PC reset_points_entry, launch_entry;
+            ARCADE_MENU_ENTRY_PC reset_points_entry;
+            ARCADE_MENU_ENTRY_PC launch_entry;
         };
 
         ARCADE_MENU_ENTRY_PC entries[5];
@@ -6064,7 +6208,8 @@ typedef struct gameobject_s {
     f32 field_b0;
     f32 scaled_height;
     NUMTX transform;
-    NUMTX draw_secondary_mtx, draw_tertiary_mtx;
+    NUMTX draw_secondary_mtx;
+    NUMTX draw_tertiary_mtx;
     NUVEC collision_min;
     NUVEC collision_max;
     NUVEC upper_position;
@@ -6100,7 +6245,8 @@ typedef struct gameobject_s {
         struct {
             u32 flags_1fc_bit_0 : 1;
             u32 flags_1fc_bit_1 : 1;
-            u32 flags_1fc_bits_2_6 : 5, player_controlled : 1;
+            u32 flags_1fc_bits_2_6 : 5;
+            u32 player_controlled : 1;
         };
     };
 
@@ -6459,7 +6605,8 @@ typedef struct gameobject_s {
     f32 weapon_scale_rate;
     f32 sabre_collision_radius;
     f32 delayed_turn_timer;
-    f32 combo_input_timer, ai_combo_cooldown;
+    f32 combo_input_timer;
+    f32 ai_combo_cooldown;
     f32 field_d54;
     f32 quick_shoot_timer;
     f32 torpedo_fire_cooldown;
@@ -7397,14 +7544,18 @@ typedef struct gamecamera_s {
     f32 blend_time;
     f32 blend_duration;
     f32 blend_curve;
-    f32 judder_time, judder_duration;
+    f32 judder_time;
+    f32 judder_duration;
     f32 shake_amplitude;
     f32 shake_intensity;
     f32 shake_decay;
     f32 shake_freq;
     f32 position_seek;
     f32 angle_seek;
-    f32 field_1e8, field_1ec, field_1f0, field_1f4;
+    f32 field_1e8;
+    f32 field_1ec;
+    f32 field_1f0;
+    f32 field_1f4;
     i32 pitch;
 
     union {
@@ -7450,7 +7601,10 @@ STATIC_ASSERT(sizeof(GAMECAMERA) == 0x230);
 STATIC_ASSERT(sizeof(NUVEC) == 0xc);
 
 typedef struct nuquat_s {
-    f32 x, y, z, w;
+    f32 x;
+    f32 y;
+    f32 z;
+    f32 w;
 } NUQUAT;
 
 STATIC_ASSERT(sizeof(NUQUAT) == 0x10);
@@ -7460,7 +7614,8 @@ STATIC_ASSERT(offsetof(NUQUAT, z) == 8);
 STATIC_ASSERT(offsetof(NUQUAT, w) == 0xc);
 
 typedef struct instnugcutscene_s {
-    struct instnugcutscene_s *next, *previous;
+    struct instnugcutscene_s *next;
+    struct instnugcutscene_s *previous;
     char name[16];
     NUMTX matrix;
     void *scene;
@@ -7822,7 +7977,8 @@ typedef struct NUHGOBJ_EVAL_PC {
     struct PC_HG_SHADOW_GROUP *shadow_groups;
     u8 suppress_shadow_points;
     u8 unknown_1a1[11];
-    NUVEC bounds_min, bounds_max;
+    NUVEC bounds_min;
+    NUVEC bounds_max;
 } NUHGOBJ_EVAL_PC;
 
 STATIC_ASSERT(offsetof(NUHGOBJ_EVAL_PC, joint_count) == 0x168);
@@ -8376,7 +8532,10 @@ STATIC_ASSERT(offsetof(NU_LIGHT_SHADOW_LIST_VIEW_PC, material_last) == 0x14);
 
 /* PC NuDynamicLight::RenderSet. */
 typedef struct nurndrlightrecord_s {
-    NUMTX view_pc, projection_pc, shadow_matrix_pc, texture_matrix_pc;
+    NUMTX view_pc;
+    NUMTX projection_pc;
+    NUMTX shadow_matrix_pc;
+    NUMTX texture_matrix_pc;
     f32 parameter_100;
     f32 parameter_104;
     i32 enabled;
@@ -8387,7 +8546,9 @@ typedef struct nurndrlightrecord_s {
     NUVEC4 planes_pc[12];
     i32 shadow_plane_count;
     u8 opaque_264_270[0xc];
-    NUVEC4 far_plane_pc, endpoint0_pc, endpoint1_pc;
+    NUVEC4 far_plane_pc;
+    NUVEC4 endpoint0_pc;
+    NUVEC4 endpoint1_pc;
     f32 shadow_radius_pc;
     NU_LIGHT_SHADOW_LIST_VIEW_PC shadow_lists_pc[2];
     NURNDRLIBSTATE *render_states[2];
@@ -8676,17 +8837,22 @@ typedef struct gizobstacle_s {
     f32 reflection_alpha;
     f32 evaluated_radius;
     NUVEC trigger_box_half_extents;
-    u32 config_flags, exclude_flags;
+    u32 config_flags;
+    u32 exclude_flags;
     NUVEC pickup_offset;
     f32 pickup_scatter_height;
-    i16 pickup_direction_x, pickup_direction_y, trigger_box_yaw;
+    i16 pickup_direction_x;
+    i16 pickup_direction_y;
+    i16 trigger_box_yaw;
     i16 room_id;
-    i16 blowup_type, pickup_count;
+    i16 blowup_type;
+    i16 pickup_count;
     i16 start_sfx_id;
     i16 stop_sfx_id;
     u8 playback_state;
     u8 mode;
-    u8 trigger_mode, unknown_093;
+    u8 trigger_mode;
+    u8 unknown_093;
     u32 progress_flags;
     i32 proximity_output;
     u32 runtime_flags;
@@ -8798,17 +8964,52 @@ typedef struct FRAME_SCANNED_PAD_PC {
     u8 is_valid;
     u8 reserved01[3];
     i32 mapped_to_pad;
-    u8 analog_left_x, analog_left_y, analog_right_x, analog_right_y;
-    u8 analog_l1, analog_l2, analog_r1, analog_r2;
-    u32 digital_buttons, digital_buttons_pressed, digital_buttons_released, digital_buttons_prev;
+    u8 analog_left_x;
+    u8 analog_left_y;
+    u8 analog_right_x;
+    u8 analog_right_y;
+    u8 analog_l1;
+    u8 analog_l2;
+    u8 analog_r1;
+    u8 analog_r2;
+    u32 digital_buttons;
+    u32 digital_buttons_pressed;
+    u32 digital_buttons_released;
+    u32 digital_buttons_prev;
     i32 analog_button_flags;
-    i32 digital_left_x, digital_left_y, digital_right_x, digital_right_y, deadzone;
-    f32 left_x_normal, left_y_normal, left_x_unknown, left_y_unknown;
-    f32 left_x_unknown2, left_y_unknown2, right_x_unknown2, right_y_unknown2;
-    f32 right_x_normal, right_y_normal, right_x_unknown, right_y_unknown;
-    f32 left_up_ramp, left_down_ramp, left_left_ramp, left_right_ramp;
-    u8 analog_left_pad_left, analog_left_pad_right, analog_left_pad_up, analog_left_pad_down;
-    u8 unknown_7c, unknown_7d, unknown_7e, unknown_7f, unknown_80, unknown_81, unknown_82, unknown_83;
+    i32 digital_left_x;
+    i32 digital_left_y;
+    i32 digital_right_x;
+    i32 digital_right_y;
+    i32 deadzone;
+    f32 left_x_normal;
+    f32 left_y_normal;
+    f32 left_x_unknown;
+    f32 left_y_unknown;
+    f32 left_x_unknown2;
+    f32 left_y_unknown2;
+    f32 right_x_unknown2;
+    f32 right_y_unknown2;
+    f32 right_x_normal;
+    f32 right_y_normal;
+    f32 right_x_unknown;
+    f32 right_y_unknown;
+    f32 left_up_ramp;
+    f32 left_down_ramp;
+    f32 left_left_ramp;
+    f32 left_right_ramp;
+    u8 analog_left_pad_left;
+    u8 analog_left_pad_right;
+    u8 analog_left_pad_up;
+    u8 analog_left_pad_down;
+    u8 unknown_7c;
+    u8 unknown_7d;
+    u8 unknown_7e;
+    u8 unknown_7f;
+    u8 unknown_80;
+    u8 unknown_81;
+    u8 unknown_82;
+    u8 unknown_83;
 } FRAME_SCANNED_PAD_PC;
 
 typedef union FRAME_RECORD_CURSOR_PC {
@@ -8819,22 +9020,43 @@ typedef union FRAME_RECORD_CURSOR_PC {
 
 typedef struct FRAME_PAD_RECORD_PC {
     i32 mode;
-    u8 *buf_start, *buf_end;
+    u8 *buf_start;
+    u8 *buf_end;
     FRAME_RECORD_CURSOR_PC record;
     i32 buf_size;
     char *filepath;
     i32 should_end;
-    u32 end_record_buttons, end_play_buttons;
+    u32 end_record_buttons;
+    u32 end_play_buttons;
     i32 is_recording;
 } FRAME_PAD_RECORD_PC;
 
 typedef struct FRAME_PAD_PC {
-    i32 device, slot, stage, id;
-    i32 digital_left_x, digital_left_y, digital_right_x, digital_right_y;
-    f32 left_x_normal, left_y_normal, left_x_unknown, left_y_unknown, left_x_unknown2, left_y_unknown2;
-    f32 right_x_normal, right_y_normal, right_x_unknown, right_y_unknown, right_x_unknown2, right_y_unknown2;
+    i32 device;
+    i32 slot;
+    i32 stage;
+    i32 id;
+    i32 digital_left_x;
+    i32 digital_left_y;
+    i32 digital_right_x;
+    i32 digital_right_y;
+    f32 left_x_normal;
+    f32 left_y_normal;
+    f32 left_x_unknown;
+    f32 left_y_unknown;
+    f32 left_x_unknown2;
+    f32 left_y_unknown2;
+    f32 right_x_normal;
+    f32 right_y_normal;
+    f32 right_x_unknown;
+    f32 right_y_unknown;
+    f32 right_x_unknown2;
+    f32 right_y_unknown2;
     u8 reserved50[0x20];
-    u32 digital_buttons, digital_buttons_prev, digital_buttons_pressed, digital_buttons_released;
+    u32 digital_buttons;
+    u32 digital_buttons_prev;
+    u32 digital_buttons_pressed;
+    u32 digital_buttons_released;
 
     union {
         u32 flags;
@@ -8850,11 +9072,21 @@ typedef struct FRAME_PAD_PC {
     u8 reserved84[4];
     u8 deadzone;
     u8 reserved89[7];
-    u8 analog_right_x, analog_right_y, analog_left_x, analog_left_y;
-    u8 analog_left_pad_right, analog_left_pad_left, analog_left_pad_up, analog_left_pad_down;
+    u8 analog_right_x;
+    u8 analog_right_y;
+    u8 analog_left_x;
+    u8 analog_left_y;
+    u8 analog_left_pad_right;
+    u8 analog_left_pad_left;
+    u8 analog_left_pad_up;
+    u8 analog_left_pad_down;
     u8 reserved98[4];
-    u8 analog_l1, analog_r1, analog_l2, analog_r2;
-    u8 unknown_b0, unknown_b1;
+    u8 analog_l1;
+    u8 analog_r1;
+    u8 analog_l2;
+    u8 analog_r2;
+    u8 unknown_b0;
+    u8 unknown_b1;
     u8 reserveda2[2];
 } FRAME_PAD_PC;
 
@@ -8887,9 +9119,14 @@ STATIC_ASSERT(offsetof(FRAME_PAD_PC, flags) == 0x80);
 
 typedef struct GAMEPAD_RUNTIME_INPUT_PC {
     FRAME_PAD_PC *bound_pad;
-    u32 held, pressed;
-    u32 left_held, left_pressed, left_previous;
-    u32 right_held, right_pressed, right_previous;
+    u32 held;
+    u32 pressed;
+    u32 left_held;
+    u32 left_pressed;
+    u32 left_previous;
+    u32 right_held;
+    u32 right_pressed;
+    u32 right_previous;
     u8 input_ready;
     u8 unknown25[0x60 - 0x25];
 } GAMEPAD_RUNTIME_INPUT_PC;
@@ -9054,9 +9291,16 @@ STATIC_ASSERT(offsetof(NUAPI, force_shadows_on_characters) == 0x84);
 STATIC_ASSERT(offsetof(NUAPI, video_brightness) == 0x8c);
 
 typedef struct nulgtlaser_pc_s {
-    NUVEC start, end;
-    f32 width, segment_length, width_wobble, end_width_ratio, length;
-    u8 type, arc, padding[2];
+    NUVEC start;
+    NUVEC end;
+    f32 width;
+    f32 segment_length;
+    f32 width_wobble;
+    f32 end_width_ratio;
+    f32 length;
+    u8 type;
+    u8 arc;
+    u8 padding[2];
     u32 colour;
     i32 seed;
 } NULGTLASER_PC;
@@ -9068,10 +9312,18 @@ STATIC_ASSERT(offsetof(NULGTLASER_PC, colour) == 0x30);
 STATIC_ASSERT(offsetof(NULGTLASER_PC, seed) == 0x34);
 
 typedef struct nulgtarclaser_pc_s {
-    NUVEC start, end, bend;
-    f32 width, segment_length, wobble, bend_amount;
-    u8 type, padding[3];
-    i32 colour, flags, seed;
+    NUVEC start;
+    NUVEC end;
+    NUVEC bend;
+    f32 width;
+    f32 segment_length;
+    f32 wobble;
+    f32 bend_amount;
+    u8 type;
+    u8 padding[3];
+    i32 colour;
+    i32 flags;
+    i32 seed;
 } NULGTARCLASER_PC;
 
 STATIC_ASSERT(sizeof(NULGTARCLASER_PC) == 0x44);
@@ -9081,7 +9333,10 @@ STATIC_ASSERT(offsetof(NULGTARCLASER_PC, seed) == 0x40);
 
 typedef struct nulgtarcmaterial_pc_s {
     NUMTL *material;
-    f32 u0, v0, u1, v1;
+    f32 u0;
+    f32 v0;
+    f32 u1;
+    f32 v1;
 } NULGTARCMATERIAL_PC;
 
 STATIC_ASSERT(sizeof(NULGTARCMATERIAL_PC) == 0x14);
@@ -9089,9 +9344,12 @@ STATIC_ASSERT(offsetof(NULGTARCMATERIAL_PC, v0) == 8);
 STATIC_ASSERT(offsetof(NULGTARCMATERIAL_PC, v1) == 0x10);
 
 typedef struct nulgtvertex_pc_s {
-    f32 x, y, z;
+    f32 x;
+    f32 y;
+    f32 z;
     u32 colour;
-    f32 u, v;
+    f32 u;
+    f32 v;
 } NULGTVERTEX_PC;
 
 STATIC_ASSERT(offsetof(NULGTVERTEX_PC, colour) == 0xc);
@@ -9118,11 +9376,14 @@ STATIC_ASSERT(offsetof(PC_BUFFER_RESOURCE_METHODS_PC, lock) == 0x2c);
 STATIC_ASSERT(offsetof(PC_BUFFER_RESOURCE_METHODS_PC, unlock) == 0x30);
 
 typedef struct SCENE_VIDEO_RESOURCE_HEADER_PC {
-    u16 vertex_buffer_count, unknown_02;
+    u16 vertex_buffer_count;
+    u16 unknown_02;
     PC_BUFFER_RESOURCE_PC **vertex_buffers;
-    u16 index_buffer_count, unknown_0a;
+    u16 index_buffer_count;
+    u16 unknown_0a;
     PC_BUFFER_RESOURCE_PC **index_buffers;
-    u16 texture_count, unknown_12;
+    u16 texture_count;
+    u16 unknown_12;
     PC_TEXTURE_RESOURCE_PC **textures;
 } SCENE_VIDEO_RESOURCE_HEADER_PC;
 
@@ -9271,21 +9532,27 @@ struct PC_D3D9_DEVICE_PC {
 };
 
 typedef struct GRAPHICS_DISPLAY_MODE_PC {
-    u32 width, height, refresh_rate;
+    u32 width;
+    u32 height;
+    u32 refresh_rate;
     i32 format;
 } GRAPHICS_DISPLAY_MODE_PC;
 
 typedef struct GRAPHICS_PRESENT_PARAMETERS_PC {
-    u32 width, height;
+    u32 width;
+    u32 height;
     i32 format;
     u32 count;
     i32 multisample_type;
     u32 multisample_quality;
     i32 swap_effect;
     HWND window;
-    BOOL windowed, enable_depth;
+    BOOL windowed;
+    BOOL enable_depth;
     i32 depth_format;
-    u32 flags, refresh_rate, interval;
+    u32 flags;
+    u32 refresh_rate;
+    u32 interval;
 } GRAPHICS_PRESENT_PARAMETERS_PC;
 
 typedef struct GRAPHICS_CAPS_PC {
@@ -9311,9 +9578,14 @@ typedef struct GRAPHICS_CAPS_PC {
 #pragma pack(push, 4)
 
 typedef struct GRAPHICS_ADAPTER_IDENTIFIER_PC {
-    char driver[512], description[512], device_name[32];
+    char driver[512];
+    char description[512];
+    char device_name[32];
     LARGE_INTEGER driver_version;
-    u32 vendor, device_id, subsystem_id, revision;
+    u32 vendor;
+    u32 device_id;
+    u32 subsystem_id;
+    u32 revision;
     GUID device_identifier;
     u32 whql_level;
 } GRAPHICS_ADAPTER_IDENTIFIER_PC;
@@ -9484,7 +9756,8 @@ typedef struct PC_GRAPHICS_GPU_RECORD_PC {
 } PC_GRAPHICS_GPU_RECORD_PC;
 
 typedef struct PC_GRAPHICS_QUERIED_GPU_PC {
-    u32 vendor_id, device_id;
+    u32 vendor_id;
+    u32 device_id;
 } PC_GRAPHICS_QUERIED_GPU_PC;
 
 STATIC_ASSERT(sizeof(PC_GRAPHICS_GPU_RECORD_PC) == 16);
@@ -9547,24 +9820,32 @@ typedef struct PC_DEVICE_BACKEND_PC {
     PC_D3D9_DEVICE_PC *device;
     GRAPHICS_CAPS_PC caps;
     GRAPHICS_PRESENT_PARAMETERS_PC parameters;
-    PC_VIEWPORT_PC requested_viewport, full_viewport;
+    PC_VIEWPORT_PC requested_viewport;
+    PC_VIEWPORT_PC full_viewport;
     u32 adapter;
     GRAPHICS_ADAPTER_IDENTIFIER_PC identifier;
     i32 device_type;
     u32 creation_flags;
-    u8 force_software, unknown_5f9, multithreaded, unknown_5fb;
+    u8 force_software;
+    u8 unknown_5f9;
+    u8 multithreaded;
+    u8 unknown_5fb;
     HRESULT present_result;
-    u32 state600, state604;
+    u32 state600;
+    u32 state604;
     GRAPHICS_DISPLAY_MODE_PC desktop_mode;
     u32 mode_count;
     GRAPHICS_DISPLAY_MODE_PC *modes;
-    u32 active_mode, aspect_mode;
+    u32 active_mode;
+    u32 aspect_mode;
     f32 aspect;
     u32 active_aspect_mode;
     f32 active_aspect;
-    u8 feature634, unknown_635[3];
+    u8 feature634;
+    u8 unknown_635[3];
     i32 multisample_index;
-    u8 multisample_tested, unknown_63d[3];
+    u8 multisample_tested;
+    u8 unknown_63d[3];
     i32 quality[5];
 
     union {
@@ -9573,29 +9854,41 @@ typedef struct PC_DEVICE_BACKEND_PC {
     };
 
     u32 render_target_flags;
-    u8 requested_windowed, unknown_65d[3];
+    u8 requested_windowed;
+    u8 unknown_65d[3];
     u32 requested_mode;
-    u8 requested_feature, unknown_665[3];
+    u8 requested_feature;
+    u8 unknown_665[3];
     i32 requested_multisample;
     u16 requested_target_count;
-    u8 saved_windowed, unknown_66f;
+    u8 saved_windowed;
+    u8 unknown_66f;
     u32 saved_mode;
-    u8 saved_feature, unknown_675[3];
+    u8 saved_feature;
+    u8 unknown_675[3];
     i32 saved_multisample;
-    u16 saved_target_count, unknown_67e;
+    u16 saved_target_count;
+    u16 unknown_67e;
     i32 saved_aspect;
     PC_TEXTURE_RESOURCE_PC *declaration684;
     PC_BUFFER_RESOURCE_PC *buffer688;
     PC_TEXTURE_RESOURCE_PC *declaration68c;
-    PC_BUFFER_RESOURCE_PC *buffer690, *buffer694, *buffer698;
-    i32 state69c, state6a0, state6a4, state6a8;
+    PC_BUFFER_RESOURCE_PC *buffer690;
+    PC_BUFFER_RESOURCE_PC *buffer694;
+    PC_BUFFER_RESOURCE_PC *buffer698;
+    i32 state69c;
+    i32 state6a0;
+    i32 state6a4;
+    i32 state6a8;
     PC_TEXTURE_RESOURCE_PC *declaration6ac;
     PC_TEXTURE_RESOURCE_PC *back_buffer;
     GRAPHICS_RENDER_TEXTURE_PC *textures[4];
     PC_TEXTURE_RESOURCE_PC *target_surfaces[4];
     i32 target_kinds[4];
-    u16 target_count, unknown_6e6;
-    PC_TEXTURE_RESOURCE_PC *current_surface, *depth_surface;
+    u16 target_count;
+    u16 unknown_6e6;
+    PC_TEXTURE_RESOURCE_PC *current_surface;
+    PC_TEXTURE_RESOURCE_PC *depth_surface;
     PC_TEXTURE_RESOURCE_PC *target_cache[4];
 
 #ifdef __cplusplus
@@ -9788,17 +10081,23 @@ STATIC_ASSERT(offsetof(PC_D3D9_METHODS_PC, create_pixel_shader) == 0x1a8);
 
 struct GRAPHICS_RENDER_TEXTURE_PC {
     PC_TEXTURE_RESOURCE_PC *resource;
-    u16 width, height;
-    u16 unknown_08, mip_count;
+    u16 width;
+    u16 height;
+    u16 unknown_08;
+    u16 mip_count;
 
     union {
         u8 unknown_0c[0x1c];
 
         struct {
-            u16 original_mip_count, reserved_0e;
+            u16 original_mip_count;
+            u16 reserved_0e;
             u32 field_10;
-            i32 format, usage, pool;
-            u32 flags, field_24;
+            i32 format;
+            i32 usage;
+            i32 pool;
+            u32 flags;
+            u32 field_24;
         };
     };
 
@@ -9824,22 +10123,36 @@ STATIC_ASSERT(offsetof(GRAPHICS_RENDER_TEXTURE_PC, field_24) == 0x24);
 struct nusound_filename_info_s;
 
 typedef struct PC_NATIVE_DEBUG_HEADER_PC {
-    i32 first, second, third, font_size;
+    i32 first;
+    i32 second;
+    i32 third;
+    i32 font_size;
     char label[128];
-    u32 unknown_colour, face_colour, high_colour, low_colour, inner_colour;
+    u32 unknown_colour;
+    u32 face_colour;
+    u32 high_colour;
+    u32 low_colour;
+    u32 inner_colour;
 } PC_NATIVE_DEBUG_HEADER_PC;
 
 typedef struct PC_NATIVE_DEBUG_VERTEX_PC {
-    f32 x, y, z, w;
+    f32 x;
+    f32 y;
+    f32 z;
+    f32 w;
     u32 colour;
 } PC_NATIVE_DEBUG_VERTEX_PC;
 
 typedef struct PC_NATIVE_DEBUG_STATE_PC {
-    u8 unknown_0, enabled;
+    u8 unknown_0;
+    u8 enabled;
     u8 unknown_002[14];
     PC_NATIVE_DEBUG_HEADER_PC header;
     PC_NATIVE_DEBUG_HEADER_PC *current_header;
-    f32 top, left, right, bottom;
+    f32 top;
+    f32 left;
+    f32 right;
+    f32 bottom;
     PC_NATIVE_DEBUG_VERTEX_PC vertices[54];
     i32 log_file;
     u8 write_log;
@@ -9947,36 +10260,72 @@ typedef struct add_game_message_pc_s {
     const char *text;
     NUVEC *position;
     NUVEC *target_position;
-    f32 scale, target_scale;
-    u8 red, green, blue, alpha;
+    f32 scale;
+    f32 target_scale;
+    u8 red;
+    u8 green;
+    u8 blue;
+    u8 alpha;
     u32 flags;
-    f32 duration, delay;
+    f32 duration;
+    f32 delay;
     u16 unknown_24;
     i16 icon;
     void *special;
     u32 score;
-    f32 unknown_30, unknown_34;
-    GAME_MESSAGE_CALLBACK_PC delay_fn, tick_fn, update_fn;
+    f32 unknown_30;
+    f32 unknown_34;
+    GAME_MESSAGE_CALLBACK_PC delay_fn;
+    GAME_MESSAGE_CALLBACK_PC tick_fn;
+    GAME_MESSAGE_CALLBACK_PC update_fn;
     void *unknown_44;
     GAME_MESSAGE_CALLBACK_PC end_fn;
     i8 player_index;
-    u8 allow_temporary, target_is_coin_total, unknown_4f;
+    u8 allow_temporary;
+    u8 target_is_coin_total;
+    u8 unknown_4f;
 } ADD_GAME_MESSAGE_PC;
 
 struct game_message_pc_s {
     const char *text;
     char text_buffer[0x78];
-    NUVEC position_a, target_position, position, start_position;
-    f32 scale_start, target_scale, scale_initial, scale_current;
-    f32 elapsed, duration, parameter_c4, parameter_c8, scale_multiplier, delay, parameter_d4;
-    u32 flags, score;
-    u16 parameter_e0, parameter_e2, parameter_e4, icon;
+    NUVEC position_a;
+    NUVEC target_position;
+    NUVEC position;
+    NUVEC start_position;
+    f32 scale_start;
+    f32 target_scale;
+    f32 scale_initial;
+    f32 scale_current;
+    f32 elapsed;
+    f32 duration;
+    f32 parameter_c4;
+    f32 parameter_c8;
+    f32 scale_multiplier;
+    f32 delay;
+    f32 parameter_d4;
+    u32 flags;
+    u32 score;
+    u16 parameter_e0;
+    u16 parameter_e2;
+    u16 parameter_e4;
+    u16 icon;
     NUSPECIALHANDLE special;
-    u8 red, green, blue, alpha;
-    u8 active, has_start_position, expired, parameter_fb, parameter_fc;
+    u8 red;
+    u8 green;
+    u8 blue;
+    u8 alpha;
+    u8 active;
+    u8 has_start_position;
+    u8 expired;
+    u8 parameter_fb;
+    u8 parameter_fc;
     i8 player_index;
-    u8 target_is_coin_total, allow_temporary;
-    GAME_MESSAGE_CALLBACK_PC delay_fn, tick_fn, update_fn;
+    u8 target_is_coin_total;
+    u8 allow_temporary;
+    GAME_MESSAGE_CALLBACK_PC delay_fn;
+    GAME_MESSAGE_CALLBACK_PC tick_fn;
+    GAME_MESSAGE_CALLBACK_PC update_fn;
 
     union {
         void *parameter_10c;
@@ -10092,7 +10441,12 @@ STATIC_ASSERT(offsetof(PC_MATERIAL_SHADER_DESC_VIEW, shader_variant_handle) == 0
 struct PC_OCCLUDER_RECORD {
     NUVEC4 vertices[4];
     NUVEC4 transformed[4];
-    f32 min_x, max_x, min_y, max_y, min_depth, depth;
+    f32 min_x;
+    f32 max_x;
+    f32 min_y;
+    f32 max_y;
+    f32 min_depth;
+    f32 depth;
     u8 unknown_98[8];
 };
 
@@ -10140,8 +10494,10 @@ struct OcclusionManager {
     OccluderSet sets[2];
     OccluderSet *building_set;
     OccluderSet *current_set;
-    f32 unknown_158, unknown_15c;
-    u32 occluded_count, query_count;
+    f32 unknown_158;
+    f32 unknown_15c;
+    u32 occluded_count;
+    u32 query_count;
     u8 unknown_168[8];
     bool IsOccludedOBB(const NUVEC *, const NUVEC *, const NUMTX *);
     bool IsOccludedSphere(const NUVEC *, f32);
@@ -10175,7 +10531,8 @@ typedef struct GIZMOPICKUP_PC {
         u8 unknown_14[2];
 
         struct {
-            u8 filter_byte, filter_reserved;
+            u8 filter_byte;
+            u8 filter_reserved;
         };
     };
 
@@ -10185,14 +10542,22 @@ typedef struct GIZMOPICKUP_PC {
         u8 flags;
 
         struct {
-            u8 state_active : 1, state_enabled : 1, state_visible : 1, state_collected : 1, state_drawn : 1,
-                state_draw_visible : 1, state_alternate_type : 1, state_activated : 1;
+            u8 state_active : 1;
+            u8 state_enabled : 1;
+            u8 state_visible : 1;
+            u8 state_collected : 1;
+            u8 state_drawn : 1;
+            u8 state_draw_visible : 1;
+            u8 state_alternate_type : 1;
+            u8 state_activated : 1;
         };
     };
 
-    u8 activation_group, unknown_19[3];
+    u8 activation_group;
+    u8 unknown_19[3];
     f32 floor;
-    u16 shadow_x, shadow_z;
+    u16 shadow_x;
+    u16 shadow_z;
 
     union {
         i8 room;
@@ -10220,15 +10585,25 @@ typedef void(__cdecl *PICKUP_UPDATE_FN_PC)(WORLDINFO *, GIZMOPICKUP_PC *);
 typedef void(__cdecl *PICKUP_COLLECT_FN_PC)(WORLDINFO *, GIZMOPICKUP_PC *, i32, GAMEOBJECT *, i32);
 
 typedef struct GIZMO_PICKUP_TYPE_PC {
-    char *name, *activation_sfx_name, *collection_sfx_name;
-    u8 field_c, random_model_count, flags, field_0f;
+    char *name;
+    char *activation_sfx_name;
+    char *collection_sfx_name;
+    u8 field_c;
+    u8 random_model_count;
+    u8 flags;
+    u8 field_0f;
     i16 first_model_id;
     u16 score;
-    f32 shadow_radius_x, shadow_radius_z, draw_distance, bob_height;
+    f32 shadow_radius_x;
+    f32 shadow_radius_z;
+    f32 draw_distance;
+    f32 bob_height;
     PICKUP_UPDATE_FN_PC update_fn;
     PICKUP_COLLECT_FN_PC collect_fn;
-    i16 debris_id, overlay_model_id;
-    f32 shadow_extent_x, shadow_extent_z;
+    i16 debris_id;
+    i16 overlay_model_id;
+    f32 shadow_extent_x;
+    f32 shadow_extent_z;
 } GIZMO_PICKUP_TYPE_PC;
 
 STATIC_ASSERT(sizeof(GIZMO_PICKUP_TYPE_PC) == 0x38);
@@ -10323,11 +10698,15 @@ typedef struct HINTSYS_PC {
         void(__cdecl *draw_fn)(HINT_PC *, i32);
     };
 
-    HINT_PC *hints, *active_hint;
-    u8 unknownc, state, unknowne[2];
+    HINT_PC *hints;
+    HINT_PC *active_hint;
+    u8 unknownc;
+    u8 state;
+    u8 unknowne[2];
     u32 *save_bits;
     i32 save_word_count;
-    f32 display_elapsed, alpha;
+    f32 display_elapsed;
+    f32 alpha;
 } HINTSYS_PC;
 
 STATIC_ASSERT(sizeof(HINTSYS_PC) == 0x20);
@@ -10387,7 +10766,10 @@ STATIC_ASSERT(offsetof(GAMECAMERA, previous_camera_mode) == 0x22e);
 struct PC_SPECIAL_SHADOW_LIGHT;
 
 typedef struct PC_SPECIAL_PROJECTION_ADJUST {
-    f32 x_scale, y_scale, x_offset, y_offset;
+    f32 x_scale;
+    f32 y_scale;
+    f32 x_offset;
+    f32 y_offset;
 } PC_SPECIAL_PROJECTION_ADJUST;
 
 STATIC_ASSERT(sizeof(PC_SPECIAL_PROJECTION_ADJUST) == 0x10);
@@ -10451,18 +10833,26 @@ struct gizforce_pc_s {
     f32 field_50;
     f32 interaction_radius;
     f32 animation_speed;
-    f32 start_frame, end_frame;
+    f32 start_frame;
+    f32 end_frame;
     f32 effect_scale;
     f32 radius;
-    f32 vertical_range, horizontal_range;
+    f32 vertical_range;
+    f32 horizontal_range;
     u32 config_flags;
     u8 unknown_078[4];
-    u8 group_index, collision_mask, activation_mode;
+    u8 group_index;
+    u8 collision_mask;
+    u8 activation_mode;
     u8 unknown_07f;
     i16 room_id;
-    i16 start_sfx_id, loop_sfx_id, stop_sfx_id;
+    i16 start_sfx_id;
+    i16 loop_sfx_id;
+    i16 stop_sfx_id;
     i16 blowup_type;
-    i16 pickup_count, pickup_rotation_x, pickup_rotation_y;
+    i16 pickup_count;
+    i16 pickup_rotation_x;
+    i16 pickup_rotation_y;
     NUVEC effect_position;
     f32 activation_radius;
 
@@ -10531,16 +10921,27 @@ STATIC_ASSERT(offsetof(GIZFORCE_TARGET_RECORD_PC, index) == 12);
 
 struct PC_HG_SHADOW_PACKET {
     NUMTX matrix;
-    void *ellipse, *cylinder, *third_shape;
-    i32 state0, state1, state2, state_byte;
-    f32 near_value, far_value;
-    u8 ellipse_count, cylinder_count, third_count, sequence;
+    void *ellipse;
+    void *cylinder;
+    void *third_shape;
+    i32 state0;
+    i32 state1;
+    i32 state2;
+    i32 state_byte;
+    f32 near_value;
+    f32 far_value;
+    u8 ellipse_count;
+    u8 cylinder_count;
+    u8 third_count;
+    u8 sequence;
 };
 
 struct PC_HG_SHADOW_STATE_VIEW {
     union {
         struct {
-            i32 state0, state1, state2;
+            i32 state0;
+            i32 state1;
+            i32 state2;
         };
 
         NUVEC direction;
@@ -10639,14 +11040,19 @@ extern "C" {
     void __cdecl DisplayListSetShadowCasterFlagPS(NUDISPLAYLISTITEM *, NUDISPLAYLISTITEM *, i32);
     void __cdecl DisplayListUpdateRenderStateShadow(NUDISPLAYLIST_PC *, NUGLOBALRNDRSTATE_PC *);
     extern PC_SPECIAL_PROJECTION_ADJUST PCSpecialProjectionAdjust;
-    extern NUMTX PCSpecialProjectionTranslate, PCSpecialProjectionScale;
-    extern i32 PCSpecialClipState, PCSpecialActiveShadowLights, PCSpecialShadowClipResultsPresent;
-    extern i32 PCSpecialForcedLOD, PCSpecialReflectionPass;
+    extern NUMTX PCSpecialProjectionTranslate;
+    extern NUMTX PCSpecialProjectionScale;
+    extern i32 PCSpecialClipState;
+    extern i32 PCSpecialActiveShadowLights;
+    extern i32 PCSpecialShadowClipResultsPresent;
+    extern i32 PCSpecialForcedLOD;
+    extern i32 PCSpecialReflectionPass;
     extern NUMTL **PCSpecialForcedMaterialTable;
     extern NUMTL *PCSpecialForcedMaterial;
     extern struct PC_SPECIAL_SHADOW_LIGHT *PCSpecialShadowLights[4];
     extern u32 PCSpecialShadowClipResults[4];
-    extern f32 global_windscale, global_windspeed;
+    extern f32 global_windscale;
+    extern f32 global_windspeed;
     extern u32 PCWindFrameCount;
 
     void __cdecl GizBuildIt_SetToStart(void *, i32, i32);
@@ -10672,7 +11078,8 @@ extern "C" {
     extern i32 PCMaterialPoolCountPc;
     void __cdecl SnakeBeenHit(GAMEOBJECT *);
     void __cdecl NuMtxSetRotationXYVU0(NUMTX *, NUANGVEC *);
-    extern f32 SnakeSegmentHeightPc, SnakeDebrisUpwardSpeedPc;
+    extern f32 SnakeSegmentHeightPc;
+    extern f32 SnakeDebrisUpwardSpeedPc;
 
     void __cdecl Arcade_Kill(i32, i32);
     void __cdecl Arcade_AIKilled(i32);
@@ -10754,7 +11161,9 @@ extern "C" {
     void __cdecl DropInOutCode(GAMEOBJECT *);
     f32 __cdecl FindGunshipHoverHeight(GAMEOBJECT *);
     void __cdecl CatchUpCode(GAMEOBJECT *, f32, f32, i32);
-    extern f32 VehicleGunshipHoverBasePc, VehicleGunshipHoverOtherPc, VehicleGunshipHoverSeparationPc;
+    extern f32 VehicleGunshipHoverBasePc;
+    extern f32 VehicleGunshipHoverOtherPc;
+    extern f32 VehicleGunshipHoverSeparationPc;
     /* Existing extern C shared block; no new shared layout fields. */
 
     GRAPPLE_DYNAMIC_PC *__cdecl Grapple_AddDynamic(void *, i32);
@@ -10762,7 +11171,8 @@ extern "C" {
     extern GRAPPLE_DYNAMIC_PC DynamicGrapplePc[4];
 
     void __cdecl SetWeaponIn(GAMEOBJECT *);
-    extern i32 LEGOCONTEXT_WEAPONIN, LEGOCONTEXT_WEAPONOUT;
+    extern i32 LEGOCONTEXT_WEAPONIN;
+    extern i32 LEGOCONTEXT_WEAPONOUT;
     /* Existing shared extern C scope. No new fields/providers. */
 
     void __cdecl FloatRumble(GAMEOBJECT *);
@@ -10774,7 +11184,8 @@ extern "C" {
     void __cdecl DisorientateCode(GAMEOBJECT *, NUVEC *, f32);
     void __cdecl TractorBeamCode(GAMEOBJECT *);
     extern i32 WeaponInOut_NoAIJediSfx;
-    extern u8 disorientAxis, TractorBeamEnabledPc;
+    extern u8 disorientAxis;
+    extern u8 TractorBeamEnabledPc;
     /* FloatAdvancePc static same originalTU; no public prototype. */
 
     i32 __cdecl BoltType_FindIDByCreature(GAMEOBJECT *, i32);
@@ -11081,7 +11492,8 @@ extern "C" {
 
     typedef struct BATARANG_TARGET_s {
         void *object;
-        u8 type, lost;
+        u8 type;
+        u8 lost;
         u16 reserved_06_word;
 
         union {
@@ -11093,7 +11505,9 @@ extern "C" {
 #pragma pack(push, 1)
 
     typedef struct BATARANG_FLIGHT_STATE_PC {
-        u8 in_flight, current_target, reserved_7f;
+        u8 in_flight;
+        u8 current_target;
+        u8 reserved_7f;
         f32 flight_time;
     } BATARANG_FLIGHT_STATE_PC;
 
@@ -11115,7 +11529,8 @@ extern "C" {
 
                     struct {
                         BATARANG_TARGET_s targets[5];
-                        NUVEC position, velocity;
+                        NUVEC position;
+                        NUVEC velocity;
                     };
                 };
 
@@ -11127,7 +11542,8 @@ extern "C" {
                 };
 
                 GAMEOBJECT *owner;
-                NUVEC sight_position, sight_velocity;
+                NUVEC sight_position;
+                NUVEC sight_velocity;
 
                 union {
                     u8 targeting_reserved_a0[12];
@@ -11179,7 +11595,8 @@ extern "C" {
         u32 coins;
         f32 scale;
         i16 last_coin;
-        u8 active, unknown_0b;
+        u8 active;
+        u8 unknown_0b;
         f32 multiplier_time;
     } PLAYER_COIN_PACKET_PC;
 
@@ -11191,7 +11608,9 @@ extern "C" {
             u8 unknown_00[4];
 
             struct {
-                u8 complete, area_complete, unknown_02[2];
+                u8 complete;
+                u8 area_complete;
+                u8 unknown_02[2];
             };
         };
 
@@ -11258,9 +11677,11 @@ extern "C" {
     STATIC_ASSERT(offsetof(TERRAIN_CALLBACK_LIFECYCLE_PC, argument) == 4);
     extern i32 PCSoundStorageLockReadyPc;
     extern CRITICAL_SECTION PCSoundStorageLockPc;
-    extern i32 PCSoundDrainStartPc, PCSoundDrainRemainingPc;
+    extern i32 PCSoundDrainStartPc;
+    extern i32 PCSoundDrainRemainingPc;
     extern f32 TerrPlatScanDist;
-    extern i32 PlatCodeCallback, cntrots;
+    extern i32 PlatCodeCallback;
+    extern i32 cntrots;
     extern TERRAIN_CALLBACK_LIFECYCLE_PC PlatCallback[8];
 
     void __cdecl Customiser_InitNames(CUSTOMISER_LAYERS_PC *);
@@ -11269,7 +11690,10 @@ extern "C" {
     void __cdecl SetQFont2D(void);
 
     typedef struct FONT_LEGACY_GLYPH_PC {
-        f32 u0, v0, u1, v1;
+        f32 u0;
+        f32 v0;
+        f32 u1;
+        f32 v1;
         u32 unknown10;
     } FONT_LEGACY_GLYPH_PC;
 
@@ -11279,7 +11703,8 @@ extern "C" {
         u8 unknown00[12];
         i16 height;
         u8 unknown0e[6];
-        i16 baseline, ic_gap;
+        i16 baseline;
+        i16 ic_gap;
         NUMTL *material;
         i32 glyph_count;
         u8 character_map[256];
@@ -11295,8 +11720,12 @@ extern "C" {
     STATIC_ASSERT(offsetof(FONT_LEGACY_READER_PC, glyphs) == 0x120);
 
     void __cdecl NuMtlSetRenderPlane(NUMTL *, i32);
-    extern i32 create_qfont2dlower, create_qfont2dz, create_qfont3d, create_qfont3dz;
-    extern VUFNT *QFont2DZ, *QFont3D;
+    extern i32 create_qfont2dlower;
+    extern i32 create_qfont2dz;
+    extern i32 create_qfont3d;
+    extern i32 create_qfont3dz;
+    extern VUFNT *QFont2DZ;
+    extern VUFNT *QFont3D;
     void __cdecl NuQFntDestroy(VUFNT *);
     i32 __cdecl NuQFntReadPS(VUFNT *, i32, i32, i32, VARIPTR *, VARIPTR);
     VUFNT *__cdecl NuQFntReadBuffer(VARIPTR *, VARIPTR *, VARIPTR);
@@ -11396,8 +11825,15 @@ extern "C" {
 
     /* Private-register helpers remain local; no public stack prototypes. */
     typedef struct RTL_LIGHT_PC {
-        NUVEC position, direction, ambient, colour, secondary_colour;
-        f32 inner_radius, outer_radius, parameters[4], parameter_54;
+        NUVEC position;
+        NUVEC direction;
+        NUVEC ambient;
+        NUVEC colour;
+        NUVEC secondary_colour;
+        f32 inner_radius;
+        f32 outer_radius;
+        f32 parameters[4];
+        f32 parameter_54;
         u8 type;
 
         union {
@@ -11411,14 +11847,21 @@ extern "C" {
             };
         };
 
-        i16 pitch, yaw, field_5e, field_60;
+        i16 pitch;
+        i16 yaw;
+        i16 field_5e;
+        i16 field_60;
         u8 unknown_62[2];
         f32 field_64;
         u16 field_68;
         i16 uid;
-        f32 intensity, blend_rate, blend;
+        f32 intensity;
+        f32 blend_rate;
+        f32 blend;
         u8 group_id;
-        i8 field_79, field_7a, field_7b;
+        i8 field_79;
+        i8 field_7a;
+        i8 field_7b;
         struct RTL_LIGHT_PC *field_7c;
         i16 led_file; /* Placeable::CurrentLedFile when the editor creates it */
         u8 unknown_82[10];
@@ -11485,7 +11928,8 @@ extern "C" {
     STATIC_ASSERT(sizeof(RTL_SET_PC) == 0x4f84);
 
     typedef struct rtl_fog_migration_pc_s {
-        f32 start, end;
+        f32 start;
+        f32 end;
         u32 colour;
         i32 low_quality_density;
         u32 low_quality_colour;
@@ -11495,7 +11939,8 @@ extern "C" {
         f32 radius;
         NUVEC position;
         f32 density;
-        f32 start_psp, end_psp;
+        f32 start_psp;
+        f32 end_psp;
         i16 led_file; /* Placeable::CurrentLedFile when the editor creates it */
         u8 unknown_3a[2];
         f32 density_wii;
@@ -11524,8 +11969,11 @@ extern "C" {
     typedef struct RTL_INDEX_PC {
         i32 enabled;
         u8 unknown_04[8];
-        i32 width, depth;
-        f32 scale, offset_x, offset_z;
+        i32 width;
+        i32 depth;
+        f32 scale;
+        f32 offset_x;
+        f32 offset_z;
         i8 **cells;
         u8 unknown_24[4];
     } RTL_INDEX_PC;
@@ -11554,9 +12002,14 @@ extern "C" {
     i32 __cdecl rtlDynamicMasterEnable(i32);
     void __cdecl rtlSetLights(struct RTL_DATA_PC *);
     void __cdecl rtlApplySetScale(void *, struct RTL_DATA_PC *, NUVEC *, NUMTX *, i32, f32);
-    extern i32 rtl_dynamic_lights_enabled, rtl_error;
-    extern f32 rtl_frametime, rtl_shadow_blend_rate, rtlwob;
-    extern NUVEC rtl_shadow_flicker, RtlUnitDirectionYPc, RtlUnitDirectionZPc;
+    extern i32 rtl_dynamic_lights_enabled;
+    extern i32 rtl_error;
+    extern f32 rtl_frametime;
+    extern f32 rtl_shadow_blend_rate;
+    extern f32 rtlwob;
+    extern NUVEC rtl_shadow_flicker;
+    extern NUVEC RtlUnitDirectionYPc;
+    extern NUVEC RtlUnitDirectionZPc;
     extern f32 *modifiers;
     extern i32 rtltimer1;
     extern f32 rtltimer1adv;
@@ -11572,9 +12025,13 @@ extern "C" {
     char **__cdecl PcInput_GetKeyNameTable(void);
     i32 __cdecl PcInput_PortIsUC(i32);
     extern VUFNT *QFont2DLower;
-    extern char *apitxt_SELECT, *apitxt_BACK;
-    extern char UiSelectPromptLiteralPc[7], UiBackPromptLiteralPc[5];
-    extern f32 MenuTextScalePc, MenuPromptPositionScalePc, MENUDY;
+    extern char *apitxt_SELECT;
+    extern char *apitxt_BACK;
+    extern char UiSelectPromptLiteralPc[7];
+    extern char UiBackPromptLiteralPc[5];
+    extern f32 MenuTextScalePc;
+    extern f32 MenuPromptPositionScalePc;
+    extern f32 MENUDY;
 
     void __cdecl DrawMenuButtonPrompts(i32, i32, i32, u32, u32, u32, u32);
 
@@ -11624,7 +12081,8 @@ extern "C" {
     typedef struct cut_load_locator_instance_s CUT_LOAD_LOCATOR_INSTANCE;
 
     typedef struct CUT_DRAW_SETTINGS_PC {
-        i16 blaster_object_0, blaster_object_1;
+        i16 blaster_object_0;
+        i16 blaster_object_1;
         i16 object_id;
         i8 cheat_id;
         u8 normal_layers;
@@ -11702,7 +12160,8 @@ extern "C" {
     void __cdecl NuRndrAxisArrowsMtx(NUMTX *, f32, NUMTL *);
 
     typedef struct debris_scale_cache_pc_s {
-        i32 base_effect_index, scaled_effect_index;
+        i32 base_effect_index;
+        i32 scaled_effect_index;
         f32 scale;
     } DEBRIS_SCALE_CACHE_PC;
 
@@ -11818,7 +12277,10 @@ void __cdecl PCStereoUnknownToken(void);
 #endif
     i32 __cdecl NuSound3PlayStereoV(i32 token, ...);
     void __cdecl PCStereoStartPacket(struct PC_STEREO_PLAY_PACKET *packet);
-    extern i32 PCStereoChannel0A, PCStereoChannel0B, PCStereoChannel1A, PCStereoChannel1B;
+    extern i32 PCStereoChannel0A;
+    extern i32 PCStereoChannel0B;
+    extern i32 PCStereoChannel1A;
+    extern i32 PCStereoChannel1B;
     extern f32 PCMusicDuckOverride;
 
     void __cdecl TrafficAnimSys_Configure(WORLDINFO *world, char *config);
@@ -11826,7 +12288,8 @@ void __cdecl PCStereoUnknownToken(void);
     void __cdecl AddVariableShotPARTEffect(i32, NUVEC *, f32, f32, NUMTX *);
 
     extern AWKWARD_SHAPE_SPHERE_PC AwkwardShapeSpherePc[14];
-    extern i16 id_CATAPULT, id_FIRETRUCK;
+    extern i16 id_CATAPULT;
+    extern i16 id_FIRETRUCK;
     void __cdecl AwkwardShapeCode(GAMEOBJECT *, i32);
     i32 __cdecl NewRayCastScaleYMask(NUVEC *, NUVEC *, f32, f32, i32, u32);
     void __cdecl RayImpact(NUVEC *);
@@ -11866,10 +12329,26 @@ void __cdecl PCStereoUnknownToken(void);
     extern f32 VehicleLoopTimePc;
 
     extern NEW_MINI_PIECE_PC NewMiniPiece[10];
-    extern f32 KITPOSX, KITPOSY, PANEL_MINIKITSCALE, PANEL_MINIKITY, DrawMiniKitTime;
-    extern f32 MiniKitScale, RedBrickScale, PANEL_REDBRICKSCALE, REDBRICKPOSX, REDBRICKPOSY, DrawRedBrickTime;
-    extern i32 MiniKitModelId_PC, CharKitModelId_PC;
-    extern f32 STATSPOSY, ICONX, POWERUPOBJSIZE, PowerUp_PanelPosMul[2], POWERUPYPOS1, POWERUPYPOS2, CHEAT_POWERUPTIME;
+    extern f32 KITPOSX;
+    extern f32 KITPOSY;
+    extern f32 PANEL_MINIKITSCALE;
+    extern f32 PANEL_MINIKITY;
+    extern f32 DrawMiniKitTime;
+    extern f32 MiniKitScale;
+    extern f32 RedBrickScale;
+    extern f32 PANEL_REDBRICKSCALE;
+    extern f32 REDBRICKPOSX;
+    extern f32 REDBRICKPOSY;
+    extern f32 DrawRedBrickTime;
+    extern i32 MiniKitModelId_PC;
+    extern i32 CharKitModelId_PC;
+    extern f32 STATSPOSY;
+    extern f32 ICONX;
+    extern f32 POWERUPOBJSIZE;
+    extern f32 PowerUp_PanelPosMul[2];
+    extern f32 POWERUPYPOS1;
+    extern f32 POWERUPYPOS2;
+    extern f32 CHEAT_POWERUPTIME;
     extern u16 PowerUp_PanelYRot[2];
     extern i32 POWERUP_TEXTID;
     void __cdecl Pup_CollectCoin(WORLDINFO *, GIZMOPICKUP_PC *, i32, GAMEOBJECT *, i32);
@@ -11995,17 +12474,26 @@ void __cdecl PCStereoUnknownToken(void);
     void __cdecl AddTorpedoAsPart(NUVEC *position, NUVEC *direction, f32 speed, f32 lifetime);
     void __cdecl PowerUp_AddPart(NUVEC *position, NUVEC *direction, f32 speed, f32 lifetime);
 
-    extern f32 DrawCoinTotalTime, PANEL_COINSCALE_START;
+    extern f32 DrawCoinTotalTime;
+    extern f32 PANEL_COINSCALE_START;
     extern i16 GizBuilditGDeb[6];
     void __cdecl EndScoreMessage(GAME_MESSAGE_PC *);
     void __cdecl GameMsg_DrawAdjustNewPos_CoinToTotal(GAME_MESSAGE_PC *);
     void __cdecl NewBuzzFrames(void *, i32, i32);
-    extern f32 AreaPickupGravity, AreaPickupScale;
-    extern f32 PartExtraCoinRate_PC, PartVehicleHeartLifetime_PC, PartVehicleHeartPodraceHeight_PC,
-        PartVehicleHeartHeight_PC;
-    extern f32 PartVehicleHeartPodraceScale_PC, PartVehicleHeartGunshipScale_PC, PartVehicleHeartScale_PC,
-        coinimpactwait;
-    extern const char PowerUpBounceSfx_PC[21], PickupCoinSfx_PC[11], CoinDropSilverSfx_PC[10], CoinDropGoldSfx_PC[10];
+    extern f32 AreaPickupGravity;
+    extern f32 AreaPickupScale;
+    extern f32 PartExtraCoinRate_PC;
+    extern f32 PartVehicleHeartLifetime_PC;
+    extern f32 PartVehicleHeartPodraceHeight_PC;
+    extern f32 PartVehicleHeartHeight_PC;
+    extern f32 PartVehicleHeartPodraceScale_PC;
+    extern f32 PartVehicleHeartGunshipScale_PC;
+    extern f32 PartVehicleHeartScale_PC;
+    extern f32 coinimpactwait;
+    extern const char PowerUpBounceSfx_PC[21];
+    extern const char PickupCoinSfx_PC[11];
+    extern const char CoinDropSilverSfx_PC[10];
+    extern const char CoinDropGoldSfx_PC[10];
     void __cdecl AddTorpedoAsPart(NUVEC *, NUVEC *, f32, f32);
     void __cdecl AddHeartAsPart(GAMEOBJECT *, NUVEC *, NUVEC *, f32, f32);
     void __cdecl PowerUp_AddPart(NUVEC *, NUVEC *, f32, f32);
@@ -12586,7 +13074,12 @@ extern OCCLUSIONMANAGER g_OcclusionManager;
     extern const char Menu_ColonSeparator[3];
     extern f32 dme_sy;
     extern i32 menu_flash;
-    extern i16 tAUDIOVOLUME, tMUSIC, tON, tOFF, tACCEPT, tBACK;
+    extern i16 tAUDIOVOLUME;
+    extern i16 tMUSIC;
+    extern i16 tON;
+    extern i16 tOFF;
+    extern i16 tACCEPT;
+    extern i16 tBACK;
     extern f32 opts_sfx_wait;
     extern i32 opts_sfx_i;
     extern LEVELDATA_PC *TITLES_LDATA;
@@ -12600,13 +13093,19 @@ extern OCCLUSIONMANAGER g_OcclusionManager;
     void __cdecl MenuDrawNewGame(MENU *menu);
     void __cdecl MenuUpdateNewGame(MENU *menu);
     void __cdecl MenuPcStringsInit(void);
-    extern MENU_PC_STRING_ENTRY MenuPcStringTable827800[40], MenuPcStringTable827940[40];
-    extern MENU_PC_STRING_ENTRY MenuPcStringTable827a80[40], MenuPcStringTable827bc0[40];
-    extern MENU_PC_STRING_ENTRY MenuPcStringTable827d00[40], MenuPcStringTable827e40[40];
+    extern MENU_PC_STRING_ENTRY MenuPcStringTable827800[40];
+    extern MENU_PC_STRING_ENTRY MenuPcStringTable827940[40];
+    extern MENU_PC_STRING_ENTRY MenuPcStringTable827a80[40];
+    extern MENU_PC_STRING_ENTRY MenuPcStringTable827bc0[40];
+    extern MENU_PC_STRING_ENTRY MenuPcStringTable827d00[40];
+    extern MENU_PC_STRING_ENTRY MenuPcStringTable827e40[40];
     extern MENU_PC_STRING_ENTRY MenuPcStringTable827f80[40];
     extern const char *MenuPcStrings[39];
     extern i32 MenuPcStringsInitialized;
-    extern i16 TextIdPc880824, TextIdPc8808fc, TextIdPc880850, TextIdPc880bc4;
+    extern i16 TextIdPc880824;
+    extern i16 TextIdPc8808fc;
+    extern i16 TextIdPc880850;
+    extern i16 TextIdPc880bc4;
     void __cdecl MenuEnterOptions(MENU *menu);
     void __cdecl MenuUpdateOptions(MENU *menu);
     void __cdecl MenuDrawOptions(MENU *menu);
@@ -12984,13 +13483,16 @@ typedef struct PC_SHADER_OBJECT_FULL_VIEW PC_SHADER_OBJECT_FULL_VIEW;
     STATIC_ASSERT(offsetof(PC_SHADER_PARAMETER_LOCAL_PC, next) == 8);
 #ifndef __cplusplus
     struct PC_SHADER_OBJECT_FULL_VIEW {
-        i32 marker, ref_count;
-        u32 key, unknown_c;
+        i32 marker;
+        i32 ref_count;
+        u32 key;
+        u32 unknown_c;
         PC_SHADER_PARAMETER_LOCAL_PC *active_parameters;
         i32 version;
         u32 field_18;
         PC_SHADER_PARAMETER_LOCAL_PC parameters[100];
-        PC_TEXTURE_RESOURCE_PC *vertex_shader, *pixel_shader;
+        PC_TEXTURE_RESOURCE_PC *vertex_shader;
+        PC_TEXTURE_RESOURCE_PC *pixel_shader;
         u32 stage_flags;
     };
 
@@ -13021,9 +13523,15 @@ typedef struct PC_SHADER_OBJECT_FULL_VIEW PC_SHADER_OBJECT_FULL_VIEW;
     typedef struct D3DX_CONSTANT_DESCRIPTION_PC {
         const char *name;
         i32 register_set;
-        UINT register_index, register_count;
-        i32 class_kind, type_kind;
-        UINT rows, columns, elements, struct_members, bytes;
+        UINT register_index;
+        UINT register_count;
+        i32 class_kind;
+        i32 type_kind;
+        UINT rows;
+        UINT columns;
+        UINT elements;
+        UINT struct_members;
+        UINT bytes;
         const void *default_value;
     } D3DX_CONSTANT_DESCRIPTION_PC;
 
@@ -13158,7 +13666,9 @@ typedef struct PC_SHADER_OBJECT_FULL_VIEW PC_SHADER_OBJECT_FULL_VIEW;
     extern NUPLANE NuPortalCameraPlane;
     extern NUMTL *DebMat[9];
     extern NUMTX xzfacingmtx;
-    extern i32 debris_rt, g_renderingDebris, DebrisSuspendDrawObjectSwitch;
+    extern i32 debris_rt;
+    extern i32 g_renderingDebris;
+    extern i32 DebrisSuspendDrawObjectSwitch;
     extern f32 debris_render_scale;
     extern i32 *edbits_editor_enabled;
     extern i32 edbits_editor_state;
@@ -13330,10 +13840,18 @@ typedef struct PC_SHADER_OBJECT_FULL_VIEW PC_SHADER_OBJECT_FULL_VIEW;
     void __cdecl TerrainDiagnosticNoOpPC(const void *context, ...);
     extern const char TerrainSourcePathPc[53];
     extern const f32 TerrainUnusedSpatialBlockPc;
-    extern const f32 TerrainBoundsMinimumPc, TerrainBoundsMaximumPc, TerrainSteepNormalYPc;
-    extern void *ScaleTerrainT2, *TempScanStack, *WallSplList;
+    extern const f32 TerrainBoundsMinimumPc;
+    extern const f32 TerrainBoundsMaximumPc;
+    extern const f32 TerrainSteepNormalYPc;
+    extern void *ScaleTerrainT2;
+    extern void *TempScanStack;
+    extern void *WallSplList;
     extern TERRAIN_POLYGON_INFO_PC *ScaleTerrainT1;
-    extern i32 terraincnt, curSphereter, platinrange, PlatImpactId, TerrShapeAdjCnt;
+    extern i32 terraincnt;
+    extern i32 curSphereter;
+    extern i32 platinrange;
+    extern i32 PlatImpactId;
+    extern i32 TerrShapeAdjCnt;
     extern TERRAIN_POLYGON_INFO_PC *TerrPoly;
     extern u8 TerrWallInfo;
     void *__cdecl SetLevelHack(i32 size);
@@ -13903,7 +14421,8 @@ typedef struct PC_SHADER_OBJECT_FULL_VIEW PC_SHADER_OBJECT_FULL_VIEW;
 
             struct {
                 u8 unknown_grid_prefix[0x14];
-                f32 grid_x, grid_y;
+                f32 grid_x;
+                f32 grid_y;
             };
         };
     } COLLECTID_PC;
@@ -14500,29 +15019,50 @@ void __cdecl AIScriptMissingConditionDiagnostic();
     typedef struct PC_EDBRIDGE {
         i32 instance_id;
         NUVEC position;
-        f32 length, field_14;
-        i16 rotation_z, rotation_y;
+        f32 length;
+        f32 field_14;
+        i16 rotation_z;
+        i16 rotation_y;
         i8 connection_index;
-        i8 field_1d, field_1e;
+        i8 field_1d;
+        i8 field_1e;
         u8 field_1f;
-        i32 special_20, special_24;
-        f32 field_28, field_2c, field_30, field_34, field_38, field_3c;
-        u8 red, green, blue, field_43;
+        i32 special_20;
+        i32 special_24;
+        f32 field_28;
+        f32 field_2c;
+        f32 field_30;
+        f32 field_34;
+        f32 field_38;
+        f32 field_3c;
+        u8 red;
+        u8 green;
+        u8 blue;
+        u8 field_43;
     } PC_EDBRIDGE;
 
     typedef struct PC_EDGRACLUMP {
-        i32 special_index, element_count;
+        i32 special_index;
+        i32 element_count;
         NUVEC position;
-        f32 size, field_18;
+        f32 size;
+        f32 field_18;
         i32 flags;
         f32 field_20;
-        u8 page, unknown_25, unknown_26, kind;
+        u8 page;
+        u8 unknown_25;
+        u8 unknown_26;
+        u8 kind;
         i32 seed;
-        f32 field_2c, field_30;
-        i16 rotation_z, rotation_y;
-        f32 near_distance, far_distance;
+        f32 field_2c;
+        f32 field_30;
+        i16 rotation_z;
+        i16 rotation_y;
+        f32 near_distance;
+        f32 far_distance;
         i16 individual_index;
-        u8 field_42, field_43;
+        u8 field_42;
+        u8 field_43;
         f32 field_44;
         NUMTX *matrices;
         void *vector_buffer;
@@ -14531,7 +15071,8 @@ void __cdecl AIScriptMissingConditionDiagnostic();
     typedef struct PC_EDGRAINDIVIDUAL {
         NUVEC position;
         f32 field_0c;
-        i16 field_10, field_12;
+        i16 field_10;
+        i16 field_12;
         u8 unknown_14[0xc];
     } PC_EDGRAINDIVIDUAL;
 
@@ -14795,9 +15336,11 @@ void __cdecl AIScriptMissingConditionDiagnostic();
     STATIC_ASSERT(sizeof(DEBRISKEY_PC) == 0x330);
     extern i32 debris_suspended;
     extern i32 update_debris_enabled;
-    extern f32 globaltime, panelglobaltime;
+    extern f32 globaltime;
+    extern f32 panelglobaltime;
     extern i16 *freedebkeys;
-    extern i32 freedebkeyptr, maxdebkeys;
+    extern i32 freedebkeyptr;
+    extern i32 maxdebkeys;
     extern DEBRISKEY_PC *debris_keystack;
     extern DEBRISGENERATOR_PC gensorttab[13];
     extern DEBRISMOMENTUMADJUSTER_PC gencodetab[7];
@@ -14822,8 +15365,10 @@ void __cdecl AIScriptMissingConditionDiagnostic();
     void __cdecl AddFiniteShotDebrisEffect2(i32 *, i32, NUVEC *, NUVEC *, NUVEC *, i32);
     void __cdecl AddFiniteShotDebrisEffect(i32 *, i32, NUVEC *, i32);
 
-    extern f32 partglobaltime, debris_thinning_level;
-    extern i32 part_emits_used, forced_debris_thinning;
+    extern f32 partglobaltime;
+    extern f32 debris_thinning_level;
+    extern i32 part_emits_used;
+    extern i32 forced_debris_thinning;
 
     typedef struct CAMERA_CLIP_PLANES_PC {
         NUMTX frustum;
@@ -14877,9 +15422,11 @@ void __cdecl AIScriptMissingConditionDiagnostic();
         GRAPHICS_RENDER_TEXTURE_PC *texture;
         u8 owns_texture; /* 0x05..0x07 alignment padding; no char arrays, so locals carry no /GS cookie */
         PC_TEXTURE_RESOURCE_PC *surface;
-        u16 level, unknown_0e;
+        u16 level;
+        u16 unknown_0e;
         u32 field_10;
-        u16 width, height;
+        u16 width;
+        u16 height;
         i16 registry_index; /* 0x1a..0x1b alignment padding */
 #ifdef __cplusplus
         PC_EFFECT_SURFACE_PC();
@@ -15024,7 +15571,9 @@ void __cdecl AIScriptMissingConditionDiagnostic();
         u8 fields_001[3];
         struct debris_particle_chunk_pc_s *next;
         u8 fields_008[12];
-        u32 field_014, field_018, field_01c;
+        u32 field_014;
+        u32 field_018;
+        u32 field_01c;
         DEBRISPARTICLE_PC particles[32];
         u32 end_command;
     };
@@ -15061,7 +15610,9 @@ void __cdecl AIScriptMissingConditionDiagnostic();
     STATIC_ASSERT(offsetof(DEBRIS_CHUNK_CONTROL_PC, collision_plane) == 0x24);
     STATIC_ASSERT(offsetof(DEBRIS_CHUNK_CONTROL_PC, restitution) == 0x28);
     extern volatile i32 debris_control_stack_lock;
-    extern i32 debrischunks, debrischunksglass, freechunkcontrolsptr;
+    extern i32 debrischunks;
+    extern i32 debrischunksglass;
+    extern i32 freechunkcontrolsptr;
     extern DEBRIS_CHUNK_CONTROL_PC **freechunkcontrols;
     extern DEBRIS_CHUNK_CONTROL_PC *debris_chunk_control_stack[2];
     i32 __cdecl SolveQuadratic(f32, f32, f32, f32 *, f32 *);
@@ -15071,7 +15622,8 @@ void __cdecl AIScriptMissingConditionDiagnostic();
 
     void __cdecl GenericDebinfoDmaTypeUpdate(DEBRIS_INFO_PC *effect);
     void __cdecl NuPtlDmaSlotsExhaustedPc(void);
-    extern i32 freeDmaDebType, EDPP_MAX_DMADEBTYPES;
+    extern i32 freeDmaDebType;
+    extern i32 EDPP_MAX_DMADEBTYPES;
     extern DEBRIS_PART_HEADER_PC **DmaDebTypes;
     void __cdecl NuVecMtxTransformVU0(NUVEC *, NUVEC *, NUMTX *);
     i32 __cdecl DebrisNuASin(f32);
@@ -15079,7 +15631,8 @@ void __cdecl AIScriptMissingConditionDiagnostic();
     i32 __cdecl NuTexCreateNative(NUTEXDIM_PC *);
     void __cdecl NuTexCreatePS(NUTEXDIM_PC *);
     void __cdecl PCDeviceCreateTextureFromMemory(const void *, u32, PC_TEXTURE_RESOURCE_PC **);
-    extern i32 NuTextureCapacityPC, NuTextureLoadCountPC;
+    extern i32 NuTextureCapacityPC;
+    extern i32 NuTextureLoadCountPC;
     extern i32 *NuTextureLoadOrderPC;
     extern const f32 AIPositionUnsetPc;
     i32 __cdecl AddGameDebris(APIDEBRISSYS_PC *, i32, NUVEC *);
@@ -15090,7 +15643,8 @@ void __cdecl AIScriptMissingConditionDiagnostic();
         DEBRISKEY_PC *key;
         NUMTX effect_orientation;
         NUVEC position;
-        struct debris_render_chunk_pc_s *previous, *next;
+        struct debris_render_chunk_pc_s *previous;
+        struct debris_render_chunk_pc_s *next;
         u16 render_priority;
         u8 fields_062[2];
     } DEBRIS_RENDER_CHUNK_PC;
@@ -15103,10 +15657,14 @@ void __cdecl AIScriptMissingConditionDiagnostic();
     STATIC_ASSERT(offsetof(DEBRIS_RENDER_CHUNK_PC, previous) == 0x58);
     STATIC_ASSERT(offsetof(DEBRIS_RENDER_CHUNK_PC, next) == 0x5c);
     STATIC_ASSERT(offsetof(DEBRIS_RENDER_CHUNK_PC, render_priority) == 0x60);
-    extern u32 debris_trash_space, debris_trash_size;
-    extern i32 debris_setup_called, freedebchkptr, freedebchkptrg;
+    extern u32 debris_trash_space;
+    extern u32 debris_trash_size;
+    extern i32 debris_setup_called;
+    extern i32 freedebchkptr;
+    extern i32 freedebchkptrg;
     extern DEBRIS_CHUNK_CONTROL_PC *debris_chunk_controls;
-    extern DEBRIS_PARTICLE_CHUNK_PC **freedebchunks, **freedebchunksglass;
+    extern DEBRIS_PARTICLE_CHUNK_PC **freedebchunks;
+    extern DEBRIS_PARTICLE_CHUNK_PC **freedebchunksglass;
     extern DEBRIS_RENDER_CHUNK_PC *ParticleChunkToRender;
     extern DEBRIS_RENDER_CHUNK_PC *ParticleChunkRenderStack[5];
     DEBRIS_PARTICLE_CHUNK_PC *__cdecl CreateDmaParticleSet(void *, i32 *);
@@ -15350,10 +15908,14 @@ void __cdecl AIScriptMissingConditionDiagnostic();
     void __cdecl InitSnakes(WORLDINFO *world);
     i32 __cdecl NuSpecialFind(NUGSCN *scene, NUSPECIALHANDLE *handle, char *name, i32 flags);
     extern u8 cables[0xf60];
-    extern f32 default_targetmomf, targetmomf;
-    extern f32 default_ownermomf, ownermomf;
-    extern f32 default_max_cable_length, max_cable_length;
-    extern f32 default_tow_length, tow_length;
+    extern f32 default_targetmomf;
+    extern f32 targetmomf;
+    extern f32 default_ownermomf;
+    extern f32 ownermomf;
+    extern f32 default_max_cable_length;
+    extern f32 max_cable_length;
+    extern f32 default_tow_length;
+    extern f32 tow_length;
     extern AREA_DATA_PC *GUNSHIP_ADATA;
     void __cdecl UpdateFrameCounters(void);
     void __cdecl ResetTimer(TIMER *timer, f32 reset_time);
@@ -15716,7 +16278,10 @@ void __cdecl AIScriptMissingConditionDiagnostic();
     typedef union MINICAM_PC {
         struct {
             MINICAM_COMMAND_PC commands[32];
-            u8 command_count, current_command, mode, easing;
+            u8 command_count;
+            u8 current_command;
+            u8 mode;
+            u8 easing;
             u8 borders;
             u8 unknown_385_b[0x3];
             f32 distance;
@@ -15737,7 +16302,9 @@ void __cdecl AIScriptMissingConditionDiagnostic();
             u16 start_roll;
             u8 unknown_3c2[0x2];
             NUVEC *focus;
-            NUVEC focus_offset, target, position;
+            NUVEC focus_offset;
+            NUVEC target;
+            NUVEC position;
             NUGSPLINE *position_spline;
             f32 delta_time;
             f32 duration;
@@ -16025,9 +16592,16 @@ void __cdecl AIScriptMissingConditionDiagnostic();
     extern i32 permbuffer_size;
     extern i32 CHARACTERBUFFERSIZE;
     extern i32 EDITBUFFERENDSIZE;
-    extern VARIPTR permbuffer_base, permbuffer_ptr, permbuffer_end;
-    extern VARIPTR characterbuffer_base, characterbuffer_ptr, characterbuffer_end;
-    extern VARIPTR superbuffer_base, superbuffer_ptr, superbuffer_end, editbuffer_end;
+    extern VARIPTR permbuffer_base;
+    extern VARIPTR permbuffer_ptr;
+    extern VARIPTR permbuffer_end;
+    extern VARIPTR characterbuffer_base;
+    extern VARIPTR characterbuffer_ptr;
+    extern VARIPTR characterbuffer_end;
+    extern VARIPTR superbuffer_base;
+    extern VARIPTR superbuffer_ptr;
+    extern VARIPTR superbuffer_end;
+    extern VARIPTR editbuffer_end;
     void __cdecl StartPerm(void);
     void __cdecl EndPerm(void);
     void __cdecl LoadPermData(void *process);
@@ -17094,7 +17668,8 @@ void __cdecl PCSoundAlreadyPlayingHook(void);
 
     typedef struct PC_TEXTURE_ANIM_LIST {
         void *first;
-        struct PC_TEXTURE_ANIM_LIST *next, *previous;
+        struct PC_TEXTURE_ANIM_LIST *next;
+        struct PC_TEXTURE_ANIM_LIST *previous;
     } PC_TEXTURE_ANIM_LIST;
 
     STATIC_ASSERT(sizeof(PC_TEXTURE_ANIM_LIST) == 12);
@@ -17104,10 +17679,14 @@ void __cdecl PCSoundAlreadyPlayingHook(void);
     typedef struct PC_TEXTURE_ANIM_ENV {
         void *program;
         i32 instruction_index;
-        i32 loop_counts[16], loop_starts[16];
+        i32 loop_counts[16];
+        i32 loop_starts[16];
         i32 loop_depth;
         i32 return_stack[16];
-        i32 call_depth, wait_base, wait_random, wait_remaining;
+        i32 call_depth;
+        i32 wait_base;
+        i32 wait_random;
+        i32 wait_remaining;
         NUMTL *material;
         u16 *texture_ids;
         i32 texture_index;
@@ -17233,7 +17812,9 @@ void __cdecl PCSoundAlreadyPlayingHook(void);
     DEBRISPARTICLE_PC *__cdecl GenDebIndexRadialStar(DEBRISKEY_PC *, DEBRIS_INFO_PC *, f32);
     i32 __cdecl AddFiniteShotPART(i32, NUVEC *, i32);
     extern i32 SceneUploadBufferSizePC;
-    extern VARIPTR SceneUploadBufferStartPC, SceneUploadBufferCursorPC, SceneUploadBufferEndPC;
+    extern VARIPTR SceneUploadBufferStartPC;
+    extern VARIPTR SceneUploadBufferCursorPC;
+    extern VARIPTR SceneUploadBufferEndPC;
     extern const char SceneUploadSourcePathPC[57];
     i32 __cdecl NuGScnUploadGfxDataFromFilePS(VARIPTR *, VARIPTR, NUFILE);
     void __cdecl DebReAlloc2(DEBRISKEY_PC *);
@@ -17286,21 +17867,29 @@ void __cdecl PCSoundAlreadyPlayingHook(void);
         NUVEC position;
         i32 effect_index;
         i32 instance_id;
-        i16 rotation_z, rotation_y;
-        i16 emitter_rotation_z, emitter_rotation_y, emitter_rotation_x;
+        i16 rotation_z;
+        i16 rotation_y;
+        i16 emitter_rotation_z;
+        i16 emitter_rotation_y;
+        i16 emitter_rotation_x;
         u8 unknown_01e[2];
         f32 start_offset;
         char name[16];
-        i32 switch_type, switch_id;
+        i32 switch_type;
+        i32 switch_id;
         f32 switch_variable;
-        i16 reflection_rotation_z, reflection_rotation_y;
-        f32 reflection_offset, reflection_bounce;
+        i16 reflection_rotation_z;
+        i16 reflection_rotation_y;
+        f32 reflection_offset;
+        f32 reflection_bounce;
         i16 render_group;
         u16 render_priority;
         i8 dynamic_priority;
-        i8 page, detail_levels;
+        i8 page;
+        i8 detail_levels;
         i8 facing_mode;
-        i16 facing_rotation_x, facing_rotation_y;
+        i16 facing_rotation_x;
+        i16 facing_rotation_y;
     } EDPP_PARTICLE_PC;
 
     STATIC_ASSERT(sizeof(EDPP_PARTICLE_PC) == 0x58);
@@ -17328,9 +17917,12 @@ void __cdecl PCSoundAlreadyPlayingHook(void);
     STATIC_ASSERT(offsetof(EDPP_PARTICLE_PC, facing_rotation_x) == 0x54);
     STATIC_ASSERT(offsetof(EDPP_PARTICLE_PC, facing_rotation_y) == 0x56);
 
-    extern i32 part_types_used, part_platimpactcnt;
+    extern i32 part_types_used;
+    extern i32 part_platimpactcnt;
     extern NUGSCN *part_scene[32];
-    extern i32 edpp_page_on[8], edpp_instances_used, edpp_types_used;
+    extern i32 edpp_page_on[8];
+    extern i32 edpp_instances_used;
+    extern i32 edpp_types_used;
     extern EDPP_PARTICLE_PC edpp_ptls[512];
     void __cdecl InitParts(i32, VARIPTR *, VARIPTR);
     void __cdecl KillPartsByScene(NUGSCN *);
@@ -17681,7 +18273,8 @@ void __cdecl PCSoundAlreadyPlayingHook(void);
     void __cdecl NuClipZPlane(NUVEC *, NUVEC *, NUVEC *, f32 *);
     i32 __cdecl BoundingBoxToLine(NUVEC *, NUVEC *, NUMTX *, NUVEC *, NUVEC *, f32, NUVEC *);
     void __cdecl ShoveSystemCheckGameObject(GAMEOBJECT *);
-    extern f32 ShoveMaximumSpeedPc, ShoveMaximumPenetrationPc;
+    extern f32 ShoveMaximumSpeedPc;
+    extern f32 ShoveMaximumPenetrationPc;
 
     void __cdecl ResetAICreature(GAMEOBJECT *, AISYS_PC *);
     void __cdecl ResetAICreatures(AISYS_PC *);
@@ -18119,7 +18712,9 @@ void __cdecl PCSoundAlreadyPlayingHook(void);
     void __cdecl CalculateInterceptVector(NUVEC *, NUVEC *, NUVEC *, f32, NUVEC *, NUVEC *);
     i32 __cdecl Player_HasDeflectBolts(GAMEOBJECT *);
     i32 __cdecl Player_HasDoubleBoltDamage_FromBolt(BOLT_PC *);
-    extern i32 BoltNoSfxPc, BoltNoObjectMomentumPc, BoltBlockContextPc;
+    extern i32 BoltNoSfxPc;
+    extern i32 BoltNoObjectMomentumPc;
+    extern i32 BoltBlockContextPc;
     extern i16 BoltDeactivatedActionPc;
     extern u32 ExBlowupFlagsPc;
     extern i32(__cdecl *BoltInitSfxFn)(GAMEOBJECT *);
@@ -18213,7 +18808,9 @@ void __cdecl PCSoundAlreadyPlayingHook(void);
     void __cdecl SetObjAsHeadTarget(GAMEOBJECT *, GAMEOBJECT *, i8, f32, f32, f32);
     i32 __cdecl CharCategory_IsCategory(GAMEOBJECT *, i32);
 
-    extern i16 GrabMachineIdPc, GrabMagnetIdPc, RobotBaseIdPc;
+    extern i16 GrabMachineIdPc;
+    extern i16 GrabMagnetIdPc;
+    extern i16 RobotBaseIdPc;
     void __cdecl Grabber_Configure(WORLDINFO *, char *);
     void __cdecl GizForceSFX_Configure(WORLDINFO *, char *);
     void __cdecl Doors_Configure(WORLDINFO *, char *);
@@ -18374,7 +18971,10 @@ void __cdecl PCSoundAlreadyPlayingHook(void);
     void __cdecl oneAtOnce_SetAttackersPerRow(i32);
     void __cdecl oneAtOnce_SetDistPerRow(f32);
     void __cdecl oneAtOnce_SetInitDistPerRow(f32);
-    extern i32 spinner_gizmotype_id, LEGOCONTEXT_GRAPPLE, lever_gizmotype_id, grapple_gizmotype_id;
+    extern i32 spinner_gizmotype_id;
+    extern i32 LEGOCONTEXT_GRAPPLE;
+    extern i32 lever_gizmotype_id;
+    extern i32 grapple_gizmotype_id;
     void __cdecl GameAIProcess(void);
     extern f32 draw_attention_distance;
     extern u32 GAMEPAD_START;
@@ -18405,9 +19005,18 @@ void __cdecl PCSoundAlreadyPlayingHook(void);
     void __cdecl APIObjectLOSChecks(APIOBJECTSYS_PC *, i32, i32, APIOBJECT_PC **, i32, APIOBJECT_PC **, f32);
 
     typedef struct render_post_viewport_prefix_pc_s {
-        f32 source_x, source_y, source_right, source_bottom;
-        f32 dest_x, dest_y, dest_right, dest_bottom;
-        f32 width_scale, height_scale, x_offset, y_offset;
+        f32 source_x;
+        f32 source_y;
+        f32 source_right;
+        f32 source_bottom;
+        f32 dest_x;
+        f32 dest_y;
+        f32 dest_right;
+        f32 dest_bottom;
+        f32 width_scale;
+        f32 height_scale;
+        f32 x_offset;
+        f32 y_offset;
     } RENDER_POST_VIEWPORT_PREFIX_PC;
 
     STATIC_ASSERT(sizeof(RENDER_POST_VIEWPORT_PREFIX_PC) == 0x30);
@@ -19232,7 +19841,9 @@ struct PC_SPECIAL_SHADOW_LIGHT {
     i32 active_render_set_count;
     u8 unknown_714[0xc];
     NUVEC4 split_planes_pc[2];
-    NUVEC4 camera_position_pc, camera_forward_pc, light_position_pc;
+    NUVEC4 camera_position_pc;
+    NUVEC4 camera_forward_pc;
+    NUVEC4 light_position_pc;
 
     union {
         NUVEC4 light_direction4_pc;
@@ -19248,8 +19859,12 @@ struct PC_SPECIAL_SHADOW_LIGHT {
     i32 parameter_4;
     i32 parameter_5;
     i32 enabled;
-    f32 parameter_0, parameter_1, parameter_2, parameter_3;
-    f32 parameter_19, parameter_20;
+    f32 parameter_0;
+    f32 parameter_1;
+    f32 parameter_2;
+    f32 parameter_3;
+    f32 parameter_19;
+    f32 parameter_20;
     i32 used_on_specials;
 #ifdef __cplusplus
     PC_SPECIAL_SHADOW_LIGHT();
@@ -19552,8 +20167,10 @@ extern "C" {
     };
 
     typedef struct SPECIAL_RESOURCE_ENTRY_PC {
-        u8 flags, unknown_01;
-        i8 event_count, animation_playing;
+        u8 flags;
+        u8 unknown_01;
+        i8 event_count;
+        i8 animation_playing;
         NUSPECIALHANDLE special;
         SPECIAL_RESOURCE_EVENT_PC *events;
     } SPECIAL_RESOURCE_ENTRY_PC;
@@ -19609,19 +20226,25 @@ extern "C" {
     STATIC_ASSERT(sizeof(((SPECIAL_RESOURCE_WORLD_PC *)0)->events) == 4);
 
     typedef struct STREAK_NODE_PC {
-        struct STREAK_NODE_PC *next, *prev;
-        NUVEC position, previous_position;
-        NUVEC start_tangent, end_tangent;
-        NUVEC positions[7], tangents[7];
+        struct STREAK_NODE_PC *next;
+        struct STREAK_NODE_PC *prev;
+        NUVEC position;
+        NUVEC previous_position;
+        NUVEC start_tangent;
+        NUVEC end_tangent;
+        NUVEC positions[7];
+        NUVEC tangents[7];
         i32 segment_count;
         f32 remaining_time;
     } STREAK_NODE_PC;
 
     typedef struct STREAK_HEADER_PC {
-        struct STREAK_HEADER_PC *next, *prev;
+        struct STREAK_HEADER_PC *next;
+        struct STREAK_HEADER_PC *prev;
         STREAK_NODE_PC *nodes;
         u16 index;
-        u8 flags, unknown_0f;
+        u8 flags;
+        u8 unknown_0f;
         i32 has_new_node;
         void **owner_slot;
         u32 colour;
@@ -19651,9 +20274,11 @@ extern "C" {
     STATIC_ASSERT(offsetof(STREAK_HEADER_PC, owner) == 0x1c);
     extern STREAK_NODE_PC StreakNodesPc[128];
     extern STREAK_HEADER_PC StreakHeadersPc[32];
-    extern STREAK_NODE_PC *streaks_free, *StreakNodesUsedPc;
+    extern STREAK_NODE_PC *streaks_free;
+    extern STREAK_NODE_PC *StreakNodesUsedPc;
     extern STREAK_HEADER_PC *streakhdrs_free;
-    extern NUMTL *streakmtl, *streakmtl_ref;
+    extern NUMTL *streakmtl;
+    extern NUMTL *streakmtl_ref;
     extern const char StreakTextureNamePc[17];
     void __cdecl InitStreaks(VARIPTR *, VARIPTR, char *);
     void __cdecl AddStreakPoints(NUVEC *, f32, u32, void **, i32, GAMEOBJECT *);
@@ -19703,7 +20328,8 @@ extern "C" {
     void __cdecl NuPadAutoConfigurePc(i32 count);
     void __cdecl PcInput_DisableAllKeyboards(void);
     void __cdecl NuRndrInitStartupMaterialsPc(void);
-    extern NUMTL *PCStartupMaterial1Pc, *PCStartupMaterial2Pc;
+    extern NUMTL *PCStartupMaterial1Pc;
+    extern NUMTL *PCStartupMaterial2Pc;
     extern i16 PlayerLastPort[8];
     void __cdecl NuPadProcessReadData(FRAME_SCANNED_PAD_PC *pad);
     void __cdecl NuPadSetMaxGamePads(i32 count);
@@ -19731,7 +20357,10 @@ typedef struct PICKUP_TYPE_SYSTEM_PC {
     GIZMO_PICKUP_TYPE_PC *types;
     u8 *random_coin_types;
     u16 type_count;
-    i8 minikit_type, gizmo_type_id, alternate_type, unknown_0d;
+    i8 minikit_type;
+    i8 gizmo_type_id;
+    i8 alternate_type;
+    i8 unknown_0d;
     i16 unknown_0e;
 } PICKUP_TYPE_SYSTEM_PC;
 
@@ -19768,7 +20397,9 @@ extern "C" {
     void __cdecl BoltTypes_Init(WORLDINFO *);
     void __cdecl LevelObjects_InitForLevel(WORLDINFO *);
     i32 __cdecl FindPartDebris(PARTDEBRISSYS *, char *);
-    extern NUGSCN *area_scene, *vehicle_scene, *big_icon_scene;
+    extern NUGSCN *area_scene;
+    extern NUGSCN *vehicle_scene;
+    extern NUGSCN *big_icon_scene;
     extern i32 KNOBS;
 
     void __cdecl PCGraphicsRenderTextureAllocationError(void);
@@ -19783,27 +20414,47 @@ extern "C" {
 #ifdef __cplusplus
 
 struct PC_DI_CAPS_PC {
-    DWORD size, flags, device_type, axes, buttons, povs;
-    DWORD ff_sample_period, ff_min_time_resolution, firmware_revision, hardware_revision, ff_driver_version;
+    DWORD size;
+    DWORD flags;
+    DWORD device_type;
+    DWORD axes;
+    DWORD buttons;
+    DWORD povs;
+    DWORD ff_sample_period;
+    DWORD ff_min_time_resolution;
+    DWORD firmware_revision;
+    DWORD hardware_revision;
+    DWORD ff_driver_version;
 };
 
 struct PC_DI_PROPERTY_PC {
-    DWORD size, header_size, object, how, data;
+    DWORD size;
+    DWORD header_size;
+    DWORD object;
+    DWORD how;
+    DWORD data;
 };
 
 struct PC_DI_OBJECT_FORMAT_PC {
     const GUID *guid;
-    DWORD offset, type, flags;
+    DWORD offset;
+    DWORD type;
+    DWORD flags;
 };
 
 struct PC_DI_DATA_FORMAT_PC {
-    DWORD size, object_size, flags, data_size, object_count;
+    DWORD size;
+    DWORD object_size;
+    DWORD flags;
+    DWORD data_size;
+    DWORD object_count;
     const PC_DI_OBJECT_FORMAT_PC *objects;
 };
 
 struct PC_DI_INSTANCE_PC {
     DWORD size;
-    GUID instance, product;
+    GUID instance;
+    GUID product;
     DWORD device_type;
     char instance_name[260];
     char product_name[260];
@@ -19811,10 +20462,12 @@ struct PC_DI_INSTANCE_PC {
 };
 
 struct PC_DI_DEVICE_METHODS_PC {
-    void *unknown_00, *unknown_04;
+    void *unknown_00;
+    void *unknown_04;
     ULONG(__stdcall *release)(NuKeyboardDevice_PC *);
     HRESULT(__stdcall *get_caps)(NuKeyboardDevice_PC *, PC_DI_CAPS_PC *);
-    void *unknown_10, *unknown_14;
+    void *unknown_10;
+    void *unknown_14;
     HRESULT(__stdcall *set_property)(NuKeyboardDevice_PC *, REFGUID, const PC_DI_PROPERTY_PC *);
     HRESULT(__stdcall *acquire)(NuKeyboardDevice_PC *);
     HRESULT(__stdcall *unacquire)(NuKeyboardDevice_PC *);
@@ -19832,7 +20485,8 @@ struct NuKeyboardDevice_PC {
 };
 
 struct PC_DI_FACTORY_METHODS_PC {
-    void *unknown_00, *unknown_04;
+    void *unknown_00;
+    void *unknown_04;
     ULONG(__stdcall *release)(PC_DI_FACTORY_PC *);
     HRESULT(__stdcall *create_device)(PC_DI_FACTORY_PC *, REFGUID, NuKeyboardDevice_PC **, IUnknown *);
     HRESULT(__stdcall *enum_devices)
@@ -19843,8 +20497,12 @@ struct PC_DI_FACTORY_PC {
     PC_DI_FACTORY_METHODS_PC *methods;
 };
 
-extern const GUID PcDirectInput8AId, PcSystemMouseId, PcSystemKeyboardId;
-extern const PC_DI_DATA_FORMAT_PC PcMouseDataFormat, PcKeyboardDataFormat, PcJoystickDataFormat;
+extern const GUID PcDirectInput8AId;
+extern const GUID PcSystemMouseId;
+extern const GUID PcSystemKeyboardId;
+extern const PC_DI_DATA_FORMAT_PC PcMouseDataFormat;
+extern const PC_DI_DATA_FORMAT_PC PcKeyboardDataFormat;
+extern const PC_DI_DATA_FORMAT_PC PcJoystickDataFormat;
 extern i32 PcInputSelectedPort;
 extern "C" BOOL __stdcall InputEnumDevicesPc(const PC_DI_INSTANCE_PC *, void *);
 STATIC_ASSERT(sizeof(PC_DI_CAPS_PC) == 44);
@@ -19907,17 +20565,22 @@ struct PC_DI_MOUSE_STATE_PC {
 };
 
 struct PC_INPUT_CAPTURE_PC {
-    u8 kind[3], unknown_03;
+    u8 kind[3];
+    u8 unknown_03;
     i16 value[3];
 };
 
 struct PC_INPUT_MOUSE_RUNTIME_PC {
-    i16 current[3], previous[3];
-    f32 accumulated[3], delta[3];
+    i16 current[3];
+    i16 previous[3];
+    f32 accumulated[3];
+    f32 delta[3];
     u8 unknown_24[12];
     f32 position[2];
     u8 buttons[16];
-    u8 unknown_48, port_activity[14], unknown_57;
+    u8 unknown_48;
+    u8 port_activity[14];
+    u8 unknown_57;
     i32 field_58;
 };
 
@@ -19941,7 +20604,9 @@ STATIC_ASSERT(offsetof(NuKeyboardOwner_PC, mouse_enabled) == 0x40);
 
 /* Private PC contract proposal. Include after saga.h. */
 struct PC_CONTROL_ITEM_PC {
-    u8 kind, command, label;
+    u8 kind;
+    u8 command;
+    u8 label;
 
     union {
         u8 flags;
@@ -19960,14 +20625,22 @@ struct PC_CONTROL_ITEM_PC {
 };
 
 struct PC_CONTROL_ROW_PC {
-    i32 count, selected;
+    i32 count;
+    i32 selected;
     PC_CONTROL_ITEM_PC *items;
 };
 
 struct PC_CONTROL_TEXT_PC {
     char text[0x100];
-    f32 fade, x, y, z, x_scale, y_scale, wrap_width;
-    u32 colour, key;
+    f32 fade;
+    f32 x;
+    f32 y;
+    f32 z;
+    f32 x_scale;
+    f32 y_scale;
+    f32 wrap_width;
+    u32 colour;
+    u32 key;
     i8 alignment;
     u8 refreshed;
     u8 unknown126[2];
@@ -19982,15 +20655,30 @@ struct PC_CONTROL_CONFIG_PC {
 };
 
 struct PC_CONTROL_SCREEN_PC {
-    i32 result, player_count;
-    u8 drop_in, active, initialized, unknown0b;
-    f32 opacity, unknown10, fade;
-    i32 phase, row_count, selected_row, capture_state, release_frames, release_reset;
-    f32 x_scale, y_scale;
+    i32 result;
+    i32 player_count;
+    u8 drop_in;
+    u8 active;
+    u8 initialized;
+    u8 unknown0b;
+    f32 opacity;
+    f32 unknown10;
+    f32 fade;
+    i32 phase;
+    i32 row_count;
+    i32 selected_row;
+    i32 capture_state;
+    i32 release_frames;
+    i32 release_reset;
+    f32 x_scale;
+    f32 y_scale;
     i32 selected_player;
-    i32 ports[4], original_ports[4], saved_ports[4];
+    i32 ports[4];
+    i32 original_ports[4];
+    i32 saved_ports[4];
     u32 config_hash;
-    u8 missing_binding, unknown71[3];
+    u8 missing_binding;
+    u8 unknown71[3];
     void(__cdecl *draw_background)(f32, f32, f32);
     f32 deadzone[4];
     f32 saved_deadzone[4];
@@ -20083,9 +20771,12 @@ struct PC_INPUT_CONFIG_PC {
         u8 unknown_44[0x16];
 
         struct {
-            u32 guid_data2, guid_data3;
+            u32 guid_data2;
+            u32 guid_data3;
             u8 guid_data4[8];
-            i16 button_count, pov_count, axis_count;
+            i16 button_count;
+            i16 pov_count;
+            i16 axis_count;
         };
     };
 
@@ -20112,13 +20803,15 @@ struct PC_INPUT_CONFIG_PC {
 
 struct PC_INPUT_COMMAND_PC {
     u8 active;
-    i8 axis, button;
+    i8 axis;
+    i8 button;
     u8 unknown_03;
     u16 unknown_04;
 };
 
 struct PC_INPUT_BINDING_PC {
-    u8 kind, unknown_01;
+    u8 kind;
+    u8 unknown_01;
     u16 value;
 };
 
@@ -20127,10 +20820,13 @@ struct PC_INPUT_DEVICE_PC {
     NuKeyboardDevice_PC *device;
     GUID product;
     i16 button_count;
-    u8 axis_count, pov_count;
-    u8 deadzone, alternate_deadzone;
+    u8 axis_count;
+    u8 pov_count;
+    u8 deadzone;
+    u8 alternate_deadzone;
     u8 unknown_1e[2];
-    u32 left_trigger, right_trigger;
+    u32 left_trigger;
+    u32 right_trigger;
 
     union {
         u8 unknown_28[2];
@@ -20141,12 +20837,16 @@ struct PC_INPUT_DEVICE_PC {
         };
     };
 
-    u8 config_dirty, config_installed, config_present, capabilities_valid;
+    u8 config_dirty;
+    u8 config_installed;
+    u8 config_present;
+    u8 capabilities_valid;
     char name[64];
     PC_INPUT_BINDING_PC bindings[32];
 
     struct {
-        u16 first, second;
+        u16 first;
+        u16 second;
     } reset_pairs[32];
 
     u8 unknown_16e[2];
@@ -20155,8 +20855,12 @@ struct PC_INPUT_DEVICE_PC {
 
 struct PC_XINPUT_GAMEPAD_PC {
     u16 buttons;
-    u8 left_trigger, right_trigger;
-    i16 thumb_lx, thumb_ly, thumb_rx, thumb_ry;
+    u8 left_trigger;
+    u8 right_trigger;
+    i16 thumb_lx;
+    i16 thumb_ly;
+    i16 thumb_rx;
+    i16 thumb_ry;
 };
 
 struct PC_XINPUT_STATE_PC {
@@ -20175,22 +20879,29 @@ STATIC_ASSERT(offsetof(PC_XINPUT_GAMEPAD_PC, thumb_rx) == 8);
 STATIC_ASSERT(offsetof(PC_XINPUT_GAMEPAD_PC, thumb_ry) == 10);
 
 struct PC_XINPUT_CAPABILITIES_PC {
-    u8 type, subtype;
+    u8 type;
+    u8 subtype;
     u16 flags;
     PC_XINPUT_GAMEPAD_PC gamepad;
-    u16 motor_left, motor_right;
+    u16 motor_left;
+    u16 motor_right;
 };
 
 struct PC_INPUT_RUNTIME_PC {
-    PC_INPUT_CONFIG_PC primary[64], secondary[64];
+    PC_INPUT_CONFIG_PC primary[64];
+    PC_INPUT_CONFIG_PC secondary[64];
 
     union {
         u8 unknown_4e00[0x34];
 
         struct {
             i32 field_4e00;
-            u32 read_mask, action_mask, completed_mask;
-            u8 keyboard_polled, mouse_polled, suppress_key_1;
+            u32 read_mask;
+            u32 action_mask;
+            u32 completed_mask;
+            u8 keyboard_polled;
+            u8 mouse_polled;
+            u8 suppress_key_1;
 
             union {
                 struct {
@@ -20217,9 +20928,11 @@ struct PC_INPUT_RUNTIME_PC {
         u8 unknown_6568[0x9c];
 
         struct {
-            i32 axis_threshold, motion_threshold;
+            i32 axis_threshold;
+            i32 motion_threshold;
             f32 ramp_seconds;
-            u8 capture_available, unknown_6575;
+            u8 capture_available;
+            u8 unknown_6575;
             PC_INPUT_CAPTURE_PC staged_capture[14];
             u8 unknown_6602[2];
         };
@@ -20234,9 +20947,12 @@ struct PC_INPUT_RUNTIME_PC {
             i32 captured_port;
             PC_INPUT_CAPTURE_PC captures[14];
             u8 unknown_6698[0x82];
-            u8 first_mouse, unknown_671b;
+            u8 first_mouse;
+            u8 unknown_671b;
             PC_INPUT_RAW_SAMPLE_PC raw_sample;
-            u8 keyboard_ui_override, unknown_67e1, unknown_67e2[2];
+            u8 keyboard_ui_override;
+            u8 unknown_67e1;
+            u8 unknown_67e2[2];
         };
     };
 
@@ -20422,7 +21138,8 @@ STATIC_ASSERT(offsetof(PC_INPUT_COMMAND_PC, axis) == 1);
 STATIC_ASSERT(offsetof(PC_INPUT_COMMAND_PC, button) == 2);
 STATIC_ASSERT(offsetof(PC_INPUT_COMMAND_PC, unknown_04) == 4);
 
-extern const GUID PcWbemClassId, PcWbemInterfaceId;
+extern const GUID PcWbemClassId;
+extern const GUID PcWbemInterfaceId;
 extern "C" char *__cdecl PcGetUserFolder(const char *, const char *);
 struct _iobuf;
 extern "C" _iobuf *__cdecl PcOpenPlatformFile(const char *, const char *, i32, const char *);
@@ -20533,7 +21250,9 @@ STATIC_ASSERT(offsetof(PC_INPUT_RUNTIME_PC, shutdown_state) == 0x67e4);
 STATIC_ASSERT(sizeof(((PC_INPUT_RUNTIME_PC *)0)->shutdown_state) == 4);
 #endif
 typedef struct CPU_VENDOR_WORDS_PC {
-    u32 word0, word1, word2;
+    u32 word0;
+    u32 word1;
+    u32 word2;
     u8 terminator[4];
 } CPU_VENDOR_WORDS_PC;
 
@@ -20790,8 +21509,10 @@ extern "C" {
     extern char *AiLevelPathName;
     extern i32 ai_usepackfile;
     extern u8 AiLoadActivationDifficultyPc;
-    extern i8 AiLoadMinimumRespawnCountPc, AiLoadMaximumRespawnCountPc;
-    extern f32 AiLoadMinimumRespawnTimePc, AiLoadMaximumRespawnTimePc;
+    extern i8 AiLoadMinimumRespawnCountPc;
+    extern i8 AiLoadMaximumRespawnCountPc;
+    extern f32 AiLoadMinimumRespawnTimePc;
+    extern f32 AiLoadMaximumRespawnTimePc;
     extern i32(__cdecl *GlobalCharacterTypeIDFn)(char *);
     extern void(__cdecl *GameAILoadFn)(AISYS_PC *, i32, NUGSCN *, VARIPTR *, VARIPTR *);
 
@@ -20814,7 +21535,8 @@ extern "C" {
     void __cdecl AIPathCnxControlSysUpdate(AI_CONTROL_SYSTEM_PC *);
     void __cdecl DeathStarEscapeB_Init(WORLDINFO *);
     void __cdecl DeathStarEscapeB_Update(WORLDINFO *);
-    extern f32 fakeanimendframe[1], fakeanimframe[1];
+    extern f32 fakeanimendframe[1];
+    extern f32 fakeanimframe[1];
     extern i8 *DeathStarEscapeBNetPacketPc;
     extern const char DeathStarEscapeBSpongePc[7];
     extern const char DeathStarEscapeBLiftDownPc[10];
@@ -21277,20 +21999,27 @@ struct PC_SHADER_FILTER_DESC_VIEW {
     u32 flags;
     i32 diffuse_maps[4];
     u8 unknown_014[0x20];
-    i32 surface_threshold, normal_threshold;
+    i32 surface_threshold;
+    i32 normal_threshold;
     u8 unknown_03c[8];
-    u8 blend_ops[3], unknown_047;
+    u8 blend_ops[3];
+    u8 unknown_047;
     i32 specular_threshold;
     u8 unknown_04c[0x3c];
     f32 shininess;
     u8 unknown_08c[0x1c];
-    u8 texture_units, sampler_indices[6], unknown_0af[0x8d];
+    u8 texture_units;
+    u8 sampler_indices[6];
+    u8 unknown_0af[0x8d];
     u32 vertex_format;
     u8 unknown_140[0x74];
-    u8 override_mode, unknown_1b5[3];
-    u32 layer_flags, selectors;
+    u8 override_mode;
+    u8 unknown_1b5[3];
+    u32 layer_flags;
+    u32 selectors;
     u8 unknown_1c0[0x24];
-    i32 extra_texture, environment_texture;
+    i32 extra_texture;
+    i32 environment_texture;
 };
 
 STATIC_ASSERT(offsetof(PC_SHADER_FILTER_DESC_VIEW, diffuse_maps) == 4);
@@ -21322,7 +22051,13 @@ STATIC_ASSERT(offsetof(PC_SHADER_FILTER_MATERIAL_VIEW, texture_id) == 0x100);
 struct PC_SHADER_MATERIAL_FILTER_VIEW {
     const PC_SHADER_FILTER_DESC_VIEW *descriptor;
     const PC_SHADER_FILTER_MATERIAL_VIEW *material;
-    i32 flags, variant, first_path, deferred_path, second_path, layer_count, parameter;
+    i32 flags;
+    i32 variant;
+    i32 first_path;
+    i32 deferred_path;
+    i32 second_path;
+    i32 layer_count;
+    i32 parameter;
     void __thiscall Initialize(const PC_SHADER_FILTER_DESC_VIEW *, const PC_SHADER_FILTER_MATERIAL_VIEW *, i32, i32);
     bool __thiscall UnfilteredHasLayer(i32) const;
     bool __thiscall HasDiffuse(i32) const;
@@ -21734,7 +22469,11 @@ typedef struct CUT_PLAYER_ACTIVE_PC {
     void *active;
     u16 clip_count;
     i16 return_door;
-    i16 *clip_text, *intro_text, *midtro_text, *outro_text, *ending_text;
+    i16 *clip_text;
+    i16 *intro_text;
+    i16 *midtro_text;
+    i16 *outro_text;
+    i16 *ending_text;
 } CUT_PLAYER_ACTIVE_PC;
 
 STATIC_ASSERT(sizeof(CUT_PLAYER_ACTIVE_PC) == 0x20);
@@ -22029,10 +22768,19 @@ extern "C" {
 #endif
     void __cdecl LoadPerm2(void);
     extern APICHARACTERMODELLIST PermModelListPc[1];
-    extern COLLECTION_BUILD_PC MasterCollectionPc, CharacterCollectionPc, VehicleCollectionPc;
-    extern COLLECTION_BUILD_PC ShopCollectionPc, JediCollectionPc, BlasterCollectionPc, BountyHunterCollectionPc;
-    extern i16 PermanentAllTitleIdPc, PermanentJediTitleIdPc, PermanentBlasterTitleIdPc, PermanentBountyTitleIdPc;
-    extern i16 PermanentWeirdo1IdPc, PermanentWeirdo2IdPc;
+    extern COLLECTION_BUILD_PC MasterCollectionPc;
+    extern COLLECTION_BUILD_PC CharacterCollectionPc;
+    extern COLLECTION_BUILD_PC VehicleCollectionPc;
+    extern COLLECTION_BUILD_PC ShopCollectionPc;
+    extern COLLECTION_BUILD_PC JediCollectionPc;
+    extern COLLECTION_BUILD_PC BlasterCollectionPc;
+    extern COLLECTION_BUILD_PC BountyHunterCollectionPc;
+    extern i16 PermanentAllTitleIdPc;
+    extern i16 PermanentJediTitleIdPc;
+    extern i16 PermanentBlasterTitleIdPc;
+    extern i16 PermanentBountyTitleIdPc;
+    extern i16 PermanentWeirdo1IdPc;
+    extern i16 PermanentWeirdo2IdPc;
     extern i16 PermanentCustomiserActionsPc[5];
 #ifdef __cplusplus
 }
@@ -22061,13 +22809,17 @@ extern "C" {
 #endif
     extern f32 JumpFailedLandChainTimePc;
     extern f32 SLAMJUMPSPEED;
-    extern f32 speeder_smoke_rate, speeder_offset_speed;
+    extern f32 speeder_smoke_rate;
+    extern f32 speeder_offset_speed;
     extern i16 BigJumpLandFallbackPc;
     extern i16 BigJumpLandPreferredPc;
     extern i16 BigJumpLandSecondaryPc;
-    extern i16 DefaultAnimationJabbaIdPc, DefaultAnimationLeiaSlaveIdPc;
-    extern i16 DefaultAnimationLamaSuIdPc, DefaultAnimationTaunWeIdPc;
-    extern i16 JumpBackFlipActionPc, JumpSlamActionPc;
+    extern i16 DefaultAnimationJabbaIdPc;
+    extern i16 DefaultAnimationLeiaSlaveIdPc;
+    extern i16 DefaultAnimationLamaSuIdPc;
+    extern i16 DefaultAnimationTaunWeIdPc;
+    extern i16 JumpBackFlipActionPc;
+    extern i16 JumpSlamActionPc;
     extern i16 JumpBackFlipActionPc;
     extern i16 JumpSlamActionPc;
     extern i16 LEGOACT_BACKPACKFALLLAND;
@@ -22091,7 +22843,8 @@ extern "C" {
     extern i16 LEGOACT_LUNGELAND;
     extern i16 LEGOACT_MAGNET_JUMP;
     extern i16 LEGOACT_SLAMLAND;
-    extern i16 id_JUMBOHOMINGDROID, id_R2Q5;
+    extern i16 id_JUMBOHOMINGDROID;
+    extern i16 id_R2Q5;
     extern i32 DoubleJump_AlwaysReachJump2Height;
     extern i32 DoubleJump_JediSlam;
     extern i32 JumpBackFlipContextPc;
@@ -22366,7 +23119,8 @@ extern "C" {
 typedef struct GRAPPLE_MOTION_PC {
     char name[16];
     NUVEC position;
-    u8 has_terrain_platform, retain_attachment;
+    u8 has_terrain_platform;
+    u8 retain_attachment;
 
     union {
         u8 flags;
@@ -22381,13 +23135,19 @@ typedef struct GRAPPLE_MOTION_PC {
     };
 
     u8 unknown_1f;
-    u16 y_rotation, x_rotation;
-    NUVEC ground_position, hook_position, shadow_probe_position;
-    u16 ground_x_rotation, ground_z_rotation;
-    f32 swing_scale, rope_length;
+    u16 y_rotation;
+    u16 x_rotation;
+    NUVEC ground_position;
+    NUVEC hook_position;
+    NUVEC shadow_probe_position;
+    u16 ground_x_rotation;
+    u16 ground_z_rotation;
+    f32 swing_scale;
+    f32 rope_length;
     GAMEOBJECT *attached_object;
     f32 activation_progress;
-    NUVEC rope_points[6], target_rope_points[6];
+    NUVEC rope_points[6];
+    NUVEC target_rope_points[6];
     u8 display_special[12];
 } GRAPPLE_MOTION_PC;
 
@@ -22709,10 +23469,15 @@ extern "C" {
     void __cdecl CutScenePlayer_SetObjects(CUTINFO *cut);
     void __cdecl PCFrameSetLoadingYieldEnabled(i32 enabled);
     extern i32 CutSceneMusicStartFramePc;
-    extern f32 LevelNameMul, LevelNameTime;
+    extern f32 LevelNameMul;
+    extern f32 LevelNameTime;
     extern u32 texanimbits;
-    extern i32 CUTNOFOG, CUTDRAWWORLD, CUTCAMONLY, ACTIVECUTCOUNT;
-    extern i32 CutInstEndCount, cut_waiting_for_new_level;
+    extern i32 CUTNOFOG;
+    extern i32 CUTDRAWWORLD;
+    extern i32 CUTCAMONLY;
+    extern i32 ACTIVECUTCOUNT;
+    extern i32 CutInstEndCount;
+    extern i32 cut_waiting_for_new_level;
 
 #ifdef __cplusplus
 }
@@ -22848,13 +23613,21 @@ typedef struct GIZMO_LEVER_PC GIZMO_LEVER_PC;
 
 struct GIZMO_LEVER_PC {
     NUMTX matrix;
-    NUVEC floor_position, target_offset;
+    NUVEC floor_position;
+    NUVEC target_offset;
     char name[16];
     NUVEC position;
-    f32 idle_animation_timer, pull_progress, auto_reset_timer, auto_reset_delay, target_indicator_scale;
+    f32 idle_animation_timer;
+    f32 pull_progress;
+    f32 auto_reset_timer;
+    f32 auto_reset_delay;
+    f32 target_indicator_scale;
     u16 yaw;
-    i16 model_special_index, platform_id;
-    u16 animation_frame, terrain_pitch, terrain_roll;
+    i16 model_special_index;
+    i16 platform_id;
+    u16 animation_frame;
+    u16 terrain_pitch;
+    u16 terrain_roll;
 
     union {
         u16 flags;
@@ -22877,7 +23650,8 @@ struct GIZMO_LEVER_PC {
         };
     };
 
-    u8 model_variant, reserved_97[9];
+    u8 model_variant;
+    u8 reserved_97[9];
 };
 
 STATIC_ASSERT(sizeof(GIZMO_LEVER_PC) == 0xa0);
@@ -22957,7 +23731,8 @@ extern "C" {
     i32 __cdecl StreamingInsideLineXZPc(f32, f32, f32, f32, f32, f32);
     BGPROCINFO *__cdecl bgGetProcActive(void);
     void __cdecl LevelStreaming_Update(WORLDINFO *);
-    extern i32 LEGOSPL_SPLIT, other_level_override;
+    extern i32 LEGOSPL_SPLIT;
+    extern i32 other_level_override;
 #ifdef __cplusplus
 }
 #endif
@@ -23103,9 +23878,17 @@ extern "C" {
     i32 __cdecl ThermalDetonator_MoveCode(GAMEOBJECT *);
     i32 __cdecl PodRace_InStartCountdown(WORLDINFO *);
     void __cdecl SetPodMergeAnims(ANIMPACKET_PC *, i32);
-    extern i16 id_BAT, id_NAFFDROID1, id_NAFFDROID2, id_NAFFDROID4, id_MOUSEDROID, id_BUZZDROID, id_SUPERBATTLEDROID;
-    extern f32 CritterSnakeExtraHoverPc, CritterBatExtraHoverPc;
-    extern f32 pod_animtime[2], podanimendframe;
+    extern i16 id_BAT;
+    extern i16 id_NAFFDROID1;
+    extern i16 id_NAFFDROID2;
+    extern i16 id_NAFFDROID4;
+    extern i16 id_MOUSEDROID;
+    extern i16 id_BUZZDROID;
+    extern i16 id_SUPERBATTLEDROID;
+    extern f32 CritterSnakeExtraHoverPc;
+    extern f32 CritterBatExtraHoverPc;
+    extern f32 pod_animtime[2];
+    extern f32 podanimendframe;
 #ifdef __cplusplus
 }
 #endif
@@ -23237,9 +24020,14 @@ extern "C" {
 #ifdef __cplusplus
 extern "C" {
 #endif
-    extern AREA_DATA_PC *SENATE_ADATA, *UTAPAU_ADATA, *HOTH_ADATA;
-    extern AREA_DATA_PC *BONUSDAGOBAH_ADATA, *BONUSKAMINO_ADATA, *BONUSKASHYYYK_ADATA;
-    extern i32 Tag_DoneFirst, Tag_DoneAny;
+    extern AREA_DATA_PC *SENATE_ADATA;
+    extern AREA_DATA_PC *UTAPAU_ADATA;
+    extern AREA_DATA_PC *HOTH_ADATA;
+    extern AREA_DATA_PC *BONUSDAGOBAH_ADATA;
+    extern AREA_DATA_PC *BONUSKAMINO_ADATA;
+    extern AREA_DATA_PC *BONUSKASHYYYK_ADATA;
+    extern i32 Tag_DoneFirst;
+    extern i32 Tag_DoneAny;
     void __cdecl NewGame(void);
     i32 __cdecl Episode_ContainsArea(i32, i32 *);
     void __cdecl Suits_Init(void);
@@ -23333,8 +24121,14 @@ STATIC_ASSERT(offsetof(KAMINO_DISCO_MUSIC_VIEW_PC, mode) == 0x3d5);
 
 typedef struct SARLACC_NETPACKET_PC {
     f32 height;
-    i16 off_mask, flash_mask, select_mask, on_mask, finish_mask, sound_mask;
-    u8 disco_active, reserved_11;
+    i16 off_mask;
+    i16 flash_mask;
+    i16 select_mask;
+    i16 on_mask;
+    i16 finish_mask;
+    i16 sound_mask;
+    u8 disco_active;
+    u8 reserved_11;
     i16 completion_sound_played;
 } SARLACC_NETPACKET_PC;
 
@@ -23397,11 +24191,19 @@ typedef struct GIZBUILDIT_PC {
     GAMEANIMSET *anim_set;
     GAMEANIMOBJ **anim_objects;
     struct GIZBUILDIT_PC *linked_buildit;
-    NUVEC file_position, start_position, position;
-    f32 bounds_radius, step_timer, step_duration;
+    NUVEC file_position;
+    NUVEC start_position;
+    NUVEC position;
+    f32 bounds_radius;
+    f32 step_timer;
+    f32 step_duration;
     u8 unknown_4c[0x20];
-    u8 anim_object_count, build_state, builders_active, built_object_count;
-    u8 unknown_70, progress;
+    u8 anim_object_count;
+    u8 build_state;
+    u8 builders_active;
+    u8 built_object_count;
+    u8 unknown_70;
+    u8 progress;
     u16 state_flags;
     u8 unknown_74[6];
     u16 availability_flags;
@@ -23957,7 +24759,9 @@ typedef struct NU_POST_BLOOM_PARAMETERS_PC NU_POST_BLOOM_PARAMETERS_PC;
 typedef struct PC_POST_BUFFER_PROXY_PC {
     GRAPHICS_RENDER_TEXTURE_PC *texture;
     i32 kind;
-    u8 enabled, resolved, unknown_0a[2];
+    u8 enabled;
+    u8 resolved;
+    u8 unknown_0a[2];
 } PC_POST_BUFFER_PROXY_PC;
 
 STATIC_ASSERT(sizeof(PC_POST_BUFFER_PROXY_PC) == 12);
@@ -23968,12 +24772,24 @@ STATIC_ASSERT(offsetof(PC_POST_BUFFER_PROXY_PC, resolved) == 9);
 
 struct NU_POST_BLOOM_PARAMETERS_PC {
     i32 enabled;
-    f32 near_angle, near_scale, far_angle, far_scale;
-    f32 intensity, unknown_18, blur_iterations, blend, threshold;
+    f32 near_angle;
+    f32 near_scale;
+    f32 far_angle;
+    f32 far_scale;
+    f32 intensity;
+    f32 unknown_18;
+    f32 blur_iterations;
+    f32 blend;
+    f32 threshold;
     i32 directional;
     NUVEC direction;
-    f32 direction_near_angle, direction_far_scale, direction_far_angle;
-    f32 direction_near_scale, direction_bias, unknown_4c, unknown_50;
+    f32 direction_near_angle;
+    f32 direction_far_scale;
+    f32 direction_far_angle;
+    f32 direction_near_scale;
+    f32 direction_bias;
+    f32 unknown_4c;
+    f32 unknown_50;
 };
 
 STATIC_ASSERT(sizeof(NU_POST_BLOOM_PARAMETERS_PC) == 0x54);
@@ -24019,8 +24835,10 @@ extern "C" PC_POST_DATA_PORT PostResourcePortsPc[6];
 
 typedef struct NU_POST_SPEED_PARAMETERS_PC {
     i32 enabled;
-    NUMTX previous, current;
-    f32 frame_time, scale;
+    NUMTX previous;
+    NUMTX current;
+    f32 frame_time;
+    f32 scale;
 } NU_POST_SPEED_PARAMETERS_PC;
 
 STATIC_ASSERT(sizeof(NU_POST_SPEED_PARAMETERS_PC) == 0x8c);
@@ -24030,29 +24848,44 @@ STATIC_ASSERT(offsetof(NU_POST_SPEED_PARAMETERS_PC, scale) == 0x88);
 
 typedef struct NU_POST_DOF_PARAMETERS_PC {
     i32 enabled;
-    f32 strength, near_distance, far_distance;
-    i32 mode, bias;
+    f32 strength;
+    f32 near_distance;
+    f32 far_distance;
+    i32 mode;
+    i32 bias;
 } NU_POST_DOF_PARAMETERS_PC;
 
 typedef struct NU_POST_MAIN_VIEW_PC {
     void *vtable;
-    u8 enabled, unknown_005[0x63];
+    u8 enabled;
+    u8 unknown_005[0x63];
     const NU_POST_BLOOM_PARAMETERS_PC *bloom;
     f32 blur_radius;
-    f32 dof_strength, dof_near, dof_far, dof_blur;
-    i32 dof_mode, dof_bias;
-    u8 dof_enabled, bloom_enabled, unknown_08a[2];
+    f32 dof_strength;
+    f32 dof_near;
+    f32 dof_far;
+    f32 dof_blur;
+    i32 dof_mode;
+    i32 dof_bias;
+    u8 dof_enabled;
+    u8 bloom_enabled;
+    u8 unknown_08a[2];
     i32 active_filter_count;
-    NUMTX motion_previous, motion_current;
-    f32 motion_scale, motion_maximum, motion_falloff;
+    NUMTX motion_previous;
+    NUMTX motion_current;
+    f32 motion_scale;
+    f32 motion_maximum;
+    f32 motion_falloff;
     i32 accumulation_frames;
-    f32 accumulation_blend, accumulation_mode_pc;
+    f32 accumulation_blend;
+    f32 accumulation_mode_pc;
 } NU_POST_MAIN_VIEW_PC;
 typedef struct NuDynamicLight NuDynamicLight;
 
 typedef struct NU_POST_DEFERRED_VIEW_PC {
     void *vtable;
-    u8 enabled, unknown_005[0x3f];
+    u8 enabled;
+    u8 unknown_005[0x3f];
     f32 parameters[4];
     i32 dynamic_light_count;
     NuDynamicLight *dynamic_lights[32];
@@ -24063,21 +24896,28 @@ typedef struct NU_POST_DEFERRED_VIEW_PC {
  * guard is added and no full class allocation/capacity is credited. */
 typedef struct NU_POST_MOTION_VIEW_PC {
     void *vtable;
-    u8 enabled, unknown_005[0xf];
-    NUMTX previous, current;
-    f32 scale, maximum, falloff;
+    u8 enabled;
+    u8 unknown_005[0xf];
+    NUMTX previous;
+    NUMTX current;
+    f32 scale;
+    f32 maximum;
+    f32 falloff;
 } NU_POST_MOTION_VIEW_PC;
 
 typedef struct NU_POST_ACCUM_VIEW_PC {
     void *vtable;
-    u8 enabled, unknown_005[0x13];
+    u8 enabled;
+    u8 unknown_005[0x13];
     i32 frames;
-    f32 blend, mode_pc;
+    f32 blend;
+    f32 mode_pc;
 } NU_POST_ACCUM_VIEW_PC;
 
 typedef struct NU_POST_SPEED_VIEW_PC {
     void *vtable;
-    u8 enabled, unknown_005[0x17];
+    u8 enabled;
+    u8 unknown_005[0x17];
     const NU_POST_SPEED_PARAMETERS_PC *parameters;
 } NU_POST_SPEED_VIEW_PC;
 
@@ -24188,15 +25028,26 @@ class NuMainFilterGen : public NuPostFilter {
     f32 blur_gain;
     i32 downsample_lod;
     const NU_POST_BLOOM_PARAMETERS_PC *bloom;
-    f32 blur_radius, dof_strength, dof_near, dof_far, dof_blur;
-    i32 dof_mode, dof_bias;
-    bool dof_enabled, bloom_enabled, motion_blur_enabled;
+    f32 blur_radius;
+    f32 dof_strength;
+    f32 dof_near;
+    f32 dof_far;
+    f32 dof_blur;
+    i32 dof_mode;
+    i32 dof_bias;
+    bool dof_enabled;
+    bool bloom_enabled;
+    bool motion_blur_enabled;
     u8 unknown_08b;
     i32 active_filter_count;
-    NUMTX motion_previous, motion_current;
-    f32 motion_scale, motion_maximum, motion_falloff;
+    NUMTX motion_previous;
+    NUMTX motion_current;
+    f32 motion_scale;
+    f32 motion_maximum;
+    f32 motion_falloff;
     i32 accumulation_frames;
-    f32 accumulation_blend, accumulation_mode_pc;
+    f32 accumulation_blend;
+    f32 accumulation_mode_pc;
 };
 
 class NuMainFilter : public NuMainFilterGen {
@@ -24222,8 +25073,11 @@ class NuMotionFilterGen : public NuPostFilter {
 
     virtual void render();
     void *programs[2];
-    NUMTX previous, current;
-    f32 scale, maximum, falloff;
+    NUMTX previous;
+    NUMTX current;
+    f32 scale;
+    f32 maximum;
+    f32 falloff;
 };
 
 class NuMotionFilter : public NuMotionFilterGen {
@@ -24244,7 +25098,8 @@ class NuMotionAccumFilterGen : public NuPostFilter {
     PC_FRAMEBUFFER_PC *accumulation_fbo;
     GRAPHICS_RENDER_TEXTURE_PC *accumulation_texture;
     i32 frames;
-    f32 blend, mode_pc;
+    f32 blend;
+    f32 mode_pc;
     i32 current_frame;
 };
 
@@ -24301,7 +25156,8 @@ class NuDeferredFilterGen : public NuPostFilter {
     NuDynamicLight *dynamic_lights[32];
     i32 deferred_geometry_count;
     void *geometry[128];
-    PC_FRAMEBUFFER_PC *shadow_fbos[6], *light_fbo;
+    PC_FRAMEBUFFER_PC *shadow_fbos[6];
+    PC_FRAMEBUFFER_PC *light_fbo;
 };
 
 class NuDeferredFilter : public NuDeferredFilterGen {
@@ -24359,7 +25215,8 @@ STATIC_ASSERT(offsetof(NuDynamicLight, render_set_count_pc) == 0x70c);
 
 typedef struct PC_LIGHT_STATE_SLOT_PC {
     u8 unknown_00[0x94];
-    i32 next, previous;
+    i32 next;
+    i32 previous;
 } PC_LIGHT_STATE_SLOT_PC;
 
 STATIC_ASSERT(sizeof(PC_LIGHT_STATE_SLOT_PC) == 0x9c);
@@ -24369,8 +25226,11 @@ STATIC_ASSERT(offsetof(PC_LIGHT_STATE_SLOT_PC, previous) == 0x98);
 extern "C" {
 #endif
     extern PC_LIGHT_STATE_SLOT_PC NuLgtStateSlotsPc[8];
-    extern i32 NuLgtStateCapacityPc, NuLgtStateActiveCountPc, NuLgtStateFreeHeadPc;
-    extern i32 NuLgtStateEnabledPc, NuLgtStateUnknownPc;
+    extern i32 NuLgtStateCapacityPc;
+    extern i32 NuLgtStateActiveCountPc;
+    extern i32 NuLgtStateFreeHeadPc;
+    extern i32 NuLgtStateEnabledPc;
+    extern i32 NuLgtStateUnknownPc;
     void __cdecl NuLgtInitializeStatePc(void);
 #ifdef __cplusplus
 }
@@ -24409,7 +25269,8 @@ extern "C" {
     STATIC_ASSERT(offsetof(PC_GOBJ_REGISTRY_CHILD_PC, native_resource) == 0x38);
 
     typedef struct PC_GOBJ_REGISTRY_ENTRY_PC {
-        struct PC_GOBJ_REGISTRY_ENTRY_PC *next, *previous;
+        struct PC_GOBJ_REGISTRY_ENTRY_PC *next;
+        struct PC_GOBJ_REGISTRY_ENTRY_PC *previous;
         u8 unknown_08[4];
         PC_GOBJ_REGISTRY_CHILD_PC *children;
         PC_GOBJ_REGISTRY_AUX_PC *auxiliary;
@@ -24417,7 +25278,8 @@ extern "C" {
 
     STATIC_ASSERT(offsetof(PC_GOBJ_REGISTRY_ENTRY_PC, children) == 0xc);
     STATIC_ASSERT(offsetof(PC_GOBJ_REGISTRY_ENTRY_PC, auxiliary) == 0x10);
-    extern i32 NuGobjRegistryInitializedPc, NuGobjRegistryCountPc;
+    extern i32 NuGobjRegistryInitializedPc;
+    extern i32 NuGobjRegistryCountPc;
     extern PC_GOBJ_REGISTRY_ENTRY_PC *NuGobjRegistryFirstPc;
     extern const char NuGobjSourcePathPc[51];
     void __cdecl NuGobjReleaseChildPc(PC_GOBJ_REGISTRY_CHILD_PC *);
@@ -24501,7 +25363,8 @@ extern "C" {
 #endif
     extern SFX_FILE_INFO_PC *SfxFileInfoPc;
     extern SFX_RECORD_PC *SfxRevertInfoPc;
-    extern i32 NumSfx, NumSfxNames;
+    extern i32 NumSfx;
+    extern i32 NumSfxNames;
     extern char SfxNameSlotsPc[1601][32];
     extern char SfxFilenameSlotsPc[1601][64];
     extern i32 SfxRefCountsPc[1601];
@@ -24535,8 +25398,10 @@ extern "C" {
     extern u8 PcMouseAxisModesPc[3];
     extern u32 mbuttons;
     extern f32 PcMouseAxisIdlePc[3];
-    extern i32 PcMouseCurrentAnglePc, PcMouseTargetAnglePc;
-    extern f32 PcMouseRadiusPc, PcMouseInterpolationPc;
+    extern i32 PcMouseCurrentAnglePc;
+    extern i32 PcMouseTargetAnglePc;
+    extern f32 PcMouseRadiusPc;
+    extern f32 PcMouseInterpolationPc;
     extern i8 PcMouseSampleIndexPc;
 #ifdef __cplusplus
     extern PC_DI_MOUSE_STATE_PC PcMouseSamplesPc[2];
@@ -24550,8 +25415,12 @@ extern "C" {
     void __cdecl NuPadRecordSave(char *filepath);
     i32 __cdecl NuFileWriteInt(NUFILE file, i32 value);
     u32 __cdecl NuFileWriteUnsignedInt(NUFILE file, u32 value);
-    extern i32 NuPowFirstTimePc, NuPowCacheIndexPc, NuFile_SwapEndianOnWrite;
-    extern f32 NuPowBasesPc[32], NuPowExponentsPc[32], NuPowResultsPc[32];
+    extern i32 NuPowFirstTimePc;
+    extern i32 NuPowCacheIndexPc;
+    extern i32 NuFile_SwapEndianOnWrite;
+    extern f32 NuPowBasesPc[32];
+    extern f32 NuPowExponentsPc[32];
+    extern f32 NuPowResultsPc[32];
     void __cdecl NuMtxPreTranslateX(NUMTX *m, f32 tx);
     void __cdecl NuMtxPreTranslateNeg(NUMTX *m, NUVEC *t);
     void __cdecl NuMtxPreSkewYX(NUMTX *Mtx, f32 SkewVal);
@@ -24600,11 +25469,16 @@ extern "C" {
     void __cdecl ZapCode(GAMEOBJECT *, i32, i32);
     extern f32 PlayerOpponent_Range2;
 
-    extern TEXTENTRY Text_TableMenu[167], Text_TableGame[347], Text_TableMain[706];
+    extern TEXTENTRY Text_TableMenu[167];
+    extern TEXTENTRY Text_TableGame[347];
+    extern TEXTENTRY Text_TableMain[706];
     STATIC_ASSERT(offsetof(GAMEOBJECT, dynamic_light_id) == 0xe04);
     void __cdecl NuLgtLaser(i32 type, f32 width, f32 segment_length, f32 width_wobble, NUVEC *start, NUVEC *delta,
                             u32 colour, f32 end_width, f32 length);
-    extern f32 testlaser_sizew, testlaser_sizel, testlaser_sizewab, testlaser_endw;
+    extern f32 testlaser_sizew;
+    extern f32 testlaser_sizel;
+    extern f32 testlaser_sizewab;
+    extern f32 testlaser_endw;
     extern i32 testlaser_type;
 #ifdef __cplusplus
 }
@@ -26391,7 +27265,8 @@ struct GIZTURRET_s {
     u8 initial_state;
     u8 muzzle_count;
     u8 shots_required;
-    u8 shots_fired, field_0x133;
+    u8 shots_fired;
+    u8 field_0x133;
     u16 y_rotation;
     u8 field_0x136[2];
     i16 destroy_sfx;
@@ -26408,7 +27283,9 @@ struct GIZTURRET_s {
             u16 update_disabled : 1;
             u16 rapid_fire_pending : 1;
             u16 fired_this_frame : 1;
-            u16 blowup_pending : 1, has_platform : 1, reward_released : 1;
+            u16 blowup_pending : 1;
+            u16 has_platform : 1;
+            u16 reward_released : 1;
             u16 rotation_sound_playing : 1;
             u16 : 4;
         };
@@ -27957,7 +28834,8 @@ struct GIZTURRETSYS_s {
     struct gameanimobjpool_s *anim_pool;
     u16 count;
     u16 capacity;
-    i8 opponent_cursor, field_0x0d[3];
+    i8 opponent_cursor;
+    i8 field_0x0d[3];
 };
 
 STATIC_ASSERT(sizeof(struct GIZTURRETSYS_s) == 16);
@@ -28103,7 +28981,12 @@ STATIC_ASSERT(sizeof(struct edcam_s) == 148);
 struct edui_prop_s {
     struct eduiitem_s base;
     i32(__cdecl *interact)(struct edui_interact_s *arg0);
-    u32 editing : 1, dragging_label : 1, divider_active : 1, button_held : 1, button_hover : 1, button_latched : 1;
+    u32 editing : 1;
+    u32 dragging_label : 1;
+    u32 divider_active : 1;
+    u32 button_held : 1;
+    u32 button_hover : 1;
+    u32 button_latched : 1;
     u32 button_type : 3;
     u32 remaining_property_flags : 23;
     i32 button_colour;
@@ -28164,7 +29047,8 @@ struct edui_file_pick_s {
     u16 reopen_directory;
     char name[64];
     char directory[256];
-    char filename[256], filter[8];
+    char filename[256];
+    char filter[8];
     i32(__cdecl *compare_entries)(void *arg0, void *arg1);
 };
 
@@ -28315,7 +29199,9 @@ extern "C" {
 
     typedef struct gamefog_state_pc_s {
         f32 colour_channels[4];
-        f32 start, end, density;
+        f32 start;
+        f32 end;
+        f32 density;
         u32 colour;
         f32 low_quality_density;
         f32 low_quality_colour_channels[4];
@@ -28324,7 +29210,8 @@ extern "C" {
 
     STATIC_ASSERT(offsetof(GAMEFOG_STATE_PC, colour) == 0x1c);
     STATIC_ASSERT(sizeof(GAMEFOG_STATE_PC) == 0x38);
-    extern GAMEFOG_STATE_PC GameFog, GameFogOld;
+    extern GAMEFOG_STATE_PC GameFog;
+    extern GAMEFOG_STATE_PC GameFogOld;
     void __cdecl GameFog_Update(WORLDINFO *world);
     extern i32 back_rgba[2];
     extern i32 old_pause_state;
@@ -28917,10 +29804,12 @@ extern "C" {
     i32 __cdecl InitStatusScreen_LSW(WORLDINFO *, STATUSPACKET_s *);
     i32 __cdecl FinishStatusPacket_LSW(WORLDINFO *, STATUSPACKET_s *, i32);
     void __cdecl DrawStatusBG_LSW(STATUSPACKET_s *);
-    extern i32 StatusNewMinikitCountPc, currentminikit;
+    extern i32 StatusNewMinikitCountPc;
+    extern i32 currentminikit;
     extern i16 StatusNewCharacterIdsPc[8];
     extern u32 StatusCollectedSuitBitsPc;
-    extern f32 StatusMiniKitDirectionOffsetPc, slideseek;
+    extern f32 StatusMiniKitDirectionOffsetPc;
+    extern f32 slideseek;
     extern STATUS_MINIKIT_DRAW_CACHE_PC StatusMiniKitDrawCachePc[10];
     void __cdecl DrawStatusMiniKit(f32, f32, f32, f32, f32, i32, STATUSPACKET_s *, f32);
     void __cdecl CollectCharcters_Skip(STATUS_STAGE_s *, STATUSPACKET_s *);
@@ -28932,22 +29821,34 @@ extern "C" {
     void __cdecl ChallangeCash_Draw(STATUS_STAGE_s *, STATUSPACKET_s *, i32);
     i32 __cdecl AddToCollection(i32);
     void __cdecl Collection_GetPos(COLLECTION_s *, i32, f32 *, f32 *);
-    extern f32 StatusCollectionIconYPc, StatusCollectionTextYPc, StatusCollectionYPc;
-    extern i32 StatusCollectionAppearSoundPlayedPc, StatusCollectionMoveSoundPlayedPc;
+    extern f32 StatusCollectionIconYPc;
+    extern f32 StatusCollectionTextYPc;
+    extern f32 StatusCollectionYPc;
+    extern i32 StatusCollectionAppearSoundPlayedPc;
+    extern i32 StatusCollectionMoveSoundPlayedPc;
     void __cdecl MiniKit_LSW_Skip(STATUS_STAGE_s *, STATUSPACKET_s *);
     void __cdecl MiniKit_LSW_Update(STATUS_STAGE_s *, STATUSPACKET_s *, f32);
     void __cdecl MiniKit_LSW_Draw(STATUS_STAGE_s *, STATUSPACKET_s *, i32);
-    extern f32 StatusMiniKitEntranceHeightPc, StatusMiniKitScalePc;
-    extern f32 StatusMiniKitXPc, StatusMiniKitYPc;
+    extern f32 StatusMiniKitEntranceHeightPc;
+    extern f32 StatusMiniKitScalePc;
+    extern f32 StatusMiniKitXPc;
+    extern f32 StatusMiniKitYPc;
     i32 __cdecl UpdateNewMiniKits(STATUSPACKET_s *, STATUS_STAGE_s *);
     void __cdecl AddStatusMiniKitParts(void);
-    extern f32 jibberlen, slidetime, pop_timer;
+    extern f32 jibberlen;
+    extern f32 slidetime;
+    extern f32 pop_timer;
     extern PART_LIGHTING_DATA_PC StatusMiniKitPartLightingPc;
     i32 __cdecl DrawPanel3DObjectMtxNoAlpha(nuhspecial_s *, NUMTX *);
     extern i32 PauseSaveAndExitPc;
-    extern TIMER BonusTimer, ChallengeTimer;
+    extern TIMER BonusTimer;
+    extern TIMER ChallengeTimer;
     extern MISSION_SAVE_READER_PC *Game_MissionSave;
-    extern i16 TextIdPc88073c, TextIdPc88071c, TextIdPc880728, TextIdPc8806e4, TextIdPc8808d0;
+    extern i16 TextIdPc88073c;
+    extern i16 TextIdPc88071c;
+    extern i16 TextIdPc880728;
+    extern i16 TextIdPc8806e4;
+    extern i16 TextIdPc8808d0;
     void __cdecl StatusPacketReset(STATUSPACKET_s *);
     f32 __cdecl StatusScoreRatioPc(f32, f32);
     i32 __cdecl newCharactersCollected(STATUSPACKET_s *);
@@ -28960,7 +29861,8 @@ extern "C" {
     void __cdecl InitMission(MISSIONSYS_PC *, i32);
     void __cdecl NuPadSetMotorsPc(NUPAD_INIT_STATE *, i32, i32);
     void __cdecl NeedScreenGrab(i32);
-    extern i32 DrawGoldBrick_Stage, DrawGoldBrick_Phase;
+    extern i32 DrawGoldBrick_Stage;
+    extern i32 DrawGoldBrick_Phase;
     extern i16 TextIdPc880f9c;
     extern const char CutPlayerTextSeparatorPc[4];
     void __cdecl SetDrawGoldBrick(STATUSPACKET_s *, i32);
@@ -28990,7 +29892,8 @@ extern "C" {
     f32 __cdecl getFinishedStatusAlpha(STATUSPACKET_s *);
     void __cdecl DrawBonusTime(STATUSPACKET_s *, f32, i32);
     extern i16 TextIdPc880734;
-    extern f32 StatusIconYPc, STATSPOS2YPc;
+    extern f32 StatusIconYPc;
+    extern f32 STATSPOS2YPc;
     extern i32 StatusDrawPlayerIconsPc;
     f32 __cdecl StatusIconsOnOff(f32);
     void __cdecl Coins_LSW_Skip(STATUS_STAGE_s *, STATUSPACKET_s *);
@@ -29013,7 +29916,8 @@ extern "C" {
     void __cdecl LevelComplete_LSW_Update(STATUS_STAGE_s *, STATUSPACKET_s *, f32);
     void __cdecl NewStatusRumbleBuzz(i32, f32, f32, i32);
     void __cdecl LevelComplete_LSW_Draw(STATUS_STAGE_s *, STATUSPACKET_s *, i32);
-    extern f32 StatusTitleYPc, StatusSecondaryTitleYPc;
+    extern f32 StatusTitleYPc;
+    extern f32 StatusSecondaryTitleYPc;
     extern i16 TextIdPc8806e8;
     extern i16 TextIdPc8806f4;
     extern i16 TextIdPc880710;
@@ -29029,7 +29933,8 @@ extern "C" {
     extern i16 TextIdPc8810cc;
     extern i16 TextIdPc8810d0;
     extern i16 TextIdPc8808d4;
-    extern f32 HudScoreXPc, HudScoreScalePc;
+    extern f32 HudScoreXPc;
+    extern f32 HudScoreScalePc;
     extern f32 StatusCoinsTotalYPc;
     extern f32 StatusCoinsScalePc;
     extern f32 StatusCoinsTitleScalePc;
@@ -29040,7 +29945,9 @@ extern "C" {
     extern i16 TextIdPc880748;
     extern CHEAT_PC ExtrasCheatsPc[46];
     extern f32 StatusTextScalePc;
-    extern i32 StatusRedPc, StatusGreenPc, StatusBluePc;
+    extern i32 StatusRedPc;
+    extern i32 StatusGreenPc;
+    extern i32 StatusBluePc;
     void __cdecl AllMiniKits_LSW_Skip(STATUS_STAGE_s *, STATUSPACKET_s *);
     void __cdecl AllMiniKits_LSW_Update(STATUS_STAGE_s *, STATUSPACKET_s *, f32);
     void __cdecl AllMiniKits_LSW_Draw(STATUS_STAGE_s *, STATUSPACKET_s *, i32);
@@ -29084,11 +29991,18 @@ extern "C" {
     extern i32 ShopBrickRotationDegreesPc;
     extern f32 ShopCharacterPeriodPc;
     extern const f64 ShopCharacterAmplitudePc;
-    extern f32 ShopCodePulseScalePc, ShopCodeArrowBingPc, ShopCodeArrowAmplitudePc;
+    extern f32 ShopCodePulseScalePc;
+    extern f32 ShopCodeArrowBingPc;
+    extern f32 ShopCodeArrowAmplitudePc;
     void __cdecl MenuDrawShop(MENU *menu);
     void __cdecl MenuUpdateShop(MENU *menu);
-    extern i16 TextIdPc88070c, TextIdPc88077c, TextIdPc880800, TextIdPc8808c4;
-    extern i16 TextIdPc880904, TextIdPc880908, TextIdPc88090c;
+    extern i16 TextIdPc88070c;
+    extern i16 TextIdPc88077c;
+    extern i16 TextIdPc880800;
+    extern i16 TextIdPc8808c4;
+    extern i16 TextIdPc880904;
+    extern i16 TextIdPc880908;
+    extern i16 TextIdPc88090c;
     extern struct shopitem_s *ExtraItems;
     extern i32 ExtraShelfIds[7];
     extern struct shopitem_s *HintItems;
@@ -29977,7 +30891,8 @@ extern "C" {
     void __cdecl MenuRegisterSoundFX(i32 move, i32 select, i32 back, i32 no_entry);
     i32 __cdecl GameAudio_OverrideFootStep_LSW(GAMEOBJECT *object, i32 on_platform);
     i32 __cdecl GameAudio_CheckReverb_LSW(void);
-    extern GAMEAUDIO_PC GameAudioLswPc, GameAudioAlternatePc;
+    extern GAMEAUDIO_PC GameAudioLswPc;
+    extern GAMEAUDIO_PC GameAudioAlternatePc;
     extern const char GameAudioName00753354Pc[11];
     extern const char ForceThrowExplodeNamePc[9];
     extern char ScorePanelName[9];
@@ -30119,14 +31034,19 @@ extern "C" {
     GIZBUILDIT_PC *__cdecl GizBuildIt_FindNearest(WORLDINFO *, GAMEOBJECT *, i32, i32);
     extern i32 HubTrueJediTypeAlphaPc;
     extern f32 HubMiniKitOpenThresholdPc;
-    extern i32 HubCompletedAreasPc, HubAreasPerEpisodePc;
+    extern i32 HubCompletedAreasPc;
+    extern i32 HubAreasPerEpisodePc;
     extern NUVEC HubForceBackPositionPc;
     extern f32 HubForceBackRadiusPc;
     extern f32 HubMiniKitOpenTimePc;
     extern void(__cdecl *HubUpdateAIFnPc)(WORLDINFO *);
-    extern i32 shop_quit, shop_save_done, SHOPACTIVE;
+    extern i32 shop_quit;
+    extern i32 shop_save_done;
+    extern i32 SHOPACTIVE;
     extern f32 ShopLockedScalePc;
-    extern i32 customiser_save_done, customiser_quit, customiser_changed;
+    extern i32 customiser_save_done;
+    extern i32 customiser_quit;
+    extern i32 customiser_changed;
     extern GAMESAVE TempGame;         /* 856c38, native0x7e4c owner. */
     extern GAMESAVE OldCustomiseGame; /* 85ea98, native0x7e4c owner. */
     void __cdecl Hub_Update(WORLDINFO *);
@@ -30605,7 +31525,9 @@ STATIC_ASSERT(offsetof(WORLDINFO, zipups) == 0x4688);
 extern "C" {
 #endif
     extern i32 ClimbNormalProbeCountPc;
-    extern f32 IndyGrappleHeightTolerancePc, IndyGrappleReleaseRadiusPc, IndyGrappleTimeoutPc;
+    extern f32 IndyGrappleHeightTolerancePc;
+    extern f32 IndyGrappleReleaseRadiusPc;
+    extern f32 IndyGrappleTimeoutPc;
     extern f32 IndyJumpDistancePc[2];
     extern INDY_PREPARE_SPECIAL_MOVE_PC IndyPrepareSpecialMovePc[7];
     extern AI_MID_SPECIAL_MOVE_PC IndyMidSpecialMoveFnsPc[10];
@@ -30660,7 +31582,8 @@ extern "C" {
     void __cdecl Batarang_StartThrowQuick(GAMEOBJECT *);
     void __cdecl Batarangs_Update(void);
     void __cdecl Batarangs_Draw(void);
-    extern f32 BatarangCatwomanStunTimePc, BatarangDetonatorHitDelayPc;
+    extern f32 BatarangCatwomanStunTimePc;
+    extern f32 BatarangDetonatorHitDelayPc;
     void __cdecl APIObjectRemoveFromLOSTable(APIOBJECTSYS_PC *system, GAMEOBJECT *source, GAMEOBJECT *target);
     void __cdecl APIObjectDestroy(APIOBJECTSYS_PC *system, GAMEOBJECT *object);
 #ifdef __cplusplus
@@ -31504,7 +32427,14 @@ struct EdRegistry {
 };
 
 extern EdRegistry theRegistry;
-extern i32 EdType_Char, EdType_Short, EdType_Int, EdType_Float, EdType_VuVec, EdType_VuMtx, EdType_NuVec, EdType_NuMtx;
+extern i32 EdType_Char;
+extern i32 EdType_Short;
+extern i32 EdType_Int;
+extern i32 EdType_Float;
+extern i32 EdType_VuVec;
+extern i32 EdType_VuMtx;
+extern i32 EdType_NuVec;
+extern i32 EdType_NuMtx;
 
 /* One member of an editor class: where it sits in the object, its type and
  * the control that edits it. Attribute bit 30 marks a pointer member. */

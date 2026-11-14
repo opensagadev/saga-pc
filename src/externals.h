@@ -27,7 +27,8 @@ typedef struct ID3DXFont ID3DXFont;
 typedef struct ID3DXRenderToSurface ID3DXRenderToSurface;
 typedef struct ID3DXEffectCompiler ID3DXEffectCompiler;
 typedef struct ID3DXConstantTable ID3DXConstantTable;
-typedef struct IDirectSound8 IDirectSound8, *LPDIRECTSOUND8;
+typedef struct IDirectSound8 IDirectSound8;
+typedef struct IDirectSound8 *LPDIRECTSOUND8;
 typedef struct IDirectSound8Vtbl IDirectSound8Vtbl;
 typedef struct IDirectSoundBuffer IDirectSoundBuffer;
 typedef struct IDirectSoundBufferVtbl IDirectSoundBufferVtbl;
@@ -42,7 +43,10 @@ typedef struct PC_DS_CAPS_VIEW {
 } PC_DS_CAPS_VIEW;
 
 typedef struct PC_DS_BUFFER_DESC_VIEW {
-    DWORD size, flags, bytes, reserved;
+    DWORD size;
+    DWORD flags;
+    DWORD bytes;
+    DWORD reserved;
     WAVEFORMATEX *format;
     GUID algorithm;
 } PC_DS_BUFFER_DESC_VIEW;

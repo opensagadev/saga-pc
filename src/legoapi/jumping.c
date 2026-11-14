@@ -460,7 +460,8 @@ void __cdecl JumpCode(GAMEOBJECT *object, i32 jump_pressed, i32 jump_held, u32 a
             object->character_context = -1;
         } else if (object->character_context == LEGOCONTEXT_LAND_SLAM) {
             i32 count = ParticlesPerSecond(25.0f, FRAMETIME);
-            NUVEC start, end;
+            NUVEC start;
+            NUVEC end;
             FindSlamOrigin(object, &start, &end);
             AddGameDebrisRot(world->game_debris_sys, hit_effect, &start, ParticlesPerSecond(20.0f, FRAMETIME), 0, 0);
             while (count > 0) {
@@ -942,7 +943,8 @@ i32(__cdecl *BigJump_LandActionFn)(GAMEOBJECT *) = BigJump_LandAction_Default;
 
 void __cdecl BigJumpCode(GAMEOBJECT *object) {
     WORLDINFO *world;
-    f32 fraction, height;
+    f32 fraction;
+    f32 height;
     NUVEC origin;
     i32 angle;
     if (LEGOCONTEXT_BIGJUMP == -1 || object->character_context != LEGOCONTEXT_BIGJUMP) {

@@ -30,7 +30,8 @@ void __cdecl PartUpdate_Heart(PART_PC *part);
 
 typedef struct coinpacket_pickup_pc_s {
     u8 unknown0[0xa];
-    u8 multiplier, unknown_b;
+    u8 multiplier;
+    u8 unknown_b;
     f32 timer;
 } COINPACKET_PICKUP_PC;
 
@@ -295,7 +296,12 @@ counter_sound:
 
 void __cdecl GizmoPickup_CollectCoin(WORLDINFO *world, NUVEC *position, i32 type_index, i32 model_variant,
                                      GAMEOBJECT *object, i32 ignored) {
-    i32 player_index, player0_active, player1_active, main_total, model_id, multiplier;
+    i32 player_index;
+    i32 player0_active;
+    i32 player1_active;
+    i32 main_total;
+    i32 model_id;
+    i32 multiplier;
     NUVEC target;
     f32 target_scale;
     u32 score;
@@ -495,7 +501,8 @@ void __cdecl CollectMinikit(NUVEC *position, char *name, i32 flags) {
 }
 
 static void __cdecl PartImpact_Coin(PART_PC *part) {
-    f32 speed, volume;
+    f32 speed;
+    f32 volume;
     i32 angle;
     if (!(coinimpactwait <= 0.0f)) {
         return;
@@ -539,7 +546,8 @@ static f32 NuFdiv(f32 a, f32 b) {
 }
 
 static void __cdecl PartMove_VehiclePickup(PART_PC *part, f32 timestep) {
-    f32 gain, target;
+    f32 gain;
+    f32 target;
     GAMEOBJECT *object;
     (void)timestep;
     if (part->initial_time == 0.0f) {
@@ -815,7 +823,11 @@ i32 __cdecl ReleaseHearts(void) {
     GAMEOBJECT *player = (GAMEOBJECT *)Player[0];
     i32 missing_hitpoints = 0;
     i32 total_hitpoints = 0;
-    i32 i, hitpoints, base, chance, adjustment;
+    i32 i;
+    i32 hitpoints;
+    i32 base;
+    i32 chance;
+    i32 adjustment;
     if (player != NULL && player->dead == 0) {
         hitpoints = player->field_107e;
         if (hitpoints > 0) {
@@ -991,7 +1003,8 @@ void __cdecl Pup_CollectHeart(WORLDINFO *world, GIZMOPICKUP_PC *pickup, i32 type
 
 static void __cdecl PartStolen_Coin(PART_PC *part) {
     GAMEOBJECT *recipient;
-    i32 first_active, second_active;
+    i32 first_active;
+    i32 second_active;
     GIZMOPICKUP_PC pickup;
     if (netclient != 0 || (part->active & 0x200) == 0) {
         return;
@@ -1092,7 +1105,14 @@ void __cdecl AddCoinsAsParts(i32 type_id, NUVEC *position, NUVEC *velocity, f32 
 
 void __cdecl AddCoinsToPanel(i32 coins, NUVEC *position, i32 player, f32 unused, GAMEOBJECT *owner, i32 random_types) {
     WORLDINFO *world = WorldInfo_CurrentlyActive();
-    i32 remainder, remaining, type, score, i, base_model, model, main_total;
+    i32 remainder;
+    i32 remaining;
+    i32 type;
+    i32 score;
+    i32 i;
+    i32 base_model;
+    i32 model;
+    i32 main_total;
     u32 j;
     u8 counts[10];
     NUVEC target;
@@ -1195,7 +1215,15 @@ void __cdecl AddPickups(i32 coins, i32 hearts, i32 torpedoes, i32 powerups, NUVE
     WORLDINFO *world = WorldInfo_CurrentlyActive();
     const f32 scale = AreaPickupScale;
     u32 arcade_flags;
-    i32 to_panel, remainder, remaining, i, j, type, score, count, both_players;
+    i32 to_panel;
+    i32 remainder;
+    i32 remaining;
+    i32 i;
+    i32 j;
+    i32 type;
+    i32 score;
+    i32 count;
+    i32 both_players;
     u8 counts[10];
     NUVEC velocity;
     GAMEOBJECT *recipient;

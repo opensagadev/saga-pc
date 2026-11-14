@@ -550,7 +550,8 @@ void __cdecl Signal_MoveCode(WORLDINFO *world, GAMEOBJECT *object) {
 void __cdecl SuitBlowupCodePc(WORLDINFO *world, GAMEOBJECT *object) {
     GIZMOBLOWUP_PC *candidates[256];
     GIZMOBLOWUP_PC *blowup;
-    NUVEC minimum, maximum;
+    NUVEC minimum;
+    NUVEC maximum;
     i32 count;
     i32 index;
     f32 remaining;

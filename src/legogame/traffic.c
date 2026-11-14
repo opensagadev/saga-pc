@@ -3,7 +3,12 @@
 typedef struct TRAFFICANIM_PC {
     NUSPECIALHANDLE special;
     void *animation;
-    f32 end_frame, tfactor, frame_interval, random_interval, room_frame_interval, y_offset;
+    f32 end_frame;
+    f32 tfactor;
+    f32 frame_interval;
+    f32 random_interval;
+    f32 room_frame_interval;
+    f32 y_offset;
     i8 vehicle_indices[16];
     i8 rooms[256];
     i8 vehicle_count;
@@ -23,7 +28,8 @@ typedef struct TRAFFICANIMSYS_PC {
     TRAFFICANIM_PC animations[64];
     NUSPECIALHANDLE vehicles[16];
     u8 unknown_50c0[0x77e0 - 0x50c0];
-    i8 animation_count, vehicle_count;
+    i8 animation_count;
+    i8 vehicle_count;
     u8 unknown_77e2[2];
 } TRAFFICANIMSYS_PC;
 
@@ -132,8 +138,11 @@ static NUFPCOMJMP Traffic_ConfigKeywords[] = {{"animobj", Traffic_animobj},
 void __cdecl TrafficAnimSys_Configure(WORLDINFO *world, char *config) {
     TRAFFIC_WORLD_VIEW_PC *view = (TRAFFIC_WORLD_VIEW_PC *)world;
     NUFPAR_PC *parser;
-    VARIPTR old_buffer, old_end;
-    i32 parsing = 0, i, frame;
+    VARIPTR old_buffer;
+    VARIPTR old_end;
+    i32 parsing = 0;
+    i32 i;
+    i32 frame;
     TRAFFICANIM_PC *animation;
     NUMTX matrix;
     i16 room;

@@ -28,7 +28,12 @@ typedef struct status_world_minikit_reader_pc_s {
 
 extern "C" i16 TextIdPc880bc0;
 extern "C" {
-    extern i16 TextIdPc8806f8, TextIdPc880704, TextIdPc880744, TextIdPc88078c, TextIdPc880790, TextIdPc88083c;
+    extern i16 TextIdPc8806f8;
+    extern i16 TextIdPc880704;
+    extern i16 TextIdPc880744;
+    extern i16 TextIdPc88078c;
+    extern i16 TextIdPc880790;
+    extern i16 TextIdPc88083c;
 }
 
 extern "C" {
@@ -159,7 +164,8 @@ extern "C" {
         NUMTX matrix;
         NUVEC origin = {0.0f, 0.0f, 800.0f};
         NUVEC position = {(f32)((f64)x * 400.0), (f32)((f64)y * 250.0), 0.0f};
-        f32 full_width, height;
+        f32 full_width;
+        f32 height;
         NuQFntSetJustifiedTolerances(1.2f, 1.2f);
         NuMtxSetIdentity(&matrix);
         NuMtxSetRotationX(&matrix, 0);
@@ -186,8 +192,12 @@ extern "C" {
             f64 half_wave = wave * 0.5;
             f32 large_scale = (f32)(((f64)scale + 0.5) - half_wave);
             f32 small_scale = (f32)(((f64)scale - 0.5) + half_wave);
-            f64 half_full_width, current_center;
-            f32 suffix_x, current_width, large_x, small_x;
+            f64 half_full_width;
+            f64 current_center;
+            f32 suffix_x;
+            f32 current_width;
+            f32 large_x;
+            f32 small_x;
             sprintf(text, "/%i", total);
             Text3DStringEncode(text, encoded);
             half_full_width = full_width * 0.5;
@@ -350,7 +360,8 @@ extern "C" {
             temple_ids[1] = -1;
             ids = packet->area != NULL && packet->area == LOSTTEMPLE_ADATA ? temple_ids : Area_PlayerIDList;
             while (*ids != -1 && count < 7) {
-                i32 id = *ids, previous = 0;
+                i32 id = *ids;
+                i32 previous = 0;
                 while (previous < count && StatusNewCharacterIdsPc[previous] != id) {
                     ++previous;
                 }
@@ -396,7 +407,9 @@ extern "C" {
 
     void __cdecl InitStatusScreen(WORLDINFO *world) {
         STATUSPACKET_s *p = &StatusPacket;
-        i32 i, area, episode;
+        i32 i;
+        i32 area;
+        i32 episode;
         if (p->lsw_packet == NULL) {
             return;
         }
@@ -740,7 +753,8 @@ extern "C" {
             }
         }
         {
-            i32 gold = 0, completed_episode = 0;
+            i32 gold = 0;
+            i32 completed_episode = 0;
             if (area != -1 && (p->field_0xb0 & 0x40) == 0 && Game.area_save[area].area_complete == 0 &&
                 (p->area->flags & 0x26) == 0) {
                 p->newly_completed = 1;
@@ -868,7 +882,9 @@ extern "C" {
     void __cdecl Status_DrawPlayerIconsPc(STATUSPACKET_s *packet, f32 y, f32 alpha) {
         i32 player;
         for (player = 0; player < 2; ++player) {
-            f32 x, weight, icon_alpha;
+            f32 x;
+            f32 weight;
+            f32 icon_alpha;
             i32 frame;
             if (player == 0) {
                 frame = 0xa5;
@@ -1185,7 +1201,8 @@ extern "C" {
         char time[256];
         char previous[256];
         char *title;
-        i32 red, green;
+        i32 red;
+        i32 green;
         if (packet->new_best_time != 0.0f) {
             title = TTab[TextIdPc88071c];
             red = 0;
@@ -1474,7 +1491,8 @@ extern "C" {
                 }
                 {
                     for (player = 0; player < 2; ++player) {
-                        u32 pressed, directions;
+                        u32 pressed;
+                        u32 directions;
                         if (select != 0 || up != 0 || down != 0) {
                             break;
                         }

@@ -723,9 +723,15 @@ void __cdecl MenuEnterSave(MENU *menu) {
 
 void __cdecl APIMenuDrawMemCardSlots(MENU *menu, f32 y) {
     i32 count;
-    i32 first, last, slot, highlight;
-    i32 red, green, blue;
-    f32 x, scale;
+    i32 first;
+    i32 last;
+    i32 slot;
+    i32 highlight;
+    i32 red;
+    i32 green;
+    i32 blue;
+    f32 x;
+    f32 scale;
     if (slideright > 0) {
         --slideright;
     }
@@ -941,7 +947,9 @@ void __cdecl MenuDrawFileCorrupt(MENU *menu) {
 
 void __cdecl APIMenuDrawGameState(f32 x, f32 y, i32 highlight, i32 slot) {
     char label[32];
-    i32 red, green, blue;
+    i32 red;
+    i32 green;
+    i32 blue;
     if (highlight != 0) {
         if (menu_flash != 0) {
             red = MENUFLASH0R;

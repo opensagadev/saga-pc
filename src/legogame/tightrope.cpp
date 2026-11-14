@@ -4,15 +4,21 @@
 
 typedef struct TIGHTROPE_MOTION_PC {
     char name[16];
-    NUVEC start, end;
-    u16 start_x_rotation, end_x_rotation, start_y_rotation, end_y_rotation;
-    u8 start_model, end_model;
+    NUVEC start;
+    NUVEC end;
+    u16 start_x_rotation;
+    u16 end_x_rotation;
+    u16 start_y_rotation;
+    u16 end_y_rotation;
+    u8 start_model;
+    u8 end_model;
     i8 start_visible;
     u8 reserved_33;
     NUVEC direction;
     f32 horizontal_length;
     u16 rotation;
-    u8 enabled, available;
+    u8 enabled;
+    u8 available;
 } TIGHTROPE_MOTION_PC;
 
 typedef struct WORLD_TIGHTROPE_VIEW_PC {
@@ -98,7 +104,8 @@ extern "C" {
 extern "C" {
 
     i32 __cdecl TightRopes_Load(WORLDINFO *world, void *unused) {
-        i32 version, index;
+        i32 version;
+        i32 index;
         if (world->tightrope_count == 0) {
             version = EdFileReadInt();
             world->tightrope_count = EdFileReadInt();
@@ -213,7 +220,8 @@ extern "C" {
         NUVEC *positions[64];
         f32 distances[64];
         NURND_VERTEX3D_PC vertices[66];
-        i32 index, endpoint;
+        i32 index;
+        i32 endpoint;
         if (rope == NULL) {
             return;
         }
@@ -221,7 +229,10 @@ extern "C" {
             vertices[index].colour = 0xffffffffu;
         }
         for (index = 0; index < world->tightrope_count; ++index, ++rope) {
-            i32 count, object_index, pass, point;
+            i32 count;
+            i32 object_index;
+            i32 pass;
+            i32 point;
             GAMEOBJECT *object;
             for (endpoint = 0; endpoint < 2; ++endpoint) {
                 if (rope->visible != 0 || (rope->field_0x32 != 0 && endpoint < 1)) {
@@ -675,7 +686,8 @@ extern "C" {
         NUVEC *anchor;
         TIGHTROPE_MOVEMENT_PC *rope;
         u16 rotation;
-        f32 fraction, amplitude;
+        f32 fraction;
+        f32 amplitude;
         anchor = (object->character_data->game_character->flags_090 & 0x80000) ? &object->lower_position
                                                                                : &object->upper_position;
         object->target_velocity.x = (object->launch_origin.x - anchor->x) * 3.0f;

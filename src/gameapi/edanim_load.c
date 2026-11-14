@@ -151,9 +151,20 @@ void edanimParticleDestroy(i32 parameter_index, i32 particle_index) {
 }
 
 i32 __cdecl edanimLoadPage(char *path, NUGSCN *scene) {
-    i32 page, version, count, slot, index, item, extra, interval, instance;
-    f32 impulse, spring, damping;
-    char name[20], discarded_name[16];
+    i32 page;
+    i32 version;
+    i32 count;
+    i32 slot;
+    i32 index;
+    i32 item;
+    i32 extra;
+    i32 interval;
+    i32 instance;
+    f32 impulse;
+    f32 spring;
+    f32 damping;
+    char name[20];
+    char discarded_name[16];
     NUVEC discarded_position;
     NUSPECIALHANDLE special;
     TERRAIN_SET_PC *terrain;
@@ -400,7 +411,8 @@ void edanimcbBouncyMenu(eduimenu_s *parent, eduiitem_s *unused1, u32 unused2) {
 }
 
 static void edanimcbLocalSoundTypeMenu(eduimenu_s *parent, eduiitem_s *unused1, u32 unused2) {
-    i32 index, selected;
+    i32 index;
+    i32 selected;
     u32 colours[4] = {0x80000000, 0x80ff0000, 0x80808080, 0x80404040};
     edanim_localsoundtype_menu = eduiMenuCreate(70, 70, 250, 200, ed_fnt, edanimcbCancelLocalSoundTypeMenu,
                                                 ((char *)("Highlighted Sound Type")));
@@ -424,7 +436,8 @@ static void edanimcbLocalSoundTypeMenu(eduimenu_s *parent, eduiitem_s *unused1, 
 }
 
 void edanimcbSoundTypeMenu(eduimenu_s *parent, eduiitem_s *unused1, u32 unused2) {
-    i32 index, selected;
+    i32 index;
+    i32 selected;
     u32 colours[4] = {0x80000000, 0x80ff0000, 0x80808080, 0x80404040};
     edanim_soundtype_menu =
         eduiMenuCreate(70, 70, 250, 250, ed_fnt, edanimcbCancelSoundTypeMenu, (char *)("Sound Type"));
@@ -546,7 +559,8 @@ i32 __cdecl edanimParamCreate(i32 instance);
 void __cdecl edanimRenderParticleEmitters(i32 parameter_index) {
     NUSPECIALHANDLE special;
     NUVEC *base_position;
-    i32 particle, colour;
+    i32 particle;
+    i32 colour;
     NuGScnGetSpecial(&special, edbits_base_scene, AnimParams[parameter_index].instance_id);
     base_position = NuSpecialGetPos(&special);
     for (particle = 0; particle < AnimParams[parameter_index].effect_count; ++particle) {
@@ -577,7 +591,8 @@ void __cdecl edanimRenderParticleEmitters(i32 parameter_index) {
 void __cdecl edanimRenderSoundEmitters(i32 parameter_index) {
     NUSPECIALHANDLE special;
     NUVEC *base_position;
-    i32 sound, colour;
+    i32 sound;
+    i32 colour;
     NuGScnGetSpecial(&special, edbits_base_scene, AnimParams[parameter_index].instance_id);
     base_position = NuSpecialGetPos(&special);
     for (sound = 0; sound < AnimParams[parameter_index].sound_count; ++sound) {
@@ -636,7 +651,8 @@ void __cdecl edanimDoInput(FRAME_PAD_PC *pad) {
     NUSPECIALHANDLE special;
     NUVEC position;
     NUVEC *origin;
-    i32 index, effect;
+    i32 index;
+    i32 effect;
     if ((pad->digital_buttons & 0x100) == 0) {
         edcamMove(pad);
     }

@@ -274,7 +274,11 @@ void __cdecl AITriggerSetSysProcess(TRIGGER_SYSTEM_PC *system) {
     u64 character_mask = 0;
     TRIGGER_SET_PC *set;
     i32 set_index;
-    i32 complete, has_assignments, index, player_count, count;
+    i32 complete;
+    i32 has_assignments;
+    i32 index;
+    i32 player_count;
+    i32 count;
     i8 assigned;
     GIZMO_PC *gizmo;
     GAMEOBJECT *object;
@@ -482,7 +486,9 @@ void __cdecl AITriggerSysAutoSetUp(WORLDINFO *world, AITRIGGERSETSYS_s *system) 
     FLOWBOX_PC *box;
     FLOWBOXGIZMODATA_PC *data;
     AITRIGGERSET_s *set;
-    i32 index, group_index, gizmo_index;
+    i32 index;
+    i32 group_index;
+    i32 gizmo_index;
     if (world != NULL && world->giz_flow != NULL) {
         flow = world->giz_flow;
         box = flow->flowboxes;

@@ -1,9 +1,18 @@
 #include "saga.h"
 
 i32 __cdecl LoadEditorSplines(char *path, VARIPTR *buffer, VARIPTR *end) {
-    i32 count, points, string_bytes, check_length, i, j, name_length;
-    char *names, *name_end;
-    NUVEC *point_cursor, *data_end, *point;
+    i32 count;
+    i32 points;
+    i32 string_bytes;
+    i32 check_length;
+    i32 i;
+    i32 j;
+    i32 name_length;
+    char *names;
+    char *name_end;
+    NUVEC *point_cursor;
+    NUVEC *data_end;
+    NUVEC *point;
     NUGSPLINE *spline;
     u32 aligned_start;
     i32 failed = 0;

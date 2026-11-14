@@ -65,7 +65,8 @@ extern "C" BOOL IsXInputProductPc(const GUID *product) {
             hr = devices[index]->Get(device_id, 0L, &value, NULL, NULL);
             if (SUCCEEDED(hr) && value.vt == VT_BSTR && value.bstrVal != NULL) {
                 if (wcsstr(value.bstrVal, L"IG_")) {
-                    DWORD pid = 0, vid = 0;
+                    DWORD pid = 0;
+                    DWORD vid = 0;
                     WCHAR *vid_text = wcsstr(value.bstrVal, L"VID_");
                     if (vid_text && swscanf(vid_text, L"VID_%4X", &vid) != 1) {
                         vid = 0;

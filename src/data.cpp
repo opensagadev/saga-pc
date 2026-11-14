@@ -32924,7 +32924,8 @@ extern "C" {
     u32 PcControlButtonsPc = 0;
     i32 PcControlPulseAnglePc = 0;
     f32 PcControlRepeatPc[2] = {0};
-    u32 PcControlHeldPc[2] = {0}, PcControlPressedPc[2] = {0};
+    u32 PcControlHeldPc[2] = {0};
+    u32 PcControlPressedPc[2] = {0};
     PC_CONTROL_SCREEN_PC PcControlScreenPc = {0,
                                               0,
                                               0,
@@ -33600,7 +33601,8 @@ extern "C" {
          0x0},
         {0},
     };
-    f32 ExtrasFadeStartPc = 0.15f, ExtrasFadeEndPc = 0.6f;
+    f32 ExtrasFadeStartPc = 0.15f;
+    f32 ExtrasFadeEndPc = 0.6f;
 #pragma const_seg(".rdata$ExtrasNameFormatPc")
     extern const char ExtrasNameFormatPc[] = "%s: %s";
 #pragma const_seg()

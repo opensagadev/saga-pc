@@ -28,7 +28,9 @@ typedef struct registry_panel_system_pc_s {
 } REGISTRY_PANEL_SYSTEM_PC;
 
 typedef struct {
-    u32 triggered[1], enabled[1], visible[1];
+    u32 triggered[1];
+    u32 enabled[1];
+    u32 visible[1];
 } PANEL_PROGRESS_PC;
 
 typedef struct {
@@ -48,11 +50,16 @@ typedef struct panel_movement_pc_s {
     NUVEC position;
     u16 y_rotation;
     u8 unknown_5e[3];
-    u8 model_variant, flags, draw_flags;
+    u8 model_variant;
+    u8 flags;
+    u8 draw_flags;
     NUVEC floor_position;
     NUVEC target_offset;
-    u16 field_7c, field_7e;
-    u16 arm_x_rotation, target_pitch, target_roll;
+    u16 field_7c;
+    u16 field_7e;
+    u16 arm_x_rotation;
+    u16 target_pitch;
+    u16 target_roll;
     i16 platform_id;
     f32 activation_time;
     f32 target_scale;
@@ -65,19 +72,28 @@ typedef struct panel_load_system_pc_s {
 
 /* Private append-only fragment for canonical 144B PANEL_MOVEMENT_PC. */
 extern const f64 GameObjectNearFloorNoFloorHeight;
-extern const f64 PanelVariantTwoTargetY, PanelVariantTwoTargetZ;
-extern const f64 PanelVariantThreeTargetY, PanelVariantThreeTargetZ;
-extern const f32 PanelTrackEnterDistanceSquared, PanelTrackLeaveDistanceSquared;
-extern const char PanelDeactivateSfxPc[10], PanelActivateSfxPc[10];
+extern const f64 PanelVariantTwoTargetY;
+extern const f64 PanelVariantTwoTargetZ;
+extern const f64 PanelVariantThreeTargetY;
+extern const f64 PanelVariantThreeTargetZ;
+extern const f32 PanelTrackEnterDistanceSquared;
+extern const f32 PanelTrackLeaveDistanceSquared;
+extern const char PanelDeactivateSfxPc[10];
+extern const char PanelActivateSfxPc[10];
 /* Private append to gizpanel_pc.c; reuse canonical PANEL_MOVEMENT_PC144/PANEL_SYSTEM_PC8. */
-extern f32 GizPanelPictureYPc, GizPanelPictureZPc, GizPanelFloorLiftPc;
-extern u8 PanelStormActivePc, PanelDroidActivePc, PanelBountyHunterActivePc;
+extern f32 GizPanelPictureYPc;
+extern f32 GizPanelPictureZPc;
+extern f32 GizPanelFloorLiftPc;
+extern u8 PanelStormActivePc;
+extern u8 PanelDroidActivePc;
+extern u8 PanelBountyHunterActivePc;
 void __cdecl SetProtocolDroidInterfaceAction(GAMEOBJECT *object);
 
 /* Native PC hint updater records retain their original packed field offsets. */
 typedef struct HINT_PANEL_PC {
     u8 reserved00[0x61];
-    u8 model_variant, flags;
+    u8 model_variant;
+    u8 flags;
     u8 reserved63[0x29];
     f32 target_scale;
 } HINT_PANEL_PC;
@@ -173,7 +189,9 @@ i32 __cdecl GizPanel_Load(void *world_pointer, void *unused) {
     STATIC_ASSERT(sizeof(PanelLoadStatePc) == 0x64);
     WORLDINFO *world = (WORLDINFO *)world_pointer;
     PANEL_SYSTEM_PC *system;
-    i32 version, index, length;
+    i32 version;
+    i32 index;
+    i32 length;
     u8 value;
     (void)unused;
     if (world == NULL || world->giz_panel_sys == NULL) {
@@ -423,7 +441,8 @@ void __cdecl GizPanel_Update(void *world_pointer, void *unused, f32 delta_time) 
             for (player_index = 0; player_index < 8; ++player_index) {
                 GAMEOBJECT *player = Player[player_index];
                 if (player != NULL && (player->flags_1fc_word & 0x1000) != 0 && player->dead == 0) {
-                    NUVEC position, direction;
+                    NUVEC position;
+                    NUVEC direction;
                     f32 distance;
                     PanelGetTrackingPositionPc(panel, &position);
                     distance = NuVecDistSqr(&position, &player->collision_position, &direction);
@@ -438,7 +457,8 @@ void __cdecl GizPanel_Update(void *world_pointer, void *unused, f32 delta_time) 
         if (nearest_player != NULL) {
             u16 previous_x = panel->field_7c;
             u16 previous_y = panel->field_7e;
-            u16 target_x, target_y;
+            u16 target_x;
+            u16 target_y;
             FindAnglesXY(&nearest_direction, &target_x, &target_y);
             target_y -= panel->y_rotation;
             if (previous_y <= 0x4000 && target_y > 0x4000 && target_y < 0xc000) {
@@ -511,8 +531,15 @@ void __cdecl GizPanel_Draw(void *world_pointer, void *unused, f32 unused_time) {
         (f64)0.8f;
     for (index = 0; index < system->count; ++index) {
         PANEL_MOVEMENT_PC *panel = &system->panels[index];
-        i32 base, animated, transition, state_on, state_off, arm, target;
-        f32 arm_y, arm_z;
+        i32 base;
+        i32 animated;
+        i32 transition;
+        i32 state_on;
+        i32 state_off;
+        i32 arm;
+        i32 target;
+        f32 arm_y;
+        f32 arm_z;
         if ((panel->flags & 4) == 0 && editor_active == 0) {
             continue;
         }
@@ -593,8 +620,10 @@ void __cdecl GizPanel_Draw(void *world_pointer, void *unused, f32 unused_time) {
             }
         }
         if ((panel->flags & 0x20) == 0 && (panel->activation_time > 0.0f || editor_active != 0)) {
-            NUVEC picture_offset, transition_offset;
-            NUMTX transition_base, animated_matrix;
+            NUVEC picture_offset;
+            NUVEC transition_offset;
+            NUMTX transition_base;
+            NUMTX animated_matrix;
             f32 frame;
             picture_offset.x = 0.0f;
             picture_offset.y = GizPanelPictureYPc;
@@ -937,7 +966,9 @@ void __cdecl GizPanel_MoveCode(WORLDINFO *world, GAMEOBJECT *object, i32 use) {
 }
 
 i32 __cdecl GizPanel_UpdateHint(HINT_PC *hint) {
-    u8 storm = 0, droid = 0, bountyhunter = 0;
+    u8 storm = 0;
+    u8 droid = 0;
+    u8 bountyhunter = 0;
     i32 index;
     if (WORLD->area != NULL && WORLD->area == HUB_ADATA) {
         return 0;
@@ -999,7 +1030,8 @@ i32 __cdecl GizPanel_UpdateHint(HINT_PC *hint) {
 
 void __cdecl GizPanel_Reset(void *context) {
     PANEL_MOVEMENT_PC *panel = (PANEL_MOVEMENT_PC *)context;
-    NUVEC offset, probe_position;
+    NUVEC offset;
+    NUVEC probe_position;
     f32 height;
     panel->floor_position.y = 0.0f;
     panel->floor_position.x = 0.0f;

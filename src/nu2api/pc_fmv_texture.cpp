@@ -4,7 +4,10 @@
  * but the D3D reset path still releases and restores its image. */
 struct NU_FMV_TEXTURE_PC {
     NUMTL *material;
-    f32 u0, u1, v0, v1;
+    f32 u0;
+    f32 u1;
+    f32 v0;
+    f32 v1;
     PC_FMV_MOVIE_PC movie;
     i32 open;
 };

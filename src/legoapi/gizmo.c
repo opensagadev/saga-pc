@@ -494,7 +494,8 @@ GIZMO_PC *__cdecl GizmoFindByData(void *system_ptr, i32 type_id, void *data) {
     GIZMOTYPE_PC *type;
     GIZMOSET_PC *set;
     GIZMO_PC *gizmo;
-    i32 i, type_index;
+    i32 i;
+    i32 type_index;
     if (types != NULL && system != NULL && data != NULL) {
         if (type_id >= 0 && type_id <= types->count) {
             type = &types->types[type_id];
@@ -734,7 +735,12 @@ i32 __cdecl GizmoSysWriteInfo(GIZMOSYS_PC *gizmo_sys, char *path, NUGSCN *scene)
     GIZMO_PC *entry;
     GIZACTIONDEF_PC *definition;
     char *name;
-    i32 type_index, gizmo_index, output_index, length, outputs, count;
+    i32 type_index;
+    i32 gizmo_index;
+    i32 output_index;
+    i32 length;
+    i32 outputs;
+    i32 count;
     if (gizmotypes != NULL) {
         if (NuFileExists(path)) {
             sprintf(backup, "%s.bak", path);

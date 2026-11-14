@@ -43,7 +43,9 @@ typedef struct part_runtime_type_pc_s {
     i32 sounds[4];
     u8 sound_modes[4];
     f32 maximum_distance;
-    f32 field_160, field_164, field_168;
+    f32 field_160;
+    f32 field_164;
+    f32 field_168;
     f32 last_used_time;
     f32 scale;
     u32 field_174;
@@ -391,7 +393,8 @@ void __cdecl edpartSelType(eduimenu_s *menu, eduiitem_s *item, u32 unused2) {
 }
 
 void __cdecl edpartGeneralTypeMenu(eduimenu_s *menu, eduiitem_s *unused1, u32 unused2) {
-    i32 index, selected;
+    i32 index;
+    i32 selected;
     edpart_generaltype_menu =
         eduiMenuCreate(70, 70, 250, 250, ed_fnt, edpartCancelGeneralTypeMenu, "Emitter Type (General)");
     if (edpart_generaltype_menu == NULL) {
@@ -429,7 +432,8 @@ void __cdecl edpartCancelLevelTypeMenu(eduimenu_s *unused0, eduimenu_s *unused1)
 }
 
 void __cdecl edpartLevelTypeMenu(eduimenu_s *menu, eduiitem_s *unused1, u32 unused2) {
-    i32 index, selected;
+    i32 index;
+    i32 selected;
     edpart_leveltype_menu = eduiMenuCreate(70, 70, 250, 250, ed_fnt, edpartCancelLevelTypeMenu, "Emitter Type (Level)");
     if (edpart_leveltype_menu == NULL) {
         return;
@@ -1420,7 +1424,8 @@ void edpartOptMenu(void) {
 
 i32 edpartSaveEffects(char *filename, u8 page) {
     char empty_name[16];
-    i32 index, variant;
+    i32 index;
+    i32 variant;
     i32 type_count = 0;
     i32 emitter_count = 0;
     memset(empty_name, 0, sizeof(empty_name));
@@ -1591,8 +1596,13 @@ static void edpartSaveMessage(eduimenu_s *parent, char *message, i32 status) {
 }
 
 void edpartFileSaveEffectsGeneral(eduimenu_s *parent, eduiitem_s *unused1, u32 unused2) {
-    char directory[256], extension[256], name[256], path[256], backup[256];
-    i32 i, backed_up = 1;
+    char directory[256];
+    char extension[256];
+    char name[256];
+    char path[256];
+    char backup[256];
+    i32 i;
+    i32 backed_up = 1;
     if (edbits_general_save_directory[0] == 0) {
         sprintf(directory, ".");
     } else {
@@ -1634,8 +1644,13 @@ void edpartFileSaveEffectsGeneral(eduimenu_s *parent, eduiitem_s *unused1, u32 u
 }
 
 void edpartFileSaveEffectsLevel(eduimenu_s *parent, eduiitem_s *unused1, u32 unused2) {
-    char directory[256], extension[256], name[256], path[256], backup[256];
-    i32 i, backed_up = 1;
+    char directory[256];
+    char extension[256];
+    char name[256];
+    char path[256];
+    char backup[256];
+    i32 i;
+    i32 backed_up = 1;
     if (edbits_level_save_directory[0] == 0) {
         sprintf(directory, ".");
     } else {
@@ -1677,10 +1692,19 @@ void edpartFileSaveEffectsLevel(eduimenu_s *parent, eduiitem_s *unused1, u32 unu
 }
 
 void edpartFileSaveEffects(eduimenu_s *parent, eduiitem_s *unused1, u32 unused2) {
-    char general_directory[256], general_extension[256], general_name[256];
-    char level_directory[256], level_extension[256], level_name[256];
-    char path[256], backup[256];
-    i32 i, general_backup = 1, level_backup = 1, general_saved, level_saved;
+    char general_directory[256];
+    char general_extension[256];
+    char general_name[256];
+    char level_directory[256];
+    char level_extension[256];
+    char level_name[256];
+    char path[256];
+    char backup[256];
+    i32 i;
+    i32 general_backup = 1;
+    i32 level_backup = 1;
+    i32 general_saved;
+    i32 level_saved;
     if (edbits_general_save_directory[0] == 0) {
         sprintf(general_directory, ".");
     } else {
@@ -1764,9 +1788,15 @@ void edpartFileSaveEffects(eduimenu_s *parent, eduiitem_s *unused1, u32 unused2)
 
 void edpartFileLoadEffects(eduimenu_s *parent, eduiitem_s *unused1, u32 unused2) {
     char path[256];
-    char general_directory[256], general_name[256], general_extension[256];
-    char level_directory[256], level_name[256], level_extension[256];
-    i32 i, index, variant;
+    char general_directory[256];
+    char general_name[256];
+    char general_extension[256];
+    char level_directory[256];
+    char level_name[256];
+    char level_extension[256];
+    i32 i;
+    i32 index;
+    i32 variant;
     i8 page;
     NUGSCN *scene;
     if (Part != NULL) {

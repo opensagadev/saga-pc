@@ -527,8 +527,11 @@ f32 __cdecl GizSpinner_GetNearestTargetPoint(GIZSPINNER_s *, NUVEC *, NUVEC *, N
 
 void __cdecl SockOn(SOCKSYS_PC *sys, i32 index);
 void __cdecl SockOff(SOCKSYS_PC *sys, i32 index);
-u32 LEGO_AIPATHCNX_BIGJUMP, LEGO_AIPATHCNX_REQUIRESPERMISSION, LEGO_AIPATHCNX_NO_DESTINATION_CHECK;
-u32 LEGO_AIPATHCNX_JUMP_NOW, LEGO_AIPATHCNX_DONT_JUMP_NOW;
+u32 LEGO_AIPATHCNX_BIGJUMP;
+u32 LEGO_AIPATHCNX_REQUIRESPERMISSION;
+u32 LEGO_AIPATHCNX_NO_DESTINATION_CHECK;
+u32 LEGO_AIPATHCNX_JUMP_NOW;
+u32 LEGO_AIPATHCNX_DONT_JUMP_NOW;
 
 typedef struct bulk_ai_lever_pc_s {
     u8 unknown_00[0x40];
@@ -620,7 +623,8 @@ const char GizActionLiteral758338[];
 const char GizActionLiteral75834c[];
 const char GizActionLiteral758360[];
 const char GizActionLiteral758374[];
-const char AITransferLiteral757824[], AITransferLiteral757a7c[];
+const char AITransferLiteral757824[];
+const char AITransferLiteral757a7c[];
 extern const char AIConditionMySetNamePc[6];
 extern const char AIConditionTakeoverTargetNamePc[15];
 
@@ -1524,7 +1528,8 @@ f32 __cdecl Condition_IsAlive(AISYS_PC *system, AISCRIPTPROCESS_PC *process, AIP
     APIOBJECT_PC *object = (APIOBJECT_PC *)argument;
     AIGROUP_PC *group;
     GAMEOBJECT *member;
-    i32 index, count;
+    i32 index;
+    i32 count;
     (void)system;
     (void)process;
     (void)packet;
@@ -1868,7 +1873,8 @@ f32 __cdecl Condition_HitPoints(AISYS_PC *system, AISCRIPTPROCESS_PC *process, A
 
 f32 __cdecl Condition_CollidingWithOpponent(AISYS_PC *system, AISCRIPTPROCESS_PC *process, AIPACKET_PC *packet,
                                             char *name, void *argument) {
-    GAMEOBJECT *opponent, *owner;
+    GAMEOBJECT *opponent;
+    GAMEOBJECT *owner;
     if (packet != NULL && (opponent = packet->opponent) != NULL && (owner = packet->owner) != NULL &&
         (U64_PAIR(opponent->collision_identity_mask) & U64_PAIR(owner->collision_contact_mask)) != 0) {
         return 1.0f;
@@ -2313,7 +2319,8 @@ f32 __cdecl Condition_SockDistanceToOpponent(AISYS_PC *unused0, AISCRIPTPROCESS_
 
 f32 __cdecl Condition_SockXDistanceToPlayer(AISYS_PC *unused0, AISCRIPTPROCESS_PC *unused1, AIPACKET_PC *packet,
                                             char *unused3, void *unused4) {
-    NUVEC player_offset, object_offset;
+    NUVEC player_offset;
+    NUVEC object_offset;
     if (packet != NULL && packet->owner != NULL && player != NULL) {
         GAMEOBJECT *object = packet->owner->objptr;
         if (player->sock_position.sock_index != -1 &&
@@ -2890,7 +2897,8 @@ f32 __cdecl Condition_GotLocatorInSet(AISYS_PC *system, AISCRIPTPROCESS_PC *proc
 
 f32 __cdecl Condition_GotOpponentLOS(AISYS_PC *system, AISCRIPTPROCESS_PC *process, AIPACKET_PC *packet, char *name,
                                      void *argument) {
-    GAMEOBJECT *object, *opponent;
+    GAMEOBJECT *object;
+    GAMEOBJECT *opponent;
     if (packet == NULL || packet->owner == NULL || packet->owner->objptr == NULL) {
         return 0.0f;
     }
@@ -3426,9 +3434,11 @@ i32 __cdecl Action_ClearTakeOverTarget(AISYS_PC *sys, AISCRIPTPROCESS_PC *proces
 
 i32 __cdecl Action_Activate(AISYS_PC *system, AISCRIPTPROCESS_PC *processor, AIPACKET_PC *packet, char **params,
                             i32 count, i32 first_time, f32 delta) {
-    GAMEOBJECT *object, *candidate;
+    GAMEOBJECT *object;
+    GAMEOBJECT *candidate;
     APIOBJECT_PC *found;
-    i32 index, creature_set = 0;
+    i32 index;
+    i32 creature_set = 0;
     char *value;
     (void)delta;
     object = NULL;
@@ -3690,7 +3700,8 @@ i32 __cdecl Action_SetSide(AISYS_PC *sys, AISCRIPTPROCESS_PC *processor, AIPACKE
     GAMEOBJECT *candidate;
     i32 type_matches;
     NUVEC offset;
-    i32 index, type_index;
+    i32 index;
+    i32 type_index;
 
     (void)param_6;
     range_squared = 0.0f;
@@ -3856,7 +3867,9 @@ i32 __cdecl Action_SetStateArea(AISYS_PC *sys, AISCRIPTPROCESS_PC *processor, AI
     NUVEC difference;
     f32 distance_squared;
     i32 matching_type;
-    i32 index, object_index, type_index;
+    i32 index;
+    i32 object_index;
+    i32 type_index;
     (void)sys;
     (void)param_6;
     range_squared = 0.0f;
@@ -3945,10 +3958,19 @@ i32 __cdecl Action_UpdateSockPos(AISYS_PC *sys, AISCRIPTPROCESS_PC *processor, A
 
 i32 __cdecl Action_Kill(AISYS_PC *system, AISCRIPTPROCESS_PC *processor, AIPACKET_PC *packet, char **params, i32 count,
                         i32 first_time, f32 delta) {
-    GAMEOBJECT *object, *candidate, *excluded = NULL;
+    GAMEOBJECT *object;
+    GAMEOBJECT *candidate;
+    GAMEOBJECT *excluded = NULL;
     APIOBJECT_PC *found;
     char *value;
-    i32 index, respawn = 0, origin = 0, all_ai = 0, debris = 0, parts = 0, creature_set = 0, check_dead = 0;
+    i32 index;
+    i32 respawn = 0;
+    i32 origin = 0;
+    i32 all_ai = 0;
+    i32 debris = 0;
+    i32 parts = 0;
+    i32 creature_set = 0;
+    i32 check_dead = 0;
     (void)delta;
     object = NULL;
     if (!first_time) {
@@ -5699,7 +5721,9 @@ i32 __cdecl Action_SetInvulnerable(AISYS_PC *sys, AISCRIPTPROCESS_PC *processor,
     i32 local_type;
     i32 global_type;
     GAMEOBJECT *candidate;
-    i32 index, object_index, type_index;
+    i32 index;
+    i32 object_index;
+    i32 type_index;
     (void)processor;
     (void)param_6;
     enabled = 1;
@@ -6812,7 +6836,8 @@ void GuidedMissile_Move(PART_PC *part, f32 time) {
         part->field_124[3] = (i32)SeekValF((f32)part->field_124[3], 0.0f, 2.0f);
     } else if (recipient != NULL && part->scale_time > guided_start_time) {
         NUVEC direction;
-        i32 yaw, pitch;
+        i32 yaw;
+        i32 pitch;
         NuVecSub(&direction, &recipient->collision_position, &part->position);
         yaw = NuAtan2D(direction.x, direction.z);
         NuVecRotateY(&direction, &direction, -yaw);
@@ -7993,7 +8018,8 @@ i32 __cdecl Action_SetPath(AISYS_PC *sys, AISCRIPTPROCESS_PC *processor, AIPACKE
     AIPATH_PC *path;
     char *value;
     APIOBJECT_PC *named;
-    i32 index, path_index;
+    i32 index;
+    i32 path_index;
 
     (void)param_6;
     path = NULL;
@@ -8289,7 +8315,11 @@ i32 __cdecl Action_PlayGizObstacle(AISYS_PC *system, AISCRIPTPROCESS_PC *process
                                    i32 count, i32 first_time, f32 delta) {
     GIZMO_PC *gizmo;
     char *value;
-    i32 index, backwards = 0, stay_open = 0, stay_shut = 0, snap = 0;
+    i32 index;
+    i32 backwards = 0;
+    i32 stay_open = 0;
+    i32 stay_shut = 0;
+    i32 snap = 0;
     GIZOBSTACLE *obstacle = NULL;
     (void)system;
     (void)processor;
@@ -8873,9 +8903,11 @@ i32 __cdecl Action_CatchUpForbidden(AISYS_PC *sys, AISCRIPTPROCESS_PC *processor
 
 i32 __cdecl Action_SetTaggable(AISYS_PC *system, AISCRIPTPROCESS_PC *processor, AIPACKET_PC *packet, char **params,
                                i32 count, i32 first_time, f32 delta) {
-    GAMEOBJECT *object, *target = NULL;
+    GAMEOBJECT *object;
+    GAMEOBJECT *target = NULL;
     char *value;
-    i32 index, disabled = 0;
+    i32 index;
+    i32 disabled = 0;
     (void)processor;
     (void)delta;
     object = NULL;
@@ -9004,10 +9036,14 @@ i32 __cdecl Action_CanAttack(AISYS_PC *sys, AISCRIPTPROCESS_PC *processor, AIPAC
 
 i32 __cdecl Action_TakeDamage(AISYS_PC *system, AISCRIPTPROCESS_PC *processor, AIPACKET_PC *packet, char **params,
                               i32 count, i32 first_time, f32 delta) {
-    GAMEOBJECT *object, *hitter, *candidate;
+    GAMEOBJECT *object;
+    GAMEOBJECT *hitter;
+    GAMEOBJECT *candidate;
     APIOBJECT_PC *found;
     char *value;
-    i32 index, damage, creature_set;
+    i32 index;
+    i32 damage;
+    i32 creature_set;
     (void)delta;
     object = NULL;
     hitter = NULL;
@@ -9062,7 +9098,8 @@ i32 __cdecl Action_TakeDamage(AISYS_PC *system, AISCRIPTPROCESS_PC *processor, A
 
 i32 __cdecl Action_TagCharacter(AISYS_PC *system, AISCRIPTPROCESS_PC *processor, AIPACKET_PC *packet, char **params,
                                 i32 count, i32 first_time, f32 delta) {
-    GAMEOBJECT *object, *target = NULL;
+    GAMEOBJECT *object;
+    GAMEOBJECT *target = NULL;
     APIOBJECT_PC *found;
     char *value;
     i32 index;
@@ -9098,11 +9135,15 @@ i32 __cdecl Action_TagCharacter(AISYS_PC *system, AISCRIPTPROCESS_PC *processor,
 i32 __cdecl Action_UseForce(AISYS_PC *system, AISCRIPTPROCESS_PC *processor, AIPACKET_PC *packet, char **params,
                             i32 count, i32 first_time, f32 delta) {
     GAMEOBJECT *object;
-    GIZFORCE_PC *force, *candidates[16];
+    GIZFORCE_PC *force;
+    GIZFORCE_PC *candidates[16];
     AI_FORCE_FIELDS_PC *view;
     GIZMO_PC *gizmo;
     char *name;
-    i32 index, candidate_count = 0, triggered_by_hit = 0, valid_category;
+    i32 index;
+    i32 candidate_count = 0;
+    i32 triggered_by_hit = 0;
+    i32 valid_category;
     (void)system;
     if (packet == NULL || packet->owner == NULL || packet->owner->objptr == NULL) {
         return 1;
@@ -10273,7 +10314,8 @@ i32 Action_HelpWithTriggers(AISYS_PC *unused0, AISCRIPTPROCESS_PC *processor, AI
     NUVEC *spinner_origin;
     NUVEC offset;
     f32 dist;
-    NUVEC spinner_position, spinner_direction;
+    NUVEC spinner_position;
+    NUVEC spinner_direction;
     if (((AI_TRIGGER_WORLD_PC *)WORLD)->trigger_system != NULL && packet != NULL && packet->owner != NULL &&
         packet->owner->objptr != NULL) {
         system = ((AI_TRIGGER_WORLD_PC *)WORLD)->trigger_system;
@@ -10869,8 +10911,11 @@ i32 __cdecl Action_GetLocatorFromSet(AISYS_PC *sys, AISCRIPTPROCESS_PC *processo
 
 i32 __cdecl Action_ProbeDroid(AISYS_PC *system, AISCRIPTPROCESS_PC *processor, AIPACKET_PC *packet, char **params,
                               i32 count, i32 first_time, f32 delta) {
-    GAMEOBJECT *object, *towing_player, *bomb;
-    AI_CABLE_OBJECT_PC *view, *player_view;
+    GAMEOBJECT *object;
+    GAMEOBJECT *towing_player;
+    GAMEOBJECT *bomb;
+    AI_CABLE_OBJECT_PC *view;
+    AI_CABLE_OBJECT_PC *player_view;
     AI_CABLE_HEAD_PC *cable;
     AILOCATOR_PC *locator;
     NUVEC difference;
@@ -11243,7 +11288,8 @@ i32 __cdecl Action_CanBeCarried(AISYS_PC *system, AISCRIPTPROCESS_PC *processor,
     GAMEOBJECT *object;
     APIOBJECT_PC *found;
     char *value;
-    i32 index, enabled = 1;
+    i32 index;
+    i32 enabled = 1;
     (void)processor;
     (void)delta;
     object = NULL;
@@ -11456,7 +11502,8 @@ i32 __cdecl Action_SetLayer(AISYS_PC *system, AISCRIPTPROCESS_PC *process, AIPAC
                             i32 count, i32 first_time, f32 delta_time) {
     GAMEOBJECT *object = NULL;
     APIOBJECT_PC *api_object;
-    i32 index, layer;
+    i32 index;
+    i32 layer;
     char *value;
     u32 set_layers = 0;
     u32 clear_layers = 0;
@@ -11638,8 +11685,10 @@ i32 __cdecl Action_AddScriptProcessor(AISYS_PC *system, AISCRIPTPROCESS_PC *proc
     i32 override_count = 0;
     char override_names[4][32];
     f32 override_values[4];
-    i32 index, slot;
-    char *value, *separator;
+    i32 index;
+    i32 slot;
+    char *value;
+    char *separator;
     AISCRIPTPROCESS_PC *created;
     WORLDINFO *world;
     (void)packet;
@@ -12336,7 +12385,8 @@ i32 __cdecl Action_CreateCreatures(AISYS_PC *sys, AISCRIPTPROCESS_PC *processor,
                                    i32 param_count, i32 first_time, f32 unused_delta) {
     NUVEC position;
     i32 index;
-    i32 minimum = -1, maximum = -1;
+    i32 minimum = -1;
+    i32 maximum = -1;
     i32 model_count = 0;
     i32 grouped = 1;
     i32 count = 1;
@@ -12353,14 +12403,16 @@ i32 __cdecl Action_CreateCreatures(AISYS_PC *sys, AISCRIPTPROCESS_PC *processor,
     ZIPUP_s *zipups[32];
     i16 models[10];
     char script[64] = "default";
-    f32 xspacing = 0.8f, zspacing = 0.8f;
+    f32 xspacing = 0.8f;
+    f32 zspacing = 0.8f;
     NUVEC offset = {0.0f, 0.0f, 0.0f};
     char *state = NULL;
     GAMEOBJECT *rider = NULL;
     i32 across = 2;
     AIPATHINFO_PC *path = NULL;
     i32 yaw = 0;
-    f32 crate_height = 0.0f, crate_delay = 0.0f;
+    f32 crate_height = 0.0f;
+    f32 crate_delay = 0.0f;
     i32 zipup_count = 0;
     f32 delay = 0.0f;
     i32 zipdown = 0;
@@ -12372,7 +12424,8 @@ i32 __cdecl Action_CreateCreatures(AISYS_PC *sys, AISCRIPTPROCESS_PC *processor,
     f32 min_dy = 1000000000.0f;
     AILOCATORSET_PC *locator_set = NULL;
     f32 max_dy = 1000000000.0f;
-    i64 add_capabilities = 0, remove_capabilities = 0;
+    i64 add_capabilities = 0;
+    i64 remove_capabilities = 0;
     if (first_time != 0) {
         if (packet != NULL && packet->owner != NULL) {
             path = &packet->path_info;
