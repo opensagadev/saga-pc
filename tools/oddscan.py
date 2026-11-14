@@ -72,6 +72,10 @@ CLASSES = [
     ("register", "b", "register storage class"),
     ("fastcall", "b", "__fastcall"),
     ("thiscall", "b", "__thiscall"),
+    ("cdecl", "b", "explicit __cdecl (the default convention; spelled out nowhere)"),
+    ("stdcall", "b", "__stdcall anywhere (Win32/COM/SDK ABI only; prefer WINAPI/CALLBACK in callbacks)"),
+    ("declspec-align", "b", "__declspec(align(N)) on a local, global or type"),
+    ("declspec-other", "b", "__declspec(noreturn/dllimport/dllexport/selectany/novtable/nothrow), __restrict"),
     ("stdcall-definition", "b", "__stdcall on a function defined in a unit"),
     ("unused-edx", "b", "parameter that only absorbs a register argument (unused_edx and similar)"),
     ("goto", "b", "goto statement"),
@@ -174,6 +178,11 @@ CODE_PATTERNS = [
     ("register", re.compile(r'\bregister\b(?!\s*\()')),
     ("fastcall", re.compile(r'\b__fastcall\b')),
     ("thiscall", re.compile(r'\b__thiscall\b')),
+    ("cdecl", re.compile(r'\b__cdecl\b')),
+    ("stdcall", re.compile(r'\b__stdcall\b')),
+    ("declspec-align", re.compile(r'__declspec\s*\(\s*align\s*\(')),
+    ("declspec-other", re.compile(
+        r'__declspec\s*\(\s*(?:noreturn|dllimport|dllexport|selectany|novtable|nothrow)\s*\)|\b__restrict\b')),
     ("unused-edx", re.compile(r'\b\w*(?:unused_e?[abcd]x|_edx|edx_unused|unused_register)\w*\b')),
     ("goto", re.compile(r'\bgoto\s+\w+\s*;')),
     ("ptr-int-cast", re.compile(

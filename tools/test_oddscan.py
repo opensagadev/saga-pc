@@ -83,6 +83,21 @@ class OddScanTests(unittest.TestCase):
         self.assertEqual(self.scan.counts["comment-retail"], 1)
         self.assertEqual(self.scan.counts["comment-address"], 1)
 
+    def test_explicit_attributes(self):
+        scan = oddscan.FileScan("src/nu2api/thing.cpp", """\
+void __cdecl Foo(void);
+extern "C" LRESULT __stdcall WindowProc(HWND, UINT, WPARAM, LPARAM);
+__declspec(noreturn) void Quit(void);
+void Args(i32 *__restrict count);
+void Bar(void) {
+    __declspec(align(16)) NUVEC position;
+}
+""")
+        self.assertEqual(scan.counts["cdecl"], 1)
+        self.assertEqual(scan.counts["stdcall"], 1)
+        self.assertEqual(scan.counts["declspec-align"], 1)
+        self.assertEqual(scan.counts["declspec-other"], 2)
+
     def test_standard_address_names_are_their_own_class(self):
         scan = oddscan.FileScan("src/legoapi/other.c", "i32 fun_0060a1b0(void);\nextern i32 dat_007facf0;\n"
                                 "i32 FUN_0060a1b0(void);\ni32 Thing67e8;\n")

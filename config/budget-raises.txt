@@ -52,3 +52,7 @@ config/declscan-budget.json A 128 port batch 1: unit-local declarations of calle
 config/declscan-budget.json C 378 port batch 1: unit-local declarations of callees and globals the new functions need (kept out of shared headers so existing code generation stays the same)
 config/declscan-budget.json D 2651 port batch 1: unit-local declarations of callees and globals the new functions need (kept out of shared headers so existing code generation stays the same)
 config/declscan-budget.json E 11 port batch 1: unit-local declarations of callees and globals the new functions need (kept out of shared headers so existing code generation stays the same)
+config/oddscan-budget.json dup-type 926 attribute audit: function-pointer typedefs repeated in several units differed only by an explicit __cdecl; without it they are textually the same duplicate
+config/oddscan-budget.json stdcall 288 new class (attribute audit): every remaining __stdcall is a Win32, COM/D3D vtable, DirectInput, RAD Bink or retail callback ABI; counted so no new one appears without review
+config/oddscan-budget.json declspec-align 152 new class (attribute audit): the aligned locals, globals and SSE types whose removal changes an object (137 others removed)
+config/oddscan-budget.json declspec-other 17 new class (attribute audit): RAD Bink and RtlUnwind dllimport prototypes and NuCommandLine's __restrict (removing it changes the code)

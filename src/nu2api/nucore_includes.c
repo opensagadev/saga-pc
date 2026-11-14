@@ -7506,6 +7506,7 @@ f32 NuTimeScanlines(NuTime *time) {
     return (f32)(NuTimeSeconds(time) * NuTime_ScanlineScale * 60.0);
 }
 
+// __restrict: without it VC8 reloads through count and arguments after each store, unlike the original.
 void NuCommandLine(i32 *__restrict count, char ***__restrict arguments) {
     // NuMain passes separate stack arguments, not these global cursors.
     argc = *count;
