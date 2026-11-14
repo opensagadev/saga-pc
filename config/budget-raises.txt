@@ -118,3 +118,5 @@ config/castscan-budget.json scalar-pun 305 port batch 3: the header-static Fabs 
 config/castscan-budget.json view-type 532 port batch 3: casts the new code keeps where saga.h types the member void * or as an overlay view
 config/castscan-budget.json void-pointer-cpp 1274 port batch 3: casts the new code keeps where saga.h types the member void * or as an overlay view
 config/declscan-budget.json D 2615 port batch 3: unit-local declarations of callees and globals the new functions need
+config/oddscan-budget.json address-name 3473 the keyboard-state accessors fun_006d4e20/40/50 become PC_INPUT_RUNTIME_PC members: the class declaration in PCInput.h names them a second time
+config/oddscan-budget.json magic-bound 1668 the 24 appends of PC_INPUT_RUNTIME_PC::InitializeDefaultRecords become the member AddInputRecord: its existing record bound 32 leaves the macro body the textual scan skipped
