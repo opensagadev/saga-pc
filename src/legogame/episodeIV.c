@@ -407,6 +407,7 @@ void DeathStarEscapeB_AlwaysUpdate(WORLDINFO *world) {
 
 /* Death Star battle midtro level slot (never assigned by FixUpLevels). */
 LEVELDATA_PC *DEATHSTARBATTLEMIDTRO_LDATA = NULL;
+i8 *DeathStarEscapeBNetPacketPc = 0;
 
 void DeathStarBattleC_AlwaysUpdate(WORLDINFO *world) {
     if (FreePlay == 0) {

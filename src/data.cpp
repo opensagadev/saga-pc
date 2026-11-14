@@ -26480,7 +26480,6 @@ extern "C" {
     i32 JediBActiveCountPc = 0;
     JEDIB_NETPACKET_PC *jedib_netpacket = NULL;
     JEDIB_STATE_PC jedi_b = {0};
-    i8 *DeathStarEscapeBNetPacketPc = 0;
 }
 
 /* Static-shadow frustum topology and mutable extrusion distance. */
