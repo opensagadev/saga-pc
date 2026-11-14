@@ -9143,18 +9143,7 @@ extern "C" {
     NUMTL *numtl_defaultmtl3d = 0;
     VARIPTR *NuDisplayListStreamCursor = 0;
     NUGLOBALRNDRSTATE_PC render_state = {0};
-    f32 default_targetmomf = 4.0f;
-    f32 default_ownermomf = 5.0f;
-    f32 default_max_cable_length = 15.0f;
-    f32 default_tow_length = 6.0f;
-    f32 targetmomf = 4.0f;
-    f32 ownermomf = 5.0f;
-    f32 max_cable_length = 15.0f;
-    f32 tow_length = 6.0f;
     AREA_DATA_PC *GUNSHIP_ADATA = 0;
-    u8 cables[0xf60] = {0};
-    i32 nsegments_drawn = 0;
-    i32 solid_cable = 0;
     i32 menu_flash = 0;
     i16 tAUDIOVOLUME = 0;
     i16 tMUSIC = 0;
@@ -24606,26 +24595,8 @@ extern "C" {
 }
 
 extern "C" {
-#pragma data_seg(".data$cable_damping")
-    f32 cable_damping = 2.0f;
-
-#pragma data_seg(".data$cable_gravity")
-    f32 cable_gravity = 3.0f;
-
-#pragma data_seg(".data$cable_ground_damping")
-    f32 cable_ground_damping = 20.0f;
-#pragma data_seg(".data$nsegments_per_unit")
-    f32 nsegments_per_unit = 6.0f;
-#pragma data_seg(".data$cable_slack")
-    f32 cable_slack = 1.0f;
-#pragma data_seg(".data$slack_factor")
-    f32 slack_factor = 1.0f;
-
-#pragma data_seg(".data$atat_locators")
-    i32 atat_locators[4] = {0, 1, 2, 3};
 
 #pragma data_seg(".data$cable_speed")
-    f32 cable_speed = 20.0f;
 }
 
 extern "C" {

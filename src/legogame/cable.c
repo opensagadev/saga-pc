@@ -27,6 +27,26 @@ typedef struct cable_context_info_pc_s {
     u64 flags;           // 0x8
 } CABLE_CONTEXT_INFO_PC; // size 0x10
 
+i32 atat_locators[4] = {0, 1, 2, 3};
+f32 cable_speed = 20.0f;
+f32 default_targetmomf = 4.0f;
+f32 default_ownermomf = 5.0f;
+f32 default_max_cable_length = 15.0f;
+f32 default_tow_length = 6.0f;
+f32 targetmomf = 4.0f;
+f32 ownermomf = 5.0f;
+f32 max_cable_length = 15.0f;
+f32 tow_length = 6.0f;
+f32 cable_gravity = 3.0f;
+f32 cable_damping = 2.0f;
+f32 cable_ground_damping = 20.0f;
+f32 nsegments_per_unit = 6.0f;
+f32 cable_slack = 1.0f;
+f32 slack_factor = 1.0f;
+u8 cables[0xf60] = {0};
+i32 nsegments_drawn = 0;
+i32 solid_cable = 0;
+
 extern const f64 GameObjectNearFloorNoFloorHeight;
 i32 XZLinesIntersect(NUVEC *a, NUVEC *b, NUVEC *c, NUVEC *d, float *first, float *second);
 
