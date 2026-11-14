@@ -57,16 +57,16 @@ i32 ObjInTube(GAMEOBJECT *object) {
     return 0;
 }
 
-typedef struct TUBE_COOLDOWN_VIEW_PC {
-    u8 unknown_00[0x30]; // 0x00
-    f32 audio_cooldown;  // 0x30
-} TUBE_COOLDOWN_VIEW_PC; // size 0x34
+typedef struct TUBE_COOLDOWN_VIEW_PC { // size 0x34
+    u8 unknown_00[0x30];               // 0x00
+    f32 audio_cooldown;                // 0x30
+} TUBE_COOLDOWN_VIEW_PC;
 
-typedef struct TUBE_ENTRY_VIEW_PC {
-    u8 unknown_000[0x79c]; // 0x000
-    i32 entry_state;       // 0x79c
-    void *entry_data;      // 0x7a0
-} TUBE_ENTRY_VIEW_PC;      // size 0x7a4
+typedef struct TUBE_ENTRY_VIEW_PC { // size 0x7a4
+    u8 unknown_000[0x79c];          // 0x000
+    i32 entry_state;                // 0x79c
+    void *entry_data;               // 0x7a0
+} TUBE_ENTRY_VIEW_PC;
 
 STATIC_ASSERT(offsetof(GAMEOBJECT, techno) == 0x798);
 STATIC_ASSERT(offsetof(GAMEOBJECT, jump_variant_state) == 0xe32);
@@ -118,37 +118,37 @@ void Tube_MoveCode(GAMEOBJECT *object, WORLDINFO *world) {
     }
 }
 
-typedef struct tube_callbacks_pc_s {
-    char name[16];         // 0x00
-    NUVEC position;        // 0x10
-    f32 height;            // 0x1c
-    f32 radius;            // 0x20
-    f32 directional_speed; // 0x24
-    f32 top;               // 0x28
-    f32 radius_squared;    // 0x2c
-    f32 audio_cooldown;    // 0x30
+typedef struct tube_callbacks_pc_s { // size 0x40
+    char name[16];                   // 0x00
+    NUVEC position;                  // 0x10
+    f32 height;                      // 0x1c
+    f32 radius;                      // 0x20
+    f32 directional_speed;           // 0x24
+    f32 top;                         // 0x28
+    f32 radius_squared;              // 0x2c
+    f32 audio_cooldown;              // 0x30
 
-    union {       // 0x34
-        u8 flags; // 0x34
+    union { // size 0x1
+        u8 flags;
 
-        struct {             // 0x34
+        struct {             // size 0x1
             u8 active : 1;   // 0x34:0
             u8 visible : 1;  // 0x34:1
             u8 flag_04 : 1;  // 0x34:2
             u8 reversed : 1; // 0x34:3
             u8 unused : 4;   // 0x34:4
         } bits;
-    };
+    }; // 0x34
 
     u8 padding[3];                // 0x35
     u32 occupied_object_masks[2]; // 0x38
-} TUBE_CALLBACKS_PC;              // size 0x40
+} TUBE_CALLBACKS_PC;
 
-typedef struct tube_progress_pc_s {
+typedef struct tube_progress_pc_s { // size 0x8
     /* Indexes both masks by tube / 32, although only 32 tubes are stored. */
     u32 visible_mask[1]; // 0x0
     u32 active_mask[1];  // 0x4
-} TUBE_PROGRESS_PC;      // size 0x8
+} TUBE_PROGRESS_PC;
 
 static void *Tubes_ReserveBufferSpace(void *world_ptr) {
     WORLDINFO *world = world_ptr;

@@ -44,7 +44,7 @@ typedef struct AISCRIPTPROCESSSTACK_PC {
 /* Not converted: these asserts balance VC8 symbol ids for fragile functions (docs/cleanup-audit.md, section 6). */
 STATIC_ASSERT(sizeof(AISCRIPTPROCESSSTACK_PC) == 0x14);
 
-struct AISCRIPTPROCESS_PC {
+struct AISCRIPTPROCESS_PC {                 // size 0xc8
     AISCRIPT_PC *base_script;               // 0x00
     AISCRIPT_PC *script;                    // 0x04
     AISTATE_PC *state;                      // 0x08
@@ -69,10 +69,10 @@ struct AISCRIPTPROCESS_PC {
     struct AILOCATOR_PC *locator;           // 0xa4
     struct AILOCATORSET_PC *locator_set;    // 0xa8
 
-    union {                           // 0xac
-        u32 field_ac;                 // 0xac
-        struct nugspline_s *myspline; // 0xac
-    };
+    union { // size 0x4
+        u32 field_ac;
+        struct nugspline_s *myspline;
+    }; // 0xac
 
     u8 creature_set;             // 0xb0
     u8 unknown_b1;               // 0xb1
@@ -84,27 +84,27 @@ struct AISCRIPTPROCESS_PC {
     AISTATE_PC *interrupt_state; // 0xbc
     AISTATE_PC *return_to_state; // 0xc0
     void *local_messages;        // 0xc4
-}; // size 0xc8
+};
 
 typedef struct AIACTIONMACRO_PC AIACTIONMACRO_PC;
 typedef struct AICONDITIONMACRO_PC AICONDITIONMACRO_PC;
 
-struct AIACTIONMACRO_PC {
-    NULISTLNK link;    // 0x00
-    char *name;        // 0x08
-    NULISTHDR actions; // 0x0c
-}; // size 0x14
-
-struct AICONDITIONMACRO_PC {
+struct AIACTIONMACRO_PC { // size 0x14
     NULISTLNK link;       // 0x00
     char *name;           // 0x08
-    NULISTHDR conditions; // 0x0c
-}; // size 0x14
+    NULISTHDR actions;    // 0x0c
+};
 
-typedef struct AISCRIPTPARAM_PC {
-    char *name;        // 0x0
-    f32 default_value; // 0x4
-} AISCRIPTPARAM_PC;    // size 0x8
+struct AICONDITIONMACRO_PC { // size 0x14
+    NULISTLNK link;          // 0x00
+    char *name;              // 0x08
+    NULISTHDR conditions;    // 0x0c
+};
+
+typedef struct AISCRIPTPARAM_PC { // size 0x8
+    char *name;                   // 0x0
+    f32 default_value;            // 0x4
+} AISCRIPTPARAM_PC;
 
 #undef SAGA_GAMEAPI_AI_AISYS_AISCRIPT_TYPES_H_PART
 #define SAGA_GAMEAPI_AI_AISYS_AISCRIPT_TYPES_H_PART 2
@@ -115,14 +115,14 @@ typedef struct AISCRIPTPARAM_PC {
 
 #if SAGA_GAMEAPI_AI_AISYS_AISCRIPT_TYPES_H_PART == 2 && !defined(SAGA_GAMEAPI_AI_AISYS_AISCRIPT_TYPES_H_STOP)
 
-struct AIACTION_PC {
+struct AIACTION_PC {                   // size 0x14
     NULISTLNK link;                    // 0x00
     char **params;                     // 0x08
     i32 param_count;                   // 0x0c
     struct AIACTIONDEF_PC *definition; // 0x10
-}; // size 0x14
+};
 
-struct AICONDITION_PC {
+struct AICONDITION_PC {                   // size 0x2c
     NULISTLNK link;                       // 0x00
     f32 param_value;                      // 0x08
     i8 comparison;                        // 0x0c
@@ -135,7 +135,7 @@ struct AICONDITION_PC {
     char *next_state_name;                // 0x20
     AISTATE_PC *next_state;               // 0x24
     AICONDITION_PC *parameter_condition;  // 0x28
-}; // size 0x2c
+};
 
 #undef SAGA_GAMEAPI_AI_AISYS_AISCRIPT_TYPES_H_PART
 #define SAGA_GAMEAPI_AI_AISYS_AISCRIPT_TYPES_H_PART 3
@@ -146,7 +146,7 @@ struct AICONDITION_PC {
 
 #if SAGA_GAMEAPI_AI_AISYS_AISCRIPT_TYPES_H_PART == 3 && !defined(SAGA_GAMEAPI_AI_AISYS_AISCRIPT_TYPES_H_STOP)
 
-struct AIREFSCRIPT_PC {
+struct AIREFSCRIPT_PC {           // size 0x24
     NULISTLNK link;               // 0x00
     char *name;                   // 0x08
     AISCRIPT_PC *script;          // 0x0c
@@ -155,17 +155,17 @@ struct AIREFSCRIPT_PC {
     u32 check_global_scripts : 1; // 0x18:0
     u32 check_level_scripts : 1;  // 0x18:1
     NULISTHDR conditions;         // 0x1c
-}; // size 0x24
+};
 
-struct AISTATE_PC {
+struct AISTATE_PC {              // size 0x24
     NULISTLNK link;              // 0x00
     NULISTHDR conditions;        // 0x08
     NULISTHDR actions;           // 0x10
     char *name;                  // 0x18
     NULISTHDR reference_scripts; // 0x1c
-}; // size 0x24
+};
 
-struct AISCRIPT_PC {
+struct AISCRIPT_PC {             // size 0x58
     NULISTLNK link;              // 0x00
     char *name;                  // 0x08
     char *derived_from;          // 0x0c
@@ -176,7 +176,7 @@ struct AISCRIPT_PC {
     NULISTHDR reference_scripts; // 0x40
     NULISTHDR condition_macros;  // 0x48
     NULISTHDR action_macros;     // 0x50
-}; // size 0x58
+};
 
 #undef SAGA_GAMEAPI_AI_AISYS_AISCRIPT_TYPES_H_PART
 #define SAGA_GAMEAPI_AI_AISYS_AISCRIPT_TYPES_H_PART 4

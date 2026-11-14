@@ -121,3 +121,17 @@ config/declscan-budget.json D 2615 port batch 3: unit-local declarations of call
 config/oddscan-budget.json address-name 3473 the keyboard-state accessors fun_006d4e20/40/50 become PC_INPUT_RUNTIME_PC members: the class declaration in PCInput.h names them a second time
 config/oddscan-budget.json magic-bound 1668 the 24 appends of PC_INPUT_RUNTIME_PC::InitializeDefaultRecords become the member AddInputRecord: its existing record bound 32 leaves the macro body the textual scan skipped
 config/oddscan-budget.json view-type 197 header plan step 2: pointers to existing decomp.h view types spelled with their struct tag (and the tag forward-declared) in the module headers that use them, so those headers need not include decomp.h; no new view type
+config/oddscan-budget.json address-name 3513 port batch 4 (members pinned by class, misjudged cdecl functions): new address names fun_XXXXXXXX, literal flags and states, existing Pc and view member names
+config/oddscan-budget.json hex-name 9669 port batch 4 (members pinned by class, misjudged cdecl functions): new address names fun_XXXXXXXX, literal flags and states, existing Pc and view member names
+config/oddscan-budget.json magic-bound 1669 port batch 4 (members pinned by class, misjudged cdecl functions): new address names fun_XXXXXXXX, literal flags and states, existing Pc and view member names
+config/oddscan-budget.json magic-flag 7565 port batch 4 (members pinned by class, misjudged cdecl functions): new address names fun_XXXXXXXX, literal flags and states, existing Pc and view member names
+config/oddscan-budget.json magic-mask 1232 port batch 4 (members pinned by class, misjudged cdecl functions): new address names fun_XXXXXXXX, literal flags and states, existing Pc and view member names
+config/oddscan-budget.json magic-state 8724 port batch 4 (members pinned by class, misjudged cdecl functions): new address names fun_XXXXXXXX, literal flags and states, existing Pc and view member names
+config/oddscan-budget.json pragma-seg 6495 port batch 4: two new data rows defined under per-variable section pragmas like their neighbours
+config/oddscan-budget.json view-use 1051 port batch 4 (members pinned by class, misjudged cdecl functions): new address names fun_XXXXXXXX, literal flags and states, existing Pc and view member names
+config/castscan-budget.json byte-pointer 1054 port batch 4: casts and unit-local declarations the new functions keep where the header types the member as void * or an overlay view
+config/castscan-budget.json declaration-type 1742 port batch 4: casts and unit-local declarations the new functions keep where the header types the member as void * or an overlay view
+config/castscan-budget.json function-pointer 805 port batch 4: casts and unit-local declarations the new functions keep where the header types the member as void * or an overlay view
+config/castscan-budget.json int-pointer 814 port batch 4: casts and unit-local declarations the new functions keep where the header types the member as void * or an overlay view
+config/castscan-budget.json void-pointer-cpp 1276 port batch 4: casts and unit-local declarations the new functions keep where the header types the member as void * or an overlay view
+config/declscan-budget.json C 369 port batch 4: casts and unit-local declarations the new functions keep where the header types the member as void * or an overlay view

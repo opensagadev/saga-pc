@@ -1,47 +1,47 @@
 #include "saga.h"
 
-typedef struct GIZFLOW_LOAD_LEVEL_PC {
-    u8 unknown_000[0xe9]; // 0x000
-    u8 max_timers;        // 0x0e9
-    u8 unknown_0ea[0xb];  // 0x0ea
-    u8 max_specials;      // 0x0f5
-    u8 unknown_0f6[0xd];  // 0x0f6
-    u8 max_randoms;       // 0x103
-} GIZFLOW_LOAD_LEVEL_PC;  // size 0x104
+typedef struct GIZFLOW_LOAD_LEVEL_PC { // size 0x104
+    u8 unknown_000[0xe9];              // 0x000
+    u8 max_timers;                     // 0x0e9
+    u8 unknown_0ea[0xb];               // 0x0ea
+    u8 max_specials;                   // 0x0f5
+    u8 unknown_0f6[0xd];               // 0x0f6
+    u8 max_randoms;                    // 0x103
+} GIZFLOW_LOAD_LEVEL_PC;
 
-typedef struct GIZFLOW_TIMER_PC {
-    f32 time_remaining; // 0x00
-    f32 start_time;     // 0x04
-    u8 unknown_008[2];  // 0x08
-    u8 flags;           // 0x0a
-    u8 unknown_00b;     // 0x0b
-    char name[16];      // 0x0c
-} GIZFLOW_TIMER_PC;     // size 0x1c
+typedef struct GIZFLOW_TIMER_PC { // size 0x1c
+    f32 time_remaining;           // 0x00
+    f32 start_time;               // 0x04
+    u8 unknown_008[2];            // 0x08
+    u8 flags;                     // 0x0a
+    u8 unknown_00b;               // 0x0b
+    char name[16];                // 0x0c
+} GIZFLOW_TIMER_PC;
 
-typedef struct GIZFLOW_RANDOM_PC {
-    char name[16];         // 0x00
-    i32 output_count;      // 0x10
-    i32 output_weights[8]; // 0x14
-    u8 unknown_034[8];     // 0x34
-} GIZFLOW_RANDOM_PC;       // size 0x3c
+typedef struct GIZFLOW_RANDOM_PC { // size 0x3c
+    char name[16];                 // 0x00
+    i32 output_count;              // 0x10
+    i32 output_weights[8];         // 0x14
+    u8 unknown_034[8];             // 0x34
+} GIZFLOW_RANDOM_PC;
 
-typedef struct GIZFLOW_RANDOM_SYSTEM_PC {
-    GIZFLOW_RANDOM_PC *randoms; // 0x0
-    i32 count;                  // 0x4
-} GIZFLOW_RANDOM_SYSTEM_PC;     // size 0x8
+typedef struct GIZFLOW_RANDOM_SYSTEM_PC { // size 0x8
+    GIZFLOW_RANDOM_PC *randoms;           // 0x0
+    i32 count;                            // 0x4
+} GIZFLOW_RANDOM_SYSTEM_PC;
 
-typedef struct GIZFLOW_SPECIAL_PC {
-    char name[32];         // 0x00
-    GAMEANIMSET *anim_set; // 0x20
-    u8 unknown_024[4];     // 0x24
-} GIZFLOW_SPECIAL_PC;      // size 0x28
+typedef struct GIZFLOW_SPECIAL_PC { // size 0x28
+    char name[32];                  // 0x00
+    GAMEANIMSET *anim_set;          // 0x20
+    u8 unknown_024[4];              // 0x24
+} GIZFLOW_SPECIAL_PC;
 
-typedef struct GIZFLOW_SPECIAL_SYSTEM_PC {
-    GIZFLOW_SPECIAL_PC *specials; // 0x0
-    i32 count;                    // 0x4
-} GIZFLOW_SPECIAL_SYSTEM_PC;      // size 0x8
+typedef struct GIZFLOW_SPECIAL_SYSTEM_PC { // size 0x8
+    GIZFLOW_SPECIAL_PC *specials;          // 0x0
+    i32 count;                             // 0x4
+} GIZFLOW_SPECIAL_SYSTEM_PC;
 
-typedef struct GIZFLOW_LOAD_WORLD_PC {
+typedef struct GIZFLOW_LOAD_WORLD_PC {   // size 0x510c
     u8 unknown_000[0x104];               // 0x0000
     VARIPTR giz_buffer;                  // 0x0104
     u8 unknown_108[0x20];                // 0x0108
@@ -56,7 +56,7 @@ typedef struct GIZFLOW_LOAD_WORLD_PC {
     u8 unknown_5100[4];                  // 0x5100
     GIZFLOW_RANDOM_SYSTEM_PC *randoms;   // 0x5104
     GIZFLOW_SPECIAL_SYSTEM_PC *specials; // 0x5108
-} GIZFLOW_LOAD_WORLD_PC;                 // size 0x510c
+} GIZFLOW_LOAD_WORLD_PC;
 
 i32 GizTimer_GetMaxGizmos(void *world_info) {
     WORLDINFO *world = world_info;

@@ -1354,10 +1354,10 @@ extern "C" i32 NewRayCastSetMask(NUVEC *position, NUVEC *movement, f32 radius, f
 
 static u8 *TempStackPtrPc = 0;
 
-struct TERRAIN_HANDLE_WALL_PAIR_PC {
-    TERRAIN_WALL_POINT *first;  // 0x0
-    TERRAIN_WALL_POINT *second; // 0x4
-}; // size 0x8
+struct TERRAIN_HANDLE_WALL_PAIR_PC { // size 0x8
+    TERRAIN_WALL_POINT *first;       // 0x0
+    TERRAIN_WALL_POINT *second;      // 0x4
+};
 
 extern "C" void NewScanInit(void) {
     TempStackPtrPc = static_cast<u8 *>(TempScanStack);
@@ -1593,18 +1593,18 @@ extern "C" void fun_0067e980(void) {
 STATIC_ASSERT(offsetof(TERRAIN_SPATIAL_NODE, point_count) == 0);
 STATIC_ASSERT(offsetof(TERRAIN_SPATIAL_CHUNK, previous) == 0);
 
-struct TERRAIN_HANDLE_END_PC {
+struct TERRAIN_HANDLE_END_PC {       // size 0x8
     TERRAIN_SCAN_WORD_PC terminator; // 0x0
 
-    union {                              // 0x4
-        TERRAIN_WALL_POINT *wall_cursor; // 0x4
+    union { // size 0x4
+        TERRAIN_WALL_POINT *wall_cursor;
 
-        struct {               // 0x4
+        struct {               // size 0x4
             i16 shape_count;   // 0x4
             i16 terrain_group; // 0x6
         } wall_end;
-    };
-}; // size 0x8
+    }; // 0x4
+};
 
 STATIC_ASSERT(offsetof(TERRAIN_SPATIAL_CHUNK, node) == 4);
 STATIC_ASSERT(offsetof(TERRAIN_SPATIAL_NODE, field_02) == 2);

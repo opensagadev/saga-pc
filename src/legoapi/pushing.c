@@ -1,33 +1,33 @@
 #include "saga.h"
 #include <string.h>
 
-typedef struct PUSH_CONTEXT_INFO_PC {
-    const char *name;   // 0x0
-    i32 action;         // 0x4
-    u64 flags;          // 0x8
-} PUSH_CONTEXT_INFO_PC; // size 0x10
+typedef struct PUSH_CONTEXT_INFO_PC { // size 0x10
+    const char *name;                 // 0x0
+    i32 action;                       // 0x4
+    u64 flags;                        // 0x8
+} PUSH_CONTEXT_INFO_PC;
 
-typedef struct PART_RELEASE_PUSH_PC {
-    u8 unknown_000[0xdc4]; // 0x000
-    f32 push_timer;        // 0xdc4
-} PART_RELEASE_PUSH_PC;    // size 0xdc8
+typedef struct PART_RELEASE_PUSH_PC { // size 0xdc8
+    u8 unknown_000[0xdc4];            // 0x000
+    f32 push_timer;                   // 0xdc4
+} PART_RELEASE_PUSH_PC;
 
 STATIC_ASSERT(offsetof(GIZSPINNER_s, state_flags) == 0x84);
 STATIC_ASSERT(offsetof(GIZSPINNER_s, spin_timer) == 0x90);
 
-typedef struct PUSH_OBJECT_LOCAL_PC {
-    u8 unknown_000[0x768];          // 0x000
-    f32 obstacle_timer;             // 0x768
-    u8 unknown_076c[0x7b1 - 0x76c]; // 0x76c
-    u8 landing_followup;            // 0x7b1
-} PUSH_OBJECT_LOCAL_PC;             // size 0x7b4
+typedef struct PUSH_OBJECT_LOCAL_PC { // size 0x7b4
+    u8 unknown_000[0x768];            // 0x000
+    f32 obstacle_timer;               // 0x768
+    u8 unknown_076c[0x7b1 - 0x76c];   // 0x76c
+    u8 landing_followup;              // 0x7b1
+} PUSH_OBJECT_LOCAL_PC;
 
 extern u32 (*CanPushObstaclesFn)(GAMEOBJECT *);
 
-typedef struct PUSH_OBSTACLE_WORLD_PC {
-    u8 unknown_000[0x46a4]; // 0x0000
-    void *obstacle_sys;     // 0x46a4
-} PUSH_OBSTACLE_WORLD_PC;   // size 0x46a8
+typedef struct PUSH_OBSTACLE_WORLD_PC { // size 0x46a8
+    u8 unknown_000[0x46a4];             // 0x0000
+    void *obstacle_sys;                 // 0x46a4
+} PUSH_OBSTACLE_WORLD_PC;
 
 typedef struct spinner_movement_pc_s {
     u8 unknown_00[0x84];

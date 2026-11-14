@@ -25,6 +25,10 @@ f32 CurrentHintAlpha(void) {
 
 const u8 HintRGB[5][3] = {{255, 0, 0}, {0, 255, 0}, {0, 127, 255}, {127, 0, 255}, {255, 255, 0}};
 
+/* LoadPermData calls this right after Alt_registerStatusScreen; the body is empty. */
+void Alt_registerStatusScreenExtraPc(void) {
+}
+
 void DrawHint_LSW(HINT_PC *hint, i32 max_lines) {
     f32 alpha;
     f32 text_x;

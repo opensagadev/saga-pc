@@ -21,6 +21,17 @@ STATIC_ASSERT(offsetof(TORPEDOPACKET_PC, target) == 0x84);
 STATIC_ASSERT(offsetof(GAMEOBJECT, flags_e20) == 0xe20);
 STATIC_ASSERT(offsetof(GAMEOBJECT, flags_e24) == 0xe24);
 STATIC_ASSERT(sizeof(GAMEOBJECT) == 0x10d8);
+STATIC_ASSERT(sizeof(GIZBOMBGEN_s) == 0x2c);
+STATIC_ASSERT(offsetof(GIZBOMBGEN_s, anim_set) == 0x1c);
+STATIC_ASSERT(sizeof(GIZBOMBGENSYS_s) == 0x14);
+STATIC_ASSERT(offsetof(GIZBOMBGENSYS_s, capacity) == 6);
+STATIC_ASSERT(offsetof(GIZBOMBGENSYS_s, anim_object_pool) == 8);
+STATIC_ASSERT(sizeof(GIZTORPMACHINE_s) == 0x2c);
+STATIC_ASSERT(sizeof(GIZTORPMACHINESYS_s) == 0xc);
+STATIC_ASSERT(offsetof(GIZTORPMACHINESYS_s, machines) == 0);
+STATIC_ASSERT(offsetof(GIZTORPMACHINESYS_s, scale) == 8);
+STATIC_ASSERT(offsetof(WORLDINFO, giz_force_sys) == 0x46ac);
+STATIC_ASSERT(offsetof(WORLDINFO, giz_bombgen_sys) == 0x5114);
 
 typedef struct coin_reset_packet_pc_s {
     u8 unknown_00[4];
@@ -42,15 +53,15 @@ typedef struct {
 
 void GizmoPickups_PostLoad(void *, void *);
 
-typedef struct lose_coins_packet_pc_s {
-    u32 coins;          // 0x0
-} LOSE_COINS_PACKET_PC; // size 0x4
+typedef struct lose_coins_packet_pc_s { // size 0x4
+    u32 coins;                          // 0x0
+} LOSE_COINS_PACKET_PC;
 
 STATIC_ASSERT(offsetof(GAMEOBJECT, coin_packet) == 0x7fc);
 STATIC_ASSERT(offsetof(CHARACTERDATA_PC, game_character) == 0x24);
 STATIC_ASSERT(offsetof(PLAYERCHARACTERCONFIG_PC, flags_090) == 0x90);
 
-typedef struct SPECIAL_MINIKIT_PC {
+typedef struct SPECIAL_MINIKIT_PC { // size 0x3c
     NUSPECIALHANDLE special;        // 0x00
     NUINSTANIM *instance_animation; // 0x0c
     void *animation_data;           // 0x10
@@ -60,17 +71,17 @@ typedef struct SPECIAL_MINIKIT_PC {
     GIZMO_PC *at_gizmo;             // 0x30
     GIZMO_PC *pickup;               // 0x34
     u32 flags;                      // 0x38
-} SPECIAL_MINIKIT_PC;               // size 0x3c
+} SPECIAL_MINIKIT_PC;
 
-typedef struct SPECIAL_MINIKIT_SYSTEM_PC {
-    SPECIAL_MINIKIT_PC *items; // 0x0
-    i32 count;                 // 0x4
-} SPECIAL_MINIKIT_SYSTEM_PC;   // size 0x8
+typedef struct SPECIAL_MINIKIT_SYSTEM_PC { // size 0x8
+    SPECIAL_MINIKIT_PC *items;             // 0x0
+    i32 count;                             // 0x4
+} SPECIAL_MINIKIT_SYSTEM_PC;
 
-typedef struct SPECIAL_MINIKIT_WORLD_PC {
+typedef struct SPECIAL_MINIKIT_WORLD_PC {        // size 0x5058
     u8 unknown_0[0x5054];                        // 0x0000
     SPECIAL_MINIKIT_SYSTEM_PC *special_minikits; // 0x5054
-} SPECIAL_MINIKIT_WORLD_PC;                      // size 0x5058
+} SPECIAL_MINIKIT_WORLD_PC;
 
 STATIC_ASSERT(offsetof(AREA_GLOBALS_PC, field_18) == 0x18);
 STATIC_ASSERT(sizeof(struct GIZMOPICKUPRUNTIMESYS_s) == 0x1c);
@@ -88,17 +99,17 @@ STATIC_ASSERT(offsetof(AREA_DATA_PC, flags) == 0x7a);
 STATIC_ASSERT(offsetof(GIZMOPICKUP_PC, unknown_14) == 0x14);
 STATIC_ASSERT(offsetof(GIZMOPICKUP_PC, activation_group) == 0x18);
 
-typedef struct PICKUP_RESET_RECORD_PC {
-    char name[8];     // 0x00
-    NUVEC position;   // 0x08
-    u8 type_code;     // 0x14
-    u8 config_flags;  // 0x15
-    u8 model_variant; // 0x16
+typedef struct PICKUP_RESET_RECORD_PC { // size 0x2c
+    char name[8];                       // 0x00
+    NUVEC position;                     // 0x08
+    u8 type_code;                       // 0x14
+    u8 config_flags;                    // 0x15
+    u8 model_variant;                   // 0x16
 
-    union {       // 0x17
-        u8 flags; // 0x17
+    union { // size 0x1
+        u8 flags;
 
-        struct {                   // 0x17
+        struct {                   // size 0x1
             u8 active : 1;         // 0x17:0
             u8 enabled : 1;        // 0x17:1
             u8 visible : 1;        // 0x17:2
@@ -108,24 +119,24 @@ typedef struct PICKUP_RESET_RECORD_PC {
             u8 alternate_type : 1; // 0x17:6
             u8 activated : 1;      // 0x17:7
         };
-    };
+    }; // 0x17
 
-    u8 unknown_18[4];     // 0x18
-    f32 floor;            // 0x1c
-    u16 shadow_x;         // 0x20
-    u16 shadow_z;         // 0x22
-    i8 room;              // 0x24
-    u8 type_index;        // 0x25
-    u16 rotation;         // 0x26
-    f32 timer;            // 0x28
-} PICKUP_RESET_RECORD_PC; // size 0x2c
+    u8 unknown_18[4]; // 0x18
+    f32 floor;        // 0x1c
+    u16 shadow_x;     // 0x20
+    u16 shadow_z;     // 0x22
+    i8 room;          // 0x24
+    u8 type_index;    // 0x25
+    u16 rotation;     // 0x26
+    f32 timer;        // 0x28
+} PICKUP_RESET_RECORD_PC;
 
-typedef struct PICKUP_RESET_PROGRESS_PC {
-    u32 collected[16];      // 0x00
-    u32 enabled[16];        // 0x40
-    u32 visible[16];        // 0x80
-    u32 activated[16];      // 0xc0
-} PICKUP_RESET_PROGRESS_PC; // size 0x100
+typedef struct PICKUP_RESET_PROGRESS_PC { // size 0x100
+    u32 collected[16];                    // 0x00
+    u32 enabled[16];                      // 0x40
+    u32 visible[16];                      // 0x80
+    u32 activated[16];                    // 0xc0
+} PICKUP_RESET_PROGRESS_PC;
 
 STATIC_ASSERT(sizeof(struct LEVELSAVE_s) == 0x54);
 STATIC_ASSERT(offsetof(struct LEVELSAVE_s, minikit_count) == 0x50);
@@ -137,20 +148,20 @@ extern i32 turret_gizmotype_id;
 extern i32 gizbuildit_gizmotype_id;
 i32 SuperCounter_AnyCollected(AREA_SUPERCOUNTER_PC *, WORLDINFO *);
 
-typedef struct pickup_counter_turret_pc_s {
-    u8 unknown_000[0x13a];  // 0x000
-    u16 flags;              // 0x13a
-} PICKUP_COUNTER_TURRET_PC; // size 0x13c
+typedef struct pickup_counter_turret_pc_s { // size 0x13c
+    u8 unknown_000[0x13a];                  // 0x000
+    u16 flags;                              // 0x13a
+} PICKUP_COUNTER_TURRET_PC;
 
-typedef struct pickup_counter_blowup_pc_s {
-    u8 unknown_00[0x94];    // 0x00
-    u8 output_flags;        // 0x94
-} PICKUP_COUNTER_BLOWUP_PC; // size 0x95
+typedef struct pickup_counter_blowup_pc_s { // size 0x95
+    u8 unknown_00[0x94];                    // 0x00
+    u8 output_flags;                        // 0x94
+} PICKUP_COUNTER_BLOWUP_PC;
 
-typedef struct pickup_counter_buildit_pc_s {
-    u8 unknown_00[0x6d];     // 0x00
-    u8 build_state;          // 0x6d
-} PICKUP_COUNTER_BUILDIT_PC; // size 0x6e
+typedef struct pickup_counter_buildit_pc_s { // size 0x6e
+    u8 unknown_00[0x6d];                     // 0x00
+    u8 build_state;                          // 0x6d
+} PICKUP_COUNTER_BUILDIT_PC;
 
 STATIC_ASSERT(offsetof(GAMECAMERA, position) == 0x11c);
 STATIC_ASSERT(offsetof(WORLDINFO, level_objects) == 0x2ac0);
@@ -158,17 +169,17 @@ STATIC_ASSERT(sizeof(GIZMOPICKUP_PC) == 0x2c);
 STATIC_ASSERT(offsetof(WORLDINFO, game_debris_sys) == 0x134);
 void SuperCounter_ActivateGizmoPickup(GIZMO_PC *, GIZMOPICKUP_PC *);
 
-typedef struct PICKUP_VISIBILITY_VIEW_PC {
-    u8 unknown_00[0x17]; // 0x00
+typedef struct PICKUP_VISIBILITY_VIEW_PC { // size 0x2c
+    u8 unknown_00[0x17];                   // 0x00
 
-    struct {              // 0x17
+    struct {              // size 0x1
         u8 unknown_0 : 2; // 0x17:0
         u8 visible : 1;   // 0x17:2
         u8 unknown_3 : 5; // 0x17:3
-    } flags;
+    } flags;              // 0x17
 
-    u8 unknown_18[0x14];     // 0x18
-} PICKUP_VISIBILITY_VIEW_PC; // size 0x2c
+    u8 unknown_18[0x14]; // 0x18
+} PICKUP_VISIBILITY_VIEW_PC;
 
 STATIC_ASSERT(sizeof(PICKUP_VISIBILITY_VIEW_PC) == sizeof(GIZMOPICKUP_PC));
 STATIC_ASSERT(offsetof(PICKUP_VISIBILITY_VIEW_PC, flags) == offsetof(GIZMOPICKUP_PC, flags));
@@ -794,6 +805,9 @@ void GizmoPickup_TurnOnPickup(GIZMOPICKUP_PC *pickup) {
 
 i32 GizmoPickup_BeenTurnedOn(GIZMOPICKUP_PC *pickup) {
     return pickup != NULL ? pickup->flags >> 7 : 0;
+}
+
+void GizmoPickups_PostLoad(void *world, void *system) {
 }
 
 GIZMOPICKUP_PC *GizmoPickup_InBox(WORLDINFO *world, i32 type_index, NUVEC *minimum, NUVEC *maximum) {

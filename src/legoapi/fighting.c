@@ -6,21 +6,21 @@ STATIC_ASSERT(offsetof(GAMEOBJECT, character_context) == 0x7b5);
 STATIC_ASSERT(offsetof(GAMEOBJECT, force_target) == 0x790);
 STATIC_ASSERT(offsetof(GAMEOBJECT, flags_e20) == 0xe20);
 
-typedef struct PUNCH_BLOWUP_VIEW_PC {
-    u8 unknown_00[0x4c];  // 0x000
-    NUVEC mid_position;   // 0x04c
-    NUVEC bounds_min;     // 0x058
-    NUVEC bounds_max;     // 0x064
-    u8 unknown_70[0x24];  // 0x070
-    u32 status_flags;     // 0x094
-    u32 draw_flags;       // 0x098
-    u32 secondary_flags;  // 0x09c
-    u8 unknown_a0[8];     // 0x0a0
-    f32 target_scale;     // 0x0a8
-    u8 unknown_ac[0x56];  // 0x0ac
-    i16 platform_id;      // 0x102
-    u8 unknown_104[0x10]; // 0x104
-} PUNCH_BLOWUP_VIEW_PC;   // size 0x114
+typedef struct PUNCH_BLOWUP_VIEW_PC { // size 0x114
+    u8 unknown_00[0x4c];              // 0x000
+    NUVEC mid_position;               // 0x04c
+    NUVEC bounds_min;                 // 0x058
+    NUVEC bounds_max;                 // 0x064
+    u8 unknown_70[0x24];              // 0x070
+    u32 status_flags;                 // 0x094
+    u32 draw_flags;                   // 0x098
+    u32 secondary_flags;              // 0x09c
+    u8 unknown_a0[8];                 // 0x0a0
+    f32 target_scale;                 // 0x0a8
+    u8 unknown_ac[0x56];              // 0x0ac
+    i16 platform_id;                  // 0x102
+    u8 unknown_104[0x10];             // 0x104
+} PUNCH_BLOWUP_VIEW_PC;
 
 typedef struct weapon_rate_pc_s {
     u8 unknown_000[0xd40];
@@ -34,10 +34,10 @@ typedef struct blowup_movement_pc_s {
     f32 target_radius;
 } BLOWUP_MOVEMENT_PC;
 
-typedef struct HOLD_RUNTIME_VIEW_PC {
-    u8 unknown_000[0xde4]; // 0x000
-    f32 hold_timer;        // 0xde4
-} HOLD_RUNTIME_VIEW_PC;    // size 0xde8
+typedef struct HOLD_RUNTIME_VIEW_PC { // size 0xde8
+    u8 unknown_000[0xde4];            // 0x000
+    f32 hold_timer;                   // 0xde4
+} HOLD_RUNTIME_VIEW_PC;
 
 i32 ObjOpponentStillThere(GAMEOBJECT *object, GAMEOBJECT *opponent, f32 gap) {
     NUVEC forward;

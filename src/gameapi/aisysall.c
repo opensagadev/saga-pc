@@ -114,14 +114,14 @@ extern void AiRndrLine3d(NURND_VERTEX3D_PC *, NUMTL *, NUMTX *);
 extern const f32 InitOnceHalf;
 
 /* Path-build view of the runtime path system (AIPATHSYS_PC is opaque here). */
-typedef struct AI_PATH_BUILD_SYSTEM_PC {
+typedef struct AI_PATH_BUILD_SYSTEM_PC {   // size 0x10
     u8 path_count;                         // 0x0
     u8 unknown1;                           // 0x1
     u16 special_route_count;               // 0x2
     AIPATH_PC **paths;                     // 0x4
     AIPATH_PC *active_path;                // 0x8
     AIPATHSPECIALROUTE_PC *special_routes; // 0xc
-} AI_PATH_BUILD_SYSTEM_PC;                 // size 0x10
+} AI_PATH_BUILD_SYSTEM_PC;
 
 STATIC_ASSERT(sizeof(((AIPATHROUTE_PC *)0)->character_mask) == 16);
 STATIC_ASSERT(sizeof(EDAIPATHNODE_s) == 0xb4);
@@ -178,23 +178,23 @@ static f32 AIPathFabs(f32 value) {
 
 /* Script message pool (AISYS message system). Records are 0x2c bytes; a
  * process's local messages chain through the word after the record. */
-typedef struct AIMESSAGE_PC {
-    NULISTLNK links; // 0x00
-    char name[32];   // 0x08
-    f32 value;       // 0x28
-} AIMESSAGE_PC;      // size 0x2c
+typedef struct AIMESSAGE_PC { // size 0x2c
+    NULISTLNK links;          // 0x00
+    char name[32];            // 0x08
+    f32 value;                // 0x28
+} AIMESSAGE_PC;
 
-typedef struct AIMESSAGESYS_PC {
-    i32 count;              // 0x00
-    AIMESSAGE_PC *messages; // 0x04
-    NULISTHDR free_list;    // 0x08
-    NULISTHDR active_list;  // 0x10
-} AIMESSAGESYS_PC;          // size 0x18
+typedef struct AIMESSAGESYS_PC { // size 0x18
+    i32 count;                   // 0x00
+    AIMESSAGE_PC *messages;      // 0x04
+    NULISTHDR free_list;         // 0x08
+    NULISTHDR active_list;       // 0x10
+} AIMESSAGESYS_PC;
 
-typedef struct AILOCALMESSAGE_PC {
+typedef struct AILOCALMESSAGE_PC {  // size 0x30
     AIMESSAGE_PC message;           // 0x00
     struct AILOCALMESSAGE_PC *next; // 0x2c
-} AILOCALMESSAGE_PC;                // size 0x30
+} AILOCALMESSAGE_PC;
 
 void AIRetreatFromDestination2(AISYS_PC *, AIPACKET_PC *, APIOBJECT_PC *, i32);
 
@@ -208,10 +208,10 @@ STATIC_ASSERT(offsetof(GAMEOBJECT, character_context) == 0x7b5);
 
 STATIC_ASSERT(offsetof(GAMEOBJECT, flags_e20) == 0xe20);
 
-typedef struct INTERACTION_ANTINODE_VIEW_PC {
-    u8 unknown[0x50];             // 0x00
-    u64 excluded_character_types; // 0x50
-} INTERACTION_ANTINODE_VIEW_PC;   // size 0x58
+typedef struct INTERACTION_ANTINODE_VIEW_PC { // size 0x58
+    u8 unknown[0x50];                         // 0x00
+    u64 excluded_character_types;             // 0x50
+} INTERACTION_ANTINODE_VIEW_PC;
 
 #define INTERACTION_GEOMETRY(p) ((GAMEOBJECT *)(p))
 
@@ -219,11 +219,11 @@ typedef void (*CHECK_ANTINODE_FN_PC)(APIOBJECT_PC *, AIANTINODE_PC *, NUVEC *, f
 
 extern CHECK_ANTINODE_FN_PC checkantinodefns[3];
 
-typedef struct INTERACTION_ANTINODE_SHAPE_VIEW_PC {
-    u8 unknown[0x40];                 // 0x00
-    f32 base_radius;                  // 0x40
-    f32 base_height;                  // 0x44
-} INTERACTION_ANTINODE_SHAPE_VIEW_PC; // size 0x48
+typedef struct INTERACTION_ANTINODE_SHAPE_VIEW_PC { // size 0x48
+    u8 unknown[0x40];                               // 0x00
+    f32 base_radius;                                // 0x40
+    f32 base_height;                                // 0x44
+} INTERACTION_ANTINODE_SHAPE_VIEW_PC;
 
 #define INTERACTION_ANTINODE_SHAPE(a) ((INTERACTION_ANTINODE_SHAPE_VIEW_PC *)(a))
 
@@ -243,95 +243,95 @@ static void AISysCheckAntinode_Rectangle(APIOBJECT_PC *object, AIANTINODE_PC *an
 CHECK_ANTINODE_FN_PC checkantinodefns[3] = {AISysCheckAntinode_Circle, AISysCheckAntinode_Ellipse,
                                             AISysCheckAntinode_Rectangle};
 
-typedef struct ai_area_load_pc_s {
-    char name[16];     // 0x00
-    NUVEC minimum;     // 0x10
-    NUVEC maximum;     // 0x1c
-    u16 flags;         // 0x28
-    u8 unknown_2a;     // 0x2a
-    u8 game_flags;     // 0x2b
-    u8 unknown_2c[12]; // 0x2c
-    AISYS_PC *system;  // 0x38
-    u8 unknown_3c[4];  // 0x3c
-} AI_AREA_LOAD_PC;     // size 0x40
-
-typedef struct ai_creature_load_pc_s {
+typedef struct ai_area_load_pc_s { // size 0x40
     char name[16];                 // 0x00
-    char script_name[16];          // 0x10
-    NUVEC position;                // 0x20
-    i32 y_rotation;                // 0x2c
-    AIPATHINFO_PC path_info;       // 0x30
-    i32 flags;                     // 0x48
-    u8 set;                        // 0x4c
-    u8 unknown_4d;                 // 0x4d
-    i16 type;                      // 0x4e
-    u8 count;                      // 0x50
-    u8 count_across;               // 0x51
-    u8 unknown_52[6];              // 0x52
-    u32 active_mask;               // 0x58
-    f32 x_spacing;                 // 0x5c
-    f32 z_spacing;                 // 0x60
-    f32 script_params[4];          // 0x64
-    AIAREA_PC *activate_area;      // 0x74
-    AIAREA_PC *area;               // 0x78
-    AILOCATOR_PC *locator;         // 0x7c
-    AILOCATOR_PC *respawn_locator; // 0x80
-    u8 activation_difficulty;      // 0x84
-    i8 min_respawn_count;          // 0x85
-    i8 max_respawn_count;          // 0x86
-    u8 activation_type;            // 0x87
-    f32 min_respawn_time;          // 0x88
-    f32 max_respawn_time;          // 0x8c
-    f32 start_stagger;             // 0x90
-    f32 view_distance;             // 0x94
-    f32 hear_distance;             // 0x98
-    f32 max_view_height;           // 0x9c
-    f32 min_view_height;           // 0xa0
-} AI_CREATURE_LOAD_PC;             // size 0xa4
+    NUVEC minimum;                 // 0x10
+    NUVEC maximum;                 // 0x1c
+    u16 flags;                     // 0x28
+    u8 unknown_2a;                 // 0x2a
+    u8 game_flags;                 // 0x2b
+    u8 unknown_2c[12];             // 0x2c
+    AISYS_PC *system;              // 0x38
+    u8 unknown_3c[4];              // 0x3c
+} AI_AREA_LOAD_PC;
 
-typedef struct ai_antinode_load_pc_s {
-    NUVEC position;                 // 0x00
-    f32 radius;                     // 0x0c
-    f32 min_y;                      // 0x10
-    f32 min_y_offset;               // 0x14
-    f32 max_y;                      // 0x18
-    f32 max_y_offset;               // 0x1c
-    NUSPECIALHANDLE special_handle; // 0x20
-    NUVEC special_position;         // 0x2c
-    i32 flags;                      // 0x38
-    i32 rotation_offset;            // 0x3c
-    f32 base_radius;                // 0x40
-    f32 base_height;                // 0x44
-    u8 enabled;                     // 0x48
-    u8 game_flags;                  // 0x49
-    u8 type;                        // 0x4a
-    u8 has_special;                 // 0x4b
-    u8 unknown_4c[12];              // 0x4c
-} AI_ANTINODE_LOAD_PC;              // size 0x58
+typedef struct ai_creature_load_pc_s { // size 0xa4
+    char name[16];                     // 0x00
+    char script_name[16];              // 0x10
+    NUVEC position;                    // 0x20
+    i32 y_rotation;                    // 0x2c
+    AIPATHINFO_PC path_info;           // 0x30
+    i32 flags;                         // 0x48
+    u8 set;                            // 0x4c
+    u8 unknown_4d;                     // 0x4d
+    i16 type;                          // 0x4e
+    u8 count;                          // 0x50
+    u8 count_across;                   // 0x51
+    u8 unknown_52[6];                  // 0x52
+    u32 active_mask;                   // 0x58
+    f32 x_spacing;                     // 0x5c
+    f32 z_spacing;                     // 0x60
+    f32 script_params[4];              // 0x64
+    AIAREA_PC *activate_area;          // 0x74
+    AIAREA_PC *area;                   // 0x78
+    AILOCATOR_PC *locator;             // 0x7c
+    AILOCATOR_PC *respawn_locator;     // 0x80
+    u8 activation_difficulty;          // 0x84
+    i8 min_respawn_count;              // 0x85
+    i8 max_respawn_count;              // 0x86
+    u8 activation_type;                // 0x87
+    f32 min_respawn_time;              // 0x88
+    f32 max_respawn_time;              // 0x8c
+    f32 start_stagger;                 // 0x90
+    f32 view_distance;                 // 0x94
+    f32 hear_distance;                 // 0x98
+    f32 max_view_height;               // 0x9c
+    f32 min_view_height;               // 0xa0
+} AI_CREATURE_LOAD_PC;
 
-typedef struct ai_system_load_pc_s {
-    void *storage;                  // 0x0000
-    VARIPTR storage_end;            // 0x0004
-    VARIPTR storage_cursor;         // 0x0008
-    i32 storage_size;               // 0x000c
-    AIPATHSYS_PC *path_sys;         // 0x0010
-    i32 creature_count;             // 0x0014
-    AI_CREATURE_LOAD_PC *creatures; // 0x0018
-    NULISTHDR scripts;              // 0x001c
-    i32 locator_count;              // 0x0024
-    AILOCATOR_PC *locators;         // 0x0028
-    i32 locator_set_count;          // 0x002c
-    AILOCATORSET_PC *locator_sets;  // 0x0030
-    i32 area_count;                 // 0x0034
-    AI_AREA_LOAD_PC *areas;         // 0x0038
-    AIGROUP_PC groups[16];          // 0x003c
-    i32 antinode_count;             // 0x137c
-    AI_ANTINODE_LOAD_PC *antinodes; // 0x1380
-    u8 unknown_1384[8];             // 0x1384
-    APIOBJECT_PC *player_1;         // 0x138c
-    APIOBJECT_PC *player_2;         // 0x1390
-    NUGSCN *scene;                  // 0x1394
-} AI_SYSTEM_LOAD_PC;                // size 0x1398
+typedef struct ai_antinode_load_pc_s { // size 0x58
+    NUVEC position;                    // 0x00
+    f32 radius;                        // 0x0c
+    f32 min_y;                         // 0x10
+    f32 min_y_offset;                  // 0x14
+    f32 max_y;                         // 0x18
+    f32 max_y_offset;                  // 0x1c
+    NUSPECIALHANDLE special_handle;    // 0x20
+    NUVEC special_position;            // 0x2c
+    i32 flags;                         // 0x38
+    i32 rotation_offset;               // 0x3c
+    f32 base_radius;                   // 0x40
+    f32 base_height;                   // 0x44
+    u8 enabled;                        // 0x48
+    u8 game_flags;                     // 0x49
+    u8 type;                           // 0x4a
+    u8 has_special;                    // 0x4b
+    u8 unknown_4c[12];                 // 0x4c
+} AI_ANTINODE_LOAD_PC;
+
+typedef struct ai_system_load_pc_s { // size 0x1398
+    void *storage;                   // 0x0000
+    VARIPTR storage_end;             // 0x0004
+    VARIPTR storage_cursor;          // 0x0008
+    i32 storage_size;                // 0x000c
+    AIPATHSYS_PC *path_sys;          // 0x0010
+    i32 creature_count;              // 0x0014
+    AI_CREATURE_LOAD_PC *creatures;  // 0x0018
+    NULISTHDR scripts;               // 0x001c
+    i32 locator_count;               // 0x0024
+    AILOCATOR_PC *locators;          // 0x0028
+    i32 locator_set_count;           // 0x002c
+    AILOCATORSET_PC *locator_sets;   // 0x0030
+    i32 area_count;                  // 0x0034
+    AI_AREA_LOAD_PC *areas;          // 0x0038
+    AIGROUP_PC groups[16];           // 0x003c
+    i32 antinode_count;              // 0x137c
+    AI_ANTINODE_LOAD_PC *antinodes;  // 0x1380
+    u8 unknown_1384[8];              // 0x1384
+    APIOBJECT_PC *player_1;          // 0x138c
+    APIOBJECT_PC *player_2;          // 0x1390
+    NUGSCN *scene;                   // 0x1394
+} AI_SYSTEM_LOAD_PC;
 
 static f32 AiLoadStartStaggerPc = 0.0f;
 
@@ -339,14 +339,14 @@ extern i32 (*GlobalCharacterTypeIDFn)(char *);
 
 extern void (*GameAILoadFn)(AISYS_PC *, i32, NUGSCN *, VARIPTR *, VARIPTR *);
 
-typedef struct ai_path_system_load_pc_s {
+typedef struct ai_path_system_load_pc_s {  // size 0x10
     u8 path_count;                         // 0x0
     u8 unknown_01;                         // 0x1
     u16 special_route_count;               // 0x2
     AIPATH_PC **paths;                     // 0x4
     AIPATH_PC *active_path;                // 0x8
     AIPATHSPECIALROUTE_PC *special_routes; // 0xc
-} AI_PATH_SYSTEM_LOAD_PC;                  // size 0x10
+} AI_PATH_SYSTEM_LOAD_PC;
 
 // Inlined AISysBufferAlloc: the failure diagnostic and publication follow the
 // allocation memset. Size arithmetic is unsigned 32-bit.
@@ -395,10 +395,10 @@ STATIC_ASSERT(offsetof(GAMEOBJECT, tag_flags) == 0x7c5);
 
 STATIC_ASSERT(offsetof(GAMEOBJECT, takeover_source) == 0xcd0);
 
-typedef struct condition_trigger_process_pc_s {
-    u8 unknown_000[0xa0];       // 0x00
-    AIAREA_PC *trigger_area;    // 0xa0
-} CONDITION_TRIGGER_PROCESS_PC; // size 0xa4
+typedef struct condition_trigger_process_pc_s { // size 0xa4
+    u8 unknown_000[0xa0];                       // 0x00
+    AIAREA_PC *trigger_area;                    // 0xa0
+} CONDITION_TRIGGER_PROCESS_PC;
 
 STATIC_ASSERT(offsetof(GAMEOBJECT, ai_area_mask) == 0x2b0);
 
@@ -406,22 +406,22 @@ STATIC_ASSERT(offsetof(GAMEOBJECT, position) == 0x5c);
 
 extern char *(*GlobalCharacterNameFn)(i32);
 
-typedef struct AI_EDITOR_MODE_ENTRY_PC {
+typedef struct AI_EDITOR_MODE_ENTRY_PC {    // size 0x30
     char name[32];                          // 0x00
     void (*enter)(void);                    // 0x20
     eduimenu_s *(*process)(FRAME_PAD_PC *); // 0x24
     void (*draw)(i32, i32, f32, f32);       // 0x28
     void (*leave)(void);                    // 0x2c
-} AI_EDITOR_MODE_ENTRY_PC;                  // size 0x30
+} AI_EDITOR_MODE_ENTRY_PC;
 
-typedef struct AI_EDITOR_MODE_BANK_PC {
+typedef struct AI_EDITOR_MODE_BANK_PC { // size 0x184
     AI_EDITOR_MODE_ENTRY_PC entries[8]; // 0x000
     i16 count;                          // 0x180
     i16 current;                        // 0x182
-} AI_EDITOR_MODE_BANK_PC;               // size 0x184
+} AI_EDITOR_MODE_BANK_PC;
 
 /* AI editor settings block (0x200 bytes, zeroed by the editor initializer). */
-typedef struct AIEDITORSETTINGS_PC {
+typedef struct AIEDITORSETTINGS_PC {                                  // size 0x200
     char path_name[16]; /* restored current path on enter */          // 0x000
     char creature_name[16]; /* restored selected creature on enter */ // 0x010
     char locator_set_name[16];                                        // 0x020
@@ -439,7 +439,7 @@ typedef struct AIEDITORSETTINGS_PC {
     void *path_scratch_cursor;                                        // 0x074
     void *path_scratch_end;                                           // 0x078
     AI_EDITOR_MODE_BANK_PC modes;                                     // 0x07c
-} AIEDITORSETTINGS_PC;                                                // size 0x200
+} AIEDITORSETTINGS_PC;
 
 #pragma section(".bss$aieditorsettings", read, write)
 __declspec(allocate(".bss$aieditorsettings")) AIEDITORSETTINGS_PC aieditorsettings = {0};
@@ -476,27 +476,27 @@ STATIC_ASSERT(sizeof(AiEditorSaveMessageColoursPc) == 16);
 
 /* The record has a four-byte mask, a five-word drawing callback,
  * a bounded 64-byte name and a final four-byte options word. */
-typedef struct AI_PATH_CONNECTION_TYPE_PC {
+typedef struct AI_PATH_CONNECTION_TYPE_PC {        // size 0x4c
     u32 connection_flag;                           // 0x00
     void (*draw)(NUVEC *, f32, NUVEC *, u32, i32); // 0x04
     char name[64];                                 // 0x08
     u32 flags;                                     // 0x48
-} AI_PATH_CONNECTION_TYPE_PC;                      // size 0x4c
+} AI_PATH_CONNECTION_TYPE_PC;
 
 extern i32 AIPathConnectionTypeCountPc;
 
 extern AI_PATH_CONNECTION_TYPE_PC AIPathConnectionTypesPc[32];
 
-typedef struct AI_EDITOR_SPECIAL_PLATFORM_PC {
-    u8 unknown_00[0x4a];         // 0x00
-    i16 instance_index;          // 0x4a
-    u8 unknown_4c[0x20];         // 0x4c
-} AI_EDITOR_SPECIAL_PLATFORM_PC; // size 0x6c
+typedef struct AI_EDITOR_SPECIAL_PLATFORM_PC { // size 0x6c
+    u8 unknown_00[0x4a];                       // 0x00
+    i16 instance_index;                        // 0x4a
+    u8 unknown_4c[0x20];                       // 0x4c
+} AI_EDITOR_SPECIAL_PLATFORM_PC;
 
-typedef struct AI_EDITOR_SPECIAL_TERRAIN_PC {
+typedef struct AI_EDITOR_SPECIAL_TERRAIN_PC { // size 0x6c
     u8 unknown_00[0x68];                      // 0x00
     AI_EDITOR_SPECIAL_PLATFORM_PC *platforms; // 0x68
-} AI_EDITOR_SPECIAL_TERRAIN_PC;               // size 0x6c
+} AI_EDITOR_SPECIAL_TERRAIN_PC;
 
 i16 disable_cylinder_check = 0;
 
@@ -655,11 +655,11 @@ void NuRndrBoundingBox(NUVEC *minimum, NUVEC *maximum, NUMTX *matrix, i32 colour
 STATIC_ASSERT(offsetof(AIEDITOR_RENDER_STATE, ai_system) == 0x64);
 
 /* Draw-family field views. */
-typedef struct AI_PATH_DRAW_FLAGS_PC {
-    NULISTLNK link;      // 0x0
-    u8 unknown_08[2];    // 0x8
-    i16 flags;           // 0xa
-} AI_PATH_DRAW_FLAGS_PC; // size 0xc
+typedef struct AI_PATH_DRAW_FLAGS_PC { // size 0xc
+    NULISTLNK link;                    // 0x0
+    u8 unknown_08[2];                  // 0x8
+    i16 flags;                         // 0xa
+} AI_PATH_DRAW_FLAGS_PC;
 
 STATIC_ASSERT(offsetof(AIEDITOR_RENDER_STATE, path_walls) == 0x31b8c);
 
@@ -709,12 +709,12 @@ extern f32 default_zspacing;
 
 eduiitem_s *creatureEditor_ResetParamsItem = NULL;
 
-typedef struct AI_CREATURE_MODEL_BOUNDS_PC {
-    u8 unknown_00[0x1c4];      // 0x000
-    f32 min_height;            // 0x1c4
-    f32 height;                // 0x1c8
-    f32 radius;                // 0x1cc
-} AI_CREATURE_MODEL_BOUNDS_PC; // size 0x1d0
+typedef struct AI_CREATURE_MODEL_BOUNDS_PC { // size 0x1d0
+    u8 unknown_00[0x1c4];                    // 0x000
+    f32 min_height;                          // 0x1c4
+    f32 height;                              // 0x1c8
+    f32 radius;                              // 0x1cc
+} AI_CREATURE_MODEL_BOUNDS_PC;
 
 extern i32 aisys_maxnumcreaturesets;
 
@@ -826,10 +826,10 @@ extern const char Text_UnknownText[2];
 
 extern NUFPCOMJMP AIScriptStateCommandsPc[5];
 
-typedef struct aiscript_const_record_pc_s {
-    char name[32];          // 0x00
-    f32 default_val;        // 0x20
-} AISCRIPT_CONST_RECORD_PC; // size 0x24
+typedef struct aiscript_const_record_pc_s { // size 0x24
+    char name[32];                          // 0x00
+    f32 default_val;                        // 0x20
+} AISCRIPT_CONST_RECORD_PC;
 
 STATIC_ASSERT(offsetof(NUFPCOMJMP, keyword) == 0);
 
@@ -903,9 +903,11 @@ static void *AIScriptBufferAllocOrWarn(VARIPTR *buf, VARIPTR *buf_end, u32 size)
 
 void AINetReplicateAction(AIACTION_PC *action, AIPACKET_PC *packet);
 
-extern AIACTIONDEF_PC *game_aiactiondefs;
-
-extern AICONDITIONDEF_PC *game_aiconditiondefs;
+#pragma bss_seg(".bss$game_aiactiondefs")
+AIACTIONDEF_PC *game_aiactiondefs = 0;
+#pragma bss_seg(".bss$game_aiconditiondefs")
+AICONDITIONDEF_PC *game_aiconditiondefs = 0;
+#pragma bss_seg()
 
 extern AIACTIONDEF_PC api_aiactiondefs[];
 
@@ -991,15 +993,15 @@ STATIC_ASSERT(offsetof(GAMEOBJECT, objptr) == 0);
 
 STATIC_ASSERT(offsetof(GAMEOBJECT, field_f10) == 0xf10);
 
-typedef struct condition_trigger_process_reader_pc_s {
-    u8 unknown_00[0xa0];               // 0x00
-    AIAREA_PC *trigger_area;           // 0xa0
-} CONDITION_TRIGGER_PROCESS_READER_PC; // size 0xa4
+typedef struct condition_trigger_process_reader_pc_s { // size 0xa4
+    u8 unknown_00[0xa0];                               // 0x00
+    AIAREA_PC *trigger_area;                           // 0xa0
+} CONDITION_TRIGGER_PROCESS_READER_PC;
 
-typedef struct condition_trigger_player_reader_pc_s {
-    u8 unknown_00[0x2b0];             // 0x000
-    u64 membership;                   // 0x2b0
-} CONDITION_TRIGGER_PLAYER_READER_PC; // size 0x2b8
+typedef struct condition_trigger_player_reader_pc_s { // size 0x2b8
+    u8 unknown_00[0x2b0];                             // 0x000
+    u64 membership;                                   // 0x2b0
+} CONDITION_TRIGGER_PLAYER_READER_PC;
 
 STATIC_ASSERT(offsetof(GAMEOBJECT, current_hp) == 0x107f);
 
@@ -19165,3 +19167,131 @@ void AIScriptMissingStateDiagnosticAlternate(const char *format, ...) {
 
 void AIScriptMissingConditionDiagnostic(const char *format, ...) {
 }
+
+#pragma const_seg(".rdata$AIRegistryTextPc007562c8")
+const char AIRegistryTextPc007562c8[13] = "FollowPlayer";
+#pragma const_seg()
+#pragma const_seg(".rdata$AIRegistryTextPc007566a8")
+const char AIRegistryTextPc007566a8[9] = "DontPush";
+#pragma const_seg()
+#pragma const_seg(".rdata$AIRegistryTextPc00756a74")
+const char AIRegistryTextPc00756a74[11] = "SetLocator";
+#pragma const_seg()
+#pragma const_seg(".rdata$AIRegistryTextPc007571b8")
+const char AIRegistryTextPc007571b8[18] = "OpponentIsAThreat";
+#pragma const_seg()
+
+#pragma data_seg(".data$api_aiactiondefs")
+AIACTIONDEF_PC api_aiactiondefs[55] = {
+    {"Idle", Action_Idle, 0, 0, 0},
+    {"SetState", Action_SetState, 0, 0, 0},
+    {"ResetTimer", Action_ResetTimer, 0, 0, 0},
+    {"RetreatFromNearestOpponent", Action_RetreatFromNearestOpponent, 0, 0, 0},
+    {"RetreatFromOpponent", Action_RetreatFromOpponent, 0, 0, 0},
+    {"MoveAwayFromPlayer", Action_MoveAwayFromPlayer, 0, 0, 0},
+    {"MoveAwayFromPlayer2", Action_MoveAwayFromPlayer2, 0, 0, 0},
+    {"SetCircleDirection", Action_SetCircleDirection, 0, 0, 0},
+    {"Circle", Action_Circle, 0, 0, 0},
+    {"CircleOpponent", Action_CircleOpponent, 0, 0, 0},
+    {"CirclePlayer", Action_CirclePlayer, 0, 0, 0},
+    {AIRegistryTextPc007562c8, Action_FollowPlayer, 0, 0, 0},
+    {"MoveAwayFromOpponent", Action_MoveAwayFromOpponent, 0, 0, 0},
+    {"FollowOpponent", Action_FollowOpponent, 0, 0, 0},
+    {"FacePlayer", Action_FacePlayer, 0, 0, 0},
+    {"FaceOpponent", Action_FaceOpponent, 0, 0, 0},
+    {"FaceLocator", Action_FaceLocator, 0, 0, 0},
+    {"IgnoreWallSplines", Action_IgnoreWallSplines, 0, 0, 0},
+    {"CheckWallSplines", Action_CheckWallSplines, 0, 0, 0},
+    {"NoTerrain", Action_NoTerrain, 0, 0, 0},
+    {"FlatTerrain", Action_FlatTerrain, 0, 0, 0},
+    {"ShadowTerrain", Action_ShadowTerrain, 0, 0, 0},
+    {"DontUseShadowTerrain", Action_DontUseShadowTerrain, 0, 0, 0},
+    {AIRegistryTextPc007566a8, Action_DontPush, 0, 0, 0},
+    {"CanSeeBehind", Action_CanSeeBehind, 0, 0, 0},
+    {"RequiresLOS", Action_RequiresLOS, 0, 0, 0},
+    {"SetFullPathSearch", Action_SetFullPathSearch, 0, 0, 0},
+    {"SetViewDistance", Action_SetViewDistance, 0, 0, 0},
+    {"SetMaxViewHeight", Action_SetMaxViewHeight, 0, 0, 0},
+    {"SetMinViewHeight", Action_SetMinViewHeight, 0, 0, 0},
+    {"SetHearDistance", Action_SetHearDistance, 0, 0, 0},
+    {"SetMoveRadius", Action_SetMoveRadius, 0, 0, 0},
+    {"GoToNode", Action_GoToNode, 0, 0, 0},
+    {"GoToNodeRandom", Action_GoToNodeRandom, 0, 0, 0},
+    {"GoToOrigin", Action_GoToOrigin, 0, 0, 0},
+    {"GoToLocator", Action_GoToLocator, 0, 0, 0},
+    {AIRegistryTextPc00756a74, Action_SetLocator, 0, 0, 0},
+    {"SetRespawnLocator", Action_SetRespawnLocator, 0, 0, 0},
+    {"FollowPath", Action_FollowPath, 0, 0, 0},
+    {"MoveAwayFromNode", Action_MoveAwayFromNode, 0, 0, 0},
+    {"OverrideAnimation", Action_OverrideAnimation, 1, 0, 0},
+    {"BlockPath", Action_BlockPath, 0, 0, 0},
+    {"PathConnectionObstacle", Action_PathConnectionObstacle, 0, 0, 0},
+    {"PathConnectionMaxLength", Action_PathConnectionMaxLength, 0, 0, 0},
+    {"NoLosCheck", Action_NoLosCheck, 0, 0, 0},
+    {"ResetToOrigin", Action_ResetToOrigin, 0, 0, 0},
+    {"SetInterrupt", Action_SetInterrupt, 0, 0, 0},
+    {"ClearInterrupt", Action_ClearInterrupt, 0, 0, 0},
+    {"SetIgnoreAntinodes", Action_SetIgnoreAntinodes, 0, 0, 0},
+    {"NoShadows", Action_NoShadows, 0, 0, 0},
+    {"SetParam", Action_SetParam, 0, 0, 0},
+    {"SetReturnToState", Action_SetReturnToState, 0, 0, 0},
+    {"ReturnToState", Action_ReturnToState, 0, 0, 0},
+    {"NotifyStateChange", Action_NotifyStateChange, 0, 0, 0},
+    {NULL, NULL, 0, 0, 0},
+};
+#pragma data_seg()
+
+#pragma data_seg(".data$api_aiconditiondefs")
+AICONDITIONDEF_PC api_aiconditiondefs[50] = {
+    {"PreviousResult", NULL, NULL},
+    {"AlwaysTrue", Condition_AlwaysTrue, Condition_AlwaysTrueInit},
+    {"LocatorRange", Condition_LocatorRange, Condition_LocatorRangeInit},
+    {"LocatorRangeXZ", Condition_LocatorRangeXZ, Condition_LocatorRangeInit},
+    {"LocatorRangeY", Condition_LocatorRangeY, Condition_LocatorRangeInit},
+    {"Timer", Condition_Timer, NULL},
+    {"Random", Condition_Random, NULL},
+    {"GotLocator", Condition_GotLocator, NULL},
+    {"GotLocatorSet", Condition_GotLocatorSet, NULL},
+    {"CurrentLocatorIs", Condition_CurrentLocatorIs, Condition_CurrentLocatorIsInit},
+    {"InTriggerArea", Condition_InTriggerArea, Condition_InTriggerAreaInit},
+    {"PlayerRange", Condition_PlayerRange, NULL},
+    {"NearestPlayerRange", Condition_NearestPlayerRange, NULL},
+    {"NearestPlayerXZRange", Condition_NearestPlayerXZRange, NULL},
+    {"InLevelNode", Condition_InLevelNode, Condition_InLevelNodeInit},
+    {"PlayerInLevelNode", Condition_PlayerInLevelNode, Condition_PlayerInLevelNodeInit},
+    {"EitherPlayerInLevelNode", Condition_EitherPlayerInLevelNode, Condition_PlayerInLevelNodeInit},
+    {"NodeRange", Condition_NodeRangePc, Condition_NodeRangeInitPc},
+    {"GotTriggerArea", Condition_GotTriggerArea, NULL},
+    {"PlayerInTriggerArea", Condition_PlayerInTriggerArea, Condition_PlayerInTriggerAreaInit},
+    {"Player2InTriggerArea", Condition_Player2InTriggerArea, Condition_PlayerInTriggerAreaInit},
+    {"EitherPlayerInTriggerArea", Condition_EitherPlayerInTriggerArea, Condition_PlayerInTriggerAreaInit},
+    {"BaddyInTriggerArea", Condition_BaddyInTriggerArea, Condition_BaddyInTriggerAreaInit},
+    {"GoodyInTriggerArea", Condition_GoodyInTriggerArea, Condition_GoodyInTriggerAreaInit},
+    {"OpponentInTriggerArea", Condition_OpponentInTriggerArea, Condition_OpponentInTriggerAreaInit},
+    {"GotOpponent", Condition_GotOpponent, NULL},
+    {AIRegistryTextPc007571b8, Condition_OpponentIsAThreat, NULL},
+    {"OpponentOnSamePath", Condition_OpponentOnSamePath, NULL},
+    {"OpponentRange", Condition_OpponentRange, NULL},
+    {"NearestOpponentRange", Condition_NearestOpponentRange, NULL},
+    {"YawToOpponent", Condition_YawToOpponent, NULL},
+    {"OpponentBelow", Condition_OpponentBelow, NULL},
+    {"OriginRange", Condition_OriginRange, NULL},
+    {"OpponentToOrigin", Condition_OpponentToOrigin, NULL},
+    {"PlayerToOrigin", Condition_PlayerToOrigin, NULL},
+    {"OpponentToLocator", Condition_OpponentToLocator, Condition_OpponentToLocatorInit},
+    {"OpponentToLocatorXZ", Condition_OpponentToLocatorXZ, Condition_OpponentToLocatorInit},
+    {"OpponentToLocatorY", Condition_OpponentToLocatorY, Condition_OpponentToLocatorInit},
+    {"PlayerToLocator", Condition_PlayerToLocator, Condition_PlayerToLocatorInit},
+    {"NearestPlayerToLocator", Condition_NearestPlayerToLocator, Condition_PlayerToLocatorInit},
+    {"OnPath", Condition_OnPath, NULL},
+    {"PlayerOnPath", Condition_PlayerOnPath, NULL},
+    {"OpponentOnPath", Condition_OpponentOnPath, NULL},
+    {"TimeOffPath", Condition_TimeOffPath, NULL},
+    {"PathBlocked", Condition_PathBlocked, NULL},
+    {"InterruptID", Condition_InterruptID, NULL},
+    {"IAm", Condition_IAm, Condition_IAmInit},
+    {"StuckTime", Condition_StuckTime, NULL},
+    {"Param", Condition_Param, NULL},
+    {NULL, NULL, NULL},
+};
+#pragma data_seg()

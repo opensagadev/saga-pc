@@ -538,3 +538,12 @@ TTNetwork theTTNetwork;
 #pragma bss_seg(".bss$sm_poolMessageData")
 TPool<NETMESSAGE_PC::MessageData, 512> NETMESSAGE_PC::sm_poolMessageData;
 #pragma bss_seg()
+
+/* Drops every outstanding reference of the message pool. */
+template <> void TPool<NETMESSAGE_PC::MessageData, 512>::fun_0060f370() {
+    for (NETMESSAGE_PC::MessageData *entry = items; entry != items + 512; ++entry) {
+        if (entry->references > 0) {
+            entry->references = 0;
+        }
+    }
+}

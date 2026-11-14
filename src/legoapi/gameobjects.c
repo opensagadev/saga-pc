@@ -3,10 +3,10 @@
 
 STATIC_ASSERT(offsetof(PART_PC, field_206) == 0x206);
 
-typedef struct grapple_rotation_pc_s {
-    u8 unknown_00[0x30]; // 0x00
-    NUVEC hook_position; // 0x30
-} GRAPPLE_ROTATION_PC;   // size 0x3c
+typedef struct grapple_rotation_pc_s { // size 0x3c
+    u8 unknown_00[0x30];               // 0x00
+    NUVEC hook_position;               // 0x30
+} GRAPPLE_ROTATION_PC;
 
 extern const f64 GameObjectNearFloorNoFloorHeight;
 
@@ -16,21 +16,21 @@ STATIC_ASSERT(offsetof(AREA_GLOBALS_PC, field_00) == 0);
 STATIC_ASSERT(offsetof(TORPEDOPACKET_PC, pickup_positions) == 0x3c);
 STATIC_ASSERT(offsetof(GAMEDEBRISENTRY_PC, effect) == 0);
 
-typedef struct kill_zipup_pc_s {
-    u8 unknown_00[0x68]; // 0x00
-    u16 runtime_flags;   // 0x68
-} KILL_ZIPUP_PC;         // size 0x6a
+typedef struct kill_zipup_pc_s { // size 0x6a
+    u8 unknown_00[0x68];         // 0x00
+    u16 runtime_flags;           // 0x68
+} KILL_ZIPUP_PC;
 
 /* A copy of the 33-DWORD script cohort (script processor plus takeover link), without extending the
    packet. Held as words so the copy is one block move and the local is not treated as a /GS buffer. */
-typedef union TAGSCRIPTSTATE_PC {
-    u32 words[0x33]; // 0x00
+typedef union TAGSCRIPTSTATE_PC { // size 0xcc
+    u32 words[0x33];
 
-    struct {                  // 0x00
+    struct {                  // size 0xb4
         u32 unknown000[0x2c]; // 0x00
         u8 creature_set;      // 0xb0
     } fields;
-} TAGSCRIPTSTATE_PC; // size 0xcc
+} TAGSCRIPTSTATE_PC;
 
 STATIC_ASSERT(offsetof(AIPACKET_PC, takeover_script_link) - offsetof(AIPACKET_PC, script_processor) == 0xc8);
 
@@ -63,35 +63,35 @@ STATIC_ASSERT(offsetof(TERRAIN_SURFACE_PC, flags) == 4);
 
 /* Shadow platform entries. Tail[1] holds the counted traversal, not an allocation count.
  */
-typedef struct shadow_platform_entry_pc_s {
-    GAMEOBJECT *object;     // 0x00
-    u8 unknown_04_14[0x10]; // 0x04
-} SHADOW_PLATFORM_ENTRY_PC; // size 0x14
+typedef struct shadow_platform_entry_pc_s { // size 0x14
+    GAMEOBJECT *object;                     // 0x00
+    u8 unknown_04_14[0x10];                 // 0x04
+} SHADOW_PLATFORM_ENTRY_PC;
 
-struct shadow_platform_list_pc_s {
+struct shadow_platform_list_pc_s {       // size 0x2c
     u8 unknown_00_04[4];                 // 0x00
     i32 count;                           // 0x04
     u8 unknown_08_18[0x10];              // 0x08
     SHADOW_PLATFORM_ENTRY_PC entries[1]; // 0x18
-}; // size 0x2c
+};
 
-typedef struct gameobject_collision_reset_pc_s {
-    u8 unknown_000[0x2b0];       // 0x000
-    u32 collision_overlap_low;   // 0x2b0
-    u32 collision_overlap_high;  // 0x2b4
-} GAMEOBJECT_COLLISION_RESET_PC; // size 0x2b8
+typedef struct gameobject_collision_reset_pc_s { // size 0x2b8
+    u8 unknown_000[0x2b0];                       // 0x000
+    u32 collision_overlap_low;                   // 0x2b0
+    u32 collision_overlap_high;                  // 0x2b4
+} GAMEOBJECT_COLLISION_RESET_PC;
 
-typedef struct GAME_ANTI_NODE_DATA_PC {
-    NUVEC position;       // 0x00
-    f32 radius;           // 0x0c
-    f32 min_y;            // 0x10
-    f32 max_y;            // 0x14
-    f32 extent_x;         // 0x18
-    f32 extent_z;         // 0x1c
-    u16 angle;            // 0x20
-    u8 shape;             // 0x22
-    u8 mode;              // 0x23
-} GAME_ANTI_NODE_DATA_PC; // size 0x24
+typedef struct GAME_ANTI_NODE_DATA_PC { // size 0x24
+    NUVEC position;                     // 0x00
+    f32 radius;                         // 0x0c
+    f32 min_y;                          // 0x10
+    f32 max_y;                          // 0x14
+    f32 extent_x;                       // 0x18
+    f32 extent_z;                       // 0x1c
+    u16 angle;                          // 0x20
+    u8 shape;                           // 0x22
+    u8 mode;                            // 0x23
+} GAME_ANTI_NODE_DATA_PC;
 
 STATIC_ASSERT(offsetof(GAMEOBJECT, collision_link) == 0x298);
 STATIC_ASSERT(offsetof(GAMEOBJECT, lighting_packet) == 0x4d8);
@@ -615,7 +615,7 @@ void GameObjectSetCanUse(GAMEOBJECT *object, void *target, u8 action, u8 unused,
 typedef void (*CHECK_ANTINODE_FN_PC)(APIOBJECT_PC *, AIANTINODE_PC *, NUVEC *, f32);
 extern CHECK_ANTINODE_FN_PC checkantinodefns[3];
 
-typedef struct OPPONENT_PACKET_PC {
+typedef struct OPPONENT_PACKET_PC {         // size 0x1ec
     u8 unknown000[0xd4];                    // 0x000
     APIOBJECT_PC *nearest_opponent_object;  // 0x0d4
     f32 nearest_opponent_metric;            // 0x0d8
@@ -627,36 +627,36 @@ typedef struct OPPONENT_PACKET_PC {
     f32 pending_opponent_metric;            // 0x0f0
     u8 unknown0f4[0xf4];                    // 0x0f4
     u32 flags;                              // 0x1e8
-} OPPONENT_PACKET_PC;                       // size 0x1ec
+} OPPONENT_PACKET_PC;
 
-typedef struct OPPONENT_OBJECT_PC {
+typedef struct OPPONENT_OBJECT_PC { // size 0x2b0
     u8 unknown000[0x230];           // 0x000
     f32 view_distance;              // 0x230
     u8 unknown234[0xc];             // 0x234
     f32 visibility_range_extension; // 0x240
     u8 unknown244[0x64];            // 0x244
     u64 awareness;                  // 0x2a8
-} OPPONENT_OBJECT_PC;               // size 0x2b0
+} OPPONENT_OBJECT_PC;
 
-typedef struct OPPONENT_GAME_PC {
-    u8 unknown000[0xeb0];       // 0x000
-    u64 seen;                   // 0xeb0
-    u64 exclusion;              // 0xeb8
-    APIOBJECT_PC *alert_target; // 0xec0
-    f32 alert_timer;            // 0xec4
-} OPPONENT_GAME_PC;             // size 0xec8
+typedef struct OPPONENT_GAME_PC { // size 0xec8
+    u8 unknown000[0xeb0];         // 0x000
+    u64 seen;                     // 0xeb0
+    u64 exclusion;                // 0xeb8
+    APIOBJECT_PC *alert_target;   // 0xec0
+    f32 alert_timer;              // 0xec4
+} OPPONENT_GAME_PC;
 
-typedef struct OPPONENT_SYS_PC {
-    u8 unknown000[0x1385]; // 0x0000
-    u8 goody_cursor;       // 0x1385
-    u16 assignment_flags;  // 0x1386
-} OPPONENT_SYS_PC;         // size 0x1388
+typedef struct OPPONENT_SYS_PC { // size 0x1388
+    u8 unknown000[0x1385];       // 0x0000
+    u8 goody_cursor;             // 0x1385
+    u16 assignment_flags;        // 0x1386
+} OPPONENT_SYS_PC;
 
-typedef struct OPPONENT_LOS_PC {
-    u32 object_size;       // 0x000
-    GAMEOBJECT *objects;   // 0x004
-    u64 line_of_sight[64]; // 0x008
-} OPPONENT_LOS_PC;         // size 0x208
+typedef struct OPPONENT_LOS_PC { // size 0x208
+    u32 object_size;             // 0x000
+    GAMEOBJECT *objects;         // 0x004
+    u64 line_of_sight[64];       // 0x008
+} OPPONENT_LOS_PC;
 
 STATIC_ASSERT(offsetof(GAMEOBJECT, ai_visibility_extension) == 0x240);
 STATIC_ASSERT(offsetof(GAMEOBJECT, ai_collision_priority_pc) == 0x292);
@@ -684,8 +684,8 @@ STATIC_ASSERT(offsetof(WORLDINFO, script_processors) == 0x2af0);
 STATIC_ASSERT(offsetof(WORLDINFO, ai_path_cnx_control_sys) == 0x4670);
 STATIC_ASSERT(offsetof(WORLDINFO, ai_connection_helpers) == 0x4674);
 
-typedef struct ai_frame_world_pc_s {
+typedef struct ai_frame_world_pc_s {        // size 0x4670
     u8 unknown_0000[0x2aec];                // 0x0000
     i32 processor_count;                    // 0x2aec
     LEVEL_SCRIPT_PROCESS_PC processors[32]; // 0x2af0
-} AI_FRAME_WORLD_PC;                        // size 0x4670
+} AI_FRAME_WORLD_PC;

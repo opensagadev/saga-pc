@@ -650,11 +650,20 @@ struct PC_POST_DATA_PORT_ENTRY {
     void *data;
     char name[32];
     i32 references;
+
+    bool fun_005c2090(const char *other);
+    void fun_005c20b0(const char *other, void *value);
+    void fun_005c20e0();
+    i32 fun_005c20f0();
+    void fun_005c2100(void *value);
+    void *fun_005c2110();
 };
 
 struct PC_POST_DATA_PORT_MANAGER {
     PC_POST_DATA_PORT_ENTRY entries[256];
     PC_POST_DATA_PORT_MANAGER();
+    PC_POST_DATA_PORT_ENTRY *fun_005c2120(i32 index);
+    void *fun_005c2160(i32 index);
     ~PC_POST_DATA_PORT_MANAGER();
     i32 Register(const char *name, void *data);
 };
@@ -1675,6 +1684,12 @@ typedef struct PC_POST_BUFFER_PROXY_PC {
     u8 enabled;
     u8 resolved;
     u8 unknown_0a[2];
+#ifdef __cplusplus
+    void fun_005c21c0(GRAPHICS_RENDER_TEXTURE_PC *texture, i32 kind, u8 enabled, u8 resolved);
+    u8 fun_005c21e0();
+    void fun_005c21f0();
+    GRAPHICS_RENDER_TEXTURE_PC *fun_005c2210();
+#endif
 } PC_POST_BUFFER_PROXY_PC;
 
 STATIC_ASSERT(sizeof(PC_POST_BUFFER_PROXY_PC) == 12);

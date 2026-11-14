@@ -109,11 +109,11 @@ i32 FindNearestBreak(u8 *text, i32 index) {
     return index;
 }
 
-typedef struct EQUIVALENT_GROUP_PC {
-    i16 object_count;           // 0x0
-    i16 byte_size;              // 0x2
-    NUSPECIALHANDLE objects[1]; // 0x4
-} EQUIVALENT_GROUP_PC;          // size 0x10
+typedef struct EQUIVALENT_GROUP_PC { // size 0x10
+    i16 object_count;                // 0x0
+    i16 byte_size;                   // 0x2
+    NUSPECIALHANDLE objects[1];      // 0x4
+} EQUIVALENT_GROUP_PC;
 
 void MessageBoxInitMtl(void) {
     MessageMtl = NuMtlCreate(1);

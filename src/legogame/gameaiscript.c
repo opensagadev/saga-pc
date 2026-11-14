@@ -6,34 +6,34 @@
 #include <stdio.h>
 #include <string.h>
 
-typedef union AI_ACTION_FLAGS_EF4_PC {
-    u32 word; // 0x0
+typedef union AI_ACTION_FLAGS_EF4_PC { // size 0x4
+    u32 word;
 
-    struct {                   // 0x0
+    struct {                   // size 0x4
         u32 unused0 : 25;      // 0x0:0
         u32 no_idle_speed : 1; // 0x0:25
         u32 unused26 : 6;      // 0x0:26
     } bits;
-} AI_ACTION_FLAGS_EF4_PC; // size 0x4
+} AI_ACTION_FLAGS_EF4_PC;
 
 extern void AiRndrLine3d(NURND_VERTEX3D_PC *, NUMTL *, NUMTX *);
 
 void AIRetreatFromDestination2(AISYS_PC *, AIPACKET_PC *, APIOBJECT_PC *, i32);
 
-typedef struct GIZSPECIAL_PARTIAL_PC {
-    u8 unknown_00[0x20];   // 0x00
-    GAMEANIMSET *anim_set; // 0x20
-} GIZSPECIAL_PARTIAL_PC;   // size 0x24
+typedef struct GIZSPECIAL_PARTIAL_PC { // size 0x24
+    u8 unknown_00[0x20];               // 0x00
+    GAMEANIMSET *anim_set;             // 0x20
+} GIZSPECIAL_PARTIAL_PC;
 
-typedef struct AITURRET_PARTIAL_PC {
-    u8 unknown_00[0xe8];    // 0x00
-    GAMEOBJECT *controller; // 0xe8
-} AITURRET_PARTIAL_PC;      // size 0xec
+typedef struct AITURRET_PARTIAL_PC { // size 0xec
+    u8 unknown_00[0xe8];             // 0x00
+    GAMEOBJECT *controller;          // 0xe8
+} AITURRET_PARTIAL_PC;
 
-typedef struct AIOBSTACLE_PARTIAL_PC {
-    u8 unknown_00[0x9c]; // 0x00
-    u32 runtime_flags;   // 0x9c
-} AIOBSTACLE_PARTIAL_PC; // size 0xa0
+typedef struct AIOBSTACLE_PARTIAL_PC { // size 0xa0
+    u8 unknown_00[0x9c];               // 0x00
+    u32 runtime_flags;                 // 0x9c
+} AIOBSTACLE_PARTIAL_PC;
 
 void FindForcePushTarget(GAMEOBJECT *object, i32 activate, i32 target_filter);
 
@@ -53,10 +53,10 @@ typedef void (*CHECK_ANTINODE_FN_PC)(APIOBJECT_PC *, AIANTINODE_PC *, NUVEC *, f
 
 /* AISYS PC callbacks. */
 
-typedef struct ai_context_reset_view_pc_s {
-    u8 unknown_000[0x6c4];  // 0x000
-    u8 reset_contexts;      // 0x6c4
-} AI_CONTEXT_RESET_VIEW_PC; // size 0x6c5
+typedef struct ai_context_reset_view_pc_s { // size 0x6c5
+    u8 unknown_000[0x6c4];                  // 0x000
+    u8 reset_contexts;                      // 0x6c4
+} AI_CONTEXT_RESET_VIEW_PC;
 
 STATIC_ASSERT(offsetof(GAMEOBJECT, flags_1f8) == 0x1f8);
 
@@ -76,19 +76,19 @@ STATIC_ASSERT(sizeof(GAMEOBJECT) == 0x10d8);
 
 STATIC_ASSERT(offsetof(GAMEOBJECT, ai_packet) + offsetof(AIPACKET_PC, creature_index) == 0x400);
 
-typedef struct ai_force_fields_pc_s {
-    u8 unknown000[0x1c];        // 0x00
-    NUVEC position;             // 0x1c
-    u8 unknown028[0x74 - 0x28]; // 0x28
-    u32 config_flags;           // 0x74
-    u8 unknown078[0xa0 - 0x78]; // 0x78
-    u32 runtime_flags;          // 0xa0
-} AI_FORCE_FIELDS_PC;           // size 0xa4
+typedef struct ai_force_fields_pc_s { // size 0xa4
+    u8 unknown000[0x1c];              // 0x00
+    NUVEC position;                   // 0x1c
+    u8 unknown028[0x74 - 0x28];       // 0x28
+    u32 config_flags;                 // 0x74
+    u8 unknown078[0xa0 - 0x78];       // 0x78
+    u32 runtime_flags;                // 0xa0
+} AI_FORCE_FIELDS_PC;
 
-typedef struct ai_force_object_pc_s {
-    u8 unknown000[0x10cc]; // 0x0000
-    GIZFORCE_PC *force;    // 0x10cc
-} AI_FORCE_OBJECT_PC;      // size 0x10d0
+typedef struct ai_force_object_pc_s { // size 0x10d0
+    u8 unknown000[0x10cc];            // 0x0000
+    GIZFORCE_PC *force;               // 0x10cc
+} AI_FORCE_OBJECT_PC;
 
 /* AISYS callback family: seven-argument callbacks. */
 extern i32 TagCharacter(GAMEOBJECT *, GAMEOBJECT *, i32);
@@ -97,17 +97,17 @@ STATIC_ASSERT(offsetof(GAMEOBJECT, tag_flags) == 0x7c5);
 
 STATIC_ASSERT(offsetof(GAMEOBJECT, takeover_source) == 0xcd0);
 
-typedef struct torpedo_action_packet_pc_s {
-    u8 count;                  // 0x00
-    u8 flags;                  // 0x01
-    u8 unknown_02;             // 0x02
-    u8 state;                  // 0x03
-    u8 unknown_04[4];          // 0x04
-    f32 timer;                 // 0x08
-    u8 unknown_0c[0x30];       // 0x0c
-    NUVEC pickup_positions[5]; // 0x3c
-    u8 unknown_78[0x10];       // 0x78
-} TORPEDO_ACTION_PACKET_PC;    // size 0x88
+typedef struct torpedo_action_packet_pc_s { // size 0x88
+    u8 count;                               // 0x00
+    u8 flags;                               // 0x01
+    u8 unknown_02;                          // 0x02
+    u8 state;                               // 0x03
+    u8 unknown_04[4];                       // 0x04
+    f32 timer;                              // 0x08
+    u8 unknown_0c[0x30];                    // 0x0c
+    NUVEC pickup_positions[5];              // 0x3c
+    u8 unknown_78[0x10];                    // 0x78
+} TORPEDO_ACTION_PACKET_PC;
 
 STATIC_ASSERT(offsetof(GAMEOBJECT, ai_area_mask) == 0x2b0);
 
@@ -177,15 +177,15 @@ extern i32 GizmoGetTypeIDByName(void *, char *);
 
 STATIC_ASSERT(offsetof(TECHNO_s, flags) == 0x3c);
 
-typedef struct ai_cable_head_pc_s {
-    GAMEOBJECT *source; // 0x0
-    GAMEOBJECT *target; // 0x4
-} AI_CABLE_HEAD_PC;     // size 0x8
+typedef struct ai_cable_head_pc_s { // size 0x8
+    GAMEOBJECT *source;             // 0x0
+    GAMEOBJECT *target;             // 0x4
+} AI_CABLE_HEAD_PC;
 
-typedef struct ai_cable_object_pc_s {
-    u8 unknown000[0x1040];  // 0x0000
-    CABLE_RECORD_PC *cable; // 0x1040
-} AI_CABLE_OBJECT_PC;       // size 0x1044
+typedef struct ai_cable_object_pc_s { // size 0x1044
+    u8 unknown000[0x1040];            // 0x0000
+    CABLE_RECORD_PC *cable;           // 0x1040
+} AI_CABLE_OBJECT_PC;
 
 STATIC_ASSERT(offsetof(GAMEOBJECT, ai_packet) + offsetof(AIPACKET_PC, locator) == 0x36c);
 
@@ -235,10 +235,10 @@ STATIC_ASSERT(offsetof(GAMEOBJECT, movement_spline_position) + offsetof(SPLINEPO
 
 extern f32 debug_condition;
 
-typedef struct AI_CONDITION_TURRET_PC {
-    u8 unknown_000[0x13a]; // 0x000
-    u16 flags;             // 0x13a
-} AI_CONDITION_TURRET_PC;  // size 0x13c
+typedef struct AI_CONDITION_TURRET_PC { // size 0x13c
+    u8 unknown_000[0x13a];              // 0x000
+    u16 flags;                          // 0x13a
+} AI_CONDITION_TURRET_PC;
 
 STATIC_ASSERT(sizeof(FLOWBOX_PC) == 0x20);
 
@@ -252,10 +252,10 @@ i32 Hint_isAvailable(i32 hint_id);
 
 i32 Hint_isCompleteByIdPc(i32 hint_id);
 
-typedef struct ai_global_trigger_world_pc_s {
-    u8 unknown_0000[0x4678];           // 0x0000
-    AITRIGGERSETSYS_s *trigger_system; // 0x4678
-} AI_GLOBAL_TRIGGER_WORLD_PC;          // size 0x467c
+typedef struct ai_global_trigger_world_pc_s { // size 0x467c
+    u8 unknown_0000[0x4678];                  // 0x0000
+    AITRIGGERSETSYS_s *trigger_system;        // 0x4678
+} AI_GLOBAL_TRIGGER_WORLD_PC;
 
 STATIC_ASSERT(offsetof(AITRIGGERSETSYS_s, field_0x4280) == 0x4280);
 
@@ -273,15 +273,15 @@ STATIC_ASSERT(offsetof(GAMEOBJECT, field_f10) == 0xf10);
 
 i32 ForceAnimationDonePc(GIZFORCE_PC *force);
 
-typedef struct condition_trigger_process_reader_pc_s {
-    u8 unknown_00[0xa0];               // 0x00
-    AIAREA_PC *trigger_area;           // 0xa0
-} CONDITION_TRIGGER_PROCESS_READER_PC; // size 0xa4
+typedef struct condition_trigger_process_reader_pc_s { // size 0xa4
+    u8 unknown_00[0xa0];                               // 0x00
+    AIAREA_PC *trigger_area;                           // 0xa0
+} CONDITION_TRIGGER_PROCESS_READER_PC;
 
-typedef struct condition_trigger_player_reader_pc_s {
-    u8 unknown_00[0x2b0];             // 0x000
-    u64 membership;                   // 0x2b0
-} CONDITION_TRIGGER_PLAYER_READER_PC; // size 0x2b8
+typedef struct condition_trigger_player_reader_pc_s { // size 0x2b8
+    u8 unknown_00[0x2b0];                             // 0x000
+    u64 membership;                                   // 0x2b0
+} CONDITION_TRIGGER_PLAYER_READER_PC;
 
 STATIC_ASSERT(offsetof(GAMEOBJECT, current_hp) == 0x107f);
 
@@ -289,11 +289,11 @@ STATIC_ASSERT(offsetof(GAMEOBJECT, last_attacker) == 0x10a8);
 
 STATIC_ASSERT(offsetof(GAMEOBJECT, flags_1fc) == 0x1fc);
 
-typedef struct ai_been_to_level_progress_pc_s {
-    u8 unknown_0000[0x2800];    // 0x0000
-    u32 visited_flags;          // 0x2800
-    u8 unknown_2804[0x624];     // 0x2804
-} AI_BEEN_TO_LEVEL_PROGRESS_PC; // size 0x2e28
+typedef struct ai_been_to_level_progress_pc_s { // size 0x2e28
+    u8 unknown_0000[0x2800];                    // 0x0000
+    u32 visited_flags;                          // 0x2800
+    u8 unknown_2804[0x624];                     // 0x2804
+} AI_BEEN_TO_LEVEL_PROGRESS_PC;
 
 STATIC_ASSERT(sizeof(AI_BEEN_TO_LEVEL_PROGRESS_PC) == sizeof(LEVEL_PROGRESS));
 
@@ -301,16 +301,16 @@ STATIC_ASSERT(offsetof(AREA_DATA_PC, levels) == 0x60);
 
 STATIC_ASSERT(offsetof(AREA_DATA_PC, level_count) == 0x7d);
 
-typedef struct ai_on_object_platform_pc_s {
-    u8 unknown_00[0x40];    // 0x00
-    NUMTX *scene_object;    // 0x40
-    u8 unknown_44[0x28];    // 0x44
-} AI_ON_OBJECT_PLATFORM_PC; // size 0x6c
+typedef struct ai_on_object_platform_pc_s { // size 0x6c
+    u8 unknown_00[0x40];                    // 0x00
+    NUMTX *scene_object;                    // 0x40
+    u8 unknown_44[0x28];                    // 0x44
+} AI_ON_OBJECT_PLATFORM_PC;
 
-typedef struct ai_on_object_terrain_pc_s {
-    u8 unknown_00[0x68];                 // 0x00
-    AI_ON_OBJECT_PLATFORM_PC *platforms; // 0x68
-} AI_ON_OBJECT_TERRAIN_PC;               // size 0x6c
+typedef struct ai_on_object_terrain_pc_s { // size 0x6c
+    u8 unknown_00[0x68];                   // 0x00
+    AI_ON_OBJECT_PLATFORM_PC *platforms;   // 0x68
+} AI_ON_OBJECT_TERRAIN_PC;
 
 STATIC_ASSERT(offsetof(NUMTX, m31) == 0x34);
 
@@ -341,15 +341,15 @@ STATIC_ASSERT(offsetof(GIZOBSTACLE, triggering_object) == 0x38);
 STATIC_ASSERT(offsetof(GIZOBSTACLE, runtime_flags) == 0x9c);
 
 /* Instance reader: only the condition's flags field is consumed. */
-typedef struct condition_cut_instance_reader_pc_s {
-    u8 opaque_00_88[0x88];          // 0x00
-    u32 flags;                      // 0x88
-} CONDITION_CUT_INSTANCE_READER_PC; // size 0x8c
+typedef struct condition_cut_instance_reader_pc_s { // size 0x8c
+    u8 opaque_00_88[0x88];                          // 0x00
+    u32 flags;                                      // 0x88
+} CONDITION_CUT_INSTANCE_READER_PC;
 
-typedef struct condition_hat_name_reader_pc_s {
-    u8 unknown_00[0x40];        // 0x00
-    char name[16];              // 0x40
-} CONDITION_HAT_NAME_READER_PC; // size 0x50
+typedef struct condition_hat_name_reader_pc_s { // size 0x50
+    u8 unknown_00[0x40];                        // 0x00
+    char name[16];                              // 0x40
+} CONDITION_HAT_NAME_READER_PC;
 
 STATIC_ASSERT(offsetof(GIZMO_LEVER_PC, name) == 0x58);
 
@@ -373,43 +373,43 @@ extern const f64 ActionSnapWeightedRandomZeroPc;
 
 typedef NUVEC *(*AI_GET_CREATURE_ORIGIN_PC)(AISYS_PC *, AIPACKET_PC *);
 
-typedef struct ai_force_platform_record_pc_s {
-    u8 unknown_00[0x40];       // 0x00
-    NUMTX *scene_matrix;       // 0x40
-    u8 unknown_44[0x28];       // 0x44
-} AI_FORCE_PLATFORM_RECORD_PC; // size 0x6c
+typedef struct ai_force_platform_record_pc_s { // size 0x6c
+    u8 unknown_00[0x40];                       // 0x00
+    NUMTX *scene_matrix;                       // 0x40
+    u8 unknown_44[0x28];                       // 0x44
+} AI_FORCE_PLATFORM_RECORD_PC;
 
-typedef struct ai_force_platform_terrain_pc_s {
-    u8 unknown_00[0x68];                    // 0x00
-    AI_FORCE_PLATFORM_RECORD_PC *platforms; // 0x68
-} AI_FORCE_PLATFORM_TERRAIN_PC;             // size 0x6c
+typedef struct ai_force_platform_terrain_pc_s { // size 0x6c
+    u8 unknown_00[0x68];                        // 0x00
+    AI_FORCE_PLATFORM_RECORD_PC *platforms;     // 0x68
+} AI_FORCE_PLATFORM_TERRAIN_PC;
 
-typedef struct ai_force_platform_object_data_pc_s {
-    u8 unknown_00[2];               // 0x0
-    i16 platform_id;                // 0x2
-} AI_FORCE_PLATFORM_OBJECT_DATA_PC; // size 0x4
+typedef struct ai_force_platform_object_data_pc_s { // size 0x4
+    u8 unknown_00[2];                               // 0x0
+    i16 platform_id;                                // 0x2
+} AI_FORCE_PLATFORM_OBJECT_DATA_PC;
 
-typedef struct ai_trigger_world_pc_s {
+typedef struct ai_trigger_world_pc_s { // size 0x467c
     u8 unknown_0000[0x4678];           // 0x0000
     AITRIGGERSETSYS_s *trigger_system; // 0x4678
-} AI_TRIGGER_WORLD_PC;                 // size 0x467c
+} AI_TRIGGER_WORLD_PC;
 
-typedef struct ai_trigger_grapple_pc_s {
-    u8 unknown_00[0x24];   // 0x00
-    NUVEC ground_position; // 0x24
-} AI_TRIGGER_GRAPPLE_PC;   // size 0x30
+typedef struct ai_trigger_grapple_pc_s { // size 0x30
+    u8 unknown_00[0x24];                 // 0x00
+    NUVEC ground_position;               // 0x24
+} AI_TRIGGER_GRAPPLE_PC;
 
-typedef struct ai_trigger_object_pc_s {
-    u8 unknown_0000[0x1072]; // 0x0000
-    u8 grapple_direction;    // 0x1072
-} AI_TRIGGER_OBJECT_PC;      // size 0x1073
+typedef struct ai_trigger_object_pc_s { // size 0x1073
+    u8 unknown_0000[0x1072];            // 0x0000
+    u8 grapple_direction;               // 0x1072
+} AI_TRIGGER_OBJECT_PC;
 
-typedef struct ai_trigger_force_pc_s {
-    u8 unknown_00[0x1c]; // 0x00
-    NUVEC position;      // 0x1c
-    u8 unknown_28[0x4c]; // 0x28
-    u32 config_flags;    // 0x74
-} AI_TRIGGER_FORCE_PC;   // size 0x78
+typedef struct ai_trigger_force_pc_s { // size 0x78
+    u8 unknown_00[0x1c];               // 0x00
+    NUVEC position;                    // 0x1c
+    u8 unknown_28[0x4c];               // 0x28
+    u32 config_flags;                  // 0x74
+} AI_TRIGGER_FORCE_PC;
 
 STATIC_ASSERT(offsetof(GAMEOBJECT, field_1088) == 0x1088);
 STATIC_ASSERT(offsetof(GAMEOBJECT, flags_ef4) == 0xef4);
@@ -429,18 +429,18 @@ u32 LEGO_AIPATHCNX_NO_DESTINATION_CHECK;
 u32 LEGO_AIPATHCNX_JUMP_NOW;
 u32 LEGO_AIPATHCNX_DONT_JUMP_NOW;
 
-typedef struct bulk_ai_lever_pc_s {
-    u8 unknown_00[0x40];  // 0x00
-    NUVEC floor_position; // 0x40
-    u8 unknown_4c[0x1c];  // 0x4c
-    NUVEC position;       // 0x68
-    u8 unknown_74[4];     // 0x74
-    f32 pull_progress;    // 0x78
-    u8 unknown_7c[0x12];  // 0x7c
-    u16 animation_frame;  // 0x8e
-    u8 unknown_90[4];     // 0x90
-    u16 flags;            // 0x94
-} BULK_AI_LEVER_PC;       // size 0x98
+typedef struct bulk_ai_lever_pc_s { // size 0x98
+    u8 unknown_00[0x40];            // 0x00
+    NUVEC floor_position;           // 0x40
+    u8 unknown_4c[0x1c];            // 0x4c
+    NUVEC position;                 // 0x68
+    u8 unknown_74[4];               // 0x74
+    f32 pull_progress;              // 0x78
+    u8 unknown_7c[0x12];            // 0x7c
+    u16 animation_frame;            // 0x8e
+    u8 unknown_90[4];               // 0x90
+    u16 flags;                      // 0x94
+} BULK_AI_LEVER_PC;
 
 typedef struct bulk_ai_panel_pc_s {
     u8 unknown_00[0x50];
@@ -452,20 +452,20 @@ typedef struct bulk_ai_panel_pc_s {
     NUVEC floor_position;
 } BULK_AI_PANEL_PC;
 
-typedef struct bulk_ai_techno_pc_s {
-    u8 unknown_00[0x10];   // 0x00
-    NUVEC position;        // 0x10
-    NUVEC ground_position; // 0x1c
-    u8 unknown_28[0x14];   // 0x28
-    u8 flags;              // 0x3c
-} BULK_AI_TECHNO_PC;       // size 0x40
+typedef struct bulk_ai_techno_pc_s { // size 0x40
+    u8 unknown_00[0x10];             // 0x00
+    NUVEC position;                  // 0x10
+    NUVEC ground_position;           // 0x1c
+    u8 unknown_28[0x14];             // 0x28
+    u8 flags;                        // 0x3c
+} BULK_AI_TECHNO_PC;
 
 i32 GizTechno_CanUseTechno(GAMEOBJECT *object, BULK_AI_TECHNO_PC *techno);
 
-typedef struct ai_action_controller_world_pc_s {
-    u8 unknown_0000[0x4670];              // 0x0000
-    AI_CONTROL_SYSTEM_PC *control_system; // 0x4670
-} AI_ACTION_CONTROLLER_WORLD_PC;          // size 0x4674
+typedef struct ai_action_controller_world_pc_s { // size 0x4674
+    u8 unknown_0000[0x4670];                     // 0x0000
+    AI_CONTROL_SYSTEM_PC *control_system;        // 0x4670
+} AI_ACTION_CONTROLLER_WORLD_PC;
 struct AIPATHCNXCONTROLLER_s *AIPathCnxControllerCreate(AI_CONTROL_SYSTEM_PC *, AISYS_PC *, AIPATH_PC *, char *, char *,
                                                         i32, char *, i32, i32);
 void AIPathCnxControllerSetOnRange(struct AIPATHCNXCONTROLLER_s *, i32, i32);
@@ -12629,3 +12629,410 @@ i32 Action_CreateCreatures(AISYS_PC *sys, AISCRIPTPROCESS_PC *processor, AIPACKE
     }
     return 1;
 }
+
+i32 Action_SpeederBeingChased(AISYS_PC *, AISCRIPTPROCESS_PC *, AIPACKET_PC *, char **, i32, i32, f32);
+i32 Action_MushroomCollapse(AISYS_PC *, AISCRIPTPROCESS_PC *, AIPACKET_PC *, char **, i32, i32, f32);
+i32 Action_Sebulba(AISYS_PC *, AISCRIPTPROCESS_PC *, AIPACKET_PC *, char **, i32, i32, f32);
+i32 Action_NewSebulba(AISYS_PC *, AISCRIPTPROCESS_PC *, AIPACKET_PC *, char **, i32, i32, f32);
+i32 Action_BoulderSection(AISYS_PC *, AISCRIPTPROCESS_PC *, AIPACKET_PC *, char **, i32, i32, f32);
+
+extern const char AIRegistryTextPc007562c8[13];
+extern const char AIRegistryTextPc007566a8[9];
+extern const char AIRegistryTextPc00756a74[11];
+extern const char AIRegistryTextPc007571b8[18];
+
+#pragma const_seg(".rdata$AIRegistryTextPc00756e7c")
+const char AIRegistryTextPc00756e7c[17] = "HelpWithTriggers";
+#pragma const_seg()
+#pragma const_seg(".rdata$AIRegistryTextPc007575bc")
+const char AIRegistryTextPc007575bc[7] = "Active";
+#pragma const_seg()
+
+#pragma data_seg(".data$lego_aiactiondefs")
+AIACTIONDEF_PC lego_aiactiondefs[208] = {
+    {"Activate", Action_Activate, 1, 0, 0},
+    {"DeActivate", Action_DeActivate, 1, 0, 0},
+    {"GoToLevelPath", Action_GoToLevelPath, 0, 0, 0},
+    {"SetPath", Action_SetPath, 0, 0, 0},
+    {"GoToOriginalPath", Action_GoToOriginalPath, 0, 0, 0},
+    {"SnapToLocator", Action_SnapToLocator, 1, 0, 0},
+    {AIRegistryTextPc00756a74, Action_GameSetLocator, 1, 0, 0},
+    {"SetLocatorSet", Action_SetLocatorSet, 0, 0, 0},
+    {"SnapToOrigin", Action_SnapToOrigin, 1, 0, 0},
+    {"BigJumpToLocator", Action_BigJumpToLocator, 0, 0, 0},
+    {"BigJump", Action_BigJump, 0, 0, 0},
+    {"SetDoomedEscapeLocator", Action_SetDoomedEscapeLocator, 0, 0, 0},
+    {"SnapToPosition", Action_SnapToPosition, 1, 0, 0},
+    {"SnapToSockPosition", Action_SnapToSockPosition, 1, 0, 0},
+    {"SetAnimation", Action_SetAnimation, 0, 0, 0},
+    {"AnimTimeRandom", Action_AnimTimeRandom, 0, 0, 0},
+    {"CanOpenDoors", Action_CanOpenDoors, 0, 0, 0},
+    {"CanShootOffScreen", Action_CanShootOffScreen, 0, 0, 0},
+    {"KeepWeaponOut", Action_KeepWeaponOut, 0, 0, 0},
+    {"SnapWeaponOut", Action_SnapWeaponOut, 1, 0, 0},
+    {"ResetContext", Action_ResetContext, 0, 0, 0},
+    {"PrefersPlayers", Action_PrefersPlayers, 0, 0, 0},
+    {"SetBoltsDontGetDeflectedBack", Action_SetBoltsDontGetDeflectedBack, 0, 0, 0},
+    {"CanShootObstructions", Action_CanShootObstructions, 0, 0, 0},
+    {"UseBigJumpToJump", Action_UseBigJumpToJump, 0, 0, 0},
+    {"SetTaggable", Action_SetTaggable, 1, 0, 0},
+    {"CatchUpForbidden", Action_CatchUpForbidden, 0, 0, 0},
+    {"CannotDropIn", Action_CannotDropIn, 1, 0, 0},
+    {"CanAttack", Action_CanAttack, 0, 0, 0},
+    {"NotWithParty", Action_NotWithParty, 1, 0, 0},
+    {"TakeDamage", Action_TakeDamage, 0, 0, 0},
+    {"TagCharacter", Action_TagCharacter, 1, 0, 0},
+    {"CanHitForceObjects", Action_CanHitForceObjects, 0, 0, 0},
+    {"AlwaysBackFlip", Action_AlwaysBackFlip, 0, 0, 0},
+    {"PlayerSpeederHack", Action_PlayerSpeederHack, 0, 0, 0},
+    {"SetAnimSpeedMul", Action_SetAnimSpeedMul, 0, 0, 0},
+    {"SetSide", Action_SetSide, 1, 0, 0},
+    {"SetStateArea", Action_SetStateArea, 0, 0, 0},
+    {"SetOpponent", Action_SetOpponent, 0, 0, 0},
+    {"AttackOpponent", Action_AttackOpponent, 0, 0, 0},
+    {"EngageOpponent", Action_EngageOpponent, 0, 0, 0},
+    {"ShootAtOpponent", Action_ShootAtOpponent, 0, 0, 0},
+    {"EngageObject", Action_EngageObject, 0, 0, 0},
+    {"GrabVictim", Action_GrabVictim, 0, 0, 0},
+    {"EatVictim", Action_EatVictim, 0, 0, 0},
+    {"ReleaseVictim", Action_ReleaseVictim, 0, 0, 0},
+    {"CanDefend", Action_CanDefend, 0, 0, 0},
+    {"DontAimAt", Action_DontAimAt, 0, 0, 0},
+    {"CanUseWeapon", Action_CanUseWeapon, 0, 0, 0},
+    {"SetBoss", Action_SetBoss, 0, 0, 0},
+    {"UpdateSockPos", Action_UpdateSockPos, 0, 0, 0},
+    {"UseForce", Action_UseForce, 0, 0, 0},
+    {"TriggerBlowUp", Action_TriggerBlowUp, 0, 0, 0},
+    {"ForcePush", Action_ForcePush, 0, 0, 0},
+    {"DeflectPlayersPart", Action_DeflectPlayersPart, 0, 0, 0},
+    {"Kill", Action_Kill, 1, 0, 0},
+    {"Explode", Action_Explode, 0, 0, 0},
+    {"SetScriptState", Action_SetScriptState, 0, 0, 0},
+    {"SetAIOverrideControl", Action_SetAIOverrideControl, 0, 0, 0},
+    {"SetLastSafePathPos", Action_SetLastSafePathPos, 0, 0, 0},
+    {"SetDontMove", Action_SetDontMove, 0, 0, 0},
+    {"DontSetStoppedFlag", Action_DontSetStoppedFlag, 0, 0, 0},
+    {"PressSpecialButton", Action_PressSpecialButton, 0, 0, 0},
+    {"PressTagButton", Action_PressTagButton, 0, 0, 0},
+    {"PressActionButton", Action_PressActionButton, 0, 0, 0},
+    {"UseWeapon", Action_UseWeapon, 0, 0, 0},
+    {"SetInvulnerable", Action_SetInvulnerable, 0, 0, 0},
+    {AIRegistryTextPc007566a8, Action_GameDontPush, 0, 0, 0},
+    {"DontAvoidCharacter", Action_DontAvoidCharacter, 0, 0, 0},
+    {"PressJumpButton", Action_PressJumpButton, 0, 0, 0},
+    {"AddToSet", Action_AddToSet, 0, 0, 0},
+    {"SetSpline", Action_SetSpline, 0, 0, 0},
+    {"SetControlSystem", Action_SetControlSystem, 0, 0, 0},
+    {"SetZeroAcceleration", Action_SetZeroAcceleration, 0, 0, 0},
+    {"FollowDirection", Action_FollowDirection, 0, 0, 0},
+    {"BreakFormation", Action_BreakFormation, 0, 0, 0},
+    {"FormationMove", Action_FormationMove, 0, 0, 0},
+    {"CreateCreatures", Action_CreateCreatures, 0, 0, 0},
+    {"SelectRandomSpline", Action_SelectRandomSpline, 0, 0, 0},
+    {"CreateSplineCreatures", Action_CreateSplineCreatures, 0, 0, 0},
+    {"Launch", Action_Launch, 0, 0, 0},
+    {"SetCurrentSpeed", Action_SetCurrentSpeed, 0, 0, 0},
+    {"SetRunSpeed", Action_SetRunSpeed, 0, 0, 0},
+    {"SetWalkSpeed", Action_SetWalkSpeed, 0, 0, 0},
+    {"SetHitPoints", Action_SetHitPoints, 1, 0, 0},
+    {"SetShieldHitPoints", Action_SetShieldHitPoints, 1, 0, 0},
+    {"SetMessage", Action_SetMessage, 1, 0, 0},
+    {"CopyMessage", Action_CopyMessage, 0, 0, 0},
+    {"SetScriptParam", Action_SetScriptParam, 0, 0, 0},
+    {"AddPart", Action_AddPart, 0, 0, 0},
+    {"AddPartDebris", Action_AddPartDebris, 0, 0, 0},
+    {"LaunchGuidedMissile", Action_LaunchGuidedMissile, 0, 0, 0},
+    {"SetHoverPhase", Action_SetHoverPhase, 0, 0, 0},
+    {"UseCurrentSpeed", Action_UseCurrentSpeed, 0, 0, 0},
+    {"SetMaxMovementRange", Action_SetMaxMovementRange, 0, 0, 0},
+    {"SetDefaultMovementRange", Action_SetDefaultMovementRange, 0, 0, 0},
+    {"SetGravityHeight", Action_SetGravityHeight, 0, 0, 0},
+    {"ApplyGravity", Action_ApplyGravity, 0, 0, 0},
+    {"IgnoreShoveSystem", Action_IgnoreShoveSystem, 0, 0, 0},
+    {"CannotBeSeen", Action_CannotBeSeen, 0, 0, 0},
+    {"CannotBeForcedBack", Action_CannotBeForcedBack, 0, 0, 0},
+    {"CanTurn", Action_CanTurn, 0, 0, 0},
+    {"NoIdleSpeed", Action_NoIdleSpeed, 0, 0, 0},
+    {"SetVisibility", Action_SetVisibility, 1, 0, 0},
+    {"EnableSock", Action_EnableSock, 1, 0, 0},
+    {"AddDebris", Action_AddDebris, 0, 0, 0},
+    {"JudderGameCamera", Action_JudderGameCamera, 0, 0, 0},
+    {"CameraShake", Action_CameraShake, 0, 0, 0},
+    {"ResetGameCamera", Action_ResetGameCamera, 1, 0, 0},
+    {"PlayCutScene", Action_PlayCutScene, 1, 0, 0},
+    {"SetLevelPath", Action_SetLevelPath, 0, 0, 0},
+    {"ImmuneToKillTerrain", Action_ImmuneToKillTerrain, 0, 0, 0},
+    {"ImmuneToBolts", Action_ImmuneToBolts, 0, 0, 0},
+    {"Respawnable", Action_Respawnable, 0, 0, 0},
+    {"SetPathCnxFlag", Action_SetPathCnxFlag, 1, 0, 0},
+    {"SetHint", Action_SetHint, 0, 0, 0},
+    {"SetHintComplete", Action_SetHintComplete, 0, 0, 0},
+    {"CancelHint", Action_CancelHint, 0, 0, 0},
+    {"CycleCharacter", Action_CycleCharacter, 0, 0, 0},
+    {"CnxController", Action_CnxController, 0, 0, 0},
+    {"CnxHelper", Action_CnxHelper, 0, 0, 0},
+    {"PlaySfx", Action_PlaySfx, 0, 0, 0},
+    {"CameraCut", Action_CameraCut, 1, 0, 0},
+    {"DynamicCameraCut", Action_DynamicCameraCut, 1, 0, 0},
+    {"EndCameraCut", Action_EndCameraCut, 1, 0, 0},
+    {"DontRaycastLOS", Action_DontRaycastLOS, 0, 0, 0},
+    {"SetForceBack", Action_SetForceBack, 1, 0, 0},
+    {"FaceCamera", Action_FaceCamera, 0, 0, 0},
+    {"FaceCharacter", Action_FaceCharacter, 0, 0, 0},
+    {"SpinOnSpot", Action_SpinOnSpot, 0, 0, 0},
+    {"FollowCharacter", Action_FollowCharacter, 0, 0, 0},
+    {AIRegistryTextPc007562c8, Action_GameFollowPlayer, 0, 0, 0},
+    {"MoveForward", Action_MoveForward, 0, 0, 0},
+    {"SetFormationCommander", Action_SetFormationCommander, 0, 0, 0},
+    {"RemoveThrownForceObjects", Action_RemoveThrownForceObjects, 0, 0, 0},
+    {"AlwaysTriggerObstacle", Action_AlwaysTriggerObstacle, 0, 0, 0},
+    {"CanTriggerObstacle", Action_CanTriggerObstacle, 0, 0, 0},
+    {"PlayGizObstacle", Action_PlayGizObstacle, 1, 0, 0},
+    {"PlayObstacle", Action_PlayGizObstacle, 1, 0, 0},
+    {"PlayGizSpecial", Action_PlayGizSpecial, 1, 0, 0},
+    {"SetObstacleToEnd", Action_SetObstacleToEnd, 1, 0, 0},
+    {AIRegistryTextPc00756e7c, Action_HelpWithTriggers, 0, 0, 0},
+    {"UseTriggerSet", Action_UseTriggerSet, 0, 0, 0},
+    {"PullLever", Action_PullLever, 0, 0, 0},
+    {"UsePanel", Action_UsePanel, 0, 0, 0},
+    {"UseTechno", Action_UseTechno, 0, 0, 0},
+    {"ReleaseLocator", Action_ReleaseLocator, 0, 0, 0},
+    {"AssignLocator", Action_AssignLocator, 0, 0, 0},
+    {"GetLocatorFromSet", Action_GetLocatorFromSet, 0, 0, 0},
+    {"MoveAwayFromLastAttacker", Action_MoveAwayFromLastAttacker, 0, 0, 0},
+    {"ProbeDroid", Action_ProbeDroid, 0, 0, 0},
+    {"AlertCreatures", Action_AlertCreatures, 0, 0, 0},
+    {"SetLastAttacker", Action_SetLastAttacker, 0, 0, 0},
+    {"LinkTurretToController", Action_LinkTurretToController, 0, 0, 0},
+    {"TakeOver", Action_TakeOver, 1, 0, 0},
+    {"ReleaseTakeOver", Action_ReleaseTakeOver, 1, 0, 0},
+    {"RegisterTakeOverObject", Action_RegisterTakeOverObject, 0, 0, 0},
+    {"SetTakeOverTarget", Action_SetTakeOverTarget, 0, 0, 0},
+    {"ClearTakeOverTarget", Action_ClearTakeOverTarget, 0, 0, 0},
+    {"AddGameMsgCount", Action_AddGameMsgCount, 1, 0, 0},
+    {"AddMiscPickups", Action_AddMiscPickups, 0, 0, 0},
+    {"SetCanTakeOver", Action_SetCanTakeOver, 0, 0, 0},
+    {"CanBeCarried", Action_CanBeCarried, 1, 0, 0},
+    {"IgnoreLastSafePathPos", Action_IgnoreLastSafePathPos, 0, 0, 0},
+    {"AwkwardShapeOverride", Action_AwkwardShapeOverride, 0, 0, 0},
+    {"IgnoreSlideTerrain", Action_IgnoreSlideTerrain, 0, 0, 0},
+    {"SplineFollowTerrain", Action_SplineFollowTerrain, 0, 0, 0},
+    {"SetLayer", Action_SetLayer, 0, 0, 0},
+    {"CreateRider", Action_CreateRider, 0, 0, 0},
+    {"AddTorpedoPacket", Action_AddTorpedoPacket, 1, 0, 0},
+    {"SpeederBeingChased", Action_SpeederBeingChased, 0, 0, 0},
+    {"ThrowDetonator", Action_ThrowDetonator, 0, 0, 0},
+    {"SetScaleOverride", Action_SetScaleOverride, 0, 0, 0},
+    {"DisableNarrowSocks", Action_DisableNarrowSocks, 1, 0, 0},
+    {"UseTimeBasedUpdate", Action_UseTimeBasedUpdate, 0, 0, 0},
+    {"ForceLightning", Action_ForceLightning, 0, 0, 0},
+    {"WalkBackwards", Action_WalkBackwards, 0, 0, 0},
+    {"AddScriptProcessor", Action_AddScriptProcessor, 0, 0, 0},
+    {"SetUseOneAtOnce", Action_SetUseOneAtOnce, 0, 0, 0},
+    {"SetAO_MaxAttackers", Action_SetAO_MaxAttackers, 0, 0, 0},
+    {"SetAO_AttackersPerRow", Action_SetAO_AttackersPerRow, 0, 0, 0},
+    {"SetAO_RowDist", Action_SetAO_RowDist, 0, 0, 0},
+    {"SetAO_InitRowDist", Action_SetAO_InitRowDist, 0, 0, 0},
+    {"SetTechnoComplete", Action_SetTechnoComplete, 0, 0, 0},
+    {"LetGoOfBalloon", Action_LetGoOfBalloon, 0, 0, 0},
+    {"DrawBossHitPoints", Action_DrawBossHitPoints, 1, 0, 0},
+    {"CompleteLevel", Action_CompleteLevel, 1, 0, 0},
+    {"GoToNewLevel", Action_GoToNewLevel, 0, 0, 0},
+    {"CircleLocator", Action_CircleLocator, 0, 0, 0},
+    {"GizmoActivate", Action_GizmoActivate, 0, 0, 0},
+    {"GizmoSetVisibility", Action_GizmoSetVisibility, 0, 0, 0},
+    {"TurnOnPickup", Action_TurnOnPickup, 0, 0, 0},
+    {"CanHelpWithTriggers", Action_CanHelpWithTriggers, 0, 0, 0},
+    {"CanCollideWithObjects", Action_CanCollideWithObjects, 0, 0, 0},
+    {"SetShootOpponents", Action_SetShootOpponents, 0, 0, 0},
+    {"PartyCanBeUnderCover", Action_PartyCanBeUnderCover, 0, 0, 0},
+    {"SetLapTime", Action_SetLapTime, 0, 0, 0},
+    {"CreatePod", Action_CreatePod, 0, 0, 0},
+    {"MushroomCollapse", Action_MushroomCollapse, 0, 0, 0},
+    {"BoulderSection", Action_BoulderSection, 0, 0, 0},
+    {"RaceOpponent", Action_RaceOpponent, 0, 0, 0},
+    {"Sebulba", Action_Sebulba, 0, 0, 0},
+    {"IgnoreTurnAroundSpline", Action_IgnoreTurnAroundSpline, 0, 0, 0},
+    {"CanMoveWhenDeactivated", Action_CanMoveWhenDeactivated, 0, 0, 0},
+    {"DontAttack", Action_DontAttack, 0, 0, 0},
+    {"CanPullLevers", Action_CanPullLevers, 0, 0, 0},
+    {"NewSebulba", Action_NewSebulba, 0, 0, 0},
+    {NULL, NULL, 0, 0, 0},
+};
+#pragma data_seg()
+
+#pragma data_seg(".data$lego_aiconditiondefs")
+AICONDITIONDEF_PC lego_aiconditiondefs[171] = {
+    {"GlynTest", Condition_GlynTest, NULL},
+    {"Debug", Condition_Debug, NULL},
+    {AIRegistryTextPc007575bc, Condition_Active, NULL},
+    {"GotGun", Condition_GotGun, NULL},
+    {"PrefersBrawling", Condition_PrefersBrawling, NULL},
+    {"IsAlive", Condition_IsAlive, Condition_IsAliveInit},
+    {"IsOnScreen", Condition_IsOnScreen, Condition_IsOnScreenInit},
+    {"OffScreenTimer", Condition_OffScreenTimer, Condition_OffScreenTimerInit},
+    {"OnObject", Condition_OnObject, Condition_OnObjectInit},
+    {"OnSameObjectAsPlayer", Condition_OnSameObjectAsPlayer, NULL},
+    {"PlayerOnObject", Condition_PlayerOnObject, Condition_OnObjectInit},
+    {"EitherPlayerOnObject", Condition_EitherPlayerOnObject, Condition_OnObjectInit},
+    {"EitherPlayerLocatorRangeXZ", Condition_EitherPlayerLocatorRangeXZ, Condition_EitherPlayerLocatorRangeXZInitPc},
+    {"OnGround", Condition_OnGround, NULL},
+    {"BeenAlerted", Condition_BeenAlerted, NULL},
+    {"PlayerOnGround", Condition_PlayerOnGround, NULL},
+    {"SpawnCount", Condition_SpawnCount, NULL},
+    {"BehindCamera", Condition_BehindCamera, NULL},
+    {"LocatorOnScreen", Condition_LocatorOnScreen, Condition_LocatorOnScreenInit},
+    {"Blocking", Condition_Blocking, NULL},
+    {"BeenHit", Condition_BeenHit, Condition_BeenHitInit},
+    {"HoverPhase", Condition_HoverPhase, NULL},
+    {"HitPoints", Condition_HitPoints, Condition_HitPointsInit},
+    {"OnDynamicGrapple", Condition_OnDynamicGrapple, Condition_OnDynamicGrappleInit},
+    {"XPos", Condition_XPos, Condition_XPosInitPc},
+    {"YPos", Condition_YPos, Condition_XPosInitPc},
+    {"ZPos", Condition_ZPos, Condition_XPosInitPc},
+    {"CollidingWithOpponent", Condition_CollidingWithOpponent, NULL},
+    {"Colliding", Condition_Colliding, NULL},
+    {"ObstacleAtStart", Condition_ObstacleAtStart, Condition_ObstacleAtEndInit},
+    {"ObstacleAtEnd", Condition_ObstacleAtEnd, Condition_ObstacleAtEndInit},
+    {"SpecialAtStart", Condition_ObstacleAtStart, Condition_SpecialAtStartInitPc},
+    {"SpecialAtEnd", Condition_ObstacleAtEnd, Condition_SpecialAtStartInitPc},
+    {"ObstacleLockedOpen", Condition_ObstacleLockedOpen, Condition_ObstacleOpenedByPlayerInit},
+    {"ObstacleLockedShut", Condition_ObstacleLockedShut, Condition_ObstacleOpenedByPlayerInit},
+    {"ForceAtStart", Condition_ForceAtStart, Condition_ForceInit},
+    {"ForceAtEnd", Condition_ForceAtEnd, Condition_ForceInit},
+    {"ObstacleOpenedByPlayer", Condition_ObstacleOpenedByPlayer, Condition_ObstacleOpenedByPlayerInit},
+    {"ObstacleOpenedByEitherPlayer", Condition_ObstacleOpenedByEitherPlayer, Condition_ObstacleOpenedByPlayerInit},
+    {"AnimationFinished", Condition_AnimationFinished, Condition_AnimationFinishedInit},
+    {"EitherPlayerPullingLever", Condition_EitherPlayerPullingLever, NULL},
+    {"EitherPlayerUsingHatMachine", Condition_EitherPlayerUsingHatMachinePc, NULL},
+    {"EitherPlayerUsingPanel", Condition_EitherPlayerUsingPanel, NULL},
+    {"EitherPlayerWearingHelmet", Condition_EitherPlayerWearingHelmet, NULL},
+    {"PartyUnderCover", Condition_PartyUnderCover, NULL},
+    {"NumBaddiesThatCanSeePlayers", Condition_NumBaddiesThatCanSeePlayers, NULL},
+    {"PlayerUsingForce", Condition_PlayerUsingForce, Condition_UsingForceInit},
+    {"EitherPlayerUsingForce", Condition_EitherPlayerUsingForce, Condition_UsingForceInit},
+    {"UsingForce", Condition_UsingForce, Condition_UsingForceInit},
+    {"OnForcePlatform", Condition_OnForcePlatform, Condition_OnForcePlatformInit},
+    {"PlayerOnForcePlatform", Condition_PlayerOnForcePlatform, Condition_OnForcePlatformInit},
+    {"EitherPlayerOnForcePlatform", Condition_EitherPlayerOnForcePlatform, Condition_OnForcePlatformInit},
+    {"ForceBeingUsed", Condition_ForceBeingUsed, Condition_UsingForceInit},
+    {"ForcePushing", Condition_ForcePushing, Condition_ForcePushingInit},
+    {"TurretAlive", Condition_TurretAlive, Condition_TurretAliveInit},
+    {"PlayerDeflectingPart", Condition_PlayerDeflectingPart, NULL},
+    {"ForceComplete", Condition_ForceComplete, Condition_ForceCompleteInit},
+    {"ForceFinished", Condition_ForceFinished, Condition_ForceCompleteInit},
+    {"BuildItComplete", Condition_BuildItComplete, Condition_BuildItCompleteInit},
+    {"BlowupBlownup", Condition_BlowupBlownup, Condition_BlowupBlownupInitPc},
+    {"IAmA", Condition_IAmA, Condition_IAmAInit},
+    {"OpponentIsA", Condition_OpponentIsA, Condition_OpponentIsAInit},
+    {AIRegistryTextPc007571b8, Condition_GameOpponentIsAThreatPc, NULL},
+    {"CanFightLikeAJedi", Condition_CanFightLikeAJedi, NULL},
+    {"IAmAGoody", Condition_IAmAGoody, NULL},
+    {"IAmABaddy", Condition_IAmABaddy, NULL},
+    {"IAmANeutral", Condition_IAmANeutral, NULL},
+    {"IAmAGoodyBaddy", Condition_IAmAGoodieBaddie, NULL},
+    {"IAmAPartyCharacter", Condition_IAmAPartyCharacter, NULL},
+    {"CategoryIs", Condition_CategoryIs, Condition_CategoryIsInit},
+    {"PlayerCategoryIs", Condition_PlayerCategoryIs, Condition_CategoryIsInit},
+    {"EitherPlayerIs", Condition_EitherPlayerIs, Condition_EitherPlayerIsInit},
+    {"Player1Is", Condition_Player1Is, Condition_EitherPlayerIsInit},
+    {"Player2Is", Condition_Player2Is, Condition_EitherPlayerIsInit},
+    {"IsSetAlive", Condition_IsSetAlive, Condition_IsSetAliveInit},
+    {"NumInSetAlive", Condition_NumInSetAlive, Condition_IsSetAliveInit},
+    {"Context", Condition_Context, NULL},
+    {"InContext", Condition_InContext, Condition_InContextInit},
+    {"OpponentContext", Condition_OpponentContext, Condition_InContextInit},
+    {"Player2Active", Condition_Player2Active, NULL},
+    {"NumBaddies", Condition_NumBaddies, Condition_NumBaddiesInit},
+    {"NumForceObjects", Condition_NumForceObjects, Condition_NumForceObjectsInit},
+    {"BeenToLevel", Condition_BeenToLevel, Condition_BeenToLevelInit},
+    {"LastLevel", Condition_LastLevel, Condition_LastLevelInit},
+    {"Message", Condition_Message, Condition_MessageInit},
+    {"ScriptParam", Condition_ScriptParam, Condition_ScriptParamInit},
+    {"CutSceneStarted", Condition_CutSceneStarted, Condition_CutSceneStartedInit},
+    {"CutSceneFinished", Condition_CutSceneFinished, Condition_CutSceneFinishedInit},
+    {"CutSceneExists", Condition_CutSceneExists, Condition_CutSceneExistsInit},
+    {"PlayerInSock", Condition_PlayerInSock, Condition_PlayerInSockInit},
+    {"CutScenePlaying", Condition_CutScenePlaying, Condition_CutScenePlayingInit},
+    {"RigidAnimFrame", Condition_RigidAnimFrame, Condition_RigidAnimFrameInit},
+    {"SockDistanceToPlayer", Condition_SockDistanceToPlayer, NULL},
+    {"SockDistanceToOpponent", Condition_SockDistanceToOpponent, NULL},
+    {"SockXDistanceToPlayer", Condition_SockXDistanceToPlayer, NULL},
+    {"PlayerDistanceAlongSock", Condition_PlayerDistanceAlongSock, NULL},
+    {"FurthestPlayerDistanceAlongSock", Condition_FurthestPlayerDistanceAlongSock, NULL},
+    {"FinishedSpline", Condition_FinishedSpline, NULL},
+    {"CurrentHintId", Condition_CurrentHintId, NULL},
+    {"HintAvailable", Condition_HintAvailable, Condition_HintAvailableInit},
+    {"HintComplete", Condition_HintComplete, Condition_HintAvailableInit},
+    {"Freeplay", Condition_Freeplay, NULL},
+    {"Indy", Condition_IndyPc, NULL},
+    {"MissionMode", Condition_MissionMode, NULL},
+    {"MissionWon", Condition_MissionWon, NULL},
+    {"ChallengeMode", Condition_ChallengeMode, NULL},
+    {"PSP", Condition_PSP, NULL},
+    {"AIOverrideControl", Condition_AIOverrideControl, Condition_AIOverrideControlInit},
+    {"BoltsDontGetDeflectedBack", Condition_BoltsDontGetDeflectedBack, NULL},
+    {"CheatProgress", Condition_CheatProgress, NULL},
+    {"BigJumpComplete", Condition_BigJumpComplete, NULL},
+    {"RespawnLocatorIs", Condition_RespawnLocatorIs, Condition_RespawnLocatorIsInit},
+    {"InMiniCut", Condition_InMiniCut, NULL},
+    {"MaulShouldRunAway", Condition_MaulShouldRunAway, NULL},
+    {"DropBackInTimer", Condition_DropBackInTimer, NULL},
+    {AIRegistryTextPc00756e7c, Condition_HelpWithTriggers, NULL},
+    {"EitherPlayerPushingSpinner", Condition_EitherPlayerPushingSpinner, Condition_EitherPlayerPushingSpinnerInit},
+    {"CharacterRange", Condition_CharacterRange, Condition_CharacterRangeInit},
+    {"BeenSpawned", Condition_BeenSpawned, NULL},
+    {"LastAttackerRange", Condition_LastAttackerRange, NULL},
+    {"LastAttackerIsActivePlayer", Condition_LastAttackerIsActivePlayer, NULL},
+    {"PartyContainsDroids", Condition_PartyContainsDroids, NULL},
+    {"CannotReachDestination", Condition_CannotReachDestination, NULL},
+    {"TakenOver", Condition_TakenOver, Condition_TakenOverInit},
+    {"PlayerTakenOver", Condition_PlayerTakenOver, NULL},
+    {"EitherPlayerTakenOver", Condition_EitherPlayerTakenOver, NULL},
+    {"BeenTakenOver", Condition_BeenTakenOver, Condition_BeenTakenOverInit},
+    {"OnSpeederBike", Condition_OnSpeederBike, Condition_OnSpeederBikeInit},
+    {"UnderPlayerControl", Condition_UnderPlayerControl, Condition_UnderPlayerControlInit},
+    {"CharacterExists", Condition_CharacterExists, Condition_CharacterExistsInit},
+    {"CharacterTypeExists", Condition_CharacterTypeExists, Condition_CharacterTypeExistsInit},
+    {"GotLocatorInSet", Condition_GotLocatorInSet, Condition_GotLocatorInSetInit},
+    {"GotOpponentLOS", Condition_GotOpponentLOS, NULL},
+    {"EmptyTakeOver", Condition_EmptyTakeOver, NULL},
+    {"HasTakeOverTarget", Condition_HasTakeOver, NULL},
+    {"TakeOverRange", Condition_TakeOverRange, NULL},
+    {"TakeOverTargetInTriggerArea", Condition_TakeOverTargetInTriggerArea, Condition_TakeOverTargetInTriggerAreaInit},
+    {"EitherPlayerInMyTriggerArea", Condition_EitherPlayerInMyTriggerArea, NULL},
+    {"GotVictim", Condition_GotVictim, NULL},
+    {"IsVisible", Condition_IsVisible, Condition_IsVisibleInit},
+    {"MySet", Condition_MySet, NULL},
+    {"ScreenWipe", Condition_ScreenWipe, NULL},
+    {"IAmPlayer2", Condition_IAmPlayer2, NULL},
+    {"HeadTurnRestricted", Condition_HeadTurnRestricted, NULL},
+    {"ShopActive", Condition_ShopActive, NULL},
+    {"Side", Condition_Side, Condition_SideInit},
+    {"NearestPartyRange", Condition_NearestPartyRange, NULL},
+    {"NearestPartyXZRange", Condition_NearestPartyXZRange, NULL},
+    {"OpponentToPlayerRange", Condition_OpponentToPlayerRange, NULL},
+    {"OpponentPathPosRange", Condition_OpponentPathPosRange, NULL},
+    {"GizmoOutput0", Condition_GizmoOutput0, Condition_GizmoOutput0InitPc},
+    {"GizmoOutput1", Condition_GizmoOutput1, Condition_GizmoOutput0InitPc},
+    {"GizmoOutput2", Condition_GizmoOutput2, Condition_GizmoOutput0InitPc},
+    {"GizmoOutput3", Condition_GizmoOutput3, Condition_GizmoOutput0InitPc},
+    {"GizmoVisibility", Condition_GizmoVisibility, Condition_GizmoVisibilityInit},
+    {"AngleAboutMyLocatorToPlayer", Condition_AngleAboutMyLocatorToPlayer, Condition_AngleAboutMyLocatorToPlayerInit},
+    {"AnimSpeedMul", Condition_AnimSpeedMul, NULL},
+    {"PickupBeenTurnedOn", Condition_PickupBeenTurnedOn, Condition_PickupBeenTurnedOnInit},
+    {"FlowBoxComplete", Condition_FlowBoxComplete, Condition_FlowBoxCompleteInit},
+    {"CanHearRadio", Condition_CanHearRadio, NULL},
+    {"BeingTowed", Condition_BeingTowed, NULL},
+    {"RaceLap", Condition_RaceLapPc, NULL},
+    {"MusicOn", Condition_MusicOn, NULL},
+    {"CharacterLoaded", Condition_CharacterLoaded, Condition_CharacterLoadedInit},
+    {"AreaComplete", Condition_AreaComplete, Condition_AreaCompleteInit},
+    {"ShouldAttackOpponent", Condition_ShouldAttackOpponent, NULL},
+    {"InSwamp", Condition_InSwamp, NULL},
+    {"InSameTriggerAreaAsNearestPlayer", Condition_InSameTriggerAreaAsNearestPlayer, NULL},
+    {"NetworkGameOnGoing", Condition_NetworkGameOnGoing, NULL},
+    {"InHubArea", Condition_InHubArea, Condition_InHubAreaInit},
+    {NULL, NULL, NULL},
+};
+#pragma data_seg()

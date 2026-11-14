@@ -16,7 +16,14 @@ extern "C" void MenuSetColours(u8 normal_r, u8 normal_g, u8 normal_b, u8 entry_r
 #include <string.h>
 #include <stdio.h>
 extern "C" void NarrowSockExceptions_Init(NARROWSOCKEXCEPTION_PC *);
-extern "C" NARROWSOCKEXCEPTION_PC NarrowSockExceptionsLswPc[4];
+#pragma data_seg(".data$NarrowSockExceptionsLswPc")
+extern "C" NARROWSOCKEXCEPTION_PC NarrowSockExceptionsLswPc[4] = {
+    {"deathstarbattle_d", -1, 1, 67.5f, 999.0f},
+    {"deathstar2battle_b", -1, 0, 67.5f, 999.0f},
+    {"deathstar2battle_c", -1, 0, 30.0f, 999.0f},
+    {NULL, 0, 0, 0.0f, 0.0f},
+};
+#pragma data_seg()
 extern "C" void SurfaceMaskOn(u32 *surface_mask);
 extern "C" void Grabber_Reset(WORLDINFO *world);
 extern "C" void Customiser_SetUpCharacterData(CUSTOMISER_LAYERS_PC *customiser);
@@ -26,7 +33,7 @@ extern "C" void SurfaceMaskOff(u32 *surface_mask);
 extern "C" void VaderA_GoneThroughDoor(WORLDINFO *world, DOOR_s *door);
 extern "C" void PodRace_IncreaseLap(void);
 
-typedef struct SHOP_COMPLETION_GAME_PC {
+typedef struct SHOP_COMPLETION_GAME_PC {  // size 0x7e4c
     u8 reserved_0000[0x782c];             // 0x0000
     AREASAVE_s area_save[72];             // 0x782c
     struct EPISODESAVE_s episode_save[6]; // 0x7b8c
@@ -39,7 +46,7 @@ typedef struct SHOP_COMPLETION_GAME_PC {
     u8 reserved_7c1b[0x79];               // 0x7c1b
     MISSION_SAVE_READER_PC mission_save;  // 0x7c94
     u8 reserved_7cf8[0x154];              // 0x7cf8
-} SHOP_COMPLETION_GAME_PC;                // size 0x7e4c
+} SHOP_COMPLETION_GAME_PC;
 
 STATIC_ASSERT(offsetof(COLLECTID, field5_0x9) == 9);
 STATIC_ASSERT(offsetof(AREA_DATA_PC, flags) == 0x7a);
@@ -314,14 +321,14 @@ typedef struct GAME_CUSTOMISER_REWARD_READER_PC {
 
 GAME_PUBLISHER_ASSERT(offsetof(GAME_CUSTOMISER_REWARD_READER_PC, save_pieces) == 0x174);
 
-struct MUSIC_PAIR_ARENA_PC {
-    i32 prefix_word;      // 0x00
-    u8 unknown_004[0x18]; // 0x04
-    i16 action_first;     // 0x1c
-    u8 unknown_01e[0x1a]; // 0x1e
-    i16 ambient_first;    // 0x38
-    u8 unknown_03a[2];    // 0x3a
-}; // size 0x3c
+struct MUSIC_PAIR_ARENA_PC { // size 0x3c
+    i32 prefix_word;         // 0x00
+    u8 unknown_004[0x18];    // 0x04
+    i16 action_first;        // 0x1c
+    u8 unknown_01e[0x1a];    // 0x1e
+    i16 ambient_first;       // 0x38
+    u8 unknown_03a[2];       // 0x3a
+};
 
 STATIC_ASSERT(offsetof(CUTINFO, skip_level) == 0xec);
 STATIC_ASSERT(offsetof(GAMEOBJECT, ai_packet) + offsetof(AIPACKET_PC, nearest_opponent) == 0x39c);

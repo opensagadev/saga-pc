@@ -637,10 +637,6 @@ extern "C" {
         }
     }
 
-    /* LoadPermData calls this right after Alt_registerStatusScreen; the body is empty. */
-    void Alt_registerStatusScreenExtraPc(void) {
-    }
-
     void Alt_registerStatusScreen(void) {
         REGISTER_STATUS_PACKET_PC registration;
         memset(&registration, 0, sizeof(registration));

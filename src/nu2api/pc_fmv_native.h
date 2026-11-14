@@ -98,7 +98,7 @@ struct PC_FMV_MOVIE_PC {
     RADFMV_IMAGE_PC *image;
     u32 unknown_0c;
     i32 playing;
-    u32 unknown_14;
+    i32 texture_id;
     GRAPHICS_RENDER_TEXTURE_PC *target;
     i32 width;
     i32 height;

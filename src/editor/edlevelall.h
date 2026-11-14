@@ -62,6 +62,7 @@ struct VuVec {
     void fun_006b83c0();
     void fun_006b83d0();
     void fun_006b83e0();
+    f32 &fun_006b83f0(i32 index);
     VuVec fun_006b8400(f32 value) const;
     f32 fun_006b8440(const VuVec &other) const;
 #endif
@@ -259,6 +260,8 @@ class EdEnumControl : public EdControl {
     virtual void Refresh();
     char *GetEnumString(i32 value);
     i32 fun_006ba010(char *name);
+    void GetVal(i32 &value);
+    void SetVal(i32 &value);
     static void cbChanged(struct eduimenu_s *, struct eduiitem_s *item, u32);
     static void cbButton(struct eduimenu_s *menu, struct eduiitem_s *item, u32);
     static void cbSelectItem(struct eduimenu_s *menu, struct eduiitem_s *item, u32);
@@ -275,6 +278,8 @@ class EdBitControl : public EdEnumControl {
     EdBitControl(u32 bit_mask, Item *items) : EdEnumControl(items), bit_mask(bit_mask) {
     }
 
+    void GetVal(i32 &value);
+    void SetVal(i32 &value);
     virtual void AddMenuItem(struct eduimenu_s *menu, EdRef *reference, void *object);
     virtual void Refresh();
     static void cbChanged(struct eduimenu_s *, struct eduiitem_s *item, u32);
@@ -469,9 +474,15 @@ struct ClassObject {
     i32 SetAttributeData(i32 attribute, i32 requested_type, void *data, i32 data_size);
     void CopyObject(ClassObject &source);
 
+    void fun_006b89c0(EdClass *object_class, void *object_data);
+    void fun_006b89d0();
+    i32 fun_006b89e0();
+
     bool fun_006b89f0(ClassObject &other) {
         return object == other.object && reference == other.reference;
     }
+
+    bool fun_006b8a20(ClassObject &other);
 
     void Set(char *name);
     void GetName(char *destination, i32 size);

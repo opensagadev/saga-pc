@@ -177,10 +177,10 @@ typedef struct AIONCEATTACKER_PC {
     f32 distance;
 } AIONCEATTACKER_PC;
 
-typedef struct bulk_ai_full_object_pc_s {
+typedef struct bulk_ai_full_object_pc_s {      // size 0x2b8
     APIOBJECT_PC object;                       // 0x000
     u8 trailing[0x2b8 - sizeof(APIOBJECT_PC)]; // 0x29c
-} BULK_AI_FULL_OBJECT_PC;                      // size 0x2b8
+} BULK_AI_FULL_OBJECT_PC;
 
 STATIC_ASSERT(sizeof(AIPACKET_PC) <= 0x210);
 

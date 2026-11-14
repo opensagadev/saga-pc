@@ -92,19 +92,19 @@ class EdColourControl : public EdControl {
     EdColourControl();
 };
 
-class EdVectorControl : public EdControl {
+class EdVectorControl : public EdControl { // size 0x1c
   public:
     EdVectorControl();
 
     eduiitem_s *components[3]; // 0x10
-}; // size 0x1c
+};
 
-class EdMatrixControl : public EdControl {
+class EdMatrixControl : public EdControl { // size 0x34
   public:
     EdMatrixControl();
 
     eduiitem_s *components[9]; // 0x10
-}; // size 0x34
+};
 
 /* Numeric property row clamped to [minimum, maximum]; the button drags the
  * value with the cursor or the analogue sticks. */
@@ -277,7 +277,7 @@ STATIC_ASSERT(offsetof(RTL_LIGHT_PC, led_file) == 0x80);
 STATIC_ASSERT(offsetof(RTL_FOG_MIGRATION_PC, led_file) == 0x38);
 STATIC_ASSERT(offsetof(RTL_FOG_MIGRATION_PC, density_wii) == 0x3c);
 
-class RTLHelper : public EdClassInterface {
+class RTLHelper : public EdClassInterface { // size 0xc
   public:
     RTLHelper();
 
@@ -315,7 +315,7 @@ class RTLHelper : public EdClassInterface {
     void Initialise();
 
     RTL_SET_PC *set; // 0x8
-}; // size 0xc
+};
 
 RTLHelper::RTLHelper() : set(NULL) {
 }
@@ -645,7 +645,7 @@ RTL_SET_PC *RTLHelper::GetIndexedSet() {
 #define RTLHELPER_FOGS(set) ((RTL_FOG_MIGRATION_PC *)(set)->fog)
 
 /* EdClassInterface for the fog volumes of the current light set. */
-class FogHelper : public EdClassInterface {
+class FogHelper : public EdClassInterface { // size 0x8
   public:
     FogHelper();
 
@@ -662,7 +662,7 @@ class FogHelper : public EdClassInterface {
 
     virtual void Render(void *object, i32 selected);
     void Initialise();
-}; // size 0x8
+};
 
 FogHelper::FogHelper() {
 }

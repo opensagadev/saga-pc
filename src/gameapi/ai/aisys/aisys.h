@@ -41,7 +41,7 @@ struct gameobject_s;
 typedef struct AIPATHNODE_PC AIPATHNODE_PC;
 typedef struct AIPATHROUTE_PC AIPATHROUTE_PC;
 
-typedef struct AIPATHCNX_PC {
+typedef struct AIPATHCNX_PC {        // size 0x24
     u32 traversal_flags[2];          // 0x00
     u32 original_traversal_flags[2]; // 0x08
     u8 node_indices[2];              // 0x10
@@ -52,9 +52,9 @@ typedef struct AIPATHCNX_PC {
     f32 distance;                    // 0x18
     f32 horizontal_distance;         // 0x1c
     f32 max_horizontal_distance;     // 0x20
-} AIPATHCNX_PC;                      // size 0x24
+} AIPATHCNX_PC;
 
-struct AIPATHROUTE_PC {
+struct AIPATHROUTE_PC {    // size 0x28
     char *name;            // 0x00
     u8 *node_routes;       // 0x04
     u8 *node_directions;   // 0x08
@@ -64,30 +64,30 @@ struct AIPATHROUTE_PC {
     u8 padding_12[2];      // 0x12
     u8 **route_nodes;      // 0x14
     u32 character_mask[4]; // 0x18
-}; // size 0x28
+};
 
-typedef struct AIPATHNODELINK_PC {
-    u8 node_index;           // 0x0
-    u8 unknown_1;            // 0x1
-    i16 special_route_index; // 0x2
-} AIPATHNODELINK_PC;         // size 0x4
+typedef struct AIPATHNODELINK_PC { // size 0x4
+    u8 node_index;                 // 0x0
+    u8 unknown_1;                  // 0x1
+    i16 special_route_index;       // 0x2
+} AIPATHNODELINK_PC;
 typedef struct AISYS_PC AISYS_PC;
 
-typedef struct AIAREA_PC {
-    char name[0x10];   // 0x00
-    NUVEC position;    // 0x10
-    f32 half_width;    // 0x1c
-    f32 height;        // 0x20
-    f32 half_depth;    // 0x24
-    i16 rotation;      // 0x28
-    u8 runtime_flags;  // 0x2a
-    u8 game_flags;     // 0x2b
-    u8 unknown_2c[12]; // 0x2c
-    AISYS_PC *system;  // 0x38
-    u8 unknown_3c[4];  // 0x3c
-} AIAREA_PC;           // size 0x40 (Android: 0x3c)
+typedef struct AIAREA_PC { // size 0x40 (Android: 0x3c)
+    char name[0x10];       // 0x00
+    NUVEC position;        // 0x10
+    f32 half_width;        // 0x1c
+    f32 height;            // 0x20
+    f32 half_depth;        // 0x24
+    i16 rotation;          // 0x28
+    u8 runtime_flags;      // 0x2a
+    u8 game_flags;         // 0x2b
+    u8 unknown_2c[12];     // 0x2c
+    AISYS_PC *system;      // 0x38
+    u8 unknown_3c[4];      // 0x3c
+} AIAREA_PC;
 
-typedef struct AIROW_PC {
+typedef struct AIROW_PC {          // size 0x34
     AIPATHINFO_PC path_info;       // 0x00
     NUVEC position;                // 0x18
     i32 rotation;                  // 0x24
@@ -96,50 +96,50 @@ typedef struct AIROW_PC {
     u8 is_alive;                   // 0x2d
     u8 unknown_2e[2];              // 0x2e
 
-    union {        // 0x30
-        u32 flags; // 0x30
+    union { // size 0x4
+        u32 flags;
 
-        struct {                      // 0x30
+        struct {                      // size 0x4
             u32 is_clockwise : 1;     // 0x30:0
             u32 is_turning : 1;       // 0x30:1
             u32 flags_bits_2_31 : 30; // 0x30:2
         };
-    };
-} AIROW_PC; // size 0x34
+    }; // 0x30
+} AIROW_PC;
 
-typedef struct AICREATURE_PC {
-    char name[16];            // 0x00
-    char script_name[16];     // 0x10
-    NUVEC position;           // 0x20
-    i32 y_rotation;           // 0x2c
-    AIPATHINFO_PC path_info;  // 0x30
-    i32 flags;                // 0x48
-    u8 set;                   // 0x4c
-    u8 unknown_4d[0x1];       // 0x4d
-    i16 type;                 // 0x4e
-    u8 count;                 // 0x50
-    u8 count_across;          // 0x51
-    u8 unknown_52[0x6];       // 0x52
-    u32 active_mask;          // 0x58
-    f32 x_spacing;            // 0x5c
-    f32 z_spacing;            // 0x60
-    f32 script_params[4];     // 0x64
-    AIAREA_PC *activate_area; // 0x74
-    void *area;               // 0x78
-    void *locator;            // 0x7c
-    void *respawn_locator;    // 0x80
-    u8 activation_difficulty; // 0x84
-    i8 min_respawn_count;     // 0x85
-    i8 max_respawn_count;     // 0x86
-    u8 activation_type;       // 0x87
-    f32 min_respawn_time;     // 0x88
-    f32 max_respawn_time;     // 0x8c
-    f32 start_stagger;        // 0x90
-    f32 view_distance;        // 0x94
-    f32 hear_distance;        // 0x98
-    f32 max_view_height;      // 0x9c
-    f32 min_view_height;      // 0xa0
-} AICREATURE_PC;              // size 0xa4
+typedef struct AICREATURE_PC { // size 0xa4
+    char name[16];             // 0x00
+    char script_name[16];      // 0x10
+    NUVEC position;            // 0x20
+    i32 y_rotation;            // 0x2c
+    AIPATHINFO_PC path_info;   // 0x30
+    i32 flags;                 // 0x48
+    u8 set;                    // 0x4c
+    u8 unknown_4d[0x1];        // 0x4d
+    i16 type;                  // 0x4e
+    u8 count;                  // 0x50
+    u8 count_across;           // 0x51
+    u8 unknown_52[0x6];        // 0x52
+    u32 active_mask;           // 0x58
+    f32 x_spacing;             // 0x5c
+    f32 z_spacing;             // 0x60
+    f32 script_params[4];      // 0x64
+    AIAREA_PC *activate_area;  // 0x74
+    void *area;                // 0x78
+    void *locator;             // 0x7c
+    void *respawn_locator;     // 0x80
+    u8 activation_difficulty;  // 0x84
+    i8 min_respawn_count;      // 0x85
+    i8 max_respawn_count;      // 0x86
+    u8 activation_type;        // 0x87
+    f32 min_respawn_time;      // 0x88
+    f32 max_respawn_time;      // 0x8c
+    f32 start_stagger;         // 0x90
+    f32 view_distance;         // 0x94
+    f32 hear_distance;         // 0x98
+    f32 max_view_height;       // 0x9c
+    f32 min_view_height;       // 0xa0
+} AICREATURE_PC;
 #ifdef __cplusplus
 extern "C" {
 #endif
@@ -226,21 +226,21 @@ extern "C" {
 typedef f32 (*AICONDITION_EVAL_PC)(AISYS_PC *, struct AISCRIPTPROCESS_PC *, struct AIPACKET_PC *, char *, void *);
 typedef void *(*AICONDITION_INIT_PC)(AISYS_PC *, char *, struct AISCRIPT_PC *);
 
-typedef struct AICONDITIONDEF_PC {
-    const char *name;            // 0x0
-    AICONDITION_EVAL_PC eval_fn; // 0x4
-    AICONDITION_INIT_PC init_fn; // 0x8
-} AICONDITIONDEF_PC;             // size 0xc
+typedef struct AICONDITIONDEF_PC { // size 0xc
+    const char *name;              // 0x0
+    AICONDITION_EVAL_PC eval_fn;   // 0x4
+    AICONDITION_INIT_PC init_fn;   // 0x8
+} AICONDITIONDEF_PC;
 
 typedef i32 (*AIACTION_EVAL_PC)(AISYS_PC *, struct AISCRIPTPROCESS_PC *, struct AIPACKET_PC *, char **, i32, i32, f32);
 
-typedef struct AIACTIONDEF_PC {
+typedef struct AIACTIONDEF_PC {   // size 0xc
     const char *name;             // 0x0
     AIACTION_EVAL_PC eval_fn;     // 0x4
     u8 replicate_on_first_action; // 0x8
     u8 is_game_action;            // 0x9
     i16 index;                    // 0xa
-} AIACTIONDEF_PC;                 // size 0xc
+} AIACTIONDEF_PC;
 #ifdef __cplusplus
 extern "C" {
 #endif
@@ -261,7 +261,7 @@ extern "C" {
 
 #if SAGA_GAMEAPI_AI_AISYS_AISYS_H_PART == 3 && !defined(SAGA_GAMEAPI_AI_AISYS_AISYS_H_STOP)
 
-struct AIPATHNODE_PC {
+struct AIPATHNODE_PC {              // size 0x5c
     char *name;                     // 0x00
     NUVEC position;                 // 0x04
     f32 radius;                     // 0x10
@@ -284,9 +284,9 @@ struct AIPATHNODE_PC {
     NUVEC special_position;         // 0x4c
     u16 route_membership_mask;      // 0x58
     u16 route_boundary_mask;        // 0x5a
-}; // size 0x5c
+};
 
-typedef struct AIPATH_PC {
+typedef struct AIPATH_PC {             // size 0xa8
     char name[0x10];                   // 0x00
     u8 node_count;                     // 0x10
     u8 flags;                          // 0x11
@@ -308,23 +308,23 @@ typedef struct AIPATH_PC {
     AIPATHNODELINK_PC *special_routes; // 0x8c
     NUVEC bounds_min;                  // 0x90
     NUVEC bounds_max;                  // 0x9c
-} AIPATH_PC;                           // size 0xa8
+} AIPATH_PC;
 
-typedef struct AIPATHSPECIALROUTE_PC {
-    u8 path_count;       // 0x0
-    u8 unknown_1[3];     // 0x1
-    AIPATH_PC **paths;   // 0x4
-} AIPATHSPECIALROUTE_PC; // size 0x8
+typedef struct AIPATHSPECIALROUTE_PC { // size 0x8
+    u8 path_count;                     // 0x0
+    u8 unknown_1[3];                   // 0x1
+    AIPATH_PC **paths;                 // 0x4
+} AIPATHSPECIALROUTE_PC;
 
-typedef struct AIPATHSYS_PC {
+typedef struct AIPATHSYS_PC {              // size 0x10
     u8 path_count;                         // 0x0
     u8 unknown_01[3];                      // 0x1
     AIPATH_PC **paths;                     // 0x4
     AIPATH_PC *active_path;                // 0x8
     AIPATHSPECIALROUTE_PC *special_routes; // 0xc
-} AIPATHSYS_PC;                            // size 0x10
+} AIPATHSYS_PC;
 
-typedef struct AIANTINODE_PC {
+typedef struct AIANTINODE_PC {      // size 0x58
     NUVEC position;                 // 0x00
     f32 radius;                     // 0x0c
     f32 min_y;                      // 0x10
@@ -344,7 +344,7 @@ typedef struct AIANTINODE_PC {
     u8 unknown_4c_b[0x4];           // 0x4c
     u8 special_type;                // 0x50
     u8 unknown_51[0x7];             // 0x51
-} AIANTINODE_PC;                    // size 0x58
+} AIANTINODE_PC;
 #ifdef __cplusplus
 extern "C" {
 #endif
@@ -379,15 +379,15 @@ extern "C" {
 
 typedef struct APIOBJECT_PC *(*APIOBJECT_FROM_ID_PC)(u8);
 
-typedef struct AILOCATORSET_PC {
-    char name[0x10];     // 0x00
-    i8 locator_count;    // 0x10
-    u8 unknown_11[3];    // 0x11
-    u8 *locator_entries; // 0x14
-    u8 *assigned;        // 0x18
-} AILOCATORSET_PC;       // size 0x1c
+typedef struct AILOCATORSET_PC { // size 0x1c
+    char name[0x10];             // 0x00
+    i8 locator_count;            // 0x10
+    u8 unknown_11[3];            // 0x11
+    u8 *locator_entries;         // 0x14
+    u8 *assigned;                // 0x18
+} AILOCATORSET_PC;
 
-typedef struct AIGROUP_PC {
+typedef struct AIGROUP_PC {           // size 0x134
     struct APIOBJECT_PC *leader;      // 0x000
     i16 rotation_speed;               // 0x004
     u8 row_count;                     // 0x006
@@ -397,36 +397,36 @@ typedef struct AIGROUP_PC {
     struct APIOBJECT_PC *members[16]; // 0x00c
     i32 member_is_alive;              // 0x04c
 
-    union {        // 0x050
-        u32 flags; // 0x050
+    union { // size 0x4
+        u32 flags;
 
-        struct {                      // 0x050
+        struct {                      // size 0x4
             u32 flags_bits_0_1 : 2;   // 0x050:0
             u32 is_reversed : 1;      // 0x050:2
             u32 flags_bit_3 : 1;      // 0x050:3
             u32 is_row_turning : 1;   // 0x050:4
             u32 flags_bits_5_31 : 27; // 0x050:5
         };
-    };
+    }; // 0x050
 
     AIROW_PC rows[4]; // 0x054
     f32 radius;       // 0x124
     f32 x_spacing;    // 0x128
     f32 z_spacing;    // 0x12c
     f32 max_speed;    // 0x130
-} AIGROUP_PC;         // size 0x134
+} AIGROUP_PC;
 
-struct AISYS_PC {
+struct AISYS_PC {           // size 0x1394
     void *storage;          // 0x0000
     VARIPTR storage_end;    // 0x0004
     VARIPTR storage_cursor; // 0x0008
     i32 storage_size;       // 0x000c
     AIPATHSYS_PC *path_sys; // 0x0010
 
-    union {                 // 0x0014
-        u8 unknown_14[4];   // 0x0014
-        i32 creature_count; // 0x0014
-    };
+    union { // size 0x4
+        u8 unknown_14[4];
+        i32 creature_count;
+    }; // 0x0014
 
     AICREATURE_PC *creatures;      // 0x0018
     NULISTHDR scripts;             // 0x001c
@@ -442,15 +442,15 @@ struct AISYS_PC {
     u8 next_area_check;            // 0x1384
     u8 goody_idx;                  // 0x1385
 
-    union {                   // 0x1386
-        u8 unknown_1386[0x2]; // 0x1386
-        i16 reset_flags;      // 0x1386
-    };
+    union { // size 0x2
+        u8 unknown_1386[0x2];
+        i16 reset_flags;
+    }; // 0x1386
 
     void *game_sys;                // 0x1388
     struct APIOBJECT_PC *player_1; // 0x138c
     struct APIOBJECT_PC *player_2; // 0x1390
-}; // size 0x1394
+};
 
 typedef void (*AI_SCRIPT_FIRST_ACTION_PC)(AISYS_PC *, struct AIPACKET_PC *, struct AISCRIPTPROCESS_PC *);
 

@@ -5,6 +5,13 @@ extern "C" const f32 InitOnceHalf;
 
 extern "C" void InitGameBeforeConfig(void);
 
+/* Allocates the permanent arena (InitOnce does the same inline). */
+extern "C" void fun_004010c0(void) {
+    permbuffer_base.void_ptr = NuAlloc(SUPERBUFFERSIZE, ".\\pcbatman.cpp", 0x112);
+    superbuffer_end.addr = permbuffer_base.addr + (u32)SUPERBUFFERSIZE;
+    original_permbuffer_base = permbuffer_base;
+}
+
 extern "C" {
     static void StartupParseArguments(i32 count, char **arguments) {
         while (count > 0) {

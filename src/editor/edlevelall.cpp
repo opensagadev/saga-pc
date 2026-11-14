@@ -83,7 +83,8 @@ STATIC_ASSERT(sizeof(EdStream) == 0x20);
 
 /* A bump allocator over a variptr range; blocks are 16-byte aligned and
  * cleared. */
-struct MemoryBuffer {
+struct MemoryBuffer { // size 0x10
+
     MemoryBuffer() {
         position = NULL;
         end = NULL;
@@ -139,7 +140,7 @@ struct MemoryBuffer {
         }
         return allocation;
     }
-}; // size 0x10
+};
 
 template <class T> T *CreateObject(MemoryBuffer *buffer) {
     return new (buffer->Allocate(sizeof(T))) T();
@@ -183,7 +184,7 @@ template <class T, i32 N> class EdStack {
 
 /* Writes the editor's block-structured .led format to an open NuFile; each
  * block starts with a size word that EndBlock patches once it is closed. */
-class EdFileOutputStream : public EdOutputStream {
+class EdFileOutputStream : public EdOutputStream { // size 0x48
   public:
     EdFileOutputStream() {
         file = 0;
@@ -212,14 +213,14 @@ class EdFileOutputStream : public EdOutputStream {
 
     EdStack<i32, 8> block_positions; // 0x20
     NUFILE file;                     // 0x44
-}; // size 0x48
+};
 
 /* Reads the .led block format back. Block names are kept in one pool;
  * BeginBlock reads a block header once and keeps it pending until a caller
  * asks for that block by name. */
-class EdFileInputStream : public EdInputStream {
+class EdFileInputStream : public EdInputStream { // size 0x19c
   public:
-    struct Block {       // 0x188
+    struct Block {       // size 0xc
         i32 position;    // 0x188
         i32 size;        // 0x18c
         i32 name_offset; // 0x190
@@ -247,10 +248,10 @@ class EdFileInputStream : public EdInputStream {
     EdStack<Block, 8> blocks; // 0x020
     char block_names[256];    // 0x084
     i32 name_length;          // 0x184
-    Block pending_block;
-    i32 pending; // 0x194
-    NUFILE file; // 0x198
-}; // size 0x19c
+    Block pending_block;      // 0x188
+    i32 pending;              // 0x194
+    NUFILE file;              // 0x198
+};
 
 /* The original keeps standalone copies of the stack members no caller uses. */
 template EdFileInputStream::Block EdStack<EdFileInputStream::Block, 8>::Pop();
@@ -258,7 +259,7 @@ template void EdStack<i32, 8>::Push(i32 item);
 template i32 EdStack<i32, 8>::Pop();
 
 /* Transform gizmo of the class editor. */
-class EdManipulator {
+class EdManipulator { // size 0x80
   public:
     virtual i32 Process(EdInputContext &input, ClassObjectList &objects);
     virtual void Render(ClassObjectList &objects);
@@ -286,7 +287,7 @@ class EdManipulator {
     void DrawRotator(VuVec &origin);
     i32 SelectAxis(EdInputContext &input, VuVec &origin, VuVec &first, VuVec &second, VuMtx *matrix);
     i32 SelectRotator(EdInputContext &input, VuVec &center, VuVec &plane);
-}; // size 0x80
+};
 
 /* The move, rotate and scale gizmos; each edits a different attribute. */
 class EdManMove : public EdManipulator {
@@ -321,7 +322,7 @@ class EdManScale : public EdManipulator {
 };
 
 /* Property menu of the objects that share one editor class. */
-class PropertyMenu : public CSListLink<PropertyMenu> {
+class PropertyMenu : public CSListLink<PropertyMenu> { // size 0x78
   public:
     static void *operator new(size_t size) {
         return theMemoryManager.AllocPool(size, 1);
@@ -343,7 +344,7 @@ class PropertyMenu : public CSListLink<PropertyMenu> {
     void AddObject(ClassObject &object);
     void ClearObjecs();
     void SelectAttr(i32 selected);
-}; // size 0x78
+};
 
 class PropertyMenuList {
   public:
@@ -371,7 +372,7 @@ struct PropertyMenuMetrics {
 
 /* Edits the properties of the class editor's selected objects through one
  * floating menu per object, thePropertyTool. */
-class PropertyTool : public EdTool {
+class PropertyTool : public EdTool { // size 0x4c
   public:
     PropertyTool() {
         show_type_names = 1;
@@ -433,7 +434,7 @@ class PropertyTool : public EdTool {
     void RenderMenu(PropertyMenu *property_menu);
     void SetDefaultActiveMenu(PropertyMenu *menu);
     void ToggleActiveMenu();
-}; // size 0x4c
+};
 
 STATIC_ASSERT(sizeof(EdControl) == 0x10);
 STATIC_ASSERT(offsetof(EdControl, item) == 0x4);
@@ -445,7 +446,7 @@ STATIC_ASSERT(offsetof(EdBitControl, bit_mask) == 0x14);
 
 /* The class editor's default tool: picks, creates and deletes objects
  * under the cursor ray. */
-class CursorTool : public EdTool {
+class CursorTool : public EdTool { // size 0xc
   public:
     virtual ~CursorTool() {
     }
@@ -459,10 +460,10 @@ class CursorTool : public EdTool {
 
     virtual i32 Process(EdInputContext &input);
     virtual void Render();
-}; // size 0xc
+};
 
 /* Spline editing tool; its own processing is empty. */
-class SplineTool : public PropertyTool {
+class SplineTool : public PropertyTool { // size 0x4c
   public:
     virtual ~SplineTool() {
     }
@@ -480,7 +481,7 @@ class SplineTool : public PropertyTool {
 
     virtual void Render() {
     }
-}; // size 0x4c
+};
 
 extern EdManipulator theDefaultManipulator;
 
@@ -611,7 +612,7 @@ struct MemBufferAllocator {};
 
 /* Editor subsystem; storage is owned by the level editor buffer, so the
  * deleting destructor never frees. */
-class EdSubSystem : public MemBufferAllocator, public CSListLink<EdSubSystem> {
+class EdSubSystem : public MemBufferAllocator, public CSListLink<EdSubSystem> { // size 0xc
   public:
     static void operator delete(void *) {
     }
@@ -629,7 +630,7 @@ class EdSubSystem : public MemBufferAllocator, public CSListLink<EdSubSystem> {
 
     virtual void SubRender() {
     }
-}; // size 0xc
+};
 
 STATIC_ASSERT(sizeof(EditorSettings) == 0xc);
 
@@ -667,18 +668,20 @@ f32 EdInputMouseX = 0.5f;
 
 /* Base interface for placeable scene objects; scene_id is the object-type ID
  * PlaceableHelper::RegisterObjectType assigns (-1 until registered). */
-class PlaceableInterface : public EdClassInterface {
+class PlaceableInterface : public EdClassInterface { // size 0xc
   public:
     PlaceableInterface();
     Placeable *Find(char *name);
     i32 Find(char *name, Placeable **objects, i32 capacity);
     i32 DebugOutputObjects();
+    i32 fun_006b8d60();
+    i32 fun_006b8d70(Placeable *object);
 
     i32 scene_id; // 0x8
-}; // size 0xc
+};
 
 /* A special object of a loaded scene, edited through its handle. */
-class SpecialObject : public Placeable {
+class SpecialObject : public Placeable { // size 0x24
   public:
     SpecialObject();
     virtual const char *GetName() const;
@@ -702,11 +705,11 @@ class SpecialObject : public Placeable {
     virtual void SetCollision(i32 enabled);
 
     NUSPECIALHANDLE special; // 0x18
-}; // size 0x24
+};
 
 /* One special of a level scene; editor_owned marks the editor-created
  * SceneInstance copies, hidden ones are skipped by iteration and drawing. */
-class SceneObject : public SpecialObject {
+class SceneObject : public SpecialObject { // size 0x2c
   public:
     static void operator delete(void *memory);
     SceneObject();
@@ -715,10 +718,10 @@ class SceneObject : public SpecialObject {
 
     i32 editor_owned; // 0x24
     i32 hidden;       // 0x28
-}; // size 0x2c
+};
 
 /* Editor-created copy of a scene object with its own transforms. */
-class SceneInstance : public SceneObject, public CSListLink<SceneInstance> {
+class SceneInstance : public SceneObject, public CSListLink<SceneInstance> { // size 0xd0
   public:
     static void operator delete(void *memory);
     SceneInstance();
@@ -739,7 +742,7 @@ class SceneInstance : public SceneObject, public CSListLink<SceneInstance> {
     __declspec(align(16)) VuMtx initial_transform; // 0x40
     VuMtx current_transform;                       // 0x80
     i32 visibility;                                // 0xc0
-}; // size 0xd0
+};
 
 /* The scene instances the editor owns, in creation order. */
 struct SceneInstanceList {
@@ -757,7 +760,7 @@ struct SceneInstanceList {
 
 /* Editor class for the specials of the loaded scenes plus the instances the
  * editor creates from them. */
-class SceneObjectHelper : public PlaceableInterface, public EdSubSystem {
+class SceneObjectHelper : public PlaceableInterface, public EdSubSystem { // size 0xb0
   public:
     SceneObjectHelper() : show_hidden_wire(1) {
     }
@@ -792,7 +795,7 @@ class SceneObjectHelper : public PlaceableInterface, public EdSubSystem {
     i32 show_hidden_solid;      // 0xa4
     i32 show_hidden_wire;       // 0xa8
     i32 show_owned_objects;     // 0xac
-}; // size 0xb0
+};
 
 extern SceneObjectHelper theSceneObjectHelper;
 
@@ -810,7 +813,7 @@ class EdRefSpecialObject : public EdRef {
 
 /* Property control of a special-object member: the button lists the
  * special objects of the loaded scenes, the typed name picks one by name. */
-class EdSpecialObjectControl : public EdControl {
+class EdSpecialObjectControl : public EdControl { // size 0x14
   public:
     static void operator delete(void *memory);
     EdSpecialObjectControl();
@@ -825,7 +828,7 @@ class EdSpecialObjectControl : public EdControl {
     static void cbButton(eduimenu_s *parent, eduiitem_s *item, u32);
 
     Placeable *highlighted_object; // 0x10
-}; // size 0x14
+};
 
 /* The registered editor subsystems, in registration order. */
 struct EdSubSystemList {
@@ -840,7 +843,7 @@ struct EdSubSystemList {
 
 /* The editor subsystems; each one is initialised, processed and rendered
  * with the level editor. */
-class EdSystem {
+class EdSystem { // size 0xc
   public:
     void RegisterSubSystem(EdSubSystem *subsystem);
     void Initalise(variptr_u &buffer, variptr_u &buffer_end, i32 from_front);
@@ -849,7 +852,7 @@ class EdSystem {
     void Render();
 
     EdSubSystemList subsystems; // 0x0
-}; // size 0xc
+};
 
 EdSystem theEdSystem;
 
@@ -900,7 +903,7 @@ i32 EdType_NuMtx;
 
 /* Property control for EdType_String members: the text is edited in place
  * and the button opens a text picker on it. */
-class EdStringControl : public EdControl {
+class EdStringControl : public EdControl { // size 0x10
   public:
     static void operator delete(void *memory) {
         theMemoryManager.FreePool(memory, sizeof(EdStringControl));
@@ -913,7 +916,7 @@ class EdStringControl : public EdControl {
     void SetVal(char const *value);
     static void cbChanged(eduimenu_s *, eduiitem_s *item, u32);
     static void cbPress(eduimenu_s *menu, eduiitem_s *item, u32);
-}; // size 0x10
+};
 
 /* Numeric property controls of the light editor unit (rtlhelper.cpp, where
  * their members are defined); the spline registration creates float rows. */
@@ -962,7 +965,7 @@ class EdFloatControl : public EdValueControl<f32> {
 
 /* Property control for EdType_Colour3 members: "r g b" text, the property
  * button shows the colour and opens a colour picker. */
-class EdColourControl : public EdControl {
+class EdColourControl : public EdControl { // size 0x10
   public:
     static void operator delete(void *memory) {
         theMemoryManager.FreePool(memory, sizeof(EdColourControl));
@@ -977,11 +980,11 @@ class EdColourControl : public EdControl {
     static void cbButton(eduimenu_s *menu, eduiitem_s *item, u32);
     static void cbChanged(eduimenu_s *, eduiitem_s *item, u32);
     static void cbColourSelected(eduimenu_s *menu, eduiitem_s *item, u32 flags);
-}; // size 0x10
+};
 
 /* Property control for a sound effect name: the button lists every sound
  * effect, and picking one plays it and stores its name. */
-class EdSfxNameControl : public EdStringControl {
+class EdSfxNameControl : public EdStringControl { // size 0x10
   public:
     static void operator delete(void *memory) {
         theMemoryManager.FreePool(memory, sizeof(EdSfxNameControl));
@@ -993,10 +996,10 @@ class EdSfxNameControl : public EdStringControl {
     static void cbChanged(eduimenu_s *, eduiitem_s *, u32);
     static void cbButton(eduimenu_s *menu, eduiitem_s *item, u32);
     static void cbSelectSfx(eduimenu_s *menu, eduiitem_s *item, u32);
-}; // size 0x10
+};
 
 /* Three "%.2f" rows (x, y, z) under an expander for a VuVec member. */
-class EdVectorControl : public EdControl {
+class EdVectorControl : public EdControl { // size 0x1c
   public:
     static void operator delete(void *memory) {
         theMemoryManager.FreePool(memory, sizeof(EdVectorControl));
@@ -1036,11 +1039,11 @@ class EdVectorControl : public EdControl {
     static void cbSelected(eduimenu_s *menu, eduiitem_s *item, u32);
 
     eduiitem_s *components[3]; // 0x10
-}; // size 0x1c
+};
 
 /* Position, rotation and scale rows (x, y, z each) under an expander for a
  * VuMtx member; the member's attributes 8, 0x10 and 0x20 pick the groups. */
-class EdMatrixControl : public EdControl {
+class EdMatrixControl : public EdControl { // size 0x34
   public:
     static void operator delete(void *memory) {
         theMemoryManager.FreePool(memory, sizeof(EdMatrixControl));
@@ -1081,11 +1084,11 @@ class EdMatrixControl : public EdControl {
     static void cbSelected(eduimenu_s *menu, eduiitem_s *item, u32);
 
     eduiitem_s *components[9]; // 0x10
-}; // size 0x34
+};
 
 /* A string member naming a placeable: the button lists every placeable,
  * and holding the pick input over an editor object names that object. */
-class PlaceableNameControl : public EdStringControl {
+class PlaceableNameControl : public EdStringControl { // size 0x14
   public:
     static void operator delete(void *memory) {
         theMemoryManager.FreePool(memory, sizeof(PlaceableNameControl));
@@ -1100,11 +1103,11 @@ class PlaceableNameControl : public EdStringControl {
     static void cbSelectObject(eduimenu_s *, eduiitem_s *item, u32);
 
     i32 reserved_10; // 0x10
-}; // size 0x14
+};
 
 /* Member references of the "Placeable" base class; member_offset carries a
  * pseudo id (0x80000001 up) instead of a byte offset. */
-class EdRefPlaceable : public EdRef {
+class EdRefPlaceable : public EdRef { // size 0x28
   public:
     EdRefPlaceable(char *type_name, char *member_name, i32 offset, i32 member_size, i32 member_attributes,
                    EdControl *member_control)
@@ -1113,11 +1116,11 @@ class EdRefPlaceable : public EdRef {
 
     virtual void GetMemberData(void *object, i32 requested_type, void *data, i32 data_size);
     virtual void SetMemberData(void *object, i32 requested_type, void *data, i32 data_size, i16 *);
-}; // size 0x28
+};
 
 /* A string member naming an editor object as "Class.Object": the button
  * picks a registered class, then one of its named objects. */
-class EdClassObjectNameControl : public EdStringControl {
+class EdClassObjectNameControl : public EdStringControl { // size 0x1c
   public:
     static void operator delete(void *memory) {
         theMemoryManager.FreePool(memory, sizeof(EdClassObjectNameControl));
@@ -1135,12 +1138,12 @@ class EdClassObjectNameControl : public EdStringControl {
     static void cbSelectObject(eduimenu_s *menu, eduiitem_s *item, u32);
 
     ClassObject selected; // 0x10
-}; // size 0x1c
+};
 
 #pragma push_macro("RegisterClass")
 #undef RegisterClass
 
-struct EdDefunctListEntry {
+struct EdDefunctListEntry {       // size 0x10
     EdDefunctListEntry *next;     // 0x0
     EdDefunctListEntry *previous; // 0x4
     EdClass *object_class;        // 0x8
@@ -1148,10 +1151,10 @@ struct EdDefunctListEntry {
 
     EdDefunctListEntry() : next(NULL), previous(NULL) {
     }
-}; // size 0x10
+};
 
 /* Spline knot editing: position and tangent references of the knot class. */
-class KnotHelper : public EdClassInterface {
+class KnotHelper : public EdClassInterface { // size 0x14
   public:
     KnotHelper();
 
@@ -1170,7 +1173,7 @@ class KnotHelper : public EdClassInterface {
     EdRef *position_ref;    // 0x08
     EdRef *in_tangent_ref;  // 0x0c
     EdRef *out_tangent_ref; // 0x10
-}; // size 0x14
+};
 
 class SplineObject;
 
@@ -1181,7 +1184,8 @@ i32 BezierLineMaxDepth = 2;
 f32 SplineMinStep = 0.1f;
 
 /* One spline control point: its position and the two tangent handles. */
-struct SplineKnot : public CSListLink<SplineKnot> {
+struct SplineKnot : public CSListLink<SplineKnot> { // size 0x50
+
     static void *operator new(size_t size) {
         return theMemoryManager.AllocPool(size, 1);
     }
@@ -1201,7 +1205,7 @@ struct SplineKnot : public CSListLink<SplineKnot> {
     }
 
     void Smooth();
-}; // size 0x50
+};
 
 struct SplineKnotList {
     SplineKnot *first;
@@ -1220,7 +1224,7 @@ struct SplineKnotList {
 };
 
 /* A block of generated spline points. */
-class SplinePointBlock : public CSListLink<SplinePointBlock> {
+class SplinePointBlock : public CSListLink<SplinePointBlock> { // size 0x18
   public:
     static void *operator new(size_t size) {
         return theMemoryManager.AllocPool(size, 1);
@@ -1243,7 +1247,7 @@ class SplinePointBlock : public CSListLink<SplinePointBlock> {
     i32 capacity;    // 0x0c
     i32 point_count; // 0x10
     VuVec *points;   // 0x14
-}; // size 0x18
+};
 
 struct SplinePointList {
     SplinePointBlock *first;
@@ -1264,7 +1268,7 @@ struct SplinePointList {
 };
 
 /* A named editor spline; the knot list is followed by its generated points. */
-class SplineObject : public CSListLink<SplineObject> {
+class SplineObject : public CSListLink<SplineObject> { // size 0x58
   public:
     static void operator delete(void *memory) {
         theMemoryManager.FreePool(memory, sizeof(SplineObject));
@@ -1317,7 +1321,7 @@ class SplineObject : public CSListLink<SplineObject> {
     void ReverseKnots();
     void SmoothKnots();
     SplineObject *Clone();
-}; // size 0x58
+};
 
 /* The splines of the level, in creation order. */
 struct SplineObjectList {
@@ -1334,7 +1338,7 @@ struct SplineObjectList {
 };
 
 /* The spline object class, theSplineHelper. */
-class SplineHelper : public EdClassInterface {
+class SplineHelper : public EdClassInterface { // size 0x18
   public:
     SplineHelper() : auto_generate_points(1) {
     }
@@ -1374,13 +1378,13 @@ class SplineHelper : public EdClassInterface {
     static void cbEdSplineReverseSpline(eduimenu_s *menu, eduiitem_s *item, u32 buttons);
     static void cbEdSplineSmoothKnot(eduimenu_s *menu, eduiitem_s *item, u32 buttons);
     static void cbEdSplineSmoothSpline(eduimenu_s *menu, eduiitem_s *item, u32 buttons);
-}; // size 0x18
+};
 
 extern SplineHelper theSplineHelper;
 
 /* Member references of the "Spline" class; member_offset carries a pseudo
  * id: 0x80000001 step, 2 height, 3 drop, 4 closed. */
-class EdRefSpline : public EdRef {
+class EdRefSpline : public EdRef { // size 0x28
   public:
     EdRefSpline(char *type_name, char *member_name, i32 offset, i32 member_size, i32 member_attributes,
                 EdControl *member_control)
@@ -1389,11 +1393,11 @@ class EdRefSpline : public EdRef {
 
     virtual void GetMemberData(void *object, i32 requested_type, void *data, i32 data_size);
     virtual void SetMemberData(void *object, i32 requested_type, void *data, i32 data_size, i16 *);
-}; // size 0x28
+};
 
 /* Member references of the "Knot" class: 0x80000001 spline name, 2 pick
  * radius, 3 position, 4 in tangent, 5 out tangent. */
-class EdRefKnot : public EdRef {
+class EdRefKnot : public EdRef { // size 0x28
   public:
     EdRefKnot(char *type_name, char *member_name, i32 offset, i32 member_size, i32 member_attributes,
               EdControl *member_control)
@@ -1402,7 +1406,7 @@ class EdRefKnot : public EdRef {
 
     virtual void GetMemberData(void *object, i32 requested_type, void *data, i32 data_size);
     virtual void SetMemberData(void *object, i32 requested_type, void *data, i32 data_size, i16 *);
-}; // size 0x28
+};
 
 KnotHelper theKnotHelper;
 
@@ -1421,16 +1425,16 @@ SplineTool theSplineTool;
 
 /* The placeable object types: every placeable helper registers its
  * interface here so tools can walk all placeables. */
-class PlaceableHelper {
+class PlaceableHelper { // size 0x88
   public:
-    struct ObjectType {                       // 0x08
+    struct ObjectType {                       // size 0x8
         char *name;                           // 0x08
         PlaceableInterface *object_interface; // 0x0c
     };
 
-    i32 object_type_count;     // 0x00
-    i32 iteration_object_type; // 0x04
-    ObjectType object_types[16];
+    i32 object_type_count;       // 0x00
+    i32 iteration_object_type;   // 0x04
+    ObjectType object_types[16]; // 0x08
 
     PlaceableHelper();
     void RegisterObjectType(char *name, PlaceableInterface *object_interface);
@@ -1457,7 +1461,7 @@ class PlaceableHelper {
         }
         return next;
     }
-}; // size 0x88
+};
 
 PlaceableHelper thePlaceableHelper;
 SceneObjectHelper theSceneObjectHelper;
@@ -1756,6 +1760,10 @@ void VuVec::fun_006b83e0() {
     w = 1.0f;
 }
 
+f32 &VuVec::fun_006b83f0(i32 index) {
+    return (&x)[index];
+}
+
 VuVec VuVec::fun_006b8400(f32 value) const {
     __declspec(align(16)) VuVec result;
     f32 inverse = 1.0f / value;
@@ -1844,7 +1852,39 @@ ClassObject &ClassEditor::fun_006b8ca0() {
 EditorSettings::~EditorSettings() {
 }
 
+i32 Placeable::fun_006b8ce0() {
+    return scene_id;
+}
+
+i32 Placeable::fun_006b8cf0() {
+    return attributes;
+}
+
+void Placeable::fun_006b8d00(i32 value) {
+    attributes = value;
+}
+
+char *Placeable::fun_006b8d10() {
+    return params.data ? params.data + 1 : NULL;
+}
+
+i32 Placeable::fun_006b8d20() {
+    return led_file;
+}
+
+void Placeable::fun_006b8d30(i16 value) {
+    led_file = value;
+}
+
 PlaceableInterface::PlaceableInterface() : scene_id(-1) {
+}
+
+i32 PlaceableInterface::fun_006b8d60() {
+    return scene_id;
+}
+
+i32 PlaceableInterface::fun_006b8d70(Placeable *object) {
+    return scene_id == object->scene_id;
 }
 
 KnotHelper::KnotHelper() {
@@ -2030,6 +2070,16 @@ void ClassEditor::Exit() {
     }
 }
 
+void ClassEditor::UpdateLists(MemoryBuffer *first, MemoryBuffer *second) {
+    i32 i;
+    for (i = 0; i < theRegistry.class_count; i++) {
+        EdClass *object_class = &theRegistry.classes[i];
+        if (object_class->object_interface != NULL) {
+            object_class->object_interface->UpdateLists(first, second);
+        }
+    }
+}
+
 void ClassEditor::PreLoadInitialisation(MemoryBuffer *first, MemoryBuffer *second) {
     i32 i;
     for (i = 0; i < theRegistry.class_count; i++) {
@@ -2067,6 +2117,20 @@ void ClassEditor::PostSaveInitialisation() {
         if (object_class->object_interface != NULL) {
             object_class->object_interface->PostSaveInitialisation();
         }
+    }
+}
+
+void ClassEditor::UpdateSnapRay(VuVec &position) {
+    if (snap_mode == 1) {
+        snap_ray.x = 0.0f;
+        snap_ray.y = -1000.0f;
+        snap_ray.z = 0.0f;
+    }
+    if (snap_mode == 2) {
+        snap_ray.x = position.x;
+        snap_ray.y = position.y;
+        snap_ray.z = position.z;
+        snap_ray.w = position.w;
     }
 }
 
@@ -2487,6 +2551,22 @@ EdColourControl::EdColourControl() {
 }
 
 EdColourControl::~EdColourControl() {
+}
+
+void EdEnumControl::GetVal(i32 &value) {
+    reference->GetMemberData(object, EdType_Int, &value, 0);
+}
+
+void EdEnumControl::SetVal(i32 &value) {
+    reference->SetMemberData(object, EdType_Int, &value, 0, NULL);
+}
+
+void EdBitControl::GetVal(i32 &value) {
+    reference->GetMemberData(object, EdType_Int, &value, 0);
+}
+
+void EdBitControl::SetVal(i32 &value) {
+    reference->SetMemberData(object, EdType_Int, &value, 0, NULL);
 }
 
 void EdColourControl::GetVal(NUVEC &value) {
@@ -5267,6 +5347,10 @@ void PropertyMenuList::InsertSorted(PropertyMenu *menu) {
 Placeable::~Placeable() {
 }
 
+void Placeable::fun_006c22b0(const char *value) {
+    params.Set(value);
+}
+
 SplinePointList::~SplinePointList() {
     SplinePointBlock *block;
     while ((block = First()) != NULL) {
@@ -7517,6 +7601,38 @@ i32 EdClass::SetAttributeData(void *object, i32 attribute, i32 requested_type, v
 /* Creates an object with a fresh guid (index 4). */
 void *EdRegistry::CreateObject(EdClassInterface *object_interface, void *source, i32 flags) {
     return CreateObject(object_interface, source, 4, 0, flags);
+}
+
+void *ClassObjectListEntry::operator new(size_t size) {
+    return theMemoryManager.AllocPool(size, 1);
+}
+
+void ClassObjectListEntry::operator delete(void *memory) {
+    theMemoryManager.FreePool(memory, sizeof(ClassObjectListEntry));
+}
+
+ClassObjectListEntry::ClassObjectListEntry() : ed_class(NULL), object(NULL), reference(NULL) {
+}
+
+void ClassObject::fun_006b89c0(EdClass *object_class, void *object_data) {
+    ed_class = object_class;
+    object = object_data;
+}
+
+void ClassObject::fun_006b89d0() {
+    ed_class = NULL;
+    object = NULL;
+}
+
+i32 ClassObject::fun_006b89e0() {
+    return object != NULL;
+}
+
+bool ClassObject::fun_006b8a20(ClassObject &other) {
+    if (object != other.object) {
+        return true;
+    }
+    return false;
 }
 
 void ClassObject::CopyObject(ClassObject &source) {

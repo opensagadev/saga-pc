@@ -1,16 +1,16 @@
 #include "saga.h"
 #include <string.h>
 
-typedef struct ripple_effect_cleanup_pc_s {
-    u8 unknown_00[0x24];    // 0x00
-    NUMTL *material;        // 0x24
-} RIPPLE_EFFECT_CLEANUP_PC; // size 0x28
+typedef struct ripple_effect_cleanup_pc_s { // size 0x28
+    u8 unknown_00[0x24];                    // 0x00
+    NUMTL *material;                        // 0x24
+} RIPPLE_EFFECT_CLEANUP_PC;
 
-typedef struct world_ripple_cleanup_pc_s {
-    u8 unknown_0000[0x46f4];           // 0x0000
-    RIPPLE_EFFECT_CLEANUP_PC *effects; // 0x46f4
-    i32 count;                         // 0x46f8
-} WORLD_RIPPLE_CLEANUP_PC;             // size 0x46fc
+typedef struct world_ripple_cleanup_pc_s { // size 0x46fc
+    u8 unknown_0000[0x46f4];               // 0x0000
+    RIPPLE_EFFECT_CLEANUP_PC *effects;     // 0x46f4
+    i32 count;                             // 0x46f8
+} WORLD_RIPPLE_CLEANUP_PC;
 
 void DestroyRippleMtls(WORLDINFO *world) {
     // MATCH-EXCEPTION: the cast is repeated at each use; a cast local gives the other SIB order (U1)
@@ -25,16 +25,16 @@ void DestroyRippleMtls(WORLDINFO *world) {
 
 typedef struct ripple_node_pc_s RIPPLE_NODE_PC;
 
-struct ripple_set_pc_s {
+struct ripple_set_pc_s {       // size 0x14
     u16 capacity;              // 0x00
     u16 active_count;          // 0x02
     RIPPLE_NODE_PC *nodes;     // 0x04
     RIPPLE_NODE_PC *free_head; // 0x08
     RIPPLE_NODE_PC *newest;    // 0x0c
     RIPPLE_NODE_PC *oldest;    // 0x10
-}; // size 0x14
+};
 
-struct ripple_node_pc_s {
+struct ripple_node_pc_s {     // size 0x80
     NUMTX matrix;             // 0x00
     NUVEC velocity;           // 0x40
     NUMTL *material;          // 0x4c
@@ -51,7 +51,7 @@ struct ripple_node_pc_s {
     u8 unknown_76[2];         // 0x76
     RIPPLE_NODE_PC *next;     // 0x78
     RIPPLE_NODE_PC *previous; // 0x7c
-}; // size 0x80
+};
 
 static RIPPLE_NODE_PC *RippleAllocPc(RIPPLE_SET_PC *set) {
     RIPPLE_NODE_PC *node = set->free_head;
@@ -119,52 +119,53 @@ void AddRipple(RIPPLE_SET_PC *set, NUMTX *matrix, f32 size, f32 growth, f32 life
     }
 }
 
-typedef struct ripple_effect_pc_s {
-    union {               // 0x00
-        u32 start_color;  // 0x00
-        u8 start_rgba[4]; // 0x00
-    };
+typedef struct ripple_effect_pc_s { // size 0x28
 
-    union {             // 0x04
-        u32 end_color;  // 0x04
-        u8 end_rgba[4]; // 0x04
-    };
+    union { // size 0x4
+        u32 start_color;
+        u8 start_rgba[4];
+    }; // 0x00
+
+    union { // size 0x4
+        u32 end_color;
+        u8 end_rgba[4];
+    }; // 0x04
 
     f32 lifetime;          // 0x08
     f32 initial_size;      // 0x0c
     f32 end_size;          // 0x10
     char texture_name[16]; // 0x14
     NUMTL *material;       // 0x24
-} RIPPLE_EFFECT_PC;        // size 0x28
+} RIPPLE_EFFECT_PC;
 
-typedef struct world_ripple_view_pc_s {
-    u8 unknown_0000[0x46f4];   // 0x0000
-    RIPPLE_EFFECT_PC *effects; // 0x46f4
-    i32 count;                 // 0x46f8
+typedef struct world_ripple_view_pc_s { // size 0x4704
+    u8 unknown_0000[0x46f4];            // 0x0000
+    RIPPLE_EFFECT_PC *effects;          // 0x46f4
+    i32 count;                          // 0x46f8
 
-    union { // 0x46fc
+    union { // size 0x8
 
-        struct {              // 0x46fc
+        struct {              // size 0x8
             i32 water_effect; // 0x46fc
             i32 sabre_effect; // 0x4700
         };
 
-        i32 effect_of_type[2]; /* indexed by LookupRippleEffectIndex */ // 0x46fc
-    };
-} WORLD_RIPPLE_VIEW_PC; // size 0x4704
+        i32 effect_of_type[2]; /* indexed by LookupRippleEffectIndex */
+    }; // 0x46fc
+} WORLD_RIPPLE_VIEW_PC;
 
-typedef struct ripple_contact_timer_view_pc_s {
-    u8 unknown_0000[0xdc0];     // 0x000
-    f32 timer;                  // 0xdc0
-} RIPPLE_CONTACT_TIMER_VIEW_PC; // size 0xdc4
+typedef struct ripple_contact_timer_view_pc_s { // size 0xdc4
+    u8 unknown_0000[0xdc0];                     // 0x000
+    f32 timer;                                  // 0xdc0
+} RIPPLE_CONTACT_TIMER_VIEW_PC;
 
 #define RIPPLE_WORLD ((WORLD_RIPPLE_VIEW_PC *)WORLD)
 #undef RIPPLE_WORLD
 
-typedef struct ripple_material_reader_pc_s {
-    u8 unknown_0000[0x70];   // 0x00
-    f32 opacity;             // 0x70
-} RIPPLE_MATERIAL_READER_PC; // size 0x74
+typedef struct ripple_material_reader_pc_s { // size 0x74
+    u8 unknown_0000[0x70];                   // 0x00
+    f32 opacity;                             // 0x70
+} RIPPLE_MATERIAL_READER_PC;
 
 static WORLDINFO *RippleEffectsWorldInfoPc = 0;
 static RIPPLE_EFFECT_PC *RippleEffectsCurrentPc = 0;

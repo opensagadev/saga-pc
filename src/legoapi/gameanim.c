@@ -1582,20 +1582,20 @@ void GameAnimSet_RemoveSpecial(GAMEANIMSET *set, nuhspecial_s *special) {
     }
 }
 
-typedef struct gameanim_reflection_matrix_pc_s {
-    f32 m00;                     // 0x00
-    f32 m01;                     // 0x04
-    f32 m02;                     // 0x08
-    f32 m03;                     // 0x0c
-    f32 m10;                     // 0x10
-    f32 m11;                     // 0x14
-    f32 m12;                     // 0x18
-    f32 m13;                     // 0x1c
-    f32 m20;                     // 0x20
-    f32 m21;                     // 0x24
-    f32 m22;                     // 0x28
-    f32 axis_coordinates[5];     // 0x2c
-} GAMEANIM_REFLECTION_MATRIX_PC; // size 0x40
+typedef struct gameanim_reflection_matrix_pc_s { // size 0x40
+    f32 m00;                                     // 0x00
+    f32 m01;                                     // 0x04
+    f32 m02;                                     // 0x08
+    f32 m03;                                     // 0x0c
+    f32 m10;                                     // 0x10
+    f32 m11;                                     // 0x14
+    f32 m12;                                     // 0x18
+    f32 m13;                                     // 0x1c
+    f32 m20;                                     // 0x20
+    f32 m21;                                     // 0x24
+    f32 m22;                                     // 0x28
+    f32 axis_coordinates[5];                     // 0x2c
+} GAMEANIM_REFLECTION_MATRIX_PC;
 
 STATIC_ASSERT(sizeof(GAMEANIM_REFLECTION_MATRIX_PC) == sizeof(NUMTX));
 STATIC_ASSERT(offsetof(NUMTX, m23) == 0x2c);

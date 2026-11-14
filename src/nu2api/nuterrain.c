@@ -305,21 +305,21 @@ i32 NewShadowOnMSitu(void) {
     return -1;
 }
 
-typedef struct TERRAIN_SKIN_BLEND_PC {
+typedef struct TERRAIN_SKIN_BLEND_PC {     // size 0x5c
     NUMTX end_matrix; /* +00 */            // 0x00
     NUVEC row_amplitude; /* +40 */         // 0x40
     u8 opaque4c_50[4];                     // 0x4c
     NUVEC translation_amplitude; /* +50 */ // 0x50
-} TERRAIN_SKIN_BLEND_PC;                   // size 0x5c
+} TERRAIN_SKIN_BLEND_PC;
 
-typedef struct TERRAIN_SKIN_INFO_PC {
+typedef struct TERRAIN_SKIN_INFO_PC {             // size 0x1c
     NUMTX *matrix; /* +00 */                      // 0x00
     const TERRAIN_SKIN_BLEND_PC *blend; /* +04 */ // 0x04
 
-    union {                        // 0x08
-        const NUVEC4 *sample_rows; // 0x08  sampled row banks
-        NUMTX *static_matrix;      // 0x08  static platform matrix
-    };
+    union {                        // size 0x4
+        const NUVEC4 *sample_rows; // sampled row banks
+        NUMTX *static_matrix;      // static platform matrix
+    }; // 0x08
 
     f32 scale; /* +0c */                              // 0x0c
     TERRAIN_SKIN_STREAM_PC *original_shape; /* +10 */ // 0x10
@@ -327,29 +327,29 @@ typedef struct TERRAIN_SKIN_INFO_PC {
     i16 pool_slot; /* +16 */                          // 0x16
     i16 mode; /* +18 */                               // 0x18
     i16 vertex_order; /* +1a */                       // 0x1a
-} TERRAIN_SKIN_INFO_PC;                               // size 0x1c
+} TERRAIN_SKIN_INFO_PC;
 
-typedef struct TERRAIN_SKIN_USE_RECORD_PC {
-    i32 last_use;             // 0x0
-    i16 skin_index;           // 0x4
-    u8 unknown_06[2];         // 0x6
-} TERRAIN_SKIN_USE_RECORD_PC; // size 0x8
+typedef struct TERRAIN_SKIN_USE_RECORD_PC { // size 0x8
+    i32 last_use;                           // 0x0
+    i16 skin_index;                         // 0x4
+    u8 unknown_06[2];                       // 0x6
+} TERRAIN_SKIN_USE_RECORD_PC;
 
-typedef struct TERRAIN_SKIN_BATCH_PC {
-    i16 kind;            // 0x00
-    i16 count;           // 0x02
-    f32 min_x;           // 0x04
-    f32 max_x;           // 0x08
-    f32 min_z;           // 0x0c
-    f32 max_z;           // 0x10
-} TERRAIN_SKIN_BATCH_PC; // size 0x14
+typedef struct TERRAIN_SKIN_BATCH_PC { // size 0x14
+    i16 kind;                          // 0x00
+    i16 count;                         // 0x02
+    f32 min_x;                         // 0x04
+    f32 max_x;                         // 0x08
+    f32 min_z;                         // 0x0c
+    f32 max_z;                         // 0x10
+} TERRAIN_SKIN_BATCH_PC;
 
 /* Raw records are variable-length: a stream is a 20-byte header followed
  * by count 100-byte polygons. */
-struct TERRAIN_SKIN_STREAM_PC {
+struct TERRAIN_SKIN_STREAM_PC {          // size 0x78
     TERRAIN_SKIN_BATCH_PC header;        // 0x00
     TERRAIN_POLYGON_INFO_PC polygons[1]; // 0x14
-}; // size 0x78
+};
 
 extern const f32 TerrainSkinBoundsMaxPc;
 extern const f32 TerrainSkinBoundsMinPc;
@@ -2060,22 +2060,22 @@ void TerrainSetPlatConnectTol(f32 tolerance) {
     TerConTol = tolerance;
 }
 
-typedef struct TERRAIN_PLATFORM_LIFECYCLE_PC {
-    NUMTX previous_matrix;       // 0x00
-    NUMTX *scene_matrix;         // 0x40
-    i32 motion_status;           // 0x44
-    i16 terrain_group_index;     // 0x48
-    i16 scene_object_index;      // 0x4a
-    u32 flags;                   // 0x4c
-    i16 bounce_frames;           // 0x50
-    u8 unknown_52[2];            // 0x52
-    f32 bounce_impulse;          // 0x54
-    f32 bounce_offset;           // 0x58
-    f32 bounce_velocity;         // 0x5c
-    f32 bounce_spring;           // 0x60
-    f32 bounce_damping;          // 0x64
-    u32 *instance_flags;         // 0x68
-} TERRAIN_PLATFORM_LIFECYCLE_PC; // size 0x6c
+typedef struct TERRAIN_PLATFORM_LIFECYCLE_PC { // size 0x6c
+    NUMTX previous_matrix;                     // 0x00
+    NUMTX *scene_matrix;                       // 0x40
+    i32 motion_status;                         // 0x44
+    i16 terrain_group_index;                   // 0x48
+    i16 scene_object_index;                    // 0x4a
+    u32 flags;                                 // 0x4c
+    i16 bounce_frames;                         // 0x50
+    u8 unknown_52[2];                          // 0x52
+    f32 bounce_impulse;                        // 0x54
+    f32 bounce_offset;                         // 0x58
+    f32 bounce_velocity;                       // 0x5c
+    f32 bounce_spring;                         // 0x60
+    f32 bounce_damping;                        // 0x64
+    u32 *instance_flags;                       // 0x68
+} TERRAIN_PLATFORM_LIFECYCLE_PC;
 
 STATIC_ASSERT(offsetof(TERRAIN_SET_PC, removed_platform_count) == 0x154);
 STATIC_ASSERT(offsetof(TERRAIN_SET_PC, removed_platforms) == 0x158);
@@ -2332,7 +2332,7 @@ void PlatInstRotate(i32 platform_index, i32 enabled) {
     }
 }
 
-typedef struct TERRAIN_PICKUP_SET_PC {
+typedef struct TERRAIN_PICKUP_SET_PC {   // size 0xa490
     TERRAIN_GROUP_PC *groups;            // 0x0000
     void *shape_data;                    // 0x0004
     i32 group_count;                     // 0x0008
@@ -2340,7 +2340,7 @@ typedef struct TERRAIN_PICKUP_SET_PC {
     TERRAIN_PLATFORM_PC platforms[32];   // 0x010c
     TERRAIN_SPATIAL_NODE *spatial_nodes; // 0x0e8c
     u8 unknown_e90[0xa490 - 0xe90];      // 0x0e90
-} TERRAIN_PICKUP_SET_PC;                 // size 0xa490
+} TERRAIN_PICKUP_SET_PC;
 
 STATIC_ASSERT(offsetof(TERRAIN_PLATFORM_PC, bounce_58) == 0x58);
 STATIC_ASSERT(offsetof(TERRAIN_PLATFORM_PC, bounce_5c) == 0x5c);
@@ -2979,9 +2979,9 @@ void TerrDrawPlatCol(TERRAIN_POLYGON_INFO_PC *terrain, i16 index, i32 colour) {
 #undef TERRAIN_TDP_GROUP
 }
 
-typedef struct terrain_debug_source_link_pc_s {
-    TERRAIN_POLYGON_INFO_PC *source_polygon; // 0x0
-} TERRAIN_DEBUG_SOURCE_LINK_PC;              // size 0x4
+typedef struct terrain_debug_source_link_pc_s { // size 0x4
+    TERRAIN_POLYGON_INFO_PC *source_polygon;    // 0x0
+} TERRAIN_DEBUG_SOURCE_LINK_PC;
 
 void TerrDrawImpactPol(void) {
     TerrainQuery_s *query = TerI;
@@ -3532,10 +3532,10 @@ const char *TerrErrorString(i32 error) {
 }
 
 /* A sound table followed by the NULL-terminated sfx name list it is built from. */
-typedef struct SOUND_REGISTRY_PC {
-    SoundTable table; // 0x00
-    char **names;     // 0xc8
-} SOUND_REGISTRY_PC;  // size 0xcc
+typedef struct SOUND_REGISTRY_PC { // size 0xcc
+    SoundTable table;              // 0x00
+    char **names;                  // 0xc8
+} SOUND_REGISTRY_PC;
 
 void RegisterSounds(SOUND_REGISTRY_PC *registry) {
     char **name = registry->names;

@@ -2,14 +2,14 @@
 
 /* Network statistics overlays: NetSmallStats::Draw and NetStats::Draw. */
 
-typedef struct NET_PRIM_VERTEX_PC {
-    f32 x;            // 0x00
-    f32 y;            // 0x04
-    f32 z;            // 0x08
-    u32 colour;       // 0x0c
-    f32 u;            // 0x10
-    f32 v;            // 0x14
-} NET_PRIM_VERTEX_PC; // size 0x18
+typedef struct NET_PRIM_VERTEX_PC { // size 0x18
+    f32 x;                          // 0x00
+    f32 y;                          // 0x04
+    f32 z;                          // 0x08
+    u32 colour;                     // 0x0c
+    f32 u;                          // 0x10
+    f32 v;                          // 0x14
+} NET_PRIM_VERTEX_PC;
 
 static void NetPrimSetColour(i32 colour) {
     if (NuPrimNeedsOverbrightening != 0) {

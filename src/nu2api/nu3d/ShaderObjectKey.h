@@ -15,7 +15,7 @@
 #ifdef __cplusplus
 extern "C" {
 #endif
-    extern u32 ShaderProgramHashPC[2];
+    extern u32 ShaderProgramHashPC[4];
 #ifdef __cplusplus
 }
 #endif

@@ -1,33 +1,33 @@
 #include "saga.h"
 
-typedef struct TRAFFICANIM_PC {
-    NUSPECIALHANDLE special; // 0x000
-    void *animation;         // 0x00c
-    f32 end_frame;           // 0x010
-    f32 tfactor;             // 0x014
-    f32 frame_interval;      // 0x018
-    f32 random_interval;     // 0x01c
-    f32 room_frame_interval; // 0x020
-    f32 y_offset;            // 0x024
-    i8 vehicle_indices[16];  // 0x028
-    i8 rooms[256];           // 0x038
-    i8 vehicle_count;        // 0x138
-    u8 unknown_139[7];       // 0x139
-} TRAFFICANIM_PC;            // size 0x140
+typedef struct TRAFFICANIM_PC { // size 0x140
+    NUSPECIALHANDLE special;    // 0x000
+    void *animation;            // 0x00c
+    f32 end_frame;              // 0x010
+    f32 tfactor;                // 0x014
+    f32 frame_interval;         // 0x018
+    f32 random_interval;        // 0x01c
+    f32 room_frame_interval;    // 0x020
+    f32 y_offset;               // 0x024
+    i8 vehicle_indices[16];     // 0x028
+    i8 rooms[256];              // 0x038
+    i8 vehicle_count;           // 0x138
+    u8 unknown_139[7];          // 0x139
+} TRAFFICANIM_PC;
 
-typedef struct TRAFFICANIMSYS_PC {
+typedef struct TRAFFICANIMSYS_PC {    // size 0x77e4
     TRAFFICANIM_PC animations[64];    // 0x0000
     NUSPECIALHANDLE vehicles[16];     // 0x5000
     u8 unknown_50c0[0x77e0 - 0x50c0]; // 0x50c0
     i8 animation_count;               // 0x77e0
     i8 vehicle_count;                 // 0x77e1
     u8 unknown_77e2[2];               // 0x77e2
-} TRAFFICANIMSYS_PC;                  // size 0x77e4
+} TRAFFICANIMSYS_PC;
 
-typedef struct TRAFFIC_WORLD_VIEW_PC {
+typedef struct TRAFFIC_WORLD_VIEW_PC {  // size 0x516c
     u8 unknown_000[0x5168];             // 0x0000
     TRAFFICANIMSYS_PC *trafficanim_sys; // 0x5168
-} TRAFFIC_WORLD_VIEW_PC;                // size 0x516c
+} TRAFFIC_WORLD_VIEW_PC;
 
 static TRAFFICANIM_PC reference_trafficanim = {0};
 static TRAFFICANIM_PC *parse_trafficanim = 0;

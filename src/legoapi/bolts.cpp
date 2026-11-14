@@ -46,7 +46,7 @@ extern "C" {
     STATIC_ASSERT(offsetof(PART_PC, active) == 0x144);
     STATIC_ASSERT(sizeof(PART_PC) == 0x220);
 
-    typedef struct BOLT_CONFIG_PC {
+    typedef struct BOLT_CONFIG_PC {  // size 0xa4
         char name[16];               // 0x00
         f32 field_10;                // 0x10
         f32 field_14;                // 0x14
@@ -69,14 +69,14 @@ extern "C" {
         i16 shoot_sfx_id;            // 0x64
         i16 hit_sfx_id;              // 0x66
 
-        struct {                                      // 0x68
+        struct {                                      // size 0x3c
             NUSPECIALHANDLE object_special;           // 0x68
             NUSPECIALHANDLE glow_special;             // 0x74
             NUSPECIALHANDLE reference_object_special; // 0x80
             NUSPECIALHANDLE reference_glow_special;   // 0x8c
             NUSPECIALHANDLE shadow_special;           // 0x98
-        } specials;
-    } BOLT_CONFIG_PC; // size 0xa4
+        } specials;                                   // 0x68
+    } BOLT_CONFIG_PC;
 
     static BOLT_CONFIG_PC *BT_bolttype = 0;
     static WORLDINFO *BT_worldinfo = 0;
@@ -1206,21 +1206,21 @@ static i32 Bolt_HitPlatPrivate(BOLT_PC *, u8 *);
 
 extern "C" i32 i_temp_xrot;
 
-typedef struct bolt_context_info_pc_s {
-    const char *name;   // 0x0
-    i32 action;         // 0x4
-    u64 flags;          // 0x8
-} BOLT_CONTEXT_INFO_PC; // size 0x10
+typedef struct bolt_context_info_pc_s { // size 0x10
+    const char *name;                   // 0x0
+    i32 action;                         // 0x4
+    u64 flags;                          // 0x8
+} BOLT_CONTEXT_INFO_PC;
 
 STATIC_ASSERT(offsetof(GAMEOBJECT, context_variant_flags) == 0x7bc);
 STATIC_ASSERT(offsetof(GAMEOBJECT, origin_scale_override) == 0xd30);
 STATIC_ASSERT(offsetof(GAMEOBJECT, scaled_radius) == 0xa4);
 STATIC_ASSERT(offsetof(PLAYERCHARACTERCONFIG_PC, walk_speed) == 0x18);
 
-typedef struct BOLT_UPDATE_TYPE_PC_s {
-    u8 unknown_000[0x98];           // 0x00
-    NUSPECIALHANDLE shadow_special; // 0x98
-} BOLT_UPDATE_TYPE_PC;              // size 0xa4
+typedef struct BOLT_UPDATE_TYPE_PC_s { // size 0xa4
+    u8 unknown_000[0x98];              // 0x00
+    NUSPECIALHANDLE shadow_special;    // 0x98
+} BOLT_UPDATE_TYPE_PC;
 
 STATIC_ASSERT(sizeof(BOLT_UPDATE_TYPE_PC) == sizeof(BOLTTYPE_PC));
 

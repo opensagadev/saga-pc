@@ -872,28 +872,28 @@ STATIC_ASSERT(offsetof(PARTTYPE_LOOKUP_PC, lighting_scale) == 0x160);
 STATIC_ASSERT(offsetof(PARTTYPE_LOOKUP_PC, last_used_time) == 0x16c);
 STATIC_ASSERT(offsetof(PART_PC, field_206) == 0x206);
 
-typedef struct debris_material_flags_pc_s {
-    u32 alpha_mode : 4;       // 0x0:0
-    u32 filter_mode : 2;      // 0x0:4
-    u32 unknown_0_64_128 : 2; // 0x0:6
-    u32 unknown_1_1_2 : 2;    // 0x0:8
-    u32 unknown_1_4_8 : 2;    // 0x0:10
-    u32 cull_mode : 2;        // 0x0:12
-    u32 z_mode : 2;           // 0x0:14
-    u32 unknown_2_1_2 : 2;    // 0x0:16
-    u32 unknown_2_4 : 1;      // 0x0:18
-    u32 unknown_19 : 1;       // 0x0:19
-    u32 alpha_test : 3;       // 0x0:20
-    u32 unknown_23_31 : 9;    // 0x0:23
-} DEBRIS_MATERIAL_FLAGS_PC;   // size 0x4
+typedef struct debris_material_flags_pc_s { // size 0x4
+    u32 alpha_mode : 4;                     // 0x0:0
+    u32 filter_mode : 2;                    // 0x0:4
+    u32 unknown_0_64_128 : 2;               // 0x0:6
+    u32 unknown_1_1_2 : 2;                  // 0x0:8
+    u32 unknown_1_4_8 : 2;                  // 0x0:10
+    u32 cull_mode : 2;                      // 0x0:12
+    u32 z_mode : 2;                         // 0x0:14
+    u32 unknown_2_1_2 : 2;                  // 0x0:16
+    u32 unknown_2_4 : 1;                    // 0x0:18
+    u32 unknown_19 : 1;                     // 0x0:19
+    u32 alpha_test : 3;                     // 0x0:20
+    u32 unknown_23_31 : 9;                  // 0x0:23
+} DEBRIS_MATERIAL_FLAGS_PC;
 
-typedef struct debris_material_secondary_pc_s {
-    u32 alpha_fail : 2;          // 0x0:0
-    u32 disable_depth_write : 1; // 0x0:2
-    u32 unknown_03_31 : 29;      // 0x0:3
-} DEBRIS_MATERIAL_SECONDARY_PC;  // size 0x4
+typedef struct debris_material_secondary_pc_s { // size 0x4
+    u32 alpha_fail : 2;                         // 0x0:0
+    u32 disable_depth_write : 1;                // 0x0:2
+    u32 unknown_03_31 : 29;                     // 0x0:3
+} DEBRIS_MATERIAL_SECONDARY_PC;
 
-typedef struct debris_material_pc_s {
+typedef struct debris_material_pc_s {       // size 0x1f4
     u8 unknown_000[0x40];                   // 0x000
     DEBRIS_MATERIAL_FLAGS_PC attribs;       // 0x040
     DEBRIS_MATERIAL_SECONDARY_PC secondary; // 0x044
@@ -908,64 +908,64 @@ typedef struct debris_material_pc_s {
     i8 particle_type_tag;                   // 0x099
     u8 unknown_09a[0x156];                  // 0x09a
     u32 vertex_flags;                       // 0x1f0
-} DEBRIS_MATERIAL_PC;                       // size 0x1f4
+} DEBRIS_MATERIAL_PC;
 
-typedef struct debris_animation_effect_pc_s {
-    u8 unknown_000[0xa8]; // 0x00
-    i16 texture_frames;   // 0xa8
-    i8 texture_rows;      // 0xaa
-    i8 frame_divisor;     // 0xab
+typedef struct debris_animation_effect_pc_s { // size 0xb0
+    u8 unknown_000[0xa8];                     // 0x00
+    i16 texture_frames;                       // 0xa8
+    i8 texture_rows;                          // 0xaa
+    i8 frame_divisor;                         // 0xab
 
-    union {              // 0xac
-        f32 rate;        // 0xac
-        u32 packed_rate; // 0xac
-    } animation_rate;
-} DEBRIS_ANIMATION_EFFECT_PC; // size 0xb0
+    union { // size 0x4
+        f32 rate;
+        u32 packed_rate;
+    } animation_rate; // 0xac
+} DEBRIS_ANIMATION_EFFECT_PC;
 
-typedef struct part_runtime_type_pc_s {
-    char name[16];              // 0x000
-    char object_names[8][16];   // 0x010
-    i16 effect_ids[8];          // 0x090
-    i8 effect_pages[8];         // 0x0a0
-    i8 scene_indices[8];        // 0x0a8
-    i8 variant_count;           // 0x0b0
-    u8 variant_mode;            // 0x0b1
-    i8 page;                    // 0x0b2
-    u8 field_b3;                // 0x0b3
-    f32 particle_scale;         // 0x0b4
-    f32 effect_scale;           // 0x0b8
-    f32 lifetime;               // 0x0bc
-    f32 lifetime_random;        // 0x0c0
-    f32 speed;                  // 0x0c4
-    f32 gravity;                // 0x0c8
-    f32 emission_rate;          // 0x0cc
-    f32 bounce;                 // 0x0d0
-    NUVEC position_random;      // 0x0d4
-    NUVEC velocity_random;      // 0x0e0
-    f32 emission_period;        // 0x0ec
-    f32 emission_period_random; // 0x0f0
-    f32 emission_pause;         // 0x0f4
-    f32 emission_pause_random;  // 0x0f8
-    i32 rotation[3];            // 0x0fc
-    i32 rotation_random[3];     // 0x108
-    u32 flags;                  // 0x114
-    i32 trail_effects[2];       // 0x118
-    f32 trail_rates[2];         // 0x120
-    i32 attached_effect;        // 0x128
-    i32 impact_effect;          // 0x12c
-    i32 impact_part;            // 0x130
-    char impact_part_name[16];  // 0x134
-    i32 kill_effect;            // 0x144
-    i32 sounds[4];              // 0x148
-    u8 sound_modes[4];          // 0x158
-    f32 maximum_distance;       // 0x15c
-    f32 field_160;              // 0x160
-    f32 field_164;              // 0x164
-    f32 field_168;              // 0x168
-    f32 last_used_time;         // 0x16c
-    f32 scale;                  // 0x170
-    u32 field_174;              // 0x174
-} PART_RUNTIME_TYPE_PC;         // size 0x178
+typedef struct part_runtime_type_pc_s { // size 0x178
+    char name[16];                      // 0x000
+    char object_names[8][16];           // 0x010
+    i16 effect_ids[8];                  // 0x090
+    i8 effect_pages[8];                 // 0x0a0
+    i8 scene_indices[8];                // 0x0a8
+    i8 variant_count;                   // 0x0b0
+    u8 variant_mode;                    // 0x0b1
+    i8 page;                            // 0x0b2
+    u8 field_b3;                        // 0x0b3
+    f32 particle_scale;                 // 0x0b4
+    f32 effect_scale;                   // 0x0b8
+    f32 lifetime;                       // 0x0bc
+    f32 lifetime_random;                // 0x0c0
+    f32 speed;                          // 0x0c4
+    f32 gravity;                        // 0x0c8
+    f32 emission_rate;                  // 0x0cc
+    f32 bounce;                         // 0x0d0
+    NUVEC position_random;              // 0x0d4
+    NUVEC velocity_random;              // 0x0e0
+    f32 emission_period;                // 0x0ec
+    f32 emission_period_random;         // 0x0f0
+    f32 emission_pause;                 // 0x0f4
+    f32 emission_pause_random;          // 0x0f8
+    i32 rotation[3];                    // 0x0fc
+    i32 rotation_random[3];             // 0x108
+    u32 flags;                          // 0x114
+    i32 trail_effects[2];               // 0x118
+    f32 trail_rates[2];                 // 0x120
+    i32 attached_effect;                // 0x128
+    i32 impact_effect;                  // 0x12c
+    i32 impact_part;                    // 0x130
+    char impact_part_name[16];          // 0x134
+    i32 kill_effect;                    // 0x144
+    i32 sounds[4];                      // 0x148
+    u8 sound_modes[4];                  // 0x158
+    f32 maximum_distance;               // 0x15c
+    f32 field_160;                      // 0x160
+    f32 field_164;                      // 0x164
+    f32 field_168;                      // 0x168
+    f32 last_used_time;                 // 0x16c
+    f32 scale;                          // 0x170
+    u32 field_174;                      // 0x174
+} PART_RUNTIME_TYPE_PC;
 
 void edpartChangeMaxLifeMenu(eduimenu_s *menu, eduiitem_s *unused1, u32 unused2);
 void edpartInstanceOrientMenu(eduimenu_s *menu, eduiitem_s *unused1, u32 unused2);
@@ -976,12 +976,12 @@ extern i32 edpart_copy_source_count;
 void edbitsDrawCube(f32 x, f32 y, f32 z, f32 half_x, f32 half_y, f32 half_z, i32 rotation_z, i32 rotation_y,
                     i32 rotation_x, i32 outer_z, i32 outer_y, i32 colour, struct PC_SCENE_MTL_VIEW *material);
 
-typedef struct PART_TERRAIN_STATE_PC {
-    u8 unknown_000[0x200]; // 0x000
-    u32 platform_id;       // 0x200
-    u8 unknown_204[5];     // 0x204
-    i8 impact_material;    // 0x209
-} PART_TERRAIN_STATE_PC;   // size 0x20c
+typedef struct PART_TERRAIN_STATE_PC { // size 0x20c
+    u8 unknown_000[0x200];             // 0x000
+    u32 platform_id;                   // 0x200
+    u8 unknown_204[5];                 // 0x204
+    i8 impact_material;                // 0x209
+} PART_TERRAIN_STATE_PC;
 
 #define PART_NORM PartImpactNormalPrivate
 i32 edpartPlace(i32 index, NUVEC *position);

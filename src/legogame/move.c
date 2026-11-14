@@ -391,7 +391,7 @@ typedef struct lunge_target_slots_pc_s {
     GIZMOBLOWUP_PC *gizmo_target;
 } LUNGE_TARGET_SLOTS_PC;
 
-struct minianimpacket_pc_s {
+struct minianimpacket_pc_s {    // size 0x24
     f32 current_time;           // 0x00
     f32 previous_time;          // 0x04
     u8 unknown_08[0xc];         // 0x08
@@ -402,7 +402,7 @@ struct minianimpacket_pc_s {
     i16 current_animation_id;   // 0x1e
     i16 previous_animation_id;  // 0x20
     i16 requested_animation_id; // 0x22
-}; // size 0x24
+};
 
 typedef struct jump_auxiliary_fields_pc_s {
     u8 unknown_000[0x7b1];

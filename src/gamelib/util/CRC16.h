@@ -284,6 +284,9 @@ struct ShaderCompilerDictionaryPc {
     const char *RenderASTName(ShaderSourceNodePc *);
     ShaderSourceNodePc *FindASTExact(const char *, u32);
     ShaderSourceNodePc *FindASTUniform(const char *);
+    void fun_00748810(i32 stage);
+    void fun_00748820();
+    void fun_00748840();
     void EmitType(ShaderCompilerBufferAllocatorPc *);
     void EmitRegister(ShaderCompilerBufferAllocatorPc *);
     void EmitVertexInput(ShaderCompilerBufferAllocatorPc *);

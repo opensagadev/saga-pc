@@ -2,7 +2,7 @@
 #include <math.h>
 #include <string.h>
 
-struct CABLE_RECORD_PC {
+struct CABLE_RECORD_PC {     // size 0x1ec
     GAMEOBJECT *source;      // 0x000
     GAMEOBJECT *target;      // 0x004
     NUVEC points[16];        // 0x008
@@ -18,14 +18,14 @@ struct CABLE_RECORD_PC {
     u8 wrap_count;           // 0x1e8
     u8 unused_01e9;          // 0x1e9
     u16 flags;               // 0x1ea
-}; // size 0x1ec
+};
 
 // The cable code tests the character context flags as a 64-bit field.
-typedef struct cable_context_info_pc_s {
-    const char *name;    // 0x0
-    i32 action;          // 0x4
-    u64 flags;           // 0x8
-} CABLE_CONTEXT_INFO_PC; // size 0x10
+typedef struct cable_context_info_pc_s { // size 0x10
+    const char *name;                    // 0x0
+    i32 action;                          // 0x4
+    u64 flags;                           // 0x8
+} CABLE_CONTEXT_INFO_PC;
 
 extern const f64 GameObjectNearFloorNoFloorHeight;
 i32 XZLinesIntersect(NUVEC *a, NUVEC *b, NUVEC *c, NUVEC *d, float *first, float *second);

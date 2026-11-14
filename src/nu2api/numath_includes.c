@@ -34,9 +34,9 @@ STATIC_ASSERT(offsetof(NUMTX, m13) == 0x1c);
 STATIC_ASSERT(offsetof(NUMTX, m23) == 0x2c);
 STATIC_ASSERT(offsetof(NUMTX, m33) == 0x3c);
 
-typedef struct NuMtxIndexedViewPc {
-    f32 elements[4][4]; // 0x00
-} NuMtxIndexedViewPc;   // size 0x40
+typedef struct NuMtxIndexedViewPc { // size 0x40
+    f32 elements[4][4];             // 0x00
+} NuMtxIndexedViewPc;
 
 STATIC_ASSERT(sizeof(NuMtxIndexedViewPc) == sizeof(NUMTX));
 STATIC_ASSERT(sizeof(((NuMtxIndexedViewPc *)0)->elements[0]) == 0x10);
@@ -4119,20 +4119,20 @@ i32 nugraphFileSaveGraphOnlyToFile(nugraph_s *graph, NUFILE file) {
 }
 
 /* Graphs saved before version 2 held 32 points. */
-struct legacy_nugraph_s {
-    u8 pad_00[0x38];  // 0x000
-    i8 interpolation; // 0x038
-    i8 point_count;   // 0x039
-    u8 pad_3a[2];     // 0x03a
-    f32 x[32];        // 0x03c
-    f32 y[32];        // 0x0bc
-    f32 x_scale;      // 0x13c
-    f32 y_scale;      // 0x140
-    f32 x_extent;     // 0x144
-    f32 y_extent;     // 0x148
-    f32 x_offset;     // 0x14c
-    f32 y_offset;     // 0x150
-}; // size 0x154
+struct legacy_nugraph_s { // size 0x154
+    u8 pad_00[0x38];      // 0x000
+    i8 interpolation;     // 0x038
+    i8 point_count;       // 0x039
+    u8 pad_3a[2];         // 0x03a
+    f32 x[32];            // 0x03c
+    f32 y[32];            // 0x0bc
+    f32 x_scale;          // 0x13c
+    f32 y_scale;          // 0x140
+    f32 x_extent;         // 0x144
+    f32 y_extent;         // 0x148
+    f32 x_offset;         // 0x14c
+    f32 y_offset;         // 0x150
+};
 
 i32 nugraphFileLoadGraphOnlyToFile(nugraph_s *graph, NUFILE file) {
     i32 version = 0;

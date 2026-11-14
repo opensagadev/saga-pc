@@ -6,11 +6,11 @@ extern "C" {
     extern NUCAMERA *EdMainCurrentCameraPc;
 }
 
-struct SHADOW_PLAYER_BOUNDS_PC {
-    u8 unknown_000[0x5fc]; // 0x000
-    NUVEC center;          // 0x5fc
-    f32 radius;            // 0x608
-}; // size 0x60c
+struct SHADOW_PLAYER_BOUNDS_PC { // size 0x60c
+    u8 unknown_000[0x5fc];       // 0x000
+    NUVEC center;                // 0x5fc
+    f32 radius;                  // 0x608
+};
 
 STATIC_ASSERT(offsetof(GAMECAMERA, render_mtx) + offsetof(NUMTX, m20) == 0xd8);
 STATIC_ASSERT(offsetof(GAMECAMERA, render_mtx) + offsetof(NUMTX, m30) == 0xe8);

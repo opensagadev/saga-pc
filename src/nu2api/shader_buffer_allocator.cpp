@@ -104,3 +104,18 @@ void ShaderCompilerBufferAllocatorPc::OverwriteText(i32 start, const char *text)
 void ShaderCompilerBufferAllocatorPc::WriteBytes(i32 offset, const void *source, i32 count) {
     memcpy(data + offset, source, count);
 }
+
+void ShaderCompilerDictionaryPc::fun_00748810(i32 stage) {
+    output_stage = stage;
+}
+
+void ShaderCompilerDictionaryPc::fun_00748820() {
+    scratch.cursor = scratch.base;
+    program_count = 0;
+}
+
+void ShaderCompilerDictionaryPc::fun_00748840() {
+    for (i32 i = 0; i < definition_count; ++i) {
+        definitions[i]->expansion_state = 0;
+    }
+}

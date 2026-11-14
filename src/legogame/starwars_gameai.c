@@ -10,10 +10,10 @@ STATIC_ASSERT(offsetof(GAMEOBJECT, takeover_source) == 0xcd0);
 STATIC_ASSERT(offsetof(GAMEOBJECT, jump_variant_state) == 0xe32);
 STATIC_ASSERT(offsetof(GAMEOBJECT, attached_tube_pc) == 0x798);
 
-typedef struct STARWARS_PREPARE_PC {
+typedef struct STARWARS_PREPARE_PC {      // size 0x8
     u32 capabilities;                     // 0x0
     AI_PREPARING_SPECIAL_MOVE_PC prepare; // 0x4
-} STARWARS_PREPARE_PC;                    // size 0x8
+} STARWARS_PREPARE_PC;
 
 extern STARWARS_PREPARE_PC starwars_prepareforspecialmove[8];
 extern AI_MID_SPECIAL_MOVE_PC starwars_midspecialmovefns[4];

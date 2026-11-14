@@ -42,6 +42,7 @@ extern "C" {
 extern "C" {
 #endif
     void NuShaderObjectKeyGenerate3(u32 *, const struct PC_SHADER_MATERIAL_FILTER_VIEW *, i32);
+    void NuShaderObjectKeyGenerate4(u32 *, u32, i32);
 #ifdef __cplusplus
 }
 #endif

@@ -1,103 +1,103 @@
 #include "saga.h"
 #include <string.h>
 
-typedef struct torpedo_pickup_positions_pc_s {
-    u8 count;                  // 0x00
-    u8 unknown_01[0x3b];       // 0x01
-    NUVEC pickup_positions[5]; // 0x3c
-} TORPEDO_PICKUP_POSITIONS_PC; // size 0x78
+typedef struct torpedo_pickup_positions_pc_s { // size 0x78
+    u8 count;                                  // 0x00
+    u8 unknown_01[0x3b];                       // 0x01
+    NUVEC pickup_positions[5];                 // 0x3c
+} TORPEDO_PICKUP_POSITIONS_PC;
 
-typedef struct torpedo_turret_query_pc_s {
-    u8 unknown_00[0x1c];           // 0x000
-    GAMEANIMOBJ *primary_anim_obj; // 0x01c
-    u8 unknown_20[0x11a];          // 0x020
-    u16 flags;                     // 0x13a
-} TORPEDO_TURRET_QUERY_PC;         // size 0x13c
+typedef struct torpedo_turret_query_pc_s { // size 0x13c
+    u8 unknown_00[0x1c];                   // 0x000
+    GAMEANIMOBJ *primary_anim_obj;         // 0x01c
+    u8 unknown_20[0x11a];                  // 0x020
+    u16 flags;                             // 0x13a
+} TORPEDO_TURRET_QUERY_PC;
 
-typedef struct torpedo_turret_query_sys_pc_s {
-    TORPEDO_TURRET_QUERY_PC *turrets; // 0x0
-    u8 unknown_04[4];                 // 0x4
-    u16 count;                        // 0x8
-} TORPEDO_TURRET_QUERY_SYS_PC;        // size 0xc
+typedef struct torpedo_turret_query_sys_pc_s { // size 0xc
+    TORPEDO_TURRET_QUERY_PC *turrets;          // 0x0
+    u8 unknown_04[4];                          // 0x4
+    u16 count;                                 // 0x8
+} TORPEDO_TURRET_QUERY_SYS_PC;
 
-typedef struct torpedo_obstacle_query_pc_s {
-    u8 unknown_00[0x28];      // 0x00
-    NUVEC evaluated_position; // 0x28
-    u8 unknown_34[0x24];      // 0x34
-    f32 target_radius;        // 0x58
-    u8 unknown_5c[0x38];      // 0x5c
-    u32 progress_flags;       // 0x94
-    u8 unknown_98[4];         // 0x98
-    u32 runtime_flags;        // 0x9c
-} TORPEDO_OBSTACLE_QUERY_PC;  // size 0xa0
+typedef struct torpedo_obstacle_query_pc_s { // size 0xa0
+    u8 unknown_00[0x28];                     // 0x00
+    NUVEC evaluated_position;                // 0x28
+    u8 unknown_34[0x24];                     // 0x34
+    f32 target_radius;                       // 0x58
+    u8 unknown_5c[0x38];                     // 0x5c
+    u32 progress_flags;                      // 0x94
+    u8 unknown_98[4];                        // 0x98
+    u32 runtime_flags;                       // 0x9c
+} TORPEDO_OBSTACLE_QUERY_PC;
 
-typedef struct torpedo_obstacle_gizmo_query_pc_s {
-    TORPEDO_OBSTACLE_QUERY_PC *object; // 0x0
-} TORPEDO_OBSTACLE_GIZMO_QUERY_PC;     // size 0x4
+typedef struct torpedo_obstacle_gizmo_query_pc_s { // size 0x4
+    TORPEDO_OBSTACLE_QUERY_PC *object;             // 0x0
+} TORPEDO_OBSTACLE_GIZMO_QUERY_PC;
 
-typedef struct torpedo_obstacle_query_sys_pc_s {
+typedef struct torpedo_obstacle_query_sys_pc_s {     // size 0x10
     u8 unknown_00[4];                                // 0x0
     TORPEDO_OBSTACLE_GIZMO_QUERY_PC **active_gizmos; // 0x4
     u8 unknown_08[4];                                // 0x8
     u16 active_gizmo_count;                          // 0xc
-} TORPEDO_OBSTACLE_QUERY_SYS_PC;                     // size 0x10
+} TORPEDO_OBSTACLE_QUERY_SYS_PC;
 
-typedef struct torpedo_target_world_query_pc_s {
-    u8 unknown_0000[0x46a4];                  // 0x0000
-    TORPEDO_OBSTACLE_QUERY_SYS_PC *obstacles; // 0x46a4
-    u8 unknown_46a8[0x10];                    // 0x46a8
-    TORPEDO_TURRET_QUERY_SYS_PC *turrets;     // 0x46b8
-} TORPEDO_TARGET_WORLD_QUERY_PC;              // size 0x46bc
+typedef struct torpedo_target_world_query_pc_s { // size 0x46bc
+    u8 unknown_0000[0x46a4];                     // 0x0000
+    TORPEDO_OBSTACLE_QUERY_SYS_PC *obstacles;    // 0x46a4
+    u8 unknown_46a8[0x10];                       // 0x46a8
+    TORPEDO_TURRET_QUERY_SYS_PC *turrets;        // 0x46b8
+} TORPEDO_TARGET_WORLD_QUERY_PC;
 
-typedef struct torpedo_runtime_pc_s {
-    u8 count;                  // 0x00
-    u8 flags;                  // 0x01
-    u8 fire_index;             // 0x02
-    u8 pickup_state;           // 0x03
-    u8 target_type;            // 0x04
-    u8 unknown_05[3];          // 0x05
-    f32 pickup_timer;          // 0x08
-    u8 unknown_0c[4];          // 0x0c
-    f32 steal_timer;           // 0x10
-    u32 pickup_data[5];        // 0x14
-    u32 pickup_flags[5];       // 0x28
-    NUVEC pickup_positions[5]; // 0x3c
-    u8 unknown_78[0xc];        // 0x78
-    void *target;              // 0x84
-} TORPEDO_RUNTIME_PC;          // size 0x88
+typedef struct torpedo_runtime_pc_s { // size 0x88
+    u8 count;                         // 0x00
+    u8 flags;                         // 0x01
+    u8 fire_index;                    // 0x02
+    u8 pickup_state;                  // 0x03
+    u8 target_type;                   // 0x04
+    u8 unknown_05[3];                 // 0x05
+    f32 pickup_timer;                 // 0x08
+    u8 unknown_0c[4];                 // 0x0c
+    f32 steal_timer;                  // 0x10
+    u32 pickup_data[5];               // 0x14
+    u32 pickup_flags[5];              // 0x28
+    NUVEC pickup_positions[5];        // 0x3c
+    u8 unknown_78[0xc];               // 0x78
+    void *target;                     // 0x84
+} TORPEDO_RUNTIME_PC;
 
-typedef struct torpedo_timers_pc_s {
-    u8 unknown_000[0xd5c]; // 0x000
-    f32 fire_cooldown;     // 0xd5c
-    u8 unknown_d60[0x20];  // 0xd60
-    f32 target_timer;      // 0xd80
-} TORPEDO_TIMERS_PC;       // size 0xd84
+typedef struct torpedo_timers_pc_s { // size 0xd84
+    u8 unknown_000[0xd5c];           // 0x000
+    f32 fire_cooldown;               // 0xd5c
+    u8 unknown_d60[0x20];            // 0xd60
+    f32 target_timer;                // 0xd80
+} TORPEDO_TIMERS_PC;
 
-typedef struct torpedo_machine_reader_pc_s {
-    u8 unknown_00[0x10];     // 0x00
-    NUVEC position;          // 0x10
-    f32 activation_time;     // 0x1c
-    u8 unknown_20[0xb];      // 0x20
-    u8 flags;                // 0x2b
-} TORPEDO_MACHINE_READER_PC; // size 0x2c
+typedef struct torpedo_machine_reader_pc_s { // size 0x2c
+    u8 unknown_00[0x10];                     // 0x00
+    NUVEC position;                          // 0x10
+    f32 activation_time;                     // 0x1c
+    u8 unknown_20[0xb];                      // 0x20
+    u8 flags;                                // 0x2b
+} TORPEDO_MACHINE_READER_PC;
 
-typedef struct torpedo_turret_reader_pc_s {
-    u8 unknown_00[0x1c];           // 0x00
-    GAMEANIMOBJ *primary_anim_obj; // 0x1c
-} TORPEDO_TURRET_READER_PC;        // size 0x20
+typedef struct torpedo_turret_reader_pc_s { // size 0x20
+    u8 unknown_00[0x1c];                    // 0x00
+    GAMEANIMOBJ *primary_anim_obj;          // 0x1c
+} TORPEDO_TURRET_READER_PC;
 
-typedef struct torpedo_obstacle_reader_pc_s {
-    u8 unknown_00[0x28];      // 0x00
-    NUVEC position;           // 0x28
-} TORPEDO_OBSTACLE_READER_PC; // size 0x34
+typedef struct torpedo_obstacle_reader_pc_s { // size 0x34
+    u8 unknown_00[0x28];                      // 0x00
+    NUVEC position;                           // 0x28
+} TORPEDO_OBSTACLE_READER_PC;
 
 #define TORPEDO_PACKET_PC(object) ((TORPEDO_RUNTIME_PC *)(object)->torpedo)
 
-typedef struct torpedo_packet_alloc_pc_s {
-    u8 count;              // 0x00
-    u8 flags;              // 0x01
-    u8 unknown_02[0x86];   // 0x02
-} TORPEDO_PACKET_ALLOC_PC; // size 0x88
+typedef struct torpedo_packet_alloc_pc_s { // size 0x88
+    u8 count;                              // 0x00
+    u8 flags;                              // 0x01
+    u8 unknown_02[0x86];                   // 0x02
+} TORPEDO_PACKET_ALLOC_PC;
 
 #define ASIN_NEG_1_OVER_6 PCPathArcSineCoefficient3
 #define ASIN_NEG_3_OVER_40 PCPathArcSineCoefficient5

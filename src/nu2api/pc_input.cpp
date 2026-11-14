@@ -236,14 +236,14 @@ void PC_INPUT_RUNTIME_PC::InitKeyboardProfiles() {
     }
 }
 
-struct PC_DI_RANGE_PC {
-    DWORD size;        // 0x00
-    DWORD header_size; // 0x04
-    DWORD object;      // 0x08
-    DWORD how;         // 0x0c
-    LONG minimum;      // 0x10
-    LONG maximum;      // 0x14
-}; // size 0x18
+struct PC_DI_RANGE_PC { // size 0x18
+    DWORD size;         // 0x00
+    DWORD header_size;  // 0x04
+    DWORD object;       // 0x08
+    DWORD how;          // 0x0c
+    LONG minimum;       // 0x10
+    LONG maximum;       // 0x14
+};
 
 /* TODO(saga.h): the DirectInput device is called through its C++ interface in retail. */
 struct PC_DI_DEVICE_INTERFACE_PC {
@@ -606,6 +606,49 @@ extern "C" i32 fun_006d6050(void) {
 
 extern "C" PC_DI_MOUSE_STATE_PC *fun_006d6060(void) {
     return &PcMouseSamplesPc[PcMouseSampleIndexPc];
+}
+
+extern "C" i32 NuPad_Interface_GetMaxDevices(void) {
+    return 14;
+}
+
+extern "C" void NuPadOpenPS(FRAME_PAD_PC *pad) {
+    pad->flags |= 4;
+}
+
+extern "C" void fun_006d60c0(void) {
+}
+
+extern "C" void NuPadClosePS(FRAME_PAD_PC *pad) {
+    pad->flags &= ~4;
+}
+
+extern "C" void NuPadInitPS(FRAME_SCANNED_PAD_PC *pad) {
+}
+
+extern "C" i32 fun_006d60f0(void) {
+    return nu_input_state->unknown_5d29;
+}
+
+extern "C" void fun_006d6100(i32 value) {
+    if (value < 1) {
+        value = 1;
+    } else if (value > 10) {
+        value = 10;
+    }
+    nu_input_state->unknown_5d29 = value;
+}
+
+extern "C" void fun_006d6140(void) {
+    nu_keyboard_device_flags = 7;
+}
+
+extern "C" void fun_006d6150(void) {
+    nu_keyboard_device_flags = 3;
+}
+
+extern "C" void fun_006d6160(void) {
+    nu_keyboard_device_flags = 0;
 }
 
 // Native NuKeyboardOwner_PC cohort, append to pc_input.cpp.

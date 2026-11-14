@@ -24,12 +24,12 @@ void GizForce_PlayForwards(GIZFORCE_PC *force);
 void GizForce_PlayBackwards(GIZFORCE_PC *force);
 i32 turret_gizmotype_id;
 
-typedef struct GIZACTION_FORCE_ANIMATION_PC {
-    u8 unknown_000[0x28];       // 0x00
-    GAMEANIMSET *anim_set;      // 0x28
-    u8 unknown_02c[0x74];       // 0x2c
-    u32 flags;                  // 0xa0
-} GIZACTION_FORCE_ANIMATION_PC; // size 0xa4
+typedef struct GIZACTION_FORCE_ANIMATION_PC { // size 0xa4
+    u8 unknown_000[0x28];                     // 0x00
+    GAMEANIMSET *anim_set;                    // 0x28
+    u8 unknown_02c[0x74];                     // 0x2c
+    u32 flags;                                // 0xa0
+} GIZACTION_FORCE_ANIMATION_PC;
 
 STATIC_ASSERT(offsetof(GIZSPECIAL_s, anim_set) == 0x20);
 i32 obstacle_gizmotype_id;

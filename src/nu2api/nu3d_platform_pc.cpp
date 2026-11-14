@@ -53,15 +53,15 @@ extern "C" {
     void fun_005f1f50(i32 texture_id);
     extern GRAPHICS_RENDER_TEXTURE_PC *PCGraphicsPostEffectBackBufferTexturePc;
 
-    typedef struct SCENE_TEXTURE_PACKET_B0_PC {
-        i32 kind;                 // 0x00
-        i32 texture_id;           // 0x04
-        i32 extra_texture_ids[3]; // 0x08
-    } SCENE_TEXTURE_PACKET_B0_PC; // size 0x14
+    typedef struct SCENE_TEXTURE_PACKET_B0_PC { // size 0x14
+        i32 kind;                               // 0x00
+        i32 texture_id;                         // 0x04
+        i32 extra_texture_ids[3];               // 0x08
+    } SCENE_TEXTURE_PACKET_B0_PC;
 
-    typedef struct SCENE_TEXTURE_PACKET_AE_PC {
-        i32 texture_ids[3];       // 0x0
-    } SCENE_TEXTURE_PACKET_AE_PC; // size 0xc
+    typedef struct SCENE_TEXTURE_PACKET_AE_PC { // size 0xc
+        i32 texture_ids[3];                     // 0x0
+    } SCENE_TEXTURE_PACKET_AE_PC;
 
     STATIC_ASSERT(offsetof(NUDISPLAYLISTITEM, type) == 0);
     STATIC_ASSERT(offsetof(NUDISPLAYLISTITEM, next) == 4);
@@ -69,12 +69,12 @@ extern "C" {
 
     /* nuportal PC backend. */
 
-    typedef struct PORTAL_BOX_PC {
-        NUVEC first;  // 0x00
-        f32 first_w;  // 0x0c
-        NUVEC second; // 0x10
-        f32 second_w; // 0x1c
-    } PORTAL_BOX_PC;  // size 0x20
+    typedef struct PORTAL_BOX_PC { // size 0x20
+        NUVEC first;               // 0x00
+        f32 first_w;               // 0x0c
+        NUVEC second;              // 0x10
+        f32 second_w;              // 0x1c
+    } PORTAL_BOX_PC;
 
     STATIC_ASSERT(offsetof(NUGSCN, num_instances) == 0x1c);
     STATIC_ASSERT(offsetof(NUGSCN, sphere_count) == 0xf0);
@@ -89,17 +89,17 @@ extern "C" {
 
     /* numtl PS half. */
 
-    typedef struct FRAME_MTL_ANIM_DESC_PC {
-        u8 u_mode;            // 0x00
-        u8 v_mode;            // 0x01
-        u8 reserved02[2];     // 0x02
-        f32 u_amplitude;      // 0x04
-        f32 v_amplitude;      // 0x08
-        f32 u_frequency;      // 0x0c
-        f32 v_frequency;      // 0x10
-    } FRAME_MTL_ANIM_DESC_PC; // size 0x14
+    typedef struct FRAME_MTL_ANIM_DESC_PC { // size 0x14
+        u8 u_mode;                          // 0x00
+        u8 v_mode;                          // 0x01
+        u8 reserved02[2];                   // 0x02
+        f32 u_amplitude;                    // 0x04
+        f32 v_amplitude;                    // 0x08
+        f32 u_frequency;                    // 0x0c
+        f32 v_frequency;                    // 0x10
+    } FRAME_MTL_ANIM_DESC_PC;
 
-    typedef struct FRAME_MTL_ANIM_PC {
+    typedef struct FRAME_MTL_ANIM_PC {       // size 0x248
         u8 reserved00[0x7b];                 // 0x000
         u8 disable_u_animation;              // 0x07b
         u8 disable_v_animation;              // 0x07c
@@ -108,19 +108,19 @@ extern "C" {
         f32 texture_animation_offsets[4][2]; // 0x1d0
         u8 reserved1f0[8];                   // 0x1f0
         FRAME_MTL_ANIM_DESC_PC animation[4]; // 0x1f8
-    } FRAME_MTL_ANIM_PC;                     // size 0x248
+    } FRAME_MTL_ANIM_PC;
 
-    typedef struct FRAME_MTL_ANIM_SET_PC {
+    typedef struct FRAME_MTL_ANIM_SET_PC {  // size 0x10
         NUDISPLAY_LIST_PC *scene;           // 0x0
         i32 material_count;                 // 0x4
         i32 *material_indices;              // 0x8
         struct FRAME_MTL_ANIM_SET_PC *next; // 0xc
-    } FRAME_MTL_ANIM_SET_PC;                // size 0x10
+    } FRAME_MTL_ANIM_SET_PC;
 
-    typedef struct FRAME_MTL_SCENE_PC {
+    typedef struct FRAME_MTL_SCENE_PC {       // size 0x15c
         u8 reserved00[0x158];                 // 0x000
         i32 shader_texture_animation_enabled; // 0x158
-    } FRAME_MTL_SCENE_PC;                     // size 0x15c
+    } FRAME_MTL_SCENE_PC;
 
 #pragma data_seg(".data$NuMainRendererControlPc")
     i32 NuMainRendererControlPc = 1;
@@ -153,10 +153,10 @@ extern "C" {
     void PCDeviceSetWorldIdentityPc(void);
     void NuRndrArenaBuildShadowVolumesPc(i32 unused0, i32 unused1);
 
-    typedef struct CAMERA_RENDER_SPECULAR_READER_PC {
-        u8 unknown_0000[0xdc];          // 0x00
-        NUVEC direction;                // 0xdc
-    } CAMERA_RENDER_SPECULAR_READER_PC; // size 0xe8
+    typedef struct CAMERA_RENDER_SPECULAR_READER_PC { // size 0xe8
+        u8 unknown_0000[0xdc];                        // 0x00
+        NUVEC direction;                              // 0xdc
+    } CAMERA_RENDER_SPECULAR_READER_PC;
 
     static NUMTX RndrStateTransformPc = {0};
     static NUMTX RndrStateScaledTransformPc = {0};
@@ -168,14 +168,14 @@ extern "C" {
 
     typedef struct PC_TRANSFORM_MATERIAL_VIEW PC_TRANSFORM_MATERIAL_VIEW;
 
-    struct PC_TRANSFORM_MATERIAL_VIEW {
+    struct PC_TRANSFORM_MATERIAL_VIEW {   // size 0x9c
         u8 unknown_00[0x30];              // 0x00
         PC_TRANSFORM_MATERIAL_VIEW *next; // 0x30
         u8 unknown_34[0x2c];              // 0x34
         f32 transform_scale;              // 0x60
         u8 unknown_64[0x35];              // 0x64
         u8 transform_kind;                // 0x99
-    }; // size 0x9c
+    };
 
     static VARIPTR rndrstream_b = {0};
     static VARIPTR rndrstream_a = {0};
@@ -184,16 +184,16 @@ extern "C" {
     static u32 rndrstream_used = 0;
     static u32 rndrstream_max_used = 0;
 
-    typedef struct SCENE_FILE_TEXTURE_HEADER_PC {
-        i32 width;                  // 0x00
-        u32 height;                 // 0x04
-        u32 unknown_08;             // 0x08
-        u32 unknown_0c;             // 0x0c
-        u32 flags;                  // 0x10
-        u32 size;                   // 0x14
-    } SCENE_FILE_TEXTURE_HEADER_PC; // size 0x18
+    typedef struct SCENE_FILE_TEXTURE_HEADER_PC { // size 0x18
+        i32 width;                                // 0x00
+        u32 height;                               // 0x04
+        u32 unknown_08;                           // 0x08
+        u32 unknown_0c;                           // 0x0c
+        u32 flags;                                // 0x10
+        u32 size;                                 // 0x14
+    } SCENE_FILE_TEXTURE_HEADER_PC;
 
-    typedef struct SCENE_FIXUP_GEOMETRY_PC {
+    typedef struct SCENE_FIXUP_GEOMETRY_PC {          // size 0x34
         u8 unknown_00[8];                             // 0x00
         u16 vertex_stride;                            // 0x08
         u8 unknown_0a[0xe];                           // 0x0a
@@ -204,14 +204,14 @@ extern "C" {
         u32 vertex_format;                            // 0x28
         u8 unknown_2c[4];                             // 0x2c
         PC_BUFFER_RESOURCE_PC *dynamic_vertex_buffer; // 0x30
-    } SCENE_FIXUP_GEOMETRY_PC;                        // size 0x34
+    } SCENE_FIXUP_GEOMETRY_PC;
 
-    typedef struct SCENE_FIXUP_VERTEX_STREAM_PC {
-        u8 unknown_00[8];                     // 0x0
-        PC_BUFFER_RESOURCE_PC *vertex_buffer; // 0x8
-    } SCENE_FIXUP_VERTEX_STREAM_PC;           // size 0xc
+    typedef struct SCENE_FIXUP_VERTEX_STREAM_PC { // size 0xc
+        u8 unknown_00[8];                         // 0x0
+        PC_BUFFER_RESOURCE_PC *vertex_buffer;     // 0x8
+    } SCENE_FIXUP_VERTEX_STREAM_PC;
 
-    typedef struct SCENE_FIXUP_NATIVE_PC {
+    typedef struct SCENE_FIXUP_NATIVE_PC {             // size 0x20
         u16 vertex_buffer_count;                       // 0x00
         u8 unknown_02[2];                              // 0x02
         PC_BUFFER_RESOURCE_PC **vertex_buffers;        // 0x04
@@ -222,31 +222,31 @@ extern "C" {
         u32 geometry_count;                            // 0x14
         SCENE_FIXUP_VERTEX_STREAM_PC **vertex_streams; // 0x18
         u32 vertex_stream_count;                       // 0x1c
-    } SCENE_FIXUP_NATIVE_PC;                           // size 0x20
+    } SCENE_FIXUP_NATIVE_PC;
 
     STATIC_ASSERT(offsetof(NUDISPLAY_LIST_PC, native_word) == 0x7c);
 
-    struct __declspec(align(16)) PC_GEOMETRY_BASIS_VECTOR_PC {
-        f32 x; // 0x0
-        f32 y; // 0x4
-        f32 z; // 0x8
-        f32 w; // 0xc
-    }; // size 0x10
+    struct __declspec(align(16)) PC_GEOMETRY_BASIS_VECTOR_PC { // size 0x10
+        f32 x;                                                 // 0x0
+        f32 y;                                                 // 0x4
+        f32 z;                                                 // 0x8
+        f32 w;                                                 // 0xc
+    };
 
-    struct PC_GEOMETRY_BASIS_INPUT_RECORD_PC {
-        PC_GEOMETRY_BASIS_VECTOR_PC rows[3]; // 0x00
-        NUVEC weights;                       // 0x30
-        u8 bones[3];                         // 0x3c
-        u8 unknown_3f;                       // 0x3f
-    }; // size 0x40
+    struct PC_GEOMETRY_BASIS_INPUT_RECORD_PC { // size 0x40
+        PC_GEOMETRY_BASIS_VECTOR_PC rows[3];   // 0x00
+        NUVEC weights;                         // 0x30
+        u8 bones[3];                           // 0x3c
+        u8 unknown_3f;                         // 0x3f
+    };
 
-    struct PC_GEOMETRY_MORPH_DELTA_PC {
+    struct PC_GEOMETRY_MORPH_DELTA_PC {       // size 0xc
         u32 unknown_00;                       // 0x0
         u32 unknown_04;                       // 0x4
         PC_GEOMETRY_BASIS_VECTOR_PC *vectors; // 0x8
-    }; // size 0xc
+    };
 
-    struct PC_GEOMETRY_BASIS_SOURCE_PC {
+    struct PC_GEOMETRY_BASIS_SOURCE_PC {            // size 0x1c
         u32 unknown_00;                             // 0x00
         i32 record_count;                           // 0x04
         u32 unknown_08;                             // 0x08
@@ -254,16 +254,16 @@ extern "C" {
         u32 unknown_10;                             // 0x10
         PC_GEOMETRY_BASIS_INPUT_RECORD_PC *records; // 0x14
         PC_GEOMETRY_MORPH_DELTA_PC *morph_deltas;   // 0x18
-    }; // size 0x1c
+    };
 
-    struct PC_GEOMETRY_MORPH_WEIGHTS_PC {
-        f32 *weight_words; // 0x0
-    }; // size 0x4
+    struct PC_GEOMETRY_MORPH_WEIGHTS_PC { // size 0x4
+        f32 *weight_words;                // 0x0
+    };
 
-    struct PC_GEOMETRY_INITIALIZED_BASIS_RECORD_PC {
-        PC_GEOMETRY_BASIS_VECTOR_PC rows[3]; // 0x00
-        u8 unwritten_30[0x10];               // 0x30
-    }; // size 0x40
+    struct PC_GEOMETRY_INITIALIZED_BASIS_RECORD_PC { // size 0x40
+        PC_GEOMETRY_BASIS_VECTOR_PC rows[3];         // 0x00
+        u8 unwritten_30[0x10];                       // 0x30
+    };
 
     extern "C" i32 PcGeometryMatrixCapacityPc;
 
@@ -308,20 +308,20 @@ extern "C" {
         (out).y = y;                                                                                                   \
     }
 
-    typedef struct PC_GEOMETRY_FORMAT_RECORD_PC {
-        u8 unknown_00[0x18];        // 0x00
-        i32 strip_segments;         // 0x18
-        u8 unknown_1c[0x5c];        // 0x1c
-    } PC_GEOMETRY_FORMAT_RECORD_PC; // size 0x78
+    typedef struct PC_GEOMETRY_FORMAT_RECORD_PC { // size 0x78
+        u8 unknown_00[0x18];                      // 0x00
+        i32 strip_segments;                       // 0x18
+        u8 unknown_1c[0x5c];                      // 0x1c
+    } PC_GEOMETRY_FORMAT_RECORD_PC;
 
-    typedef struct PC_GEOMETRY_FORMAT_PC {
+    typedef struct PC_GEOMETRY_FORMAT_PC {     // size 0x10
         u32 unknown_00;                        // 0x0
         u32 record_count;                      // 0x4
         u32 unknown_08;                        // 0x8
         PC_GEOMETRY_FORMAT_RECORD_PC *records; // 0xc
-    } PC_GEOMETRY_FORMAT_PC;                   // size 0x10
+    } PC_GEOMETRY_FORMAT_PC;
 
-    typedef struct PC_DYNAMIC_GEOMETRY_PC {
+    typedef struct PC_DYNAMIC_GEOMETRY_PC {         // size 0x20
         PC_GEOMETRY_FORMAT_PC *format;              // 0x00
         i32 element_count;                          // 0x04
         u32 unknown_08;                             // 0x08
@@ -330,36 +330,36 @@ extern "C" {
         PC_BUFFER_RESOURCE_PC *vertex_buffer;       // 0x14
         PC_BUFFER_RESOURCE_PC *strip_vertex_buffer; // 0x18
         PC_BUFFER_RESOURCE_PC *strip_index_buffer;  // 0x1c
-    } PC_DYNAMIC_GEOMETRY_PC;                       // size 0x20
+    } PC_DYNAMIC_GEOMETRY_PC;
 
-    typedef struct PC_GEOMETRY_STRIP_VERTEX_PC {
-        f32 fraction;              // 0x0
-        f32 side;                  // 0x4
-        u8 unknown_08[8];          // 0x8
-    } PC_GEOMETRY_STRIP_VERTEX_PC; // size 0x10
+    typedef struct PC_GEOMETRY_STRIP_VERTEX_PC { // size 0x10
+        f32 fraction;                            // 0x0
+        f32 side;                                // 0x4
+        u8 unknown_08[8];                        // 0x8
+    } PC_GEOMETRY_STRIP_VERTEX_PC;
 
-    typedef struct PC_GEOMETRY_CORNER_PC {
-        NUVEC position;      // 0x0
-        f32 w;               // 0xc
-    } PC_GEOMETRY_CORNER_PC; // size 0x10
+    typedef struct PC_GEOMETRY_CORNER_PC { // size 0x10
+        NUVEC position;                    // 0x0
+        f32 w;                             // 0xc
+    } PC_GEOMETRY_CORNER_PC;
 
-    typedef struct PC_GEOMETRY_OUTPUT_PC {
-        PC_GEOMETRY_CORNER_PC corners[4]; // 0x00
-        NUVEC basis_axis;                 // 0x40
-        f32 distance_squared;             // 0x4c
-    } PC_GEOMETRY_OUTPUT_PC;              // size 0x50
+    typedef struct PC_GEOMETRY_OUTPUT_PC { // size 0x50
+        PC_GEOMETRY_CORNER_PC corners[4];  // 0x00
+        NUVEC basis_axis;                  // 0x40
+        f32 distance_squared;              // 0x4c
+    } PC_GEOMETRY_OUTPUT_PC;
 
-    typedef struct PC_GEOMETRY_SORT_ITEM_PC {
-        u32 output_index;       // 0x0
-        f32 distance_squared;   // 0x4
-        u32 unknown_08;         // 0x8
-    } PC_GEOMETRY_SORT_ITEM_PC; // size 0xc
+    typedef struct PC_GEOMETRY_SORT_ITEM_PC { // size 0xc
+        u32 output_index;                     // 0x0
+        f32 distance_squared;                 // 0x4
+        u32 unknown_08;                       // 0x8
+    } PC_GEOMETRY_SORT_ITEM_PC;
 
     STATIC_ASSERT(offsetof(PC_GEOMETRY_OUTPUT_PC, corners) + 2 * sizeof(PC_GEOMETRY_CORNER_PC) == 0x20);
     extern "C" NUVEC4 PcGeometryDistanceOriginPc;
     extern "C" i32 dat_00806b94;
 
-    typedef struct PC_GEOMETRY_INPUT_PC {
+    typedef struct PC_GEOMETRY_INPUT_PC { // size 0x70
         PC_GEOMETRY_CORNER_PC corners[4]; // 0x00
         NUVEC basis_weights;              // 0x40
         u32 unknown_4c;                   // 0x4c
@@ -367,40 +367,40 @@ extern "C" {
         i32 skin_indices[3];              // 0x60
         u8 skin_weights[3];               // 0x6c
         u8 unknown_6f;                    // 0x6f
-    } PC_GEOMETRY_INPUT_PC;               // size 0x70
+    } PC_GEOMETRY_INPUT_PC;
 
-    typedef struct PC_GEOMETRY_GROUP_PC {
-        u32 element_count;   // 0x0
-        u32 first_element;   // 0x4
-        u32 transform_index; // 0x8
-    } PC_GEOMETRY_GROUP_PC;  // size 0xc
+    typedef struct PC_GEOMETRY_GROUP_PC { // size 0xc
+        u32 element_count;                // 0x0
+        u32 first_element;                // 0x4
+        u32 transform_index;              // 0x8
+    } PC_GEOMETRY_GROUP_PC;
 
-    typedef struct PC_GEOMETRY_MESH_PC {
-        u8 unknown_00[8];               // 0x00
-        u32 group_count;                // 0x08
-        PC_GEOMETRY_INPUT_PC *elements; // 0x0c
-        PC_GEOMETRY_GROUP_PC *groups;   // 0x10
-    } PC_GEOMETRY_MESH_PC;              // size 0x14
+    typedef struct PC_GEOMETRY_MESH_PC { // size 0x14
+        u8 unknown_00[8];                // 0x00
+        u32 group_count;                 // 0x08
+        PC_GEOMETRY_INPUT_PC *elements;  // 0x0c
+        PC_GEOMETRY_GROUP_PC *groups;    // 0x10
+    } PC_GEOMETRY_MESH_PC;
 
-    typedef struct PC_GEOMETRY_SKIN_PC {
-        u8 unknown_00[8];       // 0x00
-        u32 matrix_group_count; // 0x08
-        u32 unknown_0c;         // 0x0c
-        NUMTX *matrices;        // 0x10
-    } PC_GEOMETRY_SKIN_PC;      // size 0x14
+    typedef struct PC_GEOMETRY_SKIN_PC { // size 0x14
+        u8 unknown_00[8];                // 0x00
+        u32 matrix_group_count;          // 0x08
+        u32 unknown_0c;                  // 0x0c
+        NUMTX *matrices;                 // 0x10
+    } PC_GEOMETRY_SKIN_PC;
 
     typedef struct PC_GEOMETRY_BASIS_MATRIX_PC {
         PC_GEOMETRY_BASIS_VECTOR_PC rows[4];
     } PC_GEOMETRY_BASIS_MATRIX_PC;
 
-    typedef struct PC_GEOMETRY_BASIS_PC {
+    typedef struct PC_GEOMETRY_BASIS_PC {        // size 0xc0
         PC_GEOMETRY_BASIS_MATRIX_PC matrices[3]; // 0x00
-    } PC_GEOMETRY_BASIS_PC;                      // size 0xc0
+    } PC_GEOMETRY_BASIS_PC;
 
     extern "C" PC_GEOMETRY_BASIS_PC *PcGeometryTransformsPc;
     extern "C" PC_GEOMETRY_OUTPUT_PC *PcGeometryOutputPc;
 
-    typedef struct PC_MATERIAL_UPDATE_VIEW {
+    typedef struct PC_MATERIAL_UPDATE_VIEW {        // size 0x2c4
         u8 unknown_00[0x3c];                        // 0x000
         void *display;                              // 0x03c
         u8 unknown_40[4];                           // 0x040
@@ -413,18 +413,18 @@ extern "C" {
         PC_MATERIAL_SHADER_DESC_VIEW shader;        // 0x0b4
         PC_TEXTURE_RESOURCE_PC *vertex_declaration; // 0x2bc
         u16 version;                                // 0x2c0
-    } PC_MATERIAL_UPDATE_VIEW;                      // size 0x2c4
+    } PC_MATERIAL_UPDATE_VIEW;
 
-    typedef struct PC_SHADER_HANDLE_VIEW {
-        i16 handle;          // 0x0
-    } PC_SHADER_HANDLE_VIEW; // size 0x2
+    typedef struct PC_SHADER_HANDLE_VIEW { // size 0x2
+        i16 handle;                        // 0x0
+    } PC_SHADER_HANDLE_VIEW;
 
-    struct PC_MATERIAL_DEVICE_CAPS_VIEW {
-        u8 unknown_000[0x654]; // 0x000
-        u8 shader_caps;        // 0x654
+    struct PC_MATERIAL_DEVICE_CAPS_VIEW { // size 0x655
+        u8 unknown_000[0x654];            // 0x000
+        u8 shader_caps;                   // 0x654
         i32 ShaderVariant16();
         i32 ShaderVariant1();
-    }; // size 0x655
+    };
 
     typedef struct PC_MATERIAL_CREATE_SHADER PC_MATERIAL_CREATE_SHADER;
 
@@ -688,7 +688,7 @@ extern "C" {
         NuDisplayMaterialDistortTexturePc = NuTexCreateNative(texture);
     }
 
-    typedef struct PC_SPECIAL_GEOMETRY {
+    typedef struct PC_SPECIAL_GEOMETRY {      // size 0x38
         u8 unknown_0000[8];                   // 0x00
         u16 vertex_stride;                    // 0x08
         u8 joint_indices[8];                  // 0x0a
@@ -701,131 +701,131 @@ extern "C" {
         NUVEC **morph_deltas;                 // 0x2c
         u32 unknown_0030;                     // 0x30
         void *dynamic_vertices;               // 0x34
-    } PC_SPECIAL_GEOMETRY;                    // size 0x38
+    } PC_SPECIAL_GEOMETRY;
 
-    typedef struct PC_SPECIAL_DEFORMER_WEIGHTS {
-        u32 unknown_0000[2];       // 0x0
-        f32 weights[1];            // 0x8
-    } PC_SPECIAL_DEFORMER_WEIGHTS; // size 0xc
+    typedef struct PC_SPECIAL_DEFORMER_WEIGHTS { // size 0xc
+        u32 unknown_0000[2];                     // 0x0
+        f32 weights[1];                          // 0x8
+    } PC_SPECIAL_DEFORMER_WEIGHTS;
 
     typedef struct PC_SPECIAL_FACEON {
         i32 kind;
     } PC_SPECIAL_FACEON;
 
-    typedef struct PC_SPECIAL_TRANSFORM_PACKET {
-        NUMTX matrix;              // 0x00
-    } PC_SPECIAL_TRANSFORM_PACKET; // size 0x40
+    typedef struct PC_SPECIAL_TRANSFORM_PACKET { // size 0x40
+        NUMTX matrix;                            // 0x00
+    } PC_SPECIAL_TRANSFORM_PACKET;
 
-    typedef struct display_primitive_packet_pc_s {
-        u32 type;                  // 0x00
-        u8 unknown_0004[0x14];     // 0x04
-        u32 vertex_count;          // 0x18
-        u8 unknown_001c[0x1c];     // 0x1c
-    } DISPLAY_PRIMITIVE_PACKET_PC; // size 0x38
+    typedef struct display_primitive_packet_pc_s { // size 0x38
+        u32 type;                                  // 0x00
+        u8 unknown_0004[0x14];                     // 0x04
+        u32 vertex_count;                          // 0x18
+        u8 unknown_001c[0x1c];                     // 0x1c
+    } DISPLAY_PRIMITIVE_PACKET_PC;
 
-    typedef struct PC_DL_SKIN_PALETTE_READER {
-        i32 count;               // 0x0
-        f32 elements[1];         // 0x4
-    } PC_DL_SKIN_PALETTE_READER; // size 0x8
+    typedef struct PC_DL_SKIN_PALETTE_READER { // size 0x8
+        i32 count;                             // 0x0
+        f32 elements[1];                       // 0x4
+    } PC_DL_SKIN_PALETTE_READER;
 
-    typedef struct PC_DL_LIGHTS_READER {
-        NUVEC4 ambient;      // 0x00
-        NUVEC4 intensity[3]; // 0x10
-        NUVEC4 direction[3]; // 0x40
-        NUMTX shine_matrix;  // 0x70
-    } PC_DL_LIGHTS_READER;   // size 0xb0
+    typedef struct PC_DL_LIGHTS_READER { // size 0xb0
+        NUVEC4 ambient;                  // 0x00
+        NUVEC4 intensity[3];             // 0x10
+        NUVEC4 direction[3];             // 0x40
+        NUMTX shine_matrix;              // 0x70
+    } PC_DL_LIGHTS_READER;
 
-    typedef union PC_DL_NORMALIZED_DIRECTION {
-        NUVEC4 four; // 0x0
+    typedef union PC_DL_NORMALIZED_DIRECTION { // size 0x10
+        NUVEC4 four;
 
-        struct {         // 0x0
+        struct {         // size 0x10
             NUVEC three; // 0x0
             f32 w;       // 0xc
         } normalized;
-    } PC_DL_NORMALIZED_DIRECTION; // size 0x10
+    } PC_DL_NORMALIZED_DIRECTION;
 
-    typedef struct PC_DL_FOG_READER {
-        i32 enabled;       // 0x00
-        u32 colour;        // 0x04
-        f32 near_distance; // 0x08
-        f32 far_distance;  // 0x0c
-        f32 density;       // 0x10
-    } PC_DL_FOG_READER;    // size 0x14
+    typedef struct PC_DL_FOG_READER { // size 0x14
+        i32 enabled;                  // 0x00
+        u32 colour;                   // 0x04
+        f32 near_distance;            // 0x08
+        f32 far_distance;             // 0x0c
+        f32 density;                  // 0x10
+    } PC_DL_FOG_READER;
 
-    typedef struct PC_DL_LEGACY_LIGHTMAP_READER {
-        i32 texture_id[3];          // 0x00
-        f32 x_offset;               // 0x0c
-        f32 y_offset;               // 0x10
-    } PC_DL_LEGACY_LIGHTMAP_READER; // size 0x14
+    typedef struct PC_DL_LEGACY_LIGHTMAP_READER { // size 0x14
+        i32 texture_id[3];                        // 0x00
+        f32 x_offset;                             // 0x0c
+        f32 y_offset;                             // 0x10
+    } PC_DL_LEGACY_LIGHTMAP_READER;
 
-    typedef struct PC_DL_CAMERA_READER {
-        i32 id;            // 0x00
-        NUMTX view;        // 0x04
-        NUMTX projection;  // 0x44
-        f32 viewport[4];   // 0x84
-    } PC_DL_CAMERA_READER; // size 0x94
+    typedef struct PC_DL_CAMERA_READER { // size 0x94
+        i32 id;                          // 0x00
+        NUMTX view;                      // 0x04
+        NUMTX projection;                // 0x44
+        f32 viewport[4];                 // 0x84
+    } PC_DL_CAMERA_READER;
 
-    typedef struct PC_DL_MATERIAL_READER {
-        u8 unknown_0000[0x40]; // 0x00
-        u32 reflection_flags;  // 0x40
-    } PC_DL_MATERIAL_READER;   // size 0x44
+    typedef struct PC_DL_MATERIAL_READER { // size 0x44
+        u8 unknown_0000[0x40];             // 0x00
+        u32 reflection_flags;              // 0x40
+    } PC_DL_MATERIAL_READER;
 
-    typedef struct PC_DL_CAMERA_PROJECTION_READER {
-        NUMTX projection;             // 0x00
-        f32 viewport[4];              // 0x40
-    } PC_DL_CAMERA_PROJECTION_READER; // size 0x50
+    typedef struct PC_DL_CAMERA_PROJECTION_READER { // size 0x50
+        NUMTX projection;                           // 0x00
+        f32 viewport[4];                            // 0x40
+    } PC_DL_CAMERA_PROJECTION_READER;
 
-    typedef struct PC_DL_VERTEX_GROUPS_READER {
-        i32 count;                // 0x00
-        u32 flags;                // 0x04
-        NUVEC4 values[1];         // 0x08
-    } PC_DL_VERTEX_GROUPS_READER; // size 0x18
+    typedef struct PC_DL_VERTEX_GROUPS_READER { // size 0x18
+        i32 count;                              // 0x00
+        u32 flags;                              // 0x04
+        NUVEC4 values[1];                       // 0x08
+    } PC_DL_VERTEX_GROUPS_READER;
 
-    typedef struct PC_DL_VERTEX_OFFSETS_READER {
-        i32 count;                 // 0x00
-        NUVEC4 values[1];          // 0x04
-    } PC_DL_VERTEX_OFFSETS_READER; // size 0x14
+    typedef struct PC_DL_VERTEX_OFFSETS_READER { // size 0x14
+        i32 count;                               // 0x00
+        NUVEC4 values[1];                        // 0x04
+    } PC_DL_VERTEX_OFFSETS_READER;
 
     extern PC_DISPLAY_ITEM_HANDLER_PC PCDisplayShadowItemHandlersPc[49];
 
     /* PC-only table slot 0xad. */
-    typedef struct PC_DL_AD_COLOURS {
-        NUVEC colour[5]; // 0x00
-    } PC_DL_AD_COLOURS;  // size 0x3c
+    typedef struct PC_DL_AD_COLOURS { // size 0x3c
+        NUVEC colour[5];              // 0x00
+    } PC_DL_AD_COLOURS;
 
-    typedef struct PC_DL_AD_RECORD {
-        u8 unknown_0000[0x14];    // 0x00
-        u8 enabled;               // 0x14
-        u8 unknown_0015[3];       // 0x15
-        i32 segment_count;        // 0x18
-        f32 pixel_parameter;      // 0x1c
-        f32 vertex_parameter_x;   // 0x20
-        f32 vertex_parameter_y;   // 0x24
-        f32 vertex_parameter_z;   // 0x28
-        f32 pixel_parameter_x;    // 0x2c
-        f32 pixel_parameter_y;    // 0x30
-        f32 pixel_parameter_z;    // 0x34
-        f32 pixel_scalar;         // 0x38
-        PC_DL_AD_COLOURS colours; // 0x3c
-    } PC_DL_AD_RECORD;            // size 0x78
+    typedef struct PC_DL_AD_RECORD { // size 0x78
+        u8 unknown_0000[0x14];       // 0x00
+        u8 enabled;                  // 0x14
+        u8 unknown_0015[3];          // 0x15
+        i32 segment_count;           // 0x18
+        f32 pixel_parameter;         // 0x1c
+        f32 vertex_parameter_x;      // 0x20
+        f32 vertex_parameter_y;      // 0x24
+        f32 vertex_parameter_z;      // 0x28
+        f32 pixel_parameter_x;       // 0x2c
+        f32 pixel_parameter_y;       // 0x30
+        f32 pixel_parameter_z;       // 0x34
+        f32 pixel_scalar;            // 0x38
+        PC_DL_AD_COLOURS colours;    // 0x3c
+    } PC_DL_AD_RECORD;
 
-    typedef struct PC_DL_AD_RECORD_LIST {
-        u32 unknown_0000;         // 0x0
-        i32 count;                // 0x4
-        u32 unknown_0008;         // 0x8
-        PC_DL_AD_RECORD *records; // 0xc
-    } PC_DL_AD_RECORD_LIST;       // size 0x10
+    typedef struct PC_DL_AD_RECORD_LIST { // size 0x10
+        u32 unknown_0000;                 // 0x0
+        i32 count;                        // 0x4
+        u32 unknown_0008;                 // 0x8
+        PC_DL_AD_RECORD *records;         // 0xc
+    } PC_DL_AD_RECORD_LIST;
 
-    typedef struct PC_DL_AD_PACKET {
+    typedef struct PC_DL_AD_PACKET {            // size 0x20
         PC_DL_AD_RECORD_LIST *list;             // 0x00
         u32 instances;                          // 0x04
         u8 unknown_0008[0xc];                   // 0x08
         PC_BUFFER_RESOURCE_PC *instance_buffer; // 0x14
         PC_BUFFER_RESOURCE_PC *vertex_buffer;   // 0x18
         PC_BUFFER_RESOURCE_PC *index_buffer;    // 0x1c
-    } PC_DL_AD_PACKET;                          // size 0x20
+    } PC_DL_AD_PACKET;
 
-    typedef struct PC_DL_GEOMETRY_READER {
+    typedef struct PC_DL_GEOMETRY_READER {     // size 0x38
         u32 kind;                              // 0x00
         u32 primitive_count;                   // 0x04
         u16 vertex_stride;                     // 0x08
@@ -839,35 +839,35 @@ extern "C" {
         void *morph_deltas;                    // 0x2c
         PC_BUFFER_RESOURCE_PC *dynamic_buffer; // 0x30
         void *dynamic_vertices;                // 0x34
-    } PC_DL_GEOMETRY_READER;                   // size 0x38
+    } PC_DL_GEOMETRY_READER;
 
-    typedef struct PC_DL_GEOMETRY_MATERIAL_READER {
-        u8 unknown_0000[0x26c];       // 0x000
-        u32 lightmap_flags;           // 0x26c
-    } PC_DL_GEOMETRY_MATERIAL_READER; // size 0x270
+    typedef struct PC_DL_GEOMETRY_MATERIAL_READER { // size 0x270
+        u8 unknown_0000[0x26c];                     // 0x000
+        u32 lightmap_flags;                         // 0x26c
+    } PC_DL_GEOMETRY_MATERIAL_READER;
 
-    typedef struct PC_DL_FACEON_DRAW_READER {
+    typedef struct PC_DL_FACEON_DRAW_READER { // size 0x10
         u32 unknown_0000;                     // 0x0
         u32 primitive_count;                  // 0x4
         PC_BUFFER_RESOURCE_PC *vertex_buffer; // 0x8
         u32 first_vertex;                     // 0xc
-    } PC_DL_FACEON_DRAW_READER;               // size 0x10
+    } PC_DL_FACEON_DRAW_READER;
 
-    typedef struct PC_DL_DEBRIS_DRAW_READER {
-        u8 buffer_index;        // 0x0
-        u8 unknown_0001[3];     // 0x1
-        u32 use_system_buffer;  // 0x4
-        u32 first_vertex;       // 0x8
-        u32 vertex_count;       // 0xc
-    } PC_DL_DEBRIS_DRAW_READER; // size 0x10
+    typedef struct PC_DL_DEBRIS_DRAW_READER { // size 0x10
+        u8 buffer_index;                      // 0x0
+        u8 unknown_0001[3];                   // 0x1
+        u32 use_system_buffer;                // 0x4
+        u32 first_vertex;                     // 0x8
+        u32 vertex_count;                     // 0xc
+    } PC_DL_DEBRIS_DRAW_READER;
 
-    typedef struct PC_DL_LIGHTMAP_UPDATE_READER {
-        i32 mode;                   // 0x00
-        i32 texture_id;             // 0x04
-        i32 texture_ids[3];         // 0x08
-        f32 x_offset;               // 0x14
-        f32 y_offset;               // 0x18
-    } PC_DL_LIGHTMAP_UPDATE_READER; // size 0x1c
+    typedef struct PC_DL_LIGHTMAP_UPDATE_READER { // size 0x1c
+        i32 mode;                                 // 0x00
+        i32 texture_id;                           // 0x04
+        i32 texture_ids[3];                       // 0x08
+        f32 x_offset;                             // 0x14
+        f32 y_offset;                             // 0x18
+    } PC_DL_LIGHTMAP_UPDATE_READER;
 
     /* The integer slot holds the 32-bit packet identity. */
     extern i32 PCGraphicsBoundShader;
@@ -906,10 +906,10 @@ extern "C" {
     STATIC_ASSERT(offsetof(GRAPHICS_RENDER_TEXTURE_PC, flags) == 0x20);
     STATIC_ASSERT(offsetof(GRAPHICS_RENDER_TEXTURE_PC, field_24) == 0x24);
 
-    typedef struct PC_TEXTURE_LEVEL_COUNT_METHODS_PC {
+    typedef struct PC_TEXTURE_LEVEL_COUNT_METHODS_PC {             // size 0x38
         void *reserved00[13];                                      // 0x00
         u32(__stdcall *get_level_count)(PC_TEXTURE_RESOURCE_PC *); // 0x34
-    } PC_TEXTURE_LEVEL_COUNT_METHODS_PC;                           // size 0x38
+    } PC_TEXTURE_LEVEL_COUNT_METHODS_PC;
 
     STATIC_ASSERT(offsetof(PC_DEVICE_BACKEND_PC, caps) == 8);
     STATIC_ASSERT(sizeof(GRAPHICS_RENDER_TEXTURE_PC) == 0x30);
@@ -945,16 +945,16 @@ extern "C" {
     }
 
     /* The material fields the atlas font set-up writes. */
-    typedef struct nuqfnt_atlas_material_pc_s {
-        u8 unknown_000[0x40];   // 0x00
-        u32 attributes;         // 0x40
-        u32 attributes_high;    // 0x44
-        u8 unknown_048[0xc];    // 0x48
-        NUVEC diffuse;          // 0x54
-        u8 unknown_060[0x10];   // 0x60
-        f32 opacity;            // 0x70
-        i16 texture_id;         // 0x74
-    } NUQFNT_ATLAS_MATERIAL_PC; // size 0x78
+    typedef struct nuqfnt_atlas_material_pc_s { // size 0x78
+        u8 unknown_000[0x40];                   // 0x00
+        u32 attributes;                         // 0x40
+        u32 attributes_high;                    // 0x44
+        u8 unknown_048[0xc];                    // 0x48
+        NUVEC diffuse;                          // 0x54
+        u8 unknown_060[0x10];                   // 0x60
+        f32 opacity;                            // 0x70
+        i16 texture_id;                         // 0x74
+    } NUQFNT_ATLAS_MATERIAL_PC;
 
 #define NUQFNT_ATLAS_MAP_SIZE 808
 #define NUQFNT_ATLAS_GLYPH_SIZE 750
@@ -1062,91 +1062,91 @@ extern "C" {
     typedef struct screengrab_tile_params_pc_s SCREENGRAB_TILE_PARAMS_PC;
     PC_BUFFER_RESOURCE_PC *NuWaterVertexBufferPc = 0;
 
-    typedef struct nuprimvertex_pc_s {
-        f32 x;         // 0x00
-        f32 y;         // 0x04
-        f32 z;         // 0x08
-        u32 colour;    // 0x0c
-        f32 u;         // 0x10
-        f32 v;         // 0x14
-    } NUPRIMVERTEX_PC; // size 0x18
+    typedef struct nuprimvertex_pc_s { // size 0x18
+        f32 x;                         // 0x00
+        f32 y;                         // 0x04
+        f32 z;                         // 0x08
+        u32 colour;                    // 0x0c
+        f32 u;                         // 0x10
+        f32 v;                         // 0x14
+    } NUPRIMVERTEX_PC;
 
-    typedef struct nuprim_packet_pc_s {
-        u32 primitive_type;    // 0x00
-        u8 unknown_0004[0x14]; // 0x04
-        i32 vertex_count;      // 0x18
-        u8 unknown_001c[0x1c]; // 0x1c
-    } NUPRIM_PACKET_PC;        // size 0x38
+    typedef struct nuprim_packet_pc_s { // size 0x38
+        u32 primitive_type;             // 0x00
+        u8 unknown_0004[0x14];          // 0x04
+        i32 vertex_count;               // 0x18
+        u8 unknown_001c[0x1c];          // 0x1c
+    } NUPRIM_PACKET_PC;
 
-    typedef struct nuprim_command_pc_s {
-        u8 type;             // 0x0
-        u8 id;               // 0x1
-        u16 unknown_0002;    // 0x2
-        void *target;        // 0x4
-        u32 unknown_0008[2]; // 0x8
-    } NUPRIM_COMMAND_PC;     // size 0x10
+    typedef struct nuprim_command_pc_s { // size 0x10
+        u8 type;                         // 0x0
+        u8 id;                           // 0x1
+        u16 unknown_0002;                // 0x2
+        void *target;                    // 0x4
+        u32 unknown_0008[2];             // 0x8
+    } NUPRIM_COMMAND_PC;
 
-    typedef struct nuprim_material_state_pc_s {
-        u32 unknown_0000[2];    // 0x00
-        NUMTL *material;        // 0x08
-        u32 unknown_000c;       // 0x0c
-        u32 unknown_0010;       // 0x10
-        i32 texture_id;         // 0x14
-    } NUPRIM_MATERIAL_STATE_PC; // size 0x18
+    typedef struct nuprim_material_state_pc_s { // size 0x18
+        u32 unknown_0000[2];                    // 0x00
+        NUMTL *material;                        // 0x08
+        u32 unknown_000c;                       // 0x0c
+        u32 unknown_0010;                       // 0x10
+        i32 texture_id;                         // 0x14
+    } NUPRIM_MATERIAL_STATE_PC;
 
-    typedef struct nuprim_transform_packet_pc_s {
-        u8 unknown_0000[0x40];    // 0x00
-    } NUPRIM_TRANSFORM_PACKET_PC; // size 0x40
+    typedef struct nuprim_transform_packet_pc_s { // size 0x40
+        u8 unknown_0000[0x40];                    // 0x00
+    } NUPRIM_TRANSFORM_PACKET_PC;
 
-    typedef struct nuprim_render_state_ids_pc_s {
-        u8 unknown_0000[0x1e];    // 0x00
-        i16 konst_id;             // 0x1e
-        i32 global_id;            // 0x20
-        i16 lights_id;            // 0x24
-        u16 unknown_0026[3];      // 0x26
-        i16 camera_id;            // 0x2c
-        i16 fog_id;               // 0x2e
-        i16 vertex_groups_id;     // 0x30
-        i16 reflection_id;        // 0x32
-    } NUPRIM_RENDER_STATE_IDS_PC; // size 0x34
+    typedef struct nuprim_render_state_ids_pc_s { // size 0x34
+        u8 unknown_0000[0x1e];                    // 0x00
+        i16 konst_id;                             // 0x1e
+        i32 global_id;                            // 0x20
+        i16 lights_id;                            // 0x24
+        u16 unknown_0026[3];                      // 0x26
+        i16 camera_id;                            // 0x2c
+        i16 fog_id;                               // 0x2e
+        i16 vertex_groups_id;                     // 0x30
+        i16 reflection_id;                        // 0x32
+    } NUPRIM_RENDER_STATE_IDS_PC;
 
-    typedef struct nuprim_camera_packet_pc_s {
-        i32 id;                // 0x00
-        NUMTX view;            // 0x04
-        NUMTX projection;      // 0x44
-        f32 viewport[4];       // 0x84
-    } NUPRIM_CAMERA_PACKET_PC; // size 0x94
+    typedef struct nuprim_camera_packet_pc_s { // size 0x94
+        i32 id;                                // 0x00
+        NUMTX view;                            // 0x04
+        NUMTX projection;                      // 0x44
+        f32 viewport[4];                       // 0x84
+    } NUPRIM_CAMERA_PACKET_PC;
 
-    typedef struct nuprim_vec4_pc_s {
-        f32 x;        // 0x0
-        f32 y;        // 0x4
-        f32 z;        // 0x8
-        f32 w;        // 0xc
-    } NUPRIM_VEC4_PC; // size 0x10
+    typedef struct nuprim_vec4_pc_s { // size 0x10
+        f32 x;                        // 0x0
+        f32 y;                        // 0x4
+        f32 z;                        // 0x8
+        f32 w;                        // 0xc
+    } NUPRIM_VEC4_PC;
 
-    typedef struct nuprim_light_packet_pc_s {
-        NUPRIM_VEC4_PC ambient_intensity;  // 0x00
-        NUPRIM_VEC4_PC light_intensity[3]; // 0x10
-        NUPRIM_VEC4_PC light_direction[3]; // 0x40
-        NUMTX specular_mtx;                // 0x70
-        NUVEC specular_colour;             // 0xb0
-    } NUPRIM_LIGHT_PACKET_PC;              // size 0xbc
+    typedef struct nuprim_light_packet_pc_s { // size 0xbc
+        NUPRIM_VEC4_PC ambient_intensity;     // 0x00
+        NUPRIM_VEC4_PC light_intensity[3];    // 0x10
+        NUPRIM_VEC4_PC light_direction[3];    // 0x40
+        NUMTX specular_mtx;                   // 0x70
+        NUVEC specular_colour;                // 0xb0
+    } NUPRIM_LIGHT_PACKET_PC;
 
 #undef LINK_MTL_STATE
 
     /* Selects one of the two adjacent material-use buffers by bit 15. */
-    typedef struct NUPRIM_SCENE_USAGE_PC {
-        u8 unknown_0000[0x58]; // 0x00
-        u8 *material_used[2];  // 0x58
-    } NUPRIM_SCENE_USAGE_PC;   // size 0x60
+    typedef struct NUPRIM_SCENE_USAGE_PC { // size 0x60
+        u8 unknown_0000[0x58];             // 0x00
+        u8 *material_used[2];              // 0x58
+    } NUPRIM_SCENE_USAGE_PC;
 
     STATIC_ASSERT(offsetof(NUDISPLAYSCENE_PC, material_used_back) ==
                   offsetof(NUPRIM_SCENE_USAGE_PC, material_used) + sizeof(u8 *));
 
-    typedef struct AMBIENT_SPECULAR_RENDER_VIEW_PC {
-        u8 unknown_00[0x8c];           // 0x00
-        f32 global_specular;           // 0x8c
-    } AMBIENT_SPECULAR_RENDER_VIEW_PC; // size 0x90
+    typedef struct AMBIENT_SPECULAR_RENDER_VIEW_PC { // size 0x90
+        u8 unknown_00[0x8c];                         // 0x00
+        f32 global_specular;                         // 0x8c
+    } AMBIENT_SPECULAR_RENDER_VIEW_PC;
 
     // @@FUNCTIONS
 
@@ -1372,10 +1372,10 @@ extern "C" {
     }
 
     /* Sampler fields packed into GRAPHICS_RENDER_TEXTURE_PC::flags. */
-    typedef union PC_SAMPLER_FLAGS_PC {
-        u32 value; // 0x0
+    typedef union PC_SAMPLER_FLAGS_PC { // size 0x4
+        u32 value;
 
-        struct {                // 0x0
+        struct {                // size 0x4
             u32 unknown_0 : 8;  // 0x0:0
             u32 address_u : 3;  // 0x0:8
             u32 address_v : 3;  // 0x0:11
@@ -1385,7 +1385,7 @@ extern "C" {
             u32 mip_filter : 3; // 0x0:23
             u32 unknown_26 : 6; // 0x0:26
         } bits;
-    } PC_SAMPLER_FLAGS_PC; // size 0x4
+    } PC_SAMPLER_FLAGS_PC;
 
     void PCGraphicsEffectTextureSetFilterFields(GRAPHICS_RENDER_TEXTURE_PC *texture, i32 first, i32 second, i32 third) {
         texture->min_filter = fun_005f7900(first);
@@ -1564,14 +1564,14 @@ extern "C" {
     typedef struct PC_EFFECT_PC PC_EFFECT_PC;
 
     /* ID3DXEffect method table up to ID3DXBaseEffect::SetTexture (slot 52). */
-    typedef struct PC_EFFECT_METHODS_PC {
+    typedef struct PC_EFFECT_METHODS_PC {                                                        // size 0xd4
         void *unknown_00[52];                                                                    // 0x00
         HRESULT(__stdcall *set_texture)(PC_EFFECT_PC *, const char *, PC_TEXTURE_RESOURCE_PC *); // 0xd0
-    } PC_EFFECT_METHODS_PC;                                                                      // size 0xd4
+    } PC_EFFECT_METHODS_PC;
 
-    struct PC_EFFECT_PC {
+    struct PC_EFFECT_PC {                    // size 0x4
         const PC_EFFECT_METHODS_PC *methods; // 0x0
-    }; // size 0x4
+    };
 
     void fun_005f8580(GRAPHICS_RENDER_TEXTURE_PC *texture, PC_EFFECT_PC *effect, const char *parameter) {
         effect->methods->set_texture(effect, parameter, texture->resource);
@@ -7010,24 +7010,25 @@ typedef struct PC_HG_SHADOW_SHAPE48 PC_HG_SHADOW_SHAPE48;
 typedef struct PC_HG_SHADOW_SHAPE64 PC_HG_SHADOW_SHAPE64;
 typedef struct PC_HG_SHADOW_GROUP PC_HG_SHADOW_GROUP;
 
-struct PC_HG_SHADOW_SHAPE48 {
-    union {            // 0x00
-        NUVEC axes[4]; // 0x00
+struct PC_HG_SHADOW_SHAPE48 { // size 0x30
 
-        struct {          // 0x00
+    union { // size 0x30
+        NUVEC axes[4];
+
+        struct {          // size 0x30
             f32 center_x; // 0x00
             u32 flags;    // 0x04
             u8 rest[40];  // 0x08
         } filter;
-    };
-}; // size 0x30
+    }; // 0x00
+};
 
-struct PC_HG_SHADOW_SHAPE64 {
+struct PC_HG_SHADOW_SHAPE64 {      // size 0x40
     PC_HG_SHADOW_SHAPE48 position; // 0x00
     u8 unknown_30[16];             // 0x30
-}; // size 0x40
+};
 
-struct PC_HG_SHADOW_GROUP {
+struct PC_HG_SHADOW_GROUP {          // size 0x10
     PC_HG_SHADOW_SHAPE48 *ellipses;  // 0x0
     PC_HG_SHADOW_SHAPE64 *cylinders; // 0x4
     void *third_shape;               // 0x8
@@ -7035,7 +7036,7 @@ struct PC_HG_SHADOW_GROUP {
     u8 cylinder_count;               // 0xd
     u8 third_count;                  // 0xe
     u8 joint_index;                  // 0xf
-}; // size 0x10
+};
 
 extern "C" {
     NUHGOBJ_POI_PC *NuHGobjGetPOI(NUHGOBJ_EVAL_PC *object, u8 index) {
@@ -7147,15 +7148,16 @@ extern "C" void NuDisplayListShadowTransformTransposePc(void *data) {
     matrix->m32 = saved32;
 }
 
-typedef struct PC_SHADOW_MATERIAL_READER_PC {
-    union {           // 0x000
-        NUMTL common; // 0x000
+typedef struct PC_SHADOW_MATERIAL_READER_PC { // size 0x2c0
 
-        struct {                  // 0x000
+    union { // size 0x9c
+        NUMTL common;
+
+        struct {                  // size 0x44
             u8 unknown_000[0x40]; // 0x000
             u32 attributes_word;  // 0x040
         };
-    };
+    }; // 0x000
 
     u8 unknown_09c[0x154];                      // 0x09c
     u32 vertex_format;                          // 0x1f0
@@ -7163,7 +7165,7 @@ typedef struct PC_SHADOW_MATERIAL_READER_PC {
     i16 shadow_shader_id;                       // 0x1f6
     u8 unknown_1f8[0xc4];                       // 0x1f8
     PC_TEXTURE_RESOURCE_PC *vertex_declaration; // 0x2bc
-} PC_SHADOW_MATERIAL_READER_PC;                 // size 0x2c0
+} PC_SHADOW_MATERIAL_READER_PC;
 
 extern "C" void NuDisplayListShadowMaterialPc(void *data) {
     PC_SHADOW_MATERIAL_READER_PC *material = (PC_SHADOW_MATERIAL_READER_PC *)data;
@@ -7677,18 +7679,18 @@ extern "C" {
     void fun_005fe630(void) {
     }
 
-    typedef struct RENDERER_CLEAR_RECORD_PC {
-        NUVEC position;         // 0x00
-        f32 start_radius;       // 0x0c
-        f32 end_radius;         // 0x10
-        f32 radius;             // 0x14
-        u32 colour;             // 0x18
-        u32 current_colour;     // 0x1c
-        i16 active;             // 0x20
-        i16 duration;           // 0x22
-        u16 unknown_24;         // 0x24
-        u8 unknown_26[2];       // 0x26
-    } RENDERER_CLEAR_RECORD_PC; // size 0x28
+    typedef struct RENDERER_CLEAR_RECORD_PC { // size 0x28
+        NUVEC position;                       // 0x00
+        f32 start_radius;                     // 0x0c
+        f32 end_radius;                       // 0x10
+        f32 radius;                           // 0x14
+        u32 colour;                           // 0x18
+        u32 current_colour;                   // 0x1c
+        i16 active;                           // 0x20
+        i16 duration;                         // 0x22
+        u16 unknown_24;                       // 0x24
+        u8 unknown_26[2];                     // 0x26
+    } RENDERER_CLEAR_RECORD_PC;
 
     static RENDERER_CLEAR_RECORD_PC RendererClearRecordsPc[32] = {0};
 
@@ -7931,21 +7933,21 @@ extern "C" {
         NuRndrQuadBufferInitPc();
     }
 
-    typedef struct RENDERER_SHADOW_DEFAULTS_PC {
-        f32 state0;                // 0x0
-        f32 state1;                // 0x4
-        f32 state2;                // 0x8
-        u32 packed_colour;         // 0xc
-    } RENDERER_SHADOW_DEFAULTS_PC; // size 0x10
+    typedef struct RENDERER_SHADOW_DEFAULTS_PC { // size 0x10
+        f32 state0;                              // 0x0
+        f32 state1;                              // 0x4
+        f32 state2;                              // 0x8
+        u32 packed_colour;                       // 0xc
+    } RENDERER_SHADOW_DEFAULTS_PC;
 
-    typedef struct RENDERER_SCREEN_VERTEX_PC {
-        f32 x;                   // 0x00
-        f32 y;                   // 0x04
-        f32 z;                   // 0x08
-        f32 w;                   // 0x0c
-        u32 attribute_bits;      // 0x10
-        u8 unknown_14[8];        // 0x14
-    } RENDERER_SCREEN_VERTEX_PC; // size 0x1c
+    typedef struct RENDERER_SCREEN_VERTEX_PC { // size 0x1c
+        f32 x;                                 // 0x00
+        f32 y;                                 // 0x04
+        f32 z;                                 // 0x08
+        f32 w;                                 // 0x0c
+        u32 attribute_bits;                    // 0x10
+        u8 unknown_14[8];                      // 0x14
+    } RENDERER_SCREEN_VERTEX_PC;
 
 #define QUAD_VERTEX ((RENDERER_SCREEN_VERTEX_PC *)data)
 
@@ -8128,17 +8130,17 @@ extern "C" {
         NuRndrInitGeneric();
     }
 
-    typedef struct PC_STARTUP_MATERIAL_READER_PC {
-        u8 unknown_00[0x40];         // 0x00
-        u32 render_flags;            // 0x40
-        u32 secondary_flags;         // 0x44
-        u8 unknown_48[0xc];          // 0x48
-        NUVEC diffuse;               // 0x54
-        u8 unknown_60[0x10];         // 0x60
-        f32 opacity;                 // 0x70
-        i16 texture_id;              // 0x74
-        i16 sort_priority;           // 0x76
-    } PC_STARTUP_MATERIAL_READER_PC; // size 0x78
+    typedef struct PC_STARTUP_MATERIAL_READER_PC { // size 0x78
+        u8 unknown_00[0x40];                       // 0x00
+        u32 render_flags;                          // 0x40
+        u32 secondary_flags;                       // 0x44
+        u8 unknown_48[0xc];                        // 0x48
+        NUVEC diffuse;                             // 0x54
+        u8 unknown_60[0x10];                       // 0x60
+        f32 opacity;                               // 0x70
+        i16 texture_id;                            // 0x74
+        i16 sort_priority;                         // 0x76
+    } PC_STARTUP_MATERIAL_READER_PC;
 
 #define STARTUP_MATERIAL(material) ((PC_STARTUP_MATERIAL_READER_PC *)(material))
 

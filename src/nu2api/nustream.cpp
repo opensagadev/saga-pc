@@ -7,17 +7,17 @@
 #undef _ov_header_fseek_wrap
 #include <stdio.h>
 
-struct PC_OGG_CACHE_RECORD_PC {
-    char path[0x104]; // 0x000
-    u8 *data;         // 0x104
-    i32 bytes;        // 0x108
-    u32 last_used;    // 0x10c
-    i32 references;   // 0x110
-}; // size 0x114
+struct PC_OGG_CACHE_RECORD_PC { // size 0x114
+    char path[0x104];           // 0x000
+    u8 *data;                   // 0x104
+    i32 bytes;                  // 0x108
+    u32 last_used;              // 0x10c
+    i32 references;             // 0x110
+};
 
 #pragma pack(push, 4)
 
-class OggReader : public WavReader {
+class OggReader : public WavReader { // size 0x338
   public:
     OggReader(void);
     virtual ~OggReader(void);
@@ -41,7 +41,7 @@ class OggReader : public WavReader {
     i32 position;                   // 0x31c
     WAVEFORMATEX compressed_format; // 0x320
     u8 unknown_332[6];              // 0x332
-}; // size 0x338
+};
 
 #pragma pack(pop)
 STATIC_ASSERT(sizeof(OggVorbis_File) == 0x2d0);

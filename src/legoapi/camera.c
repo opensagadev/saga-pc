@@ -1,14 +1,14 @@
 #include "saga.h"
 
-typedef struct CAMERA_JUDDER_FIELDS_PC {
-    u8 unknown_000[0x11c]; // 0x000
-    NUVEC position;        // 0x11c
-} CAMERA_JUDDER_FIELDS_PC; // size 0x128
+typedef struct CAMERA_JUDDER_FIELDS_PC { // size 0x128
+    u8 unknown_000[0x11c];               // 0x000
+    NUVEC position;                      // 0x11c
+} CAMERA_JUDDER_FIELDS_PC;
 
-typedef struct LEVEL_JUDDER_FIELDS_PC {
-    u8 unknown_000[0xcd]; // 0x00
-    u8 maximum_distance;  // 0xcd
-} LEVEL_JUDDER_FIELDS_PC; // size 0xce
+typedef struct LEVEL_JUDDER_FIELDS_PC { // size 0xce
+    u8 unknown_000[0xcd];               // 0x00
+    u8 maximum_distance;                // 0xcd
+} LEVEL_JUDDER_FIELDS_PC;
 
 /* The SDK's inline NuFabs (nufloat.h): a masked copy of the float bits. */
 static f32 LegoapiCameraFabsPc(f32 f) {
@@ -312,12 +312,12 @@ void ViewCamDraw(void) {
 
 STATIC_ASSERT(offsetof(GAMEOBJECT, collision_position) == 0x80);
 
-typedef struct KEEP_SCREEN_CAMERA_FIELDS_PC {
-    u8 unknown_000[0x110];      // 0x000
-    NUVEC direction;            // 0x110
-    u8 unknown_11c[0xdc];       // 0x11c
-    u16 pitch;                  // 0x1f8
-} KEEP_SCREEN_CAMERA_FIELDS_PC; // size 0x1fc
+typedef struct KEEP_SCREEN_CAMERA_FIELDS_PC { // size 0x1fc
+    u8 unknown_000[0x110];                    // 0x000
+    NUVEC direction;                          // 0x110
+    u8 unknown_11c[0xdc];                     // 0x11c
+    u16 pitch;                                // 0x1f8
+} KEEP_SCREEN_CAMERA_FIELDS_PC;
 
 void GameCam_Reset(GAMECAMERA *camera) {
     if (camera == NULL) {
@@ -346,37 +346,37 @@ void GameCam_Reset(GAMECAMERA *camera) {
     Minicam_InitSystem();
 }
 
-typedef struct CAMERA_CONTEXT_PATH_PC {
-    u8 unknown_00[0x40];      // 0x00
-    struct nugspline_s *path; // 0x40
-    u8 unknown_44[8];         // 0x44
-    u8 flags;                 // 0x4c
-} CAMERA_CONTEXT_PATH_PC;     // size 0x50
+typedef struct CAMERA_CONTEXT_PATH_PC { // size 0x50
+    u8 unknown_00[0x40];                // 0x00
+    struct nugspline_s *path;           // 0x40
+    u8 unknown_44[8];                   // 0x44
+    u8 flags;                           // 0x4c
+} CAMERA_CONTEXT_PATH_PC;
 
-typedef struct CAMERA_CONTEXT_FOCUS_PC {
-    u8 unknown_00[0x28];   // 0x00
-    NUVEC focus;           // 0x28
-} CAMERA_CONTEXT_FOCUS_PC; // size 0x34
+typedef struct CAMERA_CONTEXT_FOCUS_PC { // size 0x34
+    u8 unknown_00[0x28];                 // 0x00
+    NUVEC focus;                         // 0x28
+} CAMERA_CONTEXT_FOCUS_PC;
 
-typedef struct CAMERA_CONTEXT_BUILDIT_PC {
-    u8 unknown_00[0x34];     // 0x00
-    NUVEC position;          // 0x34
-} CAMERA_CONTEXT_BUILDIT_PC; // size 0x40
+typedef struct CAMERA_CONTEXT_BUILDIT_PC { // size 0x40
+    u8 unknown_00[0x34];                   // 0x00
+    NUVEC position;                        // 0x34
+} CAMERA_CONTEXT_BUILDIT_PC;
 
-typedef struct CAMERA_GIZFORCE_TARGET_PC {
-    u8 unknown_00[0x1c];     // 0x00
-    NUVEC position;          // 0x1c
-} CAMERA_GIZFORCE_TARGET_PC; // size 0x28
+typedef struct CAMERA_GIZFORCE_TARGET_PC { // size 0x28
+    u8 unknown_00[0x1c];                   // 0x00
+    NUVEC position;                        // 0x1c
+} CAMERA_GIZFORCE_TARGET_PC;
 
-typedef struct CAMERA_CABLE_PC {
-    GAMEOBJECT *source; // 0x0
-    GAMEOBJECT *target; // 0x4
-} CAMERA_CABLE_PC;      // size 0x8
+typedef struct CAMERA_CABLE_PC { // size 0x8
+    GAMEOBJECT *source;          // 0x0
+    GAMEOBJECT *target;          // 0x4
+} CAMERA_CABLE_PC;
 
-typedef struct CAMERA_GRABBER_PC {
-    u8 unknown_000[0x48c]; // 0x000
-    NUVEC grab_position;   // 0x48c
-} CAMERA_GRABBER_PC;       // size 0x498
+typedef struct CAMERA_GRABBER_PC { // size 0x498
+    u8 unknown_000[0x48c];         // 0x000
+    NUVEC grab_position;           // 0x48c
+} CAMERA_GRABBER_PC;
 
 STATIC_ASSERT(offsetof(GAMEOBJECT, dead) == 0x28b);
 STATIC_ASSERT(offsetof(GAMEOBJECT, previous_position) == 0x1c0);
@@ -428,3 +428,54 @@ void SetCameraMatrices(void) {
 }
 
 #undef GAME_CAMERA_ABSOLUTE_PC
+
+static i32 NarrowSockPositionAllowed(SOCKSYS_PC *system, SOCKPOSITION_PC *position, i32 level_index) {
+    NARROWSOCKEXCEPTION_PC *exception;
+    NARROWSOCKEXCEPTION_PC *list;
+    if (system == NULL || position->sock_index == -1) {
+        return 0;
+    }
+    if ((system->socks[position->sock_index].flags & 0x800) == 0) {
+        return 0;
+    }
+    list = NarrowSockException;
+    if (list != NULL) {
+        for (exception = list; exception->level_name != NULL; ++exception) {
+            if (exception->level_index == -1 || exception->level_index != level_index ||
+                position->sock_index != exception->sock_index) {
+                continue;
+            }
+            if (position->distance >= exception->start_distance && position->distance <= exception->end_distance) {
+                return 0;
+            }
+        }
+    }
+    return 1;
+}
+
+i32 ObjInNarrowSock(GAMEOBJECT *object, SOCKSYS_PC *system, i32 level_index) {
+    GAMEOBJECT *other = NULL;
+    if ((WORLD->current_level->flags & 0x200000) == 0 && VehicleArea == 0) {
+        return 0;
+    }
+    if (disable_narrow_socks != 0) {
+        return 0;
+    }
+    if (object->field_280 != 0xff) {
+        if ((object->flags_1fc_word & 0x80) != 0) {
+            if (object == Player[0]) {
+                other = Player[1];
+            } else if (object == Player[1]) {
+                other = Player[0];
+            }
+            if (other != NULL && (other->flags_1fc_word & 0x80) != 0 &&
+                !NarrowSockPositionAllowed(system, &other->sock_position, level_index)) {
+                return 0;
+            }
+        }
+        if (NarrowSockPositionAllowed(system, &object->sock_position, level_index)) {
+            return 1;
+        }
+    }
+    return 0;
+}

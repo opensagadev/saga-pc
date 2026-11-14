@@ -1,16 +1,16 @@
 #include "saga.h"
 
-typedef struct terrain_player_platform_record_pc_s {
-    u8 unknown_0[0xe];               // 0x00
-    i16 platform_id;                 // 0x0e
-    GAMEOBJECT *object;              // 0x10
-} TERRAIN_PLAYER_PLATFORM_RECORD_PC; // size 0x14
+typedef struct terrain_player_platform_record_pc_s { // size 0x14
+    u8 unknown_0[0xe];                               // 0x00
+    i16 platform_id;                                 // 0x0e
+    GAMEOBJECT *object;                              // 0x10
+} TERRAIN_PLAYER_PLATFORM_RECORD_PC;
 
-typedef struct terrain_player_platform_sys_pc_s {
+typedef struct terrain_player_platform_sys_pc_s { // size 0x1c
     u8 unknown_0[4];                              // 0x00
     i32 count;                                    // 0x04
     TERRAIN_PLAYER_PLATFORM_RECORD_PC entries[1]; // 0x08
-} TERRAIN_PLAYER_PLATFORM_SYS_PC;                 // size 0x1c
+} TERRAIN_PLAYER_PLATFORM_SYS_PC;
 
 GAMEOBJECT *CharPlatform_FindObjFromPlatID(void *system, i32 id) {
     TERRAIN_PLAYER_PLATFORM_SYS_PC *platforms = system;
@@ -26,35 +26,35 @@ GAMEOBJECT *CharPlatform_FindObjFromPlatID(void *system, i32 id) {
     return NULL;
 }
 
-typedef struct EQUIVALENT_GROUP_PC {
-    i16 object_count;           // 0x0
-    i16 byte_size;              // 0x2
-    NUSPECIALHANDLE objects[1]; // 0x4
-} EQUIVALENT_GROUP_PC;          // size 0x10
+typedef struct EQUIVALENT_GROUP_PC { // size 0x10
+    i16 object_count;                // 0x0
+    i16 byte_size;                   // 0x2
+    NUSPECIALHANDLE objects[1];      // 0x4
+} EQUIVALENT_GROUP_PC;
 
-typedef struct EQUIVALENT_WORLD_VIEW_PC {
+typedef struct EQUIVALENT_WORLD_VIEW_PC {   // size 0x46b8
     u8 unknown_0[0x46b0];                   // 0x0000
     EQUIVALENT_GROUP_PC *equivalent_groups; // 0x46b0
     i32 equivalent_group_count;             // 0x46b4
-} EQUIVALENT_WORLD_VIEW_PC;                 // size 0x46b8
+} EQUIVALENT_WORLD_VIEW_PC;
 
-typedef struct CHAR_PLATFORM_PC {
-    NUSPECIALHANDLE special; // 0x00
-    i16 object_id;           // 0x0c
-    i16 platform_id;         // 0x0e
-    GAMEOBJECT *object;      // 0x10
-} CHAR_PLATFORM_PC;          // size 0x14
+typedef struct CHAR_PLATFORM_PC { // size 0x14
+    NUSPECIALHANDLE special;      // 0x00
+    i16 object_id;                // 0x0c
+    i16 platform_id;              // 0x0e
+    GAMEOBJECT *object;           // 0x10
+} CHAR_PLATFORM_PC;
 
-typedef struct CHAR_PLATFORM_SYSTEM_PC {
-    NUGSCN *scene;                 // 0x00
-    i32 platform_count;            // 0x04
-    CHAR_PLATFORM_PC platforms[1]; // 0x08
-} CHAR_PLATFORM_SYSTEM_PC;         // size 0x1c
+typedef struct CHAR_PLATFORM_SYSTEM_PC { // size 0x1c
+    NUGSCN *scene;                       // 0x00
+    i32 platform_count;                  // 0x04
+    CHAR_PLATFORM_PC platforms[1];       // 0x08
+} CHAR_PLATFORM_SYSTEM_PC;
 
-typedef struct CHAR_PLATFORM_WORLD_PC {
+typedef struct CHAR_PLATFORM_WORLD_PC {         // size 0x2ae0
     u8 unknown_0[0x2adc];                       // 0x0000
     CHAR_PLATFORM_SYSTEM_PC *char_platform_sys; // 0x2adc
-} CHAR_PLATFORM_WORLD_PC;                       // size 0x2ae0
+} CHAR_PLATFORM_WORLD_PC;
 
 void CharPlatforms_Configure(WORLDINFO *world, char *config) {
     CHAR_PLATFORM_WORLD_PC *view = (CHAR_PLATFORM_WORLD_PC *)world;

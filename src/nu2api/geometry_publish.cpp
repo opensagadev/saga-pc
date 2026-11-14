@@ -1,26 +1,26 @@
 #include "saga.h"
 
-struct PC_GEOMETRY_PUBLISH_FORMAT_RECORD_PC {
-    u32 unknown_00;      // 0x00
-    i32 element_count;   // 0x04
-    u8 unknown_08[0x70]; // 0x08
-}; // size 0x78
+struct PC_GEOMETRY_PUBLISH_FORMAT_RECORD_PC { // size 0x78
+    u32 unknown_00;                           // 0x00
+    i32 element_count;                        // 0x04
+    u8 unknown_08[0x70];                      // 0x08
+};
 
-struct PC_GEOMETRY_PUBLISH_SKIN_REF_PC {
-    u32 unknown_00;      // 0x00
-    i32 matrix_count;    // 0x04
-    u8 unknown_08[0x14]; // 0x08
-}; // size 0x1c
+struct PC_GEOMETRY_PUBLISH_SKIN_REF_PC { // size 0x1c
+    u32 unknown_00;                      // 0x00
+    i32 matrix_count;                    // 0x04
+    u8 unknown_08[0x14];                 // 0x08
+};
 
-struct PC_GEOMETRY_PUBLISH_FORMAT_PC {
+struct PC_GEOMETRY_PUBLISH_FORMAT_PC {             // size 0x14
     u32 kind;                                      // 0x00
     u32 record_count;                              // 0x04
     u32 skin_ref_count;                            // 0x08
     PC_GEOMETRY_PUBLISH_FORMAT_RECORD_PC *records; // 0x0c
     PC_GEOMETRY_PUBLISH_SKIN_REF_PC *skin_refs;    // 0x10
-}; // size 0x14
+};
 
-struct PC_GEOMETRY_PUBLISH_RECORD_PC {
+struct PC_GEOMETRY_PUBLISH_RECORD_PC {          // size 0x28
     PC_GEOMETRY_PUBLISH_FORMAT_PC *format;      // 0x00
     i32 element_count;                          // 0x04
     u32 unknown_08;                             // 0x08
@@ -31,13 +31,34 @@ struct PC_GEOMETRY_PUBLISH_RECORD_PC {
     PC_BUFFER_RESOURCE_PC *strip_index_buffer;  // 0x1c
     u32 frame_stamp;                            // 0x20
     u32 unknown_24;                             // 0x24
-}; // size 0x28
+};
 
-struct PC_GEOMETRY_PUBLISH_SORT_ITEM_PC {
-    u32 output_index;     // 0x0
-    f32 distance_squared; // 0x4
-    u32 unknown_08;       // 0x8
-}; // size 0xc
+/* The engine's C++ vector and matrix wrappers (the editor registers its types as "NuVec" and
+ * "NuMtx"); this unit keeps the out-of-line copies of their members. */
+struct NuMtx : NUMTX {
+    NuMtx();
+    NuMtx fun_005c6a00();
+    NuMtx fun_005c6a20(NuMtx &other);
+};
+
+struct NuVec : NUVEC {
+    NuVec();
+    NuVec(f32 value);
+    NuVec(f32 x, f32 y, f32 z);
+    NuVec(const NuVec &other);
+    NuVec(const NUVEC &other);
+    NuVec &operator=(const NuVec &other);
+    NuVec fun_005c68e0(NuMtx &matrix);
+    NuVec operator/(const NuVec &other) const;
+    NuVec operator-() const;
+    f32 fun_005c69c0() const;
+};
+
+struct PC_GEOMETRY_PUBLISH_SORT_ITEM_PC { // size 0xc
+    u32 output_index;                     // 0x0
+    f32 distance_squared;                 // 0x4
+    u32 unknown_08;                       // 0x8
+};
 
 extern "C" i32 PcGeometryBackendAvailablePc(void) {
     return PCDeviceHardwareVertexProcessingPC >= 4;
@@ -168,6 +189,44 @@ extern "C" VARIPTR *fun_005c6690(void) {
 extern "C" void fun_005c6820(void) {
 }
 
+NuVec::NuVec() {
+}
+
+NuVec::NuVec(f32 value) {
+    x = y = z = value;
+}
+
+NuVec::NuVec(f32 x, f32 y, f32 z) {
+    this->x = x;
+    this->y = y;
+    this->z = z;
+}
+
+NuVec::NuVec(const NuVec &other) : NUVEC(other) {
+}
+
+NuVec::NuVec(const NUVEC &other) : NUVEC(other) {
+}
+
+NuVec &NuVec::operator=(const NuVec &other) {
+    NUVEC::operator=(other);
+    return *this;
+}
+
+NuVec NuVec::fun_005c68e0(NuMtx &matrix) {
+    NuVec result;
+    NuVecMtxTransformH(&result, this, &matrix);
+    return result;
+}
+
+NuVec NuVec::operator/(const NuVec &other) const {
+    return NuVec(x / other.x, y / other.y, z / other.z);
+}
+
+NuVec NuVec::operator-() const {
+    return NuVec(-x, -y, -z);
+}
+
 extern "C" NUVEC *fun_005c6950(NUVEC *out, const NUVEC *a, const NUVEC *b) {
     out->x = a->y * b->z - a->z * b->y;
     out->y = a->z * b->x - a->x * b->z;
@@ -177,6 +236,25 @@ extern "C" NUVEC *fun_005c6950(NUVEC *out, const NUVEC *a, const NUVEC *b) {
 
 extern "C" f32 fun_005c6990(const NUVEC *a, const NUVEC *b) {
     return a->y * b->y + a->x * b->x + a->z * b->z;
+}
+
+f32 NuVec::fun_005c69c0() const {
+    return x * x + y * y + z * z;
+}
+
+NuMtx::NuMtx() {
+}
+
+NuMtx NuMtx::fun_005c6a00() {
+    NuMtx result;
+    NuMtxInvH(&result, this);
+    return result;
+}
+
+NuMtx NuMtx::fun_005c6a20(NuMtx &other) {
+    NuMtx result;
+    NuMtxMulH(&result, this, &other);
+    return result;
 }
 
 extern "C" f32 fun_005c6b30(const NUVEC4 *plane, const NUVEC *point) {

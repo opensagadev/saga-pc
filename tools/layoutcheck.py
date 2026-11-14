@@ -1,28 +1,40 @@
 #!/usr/bin/env python3
 """Check the layout comments of struct definitions against the MSVC x86 layout.
 
-A struct, union or class whose closing line carries a size comment is
-*converted*; its layout is then stated by one trailing comment per member line
-instead of `STATIC_ASSERT(sizeof/offsetof ...)` lines (docs/cleanup-audit.md, section 6):
+A struct, union or class whose `{` line carries a size comment is *converted*;
+its layout is then stated by trailing comments instead of
+`STATIC_ASSERT(sizeof/offsetof ...)` lines (docs/cleanup-audit.md, section 6):
 
-    typedef struct EXAMPLE_PC {
-        i32 id;             // 0x00
-        union {             // 0x04
-            f32 timer;      // 0x04
-            i32 counter;    // 0x04 note text may follow
-        };
-        u32 active : 1;     // 0x08:0
-        u32 mode : 3;       // 0x08:1
-        struct {            // 0x0c
-            i16 x, y;       // 0x0c
-        } grid[2];
-    } EXAMPLE_PC;           // size 0x14
+    typedef struct EXAMPLE_PC { // size 0x18
+        i32 id;                 // 0x00
+        union {                 // size 0x4
+            f32 timer;
+            i32 counter;        // a note, not an offset
+            struct {            // size 0x4
+                i16 lo;         // 0x04
+                i16 hi;         // 0x06
+            } halves;
+        };                      // 0x04
+        u32 active : 1;         // 0x08:0
+        u32 mode : 3;           // 0x08:1
+        struct {                // size 0x4
+            i16 x, y;           // 0x0c
+        } grid[2];              // 0x0c
+        u8 tag;                 // 0x14
+    } EXAMPLE_PC;
 
-Offsets are absolute from the start of the outermost struct, lower-case hex,
-zero-padded to the digit count of the largest offset (size - 1). A bitfield
-gives its storage unit and first bit. An anonymous or inline struct/union
-carries its offset on the line of its `{`; a line declaring several members
-carries the offset of the first. A one-line struct only needs the size.
+The size comment sits on the line of the `{` of every record: the outer one and
+each nested named or anonymous struct/union (an array of inline records states
+the element size). A member's offset sits on the line of its identifier; for a
+nested record that is its closing line (`} grid[2]; // 0x0c`, or `}; // 0x04`
+when it is anonymous). Direct members of a union carry no offset; members of a
+struct inside a union do. Offsets are absolute from the start of the outermost
+record, lower-case hex, zero-padded to the digit count of the largest offset
+(size - 1); a note may follow. A bitfield gives its storage unit and first bit.
+A line declaring several members carries the offset of the first. A one-line
+record only needs its size (a one-line nested record only its offset). The
+earlier form (size on the closing line, offsets on union members) is an error;
+`--fix` rewrites it.
 
 Layouts come from libclang with the analysis flags of `tools/check.py`
 (`--target=i686-pc-windows-msvc`, the pinned VC8 SDK headers), so packing,
@@ -35,6 +47,7 @@ are parsed in their language, headers as C and as C++, each also with
     python3 tools/layoutcheck.py --stats          # records/members covered by comments, asserts, neither
     python3 tools/layoutcheck.py --convert src/saga.h:400-1400 [--dry-run]
     python3 tools/layoutcheck.py --convert GIZFLOW_PC
+    python3 tools/layoutcheck.py --fix [FILES] [--dry-run]   # rewrite converted records to this format
 
 `--convert` takes a file, a `file:first-last` line range or a struct name. It
 writes the comments of every struct defined there that has at least one size
@@ -65,7 +78,7 @@ ANY_ASSERT = re.compile(r"\bSTATIC_ASSERT\s*\(")
 OFFSET_COMMENT = re.compile(r"^ (?P<hex>0[xX][0-9a-fA-F]+)(?::(?P<bit>\d+))?(?=$| )")
 SIZE_COMMENT = re.compile(r"^ size (?P<hex>0[xX][0-9a-fA-F]+)(?=$| )")
 # Cheap textual filter for the files that need a full check.
-HAS_COMMENTS = re.compile(r"(?:[;{]\s*// 0x[0-9a-fA-F]+|^\s*\}.*// size 0x)", re.MULTILINE)
+HAS_COMMENTS = re.compile(r"(?:[;{]\s*// (?:size )?0x[0-9a-fA-F]+|^\s*\}.*// size 0x)", re.MULTILINE)
 PATH_PART = re.compile(r"\s*\.?\s*([A-Za-z_]\w*)((?:\s*\[[^\]]*\])*)")
 
 _ci = None
@@ -141,6 +154,26 @@ def parse_offset_comment(text):
 def parse_size_comment(text):
     match = text is not None and SIZE_COMMENT.match(text)
     return match.group(0)[1:] if match else None
+
+
+def parse_layout_comment(text):
+    """The `size 0x..` or `0x..` at the start of a comment, or None."""
+    return parse_size_comment(text) or parse_offset_comment(text)
+
+
+def line_comment(lines, number):
+    if not 1 <= number <= len(lines):
+        return None
+    return split_comment(lines[number - 1])[1]
+
+
+def record_state(record, lines):
+    """'new' (size on the `{` line), 'old' (size on the closing line) or None (not converted)."""
+    if parse_size_comment(line_comment(lines, record["open"])) is not None:
+        return "new"
+    if record["close"] != record["open"] and parse_size_comment(line_comment(lines, record["close"])) is not None:
+        return "old"
+    return None
 
 
 # ---------------------------------------------------------------------------
@@ -256,8 +289,13 @@ class Analyzer:
             cursor = nested[0]
 
     def walk(self, record, start, size, lines, members, problems, prefix, nested_named):
-        """Collect expected comment lines of `record` whose start is at absolute bit `start`."""
+        """Collect expected comment lines of `record` whose start is at absolute bit `start`.
+
+        `lines` maps a line number to (expected comment text, member); text None means the line carries
+        no layout comment (direct members of a union).
+        """
         K = self.K
+        in_union = record.kind == K.UNION_DECL
         children = list(record.get_children())
         inline = []
         for child in children:
@@ -266,9 +304,24 @@ class Analyzer:
                 if decl is not None and decl.is_definition() and self.encloses(record, decl):
                     inline.append(decl)
 
-        def expect(line, offset_bits, bit, what):
+        def expect(line, text, what):
             if line not in lines:
-                lines[line] = (offset_bits // 8, bit, what)
+                lines[line] = (text, what)
+
+        def offset(bits, bit=None):
+            return None if in_union else offset_text(bits // 8, bit, size)
+
+        def nested(decl, begin, close, what, member_prefix):
+            """A nested record: size on its `{` line, its offset on its closing line."""
+            open_ = self.open_line(decl)
+            if open_ == close:
+                # One-line nested record: only its offset.
+                expect(close, offset(begin), what)
+                self.walk(decl, begin, size, {}, members, problems, member_prefix, nested_named)
+                return
+            expect(open_, size_text(decl.type.get_size()), f"{what} (size)")
+            self.walk(decl, begin, size, lines, members, problems, member_prefix, nested_named)
+            expect(close, offset(begin), what)
 
         unit = None  # (start bit, unit bytes) of the current bitfield storage unit
         for child in children:
@@ -281,8 +334,7 @@ class Analyzer:
                     if begin is None:
                         problems.append(f"line {child.extent.start.line}: anonymous member without named fields")
                         continue
-                    expect(self.open_line(child), begin, None, f"{prefix}(anonymous)")
-                    self.walk(child, begin, size, lines, members, problems, prefix, nested_named)
+                    nested(child, begin, child.extent.end.line, f"{prefix}(anonymous)", prefix)
                 else:
                     nested_named.append(child)
                 continue
@@ -303,18 +355,17 @@ class Analyzer:
                 if unit is None or unit[1] != unit_bytes or not unit[0] <= absolute or \
                         absolute + width > unit[0] + unit_bytes * 8:
                     unit = (absolute - absolute % 8, unit_bytes)
-                expect(child.extent.end.line, unit[0], absolute - unit[0], prefix + name)
+                expect(child.extent.end.line, offset(unit[0], absolute - unit[0]), prefix + name)
                 if name:
                     members.append(prefix + name)
                 continue
             unit = None
             decl = next((d for d in inline if self.same(d, self.record_of_type(child.type))), None)
             if decl is not None:
-                expect(self.open_line(decl), absolute, None, prefix + name)
                 members.append(prefix + name)
-                self.walk(decl, absolute, size, lines, members, problems, f"{prefix}{name}.", nested_named)
+                nested(decl, absolute, child.extent.end.line, prefix + name, f"{prefix}{name}.")
                 continue
-            expect(child.extent.end.line, absolute, None, prefix + name)
+            expect(child.extent.end.line, offset(absolute), prefix + name)
             if name:
                 members.append(prefix + name)
 
@@ -329,16 +380,18 @@ class Analyzer:
             if size < 0:
                 continue
             lines, members, problems, nested = {}, [], [], []
+            open_, close = self.open_line(record), record.extent.end.line
+            lines[open_] = (size_text(size), "(size)")
             self.walk(record, 0, size, lines, members, problems, "", nested)
             pending.extend(nested)
-            close = record.extent.end.line
-            lines.pop(close, None)
+            if open_ == close:
+                lines = {open_: lines[open_]}  # a one-line record only needs the size
             names = self.record_names(record)
             out.append({
                 "key": [rel_name(self.main, self.root), close],
                 "name": names[0] if names else record.type.spelling,
                 "names": names,
-                "open": self.open_line(record),
+                "open": open_,
                 "first": record.extent.start.line,
                 "close": close,
                 "size": size,
@@ -552,26 +605,29 @@ def check_file(rel, facts_list, lines):
     merged, conflicts = merge_records(facts_list)
     converted_closes = set()
     for close, record in sorted(merged.items()):
-        _, comment = split_comment(lines[close - 1]) if close <= len(lines) else ("", None)
-        size_comment = parse_size_comment(comment)
-        expected_size = size_text(record["size"])
-        if size_comment is not None:
+        state = record_state(record, lines)
+        if state == "old":
             converted_closes.add(close)
-            if size_comment != expected_size:
-                errors.append(f"{rel}:{close}: {record['name']}: `// {size_comment}`, layout is `// {expected_size}`")
+            errors.append(f"{rel}:{close}: {record['name']}: `// size` belongs on the line of `{{` "
+                          f"(line {record['open']}), not on the closing line")
+            continue
+        if state == "new":
+            converted_closes.add(close)
             for problem in record["problems"]:
                 errors.append(f"{rel}:{record['first']}: {record['name']}: {problem}")
-        for line_text, (offset, bit, what) in sorted(record["lines"].items(), key=lambda kv: int(kv[0])):
+        for line_text, (expected, what) in sorted(record["lines"].items(), key=lambda kv: int(kv[0])):
             number = int(line_text)
-            _, comment = split_comment(lines[number - 1])
-            found = parse_offset_comment(comment)
-            expected = offset_text(offset, bit, record["size"])
-            if size_comment is None:
-                if found is not None:
+            found = parse_layout_comment(line_comment(lines, number))
+            if state is None:
+                if found is not None and expected is not None and number != record["open"]:
                     errors.append(f"{rel}:{number}: {record['name']}: layout comment but no `// size` comment on "
-                                  f"line {close}")
+                                  f"line {record['open']}")
                 continue
-            if found is None:
+            if expected is None:
+                if found is not None:
+                    errors.append(f"{rel}:{number}: {record['name']}.{what}: `// {found}` on a member of a union "
+                                  "(members of a union carry no offset)")
+            elif found is None:
                 errors.append(f"{rel}:{number}: {record['name']}.{what}: missing `// {expected}`")
             elif found != expected:
                 errors.append(f"{rel}:{number}: {record['name']}.{what}: `// {found}`, layout is `// {expected}`")
@@ -601,8 +657,7 @@ def run_check(files, jobs):
         lines = (ROOT / rel).read_text(encoding="utf-8", errors="replace").splitlines()
         errors.extend(check_file(rel, analyzed[rel], lines))
         merged, _ = merge_records(analyzed[rel])
-        converted += sum(parse_size_comment(split_comment(lines[c - 1])[1]) is not None
-                         for c in merged if c <= len(lines))
+        converted += sum(record_state(record, lines) == "new" for record in merged.values())
     for error in errors:
         print(error)
     if errors:
@@ -674,14 +729,27 @@ def assert_verdicts(analyzed):
     return verdicts
 
 
-def comment_line(line, text):
-    code, comment = split_comment(line)
-    if comment is None:
-        return f"{code} // {text}"
-    existing = parse_offset_comment(comment) or parse_size_comment(comment)
+def layout_note(comment):
+    """The note of a comment without its leading layout text ('' when there is none)."""
+    existing = parse_layout_comment(comment)
     note = comment[len(existing) + 1:] if existing else comment
-    note = note.strip()
+    return note.strip()
+
+
+def comment_line(line, text, extra=""):
+    """`line` with layout comment `text` (None: no layout comment), keeping any note (plus `extra`)."""
+    code, comment = split_comment(line)
+    note = " ".join(n for n in ((layout_note(comment) if comment is not None else ""), extra) if n)
+    if text is None:
+        return f"{code} // {note}" if note else code
     return f"{code} // {text}" + (f" {note}" if note else "")
+
+
+def record_edits(record, lines, edits):
+    """Write the layout comments of one record into `edits` ({line: text})."""
+    for line_text, (text, _) in record["lines"].items():
+        number = int(line_text)
+        edits[number] = comment_line(edits.get(number, lines[number - 1]), text)
 
 
 def delete_lines(lines, doomed):
@@ -762,11 +830,7 @@ def convert(target, jobs, dry_run=False, all_records=False, scope=None, skip=())
         if reason:
             report["skipped"].append(f"{file}:{record['first']}: {record['name']}: {reason}")
             continue
-        size = record["size"]
-        edits[close] = comment_line(edits.get(close, lines[close - 1]), size_text(size))
-        for line_text, (offset, bit, _) in record["lines"].items():
-            number = int(line_text)
-            edits[number] = comment_line(edits.get(number, lines[number - 1]), offset_text(offset, bit, size))
+        record_edits(record, lines, edits)
         converted_keys.add(key)
         report["records"] += 1
         report["members"] += len(record["lines"])
@@ -823,6 +887,74 @@ def merge_ranges(ranges):
 
 
 # ---------------------------------------------------------------------------
+# Rewriting converted records
+
+
+def fix_file(rel, facts_list, lines):
+    """(new lines, line ranges to format, records rewritten, problems) for one file."""
+    merged, conflicts = merge_records(facts_list)
+    converted = {close: r for close, r in merged.items() if record_state(r, lines)}
+    problems = [f"{rel}:{r['first']}: {r['name']}: {p}" for r in converted.values() for p in r["problems"]]
+    problems += [f"{rel}:{line}: {message}" for line, message in conflicts
+                 if any(r["first"] <= line <= c for c, r in converted.items())]
+    expected, extra, owned, moved = {}, {}, set(), set()
+    for close, record in converted.items():
+        for line_text, (text, _) in record["lines"].items():
+            expected.setdefault(int(line_text), text)
+        owned.update(range(record["first"], close + 1))
+        if record_state(record, lines) == "old":
+            note = layout_note(line_comment(lines, close))
+            if note:
+                extra[record["open"]] = note
+            moved.add(close)
+    for close, record in merged.items():
+        if close not in converted and any(r["first"] <= record["first"] and close <= c
+                                          for c, r in converted.items()):
+            owned.difference_update(range(record["first"], close + 1))
+    out = list(lines)
+    changed = 0
+    for number in sorted(owned):
+        line = lines[number - 1]
+        comment = split_comment(line)[1]
+        found = parse_layout_comment(comment)
+        text = expected.get(number)
+        if found == text and number not in extra:
+            continue
+        if found is None and text is None:
+            continue
+        if number in moved and text is None:
+            out[number - 1] = split_comment(line)[0]  # the size and its note move to the `{` line
+        else:
+            out[number - 1] = comment_line(line, text, extra.get(number, ""))
+        changed += 1
+    ranges = merge_ranges([(r["first"], c) for c, r in converted.items()]) if changed else []
+    return out, ranges, len(converted), problems
+
+
+def fix(files, jobs, dry_run=False):
+    """Rewrite every converted record to the current comment format."""
+    analyzed = analyze_files(files, jobs)
+    total, problems = 0, []
+    for rel in files:
+        path = ROOT / rel
+        text = path.read_text(encoding="utf-8")
+        lines = text.splitlines()
+        out, ranges, records, found = fix_file(rel, analyzed[rel], lines)
+        problems += found
+        if out == lines:
+            continue
+        total += records
+        print(f"layoutcheck: {rel}: {records} records")
+        if not dry_run:
+            path.write_text("\n".join(out) + ("\n" if text.endswith("\n") else ""), encoding="utf-8")
+            clang_format(path, ranges)
+    for problem in problems:
+        print(f"  problem: {problem}")
+    print(f"layoutcheck: rewrote {total} records")
+    return 1 if problems else 0
+
+
+# ---------------------------------------------------------------------------
 # Statistics
 
 
@@ -834,7 +966,7 @@ def stats(jobs):
         lines = (ROOT / rel).read_text(encoding="utf-8", errors="replace").splitlines()
         merged, _ = merge_records(analyzed.get(rel, []))
         for close, record in merged.items():
-            converted = parse_size_comment(split_comment(lines[close - 1])[1]) is not None
+            converted = record_state(record, lines) is not None
             records[(rel, close)] = dict(record, converted=converted, file=rel)
     sized, offsets = set(), defaultdict(set)
     totals = defaultdict(int)
@@ -883,12 +1015,15 @@ def main(argv=None):
     parser = argparse.ArgumentParser(description=__doc__, formatter_class=argparse.RawDescriptionHelpFormatter)
     parser.add_argument("files", nargs="*", help="files to check (default: every file with layout comments)")
     parser.add_argument("--convert", metavar="TARGET", help="file, file:first-last or struct name to convert")
-    parser.add_argument("--dry-run", action="store_true", help="with --convert: report only")
+    parser.add_argument("--dry-run", action="store_true", help="with --convert or --fix: report only")
     parser.add_argument("--all-records", action="store_true", help="with --convert: also records without asserts")
     parser.add_argument("--only-here", action="store_true",
                         help="with --convert: remove asserts only in the file that defines the records")
     parser.add_argument("--skip", action="append", default=[], metavar="STRUCT",
                         help="with --convert: leave this struct and its asserts as they are (repeatable)")
+    parser.add_argument("--fix", action="store_true",
+                        help="rewrite the comments of every converted record (or of the named files) to the current "
+                             "format; with --dry-run: report only")
     parser.add_argument("--stats", action="store_true", help="coverage by comments and asserts (parses all of src/)")
     parser.add_argument("--jobs", type=int, default=min(2, multiprocessing.cpu_count()))
     args = parser.parse_args(argv)
@@ -900,6 +1035,8 @@ def main(argv=None):
     if args.stats:
         return stats(args.jobs)
     files = [Path(f).resolve().relative_to(ROOT).as_posix() for f in args.files] or candidate_files()
+    if args.fix:
+        return fix(files, args.jobs, args.dry_run)
     return run_check(files, args.jobs)
 
 

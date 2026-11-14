@@ -8,6 +8,11 @@ STATIC_ASSERT(offsetof(BaseThing, id) == 0x4);
 STATIC_ASSERT(offsetof(BaseThing, flags) == 0x8);
 STATIC_ASSERT(offsetof(BaseThing, profiling) == 0xc);
 
+/* A set flag bit switches the action off. */
+i32 BaseThing::fun_00633400(i32 action) {
+    return (flags & (1 << action)) == 0;
+}
+
 BaseThing::BaseThing() {
     id = 0;
     flags = 0;

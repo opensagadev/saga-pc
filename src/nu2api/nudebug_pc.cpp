@@ -250,61 +250,6 @@ void PC_NATIVE_DEBUG_STATE_PC::Initialize() {
     }
 }
 
-i32 PC_WINDOW_OPTIONS_PC::GetDeviceWidth() {
-    return device_width;
-}
-
-i32 PC_WINDOW_OPTIONS_PC::GetDeviceHeight() {
-    return device_height;
-}
-
-i32 PC_WINDOW_OPTIONS_PC::GetRefresh() {
-    return refresh_rate;
-}
-
-i32 PC_WINDOW_OPTIONS_PC::GetMultisample() {
-    return multisample;
-}
-
-i32 PC_WINDOW_OPTIONS_PC::GetBloomMethod() {
-    return bloommethod;
-}
-
-i32 PC_WINDOW_OPTIONS_PC::GetDesiredBloomMethod() {
-    return desiredbloommethod;
-}
-
-i32 PC_WINDOW_OPTIONS_PC::GetDesiredShadowMethod() {
-    return desiredshadowmethod;
-}
-
-u8 PC_WINDOW_OPTIONS_PC::GetSpeedBlurSupported() {
-    return speedblursupported;
-}
-
-i32 PC_DEVICE_BACKEND_PC::fun_006e18d0() {
-    return device == NULL;
-}
-
-void PC_DEVICE_BACKEND_PC::fun_006e18e0(u8 feature) {
-    requested_feature = feature;
-}
-
-void PC_DEVICE_BACKEND_PC::fun_006e18f0(u16 count) {
-    requested_target_count = count;
-}
-
-i32 PC_DEVICE_BACKEND_PC::fun_006e1900() {
-    return caps.device_type;
-}
-
-extern "C" i32 fun_006e1910(void) {
-    return PCDeviceHardwareVertexProcessingPC;
-}
-
-extern "C" void fun_006e1920(void) {
-}
-
 void PC_NATIVE_DEBUG_STATE_PC::Shutdown() {
     if (unknown_0) {
         unknown_0 = 0;

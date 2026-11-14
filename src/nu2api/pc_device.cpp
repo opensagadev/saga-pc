@@ -221,12 +221,12 @@ extern "C" void PCDeviceCreateCubeTextureFromMemory(const void *data, u32 size, 
                                               reinterpret_cast<IDirect3DCubeTexture9 **>(resource));
 }
 
-struct PC_MATERIAL_DEVICE_CAPS_VIEW {
-    u8 unknown_000[0x654]; // 0x000
-    u8 shader_caps;        // 0x654
+struct PC_MATERIAL_DEVICE_CAPS_VIEW { // size 0x655
+    u8 unknown_000[0x654];            // 0x000
+    u8 shader_caps;                   // 0x654
     i32 ShaderVariant16();
     i32 ShaderVariant1();
-}; // size 0x655
+};
 
 i32 PC_MATERIAL_DEVICE_CAPS_VIEW::ShaderVariant16() {
     i32 variant = 0;
@@ -264,14 +264,14 @@ extern "C" __declspec(noinline) HRESULT PCDeviceUnlockVertexBuffer(PC_BUFFER_RES
 
 struct PRIMITIVE_D3D_DEVICE_VIEW;
 
-struct PRIMITIVE_D3D_VTABLE_VIEW {
+struct PRIMITIVE_D3D_VTABLE_VIEW {                                                                   // size 0x168
     void *unknown_000[83];                                                                           // 0x000
     HRESULT(__stdcall *draw_primitive_up)(PRIMITIVE_D3D_DEVICE_VIEW *, i32, u32, const void *, u32); // 0x14c
     HRESULT(__stdcall *draw_indexed_primitive_up)                                                    // 0x150
     (PRIMITIVE_D3D_DEVICE_VIEW *, i32, u32, u32, u32, const void *, i32, const void *, u32);
     void *unknown_154[4];                                          // 0x154
     HRESULT(__stdcall *set_fvf)(PRIMITIVE_D3D_DEVICE_VIEW *, u32); // 0x164
-}; // size 0x168
+};
 
 struct PRIMITIVE_D3D_DEVICE_VIEW {
     PRIMITIVE_D3D_VTABLE_VIEW *methods;
@@ -347,6 +347,61 @@ extern "C" void PCDeviceCreateEffectPc(const void *data, u32 size, const D3DXMAC
 
 extern "C" void PCDeviceReleaseResourcePc(PC_TEXTURE_RESOURCE_PC *resource) {
     PCDeviceLastResult = static_cast<HRESULT>(resource->methods->release(resource));
+}
+
+i32 PC_WINDOW_OPTIONS_PC::GetDeviceWidth() {
+    return device_width;
+}
+
+i32 PC_WINDOW_OPTIONS_PC::GetDeviceHeight() {
+    return device_height;
+}
+
+i32 PC_WINDOW_OPTIONS_PC::GetRefresh() {
+    return refresh_rate;
+}
+
+i32 PC_WINDOW_OPTIONS_PC::GetMultisample() {
+    return multisample;
+}
+
+i32 PC_WINDOW_OPTIONS_PC::GetBloomMethod() {
+    return bloommethod;
+}
+
+i32 PC_WINDOW_OPTIONS_PC::GetDesiredBloomMethod() {
+    return desiredbloommethod;
+}
+
+i32 PC_WINDOW_OPTIONS_PC::GetDesiredShadowMethod() {
+    return desiredshadowmethod;
+}
+
+u8 PC_WINDOW_OPTIONS_PC::GetSpeedBlurSupported() {
+    return speedblursupported;
+}
+
+i32 PC_DEVICE_BACKEND_PC::fun_006e18d0() {
+    return device == NULL;
+}
+
+void PC_DEVICE_BACKEND_PC::fun_006e18e0(u8 feature) {
+    requested_feature = feature;
+}
+
+void PC_DEVICE_BACKEND_PC::fun_006e18f0(u16 count) {
+    requested_target_count = count;
+}
+
+i32 PC_DEVICE_BACKEND_PC::fun_006e1900() {
+    return caps.device_type;
+}
+
+extern "C" i32 fun_006e1910(void) {
+    return PCDeviceHardwareVertexProcessingPC;
+}
+
+extern "C" void fun_006e1920(void) {
 }
 
 PC_DEVICE_BACKEND_PC::PC_DEVICE_BACKEND_PC() {
@@ -518,7 +573,7 @@ PC_DEVICE_BACKEND_PC::~PC_DEVICE_BACKEND_PC() {
 
 struct GRAPHICS_DEVICE_PC;
 
-struct GRAPHICS_DEVICE_METHODS_PC {
+struct GRAPHICS_DEVICE_METHODS_PC {                                                                       // size 0x138
     void *unknown_0000[3];                                                                                // 0x000
     HRESULT(__stdcall *test_cooperative_level)(GRAPHICS_DEVICE_PC *);                                     // 0x00c
     void *get_available_texture_memory;                                                                   // 0x010
@@ -542,7 +597,7 @@ struct GRAPHICS_DEVICE_METHODS_PC {
     HRESULT(__stdcall *clear)(GRAPHICS_DEVICE_PC *, u32, const RECT *, u32, u32, f32, u32);         // 0x0ac
     void *unknown_00b0[33];                                                                         // 0x0b0
     HRESULT(__stdcall *set_software_vertex_processing)(GRAPHICS_DEVICE_PC *, BOOL);                 // 0x134
-}; // size 0x138
+};
 
 struct GRAPHICS_DEVICE_PC {
     const GRAPHICS_DEVICE_METHODS_PC *methods;
@@ -601,18 +656,18 @@ u32 PC_DEVICE_BACKEND_PC::GetMultisampleType() {
 }
 struct PC_TEXTURE_CREATE_DEVICE_PC;
 
-struct PC_TEXTURE_CREATE_METHODS_PC {
+struct PC_TEXTURE_CREATE_METHODS_PC {  // size 0x78
     void *reserved_00[23];             // 0x00
     HRESULT(__stdcall *create_texture) // 0x5c
     (PC_TEXTURE_CREATE_DEVICE_PC *, u32, u32, u32, u32, i32, i32, PC_TEXTURE_RESOURCE_PC **, HANDLE *);
     void *reserved_60[5];                    // 0x60
     HRESULT(__stdcall *create_depth_surface) // 0x74
     (PC_TEXTURE_CREATE_DEVICE_PC *, u32, u32, i32, i32, u32, BOOL, PC_TEXTURE_RESOURCE_PC **, HANDLE *);
-}; // size 0x78
+};
 
-struct PC_TEXTURE_CREATE_DEVICE_PC {
+struct PC_TEXTURE_CREATE_DEVICE_PC {             // size 0x4
     const PC_TEXTURE_CREATE_METHODS_PC *methods; // 0x0
-}; // size 0x4
+};
 
 extern "C" void PCDeviceCreateDepthSurface(u32 width, u32 height, i32 format, i32 multisample, u32 quality,
                                            BOOL discard, PC_TEXTURE_RESOURCE_PC **surface, HANDLE *shared_handle) {
@@ -1337,31 +1392,31 @@ extern "C" {
     HRESULT PCDeviceUnlockIndexBuffer(PC_BUFFER_RESOURCE_PC *);
 }
 
-struct PC_GRAPHICS_CLIP_VERTEX_PC {
-    f32 x; // 0x00
-    f32 y; // 0x04
-    f32 z; // 0x08
-    f32 u; // 0x0c
-    f32 v; // 0x10
-}; // size 0x14
+struct PC_GRAPHICS_CLIP_VERTEX_PC { // size 0x14
+    f32 x;                          // 0x00
+    f32 y;                          // 0x04
+    f32 z;                          // 0x08
+    f32 u;                          // 0x0c
+    f32 v;                          // 0x10
+};
 
-struct PC_GRAPHICS_SCREEN_VERTEX_PC {
-    f32 x; // 0x0
-    f32 y; // 0x4
-    f32 u; // 0x8
-    f32 v; // 0xc
-}; // size 0x10
+struct PC_GRAPHICS_SCREEN_VERTEX_PC { // size 0x10
+    f32 x;                            // 0x0
+    f32 y;                            // 0x4
+    f32 u;                            // 0x8
+    f32 v;                            // 0xc
+};
 
 struct GRAPHICS_TEXTURE_SURFACE_VIEW_PC;
 
-struct GRAPHICS_TEXTURE_SURFACE_METHODS_PC {
-    void *unknown_000[18];                                                                                     // 0x00
+struct GRAPHICS_TEXTURE_SURFACE_METHODS_PC { // size 0x4c
+    void *unknown_000[18];                   // 0x00
     HRESULT(__stdcall *get_surface_level)(GRAPHICS_TEXTURE_SURFACE_VIEW_PC *, u32, PC_TEXTURE_RESOURCE_PC **); // 0x48
-}; // size 0x4c
+};
 
-struct GRAPHICS_TEXTURE_SURFACE_VIEW_PC {
+struct GRAPHICS_TEXTURE_SURFACE_VIEW_PC {               // size 0x4
     const GRAPHICS_TEXTURE_SURFACE_METHODS_PC *methods; // 0x0
-}; // size 0x4
+};
 
 // noinline: the original calls PCDeviceLockIndexBuffer out of line from
 // PC_DEVICE_BACKEND_PC::BuildDefaultPoolResources; VC8 would inline it there.
@@ -1407,14 +1462,14 @@ extern "C" const char *WINAPI DXGetErrorString9A(HRESULT result);
 /* IDirect3DSurface9 methods used by the BMP dump; the shared resource table models textures. */
 typedef struct PC_SURFACE_PC PC_SURFACE_PC;
 
-typedef struct PC_SURFACE_METHODS_PC {
+typedef struct PC_SURFACE_METHODS_PC {                                                      // size 0x3c
     void *unknown_0000[2];                                                                  // 0x00
     ULONG(__stdcall *release)(PC_SURFACE_PC *);                                             // 0x08
     void *unknown_000c[9];                                                                  // 0x0c
     HRESULT(__stdcall *get_desc)(PC_SURFACE_PC *, PC_TEXTURE_LEVEL_DESC_PC *);              // 0x30
     HRESULT(__stdcall *lock_rect)(PC_SURFACE_PC *, PC_LOCKED_RECT_PC *, const RECT *, u32); // 0x34
     HRESULT(__stdcall *unlock_rect)(PC_SURFACE_PC *);                                       // 0x38
-} PC_SURFACE_METHODS_PC;                                                                    // size 0x3c
+} PC_SURFACE_METHODS_PC;
 
 struct PC_SURFACE_PC {
     const PC_SURFACE_METHODS_PC *methods;

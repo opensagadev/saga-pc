@@ -14,18 +14,18 @@ extern "C" {
     extern const char ExtrasNameFormatPc[];
 }
 
-struct EXTRAS_AREA_SAVE_READER_PC {
-    u8 unknown0[6];        // 0x0
-    u8 red_brick_unlocked; // 0x6
-    u8 unknown7[5];        // 0x7
-}; // size 0xc
+struct EXTRAS_AREA_SAVE_READER_PC { // size 0xc
+    u8 unknown0[6];                 // 0x0
+    u8 red_brick_unlocked;          // 0x6
+    u8 unknown7[5];                 // 0x7
+};
 
-struct EXTRAS_SAVE_READER_PC {
+struct EXTRAS_SAVE_READER_PC {            // size 0x7c08
     u8 unknown0[0x782c];                  // 0x0000
     EXTRAS_AREA_SAVE_READER_PC areas[72]; // 0x782c
     u8 unknown7b8c[0x74];                 // 0x7b8c
     u32 unlocked[2];                      // 0x7c00
-}; // size 0x7c08
+};
 
 extern "C" {
     extern i32 HubForceShopSavePc;

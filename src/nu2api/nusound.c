@@ -932,6 +932,53 @@ void fun_006986f0(void) {
 void fun_00698700(void) {
 }
 
+void fun_006985e0(void) {
+    PCSoundAlreadyPlayingHook();
+}
+
+void fun_006985f0(void) {
+    PCSoundAlreadyPlayingHook();
+}
+
+void fun_006987b0(void) {
+    PCSoundAlreadyPlayingHook();
+}
+
+void fun_006987c0(void) {
+    PCSoundAlreadyPlayingHook();
+}
+
+void fun_006987f0(void) {
+    PCSoundAlreadyPlayingHook();
+}
+
+void fun_00698830(void) {
+    PCSoundAlreadyPlayingHook();
+}
+
+void fun_00698840(void) {
+    PCSoundAlreadyPlayingHook();
+}
+
+void fun_006988c0(void) {
+    PCSoundAlreadyPlayingHook();
+}
+
+i32 fun_00698610(void) {
+    PCSoundAlreadyPlayingHook();
+    return 0;
+}
+
+i32 fun_006988d0(void) {
+    PCSoundAlreadyPlayingHook();
+    return 0;
+}
+
+i32 fun_006988e0(void) {
+    PCSoundAlreadyPlayingHook();
+    return 0;
+}
+
 i32 NuSound3SetReverb(i32 enable) {
     i32 previous = SoundVoiceManager.option_d14;
     SoundVoiceManager.option_d14 = enable != 0;

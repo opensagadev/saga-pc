@@ -361,6 +361,7 @@ typedef struct PC_DEVICE_BACKEND_PC {
     i32 fun_00509120();
     void fun_00509130(i32 multisample);
     void fun_00509140(i32 mode);
+    GRAPHICS_RENDER_TEXTURE_PC *fun_005c2190(u16 index);
     i32 fun_005f7860();
     GRAPHICS_CAPS_PC *fun_005f7870();
     GRAPHICS_PRESENT_PARAMETERS_PC *fun_005f7880();

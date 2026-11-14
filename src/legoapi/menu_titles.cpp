@@ -32,9 +32,9 @@ extern "C" void MenuPcStringsInit(void) {
     MenuPcStringsInitialized = 1;
 }
 
-typedef struct OPTIONS_MENU_READER_PC {
-    u8 player_control[2]; // 0x0
-} OPTIONS_MENU_READER_PC; // size 0x2
+typedef struct OPTIONS_MENU_READER_PC { // size 0x2
+    u8 player_control[2];               // 0x0
+} OPTIONS_MENU_READER_PC;
 
 extern "C" void GameDrawMenuEntry(MENU *menu, char *text) {
     if (Paused != 0) {
@@ -44,7 +44,7 @@ extern "C" void GameDrawMenuEntry(MENU *menu, char *text) {
     DrawMenuEntryEx(menu, text, (u8)MenuA);
 }
 
-typedef struct GAME_STATE_MENU_READER_PC {
-    u8 reserved[0x7c18];     // 0x0000
-    u16 completion;          // 0x7c18
-} GAME_STATE_MENU_READER_PC; // size 0x7c1a
+typedef struct GAME_STATE_MENU_READER_PC { // size 0x7c1a
+    u8 reserved[0x7c18];                   // 0x0000
+    u16 completion;                        // 0x7c18
+} GAME_STATE_MENU_READER_PC;

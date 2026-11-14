@@ -14,24 +14,25 @@ typedef struct PC_HG_SHADOW_SHAPE48 PC_HG_SHADOW_SHAPE48;
 typedef struct PC_HG_SHADOW_SHAPE64 PC_HG_SHADOW_SHAPE64;
 typedef struct PC_HG_SHADOW_GROUP PC_HG_SHADOW_GROUP;
 
-struct PC_HG_SHADOW_SHAPE48 {
-    union {            // 0x00
-        NUVEC axes[4]; // 0x00
+struct PC_HG_SHADOW_SHAPE48 { // size 0x30
 
-        struct {          // 0x00
+    union { // size 0x30
+        NUVEC axes[4];
+
+        struct {          // size 0x30
             f32 center_x; // 0x00
             u32 flags;    // 0x04
             u8 rest[40];  // 0x08
         } filter;
-    };
-}; // size 0x30
+    }; // 0x00
+};
 
-struct PC_HG_SHADOW_SHAPE64 {
+struct PC_HG_SHADOW_SHAPE64 {      // size 0x40
     PC_HG_SHADOW_SHAPE48 position; // 0x00
     u8 unknown_30[16];             // 0x30
-}; // size 0x40
+};
 
-struct PC_HG_SHADOW_GROUP {
+struct PC_HG_SHADOW_GROUP {          // size 0x10
     PC_HG_SHADOW_SHAPE48 *ellipses;  // 0x0
     PC_HG_SHADOW_SHAPE64 *cylinders; // 0x4
     void *third_shape;               // 0x8
@@ -39,7 +40,7 @@ struct PC_HG_SHADOW_GROUP {
     u8 cylinder_count;               // 0xd
     u8 third_count;                  // 0xe
     u8 joint_index;                  // 0xf
-}; // size 0x10
+};
 
 STATIC_ASSERT(sizeof(PC_HG_SHADOW_PACKET) == 0x68);
 STATIC_ASSERT(offsetof(PC_HG_SHADOW_PACKET, ellipse) == 0x40);
@@ -69,27 +70,27 @@ STATIC_ASSERT(offsetof(GAMEOBJECT, animation_root_delta) == 0x26c);
     ((CHARACTERANIM_CONFIG_PC *)(object)                                                                               \
          ->character_model->animation_configs[(object)->anim_packet.blend_target_animation])
 
-struct PC_ANIMATION_RENDER_VIEW {
-    ANIMPACKET_PC packet; // 0x00
-    f32 overlay_weight;   // 0x44
-}; // size 0x48
+struct PC_ANIMATION_RENDER_VIEW { // size 0x48
+    ANIMPACKET_PC packet;         // 0x00
+    f32 overlay_weight;           // 0x44
+};
 
 STATIC_ASSERT(offsetof(GAMEOBJECT, surface_effect_count) == 0x28e);
 STATIC_ASSERT(offsetof(GAMEOBJECT, surface_effect_id) == 0x290);
 STATIC_ASSERT(offsetof(APICHARACTERDATA, effects) == 0x28);
 
-typedef struct minianimpacket_pc_s {
-    f32 current_time;           // 0x00
-    f32 previous_time;          // 0x04
-    u8 unknown_08[0xc];         // 0x08
-    f32 blend_target_time;      // 0x14
-    u8 flags;                   // 0x18
-    u8 blending;                // 0x19
-    u8 unknown_1a[4];           // 0x1a
-    i16 current_animation_id;   // 0x1e
-    i16 previous_animation_id;  // 0x20
-    i16 requested_animation_id; // 0x22
-} MINIANIMPACKET_PC;            // size 0x24
+typedef struct minianimpacket_pc_s { // size 0x24
+    f32 current_time;                // 0x00
+    f32 previous_time;               // 0x04
+    u8 unknown_08[0xc];              // 0x08
+    f32 blend_target_time;           // 0x14
+    u8 flags;                        // 0x18
+    u8 blending;                     // 0x19
+    u8 unknown_1a[4];                // 0x1a
+    i16 current_animation_id;        // 0x1e
+    i16 previous_animation_id;       // 0x20
+    i16 requested_animation_id;      // 0x22
+} MINIANIMPACKET_PC;
 
 STATIC_ASSERT(offsetof(GAMEOBJECT, initial_position) == 0x98);
 STATIC_ASSERT(offsetof(GAMEOBJECT, collision_identity_mask) == 0x1e8);
@@ -102,14 +103,14 @@ STATIC_ASSERT(offsetof(CHARACTER_MODEL_LAYERS_PC, model_id) == 0);
 STATIC_ASSERT(offsetof(CHARACTERDATA_PC, dir) == 8);
 STATIC_ASSERT(offsetof(CHARACTERDATA_PC, animations) == 0x10);
 
-typedef struct CHARACTER_PACK_ANIMATION_PC {
-    u32 pointer_table;         // 0x0
-    u32 animation_magic;       // 0x4
-} CHARACTER_PACK_ANIMATION_PC; // size 0x8
+typedef struct CHARACTER_PACK_ANIMATION_PC { // size 0x8
+    u32 pointer_table;                       // 0x0
+    u32 animation_magic;                     // 0x4
+} CHARACTER_PACK_ANIMATION_PC;
 
 STATIC_ASSERT(offsetof(ANI3_HEADER_PC, field_12_low) == 0x12);
 
-typedef struct CHARACTER_LIST_ENTRY_PC {
+typedef struct CHARACTER_LIST_ENTRY_PC {      // size 0x4c
     i32 name_id;                              // 0x00
     u32 model_flags;                          // 0x04
     char *dir;                                // 0x08
@@ -132,7 +133,7 @@ typedef struct CHARACTER_LIST_ENTRY_PC {
     i16 icon_model;                           // 0x42
     u32 unknown_44;                           // 0x44
     u32 unknown_48;                           // 0x48
-} CHARACTER_LIST_ENTRY_PC;                    // size 0x4c
+} CHARACTER_LIST_ENTRY_PC;
 
 STATIC_ASSERT(sizeof(CHARACTER_LIST_ENTRY_PC) == sizeof(CHARACTERDATA_PC));
 extern void NuHGobjDestroy(NUHGOBJ_EVAL_PC *object);

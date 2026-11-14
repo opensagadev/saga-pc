@@ -75,22 +75,22 @@ enum { AIPATHINFO_FLAG_ON_PATH = 1 };
 
 #if SAGA_GAMEAPI_AI_AISYS_AIPATH_H_PART == 2 && !defined(SAGA_GAMEAPI_AI_AISYS_AIPATH_H_STOP)
 
-typedef struct AILOCATOR_PC {
-    char name[0x10]; // 0x00
-    NUVEC position;  // 0x10
+typedef struct AILOCATOR_PC { // size 0x3c
+    char name[0x10];          // 0x00
+    NUVEC position;           // 0x10
 
-    union {           // 0x1c
-        i32 rotation; // 0x1c
-        u32 flags;    // 0x1c
-    };
+    union { // size 0x4
+        i32 rotation;
+        u32 flags;
+    }; // 0x1c
 
     AIPATHINFO_PC path_info; // 0x20
 
-    union {                  // 0x38
-        i32 rotation_offset; // 0x38
-        u32 locator_flags;   // 0x38
-    };
-} AILOCATOR_PC; // size 0x3c
+    union { // size 0x4
+        i32 rotation_offset;
+        u32 locator_flags;
+    }; // 0x38
+} AILOCATOR_PC;
 
 #undef SAGA_GAMEAPI_AI_AISYS_AIPATH_H_PART
 #define SAGA_GAMEAPI_AI_AISYS_AIPATH_H_PART 3

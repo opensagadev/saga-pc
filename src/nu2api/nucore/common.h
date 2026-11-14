@@ -67,8 +67,8 @@ typedef u32 usize;
 #define MAX(a, b) ((a) > (b) ? (a) : (b))
 #endif
 
-typedef union variptr_u {
-    void *void_ptr; // 0x0
-    char *char_ptr; // 0x0
-    u32 addr;       // 0x0
-} VARIPTR;          // size 0x4
+typedef union variptr_u { // size 0x4
+    void *void_ptr;
+    char *char_ptr;
+    u32 addr;
+} VARIPTR;

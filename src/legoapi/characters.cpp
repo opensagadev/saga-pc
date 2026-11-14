@@ -11,16 +11,16 @@ extern "C" {
     extern const char PCContextName_Teleport[9];
 }
 
-typedef struct CHARACTER_SCENE_WORLD_PC {
+typedef struct CHARACTER_SCENE_WORLD_PC {     // size 0x2984
     u8 unknown_0000[0x2980];                  // 0x0000
     KILLPARTS_CHARSCENE_PC *character_scenes; // 0x2980
-} CHARACTER_SCENE_WORLD_PC;                   // size 0x2984
+} CHARACTER_SCENE_WORLD_PC;
 
-typedef struct CHARACTER_SCENE_CUTSYS_PC {
-    CUTINFO **records;       // 0x0
-    i32 count;               // 0x4
-    u32 *character_flags;    // 0x8
-} CHARACTER_SCENE_CUTSYS_PC; // size 0xc
+typedef struct CHARACTER_SCENE_CUTSYS_PC { // size 0xc
+    CUTINFO **records;                     // 0x0
+    i32 count;                             // 0x4
+    u32 *character_flags;                  // 0x8
+} CHARACTER_SCENE_CUTSYS_PC;
 
 STATIC_ASSERT(offsetof(WORLDINFO, buffer_end) == 0x108);
 STATIC_ASSERT(offsetof(CHARACTERDATA_PC, flags) == 0x40);

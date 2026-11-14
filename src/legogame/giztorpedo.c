@@ -1,21 +1,21 @@
 #include "saga.h"
 
-typedef struct torpedo_machine_query_pc_s {
-    char name[16];          // 0x00
-    NUVEC position;         // 0x10
-    f32 activation_time;    // 0x1c
-    u16 y_rotation;         // 0x20
-    u8 unknown_22[9];       // 0x22
-    u8 active : 1;          // 0x2b:0
-    u8 visible : 1;         // 0x2b:1
-    u8 alternate : 1;       // 0x2b:2
-} TORPEDO_MACHINE_QUERY_PC; // size 0x2c
+typedef struct torpedo_machine_query_pc_s { // size 0x2c
+    char name[16];                          // 0x00
+    NUVEC position;                         // 0x10
+    f32 activation_time;                    // 0x1c
+    u16 y_rotation;                         // 0x20
+    u8 unknown_22[9];                       // 0x22
+    u8 active : 1;                          // 0x2b:0
+    u8 visible : 1;                         // 0x2b:1
+    u8 alternate : 1;                       // 0x2b:2
+} TORPEDO_MACHINE_QUERY_PC;
 
-typedef struct torpedo_machine_query_sys_pc_s {
-    TORPEDO_MACHINE_QUERY_PC *machines; // 0x0
-    i32 count;                          // 0x4
-    f32 scale;                          // 0x8
-} TORPEDO_MACHINE_QUERY_SYS_PC;         // size 0xc
+typedef struct torpedo_machine_query_sys_pc_s { // size 0xc
+    TORPEDO_MACHINE_QUERY_PC *machines;         // 0x0
+    i32 count;                                  // 0x4
+    f32 scale;                                  // 0x8
+} TORPEDO_MACHINE_QUERY_SYS_PC;
 
 STATIC_ASSERT(offsetof(GIZMO_PC, object) == 0);
 i32 Draw3DObject(WORLDINFO *, i32, NUVEC *, u16, u16, u16, f32, f32, f32, i32);

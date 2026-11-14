@@ -1,34 +1,34 @@
 #include "saga.h"
 #include <stdio.h>
 
-typedef struct edpp_file_particle_pc_s {
-    NUVEC position;            // 0x00
-    i32 effect_index;          // 0x0c
-    i32 instance_id;           // 0x10
-    i16 rotation_z;            // 0x14
-    i16 rotation_y;            // 0x16
-    i16 emitter_rotation_z;    // 0x18
-    i16 emitter_rotation_y;    // 0x1a
-    i16 emitter_rotation_x;    // 0x1c
-    u8 unknown_01e[2];         // 0x1e
-    f32 start_offset;          // 0x20
-    char name[16];             // 0x24
-    i32 switch_type;           // 0x34
-    i32 switch_id;             // 0x38
-    f32 switch_variable;       // 0x3c
-    i16 reflection_rotation_z; // 0x40
-    i16 reflection_rotation_y; // 0x42
-    f32 reflection_offset;     // 0x44
-    f32 reflection_bounce;     // 0x48
-    i16 render_group;          // 0x4c
-    u16 render_priority;       // 0x4e
-    u8 dynamic_priority;       // 0x50
-    i8 page;                   // 0x51
-    i8 detail_levels;          // 0x52
-    u8 facing_mode;            // 0x53
-    i16 facing_rotation_x;     // 0x54
-    i16 facing_rotation_y;     // 0x56
-} EDPP_FILE_PARTICLE_PC;       // size 0x58
+typedef struct edpp_file_particle_pc_s { // size 0x58
+    NUVEC position;                      // 0x00
+    i32 effect_index;                    // 0x0c
+    i32 instance_id;                     // 0x10
+    i16 rotation_z;                      // 0x14
+    i16 rotation_y;                      // 0x16
+    i16 emitter_rotation_z;              // 0x18
+    i16 emitter_rotation_y;              // 0x1a
+    i16 emitter_rotation_x;              // 0x1c
+    u8 unknown_01e[2];                   // 0x1e
+    f32 start_offset;                    // 0x20
+    char name[16];                       // 0x24
+    i32 switch_type;                     // 0x34
+    i32 switch_id;                       // 0x38
+    f32 switch_variable;                 // 0x3c
+    i16 reflection_rotation_z;           // 0x40
+    i16 reflection_rotation_y;           // 0x42
+    f32 reflection_offset;               // 0x44
+    f32 reflection_bounce;               // 0x48
+    i16 render_group;                    // 0x4c
+    u16 render_priority;                 // 0x4e
+    u8 dynamic_priority;                 // 0x50
+    i8 page;                             // 0x51
+    i8 detail_levels;                    // 0x52
+    u8 facing_mode;                      // 0x53
+    i16 facing_rotation_x;               // 0x54
+    i16 facing_rotation_y;               // 0x56
+} EDPP_FILE_PARTICLE_PC;
 
 STATIC_ASSERT(sizeof(((EDPP_FILE_PARTICLE_PC *)0)->position) == sizeof(((EDPP_PARTICLE_PC *)0)->position));
 STATIC_ASSERT(sizeof(((EDPP_FILE_PARTICLE_PC *)0)->effect_index) == sizeof(((EDPP_PARTICLE_PC *)0)->effect_index));

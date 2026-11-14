@@ -222,11 +222,12 @@ STATIC_ASSERT(offsetof(APIDEBRISSYS_PC, entries) == 8);
 
 #if SAGA_LEGOAPI_ITEMS_BASE_APIOBJECT_H_PART == 3 && !defined(SAGA_LEGOAPI_ITEMS_BASE_APIOBJECT_H_STOP)
 
-struct AIPACKET_PC {
-    union {                                  // 0x000
-        AISCRIPTPROCESS_PC script_processor; // 0x000
+struct AIPACKET_PC { // size 0x20c
 
-        struct {                                        // 0x000
+    union { // size 0xd0
+        AISCRIPTPROCESS_PC script_processor;
+
+        struct {                                        // size 0xd0
             struct AISCRIPT_PC *base_script;            // 0x000
             struct AISCRIPT_PC *script;                 // 0x004
             struct AISTATE_PC *state;                   // 0x008
@@ -254,14 +255,14 @@ struct AIPACKET_PC {
             u8 creature_set;                            // 0x0b0
             u8 unknown_0b1[0x17];                       // 0x0b1
 
-            union {                         // 0x0c8
-                u8 unknown_0c8[4];          // 0x0c8
-                void *takeover_script_link; // 0x0c8
-            };
+            union { // size 0x4
+                u8 unknown_0c8[4];
+                void *takeover_script_link;
+            }; // 0x0c8
 
             AISCRIPTPROCESS_PC *alternate_processor; // 0x0cc
         };
-    };
+    }; // 0x000
     struct gameobject_s *owner;                // 0x0d0
     struct gameobject_s *nearest_opponent;     // 0x0d4
     f32 nearest_opponent_metric;               // 0x0d8
@@ -278,10 +279,10 @@ struct AIPACKET_PC {
     NUVEC movement_position;                   // 0x114
     f32 mover_height;                          // 0x120
 
-    union {                   // 0x124
-        u16 unknown_124;      // 0x124
-        i16 inside_path_node; // 0x124
-    };
+    union { // size 0x2
+        u16 unknown_124;
+        i16 inside_path_node;
+    }; // 0x124
 
     i16 animation_override_from; // 0x126
     i16 animation_override_to;   // 0x128
@@ -289,15 +290,15 @@ struct AIPACKET_PC {
     u32 route_mask_low;          // 0x130
     u32 route_mask_high;         // 0x134
 
-    union {                // 0x138
-        u8 unknown_138;    // 0x138
-        u8 creature_index; // 0x138
-    };
+    union { // size 0x1
+        u8 unknown_138;
+        u8 creature_index;
+    }; // 0x138
 
-    union {                       // 0x139
-        u8 path_update_flag;      // 0x139
-        u8 path_connection_state; // 0x139
-    };
+    union { // size 0x1
+        u8 path_update_flag;
+        u8 path_connection_state;
+    }; // 0x139
 
     u16 available_routes;         // 0x13a
     u8 current_route;             // 0x13c
@@ -317,17 +318,17 @@ struct AIPACKET_PC {
     AIPATHINFO_PC path_info;      // 0x158
     NUVEC last_path_position;     // 0x170
 
-    union {                                   // 0x17c
-        void *current_path_node;              // 0x17c
-        struct AIPATHNODE_PC *goal_path_node; // 0x17c
-    };
+    union { // size 0x4
+        void *current_path_node;
+        struct AIPATHNODE_PC *goal_path_node;
+    }; // 0x17c
 
     f32 movement_instruction_parameter; // 0x180
 
-    union {                                      // 0x184
-        void *path_target;                       // 0x184
-        struct AIPATHNODE_PC *special_move_node; // 0x184
-    };
+    union { // size 0x4
+        void *path_target;
+        struct AIPATHNODE_PC *special_move_node;
+    }; // 0x184
 
     struct AIPATHCNX_PC *movement_target;                // 0x188
     f32 antinode_timer;                                  // 0x18c
@@ -336,10 +337,10 @@ struct AIPACKET_PC {
     NUVEC right_diversion;                               // 0x198
     NUVEC left_diversion;                                // 0x1a4
 
-    union {                                   // 0x1b0
-        u8 unknown_1b0[4];                    // 0x1b0
-        struct AILOCATOR_PC *respawn_locator; // 0x1b0
-    };
+    union { // size 0x4
+        u8 unknown_1b0[4];
+        struct AILOCATOR_PC *respawn_locator;
+    }; // 0x1b0
 
     NUVEC fallback_destination;       // 0x1b4
     f32 fallback_stopping_distance;   // 0x1c0
@@ -348,22 +349,22 @@ struct AIPACKET_PC {
     AIPATHINFO_PC fallback_path_info; // 0x1cc
     NUVEC *movement_look_target;      // 0x1e4
 
-    union {        // 0x1e8
-        u32 flags; // 0x1e8
+    union { // size 0x4
+        u32 flags;
 
-        struct {                // 0x1e8
+        struct {                // size 0x4
             u8 flags_low;       // 0x1e8
             u8 selection_flags; // 0x1e9
             u8 route_flags;     // 0x1ea
             u8 priority_flags;  // 0x1eb
         };
 
-        struct {                        // 0x1e8
+        struct {                        // size 0x4
             u32 : 15;                   // 0x1e8:0
             u32 antinode_clockwise : 1; // 0x1e8:15
             u32 : 16;                   // 0x1e8:16
         };
-    };
+    }; // 0x1e8
 
     u32 navigation_flags;       // 0x1ec
     f32 movement_target_radius; // 0x1f0
@@ -373,9 +374,9 @@ struct AIPACKET_PC {
     f32 spawn_delay;            // 0x200
     u8 unknown_204[4];          // 0x204
     f32 time_off_path;          // 0x208
-}; // size 0x20c
+};
 
-typedef struct APIOBJECT_PC {
+typedef struct APIOBJECT_PC {                          // size 0x29c
     void *owner;                                       // 0x000
     AIPACKET_PC *ai;                                   // 0x004
     u8 unknown_008[0x48];                              // 0x008
@@ -393,10 +394,10 @@ typedef struct APIOBJECT_PC {
     u8 unknown_a8[0x4];                                // 0x0a8
     f32 collision_radius;                              // 0x0ac
 
-    union {                    // 0x0b0
-        u8 unknown_0b0[0x148]; // 0x0b0
+    union { // size 0x148
+        u8 unknown_0b0[0x148];
 
-        struct {                            // 0x0b0
+        struct {                            // size 0x148
             u8 unknown_b0_to_1b4[0x104];    // 0x0b0
             NUVEC last_safe_position;       // 0x1b4
             NUVEC previous_position;        // 0x1c0
@@ -408,19 +409,19 @@ typedef struct APIOBJECT_PC {
             u32 collision_identity_mask[2]; // 0x1e8
             u32 collision_contact_mask[2];  // 0x1f0
         };
-    };
+    }; // 0x0b0
 
     u32 motion_flags; // 0x1f8
 
-    union {            // 0x1fc
-        u32 flags_low; // 0x1fc
+    union { // size 0x4
+        u32 flags_low;
 
-        struct {                      // 0x1fc
+        struct {                      // size 0x4
             u32 : 17;                 // 0x1fc:0
             u32 ignore_antinodes : 1; // 0x1fc:17
             u32 : 14;                 // 0x1fc:18
         };
-    };
+    }; // 0x1fc
 
     u8 unknown_200[0xc];                                             // 0x200
     NUSPECIALHANDLE collision_special;                               // 0x20c
@@ -455,7 +456,7 @@ typedef struct APIOBJECT_PC {
     u16 ai_resolved_collision_priority_pc;                           // 0x294
     u8 unknown_296[0x2];                                             // 0x296
     struct APIOBJECT_PC *collision_link;                             // 0x298
-} APIOBJECT_PC;                                                      // size 0x29c
+} APIOBJECT_PC;
 
 typedef struct CHARACTERANIM_CONFIG_PC {
     char *name;

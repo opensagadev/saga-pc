@@ -477,35 +477,53 @@ Today: 13,127 assert lines. `offsetof` 11,323 (saga.h 4,698 = 41%; units
 nu3d_platform_pc.cpp 286); `sizeof` 1,804 (saga.h 751 = 42%; nu3d_includes.cpp
 74, edlevelall.cpp 55, nu3d_platform_pc.cpp 50). saga.h holds 5,454 (42%).
 
-Grammar (one required comment per field and per struct, checked by a tool):
+Grammar (one required comment per field and per struct, checked by a tool;
+format revised 2026-11-14, see below):
 
 ```c
-typedef struct example_s {
+typedef struct example_s {  // size 0x48c
     NUVEC pos;              // 0x000
     u32 flags;              // 0x1fc
-    union {                 // 0x200
-        f32 timer;          // 0x200
-        i32 counter;        // 0x200
-    };
+    union {                 // size 0x4
+        f32 timer;
+        struct {            // size 0x4
+            i16 lo;         // 0x200 (absolute, not relative)
+            i16 hi;         // 0x202
+        } halves;
+    };                      // 0x200
     u32 active : 1;         // 0x204:0
     u32 mode : 3;           // 0x204:1
-    struct {                // 0x208
+    struct {                // size 0x2
         i16 x;              // 0x208 (absolute, not relative)
-    } grid;
-} EXAMPLE;                  // size 0x48c
+    } grid;                 // 0x208
+} EXAMPLE;
 ```
 
-- Offsets are absolute from the start of the outermost named struct, lower-case
-  hex, at least three digits wide inside a struct larger than 0xfff (four for
-  larger), so they align and sort.
+- Size: `// size 0xNN` on the line of the `{` of the outer record and of every
+  nested named or anonymous struct or union (an array of inline records: the
+  size of one element).
+- Offsets are absolute from the start of the outermost record, lower-case
+  hex, zero-padded to the digits of `size - 1`, so they align and sort. A
+  member's offset sits on the line of its identifier: for a nested record its
+  closing line (`} grid; // 0x208`), for an anonymous one the `};` line.
+- Members directly inside a union carry no offset (they all sit at the
+  union's offset). Members of a struct nested inside a union carry theirs,
+  measured from the start of the outermost record like every other offset.
 - Bitfields: `0xOFF:BIT` (storage unit offset and first bit).
-- Anonymous unions and structs: the opening line carries the offset; members
-  repeat it.
+- A note may follow the offset; a line with several members carries the
+  first one's offset. A one-line record needs only its size, a one-line
+  nested record only its offset.
 - C++ classes with a vtable: a comment line `// 0x000 vtable` before the first
-  member; base classes `// 0x000 base BASE_NAME`.
-- Closing line: `// size 0xNN` after the type name (or after `};`).
+  member; base classes `// 0x000 base BASE_NAME` (not checked yet).
 - Types whose layout is unknown past some point keep an explicit tail field
   (`u8 unknown_1f0[0x10]; // 0x1f0`), so the size is still stated.
+
+*Format revision (2026-11-14).* The first form put the size on the closing
+line and repeated the union's offset on every union member and on the `{` of
+nested records. `tools/layoutcheck.py` now rejects that form, and
+`tools/layoutcheck.py --fix` rewrote the 1,037 converted records (169 files)
+mechanically; the comments changed, no code (every object compiles
+identical). The pilot description below uses the first form.
 
 Checker (`tools/layoutcheck.py`, planned): parse every struct definition in
 `src/**/*.h` (and units while local types remain), and fail if a field or a

@@ -151,36 +151,36 @@ void ShaderCompilerParserPc::EndIf() {
     --scope_count;
 }
 
-struct ShaderParserTogglePc : ShaderParserNodePc {
-    u8 enabled;      // 0x8
-    u8 unknown_9[3]; // 0x9
+struct ShaderParserTogglePc : ShaderParserNodePc { // size 0xc
+    u8 enabled;                                    // 0x8
+    u8 unknown_9[3];                               // 0x9
     ShaderParserTogglePc(u8 enabled);
-}; // size 0xc
+};
 
-struct ShaderParserReferencePc : ShaderParserNodePc {
-    u32 flags;       // 0x08
-    i32 alias_depth; // 0x0c
-    char *name;      // 0x10
+struct ShaderParserReferencePc : ShaderParserNodePc { // size 0x14
+    u32 flags;                                        // 0x08
+    i32 alias_depth;                                  // 0x0c
+    char *name;                                       // 0x10
     ShaderParserReferencePc(u32 flags, i32 alias_depth, char *name);
-}; // size 0x14
+};
 
-struct ShaderParserDeclarationPc : ShaderParserNodePc {
-    u32 flags;             // 0x08
-    i32 type;              // 0x0c
-    i32 array_count;       // 0x10
-    char *name;            // 0x14
-    i32 semantic;          // 0x18
-    char *custom_semantic; // 0x1c
-    i32 vertex_register;   // 0x20
-    i32 pixel_register;    // 0x24
+struct ShaderParserDeclarationPc : ShaderParserNodePc { // size 0x28
+    u32 flags;                                          // 0x08
+    i32 type;                                           // 0x0c
+    i32 array_count;                                    // 0x10
+    char *name;                                         // 0x14
+    i32 semantic;                                       // 0x18
+    char *custom_semantic;                              // 0x1c
+    i32 vertex_register;                                // 0x20
+    i32 pixel_register;                                 // 0x24
     ShaderParserDeclarationPc(u32 flags, i32 type, i32 array_count, char *name, i32 semantic, char *custom_semantic,
                               i32 vertex_register, i32 pixel_register);
-}; // size 0x28
+};
 
-struct ShaderParserEmitPc : ShaderParserNodePc {
-    u32 flags; // 0x8
+struct ShaderParserEmitPc : ShaderParserNodePc { // size 0xc
+    u32 flags;                                   // 0x8
     ShaderParserEmitPc(u32 flags);
-}; // size 0xc
+};
 
 ShaderParserNodePc::ShaderParserNodePc(i32 kind) : kind(kind), next(NULL) {
 }
@@ -612,7 +612,7 @@ template <class T> inline void SafeDeleteArray(T *&pointer) {
     }
 }
 
-struct ShaderParserIncludePc {
+struct ShaderParserIncludePc {              // size 0x14
     const char *name;                       // 0x00
     ShaderCompilerBufferAllocatorPc buffer; // 0x04
 
@@ -625,7 +625,7 @@ struct ShaderParserIncludePc {
     ~ShaderParserIncludePc() {
         SafeDeleteArray(name);
     }
-}; // size 0x14
+};
 
 ShaderCompilerParserPc::ShaderCompilerParserPc() : text((ShaderLexicalClassesInitPc(), 0x1000), true) {
     include_directories[0] = 0;
@@ -645,6 +645,11 @@ void ShaderCompilerParserPc::ClearIncludes() {
     }
     includes.erase(includes.begin(), includes.end());
 }
+
+/* Out-of-line copies of the include-list members the parser's loops inline. */
+template void std::vector<ShaderParserIncludePc *>::clear();
+template bool std::vector<ShaderParserIncludePc *>::const_iterator::operator<(
+    const std::vector<ShaderParserIncludePc *>::const_iterator &) const;
 
 ShaderCompilerParserPc::~ShaderCompilerParserPc() {
     ClearIncludes();

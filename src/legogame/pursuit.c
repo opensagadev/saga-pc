@@ -3,23 +3,23 @@
 
 /* Bounty hunter pursuit level callbacks (original pursuit.cpp). */
 
-typedef struct PURSUIT_TRAFFIC_ENTRY_PC {
-    NUSPECIALHANDLE special;     // 0x000
-    void *animation;             // 0x00c
-    f32 end_frame;               // 0x010
-    u8 unknown_14[0x139 - 0x14]; // 0x014
-    u8 active;                   // 0x139
-    i8 direction;                // 0x13a
-    u8 unknown_13b[5];           // 0x13b
-} PURSUIT_TRAFFIC_ENTRY_PC;      // size 0x140
+typedef struct PURSUIT_TRAFFIC_ENTRY_PC { // size 0x140
+    NUSPECIALHANDLE special;              // 0x000
+    void *animation;                      // 0x00c
+    f32 end_frame;                        // 0x010
+    u8 unknown_14[0x139 - 0x14];          // 0x014
+    u8 active;                            // 0x139
+    i8 direction;                         // 0x13a
+    u8 unknown_13b[5];                    // 0x13b
+} PURSUIT_TRAFFIC_ENTRY_PC;
 
-typedef struct PURSUIT_TRAFFIC_PC {
+typedef struct PURSUIT_TRAFFIC_PC {       // size 0x77e4
     PURSUIT_TRAFFIC_ENTRY_PC entries[64]; // 0x0000
     u8 unknown_5000[0x77e0 - 0x5000];     // 0x5000
     i8 count;                             // 0x77e0
     u8 unknown_77e1[2];                   // 0x77e1
     i8 side;                              // 0x77e3
-} PURSUIT_TRAFFIC_PC;                     // size 0x77e4
+} PURSUIT_TRAFFIC_PC;
 
 typedef struct ZAMARROW_PC {
     GAMEOBJECT *object;
@@ -41,6 +41,12 @@ static i32 pursuit_c_hack = 1;
 static ZAMARROW_PC zamarrow;
 /* Generator laser type. */
 static i32 pursuit_laser_type;
+
+/* Clears the locator arrow and points it at Zam Wesell again. */
+void fun_004bc2c0(WORLDINFO *world) {
+    memset(&zamarrow, 0, sizeof(zamarrow));
+    zamarrow.object = GetNamedGameObject(world->ai_sys, "ai_zam");
+}
 
 static void UpdateZamArrow(WORLDINFO *world) {
     NUVEC position;

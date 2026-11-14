@@ -1,26 +1,26 @@
 #include "saga.h"
 #include <stdio.h>
 
-struct credit_record_pc_s {
-    char *text;     // 0x00
-    f32 x;          // 0x04
-    f32 y;          // 0x08
-    f32 scale;      // 0x0c
-    u8 colour[4];   // 0x10
-    u8 alignment;   // 0x14
-    i8 type;        // 0x15
-    u8 reserved[2]; // 0x16
-}; // size 0x18
+struct credit_record_pc_s { // size 0x18
+    char *text;             // 0x00
+    f32 x;                  // 0x04
+    f32 y;                  // 0x08
+    f32 scale;              // 0x0c
+    u8 colour[4];           // 0x10
+    u8 alignment;           // 0x14
+    i8 type;                // 0x15
+    u8 reserved[2];         // 0x16
+};
 
-typedef struct credit_type_pc_s {
-    char *name;           // 0x00
-    f32 scale;            // 0x04
-    f32 width;            // 0x08
-    u8 default_colour[4]; // 0x0c
-    u8 colour[4];         // 0x10
-    u8 reserved[3];       // 0x14
-    i8 type;              // 0x17
-} CREDIT_TYPE_PC;         // size 0x18
+typedef struct credit_type_pc_s { // size 0x18
+    char *name;                   // 0x00
+    f32 scale;                    // 0x04
+    f32 width;                    // 0x08
+    u8 default_colour[4];         // 0x0c
+    u8 colour[4];                 // 0x10
+    u8 reserved[3];               // 0x14
+    i8 type;                      // 0x17
+} CREDIT_TYPE_PC;
 
 static f32 Credits_Duration = 120.0f;
 static f32 CreditsSize = 0;
@@ -206,11 +206,11 @@ void Credits_GetInfo(f32 *duration, i32 *flag, f32 *alpha) {
 extern "C" void fun_0059d750() {
 }
 
-typedef struct credits_completion_reader_pc_s {
-    u16 points;                 // 0x0
-    u8 unknown_02;              // 0x2
-    u8 flags;                   // 0x3
-} CREDITS_COMPLETION_READER_PC; // size 0x4
+typedef struct credits_completion_reader_pc_s { // size 0x4
+    u16 points;                                 // 0x0
+    u8 unknown_02;                              // 0x2
+    u8 flags;                                   // 0x3
+} CREDITS_COMPLETION_READER_PC;
 
 static void CreditsDrawListPc(CREDIT_RECORD_PC *credit, f32 time) {
     char percentage[32];

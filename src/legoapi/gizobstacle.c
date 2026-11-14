@@ -42,43 +42,43 @@ void GizObstacle_PlayBackwards(GIZOBSTACLE *obstacle) {
 STATIC_ASSERT(offsetof(WORLDINFO, progress_flag_5174) == 0x5170);
 STATIC_ASSERT(offsetof(GAMEOBJECT, ai_packet) + offsetof(AIPACKET_PC, creature_index) == 0x400);
 
-typedef struct gizobstacle_system_pc_s {
-    GIZOBSTACLE *obstacles;     // 0x00
-    GIZMO_PC **active_gizmos;   // 0x04
-    u16 count;                  // 0x08
-    u16 capacity;               // 0x0a
-    u16 active_gizmo_count;     // 0x0c
-    u16 unknown_00e;            // 0x0e
-    GAMEANIMOBJPOOL *anim_pool; // 0x10
-} GIZOBSTACLE_SYSTEM_PC;        // size 0x14
+typedef struct gizobstacle_system_pc_s { // size 0x14
+    GIZOBSTACLE *obstacles;              // 0x00
+    GIZMO_PC **active_gizmos;            // 0x04
+    u16 count;                           // 0x08
+    u16 capacity;                        // 0x0a
+    u16 active_gizmo_count;              // 0x0c
+    u16 unknown_00e;                     // 0x0e
+    GAMEANIMOBJPOOL *anim_pool;          // 0x10
+} GIZOBSTACLE_SYSTEM_PC;
 
-typedef struct gizobstacle_progress_pc_s {
-    u32 enabled[4];         // 0x00
-    u32 visible[4];         // 0x10
-    u32 pickups_spawned[4]; // 0x20
-    u32 ai_active[4];       // 0x30
-    u32 blocked[4];         // 0x40
-    u32 trigger_latched[4]; // 0x50
-    u32 destroyed[4];       // 0x60
-} GIZOBSTACLE_PROGRESS_PC;  // size 0x70
+typedef struct gizobstacle_progress_pc_s { // size 0x70
+    u32 enabled[4];                        // 0x00
+    u32 visible[4];                        // 0x10
+    u32 pickups_spawned[4];                // 0x20
+    u32 ai_active[4];                      // 0x30
+    u32 blocked[4];                        // 0x40
+    u32 trigger_latched[4];                // 0x50
+    u32 destroyed[4];                      // 0x60
+} GIZOBSTACLE_PROGRESS_PC;
 
-typedef struct obstacle_progress_flags_pc_s {
-    u32 active : 1;           // 0x0:0
-    u32 visible : 1;          // 0x0:1
-    u32 unknown : 30;         // 0x0:2
-} OBSTACLE_PROGRESS_FLAGS_PC; // size 0x4
+typedef struct obstacle_progress_flags_pc_s { // size 0x4
+    u32 active : 1;                           // 0x0:0
+    u32 visible : 1;                          // 0x0:1
+    u32 unknown : 30;                         // 0x0:2
+} OBSTACLE_PROGRESS_FLAGS_PC;
 
-typedef struct obstacle_runtime_flags_pc_s {
-    u32 pickups_spawned : 1;     // 0x0:0
-    u32 pending_blowup_type : 1; // 0x0:1
-    u32 ai_active : 1;           // 0x0:2
-    u32 blocked : 1;             // 0x0:3
-    u32 has_platform : 1;        // 0x0:4
-    u32 anim_object_bit_1 : 1;   // 0x0:5
-    u32 trigger_latched : 1;     // 0x0:6
-    u32 destroyed : 1;           // 0x0:7
-    u32 unknown : 24;            // 0x0:8
-} OBSTACLE_RUNTIME_FLAGS_PC;     // size 0x4
+typedef struct obstacle_runtime_flags_pc_s { // size 0x4
+    u32 pickups_spawned : 1;                 // 0x0:0
+    u32 pending_blowup_type : 1;             // 0x0:1
+    u32 ai_active : 1;                       // 0x0:2
+    u32 blocked : 1;                         // 0x0:3
+    u32 has_platform : 1;                    // 0x0:4
+    u32 anim_object_bit_1 : 1;               // 0x0:5
+    u32 trigger_latched : 1;                 // 0x0:6
+    u32 destroyed : 1;                       // 0x0:7
+    u32 unknown : 24;                        // 0x0:8
+} OBSTACLE_RUNTIME_FLAGS_PC;
 
 STATIC_ASSERT(offsetof(GIZOBSTACLE, progress_flags) == 0x94);
 
@@ -504,10 +504,10 @@ void GizObstacles_Reset(void *world_ptr, void *data, void *progress_ptr) {
     ngizobstacletriggers = 0;
 }
 
-typedef struct gizobstacle_object_data_pc_s {
-    i16 flags;                // 0x0
-    i16 platform_id;          // 0x2
-} GIZOBSTACLE_OBJECT_DATA_PC; // size 0x4
+typedef struct gizobstacle_object_data_pc_s { // size 0x4
+    i16 flags;                                // 0x0
+    i16 platform_id;                          // 0x2
+} GIZOBSTACLE_OBJECT_DATA_PC;
 
 STATIC_ASSERT(offsetof(GIZOBSTACLE, triggering_object) == 0x38);
 STATIC_ASSERT(offsetof(GIZOBSTACLE, auto_return_timer) == 0x40);
@@ -1253,34 +1253,34 @@ ADDGIZMOTYPE_PC *GizObstacles_RegisterGizmo(i32 type_id) {
     return addtype;
 }
 
-typedef struct bomb_generator_runtime_pc_s {
-    char name[16];              // 0x00
-    NUVEC position;             // 0x10
-    GAMEANIMSET *anim_set;      // 0x1c
-    i32 interval;               // 0x20
-    GAMEOBJECT *generated_bomb; // 0x24
-    u16 unknown_28;             // 0x28
+typedef struct bomb_generator_runtime_pc_s { // size 0x2c
+    char name[16];                           // 0x00
+    NUVEC position;                          // 0x10
+    GAMEANIMSET *anim_set;                   // 0x1c
+    i32 interval;                            // 0x20
+    GAMEOBJECT *generated_bomb;              // 0x24
+    u16 unknown_28;                          // 0x28
 
-    union {        // 0x2a
-        u16 flags; // 0x2a
+    union { // size 0x2
+        u16 flags;
 
-        struct {                    // 0x2a
+        struct {                    // size 0x2
             u16 active : 1;         // 0x2a:0
             u16 visible : 1;        // 0x2a:1
             u16 unknown_flags : 14; // 0x2a:2
         };
-    };
-} BOMB_GENERATOR_RUNTIME_PC; // size 0x2c
+    }; // 0x2a
+} BOMB_GENERATOR_RUNTIME_PC;
 
-typedef struct bomb_generator_system_runtime_pc_s {
-    BOMB_GENERATOR_RUNTIME_PC *items; // 0x00
-    u16 count;                        // 0x04
-    u16 capacity;                     // 0x06
-    void *pool;                       // 0x08
-    i16 flags;                        // 0x0c
-    u16 unknown_0e;                   // 0x0e
-    void *progress;                   // 0x10
-} BOMB_GENERATOR_SYSTEM_RUNTIME_PC;   // size 0x14
+typedef struct bomb_generator_system_runtime_pc_s { // size 0x14
+    BOMB_GENERATOR_RUNTIME_PC *items;               // 0x00
+    u16 count;                                      // 0x04
+    u16 capacity;                                   // 0x06
+    void *pool;                                     // 0x08
+    i16 flags;                                      // 0x0c
+    u16 unknown_0e;                                 // 0x0e
+    void *progress;                                 // 0x10
+} BOMB_GENERATOR_SYSTEM_RUNTIME_PC;
 
 STATIC_ASSERT(offsetof(BOMB_GENERATOR_SYSTEM_RUNTIME_PC, flags) == 0xc &&
               sizeof(((BOMB_GENERATOR_SYSTEM_RUNTIME_PC *)0)->flags) == 2);

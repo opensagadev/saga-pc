@@ -519,6 +519,31 @@ void ShaderManagerHLSLPc::AdaptDescriptor(const PC_SHADER_FILTER_DESC_VIEW *inpu
     }
 }
 
+/* Builds (or rebuilds in place) the shader object for a precompiled key. */
+void ShaderManagerHLSL::fun_007459a0(i32 flags, i32 selector, const char *vertex_text, i32 vertex_length,
+                                     const char *pixel_text, i32 pixel_length) {
+    u32 key = 0;
+    NuShaderObjectKeyGenerate4(&key, flags, selector);
+    PC_SHADER_OBJECT_FULL_VIEW *shader = NULL;
+    for (i32 i = 0; i < 400; i++) {
+        if (key == slots[i].key) {
+            shader = &slots[i];
+            break;
+        }
+    }
+    i32 index;
+    if (shader != NULL) {
+        index = shader->marker;
+        PCShaderNativeUnInit(shader);
+    } else {
+        i32 free_index;
+        shader = AllocateSlot(&free_index);
+        index = free_index;
+    }
+    PCShaderObjectInitHLSLPc(shader, &key, index, vertex_text, vertex_length, pixel_text, pixel_length,
+                             compiler->dictionary.profile);
+}
+
 void ShaderManagerHLSL::SetUniformValues(i32 semantic, const f32 *values) {
     ShaderUniformRecordPc *uniform = &ShaderUniformRecordsPc[semantic];
     if (compiler->dictionary.profile != 4) {

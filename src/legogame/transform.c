@@ -10,12 +10,12 @@ STATIC_ASSERT(offsetof(GAMEOBJECT, transform_alpha) == 0xd80);
 STATIC_ASSERT(offsetof(GAMEOBJECT, transform_target_scale) == 0xd8c);
 STATIC_ASSERT(offsetof(GAMEOBJECT, transform_target) == 0xd14);
 
-typedef struct transform_glow_pc_s {
-    u8 unused_0000[0xc68];         // 0x000
-    NUVEC glow_position;           // 0xc68
-    u8 unused_0c74[0xe2c - 0xc74]; // 0xc74
-    u8 glow_kind;                  // 0xe2c
-} TRANSFORM_GLOW_PC;               // size 0xe30
+typedef struct transform_glow_pc_s { // size 0xe30
+    u8 unused_0000[0xc68];           // 0x000
+    NUVEC glow_position;             // 0xc68
+    u8 unused_0c74[0xe2c - 0xc74];   // 0xc74
+    u8 glow_kind;                    // 0xe2c
+} TRANSFORM_GLOW_PC;
 
 // The target draw keeps a private copy of this numtx-style Z rotation.
 static void RotateTargetMatrix(NUMTX *matrix, i32 angle) {

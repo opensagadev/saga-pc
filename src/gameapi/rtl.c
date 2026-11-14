@@ -12,14 +12,14 @@ static u16 rtl_uid = 1;
 static i32 rtl_dynamic_cnt = 0;
 #pragma bss_seg()
 
-typedef union RTL_FRAME_TIMER_VIEW_PC {
-    i32 value; // 0x0
+typedef union RTL_FRAME_TIMER_VIEW_PC { // size 0x4
+    i32 value;
 
-    struct {      // 0x0
+    struct {      // size 0x4
         u16 low;  // 0x0
         u16 high; // 0x2
     } words;
-} RTL_FRAME_TIMER_VIEW_PC; // size 0x4
+} RTL_FRAME_TIMER_VIEW_PC;
 
 STATIC_ASSERT(sizeof(RTL_FRAME_TIMER_VIEW_PC) == sizeof(i32));
 
@@ -1045,17 +1045,17 @@ void rtlSetShadowFlickerBlendTime(f32 time) {
 void fun_00635b00(void) {
 }
 
-typedef struct BURN_OUT_PC {
-    i32 active;     // 0x00
-    NUVEC position; // 0x04
-    f32 field_10;   // 0x10
-    f32 field_14;   // 0x14
-    f32 field_18;   // 0x18
-    f32 field_1c;   // 0x1c
-    f32 field_20;   // 0x20
-} BURN_OUT_PC;      // size 0x24
+typedef struct BURN_OUT_PC { // size 0x24
+    i32 active;              // 0x00
+    NUVEC position;          // 0x04
+    f32 field_10;            // 0x10
+    f32 field_14;            // 0x14
+    f32 field_18;            // 0x18
+    f32 field_1c;            // 0x1c
+    f32 field_20;            // 0x20
+} BURN_OUT_PC;
 
-struct BURN_SET_PC {
+struct BURN_SET_PC {                    // size 0x564
     BURN_PARAMETERS_PC parameters;      // 0x000
     BURN_PARAMETERS_PC parameters_copy; // 0x054
     i32 field_a8;                       // 0x0a8
@@ -1074,7 +1074,7 @@ struct BURN_SET_PC {
     f32 field_558;                      // 0x558
     f32 field_55c;                      // 0x55c
     i32 field_560;                      // 0x560
-}; // size 0x564
+};
 
 STATIC_ASSERT(offsetof(BURN_PARAMETERS_PC, field_00) == 0x0);
 STATIC_ASSERT(sizeof(((BURN_PARAMETERS_PC *)0)->field_00) == 4);
@@ -1428,10 +1428,10 @@ void edrtlCalculateBurnoutEx(BURN_SET_PC *set, BURN_PARAMETERS_PC *parameters, N
                           frame_time);
 }
 
-typedef struct rtl_direction_lookup_pc_s {
-    u32 header;               // 0x0000
-    RTL_LIGHT_PC lights[129]; // 0x0004
-} RTL_DIRECTION_LOOKUP_PC;    // size 0x4690
+typedef struct rtl_direction_lookup_pc_s { // size 0x4690
+    u32 header;                            // 0x0000
+    RTL_LIGHT_PC lights[129];              // 0x0004
+} RTL_DIRECTION_LOOKUP_PC;
 
 STATIC_ASSERT(offsetof(RTL_LIGHT_PC, direction) == 0xc);
 

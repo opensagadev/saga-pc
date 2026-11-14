@@ -5,7 +5,7 @@
 #include <stdlib.h>
 #include <string.h>
 
-struct RADFMV_DEVICE_METHODS_PC {
+struct RADFMV_DEVICE_METHODS_PC {                                                                        // size 0x168
     void *unknown_000[2];                                                                                // 0x000
     ULONG(__stdcall *release)(PC_D3D9_DEVICE_PC *);                                                      // 0x008
     void *unknown_00c[14];                                                                               // 0x00c
@@ -21,12 +21,12 @@ struct RADFMV_DEVICE_METHODS_PC {
     HRESULT(__stdcall *draw_primitive_up)(PC_D3D9_DEVICE_PC *, u32, u32, const void *, u32); // 0x14c
     void *unknown_150[5];                                                                    // 0x150
     HRESULT(__stdcall *set_fvf)(PC_D3D9_DEVICE_PC *, u32);                                   // 0x164
-}; // size 0x168
+};
 
-struct RADFMV_FACTORY_METHODS_PC {
+struct RADFMV_FACTORY_METHODS_PC {                                                         // size 0x2c
     void *unknown_000[10];                                                                 // 0x00
     HRESULT(__stdcall *check_format)(GRAPHICS_FACTORY_PC *, u32, u32, u32, u32, u32, u32); // 0x28
-}; // size 0x2c
+};
 
 #define RAD_DEVICE_METHODS(device) reinterpret_cast<const RADFMV_DEVICE_METHODS_PC *>((device)->methods)
 #define RAD_FACTORY_METHODS(factory) reinterpret_cast<const RADFMV_FACTORY_METHODS_PC *>((factory)->methods)
@@ -194,16 +194,16 @@ RADFMV_TEXTURE_PC *RadFmvCreateTexturePc(PC_D3D9_DEVICE_PC *device, u32 format, 
     return texture;
 }
 
-struct RADFMV_VERTEX_PC {
-    f32 x;        // 0x00
-    f32 y;        // 0x04
-    f32 z;        // 0x08
-    f32 rhw;      // 0x0c
-    u32 diffuse;  // 0x10
-    u32 specular; // 0x14
-    f32 u;        // 0x18
-    f32 v;        // 0x1c
-}; // size 0x20
+struct RADFMV_VERTEX_PC { // size 0x20
+    f32 x;                // 0x00
+    f32 y;                // 0x04
+    f32 z;                // 0x08
+    f32 rhw;              // 0x0c
+    u32 diffuse;          // 0x10
+    u32 specular;         // 0x14
+    f32 u;                // 0x18
+    f32 v;                // 0x1c
+};
 
 static void RadFmvDrawQuadPc(PC_D3D9_DEVICE_PC *device, f32 x, f32 y, f32 x_scale, f32 y_scale, i32 width, i32 height,
                              f32 alpha) {

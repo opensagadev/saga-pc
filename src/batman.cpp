@@ -33,10 +33,10 @@ extern "C" {
 }
 STATIC_ASSERT(sizeof(BURNOUTON) == 4);
 
-typedef struct main_controller_world_view_pc_s {
-    u8 unknown_0000[0x4670];              // 0x0000
-    AI_CONTROL_SYSTEM_PC *control_system; // 0x4670
-} MAIN_CONTROLLER_WORLD_VIEW_PC;          // size 0x4674
+typedef struct main_controller_world_view_pc_s { // size 0x4674
+    u8 unknown_0000[0x4670];                     // 0x0000
+    AI_CONTROL_SYSTEM_PC *control_system;        // 0x4670
+} MAIN_CONTROLLER_WORLD_VIEW_PC;
 
 extern "C" void DrawSaveSlots(MENU *, f32);
 
@@ -556,14 +556,14 @@ static void NuMainRenderWorld(WORLDINFO *world) {
     }
 }
 
-typedef struct NU_MAIN_STATUS_PACKET_PC {
-    u8 unknown_00[0x9c];    // 0x00
-    u16 player_models[2];   // 0x9c
-    u8 unknown_a0[4];       // 0xa0
-    u8 player_active[2];    // 0xa4
-    u8 unknown_a6[0xe];     // 0xa6
-    u8 status_flags;        // 0xb4
-} NU_MAIN_STATUS_PACKET_PC; // size 0xb6
+typedef struct NU_MAIN_STATUS_PACKET_PC { // size 0xb6
+    u8 unknown_00[0x9c];                  // 0x00
+    u16 player_models[2];                 // 0x9c
+    u8 unknown_a0[4];                     // 0xa0
+    u8 player_active[2];                  // 0xa4
+    u8 unknown_a6[0xe];                   // 0xa6
+    u8 status_flags;                      // 0xb4
+} NU_MAIN_STATUS_PACKET_PC;
 
 STATIC_ASSERT(offsetof(PLAYERPROGRESS, field_7) == 7);
 STATIC_ASSERT(offsetof(PLAYERPROGRESS, coins) == 0);

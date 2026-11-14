@@ -2,6 +2,22 @@
 #pragma bss_seg(".bss$StreakHeadersUsedPc")
 static STREAK_HEADER_PC *streakhdrs_used = 0;
 
+/* Moves a header from the free list to the front of the used list. */
+extern "C" STREAK_HEADER_PC *fun_005a35c0(void) {
+    STREAK_HEADER_PC *header = streakhdrs_free;
+    if (header != NULL) {
+        streakhdrs_free = header->next;
+        header->next = streakhdrs_used;
+        if (streakhdrs_used != NULL) {
+            streakhdrs_used->prev = header;
+        }
+        header->prev = NULL;
+        streakhdrs_used = header;
+        header->nodes = NULL;
+    }
+    return header;
+}
+
 // Takes the endpoint pointers in EDI/ESI and six stack arguments; the helper
 // stays beside its sole caller for VC8's internal ABI.
 extern "C" {
@@ -281,10 +297,10 @@ extern "C" void ResetStreaks(void) {
     streakhdrs_used = NULL;
 }
 
-struct STREAK_MATERIAL_SCALE_PC {
-    u8 unknown_00[0x64]; // 0x00
-    f32 effect_scale;    // 0x64
-}; // size 0x68
+struct STREAK_MATERIAL_SCALE_PC { // size 0x68
+    u8 unknown_00[0x64];          // 0x00
+    f32 effect_scale;             // 0x64
+};
 
 STATIC_ASSERT(offsetof(PC_SCENE_MTL_VIEW, sort_pri) == 0x76);
 

@@ -367,7 +367,11 @@ into a target file in retail order and rewrites `config/*.json` owners.
    code calls. Gains: `DrawCharIcon`, `TieSpinZPart_Move`.
 
    Deferred merges, game side (`src/legoapi`, `src/legogame` targets):
-   - Folded-RET diagnostics (`*_diagnostic_pc.c`): see the first rule.
+   - Folded-RET diagnostics (`*_diagnostic_pc.c`): see the first rule. The
+     stub-file pass (cleanup batch 12) moved only stubs without a caller in
+     the target file (`fun_005788a0` to `levels.cpp`, `GizmoPickups_PostLoad`
+     to `gizmopickups.c`, `Alt_registerStatusScreenExtraPc` to
+     `gamehint.c`); each remaining stub file says why it stays.
    - `creature`: `ResetPlayer` stays in `players.c`. With
      `Player_StartPos` defined out of view it drops from 97.44% to 93.91%.
    - `parts`: `LoadPartFile` (`parts_load.c`). `parts.c` still holds the
@@ -383,8 +387,9 @@ into a target file in retail order and rewrites `config/*.json` owners.
      `lighting`; review the boundary before choosing the language.
    - `jumping` (Fade COMDAT members from `fade.cpp`; `jumping.c` needs
      prototypes for its hook pointers as C++), `fade` (ThingManager members
-     defined in two units), `bolts` (engine-side pieces), `startup_dats.c`
-     and `player_device_port_pc.c` (undetermined targets): not attempted.
+     defined in two units), `bolts` (engine-side pieces) and `startup_dats.c`
+     (undetermined target): not attempted. `player_device_port_pc.c` joined
+     `control_setup.cpp`, the only other file of its undetermined compiland.
 
    Engine side (`src/nu2api`, `src/gameapi` targets), done: `shaderSemantics.cpp`
    (new, from `nurndr.c` and `nushadermanager.cpp`), `nushaderobjectbase.cpp`

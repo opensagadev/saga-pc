@@ -1,17 +1,17 @@
 #include "saga.h"
 #include <vector>
 
-struct POST_VERTEX_SHADER_CACHE_ENTRY_PC {
-    PC_TEXTURE_RESOURCE_PC *shader; // 0x0
-    const DWORD *tokens;            // 0x4
-}; // size 0x8
+struct POST_VERTEX_SHADER_CACHE_ENTRY_PC { // size 0x8
+    PC_TEXTURE_RESOURCE_PC *shader;        // 0x0
+    const DWORD *tokens;                   // 0x4
+};
 
-struct POST_PIXEL_SHADER_CACHE_ENTRY_PC {
-    PC_TEXTURE_RESOURCE_PC *shader; // 0x0
-    const DWORD *tokens;            // 0x4
-}; // size 0x8
+struct POST_PIXEL_SHADER_CACHE_ENTRY_PC { // size 0x8
+    PC_TEXTURE_RESOURCE_PC *shader;       // 0x0
+    const DWORD *tokens;                  // 0x4
+};
 
-struct POST_SHADER_PROGRAM_POOL_PC {
+struct POST_SHADER_PROGRAM_POOL_PC {     // size 0x40c
     POST_SHADER_PROGRAM_PC programs[64]; // 0x000
     u8 occupied[8];                      // 0x400
     i32 cursor;                          // 0x408
@@ -19,7 +19,7 @@ struct POST_SHADER_PROGRAM_POOL_PC {
     POST_SHADER_PROGRAM_POOL_PC *fun_006051a0();
     i32 fun_00605480(i32 index);
     void fun_006054a0(i32 index, bool set);
-}; // size 0x40c
+};
 
 STATIC_ASSERT(sizeof(std::vector<POST_VERTEX_SHADER_CACHE_ENTRY_PC>) == 16);
 STATIC_ASSERT(sizeof(std::vector<POST_PIXEL_SHADER_CACHE_ENTRY_PC>) == 16);

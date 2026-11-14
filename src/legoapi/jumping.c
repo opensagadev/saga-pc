@@ -5,7 +5,7 @@ extern i32 (*FindSlamOrigin_UseCPosFn)(GAMEOBJECT *);
 extern void (*BigJump_EndOfLandFn)(GAMEOBJECT *);
 extern i32 (*BigJump_LandActionFn)(GAMEOBJECT *);
 
-struct minianimpacket_pc_s {
+struct minianimpacket_pc_s {    // size 0x24
     f32 current_time;           // 0x00
     f32 previous_time;          // 0x04
     u8 unknown_08[0xc];         // 0x08
@@ -16,22 +16,22 @@ struct minianimpacket_pc_s {
     i16 current_animation_id;   // 0x1e
     i16 previous_animation_id;  // 0x20
     i16 requested_animation_id; // 0x22
-}; // size 0x24
+};
 
-typedef struct beast_fall_land_view_pc_s {
-    u8 unknown_0[0x7d0];              // 0x000
-    MINIANIMPACKET_PC mini_animation; // 0x7d0
-    u8 unknown_7f4[0xdac - 0x7f4];    // 0x7f4
-    f32 fall_animation_time;          // 0xdac
-} BEAST_FALL_LAND_VIEW_PC;            // size 0xdb0
+typedef struct beast_fall_land_view_pc_s { // size 0xdb0
+    u8 unknown_0[0x7d0];                   // 0x000
+    MINIANIMPACKET_PC mini_animation;      // 0x7d0
+    u8 unknown_7f4[0xdac - 0x7f4];         // 0x7f4
+    f32 fall_animation_time;               // 0xdac
+} BEAST_FALL_LAND_VIEW_PC;
 
 extern i32 (*IsWearingBackPackFn)(GAMEOBJECT *);
 extern i32 (*UsingExtraActionsFn)(GAMEOBJECT *);
 
-typedef struct BALLOON_HEIGHT_VIEW_PC {
-    u8 unknown[0x778];    // 0x000
-    f32 height;           // 0x778
-} BALLOON_HEIGHT_VIEW_PC; // size 0x77c
+typedef struct BALLOON_HEIGHT_VIEW_PC { // size 0x77c
+    u8 unknown[0x778];                  // 0x000
+    f32 height;                         // 0x778
+} BALLOON_HEIGHT_VIEW_PC;
 
 typedef struct jump_auxiliary_fields_pc_s {
     u8 unknown_000[0x7b1];

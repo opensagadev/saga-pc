@@ -466,14 +466,14 @@ void do_Pad_Standard_camera(edcam_s *camera, f32 delta_time, FRAME_PAD_PC *pad) 
 
 /* PC Maya drag angles are observed through DWORD reads and low-WORD writes.
  * The upper halves remain part of each view and are preserved by updates. */
-typedef union EdcamMayaAngleObservedPc {
-    u32 word; // 0x0
+typedef union EdcamMayaAngleObservedPc { // size 0x4
+    u32 word;
 
-    struct {       // 0x0
+    struct {       // size 0x4
         u16 angle; // 0x0
         u16 upper; // 0x2
     } parts;
-} EdcamMayaAngleObservedPc; // size 0x4
+} EdcamMayaAngleObservedPc;
 
 STATIC_ASSERT(offsetof(edcam_s, distance) == 0x14);
 STATIC_ASSERT(offsetof(edcam_s, distance_speed) == 0x6c);

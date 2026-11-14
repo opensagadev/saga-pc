@@ -43,11 +43,6 @@
   },
   {
    "unit": "src/nu2api/shader_parser.cpp",
-   "symbol": "??0?$_Vector_iterator@PAUShaderParserIncludePc@@V?$allocator@PAUShaderParserIncludePc@@@std@@@std@@QAE@PAPAUShaderParserIncludePc@@PBU_Container_base@1@@Z",
-   "kind": "function"
-  },
-  {
-   "unit": "src/nu2api/shader_parser.cpp",
    "symbol": "?assign@?$char_traits@D@std@@SAXAADABD@Z",
    "kind": "function"
   },
@@ -79,71 +74,6 @@
   {
    "unit": "src/nu2api/nu3d_includes.cpp",
    "symbol": "??2@YAPAXIPAX@Z",
-   "kind": "function"
-  },
-  {
-   "unit": "src/nu2api/nu3d_includes.cpp",
-   "symbol": "??1NuPostFilter@@UAE@XZ",
-   "kind": "function"
-  },
-  {
-   "unit": "src/nu2api/nu3d_includes.cpp",
-   "symbol": "??1NuMotionFilterGen@@UAE@XZ",
-   "kind": "function"
-  },
-  {
-   "unit": "src/nu2api/nu3d_includes.cpp",
-   "symbol": "??1NuMotionAccumFilterGen@@UAE@XZ",
-   "kind": "function"
-  },
-  {
-   "unit": "src/nu2api/nu3d_includes.cpp",
-   "symbol": "??1NuMainFilterGen@@UAE@XZ",
-   "kind": "function"
-  },
-  {
-   "unit": "src/nu2api/nudlist_material_pc.cpp",
-   "symbol": "??1NuMainFilterGen@@UAE@XZ",
-   "kind": "function"
-  },
-  {
-   "unit": "src/nu2api/nudlist_material_pc.cpp",
-   "symbol": "??1NuPostFilter@@UAE@XZ",
-   "kind": "function"
-  },
-  {
-   "unit": "src/nu2api/nu3d_includes.cpp",
-   "symbol": "??1NuDeferredFilterGen@@UAE@XZ",
-   "kind": "function"
-  },
-  {
-   "unit": "src/nu2api/nu3d_includes.cpp",
-   "symbol": "??1NuSpeedBlurFilterGen@@UAE@XZ",
-   "kind": "function"
-  },
-  {
-   "unit": "src/nu2api/nu3d_includes.cpp",
-   "symbol": "??1NuMotionAccumFilter@@UAE@XZ",
-   "kind": "function"
-  },
-  {
-   "unit": "src/nu2api/nu3d_includes.cpp",
-   "symbol": "??1NuDeferredFilter@@UAE@XZ",
-   "kind": "function"
-  },
-  {
-   "unit": "src/nu2api/nu3d_includes.cpp",
-   "symbol": "??1NuCopyFilter@@UAE@XZ",
-   "kind": "function"
-  },
-  {
-   "unit": "src/nu2api/nu3d_includes.cpp",
-   "symbol": "??1NuMotionFilter@@UAE@XZ",
-   "kind": "function"
-  },
-  {
-   "unit": "src/nu2api/nu3d_includes.cpp",
-   "symbol": "??1NuSpeedBlurFilter@@UAE@XZ",
    "kind": "function"
   },
   {
@@ -358,16 +288,6 @@
   },
   {
    "unit": "src/editor/edlevelall.cpp",
-   "symbol": "??0EdRegistry@@QAE@XZ",
-   "kind": "function"
-  },
-  {
-   "unit": "src/editor/edlevelall.cpp",
-   "symbol": "??0EdDefunctList@@QAE@XZ",
-   "kind": "function"
-  },
-  {
-   "unit": "src/editor/edlevelall.cpp",
    "symbol": "?Allocate@MemoryBuffer@@QAEPAXI@Z",
    "kind": "function"
   },
@@ -433,27 +353,7 @@
   },
   {
    "unit": "src/editor/edlevelall.cpp",
-   "symbol": "??0?$CSListLink@VEdSubSystem@@@@QAE@XZ",
-   "kind": "function"
-  },
-  {
-   "unit": "src/editor/edlevelall.cpp",
-   "symbol": "??0?$CSListLink@VSceneInstance@@@@QAE@XZ",
-   "kind": "function"
-  },
-  {
-   "unit": "src/editor/edlevelall.cpp",
-   "symbol": "??1SceneObjectHelper@@UAE@XZ",
-   "kind": "function"
-  },
-  {
-   "unit": "src/editor/edlevelall.cpp",
    "symbol": "??1?$EdValueControl@M@@UAE@XZ",
-   "kind": "function"
-  },
-  {
-   "unit": "src/editor/edlevelall.cpp",
-   "symbol": "??0?$CSListLink@USplineKnot@@@@QAE@XZ",
    "kind": "function"
   },
   {

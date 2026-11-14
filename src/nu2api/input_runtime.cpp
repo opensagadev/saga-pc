@@ -4,6 +4,17 @@
 
 static u32 PcMousePressedMaskPc = 0;
 
+extern "C" u32 fun_006d58c0(void) {
+    return PcMousePressedMaskPc;
+}
+
+extern "C" u32 fun_006d58f0(i32 button) {
+    if (button >= 0 && button < 4u) {
+        return (1 << button) & PcMousePressedMaskPc;
+    }
+    return 0;
+}
+
 i32 PC_INPUT_RUNTIME_PC::ResolveAuxiliaryConflictsPc(i32 auxiliary_index, i32 bank_count) {
     if ((u32)(auxiliary_ports[auxiliary_index] - 10) > 3) {
         return 0;
@@ -190,22 +201,22 @@ extern "C" void PcInput_SetIsUsedCallBack(i32 (*filter)(i32, i32)) {
     PcInputCommandFilterPc = filter;
 }
 
-typedef struct NuKeyboardInitKeyRecord_PC {
-    u8 unknown_00;            // 0x0
-    u8 unknown_01;            // 0x1
-    u8 unknown_02;            // 0x2
-    u8 unknown_03;            // 0x3
-    u16 unknown_04;           // 0x4
-} NuKeyboardInitKeyRecord_PC; // size 0x6
+typedef struct NuKeyboardInitKeyRecord_PC { // size 0x6
+    u8 unknown_00;                          // 0x0
+    u8 unknown_01;                          // 0x1
+    u8 unknown_02;                          // 0x2
+    u8 unknown_03;                          // 0x3
+    u16 unknown_04;                         // 0x4
+} NuKeyboardInitKeyRecord_PC;
 
-typedef struct NuKeyboardInitTriplet_PC {
-    u8 unknown_00;          // 0x0
-    u8 unknown_01;          // 0x1
-    u8 unknown_02;          // 0x2
-    u8 unknown_03_to_09[7]; // 0x3
-} NuKeyboardInitTriplet_PC; // size 0xa
+typedef struct NuKeyboardInitTriplet_PC { // size 0xa
+    u8 unknown_00;                        // 0x0
+    u8 unknown_01;                        // 0x1
+    u8 unknown_02;                        // 0x2
+    u8 unknown_03_to_09[7];               // 0x3
+} NuKeyboardInitTriplet_PC;
 
-typedef struct NuKeyboardInitLayout_PC {
+typedef struct NuKeyboardInitLayout_PC {                // size 0x68b4
     u8 cleared_0000_to_26ff[0x2700];                    // 0x0000
     u8 cleared_2700_to_4dff[0x2700];                    // 0x2700
     i32 unknown_4e00;                                   // 0x4e00
@@ -246,7 +257,7 @@ typedef struct NuKeyboardInitLayout_PC {
     i32 unknown_67ec;                                   // 0x67ec
     NuKeyboardInitKeyRecord_PC key_records[32];         // 0x67f0
     u8 *keyboard_state;                                 // 0x68b0
-} NuKeyboardInitLayout_PC;                              // size 0x68b4
+} NuKeyboardInitLayout_PC;
 
 extern void (*PcInputStateInitializedCallback)(PC_INPUT_RUNTIME_PC *);
 
@@ -704,12 +715,12 @@ u32 PC_INPUT_RUNTIME_PC::CombineUiButtonsPc(i32 port, u32 buttons) {
     return buttons;
 }
 
-struct PC_DI_JOYSTICK_STATE_PC {
-    i32 axes[8];           // 0x000
-    i32 pov[4];            // 0x020
-    u8 buttons[128];       // 0x030
-    i32 extended_axes[24]; // 0x0b0
-}; // size 0x110
+struct PC_DI_JOYSTICK_STATE_PC { // size 0x110
+    i32 axes[8];                 // 0x000
+    i32 pov[4];                  // 0x020
+    u8 buttons[128];             // 0x030
+    i32 extended_axes[24];       // 0x0b0
+};
 
 i32 PC_INPUT_RUNTIME_PC::SampleDevicePc(i32 port, PC_INPUT_RAW_SAMPLE_PC *sample) {
     memset(sample->axes, 0, 64);
@@ -1457,6 +1468,28 @@ i32 PC_INPUT_RUNTIME_PC::fun_006d4fe0(i32 port, i32 kind, i32 value) {
     return 0;
 }
 
+/* Original source name unknown. PlayersDropInOut calls it rather than folding the constant. */
+extern "C" i32 PcInput_GetFirstKeyboardPort(void) {
+    return 10;
+}
+
+extern "C" void fun_006d5050(const i8 *order) {
+    i8 *destination;
+    i32 value;
+    PcInputActionOrder[0] = -1;
+    if (order != NULL) {
+        destination = PcInputActionOrder;
+        do {
+            value = *order++;
+            *destination++ = value;
+        } while (value >= 0);
+    }
+}
+
+extern "C" void PcInput_SetStringUCGfxRemapFn(void (*callback)(i32, char *)) {
+    TextInputNameCallbackPc = callback;
+}
+
 i32 PC_INPUT_RUNTIME_PC::fun_006d4de0(i32 port, i32 action, i32 auxiliary, i32 bank) {
     if (auxiliary) {
         return auxiliary_bindings[bank][action].kind != 0;
@@ -1488,6 +1521,21 @@ void PC_INPUT_RUNTIME_PC::CopyBindingsPc(i32 port, i32 to_auxiliary, i32 bank) {
 
 extern "C" void PcInputCopyBindingsPc(i32 port, i32 to_auxiliary, i32 bank) {
     ((PC_INPUT_RUNTIME_PC *)nu_input_state)->CopyBindingsPc(port, to_auxiliary, bank);
+}
+
+extern "C" f32 fun_006d5b00(void) {
+    PC_INPUT_RUNTIME_PC *runtime = (PC_INPUT_RUNTIME_PC *)nu_input_state;
+    return runtime->mouse.accumulated[0];
+}
+
+extern "C" f32 fun_006d5b10(void) {
+    PC_INPUT_RUNTIME_PC *runtime = (PC_INPUT_RUNTIME_PC *)nu_input_state;
+    return runtime->mouse.accumulated[1];
+}
+
+extern "C" f32 fun_006d5b20(void) {
+    PC_INPUT_RUNTIME_PC *runtime = (PC_INPUT_RUNTIME_PC *)nu_input_state;
+    return runtime->mouse.accumulated[2];
 }
 
 extern "C" void PcInputResetMouseMotionPc() {
@@ -1996,14 +2044,14 @@ extern "C" void fun_006d92c0(i32 axis, i32 active, i32 port, i32 kind, i32 value
 }
 
 // Append to input_runtime.cpp. Extend config unknown_44 with metadata named in B-layout.txt.
-struct PC_INPUT_EXPORT_METADATA_PC {
-    i16 button_count;            // 0x0
-    i16 pov_count;               // 0x2
-    i16 axis_count;              // 0x4
-    u16 deadzone_word;           // 0x6
-    u16 alternate_deadzone_word; // 0x8
-    i16 key;                     // 0xa
-}; // size 0xc
+struct PC_INPUT_EXPORT_METADATA_PC { // size 0xc
+    i16 button_count;                // 0x0
+    i16 pov_count;                   // 0x2
+    i16 axis_count;                  // 0x4
+    u16 deadzone_word;               // 0x6
+    u16 alternate_deadzone_word;     // 0x8
+    i16 key;                         // 0xa
+};
 
 STATIC_ASSERT(offsetof(PC_INPUT_CONFIG_PC, button_count) == 0x54);
 

@@ -83,7 +83,7 @@ PC_TEXTURE_ANIM_ENV *NuTexAnimEnvCreate(VARIPTR *buffer, NUMTL *material, u16 *t
 
 typedef struct TEXTURE_ANIM_PROGRAM_PC TEXTURE_ANIM_PROGRAM_PC;
 
-struct TEXTURE_ANIM_PROGRAM_PC {
+struct TEXTURE_ANIM_PROGRAM_PC {       // size 0x1bc
     TEXTURE_ANIM_PROGRAM_PC *next;     // 0x000
     TEXTURE_ANIM_PROGRAM_PC *previous; // 0x004
     char name[32];                     // 0x008
@@ -98,11 +98,11 @@ struct TEXTURE_ANIM_PROGRAM_PC {
     u16 flags;                         // 0x1b6
     u16 mask;                          // 0x1b8
     i16 instructions[1];               // 0x1ba
-}; // size 0x1bc
+};
 
 typedef struct TEXTURE_ANIMATION_PC TEXTURE_ANIMATION_PC;
 
-struct TEXTURE_ANIMATION_PC {
+struct TEXTURE_ANIMATION_PC {         // size 0x20
     TEXTURE_ANIMATION_PC *next;       // 0x00
     TEXTURE_ANIMATION_PC *previous;   // 0x04
     u16 *texture_ids;                 // 0x08
@@ -113,14 +113,14 @@ struct TEXTURE_ANIMATION_PC {
     PC_TEXTURE_ANIM_ENV *environment; // 0x14
     char *name;                       // 0x18
     char *program_name;               // 0x1c
-}; // size 0x20
+};
 
-typedef struct TEXTURE_ANIM_MATERIAL_PC {
-    u8 unknown_00[0x74];    // 0x00
-    i16 texture_id;         // 0x74
-    u8 unknown_76[0x42];    // 0x76
-    i32 diffuse_texture_id; // 0xb8
-} TEXTURE_ANIM_MATERIAL_PC; // size 0xbc
+typedef struct TEXTURE_ANIM_MATERIAL_PC { // size 0xbc
+    u8 unknown_00[0x74];                  // 0x00
+    i16 texture_id;                       // 0x74
+    u8 unknown_76[0x42];                  // 0x76
+    i32 diffuse_texture_id;               // 0xb8
+} TEXTURE_ANIM_MATERIAL_PC;
 
 static u32 nta_sig_off = 0;
 static u32 nta_sig_on = 0;

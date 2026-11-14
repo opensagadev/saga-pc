@@ -141,6 +141,8 @@ template <typename T, u32 COUNT> struct TPool {
             }
         }
     }
+
+    void fun_0060f370();
 };
 
 struct NETMESSAGE_PC {

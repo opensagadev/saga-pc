@@ -19,18 +19,18 @@ static f32 ZipUpSwingOffsetHeightPc = 0.25150299072265625f;
 static f32 ZipUpSwingOffsetLengthPc = 1.9236159324645996f;
 #pragma data_seg()
 
-struct zipup_pc_s {
-    char name[16]; // 0x00
+struct zipup_pc_s { // size 0x7c
+    char name[16];  // 0x00
 
-    union {                 // 0x10
-        NUVEC endpoints[3]; // 0x10
+    union { // size 0x24
+        NUVEC endpoints[3];
 
-        struct {                  // 0x10
+        struct {                  // size 0x24
             NUVEC lower_position; // 0x10
             NUVEC hook_origin;    // 0x1c
             NUVEC upper_position; // 0x28
         };
-    };
+    }; // 0x10
 
     u16 hook_x_rotation;         // 0x34
     u16 hook_y_rotation;         // 0x36
@@ -43,15 +43,15 @@ struct zipup_pc_s {
     u16 facing_angle;            // 0x64
     u8 unknown_66[2];            // 0x66
 
-    union {             // 0x68
-        u16 flags_word; // 0x68
+    union { // size 0x2
+        u16 flags_word;
 
-        struct {              // 0x68
+        struct {              // size 0x2
             u8 flags;         // 0x68
             u8 runtime_flags; // 0x69
         };
 
-        struct {            // 0x68
+        struct {            // size 0x2
             u16 bit_01 : 1; // 0x68:0
             u16 bit_02 : 1; // 0x68:1
             u16 bit_04 : 1; // 0x68:2
@@ -60,18 +60,18 @@ struct zipup_pc_s {
             u16 bit_20 : 1; // 0x68:5
         } config;
 
-        struct {                  // 0x68
+        struct {                  // size 0x2
             u16 unknown_bits : 6; // 0x68:0
             u16 active : 1;       // 0x68:6
             u16 visible : 1;      // 0x68:7
         } state;
-    };
+    }; // 0x68
 
     u8 unknown_6a[2]; // 0x6a
 
-    union { // 0x6c
+    union { // size 0x10
 
-        struct {                         // 0x6c
+        struct {                         // size 0x10
             f32 lower_ground_height;     // 0x6c
             f32 upper_ground_height;     // 0x70
             u16 lower_ground_x_rotation; // 0x74
@@ -80,13 +80,13 @@ struct zipup_pc_s {
             u16 upper_ground_z_rotation; // 0x7a
         };
 
-        struct {                       // 0x6c
+        struct {                       // size 0x10
             f32 ground_heights[2];     // 0x6c
             u16 ground_x_rotations[2]; // 0x74
             u16 ground_z_rotations[2]; // 0x78
         };
-    };
-}; // size 0x7c
+    }; // 0x6c
+};
 
 i32 ActivePlayerInRange(NUVEC *position, f32 range_squared, f32 *distance_squared);
 
@@ -98,15 +98,15 @@ typedef struct HINT_ZIPUP_PC {
     u8 reserved69[0x13];
 } HINT_ZIPUP_PC;
 
-typedef struct zipup_transport_view_pc_s {
-    u8 unknown_00[0x748];  // 0x000
-    NUVEC entry;           // 0x748
-    NUVEC start;           // 0x754
-    NUVEC swing;           // 0x760
-    NUVEC landing;         // 0x76c
-    u8 unknown_778[0x634]; // 0x778
-    f32 detach_fall_delay; // 0xdac
-} ZIPUP_TRANSPORT_VIEW_PC; // size 0xdb0
+typedef struct zipup_transport_view_pc_s { // size 0xdb0
+    u8 unknown_00[0x748];                  // 0x000
+    NUVEC entry;                           // 0x748
+    NUVEC start;                           // 0x754
+    NUVEC swing;                           // 0x760
+    NUVEC landing;                         // 0x76c
+    u8 unknown_778[0x634];                 // 0x778
+    f32 detach_fall_delay;                 // 0xdac
+} ZIPUP_TRANSPORT_VIEW_PC;
 
 #define ASIN_NEG_1_OVER_6 PCPathArcSineCoefficient3
 #define ASIN_NEG_3_OVER_40 PCPathArcSineCoefficient5
@@ -117,10 +117,10 @@ typedef struct zipup_transport_view_pc_s {
 #define ASIN_POW4(x) (ASIN_POW2(x) * ASIN_POW2(x))
 #define ASIN_POW5(x) (ASIN_POW2(x) * ASIN_POW3(x))
 
-typedef struct zipup_progress_pc_s {
-    u32 active_mask[1];  // 0x0
-    u32 visible_mask[1]; // 0x4
-} ZIPUP_PROGRESS_PC;     // size 0x8
+typedef struct zipup_progress_pc_s { // size 0x8
+    u32 active_mask[1];              // 0x0
+    u32 visible_mask[1];             // 0x4
+} ZIPUP_PROGRESS_PC;
 
 enum ZIPUP_FLAGS {
     ZIPUP_FLAG_CONFIG_0 = 1,
@@ -133,18 +133,18 @@ enum ZIPUP_FLAGS {
     ZIPUP_FLAG_VISIBLE = 0x80
 };
 
-typedef struct zipup_rope_vertex_pc_s {
-    NUVEC position;     // 0x00
-    NUVEC normal;       // 0x0c
-    u32 colour;         // 0x18
-    f32 u;              // 0x1c
-    f32 v;              // 0x20
-} ZIPUP_ROPE_VERTEX_PC; // size 0x24
+typedef struct zipup_rope_vertex_pc_s { // size 0x24
+    NUVEC position;                     // 0x00
+    NUVEC normal;                       // 0x0c
+    u32 colour;                         // 0x18
+    f32 u;                              // 0x1c
+    f32 v;                              // 0x20
+} ZIPUP_ROPE_VERTEX_PC;
 
-typedef struct zipup_rope_material_pc_s {
-    u8 unknown_0[0x70];   // 0x00
-    f32 opacity;          // 0x70
-} ZIPUP_ROPE_MATERIAL_PC; // size 0x74
+typedef struct zipup_rope_material_pc_s { // size 0x74
+    u8 unknown_0[0x70];                   // 0x00
+    f32 opacity;                          // 0x70
+} ZIPUP_ROPE_MATERIAL_PC;
 
 static f32 ZipUpFabsPc(f32 value);
 

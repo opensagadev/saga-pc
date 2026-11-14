@@ -12,26 +12,26 @@ void InitSnakes(WORLDINFO *world) {
     NuSpecialFind(world->current_gscn, &snake_hspecials[2], "Snake_bit_3", 1);
 }
 
-typedef struct snake_segment_pc_s {
-    NUVEC position;    // 0x00
-    f32 ground_height; // 0x0c
-    NUANG yaw;         // 0x10
-    NUANG pitch;       // 0x14
-} SNAKE_SEGMENT_PC;    // size 0x18
+typedef struct snake_segment_pc_s { // size 0x18
+    NUVEC position;                 // 0x00
+    f32 ground_height;              // 0x0c
+    NUANG yaw;                      // 0x10
+    NUANG pitch;                    // 0x14
+} SNAKE_SEGMENT_PC;
 
-typedef struct snake_body_pc_s {
+typedef struct snake_body_pc_s {   // size 0x110
     SNAKE_SEGMENT_PC segments[11]; // 0x000
     f32 scale;                     // 0x108
     u16 segment_count;             // 0x10c
     u16 flags;                     // 0x10e
-} SNAKE_BODY_PC;                   // size 0x110
+} SNAKE_BODY_PC;
 
-typedef struct snake_object_reader_pc_s {
-    u8 unknown_000[0x4d8];          // 0x0000
-    PART_LIGHTING_DATA_PC lighting; // 0x04d8
-    u8 unknown_5a4[0x10ac - 0x5a4]; // 0x05a4
-    SNAKE_BODY_PC *snake_body;      // 0x10ac
-} SNAKE_OBJECT_READER_PC;           // size 0x10b0
+typedef struct snake_object_reader_pc_s { // size 0x10b0
+    u8 unknown_000[0x4d8];                // 0x0000
+    PART_LIGHTING_DATA_PC lighting;       // 0x04d8
+    u8 unknown_5a4[0x10ac - 0x5a4];       // 0x05a4
+    SNAKE_BODY_PC *snake_body;            // 0x10ac
+} SNAKE_OBJECT_READER_PC;
 
 extern f32 SnakeSegmentSpacingPc;
 extern f32 SnakeHeadHeightPc;

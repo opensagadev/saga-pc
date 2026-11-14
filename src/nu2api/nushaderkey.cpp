@@ -121,8 +121,20 @@ extern "C" void NuShaderObjectKeyGeneratePc(u32 *key, const PC_SHADER_FILTER_DES
     NuShaderObjectKeyGenerate3(key, &filter, pixel_stage);
 }
 
+extern "C" u8 dat_0297d6a8[16];
+
+/* Installs the 16-byte hash of the uber shader source that every key mixes in. */
+extern "C" void NuShaderObjectKeySetUberShaderHash(const u8 *hash) {
+    if (hash == NULL) {
+        hash = dat_0297d6a8;
+    }
+    for (i32 i = 0; i < 16; i++) {
+        reinterpret_cast<u8 *>(ShaderProgramHashPC)[i] = hash[i];
+    }
+}
+
 /* The key of a program described by flags alone. No caller. */
-extern "C" void NuShaderObjectKeyGenerate4(u32 *key, u32 flags) {
+extern "C" void NuShaderObjectKeyGenerate4(u32 *key, u32 flags, i32) {
     PC_SHADER_KEY_BLOCK_PC block;
     memset(&block, 0, sizeof(block));
     block.bytes[0x14] = 1;

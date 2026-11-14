@@ -7,10 +7,10 @@ extern "C" {
     void ClearSpecialMove(GAMEOBJECT *);
 }
 
-typedef struct batman_prepare_pc_s {
+typedef struct batman_prepare_pc_s {      // size 0x8
     u32 capabilities;                     // 0x0
     AI_PREPARING_SPECIAL_MOVE_PC prepare; // 0x4
-} BATMAN_PREPARE_PC;                      // size 0x8
+} BATMAN_PREPARE_PC;
 
 extern "C" {
     extern BATMAN_PREPARE_PC batman_prepareforspecialmove[11];

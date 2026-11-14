@@ -564,27 +564,44 @@ left to you.
 ## Layout comments
 
 A struct states its layout in trailing comments instead of `STATIC_ASSERT`
-lines: every member line carries its offset from the start of the outermost
-struct, the closing line its size. `make check-core` runs `tools/layoutcheck.py`,
+lines: the line of its `{` carries its size, every member line its offset from
+the start of the outermost struct. `make check-core` runs `tools/layoutcheck.py`,
 which computes the layouts with the MSVC x86 ABI (libclang,
 `--target=i686-pc-windows-msvc`, the pinned SDK headers, C and C++, with and
 without `SAGA_DEBUG`) and fails on a wrong, missing or misformatted comment in
 any struct that has a size comment.
 
 ```c
-typedef struct EXAMPLE_PC {
-    i32 id;          // 0x00
-    union {          // 0x04  anonymous and inline structs: on the line of `{`
-        f32 timer;   // 0x04
-        i32 counter; // 0x04  a note may follow the offset
-    };
-    u32 active : 1;  // 0x08:0  bitfields: storage unit and first bit
-    u32 mode : 3;    // 0x08:1
-} EXAMPLE_PC;        // size 0x0c
+typedef struct EXAMPLE_PC { // size 0x14
+    i32 id;                 // 0x00
+    union {                 // size 0x4   every nested struct/union: size on its `{` line
+        f32 timer;          //            direct members of a union: no offset
+        struct {            // size 0x4
+            i16 lo;         // 0x04       members of a struct in a union: absolute offsets
+            i16 hi;         // 0x06  a note may follow the offset
+        } halves;
+    };                      // 0x04       anonymous: offset on the closing line
+    u32 active : 1;         // 0x08:0     bitfields: storage unit and first bit
+    u32 mode : 3;           // 0x08:1
+    struct {                // size 0x2
+        u8 x, y;            // 0x0c
+    } grid[2];              // 0x0c       named: offset on the line of its identifier
+    u32 tag;                // 0x10
+} EXAMPLE_PC;
 ```
 
-Offsets are lower-case hex, zero-padded to the digits of `size - 1`; a line
-with several members carries the first one's offset. `python3
+The size comment goes on the line of the `{` of the outer record and of every
+nested named or anonymous struct or union (for an array of inline records, the
+size of one element). A member's offset goes on the line of its identifier;
+for a nested record that is its closing line (`} grid[2]; // 0x0c`), for an
+anonymous one the `};` line. Members directly inside a union carry no offset
+(they all sit at the union's offset); members of a struct nested in a union
+carry theirs, measured like every offset from the start of the outermost
+record. A one-line record needs only its size, a one-line nested record only
+its offset. Offsets are lower-case hex, zero-padded to the digits of
+`size - 1`; a line with several members carries the first one's offset. The earlier form (size on
+the closing line, offsets on union members) fails the check; `python3
+tools/layoutcheck.py --fix` rewrites it. `python3
 tools/layoutcheck.py --convert FILE[:FIRST-LAST]|STRUCT` writes these comments
 and deletes the size/offset asserts that agree with the computed layout;
 `--stats` shows what is covered by comments, by asserts, or by neither. Other

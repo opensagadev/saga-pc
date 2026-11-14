@@ -3,6 +3,13 @@
 #include <stdio.h>
 #include <string.h>
 
+extern "C" void fun_0050ed40(i32, i32, i32);
+
+extern "C" void fun_006dd400(void) {
+    PcWindowOptions.Load();
+    fun_0050ed40(0, 0, 0);
+}
+
 extern "C" char *PcGetUserFolder(const char *unused_company, const char *unused_product) {
     i32 folder = CSIDL_LOCAL_APPDATA;
     if (PcUsePersonalFolder) {

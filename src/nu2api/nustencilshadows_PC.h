@@ -435,10 +435,10 @@ extern "C" {
 #if SAGA_NU2API_NUSTENCILSHADOWS_PC_H_PART == 3 && !defined(SAGA_NU2API_NUSTENCILSHADOWS_PC_H_STOP)
 
 /* One saved camera of the PC camera stack (0x280a598, 64 entries) with the render-state camera id. */
-typedef struct NU_CAMERA_STACK_ENTRY_PC {
-    NUCAMERA camera;        // 0x00
-    i32 camera_id;          // 0x78
-} NU_CAMERA_STACK_ENTRY_PC; // size 0x7c
+typedef struct NU_CAMERA_STACK_ENTRY_PC { // size 0x7c
+    NUCAMERA camera;                      // 0x00
+    i32 camera_id;                        // 0x78
+} NU_CAMERA_STACK_ENTRY_PC;
 #ifdef __cplusplus
 extern "C" {
 #endif

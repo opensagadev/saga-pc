@@ -1,20 +1,20 @@
 #include "saga.h"
 #include <stdio.h>
 
-typedef struct cut_scene_pre_end_pc_s {
-    u8 unknown_00[8];   // 0x0
-    f32 duration;       // 0x8
-} CUT_SCENE_PRE_END_PC; // size 0xc
+typedef struct cut_scene_pre_end_pc_s { // size 0xc
+    u8 unknown_00[8];                   // 0x0
+    f32 duration;                       // 0x8
+} CUT_SCENE_PRE_END_PC;
 
-typedef struct cut_camera_pre_end_pc_s {
-    void *keys;          // 0x0
-    u8 unknown_04[5];    // 0x4
-    i8 camera_index;     // 0x9
-    u8 unknown_0a;       // 0xa
-    u8 key_count;        // 0xb
-} CUT_CAMERA_PRE_END_PC; // size 0xc
+typedef struct cut_camera_pre_end_pc_s { // size 0xc
+    void *keys;                          // 0x0
+    u8 unknown_04[5];                    // 0x4
+    i8 camera_index;                     // 0x9
+    u8 unknown_0a;                       // 0xa
+    u8 key_count;                        // 0xb
+} CUT_CAMERA_PRE_END_PC;
 
-typedef struct cut_instance_pre_end_pc_s {
+typedef struct cut_instance_pre_end_pc_s {  // size 0xa0
     u8 unknown_00[0x58];                    // 0x00
     CUT_SCENE_PRE_END_PC *scene;            // 0x58
     u8 unknown_5c[0x2c];                    // 0x5c
@@ -24,7 +24,7 @@ typedef struct cut_instance_pre_end_pc_s {
     f32 render_frame;                       // 0x94
     u8 unknown_98[4];                       // 0x98
     CUT_CAMERA_PRE_END_PC *camera_instance; // 0x9c
-} CUT_INSTANCE_PRE_END_PC;                  // size 0xa0
+} CUT_INSTANCE_PRE_END_PC;
 
 void instNuGCutSceneEndButNotSystems(INSTNUGCUTSCENE *owner) {
     CUT_INSTANCE_PRE_END_PC *instance = (CUT_INSTANCE_PRE_END_PC *)owner;
@@ -80,23 +80,23 @@ void fun_005004d0(void) {
 
 STATIC_ASSERT(offsetof(CUT_PLAYER_ACTIVE_PC, active) == 4);
 
-typedef struct CUT_PLAYER_STATE_PC {
-    NUSPECIALHANDLE special; // 0x0
-    u8 flags;                // 0xc
-    u8 unknown_0d[3];        // 0xd
-} CUT_PLAYER_STATE_PC;       // size 0x10
+typedef struct CUT_PLAYER_STATE_PC { // size 0x10
+    NUSPECIALHANDLE special;         // 0x0
+    u8 flags;                        // 0xc
+    u8 unknown_0d[3];                // 0xd
+} CUT_PLAYER_STATE_PC;
 
-typedef struct CUT_PLAYER_RECORD_PC {
-    u8 unknown_00[0x48];         // 0x00
-    CUT_PLAYER_STATE_PC *states; // 0x48
-    u8 state_count;              // 0x4c
-} CUT_PLAYER_RECORD_PC;          // size 0x50
+typedef struct CUT_PLAYER_RECORD_PC { // size 0x50
+    u8 unknown_00[0x48];              // 0x00
+    CUT_PLAYER_STATE_PC *states;      // 0x48
+    u8 state_count;                   // 0x4c
+} CUT_PLAYER_RECORD_PC;
 
-typedef struct CUT_PLAYER_INST_ANIM_PC {
-    u8 unknown_00[0x4c];   // 0x00
-    f32 time;              // 0x4c
-    u32 flags;             // 0x50
-} CUT_PLAYER_INST_ANIM_PC; // size 0x54
+typedef struct CUT_PLAYER_INST_ANIM_PC { // size 0x54
+    u8 unknown_00[0x4c];                 // 0x00
+    f32 time;                            // 0x4c
+    u32 flags;                           // 0x50
+} CUT_PLAYER_INST_ANIM_PC;
 
 STATIC_ASSERT(sizeof(CUT_PLAYER_CLIP_CONFIG_PC) == 0x44);
 STATIC_ASSERT(offsetof(CUT_PLAYER_CLIP_CONFIG_PC, level_id) == 0);
@@ -104,17 +104,17 @@ STATIC_ASSERT(offsetof(CUT_PLAYER_CLIP_CONFIG_PC, type) == 2);
 STATIC_ASSERT(offsetof(CUT_PLAYER_CLIP_CONFIG_PC, guest_episode) == 3);
 STATIC_ASSERT(offsetof(CUT_PLAYER_CLIP_CONFIG_PC, name) == 4);
 
-typedef struct cut_player_config_pc_s {
-    CUT_PLAYER_CLIP_CONFIG_PC *clips;  // 0x00
-    CUT_PLAYER_CLIP_CONFIG_PC *active; // 0x04
-    u16 clip_count;                    // 0x08
-    i16 return_door;                   // 0x0a
-    i16 *clip_text;                    // 0x0c
-    i16 *intro_text;                   // 0x10
-    i16 *midtro_text;                  // 0x14
-    i16 *outro_text;                   // 0x18
-    i16 *ending_text;                  // 0x1c
-} CUT_PLAYER_CONFIG_PC;                // size 0x20
+typedef struct cut_player_config_pc_s { // size 0x20
+    CUT_PLAYER_CLIP_CONFIG_PC *clips;   // 0x00
+    CUT_PLAYER_CLIP_CONFIG_PC *active;  // 0x04
+    u16 clip_count;                     // 0x08
+    i16 return_door;                    // 0x0a
+    i16 *clip_text;                     // 0x0c
+    i16 *intro_text;                    // 0x10
+    i16 *midtro_text;                   // 0x14
+    i16 *outro_text;                    // 0x18
+    i16 *ending_text;                   // 0x1c
+} CUT_PLAYER_CONFIG_PC;
 
 STATIC_ASSERT(offsetof(AREA_DATA_PC, episode_index) == 0x86);
 STATIC_ASSERT(sizeof(EPISODEDATA_PC) == 0x1c);
@@ -125,33 +125,33 @@ STATIC_ASSERT(offsetof(EPISODEDATA_PC, text_id) == 2);
 STATIC_ASSERT(offsetof(LEVELDATA_PC, episode) == 0xa2);
 STATIC_ASSERT(offsetof(LEVELDATA_PC, area_index) == 0xa3);
 
-typedef struct cut_average_rigid_system_pc_s {
-    void *rigids;              // 0x0
-    u16 count;                 // 0x4
-} CUT_AVERAGE_RIGID_SYSTEM_PC; // size 0x8
+typedef struct cut_average_rigid_system_pc_s { // size 0x8
+    void *rigids;                              // 0x0
+    u16 count;                                 // 0x4
+} CUT_AVERAGE_RIGID_SYSTEM_PC;
 
-typedef struct cut_average_scene_pc_s {
+typedef struct cut_average_scene_pc_s {        // size 0x18
     u8 unknown_00[0x14];                       // 0x00
     CUT_AVERAGE_RIGID_SYSTEM_PC *rigid_system; // 0x14
-} CUT_AVERAGE_SCENE_PC;                        // size 0x18
+} CUT_AVERAGE_SCENE_PC;
 
-typedef struct cut_average_rigid_pc_s {
-    NUSPECIALHANDLE special; // 0x0
-    u8 unknown_0c[4];        // 0xc
-} CUT_AVERAGE_RIGID_PC;      // size 0x10
+typedef struct cut_average_rigid_pc_s { // size 0x10
+    NUSPECIALHANDLE special;            // 0x0
+    u8 unknown_0c[4];                   // 0xc
+} CUT_AVERAGE_RIGID_PC;
 
 typedef struct cut_average_rigid_instance_pc_s {
     CUT_AVERAGE_RIGID_PC *rigids;
 } CUT_AVERAGE_RIGID_INSTANCE_PC;
 
-typedef struct cut_average_instance_pc_s {
+typedef struct cut_average_instance_pc_s {         // size 0xa4
     u8 unknown_00[0x58];                           // 0x00
     CUT_AVERAGE_SCENE_PC *scene;                   // 0x58
     u8 unknown_5c[4];                              // 0x5c
     NUVEC center;                                  // 0x60
     u8 unknown_6c[0x34];                           // 0x6c
     CUT_AVERAGE_RIGID_INSTANCE_PC *rigid_instance; // 0xa0
-} CUT_AVERAGE_INSTANCE_PC;                         // size 0xa4
+} CUT_AVERAGE_INSTANCE_PC;
 
 void instNuGCutSceneCalculateAverageCentre(INSTNUGCUTSCENE *owner, NUMTX *matrix, NUVEC *out) {
     CUT_AVERAGE_INSTANCE_PC *instance = (CUT_AVERAGE_INSTANCE_PC *)owner;
@@ -184,36 +184,36 @@ void instNuGCutSceneCalculateAverageCentre(INSTNUGCUTSCENE *owner, NUMTX *matrix
     }
 }
 
-typedef struct cut_memory_scene_pc_s {
-    u8 unknown_00[0x58]; // 0x00
-    u32 loaded_size;     // 0x58
-} CUT_MEMORY_SCENE_PC;   // size 0x5c
+typedef struct cut_memory_scene_pc_s { // size 0x5c
+    u8 unknown_00[0x58];               // 0x00
+    u32 loaded_size;                   // 0x58
+} CUT_MEMORY_SCENE_PC;
 
-typedef struct cut_memory_instance_pc_s {
-    u8 unknown_00[0x58];             // 0x00
-    CUT_MEMORY_SCENE_PC *scene;      // 0x58
-    u8 unknown_5c[0x2c];             // 0x5c
-    u32 flags_88;                    // 0x88
-    u8 unknown_8c[0x54];             // 0x8c
-    f32 accumulated_stream_duration; // 0xe0
-    u8 unknown_e4[0xc];              // 0xe4
-    u32 allocation_size;             // 0xf0
-} CUT_MEMORY_INSTANCE_PC;            // size 0xf4
+typedef struct cut_memory_instance_pc_s { // size 0xf4
+    u8 unknown_00[0x58];                  // 0x00
+    CUT_MEMORY_SCENE_PC *scene;           // 0x58
+    u8 unknown_5c[0x2c];                  // 0x5c
+    u32 flags_88;                         // 0x88
+    u8 unknown_8c[0x54];                  // 0x8c
+    f32 accumulated_stream_duration;      // 0xe0
+    u8 unknown_e4[0xc];                   // 0xe4
+    u32 allocation_size;                  // 0xf0
+} CUT_MEMORY_INSTANCE_PC;
 
-typedef struct cut_memory_entry_pc_s {
-    void *handle;               // 0x0
-    CUT_MEMORY_SCENE_PC *scene; // 0x4
-    f32 accumulated_duration;   // 0x8
-    u8 flags;                   // 0xc
-    u8 unknown_0d[3];           // 0xd
-} CUT_MEMORY_ENTRY_PC;          // size 0x10
+typedef struct cut_memory_entry_pc_s { // size 0x10
+    void *handle;                      // 0x0
+    CUT_MEMORY_SCENE_PC *scene;        // 0x4
+    f32 accumulated_duration;          // 0x8
+    u8 flags;                          // 0xc
+    u8 unknown_0d[3];                  // 0xd
+} CUT_MEMORY_ENTRY_PC;
 
-typedef struct cut_memory_vertex_pc_s {
-    f32 x;              // 0x0
-    f32 y;              // 0x4
-    f32 z;              // 0x8
-    u32 colour;         // 0xc
-} CUT_MEMORY_VERTEX_PC; // size 0x10
+typedef struct cut_memory_vertex_pc_s { // size 0x10
+    f32 x;                              // 0x0
+    f32 y;                              // 0x4
+    f32 z;                              // 0x8
+    u32 colour;                         // 0xc
+} CUT_MEMORY_VERTEX_PC;
 
 #pragma section(".bss$DefragCutSceneEndMem", read, write)
 __declspec(allocate(".bss$DefragCutSceneEndMem")) void *DefragCutSceneEndMem = NULL;
@@ -387,33 +387,33 @@ void DisplayCutSceneMemory(void) {
 
 typedef struct cut_script_node_pc_s CUT_SCRIPT_NODE_PC;
 
-struct cut_script_node_pc_s {
+struct cut_script_node_pc_s { // size 0x18
     CUT_SCRIPT_NODE_PC *next; // 0x00
     i32 type;                 // 0x04
 
-    union {          // 0x08
-        char *name;  // 0x08
-        i32 param;   // 0x08
-        u8 bytes[4]; // 0x08
-    } a;
+    union { // size 0x4
+        char *name;
+        i32 param;
+        u8 bytes[4];
+    } a; // 0x08
 
-    union {                        // 0x0c
-        char *name;                // 0x0c
-        i32 value;                 // 0x0c
-        CUT_SCRIPT_NODE_PC *block; // 0x0c
-    } b;
+    union { // size 0x4
+        char *name;
+        i32 value;
+        CUT_SCRIPT_NODE_PC *block;
+    } b; // 0x0c
 
     CUT_SCRIPT_NODE_PC *c; // 0x10
     CUT_SCRIPT_NODE_PC *d; // 0x14
-}; // size 0x18
+};
 
 typedef struct cut_script_pc_s CUT_SCRIPT_PC;
 
-struct cut_script_pc_s {
+struct cut_script_pc_s {       // size 0xc
     CUT_SCRIPT_PC *next;       // 0x0
     char *name;                // 0x4
     CUT_SCRIPT_NODE_PC *nodes; // 0x8
-}; // size 0xc
+};
 
 #define CUT_SCRIPT_NODE_ALLOC(node, buffer, size)                                                                      \
     (node) = (CUT_SCRIPT_NODE_PC *)(buffer)->void_ptr;                                                                 \
@@ -638,43 +638,43 @@ CUT_SCRIPT_PC *CutScriptLoadPc(char *file, VARIPTR *buffer, i32 unused) {
     return head;
 }
 
-typedef struct cut_trigger_shape_pc_s {
-    i32 type;           // 0x0
-    void *data;         // 0x4
-} CUT_TRIGGER_SHAPE_PC; // size 0x8
+typedef struct cut_trigger_shape_pc_s { // size 0x8
+    i32 type;                           // 0x0
+    void *data;                         // 0x4
+} CUT_TRIGGER_SHAPE_PC;
 
 typedef struct cut_trigger_sphere_pc_s {
     NUVEC centre;
     f32 radius;
 } CUT_TRIGGER_SPHERE_PC;
 
-typedef struct cut_trigger_box_pc_s {
-    NUMTX matrix;     // 0x00
-    NUVEC min;        // 0x40
-    NUVEC max;        // 0x4c
-} CUT_TRIGGER_BOX_PC; // size 0x58
+typedef struct cut_trigger_box_pc_s { // size 0x58
+    NUMTX matrix;                     // 0x00
+    NUVEC min;                        // 0x40
+    NUVEC max;                        // 0x4c
+} CUT_TRIGGER_BOX_PC;
 
-typedef struct cut_trigger_cylinder_pc_s {
-    NUVEC base;            // 0x00
-    f32 height;            // 0x0c
-    f32 radius;            // 0x10
-} CUT_TRIGGER_CYLINDER_PC; // size 0x14
+typedef struct cut_trigger_cylinder_pc_s { // size 0x14
+    NUVEC base;                            // 0x00
+    f32 height;                            // 0x0c
+    f32 radius;                            // 0x10
+} CUT_TRIGGER_CYLINDER_PC;
 
-typedef struct cut_trigger_entry_pc_s {
-    char *name;                   // 0x00
-    i32 kind;                     // 0x04
-    i16 threshold;                // 0x08
-    u8 initial_state;             // 0x0a
-    u8 unknown_0b;                // 0x0b
-    u8 flags;                     // 0x0c
-    u8 unknown_0d[3];             // 0x0d
-    f32 radius;                   // 0x10
-    NUVEC min;                    // 0x14
-    NUVEC max;                    // 0x20
-    i16 shape_count;              // 0x2c
-    i16 scene_instance;           // 0x2e
-    CUT_TRIGGER_SHAPE_PC *shapes; // 0x30
-} CUT_TRIGGER_ENTRY_PC;           // size 0x34
+typedef struct cut_trigger_entry_pc_s { // size 0x34
+    char *name;                         // 0x00
+    i32 kind;                           // 0x04
+    i16 threshold;                      // 0x08
+    u8 initial_state;                   // 0x0a
+    u8 unknown_0b;                      // 0x0b
+    u8 flags;                           // 0x0c
+    u8 unknown_0d[3];                   // 0x0d
+    f32 radius;                         // 0x10
+    NUVEC min;                          // 0x14
+    NUVEC max;                          // 0x20
+    i16 shape_count;                    // 0x2c
+    i16 scene_instance;                 // 0x2e
+    CUT_TRIGGER_SHAPE_PC *shapes;       // 0x30
+} CUT_TRIGGER_ENTRY_PC;
 
 typedef struct cut_trigger_file_pc_s {
     i32 version;
@@ -683,23 +683,23 @@ typedef struct cut_trigger_file_pc_s {
     CUT_TRIGGER_ENTRY_PC *entries;
 } CUT_TRIGGER_FILE_PC;
 
-typedef struct cut_trigger_state_pc_s {
-    i16 count;          // 0x0
-    u8 state;           // 0x2
-    u8 pulled;          // 0x3
-} CUT_TRIGGER_STATE_PC; // size 0x4
+typedef struct cut_trigger_state_pc_s { // size 0x4
+    i16 count;                          // 0x0
+    u8 state;                           // 0x2
+    u8 pulled;                          // 0x3
+} CUT_TRIGGER_STATE_PC;
 
-typedef struct cut_trigger_scene_instance_pc_s {
-    NUMTX matrix;                // 0x00
-    i32 unknown_40;              // 0x40
-    u32 flags;                   // 0x44
-    NUMTX *animated_matrix;      // 0x48
-    u32 unknown_4c;              // 0x4c
-} CUT_TRIGGER_SCENE_INSTANCE_PC; // size 0x50
+typedef struct cut_trigger_scene_instance_pc_s { // size 0x50
+    NUMTX matrix;                                // 0x00
+    i32 unknown_40;                              // 0x40
+    u32 flags;                                   // 0x44
+    NUMTX *animated_matrix;                      // 0x48
+    u32 unknown_4c;                              // 0x4c
+} CUT_TRIGGER_SCENE_INSTANCE_PC;
 
 typedef struct cut_trigger_set_pc_s CUT_TRIGGER_SET_PC;
 
-struct cut_trigger_set_pc_s {
+struct cut_trigger_set_pc_s {     // size 0x3c
     CUT_TRIGGER_SET_PC *next;     // 0x00
     CUT_TRIGGER_SET_PC *prev;     // 0x04
     CUT_TRIGGER_FILE_PC *file;    // 0x08
@@ -708,17 +708,17 @@ struct cut_trigger_set_pc_s {
     CUT_SCRIPT_PC *scripts;       // 0x14
     i8 params[32];                // 0x18
     u32 flags;                    // 0x38
-}; // size 0x3c
+};
 
 #pragma section(".bss$CutTriggerSetListPc", read, write)
 __declspec(allocate(".bss$CutTriggerSetListPc")) CUT_TRIGGER_SET_PC *CutTriggerSetListPc = NULL;
 #pragma section(".bss$CutTriggerPendingSetListPc", read, write)
 __declspec(allocate(".bss$CutTriggerPendingSetListPc")) CUT_TRIGGER_SET_PC *CutTriggerPendingSetListPc = NULL;
 
-typedef struct cut_app_command_pc_s {
-    char *name;         // 0x0
-    void (*fn)(char *); // 0x4
-} CUT_APP_COMMAND_PC;   // size 0x8
+typedef struct cut_app_command_pc_s { // size 0x8
+    char *name;                       // 0x0
+    void (*fn)(char *);               // 0x4
+} CUT_APP_COMMAND_PC;
 
 #pragma section(".bss$CutScriptAppCommandsPc", read, write)
 __declspec(allocate(".bss$CutScriptAppCommandsPc")) CUT_APP_COMMAND_PC *CutScriptAppCommandsPc = NULL;

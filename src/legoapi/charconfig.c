@@ -1,20 +1,20 @@
 #include "saga.h"
 extern i32 configureallcharacters_perm;
 
-typedef struct CHARCONFIG_PC {
+typedef struct CHARCONFIG_PC {            // size 0xfc8
     CHARACTERDATA_PC *character;          // 0x000
     PLAYERCHARACTERCONFIG_PC *runtime;    // 0x004
     GAMECHARACTERLAYER_PC *layer_scratch; // 0x008
 
-    union {        // 0x00c
-        u32 flags; // 0x00c
+    union { // size 0x4
+        u32 flags;
 
-        struct {                 // 0x00c
+        struct {                 // size 0x4
             u32 flags_low : 6;   // 0x00c:0
             u32 permanent : 1;   // 0x00c:6
             u32 flags_high : 25; // 0x00c:7
         };
-    };
+    }; // 0x00c
 
     u8 named_layers;                                   // 0x010
     u8 unknown_11[3];                                  // 0x011
@@ -25,14 +25,14 @@ typedef struct CHARCONFIG_PC {
     VARIPTR *arena;                                    // 0x020
     VARIPTR *arena_end;                                // 0x024
     char animation_names[100][40];                     // 0x028
-} CHARCONFIG_PC;                                       // size 0xfc8
+} CHARCONFIG_PC;
 
 CHARCONFIG_PC charconfig = {0};
 
 /* Bit views of PLAYERCHARACTERCONFIG_PC.flags_094 and flags_098: the keyword handlers
    store these as 1-bit fields of a 32-bit unit. They belong in saga.h as members of the
    flags_094/flags_098 unions; until then the CC_FLAGS macros view the words through them. */
-typedef struct CHARCONFIG_FLAGS094_PC {
+typedef struct CHARCONFIG_FLAGS094_PC {     // size 0x4
     u32 minikit_with_scene : 1;             // 0x0:0
     u32 dont_turn : 1;                      // 0x0:1
     u32 no_jump : 1;                        // 0x0:2
@@ -65,18 +65,18 @@ typedef struct CHARCONFIG_FLAGS094_PC {
     u32 has_whip : 1;                       // 0x0:29
     u32 atatheadmovement : 1;               // 0x0:30
     u32 can_poo : 1;                        // 0x0:31
-} CHARCONFIG_FLAGS094_PC;                   // size 0x4
+} CHARCONFIG_FLAGS094_PC;
 
-typedef struct CHARCONFIG_FLAGS098_PC {
-    u32 can_zap : 1;                  // 0x0:0
-    u32 put_weapon_away_on_shoot : 1; // 0x0:1
-    u32 always_stop_to_shoot : 1;     // 0x0:2
-    u32 second_shot_only : 1;         // 0x0:3
-    u32 no_start_punch_sfx : 1;       // 0x0:4
-    u32 single_jump_slam : 1;         // 0x0:5
-    u32 dont_draw_rider : 1;          // 0x0:6
-    u32 unknown_7 : 1;                // 0x0:7
-} CHARCONFIG_FLAGS098_PC;             // size 0x4
+typedef struct CHARCONFIG_FLAGS098_PC { // size 0x4
+    u32 can_zap : 1;                    // 0x0:0
+    u32 put_weapon_away_on_shoot : 1;   // 0x0:1
+    u32 always_stop_to_shoot : 1;       // 0x0:2
+    u32 second_shot_only : 1;           // 0x0:3
+    u32 no_start_punch_sfx : 1;         // 0x0:4
+    u32 single_jump_slam : 1;           // 0x0:5
+    u32 dont_draw_rider : 1;            // 0x0:6
+    u32 unknown_7 : 1;                  // 0x0:7
+} CHARCONFIG_FLAGS098_PC;
 
 #define CC_FLAGS094 (*(CHARCONFIG_FLAGS094_PC *)&charconfig.runtime->flags_094)
 #define CC_FLAGS098 (*(CHARCONFIG_FLAGS098_PC *)charconfig.runtime->flags_098)

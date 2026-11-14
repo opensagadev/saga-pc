@@ -1,16 +1,16 @@
 #include "saga.h"
 
-typedef struct episode_area_save_reader_pc_s {
-    u8 complete;               // 0x0
-    u8 area_complete;          // 0x1
-    u8 story_complete;         // 0x2
-    u8 freeplay_complete;      // 0x3
-    u8 minikit_complete;       // 0x4
-    u8 minikit_count;          // 0x5
-    u8 red_brick_complete;     // 0x6
-    u8 challenge_complete;     // 0x7
-    f32 challenge_time;        // 0x8
-} EPISODE_AREA_SAVE_READER_PC; // size 0xc
+typedef struct episode_area_save_reader_pc_s { // size 0xc
+    u8 complete;                               // 0x0
+    u8 area_complete;                          // 0x1
+    u8 story_complete;                         // 0x2
+    u8 freeplay_complete;                      // 0x3
+    u8 minikit_complete;                       // 0x4
+    u8 minikit_count;                          // 0x5
+    u8 red_brick_complete;                     // 0x6
+    u8 challenge_complete;                     // 0x7
+    f32 challenge_time;                        // 0x8
+} EPISODE_AREA_SAVE_READER_PC;
 
 STATIC_ASSERT(offsetof(EPISODEDATA_PC, area_ids) == 4);
 STATIC_ASSERT(offsetof(EPISODEDATA_PC, area_count) == 0x18);

@@ -3,33 +3,33 @@
 #include <string.h>
 
 static void *NuAllocPeakEnd1 = 0;
-static NUALLOC_POOL *NuAllocPool = 0;
+NUALLOC_POOL *NuAllocPool = 0;
 static u32 NuAllocRecordSerial = 0;
 
-struct nualloc_record_s {
+struct nualloc_record_s {              // size 0x20
     struct nualloc_record_s *next;     // 0x00
     struct nualloc_record_s *previous; // 0x04
     i32 source_line;                   // 0x08
     u32 serial;                        // 0x0c
     u32 requested_size;                // 0x10
     u32 header_metadata[3];            // 0x14
-}; // size 0x20
+};
 
-typedef struct nualloc_tail_s {
-    u32 metadata[3]; // 0x0
-} NUALLOC_TAIL;      // size 0xc
+typedef struct nualloc_tail_s { // size 0xc
+    u32 metadata[3];            // 0x0
+} NUALLOC_TAIL;
 
-struct nualloc_arena_s {
-    u32 *cursor; // 0x0
-    u32 end;     // 0x4
-}; // size 0x8
+struct nualloc_arena_s { // size 0x8
+    u32 *cursor;         // 0x0
+    u32 end;             // 0x4
+};
 
-struct nualloc_pool_s {
-    u32 capacity;   // 0x0
-    u32 remaining;  // 0x4
-    u32 cursor;     // 0x8
-    u32 unknown_0c; // 0xc
-}; // size 0x10
+struct nualloc_pool_s { // size 0x10
+    u32 capacity;       // 0x0
+    u32 remaining;      // 0x4
+    u32 cursor;         // 0x8
+    u32 unknown_0c;     // 0xc
+};
 
 /* Allocator state. */
 extern NUALLOC_RECORD *NuAllocRecordHead;
@@ -42,22 +42,22 @@ void NuAllocBadPointer(void);
 void NuAllocReport(const void *message, ...);
 
 /* PC manager prefix and block header touched by the allocator. */
-typedef struct nualloc_manager_block_pc_s {
+typedef struct nualloc_manager_block_pc_s {      // size 0xc
     u32 size_flags;                              // 0x0
     struct nualloc_manager_block_pc_s *next;     // 0x4
     struct nualloc_manager_block_pc_s *previous; // 0x8
-} NUALLOC_MANAGER_BLOCK_PC;                      // size 0xc
+} NUALLOC_MANAGER_BLOCK_PC;
 
-typedef struct nualloc_manager_trailer_pc_s {
+typedef struct nualloc_manager_trailer_pc_s { // size 0x4
     NUALLOC_MANAGER_BLOCK_PC *previous_block; // 0x0
-} NUALLOC_MANAGER_TRAILER_PC;                 // size 0x4
+} NUALLOC_MANAGER_TRAILER_PC;
 
-typedef struct nualloc_manager_prefix_pc_s {
-    void *base;              // 0x0
-    u32 size;                // 0x4
-    u32 block_count;         // 0x8
-    u32 used_bytes;          // 0xc
-} NUALLOC_MANAGER_PREFIX_PC; // size 0x10
+typedef struct nualloc_manager_prefix_pc_s { // size 0x10
+    void *base;                              // 0x0
+    u32 size;                                // 0x4
+    u32 block_count;                         // 0x8
+    u32 used_bytes;                          // 0xc
+} NUALLOC_MANAGER_PREFIX_PC;
 
 void *NuAllocManagerAllocateAlignedPc(NUALLOC_MANAGER_PREFIX_PC *manager, u32 size, u32 alignment);
 void NuAllocManagerFreePc(NUALLOC_MANAGER_PREFIX_PC *manager, void *memory);
