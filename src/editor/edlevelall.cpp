@@ -659,6 +659,8 @@ STATIC_ASSERT(offsetof(LevelEditor, editors_entered) == 0x10a8);
 STATIC_ASSERT(offsetof(LevelEditor, active) == 0x10ac);
 STATIC_ASSERT(sizeof(LevelEditor) == 0x10b0);
 
+i32 EdLevelFntScale = 24;
+struct eduiiattr_s EdLevelAttr = {0x80000000, 0x80ff0000, 0x80808080, 0x80404040};
 char *EdLevelFileExtension = ".led";
 
 u8 EdInputUseMouse;
@@ -855,6 +857,21 @@ EdSystem theEdSystem;
 
 extern i32 MemoryManagerTraceFailures;
 
+i32 NewPrim = 0;
+i32 NewMtl = 0;
+NUMTX *NewMtx = 0;
+NUMTL *edLevel2dMtl = 0;
+NUMTL *edLevel3dMtl = 0;
+NUMTL *edLevelTexMtl = 0;
+i32 EdLevelFnt = 0;
+struct eduimenu_s *edLevelActiveMenu = 0;
+struct eduimenu_s *edLevelPinnedMenu = 0;
+struct eduimenu_s *edLevelNextMenu = 0;
+i32 edLevelDestroyActiveMenu = 0;
+struct eduimenu_s *edLevelDestroyThisMenu = 0;
+struct eduimenu_s *edLevelDestroyThisMenu2 = 0;
+i32 pad_disabled = 0;
+i32 edlevel_mouseandkeyboard = 0;
 i16 Placeable::CurrentLedFile;
 
 /* Layouts of the editor classes declared in saga.h, checked here rather than

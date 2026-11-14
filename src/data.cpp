@@ -13307,27 +13307,6 @@ extern "C" {
     struct PC_OGG_CACHE_RECORD_PC *PCOggCachePoolPc = 0;
     i32 PCOggCriticalSectionPc = 0;
     NUMTL *EdDrawMtl[2] = {0};
-    i32 NewPrim = 0;
-    i32 NewMtl = 0;
-    NUMTX *NewMtx = 0;
-    NUMTL *edLevel2dMtl = 0;
-    NUMTL *edLevel3dMtl = 0;
-    NUMTL *edLevelTexMtl = 0;
-    struct eduimenu_s *edLevelActiveMenu = 0;
-    i32 EdLevelFnt = 0;
-#pragma data_seg(".data$EdLevelFntScale")
-    i32 EdLevelFntScale = 24;
-#pragma data_seg()
-#pragma data_seg(".data$EdLevelAttr")
-    struct eduiiattr_s EdLevelAttr = {0x80000000, 0x80ff0000, 0x80808080, 0x80404040};
-#pragma data_seg()
-    struct eduimenu_s *edLevelPinnedMenu = 0;
-    struct eduimenu_s *edLevelNextMenu = 0;
-    i32 edLevelDestroyActiveMenu = 0;
-    struct eduimenu_s *edLevelDestroyThisMenu = 0;
-    struct eduimenu_s *edLevelDestroyThisMenu2 = 0;
-    i32 edlevel_mouseandkeyboard = 0;
-    i32 pad_disabled = 0;
 }
 
 extern "C" {
@@ -26648,16 +26627,6 @@ extern "C" {
 extern "C" {
     __declspec(allocate(".bss$EmperorFloorRouteOnPc")) i32 EmperorFloorRouteOnPc = 0;
 }
-
-#pragma data_seg(".data$EmperorFloorRadiusPc")
-#pragma data_seg()
-#pragma data_seg(".data$EmperorFloorJitterPc")
-#pragma data_seg()
-#pragma data_seg(".data$EmperorFloorPushPc")
-#pragma data_seg()
-
-#pragma data_seg(".data$EmperorFloorSafeXMinimumPc")
-#pragma data_seg()
 
 extern "C" {
 /* DDS image used for textures that fail to resolve (128x128, 0x2080 bytes). */
