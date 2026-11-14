@@ -24861,7 +24861,6 @@ extern "C" {
     i32 netcamera = 0;
 
 #pragma data_seg(".data$movegamecamera_forcesock")
-    i32 movegamecamera_forcesock = -1;
 
     f32 PodCamDist = 0;
 
@@ -24871,7 +24870,6 @@ extern "C" {
     f32 HUB_MINIKITVIEWER_CAMDY = 0.30000001192092896f;
 
 #pragma data_seg(".data$CamStopBlend")
-    f32 CamStopBlend = 1.0f;
 }
 
 extern "C" {
@@ -24886,55 +24884,12 @@ extern "C" {
     NUVEC *shopcamlookat = 0;
     i32 (*menuptr)(void *menu) = 0;
 
-#pragma data_seg(".data$GunshipAOffset")
-    NUVEC GunshipAOffset = {12.0f, 22.5f, -12.0f};
-
 #pragma data_seg(".data$testmovef")
-    f32 testmovef = 0.005f;
 }
 
 extern "C" {
-#pragma data_seg(".data$CamTitlesSplineEndPc")
-    f32 CamTitlesSplineEndPc = 0.95f;
-
-#pragma data_seg(".data$CamTitlesBonusTimePc")
-    f32 CamTitlesBonusTimePc = 51.0f;
-
-#pragma data_seg(".data$CamShopBlendTimePc")
-    f32 CamShopBlendTimePc = 1.0f;
-
-#pragma data_seg(".data$CamNewGameDurationPc")
-    f32 CamNewGameDurationPc = 10.0f;
-
-#pragma data_seg(".data$CamPodSprintStartDistPc")
-    f32 CamPodSprintStartDistPc = 12.0f;
-
-#pragma data_seg(".data$CamPodSprintEndDistPc")
-    f32 CamPodSprintEndDistPc = 2.0f;
-
-#pragma data_seg(".data$CamPodSprintHeightPc")
-    f32 CamPodSprintHeightPc = 0.65f;
-
-#pragma data_seg(".data$CamPodSprintRollScalePc")
-    f32 CamPodSprintRollScalePc = 0.6f;
-
-#pragma data_seg(".data$CamPodSprintAngleSeekPc")
-    f32 CamPodSprintAngleSeekPc = 7.0f;
-
-#pragma data_seg(".data$CamPodShakeScalePc")
-    f32 CamPodShakeScalePc = 2.0f;
-
-#pragma data_seg(".data$CamWalkerRadiusPc")
-    f32 CamWalkerRadiusPc = 5.0f;
-
-#pragma data_seg(".data$CamWalkerLiftPc")
-    f32 CamWalkerLiftPc = 4.0f;
-
-#pragma data_seg(".data$CamDewbackRadiusPc")
-    f32 CamDewbackRadiusPc = 5.0f;
 
 #pragma data_seg(".data$CamDewbackLiftPc")
-    f32 CamDewbackLiftPc = 1.5f;
 
     // Native PC frontend strings: language-selected index/string tables.
 

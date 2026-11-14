@@ -222,8 +222,26 @@ static void PlayerCamPos(GAMEOBJECT *object, NUVEC *position, NUVEC *reference) 
 }
 
 #pragma data_seg(".data$ViewCam")
+f32 CamStopBlend = 1.0f;
+f32 CamTitlesSplineEndPc = 0.95f;
+NUVEC GunshipAOffset = {12.0f, 22.5f, -12.0f};
+f32 CamTitlesBonusTimePc = 51.0f;
+f32 CamShopBlendTimePc = 1.0f;
+f32 CamNewGameDurationPc = 10.0f;
+i32 movegamecamera_forcesock = -1;
+f32 testmovef = 0.005f;
+f32 CamPodSprintStartDistPc = 12.0f;
+f32 CamPodSprintEndDistPc = 2.0f;
+f32 CamPodSprintHeightPc = 0.65f;
+f32 CamPodSprintRollScalePc = 0.6f;
+f32 CamPodSprintAngleSeekPc = 7.0f;
+f32 CamPodShakeScalePc = 2.0f;
 VIEWCAM_PC ViewCam = {0,   {1000000000.0f, 0.0f, 0.0f}, -8192, -29500, 2.6600000858306885f, 0.0f, 120.0f, 0x43480000,
                       NULL};
+f32 CamWalkerRadiusPc = 5.0f;
+f32 CamWalkerLiftPc = 4.0f;
+f32 CamDewbackRadiusPc = 5.0f;
+f32 CamDewbackLiftPc = 1.5f;
 #pragma data_seg()
 
 void ViewCamSetActive(i32 mode, GAMEPAD_PC *gamepad) {
