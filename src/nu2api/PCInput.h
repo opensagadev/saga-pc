@@ -64,6 +64,7 @@ typedef struct NuKeyboardOwner_PC {
     i32 fun_006d5720(i32 *axes, i32 *buttons);
     i32 fun_006d5970();
     i32 fun_006d5980();
+    u8 *PollKeyboardPc();
 #endif
 } NuKeyboardOwner_PC;
 
@@ -199,10 +200,6 @@ extern "C" {
     extern i32 nu_keyboard_device_flags;
     extern i32 nu_keyboard_key_index;
     extern i32 nu_keyboard_repeat_countdown;
-    u8 *__fastcall NuKeyboardPoll(NuKeyboardOwner_PC *owner);
-    void __fastcall NuKeyboardResetInputRecords(NuKeyboardState_PC *state);
-    void __fastcall NuKeyboardInsertInputRecord(NuKeyboardState_PC *state, i32 unused_edx, i32 index, i32 field_00,
-                                                i32 field_01, i32 field_02, u16 field_04);
     void PcInput_EnableKeyboards(const i16 *keys, i32 count);
     extern i32 PCDeviceHardwareVertexProcessingPC;
     void NuPadAutoConfigurePc(i32 count);
@@ -598,7 +595,8 @@ struct PC_INPUT_RUNTIME_PC {
     };
 
     i32 shutdown_state;
-    u8 unknown_67e8[8];
+    i32 unknown_67e8;
+    i32 unknown_67ec;
     PC_INPUT_COMMAND_PC commands[32];
     u8 *keyboard_state;
     PC_INPUT_RUNTIME_PC();
@@ -606,7 +604,7 @@ struct PC_INPUT_RUNTIME_PC {
     i32 PollKeyboardPc() {
         if (!keyboard_polled) {
             keyboard_polled = 1;
-            keyboard_state = NuKeyboardPoll(&nu_keyboard_owner);
+            keyboard_state = nu_keyboard_owner.PollKeyboardPc();
         }
         return 1;
     }
@@ -690,6 +688,14 @@ struct PC_INPUT_RUNTIME_PC {
     i32 fun_006d4790(i32);
     i32 fun_006d4de0(i32 port, i32 action, i32 auxiliary, i32 bank);
     void fun_006d4c90(u32 layout_id);
+    void ResetInputRecords();
+    void fun_006d4e20(i32 value);
+    i32 GetInputRecordCount();
+    i32 fun_006d4e40();
+    i32 fun_006d4e50();
+    void InsertInputRecord(i32 index, i32 field_00, i32 field_01, i32 field_02, u16 field_04);
+    void AddInputRecord(i32 field_00, i32 field_01, i32 field_02, u16 field_04);
+    void InitializeDefaultRecords();
 };
 
 // Add public declarations in C++ context (PC_INPUT_CONFIG_PC type is C++ only).

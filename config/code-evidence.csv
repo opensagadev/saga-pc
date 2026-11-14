@@ -2189,7 +2189,7 @@ address,size,symbol,evidence,proposed,compiland,signals,port
 0x006d6ef0,80,?fun_006d6ef0@PC_INPUT_RUNTIME_PC@@QAEXEHHHHH@Z,extent,,nu2api/PCInput.cpp,unreferenced,
 0x006d7410,19,?fun_006d7410@PC_INPUT_RUNTIME_PC@@QAEHHH@Z,extent,,nu2api/PCInput.cpp,unreferenced,
 0x006d82d0,149,?fun_006d82d0@PC_INPUT_RUNTIME_PC@@QAEIHIHHHHI@Z,extent,,nu2api/PCInput.cpp,unreferenced,
-0x006d8d20,53,_fun_006d8d20,extent,,nu2api/PCInput.cpp,unreferenced,
+0x006d8d20,53,?AddInputRecord@PC_INPUT_RUNTIME_PC@@QAEXHHHG@Z,extent,,nu2api/PCInput.cpp,unreferenced,
 0x006d9250,104,_fun_006d9250,extent,,nu2api/PCInput.cpp,unreferenced,
 0x006d92c0,119,_fun_006d92c0,extent,,nu2api/PCInput.cpp,unreferenced,
 0x006d9430,95,_NuPadSetMotorsPS,extent,,nu2api/PCInput.cpp,unreferenced,

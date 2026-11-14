@@ -13307,14 +13307,14 @@ address,symbol,size,ctype
 0x6d4d50,?fun_006d4d50@PC_INPUT_RUNTIME_PC@@QAEHXZ,8,
 0x6d4d60,_fun_006d4d60,1,
 0x6d4d70,?fun_006d4d70@PC_INPUT_RUNTIME_PC@@QAEXXZ,21,
-0x006d4d90,@NuKeyboardResetInputRecords@4,49,void __fastcall (NuKeyboardState_PC *)
+0x006d4d90,?ResetInputRecords@PC_INPUT_RUNTIME_PC@@QAEXXZ,49,void __thiscall (void)
 0x006d4dd0,_PcInput_SetStringUCGfxRemapFn,10,"void __cdecl(void (__cdecl *)(i32, char *))"
 0x6d4de0,?fun_006d4de0@PC_INPUT_RUNTIME_PC@@QAEHHHHH@Z,60,
-0x006d4e20,@fun_006d4e20@12,13,"void __fastcall (NuKeyboardState_PC *, i32, i32)"
-0x006d4e30,@NuKeyboardGetInputRecordCount@8,7,"i32 __fastcall (NuKeyboardState_PC *, i32)"
-0x006d4e40,@fun_006d4e40@8,7,"i32 __fastcall (NuKeyboardState_PC *, i32)"
-0x006d4e50,@fun_006d4e50@8,7,"i32 __fastcall (NuKeyboardState_PC *, i32)"
-0x006d4e60,@NuKeyboardInsertInputRecord@28,135,"void __fastcall (NuKeyboardState_PC *, i32, i32, i32, i32, i32, u16)"
+0x006d4e20,?fun_006d4e20@PC_INPUT_RUNTIME_PC@@QAEXH@Z,13,void __thiscall (i32)
+0x006d4e30,?GetInputRecordCount@PC_INPUT_RUNTIME_PC@@QAEHXZ,7,i32 __thiscall (void)
+0x006d4e40,?fun_006d4e40@PC_INPUT_RUNTIME_PC@@QAEHXZ,7,i32 __thiscall (void)
+0x006d4e50,?fun_006d4e50@PC_INPUT_RUNTIME_PC@@QAEHXZ,7,i32 __thiscall (void)
+0x006d4e60,?InsertInputRecord@PC_INPUT_RUNTIME_PC@@QAEXHHHHG@Z,135,"void __thiscall (i32, i32, i32, i32, u16)"
 0x6d4ef0,?fun_006d4ef0@PC_INPUT_RUNTIME_PC@@QAEHHPAH000@Z,108,
 0x6d4f60,?fun_006d4f60@PC_INPUT_RUNTIME_PC@@QAEHHH@Z,96,
 0x6d4fc0,?fun_006d4fc0@PC_INPUT_RUNTIME_PC@@QAEXPBD@Z,30,
@@ -13343,7 +13343,7 @@ address,symbol,size,ctype
 0x6d5950,?ScheduleRescan@NuKeyboardOwner_PC@@QAEXMH@Z,19,"void __thiscall(f32,i32)"
 0x6d5970,?fun_006d5970@NuKeyboardOwner_PC@@QAEHXZ,9,
 0x6d5980,?fun_006d5980@NuKeyboardOwner_PC@@QAEHXZ,9,
-0x006d5990,@NuKeyboardPoll@4,368,u8 *__fastcall (NuKeyboardOwner_PC *)
+0x006d5990,?PollKeyboardPc@NuKeyboardOwner_PC@@QAEPAEXZ,368,u8 *__thiscall (void)
 0x6d5b00,_fun_006d5b00,12,
 0x6d5b10,_fun_006d5b10,12,
 0x6d5b20,_fun_006d5b20,12,
@@ -13453,7 +13453,7 @@ address,symbol,size,ctype
 0x6d8490,?CaptureBindingPc@PC_INPUT_RUNTIME_PC@@QAEXH@Z,706,void __thiscall(i32)
 0x6d8760,?ServicePendingCapturePc@PC_INPUT_RUNTIME_PC@@QAEXXZ,135,void __thiscall(void)
 0x6d87f0,?ButtonName@TEXT_INPUT_MANAGER_PC@@QAEHHHPADHHHH0@Z,1328,"i32 __thiscall(i32,i32,char*,i32,i32,i32,i32,char*)"
-0x6d8d20,_fun_006d8d20,53,
+0x6d8d20,?AddInputRecord@PC_INPUT_RUNTIME_PC@@QAEXHHHG@Z,53,"void __thiscall (i32, i32, i32, u16)"
 0x6d8d60,?AssignBindingPc@PC_INPUT_RUNTIME_PC@@QAEXHHHHHHHI@Z,725,
 0x6d9040,?Shutdown@NuKeyboardOwner_PC@@QAEXXZ,224,void __thiscall NuKeyboardOwner_PC::Shutdown(void)
 0x6d9120,_PcInput_ScanForAnyInput,236,
@@ -13477,7 +13477,7 @@ address,symbol,size,ctype
 0x6d9610,_PcInputEndFramePc,49,void __cdecl(void)
 0x6d9650,_PcInputResolveAuxiliaryConflictsPc,22,
 0x6d9670,_PcInputBindingButtonNamePc,52,
-0x006d96b0,@NuKeyboardInitializeDefaultRecords_candidate@4,802,void __fastcall (NuKeyboardState_PC *)
+0x006d96b0,?InitializeDefaultRecords@PC_INPUT_RUNTIME_PC@@QAEXXZ,802,void __thiscall (void)
 0x6d99e0,?fun_006d99e0@PC_INPUT_RUNTIME_PC@@QAEHHE@Z,26,
 0x6d9a00,?WriteConfigurationPc@PC_INPUT_RUNTIME_PC@@QAEXPAUPC_INPUT_CONFIG_PC@@HPBD@Z,267,
 0x6d9b10,?SaveConfigurationPc@PC_INPUT_RUNTIME_PC@@QAEXXZ,97,

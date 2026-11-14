@@ -734,6 +734,66 @@ i32 NuKeyboardOwner_PC::fun_006d5980() {
     return device != NULL;
 }
 
+u8 *NuKeyboardOwner_PC::PollKeyboardPc() {
+    u8 *page;
+    i8 page_index;
+    i32 i;
+    i32 next_key_index;
+    i32 key_index;
+    i32 key_count;
+
+    poll_status = 0;
+    if ((nu_keyboard_device_flags & 2) == 0 && device != 0) {
+        poll_status = 1;
+        if (device->methods->poll(device) < 0) {
+            if (device->methods->acquire(device) < 0) {
+                page = nu_keyboard_pages + (i8)nu_keyboard_page_index * 0x100;
+                memset(page, 0, nu_keyboard_owner.key_count);
+                return page;
+            }
+            device->methods->poll(device);
+        }
+
+        nu_keyboard_page_index ^= 1;
+        if (device->methods->get_state(device, 0x100, nu_keyboard_pages + (i8)nu_keyboard_page_index * 0x100) == 0) {
+            page_index = (i8)nu_keyboard_page_index;
+            key_count = nu_keyboard_owner.key_count;
+            key_index = nu_keyboard_key_index;
+            nu_keyboard_previous_key_index = key_index;
+            next_key_index = 0;
+            for (i = 0; i < key_count; ++i) {
+                if (nu_keyboard_pages[page_index * 0x100 + i] != 0 && i != key_index) {
+                    next_key_index = i;
+                    break;
+                }
+            }
+
+            if (nu_keyboard_repeat_countdown != 0) {
+                --nu_keyboard_repeat_countdown;
+                if (next_key_index != 0) {
+                    nu_keyboard_repeat_countdown = 6;
+                }
+                memset(nu_keyboard_pages + page_index * 0x100, 0, key_count);
+            } else if (next_key_index != 0) {
+                nu_keyboard_key_index = key_index = next_key_index;
+                goto check_none;
+            }
+            if (key_index != 0 && nu_keyboard_pages[page_index * 0x100 + key_index] == 0) {
+                nu_keyboard_key_index = key_index = 0;
+            }
+        check_none:
+            if (key_index == 0) {
+                nu_keyboard_no_key_state = 0;
+            }
+            return nu_keyboard_pages + page_index * 0x100;
+        }
+    }
+
+    page = nu_keyboard_pages + (i8)nu_keyboard_page_index * 0x100;
+    memset(page, 0, nu_keyboard_owner.key_count);
+    return page;
+}
+
 NuKeyboardOwner_PC::NuKeyboardOwner_PC() {
     unknown_0000 = 0.0f;
     unknown_0008 = 0.0f;
