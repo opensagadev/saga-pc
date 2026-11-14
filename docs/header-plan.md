@@ -163,9 +163,11 @@ What changed:
    (where the declarations sit, not how many there are).
 4. `nuvec.h`, `nufile_pc.h` and `common.h` are one part each.
 
-Measured against origin/main 77c2713b and again on 7e2e1d82 (full build, `match.py --update`):
-no function changes its bytes or score, the exact set by address is the
-same and reproduced data stays 970,473 bytes.
+Measured with a full build and `match.py --update`: on origin/main 77c2713b
+no function changed; on 7e2e1d82 the exact set by address is the same,
+reproduced data stays 970,473 bytes, and two non-exact fragile functions
+move by less than 0.04 points (`InitGameAfterConfig` 82.2397 -> 82.2372,
+`DrawSubItems` 82.9811 -> 82.9484).
 
 What is left is ownership, not spelling. The 37-header cycle runs through
 types needed by value across headers: the catch-alls
