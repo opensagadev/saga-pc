@@ -26,6 +26,8 @@ SOURCES := $(filter-out src/debug/sound_monitor.c src/debug/stream_capture.c src
 DEPENDENCY_SOURCES := $(shell $(PYTHON) tools/dependencies.py --sources)
 DEPENDENCY_FILES := $(shell $(PYTHON) -c 'import json; print(" ".join("lib/ogg-vorbis/"+p for p in json.load(open("config/ogg-vorbis.json"))["files"]))')
 SOURCE_DIRS := $(shell find src -type d)
+# saga.h and the module headers it includes (docs/header-plan.md); src/debug headers are listed per rule.
+PROJECT_HEADERS := $(shell find src -type f -name '*.h' -not -path 'src/debug/*' | LC_ALL=C sort)
 OBJECTS := $(patsubst src/%,$(OBJ_DIR)/%,$(SOURCES:.cpp=.obj))
 OBJECTS := $(OBJECTS:.c=.obj)
 OBJECTS += $(patsubst lib/ogg-vorbis/%,$(OBJ_DIR)/vendored/%,$(DEPENDENCY_SOURCES:.c=.obj))
@@ -129,10 +131,10 @@ $(DINPUT8_LIB): tools/dinput8.def tools/cc.py Makefile
 $(XINPUT_LIB): tools/xinput1_3.def tools/cc.py Makefile
 	$(PYTHON) tools/cc.py --implib $@ $<
 
-$(OBJ_DIR)/%.obj: src/%.cpp src/saga.h src/externals.h src/debug/diagnostics.h src/debug/support.h config/toolchain.json Makefile tools/cc.py tools/lib.py | build/tools/wine/.ready
+$(OBJ_DIR)/%.obj: src/%.cpp $(PROJECT_HEADERS) src/debug/diagnostics.h src/debug/support.h config/toolchain.json Makefile tools/cc.py tools/lib.py | build/tools/wine/.ready
 	$(PYTHON) tools/cc.py $< $@ $(CPPFLAGS) $(CXXFLAGS)
 
-$(OBJ_DIR)/%.obj: src/%.c src/saga.h src/externals.h src/debug/diagnostics.h src/debug/support.h config/toolchain.json Makefile tools/cc.py tools/lib.py | build/tools/wine/.ready
+$(OBJ_DIR)/%.obj: src/%.c $(PROJECT_HEADERS) src/debug/diagnostics.h src/debug/support.h config/toolchain.json Makefile tools/cc.py tools/lib.py | build/tools/wine/.ready
 	$(PYTHON) tools/cc.py $< $@ $(CPPFLAGS) $(CXXFLAGS)
 
 # Serialize first-time Wine setup, then compile distinct objects concurrently.
@@ -147,7 +149,7 @@ dependencies:
 $(DEPENDENCY_FILES): | dependencies
 	@test -f $@
 
-$(OBJ_DIR)/vendored/%.obj: lib/ogg-vorbis/%.c $(DEPENDENCY_FILES) src/saga.h src/externals.h src/debug/diagnostics.h src/debug/support.h config/ogg-vorbis.json tools/dependencies.py config/toolchain.json Makefile tools/cc.py tools/lib.py | build/tools/wine/.ready
+$(OBJ_DIR)/vendored/%.obj: lib/ogg-vorbis/%.c $(DEPENDENCY_FILES) $(PROJECT_HEADERS) src/debug/diagnostics.h src/debug/support.h config/ogg-vorbis.json tools/dependencies.py config/toolchain.json Makefile tools/cc.py tools/lib.py | build/tools/wine/.ready
 	$(PYTHON) tools/cc.py $(if $(TOOLCHAIN),--toolchain $(TOOLCHAIN) )$< $@ $(CPPFLAGS) $(CXXFLAGS)
 
 setup: dependencies
