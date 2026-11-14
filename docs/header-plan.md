@@ -668,7 +668,10 @@ build worker proves three things, unit by unit, Matching and Debug:
 3. **Same exact set.** `match.py --update` must report the same exact set by
    address, with the FRAGILE functions (`tools/unitscore.py`) unchanged.
 
-If 2 or 3 fails for a unit and 1 holds, the cause is the order:
+Proof 2 cannot hold as stated: every new header file costs each unit one
+symbol id (section 6, "Files as ids"). The fragile functions change even
+with `--exact-order`. If 2 or 3 fails for a unit beyond the fragile
+functions and 1 holds, look at the order:
 
 1. Rebuild with `--exact-order`, which `--check-neutral` proves
    token-identical, to confirm it.
@@ -827,10 +830,41 @@ prototypes are not header material.
   every unit. Proof 1 holds the declarations and their count fixed. Whether
   VC8's id assignment depends on order beyond the count is what proofs 2 and
   3 settle; `--exact-order` is the fallback (token-identical, 4,961 parts).
-- **Macros as ids.** Include guards and part macros are preprocessor names.
-  Per the assert pilot the fragile functions depend on symbol ids, which
-  macros should not consume. Step 1's object proof settles it. The fallback
-  is `#pragma once` for single-part headers.
+- **Files as ids (measured, 2026-11-14).** Step 1 is not byte-neutral, and
+  not because of macros. VC8 spends one symbol id on each distinct source
+  file a unit opens, the same as one typedef, in C and C++. The split adds
+  419 files to every unit. Measured by compiling single objects against an
+  edited saga.h (no other change):
+  - 1,000 unused `#define`s: every object identical. Guard macros,
+    `SAGA_SHIM` and the `_PART` macros cost nothing.
+  - `#line`: identical. Line numbers cost nothing.
+  - Moving the whole saga.h body into one included file: `game.obj`
+    changes (`InitGameAfterConfig`). The file is the cause.
+  - N empty files included at the top of saga.h gave the same object
+    signatures as N `typedef int t_i;`, for N = 0..70. Checked on
+    `legogame/shop.c` (C) and `nu2api/nu3d_platform_pc.cpp` (C++). The
+    period is 64: N = 64, 128 and 448 at the top, or 64 at the end, leave
+    all six test objects identical.
+  - Including an already-opened file again costs nothing. This holds for a
+    plain file, a guarded file and a `#pragma once` file. Nesting depth
+    costs nothing either: 4 nested files equal 4 flat files.
+  - Position matters. 64 files spread through saga.h change three of the six
+    objects, because every declaration after a file shifts by one id.
+  - Confirmation: the original saga.h plus one empty-file `#include` at each
+    of the 419 points where the `--exact-order` split first opens a header
+    reproduces the split's objects. The match is exact for
+    `episodeIII.obj` (`BoulderSpawnPc`), `game.obj`, `nu3d_includes.obj`
+    (`NuDeferredFilterGen::render`), `edlevelall.obj` and
+    `nu3d_platform_pc.obj`. For `shop.obj` it is one id off (`SubItemMenu`
+    there, `DrawSubItems` in the split).
+
+  `#pragma once` instead of guards changes nothing. A byte-neutral step 1
+  would need every unit's file count to come out right at each fragile
+  declaration, modulo 64. Only padding files or contrived header grouping
+  can do that, which is steering. So the split will change the fragile
+  functions, as step 2 already expects. They have to be retuned honestly,
+  for example by the order of the saga.h assert conversion, under the
+  exact-set check.
 - **Declaration count.** Every deletion of a declaration (the 297
   candidates, the 16 duplicates, the saga.h asserts that the layout comments
   replace) changes the id count of every unit that sees it. Do those after
