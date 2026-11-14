@@ -15119,7 +15119,6 @@ extern "C" {
 }
 
 extern "C" {
-    i32 COLLECTION_COMPLETIONCOUNT = 0;
     HUB_AI_MUSIC_VIEW_PC HubAiMusicStatePc = {0};
     KAMINO_DISCO_MUSIC_VIEW_PC KaminoDiscoMusicStatePc = {0};
     SARLACC_NETPACKET_PC *sarlaccb_netpacket = NULL;
