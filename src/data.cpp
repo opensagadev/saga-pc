@@ -9559,7 +9559,6 @@ extern "C" {
 }
 
 extern "C" {
-    CUSTOMISER_LAYERS_PC *CharacterCustomiser = 0;
 #pragma data_seg(".data$id_BODYGUARD")
     i16 id_BODYGUARD = -1;
 #pragma data_seg()
@@ -14566,8 +14565,6 @@ extern "C" {
     i16 PermanentBountyTitleIdPc = 0;
     i16 PermanentWeirdo1IdPc = -1;
     i16 PermanentWeirdo2IdPc = -1;
-    i16 PermanentCustomiserActionsPc[5] = {97, 190, 98, 99, -1};
-    char CustomiseLetter[39] = "ABCDEFGHIJKLMNOPQRSTUVWXYZ- 0123456789";
 }
 
 extern "C" {
@@ -24024,7 +24021,6 @@ extern "C" {
 }
 
 extern "C" {
-    i32 CustomiseMode[2] = {0};
 
     i32 makeplayerlist_freeplay = 0;
 }
@@ -25041,8 +25037,6 @@ extern "C" {
     i32 movegamecamera_forcesock = -1;
 
     f32 PodCamDist = 0;
-
-    NUVEC CustomisePos[2] = {0};
 
     struct nuvec_s *shopcampos = 0;
 
@@ -27178,8 +27172,6 @@ extern "C" {
     i32 shop_quit = 0;
     i32 shop_save_done = 0;
     f32 ShopLockedScalePc = 0;
-    i32 customiser_save_done = 0;
-    i32 customiser_changed = 0;
     GAMESAVE TempGame = {0};
     GAMESAVE OldCustomiseGame = {0};
 }
@@ -27300,9 +27292,6 @@ extern "C" {
     i32 bonusmodemode = 0;
     f32 bonusmodeduration = 0;
     f32 HubIconWibbleTimePc[4] = {0};
-    f32 BlipL[2] = {0};
-    f32 BlipR[2] = {0};
-    f32 BlipU[2] = {0};
     f32 BlipD[2] = {0};
     f32 uprepeattime[2] = {0};
     f32 downrepeattime[2] = {0};

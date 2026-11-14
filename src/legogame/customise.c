@@ -262,6 +262,10 @@ static void UpdateCustomPieceAnim(CUSTOM_PIECE_ANIM_PC *anim, u16 minimum, u16 m
     }
 }
 
+static f32 CustomiseHeadOffsetPc = 0.21f;
+i16 PermanentCustomiserActionsPc[5] = {97, 190, 98, 99, -1};
+char CustomiseLetter[39] = "ABCDEFGHIJKLMNOPQRSTUVWXYZ- 0123456789";
+static f32 CustomiseNameLetterScalePc = 0.5f;
 static CUSTOMISER_GAME_SETTING_PC CustomiserGameSettingsPrivatePc[] = {{"bountyhunter", 0x1000000, 0},
                                                                        {"jedi", 8, 0},
                                                                        {"sith", 0xc, 2},
@@ -269,6 +273,12 @@ static CUSTOMISER_GAME_SETTING_PC CustomiserGameSettingsPrivatePc[] = {{"bountyh
                                                                        {"alreadygothat", 0, 0x10},
                                                                        {"stormtrooperhelmet", 0, 0x40000},
                                                                        {NULL, 0, 0}};
+static f32 CustomiseNameGapPc = 0.05249999836087227f;
+static f32 CustomiseNameSideGapPc = 0.05999999865889549f;
+static f32 CustomiseNameArrowScalePc = 0.6000000238418579f;
+static f32 CustomiseNameArrowOffsetPc = 0.10000000149011612f;
+static f32 CustomiseNameBracketOffsetXPc = 0.009999999776482582f;
+static f32 CustomiseNameBracketOffsetYPc = 0.007499999832361937f;
 
 void PermanentCustomPieceConfigPc(CUSTOMPIECE_LAYERS_PC *input, NUFPAR_PC *parser) {
     CUSTOM_PIECE_CONFIG_PC *piece = (CUSTOM_PIECE_CONFIG_PC *)input;
@@ -398,17 +408,32 @@ i32 PermanentCustomPieceAvailablePc(CUSTOMPIECE_LAYERS_PC *input) {
 }
 
 static CUSTOM_PIECE_ANIM_PC CustomiseArmsAnimPc[2] = {0};
+static NUVEC CustomiseScreenPosPc[2] = {0};
+static i32 CustomiseNameYPc[2] = {0};
+static f32 CustomiseNameBoardTMulPc[2] = {0};
 static CUSTOM_PIECE_ANIM_PC CustomiseLegsAnimPc[2] = {0};
-static CUSTOM_PIECE_ANIM_PC CustomiseHeadAnimPc[2] = {0};
+i32 CustomiseMode[2] = {0};
 static u16 CustomiseTiltXPc[2] = {0};
 static u16 CustomiseBobPc[2] = {0};
+i32 customiser_changed = 0;
+NUVEC CustomisePos[2] = {0};
+f32 BlipR[2] = {0};
+f32 BlipL[2] = {0};
+static f32 CustomiseMenuTimePc[2] = {0};
+f32 BlipU[2] = {0};
+static CUSTOM_PIECE_ANIM_PC CustomiseHeadAnimPc[2] = {0};
+static f32 CustomiseNameBoardMulPc[2] = {0};
 static u16 CustomiseTiltZPc[2] = {0};
 static u16 CustomiseRotYPc[2] = {0};
-static u16 CustomiseYRotPc[2] = {0};
-static f32 CustomiseNameAlphaPc = 0;
-static f32 CustomiseNameBoardTMulPc[2] = {0};
-static f32 CustomiseNameBoardMulPc[2] = {0};
 static f32 CustomiseNameLetterBlipScalePc[2] = {0};
+static u16 CustomiseYRotPc[2] = {0};
+CUSTOMISER_LAYERS_PC *CharacterCustomiser = 0;
+static i32 CustomiseMenuYPc[2] = {0};
+static NUVEC CustomiseNoHatPosPc[2] = {0};
+static f32 CustomiseNameAlphaPc = 0;
+i32 customiser_save_done = 0;
+i32 customiser_quit = 0;
+static i32 CustomiseNameXPc[2] = {0};
 
 /* 00424040 / 775 */
 void Customiser_Init(CUSTOMISER_LAYERS_PC *input) {
@@ -477,8 +502,6 @@ void Customiser_Init(CUSTOMISER_LAYERS_PC *input) {
     CustomiseNameLetterBlipScalePc[0] = 1.0f;
 }
 
-static f32 CustomiseMenuTimePc[2] = {0};
-
 void Customiser_Reset(CUSTOMISER_LAYERS_PC *customiser) {
     CUSTOMISER_UPDATE_PC *runtime = (CUSTOMISER_UPDATE_PC *)customiser;
     i32 side;
@@ -494,16 +517,12 @@ void Customiser_Reset(CUSTOMISER_LAYERS_PC *customiser) {
     }
 }
 
-static NUVEC CustomiseScreenPosPc[2] = {0};
-
 /* 004243b0 / 42 */
 void Customiser_TransformToPanel(CUSTOMISER_LAYERS_PC *unused) {
     (void)unused;
     NuCameraTransformScreenClip(&CustomiseScreenPosPc[0], &CustomisePos[0], 1, NULL);
     NuCameraTransformScreenClip(&CustomiseScreenPosPc[1], &CustomisePos[1], 1, NULL);
 }
-
-i32 customiser_quit = 0;
 
 /* 004243e0 / 273; static native callee receives customiser in EDI. */
 static u32 CustomiserPreviewLayerMaskPc(CUSTOMISER_CONFIG_PC *customiser, const u16 *selection, i32 selected,
@@ -612,10 +631,6 @@ i32 Customise_GetToggleString(i32 index) {
     }
     return TextIdPc880780;
 }
-
-static i32 CustomiseMenuYPc[2] = {0};
-static i32 CustomiseNameXPc[2] = {0};
-static i32 CustomiseNameYPc[2] = {0};
 
 /* 00424810..004252bc: PC control returns its quit decision to the wrapper. */
 i32 CustomiserMenu_Update(void) {
@@ -927,14 +942,6 @@ void CustomiserMenu_End() {
     }
 }
 
-static f32 CustomiseNameLetterScalePc = 0.5f;
-static f32 CustomiseNameGapPc = 0.05249999836087227f;
-static f32 CustomiseNameSideGapPc = 0.05999999865889549f;
-static f32 CustomiseNameArrowScalePc = 0.6000000238418579f;
-static f32 CustomiseNameArrowOffsetPc = 0.10000000149011612f;
-static f32 CustomiseNameBracketOffsetXPc = 0.009999999776482582f;
-static f32 CustomiseNameBracketOffsetYPc = 0.007499999832361937f;
-
 static void CustomiserDrawNameEditorPc(CUSTOMISER_LAYERS_PC *input) {
     CUSTOMISER_CONFIG_PC *customiser = (CUSTOMISER_CONFIG_PC *)input;
     i32 side;
@@ -1032,9 +1039,6 @@ static void CustomiserDrawNameEditorPc(CUSTOMISER_LAYERS_PC *input) {
         }
     }
 }
-
-static NUVEC CustomiseNoHatPosPc[2] = {0};
-static f32 CustomiseHeadOffsetPc = 0.21f;
 
 void Customiser_Update(CUSTOMISER_LAYERS_PC *input, WORLDINFO *world) {
     CUSTOMISER_CONFIG_PC *customiser = (CUSTOMISER_CONFIG_PC *)input;
