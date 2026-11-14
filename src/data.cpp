@@ -10960,7 +10960,6 @@ extern "C" {
     void (*NuCutSceneCharacterDestroyData)(void *, void *) = 0;
     void (*NuCutSceneCharacterEval)(INSTNUGCUTSCENE *, void *, void *, void *, f32) = 0;
     void (*NuCutSceneCharacterRelease)(void *, void *) = 0;
-    u8 CutSceneCameraCTRL = 0;
     i32 part_types_used = 0;
     i32 part_platimpactcnt = 0;
     NUGSCN *part_scene[32] = {0};
@@ -13541,8 +13540,6 @@ extern "C" {
     i32 DEBPAGE_AREA = -1;
 #pragma data_seg()
 
-    f32 CutSceneCameraFocalLengthPc = 0;
-
     NUGSCN *things_scene = 0;
 
     NUSPECIALHANDLE RenderBackdropSpecialsPc[4] = {0};
@@ -14513,13 +14510,6 @@ extern "C" {
 
 extern "C" {
     NUMTX CutSceneCameraMatrixPc = {0};
-    u8 CutSceneCameraMatrixSetPc = 0;
-    u8 CutSceneUseFocusLocationPc = 0;
-    f32 CutSceneFocusDistancePc = 0.0f;
-    f32 CutSceneFStopPc = 0.0f;
-    i32 CutSceneCameraChangedPc = 0;
-    i32 CutSceneCameraDofModePc = 0;
-    INSTNUGCUTSCENE *CutSceneLoadingInstancePc = NULL;
     void (*NuCutSceneCharacterProcess)(INSTNUGCUTSCENE *, void *, void *, void *, f32, i32) = NULL;
     void (*NuCutSceneSFXFixUp)(INSTNUGCUTSCENE *) = NULL;
 }
@@ -23811,8 +23801,6 @@ extern "C" {
 
 extern "C" {
     i32 stream_cut_issued = 0;
-
-    void *cutscene_load_instance = 0;
 }
 
 extern "C" {

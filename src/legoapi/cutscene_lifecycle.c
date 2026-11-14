@@ -3,6 +3,21 @@
 #include <float.h>
 static INSTNUGCUTSCENE *CutSceneBackgroundInstancesPc = 0;
 static INSTNUGCUTSCENE *active_cutscene_instances = 0;
+static i32 cutscene_synchro_counter = 0;
+u8 CutSceneCameraMatrixSetPc = 0;
+u8 CutSceneCameraCTRL = 0;
+u8 CutSceneUseFocusLocationPc = 0;
+i32 CutSceneCameraDofModePc = 0;
+f32 CutSceneCameraFocalLengthPc = 0;
+f32 CutSceneFocusDistancePc = 0.0f;
+f32 CutSceneFStopPc = 0.0f;
+i32 CutSceneCameraChangedPc = 0;
+static i32 CutSceneQuitPromptPc = 0;
+static i32 CutSceneHasQuitPc = 0;
+INSTNUGCUTSCENE *CutSceneLoadingInstancePc = NULL;
+void *cutscene_load_instance = 0;
+static i32 CutSceneLockPlayerPc = 0;
+static i32 CutSceneTerminateStreamPc = 0;
 
 struct state_anim_pc_s;
 
@@ -2378,11 +2393,6 @@ static void CutSceneStreamSkipPc(CUT_INSTANCE_LOAD_PC *instance, f32 elapsed) {
     }
 }
 
-static i32 cutscene_synchro_counter = 0;
-static i32 CutSceneQuitPromptPc = 0;
-static i32 CutSceneHasQuitPc = 0;
-static i32 CutSceneLockPlayerPc = 0;
-static i32 CutSceneTerminateStreamPc = 0;
 extern void (*NuCutSceneSFXFixUp)(INSTNUGCUTSCENE *);
 extern void (*NuCutSceneCharacterProcess)(INSTNUGCUTSCENE *, void *, void *, void *, f32, i32);
 
