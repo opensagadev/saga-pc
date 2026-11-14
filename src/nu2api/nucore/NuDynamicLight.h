@@ -1,0 +1,67 @@
+#ifndef SAGA_NU2API_NUCORE_NUDYNAMICLIGHT_H_PART
+#define SAGA_NU2API_NUCORE_NUDYNAMICLIGHT_H_PART 1
+#endif
+
+/* Split from saga.h (tools/headersplit.py, docs/header-plan.md). saga.h includes this header at the place of its
+ * declarations. */
+/* Included via saga.h only for now: editor/edlevelall.h, nu2api/nu3d/nu3d_includes.h, nu2api/nucore/fixed_width.h,
+ * nu2api/numath/numtx.h (not all of it earlier in the shim). */
+
+#ifndef SAGA_SHIM
+#include "editor/edlevelall.h"
+#include "nu2api/nu3d/nu3d_includes.h"
+#include "nu2api/nucore/fixed_width.h"
+#include "nu2api/numath/numtx.h"
+#endif
+/* 2 parts: saga.h includes this header once per part, each where its declarations belong; included directly, it gives
+ * all parts at once. */
+
+#if SAGA_NU2API_NUCORE_NUDYNAMICLIGHT_H_PART == 1 && !defined(SAGA_NU2API_NUCORE_NUDYNAMICLIGHT_H_STOP)
+
+#ifdef __cplusplus
+extern "C" {
+#endif
+    struct PC_SPECIAL_SHADOW_LIGHT *NuDynamicLightCreate(void);
+    void NuDynamicLightAddRenderScene(NURNDRLIGHTRECORD *records, i32 index, i32 scene_id);
+#ifdef __cplusplus
+}
+#endif
+typedef struct NuDynamicLight NuDynamicLight;
+typedef struct VuMtx VuMtx;
+
+struct VuMtx {
+    NUMTX matrix;
+#ifdef __cplusplus
+    void fun_006b8470(const VuVec &scale);
+#endif
+};
+
+STATIC_ASSERT(sizeof(struct VuMtx) == 64);
+#undef SAGA_NU2API_NUCORE_NUDYNAMICLIGHT_H_PART
+#define SAGA_NU2API_NUCORE_NUDYNAMICLIGHT_H_PART 2
+#ifdef SAGA_SHIM
+#define SAGA_NU2API_NUCORE_NUDYNAMICLIGHT_H_STOP
+#endif
+#endif
+
+#if SAGA_NU2API_NUCORE_NUDYNAMICLIGHT_H_PART == 2 && !defined(SAGA_NU2API_NUCORE_NUDYNAMICLIGHT_H_STOP)
+#ifdef __cplusplus
+
+struct NuDynamicLight {
+    void resetGeometry();
+    NURNDRLIGHTRECORD render_sets_pc[2];
+    u8 unknown_700[0xc];
+    i32 render_set_count_pc;
+};
+
+STATIC_ASSERT(offsetof(NuDynamicLight, render_sets_pc) == 0);
+STATIC_ASSERT(offsetof(NuDynamicLight, render_set_count_pc) == 0x70c);
+#endif
+#undef SAGA_NU2API_NUCORE_NUDYNAMICLIGHT_H_PART
+#define SAGA_NU2API_NUCORE_NUDYNAMICLIGHT_H_PART 3
+#ifdef SAGA_SHIM
+#define SAGA_NU2API_NUCORE_NUDYNAMICLIGHT_H_STOP
+#endif
+#endif
+
+#undef SAGA_NU2API_NUCORE_NUDYNAMICLIGHT_H_STOP

@@ -1,0 +1,22 @@
+#ifndef SAGA_LEGOAPI_GIZMOS_TRIGGER_MINICUT_H
+#define SAGA_LEGOAPI_GIZMOS_TRIGGER_MINICUT_H
+
+/* Split from saga.h (tools/headersplit.py, docs/header-plan.md). saga.h includes this header at the place of its
+ * declarations. */
+/* Included via saga.h only for now: legoapi/gizmo/base/gizmo.h (not all of it earlier in the shim). */
+
+#include "nu2api/nucore/fixed_width.h"
+
+#ifndef SAGA_SHIM
+#include "legoapi/gizmo/base/gizmo.h"
+#endif
+
+#ifdef __cplusplus
+extern "C" {
+#endif
+    struct addgizmotype_pc_s *MiniCut_RegisterGizmo(i32);
+#ifdef __cplusplus
+}
+#endif
+
+#endif

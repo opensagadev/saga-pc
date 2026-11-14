@@ -1,0 +1,45 @@
+#ifndef SAGA_NU2API_NU3D_NUSPECIAL_INTERNAL_H
+#define SAGA_NU2API_NU3D_NUSPECIAL_INTERNAL_H
+
+/* Split from saga.h (tools/headersplit.py, docs/header-plan.md). saga.h includes this header at the place of its
+ * declarations. */
+/* Included via saga.h only for now: nu2api/nucore/common.h, nu2api/numath/nuvec.h (not all of it earlier in the shim).
+ */
+
+#include "nu2api/nucore/fixed_width.h"
+
+#ifndef SAGA_SHIM
+#include "nu2api/nucore/common.h"
+#include "nu2api/numath/nuvec.h"
+#endif
+
+#ifdef __cplusplus
+extern "C" {
+#endif
+    extern f32 nuspecial_const_alpha;
+    extern NUVEC nuspecial_const_tint;
+    extern i32 nuspecial_const_alpha_enabled;
+    extern i32 nuspecial_const_tint_enabled;
+#ifdef __cplusplus
+}
+#endif
+typedef struct NuSpecialLegacyInstanceBoundsLayout NuSpecialLegacyInstanceBoundsLayout;
+typedef struct NuSpecialLegacyRuntimeLayout NuSpecialLegacyRuntimeLayout;
+
+struct NuSpecialLegacyInstanceBoundsLayout {
+    u8 pad_00[64];
+    i16 object_index;
+};
+
+STATIC_ASSERT(sizeof(struct NuSpecialLegacyInstanceBoundsLayout) == 66);
+
+struct NuSpecialLegacyRuntimeLayout {
+    u8 pad_00[64];
+    u8 *instance;
+    char *name;
+    u32 flags;
+};
+
+STATIC_ASSERT(sizeof(struct NuSpecialLegacyRuntimeLayout) == 76);
+
+#endif

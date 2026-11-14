@@ -1,0 +1,27 @@
+#ifndef SAGA_GAMEAPI_GUI_APIMENU_INTERNAL_H
+#define SAGA_GAMEAPI_GUI_APIMENU_INTERNAL_H
+
+/* Split from saga.h (tools/headersplit.py, docs/header-plan.md). saga.h includes this header at the place of its
+ * declarations. */
+
+#include "gameapi/gui/apimenu.h"
+#include "nu2api/nu3d/numtl.h"
+#include "nu2api/nucore/common.h"
+#include "nu2api/nucore/fixed_width.h"
+
+#ifdef __cplusplus
+extern "C" {
+#endif
+    extern i32 MenuDisableHeaders;
+    extern i32 MenuLanguages;
+    extern void (*drawslotinfofn)(f32, f32, i32, i32);
+    extern void (*drawslotsfn)(MENU *, f32);
+    extern i32 MenuDrawDropShadows;
+    extern NUMTL *MenuFadeMtl;
+    extern const char Menu_UsedFormat[15];
+    extern const char Menu_OptionsVolumeFormat[10];
+#ifdef __cplusplus
+}
+#endif
+
+#endif

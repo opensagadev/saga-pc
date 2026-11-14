@@ -1,0 +1,26 @@
+#ifndef SAGA_GAMEAPI_EDMAIN_H
+#define SAGA_GAMEAPI_EDMAIN_H
+
+/* Split from saga.h (tools/headersplit.py, docs/header-plan.md). saga.h includes this header at the place of its
+ * declarations. */
+/* Included via saga.h only for now: gameapi/edtools/edui.h (not all of it earlier in the shim). */
+
+#include "nu2api/nucore/fixed_width.h"
+#include "nu2api/numath/nuvec.h"
+
+#ifndef SAGA_SHIM
+#include "gameapi/edtools/edui.h"
+#endif
+
+#ifdef __cplusplus
+extern "C" {
+#endif
+    NUVEC *edmainQueryLocVec(void);
+    void cbMMCancel(struct eduimenu_s *arg0, struct eduimenu_s *arg1);
+    void cbMMRegSel(struct eduimenu_s *arg0, struct eduiitem_s *arg1, u32 arg2);
+    void cbMMReturnToApp(struct eduimenu_s *arg0, struct eduiitem_s *arg1, u32 arg2);
+#ifdef __cplusplus
+}
+#endif
+
+#endif
