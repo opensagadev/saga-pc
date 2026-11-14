@@ -1,8 +1,7 @@
-#ifndef SAGA_LEGOAPI_ACTIONS_CHARACTER_SPECIALMOVES_TYPES_H
-#define SAGA_LEGOAPI_ACTIONS_CHARACTER_SPECIALMOVES_TYPES_H
-
 /* Split from saga.h (tools/headersplit.py, docs/header-plan.md). saga.h includes this header at the place of its
  * declarations. */
+
+#pragma once
 
 #include "nu2api/nucore/common.h"
 
@@ -16,5 +15,3 @@ typedef struct specialmove_pc_s {
     u16 flags;
     f32 distance_apart;
 } SPECIALMOVE_PC;
-
-#endif

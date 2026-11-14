@@ -1,8 +1,7 @@
-#ifndef SAGA_NU2API_NUMUSIC_GEN_H
-#define SAGA_NU2API_NUMUSIC_GEN_H
-
 /* Split from saga.h (tools/headersplit.py, docs/header-plan.md). saga.h includes this header at the place of its
  * declarations. */
+
+#pragma once
 
 #include "nu2api/nucore/common.h"
 
@@ -79,5 +78,3 @@ STATIC_ASSERT(offsetof(PC_SOUND_INIT_CONFIG, option_18) == 0x18);
 STATIC_ASSERT(offsetof(PC_SOUND_INIT_CONFIG, option_1c) == 0x1c);
 STATIC_ASSERT(offsetof(PC_SOUND_INIT_CONFIG, option_20) == 0x20);
 STATIC_ASSERT(offsetof(PC_SOUND_INIT_CONFIG, option_24) == 0x24);
-
-#endif

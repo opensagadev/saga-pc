@@ -1,8 +1,7 @@
-#ifndef SAGA_LEGOAPI_GIZMOS_TRIGGER_GIZTIMER_H
-#define SAGA_LEGOAPI_GIZMOS_TRIGGER_GIZTIMER_H
-
 /* Split from saga.h (tools/headersplit.py, docs/header-plan.md). saga.h includes this header at the place of its
  * declarations. */
+
+#pragma once
 
 #include "nu2api/nucore/common.h"
 
@@ -28,6 +27,4 @@ extern "C" {
     void GizTimer_Update(void *world_info, void *arg1, f32 delta_time);
 #ifdef __cplusplus
 }
-#endif
-
 #endif

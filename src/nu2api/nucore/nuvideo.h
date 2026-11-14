@@ -1,8 +1,7 @@
-#ifndef SAGA_NU2API_NUCORE_NUVIDEO_H
-#define SAGA_NU2API_NUCORE_NUVIDEO_H
-
 /* Split from saga.h (tools/headersplit.py, docs/header-plan.md). saga.h includes this header at the place of its
  * declarations. */
+
+#pragma once
 
 #include "nu2api/nucore/common.h"
 
@@ -22,6 +21,4 @@ extern "C" {
     void NuPs2VideoScreenDump(char *filename, i32 format, f32 scale_x, f32 scale_y, i32 face, i32 x, i32 y);
 #ifdef __cplusplus
 }
-#endif
-
 #endif

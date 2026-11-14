@@ -1,8 +1,7 @@
-#ifndef SAGA_NU2API_NU3D_SHADEROBJECTKEY_H
-#define SAGA_NU2API_NU3D_SHADEROBJECTKEY_H
-
 /* Split from saga.h (tools/headersplit.py, docs/header-plan.md). saga.h includes this header at the place of its
  * declarations. */
+
+#pragma once
 
 #include "nu2api/nucore/common.h"
 
@@ -76,6 +75,4 @@ class HLSLShaderBuilder : public ShaderBuilderGen {
 
 typedef HLSLShaderBuilder ShaderCompilerHLSLPc;
 STATIC_ASSERT(sizeof(ShaderCompilerHLSLPc) == 0xbd0);
-#endif
-
 #endif

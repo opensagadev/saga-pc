@@ -1,8 +1,7 @@
-#ifndef SAGA_LEGOAPI_PROPS_OBJECTS_TIGHTROPE_H
-#define SAGA_LEGOAPI_PROPS_OBJECTS_TIGHTROPE_H
-
 /* Split from saga.h (tools/headersplit.py, docs/header-plan.md). saga.h includes this header at the place of its
  * declarations. */
+
+#pragma once
 
 #include "nu2api/nucore/common.h"
 
@@ -73,5 +72,3 @@ struct TIGHTROPE_s {
 };
 
 STATIC_ASSERT(sizeof(struct TIGHTROPE_s) == 72);
-
-#endif

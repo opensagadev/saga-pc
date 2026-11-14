@@ -1,8 +1,7 @@
-#ifndef SAGA_LEGOAPI_WORLD_LEVELS_EPISODEI_H
-#define SAGA_LEGOAPI_WORLD_LEVELS_EPISODEI_H
-
 /* Split from saga.h (tools/headersplit.py, docs/header-plan.md). saga.h includes this header at the place of its
  * declarations. */
+
+#pragma once
 
 #include "nu2api/nucore/common.h"
 
@@ -98,6 +97,4 @@ extern "C" {
     extern f32 test_seek_rate;
 #ifdef __cplusplus
 }
-#endif
-
 #endif

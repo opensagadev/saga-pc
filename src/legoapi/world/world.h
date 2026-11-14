@@ -1,8 +1,7 @@
-#ifndef SAGA_LEGOAPI_WORLD_WORLD_H
-#define SAGA_LEGOAPI_WORLD_WORLD_H
-
 /* Split from saga.h (tools/headersplit.py, docs/header-plan.md). saga.h includes this header at the place of its
  * declarations. */
+
+#pragma once
 
 #include "nu2api/nucore/common.h"
 
@@ -506,5 +505,3 @@ STATIC_ASSERT(offsetof(WORLDINFO, ai_trigger_set) == 0x4678);
 STATIC_ASSERT(offsetof(WORLDINFO, climb_objects) == 0x467c);
 STATIC_ASSERT(offsetof(WORLDINFO, unknown_4680) == 0x4680);
 STATIC_ASSERT(offsetof(WORLDINFO, zipups) == 0x4688);
-
-#endif

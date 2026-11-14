@@ -1,8 +1,7 @@
-#ifndef SAGA_NU2API_NUMATH_NUMATH_INCLUDES_H
-#define SAGA_NU2API_NUMATH_NUMATH_INCLUDES_H
-
 /* Split from saga.h (tools/headersplit.py, docs/header-plan.md). saga.h includes this header at the place of its
  * declarations. */
+
+#pragma once
 
 #include "nu2api/nucore/common.h"
 
@@ -30,6 +29,4 @@ extern "C" {
     extern f32 NuPowResultsPc[32];
 #ifdef __cplusplus
 }
-#endif
-
 #endif

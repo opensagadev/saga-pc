@@ -1,8 +1,7 @@
-#ifndef SAGA_LEGOAPI_AI_CORE_AISYSALL_H
-#define SAGA_LEGOAPI_AI_CORE_AISYSALL_H
-
 /* Split from saga.h (tools/headersplit.py, docs/header-plan.md). saga.h includes this header at the place of its
  * declarations. */
+
+#pragma once
 
 #include "nu2api/nucore/common.h"
 
@@ -85,6 +84,4 @@ extern "C" {
     extern f32 aiEditor_DrawYOffset;
 #ifdef __cplusplus
 }
-#endif
-
 #endif

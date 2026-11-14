@@ -1,8 +1,7 @@
-#ifndef SAGA_LEGOAPI_GIZMOS_TRIGGER_GIZSPECIAL_H
-#define SAGA_LEGOAPI_GIZMOS_TRIGGER_GIZSPECIAL_H
-
 /* Split from saga.h (tools/headersplit.py, docs/header-plan.md). saga.h includes this header at the place of its
  * declarations. */
+
+#pragma once
 
 #include "nu2api/nucore/common.h"
 
@@ -19,6 +18,4 @@ extern "C" {
     struct addgizmotype_pc_s *GizSpecial_RegisterGizmo(i32 type_id);
 #ifdef __cplusplus
 }
-#endif
-
 #endif

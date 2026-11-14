@@ -1,8 +1,7 @@
-#ifndef SAGA_LEGOAPI_CORE_SAVE_VALUES_H
-#define SAGA_LEGOAPI_CORE_SAVE_VALUES_H
-
 /* Split from saga.h (tools/headersplit.py, docs/header-plan.md). saga.h includes this header at the place of its
  * declarations. */
+
+#pragma once
 
 #include "nu2api/nucore/common.h"
 
@@ -27,5 +26,3 @@ enum { SAVE_REWARD_ALL_GOLD_BRICKS = 2 };
 enum { SAVE_CHARACTER_AVAILABLE = 1 };
 
 enum { SAVE_CHARACTER_UNLOCKED = 2 };
-
-#endif

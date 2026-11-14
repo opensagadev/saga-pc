@@ -1,8 +1,7 @@
-#ifndef SAGA_LEGOAPI_WORLD_LEVELS_EPISODEIV_H
-#define SAGA_LEGOAPI_WORLD_LEVELS_EPISODEIV_H
-
 /* Split from saga.h (tools/headersplit.py, docs/header-plan.md). saga.h includes this header at the place of its
  * declarations. */
+
+#pragma once
 
 #include "nu2api/nucore/common.h"
 
@@ -23,6 +22,4 @@ extern "C" {
     i32 DeathStarShieldDown(void);
 #ifdef __cplusplus
 }
-#endif
-
 #endif

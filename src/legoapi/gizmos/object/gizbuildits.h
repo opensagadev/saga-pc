@@ -1,8 +1,7 @@
-#ifndef SAGA_LEGOAPI_GIZMOS_OBJECT_GIZBUILDITS_H
-#define SAGA_LEGOAPI_GIZMOS_OBJECT_GIZBUILDITS_H
-
 /* Split from saga.h (tools/headersplit.py, docs/header-plan.md). saga.h includes this header at the place of its
  * declarations. */
+
+#pragma once
 
 #include "nu2api/nucore/common.h"
 
@@ -41,6 +40,4 @@ extern "C" {
     void GizBuildIt_SetStepTime(GIZBUILDIT_s *, GAMEOBJECT *);
 #ifdef __cplusplus
 }
-#endif
-
 #endif

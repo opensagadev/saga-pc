@@ -1,8 +1,7 @@
-#ifndef SAGA_LEGOAPI_ACTIONS_CHARACTER_SPEEDERCHASE_H
-#define SAGA_LEGOAPI_ACTIONS_CHARACTER_SPEEDERCHASE_H
-
 /* Split from saga.h (tools/headersplit.py, docs/header-plan.md). saga.h includes this header at the place of its
  * declarations. */
+
+#pragma once
 
 #include "nu2api/nucore/common.h"
 
@@ -87,6 +86,4 @@ extern "C" {
     i32 SpeederBlowupHack(GIZMOBLOWUP_PC *, i32);
 #ifdef __cplusplus
 }
-#endif
-
 #endif

@@ -1,8 +1,7 @@
-#ifndef SAGA_LEGOAPI_MENUS_SCREENS_GAMEMENUALL_H
-#define SAGA_LEGOAPI_MENUS_SCREENS_GAMEMENUALL_H
-
 /* Split from saga.h (tools/headersplit.py, docs/header-plan.md). saga.h includes this header at the place of its
  * declarations. */
+
+#pragma once
 
 #include "nu2api/nucore/common.h"
 
@@ -248,6 +247,4 @@ extern "C" {
     extern u8 leftrepeatcount[2];
 #ifdef __cplusplus
 }
-#endif
-
 #endif

@@ -1,8 +1,7 @@
-#ifndef SAGA_NU2API_NUCORE_NUNETEMU_H
-#define SAGA_NU2API_NUCORE_NUNETEMU_H
-
 /* Split from saga.h (tools/headersplit.py, docs/header-plan.md). saga.h includes this header at the place of its
  * declarations. */
+
+#pragma once
 
 #include "nu2api/nucore/common.h"
 
@@ -91,6 +90,4 @@ struct NuNetEmu {
 };
 
 extern NuNetEmu theNuNetEmu;
-#endif
-
 #endif

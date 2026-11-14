@@ -1,8 +1,7 @@
-#ifndef SAGA_LEGOAPI_GIZMO_OBJECT_GIZMOPICKUP_H
-#define SAGA_LEGOAPI_GIZMO_OBJECT_GIZMOPICKUP_H
-
 /* Split from saga.h (tools/headersplit.py, docs/header-plan.md). saga.h includes this header at the place of its
  * declarations. */
+
+#pragma once
 
 #include "nu2api/nucore/common.h"
 
@@ -144,6 +143,4 @@ extern "C" {
     void GizmoPickups_SetOnOff(void);
 #ifdef __cplusplus
 }
-#endif
-
 #endif

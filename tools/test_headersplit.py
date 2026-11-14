@@ -112,6 +112,13 @@ class Segmentation(unittest.TestCase):
     def test_roundtrip_is_lossless(self):
         self.assertEqual(self.seg.roundtrip(), HEADER)
 
+    def test_pragma_once_header_segments_like_the_guarded_one(self):
+        text = "/* File. */\n#pragma once\n" + HEADER.split("\n", 2)[2].rsplit("\n#endif\n", 1)[0] + "\n"
+        seg = hs.segment(text)
+        self.assertEqual(seg.roundtrip(), text)
+        self.assertEqual(seg.guard[0].rest, "once")
+        self.assertEqual([i.key for i in seg.items], [i.key for i in self.seg.items])
+
     def test_items_kinds_and_names(self):
         got = {i.key: (i.kind, i.names) for i in self.seg.items}
         self.assertEqual(got["struct:nuvec_s"], ("struct", ["nuvec_s", "NUVEC"]))
@@ -168,12 +175,14 @@ class Planning(unittest.TestCase):
         includes = [line.split('"')[1] for line in shim.splitlines() if line.startswith("#include \"")]
         self.assertEqual(includes[:4], ["decomp.h", "base.h", "decomp.h", "base.h"])
         self.assertIn("#define LOCAL_GUARD", shim)
-        self.assertTrue(shim.startswith("#ifndef SAGA_H\n#define SAGA_H\n"))
+        self.assertTrue(shim.startswith("#pragma once\n\n"))
+        self.assertNotIn("SAGA_H", shim)
 
-    def test_single_part_header_has_a_guard_and_plain_includes(self):
+    def test_single_part_header_is_pragma_once_with_plain_includes(self):
         text = hs.render_header(self.plan, "colour.h")
-        self.assertTrue(text.startswith("#ifndef SAGA_COLOUR_H\n#define SAGA_COLOUR_H\n"))
-        self.assertTrue(text.rstrip().endswith("#endif"))
+        self.assertTrue(text.startswith(hs.HEADER_NOTE + "\n\n#pragma once\n"))
+        self.assertNotIn("SAGA_COLOUR_H", text)
+        self.assertFalse(text.rstrip().endswith("#endif"))
         thing = hs.render_header(self.plan, "thing.h")
         self.assertIn("#ifdef __cplusplus\nclass Thing", thing)
         self.assertIn("#else\nvoid ThingInit(void);", thing)  # the original #else is reused
@@ -188,6 +197,9 @@ class Planning(unittest.TestCase):
         multi = hs.render_header(self.plan, "numath/nuvec.h")
         self.assertIn("#if SAGA_NUMATH_NUVEC_H_PART == 2 && !defined(SAGA_NUMATH_NUVEC_H_STOP)", multi)
         self.assertIn("#ifndef SAGA_SHIM", multi)
+        # Several parts: `#pragma once` outside the shim only, then the part selector.
+        self.assertIn("#ifndef SAGA_SHIM\n#pragma once\n#endif\n#ifndef SAGA_NUMATH_NUVEC_H_PART\n"
+                      "#define SAGA_NUMATH_NUVEC_H_PART 1\n#endif\n", multi)
 
     def test_apply_refuses_to_overwrite_a_header(self):
         with tempfile.TemporaryDirectory() as tmp:

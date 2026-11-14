@@ -1,8 +1,7 @@
-#ifndef SAGA_LEGOAPI_AI_CORE_AISYSALL_TYPES_H
-#define SAGA_LEGOAPI_AI_CORE_AISYSALL_TYPES_H
-
 /* Split from saga.h (tools/headersplit.py, docs/header-plan.md). saga.h includes this header at the place of its
  * declarations. */
+
+#pragma once
 
 #include "nu2api/nucore/common.h"
 
@@ -24,5 +23,3 @@ typedef struct EDAIAREA_s { /* Editor area record: a list link ahead of an AIARE
 } EDAIAREA_s;
 
 STATIC_ASSERT(sizeof(EDAIAREA_s) == 72);
-
-#endif

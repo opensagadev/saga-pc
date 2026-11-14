@@ -1,8 +1,7 @@
-#ifndef SAGA_LEGOAPI_GIZMO_BASE_GIZGAME_H
-#define SAGA_LEGOAPI_GIZMO_BASE_GIZGAME_H
-
 /* Split from saga.h (tools/headersplit.py, docs/header-plan.md). saga.h includes this header at the place of its
  * declarations. */
+
+#pragma once
 
 #include "nu2api/nucore/common.h"
 
@@ -19,6 +18,4 @@ extern "C" {
     i32 GizmoSys_BoltHit(void *, WORLDINFO *, BOLT_PC *, NUVEC *, NUVEC *, NUVEC *, f32, u8 *);
 #ifdef __cplusplus
 }
-#endif
-
 #endif

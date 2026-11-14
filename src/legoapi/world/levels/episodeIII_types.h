@@ -1,8 +1,7 @@
-#ifndef SAGA_LEGOAPI_WORLD_LEVELS_EPISODEIII_TYPES_H
-#define SAGA_LEGOAPI_WORLD_LEVELS_EPISODEIII_TYPES_H
-
 /* Split from saga.h (tools/headersplit.py, docs/header-plan.md). saga.h includes this header at the place of its
  * declarations. */
+
+#pragma once
 
 #include "nu2api/nucore/common.h"
 
@@ -28,5 +27,3 @@ typedef struct vadera_pc_s {
 
 STATIC_ASSERT(sizeof(VADERA_PC) == 0x30);
 STATIC_ASSERT(offsetof(VADERA_PC, big_jump_locator) == 0x24);
-
-#endif

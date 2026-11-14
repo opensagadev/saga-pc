@@ -9,7 +9,7 @@ targets of config/header-map.csv) in a translation unit of its own,
     #include "HEADER"
 
 once as C (-std=c89) and once as C++ (-std=c++98), with the lint flags of
-tools/check.py, parsed by libclang (as tools/layoutcheck.py does). The second include checks the guard.
+tools/check.py, parsed by libclang (as tools/layoutcheck.py does). The second include checks `#pragma once`.
 A header is standalone when both compile without an error. Every header is C
 as well as C++: all C units see every header through saga.h.
 

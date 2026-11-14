@@ -1,8 +1,7 @@
-#ifndef SAGA_LEGOAPI_ITEMS_COLLECT_SHARD_H
-#define SAGA_LEGOAPI_ITEMS_COLLECT_SHARD_H
-
 /* Split from saga.h (tools/headersplit.py, docs/header-plan.md). saga.h includes this header at the place of its
  * declarations. */
+
+#pragma once
 
 #include "nu2api/nucore/common.h"
 
@@ -50,6 +49,4 @@ extern "C" {
     void Signal_SetVisibility(struct SIGNAL_s *signal, i32 visible);
 #ifdef __cplusplus
 }
-#endif
-
 #endif

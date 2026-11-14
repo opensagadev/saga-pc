@@ -1,8 +1,7 @@
-#ifndef SAGA_LEGOAPI_ACTIONS_CHARACTER_LEGOAPI_TAG_H
-#define SAGA_LEGOAPI_ACTIONS_CHARACTER_LEGOAPI_TAG_H
-
 /* Split from saga.h (tools/headersplit.py, docs/header-plan.md). saga.h includes this header at the place of its
  * declarations. */
+
+#pragma once
 
 #include "nu2api/nucore/common.h"
 
@@ -35,6 +34,4 @@ extern "C" {
     void TakeOverGameObject(struct gameobject_s *rider, struct gameobject_s *vehicle, i32 blend_camera, i32 immediate);
 #ifdef __cplusplus
 }
-#endif
-
 #endif

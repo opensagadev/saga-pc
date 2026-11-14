@@ -1,8 +1,7 @@
-#ifndef SAGA_LEGOAPI_RENDER_LIGHT_SHADOW_H
-#define SAGA_LEGOAPI_RENDER_LIGHT_SHADOW_H
-
 /* Split from saga.h (tools/headersplit.py, docs/header-plan.md). saga.h includes this header at the place of its
  * declarations. */
+
+#pragma once
 
 #include "nu2api/nucore/common.h"
 
@@ -20,6 +19,4 @@ extern "C" {
     void InitShadowLights(void);
 #ifdef __cplusplus
 }
-#endif
-
 #endif

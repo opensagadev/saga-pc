@@ -216,6 +216,34 @@ def check_headers():
 
 HEADER_MAP = "config/header-map.csv"
 
+# Project headers are `#pragma once` (first directive, after any file comment), never include guards. A header that
+# src/saga.h still includes once per part (SAGA_SHIM) has it only outside the shim, until the shim goes.
+PRAGMA_ONCE = re.compile(r"#[ \t]*pragma[ \t]+once[ \t]*")
+PART_ONCE = ("#ifndef SAGA_SHIM", "#pragma once", "#endif")
+GUARD_PAIR = re.compile(r"^[ \t]*#[ \t]*ifndef[ \t]+(\w+_H)[ \t]*\n[ \t]*#[ \t]*define[ \t]+\1[ \t]*$", re.MULTILINE)
+DIRECTIVE = re.compile(r"^[ \t]*(#[^\n]*?)[ \t]*$", re.MULTILINE)
+
+
+def header_guard_errors(path, text):
+    """Why `text` (a header under src/) does not follow the `#pragma once` rule, or []."""
+    errors = []
+    directives = [re.sub(r"[ \t]+", " ", m.group(1)) for m in DIRECTIVE.finditer(text)]
+    if not directives or not (PRAGMA_ONCE.fullmatch(directives[0]) or tuple(directives[:3]) == PART_ONCE):
+        errors.append(f"{path}: the first directive must be #pragma once")
+    for match in GUARD_PAIR.finditer(text):
+        line = text.count("\n", 0, match.start()) + 1
+        errors.append(f"{path}:{line}: include guard {match.group(1)}; use #pragma once")
+    return errors
+
+
+def check_header_guards(root=None):
+    root = ROOT if root is None else root
+    errors = []
+    for path in sorted((root / "src").rglob("*.h")):
+        errors += header_guard_errors(path.relative_to(root).as_posix(), path.read_text(encoding="latin-1"))
+    if errors:
+        raise ValueError("Headers must use #pragma once:\n  - " + "\n  - ".join(errors))
+
 
 def split_headers():
     """The module headers saga.h is split into (docs/header-plan.md): the targets of config/header-map.csv."""
@@ -722,6 +750,7 @@ def main():
     if errors:
         raise ValueError("Symbol/map checks failed:\n  - " + "\n  - ".join(errors))
     check_headers()
+    check_header_guards()
     check_diagnostic_boundaries()
     check_unit_table()
     check_badges()

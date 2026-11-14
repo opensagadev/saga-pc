@@ -1,8 +1,7 @@
-#ifndef SAGA_LEGOAPI_MENUS_SCREENS_STORE_H
-#define SAGA_LEGOAPI_MENUS_SCREENS_STORE_H
-
 /* Split from saga.h (tools/headersplit.py, docs/header-plan.md). saga.h includes this header at the place of its
  * declarations. */
+
+#pragma once
 
 #include "nu2api/nucore/common.h"
 
@@ -73,5 +72,3 @@ STATIC_ASSERT(offsetof(COLLECTID, grid_y) == 24);
 STATIC_ASSERT(offsetof(COLLECTID_PC, grid_x) == 20);
 STATIC_ASSERT(offsetof(COLLECTID_PC, grid_y) == 24);
 STATIC_ASSERT(offsetof(COLLECTID_PC, unknown_price_tail) == 9);
-
-#endif

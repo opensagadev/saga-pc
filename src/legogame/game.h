@@ -1,8 +1,7 @@
-#ifndef SAGA_LEGOGAME_GAME_H
-#define SAGA_LEGOGAME_GAME_H
-
 /* Split from saga.h (tools/headersplit.py, docs/header-plan.md). saga.h includes this header at the place of its
  * declarations. */
+
+#pragma once
 
 #include "nu2api/nucore/common.h"
 
@@ -409,6 +408,4 @@ extern "C" {
     extern struct area_data_pc_s *E6CHARACTER_ADATA;
 #ifdef __cplusplus
 }
-#endif
-
 #endif

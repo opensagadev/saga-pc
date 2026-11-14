@@ -1,8 +1,7 @@
-#ifndef SAGA_LEGOAPI_GIZMOS_FX_GUIDELINES_H
-#define SAGA_LEGOAPI_GIZMOS_FX_GUIDELINES_H
-
 /* Split from saga.h (tools/headersplit.py, docs/header-plan.md). saga.h includes this header at the place of its
  * declarations. */
+
+#pragma once
 
 #include "nu2api/nucore/common.h"
 
@@ -27,6 +26,4 @@ extern "C" {
     INDY_GUIDELINE_PC *GuideLine_FindNearest(NUVEC *position, struct WORLDINFO_s *world, i32 *endpoint, f32 *distance);
 #ifdef __cplusplus
 }
-#endif
-
 #endif

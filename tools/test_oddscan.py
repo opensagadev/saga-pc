@@ -55,6 +55,11 @@ class OddScanTests(unittest.TestCase):
     def lines(self, cls):
         return [line for line, _ in self.scan.findings[cls]]
 
+    def test_pragma_once_is_not_an_oddity(self):
+        scan = oddscan.FileScan("src/legoapi/thing.h", "/* Thing. */\n\n#pragma once\n\n#pragma other\n")
+        self.assertEqual(scan.counts["pragma-other"], 1)
+        self.assertNotIn("once", scan.pragmas)
+
     def test_lex_separates_comments_and_strings(self):
         code, comments = oddscan.lex('a = "x // y"; // z\n/* b\nc */ d;\n')
         self.assertNotIn("//", code.split("\n")[0].split(";")[0])

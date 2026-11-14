@@ -1,8 +1,7 @@
-#ifndef SAGA_NU2API_NUFILE_NUFILEPAK_H
-#define SAGA_NU2API_NUFILE_NUFILEPAK_H
-
 /* Split from saga.h (tools/headersplit.py, docs/header-plan.md). saga.h includes this header at the place of its
  * declarations. */
+
+#pragma once
 
 #include "nu2api/nucore/common.h"
 
@@ -20,6 +19,4 @@ extern "C" {
     void *NuFilePakLoadKey(char *, VARIPTR *, VARIPTR, i32, const u8 *, u32);
 #ifdef __cplusplus
 }
-#endif
-
 #endif

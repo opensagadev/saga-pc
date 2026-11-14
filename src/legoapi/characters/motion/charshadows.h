@@ -1,8 +1,7 @@
-#ifndef SAGA_LEGOAPI_CHARACTERS_MOTION_CHARSHADOWS_H
-#define SAGA_LEGOAPI_CHARACTERS_MOTION_CHARSHADOWS_H
-
 /* Split from saga.h (tools/headersplit.py, docs/header-plan.md). saga.h includes this header at the place of its
  * declarations. */
+
+#pragma once
 
 #include "nu2api/nucore/common.h"
 
@@ -41,6 +40,4 @@ extern "C" {
     void CharShadows_Draw(void);
 #ifdef __cplusplus
 }
-#endif
-
 #endif

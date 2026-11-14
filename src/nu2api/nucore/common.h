@@ -1,8 +1,7 @@
-#ifndef SAGA_NU2API_NUCORE_COMMON_H
-#define SAGA_NU2API_NUCORE_COMMON_H
-
 /* The prelude every header may include first (docs/header-plan.md, step 2): the platform headers, externals.h, the
  * scaffolding macros (STATIC_ASSERT, STUBBED, U64_PAIR), the fixed-width types and the engine's basic types. */
+
+#pragma once
 
 #include <stddef.h>
 
@@ -73,5 +72,3 @@ typedef union variptr_u {
     char *char_ptr; // 0x0
     u32 addr;       // 0x0
 } VARIPTR;          // size 0x4
-
-#endif

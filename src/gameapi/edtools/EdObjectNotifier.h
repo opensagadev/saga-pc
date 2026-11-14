@@ -1,8 +1,7 @@
-#ifndef SAGA_GAMEAPI_EDTOOLS_EDOBJECTNOTIFIER_H
-#define SAGA_GAMEAPI_EDTOOLS_EDOBJECTNOTIFIER_H
-
 /* Split from saga.h (tools/headersplit.py, docs/header-plan.md). saga.h includes this header at the place of its
  * declarations. */
+
+#pragma once
 
 #include "nu2api/nucore/common.h"
 
@@ -28,6 +27,4 @@ class EdObjectNotifier {
     virtual void NotifyReviveObject(void *, EdClass *, i32) {
     }
 };
-#endif
-
 #endif

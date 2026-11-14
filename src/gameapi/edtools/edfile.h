@@ -1,8 +1,7 @@
-#ifndef SAGA_GAMEAPI_EDTOOLS_EDFILE_H
-#define SAGA_GAMEAPI_EDTOOLS_EDFILE_H
-
 /* Split from saga.h (tools/headersplit.py, docs/header-plan.md). saga.h includes this header at the place of its
  * declarations. */
+
+#pragma once
 
 #include "nu2api/nucore/common.h"
 
@@ -47,6 +46,4 @@ extern "C" {
     void cbmcfgCameraSpeed(struct eduimenu_s *arg0, struct eduiitem_s *arg1, u32 arg2);
 #ifdef __cplusplus
 }
-#endif
-
 #endif

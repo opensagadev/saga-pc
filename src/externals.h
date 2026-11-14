@@ -1,5 +1,4 @@
-#ifndef SAGA_EXTERNALS_H
-#define SAGA_EXTERNALS_H
+#pragma once
 
 #include <windows.h>
 #include <objbase.h>
@@ -204,6 +203,4 @@ extern "C" {
 
 #ifdef __cplusplus
 }
-#endif
-
 #endif

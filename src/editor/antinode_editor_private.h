@@ -1,8 +1,7 @@
-#ifndef SAGA_EDITOR_ANTINODE_EDITOR_PRIVATE_H
-#define SAGA_EDITOR_ANTINODE_EDITOR_PRIVATE_H
-
 /* Split from saga.h (tools/headersplit.py, docs/header-plan.md). saga.h includes this header at the place of its
  * declarations. */
+
+#pragma once
 
 #include "nu2api/nucore/common.h"
 
@@ -33,5 +32,3 @@ struct EDANTINODE_s {
 };
 
 STATIC_ASSERT(sizeof(struct EDANTINODE_s) == 76);
-
-#endif

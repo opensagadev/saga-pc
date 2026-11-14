@@ -1,8 +1,7 @@
-#ifndef SAGA_LEGOAPI_GIZMOS_OBJECT_GIZOBSTACLE_H
-#define SAGA_LEGOAPI_GIZMOS_OBJECT_GIZOBSTACLE_H
-
 /* Split from saga.h (tools/headersplit.py, docs/header-plan.md). saga.h includes this header at the place of its
  * declarations. */
+
+#pragma once
 
 #include "nu2api/nucore/common.h"
 
@@ -51,6 +50,4 @@ extern "C" {
     extern const char *GizObstacleRegistrationNamePtrPc;
 #ifdef __cplusplus
 }
-#endif
-
 #endif

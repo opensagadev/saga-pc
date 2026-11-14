@@ -1,8 +1,7 @@
-#ifndef SAGA_EXTERNALS_DSOUND_H
-#define SAGA_EXTERNALS_DSOUND_H
-
 /* Split from saga.h (tools/headersplit.py, docs/header-plan.md). saga.h includes this header at the place of its
  * declarations. */
+
+#pragma once
 
 #include "nu2api/nucore/common.h"
 
@@ -35,6 +34,4 @@ extern "C" {
     STATIC_ASSERT(offsetof(IDirectSound8Vtbl, get_speaker_config) == 0x20);
 #ifdef __cplusplus
 }
-#endif
-
 #endif

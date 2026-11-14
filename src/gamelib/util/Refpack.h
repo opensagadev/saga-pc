@@ -1,8 +1,7 @@
-#ifndef SAGA_GAMELIB_UTIL_REFPACK_H
-#define SAGA_GAMELIB_UTIL_REFPACK_H
-
 /* Split from saga.h (tools/headersplit.py, docs/header-plan.md). saga.h includes this header at the place of its
  * declarations. */
+
+#pragma once
 
 #include "nu2api/nucore/common.h"
 
@@ -38,6 +37,4 @@ extern "C" {
 #endif
 #ifdef __cplusplus
 extern "C" void refpack_init(void);
-#endif
-
 #endif

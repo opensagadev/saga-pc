@@ -61,7 +61,7 @@ CLASSES = [
     ("pragma-warning", "a", "#pragma warning"),
     ("pragma-comment", "a", "#pragma comment(lib/linker)"),
     ("pragma-macro", "a", "#pragma push_macro/pop_macro"),
-    ("pragma-other", "a", "any other #pragma or __pragma()"),
+    ("pragma-other", "a", "any other #pragma or __pragma() (`#pragma once` is the header rule, not counted)"),
     ("noinline", "b", "__declspec(noinline)"),
     ("forceinline", "b", "__forceinline"),
     ("inline-keyword", "b", "__inline (non-standard spelling)"),
@@ -652,7 +652,7 @@ class FileScan:
             index += 1
             text = text.rstrip().rstrip("\\") + " " + lines[index]
         match = PRAGMA.search(text)
-        if match:
+        if match and (match.group(1) or match.group(2)) != "once":  # `#pragma once` is the header rule
             kind = match.group(1) or match.group(2)
             self.pragmas[kind] += 1
             self.add(PRAGMA_KIND.get(kind, "pragma-other"), number, raw_lines[number - 1])

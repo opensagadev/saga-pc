@@ -1,8 +1,7 @@
-#ifndef SAGA_NU2API_NUCORE_NUDEFERREDFILTERGEN_H
-#define SAGA_NU2API_NUCORE_NUDEFERREDFILTERGEN_H
-
 /* Split from saga.h (tools/headersplit.py, docs/header-plan.md). saga.h includes this header at the place of its
  * declarations. */
+
+#pragma once
 
 #include "nu2api/nucore/common.h"
 
@@ -49,6 +48,4 @@ STATIC_ASSERT(offsetof(NuDeferredFilterGen, parameters) == 0x44);
 STATIC_ASSERT(offsetof(NuDeferredFilterGen, dynamic_light_count) == 0x54);
 STATIC_ASSERT(offsetof(NuDeferredFilterGen, dynamic_lights) == 0x58);
 STATIC_ASSERT(offsetof(NuDeferredFilterGen, deferred_geometry_count) == 0xd8);
-#endif
-
 #endif

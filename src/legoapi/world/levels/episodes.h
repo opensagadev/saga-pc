@@ -1,8 +1,7 @@
-#ifndef SAGA_LEGOAPI_WORLD_LEVELS_EPISODES_H
-#define SAGA_LEGOAPI_WORLD_LEVELS_EPISODES_H
-
 /* Split from saga.h (tools/headersplit.py, docs/header-plan.md). saga.h includes this header at the place of its
  * declarations. */
+
+#pragma once
 
 #include "nu2api/nucore/common.h"
 
@@ -25,6 +24,4 @@ extern "C" {
 #endif
 #ifdef __cplusplus
 i32 Episode_CountOpenAreas(i32, i32, COLLECTION_AREA_SAVE_PC *);
-#endif
-
 #endif

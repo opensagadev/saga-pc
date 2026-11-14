@@ -1,8 +1,7 @@
-#ifndef SAGA_GAMEAPI_APITEXT_H
-#define SAGA_GAMEAPI_APITEXT_H
-
 /* Split from saga.h (tools/headersplit.py, docs/header-plan.md). saga.h includes this header at the place of its
  * declarations. */
+
+#pragma once
 
 #include "nu2api/nucore/common.h"
 
@@ -254,6 +253,4 @@ extern "C" {
     char *TextButtonStringPc(i32, const char *, const char *);
 #ifdef __cplusplus
 }
-#endif
-
 #endif

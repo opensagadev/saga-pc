@@ -1,8 +1,7 @@
-#ifndef SAGA_LEGOAPI_WORLD_LEVELS_EPISODE_H
-#define SAGA_LEGOAPI_WORLD_LEVELS_EPISODE_H
-
 /* Split from saga.h (tools/headersplit.py, docs/header-plan.md). saga.h includes this header at the place of its
  * declarations. */
+
+#pragma once
 
 #include "nu2api/nucore/common.h"
 
@@ -41,6 +40,4 @@ extern "C" {
     i32 Episode_IsComplete(EPISODEDATA_PC *, i32 *);
 #ifdef __cplusplus
 }
-#endif
-
 #endif

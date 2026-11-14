@@ -1,8 +1,7 @@
-#ifndef SAGA_LEGOAPI_GIZMOS_TRANSPORT_TELEPORT_H
-#define SAGA_LEGOAPI_GIZMOS_TRANSPORT_TELEPORT_H
-
 /* Split from saga.h (tools/headersplit.py, docs/header-plan.md). saga.h includes this header at the place of its
  * declarations. */
+
+#pragma once
 
 #include "nu2api/nucore/common.h"
 
@@ -27,6 +26,4 @@ extern "C" {
     void Teleport_NetMoveCode(GAMEOBJECT *);
 #ifdef __cplusplus
 }
-#endif
-
 #endif

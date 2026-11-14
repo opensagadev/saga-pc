@@ -1,8 +1,7 @@
-#ifndef SAGA_LEGOAPI_GIZMOS_TRANSPORT_GIZPORTAL_H
-#define SAGA_LEGOAPI_GIZMOS_TRANSPORT_GIZPORTAL_H
-
 /* Split from saga.h (tools/headersplit.py, docs/header-plan.md). saga.h includes this header at the place of its
  * declarations. */
+
+#pragma once
 
 #include "nu2api/nucore/common.h"
 
@@ -33,5 +32,3 @@ enum { PORTALDOOR_CLOSED = 4 };
 enum { PORTALDOOR_OPENED = 2 };
 
 enum { PORTALDOOR_TRIGGER_AT_END = 1 };
-
-#endif

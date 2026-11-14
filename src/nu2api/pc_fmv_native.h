@@ -1,5 +1,5 @@
-#ifndef PC_FMV_NATIVE_H
-#define PC_FMV_NATIVE_H
+#pragma once
+
 #include "saga.h"
 struct RADFMV_TEXTURE_PC;
 
@@ -146,4 +146,3 @@ extern "C" {
     IDirectSound8 *NuFmvGetSoundFactoryPc(void);
     extern void (*FmvDrawCallbackPc)(void);
 }
-#endif

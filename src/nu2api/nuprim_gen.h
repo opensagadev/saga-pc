@@ -1,8 +1,7 @@
-#ifndef SAGA_NU2API_NUPRIM_GEN_H
-#define SAGA_NU2API_NUPRIM_GEN_H
-
 /* Split from saga.h (tools/headersplit.py, docs/header-plan.md). saga.h includes this header at the place of its
  * declarations. */
+
+#pragma once
 
 #include "nu2api/nucore/common.h"
 
@@ -13,6 +12,4 @@ extern "C" {
     extern const f64 nu_wind_scaled_time_multiplier;
 #ifdef __cplusplus
 }
-#endif
-
 #endif

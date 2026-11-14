@@ -1,8 +1,7 @@
-#ifndef SAGA_NU2API_NUMATH_NUMTX_H
-#define SAGA_NU2API_NUMATH_NUMTX_H
-
 /* Split from saga.h (tools/headersplit.py, docs/header-plan.md). saga.h includes this header at the place of its
  * declarations. */
+
+#pragma once
 
 #include "nu2api/nucore/common.h"
 
@@ -155,5 +154,3 @@ extern "C" {
 }
 #endif
 #define NUMTX_GET_ROW_VEC(mtx, row) ((NUVEC *)&((mtx)[0].m##row##0))
-
-#endif

@@ -1,8 +1,7 @@
-#ifndef SAGA_LEGOAPI_MENUS_SCREENS_GAMESTRUCTURE_H
-#define SAGA_LEGOAPI_MENUS_SCREENS_GAMESTRUCTURE_H
-
 /* Split from saga.h (tools/headersplit.py, docs/header-plan.md). saga.h includes this header at the place of its
  * declarations. */
+
+#pragma once
 
 #include "nu2api/nucore/common.h"
 
@@ -58,6 +57,4 @@ extern "C" {
     void PauseGame(i32);
 #ifdef __cplusplus
 }
-#endif
-
 #endif

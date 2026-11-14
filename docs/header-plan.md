@@ -779,7 +779,10 @@ that. Each part is a block of the header's file:
 ```
 
 The shim includes the header once per part. Included directly, the header
-gives all its parts at once.
+gives all its parts at once. Headers are `#pragma once` (no include
+guards, `tools/check.py`); a header with parts has it only outside the
+shim (`#ifndef SAGA_SHIM` / `#pragma once` / `#endif`, before its
+`#ifndef ..._PART` / `#define ..._PART 1` / `#endif` selector).
 
 Includes inside a header:
 
@@ -947,7 +950,7 @@ When no unit includes saga.h:
    unused declarations, or move each one the build shows to be needed to its
    `would go to` owner.
 2. Merge each header's parts into one body. The `#if ..._PART` sections and
-   the `#ifndef SAGA_SHIM` wrappers go; the order inside a header may then
+   the `#ifndef SAGA_SHIM` wrappers (around `#pragma once` too) go; the order inside a header may then
    change, proven by objects.
 3. Give the catch-all rows (`globals.h`, `legoapi_types.h`, detail
    `catch-all`) module owners.

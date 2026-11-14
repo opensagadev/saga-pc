@@ -1,8 +1,7 @@
-#ifndef SAGA_GAMEAPI_EDTOOLS_EDPART_INTERNAL_H
-#define SAGA_GAMEAPI_EDTOOLS_EDPART_INTERNAL_H
-
 /* Split from saga.h (tools/headersplit.py, docs/header-plan.md). saga.h includes this header at the place of its
  * declarations. */
+
+#pragma once
 
 #include "nu2api/nucore/common.h"
 
@@ -18,6 +17,4 @@ extern "C" {
     extern struct parttype_lookup_pc_s *edpart_nearest_type;
 #ifdef __cplusplus
 }
-#endif
-
 #endif

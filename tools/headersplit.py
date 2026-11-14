@@ -559,8 +559,14 @@ def segment(text):
     i = 0
     n = len(tokens)
     guard = None
-    # Include guard: #ifndef X / #define X first, the matching #endif last.
-    if n >= 2 and tokens[0].kind == "dir" and tokens[0].directive == "ifndef" and \
+    # `#pragma once` first (the project's form), or an include guard: #ifndef X / #define X first, the matching
+    # #endif last (older inputs).
+    if n >= 1 and tokens[0].kind == "dir" and tokens[0].directive == "pragma" and tokens[0].rest == "once":
+        guard = (tokens[0],)
+        events.append(Event("guard", tokens[0].line, tokens[0].end, 1))
+        tokens = tokens[1:]
+        n = len(tokens)
+    elif n >= 2 and tokens[0].kind == "dir" and tokens[0].directive == "ifndef" and \
             tokens[1].kind == "dir" and tokens[1].directive == "define" and tokens[1].rest == tokens[0].rest:
         close = _match_endif(tokens, 0)
         if close == n - 1:
@@ -2256,23 +2262,32 @@ HEADER_NOTE = ("/* Split from saga.h (tools/headersplit.py, docs/header-plan.md)
                "the place of its declarations. */")
 
 
+PART_NOTE = ("/* saga.h includes this header once per part (SAGA_SHIM), so `#pragma once` holds for direct includes "
+             "only; the\n * condition and the _PART selector go away with the shim. */")
+
+
 def render_header(plan, header):
+    """A header with one part is `#pragma once`; one with several parts is that only outside the shim, which
+    includes it once per part (the `_PART` selector)."""
     runs = plan.targets[header]
     plain, shim_only, notes = plan.includes.get(header, ([], [], []))
     guard = guard_name(header)
-    out = [f"#ifndef {guard}" if len(runs) == 1 else f"#ifndef {guard}_PART",
-           f"#define {guard}" if len(runs) == 1 else f"#define {guard}_PART 1",
-           f"#endif" if len(runs) > 1 else None, "", HEADER_NOTE]
-    out = [line for line in out if line is not None]
+    out = [HEADER_NOTE]
     for note in notes:
         out.append(f"/* {note[0].upper()}{note[1:]}. */")
+    out.append("")
+    if len(runs) == 1:
+        out.append("#pragma once")
+    else:
+        out += [PART_NOTE, "#ifndef SAGA_SHIM", "#pragma once", "#endif",
+                f"#ifndef {guard}_PART", f"#define {guard}_PART 1", "#endif"]
     if plain:
         out.append("")
         out += [f'#include "{h}"' for h in plain]
     if shim_only:
         out += ["", "#ifndef SAGA_SHIM"] + [f'#include "{h}"' for h in shim_only] + ["#endif"]
     if len(runs) == 1:
-        out += ["", render_items(plan.seg, runs[0].items), "", f"#endif"]
+        out += ["", render_items(plan.seg, runs[0].items)]
         return "\n".join(out) + "\n"
     out.append(f"/* {len(runs)} parts: saga.h includes this header once per part, each where its declarations belong; "
                "included directly, it gives all parts at once. */")
@@ -2298,15 +2313,13 @@ def render_shim(plan):
     guard = seg.guard
     out = []
     if guard:
-        out += [guard[0].text, guard[1].text, ""]
+        out += ["#pragma once", ""]
     out += [SHIM_COMMENT_EXACT if plan.exact else SHIM_COMMENT, "#define SAGA_SHIM", ""]
     for run in plan.runs:
         if run.target:
             out.append(f'#include "{run.target}"')
         else:
             out.append(render_items(seg, run.items))
-    if guard:
-        out += ["", guard[2].text]
     return "\n".join(out) + "\n"
 
 

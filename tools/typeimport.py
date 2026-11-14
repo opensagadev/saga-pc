@@ -225,16 +225,16 @@ class Importer:
 
 
 def insert_section(text, section):
-    """Place the section inside the include guard, before the globals section if present."""
+    """Place the section at the end of the header (`#pragma once`, no guard), before the globals section if
+    present."""
     if SECTION_START in text:
         start = text.index(SECTION_START)
-        end = text.index(GLOBALS_START) if GLOBALS_START in text else text.rindex("\n#endif")
-        return text[:start] + section + "\n" + text[end:]
+        end = text.index(GLOBALS_START) if GLOBALS_START in text else len(text)
+        return text[:start] + section + ("\n" if end < len(text) else "") + text[end:]
     if GLOBALS_START in text:
         at = text.index(GLOBALS_START)
         return text[:at] + section + "\n" + text[at:]
-    body, guard = text.rstrip("\n").rsplit("\n#endif", 1)
-    return body + "\n\n" + section + "\n#endif" + guard + "\n"
+    return text.rstrip("\n") + "\n\n" + section
 
 
 def verify(importer, tags, text):

@@ -1,8 +1,7 @@
-#ifndef SAGA_NU2API_NUFILE_NUFILE_H
-#define SAGA_NU2API_NUFILE_NUFILE_H
-
 /* Split from saga.h (tools/headersplit.py, docs/header-plan.md). saga.h includes this header at the place of its
  * declarations. */
+
+#pragma once
 
 #include "nu2api/nucore/common.h"
 
@@ -252,5 +251,3 @@ extern "C" {
 enum { NUFILE_READ = 0 };
 
 enum { NUFILE_WRITE = 1 };
-
-#endif

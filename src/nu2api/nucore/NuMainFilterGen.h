@@ -1,8 +1,7 @@
-#ifndef SAGA_NU2API_NUCORE_NUMAINFILTERGEN_H
-#define SAGA_NU2API_NUCORE_NUMAINFILTERGEN_H
-
 /* Split from saga.h (tools/headersplit.py, docs/header-plan.md). saga.h includes this header at the place of its
  * declarations. */
+
+#pragma once
 
 #include "nu2api/nucore/common.h"
 
@@ -67,6 +66,4 @@ STATIC_ASSERT(offsetof(NuMainFilterGen, bloom) == 0x68);
 STATIC_ASSERT(offsetof(NuMainFilterGen, dof_enabled) == 0x88);
 STATIC_ASSERT(offsetof(NuMainFilterGen, bloom_enabled) == 0x89);
 STATIC_ASSERT(offsetof(NuMainFilterGen, active_filter_count) == 0x8c);
-#endif
-
 #endif

@@ -1,8 +1,7 @@
-#ifndef SAGA_LEGOAPI_WORLD_LEVELS_EPISODEIII_H
-#define SAGA_LEGOAPI_WORLD_LEVELS_EPISODEIII_H
-
 /* Split from saga.h (tools/headersplit.py, docs/header-plan.md). saga.h includes this header at the place of its
  * declarations. */
+
+#pragma once
 
 #include "nu2api/nucore/common.h"
 
@@ -30,6 +29,4 @@ extern "C" {
     extern VADERA_PC vader_a;
 #ifdef __cplusplus
 }
-#endif
-
 #endif

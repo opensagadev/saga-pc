@@ -1,8 +1,7 @@
-#ifndef SAGA_NU2API_WAVREADER_H
-#define SAGA_NU2API_WAVREADER_H
-
 /* Split from saga.h (tools/headersplit.py, docs/header-plan.md). saga.h includes this header at the place of its
  * declarations. */
+
+#pragma once
 
 #include "nu2api/nucore/common.h"
 
@@ -63,6 +62,4 @@ STATIC_ASSERT(sizeof(PC_WAVE_CHUNK_PC) == 12);
 STATIC_ASSERT(offsetof(PC_WAVE_CHUNK_PC, kind) == 0);
 STATIC_ASSERT(offsetof(PC_WAVE_CHUNK_PC, bytes) == 4);
 STATIC_ASSERT(offsetof(PC_WAVE_CHUNK_PC, offset) == 8);
-#endif
-
 #endif

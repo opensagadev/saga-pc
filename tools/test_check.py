@@ -353,6 +353,42 @@ class CommonMatchTests(unittest.TestCase):
         self.assertEqual(report["data"][0]["objects"], [])
 
 
+class HeaderGuardTests(unittest.TestCase):
+    def test_pragma_once_after_the_file_comment_passes(self):
+        self.assertEqual(check_module.header_guard_errors("a.h", "/* A. */\n\n#pragma once\n\nint a;\n"), [])
+        self.assertEqual(check_module.header_guard_errors("a.h", "#pragma once\n#ifndef MIN\n#define MIN 1\n"
+                                                          "#endif\n#ifndef LOCAL\n#define LOCAL\n#endif\n"), [])
+
+    def test_part_header_has_pragma_once_outside_the_shim(self):
+        text = ("/* Split. */\n\n#ifndef SAGA_SHIM\n#pragma once\n#endif\n#ifndef SAGA_A_H_PART\n"
+                "#define SAGA_A_H_PART 1\n#endif\n")
+        self.assertEqual(check_module.header_guard_errors("a.h", text), [])
+        self.assertTrue(check_module.header_guard_errors("a.h", text.replace("#pragma once\n", "")))
+
+    def test_include_guard_is_rejected(self):
+        errors = check_module.header_guard_errors("a.h", "#ifndef SAGA_A_H\n#define SAGA_A_H\nint a;\n#endif\n")
+        self.assertEqual(len(errors), 2)
+        self.assertIn("first directive must be #pragma once", errors[0])
+        self.assertIn("a.h:1: include guard SAGA_A_H", errors[1])
+        errors = check_module.header_guard_errors("b.h", "#pragma once\n\n#ifndef B_H\n#define B_H\n#endif\n")
+        self.assertEqual(errors, ["b.h:3: include guard B_H; use #pragma once"])
+        self.assertTrue(check_module.header_guard_errors("c.h", "int c;\n"))
+
+    def test_check_walks_every_header_under_src(self):
+        with tempfile.TemporaryDirectory() as temp:
+            root = Path(temp)
+            (root / "src/x").mkdir(parents=True)
+            (root / "src/a.h").write_text("#pragma once\n")
+            (root / "src/x/b.h").write_text("#pragma once\n")
+            check_module.check_header_guards(root)
+            (root / "src/x/b.h").write_text("#ifndef SAGA_X_B_H\n#define SAGA_X_B_H\n#endif\n")
+            with self.assertRaisesRegex(ValueError, "src/x/b.h:1: include guard SAGA_X_B_H"):
+                check_module.check_header_guards(root)
+
+    def test_tree_headers_use_pragma_once(self):
+        check_module.check_header_guards()
+
+
 class HeaderLayoutTests(unittest.TestCase):
     def test_debug_analysis_is_limited_to_diagnostic_support(self):
         for source in ("src/debug/log.c", "src/debug/skin_trace.cpp", "src/debug/skin_trace_windows.cpp",

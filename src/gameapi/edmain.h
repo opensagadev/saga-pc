@@ -1,8 +1,7 @@
-#ifndef SAGA_GAMEAPI_EDMAIN_H
-#define SAGA_GAMEAPI_EDMAIN_H
-
 /* Split from saga.h (tools/headersplit.py, docs/header-plan.md). saga.h includes this header at the place of its
  * declarations. */
+
+#pragma once
 
 #include "nu2api/nucore/common.h"
 
@@ -21,6 +20,4 @@ extern "C" {
     void cbMMReturnToApp(struct eduimenu_s *arg0, struct eduiitem_s *arg1, u32 arg2);
 #ifdef __cplusplus
 }
-#endif
-
 #endif

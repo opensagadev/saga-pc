@@ -1,8 +1,7 @@
-#ifndef SAGA_LEGOAPI_MENUS_CORE_HINT_H
-#define SAGA_LEGOAPI_MENUS_CORE_HINT_H
-
 /* Split from saga.h (tools/headersplit.py, docs/header-plan.md). saga.h includes this header at the place of its
  * declarations. */
+
+#pragma once
 
 #include "nu2api/nucore/common.h"
 
@@ -112,5 +111,3 @@ extern "C" {
 }
 #endif
 STATIC_ASSERT(offsetof(HINT_PC, display_duration) == 8);
-
-#endif

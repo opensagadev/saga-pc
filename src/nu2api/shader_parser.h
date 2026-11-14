@@ -1,8 +1,7 @@
-#ifndef SAGA_NU2API_SHADER_PARSER_H
-#define SAGA_NU2API_SHADER_PARSER_H
-
 /* Split from saga.h (tools/headersplit.py, docs/header-plan.md). saga.h includes this header at the place of its
  * declarations. */
+
+#pragma once
 
 #include "nu2api/nucore/common.h"
 
@@ -120,6 +119,4 @@ STATIC_ASSERT(offsetof(ShaderCompilerParserPc, branch_count) == 0x2c4);
 STATIC_ASSERT(offsetof(ShaderCompilerParserPc, scopes) == 0x2c8);
 STATIC_ASSERT(offsetof(ShaderCompilerParserPc, scope_count) == 0x458);
 #endif
-#endif
-
 #endif

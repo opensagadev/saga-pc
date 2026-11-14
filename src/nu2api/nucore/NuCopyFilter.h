@@ -1,8 +1,7 @@
-#ifndef SAGA_NU2API_NUCORE_NUCOPYFILTER_H
-#define SAGA_NU2API_NUCORE_NUCOPYFILTER_H
-
 /* Split from saga.h (tools/headersplit.py, docs/header-plan.md). saga.h includes this header at the place of its
  * declarations. */
+
+#pragma once
 
 #include "nu2api/nucore/common.h"
 
@@ -25,6 +24,4 @@ class NuCopyFilter : public NuPostFilter {
 };
 
 STATIC_ASSERT(sizeof(NuCopyFilter) == 0x14);
-#endif
-
 #endif

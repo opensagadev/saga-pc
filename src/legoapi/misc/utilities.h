@@ -1,8 +1,7 @@
-#ifndef SAGA_LEGOAPI_MISC_UTILITIES_H
-#define SAGA_LEGOAPI_MISC_UTILITIES_H
-
 /* Split from saga.h (tools/headersplit.py, docs/header-plan.md). saga.h includes this header at the place of its
  * declarations. */
+
+#pragma once
 
 #include "nu2api/nucore/common.h"
 
@@ -55,6 +54,4 @@ extern "C" {
                        struct nuvec_s *second_end, f32 *first_fraction, f32 *second_fraction);
 #ifdef __cplusplus
 }
-#endif
-
 #endif

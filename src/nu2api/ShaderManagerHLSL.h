@@ -1,8 +1,7 @@
-#ifndef SAGA_NU2API_SHADERMANAGERHLSL_H
-#define SAGA_NU2API_SHADERMANAGERHLSL_H
-
 /* Split from saga.h (tools/headersplit.py, docs/header-plan.md). saga.h includes this header at the place of its
  * declarations. */
+
+#pragma once
 
 #include "nu2api/nucore/common.h"
 
@@ -44,6 +43,4 @@ STATIC_ASSERT(offsetof(ShaderManagerHLSLPc, compiler) == 0x7918c);
 STATIC_ASSERT(offsetof(ShaderManagerHLSLPc, vertex_source) == 0x79190);
 STATIC_ASSERT(offsetof(ShaderManagerHLSLPc, pixel_source) == 0x791a0);
 STATIC_ASSERT(sizeof(ShaderManagerHLSLPc) == 0x791b0);
-#endif
-
 #endif

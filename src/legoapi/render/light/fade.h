@@ -1,8 +1,7 @@
-#ifndef SAGA_LEGOAPI_RENDER_LIGHT_FADE_H
-#define SAGA_LEGOAPI_RENDER_LIGHT_FADE_H
-
 /* Split from saga.h (tools/headersplit.py, docs/header-plan.md). saga.h includes this header at the place of its
  * declarations. */
+
+#pragma once
 
 #include "nu2api/nucore/common.h"
 
@@ -21,6 +20,4 @@ extern "C" {
     extern NUSPECIALHANDLE FadeLoop_ObjHSpecial;
 #ifdef __cplusplus
 }
-#endif
-
 #endif

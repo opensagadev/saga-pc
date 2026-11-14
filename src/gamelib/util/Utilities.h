@@ -1,8 +1,7 @@
-#ifndef SAGA_GAMELIB_UTIL_UTILITIES_H
-#define SAGA_GAMELIB_UTIL_UTILITIES_H
-
 /* Split from saga.h (tools/headersplit.py, docs/header-plan.md). saga.h includes this header at the place of its
  * declarations. */
+
+#pragma once
 
 #include "nu2api/nucore/common.h"
 
@@ -27,6 +26,4 @@ f32 NuSpecialGetAnimPos(struct nuhspecial_s *special);
 u32 UtilGetTime(void);
 u32 UtilGetFrameStartTime(void);
 void UtilFrameStart(void);
-#endif
-
 #endif

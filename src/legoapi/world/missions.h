@@ -1,8 +1,7 @@
-#ifndef SAGA_LEGOAPI_WORLD_MISSIONS_H
-#define SAGA_LEGOAPI_WORLD_MISSIONS_H
-
 /* Split from saga.h (tools/headersplit.py, docs/header-plan.md). saga.h includes this header at the place of its
  * declarations. */
+
+#pragma once
 
 #include "nu2api/nucore/common.h"
 
@@ -86,5 +85,3 @@ STATIC_ASSERT(offsetof(MISSIONSYS_PC, active_mission) == 4);
 STATIC_ASSERT(offsetof(MISSIONSYS_PC, unknown_08) == 8);
 STATIC_ASSERT(offsetof(MISSIONSYS_PC, count) == 0x1c);
 STATIC_ASSERT(offsetof(MISSIONSYS_PC, state) == 0x1d);
-
-#endif

@@ -1,8 +1,7 @@
-#ifndef SAGA_LEGOAPI_LIB_CAMERA_H
-#define SAGA_LEGOAPI_LIB_CAMERA_H
-
 /* Split from saga.h (tools/headersplit.py, docs/header-plan.md). saga.h includes this header at the place of its
  * declarations. */
+
+#pragma once
 
 #include "nu2api/nucore/common.h"
 
@@ -61,6 +60,4 @@ extern "C" {
     extern i32 (*AlternateGameCallbackPc)(GAMEOBJECT *object);
 #ifdef __cplusplus
 }
-#endif
-
 #endif

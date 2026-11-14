@@ -1,9 +1,14 @@
+/* Split from saga.h (tools/headersplit.py, docs/header-plan.md). saga.h includes this header at the place of its
+ * declarations. */
+
+/* saga.h includes this header once per part (SAGA_SHIM), so `#pragma once` holds for direct includes only; the
+ * condition and the _PART selector go away with the shim. */
+#ifndef SAGA_SHIM
+#pragma once
+#endif
 #ifndef SAGA_LEGOAPI_WORLD_LEVEL_H_PART
 #define SAGA_LEGOAPI_WORLD_LEVEL_H_PART 1
 #endif
-
-/* Split from saga.h (tools/headersplit.py, docs/header-plan.md). saga.h includes this header at the place of its
- * declarations. */
 
 #include "nu2api/nucore/common.h"
 

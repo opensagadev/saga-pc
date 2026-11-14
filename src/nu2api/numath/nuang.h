@@ -1,8 +1,7 @@
-#ifndef SAGA_NU2API_NUMATH_NUANG_H
-#define SAGA_NU2API_NUMATH_NUANG_H
-
 /* Split from saga.h (tools/headersplit.py, docs/header-plan.md). saga.h includes this header at the place of its
  * declarations. */
+
+#pragma once
 
 #include "nu2api/nucore/common.h"
 
@@ -16,6 +15,4 @@ extern "C" {
     void NuAng2AltSol(NUANG *out_x, NUANG *out_y, NUANG *out_z, NUANG x, NUANG y, NUANG z);
 #ifdef __cplusplus
 }
-#endif
-
 #endif

@@ -1,8 +1,7 @@
-#ifndef SAGA_LEGOAPI_ITEMS_OBJECTS_GAMEOBJECTS_H
-#define SAGA_LEGOAPI_ITEMS_OBJECTS_GAMEOBJECTS_H
-
 /* Split from saga.h (tools/headersplit.py, docs/header-plan.md). saga.h includes this header at the place of its
  * declarations. */
+
+#pragma once
 
 #include "nu2api/nucore/common.h"
 
@@ -40,6 +39,4 @@ extern "C" {
     void GameObjectSetCanUse(GAMEOBJECT *, void *, u8, u8, f32);
 #ifdef __cplusplus
 }
-#endif
-
 #endif

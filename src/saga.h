@@ -1,5 +1,4 @@
-#ifndef SAGA_H
-#define SAGA_H
+#pragma once
 
 /* Include-all shim (docs/header-plan.md, step 1): every module header, in an order where each declaration
  * comes after what it depends on. A header with several parts is included once per part. Declarations without a
@@ -604,5 +603,3 @@
 #include "legoapi/legoapi_types.h"
 #include "gamelib/util/gamelib_util_types.h"
 #include "legoapi/items/collect/bolts.h"
-
-#endif

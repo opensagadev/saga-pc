@@ -1,8 +1,7 @@
-#ifndef SAGA_GAMEAPI_EDTOOLS_EDRENDER_H
-#define SAGA_GAMEAPI_EDTOOLS_EDRENDER_H
-
 /* Split from saga.h (tools/headersplit.py, docs/header-plan.md). saga.h includes this header at the place of its
  * declarations. */
+
+#pragma once
 
 #include "nu2api/nucore/common.h"
 
@@ -18,6 +17,4 @@ extern "C" {
     void edbitsDrawCross(f32 x, f32 y, f32 z, f32 radius, i32 colour, struct PC_SCENE_MTL_VIEW *material);
 #ifdef __cplusplus
 }
-#endif
-
 #endif

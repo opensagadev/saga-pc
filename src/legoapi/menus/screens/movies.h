@@ -1,8 +1,7 @@
-#ifndef SAGA_LEGOAPI_MENUS_SCREENS_MOVIES_H
-#define SAGA_LEGOAPI_MENUS_SCREENS_MOVIES_H
-
 /* Split from saga.h (tools/headersplit.py, docs/header-plan.md). saga.h includes this header at the place of its
  * declarations. */
+
+#pragma once
 
 #include "nu2api/nucore/common.h"
 
@@ -16,5 +15,3 @@ typedef struct nupad_init_state_s {
 STATIC_ASSERT(offsetof(NUPAD_INIT_STATE, init_type) == 0x88);
 STATIC_ASSERT(offsetof(NUPAD_INIT_STATE, init_flags) == 0x89);
 STATIC_ASSERT(offsetof(NUPAD_INIT_STATE, init_port) == 0x8a);
-
-#endif

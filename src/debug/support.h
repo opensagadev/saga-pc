@@ -1,5 +1,4 @@
-#ifndef SAGA_DEBUG_SUPPORT_H
-#define SAGA_DEBUG_SUPPORT_H
+#pragma once
 
 /* Shared internal Debug support ABI; implementations and integration use these declarations. */
 #include <windows.h>
@@ -25,5 +24,3 @@ extern "C" {
 
 #pragma intrinsic(_InterlockedExchange)
 #pragma intrinsic(_ReturnAddress)
-
-#endif

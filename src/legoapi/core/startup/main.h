@@ -1,8 +1,7 @@
-#ifndef SAGA_LEGOAPI_CORE_STARTUP_MAIN_H
-#define SAGA_LEGOAPI_CORE_STARTUP_MAIN_H
-
 /* Split from saga.h (tools/headersplit.py, docs/header-plan.md). saga.h includes this header at the place of its
  * declarations. */
+
+#pragma once
 
 #include "nu2api/nucore/common.h"
 
@@ -12,6 +11,4 @@ extern "C" {
     void FinishLoop(i32 frames);
 #ifdef __cplusplus
 }
-#endif
-
 #endif

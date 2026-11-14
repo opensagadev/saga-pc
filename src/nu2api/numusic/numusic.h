@@ -1,8 +1,7 @@
-#ifndef SAGA_NU2API_NUMUSIC_NUMUSIC_H
-#define SAGA_NU2API_NUMUSIC_NUMUSIC_H
-
 /* Split from saga.h (tools/headersplit.py, docs/header-plan.md). saga.h includes this header at the place of its
  * declarations. */
+
+#pragma once
 
 #include "nu2api/nucore/common.h"
 
@@ -257,6 +256,4 @@ STATIC_ASSERT(offsetof(NuMusic, language) == 0x1d4);
 STATIC_ASSERT(offsetof(NuMusic::Track, pitch) == 0x28);
 
 extern NuMusic music_man;
-#endif
-
 #endif

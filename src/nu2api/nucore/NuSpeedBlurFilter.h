@@ -1,8 +1,7 @@
-#ifndef SAGA_NU2API_NUCORE_NUSPEEDBLURFILTER_H
-#define SAGA_NU2API_NUCORE_NUSPEEDBLURFILTER_H
-
 /* Split from saga.h (tools/headersplit.py, docs/header-plan.md). saga.h includes this header at the place of its
  * declarations. */
+
+#pragma once
 
 #include "nu2api/nucore/common.h"
 
@@ -40,6 +39,4 @@ class NuSpeedBlurFilter : public NuSpeedBlurFilterGen {
 STATIC_ASSERT(sizeof(NuSpeedBlurFilter) == 0x40);
 STATIC_ASSERT(offsetof(NuSpeedBlurFilter, texture_surface) == 0x20);
 STATIC_ASSERT(offsetof(NuSpeedBlurFilter, platform_uniform) == 0x3c);
-#endif
-
 #endif

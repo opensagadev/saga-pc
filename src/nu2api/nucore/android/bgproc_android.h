@@ -1,8 +1,7 @@
-#ifndef SAGA_NU2API_NUCORE_ANDROID_BGPROC_ANDROID_H
-#define SAGA_NU2API_NUCORE_ANDROID_BGPROC_ANDROID_H
-
 /* Split from saga.h (tools/headersplit.py, docs/header-plan.md). saga.h includes this header at the place of its
  * declarations. */
+
+#pragma once
 
 #include "nu2api/nucore/common.h"
 
@@ -14,6 +13,4 @@ extern "C" {
     i32 bgprocIsFreezing(void);
 #ifdef __cplusplus
 }
-#endif
-
 #endif

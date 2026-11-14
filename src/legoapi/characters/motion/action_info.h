@@ -1,8 +1,7 @@
-#ifndef SAGA_LEGOAPI_CHARACTERS_MOTION_ACTION_INFO_H
-#define SAGA_LEGOAPI_CHARACTERS_MOTION_ACTION_INFO_H
-
 /* Split from saga.h (tools/headersplit.py, docs/header-plan.md). saga.h includes this header at the place of its
  * declarations. */
+
+#pragma once
 
 #include "nu2api/nucore/common.h"
 
@@ -22,6 +21,4 @@ extern "C" {
     extern CHARACTER_CONTEXT_INFO_PC *CInfo;
 #ifdef __cplusplus
 }
-#endif
-
 #endif

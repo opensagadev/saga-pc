@@ -1,8 +1,7 @@
-#ifndef SAGA_LEGOAPI_MENUS_CORE_TEXT_H
-#define SAGA_LEGOAPI_MENUS_CORE_TEXT_H
-
 /* Split from saga.h (tools/headersplit.py, docs/header-plan.md). saga.h includes this header at the place of its
  * declarations. */
+
+#pragma once
 
 #include "nu2api/nucore/common.h"
 
@@ -59,6 +58,4 @@ extern "C" {
     i32 Text_ExpandButtonString(char *, char *);
 #ifdef __cplusplus
 }
-#endif
-
 #endif

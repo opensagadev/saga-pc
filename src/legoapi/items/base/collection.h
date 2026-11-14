@@ -1,8 +1,7 @@
-#ifndef SAGA_LEGOAPI_ITEMS_BASE_COLLECTION_H
-#define SAGA_LEGOAPI_ITEMS_BASE_COLLECTION_H
-
 /* Split from saga.h (tools/headersplit.py, docs/header-plan.md). saga.h includes this header at the place of its
  * declarations. */
+
+#pragma once
 
 #include "nu2api/nucore/common.h"
 
@@ -63,6 +62,4 @@ extern "C" {
     void Collection_Draw(COLLECTION_BUILD_PC *, f32, f32, f32, APICHARACTERMODELLIST *, f32, i32);
 #ifdef __cplusplus
 }
-#endif
-
 #endif

@@ -1,8 +1,7 @@
-#ifndef SAGA_NU2API_NUMATH_NURAND_H
-#define SAGA_NU2API_NUMATH_NURAND_H
-
 /* Split from saga.h (tools/headersplit.py, docs/header-plan.md). saga.h includes this header at the place of its
  * declarations. */
+
+#pragma once
 
 #include "nu2api/nucore/common.h"
 
@@ -28,6 +27,4 @@ extern "C" {
     f32 NuFloatRand(NURAND *rand);
 #ifdef __cplusplus
 }
-#endif
-
 #endif

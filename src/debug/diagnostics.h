@@ -1,5 +1,4 @@
-#ifndef SAGA_DIAGNOSTICS_H
-#define SAGA_DIAGNOSTICS_H
+#pragma once
 
 /* Project diagnostics only. Never condition game behavior on SAGA_DEBUG.
  * All logging arguments and conditions must be free of side effects. */
@@ -86,6 +85,4 @@ extern "C" {
 #define STUBBED_NAMED(name) ((void)0)
 #endif
 #define UNIMPLEMENTED(...) ((void)0)
-#endif
-
 #endif

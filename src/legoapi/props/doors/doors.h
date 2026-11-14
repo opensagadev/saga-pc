@@ -1,8 +1,7 @@
-#ifndef SAGA_LEGOAPI_PROPS_DOORS_DOORS_H
-#define SAGA_LEGOAPI_PROPS_DOORS_DOORS_H
-
 /* Split from saga.h (tools/headersplit.py, docs/header-plan.md). saga.h includes this header at the place of its
  * declarations. */
+
+#pragma once
 
 #include "nu2api/nucore/common.h"
 
@@ -25,6 +24,4 @@ extern "C" {
     extern i32 door_cutscenesnap;
 #ifdef __cplusplus
 }
-#endif
-
 #endif

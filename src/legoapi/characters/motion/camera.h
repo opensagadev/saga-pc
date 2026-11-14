@@ -1,8 +1,7 @@
-#ifndef SAGA_LEGOAPI_CHARACTERS_MOTION_CAMERA_H
-#define SAGA_LEGOAPI_CHARACTERS_MOTION_CAMERA_H
-
 /* Split from saga.h (tools/headersplit.py, docs/header-plan.md). saga.h includes this header at the place of its
  * declarations. */
+
+#pragma once
 
 #include "nu2api/nucore/common.h"
 
@@ -21,6 +20,4 @@ extern "C" {
     extern NUVEC ObstacleCamCutPts[2];
 #ifdef __cplusplus
 }
-#endif
-
 #endif

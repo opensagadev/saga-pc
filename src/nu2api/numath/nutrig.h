@@ -1,8 +1,7 @@
-#ifndef SAGA_NU2API_NUMATH_NUTRIG_H
-#define SAGA_NU2API_NUMATH_NUTRIG_H
-
 /* Split from saga.h (tools/headersplit.py, docs/header-plan.md). saga.h includes this header at the place of its
  * declarations. */
+
+#pragma once
 
 #include "nu2api/nucore/common.h"
 
@@ -31,5 +30,3 @@ extern "C" {
 #endif
 #define NU_SIN_LUT(ang) NuTrigTable[(i32)(ang) >> 1 & 0x7fff]
 #define NU_COS_LUT(ang) NuTrigTable[((i32)(ang) + 0x4000) >> 1 & 0x7fff]
-
-#endif

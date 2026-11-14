@@ -1,5 +1,5 @@
-#ifndef SAGA_SKIN_TRACE_CORE_H
-#define SAGA_SKIN_TRACE_CORE_H
+#pragma once
+
 /* Debug-only diagnostic API. Integration macros belong in diagnostics.h.
  * Opt in before launch: SAGA_SKIN_TRACE=60000,1 make BUILD_KIND=Debug run
  * Normal stdout and automatic build/log files receive the trace; no redirection is needed.
@@ -66,4 +66,3 @@ extern "C" {
     void skin_trace_reset_end(TraceWord device);
     void skin_trace_capture(const TraceDraw *draw);
 }
-#endif

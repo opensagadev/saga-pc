@@ -1,8 +1,7 @@
-#ifndef SAGA_LEGOAPI_ITEMS_COLLECT_SPACELEVEL_H
-#define SAGA_LEGOAPI_ITEMS_COLLECT_SPACELEVEL_H
-
 /* Split from saga.h (tools/headersplit.py, docs/header-plan.md). saga.h includes this header at the place of its
  * declarations. */
+
+#pragma once
 
 #include "nu2api/nucore/common.h"
 
@@ -120,6 +119,4 @@ extern "C" {
     extern anakin_door_setup_s DoorSetupList[15];
 #ifdef __cplusplus
 }
-#endif
-
 #endif

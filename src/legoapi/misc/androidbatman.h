@@ -1,8 +1,7 @@
-#ifndef SAGA_LEGOAPI_MISC_ANDROIDBATMAN_H
-#define SAGA_LEGOAPI_MISC_ANDROIDBATMAN_H
-
 /* Split from saga.h (tools/headersplit.py, docs/header-plan.md). saga.h includes this header at the place of its
  * declarations. */
+
+#pragma once
 
 #include "nu2api/nucore/common.h"
 
@@ -34,6 +33,4 @@ extern "C" {
     extern TIMER BonusTimer;
 #ifdef __cplusplus
 }
-#endif
-
 #endif

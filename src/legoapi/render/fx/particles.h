@@ -1,8 +1,7 @@
-#ifndef SAGA_LEGOAPI_RENDER_FX_PARTICLES_H
-#define SAGA_LEGOAPI_RENDER_FX_PARTICLES_H
-
 /* Split from saga.h (tools/headersplit.py, docs/header-plan.md). saga.h includes this header at the place of its
  * declarations. */
+
+#pragma once
 
 #include "nu2api/nucore/common.h"
 
@@ -20,6 +19,4 @@ extern "C" {
     void Particles_DumpAreaPage(void);
 #ifdef __cplusplus
 }
-#endif
-
 #endif

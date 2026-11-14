@@ -1,8 +1,7 @@
-#ifndef SAGA_NU2API_NUGSCN_GEN_H
-#define SAGA_NU2API_NUGSCN_GEN_H
-
 /* Split from saga.h (tools/headersplit.py, docs/header-plan.md). saga.h includes this header at the place of its
  * declarations. */
+
+#pragma once
 
 #include "nu2api/nucore/common.h"
 
@@ -23,6 +22,4 @@ extern "C" {
     void RenderPostViewportResetPc(void);
 #ifdef __cplusplus
 }
-#endif
-
 #endif

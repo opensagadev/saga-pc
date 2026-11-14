@@ -1,8 +1,7 @@
-#ifndef SAGA_LEGOAPI_ITEMS_OBJECTS_LEGOAPI_TRAFFIC_H
-#define SAGA_LEGOAPI_ITEMS_OBJECTS_LEGOAPI_TRAFFIC_H
-
 /* Split from saga.h (tools/headersplit.py, docs/header-plan.md). saga.h includes this header at the place of its
  * declarations. */
+
+#pragma once
 
 #include "nu2api/nucore/common.h"
 
@@ -12,6 +11,4 @@ extern "C" {
     extern i32 traffic_portalling;
 #ifdef __cplusplus
 }
-#endif
-
 #endif

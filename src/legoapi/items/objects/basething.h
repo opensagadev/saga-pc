@@ -1,8 +1,7 @@
-#ifndef SAGA_LEGOAPI_ITEMS_OBJECTS_BASETHING_H
-#define SAGA_LEGOAPI_ITEMS_OBJECTS_BASETHING_H
-
 /* Split from saga.h (tools/headersplit.py, docs/header-plan.md). saga.h includes this header at the place of its
  * declarations. */
+
+#pragma once
 
 #include "nu2api/nucore/common.h"
 
@@ -56,6 +55,4 @@ class BaseThing {
     u32 flags;
     i32 profiling;
 };
-#endif
-
 #endif

@@ -1,8 +1,7 @@
-#ifndef SAGA_NU2API_TRIGGER_H
-#define SAGA_NU2API_TRIGGER_H
-
 /* Split from saga.h (tools/headersplit.py, docs/header-plan.md). saga.h includes this header at the place of its
  * declarations. */
+
+#pragma once
 
 #include "nu2api/nucore/common.h"
 
@@ -28,6 +27,4 @@ extern "C" {
     void instNuGCutScenePlay(struct instnugcutscene_s *owner, i32 forward);
 #ifdef __cplusplus
 }
-#endif
-
 #endif

@@ -1,8 +1,7 @@
-#ifndef SAGA_LEGOAPI_RENDER_FX_EDSPLINES_H
-#define SAGA_LEGOAPI_RENDER_FX_EDSPLINES_H
-
 /* Split from saga.h (tools/headersplit.py, docs/header-plan.md). saga.h includes this header at the place of its
  * declarations. */
+
+#pragma once
 
 #include "nu2api/nucore/common.h"
 
@@ -69,6 +68,4 @@ extern "C" {
     struct nugspline_s *edSpline_SplineFind(struct NUGSCN_s *, char *);
 #ifdef __cplusplus
 }
-#endif
-
 #endif

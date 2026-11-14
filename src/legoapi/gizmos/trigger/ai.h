@@ -1,8 +1,7 @@
-#ifndef SAGA_LEGOAPI_GIZMOS_TRIGGER_AI_H
-#define SAGA_LEGOAPI_GIZMOS_TRIGGER_AI_H
-
 /* Split from saga.h (tools/headersplit.py, docs/header-plan.md). saga.h includes this header at the place of its
  * declarations. */
+
+#pragma once
 
 #include "nu2api/nucore/common.h"
 
@@ -20,5 +19,3 @@ struct LEVELSCRIPTPROCESS_s {
 };
 
 STATIC_ASSERT(sizeof(struct LEVELSCRIPTPROCESS_s) == 220);
-
-#endif

@@ -1,8 +1,7 @@
-#ifndef SAGA_LEGOAPI_AUDIO_SPECIALSFX_H
-#define SAGA_LEGOAPI_AUDIO_SPECIALSFX_H
-
 /* Split from saga.h (tools/headersplit.py, docs/header-plan.md). saga.h includes this header at the place of its
  * declarations. */
+
+#pragma once
 
 #include "nu2api/nucore/common.h"
 
@@ -19,6 +18,4 @@ extern "C" {
     void UpdateSpecialSfx(WORLDINFO *);
 #ifdef __cplusplus
 }
-#endif
-
 #endif

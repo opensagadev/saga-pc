@@ -1,8 +1,7 @@
-#ifndef SAGA_LEGOAPI_GIZMO_OBJECT_GIZBUILDIT_H
-#define SAGA_LEGOAPI_GIZMO_OBJECT_GIZBUILDIT_H
-
 /* Split from saga.h (tools/headersplit.py, docs/header-plan.md). saga.h includes this header at the place of its
  * declarations. */
+
+#pragma once
 
 #include "nu2api/nucore/common.h"
 
@@ -46,5 +45,3 @@ STATIC_ASSERT(offsetof(GIZBUILDIT_PC, anim_object_count) == 0x6c);
 STATIC_ASSERT(offsetof(GIZBUILDIT_PC, progress) == 0x71);
 STATIC_ASSERT(offsetof(GIZBUILDIT_PC, state_flags) == 0x72);
 STATIC_ASSERT(offsetof(GIZBUILDIT_PC, availability_flags) == 0x7a);
-
-#endif

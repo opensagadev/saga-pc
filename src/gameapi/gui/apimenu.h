@@ -1,8 +1,7 @@
-#ifndef SAGA_GAMEAPI_GUI_APIMENU_H
-#define SAGA_GAMEAPI_GUI_APIMENU_H
-
 /* Split from saga.h (tools/headersplit.py, docs/header-plan.md). saga.h includes this header at the place of its
  * declarations. */
+
+#pragma once
 
 #include "nu2api/nucore/common.h"
 
@@ -300,6 +299,4 @@ extern "C" {
     void MenuUpdateBonusMode(MENU *);
 #ifdef __cplusplus
 }
-#endif
-
 #endif

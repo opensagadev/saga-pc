@@ -219,10 +219,9 @@ def declare(names, android, translator):
     if not externs and not constants:
         return missing
     if SECTION_START not in text:
-        # Inside the include guard: the file ends with the guard's #endif.
-        body, guard = text.rstrip("\n").rsplit("\n#endif", 1)
-        text = body + "\n\n" + SECTION_START + "\n#ifdef __cplusplus\nextern \"C\" {\n#endif\n" \
-            "#ifdef __cplusplus\n}\n#endif\n\n#endif" + guard + "\n"
+        # At the end of the header (`#pragma once`, no guard to stay inside).
+        text = text.rstrip("\n") + "\n\n" + SECTION_START + "\n#ifdef __cplusplus\nextern \"C\" {\n#endif\n" \
+            "#ifdef __cplusplus\n}\n#endif\n"
     marker = "#ifdef __cplusplus\n}\n#endif\n"
     section = text.index(SECTION_START)
     head, tail = text[:section], text[section:]

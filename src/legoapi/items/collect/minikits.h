@@ -1,8 +1,7 @@
-#ifndef SAGA_LEGOAPI_ITEMS_COLLECT_MINIKITS_H
-#define SAGA_LEGOAPI_ITEMS_COLLECT_MINIKITS_H
-
 /* Split from saga.h (tools/headersplit.py, docs/header-plan.md). saga.h includes this header at the place of its
  * declarations. */
+
+#pragma once
 
 #include "nu2api/nucore/common.h"
 
@@ -37,5 +36,3 @@ extern "C" {
 #endif
 
 enum { AREAFLAG_MINIKIT = 16 };
-
-#endif
