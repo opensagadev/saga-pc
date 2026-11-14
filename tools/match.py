@@ -11,13 +11,13 @@ import sys
 
 if __package__:
     from . import diffclass, idiomscan
-    from .binary import compare_data, relocate_function, write_function
+    from .binary import COFF, _COFFAnalysis, _PreparedBindings, compare_data, relocate_function, write_function
     from .lib import (ROOT, DefinitionIndex, bindings_for, compiled_objects, dependency_files, covered_bytes,
                       digest, external_symbols, load_code_groups, prepare_code_group_objects, library_objects, load_json, load_symbols, mapping_progress, number, object_path, project, retail, section_mapping_progress, sha256)
 else:
     sys.path.insert(0, str(Path(__file__).resolve().parents[1]))
     from tools import diffclass, idiomscan
-    from tools.binary import compare_data, relocate_function, write_function
+    from tools.binary import COFF, _COFFAnalysis, _PreparedBindings, compare_data, relocate_function, write_function
     from tools.lib import (ROOT, DefinitionIndex, bindings_for, compiled_objects, dependency_files, covered_bytes,
                      digest, external_symbols, load_code_groups, prepare_code_group_objects, library_objects, load_json, load_symbols, mapping_progress, number, object_path, project, retail, section_mapping_progress, sha256)
 
@@ -692,10 +692,24 @@ def main():
     pe = retail(target)
     cli, cli_pin = objdiff()
     OUT.mkdir(parents=True, exist_ok=True)
+    # Per-function analysis keyed by (address, target bytes, relocated base bytes): an unchanged
+    # function's comparison objects are not rewritten and capstone does not run on it again, so a
+    # rebuild that changes few objects is checked in seconds. The analysis is deterministic for given
+    # bytes, so the cache only depends on the pinned tool versions.
+    cache_path = OUT / "comparison-cache.json"
+    cache_key = f"{cli_pin.get('version')}|{cli_pin.get('sha256')}|{diffclass.available()}"
+    cache = {}
+    if cache_path.is_file():
+        stored = json.loads(cache_path.read_text())
+        if stored.get("key") == cache_key:
+            cache = stored["results"]
+    fresh = {}
     objects = compiled_objects()
     from tools.candidate_only import load as load_candidate_only
     candidate_only = load_candidate_only(config, objects, records)
     objects = prepare_code_group_objects(objects, load_code_groups(config), records)
+    # Index each object's definitions once (an analysis snapshot), not on every symbol lookup.
+    objects = {unit: _COFFAnalysis(obj) if type(obj) is COFF else obj for unit, obj in objects.items()}
     definition_index = DefinitionIndex(objects)
     for unit, (obj, names) in library_objects().items():
         definition_index.add_library(unit, obj, names)
@@ -718,6 +732,9 @@ def main():
                 migrations = reviewed_migrations(previous_report, members)
     externals = external_symbols(pe, records, objects, definition_index=definition_index)
     bindings = bindings_for(records)
+    # Normalise the bindings once, not on every relocation.
+    prepared = _PreparedBindings(bindings)
+    written = {path.name for path in OUT.iterdir()}
     units, functions, data, inlined = [], [], [], []
     code_components = []
     for record in selected:
@@ -780,24 +797,34 @@ def main():
         for unit, obj in definitions:
             result = {"unit": unit}
             if not is_function:
-                result.update(compare_data(pe, obj, symbol, va, record["size"], bindings))
+                result.update(compare_data(pe, obj, symbol, va, record["size"], prepared))
             else:
                 original = pe.read_va(va, record["size"])
-                base, relocations = relocate_function(obj, symbol, va, bindings)
+                base, relocations = relocate_function(obj, symbol, va, prepared)
                 if obj.code_group(symbol) is not None:
                     row["region_kind"] = "complete_code_group"
                 stem = f"{va:08x}-" + digest((unit + symbol).encode())[:12]
-                original_path, base_path = OUT / (stem + ".target.obj"), OUT / (stem + ".base.obj")
-                write_function(original_path, symbol, va, original)
-                write_function(base_path, symbol, va, base)
-                units.append({"name": stem, "target_path": original_path.name, "base_path": base_path.name})
                 result.update({"base_size": len(base), "exact_match": original == base,
                                "target_sha256": digest(original), "base_sha256": digest(base),
                                "relocation_count": len(relocations), "comparison_unit": stem})
-                if original != base and "diff_class" not in row and diffclass.available():
-                    # Optional (capstone): why the first differing copy differs.
-                    row.update(diffclass.describe(original, base, va))
-                    row["idioms"] = idiomscan.signatures(original, base, va)
+                key = f"{va:08x}|{result['target_sha256']}|{result['base_sha256']}"
+                hit = cache.get(key)
+                original_path, base_path = OUT / (stem + ".target.obj"), OUT / (stem + ".base.obj")
+                # objdiff itself runs over every unit (it takes under a second), so the aggregate in its
+                # report stays exact; only the comparison objects and the capstone analysis are cached.
+                units.append({"name": stem, "target_path": original_path.name, "base_path": base_path.name})
+                if hit is None or hit.get("stem") != stem or not {original_path.name, base_path.name} <= written:
+                    write_function(original_path, symbol, va, original)
+                    write_function(base_path, symbol, va, base)
+                if hit is None:
+                    hit = {"stem": stem}
+                    if original != base and diffclass.available():
+                        # Optional (capstone): why the copy differs.
+                        hit.update(diffclass.describe(original, base, va))
+                        hit["idioms"] = idiomscan.signatures(original, base, va)
+                fresh[key] = hit
+                if original != base and "diff_class" not in row:
+                    row.update({k: v for k, v in hit.items() if k != "stem"})
             row["objects"].append(result)
         row["exact_match"] = all(result["exact_match"] for result in row["objects"])
         row["status"] = "exact" if row["exact_match"] else "different"
@@ -819,6 +846,8 @@ def main():
             scores = [r["objdiff_percent"] for r in row["objects"]]
             if scores:
                 row["objdiff_percent"] = min(scores)
+    if not args.function:
+        cache_path.write_text(json.dumps({"key": cache_key, "results": fresh}))
     for row in functions + data:
         similarity = row.get("objdiff_percent")
         score = f"; objdiff {similarity:.2f}%" if similarity is not None else ""
