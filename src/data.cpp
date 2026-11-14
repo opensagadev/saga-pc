@@ -8501,12 +8501,6 @@ extern "C" {
     extern const char GizAIMessage_NameFormat[3] = "%s";
 #pragma const_seg()
     GIZAIMESSAGESYS *gizaimessagesys = 0;
-    f32 PanelProjectionX = 1222.0f;
-    f32 PanelProjectionY = 1145.0f;
-    f32 PanelWideWidth = 740.0f;
-    f32 PanelWideHeight = 387.5f;
-    f32 PANEL3DMULX = 0;
-    f32 PANEL3DMULY = 0;
     LANGUAGEDATA Game_LanguageList[7] = {{1, apitxt_ENGLISH}, {2, apitxt_FRENCH},  {4, apitxt_GERMAN},
                                          {5, apitxt_ITALIAN}, {3, apitxt_SPANISH}, {8, apitxt_DANISH},
                                          {-1, NULL}};
@@ -10115,8 +10109,6 @@ extern "C" {
     i32 OldBonusScore[2] = {0};
     i32 BonusScore[2] = {0};
     GAMEOBJECT *BombGenerator_PlayerBomb[2] = {0};
-    i32 BuildUpTotal = 0;
-    i32 BuildUpDone = 0;
     AREA_GLOBALS_PC AreaGlobals_PC = {0};
 }
 
@@ -10996,24 +10988,6 @@ extern "C" {
 #pragma data_seg(".data$CoinTab")
     u8 CoinTab[4] = {0, 1, 2, 3};
 #pragma data_seg()
-#pragma data_seg(".data$PANEL_COINX")
-    f32 PANEL_COINX = 0.6499999761581421f;
-#pragma data_seg()
-#pragma data_seg(".data$PANEL_COINY")
-    f32 PANEL_COINY = 0.04500000178813934f;
-#pragma data_seg()
-#pragma data_seg(".data$PANEL_COINSCALE_END")
-    f32 PANEL_COINSCALE_END = 0.3499999940395355f;
-#pragma data_seg()
-#pragma data_seg(".data$STATSPOSY")
-    f32 STATSPOSY = 0.7450000047683716f;
-#pragma data_seg()
-#pragma data_seg(".data$COINTOTAL_COINSIZE")
-    f32 COINTOTAL_COINSIZE = 0.5f;
-#pragma data_seg()
-#pragma data_seg(".data$cointotal_i_obj")
-    i32 cointotal_i_obj[2] = {187, 187};
-#pragma data_seg()
 #pragma data_seg(".data$TerrainLastChatterSfxPc")
     i32 TerrainLastChatterSfxPc = -1;
 #pragma data_seg()
@@ -11037,9 +11011,6 @@ extern "C" {
     u32 BonusCoinTarget = 0;
     i32 BonusWinFlag = 0;
     f32 BuildUpScale = 0;
-    f32 CoinTotalScale = 0;
-    f32 DrawBuildUpTime = 0;
-    f32 cointotal_x[2] = {0};
     i32 MenuStopDraw = 0;
     i32 MenuValidated = 0;
     f32 MenuAlpha = 0;
@@ -11116,12 +11087,6 @@ extern "C" {
         {PickupTypeLiteral758c00, PickupTypeLiteral758c3c, NULL, 117, 0, 1, 0, 208, 0, 0.125f, 0.125f, 2.0f,
          0.05000000074505806f, Pup_UpdatePowerUp, Pup_CollectPowerUp, -1, 209, 0.0f, 0.0f}};
 #pragma data_seg()
-#pragma data_seg(".data$POWERUPYPOS1")
-    f32 POWERUPYPOS1 = -0.33500000834465027f;
-#pragma data_seg()
-#pragma data_seg(".data$POWERUPYPOS2")
-    f32 POWERUPYPOS2 = -0.20000000298023224f;
-#pragma data_seg()
 #pragma data_seg(".data$CHEAT_POWERUPTIME")
     f32 CHEAT_POWERUPTIME = 20.0f;
 #pragma data_seg()
@@ -11141,44 +11106,10 @@ extern "C" {
 #pragma data_seg()
 }
 extern "C" {
-    f32 DrawMiniKitTime = 0;
-}
-extern "C" {
     f32 MiniKitScale = 0;
 }
 extern "C" {
     NEW_MINI_PIECE_PC NewMiniPiece[10] = {0};
-}
-extern "C" {
-#pragma data_seg(".data$PANEL_REDBRICKSCALE")
-    f32 PANEL_REDBRICKSCALE = 0.4000000059604645f;
-#pragma data_seg()
-}
-extern "C" {
-#pragma data_seg(".data$REDBRICKPOSX")
-    f32 REDBRICKPOSX = 0.7250000238418579f;
-#pragma data_seg()
-}
-extern "C" {
-#pragma data_seg(".data$REDBRICKPOSY")
-    f32 REDBRICKPOSY = -0.7450000047683716f;
-#pragma data_seg()
-}
-extern "C" {
-    f32 DrawRedBrickTime = 0;
-}
-extern "C" {
-    f32 RedBrickScale = 0;
-}
-extern "C" {
-#pragma data_seg(".data$ICONX")
-    f32 ICONX = 0.7749999761581421f;
-#pragma data_seg()
-}
-extern "C" {
-#pragma data_seg(".data$POWERUPOBJSIZE")
-    f32 POWERUPOBJSIZE = 0.25f;
-#pragma data_seg()
 }
 extern "C" {
     u16 PowerUp_PanelYRot[2] = {0};
@@ -11282,10 +11213,6 @@ extern "C" {
 #pragma data_seg(".data$GizBuilditGDeb")
     i16 GizBuilditGDeb[6] = {-1, -1, -1, -1, -1, -1};
 #pragma data_seg()
-    f32 DrawCoinTotalTime = 0;
-#pragma data_seg(".data$PANEL_COINSCALE_START")
-    f32 PANEL_COINSCALE_START = 1.0f;
-#pragma data_seg()
 }
 
 extern "C" {
@@ -11386,8 +11313,6 @@ extern "C" {
 #pragma data_seg()
 
     LEVELDATA_PC *CRUISERC_LDATA = 0;
-
-    f32 builduptime = 0;
 
     i32 ObstacleCamHoldUntilPlayersMove = 0;
 
@@ -13667,8 +13592,6 @@ extern "C" {
     char *LeverTypeNamePtrPc = "Lever";
     char *LeverOutputDownNamePtrPc = TextInputKeyNameTextPc75ac34;
     TIMER JoinInTimer = {0};
-    f32 MissionDropInAlphaPc = 0.75f;
-    f32 MissionPlayerIconSizePc = 0.15999999642372131f;
     i16 id_PRINCESSLEIABOUSHH = -1;
     i32 hatmachine_gizmotype_id = -1;
     f32 PushRumbleWindowPc = 0.10000000149011612f;
@@ -13853,7 +13776,6 @@ extern "C" {
     u8 CheatC3poBitsEnabledPc = 0;
     i32 (*CheckMusicOtherFn)(void) = NULL;
     i32 (*PauseRenderOffFn)(void) = NULL;
-    f32 minikittime = 0.0f;
     i32 (*Tag_NoHiddenIconFn)(GAMEOBJECT *) = NULL;
     f32 game_pulse = 0.0f;
     f32 global_pulse = 0.0f;
@@ -13982,9 +13904,7 @@ extern "C" {
     i32 TrooperGameDebrisPc[4] = {-1, -1, -1, -1};
     i32 LEGOHINT_SHOOTCAMERAS = -1;
     i32 LEGOHINT_BUILD = -1;
-    f32 REDBRICKPOS2X = 1.27499998f;
-    f32 REDBRICKPOS2Y = -1.255f;
-    /* These bytes are MENUEXITR, MENUEXITG and the MENULOST* blend
+    /* The Android build names these bytes MENUEXITR, MENUEXITG and the MENULOST* blend
        endpoints; MenuDrawPauseRestart/Exit and InitGameAfterConfig address all eight. */
     u8 AlternateHudColourBytesPc[8] = {255, 191, 191, 95, 128, 255, 31, 128};
     i32 LEGOTHINGSSCENE_TER_SPINBASE = -1;
@@ -22622,14 +22542,6 @@ extern "C" {
 
 extern "C" {
     f32 statstime = 0;
-
-    f32 cointotaltime = 0;
-
-    f32 redbrickslidetime = 0;
-
-    f32 goldbricktime = 0;
-
-    struct gameobject_s *drawbosshitpoints = 0;
 }
 
 extern "C" {
@@ -25408,27 +25320,6 @@ extern "C" {
 #pragma data_seg(".data$HubEpisodeTitleYPc")
     f32 HubEpisodeTitleYPc = -0.5950000286102295f;
 #pragma data_seg()
-#pragma data_seg(".data$HubPromptXPc")
-    f32 HubPromptXPc = 0.6700000166893005f;
-#pragma data_seg()
-#pragma data_seg(".data$HubPromptSpacingPc")
-    f32 HubPromptSpacingPc = -0.07000000029802322f;
-#pragma data_seg()
-#pragma data_seg(".data$HubPromptLabelOffsetPc")
-    f32 HubPromptLabelOffsetPc = -0.03999999910593033f;
-#pragma data_seg()
-#pragma data_seg(".data$HubPromptMaxWidthPc")
-    f32 HubPromptMaxWidthPc = 0.2750000059604645f;
-#pragma data_seg()
-#pragma data_seg(".data$HubBuildBarSpacingPc")
-    f32 HubBuildBarSpacingPc = 0.03500000014901161f;
-#pragma data_seg()
-#pragma data_seg(".data$HubBuildBarScalePc")
-    f32 HubBuildBarScalePc = 0.10000000149011612f;
-#pragma data_seg()
-#pragma data_seg(".data$HubBuildBarOverallScalePc")
-    f32 HubBuildBarOverallScalePc = 0.8500000238418579f;
-#pragma data_seg()
 #pragma data_seg(".data$COLLECTION_DX")
     f32 COLLECTION_DX = 0.15000000596046448f;
 #pragma data_seg()
@@ -25440,15 +25331,6 @@ extern "C" {
 #pragma data_seg()
 #pragma data_seg(".data$HubEpisodeGreenPc")
     u8 HubEpisodeGreenPc = 191;
-#pragma data_seg()
-#pragma data_seg(".data$HubBuildBarSegmentsPc")
-    i32 HubBuildBarSegmentsPc = 10;
-#pragma data_seg()
-#pragma data_seg(".data$HubPromptOffColourPc")
-    i32 HubPromptOffColourPc[3] = {255, 255, 255};
-#pragma data_seg()
-#pragma data_seg(".data$HubPromptOnColourPc")
-    i32 HubPromptOnColourPc[3] = {223, 223, 223};
 #pragma data_seg()
     char TextInputActionLabelBufferPc[128] = {0};
 /* Exact address-backed native span [8016a8,8016f0), not a claim about original logical array capacity. Reader remains
@@ -25511,95 +25393,6 @@ extern "C" {
 #pragma const_seg()
     const char *HubAreaNamesPc[10] = {"MAINROOM", "EPISODE1", "EPISODE2", "EPISODE3", "EPISODE4",
                                       "EPISODE5", "EPISODE6", "JUNKYARD", "BONUS",    "BOUNTY"};
-}
-
-extern "C" {
-#pragma data_seg(".data$HudNameScalePc")
-    f32 HudNameScalePc = 0.3499999940395355f;
-#pragma data_seg(".data$HudNameWidthPc")
-    f32 HudNameWidthPc = 0.5f;
-#pragma data_seg(".data$HudNameWideWidthPc")
-    f32 HudNameWideWidthPc = 0.699999988079071f;
-#pragma data_seg(".data$HudNameOffsetXPc")
-    f32 HudNameOffsetXPc = 0.07500000298023224f;
-#pragma data_seg(".data$HudNameOffsetYPc")
-    f32 HudNameOffsetYPc = -0.125f;
-#pragma data_seg(".data$HudPausePromptOffsetYPc")
-    f32 HudPausePromptOffsetYPc = -0.2849999964237213f;
-#pragma data_seg(".data$HudDropInXPc")
-    f32 HudDropInXPc = 0.6850000023841858f;
-#pragma data_seg(".data$HudDropInScalePc")
-    f32 HudDropInScalePc = 0.3499999940395355f;
-#pragma data_seg(".data$HudCoinAdjustYPc")
-    f32 HudCoinAdjustYPc = -0.006000000052154064f;
-#pragma data_seg(".data$HudScoreXPc")
-    f32 HudScoreXPc = 0.6100000143051147f;
-#pragma data_seg(".data$HudScoreScalePc")
-    f32 HudScoreScalePc = 0.375f;
-#pragma data_seg(".data$HudHeartXPc")
-    f32 HudHeartXPc = 0.6499999761581421f;
-#pragma data_seg(".data$HudHeartYPc")
-    f32 HudHeartYPc = -0.04500000178813934f;
-#pragma data_seg(".data$HudHeartScalePc")
-    f32 HudHeartScalePc = 0.19499999284744263f;
-#pragma data_seg(".data$STATSPOS2YPc")
-    f32 STATSPOS2YPc = 1.2549999952316284f;
-#pragma data_seg(".data$HudNameRedPc")
-    i32 HudNameRedPc = 255;
-#pragma data_seg(".data$HudNameGreenPc")
-    i32 HudNameGreenPc = 255;
-#pragma data_seg(".data$HudNameBluePc")
-    i32 HudNameBluePc = 255;
-#pragma data_seg(".data$HudPausePromptEnabledPc")
-    i32 HudPausePromptEnabledPc = 1;
-#pragma data_seg(".data$HudPausePromptRedPc")
-    i32 HudPausePromptRedPc = 255;
-#pragma data_seg(".data$HudPausePromptGreenPc")
-    i32 HudPausePromptGreenPc = 191;
-    u8 HudPausePromptBluePc = 0;
-#pragma data_seg()
-
-    i32 DrawBossHitPointsTwoRowsPc = 0;
-#pragma data_seg(".data$PanelHeartSpacingPc")
-    f32 PanelHeartSpacingPc = 0.3f;
-#pragma data_seg(".data$PanelHeartRowOffsetPc")
-    f32 PanelHeartRowOffsetPc = 0.14f;
-#pragma data_seg(".data$PanelHeartWidescreenPc")
-    f32 PanelHeartWidescreenPc = 0.85f;
-#pragma data_seg(".data$DoubleScoreTextYPc")
-    f32 DoubleScoreTextYPc = -0.6f;
-#pragma data_seg(".data$DoubleScoreTextScalePc")
-    f32 DoubleScoreTextScalePc = 0.5f;
-
-#pragma data_seg()
-
-#pragma data_seg(".data$CoinTotalScoreSizePc")
-    f32 CoinTotalScoreSizePc = 0.5f;
-#pragma data_seg(".data$CoinTotalCoinOffsetPc")
-    f32 CoinTotalCoinOffsetPc = 0.05000000074505806f;
-#pragma data_seg(".data$CoinTotalScoreOffsetYPc")
-    f32 CoinTotalScoreOffsetYPc = -0.004999999888241291f;
-#pragma data_seg(".data$CoinTotalTargetOffsetYPc")
-    f32 CoinTotalTargetOffsetYPc = -0.10000000149011612f;
-#pragma data_seg(".data$DrawCoinTotalYPc")
-    f32 DrawCoinTotalYPc = 2000000.0f;
-#pragma data_seg(".data$HudLevelTitleYPc")
-    f32 HudLevelTitleYPc = -0.7450000047683716f;
-#pragma data_seg(".data$HudLevelTitleScalePc")
-    f32 HudLevelTitleScalePc = 0.5f;
-#pragma data_seg(".data$HudLevelTitleScaleXPc")
-    f32 HudLevelTitleScaleXPc = 1.0f;
-#pragma data_seg(".data$HudLevelTitleWidthPc")
-    f32 HudLevelTitleWidthPc = 1.0f;
-#pragma data_seg(".data$HudBossHeartYPc")
-    f32 HudBossHeartYPc = 0.4699999988079071f;
-#pragma data_seg(".data$HudBossHeartScalePc")
-    f32 HudBossHeartScalePc = 0.20000000298023224f;
-#pragma data_seg(".data$HudBossIconYPc")
-    f32 HudBossIconYPc = 0.612500011920929f;
-#pragma data_seg(".data$HudBossIconScalePc")
-    f32 HudBossIconScalePc = 0.1599999964237213f;
-#pragma data_seg()
 }
 
 extern "C" {

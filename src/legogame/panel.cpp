@@ -115,7 +115,31 @@ extern "C" {
         return POWERUPYPOS1;
     }
 
+    i8 meleeTarg_maxCount[4] = {0};
+    f32 DrawMiniKitTime = 0;
+    f32 PANEL3DMULX = 0;
+    f32 CoinTotalScale = 0;
+    f32 DrawCoinTotalTime = 0;
+    f32 DrawRedBrickTime = 0;
+    f32 RedBrickScale = 0;
+    f32 DrawBuildUpTime = 0;
+    f32 meleeTarg_alpha[4] = {0};
+    f32 meleeTarg_flashTime[4] = {0};
+    f32 cointotaltime = 0;
+    f32 redbrickslidetime = 0;
+    f32 builduptime = 0;
+    i8 meleeTarg_localCount[4] = {0};
+    i32 BuildUpTotal = 0;
+    f32 meleeTarg_scaleSize[4] = {0};
+    i32 BuildUpDone = 0;
+    f32 PANEL3DMULY = 0;
+    f32 minikittime = 0.0f;
+    f32 goldbricktime = 0;
+    u8 HudPausePromptBluePc = 0;
     i32 drawautosaveicon = 0;
+    f32 cointotal_x[2] = {0};
+    i32 DrawBossHitPointsTwoRowsPc = 0;
+    struct gameobject_s *drawbosshitpoints = 0;
 
     void DrawAutoSaveIcon(void) {
         drawautosaveicon = 1;
@@ -943,7 +967,85 @@ extern "C" {
         drawbosshitpoints = object;
     }
 
+    f32 PanelProjectionX = 1222.0f;
+    f32 PanelProjectionY = 1145.0f;
+    f32 HudNameScalePc = 0.3499999940395355f;
+    i32 HudNameRedPc = 255;
+    i32 HudNameGreenPc = 255;
+    i32 HudNameBluePc = 255;
+    f32 HudNameWidthPc = 0.5f;
+    f32 HudNameWideWidthPc = 0.699999988079071f;
+    f32 HudNameOffsetXPc = 0.07500000298023224f;
+    f32 HudNameOffsetYPc = -0.125f;
+    i32 HudPausePromptEnabledPc = 1;
+    f32 HudPausePromptOffsetYPc = -0.2849999964237213f;
+    i32 HudPausePromptRedPc = 255;
+    i32 HudPausePromptGreenPc = 191;
+    f32 DoubleScoreTextYPc = -0.6f;
+    f32 DoubleScoreTextScalePc = 0.5f;
+    f32 POWERUPOBJSIZE = 0.25f;
+    f32 POWERUPYPOS1 = -0.33500000834465027f;
+    f32 POWERUPYPOS2 = -0.20000000298023224f;
+    f32 HudLevelTitleYPc = -0.7450000047683716f;
+    f32 HudLevelTitleScalePc = 0.5f;
+    f32 HudLevelTitleScaleXPc = 1.0f;
+    f32 HudLevelTitleWidthPc = 1.0f;
+    f32 HudDropInXPc = 0.6850000023841858f;
+    f32 MissionDropInAlphaPc = 0.75f;
+    f32 HudDropInScalePc = 0.3499999940395355f;
+    f32 PANEL_COINX = 0.6499999761581421f;
+    f32 PANEL_COINY = 0.04500000178813934f;
+    f32 HudCoinAdjustYPc = -0.006000000052154064f;
+    f32 HudScoreXPc = 0.6100000143051147f;
+    f32 PANEL_COINSCALE_START = 1.0f;
+    f32 PANEL_COINSCALE_END = 0.3499999940395355f;
+    f32 HudScoreScalePc = 0.375f;
+    f32 HudHeartXPc = 0.6499999761581421f;
+    f32 HudHeartYPc = -0.04500000178813934f;
+    f32 HudHeartScalePc = 0.19499999284744263f;
+    f32 PanelHeartSpacingPc = 0.3f;
+    f32 PanelHeartRowOffsetPc = 0.14f;
+    f32 STATSPOSY = 0.7450000047683716f;
+    f32 STATSPOS2YPc = 1.2549999952316284f;
+    f32 MissionPlayerIconSizePc = 0.15999999642372131f;
+    f32 ICONX = 0.7749999761581421f;
+    f32 PANEL_REDBRICKSCALE = 0.4000000059604645f;
+    f32 REDBRICKPOSX = 0.7250000238418579f;
+    f32 REDBRICKPOSY = -0.7450000047683716f;
+    f32 REDBRICKPOS2X = 1.27499998f;
+    f32 REDBRICKPOS2Y = -1.255f;
+    f32 HudAutoSaveScalePc = 0.07500000298023224f;
+    i32 HubPromptOffColourPc[3] = {255, 255, 255};
+    i32 HubPromptOnColourPc[3] = {223, 223, 223};
+    f32 HubPromptXPc = 0.6700000166893005f;
+    f32 HubPromptSpacingPc = -0.07000000029802322f;
+    f32 HubPromptLabelOffsetPc = -0.03999999910593033f;
+    f32 HubPromptMaxWidthPc = 0.2750000059604645f;
+    f32 CoinTotalScoreSizePc = 0.5f;
+    f32 COINTOTAL_COINSIZE = 0.5f;
+    f32 CoinTotalCoinOffsetPc = 0.05000000074505806f;
+    f32 CoinTotalScoreOffsetYPc = -0.004999999888241291f;
+    i32 cointotal_i_obj[2] = {187, 187};
+    f32 CoinTotalTargetOffsetYPc = -0.10000000149011612f;
+    f32 DrawCoinTotalYPc = 2000000.0f;
+    i32 HubBuildBarSegmentsPc = 10;
+    f32 HubBuildBarSpacingPc = 0.03500000014901161f;
+    f32 HubBuildBarScalePc = 0.10000000149011612f;
+    f32 HubBuildBarOverallScalePc = 0.8500000238418579f;
+    f32 PanelHeartWidescreenPc = 0.85f;
+    f32 HudBossHeartYPc = 0.4699999988079071f;
+    f32 HudBossHeartScalePc = 0.20000000298023224f;
+    f32 HudBossIconYPc = 0.612500011920929f;
+    f32 HudBossIconScalePc = 0.1599999964237213f;
+    f32 MeleeRowsScalePc = 0.8f;
+    f32 MeleeRowsYPc = 0.475f;
     f32 MeleeRowsSpacingPc = 0.15f;
+    f32 MeleeRowsYOffsetPc = -0.175f;
+    f32 TimerBaseScalePc = 0.75f;
+    f32 TimerScalePc = 1.0f;
+    f32 TimerAlphaPc = 1.0f;
+    f32 PanelWideWidth = 740.0f;
+    f32 PanelWideHeight = 387.5f;
 
     void DrawMeleeTargetsPc(i16 *targets, u8 *status, i32 count) {
         f32 alpha;
@@ -988,10 +1090,6 @@ extern "C" {
         }
     }
 
-    f32 MeleeRowsScalePc = 0.8f;
-    f32 MeleeRowsYPc = 0.475f;
-    f32 MeleeRowsYOffsetPc = -0.175f;
-
     void DrawMeleeTargetsRowsPc(i16 *targets, char *defeated, f32 *values, i32 count) {
         i32 row_counts[3];
         i32 row;
@@ -1034,12 +1132,7 @@ extern "C" {
         }
     }
 
-    /* Melee target counter state. */
-    i8 meleeTarg_maxCount[4] = {0};
-    f32 meleeTarg_alpha[4] = {0};
-    f32 meleeTarg_flashTime[4] = {0};
-    i8 meleeTarg_localCount[4] = {0};
-    f32 meleeTarg_scaleSize[4] = {0};
+    /* PC 0x0087b950 / 0x0087b970 / 0x0087b980 / 0x0087b99c / 0x0087b9a4: melee target counter state. */
 
     void DrawMeleeTargetsNumber(i16 *targets, u8 *counts, i32 count, u8 reset, NUSPECIALHANDLE *special) {
         char text[4];
@@ -1155,10 +1248,6 @@ extern "C" {
         }
     }
 
-    f32 TimerBaseScalePc = 0.75f;
-    f32 TimerScalePc = 1.0f;
-    f32 TimerAlphaPc = 1.0f;
-
     void DrawTimer(i32 time, i32 expanded, i32 reset) {
         char text[16];
         f32 scale;
@@ -1202,7 +1291,6 @@ extern "C" {
     }
 
 #pragma data_seg(".data$HudAutoSaveScalePc")
-    f32 HudAutoSaveScalePc = 0.07500000298023224f;
 #pragma data_seg()
 
     void DrawPanel(void) {
