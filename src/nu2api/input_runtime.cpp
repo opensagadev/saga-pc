@@ -851,8 +851,8 @@ i32 PC_INPUT_RUNTIME_PC::UpdateMousePc() {
             mouse.accumulated[1] += mouse.delta[1] * 0.00390625;
             mouse.accumulated[2] += mouse.delta[2];
             f32 reciprocal = 1.0f / PcInputAspectRatioPc();
-            mouse.position[0] += mouse.delta[0] * reciprocal * 0.00000762939453125;
-            mouse.position[1] += mouse.delta[1] * 0.00000762939453125;
+            mouse.position[0] += mouse.delta[0] * reciprocal * 7.62939453125e-6;
+            mouse.position[1] += mouse.delta[1] * 7.62939453125e-6;
             if (mouse.position[0] < 0.0f) {
                 mouse.position[0] = 0.0f;
             } else if (mouse.position[0] > 1.0f) {

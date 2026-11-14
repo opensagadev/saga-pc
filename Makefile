@@ -190,6 +190,7 @@ check-core: dependencies
 	$(PYTHON) tools/declscan.py --check
 	$(PYTHON) tools/castscan.py --check
 	$(PYTHON) tools/literalscan.py --check
+	$(PYTHON) tools/floatlit.py --check
 	$(PYTHON) tools/layoutcheck.py
 	$(PYTHON) tools/standalone.py --check
 	$(PYTHON) -m unittest discover -s tools -p 'test_*.py'

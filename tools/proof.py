@@ -44,6 +44,7 @@ CHECKS = [
     ("declscan", ["tools/declscan.py", "--check"]),
     ("castscan", ["tools/castscan.py", "--check"]),
     ("literalscan", ["tools/literalscan.py", "--check"]),
+    ("floatlit", ["tools/floatlit.py", "--check"]),
     ("layoutcheck", ["tools/layoutcheck.py"]),
     ("standalone", ["tools/standalone.py", "--check"]),
 ]

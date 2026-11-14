@@ -300,11 +300,11 @@ void GizPanel_GetAbsTargetPos(void *context, NUVEC *target, i32 player_position)
         return;
     }
     if (player_position != 0 && panel->model_variant == 0) {
-        offset.x = -0.03999999910593033f;
+        offset.x = -0.04f;
         offset.y = panel->target_offset.y;
-        offset.z = -0.30000001192092896f;
+        offset.z = -0.3f;
     } else if (player_position != 0 && panel->model_variant == 1) {
-        offset.x = 0.03500000014901161f;
+        offset.x = 0.035f;
         offset.y = panel->target_offset.y;
         offset.z = -0.25f;
     } else {
@@ -428,7 +428,7 @@ void GizPanel_Update(void *world_pointer, void *unused, f32 delta_time) {
             f32 maximum_distance;
             i32 player_index;
             nearest_player = NULL;
-            maximum_distance = (panel->flags & 0x10) != 0 ? 1.2100000381469727f : 0.809999942779541f;
+            maximum_distance = (panel->flags & 0x10) != 0 ? 1.21f : 0.80999994f;
             for (player_index = 0; player_index < 8; ++player_index) {
                 GAMEOBJECT *player = Player[player_index];
                 if (player != NULL && (player->flags_1fc_word & 0x1000) != 0 && player->dead == 0) {

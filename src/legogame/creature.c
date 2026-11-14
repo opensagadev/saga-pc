@@ -1352,8 +1352,8 @@ void MovePlayer(GAMEOBJECT *object) {
                             pad->input_mode = 2;
                         }
                     }
-                    x = (f32)(x * (f64)0.007843137718737125f);
-                    z = (f32)(z * (f64)0.007843137718737125f);
+                    x = (f32)(x * (f64)0.007843138f);
+                    z = (f32)(z * (f64)0.007843138f);
                     angle = NuAtan2D(x, z);
                     axis.x = axis.y = 0.0f;
                     axis.z = PlayersFabsPc(x) > PlayersFabsPc(z) ? PlayersFabsPc(x) : PlayersFabsPc(z);
@@ -4463,7 +4463,7 @@ void DrawParaphernaliaPc(GAMEOBJECT *object) {
             NuMtxSetRotationXYVU0(&matrix, &passenger_rotation);
             matrix.m30 = object->position.x + NuTrigTable[object->field_0x276 >> 1] * object->bounds_radius * 1.75;
             matrix.m31 =
-                object->collision_min.y + (object->collision_max.y - object->collision_min.y) * 0.60000002384185791;
+                object->collision_min.y + (object->collision_max.y - object->collision_min.y) * 0.6000000238418579;
             matrix.m32 = object->position.z +
                          NuTrigTable[((object->field_0x276 + 0x4000) >> 1) & 0x7fff] * object->bounds_radius * 1.75;
         }
@@ -4597,9 +4597,9 @@ void DrawParaphernaliaPc(GAMEOBJECT *object) {
     }
     if ((object->character_data->game_character->flags_090 & 0x1000000) != 0 && extra->force_alpha > 0.0f &&
         extra->force_radius > 0.0f) {
-        transform_alpha = ((f32)(extra->force_alpha * 0.60000002384185791 + 0.40000000596046448));
+        transform_alpha = ((f32)(extra->force_alpha * 0.6000000238418579 + 0.4000000059604645));
         transform_radius =
-            ((f32)((extra->force_alpha * 0.20000004768371582 + 1.3999999761581421) * extra->force_radius));
+            ((f32)((extra->force_alpha * 0.20000004768371582 + 1.399999976158142) * extra->force_radius));
         TransformDrawTargetPc(&extra->force_position, transform_radius, transform_alpha);
     }
     config = object->character_data->game_character;
@@ -4646,10 +4646,10 @@ void DrawParaphernaliaPc(GAMEOBJECT *object) {
 
                 if (fraction < 0.10000000149011612) {
                     special_scaling.x = fraction / 0.10000000149011612;
-                } else if (fraction < 0.89999997615814209) {
+                } else if (fraction < 0.8999999761581421) {
                     special_scaling.x = 1.0f;
                 } else {
-                    special_scaling.x = 1.0 - (fraction - 0.89999997615814209) / 0.10000000149011612;
+                    special_scaling.x = 1.0 - (fraction - 0.8999999761581421) / 0.10000000149011612;
                 }
                 special_scaling.y = special_scaling.z = special_scaling.x;
                 NuMtxSetScale(&matrix, &special_scaling);

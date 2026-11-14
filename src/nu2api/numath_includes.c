@@ -1933,7 +1933,7 @@ void NuMtxTruncate24Bit(NUMTX *out, NUMTX *input) {
 }
 
 void NuMtx24BitCorrection(NUMTX *correction, NUMTX *matrix) {
-    f32 best_error = 3.4028234663852886e+38f;
+    f32 best_error = 3.402823466e38f;
     i32 element;
     i32 pass;
     f32 step = 1.0f;
@@ -4188,7 +4188,7 @@ i32 nugraphFileLoadGraphOnly(nugraph_s *graph, char *filename) {
 }
 
 void NuTrigInit(void) {
-    const f32 interval = (f32)(2.0 * 3.14159265358979323846 / 32768);
+    const f32 interval = (f32)(2.0 * 3.141592653589793 / 32768);
     i32 i;
 
     for (i = 0; i < 32768; ++i) {
@@ -4223,7 +4223,7 @@ static f32 NuSinApprox3(i32 angle) {
     term3 = x3 * -0.16666656732559204;
     term5 = x5 * 0.008333025500178337;
     term7 = -0.00019807413627859205 * x7;
-    term9 = x7 * x2 * 2.601886990305502e-06;
+    term9 = x7 * x2 * 2.601886990305502e-6;
     return x + term3 + term5 + term7 + term9;
 }
 
@@ -4270,10 +4270,10 @@ static f32 NuAngAtanQuadrantRadI(u32 dx, u32 dy) {
 
 f32 NuAtanf(i32 dx, i32 dy) {
     if (dx == 0) {
-        return dy < 0 ? 3.1415927410125732f : 0.0f;
+        return dy < 0 ? 3.1415927f : 0.0f;
     }
     if (dy == 0) {
-        return dx < 0 ? 4.71238899230957f : 1.5707963705062866f;
+        return dx < 0 ? 4.712389f : 1.5707964f;
     }
     if (dx < 0) {
         if (dy < 0) {
@@ -4482,7 +4482,7 @@ void NuMtxGetPerspectiveD3D(NUMTX *mtx, f32 *fovy, f32 *aspect, f32 *zNear, f32 
     *zNear = -mtx->m32 / Q;
     *zFar = (*zNear * Q) / (Q - 1.0f);
     *aspect = mtx->m11 / mtx->m00;
-    *fovy = NuAtan2(1.0f / mtx->m11, 1.0f) * 360.0f / (f32)3.14159265358979323846;
+    *fovy = NuAtan2(1.0f / mtx->m11, 1.0f) * 360.0f / (f32)3.141592653589793;
 }
 
 void NuMtxGetPerspectivePS3(NUMTX *mtx, f32 *fovy, f32 *aspect, f32 *zNear, f32 *zFar) {
@@ -4492,7 +4492,7 @@ void NuMtxGetPerspectivePS3(NUMTX *mtx, f32 *fovy, f32 *aspect, f32 *zNear, f32 
     *zNear = -B / (Q + 1.0f);
     *zFar = (*zNear * B) / (*zNear * 2.0f + B);
     *aspect = mtx->m11 / mtx->m00;
-    *fovy = NuAtan2(1.0f / mtx->m11, 1.0f) * 360.0f / (f32)3.14159265358979323846;
+    *fovy = NuAtan2(1.0f / mtx->m11, 1.0f) * 360.0f / (f32)3.141592653589793;
 }
 
 void NuMtxGetPerspectiveOGL(NUMTX *mtx, f32 *fovy, f32 *aspect, f32 *zNear, f32 *zFar) {
@@ -4500,7 +4500,7 @@ void NuMtxGetPerspectiveOGL(NUMTX *mtx, f32 *fovy, f32 *aspect, f32 *zNear, f32 
     *zNear = 2.0f * depth / mtx->m32 - 1.0f;
     *zFar = (*zNear * depth) / (depth - 1.0f);
     *aspect = mtx->m11 / mtx->m00;
-    *fovy = NuAtan2(1.0f / mtx->m11, 1.0f) * 360.0f / (f32)3.14159265358979323846;
+    *fovy = NuAtan2(1.0f / mtx->m11, 1.0f) * 360.0f / (f32)3.141592653589793;
 }
 
 void NuMtxGetPerspectiveBlend(NUMTX *mtx, f32 *fovy, f32 *aspect, f32 *zNear, f32 *zFar) {
@@ -4508,7 +4508,7 @@ void NuMtxGetPerspectiveBlend(NUMTX *mtx, f32 *fovy, f32 *aspect, f32 *zNear, f3
     *zNear = -(mtx->m32 * 0.5f) / Q;
     *zFar = (*zNear * Q) / (Q - 1.0f);
     *aspect = mtx->m11 / mtx->m00;
-    *fovy = NuAtan2(1.0f / mtx->m11, 1.0f) * 360.0f / (f32)3.14159265358979323846;
+    *fovy = NuAtan2(1.0f / mtx->m11, 1.0f) * 360.0f / (f32)3.141592653589793;
 }
 
 i32 NuPlnLine2(NUPLANE *plane, NUVEC *a, NUVEC *b, NUVEC *c, NUVEC *start, NUVEC *end, NUVEC *out, f32 *distance,

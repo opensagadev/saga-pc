@@ -1118,7 +1118,7 @@ void FactoryG_Update(WORLDINFO *world) {
                                             VehicleTurnPhaseScale) >>
                                  1] *
                      30.0);
-        ObiWan->field_0x276 = (u16)(0xc000 - (i16)(i32)((f64)lamp * -182.0444488525390625));
+        ObiWan->field_0x276 = (u16)(0xc000 - (i16)(i32)((f64)lamp * -182.04444885253906));
         return;
     }
     if (ObiWan == NULL) {
@@ -1584,7 +1584,7 @@ static void KaminoEResetTurretsPc(void) {
     }
 }
 
-NUVEC KaminoShipCentrePc = {56.5f, -2.890000104904175f, 8.0f};
+NUVEC KaminoShipCentrePc = {56.5f, -2.89f, 8.0f};
 f32 KaminoShipRadiusPc = 6.5f;
 i32 KaminoShipOrbitPitchPc = -3640;
 i32 KaminoShipOrbitYawPc = 0x4000;
@@ -1760,7 +1760,7 @@ void KaminoE_Update(WORLDINFO *world) {
                 }
                 phase = (f32)((f64)z / 2.5);
                 phase = phase * KaminoShipAimScalePc;
-                kamino_e.orbit_yaw = KaminoShipOrbitYawPc - (i32)(phase * -182.04444885253906f);
+                kamino_e.orbit_yaw = KaminoShipOrbitYawPc - (i32)(phase * -182.04445f);
                 offset.x = 0.0f;
                 offset.y = -KaminoShipGunOffsetPc[0].y;
                 offset.z = -KaminoShipGunOffsetPc[0].z;

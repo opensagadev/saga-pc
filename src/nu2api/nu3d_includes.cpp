@@ -6912,12 +6912,12 @@ extern "C" i32 rawClip(const NUVEC4 *input, NUVEC4 *output, i32, const NUVEC4 *p
 }
 
 extern "C" void PostShadowComputeBoundingSpacePc(const NUVEC4 *points, NUMTX *matrix) {
-    f32 min_x = 3.4028234663852886e+38f;
-    f32 max_x = -3.4028234663852886e+38f;
-    f32 min_y = 3.4028234663852886e+38f;
-    f32 max_y = -3.4028234663852886e+38f;
-    f32 min_z = 3.4028234663852886e+38f;
-    f32 max_z = -3.4028234663852886e+38f;
+    f32 min_x = 3.402823466e38f;
+    f32 max_x = -3.402823466e38f;
+    f32 min_y = 3.402823466e38f;
+    f32 max_y = -3.402823466e38f;
+    f32 min_z = 3.402823466e38f;
+    f32 max_z = -3.402823466e38f;
     for (i32 i = 0; i < 8; i++) {
         if (points[i].x < min_x) {
             min_x = points[i].x;
@@ -9390,7 +9390,7 @@ extern "C" {
                 if (system_qfont != NULL) {
                     system_qfont->platform_data->colour = 0xe0e0e0e0;
                     *system_qfont->x_scale = NuTimeBarFontScale;
-                    *system_qfont->y_scale = (NuQFntMode & 4) != 0 ? NuTimeBarFontScale : 0.42500001192092896f;
+                    *system_qfont->y_scale = (NuQFntMode & 4) != 0 ? NuTimeBarFontScale : 0.425f;
                 }
                 text_y = y + height - (i32)(NuQFntHeight(system_qfont) * 0.25);
                 if (timebar->slot_names[slot] != NULL) {
@@ -12069,7 +12069,7 @@ void NuMainFilterGen::initTextureResources(i32 width, i32 height) {
     downsample_texture = PCGraphicsCreateEffectTexture(w, h, 1, 1, 2);
     if (height < 704) {
         dof_blur -= 1.0;
-        blur_radius -= 0.85000002384185791;
+        blur_radius -= 0.8500000238418579;
         blur_gain -= 0.5;
     }
 }
@@ -18643,10 +18643,10 @@ PC_SPECIAL_SHADOW_LIGHT &PC_SPECIAL_SHADOW_LIGHT::operator=(const PC_SPECIAL_SHA
 extern "C" {
     static void PostShadowProjectBoundsPc(i32 count, const NUVEC4 *vertices, NUVEC *offset, f32 scale, f32 *xmin_out,
                                           f32 *xmax_out, f32 *ymin_out, f32 *ymax_out) {
-        f32 xmin = 3.4028234663852886e+38f;
-        f32 xmax = -3.4028234663852886e+38f;
-        f32 ymin = 3.4028234663852886e+38f;
-        f32 ymax = -3.4028234663852886e+38f;
+        f32 xmin = 3.402823466e38f;
+        f32 xmax = -3.402823466e38f;
+        f32 ymin = 3.402823466e38f;
+        f32 ymax = -3.402823466e38f;
         for (i32 i = 0; i < count; ++i) {
             NUVEC result;
             NuVecAdd(&result, (NUVEC *)&vertices[i], offset);
@@ -18747,12 +18747,12 @@ void PC_SPECIAL_SHADOW_LIGHT::ComputeShadowMatrixPc(NURNDRLIGHTRECORD *set) {
     }
     NUVEC minimum;
     NUVEC maximum;
-    minimum.x = 3.4028234663852886e+38f;
-    minimum.y = 3.4028234663852886e+38f;
-    minimum.z = 3.4028234663852886e+38f;
-    maximum.x = -3.4028234663852886e+38f;
-    maximum.y = -3.4028234663852886e+38f;
-    maximum.z = -3.4028234663852886e+38f;
+    minimum.x = 3.402823466e38f;
+    minimum.y = 3.402823466e38f;
+    minimum.z = 3.402823466e38f;
+    maximum.x = -3.402823466e38f;
+    maximum.y = -3.402823466e38f;
+    maximum.z = -3.402823466e38f;
     for (i32 i = 0; i < 10; ++i) {
         __declspec(align(16)) NUVEC4 result;
         NUVEC bound;

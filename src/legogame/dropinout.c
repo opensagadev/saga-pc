@@ -6,10 +6,10 @@ i32 PcInput_GetFirstKeyboardPort(void);
 i32 PC_CtrlConfigGetPlayerPort(i32 player_index);
 void PlayerSetCurrentHpPc(GAMEOBJECT *object, i8 hitpoints);
 #define DROPIN_SCREEN_INSIDE(object)                                                                                   \
-    ((object)->camera_screen_position.x > -0.85000002384185791 &&                                                      \
-     (object)->camera_screen_position.x < 0.85000002384185791 &&                                                       \
-     (object)->camera_screen_position.y > -0.85000002384185791 &&                                                      \
-     (object)->camera_screen_position.y < 0.85000002384185791)
+    ((object)->camera_screen_position.x > -0.8500000238418579 &&                                                       \
+     (object)->camera_screen_position.x < 0.8500000238418579 &&                                                        \
+     (object)->camera_screen_position.y > -0.8500000238418579 &&                                                       \
+     (object)->camera_screen_position.y < 0.8500000238418579)
 #define DROPIN_SCREEN_OUTSIDE(object)                                                                                  \
     ((object)->camera_screen_position.x < -1.0f || (object)->camera_screen_position.x > 1.0f ||                        \
      (object)->camera_screen_position.y < -1.0f || (object)->camera_screen_position.y > 1.0f)

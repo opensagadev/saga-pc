@@ -5132,7 +5132,7 @@ extern "C" {
         magnitude = NuFsqrt((f32)(((f64)NuVecMagSqr((NUVEC *)&((NUMTX *)buffer->void_ptr)->m10) +
                                    NuVecMagSqr((NUVEC *)&((NUMTX *)buffer->void_ptr)->m00) +
                                    NuVecMagSqr((NUVEC *)&((NUMTX *)buffer->void_ptr)->m20)) *
-                                  (f64)0.3333333432674408f));
+                                  (f64)0.33333334f));
         buffer->addr += sizeof(NUMTX);
         *(f32 *)buffer->void_ptr = magnitude;
         buffer->addr += sizeof(f32);

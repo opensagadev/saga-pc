@@ -105,8 +105,8 @@ extern "C" void AddStreakPoints(NUVEC *points, f32 duration, u32 colour, void **
     STREAK_NODE_PC *older = node->next;
     NuVecSub(&node->start_tangent, &older->position, &node->position);
     NuVecSub(&header->nodes->end_tangent, &header->nodes->next->previous_position, &header->nodes->previous_position);
-    NuVecScale(&header->nodes->start_tangent, &header->nodes->start_tangent, 0.3333333432674408f);
-    NuVecScale(&header->nodes->end_tangent, &header->nodes->end_tangent, 0.3333333432674408f);
+    NuVecScale(&header->nodes->start_tangent, &header->nodes->start_tangent, 0.33333334f);
+    NuVecScale(&header->nodes->end_tangent, &header->nodes->end_tangent, 0.33333334f);
     node = header->nodes;
     older = node->next;
     STREAK_NODE_PC *oldest = older->next;
@@ -119,8 +119,8 @@ extern "C" void AddStreakPoints(NUVEC *points, f32 duration, u32 colour, void **
         NuVecSub(&incoming, &older->previous_position, &node->previous_position);
         NuVecSub(&outgoing, &older->next->previous_position, &older->previous_position);
         NuVecAddScale(&header->nodes->next->end_tangent, &incoming, &outgoing, 0.5f);
-        NuVecScale(&header->nodes->next->start_tangent, &header->nodes->next->start_tangent, 0.3333333432674408f);
-        NuVecScale(&header->nodes->next->end_tangent, &header->nodes->next->end_tangent, 0.3333333432674408f);
+        NuVecScale(&header->nodes->next->start_tangent, &header->nodes->next->start_tangent, 0.33333334f);
+        NuVecScale(&header->nodes->next->end_tangent, &header->nodes->next->end_tangent, 0.33333334f);
         for (i32 index = 1; index < header->nodes->next->next->segment_count; ++index) {
             STREAK_NODE_PC *newer = header->nodes->next;
             STREAK_NODE_PC *segment = newer->next;
@@ -136,8 +136,8 @@ extern "C" void AddStreakPoints(NUVEC *points, f32 duration, u32 colour, void **
     } else {
         NuVecSub(&older->start_tangent, &older->position, &node->position);
         NuVecSub(&older->end_tangent, &older->previous_position, &node->previous_position);
-        NuVecScale(&header->nodes->next->start_tangent, &header->nodes->next->start_tangent, 0.3333333432674408f);
-        NuVecScale(&header->nodes->next->end_tangent, &header->nodes->next->end_tangent, 0.3333333432674408f);
+        NuVecScale(&header->nodes->next->start_tangent, &header->nodes->next->start_tangent, 0.33333334f);
+        NuVecScale(&header->nodes->next->end_tangent, &header->nodes->next->end_tangent, 0.33333334f);
     }
     node = header->nodes;
     NuVecSub(&edge_a, &node->previous_position, &node->position);

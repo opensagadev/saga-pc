@@ -194,19 +194,19 @@ extern "C" f32 PcInputAspectRatioPc(void) {
     f32 value;
     switch (PcWindowOptions.aspect_mode) {
         case 0:
-            value = 1.3333333730697632f;
+            value = 1.3333334f;
             break;
         case 1:
-            value = 1.7777777910232544f;
+            value = 1.7777778f;
             break;
         case 2:
-            value = 1.600000023841858f;
+            value = 1.6f;
             break;
         case 3:
             value = PCDeviceBackend.active_aspect;
             break;
         default:
-            value = 1.3333333730697632f;
+            value = 1.3333334f;
             break;
     }
     return value;

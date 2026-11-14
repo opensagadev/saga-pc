@@ -1449,9 +1449,9 @@ void LoadAreaCharacters(void) {
             if (0.6f < icon_time && 2 != CharacterDataLoad) {
                 icon_time = 0.6f;
             }
-            if ((f64)icon_time >= (f64)3.9499998092651367f) {
+            if ((f64)icon_time >= (f64)3.9499998f) {
                 icon_stage = 2;
-                icon_time = 3.9499998092651367f;
+                icon_time = 3.9499998f;
             }
         }
         if (load_type != 2) {
@@ -1488,7 +1488,7 @@ void LoadAreaCharacters(void) {
                 i32 bob_angle = (i32)((f64)NuFmod(LoadTime, 1.0f) * 65536.0);
                 f32 bob = (f32)((f64)NuTrigTable[(bob_angle >> 1) & 0x7fff] * 0.15000000596046448);
                 if (HUB_ADATA != NULL && Area == HUB_ADATA->index) {
-                    if (CharacterDataLoad != 0 && icon_time > 0.0f && (f64)icon_time < (f64)3.9499998092651367f) {
+                    if (CharacterDataLoad != 0 && icon_time > 0.0f && (f64)icon_time < (f64)3.9499998f) {
                         f32 base_x = 0.1425f;
                         f32 icon_scale = 0.4f;
                         if (Game_OptionsSave != NULL && Game_OptionsSave->widescreen != 0) {
@@ -1526,10 +1526,10 @@ void LoadAreaCharacters(void) {
                                 }
                                 drawcharicon_find = 1;
                                 if (player == 0) {
-                                    DrawCharIcon(PlayerID[0], -x, 0.16624999046325684f, 0.0f, icon_scale, 166, alpha,
+                                    DrawCharIcon(PlayerID[0], -x, 0.16624999f, 0.0f, icon_scale, 166, alpha,
                                                  (f32)((0.8500000238418579 + (f64)bob) * alpha), 1, NULL);
                                 } else {
-                                    DrawCharIcon(PlayerID[1], x, -0.16624999046325684f, 0.0f, icon_scale, 165, alpha,
+                                    DrawCharIcon(PlayerID[1], x, -0.16624999f, 0.0f, icon_scale, 165, alpha,
                                                  (f32)((0.8500000238418579 - (f64)bob) * alpha), 1, NULL);
                                 }
                             }

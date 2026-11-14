@@ -928,12 +928,12 @@ void CustomiserMenu_End() {
 }
 
 static f32 CustomiseNameLetterScalePc = 0.5f;
-static f32 CustomiseNameGapPc = 0.05249999836087227f;
-static f32 CustomiseNameSideGapPc = 0.05999999865889549f;
-static f32 CustomiseNameArrowScalePc = 0.6000000238418579f;
-static f32 CustomiseNameArrowOffsetPc = 0.10000000149011612f;
-static f32 CustomiseNameBracketOffsetXPc = 0.009999999776482582f;
-static f32 CustomiseNameBracketOffsetYPc = 0.007499999832361937f;
+static f32 CustomiseNameGapPc = 0.0525f;
+static f32 CustomiseNameSideGapPc = 0.06f;
+static f32 CustomiseNameArrowScalePc = 0.6f;
+static f32 CustomiseNameArrowOffsetPc = 0.1f;
+static f32 CustomiseNameBracketOffsetXPc = 0.01f;
+static f32 CustomiseNameBracketOffsetYPc = 0.0075f;
 
 static void CustomiserDrawNameEditorPc(CUSTOMISER_LAYERS_PC *input) {
     CUSTOMISER_CONFIG_PC *customiser = (CUSTOMISER_CONFIG_PC *)input;
@@ -981,12 +981,12 @@ static void CustomiserDrawNameEditorPc(CUSTOMISER_LAYERS_PC *input) {
                 if (column == CustomiseNameXPc[side]) {
                     const i32 colour = menu_flash == 0 ? 255 : 191;
                     letter[0] = CustomiseLetter[CustomiseNameYPc[side]];
-                    Text3D((char *)InitAsciiUpPc, x, (f32)(CustomiseNameArrowOffsetPc - (f64)0.6499999761581421f), 1.0f,
+                    Text3D((char *)InitAsciiUpPc, x, (f32)(CustomiseNameArrowOffsetPc - (f64)0.65f), 1.0f,
                            CustomiseNameArrowScalePc, CustomiseNameArrowScalePc, CustomiseNameArrowScalePc, 0, colour,
                            colour, colour);
-                    Text3D((char *)TagAsciiDownPc, x, (f32)(-(f64)0.6499999761581421f - CustomiseNameArrowOffsetPc),
-                           1.0f, CustomiseNameArrowScalePc, CustomiseNameArrowScalePc, CustomiseNameArrowScalePc, 0,
-                           colour, colour, colour);
+                    Text3D((char *)TagAsciiDownPc, x, (f32)(-(f64)0.65f - CustomiseNameArrowOffsetPc), 1.0f,
+                           CustomiseNameArrowScalePc, CustomiseNameArrowScalePc, CustomiseNameArrowScalePc, 0, colour,
+                           colour, colour);
                     scale = CustomiseNameLetterBlipScalePc[side];
                     letter_red = letter_blue = 255;
                     letter_green = menu_flash == 0 ? 255 : 0;
@@ -1000,34 +1000,34 @@ static void CustomiserDrawNameEditorPc(CUSTOMISER_LAYERS_PC *input) {
                     letter_green = green;
                     letter_blue = blue;
                 }
-                Text3D(letter, x, -0.6499999761581421f, 1.0f, scale * CustomiseNameLetterScalePc, (f32)(scale * 0.5),
-                       0.5f, 0, letter_red, letter_green, letter_blue);
+                Text3D(letter, x, -0.65f, 1.0f, scale * CustomiseNameLetterScalePc, (f32)(scale * 0.5), 0.5f, 0,
+                       letter_red, letter_green, letter_blue);
                 if (column == 0) {
                     Text3D("[", (x - gap) + CustomiseNameBracketOffsetXPc,
-                           (f32)(CustomiseNameBracketOffsetYPc - (f64)0.6499999761581421f), 1.0f, 0.5f,
-                           0.6000000238418579f, 0.5f, 0, red, green, blue);
+                           (f32)(CustomiseNameBracketOffsetYPc - (f64)0.65f), 1.0f, 0.5f, 0.6f, 0.5f, 0, red, green,
+                           blue);
                 } else if (column == 14) {
                     Text3D("]", (x + gap) - CustomiseNameBracketOffsetXPc,
-                           (f32)(CustomiseNameBracketOffsetYPc - (f64)0.6499999761581421f), 1.0f, 0.5f,
-                           0.6000000238418579f, 0.5f, 0, red, green, blue);
+                           (f32)(CustomiseNameBracketOffsetYPc - (f64)0.65f), 1.0f, 0.5f, 0.6f, 0.5f, 0, red, green,
+                           blue);
                 }
                 x += gap;
             }
         } else {
             GameObj_GetNamePc(customiser->character_ids[side], NULL, name);
-            SmartTextEx(name, CustomiseScreenPosPc[side].x, -0.6499999761581421f, 1.0f, 0.5f, 0.5f, 0.5f, 0, red, green,
-                        blue, 0.75f, 2, NULL, 0, (i32)(CustomiseNameAlphaPc * 128.0));
+            SmartTextEx(name, CustomiseScreenPosPc[side].x, -0.65f, 1.0f, 0.5f, 0.5f, 0.5f, 0, red, green, blue, 0.75f,
+                        2, NULL, 0, (i32)(CustomiseNameAlphaPc * 128.0));
         }
         x = CustomiseScreenPosPc[side].x;
         alpha = (1.0f - CustomiseNameBoardMulPc[side]) * CustomiseNameAlphaPc;
-        DrawPanel3DObject(x, -0.47999998927116394f, 1.0f, MissionPlayerIconSizePc, MissionPlayerIconSizePc,
-                          MissionPlayerIconSizePc, 0, 0, 0, &WORLD->level_objects[167].special, 0, alpha);
+        DrawPanel3DObject(x, -0.48f, 1.0f, MissionPlayerIconSizePc, MissionPlayerIconSizePc, MissionPlayerIconSizePc, 0,
+                          0, 0, &WORLD->level_objects[167].special, 0, alpha);
         icon = Customiser_GetIcon(input, &Game.customiser_start[side], index);
         if (icon != -1) {
             if (icon != PCArcadeUnpairedIconModel) {
                 ++icon;
             }
-            DrawPanel3DObject(x, -0.47999998927116394f, 1.0f, MissionPlayerIconSizePc, MissionPlayerIconSizePc,
+            DrawPanel3DObject(x, -0.48f, 1.0f, MissionPlayerIconSizePc, MissionPlayerIconSizePc,
                               MissionPlayerIconSizePc, 0, 0, 0, &WORLD->level_objects[icon].special, 0, alpha);
         }
     }
@@ -1410,19 +1410,18 @@ void MenuDrawCustomiserPc(MENU *menu) {
         }
         if (MissionMenuPacketPc.active_player[player] != 0 && CustomiseMode[side] != 1) {
             y = (f32)(STATSPOSY - 0.22499999403953552);
-            Text3D("<", (f32)(x - 0.05000000074505806 - (BlipL[player] > 0.0f ? 0.015000000596046448f : 0.0f)), y, 1.0f,
-                   0.5f, 0.5f, 0.5f, 0, colour, colour, colour);
-            Text3D(">", (f32)(x + 0.05000000074505806 + (BlipR[player] > 0.0f ? 0.015000000596046448f : 0.0f)), y, 1.0f,
-                   0.5f, 0.5f, 0.5f, 0, colour, colour, colour);
+            Text3D("<", (f32)(x - 0.05000000074505806 - (BlipL[player] > 0.0f ? 0.015000001f : 0.0f)), y, 1.0f, 0.5f,
+                   0.5f, 0.5f, 0, colour, colour, colour);
+            Text3D(">", (f32)(x + 0.05000000074505806 + (BlipR[player] > 0.0f ? 0.015000001f : 0.0f)), y, 1.0f, 0.5f,
+                   0.5f, 0.5f, 0, colour, colour, colour);
             Text3DEx((char *)InitAsciiUpPc, x,
-                     (f32)(y - -0.07000000029802322 - (BlipU[player] > 0.0f ? -0.021000001579523087f : 0.0f)), 1.0f,
-                     0.5f, 0.5f, 0.5f, 0, colour, colour, colour, CustomiseMenuYPc[side] > 0 ? 128 : 32);
+                     (f32)(y - -0.07000000029802322 - (BlipU[player] > 0.0f ? -0.021000002f : 0.0f)), 1.0f, 0.5f, 0.5f,
+                     0.5f, 0, colour, colour, colour, CustomiseMenuYPc[side] > 0 ? 128 : 32);
             Text3DEx((char *)TagAsciiDownPc, x,
-                     (f32)(y - 0.07000000029802322 + (BlipD[player] > 0.0f ? -0.021000001579523087f : 0.0f)), 1.0f,
-                     0.5f, 0.5f, 0.5f, 0, colour, colour, colour, CustomiseMenuYPc[side] < 8 ? 128 : 32);
-            SmartTextEx(TTab[TextIdPc880888], x, (f32)(STATSPOSY - 0.375), 1.0f, 0.30000001192092896f,
-                        0.30000001192092896f, 0.30000001192092896f, 0, colour, colour, colour, 0.15000000596046448f, 1,
-                        NULL, 0, 128);
+                     (f32)(y - 0.07000000029802322 + (BlipD[player] > 0.0f ? -0.021000002f : 0.0f)), 1.0f, 0.5f, 0.5f,
+                     0.5f, 0, colour, colour, colour, CustomiseMenuYPc[side] < 8 ? 128 : 32);
+            SmartTextEx(TTab[TextIdPc880888], x, (f32)(STATSPOSY - 0.375), 1.0f, 0.3f, 0.3f, 0.3f, 0, colour, colour,
+                        colour, 0.15f, 1, NULL, 0, 128);
         }
         x += ICONX + ICONX;
     }

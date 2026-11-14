@@ -70,7 +70,7 @@ PC_NUWINDGROUP *NuWindCreateMtx(NUSPECIALHANDLE *source, NUMTX *matrices, i16 co
     group->distance_range = group->far_distance - group->near_distance;
     group->field_48 = 0.2f;
     group->field_40 = 0.025f;
-    group->field_44 = 0.0006250000442378223f;
+    group->field_44 = 0.00062500004f;
 
     min_x = min_y = min_z = 10000000.0f;
     max_x = max_y = max_z = -10000000.0f;

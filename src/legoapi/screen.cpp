@@ -534,7 +534,7 @@ extern "C" void DrawCutBorders(i32 widescreen) {
     if ((CutStopInfo != NULL && (((CUT_BORDER_RECORD *)CutStopInfo)->flags & 0x4000) != 0) ||
         (WORLD->cutscene_sys != NULL && WORLD->cutscene_sys->count == 1 &&
          (((CUT_BORDER_RECORD *)WORLD->cutscene_sys->records[0])->flags & 0x4000) != 0)) {
-        border_scale = 0.21276596188545227f;
+        border_scale = 0.21276596f;
     } else {
         border_scale = 0.1f;
     }

@@ -1,6 +1,6 @@
 #include "saga.h"
 #pragma data_seg(".data$ShoveCollisionExpansionPc")
-static f32 ShoveCollisionExpansionPc = 0.10000000149011612f;
+static f32 ShoveCollisionExpansionPc = 0.1f;
 #pragma data_seg()
 
 typedef struct shove_object_s { // size 0x18

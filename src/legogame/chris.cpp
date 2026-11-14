@@ -367,7 +367,7 @@ extern "C" {
 #pragma data_seg(".data$FlightSplineExtensionPc")
     char *FlightSplineExtensionPc = ".FSP";
 #pragma data_seg(".data$FlightSplineDefaultIncrementPc")
-    f32 FlightSplineDefaultIncrementPc = 0.009999999776482582f;
+    f32 FlightSplineDefaultIncrementPc = 0.01f;
 #pragma data_seg()
 
     void FlightSplineCapacityDiagnosticPc(char *filename);

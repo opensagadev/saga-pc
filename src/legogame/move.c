@@ -5904,7 +5904,7 @@ void DrawForceGlowSprite(NUVEC *position, f32 radius, i32 model, f32 alpha, GAME
     model++;
     if (WORLD->level_objects[model].active != 0) {
         NuMtxSetScale(&matrix, &scale);
-        angle = (u16)(i32)((f64)NuFmod(GameTimer.time_elapsed, 16.777000427246094f) / 16.777000427246094 * 65536.0);
+        angle = (u16)(i32)((f64)NuFmod(GameTimer.time_elapsed, 16.777f) / 16.777000427246094 * 65536.0);
         MovementMtxRotateZPc(&matrix, angle);
         NuMtxMulR(&matrix, &matrix, &GameCam->render_mtx);
         NuMtxTranslate(&matrix, &draw_position);
@@ -8532,13 +8532,13 @@ i32 Shop_UpdateHint(HINT_PC *hint) {
 }
 
 #pragma data_seg(".data$ApplyGravityContext22HoverHeight")
-static f32 ApplyGravityContext22HoverHeight = 0.20000000298023224f;
+static f32 ApplyGravityContext22HoverHeight = 0.2f;
 #pragma data_seg()
 #pragma data_seg(".data$ApplyGravityContext42HoverHeight")
-static f32 ApplyGravityContext42HoverHeight = 0.20000000298023224f;
+static f32 ApplyGravityContext42HoverHeight = 0.2f;
 #pragma data_seg()
 #pragma data_seg(".data$ApplyGravityContextHoverHeight")
-static f32 ApplyGravityContextHoverHeight = 0.20000000298023224f;
+static f32 ApplyGravityContextHoverHeight = 0.2f;
 #pragma data_seg()
 #pragma data_seg(".data$ApplyGravityWallRunAcceleration")
 static f32 ApplyGravityWallRunAcceleration = -0.25f;
@@ -8856,16 +8856,16 @@ void ApplyGravity_Network(GAMEOBJECT *object) {
 }
 
 #pragma data_seg(".data$PlayerBackwardMomentumScalePc")
-static f32 PlayerBackwardMomentumScalePc = 1.2000000476837158f;
+static f32 PlayerBackwardMomentumScalePc = 1.2f;
 #pragma data_seg()
 #pragma data_seg(".data$PlayerFloatHeightFractionPc")
 static f32 PlayerFloatHeightFractionPc = 0.625f;
 #pragma data_seg()
 #pragma data_seg(".data$PlayerSecondBackwardMomentumScalePc")
-static f32 PlayerSecondBackwardMomentumScalePc = 1.2000000476837158f;
+static f32 PlayerSecondBackwardMomentumScalePc = 1.2f;
 #pragma data_seg()
 #pragma data_seg(".data$VEHICLE_WATER_SPEED_MUL")
-static f32 VEHICLE_WATER_SPEED_MUL = 0.699999988079071f;
+static f32 VEHICLE_WATER_SPEED_MUL = 0.7f;
 #pragma data_seg()
 
 void MovePlayer_DIRECTIONAL(GAMEOBJECT *object) {
@@ -9650,7 +9650,7 @@ void MovePlayer_DIRECTIONAL(GAMEOBJECT *object) {
                         }
                         if (WORLD->current_level == VADERA_LDATA && !((object->flags_1fc & 0x80) != 0) &&
                             GameCam->sock_position.sock_index == 0) {
-                            walking_speed *= 1.0416666269302368f;
+                            walking_speed *= 1.0416666f;
                         }
                         object->target_velocity.x =
                             NuTrigTable[walking_angle >> 1] * walking_speed * water_speed_multiplier;
@@ -9858,7 +9858,7 @@ static f32 PODSPRINT_TURNRATE = 1.0f;
 static f32 PODSPRINT_VELOCITYSEEK = 8.0f;
 #pragma data_seg()
 #pragma data_seg(".data$VEHICLE_SUBMARINE_DEPTH")
-static f32 VEHICLE_SUBMARINE_DEPTH = 0.20000000298023224f;
+static f32 VEHICLE_SUBMARINE_DEPTH = 0.2f;
 #pragma data_seg()
 #pragma data_seg(".data$VEHICLE_TUBE_UPSPEED")
 static f32 VEHICLE_TUBE_UPSPEED = 5.0f;

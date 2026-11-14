@@ -1,6 +1,6 @@
 #include "saga.h"
 
-static f32 HairMovementFallAnglePc = -1.8325958251953125f;
+static f32 HairMovementFallAnglePc = -1.8325958f;
 static f32 HairMovementFallRatePc = 2.0f;
 static f32 HairMovementRecoverRatePc = 2.0f;
 

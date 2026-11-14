@@ -670,7 +670,7 @@ extern "C" {
             x = other->position->x - position->x;
             y = other->position->y - position->y;
             z = other->position->z - position->z;
-            if (x * x + y * y + z * z <= (f64)0.002500000176951289f) {
+            if (x * x + y * y + z * z <= (f64)0.0025000002f) {
                 return 1;
             }
         }

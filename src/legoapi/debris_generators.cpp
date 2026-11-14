@@ -219,7 +219,7 @@ extern "C" {
         f32 sine = NuRandFloatSeeded(&debrisseed) * (upper_sine - lower_sine) + lower_sine;
         i32 angle_z = static_cast<i16>(DebrisNuASin(sine));
         i32 angle_y = static_cast<i32>(displacement.y) +
-                      static_cast<i32>(static_cast<f32>(random_angle) * effect->rotor_speed_x * 0.000030517578125f);
+                      static_cast<i32>(static_cast<f32>(random_angle) * effect->rotor_speed_x * 0.000030517578f);
         NUVEC vector;
         vector.x = displacement.x;
         vector.z = 0.0f;

@@ -1253,11 +1253,11 @@ void PC_CONTROL_SCREEN_PC::Draw(void) {
     f32 primary;
     f32 secondary;
     if (selected_player == 0) {
-        primary = -0.6499999761581421f;
-        secondary = 0.6499999761581421f;
+        primary = -0.65f;
+        secondary = 0.65f;
     } else {
-        primary = 0.6499999761581421f;
-        secondary = -0.6499999761581421f;
+        primary = 0.65f;
+        secondary = -0.65f;
     }
     NuQFntPushPrintMode(2);
     NuQFntPushCoordinateSystem(3);
@@ -1321,15 +1321,14 @@ void PC_CONTROL_SCREEN_PC::Draw(void) {
                           0);
             }
             if (port1 >= 0 && player_count > 1) {
-                QueueText(PcInputDeviceNamePc(port1), label_x + 0.6499999761581421f, device_y, 0.0f, 0x40, 1.4f, 0.8f,
-                          0x80208020, 1.0f, 0.6f, 0);
+                QueueText(PcInputDeviceNamePc(port1), label_x + 0.65f, device_y, 0.0f, 0x40, 1.4f, 0.8f, 0x80208020,
+                          1.0f, 0.6f, 0);
             }
             device_y -= line_height * 2.0f;
         }
         if (player_count > 1) {
             DrawText(PcControlTextPc[23], left, device_y, 0.0f, 0x40, 2.0f, 1.5f, heading0, 2, 0.0f);
-            DrawText(PcControlTextPc[24], label_x + 0.6499999761581421f, device_y, 0.0f, 0x40, 2.0f, 1.5f, heading1, 2,
-                     0.0f);
+            DrawText(PcControlTextPc[24], label_x + 0.65f, device_y, 0.0f, 0x40, 2.0f, 1.5f, heading1, 2, 0.0f);
         }
         PcInputSetMouseFieldPc(1);
         i32 show_empty0 = 1;

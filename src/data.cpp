@@ -199,12 +199,11 @@ extern "C" {
     i32 RenderBackdropBlackPc = 0;
     f32 hub_minikitviewer_movewait = 0.0f;
     f32 hub_minikitviewer_move = 0.0f;
-    f32 HubMiniKitViewerReflectYPc = 0.09000000357627869f;
+    f32 HubMiniKitViewerReflectYPc = 0.09f;
     f32 HubHologramAlphaPc = 0.0f;
     i32 HubCompletionPointsPc = 0;
     i32 HubBothTrueJediGoldBricksPc = 0;
-    f32 HubAreaPanelOnePc[6] = {-0.15000000596046448f, -0.45000001788139343f, 0.75f, -0.75f,
-                                0.45000001788139343f,  0.15000000596046448f};
+    f32 HubAreaPanelOnePc[6] = {-0.15f, -0.45000002f, 0.75f, -0.75f, 0.45000002f, 0.15f};
     NUGSPLINE *HubMiniKitViewerSplinePc = NULL;
     f32 HubAreaTimePc = 0.0f;
     f32 HubEpisodeTimePc = 0.0f;
@@ -245,10 +244,10 @@ extern "C" {
     u16 TextCrawlRotateYPc = 0;
     u16 TextCrawlRotateZPc = 0;
     f32 TextCrawlTimePc = 0.0f;
-    f32 TextCrawlScaleXPc = 0.009999999776482582f;
-    f32 TextCrawlScaleYPc = 0.009999999776482582f;
+    f32 TextCrawlScaleXPc = 0.01f;
+    f32 TextCrawlScaleYPc = 0.01f;
     f32 TextCrawlLineWidthPc = 7.0f;
-    f32 TextCrawlLineSpacingPc = 1.2999999523162842f;
+    f32 TextCrawlLineSpacingPc = 1.3f;
     u32 TextCrawlRedPc = 0;
     u32 TextCrawlGreenPc = 111;
     u8 TextCrawlBluePc = 255;
@@ -7577,7 +7576,7 @@ extern "C" {
                                          4.0f,
                                          {1.0f, 1.0f, 1.0f},
                                          1.0f,
-                                         0.10000000149011612f,
+                                         0.1f,
                                          0.0f,
                                          {{0.0f, 0.0f},
                                           {1.0f, 1.0f},
@@ -7843,7 +7842,7 @@ extern "C" {
     extern const f64 VehicleTurnPhaseOffset = 16384.0;
     extern const f64 MoveSplineRunSpeedSentinel = 1000000000.0;
     extern const f64 BoltTargetRandomDenominator = 65535.0;
-    extern const f64 NuAnimDataFloatMax = 3.4028234663852886e+38;
+    extern const f64 NuAnimDataFloatMax = 3.4028234663852886e38;
 #pragma data_seg(".data$GameObjectRotationBuggyId")
     u16 GameObjectRotationBuggyId = 0xffff;
 #pragma data_seg()
@@ -9040,7 +9039,7 @@ extern "C" {
     extern const f64 NuTimeBarSlotWidth = 0.02500000037252903;
 #pragma const_seg()
 #pragma const_seg(".rdata$NuTimeBarFontScale")
-    extern const f32 NuTimeBarFontScale = 0.8500000238418579f;
+    extern const f32 NuTimeBarFontScale = 0.85f;
 #pragma const_seg()
 #pragma const_seg(".rdata$NuTimeBarNegativeSlotWidth")
     extern const f64 NuTimeBarNegativeSlotWidth = -0.02500000037252903;
@@ -9947,10 +9946,10 @@ extern "C" {
     LEVELDATA_PC *DEATHSTARRESCUEA_LDATA = 0;
 #pragma bss_seg()
 #pragma const_seg(".rdata$ForcePushApproachInnerSquare")
-    extern const f32 ForcePushApproachInnerSquare = 0.010000000707805157f;
+    extern const f32 ForcePushApproachInnerSquare = 0.010000001f;
 #pragma const_seg()
 #pragma const_seg(".rdata$ForcePushApproachOuterSquare")
-    extern const f32 ForcePushApproachOuterSquare = 0.04000000283122063f;
+    extern const f32 ForcePushApproachOuterSquare = 0.040000003f;
 #pragma const_seg()
 #pragma data_seg(".data$id_GONKDROID")
     u16 id_GONKDROID = 0xffff;
@@ -10044,7 +10043,7 @@ extern "C" {
     extern const f64 ApplyGravityFrameScale = 180.0;
 #pragma const_seg()
 #pragma const_seg(".rdata$ApplyGravityMinimumFrameTime")
-    extern const f32 ApplyGravityMinimumFrameTime = 0.01666666753590107f;
+    extern const f32 ApplyGravityMinimumFrameTime = 0.016666668f;
 #pragma const_seg()
 }
 
@@ -10089,8 +10088,8 @@ extern "C" {
         0,                                    // velocity
         0,                                    // owner
         0,                                    // recipient
-        0.10000000149011612f,                 // field_14
-        0.10000000149011612f,                 // field_18
+        0.1f,                                 // field_14
+        0.1f,                                 // field_18
         -5.0f,                                // gravity
         0.75f,                                // field_20
         0,                                    // special
@@ -10119,7 +10118,7 @@ extern "C" {
         0,                                    // lighting_handle
         -1,                                   // lighting_id
         2000000.0f,                           // field_88
-        0.01666666753590107f,                 // time_step
+        0.016666668f,                         // time_step
         0xffffffffu,                          // hostility_group
         0,                                    // lighting_data
         1.0f,                                 // lighting_scale_x
@@ -10160,7 +10159,7 @@ extern "C" {
     i32 new_retreat = 1;
 #pragma data_seg()
 #pragma data_seg(".data$ai_moveradius")
-    f32 ai_moveradius = 0.10000000149011612f;
+    f32 ai_moveradius = 0.1f;
 #pragma data_seg()
 #pragma data_seg(".data$AIMovementInstructionPositiveThreshold")
     f32 AIMovementInstructionPositiveThreshold = 0.5f;
@@ -10188,7 +10187,7 @@ extern "C" {
     f32 VehicleAreaRememberSpeed = 0;
 #pragma bss_seg()
 #pragma data_seg(".data$VehicleCollisionDamageSpeedFraction")
-    f32 VehicleCollisionDamageSpeedFraction = 0.6000000238418579f;
+    f32 VehicleCollisionDamageSpeedFraction = 0.6f;
 #pragma data_seg()
 #pragma data_seg(".data$VehicleCollisionFrontAngle")
     i32 VehicleCollisionFrontAngle = 45;
@@ -10290,7 +10289,7 @@ extern "C" {
     AI_GAME_PARAM_TO_FLOAT_PC GameParamToFloatFn = 0;
 #pragma bss_seg()
 #pragma data_seg(".data$rocket_speed")
-    f32 rocket_speed = 1.2000000476837158f;
+    f32 rocket_speed = 1.2f;
 #pragma data_seg()
 #pragma bss_seg(".bss$GUNSHIPA_LDATA")
     LEVELDATA_PC *GUNSHIPA_LDATA = 0;
@@ -10397,7 +10396,7 @@ extern "C" {
     f32 SpeederChaseATATExitHeight = 2.5f;
 #pragma data_seg()
 #pragma data_seg(".data$SpeederChaseATATExitLandPos")
-    NUVEC SpeederChaseATATExitLandPos = {-159.0f, 6.869999885559082f, -17.600000381469727f};
+    NUVEC SpeederChaseATATExitLandPos = {-159.0f, 6.87f, -17.6f};
 #pragma data_seg()
 #pragma bss_seg(".bss$LastSafePosExtraFn")
     LAST_SAFE_POS_EXTRA_PC LastSafePosExtraFn = 0;
@@ -12638,19 +12637,19 @@ extern "C" {
     i32 PCArcadePointGoals[5] = {5, 10, 25, 50, 0};
 #pragma data_seg()
 #pragma data_seg(".data$PCArcadeIconMessageY")
-    f32 PCArcadeIconMessageY = -0.550000011920929f;
+    f32 PCArcadeIconMessageY = -0.55f;
 #pragma data_seg()
 #pragma data_seg(".data$PANEL_COINX")
-    f32 PANEL_COINX = 0.6499999761581421f;
+    f32 PANEL_COINX = 0.65f;
 #pragma data_seg()
 #pragma data_seg(".data$PANEL_COINY")
-    f32 PANEL_COINY = 0.04500000178813934f;
+    f32 PANEL_COINY = 0.045f;
 #pragma data_seg()
 #pragma data_seg(".data$PANEL_COINSCALE_END")
-    f32 PANEL_COINSCALE_END = 0.3499999940395355f;
+    f32 PANEL_COINSCALE_END = 0.35f;
 #pragma data_seg()
 #pragma data_seg(".data$STATSPOSY")
-    f32 STATSPOSY = 0.7450000047683716f;
+    f32 STATSPOSY = 0.745f;
 #pragma data_seg()
 #pragma data_seg(".data$COINTOTAL_COINSIZE")
     f32 COINTOTAL_COINSIZE = 0.5f;
@@ -12797,32 +12796,32 @@ extern "C" {
 #pragma data_seg()
 #pragma data_seg(".data$GizmoPickupType")
     GIZMO_PICKUP_TYPE_PC GizmoPickupType[10] = {
-        {PickupTypeLiteral758c80, NULL, NULL, 115, 4, 64, 0, 183, 10, 0.04500000178813934f, 0.04500000178813934f, 10.0f,
-         0.0f, NULL, Pup_CollectCoin, -1, -1, 0.0f, 0.0f},
-        {PickupTypeLiteral758c74, NULL, NULL, 103, 4, 64, 0, 191, 100, 0.04500000178813934f, 0.04500000178813934f,
-         10.0f, 0.0f, NULL, Pup_CollectCoin, -1, -1, 0.0f, 0.0f},
-        {PickupTypeLiteral758c68, PickupTypeLiteral758c5c, NULL, 98, 4, 64, 0, 199, 1000, 0.04500000178813934f,
-         0.04500000178813934f, 6.0f, 0.0f, Pup_UpdateBlueCoin, Pup_CollectCoin, 8, -1, 0.0f, 0.0f},
-        {PickupTypeLiteral758c50, PickupTypeLiteral758c5c, NULL, 112, 4, 64, 0, 213, 10000, 0.04500000178813934f,
-         0.04500000178813934f, 6.0f, 0.0f, Pup_UpdatePurpleCoin, Pup_CollectCoin, 8, -1, 0.0f, 0.0f},
-        {PickupTypeLiteral758c48, PickupTypeLiteral758c3c, NULL, 109, 0, 69, 0, 206, 0, 0.125f, 0.15000000596046448f,
-         2.0f, 0.05000000074505806f, NULL, Pup_CollectMinikit, 20, -1, 0.0f, 0.0f},
-        {PickupTypeLiteral758c34, NULL, NULL, 104, 0, 2, 0, 203, 0, 0.10000000149011612f, 0.07999999821186066f, 4.0f,
-         0.0f, NULL, Pup_CollectHeart, -1, -1, 0.0f, 0.0f},
-        {PickupTypeLiteral758c28, PickupTypeLiteral758c3c, NULL, 114, 0, 73, 0, 210, 0, 0.11999999731779099f,
-         0.05999999865889549f, 2.0f, 0.10000000149011612f, NULL, Pup_CollectRedBrick, 99, -1, 0.0f, 0.0f},
-        {PickupTypeLiteral758c20, PickupTypeLiteral758c3c, PickupTypeLiteral758c14, 99, 0, 33, 0, 207, 0, 0.125f,
-         0.15000000596046448f, 2.0f, 0.05000000074505806f, NULL, Pup_CollectCharKit, 20, -1, 0.0f, 0.0f},
-        {PickupTypeLiteral758c0c, NULL, NULL, 116, 0, 2, 0, 121, 0, 0.10000000149011612f, 0.10000000149011612f, 5.0f,
-         0.0f, NULL, NULL, -1, -1, 0.0f, 0.0f},
-        {PickupTypeLiteral758c00, PickupTypeLiteral758c3c, NULL, 117, 0, 1, 0, 208, 0, 0.125f, 0.125f, 2.0f,
-         0.05000000074505806f, Pup_UpdatePowerUp, Pup_CollectPowerUp, -1, 209, 0.0f, 0.0f}};
+        {PickupTypeLiteral758c80, NULL, NULL, 115, 4, 64, 0, 183, 10, 0.045f, 0.045f, 10.0f, 0.0f, NULL,
+         Pup_CollectCoin, -1, -1, 0.0f, 0.0f},
+        {PickupTypeLiteral758c74, NULL, NULL, 103, 4, 64, 0, 191, 100, 0.045f, 0.045f, 10.0f, 0.0f, NULL,
+         Pup_CollectCoin, -1, -1, 0.0f, 0.0f},
+        {PickupTypeLiteral758c68, PickupTypeLiteral758c5c, NULL, 98, 4, 64, 0, 199, 1000, 0.045f, 0.045f, 6.0f, 0.0f,
+         Pup_UpdateBlueCoin, Pup_CollectCoin, 8, -1, 0.0f, 0.0f},
+        {PickupTypeLiteral758c50, PickupTypeLiteral758c5c, NULL, 112, 4, 64, 0, 213, 10000, 0.045f, 0.045f, 6.0f, 0.0f,
+         Pup_UpdatePurpleCoin, Pup_CollectCoin, 8, -1, 0.0f, 0.0f},
+        {PickupTypeLiteral758c48, PickupTypeLiteral758c3c, NULL, 109, 0, 69, 0, 206, 0, 0.125f, 0.15f, 2.0f, 0.05f,
+         NULL, Pup_CollectMinikit, 20, -1, 0.0f, 0.0f},
+        {PickupTypeLiteral758c34, NULL, NULL, 104, 0, 2, 0, 203, 0, 0.1f, 0.08f, 4.0f, 0.0f, NULL, Pup_CollectHeart, -1,
+         -1, 0.0f, 0.0f},
+        {PickupTypeLiteral758c28, PickupTypeLiteral758c3c, NULL, 114, 0, 73, 0, 210, 0, 0.12f, 0.06f, 2.0f, 0.1f, NULL,
+         Pup_CollectRedBrick, 99, -1, 0.0f, 0.0f},
+        {PickupTypeLiteral758c20, PickupTypeLiteral758c3c, PickupTypeLiteral758c14, 99, 0, 33, 0, 207, 0, 0.125f, 0.15f,
+         2.0f, 0.05f, NULL, Pup_CollectCharKit, 20, -1, 0.0f, 0.0f},
+        {PickupTypeLiteral758c0c, NULL, NULL, 116, 0, 2, 0, 121, 0, 0.1f, 0.1f, 5.0f, 0.0f, NULL, NULL, -1, -1, 0.0f,
+         0.0f},
+        {PickupTypeLiteral758c00, PickupTypeLiteral758c3c, NULL, 117, 0, 1, 0, 208, 0, 0.125f, 0.125f, 2.0f, 0.05f,
+         Pup_UpdatePowerUp, Pup_CollectPowerUp, -1, 209, 0.0f, 0.0f}};
 #pragma data_seg()
 #pragma data_seg(".data$POWERUPYPOS1")
-    f32 POWERUPYPOS1 = -0.33500000834465027f;
+    f32 POWERUPYPOS1 = -0.335f;
 #pragma data_seg()
 #pragma data_seg(".data$POWERUPYPOS2")
-    f32 POWERUPYPOS2 = -0.20000000298023224f;
+    f32 POWERUPYPOS2 = -0.2f;
 #pragma data_seg()
 #pragma data_seg(".data$CHEAT_POWERUPTIME")
     f32 CHEAT_POWERUPTIME = 20.0f;
@@ -12840,12 +12839,12 @@ extern "C" {
 
 extern "C" {
 #pragma data_seg(".data$KITPOSX")
-    f32 KITPOSX = -0.7250000238418579f;
+    f32 KITPOSX = -0.725f;
 #pragma data_seg()
 }
 extern "C" {
 #pragma data_seg(".data$KITPOSY")
-    f32 KITPOSY = -0.699999988079071f;
+    f32 KITPOSY = -0.7f;
 #pragma data_seg()
 }
 extern "C" {
@@ -12855,7 +12854,7 @@ extern "C" {
 }
 extern "C" {
 #pragma data_seg(".data$PANEL_MINIKITY")
-    f32 PANEL_MINIKITY = 0.029999999329447746f;
+    f32 PANEL_MINIKITY = 0.03f;
 #pragma data_seg()
 }
 extern "C" {
@@ -12885,17 +12884,17 @@ extern "C" {
 }
 extern "C" {
 #pragma data_seg(".data$PANEL_REDBRICKSCALE")
-    f32 PANEL_REDBRICKSCALE = 0.4000000059604645f;
+    f32 PANEL_REDBRICKSCALE = 0.4f;
 #pragma data_seg()
 }
 extern "C" {
 #pragma data_seg(".data$REDBRICKPOSX")
-    f32 REDBRICKPOSX = 0.7250000238418579f;
+    f32 REDBRICKPOSX = 0.725f;
 #pragma data_seg()
 }
 extern "C" {
 #pragma data_seg(".data$REDBRICKPOSY")
-    f32 REDBRICKPOSY = -0.7450000047683716f;
+    f32 REDBRICKPOSY = -0.745f;
 #pragma data_seg()
 }
 extern "C" {
@@ -12910,7 +12909,7 @@ extern "C" {
 }
 extern "C" {
 #pragma data_seg(".data$ICONX")
-    f32 ICONX = 0.7749999761581421f;
+    f32 ICONX = 0.775f;
 #pragma data_seg()
 }
 extern "C" {
@@ -13029,12 +13028,12 @@ extern "C" {
 }
 extern "C" {
 #pragma data_seg(".data$KillPartsTieTrailScalePc")
-    f32 KillPartsTieTrailScalePc = 0.10000000149011612f;
+    f32 KillPartsTieTrailScalePc = 0.1f;
 #pragma data_seg()
 }
 extern "C" {
 #pragma data_seg(".data$KillPartsTieSpinTranslationPc")
-    NUVEC KillPartsTieSpinTranslationPc = {0.0f, 0.0f, -0.05000000074505806f};
+    NUVEC KillPartsTieSpinTranslationPc = {0.0f, 0.0f, -0.05f};
 #pragma data_seg()
 }
 extern "C" {
@@ -13116,16 +13115,16 @@ extern "C" {
 
 extern "C" {
 #pragma data_seg(".data$SnakeSegmentSpacingPc")
-    f32 SnakeSegmentSpacingPc = 0.15000000596046448f;
+    f32 SnakeSegmentSpacingPc = 0.15f;
 #pragma data_seg()
 #pragma data_seg(".data$SnakeHeadHeightPc")
-    f32 SnakeHeadHeightPc = 0.15000000596046448f;
+    f32 SnakeHeadHeightPc = 0.15f;
 #pragma data_seg()
 #pragma data_seg(".data$SnakeYawSeekRatePc")
     f32 SnakeYawSeekRatePc = 5.0f;
 #pragma data_seg()
 #pragma data_seg(".data$SnakeSegmentHeightPc")
-    f32 SnakeSegmentHeightPc = 0.019999999552965164f;
+    f32 SnakeSegmentHeightPc = 0.02f;
 #pragma data_seg()
 #pragma data_seg(".data$SnakeDebrisUpwardSpeedPc")
     f32 SnakeDebrisUpwardSpeedPc = 1.0f;
@@ -13167,11 +13166,11 @@ extern "C" {
 #pragma data_seg()
 
 #pragma data_seg(".data$CombatNpcKillDifficultyAmountPc")
-    f32 CombatNpcKillDifficultyAmountPc = 0.009999999776482582f;
+    f32 CombatNpcKillDifficultyAmountPc = 0.01f;
 #pragma data_seg()
 
 #pragma data_seg(".data$CombatPlayerDeathDifficultyAmountPc")
-    f32 CombatPlayerDeathDifficultyAmountPc = -0.02500000037252903f;
+    f32 CombatPlayerDeathDifficultyAmountPc = -0.025f;
 #pragma data_seg()
 
 #pragma data_seg(".data$CombatHitReactionIntervalPc")
@@ -13253,7 +13252,7 @@ extern "C" {
 #pragma data_seg()
 
 #pragma data_seg(".data$VehicleGunshipHoverSeparationPc")
-    f32 VehicleGunshipHoverSeparationPc = 0.800000011920929f;
+    f32 VehicleGunshipHoverSeparationPc = 0.8f;
 #pragma data_seg()
 }
 
@@ -13311,20 +13310,12 @@ extern "C" {
 
 extern "C" {
 #pragma data_seg(".data$AwkwardShapeSpherePc")
-    AWKWARD_SHAPE_SPHERE_PC AwkwardShapeSpherePc[14] = {{&id_RANCOR, 4, 0, 0.30000001192092896f},
-                                                        {&id_DEWBACK, 1, 1, 0.20000000298023224f},
-                                                        {&id_DEWBACK, 2, 0, 0.125f},
-                                                        {&id_DEWBACK, 3, 0, 0.10000000149011612f},
-                                                        {&id_DEWBACK, 4, 0, 0.07500000298023224f},
-                                                        {&id_BIGGUN, 3, 0, 0.17499999701976776f},
-                                                        {&id_BIGGUN, 4, 0, 0.17499999701976776f},
-                                                        {&id_BIGGUN, 5, 0, 0.17499999701976776f},
-                                                        {&id_BANTHA, 1, 1, 0.25f},
-                                                        {&id_ATAT, 7, 1, 1.2000000476837158f},
-                                                        {&id_CATAPULT, 1, 0, 0.25f},
-                                                        {&id_FIRETRUCK, 1, 1, 0.30000001192092896f},
-                                                        {&id_FIRETRUCK, 2, 1, 0.30000001192092896f},
-                                                        {NULL, 0, 0, 0.0f}};
+    AWKWARD_SHAPE_SPHERE_PC AwkwardShapeSpherePc[14] = {
+        {&id_RANCOR, 4, 0, 0.3f},    {&id_DEWBACK, 1, 1, 0.2f},   {&id_DEWBACK, 2, 0, 0.125f},
+        {&id_DEWBACK, 3, 0, 0.1f},   {&id_DEWBACK, 4, 0, 0.075f}, {&id_BIGGUN, 3, 0, 0.175f},
+        {&id_BIGGUN, 4, 0, 0.175f},  {&id_BIGGUN, 5, 0, 0.175f},  {&id_BANTHA, 1, 1, 0.25f},
+        {&id_ATAT, 7, 1, 1.2f},      {&id_CATAPULT, 1, 0, 0.25f}, {&id_FIRETRUCK, 1, 1, 0.3f},
+        {&id_FIRETRUCK, 2, 1, 0.3f}, {NULL, 0, 0, 0.0f}};
 #pragma data_seg()
 
 #pragma data_seg(".data$id_CATAPULT")
@@ -13692,7 +13683,7 @@ extern "C" {
 #pragma data_seg()
 
 #pragma data_seg(".data$CUTSUBTITLEDEFAULT_FITWIDTH")
-    f32 CUTSUBTITLEDEFAULT_FITWIDTH = 1.7000000476837158f;
+    f32 CUTSUBTITLEDEFAULT_FITWIDTH = 1.7f;
 #pragma data_seg()
 
 #pragma bss_seg(".bss$CUTSUBTITLEDEFAULT_ALIGN")
@@ -14498,11 +14489,11 @@ extern "C" {
 #pragma data_seg()
 
 #pragma data_seg(".data$PUNCHGAP")
-    f32 PUNCHGAP = 0.30000001192092896f;
+    f32 PUNCHGAP = 0.3f;
 #pragma data_seg()
 
 #pragma data_seg(".data$PUNCHCHARGAP")
-    f32 PUNCHCHARGAP = 0.6000000238418579f;
+    f32 PUNCHCHARGAP = 0.6f;
 #pragma data_seg()
 
 #pragma data_seg(".data$CanPunchGirls")
@@ -14813,11 +14804,11 @@ extern "C" {
 #pragma data_seg()
 
 #pragma data_seg(".data$PCForceGlowHoldDuration")
-    f32 PCForceGlowHoldDuration = 0.3330000042915344f;
+    f32 PCForceGlowHoldDuration = 0.333f;
 #pragma data_seg()
 
 #pragma data_seg(".data$FORCEGLOWTIME")
-    f32 FORCEGLOWTIME = 0.10000000149011612f;
+    f32 FORCEGLOWTIME = 0.1f;
 #pragma data_seg()
 
 #pragma data_seg(".data$CableTargetScalePc")
@@ -14833,7 +14824,7 @@ extern "C" {
 #pragma data_seg()
 
 #pragma data_seg(".data$PodRaceMinimumSpeedPc")
-    f32 PodRaceMinimumSpeedPc = 0.3330000042915344f;
+    f32 PodRaceMinimumSpeedPc = 0.333f;
 #pragma data_seg()
 
 #pragma data_seg(".data$PodRaceBoostSpeedPc")
@@ -14845,7 +14836,7 @@ extern "C" {
 #pragma data_seg()
 
 #pragma data_seg(".data$PodSprintBoostSpeedPc")
-    f32 PodSprintBoostSpeedPc = 1.399999976158142f;
+    f32 PodSprintBoostSpeedPc = 1.4f;
 #pragma data_seg()
 
 #pragma data_seg(".data$PodBoostHeightPc")
@@ -14861,13 +14852,12 @@ extern "C" {
 #pragma data_seg()
 
 #pragma data_seg(".data$PodCollisionThresholdPc")
-    f32 PodCollisionThresholdPc = 0.9990000128746033f;
+    f32 PodCollisionThresholdPc = 0.999f;
 #pragma data_seg()
 
 #pragma data_seg(".data$PodSprintLiftPositionsPc")
-    NUVEC PodSprintLiftPositionsPc[3] = {{-395.260009765625f, -5.480000019073486f, -165.0800018310547f},
-                                         {-375.3800048828125f, -5.039999961853027f, -286.5f},
-                                         {-354.9100036621094f, -4.849999904632568f, -299.32000732421875f}};
+    NUVEC PodSprintLiftPositionsPc[3] = {
+        {-395.26f, -5.48f, -165.08f}, {-375.38f, -5.04f, -286.5f}, {-354.91f, -4.85f, -299.32f}};
 #pragma data_seg()
 #pragma data_seg(".data$DirectionalGrappleSeekScalePc")
     f32 DirectionalGrappleSeekScalePc = 0.5f;
@@ -15031,7 +15021,7 @@ extern "C" {
 #pragma data_seg()
 
 #pragma data_seg(".data$rtl_shadow_flicker")
-    NUVEC rtl_shadow_flicker = {0.10000000149011612f, 0.10000000149011612f, 0.10000000149011612f};
+    NUVEC rtl_shadow_flicker = {0.1f, 0.1f, 0.1f};
 #pragma data_seg()
 
 #pragma data_seg(".data$RtlModifierIndexZeroPc")
@@ -15043,7 +15033,7 @@ extern "C" {
 #pragma data_seg()
 
 #pragma data_seg(".data$rtlwob")
-    f32 rtlwob = 0.05000000074505806f;
+    f32 rtlwob = 0.05f;
 #pragma data_seg()
 
 #pragma bss_seg(".bss$PCShadowCurrentLight")
@@ -15116,7 +15106,7 @@ extern "C" {
 #pragma data_seg()
 
 #pragma data_seg(".data$MENUDY")
-    f32 MENUDY = -0.10664000362157822f;
+    f32 MENUDY = -0.10664f;
 #pragma data_seg()
 
 #pragma data_seg(".data$MenuAcceptPromptTextPc")
@@ -15158,7 +15148,7 @@ extern "C" {
 #pragma data_seg()
 
 #pragma data_seg(".data$MenuTopYPc")
-    f32 MenuTopYPc = 0.800000011920929f;
+    f32 MenuTopYPc = 0.8f;
 #pragma data_seg()
 
 #pragma data_seg(".data$MENUNORMALR")
@@ -15410,7 +15400,7 @@ extern "C" {
 #pragma bss_seg()
 
 #pragma data_seg(".data$default_mover_extra")
-    f32 default_mover_extra = 0.05000000074505806f;
+    f32 default_mover_extra = 0.05f;
 #pragma data_seg()
 
 #pragma data_seg(".data$id_MOSEISLEYCITIZEN")
@@ -15448,7 +15438,7 @@ extern "C" {
 #pragma bss_seg()
 
 #pragma data_seg(".data$PodRaceSplineIncrementPc")
-    f32 PodRaceSplineIncrementPc = 0.0010000000474974513f;
+    f32 PodRaceSplineIncrementPc = 0.001f;
 #pragma data_seg()
 
 #pragma data_seg(".data$PodCreateSplineKeywordPc")
@@ -15487,7 +15477,7 @@ extern "C" {
 #pragma data_seg()
 
 #pragma data_seg(".data$ShoveMaximumPenetrationPc")
-    f32 ShoveMaximumPenetrationPc = 0.10000000149011612f;
+    f32 ShoveMaximumPenetrationPc = 0.1f;
 #pragma data_seg()
 
 #pragma bss_seg(".bss$ObstacleReturnLevelPc")
@@ -15663,7 +15653,7 @@ extern "C" {
     u64 GameAntinodeGridPc[64] = {0};
 #pragma bss_seg()
 #pragma const_seg(".rdata$ZipUpHookOffsetPc")
-    extern const NUVEC ZipUpHookOffsetPc = {0.0f, -0.11429999768733978f, -0.08590000122785568f};
+    extern const NUVEC ZipUpHookOffsetPc = {0.0f, -0.1143f, -0.0859f};
 #pragma const_seg()
 #pragma data_seg(".data$ZipUpSwingStartAnimationPc")
     u16 ZipUpSwingStartAnimationPc = 0xffff;
@@ -15681,13 +15671,13 @@ extern "C" {
     NUMTL *ropemtl = 0;
 #pragma bss_seg()
 #pragma data_seg(".data$ZipUpMarkerOffsetYPc")
-    f32 ZipUpMarkerOffsetYPc = 0.8399999737739563f;
+    f32 ZipUpMarkerOffsetYPc = 0.84f;
 #pragma data_seg()
 #pragma data_seg(".data$ZipUpMarkerOffsetZPc")
-    f32 ZipUpMarkerOffsetZPc = 0.9229000210762024f;
+    f32 ZipUpMarkerOffsetZPc = 0.9229f;
 #pragma data_seg()
 #pragma data_seg(".data$ZipUpRopeHalfWidthPc")
-    f32 ZipUpRopeHalfWidthPc = 0.009999999776482582f;
+    f32 ZipUpRopeHalfWidthPc = 0.01f;
 #pragma data_seg()
 #pragma data_seg(".data$ZipUpRopeCheatColourPc")
     u32 ZipUpRopeCheatColourPc = 0xff103f10;
@@ -16087,7 +16077,7 @@ extern "C" {
     i32 active_neutral_count = 0;
 #pragma data_seg()
 #pragma data_seg(".data$GameAiPartyFollowSpacingPc")
-    f32 GameAiPartyFollowSpacingPc = 0.20000000298023224f;
+    f32 GameAiPartyFollowSpacingPc = 0.2f;
 #pragma data_seg()
 #pragma data_seg(".data$JEDI_B_LDATA")
     LEVELDATA_PC *JEDI_B_LDATA = NULL;
@@ -16099,7 +16089,7 @@ extern "C" {
     i32 LEGO_AIPATHCNX_R2D2GLIDE = 0;
 #pragma data_seg()
 #pragma data_seg(".data$jump_stuck_time")
-    f32 jump_stuck_time = 0.10000000149011612f;
+    f32 jump_stuck_time = 0.1f;
 #pragma data_seg()
 #pragma data_seg(".data$LEGO_AIPATHCNX_JUMP")
     i32 LEGO_AIPATHCNX_JUMP = 0;
@@ -16556,27 +16546,27 @@ extern "C" {
     char *LeverOutputDownNamePtrPc = TextInputKeyNameTextPc75ac34;
     MISSION_MENU_PACKET_PC MissionMenuPacketPc = {0};
     TIMER JoinInTimer = {0};
-    f32 MissionIconGapPc = 0.035000000149011612f;
-    f32 MissionIconStepPc = 0.11999999731779099f;
+    f32 MissionIconGapPc = 0.035f;
+    f32 MissionIconStepPc = 0.12f;
     i16 MissionMenuInstructionTextPc = 0;
     f32 MissionIconBaseSizePc = 0.125f;
-    f32 MissionIconSelectedSizePc = 0.20000000298023224f;
-    f32 MissionIconYPc = -0.72500002384185791f;
-    f32 MissionNameYPc = -0.52499997615814209f;
+    f32 MissionIconSelectedSizePc = 0.2f;
+    f32 MissionIconYPc = -0.725f;
+    f32 MissionNameYPc = -0.525f;
     f32 MissionNameScalePc = 0.625f;
-    f32 MissionBestTimeXPc = 0.15000000596046448f;
-    f32 MissionBestTimeYPc = -0.36500000953674316f;
+    f32 MissionBestTimeXPc = 0.15f;
+    f32 MissionBestTimeYPc = -0.365f;
     f32 MissionBestTimeScalePc = 0.5f;
     f32 MissionDropInAlphaPc = 0.75f;
-    f32 MissionPlayerIconSizePc = 0.15999999642372131f;
+    f32 MissionPlayerIconSizePc = 0.16f;
     i16 id_PRINCESSLEIABOUSHH = -1;
     i32 hatmachine_gizmotype_id = -1;
-    f32 PushRumbleWindowPc = 0.10000000149011612f;
+    f32 PushRumbleWindowPc = 0.1f;
     f32 PushRumblePeriodPc = 0.25f;
     f32 PushFallingSpeedPc = 10.0f;
     f32 PushVelocitySeekRatePc = 1.0f;
-    f32 PushGroundOffsetPc = -0.0010000000474974513f;
-    f32 PushCornerInsetPc = -0.0060000000521540642f;
+    f32 PushGroundOffsetPc = -0.001f;
+    f32 PushCornerInsetPc = -0.006f;
     i32 PushBlockHintIdPc = -1;
     f32 PushBlockOverlapShrinkPc = 0.0f;
     char *PushBlocksNamePc = "PushBlocks";
@@ -16599,8 +16589,8 @@ extern "C" {
     i16 id_MOUSEDROID = -1;
     i16 id_BUZZDROID = -1;
     i16 id_SUPERBATTLEDROID = -1;
-    f32 CritterSnakeExtraHoverPc = -0.15000000596046448f;
-    f32 CritterBatExtraHoverPc = 0.20000000298023224f;
+    f32 CritterSnakeExtraHoverPc = -0.15f;
+    f32 CritterBatExtraHoverPc = 0.2f;
     f32 pod_animtime[2] = {1.0f, 1.0f};
     f32 podanimendframe = 1.0f;
     i16 id_BATTLEDROID = -1;
@@ -16616,7 +16606,7 @@ extern "C" {
         PCBuildModelLayerList,                    /* 0x0 make_layer_list */
         NULL,                                     /* 0x4 layers */
         NULL,                                     /* 0x8 layer_lookup */
-        0.10000000149011612f,                     /* 0xc stop_speed */
+        0.1f,                                     /* 0xc stop_speed */
         0.0f,                                     /* 0x10 idle_speed */
         1.0f,                                     /* 0x14 tiptoe_speed */
         2.0f,                                     /* 0x18 walk_speed */
@@ -16632,11 +16622,11 @@ extern "C" {
         1.0f,                                     /* 0x40 second_jump_height */
         {5.0f},                                   /* 0x44 velocity_seek_rate */
         0.0f,                                     /* 0x48 jump_hold_duration */
-        0.3375000059604645f,                      /* 0x4c collision_origin_radius */
-        1.0471975803375244f,                      /* 0x50 field_050 */
-        0.3490658700466156f,                      /* 0x54 field_054 */
+        0.3375f,                                  /* 0x4c collision_origin_radius */
+        1.0471976f,                               /* 0x50 field_050 */
+        0.34906587f,                              /* 0x54 field_054 */
         10.0f,                                    /* 0x58 field_058 */
-        -1.8325958251953125f,                     /* 0x5c field_05c */
+        -1.8325958f,                              /* 0x5c field_05c */
         0.0f,                                     /* 0x60 field_060 */
         6.0f,                                     /* 0x64 viewdistance */
         3.0f,                                     /* 0x68 heardistance */
@@ -16709,12 +16699,11 @@ extern "C" {
 
 extern "C" {
     const char *TechnoRegistrationNamePc = "Techno";
-    TECHNO_CONFIG_PC TechnoSysPc = {
-        0.20000000298023224f,
-        {85, 44, -1, -1},
-        {{0.0f, 0.0f, 0.0f}, {0.0f, 0.0f, 0.0f}, {0.0f, 0.0f, 0.0f}},
-        {45, 46},
-        {{0.09910000115633011f, 0.0f, 0.07620000094175339f}, {-0.09910000115633011f, 0.0f, 0.07620000094175339f}}};
+    TECHNO_CONFIG_PC TechnoSysPc = {0.2f,
+                                    {85, 44, -1, -1},
+                                    {{0.0f, 0.0f, 0.0f}, {0.0f, 0.0f, 0.0f}, {0.0f, 0.0f, 0.0f}},
+                                    {45, 46},
+                                    {{0.0991f, 0.0f, 0.0762f}, {-0.0991f, 0.0f, 0.0762f}}};
     const char *PortalRegistrationPrefixPc = "portal_";
     const char *ShadowGizmoNamePc = "ShadowDirection";
     const char *ShadowOutputNamePc = "Dont Use Me!";
@@ -25342,9 +25331,9 @@ extern "C" {
 #pragma bss_seg(".bss$MaterialDispatcherEffectStatePc")
 extern "C" {
     f32 PCShaderShininessFactorStorage = 1.0f;
-    f32 PCShaderWaterThetaStep = 0.2666666805744171f;
+    f32 PCShaderWaterThetaStep = 0.26666668f;
     f32 PCShaderWaterAmplitudeScale = 4.0f;
-    f32 PCShaderWaterTheta = 0.699999988079071f;
+    f32 PCShaderWaterTheta = 0.7f;
     i32 PCShaderWaterLastFrame = -1;
     NUVEC4 PCShaderWaterTable[32] = {0};
     struct PC_SHADER_WATER_MATERIAL_VIEW *PCShaderWaterPreviousMaterial = NULL;
@@ -26128,7 +26117,7 @@ extern "C" {
     struct eduimenu_s *edpp_active_menu = 0;
 
 #pragma data_seg(".data$edpp_copy_size")
-    f32 edpp_copy_size = 0.20000000298023224f;
+    f32 edpp_copy_size = 0.2f;
 
 #pragma bss_seg(".bss$edpp_dpad_mode")
     i32 edpp_dpad_mode = 0;
@@ -26250,7 +26239,7 @@ extern "C" {
     i32 gizturret_test_ang = 3640;
 
 #pragma data_seg(".data$gizturret_rapid_fire_rate")
-    f32 gizturret_rapid_fire_rate = 0.20000000298023224f;
+    f32 gizturret_rapid_fire_rate = 0.2f;
 }
 
 extern "C" {
@@ -26278,7 +26267,7 @@ extern "C" {
     struct PC_SCENE_MTL_VIEW *edpart_mtl = 0;
 
 #pragma data_seg(".data$edpart_copy_size")
-    f32 edpart_copy_size = 0.20000000298023224f;
+    f32 edpart_copy_size = 0.2f;
 
 #pragma bss_seg(".bss$edpart_dpad_mode")
     i32 edpart_dpad_mode = 0;
@@ -26868,10 +26857,10 @@ extern "C" {
     void *edui_font = 0;
 
 #pragma data_seg(".data$edui_font_scale_y")
-    f32 edui_font_scale_y = 0.8999999761581421f;
+    f32 edui_font_scale_y = 0.9f;
 
 #pragma data_seg(".data$edui_font_scale_x")
-    f32 edui_font_scale_x = 0.8999999761581421f;
+    f32 edui_font_scale_x = 0.9f;
 
 #pragma data_seg(".data$edui_cursor_x")
     f32 edui_cursor_x = 50.0f;
@@ -27046,10 +27035,10 @@ extern "C" {
     f32 test_factor = 10.0f;
 
 #pragma data_seg(".data$test_seek_rate")
-    f32 test_seek_rate = 0.009999999776482582f;
+    f32 test_seek_rate = 0.01f;
 
 #pragma data_seg(".data$max_speed_mul")
-    f32 max_speed_mul = 1.2999999523162842f;
+    f32 max_speed_mul = 1.3f;
 
 #pragma data_seg(".data$min_speed_mul")
     f32 min_speed_mul = 0.5f;
@@ -27314,7 +27303,7 @@ extern "C" {
     struct nuvec_s *shopcampos = 0;
 
 #pragma data_seg(".data$HUB_MINIKITVIEWER_CAMDY")
-    f32 HUB_MINIKITVIEWER_CAMDY = 0.30000001192092896f;
+    f32 HUB_MINIKITVIEWER_CAMDY = 0.3f;
 
 #pragma data_seg(".data$CamStopBlend")
     f32 CamStopBlend = 1.0f;
@@ -29468,22 +29457,22 @@ extern "C" {
     f32 PANEL_MINIKITCOUNTSCALE = 0.5f;
 #pragma data_seg()
 #pragma data_seg(".data$PANEL_MINIKITCOUNTY")
-    f32 PANEL_MINIKITCOUNTY = -0.10000000149011612f;
+    f32 PANEL_MINIKITCOUNTY = -0.1f;
 #pragma data_seg()
 #pragma data_seg(".data$stats_xscale")
     f32 stats_xscale = 1.0f;
 #pragma data_seg()
 #pragma data_seg(".data$HubEpisodeTitleYPc")
-    f32 HubEpisodeTitleYPc = -0.5950000286102295f;
+    f32 HubEpisodeTitleYPc = -0.595f;
 #pragma data_seg()
 #pragma data_seg(".data$HubEpisodeTitleSizePc")
     f32 HubEpisodeTitleSizePc = 0.5f;
 #pragma data_seg()
 #pragma data_seg(".data$HubEpisodeSubtitleYPc")
-    f32 HubEpisodeSubtitleYPc = -0.7450000047683716f;
+    f32 HubEpisodeSubtitleYPc = -0.745f;
 #pragma data_seg()
 #pragma data_seg(".data$HubEpisodeSubtitleSizePc")
-    f32 HubEpisodeSubtitleSizePc = 0.6000000238418579f;
+    f32 HubEpisodeSubtitleSizePc = 0.6f;
 #pragma data_seg()
 #pragma data_seg(".data$HubSelectMenuYPc")
     f32 HubSelectMenuYPc = 0.125f;
@@ -29492,43 +29481,43 @@ extern "C" {
     f32 HubBonusMenuYPc = 0.125f;
 #pragma data_seg()
 #pragma data_seg(".data$HubPromptXPc")
-    f32 HubPromptXPc = 0.6700000166893005f;
+    f32 HubPromptXPc = 0.67f;
 #pragma data_seg()
 #pragma data_seg(".data$HubPromptSpacingPc")
-    f32 HubPromptSpacingPc = -0.07000000029802322f;
+    f32 HubPromptSpacingPc = -0.07f;
 #pragma data_seg()
 #pragma data_seg(".data$HubPromptLabelOffsetPc")
-    f32 HubPromptLabelOffsetPc = -0.03999999910593033f;
+    f32 HubPromptLabelOffsetPc = -0.04f;
 #pragma data_seg()
 #pragma data_seg(".data$HubPromptMaxWidthPc")
-    f32 HubPromptMaxWidthPc = 0.2750000059604645f;
+    f32 HubPromptMaxWidthPc = 0.275f;
 #pragma data_seg()
 #pragma data_seg(".data$HubBuildBarSpacingPc")
-    f32 HubBuildBarSpacingPc = 0.03500000014901161f;
+    f32 HubBuildBarSpacingPc = 0.035f;
 #pragma data_seg()
 #pragma data_seg(".data$HubBuildBarScalePc")
-    f32 HubBuildBarScalePc = 0.10000000149011612f;
+    f32 HubBuildBarScalePc = 0.1f;
 #pragma data_seg()
 #pragma data_seg(".data$HubBuildBarOverallScalePc")
-    f32 HubBuildBarOverallScalePc = 0.8500000238418579f;
+    f32 HubBuildBarOverallScalePc = 0.85f;
 #pragma data_seg()
 #pragma data_seg(".data$HubTrueJediLabelOffsetPc")
-    f32 HubTrueJediLabelOffsetPc = 0.23499999940395355f;
+    f32 HubTrueJediLabelOffsetPc = 0.235f;
 #pragma data_seg()
 #pragma data_seg(".data$HubTrueJediLabelScalePc")
-    f32 HubTrueJediLabelScalePc = 0.44999998807907104f;
+    f32 HubTrueJediLabelScalePc = 0.45f;
 #pragma data_seg()
 #pragma data_seg(".data$HubTrueJediLabelWidthPc")
-    f32 HubTrueJediLabelWidthPc = 0.4000000059604645f;
+    f32 HubTrueJediLabelWidthPc = 0.4f;
 #pragma data_seg()
 #pragma data_seg(".data$COLLECTION_DX")
-    f32 COLLECTION_DX = 0.15000000596046448f;
+    f32 COLLECTION_DX = 0.15f;
 #pragma data_seg()
 #pragma data_seg(".data$COLLECTION_DY")
-    f32 COLLECTION_DY = -0.20000000298023224f;
+    f32 COLLECTION_DY = -0.2f;
 #pragma data_seg()
 #pragma data_seg(".data$COLLECTION_ICONSIZE")
-    f32 COLLECTION_ICONSIZE = 0.1599999964237213f;
+    f32 COLLECTION_ICONSIZE = 0.16f;
 #pragma data_seg()
 #pragma data_seg(".data$HubEpisodeRedPc")
     u8 HubEpisodeRedPc = 255;
@@ -29861,41 +29850,41 @@ extern "C" {
 
 extern "C" {
 #pragma data_seg(".data$KITPOS2YPc")
-    f32 KITPOS2YPc = -1.2999999523162842f;
+    f32 KITPOS2YPc = -1.3f;
 #pragma data_seg()
 }
 
 extern "C" {
 #pragma data_seg(".data$HudNameScalePc")
-    f32 HudNameScalePc = 0.3499999940395355f;
+    f32 HudNameScalePc = 0.35f;
 #pragma data_seg(".data$HudNameWidthPc")
     f32 HudNameWidthPc = 0.5f;
 #pragma data_seg(".data$HudNameWideWidthPc")
-    f32 HudNameWideWidthPc = 0.699999988079071f;
+    f32 HudNameWideWidthPc = 0.7f;
 #pragma data_seg(".data$HudNameOffsetXPc")
-    f32 HudNameOffsetXPc = 0.07500000298023224f;
+    f32 HudNameOffsetXPc = 0.075f;
 #pragma data_seg(".data$HudNameOffsetYPc")
     f32 HudNameOffsetYPc = -0.125f;
 #pragma data_seg(".data$HudPausePromptOffsetYPc")
-    f32 HudPausePromptOffsetYPc = -0.2849999964237213f;
+    f32 HudPausePromptOffsetYPc = -0.285f;
 #pragma data_seg(".data$HudDropInXPc")
-    f32 HudDropInXPc = 0.6850000023841858f;
+    f32 HudDropInXPc = 0.685f;
 #pragma data_seg(".data$HudDropInScalePc")
-    f32 HudDropInScalePc = 0.3499999940395355f;
+    f32 HudDropInScalePc = 0.35f;
 #pragma data_seg(".data$HudCoinAdjustYPc")
-    f32 HudCoinAdjustYPc = -0.006000000052154064f;
+    f32 HudCoinAdjustYPc = -0.006f;
 #pragma data_seg(".data$HudScoreXPc")
-    f32 HudScoreXPc = 0.6100000143051147f;
+    f32 HudScoreXPc = 0.61f;
 #pragma data_seg(".data$HudScoreScalePc")
     f32 HudScoreScalePc = 0.375f;
 #pragma data_seg(".data$HudHeartXPc")
-    f32 HudHeartXPc = 0.6499999761581421f;
+    f32 HudHeartXPc = 0.65f;
 #pragma data_seg(".data$HudHeartYPc")
-    f32 HudHeartYPc = -0.04500000178813934f;
+    f32 HudHeartYPc = -0.045f;
 #pragma data_seg(".data$HudHeartScalePc")
-    f32 HudHeartScalePc = 0.19499999284744263f;
+    f32 HudHeartScalePc = 0.195f;
 #pragma data_seg(".data$STATSPOS2YPc")
-    f32 STATSPOS2YPc = 1.2549999952316284f;
+    f32 STATSPOS2YPc = 1.255f;
 #pragma data_seg(".data$HudNameRedPc")
     i32 HudNameRedPc = 255;
 #pragma data_seg(".data$HudNameGreenPc")
@@ -29932,15 +29921,15 @@ extern "C" {
 #pragma data_seg(".data$CoinTotalScoreSizePc")
     f32 CoinTotalScoreSizePc = 0.5f;
 #pragma data_seg(".data$CoinTotalCoinOffsetPc")
-    f32 CoinTotalCoinOffsetPc = 0.05000000074505806f;
+    f32 CoinTotalCoinOffsetPc = 0.05f;
 #pragma data_seg(".data$CoinTotalScoreOffsetYPc")
-    f32 CoinTotalScoreOffsetYPc = -0.004999999888241291f;
+    f32 CoinTotalScoreOffsetYPc = -0.005f;
 #pragma data_seg(".data$CoinTotalTargetOffsetYPc")
-    f32 CoinTotalTargetOffsetYPc = -0.10000000149011612f;
+    f32 CoinTotalTargetOffsetYPc = -0.1f;
 #pragma data_seg(".data$DrawCoinTotalYPc")
     f32 DrawCoinTotalYPc = 2000000.0f;
 #pragma data_seg(".data$HudLevelTitleYPc")
-    f32 HudLevelTitleYPc = -0.7450000047683716f;
+    f32 HudLevelTitleYPc = -0.745f;
 #pragma data_seg(".data$HudLevelTitleScalePc")
     f32 HudLevelTitleScalePc = 0.5f;
 #pragma data_seg(".data$HudLevelTitleScaleXPc")
@@ -29948,13 +29937,13 @@ extern "C" {
 #pragma data_seg(".data$HudLevelTitleWidthPc")
     f32 HudLevelTitleWidthPc = 1.0f;
 #pragma data_seg(".data$HudBossHeartYPc")
-    f32 HudBossHeartYPc = 0.4699999988079071f;
+    f32 HudBossHeartYPc = 0.47f;
 #pragma data_seg(".data$HudBossHeartScalePc")
-    f32 HudBossHeartScalePc = 0.20000000298023224f;
+    f32 HudBossHeartScalePc = 0.2f;
 #pragma data_seg(".data$HudBossIconYPc")
-    f32 HudBossIconYPc = 0.612500011920929f;
+    f32 HudBossIconYPc = 0.6125f;
 #pragma data_seg(".data$HudBossIconScalePc")
-    f32 HudBossIconScalePc = 0.1599999964237213f;
+    f32 HudBossIconScalePc = 0.16f;
 #pragma data_seg()
 }
 
@@ -30382,9 +30371,9 @@ extern "C" {
     i32 pushposincrease = 0;
 #pragma bss_seg()
 #pragma data_seg(".data$PushInitGroundOffsetPc")
-    f32 PushInitGroundOffsetPc = -0.0010000000474974513f;
+    f32 PushInitGroundOffsetPc = -0.001f;
 #pragma data_seg(".data$PushInitCornerInsetPc")
-    f32 PushInitCornerInsetPc = -0.0060000000521540642f;
+    f32 PushInitCornerInsetPc = -0.006f;
 
 #pragma data_seg()
 }
@@ -30456,7 +30445,7 @@ extern "C" {
 
 extern "C" {
 #pragma data_seg(".data$HeadCloakHairTuningPc")
-    f32 HeadMovementThresholdPc = 0.0017453293548896909f;
+    f32 HeadMovementThresholdPc = 0.0017453294f;
     f32 CloakMovementRecoverRatePc = 2.0f;
     f32 CloakMovementFallRatePc = 2.0f;
 #pragma data_seg()

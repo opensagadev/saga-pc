@@ -177,7 +177,7 @@ void DeathStar2BattleD_Update(WORLDINFO *world) {
     u8 *flags = (u8 *)LevFlag;
     (void)world;
     if (flags[0] > 0 && qrand() < 0x800) {
-        NewRumbleAllPlayers((f32)((f64)qrand() * (f64)0.000015259021893143654f), 0.0f, 0, 0);
+        NewRumbleAllPlayers((f32)((f64)qrand() * (f64)0.000015259022f), 0.0f, 0, 0);
     }
     shield_gizmo = LevGizmo[7];
     if (shield_gizmo != NULL) {
@@ -226,8 +226,7 @@ void DeathStar2BattleD_Update(WORLDINFO *world) {
         length = NuVecDist(&((GAMEOBJECT *)Player[i])->collision_position, mid, &delta);
         NuLgtLaser(DeathStarZapLaserTypePc, DeathStarZapSizeWidthPc, DeathStarZapSizeLengthPc, DeathStarZapWidthBiasPc,
                    mid, &delta, 0xff808040, DeathStarZapEndWidthPc, length);
-        NewRumble(((GAMEOBJECT *)Player[i])->pad->bound_pad,
-                  (f32)((f64)qrand() * (f64)0.000015259021893143654f * (f64)0.3f), 0);
+        NewRumble(((GAMEOBJECT *)Player[i])->pad->bound_pad, (f32)((f64)qrand() * (f64)0.000015259022f * (f64)0.3f), 0);
         if (qrand() < 0x1000) {
             NewBuzzFrames(((GAMEOBJECT *)Player[i])->pad->bound_pad, 1, 0);
         }

@@ -103,15 +103,15 @@ static f32 CameraFabsPc(f32 f) {
 f32 __fastcall PCDeviceBackend_GetActiveAspectPc(PC_DEVICE_BACKEND_PC *backend) {
     switch (PcWindowOptions.aspect_mode) {
         case 1:
-            return 1.7777777910232544f;
+            return 1.7777778f;
         case 2:
-            return 1.600000023841858f;
+            return 1.6f;
         case 3:
             return backend->active_aspect;
         case 0:
-            return 1.3333333730697632f;
+            return 1.3333334f;
         default:
-            return 1.3333333730697632f;
+            return 1.3333334f;
     }
 }
 
@@ -222,8 +222,7 @@ static void PlayerCamPos(GAMEOBJECT *object, NUVEC *position, NUVEC *reference) 
 }
 
 #pragma data_seg(".data$ViewCam")
-VIEWCAM_PC ViewCam = {0,   {1000000000.0f, 0.0f, 0.0f}, -8192, -29500, 2.6600000858306885f, 0.0f, 120.0f, 0x43480000,
-                      NULL};
+VIEWCAM_PC ViewCam = {0, {1000000000.0f, 0.0f, 0.0f}, -8192, -29500, 2.66f, 0.0f, 120.0f, 0x43480000, NULL};
 #pragma data_seg()
 
 void ViewCamSetActive(i32 mode, GAMEPAD_PC *gamepad) {

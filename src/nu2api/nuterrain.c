@@ -1002,7 +1002,7 @@ void NewScanRot(NUVEC *position, i32 terrain_mask) {
                 }
                 dz = (min_z + max_z) * NuQFntHalfScale - group->origin.z;
                 dx = (max_x + min_x) * NuQFntHalfScale - group->origin.x;
-                reach = group->radius + 9.999999747378752e-06;
+                reach = group->radius + 9.999999747378752e-6;
                 distance_squared = dx * dx + dz * dz;
                 if (!(reach * reach > distance_squared)) {
                     continue;

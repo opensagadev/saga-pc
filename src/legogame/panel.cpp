@@ -1202,7 +1202,7 @@ extern "C" {
     }
 
 #pragma data_seg(".data$HudAutoSaveScalePc")
-    f32 HudAutoSaveScalePc = 0.07500000298023224f;
+    f32 HudAutoSaveScalePc = 0.075f;
 #pragma data_seg()
 
     void DrawPanel(void) {

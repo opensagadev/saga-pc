@@ -9455,22 +9455,22 @@ i32 Action_DynamicCameraCut(AISYS_PC *system, AISCRIPTPROCESS_PC *processor, AIP
                 range = AIParamToFloat(processor, value + 6);
             } else if ((value = NuStrIStr(params[index], "cont_roty=")) != NULL) {
                 flags |= 0x20;
-                rotation_y = (i32)((i32)AIParamToFloat(processor, value + 10) * 182.0444488525390625f);
+                rotation_y = (i32)((i32)AIParamToFloat(processor, value + 10) * 182.04445f);
             } else if ((value = NuStrIStr(params[index], "roty=")) != NULL) {
                 flags |= 0x4;
-                rotation_y = (i32)((i32)AIParamToFloat(processor, value + 5) * 182.0444488525390625f);
+                rotation_y = (i32)((i32)AIParamToFloat(processor, value + 5) * 182.04445f);
             } else if ((value = NuStrIStr(params[index], "cont_rotx=")) != NULL) {
                 flags |= 0x10;
-                rotation_x = (i32)((i32)AIParamToFloat(processor, value + 10) * 182.0444488525390625f);
+                rotation_x = (i32)((i32)AIParamToFloat(processor, value + 10) * 182.04445f);
             } else if ((value = NuStrIStr(params[index], "rotx=")) != NULL) {
                 flags |= 0x2;
-                rotation_x = (i32)(-(i32)AIParamToFloat(processor, value + 5) * 182.0444488525390625f);
+                rotation_x = (i32)(-(i32)AIParamToFloat(processor, value + 5) * 182.04445f);
             } else if ((value = NuStrIStr(params[index], "cont_rotz=")) != NULL) {
                 flags |= 0x40;
-                rotation_z = (i32)((i32)AIParamToFloat(processor, value + 10) * 182.0444488525390625f);
+                rotation_z = (i32)((i32)AIParamToFloat(processor, value + 10) * 182.04445f);
             } else if ((value = NuStrIStr(params[index], "rotz=")) != NULL) {
                 flags |= 0x8;
-                rotation_z = (i32)(-(i32)AIParamToFloat(processor, value + 5) * 182.0444488525390625f);
+                rotation_z = (i32)(-(i32)AIParamToFloat(processor, value + 5) * 182.04445f);
             } else if ((value = NuStrIStr(params[index], "campos_x=")) != NULL) {
                 camera_position.x = AIParamToFloat(processor, value + 9);
             } else if ((value = NuStrIStr(params[index], "campos_y=")) != NULL) {

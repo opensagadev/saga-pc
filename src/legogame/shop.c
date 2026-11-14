@@ -1320,7 +1320,7 @@ i32 CodeMenu(void *menu) {
                     ShopCheatNamePc = ExtrasCheatsPc[i].text_id ? TTab[*ExtrasCheatsPc[i].text_id] : TTab[tUNKNOWN];
                 }
                 ShopPurchasePulsePc = ShopPurchasePulseDurationPc;
-                ShopCheatTimerPc = 3.1499998569488525f;
+                ShopCheatTimerPc = 3.1499999f;
             }
         }
     } else {

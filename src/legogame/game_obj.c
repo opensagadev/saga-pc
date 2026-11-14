@@ -1531,7 +1531,7 @@ void LoseHelmet(GAMEOBJECT *object, i32 unused1, i32 unused2) {
 }
 
 #pragma data_seg(".data$SHIELDFLICKERTIME")
-static f32 SHIELDFLICKERTIME = 0.10000000149011612f;
+static f32 SHIELDFLICKERTIME = 0.1f;
 #pragma data_seg()
 
 void ObjHitShield(GAMEOBJECT *attacker, GAMEOBJECT *target, i32 damage, void *unused_bolt) {

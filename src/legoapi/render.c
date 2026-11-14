@@ -20,8 +20,8 @@ typedef struct render_post_prim_vertex_s { // size 0x18
 } RENDER_POST_PRIM_VERTEX_PC;
 
 #define GRID_TAN_HALF_FOV(half_fov)                                                                                    \
-    (NuTrigTable[(i32)((half_fov) * 10430.3779296875f) >> 1 & 0x7fff] /                                                \
-     NuTrigTable[(16384 - (i32)((half_fov) * -10430.3779296875f)) >> 1 & 0x7fff])
+    (NuTrigTable[(i32)((half_fov) * 10430.378f) >> 1 & 0x7fff] /                                                       \
+     NuTrigTable[(16384 - (i32)((half_fov) * -10430.378f)) >> 1 & 0x7fff])
 #ifndef MIN
 #define MIN(a, b) ((a) < (b) ? (a) : (b))
 #endif
@@ -59,7 +59,7 @@ typedef struct render_post_prim_vertex_s { // size 0x18
             brightness = ((brightness - near_angle) * scale_delta / angle_delta + near_scale) * parameters->intensity; \
         if (parameters->directional) {                                                                                 \
             f32 angle = (i16)(0x4000 - RenderPostASinPc(NuVecDot(&parameters->direction, (NUVEC *)&direction))) *      \
-                        0.0054931640625f;                                                                              \
+                        0.005493164f;                                                                                  \
             if (angle < parameters->direction_near_angle) {                                                            \
                 brightness += 128.0f * parameters->direction_far_scale;                                                \
             } else if (!(angle > parameters->direction_far_angle)) {                                                   \

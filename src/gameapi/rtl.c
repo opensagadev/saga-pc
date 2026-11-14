@@ -3206,7 +3206,7 @@ void InitUI(void) {
     for (i = 0; i < modifier_cnt; ++i) {
         created = eduiItemSliderCreate(i, colours, 0, (void *)&cbModifierAdjust, 0.0f, 1.0f, 1.0f, modifier_names[i]);
         modifier_adj_items[i] = eduiMenuAddItem(modifier_adj_menu, created);
-        eduiItemSliderSetGranularity(((edui_slider_s *)modifier_adj_items[i]), 0.10000000149011612f);
+        eduiItemSliderSetGranularity(((edui_slider_s *)modifier_adj_items[i]), 0.1f);
     }
     eduiMenuFitWidth(modifier_adj_menu, 5);
     menu = eduiMenuCreate(100, 70, 180, 300, 0, (void *)&cbCancelSubMenu, "Flicker Light Options");
@@ -3259,7 +3259,7 @@ void InitUI(void) {
     eduiMenuAddItem(prop_menu, created);
     created = eduiItemSliderCreate(0, colours, 0, (void *)cbMultiplier, 0.5f, 127.0f, 1.0f, "Multiplier");
     multiplier_item = eduiMenuAddItem(prop_menu, created);
-    eduiItemSliderSetGranularity(((edui_slider_s *)multiplier_item), 0.10000000149011612f);
+    eduiItemSliderSetGranularity(((edui_slider_s *)multiplier_item), 0.1f);
     eduiItemSliderSetFmt(((edui_slider_s *)multiplier_item), "%.1f");
     created = eduiItemSliderCreateInt(0, colours, 0, (void *)cbGroupID, 0, 255, 0, "Group ID");
     groupid_item = eduiMenuAddItem(prop_menu, created);
@@ -3388,7 +3388,7 @@ void InitUI(void) {
     fogdensity_item = eduiMenuAddItem(fog_menu, created);
     created = eduiItemSliderCreate(0, colours, 0, (void *)rtlCbFogDensityWiiPc, 0.0f, 4.0f, 1.0f, "Fog Density (Wii)");
     created = eduiMenuAddItem(fog_menu, created);
-    ((edui_slider_s *)fogdensity_item)->granularity = 1.9999999494757503e-05f;
+    ((edui_slider_s *)fogdensity_item)->granularity = 0.00002f;
     fogdensitywii_item = created;
     created = eduiItemSliderCreate(0, colours, 0, (void *)cbFogStart, 0.0f, 2000.0f, 4.0f, "Fog Start (PS2)");
     fogstart_item = eduiMenuAddItem(fog_menu, created);
@@ -3413,16 +3413,16 @@ void InitUI(void) {
     blurdensity_item = eduiMenuAddItem(fog_menu, created);
     created = eduiItemSliderCreate(0, colours, 0, (void *)cbFogAdjRng, 0.0f, 2000.0f, 1000.0f, "Fog Distance Range");
     fogadjrng_item = eduiMenuAddItem(fog_menu, created);
-    created = eduiItemSliderCreate(0, colours, 0, (void *)cbFogAdjNear, 0.0010000000474974513f, 2000.0f,
-                                   0.10000000149011612f, "Near Clip (editor only)");
+    created =
+        eduiItemSliderCreate(0, colours, 0, (void *)cbFogAdjNear, 0.001f, 2000.0f, 0.1f, "Near Clip (editor only)");
     fogadjnear_item = eduiMenuAddItem(fog_menu, created);
-    created = eduiItemSliderCreate(0, colours, 0, (void *)cbFogAdjFar, 0.0010000000474974513f, 5000.0f, 1000.0f,
-                                   "Far Clip (editor only)");
+    created =
+        eduiItemSliderCreate(0, colours, 0, (void *)cbFogAdjFar, 0.001f, 5000.0f, 1000.0f, "Far Clip (editor only)");
     fogadjfar_item = eduiMenuAddItem(fog_menu, created);
     created = eduiItemSliderCreate(0, colours, 0, (void *)cbDOFFStop, 1.0f, 21.0f, 1.0f, "DOF - F-Stop");
     created = eduiMenuAddItem(fog_menu, created);
     menu = fog_menu;
-    ((edui_slider_s *)created)->granularity = 0.10000000149011612f;
+    ((edui_slider_s *)created)->granularity = 0.1f;
     dof_fstop_item = created;
     eduiMenuFitWidth(menu, 5);
     menu = eduiMenuCreate(100, 70, 180, 300, 0, (void *)edrtlcbCancelMenu, "Fog Editor Options");

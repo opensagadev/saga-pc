@@ -2053,10 +2053,10 @@ extern "C" i32 eduicbProcessSlider(eduimenu_s *menu, eduiitem_s *item, f32 delta
                     MAX(0.0f, slider->normalized_value -
                                   (u32)l2 * delta_time / EduiNominalFrameTimePc * EduiSliderDynamicScalePc);
             } else {
-                EduiSliderDynamicScalePc = 1.627604291343232e-7f;
+                EduiSliderDynamicScalePc = 1.6276043e-7f;
                 slider->normalized_value =
                     (f32)MAX(0.0f, slider->normalized_value -
-                                       (u32)l2 * delta_time / EduiNominalFrameTimePc * (f64)1.627604251552839e-5f);
+                                       (u32)l2 * delta_time / EduiNominalFrameTimePc * (f64)0.000016276043f);
             }
             slider->value = slider->normalized_value * slider->range + slider->minimum;
             slider->change_timer = 60;
@@ -2073,10 +2073,10 @@ extern "C" i32 eduicbProcessSlider(eduimenu_s *menu, eduiitem_s *item, f32 delta
                     MIN(1.0f, slider->normalized_value +
                                   (u32)r2 * delta_time / EduiNominalFrameTimePc * EduiSliderDynamicScalePc);
             } else {
-                EduiSliderDynamicScalePc = 1.627604291343232e-7f;
+                EduiSliderDynamicScalePc = 1.6276043e-7f;
                 slider->normalized_value =
                     (f32)MIN(1.0f, slider->normalized_value +
-                                       (u32)r2 * delta_time / EduiNominalFrameTimePc * (f64)1.627604251552839e-5f);
+                                       (u32)r2 * delta_time / EduiNominalFrameTimePc * (f64)0.000016276043f);
             }
             slider->value = slider->normalized_value * slider->range + slider->minimum;
             slider->change_timer = 60;
@@ -2084,7 +2084,7 @@ extern "C" i32 eduicbProcessSlider(eduimenu_s *menu, eduiitem_s *item, f32 delta
                 slider->changed(menu, item, pad->digital_buttons);
             }
         } else {
-            EduiSliderDynamicScalePc = 1.627604291343232e-7f;
+            EduiSliderDynamicScalePc = 1.6276043e-7f;
         }
     }
     return 0;
@@ -2306,9 +2306,9 @@ extern "C" i32 eduicbProcessColourSlider(eduimenu_s *menu, eduiitem_s *item, f32
                 slider->normalized_value =
                     MAX(0.0f, slider->normalized_value - (u32)pad->analog_l2 * EduiColourSliderDynamicScalePc);
             } else {
-                EduiColourSliderDynamicScalePc = 1.627604291343232e-7f;
+                EduiColourSliderDynamicScalePc = 1.6276043e-7f;
                 slider->normalized_value =
-                    (f32)MAX(0.0f, slider->normalized_value - (u32)pad->analog_l2 * (f64)1.627604251552839e-5f);
+                    (f32)MAX(0.0f, slider->normalized_value - (u32)pad->analog_l2 * (f64)0.000016276043f);
             }
             slider->value = slider->normalized_value * slider->range + slider->minimum;
             slider->change_timer = 60;
@@ -2321,9 +2321,9 @@ extern "C" i32 eduicbProcessColourSlider(eduimenu_s *menu, eduiitem_s *item, f32
                 slider->normalized_value =
                     MIN(1.0f, slider->normalized_value + (u32)pad->analog_r2 * EduiColourSliderDynamicScalePc);
             } else {
-                EduiColourSliderDynamicScalePc = 1.627604291343232e-7f;
+                EduiColourSliderDynamicScalePc = 1.6276043e-7f;
                 slider->normalized_value =
-                    (f32)MIN(1.0f, slider->normalized_value + (u32)pad->analog_r2 * (f64)1.627604251552839e-5f);
+                    (f32)MIN(1.0f, slider->normalized_value + (u32)pad->analog_r2 * (f64)0.000016276043f);
             }
             slider->value = slider->normalized_value * slider->range + slider->minimum;
             slider->change_timer = 60;
@@ -2331,7 +2331,7 @@ extern "C" i32 eduicbProcessColourSlider(eduimenu_s *menu, eduiitem_s *item, f32
                 slider->changed(menu, item, pad->digital_buttons);
             }
         } else {
-            EduiColourSliderDynamicScalePc = 1.627604291343232e-7f;
+            EduiColourSliderDynamicScalePc = 1.6276043e-7f;
         }
     }
     return 0;

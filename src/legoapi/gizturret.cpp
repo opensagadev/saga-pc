@@ -597,7 +597,7 @@ extern "C" {
                                             if (!(turret->behavior_flags & 0x80)) {
                                                 desired_yaw = NuAngAdd(
                                                     static_cast<i32>(NuAtan2(-local_direction.x, -local_direction.z) *
-                                                                     10430.3779296875f),
+                                                                     10430.378f),
                                                     0);
                                                 if (turret->yaw_upper != 0 && desired_yaw > turret->yaw_upper) {
                                                     desired_yaw = turret->yaw_upper;
@@ -618,7 +618,7 @@ extern "C" {
                                                         NuAtan2(local_direction.y,
                                                                 NuFsqrt(local_direction.x * local_direction.x +
                                                                         local_direction.z * local_direction.z)) *
-                                                        10430.3779296875f),
+                                                        10430.378f),
                                                     0);
                                                 if (turret->pitch_upper != 0 && desired_pitch > turret->pitch_upper) {
                                                     desired_pitch = turret->pitch_upper;
