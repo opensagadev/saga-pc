@@ -8298,11 +8298,6 @@ extern "C" {
     i32 PCThreadCriticalSectionCount = 0;
     CRITICAL_SECTION PCThreadCriticalSections[13] = {0};
     i32 PCFrameCriticalSectionIndex = 0;
-    NUALLOC_RECORD *NuAllocRecordHead = 0;
-    u32 NuAllocTrackedBytes = 0;
-    NUALLOC_ARENA *NuAllocArena = 0;
-    void *NuAllocManager = 0;
-    void *NuAllocPeakEnd0 = 0;
     u32 NuAllocHeaderMetadata[3] = {0x424d454d, 0x45484b4c, 0x52454441};
     u32 NuAllocTailMetadata[3] = {0x424d454d, 0x41544b4c, 0x31304c49};
 #pragma const_seg(".rdata$NuFileDiscSuffix")

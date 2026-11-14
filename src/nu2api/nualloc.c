@@ -2,9 +2,14 @@
 #include <stdlib.h>
 #include <string.h>
 
-static void *NuAllocPeakEnd1 = 0;
+NUALLOC_RECORD *NuAllocRecordHead = 0;
+u32 NuAllocTrackedBytes = 0;
 static NUALLOC_POOL *NuAllocPool = 0;
 static u32 NuAllocRecordSerial = 0;
+NUALLOC_ARENA *NuAllocArena = 0;
+void *NuAllocManager = 0;
+void *NuAllocPeakEnd0 = 0;
+static void *NuAllocPeakEnd1 = 0;
 
 struct nualloc_record_s {
     struct nualloc_record_s *next;     // 0x00
