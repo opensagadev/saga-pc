@@ -40,11 +40,11 @@
 // Retail reads several adjacent u32 pairs (bit masks, CInfo flags) as one 64-bit value.  The structs keep their u32
 // members so that their alignment stays at 4; this accesses such a pair in place as a u64.
 #define U64_PAIR(pair) (*(u64 *)(pair))
-STATIC_ASSERT(sizeof(void *) == 4);
 
 #include "nu2api/nucore/fixed_width.h"
 
 // VC8-compatible C/C++ checks for the retail x86 data model.
+STATIC_ASSERT(sizeof(void *) == 4);
 STATIC_ASSERT(sizeof(i8) == 1);
 STATIC_ASSERT(sizeof(i16) == 2);
 STATIC_ASSERT(sizeof(i32) == 4);
