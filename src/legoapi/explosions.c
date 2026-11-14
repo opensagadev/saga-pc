@@ -131,7 +131,7 @@ void __cdecl UpdateExplosion_Generic(EXPLOSION_PC *explosion) {
                 inverse = 1.0f / NuFsqrt(squared);
                 normalized = x * inverse;
                 object->movement_direction_x = normalized * ExplosionKnockbackScalePc;
-                normalized = z * inverse;
+                normalized = (f32)(z * inverse);
                 object->movement_direction_z = normalized * ExplosionKnockbackScalePc;
             }
             if (hit_character || (explosion->flags & 1) == 0) {

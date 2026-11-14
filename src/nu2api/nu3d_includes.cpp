@@ -14406,7 +14406,7 @@ extern "C" {
         NUMTX *draw_matrix;
         if (legacy != NULL) {
             instance = (NUMTX *)legacy->instance;
-            instance_view = legacy->instance;
+            instance_view = (NUINSTANCE *)legacy->instance;
             draw_matrix = &instance_view->animation->matrix;
             return draw_matrix != NULL ? draw_matrix : instance;
         }
@@ -14507,7 +14507,7 @@ extern "C" {
         }
         legacy = (NUSPECIAL_LEGACY_PC *)special->special;
         if (legacy != NULL) {
-            instance = legacy->instance;
+            instance = (NUINSTANCE *)legacy->instance;
             return (instance->flags >> 3) & 1;
         }
         display = (NUDISPLAY_SPECIAL_PC *)special->display_special;
@@ -14602,7 +14602,7 @@ extern "C" {
         NUINSTANCE *instance;
         if (special->scene != NULL && special->special != NULL) {
             legacy = (NUSPECIAL_LEGACY_PC *)special->special;
-            instance = legacy->instance;
+            instance = (NUINSTANCE *)legacy->instance;
             return (instance->flags >> 1) & 1;
         }
         return 1;
@@ -14617,7 +14617,7 @@ extern "C" {
         }
         legacy = (NUSPECIAL_LEGACY_PC *)special->special;
         if (legacy != NULL) {
-            instance = legacy->instance;
+            instance = (NUINSTANCE *)legacy->instance;
             return instance->flags & 1;
         }
         display = (NUDISPLAY_SPECIAL_PC *)special->display_special;
@@ -15202,7 +15202,7 @@ extern "C" {
         }
         legacy = (NUSPECIAL_LEGACY_PC *)special->special;
         if (legacy != NULL) {
-            legacy->instance->matrix = *matrix;
+            ((NUINSTANCE *)legacy->instance)->matrix = *matrix;
             return;
         }
         display = (NUDISPLAY_SPECIAL_PC *)special->display_special;
@@ -15249,9 +15249,9 @@ extern "C" {
             return;
         }
         if (special->special != NULL) {
-            ((NUSPECIAL_LEGACY_PC *)special->special)->instance->matrix.m30 = position->x;
-            ((NUSPECIAL_LEGACY_PC *)special->special)->instance->matrix.m31 = position->y;
-            ((NUSPECIAL_LEGACY_PC *)special->special)->instance->matrix.m32 = position->z;
+            ((NUINSTANCE *)((NUSPECIAL_LEGACY_PC *)special->special)->instance)->matrix.m30 = position->x;
+            ((NUINSTANCE *)((NUSPECIAL_LEGACY_PC *)special->special)->instance)->matrix.m31 = position->y;
+            ((NUINSTANCE *)((NUSPECIAL_LEGACY_PC *)special->special)->instance)->matrix.m32 = position->z;
         } else {
             ((NUDISPLAY_SPECIAL_PC *)special->display_special)->draw_matrix.m30 = position->x;
             ((NUDISPLAY_SPECIAL_PC *)special->display_special)->draw_matrix.m31 = position->y;
@@ -15699,7 +15699,7 @@ extern "C" {
         NUVEC translation;
         NUVEC locator_translation;
         u8 i;
-        if ((i32)animation->magic >= 0x414e4934 && (i32)animation->magic <= 0x414e4935) {
+        if ((i32)animation->magic >= (i32)0x414e4934 && (i32)animation->magic <= (i32)0x414e4935) {
             NuHGobjEvalAnim2Root_3(object, animation, time, override_count, overrides, matrices, root_fn, root_data);
             return;
         }
@@ -15713,8 +15713,8 @@ extern "C" {
         NuAnimData2CalcTime(&legacy->prefix, time, &anim_time);
         if (override_count != 0) {
             memset(joint_overrides, 0, object->joint_count * 4);
-            for (i = 0; i < override_count; ++i) {
-                if (overrides[i].joint_index < object->joint_override_map_count) {
+            for (i = 0; (i32)i < override_count; ++i) {
+                if ((i32)overrides[i].joint_index < object->joint_override_map_count) {
                     u8 index = object->joint_override_map[overrides[i].joint_index];
                     if (index != 255) {
                         joint_overrides[index] = &overrides[i];
@@ -15722,13 +15722,13 @@ extern "C" {
                 }
             }
         }
-        for (i = 0; i < object->joint_count; ++i) {
+        for (i = 0; (i32)i < object->joint_count; ++i) {
             NUMTX *output = &matrices[i];
             NUHGOBJ_JOINT_OVERRIDE_PC *override_anim;
             DWA_CURVE_CELL_PC *curves;
             i8 *types;
             i32 flags;
-            if (i >= legacy->prefix.node_count.legacy) {
+            if ((i32)i >= legacy->prefix.node_count.legacy) {
                 *output = NuMtxSetIdentityTemplate;
                 continue;
             }
@@ -16531,7 +16531,7 @@ void PC_SPECIAL_SHADOW_LIGHT::ComputeShadowMatrixPc(NURNDRLIGHTRECORD *set) {
     absolute.u = *(u32 *)&dot & 0x7fffffff;
     f32 product = near_plane * far_plane;
     f32 distance = NuFsqrt(product) + near_plane;
-    distance = set->parameter_110 * distance / (1.0f - absolute.f);
+    distance = set->parameter_110 * distance / (f32)(1.0f - absolute.f);
     camera_position.x = captured_inverse.m30;
     camera_position.y = captured_inverse.m31;
     camera_position.z = captured_inverse.m32;

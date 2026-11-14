@@ -464,7 +464,7 @@ extern "C" {
             default: {
                 const f32 movement_sq = query->movement.x * query->movement.x + query->movement.y * query->movement.y +
                                         query->movement.z * query->movement.z;
-                const f32 reach = 0.02f + query->collision_radius_sq + movement_sq;
+                const f32 reach = (f32)(0.02f + query->collision_radius_sq + movement_sq);
                 max_x = query->position.x + reach;
                 max_y = query->position.y + query->object_scale * reach;
                 max_z = query->position.z + reach;
@@ -667,7 +667,7 @@ extern "C" {
             default: {
                 const f32 movement_sq = query->movement.x * query->movement.x + query->movement.y * query->movement.y +
                                         query->movement.z * query->movement.z;
-                const f32 reach = 0.02f + query->collision_radius_sq + movement_sq;
+                const f32 reach = (f32)(0.02f + query->collision_radius_sq + movement_sq);
                 max_x = query->position.x + reach;
                 max_y = query->position.y + query->object_scale * reach;
                 max_z = query->position.z + reach;
@@ -680,25 +680,25 @@ extern "C" {
             case 1: {
                 f32 extent_sq;
                 if (query->movement.x > 0.0f) {
-                    min_x = query->position.x - 0.02f - query->collision_radius;
-                    max_x = query->movement.x + query->position.x + 0.02f + query->collision_radius;
+                    min_x = (f32)(query->position.x - 0.02f - query->collision_radius);
+                    max_x = (f32)(query->movement.x + query->position.x + 0.02f + query->collision_radius);
                 } else {
-                    min_x = query->movement.x + query->position.x - 0.02f - query->collision_radius;
-                    max_x = query->position.x + 0.02f + query->collision_radius;
+                    min_x = (f32)(query->movement.x + query->position.x - 0.02f - query->collision_radius);
+                    max_x = (f32)(query->position.x + 0.02f + query->collision_radius);
                 }
                 if (query->movement.y > 0.0f) {
-                    min_y = query->position.y - 0.02f - query->collision_radius;
-                    max_y = query->movement.y + query->position.y + 0.02f + query->collision_radius;
+                    min_y = (f32)(query->position.y - 0.02f - query->collision_radius);
+                    max_y = (f32)(query->movement.y + query->position.y + 0.02f + query->collision_radius);
                 } else {
-                    min_y = query->movement.y + query->position.y - 0.02f - query->collision_radius;
-                    max_y = query->position.y + 0.02f + query->collision_radius;
+                    min_y = (f32)(query->movement.y + query->position.y - 0.02f - query->collision_radius);
+                    max_y = (f32)(query->position.y + 0.02f + query->collision_radius);
                 }
                 if (query->movement.z > 0.0f) {
-                    min_z = query->position.z - 0.02f - query->collision_radius;
-                    max_z = query->movement.z + query->position.z + 0.02f + query->collision_radius;
+                    min_z = (f32)(query->position.z - 0.02f - query->collision_radius);
+                    max_z = (f32)(query->movement.z + query->position.z + 0.02f + query->collision_radius);
                 } else {
-                    min_z = query->movement.z + query->position.z - 0.02f - query->collision_radius;
-                    max_z = query->position.z + 0.02f + query->collision_radius;
+                    min_z = (f32)(query->movement.z + query->position.z - 0.02f - query->collision_radius);
+                    max_z = (f32)(query->position.z + 0.02f + query->collision_radius);
                 }
                 extent_sq = (min_x - max_x) * (min_x - max_x) + (min_y - max_y) * (min_y - max_y) +
                             (min_z - max_z) * (min_z - max_z);
@@ -708,12 +708,12 @@ extern "C" {
         }
         query = TerI;
         query->scan_list = group_header;
-        min_x = min_x - 0.05f;
-        max_x = max_x + 0.05f;
-        min_y = min_y - 0.05f;
-        max_y = max_y + 0.05f;
-        min_z = min_z - 0.05f;
-        max_z = max_z + 0.05f;
+        min_x = (f32)(min_x - 0.05f);
+        max_x = (f32)(max_x + 0.05f);
+        min_y = (f32)(min_y - 0.05f);
+        max_y = (f32)(max_y + 0.05f);
+        min_z = (f32)(min_z - 0.05f);
+        max_z = (f32)(max_z + 0.05f);
         group = &TERRAIN_STH_SET->groups[group_index];
         platform = &TERRAIN_STH_PLATFORM(group);
         if (platform->scene_object != NULL) {
@@ -1671,30 +1671,30 @@ i16 *NewScanHandelFullPc(NUVEC *position, NUVEC *movement, f32 radius, i32 scan_
     shape_count = 0;
     platinrange = 0;
     if (movement->x > 0.0f) {
-        scan->min_x = position->x - 0.02f - radius;
-        scan->max_x = position->x + movement->x + 0.02f + radius;
+        scan->min_x = (f32)(position->x - 0.02f - radius);
+        scan->max_x = (f32)(position->x + movement->x + 0.02f + radius);
     } else {
-        scan->min_x = position->x + movement->x - 0.02f - radius;
-        scan->max_x = position->x + 0.02f + radius;
+        scan->min_x = (f32)(position->x + movement->x - 0.02f - radius);
+        scan->max_x = (f32)(position->x + 0.02f + radius);
     }
     if (movement->y > 0.0f) {
-        scan->min_y = position->y - 0.02f - radius;
-        scan->max_y = position->y + movement->y + 0.02f + radius;
+        scan->min_y = (f32)(position->y - 0.02f - radius);
+        scan->max_y = (f32)(position->y + movement->y + 0.02f + radius);
     } else {
-        scan->min_y = position->y + movement->y - 0.02f - radius;
-        scan->max_y = position->y + 0.02f + radius;
+        scan->min_y = (f32)(position->y + movement->y - 0.02f - radius);
+        scan->max_y = (f32)(position->y + 0.02f + radius);
     }
     if (movement->z > 0.0f) {
-        scan->min_z = position->z - 0.02f - radius;
-        scan->max_z = position->z + movement->z + 0.02f + radius;
+        scan->min_z = (f32)(position->z - 0.02f - radius);
+        scan->max_z = (f32)(position->z + movement->z + 0.02f + radius);
     } else {
-        scan->min_z = position->z + movement->z - 0.02f - radius;
-        scan->max_z = position->z + 0.02f + radius;
+        scan->min_z = (f32)(position->z + movement->z - 0.02f - radius);
+        scan->max_z = (f32)(position->z + 0.02f + radius);
     }
     extent_sq = (scan->min_x - scan->max_x) * (scan->min_x - scan->max_x) +
                 (scan->min_y - scan->max_y) * (scan->min_y - scan->max_y) +
                 (scan->min_z - scan->max_z) * (scan->min_z - scan->max_z);
-    scan_radius = NuFsqrt(extent_sq + 0.05f);
+    scan_radius = NuFsqrt((f32)(extent_sq + 0.05f));
     for (i32 cell_index = 0; cell_index < TERRAIN_NSF_SET->used_cell_count; ++cell_index) {
         TERRAIN_CELL_PC *cell = &TERRAIN_NSF_SET->cells[cell_index];
         if (!(scan->max_x >= cell->min_x && scan->max_z >= cell->min_z && cell->max_x >= scan->min_x &&
@@ -1740,12 +1740,12 @@ i16 *NewScanHandelFullPc(NUVEC *position, NUVEC *movement, f32 radius, i32 scan_
         }
     }
     TerI->scan_list = group_header;
-    scan->min_x = scan->min_x - 0.05f;
-    scan->max_x = scan->max_x + 0.05f;
-    scan->min_y = scan->min_y - 0.05f;
-    scan->max_y = scan->max_y + 0.05f;
-    scan->min_z = scan->min_z - 0.05f;
-    scan->max_z = scan->max_z + 0.05f;
+    scan->min_x = (f32)(scan->min_x - 0.05f);
+    scan->max_x = (f32)(scan->max_x + 0.05f);
+    scan->min_y = (f32)(scan->min_y - 0.05f);
+    scan->max_y = (f32)(scan->max_y + 0.05f);
+    scan->min_z = (f32)(scan->min_z - 0.05f);
+    scan->max_z = (f32)(scan->max_z + 0.05f);
     if (scan_type != 0) {
         i16 *indices = TERRAIN_NSF_SET->group_indices + TERRAIN_NSF_SET->platform_cell.first_group;
         for (i32 i = 0; i < TERRAIN_NSF_SET->platform_cell.group_count; ++i, ++indices) {

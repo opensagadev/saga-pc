@@ -250,7 +250,7 @@ extern "C" {
                     }
                     if (WORLD->level_objects[model].active != 0) {
                         NuMtxSetRotationX(&matrix, angle_x);
-                        NuMtxRotateY(&matrix, endpoint == 0 ? rope->field_0x2c : rope->field_0x2e);
+                        NuMtxRotateY(&matrix, endpoint == 0 ? rope->field_0x2c : (NUANG)rope->field_0x2e);
                         NuMtxTranslate(&matrix, position);
                         NuSpecialDrawAt(&WORLD->level_objects[model].special, &matrix);
                     }
