@@ -17,7 +17,7 @@
   "record-pun": 599,
   "scalar-pun": 273,
   "int-pointer": 801,
-  "const": 1967,
+  "const": 1491,
   "void-pointer-cpp": 1264,
   "unprototyped-argument": 22,
   "vararg": 29,
