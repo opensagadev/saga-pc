@@ -165,3 +165,4 @@ config/oddscan-budget.json decomp-type 20 new class: game and engine types still
 config/oddscan-budget.json view-type 181 two view typedefs moved from decomp.h, which view-type does not scan, to ShaderManager.h (no new view)
 config/oddscan-budget.json decomp-type 9 down from 20: nine more view types moved to their module headers (target 0)
 config/oddscan-budget.json decomp-type 7 down from 9: PC_SHADER_RECORD_VIEW and PC_SHADER_MATERIAL_FILTER_VIEW moved to their module headers (target 0)
+config/oddscan-budget.json decomp-type 5 down from 7: the audio decoder view and its methods table fold into WavReader (target 0)

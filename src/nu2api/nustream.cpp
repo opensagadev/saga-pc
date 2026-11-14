@@ -381,9 +381,7 @@ SoundQueue::~SoundQueue(void) {
             } while (thread != NULL);
         }
     }
-    if (decoder != NULL) {
-        decoder->vtable->destroy(decoder, 1);
-    }
+    delete decoder;
     decoder = NULL;
     DeleteCriticalSection(&volume_lock);
     DeleteCriticalSection(&operation_lock);
@@ -470,12 +468,12 @@ i32 SoundQueue::FillBuffer(i32 bytes, u32 flags) {
     if ((flags & 2) == 0 && (i32)play_cursor >= buffer_write_position && (i32)play_cursor < buffer_write_position + requested) {
         return 0;
     }
-    i32 amount = decoder->vtable->get_size(decoder) - decoded_bytes;
+    i32 amount = decoder->GetSize() - decoded_bytes;
     i32 decoded;
     if (requested < amount) {
         decoded = requested;
     } else {
-        decoded = decoder->vtable->get_size(decoder) - decoded_bytes;
+        decoded = decoder->GetSize() - decoded_bytes;
     }
     void *data;
     void *second;
@@ -502,8 +500,8 @@ i32 SoundQueue::FillBuffer(i32 bytes, u32 flags) {
             decoded = 0;
         } else if (decoded != 0) {
             u32 read_count;
-            if (FAILED(decoder->vtable->read(decoder, data, decoded, &read_count)) || read_count != (u32)decoded) {
-                decoded_bytes = decoder->vtable->get_size(decoder);
+            if (FAILED(decoder->Read(data, decoded, &read_count)) || read_count != (u32)decoded) {
+                decoded_bytes = decoder->GetSize();
                 decoded = 0;
                 buffer = (IDirectSoundBuffer *)volume_sink;
                 if (SUCCEEDED(buffer->vtable->stop(buffer))) {
@@ -514,17 +512,17 @@ i32 SoundQueue::FillBuffer(i32 bytes, u32 flags) {
         if ((loop_flags & 1) != 0) {
             if (decoded < requested) {
                 do {
-                    decoder->vtable->reset(decoder);
+                    decoder->Reset();
                     decoded_bytes = 0;
                     i32 remaining = requested - decoded;
-                    i32 available = decoder->vtable->get_size(decoder) - decoded_bytes;
+                    i32 available = decoder->GetSize() - decoded_bytes;
                     i32 block = remaining;
                     if (available < remaining) {
-                        block = decoder->vtable->get_size(decoder) - decoded_bytes;
+                        block = decoder->GetSize() - decoded_bytes;
                     }
                     u32 read_count;
-                    if (FAILED(decoder->vtable->read(decoder, (u8 *)data + decoded, block, &read_count)) || read_count != (u32)block) {
-                        decoded_bytes = decoder->vtable->get_size(decoder);
+                    if (FAILED(decoder->Read((u8 *)data + decoded, block, &read_count)) || read_count != (u32)block) {
+                        decoded_bytes = decoder->GetSize();
                         memset(data, 0, requested);
                         buffer = (IDirectSoundBuffer *)volume_sink;
                         if (SUCCEEDED(buffer->vtable->stop(buffer))) {
@@ -607,9 +605,9 @@ DWORD SoundQueue::Run(void) {
                         decoded_bytes = 0;
                         buffer_write_position = 0;
                         unknown_0004 = -1;
-                        decoder->vtable->close(decoder);
+                        decoder->Close();
                         WAVEFORMATEX format;
-                        if (SUCCEEDED(decoder->vtable->open(decoder, NULL, current_path, &format))) {
+                        if (SUCCEEDED(decoder->Open(NULL, current_path, &format))) {
                             if (wave_format.nSamplesPerSec != format.nSamplesPerSec || wave_format.nChannels != format.nChannels) {
                                 SetFormat(&format);
                             }
@@ -629,14 +627,14 @@ DWORD SoundQueue::Run(void) {
                             decoded_bytes = 0;
                             buffer_write_position = 0;
                             loop_flags = 0;
-                            decoder->vtable->reset(decoder);
+                            decoder->Reset();
                             i32 duration = buffer_seconds * 1000;
                             if (duration < 2000) {
                                 duration = 2000;
                             }
                             u32 preload = (u32)(wave_format.nAvgBytesPerSec * duration) / 1000;
                             stream_state = 1;
-                            decoded_bytes = decoder->vtable->seek_time(decoder, current_offset);
+                            decoded_bytes = decoder->SeekTime(current_offset);
                             buffer = (IDirectSoundBuffer *)volume_sink;
                             if (buffer != NULL) {
                                 buffer->vtable->set_current_position(buffer, 0);
@@ -840,7 +838,7 @@ SoundQueue::SoundQueue(IDirectSound8 *factory_value, i32 mode) {
     unknown_03f4 = 0;
     requested_volume = 0;
     applied_volume = 1;
-    decoder = (PC_AUDIO_DECODER_VIEW *)new OggReader;
+    decoder = new OggReader;
     stream_state = 0;
     InitializeCriticalSection(&lock);
     InitializeCriticalSection(&operation_lock);

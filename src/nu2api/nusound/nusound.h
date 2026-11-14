@@ -357,7 +357,7 @@ struct SoundQueue {                    // size 0x400
     i32 loop_flags;                  // 0x1d0
     i32 unknown_1d4;                 // 0x1d4
     i32 pending_bytes;               // 0x1d8
-    PC_AUDIO_DECODER_VIEW *decoder;  // 0x1dc
+    class WavReader *decoder;        // 0x1dc
 
     union { // size 0x105
 

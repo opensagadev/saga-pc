@@ -58,7 +58,6 @@ extern "C" {
 }
 #endif
 #ifdef __cplusplus
-struct PC_AUDIO_DECODER_VIEW;
 
 #endif
 #ifdef __cplusplus
@@ -159,22 +158,6 @@ extern "C" {
 }
 #endif
 #ifdef __cplusplus
-
-struct PC_AUDIO_DECODER_METHODS {                                                                    // size 0x24
-    void *(__thiscall *destroy)(PC_AUDIO_DECODER_VIEW *, u32);                                       // 0x00
-    HRESULT(__thiscall *open)(PC_AUDIO_DECODER_VIEW *, struct nudathdr_s *, char *, WAVEFORMATEX *); // 0x04
-    void *unknown_08;                                                                                // 0x08
-    HRESULT(__thiscall *close)(PC_AUDIO_DECODER_VIEW *);                                             // 0x0c
-    WAVEFORMATEX *(__thiscall *get_format)(PC_AUDIO_DECODER_VIEW *);                                 // 0x10
-    i32(__thiscall *get_size)(PC_AUDIO_DECODER_VIEW *);                                              // 0x14
-    HRESULT(__thiscall *reset)(PC_AUDIO_DECODER_VIEW *);                                             // 0x18
-    HRESULT(__thiscall *read)(PC_AUDIO_DECODER_VIEW *, void *, u32, u32 *);                          // 0x1c
-    i32(__thiscall *seek_time)(PC_AUDIO_DECODER_VIEW *, f32);                                        // 0x20
-};
-
-struct PC_AUDIO_DECODER_VIEW {
-    const PC_AUDIO_DECODER_METHODS *vtable;
-};
 
 #endif
 #ifdef __cplusplus

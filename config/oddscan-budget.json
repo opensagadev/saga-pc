@@ -15,7 +15,7 @@
   "volatile-other": 40,
   "register": 0,
   "fastcall": 3,
-  "thiscall": 8,
+  "thiscall": 0,
   "stdcall-definition": 6,
   "unused-edx": 0,
   "goto": 397,
@@ -28,12 +28,12 @@
   "void-cast": 1249,
   "ptr-int-cast": 50,
   "raw-offset": 10,
-  "view-type": 181,
-  "view-use": 843,
+  "view-type": 179,
+  "view-use": 833,
   "assert-offsetof-header": 98,
   "assert-offsetof-unit": 95,
   "assert-sizeof": 60,
-  "placeholder-field": 8845,
+  "placeholder-field": 8844,
   "hex-name": 571,
   "address-name": 16324,
   "candidate-name": 34,
@@ -71,5 +71,5 @@
   "declspec-align": 170,
   "declspec-other": 17,
   "other-platform": 0,
-  "decomp-type": 7
+  "decomp-type": 5
 }
