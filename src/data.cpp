@@ -398,7 +398,6 @@ extern "C" {
     i8 AiLoadMaximumRespawnCountPc = 0;
     f32 AiLoadMinimumRespawnTimePc = 0.0f;
     f32 AiLoadMaximumRespawnTimePc = 0.0f;
-    i32 (*GlobalCharacterTypeIDFn)(char *) = NULL;
     void (*GameAILoadFn)(AISYS_PC *, i32, NUGSCN *, VARIPTR *, VARIPTR *) = NULL;
 }
 
@@ -10210,7 +10209,6 @@ extern "C" {
     f32 DEFAULT_MOVE_RANGE = 0;
     AI_LEVEL_CHARACTER_TYPE_ID_PC LevelCharacterTypeIDFn = 0;
     AI_LEVEL_CHARACTER_TYPE_ID_PC SpecialRouteCharacterTypeIDFn = 0;
-    AI_LEVEL_CHARACTER_GLOBAL_ID_PC LevelCharacterGlobalIDFn = 0;
 #pragma const_seg(".rdata$AICombatOffscreenName")
     const char AICombatOffscreenName[10] = "offscreen";
 #pragma const_seg()

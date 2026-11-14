@@ -19,9 +19,11 @@ i32 StarWars_MidSpecialMove(AISYS_PC *, AIPACKET_PC *, APIOBJECT_PC *);
 
 AI_CHARACTER_NAME_PC LevelCharacterNameFn = 0;
 AI_CHARACTER_NAME_PC SpecialRouteCharacterNameFn = 0;
+AI_LEVEL_CHARACTER_GLOBAL_ID_PC LevelCharacterGlobalIDFn = 0;
+i32 (*GlobalCharacterTypeIDFn)(char *) = NULL;
 AI_GLOBAL_CHARACTER_NAME_PC GlobalCharacterNameFn = 0;
-AI_GLOBAL_CHARACTER_HGOBJ_PC GlobalCharacterHGobjFn = 0;
 AI_GLOBAL_CHARACTER_RENDER_PC GlobalCharacterRenderFn = 0;
+AI_GLOBAL_CHARACTER_HGOBJ_PC GlobalCharacterHGobjFn = 0;
 AI_CLEAR_CREATURES_PC ClearAICreaturesFn = 0;
 
 typedef struct EQUIVALENTOBJECTGROUP_PC {
