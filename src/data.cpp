@@ -14006,14 +14006,6 @@ extern "C" {
 
 extern "C" {
 
-#pragma data_seg(".data$ShoveMaximumSpeedPc")
-    f32 ShoveMaximumSpeedPc = 2.0f;
-#pragma data_seg()
-
-#pragma data_seg(".data$ShoveMaximumPenetrationPc")
-    f32 ShoveMaximumPenetrationPc = 0.10000000149011612f;
-#pragma data_seg()
-
     LEVELDATA_PC *ObstacleReturnLevelPc = 0;
 
     NUVEC *GizObstacleTriggersPc[16] = {0};
