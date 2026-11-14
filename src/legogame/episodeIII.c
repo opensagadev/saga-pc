@@ -206,8 +206,30 @@ void CruiserAUpdate(WORLDINFO *world) {
     }
 }
 
-CRUISERC_PC cruiser_c = {0};
+CRUISERD_NETPACKET_PC *cruiserd_netpacket = NULL;
+static i32 CruiserD_Lift_plat_id = 0;
+VADERC_PC vader_c = {0};
+void *vaderc_netpacket = NULL;
+NUVEC boulder_old_pos[2] = {0};
+static CRUISERD_LIFT_ANIM_PC *CruiserD_LiftAnim = NULL;
 CRUISERC_NETPACKET_PC *crusiserc_netpacket = NULL;
+static GIZAIMESSAGE *CruiserD_LiftChase_msg = NULL;
+CRUISERC_PC cruiser_c = {0};
+static i32 CruiserE_ix = 0;
+i32 Vader_ObiWanKilledAnakin = 0;
+f32 boulder_wait = 0.0f;
+static NUSPECIALHANDLE CruiserD_Lift = {NULL, NULL, NULL};
+VADERA_NETPACKET_PC *vadera_netpacket = NULL;
+PART_PC *boulder_part[2] = {NULL, NULL};
+VADERA_PC vader_a = {0};
+i32 CruiserD_LiftChase = 0;
+struct gameobject_s *Grievous_obj = 0;
+struct gizaimessage_s *KashyyykA_msg_TotalWookies = 0;
+struct gizaimessage_s *KashyyykA_msg_WookiesToRescue = 0;
+i32 i_boulder = 0;
+struct gizaimessage_s *vader_b_complete_msg = 0;
+u8 vader_b_playersDead = 0;
+void *CurTerr = NULL;
 
 void CruiserCReset(WORLDINFO *world) {
     crusiserc_netpacket = SetLevelHack(4);
@@ -252,12 +274,6 @@ void CruiserCPanel(WORLDINFO *world) {
     }
 }
 
-CRUISERD_NETPACKET_PC *cruiserd_netpacket = NULL;
-static i32 CruiserE_ix = 0;
-static NUSPECIALHANDLE CruiserD_Lift = {NULL, NULL, NULL};
-static CRUISERD_LIFT_ANIM_PC *CruiserD_LiftAnim = NULL;
-static i32 CruiserD_Lift_plat_id = 0;
-
 void CruiserDInit(WORLDINFO *world) {
     i32 i;
     for (i = 0; i < world->area->level_count; i++) {
@@ -276,7 +292,14 @@ void CruiserDInit(WORLDINFO *world) {
 static f32 CruiserD_LiftSpeedPc = 0.1f;
 static f32 CruiserD_frame = 1.0f;
 static i32 CruiserD_direction = 1;
-static GIZAIMESSAGE *CruiserD_LiftChase_msg = NULL;
+static f32 CruiserD_ResetTimePc = 1.0f;
+f32 boulder_radius = 0.3f;
+i32 boulder_blowup_type = -1;
+NUVEC TempleC_StreamStatusPos = {52.57f, 0.76f, -16.54f};
+static f32 VaderA_TimeBonusPc = 20.0f;
+static f32 VaderA_TimeLimitsPc[3] = {30.0f, 15.0f, 0.0f};
+static NUVEC vadar_cam_pos = {0.0f, 0.88f, -12.4f};
+static NUVEC vadar_cam_tgt = {0.0f, 2.0f, -17.4f};
 
 void CruiserDReset(WORLDINFO *world) {
     CruiserD_LiftChase_msg = CheckGizAIMessage(gizaimessagesys, "LiftChase", NULL);
@@ -302,8 +325,6 @@ void CruiserDReset(WORLDINFO *world) {
     }
     CruiserD_LiftChase = 0;
 }
-
-static f32 CruiserD_ResetTimePc = 1.0f;
 
 void CruiserDUpdate(WORLDINFO *world) {
     CruiserD_LiftChase = 0;
@@ -606,8 +627,6 @@ i32 Action_BoulderSection(AISYS_PC *system, AISCRIPTPROCESS_PC *processor, AIPAC
     return 0;
 }
 
-NUVEC TempleC_StreamStatusPos = {52.57f, 0.76f, -16.54f};
-
 void TempleC_AlwaysUpdate(WORLDINFO *unused0) {
     NUVEC position;
     if (LevelFixupSlotPc0087b150 != NULL && Players_AveragePos(&position, NULL) &&
@@ -615,9 +634,6 @@ void TempleC_AlwaysUpdate(WORLDINFO *unused0) {
         other_level_override = LevelFixupSlotPc0087b150->index;
     }
 }
-
-static f32 VaderA_TimeLimitsPc[3] = {30.0f, 15.0f, 0.0f};
-VADERA_PC vader_a = {0};
 
 static void VaderA_StartCollapseStage(WORLDINFO *world) {
     i32 path_index;
@@ -643,8 +659,6 @@ static void VaderA_StartCollapseStage(WORLDINFO *world) {
     }
 }
 
-VADERA_NETPACKET_PC *vadera_netpacket = NULL;
-
 void VaderA_Init(WORLDINFO *world) {
     memset(&vader_a, 0, sizeof(vader_a));
     vadera_netpacket = SetLevelHack(8);
@@ -665,10 +679,6 @@ void VaderA_Reset(WORLDINFO *world) {
     vader_a.collapse_started = 1;
     vader_a.reset_flag = 0;
 }
-
-static f32 VaderA_TimeBonusPc = 20.0f;
-static NUVEC vadar_cam_pos = {0.0f, 0.88f, -12.4f};
-static NUVEC vadar_cam_tgt = {0.0f, 2.0f, -17.4f};
 
 void VaderA_Update(WORLDINFO *world) {
     i32 i;
@@ -784,10 +794,6 @@ void VaderB_Update(WORLDINFO *world) {
     }
 }
 
-VADERC_PC vader_c = {0};
-void *vaderc_netpacket = NULL;
-i32 Vader_ObiWanKilledAnakin = 0;
-
 void VaderC_Init(WORLDINFO *world) {
     char *names[10] = {"rock1", "rock2", "rock3", "rock4", "rock5", "rock6", "rock7", "rock8", "rock10", "rock11"};
     i32 i;
@@ -809,8 +815,6 @@ void VaderC_Reset(WORLDINFO *world) {
     vader_c.progress_mask = 0;
     vader_c.players_dead = 0;
 }
-
-void *CurTerr = NULL;
 
 void VaderC_Update(WORLDINFO *world) {
     GAMEOBJECT *first;

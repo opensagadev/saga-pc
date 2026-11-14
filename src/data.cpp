@@ -14954,7 +14954,6 @@ extern "C" {
     i32 deathstar_hold_count = 0;
     i32 selectmodemode = 0;
     f32 selectmodetime = 0.0f;
-    i32 CruiserD_LiftChase = 0;
     i32 (*CheckMusicOtherFn)(void) = NULL;
     i32 (*GameAudio_ActionMusicFn)(void) = NULL;
     i32 (*PauseRenderOffFn)(void) = NULL;
@@ -24001,18 +24000,6 @@ extern "C" {
 }
 
 extern "C" {
-    struct gameobject_s *Grievous_obj = 0;
-
-    struct gizaimessage_s *KashyyykA_msg_TotalWookies = 0;
-
-    struct gizaimessage_s *KashyyykA_msg_WookiesToRescue = 0;
-
-    struct gizaimessage_s *vader_b_complete_msg = 0;
-
-    u8 vader_b_playersDead = 0;
-}
-
-extern "C" {
     NUSPECIALHANDLE FadeLoop_ObjHSpecial = {0};
 }
 
@@ -27689,10 +27676,6 @@ extern "C" {
 
 extern "C" {
     f32 fakeanimframe[1] = {0};
-    NUVEC boulder_old_pos[2] = {0};
-    f32 boulder_wait = 0.0f;
-    PART_PC *boulder_part[2] = {NULL, NULL};
-    i32 i_boulder = 0;
     i32 JediBActiveCountPc = 0;
     JEDIB_NETPACKET_PC *jedib_netpacket = NULL;
     JEDIB_STATE_PC jedi_b = {0};
@@ -27794,13 +27777,6 @@ extern "C" {
     f32 lightning_sizewab[2] = {0.01f, 0.01f};
     f32 lightning_endw[2] = {0.1f, 0.1f};
     u32 lightning_col[2] = {0xff808040, 0xff808040};
-}
-
-extern "C" {
-#pragma data_seg(".data$KashyyykDBoulderTuningPc")
-    f32 boulder_radius = 0.3f;
-    i32 boulder_blowup_type = -1;
-#pragma data_seg()
 }
 
 extern "C" {
