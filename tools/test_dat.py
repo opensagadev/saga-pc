@@ -86,17 +86,17 @@ def write_file_constants(directory):
     """Reuse production file literals and writer state in the isolated fixture."""
     production = (ROOT / "src/data.cpp").read_text()
     definitions = re.findall(
-        r'extern const char ((?:NuFileExt_\w+|NuFileSourcePathPC|NuFileIopImageNamePc|SceneFileExtensionPc))'
+        r'extern const char ((?:NuFileExt_\w+|NuFileSourcePathPC))'
         r'\[(\d+)\]\s*=\s*("(?:\\.|[^"\\])*")\s*;',
         production)
-    required = {"NuFileSourcePathPC", "NuFileIopImageNamePc", "SceneFileExtensionPc"}
+    required = {"NuFileSourcePathPC"}
     if not required.issubset({name for name, _, _ in definitions}):
         raise ValueError("DAT fixture is missing the production file source literals")
     writer_state = re.findall(r"^\s*i32 NuFile_SwapEndianOnWrite\s*=\s*0;\s*$",
                               production, re.MULTILINE)
     if len(writer_state) != 1:
         raise ValueError("DAT fixture needs the production file-writer endian state")
-    image_name = re.findall(r"^\s*char \*iop_image_name\s*=\s*\(char \*\)NuFileIopImageNamePc;\s*$",
+    image_name = re.findall(r'^\s*char \*iop_image_name\s*=\s*"ioprp300\.img";\s*$',
                             production, re.MULTILINE)
     if len(image_name) != 1:
         raise ValueError("DAT fixture needs the production IOP image-name pointer")
