@@ -396,6 +396,9 @@ void BurnoutApply(i32 view) {
 }
 
 static f32 RippleRandomRadiusPc = 0.15f;
+f32 RipplePerturbationPc = 0.15f;
+f32 RippleSfxCooldownPc = 0.5f;
+f32 ForceFieldRippleRatePc = 100.0f;
 
 void AddSurfaceRipples(GAMEOBJECT *object) {
     RIPPLE_CONTACT_TIMER_VIEW_PC *contact_timer = (RIPPLE_CONTACT_TIMER_VIEW_PC *)object;

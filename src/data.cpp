@@ -14532,15 +14532,6 @@ extern "C" {
 #pragma data_seg(".data$RippleSetPc")
     RIPPLE_SET_PC *RippleSetPc = NULL;
 #pragma data_seg()
-#pragma data_seg(".data$RipplePerturbationPc")
-    f32 RipplePerturbationPc = 0.15f;
-#pragma data_seg()
-#pragma data_seg(".data$RippleSfxCooldownPc")
-    f32 RippleSfxCooldownPc = 0.5f;
-#pragma data_seg()
-#pragma data_seg(".data$ForceFieldRippleRatePc")
-    f32 ForceFieldRippleRatePc = 100.0f;
-#pragma data_seg()
 #pragma data_seg(".data$StreakAlphaScalePc")
     f32 StreakAlphaScalePc = 2.0f;
 #pragma data_seg()
