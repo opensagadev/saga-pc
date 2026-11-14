@@ -699,6 +699,12 @@ extern "C" {
         }
     }
 
+    i32 PlayerGrappleSwingModePc = 1;
+    i32 Grapples_Available = 1;
+    i16 Grapple_RopeSwingRotate = 21845;
+    u32 GRAPPLE_RGBA = 0xffffffffu;
+    i32 grapple_gizmotype_id = -1;
+    i32 GrappleCurvedRopeEnabledPc = 1;
     f32 GrappleRopeSeekRatesPc[6] = {24.0f, 12.0f, 8.0f, 6.0f, 4.5f, 3.0f};
 }
 

@@ -11458,9 +11458,6 @@ extern "C" {
     NUVEC4 NuRndr_DebrisPlane = {0};
     void *PCDisplayClipSet = 0;
     i32 PCDisplayClipGroupIndex = 0;
-#pragma data_seg(".data$PlayerGrappleSwingModePc")
-    i32 PlayerGrappleSwingModePc = 1;
-#pragma data_seg()
 #pragma const_seg(".rdata$PlayerGrappleWindSoundPc")
     extern const char PlayerGrappleWindSoundPc[11] = "GrapWindLp";
 #pragma const_seg()
@@ -14381,9 +14378,6 @@ extern "C" {
 #pragma data_seg(".data$lever_gizmotype_id")
     i32 lever_gizmotype_id = -1;
 #pragma data_seg()
-#pragma data_seg(".data$grapple_gizmotype_id")
-    i32 grapple_gizmotype_id = -1;
-#pragma data_seg()
 }
 
 extern "C" {
@@ -14789,9 +14783,7 @@ extern "C" {
     i16 LEGOACT_LEDGE_RIGHT = -1;
     i32 CreditsFlag = 0;
     f32 CreditsAlpha = 0.0f;
-    i32 Grapples_Available = 1;
     i32 Grapple_RopeSwingsAvailable = 0;
-    i16 Grapple_RopeSwingRotate = 21845;
     i32 LEGOHINT_GRAPPLE = -1;
     i16 LEGOACT_GRAPPLE_IDLE = -1;
     i16 LEGOACT_GRAPPLE_UP = -1;
@@ -26403,11 +26395,6 @@ extern "C" {
 extern "C" {
 #pragma data_seg(".data$RopeCurveSubdivisionsPc")
     i32 RopeCurveSubdivisionsPc = 3;
-#pragma data_seg(".data$GrappleRopeColourPc")
-    u32 GRAPPLE_RGBA = 0xffffffffu;
-#pragma data_seg(".data$GrappleCurvedRopeEnabledPc")
-    i32 GrappleCurvedRopeEnabledPc = 1;
-#pragma data_seg()
 }
 
 extern "C" {
