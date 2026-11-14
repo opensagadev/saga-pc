@@ -23,6 +23,13 @@ typedef struct kaminoeplate_s {
     u16 flags_13a;
     u8 opaque_13c_140[0x4];
 } KAMINOEPLATE;
+
+typedef struct KAMINO_DISCO_MUSIC_VIEW { // size 0x3e8
+    u8 unknown_00[0x3d5];                // 0x000
+    u8 mode;                             // 0x3d5
+    u8 unknown_3d6[0x12];                // 0x3d6
+} KAMINO_DISCO_MUSIC_VIEW;
+
 #ifdef __cplusplus
 extern "C" {
 #endif

@@ -10,6 +10,12 @@
 #include "decomp.h"
 #endif
 
+typedef struct PC_SHADER_SLOT_VIEW { // size 0x4d8
+    u32 unknown_0;                   // 0x000
+    PC_SHADER_RECORD_VIEW record;    // 0x004
+    u8 unknown_c[0x4cc];             // 0x00c
+} PC_SHADER_SLOT_VIEW;
+
 #ifdef __cplusplus
 extern "C" {
 #endif

@@ -265,6 +265,12 @@ typedef struct customiser_completion_reader_s { // size 0x4
     u8 flags;                                   // 0x3
 } CUSTOMISER_COMPLETION_READER_PC;
 
+typedef struct ANIM_REDIRECT_VIEW_PC { // size 0x8
+    const char *name;                  // 0x0
+    i16 animation_id;                  // 0x4
+    u8 unknown_06[2];                  // 0x6
+} ANIM_REDIRECT_VIEW_PC;
+
 #ifdef __cplusplus
 extern "C" {
 #endif

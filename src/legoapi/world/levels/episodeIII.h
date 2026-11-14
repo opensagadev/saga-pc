@@ -13,6 +13,20 @@
 #include "nu2api/numath/nuvec.h"
 #endif
 
+typedef union LEVEL_INST_ANIM_RESET_VIEW { // size 0x30
+    u32 reset_words[12];
+    NUINSTANIM *animations[12];
+
+    struct {                    // size 0x30
+        u8 unknown_00[0x20];    // 0x00
+        f32 miscellaneous_time; // 0x20
+        u16 target_deg_mid;     // 0x24
+        u16 unknown_26;         // 0x26
+        u16 target_deg_far;     // 0x28
+        u8 unknown_2a[6];       // 0x2a
+    } fields;
+} LEVEL_INST_ANIM_RESET_VIEW;
+
 #ifdef __cplusplus
 extern "C" {
 #endif

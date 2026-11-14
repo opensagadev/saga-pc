@@ -409,6 +409,30 @@ extern "C" {
 #endif
 
 #if SAGA_NU2API_NUSTENCILSHADOWS_PC_H_PART == 4 && !defined(SAGA_NU2API_NUSTENCILSHADOWS_PC_H_STOP)
+struct PC_HG_SHADOW_STATE_VIEW { // size 0x10
+
+    union { // size 0xc
+
+        struct {        // size 0xc
+            i32 state0; // 0x0
+            i32 state1; // 0x4
+            i32 state2; // 0x8
+        };
+
+        NUVEC direction;
+    }; // 0x0
+
+    union { // size 0x4
+
+        struct {              // size 0x4
+            u8 unknown_0c[3]; // 0xc
+            i8 state_byte;    // 0xf
+        };
+
+        u32 packed_colour;
+    }; // 0xc
+};
+
 #ifdef __cplusplus
 extern "C" {
 #endif
@@ -508,6 +532,16 @@ extern "C" {
 #endif
 
 #if SAGA_NU2API_NUSTENCILSHADOWS_PC_H_PART == 6 && !defined(SAGA_NU2API_NUSTENCILSHADOWS_PC_H_STOP)
+typedef union PC_BOOT_FRAMEBUFFER_VIEW { // size 0x8
+
+    struct {                                          // size 0x8
+        struct PC_FRAMEBUFFER *default_framebuffer;   // 0x0
+        struct PC_FRAMEBUFFER *secondary_framebuffer; // 0x4
+    } fields;
+
+    struct PC_FRAMEBUFFER *slots[2];
+} PC_BOOT_FRAMEBUFFER_VIEW;
+
 #ifdef __cplusplus
 extern "C" {
 #endif

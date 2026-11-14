@@ -1492,6 +1492,16 @@ extern "C" {
 #endif
 
 #if SAGA_NU2API_NU3D_NU3D_INCLUDES_H_PART == 9 && !defined(SAGA_NU2API_NU3D_NU3D_INCLUDES_H_STOP)
+typedef struct NU_POST_DEFERRED_VIEW {         // size 0xdc
+    void *vtable;                              // 0x00
+    u8 enabled;                                // 0x04
+    u8 unknown_005[0x3f];                      // 0x05
+    f32 parameters[4];                         // 0x44
+    i32 dynamic_light_count;                   // 0x54
+    struct NuDynamicLight *dynamic_lights[32]; // 0x58
+    i32 deferred_geometry_count;               // 0xd8
+} NU_POST_DEFERRED_VIEW;
+
 #ifdef __cplusplus
 extern "C" {
 #endif
