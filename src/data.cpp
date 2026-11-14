@@ -26,7 +26,6 @@ extern "C" {
     i32 loadareacharacters_no_backdrop_reset = 0;
     i32 loadareadata_loadlevel = 0;
     i32 textcrawlactive = 0;
-    i16 tTOUCHTOSTART = 0;
     AREA_LEVEL_LOAD_PC LevelLoad[12] = {0};
     i32 Area_PlayerModelCount = 0;
     APICHARACTERMODELLIST Area_FreePlayModelList[49] = {0};
@@ -8475,7 +8474,6 @@ extern "C" {
     extern const char TextLoadPermTextDirectory[12] = "stuff\\text\\";
 #pragma const_seg()
 
-    i16 tALONGTIMEAGO = 0;
     i32 NuQFntCSModeStackIndex = 0;
 
     void *gizmotypes = 0;
@@ -8783,12 +8781,6 @@ extern "C" {
     NUMTL *numtl_defaultmtl3d = 0;
     AREA_DATA_PC *GUNSHIP_ADATA = 0;
     i32 menu_flash = 0;
-    i16 tAUDIOVOLUME = 0;
-    i16 tMUSIC = 0;
-    i16 tON = 0;
-    i16 tOFF = 0;
-    i16 tACCEPT = 0;
-    i16 tBACK = 0;
     OPTIONSSAVE *Game_OptionsSave = 0;
     LEVELDATA_PC *TITLES_LDATA = 0;
 
@@ -9115,9 +9107,6 @@ extern "C" {
     i16 PCArcadeModeText0 = 0;
     i16 PCArcadeModeText1 = 0;
     i16 PCArcadeModeText2 = 0;
-    i16 PCArcadeLevelText = 0;
-    i16 PCArcadeModeText = 0;
-    i16 PCArcadePlayText = 0;
 #pragma data_seg(".data$Arcade_Mode")
     ARCADE_MODE_PC Arcade_Mode[7] = {
         {&PCArcadeModeText0, 0, 0x19},   {&PCArcadeModeText1, 10, 0x12}, {&PCArcadeModeText1, 25, 0x12},
@@ -13008,61 +12997,41 @@ extern "C" {
     char SuitMetadataName0075314cPc[7] = "batman";
 #pragma data_seg()
 
-    i16 tBATMANSUIT = 0;
-
 #pragma data_seg(".data$SuitMetadataName0075d280Pc")
     char SuitMetadataName0075d280Pc[14] = "batman_shadow";
 #pragma data_seg()
-
-    i16 tSHADOWSUIT = 0;
 
 #pragma data_seg(".data$SuitMetadataName0075d270Pc")
     char SuitMetadataName0075d270Pc[13] = "batman_glide";
 #pragma data_seg()
 
-    i16 tGLIDESUIT = 0;
-
 #pragma data_seg(".data$SuitMetadataName0075d25cPc")
     char SuitMetadataName0075d25cPc[18] = "batman_demolition";
 #pragma data_seg()
-
-    i16 tDEMOLITIONSUIT = 0;
 
 #pragma data_seg(".data$SuitMetadataName0075d24cPc")
     char SuitMetadataName0075d24cPc[13] = "batman_sonar";
 #pragma data_seg()
 
-    i16 tSONARSUIT = 0;
-
 #pragma data_seg(".data$SuitMetadataName00753144Pc")
     char SuitMetadataName00753144Pc[6] = "robin";
 #pragma data_seg()
-
-    i16 tROBINSUIT = 0;
 
 #pragma data_seg(".data$SuitMetadataName0075d240Pc")
     char SuitMetadataName0075d240Pc[12] = "robin_water";
 #pragma data_seg()
 
-    i16 tWATERSUIT = 0;
-
 #pragma data_seg(".data$SuitMetadataName0075d22cPc")
     char SuitMetadataName0075d22cPc[17] = "robin_technology";
 #pragma data_seg()
-
-    i16 tTECHNOLOGYSUIT = 0;
 
 #pragma data_seg(".data$SuitMetadataName0075d21cPc")
     char SuitMetadataName0075d21cPc[13] = "robin_magnet";
 #pragma data_seg()
 
-    i16 tMAGNETSUIT = 0;
-
 #pragma data_seg(".data$SuitMetadataName0075d20cPc")
     char SuitMetadataName0075d20cPc[14] = "robin_attract";
 #pragma data_seg()
-
-    i16 tATTRACTSUIT = 0;
 
     i32 addcreature_override_id_check = 0;
 
@@ -13650,10 +13619,6 @@ extern "C" {
     COLLECTION_BUILD_PC JediCollectionPc = {NULL, 0, 0, NULL, NULL, 0.0f};
     COLLECTION_BUILD_PC BlasterCollectionPc = {NULL, 0, 0, NULL, NULL, 0.0f};
     COLLECTION_BUILD_PC BountyHunterCollectionPc = {NULL, 0, 0, NULL, NULL, 0.0f};
-    i16 PermanentAllTitleIdPc = 0;
-    i16 PermanentJediTitleIdPc = 0;
-    i16 PermanentBlasterTitleIdPc = 0;
-    i16 PermanentBountyTitleIdPc = 0;
     i16 PermanentWeirdo1IdPc = -1;
     i16 PermanentWeirdo2IdPc = -1;
 }
@@ -13856,7 +13821,6 @@ extern "C" {
     char *LeverTypeNamePtrPc = "Lever";
     char *LeverOutputDownNamePtrPc = TextInputKeyNameTextPc75ac34;
     TIMER JoinInTimer = {0};
-    i16 MissionMenuInstructionTextPc = 0;
     f32 MissionDropInAlphaPc = 0.75f;
     f32 MissionPlayerIconSizePc = 0.15999999642372131f;
     i16 id_PRINCESSLEIABOUSHH = -1;
@@ -14197,12 +14161,6 @@ extern "C" {
     i16 id_SERVICECAR = -1;
     i32 SuperCarry_UseActionButton = 0;
     i32 ForcePush_Waft = 0;
-    i16 tCLIPi = 0;
-    i16 tINTRO = 0;
-    i16 tMIDTRO = 0;
-    i16 tOUTRO = 0;
-    i16 tENDING = 0;
-    i16 tPOWERUP = 0;
 }
 
 // The HLSL uber-shader source compiled into every material variant, with its NUL.
