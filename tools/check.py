@@ -476,7 +476,7 @@ def prepare_editor():
 # Checks of .clang-tidy with findings only in the upstream Ogg Vorbis code (not edited here).
 VENDORED_TIDY_EXCLUDED = ("bugprone-incorrect-roundings", "misc-header-include-cycle",
                           "performance-type-promotion-in-math-fn", "readability-avoid-unconditional-preprocessor-if",
-                          "readability-redundant-control-flow")
+                          "readability-isolate-declaration", "readability-redundant-control-flow")
 
 
 def tidy_jobs(files, debug=True):

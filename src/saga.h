@@ -1680,16 +1680,16 @@ typedef struct AIANTINODE_PC {
     NUVEC special_position;         // 0x2c
     i32 rotation;                   // 0x38
     i32 rotation_offset;            // 0x3c
-    f32 base_radius;
-    f32 base_height;      // 0x40
-    u8 enabled;           // 0x48
-    u8 game_flags;        // 0x49
-    u8 type;              // 0x4a
-    u8 has_special;       // 0x4b
-    u8 unknown_4c_b[0x4]; // 0x4c
-    u8 special_type;      // 0x50
-    u8 unknown_51[0x7];   // 0x51
-} AIANTINODE_PC;          // size 0x58
+    f32 base_radius;                // 0x40
+    f32 base_height;                // 0x44
+    u8 enabled;                     // 0x48
+    u8 game_flags;                  // 0x49
+    u8 type;                        // 0x4a
+    u8 has_special;                 // 0x4b
+    u8 unknown_4c_b[0x4];           // 0x4c
+    u8 special_type;                // 0x50
+    u8 unknown_51[0x7];             // 0x51
+} AIANTINODE_PC;                    // size 0x58
 
 typedef struct AIROW_PC {
     AIPATHINFO_PC path_info;       // 0x00

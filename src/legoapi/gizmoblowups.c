@@ -53,9 +53,9 @@ typedef struct {
 } ADD_AI_WORLD_PC;                         // size 0x4670
 
 typedef struct {
-    GIZBOMBGEN_s *items; // 0x00
-    u16 count;
-    u16 capacity;                // 0x04
+    GIZBOMBGEN_s *items;         // 0x00
+    u16 count;                   // 0x04
+    u16 capacity;                // 0x06
     void *pool;                  // 0x08
     i16 reset : 1;               // 0x0c:0
     i16 reset_saved : 1;         // 0x0c:1
@@ -133,59 +133,59 @@ extern const char SpinnerCompleteSuffixPc[12];
 extern const char SpinnerAllCompletePc[15];
 
 typedef struct {
-    u32 built[2];
-    u32 enabled[2];
-    u32 visible[2];
-    u32 completed[2];    // 0x00
+    u32 built[2];        // 0x00
+    u32 enabled[2];      // 0x08
+    u32 visible[2];      // 0x10
+    u32 completed[2];    // 0x18
     u8 object_count[64]; // 0x20
 } BUILD_PROGRESS_PC;     // size 0x60
 
 typedef struct {
-    u32 enabled[4];
-    u32 visible[4];
-    u32 reward[4];
-    u32 socket[4];
-    u32 released[4];
-    u32 pending[4];
-    u32 destroyed[4];       // 0x00
+    u32 enabled[4];         // 0x00
+    u32 visible[4];         // 0x10
+    u32 reward[4];          // 0x20
+    u32 socket[4];          // 0x30
+    u32 released[4];        // 0x40
+    u32 pending[4];         // 0x50
+    u32 destroyed[4];       // 0x60
     u8 group_members[8][8]; // 0x70
 } FORCE_PROGRESS_PC;        // size 0xb0
 
 typedef struct {
-    u32 triggered[16];
-    u32 enabled[16];
-    u32 visible[16];
-    u32 completed[16]; // 0x00
+    u32 triggered[16]; // 0x00
+    u32 enabled[16];   // 0x40
+    u32 visible[16];   // 0x80
+    u32 completed[16]; // 0xc0
 } BLOWUP_PROGRESS_PC;  // size 0x100
 
 typedef struct {
-    u32 collected[16];
-    u32 enabled[16];
-    u32 visible[16];
-    u32 reserved[16]; // 0x00
-} PICKUP_PROGRESS_PC; // size 0x100
+    u32 collected[16]; // 0x00
+    u32 enabled[16];   // 0x40
+    u32 visible[16];   // 0x80
+    u32 reserved[16];  // 0xc0
+} PICKUP_PROGRESS_PC;  // size 0x100
 
 typedef struct {
-    u32 enabled[3];
-    u32 visible[3]; // 0x00
+    u32 enabled[3]; // 0x00
+    u32 visible[3]; // 0x0c
 } BOMB_PROGRESS_PC; // size 0x18
 
 typedef struct {
-    u32 triggered;
-    u32 enabled;
-    u32 visible;     // 0x0
+    u32 triggered;   // 0x0
+    u32 enabled;     // 0x4
+    u32 visible;     // 0x8
 } PANEL_PROGRESS_PC; // size 0xc
 
 typedef struct {
-    u32 enabled;
-    u32 visible;       // 0x0
+    u32 enabled;       // 0x0
+    u32 visible;       // 0x4
 } GRAPPLE_PROGRESS_PC; // size 0x8
 
 typedef struct {
-    u8 unused00[0x6d]; // 0x00
-    u8 build_state;
-    u8 unused6e;
-    u8 built_object_count;  // 0x6d
+    u8 unused00[0x6d];      // 0x00
+    u8 build_state;         // 0x6d
+    u8 unused6e;            // 0x6e
+    u8 built_object_count;  // 0x6f
     u8 unused70[10];        // 0x70
     u16 flags;              // 0x7a
 } BUILD_PROGRESS_RECORD_PC; // size 0x7c
@@ -220,9 +220,9 @@ typedef struct {
 typedef struct {
     FORCE_PROGRESS_RECORD_PC *members[8]; // 0x00
     u8 unused20[6];                       // 0x20
-    u8 member_count;
-    u8 configured_count;   // 0x26
-} FORCE_PROGRESS_GROUP_PC; // size 0x28
+    u8 member_count;                      // 0x26
+    u8 configured_count;                  // 0x27
+} FORCE_PROGRESS_GROUP_PC;                // size 0x28
 
 typedef struct {
     FORCE_PROGRESS_RECORD_PC *records; // 0x000
@@ -233,9 +233,9 @@ typedef struct {
 } FORCE_PROGRESS_SYSTEM_PC;            // size 0x158
 
 typedef struct {
-    u8 unused00[0x2a]; // 0x00
-    u8 flags;
-    u8 unused2b;           // 0x2a
+    u8 unused00[0x2a];     // 0x00
+    u8 flags;              // 0x2a
+    u8 unused2b;           // 0x2b
 } BOMB_PROGRESS_RECORD_PC; // size 0x2c
 
 typedef struct {
@@ -383,10 +383,10 @@ typedef struct BLOWUP_STATUS_BITS_PC {
 STATIC_ASSERT(sizeof(BLOWUP_STATUS_BITS_PC) == sizeof(((GIZMOBLOWUP_PC *)0)->status_flags));
 
 typedef struct {
-    u32 blown_up[16];
-    u32 activated[16];
-    u32 visible[16];
-    u32 secondary_output[16]; // 0x00
+    u32 blown_up[16];         // 0x00
+    u32 activated[16];        // 0x40
+    u32 visible[16];          // 0x80
+    u32 secondary_output[16]; // 0xc0
 } BLOWUP_RESET_PROGRESS_PC;   // size 0x100
 
 typedef struct {
