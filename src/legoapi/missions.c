@@ -1,14 +1,5 @@
 #include "saga.h"
 
-typedef struct MISSION_END_DATA_VIEW { // size 0x2
-    i16 find_character;                // 0x0
-} MISSION_END_DATA_VIEW;
-
-typedef struct MISSION_END_SYSTEM_VIEW { // size 0xc
-    u8 unknown_00[8];                    // 0x0
-    f32 elapsed_time;                    // 0x8
-} MISSION_END_SYSTEM_VIEW;
-
 typedef struct MISSION_SYSTEM_READER { // size 0x30
     MISSIONDATA_PC *missions;          // 0x00
     MISSIONDATA_PC *active_mission;    // 0x04

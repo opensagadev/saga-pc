@@ -377,12 +377,6 @@ extern "C" u32 PCShaderSamplerBiasBitsPc(f32 bias) {
 }
 
 /* Minimum accessed cohort, not a whole NUMTL allocation/size claim. */
-typedef struct PC_SHADER_WATER_MATERIAL_VIEW { // size 0x70
-    u8 unknown_0000[0x60];                     // 0x00
-    f32 phase_speed;                           // 0x60
-    u8 unknown_0064[8];                        // 0x64
-    f32 amplitude;                             // 0x6c
-} PC_SHADER_WATER_MATERIAL_VIEW;
 
 /* Original caller/helper cohort required; these are logical signatures only.
  * Physical register ABI remains a compiler proof hold until the real dispatcher

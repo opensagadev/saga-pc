@@ -21,43 +21,10 @@ void DieRumble(GAMEOBJECT *);
 void GetTakeOverPos(GAMEOBJECT *, NUVEC *);
 extern i16 dat_007f18c4;
 
-typedef struct kill_zipup_s {
-    u8 unknown_00[0x68];
-    u16 runtime_flags;
-} KILL_ZIPUP;
-
-typedef struct combat_coinpacket_s {
-    u32 coins;
-} COMBAT_COINPACKET;
-
-typedef struct shield_state_s {
-    u8 unknown_000[0xd30];
-    f32 shield_enabled;
-    f32 shield_timer;
-} SHIELD_STATE;
-
-typedef struct reaction_fields_s {
-    u8 unknown_00[0x6c4];
-    u8 reset_contexts;
-    u8 unknown_6c5[0x750 - 0x6c5];
-    f32 animation_speed;
-    u8 unknown_754[0x778 - 0x754];
-    f32 reaction_duration;
-} REACTION_FIELDS;
-
 /* Full PC ObjHitObj source contract: complete 5764-byte original interval,
    physical calling convention and finite reader cohorts independently reviewed.
    PC-only reaction and adaptive branches and PC DWORD masks are preserved.
    Existing partial part/object providers retain their explicit runtime gaps. */
-typedef struct combat_reaction_owner_s {
-    u8 unknown_000[0x7bb];
-    i8 attacker_slot;
-} COMBAT_REACTION_OWNER;
-
-typedef struct combat_attack_counter_s {
-    u8 unknown_000[0x1083];
-    u8 attack_count;
-} COMBAT_ATTACK_COUNTER;
 
 typedef struct collision_exclusion_view_s {
     u8 unknown_0000[0x298];
@@ -66,21 +33,10 @@ typedef struct collision_exclusion_view_s {
     u64 exclusion_mask;
 } COLLISION_EXCLUSION_VIEW;
 
-typedef struct collision_platform_push_view_pc_s {
-    u8 unknown_0000[0xdc4];
-    f32 platform_push_timer;
-} COLLISION_PLATFORM_PUSH_VIEW_PC;
-
 typedef struct collision_techno_view_s {
     u8 unknown_0000[0x68];
     u8 flags;
 } COLLISION_TECHNO_VIEW;
-
-typedef struct collision_masks_view_s {
-    u8 unknown_0000[0x1e8];
-    u64 collision_identity_mask;
-    u64 collision_contact_mask;
-} COLLISION_MASKS_VIEW;
 
 #define PANEL_PLAYER_ACTIVE(flags) (((flags) & 0x1000) != 0 && ((flags) & 0x80) != 0)
 
@@ -101,11 +57,6 @@ typedef struct KILLPARTS_RENDER {
     NUSPECIALHANDLE **rigid_specials;
     u8 unknown_8[0xc];
 } KILLPARTS_RENDER;
-
-typedef struct KILLPARTS_OBJECT_LIGHT {
-    u8 unknown_0[0x4d8];
-    PART_LIGHTING_DATA lighting;
-} KILLPARTS_OBJECT_LIGHT;
 
 typedef struct KILLPARTS_PART {
     u8 unknown_0[0x20c];

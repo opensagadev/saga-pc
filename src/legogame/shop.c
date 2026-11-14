@@ -1,17 +1,6 @@
 #include "saga.h"
 #include <stdio.h>
 
-typedef struct SHOP_SAVE_VIEW {
-    u8 unknown_0000[0x7bd4];
-    u32 hint_purchased_bits[3];
-    u32 character_purchased_bits[4];
-    u32 extra_unlocked_bits[2];
-    u32 gold_brick_purchased_bits[2];
-    u32 extra_purchased_bits[2];
-    u8 unknown_7c08[0x15];
-    u8 bolt_unlocked;
-} SHOP_SAVE_VIEW;
-
 #define SHOP_FMIN(a, b) ((a) < (b) ? (a) : (b))
 #define SHOP_FMAX(a, b) ((a) > (b) ? (a) : (b))
 #define SHOP_CLAMP01(x) SHOP_FMAX(0.0f, SHOP_FMIN(x, 1.0f))

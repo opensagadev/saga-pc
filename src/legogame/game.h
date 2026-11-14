@@ -360,3 +360,82 @@ extern "C" {
 #ifdef __cplusplus
 }
 #endif
+
+typedef struct {          // size 0xa4
+    char name[16];        // 0x00
+    u8 opaque[0xa4 - 16]; // 0x10
+} ADD_FORCE;
+
+typedef struct {               // size 0x90
+    u8 opaque_00[0x40];        // 0x00
+    char name[16];             // 0x40
+    u8 opaque_50[0x90 - 0x50]; // 0x50
+} ADD_PANEL;
+
+typedef struct {          // size 0xfc
+    char name[16];        // 0x00
+    u8 opaque[0xfc - 16]; // 0x10
+} ADD_TELEPORT;
+
+typedef struct ASTEROID {
+    NUSPECIALHANDLE special;
+    GIZMOBLOWUP_PC *blowup;
+    i16 rotation_speed_x;
+    i16 rotation_speed_y;
+    i16 rotation_speed_z;
+    u8 activated;
+} ASTEROID;
+
+typedef struct FINAL_ASTEROID {
+    NUSPECIALHANDLE special;
+    GIZMOBLOWUP_PC *blowups[8];
+    i16 blowup_count;
+    i16 rotation_speed_x;
+    i16 rotation_speed_y;
+    i16 rotation_speed_z;
+    i16 rotation_x;
+    i16 rotation_y;
+    i16 rotation_z;
+} FINAL_ASTEROID;
+
+typedef struct KILLPARTS_OBJECT_LIGHT {
+    u8 unknown_0[0x4d8];
+    PART_LIGHTING_DATA lighting;
+} KILLPARTS_OBJECT_LIGHT;
+
+typedef struct STATUS_RUMBLE_PAIR {
+    RUMBLE_PACKET_RESOURCE players[2];
+} STATUS_RUMBLE_PAIR;
+
+typedef struct ai_gizmo_name_process_s { // size 0xdc
+    char name[16];                       // 0x00
+    u8 unknown_10[4];                    // 0x10
+    AISCRIPT *script;                    // 0x14
+    u8 unknown_18[0x98];                 // 0x18
+    char *context_name;                  // 0xb0
+    char *locator_name;                  // 0xb4
+    char *locator_set_name;              // 0xb8
+    u8 unknown_bc[0x20];                 // 0xbc
+} AI_GIZMO_NAME_PROCESS;
+
+typedef struct custom_category_config_s {
+    char *name;
+    u8 uses_special;
+    i8 material_tag;
+    u8 material_indices[2];
+    char *scene_file;
+} CUSTOM_CATEGORY_CONFIG_PC;
+
+typedef struct custom_piece_config_s {
+    char *name;
+    i16 character_id;
+    i16 icon_character_id;
+    i16 weapon_model;
+    i16 unknown_indices_0a[3];
+    i8 field_10;
+    i8 collection_type;
+    u16 availability_flags;
+    u32 model_flags;
+    u32 gameplay_flags;
+    u8 unknown_1c[12];
+} CUSTOM_PIECE_CONFIG;

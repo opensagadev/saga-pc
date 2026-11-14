@@ -117,10 +117,6 @@ static i32 NuRDPIExpression(NURDPICTX_PC *context);
 
 /* PC manager prefix and block header touched by the allocator. */
 
-typedef struct nualloc_manager_trailer_s { // size 0x4
-    NUALLOC_MANAGER_BLOCK *previous_block; // 0x0
-} NUALLOC_MANAGER_TRAILER;
-
 #define NUGENERICPAD FRAME_SCANNED_PAD_PC
 #define ANALOG_CENTER 0x80
 #define NUPAD_PLAY 2

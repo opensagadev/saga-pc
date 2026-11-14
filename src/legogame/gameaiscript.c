@@ -172,11 +172,6 @@ typedef struct condition_trigger_process_reader_s { // size 0xa4
     AIAREA *trigger_area;                           // 0xa0
 } CONDITION_TRIGGER_PROCESS_READER;
 
-typedef struct condition_trigger_player_reader_s { // size 0x2b8
-    u8 unknown_00[0x2b0];                          // 0x000
-    u64 membership;                                // 0x2b0
-} CONDITION_TRIGGER_PLAYER_READER;
-
 typedef struct ai_been_to_level_progress_s { // size 0x2e28
     u8 unknown_0000[0x2800];                 // 0x0000
     u32 visited_flags;                       // 0x2800

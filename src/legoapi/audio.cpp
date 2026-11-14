@@ -20,15 +20,6 @@ extern "C" {
 extern i32 (*CheckMusicOtherFn)(void);
 extern i32 (*GameAudio_ActionMusicFn)(void);
 
-struct MUSIC_PAIR_ARENA {
-    i32 prefix_word;
-    u8 unknown_004[0x18];
-    i16 action_first;
-    u8 unknown_01e[0x1a];
-    i16 ambient_first;
-    u8 unknown_03a[2];
-};
-
 extern "C" {
     extern i32 last_currentmusicpair_quiet;
     extern i32 MusicOther;

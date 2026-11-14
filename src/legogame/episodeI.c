@@ -53,17 +53,6 @@ static f32 PodSebulbaThrowGravity;
 
 /* Episode I level callbacks installed by FixUpLevels. */
 
-typedef struct gungan_a_s {
-    i16 unknown_000;
-    i16 count;
-    AILOCATOR *origins[32];
-    AILOCATOR *targets[32];
-    f32 spawn_timer;
-    i16 model_index;
-    i16 unknown_10a;
-    i16 models[4];
-} GUNGAN_A_PC;
-
 typedef struct minesys_s {
     NUSPECIALHANDLE mine_special;
     MINE_ENTRY_PC mines[64];
@@ -80,13 +69,6 @@ typedef struct retakeg_netpacket_s {
     i16 guard_a;
     i16 guard_b;
 } RETAKEG_NETPACKET_PC;
-
-typedef struct cut_instance_reader_s {
-    u8 opaque_00_88[0x88];
-    u32 flags_88;
-    u32 unknown_8c;
-    f32 current_frame;
-} CUT_INSTANCE_READER;
 
 extern i16 dat_007f19ac;
 extern i16 dat_007f19b0;

@@ -49,17 +49,7 @@ typedef struct BURNOUT_CUT_PREFIX { // size 0x54
     u32 flags;                      // 0x50
 } BURNOUT_CUT_PREFIX;
 
-typedef struct ripple_contact_timer_view_s {
-    u8 unknown_0000[0xdc0];
-    f32 timer;
-} RIPPLE_CONTACT_TIMER_VIEW;
-
 #define RIPPLE_WORLD ((WORLD_RIPPLE_VIEW *)WORLD)
-
-typedef struct ripple_material_reader_s {
-    u8 unknown_0000[0x70];
-    f32 opacity;
-} RIPPLE_MATERIAL_READER;
 
 void DebrisKillPlayers(void) {
     i32 i;

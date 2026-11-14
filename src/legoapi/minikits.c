@@ -255,13 +255,3 @@ void MiniKit_GameMsg_End(GAME_MESSAGE_PC *message) {
     NewRumbleAllPlayers(0.6f, 0.0f, 0, 0);
     GameCam_Judder(GameCam, -0.2f, 0, NULL);
 }
-
-typedef struct HOTH_WORLD_SCRIPT { // size 0x2bc8
-    u8 reserved[0x2b00];           // 0x0000
-    AISCRIPTPROCESS processor;     // 0x2b00
-} HOTH_WORLD_SCRIPT;
-
-typedef struct HOTH_ANTINODE {    // size 0x58
-    u8 reserved[0x50];            // 0x00
-    i64 excluded_character_types; // 0x50
-} HOTH_ANTINODE;

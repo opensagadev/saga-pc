@@ -6,11 +6,6 @@ extern const f64 GameObjectNearFloorNoFloorHeight;
 STATIC_ASSERT(offsetof(GAMEOBJECT, locator_matrices) + 2 * sizeof(NUMTX) == 0x884);
 STATIC_ASSERT(offsetof(CHARACTER_MODEL_LAYERS, points_of_interest) + 2 * sizeof(void *) == 0x1c);
 
-typedef struct kill_zipup_s { // size 0x6a
-    u8 unknown_00[0x68];      // 0x00
-    u16 runtime_flags;        // 0x68
-} KILL_ZIPUP;
-
 /* A copy of the 33-DWORD script cohort (script processor plus takeover link), without extending the
    packet. Held as words so the copy is one block move and the local is not treated as a /GS buffer. */
 typedef union TAGSCRIPTSTATE { // size 0xcc
@@ -23,12 +18,6 @@ typedef union TAGSCRIPTSTATE { // size 0xcc
 } TAGSCRIPTSTATE;
 
 /* Bitfield view of flags_1fc: bit 7 marks a player-controlled object, bit 8 an AI-driven one. */
-typedef struct TAGFLAGS1FC {
-    u32 bits_0_6 : 7;
-    u32 player : 1;
-    u32 ai : 1;
-    u32 bits_9_31 : 23;
-} TAGFLAGS1FC;
 
 /* Shadow platform entries. Tail[1] holds the counted traversal, not an allocation count.
  */
@@ -567,15 +556,6 @@ typedef struct OPPONENT_PACKET_PC {      // size 0x1ec
     u32 flags;                           // 0x1e8
 } OPPONENT_PACKET_PC;
 
-typedef struct OPPONENT_OBJECT_PC { // size 0x2b0
-    u8 unknown000[0x230];           // 0x000
-    f32 view_distance;              // 0x230
-    u8 unknown_234[0xc];            // 0x234
-    f32 visibility_range_extension; // 0x240
-    u8 unknown244[0x64];            // 0x244
-    u64 awareness;                  // 0x2a8
-} OPPONENT_OBJECT_PC;
-
 typedef struct OPPONENT_GAME_PC { // size 0xec8
     u8 unknown000[0xeb0];         // 0x000
     u64 seen;                     // 0xeb0
@@ -583,12 +563,6 @@ typedef struct OPPONENT_GAME_PC { // size 0xec8
     APIOBJECT *alert_target;      // 0xec0
     f32 alert_timer;              // 0xec4
 } OPPONENT_GAME_PC;
-
-typedef struct OPPONENT_SYS_PC { // size 0x1388
-    u8 unknown000[0x1385];       // 0x0000
-    u8 goody_cursor;             // 0x1385
-    u16 assignment_flags;        // 0x1386
-} OPPONENT_SYS_PC;
 
 typedef struct OPPONENT_LOS_PC { // size 0x208
     u32 object_size;             // 0x000

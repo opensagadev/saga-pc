@@ -1,15 +1,6 @@
 #include "saga.h"
 #include <string.h>
 
-typedef struct GIZFLOW_LOAD_LEVEL { // size 0x104
-    u8 unknown_000[0xe9];           // 0x000
-    u8 max_timers;                  // 0x0e9
-    u8 unknown_0ea[0xb];            // 0x0ea
-    u8 max_specials;                // 0x0f5
-    u8 unknown_0f6[0xd];            // 0x0f6
-    u8 max_randoms;                 // 0x103
-} GIZFLOW_LOAD_LEVEL;
-
 typedef struct GIZFLOW_TIMER { // size 0x1c
     f32 time_remaining;        // 0x00
     f32 start_time;            // 0x04

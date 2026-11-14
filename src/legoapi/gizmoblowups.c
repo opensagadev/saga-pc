@@ -5,22 +5,6 @@ typedef struct {          // size 0x7c
     u8 opaque[0x7c - 16]; // 0x10
 } ADD_BUILDIT;
 
-typedef struct {          // size 0xa4
-    char name[16];        // 0x00
-    u8 opaque[0xa4 - 16]; // 0x10
-} ADD_FORCE;
-
-typedef struct {               // size 0x90
-    u8 opaque_00[0x40];        // 0x00
-    char name[16];             // 0x40
-    u8 opaque_50[0x90 - 0x50]; // 0x50
-} ADD_PANEL;
-
-typedef struct {          // size 0xfc
-    char name[16];        // 0x00
-    u8 opaque[0xfc - 16]; // 0x10
-} ADD_TELEPORT;
-
 typedef struct {          // size 0x2c
     char name[16];        // 0x00
     u8 opaque[0x2b - 16]; // 0x10
@@ -49,39 +33,9 @@ typedef struct {         // size 0x3c
     NUVEC position;      // 0x30
 } FLOW_BLOWUP_POSITION;
 
-typedef struct ai_gizmo_name_process_s { // size 0xdc
-    char name[16];                       // 0x00
-    u8 unknown_10[4];                    // 0x10
-    AISCRIPT *script;                    // 0x14
-    u8 unknown_18[0x98];                 // 0x18
-    char *context_name;                  // 0xb0
-    char *locator_name;                  // 0xb4
-    char *locator_set_name;              // 0xb8
-    u8 unknown_bc[0x20];                 // 0xbc
-} AI_GIZMO_NAME_PROCESS;
-
 extern char dat_007516c0[1];
 extern char *BlowupOutputNames[3];
 extern char SpinnerOutputBuffer[14];
-
-typedef struct {         // size 0x60
-    u32 built[2];        // 0x00
-    u32 enabled[2];      // 0x08
-    u32 visible[2];      // 0x10
-    u32 completed[2];    // 0x18
-    u8 object_count[64]; // 0x20
-} BUILD_PROGRESS;
-
-typedef struct {            // size 0xb0
-    u32 enabled[4];         // 0x00
-    u32 visible[4];         // 0x10
-    u32 reward[4];          // 0x20
-    u32 socket[4];          // 0x30
-    u32 released[4];        // 0x40
-    u32 pending[4];         // 0x50
-    u32 destroyed[4];       // 0x60
-    u8 group_members[8][8]; // 0x70
-} FORCE_PROGRESS;
 
 typedef struct {       // size 0x100
     u32 triggered[16]; // 0x00
@@ -89,18 +43,6 @@ typedef struct {       // size 0x100
     u32 visible[16];   // 0x80
     u32 completed[16]; // 0xc0
 } BLOWUP_PROGRESS;
-
-typedef struct {       // size 0x100
-    u32 collected[16]; // 0x00
-    u32 enabled[16];   // 0x40
-    u32 visible[16];   // 0x80
-    u32 reserved[16];  // 0xc0
-} PICKUP_PROGRESS;
-
-typedef struct {    // size 0x18
-    u32 enabled[3]; // 0x00
-    u32 visible[3]; // 0x0c
-} BOMB_PROGRESS;
 
 typedef struct {   // size 0xc
     u32 triggered; // 0x0
@@ -126,35 +68,6 @@ typedef struct {                    // size 0x8
     BUILD_PROGRESS_RECORD *records; // 0x0
     u16 count;                      // 0x4
 } BUILD_PROGRESS_SYSTEM;
-
-typedef struct {       // size 0xa4
-    u8 unused00[0xa0]; // 0x00
-
-    union { // size 0x4
-        u32 runtime_flags;
-
-        struct {                         // size 0x4
-            u32 enabled : 1;             // 0xa0:0
-            u32 visible : 1;             // 0xa0:1
-            u32 : 7;                     // 0xa0:2
-            u32 reward_released : 1;     // 0xa0:9
-            u32 : 1;                     // 0xa0:10
-            u32 socket_hidden : 1;       // 0xa0:11
-            u32 : 2;                     // 0xa0:12
-            u32 completion_released : 1; // 0xa0:14
-            u32 completion_pending : 1;  // 0xa0:15
-            u32 destroyed : 1;           // 0xa0:16
-            u32 : 15;                    // 0xa0:17
-        };
-    }; // 0xa0
-} FORCE_PROGRESS_RECORD;
-
-typedef struct {                       // size 0x28
-    FORCE_PROGRESS_RECORD *members[8]; // 0x00
-    u8 unused20[6];                    // 0x20
-    u8 member_count;                   // 0x26
-    u8 configured_count;               // 0x27
-} FORCE_PROGRESS_GROUP;
 
 typedef struct {                    // size 0x158
     FORCE_PROGRESS_RECORD *records; // 0x000

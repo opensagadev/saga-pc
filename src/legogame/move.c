@@ -29,17 +29,6 @@ typedef struct pod_camera_reader_s {
     f32 camera_shake_strength;
 } POD_CAMERA_READER;
 
-typedef struct pod_merge_packet_reader_s {
-    u8 unknown_00[0x10];
-    f32 blend_source_time;
-    f32 blend_target_time;
-    u8 unknown_18[0x22];
-    i16 requested_animation;
-    u8 unknown_3c[6];
-    i16 overlay_animation;
-    f32 overlay_weight;
-} POD_MERGE_PACKET_READER;
-
 extern i32 FalconDebKey[2];
 extern i32 LandspeederExhaustJoints[3];
 
@@ -48,23 +37,6 @@ typedef struct force_glow_reader_s {
     GAMEOBJECT *force_glow_object;
     GAMEOBJECT *force_glow_candidate;
 } FORCE_GLOW_READER;
-
-typedef struct force_glow_packet_s {
-    u8 unknown000[0x650];
-    void *object;
-    void *candidate;
-    u8 unknown_658[0x6bc - 0x658];
-    f32 alpha;
-    f32 target;
-    f32 recovery;
-    f32 unknown6c8;
-    f32 hold;
-} FORCE_GLOW_PACKET;
-
-typedef struct BALLOON_HEIGHT_VIEW {
-    u8 unknown[0x778];
-    f32 height;
-} BALLOON_HEIGHT_VIEW;
 
 void SecurityDoor_MoveCode(WORLDINFO *, GAMEOBJECT *);
 void Techno_MoveCode(WORLDINFO *, GAMEOBJECT *);
@@ -82,11 +54,6 @@ typedef struct movement_suit_s {
     u8 unknown_00[0xc];
     u8 store_flag;
 } MOVEMENT_SUIT;
-
-typedef struct movement_model_s {
-    u8 unknown_00[0xc];
-    void **model_data_b;
-} MOVEMENT_MODEL;
 
 TUBE *Tube_InAnyCylinder(WORLDINFO *, GAMEOBJECT *, i32);
 #define ASIN_NEG_1_OVER_6 PCPathArcSineCoefficient3

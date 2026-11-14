@@ -4,29 +4,9 @@ extern i32 NuMainSkipCutBorders;
 extern i32 drawautosaveicon;
 STATIC_ASSERT(offsetof(LEVELDATA_PC, callbacks) + 6 * sizeof(void *) == 0x80);
 
-typedef struct coin_reset_packet_s {
-    u8 unknown_00[4];
-    f32 scale;
-    u8 unknown_08[2];
-    u8 active;
-    u8 unknown_0b;
-    f32 double_score_timer;
-} COIN_RESET_PACKET;
-
 extern char *GizmoPickup_OutputName;
 
-typedef struct {
-    u32 collected[16];
-    u32 enabled[16];
-    u32 visible[16];
-    u32 reserved[16];
-} PICKUP_PROGRESS;
-
 void GizmoPickups_PostLoad(void *, void *);
-
-typedef struct lose_coins_packet_s { // size 0x4
-    u32 coins;                       // 0x0
-} LOSE_COINS_PACKET;
 
 typedef struct SPECIAL_MINIKIT {    // size 0x3c
     NUSPECIALHANDLE special;        // 0x00

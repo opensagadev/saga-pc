@@ -17,18 +17,6 @@ typedef struct STILL_RENDER_MATERIAL {   // size 0x2bc
     PC_MATERIAL_SHADER_DESC_VIEW shader; // 0x0b4
 } STILL_RENDER_MATERIAL;
 
-typedef struct permanent_material_reader_s {
-    u8 unknown_0000[0x40];
-    u32 attributes;
-    u32 shader_flags;
-    u8 unknown_0048[0xc];
-    f32 diffuse[3];
-    u8 unknown_0060[0x10];
-    f32 opacity;
-    i16 texture_id;
-    u16 sort_priority;
-} PERMANENT_MATERIAL_READER;
-
 extern "C" NUMTL *FadeMtl;
 extern "C" NUMTL *FadeMtl2;
 extern "C" NUMTL *ScreenFadeMtl;

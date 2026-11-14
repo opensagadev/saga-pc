@@ -86,11 +86,6 @@ typedef struct player_reset_packet_s { // size 0x780
 /* Two-DWORD view of the default mask. */
 GAMEOBJECT *AddCreature(i32 model, i32 mode);
 
-typedef struct CREATURE_RESET_PACKET_VIEW { // size 0xe4c
-    u8 unknown_000[0x6c4];                  // 0x000
-    u8 packet[0x788];                       // 0x6c4
-} CREATURE_RESET_PACKET_VIEW;
-
 typedef union player_position_sock_pc_u { // size 0x38
     SOCKPOSITION_PC sock;
 

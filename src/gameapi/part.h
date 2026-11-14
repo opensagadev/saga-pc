@@ -13,3 +13,8 @@ extern "C" {
 #ifdef __cplusplus
 }
 #endif
+
+typedef struct condition_trigger_player_reader_s { // size 0x2b8
+    u8 unknown_00[0x2b0];                          // 0x000
+    u64 membership;                                // 0x2b0
+} CONDITION_TRIGGER_PLAYER_READER;

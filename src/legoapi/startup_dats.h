@@ -18,3 +18,8 @@ extern "C" {
 #ifdef __cplusplus
 }
 #endif
+
+typedef struct HOTH_WORLD_SCRIPT {
+    u8 reserved[0x2b00];
+    AISCRIPTPROCESS processor;
+} HOTH_WORLD_SCRIPT;

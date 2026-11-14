@@ -82,12 +82,6 @@ typedef struct PANEL_PRIM_VERTEX {
     u32 colour;
 } PANEL_PRIM_VERTEX;
 
-typedef struct TAG_CHARACTER_DATA_READER {
-    u8 opaque_00[0x42];
-    i16 icon_model;
-    u8 opaque_44[8];
-} TAG_CHARACTER_DATA_READER;
-
 extern i32 (*Tag_NoHiddenIconFn)(GAMEOBJECT *);
 
 static void NuRndrPrimSetColour(i32 colour) {

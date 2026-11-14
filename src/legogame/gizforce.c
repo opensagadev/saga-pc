@@ -1,10 +1,5 @@
 #include "saga.h"
 
-typedef struct GIZFORCE_ANIMATION_DATA {
-    u8 unknown_00[2];
-    i16 platform_id;
-} GIZFORCE_ANIMATION_DATA;
-
 typedef struct GIZFORCE_GROUP_BEST {
     GIZFORCE_PC *forces[9];
     u8 flags;
@@ -37,21 +32,11 @@ typedef struct GIZFORCE_SYS_BEST {
     GAMEANIMOBJPOOL *anim_pool;
 } GIZFORCE_SYS_BEST;
 
-typedef struct GIZFORCE_LOS_BEST {
-    u32 clear_bits[12];
-    u32 queried_at[1];
-} GIZFORCE_LOS_BEST;
-
 typedef struct GIZFORCE_OBJECT_BEST {
     u8 unknown_000[0x10cc];
     GIZFORCE_PC *target;
     GAMEANIMOBJ *animation;
 } GIZFORCE_OBJECT_BEST;
-
-typedef struct GIZFORCE_PLATFORM_BEST_PC {
-    u8 unknown_000[2];
-    i16 platform_id;
-} GIZFORCE_PLATFORM_BEST_PC;
 
 typedef struct force_sfx_config_s {
     u8 unknown_00[0x28];
@@ -81,22 +66,6 @@ typedef struct trigger_force_object_s {
 
 void GameAnimSet_SetOffset(GAMEANIMSET *, NUVEC *);
 
-typedef struct FORCE_RESET_PROGRESS {
-    u32 enabled[4];
-    u32 visible[4];
-    u32 reward_released[4];
-    u32 socket_hidden[4];
-    u32 completion_released[4];
-    u32 completion_pending[4];
-    u32 destroyed[4];
-    u8 group_members[8][8];
-} FORCE_RESET_PROGRESS;
-
-typedef struct {
-    char name[16];
-    u8 opaque[0xa4 - 16];
-} ADD_FORCE;
-
 typedef struct registry_force_record_pc_s {
     u8 unknown_00[0x28];
     GAMEANIMSET *anim_set;
@@ -117,46 +86,6 @@ typedef struct registry_force_system_pc_s {
     GAMEANIMOBJPOOL *anim_pool;
     GIZFORCEGROUP_s groups[8];
 } REGISTRY_FORCE_SYSTEM_PC;
-
-typedef struct {
-    u32 enabled[4];
-    u32 visible[4];
-    u32 reward[4];
-    u32 socket[4];
-    u32 released[4];
-    u32 pending[4];
-    u32 destroyed[4];
-    u8 group_members[8][8];
-} FORCE_PROGRESS;
-
-typedef struct {
-    u8 unused00[0xa0];
-
-    union {
-        u32 runtime_flags;
-
-        struct {
-            u32 enabled : 1;
-            u32 visible : 1;
-            u32 : 7;
-            u32 reward_released : 1;
-            u32 : 1;
-            u32 socket_hidden : 1;
-            u32 : 2;
-            u32 completion_released : 1;
-            u32 completion_pending : 1;
-            u32 destroyed : 1;
-            u32 : 15;
-        };
-    };
-} FORCE_PROGRESS_RECORD;
-
-typedef struct {
-    FORCE_PROGRESS_RECORD *members[8];
-    u8 unused20[6];
-    u8 member_count;
-    u8 configured_count;
-} FORCE_PROGRESS_GROUP;
 
 typedef struct {
     FORCE_PROGRESS_RECORD *records;

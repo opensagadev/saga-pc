@@ -18,11 +18,6 @@ void ClearSpecialMove(GAMEOBJECT *);
 void InitFn_PreparingForSpecialMove(AI_PREPARING_SPECIAL_MOVE_PC);
 void InitFn_MidSpecialMove(AI_MID_SPECIAL_MOVE_PC);
 
-typedef struct character_ai_capabilities_s {
-    u8 unknown_00[0x44];
-    u32 path_capabilities;
-} CHARACTER_AI_CAPABILITIES;
-
 i32 StarWars_MidSpecialMove_Default(AISYS_PC *system, AIPACKET *packet, APIOBJECT *object) {
     GAMEOBJECT *owner = object->owner;
     u32 capabilities = packet->path_info.connection->traversal_flags[packet->path_info.direction] & packet->capabilities;

@@ -28,11 +28,6 @@ typedef struct beast_fall_land_view_s { // size 0xdb0
 extern i32 (*IsWearingBackPackFn)(GAMEOBJECT *);
 extern i32 (*UsingExtraActionsFn)(GAMEOBJECT *);
 
-typedef struct BALLOON_HEIGHT_VIEW { // size 0x77c
-    u8 unknown[0x778];               // 0x000
-    f32 height;                      // 0x778
-} BALLOON_HEIGHT_VIEW;
-
 typedef struct jump_auxiliary_fields_s {
     u8 unknown_000[0x7b1];
     u8 landing_followup;

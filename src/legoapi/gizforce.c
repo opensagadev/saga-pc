@@ -73,23 +73,6 @@ static void DrawLightningBolts(GAMEOBJECT *object, GAMEOBJECT *target, i32 light
     }
 }
 
-typedef struct force_glow_packet_s { // size 0x6d0
-    u8 unknown000[0x650];            // 0x000
-    void *object;                    // 0x650
-    void *candidate;                 // 0x654
-    u8 unknown_658[0x6bc - 0x658];   // 0x658
-    f32 alpha;                       // 0x6bc
-    f32 target;                      // 0x6c0
-    f32 recovery;                    // 0x6c4
-    f32 unknown6c8;                  // 0x6c8
-    f32 hold;                        // 0x6cc
-} FORCE_GLOW_PACKET;
-
-typedef struct GIZFORCE_ANIMATION_DATA { // size 0x4
-    u8 unknown_00[2];                    // 0x0
-    i16 platform_id;                     // 0x2
-} GIZFORCE_ANIMATION_DATA;
-
 typedef struct GIZFORCE_GROUP_BEST { // size 0x28
     GIZFORCE_PC *forces[9];          // 0x00
     u8 flags;                        // 0x24
@@ -122,21 +105,11 @@ typedef struct GIZFORCE_SYS_BEST { // size 0x18
     GAMEANIMOBJPOOL *anim_pool;    // 0x14
 } GIZFORCE_SYS_BEST;
 
-typedef struct GIZFORCE_LOS_BEST { // size 0x34
-    u32 clear_bits[12];            // 0x00
-    u32 queried_at[1];             // 0x30
-} GIZFORCE_LOS_BEST;
-
 typedef struct GIZFORCE_OBJECT_BEST { // size 0x10d4
     u8 unknown_000[0x10cc];           // 0x0000
     GIZFORCE_PC *target;              // 0x10cc
     GAMEANIMOBJ *animation;           // 0x10d0
 } GIZFORCE_OBJECT_BEST;
-
-typedef struct GIZFORCE_PLATFORM_BEST_PC { // size 0x4
-    u8 unknown_000[2];                     // 0x0
-    i16 platform_id;                       // 0x2
-} GIZFORCE_PLATFORM_BEST_PC;
 
 typedef struct force_sfx_config_s { // size 0xa4
     u8 unknown_00[0x28];            // 0x00
@@ -182,16 +155,5 @@ typedef struct trigger_force_object_s { // size 0x10d0
     u8 unknown000[0x10cc];              // 0x0000
     GIZFORCE_PC *force;                 // 0x10cc
 } TRIGGER_FORCE_OBJECT;
-
-typedef struct FORCE_RESET_PROGRESS { // size 0xb0
-    u32 enabled[4];                   // 0x00
-    u32 visible[4];                   // 0x10
-    u32 reward_released[4];           // 0x20
-    u32 socket_hidden[4];             // 0x30
-    u32 completion_released[4];       // 0x40
-    u32 completion_pending[4];        // 0x50
-    u32 destroyed[4];                 // 0x60
-    u8 group_members[8][8];           // 0x70
-} FORCE_RESET_PROGRESS;
 
 /* Append to gizforce.c; canonical164B PC record/system344 view already owned. */

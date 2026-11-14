@@ -17,11 +17,6 @@ extern "C" {
     extern AI_MID_SPECIAL_MOVE_PC batman_midspecialmovefns[8];
 }
 
-typedef struct character_ai_capabilities_s {
-    u8 unknown_00[0x44];
-    u32 path_capabilities;
-} CHARACTER_AI_CAPABILITIES;
-
 typedef struct suit_ai_capabilities_s {
     u8 unknown_00[0x10];
     u32 path_capabilities;

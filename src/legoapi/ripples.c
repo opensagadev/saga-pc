@@ -119,18 +119,8 @@ void AddRipple(RIPPLE_SET_PC *set, NUMTX *matrix, f32 size, f32 growth, f32 life
     }
 }
 
-typedef struct ripple_contact_timer_view_s { // size 0xdc4
-    u8 unknown_0000[0xdc0];                  // 0x000
-    f32 timer;                               // 0xdc0
-} RIPPLE_CONTACT_TIMER_VIEW;
-
 #define RIPPLE_WORLD ((WORLD_RIPPLE_VIEW *)WORLD)
 #undef RIPPLE_WORLD
-
-typedef struct ripple_material_reader_s { // size 0x74
-    u8 unknown_0000[0x70];                // 0x00
-    f32 opacity;                          // 0x70
-} RIPPLE_MATERIAL_READER;
 
 static WORLDINFO *RippleEffectsWorldInfo = 0;
 static RIPPLE_EFFECT *RippleEffectsCurrent = 0;

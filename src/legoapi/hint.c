@@ -15,11 +15,6 @@ typedef struct HINT_COMPLETION { // size 0x4
 
 STATIC_ASSERT(sizeof(HINT_COMPLETION) == sizeof(CUSTOMISER_COMPLETION_READER_PC));
 
-typedef struct HINT_WORLD_TELEPORT { // size 0x4688
-    u8 reserved00[0x4684];           // 0x0000
-    i32 teleport_count;              // 0x4684
-} HINT_WORLD_TELEPORT;
-
 /* Hint updater records keep their packed field offsets. */
 typedef struct HINT_PANEL { // size 0x90
     u8 reserved00[0x61];    // 0x00

@@ -100,15 +100,6 @@ typedef struct OPPONENT_PACKET_PC {
     u32 flags;
 } OPPONENT_PACKET_PC;
 
-typedef struct OPPONENT_OBJECT_PC {
-    u8 unknown000[0x230];
-    f32 view_distance;
-    u8 unknown_234[0xc];
-    f32 visibility_range_extension;
-    u8 unknown244[0x64];
-    u64 awareness;
-} OPPONENT_OBJECT_PC;
-
 typedef struct OPPONENT_GAME_PC {
     u8 unknown000[0xeb0];
     u64 seen;
@@ -116,12 +107,6 @@ typedef struct OPPONENT_GAME_PC {
     APIOBJECT *alert_target;
     f32 alert_timer;
 } OPPONENT_GAME_PC;
-
-typedef struct OPPONENT_SYS_PC {
-    u8 unknown000[0x1385];
-    u8 goody_cursor;
-    u16 assignment_flags;
-} OPPONENT_SYS_PC;
 
 typedef struct OPPONENT_LOS_PC {
     u32 object_size;
@@ -144,17 +129,6 @@ typedef struct ai_frame_world_s {
 } AI_FRAME_WORLD;
 
 extern char AIGizmoNameBuffer[16];
-
-typedef struct ai_gizmo_name_process_s {
-    char name[16];
-    u8 unknown_10[4];
-    AISCRIPT *script;
-    u8 unknown_18[0x98];
-    char *context_name;
-    char *locator_name;
-    char *locator_set_name;
-    u8 unknown_bc[0x20];
-} AI_GIZMO_NAME_PROCESS;
 
 extern char AIProcessingOutputText[11];
 

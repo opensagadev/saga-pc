@@ -157,13 +157,6 @@ void CollectCharactersOff_Skip(STATUS_STAGE_s *stage, STATUSPACKET_s *packet) {
 }
 
 /* Native walks the two adjacent 0x14-byte rumble records. */
-typedef struct STATUS_RUMBLE_PAIR {
-    RUMBLE_PACKET_RESOURCE players[2];
-} STATUS_RUMBLE_PAIR;
-
-typedef struct StatusPlayerModelPair { // size 0x4
-    u16 model[2];                      // 0x0
-} StatusPlayerModelPair;
 
 #define STATUS_APPEND_STAGE_INLINE(packet_arg, type_arg, gold_arg)                                                                         \
     do {                                                                                                                                   \

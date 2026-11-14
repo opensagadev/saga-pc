@@ -234,11 +234,6 @@ typedef struct PLAYER_ROUTE_MASK_WORDS {
 extern u64 CharacterMaskAll;
 extern i32 complexsockposition_forcesock;
 
-typedef struct CREATURE_RESET_PACKET_VIEW {
-    u8 unknown_000[0x6c4];
-    u8 packet[0x788];
-} CREATURE_RESET_PACKET_VIEW;
-
 typedef struct PLAYER_LAYER_FLAGS {
     u32 unknown_0 : 9;
     u32 bob : 1;

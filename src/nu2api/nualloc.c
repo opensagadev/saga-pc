@@ -43,10 +43,6 @@ void NuAllocReport(const void *message, ...);
 
 /* PC manager prefix and block header touched by the allocator. */
 
-typedef struct nualloc_manager_trailer_s { // size 0x4
-    NUALLOC_MANAGER_BLOCK *previous_block; // 0x0
-} NUALLOC_MANAGER_TRAILER;
-
 void *NuAllocManagerAllocateAligned(NUALLOC_MANAGER_PREFIX_PC *manager, u32 size, u32 alignment);
 void NuAllocManagerFree(NUALLOC_MANAGER_PREFIX_PC *manager, void *memory);
 

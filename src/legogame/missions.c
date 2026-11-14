@@ -1,14 +1,5 @@
 #include "saga.h"
 
-typedef struct MISSION_END_DATA_VIEW {
-    i16 find_character;
-} MISSION_END_DATA_VIEW;
-
-typedef struct MISSION_END_SYSTEM_VIEW {
-    u8 unknown_00[8];
-    f32 elapsed_time;
-} MISSION_END_SYSTEM_VIEW;
-
 typedef struct MENU_INPUT_PAD_PC {
     FRAME_PAD_PC *bound_pad;
     u32 held;

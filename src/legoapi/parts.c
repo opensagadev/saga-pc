@@ -815,21 +815,6 @@ void edpartDebrisSettingsMenu(eduimenu_s *menu, eduiitem_s *unused1, u32 unused2
 
 void AddDebrisEffectToStack(DEBRISKEY_PC *key);
 
-typedef struct debris_material_flags_s { // size 0x4
-    u32 alpha_mode : 4;                  // 0x0:0
-    u32 filter_mode : 2;                 // 0x0:4
-    u32 unknown_0_64_128 : 2;            // 0x0:6
-    u32 unknown_1_1_2 : 2;               // 0x0:8
-    u32 unknown_1_4_8 : 2;               // 0x0:10
-    u32 cull_mode : 2;                   // 0x0:12
-    u32 z_mode : 2;                      // 0x0:14
-    u32 unknown_2_1_2 : 2;               // 0x0:16
-    u32 unknown_2_4 : 1;                 // 0x0:18
-    u32 unknown_19 : 1;                  // 0x0:19
-    u32 alpha_test : 3;                  // 0x0:20
-    u32 unknown_23_31 : 9;               // 0x0:23
-} DEBRIS_MATERIAL_FLAGS;
-
 typedef struct debris_material_secondary_s { // size 0x4
     u32 alpha_fail : 2;                      // 0x0:0
     u32 disable_depth_write : 1;             // 0x0:2

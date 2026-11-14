@@ -69,3 +69,49 @@ extern "C" {
 #ifdef __cplusplus
 }
 #endif
+
+typedef struct BONUS_GUNSHIP_FLAGS {
+    u8 progress;
+    u8 secondary;
+    u8 reserved[14];
+} BONUS_GUNSHIP_FLAGS;
+
+typedef struct KAMINO_SHIP_ZERO_ANGLES {
+    u16 pitch;
+    i32 yaw;
+} KAMINO_SHIP_ZERO_ANGLES;
+
+typedef struct SHOP_SAVE_VIEW {
+    u8 unknown_0000[0x7bd4];
+    u32 hint_purchased_bits[3];
+    u32 character_purchased_bits[4];
+    u32 extra_unlocked_bits[2];
+    u32 gold_brick_purchased_bits[2];
+    u32 extra_purchased_bits[2];
+    u8 unknown_7c08[0x15];
+    u8 bolt_unlocked;
+} SHOP_SAVE_VIEW;
+
+typedef struct TAG_CHARACTER_DATA_READER {
+    u8 opaque_00[0x42];
+    i16 icon_model;
+    u8 opaque_44[8];
+} TAG_CHARACTER_DATA_READER;
+
+typedef struct cutinfo_reader_s {
+    u8 opaque_00_04[0x4];
+    void *instance;
+    u8 opaque_08_54[0x4c];
+    f32 previous_frame;
+} CUTINFO_READER;
+
+typedef struct kaminoc_packet_s {
+    i16 off_mask;
+    i16 pending_mask;
+    i16 occupied_mask;
+    i16 complete_mask;
+    i16 final_mask;
+    i16 sound_mask;
+    u8 complete;
+    u8 reserved_0d;
+} KAMINOC_PACKET_PC;

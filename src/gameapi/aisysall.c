@@ -707,11 +707,6 @@ typedef struct condition_trigger_process_reader_s { // size 0xa4
     AIAREA *trigger_area;                           // 0xa0
 } CONDITION_TRIGGER_PROCESS_READER;
 
-typedef struct condition_trigger_player_reader_s { // size 0x2b8
-    u8 unknown_00[0x2b0];                          // 0x000
-    u64 membership;                                // 0x2b0
-} CONDITION_TRIGGER_PLAYER_READER;
-
 STATIC_ASSERT(offsetof(GAMEOBJECT, position) + offsetof(NUVEC, y) == 0x60);
 
 SOCK_PC *FindSock(SOCKSYS_PC *system, char *name);

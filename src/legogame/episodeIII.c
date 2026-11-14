@@ -2,27 +2,7 @@
 #include <string.h>
 #include "saga.h"
 
-typedef struct BONUS_GUNSHIP_FLAGS { // size 0x10
-    u8 progress;                     // 0x0
-    u8 secondary;                    // 0x1
-    u8 reserved[14];                 // 0x2
-} BONUS_GUNSHIP_FLAGS;
-
 STATIC_ASSERT(sizeof(BONUS_GUNSHIP_FLAGS) == sizeof(LevFlag));
-
-typedef struct cutinfo_reader_s { // size 0x58
-    u8 opaque_00_04[0x4];         // 0x00
-    void *instance;               // 0x04
-    u8 opaque_08_54[0x4c];        // 0x08
-    f32 previous_frame;           // 0x54
-} CUTINFO_READER;
-
-typedef struct cut_instance_reader_s { // size 0x94
-    u8 opaque_00_88[0x88];             // 0x00
-    u32 flags_88;                      // 0x88
-    u32 unknown_8c;                    // 0x8c
-    f32 current_frame;                 // 0x90
-} CUT_INSTANCE_READER;
 
 typedef struct dooku_c_s {       // size 0x14
     GIZAIMESSAGE *total_message; // 0x00
@@ -47,17 +27,6 @@ typedef struct kaminodisco_s {       // size 0x3e8
     GIZAIMESSAGE *next_tile_message; // 0x3e0
     GIZAIMESSAGE *complete_message;  // 0x3e4
 } KAMINODISCO_PC;
-
-typedef struct kaminoc_packet_s { // size 0xe
-    i16 off_mask;                 // 0x0
-    i16 pending_mask;             // 0x2
-    i16 occupied_mask;            // 0x4
-    i16 complete_mask;            // 0x6
-    i16 final_mask;               // 0x8
-    i16 sound_mask;               // 0xa
-    u8 complete;                  // 0xc
-    u8 reserved_0d;               // 0xd
-} KAMINOC_PACKET_PC;
 
 typedef struct kaminoe_turret_reader_s { // size 0x140
     u8 opaque_00_1c[0x1c];               // 0x000
@@ -100,11 +69,6 @@ typedef struct kamino_e_s {               // size 0x78
 
 #define KAMINO_DISCO_AREA_MASK_SET(world, area)                                                                                            \
     ((*(u64 *)((GAMEOBJECT *)(world)->ai_sys->player_1)->ai_area_mask & (u64)(i64)(1 << (i32)((area) - (world)->ai_sys->areas))) != 0)
-
-typedef struct KAMINO_SHIP_ZERO_ANGLES { // size 0x8
-    u16 pitch;                           // 0x0
-    i32 yaw;                             // 0x4
-} KAMINO_SHIP_ZERO_ANGLES;
 
 extern NUVEC boulder_old_pos[2];
 extern f32 boulder_wait;

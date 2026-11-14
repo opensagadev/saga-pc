@@ -125,3 +125,14 @@ typedef struct podrace_levflag_s { // size 0x10
     u8 mushroom_state;             // 0x1
     u8 remaining[14];              // 0x2
 } PODRACE_LEVFLAG;
+
+typedef struct gungan_a_s { // size 0x114
+    i16 unknown_000;        // 0x000
+    i16 count;              // 0x002
+    AILOCATOR *origins[32]; // 0x004
+    AILOCATOR *targets[32]; // 0x084
+    f32 spawn_timer;        // 0x104
+    i16 model_index;        // 0x108
+    i16 unknown_10a;        // 0x10a
+    i16 models[4];          // 0x10c
+} GUNGAN_A_PC;

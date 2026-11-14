@@ -10,26 +10,9 @@ extern "C" {
     extern void *Door_Last;
 }
 
-typedef struct player_progress_hp_s {
-    u8 unknown_0000[8];
-    u8 hitpoints;
-    u8 unknown_0009[7];
-} PLAYER_PROGRESS_HP;
-
 extern "C" {
     extern AREA_DATA_PC *ANEWHOPE_ADATA;
 }
-
-typedef struct area_loading_clock_reader_s {
-    u8 unknown_0000[0x7c20];
-    f32 elapsed_time;
-} AREA_LOADING_CLOCK_READER;
-
-typedef struct area_loading_pad_reader_pc_s {
-    u8 unknown_0000[8];
-    u32 buttons_pressed;
-    u8 unknown_000c[0x54];
-} AREA_LOADING_PAD_READER_PC;
 
 extern "C" {
     void MusicClearAll(void);
@@ -49,18 +32,6 @@ extern "C" void CreateUsefulMaterials(void);
 extern "C" void edbitsRegisterThingsScene(NUGSCN *scene);
 extern "C" i32 NuMtlSetCurrentRenderPlane(i32 render_plane);
 extern "C" void ParticleReset(void);
-
-typedef struct permanent_material_reader_s {
-    u8 unknown_0000[0x40];
-    u32 attributes;
-    u32 shader_flags;
-    u8 unknown_0048[0xc];
-    f32 diffuse[3];
-    u8 unknown_0060[0x10];
-    f32 opacity;
-    i16 texture_id;
-    u16 sort_priority;
-} PERMANENT_MATERIAL_READER;
 
 extern "C" void DebrisSetup(VARIPTR *, VARIPTR, char *, i32, i32, i32);
 
@@ -319,11 +290,6 @@ extern "C" void ChrisDogFightAInit(WORLDINFO *);
 extern "C" void ChrisDogFightAReset(WORLDINFO *);
 extern "C" void ChrisDogFightAUpdate(WORLDINFO *);
 extern "C" void ChrisDogFightADraw(WORLDINFO *);
-
-typedef struct ai_script_progress_view_s {
-    u8 unknown_0000[0x2824];
-    LEVEL_SCRIPT_PROGRESS scripts[32];
-} AI_SCRIPT_PROGRESS_VIEW;
 
 #define WORLD_PORTAL_BOUNDS(scene) ((NUVEC4 *)(scene)->portal_boxes)
 extern "C" {

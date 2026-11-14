@@ -4,13 +4,6 @@
 static i32 goldbrickmsgcount = 0;
 
 /* Walks the two adjacent 0x14-byte rumble records. */
-typedef struct STATUS_RUMBLE_PAIR {
-    RUMBLE_PACKET_RESOURCE players[2];
-} STATUS_RUMBLE_PAIR;
-
-typedef struct StatusPlayerModelPair {
-    u16 model[2];
-} StatusPlayerModelPair;
 
 #define STATUS_APPEND_STAGE_INLINE(packet_arg, type_arg, gold_arg)                                                                         \
     do {                                                                                                                                   \

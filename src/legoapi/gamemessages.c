@@ -3,22 +3,10 @@
 
 #include <string.h>
 
-typedef struct coin_packet_s { // size 0xc
-    u32 coins;                 // 0x0
-    f32 scale;                 // 0x4
-    i16 last_coin;             // 0x8
-    u8 unknown_0a[2];          // 0xa
-} COIN_PACKET;
-
 typedef struct object_coin_packet_s { // size 0x800
     u8 unknown_000[0x7fc];            // 0x000
     COIN_PACKET *coin_packet;         // 0x7fc
 } OBJECT_COIN_PACKET;
-
-typedef struct game_save_score_s { // size 0x7c18
-    u8 unknown_0000[0x7c14];       // 0x0000
-    u32 coins;                     // 0x7c14
-} GAME_SAVE_SCORE;
 
 /* Out-of-line copies of the SDK's static float helpers (nufloat.h). */
 static f32 GameMessagesFabs(f32 f) {

@@ -28,3 +28,379 @@ extern "C" {
 #ifdef __cplusplus
 }
 #endif
+
+typedef struct ASTEROIDC_NETPACKET {
+    u16 rotation_x;
+    u16 rotation_y;
+    u16 rotation_z;
+} ASTEROIDC_NETPACKET;
+
+typedef struct BALLOON_HEIGHT_VIEW { // size 0x77c
+    u8 unknown[0x778];               // 0x000
+    f32 height;                      // 0x778
+} BALLOON_HEIGHT_VIEW;
+
+typedef struct {    // size 0x18
+    u32 enabled[3]; // 0x00
+    u32 visible[3]; // 0x0c
+} BOMB_PROGRESS;
+
+typedef struct {
+    u32 built[2];
+    u32 enabled[2];
+    u32 visible[2];
+    u32 completed[2];
+    u8 object_count[64];
+} BUILD_PROGRESS;
+
+typedef struct CLOUDCITY_LEVEL_FLAG_VIEW {
+    u8 started;
+} CLOUDCITY_LEVEL_FLAG_VIEW;
+
+typedef struct CREATURE_RESET_PACKET_VIEW { // size 0xe4c
+    u8 unknown_000[0x6c4];                  // 0x000
+    u8 packet[0x788];                       // 0x6c4
+} CREATURE_RESET_PACKET_VIEW;
+
+typedef struct {            // size 0xb0
+    u32 enabled[4];         // 0x00
+    u32 visible[4];         // 0x10
+    u32 reward[4];          // 0x20
+    u32 socket[4];          // 0x30
+    u32 released[4];        // 0x40
+    u32 pending[4];         // 0x50
+    u32 destroyed[4];       // 0x60
+    u8 group_members[8][8]; // 0x70
+} FORCE_PROGRESS;
+
+typedef struct {       // size 0xa4
+    u8 unused00[0xa0]; // 0x00
+
+    union { // size 0x4
+        u32 runtime_flags;
+
+        struct {                         // size 0x4
+            u32 enabled : 1;             // 0xa0:0
+            u32 visible : 1;             // 0xa0:1
+            u32 : 7;                     // 0xa0:2
+            u32 reward_released : 1;     // 0xa0:9
+            u32 : 1;                     // 0xa0:10
+            u32 socket_hidden : 1;       // 0xa0:11
+            u32 : 2;                     // 0xa0:12
+            u32 completion_released : 1; // 0xa0:14
+            u32 completion_pending : 1;  // 0xa0:15
+            u32 destroyed : 1;           // 0xa0:16
+            u32 : 15;                    // 0xa0:17
+        };
+    }; // 0xa0
+} FORCE_PROGRESS_RECORD;
+
+typedef struct {                       // size 0x28
+    FORCE_PROGRESS_RECORD *members[8]; // 0x00
+    u8 unused20[6];                    // 0x20
+    u8 member_count;                   // 0x26
+    u8 configured_count;               // 0x27
+} FORCE_PROGRESS_GROUP;
+
+typedef struct FORCE_RESET_PROGRESS { // size 0xb0
+    u32 enabled[4];                   // 0x00
+    u32 visible[4];                   // 0x10
+    u32 reward_released[4];           // 0x20
+    u32 socket_hidden[4];             // 0x30
+    u32 completion_released[4];       // 0x40
+    u32 completion_pending[4];        // 0x50
+    u32 destroyed[4];                 // 0x60
+    u8 group_members[8][8];           // 0x70
+} FORCE_RESET_PROGRESS;
+
+typedef struct GAME_STATE_MENU_READER { // size 0x7c1a
+    u8 reserved[0x7c18];                // 0x0000
+    u16 completion;                     // 0x7c18
+} GAME_STATE_MENU_READER;
+
+typedef struct GIZFLOW_LOAD_LEVEL { // size 0x104
+    u8 unknown_000[0xe9];           // 0x000
+    u8 max_timers;                  // 0x0e9
+    u8 unknown_0ea[0xb];            // 0x0ea
+    u8 max_specials;                // 0x0f5
+    u8 unknown_0f6[0xd];            // 0x0f6
+    u8 max_randoms;                 // 0x103
+} GIZFLOW_LOAD_LEVEL;
+
+typedef struct GIZFORCE_ANIMATION_DATA { // size 0x4
+    u8 unknown_00[2];                    // 0x0
+    i16 platform_id;                     // 0x2
+} GIZFORCE_ANIMATION_DATA;
+
+typedef struct GIZFORCE_LOS_BEST { // size 0x34
+    u32 clear_bits[12];            // 0x00
+    u32 queried_at[1];             // 0x30
+} GIZFORCE_LOS_BEST;
+
+typedef struct GIZFORCE_PLATFORM_BEST_PC { // size 0x4
+    u8 unknown_000[2];                     // 0x0
+    i16 platform_id;                       // 0x2
+} GIZFORCE_PLATFORM_BEST_PC;
+
+typedef struct HINT_WORLD_TELEPORT { // size 0x4688
+    u8 reserved00[0x4684];           // 0x0000
+    i32 teleport_count;              // 0x4684
+} HINT_WORLD_TELEPORT;
+
+typedef struct HOTH_ANTINODE {
+    u8 reserved[0x50];
+    i64 excluded_character_types;
+} HOTH_ANTINODE;
+
+typedef struct MISSION_END_DATA_VIEW { // size 0x2
+    i16 find_character;                // 0x0
+} MISSION_END_DATA_VIEW;
+
+typedef struct MISSION_END_SYSTEM_VIEW { // size 0xc
+    u8 unknown_00[8];                    // 0x0
+    f32 elapsed_time;                    // 0x8
+} MISSION_END_SYSTEM_VIEW;
+
+struct MUSIC_PAIR_ARENA {
+    i32 prefix_word;
+    u8 unknown_004[0x18];
+    i16 action_first;
+    u8 unknown_01e[0x1a];
+    i16 ambient_first;
+    u8 unknown_03a[2];
+};
+
+typedef struct OPPONENT_OBJECT_PC { // size 0x2b0
+    u8 unknown000[0x230];           // 0x000
+    f32 view_distance;              // 0x230
+    u8 unknown_234[0xc];            // 0x234
+    f32 visibility_range_extension; // 0x240
+    u8 unknown244[0x64];            // 0x244
+    u64 awareness;                  // 0x2a8
+} OPPONENT_OBJECT_PC;
+
+typedef struct OPPONENT_SYS_PC { // size 0x1388
+    u8 unknown000[0x1385];       // 0x0000
+    u8 goody_cursor;             // 0x1385
+    u16 assignment_flags;        // 0x1386
+} OPPONENT_SYS_PC;
+
+typedef struct OPTIONS_MENU_READER { // size 0x2
+    u8 player_control[2];            // 0x0
+} OPTIONS_MENU_READER;
+
+typedef struct {       // size 0x100
+    u32 collected[16]; // 0x00
+    u32 enabled[16];   // 0x40
+    u32 visible[16];   // 0x80
+    u32 reserved[16];  // 0xc0
+} PICKUP_PROGRESS;
+
+typedef struct StatusPlayerModelPair { // size 0x4
+    u16 model[2];                      // 0x0
+} StatusPlayerModelPair;
+
+typedef struct TAGFLAGS1FC {
+    u32 bits_0_6 : 7;
+    u32 player : 1;
+    u32 ai : 1;
+    u32 bits_9_31 : 23;
+} TAGFLAGS1FC;
+
+typedef struct ai_script_progress_view_s { // size 0x2c24
+    u8 unknown_0000[0x2824];               // 0x0000
+    LEVEL_SCRIPT_PROGRESS scripts[32];     // 0x2824
+} AI_SCRIPT_PROGRESS_VIEW;
+
+typedef struct area_gizmo_s { // size 0x8
+    void *object;             // 0x0
+    i16 unknown_0004;         // 0x4
+    u8 type_id;               // 0x6
+    u8 unknown_0007;          // 0x7
+} AREA_GIZMO;
+
+typedef struct area_gizmoset_s { // size 0x14
+    void *type;                  // 0x00
+    i32 count;                   // 0x04
+    i32 max_count;               // 0x08
+    void *gizmos;                // 0x0c
+    void *unknown_0010;          // 0x10
+} AREA_GIZMOSET;
+
+typedef struct area_gizmotype_s {         // size 0x9c
+    u8 unknown_0000[0x44];                // 0x00
+    char *(*get_gizmo_name)(void *gizmo); // 0x44
+    u8 unknown_0048[0x54];                // 0x48
+} AREA_GIZMOTYPE;
+
+typedef struct area_loading_clock_reader_s { // size 0x7c24
+    u8 unknown_0000[0x7c20];                 // 0x0000
+    f32 elapsed_time;                        // 0x7c20
+} AREA_LOADING_CLOCK_READER;
+
+typedef struct area_loading_pad_reader_pc_s { // size 0x60
+    u8 unknown_0000[8];                       // 0x00
+    u32 buttons_pressed;                      // 0x08
+    u8 unknown_000c[0x54];                    // 0x0c
+} AREA_LOADING_PAD_READER_PC;
+
+typedef struct character_ai_capabilities_s {
+    u8 unknown_00[0x44];
+    u32 path_capabilities;
+} CHARACTER_AI_CAPABILITIES;
+
+typedef struct coin_packet_s { // size 0xc
+    u32 coins;                 // 0x0
+    f32 scale;                 // 0x4
+    i16 last_coin;             // 0x8
+    u8 unknown_0a[2];          // 0xa
+} COIN_PACKET;
+
+typedef struct coin_reset_packet_s { // size 0x10
+    u8 unknown_00[4];                // 0x0
+    f32 scale;                       // 0x4
+    u8 unknown_08[2];                // 0x8
+    u8 active;                       // 0xa
+    u8 unknown_0b;                   // 0xb
+    f32 double_score_timer;          // 0xc
+} COIN_RESET_PACKET;
+
+typedef struct collision_masks_view_s { // size 0x1f8
+    u8 unknown_0000[0x1e8];             // 0x000
+    u64 collision_identity_mask;        // 0x1e8
+    u64 collision_contact_mask;         // 0x1f0
+} COLLISION_MASKS_VIEW;
+
+typedef struct collision_platform_push_view_pc_s { // size 0xdc8
+    u8 unknown_0000[0xdc4];                        // 0x000
+    f32 platform_push_timer;                       // 0xdc4
+} COLLISION_PLATFORM_PUSH_VIEW_PC;
+
+typedef struct combat_attack_counter_s { // size 0x1084
+    u8 unknown_000[0x1083];              // 0x0000
+    u8 attack_count;                     // 0x1083
+} COMBAT_ATTACK_COUNTER;
+
+typedef struct combat_coinpacket_s { // size 0x4
+    u32 coins;                       // 0x0
+} COMBAT_COINPACKET;
+
+typedef struct combat_reaction_owner_s { // size 0x7bc
+    u8 unknown_000[0x7bb];               // 0x000
+    i8 attacker_slot;                    // 0x7bb
+} COMBAT_REACTION_OWNER;
+
+typedef struct custom_save_config_s {
+    u16 pieces[9];
+    u8 unknown_12[0x26];
+    u16 secondary_pieces[9];
+    u8 unknown_4a[0x26];
+} CUSTOM_SAVE_CONFIG;
+
+typedef struct cut_instance_reader_s { // size 0x94
+    u8 opaque_00_88[0x88];             // 0x00
+    u32 flags_88;                      // 0x88
+    u32 unknown_8c;                    // 0x8c
+    f32 current_frame;                 // 0x90
+} CUT_INSTANCE_READER;
+
+typedef struct cut_load_character_animation_s { // size 0x10
+    u32 unknown_00;                             // 0x0
+    void *animation;                            // 0x4
+    u8 unknown_08[8];                           // 0x8
+} CUT_LOAD_CHARACTER_ANIMATION;
+
+struct cut_load_character_instance_s { // size 0x18
+    void *model;                       // 0x00
+    u8 unknown_04[8];                  // 0x04
+    f32 frame_a;                       // 0x0c
+    u8 unknown_10[5];                  // 0x10
+    u8 animation_a;                    // 0x15
+    u8 animation_b;                    // 0x16
+    u8 unknown_17;                     // 0x17
+};
+
+typedef struct force_glow_packet_s { // size 0x6d0
+    u8 unknown000[0x650];            // 0x000
+    void *object;                    // 0x650
+    void *candidate;                 // 0x654
+    u8 unknown_658[0x6bc - 0x658];   // 0x658
+    f32 alpha;                       // 0x6bc
+    f32 target;                      // 0x6c0
+    f32 recovery;                    // 0x6c4
+    f32 unknown6c8;                  // 0x6c8
+    f32 hold;                        // 0x6cc
+} FORCE_GLOW_PACKET;
+
+typedef struct game_save_score_s { // size 0x7c18
+    u8 unknown_0000[0x7c14];       // 0x0000
+    u32 coins;                     // 0x7c14
+} GAME_SAVE_SCORE;
+
+typedef struct kill_zipup_s { // size 0x6a
+    u8 unknown_00[0x68];      // 0x00
+    u16 runtime_flags;        // 0x68
+} KILL_ZIPUP;
+
+typedef struct lose_coins_packet_s { // size 0x4
+    u32 coins;                       // 0x0
+} LOSE_COINS_PACKET;
+
+typedef struct movement_model_s {
+    u8 unknown_00[0xc];
+    void **model_data_b;
+} MOVEMENT_MODEL;
+
+typedef struct permanent_material_reader_s {
+    u8 unknown_0000[0x40];
+    u32 attributes;
+    u32 shader_flags;
+    u8 unknown_0048[0xc];
+    f32 diffuse[3];
+    u8 unknown_0060[0x10];
+    f32 opacity;
+    i16 texture_id;
+    u16 sort_priority;
+} PERMANENT_MATERIAL_READER;
+
+typedef struct player_progress_hp_s { // size 0x10
+    u8 unknown_0000[8];               // 0x0
+    u8 hitpoints;                     // 0x8
+    u8 unknown_0009[7];               // 0x9
+} PLAYER_PROGRESS_HP;
+
+typedef struct pod_merge_packet_reader_s { // size 0x48
+    u8 unknown_00[0x10];                   // 0x00
+    f32 blend_source_time;                 // 0x10
+    f32 blend_target_time;                 // 0x14
+    u8 unknown_18[0x22];                   // 0x18
+    i16 requested_animation;               // 0x3a
+    u8 unknown_3c[6];                      // 0x3c
+    i16 overlay_animation;                 // 0x42
+    f32 overlay_weight;                    // 0x44
+} POD_MERGE_PACKET_READER;
+
+typedef struct reaction_fields_s { // size 0x77c
+    u8 unknown_00[0x6c4];          // 0x000
+    u8 reset_contexts;             // 0x6c4
+    u8 unknown_6c5[0x750 - 0x6c5]; // 0x6c5
+    f32 animation_speed;           // 0x750
+    u8 unknown_754[0x778 - 0x754]; // 0x754
+    f32 reaction_duration;         // 0x778
+} REACTION_FIELDS;
+
+typedef struct ripple_contact_timer_view_s { // size 0xdc4
+    u8 unknown_0000[0xdc0];                  // 0x000
+    f32 timer;                               // 0xdc0
+} RIPPLE_CONTACT_TIMER_VIEW;
+
+typedef struct ripple_material_reader_s { // size 0x74
+    u8 unknown_0000[0x70];                // 0x00
+    f32 opacity;                          // 0x70
+} RIPPLE_MATERIAL_READER;
+
+typedef struct shield_state_s { // size 0xd38
+    u8 unknown_000[0xd30];      // 0x000
+    f32 shield_enabled;         // 0xd30
+    f32 shield_timer;           // 0xd34
+} SHIELD_STATE;

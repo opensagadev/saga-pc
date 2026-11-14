@@ -3,27 +3,7 @@
 #include <stdio.h>
 #include <math.h>
 
-typedef struct BONUS_GUNSHIP_FLAGS {
-    u8 progress;
-    u8 secondary;
-    u8 reserved[14];
-} BONUS_GUNSHIP_FLAGS;
-
 #define BONUS_GUNSHIP_FLAGS_PC_VIEW ((BONUS_GUNSHIP_FLAGS *)LevFlag)
-
-typedef struct cutinfo_reader_s {
-    u8 opaque_00_04[0x4];
-    void *instance;
-    u8 opaque_08_54[0x4c];
-    f32 previous_frame;
-} CUTINFO_READER;
-
-typedef struct cut_instance_reader_s {
-    u8 opaque_00_88[0x88];
-    u32 flags_88;
-    u32 unknown_8c;
-    f32 current_frame;
-} CUT_INSTANCE_READER;
 
 typedef struct dooku_c_s {
     GIZAIMESSAGE *total_message;
@@ -52,17 +32,6 @@ typedef struct kaminodisco_s {
     GIZAIMESSAGE *next_tile_message;
     GIZAIMESSAGE *complete_message;
 } KAMINODISCO_PC;
-
-typedef struct kaminoc_packet_s {
-    i16 off_mask;
-    i16 pending_mask;
-    i16 occupied_mask;
-    i16 complete_mask;
-    i16 final_mask;
-    i16 sound_mask;
-    u8 complete;
-    u8 reserved_0d;
-} KAMINOC_PACKET_PC;
 
 typedef struct kamino_progress_gizmo_reader_s {
     u8 opaque_00_94[0x94];
@@ -119,11 +88,6 @@ void KaminoEGizmoMissing(char *name);
 #define KAMINO_DISCO_AREA_MASK_SET(world, area)                                                                                            \
     ((*(u64 *)((GAMEOBJECT *)(world)->ai_sys->player_1)->ai_area_mask & (u64)(i64)(1 << (i32)((area) - (world)->ai_sys->areas))) != 0)
 #define KAMINO_DISCO_PLAYER_IN_AREA(world, who, area) ((who) != NULL && (area) != NULL && KAMINO_DISCO_AREA_MASK_SET(world, area))
-
-typedef struct KAMINO_SHIP_ZERO_ANGLES {
-    u16 pitch;
-    i32 yaw;
-} KAMINO_SHIP_ZERO_ANGLES;
 
 static i32 PaintMixColour(i32 first, i32 second) {
     if ((first == 0 && second == 1) || (first == 1 && second == 0)) {

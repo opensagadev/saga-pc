@@ -37,29 +37,7 @@ typedef struct podrace_resource_s {        // size 0xb030
     u8 unknown_b021[15];                   // 0xb021
 } PODRACE_RESOURCE;
 
-typedef struct pod_merge_packet_reader_s { // size 0x48
-    u8 unknown_00[0x10];                   // 0x00
-    f32 blend_source_time;                 // 0x10
-    f32 blend_target_time;                 // 0x14
-    u8 unknown_18[0x22];                   // 0x18
-    i16 requested_animation;               // 0x3a
-    u8 unknown_3c[6];                      // 0x3c
-    i16 overlay_animation;                 // 0x42
-    f32 overlay_weight;                    // 0x44
-} POD_MERGE_PACKET_READER;
-
 /* Episode I level callbacks installed by FixUpLevels. */
-
-typedef struct gungan_a_s { // size 0x114
-    i16 unknown_000;        // 0x000
-    i16 count;              // 0x002
-    AILOCATOR *origins[32]; // 0x004
-    AILOCATOR *targets[32]; // 0x084
-    f32 spawn_timer;        // 0x104
-    i16 model_index;        // 0x108
-    i16 unknown_10a;        // 0x10a
-    i16 models[4];          // 0x10c
-} GUNGAN_A_PC;
 
 typedef struct minesys_s {        // size 0x748
     NUSPECIALHANDLE mine_special; // 0x000
@@ -72,13 +50,6 @@ typedef struct minesys_s {        // size 0x748
     i32 mine_part;                // 0x740
     f32 update_timer;             // 0x744
 } MINESYS_PC;
-
-typedef struct cut_instance_reader_s { // size 0x94
-    u8 opaque_00_88[0x88];             // 0x00
-    u32 flags_88;                      // 0x88
-    u32 unknown_8c;                    // 0x8c
-    f32 current_frame;                 // 0x90
-} CUT_INSTANCE_READER;
 
 void RetakeG_Reset(WORLDINFO *world) {
 }

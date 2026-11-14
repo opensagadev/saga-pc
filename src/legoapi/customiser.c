@@ -11,35 +11,6 @@ typedef struct customiser_anims_load_s {
     u16 *animation_ids_to_load;
 } CUSTOMISER_ANIMS_LOAD;
 
-typedef struct custom_piece_config_s {
-    char *name;
-    i16 character_id;
-    i16 icon_character_id;
-    i16 weapon_model;
-    i16 unknown_indices_0a[3];
-    i8 field_10;
-    i8 collection_type;
-    u16 availability_flags;
-    u32 model_flags;
-    u32 gameplay_flags;
-    u8 unknown_1c[12];
-} CUSTOM_PIECE_CONFIG;
-
-typedef struct custom_category_config_s {
-    char *name;
-    u8 uses_special;
-    i8 material_tag;
-    u8 material_indices[2];
-    char *scene_file;
-} CUSTOM_CATEGORY_CONFIG_PC;
-
-typedef struct custom_save_config_s {
-    u16 pieces[9];
-    u8 unknown_12[0x26];
-    u16 secondary_pieces[9];
-    u8 unknown_4a[0x26];
-} CUSTOM_SAVE_CONFIG;
-
 typedef struct customiser_config_s {
     CUSTOM_CATEGORY_CONFIG_PC *categories[9];
     CUSTOM_PIECE_CONFIG *piece_sets[9];
@@ -83,11 +54,6 @@ typedef struct custom_accessory_material_s {
     u8 unknown_76[0x24];
     u8 material_tag;
 } CUSTOM_ACCESSORY_MATERIAL;
-
-typedef struct KILLPARTS_OBJECT_LIGHT {
-    u8 unknown_0[0x4d8];
-    PART_LIGHTING_DATA lighting;
-} KILLPARTS_OBJECT_LIGHT;
 
 typedef struct KILLPARTS_SAVED_PIECES {
     i16 pieces[9];

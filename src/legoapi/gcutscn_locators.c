@@ -76,12 +76,6 @@ typedef struct cut_load_character_system_s {
     u16 count;
 } CUT_LOAD_CHARACTER_SYSTEM;
 
-typedef struct cut_load_character_animation_s { // size 0x10
-    u32 unknown_00;                             // 0x0
-    void *animation;                            // 0x4
-    u8 unknown_08[8];                           // 0x8
-} CUT_LOAD_CHARACTER_ANIMATION;
-
 typedef struct cut_load_camera_system_s { // size 0x24
     i32 count;                            // 0x00
     void *cameras;                        // 0x04
@@ -146,16 +140,6 @@ typedef struct cut_load_rigid_instance_s { // size 0x10
 typedef struct cut_load_rigid_instance_system_s {
     CUT_LOAD_RIGID_INSTANCE *rigids;
 } CUT_LOAD_RIGID_INSTANCE_SYSTEM;
-
-struct cut_load_character_instance_s { // size 0x18
-    void *model;                       // 0x00
-    u8 unknown_04[8];                  // 0x04
-    f32 frame_a;                       // 0x0c
-    u8 unknown_10[5];                  // 0x10
-    u8 animation_a;                    // 0x15
-    u8 animation_b;                    // 0x16
-    u8 unknown_17;                     // 0x17
-};
 
 typedef struct cut_load_character_instance_system_s {
     CUT_LOAD_CHARACTER_INSTANCE *characters;

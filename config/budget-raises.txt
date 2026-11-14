@@ -154,3 +154,6 @@ config/castscan-budget.json layout-compatible 301 15 casts between unit copies o
 config/castscan-budget.json record-pun 625 see layout-compatible 301 (same 15 casts)
 config/castscan-budget.json record-pun 628 three casts between unit copies of a type become casts between distinct types once the copies are unified (same casts)
 config/oddscan-budget.json volatile-other 41 the unified copy of a cache record keeps its volatile reference count (shared with the streaming thread), which the other unit's copy did not spell
+config/castscan-budget.json declaration-type 1815 112 casts between unit copies of 78 types (duplicate-type 1632 -> 1517) are now casts between distinct types once the copies merge into headers (same casts)
+config/castscan-budget.json record-pun 694 see declaration-type 1815
+config/standalone-budget.json non-standalone 231 one module header now holds unit types moved there after the headers they use (saga.h order); it compiles with saga.h, standalone with the header pass

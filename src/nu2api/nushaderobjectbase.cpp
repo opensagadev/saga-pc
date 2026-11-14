@@ -1,12 +1,6 @@
 #include "saga.h"
 
 /* Minimum accessed cohort, not a whole NUMTL allocation/size claim. */
-typedef struct PC_SHADER_WATER_MATERIAL_VIEW {
-    u8 unknown_0000[0x60];
-    f32 phase_speed;
-    u8 unknown_0064[8];
-    f32 amplitude;
-} PC_SHADER_WATER_MATERIAL_VIEW;
 
 extern "C" {
 

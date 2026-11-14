@@ -6,32 +6,11 @@ extern "C" {
     void AreasConfigDiagnostic(char *message);
 }
 
-typedef struct area_gizmotype_s {         // size 0x9c
-    u8 unknown_0000[0x44];                // 0x00
-    char *(*get_gizmo_name)(void *gizmo); // 0x44
-    u8 unknown_0048[0x54];                // 0x48
-} AREA_GIZMOTYPE;
-
 typedef struct area_gizmotypes_s { // size 0xc
     i32 count;                     // 0x0
     i32 unknown_0004;              // 0x4
     AREA_GIZMOTYPE *types;         // 0x8
 } AREA_GIZMOTYPES;
-
-typedef struct area_gizmoset_s { // size 0x14
-    void *type;                  // 0x00
-    i32 count;                   // 0x04
-    i32 max_count;               // 0x08
-    void *gizmos;                // 0x0c
-    void *unknown_0010;          // 0x10
-} AREA_GIZMOSET;
-
-typedef struct area_gizmo_s { // size 0x8
-    void *object;             // 0x0
-    i16 unknown_0004;         // 0x4
-    u8 type_id;               // 0x6
-    u8 unknown_0007;          // 0x7
-} AREA_GIZMO;
 
 typedef struct area_gizmosys_prefix_s { // size 0x4
     AREA_GIZMOSET *sets;                // 0x0
@@ -377,12 +356,6 @@ AREA_DATA_PC *Areas_ConfigureList(char *path, VARIPTR *buffer, VARIPTR *buffer_e
     AreasConfigDiagnostic(path);
     return NULL;
 }
-
-typedef struct player_progress_hp_s { // size 0x10
-    u8 unknown_0000[8];               // 0x0
-    u8 hitpoints;                     // 0x8
-    u8 unknown_0009[7];               // 0x9
-} PLAYER_PROGRESS_HP;
 
 i32 AreaFromMiniKitID(i32 id) {
     i32 index;
@@ -803,17 +776,6 @@ extern "C" void DumpAreaData(i32 mode, i32) {
     APIDumpCharacterModels(mode);
     Particles_DumpAreaPage();
 }
-
-typedef struct area_loading_clock_reader_s { // size 0x7c24
-    u8 unknown_0000[0x7c20];                 // 0x0000
-    f32 elapsed_time;                        // 0x7c20
-} AREA_LOADING_CLOCK_READER;
-
-typedef struct area_loading_pad_reader_pc_s { // size 0x60
-    u8 unknown_0000[8];                       // 0x00
-    u32 buttons_pressed;                      // 0x08
-    u8 unknown_000c[0x54];                    // 0x0c
-} AREA_LOADING_PAD_READER_PC;
 
 extern "C" u8 *Game_LevelSave;
 

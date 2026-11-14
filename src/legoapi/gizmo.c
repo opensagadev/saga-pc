@@ -4,32 +4,11 @@
 STATIC_ASSERT(offsetof(GIZMOTYPE, fns) + offsetof(GIZMOFNS, get_gizmo_name_fn) == 0x44);
 STATIC_ASSERT(offsetof(GIZMOTYPE, fns) + offsetof(GIZMOFNS, get_num_outputs_fn) == 0x50);
 
-typedef struct area_gizmotype_s {
-    u8 unknown_0000[0x44];
-    char *(*get_gizmo_name)(void *gizmo);
-    u8 unknown_0048[0x54];
-} AREA_GIZMOTYPE;
-
 typedef struct area_gizmotypes_s {
     i32 count;
     i32 unknown_0004;
     AREA_GIZMOTYPE *types;
 } AREA_GIZMOTYPES;
-
-typedef struct area_gizmoset_s {
-    void *type;
-    i32 count;
-    i32 max_count;
-    void *gizmos;
-    void *unknown_0010;
-} AREA_GIZMOSET;
-
-typedef struct area_gizmo_s {
-    void *object;
-    i16 unknown_0004;
-    u8 type_id;
-    u8 unknown_0007;
-} AREA_GIZMO;
 
 typedef struct area_gizmosys_prefix_s {
     AREA_GIZMOSET *sets;

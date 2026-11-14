@@ -78,10 +78,6 @@ extern "C" {
     extern i32 pause_i_pad;
 }
 
-typedef struct OPTIONS_MENU_READER {
-    u8 player_control[2];
-} OPTIONS_MENU_READER;
-
 extern "C" {
     extern i16 dat_0088081c;
     extern i16 dat_00880820;
@@ -91,11 +87,6 @@ extern "C" {
     extern f32 MenuSaveSlotsWidth;
     extern f32 MenuSaveSlotsStepY;
 }
-
-typedef struct GAME_STATE_MENU_READER {
-    u8 reserved[0x7c18];
-    u16 completion;
-} GAME_STATE_MENU_READER;
 
 typedef struct MENU_INPUT_PAD_PC {
     FRAME_PAD_PC *bound_pad;

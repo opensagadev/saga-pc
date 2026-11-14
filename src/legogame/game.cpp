@@ -73,17 +73,6 @@ extern "C" {
     extern i16 dat_007f1828; /* character id fixed up from "PenguinBomb" */
 }
 
-typedef struct SHOP_SAVE_VIEW {
-    u8 unknown_0000[0x7bd4];
-    u32 hint_purchased_bits[3];
-    u32 character_purchased_bits[4];
-    u32 extra_unlocked_bits[2];
-    u32 gold_brick_purchased_bits[2];
-    u32 extra_purchased_bits[2];
-    u8 unknown_7c08[0x15];
-    u8 bolt_unlocked;
-} SHOP_SAVE_VIEW;
-
 extern "C" i32 Hub_PanelBusy(void);
 #define GAME_PUBLISHER_ASSERT(expression) typedef char SAGA_JOIN(game_publisher_static_assert_, __COUNTER__)[(expression) ? 1 : -1]
 GAME_PUBLISHER_ASSERT(offsetof(GAMEOBJECT, suit) == 0xcbc);
@@ -275,12 +264,6 @@ typedef struct GAME_GIZMO_SFX_CAMERA_READER {
 GAME_PUBLISHER_ASSERT(offsetof(GAME_GIZMO_SFX_CAMERA_READER, sock) == 1);
 GAME_PUBLISHER_ASSERT(offsetof(GAME_GIZMO_SFX_CAMERA_READER, sock_distance) == 0x2c);
 
-typedef struct TAG_CHARACTER_DATA_READER {
-    u8 opaque_00[0x42];
-    i16 icon_model;
-    u8 opaque_44[8];
-} TAG_CHARACTER_DATA_READER;
-
 GAME_PUBLISHER_ASSERT(sizeof(TAG_CHARACTER_DATA_READER) == 0x4c);
 GAME_PUBLISHER_ASSERT(offsetof(TAG_CHARACTER_DATA_READER, icon_model) == 0x42);
 GAME_PUBLISHER_ASSERT(offsetof(APICHARSYS, char_data) == 0x20);
@@ -313,15 +296,6 @@ typedef struct GAME_CUSTOMISER_REWARD_READER {
 } GAME_CUSTOMISER_REWARD_READER;
 
 GAME_PUBLISHER_ASSERT(offsetof(GAME_CUSTOMISER_REWARD_READER, save_pieces) == 0x174);
-
-struct MUSIC_PAIR_ARENA { // size 0x3c
-    i32 prefix_word;      // 0x00
-    u8 unknown_004[0x18]; // 0x04
-    i16 action_first;     // 0x1c
-    u8 unknown_01e[0x1a]; // 0x1e
-    i16 ambient_first;    // 0x38
-    u8 unknown_03a[2];    // 0x3a
-};
 
 STATIC_ASSERT(offsetof(GAMEOBJECT, ai_packet) + offsetof(AIPACKET, nearest_opponent) == 0x39c);
 STATIC_ASSERT(offsetof(GAMEOBJECT, ai_packet) + offsetof(AIPACKET, nearest_opponent_metric) == 0x3a0);

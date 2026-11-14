@@ -10,12 +10,6 @@ typedef struct bulk_ai_panel_s {
     NUVEC floor_position;
 } BULK_AI_PANEL;
 
-typedef struct {
-    u8 opaque_00[0x40];
-    char name[16];
-    u8 opaque_50[0x90 - 0x50];
-} ADD_PANEL;
-
 typedef struct registry_panel_record_pc_s {
     u8 storage[0x90];
 } REGISTRY_PANEL_RECORD_PC;

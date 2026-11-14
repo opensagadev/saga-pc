@@ -22,42 +22,13 @@ typedef struct CLOUDCITY_PANEL_FLAGS_VIEW {
     u8 flags;
 } CLOUDCITY_PANEL_FLAGS_VIEW;
 
-typedef struct CLOUDCITY_LEVEL_FLAG_VIEW {
-    u8 started;
-} CLOUDCITY_LEVEL_FLAG_VIEW;
-
 extern i32 turret_gizmotype_id;
 void DrawMeleeTargetsNumber(i16 *targets, u8 *counts, i32 count, u8 reset, NUSPECIALHANDLE *special);
 #define FALCON_SLOT(object) ((i8)(object)->unknown_280)
 
 /* Asteroid field. */
-typedef struct ASTEROID {
-    NUSPECIALHANDLE special;
-    GIZMOBLOWUP_PC *blowup;
-    i16 rotation_speed_x;
-    i16 rotation_speed_y;
-    i16 rotation_speed_z;
-    u8 activated;
-} ASTEROID;
 
 /* Rotating rock at the end of AsteroidChase C. */
-typedef struct FINAL_ASTEROID {
-    NUSPECIALHANDLE special;
-    GIZMOBLOWUP_PC *blowups[8];
-    i16 blowup_count;
-    i16 rotation_speed_x;
-    i16 rotation_speed_y;
-    i16 rotation_speed_z;
-    i16 rotation_x;
-    i16 rotation_y;
-    i16 rotation_z;
-} FINAL_ASTEROID;
-
-typedef struct ASTEROIDC_NETPACKET {
-    u16 rotation_x;
-    u16 rotation_y;
-    u16 rotation_z;
-} ASTEROIDC_NETPACKET;
 
 #define PLAYER_OBJ(i) ((GAMEOBJECT *)Player[i])
 void LevelStreaming_DoorOverride(WORLDINFO *world, LEVELDATA_PC *level, f32 radius, f32 *distance);
@@ -87,16 +58,6 @@ extern u32 LEGO_AIPATHCNX_BIGJUMP;
             }                                                                                                                              \
         }                                                                                                                                  \
     } while (0)
-
-typedef struct HOTH_WORLD_SCRIPT {
-    u8 reserved[0x2b00];
-    AISCRIPTPROCESS processor;
-} HOTH_WORLD_SCRIPT;
-
-typedef struct HOTH_ANTINODE {
-    u8 reserved[0x50];
-    i64 excluded_character_types;
-} HOTH_ANTINODE;
 
 void DrawMeleeTargetsRows(i16 *targets, char *defeated, f32 *values, i32 count);
 

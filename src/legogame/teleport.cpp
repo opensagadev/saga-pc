@@ -79,20 +79,10 @@ typedef struct TELEPORT_VARIANT_VIEW { // size 0x7c0
 } TELEPORT_VARIANT_VIEW;
 
 typedef struct {
-    char name[16];
-    u8 opaque[0xfc - 16];
-} ADD_TELEPORT;
-
-typedef struct {
     u8 opaque[0x4680];
     ADD_TELEPORT *items;
     i32 count;
 } ADD_TELEPORT_WORLD;
-
-typedef struct HINT_WORLD_TELEPORT {
-    u8 reserved00[0x4684];
-    i32 teleport_count;
-} HINT_WORLD_TELEPORT;
 
 extern "C" {
     static void Tel_1_way(NUFPAR_PC *parser);
