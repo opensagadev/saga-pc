@@ -376,10 +376,7 @@ extern "C" {
 extern "C" {
     char *AiLevelPathName = TextInputKeyNameTextPc7516c0;
     i32 ai_usepackfile = 1;
-    i8 AiLoadMinimumRespawnCountPc = 0;
     i8 AiLoadMaximumRespawnCountPc = 0;
-    f32 AiLoadMinimumRespawnTimePc = 0.0f;
-    f32 AiLoadMaximumRespawnTimePc = 0.0f;
     void (*GameAILoadFn)(AISYS_PC *, i32, NUGSCN *, VARIPTR *, VARIPTR *) = NULL;
 }
 
@@ -7695,7 +7692,6 @@ extern "C" {
     extern const f64 VehicleTurnPhaseOffset = 16384.0;
     extern const f64 MoveSplineRunSpeedSentinel = 1000000000.0;
     extern const f64 BoltTargetRandomDenominator = 65535.0;
-    extern const f64 NuAnimDataFloatMax = 3.4028234663852886e+38;
 #pragma data_seg(".data$GameObjectRotationBuggyId")
     u16 GameObjectRotationBuggyId = 0xffff;
 #pragma data_seg()
@@ -8145,9 +8141,6 @@ extern "C" {
     i32 PCClipExtentsEnabled = 1;
 #pragma data_seg()
     i32 PCClipUseSSE = 0;
-#pragma data_seg(".data$AIPathConnectionMargin")
-    f32 AIPathConnectionMargin = 0.05f;
-#pragma data_seg()
     NUCAMERA *pNuCam = 0;
 #define IDENTITY_NUMTX 1.0f, 0.0f, 0.0f, 0.0f, 0.0f, 1.0f, 0.0f, 0.0f, 0.0f, 0.0f, 1.0f, 0.0f, 0.0f, 0.0f, 0.0f, 1.0f
     NUMTX NuMtxSetIdentityTemplate = {IDENTITY_NUMTX};
@@ -8931,8 +8924,6 @@ i32 cubeEdgeTopologies[12][2] = {{3, 0}, {4, 0}, {1, 0}, {5, 0}, {2, 3}, {2, 4},
 
 // 513 angular samples including both endpoints.
 
-VARIPTR *aiscript_load_buffer = 0;
-
 AISCRIPT_PC *aiscript_load_script = 0;
 
 AISTATE_PC *aiscript_load_state = 0;
@@ -9091,7 +9082,6 @@ extern "C" {
 #pragma data_seg(".data$CInfo")
     CHARACTER_CONTEXT_INFO_PC *CInfo = &PCContextInfoTable[1];
 #pragma data_seg()
-    AIANTINODE_PC dynamic_antinodes[64] = {0};
 #pragma data_seg(".data$default_path_radius")
     f32 default_path_radius = 0.25f;
 #pragma data_seg()
@@ -9276,17 +9266,8 @@ extern "C" {
 
 extern "C" {
     AI_PREPARING_SPECIAL_MOVE_PC PreparingForSpecialMoveFn = 0;
-#pragma data_seg(".data$new_retreat")
-    i32 new_retreat = 1;
-#pragma data_seg()
 #pragma data_seg(".data$ai_moveradius")
     f32 ai_moveradius = 0.10000000149011612f;
-#pragma data_seg()
-#pragma data_seg(".data$AIMovementInstructionPositiveThreshold")
-    f32 AIMovementInstructionPositiveThreshold = 0.5f;
-#pragma data_seg()
-#pragma data_seg(".data$AIMovementInstructionNegativeThreshold")
-    f32 AIMovementInstructionNegativeThreshold = -0.5f;
 #pragma data_seg()
 
     NUSPECIALHANDLE LevHSpecial[88] = {0};
@@ -9373,8 +9354,6 @@ extern "C" {
     i16 id_BASKETCANNON = -1;
 #pragma data_seg()
     AI_SCRIPT_FIRST_ACTION_PC ScriptProcessFirstTimeActionFn = 0;
-    AIPACKET_PC *current_packet = 0;
-    AISCRIPTPROCESS_PC *current_processor = 0;
 }
 
 extern "C" {
@@ -9495,7 +9474,6 @@ extern "C" {
 #pragma const_seg(".rdata$AIActionFalseName")
     const char AIActionFalseName[6] = "FALSE";
 #pragma const_seg()
-    i32 AIActionDiagnosticMode = 0;
     f32 ForceBackRadius2 = 0;
 
 #pragma data_seg(".data$Tag_Mode")
@@ -13631,7 +13609,6 @@ extern "C" {
     u8 default_nacross = 2;
     f32 default_xspacing = 0.4f;
     f32 default_zspacing = 0.4f;
-    i32 aisys_maxnumcreaturesets = 32;
 }
 
 extern "C" {
@@ -22964,7 +22941,6 @@ extern "C" {
 }
 
 extern "C" {
-    f32 AiRndrCullDistance = 0;
 
     struct AIEDITOR_RENDER_STATE *aieditor = 0;
 }
@@ -26332,7 +26308,6 @@ extern "C" {
     void (*AIPathDeletedFn)(struct EDAIPATH_s *) = NULL;
     i32 near_clip_at_cursor = 0;
     void (*AIPathNodeMovedFn)(struct EDAIPATHNODE_s *) = NULL;
-    NUVEC edpath_addoffset = {0};
 }
 
 #pragma section(".bss$GameAISYSRebuildFromEditorDataFn", read, write)

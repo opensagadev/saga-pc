@@ -6,6 +6,8 @@
 #include <stdio.h>
 #include <string.h>
 
+f32 AiRndrCullDistance = 0;
+VARIPTR *aiscript_load_buffer = 0;
 static VARIPTR *aiscript_load_end_buffer = 0;
 
 extern NULISTLNK *NuLinkedListGetPrev(NULISTHDR *list, NULISTLNK *node);
@@ -333,6 +335,12 @@ typedef struct ai_system_load_pc_s {
     NUGSCN *scene;                  // 0x1394
 } AI_SYSTEM_LOAD_PC;                // size 0x1398
 
+AIPACKET_PC *current_packet = 0;
+AISCRIPTPROCESS_PC *current_processor = 0;
+i8 AiLoadMinimumRespawnCountPc = 0;
+AIANTINODE_PC dynamic_antinodes[64] = {0};
+f32 AiLoadMinimumRespawnTimePc = 0.0f;
+f32 AiLoadMaximumRespawnTimePc = 0.0f;
 static f32 AiLoadStartStaggerPc = 0.0f;
 
 extern i32 (*GlobalCharacterTypeIDFn)(char *);
@@ -628,6 +636,15 @@ STATIC_ASSERT(offsetof(EDANTINODE_s, type) == 0x49);
 
 STATIC_ASSERT(offsetof(EDANTINODE_s, link) == 0);
 
+/* Form2: append these genuine editor-owned mutable scalar definitions in
+ * existing src/gameapi/aisys.c before the six-function draft. This TU already
+ * owns editor behavior, and both cells have process-static lifetime in Native.
+ * Translation-unit placement is an ordinary owner choice; source spelling and
+ * initialization are unchanged. Native allocation extents unknown; zero credit.
+ * src/data.cpp is retained byte-for-byte from baseline, avoiding its measured
+ * constructor/data region displacement. All old aisys complete spans remain a
+ * hard measured gate. No section attributes, extra helpers, aliases or bank. */
+i32 aisys_maxnumcreaturesets = 32;
 f32 AiEditorPickHeightTolerancePc = 0.1f;
 
 extern f32 AiEditorPickHeightTolerancePc;
@@ -707,6 +724,7 @@ extern u8 default_nacross;
 extern f32 default_xspacing;
 extern f32 default_zspacing;
 
+NUVEC edpath_addoffset = {0};
 eduiitem_s *creatureEditor_ResetParamsItem = NULL;
 
 typedef struct AI_CREATURE_MODEL_BOUNDS_PC {
@@ -726,6 +744,10 @@ void edcamGetPosAng(NUVEC *position, i32 *angle_x, i32 *angle_y);
 
 i32 NewRayCastScaleY(NUVEC *position, NUVEC *movement, f32 radius, f32 scale_y, i32 scan_flags);
 
+f32 AIPathConnectionMargin = 0.05f;
+f32 AIMovementInstructionPositiveThreshold = 0.5f;
+f32 AIMovementInstructionNegativeThreshold = -0.5f;
+i32 new_retreat = 1;
 f32 AiEditorCursorRayScalePc = 1e-17f;
 
 STATIC_ASSERT(sizeof(AIPATHINFO_PC) == 0x18);
@@ -740,6 +762,7 @@ STATIC_ASSERT(offsetof(EDAIPATHCHECK_s, angle) == 0x18);
 
 /* NUL-terminated instruction strings, each in its own section to keep the data layout. */
 #pragma const_seg(".rdata$AiAntinodeRenderNearestPc")
+const f64 NuAnimDataFloatMax = 3.4028234663852886e+38;
 const char AiAntinodeRenderNearestPc[] = "SELECT - Select nearest";
 #pragma const_seg()
 
@@ -911,6 +934,7 @@ extern AIACTIONDEF_PC api_aiactiondefs[];
 
 extern AICONDITIONDEF_PC api_aiconditiondefs[];
 
+i32 AIActionDiagnosticMode = 0;
 static i32 ExpressionRequiredNameLookup = 0;
 
 static i32 ExpressionNameLookupFailed = 0;
