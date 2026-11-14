@@ -55,7 +55,6 @@ extern "C" {
     i32 FreePlayModelCount = 0;
     i32 FreePlayResidentCount = 0;
     i32 FreePlayBonusCount = 0;
-    i32 bonusmodearcade = 0;
     i16 TextCrawlChapterIdPc = 0;
     i16 TextCrawlVehicleBonusIdPc = 0;
     i16 TextCrawlCharacterBonusIdPc = 0;
@@ -192,30 +191,10 @@ extern "C" {
 }
 
 extern "C" {
-    f32 hub_minikitviewer_movewait = 0.0f;
-    f32 hub_minikitviewer_move = 0.0f;
-    f32 HubMiniKitViewerReflectYPc = 0.09000000357627869f;
-    f32 HubHologramAlphaPc = 0.0f;
     i32 HubCompletionPointsPc = 0;
     i32 HubBothTrueJediGoldBricksPc = 0;
-    f32 HubAreaPanelOnePc[6] = {-0.15000000596046448f, -0.45000001788139343f, 0.75f, -0.75f,
-                                0.45000001788139343f,  0.15000000596046448f};
-    NUGSPLINE *HubMiniKitViewerSplinePc = NULL;
-    f32 HubAreaTimePc = 0.0f;
-    f32 HubEpisodeTimePc = 0.0f;
-    f32 HubStatsTimePc = 0.0f;
-    i32 HubAreaPc = 0;
-    i32 HubLastAreaPc = 0;
-    i32 HubEpisodePc = 0;
-    i32 HubMiniKitAreaPc = 0;
-    void (*HubInitAIFnPc)(WORLDINFO *) = NULL;
-    f32 HubHologramTargetAlphaPc = 0.0f;
     void *HubBuildItPc = NULL;
-    void (*HubResetAIFnPc)(WORLDINFO *) = NULL;
     u64 LevHSpecialExists = 0ui64;
-    f32 HubJabbaAwakePc = 0.0f;
-    i32 HubBuildItsResetPc = 0;
-    f32 HubPreventDropOutTimePc = 0.0f;
     i32 EpCompleteCount = 0;
     i32 EpCompleteTotal = 0;
     i32 EpMiniKitCount = 0;
@@ -241,8 +220,6 @@ extern "C" {
     f32 TextCrawlTimePc = 0.0f;
     u32 TextCrawlRedPc = 0;
     u8 TextCrawlBluePc = 255;
-    i32 Arcade_TextCrawlID = -1;
-    i32 Arcade_TextCrawlParagraphs = 1;
 }
 
 extern "C" {
@@ -8500,7 +8477,6 @@ extern "C" {
 
     i32 PlayerID[2] = {-1, -1};
     i16 PlayerList[8] = {0};
-    APICHARACTERMODELLIST Hub_ModelList[6] = {0};
     LEVELDATA_PC *LDataList = 0;
     LEVELDATA_PC *NEWGAME_LDATA = 0;
     LEVELDATA_PC *LOADGAME_LDATA = 0;
@@ -9113,23 +9089,6 @@ extern "C" {
         {&PCArcadeModeText1, 50, 0x12},  {&PCArcadeModeText2, 50000, 4}, {&PCArcadeModeText2, 100000, 4},
         {&PCArcadeModeText2, 250000, 4},
     };
-#pragma data_seg()
-#pragma data_seg(".data$ArcadeItem")
-    ARCADE_ITEM_PC ArcadeItem = {{&PCArcadeLevelText,
-                                  0,
-                                  12,
-                                  0,
-                                  &PCArcadeModeText,
-                                  0,
-                                  7,
-                                  0,
-                                  &PCArcadePlayText,
-                                  0,
-                                  5,
-                                  0,
-                                  {&TextIdPc8807cc, 0, 2, 0},
-                                  {&TextIdPc8808c0, 0, 1, 0}}};
-
 #pragma data_seg()
 }
 
@@ -9761,7 +9720,6 @@ extern "C" {
     // Hub arrays are two-entry source views; full original capacities remain unknown.
     f32 pod_roll[2] = {0};
     f32 pod_roll_target[2] = {0};
-    f32 Hub_PadSpeed[2] = {0};
     u16 Hub_PadAngle[2] = {0};
     MISSIONSYS_PC *MissionSys = 0;
     void (*GameObjectDimensionsExtraFn)(GAMEOBJECT *) = 0;
@@ -11053,12 +11011,6 @@ extern "C" {
 #pragma data_seg(".data$CoinTab")
     u8 CoinTab[4] = {0, 1, 2, 3};
 #pragma data_seg()
-#pragma data_seg(".data$PCArcadePointGoals")
-    i32 PCArcadePointGoals[5] = {5, 10, 25, 50, 0};
-#pragma data_seg()
-#pragma data_seg(".data$PCArcadeIconMessageY")
-    f32 PCArcadeIconMessageY = -0.550000011920929f;
-#pragma data_seg()
 #pragma data_seg(".data$PANEL_COINX")
     f32 PANEL_COINX = 0.6499999761581421f;
 #pragma data_seg()
@@ -11099,8 +11051,6 @@ extern "C" {
 #pragma data_seg()
     u32 BonusCoinTarget = 0;
     i32 BonusWinFlag = 0;
-    i32 Arcade_Points[2] = {0};
-    i32 Arcade_Score[2] = {0};
     f32 BuildUpScale = 0;
     f32 CoinTotalScale = 0;
     f32 DrawBuildUpTime = 0;
@@ -13991,13 +13941,9 @@ extern "C" {
 
 extern "C" {
     u8 CheatC3poBitsEnabledPc = 0;
-    i32 selectmodemode = 0;
-    f32 selectmodetime = 0.0f;
     i32 (*CheckMusicOtherFn)(void) = NULL;
     i32 (*PauseRenderOffFn)(void) = NULL;
     f32 minikittime = 0.0f;
-    i32 freeplaymode = 0;
-    i32 freeplay_selected[2] = {0, 0};
     i32 (*Tag_NoHiddenIconFn)(GAMEOBJECT *) = NULL;
     f32 game_pulse = 0.0f;
     f32 global_pulse = 0.0f;
@@ -14055,10 +14001,6 @@ extern "C" {
     ANIM_REDIRECT_VIEW_PC AnimRedirectList_Batman[1] = {
         {NULL, 0, {0, 0}},
     };
-}
-
-extern "C" {
-    f32 HubMiniKitPanelTimePc = 0.0f;
 }
 
 extern "C" {
@@ -24752,11 +24694,6 @@ extern "C" {
 }
 
 extern "C" {
-    i32 HubDoorAreaPc = 0;
-    i32 HubDoorNewLevelPc = 0;
-}
-
-extern "C" {
     /* Place actual owners in canonical data.cpp extern-C cohort. */
     i32 GameKeepMergeActionPc = 0;
 #pragma data_seg(".data$CharacterBlobShadowsOnPc")
@@ -25545,26 +25482,6 @@ extern "C" {
 }
 
 extern "C" {
-#pragma data_seg(".data$HubTrueJediTypeAlphaPc")
-    i32 HubTrueJediTypeAlphaPc = 96;
-#pragma data_seg()
-#pragma data_seg(".data$HubMiniKitOpenThresholdPc")
-    f32 HubMiniKitOpenThresholdPc = 1.0;
-#pragma data_seg()
-#pragma data_seg(".data$HubCompletedAreasPc")
-    i32 HubCompletedAreasPc = 6;
-#pragma data_seg()
-#pragma data_seg(".data$HubAreasPerEpisodePc")
-    i32 HubAreasPerEpisodePc = 7;
-#pragma data_seg()
-#pragma data_seg(".data$HubForceBackPositionPc")
-    NUVEC HubForceBackPositionPc = {-20.275999069213867, 0.0, -49.327999114990234};
-#pragma data_seg()
-#pragma data_seg(".data$HubForceBackRadiusPc")
-    f32 HubForceBackRadiusPc = 2.299999952316284;
-#pragma data_seg()
-    f32 HubMiniKitOpenTimePc = 0;
-    void (*HubUpdateAIFnPc)(WORLDINFO *) = 0;
     i32 shop_quit = 0;
     i32 shop_save_done = 0;
     GAMESAVE TempGame = {0};
@@ -25578,26 +25495,8 @@ extern "C" {
 #pragma data_seg(".data$PANEL_MINIKITCOUNTY")
     f32 PANEL_MINIKITCOUNTY = -0.10000000149011612f;
 #pragma data_seg()
-#pragma data_seg(".data$stats_xscale")
-    f32 stats_xscale = 1.0f;
-#pragma data_seg()
 #pragma data_seg(".data$HubEpisodeTitleYPc")
     f32 HubEpisodeTitleYPc = -0.5950000286102295f;
-#pragma data_seg()
-#pragma data_seg(".data$HubEpisodeTitleSizePc")
-    f32 HubEpisodeTitleSizePc = 0.5f;
-#pragma data_seg()
-#pragma data_seg(".data$HubEpisodeSubtitleYPc")
-    f32 HubEpisodeSubtitleYPc = -0.7450000047683716f;
-#pragma data_seg()
-#pragma data_seg(".data$HubEpisodeSubtitleSizePc")
-    f32 HubEpisodeSubtitleSizePc = 0.6000000238418579f;
-#pragma data_seg()
-#pragma data_seg(".data$HubSelectMenuYPc")
-    f32 HubSelectMenuYPc = 0.125f;
-#pragma data_seg()
-#pragma data_seg(".data$HubBonusMenuYPc")
-    f32 HubBonusMenuYPc = 0.125f;
 #pragma data_seg()
 #pragma data_seg(".data$HubPromptXPc")
     f32 HubPromptXPc = 0.6700000166893005f;
@@ -25620,15 +25519,6 @@ extern "C" {
 #pragma data_seg(".data$HubBuildBarOverallScalePc")
     f32 HubBuildBarOverallScalePc = 0.8500000238418579f;
 #pragma data_seg()
-#pragma data_seg(".data$HubTrueJediLabelOffsetPc")
-    f32 HubTrueJediLabelOffsetPc = 0.23499999940395355f;
-#pragma data_seg()
-#pragma data_seg(".data$HubTrueJediLabelScalePc")
-    f32 HubTrueJediLabelScalePc = 0.44999998807907104f;
-#pragma data_seg()
-#pragma data_seg(".data$HubTrueJediLabelWidthPc")
-    f32 HubTrueJediLabelWidthPc = 0.4000000059604645f;
-#pragma data_seg()
 #pragma data_seg(".data$COLLECTION_DX")
     f32 COLLECTION_DX = 0.15000000596046448f;
 #pragma data_seg()
@@ -25638,20 +25528,8 @@ extern "C" {
 #pragma data_seg(".data$COLLECTION_ICONSIZE")
     f32 COLLECTION_ICONSIZE = 0.1599999964237213f;
 #pragma data_seg()
-#pragma data_seg(".data$HubEpisodeRedPc")
-    u8 HubEpisodeRedPc = 255;
-#pragma data_seg()
 #pragma data_seg(".data$HubEpisodeGreenPc")
     u8 HubEpisodeGreenPc = 191;
-#pragma data_seg()
-#pragma data_seg(".data$HubTrueJediLabelRedPc")
-    u8 HubTrueJediLabelRedPc = 255;
-#pragma data_seg()
-#pragma data_seg(".data$HubTrueJediLabelGreenPc")
-    u8 HubTrueJediLabelGreenPc = 255;
-#pragma data_seg()
-#pragma data_seg(".data$HubTrueJediLabelBluePc")
-    u8 HubTrueJediLabelBluePc = 255;
 #pragma data_seg()
 #pragma data_seg(".data$HubBuildBarSegmentsPc")
     i32 HubBuildBarSegmentsPc = 10;
@@ -25662,9 +25540,6 @@ extern "C" {
 #pragma data_seg(".data$HubPromptOnColourPc")
     i32 HubPromptOnColourPc[3] = {223, 223, 223};
 #pragma data_seg()
-    i32 HubDrawMiniKitCharacterPc = 0;
-    u8 HubEpisodeBluePc = 0;
-    f32 HubArcadeMenuYPc = 0;
     char TextInputActionLabelBufferPc[128] = {0};
 /* Exact address-backed native span [8016a8,8016f0), not a claim about original logical array capacity. Reader remains
  * unsized. */
@@ -25675,18 +25550,6 @@ extern "C" {
 
 /* Append inside data.cpp; each original new owner gets its own section. */
 extern "C" {
-    i32 hub_bonusepisode = 0;
-    f32 selectmodeduration = 0;
-    f32 bonusmodetime = 0;
-    i32 hub_selectmode = 0;
-    i32 hub_bonusarea = 0;
-    i32 hub_bonusmode = 0;
-    i32 fpcount = 0;
-    i32 hub_freeplaysource = 0;
-    APICHARACTERMODELLIST fplist[341] = {0};
-    i32 bonusmodemode = 0;
-    f32 bonusmodeduration = 0;
-    f32 HubIconWibbleTimePc[4] = {0};
     f32 BlipD[2] = {0};
     f32 uprepeattime[2] = {0};
     f32 downrepeattime[2] = {0};
@@ -25695,17 +25558,9 @@ extern "C" {
     u8 uprepeatcount[2] = {0};
     u8 leftrepeatcount[2] = {0};
     u8 rightrepeatcount[2] = {0};
-    i32 HubIconWibbleRatePc[4] = {0};
-    i32 freeplay_i[2] = {0};
     APICHARACTERMODELLIST NetFreePlayModelList[49] = {0};
     u8 net_recievedFreePlayList = 0;
     i8 net_FreePlayModelCount = 0;
-#pragma data_seg(".data$ArcadeLevelPc")
-    AREA_DATA_PC **ArcadeLevelPc[12] = {&SENATE_ADATA,       &UTAPAU_ADATA,      &HOTH_ADATA,
-                                        &BONUSDAGOBAH_ADATA, &BONUSKAMINO_ADATA, &BONUSKASHYYYK_ADATA,
-                                        &E1CHARACTER_ADATA,  &E2CHARACTER_ADATA, &E3CHARACTER_ADATA,
-                                        &E4CHARACTER_ADATA,  &E5CHARACTER_ADATA, &E6CHARACTER_ADATA};
-#pragma data_seg()
 }
 
 extern "C" {

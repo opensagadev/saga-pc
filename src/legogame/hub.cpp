@@ -1166,6 +1166,24 @@ static void HubDrawArcadeStatsPc(f32 alpha) {
 
 extern "C" {
 #pragma data_seg(".data$Arcade_NeedTwoPlayers_Scale")
+    AREA_DATA_PC **ArcadeLevelPc[12] = {&SENATE_ADATA,       &UTAPAU_ADATA,      &HOTH_ADATA,
+                                        &BONUSDAGOBAH_ADATA, &BONUSKAMINO_ADATA, &BONUSKASHYYYK_ADATA,
+                                        &E1CHARACTER_ADATA,  &E2CHARACTER_ADATA, &E3CHARACTER_ADATA,
+                                        &E4CHARACTER_ADATA,  &E5CHARACTER_ADATA, &E6CHARACTER_ADATA};
+    ARCADE_ITEM_PC ArcadeItem = {{&PCArcadeLevelText,
+                                  0,
+                                  12,
+                                  0,
+                                  &PCArcadeModeText,
+                                  0,
+                                  7,
+                                  0,
+                                  &PCArcadePlayText,
+                                  0,
+                                  5,
+                                  0,
+                                  {&TextIdPc8807cc, 0, 2, 0},
+                                  {&TextIdPc8808c0, 0, 1, 0}}};
     static f32 Arcade_NeedTwoPlayers_Scale = 1.0f;
 #pragma data_seg()
 
@@ -1576,6 +1594,13 @@ static i32 HubCopyNetworkFreePlayListPc(void) {
     return 1;
 }
 
+NUGSPLINE *HubMiniKitViewerSplinePc = NULL;
+f32 hub_minikitviewer_move = 0.0f;
+f32 hub_minikitviewer_movewait = 0.0f;
+void (*HubInitAIFnPc)(WORLDINFO *) = NULL;
+void (*HubResetAIFnPc)(WORLDINFO *) = NULL;
+void (*HubUpdateAIFnPc)(WORLDINFO *) = 0;
+f32 HubArcadeMenuYPc = 0;
 static u16 HubIconWibbleAnglePc[4] = {0};
 
 extern "C" void fun_00476b70() {
@@ -1651,13 +1676,48 @@ static i32 HubMoveFreePlayCursorPc(COLLECTION_BUILD_PC *collection, i32 player, 
     return index;
 }
 
+f32 HubEpisodeTimePc = 0.0f;
+i32 bonusmodearcade = 0;
+f32 bonusmodetime = 0;
+i32 selectmodemode = 0;
+f32 HubMiniKitPanelTimePc = 0.0f;
+i32 hub_selectmode = 0;
+APICHARACTERMODELLIST Hub_ModelList[6] = {0};
 static f32 BigIconAlpha[2] = {0};
 #pragma data_seg(".data$HubFreePlaySelectionWaitPc")
+f32 PCArcadeIconMessageY = -0.550000011920929f;
+NUVEC HubForceBackPositionPc = {-20.275999069213867, 0.0, -49.327999114990234};
+f32 HubForceBackRadiusPc = 2.299999952316284;
+i32 Arcade_TextCrawlID = -1;
+i32 Arcade_TextCrawlParagraphs = 1;
 static f32 HubFreePlaySelectionWaitPc = 0.75f;
 #pragma data_seg()
 static f32 freeplay_time[2] = {0};
+i32 hub_bonusepisode = 0;
+i32 HubIconWibbleRatePc[4] = {0};
+f32 selectmodeduration = 0;
 static f32 freeplayduration = 0;
 static f32 freeplaytime = 0;
+i32 Arcade_Points[2] = {0};
+i32 HubMiniKitAreaPc = 0;
+f32 HubJabbaAwakePc = 0.0f;
+i32 HubAreaPc = 0;
+i32 HubEpisodePc = 0;
+i32 freeplay_selected[2] = {0, 0};
+i32 freeplaymode = 0;
+f32 HubMiniKitOpenTimePc = 0;
+i32 Arcade_Score[2] = {0};
+f32 HubAreaTimePc = 0.0f;
+i32 hub_bonusarea = 0;
+i32 hub_bonusmode = 0;
+i32 HubDoorNewLevelPc = 0;
+i32 freeplay_i[2] = {0};
+f32 HubStatsTimePc = 0.0f;
+i32 fpcount = 0;
+f32 selectmodetime = 0.0f;
+i32 HubDoorAreaPc = 0;
+i32 hub_freeplaysource = 0;
+APICHARACTERMODELLIST fplist[341] = {0};
 static i32 hub_freeplay_area = 0;
 
 extern "C" void Hub_UpdateFreePlaySelect(void) {
@@ -2045,6 +2105,14 @@ static i32 Hub_UpdateMiniKitBoundsPc(i32 area_index, WORLDINFO *world) {
 
 static i32 hub_minikitviewer_area = 0;
 static NUVEC hub_minikitviewer_pos = {-27.0f, 0.10000000149011612f, -22.125f};
+i32 HubLastAreaPc = 0;
+f32 Hub_PadSpeed[2] = {0};
+i32 bonusmodemode = 0;
+f32 bonusmodeduration = 0;
+u8 HubEpisodeBluePc = 0;
+f32 HubHologramAlphaPc = 0.0f;
+f32 HubHologramTargetAlphaPc = 0.0f;
+f32 HubPreventDropOutTimePc = 0.0f;
 static f32 HubMiniKitViewerAlphaPc = 0.0f;
 
 extern "C" void Hub_UpdateMiniKits(WORLDINFO *world) {
@@ -2198,6 +2266,16 @@ extern "C" void Hub_UpdateMiniKits(WORLDINFO *world) {
 }
 
 static f32 HubMiniKitViewerStepPc = 2.0f;
+f32 stats_xscale = 1.0f;
+f32 HubTrueJediLabelOffsetPc = 0.23499999940395355f;
+f32 HubTrueJediLabelScalePc = 0.44999998807907104f;
+f32 HubTrueJediLabelWidthPc = 0.4000000059604645f;
+u8 HubTrueJediLabelRedPc = 255;
+u8 HubTrueJediLabelGreenPc = 255;
+u8 HubTrueJediLabelBluePc = 255;
+i32 HubTrueJediTypeAlphaPc = 96;
+f32 HubSelectMenuYPc = 0.125f;
+f32 HubBonusMenuYPc = 0.125f;
 static f32 HubMiniKitViewerBaseYPc = 0.14300000667572021f;
 
 extern "C" void Hub_DrawMiniKits(WORLDINFO *world) {
@@ -2334,6 +2412,8 @@ extern "C" void Hub_DrawImportantBrick(i32 object, f32 x, f32 y, f32 alpha, i32 
     }
 }
 
+f32 HubAreaPanelOnePc[6] = {-0.15000000596046448f, -0.45000001788139343f, 0.75f, -0.75f,
+                            0.45000001788139343f,  0.15000000596046448f};
 static f32 HubAreaPanelTwoPc[6] = {-0.30000001192092896f, 0.0f, 0.6000000238418579f,
                                    -0.6000000238418579f,  0.0f, 0.30000001192092896f};
 extern "C" f32 *HubAreaPanelXPc = HubAreaPanelTwoPc;
@@ -2516,6 +2596,8 @@ extern "C" void Hub_UpdateKit(void) {
     }
 }
 
+f32 HubMiniKitOpenThresholdPc = 1.0;
+i32 PCArcadePointGoals[5] = {5, 10, 25, 50, 0};
 static HUB_EPISODE_INFO_PC HubEpisodeInfoPc[10] = {
     {0, 1, "DE1", "lock_1_on", 0, 0, NULL, NULL, {NULL, NULL, 0}},
     {1, 1, "DE2", "lock_2_on", 0, 0, NULL, NULL, {NULL, NULL, 0}},
@@ -2618,11 +2700,20 @@ extern "C" {
         return 0;
     }
 }
+i32 HubCompletedAreasPc = 6;
+i32 HubAreasPerEpisodePc = 7;
 static i32 HubStatsBaseAnglePc = 45;
 static f32 HubStatsBobAmplitudePc = 0.009999999776482582f;
+f32 HubEpisodeTitleSizePc = 0.5f;
+f32 HubEpisodeSubtitleYPc = -0.7450000047683716f;
+f32 HubEpisodeSubtitleSizePc = 0.6000000238418579f;
+u8 HubEpisodeRedPc = 255;
 static const NUVEC HubPercentPositionPc = {-26.71299934387207f, 0.699999988079071f, -48.777000427246094f};
 static u32 HubStatsHighColourPc = 255;
 static u32 HubStatsMiddleColourPc = 127;
+f32 HubIconWibbleTimePc[4] = {0};
+i32 HubDrawMiniKitCharacterPc = 0;
+i32 HubBuildItsResetPc = 0;
 static u8 HubStatsLowColourPc = 0;
 
 extern "C" void Hub_Draw3D(WORLDINFO *world) {
@@ -3128,6 +3219,7 @@ static f32 HubFreePlayBigYPc = 0.3499999940395355f;
 #pragma data_seg()
 static APICHARACTERMODELLIST HubFreePlayDrawListPc[341] = {0};
 #pragma data_seg(".data$HubFreePlayFinalSizePc")
+f32 HubMiniKitViewerReflectYPc = 0.09000000357627869f;
 static f32 HubFreePlayFinalSizePc = 0.3499999940395355f;
 #pragma data_seg()
 #pragma data_seg(".data$HubFreePlayNameYPc")
