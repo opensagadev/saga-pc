@@ -818,6 +818,12 @@ void SuperCarry_Release(GAMEOBJECT *object) {
     }
 }
 
+u8 SuperCarryPlayerRgbPc[2][3] = {{0, 127, 255}, {0, 255, 0}};
+f32 SUPERCARRY_DROPSPEED_XZ = 0.2f;
+f32 SUPERCARRY_DROPSPEED_Y = 1.0f;
+f32 SUPERCARRY_OBJGRAVITY = -6.0f;
+i32 SuperCarry_KeepObjectLevel = 1;
+i32 SuperCarry_AlignObject = 1;
 i32 SuperCarry_PutDownDrop = 1;
 f32 SUPERCARRY_JUMPSPEED = 1.4f;
-u8 SuperCarryPlayerRgbPc[2][3] = {{0, 127, 255}, {0, 255, 0}};
+f32 SuperCarryImpactSpeedPc = 4.0f;

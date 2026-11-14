@@ -10232,21 +10232,6 @@ extern "C" {
 #pragma data_seg(".data$SUPERCARRY_RELEASESPEED_XZ")
     f32 SUPERCARRY_RELEASESPEED_XZ = 2.0f;
 #pragma data_seg()
-#pragma data_seg(".data$SUPERCARRY_DROPSPEED_XZ")
-    f32 SUPERCARRY_DROPSPEED_XZ = 0.2f;
-#pragma data_seg()
-#pragma data_seg(".data$SUPERCARRY_DROPSPEED_Y")
-    f32 SUPERCARRY_DROPSPEED_Y = 1.0f;
-#pragma data_seg()
-#pragma data_seg(".data$SUPERCARRY_OBJGRAVITY")
-    f32 SUPERCARRY_OBJGRAVITY = -6.0f;
-#pragma data_seg()
-#pragma data_seg(".data$SuperCarry_KeepObjectLevel")
-    i32 SuperCarry_KeepObjectLevel = 1;
-#pragma data_seg()
-#pragma data_seg(".data$SuperCarry_AlignObject")
-    i32 SuperCarry_AlignObject = 1;
-#pragma data_seg()
     PLAYER_CLEAR_CONTEXT_CALLBACK_PC Player_ClearContextFn = 0;
 #pragma data_seg(".data$AIFireIntervalMul")
     f32 AIFireIntervalMul = 1.0f;
@@ -11588,9 +11573,6 @@ extern "C" {
 }
 
 extern "C" {
-#pragma data_seg(".data$SuperCarryImpactSpeedPc")
-    f32 SuperCarryImpactSpeedPc = 4.0f;
-#pragma data_seg()
     void (*ExtraDieSfxFn)(GAMEOBJECT *) = 0;
 }
 
