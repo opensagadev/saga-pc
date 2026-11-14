@@ -2,8 +2,22 @@
 #include <float.h>
 #include <string.h>
 
+/* Retail unit 0x62a5e0-0x630d61 (gameapi/apiobject.c): definitions in retail address order. */
+
+i32 (*RedirectAnimFn)(char *, void *, CHARACTERANIM_CONFIG_PC *, char *) = 0;
+void *RedirectAnimList = 0;
+i32 drawcharactermodel_nobsa = 0;
+i32 drawcharactermodel_noani = 0;
+i32 drawcharactermodel_restpose = 0;
+i32 drawcharactermodel_keepmergeaction = 0;
+i32 drawcharactermodel_locatorsupdated = 0;
+u8 TempNumJoints = 0;
+i32 notransparentchardraw = 0;
+void (*APIObjResetShadowMapRenderingFn)(void) = 0;
+void (*APIObjEnableShadowMapRenderingFn)(void) = 0;
 static API_ACTION_INFO_PC *APIActionInfo = 0;
 static API_EXTRA_ACTION_PC *APIExtraActionData = 0;
+f32 animduration_blendouttime = 0;
 
 #define PC_WIND_SIN(radians) NuTrigTable[((i32)((radians) * 10430.3779296875) >> 1) & 0x7fff]
 #define PC_WIND_COS(radians) NuTrigTable[((0x4000 - (i32)((radians) * -10430.3779296875)) >> 1) & 0x7fff]
@@ -231,7 +245,12 @@ void AnimList_RequestAnimGroupForCreatures(i32 group_id, ...) {
     va_end(creatures);
 }
 
+static f32 MINFORCEAPART = 0.333f;
+static f32 MAXFORCEAPART = 0.666f;
 static i32 AnimBlendMode = 1;
+i32 (*MakeLayerList)(CHARACTER_MODEL_LAYERS_PC *, i16 *, u32) = PCBuildModelLayerList;
+char RedirectAnimDir[64] = "chars\\commonanims\\";
+i32 dat_0080fbf0 = 1;
 
 void SetAnimBlendMode(i32 mode) {
     AnimBlendMode = mode;
@@ -499,9 +518,6 @@ void APIObjectVelocities(GAMEOBJECT *object) {
         object->velocity_magnitude = NuFsqrt(object->velocity.y * object->velocity.y + horizontal_squared);
     }
 }
-
-static f32 MINFORCEAPART = 0.333f;
-static f32 MAXFORCEAPART = 0.666f;
 
 i32 APIObjectCollision(APIOBJECT_PC *first_input, APIOBJECT_PC *second_input) {
     GAMEOBJECT *first = (GAMEOBJECT *)first_input;
@@ -1650,8 +1666,6 @@ i16 FindAnimIX(CHARACTERDATA_PC *character, char *name) {
     }
     return -1;
 }
-
-f32 animduration_blendouttime = 0;
 
 f32 AnimDuration(i32 character_id, i32 animation, f32 start_frame, f32 end_frame, i32 subtract_blend_out) {
     i16 model_id;

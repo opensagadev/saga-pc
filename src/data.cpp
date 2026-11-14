@@ -7918,9 +7918,6 @@ extern "C" {
     ANI3_GLOBALBUFFER_PC *globalbuffer = 0;
     i32 ddmaxjoints = 0;
     i32 motionBlurAccumActiveThisFrame = 0;
-#pragma data_seg(".data$ModelAnimLayerListDispatchPc")
-    i32 (*MakeLayerList)(CHARACTER_MODEL_LAYERS_PC *, i16 *, u32) = PCBuildModelLayerList;
-#pragma data_seg()
 #pragma data_seg(".data$DwaWeightCursorPc")
     i32 rndr_blend_shape_deformer_wt_cnt = 61184;
 #pragma data_seg()
@@ -10602,14 +10599,6 @@ extern "C" {
 #pragma const_seg()
     i32 append = 0;
     i32 nopakfile = 0;
-    i32 (*RedirectAnimFn)(char *, void *, CHARACTERANIM_CONFIG_PC *, char *) = 0;
-    void *RedirectAnimList = 0;
-#pragma data_seg(".data$RedirectAnimDir")
-    char RedirectAnimDir[64] = "chars\\commonanims\\";
-#pragma data_seg()
-#pragma data_seg(".data$dat_0080fbf0")
-    i32 dat_0080fbf0 = 1;
-#pragma data_seg()
 }
 
 extern "C" {
@@ -12384,24 +12373,6 @@ extern "C" {
     i32 PCShadowPacketCount = 0;
 
     PC_HG_SHADOW_STATE_VIEW PCShadowState = {0};
-
-    i32 drawcharactermodel_nobsa = 0;
-
-    i32 drawcharactermodel_noani = 0;
-
-    i32 drawcharactermodel_restpose = 0;
-
-    i32 drawcharactermodel_keepmergeaction = 0;
-
-    i32 drawcharactermodel_locatorsupdated = 0;
-
-    u8 TempNumJoints = 0;
-
-    i32 notransparentchardraw = 0;
-
-    void (*APIObjResetShadowMapRenderingFn)(void) = 0;
-
-    void (*APIObjEnableShadowMapRenderingFn)(void) = 0;
 
     NUHGOBJ_EVAL_PC *Temphgobj = 0;
 
