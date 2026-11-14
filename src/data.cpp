@@ -8213,15 +8213,9 @@ extern "C" {
     i32 part_page_on[8] = {0};
     GAMEPAD_INIT_RECORD GamePadStorage[64] = {0};
     i32 bgproc_initialized = 0;
-    CRITICAL_SECTION bgproc_critical_section = {0};
     HANDLE bgproc_work_event = 0;
     HANDLE bgproc_resume_event = 0;
-    BGPROCINFO *bgproc_active = 0;
-    DWORD bgproc_thread_id = 0;
-    i32 bgproc_frozen = 0;
-    i32 bgproc_freeze = 0;
     i32 ShowingError = 0;
-    i32 bHaveErr = 0;
     HANDLE pc_file_handles[32] = {
         INVALID_HANDLE_VALUE, INVALID_HANDLE_VALUE, INVALID_HANDLE_VALUE, INVALID_HANDLE_VALUE, INVALID_HANDLE_VALUE,
         INVALID_HANDLE_VALUE, INVALID_HANDLE_VALUE, INVALID_HANDLE_VALUE, INVALID_HANDLE_VALUE, INVALID_HANDLE_VALUE,
@@ -8278,7 +8272,6 @@ extern "C" {
     i32 nu_keyboard_previous_key_index = 0;
     i32 nu_keyboard_no_key_state = 0;
     f32 dat_02975608 = 0.0f;
-    i32 PCThreadCriticalSectionCount = 0;
     CRITICAL_SECTION PCThreadCriticalSections[13] = {0};
     i32 PCFrameCriticalSectionIndex = 0;
     u32 NuAllocHeaderMetadata[3] = {0x424d454d, 0x45484b4c, 0x52454441};
@@ -8809,7 +8802,6 @@ extern "C" {
     i32 nu_water_reset_state = 0;
     i32 nu_water_flow_state = 0;
     i32 nu_water_reset_status = 0;
-    i64 NuTime_TickBase = 0;
     i64 NuTime_PerformanceFrequency = 0;
 #pragma const_seg(".rdata$NuTimeLowScale")
     extern const f64 NuTime_LowScale = 4294967295.0;
@@ -10942,12 +10934,7 @@ extern "C" {
 #pragma bss_seg()
     char PCNativeDebugFormatBuffer[2048] = {0};
     char PCNativeDebugOutputBuffer[2048] = {0};
-    char PCWarningFormatBuffer[1024] = {0};
-    char PCWarningOutputBuffer[1024] = {0};
-    char PCWarningMessages[1024] = {0};
     void (*PCWarningHandler)(char *) = 0;
-    void (*nuerror_handler)(char *) = 0;
-    void (*nuwarning_handler)(char *) = 0;
 #pragma const_seg(".rdata$PCWarningSuffix")
     extern const char PCWarningSuffix[2] = "\n";
 #pragma const_seg()
@@ -14334,12 +14321,6 @@ extern "C" {
 #pragma data_seg()
 #pragma data_seg(".data$FrameMaterialAnimationSpeedPc")
     f32 FrameMaterialAnimationSpeedPc = 1.0f;
-#pragma data_seg()
-}
-
-extern "C" {
-#pragma data_seg(".data$bgproc_thread_handle_pc")
-    HANDLE bgproc_thread_handle_pc = NULL;
 #pragma data_seg()
 }
 
@@ -23535,11 +23516,6 @@ extern "C" {
 }
 
 extern "C" {
-    i32 PcStartupCriticalSectionInitialized = 0;
-    CRITICAL_SECTION PcStartupCriticalSection = {0};
-}
-
-extern "C" {
     FRAME_PAD_PC *pActivePad = 0;
 }
 
@@ -24230,16 +24206,6 @@ extern "C" {
     struct PC_SCENE_MTL_VIEW *edanim_mtl_zoff = 0;
 
     i32 edanim_sound_mode = 0;
-}
-
-extern "C" {
-    i32 DisableDebugMsg = 0;
-
-    char err_msg_filter[32] = {0};
-
-    char *nufile = 0;
-
-    i32 nuline = 0;
 }
 
 extern "C" {
