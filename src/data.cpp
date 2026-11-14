@@ -25173,10 +25173,6 @@ extern "C" {
 }
 
 extern "C" {
-    nuhspecial_s thingsSceneBase = {0};
-}
-
-extern "C" {
     void *factoryb_netpacket = 0;
 
     struct gizmo_pc_s *forcetube = 0;
