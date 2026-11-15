@@ -248,7 +248,7 @@ typedef struct hub_door_reader_s {
 } HUB_DOOR_READER;
 
 struct GIZBUILDIT;
-#define HUB_PC_MENU_PLAYER(p, mode)                                                                                                        \
+#define HUB_MENU_PLAYER(p, mode)                                                                                                           \
     ((p) != NULL && ((p)->flags_1fc & 0x80) != 0 && (p)->unknown_281 != 0 &&                                                               \
      ((p)->character_context == -1 || (p)->character_context == 0x31 || (p)->character_context == 0x32) &&                                 \
      (p)->jump_animation_state == (mode))
@@ -3241,10 +3241,10 @@ extern "C" void Hub_Update(WORLDINFO *world) {
     if (SHOPACTIVE != 0) {
         DrawCoinTotalTime = 1;
     } else if (GetMenuID() != 12) {
-        if (HUB_PC_MENU_PLAYER(Player[0], 14)) {
+        if (HUB_MENU_PLAYER(Player[0], 14)) {
             available = 1;
         }
-        if (HUB_PC_MENU_PLAYER(Player[1], 14)) {
+        if (HUB_MENU_PLAYER(Player[1], 14)) {
             available = 1;
         }
     }
@@ -3269,10 +3269,10 @@ extern "C" void Hub_Update(WORLDINFO *world) {
     }
     available = 0;
     if (Customiser_MenuAvailable(CharacterCustomiser) != 0) {
-        if (HUB_PC_MENU_PLAYER(Player[0], 15)) {
+        if (HUB_MENU_PLAYER(Player[0], 15)) {
             available = 1;
         }
-        if (HUB_PC_MENU_PLAYER(Player[1], 15)) {
+        if (HUB_MENU_PLAYER(Player[1], 15)) {
             available = 1;
         }
     }
@@ -3296,10 +3296,10 @@ extern "C" void Hub_Update(WORLDINFO *world) {
     Customiser_Update(CharacterCustomiser, world);
     available = 0;
     if (Missions_PartyAvailable(NULL) != 0) {
-        if (HUB_PC_MENU_PLAYER(Player[0], 20)) {
+        if (HUB_MENU_PLAYER(Player[0], 20)) {
             available = 1;
         }
-        if (HUB_PC_MENU_PLAYER(Player[1], 20)) {
+        if (HUB_MENU_PLAYER(Player[1], 20)) {
             available = 1;
         }
     }

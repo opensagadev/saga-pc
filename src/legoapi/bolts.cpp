@@ -273,9 +273,9 @@ typedef struct bolt_context_info_s { // size 0x10
     u64 flags;                       // 0x8
 } BOLT_CONTEXT_INFO;
 
-typedef struct BOLT_UPDATE_TYPE_PC_s { // size 0xa4
-    u8 unknown_000[0x98];              // 0x00
-    nuhspecial_s shadow_special;       // 0x98
+typedef struct BOLT_UPDATE_TYPE_s { // size 0xa4
+    u8 unknown_000[0x98];           // 0x00
+    nuhspecial_s shadow_special;    // 0x98
 } BOLT_UPDATE_TYPE;
 
 extern "C" i32 MatrixReflectionVU0_AXISY(NUMTX *, f32, f32, NUMTX *);

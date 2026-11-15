@@ -6,7 +6,7 @@
 #include "nu2api/nu3d/nuhspecial.h"
 #include "nu2api/numath/nuvec.h"
 
-struct BOLTTYPE_PC_s;
+struct BOLTTYPE_s;
 struct WORLDINFO_s;
 struct bolt_s;
 struct cutinfo_s;
@@ -238,7 +238,7 @@ extern "C" {
     extern LEVELDATA *LastLData;
     extern LEVELDATA *NewLData;
     void ClearLevelProgress(i32 index, struct WORLDINFO_s *world);
-    struct BOLTTYPE_PC_s *BoltType_FindByID(i32, struct WORLDINFO_s *);
+    struct BOLTTYPE_s *BoltType_FindByID(i32, struct WORLDINFO_s *);
     void ResetLevel(struct WORLDINFO_s *world, char *cutscene, i32 unused);
     void Level_SetDefaults(LEVELDATA *level);
     extern LEVELDATA *levelconfig_ldata;

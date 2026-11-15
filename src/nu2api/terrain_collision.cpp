@@ -1233,8 +1233,8 @@ extern "C" {
             CurTrackInfo->platform_contact_state == 0 || TerConTol == 0.0f) {
             return count;
         }
-#define TERRAIN_PC_TRACK_PLATFORM (CurrentTerrain->platforms[track->platform_index])
-#define TERRAIN_PC_TRACK_MATRIX (TERRAIN_PC_TRACK_PLATFORM.scene_object)
+#define TERRAIN_TRACK_PLATFORM (CurrentTerrain->platforms[track->platform_index])
+#define TERRAIN_TRACK_MATRIX (TERRAIN_TRACK_PLATFORM.scene_object)
         TerrainQuery_s *query = static_cast<TerrainQuery_s *>(NuScratchAlloc32(sizeof(TerrainQuery_s)));
         i16 *input = static_cast<i16 *>(old_query->scan_list);
         TerI = query;
@@ -1265,27 +1265,27 @@ extern "C" {
         current->platform_position = old_query->position;
         TERRAIN_TRACK_SLOT *track = CurTrackInfo;
         if (track != NULL && (track->flags & TERRAIN_TRACK_FLAG_CONNECTED)) {
-            TERRAIN_PLATFORM *platform = &TERRAIN_PC_TRACK_PLATFORM;
+            TERRAIN_PLATFORM *platform = &TERRAIN_TRACK_PLATFORM;
             if (platform->flags & 1) {
                 NuMtxInvRSS(&tertempmat, reinterpret_cast<NUMTX *>(platform));
                 track = CurTrackInfo;
-                tertempvec4.x = old_query->position.x - TERRAIN_PC_TRACK_PLATFORM.previous_matrix.m30;
+                tertempvec4.x = old_query->position.x - TERRAIN_TRACK_PLATFORM.previous_matrix.m30;
                 tertempvec4.y =
-                    (old_query->position.y - TerI->collision_radius) * TerI->object_scale - TERRAIN_PC_TRACK_PLATFORM.previous_matrix.m31;
-                tertempvec4.z = old_query->position.z - TERRAIN_PC_TRACK_PLATFORM.previous_matrix.m32;
+                    (old_query->position.y - TerI->collision_radius) * TerI->object_scale - TERRAIN_TRACK_PLATFORM.previous_matrix.m31;
+                tertempvec4.z = old_query->position.z - TERRAIN_TRACK_PLATFORM.previous_matrix.m32;
                 tertempvec4.w = 1.0f;
                 NuVec4MtxTransformVU0(&tertempvec4, &tertempvec4, &tertempmat);
                 track = CurTrackInfo;
-                NuVec4MtxTransformVU0(&tertempvec4, &tertempvec4, TERRAIN_PC_TRACK_MATRIX);
+                NuVec4MtxTransformVU0(&tertempvec4, &tertempvec4, TERRAIN_TRACK_MATRIX);
                 current = TerI;
                 current->platform_position.x = tertempvec4.x;
                 current->platform_position.y = current->inverse_object_scale * tertempvec4.y + current->collision_radius;
                 current->platform_position.z = tertempvec4.z;
             } else {
-                query->platform_position.x += TERRAIN_PC_TRACK_MATRIX->m30 - TERRAIN_PC_TRACK_PLATFORM.previous_matrix.m30;
+                query->platform_position.x += TERRAIN_TRACK_MATRIX->m30 - TERRAIN_TRACK_PLATFORM.previous_matrix.m30;
                 query->platform_position.y +=
-                    (TERRAIN_PC_TRACK_MATRIX->m31 - TERRAIN_PC_TRACK_PLATFORM.previous_matrix.m31) * old_query->inverse_object_scale;
-                query->platform_position.z += TERRAIN_PC_TRACK_MATRIX->m32 - TERRAIN_PC_TRACK_PLATFORM.previous_matrix.m32;
+                    (TERRAIN_TRACK_MATRIX->m31 - TERRAIN_TRACK_PLATFORM.previous_matrix.m31) * old_query->inverse_object_scale;
+                query->platform_position.z += TERRAIN_TRACK_MATRIX->m32 - TERRAIN_TRACK_PLATFORM.previous_matrix.m32;
             }
         }
         current->platform_normal = current->platform_position;
@@ -1333,7 +1333,7 @@ extern "C" {
                 }
                 old_query->platform_position.x = query->platform_position.x;
                 track = CurTrackInfo;
-                if (TERRAIN_PC_TRACK_PLATFORM.flags & 1) {
+                if (TERRAIN_TRACK_PLATFORM.flags & 1) {
                     old_query->platform_position.y = old_query->collision_radius + query->platform_position.y;
                 } else {
                     old_query->platform_position.y = old_query->collision_radius + query->platform_position.y + (f64)0.0025f;
@@ -1399,8 +1399,8 @@ extern "C" {
                 return count;
             }
         }
-#undef TERRAIN_PC_TRACK_MATRIX
-#undef TERRAIN_PC_TRACK_PLATFORM
+#undef TERRAIN_TRACK_MATRIX
+#undef TERRAIN_TRACK_PLATFORM
     }
 
     i32 TerrainPlatformEmbedded(NUVEC *movement_delta) {

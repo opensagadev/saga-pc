@@ -5,7 +5,7 @@
 #include "nu2api/numath/numtx.h"
 #include "nu2api/numath/nuvec.h"
 
-struct BOLTSYS_PC_s;
+struct BOLTSYS_s;
 struct WORLDINFO_s;
 struct bolt_s;
 
@@ -32,7 +32,7 @@ extern "C" {
 #endif
 
 typedef struct bolt_s {         // size 0x138
-    struct BOLTTYPE_PC_s *type; // 0x000
+    struct BOLTTYPE_s *type;    // 0x000
     struct gameobject_s *owner; // 0x004
     NUMTX orientation;          // 0x008
     NUMTX effect_orientation;   // 0x048
@@ -84,7 +84,7 @@ extern "C" {
     extern struct bolt_s *objhitobj_bolt;
     extern i32 (*Bolt_HitPlatFn)(struct bolt_s *bolt);
     void Bolt_Debris_Default(struct bolt_s *, NUVEC *, i32, NUVEC *, i32);
-    void BoltSys_Init(struct BOLTSYS_PC_s *);
+    void BoltSys_Init(struct BOLTSYS_s *);
     extern BOLT Bolt[32];
     void Bolts_Update(struct WORLDINFO_s *);
     void Bolts_Draw(struct WORLDINFO_s *);

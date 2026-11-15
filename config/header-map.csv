@@ -997,7 +997,7 @@ assert:-#720,assert,,3561,3561,1,legoapi/render/core/gameliball.h,follow-type,MU
 assert:-#721,assert,,3562,3562,1,legoapi/render/core/gameliball.h,follow-type,MUSICPLAYBACK
 assert:-#722,assert,,3563,3563,1,legoapi/render/core/gameliball.h,follow-type,MUSICPLAYBACK
 forward:bolt_s,forward,bolt_s,3565,3565,2,legoapi/legoapi_types.h,android-stem,catch-all (needs a module owner); bolt_s -> BOLT_s
-struct:BOLTTYPE_PC_s,struct,BOLTTYPE_PC_s BOLTTYPE,3567,3627,62,legoapi/world/world.h,android-stem,BOLTTYPE_PC_s -> BOLTTYPE_s
+struct:BOLTTYPE_s,struct,BOLTTYPE_s BOLTTYPE,3567,3627,62,legoapi/world/world.h,android-stem,BOLTTYPE_s -> BOLTTYPE_s
 assert:-#723,assert,,3629,3629,2,legoapi/world/world.h,follow-type,BOLTTYPE
 assert:-#724,assert,,3630,3630,1,legoapi/world/world.h,follow-type,BOLTTYPE
 assert:-#725,assert,,3631,3631,1,legoapi/world/world.h,follow-type,BOLTTYPE
@@ -1036,7 +1036,7 @@ assert:-#757,assert,,3663,3663,1,legoapi/world/world.h,follow-type,BOLTTYPE
 forward:gameobject_s#3,forward,gameobject_s,3665,3665,2,legoapi/items/base/apiobject.h,android-stem,gameobject_s -> GameObject_s
 forward:bolt_s#2,forward,bolt_s,3666,3666,1,legoapi/legoapi_types.h,android-stem,catch-all (needs a module owner); bolt_s -> BOLT_s
 forward:PART,forward,PART,3667,3667,1,legoapi/items/objects/objectsall.h,rule,used most in gameapi/objectsall.cpp (54) android-path
-struct:BOLTSYS_PC_s,struct,BOLTSYS_PC_s BOLTSYS,3669,3678,11,legoapi/legoapi_types.h,android-stem,catch-all (needs a module owner); BOLTSYS -> BOLTSYS
+struct:BOLTSYS_s,struct,BOLTSYS_s BOLTSYS,3669,3678,11,legoapi/legoapi_types.h,android-stem,catch-all (needs a module owner); BOLTSYS -> BOLTSYS
 assert:-#758,assert,,3680,3680,2,legoapi/legoapi_types.h,follow-type,catch-all (needs a module owner); BOLTSYS
 assert:-#759,assert,,3681,3681,1,legoapi/legoapi_types.h,follow-type,catch-all (needs a module owner); BOLTSYS
 assert:-#760,assert,,3682,3682,1,legoapi/legoapi_types.h,follow-type,catch-all (needs a module owner); BOLTSYS
@@ -1551,7 +1551,7 @@ assert:-#1212,assert,,5429,5429,1,legoapi/characters/motion/move.h,follow-type,G
 assert:-#1213,assert,,5430,5430,1,legoapi/characters/motion/move.h,follow-type,GAMEPAD
 assert:-#1214,assert,,5431,5431,1,legoapi/characters/motion/move.h,follow-type,GAMEPAD
 assert:-#1215,assert,,5432,5432,1,legoapi/characters/motion/move.h,follow-type,GAMEPAD
-struct:CHARACTER_CONTEXT_INFO_PC_s,struct,CHARACTER_CONTEXT_INFO_PC_s CHARACTER_CONTEXT_INFO,5434,5439,7,legoapi/characters/motion/action_info.h,android-stem,CHARACTER_CONTEXT_INFO_PC_s -> CHARACTER_CONTEXT_INFO_s
+struct:CHARACTER_CONTEXT_INFO_s,struct,CHARACTER_CONTEXT_INFO_s CHARACTER_CONTEXT_INFO,5434,5439,7,legoapi/characters/motion/action_info.h,android-stem,CHARACTER_CONTEXT_INFO_s -> CHARACTER_CONTEXT_INFO_s
 assert:-#1216,assert,,5441,5441,2,legoapi/characters/motion/action_info.h,follow-type,CHARACTER_CONTEXT_INFO
 assert:-#1217,assert,,5442,5442,1,legoapi/characters/motion/action_info.h,follow-type,CHARACTER_CONTEXT_INFO
 assert:-#1218,assert,,5443,5443,1,legoapi/characters/motion/action_info.h,follow-type,CHARACTER_CONTEXT_INFO
@@ -1694,12 +1694,12 @@ assert:-#1353,assert,,5606,5606,1,legoapi/characters/core/character.h,follow-typ
 assert:-#1354,assert,,5607,5607,1,legoapi/characters/core/character.h,follow-type,CHARACTERDATA
 assert:-#1355,assert,,5608,5608,1,legoapi/characters/core/character.h,follow-type,CHARACTERDATA
 assert:-#1356,assert,,5609,5609,1,legoapi/characters/core/character.h,follow-type,CHARACTERDATA
-struct:ARCADE_MODE_PC_s,struct,ARCADE_MODE_PC_s ARCADE_MODE,5611,5615,6,legoapi/world/worldinfo.h,rule,used most in legoapi/worldinfo.cpp (1) android-dir
+struct:ARCADE_MODE_s,struct,ARCADE_MODE_s ARCADE_MODE,5611,5615,6,legoapi/world/worldinfo.h,rule,used most in legoapi/worldinfo.cpp (1) android-dir
 assert:-#1357,assert,,5617,5617,2,legoapi/world/worldinfo.h,follow-type,ARCADE_MODE
 assert:-#1358,assert,,5618,5618,1,legoapi/world/worldinfo.h,follow-type,ARCADE_MODE
-struct:ARCADE_MENU_ENTRY_PC_s,struct,ARCADE_MENU_ENTRY_PC_s ARCADE_MENU_ENTRY,5620,5625,7,legoapi/world/worldinfo.h,rule,"used in saga.h only, most by legoapi/world/worldinfo.h (1)"
+struct:ARCADE_MENU_ENTRY_s,struct,ARCADE_MENU_ENTRY_s ARCADE_MENU_ENTRY,5620,5625,7,legoapi/world/worldinfo.h,rule,"used in saga.h only, most by legoapi/world/worldinfo.h (1)"
 assert:-#1359,assert,,5627,5627,2,legoapi/world/worldinfo.h,follow-type,ARCADE_MENU_ENTRY
-struct:ARCADE_ITEM_PC_s,struct,ARCADE_ITEM_PC_s ARCADE_ITEM,5630,5651,24,legoapi/world/worldinfo.h,rule,used most in legoapi/worldinfo.cpp (1) android-dir
+struct:ARCADE_ITEM_s,struct,ARCADE_ITEM_s ARCADE_ITEM,5630,5651,24,legoapi/world/worldinfo.h,rule,used most in legoapi/worldinfo.cpp (1) android-dir
 assert:-#1360,assert,,5653,5653,2,legoapi/world/worldinfo.h,follow-type,ARCADE_ITEM
 assert:-#1361,assert,,5654,5654,1,legoapi/world/worldinfo.h,follow-type,ARCADE_ITEM
 assert:-#1362,assert,,5655,5655,1,legoapi/world/worldinfo.h,follow-type,ARCADE_ITEM

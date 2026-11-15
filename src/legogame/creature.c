@@ -343,7 +343,7 @@ f32 ComplexShadowBase = 25.0f;
 i32 CharacterLoadAreaModels = 1;
 i32 AnimPacketModelsCompatible(ANIMPACKET *packet, i32 source_id, i32 target_id);
 
-typedef struct SPECIAL_LAYER_PC_s {
+typedef struct SPECIAL_LAYER_s {
     i16 *character_id;
     const char *name;
     u32 mask;

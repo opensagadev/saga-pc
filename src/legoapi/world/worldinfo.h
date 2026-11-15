@@ -4,21 +4,21 @@
 
 struct WORLDINFO_s;
 
-typedef struct ARCADE_MODE_PC_s { // size 0xc
-    i16 *text;                    // 0x0
-    i32 target;                   // 0x4
-    u32 flags;                    // 0x8
+typedef struct ARCADE_MODE_s { // size 0xc
+    i16 *text;                 // 0x0
+    i32 target;                // 0x4
+    u32 flags;                 // 0x8
 } ARCADE_MODE;
 
-typedef struct ARCADE_MENU_ENTRY_PC_s { // size 0x8
-    i16 *text;                          // 0x0
-    i8 index;                           // 0x4
-    u8 count;                           // 0x5
-    u16 unknown_06;                     // 0x6
+typedef struct ARCADE_MENU_ENTRY_s { // size 0x8
+    i16 *text;                       // 0x0
+    i8 index;                        // 0x4
+    u8 count;                        // 0x5
+    u16 unknown_06;                  // 0x6
 } ARCADE_MENU_ENTRY;
 
-/* REPLACE existing ARCADE_ITEM_PC24-byte declaration, preserve every old field. */
-typedef struct ARCADE_ITEM_PC_s { // size 0x28
+/* REPLACE existing ARCADE_ITEM 24-byte declaration, preserve every old field. */
+typedef struct ARCADE_ITEM_s { // size 0x28
 
     union { // size 0x28
 

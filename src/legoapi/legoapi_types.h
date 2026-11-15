@@ -28,7 +28,7 @@ struct ThingProcessData;
 struct VuVec;
 struct debris_particle_s;
 
-struct BOLTTYPE_PC_s;
+struct BOLTTYPE_s;
 struct FLOWBOX;
 struct FORCE_RESET_GROUP;
 struct FRAME_PAD;
@@ -934,8 +934,8 @@ class FadeSystem : public FADEINFO_s { // size 0x2c
 
 #endif
 
-typedef struct BOLTSYS_PC_s {                                    // size 0x20
-    struct BOLTTYPE_PC_s *types;                                 // 0x00
+typedef struct BOLTSYS_s {                                       // size 0x20
+    struct BOLTTYPE_s *types;                                    // 0x00
     i32 count;                                                   // 0x04
     void (*stop_targeting)(struct gameobject_s *, NUVEC *);      // 0x08
     void (*debris)(struct bolt_s *, NUVEC *, i32, NUVEC *, i32); // 0x0c

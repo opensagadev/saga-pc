@@ -59,7 +59,7 @@
 #include <stdio.h>
 #include <math.h>
 
-#define BONUS_GUNSHIP_FLAGS_PC_VIEW ((BONUS_GUNSHIP_FLAGS *)LevFlag)
+#define BONUS_GUNSHIP_LEVFLAGS ((BONUS_GUNSHIP_FLAGS *)LevFlag)
 
 typedef struct dooku_c_s {
     GIZAIMESSAGE *total_message;
@@ -2038,17 +2038,17 @@ i32 GunshipPlayerDead = 0;
 
 void BonusGunshipA_Reset(WORLDINFO *world) {
     GunshipPlayerDead = 0;
-    BONUS_GUNSHIP_FLAGS_PC_VIEW->secondary = 0;
+    BONUS_GUNSHIP_LEVFLAGS->secondary = 0;
     bonus_gunship_store_progress_flag = 0;
-    if (BONUS_GUNSHIP_FLAGS_PC_VIEW->progress == 1) {
-        BONUS_GUNSHIP_FLAGS_PC_VIEW->progress = 2;
+    if (BONUS_GUNSHIP_LEVFLAGS->progress == 1) {
+        BONUS_GUNSHIP_LEVFLAGS->progress = 2;
     }
 }
 
 void BonusGunshipA_Update(WORLDINFO *world) {
     GAMEOBJECT *first = Player[0];
     GAMEOBJECT *second = Player[1];
-    if (BONUS_GUNSHIP_FLAGS_PC_VIEW->progress == 0) {
+    if (BONUS_GUNSHIP_LEVFLAGS->progress == 0) {
         if ((first != NULL && first->sock_position.sock_index == 0 && first->sock_position.distance > 12.1f) ||
             (second != NULL && second->sock_position.sock_index == 0 && second->sock_position.distance > 12.1f)) {
             if (netclient == 0) {
@@ -2059,7 +2059,7 @@ void BonusGunshipA_Update(WORLDINFO *world) {
                 first = Player[0];
                 bonus_gunship_store_progress_flag = 0;
             }
-            BONUS_GUNSHIP_FLAGS_PC_VIEW->progress = 1;
+            BONUS_GUNSHIP_LEVFLAGS->progress = 1;
         }
     }
     if (GunshipPlayerDead == 0 && ((first != NULL && first->dead != 0) || (second != NULL && second->dead != 0))) {
@@ -2077,8 +2077,8 @@ void BonusGunshipB_Init(WORLDINFO *world) {
 
 void BonusGunshipB_Reset(WORLDINFO *world) {
     MiscTime = 0.0f;
-    BONUS_GUNSHIP_FLAGS_PC_VIEW->progress = 0;
-    BONUS_GUNSHIP_FLAGS_PC_VIEW->secondary = 0;
+    BONUS_GUNSHIP_LEVFLAGS->progress = 0;
+    BONUS_GUNSHIP_LEVFLAGS->secondary = 0;
     GunshipPlayerDead = 0;
     bonus_gunship_store_progress_flag = 0;
 }
@@ -2089,7 +2089,7 @@ void BonusGunshipB_Update(WORLDINFO *world) {
             GunshipPlayerDead = 1;
             ResetLevel(world, "ep2_bonus_gunshipcavalry_explode", 1);
         }
-        if (BONUS_GUNSHIP_FLAGS_PC_VIEW->progress == 0) {
+        if (BONUS_GUNSHIP_LEVFLAGS->progress == 0) {
             f32 delay = 15.0f;
             if (LevDeaths >= 3) {
                 delay = (f32)((f64)LevDeaths + 15.0);
@@ -2098,7 +2098,7 @@ void BonusGunshipB_Update(WORLDINFO *world) {
                 }
             }
             if (GameTimer.time_elapsed >= delay) {
-                BONUS_GUNSHIP_FLAGS_PC_VIEW->progress = 1;
+                BONUS_GUNSHIP_LEVFLAGS->progress = 1;
                 if (LevGizObst[0] != NULL) {
                     LevGizObst[0]->runtime_flags |= GIZOBSTACLE_LOCKED_OPEN;
                 }
@@ -2106,7 +2106,7 @@ void BonusGunshipB_Update(WORLDINFO *world) {
                 TimerScale = 1.0f;
                 TimerAlpha = 0.0f;
             }
-        } else if (BONUS_GUNSHIP_FLAGS_PC_VIEW->progress == 1) {
+        } else if (BONUS_GUNSHIP_LEVFLAGS->progress == 1) {
             f32 previous_time;
             NuFmod(MiscTime, 5.0f);
             previous_time = MiscTime;
@@ -2122,24 +2122,24 @@ void BonusGunshipB_Update(WORLDINFO *world) {
                     GunshipPlayerDead = 1;
                     ResetLevel(world, "ep2_bonus_gunshipcavalry_explode", 1);
                 }
-                BONUS_GUNSHIP_FLAGS_PC_VIEW->progress = 2;
+                BONUS_GUNSHIP_LEVFLAGS->progress = 2;
             } else if (MiscTime > 0.0f && (i32)MiscTime != (i32)previous_time) {
                 TimerScale = 1.25f;
                 TickTockSfx();
             }
         }
-        BonusGunshipBNetPacket->progress = BONUS_GUNSHIP_FLAGS_PC_VIEW->progress;
-        BonusGunshipBNetPacket->secondary = BONUS_GUNSHIP_FLAGS_PC_VIEW->secondary;
+        BonusGunshipBNetPacket->progress = BONUS_GUNSHIP_LEVFLAGS->progress;
+        BonusGunshipBNetPacket->secondary = BONUS_GUNSHIP_LEVFLAGS->secondary;
         BonusGunshipBNetPacket->time = MiscTime;
     } else {
-        BONUS_GUNSHIP_FLAGS_PC_VIEW->progress = BonusGunshipBNetPacket->progress;
-        BONUS_GUNSHIP_FLAGS_PC_VIEW->secondary = BonusGunshipBNetPacket->secondary;
+        BONUS_GUNSHIP_LEVFLAGS->progress = BonusGunshipBNetPacket->progress;
+        BONUS_GUNSHIP_LEVFLAGS->secondary = BonusGunshipBNetPacket->secondary;
         MiscTime = BonusGunshipBNetPacket->time;
     }
 }
 
 void BonusGunshipB_Panel(WORLDINFO *world) {
-    if (BONUS_GUNSHIP_FLAGS_PC_VIEW->progress == 1) {
+    if (BONUS_GUNSHIP_LEVFLAGS->progress == 1) {
         if (MiscTime > 0.0f) {
             DrawTimer((i32)MiscTime + 1, 0, 0);
         }

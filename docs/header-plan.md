@@ -438,7 +438,7 @@ The 50 largest `rule` rows:
 | `GRAPHICS_RENDER_TEXTURE` | struct | 26 | `nu2api/nu3d/nu3d_includes.h` | used most in nu2api/nu3d_includes.cpp (70) |
 | `ANI3_HEADER` | struct | 25 | `nu2api/nu3d/nu3d_includes.h` | used most in nu2api/nu3d_includes.cpp (41) |
 | `mission_sys_s` | struct | 25 | `legoapi/world/missions.h` | used most in legoapi/missions.c (11) |
-| `ARCADE_ITEM_PC_s` | struct | 24 | `legoapi/world/worldinfo.h` | used most in legoapi/worldinfo.cpp (1) |
+| `ARCADE_ITEM_s` | struct | 24 | `legoapi/world/worldinfo.h` | used most in legoapi/worldinfo.cpp (1) |
 | `NUHGOBJ_EVAL` | struct | 24 | `nu2api/nu3d/nu3d_includes.h` | used most in nu2api/nu3d_includes.cpp (26) |
 | `BURN_PARAMETERS` | struct | 24 | `legoapi/render/fx/game_deb.h` | used most in legogame/game_deb.c (46) |
 | `EdEnumControl` | class | 24 | `editor/edlevelall.h` | used most in editor/edlevelall.cpp (29) |

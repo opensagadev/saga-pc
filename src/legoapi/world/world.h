@@ -39,14 +39,14 @@ typedef struct level_sfx_entry_s { // size 0x10
     u8 unknown_000f;               // 0xf
 } LEVELSFXENTRY;
 
-typedef struct BOLTTYPE_PC_s { // size 0xa4
-    char name[16];             // 0x00
-    f32 unknown_10;            // 0x10
-    f32 unknown_14;            // 0x14
-    f32 unknown_18;            // 0x18
-    f32 unknown_1c;            // 0x1c
-    f32 unknown_20;            // 0x20
-    f32 unknown_24;            // 0x24
+typedef struct BOLTTYPE_s { // size 0xa4
+    char name[16];          // 0x00
+    f32 unknown_10;         // 0x10
+    f32 unknown_14;         // 0x14
+    f32 unknown_18;         // 0x18
+    f32 unknown_1c;         // 0x1c
+    f32 unknown_20;         // 0x20
+    f32 unknown_24;         // 0x24
 
     union { // size 0x10
 
