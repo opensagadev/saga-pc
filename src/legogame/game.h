@@ -485,24 +485,3 @@ typedef struct HINT_ZIPUP { // size 0x7c
     u8 flags;               // 0x68
     u8 reserved69[0x13];    // 0x69
 } HINT_ZIPUP;
-
-typedef struct MISSION_SYSTEM_READER {     // size 0x30
-    struct mission_data_s *missions;       // 0x00
-    struct mission_data_s *active_mission; // 0x04
-    TIMER timer;                           // 0x08
-    MISSION_SAVE_READER *save;             // 0x18
-    u8 count;                              // 0x1c
-    u8 state;                              // 0x1d
-
-    union { // size 0x1
-        u8 flags;
-
-        struct {                  // size 0x1
-            u8 pickups : 1;       // 0x1e:0
-            u8 unknown_flags : 7; // 0x1e:1
-        };
-    }; // 0x1e
-
-    u8 character_count;   // 0x1f
-    i16 character_ids[8]; // 0x20
-} MISSION_SYSTEM_READER;

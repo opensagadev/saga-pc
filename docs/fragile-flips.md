@@ -49,3 +49,9 @@ during the cleanup; each flip is logged here and they get one tuning pass once t
 | one EXPLOSION record (the 0x34 view deleted) | BoltTypes_Configure | legoapi/bolts.cpp | 99.88 % | exact |
 | one EXPLOSION record (the 0x34 view deleted) | SubItemMenu | legogame/shop.c | 97.72 % | 98.31 % |
 | one EXPLOSION record (the 0x34 view deleted) | NuRndrParticleGroup | nu2api/nu3d_platform.cpp | 95.37 % | 94.56 % |
+| one MISSIONSYS record (0x30) | BoulderSpawn | legogame/episodeIII.c | exact | 83.28 % |
+| one MISSIONSYS record (0x30) | BlockadeRunnerDEjectCreature | legogame/episodeIV.c | exact | 90.96 % |
+| one MISSIONSYS record (0x30) | BoltTypes_Configure | legoapi/bolts.cpp | exact | 99.88 % |
+| one MISSIONSYS record (0x30) | SubItemMenu | legogame/shop.c | 98.31 % | 97.72 % |
+| one MISSIONSYS record (0x30) | NuRndrParticleGroup | nu2api/nu3d_platform.cpp | 94.56 % | 95.37 % |
+| one MISSIONSYS record (0x30) | InitGameAfterConfig | legogame/game.cpp | 82.2372 % | 82.2397 % |

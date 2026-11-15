@@ -63,7 +63,7 @@ static f32 MissionsFabs(f32 f) {
     return rv;
 }
 
-static void UpdateMissionIconX(MISSION_SYSTEM_READER *system, i32 initialize) {
+static void UpdateMissionIconX(MISSIONSYS *system, i32 initialize) {
     i32 index;
     f32 x;
     for (index = 0; index < system->count; ++index) {
@@ -89,7 +89,7 @@ static f32 MissionsAlpha = 0;
 static f32 MissionIconScale[20] = {0};
 
 void MenuInitMissions(MENU *menu) {
-    MISSION_SYSTEM_READER *system = (MISSION_SYSTEM_READER *)MissionSys;
+    MISSIONSYS *system = MissionSys;
     i32 index;
     MissionsAlpha = 0.0f;
     if (system == NULL) {
@@ -123,7 +123,7 @@ void MenuDrawMissions(MENU *menu) {
     f32 icon_size;
     i32 i;
     i32 appearance;
-    MISSION_SYSTEM_READER *system;
+    MISSIONSYS *system;
     char time[64];
     char text[64];
     i32 select0;
@@ -137,7 +137,7 @@ void MenuDrawMissions(MENU *menu) {
         return;
     }
     alpha = MenuAlpha;
-    system = (MISSION_SYSTEM_READER *)MissionSys;
+    system = MissionSys;
     SmartTextEx(TTab[system->missions[MissionMenuSelection].name_id], 0.0f, MissionNameY, 1.0f, MissionNameScale, MissionNameScale,
                 MissionNameScale, 0, 255, 191, 0, 1.7f, 1, NULL, 0, (u32)(i32)(128.0f * MissionsAlpha * alpha));
     SmartTextEx(TTab[MissionMenuInstructionText], 0.0f, 0.525f, 1.0f, MissionNameScale, MissionNameScale, MissionNameScale, 0, 255, 255,
@@ -318,7 +318,7 @@ void MenuUpdateMissions(MENU *menu) {
     i32 right = 0;
     i32 player;
     i32 index;
-    MISSION_SYSTEM_READER *system;
+    MISSIONSYS *system;
     if (MissionSys == NULL) {
         cancel = 1;
     }
@@ -362,13 +362,13 @@ void MenuUpdateMissions(MENU *menu) {
         }
     }
     if (start != 0) {
-        system = (MISSION_SYSTEM_READER *)MissionSys;
+        system = MissionSys;
         system->active_mission = &system->missions[MissionMenuSelection];
         system->state = 1;
         ResetTimer(&system->timer, 0.0f);
         Cheats_TurnOff(0);
         GameAudio_PlaySfx(0x30, NULL, 0, 0);
-        system = (MISSION_SYSTEM_READER *)MissionSys;
+        system = MissionSys;
         NextArea_FreePlay = 0;
         FreePlay = 0;
         NewLData = &LDataList[system->active_mission->level];
@@ -379,7 +379,7 @@ void MenuUpdateMissions(MENU *menu) {
         if (MissionMenuSelection > 0) {
             --MissionMenuSelection;
         }
-    } else if (right != 0 && MissionMenuSelection < ((MISSION_SYSTEM_READER *)MissionSys)->count - 1) {
+    } else if (right != 0 && MissionMenuSelection < MissionSys->count - 1) {
         ++MissionMenuSelection;
     }
     if (MissionMenuSelection != previous) {
@@ -395,6 +395,6 @@ void MenuUpdateMissions(MENU *menu) {
         for (index = 0; index < MissionSys->count; ++index) {
             MissionIconScale[index] = SeekValF(MissionIconScale[index], index == MissionMenuSelection ? 1.0f : 0.0f, 5.0f);
         }
-        UpdateMissionIconX((MISSION_SYSTEM_READER *)MissionSys, 0);
+        UpdateMissionIconX(MissionSys, 0);
     }
 }

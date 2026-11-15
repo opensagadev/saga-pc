@@ -15,30 +15,25 @@ typedef struct MISSION_SAVE_READER { // size 0x64
 extern "C" {
 #endif
 
-    typedef struct mission_sys_s { // size 0x20
-
-        union { // size 0x4
-            u8 unknown_00[4];
-            struct mission_data_s *missions;
-        }; // 0x00
-
+    typedef struct mission_sys_s {             // size 0x30
+        struct mission_data_s *missions;       // 0x00
         struct mission_data_s *active_mission; // 0x04
+        TIMER timer;                           // 0x08
+        MISSION_SAVE_READER *save;             // 0x18
+        u8 count;                              // 0x1c
+        u8 state;                              // 0x1d
 
-        union { // size 0x18
-            u8 unknown_08[0x15];
+        union { // size 0x1
+            u8 flags;
 
-            struct {                           // size 0x18
-                u8 unknown_count_prefix[0x14]; // 0x08
-                u8 count;                      // 0x1c
-                u8 state;                      // 0x1d
-                u8 reserved_1e[2];             // 0x1e
+            struct {                  // size 0x1
+                u8 pickups : 1;       // 0x1e:0
+                u8 unknown_flags : 7; // 0x1e:1
             };
+        }; // 0x1e
 
-            struct {               // size 0x18
-                TIMER timer;       // 0x08
-                u8 reserved_18[8]; // 0x18
-            };
-        }; // 0x08
+        u8 character_count;   // 0x1f
+        i16 character_ids[8]; // 0x20
     } MISSIONSYS;
 
 #ifdef __cplusplus

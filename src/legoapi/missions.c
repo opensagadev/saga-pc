@@ -18,8 +18,8 @@ void MissionsConfigMissing(char *filename);
 
 MISSIONSYS *Missions_Configure(char *file, VARIPTR *buffer_start, VARIPTR *buffer_end, MISSION_SAVE_READER *save) {
     NUFPAR *parser;
-    MISSION_SYSTEM_READER temporary;
-    MISSION_SYSTEM_READER *destination;
+    MISSIONSYS temporary;
+    MISSIONSYS *destination;
     MISSIONDATA *mission;
     i32 character;
     parser = NuFParCreate(file);
@@ -98,7 +98,7 @@ MISSIONSYS *Missions_Configure(char *file, VARIPTR *buffer_start, VARIPTR *buffe
     destination = buffer_start->void_ptr;
     PCByteCopy(destination, &temporary, sizeof(temporary));
     buffer_start->addr = (buffer_start->addr + sizeof(temporary) + 3) & ~3u;
-    return (MISSIONSYS *)destination;
+    return destination;
 }
 
 void Mission_Clear(MISSIONSYS *ms) {
@@ -127,30 +127,26 @@ MISSIONDATA *Mission_Active(MISSIONSYS *system) {
 }
 
 i32 Mission_CurrentState(MISSIONSYS *system) {
-    MISSION_SYSTEM_READER *reader;
     if (system == NULL) {
         system = MissionSys;
     }
     if (system == NULL) {
         return 0;
     }
-    reader = (MISSION_SYSTEM_READER *)system;
-    if (reader->state != 0 && reader->active_mission != NULL) {
-        return reader->state;
+    if (system->state != 0 && system->active_mission != NULL) {
+        return system->state;
     }
     return 0;
 }
 
 i32 Missions_PartyAvailable(MISSIONSYS *system) {
-    MISSION_SYSTEM_READER *reader;
     i32 index;
     if (system == NULL) {
         system = MissionSys;
     }
     if (system != NULL) {
-        reader = (MISSION_SYSTEM_READER *)system;
-        for (index = 0; index < reader->character_count; ++index) {
-            if (Collection_Got(reader->character_ids[index]) == 0) {
+        for (index = 0; index < system->character_count; ++index) {
+            if (Collection_Got(system->character_ids[index]) == 0) {
                 return 0;
             }
         }
@@ -159,19 +155,17 @@ i32 Missions_PartyAvailable(MISSIONSYS *system) {
 }
 
 i32 Missions_NumCompleted(MISSIONSYS *system, MISSION_SAVE_READER *save, i32 complete) {
-    MISSION_SYSTEM_READER *reader;
     i32 index;
     i32 total = 0;
     if (system == NULL) {
         system = MissionSys;
     }
     if (system != NULL) {
-        reader = (MISSION_SYSTEM_READER *)system;
-        for (index = 0; index < reader->count; ++index) {
+        for (index = 0; index < system->count; ++index) {
             if (complete != 0) {
                 save->completed[index] = 1;
                 if (save->best_times[index] == 0.0f) {
-                    save->best_times[index] = (f32)reader->missions[index].time - 1.0f;
+                    save->best_times[index] = (f32)system->missions[index].time - 1.0f;
                 }
             }
             if (save->completed[index] != 0) {
@@ -183,14 +177,12 @@ i32 Missions_NumCompleted(MISSIONSYS *system, MISSION_SAVE_READER *save, i32 com
 }
 
 GAMEOBJECT *Mission_FindTarget(MISSIONSYS *system, u64 *identity) {
-    MISSION_SYSTEM_READER *reader;
     GAMEOBJECT *target;
     if (system == NULL) {
         system = MissionSys;
     }
     if (system != NULL) {
-        reader = (MISSION_SYSTEM_READER *)system;
-        target = FindGameObject(reader->active_mission->find_character, 0, 0, 1, 0);
+        target = FindGameObject(system->active_mission->find_character, 0, 0, 1, 0);
         if (identity != NULL) {
             *identity = target != NULL ? U64_PAIR(target->collision_identity_mask) : 0;
         }
@@ -203,15 +195,13 @@ GAMEOBJECT *Mission_FindTarget(MISSIONSYS *system, u64 *identity) {
 }
 
 i32 Missions_PickupsOff(MISSIONSYS *system) {
-    MISSION_SYSTEM_READER *reader;
     if (system == NULL) {
         system = MissionSys;
     }
     if (system == NULL) {
         return 0;
     }
-    reader = (MISSION_SYSTEM_READER *)system;
-    if (reader->state == 0 || reader->active_mission == NULL || (reader->flags & 1) != 0) {
+    if (system->state == 0 || system->active_mission == NULL || (system->flags & 1) != 0) {
         return 0;
     }
     return 1;

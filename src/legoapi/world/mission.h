@@ -28,7 +28,6 @@ extern "C" {
 #ifdef __cplusplus
 }
 #endif
-typedef struct MISSIONSYS_s MISSIONSYS_s;
 #ifdef __cplusplus
 extern "C" {
 #endif
@@ -50,18 +49,6 @@ extern "C" {
 #ifdef __cplusplus
 }
 #endif
-
-struct MISSIONSYS_s {                         // size 0x30
-    struct MISSIONDATA_s *missions;           // 0x00
-    struct MISSIONDATA_s *mission;            // 0x04
-    TIMER timer;                              // 0x08
-    struct MISSION_SAVE_READER *mission_save; // 0x18
-    u8 count;                                 // 0x1c
-    u8 field8_0x1d;                           // 0x1d
-    u8 flags;                                 // 0x1e
-    u8 character_count;                       // 0x1f
-    i16 character_ids[8];                     // 0x20
-};
 
 #ifdef __cplusplus
 extern "C" {
