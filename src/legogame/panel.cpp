@@ -1005,7 +1005,7 @@ extern "C" {
     i8 meleeTarg_localCount[4] = {0};
     f32 meleeTarg_scaleSize[4] = {0};
 
-    void DrawMeleeTargetsNumber(i16 *targets, u8 *counts, i32 count, u8 reset, NUSPECIALHANDLE *special) {
+    void DrawMeleeTargetsNumber(i16 *targets, u8 *counts, i32 count, u8 reset, nuhspecial_s *special) {
         char text[4];
         f32 icon_scale;
         f32 step;

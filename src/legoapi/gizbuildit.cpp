@@ -22,7 +22,7 @@ typedef struct buildit_matrices_s { // size 0x80
 
 typedef struct buildit_animation_s { // size 0x28
     u8 unknown_00[4];                // 0x00
-    NUSPECIALHANDLE special;         // 0x04
+    nuhspecial_s special;            // 0x04
     u8 unknown_10[0x14];             // 0x10
     BUILDIT_MATRICES *object_data;   // 0x24
 } BUILDIT_ANIMATION;
@@ -1348,7 +1348,7 @@ extern "C" {
                 *(NUVEC *)&object_data->draw_mtx.m30 = scatter_position;
             } else {
                 object = buildit->anim_objects[index];
-                NuSpecialSetDrawPos((nuhspecial_s *)&object->special, &scatter_position);
+                NuSpecialSetDrawPos(&object->special, &scatter_position);
             }
             AddGameDebris(WORLD->game_debris_sys, GizBuilditGDeb[qrand() / 0x2aab], &scatter_position);
         }
@@ -1433,7 +1433,7 @@ extern "C" {
                     if (buildit->linked_buildit != NULL) {
                         *(NUVEC *)&data->draw_mtx.m30 = finish_position;
                     } else {
-                        NuSpecialSetDrawPos((nuhspecial_s *)&piece->special, &finish_position);
+                        NuSpecialSetDrawPos(&piece->special, &finish_position);
                     }
                 }
             } else if (buildit->build_state == 0) {
@@ -1476,7 +1476,7 @@ extern "C" {
                                     GIZBUILDITANIMDATA_s *data = (GIZBUILDITANIMDATA_s *)buildit->anim_objects[piece_index]->object_data;
                                     *(NUVEC *)&data->draw_mtx.m30 = target;
                                 } else {
-                                    NuSpecialSetDrawPos((nuhspecial_s *)&buildit->anim_objects[piece_index]->special, &target);
+                                    NuSpecialSetDrawPos(&buildit->anim_objects[piece_index]->special, &target);
                                     NuSpecialUpdate(&buildit->anim_objects[piece_index]->special);
                                 }
                             }
@@ -1499,7 +1499,7 @@ extern "C" {
                                 EvalAnim2(&piece->special, piece->instance_animation->ltime);
                             }
                             GameAudio_PlaySfx(0x3b, NuSpecialGetDrawPos(&piece->special), 0, 0);
-                            NuSpecialSetDrawPos((nuhspecial_s *)&piece->special, NuSpecialGetPos(&piece->special));
+                            NuSpecialSetDrawPos(&piece->special, NuSpecialGetPos(&piece->special));
                         }
                         ++buildit->built_object_count;
                         if (buildit->built_object_count == buildit->anim_object_count) {

@@ -26,7 +26,7 @@ struct nudisplay_list_s;
 struct numtl_s;
 struct numtx_s;
 struct nurndrlibstate_s;
-struct nuspecial_handle_s;
+struct nuhspecial_s;
 
 typedef struct nudisplaylist_pc_s NUDISPLAYLIST_PC;
 
@@ -97,7 +97,7 @@ struct nudisplaylist_pc_s {   // size 0x28
 extern "C" {
 #endif
 
-    i32 NuDisplayListRndrSpecial(struct nuspecial_handle_s *, struct numtx_s *, i32, struct numtx_s *, void *);
+    i32 NuDisplayListRndrSpecial(struct nuhspecial_s *, struct numtx_s *, i32, struct numtx_s *, void *);
     VARIPTR *NuDisplayListLinkItems(NUDISPLAYLIST_PC *, i32);
     void *DisplayListCreateGeomTransformPS(VARIPTR *, struct numtx_s *, struct numtl_s *, void *, void *);
     void *DisplayListCreateSkinTransformPS(VARIPTR *, struct numtx_s *, void *, void *, void **, void *);
@@ -107,8 +107,8 @@ extern "C" {
     void NuDisplayListAddMaterialState(NUDISPLAYLISTITEM *, struct numtl_s *);
     void NuDisplayListAddMicrocode(NUDISPLAYLISTITEM *, struct numtl_s *);
     void NuDisplayListAddLightState(NUDISPLAYLISTITEM *, struct numtl_s *);
-    void NuDisplayListUpdateSpecial(struct nuspecial_handle_s *special);
-    void DisplayListUpdateSpecialTransformPS(struct nuspecial_handle_s *special, struct numtx_s *matrix);
+    void NuDisplayListUpdateSpecial(struct nuhspecial_s *special);
+    void DisplayListUpdateSpecialTransformPS(struct nuhspecial_s *special, struct numtx_s *matrix);
 #ifdef __cplusplus
 }
 #endif

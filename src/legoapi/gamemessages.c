@@ -132,7 +132,7 @@ found:
     slot->parameter_fc = message->unknown_4f;
     slot->icon = (u16)message->icon;
     if (message->special != NULL) {
-        slot->special = *(NUSPECIALHANDLE *)message->special;
+        slot->special = *(nuhspecial_s *)message->special;
     } else {
         memset(&slot->special, 0, sizeof(slot->special));
     }
@@ -386,7 +386,7 @@ void DrawGameMessages(void) {
                                   message->parameter_e4, &message->special, 2, alpha);
             }
             if (GameMsg_GetExtraObjFn != NULL) {
-                NUSPECIALHANDLE *extra = GameMsg_GetExtraObjFn(message);
+                nuhspecial_s *extra = GameMsg_GetExtraObjFn(message);
                 if (extra != NULL && NuSpecialExistsFn(extra) != 0) {
                     const u32 draw_flags = message->flags;
                     if ((draw_flags & 0x20000) != 0) {

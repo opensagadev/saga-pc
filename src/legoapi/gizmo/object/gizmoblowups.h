@@ -69,33 +69,33 @@ extern "C" {
 
 #if SAGA_LEGOAPI_GIZMO_OBJECT_GIZMOBLOWUPS_H_PART == 2 && !defined(SAGA_LEGOAPI_GIZMO_OBJECT_GIZMOBLOWUPS_H_STOP)
 
-typedef struct GIZMOBLOWUPTYPE {           // size 0x100
-    NUSPECIALHANDLE alternate_specials[4]; // 0x00
-    NUSPECIALHANDLE animated_special;      // 0x30
-    NUSPECIALHANDLE decal_special;         // 0x3c
-    NUSPECIALHANDLE shadow_special;        // 0x48
-    NUSPECIALHANDLE burst_special;         // 0x54
-    u8 unknown_60[0x18];                   // 0x60
-    f32 animation_time_scale;              // 0x78
-    u32 animation_flags;                   // 0x7c
-    u32 effect_flags;                      // 0x80
-    f32 unknown_084;                       // 0x84
-    f32 animation_start_frame;             // 0x88
-    f32 animation_end_frame;               // 0x8c
-    f32 animation_base_frame;              // 0x90
-    f32 unknown_094;                       // 0x94
-    f32 unknown_098;                       // 0x98
-    f32 unknown_09c;                       // 0x9c
-    i16 particle_types[9];                 // 0xa0
-    u16 instance_count;                    // 0xb2
-    GAMEANTINODEDATA anti_node_data;       // 0xb4
-    char name[32];                         // 0xd8
-    u8 unknown_0f8;                        // 0xf8
-    u8 unknown_0f9;                        // 0xf9
-    u8 unknown_0fa;                        // 0xfa
-    u8 unknown_0fb;                        // 0xfb
-    u8 animation_runtime_flags;            // 0xfc
-    u8 unknown_fd[3];                      // 0xfd
+typedef struct GIZMOBLOWUPTYPE {        // size 0x100
+    nuhspecial_s alternate_specials[4]; // 0x00
+    nuhspecial_s animated_special;      // 0x30
+    nuhspecial_s decal_special;         // 0x3c
+    nuhspecial_s shadow_special;        // 0x48
+    nuhspecial_s burst_special;         // 0x54
+    u8 unknown_60[0x18];                // 0x60
+    f32 animation_time_scale;           // 0x78
+    u32 animation_flags;                // 0x7c
+    u32 effect_flags;                   // 0x80
+    f32 unknown_084;                    // 0x84
+    f32 animation_start_frame;          // 0x88
+    f32 animation_end_frame;            // 0x8c
+    f32 animation_base_frame;           // 0x90
+    f32 unknown_094;                    // 0x94
+    f32 unknown_098;                    // 0x98
+    f32 unknown_09c;                    // 0x9c
+    i16 particle_types[9];              // 0xa0
+    u16 instance_count;                 // 0xb2
+    GAMEANTINODEDATA anti_node_data;    // 0xb4
+    char name[32];                      // 0xd8
+    u8 unknown_0f8;                     // 0xf8
+    u8 unknown_0f9;                     // 0xf9
+    u8 unknown_0fa;                     // 0xfa
+    u8 unknown_0fb;                     // 0xfb
+    u8 animation_runtime_flags;         // 0xfc
+    u8 unknown_fd[3];                   // 0xfd
 } GIZMOBLOWUPTYPE;
 
 typedef struct GIZMOBLOWUP_PC { // size 0x114
@@ -229,7 +229,7 @@ extern "C" {
     void GizmoBlowUp_AddEffects(NUVEC *position, GIZMOBLOWUP_PC *blowup, i32 add_offset, i32 flags, struct gameobject_s *object);
     i32 GizmoBlowupCheckProximity(struct WORLDINFO_s *, struct gameobject_s *);
     i32 GizmoBlowupBlowup(GIZMOBLOWUP_PC *, i32, i32, i32, struct gameobject_s *, i32);
-    GIZMOBLOWUPTYPE *GizmoBlowupTypeAdd(struct WORLDINFO_s *, NUSPECIALHANDLE *, i32, i32 *);
+    GIZMOBLOWUPTYPE *GizmoBlowupTypeAdd(struct WORLDINFO_s *, nuhspecial_s *, i32, i32 *);
     void GizmoBlowupTypeRemove(GIZMOBLOWUPTYPE *, struct WORLDINFO_s *);
     void *gizmoblowup_reservebuffers(struct WORLDINFO_s *);
     void GizmoBlowupsFinalSetup(struct WORLDINFO_s *);

@@ -334,7 +334,7 @@ typedef struct minikit_s {          // size 0x18
     u8 piece_count;                 // 0x08
     i8 area_index;                  // 0x09
     i16 model_id;                   // 0x0a
-    NUSPECIALHANDLE shadow;         // 0x0c
+    nuhspecial_s shadow;            // 0x0c
 } MINIKIT_PC;
 
 typedef struct HUBMINIKIT_s HUBMINIKIT_s;

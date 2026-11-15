@@ -1,10 +1,10 @@
 #include "saga.h"
 #include <string.h>
 
-struct RADIO_ENTRY {         // size 0x14
-    GIZMOBLOWUP_PC *blowup;  // 0x00
-    NUSPECIALHANDLE special; // 0x04
-    f32 time;                // 0x10
+struct RADIO_ENTRY {        // size 0x14
+    GIZMOBLOWUP_PC *blowup; // 0x00
+    nuhspecial_s special;   // 0x04
+    f32 time;               // 0x10
 };
 
 f32 RadioLifetime = 20.0f;

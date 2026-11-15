@@ -19,7 +19,7 @@ typedef struct cut_rigid_lifecycle_s {    // size 0x5c
 } CUT_RIGID_LIFECYCLE;
 
 typedef struct cut_rigid_instance_s { // size 0x10
-    NUSPECIALHANDLE special;          // 0x0
+    nuhspecial_s special;             // 0x0
     u8 state_index;                   // 0xc
     u8 unknown_0d[3];                 // 0xd
 } CUT_RIGID_INSTANCE;
@@ -216,7 +216,7 @@ static void CutSceneEndRigidsPC(INSTNUGCUTSCENE *owner, f32 frame) {
     }
 }
 
-i32 instNuGCutGetNextRigidInfo(INSTNUGCUTSCENE *owner, f32 frame, i32 index, NUMTX *matrix, NUSPECIALHANDLE *special) {
+i32 instNuGCutGetNextRigidInfo(INSTNUGCUTSCENE *owner, f32 frame, i32 index, NUMTX *matrix, nuhspecial_s *special) {
     CUT_INSTANCE_LIFECYCLE_PC *instance = (CUT_INSTANCE_LIFECYCLE_PC *)owner;
     CUT_RIGID_SYSTEM_LIFECYCLE *system = instance->scene->rigid_system;
     CUT_RIGID_LIFECYCLE *rigid;
@@ -704,7 +704,7 @@ void *NuGCutSceneLoadAddr(char *path, CUT_SCENE_LOAD_PC *scene, i32 loaded_size,
 static void CutSceneRigidFixUp(CUT_SCENE_LOAD_PC *scene, NUGSCN *gscene) {
     CUT_LOAD_RIGID_SYSTEM *system = scene->rigid_system;
     CUT_LOAD_LOCATOR_SYSTEM *locators = scene->locator_system;
-    NUSPECIALHANDLE handle;
+    nuhspecial_s handle;
     i32 i;
     if (gscene != NULL) {
         for (i = 0; i < system->count; ++i) {
@@ -826,7 +826,7 @@ void NuGCutSceneFixUp(void *asset, NUGSCN *gscene, void *extra_scene, i32 page) 
 
 static void CutSceneRigidFixUpExtra(CUT_SCENE_LOAD_PC *scene, NUGSCN *gscene) {
     CUT_LOAD_RIGID_SYSTEM *system = scene->rigid_system;
-    NUSPECIALHANDLE handle;
+    nuhspecial_s handle;
     i32 i;
     if (gscene != NULL) {
         for (i = 0; i < system->count; ++i) {
@@ -919,7 +919,7 @@ static CUT_LOAD_RIGID_INSTANCE_SYSTEM *CutRigidInstanceCreate(CUT_SCENE_LOAD_PC 
                     display_list = gscene->display_list;
                     if (display_list != NULL) {
                         i32 index = ((i32)rigid->special - (i32)rigid->scene->display_list->specials) / 0xd0;
-                        target->special.display_special = (NUMTX *)&display_list->specials[index];
+                        target->special.display_special = &display_list->specials[index];
                         target->special.special = NULL;
                     } else {
                         i32 index = ((i32)rigid->special - (i32)rigid->scene->specials) / 0x4c;
@@ -1124,7 +1124,7 @@ INSTNUGCUTSCENE *instNuGCutSceneCreate(void *asset, NUGSCN *gscene, void *extra_
 
 typedef void (*CUT_DRAW_RENDER_CALLBACK_PC)(INSTNUGCUTSCENE *, void *, void *, void *, f32, i32);
 typedef void (*CUT_DRAW_EVAL_CALLBACK_PC)(INSTNUGCUTSCENE *, void *, void *, void *, f32);
-typedef void (*CUT_DRAW_RIGID_CALLBACK_PC)(void *, NUSPECIALHANDLE *, NUMTX *);
+typedef void (*CUT_DRAW_RIGID_CALLBACK_PC)(void *, nuhspecial_s *, NUMTX *);
 extern void (*NuCutSceneResetCharacters)(INSTNUGCUTSCENE *);
 
 void fun_005000c0(void) {

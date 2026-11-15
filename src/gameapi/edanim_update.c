@@ -29,7 +29,7 @@ i32 EdAnimLocalFrameCount = 0;
 
 void edanimUpdateObjects(f32 elapsed) {
     NUINSTANIM *animation;
-    NUSPECIALHANDLE special;
+    nuhspecial_s special;
     f32 seconds;
     NUMTX orientation;
     i32 index;

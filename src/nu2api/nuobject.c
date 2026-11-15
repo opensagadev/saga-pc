@@ -93,7 +93,7 @@ i32 NuFadeSetFxCodeMtls(NUGEOM *geometry, u8 *codes) {
     return count;
 }
 
-PC_NUFADEGROUP *NuFadeObjCreateMtx(NUSPECIALHANDLE *source, NUMTX *matrices, i16 count, f32 near_distance, f32 far_distance, i32 flags) {
+PC_NUFADEGROUP *NuFadeObjCreateMtx(nuhspecial_s *source, NUMTX *matrices, i16 count, f32 near_distance, f32 far_distance, i32 flags) {
     PC_NUFADEGROUP *group;
     NUMTX *matrix = matrices;
     i16 *platform;
@@ -115,8 +115,8 @@ PC_NUFADEGROUP *NuFadeObjCreateMtx(NUSPECIALHANDLE *source, NUMTX *matrices, i16
         group->matrices = matrices;
         group->platforms = platform;
         group->scene = source->scene;
-        group->special = (NUDISPLAY_SPECIAL *)source->display_special;
-        group->instance_index = (i16)((NUDISPLAY_SPECIAL *)source->display_special)->instance_ix;
+        group->special = source->display_special;
+        group->instance_index = (i16)source->display_special->instance_ix;
         group->terrain = TerrainGetCur();
         group->count = count;
         group->flags = (i16)flags;
@@ -256,7 +256,7 @@ void NuFadeObjDraw(void) {
     f32 near_squared;
     f32 far_squared;
     f32 distance_squared;
-    NUSPECIALHANDLE special;
+    nuhspecial_s special;
     special.special = NULL;
     if (NuFadeObjEnabled == 0) {
         return;
@@ -283,7 +283,7 @@ void NuFadeObjDraw(void) {
                         matrix->m23 = 1.0e-11f;
                     }
                     special.scene = group->scene;
-                    special.display_special = (NUMTX *)group->special;
+                    special.display_special = group->special;
                     if (NuSpecialDrawAt(&special, matrix)) {
                         group->drawn = 1;
                     }

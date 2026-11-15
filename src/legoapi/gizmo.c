@@ -704,7 +704,7 @@ i32 GizmoGetGuid(GIZMOSYS_PC *system, GIZMO_PC *gizmo) {
 i32 GizmoInfoVersion = 4;
 
 i32 GizmoSysWriteInfo(GIZMOSYS_PC *gizmo_sys, char *path, NUGSCN *scene) {
-    NUSPECIALHANDLE special;
+    nuhspecial_s special;
     GIZMO_PC gizmo;
     char backup[256];
     GIZMOTYPES *types;
@@ -926,7 +926,7 @@ static void GizmoAppendSpecialErrorPrivate(void *ptr, const char *text) {
     }
 }
 
-i32 Gizmo_FindNuSpecial(NUGSCN *scene, NUSPECIALHANDLE *special, char *name, i32 flags, void *ptr, char *prefix, char *suffix) {
+i32 Gizmo_FindNuSpecial(NUGSCN *scene, nuhspecial_s *special, char *name, i32 flags, void *ptr, char *prefix, char *suffix) {
     GIZMOSYS_PC *system = ptr;
     if (NuSpecialFind(scene, special, name, flags)) {
         return 1;

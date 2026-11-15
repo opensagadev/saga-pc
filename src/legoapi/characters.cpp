@@ -154,9 +154,9 @@ extern "C" {
         }
     }
 
-    NUSPECIALHANDLE *CharScene_FindHSpecial(WORLDINFO *world, i32 character_id) {
+    nuhspecial_s *CharScene_FindHSpecial(WORLDINFO *world, i32 character_id) {
         KILLPARTS_WORLD_SCENES *scenes = reinterpret_cast<KILLPARTS_WORLD_SCENES *>(world);
-        NUSPECIALHANDLE *special;
+        nuhspecial_s *special;
         if (KillPartsCharSceneArea != NULL && KillPartsCharSceneArea[character_id].scene != NULL) {
             special = &KillPartsCharSceneArea[character_id].special_scene;
         } else if (scenes->character_scenes[character_id].scene != NULL) {
@@ -172,7 +172,7 @@ extern "C" {
 }
 
 void CharScene_Draw(WORLDINFO *world, i32 character_id, NUMTX *matrix, NUMTX *reflection_matrix) {
-    NUSPECIALHANDLE *special = CharScene_FindHSpecial(world, character_id);
+    nuhspecial_s *special = CharScene_FindHSpecial(world, character_id);
     if (special != NULL) {
         if (matrix != NULL) {
             NuSpecialDrawAt(special, matrix);
@@ -286,9 +286,9 @@ extern "C" {
     }
 
     void DrawCharIcon(i32 character_id, f32 x, f32 y, f32 z, f32 scale, i32 frame_object_id, f32 character_alpha, f32 frame_alpha,
-                      i32 draw_character, NUSPECIALHANDLE *override_special) {
+                      i32 draw_character, nuhspecial_s *override_special) {
         WORLDINFO *world = WorldInfo_CurrentlyActive();
-        NUSPECIALHANDLE special;
+        nuhspecial_s special;
         if (ObjTabList == NULL || world == NULL) {
             return;
         }

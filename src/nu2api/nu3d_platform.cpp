@@ -1558,7 +1558,7 @@ extern "C" {
 
     /* The PC backend has no special-transform work: the leaf forwards to the shared empty
      * diagnostic. */
-    void DisplayListUpdateSpecialTransformPS(NUSPECIALHANDLE *special, NUMTX *matrix) {
+    void DisplayListUpdateSpecialTransformPS(nuhspecial_s *special, NUMTX *matrix) {
         DisplayListSpecialTransformNoOp(special, matrix);
     }
 
@@ -4354,7 +4354,7 @@ extern "C" {
         PCSpecialProjectionAdjust.y_offset = ((height - source_bottom) - source_y) * -2.0f / height;
     }
 
-    i32 NuSpecialDrawAtAlpha(NUSPECIALHANDLE *handle, NUMTX *matrix, f32 alpha) {
+    i32 NuSpecialDrawAtAlpha(nuhspecial_s *handle, NUMTX *matrix, f32 alpha) {
         i32 result;
         if (handle->scene == NULL) {
             return 0;

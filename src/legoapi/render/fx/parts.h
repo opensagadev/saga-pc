@@ -34,7 +34,7 @@ extern "C" {
     void PartStop_Flickerer(PART_PC *);
     i32 PartDraw_Flickerer(PART_PC *);
     void PartCollide_3D(PART_PC *);
-    PART_PC *Part_FindFromHSpecial(NUSPECIALHANDLE *);
+    PART_PC *Part_FindFromHSpecial(nuhspecial_s *);
     void PartKill_ForceThrow(PART_PC *, i32);
     PART_PC *AddPart(ADDPART *);
     PART_PC *FindIncomingPart(void *owner, NUVEC *position, f32 radius, u32 flags, f32 range);

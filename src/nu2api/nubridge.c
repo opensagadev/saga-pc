@@ -491,7 +491,7 @@ void NuBridgeOn(i32 enabled) {
     NuBridgeProc = enabled;
 }
 
-i32 NuBridgeCreate(NUGSCN *scene, NUSPECIALHANDLE *first, NUSPECIALHANDLE *second, NUVEC *start, NUVEC *end, f32 width, i16 rotation,
+i32 NuBridgeCreate(NUGSCN *scene, nuhspecial_s *first, nuhspecial_s *second, NUVEC *start, NUVEC *end, f32 width, i16 rotation,
                    f32 spring_strength, f32 damping, f32 gravity, f32 load_multiplier, i32 count, f32 unknown_b04, f32 unknown_b08,
                    i32 unknown_ae7, u32 colour) {
     i32 index;

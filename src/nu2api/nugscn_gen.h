@@ -17,7 +17,7 @@ extern "C" {
 #endif
     i32 NuCameraClipHGobj(NUHGOBJ_EVAL *, NUMTX *, NUMTX *);
     i32 NuGScnNumSpecials(NUGSCN *);
-    void NuGScnGetSpecial(NUSPECIALHANDLE *, NUGSCN *, i32);
+    void NuGScnGetSpecial(nuhspecial_s *, NUGSCN *, i32);
     void NuVpSetIdentity(NUMTX *matrix);
     void RenderPostViewportReset(void);
 #ifdef __cplusplus

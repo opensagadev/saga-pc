@@ -485,7 +485,7 @@ typedef struct APIOBJECT {                          // size 0x29c
     }; // 0x1fc
 
     u8 unknown_200[0xc];                                          // 0x200
-    NUSPECIALHANDLE collision_special;                            // 0x20c
+    nuhspecial_s collision_special;                               // 0x20c
     u8 unknown_218_b[0x8];                                        // 0x218
     f32 water_height;                                             // 0x220
     u8 unknown_224[0x4];                                          // 0x224

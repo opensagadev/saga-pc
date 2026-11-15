@@ -49,7 +49,7 @@ void KillPartsByScene(NUGSCN *scene) {
     i32 index;
     for (index = 0; index < MAXPARTS; ++index, ++part) {
         if ((part->active & 1) != 0 && part->source_special != NULL && part->special.scene == scene) {
-            NUSPECIALHANDLE *special = &part->special;
+            nuhspecial_s *special = &part->special;
             special->scene = NULL;
             special->special = NULL;
             special->display_special = NULL;
@@ -1116,7 +1116,7 @@ PART_PC *TargetPart(GAMEOBJECT *object, NUVEC *position, NUVEC *direction, f32 r
     return NULL;
 }
 
-PART_PC *Part_FindFromHSpecial(NUSPECIALHANDLE *special) {
+PART_PC *Part_FindFromHSpecial(nuhspecial_s *special) {
     PART_PC *part;
     i32 index;
     if (special == NULL) {
@@ -2148,7 +2148,7 @@ void AddVariableShotPARTEffect(i32 effect_index, NUVEC *position, f32 rate, f32 
         ADDPART params = Default_ADDPART;
         NUVEC part_position;
         NUVEC velocity;
-        NUSPECIALHANDLE special;
+        nuhspecial_s special;
         NUMTX matrix;
         f32 range;
         i16 angle_x;
@@ -2684,7 +2684,7 @@ i32 AddScaledFiniteShotPART(i32 effect, NUVEC *position, i32 count, f32 scale) {
 }
 
 i32 edpartLookupObjectInScene(char *name, NUGSCN *scene) {
-    NUSPECIALHANDLE special;
+    nuhspecial_s special;
     i32 count;
     i32 i;
     char *special_name;
@@ -3427,7 +3427,7 @@ void UpdatePartEmits(f32 time) {
     NUVEC position;
     NUVEC velocity;
     NUMTX matrix;
-    NUSPECIALHANDLE special;
+    nuhspecial_s special;
     f32 interval;
     f32 shift;
     f32 previous_distance;

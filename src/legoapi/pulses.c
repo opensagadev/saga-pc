@@ -11,16 +11,16 @@ static f32 PulsesFabs(f32 f) {
     return rv;
 }
 
-typedef struct PULSE {       // size 0x34
-    NUSPECIALHANDLE special; // 0x00
-    f32 on_time;             // 0x0c
-    f32 off_time;            // 0x10
-    f32 timer;               // 0x14
-    f32 start_wait;          // 0x18
-    u16 active;              // 0x1c
-    u16 disabled;            // 0x1e
-    char gizmo_name[16];     // 0x20
-    void *gizmo;             // 0x30
+typedef struct PULSE {    // size 0x34
+    nuhspecial_s special; // 0x00
+    f32 on_time;          // 0x0c
+    f32 off_time;         // 0x10
+    f32 timer;            // 0x14
+    f32 start_wait;       // 0x18
+    u16 active;           // 0x1c
+    u16 disabled;         // 0x1e
+    char gizmo_name[16];  // 0x20
+    void *gizmo;          // 0x30
 } PULSE;
 
 struct level_sfx_pulse_prefix_s {    // size 0x20

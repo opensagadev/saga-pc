@@ -24,7 +24,7 @@ AI_CLEAR_CREATURES ClearAICreaturesFn = 0;
 typedef struct EQUIVALENTOBJECTGROUP { // size 0x10
     i16 object_count;                  // 0x0
     i16 byte_size;                     // 0x2
-    NUSPECIALHANDLE objects[1];        // 0x4
+    nuhspecial_s objects[1];           // 0x4
 } EQUIVALENTOBJECTGROUP;
 
 i32 NuHGobjRndr(NUHGOBJ_EVAL *object, NUMTX *matrix, i32 count, i16 *layers) {

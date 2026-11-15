@@ -6,7 +6,7 @@ extern "C" char *PushBlocksName;
 
 typedef struct PUSH_SUPPORT_BLOCK_VIEW {
     u8 unknown_000[0x24];
-    NUSPECIALHANDLE special;
+    nuhspecial_s special;
     GAMEOBJECT *pushing_object;
     u8 unknown_034[0x58 - 0x34];
     NUVEC *position;
@@ -47,7 +47,7 @@ typedef struct PUSH_RUNTIME_BLOCK_VIEW {
     i32 previous_extra_terrain_info;
     PUSH_BLOCK_PC *supporting_block;
     PUSH_BLOCK_PC *previous_supporting_block;
-    NUSPECIALHANDLE special;
+    nuhspecial_s special;
     GAMEOBJECT *pushing_object;
     i32 platform_id;
     u8 unknown_038[8];
@@ -55,7 +55,7 @@ typedef struct PUSH_RUNTIME_BLOCK_VIEW {
     char name[16];
     NUVEC *snap_positions;
     NUVEC *position;
-    NUSPECIALHANDLE end_position_specials[2];
+    nuhspecial_s end_position_specials[2];
     NUVEC end_position_origins[2];
     NUVEC velocity;
     NUVEC target_velocity;
@@ -126,7 +126,7 @@ extern "C" void KnockPushBlock(PUSH_BLOCK_PC *opaque_block, NUVEC *direction) {
 extern "C" void ResetSinglePushBlock(WORLDINFO *, struct pushblock_s *opaque, i32) {
     PUSH_BLOCK_PC *block = opaque;
     block->platform_id = FindPlatInst(NuSpecialGetInstanceix(&block->special));
-    SetAnimFrame(reinterpret_cast<struct nuhspecial_s *>(&block->special), 1.0f);
+    SetAnimFrame(&block->special, 1.0f);
     block->packed_state_flags &= 0xfdfc70f2u;
     block->pushing_object = NULL;
     block->completed_snap_positions = 0;
@@ -175,7 +175,7 @@ extern "C" void ResetPushProgress(WORLDINFO *opaque, void *progress_data) {
                 *reinterpret_cast<NUVEC *>(&matrix->m30) = *reinterpret_cast<NUVEC *>(&evaluated.m30);
                 NuSpecialUpdate(&block->special);
                 for (i32 output = 0; output < block->end_position_count; ++output) {
-                    NUSPECIALHANDLE *special = &block->end_position_specials[output];
+                    nuhspecial_s *special = &block->end_position_specials[output];
                     if (special != NULL) {
                         matrix = NuSpecialGetInstanceMtx(special);
                         EvalAnim(special, 1.0f, &evaluated, 0);
@@ -188,7 +188,7 @@ extern "C" void ResetPushProgress(WORLDINFO *opaque, void *progress_data) {
                 *reinterpret_cast<NUVEC *>(&matrix->m30) = progress->positions[index];
                 NuSpecialUpdate(&block->special);
                 for (i32 output = 0; output < block->end_position_count; ++output) {
-                    NUSPECIALHANDLE *special = &block->end_position_specials[output];
+                    nuhspecial_s *special = &block->end_position_specials[output];
                     if (special != NULL) {
                         matrix = NuSpecialGetInstanceMtx(special);
                         *reinterpret_cast<NUVEC *>(&matrix->m30) = progress->end_positions[output][index];
@@ -1228,7 +1228,7 @@ static void Push_StoreProgress(void *world_ptr, void *, void *progress_ptr) {
             progress->positions[index] = v000;
         }
         for (i32 end = 0; end < block->end_position_count; ++end) {
-            NUSPECIALHANDLE *special = &block->end_position_specials[end];
+            nuhspecial_s *special = &block->end_position_specials[end];
             if (special != NULL) {
                 if (NuSpecialExistsFn(special) != 0) {
                     progress->end_positions[end][index] = NuSpecialGetInstanceMtx(special)->translation;

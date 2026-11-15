@@ -178,6 +178,7 @@
 #include "legoapi/render/core/gameliball.h"
 #include "legoapi/legoapi_types.h"
 #include "legoapi/render/core/gameliball.h"
+#include "nu2api/nu3d/nuhspecial.h"
 #include "nu2api/nu3d/nu3d_includes.h"
 #include "nu2api/nu3d/nucamera.h"
 #include "nu2api/nudynamiclight_renderset_gen.h"

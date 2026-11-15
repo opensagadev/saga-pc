@@ -26,7 +26,7 @@
 struct NUANIM_TIME2;
 struct NUHGOBJ_EVAL;
 struct cut_load_locator_instance_s;
-struct nuspecial_handle_s;
+struct nuhspecial_s;
 
 typedef struct instnugcutscene_s {              // size 0xf8
     struct instnugcutscene_s *next;             // 0x00
@@ -52,7 +52,7 @@ extern "C" {
     extern void (*UpdateLocatorVfxFn)(i32, NUMTX *);
     extern i32 (*TriggerLocatorVfxFn)(i32, NUMTX *);
     extern void (*NuCutSceneCharacterRender)(INSTNUGCUTSCENE *, void *, void *, void *, f32, i32);
-    extern void (*NuCutSceneRigidPostRender)(void *, struct nuspecial_handle_s *, NUMTX *);
+    extern void (*NuCutSceneRigidPostRender)(void *, struct nuhspecial_s *, NUMTX *);
     void NuSetCutSceneResetCharactersFn(void (*)(INSTNUGCUTSCENE *));
     extern i32 (*LookupLocatorVfxFn)(char *);
     extern i32 (*NuCutSceneRequestSFX)(char *);

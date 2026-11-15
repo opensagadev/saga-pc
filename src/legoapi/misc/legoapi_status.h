@@ -107,7 +107,7 @@ extern "C" {
 #if SAGA_LEGOAPI_MISC_LEGOAPI_STATUS_H_PART == 2 && !defined(SAGA_LEGOAPI_MISC_LEGOAPI_STATUS_H_STOP)
 
 typedef struct minikit_piece_s { // size 0x68
-    NUSPECIALHANDLE special;     // 0x00
+    nuhspecial_s special;        // 0x00
     NUMTX matrix;                // 0x0c
     u8 unknown_4c[0x18];         // 0x4c
     u8 direction;                // 0x64

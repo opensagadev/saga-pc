@@ -14,7 +14,7 @@
 #ifdef __cplusplus
 extern "C" {
 #endif
-    void AddShoveObject(NUSPECIALHANDLE *, i16);
+    void AddShoveObject(nuhspecial_s *, i16);
     void ShoveObjectSysReset(void);
     void ShoveSystemCheckGameObject(GAMEOBJECT *);
     extern f32 ShoveMaximumSpeed;

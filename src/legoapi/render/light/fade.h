@@ -17,7 +17,7 @@ extern "C" {
     void FadeLoop_DrawObj(f32 alpha);
     extern struct NUGSCN_s *FadeLoop_ObjScene;
     void FadeLoop_SetObj(struct NUGSCN_s *scene, char *name);
-    extern NUSPECIALHANDLE FadeLoop_ObjHSpecial;
+    extern nuhspecial_s FadeLoop_ObjHSpecial;
 #ifdef __cplusplus
 }
 #endif

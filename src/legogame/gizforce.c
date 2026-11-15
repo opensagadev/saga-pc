@@ -732,7 +732,7 @@ i32 GizForce_GameObjUsingForce(GAMEOBJECT *object, GIZFORCE_PC *force) {
 }
 
 PART_PC *GizForce_Throw(GAMEOBJECT *object, GIZFORCE_PC *force, f32 speed, f32 gravity, i32 unused) {
-    NUSPECIALHANDLE *special = &force->anim_set->objects->special;
+    nuhspecial_s *special = &force->anim_set->objects->special;
     NUMTX translated;
     NUMTX *matrix;
     NUVEC velocity;

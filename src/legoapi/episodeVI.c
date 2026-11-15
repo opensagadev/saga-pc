@@ -3,11 +3,11 @@
 
 typedef struct SARLACC_DISCO {      // size 0x400
     AIAREA *area;                   // 0x000
-    NUSPECIALHANDLE off[16];        // 0x004
-    NUSPECIALHANDLE flash[16];      // 0x0c4
-    NUSPECIALHANDLE select[16];     // 0x184
-    NUSPECIALHANDLE on[16];         // 0x244
-    NUSPECIALHANDLE finish[16];     // 0x304
+    nuhspecial_s off[16];           // 0x004
+    nuhspecial_s flash[16];         // 0x0c4
+    nuhspecial_s select[16];        // 0x184
+    nuhspecial_s on[16];            // 0x244
+    nuhspecial_s finish[16];        // 0x304
     GIZOBSTACLE *off_obstacle;      // 0x3c4
     GIZOBSTACLE *on_obstacle;       // 0x3c8
     u8 panel_state[16];             // 0x3cc
@@ -28,7 +28,7 @@ typedef struct SARLACC_DISCO {      // size 0x400
 f32 SarlaccDiscoBaseOffset = -0.12f;
 
 static SARLACC_DISCO sarlaccdisco = {0};
-NUSPECIALHANDLE SarlaccLevSpecial[7] = {0};
+nuhspecial_s SarlaccLevSpecial[7] = {0};
 void *SarlaccLevelBuildits[2] = {0};
 GIZMO_PC *SarlaccObstMirrorBall = NULL;
 GIZMO_PC *SarlaccForceMirrorBall = NULL;

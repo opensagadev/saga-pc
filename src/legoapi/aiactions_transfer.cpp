@@ -19,13 +19,13 @@ extern "C" {
     void SockOff(SOCKSYS_PC *sys, i32 index);
 }
 
-static i32 NuSpecialFindMultiDisplay(NUGSCN *scene, NUSPECIALHANDLE *dest, char *name, i32 capacity, i32 flags) {
+static i32 NuSpecialFindMultiDisplay(NUGSCN *scene, nuhspecial_s *dest, char *name, i32 capacity, i32 flags) {
     i32 count = 0;
     NUDISPLAY_SPECIAL *special = scene->display_list->specials;
     for (i32 index = 0; index < scene->display_list->special_count; ++index, ++special) {
         if (NuStrIStr(special->name, name) != NULL) {
             dest->scene = scene;
-            dest->display_special = (NUMTX *)special;
+            dest->display_special = special;
             dest->special = NULL;
             ++dest;
             if (++count >= capacity) {
@@ -39,7 +39,7 @@ static i32 NuSpecialFindMultiDisplay(NUGSCN *scene, NUSPECIALHANDLE *dest, char 
     return count;
 }
 
-extern "C" i32 NuSpecialFindMulti(NUGSCN *scene, NUSPECIALHANDLE *dest, char *name, i32 capacity, i32 flags) {
+extern "C" i32 NuSpecialFindMulti(NUGSCN *scene, nuhspecial_s *dest, char *name, i32 capacity, i32 flags) {
     NUDISPLAY_SPECIAL *display_special = NULL;
     i32 count = 0;
     if (scene != NULL) {
@@ -51,7 +51,7 @@ extern "C" i32 NuSpecialFindMulti(NUGSCN *scene, NUSPECIALHANDLE *dest, char *na
             if (NuStrIStr(special->name, name) != NULL) {
                 dest->scene = scene;
                 dest->special = (NUMTX *)special;
-                dest->display_special = scene->display_list != NULL ? (NUMTX *)display_special : NULL;
+                dest->display_special = scene->display_list != NULL ? display_special : NULL;
                 ++dest;
                 if (++count >= capacity) {
                     return count;

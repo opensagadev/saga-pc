@@ -166,7 +166,7 @@ struct game_message_s {              // size 0x114
     u16 parameter_e2;                // 0x0e2
     u16 parameter_e4;                // 0x0e4
     u16 icon;                        // 0x0e6
-    NUSPECIALHANDLE special;         // 0x0e8
+    nuhspecial_s special;            // 0x0e8
     u8 red;                          // 0x0f4
     u8 green;                        // 0x0f5
     u8 blue;                         // 0x0f6

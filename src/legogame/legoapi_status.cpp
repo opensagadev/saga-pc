@@ -1002,7 +1002,7 @@ void DrawStatusMiniKit(f32 x, f32 y, f32 z, f32 scale, f32 collected_scale, i32 
             StatusMiniKitDrawCache[index].active = 1;
         }
         if (world->level_objects[206].active != 0) {
-            DrawPanel3DObjectMtxNoAlpha((nuhspecial_s *)&((STATUS_WORLD_MINIKIT_READER *)world)->minikit.pieces[index].special, &matrix);
+            DrawPanel3DObjectMtxNoAlpha(&((STATUS_WORLD_MINIKIT_READER *)world)->minikit.pieces[index].special, &matrix);
         }
     }
 }

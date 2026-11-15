@@ -30,9 +30,9 @@ extern "C" {
 #endif
     void WidescreenCode(i32);
     void BackDrop_Draw(f32, i32);
-    void DrawParallax(NUSPECIALHANDLE *);
+    void DrawParallax(nuhspecial_s *);
     void NoRender(void);
-    extern NUSPECIALHANDLE RenderBackdropSpecials[4];
+    extern nuhspecial_s RenderBackdropSpecials[4];
     extern struct NUGSCN_s *backdrop_scene;
     extern void (*RenderBackdropAlphaFn)(f32 *);
     void UpdateCutBorders(void);

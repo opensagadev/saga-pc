@@ -57,7 +57,7 @@ typedef struct hub_area_info_s {
     i32 flags;
     AREA_DATA_PC *area;
     void *door;
-    NUSPECIALHANDLE lock;
+    nuhspecial_s lock;
     void *bonus_gizmo;
     void *second_bonus_gizmo;
 } HUB_AREA_INFO_PC;
@@ -94,7 +94,7 @@ extern "C" {
 }
 
 typedef struct hub_minikit_piece_s {
-    NUSPECIALHANDLE special;
+    nuhspecial_s special;
     NUMTX matrix;
     u8 unknown_4c[0x1a];
     u8 enabled;
@@ -107,7 +107,7 @@ typedef struct hub_minikit_pieces_s {
     u8 piece_count;
     i8 area_index;
     i16 model_id;
-    NUSPECIALHANDLE base;
+    nuhspecial_s base;
 } HUB_MINIKIT_PIECES;
 
 #define HUB_SIN_LUT(a) (NuTrigTable[(((i32)(a)) >> 1) & 0x7fff])
@@ -135,7 +135,7 @@ typedef struct hub_episode_info_s {
     u32 unknown_10;
     EPISODEDATA_PC *data;
     void *door;
-    NUSPECIALHANDLE lock_on;
+    nuhspecial_s lock_on;
 } HUB_EPISODE_INFO_PC;
 
 typedef struct hub_init_world_reader_s {

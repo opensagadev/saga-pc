@@ -237,29 +237,29 @@ extern "C" {
 
 #if SAGA_GAMEAPI_AI_AISYS_AISYS_H_PART == 3 && !defined(SAGA_GAMEAPI_AI_AISYS_AISYS_H_STOP)
 
-struct AIPATHNODE {                 // size 0x5c
-    char *name;                     // 0x00
-    NUVEC position;                 // 0x04
-    f32 radius;                     // 0x10
-    f32 radius_squared;             // 0x14
-    f32 min_height;                 // 0x18
-    f32 min_height_offset;          // 0x1c
-    f32 max_height;                 // 0x20
-    f32 max_height_offset;          // 0x24
-    u8 connection_count;            // 0x28
-    u8 flags;                       // 0x29
-    u8 has_special;                 // 0x2a
-    u8 runtime_flags;               // 0x2b
-    i16 path_flags;                 // 0x2c
-    u8 distance_cache_nodes[2];     // 0x2e
-    u8 special_route_index;         // 0x30
-    u8 pad_31[3];                   // 0x31
-    AIPATHCNX **connections;        // 0x34
-    f32 distance_cache[2];          // 0x38
-    NUSPECIALHANDLE special_handle; // 0x40
-    NUVEC special_position;         // 0x4c
-    u16 route_membership_mask;      // 0x58
-    u16 route_boundary_mask;        // 0x5a
+struct AIPATHNODE {              // size 0x5c
+    char *name;                  // 0x00
+    NUVEC position;              // 0x04
+    f32 radius;                  // 0x10
+    f32 radius_squared;          // 0x14
+    f32 min_height;              // 0x18
+    f32 min_height_offset;       // 0x1c
+    f32 max_height;              // 0x20
+    f32 max_height_offset;       // 0x24
+    u8 connection_count;         // 0x28
+    u8 flags;                    // 0x29
+    u8 has_special;              // 0x2a
+    u8 runtime_flags;            // 0x2b
+    i16 path_flags;              // 0x2c
+    u8 distance_cache_nodes[2];  // 0x2e
+    u8 special_route_index;      // 0x30
+    u8 pad_31[3];                // 0x31
+    AIPATHCNX **connections;     // 0x34
+    f32 distance_cache[2];       // 0x38
+    nuhspecial_s special_handle; // 0x40
+    NUVEC special_position;      // 0x4c
+    u16 route_membership_mask;   // 0x58
+    u16 route_boundary_mask;     // 0x5a
 };
 
 typedef struct AIPATH {               // size 0xa8
@@ -300,26 +300,26 @@ typedef struct AIPATHSYS {              // size 0x10
     AIPATHSPECIALROUTE *special_routes; // 0xc
 } AIPATHSYS;
 
-typedef struct AIANTINODE {         // size 0x58
-    NUVEC position;                 // 0x00
-    f32 radius;                     // 0x0c
-    f32 min_y;                      // 0x10
-    f32 min_y_offset;               // 0x14
-    f32 max_y;                      // 0x18
-    f32 max_y_offset;               // 0x1c
-    NUSPECIALHANDLE special_handle; // 0x20
-    NUVEC special_position;         // 0x2c
-    i32 rotation;                   // 0x38
-    i32 rotation_offset;            // 0x3c
-    f32 base_radius;                // 0x40
-    f32 base_height;                // 0x44
-    u8 enabled;                     // 0x48
-    u8 game_flags;                  // 0x49
-    u8 type;                        // 0x4a
-    u8 has_special;                 // 0x4b
-    u8 unknown_4c_b[0x4];           // 0x4c
-    u8 special_type;                // 0x50
-    u8 unknown_51[0x7];             // 0x51
+typedef struct AIANTINODE {      // size 0x58
+    NUVEC position;              // 0x00
+    f32 radius;                  // 0x0c
+    f32 min_y;                   // 0x10
+    f32 min_y_offset;            // 0x14
+    f32 max_y;                   // 0x18
+    f32 max_y_offset;            // 0x1c
+    nuhspecial_s special_handle; // 0x20
+    NUVEC special_position;      // 0x2c
+    i32 rotation;                // 0x38
+    i32 rotation_offset;         // 0x3c
+    f32 base_radius;             // 0x40
+    f32 base_height;             // 0x44
+    u8 enabled;                  // 0x48
+    u8 game_flags;               // 0x49
+    u8 type;                     // 0x4a
+    u8 has_special;              // 0x4b
+    u8 unknown_4c_b[0x4];        // 0x4c
+    u8 special_type;             // 0x50
+    u8 unknown_51[0x7];          // 0x51
 } AIANTINODE;
 #ifdef __cplusplus
 extern "C" {
@@ -336,7 +336,7 @@ extern "C" {
     void AIAntinodeDestroy(AIANTINODE *);
     void AIAntinodeMove(AIANTINODE *, NUVEC *, f32, f32, f32);
     f32 AIPathNodeDistanceToPathNode(AIPATH *, i32, i32, i32, u32);
-    typedef i32 (*AISYS_SPECIAL_NODE_CALLBACK_PC)(void *, NUSPECIALHANDLE *);
+    typedef i32 (*AISYS_SPECIAL_NODE_CALLBACK_PC)(void *, nuhspecial_s *);
     extern AISYS_SPECIAL_NODE_CALLBACK_PC AISysSpecialNodeCallback;
     i32 WithinConnection(void *, NUVEC *, AIPATH *, AIPATHCNX *, i32, AIPATHCNX *, i32, i32, AIPATHINFO *, f32, i32);
     void AIPathNodeUpdatePos(void *, AIPATH *, AIPATHNODE *);
@@ -477,7 +477,7 @@ extern "C" {
 #ifdef __cplusplus
 }
 #endif
-typedef i32 AIFINDALTERNATIVESPECIALOBJECT(AISYS_PC *system, NUSPECIALHANDLE *special);
+typedef i32 AIFINDALTERNATIVESPECIALOBJECT(AISYS_PC *system, nuhspecial_s *special);
 #undef SAGA_GAMEAPI_AI_AISYS_AISYS_H_PART
 #define SAGA_GAMEAPI_AI_AISYS_AISYS_H_PART 5
 #ifdef SAGA_SHIM

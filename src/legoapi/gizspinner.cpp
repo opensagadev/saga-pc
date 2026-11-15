@@ -16,7 +16,7 @@ static f32 SpinnerFabs(f32 value) {
 }
 
 /* Looks the special up in the level scene first, then in the shared things scene. */
-static i32 SpinnerFindSpecial(WORLDINFO *world, NUSPECIALHANDLE *special, char *name) {
+static i32 SpinnerFindSpecial(WORLDINFO *world, nuhspecial_s *special, char *name) {
     NuSpecialFind(world->current_gscn, special, name, 0);
     if (NuSpecialExistsFn(special) != 0) {
         return 1;
@@ -102,9 +102,9 @@ extern "C" {
         NUVEC arm_maximum;
         f32 x_extent;
         f32 z_extent;
-        NuSpecialGetBounds((NUSPECIALHANDLE *)&spinner->special, &minimum, &maximum);
-        if (NuSpecialCompare((NUSPECIALHANDLE *)&thingsSceneBase, (NUSPECIALHANDLE *)&spinner->special) != 0) {
-            NuSpecialGetBounds((NUSPECIALHANDLE *)&thingsSceneArm, &arm_minimum, &arm_maximum);
+        NuSpecialGetBounds(&spinner->special, &minimum, &maximum);
+        if (NuSpecialCompare(&thingsSceneBase, &spinner->special) != 0) {
+            NuSpecialGetBounds(&thingsSceneArm, &arm_minimum, &arm_maximum);
             NuVecAdd(&minimum, &minimum, &arm_minimum);
             NuVecAdd(&maximum, &maximum, &arm_maximum);
         }
@@ -156,8 +156,8 @@ extern "C" i32 GizSpinner_Load(void *world_pointer, void *unused) {
     f32 rounded_point;
     (void)unused;
     if (world->spinners != NULL) {
-        NuSpecialFind(things_scene, (NUSPECIALHANDLE *)&thingsSceneBase, "Spinner_default_Base", 0);
-        NuSpecialFind(things_scene, (NUSPECIALHANDLE *)&thingsSceneArm, "Spinner_default_Arm", 0);
+        NuSpecialFind(things_scene, &thingsSceneBase, "Spinner_default_Base", 0);
+        NuSpecialFind(things_scene, &thingsSceneArm, "Spinner_default_Arm", 0);
         if (world->spinner_count == 0) {
             version = EdFileReadInt();
             world->spinner_count = EdFileReadInt();
@@ -177,10 +177,10 @@ extern "C" i32 GizSpinner_Load(void *world_pointer, void *unused) {
                 name_length = EdFileReadChar();
                 EdFileRead(special_name, name_length);
                 // MATCH-EXCEPTION: the SpinnerFindSpecial lookup written out; each result is tested in place here.
-                NuSpecialFind(world->current_gscn, (NUSPECIALHANDLE *)&special, special_name, 0);
-                if (NuSpecialExistsFn((NUSPECIALHANDLE *)&special) == 0) {
-                    NuSpecialFind(things_scene, (NUSPECIALHANDLE *)&special, special_name, 0);
-                    if (NuSpecialExistsFn((NUSPECIALHANDLE *)&special) == 0) {
+                NuSpecialFind(world->current_gscn, &special, special_name, 0);
+                if (NuSpecialExistsFn(&special) == 0) {
+                    NuSpecialFind(things_scene, &special, special_name, 0);
+                    if (NuSpecialExistsFn(&special) == 0) {
                         special_missing = 1;
                     }
                 }
@@ -224,13 +224,12 @@ extern "C" i32 GizSpinner_Load(void *world_pointer, void *unused) {
                         end_frame = AIPositionUnset;
                         name_length = EdFileReadChar();
                         EdFileRead(special_name, name_length);
-                        SpinnerFindSpecial(world, (NUSPECIALHANDLE *)&special, special_name);
+                        SpinnerFindSpecial(world, &special, special_name);
                         if (version >= 3) {
                             start_frame = EdFileReadFloat();
                             end_frame = EdFileReadFloat();
                         }
-                        object =
-                            GameAnimSet_AddObject(world->spinners[index].anim_set, (NUSPECIALHANDLE *)&special, start_frame, end_frame, 0);
+                        object = GameAnimSet_AddObject(world->spinners[index].anim_set, &special, start_frame, end_frame, 0);
                         if (world->spinners[index].primary_anim_obj == NULL) {
                             if (object != NULL && object->animation != NULL) {
                                 world->spinners[index].primary_anim_obj = object;
@@ -321,7 +320,7 @@ extern "C" void GizSpinners_InitTerrain(WORLDINFO *world) {
     for (index = 0; index < world->current_level->max_spinners; ++index) {
         if ((world->spinners[index].flags & GIZSPINNER_FLAG_VALID) != 0) {
             NUMTX matrix;
-            i32 instance = NuSpecialGetInstanceix((NUSPECIALHANDLE *)&world->spinners[index].special);
+            i32 instance = NuSpecialGetInstanceix(&world->spinners[index].special);
             FindPlatInst(instance);
             NuMtxSetIdentity(&matrix);
             NuMtxSetRotationY(&matrix, 0);
@@ -329,7 +328,7 @@ extern "C" void GizSpinners_InitTerrain(WORLDINFO *world) {
             NuMtxTranslate(&matrix, &world->spinners[index].position);
             world->spinners[index].matrix = matrix;
 
-            if (NuSpecialCompare((NUSPECIALHANDLE *)&world->spinners[index].special, (NUSPECIALHANDLE *)&thingsSceneBase) != 0) {
+            if (NuSpecialCompare(&world->spinners[index].special, &thingsSceneBase) != 0) {
                 use_default_terrain = 1;
             }
             if (use_default_terrain != 0) {
@@ -366,7 +365,7 @@ extern "C" GIZSPINNER_s *GizSpinner_FindBySpecialName(void *world_ptr, char *nam
     }
     for (i32 index = 0; index < world->current_level->max_spinners; ++index) {
         GIZSPINNER_s *spinner = &world->spinners[index];
-        if (spinner != NULL && (spinner->flags & 1) != 0 && NuStrCmp(NuSpecialGetName((NUSPECIALHANDLE *)&spinner->special), name) == 0) {
+        if (spinner != NULL && (spinner->flags & 1) != 0 && NuStrCmp(NuSpecialGetName(&spinner->special), name) == 0) {
             return spinner;
         }
     }
@@ -391,19 +390,18 @@ extern "C" void GizSpinner_Draw(void *world_pointer, void *data, f32 frame_time)
         if (!(spinner->flags & 1) || ((spinner->flags & 4) && editor_active == 0)) {
             continue;
         }
-        if (NuSpecialExistsFn((NUSPECIALHANDLE *)&spinner->special)) {
-            NuSpecialDrawAt((NUSPECIALHANDLE *)&spinner->special, &spinner->matrix);
-            if (spinner->type > 0 && NuSpecialCompare((NUSPECIALHANDLE *)&spinner->special, (NUSPECIALHANDLE *)&thingsSceneBase) != 0 &&
-                NuSpecialExistsFn((NUSPECIALHANDLE *)&thingsSceneArm) != 0) {
+        if (NuSpecialExistsFn(&spinner->special)) {
+            NuSpecialDrawAt(&spinner->special, &spinner->matrix);
+            if (spinner->type > 0 && NuSpecialCompare(&spinner->special, &thingsSceneBase) != 0 &&
+                NuSpecialExistsFn(&thingsSceneArm) != 0) {
                 arm = spinner->arms;
                 for (arm_index = 0; arm_index < spinner->type; ++arm_index, ++arm) {
-                    NuSpecialDrawAt((NUSPECIALHANDLE *)&thingsSceneArm, &arm->matrix);
+                    NuSpecialDrawAt(&thingsSceneArm, &arm->matrix);
                 }
             }
         }
         ResetShadowMapRendering();
-        if (!(spinner->state_flags & 0x800) || !NuSpecialExistsFn((NUSPECIALHANDLE *)&spinner->special) ||
-            !NuSpecialGetVisibilityFn((NUSPECIALHANDLE *)&spinner->special)) {
+        if (!(spinner->state_flags & 0x800) || !NuSpecialExistsFn(&spinner->special) || !NuSpecialGetVisibilityFn(&spinner->special)) {
             continue;
         }
         ground_height = spinner->ground_height;
@@ -412,12 +410,11 @@ extern "C" void GizSpinner_Draw(void *world_pointer, void *data, f32 frame_time)
             continue;
         }
         NuRndrStartReflectionRender(0);
-        NuSpecialDrawAt((NUSPECIALHANDLE *)&spinner->special, &reflection);
-        if (spinner->type > 0 && NuSpecialCompare((NUSPECIALHANDLE *)&spinner->special, (NUSPECIALHANDLE *)&thingsSceneBase) != 0 &&
-            NuSpecialExistsFn((NUSPECIALHANDLE *)&thingsSceneArm) != 0) {
+        NuSpecialDrawAt(&spinner->special, &reflection);
+        if (spinner->type > 0 && NuSpecialCompare(&spinner->special, &thingsSceneBase) != 0 && NuSpecialExistsFn(&thingsSceneArm) != 0) {
             arm = spinner->arms;
             for (arm_index = 0; arm_index < spinner->type; ++arm_index, ++arm) {
-                NuSpecialDrawAt((NUSPECIALHANDLE *)&thingsSceneArm, &arm->matrix);
+                NuSpecialDrawAt(&thingsSceneArm, &arm->matrix);
             }
         }
         NuRndrEndReflectionRender();
@@ -811,8 +808,8 @@ static void SpinnerResetEntry(GIZSPINNER_s *spinner, SpinnerProgressEntry *progr
     NuMtxSetRotationY(&spinner->matrix, spinner->initial_rotation);
     NuMtxTranslate(&spinner->matrix, &spinner->position);
     NewTerrPlatformsOff();
-    if (NuSpecialGetMtx((NUSPECIALHANDLE *)&spinner->special) != NULL) {
-        spinner->ground_height = GameShadow(NULL, (NUVEC *)&NuSpecialGetMtx((NUSPECIALHANDLE *)&spinner->special)->m30, 5.0f, -1);
+    if (NuSpecialGetMtx(&spinner->special) != NULL) {
+        spinner->ground_height = GameShadow(NULL, (NUVEC *)&NuSpecialGetMtx(&spinner->special)->m30, 5.0f, -1);
     } else {
         spinner->ground_height = LevelConfigFarDistance;
     }
@@ -850,14 +847,14 @@ extern "C" void GizSpinner_SetVisibility(void *gizmo_pointer, i32 visible) {
     if (visible != 0) {
         spinner->flags &= (u8)~4;
         if (spinner->platform_id == -1) {
-            i32 instance_index = NuSpecialGetInstanceix((NUSPECIALHANDLE *)&spinner->special);
+            i32 instance_index = NuSpecialGetInstanceix(&spinner->special);
             FindPlatInst(instance_index);
             NuMtxSetIdentity(&matrix);
             NuMtxSetRotationY(&matrix, 0);
             NuMtxRotateY(&matrix, spinner->rotation);
             NuMtxTranslate(&matrix, &spinner->position);
             spinner->matrix = matrix;
-            if (NuSpecialCompare((NUSPECIALHANDLE *)&spinner->special, (NUSPECIALHANDLE *)&thingsSceneBase) != 0) {
+            if (NuSpecialCompare(&spinner->special, &thingsSceneBase) != 0) {
                 if (LEGOTHINGSSCENE_TER_SPINBASE != -1) {
                     spinner->platform_id = NewPlatPickupInst(spinner, LEGOTHINGSSCENE_TER_SPINBASE);
                 } else {
@@ -908,7 +905,7 @@ extern "C" i32 GizSpinner_UsingSpecial(void *results_ptr, void *world_ptr, i32 c
     i32 count = 0;
     i32 type_id = -1;
     i32 index;
-    NUSPECIALHANDLE special;
+    nuhspecial_s special;
     GIZSPINNER_s *cached_spinner;
     if (results == NULL || world == NULL || world->spinners == NULL) {
         return 0;

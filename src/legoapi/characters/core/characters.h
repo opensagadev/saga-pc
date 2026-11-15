@@ -30,14 +30,14 @@ typedef struct apicharactermodellist_s { // size 0x4
 
 typedef struct KILLPARTS_CHARSCENE { // size 0x10
     struct NUGSCN_s *scene;          // 0x0
-    NUSPECIALHANDLE special_scene;   // 0x4
+    nuhspecial_s special_scene;      // 0x4
 } KILLPARTS_CHARSCENE;
 
 #ifdef __cplusplus
 extern "C" {
 #endif
     void CharScene_Draw(struct WORLDINFO_s *, i32, struct numtx_s *, struct numtx_s *);
-    NUSPECIALHANDLE *CharScene_FindHSpecial(struct WORLDINFO_s *, i32);
+    nuhspecial_s *CharScene_FindHSpecial(struct WORLDINFO_s *, i32);
     extern KILLPARTS_CHARSCENE *KillPartsCharSceneArea;
     void HeadMovement(struct gameobject_s *);
     void HairMovement(struct gameobject_s *);

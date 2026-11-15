@@ -65,7 +65,7 @@ void InitFn_GetNamedAPIObject(AI_GET_NAMED_OBJECT);
 void InitFn_GetAICreatureOrigin(AI_GET_CREATURE_ORIGIN);
 void InitFn_AIBigJumpToDestination(AI_BIG_JUMP_TO_DESTINATION_PC);
 void InitFn_FindAlternativeSpecialObjectFn(AIFINDALTERNATIVESPECIALOBJECT *);
-i32 EquivalentObject_Find(WORLDINFO *, NUSPECIALHANDLE *);
+i32 EquivalentObject_Find(WORLDINFO *, nuhspecial_s *);
 void ClearAICreatures(void);
 void StarWars_GameAISysInit(void);
 void Indy_GameAISysInit(void);
@@ -1269,7 +1269,7 @@ i32 AIBigJumpToDestination(APIOBJECT *apiobject, NUVEC *destination) {
     return 1;
 }
 
-i32 GameFindAlternativeSpecialObject(AISYS_PC *system, NUSPECIALHANDLE *special) {
+i32 GameFindAlternativeSpecialObject(AISYS_PC *system, nuhspecial_s *special) {
     (void)system;
     return EquivalentObject_Find(WorldInfo_CurrentlyActive(), special);
 }
@@ -1414,7 +1414,7 @@ void AIPathCnxControlSysReset(AI_CONTROL_SYSTEM_PC *system) {
 
 struct AIPATHCNXCONTROLLER_s *AIPathCnxControllerCreate(AI_CONTROL_SYSTEM_PC *system, AISYS_PC *ai, AIPATH *path, char *from, char *to,
                                                         i32 target_type, char *target_name, i32 fake_animation_id, i32 gizmo_output) {
-    NUSPECIALHANDLE special;
+    nuhspecial_s special;
     struct AIPATHCNXCONTROLLER_s *controller = NULL;
     void *target = NULL;
     AIPATHCNX *connection;

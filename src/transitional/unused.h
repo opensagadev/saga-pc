@@ -795,7 +795,7 @@ extern "C" {
     extern void (*nudebug_handler)(char *arg0);
     void NuHtmlFlush(i32 force);
     void NuRndrPrimUV(f32 u, f32 v);
-    extern i32 (*FindAlternativeSpecialObjectFn)(struct AISYS_PC *arg0, NUSPECIALHANDLE *arg1);
+    extern i32 (*FindAlternativeSpecialObjectFn)(struct AISYS_PC *arg0, nuhspecial_s *arg1);
     extern f32 SpaceRumbleTimer;
     void Hub_MarkCharacterUnavailable(i16 *characters, i16 character);
     extern storepack_s StorePack[11];

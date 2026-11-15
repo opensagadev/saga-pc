@@ -87,7 +87,7 @@ void GizAction_ActivatePartEffect(GIZFLOW *unused0, FLOWBOX *unused1, char **par
 
 void GizActions_SetVisibility(GIZFLOW *unused0, FLOWBOX *unused1, char **params, i32 count) {
     i32 i;
-    NUSPECIALHANDLE special;
+    nuhspecial_s special;
     i32 visible = 1;
     memset(&special, 0, sizeof(special));
     for (i = 0; i < count; ++i) {

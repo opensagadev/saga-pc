@@ -99,7 +99,7 @@ extern "C" {
 #if SAGA_LEGOAPI_WORLD_LEVEL_H_PART == 2 && !defined(SAGA_LEGOAPI_WORLD_LEVEL_H_STOP)
 
 typedef struct LEVEL_OBJECT_RUNTIME { // size 0x10
-    NUSPECIALHANDLE special;          // 0x0
+    nuhspecial_s special;             // 0x0
     u8 unknown_c[2];                  // 0xc
     u8 active;                        // 0xe
     u8 padding_f;                     // 0xf

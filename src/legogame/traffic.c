@@ -1,7 +1,7 @@
 #include "saga.h"
 
 typedef struct TRAFFICANIM { // size 0x140
-    NUSPECIALHANDLE special; // 0x000
+    nuhspecial_s special;    // 0x000
     void *animation;         // 0x00c
     f32 end_frame;           // 0x010
     f32 tfactor;             // 0x014
@@ -17,7 +17,7 @@ typedef struct TRAFFICANIM { // size 0x140
 
 typedef struct TRAFFICANIMSYS {       // size 0x77e4
     TRAFFICANIM animations[64];       // 0x0000
-    NUSPECIALHANDLE vehicles[16];     // 0x5000
+    nuhspecial_s vehicles[16];        // 0x5000
     u8 unknown_50c0[0x77e0 - 0x50c0]; // 0x50c0
     i8 animation_count;               // 0x77e0
     i8 vehicle_count;                 // 0x77e1
@@ -89,7 +89,7 @@ static NUFPCOMJMP TrafficAnim_ConfigKeywords[] = {
 };
 
 static void Traffic_animobj(NUFPAR_PC *parser) {
-    NUSPECIALHANDLE special;
+    nuhspecial_s special;
     NUINSTANIM *instance;
     TRAFFICANIM *animation;
     if (NuFParGetWord(parser) == 0) {

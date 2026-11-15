@@ -33,7 +33,7 @@ struct NUHGOBJ_EVAL;
 struct cut_load_locator_instance_s;
 struct instnugcutscene_s;
 struct numtl_s;
-struct nuspecial_handle_s;
+struct nuhspecial_s;
 
 typedef struct CUT_LOCATOR_ANIMATION { // size 0x54
     NUMTX base_matrix;                 // 0x00
@@ -76,7 +76,7 @@ extern "C" {
     extern void (*NuCutSceneResetCharacters)(struct instnugcutscene_s *);
     typedef void (*CUT_DRAW_RENDER_CALLBACK_PC)(struct instnugcutscene_s *, void *, void *, void *, f32, i32);
     typedef void (*CUT_DRAW_EVAL_CALLBACK_PC)(struct instnugcutscene_s *, void *, void *, void *, f32);
-    typedef void (*CUT_DRAW_RIGID_CALLBACK_PC)(void *, struct nuspecial_handle_s *, NUMTX *);
+    typedef void (*CUT_DRAW_RIGID_CALLBACK_PC)(void *, struct nuhspecial_s *, NUMTX *);
     void instGetLookAtLocatorInfo(struct instnugcutscene_s *, struct CUT_LOOKAT_STATE *);
     void instNuGCutLocatorUpdate(struct instnugcutscene_s *, CUT_LOAD_LOCATOR_SYSTEM *, struct cut_load_locator_instance_s *,
                                  CUT_LOAD_LOCATOR *, f32, NUMTX *, i32);
@@ -357,7 +357,7 @@ typedef struct cut_load_camera_instance_s { // size 0x10
 } CUT_LOAD_CAMERA_INSTANCE;
 
 typedef struct cut_load_rigid_instance_s { // size 0x10
-    NUSPECIALHANDLE special;               // 0x0
+    nuhspecial_s special;                  // 0x0
     u8 state_index;                        // 0xc
     u8 visible;                            // 0xd
     u8 unknown_0e[2];                      // 0xe

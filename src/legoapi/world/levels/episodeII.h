@@ -101,7 +101,7 @@ typedef struct JEDIB_STATE {           // size 0x63f0
     i16 state;                         // 0x6306
     f32 timer;                         // 0x6308
     u32 seed;                          // 0x630c
-    NUSPECIALHANDLE hero_spawns[3][4]; // 0x6310
+    nuhspecial_s hero_spawns[3][4];    // 0x6310
     GAMEOBJECT *heroes[3];             // 0x63a0
     GIZAIMESSAGE *msg_phase;           // 0x63ac
     GIZAIMESSAGE *msg_phase_complete;  // 0x63b0

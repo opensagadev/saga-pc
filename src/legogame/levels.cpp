@@ -1561,7 +1561,7 @@ extern "C" {
 #define SCENE_STATE(progress, i) (((SCENE_SPECIAL_STATE *)(progress)->specials)[i])
 
     void StoreSceneProgress(NUGSCN *scene, SCENEPROGRESS *progress, i32 copy_tfactor) {
-        NUSPECIALHANDLE special;
+        nuhspecial_s special;
         NUINSTANIM *animation;
         i32 count;
         i32 i;
@@ -1604,7 +1604,7 @@ extern "C" {
 void ResetScene(NUGSCN *scene, SCENEPROGRESS *progress) {
     i32 count;
     i32 i;
-    NUSPECIALHANDLE special;
+    nuhspecial_s special;
     NUINSTANIM *animation;
     ANI3_HEADER *data;
     NUMTX *base;
@@ -1655,10 +1655,10 @@ void ResetScene(NUGSCN *scene, SCENEPROGRESS *progress) {
     }
 }
 
-extern "C" SCENESPECIALPROGRESS *FindSceneStateObj(NUGSCN *scene, SCENEPROGRESS *progress, NUSPECIALHANDLE *target) {
+extern "C" SCENESPECIALPROGRESS *FindSceneStateObj(NUGSCN *scene, SCENEPROGRESS *progress, nuhspecial_s *target) {
     i32 count;
     i32 i;
-    NUSPECIALHANDLE special;
+    nuhspecial_s special;
     if (scene != NULL && progress != NULL && target != NULL) {
         count = NuSpecialGetNumSpecials(scene);
         if (count == 0) {

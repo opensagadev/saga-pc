@@ -58,7 +58,7 @@ static char gizspecial_prefix[8] = "qaz_";
 // NOLINTNEXTLINE(readability-identifier-naming) -- retained genuine subsystem public name.
 GIZMO_PC *createGizSpecial(void *unused, char *name) {
     GIZFLOW_LOAD_WORLD *world = (GIZFLOW_LOAD_WORLD *)WorldInfo_CurrentlyLoading();
-    NUSPECIALHANDLE scene_special;
+    nuhspecial_s scene_special;
     char gizmo_name[32];
     GIZMO_PC *gizmo;
     GIZFLOW_SPECIAL *special;

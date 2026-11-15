@@ -3,7 +3,7 @@
 #include <string.h>
 
 extern u8 snakebodies[0x440];
-static NUSPECIALHANDLE snake_hspecials[3] = {0};
+static nuhspecial_s snake_hspecials[3] = {0};
 
 void InitSnakes(WORLDINFO *world) {
     memset(snakebodies, 0, sizeof(snakebodies));
@@ -178,7 +178,7 @@ void SnakeBeenHit(GAMEOBJECT *object) {
     NUVEC scale;
     NUVEC momentum;
     ADDPART params;
-    NUSPECIALHANDLE *special;
+    nuhspecial_s *special;
     if (object == NULL || reader->snake_body == NULL || reader->snake_body->segment_count <= 2) {
         return;
     }
@@ -235,7 +235,7 @@ void BlowUpSnakeBody(GAMEOBJECT *object) {
     NUVEC scale;
     NUVEC momentum;
     ADDPART params;
-    NUSPECIALHANDLE *special;
+    nuhspecial_s *special;
     if (object == NULL || reader->snake_body == NULL) {
         return;
     }

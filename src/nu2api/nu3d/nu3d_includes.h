@@ -651,12 +651,6 @@ struct POST_SHADER_PROGRAM_PC {         // size 0x10
 
 #if SAGA_NU2API_NU3D_NU3D_INCLUDES_H_PART == 3 && !defined(SAGA_NU2API_NU3D_NU3D_INCLUDES_H_STOP)
 
-typedef struct nuspecial_handle_s { // size 0xc
-    struct NUGSCN_s *scene;         // 0x0
-    NUMTX *special;                 // 0x4
-    NUMTX *display_special;         // 0x8
-} NUSPECIALHANDLE;
-
 typedef struct nuspecial_legacy_s { // size 0x4c
     NUMTX matrix;                   // 0x00
     struct nuinstance_s *instance;  // 0x40
@@ -744,12 +738,12 @@ typedef struct NUHGOBJ_EVAL_JOINT { // size 0x60
     u8 unknown_52_5f[14];           // 0x52
 } NUHGOBJ_EVAL_JOINT;
 
-typedef struct NUHGOBJ_RENDER_PART {   // size 0x14
-    const char *name;                  // 0x00
-    NUSPECIALHANDLE **rigid;           // 0x04
-    NUSPECIALHANDLE *smooth;           // 0x08
-    NUSPECIALHANDLE **alternate_rigid; // 0x0c
-    NUSPECIALHANDLE *alternate_smooth; // 0x10
+typedef struct NUHGOBJ_RENDER_PART { // size 0x14
+    const char *name;                // 0x00
+    nuhspecial_s **rigid;            // 0x04
+    nuhspecial_s *smooth;            // 0x08
+    nuhspecial_s **alternate_rigid;  // 0x0c
+    nuhspecial_s *alternate_smooth;  // 0x10
 } NUHGOBJ_RENDER_PART;
 
 typedef struct NUHGOBJ_POI { // size 0x50
@@ -775,7 +769,7 @@ class PCFrustumClipSet { // size 0x714
     i32 active_render_set_count;  // 0x710
     i32 TestBoxes(const NUVEC *, const NUVEC *);
     bool TestBox(const NUVEC *minimum, const NUVEC *maximum, i32 group_index);
-    i32 fun_005e66b0(NUSPECIALHANDLE *special, NUMTX *matrix);
+    i32 fun_005e66b0(nuhspecial_s *special, NUMTX *matrix);
     bool fun_005e6710(const NUVEC *center, const NUVEC *extent, i32 group_index);
     i32 fun_005e6770(const NUVEC *center, const NUVEC *extent);
 };
@@ -829,8 +823,8 @@ extern "C" {
     } CAMERA_CLIP_PLANES;
 
     extern CAMERA_CLIP_PLANES CameraClipPlanes;
-    void NuSpecialUpdate(NUSPECIALHANDLE *special);
-    f32 NuSpecialGetAnimEndFrame(NUSPECIALHANDLE *special);
+    void NuSpecialUpdate(nuhspecial_s *special);
+    f32 NuSpecialGetAnimEndFrame(nuhspecial_s *special);
     extern NUMTX NuPortalLocalView;
     extern NUMTX NuPortalProjectionScratch;
     extern NUMTX NuPortalProjectionInverse;
@@ -844,9 +838,9 @@ extern "C" {
     extern NUCAMERAREFLECT global_reflect;
     extern NUMTX NuVpIdentityMatrix;
     extern NUMTX NuCameraScissorProjectionScratch;
-    i32 NuSpecialDrawAt(NUSPECIALHANDLE *, NUMTX *);
+    i32 NuSpecialDrawAt(nuhspecial_s *, NUMTX *);
     void __fastcall NuQuatMulAligned(const NUQUAT *parent, const NUQUAT *rotation, NUQUAT *out);
-    void NuSpecialSetDrawMtx(NUSPECIALHANDLE *special, NUMTX *matrix);
+    void NuSpecialSetDrawMtx(nuhspecial_s *special, NUMTX *matrix);
     extern NUMTX VisibilityPrimaryPlaneMatrix;
     extern NUMTX VisibilityAlternatePlaneMatrix;
     extern NUMTX VisibilityPrimaryWorldMatrix;

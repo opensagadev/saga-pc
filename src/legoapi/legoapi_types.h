@@ -1031,7 +1031,7 @@ struct AIPATHCNXCONTROLLER_s {    // size 0xa8
 
     union { // size 0xc
         void *target;
-        NUSPECIALHANDLE special;
+        nuhspecial_s special;
         i32 fake_animation_id;
     }; // 0x0c
 
@@ -1370,7 +1370,7 @@ typedef struct gameanimobj_s GAMEANIMOBJ;
 
 struct gameanimobj_s {              // size 0x28
     GAMEANIMOBJ *next;              // 0x00
-    NUSPECIALHANDLE special;        // 0x04
+    nuhspecial_s special;           // 0x04
     NUINSTANIM *instance_animation; // 0x10
     void *animation;                // 0x14
     f32 start_frame;                // 0x18
@@ -1482,7 +1482,7 @@ struct gizforce_s {                    // size 0xa4
     NUVEC file_position;               // 0x10
     NUVEC position;                    // 0x1c
     GAMEANIMSET *anim_set;             // 0x28
-    NUSPECIALHANDLE along_socket;      // 0x2c
+    nuhspecial_s along_socket;         // 0x2c
     struct gameobject_s *using_object; // 0x38
     u32 reset_word;                    // 0x3c
     struct FORCE_RESET_GROUP *group;   // 0x40
@@ -2153,7 +2153,7 @@ struct pushblock_s { // size 0xd4
         struct pushblock_s *block_below;
     }; // 0x1c
     struct pushblock_s *previous_supporting_block; // 0x20
-    NUSPECIALHANDLE special;                       // 0x24
+    nuhspecial_s special;                          // 0x24
     struct gameobject_s *pushing_object;           // 0x30
     i32 platform_id;                               // 0x34
     u8 fields_038[8];                              // 0x38
@@ -2161,7 +2161,7 @@ struct pushblock_s { // size 0xd4
     char name[16];                                 // 0x44
     struct nuvec_s *snap_positions;                // 0x54
     struct nuvec_s *position;                      // 0x58
-    NUSPECIALHANDLE end_position_specials[2];      // 0x5c
+    nuhspecial_s end_position_specials[2];         // 0x5c
     NUVEC end_position_origins[2];                 // 0x74
     NUVEC velocity;                                // 0x8c
     NUVEC target_velocity;                         // 0x98
@@ -2893,16 +2893,16 @@ class TTNetwork : public NetTransporter, public BaseThing { // size 0x110f4
 };
 #endif
 
-typedef struct minesys_s {        // size 0x748
-    NUSPECIALHANDLE mine_special; // 0x000
-    MINE_ENTRY_PC mines[64];      // 0x00c
-    f32 mine_radius;              // 0x70c
-    f32 spawn_timer;              // 0x710
-    AIAREA *nomine_areas[10];     // 0x714
-    i16 nomine_count;             // 0x73c
-    i16 mine_debris;              // 0x73e
-    i32 mine_part;                // 0x740
-    f32 update_timer;             // 0x744
+typedef struct minesys_s {     // size 0x748
+    nuhspecial_s mine_special; // 0x000
+    MINE_ENTRY_PC mines[64];   // 0x00c
+    f32 mine_radius;           // 0x70c
+    f32 spawn_timer;           // 0x710
+    AIAREA *nomine_areas[10];  // 0x714
+    i16 nomine_count;          // 0x73c
+    i16 mine_debris;           // 0x73e
+    i32 mine_part;             // 0x740
+    f32 update_timer;          // 0x744
 } MINESYS_PC;
 
 #undef SAGA_LEGOAPI_LEGOAPI_TYPES_H_PART

@@ -43,13 +43,13 @@ extern "C" {
         i16 shoot_sfx_id;            // 0x64
         i16 hit_sfx_id;              // 0x66
 
-        struct {                                      // size 0x3c
-            NUSPECIALHANDLE object_special;           // 0x68
-            NUSPECIALHANDLE glow_special;             // 0x74
-            NUSPECIALHANDLE reference_object_special; // 0x80
-            NUSPECIALHANDLE reference_glow_special;   // 0x8c
-            NUSPECIALHANDLE shadow_special;           // 0x98
-        } specials;                                   // 0x68
+        struct {                                   // size 0x3c
+            nuhspecial_s object_special;           // 0x68
+            nuhspecial_s glow_special;             // 0x74
+            nuhspecial_s reference_object_special; // 0x80
+            nuhspecial_s reference_glow_special;   // 0x8c
+            nuhspecial_s shadow_special;           // 0x98
+        } specials;                                // 0x68
     } BOLT_CONFIG;
 
     static BOLT_CONFIG *BT_bolttype = 0;
@@ -214,7 +214,7 @@ typedef struct bolt_context_info_s { // size 0x10
 
 typedef struct BOLT_UPDATE_TYPE_PC_s { // size 0xa4
     u8 unknown_000[0x98];              // 0x00
-    NUSPECIALHANDLE shadow_special;    // 0x98
+    nuhspecial_s shadow_special;       // 0x98
 } BOLT_UPDATE_TYPE;
 
 extern "C" i32 MatrixReflectionVU0_AXISY(NUMTX *, f32, f32, NUMTX *);
@@ -710,10 +710,10 @@ extern "C" {
         i32 index;
         for (index = 0; index < BoltSys->count; ++index, ++type) {
             i32 reflected;
-            memset(&type->specials.object_special, 0, sizeof(NUSPECIALHANDLE));
-            memset(&type->specials.glow_special, 0, sizeof(NUSPECIALHANDLE));
-            memset(&type->specials.reference_object_special, 0, sizeof(NUSPECIALHANDLE));
-            memset(&type->specials.reference_glow_special, 0, sizeof(NUSPECIALHANDLE));
+            memset(&type->specials.object_special, 0, sizeof(nuhspecial_s));
+            memset(&type->specials.glow_special, 0, sizeof(nuhspecial_s));
+            memset(&type->specials.reference_object_special, 0, sizeof(nuhspecial_s));
+            memset(&type->specials.reference_glow_special, 0, sizeof(nuhspecial_s));
             if (type->object_ids[0] != -1) {
                 type->specials.object_special = world->level_objects[type->object_ids[0]].special;
                 if (type->object_ids[1] != -1) {
@@ -736,7 +736,7 @@ extern "C" {
             if (type->object_ids[2] != -1) {
                 type->specials.shadow_special = world->level_objects[type->object_ids[2]].special;
             } else {
-                memset(&type->specials.shadow_special, 0, sizeof(NUSPECIALHANDLE));
+                memset(&type->specials.shadow_special, 0, sizeof(nuhspecial_s));
             }
         }
     }
@@ -1115,20 +1115,20 @@ extern "C" void Bolts_Draw(WORLDINFO *world) {
         }
         NuMtxTranslate(&matrix, &bolt->position);
         i32 drawn[2];
-        drawn[0] = NuSpecialExistsFn(&reinterpret_cast<NUSPECIALHANDLE *>(type->specials_68)[0])
-                       ? NuSpecialDrawAt(&reinterpret_cast<NUSPECIALHANDLE *>(type->specials_68)[0], &matrix)
+        drawn[0] = NuSpecialExistsFn(&reinterpret_cast<nuhspecial_s *>(type->specials_68)[0])
+                       ? NuSpecialDrawAt(&reinterpret_cast<nuhspecial_s *>(type->specials_68)[0], &matrix)
                        : 0;
-        drawn[1] = NuSpecialExistsFn(&reinterpret_cast<NUSPECIALHANDLE *>(type->specials_68)[1])
-                       ? NuSpecialDrawAt(&reinterpret_cast<NUSPECIALHANDLE *>(type->specials_68)[1], &matrix)
+        drawn[1] = NuSpecialExistsFn(&reinterpret_cast<nuhspecial_s *>(type->specials_68)[1])
+                       ? NuSpecialDrawAt(&reinterpret_cast<nuhspecial_s *>(type->specials_68)[1], &matrix)
                        : 0;
         if (static_cast<f64>(bolt->reflection_height) != 2000000.0) {
             NUMTX reflection;
             if (MatrixReflectionVU0_AXISY(&matrix, bolt->reflection_height, world->current_level->reflection_y, &reflection)) {
-                if (NuSpecialExistsFn(&reinterpret_cast<NUSPECIALHANDLE *>(type->specials_68)[2])) {
-                    NuSpecialDrawAt(&reinterpret_cast<NUSPECIALHANDLE *>(type->specials_68)[2], &reflection);
+                if (NuSpecialExistsFn(&reinterpret_cast<nuhspecial_s *>(type->specials_68)[2])) {
+                    NuSpecialDrawAt(&reinterpret_cast<nuhspecial_s *>(type->specials_68)[2], &reflection);
                 }
-                if (NuSpecialExistsFn(&reinterpret_cast<NUSPECIALHANDLE *>(type->specials_68)[3])) {
-                    NuSpecialDrawAt(&reinterpret_cast<NUSPECIALHANDLE *>(type->specials_68)[3], &reflection);
+                if (NuSpecialExistsFn(&reinterpret_cast<nuhspecial_s *>(type->specials_68)[3])) {
+                    NuSpecialDrawAt(&reinterpret_cast<nuhspecial_s *>(type->specials_68)[3], &reflection);
                 }
             }
         }
@@ -1140,7 +1140,7 @@ extern "C" void Bolts_Draw(WORLDINFO *world) {
             matrix.m30 = bolt->position.x;
             matrix.m31 = static_cast<f32>(static_cast<f64>(bolt->unknown_e4) + static_cast<f64>(0.005f));
             matrix.m32 = bolt->position.z;
-            NuSpecialDrawAt(&reinterpret_cast<NUSPECIALHANDLE *>(type->specials_68)[4], shadow_matrix);
+            NuSpecialDrawAt(&reinterpret_cast<nuhspecial_s *>(type->specials_68)[4], shadow_matrix);
         }
         if (drawn[0] != 0 || drawn[1] != 0) {
             bolt->unknown_102 = 1;
@@ -1302,7 +1302,7 @@ extern "C" void Bolt_Init(void *storage, NETMESSAGE &message) {
     BoltNoObjectMomentum = 0;
     i32 shoot_id = -1;
     BoltShootIdScratch = -1;
-    if (type == NULL || !NuSpecialExistsFn(reinterpret_cast<NUSPECIALHANDLE *>(type->specials_68))) {
+    if (type == NULL || !NuSpecialExistsFn(reinterpret_cast<nuhspecial_s *>(type->specials_68))) {
         return;
     }
     if (bolt->active != 0) {
@@ -1498,7 +1498,7 @@ extern "C" void Bolt_Init(void *storage, NETMESSAGE &message) {
 extern "C" BOLT_PC *Bolt_Add(GAMEOBJECT *owner, NUVEC *position, NUMTX *matrix, i32 type_id, i32 flags) {
     BOLTTYPE_PC *type = BoltType_FindByID(type_id, WORLD);
     BOLT_PC *bolt = NULL;
-    if (type != NULL && NuSpecialExistsFn(reinterpret_cast<NUSPECIALHANDLE *>(type->specials_68))) {
+    if (type != NULL && NuSpecialExistsFn(reinterpret_cast<nuhspecial_s *>(type->specials_68))) {
         bolt = Bolt_Alloc();
         if (bolt != NULL) {
             u16 owner_index = owner ? (u16)(owner - Obj) : 0xffff;

@@ -79,7 +79,7 @@ void fun_005004d0(void) {
 }
 
 typedef struct CUT_PLAYER_STATE { // size 0x10
-    NUSPECIALHANDLE special;      // 0x0
+    nuhspecial_s special;         // 0x0
     u8 flags;                     // 0xc
     u8 unknown_0d[3];             // 0xd
 } CUT_PLAYER_STATE;
@@ -101,7 +101,7 @@ typedef struct cut_average_scene_s {        // size 0x18
 } CUT_AVERAGE_SCENE;
 
 typedef struct cut_average_rigid_s { // size 0x10
-    NUSPECIALHANDLE special;         // 0x0
+    nuhspecial_s special;            // 0x0
     u8 unknown_0c[4];                // 0xc
 } CUT_AVERAGE_RIGID;
 
@@ -1082,7 +1082,7 @@ void CutSceneMissingObjectDiagnostic(char *format, ...) {
 void CutScriptExecute(CUT_SCRIPT_NODE *node, NUGSCN *scene, CUT_TRIGGER_SET_PC *set) {
     INSTNUGCUTSCENE *instance;
     INSTNUGCUTSCENE *chain;
-    NUSPECIALHANDLE special;
+    nuhspecial_s special;
     CUT_APP_COMMAND_PC *command;
     i32 count;
     i32 done;

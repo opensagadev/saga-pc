@@ -222,7 +222,7 @@ extern "C" {
             return;
         }
         for (special_index = 0; special_index < 4; ++special_index) {
-            NUSPECIALHANDLE *special = &RenderBackdropSpecials[special_index];
+            nuhspecial_s *special = &RenderBackdropSpecials[special_index];
             if (NuSpecialExistsFn(special) != 0) {
                 NUMTX matrix = *NuSpecialGetDrawMtx(special);
                 NUVEC position;
@@ -248,7 +248,7 @@ extern "C" {
         }
     }
 
-    void DrawParallax(NUSPECIALHANDLE *special) {
+    void DrawParallax(nuhspecial_s *special) {
         NUVEC scale;
         NUMTX matrix;
         scale.x = scale.y = scale.z = (f32)((f64)pNuCam->far_clip * TerrainScanMargin10 * 0.5);

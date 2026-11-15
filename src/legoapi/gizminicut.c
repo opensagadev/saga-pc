@@ -175,7 +175,7 @@ void GizMiniCut_Reset(void *world_ptr, void *data, void *progress) {
             MINICUT_PART *part = &cut->parts[j];
             GAMEOBJECT *object = GetNamedGameObject(world->ai_sys, part->name);
             if (object == NULL) {
-                NUSPECIALHANDLE special;
+                nuhspecial_s special;
                 AILOCATOR *locator;
                 NuSpecialFind(world->current_gscn, &special, part->name, 0);
                 if (NuSpecialExistsFn(&special) == 0) {

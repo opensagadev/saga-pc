@@ -47,7 +47,7 @@ typedef struct cut_record_cleanup_s { // size 0x8
 } CUT_RECORD_CLEANUP;
 
 typedef struct CUT_LOAD_STATE { // size 0x10
-    NUSPECIALHANDLE special;    // 0x0
+    nuhspecial_s special;       // 0x0
     u8 on : 1;                  // 0xc:0
     u8 off : 1;                 // 0xc:1
     u8 end_anim : 1;            // 0xc:2
@@ -339,7 +339,7 @@ extern "C" {
 }
 
 typedef struct CUT_PLAYER_STATE {
-    NUSPECIALHANDLE special;
+    nuhspecial_s special;
     u8 flags;
     u8 unknown_0d[3];
 } CUT_PLAYER_STATE;
@@ -1507,7 +1507,7 @@ extern "C" void CutScenes_BGLoadManager() {
 
 extern "C" {
 
-    static void CutScene_RigidPostRender(CUT_DRAW_RIGID *rigid, NUSPECIALHANDLE *instance, NUMTX *matrix) {
+    static void CutScene_RigidPostRender(CUT_DRAW_RIGID *rigid, nuhspecial_s *instance, NUMTX *matrix) {
         if ((rigid->flags & 0x10) == 0) {
             return;
         }
@@ -1530,7 +1530,7 @@ extern "C" {
         reflection.m11 = -reflection.m11;
         reflection.m21 = -reflection.m21;
         reflection.m31 = ground - (reflection.m31 - ground);
-        NUSPECIALHANDLE *special = NULL;
+        nuhspecial_s *special = NULL;
         i32 index = LevelObject_FindIndexFromName_RefOnly(NuSpecialGetName(instance));
         if (index != -1) {
             index = LevelObject_GetReflection(index);

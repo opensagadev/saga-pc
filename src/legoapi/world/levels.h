@@ -292,7 +292,7 @@ extern "C" {
     extern GIZAIMESSAGE *LevAIMessage[8];
     extern AIAREA *LevArea[4];
 
-    extern NUSPECIALHANDLE LevHSpecial[88];
+    extern nuhspecial_s LevHSpecial[88];
     void LevelObjects_InitForGame(LEVEL_OBJECT_CONFIG *, VARIPTR *, VARIPTR *, i32, i32);
     extern GIZMO_PC *LevGizmo[12];
     extern GIZMOBLOWUP_PC *LevBlowUp[2];

@@ -239,7 +239,7 @@ typedef struct pod_boost_view_s {
 
 typedef struct FORCE_ANIMATION_OBJECT {
     u8 unknown_000[4];
-    NUSPECIALHANDLE special;
+    nuhspecial_s special;
 } FORCE_ANIMATION_OBJECT;
 
 typedef struct FORCE_ATTENTION {

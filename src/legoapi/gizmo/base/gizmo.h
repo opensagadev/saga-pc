@@ -27,7 +27,7 @@ struct NUGSCN_s;
 struct WORLDINFO_s;
 struct bolt_s;
 struct gameobject_s;
-struct nuspecial_handle_s;
+struct nuhspecial_s;
 
 typedef struct gizmo_s { // size 0x8
     void *object;        // 0x0
@@ -188,7 +188,7 @@ extern "C" {
 #ifdef __cplusplus
 extern "C" {
 #endif
-    i32 Gizmo_FindNuSpecial(struct NUGSCN_s *, struct nuspecial_handle_s *, char *, i32, void *, char *, char *);
+    i32 Gizmo_FindNuSpecial(struct NUGSCN_s *, struct nuhspecial_s *, char *, i32, void *, char *, char *);
 #ifdef __cplusplus
 }
 #endif

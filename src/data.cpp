@@ -6352,7 +6352,7 @@ extern "C" {
 extern "C" {
 
 #pragma bss_seg(".bss$LevHSpecial")
-    NUSPECIALHANDLE LevHSpecial[88] = {0};
+    nuhspecial_s LevHSpecial[88] = {0};
 #pragma bss_seg()
 #pragma bss_seg(".bss$LevGizObst")
     GIZOBSTACLE *LevGizObst[8] = {0};
@@ -7657,7 +7657,7 @@ extern "C" {
     f32 eFloor_timer = 0;
 #pragma bss_seg()
 #pragma bss_seg(".bss$hspecial_efloor")
-    NUSPECIALHANDLE *hspecial_efloor = 0;
+    nuhspecial_s *hspecial_efloor = 0;
 #pragma bss_seg()
 #pragma bss_seg(".bss$SarlaccPowerPc")
     i32 SarlaccPower = 0;
@@ -10230,7 +10230,7 @@ extern "C" {
 #pragma bss_seg()
 
 #pragma bss_seg(".bss$RenderBackdropSpecialsPc")
-    NUSPECIALHANDLE RenderBackdropSpecials[4] = {0};
+    nuhspecial_s RenderBackdropSpecials[4] = {0};
 #pragma bss_seg()
 
 #pragma bss_seg(".bss$RenderBackdropScenePc")
@@ -10399,7 +10399,7 @@ extern "C" {
 #pragma bss_seg()
 
 #pragma bss_seg(".bss$NuCutSceneRigidPostRender")
-    void (*NuCutSceneRigidPostRender)(void *, NUSPECIALHANDLE *, NUMTX *) = 0;
+    void (*NuCutSceneRigidPostRender)(void *, nuhspecial_s *, NUMTX *) = 0;
 #pragma bss_seg()
 
 #pragma bss_seg(".bss$NuCutSceneSFXUpdate")
@@ -11601,7 +11601,7 @@ extern "C" {
     void (*Game_AllGoldBricksFn)(void) = NULL;
     f32 (*Hint_AlphaTargetFn)(void) = NULL;
     void (*Collection_GetSelectingPlayerIDsFn)(i16 *ids) = NULL;
-    NUSPECIALHANDLE *(*GameMsg_GetExtraObjFn)(GAME_MESSAGE_PC *message) = NULL;
+    nuhspecial_s *(*GameMsg_GetExtraObjFn)(GAME_MESSAGE_PC *message) = NULL;
     const char *InitAsciiUp = "\xC2\xAC";
     const char *InitAsciiLeft = "<";
     const char *InitAsciiRight = ">";
@@ -19336,7 +19336,7 @@ extern "C" {
 
 extern "C" {
 #pragma bss_seg(".bss$FadeLoop_ObjHSpecial")
-    NUSPECIALHANDLE FadeLoop_ObjHSpecial = {0};
+    nuhspecial_s FadeLoop_ObjHSpecial = {0};
 }
 
 extern "C" {
@@ -22705,7 +22705,7 @@ extern "C" {
 
 extern "C" {
 #pragma bss_seg(".bss$SebulbaMineSpecialPc")
-    NUSPECIALHANDLE SebulbaMineSpecial = {0};
+    nuhspecial_s SebulbaMineSpecial = {0};
 #pragma bss_seg()
 }
 

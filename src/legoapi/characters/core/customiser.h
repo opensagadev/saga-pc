@@ -57,7 +57,7 @@ extern "C" {
 
 typedef struct KILLPARTS_ACCESSORY { // size 0x20
     void *scene;                     // 0x00
-    NUSPECIALHANDLE special;         // 0x04
+    nuhspecial_s special;            // 0x04
     u8 unknown_10[0x10];             // 0x10
 } KILLPARTS_ACCESSORY;
 

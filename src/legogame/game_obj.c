@@ -36,7 +36,7 @@ typedef struct collision_exclusion_view_s {
 #define PANEL_PLAYER_ACTIVE(flags) (((flags) & 0x1000) != 0 && ((flags) & 0x80) != 0)
 
 typedef struct KILLPARTS_MINIKIT_PIECE {
-    NUSPECIALHANDLE special;
+    nuhspecial_s special;
     NUMTX matrix;
     u8 unknown_4c[0x1c];
 } KILLPARTS_MINIKIT_PIECE;
@@ -49,7 +49,7 @@ typedef struct KILLPARTS_MINIKIT_PIECES {
 
 typedef struct KILLPARTS_RENDER {
     const char *name;
-    NUSPECIALHANDLE **rigid_specials;
+    nuhspecial_s **rigid_specials;
     u8 unknown_8[0xc];
 } KILLPARTS_RENDER;
 
@@ -3103,7 +3103,7 @@ void KillParts(GAMEOBJECT *object, i32 animation, i32 excluded_layer, i32 mode, 
     if ((object->character_data->flags & 1) != 0 && VehicleArea != 0 &&
         (object->character_data->model_flags & CHARACTER_MODEL_VEHICLE) != 0 &&
         object->character_data->game_character->unknown_028 > 0.0f) {
-        NUSPECIALHANDLE *special = CharScene_FindHSpecial(WORLD, ((i16)object->id));
+        nuhspecial_s *special = CharScene_FindHSpecial(WORLD, ((i16)object->id));
         if (special != NULL) {
             ADDPART params;
             PART_PC *part;
@@ -3548,7 +3548,7 @@ impact:
                     CompleteLevel(WORLD);
                 } else {
                     char name[16];
-                    NUSPECIALHANDLE special;
+                    nuhspecial_s special;
                     i32 i;
                     for (i = 1; i != 12; ++i) {
                         sprintf(name, "rock%d", i);

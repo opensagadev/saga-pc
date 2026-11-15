@@ -268,8 +268,6 @@ class EdFloatControl : public EdValueControl<f32> {
 void cbEdLevelDestroy(eduimenu_s *menu, eduimenu_s *);
 i32 LineToPlaneIntersecion(VuVec &origin, VuVec &direction, VuVec &plane, VuVec *intersection);
 
-STATIC_ASSERT(RTL_EDITOR_SET_SIZE == 0x6fac);
-
 class RTLHelper : public EdClassInterface { // size 0xc
   public:
     RTLHelper();

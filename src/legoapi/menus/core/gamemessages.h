@@ -24,7 +24,7 @@
 
 #if SAGA_LEGOAPI_MENUS_CORE_GAMEMESSAGES_H_PART == 1 && !defined(SAGA_LEGOAPI_MENUS_CORE_GAMEMESSAGES_H_STOP)
 
-struct nuspecial_handle_s;
+struct nuhspecial_s;
 
 typedef void (*GAME_MESSAGE_CALLBACK)(GAME_MESSAGE_PC *);
 #ifdef __cplusplus
@@ -61,7 +61,7 @@ extern "C" {
 
     extern GAME_MESSAGE_PC GameMessage[128];
     GAME_MESSAGE_PC *AddGameMsg(ADD_GAME_MESSAGE_PC *message);
-    extern struct nuspecial_handle_s *(*GameMsg_GetExtraObjFn)(GAME_MESSAGE_PC *message);
+    extern struct nuhspecial_s *(*GameMsg_GetExtraObjFn)(GAME_MESSAGE_PC *message);
 #ifdef __cplusplus
 }
 #endif

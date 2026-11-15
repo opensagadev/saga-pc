@@ -163,7 +163,7 @@ void edbitsDrawBBox(NUVEC *minimum, NUVEC *maximum, i32 colour, NUMTL *material)
 
 i32 edbitsLookupInstance(char *name, NUGSCN *scene) {
     i32 index;
-    NUSPECIALHANDLE special;
+    nuhspecial_s special;
     if (scene != NULL) {
         for (index = 0; index < NuGScnNumSpecials(scene); ++index) {
             NuGScnGetSpecial(&special, scene, index);

@@ -301,7 +301,7 @@ static void SockParObj(NUFPAR_PC *parser, void *context) {
         }
     }
     if (sockpar_sock->object_count > 0) {
-        sockpar_buffer_ptr->addr += sockpar_sock->object_count * sizeof(NUSPECIALHANDLE);
+        sockpar_buffer_ptr->addr += sockpar_sock->object_count * sizeof(nuhspecial_s);
     } else {
         sockpar_sock->objects = NULL;
     }

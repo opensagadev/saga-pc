@@ -417,7 +417,7 @@ extern "C" {
             NuCameraSet(pNuCam);
             InitPanel(Game.options_save.widescreen);
             NuQFntSetCoordinateSystem(3);
-            NUSPECIALHANDLE special = {};
+            nuhspecial_s special = {};
             NUVEC scale_vec = {0.125f, 0.125f, 0.125f};
             NuMtxSetScale(&scale, &scale_vec);
             scale.m32 = 1.0f;

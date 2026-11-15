@@ -50,7 +50,7 @@ void fun_005c6110(void) {
     dat_00806b84 = enabled;
 }
 
-void DisplayListSpecialTransformNoOp(NUSPECIALHANDLE *special, NUMTX *matrix) {
+void DisplayListSpecialTransformNoOp(nuhspecial_s *special, NUMTX *matrix) {
     (void)special;
     (void)matrix;
 }

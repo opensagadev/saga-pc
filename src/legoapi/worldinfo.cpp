@@ -259,17 +259,17 @@ extern "C" {
     typedef struct EQUIVALENTOBJECTGROUP {
         i16 object_count;
         i16 byte_size;
-        NUSPECIALHANDLE objects[1];
+        nuhspecial_s objects[1];
     } EQUIVALENTOBJECTGROUP;
 
     typedef struct EQUIVALENT_GROUP {
         i16 object_count;
         i16 byte_size;
-        NUSPECIALHANDLE objects[1];
+        nuhspecial_s objects[1];
     } EQUIVALENT_GROUP;
 
     typedef struct PORTAL_DOOR { // size 0x10
-        NUSPECIALHANDLE special; // 0x0
+        nuhspecial_s special;    // 0x0
         u16 flags;               // 0xc
         u8 portal_id;            // 0xe
         u8 unknown_0f;           // 0xf
@@ -332,7 +332,7 @@ extern "C" {
             return;
         }
         for (index = 0; index < world->portal_door_count; ++index, ++door) {
-            NUINSTANIM *animation = (NUINSTANIM *)NuSpecialGetInstAnim((NUSPECIALHANDLE *)&door->special);
+            NUINSTANIM *animation = (NUINSTANIM *)NuSpecialGetInstAnim(&door->special);
             if (animation != NULL) {
                 const f32 end_frame = NuAnimEndFrameOld(door->special.scene->instance_animation_data[animation->animation_index]);
                 const u16 flags = door->flags;
@@ -391,7 +391,7 @@ extern "C" {
             while (NuFParGetWord(parser) != 0) {
                 if (NuSpecialFind(world->current_gscn, &cursor->objects[cursor->object_count], parser->word_buffer_ptr, 1) != 0) {
                     ++cursor->object_count;
-                    cursor->byte_size += sizeof(NUSPECIALHANDLE);
+                    cursor->byte_size += sizeof(nuhspecial_s);
                 }
             }
             if (cursor->object_count > 0) {
@@ -407,7 +407,7 @@ extern "C" {
         }
     }
 
-    i32 EquivalentObject_Find(WORLDINFO *world, NUSPECIALHANDLE *special) {
+    i32 EquivalentObject_Find(WORLDINFO *world, nuhspecial_s *special) {
         EQUIVALENTOBJECTGROUP *group;
         i32 group_index;
         i32 index;

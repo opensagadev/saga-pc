@@ -25,7 +25,7 @@ extern "C" {
     void RootFn(NUMTX *, void *, NUVEC *, NUVEC *, NUVEC *, f32);
     void RootFnY(NUMTX *, void *, NUVEC *, NUVEC *, NUVEC *, f32);
     void BlendRootFn(NUMTX *, void *, NUVEC *, NUVEC *, NUVEC *, f32);
-    GAMEANIMOBJ *GameAnimSet_AddObject(GAMEANIMSET *set, NUSPECIALHANDLE *special, f32 start_frame, f32 end_frame, i32 append);
+    GAMEANIMOBJ *GameAnimSet_AddObject(GAMEANIMSET *set, nuhspecial_s *special, f32 start_frame, f32 end_frame, i32 append);
     i32 GameAnimSet_GetAveragePos(GAMEANIMSET *set, NUVEC *position, i32 frame_selection, i32 include_animated, i32 include_static);
     i32 GameAnimSet_GetCentreAndRadius(GAMEANIMSET *set, NUVEC *centre, f32 *radius, i32 frame_selection, i32 include_animated,
                                        i32 include_static);
@@ -64,8 +64,8 @@ extern "C" {
     i32 CurrentAnim(ANIMPACKET_PC *);
     f32 AnimDuration(i32, i32, f32, f32, i32);
     void ResetAnimPacket(ANIMPACKET_PC *, i32);
-    void EvalAnim(NUSPECIALHANDLE *special, f32 frame, NUMTX *matrix, i32 update);
-    void EvalAnim2(NUSPECIALHANDLE *special, f32 frame);
+    void EvalAnim(nuhspecial_s *special, f32 frame, NUMTX *matrix, i32 update);
+    void EvalAnim2(nuhspecial_s *special, f32 frame);
     extern u8 ForcePlayEndFrame;
     extern u8 ForceEulerToQuat;
     f32 AnimStopFrame(CHARACTER_MODEL_LAYERS *, i32);

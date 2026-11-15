@@ -1225,7 +1225,7 @@ void *GameBufferAlloc(VARIPTR *buf, VARIPTR *end, i32 size) {
     return ptr;
 }
 
-void EvalAnim(NUSPECIALHANDLE *special, f32 frame, NUMTX *matrix, i32 update) {
+void EvalAnim(nuhspecial_s *special, f32 frame, NUMTX *matrix, i32 update) {
     NUINSTANIM *instance_animation;
     ANI3_HEADER *animation;
     NUGSCN *scene;
@@ -1258,7 +1258,7 @@ void EvalAnim(NUSPECIALHANDLE *special, f32 frame, NUMTX *matrix, i32 update) {
     }
 }
 
-void EvalAnim2(NUSPECIALHANDLE *special, f32 frame) {
+void EvalAnim2(nuhspecial_s *special, f32 frame) {
     NUINSTANIM *instance_animation;
     ANI3_HEADER *animation;
     NUGSCN *scene;
@@ -1406,7 +1406,7 @@ i32 Draw3DObjectMtx(WORLDINFO *world, i32 object_id, NUMTX *matrix) {
 }
 
 i32 DrawPanel3DObject(f32 x, f32 y, f32 z, f32 scale_x, f32 scale_y, f32 scale_z, u16 rotate_x, u16 rotate_y, u16 rotate_z,
-                      NUSPECIALHANDLE *special, i32 rotate_order, f32 alpha) {
+                      nuhspecial_s *special, i32 rotate_order, f32 alpha) {
     if (alpha > 0.0f && special != NULL && NuSpecialExistsFn(special) != 0 && (scale_x != 0.0f || scale_y != 0.0f || scale_z != 0.0f)) {
         NUVEC scale = {scale_x, scale_y, scale_z};
         NUMTX matrix;
@@ -1422,7 +1422,7 @@ i32 DrawPanel3DObject(f32 x, f32 y, f32 z, f32 scale_x, f32 scale_y, f32 scale_z
 }
 
 i32 DrawPanel3DObjectNoAlpha(f32 x, f32 y, f32 z, f32 scale_x, f32 scale_y, f32 scale_z, u16 rotate_x, u16 rotate_y, u16 rotate_z,
-                             NUSPECIALHANDLE *special, i32 rotate_order) {
+                             nuhspecial_s *special, i32 rotate_order) {
     if (special != NULL && NuSpecialExistsFn(special) != 0 && (scale_x != 0.0f || scale_y != 0.0f || scale_z != 0.0f)) {
         NUVEC scale = {scale_x, scale_y, scale_z};
         NUMTX matrix;
@@ -1437,7 +1437,7 @@ i32 DrawPanel3DObjectNoAlpha(f32 x, f32 y, f32 z, f32 scale_x, f32 scale_y, f32 
     return 0;
 }
 
-i32 DrawPanel3DObjectMtx(NUSPECIALHANDLE *special, NUMTX *matrix, f32 alpha) {
+i32 DrawPanel3DObjectMtx(nuhspecial_s *special, NUMTX *matrix, f32 alpha) {
     if (!(alpha <= 0.0f) && special != NULL && NuSpecialExistsFn(special) != 0) {
         NuMtxMulVU0(matrix, matrix, NuCameraGetMtx());
         NuSpecialDrawAtAlpha(special, matrix, alpha);
@@ -1453,7 +1453,7 @@ i32 DrawPanel3DObjectMtxNoAlpha(nuhspecial_s *special, NUMTX *matrix) {
     return NuSpecialDrawAt(special, matrix);
 }
 
-void DrawObjectOnCharacter(WORLDINFO *world, GAMEOBJECT *object, i32 object_id, NUSPECIALHANDLE *special, i32 locator, i32 second_locator,
+void DrawObjectOnCharacter(WORLDINFO *world, GAMEOBJECT *object, i32 object_id, nuhspecial_s *special, i32 locator, i32 second_locator,
                            NUMTX *joints, i32 reflect, u32 layers, NUMTX *rotation, NUVEC *translation, f32 alpha, f32 scale) {
     i32 position_only = dco_locatorposonly;
     u16 rotate_z;
@@ -1654,11 +1654,11 @@ void SetAnimFrame(struct nuhspecial_s *special, f32 frame) {
     f32 **animation;
     NUMTX *instance_matrix;
     f32 end_frame;
-    if (NuSpecialExistsFn((NUSPECIALHANDLE *)special) == 0) {
+    if (NuSpecialExistsFn(special) == 0) {
         return;
     }
     ReflectionCopyMatrix(&matrix, (NUMTX *)&ANI3_EVAL_IDENTITY_MATRIX);
-    instance_animation = NuSpecialGetInstAnim((NUSPECIALHANDLE *)special);
+    instance_animation = NuSpecialGetInstAnim(special);
     if (instance_animation == NULL) {
         return;
     }
@@ -1677,7 +1677,7 @@ void SetAnimFrame(struct nuhspecial_s *special, f32 frame) {
         NuAnimData2CalcMatrix((ANI3_HEADER *)*animation, 0, frame, &matrix);
     }
     instance_animation->matrix = matrix;
-    instance_matrix = NuSpecialGetInstanceMtx((NUSPECIALHANDLE *)special);
+    instance_matrix = NuSpecialGetInstanceMtx(special);
     instance_animation->matrix.m30 = instance_matrix->m30;
     instance_animation->matrix.m31 = instance_matrix->m31;
     instance_animation->matrix.m32 = instance_matrix->m32;

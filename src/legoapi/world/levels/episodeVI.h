@@ -28,7 +28,7 @@ extern "C" {
     extern u64 routemask_efloor_on;
     extern u64 routemask_efloor_off;
     extern f32 eFloor_timer;
-    extern NUSPECIALHANDLE *hspecial_efloor;
+    extern nuhspecial_s *hspecial_efloor;
     extern i32 SarlaccPower;
     extern i32 SarlaccRecharging;
     extern i32 SarlaccTargetShield[2];

@@ -1,8 +1,8 @@
 #include "saga.h"
 
-typedef struct FADER {               // size 0x18
-    NUSPECIALHANDLE special;         // 0x00
-    NUSPECIALHANDLE while_animating; // 0x0c
+typedef struct FADER {            // size 0x18
+    nuhspecial_s special;         // 0x00
+    nuhspecial_s while_animating; // 0x0c
 } FADER;
 
 typedef struct FADERS_WORLD_VIEW { // size 0x503c

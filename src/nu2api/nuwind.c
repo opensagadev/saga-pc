@@ -46,7 +46,7 @@ void NuWindFreeGrp(PC_NUWINDGROUP *group) {
     }
 }
 
-PC_NUWINDGROUP *NuWindCreateMtx(NUSPECIALHANDLE *source, NUMTX *matrices, i16 count, f32 value20, f32 value24, i32 flags, f32 near_distance,
+PC_NUWINDGROUP *NuWindCreateMtx(nuhspecial_s *source, NUMTX *matrices, i16 count, f32 value20, f32 value24, i32 flags, f32 near_distance,
                                 f32 far_distance) {
     PC_NUWINDGROUP *group = NuWindAllocateGrp();
     NUMTX *matrix = matrices;
@@ -63,7 +63,7 @@ PC_NUWINDGROUP *NuWindCreateMtx(NUSPECIALHANDLE *source, NUMTX *matrices, i16 co
     }
     group->matrices = matrices;
     group->scene = source->scene;
-    group->special = (NUDISPLAY_SPECIAL *)source->display_special;
+    group->special = source->display_special;
     group->matrix_count = count;
     group->value20 = value20;
     group->value24 = value24;
@@ -306,7 +306,7 @@ void NuWindDraw(void) {
     f32 saved_m23;
     f32 saved_m33;
     f32 distance_squared;
-    NUSPECIALHANDLE special;
+    nuhspecial_s special;
     special.special = NULL;
     group = NuWindGroup;
     for (index = 0; index < NuWindMaxGroupsPC; ++index, ++group) {
@@ -330,7 +330,7 @@ void NuWindDraw(void) {
                         matrix->m23 = 1.0e-11f;
                     }
                     special.scene = group->scene;
-                    special.display_special = (NUMTX *)group->special;
+                    special.display_special = group->special;
                     if (NuSpecialDrawAt(&special, matrix) != 0) {
                         group->drawn = 1;
                     }

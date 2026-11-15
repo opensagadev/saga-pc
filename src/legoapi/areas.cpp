@@ -853,8 +853,8 @@ extern "C" void SuperCounter_ActivateGizmoPickup(GIZMO_PC *gizmo, GIZMOPICKUP *g
             NUVEC *message_position;
             if (pickup->position_gizmo != NULL) {
                 message_position = GizmoGetPos((GIZMOSYS_PC *)WORLD->gizmo_sys, pickup->position_gizmo);
-            } else if (NuSpecialExistsFn((NUSPECIALHANDLE *)&pickup->position_special) != 0) {
-                message_position = NuSpecialGetDrawPos((NUSPECIALHANDLE *)&pickup->position_special);
+            } else if (NuSpecialExistsFn((nuhspecial_s *)&pickup->position_special) != 0) {
+                message_position = NuSpecialGetDrawPos((nuhspecial_s *)&pickup->position_special);
             } else {
                 message_position = &gizmo_pickup->position;
             }
@@ -879,7 +879,7 @@ extern "C" void SuperCounters_FixUpGizmos(WORLDINFO *world) {
                 if (pickup->use_special == 0) {
                     pickup->position_gizmo = GizmoFindByName(world->gizmo_sys, -1, pickup->position_name);
                 } else {
-                    NuSpecialFind(world->current_gscn, reinterpret_cast<NUSPECIALHANDLE *>(pickup->position_special), pickup->position_name,
+                    NuSpecialFind(world->current_gscn, reinterpret_cast<nuhspecial_s *>(pickup->position_special), pickup->position_name,
                                   1);
                 }
             }

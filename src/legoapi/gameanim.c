@@ -516,7 +516,7 @@ f32 GameAnimSet_GetCompletionRatio(GAMEANIMSET *set) {
     return ratio;
 }
 
-GAMEANIMOBJ *GameAnimSet_AddObject(GAMEANIMSET *set, NUSPECIALHANDLE *special, f32 start_frame, f32 end_frame, i32 append) {
+GAMEANIMOBJ *GameAnimSet_AddObject(GAMEANIMSET *set, nuhspecial_s *special, f32 start_frame, f32 end_frame, i32 append) {
     GAMEANIMOBJPOOL *pool;
     GAMEANIMOBJ *object = NULL;
     GAMEANIMOBJ *tail;
@@ -935,7 +935,7 @@ void EdFileWriteNuVec(NUVEC *value);
 extern struct eduimenu_s *edanim_switch_menu;
 
 i32 edanimFileSave(char *path) {
-    NUSPECIALHANDLE special;
+    nuhspecial_s special;
     char name[20];
     i32 count;
     i32 i;
@@ -1507,7 +1507,7 @@ void fun_0065b5e0(void) {
 
 GAMEANIMOBJ *GameAnimSet_AddObjectByName(GAMEANIMSET *set, NUGSCN *scene, char *name, f32 start_frame, f32 end_frame, i32 append,
                                          void *gizmo_sys, char *prefix, char *suffix) {
-    NUSPECIALHANDLE special;
+    nuhspecial_s special;
     if (set && Gizmo_FindNuSpecial(scene, &special, name, 1, gizmo_sys, prefix, suffix)) {
         return GameAnimSet_AddObject(set, &special, start_frame, end_frame, append);
     }

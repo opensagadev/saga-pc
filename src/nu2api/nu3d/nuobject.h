@@ -18,7 +18,7 @@ extern "C" {
 #endif
     NUVEC NuFadeObjGetAngleTerrainValues(NUVEC *);
     void NuFadeObjInit(void);
-    PC_NUFADEGROUP *NuFadeObjCreateMtx(NUSPECIALHANDLE *, NUMTX *, i16, f32, f32, i32);
+    PC_NUFADEGROUP *NuFadeObjCreateMtx(nuhspecial_s *, NUMTX *, i16, f32, f32, i32);
     void NuFadeObjUpdateArray(NUVEC **positions);
     void NuFadeObjUpdate(NUVEC *position);
     void NuFadeObjDraw(void);

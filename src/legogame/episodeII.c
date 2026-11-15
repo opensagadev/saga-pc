@@ -8,20 +8,20 @@
 typedef struct dooku_c_s {
     GIZAIMESSAGE *total_message;
     GIZAIMESSAGE *hit_message;
-    NUSPECIALHANDLE node;
+    nuhspecial_s node;
 } DOOKU_C_PC;
 
 void KillBossNewLevel(i32 id, i32 unused_4, f32 delay, i32 level_index);
-void DrawForceBackEffect(NUSPECIALHANDLE *special);
+void DrawForceBackEffect(nuhspecial_s *special);
 void GizPanel_Reset(void *panel);
 
 typedef struct kaminodisco_s {
     AIAREA *area;
-    NUSPECIALHANDLE off[16];
-    NUSPECIALHANDLE pending[16];
-    NUSPECIALHANDLE occupied[16];
-    NUSPECIALHANDLE complete[16];
-    NUSPECIALHANDLE final[16];
+    nuhspecial_s off[16];
+    nuhspecial_s pending[16];
+    nuhspecial_s occupied[16];
+    nuhspecial_s complete[16];
+    nuhspecial_s final[16];
     i8 tile_state[16];
     i8 tile_count;
     i8 phase;
@@ -65,7 +65,7 @@ typedef struct kamino_e_s {
     GIZAIMESSAGE *minicut_started;
     CUTINFO *intro_cutscene;
     AIAREA *landing_area;
-    NUSPECIALHANDLE slave1;
+    nuhspecial_s slave1;
     KAMINOE_TURRET_READER *turrets[4];
     KAMINOE_TURRET_READER *active_turret;
     void *panels[4];
@@ -125,16 +125,16 @@ nuhspecial_s painttargetcolour[3] = {0};
 void DrawPaintLights(void) {
     i32 i;
     for (i = 0; i < ((i8 *)factoryb_netpacket)[1]; i++) {
-        if (NuSpecialExistsFn((NUSPECIALHANDLE *)&paintlights[i]) != 0) {
-            NuSpecialDrawAt((NUSPECIALHANDLE *)&green_light, NuSpecialGetDrawMtx((NUSPECIALHANDLE *)&paintlights[i]));
+        if (NuSpecialExistsFn(&paintlights[i]) != 0) {
+            NuSpecialDrawAt(&green_light, NuSpecialGetDrawMtx(&paintlights[i]));
         }
     }
     for (i = 0; i < 3; i++) {
         i8 colour = ((i8 *)factoryb_netpacket)[3];
         if (i == colour - 3 || colour == 0) {
-            NuSpecialSetVisibility((NUSPECIALHANDLE *)&painttargetcolour[i], 1);
+            NuSpecialSetVisibility(&painttargetcolour[i], 1);
         } else {
-            NuSpecialSetVisibility((NUSPECIALHANDLE *)&painttargetcolour[i], 0);
+            NuSpecialSetVisibility(&painttargetcolour[i], 0);
         }
     }
 }
@@ -1083,14 +1083,14 @@ void KaminoA_AlwaysUpdate(WORLDINFO *world) {
 
 KAMINODISCO_PC kaminodisco = {0};
 KAMINOC_PACKET_PC *kaminoc_netpacket = NULL;
-NUSPECIALHANDLE disco_on_spin[3] = {0};
+nuhspecial_s disco_on_spin[3] = {0};
 GIZMO_PC *disco_off_spina[3] = {0};
-NUSPECIALHANDLE walllights[2] = {0};
-NUSPECIALHANDLE walllights_disco[2] = {0};
-NUSPECIALHANDLE striplights[2] = {0};
-NUSPECIALHANDLE discolights[2] = {0};
-NUSPECIALHANDLE discorm_wall_on = {0};
-NUSPECIALHANDLE discorm_wall_off = {0};
+nuhspecial_s walllights[2] = {0};
+nuhspecial_s walllights_disco[2] = {0};
+nuhspecial_s striplights[2] = {0};
+nuhspecial_s discolights[2] = {0};
+nuhspecial_s discorm_wall_on = {0};
+nuhspecial_s discorm_wall_off = {0};
 GIZMO_PC *gizTurrets[2] = {0};
 i32 last = 0;
 
@@ -2084,13 +2084,13 @@ void InitPaintPuzzle(WORLDINFO *world) {
         paintpanel[i] = GizmoFindByName(world->gizmo_sys, gizpanel_gizmotype_id, paint_panel_name[i]);
     }
     for (i = 0; i < 3; i++) {
-        NuSpecialFind(world->current_gscn, (NUSPECIALHANDLE *)&painttargetcolour[i], paint_target_colour[i], 0);
+        NuSpecialFind(world->current_gscn, &painttargetcolour[i], paint_target_colour[i], 0);
     }
     for (i = 0; i < 3; i++) {
-        NuSpecialFind(world->current_gscn, (NUSPECIALHANDLE *)&paintlights[i], paint_light_name[i], 0);
+        NuSpecialFind(world->current_gscn, &paintlights[i], paint_light_name[i], 0);
     }
     forcetube = GizmoFindByName(world->gizmo_sys, obstacle_gizmotype_id, "FORCE_TUBE");
-    NuSpecialFind(world->current_gscn, (NUSPECIALHANDLE *)&green_light, "green_light_on1", 1);
+    NuSpecialFind(world->current_gscn, &green_light, "green_light_on1", 1);
     ResetPaintPuzzle(world);
 }
 

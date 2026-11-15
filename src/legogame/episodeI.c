@@ -44,7 +44,7 @@ typedef struct podrace_resource_s {
     u8 unknown_b021[15];
 } PODRACE_RESOURCE;
 
-extern NUSPECIALHANDLE SebulbaMineSpecial;
+extern nuhspecial_s SebulbaMineSpecial;
 extern f32 SebulbaDistanceBias;
 extern f32 SebulbaThrowIntervalPc;
 static f32 PodSebulbaThrowSpeed;
@@ -74,7 +74,7 @@ typedef struct podrace_netpacket_s {
     i32 lap;
 } PODRACE_NETPACKET;
 
-i32 NuSpecialClipTestExtents(NUSPECIALHANDLE *special, NUMTX *matrix);
+i32 NuSpecialClipTestExtents(nuhspecial_s *special, NUMTX *matrix);
 
 /* Pod sprint (Episode I bonus) level callbacks. */
 typedef struct PODSPRINT_VIEW {   // size 0x94

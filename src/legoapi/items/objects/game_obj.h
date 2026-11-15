@@ -31,7 +31,7 @@ struct PART_PC;
 struct WORLDINFO_s;
 struct gameobject_s;
 struct numtx_s;
-struct nuspecial_handle_s;
+struct nuhspecial_s;
 
 typedef struct PART_LIGHTING_DATA PART_LIGHTING_DATA;
 typedef void (*PART_MOVE)(struct PART_PC *, f32);
@@ -113,52 +113,52 @@ extern "C" {
 
 #if SAGA_LEGOAPI_ITEMS_OBJECTS_GAME_OBJ_H_PART == 3 && !defined(SAGA_LEGOAPI_ITEMS_OBJECTS_GAME_OBJ_H_STOP)
 
-typedef struct ADDPART {                // size 0xc8
-    struct numtx_s *matrix;             // 0x00
-    NUVEC *position;                    // 0x04
-    NUVEC *velocity;                    // 0x08
-    struct gameobject_s *owner;         // 0x0c
-    struct gameobject_s *recipient;     // 0x10
-    f32 unknown_14;                     // 0x14
-    f32 unknown_18;                     // 0x18
-    f32 gravity;                        // 0x1c
-    f32 unknown_20;                     // 0x20
-    struct nuspecial_handle_s *special; // 0x24
-    i32 part_id;                        // 0x28
-    u32 flags;                          // 0x2c
-    PART_ACTION callback_30;            // 0x30
-    PART_MOVE move_fn;                  // 0x34
-    PART_ACTION deflect_fn;             // 0x38
-    PART_ACTION impact_fn;              // 0x3c
-    PART_ACTION collision_fn;           // 0x40
-    PART_KILL kill_fn;                  // 0x44
-    PART_ACTION update_fn;              // 0x48
-    PART_ACTION stop_fn;                // 0x4c
-    PART_ACTION destroy_fn;             // 0x50
-    PART_DRAW draw_fn;                  // 0x54
-    i32 effect_id_58;                   // 0x58
-    i32 *debris_handle;                 // 0x5c
-    i32 effect_id_60;                   // 0x60
-    i32 effect_id_64;                   // 0x64
-    f32 unknown_68;                     // 0x68
-    f32 unknown_6c;                     // 0x6c
-    i32 effect_id_70;                   // 0x70
-    i32 effect_id_74;                   // 0x74
-    i32 effect_id_78;                   // 0x78
-    f32 effect_scale;                   // 0x7c
-    i32 *lighting_handle;               // 0x80
-    i32 lighting_id;                    // 0x84
-    f32 unknown_88;                     // 0x88
-    f32 time_step;                      // 0x8c
-    u32 hostility_group;                // 0x90
-    PART_LIGHTING_DATA *lighting_data;  // 0x94
-    f32 lighting_scale_x;               // 0x98
-    f32 lighting_scale_y;               // 0x9c
-    f32 lighting_scale_z;               // 0xa0
-    f32 unknown_a4;                     // 0xa4
-    u32 unknown_a8[6];                  // 0xa8
-    f32 unknown_c0;                     // 0xc0
-    u8 unknown_c4;                      // 0xc4
+typedef struct ADDPART {               // size 0xc8
+    struct numtx_s *matrix;            // 0x00
+    NUVEC *position;                   // 0x04
+    NUVEC *velocity;                   // 0x08
+    struct gameobject_s *owner;        // 0x0c
+    struct gameobject_s *recipient;    // 0x10
+    f32 unknown_14;                    // 0x14
+    f32 unknown_18;                    // 0x18
+    f32 gravity;                       // 0x1c
+    f32 unknown_20;                    // 0x20
+    struct nuhspecial_s *special;      // 0x24
+    i32 part_id;                       // 0x28
+    u32 flags;                         // 0x2c
+    PART_ACTION callback_30;           // 0x30
+    PART_MOVE move_fn;                 // 0x34
+    PART_ACTION deflect_fn;            // 0x38
+    PART_ACTION impact_fn;             // 0x3c
+    PART_ACTION collision_fn;          // 0x40
+    PART_KILL kill_fn;                 // 0x44
+    PART_ACTION update_fn;             // 0x48
+    PART_ACTION stop_fn;               // 0x4c
+    PART_ACTION destroy_fn;            // 0x50
+    PART_DRAW draw_fn;                 // 0x54
+    i32 effect_id_58;                  // 0x58
+    i32 *debris_handle;                // 0x5c
+    i32 effect_id_60;                  // 0x60
+    i32 effect_id_64;                  // 0x64
+    f32 unknown_68;                    // 0x68
+    f32 unknown_6c;                    // 0x6c
+    i32 effect_id_70;                  // 0x70
+    i32 effect_id_74;                  // 0x74
+    i32 effect_id_78;                  // 0x78
+    f32 effect_scale;                  // 0x7c
+    i32 *lighting_handle;              // 0x80
+    i32 lighting_id;                   // 0x84
+    f32 unknown_88;                    // 0x88
+    f32 time_step;                     // 0x8c
+    u32 hostility_group;               // 0x90
+    PART_LIGHTING_DATA *lighting_data; // 0x94
+    f32 lighting_scale_x;              // 0x98
+    f32 lighting_scale_y;              // 0x9c
+    f32 lighting_scale_z;              // 0xa0
+    f32 unknown_a4;                    // 0xa4
+    u32 unknown_a8[6];                 // 0xa8
+    f32 unknown_c0;                    // 0xc0
+    u8 unknown_c4;                     // 0xc4
 } ADDPART;
 
 typedef struct KILLPARTS_BIKE { // size 0x34

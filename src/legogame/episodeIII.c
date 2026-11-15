@@ -5,16 +5,16 @@
 typedef struct dooku_c_s {       // size 0x14
     GIZAIMESSAGE *total_message; // 0x00
     GIZAIMESSAGE *hit_message;   // 0x04
-    NUSPECIALHANDLE node;        // 0x08
+    nuhspecial_s node;           // 0x08
 } DOOKU_C_PC;
 
 typedef struct kaminodisco_s {       // size 0x3e8
     AIAREA *area;                    // 0x000
-    NUSPECIALHANDLE off[16];         // 0x004
-    NUSPECIALHANDLE pending[16];     // 0x0c4
-    NUSPECIALHANDLE occupied[16];    // 0x184
-    NUSPECIALHANDLE complete[16];    // 0x244
-    NUSPECIALHANDLE final[16];       // 0x304
+    nuhspecial_s off[16];            // 0x004
+    nuhspecial_s pending[16];        // 0x0c4
+    nuhspecial_s occupied[16];       // 0x184
+    nuhspecial_s complete[16];       // 0x244
+    nuhspecial_s final[16];          // 0x304
     i8 tile_state[16];               // 0x3c4
     i8 tile_count;                   // 0x3d4
     i8 phase;                        // 0x3d5
@@ -48,7 +48,7 @@ typedef struct kamino_e_s {               // size 0x78
     GIZAIMESSAGE *minicut_started;        // 0x10
     CUTINFO *intro_cutscene;              // 0x14
     AIAREA *landing_area;                 // 0x18
-    NUSPECIALHANDLE slave1;               // 0x1c
+    nuhspecial_s slave1;                  // 0x1c
     KAMINOE_TURRET_READER *turrets[4];    // 0x28
     KAMINOE_TURRET_READER *active_turret; // 0x38
     void *panels[4];                      // 0x3c
@@ -106,7 +106,7 @@ typedef struct vadera_netpacket_s {
 typedef struct vaderc_s {
     GIZAIMESSAGE *final_fight_message;
     AILOCATOR *big_jump_locator;
-    NUSPECIALHANDLE rocks[10];
+    nuhspecial_s rocks[10];
     i16 platform_ids[10];
     u8 progress_mask;
     u8 players_dead;
@@ -185,7 +185,7 @@ void CruiserCPanel(WORLDINFO *world) {
 
 CRUISERD_NETPACKET_PC *cruiserd_netpacket = NULL;
 static i32 CruiserE_ix = 0;
-static NUSPECIALHANDLE CruiserD_Lift = {NULL, NULL, NULL};
+static nuhspecial_s CruiserD_Lift = {NULL, NULL, NULL};
 static CRUISERD_LIFT_ANIM_PC *CruiserD_LiftAnim = NULL;
 static i32 CruiserD_Lift_plat_id = 0;
 
@@ -549,7 +549,7 @@ VADERA_PC vader_a = {0};
 
 static void VaderA_StartCollapseStage(WORLDINFO *world) {
     i32 path_index;
-    NUSPECIALHANDLE specials[100];
+    nuhspecial_s specials[100];
     i32 special_count;
     i32 i;
     u32 *path_connection = AIPAthFindPathCnx(world->ai_sys, world->ai_sys->path_sys->active_path, "Block1_a", "Block1_b", &path_index);

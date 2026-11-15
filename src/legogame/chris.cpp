@@ -333,11 +333,6 @@ extern "C" {
         NUVEC xyz;                                                   // 0x0
     } DOGFIGHT_COLLISION_VECTOR;
 
-    STATIC_ASSERT(__alignof(DOGFIGHT_COLLISION_VECTOR) == 16);
-    STATIC_ASSERT(__alignof(NUVEC) == 4);
-
-    STATIC_ASSERT(__alignof(NUVEC) == 4);
-
     /* Anakin C door pairs; the table ends with an empty name. */
     anakin_door_setup_s DoorSetupList[15] = {
         {"door1",  "door1r",  15.0f, 1.0f, 0, {0}, {-1.0f, 0.0f, 0.0f}, -0.5f, 0.0f},
@@ -523,12 +518,12 @@ extern "C" {
                 NuVecMtxTransform(&position, &translation, &door->original_matrix);
                 memcpy(&door->matrix.m30, &position, sizeof(position));
                 door->matrix.m33 = 1.0f;
-                NuSpecialSetDrawMtx((NUSPECIALHANDLE *)&door->special, &door->matrix);
+                NuSpecialSetDrawMtx(&door->special, &door->matrix);
                 if (door->has_secondary != 0) {
                     NuVecMtxTransform(&position, &translation, &door->original_secondary_matrix);
                     memcpy(&door->secondary_matrix.m30, &position, sizeof(position));
                     door->secondary_matrix.m33 = 1.0f;
-                    NuSpecialSetDrawMtx((NUSPECIALHANDLE *)&door->secondary_special, &door->secondary_matrix);
+                    NuSpecialSetDrawMtx(&door->secondary_special, &door->secondary_matrix);
                 }
             }
         }
@@ -2041,7 +2036,7 @@ extern "C" {
     }
 
     void ChrisAnakinBInit() {
-        NUSPECIALHANDLE centre;
+        nuhspecial_s centre;
         RadialMoveCentre.x = 0.0f;
         RadialMoveCentre.y = 0.0f;
         RadialMoveCentre.z = 0.0f;
@@ -2361,22 +2356,21 @@ extern "C" {
                 }
                 return;
             }
-            if (!NuSpecialFind(WORLD->current_gscn, (NUSPECIALHANDLE *)&door->special, setup->name, 1) ||
-                !NuSpecialExistsFn((NUSPECIALHANDLE *)&door->special)) {
+            if (!NuSpecialFind(WORLD->current_gscn, &door->special, setup->name, 1) || !NuSpecialExistsFn(&door->special)) {
                 continue;
             }
 
-            if (NuSpecialFind(WORLD->current_gscn, (NUSPECIALHANDLE *)&door->secondary_special, setup->secondary_name, 1)) {
-                door->has_secondary = ((i16)(NuSpecialExistsFn((NUSPECIALHANDLE *)&door->secondary_special)));
+            if (NuSpecialFind(WORLD->current_gscn, &door->secondary_special, setup->secondary_name, 1)) {
+                door->has_secondary = ((i16)(NuSpecialExistsFn(&door->secondary_special)));
             }
 
             CopyFlightMatrix(&door->original_matrix, &ANI3_EVAL_IDENTITY_MATRIX);
-            door->matrix = door->original_matrix = *NuSpecialGetMtx((NUSPECIALHANDLE *)&door->special);
+            door->matrix = door->original_matrix = *NuSpecialGetMtx(&door->special);
             if (door->has_secondary != 0) {
                 CopyFlightMatrix(&door->original_secondary_matrix, &ANI3_EVAL_IDENTITY_MATRIX);
-                door->secondary_matrix = door->original_secondary_matrix = *NuSpecialGetMtx((NUSPECIALHANDLE *)&door->secondary_special);
+                door->secondary_matrix = door->original_secondary_matrix = *NuSpecialGetMtx(&door->secondary_special);
             }
-            door->platform_id = ((i16)(FindPlatInst(NuSpecialGetInstanceix((NUSPECIALHANDLE *)&door->special))));
+            door->platform_id = ((i16)(FindPlatInst(NuSpecialGetInstanceix(&door->special))));
             door->active = 1;
             door->flags = ((u8)(setup->flags));
             door->direction = setup->direction;

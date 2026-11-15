@@ -23,7 +23,7 @@ extern "C" {
     void *DisplayListBuildFogPacket(NUGLOBALRNDRSTATE_PC *state);
     void *DisplayListBuildVertexGroupPacket(NUGLOBALRNDRSTATE_PC *);
     void NuPtlDmaSlotsExhausted(void);
-    void DisplayListSpecialTransformNoOp(NUSPECIALHANDLE *special, NUMTX *matrix);
+    void DisplayListSpecialTransformNoOp(nuhspecial_s *special, NUMTX *matrix);
     void NuVpBuildScalingTemplate(void);
     void PCClipScreenUnsupported(void);
     void NuTexBmpUnsupportedDepth(i32 bit_count, const char *path);

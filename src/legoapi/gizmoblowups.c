@@ -64,15 +64,15 @@ typedef struct blowup_effect_instance_s { // size 0x110
     i8 pickup_multiplier;                 // 0x10d
 } BLOWUP_EFFECT_INSTANCE;
 
-typedef struct blowup_effect_type_s {      // size 0xfc
-    NUSPECIALHANDLE alternate_specials[4]; // 0x00
-    u8 unknown_30[0x94 - 0x30];            // 0x30
-    f32 fragment_gravity;                  // 0x94
-    f32 fragment_speed;                    // 0x98
-    u8 unknown_9c[4];                      // 0x9c
-    i16 particle_types[7];                 // 0xa0
-    u8 unknown_ae[0xfa - 0xae];            // 0xae
-    u8 fragment_count;                     // 0xfa
+typedef struct blowup_effect_type_s {   // size 0xfc
+    nuhspecial_s alternate_specials[4]; // 0x00
+    u8 unknown_30[0x94 - 0x30];         // 0x30
+    f32 fragment_gravity;               // 0x94
+    f32 fragment_speed;                 // 0x98
+    u8 unknown_9c[4];                   // 0x9c
+    i16 particle_types[7];              // 0xa0
+    u8 unknown_ae[0xfa - 0xae];         // 0xae
+    u8 fragment_count;                  // 0xfa
 } BLOWUP_EFFECT_TYPE;
 
 extern void (*GizmoBlowUp_SfxFn)(GIZMOBLOWUP_PC *, NUVEC *);
@@ -439,7 +439,7 @@ u32 GizmoBlowups_TotalScore(WORLDINFO *world) {
     return total;
 }
 
-GIZMOBLOWUPTYPE *GizmoBlowupTypeAdd(WORLDINFO *world, NUSPECIALHANDLE *special, i32 flags, i32 *result) {
+GIZMOBLOWUPTYPE *GizmoBlowupTypeAdd(WORLDINFO *world, nuhspecial_s *special, i32 flags, i32 *result) {
     i32 i;
     GIZMOBLOWUPTYPE *type;
     NUINSTANIM *animation;
@@ -2221,7 +2221,7 @@ void GizmoBlowupBurstDraw(void *world_pointer, void *data, f32 frame_time) {
     WORLDINFO *world = world_pointer;
     GIZMOBLOWUP_PC *blowup = world->gizmo_blowups;
     GIZMOBLOWUPTYPE *type;
-    NUSPECIALHANDLE *special;
+    nuhspecial_s *special;
     NUINSTANIM *animation;
     NUMTX animated_matrix;
     NUMTX draw_matrix;

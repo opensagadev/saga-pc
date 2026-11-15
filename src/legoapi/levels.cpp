@@ -13,7 +13,7 @@ extern "C" {
 }
 
 typedef struct startup_level_object_s { // size 0x10
-    NUSPECIALHANDLE special;            // 0x0
+    nuhspecial_s special;               // 0x0
     i16 platform_id;                    // 0xc
     u8 active;                          // 0xe
     u8 unknown_f;                       // 0xf

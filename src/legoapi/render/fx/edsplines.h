@@ -14,7 +14,7 @@ struct NUGSCN_s;
 struct NUVEC4;
 struct flight_spline_resource_s;
 struct nugspline_s;
-struct nuspecial_handle_s;
+struct nuhspecial_s;
 
 typedef struct SPLINEPOS_s {    // size 0x20
     struct nugspline_s *spline; // 0x00
@@ -53,7 +53,7 @@ extern "C" {
     extern i32 numSplinesLoaded;
     extern const char *EDSPLINE_FILECHECK;
     extern const char EditorSplineFileCheckText[13];
-    void GameAntiNodeData_Init(void *, struct nuspecial_handle_s *);
+    void GameAntiNodeData_Init(void *, struct nuhspecial_s *);
     void GameAntiNodeData_Read(void *);
     struct nugspline_s *edSpline_SplineFind(struct NUGSCN_s *, char *);
 #ifdef __cplusplus

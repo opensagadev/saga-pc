@@ -14,7 +14,7 @@ typedef struct cruiserc_s {       // size 0x14
 typedef struct vaderc_s {              // size 0x98
     GIZAIMESSAGE *final_fight_message; // 0x00
     AILOCATOR *big_jump_locator;       // 0x04
-    NUSPECIALHANDLE rocks[10];         // 0x08
+    nuhspecial_s rocks[10];            // 0x08
     i16 platform_ids[10];              // 0x80
     u8 progress_mask;                  // 0x94
     u8 players_dead;                   // 0x95

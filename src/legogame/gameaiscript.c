@@ -668,7 +668,7 @@ void *Condition_IsVisibleInit(AISYS_PC *system, char *name, AISCRIPT *script) {
 }
 
 f32 Condition_IsVisible(AISYS_PC *unused0, AISCRIPTPROCESS *unused1, AIPACKET *unused2, char *unused3, void *argument) {
-    NUSPECIALHANDLE special = {NULL, NULL, NULL};
+    nuhspecial_s special = {NULL, NULL, NULL};
     NuSpecialFind(WORLD->current_gscn, &special, argument, 1);
     if (NuSpecialExistsFn(&special) != 0) {
         return (f32)(NuSpecialGetVisibilityFn(&special));
@@ -1267,7 +1267,7 @@ f32 Condition_BeenAlerted(AISYS_PC *system, AISCRIPTPROCESS *process, AIPACKET *
 }
 
 void *Condition_OnObjectInit(AISYS_PC *system, char *name, AISCRIPT *script) {
-    NUSPECIALHANDLE special;
+    nuhspecial_s special;
     if (CurrentTerrain != NULL) {
         if (NuSpecialFind(WORLD->current_gscn, &special, name, 1) != 0) {
             return (void *)FindPlatInst(NuSpecialGetInstanceix(&special));
@@ -1761,7 +1761,7 @@ f32 Condition_ScriptParam(AISYS_PC *system, AISCRIPTPROCESS *process, AIPACKET *
 }
 
 void *Condition_AnimationFinishedInit(AISYS_PC *system, char *name, AISCRIPT *script) {
-    NUSPECIALHANDLE special;
+    nuhspecial_s special;
     NuSpecialFind(WORLD->current_gscn, &special, name, 1);
     if (NuSpecialExistsFn(&special) != 0) {
         return NuSpecialGetInstAnim(&special);
@@ -1789,7 +1789,7 @@ f32 Condition_AnimationFinished(AISYS_PC *system, AISCRIPTPROCESS *process, AIPA
 }
 
 void *Condition_RigidAnimFrameInit(AISYS_PC *system, char *name, AISCRIPT *script) {
-    NUSPECIALHANDLE special;
+    nuhspecial_s special;
     NuSpecialFind(WORLD->current_gscn, &special, name, 1);
     if (NuSpecialExistsFn(&special)) {
         return NuSpecialGetInstAnim(&special);
@@ -4899,7 +4899,7 @@ i32 Action_EngageObject(AISYS_PC *sys, AISCRIPTPROCESS *processor, AIPACKET *pac
     object = ((APIOBJECT *)packet->owner)->owner;
     if (param_5 != 0) {
         i32 index;
-        NUSPECIALHANDLE special;
+        nuhspecial_s special;
         packet->movement_instruction_parameter = idealgoalrange;
         processor->action_data_5 = engagefiretime;
 
@@ -4919,7 +4919,7 @@ i32 Action_EngageObject(AISYS_PC *sys, AISCRIPTPROCESS *processor, AIPACKET *pac
         processor->action_timer = NuRandFloat() * processor->action_data_5;
         if (name != NULL) {
             if (nearest != 0) {
-                NUSPECIALHANDLE specials[50];
+                nuhspecial_s specials[50];
                 i32 special_count = NuSpecialFindMulti(WORLD->current_gscn, specials, name, 50, 0);
                 if (special_count != 0) {
                     f32 nearest_distance = 1.0e9f;
@@ -6168,7 +6168,7 @@ i32 Action_CopyMessage(AISYS_PC *unused0, AISCRIPTPROCESS *unused1, AIPACKET *un
 
 i32 Action_AddPart(AISYS_PC *system, AISCRIPTPROCESS *processor, AIPACKET *packet, char **params, i32 count, i32 first_time, f32 elapsed) {
     if (first_time != 0) {
-        NUSPECIALHANDLE special;
+        nuhspecial_s special;
         NUVEC position;
         i32 index;
         char *value;
@@ -6324,7 +6324,7 @@ i32 Action_LaunchGuidedMissile(AISYS_PC *system, AISCRIPTPROCESS *processor, AIP
                                f32 elapsed) {
     NUVEC offset = {0.0f, 0.0f, 0.0f};
     if (first_time != 0) {
-        NUSPECIALHANDLE source;
+        nuhspecial_s source;
         i32 index;
         char *value;
         memset(&source, 0, sizeof(source));
@@ -6760,7 +6760,7 @@ i32 Action_SetVisibility(AISYS_PC *unused0, AISCRIPTPROCESS *unused1, AIPACKET *
     i32 visible = 1;
     if (first_time != 0) {
         i32 index;
-        NUSPECIALHANDLE special;
+        nuhspecial_s special;
         memset(&special, 0, sizeof(special));
         for (index = 0; index < param_count; ++index) {
             char *value = NuStrIStr(params[index], (char *)"name");
@@ -8896,7 +8896,7 @@ i32 Action_CameraCut(AISYS_PC *system, AISCRIPTPROCESS *processor, AIPACKET *pac
     NUVEC *target;
     AILOCATOR *locator;
     GAMEOBJECT *object;
-    NUSPECIALHANDLE special;
+    nuhspecial_s special;
     NUMTX *matrix;
     i32 index;
 
@@ -9080,7 +9080,7 @@ i32 Action_DynamicCameraCut(AISYS_PC *system, AISCRIPTPROCESS *processor, AIPACK
     NUVEC *target;
     AILOCATOR *locator;
     GAMEOBJECT *object;
-    NUSPECIALHANDLE special;
+    nuhspecial_s special;
     i32 have_camera_position;
     NUMTX *matrix;
     i32 index;

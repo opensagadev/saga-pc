@@ -17,7 +17,7 @@ void edbitsDrawOvalTilted(NUVEC *centre, f32 radius_x, f32 radius_z, i32 colour,
 #define EDGRA_INDIVIDUAL(clump, element) (&IndGrassClumps[EDGRA_MAX_UNITS_PER_INDIVIDUAL_CLUMP * (clump) + (element)])
 
 i32 edgraFileSave(char *path) {
-    NUSPECIALHANDLE special;
+    nuhspecial_s special;
     char name[20];
     i32 clump_count = 0;
     i32 element_count = 0;
@@ -137,7 +137,7 @@ struct PC_SCENE_MTL_VIEW *edgra_mtl = 0;
 void edgraDrawCursor(void) {
     NURND_VERTEX3D_PC line[2];
     NUVEC arrow;
-    NUSPECIALHANDLE special;
+    nuhspecial_s special;
     line[0].colour = 0xffffffff;
     line[1].colour = 0xffffffff;
     line[0].position.x = edgra_cam_pos.x - 0.5f;

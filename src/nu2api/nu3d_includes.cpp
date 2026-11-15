@@ -3466,13 +3466,13 @@ extern "C" {
         matrix->m32 = -matrix->m32;
     }
 
-    i32 fun_005ea480(NUSPECIALHANDLE *special) {
+    i32 fun_005ea480(nuhspecial_s *special) {
         i32 found = 0;
         if (special->scene == NULL) {
             return 0;
         }
         NUDISPLAY_LIST_PC *list = special->scene->display_list;
-        NUDISPLAY_SPECIAL *display = (NUDISPLAY_SPECIAL *)special->display_special;
+        NUDISPLAY_SPECIAL *display = special->display_special;
         PC_DISPLAY_CLIP_OBJECT *clip = (PC_DISPLAY_CLIP_OBJECT *)display->clip_objects;
         for (i32 i = 0; i < clip->material_count; ++i) {
             NUMTL *material = list->display_materials[clip->material_ids[i]];
@@ -3490,7 +3490,7 @@ extern "C" {
 
     void NuSpecialBurstDrawAt(nuhspecial_s *special, u32 count, NUMTX *matrices, i32 clip) {
         struct NuSpecialLegacyRuntimeLayout *runtime;
-        NUSPECIALHANDLE *handle = ((NUSPECIALHANDLE *)(special));
+        nuhspecial_s *handle = ((special));
         if (handle == NULL || handle->scene == NULL) {
             return;
         }
@@ -10527,7 +10527,7 @@ extern "C" {
         return alpha;
     }
 
-    i32 NuDisplayListRndrSpecial(NUSPECIALHANDLE *handle, NUMTX *matrix, i32 skinned, NUMTX *skin_matrices, void *blend_values) {
+    i32 NuDisplayListRndrSpecial(nuhspecial_s *handle, NUMTX *matrix, i32 skinned, NUMTX *skin_matrices, void *blend_values) {
         NUMTX wind_matrix;
         NUVEC center;
         NUVEC minimum;
@@ -10675,14 +10675,14 @@ extern "C" {
         return clip;
     }
 
-    i32 NuSpecialDrawAt(NUSPECIALHANDLE *handle, NUMTX *matrix) {
+    i32 NuSpecialDrawAt(nuhspecial_s *handle, NUMTX *matrix) {
         if (handle == NULL || handle->scene == NULL || handle->display_special == NULL) {
             return 0;
         }
         return NuDisplayListRndrSpecial(handle, matrix, 0, NULL, NULL);
     }
 
-    i32 NuSpecialDrawSmoothSkin(NUSPECIALHANDLE *special, NUMTX *skin_matrices, NUMTX *world_matrix) {
+    i32 NuSpecialDrawSmoothSkin(nuhspecial_s *special, NUMTX *skin_matrices, NUMTX *world_matrix) {
         if (special->scene == NULL) {
             return 0;
         }
@@ -10692,7 +10692,7 @@ extern "C" {
         return NuDisplayListRndrSpecial(special, world_matrix, 2, skin_matrices, NULL);
     }
 
-    i32 NuSpecialDrawSmoothSkinDwa(NUSPECIALHANDLE *special, NUMTX *skin_matrices, NUMTX *world_matrix, void *blend_values) {
+    i32 NuSpecialDrawSmoothSkinDwa(nuhspecial_s *special, NUMTX *skin_matrices, NUMTX *world_matrix, void *blend_values) {
         if (special->scene == NULL) {
             return 0;
         }
@@ -10702,13 +10702,13 @@ extern "C" {
         return NuDisplayListRndrSpecial(special, world_matrix, 2, skin_matrices, blend_values);
     }
 
-    i32 NuSpecialDrawWith(NUSPECIALHANDLE *special, NUMTX *matrix) {
+    i32 NuSpecialDrawWith(nuhspecial_s *special, NUMTX *matrix) {
         NUMTX combined;
         if (special->scene == NULL) {
             return 0;
         }
         if (special->display_special != NULL) {
-            NuMtxMul(&combined, special->display_special, matrix);
+            NuMtxMul(&combined, &special->display_special->instance_matrix, matrix);
             return NuDisplayListRndrSpecial(special, &combined, 0, NULL, NULL);
         }
         NuMtxMul(&combined, special->special, matrix);
@@ -11010,7 +11010,7 @@ extern "C" void NuDisplaySceneRndr(NUDISPLAY_LIST_PC *scene) {
     NUGSCN temporary_scene;
     VISIBILITY_RESULT_READER_PC *visibility;
     NUGSCN *gscene;
-    NUSPECIALHANDLE handle;
+    nuhspecial_s handle;
     i32 portal_filter;
     if (DisplaySceneRenderDisabled != 0) {
         return;
@@ -11051,7 +11051,7 @@ extern "C" void NuDisplaySceneRndr(NUDISPLAY_LIST_PC *scene) {
         if ((special->common.flags & 2) == 0) {
             continue;
         }
-        handle.display_special = reinterpret_cast<NUMTX *>(special);
+        handle.display_special = &scene->specials[i];
         if (portal_filter != 0 && (scene->visibility_flags[special->common.instance_ix] & 8) == 0 &&
             ((visibility->portal_bits[(i32)special->common.instance_ix >> 3] >> (special->common.instance_ix & 7)) & 1) == 0) {
             continue;
@@ -11255,14 +11255,14 @@ extern "C" void DisplaySceneRndrSpecials(NUDISPLAY_LIST_PC *scene, i32 unused0, 
         temporary_scene.display_list = scene;
         gscene = &temporary_scene;
     }
-    NUSPECIALHANDLE handle;
+    nuhspecial_s handle;
     handle.scene = gscene;
     for (i32 i = 0; i < scene->special_count; ++i) {
         VISIBILITY_DISPLAY_SPECIAL_READER *special = reinterpret_cast<VISIBILITY_DISPLAY_SPECIAL_READER *>(&scene->specials[i]);
         if ((special->common.flags & 2) == 0) {
             continue;
         }
-        handle.display_special = reinterpret_cast<NUMTX *>(special);
+        handle.display_special = &scene->specials[i];
         if (shadow_filter != 0 && (scene->visibility_flags[special->common.instance_ix] & 0x20) == 0) {
             continue;
         }
@@ -12284,7 +12284,7 @@ void NuMotionFilterGen::render() {
     PostPortColorBuffer.manager->entries[PostPortColorBuffer.index].data = color;
 }
 
-i32 PCFrustumClipSet::fun_005e66b0(NUSPECIALHANDLE *special, NUMTX *matrix) {
+i32 PCFrustumClipSet::fun_005e66b0(nuhspecial_s *special, NUMTX *matrix) {
     __declspec(align(16)) NUVEC minimum;
     __declspec(align(16)) NUVEC maximum;
     NuSpecialGetBounds(special, &minimum, &maximum);
@@ -15912,7 +15912,7 @@ extern "C" {
 extern "C" {
 
 #define SPECIAL_LEGACY(handle) ((NUSPECIAL_LEGACY *)(handle)->special)
-#define SPECIAL_DISPLAY(handle) ((NUDISPLAY_SPECIAL *)(handle)->display_special)
+#define SPECIAL_DISPLAY(handle) ((handle)->display_special)
 #define SPECIAL_GOBJ(handle) ((handle)->scene->objects[SPECIAL_LEGACY(handle)->instance->object_index])
 
     enum {
@@ -15922,7 +15922,7 @@ extern "C" {
         NUINSTANCE_NO_VISIBILITY_TEST_FLAG = 1 << 3
     };
 
-    f32 NuSpecialGetAnimEndFrame(NUSPECIALHANDLE *special) {
+    f32 NuSpecialGetAnimEndFrame(nuhspecial_s *special) {
         NUSPECIAL_LEGACY *legacy;
         NUINSTANCE *legacy_instance;
         NUDISPLAY_SPECIAL *display;
@@ -15940,7 +15940,7 @@ extern "C" {
             legacy_instance = legacy->instance;
             animation = legacy_instance->animation;
         } else {
-            display = (NUDISPLAY_SPECIAL *)special->display_special;
+            display = special->display_special;
             if (display == NULL || display->instance_animation == (void *)-1 || display->instance_animation == NULL) {
                 return 0.0f;
             }
@@ -15967,7 +15967,7 @@ extern "C" {
         return (f32)fallback_table->end_frame_lookup[animation_index - 1].end_frame;
     }
 
-    void NuSpecialGetRadius(NUSPECIALHANDLE *special, NUVEC *position, f32 *radius) {
+    void NuSpecialGetRadius(nuhspecial_s *special, NUVEC *position, f32 *radius) {
         if (special->special != NULL) {
             *radius = SPECIAL_GOBJ(special)->radius;
             *position = SPECIAL_GOBJ(special)->center;
@@ -15977,29 +15977,29 @@ extern "C" {
         }
     }
 
-    f32 NuSpecialGetOriginRadius(NUSPECIALHANDLE *special) {
+    f32 NuSpecialGetOriginRadius(nuhspecial_s *special) {
         if (special->special != NULL) {
             return SPECIAL_GOBJ(special)->origin_radius;
         }
         return NuVecMag(&SPECIAL_DISPLAY(special)->center) + SPECIAL_DISPLAY(special)->radius;
     }
 
-    NUMTX *NuSpecialGetMtx(NUSPECIALHANDLE *special) {
+    NUMTX *NuSpecialGetMtx(nuhspecial_s *special) {
         if (special->display_special != NULL) {
-            return special->display_special;
+            return &special->display_special->instance_matrix;
         }
         return special->special;
     }
 
-    void NuSpecialSetMtx(NUSPECIALHANDLE *special, const NUMTX *matrix) {
+    void NuSpecialSetMtx(nuhspecial_s *special, const NUMTX *matrix) {
         if (special->display_special != NULL) {
-            *special->display_special = *matrix;
+            special->display_special->instance_matrix = *matrix;
         } else {
             *special->special = *matrix;
         }
     }
 
-    i32 NuSpecialExistsFn(NUSPECIALHANDLE *special) {
+    i32 NuSpecialExistsFn(nuhspecial_s *special) {
         if (special != NULL) {
             if (special->special != NULL || special->display_special != NULL) {
                 return 1;
@@ -16008,13 +16008,13 @@ extern "C" {
         return 0;
     }
 
-    char *NuSpecialGetName(NUSPECIALHANDLE *special) {
+    char *NuSpecialGetName(nuhspecial_s *special) {
         NUDISPLAY_SPECIAL *display;
         NUSPECIAL_LEGACY *legacy;
         if (special == NULL) {
             return NULL;
         }
-        display = (NUDISPLAY_SPECIAL *)special->display_special;
+        display = special->display_special;
         if (display != NULL) {
             return display->name;
         }
@@ -16033,7 +16033,7 @@ extern "C" {
         nuspecial_vertex_noffsets = count;
     }
 
-    i32 NuSpecialTestAnim(NUSPECIALHANDLE *special) {
+    i32 NuSpecialTestAnim(nuhspecial_s *special) {
         if (special->display_special != NULL) {
             if (SPECIAL_DISPLAY(special)->instance_animation != (NUINSTANIM *)-1 && SPECIAL_DISPLAY(special)->instance_animation != NULL) {
                 return 1;
@@ -16044,9 +16044,9 @@ extern "C" {
         return 0;
     }
 
-    NUVEC *NuSpecialGetPos(NUSPECIALHANDLE *special) {
+    NUVEC *NuSpecialGetPos(nuhspecial_s *special) {
         if (special->display_special != NULL) {
-            return (NUVEC *)&special->display_special->m30;
+            return (NUVEC *)&special->display_special->instance_matrix.m30;
         }
         if (special->special != NULL) {
             return (NUVEC *)&special->special->m30;
@@ -16054,7 +16054,7 @@ extern "C" {
         return NULL;
     }
 
-    NUVEC *NuSpecialGetDrawPos(NUSPECIALHANDLE *special) {
+    NUVEC *NuSpecialGetDrawPos(nuhspecial_s *special) {
         if (special->display_special != NULL) {
             if (SPECIAL_DISPLAY(special)->instance_animation != (NUINSTANIM *)-1 && SPECIAL_DISPLAY(special)->instance_animation != NULL) {
                 return (NUVEC *)&SPECIAL_DISPLAY(special)->instance_animation->matrix.m30;
@@ -16070,7 +16070,7 @@ extern "C" {
         return NULL;
     }
 
-    NUMTX *NuSpecialGetDrawMtx(NUSPECIALHANDLE *special) {
+    NUMTX *NuSpecialGetDrawMtx(nuhspecial_s *special) {
         NUSPECIAL_LEGACY *legacy = (NUSPECIAL_LEGACY *)special->special;
         NUINSTANCE *instance_view;
         NUDISPLAY_SPECIAL *display;
@@ -16082,7 +16082,7 @@ extern "C" {
             draw_matrix = &instance_view->animation->matrix;
             return draw_matrix != NULL ? draw_matrix : instance;
         }
-        display = (NUDISPLAY_SPECIAL *)special->display_special;
+        display = special->display_special;
         if (display != NULL) {
             if (display->instance_animation == (void *)-1 || display->instance_animation == NULL) {
                 return &display->draw_matrix;
@@ -16092,23 +16092,23 @@ extern "C" {
         return NULL;
     }
 
-    NUMTX *NuSpecialGetInstanceMtx(NUSPECIALHANDLE *special) {
+    NUMTX *NuSpecialGetInstanceMtx(nuhspecial_s *special) {
         NUSPECIAL_LEGACY *legacy = (NUSPECIAL_LEGACY *)special->special;
         NUDISPLAY_SPECIAL *display;
         if (legacy != NULL) {
             return (NUMTX *)legacy->instance;
         }
-        display = (NUDISPLAY_SPECIAL *)special->display_special;
+        display = special->display_special;
         return display != NULL ? &display->draw_matrix : NULL;
     }
 
-    void NuSpecialSetInstanceMtx(NUSPECIALHANDLE *special, NUMTX *matrix) {
+    void NuSpecialSetInstanceMtx(nuhspecial_s *special, NUMTX *matrix) {
         if (special != NULL && special->scene != NULL && special->special != NULL) {
             *(NUMTX *)((NUSPECIAL_LEGACY *)special->special)->instance = *matrix;
         }
     }
 
-    i32 NuSpecialClipTestExtents(NUSPECIALHANDLE *special, NUMTX *matrix) {
+    i32 NuSpecialClipTestExtents(nuhspecial_s *special, NUMTX *matrix) {
         if (special->special != NULL) {
             return NuCameraClipTestExtents(&SPECIAL_GOBJ(special)->bounds_min, &SPECIAL_GOBJ(special)->bounds_max, matrix, 0.0f, 0);
         }
@@ -16116,7 +16116,7 @@ extern "C" {
                                        matrix, 0.0f, 0);
     }
 
-    void *NuSpecialGetInstAnim(NUSPECIALHANDLE *special) {
+    void *NuSpecialGetInstAnim(nuhspecial_s *special) {
         if (special->special != NULL) {
             return SPECIAL_LEGACY(special)->instance->animation;
         }
@@ -16127,7 +16127,7 @@ extern "C" {
         return NULL;
     }
 
-    void NuSpecialSetCollision(NUSPECIALHANDLE *special, i32 enabled) {
+    void NuSpecialSetCollision(nuhspecial_s *special, i32 enabled) {
         if (special == NULL || special->scene == NULL) {
             return;
         }
@@ -16146,7 +16146,7 @@ extern "C" {
         }
     }
 
-    i32 NuSpecialGetCollision(NUSPECIALHANDLE *special) {
+    i32 NuSpecialGetCollision(nuhspecial_s *special) {
         NUSPECIAL_LEGACY *legacy;
         NUDISPLAY_SPECIAL *display;
         if (special == NULL || special->scene == NULL) {
@@ -16156,11 +16156,11 @@ extern "C" {
         if (legacy != NULL) {
             return legacy->flags & NUSPECIAL_COLLISION_FLAG;
         }
-        display = (NUDISPLAY_SPECIAL *)special->display_special;
+        display = special->display_special;
         return display != NULL ? display->flags & NUSPECIAL_COLLISION_FLAG : 0;
     }
 
-    void NuSpecialSetNoVisiTest(NUSPECIALHANDLE *special, i32 enabled) {
+    void NuSpecialSetNoVisiTest(nuhspecial_s *special, i32 enabled) {
         if (special->scene == NULL) {
             return;
         }
@@ -16175,7 +16175,7 @@ extern "C" {
         }
     }
 
-    i32 NuSpecialGetNoVisiTestFn(NUSPECIALHANDLE *special) {
+    i32 NuSpecialGetNoVisiTestFn(nuhspecial_s *special) {
         NUSPECIAL_LEGACY *legacy;
         NUINSTANCE *instance;
         NUDISPLAY_SPECIAL *display;
@@ -16187,11 +16187,11 @@ extern "C" {
             instance = (NUINSTANCE *)legacy->instance;
             return (instance->flags >> 3) & 1;
         }
-        display = (NUDISPLAY_SPECIAL *)special->display_special;
+        display = special->display_special;
         return display != NULL ? display->flags & NUSPECIAL_NO_VISIBILITY_TEST_FLAG : 0;
     }
 
-    void NuSpecialSetOnScreen(NUSPECIALHANDLE *special, i32 enabled) {
+    void NuSpecialSetOnScreen(nuhspecial_s *special, i32 enabled) {
         if (special->scene == NULL) {
             return;
         }
@@ -16209,13 +16209,13 @@ extern "C" {
     void fun_006030d0(NUGOBJ *gobj);
     void fun_006030f0(NUGOBJ *gobj, i32 first, i32 second);
 
-    void fun_005cfea0(NUSPECIALHANDLE *special) {
+    void fun_005cfea0(nuhspecial_s *special) {
         if (special->special != NULL) {
             fun_006030d0(SPECIAL_GOBJ(special));
         }
     }
 
-    void fun_005cff80(NUSPECIALHANDLE *special, i32 first, i32 second) {
+    void fun_005cff80(nuhspecial_s *special, i32 first, i32 second) {
         if (special->special != NULL) {
             fun_006030f0(SPECIAL_GOBJ(special), first, second);
         }
@@ -16248,15 +16248,15 @@ extern "C" {
         RndrStateSetReflection(reflection);
     }
 
-    void NuSpecialGetNext(NUSPECIALHANDLE *special) {
+    void NuSpecialGetNext(nuhspecial_s *special) {
         if (special->special != NULL) {
             special->special = (NUMTX *)((NUSPECIAL_LEGACY *)special->special + 1);
         } else if (special->display_special != NULL) {
-            special->display_special = (NUMTX *)((NUDISPLAY_SPECIAL *)special->display_special + 1);
+            special->display_special = special->display_special + 1;
         }
     }
 
-    i32 NuSpecialGetFirst(NUGSCN *scene, NUSPECIALHANDLE *special, i32 flags) {
+    i32 NuSpecialGetFirst(NUGSCN *scene, nuhspecial_s *special, i32 flags) {
         if (scene->specials != NULL) {
             special->scene = scene;
             special->special = (NUMTX *)scene->specials;
@@ -16266,7 +16266,7 @@ extern "C" {
         if (scene->display_list->special_count != 0) {
             special->scene = scene;
             special->special = NULL;
-            special->display_special = (NUMTX *)scene->display_list->specials;
+            special->display_special = scene->display_list->specials;
             return 1;
         }
         special->scene = NULL;
@@ -16297,7 +16297,7 @@ extern "C" {
         return 0;
     }
 
-    i32 NuSpecialGetOnScreenFn(NUSPECIALHANDLE *special) {
+    i32 NuSpecialGetOnScreenFn(nuhspecial_s *special) {
         NUSPECIAL_LEGACY *legacy;
         NUINSTANCE *instance;
         if (special->scene != NULL && special->special != NULL) {
@@ -16308,7 +16308,7 @@ extern "C" {
         return 1;
     }
 
-    i32 NuSpecialGetVisibilityFn(NUSPECIALHANDLE *special) {
+    i32 NuSpecialGetVisibilityFn(nuhspecial_s *special) {
         NUSPECIAL_LEGACY *legacy;
         NUINSTANCE *instance;
         NUDISPLAY_SPECIAL *display;
@@ -16320,11 +16320,11 @@ extern "C" {
             instance = (NUINSTANCE *)legacy->instance;
             return instance->flags & 1;
         }
-        display = (NUDISPLAY_SPECIAL *)special->display_special;
+        display = special->display_special;
         return display != NULL ? (display->flags >> 1) & 1 : 0;
     }
 
-    i32 NuSpecialCompare(NUSPECIALHANDLE *first, NUSPECIALHANDLE *second) {
+    i32 NuSpecialCompare(nuhspecial_s *first, nuhspecial_s *second) {
         if (first->special != NULL && first->special == second->special) {
             return 1;
         }
@@ -16334,7 +16334,7 @@ extern "C" {
         return 0;
     }
 
-    void NuSpecialClear(NUSPECIALHANDLE *special) {
+    void NuSpecialClear(nuhspecial_s *special) {
         special->scene = NULL;
         special->special = NULL;
         special->display_special = NULL;
@@ -16431,7 +16431,7 @@ extern "C" {
         }
     }
 
-    void NuSpecialSetVisibility(NUSPECIALHANDLE *handle, i32 visible) {
+    void NuSpecialSetVisibility(nuhspecial_s *handle, i32 visible) {
         NUDISPLAY_SPECIAL *display;
         NUDISPLAY_LIST_PC *display_list;
 
@@ -16489,8 +16489,8 @@ extern "C" {
         out->w = *(f32 *)&bits;
     }
 
-    void NuDisplayListUpdateSpecial(NUSPECIALHANDLE *special) {
-        NUDISPLAY_SPECIAL *display = (NUDISPLAY_SPECIAL *)special->display_special;
+    void NuDisplayListUpdateSpecial(nuhspecial_s *special) {
+        NUDISPLAY_SPECIAL *display = special->display_special;
         NUDISPLAY_LIST_PC *display_scene = special->scene->display_list;
         NUMTX draw_matrix = *NuSpecialGetDrawMtx(special);
         NUVEC4 extent;
@@ -16549,9 +16549,9 @@ extern "C" {
         DisplayListUpdateSpecialTransformPS(special, &draw_matrix);
     }
 
-    void xxxNuDisplayListUpdateSpecial(NUSPECIALHANDLE *special) {
+    void xxxNuDisplayListUpdateSpecial(nuhspecial_s *special) {
         NUDISPLAY_LIST_PC *scene = special->scene->display_list;
-        NUDISPLAY_SPECIAL *display = (NUDISPLAY_SPECIAL *)special->display_special;
+        NUDISPLAY_SPECIAL *display = special->display_special;
         NUMTX matrix = *NuSpecialGetDrawMtx(special);
         NUVEC4 corners[8];
         NUVEC4 maximum;
@@ -16628,7 +16628,7 @@ extern "C" {
         DisplayListUpdateSpecialTransformPS(special, &matrix);
     }
 
-    void NuSpecialUpdate(NUSPECIALHANDLE *special) {
+    void NuSpecialUpdate(nuhspecial_s *special) {
         if (special == NULL || special->display_special == NULL || special->scene == NULL) {
             return;
         }
@@ -16639,7 +16639,7 @@ extern "C" {
         NuDisplayListUpdateSpecial(special);
     }
 
-    i32 NuSpecialGetInstanceix(NUSPECIALHANDLE *handle) {
+    i32 NuSpecialGetInstanceix(nuhspecial_s *handle) {
         i32 i;
         if (handle->special != NULL) {
             for (i = 0; i < handle->scene->num_instances; ++i) {
@@ -16650,12 +16650,12 @@ extern "C" {
             return -1;
         }
         if (handle->display_special != NULL) {
-            return ((NUDISPLAY_SPECIAL *)handle->display_special)->instance_ix;
+            return handle->display_special->instance_ix;
         }
         return -1;
     }
 
-    i32 NuSpecialNumMtls(NUSPECIALHANDLE *special) {
+    i32 NuSpecialNumMtls(nuhspecial_s *special) {
         NUSPECIAL_LEGACY *legacy = (NUSPECIAL_LEGACY *)special->special;
         i32 count = 0;
         if (legacy != NULL) {
@@ -16670,7 +16670,7 @@ extern "C" {
             return count;
         }
         if (special->display_special != NULL) {
-            NUDISPLAY_SPECIAL *display = (NUDISPLAY_SPECIAL *)special->display_special;
+            NUDISPLAY_SPECIAL *display = special->display_special;
             i32 level = 0;
             while (display->clip_range[level] != 0.0f) {
                 ++level;
@@ -16680,7 +16680,7 @@ extern "C" {
         return 0;
     }
 
-    NUMTL *NuSpecialGetMtl(NUSPECIALHANDLE *special, i32 index) {
+    NUMTL *NuSpecialGetMtl(nuhspecial_s *special, i32 index) {
         NUSPECIAL_LEGACY *legacy = (NUSPECIAL_LEGACY *)special->special;
         if (legacy != NULL) {
             NUGOBJ *object = special->scene->objects[legacy->instance->object_index];
@@ -16699,7 +16699,7 @@ extern "C" {
             return geom->mtl;
         }
         if (special->display_special != NULL) {
-            NUDISPLAY_SPECIAL *display = (NUDISPLAY_SPECIAL *)special->display_special;
+            NUDISPLAY_SPECIAL *display = special->display_special;
             i32 level = 0;
             while (display->clip_range[level] != 0.0f) {
                 ++level;
@@ -16757,7 +16757,7 @@ extern "C" {
         }
     }
 
-    i32 NuSpecialFindDisplay(NUGSCN *scene, NUSPECIALHANDLE *handle, char *name, i32 flags) {
+    i32 NuSpecialFindDisplay(NUGSCN *scene, nuhspecial_s *handle, char *name, i32 flags) {
         NUDISPLAY_SPECIAL *special;
         i32 index;
         if (scene == NULL) {
@@ -16767,7 +16767,7 @@ extern "C" {
         for (index = 0; index < scene->display_list->special_count; ++index, ++special) {
             if (NuStrICmp(name, special->name) == 0) {
                 handle->scene = scene;
-                handle->display_special = (NUMTX *)special;
+                handle->display_special = special;
                 handle->special = NULL;
                 return 1;
             }
@@ -16781,7 +16781,7 @@ extern "C" {
         return 0;
     }
 
-    i32 NuSpecialFind(NUGSCN *scene, NUSPECIALHANDLE *handle, char *name, i32 flags) {
+    i32 NuSpecialFind(NUGSCN *scene, nuhspecial_s *handle, char *name, i32 flags) {
         NUSPECIAL_LEGACY *special;
         i32 index;
         (void)flags;
@@ -16811,7 +16811,7 @@ extern "C" {
 
     i32 NuStrICmpWC(char *pattern, char *name, char *wildcards);
 
-    static i32 NuSpecialFindMultiWCDisplay(NUGSCN *scene, NUSPECIALHANDLE *dest, char (*wildcards)[20], char *pattern, i32 capacity,
+    static i32 NuSpecialFindMultiWCDisplay(NUGSCN *scene, nuhspecial_s *dest, char (*wildcards)[20], char *pattern, i32 capacity,
                                            i32 flags) {
         i32 count = 0;
         NUDISPLAY_SPECIAL *special = scene->display_list->specials;
@@ -16826,7 +16826,7 @@ extern "C" {
             if (result == 0) {
                 if (dest != NULL) {
                     dest->scene = scene;
-                    dest->display_special = (NUMTX *)special;
+                    dest->display_special = special;
                     dest->special = NULL;
                     ++dest;
                 }
@@ -16844,7 +16844,7 @@ extern "C" {
         return count;
     }
 
-    i32 NuSpecialFindMultiWC(NUGSCN *scene, NUSPECIALHANDLE *dest, char (*wildcards)[20], char *pattern, i32 capacity, i32 flags) {
+    i32 NuSpecialFindMultiWC(NUGSCN *scene, nuhspecial_s *dest, char (*wildcards)[20], char *pattern, i32 capacity, i32 flags) {
         i32 count = 0;
         if (scene != NULL) {
             NUSPECIAL_LEGACY *special;
@@ -16866,7 +16866,7 @@ extern "C" {
                     if (dest != NULL) {
                         dest->scene = scene;
                         dest->special = (NUMTX *)special;
-                        dest->display_special = scene->display_list != NULL ? (NUMTX *)display_special : NULL;
+                        dest->display_special = scene->display_list != NULL ? display_special : NULL;
                         ++dest;
                     }
                     if (wildcards != NULL) {
@@ -16893,12 +16893,12 @@ extern "C" {
         return scene->special_count;
     }
 
-    void NuGScnGetSpecial(NUSPECIALHANDLE *special, NUGSCN *scene, i32 index) {
+    void NuGScnGetSpecial(nuhspecial_s *special, NUGSCN *scene, i32 index) {
         if (scene != NULL && special != NULL) {
             if (scene->display_list != NULL && index < scene->display_list->special_count) {
                 special->scene = scene;
                 special->special = NULL;
-                special->display_special = (NUMTX *)&scene->display_list->specials[index];
+                special->display_special = &scene->display_list->specials[index];
                 return;
             }
             if (index < scene->special_count) {
@@ -16913,7 +16913,7 @@ extern "C" {
         special->display_special = NULL;
     }
 
-    void NuSpecialSetInstAnimTime(NUSPECIALHANDLE *special, f32 frame) {
+    void NuSpecialSetInstAnimTime(nuhspecial_s *special, f32 frame) {
         NUGSCN *scene = special->scene;
         if (scene == NULL) {
             return;
@@ -16935,7 +16935,7 @@ extern "C" {
         CutSceneBoundingBoxTrackRoot = track_root;
     }
 
-    void NuSpecialSetDrawMtx(NUSPECIALHANDLE *special, NUMTX *matrix) {
+    void NuSpecialSetDrawMtx(nuhspecial_s *special, NUMTX *matrix) {
         NUSPECIAL_LEGACY *legacy;
         NUDISPLAY_SPECIAL *display;
         NUDISPLAY_LIST_PC *display_list;
@@ -16948,16 +16948,16 @@ extern "C" {
             ((NUINSTANCE *)legacy->instance)->matrix = *matrix;
             return;
         }
-        display = (NUDISPLAY_SPECIAL *)special->display_special;
+        display = special->display_special;
         display->draw_matrix = *matrix;
         display_list = special->scene->display_list;
         if ((display_list->instance_visibility_enabled & 1) != 0) {
             NuDisplayListUpdateSpecial(special);
-            ((NUDISPLAY_SPECIAL *)special->display_special)->flags |= 0x400;
+            special->display_special->flags |= 0x400;
         }
     }
 
-    void NuSpecialGetBounds(NUSPECIALHANDLE *special, NUVEC *minimum, NUVEC *maximum) {
+    void NuSpecialGetBounds(nuhspecial_s *special, NUVEC *minimum, NUVEC *maximum) {
         NUGOBJ *object;
         if (special->special != NULL) {
             object = SPECIAL_GOBJ(special);
@@ -16972,7 +16972,7 @@ extern "C" {
         }
     }
 
-    void NuSpecialSetBounds(NUSPECIALHANDLE *special, NUVEC *minimum, NUVEC *maximum) {
+    void NuSpecialSetBounds(nuhspecial_s *special, NUVEC *minimum, NUVEC *maximum) {
         NUGOBJ *object;
         if (special->special != NULL) {
             for (object = SPECIAL_GOBJ(special); object != NULL; object = object->next) {
@@ -16986,7 +16986,7 @@ extern "C" {
     }
 
     void NuSpecialSetDrawPos(nuhspecial_s *special_pointer, NUVEC *position) {
-        NUSPECIALHANDLE *special = (NUSPECIALHANDLE *)special_pointer;
+        nuhspecial_s *special = special_pointer;
         NUDISPLAY_LIST_PC *display_list;
         if (special == NULL || special->scene == NULL) {
             return;
@@ -16996,13 +16996,13 @@ extern "C" {
             ((NUINSTANCE *)((NUSPECIAL_LEGACY *)special->special)->instance)->matrix.m31 = position->y;
             ((NUINSTANCE *)((NUSPECIAL_LEGACY *)special->special)->instance)->matrix.m32 = position->z;
         } else {
-            ((NUDISPLAY_SPECIAL *)special->display_special)->draw_matrix.m30 = position->x;
-            ((NUDISPLAY_SPECIAL *)special->display_special)->draw_matrix.m31 = position->y;
-            ((NUDISPLAY_SPECIAL *)special->display_special)->draw_matrix.m32 = position->z;
+            special->display_special->draw_matrix.m30 = position->x;
+            special->display_special->draw_matrix.m31 = position->y;
+            special->display_special->draw_matrix.m32 = position->z;
             display_list = special->scene->display_list;
             if ((display_list->instance_visibility_enabled & 1) != 0) {
                 NuDisplayListUpdateSpecial(special);
-                ((NUDISPLAY_SPECIAL *)special->display_special)->flags |= 0x400;
+                special->display_special->flags |= 0x400;
             }
         }
     }
@@ -17860,7 +17860,7 @@ extern "C" {
         i32 joint;
         NUMTX *skin;
         DWA_WEIGHT_BLOCK *blend;
-        NUSPECIALHANDLE *handle;
+        nuhspecial_s *handle;
         VARIPTR *cursor;
         NUMTX matrix;
         NUVEC min;
@@ -18297,7 +18297,7 @@ extern "C" i32 NuDynamicLightTestShadowExtrusions(PCFrustumClipSet *light, const
     return light->TestBoxes(&first_copy.xyz, &second_copy.xyz);
 }
 
-extern "C" void NuDynamicLightTestShadowExtrusionsSpecial(PCFrustumClipSet *light, NUSPECIALHANDLE *special, NUMTX *matrix) {
+extern "C" void NuDynamicLightTestShadowExtrusionsSpecial(PCFrustumClipSet *light, nuhspecial_s *special, NUMTX *matrix) {
     light->fun_005e66b0(special, matrix);
 }
 

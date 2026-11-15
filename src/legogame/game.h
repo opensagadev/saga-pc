@@ -380,7 +380,7 @@ typedef struct {          // size 0xfc
 } ADD_TELEPORT;
 
 typedef struct ASTEROID {
-    NUSPECIALHANDLE special;
+    nuhspecial_s special;
     GIZMOBLOWUP_PC *blowup;
     i16 rotation_speed_x;
     i16 rotation_speed_y;
@@ -389,7 +389,7 @@ typedef struct ASTEROID {
 } ASTEROID;
 
 typedef struct FINAL_ASTEROID {
-    NUSPECIALHANDLE special;
+    nuhspecial_s special;
     GIZMOBLOWUP_PC *blowups[8];
     i16 blowup_count;
     i16 rotation_speed_x;

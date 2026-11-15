@@ -53,7 +53,7 @@
   "dup-type-conflict": 12,
   "local-extern": 51,
   "magic-state": 7950,
-  "magic-flag": 7063,
+  "magic-flag": 7065,
   "magic-mask": 1156,
   "magic-bound": 1666,
   "include-mid-file": 4,

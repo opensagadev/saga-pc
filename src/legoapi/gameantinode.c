@@ -262,7 +262,7 @@ void GameAntinode_Update(void *opaque_system) {
     }
 }
 
-void GameAntiNodeData_Init(void *opaque_data, NUSPECIALHANDLE *special) {
+void GameAntiNodeData_Init(void *opaque_data, nuhspecial_s *special) {
     GAME_ANTI_NODE_DATA *data = opaque_data;
     NUVEC minimum;
     NUVEC maximum;

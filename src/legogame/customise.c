@@ -36,7 +36,7 @@ typedef struct customiser_game_setting_s {
 
 typedef struct custom_accessory_resource_s {
     NUGSCN *scene;
-    NUSPECIALHANDLE special;
+    nuhspecial_s special;
     i32 original_texture_id;
     i32 texture_id;
     i32 material_index;
@@ -1221,7 +1221,7 @@ void Customiser_Draw3D(CUSTOMISER_LAYERS *input) {
             object = &world->level_objects[weapon->weapon_model];
             if (object->active != 0) {
                 i32 blade;
-                NUSPECIALHANDLE *special;
+                nuhspecial_s *special;
                 matrix = runtime->joint_matrices[side][hand];
                 NuSpecialDrawAt(&object->special, &matrix);
                 if (LightSabre_ColourFromObj(weapon->weapon_model, &blade) != -1) {

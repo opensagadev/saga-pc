@@ -25,7 +25,7 @@
 struct GAMEPAD_PC;
 struct addgizmotype_s;
 struct gameobject_s;
-struct nuspecial_handle_s;
+struct nuhspecial_s;
 
 typedef struct techno_s { // size 0x70
     u8 unknown_00[0x37];  // 0x00
@@ -35,7 +35,7 @@ typedef struct techno_s { // size 0x70
     union { // size 0x4
         void *controlled_object;
         struct gameobject_s *controlled_player;
-        struct nuspecial_handle_s *controlled_special;
+        struct nuhspecial_s *controlled_special;
     }; // 0x6c
 } TECHNO_PC;
 

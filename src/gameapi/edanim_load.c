@@ -12,7 +12,7 @@ extern char edbits_level_filename[256];
 extern i8 edbits_what_game;
 
 i32 edanimLookupSpecial(char *name, NUGSCN *scene) {
-    NUSPECIALHANDLE special;
+    nuhspecial_s special;
     i32 index;
     if (scene != NULL) {
         for (index = 0; index < NuGScnNumSpecials(scene); ++index) {
@@ -42,7 +42,7 @@ void edbitsRegisterLevel(char *filename, i8 game) {
 }
 
 void edanimDetermineNearestAnim(f32 distance) {
-    NUSPECIALHANDLE special;
+    nuhspecial_s special;
     NUVEC delta;
     f32 candidate;
     i32 i;
@@ -186,7 +186,7 @@ i32 edanimLoadPage(char *path, NUGSCN *scene) {
     char name[20];
     char discarded_name[16];
     NUVEC discarded_position;
-    NUSPECIALHANDLE special;
+    nuhspecial_s special;
     TERRAIN_SET_PC *terrain;
     TERRAIN_PLATFORM_PC *platform;
     page = -1;
@@ -573,7 +573,7 @@ i32 edanim_emitrotz = 0;
 i32 edanim_emitroty = 0;
 
 void edanimRenderParticleEmitters(i32 parameter_index) {
-    NUSPECIALHANDLE special;
+    nuhspecial_s special;
     NUVEC *base_position;
     i32 particle;
     i32 colour;
@@ -604,7 +604,7 @@ void edanimRenderParticleEmitters(i32 parameter_index) {
 }
 
 void edanimRenderSoundEmitters(i32 parameter_index) {
-    NUSPECIALHANDLE special;
+    nuhspecial_s special;
     NUVEC *base_position;
     i32 sound;
     i32 colour;
@@ -623,13 +623,13 @@ void edanimRenderSoundEmitters(i32 parameter_index) {
 }
 
 void edanimSoundPlace(i32 sound_index, NUVEC *position) {
-    NUSPECIALHANDLE special;
+    nuhspecial_s special;
     NuGScnGetSpecial(&special, edbits_base_scene, edanim_nearest);
     NuVecSub((NUVEC *)AnimParams[edanim_nearest_param_id].sound_positions[sound_index], position, NuSpecialGetPos(&special));
 }
 
 void edanimParticlePlace(i32 particle_index, NUVEC *position) {
-    NUSPECIALHANDLE special;
+    nuhspecial_s special;
     NuGScnGetSpecial(&special, edbits_base_scene, edanim_nearest);
     NuVecSub((NUVEC *)AnimParams[edanim_nearest_param_id].effect_positions[particle_index], position, NuSpecialGetPos(&special));
     AnimParams[edanim_nearest_param_id].effect_angles[particle_index] = edanim_emitrotz;
@@ -661,7 +661,7 @@ void edanimSoundCreate(NUVEC *position) {
 }
 
 void edanimDoInput(FRAME_PAD_PC *pad) {
-    NUSPECIALHANDLE special;
+    nuhspecial_s special;
     NUVEC position;
     NUVEC *origin;
     i32 index;
@@ -842,7 +842,7 @@ struct PC_SCENE_MTL_VIEW *edanim_mtl_zoff = 0;
 void edanimDrawCursor(void) {
     NURND_VERTEX3D_PC line[2];
     NUVEC direction;
-    NUSPECIALHANDLE special;
+    nuhspecial_s special;
     line[0].colour = 0xffffffff;
     line[1].colour = 0xffffffff;
     line[0].position.x = edanim_cam_pos.x - 0.5f;
@@ -937,7 +937,7 @@ void edanimcbSetSoundTiming(eduimenu_s *unused0, eduiitem_s *item, u32 unused2);
 
 void edanimcbLocalSoundMenu(eduimenu_s *parent, eduiitem_s *unused1, u32 unused2) {
     u32 colours[4] = {0x80000000, 0x80ff0000, 0x80808080, 0x80404040};
-    NUSPECIALHANDLE special;
+    nuhspecial_s special;
     if (edanim_nearest_sound == -1) {
         return;
     }

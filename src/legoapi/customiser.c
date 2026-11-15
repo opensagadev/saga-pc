@@ -35,7 +35,7 @@ void CustomiserLoadTrace(char *path);
 
 typedef struct custom_accessory_resource_s {
     NUGSCN *scene;
-    NUSPECIALHANDLE special;
+    nuhspecial_s special;
     i32 original_texture_id;
     i32 texture_id;
     i32 material_index;
@@ -341,7 +341,7 @@ void Customiser_AddPartAccessories(CUSTOMISER_LAYERS *customiser, GAMEOBJECT *ob
     side = ((i16)object->id) != accessories->character_ids[0];
     resource = KillPartsAccessories[side];
     for (category = 0; category < 9; ++category, ++resource) {
-        NUSPECIALHANDLE *special;
+        nuhspecial_s *special;
         NUVEC momentum;
         ADDPART params;
         if (category == 2) {

@@ -25,7 +25,7 @@
 struct NUGSCN_s;
 struct nugspline_s;
 struct numtx_s;
-struct nuspecial_handle_s;
+struct nuhspecial_s;
 
 typedef struct sockrot_s { // size 0x4
     u16 x;                 // 0x0
@@ -160,32 +160,32 @@ typedef struct sock_s {          // size 0x13c
         f32 vertical_scale;
     }; // 0x07c
 
-    f32 unknown_80;                     // 0x080
-    f32 unknown_84;                     // 0x084
-    f32 look_ratio_xz;                  // 0x088
-    f32 look_ratio_y;                   // 0x08c
-    f32 camera_position_seek;           // 0x090
-    f32 camera_angle_seek;              // 0x094
-    f32 unknown_98;                     // 0x098
-    f32 camera_local_x_ratio;           // 0x09c
-    f32 camera_vertical_ratio;          // 0x0a0
-    f32 camera_lateral_ratio;           // 0x0a4
-    NUVEC camera_arena_offset;          // 0x0a8
-    f32 camera_rail_offset;             // 0x0b4
-    NUVEC camera_arena_blend;           // 0x0b8
-    f32 camera_distance_to_target;      // 0x0c4
-    f32 camera_pullback_ratio;          // 0x0c8
-    f32 single_player_pullback;         // 0x0cc
-    f32 two_player_pullback;            // 0x0d0
-    f32 camera_height_above_ground;     // 0x0d4
-    f32 camera_shake;                   // 0x0d8
-    u32 overlap_exclusion_mask[2];      // 0x0dc
-    char name[16];                      // 0x0e4
-    f32 overlap_blend_ratio;            // 0x0f4
-    struct nuspecial_handle_s *objects; // 0x0f8
-    u16 object_count;                   // 0x0fc
-    u8 unknown_fe;                      // 0x0fe
-    u8 unknown_ff;                      // 0x0ff
+    f32 unknown_80;                 // 0x080
+    f32 unknown_84;                 // 0x084
+    f32 look_ratio_xz;              // 0x088
+    f32 look_ratio_y;               // 0x08c
+    f32 camera_position_seek;       // 0x090
+    f32 camera_angle_seek;          // 0x094
+    f32 unknown_98;                 // 0x098
+    f32 camera_local_x_ratio;       // 0x09c
+    f32 camera_vertical_ratio;      // 0x0a0
+    f32 camera_lateral_ratio;       // 0x0a4
+    NUVEC camera_arena_offset;      // 0x0a8
+    f32 camera_rail_offset;         // 0x0b4
+    NUVEC camera_arena_blend;       // 0x0b8
+    f32 camera_distance_to_target;  // 0x0c4
+    f32 camera_pullback_ratio;      // 0x0c8
+    f32 single_player_pullback;     // 0x0cc
+    f32 two_player_pullback;        // 0x0d0
+    f32 camera_height_above_ground; // 0x0d4
+    f32 camera_shake;               // 0x0d8
+    u32 overlap_exclusion_mask[2];  // 0x0dc
+    char name[16];                  // 0x0e4
+    f32 overlap_blend_ratio;        // 0x0f4
+    struct nuhspecial_s *objects;   // 0x0f8
+    u16 object_count;               // 0x0fc
+    u8 unknown_fe;                  // 0x0fe
+    u8 unknown_ff;                  // 0x0ff
 
     struct {            // size 0x2
         u8 value;       // 0x100

@@ -118,14 +118,14 @@ void edgraStartPage(i8 page) {
             }
             if (count > 0) {
                 NUGSCN *scene = edgra_page_scene[page];
-                NUSPECIALHANDLE special;
+                nuhspecial_s special;
                 special.scene = scene;
                 if (scene->display_list == NULL) {
                     special.special = (NUMTX *)&scene->specials[GrassClumps[i].special_index];
                     special.display_special = NULL;
                 } else {
                     special.special = NULL;
-                    special.display_special = (NUMTX *)&scene->display_list->specials[GrassClumps[i].special_index];
+                    special.display_special = &scene->display_list->specials[GrassClumps[i].special_index];
                 }
                 if (GrassClumps[i].kind == 2 || GrassClumps[i].kind == 3) {
                     NuFadeObjCreateMtx(&special, GrassClumps[i].matrices, (i16)count, GrassClumps[i].near_distance,

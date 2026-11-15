@@ -1224,7 +1224,7 @@ void GizmoBlowUp_Sfx(GIZMOBLOWUP_PC *unused, NUVEC *position) {
     }
 }
 
-static NUSPECIALHANDLE *GameMsg_GetExtraObj(GAME_MESSAGE_PC *message) {
+static nuhspecial_s *GameMsg_GetExtraObj(GAME_MESSAGE_PC *message) {
     if (message->icon == 0xd0) {
         return &WORLD->level_objects[0xd1].special;
     }
@@ -1920,7 +1920,7 @@ extern "C" {
         u32 flags = part->flags;
         i32 type = part->part_id;
         GAMEOBJECT *owner = part->owner;
-        NUSPECIALHANDLE *special = part->source_special;
+        nuhspecial_s *special = part->source_special;
         f32 radius = part->unknown_e4;
         NUVEC velocity;
         ADDPART params;

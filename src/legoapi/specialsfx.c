@@ -103,7 +103,7 @@ i32 SpecialSfxLoad(char *path, void *world_ptr) {
 }
 
 i32 SpecialSfxAdd(i32 special_index) {
-    NUSPECIALHANDLE special;
+    nuhspecial_s special;
     SPECIAL_RESOURCE_ENTRY *entry;
     if (WORLD->special_sfx_count < 192) {
         NuGScnGetSpecial(&special, WORLD->current_gscn, special_index);

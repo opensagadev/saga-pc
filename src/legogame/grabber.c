@@ -33,8 +33,8 @@ typedef struct grabber_s {                   // size 0x568
     CHARACTER_MODEL_LAYERS *character_model; // 0x4b0
     ANIMPACKET_PC animation;                 // 0x4b4
     u8 unknown_4f8[4];                       // 0x4f8
-    NUSPECIALHANDLE special;                 // 0x4fc
-    NUSPECIALHANDLE shadow_special;          // 0x508
+    nuhspecial_s special;                    // 0x4fc
+    nuhspecial_s shadow_special;             // 0x508
     GAMEOBJECT *victim;                      // 0x514
     GIZOBSTACLE *action_switch;              // 0x518
     GIZOBSTACLE *direction_switches[4];      // 0x51c
@@ -224,7 +224,7 @@ static GRAB_CONFIG_DATA GrabConfigData = {
 
 void Grabber_Configure(WORLDINFO *world_ptr, char *config) {
     WORLD_GRABBER *world = (WORLD_GRABBER *)world_ptr;
-    NUSPECIALHANDLE special;
+    nuhspecial_s special;
     NUFPAR_PC *parser;
     u8 active;
     if (VehicleArea != 0 || (world->current_level->flags & (LEVEL_INTRO | LEVEL_MIDTRO | LEVEL_OUTRO)) != 0 || world->grabber != NULL) {

@@ -12,7 +12,7 @@ struct NUPORTAL_FRUSTUM;
 struct nudisplay_list_s;
 struct nuinstance_s;
 struct numtl_s;
-struct nuspecial_handle_s;
+struct nuhspecial_s;
 struct nuspecial_legacy_s;
 struct nutexdim_s;
 
@@ -78,7 +78,7 @@ extern "C" {
 #endif
 
     void NuGScnCreatePS(NUGSCN *, VARIPTR *, VARIPTR *);
-    i32 NuSpecialFind(NUGSCN *scene, struct nuspecial_handle_s *handle, char *name, i32 flags);
+    i32 NuSpecialFind(NUGSCN *scene, struct nuhspecial_s *handle, char *name, i32 flags);
     void NuGScnRemove(NUGSCN *);
     void NuGScnFixupTIDs(NUGSCN *);
     void NuGScnFixupTIDsPS(NUGSCN *);

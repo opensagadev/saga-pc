@@ -4,7 +4,7 @@
 /* Bounty hunter pursuit level callbacks (original pursuit.cpp). */
 
 typedef struct PURSUIT_TRAFFIC_ENTRY { // size 0x140
-    NUSPECIALHANDLE special;           // 0x000
+    nuhspecial_s special;              // 0x000
     void *animation;                   // 0x00c
     f32 end_frame;                     // 0x010
     u8 unknown_14[0x139 - 0x14];       // 0x014

@@ -4,7 +4,7 @@ static f32 ShoveCollisionExpansion = 0.1f;
 #pragma data_seg()
 
 typedef struct shove_object_s { // size 0x18
-    NUSPECIALHANDLE *special;   // 0x00
+    nuhspecial_s *special;      // 0x00
     NUVEC position;             // 0x04
     f32 radius;                 // 0x10
     i16 platform_id;            // 0x14
@@ -26,7 +26,7 @@ static f32 ShovesysFabs(f32 f) {
     return rv;
 }
 
-void AddShoveObject(NUSPECIALHANDLE *special, i16 platform_id) {
+void AddShoveObject(nuhspecial_s *special, i16 platform_id) {
     NUMTX *matrix;
     if (NuSpecialExistsFn(special) && ShoveSystem.count < 16) {
         ShoveSystem.objects[ShoveSystem.count].special = special;

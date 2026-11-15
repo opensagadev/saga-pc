@@ -733,7 +733,7 @@ extern "C" {
         u8 unknown_01;                      // 0x01
         i8 event_count;                     // 0x02
         i8 animation_playing;               // 0x03
-        NUSPECIALHANDLE special;            // 0x04
+        nuhspecial_s special;               // 0x04
         SPECIAL_RESOURCE_EVENT *events;     // 0x10
     } SPECIAL_RESOURCE_ENTRY;
 

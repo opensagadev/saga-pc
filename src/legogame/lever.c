@@ -586,7 +586,7 @@ ADDGIZMOTYPE_PC *Levers_RegisterGizmo(i32 type_id) {
 static void Levers_Draw(void *world_ptr, void *data, f32 delta_time) {
     WORLDINFO *world = world_ptr;
     LEVER_WORLD *lever_world = (LEVER_WORLD *)world;
-    NUSPECIALHANDLE *animated_special;
+    nuhspecial_s *animated_special;
     GIZMO_LEVER *lever;
     u16 target_spin_angle;
     f32 target_pulse;

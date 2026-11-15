@@ -1375,7 +1375,7 @@ i32 edpartSaveEffects(char *filename, u8 page) {
             }
             for (variant = 0; variant < 8; ++variant) {
                 i16 effect_id = ((PART_RUNTIME_TYPE *)part_types)[index].effect_ids[variant];
-                NUSPECIALHANDLE special;
+                nuhspecial_s special;
                 if (effect_id == -1) {
                     EdFileWrite(empty_name, 16);
                 } else if (effect_id == 9999) {

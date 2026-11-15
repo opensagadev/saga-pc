@@ -246,8 +246,8 @@ i32 edbriLoadPage(char *path, void *scene) {
 void edbriBridgeUpdate(i32 index, NUGSCN *scene) {
     NUVEC end;
     NUVEC delta;
-    NUSPECIALHANDLE first;
-    NUSPECIALHANDLE second;
+    nuhspecial_s first;
+    nuhspecial_s second;
     u32 colour;
     if (edBridges[index].instance_id != -1) {
         NuBridgeRemove(edBridges[index].instance_id);
@@ -424,7 +424,7 @@ static void edbricbBridgePropertiesMenu(eduimenu_s *parent, eduiitem_s *unused1,
 }
 
 i32 edbriFileSave(char *path) {
-    NUSPECIALHANDLE special;
+    nuhspecial_s special;
     char name[20];
     i32 count = 0;
     i32 i;
@@ -532,7 +532,7 @@ void edbricbPostInstanceMenu(eduimenu_s *parent, eduiitem_s *unused1, u32 unused
                     eduiItemCheckCreate((size_t)(-1), edblack, edbri_post_instance_type == -1, 1, edbricbSetPostInstanceType, "None"));
     count = NuSpecialGetNumSpecials(edbits_base_scene);
     for (i = 0; i < count; ++i) {
-        NUSPECIALHANDLE special;
+        nuhspecial_s special;
         selected = edbri_post_instance_type == i;
         NuGScnGetSpecial(&special, edbits_base_scene, i);
         eduiMenuAddItem(edbri_postinstance_menu,
@@ -569,7 +569,7 @@ void edbricbPlankInstanceMenu(eduimenu_s *parent, eduiitem_s *unused1, u32 unuse
                     eduiItemCheckCreate((size_t)(-1), edblack, edbri_plank_instance_type == -1, 1, edbricbSetPlankInstanceType, "None"));
     count = NuSpecialGetNumSpecials(edbits_base_scene);
     for (i = 0; i < count; ++i) {
-        NUSPECIALHANDLE special;
+        nuhspecial_s special;
         selected = edbri_plank_instance_type == i;
         NuGScnGetSpecial(&special, edbits_base_scene, i);
         eduiMenuAddItem(edbri_plankinstance_menu,
@@ -864,14 +864,14 @@ void edbriDrawCursor(void) {
     if (edbri_plank_instance_type == -1) {
         NuQFntPrintEx(system_qfont, 0x17c0, 0xa50, 0x10, "Plank Inst: <none>");
     } else {
-        NUSPECIALHANDLE special;
+        nuhspecial_s special;
         NuGScnGetSpecial(&special, edbits_base_scene, edbri_plank_instance_type);
         NuQFntPrintEx(system_qfont, 0x17c0, 0xa50, 0x10, "Plank Inst: %s", NuSpecialGetName(&special));
     }
     if (edbri_post_instance_type == -1) {
         NuQFntPrintEx(system_qfont, 0x17c0, 0xaf0, 0x10, "Post Inst: <none>");
     } else {
-        NUSPECIALHANDLE special;
+        nuhspecial_s special;
         NuGScnGetSpecial(&special, edbits_base_scene, edbri_post_instance_type);
         NuQFntPrintEx(system_qfont, 0x17c0, 0xaf0, 0x10, "Post Inst: %s", NuSpecialGetName(&special));
     }

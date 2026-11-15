@@ -58,7 +58,7 @@ extern "C" {
     extern i32 NuWindDir2;
     void NuWindInit(void);
     PC_NUWINDGROUP *NuWindAllocateGrp(void);
-    PC_NUWINDGROUP *NuWindCreateMtx(NUSPECIALHANDLE *, NUMTX *, i16, f32, f32, i32, f32, f32);
+    PC_NUWINDGROUP *NuWindCreateMtx(nuhspecial_s *, NUMTX *, i16, f32, f32, i32, f32, f32);
     void NuWindUpdateArray(NUVEC **positions);
     void NuWindUpdate(NUVEC *wind);
     void NuWindDraw(void);

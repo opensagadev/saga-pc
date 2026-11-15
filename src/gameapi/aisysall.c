@@ -222,7 +222,7 @@ typedef struct ai_antinode_load_s { // size 0x58
     f32 min_y_offset;               // 0x14
     f32 max_y;                      // 0x18
     f32 max_y_offset;               // 0x1c
-    NUSPECIALHANDLE special_handle; // 0x20
+    nuhspecial_s special_handle;    // 0x20
     NUVEC special_position;         // 0x2c
     i32 flags;                      // 0x38
     i32 rotation_offset;            // 0x3c
@@ -7070,7 +7070,7 @@ i32 NuSpecialFindByPlatformID(NUGSCN *scene, struct nuhspecial_s *result, i32 pl
     i32 count;
     i32 instance_index;
     i32 index;
-    NUSPECIALHANDLE candidate;
+    nuhspecial_s candidate;
     memset(result, 0, sizeof(*result));
     if (scene != NULL && CurrentTerrain != NULL && platform_id != -1) {
         count = NuGScnNumSpecials(scene);
@@ -7078,7 +7078,7 @@ i32 NuSpecialFindByPlatformID(NUGSCN *scene, struct nuhspecial_s *result, i32 pl
         for (index = 0; index < count; ++index) {
             NuGScnGetSpecial(&candidate, scene, index);
             if (NuSpecialGetInstanceix(&candidate) == instance_index) {
-                *result = *(struct nuhspecial_s *)&candidate;
+                *result = *&candidate;
                 return 1;
             }
         }
@@ -9253,7 +9253,7 @@ void pathEditor_Enter(void) {
                             node->lower_height = source->min_height - source->position.y;
                             node->upper_height = source->max_height - source->position.y;
                             node->flags = source->runtime_flags;
-                            node->special = *(struct nuhspecial_s *)&source->special_handle;
+                            node->special = *&source->special_handle;
                             node->special_position = source->special_position;
                             node->index = (i16)index;
                             if (source->name != NULL) {
@@ -10140,7 +10140,7 @@ void antinodeEditor_Enter(void) {
             node->lower_height = source->min_y - source->position.y;
             node->upper_height = source->max_y - source->position.y;
             node->game_flags = source->game_flags;
-            node->special = *(struct nuhspecial_s *)&source->special_handle;
+            node->special = *&source->special_handle;
             node->special_position = source->special_position;
             node->rotation_offset = source->rotation_offset;
             node->flags = source->rotation;
@@ -14536,7 +14536,7 @@ AIPATHSYS *pathEditorCreateData(VARIPTR *cursor, VARIPTR *end, void **scratch_cu
                                     runtime->radius = node->radius;
                                     runtime->radius_squared = node->radius * node->radius;
                                     runtime->runtime_flags = node->flags;
-                                    runtime->special_handle = *(NUSPECIALHANDLE *)&node->special;
+                                    runtime->special_handle = *&node->special;
                                     if (NuSpecialExistsFn(&runtime->special_handle)) {
                                         runtime->has_special = 1;
                                     }

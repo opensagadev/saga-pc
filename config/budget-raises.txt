@@ -185,3 +185,4 @@ config/declscan-budget.json A 185 moved data definitions: a unit's own extern of
 config/declscan-budget.json C 425 moved data definitions: a unit's own extern of a global that data.cpp defined (class D) now forward-declares the definition moved into the unit
 config/declscan-budget.json A 217 moved data definitions: a unit's own extern of a global that data.cpp defined (class D) now repeats the definition moved into the unit
 config/declscan-budget.json C 450 moved data definitions: a unit's own extern of a global that data.cpp defined (class D) now forward-declares the definition moved into the unit
+config/oddscan-budget.json magic-flag 7065 two `flags |= 0x400` on display specials in nu3d_includes.cpp that oddscan did not see behind the NUDISPLAY_SPECIAL cast the NUSPECIALHANDLE fold removed (same statements)

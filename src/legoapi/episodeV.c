@@ -18,7 +18,7 @@ struct panel_movement_s;
 struct panel_movement_s *GizPanel_FindByName(WORLDINFO *, char *);
 
 extern i32 turret_gizmotype_id;
-void DrawMeleeTargetsNumber(i16 *targets, u8 *counts, i32 count, u8 reset, NUSPECIALHANDLE *special);
+void DrawMeleeTargetsNumber(i16 *targets, u8 *counts, i32 count, u8 reset, nuhspecial_s *special);
 #define FALCON_SLOT(object) ((i8)(object)->unknown_280)
 
 /* Asteroid field. */
@@ -278,7 +278,7 @@ void Asteroid_AddParts(GIZMOBLOWUP_PC *blowup) {
     i32 special_indices[4] = {0, -1, -1, -1};
     i32 index;
     i32 part_count;
-    NUSPECIALHANDLE *special;
+    nuhspecial_s *special;
     NUANGVEC rotation;
     NUMTX matrix;
     NUVEC velocity;
@@ -327,7 +327,7 @@ i32 nasteroids = 0;
 i32 maxrotspd[3] = {0x1555, 0x38e, 0x16c};
 
 void Asteroids_Reset(WORLDINFO *world) {
-    NUSPECIALHANDLE specials[128];
+    nuhspecial_s specials[128];
     ASTEROID *asteroid;
     GIZMOBLOWUP_PC *blowup;
     char *name;
@@ -643,7 +643,7 @@ void AsteroidChaseC_Update(WORLDINFO *world) {
 }
 
 i32 lastPlaying = 0;
-NUSPECIALHANDLE specialIcon = {0};
+nuhspecial_s specialIcon = {0};
 
 void AsteroidChaseD_Init(WORLDINFO *world) {
     i16 targets = -1;

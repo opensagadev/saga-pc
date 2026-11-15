@@ -8,7 +8,7 @@ extern char *GizmoPickup_OutputName;
 void GizmoPickups_PostLoad(void *, void *);
 
 typedef struct SPECIAL_MINIKIT {    // size 0x3c
-    NUSPECIALHANDLE special;        // 0x00
+    nuhspecial_s special;           // 0x00
     NUINSTANIM *instance_animation; // 0x0c
     void *animation_data;           // 0x10
     f32 end_frame;                  // 0x14

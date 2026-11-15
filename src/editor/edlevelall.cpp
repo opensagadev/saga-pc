@@ -69,8 +69,8 @@ extern "C" {
     void EdDrawPolySector(NUVEC *center, f32 radius, i32 axis, i32 first_angle, i32 last_angle, i32 colour, i32 segments);
     f32 eduiGetAnalougePadValue(FRAME_PAD_PC *pad);
     void eduiGetCursorDelta(f32 *x, f32 *y);
-    i32 NuSpecialNumMtls(NUSPECIALHANDLE *special);
-    NUMTL *NuSpecialGetMtl(NUSPECIALHANDLE *special, i32 index);
+    i32 NuSpecialNumMtls(nuhspecial_s *special);
+    NUMTL *NuSpecialGetMtl(nuhspecial_s *special, i32 index);
     eduiitem_s *eduiItemFilterCreate(u32 data, void *colours, char *text, char *value);
     void eduiMenuSortItemsByTxt(eduimenu_s *menu);
     void edcamSetDist(f32 distance);
@@ -637,7 +637,7 @@ class SpecialObject : public Placeable { // size 0x24
     virtual const VuVec *GetCurrentPosition() const;
     virtual void SetCurrentPosition(const VuVec *position);
     virtual void Render(const VuMtx *matrix) const;
-    virtual NUSPECIALHANDLE *GetNuHSpecial();
+    virtual nuhspecial_s *GetNuHSpecial();
     virtual i32 Exists() const;
     virtual i32 GetNumMtls() const;
     virtual NUMTL *GetMtl(i32 index) const;
@@ -646,7 +646,7 @@ class SpecialObject : public Placeable { // size 0x24
     virtual i32 GetCollision() const;
     virtual void SetCollision(i32 enabled);
 
-    NUSPECIALHANDLE special; // 0x18
+    nuhspecial_s special; // 0x18
 };
 
 /* One special of a level scene; editor_owned marks the editor-created
@@ -762,8 +762,8 @@ class EdSpecialObjectControl : public EdControl { // size 0x14
     virtual void Process(EdInputContext &input);
     virtual void Render();
     virtual void AddMenuItem(eduimenu_s *menu, EdRef *reference, void *object);
-    void GetVal(NUSPECIALHANDLE &value);
-    void SetVal(NUSPECIALHANDLE &value);
+    void GetVal(nuhspecial_s &value);
+    void SetVal(nuhspecial_s &value);
     static void cbChanged(eduimenu_s *, eduiitem_s *item, u32);
     static void cbSelectObject(eduimenu_s *, eduiitem_s *item, u32);
     static void cbButton(eduimenu_s *parent, eduiitem_s *item, u32);
@@ -3803,7 +3803,7 @@ void SerialiseColour3(EdStream &stream, void *data, i32) {
 /* Writes a special's name, or reads one back and looks it up in every
  * loaded scene. */
 void SerialiseNuHSpecial(EdStream &stream, void *data, i32) {
-    NUSPECIALHANDLE *special = static_cast<NUSPECIALHANDLE *>(data);
+    nuhspecial_s *special = static_cast<nuhspecial_s *>(data);
     if (stream.mode == 2) {
         char *name = NuSpecialGetName(special);
         stream.SerialiseString(name, 0);
@@ -4077,23 +4077,23 @@ void EditorSettings::AddMenuItems(eduimenu_s *menu) {
 }
 
 i32 SpecialObject::Exists() const {
-    return NuSpecialExistsFn(const_cast<NUSPECIALHANDLE *>(&special));
+    return NuSpecialExistsFn(const_cast<nuhspecial_s *>(&special));
 }
 
 const char *SpecialObject::GetName() const {
-    return NuSpecialGetName(const_cast<NUSPECIALHANDLE *>(&special));
+    return NuSpecialGetName(const_cast<nuhspecial_s *>(&special));
 }
 
 i32 SpecialObject::GetNumMtls() const {
-    return NuSpecialNumMtls(const_cast<NUSPECIALHANDLE *>(&special));
+    return NuSpecialNumMtls(const_cast<nuhspecial_s *>(&special));
 }
 
 NUMTL *SpecialObject::GetMtl(i32 index) const {
-    return NuSpecialGetMtl(const_cast<NUSPECIALHANDLE *>(&special), index);
+    return NuSpecialGetMtl(const_cast<nuhspecial_s *>(&special), index);
 }
 
 i32 SpecialObject::GetVisibility() const {
-    return NuSpecialGetVisibilityFn(const_cast<NUSPECIALHANDLE *>(&special));
+    return NuSpecialGetVisibilityFn(const_cast<nuhspecial_s *>(&special));
 }
 
 void SpecialObject::SetVisibility(i32 visible) {
@@ -4101,7 +4101,7 @@ void SpecialObject::SetVisibility(i32 visible) {
 }
 
 i32 SpecialObject::GetCollision() const {
-    return NuSpecialGetCollision(const_cast<NUSPECIALHANDLE *>(&special)) != 0;
+    return NuSpecialGetCollision(const_cast<nuhspecial_s *>(&special)) != 0;
 }
 
 void SpecialObject::SetCollision(i32 enabled) {
@@ -4111,14 +4111,14 @@ void SpecialObject::SetCollision(i32 enabled) {
 f32 SpecialObject::GetRadius() const {
     f32 radius = 1.0f;
     NUVEC centre;
-    if (NuSpecialExistsFn(const_cast<NUSPECIALHANDLE *>(&special))) {
-        NuSpecialGetRadius(const_cast<NUSPECIALHANDLE *>(&special), &centre, &radius);
+    if (NuSpecialExistsFn(const_cast<nuhspecial_s *>(&special))) {
+        NuSpecialGetRadius(const_cast<nuhspecial_s *>(&special), &centre, &radius);
     }
     return radius;
 }
 
 const VuMtx *SpecialObject::GetInitialTransform() const {
-    return (const VuMtx *)NuSpecialGetMtx(const_cast<NUSPECIALHANDLE *>(&special));
+    return (const VuMtx *)NuSpecialGetMtx(const_cast<nuhspecial_s *>(&special));
 }
 
 void SpecialObject::SetInitialTransform(const VuMtx *matrix) {
@@ -4126,7 +4126,7 @@ void SpecialObject::SetInitialTransform(const VuMtx *matrix) {
 }
 
 const VuMtx *SpecialObject::GetCurrentTransform() const {
-    return (const VuMtx *)NuSpecialGetDrawMtx(const_cast<NUSPECIALHANDLE *>(&special));
+    return (const VuMtx *)NuSpecialGetDrawMtx(const_cast<nuhspecial_s *>(&special));
 }
 
 void SpecialObject::SetCurrentTransform(const VuMtx *matrix) {
@@ -4134,25 +4134,25 @@ void SpecialObject::SetCurrentTransform(const VuMtx *matrix) {
 }
 
 const VuVec *SpecialObject::GetInitialPosition() const {
-    return (const VuVec *)NuSpecialGetPos(const_cast<NUSPECIALHANDLE *>(&special));
+    return (const VuVec *)NuSpecialGetPos(const_cast<nuhspecial_s *>(&special));
 }
 
 void SpecialObject::SetInitialPosition(const VuVec *) {
 }
 
 const VuVec *SpecialObject::GetCurrentPosition() const {
-    return (const VuVec *)NuSpecialGetDrawPos(const_cast<NUSPECIALHANDLE *>(&special));
+    return (const VuVec *)NuSpecialGetDrawPos(const_cast<nuhspecial_s *>(&special));
 }
 
 void SpecialObject::SetCurrentPosition(const VuVec *position) {
-    NuSpecialSetDrawPos((nuhspecial_s *)&special, const_cast<NUVEC *>(&position->xyz));
+    NuSpecialSetDrawPos(&special, const_cast<NUVEC *>(&position->xyz));
 }
 
 void SpecialObject::Render(const VuMtx *matrix) const {
     if (matrix != NULL) {
-        NuSpecialDrawAt(const_cast<NUSPECIALHANDLE *>(&special), const_cast<NUMTX *>(&matrix->matrix));
+        NuSpecialDrawAt(const_cast<nuhspecial_s *>(&special), const_cast<NUMTX *>(&matrix->matrix));
     } else {
-        NuSpecialDrawAt(const_cast<NUSPECIALHANDLE *>(&special), NuSpecialGetDrawMtx(const_cast<NUSPECIALHANDLE *>(&special)));
+        NuSpecialDrawAt(const_cast<nuhspecial_s *>(&special), NuSpecialGetDrawMtx(const_cast<nuhspecial_s *>(&special)));
     }
 }
 
@@ -4204,7 +4204,7 @@ void SceneInstance::SetCurrentPosition(const VuVec *position) {
 }
 
 void SceneInstance::Render(const VuMtx *) const {
-    NuSpecialDrawAt(const_cast<NUSPECIALHANDLE *>(&special), const_cast<NUMTX *>(&current_transform.matrix));
+    NuSpecialDrawAt(const_cast<nuhspecial_s *>(&special), const_cast<NUMTX *>(&current_transform.matrix));
 }
 
 void SceneObjectHelper::ClearLevel(i32 level) {
@@ -4232,7 +4232,7 @@ SpecialObject::SpecialObject() {
     NuSpecialClear(&special);
 }
 
-NUSPECIALHANDLE *SpecialObject::GetNuHSpecial() {
+nuhspecial_s *SpecialObject::GetNuHSpecial() {
     return &special;
 }
 
@@ -4241,7 +4241,7 @@ void EdRefSpecialObject::GetMemberData(void *object, i32 requested_type, void *d
     CheckType(requested_type);
     switch (member_offset) {
         case 0x80000008:
-            *static_cast<NUSPECIALHANDLE *>(data) = special_object->special;
+            *static_cast<nuhspecial_s *>(data) = special_object->special;
             break;
         case 0x80000009:
             *static_cast<i32 *>(data) = NuSpecialGetVisibilityFn(&special_object->special);
@@ -4257,7 +4257,7 @@ void EdRefSpecialObject::SetMemberData(void *object, i32 requested_type, void *d
     CheckType(requested_type);
     switch (member_offset) {
         case 0x80000008:
-            special_object->special = *static_cast<NUSPECIALHANDLE *>(data);
+            special_object->special = *static_cast<nuhspecial_s *>(data);
             break;
         case 0x80000009:
             NuSpecialSetVisibility(&special_object->special, *static_cast<i32 *>(data));
@@ -4520,17 +4520,17 @@ EdSpecialObjectControl::~EdSpecialObjectControl() {
 }
 
 /* Takes the scene object with the typed name, if there is one. */
-void EdSpecialObjectControl::GetVal(NUSPECIALHANDLE &value) {
+void EdSpecialObjectControl::GetVal(nuhspecial_s &value) {
     reference->GetMemberData(object, EdType_NuHSpecial, &value, 0);
 }
 
-void EdSpecialObjectControl::SetVal(NUSPECIALHANDLE &value) {
+void EdSpecialObjectControl::SetVal(nuhspecial_s &value) {
     reference->SetMemberData(object, EdType_NuHSpecial, &value, 0, NULL);
 }
 
 void EdSpecialObjectControl::cbChanged(eduimenu_s *, eduiitem_s *item, u32) {
     EdSpecialObjectControl *control = static_cast<EdSpecialObjectControl *>(item->data_ptr);
-    NUSPECIALHANDLE selected;
+    nuhspecial_s selected;
     NuSpecialClear(&selected);
     for (Placeable *object = (Placeable *)thePlaceableHelper.GetNextObject(NULL, SpecialObjectFilter); object != NULL;
          object = (Placeable *)thePlaceableHelper.GetNextObject(object, SpecialObjectFilter)) {
@@ -4552,8 +4552,8 @@ void EdSpecialObjectControl::cbSelectObject(eduimenu_s *, eduiitem_s *item, u32)
     if (active_special_object_control == NULL) {
         return;
     }
-    NUSPECIALHANDLE cleared;
-    NUSPECIALHANDLE *selected;
+    nuhspecial_s cleared;
+    nuhspecial_s *selected;
     SpecialObject *object = static_cast<SpecialObject *>(item->data_ptr);
     if (object != (SpecialObject *)-1) {
         selected = &object->special;
@@ -4576,7 +4576,7 @@ void EdSpecialObjectControl::cbButton(eduimenu_s *parent, eduiitem_s *item, u32)
     if (menu == NULL) {
         return;
     }
-    NUSPECIALHANDLE selected;
+    nuhspecial_s selected;
     active_special_object_control->GetVal(selected);
     eduiMenuAddItem(menu, eduiItemSelCreate((u32)-1, item->colours, 0, 0, cbSelectObject, "None"));
     Placeable *object = (Placeable *)thePlaceableHelper.GetNextObject(NULL, SpecialObjectFilter);
@@ -10696,7 +10696,7 @@ void EdSpecialObjectControl::AddMenuItem(eduimenu_s *menu, EdRef *member, void *
     }
     control->reference = member;
     control->object = target;
-    NUSPECIALHANDLE special;
+    nuhspecial_s special;
     member->GetMemberData(target, EdType_NuHSpecial, &special, 0);
     char *name = NuSpecialGetName(&special);
     if (name == NULL) {

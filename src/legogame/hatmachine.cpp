@@ -614,7 +614,7 @@ extern "C" void HatMachine_Draw(void *world_ptr, void *, f32) {
         (f64)NuTrigTable[((i32)((f64)NuFmod(GameTimer.time_elapsed_mod_seconds, 0.5f) * 2.0 * 65536.0) >> 1) & 0x7fff] * (f64)0.15f +
         (f64)0.85f;
     EnableShadowMapRendering(0);
-    NUSPECIALHANDLE *specials[4];
+    nuhspecial_s *specials[4];
     NUINSTANIM *animations[4];
     f32 end_frames[4];
     if (StartupGameFlag1 != 0) {
