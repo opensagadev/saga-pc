@@ -692,57 +692,57 @@ u32 PC_INPUT_RUNTIME::CombineUiButtons(i32 port, u32 buttons) {
     }
     const u8 *keys = nu_keyboard_pages + (i8)nu_keyboard_page_index * 256;
     if (keys[0x1c]) {
-        buttons |= 0x40;
+        buttons |= PAD_BUTTON_CROSS;
     }
     if (mouse.buttons[0]) {
-        buttons |= 0x40;
+        buttons |= PAD_BUTTON_CROSS;
     }
     if (keys[0x9c]) {
-        buttons |= 0x40;
+        buttons |= PAD_BUTTON_CROSS;
     }
     if (keys[0x39]) {
-        buttons |= 0x40;
+        buttons |= PAD_BUTTON_CROSS;
     }
     if (mouse.buttons[2]) {
-        buttons |= 0x40;
+        buttons |= PAD_BUTTON_CROSS;
     }
     if (!suppress_key_1) {
         if ((u32)(port - 10) <= 3) {
-            buttons &= ~0x800u;
+            buttons &= ~PAD_BUTTON_START;
         }
         if (keys[1]) {
-            buttons |= 0x20;
+            buttons |= PAD_BUTTON_CIRCLE;
         }
     }
     if (keys[0xe]) {
-        buttons |= 0x20;
+        buttons |= PAD_BUTTON_CIRCLE;
     }
     if (mouse.buttons[1]) {
-        buttons |= 0x20;
+        buttons |= PAD_BUTTON_CIRCLE;
     }
     if (keys[0x3b]) {
-        buttons |= 0x80;
+        buttons |= PAD_BUTTON_SQUARE;
     }
     if (keys[0x3c]) {
-        buttons |= 0x10;
+        buttons |= PAD_BUTTON_TRIANGLE;
     }
     if (keys[0xcd]) {
-        buttons |= 0x2000;
+        buttons |= PAD_BUTTON_RIGHT;
     }
     if (keys[0xcb]) {
-        buttons |= 0x8000;
+        buttons |= PAD_BUTTON_LEFT;
     }
     if (keys[0xd0]) {
-        buttons |= 0x4000;
+        buttons |= PAD_BUTTON_DOWN;
     }
     if (mouse.delta[2] < 0.0f) {
-        buttons |= 0x4000;
+        buttons |= PAD_BUTTON_DOWN;
     }
     if (keys[0xc8]) {
-        buttons |= 0x1000;
+        buttons |= PAD_BUTTON_UP;
     }
     if (mouse.delta[2] > 0.0f) {
-        buttons |= 0x1000;
+        buttons |= PAD_BUTTON_UP;
     }
     return buttons;
 }

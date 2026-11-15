@@ -175,6 +175,21 @@ extern "C" {
 #define APIOBJECT_CONTEXT_EVENT_DONE 0x40
 #define APIOBJECT_CONTEXT_INVULNERABLE 0x20000 /* hits do nothing while the context's info has the flag for it */
 
+/* gameobject_s.context_variant_flags in the jump context (StartJump, StartEndOfJump, StartComboJump, StartLunge). */
+#define APIOBJECT_JUMP_FLIP 0x2000    /* StartComboJump's flip; the landing plays LEGOACT_FLIPLAND */
+#define APIOBJECT_JUMP_DOUBLE 0x4000  /* the second jump has started; the landing may play LEGOACT_LAND3 */
+#define APIOBJECT_JUMP_FALLING 0x8000 /* StartEndOfJump, the combat roll's and the super carry jump's time is up */
+#define APIOBJECT_JUMP_ATTACK 0x10000 /* StartJump in movement states 3 and 4, StartLunge */
+
+/* gameobject_s.context_variant_flags in the punch context (PunchCode). */
+#define APIOBJECT_PUNCH_COMBO 0x1          /* a combo style was chosen: queued_context_animation follows */
+#define APIOBJECT_PUNCH_BEHIND 0x80        /* ACTION_PUNCH_BEHIND, the target is behind */
+#define APIOBJECT_PUNCH_SPECIAL_MOVE 0x200 /* SpecialMove_Check found one: special_move_pc */
+
+/* gameobject_s.context_variant_flags in the sabre combo context (LightSabreComboCode). */
+#define APIOBJECT_COMBO_ENDED 0x2   /* the combo context ended (animation end, blend-out or no press in time) */
+#define APIOBJECT_COMBO_WAITING 0x4 /* between hits: a press within combo_input_timer continues the combo */
+
 /* gameobject_s.tag_flags, from the tagging code (legoapi_tag.c) and the SetTaggable AI action. */
 #define APIOBJECT_TAG_DISABLED 0x2         /* SetTaggable FALSE: cannot be tagged to or dropped in on */
 #define APIOBJECT_TAG_PENDING 0x4          /* a tag to pending_tag_target waits for tag_cooldown */

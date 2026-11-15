@@ -1607,11 +1607,11 @@ i32 eduiMenuItemMoveDown(eduimenu_s *menu, eduiitem_s *item) {
 i32 eduicbInteractSel(edui_interact_s *interact) {
     edui_sel_s *item = (edui_sel_s *)interact->item;
     eduimenu_s *menu = interact->menu;
-    if (interact->callback && (edui_cursor_buttons_db & 0x40)) {
+    if (interact->callback && (edui_cursor_buttons_db & PAD_BUTTON_CROSS)) {
         item->selected(menu, &item->base, edui_cursor_buttons);
         return 0;
     }
-    if (interact->callback && (edui_cursor_buttons & 0x40) && item->held) {
+    if (interact->callback && (edui_cursor_buttons & PAD_BUTTON_CROSS) && item->held) {
         item->held(menu, &item->base, edui_cursor_buttons);
     }
     return 0;
@@ -2139,7 +2139,7 @@ static i32 eduicbProcessExpander(eduimenu_s *menu, eduiitem_s *item, f32 delta_t
 
 static i32 eduicbInteractExpander(edui_interact_s *interact) {
     EDUI_EXPANDER *expander = (EDUI_EXPANDER *)interact->item;
-    if (edui_cursor_buttons_db & 0x40) {
+    if (edui_cursor_buttons_db & PAD_BUTTON_CROSS) {
         if (expander->changed) {
             expander->changed(interact->menu, &expander->base, 0);
         }
@@ -2446,7 +2446,7 @@ static i32 EduiPropDragLabel(edui_prop_s *property, eduimenu_s *menu) {
                 ((edui_prop_s *)other)->label_width = property->label_width;
             }
         }
-        if (!(edui_cursor_buttons & 0x40)) {
+        if (!(edui_cursor_buttons & PAD_BUTTON_CROSS)) {
             property->dragging_label = 0;
         }
     }
@@ -2534,7 +2534,7 @@ static i32 EduiPropButton(edui_prop_s *property, eduimenu_s *menu, FRAME_PAD *pa
             property->button(menu, &property->base, edui_cursor_buttons);
             property->button_held = 0;
         }
-        if (!(edui_cursor_buttons & 0x40)) {
+        if (!(edui_cursor_buttons & PAD_BUTTON_CROSS)) {
             property->button_held = 0;
         }
     }
@@ -2600,7 +2600,7 @@ static i32 eduicbInteractProp(edui_interact_s *interact) {
     eduimenu_s *menu = interact->menu;
     edui_prop_s *property = (edui_prop_s *)interact->item;
     i32 handled = 0;
-    if (edui_cursor_buttons & 0x40) {
+    if (edui_cursor_buttons & PAD_BUTTON_CROSS) {
         if (!property->dragging_label && !property->button_held) {
             if (!property->editing) {
                 if (EduiPropOverLabel(interact) && property->selected) {
@@ -4967,32 +4967,32 @@ i32 ProcessFileSel3(f32 elapsed, FRAME_PAD *pad) {
         FS_RefreshDir = 0;
     }
     buttons = FS_GetPadWithRepeat(pad, 0.05f, elapsed);
-    if (buttons & 0x4000) {
+    if (buttons & PAD_BUTTON_DOWN) {
         FS_MoveCursorDown(1);
     }
-    if (buttons & 0x1000) {
+    if (buttons & PAD_BUTTON_UP) {
         FS_MoveCursorUp(1);
     }
-    if (buttons & 1) {
+    if (buttons & PAD_BUTTON_L2) {
         FS_MoveCursorDown(14);
     }
-    if (buttons & 4) {
+    if (buttons & PAD_BUTTON_L1) {
         FS_MoveCursorUp(14);
     }
-    if (buttons & 2) {
+    if (buttons & PAD_BUTTON_R2) {
         FS_MoveCursorDown(FS_NumFiles);
     }
-    if (buttons & 8) {
+    if (buttons & PAD_BUTTON_R1) {
         FS_MoveCursorUp(FS_NumFiles);
     }
-    if (buttons & 0x80) {
+    if (buttons & PAD_BUTTON_SQUARE) {
         if (++FS_SortMode == 4) {
             FS_SortMode = 0;
         }
         FS_RefreshDir = 2;
         NuStrCpy(FS_LastFileName, FS_CurrentCursorPos + 7);
     }
-    if (buttons & 0x20) {
+    if (buttons & PAD_BUTTON_CIRCLE) {
         length = NuStrLen(FS_Path);
         if (length != 0 && FS_Path[length - 1] == '\\') {
             FS_Path[length - 1] = '\0';
@@ -5007,7 +5007,7 @@ i32 ProcessFileSel3(f32 elapsed, FRAME_PAD *pad) {
         FS_RefreshDir = 1;
         FS_LastFileName[0] = '\0';
     }
-    if (buttons & 0x40) {
+    if (buttons & PAD_BUTTON_CROSS) {
         if (FS_CurrentCursorPos[0] == 'V') {
             FS_ShowVolumes = 0;
             NuStrCpy(FS_Path, FS_CurrentCursorPos + 7);

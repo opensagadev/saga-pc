@@ -686,7 +686,8 @@ void CollideGameObjects(WORLDINFO *world) {
             context == CHARACTER_CONTEXT_GET_IN || context == CHARACTER_CONTEXT_TELEPORT || context == CHARACTER_CONTEXT_EATEN) {
             continue;
         }
-        if (context == CHARACTER_CONTEXT_PUNCH && object->special_move_pc != -1 && (object->context_variant_flags & 0x200)) {
+        if (context == CHARACTER_CONTEXT_PUNCH && object->special_move_pc != -1 &&
+            (object->context_variant_flags & APIOBJECT_PUNCH_SPECIAL_MOVE)) {
             continue;
         }
         if (object->character_context == CHARACTER_CONTEXT_BIG_JUMP && object->unknown_7b3 == 1) {

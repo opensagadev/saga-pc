@@ -2997,7 +2997,8 @@ void Glide_MoveCode(GAMEOBJECT *object) {
         return;
     }
     if (object->character_context != CHARACTER_CONTEXT_NONE && object->character_context != CHARACTER_CONTEXT_TUBE &&
-        (object->character_context != CHARACTER_CONTEXT_JUMP || (!can_glide && (object->context_variant_flags & 0x8000) == 0))) {
+        (object->character_context != CHARACTER_CONTEXT_JUMP ||
+         (!can_glide && (object->context_variant_flags & APIOBJECT_JUMP_FALLING) == 0))) {
         return;
     }
     Glide_Start(object);
@@ -3030,7 +3031,7 @@ i32 Glide_SetTargetMom(GAMEOBJECT *object) {
 
 void StartLunge(GAMEOBJECT *object, f32 speed, f32 height) {
     LUNGE_TARGET_SLOTS *targets = (LUNGE_TARGET_SLOTS *)object;
-    object->context_variant_flags &= ~0x80;
+    object->context_variant_flags &= ~APIOBJECT_PUNCH_BEHIND;
     object->context_timer = 0.0f;
     object->character_context = CHARACTER_CONTEXT_JUMP;
     object->action_movement_state = 3;
@@ -3039,7 +3040,7 @@ void StartLunge(GAMEOBJECT *object, f32 speed, f32 height) {
         object->portal_flags |= 0x800;
     }
     object->velocity.y = speed;
-    object->context_variant_flags |= 0x10000;
+    object->context_variant_flags |= APIOBJECT_JUMP_ATTACK;
     object->jump_sequence = 0;
     if (height > 0.0f) {
         MakeJumpReachHeight(object, height, 0);
@@ -3099,7 +3100,7 @@ void StartJetPackFall(GAMEOBJECT *object, i32 fall) {
     object->jump_sequence = 2;
     object->airborne_collision_target = NULL;
     if (fall == 0 && object->character_model->model_data_b[0x49] != NULL) {
-        object->context_variant_flags &= ~0x8000;
+        object->context_variant_flags &= ~APIOBJECT_JUMP_FALLING;
         object->velocity.y = object->character_data->game_character->jump_speed;
         object->unknown_7aa = ACTION_HOVERDOWN;
         PlayJumpSfx(object, 0);
@@ -3268,15 +3269,15 @@ static PART_PC *BlockFindIncomingPart(GAMEOBJECT *object) {
 
 static void StartComboJump(GAMEOBJECT *object, i32 variant) {
     object->velocity.y = object->character_data->game_character->second_jump_speed;
-    object->context_variant_flags &= ~0x10000u;
+    object->context_variant_flags &= ~APIOBJECT_JUMP_ATTACK;
     object->character_context = CHARACTER_CONTEXT_JUMP;
     object->action_movement_state = 2;
     if (variant) {
         object->unknown_7aa = ACTION_FLIP;
-        object->context_variant_flags |= 0x2000;
+        object->context_variant_flags |= APIOBJECT_JUMP_FLIP;
     } else {
         object->unknown_7aa = ACTION_COMBOJUMP;
-        object->context_variant_flags &= ~0x2000u;
+        object->context_variant_flags &= ~APIOBJECT_JUMP_FLIP;
     }
     object->flags_e20 |= 0x100000;
     object->context_timer = 0.0f;
@@ -3589,7 +3590,7 @@ static void PunchCode(GAMEOBJECT *object, i32 pressed, i32 held, i32 require_tar
                 if ((object->context_flags_pc & APIOBJECT_CONTEXT_EVENT_DONE) == 0) {
                     Punch_Hit(object, object->force_target, punch_gap, punch_charge_gap);
                 }
-                if (suppress_combo == 0 && (object->context_flags_pc & 0x80) == 0 && object->combo_stage < 2 &&
+                if (suppress_combo == 0 && (object->context_flags_pc & APIOBJECT_PUNCH_BEHIND) == 0 && object->combo_stage < 2 &&
                     object->combo_input_latched != 0 && object->attack_override != 6) {
                     object->force_target = NULL;
                     object->blowup_target = NULL;
@@ -3607,7 +3608,7 @@ static void PunchCode(GAMEOBJECT *object, i32 pressed, i32 held, i32 require_tar
                         i32 alternate_animations[4];
                         i32 i;
                         object->combo_stage++;
-                        if ((object->context_flags_pc & 1) != 0) {
+                        if ((object->context_flags_pc & APIOBJECT_PUNCH_COMBO) != 0) {
                             alternate_animations[1] = -1;
                             alternate_animations[2] = -1;
                             alternate_animations[3] = -1;
@@ -3650,7 +3651,7 @@ static void PunchCode(GAMEOBJECT *object, i32 pressed, i32 held, i32 require_tar
                                 object->context_timer = duration;
                                 object->character_context = CHARACTER_CONTEXT_PUNCH;
                                 object->context_duration =
-                                    (object->context_variant_flags & 1) != 0 && object->combo_stage < 2 ? 0.2f : 0.0f;
+                                    (object->context_variant_flags & APIOBJECT_PUNCH_COMBO) != 0 && object->combo_stage < 2 ? 0.2f : 0.0f;
                                 object->context_variant_flags &= ~APIOBJECT_CONTEXT_EVENT_DONE;
                                 object->context_timer += object->context_duration;
                                 object->combo_input_latched = 0;
@@ -3727,17 +3728,17 @@ static void PunchCode(GAMEOBJECT *object, i32 pressed, i32 held, i32 require_tar
         object->force_target->character_context != CHARACTER_CONTEXT_SPECIAL_MOVE_VICTIM) {
         i32 special_move = SpecialMove_Check(object, object->force_target);
         if (special_move != -1) {
-            object->context_variant_flags |= 0x200;
+            object->context_variant_flags |= APIOBJECT_PUNCH_SPECIAL_MOVE;
             object->special_move_pc = special_move;
             object->unknown_7aa = SpecialMove_GetAttackerAction(object->special_move_pc);
             object->combo_stage = 2;
-            object->context_variant_flags &= ~0x80;
+            object->context_variant_flags &= ~APIOBJECT_PUNCH_BEHIND;
             goto start_attack;
         }
     }
     if ((object->force_target != NULL && ComboOpponent_Behind != 0) || (object->blowup_target != NULL && GizmoBlowUpOpponent_Behind != 0)) {
         object->special_move_pc = -1;
-        object->context_variant_flags |= 0x80;
+        object->context_variant_flags |= APIOBJECT_PUNCH_BEHIND;
         object->unknown_7aa = ACTION_PUNCH_BEHIND;
         object->combo_stage = 0;
         goto start_attack;
@@ -3747,26 +3748,26 @@ static void PunchCode(GAMEOBJECT *object, i32 pressed, i32 held, i32 require_tar
     if (object->attack_override == 0) {
         object->combo_stage = 0;
         object->unknown_7aa = ACTION_PUNCH;
-        object->context_variant_flags &= ~0x80;
+        object->context_variant_flags &= ~APIOBJECT_PUNCH_BEHIND;
     } else {
         switch (object->attack_override) {
             case 1:
                 object->combo_stage = 2;
                 object->unknown_7aa = ACTION_PUNCH;
-                object->context_variant_flags &= ~0x80;
+                object->context_variant_flags &= ~APIOBJECT_PUNCH_BEHIND;
                 break;
             case 2:
                 object->unknown_7aa = ACTION_PUNCH2;
                 object->combo_stage = 2;
-                object->context_variant_flags &= ~0x80;
+                object->context_variant_flags &= ~APIOBJECT_PUNCH_BEHIND;
                 break;
             case 3:
                 object->unknown_7aa = ACTION_PUNCH3;
                 object->combo_stage = 2;
-                object->context_variant_flags &= ~0x80;
+                object->context_variant_flags &= ~APIOBJECT_PUNCH_BEHIND;
                 break;
             case 4:
-                object->context_variant_flags |= 0x80;
+                object->context_variant_flags |= APIOBJECT_PUNCH_BEHIND;
                 object->unknown_7aa = ACTION_PUNCH_BEHIND;
                 object->combo_stage = 0;
                 goto start_attack;
@@ -3781,13 +3782,13 @@ static void PunchCode(GAMEOBJECT *object, i32 pressed, i32 held, i32 require_tar
             default:
                 object->combo_stage = 0;
                 object->unknown_7aa = ACTION_PUNCH;
-                object->context_variant_flags &= ~0x80;
+                object->context_variant_flags &= ~APIOBJECT_PUNCH_BEHIND;
                 break;
         }
     }
 
 start_attack:
-    object->context_variant_flags &= ~1;
+    object->context_variant_flags &= ~APIOBJECT_PUNCH_COMBO;
     if (StartupGameFlag1 == 0 || StartupGameFlag0 != 0 ||
         (object->id == (u16)dat_007f17d4 && APICharacterLoaded(PunchRangeCompanionId) != NULL)) {
         if (object->unknown_7aa == ACTION_PUNCH && object->combo_stage == 0) {
@@ -3807,7 +3808,7 @@ start_attack:
             if (style->combo_style != 0xff) {
                 i32 selected = style->combo_style != 0 ? 0x35 : 0x2e;
                 if (model->model_data_b[selected] != NULL) {
-                    object->context_variant_flags |= 1;
+                    object->context_variant_flags |= APIOBJECT_PUNCH_COMBO;
                     object->queued_context_animation = selected;
                     object->combo_branch = 0;
                     object->unknown_7aa = selected;
@@ -3832,9 +3833,9 @@ start_attack:
         object->context_timer = duration;
         object->character_context = CHARACTER_CONTEXT_PUNCH;
         object->combo_input_latched = 0;
-        extra = (object->context_variant_flags & 1) != 0 ? 0.2f : 0.0f;
+        extra = (object->context_variant_flags & APIOBJECT_PUNCH_COMBO) != 0 ? 0.2f : 0.0f;
         object->context_duration = extra;
-        if ((object->context_variant_flags & 0x80) == 0) {
+        if ((object->context_variant_flags & APIOBJECT_PUNCH_BEHIND) == 0) {
             object->context_timer = duration + extra;
         }
         ResetAnimPacket(&object->anim_packet, -1);
@@ -4457,15 +4458,15 @@ i32 fun_004a10b0(void) {
 
 static void LightSabreComboCode(GAMEOBJECT *object, i32 action_pressed, i32 action_held, i32 jump_pressed, i32 special_pressed) {
     COMBO_STATE_VIEW *state = (COMBO_STATE_VIEW *)object;
-    object->context_variant_flags &= ~2u;
+    object->context_variant_flags &= ~APIOBJECT_COMBO_ENDED;
     if (object->character_context == CHARACTER_CONTEXT_COMBO) {
         object->portal_flags |= 0x800;
-        if ((object->context_variant_flags & 4) != 0) {
+        if ((object->context_variant_flags & APIOBJECT_COMBO_WAITING) != 0) {
             if ((action_pressed || object->combo_input_latched) && object->combo_stage < 2) {
                 switch (object->combo_stage) {
                     case 0:
                         SetComboOpponent(object, 1.0f, 1, 0);
-                        object->context_variant_flags &= ~4u;
+                        object->context_variant_flags &= ~APIOBJECT_COMBO_WAITING;
                         object->combo_stage = 1;
                         if (object->id != (u16)id_IMPERIALGUARD) {
                             PlaySabreSfx(NULL, object, NULL, 1);
@@ -4491,7 +4492,7 @@ static void LightSabreComboCode(GAMEOBJECT *object, i32 action_pressed, i32 acti
                         break;
                     case 1:
                         SetComboOpponent(object, 1.0f, 1, 0);
-                        object->context_variant_flags &= ~4u;
+                        object->context_variant_flags &= ~APIOBJECT_COMBO_WAITING;
                         object->combo_stage = 2;
                         if (object->id != (u16)id_IMPERIALGUARD) {
                             PlaySabreSfx(NULL, object, NULL, 1);
@@ -4528,7 +4529,7 @@ static void LightSabreComboCode(GAMEOBJECT *object, i32 action_pressed, i32 acti
                 object->combo_input_timer -= FRAMETIME;
                 if (object->combo_input_timer <= 0.0f) {
                     object->character_context = CHARACTER_CONTEXT_NONE;
-                    object->context_variant_flags |= 2;
+                    object->context_variant_flags |= APIOBJECT_COMBO_ENDED;
                     if (action_held) {
                         StartHold(object);
                     }
@@ -4557,21 +4558,21 @@ static void LightSabreComboCode(GAMEOBJECT *object, i32 action_pressed, i32 acti
                     object->context_variant_flags |= 8;
                 }
                 if ((object->anim_packet.flags & 1) != 0) {
-                    object->context_variant_flags |= 2;
+                    object->context_variant_flags |= APIOBJECT_COMBO_ENDED;
                     object->character_context = CHARACTER_CONTEXT_NONE;
                 } else {
                     CHARACTERANIM_CONFIG *info = object->character_model->animation_configs[object->unknown_7aa];
                     f32 blend_out = info->blend_out_time;
                     if (blend_out > 0.0f &&
                         AnimDuration((i16)object->id, object->unknown_7aa, object->anim_packet.current_time, 0.0f, 0) < blend_out) {
-                        object->context_variant_flags |= 2;
+                        object->context_variant_flags |= APIOBJECT_COMBO_ENDED;
                         object->character_context = CHARACTER_CONTEXT_NONE;
                     }
                 }
                 object->sabre_flags |= 2;
                 if ((object->context_variant_flags & APIOBJECT_CONTEXT_EVENT_DONE) == 0 &&
                     (((object->context_variant_flags & 8) != 0 && AnimListFrame(object->character_model, object->unknown_7aa, 0) == 0.0f) ||
-                     (object->context_variant_flags & 2) != 0)) {
+                     (object->context_variant_flags & APIOBJECT_COMBO_ENDED) != 0)) {
                     ComboHitFrame(object, object->combo_branch == 6 ? 3 : 1);
                 }
                 if (object->character_context == CHARACTER_CONTEXT_NONE && action_held &&
@@ -4584,7 +4585,7 @@ static void LightSabreComboCode(GAMEOBJECT *object, i32 action_pressed, i32 acti
                 }
             } else if ((object->anim_packet.flags & 1) != 0) {
                 object->combo_input_timer = 0.2f;
-                object->context_variant_flags |= 4;
+                object->context_variant_flags |= APIOBJECT_COMBO_WAITING;
                 BlockSfx(object);
                 object->sabre_flags |= 2;
                 if ((object->context_variant_flags & APIOBJECT_CONTEXT_EVENT_DONE) == 0) {
@@ -4728,7 +4729,7 @@ static void LightSabreComboCode(GAMEOBJECT *object, i32 action_pressed, i32 acti
     }
 combo_finished:
     if (object->weapon_scale == 1.0f && (object->flags_e20 & 0x80000) == 0 && object->character_context == CHARACTER_CONTEXT_COMBO &&
-        (object->context_variant_flags & 4) != 0) {
+        (object->context_variant_flags & APIOBJECT_COMBO_WAITING) != 0) {
         object->flags_e20 |= 0x80000;
     }
 }

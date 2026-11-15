@@ -554,7 +554,7 @@ void SuperCarry_MoveCode(WORLDINFO *world, struct gameobject_s *object) {
                     } else {
                         object->context_duration = (-object->velocity.y / object->character_data->game_character->gravity) * 2.0f;
                     }
-                    object->context_variant_flags &= ~0x8000u;
+                    object->context_variant_flags &= ~APIOBJECT_JUMP_FALLING;
                     object->context_duration += 0.1f;
                     object->unknown_281 = 0;
                     object->unknown_1050 = 0;
@@ -642,7 +642,7 @@ void SuperCarry_MoveCode(WORLDINFO *world, struct gameobject_s *object) {
             case 6: {
                 object->context_timer += FRAMETIME;
                 if (object->context_timer >= object->context_duration) {
-                    object->context_variant_flags |= 0x8000;
+                    object->context_variant_flags |= APIOBJECT_JUMP_FALLING;
                 }
                 if (object->context_timer >= 0.1f && object->unknown_281 != 0) {
                     i32 fell = (object->context_variant_flags >> 15) & 1;
@@ -672,7 +672,7 @@ void SuperCarry_MoveCode(WORLDINFO *world, struct gameobject_s *object) {
             case 7:
                 object->context_timer -= FRAMETIME;
                 if (object->context_timer <= 0.0f ||
-                    ((object->context_variant_flags & 0x8000) == 0 && object->pad->input_magnitude > 0.0f)) {
+                    ((object->context_variant_flags & APIOBJECT_JUMP_FALLING) == 0 && object->pad->input_magnitude > 0.0f)) {
                     SUPER_CARRY_IDLE_OR_WALK(object);
                 }
                 return;
