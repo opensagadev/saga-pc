@@ -1,12 +1,5 @@
 #include "saga.h"
 
-typedef struct transform_glow_s {  // size 0xe30
-    u8 unused_0000[0xc68];         // 0x000
-    NUVEC glow_position;           // 0xc68
-    u8 unused_0c74[0xe2c - 0xc74]; // 0xc74
-    u8 glow_kind;                  // 0xe2c
-} TRANSFORM_GLOW;
-
 // The target draw keeps a private copy of this numtx-style Z rotation.
 static void RotateTargetMatrix(NUMTX *matrix, i32 angle) {
     f32 cosine = NuTrigTable[((angle + 0x4000) >> 1) & 0x7fff];
@@ -26,7 +19,6 @@ static void RotateTargetMatrix(NUMTX *matrix, i32 angle) {
 }
 
 void Transform_MoveCode(WORLDINFO *world, GAMEOBJECT *object) {
-    TRANSFORM_GLOW *glow = (TRANSFORM_GLOW *)object;
     GIZMOBLOWUP_PC *target;
     ResetForceGlow(object->ai_player_packet);
     if (object->character_context == CHARACTER_CONTEXT_TRANSFORM) {
@@ -105,9 +97,9 @@ void Transform_MoveCode(WORLDINFO *world, GAMEOBJECT *object) {
             }
         }
         if (nearest != NULL) {
-            glow->glow_kind = 4;
+            object->glow_kind = 4;
             object->transform_target = nearest;
-            glow->glow_position = nearest->mid_position;
+            object->glow_position = nearest->mid_position;
             object->transform_target_scale = nearest->target_scale;
             object->transform_alpha = 1.0f;
             if (object->pad->buttons_held & GAMEPAD_SPECIAL) {

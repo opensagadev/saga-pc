@@ -1063,7 +1063,7 @@ typedef struct gameobject_s { // size 0x10d8
         struct {                           // size 0x24
             u8 targeting_reserved_c50[12]; // 0x0c50
             NUVEC camera_screen_position;  // 0x0c5c
-            u8 targeting_reserved_c68[12]; // 0x0c68
+            NUVEC glow_position;           // 0x0c68
         };
     }; // 0x0c50
 

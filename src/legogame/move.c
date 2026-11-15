@@ -193,13 +193,6 @@ typedef struct COMBO_AI_VIEW {
 extern AREA_DATA_PC *DEATHSTARBATTLE_ADATA;
 extern AREA_DATA_PC *ANAKINSFLIGHT_ADATA;
 
-typedef struct vehicle_thrust_view_s {
-    u8 unknown_000[0xdcc];
-    f32 thrust_level;
-    u8 unknown_dd0[0xe28 - 0xdd0];
-    u8 effect_noise[4];
-} VEHICLE_THRUST_VIEW;
-
 typedef struct vehicle_joint_modifier_s {
     NUVEC rotation;
     u8 unknown_00c[0x30 - 0xc];
@@ -1961,7 +1954,6 @@ void ApplyExtraRotation(GAMEOBJECT *object, NUMTX *matrix) {
 }
 
 static void VehicleThrust(GAMEOBJECT *object) {
-    VEHICLE_THRUST_VIEW *view = (VEHICLE_THRUST_VIEW *)object;
     f32 speed = GetVehicleSpeedMul(object, object->pad->input_magnitude);
     f32 target;
     i32 i;
@@ -1969,9 +1961,9 @@ static void VehicleThrust(GAMEOBJECT *object) {
         speed = 1.0f;
     }
     target = (f32)((f64)speed * 0.75 + 0.75);
-    view->thrust_level = SeekValF(view->thrust_level, target, view->thrust_level < target ? 8.0f : 3.0f);
+    object->thrust_effect_scale = SeekValF(object->thrust_effect_scale, target, object->thrust_effect_scale < target ? 8.0f : 3.0f);
     for (i = 0; i < 4; ++i) {
-        view->effect_noise[i] = (u8)(qrand() >> 8);
+        object->effect_noise[i] = (u8)(qrand() >> 8);
     }
 }
 
