@@ -429,54 +429,24 @@ The 50 largest `rule` rows:
 
 ### 1.4 libogg and libvorbis
 
-What `lib/ogg-vorbis` materialises (`config/ogg-vorbis.json`, pinned archive
-of commit 6370ba4a, `src/vendored/`):
+Done (2026-11-15). `config/ogg-vorbis.json` pins the archive (commit 6370ba4a, `src/vendored/`); its
+`archive_files` are the checksums of six members as the archive has them, and `config/ogg-vorbis.patch` adapts
+exactly those six, applied by `tools/dependencies.py` without offset or fuzz before `files` verifies the result:
 
-- `vorbis/vorbis/codec.h` and `vorbis/vorbis/vorbisfile.h` are the libvorbis
-  headers. `nu2api/oggreader.cpp` and `nu2api/nustream.cpp` already include
-  `"vorbis/vorbisfile.h"`.
-- `vorbis/ogg/ogg.h`, `vorbis/ogg/os_types.h` and `vorbis/smallft.h` are
-  stubs that include `saga.h`. saga.h carries the content they stand for:
-  - the libogg API: token-identical to libogg 1.1.3 `include/ogg/ogg.h`;
-  - the `ogg_int*_t` typedefs: identical to the `_WIN32` MSVC branch of
-    `os_types.h`;
-  - the `drft_*` declarations: libvorbis 1.2.0 `lib/smallft.h`, apart from
-    `extern` and parameter names.
+- `vorbis/ogg/ogg.h`, `vorbis/ogg/os_types.h` and `vorbis/smallft.h`, stubs that included `saga.h`, carry the
+  library declarations: libogg 1.1.3 `include/ogg/ogg.h`, the allocator names and the `_WIN32` MSVC branch of
+  `os_types.h`, libvorbis 1.2.0 `lib/smallft.h`;
+- `ogg_bitwise.c`, `ogg_framing.c` and `vorbis_smallft.c` include `<ogg/ogg.h>` or `"smallft.h"` instead of
+  `saga.h`.
 
-Verification of the library layouts:
+The vendored objects are byte-identical to the ones built through saga.h, so `/DSAGA_VENDORED_LIBRARY` (which only
+kept `<xmmintrin.h>` out of them through `common.h`) left the Makefile. The holding headers
+`transitional/libogg/*.h` and `transitional/libvorbis/smallft.h` are deleted; `nu2api/oggreader.cpp` and
+`nu2api/nustream.cpp` get the API from `"vorbis/vorbisfile.h"`, which includes `<ogg/ogg.h>`.
 
-- clang `-fdump-record-layouts` (i686 MSVC target, the lint flags) of
-  `oggpack_buffer`, `ogg_page`, `ogg_stream_state`, `ogg_packet`,
-  `ogg_sync_state` and `drft_lookup`.
-- One run with saga.h, one with the upstream `ogg/ogg.h` + `os_types.h` +
-  `smallft.h`.
-- Result: field offsets and sizes are identical. The saga.h STATIC_ASSERTs on
-  these types stay in `decomp.h` as layout checks of a library type.
-
-So the units should get the API from the library headers. That needs the pin
-to carry the upstream `ogg/ogg.h`, `os_types.h` and `smallft.h` instead of
-the stubs. The vendored units' includes then resolve as today, through
-`-Ilib/ogg-vorbis/vorbis`.
-
-Until then, the split moves the 79 copied declarations into holding headers
-(evidence `library`):
-
-- `transitional/libogg/ogg.h`
-- `transitional/libogg/os_types.h`
-- `transitional/libvorbis/smallft.h`
-
-They cannot take the library names under `src/`. MSVC's quoted-include
-search (`/Isrc` comes before `/Ilib/ogg-vorbis/vorbis`) would find
-`src/ogg/ogg.h` or `src/smallft.h` before the stub from a vendored unit, and
-that unit would lose the rest of saga.h.
-
-When the pin changes:
-
-1. delete the holding headers;
-2. the shim (or, after step 2, the units that use the API: `oggreader.cpp`,
-   `nustream.cpp`, the vendored units) includes `<ogg/ogg.h>` /
-   `"vorbis/vorbisfile.h"`;
-3. prove it with `--check-counts` and objects.
+Layouts were checked before the change: clang `-fdump-record-layouts` (i686 MSVC target) of `oggpack_buffer`,
+`ogg_page`, `ogg_stream_state`, `ogg_packet`, `ogg_sync_state` and `drft_lookup` gave the same offsets and sizes
+from the saga.h copies and from the upstream headers.
 
 ### 1.5 Declarations no unit uses: deletion candidates
 

@@ -77,6 +77,29 @@ class DependencyTests(unittest.TestCase):
         (target / 'source.c').write_text('changed ignored source')
         self.assertNotEqual(first, debug_identity.build_identity(self.root))
 
+    def adapted_pin(self, patch_text, result):
+        (self.root / 'config/adapt.patch').write_text(patch_text)
+        self.pin['patch'] = 'config/adapt.patch'
+        self.pin['archive_files'] = {'source.c': hashlib.sha256(self.payload).hexdigest()}
+        self.pin['files'] = {'source.c': hashlib.sha256(result).hexdigest()}
+        self.write_pin()
+
+    def test_patch_adapts_archive_members(self):
+        result = b'/* preserved license */\nint adapted;\nint added;\n'
+        self.adapted_pin('--- a/source.c\n+++ b/source.c\n@@ -2 +2,2 @@\n-int original;\n+int adapted;\n+int added;\n',
+                         result)
+        target = dependencies.materialize(self.root, self.archive)
+        self.assertEqual((target / 'source.c').read_bytes(), result)
+
+    def test_patch_that_does_not_apply_or_misses_a_file_cannot_publish(self):
+        self.adapted_pin('--- a/source.c\n+++ b/source.c\n@@ -2 +2 @@\n-int other;\n+int adapted;\n', b'')
+        with self.assertRaisesRegex(ValueError, 'does not apply'):
+            dependencies.materialize(self.root, self.archive)
+        self.adapted_pin('--- a/other.c\n+++ b/other.c\n@@ -1 +1 @@\n-a\n+b\n', b'')
+        with self.assertRaisesRegex(ValueError, 'exactly'):
+            dependencies.materialize(self.root, self.archive)
+        self.assertFalse((self.root / 'lib/ogg-vorbis').exists())
+
     def test_shared_lib_root_is_rejected(self):
         shared = self.root / 'shared'
         shared.mkdir()

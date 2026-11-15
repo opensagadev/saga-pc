@@ -113,8 +113,6 @@ def compile_listing(unit):
     obj, listing = stem.with_suffix(".obj"), stem.with_suffix(".cod")
     obj.unlink(missing_ok=True)
     flags = list(FLAGS)
-    if unit.startswith("lib/ogg-vorbis/"):
-        flags.append("/DSAGA_VENDORED_LIBRARY")
     command = [wine, str(compiler / "cl.exe"), *flags, *("/I" + windows(ROOT / i) for i in INCLUDES),
                "/FAsc", "/Fa" + windows(listing), "/Fo" + windows(obj), windows(ROOT / unit)]
     result = subprocess.run(command, cwd=ROOT, env=env, capture_output=True, text=True, errors="replace")

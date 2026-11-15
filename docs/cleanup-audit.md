@@ -116,7 +116,6 @@ repeated here.
 |---|---|---|
 | `/GS-` for every vendored libvorbis object except vorbisfile | Makefile:41 | retail libvorbis has no security cookies |
 | second compiler (VC8 RTM) for libvorbis and `vorbis_smallft` | Makefile:44-46, config/toolchain.json `secondary` | retail links a prebuilt RTM libvorbis |
-| `/DSAGA_VENDORED_LIBRARY` for vendored objects | Makefile:48 | they never included the engine's SSE header (`<xmmintrin.h>`) |
 | `#define SAGA_VENDORED_LIBRARY` in a game unit | nufmv/pc/Bink/dsplay_bink.cpp | RAD sample code, also built without the SSE header |
 | `/DSAGA_BUILD_ID=...` for `src/debug/log.c` | tools/cc.py | Debug identity string |
 | Debug kind: `/DSAGA_DEBUG /Z7`, console subsystem | Makefile | diagnostics build, never compared |

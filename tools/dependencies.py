@@ -6,6 +6,7 @@ import hashlib
 import json
 import os
 from pathlib import Path, PurePosixPath
+import re
 import shutil
 import tarfile
 import tempfile
@@ -26,6 +27,75 @@ def manifest(root=ROOT):
 def source_names(root=ROOT):
     return ['lib/ogg-vorbis/' + name for name in manifest(root)['files']
             if name.endswith(('.c', '.cpp'))]
+
+
+HUNK = re.compile(r'@@ -(\d+)(?:,(\d+))? \+(\d+)(?:,(\d+))? @@')
+
+
+def parse_patch(text):
+    """{path: [(old start, old lines, new lines)]} of a unified diff whose paths start with a/ and b/."""
+    files, hunks = {}, None
+    lines = text.splitlines(keepends=True)
+    i = 0
+    while i < len(lines):
+        line = lines[i]
+        if line.startswith('--- ') and i + 1 < len(lines) and lines[i + 1].startswith('+++ '):
+            if not lines[i + 1].startswith('+++ b/'):
+                raise ValueError('Malformed Ogg/Vorbis patch header: ' + lines[i + 1].strip())
+            hunks = files.setdefault(lines[i + 1][6:].rstrip('\n').split('\t')[0], [])
+            i += 2
+            continue
+        match = HUNK.match(line)
+        if match is None:
+            i += 1
+            continue
+        if hunks is None:
+            raise ValueError('Ogg/Vorbis patch hunk before a file header')
+        old_count, new_count = int(match.group(2) or 1), int(match.group(4) or 1)
+        old, new = [], []
+        i += 1
+        while len(old) < old_count or len(new) < new_count:
+            if i >= len(lines) or lines[i][:1] not in (' ', '-', '+'):
+                raise ValueError('Malformed Ogg/Vorbis patch hunk at line %d' % (i + 1))
+            kind, rest = lines[i][0], lines[i][1:]
+            if kind != '+':
+                old.append(rest)
+            if kind != '-':
+                new.append(rest)
+            i += 1
+        hunks.append((int(match.group(1)), old, new))
+    return files
+
+
+def apply_hunks(data, hunks):
+    """Apply hunks exactly (no offset, no fuzz) to the bytes of one file."""
+    lines = data.decode('latin-1').splitlines(keepends=True)
+    for start, old, new in sorted(hunks, key=lambda hunk: hunk[0], reverse=True):
+        at = start - 1 if old else start
+        if at < 0 or lines[at:at + len(old)] != old:
+            raise ValueError('Ogg/Vorbis patch does not apply at line %d' % start)
+        lines[at:at + len(old)] = new
+    return ''.join(lines).encode('latin-1')
+
+
+def adapt(staging, pin, root):
+    """Apply the project's patch (`patch`) to the archive members it names; `archive_files` holds their archive
+    checksums, `files` the adapted ones."""
+    originals = pin.get('archive_files', {})
+    if not originals:
+        return
+    if not verified_files(staging, originals):
+        raise ValueError('Ogg/Vorbis archive member SHA-256 mismatch')
+    patches = parse_patch((root / pin['patch']).read_text(encoding='latin-1'))
+    if set(patches) != set(originals):
+        raise ValueError('The Ogg/Vorbis patch must adapt exactly the archive_files')
+    for name, hunks in patches.items():
+        path = staging / name
+        path.write_bytes(apply_hunks(path.read_bytes(), hunks))
+
+
+def verified_files(directory, files):
+    return all((directory / name).is_file() and checksum(directory / name) == value for name, value in files.items())
 
 
 def verified(directory, files):
@@ -103,6 +173,7 @@ def _materialize(root, archive, offline):
                 destination.parent.mkdir(parents=True, exist_ok=True)
                 with source.extractfile(member) as stream, destination.open('wb') as output:
                     shutil.copyfileobj(stream, output)
+        adapt(staging, pin, root)
         if not verified(staging, pin['files']):
             raise ValueError('Ogg/Vorbis selected-file SHA-256 mismatch')
         # Keep the last complete tree until the entire replacement is verified.

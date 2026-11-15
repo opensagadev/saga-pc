@@ -3,9 +3,18 @@
   "url": "https://codeload.github.com/opensagadev/saga-pc/tar.gz/6370ba4aecfd5a18873c42a5dde1d3bef9be2a6e",
   "sha256": "7522d44752405daf8bdfe9039f6911565aee31a0bd8d73912c5a35084d3898d5",
   "archive_prefix": "saga-pc-6370ba4aecfd5a18873c42a5dde1d3bef9be2a6e/src/vendored/",
-  "files": {
+  "patch": "config/ogg-vorbis.patch",
+  "archive_files": {
     "ogg_bitwise.c": "03610eb9d1a7b6b9000fd2a6f1ff7e3fbb5f24058d93d2690e2e763066595ec6",
     "ogg_framing.c": "16122041613b0dd0b54668097a80b0b3c36468946baffccd7d1af65de4f94fce",
+    "vorbis/ogg/ogg.h": "346e0a92200f4b15861da6a6bc9fe8dc31ac86ae088a032067d728c71bbbfeee",
+    "vorbis/ogg/os_types.h": "37500e144e5c62da31d14e2a189bbdd8e81db0608518231b19faa778c05265ec",
+    "vorbis/smallft.h": "a228e747f3712f50d7ed1724b7f8365412dc4b74241fe0deb57096e985cf6f04",
+    "vorbis_smallft.c": "a0433590c4493b39a3b706c4c62134671b8266d681a12a7525587e4bec8e7d85"
+  },
+  "files": {
+    "ogg_bitwise.c": "5b431d47dbb1804f38d4cd8b33cdea91c8fe4e081cdebeeb5cfdb18518a6837b",
+    "ogg_framing.c": "8c4a310bf6bb4daba282927d976c8d63bba0a20017191548511226917c024f10",
     "vorbis/COPYING": "045268414de7e90eb43968f749e99b9d463d64a4c3b2029087043e2686eccec6",
     "vorbis/analysis.c": "34708b6e862b152cb9a4150fe9b99a1ca03fede2b3e81f76bc313f1fafcb4272",
     "vorbis/backends.h": "c4a374768dc777c17fe838fc8abb7e4653887f5cb447e52097920cbe3009bca7",
@@ -33,8 +42,8 @@
     "vorbis/mdct.c": "9c781f26598b31d0030c7a310d4932544ee1bfeb780f81e66f96b5405987a25f",
     "vorbis/mdct.h": "0224a6fb4d5960baf29290a7012d4ae4eb7b1cd5dc336defd3afd61bd205f5b1",
     "vorbis/misc.h": "c2e119632cf2dc7f2a1cc1acf20a01f9fe03d16db5e693b073af190744de8c88",
-    "vorbis/ogg/ogg.h": "346e0a92200f4b15861da6a6bc9fe8dc31ac86ae088a032067d728c71bbbfeee",
-    "vorbis/ogg/os_types.h": "37500e144e5c62da31d14e2a189bbdd8e81db0608518231b19faa778c05265ec",
+    "vorbis/ogg/ogg.h": "e441cb47bda7f2c2080b4454b92b315031c5eee7df54bde14c95c498064cf264",
+    "vorbis/ogg/os_types.h": "7a4b1540e903c80a08526a15b67143ce8883367b93ed745f56a35488132533f6",
     "vorbis/os.h": "04890607c5f29573f94dff5d0e62c6988fe8bd8ac094bbff7f95aebb1eb08a5d",
     "vorbis/psy.c": "b2e07bde48dca2d60795014db65dc62b89ae0b5014ea3cc0a2cf1c5e0d1b38bb",
     "vorbis/psy.h": "3e7df4b503ba337c6d63f8cbe7498c06f6a382968a7ddb79ce46ce664756a9c6",
@@ -43,7 +52,7 @@
     "vorbis/res0.c": "2f9eb4dac7e9feca6cacaab1c33d09997b1d2aee23ba9ff6963b145d0a45d5f4",
     "vorbis/scales.h": "80a989cb166d4ae7e1440578bbd4a64b46d2a79881b169a90c8f88ad1d4c4961",
     "vorbis/sharedbook.c": "496c6ff1a8585ead31ca70896b41c7ad1199855b11dbd3168013b8e184ef91ce",
-    "vorbis/smallft.h": "a228e747f3712f50d7ed1724b7f8365412dc4b74241fe0deb57096e985cf6f04",
+    "vorbis/smallft.h": "ae488092a50692adaada355a5c5ce9b59d8e40f635d90338da5f6adb22ce6c39",
     "vorbis/synthesis.c": "7d1ccc283e699b7abe9b60dff985bd52d6647e81c19b0ff6edacf09773bf3fc9",
     "vorbis/vorbis/codec.h": "11b57f46e4603e96c4774833ecf9d6d3473cd8527701b9286d8321f9e98c2bbf",
     "vorbis/vorbis/vorbisenc.h": "a6f757327f6d9a42156b8f84f78fb5b9a827055b8175260a892e0038b37dd9b2",
@@ -51,6 +60,6 @@
     "vorbis/vorbisfile.c": "570b19c58c43885d70c5e3c6b4d221d5e9df04e652402802ab07f2dd5b3f68ae",
     "vorbis/window.c": "2d724324eb351ba1f3659912224447445636261fe39c9192d31da529127996c6",
     "vorbis/window.h": "a10ede6832692ccec154bb9291be7ec236f9642a99a6af9b108ff7df030904b5",
-    "vorbis_smallft.c": "a0433590c4493b39a3b706c4c62134671b8266d681a12a7525587e4bec8e7d85"
+    "vorbis_smallft.c": "0cb663ba9e42ec0a437c99ce9cfe034517c0ecafb1f527afc9146c4c9fefaf17"
   }
 }

@@ -100,11 +100,9 @@ class MainFile:
 
 
 def unit_flags(unit, base_flags):
-    """Lint flags for one unit (language, debug selector, vendored define)."""
+    """Lint flags for one unit (language, debug selector)."""
     from tools.check import analysis_language  # noqa: PLC0415
     flags = [*base_flags, *analysis_language(unit)]
-    if unit.startswith("lib/"):
-        flags.append("-DSAGA_VENDORED_LIBRARY")
     return flags
 
 

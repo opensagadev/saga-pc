@@ -41,3 +41,9 @@ The precise historical Ogg release is unverified; the
 reference, not the build input. Local matching changes, VC8 compatibility,
 formatting, and notices are preserved byte for byte. Upgrading these libraries
 requires a separate audited manifest change and native comparisons.
+
+Six archive members are adapted on materialization: `config/ogg-vorbis.patch` replaces the three header stubs
+(`ogg/ogg.h`, `ogg/os_types.h`, `smallft.h`) with the libogg/libvorbis declarations they stood for and points
+`ogg_bitwise.c`, `ogg_framing.c` and `vorbis_smallft.c` at them. `archive_files` in the manifest holds the
+checksums of those members as archived; the patch must apply exactly (no offset, no fuzz) and cover exactly those
+members, and `files` verifies the adapted result.
