@@ -554,7 +554,7 @@ extern "C" {
     static NUMTX RndrStateScaledTransform = {0};
     i32 nurndr_tritot_this_frame = 0;
     VARIPTR nudlist_stream_cursor = {0};
-    u32 clip_outcode_workspace_prefix[8] = {0};
+    __declspec(align(16)) u32 clip_outcode_workspace_prefix[8] = {0};
     DWA_WEIGHT_BLOCK *DwaPointerPool[2048] = {0};
     NUMTX PcGeometryViewProjectionMatrix = {0};
     f32 dat_0097f990 = 0;
@@ -609,7 +609,7 @@ extern "C" {
     static u32 rndrstream_used = 0;
     u8 NuPortalVisibilityBits[625] = {0};
     NU_CAMERA_STACK_ENTRY dat_0280a598[64] = {0};
-    NUMTX clip_test_mtx = {0};
+    __declspec(align(16)) NUMTX clip_test_mtx = {0};
     PC_SHADOW_QUEUE_RECORD NuRndrShadPolDat[128] = {0};
     static u32 rndrstream_max_used = 0;
     i32 NuQFntScanX = 0;
