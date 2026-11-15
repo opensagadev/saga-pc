@@ -17,6 +17,8 @@ extern GAMEOBJECT *player_tag_from;
 /* Defined in render.c; an empty body in this unit would let the call be dropped. */
 void TakeOverReleaseDiagnostic(char *rider_name, char *object_name);
 
+i32 Tag_Mode = 2;
+
 void Tag_SetMode(i32 mode) {
     Tag_Mode = mode;
 }
@@ -97,6 +99,11 @@ static void SetRiderPos(GAMEOBJECT *object, NUVEC *position) {
     }
     GameObjectOrigin(object);
 }
+
+i16 id_BOMARRMONK = -1;
+i16 id_HEAVYREPEATINGCANNON = -1;
+i16 id_BIGGUN = -1;
+i16 id_TROOPERCANNON = -1;
 
 static void TakeOver_SetAction(GAMEOBJECT *rider, GAMEOBJECT *vehicle) {
     i32 action;
@@ -419,6 +426,8 @@ found:
     return 1;
 }
 
+TAG_DRAW_ICON_PC Tag_DrawIconFn = 0;
+
 void Tag_Check(GAMEOBJECT *object) {
     GAMEOBJECT *target;
     i32 result;
@@ -558,6 +567,10 @@ draw_icon:
     }
 }
 
+f32 SpeederChaseATATExitSpeed = 4.0f;
+f32 SpeederChaseATATExitHeight = 2.5f;
+NUVEC SpeederChaseATATExitLandPos = {-159.0f, 6.87f, -17.6f};
+
 void ReleaseTakeOver(GAMEOBJECT *target, i32 unused) {
     GAMEOBJECT *rider;
     GAMEOBJECT *object;
@@ -672,6 +685,8 @@ void TakeOverGameObject(GAMEOBJECT *rider, GAMEOBJECT *vehicle, i32 blend_camera
         TakeOver2GetIn(rider, vehicle);
     }
 }
+
+f32 TakeOverATATJumpScale = 0.75f;
 
 void TakeOverCode(GAMEOBJECT *object, i32 tag_pressed) {
     GAMEOBJECT *target;

@@ -158,6 +158,14 @@ typedef struct techno_progress_s { // size 0x8
     u32 visible[1];                // 0x4
 } TECHNO_PROGRESS;
 
+TECHNO_CONFIG_PC TechnoSys = {
+    0.2f,
+    {85, 44, -1, -1},
+    {{0.0f, 0.0f, 0.0f}, {0.0f, 0.0f, 0.0f}, {0.0f, 0.0f, 0.0f}},
+    {45, 46},
+    {{0.0991f, 0.0f, 0.0762f}, {-0.0991f, 0.0f, 0.0762f}}
+};
+
 static void Techno_ResetFields(TECHNO_CALLBACK *techno) {
     f32 floor_height;
     techno->ground_position.y = 0.0f;
@@ -465,6 +473,9 @@ static i32 Technos_Load(void *world_ptr, void *data) {
     }
     return 0;
 }
+
+i32 techno_gizmotype_id = -1;
+const char *TechnoRegistrationName = "Techno";
 
 ADDGIZMOTYPE_PC *Technos_RegisterGizmo(i32 type_id) {
     static ADDGIZMOTYPE_PC addtype = {0};

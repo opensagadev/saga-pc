@@ -36,17 +36,99 @@ extern NUVEC BrickCurPos[7];
 extern NUVEC CutCurPos[7];
 extern f32 pickedbing;
 static f32 scalenorm;
+void (*ShopDrawParent[3])(void) = {0};
+i32 ShopOldMenuLevel = 0;
+nuhspecial_s cutfilm_locked = {0};
+f32 TopBigPush[6] = {0};
+nuhspecial_s codeblank = {0};
+f32 codeshelfscale[6] = {0};
+i32 ShopColumn = 0;
+f32 topscale[6] = {0};
+nuhspecial_s question = {0};
+i32 charcheatix = 0;
+f32 ShopLockedScale = 0;
+i32 ShopEntered = 0;
+shopitem_s CutItems[128] = {0};
+f32 TopShelfPush[6] = {0};
+i32 CutScenePlayCount = 0;
+f32 ShopOldPickedScale = 0;
+i32 BrickShelfIds[7] = {0};
+f32 codebigscale[6] = {0};
+f32 TopBigScale[6] = {0};
+i32 oldpicked = 0;
+char *ShopCheatName = 0;
+struct nuvec_s *shopcampos = 0;
+f32 TopShelfScale[6] = {0};
+i32 extracheatix = 0;
+i32 (*ShopOldMenuFn)(void *) = 0;
+i32 (*menuptr)(void *menu) = 0;
 static f32 scalepicked;
+i32 (*ShopMenuParent[3])(void *) = {0};
 static f32 scale2;
+i32 subpicked = 0;
+nuhspecial_s arrow3 = {0};
+i32 ShopMoveItems = 0;
+nuhspecial_s infoblank = {0};
+f32 ShopSubInitA = 0;
+f32 ShopSubInitB = 0;
 static f32 scale3;
+u32 codelist[144] = {0};
 static f32 scale4;
+i32 CutShelfIds[7] = {0};
+nuhspecial_s cutblank = {0};
+i32 ExtraShelfIds[7] = {0};
+f32 toppush[6] = {0};
+void (*ShopOldDrawFn)(void) = 0;
+NUVEC ExtraCurPos[7] = {0};
+void (*drawptr)(void) = 0;
+struct nugspline_s *shopcamspline = NULL;
+NUVEC *shopcamlookat = 0;
+shopitem_s TopShelf[6] = {0};
+nuhspecial_s cutfilm_unlocked = {0};
+nuhspecial_s iconback = {0};
+nuhspecial_s extrasils[44] = {0};
+nuhspecial_s arrow2 = {0};
+f32 ShopOldPickedPush = 0;
+NUVEC BrickCurPos[7] = {0};
 extern f32 TopBigScale[6];
 extern f32 TopShelfPush[6];
 extern f32 TopBigPush[6];
 static f32 SubBigCharPush;
+i32 ShopEaseSubIn = 0;
+i32 SHOPEXTRACOUNT = 0;
+f32 ShopInOutScale = 0;
+nuhspecial_s atoz0to9icon[36] = {0};
+f32 ShopNameAlpha = 0;
+f32 ShopScaleOverride[7] = {0};
+NUVEC HintCurPos[7] = {0};
+i32 CharShelfIds[7] = {0};
+NUVEC CutCurPos[7] = {0};
+f32 ShopHintDrawWait = 0;
+NUVEC CharCurPos[7] = {0};
 static f32 SubNormCharPush;
+i32 ShopScrollKeyHit = 0;
+i32 (*ShopOldMenuParent[3])(void *) = {0};
+i32 shop_from_cutsceneplayer = 0;
+i32 HintShelfIds[7] = {0};
+i32 SHOPCHARCOUNT = 0;
 static f32 subpush[3];
+void (*ShopOldDrawPanelFn)(void) = 0;
+NUVEC SubShelfPos[7] = {0};
+i32 SHOPACTIVE = 0;
+shopitem_s *CharItems = NULL;
+shopitem_s *ExtraItems = NULL;
+shopitem_s *CodeItems = NULL;
+shopitem_s *BrickItems = NULL;
+f32 ShopPurchasePulse = 0;
+i32 ShopLastItem = 0;
+i32 ShopExit = 0;
+f32 ShopCheatTimer = 0;
+struct CUT_PLAYER_ACTIVE *shopcutsceneplayer = NULL;
 static u16 shelfang;
+f32 ShopCharTopOffset = 0;
+i32 ShopSubMenu = 0;
+i32 ShopMoveSfxLock = 0;
+i32 ShopItemChanged = 0;
 extern f32 codeshelfscale[6];
 extern f32 codemenuscale[6];
 extern f32 codebigscale[6];
@@ -297,13 +379,27 @@ static void Shop_GetInput(SHOP_INPUT_PC *input) {
 
 #pragma bss_seg(".bss$CodePos")
 static NUVEC CodePos[6] = {0};
+i32 SHOPHINTCOUNT = 0;
+i32 ShopDrawLevel = 0;
 #pragma bss_seg(".bss$ShelfPos")
 static NUVEC ShelfPos[6] = {0};
+nuhspecial_s arrow4 = {0};
+i32 picked = 0;
+nuhspecial_s arrow1 = {0};
 #pragma bss_seg(".bss$splcharshelf")
 static struct nugspline_s *splcharshelf = NULL;
 #pragma bss_seg()
+void (*ShopDrawPanelFn)(void) = 0;
+f32 ShopSlideTimer = 0;
+nuhspecial_s toolblank = {0};
+i32 ShopOldDrawLevel = 0;
+i32 ShopMenuLevel = 0;
+void (*ShopOldDrawParent[3])(void) = {0};
 static struct nugspline_s *splcodes = 0;
+f32 codemenuscale[6] = {0};
 static struct nugspline_s *splshelf = 0;
+f32 pickedbing = 0;
+i32 ShopMenu = 0;
 
 void LoadShelfSplines(void) {
     i32 i;
@@ -392,6 +488,14 @@ void UpdateCharacterIDs(void) {
         CharItems[i].price = price;
     }
 }
+
+i16 ShopHintIds[24] = {-1, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0};
+i32 SHOPCUTCOUNT = 128;
+f32 ShopNativeScale[6] = {0.9f, 0.9f, 0.28f, 0.95f, 0.8f, 0.9f};
+f32 ShopNativeBigFactor[6] = {1.6f, 1.6f, 1.6f, 1.65f, 1.6875f, 1.6f};
+f32 ShopNativePush[6] = {0.045f, 0.045f, 0.045f, 0.05f, 0.015f, 0.045f};
+f32 ShopNativeSubInitA = 0.045f;
+f32 ShopNativeSubInitB = 0.075f;
 
 void InitShop(WORLDINFO *world) {
     i32 i;
@@ -621,6 +725,8 @@ void InitShop(WORLDINFO *world) {
 i32 CheckCash(shopitem_s *items, i32 item) {
     return Game.coins >= (u32)items[item].price;
 }
+
+f32 ShopPurchasePulseDuration = 0.35f;
 
 i32 BuyShopItem(shopitem_s *items, i32 index, i32 charge) {
     SHOP_SAVE_VIEW *save = (SHOP_SAVE_VIEW *)&Game;
@@ -1509,6 +1615,10 @@ void DrawTopShelf(i32 unused) {
     Shop_DrawItem(&TopShelf[5], &ShelfPos[5], topscale[5], 1.0f, 1, toppush[5], 0, shelfang, 0);
 }
 
+f32 ShopCodePulseScale = 0.5f;
+f32 ShopCodeArrowBing = 0.5f;
+f32 ShopCodeArrowAmplitude = 0.5f;
+
 /* Renders exactly six code slots, uses codeshelfscale, and updates the
  * arrow phase. */
 void DrawCodeMenu3D(void) {
@@ -1552,6 +1662,9 @@ void DrawCodeMenu3D(void) {
     angle = (i32)((f64)ShopInOutScale * 32768.0);
     ShopCodeArrowBing = NuTrigTable[(angle >> 1) & 0x7fff] * ShopCodeArrowAmplitude;
 }
+
+i32 ShopBrickRotationDegrees = 315;
+f32 ShopCharacterPeriod = 1.75f;
 
 void DrawSubItems(void) {
     f32 bing = 0.0f;

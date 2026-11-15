@@ -110,6 +110,9 @@ extern "C" {
             }
         }
 
+        i32 legal_tid = 0;
+        i32 loadlegal_done = 0;
+
         void LoadPermLoadLegalTexture(void) {
             VARIPTR texture_base;
             VARIPTR texture_end;
@@ -161,6 +164,8 @@ extern "C" {
             *output = material;
             return 1;
         }
+
+        NUMTL *legal_mtl = 0;
 
         void LoadPermDestroyLegalMtl(void) {
             if (legal_mtl != NULL) {
@@ -232,6 +237,10 @@ extern "C" {
             unknown_10 = 0;
             memset(free_lists, 0, sizeof(free_lists));
         }
+
+        i32 PermDataLoaded = 1;
+        volatile i32 LoadPerm_LanguageSelect = 0;
+        i32 LoadPerm_StringsLoaded = 0;
 
         void LoadPermData(void *process) {
             PC_CONTROL_CONFIG control_config;

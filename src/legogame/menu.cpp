@@ -150,7 +150,12 @@ extern "C" {
         }
     }
 
+    i32 newgamefade = 0;
+    f32 newgamewait = 0.0f;
+    MISSION_MENU_PACKET MissionMenuPacket = {0};
+    f32 newgamealpha = 0.0f;
     __declspec(allocate(".bss$MenuButtonHistoryPc")) u32 MenuButtonHistory[15] = {0};
+    u8 MenuKeyboardOverrideActivePc = 0;
 
     void MenuUpdateButtonHistory(void) {
         const i32 menu_id = GetMenuID();

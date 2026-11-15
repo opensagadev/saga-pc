@@ -30,6 +30,7 @@ typedef struct level_sfx_cut_s { // size 0xe8
 } LEVEL_SFX_CUT;
 
 AREA_DATA_PC *DEATHSTARRESCUE_ADATA;
+i32 ShadowMode = 0;
 
 i32 GameAudio_OverrideFootStep_LSW(GAMEOBJECT *object, i32 on_platform) {
     WORLDINFO *world = WorldInfo_CurrentlyActive();

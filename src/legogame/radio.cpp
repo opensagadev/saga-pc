@@ -9,6 +9,10 @@ struct RADIO_ENTRY {        // size 0x14
 
 f32 RadioLifetime = 20.0f;
 
+extern "C" {
+    u8 RadioEntries[0xa0] = {0};
+}
+
 void ResetRadios(void) {
     memset(RadioEntries, 0, sizeof(RadioEntries));
     radios_playing = 0;

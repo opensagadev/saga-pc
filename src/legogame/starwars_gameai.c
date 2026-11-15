@@ -460,6 +460,9 @@ i32 StarWars_MidSpecialMove(AISYS_PC *system, AIPACKET *packet, APIOBJECT *apiob
     return 0;
 }
 
+i32 LEGO_AIPATHCNX_DONTTOGGLE = 0;
+i32 LEGO_AIPATHCNX_FULLTERRAIN = 0;
+
 void StarWars_GameAISysInit(void) {
     LEGO_AIPATHCNX_JUMP = 0x1;
     LEGO_AIPATHCNX_R2D2GLIDE = 0x4;

@@ -83,6 +83,7 @@ static void Traffic_vehicle(NUFPAR_PC *parser) {
     }
 }
 
+i32 traffic_portalling = 1;
 static NUFPCOMJMP TrafficAnim_ConfigKeywords[] = {
     {"yoffset", TrafficAnim_yoffset},
     {NULL,      NULL               }

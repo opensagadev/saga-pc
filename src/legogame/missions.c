@@ -68,7 +68,17 @@ void MenuInitMissions(MENU *menu) {
     UpdateMissionIconX(system, 1);
 }
 
+f32 MissionIconBaseSize = 0.125f;
+f32 MissionIconSelectedSize = 0.2f;
+f32 MissionIconGap = 0.035f;
+f32 MissionIconStep = 0.12f;
+f32 MissionIconY = -0.725f;
+f32 MissionNameY = -0.525f;
+f32 MissionNameScale = 0.625f;
 f32 MissionBestBrickX = -0.15f;
+f32 MissionBestTimeX = 0.15f;
+f32 MissionBestTimeY = -0.365f;
+f32 MissionBestTimeScale = 0.5f;
 
 void MenuDrawMissions(MENU *menu) {
     f32 alpha;

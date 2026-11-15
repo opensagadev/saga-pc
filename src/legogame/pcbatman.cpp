@@ -4,6 +4,10 @@ extern "C" void NuRndrConfigureLeaf(f32, f32, i32);
 
 extern "C" void InitGameBeforeConfig(void);
 
+extern "C" {
+    i32 SUPERBUFFERSIZE = 0x09600000;
+}
+
 /* Allocates the permanent arena (InitOnce does the same inline). */
 extern "C" void fun_004010c0(void) {
     permbuffer_base.void_ptr = NuAlloc(SUPERBUFFERSIZE, ".\\pcbatman.cpp", 0x112);
@@ -21,6 +25,13 @@ extern "C" {
         StartupGameFlag1 = 1;
         StartupGameFlag0 = 0;
     }
+}
+
+extern "C" {
+    i32 InitOnceFileMode = 1;
+    const char *StartupDatNames[7] = {
+        "GAME.DAT", "Episode_I.DAT", "Episode_II.DAT", "Episode_III.DAT", "Episode_IV.DAT", "Episode_V.DAT", "Episode_VI.DAT",
+    };
 }
 
 extern "C" void InitOnce(i32 argc, char **argv) {

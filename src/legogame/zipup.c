@@ -1,5 +1,7 @@
 #include "saga.h"
 
+char GrapDetach_text[11] = "GrapDetach";
+char GrapAttach_text[11] = "GrapAttach";
 #pragma data_seg(".data$GrapSwing_text")
 static char GrapSwing_text[10] = "GrapSwing";
 #pragma data_seg()
@@ -12,9 +14,15 @@ static f32 ZipUpRiderOffsetScale = 0.9f;
 #pragma data_seg(".data$ZipUpSwingDurationPc")
 static f32 ZipUpSwingDurationPc = 1.5f;
 #pragma data_seg()
+char *ZipUpTypeNamePtr = "ZipUp";
+u32 ZipUpRopeCheatColour = 0xff103f10;
 #pragma data_seg(".data$ZipUpSwingOffsetHeightPc")
 static f32 ZipUpSwingOffsetHeightPc = 0.251503f;
 #pragma data_seg()
+i32 zipup_gizmotype_id = -1;
+f32 ZipUpRopeHalfWidth = 0.01f;
+f32 ZipUpMarkerOffsetZ = 0.9229f;
+f32 ZipUpMarkerOffsetY = 0.84f;
 #pragma data_seg(".data$ZipUpSwingOffsetLengthPc")
 static f32 ZipUpSwingOffsetLengthPc = 1.9236159f;
 #pragma data_seg()
@@ -1043,7 +1051,10 @@ static i32 ZipUp_GetNumOutputs(GIZMO_PC *gizmo) {
     return 1;
 }
 
+NUMTL *ropemtl = 0;
+i32 CanDrawZipUpSwirls = 0;
 static ADDGIZMOTYPE_PC ZipUpAddTypePc = {0};
+i32 ZipUpRopeModulation = 0;
 
 extern ADDGIZMOTYPE_PC *ZipUps_RegisterGizmo(i32 type_id) {
     ZipUpAddTypePc = Default_ADDGIZMOTYPE;

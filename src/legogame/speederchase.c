@@ -24,8 +24,10 @@ i32 SpeederBlowupHack(GIZMOBLOWUP_PC *blowup, i32 hit_type) {
 SPEEDERCHASE_NETPACKET *SpeederChaseNetPacket = NULL;
 i32 SpeederChaseState0 = 0;
 i32 SpeederChaseState1 = 0;
+i32 speeder_hitpoints_lost = 0;
 f32 SpeederChaseTime0 = 0.0f;
 f32 SpeederChaseTime1 = 0.0f;
+i32 players_cannot_exit_speeder = 0;
 
 void SpeederChaseA_Init(WORLDINFO *world) {
     SpeederChaseNetPacket = SetLevelHack(7);
@@ -203,6 +205,7 @@ static void SpeederChase_SetMode(AISCRIPTPROCESS *processor, i32 mode) {
     speeder_hitpoints_lost = 0;
 }
 
+i32 players_going_forward = 1;
 /* Speeder chase pursuit tuning. */
 f32 speeder_ahead_time = 15.0f;
 f32 speeder_midrange_time = 10.0f;

@@ -109,6 +109,9 @@ extern "C" {
     }
 
     i32 drawautosaveicon = 0;
+    f32 cointotal_x[2] = {0};
+    i32 DrawBossHitPointsTwoRows = 0;
+    struct gameobject_s *drawbosshitpoints = 0;
 
     void DrawAutoSaveIcon(void) {
         drawautosaveicon = 1;
@@ -998,12 +1001,31 @@ extern "C" {
         }
     }
 
+    i32 DoubleScore = 0;
+    f32 statstime = 0;
+    f32 BuildUpScale = 0;
     /* Melee target counter state. */
     i8 meleeTarg_maxCount[4] = {0};
+    f32 DrawMiniKitTime = 0;
+    f32 PANEL3DMULX = 0;
+    f32 CoinTotalScale = 0;
+    f32 DrawCoinTotalTime = 0;
+    f32 DrawRedBrickTime = 0;
+    f32 RedBrickScale = 0;
+    f32 DrawBuildUpTime = 0;
     f32 meleeTarg_alpha[4] = {0};
     f32 meleeTarg_flashTime[4] = {0};
+    f32 cointotaltime = 0;
+    f32 redbrickslidetime = 0;
+    f32 builduptime = 0;
     i8 meleeTarg_localCount[4] = {0};
+    i32 BuildUpTotal = 0;
     f32 meleeTarg_scaleSize[4] = {0};
+    i32 BuildUpDone = 0;
+    f32 PANEL3DMULY = 0;
+    f32 minikittime = 0.0f;
+    f32 goldbricktime = 0;
+    u8 HudPausePromptBlue = 0;
 
     void DrawMeleeTargetsNumber(i16 *targets, u8 *counts, i32 count, u8 reset, nuhspecial_s *special) {
         char text[4];
@@ -1121,6 +1143,8 @@ extern "C" {
     f32 TimerBaseScale = 0.75f;
     f32 TimerScale = 1.0f;
     f32 TimerAlpha = 1.0f;
+    f32 PanelWideWidth = 740.0f;
+    f32 PanelWideHeight = 387.5f;
 
     void DrawTimer(i32 time, i32 expanded, i32 reset) {
         char text[16];
@@ -1163,9 +1187,79 @@ extern "C" {
         PANEL3DMULY = 224.0 / (PanelProjectionY * (224.0 / height));
     }
 
+    f32 PanelProjectionX = 1222.0f;
+    f32 PanelProjectionY = 1145.0f;
+    f32 HudNameScale = 0.35f;
+    i32 HudNameRed = 255;
+    i32 HudNameGreen = 255;
+    i32 HudNameBlue = 255;
+    f32 HudNameWidth = 0.5f;
+    f32 HudNameWideWidth = 0.7f;
+    f32 HudNameOffsetX = 0.075f;
+    f32 HudNameOffsetY = -0.125f;
+    i32 HudPausePromptEnabled = 1;
+    f32 HudPausePromptOffsetY = -0.285f;
+    i32 HudPausePromptRed = 255;
+    i32 HudPausePromptGreen = 191;
+    f32 DoubleScoreTextY = -0.6f;
+    f32 DoubleScoreTextScale = 0.5f;
+    f32 POWERUPOBJSIZE = 0.25f;
+    f32 POWERUPYPOS1 = -0.335f;
+    f32 POWERUPYPOS2 = -0.2f;
+    f32 HudLevelTitleY = -0.745f;
+    f32 HudLevelTitleScale = 0.5f;
+    f32 HudLevelTitleScaleX = 1.0f;
+    f32 HudLevelTitleWidth = 1.0f;
+    f32 HudDropInX = 0.685f;
+    f32 MissionDropInAlpha = 0.75f;
+    f32 HudDropInScale = 0.35f;
+    f32 PANEL_COINX = 0.65f;
+    f32 PANEL_COINY = 0.045f;
+    f32 HudCoinAdjustY = -0.006f;
+    f32 HudScoreX = 0.61f;
+    f32 PANEL_COINSCALE_END = 0.35f;
+    f32 HudScoreScale = 0.375f;
+    f32 HudHeartX = 0.65f;
+    f32 HudHeartY = -0.045f;
+    f32 HudHeartScale = 0.195f;
+    f32 PanelHeartSpacing = 0.3f;
+    f32 PanelHeartRowOffset = 0.14f;
+    f32 STATSPOSY = 0.745f;
+    f32 STATSPOS2Y = 1.255f;
+    f32 MissionPlayerIconSize = 0.16f;
+    f32 ICONX = 0.775f;
+    f32 PANEL_REDBRICKSCALE = 0.4f;
+    f32 REDBRICKPOSX = 0.725f;
+    f32 REDBRICKPOSY = -0.745f;
+    f32 REDBRICKPOS2X = 1.27499998f;
+    f32 REDBRICKPOS2Y = -1.255f;
 #pragma data_seg(".data$HudAutoSaveScalePc")
     f32 HudAutoSaveScale = 0.075f;
 #pragma data_seg()
+    i32 HubPromptOffColour[3] = {255, 255, 255};
+    i32 HubPromptOnColour[3] = {223, 223, 223};
+    f32 HubPromptX = 0.67f;
+    f32 HubPromptSpacing = -0.07f;
+    f32 HubPromptLabelOffset = -0.04f;
+    f32 HubPromptMaxWidth = 0.275f;
+    f32 CoinTotalScoreSize = 0.5f;
+    f32 COINTOTAL_COINSIZE = 0.5f;
+    f32 CoinTotalCoinOffset = 0.05f;
+    f32 CoinTotalScoreOffsetY = -0.005f;
+    i32 cointotal_i_obj[2] = {187, 187};
+    f32 CoinTotalTargetOffsetY = -0.1f;
+    f32 DrawCoinTotalY = 2000000.0f;
+    i32 HubBuildBarSegments = 10;
+    f32 HubBuildBarSpacing = 0.035f;
+    f32 HubBuildBarScale = 0.1f;
+    f32 HubBuildBarOverallScale = 0.85f;
+    f32 PanelHeartWidescreen = 0.85f;
+    f32 HudBossHeartY = 0.47f;
+    f32 HudBossHeartScale = 0.2f;
+    f32 HudBossIconY = 0.6125f;
+    f32 HudBossIconScale = 0.16f;
+
+    i32 FPSDISPLAY = 0;
 
     void DrawPanel(void) {
         i32 menu = GetMenuID();
@@ -1398,6 +1492,10 @@ extern "C" void PanelRender(WORLDINFO *world) {
         NuPrimSetCoordinateSystem(NuPrimCoordSystemStack[NuPrimCSPos]);
         NuRndrEndScene();
     }
+}
+
+extern "C" {
+    f32 game_pulse = 0.0f;
 }
 
 void Tag_DrawIcon_Batman(GAMEOBJECT *object) {

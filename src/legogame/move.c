@@ -429,6 +429,13 @@ static f32 MoveFabs(f32 value) {
     return *(f32 *)&bits;
 }
 
+i16 dat_007f1924 = -1;
+i16 dat_007f1928 = -1;
+i16 id_BASKETCANNON = -1;
+i16 id_STAP = -1;
+i16 id_JUMBOHOMINGDROID = -1;
+i16 id_RANCOR = -1;
+i16 id_R2Q5 = -1;
 i16 id_R2Q5;
 
 typedef struct CHARACTER_COMMUNICATE_READER {
@@ -1073,6 +1080,7 @@ static f32 MovementWalkingSpeedPC(GAMEOBJECT *object, f32 scale) {
 }
 
 static f32 magdif = 0;
+f32 PodCollisionMagnitude = 0;
 
 void VehicleCollisionCode(GAMEOBJECT *object) {
     i32 speeder_level;
@@ -1544,6 +1552,8 @@ void MovePlayer_ROLLING(GAMEOBJECT *object) {
 #pragma data_seg(".data$PodFacingSeekRate")
 static f32 PodFacingSeekRate = 2.0f;
 #pragma data_seg()
+f32 TURNTIME = 1.0f;
+f32 VehicleLoopTime = 1.5f;
 #pragma data_seg(".data$PodRollInputRate")
 static f32 PodRollInputRate = 6.0f;
 #pragma data_seg()
@@ -1753,6 +1763,24 @@ void LoopCode(GAMEOBJECT *object, i32 jump_pressed, i32 unused, GAMEPAD_PC *pad,
 }
 
 f32 TurnCamSafeDurationScale = 0.95f;
+f32 CombatReactionHorizontalScale = 1.5f;
+f32 CombatReactionVerticalScale = 2.0f;
+i32 test_ai_combo = 1;
+f32 ForceDeflectSpeed = 4.0f;
+f32 ForceDeflectSeekRate = 3.0f;
+f32 ForcePushDuration = 0.8f;
+f32 ForcePushStrongDuration = 1.2f;
+f32 ForcePushMindTrickDuration = 0.4f;
+f32 PCForceGlowRadiusMultiplier = 1.125f;
+f32 PCForceGlowHoldDuration = 0.333f;
+f32 FORCEGLOWTIME = 0.1f;
+f32 rocket_speed = 1.2f;
+i32 VehicleGunshipAngleADefault = 8;
+i32 VehicleGunshipAngleAPlayer1 = 10;
+i32 VehicleGunshipAngleAPlayer2 = 5;
+i32 VehicleGunshipAngleBDefault = 3;
+i32 VehicleGunshipAngleBPlayer1 = 4;
+f32 CableTargetScale = 2.0f;
 
 void TurnCodeCamSafe(GAMEOBJECT *object, NUMTX *matrix) {
     static i16 TURNROLL = 180;
@@ -5620,12 +5648,27 @@ void ResetForceBack(void) {
     ForceBackPos = NULL;
 }
 
+AREA_DATA_PC *BOUNTYHUNTERPURSUIT_ADATA = 0;
+AREA_DATA_PC *DOGFIGHT_ADATA = 0;
+AREA_DATA_PC *BATTLEOVERCORUSCANT_ADATA = 0;
+f32 avg_currentspeed_mul = 0;
+f32 PlayerOpponent_Range2 = 0.0f;
 #pragma bss_seg(".bss$ForceBackRadiusPc")
 static f32 ForceBackRadiusPc = 0;
 #pragma bss_seg()
+f32 ForceBackRadius2 = 0;
+i32 ComboOpponent_Behind = 0;
+f32 ComboOpponent_Range2 = 0;
+NUVEC PooPosition[2] = {0};
+f32 VehicleAreaRememberSpeed = 0;
+i32 IDLESPEEDINNARROWSOCKSONLY = 0;
+f32 SaberSparksTimer = 0;
+i32 testlaser_type = 0;
 #pragma bss_seg(".bss$ForceBackType")
 static i32 ForceBackType = 0;
 #pragma bss_seg()
+void (*VehicleSlowdownCallback)(GAMEOBJECT *) = 0;
+i32 lightning_type = 0;
 
 void SetForceBack(GAMEOBJECT *object, NUVEC *position, f32 radius, i32 type) {
     ForceBackObj = object;
@@ -5951,6 +5994,15 @@ void fun_004a5690(void) {
 #pragma data_seg(".data$rocket_lock_distance")
 static f32 rocket_lock_distance = 1.0f;
 #pragma data_seg()
+f32 PodCollisionThreshold = 0.999f;
+NUVEC PodSprintLiftPositions[3] = {
+    {-395.26f, -5.48f, -165.08f},
+    {-375.38f, -5.04f, -286.5f },
+    {-354.91f, -4.85f, -299.32f}
+};
+f32 DirectionalGrappleSeekScalePc = 0.5f;
+f32 DirectionalZipUpSeekRatePc = 8.0f;
+i32 LandspeederExhaustJoints[3] = {2, 3, 4};
 
 void BobaRocket_Move(PART_PC *part, f32 elapsed) {
     NUVEC delta;
@@ -6594,6 +6646,23 @@ void CableCode(GAMEOBJECT *object, i32 special_pressed, f32 unused) {
 }
 
 static f32 JumpAnimHoldTime = 0.100000001f;
+AWKWARD_SHAPE_SPHERE_PC AwkwardShapeSphere[14] = {
+    {&id_RANCOR,    4, 0, 0.3f  },
+    {&id_DEWBACK,   1, 1, 0.2f  },
+    {&id_DEWBACK,   2, 0, 0.125f},
+    {&id_DEWBACK,   3, 0, 0.1f  },
+    {&id_DEWBACK,   4, 0, 0.075f},
+    {&id_BIGGUN,    3, 0, 0.175f},
+    {&id_BIGGUN,    4, 0, 0.175f},
+    {&id_BIGGUN,    5, 0, 0.175f},
+    {&id_BANTHA,    1, 1, 0.25f },
+    {&id_ATAT,      7, 1, 1.2f  },
+    {&id_CATAPULT,  1, 0, 0.25f },
+    {&id_FIRETRUCK, 1, 1, 0.3f  },
+    {&id_FIRETRUCK, 2, 1, 0.3f  },
+    {NULL,          0, 0, 0.0f  }
+};
+u8 disorientAxis = 7;
 
 static void JumpAnimCode(GAMEOBJECT *object) {
     DEFAULT_ANIMATION_TIMERS *timers = (DEFAULT_ANIMATION_TIMERS *)object;
@@ -8332,21 +8401,427 @@ static f32 ApplyGravityContext22HoverHeight = 0.2f;
 #pragma data_seg(".data$ApplyGravityContext42HoverHeight")
 static f32 ApplyGravityContext42HoverHeight = 0.2f;
 #pragma data_seg()
+i32 TwistSockRotationModeA = 3;
+i32 TwistSockRotationModeB = 5;
+i32 TwistYawLeanDegrees = 15;
+i32 TwistPitchLeanDegrees = 15;
+f32 TwistLateralSpeed = 8.0f;
+f32 CurrentSpeed = 10.0f;
+f32 BaseCurrentSpeed = 10.0f;
+i32 CircleLeanDegrees = 30;
 #pragma data_seg(".data$ApplyGravityContextHoverHeight")
 static f32 ApplyGravityContextHoverHeight = 0.2f;
 #pragma data_seg()
+API_EXTRA_ACTION PlayerExtraActionInfo[33] = {
+    {"run1",                      3  },
+    {"idle1",                     1  },
+    {"interface1",                24 },
+    {"deactivated1",              65 },
+    {"fall1",                     5  },
+    {"fire1",                     2  },
+    {"force1",                    11 },
+    {"walk1",                     0  },
+    {"tiptoe1",                   4  },
+    {"jump1",                     6  },
+    {"land1",                     7  },
+    {"shoot1",                    22 },
+    {"block",                     26 },
+    {"takehit1",                  61 },
+    {"punch1",                    81 },
+    {"trooperaccess",             69 },
+    {"throw1",                    101},
+    {"hunteraccess",              70 },
+    {"stun1",                     167},
+    {"stunned1",                  170},
+    {"ride",                      108},
+    {"ride_buggy",                112},
+    {"ride_gyrocopter",           131},
+    {"ride_bantha",               112},
+    {"ride_dewback",              131},
+    {"ride_landspeeder",          132},
+    {"ride_tauntaun",             134},
+    {"ride_speederbike",          192},
+    {"ride_heavyrepeatingcannon", 193},
+    {"ride_troopercannon",        194},
+    {"rideluke",                  195},
+    {"rideluke_running",          196},
+    {NULL,                        0  }
+};
+f32 lightning_sizew[2] = {0.02f, 0.02f};
+f32 lightning_sizel[2] = {0.1f, 0.1f};
+f32 lightning_sizewab[2] = {0.01f, 0.01f};
+f32 lightning_endw[2] = {0.1f, 0.1f};
+u32 lightning_col[2] = {0xff808040, 0xff808040};
 #pragma data_seg(".data$ApplyGravityWallRunAcceleration")
 static f32 ApplyGravityWallRunAcceleration = -0.25f;
 #pragma data_seg()
 #pragma data_seg(".data$PODSPRINT_GRAVITY")
 static f32 PODSPRINT_GRAVITY = -35.0f;
 #pragma data_seg()
+CHARACTER_CONTEXT_INFO_PC *CInfo = &PCContextInfoTable[1];
+BLADE BladeTab[4] = {
+    {101, 223, 1, 59, 64, {255, 31, 0},  {0, 0, 0}},
+    {103, 221, 2, 60, 65, {30, 191, 15}, {0, 0, 0}},
+    {105, 225, 3, 61, 66, {0, 191, 255}, {0, 0, 0}},
+    {107, 227, 4, 62, 67, {200, 0, 255}, {0, 0, 0}},
+};
+CHARACTER_CONTEXT_INFO_PC PCContextInfoTable[101] = {
+    {"NoContext",         -1, 0x1000,     0 },
+    {"Jump",              -1, 0x1000000,  0 },
+    {"LandJump",          -1, 0x15,       0 },
+    {"LandJump2",         -1, 0x15,       0 },
+    {"LandFlip",          -1, 0x15,       0 },
+    {"LandComboJump",     -1, 0x15,       0 },
+    {"Combo",             -1, 0x800010,   1 },
+    {"WeaponIn",          -1, 0x1013,     0 },
+    {"WeaponOut",         -1, 0x1013,     0 },
+    {"Force",             -1, 0x222,      0 },
+    {"ComboRotate",       -1, 0x11,       0 },
+    {"Shoot",             -1, 0x11,       0 },
+    {"Interface",         -1, 0x33,       0 },
+    {"Block",             -1, 0x4000010,  0 },
+    {"LandLunge",         -1, 0x800011,   0 },
+    {"LandSlam",          -1, 0x800011,   0 },
+    {"Teleport",          -1, 0x1b3,      12},
+    {"Swipe",             -1, 0x800010,   0 },
+    {"Tube",              -1, 0x408,      0 },
+    {"ForceThrow",        -1, 0x12,       0 },
+    {"HoverUp",           -1, 0x30,       0 },
+    {"Rocket",            -1, 0x11,       0 },
+    {"TakeHit",           -1, 0x10000031, 0 },
+    {"Zap",               -1, 0x10,       0 },
+    {"Deactivated",       -1, 0x10200031, 0 },
+    {"Hold",              -1, 0x4000010,  0 },
+    {"LandSpecial",       -1, 0x15,       0 },
+    {"Communicate",       -1, 0x33,       0 },
+    {"ForcePush",         -1, 0x2,        0 },
+    {"ForcePushed",       -1, 0x231,      0 },
+    {"ForceDeflect",      -1, 0x2,        0 },
+    {"ForceFrozen",       -1, 0xb,        0 },
+    {"BigJump",           -1, 0x2400111,  0 },
+    {"BackFlip",          -1, 0x91,       0 },
+    {"Recoil",            -1, 0x9,        0 },
+    {"ForcedBack",        -1, 0x8,        0 },
+    {"DropIn",            -1, 0x40113,    0 },
+    {"DropOut",           -1, 0x40113,    0 },
+    {"Dodge",             -1, 0x92,       1 },
+    {"Punch",             -1, 0x10032,    1 },
+    {"Push",              -1, 0x2030,     0 },
+    {"PushSpinner",       -1, 0x3010,     0 },
+    {"LandCombatRoll",    -1, 0xb4,       0 },
+    {"Turn",              -1, 0x190,      0 },
+    {"Doomed",            -1, 0x400110,   0 },
+    {"Launch",            -1, 0x0,        0 },
+    {"BuildIt",           -1, 0x10,       0 },
+    {"ThrowDetonator",    -1, 0x33,       0 },
+    {"Grabbed",           -1, 0x13,       0 },
+    {"SpecialMoveVictim", -1, 0x33,       0 },
+    {"Roll",              -1, 0x10,       16},
+    {"UnRoll",            -1, 0x13,       16},
+    {"Slide",             -1, 0x40000030, 0 },
+    {"BeenDragged",       -1, 0x0,        0 },
+    {"ZipDown",           -1, 0x30,       0 },
+    {"Loop",              -1, 0x190,      0 },
+    {"Poo",               -1, 0x33,       0 },
+    {"Grab",              -1, 0x33,       0 },
+    {"Eaten",             -1, 0x60020933, 0 },
+    {"BarrelRoll",        -1, 0x190,      0 },
+    {"BeenTakenOver",     -1, 0x600209b0, 0 },
+    {"GetIn",             -1, 0x60400130, 0 },
+    {"Flatten",           -1, 0x33,       0 },
+    {"Buck",              -1, 0x33,       0 },
+    {"Eat",               -1, 0x33,       0 },
+    {"Disorientate",      -1, 0x100,      0 },
+    {"Activate",          -1, 0x200033,   0 },
+    {"ZappedByFloor",     -1, 0x31,       0 },
+    {"Climb",             -1, 0x431,      0 },
+    {"Tightrope",         -1, 0x80431,    0 },
+    {"WallShuffle",       -1, 0x3031,     0 },
+    {"Grapple",           -1, 0x40000430, 0 },
+    {"ZipUp",             -1, 0x40000430, 0 },
+    {"PlaceDetonator",    -1, 0x33,       0 },
+    {"PickUpDetonator",   -1, 0x31,       0 },
+    {"PullLever",         -1, 0x31,       0 },
+    {"Float",             -1, 0x30,       2 },
+    {"Signal",            -1, 0x4000433,  0 },
+    {"Batarang",          -1, 0x8000033,  0 },
+    {"Hang",              -1, 0x430,      0 },
+    {"Glide",             -1, 0x430,      0 },
+    {"Catch",             -1, 0x13,       0 },
+    {"Techno",            -1, 0x84000031, 0 },
+    {"AttractoTarget",    -1, 0x4000033,  0 },
+    {"AttractoDeposit",   -1, 0x33,       0 },
+    {"Sonar",             -1, 0x33,       0 },
+    {"LedgeTerrain",      -1, 0x431,      0 },
+    {"Transform",         -1, 0x33,       0 },
+    {"WallJumpWait",      -1, 0x2431,     0 },
+    {"SuperCarry",        -1, 0x33,       0 },
+    {"PushObstacle",      -1, 0x3010,     0 },
+    {"Stunned",           -1, 0x10000031, 0 },
+    {"Ledge",             -1, 0x431,      0 },
+    {"Security",          -1, 0x33,       0 },
+    {"Ballooning",        -1, 0x100010,   0 },
+    {"ThrowQuick",        -1, 0x33,       0 },
+    {"DieAir",            -1, 0x80b1,     0 },
+    {"DieGround",         -1, 0x80b1,     0 },
+    {"HatMachine",        -1, 0x33,       0 },
+    {"Whip",              -1, 0x33,       1 },
+    {"NetWait",           -1, 0x23,       0 },
+};
+API_ACTION_INFO PlayerActionInfoList[234] = {
+    {"?",                   0U},
+    {"walk",                2U},
+    {"idle",                0U},
+    {"fire",                0U},
+    {"run",                 4U},
+    {"tiptoe",              1U},
+    {"fall",                0U},
+    {"jump",                0U},
+    {"land",                0U},
+    {"idle4",               0U},
+    {"jump2",               0U},
+    {"land2",               0U},
+    {"force",               0U},
+    {"flip",                0U},
+    {"flipland",            0U},
+    {"jump3",               0U},
+    {"idle2",               0U},
+    {"weaponin",            0U},
+    {"weaponout",           0U},
+    {"combojump",           0U},
+    {"comboland",           0U},
+    {"idle3",               0U},
+    {"land3",               0U},
+    {"shoot",               0U},
+    {"run2",                4U},
+    {"interface",           0U},
+    {"weaponidle",          0U},
+    {"block1",              8U},
+    {"block2",              8U},
+    {"block3",              8U},
+    {"run3",                4U},
+    {"crawl",               0U},
+    {"lunge",               0U},
+    {"lungeland",           0U},
+    {"slam",                0U},
+    {"slamland",            0U},
+    {"open",                0U},
+    {"hover",               0U},
+    {"fly",                 0U},
+    {"left",                0U},
+    {"force2",              0U},
+    {"fall2",               0U},
+    {"weaponback",          0U},
+    {"up",                  0U},
+    {"pushed",              0U},
+    {"in",                  0U},
+    {"out",                 0U},
+    {"combo1_1",            0U},
+    {"combo1_2a",           0U},
+    {"combo1_2b",           0U},
+    {"combo1_3a",           0U},
+    {"combo1_3b",           0U},
+    {"combo1_3c",           0U},
+    {"combo1_3d",           0U},
+    {"combo2_1",            0U},
+    {"combo2_2a",           0U},
+    {"combo2_2b",           0U},
+    {"combo2_3a",           0U},
+    {"combo2_3b",           0U},
+    {"combo2_3c",           0U},
+    {"combo2_3d",           0U},
+    {"shoot2",              0U},
+    {"takehit",             0U},
+    {"takehit2",            0U},
+    {"tiptoe2",             1U},
+    {"walk2",               2U},
+    {"deactivated",         0U},
+    {"deactivated2",        0U},
+    {"deactivated3",        0U},
+    {"deactivated4",        0U},
+    {"interface2",          0U},
+    {"interface3",          0U},
+    {"interface4",          0U},
+    {"hoverup",             0U},
+    {"hoverdown",           0U},
+    {"land4",               0U},
+    {"fall3",               0U},
+    {"fall4",               0U},
+    {"fire2",               0U},
+    {"eat",                 0U},
+    {"right",               0U},
+    {"walkbackwards",       0U},
+    {"punch",               0U},
+    {"push",                0U},
+    {"choked",              0U},
+    {"zapped",              0U},
+    {"punch2",              0U},
+    {"punch3",              0U},
+    {"combatroll_fire",     0U},
+    {"forwards",            0U},
+    {"fallland",            0U},
+    {"shootleft",           0U},
+    {"shootright",          0U},
+    {"shootback",           0U},
+    {"pulllever",           0U},
+    {"helmeton",            0U},
+    {"build",               0U},
+    {"idle5",               0U},
+    {"idle6",               0U},
+    {"idle7",               0U},
+    {"idle8",               0U},
+    {"attack",              0U},
+    {"throw",               0U},
+    {"pickup",              0U},
+    {"drop",                0U},
+    {"grabbed",             0U},
+    {"attacked",            0U},
+    {"slide",               0U},
+    {"communicate",         0U},
+    {"ride",                0U},
+    {"helmeton2",           0U},
+    {"throw2",              0U},
+    {"throw3",              0U},
+    {"ride2",               0U},
+    {"extra_tiptoe",        1U},
+    {"extra_walk",          2U},
+    {"extra_run",           4U},
+    {"extra_fall",          0U},
+    {"extra_idle",          0U},
+    {"extra_weaponidle",    0U},
+    {"backflip",            0U},
+    {"extra_jump",          0U},
+    {"extra_jump2",         0U},
+    {"extra_land",          0U},
+    {"extra_land2",         0U},
+    {"extra_lunge",         0U},
+    {"extra_lungeland",     0U},
+    {"extra_weaponin",      0U},
+    {"extra_weaponout",     0U},
+    {"activate",            0U},
+    {"deactivate",          0U},
+    {"walk3",               2U},
+    {"ride3",               0U},
+    {"ride4",               0U},
+    {"splat",               0U},
+    {"ride5",               0U},
+    {"climb_idle",          0U},
+    {"tightrope_idle",      0U},
+    {"tightrope_move",      0U},
+    {"wallshuffle_idle",    0U},
+    {"wallshuffle_left",    0U},
+    {"wallshuffle_right",   0U},
+    {"putdown",             0U},
+    {"float",               0U},
+    {"tightrope_geton",     0U},
+    {"target",              0U},
+    {"hang_idle",           0U},
+    {"hang_move",           0U},
+    {"glide",               0U},
+    {"punch_behind",        0U},
+    {"tightrope_getoff",    0U},
+    {"change",              0U},
+    {"throw_wait",          0U},
+    {"catch",               0U},
+    {"hack",                0U},
+    {"attract",             0U},
+    {"transfer",            0U},
+    {"sonar",               0U},
+    {"ledge_idle",          0U},
+    {"ledge_left",          0U},
+    {"ledge_right",         0U},
+    {"transform",           0U},
+    {"walljump_wait",       0U},
+    {"walljump",            0U},
+    {"supercarry_pickup",   0U},
+    {"supercarry_idle",     0U},
+    {"supercarry_walk",     0U},
+    {"supercarry_throw",    0U},
+    {"stun",                0U},
+    {"stun2",               0U},
+    {"stun3",               0U},
+    {"stunned",             0U},
+    {"stunned2",            0U},
+    {"stunned3",            0U},
+    {"security",            0U},
+    {"superpush_idle",      0U},
+    {"superpush_push",      0U},
+    {"superpush_pull",      0U},
+    {"ballooning",          0U},
+    {"throw_quick",         0U},
+    {"backpackfallland",    0U},
+    {"combatroll_jump",     0U},
+    {"combatroll_fall",     0U},
+    {"combatroll_land",     0U},
+    {"recoil",              0U},
+    {"die_air",             0U},
+    {"stun_die",            0U},
+    {"grapple_idle",        0U},
+    {"grapple_up",          0U},
+    {"grapple_down",        0U},
+    {"grapple_hang",        0U},
+    {"idle9",               0U},
+    {"idle10",              0U},
+    {"ride6",               0U},
+    {"ride7",               0U},
+    {"ride8",               0U},
+    {"ride9",               0U},
+    {"ride10",              0U},
+    {"magnet_walk_metal",   2U},
+    {"magnet_tiptoe",       1U},
+    {"magnet_walk",         2U},
+    {"magnet_run",          4U},
+    {"magnet_jump",         0U},
+    {"magnet_land",         0U},
+    {"dropin",              0U},
+    {"dropout",             0U},
+    {"climb_up",            0U},
+    {"climb_down",          0U},
+    {"climb_left",          0U},
+    {"climb_right",         0U},
+    {"ai_override1",        0U},
+    {"ai_override2",        0U},
+    {"ai_override3",        0U},
+    {"ai_override4",        0U},
+    {"supercarry_putdown",  0U},
+    {"supercarry_bash",     0U},
+    {"supercarry_jump",     0U},
+    {"supercarry_land",     0U},
+    {"supercarry_fallland", 0U},
+    {"ledge_grab",          0U},
+    {"teeter",              0U},
+    {"whip_start",          0U},
+    {"whip_crack",          0U},
+    {"whip_grab",           0U},
+    {"whip_break",          0U},
+    {"whip_swing_start",    0U},
+    {"whip_swing_swing",    0U},
+    {"whip_swing_jump",     0U},
+    {"crawl_idle",          0U},
+    {"crawl_move",          0U},
+    {"swim",                0U},
+    {"wade",                0U},
+    {"dig",                 0U},
+    {"winch",               0U}
+};
+void *PlayerBlockActionInfo = &PlayerActionInfoList[1];
 #pragma data_seg(".data$SLAMGRAVITY")
 static f32 SLAMGRAVITY = -15.0f;
 #pragma data_seg()
 #pragma bss_seg(".bss$applygravity_extrahoveroffset")
 static f32 applygravity_extrahoveroffset = 0;
 #pragma bss_seg()
+i32 getvehiclehoverheight_hothbattlehack = 0;
+i32 TwistScaleLean = 0;
+f32 CurrentSpeedOverride = 0;
+f32 pod_roll[2] = {0};
+f32 pod_roll_target[2] = {0};
+f32 VehicleLaunchHoverOffset = 0;
+i32 objopponent_ignoreaiopponent = 0;
+i32 ForcePush_Waft = 0;
+i32 ForcePush_SuperPush = 0;
+i32 ForcePush_SuperMindTrick = 0;
+i32 VehicleGunshipAngleBPlayer2 = 0;
 
 void ApplyGravity(GAMEOBJECT *object, f32 *gravity, f32 hover_height, f32 seek_rate, f32 *ground_height) {
     CHARACTERDATA_PC *character;
@@ -8648,6 +9123,10 @@ void ApplyGravity_Network(GAMEOBJECT *object) {
 #pragma data_seg(".data$PlayerBackwardMomentumScalePc")
 static f32 PlayerBackwardMomentumScale = 1.2f;
 #pragma data_seg()
+f32 testlaser_sizew = 0.02f;
+f32 testlaser_sizel = 0.1f;
+f32 testlaser_sizewab = 0.01f;
+f32 testlaser_endw = 0.1f;
 #pragma data_seg(".data$PlayerFloatHeightFractionPc")
 static f32 PlayerFloatHeightFraction = 0.625f;
 #pragma data_seg()
@@ -11651,6 +12130,27 @@ weapon_in:
 static f32 DefaultMotionSpiderFarSpeed = -2.0f;
 static f32 DefaultMotionSpiderNearSpeed = -0.4f;
 static f32 DefaultMotionSpiderRange = 1.0f;
+f32 VehicleZamSmokeRate = 10.0f;
+f32 speeder_offset_speed = 2.0f;
+f32 speeder_smoke_rate = 5.0f;
+f32 VehicleGunshipHoverBase = 2.0f;
+f32 VehicleGunshipHoverOther = 1.25f;
+f32 VehicleGunshipHoverSeparation = 0.8f;
+f32 CritterSnakeExtraHover = -0.15f;
+f32 CritterBatExtraHover = 0.2f;
+f32 VehicleShieldTarget = 5.0f;
+f32 PodRaceMinimumSpeed = 0.333f;
+f32 PodRaceBoostSpeed = 2.0f;
+f32 PodSprintMinimumSpeed = 1.0f;
+f32 PodSprintBoostSpeed = 1.4f;
+f32 PodBoostHeight = 1.0f;
+f32 PodPitchHistory[2] = {1.0f, 1.0f};
+f32 pod_animtime[2] = {1.0f, 1.0f};
+f32 podanimendframe = 1.0f;
+i32 PodSprintDebrisIndex = 117;
+f32 VehicleCollisionDamageSpeedFraction = 0.6f;
+i32 VehicleCollisionFrontAngle = 45;
+i32 VehicleCollisionRearAngle = 10;
 
 void Move_CHARACTER(GAMEOBJECT *object) {
     u32 action_pressed = object->pad->buttons_pressed & GAMEPAD_ACTION;

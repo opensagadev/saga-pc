@@ -196,6 +196,7 @@ static void TorpedoRotateY(NUMTX *m, NUANG angle) {
 }
 
 static TORPEDO_PACKET_ALLOC_PC TorpedoPackets[16] = {0};
+u8 TorpedoFillEnabled = 0;
 
 void fun_004d2290(void) {
     memset(TorpedoPackets, 0, sizeof(TorpedoPackets));
@@ -290,6 +291,9 @@ static void TorpedoHitDispatch(void *target, NUVEC *position, i32 player, u8 tar
             break;
     }
 }
+
+f32 TorpedoStealTimer = 2.0f;
+f32 TorpedoStealRange = 2.0f;
 
 void Torpedo_UpdateJobbies(GAMEOBJECT *object) {
     GAMEOBJECT *player;
@@ -697,6 +701,8 @@ i32 PartDraw_Torp(PART_PC *part) {
     }
     return draw;
 }
+
+char dat_00759770[2] = "X";
 
 void TorpedoCode(GAMEOBJECT *object, i32 fire, f32 fire_cooldown) {
     TORPEDO_RUNTIME *packet = (TORPEDO_RUNTIME *)object->torpedo;

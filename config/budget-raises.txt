@@ -189,3 +189,5 @@ config/oddscan-budget.json magic-flag 7065 two `flags |= 0x400` on display speci
 config/declscan-budget.json A 223 moved data definitions: a unit's own extern of a global that data.cpp defined (class D) now repeats the definition moved into the unit
 config/declscan-budget.json C 483 moved data definitions: a unit's own extern of a global that data.cpp defined (class D) now forward-declares the definition moved into the unit
 config/oddscan-budget.json dup-type 381 the GIZACTIONFN function-pointer typedef moved from legoapi_types.h to gizmo.h; dup-type reads such a typedef as a type named void (same declaration, new file)
+config/declscan-budget.json A 258 moved data definitions: a unit's own extern of a global that data.cpp defined (class D) now repeats the definition moved into the unit
+config/declscan-budget.json C 571 moved data definitions: a unit's own extern of a global that data.cpp defined (class D) now forward-declares the definition moved into the unit
