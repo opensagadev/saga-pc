@@ -471,7 +471,7 @@ i32 edbriFileSave(char *path) {
                 name[0] = 0;
             } else {
                 NuGScnGetSpecial(&special, edbits_base_scene, edBridges[i].special_20);
-                strncpy(name, NuSpecialGetName(&special), 20);
+                strncpy(name, NuSpecialGetName(&special), sizeof(name));
             }
             name[19] = 0;
             EdFileWrite(name, 20);
@@ -479,7 +479,7 @@ i32 edbriFileSave(char *path) {
                 name[0] = 0;
             } else {
                 NuGScnGetSpecial(&special, edbits_base_scene, edBridges[i].special_24);
-                strncpy(name, NuSpecialGetName(&special), 20);
+                strncpy(name, NuSpecialGetName(&special), sizeof(name));
             }
             name[19] = 0;
             EdFileWrite(name, 20);

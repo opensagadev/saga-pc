@@ -3236,7 +3236,7 @@ extern "C" void Hub_Update(WORLDINFO *world) {
             LevTime[0] -= FRAMETIME;
         }
     } else if (GetMenuID() == -1 && available != 0) {
-        memcpy(&TempGame, &Game, 0x7e4c);
+        memcpy(&TempGame, &Game, sizeof(TempGame));
         SHOPACTIVE = 1;
         MakeMenuPacket();
         Hint_CancelCurrent();
@@ -3264,7 +3264,7 @@ extern "C" void Hub_Update(WORLDINFO *world) {
             LevTime[1] -= FRAMETIME;
         }
     } else if (GetMenuID() == -1 && available != 0) {
-        memcpy(&OldCustomiseGame, &Game, 0x7e4c);
+        memcpy(&OldCustomiseGame, &Game, sizeof(OldCustomiseGame));
         MakeMenuPacket();
         NewMenu(12, -1, -1);
         Hint_CancelCurrent();

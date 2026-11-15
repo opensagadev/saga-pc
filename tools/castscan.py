@@ -35,6 +35,9 @@ config/castscan-keep.csv (file, function, cast text, occurrence in the function,
 reason) and counts as `codegen-steering`; `--check` fails on an entry that
 matches no cast.
 
+The same walk collects the literals that equal the size or element count of the
+object they act on (tools/sizeofnames.py); `--check` budgets them as `size-literal`.
+
 The scan is cached per unit (build/castscan/cache.json) and runs two parses at a
 time (`--jobs`). docs/cast-audit.md explains the classes and the cleanup plan.
 """
@@ -56,7 +59,7 @@ if __package__ in (None, ""):
 from tools import budget  # noqa: E402
 from tools.lib import ROOT, clang_jobs  # noqa: E402
 
-VERSION = 6
+VERSION = 10
 OUTPUT = ROOT / "build/castscan"
 CACHE = OUTPUT / "cache.json"
 BUDGET = ROOT / "config/castscan-budget.json"
@@ -379,7 +382,9 @@ class Unit:
         while stack:
             node, ancestors = stack.pop()
             kind = node.kind
-            if kind in ref_kinds or kind == K.CALL_EXPR:
+            if self.unevaluated(ancestors):
+                pass  # a name in a sizeof operand is not a use of its value
+            elif kind in ref_kinds or kind == K.CALL_EXPR:
                 target = node.referenced
                 if target is not None and target.kind in counted:
                     function_target = target.kind in (K.FUNCTION_DECL, K.CXX_METHOD)
@@ -400,6 +405,10 @@ class Unit:
             self.header_refs[f"{relative(file)}:{line}"] = dict(refs)
         else:
             self.refs.update(refs)
+
+    def unevaluated(self, ancestors):
+        """Whether the node below `ancestors` is inside the operand of sizeof (or another unevaluated operator)."""
+        return any(a.kind == self.ci.CursorKind.CXX_UNARY_EXPR for a in ancestors)
 
     def operand(self, node):
         """The expression a cast converts. In C++ the conversion itself is an implicit cast child with the
@@ -761,7 +770,8 @@ def collect(tu, main, cpp, sources=None):
     unit.walk(MainFile(tu, str(main)))
     errors = [str(d) for d in tu.diagnostics if d.severity >= 3][:20]
     used = {record["entity"] for record in unit.casts if "entity" in record}
-    return {"casts": unit.casts, "refs": dict(unit.refs), "header_refs": unit.header_refs,
+    from tools import sizeofnames  # noqa: PLC0415
+    return {"casts": unit.casts, "sizes": sizeofnames.find(tu), "refs": dict(unit.refs), "header_refs": unit.header_refs,
             "entities": {usr: unit.entities[usr] for usr in used},
             "records": unit.records, "errors": errors}
 
@@ -779,6 +789,8 @@ def merge_debug(facts, debug):
         facts["header_refs"].setdefault(key, refs)
     facts["entities"].update({k: v for k, v in debug["entities"].items() if k not in facts["entities"]})
     facts["records"].update({k: v for k, v in debug["records"].items() if k not in facts["records"]})
+    sizes = {(s["file"], s["offset"]) for s in facts["sizes"]}
+    facts["sizes"].extend(s for s in debug["sizes"] if (s["file"], s["offset"]) not in sizes)
     return facts
 
 
@@ -1278,6 +1290,18 @@ def gather(facts, macros=None):
     return list(seen.values()), failures
 
 
+def gather_sizes(facts):
+    """The size literal sites of tools/sizeofnames.py, one per written location, and the failed units."""
+    seen, failures = {}, []
+    for unit, unit_facts in sorted(facts.items()):
+        if "failed" in unit_facts:
+            failures.append(f"{unit}: {unit_facts['failed']}")
+            continue
+        for site in unit_facts.get("sizes", ()):
+            seen.setdefault((site["file"], site["offset"]), site)
+    return sorted(seen.values(), key=lambda s: (s["file"], s["offset"])), failures
+
+
 def class_counts(casts):
     counts = Counter(record["class"] for record in casts)
     return {name: counts[name] for name in CLASS_IDS}
@@ -1394,8 +1418,10 @@ def stats(casts):
     return "\n".join(lines)
 
 
-def check_budget(args, casts):
+def check_budget(args, casts, sizes=()):
     counts = class_counts(casts)
+    # Not a cast: literals that are the size or count of the object they act on (tools/sizeofnames.py).
+    counts["size-literal"] = sum(1 for site in sizes if site.get("new") or site.get("odd"))
     if args.write_budget:
         budget.write(args.budget, budget.lowered(budget.load(args.budget), counts) if args.budget.is_file()
                      else counts)
@@ -1408,7 +1434,8 @@ def check_budget(args, casts):
         print(f"castscan: new casts; list them with python3 tools/castscan.py --list {names} "
               f"(docs/cast-audit.md)", file=sys.stderr)
     else:
-        print(f"castscan: {sum(counts.values())} casts in {len(counts)} classes within budget")
+        print(f"castscan: {sum(counts.values()) - counts['size-literal']} casts in {len(counts) - 1} classes and "
+              f"{counts['size-literal']} size literals within budget")
     return status
 
 
@@ -1445,7 +1472,7 @@ def main(argv=None):
         for row in classifier.keep_unmatched:
             print(f"castscan: {relative(KEEP)}: no cast {row['cast']} (#{row['occurrence']}) in "
                   f"{row['function']} ({row['file']}); update or remove the entry", file=sys.stderr)
-        return check_budget(args, casts) or (1 if classifier.keep_unmatched else 0)
+        return check_budget(args, casts, gather_sizes(facts)[0]) or (1 if classifier.keep_unmatched else 0)
     if args.paths:
         wanted = [Path(p).resolve().relative_to(ROOT).as_posix() for p in args.paths]
         casts = [r for r in casts if any(r["file"] == p or r["file"].startswith(p.rstrip("/") + "/") for p in wanted)]

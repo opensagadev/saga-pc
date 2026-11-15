@@ -1091,7 +1091,7 @@ extern "C" {
         memset(progress->enabled, -1, sizeof(progress->enabled));
         memset(progress->visible, -1, sizeof(progress->visible));
         memset(progress->completed, 0, sizeof(progress->completed));
-        memset(progress->object_count, 0, 64);
+        memset(progress->object_count, 0, sizeof(progress->object_count));
     }
 
     void GizBuildIts_StoreProgress(void *world_ptr, void *data, void *progress_ptr) {
@@ -1108,7 +1108,7 @@ extern "C" {
         memset(progress->enabled, -1, sizeof(progress->enabled));
         memset(progress->visible, -1, sizeof(progress->visible));
         memset(progress->completed, 0, sizeof(progress->completed));
-        memset(progress->object_count, 0, 64);
+        memset(progress->object_count, 0, sizeof(progress->object_count));
 
         record = system->records;
         for (index = 0; index < system->count; ++index, ++record) {

@@ -5060,7 +5060,7 @@ void Players_Init(void) {
                 ((PLAYER_COIN_PACKET_PC *)players[index]->coin_packet)->coins = 0;
             }
             players[index]->gizforce_los_info = &GizForceLOSInfo[index];
-            memcpy(&BackUpPlayers[index], players[index], 0x10d8);
+            memcpy(&BackUpPlayers[index], players[index], sizeof(BackUpPlayers[index]));
         }
     }
     RememberPlayerIDs(0, players[0] != NULL ? (i16)players[0]->id : -1, players[1] != NULL ? (i16)players[1]->id : -1);

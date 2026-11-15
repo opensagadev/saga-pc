@@ -123,7 +123,7 @@ void NuErrorSetFilter(char *filter) {
     if (filter == NULL) {
         NuStrCpy(err_msg_filter, "");
     } else {
-        NuStrNCpy(err_msg_filter, filter, 32);
+        NuStrNCpy(err_msg_filter, filter, sizeof(err_msg_filter));
     }
 }
 

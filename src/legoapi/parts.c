@@ -3419,10 +3419,10 @@ void edpartChangeName(eduimenu_s *unused0, eduiitem_s *item, u32 unused2) {
     if (edpart_create_type != -1) {
         i32 index;
         char *name = ((edui_textpicker_s *)(item))->value;
-        NuStrNCpy(part_types[edpart_create_type].name, name, 16);
+        NuStrNCpy(part_types[edpart_create_type].name, name, sizeof(part_types[edpart_create_type].name));
         for (index = 0; index < 40; ++index) {
             if (part_emits[index].effect_id == edpart_create_type) {
-                NuStrNCpy(part_emits[index].name, name, 16);
+                NuStrNCpy(part_emits[index].name, name, sizeof(part_emits[index].name));
             }
         }
     }

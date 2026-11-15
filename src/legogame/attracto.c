@@ -386,7 +386,7 @@ void *Attractos_AllocateProgressData(VARIPTR *start, VARIPTR *end) {
 
 void Attractos_ClearProgress(void *world, ATTRACTO_PROGRESS *progress) {
     if (progress != NULL) {
-        memset(progress->counts, 0, 32);
+        memset(progress->counts, 0, sizeof(progress->counts));
         progress->visible[0] = 0xffffffffu;
         progress->active[0] = 0xffffffffu;
         progress->filled[0] = 0;

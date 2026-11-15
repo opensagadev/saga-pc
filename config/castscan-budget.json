@@ -8,11 +8,11 @@
   "raw-offset": 368,
   "embedded-base": 923,
   "view-type": 531,
-  "duplicate-type": 1258,
-  "declaration-type": 1548,
+  "duplicate-type": 1257,
+  "declaration-type": 1550,
   "layout-compatible": 286,
   "function-pointer": 805,
-  "field-address": 335,
+  "field-address": 333,
   "byte-pointer": 652,
   "record-pun": 818,
   "scalar-pun": 300,
@@ -29,5 +29,6 @@
   "signedness": 1863,
   "widening": 178,
   "class-hierarchy": 17,
-  "other": 4
+  "other": 4,
+  "size-literal": 4
 }

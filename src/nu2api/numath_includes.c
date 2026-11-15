@@ -815,7 +815,7 @@ i16 NuFloatToHalf(f32 value) {
     i32 exponent;
     i32 mantissa;
     i32 sign;
-    memcpy(&packed.bits, &value, 4);
+    memcpy(&packed.bits, &value, sizeof(packed.bits));
     sign = packed.bits >> 31;
     exponent = (packed.bits >> 23) & 0xff;
     mantissa = packed.bits & 0x7fffff;
@@ -1883,54 +1883,54 @@ void NuMtxTruncate24Bit(NUMTX *out, NUMTX *input) {
         u32 bits;
     } packed;
 
-    memcpy(&packed.bits, &input->m00, 4);
+    memcpy(&packed.bits, &input->m00, sizeof(packed.bits));
     packed.bits &= 0xffffff00u;
-    memcpy(&out->m00, &packed.bits, 4);
-    memcpy(&packed.bits, &input->m01, 4);
+    memcpy(&out->m00, &packed.bits, sizeof(out->m00));
+    memcpy(&packed.bits, &input->m01, sizeof(packed.bits));
     packed.bits &= 0xffffff00u;
-    memcpy(&out->m01, &packed.bits, 4);
-    memcpy(&packed.bits, &input->m02, 4);
+    memcpy(&out->m01, &packed.bits, sizeof(out->m01));
+    memcpy(&packed.bits, &input->m02, sizeof(packed.bits));
     packed.bits &= 0xffffff00u;
-    memcpy(&out->m02, &packed.bits, 4);
-    memcpy(&packed.bits, &input->m03, 4);
+    memcpy(&out->m02, &packed.bits, sizeof(out->m02));
+    memcpy(&packed.bits, &input->m03, sizeof(packed.bits));
     packed.bits &= 0xffffff00u;
-    memcpy(&out->m03, &packed.bits, 4);
-    memcpy(&packed.bits, &input->m10, 4);
+    memcpy(&out->m03, &packed.bits, sizeof(out->m03));
+    memcpy(&packed.bits, &input->m10, sizeof(packed.bits));
     packed.bits &= 0xffffff00u;
-    memcpy(&out->m10, &packed.bits, 4);
-    memcpy(&packed.bits, &input->m11, 4);
+    memcpy(&out->m10, &packed.bits, sizeof(out->m10));
+    memcpy(&packed.bits, &input->m11, sizeof(packed.bits));
     packed.bits &= 0xffffff00u;
-    memcpy(&out->m11, &packed.bits, 4);
-    memcpy(&packed.bits, &input->m12, 4);
+    memcpy(&out->m11, &packed.bits, sizeof(out->m11));
+    memcpy(&packed.bits, &input->m12, sizeof(packed.bits));
     packed.bits &= 0xffffff00u;
-    memcpy(&out->m12, &packed.bits, 4);
-    memcpy(&packed.bits, &input->m13, 4);
+    memcpy(&out->m12, &packed.bits, sizeof(out->m12));
+    memcpy(&packed.bits, &input->m13, sizeof(packed.bits));
     packed.bits &= 0xffffff00u;
-    memcpy(&out->m13, &packed.bits, 4);
-    memcpy(&packed.bits, &input->m20, 4);
+    memcpy(&out->m13, &packed.bits, sizeof(out->m13));
+    memcpy(&packed.bits, &input->m20, sizeof(packed.bits));
     packed.bits &= 0xffffff00u;
-    memcpy(&out->m20, &packed.bits, 4);
-    memcpy(&packed.bits, &input->m21, 4);
+    memcpy(&out->m20, &packed.bits, sizeof(out->m20));
+    memcpy(&packed.bits, &input->m21, sizeof(packed.bits));
     packed.bits &= 0xffffff00u;
-    memcpy(&out->m21, &packed.bits, 4);
-    memcpy(&packed.bits, &input->m22, 4);
+    memcpy(&out->m21, &packed.bits, sizeof(out->m21));
+    memcpy(&packed.bits, &input->m22, sizeof(packed.bits));
     packed.bits &= 0xffffff00u;
-    memcpy(&out->m22, &packed.bits, 4);
-    memcpy(&packed.bits, &input->m23, 4);
+    memcpy(&out->m22, &packed.bits, sizeof(out->m22));
+    memcpy(&packed.bits, &input->m23, sizeof(packed.bits));
     packed.bits &= 0xffffff00u;
-    memcpy(&out->m23, &packed.bits, 4);
-    memcpy(&packed.bits, &input->m30, 4);
+    memcpy(&out->m23, &packed.bits, sizeof(out->m23));
+    memcpy(&packed.bits, &input->m30, sizeof(packed.bits));
     packed.bits &= 0xffffff00u;
-    memcpy(&out->m30, &packed.bits, 4);
-    memcpy(&packed.bits, &input->m31, 4);
+    memcpy(&out->m30, &packed.bits, sizeof(out->m30));
+    memcpy(&packed.bits, &input->m31, sizeof(packed.bits));
     packed.bits &= 0xffffff00u;
-    memcpy(&out->m31, &packed.bits, 4);
-    memcpy(&packed.bits, &input->m32, 4);
+    memcpy(&out->m31, &packed.bits, sizeof(out->m31));
+    memcpy(&packed.bits, &input->m32, sizeof(packed.bits));
     packed.bits &= 0xffffff00u;
-    memcpy(&out->m32, &packed.bits, 4);
-    memcpy(&packed.bits, &input->m33, 4);
+    memcpy(&out->m32, &packed.bits, sizeof(out->m32));
+    memcpy(&packed.bits, &input->m33, sizeof(packed.bits));
     packed.bits &= 0xffffff00u;
-    memcpy(&out->m33, &packed.bits, 4);
+    memcpy(&out->m33, &packed.bits, sizeof(out->m33));
 }
 
 void NuMtx24BitCorrection(NUMTX *correction, NUMTX *matrix) {
@@ -3223,8 +3223,8 @@ NUVEC NuBezierCubicPatchEvaluate(NUVEC *control, f32 u, f32 v) {
     result.x = 0.0f;
     result.y = 0.0f;
     result.z = 0.0f;
-    for (i = 0; i < 4; ++i) {
-        for (j = 0; j < 4; ++j) {
+    for (i = 0; i < sizeof(weights_u) / sizeof(weights_u[0]); ++i) {
+        for (j = 0; j < sizeof(weights_v) / sizeof(weights_v[0]); ++j) {
             NuVecScaleAccum(&result, control + i + j * 4, weights_u[i] * weights_v[j]);
         }
     }
@@ -3294,8 +3294,8 @@ NUVEC NuBezierCubicPatchEvaluatePartials(NUVEC *control, f32 u, f32 v, i32 order
     result.x = 0.0f;
     result.y = 0.0f;
     result.z = 0.0f;
-    for (i = 0; i < 4; ++i) {
-        for (j = 0; j < 4; ++j) {
+    for (i = 0; i < sizeof(weights_u) / sizeof(weights_u[0]); ++i) {
+        for (j = 0; j < sizeof(weights_v) / sizeof(weights_v[0]); ++j) {
             NuVecScaleAccum(&result, control + i + j * 4, weights_u[i] * weights_v[j]);
         }
     }

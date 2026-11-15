@@ -50,7 +50,7 @@ extern "C" i32 RadFmvInitializeFormatsPc(GRAPHICS_FACTORY *factory, u32 display_
         {25, 4, 2, 1}
     };
     u32 i;
-    for (i = 0; i < 7; ++i) {
+    for (i = 0; i < sizeof(formats) / sizeof(formats[0]); ++i) {
         if (RadFmvCheckFormatPc(factory, formats[i][0], display_format)) {
             context->opaque_format = formats[i][0];
             context->opaque_bink_format = formats[i][1];
@@ -61,7 +61,7 @@ extern "C" i32 RadFmvInitializeFormatsPc(GRAPHICS_FACTORY *factory, u32 display_
     if (i == 7) {
         return 0;
     }
-    for (i = 0; i < 7; ++i) {
+    for (i = 0; i < sizeof(formats) / sizeof(formats[0]); ++i) {
         if (formats[i][3] && RadFmvCheckFormatPc(factory, formats[i][0], display_format)) {
             context->alpha_format = formats[i][0];
             context->alpha_bink_format = formats[i][1];
@@ -265,7 +265,7 @@ static void RadFmvDrawOutlinePc(PC_D3D9_DEVICE *device, f32 x, f32 y, f32 xs, f3
     vertices[9] = vertices[3];
     vertices[10] = vertices[1];
     vertices[11] = vertices[5];
-    for (u32 i = 8; i < 12; ++i) {
+    for (u32 i = 8; i < sizeof(vertices) / sizeof(vertices[0]); ++i) {
         vertices[i].specular = vertices[i].diffuse = 0xffff0000;
     }
     device->methods->set_texture_stage_state(device, 0, 2, 0);
@@ -307,7 +307,7 @@ RADFMV_IMAGE *RadFmvCreateTiledPc(RADFMV_CONTEXT *context, u32 width, u32 height
     if (!image) {
         return NULL;
     }
-    memset(image, 0, 0x50);
+    memset(image, 0, sizeof(*image));
     image->textures = reinterpret_cast<RADFMV_TEXTURE **>(image + 1);
     image->pitch = pitch;
     image->bytes_per_pixel = bytes;
@@ -534,7 +534,7 @@ RADFMV_IMAGE *RadFmvCreateSinglePc(RADFMV_CONTEXT *context, u32 width, u32 heigh
     if (!image) {
         return NULL;
     }
-    memset(image, 0, 0x50);
+    memset(image, 0, sizeof(*image));
     u32 bytes = alpha ? context->alpha_bytes : context->opaque_bytes;
     image->device = context->device;
     image->width = width;

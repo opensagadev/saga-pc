@@ -758,7 +758,7 @@ void TorpedoCode(GAMEOBJECT *object, i32 fire, f32 fire_cooldown) {
     }
     if (WORLD->area != NULL &&
         (WORLD->area == BATTLEOVERCORUSCANT_ADATA || WORLD->area == PODSPRINT_ADATA || WORLD->area == GUNSHIP_ADATA)) {
-        memset(packet, 0, 0x88);
+        memset(packet, 0, sizeof(*packet));
         return;
     }
     if (timers->fire_cooldown > 0.0f) {

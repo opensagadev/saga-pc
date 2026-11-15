@@ -21,7 +21,7 @@ void GizFlowStoreProgress(GIZFLOW *system, GIZFLOWPROGRESS *progress) {
         return;
     }
 
-    memset(progress, 0, 0x144);
+    memset(progress, 0, sizeof(*progress));
     progress->valid = 1;
     box = system->flowboxes;
     for (i = 0; i < system->flowbox_count; ++i, ++box) {
@@ -654,7 +654,7 @@ static void GizFlowConfigGizmoType(NUFPAR *parser) {
 static void GizFlowConfigGizmoName(NUFPAR *parser) {
     NuFParGetWord(parser);
     if (parser->word_buffer_ptr != NULL) {
-        NuStrNCpy(load_gizmoname, parser->word_buffer_ptr, 32);
+        NuStrNCpy(load_gizmoname, parser->word_buffer_ptr, sizeof(load_gizmoname));
     }
 }
 
@@ -1138,7 +1138,7 @@ void RegisterGizActions(GIZACTIONDEF *definitions) {
 static void GizFlowConfigName(NUFPAR *parser) {
     NuFParGetWord(parser);
     if (parser->word_buffer_ptr != NULL) {
-        NuStrNCpy(load_name, parser->word_buffer_ptr, 32);
+        NuStrNCpy(load_name, parser->word_buffer_ptr, sizeof(load_name));
     }
 }
 

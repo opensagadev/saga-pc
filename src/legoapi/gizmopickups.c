@@ -452,10 +452,10 @@ void GizmoPickups_ClearProgress(void *owner, void *progress_ptr) {
     if (progress == NULL) {
         return;
     }
-    memset(progress->visible, -1, 64);
-    memset(progress->enabled, -1, 64);
-    memset(progress->collected, 0, 64);
-    memset(progress->reserved, 0, 64);
+    memset(progress->visible, -1, sizeof(progress->visible));
+    memset(progress->enabled, -1, sizeof(progress->enabled));
+    memset(progress->collected, 0, sizeof(progress->collected));
+    memset(progress->reserved, 0, sizeof(progress->reserved));
 }
 
 void GizmoPickups_StoreProgress(void *world_ptr, void *data, void *progress_ptr) {
@@ -468,10 +468,10 @@ void GizmoPickups_StoreProgress(void *world_ptr, void *data, void *progress_ptr)
     if (progress == NULL) {
         return;
     }
-    memset(progress->visible, -1, 64);
-    memset(progress->enabled, -1, 64);
-    memset(progress->collected, 0, 64);
-    memset(progress->reserved, 0, 64);
+    memset(progress->visible, -1, sizeof(progress->visible));
+    memset(progress->enabled, -1, sizeof(progress->enabled));
+    memset(progress->collected, 0, sizeof(progress->collected));
+    memset(progress->reserved, 0, sizeof(progress->reserved));
 
     if (world == NULL) {
         return;

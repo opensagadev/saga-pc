@@ -1154,7 +1154,7 @@ static void fnAudioSample(NUFPAR *fpar) {
             SfxInfo[NumSfxInst].sample_id_flags |= 0x80000u;
         } else if (NuStrICmp(fpar->word_buffer_ptr, "name") == 0) {
             NuFParGetWord(fpar);
-            NuStrNCpy(SfxNameSlots[NumSfxInst], fpar->word_buffer_ptr, 0x20);
+            NuStrNCpy(SfxNameSlots[NumSfxInst], fpar->word_buffer_ptr, sizeof(SfxNameSlots[NumSfxInst]));
 
             str = SfxNameSlots[NumSfxInst];
             SfxInfo[NumSfxInst].name = str;
@@ -1205,7 +1205,7 @@ static void fnAudioSample(NUFPAR *fpar) {
                 }
                 if (i == NumSfx) {
                     filename_index = NumSfxNames++;
-                    NuStrNCpy(SfxFilenameSlots[filename_index], fpar->word_buffer_ptr, 0x40);
+                    NuStrNCpy(SfxFilenameSlots[filename_index], fpar->word_buffer_ptr, sizeof(SfxFilenameSlots[filename_index]));
                     SfxInfo[NumSfxInst].filename = SfxFilenameSlots[NumSfxNames - 1];
                 }
             }
@@ -1358,7 +1358,7 @@ void LoadSfx(const char *file, VARIPTR *cursor, VARIPTR end) {
     SfxFileInfo[count].static_sample = 0;
     SfxFileInfo[count].index = -1;
     NuSound3SetSampleTable(SfxFileInfo, cursor, end);
-    memset(SfxBits, 0, 200);
+    memset(SfxBits, 0, sizeof(SfxBits));
     if (NOSOUND == 0) {
         NuSound3SetRequestTable(SfxBits, 100);
     }
@@ -1400,7 +1400,7 @@ void InitSfx(VARIPTR *cursor, VARIPTR end, const char *file) {
     SfxFileInfo[i].index = -1;
     NuStrCpy(SfxConfigFilename, file);
     LoadSfx(file, cursor, end);
-    memset(GlobalSfxBits, 0, 200);
+    memset(GlobalSfxBits, 0, sizeof(GlobalSfxBits));
     for (i = 0; i < NumSfxInst; ++i) {
         if (SfxInfo[i].sample_id_flags & 0x20000) {
             sample = ((i32)(SfxInfo[i].sample_id_flags << 17)) >> 17;

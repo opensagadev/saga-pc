@@ -567,7 +567,7 @@ void Customiser_SetUpCharacterData(CUSTOMISER_LAYERS *input) {
     if (customiser == NULL) {
         return;
     }
-    for (side = 0; side < 2; ++side) {
+    for (side = 0; side < sizeof(Game.customiser_start) / sizeof(Game.customiser_start[0]); ++side) {
         const u16 *selection = Game.customiser_start[side].pieces;
         CHARACTERDATA *character = &CDataList[customiser->character_ids[side]];
         PLAYERCHARACTERCONFIG *config = character->game_character;
@@ -1313,10 +1313,11 @@ void MenuUpdateCustomiser(MENU *menu) {
         return;
     }
     quit = CustomiserMenu_Update();
-    customiser_changed = memcmp(Game.customiser_start, OldCustomiseGame.customiser_start, 0x70) != 0 ||
-                         memcmp(Game.customiser_start[0].name, OldCustomiseGame.customiser_start[0].name, 0x20) != 0 ||
-                         Game.customiser_start[0].use_saved_name != OldCustomiseGame.customiser_start[0].use_saved_name ||
-                         Game.customiser_start[1].use_saved_name != OldCustomiseGame.customiser_start[1].use_saved_name;
+    customiser_changed =
+        memcmp(Game.customiser_start, OldCustomiseGame.customiser_start, sizeof(Game.customiser_start)) != 0 ||
+        memcmp(Game.customiser_start[0].name, OldCustomiseGame.customiser_start[0].name, sizeof(Game.customiser_start[0].name)) != 0 ||
+        Game.customiser_start[0].use_saved_name != OldCustomiseGame.customiser_start[0].use_saved_name ||
+        Game.customiser_start[1].use_saved_name != OldCustomiseGame.customiser_start[1].use_saved_name;
     if (quit == 0) {
         return;
     }

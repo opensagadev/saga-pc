@@ -15,6 +15,18 @@ labels and masks, also through locals, parameters and function results that
 only carry the field (`--dry-run` lists the edits and the values left without
 a name). Prove the result like any change.
 
+Before a number is named, check whether it is a size or a count:
+`python3 tools/sizeofnames.py --dry-run` lists the literals that equal the size
+or element count of the object they act on (the length of `memset`, `memcpy`,
+`NuStrNCpy` and friends, an allocator's size, a `for` bound over arrays indexed
+by the counter, an offset past a record) and without `--dry-run` writes
+`sizeof(x)`, `sizeof(*p)`, `sizeof(T)` or, for an unsigned loop counter,
+`sizeof(a) / sizeof(a[0])` there (a signed counter keeps its literal: `sizeof`
+would make the comparison unsigned).
+tools/castscan.py counts the sites left as `size-literal` (budget 0);
+`--list-multiples` shows sizes that are a multiple of an element size, whose
+count still needs a name. Loop counters and sizes are not magic values.
+
 ## Named
 
 | Field or value | Names | Evidence |

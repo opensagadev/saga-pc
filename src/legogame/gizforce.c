@@ -961,7 +961,7 @@ void GizForces_ClearProgress(void *owner, void *progress_ptr) {
     memset(progress->released, 0, sizeof(progress->released));
     memset(progress->pending, 0, sizeof(progress->pending));
     memset(progress->destroyed, 0, sizeof(progress->destroyed));
-    memset(progress->group_members, -1, 64);
+    memset(progress->group_members, -1, sizeof(progress->group_members));
 }
 
 void GizForces_StoreProgress(void *world_ptr, void *data, void *progress_ptr) {
@@ -1363,7 +1363,7 @@ void GizForces_Reset(void *world_ptr, void *data_ptr, void *progress_ptr) {
     GIZFORCE *force;
     i32 index;
     NUVEC offset;
-    memset(system->groups, 0, 0x140);
+    memset(system->groups, 0, sizeof(system->groups));
     force = (GIZFORCE *)system->forces;
     for (index = 0; index < system->count; ++index, ++force) {
         ForceResetSingle(world, force);

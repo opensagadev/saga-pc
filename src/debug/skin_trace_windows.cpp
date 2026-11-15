@@ -88,7 +88,7 @@ extern "C" void skin_trace_capture_geometry(TraceWord geometry, TraceWord materi
     draw.base_vertex = base_vertex;
     draw.start_index = start_index;
     const unsigned int semantics[7] = {0x11, 6, 7, 8, 0x49, 0x18, 1};
-    for (unsigned int i = 0; i < 7; ++i) {
+    for (unsigned int i = 0; i < sizeof(semantics) / sizeof(semantics[0]); ++i) {
         for (unsigned int stage = 0; stage < 2; ++stage) {
             TraceParameter &out = draw.parameter[i * 2 + stage];
             out.stage = -1;

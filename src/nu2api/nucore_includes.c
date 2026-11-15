@@ -4782,8 +4782,8 @@ void NuStringTableSaveCharacterList(char *filepath, char *scratch, i32 report_mi
 
     used = scratch;
     memset(used, 0, 0x1fff);
-    memset(characters, 0, 0x400);
-    memset(message, 0, 0x200);
+    memset(characters, 0, sizeof(characters));
+    memset(message, 0, sizeof(message));
     bank = CurrentStringBank;
     for (i = 0; i < StringBank[bank].string_count; i++) {
         if (StringBank[bank].strings[i].str_utf16 != NULL) {
@@ -9334,7 +9334,7 @@ void ImplodeMakeTable(i32 size, u8 *len, i32 unknown, u16 *table) {
     u32 unknown4;
     u16 *cursor;
 
-    for (i = 1; i < 0x11; i++) {
+    for (i = 1; i < sizeof(symbol_count) / sizeof(symbol_count[0]); i++) {
         symbol_count[i] = 0;
     }
 

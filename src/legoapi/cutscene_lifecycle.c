@@ -914,7 +914,7 @@ static CUT_LOAD_CAMERA_INSTANCE *CutCameraInstanceCreate(CUT_LOAD_CAMERA_SYSTEM 
         buffer->addr = (buffer->addr + 15) & ~15;
         instance = buffer->void_ptr;
         buffer->addr += 16;
-        memset(instance, 0, 16);
+        memset(instance, 0, sizeof(*instance));
         buffer->addr = (buffer->addr + 15) & ~15;
         instance->states = buffer->void_ptr;
         buffer->addr += system->count * 4;
@@ -1033,7 +1033,7 @@ static CUT_LOAD_LOCATOR_INSTANCE_SYSTEM *CutLocatorInstanceCreate(CUT_LOAD_LOCAT
                 buffer->addr = (buffer->addr + 3) & ~3;
                 target->effect.focus = buffer->void_ptr;
                 buffer->addr += 24;
-                memset(target->effect.focus, 0, 24);
+                memset(target->effect.focus, 0, sizeof(*target->effect.focus));
                 if (locator->tracks_self != 0) {
                     target->effect.focus->self = locator;
                 }
@@ -1041,7 +1041,7 @@ static CUT_LOAD_LOCATOR_INSTANCE_SYSTEM *CutLocatorInstanceCreate(CUT_LOAD_LOCAT
                 buffer->addr = (buffer->addr + 15) & ~15;
                 target->effect.sound = buffer->void_ptr;
                 buffer->addr += 16;
-                memset(target->effect.sound, 0, 16);
+                memset(target->effect.sound, 0, sizeof(*target->effect.sound));
             }
         }
     }
@@ -1054,7 +1054,7 @@ static CUT_LOAD_TRIGGER_INSTANCE *CutTriggerInstanceCreate(VARIPTR *buffer, CUT_
     buffer->addr = (buffer->addr + 15) & ~15;
     instance = buffer->void_ptr;
     buffer->addr += 8;
-    memset(instance, 0, 8);
+    memset(instance, 0, sizeof(*instance));
     instance->owner = owner;
     instance->states = buffer->void_ptr;
     buffer->addr += count * sizeof(CUT_LOAD_TRIGGER_STATE);
@@ -1111,7 +1111,7 @@ INSTNUGCUTSCENE *instNuGCutSceneCreate(void *asset, NUGSCN *gscene, void *extra_
         if (instance == NULL) {
             return NULL;
         }
-        memset(instance, 0, 0xf8);
+        memset(instance, 0, sizeof(*instance));
         instance->alpha = 1.0f;
         instance->scene_owner = gscene;
         instance->extra_scene_owner = extra_scene;

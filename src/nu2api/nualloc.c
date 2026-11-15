@@ -207,11 +207,11 @@ void *NuAlloc(i32 size, const char *file, i32 line) {
         memset(record, 0, allocation_size);
         NuAllocTrackedBytes += (u32)size;
         record->requested_size = (u32)size;
-        for (i = 0; i < 3; ++i) {
+        for (i = 0; i < sizeof(record->header_metadata) / sizeof(record->header_metadata[0]); ++i) {
             record->header_metadata[i] = NuAllocHeaderMetadata[i];
         }
         tail = (NUALLOC_TAIL *)((u32)record + (u32)size + 32);
-        for (i = 0; i < 3; ++i) {
+        for (i = 0; i < sizeof(tail->metadata) / sizeof(tail->metadata[0]); ++i) {
             tail->metadata[i] = NuAllocTailMetadata[i];
         }
         filename_copy = (char *)(tail + 1);
@@ -347,7 +347,7 @@ void *NuReAlloc(void *user_data, i32 size, const char *file, i32 line) {
         NuAllocTrackedBytes += (u32)size - record->requested_size;
         record->requested_size = (u32)size;
         tail = (NUALLOC_TAIL *)((u32)record + (u32)size + 32);
-        for (i = 0; i < 3; ++i) {
+        for (i = 0; i < sizeof(tail->metadata) / sizeof(tail->metadata[0]); ++i) {
             tail->metadata[i] = NuAllocTailMetadata[i];
         }
         filename_copy = (char *)(tail + 1);

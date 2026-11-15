@@ -153,7 +153,7 @@ GIZMO_PC *createGizRandom(void *unused, i32 output_count, i32 *weights, char *na
     for (i = 0; i < output_count; ++i) {
         random->output_weights[i] = weights[i];
     }
-    NuStrNCpy(random->name, name, 16);
+    NuStrNCpy(random->name, name, sizeof(random->name));
     ++world->randoms->count;
     return AddGizmo(world->gizmo_sys, gizrandom_gizmotype_id, NULL, random);
 }

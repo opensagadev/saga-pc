@@ -138,7 +138,7 @@ static LONG CALLBACK fault_observe(EXCEPTION_POINTERS *pointers) {
         fault_value(" ESI=", fault_context.Esi);
         fault_value(" EDI=", fault_context.Edi);
         fault_append("\r\nstack-words(no-unwind):");
-        for (i = 0; i < 16; ++i) {
+        for (i = 0; i < sizeof(fault_stack) / sizeof(fault_stack[0]); ++i) {
             DWORD address = fault_context.Esp + i * sizeof(DWORD);
             if (address < fault_context.Esp || !fault_read((void *)address, &fault_stack[i], sizeof(DWORD))) {
                 fault_append(" unreadable");

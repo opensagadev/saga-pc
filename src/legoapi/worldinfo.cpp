@@ -182,7 +182,7 @@ extern "C" {
     void WorldInfo_UpdateRoomVisibility(WORLDINFO *world, i32 param) {
         world->room_visibility_flag = 1;
         world->rooms_visible_ptr = world->rooms_visible;
-        memset(world->rooms_visible, 0, 0x100);
+        memset(world->rooms_visible, 0, sizeof(world->rooms_visible));
 
         if (param == 0) {
             NUGSCN *scene = world->current_gscn;

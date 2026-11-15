@@ -61,7 +61,7 @@ i32 edgraFileSave(char *path) {
                 continue;
             }
             NuGScnGetSpecial(&special, edbits_base_scene, GrassClumps[i].special_index);
-            strncpy(name, NuSpecialGetName(&special), 20);
+            strncpy(name, NuSpecialGetName(&special), sizeof(name));
             name[19] = 0;
             EdFileWrite(name, 20);
             EdFileWriteInt(GrassClumps[i].element_count);
@@ -330,7 +330,7 @@ void edgraToggleFilter(eduimenu_s *unused0, eduiitem_s *item, u32 unused2) {
 }
 
 void edgraChangeFilterName(eduimenu_s *unused0, eduiitem_s *item, u32 unused2) {
-    NuStrNCpy(edgra_filter_string, ((edui_textpicker_s *)item)->value, 16);
+    NuStrNCpy(edgra_filter_string, ((edui_textpicker_s *)item)->value, sizeof(edgra_filter_string));
 }
 
 void edgracbCancelOptMenu(eduimenu_s *unused0, eduimenu_s *unused1) {

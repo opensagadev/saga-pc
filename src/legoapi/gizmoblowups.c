@@ -367,10 +367,10 @@ void Blowup_ClearProgress(void *owner, void *progress_ptr) {
     if (progress == NULL) {
         return;
     }
-    memset(progress->triggered, 0, 64);
-    memset(progress->enabled, -1, 64);
-    memset(progress->visible, -1, 64);
-    memset(progress->completed, 0, 64);
+    memset(progress->triggered, 0, sizeof(progress->triggered));
+    memset(progress->enabled, -1, sizeof(progress->enabled));
+    memset(progress->visible, -1, sizeof(progress->visible));
+    memset(progress->completed, 0, sizeof(progress->completed));
 }
 
 void Blowup_StoreProgress(void *world_ptr, void *data, void *progress_ptr) {
@@ -383,10 +383,10 @@ void Blowup_StoreProgress(void *world_ptr, void *data, void *progress_ptr) {
     if (progress == NULL) {
         return;
     }
-    memset(progress->triggered, 0, 64);
-    memset(progress->enabled, -1, 64);
-    memset(progress->visible, -1, 64);
-    memset(progress->completed, 0, 64);
+    memset(progress->triggered, 0, sizeof(progress->triggered));
+    memset(progress->enabled, -1, sizeof(progress->enabled));
+    memset(progress->visible, -1, sizeof(progress->visible));
+    memset(progress->completed, 0, sizeof(progress->completed));
 
     if (world == NULL || world->gizmo_blowups == NULL) {
         return;
@@ -2107,7 +2107,7 @@ i32 GizmoBlowupGetNameTableId(char *name) {
         }
     }
     if (GizmoBlowupNameCount < 32) {
-        NuStrNCpy(GizmoBlowupNameTable[GizmoBlowupNameCount], name, 32);
+        NuStrNCpy(GizmoBlowupNameTable[GizmoBlowupNameCount], name, sizeof(GizmoBlowupNameTable[GizmoBlowupNameCount]));
         GizmoBlowupNameCount++;
         return GizmoBlowupNameCount - 1;
     }

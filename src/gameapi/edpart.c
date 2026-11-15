@@ -1320,7 +1320,7 @@ void edpartToggleFilter(eduimenu_s *unused0, eduiitem_s *item, u32 unused2) {
 }
 
 void edpartChangeFilterName(eduimenu_s *unused0, eduiitem_s *item, u32 unused2) {
-    NuStrNCpy(edpart_filter_string, ((edui_textpicker_s *)item)->value, 16);
+    NuStrNCpy(edpart_filter_string, ((edui_textpicker_s *)item)->value, sizeof(edpart_filter_string));
 }
 
 void edpartCancelOptMenu(eduimenu_s *unused0, eduimenu_s *unused1) {

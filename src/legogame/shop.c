@@ -2175,7 +2175,7 @@ i32 ItemMenu(void *menu) {
         ShopSubMenu = 0;
         ShopEaseSubIn = 1;
         if (TopShelf[ShopLastItem].type == 3) {
-            memset(ShopUserCode, 'A', 6);
+            memset(ShopUserCode, 'A', sizeof(ShopUserCode));
             ShopMenu = 11;
             ShopColumn = 0;
             ShopLastItem = -1;

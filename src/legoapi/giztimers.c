@@ -151,7 +151,7 @@ GIZMO_PC *createGizTimer(void *unused, f32 time, i32 random_time, char *name) {
     timer = &world->timers[world->timer_count];
     timer->start_time = time;
     timer->flags = (u8)((timer->flags & ~2) | ((random_time & 1) << 1));
-    NuStrNCpy(timer->name, name, 16);
+    NuStrNCpy(timer->name, name, sizeof(timer->name));
     ++world->timer_count;
     return AddGizmo(world->gizmo_sys, giztimer_gizmotype_id, NULL, timer);
 }

@@ -3181,7 +3181,7 @@ extern "C" {
     }
 
     void PC_EFFECT_SURFACE::ReleaseResources() {
-        for (u32 index = 0; index != 256; ++index) {
+        for (u32 index = 0; index != sizeof(PcSurfaceRegistry) / sizeof(PcSurfaceRegistry[0]); ++index) {
             PC_EFFECT_SURFACE *item = PcSurfaceRegistry[index];
             if (item != NULL && item->surface != NULL) {
                 if (item->texture->surface == NULL) {
@@ -3193,7 +3193,7 @@ extern "C" {
     }
 
     void PC_EFFECT_SURFACE::RestoreResources() {
-        for (u32 index = 0; index != 256; ++index) {
+        for (u32 index = 0; index != sizeof(PcSurfaceRegistry) / sizeof(PcSurfaceRegistry[0]); ++index) {
             if (PcSurfaceRegistry[index] != NULL) {
                 if (PcSurfaceRegistry[index]->texture != NULL) {
                     if (PcSurfaceRegistry[index]->texture->surface != NULL) {
@@ -4754,7 +4754,7 @@ extern "C" {
     void SetAllInstancesVisible(NUGSCN *scene) {
         i32 i;
         if (scene->display_list != NULL) {
-            memset(NuPortalVisibilityBits, 255, 625);
+            memset(NuPortalVisibilityBits, 255, sizeof(NuPortalVisibilityBits));
         } else {
             for (i = 0; i < scene->num_instances; ++i) {
                 scene->instances[i].flags |= 4;
@@ -4765,7 +4765,7 @@ extern "C" {
     void SetAllInstancesHidden(NUGSCN *scene) {
         i32 i;
         if (scene->display_list != NULL) {
-            memset(NuPortalVisibilityBits, 0, 625);
+            memset(NuPortalVisibilityBits, 0, sizeof(NuPortalVisibilityBits));
         } else {
             for (i = 0; i < scene->num_instances; ++i) {
                 scene->instances[i].flags &= ~4U;

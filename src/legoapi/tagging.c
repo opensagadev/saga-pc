@@ -60,7 +60,7 @@ void RegisterTakeOverObject(GAMEOBJECT *object) {
     takeoverobjects[index].object = object;
     script = object->ai_packet.script_processor.script;
     if (script != NULL && script->name != NULL) {
-        NuStrNCpy(takeoverobjects[index].script_name, script->name, 16);
+        NuStrNCpy(takeoverobjects[index].script_name, script->name, sizeof(takeoverobjects[index].script_name));
     }
     takeoverobjects[index].character_id = object->id;
     takeoverobjects[index].source_creature = object->ai_packet.creature_index;

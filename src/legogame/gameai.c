@@ -934,10 +934,11 @@ void GameAISysStartFrame(AISYS_PC *system) {
     }
     if (system->path_sys != NULL) {
         for (path_index = 0; path_index < system->path_sys->path_count; ++path_index) {
-            memset(system->path_sys->paths[path_index]->updated_node_bits, 0, 0x20);
+            memset(system->path_sys->paths[path_index]->updated_node_bits, 0,
+                   sizeof(system->path_sys->paths[path_index]->updated_node_bits));
             PCByteCopy(system->path_sys->paths[path_index]->previous_inside_node_bits,
                        system->path_sys->paths[path_index]->inside_node_bits, 0x20);
-            memset(system->path_sys->paths[path_index]->inside_node_bits, 0, 0x20);
+            memset(system->path_sys->paths[path_index]->inside_node_bits, 0, sizeof(system->path_sys->paths[path_index]->inside_node_bits));
         }
         for (path_index = 0; path_index < system->path_sys->path_count; ++path_index) {
             for (connection_index = 0; connection_index < system->path_sys->paths[path_index]->connection_count; ++connection_index) {
@@ -2179,7 +2180,7 @@ char *AI_GetGizmoName(void *gizmo_pointer) {
         return process->name;
     }
     if (process->script != NULL && process->script->name != NULL) {
-        NuStrNCpy(AIGizmoNameBuffer, process->script->name, 16);
+        NuStrNCpy(AIGizmoNameBuffer, process->script->name, sizeof(AIGizmoNameBuffer));
     } else {
         NuStrCpy(AIGizmoNameBuffer, "");
     }

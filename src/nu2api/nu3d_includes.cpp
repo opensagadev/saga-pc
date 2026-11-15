@@ -748,8 +748,9 @@ extern "C" {
         u32 array_size;
 
         if (curve_count != 0) {
-            curve_set = (NuAnimReadCurveSet *)NuAlloc(0x10, "d:\\projects\\game_saga\\nu2api.saga\\nu3d\\nuanim.c", 0x4ec);
-            memset(curve_set, 0, 0x10);
+            curve_set =
+                (NuAnimReadCurveSet *)NuAlloc(sizeof(NuAnimReadCurveSet), "d:\\projects\\game_saga\\nu2api.saga\\nu3d\\nuanim.c", 0x4ec);
+            memset(curve_set, 0, sizeof(*curve_set));
             curve_set->curve_count = (i8)curve_count;
 
             array_size = (u32)curve_count * sizeof(void *);
@@ -6058,7 +6059,7 @@ bool OccluderSet::IsOccludedOBB(NUVEC const *minimum, NUVEC const *maximum, NUMT
     } else {
         NuAnimMtxCopyPrivate(&transform, &projection_matrix);
     }
-    for (u32 i = 0; i < 8; ++i) {
+    for (u32 i = 0; i < sizeof(corners) / sizeof(corners[0]); ++i) {
         NuVec4MtxTransform(&corners[i], reinterpret_cast<NUVEC *>(&corners[i]), &transform);
         if (corners[i].w <= 0.0f) {
             return false;
@@ -6118,7 +6119,7 @@ bool OccluderSet::IsOccludedOBB(NUVEC const *minimum, NUVEC const *maximum, NUMT
             normal.y = -(second.x - first.x);
             NuVecNorm(reinterpret_cast<NUVEC *>(&normal), reinterpret_cast<NUVEC *>(&normal));
             normal.z = normal.w = 0.0f;
-            for (u32 corner = 0; corner < 8; ++corner) {
+            for (u32 corner = 0; corner < sizeof(corners) / sizeof(corners[0]); ++corner) {
                 NUVEC delta;
                 delta.x = corners[corner].x - first.x;
                 delta.y = corners[corner].y - first.y;
@@ -6147,7 +6148,7 @@ void OccluderSet::PrepareForQueries(NUMTX const *query, NUMTX const *projection)
         record.max_y = -1000000.0f;
         record.depth = -1000000.0f;
         bool valid = true;
-        for (u32 vertex = 0; vertex != 4; ++vertex) {
+        for (u32 vertex = 0; vertex != sizeof(record.transformed) / sizeof(record.transformed[0]); ++vertex) {
             NuVec4MtxTransform(&record.transformed[vertex], reinterpret_cast<NUVEC *>(&record.vertices[vertex]), &projection_matrix);
             if (!(record.transformed[vertex].w > 0.0f)) {
                 valid = false;
@@ -6514,7 +6515,7 @@ void OcclusionManager::AddOccluder(const NUVEC *a, const NUVEC *b, const NUVEC *
         f32 min_depth = 1000000.0f;
         f32 max_x = -1000000.0f;
         f32 max_y = -1000000.0f;
-        for (u32 i = 0; i != 4; ++i) {
+        for (u32 i = 0; i != sizeof(projected) / sizeof(projected[0]); ++i) {
             if (projected[i].w < 0.001f) {
                 return;
             }

@@ -319,7 +319,7 @@ void edbitsDrawCross(f32 x, f32 y, f32 z, f32 radius, i32 colour, struct PC_SCEN
 i32 edbits_numsounds = 0;
 
 void edbitsRegisterSoundEffect(char *name, i32 id) {
-    strncpy(edbitsGameSound[edbits_numsounds].name, name, 16);
+    strncpy(edbitsGameSound[edbits_numsounds].name, name, sizeof(edbitsGameSound[edbits_numsounds].name));
     edbitsGameSound[edbits_numsounds].name[15] = '\0';
     edbitsGameSound[edbits_numsounds].id = id;
     edbits_numsounds++;

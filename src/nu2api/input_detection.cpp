@@ -170,7 +170,7 @@ cleanup:
     if (class_name) {
         SysFreeString(class_name);
     }
-    for (index = 0; index < 20; index++) {
+    for (index = 0; index < sizeof(devices) / sizeof(devices[0]); index++) {
         if (devices[index]) {
             devices[index]->Release();
             devices[index] = NULL;

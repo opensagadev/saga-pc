@@ -1154,7 +1154,7 @@ extern "C" {
         memset(LevFlag, 0, sizeof(LevFlag));
         memset(LevSfxFlag, 0, sizeof(LevSfxFlag));
         memset(LevHSpecial, 0, sizeof(LevHSpecial));
-        memset(dynamic_antinodes, 0, 0x1600);
+        memset(dynamic_antinodes, 0, sizeof(dynamic_antinodes));
         memset(&LevInstAnimReset, 0, sizeof(LevInstAnimReset));
         memset(LevArea, 0, sizeof(LevArea));
         memset(LevPathNodes, 0, sizeof(LevPathNodes));

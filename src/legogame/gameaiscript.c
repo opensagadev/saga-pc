@@ -11192,7 +11192,7 @@ i32 Action_AddScriptProcessor(AISYS_PC *system, AISCRIPTPROCESS *processor, AIPA
             } else if ((value = NuStrIStr(params[index], "spline=")) != NULL) {
                 spline = NuSplineFind(WORLD->current_gscn, value + 7);
             } else if ((value = NuStrIStr(params[index], "param")) != NULL && override_count < 4) {
-                NuStrNCpy(override_names[override_count], value + 6, 32);
+                NuStrNCpy(override_names[override_count], value + 6, sizeof(override_names[override_count]));
                 separator = NuStrIStr(override_names[override_count], "=");
                 if (separator != NULL) {
                     override_values[override_count] = AIParamToFloat(processor, separator + 1);

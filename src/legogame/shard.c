@@ -299,9 +299,9 @@ void *Shards_AllocateProgressData(VARIPTR *start, VARIPTR *end) {
 
 void Shards_ClearProgress(void *world, SHARD_PROGRESS *progress) {
     if (progress != NULL) {
-        memset(progress->collected, 0, 16);
-        memset(progress->active, 0xff, 16);
-        memset(progress->visible, 0xff, 16);
+        memset(progress->collected, 0, sizeof(progress->collected));
+        memset(progress->active, 0xff, sizeof(progress->active));
+        memset(progress->visible, 0xff, sizeof(progress->visible));
     }
 }
 

@@ -400,7 +400,7 @@ void GizAction_ChangeTechnoTgt(GIZFLOW *unused0, FLOWBOX *unused1, char **params
     NuStrCpy(old_name, techno->target_name);
     old_complete = techno->complete;
     techno->controlled_object = NULL;
-    NuStrNCpy(techno->target_name, target_name, 16);
+    NuStrNCpy(techno->target_name, target_name, sizeof(techno->target_name));
     techno->target_mode = (u8)target_kind;
     techno->complete = 0;
     GameCam_Blend(GameCam, 0.5f, 0.0f, 1);

@@ -1073,7 +1073,7 @@ extern "C" {
         memset(progress->fired, 0, sizeof(progress->fired));
         memset(progress->stopped, 0, sizeof(progress->stopped));
         memset(progress->completed, 0, sizeof(progress->completed));
-        memset(progress->timers, 255, 64);
+        memset(progress->timers, 255, sizeof(progress->timers));
     }
 
     GIZTURRET_s *GizTurret_FindByName(GIZTURRETSYS_s *system, char *name) {
@@ -1105,7 +1105,7 @@ extern "C" {
         memset(progress->fired, 0, sizeof(progress->fired));
         memset(progress->stopped, 0, sizeof(progress->stopped));
         memset(progress->completed, 0, sizeof(progress->completed));
-        memset(progress->timers, 255, 64);
+        memset(progress->timers, 255, sizeof(progress->timers));
 
         record = system->turrets;
         for (index = 0; index < system->count; ++index, ++record) {

@@ -6693,7 +6693,7 @@ AIMESSAGE *CheckAIMessage(AIMESSAGESYS *sys, char *name, AIMESSAGE *message) {
             if (message != NULL) {
                 NuLinkedListRemove(&sys->free_list, &message->links);
                 NuLinkedListAppend(&sys->active_list, &message->links);
-                NuStrNCpy(message->name, name, 32);
+                NuStrNCpy(message->name, name, sizeof(message->name));
             }
             result = message;
         }
@@ -6740,7 +6740,7 @@ AILOCALMESSAGE *FindLocalAIMessage(AISCRIPTPROCESS *processor, char *name) {
 }
 
 void AddLocalAIMessage(AISCRIPTPROCESS *processor, AILOCALMESSAGE *message, char *name) {
-    NuStrNCpy(message->message.name, name, 32);
+    NuStrNCpy(message->message.name, name, sizeof(message->message.name));
     if (processor->local_messages == NULL) {
         processor->local_messages = message;
         message->next = NULL;
@@ -7375,7 +7375,7 @@ void areaEditor_Enter(void) {
             AIAREA *source = &aieditor->ai_system->areas[i];
             EDAIAREA_s *area =
                 areaEditorCreateArea(&source->position, (NUVEC *)&source->half_width, source->rotation, (i8)source->game_flags);
-            NuStrNCpy(area->name, source->name, 16);
+            NuStrNCpy(area->name, source->name, sizeof(area->name));
         }
     }
 }
@@ -7682,7 +7682,7 @@ static void AiEditorSetPendingLocatorName(eduimenu_s *menu, eduiitem_s *item, u3
     if (state->current_locator_set != NULL) {
         char *name = ((edui_textpicker_s *)item)->value;
         if (strlen(name) != 0) {
-            NuStrNCpy(state->pending_locator_name, name, 16);
+            NuStrNCpy(state->pending_locator_name, name, sizeof(state->pending_locator_name));
         }
     }
 }
@@ -8981,7 +8981,7 @@ static void AiEditorRenameNode(eduimenu_s *menu, eduiitem_s *item, u32 event) {
     }
     name = ((edui_textpicker_s *)item)->value;
     if (strlen(name) == 0) {
-        memset(current->name, 0, 16);
+        memset(current->name, 0, sizeof(current->name));
         return;
     }
     for (node = (EDAIPATHNODE_s *)NuLinkedListGetHead(&path->nodes); node != NULL;

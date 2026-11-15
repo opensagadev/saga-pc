@@ -117,7 +117,7 @@ namespace {
     }
 
     unsigned int stream_of(TraceWord address) {
-        for (unsigned int i = 0; i < 2; ++i) {
+        for (unsigned int i = 0; i < sizeof(state.stream) / sizeof(state.stream[0]); ++i) {
             if (state.stream[i].size && address >= state.stream[i].base && address - state.stream[i].base < state.stream[i].size) {
                 return i;
             }
@@ -127,12 +127,12 @@ namespace {
 
     Thread *thread_state() {
         unsigned int id = skin_trace_thread();
-        for (unsigned int i = 0; i < 4; ++i) {
+        for (unsigned int i = 0; i < sizeof(state.thread) / sizeof(state.thread[0]); ++i) {
             if (state.thread[i].id == id) {
                 return &state.thread[i];
             }
         }
-        for (unsigned int j = 0; j < 4; ++j) {
+        for (unsigned int j = 0; j < sizeof(state.thread) / sizeof(state.thread[0]); ++j) {
             if (!state.thread[j].id) {
                 state.thread[j].id = id;
                 return &state.thread[j];
@@ -153,10 +153,10 @@ namespace {
     }
 
     void invalidate_registers() {
-        for (unsigned int i = 0; i < 256; ++i) {
+        for (unsigned int i = 0; i < sizeof(state.vertex) / sizeof(state.vertex[0]); ++i) {
             state.vertex[i].valid = 0;
         }
-        for (unsigned int j = 0; j < 224; ++j) {
+        for (unsigned int j = 0; j < sizeof(state.pixel) / sizeof(state.pixel[0]); ++j) {
             state.pixel[j].valid = 0;
         }
         state.shader_valid[0] = state.shader_valid[1] = 0;
@@ -193,17 +193,17 @@ extern "C" void skin_trace_stream(unsigned int index, TraceWord base, unsigned i
     s.base = base;
     s.size = size;
     ++s.epoch;
-    for (unsigned int i = 0; i < 32; ++i) {
+    for (unsigned int i = 0; i < sizeof(state.owner) / sizeof(state.owner[0]); ++i) {
         if (state.owner[i].stream == index) {
             state.owner[i].skin = 0;
         }
     }
-    for (unsigned int j = 0; j < 64; ++j) {
+    for (unsigned int j = 0; j < sizeof(state.item) / sizeof(state.item[0]); ++j) {
         if (state.item[j].stream == index) {
             state.item[j].item = 0;
         }
     }
-    for (unsigned int k = 0; k < 4; ++k) {
+    for (unsigned int k = 0; k < sizeof(state.thread) / sizeof(state.thread[0]); ++k) {
         if (state.thread[k].palette_stream == index) {
             state.thread[k].palette = 0;
             state.thread[k].palette_count = 0;
@@ -246,7 +246,7 @@ extern "C" void skin_trace_skin(TraceWord hierarchy, TraceWord joints, const voi
                 hex(record, used, sizeof(record), joints);
                 for (unsigned int w = 0; w < 16; ++w) {
                     TraceWord bits;
-                    memcpy(&bits, (const char *)world64 + w * 4, 4);
+                    memcpy(&bits, (const char *)world64 + w * 4, sizeof(bits));
                     hex(record, used, sizeof(record), bits);
                 }
                 if (state.lines < max_lines && used + 160 <= max_log_bytes - state.bytes) {
@@ -259,16 +259,16 @@ extern "C" void skin_trace_skin(TraceWord hierarchy, TraceWord joints, const voi
         if (!ordinal) {
             return;
         }
-        for (unsigned int k = 0; k < 32; ++k) {
+        for (unsigned int k = 0; k < sizeof(state.owner) / sizeof(state.owner[0]); ++k) {
             Owner &prior = state.owner[k];
             if (prior.skin && prior.hierarchy == hierarchy && prior.joints == joints && prior.stream == stream &&
-                prior.epoch == state.stream[stream].epoch && memcmp(prior.world, world64, 64)) {
-                for (unsigned int a = 0; a < 32; ++a) {
+                prior.epoch == state.stream[stream].epoch && memcmp(prior.world, world64, sizeof(prior.world))) {
+                for (unsigned int a = 0; a < sizeof(state.owner) / sizeof(state.owner[0]); ++a) {
                     if (state.owner[a].hierarchy == hierarchy && state.owner[a].joints == joints) {
                         state.owner[a].ordinal = 0;
                     }
                 }
-                for (unsigned int b = 0; b < 64; ++b) {
+                for (unsigned int b = 0; b < sizeof(state.item) / sizeof(state.item[0]); ++b) {
                     if (state.item[b].hierarchy == hierarchy && state.item[b].joints == joints) {
                         state.item[b].ordinal = 0;
                     }
@@ -280,7 +280,7 @@ extern "C" void skin_trace_skin(TraceWord hierarchy, TraceWord joints, const voi
         o.skin = skin;
         o.hierarchy = hierarchy;
         o.joints = joints;
-        memcpy(o.world, world64, 64);
+        memcpy(o.world, world64, sizeof(o.world));
         o.count = count;
         o.stream = stream;
         o.epoch = state.stream[stream].epoch;
@@ -320,7 +320,7 @@ extern "C" void skin_trace_item(TraceWord draw_item, TraceWord palette, TraceWor
     i.geometry = geometry;
     i.hierarchy = owner->hierarchy;
     i.joints = owner->joints;
-    memcpy(i.world, owner->world, 64);
+    memcpy(i.world, owner->world, sizeof(i.world));
     i.stream = stream;
     i.epoch = owner->epoch;
     i.ordinal = owner->ordinal;
@@ -387,7 +387,7 @@ extern "C" void skin_trace_upload(int stage, unsigned int first, unsigned int co
     for (unsigned int j = 0; j < count; ++j) {
         r[first + j].valid = result >= 0;
         if (result >= 0) {
-            memcpy(r[first + j].value, (const char *)values + j * 16, 16);
+            memcpy(r[first + j].value, (const char *)values + j * 16, sizeof(r[first + j].value));
         }
     }
 }
@@ -412,13 +412,13 @@ namespace {
         invalidate_registers();
         state.writer = skin_trace_thread();
         state.multiple_writers = 0;
-        for (unsigned int i = 0; i < 64; ++i) {
+        for (unsigned int i = 0; i < sizeof(state.item) / sizeof(state.item[0]); ++i) {
             state.item[i].item = 0;
         }
-        for (unsigned int j = 0; j < 32; ++j) {
+        for (unsigned int j = 0; j < sizeof(state.owner) / sizeof(state.owner[0]); ++j) {
             state.owner[j].skin = 0;
         }
-        for (unsigned int k = 0; k < 4; ++k) {
+        for (unsigned int k = 0; k < sizeof(state.thread) / sizeof(state.thread[0]); ++k) {
             state.thread[k].palette = 0;
             state.thread[k].palette_count = 0;
         }
@@ -514,7 +514,7 @@ extern "C" void skin_trace_capture(const TraceDraw *draw) {
         text(record, used, sizeof(record), " logical-vs/ps, actual-known-vs/ps: ");
         hex(record, used, sizeof(record), draw->expected_vertex_shader);
         hex(record, used, sizeof(record), draw->expected_pixel_shader);
-        for (unsigned int stage = 0; stage < 2; ++stage) {
+        for (unsigned int stage = 0; stage < sizeof(state.shader_valid) / sizeof(state.shader_valid[0]); ++stage) {
             if (state.shader_valid[stage]) {
                 hex(record, used, sizeof(record), state.shader[stage]);
             } else {
@@ -522,11 +522,11 @@ extern "C" void skin_trace_capture(const TraceDraw *draw) {
             }
         }
         text(record, used, sizeof(record), " submission-world: ");
-        for (unsigned int w = 0; w < 16; ++w) {
+        for (unsigned int w = 0; w < sizeof(item->world) / sizeof(item->world[0]); ++w) {
             hex(record, used, sizeof(record), item->world[w]);
         }
         const char *names[] = {" world11:", " light6:", " light7:", " light8:", " spec49:", " skin18:", " ambient1:"};
-        for (unsigned int p = 0; p < 14; ++p) {
+        for (unsigned int p = 0; p < sizeof(draw->parameter) / sizeof(draw->parameter[0]); ++p) {
             unsigned int semantic = p / 2;
             const TraceParameter &v = draw->parameter[p];
             text(record, used, sizeof(record), names[semantic]);
@@ -557,7 +557,7 @@ extern "C" void skin_trace_capture(const TraceDraw *draw) {
                 if (!r[v.first + n].valid) {
                     text(record, used, sizeof(record), "unknown ");
                 } else {
-                    for (unsigned int c = 0; c < 4; ++c) {
+                    for (unsigned int c = 0; c < sizeof(r[v.first + n].value) / sizeof(r[v.first + n].value[0]); ++c) {
                         hex(record, used, sizeof(record), r[v.first + n].value[c]);
                     }
                 }

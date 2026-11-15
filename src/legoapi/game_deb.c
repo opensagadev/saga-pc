@@ -207,7 +207,7 @@ i32 AddPARTEffect(i32 effect, NUVEC *position) {
         if (part_emits[i].effect_id == -1) {
             part_emits[i].position = *position;
             part_emits[i].effect_id = effect;
-            NuStrNCpy(part_emits[i].name, part_types[effect].name, 16);
+            NuStrNCpy(part_emits[i].name, part_types[effect].name, sizeof(part_emits[i].name));
             PARTStartOffset(i, 0.0f);
             part_emits[i].camera_distance = 9999.9f;
             ++part_emits_used;

@@ -753,8 +753,8 @@ struct PC_DI_JOYSTICK_STATE { // size 0x110
 };
 
 i32 PC_INPUT_RUNTIME::SampleDevicePc(i32 port, PC_INPUT_RAW_SAMPLE *sample) {
-    memset(sample->axes, 0, 64);
-    memset(sample->buttons, 0, 132);
+    memset(sample->axes, 0, sizeof(sample->axes));
+    memset(sample->buttons, 0, sizeof(sample->buttons));
     if (port < 0) {
         return 0;
     }
@@ -909,7 +909,7 @@ i32 PC_INPUT_RUNTIME::UpdateMousePc() {
             PCByteCopy(mouse.buttons, state->buttons, button_count);
             return 1;
         }
-        memset(mouse.buttons, 0, 16);
+        memset(mouse.buttons, 0, sizeof(mouse.buttons));
         mouse.accumulated[0] = mouse.accumulated[1] = mouse.accumulated[2] = mouse.delta[0] = mouse.delta[1] = mouse.delta[2] = 0.0f;
         for (i32 axis = 0; axis < 3; ++axis) {
             mouse.previous[axis] = mouse.current[axis];
@@ -2147,7 +2147,7 @@ void PC_INPUT_RUNTIME::ExportConfig(i32 port, PC_INPUT_CONFIG *config, i32 auxil
             config->all_axes[i][1] = 0;
         }
     }
-    memset(config->name, 0, 64);
+    memset(config->name, 0, sizeof(config->name));
     PCByteCopy(config->name, devices[port].name, NuStrLen(devices[port].name));
     config->product_id = devices[port].product.Data1;
     config->guid_data2 = devices[port].product.Data2;
