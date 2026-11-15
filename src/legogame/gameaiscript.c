@@ -2098,7 +2098,7 @@ f32 Condition_PartyContainsDroids(AISYS_PC *system, AISCRIPTPROCESS *process, AI
 }
 
 f32 Condition_CannotReachDestination(AISYS_PC *system, AISCRIPTPROCESS *process, AIPACKET *packet, char *name, void *argument) {
-    if (packet != NULL && (packet->flags & 0x400000) != 0) {
+    if (packet != NULL && (packet->flags & AIPACKET_PATH_BLOCKED) != 0) {
         return 1.0f;
     }
     return 0.0f;
@@ -5492,7 +5492,7 @@ i32 Action_SetFormationCommander(AISYS_PC *unused0, AISCRIPTPROCESS *unused1, AI
         if (packet->group_member_index == group->member_count - 1 &&
             (group->count_across == 1 || group->member_count % group->count_across == 1)) {
             object = packet->owner->objptr;
-            packet->flags |= 0x1000000;
+            packet->flags |= AIPACKET_FORMATION_COMMANDER;
             if ((i16)object->id == id_BATTLEDROID || (i16)object->id == id_BATTLEDROIDSECURITY ||
                 (i16)object->id == id_BATTLEDROIDGEONOSIAN) {
                 NewPlayerCharacter(object, id_BATTLEDROIDCOMMANDER, (i16)object->id, 1);
@@ -11431,11 +11431,12 @@ i32 Action_CircleLocator(AISYS_PC *sys, AISCRIPTPROCESS *processor, AIPACKET *pa
                     value += NuStrLen("goalrange") + 1;
                     packet->movement_instruction_parameter = AIParamToFloatEx(packet, processor, value);
                 } else if (NuStrICmp(params[index], "reverse") == 0) {
-                    packet->flags = (packet->flags & ~0x200u) | (~packet->flags & 0x200u); // MATCH-EXCEPTION: toggles a one-bit bitfield
+                    packet->flags = (packet->flags & ~AIPACKET_CIRCLE_CLOCKWISE) |
+                                    (~packet->flags & AIPACKET_CIRCLE_CLOCKWISE); // MATCH-EXCEPTION: toggles a one-bit bitfield
                 } else if (NuStrICmp(params[index], "anticlockwise") == 0) {
-                    packet->flags &= ~0x200u;
+                    packet->flags &= ~AIPACKET_CIRCLE_CLOCKWISE;
                 } else if (NuStrICmp(params[index], "clockwise") == 0) {
-                    packet->flags |= 0x200;
+                    packet->flags |= AIPACKET_CIRCLE_CLOCKWISE;
                 } else {
                     packet->movement_instruction_parameter = AIParamToFloatEx(packet, processor, params[index]);
                 }

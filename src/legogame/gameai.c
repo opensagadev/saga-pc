@@ -2517,7 +2517,7 @@ void GameAIProcess(void) {
                     object->pad->buttons_pressed |= GAMEPAD_JUMP;
                     object->respawn_timer = 0.0f;
                 } else {
-                    object->ai_packet.flags |= 0x400000;
+                    object->ai_packet.flags |= AIPACKET_PATH_BLOCKED;
                 }
             }
         }
@@ -2594,7 +2594,7 @@ void GameAIProcess(void) {
                     object->route_search_index = 0;
                 }
             }
-        } else if ((object->ai_packet.flags & 0x400000) != 0) {
+        } else if ((object->ai_packet.flags & AIPACKET_PATH_BLOCKED) != 0) {
             AISysFindRoute(&object->ai_packet);
         }
         if ((object->flags_1fc_word & 0x180) == 0x80) {

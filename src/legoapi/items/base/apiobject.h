@@ -283,6 +283,13 @@ typedef struct APIDEBRISSYS {        // size 0xc
 
 #if SAGA_LEGOAPI_ITEMS_BASE_APIOBJECT_H_PART == 3 && !defined(SAGA_LEGOAPI_ITEMS_BASE_APIOBJECT_H_STOP)
 
+/* AIPACKET.flags bits that AI script actions and conditions set or test (their names are the script keywords). */
+#define AIPACKET_IGNORE_WALL_SPLINES 0x80      /* IgnoreWallSplines; CheckWallSplines sets it too */
+#define AIPACKET_CHECK_WALL_SPLINES 0x100      /* CheckWallSplines */
+#define AIPACKET_CIRCLE_CLOCKWISE 0x200        /* SetCircleDirection Clockwise / AntiClockwise / Reverse / Random */
+#define AIPACKET_PATH_BLOCKED 0x400000         /* the PathBlocked and CannotReachDestination conditions */
+#define AIPACKET_FORMATION_COMMANDER 0x1000000 /* SetFormationCommander */
+
 struct AIPACKET { // size 0x20c
 
     union { // size 0xd0

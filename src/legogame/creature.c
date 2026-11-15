@@ -1800,7 +1800,7 @@ void TerrainPlayer(GAMEOBJECT *object) {
                     }
                     TerrainSetPlatConnectTol(
                         (api->character_data->model_flags & CHARACTER_MODEL_NON_STICK) != 0 ? 0.0f : TerrainPlayerPlatConnectTolerance);
-                    if ((object->ai_packet.flags & 0x80) != 0) {
+                    if ((object->ai_packet.flags & AIPACKET_IGNORE_WALL_SPLINES) != 0) {
                         IgnoreWallSplines = 1;
                     }
                     TerrainSetImpactData(impact_records, &impact_count, 8);
@@ -3544,9 +3544,9 @@ void ResetAICreature(GAMEOBJECT *object, AISYS_PC *system) {
     creature = &system->creatures[object->ai_packet.creature_index];
     object->ai_packet.creature_set = ((AI_CREATURE_RESET_VIEW *)creature)->creature_set;
     if ((creature->flags & 1) != 0) {
-        object->ai_packet.flags |= 0x80;
+        object->ai_packet.flags |= AIPACKET_IGNORE_WALL_SPLINES;
     } else {
-        object->ai_packet.flags &= ~0x80u;
+        object->ai_packet.flags &= ~AIPACKET_IGNORE_WALL_SPLINES;
     }
     object->ai_packet.flags &= ~0x40000u;
     object->view_distance = creature->view_distance;
@@ -3596,7 +3596,7 @@ void ResetAICreature(GAMEOBJECT *object, AISYS_PC *system) {
     SetAnimTimeRandom(object->character_model, &object->anim_packet);
     object->ai_packet.movement_stopping_distance = 0.0f;
     ((AI_RESET_EXTRA *)object)->reset_timer = 0.0f;
-    object->ai_packet.flags &= ~0x1000000u;
+    object->ai_packet.flags &= ~AIPACKET_FORMATION_COMMANDER;
     object->ai_packet.movement_destination = object->position;
     object->ai_packet.path_target = NULL;
     ((AI_RESET_EXTRA *)object)->search_state = 0;

@@ -2283,7 +2283,7 @@ f32 Condition_NearestPlayerToLocator(AISYS_PC *system, AISCRIPTPROCESS *process,
 }
 
 f32 Condition_PathBlocked(AISYS_PC *system, AISCRIPTPROCESS *process, AIPACKET *packet, char *name, void *argument) {
-    if (packet != NULL && (packet->flags & 0x400000) != 0) {
+    if (packet != NULL && (packet->flags & AIPACKET_PATH_BLOCKED) != 0) {
         return 1.0f;
     }
     return 0.0f;
@@ -2437,16 +2437,16 @@ i32 Action_SetCircleDirection(AISYS_PC *system, AISCRIPTPROCESS *processor, AIPA
     }
     for (i = 0; i < param_count; i++) {
         if (NuStrICmp(params[i], "Clockwise") == 0) {
-            packet->flags |= 0x200u;
+            packet->flags |= AIPACKET_CIRCLE_CLOCKWISE;
         } else if (NuStrICmp(params[i], "AntiClockwise") == 0) {
-            packet->flags &= ~0x200u;
+            packet->flags &= ~AIPACKET_CIRCLE_CLOCKWISE;
         } else if (NuStrICmp(params[i], "Reverse") == 0) {
-            packet->flags ^= 0x200u;
+            packet->flags ^= AIPACKET_CIRCLE_CLOCKWISE;
         } else if (NuStrICmp(params[i], "Random") == 0) {
             if (NuRandFloat() > 0.5f) {
-                packet->flags |= 0x200u;
+                packet->flags |= AIPACKET_CIRCLE_CLOCKWISE;
             } else {
-                packet->flags &= ~0x200u;
+                packet->flags &= ~AIPACKET_CIRCLE_CLOCKWISE;
             }
         }
     }
@@ -2573,10 +2573,10 @@ i32 Action_IgnoreWallSplines(AISYS_PC *system, AISCRIPTPROCESS *processor, AIPAC
     if (packet == NULL || first_time == 0) {
         return 1;
     }
-    packet->flags |= 0x80u;
+    packet->flags |= AIPACKET_IGNORE_WALL_SPLINES;
     for (i = 0; i < count; i++) {
         if (NuStrICmp(params[i], AIScriptFalse) == 0) {
-            packet->flags &= ~0x80u;
+            packet->flags &= ~AIPACKET_IGNORE_WALL_SPLINES;
         }
     }
     return 1;
@@ -2587,14 +2587,14 @@ i32 Action_CheckWallSplines(AISYS_PC *system, AISCRIPTPROCESS *processor, AIPACK
     i32 i;
 
     if (packet != NULL && first_time != 0) {
-        packet->flags |= 0x100u;
+        packet->flags |= AIPACKET_CHECK_WALL_SPLINES;
         for (i = 0; i < count; i++) {
             if (NuStrICmp(params[i], AIScriptFalse) == 0) {
-                packet->flags &= ~0x100u;
+                packet->flags &= ~AIPACKET_CHECK_WALL_SPLINES;
             }
         }
-        if ((packet->flags & 0x100u) != 0) {
-            packet->flags |= 0x80u;
+        if ((packet->flags & AIPACKET_CHECK_WALL_SPLINES) != 0) {
+            packet->flags |= AIPACKET_IGNORE_WALL_SPLINES;
         }
     }
     return 1;
@@ -6076,7 +6076,7 @@ void AIMoveToDestination(AISYS_PC *system, AIPACKET *packet, APIOBJECT *object, 
     flags = current_2->traversal_flags[packet->path_info.direction];
     if ((flags & 0xd8000000) != 0) {
         packet->movement_destination = path->nodes[current_2->node_indices[packet->path_info.direction]].position;
-        packet->flags |= 0x00400000u;
+        packet->flags |= AIPACKET_PATH_BLOCKED;
         packet->movement_stopping_distance = 0.0f;
         packet->frame_state = current_2->traversal_flags[packet->path_info.direction];
         return;
@@ -6142,7 +6142,7 @@ void AIMoveToDestination(AISYS_PC *system, AIPACKET *packet, APIOBJECT *object, 
         if (((u64)flags & 0xdfffffff) != 0) {
             if ((flags & 0xd8000000) != 0) {
                 packet->movement_destination = object->position;
-                packet->flags |= 0x00400000u;
+                packet->flags |= AIPACKET_PATH_BLOCKED;
                 packet->movement_stopping_distance = 0.0f;
                 packet->frame_state = next->traversal_flags[direction];
                 return;
@@ -6206,7 +6206,7 @@ void AIMoveToDestination(AISYS_PC *system, AIPACKET *packet, APIOBJECT *object, 
     if (NuVecDistSqr(&packet->movement_destination, &object->position, &difference) < 1.0f) {
         packet->movement_destination = object->position;
     }
-    packet->flags |= 0x00400000u;
+    packet->flags |= AIPACKET_PATH_BLOCKED;
 }
 
 void AIMoveToDestinationAvoidingCamera(AISYS_PC *system, AIPACKET *packet, APIOBJECT *object, i32 checks) {
@@ -6408,7 +6408,7 @@ void AICircle(AISYS_PC *system, AIPACKET *packet, APIOBJECT *object, i32 checks)
     difference.z = radius;
     NuVecRotateY(&difference, &difference, angle);
     NuVecAdd(&circle_position, &packet->fallback_destination, &difference);
-    if ((packet->flags & 0x200) != 0) {
+    if ((packet->flags & AIPACKET_CIRCLE_CLOCKWISE) != 0) {
         angle = NuAngSub(angle, 0x4000);
     } else {
         angle = NuAngAdd(angle, 0x4000);
@@ -15441,13 +15441,13 @@ i32 Action_Circle(AISYS_PC *sys, AISCRIPTPROCESS *processor, AIPACKET *packet, c
             }
 
             if (NuStrICmp(params[i], "ANTICLOCKWISE") == 0) {
-                packet->flags &= ~0x200u;
+                packet->flags &= ~AIPACKET_CIRCLE_CLOCKWISE;
             } else if (NuStrICmp(params[i], "CLOCKWISE") == 0) {
-                packet->flags |= 0x200u;
+                packet->flags |= AIPACKET_CIRCLE_CLOCKWISE;
             } else if (NuStrICmp(params[i], "REVERSE") == 0) {
                 // MATCH-EXCEPTION: the original flips the clockwise bit as a 1-bit field (x ^ ((~x ^ x) & 0x200));
                 // flags has no bitfield view, so the flip is a masked merge.
-                packet->flags = (packet->flags & ~0x200u) | (~packet->flags & 0x200u);
+                packet->flags = (packet->flags & ~AIPACKET_CIRCLE_CLOCKWISE) | (~packet->flags & AIPACKET_CIRCLE_CLOCKWISE);
             } else if (NuStrICmp(params[i], "facing") == 0) {
                 processor->action_data_1 |= 1;
             } else if (NuStrICmp(params[i], "currentdist") == 0) {
@@ -15517,13 +15517,13 @@ i32 Action_CirclePlayer(AISYS_PC *sys, AISCRIPTPROCESS *processor, AIPACKET *pac
                 continue;
             }
             if (NuStrICmp(params[i], "ANTICLOCKWISE") == 0) {
-                packet->flags &= ~0x200u;
+                packet->flags &= ~AIPACKET_CIRCLE_CLOCKWISE;
             } else if (NuStrICmp(params[i], "CLOCKWISE") == 0) {
-                packet->flags |= 0x200u;
+                packet->flags |= AIPACKET_CIRCLE_CLOCKWISE;
             } else if (NuStrICmp(params[i], "REVERSE") == 0) {
                 // MATCH-EXCEPTION: the original flips the clockwise bit as a 1-bit field (x ^ ((~x ^ x) & 0x200));
                 // flags has no bitfield view, so the flip is a masked merge.
-                packet->flags = (packet->flags & ~0x200u) | (~packet->flags & 0x200u);
+                packet->flags = (packet->flags & ~AIPACKET_CIRCLE_CLOCKWISE) | (~packet->flags & AIPACKET_CIRCLE_CLOCKWISE);
             } else if (NuStrICmp(params[i], "facing") == 0) {
                 processor->action_data_1 |= 1;
             } else if (NuStrICmp(params[i], "can_go_off_path") == 0) {
@@ -15565,18 +15565,18 @@ i32 Action_CircleOpponent(AISYS_PC *system, AISCRIPTPROCESS *processor, AIPACKET
                 continue;
             }
             if (NuStrICmp(params[i], "ANTICLOCKWISE") == 0) {
-                packet->flags &= ~0x200u;
+                packet->flags &= ~AIPACKET_CIRCLE_CLOCKWISE;
             } else if (NuStrICmp(params[i], "CLOCKWISE") == 0) {
-                packet->flags |= 0x200u;
+                packet->flags |= AIPACKET_CIRCLE_CLOCKWISE;
             } else if (NuStrICmp(params[i], "REVERSE") == 0) {
                 // MATCH-EXCEPTION: the original flips the clockwise bit as a 1-bit field (x ^ ((~x ^ x) & 0x200));
                 // flags has no bitfield view, so the flip is a masked merge.
-                packet->flags = (packet->flags & ~0x200u) | (~packet->flags & 0x200u);
+                packet->flags = (packet->flags & ~AIPACKET_CIRCLE_CLOCKWISE) | (~packet->flags & AIPACKET_CIRCLE_CLOCKWISE);
             } else if (NuStrICmp(params[i], "RANDOM") == 0) {
                 if (NuRandFloat() < 0.5f) {
-                    packet->flags &= ~0x200u;
+                    packet->flags &= ~AIPACKET_CIRCLE_CLOCKWISE;
                 } else {
-                    packet->flags |= 0x200u;
+                    packet->flags |= AIPACKET_CIRCLE_CLOCKWISE;
                 }
             } else if (NuStrICmp(params[i], "facing") == 0) {
                 processor->action_data_1 |= 1;
@@ -16098,7 +16098,7 @@ i32 Action_GoToLocator(AISYS_PC *sys, AISCRIPTPROCESS *processor, AIPACKET *pack
         } else {
             return 1;
         }
-    } else if ((packet->flags & 0x400000u) != 0 && (processor->action_data_1 & 16u) != 0 && AIBigJumpToDestinationFn != NULL &&
+    } else if ((packet->flags & AIPACKET_PATH_BLOCKED) != 0 && (processor->action_data_1 & 16u) != 0 && AIBigJumpToDestinationFn != NULL &&
                AIBigJumpToDestinationFn(((APIOBJECT *)packet->owner), &locator->position) != 0) {
         return 1;
     }
