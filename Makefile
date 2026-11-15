@@ -1,4 +1,6 @@
 PYTHON ?= python3
+# The libclang scans run with SAGA_CLANG_PYTHON when it is set: an interpreter whose libclang is the pinned 18.
+CLANG_PYTHON ?= $(or $(SAGA_CLANG_PYTHON),$(PYTHON))
 BUILD_KIND ?= Matching
 
 ifeq ($(BUILD_KIND),Matching)
@@ -92,7 +94,7 @@ LDLIBS := user32.lib gdi32.lib winmm.lib ole32.lib oleaut32.lib shell32.lib adva
 
 .DEFAULT_GOAL := build
 .DELETE_ON_ERROR:
-.PHONY: dependencies all build objects link Matching Debug run setup editor check check-core lint format check-objects check-warnings lower-warning-budget test match diff inspect clean
+.PHONY: dependencies all build objects link Matching Debug run setup editor check check-core check-scans lint format check-objects check-warnings lower-warning-budget test match diff inspect clean
 
 all: build
 build: link prune-objects
@@ -190,18 +192,21 @@ format:
 	$(PYTHON) tools/check.py --format-fix
 
 # Counts that may only go down (tools/budget.py): oddities, unit declarations, casts, single-use string
-# constants, module headers that do not compile alone; warnings: check-warnings.
-check-core: dependencies
+# constants, module headers that do not compile alone; warnings: check-warnings. check-scans is check-core
+# without the tool tests.
+check-core: check-scans
+	$(PYTHON) -m unittest discover -s tools -p 'test_*.py'
+
+check-scans: dependencies
 	$(PYTHON) tools/check.py
 	$(PYTHON) tools/budget.py --guard
 	$(PYTHON) tools/oddscan.py --check
-	$(PYTHON) tools/declscan.py --check
-	$(PYTHON) tools/castscan.py --check
+	$(CLANG_PYTHON) tools/declscan.py --check
+	$(CLANG_PYTHON) tools/castscan.py --check
 	$(PYTHON) tools/literalscan.py --check
 	$(PYTHON) tools/floatlit.py --check
-	$(PYTHON) tools/layoutcheck.py
-	$(PYTHON) tools/standalone.py --check
-	$(PYTHON) -m unittest discover -s tools -p 'test_*.py'
+	$(CLANG_PYTHON) tools/layoutcheck.py
+	$(CLANG_PYTHON) tools/standalone.py --check
 
 
 check-objects: objects
