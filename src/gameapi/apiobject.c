@@ -68,37 +68,6 @@ static API_EXTRA_ACTION *APIExtraActionData = 0;
 typedef struct PC_ANIMATION_RENDER_VIEW PC_ANIMATION_RENDER_VIEW;
 typedef struct PC_HG_SHADOW_PACKET PC_HG_SHADOW_PACKET;
 typedef struct PC_HG_SHADOW_STATE_VIEW PC_HG_SHADOW_STATE_VIEW;
-typedef struct PC_HG_SHADOW_SHAPE48 PC_HG_SHADOW_SHAPE48;
-typedef struct PC_HG_SHADOW_SHAPE64 PC_HG_SHADOW_SHAPE64;
-typedef struct PC_HG_SHADOW_GROUP PC_HG_SHADOW_GROUP;
-
-struct PC_HG_SHADOW_SHAPE48 { // size 0x30
-
-    union { // size 0x30
-        NUVEC axes[4];
-
-        struct {          // size 0x30
-            f32 center_x; // 0x00
-            u32 flags;    // 0x04
-            u8 rest[40];  // 0x08
-        } filter;
-    }; // 0x00
-};
-
-struct PC_HG_SHADOW_SHAPE64 {      // size 0x40
-    PC_HG_SHADOW_SHAPE48 position; // 0x00
-    u8 unknown_30[16];             // 0x30
-};
-
-struct PC_HG_SHADOW_GROUP {          // size 0x10
-    PC_HG_SHADOW_SHAPE48 *ellipses;  // 0x0
-    PC_HG_SHADOW_SHAPE64 *cylinders; // 0x4
-    void *third_shape;               // 0x8
-    u8 ellipse_count;                // 0xc
-    u8 cylinder_count;               // 0xd
-    u8 third_count;                  // 0xe
-    u8 joint_index;                  // 0xf
-};
 
 #define BLEND_SOURCE_CONFIG(object)                                                                                                        \
     ((CHARACTERANIM_CONFIG *)(object)->character_model->animation_configs[(object)->anim_packet.blend_source_animation])
