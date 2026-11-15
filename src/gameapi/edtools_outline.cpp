@@ -1,4 +1,11 @@
-#include "saga.h"
+#include "gameapi/edtools/edui.h"
+#include "legoapi/render/core/render.h"
+#include "nu2api/nu3d/nucamera.h"
+#include "nu2api/nu3d/numtl.h"
+#include "nu2api/nu3d/nurndr.h"
+#include "nu2api/numath/numath_includes.h"
+#include "nu2api/numath/numtx.h"
+#include "nu2api/numath/nuvec.h"
 
 /* Camera-facing outline helpers from the edtools unit, used by the light
  * editor. */

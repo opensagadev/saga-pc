@@ -1,6 +1,25 @@
 #include <stdio.h>
 #include <string.h>
-#include "saga.h"
+#include "gameapi/edpart.h"
+#include "gameapi/edptl.h"
+#include "gameapi/edtools/edanim_internal.h"
+#include "gameapi/edtools/edcam.h"
+#include "gameapi/edtools/edfile.h"
+#include "gameapi/edtools/edgra.h"
+#include "gameapi/edtools/edgra_internal.h"
+#include "gameapi/edtools/edrender.h"
+#include "gameapi/edtools/edui.h"
+#include "legoapi/render/core/gameliball.h"
+#include "nu2api/nu3d/nu3d_includes.h"
+#include "nu2api/nu3d/nuhspecial.h"
+#include "nu2api/nu3d/numtl.h"
+#include "nu2api/nu3d/nuqfnt.h"
+#include "nu2api/nu3d/nurndr.h"
+#include "nu2api/nuanimation_gen.h"
+#include "nu2api/nucore/nustring.h"
+#include "nu2api/nugscn_gen.h"
+#include "nu2api/numath/numtx.h"
+#include "nu2api/numath/nuvec.h"
 
 extern struct eduimenu_s *edgra_sscale_menu;
 void EdFileWrite(void *data, i32 len);

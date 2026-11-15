@@ -1,4 +1,17 @@
-#include "saga.h"
+#include "gameapi/edptl.h"
+#include "gameapi/edtools/edanim_internal.h"
+#include "legoapi/legoapi_types.h"
+#include "legoapi/render/core/gameliball.h"
+#include "legoapi/render/fx.h"
+#include "legoapi/render/fx/game_deb.h"
+#include "legoapi/render/light/lighting.h"
+#include "nu2api/nu3d/nuhspecial.h"
+#include "nu2api/nuanimation_gen.h"
+#include "nu2api/nucore/nuvideo.h"
+#include "nu2api/nugscn_gen.h"
+#include "nu2api/numath/numath_includes.h"
+#include "nu2api/numath/numtx.h"
+#include "nu2api/numath/nuvec.h"
 #include <math.h>
 #include <string.h>
 

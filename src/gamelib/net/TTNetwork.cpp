@@ -1,4 +1,16 @@
-#include "saga.h"
+#include "MechInputTouch/MechInputTouch_types.h"
+#include "editor/edlevelall.h"
+#include "gameapi/edtools/edui.h"
+#include "gamelib/net/NetMessagePc.h"
+#include "gamelib/util/Refpack.h"
+#include "gamelib/util/Utilities.h"
+#include "gamelib/util/gamelib_util_types.h"
+#include "globals.h"
+#include "legoapi/items/collect/bolts.h"
+#include "legoapi/legoapi_types.h"
+#include "nu2api/nucore/NuNetEmu.h"
+#include "nu2api/nucore/nustring.h"
+#include "nu2api/nufile/nufile.h"
 
 NetSessionManager *theNetSessionManager;
 

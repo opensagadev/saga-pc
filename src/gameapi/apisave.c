@@ -1,4 +1,19 @@
-#include "saga.h"
+#include "batman.h"
+#include "gameapi/apisave.h"
+#include "gameapi/apitext.h"
+#include "gameapi/edtools/edui.h"
+#include "gameapi/gui/apimenu.h"
+#include "gameapi/gui/apimenu_internal.h"
+#include "gameframework/saveload.h"
+#include "globals.h"
+#include "legoapi/audio/sfx.h"
+#include "legoapi/items/collect/bolts.h"
+#include "legoapi/menus/core/text.h"
+#include "legoapi/menus/screens/gamemenuall.h"
+#include "nu2api/nu3d/numtl.h"
+#include "nu2api/nu3d/nuqfnt.h"
+#include "nu2api/nucore/nustring.h"
+#include "nu2api/nucore/nutime.h"
 #include <stdio.h>
 
 extern i32 saveload_slotused[];

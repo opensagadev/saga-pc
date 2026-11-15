@@ -1,4 +1,21 @@
-#include "saga.h"
+#include "gameapi/edtools/edcam.h"
+#include "gameapi/edtools/edfile.h"
+#include "gameapi/edtools/edrender.h"
+#include "gameapi/edtools/edtoolsall.h"
+#include "gameapi/edtools/edui.h"
+#include "gameapi/part.h"
+#include "legoapi/legoapi_types.h"
+#include "legoapi/lib/hub.h"
+#include "nu2api/nu3d/nu3d_includes.h"
+#include "nu2api/nu3d/numtl.h"
+#include "nu2api/nu3d/nuprim.h"
+#include "nu2api/nu3d/nuqfnt.h"
+#include "nu2api/nu3d/nurndr.h"
+#include "nu2api/nucore/nucore_includes.h"
+#include "nu2api/nucore/nustring.h"
+#include "nu2api/numath/nufloat.h"
+#include "nu2api/numath/numtx.h"
+#include "nu2api/numath/nuvec.h"
 
 i32 ui_bgmtl = 0;
 extern "C" struct PC_SCENE_MTL_VIEW *uimtls[5];

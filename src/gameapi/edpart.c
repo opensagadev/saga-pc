@@ -1,6 +1,30 @@
 #include <stdio.h>
 #include <string.h>
-#include "saga.h"
+#include "gameapi/apisave.h"
+#include "gameapi/edmain.h"
+#include "gameapi/edpart.h"
+#include "gameapi/edtools/edanim_internal.h"
+#include "gameapi/edtools/edcam.h"
+#include "gameapi/edtools/edfile.h"
+#include "gameapi/edtools/edpart_internal.h"
+#include "gameapi/edtools/edrender.h"
+#include "gameapi/edtools/edui.h"
+#include "globals.h"
+#include "legoapi/items/objects/game_obj.h"
+#include "legoapi/items/objects/objectsall.h"
+#include "legoapi/render/core/gameliball.h"
+#include "legoapi/render/fx/game_deb.h"
+#include "nu2api/nu3d/nucamera.h"
+#include "nu2api/nu3d/nugscn.h"
+#include "nu2api/nu3d/nuhspecial.h"
+#include "nu2api/nu3d/numtl.h"
+#include "nu2api/nuanimation_gen.h"
+#include "nu2api/nucore/nustring.h"
+#include "nu2api/nufile/nufile.h"
+#include "nu2api/nugscn_gen.h"
+#include "nu2api/numath/numtx.h"
+#include "nu2api/numath/nuvec.h"
+#include "nu2api/numusic/sfx.h"
 struct eduimenu_s *edpart_instance_menu = 0;
 struct eduimenu_s *edpart_worldinstance_menu = 0;
 struct eduimenu_s *edpart_thingsinstance_menu = 0;

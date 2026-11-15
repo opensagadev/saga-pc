@@ -1,4 +1,6 @@
-#include "saga.h"
+#include "gamelib/util/V2SessionManager.h"
+#include "gamelib/util/gamelib_util_types.h"
+#include "nu2api/nucore/nustring.h"
 #include <stdarg.h>
 #include <stdio.h>
 

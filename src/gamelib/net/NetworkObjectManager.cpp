@@ -1,4 +1,10 @@
-#include "saga.h"
+#include "editor/edlevelall.h"
+#include "gamelib/util/Refpack.h"
+#include "gamelib/util/Utilities.h"
+#include "gamelib/util/gamelib_util_types.h"
+#include "globals.h"
+#include "legoapi/items/collect/bolts.h"
+#include "nu2api/nucore/NuNetEmu.h"
 
 /* Network object system: replicates editor objects between peers on
  * listener channel 3. */

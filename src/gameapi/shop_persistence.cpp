@@ -1,4 +1,8 @@
-#include "saga.h"
+#include "gameframework/saveload.h"
+#include "legoapi/items/collect/bolts.h"
+#include "nu2api/nuwin32/d3dApiCalls.h"
+#include "nu2api/platform_files.h"
+#include "nu2api/save_folder.h"
 #include <stdio.h>
 #include <string.h>
 

@@ -1,6 +1,28 @@
 #include <stdio.h>
 #include <string.h>
-#include "saga.h"
+#include "gameapi/edbits.h"
+#include "gameapi/edpart.h"
+#include "gameapi/edptl.h"
+#include "gameapi/edtools/edanim_internal.h"
+#include "gameapi/edtools/edbri_internal.h"
+#include "gameapi/edtools/edcam.h"
+#include "gameapi/edtools/edfile.h"
+#include "gameapi/edtools/edrender.h"
+#include "gameapi/edtools/edtoolsall.h"
+#include "gameapi/edtools/edui.h"
+#include "legoapi/items/objects/objectsall.h"
+#include "legoapi/render/core/gameliball.h"
+#include "nu2api/nu3d/nu3d_includes.h"
+#include "nu2api/nu3d/nubridge.h"
+#include "nu2api/nu3d/nugscn.h"
+#include "nu2api/nu3d/nuhspecial.h"
+#include "nu2api/nu3d/numtl.h"
+#include "nu2api/nu3d/nuqfnt.h"
+#include "nu2api/nu3d/nurndr.h"
+#include "nu2api/nuanimation_gen.h"
+#include "nu2api/nufile/nufile.h"
+#include "nu2api/nugscn_gen.h"
+#include "nu2api/numath/nuvec.h"
 
 extern struct eduimenu_s *edbri_plankinstance_menu;
 extern struct eduimenu_s *edbri_postinstance_menu;

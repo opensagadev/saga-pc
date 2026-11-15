@@ -1,4 +1,11 @@
-#include "saga.h"
+#include "MechInputTouch/MechInputTouch_types.h"
+#include "gameapi/edtools/edui.h"
+#include "gamelib/util/Refpack.h"
+#include "globals.h"
+#include "legoapi/items/objects/basething.h"
+#include "legoapi/legoapi_types.h"
+#include "nu2api/nu3d/nuqfnt.h"
+#include "nu2api/nu3d/nutimebar_plain.h"
 #include <string.h>
 
 /* ThingManager's unit. */

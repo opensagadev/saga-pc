@@ -1,4 +1,19 @@
-#include "saga.h"
+#include "gameapi/edpart.h"
+#include "gameapi/edptl.h"
+#include "gameapi/edtools/edanim_internal.h"
+#include "gameapi/edtools/edfile.h"
+#include "gameapi/edtools/edgra.h"
+#include "gameapi/edtools/edpp_internal.h"
+#include "gameapi/edtools/edui.h"
+#include "legoapi/items/objects/objectsall.h"
+#include "legoapi/legoapi_types.h"
+#include "legoapi/render/core/gameliball.h"
+#include "legoapi/render/fx.h"
+#include "legoapi/render/fx/game_deb.h"
+#include "nu2api/nu3d/nugscn.h"
+#include "nu2api/nu3d/numtl.h"
+#include "nu2api/nu3d/nuptl.h"
+#include "nu2api/numath/nuvec.h"
 #include <stdio.h>
 
 typedef struct edpp_file_particle_s { // size 0x58

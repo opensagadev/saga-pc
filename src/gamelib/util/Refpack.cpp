@@ -1,4 +1,6 @@
-#include "saga.h"
+#include "gamelib/util/Refpack.h"
+#include "globals.h"
+#include "legoapi/items/collect/bolts.h"
 
 /* Linear allocation from the memory manager's arena. */
 void *memorymanager_s::AllocLinear(u32 bytes, u32 alignment, i32 clear) {

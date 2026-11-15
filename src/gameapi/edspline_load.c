@@ -1,4 +1,10 @@
-#include "saga.h"
+#include "gameapi/edtools/edfile.h"
+#include "legoapi/render/fx/edsplines.h"
+#include "legoapi/world/world_shared.h"
+#include "nu2api/nu3d/nugscn.h"
+#include "nu2api/nu3d/nuspline.h"
+#include "nu2api/nucore/nustring.h"
+#include "nu2api/numath/nuvec.h"
 
 static void EdsplinesNuError(const char *format, ...) {
 }

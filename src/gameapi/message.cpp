@@ -1,4 +1,12 @@
-#include "saga.h"
+#include "gameapi/ai/aisys/aiscript_types.h"
+#include "gameapi/ai/aisys/aisys.h"
+#include "gameapi/edtools/edfile.h"
+#include "gamelib/util/Refpack.h"
+#include "gamelib/util/gamelib_util_types.h"
+#include "globals.h"
+#include "legoapi/items/base/apiobject.h"
+#include "legoapi/items/collect/bolts.h"
+#include "nu2api/nucore/nustring.h"
 
 /* AI script network replication. AINet is abstract: the game derives from it
  * to map AI packets to network ids. No class derives from it, so

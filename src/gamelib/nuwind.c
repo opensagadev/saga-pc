@@ -1,4 +1,8 @@
-#include "saga.h"
+#include "gamelib/nuwind/nuwind.h"
+#include "nu2api/nucore/nuapi.h"
+#include "nu2api/numath/nufloat.h"
+#include "nu2api/nuprim_gen.h"
+#include "nu2api/nustencilshadows_PC.h"
 
 extern i32 dat_009739d4;
 

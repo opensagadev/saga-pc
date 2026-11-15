@@ -1,4 +1,7 @@
-#include "saga.h"
+#include "gamelib/util/gamelib_util_types.h"
+#include "nu2api/nu3d/ShaderManager.h"
+#include "nu2api/nu3d/nushaderobject.h"
+#include "nu2api/nuwin32/d3dCalls.h"
 
 VirtualStackAllocator::VirtualStackAllocator() {
     owns_memory = 0;

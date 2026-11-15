@@ -1,4 +1,9 @@
-#include "saga.h"
+#include "gamelib/util/Utilities.h"
+#include "gamelib/util/gamelib_util_types.h"
+#include "nu2api/nu3d/nuprim.h"
+#include "nu2api/nu3d/nuqfnt.h"
+#include "nu2api/nucore/nucore_includes.h"
+#include "nu2api/nustencilshadows_PC.h"
 
 /* Network statistics overlays: NetSmallStats::Draw and NetStats::Draw. */
 

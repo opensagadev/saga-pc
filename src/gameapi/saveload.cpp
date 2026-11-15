@@ -1,4 +1,5 @@
-#include "saga.h"
+#include "gameframework/saveload.h"
+#include "nu2api/platform_files.h"
 #include <stdio.h>
 #include <string.h>
 

@@ -1,4 +1,5 @@
-#include "saga.h"
+#include "gamelib/util/gamelib_util_types.h"
+#include "nu2api/nucore/nustring.h"
 
 /* Network file transfer manager. Only the bookkeeping survives on PC; the
  * transfer bodies are empty. */

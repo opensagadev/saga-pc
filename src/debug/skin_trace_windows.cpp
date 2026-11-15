@@ -1,5 +1,9 @@
 /* Debug-only adapter. Compile alongside src/debug/log.c; never link into Matching. */
-#include "saga.h"
+#include "decomp.h"
+#include "nu2api/nu3d/ShaderManager.h"
+#include "nu2api/nu3d/nushader.h"
+#include "nu2api/nu3d/nushaderobject.h"
+#include "nu2api/nu3d/shaderSemantics.h"
 #include "skin_trace.h"
 #include <errno.h>
 #include <windows.h>
