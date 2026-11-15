@@ -106,12 +106,12 @@ void KillPartsByScene(NUGSCN *scene) {
     PART_PC *part = Part;
     i32 index;
     for (index = 0; index < MAXPARTS; ++index, ++part) {
-        if ((part->active & 1) != 0 && part->source_special != NULL && part->special.scene == scene) {
+        if ((part->active & PART_IN_USE) != 0 && part->source_special != NULL && part->special.scene == scene) {
             nuhspecial_s *special = &part->special;
             special->scene = NULL;
             special->special = NULL;
             special->display_special = NULL;
-            part->active &= ~1;
+            part->active &= ~PART_IN_USE;
             part->source_special = NULL;
         }
     }
@@ -236,10 +236,10 @@ f32 PARTGetTotalOffTime(i32 type) {
 }
 
 void KillPart(PART_PC *part, i32 reason) {
-    if ((part->active & 1) == 0) {
+    if ((part->active & PART_IN_USE) == 0) {
         return;
     }
-    part->active &= ~1u;
+    part->active &= ~PART_IN_USE;
     if ((part->flags & 0x20000) != 0 && part->debris_handle != NULL) {
         DebFreeInstantly(part->debris_handle);
     }
@@ -289,7 +289,7 @@ PART_PC *AddPart(ADDPART *parameters) {
         return NULL;
     }
     scanned = 0;
-    while ((Part[part_slot_cursor].active & 1) != 0 && (Part[part_slot_cursor].flags & 0x200) != 0 && scanned < MAXPARTS) {
+    while ((Part[part_slot_cursor].active & PART_IN_USE) != 0 && (Part[part_slot_cursor].flags & 0x200) != 0 && scanned < MAXPARTS) {
         if (++part_slot_cursor == MAXPARTS) {
             part_slot_cursor = 0;
         }
@@ -299,7 +299,7 @@ PART_PC *AddPart(ADDPART *parameters) {
         return NULL;
     }
     part = &Part[part_slot_cursor];
-    if ((part->active & 1) != 0) {
+    if ((part->active & PART_IN_USE) != 0) {
         if (part->destroy_fn != NULL) {
             part->destroy_fn(part);
         }
@@ -336,7 +336,7 @@ PART_PC *AddPart(ADDPART *parameters) {
     part->field_ec = parameters->unknown_20;
     part->unknown_f0 = parameters->unknown_88;
     part->part_id = (i16)parameters->part_id;
-    part->active = (part->active & ~2u) | 1;
+    part->active = (part->active & ~2u) | PART_IN_USE;
     part->flags = parameters->flags;
     part->flicker_flags = parameters->unknown_c4;
     part->active &= ~0x4000u;
@@ -440,7 +440,7 @@ PART_PC *HitParts(GAMEOBJECT *excluded_owner, NUVEC *points, i32 point_count, f3
 
     for (index = 0; index < MAXPARTS; ++index, ++part) {
         i32 point;
-        if ((part->active & 1) == 0 || part->owner == excluded_owner || (part->flags & flags) == 0) {
+        if ((part->active & PART_IN_USE) == 0 || part->owner == excluded_owner || (part->flags & flags) == 0) {
             continue;
         }
         if (maximum->x < part->collision_min.x || minimum->x > part->collision_max.x || maximum->z < part->collision_min.z ||
@@ -1152,7 +1152,7 @@ PART_PC *FindIncomingPart(void *owner, NUVEC *position, f32 radius, u32 flags, f
     f32 distance;
     i32 i;
     for (i = 0; i < MAXPARTS; ++i, ++part) {
-        if ((part->active & 1) == 0 || part->owner == owner || (part->flags & flags) != flags) {
+        if ((part->active & PART_IN_USE) == 0 || part->owner == owner || (part->flags & flags) != flags) {
             continue;
         }
         if (range > 0.0f) {
@@ -1231,7 +1231,7 @@ PART_PC *TargetPart(GAMEOBJECT *object, NUVEC *position, NUVEC *direction, f32 r
         }
     }
     for (i = 0; i < MAXPARTS; ++i, ++part) {
-        if ((part->active & 1) == 0 || ((part->flags & 0x8000000) == 0 && (part->flags & 0xa) != 0xa)) {
+        if ((part->active & PART_IN_USE) == 0 || ((part->flags & 0x8000000) == 0 && (part->flags & 0xa) != 0xa)) {
             continue;
         }
         if (part->position.x < minimum.x || part->position.x > maximum.x || part->position.z < minimum.z || part->position.z > maximum.z) {
@@ -1283,7 +1283,7 @@ PART_PC *Part_FindFromHSpecial(nuhspecial_s *special) {
     }
     part = Part;
     for (index = 0; index < MAXPARTS; index++, part++) {
-        if ((part->active & 1) != 0 && NuSpecialCompare(&part->special, special)) {
+        if ((part->active & PART_IN_USE) != 0 && NuSpecialCompare(&part->special, special)) {
             return part;
         }
     }
@@ -1311,7 +1311,7 @@ void KillAllParts(void) {
     i32 i;
     if (part != NULL) {
         for (i = 0; i < MAXPARTS; ++i, ++part) {
-            if ((part->active & 1) != 0) {
+            if ((part->active & PART_IN_USE) != 0) {
                 KillPart(part, 0);
             }
         }
@@ -2418,7 +2418,7 @@ PART_PC *FindPart(NUVEC *position, i32 player, GAMEOBJECT *owner) {
     nearest = 1000000.0f;
     result = NULL;
     for (i = 0; i < MAXPARTS; ++i, ++part) {
-        if ((part->active & 1) != 0 && (player == -1 || part->unknown_206 == player) && (owner == NULL || part->owner == owner)) {
+        if ((part->active & PART_IN_USE) != 0 && (player == -1 || part->unknown_206 == player) && (owner == NULL || part->owner == owner)) {
             if (position != NULL) {
                 f32 distance = NuVecDistSqr(position, &part->position, NULL);
                 if (distance < nearest) {
@@ -4616,7 +4616,7 @@ void DrawParts(i32 keep_offscreen) {
     NUMTX *matrix;
     NUVEC scale;
     for (i = 0; i < MAXPARTS; ++i, ++part) {
-        if ((part->active & 1) == 0 || (part->flags & 0x1000) != 0) {
+        if ((part->active & PART_IN_USE) == 0 || (part->flags & 0x1000) != 0) {
             continue;
         }
         if (part->draw_fn != NULL && part->draw_fn(part) == 0) {
@@ -4700,7 +4700,7 @@ void UpdateParts(f32 time) {
     part = Part;
     for (i = 0; i < MAXPARTS; ++i, ++part) {
         state = (PART_TERRAIN_STATE *)part;
-        if ((part->active & 1) == 0) {
+        if ((part->active & PART_IN_USE) == 0) {
             continue;
         }
         PartRuntimeMatrixCopyPrivate(&part->previous_transform, &part->transform);
@@ -4851,11 +4851,11 @@ void UpdateParts(f32 time) {
                 memmove(&part->transform, &mtx, 0x30);
             }
         }
-        if ((part->active & 1) != 0) {
+        if ((part->active & PART_IN_USE) != 0) {
             if ((part->flags & 2) != 0 && part->collision_fn != NULL) {
                 part->collision_fn(part);
             }
-            if ((part->active & 1) != 0) {
+            if ((part->active & PART_IN_USE) != 0) {
                 if (part->update_fn != NULL) {
                     part->update_fn(part);
                 }
@@ -4907,7 +4907,7 @@ void UpdateParts(f32 time) {
             part->callback_1ac(part);
         }
         part->unknown_208 = 0;
-        if ((part->active & 1) == 0) {
+        if ((part->active & PART_IN_USE) == 0) {
             KillPart(part, 0);
             memset(part, 0, sizeof(PART_PC));
         }

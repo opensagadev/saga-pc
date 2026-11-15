@@ -205,7 +205,7 @@ static void PlayerCamPos(GAMEOBJECT *object, NUVEC *position, NUVEC *reference) 
             }
             break;
         case CHARACTER_CONTEXT_FORCE_DEFLECT:
-            if (object->force_part != NULL && (object->force_part->active & 1) != 0) {
+            if (object->force_part != NULL && (object->force_part->active & PART_IN_USE) != 0) {
                 target = &object->force_part->position;
             }
             break;

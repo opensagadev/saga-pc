@@ -412,7 +412,7 @@ void JumpCode(GAMEOBJECT *object, i32 jump_pressed, i32 jump_held, u32 animation
             (LEGOCONTEXT_LAND_LUNGE == -1 || object->character_context != LEGOCONTEXT_LAND_LUNGE) &&
             (LEGOCONTEXT_LAND_SLAM == -1 || object->character_context != LEGOCONTEXT_LAND_SLAM) &&
             ((ZipUpLandCombatRollContext == -1 || object->character_context != ZipUpLandCombatRollContext) ||
-             ((object->character_data->game_character->flags_094 & 0x80000) != 0 &&
+             ((object->character_data->game_character->flags_094 & CHARACTER_OPTION_COMBAT_ROLL_CAN_GET_UP) != 0 &&
               !(object->unknown_7b3 == 1 && aux->landing_followup == 0))) &&
             object->pad->input_magnitude > 0.0f && (object->flags_e24 & 0x800) == 0) {
             object->character_context = CHARACTER_CONTEXT_NONE;

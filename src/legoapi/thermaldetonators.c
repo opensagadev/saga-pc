@@ -95,7 +95,7 @@ void PartImpact_ThermalDetonator(PART_PC *part) {
         PartImpact_Brick(part);
         PlaySfx("ThermalDet_Bnce", &part->position);
     }
-    if ((part->active & 1) != 0 && (part->active & 2) == 0) {
+    if ((part->active & PART_IN_USE) != 0 && (part->active & 2) == 0) {
         trail.x = part->impact_position.x - part->impact_normal.x * part->unknown_e0;
         trail.y = part->impact_position.y - part->impact_normal.y * part->unknown_e0;
         trail.z = part->impact_position.z - part->impact_normal.z * part->unknown_e0;

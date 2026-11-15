@@ -165,7 +165,8 @@ void CharacterMiniKits_Load(COLLECTION_BUILD *collection, WORLDINFO *world, VARI
     buffer->addr += table_size;
     for (i = 0; i < collection->count; ++i) {
         character_id = collection->list[i].id;
-        if ((GCDataList[character_id].flags_094 & 0x400) != 0 || APICharacterLoaded(character_id) == NULL) {
+        if ((GCDataList[character_id].flags_094 & CHARACTER_OPTION_MINIKIT_NOSCENEWHENPLAYABLE) != 0 ||
+            APICharacterLoaded(character_id) == NULL) {
             continue;
         }
         view->pieces_by_id[character_id] = buffer->void_ptr;

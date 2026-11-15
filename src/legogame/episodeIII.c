@@ -453,7 +453,7 @@ void Boulder_Move(PART_PC *part, f32 unused) {
     }
     if (LevInstAnimReset.animations[index]->ltime > 1.0f && !(LevInstAnimReset.animations[index]->flags & NUINSTANIM_FLAG_PLAYING)) {
         KillPart(part, 0);
-    } else if (part->active & 1) {
+    } else if (part->active & PART_IN_USE) {
         PlaySfx("Kas_BoulderLoop", &part->position);
     }
 }

@@ -326,7 +326,8 @@ static void Grapple_FindNearestInList(NUVEC *position, GRAPPLE_MOTION *grapple, 
                     continue;
                 }
             }
-            if (grapple->reversed && ((object->character_data->game_character->flags_094 & 0x20000000) == 0 || !grapple->disabled)) {
+            if (grapple->reversed &&
+                ((object->character_data->game_character->flags_094 & CHARACTER_OPTION_HAS_WHIP) == 0 || !grapple->disabled)) {
                 continue;
             }
             if (!(object->upper_position.y < grapple->shadow_probe_position.y)) {

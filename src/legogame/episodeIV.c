@@ -243,13 +243,13 @@ void BlockadeRunnerD_Update(WORLDINFO *world) {
         if (LevGameObject[i] == NULL || LevGamePart[i] == NULL) {
             continue;
         }
-        if ((LevGamePart[i]->active & 1) != 0) {
+        if ((LevGamePart[i]->active & PART_IN_USE) != 0) {
             LevGameObject[i]->flags_107a = 5;
             LevGameObject[i]->vehicle_orientation = LevGamePart[i]->transform;
             LevGameObject[i]->position = LevGameObject[i]->vehicle_orientation.translation;
             LevGameObject[i]->ai_update_position = LevGameObject[i]->position;
         }
-        if ((LevGamePart[i]->active & 1) == 0 || LevGamePart[i]->kill_fn != BlockadeRunnerDKillEjectedCreature) {
+        if ((LevGamePart[i]->active & PART_IN_USE) == 0 || LevGamePart[i]->kill_fn != BlockadeRunnerDKillEjectedCreature) {
             KillGameObject(LevGameObject[i], 4, 0);
             LevGameObject[i] = NULL;
         }

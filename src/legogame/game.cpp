@@ -2411,7 +2411,7 @@ extern "C" {
                 if (api->dead != 0 || (api->flags_1fc_word & APIOBJECT_FLAG_DONT_PUSH) != 0) {
                     continue;
                 }
-                if ((part->active & 1) == 0) {
+                if ((part->active & PART_IN_USE) == 0) {
                     speed = api->character_data->game_character->run_speed;
                     if (api->scaled_radius > 1.0f) {
                         speed /= api->scaled_radius;

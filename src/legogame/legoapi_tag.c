@@ -674,7 +674,7 @@ void ReleaseTakeOver(GAMEOBJECT *target, i32 unused) {
     character = object->character_data->game_character;
     if (character->unknown_028 > 0.0f) {
         object->velocity.y -= (f64)rider->velocity.y * 0.5;
-    } else if ((character->flags_094 & 0x20000) != 0) {
+    } else if ((character->flags_094 & CHARACTER_OPTION_BUCK_RIDER) != 0) {
         Buck_Start(object, rider);
     }
     object->rider = NULL;

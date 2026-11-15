@@ -438,11 +438,11 @@ ZIPUP_PC *ZipUp_FindNearest(WORLDINFO *world, NUVEC *position, f32 radius, f32 *
                 continue;
             }
             if ((flags & 0x20) != 0) {
-                if ((object->character_data->game_character->flags_094 & 0x20000000) == 0) {
+                if ((object->character_data->game_character->flags_094 & CHARACTER_OPTION_HAS_WHIP) == 0) {
                     continue;
                 }
             } else {
-                if ((object->character_data->game_character->flags_094 & 0x20000000) != 0) {
+                if ((object->character_data->game_character->flags_094 & CHARACTER_OPTION_HAS_WHIP) != 0) {
                     continue;
                 }
                 if ((flags & 2) == 0 && object->player_index != -1) {
@@ -673,7 +673,7 @@ void ZipUp_MoveCode(GAMEOBJECT *object, i32 special_pressed) {
         }
         if (!SuperWeirdo(object)) {
             if ((object->character_data->model_flags & CHARACTER_MODEL_JEDI) == 0 ||
-                (object->character_data->game_character->flags_094 & 0x8000) != 0 || !Cheat_IsOn(13)) {
+                (object->character_data->game_character->flags_094 & CHARACTER_OPTION_NO_FORCE) != 0 || !Cheat_IsOn(13)) {
                 return;
             }
         }
@@ -702,7 +702,7 @@ void ZipUp_MoveCode(GAMEOBJECT *object, i32 special_pressed) {
         zipup->occupant = object;
         object->context_variant_flags |= 0x20;
         ((ZIPUP_PC *)object->grapple)->flags_word |= 0x100;
-        if ((object->character_data->game_character->flags_094 & 0x20000000) != 0) {
+        if ((object->character_data->game_character->flags_094 & CHARACTER_OPTION_HAS_WHIP) != 0) {
             NUVEC offset;
             f32 duration;
             ZIPUP_PC *current;

@@ -634,14 +634,16 @@ void Player_ToggleCharacter(GAMEOBJECT *object, i32 direction, i32 sound) {
         }
         if (collected == -1 && (GCDataList[id].flags_090 & CHARACTER_RUNTIME_EXTRA_TOGGLE) == 0 &&
             ((GCDataList[id].flags_094 >> 24) & 1) == 0 &&
-            !(VehicleArea != 0 && BonusArea != 0 && Cheats_CheckFlags(0x100) != 0 && (GCDataList[id].flags_094 & 0x2000000) != 0)) {
+            !(VehicleArea != 0 && BonusArea != 0 && Cheats_CheckFlags(0x100) != 0 &&
+              (GCDataList[id].flags_094 & CHARACTER_OPTION_TOGGLE_IF_IN_MINIKIT_BONUS) != 0)) {
             goto next_character;
         }
         if (VehicleArea != 0) {
             if ((CDataList[id].model_flags & CHARACTER_MODEL_VEHICLE) == 0 &&
                 !(BonusArea != 0 && (CDataList[id].model_flags & CHARACTER_MODEL_MINIKIT) != 0) &&
                 (GCDataList[id].flags_090 & CHARACTER_RUNTIME_EXTRA_TOGGLE) == 0 &&
-                !(BonusArea != 0 && Cheats_CheckFlags(0x100) != 0 && (GCDataList[id].flags_094 & 0x2000000) != 0)) {
+                !(BonusArea != 0 && Cheats_CheckFlags(0x100) != 0 &&
+                  (GCDataList[id].flags_094 & CHARACTER_OPTION_TOGGLE_IF_IN_MINIKIT_BONUS) != 0)) {
                 goto next_character;
             }
             if (BonusArea != 0) {
@@ -651,7 +653,8 @@ void Player_ToggleCharacter(GAMEOBJECT *object, i32 direction, i32 sound) {
                         goto next_character;
                     }
                 } else if ((GCDataList[id].flags_090 & CHARACTER_RUNTIME_EXTRA_TOGGLE) == 0 &&
-                           !(BonusArea != 0 && Cheats_CheckFlags(0x100) != 0 && (GCDataList[id].flags_094 & 0x2000000) != 0)) {
+                           !(BonusArea != 0 && Cheats_CheckFlags(0x100) != 0 &&
+                             (GCDataList[id].flags_094 & CHARACTER_OPTION_TOGGLE_IF_IN_MINIKIT_BONUS) != 0)) {
                     goto next_character;
                 }
                 if (object->unknown_283 >= 0 && object->unknown_283 < 17 && (TerLayer[object->unknown_283].flags & 1) != 0 &&

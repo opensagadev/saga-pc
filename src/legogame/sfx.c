@@ -569,7 +569,7 @@ void SetLevelSfxBits(WORLDINFO *world) {
             apicharsys->playermodelids[id_GAMORREANGUARD] != -1) {
             ADD_SFX("ForceChokeCrunch");
         }
-        if ((game_character->flags_094 & 0x20000000) != 0) {
+        if ((game_character->flags_094 & CHARACTER_OPTION_HAS_WHIP) != 0) {
             ADD_GAME_SFX(0x4c);
             ADD_GAME_SFX(0x4d);
             ADD_GAME_SFX(0x4e);

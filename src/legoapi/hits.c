@@ -43,11 +43,11 @@ i32 CannotKill(GAMEOBJECT *object) {
     if ((U64_PAIR(&CInfo[object->character_context].flags) & 0x02000000) != 0) {
         return 1;
     }
-    return (object->character_data->game_character->flags_094 & 0x800) != 0 && object->player_index == -1;
+    return (object->character_data->game_character->flags_094 & CHARACTER_OPTION_CANNOT_KILL) != 0 && object->player_index == -1;
 }
 
 i32 NoLayerKill(GAMEOBJECT *object) {
-    return (object->character_data->game_character->flags_094 & 0x800000) != 0 && object->unknown_283 == 6;
+    return (object->character_data->game_character->flags_094 & CHARACTER_OPTION_HOVER_OVER_MUD) != 0 && object->unknown_283 == 6;
 }
 
 GAMEOBJECT *BossKilled(i32 character_id) {

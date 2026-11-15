@@ -929,7 +929,7 @@ i32 ReleaseHearts(void) {
     }
     if (missing_hitpoints > 0 && MAXPARTS > 0) {
         for (i = 0; i < MAXPARTS; ++i) {
-            if ((Part[i].active & 1) && Part[i].part_id == 0xcb) {
+            if ((Part[i].active & PART_IN_USE) && Part[i].part_id == 0xcb) {
                 --missing_hitpoints;
             }
         }
@@ -1122,7 +1122,7 @@ static void PartStop_Coin(PART_PC *part) {
     GIZMOPICKUPRUNTIMESYS_s *system;
     GIZMOPICKUP *pickup;
     if (netclient != 0) {
-        part->active &= ~1;
+        part->active &= ~PART_IN_USE;
         return;
     }
     system = WORLD->pickup_runtime_sys;
@@ -1144,7 +1144,7 @@ static void PartStop_Coin(PART_PC *part) {
     pickup->shadow_x = 0;
     pickup->shadow_z = 0;
     pickup->flags = (pickup->flags | 0x20) & ~GIZMOPICKUP_STATE_ALTERNATE_TYPE;
-    part->active &= ~1;
+    part->active &= ~PART_IN_USE;
 }
 
 void AddCoinsAsParts(i32 type_id, NUVEC *position, NUVEC *velocity, f32 lifetime, f32 scale) {

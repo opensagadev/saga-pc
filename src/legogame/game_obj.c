@@ -1189,7 +1189,7 @@ void GameObjectToCameraCode(GAMEOBJECT *object) {
     }
     if (GameTimer.update_count > 0) {
         data = object->character_data->game_character;
-        if ((data->flags_094 & 0x10) == 0) {
+        if ((data->flags_094 & CHARACTER_OPTION_FIXED_LAYERS) == 0) {
             if (object->dead != 0 &&
                 (mask = apicharsys->char_data[object->character_model->model_id].game_character->layer_mask_dead) != 0) {
                 object->layer_mask = mask;
@@ -2905,7 +2905,7 @@ i32 KillGameObject(GAMEOBJECT *object, i32 reason, i32 unused) {
         }
         part = Part;
         for (i = 0; i < MAXPARTS; ++i, ++part) {
-            if ((part->active & 1) != 0 && part->owner == object) {
+            if ((part->active & PART_IN_USE) != 0 && part->owner == object) {
                 part->owner = NULL;
             }
         }
@@ -3167,7 +3167,7 @@ void KillParts(GAMEOBJECT *object, i32 animation, i32 excluded_layer, i32 mode, 
     layer_character = object->character_data;
     KillPartsPreviousVariant = random_variant;
 
-    layers = (layer_character->game_character->flags_094 & 0x40000) != 0
+    layers = (layer_character->game_character->flags_094 & CHARACTER_OPTION_DIE_USECURRENTLAYERS) != 0
                  ? object->layer_mask
                  : AdjustLayerBits(layer_character->game_character->layer_mask_dead, object);
     if (animation != -1) {

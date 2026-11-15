@@ -284,7 +284,7 @@ void Buck_StartRiderJump(GAMEOBJECT *rider, GAMEOBJECT *mount) {
     rider->pad->buttons_held = 0;
     rider->pad->buttons_pressed = 0;
     clearance = mount->upper_position.y;
-    if ((mount->character_data->game_character->flags_094 & 0x20000) != 0) {
+    if ((mount->character_data->game_character->flags_094 & CHARACTER_OPTION_BUCK_RIDER) != 0) {
         clearance += BUCK_RIDERJUMPCLEARANCE;
     }
     clearance -= rider->lower_position.y;

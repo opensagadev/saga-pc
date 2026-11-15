@@ -720,7 +720,7 @@ void ExtraCharacterFixUpAfterConfig(void) {
     SetMoveAndAnimateFunctions(0, 0, 0, 0, 2, NULL, NULL, PostAnimate_FETT);
     SetMoveAndAnimateFunctions(0, 0, 0, 0, 0, Move_WEIRDO, Animate_WEIRDO, NULL);
     for (i = 0; i < CHARCOUNT; ++i) {
-        if ((GCDataList[i].flags_094 & 0x10000000) != 0) {
+        if ((GCDataList[i].flags_094 & CHARACTER_OPTION_HOVER_WINGS) != 0) {
             CDataList[i].move_fn = Move_GEONOSIAN;
             CDataList[i].animate_fn = Animate_GEONOSIAN;
         }
@@ -2829,7 +2829,7 @@ void ParaphernaliaCommunicate(GAMEOBJECT *object, i32 reflection) {
         }
         model = 0x19;
     } else {
-        if ((config->flags_094 & 0x80) != 0) {
+        if ((config->flags_094 & CHARACTER_OPTION_CAN_COMMUNICATE) != 0) {
             model = 0xe;
         }
         matrix = object->locator_matrices[locator];
@@ -4312,7 +4312,7 @@ void DrawWeapons(GAMEOBJECT *object, i32 reflection, f32 weapon_scale) {
     if (weapon_scale <= 0.0f) {
         return;
     }
-    if ((object->character_data->game_character->flags_094 & 0x200000) != 0) {
+    if ((object->character_data->game_character->flags_094 & CHARACTER_OPTION_NO_WEAPON_DRAW) != 0) {
         return;
     }
     for (hand = 0; hand < 4; ++hand) {
@@ -4651,7 +4651,7 @@ void DrawParaphernalia(GAMEOBJECT *object) {
                                passenger->character_data->game_character->layer_mask_medium);
     }
     config = object->character_data->game_character;
-    if ((config->flags_094 & 1) != 0) {
+    if ((config->flags_094 & CHARACTER_OPTION_MINIKIT_WITH_SCENE) != 0) {
         if (BonusArea != 0 && VehicleArea != 0) {
             CharMiniKit_Draw(((i16)(object->id)), &object->transform, object->reflection_enabled, object->reflection_height,
                              WORLD->current_level->reflection_y);

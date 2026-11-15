@@ -161,7 +161,8 @@ void WeaponOutCode(GAMEOBJECT *object) {
     if (LEGOCONTEXT_WEAPONOUT == -1 || object->character_context != LEGOCONTEXT_WEAPONOUT) {
         return;
     }
-    if (object->pad->input_magnitude > 0.0f && (object->character_data->game_character->flags_094 & 0x1000) == 0) {
+    if (object->pad->input_magnitude > 0.0f &&
+        (object->character_data->game_character->flags_094 & CHARACTER_OPTION_WAIT_FOR_WEAPON_IN_OUT) == 0) {
         if (object->weapon_scale == 0.0f && object->unknown_e33 != 1) {
             FastWeaponOut(object, 0);
         }
@@ -285,7 +286,8 @@ void WeaponInCode(GAMEOBJECT *object) {
     if (LEGOCONTEXT_WEAPONIN == -1 || object->character_context != LEGOCONTEXT_WEAPONIN) {
         return;
     }
-    if (object->pad->input_magnitude > 0.0f && (object->character_data->game_character->flags_094 & 0x1000) == 0) {
+    if (object->pad->input_magnitude > 0.0f &&
+        (object->character_data->game_character->flags_094 & CHARACTER_OPTION_WAIT_FOR_WEAPON_IN_OUT) == 0) {
         if (object->weapon_scale == 1.0f && object->unknown_e33 != 2) {
             FastWeaponIn(object, 0);
         }

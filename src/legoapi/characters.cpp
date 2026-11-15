@@ -442,7 +442,8 @@ extern "C" {
         }
         category = &CharCategory[index];
         if (category->model_flags != 0) {
-            if ((category->model_flags & CHARACTER_MODEL_JEDI) != 0 && (object->character_data->game_character->flags_094 & 0x8000) != 0) {
+            if ((category->model_flags & CHARACTER_MODEL_JEDI) != 0 &&
+                (object->character_data->game_character->flags_094 & CHARACTER_OPTION_NO_FORCE) != 0) {
                 return 0;
             }
             if ((object->character_data->model_flags & category->model_flags) != category->model_flags) {
@@ -498,8 +499,8 @@ extern "C" {
                 }
                 id = list->model_id;
                 if ((GCDataList[id].flags_090 & game_flags) != game_flags || (CDataList[id].model_flags & model_flags) != model_flags ||
-                    (reject_hidden != 0 && (GCDataList[id].flags_094 & 0x4000) != 0) ||
-                    ((model_flags & 8) != 0 && (GCDataList[id].flags_094 & 0x8000) != 0)) {
+                    (reject_hidden != 0 && (GCDataList[id].flags_094 & CHARACTER_OPTION_NO_CATEGORY) != 0) ||
+                    ((model_flags & 8) != 0 && (GCDataList[id].flags_094 & CHARACTER_OPTION_NO_FORCE) != 0)) {
                     continue;
                 }
                 if (require_hats == 0 || CanWearHatsInFreePlay(id) != 0) {
@@ -526,8 +527,9 @@ extern "C" {
             }
             runtime = character->game_character;
             if (character->move_fn == Move_DEFAULT || (runtime->flags_090 & game_flags) != game_flags ||
-                (character->model_flags & model_flags) != model_flags || (exclude_hidden != 0 && (runtime->flags_094 & 0x4000) != 0) ||
-                ((model_flags & 8) != 0 && (runtime->flags_094 & 0x8000) != 0) || Collection_Got(id) == 0 ||
+                (character->model_flags & model_flags) != model_flags ||
+                (exclude_hidden != 0 && (runtime->flags_094 & CHARACTER_OPTION_NO_CATEGORY) != 0) ||
+                ((model_flags & 8) != 0 && (runtime->flags_094 & CHARACTER_OPTION_NO_FORCE) != 0) || Collection_Got(id) == 0 ||
                 (require_hat != 0 && CanWearHatsInFreePlay(id) == 0)) {
                 continue;
             }

@@ -5643,7 +5643,7 @@ i32 Action_RemoveThrownForceObjects(AISYS_PC *system, AISCRIPTPROCESS *processor
     (void)first_time;
     (void)delta;
     for (index = 0; index < MAXPARTS; ++index, ++part) {
-        if ((part->active & 1) && part->kill_fn == PartKill_ForceThrow) {
+        if ((part->active & PART_IN_USE) && part->kill_fn == PartKill_ForceThrow) {
             KillPart(part, 0);
         }
     }

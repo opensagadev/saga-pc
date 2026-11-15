@@ -849,7 +849,7 @@ extern "C" {
         i32 i;
         i32 point;
         for (i = 0; i < MAXPARTS; ++i, ++part) {
-            if (!(part->active & 1)) {
+            if (!(part->active & PART_IN_USE)) {
                 continue;
             }
             if (!(part->flags & 0x08000000) && (part->flags & 0xa) != 0xa) {
@@ -1077,7 +1077,8 @@ extern "C" void Bolt_HitGameObjectRC(NETMESSAGE &message) {
             reflected_bolt->flags |= 0x10000000;
         }
     } else if (object->origin_scale_override == 1.0f ||
-               ((object->character_data->game_character->flags_094 & 0x4000000) != 0 && VehicleArea != 0 && BonusArea != 0) ||
+               ((object->character_data->game_character->flags_094 & CHARACTER_OPTION_DEFLECT_BOLTS_IN_MINIKIT_BONUS) != 0 &&
+                VehicleArea != 0 && BonusArea != 0) ||
                (object->current_hp == 0 && (object->character_data->model_flags & CHARACTER_MODEL_VEHICLE) != 0) ||
                ((object->character_data->model_flags & CHARACTER_MODEL_ONLY_ACTIVE_WHEN_TAKEN_OVER) != 0 && object->rider == NULL)) {
         if ((bolt->flags & 0x4000000) != 0) {

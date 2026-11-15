@@ -115,6 +115,10 @@ extern "C" {
 
 typedef void (*PART_KILL)(struct PART_PC *, i32);
 
+/* PART_PC.active: AddPart takes a slot without it and sets it, KillPart clears it; the part loops skip slots
+ * without it. */
+#define PART_IN_USE 0x1
+
 struct PART_PC { // size 0x220
 
     union { // size 0x40

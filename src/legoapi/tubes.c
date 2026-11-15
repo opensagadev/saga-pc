@@ -397,7 +397,7 @@ static void Tubes_Update(void *world_ptr, void *data, f32 frame_time) {
                 u16 angle;
                 if ((object->flags_1fc_word & APIOBJECT_FLAG_IN_USE) == 0 || (object->flags_1fc_word & APIOBJECT_FLAG_CHARACTER) == 0 ||
                     object->dead != 0 || !(object->character_data->model_flags & CHARACTER_MODEL_DROID) ||
-                    (GCDataList[(i16)object->id].flags_094 & 0x100)) {
+                    (GCDataList[(i16)object->id].flags_094 & CHARACTER_OPTION_IMMUNE_TO_MAGNETS)) {
                     continue;
                 }
                 if (Tube_InCylinder(object, (TUBE *)tube, &distance, 0) == 0) {
