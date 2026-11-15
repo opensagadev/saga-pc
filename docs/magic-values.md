@@ -34,7 +34,9 @@ or element count of the object they act on (the length of `memset`, `memcpy`,
 by the counter, an offset past a record) and without `--dry-run` writes
 `sizeof(x)`, `sizeof(*p)`, `sizeof(T)` or, for an unsigned loop counter,
 `sizeof(a) / sizeof(a[0])` there (a signed counter keeps its literal: `sizeof`
-would make the comparison unsigned).
+would make the comparison unsigned). The 957 bounds of signed loop counters
+that stay literal this way are decided: they are matched code with signed
+counters, so they are not rewritten and not listed as open.
 tools/castscan.py counts the sites left as `size-literal` (budget 0);
 `--list-multiples` shows sizes that are a multiple of an element size, whose
 count still needs a name. Loop counters and sizes are not magic values:
