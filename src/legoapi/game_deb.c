@@ -274,7 +274,7 @@ void DebrisStartOffsetEx(DEBRISKEY_PC *key, f32 offset) {
     if (effect->emission_period_random == 0.0f && effect->emission_pause_random == 0.0f) {
         interval = effect->emission_period + effect->emission_pause;
         start = (f32)((i32)(now / interval)) * interval;
-        if (effect->generator_type == 7 && effect->emission_pause == 0.0f) {
+        if (effect->generator_type == DEBRIS_GENERATOR_RADIAL_ROTOR && effect->emission_pause == 0.0f) {
             key->emitter_rotation_x = (i16)((i32)(effect->rotor_speed_x * (f32)frame_count));
             key->emitter_rotation_y = (i16)((i32)(effect->rotor_speed_y * (f32)frame_count));
             key->emission_time = start + interval;

@@ -2140,7 +2140,7 @@ i32 DebrisGetRingProperties(i32 handle, NUVEC *origin, NUVEC *direction, f32 *ra
     origin->x = key->position.x;
     origin->y = key->position.y;
     origin->z = key->position.z;
-    if (effect->generator_type == 11) {
+    if (effect->generator_type == DEBRIS_GENERATOR_IMPROVED_RADIAL) {
         axis.x = 0.0f;
         axis.y = 1.0f;
         axis.z = 0.0f;
@@ -2153,7 +2153,8 @@ i32 DebrisGetRingProperties(i32 handle, NUVEC *origin, NUVEC *direction, f32 *ra
     direction->x = axis.x;
     direction->y = axis.y;
     direction->z = axis.z;
-    if (effect->generator_type != 6 && effect->generator_type != 7 && effect->generator_type != 11) {
+    if (effect->generator_type != DEBRIS_GENERATOR_RADIAL && effect->generator_type != DEBRIS_GENERATOR_RADIAL_ROTOR &&
+        effect->generator_type != DEBRIS_GENERATOR_IMPROVED_RADIAL) {
         *radius = 0.0f;
         return 0;
     }
@@ -2173,7 +2174,7 @@ i32 DebrisGetConeProperties(i32 handle, NUVEC *origin, NUVEC *end, f32 *start_ra
     origin->x = key->position.x;
     origin->y = key->position.y;
     origin->z = key->position.z;
-    if (effect->generator_type != 8) {
+    if (effect->generator_type != DEBRIS_GENERATOR_SPHEROID) {
         end->x = end->y = end->z = 0.0f;
         *direction = *end;
         *start_radius = *end_radius = *length = *speed = 0.0f;

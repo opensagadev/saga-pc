@@ -585,7 +585,7 @@ void edanimRenderParticleEmitters(i32 parameter_index) {
         }
         if (edanim_particle_mode && edanim_nearest_particle == particle) {
             DEBRIS_INFO_PC *definition = debtab[AnimParams[parameter_index].effect_ids[particle]];
-            if (definition->generator_type == 0) {
+            if (definition->generator_type == DEBRIS_GENERATOR_NORMAL) {
                 edbitsDrawCube(base_position->x + AnimParams[parameter_index].effect_positions[particle][0],
                                base_position->y + AnimParams[parameter_index].effect_positions[particle][1],
                                base_position->z + AnimParams[parameter_index].effect_positions[particle][2],

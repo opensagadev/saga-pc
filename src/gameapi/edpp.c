@@ -1262,7 +1262,7 @@ void edppDrawCursor(void) {
                 NuQFntPrintEx(system_qfont, 0x1720, 0xc30, 0x10, "Highlight: <none>");
             } else {
                 effect = debtab[debkeydata[edpp_ptls[edpp_nearest].instance_id].effect_index];
-                if (effect->generator_type == 0) {
+                if (effect->generator_type == DEBRIS_GENERATOR_NORMAL) {
                     edbitsDrawCube(edpp_cam_pos.x, edpp_cam_pos.y, edpp_cam_pos.z, effect->emitter_random_extent.x,
                                    effect->emitter_random_extent.y, effect->emitter_random_extent.z, edpp_emitrotz, edpp_emitroty,
                                    edpp_emitrotx, rotation_z, rotation_y, 0xff0000ff, (NUMTL *)edpp_mtl);
@@ -2410,15 +2410,18 @@ void cbPtlEmitMenu(eduimenu_s *parent, eduiitem_s *unused1, u32 unused2) {
         if (ptlemitmenu != NULL) {
             eduiMenuAddItem(ptlemitmenu, eduiItemSelCreate(1, colours, 0, 0, cbPtlEmitVelMenu, "Emitter Vel..."));
             eduiMenuAddItem(ptlemitmenu, eduiItemSelCreate(1, colours, 0, 0, cbPtlGravMenu, "Gravity..."));
-            if (effect->generator_type == 0 || effect->generator_type == 8 || effect->generator_type == 9 || effect->generator_type == 10) {
+            if (effect->generator_type == DEBRIS_GENERATOR_NORMAL || effect->generator_type == DEBRIS_GENERATOR_SPHEROID ||
+                effect->generator_type == DEBRIS_GENERATOR_BOUNCE_Y || effect->generator_type == DEBRIS_GENERATOR_BOUNCE_XZ) {
                 eduiMenuAddItem(ptlemitmenu, eduiItemSelCreate(1, colours, 0, 0, cbPtlVarStartMenu, "Random Start..."));
-            } else if (effect->generator_type == 6 || effect->generator_type == 7 || effect->generator_type == 11 ||
-                       effect->generator_type == 12) {
+            } else if (effect->generator_type == DEBRIS_GENERATOR_RADIAL || effect->generator_type == DEBRIS_GENERATOR_RADIAL_ROTOR ||
+                       effect->generator_type == DEBRIS_GENERATOR_IMPROVED_RADIAL ||
+                       effect->generator_type == DEBRIS_GENERATOR_STAR_RADIAL) {
                 eduiMenuAddItem(ptlemitmenu, eduiItemSelCreate(1, colours, 0, 0, cbPtlVarStartMenu, "Base Emit Vector..."));
             }
-            if (effect->generator_type == 0) {
+            if (effect->generator_type == DEBRIS_GENERATOR_NORMAL) {
                 eduiMenuAddItem(ptlemitmenu, eduiItemSelCreate(1, colours, 0, 0, cbPtlStartVelMenu, "Start Velocity..."));
-            } else if (effect->generator_type == 7 || effect->generator_type == 11) {
+            } else if (effect->generator_type == DEBRIS_GENERATOR_RADIAL_ROTOR ||
+                       effect->generator_type == DEBRIS_GENERATOR_IMPROVED_RADIAL) {
                 eduiMenuAddItem(ptlemitmenu, eduiItemSelCreate(1, colours, 0, 0, cbPtlStartVelMenu, "Emit Point Velocity..."));
             }
             eduiMenuAddItem(ptlemitmenu, eduiItemSelCreate(1, colours, 0, 0, cbPtlVarEmitMenu, "Emitter Variation..."));
@@ -2426,12 +2429,13 @@ void cbPtlEmitMenu(eduimenu_s *parent, eduiitem_s *unused1, u32 unused2) {
             eduiMenuAddItem(ptlemitmenu, eduiItemSelCreate(1, colours, 0, 0, cbChangeETimeMenu, "Particle Life..."));
             eduiMenuAddItem(ptlemitmenu, eduiItemSelCreate(1, colours, 0, 0, cbPtlEmitTimeMenu, "Emitter Timing..."));
             eduiMenuAddItem(ptlemitmenu, eduiItemSelCreate(1, colours, 0, 0, cbPtlCutOffMenu, "Repeat / Radii..."));
-            if (effect->generator_type == 0 || effect->generator_type == 6 || effect->generator_type == 7 || effect->generator_type == 8) {
+            if (effect->generator_type == DEBRIS_GENERATOR_NORMAL || effect->generator_type == DEBRIS_GENERATOR_RADIAL ||
+                effect->generator_type == DEBRIS_GENERATOR_RADIAL_ROTOR || effect->generator_type == DEBRIS_GENERATOR_SPHEROID) {
                 eduiMenuAddItem(ptlemitmenu, eduiItemSelCreate(1, colours, 0, 0, edptlcbGhostMenu, "Particle Ghosts..."));
             } else {
                 eduiMenuAddItem(ptlemitmenu, eduiItemSelCreate(1, disabled_colours, 0, 0, NULL, "Particle Ghosts..."));
             }
-            if (effect->generator_type == 12) {
+            if (effect->generator_type == DEBRIS_GENERATOR_STAR_RADIAL) {
                 eduiMenuAddItem(ptlemitmenu, eduiItemSelCreate(1, colours, 0, 0, edptlcbStarMenu, "Star Settings..."));
             } else {
                 eduiMenuAddItem(ptlemitmenu, eduiItemSelCreate(1, disabled_colours, 0, 0, NULL, "Star Settings..."));
@@ -2649,9 +2653,11 @@ static void cbPtlChangeX(eduimenu_s *menu, eduiitem_s *item, u32 unused2) {
 static void cbPtlChangeY(eduimenu_s *menu, eduiitem_s *item, u32 unused2) {
     DEBRIS_INFO_PC *effect;
     i32 instance_id;
+
     if (edpp_nearest == -1) {
         return;
     }
+
     instance_id = edpp_ptls[edpp_nearest].instance_id;
     if (instance_id == -1) {
         return;
@@ -2659,24 +2665,30 @@ static void cbPtlChangeY(eduimenu_s *menu, eduiitem_s *item, u32 unused2) {
     effect = debtab[debkeydata[instance_id].effect_index];
     if (menu != NULL) {
         if (menu == ptlvaremitmenu) {
-            if (effect->generator_type == 0 || effect->generator_type == 8 || effect->generator_type == 9 || effect->generator_type == 10) {
+            if (effect->generator_type == DEBRIS_GENERATOR_NORMAL || effect->generator_type == DEBRIS_GENERATOR_SPHEROID ||
+                effect->generator_type == DEBRIS_GENERATOR_BOUNCE_Y || effect->generator_type == DEBRIS_GENERATOR_BOUNCE_XZ) {
                 effect->rotor_speed_x = ((edui_slider_s *)item)->value;
-            } else if (effect->generator_type == 6 || effect->generator_type == 7 || effect->generator_type == 11 ||
-                       effect->generator_type == 12) {
+            } else if (effect->generator_type == DEBRIS_GENERATOR_RADIAL || effect->generator_type == DEBRIS_GENERATOR_RADIAL_ROTOR ||
+                       effect->generator_type == DEBRIS_GENERATOR_IMPROVED_RADIAL ||
+                       effect->generator_type == DEBRIS_GENERATOR_STAR_RADIAL) {
                 effect->rotor_speed_x = (f32)(i32)((65536.0f / 360.0f) * ((edui_slider_s *)item)->value);
             }
         } else if (menu == ptlvarstartmenu) {
-            if (effect->generator_type == 0 || effect->generator_type == 8 || effect->generator_type == 9 || effect->generator_type == 10) {
+            if (effect->generator_type == DEBRIS_GENERATOR_NORMAL || effect->generator_type == DEBRIS_GENERATOR_SPHEROID ||
+                effect->generator_type == DEBRIS_GENERATOR_BOUNCE_Y || effect->generator_type == DEBRIS_GENERATOR_BOUNCE_XZ) {
                 effect->emitter_random_extent.y = ((edui_slider_s *)item)->value;
-            } else if (effect->generator_type == 6 || effect->generator_type == 7 || effect->generator_type == 11 ||
-                       effect->generator_type == 12) {
+            } else if (effect->generator_type == DEBRIS_GENERATOR_RADIAL || effect->generator_type == DEBRIS_GENERATOR_RADIAL_ROTOR ||
+                       effect->generator_type == DEBRIS_GENERATOR_IMPROVED_RADIAL ||
+                       effect->generator_type == DEBRIS_GENERATOR_STAR_RADIAL) {
                 effect->emitter_random_extent.y = (f32)(i32)((65536.0f / 360.0f) * ((edui_slider_s *)item)->value);
             }
         } else if (menu == ptlstartvelmenu) {
-            if (effect->generator_type == 0 || effect->generator_type == 8 || effect->generator_type == 9 || effect->generator_type == 10) {
+            if (effect->generator_type == DEBRIS_GENERATOR_NORMAL || effect->generator_type == DEBRIS_GENERATOR_SPHEROID ||
+                effect->generator_type == DEBRIS_GENERATOR_BOUNCE_Y || effect->generator_type == DEBRIS_GENERATOR_BOUNCE_XZ) {
                 effect->emitter_velocity.y = ((edui_slider_s *)item)->value;
-            } else if (effect->generator_type == 6 || effect->generator_type == 7 || effect->generator_type == 11 ||
-                       effect->generator_type == 12) {
+            } else if (effect->generator_type == DEBRIS_GENERATOR_RADIAL || effect->generator_type == DEBRIS_GENERATOR_RADIAL_ROTOR ||
+                       effect->generator_type == DEBRIS_GENERATOR_IMPROVED_RADIAL ||
+                       effect->generator_type == DEBRIS_GENERATOR_STAR_RADIAL) {
                 effect->emitter_velocity.y = (f32)(i32)((65536.0f / 360.0f) * ((edui_slider_s *)item)->value);
             }
         }
@@ -2696,30 +2708,36 @@ static void cbPtlChangeZ(eduimenu_s *menu, eduiitem_s *item, u32 unused2) {
     effect = debtab[debkeydata[instance_id].effect_index];
     if (menu != NULL) {
         if (menu == ptlvaremitmenu) {
-            if (effect->generator_type == 0 || effect->generator_type == 8 || effect->generator_type == 9 || effect->generator_type == 10) {
+            if (effect->generator_type == DEBRIS_GENERATOR_NORMAL || effect->generator_type == DEBRIS_GENERATOR_SPHEROID ||
+                effect->generator_type == DEBRIS_GENERATOR_BOUNCE_Y || effect->generator_type == DEBRIS_GENERATOR_BOUNCE_XZ) {
                 effect->rotor_speed_y = ((edui_slider_s *)item)->value;
-            } else if (effect->generator_type == 6 || effect->generator_type == 7 || effect->generator_type == 12) {
+            } else if (effect->generator_type == DEBRIS_GENERATOR_RADIAL || effect->generator_type == DEBRIS_GENERATOR_RADIAL_ROTOR ||
+                       effect->generator_type == DEBRIS_GENERATOR_STAR_RADIAL) {
                 effect->rotor_speed_y = (f32)(i32)((65536.0f / 360.0f) * ((edui_slider_s *)item)->value);
-            } else if (effect->generator_type == 11) {
+            } else if (effect->generator_type == DEBRIS_GENERATOR_IMPROVED_RADIAL) {
                 effect->rotor_speed_y = (f32)(i32)((65536.0f / 360.0f) * ((edui_slider_s *)item)->value);
                 effect->emitter_random_extent.z = MIN(effect->emitter_random_extent.z, 16384.0f - effect->rotor_speed_y);
                 effect->emitter_random_extent.z = MAX(effect->emitter_random_extent.z, -(16384.0f - effect->rotor_speed_y));
             }
         } else if (menu == ptlvarstartmenu) {
-            if (effect->generator_type == 0 || effect->generator_type == 8 || effect->generator_type == 9 || effect->generator_type == 10) {
+            if (effect->generator_type == DEBRIS_GENERATOR_NORMAL || effect->generator_type == DEBRIS_GENERATOR_SPHEROID ||
+                effect->generator_type == DEBRIS_GENERATOR_BOUNCE_Y || effect->generator_type == DEBRIS_GENERATOR_BOUNCE_XZ) {
                 effect->emitter_random_extent.z = ((edui_slider_s *)item)->value;
-            } else if (effect->generator_type == 6 || effect->generator_type == 7 || effect->generator_type == 12) {
+            } else if (effect->generator_type == DEBRIS_GENERATOR_RADIAL || effect->generator_type == DEBRIS_GENERATOR_RADIAL_ROTOR ||
+                       effect->generator_type == DEBRIS_GENERATOR_STAR_RADIAL) {
                 effect->emitter_random_extent.z = (f32)(i32)((65536.0f / 360.0f) * ((edui_slider_s *)item)->value);
-            } else if (effect->generator_type == 11) {
+            } else if (effect->generator_type == DEBRIS_GENERATOR_IMPROVED_RADIAL) {
                 effect->emitter_random_extent.z = (f32)(i32)((65536.0f / 360.0f) * ((edui_slider_s *)item)->value);
                 effect->rotor_speed_y = MIN(effect->rotor_speed_y, 16384.0f - effect->emitter_random_extent.z);
                 effect->rotor_speed_y = MAX(effect->rotor_speed_y, -(16384.0f - effect->emitter_random_extent.z));
             }
         } else if (menu == ptlstartvelmenu) {
-            if (effect->generator_type == 0 || effect->generator_type == 8 || effect->generator_type == 9 || effect->generator_type == 10) {
+            if (effect->generator_type == DEBRIS_GENERATOR_NORMAL || effect->generator_type == DEBRIS_GENERATOR_SPHEROID ||
+                effect->generator_type == DEBRIS_GENERATOR_BOUNCE_Y || effect->generator_type == DEBRIS_GENERATOR_BOUNCE_XZ) {
                 effect->emitter_velocity.z = ((edui_slider_s *)item)->value;
-            } else if (effect->generator_type == 6 || effect->generator_type == 7 || effect->generator_type == 11 ||
-                       effect->generator_type == 12) {
+            } else if (effect->generator_type == DEBRIS_GENERATOR_RADIAL || effect->generator_type == DEBRIS_GENERATOR_RADIAL_ROTOR ||
+                       effect->generator_type == DEBRIS_GENERATOR_IMPROVED_RADIAL ||
+                       effect->generator_type == DEBRIS_GENERATOR_STAR_RADIAL) {
                 effect->emitter_velocity.z = (f32)(i32)((65536.0f / 360.0f) * ((edui_slider_s *)item)->value);
             }
         }
@@ -2735,14 +2753,15 @@ void cbPtlVarEmitMenu(eduimenu_s *parent, eduiitem_s *unused1, u32 unused2) {
     effect = debtab[debkeydata[edpp_ptls[edpp_nearest].instance_id].effect_index];
     ptlvaremitmenu = eduiMenuCreate(70, 70, 180, 300, ed_fnt, cbPtlCancelVarEmitMenu, "Emitter Variation");
     if (ptlvaremitmenu != NULL) {
-        if (effect->generator_type == 0 || effect->generator_type == 8 || effect->generator_type == 9 || effect->generator_type == 10) {
+        if (effect->generator_type == DEBRIS_GENERATOR_NORMAL || effect->generator_type == DEBRIS_GENERATOR_SPHEROID ||
+            effect->generator_type == DEBRIS_GENERATOR_BOUNCE_Y || effect->generator_type == DEBRIS_GENERATOR_BOUNCE_XZ) {
             eduiMenuAddItem(ptlvaremitmenu, eduiItemSliderCreate(0, colours, 0, cbPtlChangeX, 0.0f, 5.0f * edptl_superscale,
                                                                  effect->momentum_random_x, "Rand Emit X"));
             eduiMenuAddItem(ptlvaremitmenu, eduiItemSliderCreate(0, colours, 0, cbPtlChangeY, 0.0f, 5.0f * edptl_superscale,
                                                                  effect->rotor_speed_x, "Rand Emit Y"));
             eduiMenuAddItem(ptlvaremitmenu, eduiItemSliderCreate(0, colours, 0, cbPtlChangeZ, 0.0f, 5.0f * edptl_superscale,
                                                                  effect->rotor_speed_y, "Rand Emit Z"));
-        } else if (effect->generator_type == 6 || effect->generator_type == 12) {
+        } else if (effect->generator_type == DEBRIS_GENERATOR_RADIAL || effect->generator_type == DEBRIS_GENERATOR_STAR_RADIAL) {
             eduiMenuAddItem(ptlvaremitmenu, eduiItemSliderCreate(0, colours, 0, cbPtlChangeX, 0.0f, 5.0f * edptl_superscale,
                                                                  effect->momentum_random_x, "Rand Mag X"));
             eduiMenuAddItem(ptlvaremitmenu, eduiItemSliderCreate(0, colours, 0, cbPtlChangeY, 0.0f, 180.0f,
@@ -2753,7 +2772,7 @@ void cbPtlVarEmitMenu(eduimenu_s *parent, eduiitem_s *unused1, u32 unused2) {
                                                                  effect->rotor_speed_y * (360.0f / 65536.0f), "Rand Rot Z"));
             eduiItemSliderSetFmt((edui_slider_s *)edui_last_item, "(%1.01f)");
             eduiItemSliderSetGranularity((edui_slider_s *)edui_last_item, 0.1f);
-        } else if (effect->generator_type == 7) {
+        } else if (effect->generator_type == DEBRIS_GENERATOR_RADIAL_ROTOR) {
             eduiMenuAddItem(ptlvaremitmenu, eduiItemSliderCreate(0, colours, 0, cbPtlChangeX, 0.0f, 5.0f * edptl_superscale,
                                                                  effect->momentum_random_x, "Rand Mag"));
             eduiMenuAddItem(ptlvaremitmenu, eduiItemSliderCreate(0, colours, 0, cbPtlChangeY, -90.0f, 180.0f,
@@ -2764,7 +2783,7 @@ void cbPtlVarEmitMenu(eduimenu_s *parent, eduiitem_s *unused1, u32 unused2) {
                                                                  effect->rotor_speed_y * (360.0f / 65536.0f), "Step Rot Z"));
             eduiItemSliderSetFmt((edui_slider_s *)edui_last_item, "(%1.01f)");
             eduiItemSliderSetGranularity((edui_slider_s *)edui_last_item, 0.1f);
-        } else if (effect->generator_type == 11) {
+        } else if (effect->generator_type == DEBRIS_GENERATOR_IMPROVED_RADIAL) {
             eduiMenuAddItem(ptlvaremitmenu, eduiItemSliderCreate(0, colours, 0, cbPtlChangeX, 0.0f, 5.0f * edptl_superscale,
                                                                  effect->momentum_random_x, "Rand Mag X"));
             eduiMenuAddItem(ptlvaremitmenu, eduiItemSliderCreate(0, colours, 0, cbPtlChangeY, 0.0f, 180.0f,
@@ -2786,23 +2805,26 @@ void cbPtlVarStartMenu(eduimenu_s *parent, eduiitem_s *unused1, u32 unused2) {
     u32 colours[4] = {0x80000000, 0x80ff0000, 0x80808080, 0x80404040};
     if (!(edpp_nearest == -1 || edpp_ptls[edpp_nearest].instance_id == -1)) {
         DEBRIS_INFO_PC *effect = debtab[debkeydata[edpp_ptls[edpp_nearest].instance_id].effect_index];
-        if (effect->generator_type == 0 || effect->generator_type == 8 || effect->generator_type == 9 || effect->generator_type == 10) {
+        if (effect->generator_type == DEBRIS_GENERATOR_NORMAL || effect->generator_type == DEBRIS_GENERATOR_SPHEROID ||
+            effect->generator_type == DEBRIS_GENERATOR_BOUNCE_Y || effect->generator_type == DEBRIS_GENERATOR_BOUNCE_XZ) {
             ptlvarstartmenu = eduiMenuCreate(70, 70, 180, 300, ed_fnt, cbPtlCancelVarStartMenu, "Random Start");
-        } else if (effect->generator_type == 6 || effect->generator_type == 7 || effect->generator_type == 11 ||
-                   effect->generator_type == 12) {
+        } else if (effect->generator_type == DEBRIS_GENERATOR_RADIAL || effect->generator_type == DEBRIS_GENERATOR_RADIAL_ROTOR ||
+                   effect->generator_type == DEBRIS_GENERATOR_IMPROVED_RADIAL || effect->generator_type == DEBRIS_GENERATOR_STAR_RADIAL) {
             ptlvarstartmenu = eduiMenuCreate(70, 70, 180, 300, ed_fnt, cbPtlCancelVarStartMenu, "Base Emit Vector");
         }
         if (ptlvarstartmenu == NULL) {
             return;
         }
-        if (effect->generator_type == 0 || effect->generator_type == 8 || effect->generator_type == 9 || effect->generator_type == 10) {
+        if (effect->generator_type == DEBRIS_GENERATOR_NORMAL || effect->generator_type == DEBRIS_GENERATOR_SPHEROID ||
+            effect->generator_type == DEBRIS_GENERATOR_BOUNCE_Y || effect->generator_type == DEBRIS_GENERATOR_BOUNCE_XZ) {
             eduiMenuAddItem(ptlvarstartmenu, eduiItemSliderCreate(0, colours, 0, cbPtlChangeX, 0.0f, 5.0f * edptl_superscale,
                                                                   effect->emitter_random_extent.x, "Rand Start X"));
             eduiMenuAddItem(ptlvarstartmenu, eduiItemSliderCreate(0, colours, 0, cbPtlChangeY, 0.0f, 5.0f * edptl_superscale,
                                                                   effect->emitter_random_extent.y, "Rand Start Y"));
             eduiMenuAddItem(ptlvarstartmenu, eduiItemSliderCreate(0, colours, 0, cbPtlChangeZ, 0.0f, 5.0f * edptl_superscale,
                                                                   effect->emitter_random_extent.z, "Rand Start Z"));
-        } else if (effect->generator_type == 6 || effect->generator_type == 7 || effect->generator_type == 12) {
+        } else if (effect->generator_type == DEBRIS_GENERATOR_RADIAL || effect->generator_type == DEBRIS_GENERATOR_RADIAL_ROTOR ||
+                   effect->generator_type == DEBRIS_GENERATOR_STAR_RADIAL) {
             eduiMenuAddItem(ptlvarstartmenu, eduiItemSliderCreate(0, colours, 0, cbPtlChangeX, 0.0f, 5.0f * edptl_superscale,
                                                                   effect->emitter_random_extent.x, "Base Mag"));
             eduiMenuAddItem(ptlvarstartmenu, eduiItemSliderCreate(0, colours, 0, cbPtlChangeY, -180.0f, 360.0f,
@@ -2813,7 +2835,7 @@ void cbPtlVarStartMenu(eduimenu_s *parent, eduiitem_s *unused1, u32 unused2) {
                                                                   effect->emitter_random_extent.z * (360.0f / 65536.0f), "Base Rot Z"));
             eduiItemSliderSetFmt((edui_slider_s *)edui_last_item, "(%1.01f)");
             eduiItemSliderSetGranularity((edui_slider_s *)edui_last_item, 0.1f);
-        } else if (effect->generator_type == 11) {
+        } else if (effect->generator_type == DEBRIS_GENERATOR_IMPROVED_RADIAL) {
             eduiMenuAddItem(ptlvarstartmenu, eduiItemSliderCreate(0, colours, 0, cbPtlChangeX, 0.0f, 5.0f * edptl_superscale,
                                                                   effect->emitter_random_extent.x, "Base Mag"));
             eduiMenuAddItem(ptlvarstartmenu, eduiItemSliderCreate(0, colours, 0, cbPtlChangeY, -180.0f, 360.0f,
@@ -2825,7 +2847,7 @@ void cbPtlVarStartMenu(eduimenu_s *parent, eduiitem_s *unused1, u32 unused2) {
             eduiItemSliderSetFmt((edui_slider_s *)edui_last_item, "(%1.01f)");
             eduiItemSliderSetGranularity((edui_slider_s *)edui_last_item, 0.1f);
         }
-        if (effect->generator_type == 6 || effect->generator_type == 12) {
+        if (effect->generator_type == DEBRIS_GENERATOR_RADIAL || effect->generator_type == DEBRIS_GENERATOR_STAR_RADIAL) {
             eduiMenuAddItem(ptlvarstartmenu, eduiItemSliderCreate(0, colours, 0, edptlcbChangeRampTime, 0.0f, (f32)edptl_superscale,
                                                                   effect->scale_in_time, "Ramp Time"));
         }
@@ -2839,23 +2861,26 @@ void cbPtlStartVelMenu(eduimenu_s *parent, eduiitem_s *unused1, u32 unused2) {
     u32 colours[4] = {0x80000000, 0x80ff0000, 0x80808080, 0x80404040};
     if (!(edpp_nearest == -1 || edpp_ptls[edpp_nearest].instance_id == -1)) {
         DEBRIS_INFO_PC *effect = debtab[debkeydata[edpp_ptls[edpp_nearest].instance_id].effect_index];
-        if (effect->generator_type == 0 || effect->generator_type == 8 || effect->generator_type == 9 || effect->generator_type == 10) {
+        if (effect->generator_type == DEBRIS_GENERATOR_NORMAL || effect->generator_type == DEBRIS_GENERATOR_SPHEROID ||
+            effect->generator_type == DEBRIS_GENERATOR_BOUNCE_Y || effect->generator_type == DEBRIS_GENERATOR_BOUNCE_XZ) {
             ptlstartvelmenu = eduiMenuCreate(70, 70, 250, 300, ed_fnt, cbPtlCancelStartVelMenu, "Start Velocity");
-        } else if (effect->generator_type == 6 || effect->generator_type == 7 || effect->generator_type == 11 ||
-                   effect->generator_type == 12) {
+        } else if (effect->generator_type == DEBRIS_GENERATOR_RADIAL || effect->generator_type == DEBRIS_GENERATOR_RADIAL_ROTOR ||
+                   effect->generator_type == DEBRIS_GENERATOR_IMPROVED_RADIAL || effect->generator_type == DEBRIS_GENERATOR_STAR_RADIAL) {
             ptlstartvelmenu = eduiMenuCreate(70, 70, 250, 300, ed_fnt, cbPtlCancelStartVelMenu, "Emit Point Velocity");
         }
         if (ptlstartvelmenu == NULL) {
             return;
         }
-        if (effect->generator_type == 0 || effect->generator_type == 8 || effect->generator_type == 9 || effect->generator_type == 10) {
+        if (effect->generator_type == DEBRIS_GENERATOR_NORMAL || effect->generator_type == DEBRIS_GENERATOR_SPHEROID ||
+            effect->generator_type == DEBRIS_GENERATOR_BOUNCE_Y || effect->generator_type == DEBRIS_GENERATOR_BOUNCE_XZ) {
             eduiMenuAddItem(ptlstartvelmenu, eduiItemSliderCreate(0, colours, 0, cbPtlChangeX, -5.0f, 10.0f * edptl_superscale,
                                                                   effect->emitter_velocity.x, "Start Vel X"));
             eduiMenuAddItem(ptlstartvelmenu, eduiItemSliderCreate(0, colours, 0, cbPtlChangeY, -5.0f, 10.0f * edptl_superscale,
                                                                   effect->emitter_velocity.y, "Start Vel Y"));
             eduiMenuAddItem(ptlstartvelmenu, eduiItemSliderCreate(0, colours, 0, cbPtlChangeZ, -5.0f, 10.0f * edptl_superscale,
                                                                   effect->emitter_velocity.z, "Start Vel Z"));
-        } else if (effect->generator_type == 6 || effect->generator_type == 7 || effect->generator_type == 12) {
+        } else if (effect->generator_type == DEBRIS_GENERATOR_RADIAL || effect->generator_type == DEBRIS_GENERATOR_RADIAL_ROTOR ||
+                   effect->generator_type == DEBRIS_GENERATOR_STAR_RADIAL) {
             eduiMenuAddItem(ptlstartvelmenu, eduiItemSliderCreate(0, colours, 0, cbPtlChangeX, 0.0f, 5.0f * edptl_superscale,
                                                                   effect->emitter_velocity.x, "Mag Velocity"));
             eduiMenuAddItem(ptlstartvelmenu, eduiItemSliderCreate(0, colours, 0, cbPtlChangeY, -180.0f, 360.0f,
@@ -2866,7 +2891,7 @@ void cbPtlStartVelMenu(eduimenu_s *parent, eduiitem_s *unused1, u32 unused2) {
                                                                   effect->emitter_velocity.z * (360.0f / 65536.0f), "Rot Z Vel"));
             eduiItemSliderSetFmt((edui_slider_s *)edui_last_item, "(%1.01f)");
             eduiItemSliderSetGranularity((edui_slider_s *)edui_last_item, 0.1f);
-        } else if (effect->generator_type == 11) {
+        } else if (effect->generator_type == DEBRIS_GENERATOR_IMPROVED_RADIAL) {
             eduiMenuAddItem(ptlstartvelmenu, eduiItemSliderCreate(0, colours, 0, cbPtlChangeX, 0.0f, 5.0f * edptl_superscale,
                                                                   effect->emitter_velocity.x, "Mag Velocity"));
             eduiMenuAddItem(ptlstartvelmenu, eduiItemSliderCreate(0, colours, 0, cbPtlChangeY, -180.0f, 360.0f,
@@ -2878,7 +2903,7 @@ void cbPtlStartVelMenu(eduimenu_s *parent, eduiitem_s *unused1, u32 unused2) {
             eduiItemSliderSetFmt((edui_slider_s *)edui_last_item, "(%1.01f)");
             eduiItemSliderSetGranularity((edui_slider_s *)edui_last_item, 0.1f);
         }
-        if (effect->generator_type == 6 || effect->generator_type == 12) {
+        if (effect->generator_type == DEBRIS_GENERATOR_RADIAL || effect->generator_type == DEBRIS_GENERATOR_STAR_RADIAL) {
             eduiMenuAddItem(ptlstartvelmenu, eduiItemSliderCreate(0, colours, 0, edptlcbChangeRampTime, 0.0f, (f32)edptl_superscale,
                                                                   effect->scale_in_time, "Ramp Time"));
         }
@@ -3276,15 +3301,16 @@ void cbPtlSelGSort(eduimenu_s *menu, eduiitem_s *item, u32 unused2) {
     if (effect->generator_type == item->data) {
         return;
     }
-    if (effect->generator_type == 6 && item->data == 11) {
+    if (effect->generator_type == DEBRIS_GENERATOR_RADIAL && item->data == DEBRIS_GENERATOR_IMPROVED_RADIAL) {
         effect->rotor_speed_y *= 0.5f;
         effect->emitter_random_extent.z *= 0.5f;
         effect->emitter_velocity.z *= 0.5f;
-    } else if (effect->generator_type == 11 && item->data == 6) {
+    } else if (effect->generator_type == DEBRIS_GENERATOR_IMPROVED_RADIAL && item->data == DEBRIS_GENERATOR_RADIAL) {
         effect->rotor_speed_y *= 2.0f;
         effect->emitter_random_extent.z *= 2.0f;
         effect->emitter_velocity.z *= 2.0f;
-    } else if (!((effect->generator_type == 6 && item->data == 12) || (effect->generator_type == 12 && item->data == 6))) {
+    } else if (!((effect->generator_type == DEBRIS_GENERATOR_RADIAL && item->data == DEBRIS_GENERATOR_STAR_RADIAL) ||
+                 (effect->generator_type == DEBRIS_GENERATOR_STAR_RADIAL && item->data == DEBRIS_GENERATOR_RADIAL))) {
         /* Clears momentum_random_x through emitter_velocity (0x4c-0x6f). */
         memset(&effect->momentum_random_x, 0, 9 * sizeof(f32));
         effect->scale_in_time = 0.0f;
@@ -3397,32 +3423,48 @@ void edptlcbDetailMenu(eduimenu_s *parent, eduiitem_s *unused1, u32 unused2) {
 void cbPtlGSortMenu(eduimenu_s *menu, eduiitem_s *unused1, u32 unused2) {
     u32 colours[4] = {0x80000000, 0x80ff0000, 0x80808080, 0x80404040};
     DEBRIS_INFO_PC *effect;
+
     if (edpp_nearest == -1 || edpp_ptls[edpp_nearest].instance_id == -1) {
         return;
     }
+
     effect = debtab[debkeydata[edpp_ptls[edpp_nearest].instance_id].effect_index];
     ptlgsortmenu = eduiMenuCreate(70, 70, 180, 250, ed_fnt, cbPtlCancelGSortMenu, "GenSort Type");
     if (ptlgsortmenu) {
-        eduiMenuAddItem(ptlgsortmenu, eduiItemCheckCreate(0, colours, effect->generator_type == 0, 1, cbPtlSelGSort, "Normal"));
+        eduiMenuAddItem(ptlgsortmenu, eduiItemCheckCreate(DEBRIS_GENERATOR_NORMAL, colours,
+                                                          effect->generator_type == DEBRIS_GENERATOR_NORMAL, 1, cbPtlSelGSort, "Normal"));
         if (effect->particle_type == 7) {
-            eduiMenuAddItem(ptlgsortmenu, eduiItemSelCreate(6, edgrey, 0, 0, NULL, "Radial"));
-            eduiMenuAddItem(ptlgsortmenu, eduiItemSelCreate(7, edgrey, 0, 0, NULL, "Radial Rotor"));
+            eduiMenuAddItem(ptlgsortmenu, eduiItemSelCreate(DEBRIS_GENERATOR_RADIAL, edgrey, 0, 0, NULL, "Radial"));
+            eduiMenuAddItem(ptlgsortmenu, eduiItemSelCreate(DEBRIS_GENERATOR_RADIAL_ROTOR, edgrey, 0, 0, NULL, "Radial Rotor"));
         } else {
-            eduiMenuAddItem(ptlgsortmenu, eduiItemCheckCreate(6, colours, effect->generator_type == 6, 1, cbPtlSelGSort, "Radial"));
-            eduiMenuAddItem(ptlgsortmenu, eduiItemCheckCreate(7, colours, effect->generator_type == 7, 1, cbPtlSelGSort, "Radial Rotor"));
-        }
-        eduiMenuAddItem(ptlgsortmenu, eduiItemCheckCreate(8, colours, effect->generator_type == 8, 1, cbPtlSelGSort, "Spheroid"));
-        if (effect->particle_type == 7) {
-            eduiMenuAddItem(ptlgsortmenu, eduiItemSelCreate(9, edgrey, 0, 0, NULL, "BounceY"));
-            eduiMenuAddItem(ptlgsortmenu, eduiItemSelCreate(10, edgrey, 0, 0, NULL, "BounceXZ"));
-            eduiMenuAddItem(ptlgsortmenu, eduiItemSelCreate(11, edgrey, 0, 0, NULL, "Improved Radial"));
-            eduiMenuAddItem(ptlgsortmenu, eduiItemSelCreate(12, edgrey, 0, 0, NULL, "Star Radial"));
-        } else {
-            eduiMenuAddItem(ptlgsortmenu, eduiItemCheckCreate(9, colours, effect->generator_type == 9, 1, cbPtlSelGSort, "BounceY"));
-            eduiMenuAddItem(ptlgsortmenu, eduiItemCheckCreate(10, colours, effect->generator_type == 10, 1, cbPtlSelGSort, "BounceXZ"));
             eduiMenuAddItem(ptlgsortmenu,
-                            eduiItemCheckCreate(11, colours, effect->generator_type == 11, 1, cbPtlSelGSort, "Improved Radial"));
-            eduiMenuAddItem(ptlgsortmenu, eduiItemCheckCreate(12, colours, effect->generator_type == 12, 1, cbPtlSelGSort, "Star Radial"));
+                            eduiItemCheckCreate(DEBRIS_GENERATOR_RADIAL, colours, effect->generator_type == DEBRIS_GENERATOR_RADIAL, 1,
+                                                cbPtlSelGSort, "Radial"));
+            eduiMenuAddItem(ptlgsortmenu,
+                            eduiItemCheckCreate(DEBRIS_GENERATOR_RADIAL_ROTOR, colours,
+                                                effect->generator_type == DEBRIS_GENERATOR_RADIAL_ROTOR, 1, cbPtlSelGSort, "Radial Rotor"));
+        }
+        eduiMenuAddItem(ptlgsortmenu,
+                        eduiItemCheckCreate(DEBRIS_GENERATOR_SPHEROID, colours, effect->generator_type == DEBRIS_GENERATOR_SPHEROID, 1,
+                                            cbPtlSelGSort, "Spheroid"));
+        if (effect->particle_type == 7) {
+            eduiMenuAddItem(ptlgsortmenu, eduiItemSelCreate(DEBRIS_GENERATOR_BOUNCE_Y, edgrey, 0, 0, NULL, "BounceY"));
+            eduiMenuAddItem(ptlgsortmenu, eduiItemSelCreate(DEBRIS_GENERATOR_BOUNCE_XZ, edgrey, 0, 0, NULL, "BounceXZ"));
+            eduiMenuAddItem(ptlgsortmenu, eduiItemSelCreate(DEBRIS_GENERATOR_IMPROVED_RADIAL, edgrey, 0, 0, NULL, "Improved Radial"));
+            eduiMenuAddItem(ptlgsortmenu, eduiItemSelCreate(DEBRIS_GENERATOR_STAR_RADIAL, edgrey, 0, 0, NULL, "Star Radial"));
+        } else {
+            eduiMenuAddItem(ptlgsortmenu,
+                            eduiItemCheckCreate(DEBRIS_GENERATOR_BOUNCE_Y, colours, effect->generator_type == DEBRIS_GENERATOR_BOUNCE_Y, 1,
+                                                cbPtlSelGSort, "BounceY"));
+            eduiMenuAddItem(ptlgsortmenu,
+                            eduiItemCheckCreate(DEBRIS_GENERATOR_BOUNCE_XZ, colours, effect->generator_type == DEBRIS_GENERATOR_BOUNCE_XZ,
+                                                1, cbPtlSelGSort, "BounceXZ"));
+            eduiMenuAddItem(ptlgsortmenu, eduiItemCheckCreate(DEBRIS_GENERATOR_IMPROVED_RADIAL, colours,
+                                                              effect->generator_type == DEBRIS_GENERATOR_IMPROVED_RADIAL, 1, cbPtlSelGSort,
+                                                              "Improved Radial"));
+            eduiMenuAddItem(ptlgsortmenu,
+                            eduiItemCheckCreate(DEBRIS_GENERATOR_STAR_RADIAL, colours,
+                                                effect->generator_type == DEBRIS_GENERATOR_STAR_RADIAL, 1, cbPtlSelGSort, "Star Radial"));
         }
     }
     eduiMenuAttach(menu, ptlgsortmenu);

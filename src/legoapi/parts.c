@@ -2075,7 +2075,8 @@ void DebrisDraw(i32 unused, i32 pass) {
             if (key->unknown_2f7 == 0) {
                 visible = 0;
             }
-            if (pass != 4 && visible && effect->generator_type == 0 && effect->use_explicit_clip_box == 0 && !assigned) {
+            if (pass != 4 && visible && effect->generator_type == DEBRIS_GENERATOR_NORMAL && effect->use_explicit_clip_box == 0 &&
+                !assigned) {
                 NUVEC minimum;
                 NUVEC maximum;
                 if (key->clip_radius == 0.0f || *edbits_editor_enabled != 0) {

@@ -15,6 +15,16 @@ struct debris_part_header_s;
 struct eduiitem_s;
 struct eduimenu_s;
 
+/* debris_info_s.generator_type: the index into gensorttab; the debris editor's GenSort Type menu names them. */
+#define DEBRIS_GENERATOR_NORMAL 0           /* GenDebIndex */
+#define DEBRIS_GENERATOR_RADIAL 6           /* GenDebIndexRadial */
+#define DEBRIS_GENERATOR_RADIAL_ROTOR 7     /* GenDebIndexRadialRotor */
+#define DEBRIS_GENERATOR_SPHEROID 8         /* GenDebIndexSpheroid */
+#define DEBRIS_GENERATOR_BOUNCE_Y 9         /* GenDebIndexBounceY */
+#define DEBRIS_GENERATOR_BOUNCE_XZ 10       /* GenDebIndexBounceXZ */
+#define DEBRIS_GENERATOR_IMPROVED_RADIAL 11 /* GenDebIndexImprovedRadial */
+#define DEBRIS_GENERATOR_STAR_RADIAL 12     /* GenDebIndexRadialStar */
+
 typedef struct debris_info_s {   // size 0x428
     char name[16];               // 0x000
     u8 category;                 // 0x010

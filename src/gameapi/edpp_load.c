@@ -302,7 +302,7 @@ void cbPtlTextureMenu(eduimenu_s *menu, eduiitem_s *unused1, u32 unused2) {
             eduiMenuAddItem(texturemenu, eduiItemCheckCreate(2, colours, effect->particle_type == 2, 1, cbPtlSelTextureType, "Modulative"));
             eduiMenuAddItem(texturemenu,
                             eduiItemCheckCreate(3, colours, effect->particle_type == 3, 1, cbPtlSelTextureType, "Subtractive"));
-            if (!(effect->generator_type == 0 || effect->generator_type == 8)) {
+            if (!(effect->generator_type == DEBRIS_GENERATOR_NORMAL || effect->generator_type == DEBRIS_GENERATOR_SPHEROID)) {
                 eduiMenuAddItem(texturemenu, eduiItemSelCreate(7, edgrey, 0, 0, NULL, "Glass"));
             } else {
                 eduiMenuAddItem(texturemenu, eduiItemCheckCreate(7, colours, effect->particle_type == 7, 1, cbPtlSelTextureType, "Glass"));

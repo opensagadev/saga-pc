@@ -329,7 +329,7 @@ void FileLoadSingleEffectType(DEBRIS_INFO_PC *destination, i32 version, i8 categ
         EdFileReadFloat();
         EdFileReadFloat();
     }
-    if ((version == 18 || version == 19) && effect->generator_type == 6) {
+    if ((version == 18 || version == 19) && effect->generator_type == DEBRIS_GENERATOR_RADIAL) {
         effect->rotor_speed_y = (f32)(effect->rotor_speed_y * 2.0);
         effect->emitter_random_extent.z = (f32)(effect->emitter_random_extent.z * 2.0);
     }
@@ -577,32 +577,41 @@ void cbPtlReadoutMenu(eduimenu_s *menu, eduiitem_s *unused1, u32 unused2) {
 static void cbPtlGSortMenu(eduimenu_s *menu, eduiitem_s *unused1, u32 unused2) {
     struct debris_info_s *effect;
     u32 colours[4] = {0x80000000, 0x80ff0000, 0x80808080, 0x80404040};
+
     if (edpp_nearest == -1 || edpp_ptls[edpp_nearest].instance_id == -1) {
         return;
     }
+
     effect = debtab[debkeydata[edpp_ptls[edpp_nearest].instance_id].effect_index];
     ptlgsortmenu = eduiMenuCreate(70, 70, 180, 250, ed_fnt, cbPtlCancelGSortMenu, "GenSort Type");
     if (ptlgsortmenu) {
-        eduiMenuAddItem(ptlgsortmenu, eduiItemCheckCreate(0, colours, effect->generator_type == 0, 1, cbPtlSelGSort, "Normal"));
+        eduiMenuAddItem(ptlgsortmenu,
+                        eduiItemCheckCreate(0, colours, effect->generator_type == DEBRIS_GENERATOR_NORMAL, 1, cbPtlSelGSort, "Normal"));
         if (effect->particle_type == 7) {
             eduiMenuAddItem(ptlgsortmenu, eduiItemSelCreate(6, edgrey, 0, 0, NULL, "Radial"));
             eduiMenuAddItem(ptlgsortmenu, eduiItemSelCreate(7, edgrey, 0, 0, NULL, "Radial Rotor"));
         } else {
-            eduiMenuAddItem(ptlgsortmenu, eduiItemCheckCreate(6, colours, effect->generator_type == 6, 1, cbPtlSelGSort, "Radial"));
-            eduiMenuAddItem(ptlgsortmenu, eduiItemCheckCreate(7, colours, effect->generator_type == 7, 1, cbPtlSelGSort, "Radial Rotor"));
+            eduiMenuAddItem(ptlgsortmenu,
+                            eduiItemCheckCreate(6, colours, effect->generator_type == DEBRIS_GENERATOR_RADIAL, 1, cbPtlSelGSort, "Radial"));
+            eduiMenuAddItem(ptlgsortmenu, eduiItemCheckCreate(7, colours, effect->generator_type == DEBRIS_GENERATOR_RADIAL_ROTOR, 1,
+                                                              cbPtlSelGSort, "Radial Rotor"));
         }
-        eduiMenuAddItem(ptlgsortmenu, eduiItemCheckCreate(8, colours, effect->generator_type == 8, 1, cbPtlSelGSort, "Spheroid"));
+        eduiMenuAddItem(ptlgsortmenu,
+                        eduiItemCheckCreate(8, colours, effect->generator_type == DEBRIS_GENERATOR_SPHEROID, 1, cbPtlSelGSort, "Spheroid"));
         if (effect->particle_type == 7) {
             eduiMenuAddItem(ptlgsortmenu, eduiItemSelCreate(9, edgrey, 0, 0, NULL, "BounceY"));
             eduiMenuAddItem(ptlgsortmenu, eduiItemSelCreate(10, edgrey, 0, 0, NULL, "BounceXZ"));
             eduiMenuAddItem(ptlgsortmenu, eduiItemSelCreate(11, edgrey, 0, 0, NULL, "Improved Radial"));
             eduiMenuAddItem(ptlgsortmenu, eduiItemSelCreate(12, edgrey, 0, 0, NULL, "Star Radial"));
         } else {
-            eduiMenuAddItem(ptlgsortmenu, eduiItemCheckCreate(9, colours, effect->generator_type == 9, 1, cbPtlSelGSort, "BounceY"));
-            eduiMenuAddItem(ptlgsortmenu, eduiItemCheckCreate(10, colours, effect->generator_type == 10, 1, cbPtlSelGSort, "BounceXZ"));
-            eduiMenuAddItem(ptlgsortmenu,
-                            eduiItemCheckCreate(11, colours, effect->generator_type == 11, 1, cbPtlSelGSort, "Improved Radial"));
-            eduiMenuAddItem(ptlgsortmenu, eduiItemCheckCreate(12, colours, effect->generator_type == 12, 1, cbPtlSelGSort, "Star Radial"));
+            eduiMenuAddItem(ptlgsortmenu, eduiItemCheckCreate(9, colours, effect->generator_type == DEBRIS_GENERATOR_BOUNCE_Y, 1,
+                                                              cbPtlSelGSort, "BounceY"));
+            eduiMenuAddItem(ptlgsortmenu, eduiItemCheckCreate(10, colours, effect->generator_type == DEBRIS_GENERATOR_BOUNCE_XZ, 1,
+                                                              cbPtlSelGSort, "BounceXZ"));
+            eduiMenuAddItem(ptlgsortmenu, eduiItemCheckCreate(11, colours, effect->generator_type == DEBRIS_GENERATOR_IMPROVED_RADIAL, 1,
+                                                              cbPtlSelGSort, "Improved Radial"));
+            eduiMenuAddItem(ptlgsortmenu, eduiItemCheckCreate(12, colours, effect->generator_type == DEBRIS_GENERATOR_STAR_RADIAL, 1,
+                                                              cbPtlSelGSort, "Star Radial"));
         }
     }
     eduiMenuAttach(menu, ptlgsortmenu);
