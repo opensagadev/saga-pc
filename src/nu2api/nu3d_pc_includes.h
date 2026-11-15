@@ -36,6 +36,9 @@ extern "C" {
     void NuDisplayListReflection(void *);
     void NuDisplayListDrawGeometry(void *);
     void NuDisplayListMaterial(void *);
+    void NuDebrisReleaseVertexBuffers(void);
+    void NuDisplayListShadowMaterial(void *data);
+    void debris_InitializeD3D(void);
 #ifdef __cplusplus
 }
 #endif

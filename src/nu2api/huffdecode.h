@@ -225,6 +225,12 @@ extern "C" {
     extern i32 gExplodeInitialised;
     extern i32 FramePadProfilePortPc;
     extern char *iop_image_name;
+    extern NUFILE_DEVICE enum_devices[16];
+    extern f32 FrameStartupDelay;
+    extern i32 NuApiTextLine;
+    extern i32 enum_numdevices;
+    extern i32 min_delay;
+    extern u32 dat_0091ef20;
 #ifdef __cplusplus
 }
 #endif

@@ -387,6 +387,8 @@ typedef struct PC_DEVICE_BACKEND_PC {       // size 0x700
 extern "C" {
 #endif
     extern PC_DEVICE_BACKEND_PC PCDeviceBackend;
+    extern void (*PCGraphicsDeviceLostCallback)(GRAPHICS_PRESENT_PARAMETERS *);
+    void PCDeviceEvictManagedResources();
 #ifdef __cplusplus
 }
 #endif

@@ -192,7 +192,6 @@ void edbitsDoSingleDump(i32 face) {
 }
 
 extern i32 edbits_cubecount;
-extern i32 NuRndrDoingScreenGrab;
 
 i32 edbitsStartCubemapDump(void) {
     if (edbits_cubecount != 0) {

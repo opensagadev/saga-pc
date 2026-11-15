@@ -52,6 +52,7 @@ extern "C" {
     void SetShadowLight(void);
     char *rtlGetEnvPath(void);
     char *rtlGetEnvSceneName(void);
+    extern NUCAMERA *EdMainCurrentCamera;
 #ifdef __cplusplus
 }
 #endif

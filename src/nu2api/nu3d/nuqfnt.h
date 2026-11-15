@@ -148,6 +148,7 @@ extern "C" {
     void NuQFntSetMtxRS(void *stream, VUFNT *font, struct numtx_s *matrix);
     void NuFntScale(i32 x, i32 y);
     void NuFntSet(i32 font);
+    void NuQFntInit(VARIPTR *buffer, VARIPTR end);
 #ifdef __cplusplus
 }
 #endif

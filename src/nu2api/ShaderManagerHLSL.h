@@ -39,3 +39,7 @@ class ShaderManagerHLSL : public PC_SHADER_MANAGER_VIEW { // size 0x791b0
 
 typedef ShaderManagerHLSL ShaderManagerHLSLPc;
 #endif
+
+#ifdef __cplusplus
+extern char uberShader2[158576];
+#endif

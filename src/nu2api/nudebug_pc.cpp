@@ -9,8 +9,6 @@
 #include <process.h>
 #include <string.h>
 
-extern "C" void NuFileWriteString(NUFILE file, const char *text);
-
 /* Empty hook that receives each runtime error report. PCNativeErrorPrint
  * still calls it, which suggests it was compiled in another unit; here the
  * compiler drops the call to the empty body. */

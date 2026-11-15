@@ -4,10 +4,6 @@
 
 extern "C" {
 
-    extern TerrainQuery_s *TerI;
-    extern TERRAIN_POLYGON_INFO *ScaleTerrain;
-    void TerrainSkinAllocate(TERRAIN_GROUP_PC *);
-
     enum { TERRAIN_PLATFORM_FLAG_ROTATING = 1 };
 }
 

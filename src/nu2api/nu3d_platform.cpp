@@ -60,7 +60,6 @@ extern "C" {
 
     // @@PREAMBLE
     struct POST_SHADER_PROGRAM_PC;
-    POST_SHADER_PROGRAM_PC *PostShaderProgramCreatePc(i32, const DWORD *, const DWORD *);
     extern const DWORD dat_007662d8[168];
     extern const DWORD dat_00766578[94];
     extern const DWORD dat_007666f0[75];
@@ -79,11 +78,6 @@ extern "C" {
     extern const DWORD dat_007690b0[131];
     extern const DWORD dat_007692c0[175];
     extern const DWORD dat_00769580[100];
-    PC_FRAMEBUFFER *PCGraphicsCreateFramebuffer(void);
-    void NuPostEffectReleasePorts(void);
-    void fun_005f83a0(GRAPHICS_RENDER_TEXTURE *texture, i32 texture_id);
-    void fun_005f1f50(i32 texture_id);
-    extern GRAPHICS_RENDER_TEXTURE *PCGraphicsPostEffectBackBufferTexture;
 
     typedef struct SCENE_TEXTURE_PACKET_B0 { // size 0x14
         i32 kind;                            // 0x00
@@ -150,9 +144,7 @@ extern "C" {
     extern NUVEC4 RendererArenaData[];
     extern u32 RendererArenaOffsets[];
     extern i32 RendererArenaTypes[];
-    extern i32 RendererArenaVertexCount;
     extern u32 RendererArenaCount;
-    extern PC_TEXTURE_RESOURCE *RendererVertexDeclaration;
     extern PC_BUFFER_RESOURCE *RendererQuadVertexBuffer;
 
     u8 NuUnresolvedTextureDds[0x2080] = {
@@ -541,9 +533,6 @@ extern "C" {
     u32 RendererStencilRef = 0x60;
     u32 PCGraphicsPostEffectWidth = 512;
     u32 PCGraphicsPostEffectHeight = 512;
-
-    void PCDeviceSetWorldIdentityPc(void);
-    void NuRndrArenaBuildShadowVolumes(i32 unused0, i32 unused1);
 
     typedef struct CAMERA_RENDER_SPECULAR_READER { // size 0xe8
         u8 unknown_0000[0xdc];                     // 0x00
@@ -1294,8 +1283,6 @@ extern "C" {
     /* The integer slot holds the 32-bit packet identity. */
     extern i32 PCGraphicsBoundShader;
 
-    extern "C" void NuStrFixExt(char *, char *, char *, i32);
-
     /* The leading pad keeps the 14-byte file header's 32-bit fields naturally aligned. */
     typedef struct nutexbmp_file_header_s {
         u16 pad_00;
@@ -1330,7 +1317,6 @@ extern "C" {
     }
 
     /* Font atlas builder: scans a BMP glyph strip for glyph cells and builds a font around it. */
-    extern "C" i32 NuStrLenW(const NUWCHAR *str);
 
     /* Nonzero when any texel of the 32-bit column at (x, y) has a nonzero alpha. */
     // forceinline: the original inlines this into NuQFntColumnOpaque32, which VC8's own heuristics do not.
@@ -1371,14 +1357,7 @@ extern "C" {
         NuQFntNextGlyph32(bitmap, cell_height, &x, &y, &width);                                                                            \
     }
 
-    extern "C" {
-        extern PC_EFFECT_SURFACE *PcSurfaceRegistry[256];
-        extern u8 PcSurfaceRegistryInitialized;
-        extern PC_FRAMEBUFFER PcFramebufferPool[32];
-        extern u8 PcFramebufferActive[32];
-        extern PC_FRAMEBUFFER *PcBoundFramebuffer;
-        extern PC_FRAMEBUFFER *PcSecondaryFramebuffer;
-    }
+    extern "C" {}
 
     extern "C" {
         PC_EFFECT_SURFACE *PcSurfaceRegistry[256] = {NULL};
@@ -1415,9 +1394,6 @@ extern "C" {
         i32 NuLgtArcLaserFrame = 0;
     }
 
-    void NuVec4Scale(NUVEC4 *, NUVEC4 *, f32);
-    void NuVec4ScaleXYZVU0(NUVEC4 *, NUVEC4 *, f32);
-    i32 NuRndrBeginSceneEx(i32, i32, i32);
 #define NU_LGT_RAND() ((i32)(NuLgtSeed = (NuLgtSeed * 0x24cd + 1) & 0xffff))
 #define NU_LGT_ARC_VERTEX(position, colour, tex_u, tex_v)                                                                                  \
     do {                                                                                                                                   \
@@ -1428,14 +1404,8 @@ extern "C" {
         NuPrim2DAddXYZ((position)->x, (position)->y, (position)->z);                                                                       \
     } while (0)
 
-    extern i32 min_delay;
-    extern f32 FrameStartupDelay;
-    extern i32 NuApiTextLine;
     extern f32 NuFrameAccumulatedTime;
     extern const char *GetPCStartupMessage(void);
-    extern u32 PcGetRefreshRate(void);
-    extern void bgprocFrameSleep(i32 milliseconds);
-    extern void NuFrameEndLeaf(void);
     extern void FmvPlatformUpdatePc(void);
 
 #define NUFRAME_ELAPSED(elapsed, now, start)                                                                                               \
@@ -7511,7 +7481,6 @@ extern "C" void NuDisplayListShadowMaterial(void *data) {
 
 /* nurndr's platform members, in nurndr order. */
 extern "C" {
-    extern u8 DwaBlockTable[0x400];
 
     void NuRndrGradClear(i32 clear_flags, i32 top_colour, i32 bottom_colour, f32 alpha) {
         NuRndrClear(clear_flags, bottom_colour, alpha);
@@ -8379,8 +8348,6 @@ extern "C" {
         NuRndrQuadBufferInit();
         NuRndrGeometryBuffersInit();
     }
-
-    void PCGraphicsCreatePostEffectWorkTexture(i32 width, i32 height);
 
     /* Sizes the post-effect targets (power-of-two when the device needs it) and claims the back-buffer copy. */
     void PCGraphicsCreatePostEffectTextures(u32 width, u32 height) {

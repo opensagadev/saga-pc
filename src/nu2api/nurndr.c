@@ -92,8 +92,6 @@ void NuRndrClear(i32 clear_flags, i32 bg_colour, f32 alpha) {
     currentScene.calc_20 = (f32)(0.0625 * vpCurrent.height / ((f64)PS2_REZ_H / PS2_VREZ_H));
 }
 
-void NuRndrSphereMtx(NUMTX *matrix, i32 colour, i32 segments, NUMTL *material);
-
 void NuRndrSphereTRS(NUVEC *translation, NUANGVEC *rotation, NUVEC *scale, i32 colour, i32 segments, NUMTL *material) {
     NUMTX matrix;
     if (rotation != NULL) {
@@ -387,8 +385,6 @@ typedef struct NURNDR_EFFECTS_VIEW { // size 0xdc
 
 #define NURNDR_EFFECTS ((NURNDR_EFFECTS_VIEW *)&currentScene.unknown_ac)
 
-extern i32 NuRndrDoingScreenGrab;
-
 void NuDepthOfFieldEffectEx(const NU_POST_DOF_PARAMETERS *parameters) {
     NURNDR_EFFECTS->dof = *parameters;
     if (NuRndrDoingScreenGrab != 0) {
@@ -447,8 +443,6 @@ void NuAccumulationMotionBlurParams(i32 frames, f32 blend, f32 mode) {
     NURNDR_EFFECTS->accumulation_frames = frames;
     NURNDR_EFFECTS->accumulation_mode = mode;
 }
-
-extern i32 motionBlurAccumActiveThisFrame;
 
 void NuAccumulationMotionBlurEffect(i32 frames, f32 blend, f32 mode) {
     NURNDR_EFFECTS->accumulation_blend = blend;
@@ -522,8 +516,6 @@ f32 fun_005d52b0(f32 value, f32 minimum, f32 maximum) {
 void fun_005d5230(void) {
     currentScene.unknown_24 = 1;
 }
-
-extern i32 dat_0080b6e4;
 
 void fun_005d5250(i32 value) {
     dat_0080b6e4 = value;

@@ -9,6 +9,7 @@
 extern "C" {
 #endif
     void NuWaterSpeed(f32);
+    void NuWaterReleaseVertexBuffer(void);
 #ifdef __cplusplus
 }
 #endif

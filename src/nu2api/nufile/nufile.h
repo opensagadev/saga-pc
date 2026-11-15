@@ -203,6 +203,13 @@ extern "C" {
     void NuFileCloseDir(i32 file);
     i32 NuFileOpenDir(char *path);
     i32 NuFileAlign(NUFILE file, i32 mask);
+    extern void NuFileReldirFix(NUFILE_DEVICE *device, char *path);
+    i32 NuFileCopy(char *destination, char *source);
+    i32 NuMcCheckCardFormatted(i32 port, i32 slot);
+    i32 NuMcCheckCardFreeSpace(i32 port, i32 slot);
+    i32 NuMcCheckCardPresent(i32 port, i32 slot);
+    i32 NuMcFormat(i32 port, i32 slot);
+    void NuFileWriteString(NUFILE file, const char *text);
 #ifdef __cplusplus
 }
 #endif

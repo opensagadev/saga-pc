@@ -26,7 +26,6 @@ void (*Text_GameSetLanguageFn)(i32) = 0;
 
 extern i32 NuFParGetLineW(NUFPAR_PC *parser);
 extern i32 NuFParGetWordW(NUFPAR_PC *parser);
-extern i32 NuStrLenW(const NUWCHAR *str);
 
 void Text_InitLanguageList(LANGUAGEDATA *language_list) {
     if (language_list != NULL) {

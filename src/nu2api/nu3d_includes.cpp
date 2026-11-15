@@ -3763,10 +3763,6 @@ extern "C" {
 // nuqfnt and nufont.
 extern "C" {
 
-    void NuStrFixExtPlatform(char *dst, char *src, char *ext, i32 dst_size, char *platform_string);
-
-    extern i32 nuqfnt_initialised;
-
     /* Embedded system font pointer block (0x4930 bytes), fixed in place by NuPtrBlockFix. */
 #pragma data_seg(".data$NuQFntSystemFontBlockPc")
     u8 NuQFntSystemFontBlock[0x4930] = {
@@ -5488,8 +5484,6 @@ extern "C" {
         return NuQFntReadBuffer(&aligned, buffer, end);
     }
 
-    i32 NuMtlSetCurrentRenderPlane(i32 render_plane);
-
     VUFNT *NuQFntDuplicate(VUFNT *font, i32 flags, i32 plane, VARIPTR *buffer, VARIPTR *end) {
         FONT_LOAD_READER *reader = (FONT_LOAD_READER *)font;
         FONT_LOAD_READER *duplicate;
@@ -5975,7 +5969,6 @@ extern "C" {
 } // extern "C"
 
 // occlusion (OccluderSet/OcclusionManager and the PostShadow helpers).
-extern "C" void NuMtxSetOrthoBlend(NUMTX *, f32, f32, f32, f32, f32, f32);
 
 static inline void OccluderCross(NUVEC *dst, const NUVEC &a, const NUVEC &b) {
     NuVecCross(dst, const_cast<NUVEC *>(&a), const_cast<NUVEC *>(&b));
@@ -6471,10 +6464,6 @@ void OcclusionManager::RenderZPass() const {
     if (initialized && enabled) {
         current_set->RenderOccluders(true);
     }
-}
-
-extern "C" {
-    extern i32 NuRndrDoingScreenGrab;
 }
 
 i32 gRenderOccluders = 0;
@@ -7330,8 +7319,6 @@ extern "C" {
         NuPortalOverrideCamera = camera;
     }
 
-    extern u8 dat_009737ff;
-
     void fun_005da470(u8 value) {
         dat_009737ff = value;
     }
@@ -8180,8 +8167,6 @@ extern "C" {
         return ((NUMTL *)(mtl));
     }
 
-    void fun_005de1c0(NUMTL *material);
-
     static NUMTL *NuMtlAllocateBuffPC(VARIPTR *buffer, VARIPTR buffer_end, i32 is_3d) {
         PC_MATERIAL_CREATE_VIEW *mtl = (PC_MATERIAL_CREATE_VIEW *)((buffer->addr + 15) & ~15u);
         buffer->addr = ((buffer->addr + 15) & ~15u) + sizeof(PC_MATERIAL_CREATE_VIEW);
@@ -8225,8 +8210,6 @@ extern "C" {
     NUMTL *NuMtlCreateBuff3D(i32 count, VARIPTR *buffer, VARIPTR buffer_end) {
         return NuMtlAllocateBuffPC(buffer, buffer_end, 1);
     }
-
-    extern i32 mtl_animation_mask;
 
     void NuMtlAnimateSetSpeedScale(f32 scale) {
         FrameMaterialAnimationSpeed = scale;
@@ -8362,8 +8345,6 @@ extern "C" {
 
     void NuRndrScreenGrabTileInit(SCREENGRAB_TILE_PARAMS_PC *params, i32 tiles, f32 b, f32 a, f32 c);
     void NuRndrScreenGrabTileDeInit(SCREENGRAB_TILE_PARAMS_PC *params);
-    void NuRndrScreenGrabTileBegin(void **tile);
-    void NuRndrScreenGrabTileEnd(void **tile);
 
     static i32 dump_state = -1;
 
@@ -8561,8 +8542,6 @@ extern "C" {
         return 0;
     }
 
-    void NuMtlInitExPS(VARIPTR *buffer);
-
     void NuMtlInitEx(VARIPTR *buffer, i32 material_count) {
         PC_MATERIAL_CREATE_SHADER desc2d;
         PC_MATERIAL_CREATE_SHADER desc3d;
@@ -8599,8 +8578,6 @@ extern "C" {
         NuMtlUpdatePS(numtl_defaultmtl3d);
         ++material->version;
     }
-
-    GRAPHICS_RENDER_TEXTURE *PCGraphicsFrameRenderTexture(i32 texture_id);
 
     void fun_005f1f50(i32 texture_id) {
         if (texture_id == 0) {
@@ -11436,9 +11413,6 @@ extern "C" void NuDisplayListBurstRndrSpecial(nuhspecial_s *handle, u32 count, N
 
 /* The reset clears these three adjacent flags together. */
 
-extern "C" PC_FRAMEBUFFER *PCGraphicsCreateFramebuffer(void);
-extern "C" void PCGraphicsAttachFramebuffer(PC_FRAMEBUFFER *, i32, GRAPHICS_RENDER_TEXTURE *, i32);
-
 static f32 motionFactorPan = 0.01f;
 static f32 motionFactorPull = -0.024f;
 extern "C" {
@@ -11543,8 +11517,6 @@ extern "C" GRAPHICS_RENDER_TEXTURE *NuPostEffectGetDepthBuffer(i32 frame) {
     }
     return dat_0097ace4;
 }
-
-extern "C" void PCGraphicsResizePostEffectTextures(u32, u32);
 
 /* Re-creates the size-dependent filter textures after a device reset. */
 extern "C" void NuPostEffectResize(void) {
@@ -11744,7 +11716,6 @@ bool NuMainFilterGen::isEnabled() {
 
 struct POST_SHADER_PROGRAM_PC;
 extern "C" {
-    POST_SHADER_PROGRAM_PC *PostShaderProgramCreatePc(i32, const DWORD *, const DWORD *);
     extern const DWORD dat_007656f0[42];
     extern const DWORD dat_00765798[43];
     extern const DWORD dat_00765848[151];
@@ -11773,15 +11744,8 @@ extern "C" {
     extern const DWORD dat_007692c0[175];
     extern const DWORD dat_00769580[100];
 }
-extern "C" void PCGraphicsCreatePostEffectTextures(u32, u32);
 extern "C" GRAPHICS_RENDER_TEXTURE *PCGraphicsPostEffectWorkTexture;
 extern "C" GRAPHICS_RENDER_TEXTURE *PCGraphicsPostEffectBackBufferTexture;
-extern "C" i32 PCGraphicsEffectTextureMipCount(GRAPHICS_RENDER_TEXTURE *);
-extern "C" void PCGraphicsEffectTextureSetLowNibbles(GRAPHICS_RENDER_TEXTURE *, i32, i32);
-extern "C" void PCGraphicsEffectTextureSetField24(GRAPHICS_RENDER_TEXTURE *, i32);
-extern "C" void PCGraphicsEffectTextureSetFilterFields(GRAPHICS_RENDER_TEXTURE *, i32, i32, i32);
-extern "C" void PCGraphicsEffectTextureSetWrapFields(GRAPHICS_RENDER_TEXTURE *, i32, i32);
-extern "C" void PostFilterInitPrograms(i32, i32);
 extern "C" u8 NuPostFilterMemory[0x800];
 extern "C" VirtualStackAllocator NuPostFilterAllocator;
 extern "C" NuCopyFilter *NuPostCopyFilter;
@@ -12101,8 +12065,6 @@ extern "C" void NuPostEffectEnd(void) {
     PostProxyBuffers[4].enabled = true;
 }
 
-extern "C" void NuVec4Scale(NUVEC4 *, NUVEC4 *, f32);
-
 void NuSpeedBlurFilterGen::computeSpeedBlur(NUVEC4 *result) {
     NUMTX previous_inverse;
     NUMTX current_inverse;
@@ -12128,8 +12090,6 @@ void NuSpeedBlurFilterGen::computeSpeedBlur(NUVEC4 *result) {
     *result = motion;
     result->w = 0.0f;
 }
-
-extern "C" void PCGraphicsDestroyFramebuffer(PC_FRAMEBUFFER *);
 
 void NuPostFilterGen::destroyResources() {
     PCGraphicsDestroyFramebuffer(input_fbo);
@@ -12399,8 +12359,6 @@ i32 PCFrustumClipSet::fun_005e6770(const NUVEC *center, const NUVEC *extent) {
 }
 
 extern "C" {
-    extern POST_SHADER_PROGRAM_PC *PostCopyTexProgram;
-    extern PC_FRAMEBUFFER *PostCopyFramebuffer;
     f32 NuSpeedBlurDepthScale = 100000.0f;
 }
 
@@ -12581,9 +12539,7 @@ void NuSpeedBlurFilterGen::render() {
 }
 
 extern "C" {
-    extern POST_SHADER_PROGRAM_PC *PostBlur5x5Program;
     void PostBlur7x7Dispatch(GRAPHICS_RENDER_TEXTURE *, i32, GRAPHICS_RENDER_TEXTURE *, i32, i32, i32, bool, f32, POST_SHADER_PROGRAM_PC *);
-    void PCGraphicsResolveFramebuffer(i32);
     f32 NuMainFilterDofBlurScale = 1.5f;
     i32 NuPostEffectBackBufferFrame = -1;
     i32 dat_0080bf24 = -1;
@@ -13003,12 +12959,6 @@ extern "C" void NuPostEffectReleasePorts(void) {
     }
 }
 
-extern "C" {
-    extern POST_SHADER_PROGRAM_PC *PostBlendTexProgram;
-    extern PC_FRAMEBUFFER *PostBlurFramebuffer;
-    void PostGaussianKernel(i32 width, i32 height, NUVEC4 *taps, f32 scale);
-}
-
 /* Blurs a texture chain with the 13-tap Gaussian kernel, one level at a time. */
 extern "C" void PostBlurGaussianChain(GRAPHICS_RENDER_TEXTURE *source, i32 source_lod, GRAPHICS_RENDER_TEXTURE *textures, i32 first_lod,
                                       i32 iterations, i32 levels, bool mip_chain) {
@@ -13059,8 +13009,6 @@ extern "C" void PostBlurGaussianChain(GRAPHICS_RENDER_TEXTURE *source, i32 sourc
     }
 }
 
-extern "C" void PCGraphicsDestroyPostEffectTextures(void);
-
 #define POST_FILTER_RELEASE(filter)                                                                                                        \
     do {                                                                                                                                   \
         if ((filter) != NULL) {                                                                                                            \
@@ -13096,8 +13044,6 @@ extern "C" f32 NuPostEffectTiming(i32 *last_frame) {
 
 /* nulgtlaser's nu3d forwarders; the laser renderer itself is in nu3d_platform.cpp. */
 extern "C" {
-    void NuVec4ScaleXYZVU0(NUVEC4 *, NUVEC4 *, f32);
-    i32 NuRndrBeginSceneEx(i32, i32, i32);
 
     void NuVec4ScaleXYZVU0(NUVEC4 *out, NUVEC4 *input, f32 scale) {
         NuVec4Scale(out, input, scale);
@@ -13121,11 +13067,6 @@ extern "C" {
 } // extern "C"
 
 /* nutex_pc's two nu3d texture helpers; the rest of nutex_pc is in nu3d_platform.cpp. */
-
-extern "C" {
-    extern u32 PCGraphicsPostEffectWidth;
-    extern u32 PCGraphicsPostEffectHeight;
-}
 
 extern "C" void PCGraphicsCreatePostEffectWorkTexture(i32 width, i32 height) {
     width = PCGraphicsPostEffectWidth;
@@ -14402,8 +14343,6 @@ extern "C" {
         }
     }
 
-    extern void *dat_00971ad8;
-
     void *fun_005e5680(void) {
         return dat_00971ad8;
     }
@@ -14669,8 +14608,6 @@ extern "C" {
         struct SCENE_INGEST_TEXTURE_PROGRAM *previous; // 0x04
         char name[32];                                 // 0x08
     } SCENE_INGEST_TEXTURE_PROGRAM;
-
-    void NuGScnFixupPS(NUGSCN *);
 
     static NUGSCN *NuReadGraphicsData(VARIPTR *buffer, VARIPTR *buffer_end, char *path, SCENE_INGEST_FILE *scene_data) {
         NUGSCN *scene;
@@ -14974,7 +14911,6 @@ extern "C" {
 
 /* nuvisibility */
 extern "C" {
-    i32 NuFileCopy(char *destination, char *source);
 
     typedef struct visibility_scene_reader_s { // size 0x14c
         u8 unknown_00[0x1c];                   // 0x000
@@ -15115,8 +15051,6 @@ extern "C" {
         u32 unknown_24;                    // 0x24
         u32 state;                         // 0x28
     } NUBOXTREEVISIBILITY;
-
-    void NuFileWriteString(NUFILE file, const char *text);
 
     void BoxTreeRndrRec(NUVISIBOXTREE *tree, u8 *results, NUVISIBOXTREENODE *node, i32 instance_count, f32 far_clip, NUGSCN *scene) {
         if (node->children[0] == 0xffff) {
@@ -16258,9 +16192,6 @@ extern "C" {
         }
     }
 
-    void fun_006030d0(NUGOBJ *gobj);
-    void fun_006030f0(NUGOBJ *gobj, i32 first, i32 second);
-
     void fun_005cfea0(nuhspecial_s *special) {
         if (special->special != NULL) {
             fun_006030d0(SPECIAL_GOBJ(special));
@@ -16860,8 +16791,6 @@ extern "C" {
         handle->display_special = NULL;
         return 0;
     }
-
-    i32 NuStrICmpWC(char *pattern, char *name, char *wildcards);
 
     static i32 NuSpecialFindMultiWCDisplay(NUGSCN *scene, nuhspecial_s *dest, char (*wildcards)[20], char *pattern, i32 capacity,
                                            i32 flags) {
@@ -18219,19 +18148,11 @@ extern "C" {
 extern "C" {
     extern NUMTX PostShadowView;
     extern NUMTX PostShadowProjection;
-    void PCGraphicsClearFramebuffer(u32, i32);
     // Repeats saga.h, but deleting it changes NuDeferredFilterGen::render (declaration noise).
     void PCGraphicsAttachFramebuffer(PC_FRAMEBUFFER *, i32, GRAPHICS_RENDER_TEXTURE *, i32);
     // Repeats saga.h, but deleting it changes NuDeferredFilterGen::render (declaration noise).
     void PostBlur7x7Dispatch(GRAPHICS_RENDER_TEXTURE *, i32, GRAPHICS_RENDER_TEXTURE *, i32, i32, i32, bool, f32, POST_SHADER_PROGRAM_PC *);
-    extern NUVEC4 PostShadowWhite;
-    extern const WCHAR PostDeferredLabel[17];
-    extern const WCHAR PostShadowRenderLabel[14];
     extern PC_DISPLAY_ITEM_HANDLER_PC PCDisplayShadowItemHandlers[49];
-    void NuDisplayListShadowTransform(void *data);
-    void NuDisplayListShadowTransformTranspose(void *data);
-    void NuDisplayListShadowMaterial(void *data);
-    void PostShadowSelectHandlers(i32 mode);
 }
 
 void PC_SPECIAL_SHADOW_LIGHT::fun_005c6d90(NUMTX *view, NUMTX *projection) {
@@ -19096,12 +19017,6 @@ extern "C" PC_DISPLAY_ITEM_HANDLER_PC PCDisplayShadowItemHandlers[49] = {NuDispl
 #pragma data_seg()
 
 /* nudlist_material */
-extern "C" {
-    extern POST_SHADER_PROGRAM_PC *PostBlur7x7Program;
-    extern POST_SHADER_PROGRAM_PC *PostCopyAuxProgram;
-    extern POST_SHADER_PROGRAM_PC *PostBlurAuxProgram;
-    extern f32 PostBlurInputBiasPc;
-}
 
 // NuShaderProgramMakeCurrent and the per-stage sampler binds, inlined here.
 #define POST_BLUR_BIND_PROGRAM(bound_program)                                                                                              \
@@ -19249,11 +19164,6 @@ extern "C" void PostBlur7x7High(GRAPHICS_RENDER_TEXTURE *source, i32 source_lod,
             input_lod = output_lod;
         }
     }
-}
-
-extern "C" {
-    extern f32 PostBlurDirectInputBiasPc;
-    extern f32 PostBlurDirectOutputBiasPc;
 }
 
 /* Unreferenced 7x7 blur variant: both passes render straight into the output level, no work texture. */

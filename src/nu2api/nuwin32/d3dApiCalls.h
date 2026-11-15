@@ -39,6 +39,12 @@ extern "C" {
     f32 PcInputAspectRatioPc(void);
 #ifdef __cplusplus
     void PCDevicePostEffectBarrierPc(void);
+    extern u32 PcGetRefreshRate(void);
+    i32 PCFrameBeginScene(i32 begin);
+    void PCDeviceSetWorldIdentityPc(void);
+    void PCFrameConfigureTargets(void);
+    void PCFrameResetTargets(void);
+    void PCGraphicsRecreateResources(i32 reset_available);
 #ifdef __cplusplus
 }
 #endif

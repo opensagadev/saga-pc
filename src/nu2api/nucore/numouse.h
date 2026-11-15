@@ -16,6 +16,8 @@ extern "C" {
     f32 NuMouseReadXRel(void);
     f32 NuMouseReadYRel(void);
     f32 NuMouseReadZRel(void);
+    f32 NuMouseReadX(void);
+    f32 NuMouseReadY(void);
 #ifdef __cplusplus
 }
 #endif

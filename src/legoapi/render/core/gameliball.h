@@ -1012,6 +1012,29 @@ extern "C" {
     void edanimcbSwitchMenu(struct eduimenu_s *parent, struct eduiitem_s *unused1, u32 unused2);
     void edanimcbToggleSoundType(struct eduimenu_s *menu, struct eduiitem_s *item, u32 unused2);
     void edbitsDrawSphere(NUVEC *centre, f32 radius, i32 colour, struct numtl_s *material);
+    extern NUVEC TerrainRoofNormal;
+    extern TERRAIN_POLYGON_INFO *ScaleTerrain;
+    extern TERRAIN_POLYGON_INFO *TerrainCastAuxPolygon;
+    extern TerrainQuery_s *TerI;
+    extern const f32 TerrainCastLowerSentinel;
+    extern const f32 TerrainSkinBoundsMax;
+    extern const f32 TerrainSkinBoundsMin;
+    extern f32 TerrainShadowHeight;
+    extern i16 TerrainCastAuxIndex;
+    extern i16 TerrainRoofIndex;
+    extern i16 TerrainShadowFloorIndex;
+    extern i32 PlatSkinCnt;
+    extern i32 PlatSkinMaxSize;
+    extern i32 PlatSkinMaxStore;
+    extern u16 NuTerrPlatsOff;
+    extern u16 TerrainRoofValid;
+    extern u16 TerrainSurfaceClass;
+    extern u16 TerrainWaterCastIndex;
+    extern u32 TerrainUpadteCnt;
+    extern u8 *PlatSkinMem;
+    f32 NewCast(NUVEC *, f32, f32);
+    void InitSoundInfo(i32);
+    void LoadSfx(const char *, VARIPTR *, VARIPTR);
 #ifdef __cplusplus
 }
 #endif

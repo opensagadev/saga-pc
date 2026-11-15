@@ -2196,8 +2196,6 @@ extern "C" void PcInputStageAuxiliaryConfigPc(i32 port, i32 bank, i32 key) {
 }
 
 // Append input_runtime.cpp. Native strings/table definitions and mappings in B-save-data.json.
-extern u8 PcInputWriteTextProfiles;
-extern const char *PcInputBindingKindNames[14];
 
 void PC_INPUT_RUNTIME_PC::SanitizeConfigName(const char *name, char *destination) {
     PCByteCopy(destination, name, 63);

@@ -2,35 +2,18 @@
 
 extern "C" {
     void PCDeviceBeginScenePc(void);
-    void PCGraphicsReleaseFramebuffers(void);
-    void PCGraphicsRestoreFramebuffers(void);
-    void NuRndrGeometryBufferRelease(void);
-    void NuRndrGeometryBufferRestore(void);
-    void NuDebrisReleaseVertexBuffers(void);
-    void debris_InitializeD3D(void);
     void NuRndrDwaRelease(void);
-    void PcGeometryOriginRelease(void);
-    void NuPrimReleaseResources(void);
-    void NuKeyboardWindowStateLeafPc(void);
     i32 GameReleaseResources(void);
     i32 GameRestoreResources(void);
     void DebrisReleaseResources(void);
     void DebrisRestoreResources(void);
-    void NuWaterReleaseVertexBuffer(void);
     void NuGScnReleaseDynamicBuffers(void);
     void NuGScnRestoreDynamicBuffers(void);
-    void NuTexReleaseResources(void);
-    void NuTexRestoreResources(void);
-    void FmvReleasePc(void);
-    void FmvRestorePc(void);
     void NuFmvTextureReleasePc(void);
     void NuFmvTextureRestorePc(void);
-    void ResizeStillRender(i32, i32);
-    void PCGraphicsClearFrameTextures(void);
     f32 fun_005d0920(void);
     f32 fun_005d0930(void);
 }
-extern "C" void NuPostEffectResize(void);
 extern "C" void fun_006d3120(void);
 extern "C" u32 dat_02974ccc;
 extern "C" u32 dat_02974cd0;

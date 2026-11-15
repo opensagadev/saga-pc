@@ -25,6 +25,7 @@ extern "C" {
     i32 bgprocIsFrozen(void);
 
     void PcInitializeStartupCriticalSection(void);
+    extern void bgprocFrameSleep(i32 milliseconds);
 #ifdef __cplusplus
 }
 #endif

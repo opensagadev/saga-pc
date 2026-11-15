@@ -132,6 +132,8 @@ extern "C" {
 #endif
     i32 PcNativeSelectLanguage(const char *);
     extern u32 PcUseUserGeoRegion;
+    void NuHwSetParameter33(void *value);
+    void PcSetDefaultParameter(const char *);
 #ifdef __cplusplus
 }
 #endif

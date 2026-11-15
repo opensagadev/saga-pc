@@ -11,7 +11,6 @@
 
 /* Network condition emulator. */
 
-extern "C" i32 refpack(u8 *source, i32 source_size, u8 *destination);
 i32 unref(u8 *source, u8 *destination);
 
 NuNetEmu theNuNetEmu;

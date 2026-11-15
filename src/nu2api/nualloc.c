@@ -44,8 +44,6 @@ extern NUALLOC_RECORD *NuAllocRecordHead;
 extern u32 NuAllocHeaderMetadata[3];
 
 /* Diagnostic hooks compiled out to a bare return; defined in nudebug.c. */
-void NuAllocBadPointer(void);
-void NuAllocReport(const void *message, ...);
 
 /* PC manager prefix and block header touched by the allocator. */
 

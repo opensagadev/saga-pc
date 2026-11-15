@@ -213,3 +213,12 @@ struct GRAPHICS_FACTORY {                    // size 0x4
 #endif
 
 #undef SAGA_NU2API_NUFMV_PC_BINK_DSPLAY_BINK_H_STOP
+
+#ifdef __cplusplus
+extern "C" {
+#endif
+    void FmvReleasePc(void);
+    void FmvRestorePc(void);
+#ifdef __cplusplus
+}
+#endif

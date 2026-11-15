@@ -10,9 +10,6 @@ void FileDirectoryErrorPc(i32 error) {
     (void)error;
 }
 
-void PCNativeErrorPrint(PC_NATIVE_DEBUG_STATE *state, const char *format, ...);
-void PCNativeWarningPrint(PC_NATIVE_DEBUG_STATE *state, const char *format, ...);
-
 void NuErrorPrint(char *text) {
     PCNativeErrorPrint(&PCNativeWarningDebugState, PCWarningNativeFormat, text);
 }

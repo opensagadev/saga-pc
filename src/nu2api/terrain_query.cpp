@@ -4,10 +4,6 @@
 
 extern "C" {
 
-    extern TerrainQuery_s *TerI;
-    extern TERRAIN_POLYGON_INFO *ScaleTerrain;
-    void TerrainSkinAllocate(TERRAIN_GROUP_PC *);
-
     enum { TERRAIN_PLATFORM_FLAG_ROTATING = 1 };
 }
 
@@ -2088,15 +2084,6 @@ extern "C" void DrawHitTerrain(void) {
         }
     }
     NuScratchRelease();
-}
-
-extern "C" {
-    extern f32 TerrainShadowHeight;
-    extern i16 TerrainShadowFloorIndex;
-    extern u16 TerrainWaterCastIndex;
-    extern u16 NuTerrPlatsOff;
-    extern TERRAIN_POLYGON_INFO *TerrainCastAuxPolygon;
-    f32 NewCast(NUVEC *, f32, f32);
 }
 
 extern "C" f32 NewShadowHandelEx(NUVEC *position, f32 unused, f32 height_above, f32 height_below, i32 terrain_mask, i16 *handle) {

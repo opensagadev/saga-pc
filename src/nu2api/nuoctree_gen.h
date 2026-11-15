@@ -9,6 +9,7 @@
 extern "C" {
 #endif
     void NuLgtInitializeState(void);
+    void NuPostEffectReleasePorts(void);
 #ifdef __cplusplus
 }
 #endif

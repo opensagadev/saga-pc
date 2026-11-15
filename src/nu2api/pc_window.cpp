@@ -275,7 +275,6 @@ extern "C" void PcRelaunchMediaCenter(void) {
 }
 
 extern "C" {
-    extern i32 PcCursorTextureIdPc;
     extern NUMTL *PcCursorMaterialPc;
     void PcCreateCursorMaterialPc(void);
 }
@@ -508,11 +507,6 @@ extern "C" void PcCreateCursorMaterialPc(void) {
     PcCursorMaterialPc->texture_id = (i16)PcCursorTextureIdPc;
     NuMtlUpdate(PcCursorMaterialPc);
 }
-
-extern "C" f32 fun_006d5c50(void);
-extern "C" f32 fun_006d5c60(void);
-extern "C" void NuRndrRectUV2dNoScale(f32 x, f32 y, f32 z, f32 width, f32 height, f32 u0, f32 v0, f32 u1, f32 v1, i32 colour,
-                                      NUMTL *material);
 
 extern "C" void fun_006ddfa0(f32 size) {
     f32 x = fun_006d5c50();

@@ -334,10 +334,7 @@ rejected:
     return 1;
 }
 
-extern i32 NuCameraScissorWidth;
-extern i32 NuCameraScissorHeight;
 i32 NuRndrSetViewMtx(NUMTX *view_projection, NUMTX *viewport_clip, NUMTX *scissor_clip);
-void FaceYDirStream(i32 angle);
 
 void NuCameraSetEx(NUCAMERA *camera, i32 fast) {
     global_camera = *camera;

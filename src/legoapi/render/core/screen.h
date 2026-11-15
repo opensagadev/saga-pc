@@ -64,6 +64,7 @@ extern "C" {
     extern i32 back_rgba[2];
     extern i32 old_pause_state;
     void NeedScreenGrab(i32);
+    void ResizeStillRender(i32, i32);
 #ifdef __cplusplus
 }
 #endif

@@ -71,6 +71,10 @@ extern "C" {
     u8 NuToUpper(u8);
     char *NuIToA(i32, char *, i32);
     u16 NuToUpperW(u16 c);
+    i32 NuStrICmpWC(char *pattern, char *name, char *wildcards);
+    i32 NuStrLenW(const NUWCHAR *str);
+    void NuStrFixExt(char *, char *, char *, i32);
+    void NuStrFixExtPlatform(char *dst, char *src, char *ext, i32 dst_size, char *platform_string);
 #ifdef __cplusplus
 }
 #endif

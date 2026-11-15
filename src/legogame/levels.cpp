@@ -30,7 +30,6 @@ extern "C" {
 }
 extern "C" void CreateUsefulMaterials(void);
 extern "C" void edbitsRegisterThingsScene(NUGSCN *scene);
-extern "C" i32 NuMtlSetCurrentRenderPlane(i32 render_plane);
 extern "C" void ParticleReset(void);
 
 extern "C" void DebrisSetup(VARIPTR *, VARIPTR, char *, i32, i32, i32);

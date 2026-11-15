@@ -588,6 +588,7 @@ extern "C" {
     void eduiSetCursorCoords(f32 x, f32 y);
     void eduiSetDefaultActiveMenu(eduimenu_s *menu);
     void eduiSetUsingMenuFocus(i32 enabled);
+    extern i32 edmain_cursor_enabled;
 #ifdef __cplusplus
 }
 #endif

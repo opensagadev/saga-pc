@@ -645,7 +645,6 @@ u32 nusound_seed = 0x20558057;
 char SfxConfigFilename[256] = "Audio/audio.cfg";
 f32 MASTERVOLUME = 1.0f;
 f32 AUDIOFADELEVEL = 1.0f;
-i32 NuSoundGetStereoStreamStatus(i32 stream);
 
 static void MusicPlayStream(i32 stream, i32 track, i32 volume, f32 seek_offset, i32 one_shot) {
     if (NOSOUND == 0 && NOMUSIC == 0) {
@@ -1108,9 +1107,6 @@ char *GetSfxName(i32 sound_id) {
 i32 NuSound3LoadingSfx(void) {
     return NuSound3LoadingSfxPc != 0;
 }
-
-void InitSoundInfo(i32);
-void LoadSfx(const char *, VARIPTR *, VARIPTR);
 
 SFX_RECORD_PC *SfxRevertInfo = 0;
 char SfxNameSlots[1601][32] = {0};

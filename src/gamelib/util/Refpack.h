@@ -26,6 +26,7 @@ typedef struct memorymanager_s { // size 0x248
 extern "C" {
 #endif
     extern u32 crctab[256];
+    i32 refpack(u8 *source, i32 source_size, u8 *destination);
 #ifdef __cplusplus
 }
 #endif

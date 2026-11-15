@@ -65,6 +65,8 @@ extern "C" {
     void NuVec4ToNuHalfVec4(NUVEC4 *v, NUHALFVEC4 *out);
     void NuHalfVec4ToNuVec4(NUHALFVEC4 *v, NUVEC4 *out);
     void NuVec4MtxTransformHVU0(struct NUVEC4 *out, struct NUVEC4 *v, struct numtx_s *matrix);
+    void NuVec4Scale(NUVEC4 *, NUVEC4 *, f32);
+    void NuVec4ScaleXYZVU0(NUVEC4 *, NUVEC4 *, f32);
 #ifdef __cplusplus
 }
 #endif

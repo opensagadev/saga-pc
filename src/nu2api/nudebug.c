@@ -11,13 +11,6 @@
 #include "nu2api/numath/numtx.h"
 #include "nu2api/nuwin32/Stubs.h"
 
-extern i32 dat_00973868;
-extern i32 dat_00806b84;
-extern i32 dat_00806b88;
-extern i32 dat_00806b8c;
-extern i32 dat_00806b90;
-extern i32 dat_00806b94;
-
 void PCAnimationLoadFailureNoOp(char *path) {
     (void)path;
 }

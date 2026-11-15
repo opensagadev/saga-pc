@@ -93,8 +93,6 @@ extern "C" i32 fun_00698b50(void) {
     return 0;
 }
 
-extern "C" void fun_00697eb0(void);
-
 SoundVoiceManagerPC::~SoundVoiceManagerPC() {
     i32 i;
     fun_00697eb0();

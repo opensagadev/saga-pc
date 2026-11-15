@@ -45,6 +45,9 @@ extern "C" {
     void NuPadUpdatePads(void);
     void NuPadRecordSave(char *filepath);
     i32 NuPs2ApplyDeadZone(i32 raw_value, i32 dead_zone);
+    i32 NuPadGetPlayer(i32 port);
+    void NuPadClosePS(FRAME_PAD_PC *pad);
+    void NuPadSetMotorsPS(i32 port, i32 motor0, i32 motor1);
 #ifdef __cplusplus
 }
 #endif

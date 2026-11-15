@@ -376,9 +376,6 @@ struct TERRAIN_SKIN_STREAM {          // size 0x78
     TERRAIN_POLYGON_INFO polygons[1]; // 0x14
 };
 
-extern const f32 TerrainSkinBoundsMax;
-extern const f32 TerrainSkinBoundsMin;
-
 NUVEC *TerrainSkin(NUVEC *result, const TERRAIN_SKIN_INFO *info, const NUVEC *position, f32 weight, i32 mode) {
     NUVEC4 point;
     NUMTX matrix;
@@ -605,13 +602,8 @@ NUVEC *TerrainStaticMtx(NUVEC *result, const TERRAIN_SKIN_INFO *info, const NUVE
     return result;
 }
 
-extern i32 PlatSkinCnt;
 extern TERRAIN_SKIN_INFO *PlatSkinInfo;
-extern u32 TerrainUpadteCnt;
 extern TERRAIN_SKIN_USE_RECORD *SkinMemInfo;
-extern i32 PlatSkinMaxStore;
-extern i32 PlatSkinMaxSize;
-extern u8 *PlatSkinMem;
 
 /* TerI points at the 0x948-byte TerrainQuery_s query packet.
  * PLATFORM.scene_object is a void*, accessed through NUMTX*;
@@ -668,18 +660,6 @@ void TerrainSkinAllocate(TERRAIN_GROUP_PC *group) {
     SkinPlatform(group, (TERRAIN_SKIN_STREAM *)(PlatSkinMem + PlatSkinMaxSize * selected), &infos[-(group->scene_index + 1)]);
     SkinMemInfo[selected].last_use = (i32)TerrainUpadteCnt;
 }
-
-extern TERRAIN_POLYGON_INFO *ScaleTerrain;
-extern u16 NuTerrPlatsOff;
-extern i16 TerrainShadowFloorIndex;
-extern f32 TerrainShadowHeight;
-extern i16 TerrainCastAuxIndex;
-extern u16 TerrainRoofValid;
-extern i16 TerrainRoofIndex;
-extern NUVEC TerrainRoofNormal;
-extern const f32 TerrainCastLowerSentinel;
-
-extern u16 TerrainSurfaceClass;
 
 typedef struct TERRAIN_SCAN_WRITER {
     TERRAIN_SCAN_WORD *group_header;

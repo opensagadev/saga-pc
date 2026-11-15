@@ -12,6 +12,8 @@
 #include "nu2api/numath/nuvec.h"
 #endif
 
+struct TERRAIN_GROUP_PC;
+
 #ifdef __cplusplus
 extern "C" {
 #endif
@@ -82,6 +84,7 @@ extern "C" {
     void DrawWallSpline(f32);
     i32 NewPlatPickupInst(void *, i32);
     i32 NewRayCastScaleY(NUVEC *position, NUVEC *movement, f32 radius, f32 scale_y, i32 scan_flags);
+    void TerrainSkinAllocate(struct TERRAIN_GROUP_PC *);
 #ifdef __cplusplus
 }
 #endif

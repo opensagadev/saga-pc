@@ -592,7 +592,6 @@ void ShaderManagerHLSL::SetUniformValues(i32 semantic, const f32 *values) {
 }
 
 #include <new>
-extern char uberShader2[158576];
 
 template <> PC_SHADER_MANAGER_VIEW::ShaderManagerTemplate() {
     bound_slot = NULL;

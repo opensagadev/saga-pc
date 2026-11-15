@@ -19,13 +19,6 @@
 #include "nu2api/nuwin32/d3dCore.h"
 #include "nu2api/nuwin32/pcapi.h"
 
-extern "C" {
-    i32 PCFrameBeginScene(i32 begin);
-    void PCFrameResetTargets(void);
-    void PCFrameConfigureTargets(void);
-    void NuDisplayListHtmlEnd(void);
-}
-
 extern "C" PC_EFFECT_SURFACE *PcSurfaceRegistry[256];
 
 /* Header-inline: the swap loop's local target expands the destructor. */

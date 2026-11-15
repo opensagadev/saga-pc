@@ -91,6 +91,11 @@ extern "C" {
     void NuRndrRectUV2di(i32 x, i32 y, i32 width, i32 height, f32 u0, f32 v0, f32 u1, f32 v1, i32 colour, struct numtl_s *material);
     void NuRndrGradRectUV2di(i32 x, i32 y, i32 width, i32 height, f32 u0, f32 v0, f32 u1, f32 v1, u32 *colours, void *material);
     void NuRndrLine3dDbgFlush(void);
+    extern i32 NuRndrDoingScreenGrab;
+    i32 NuRndrBeginSceneEx(i32, i32, i32);
+    void FaceYDirStream(i32 angle);
+    void NuRndrScreenGrabTileBegin(void **tile);
+    void NuRndrScreenGrabTileEnd(void **tile);
 #ifdef __cplusplus
 }
 #endif

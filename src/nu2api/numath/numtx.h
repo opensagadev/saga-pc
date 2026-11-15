@@ -134,6 +134,7 @@ extern "C" {
     void NuMtxLookAtInverseD3D(NUMTX *mtx, NUVEC *eye, NUVEC *center, NUVEC *up);
     void NuMtxSetPerspectiveBlend(NUMTX *mtx, f32 fovy, f32 aspect, f32 zNear, f32 zFar);
     void NuMtxGetFrustumBlend(NUMTX *mtx, f32 *l, f32 *r, f32 *b, f32 *t, f32 *n, f32 *f);
+    void NuMtxSetOrthoBlend(NUMTX *, f32, f32, f32, f32, f32, f32);
 #ifdef __cplusplus
 }
 #endif

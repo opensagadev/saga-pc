@@ -242,10 +242,6 @@ PC_CONTROL_SCREEN *PC_CONTROL_SCREEN::fun_00420190(void) {
     return this;
 }
 
-extern "C" {
-    i32 NuMtlSetCurrentRenderPlane(i32);
-}
-
 void PC_CONTROL_SCREEN::Register(PC_CONTROL_CONFIG *config, VARIPTR *, VARIPTR *) {
     PC_CONTROL_ITEM **list = config->rows;
     draw_background = config->draw_background;

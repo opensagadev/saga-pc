@@ -22,6 +22,8 @@ extern "C" {
     void NuDisplayListPacketAd(void *);
     void NuDisplayListUpdateLightmap(void);
     void NuDisplayListDrawFaceOn(void *);
+    void NuDisplayListShadowTransform(void *data);
+    void NuDisplayListShadowTransformTranspose(void *data);
 #ifdef __cplusplus
 }
 #endif

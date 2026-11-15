@@ -17,6 +17,7 @@ extern "C" {
     void PCDisplayListCriticalSectionEnter(void);
     void PCDisplayListCriticalSectionLeave(void);
     void NuRndrInitStartupMaterials(void);
+    void fun_005de1c0(NUMTL *material);
 #ifdef __cplusplus
 }
 #endif

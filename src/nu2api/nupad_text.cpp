@@ -324,8 +324,6 @@ extern "C" char *TextInputActionLabelPc(i32 device, i32 action, i32 custom, i32 
     return TextInputActionLabelBufferPc;
 }
 
-extern "C" i32 NuPadGetPlayer(i32 port);
-
 extern "C" void fun_006da460(i32 player) {
     PC_INPUT_RUNTIME_PC *runtime = (PC_INPUT_RUNTIME_PC *)nu_input_state;
     PC_INPUT_CONFIG_PC config;

@@ -68,12 +68,6 @@ i32 read_buffer_size = 0;
 i32 NuApiTextLine = 0;
 static i32 read_buffer_decoded_size = 0;
 
-extern NUFILE_DEVICE enum_devices[16];
-extern i32 enum_numdevices;
-
-void NuDatFileMissing(char *filepath);
-void NuRDPIVariableError(char *name);
-
 // Fetch one control bit; the marker bit refills the buffer from the next input byte.
 #define NUPP_GETBIT()                                                                                                                      \
     bits += bits;                                                                                                                          \
@@ -185,16 +179,6 @@ i16 PlayerLastPort[8] = {-1, -1, -1, -1, -1, -1, -1, -1};
 static i32 FramePadDirectMappingPc = 0;
 static i32 FramePadActivatedPc = 0;
 
-u32 ImplodeDecodeC(void);
-u32 ImplodeDecodeOffset(void);
-void ImplodeMakeTable(i32, u8 *, i32, u16 *);
-void ImplodeHufDecodeStart(void);
-void ImplodeInitGetBits(void);
-u32 ImplodeGetBits(i32 count);
-void ImplodeFillBuf(i32 count);
-u8 ImplodeGetByteFromMem(void);
-void ImplodeError(char *msg, ...);
-
 static i32 ImplodePendingCopy = 0;
 static i32 inlen = 0;
 
@@ -231,8 +215,6 @@ static u8 ImplodeLiteralLengths[0x1fe] = {0};
 static u32 subbitbuf = 0;
 static u32 bitcount = 0;
 
-extern NUMTL *NuTimeBar_FrameOutMtl;
-
 typedef struct TimeBarSet {  // size 0x2c
     i32 uses_buffer;         // 0x00
     i32 slot_count;          // 0x04
@@ -254,9 +236,6 @@ f32 FrameStartupDelay = 6.0f;
 
 extern f32 NuFrameAccumulatedTime;
 extern const char *GetPCStartupMessage(void);
-extern u32 PcGetRefreshRate(void);
-extern void bgprocFrameSleep(i32 milliseconds);
-extern void NuFrameEndLeaf(void);
 extern void FmvPlatformUpdatePc(void);
 
 #define NUFRAME_ELAPSED(elapsed, now, start)                                                                                               \
@@ -558,10 +537,6 @@ i32 NuFileGetDevices(NUFILE_DEVICE **result) {
     }
     return enum_numdevices;
 }
-
-i32 NuMcCheckCardPresent(i32 port, i32 slot);
-i32 NuMcCheckCardFormatted(i32 port, i32 slot);
-i32 NuMcCheckCardFreeSpace(i32 port, i32 slot);
 
 i32 NuFileRefreshDevices(NUFILE_DEVICE **result) {
     i32 index;
@@ -2083,8 +2058,6 @@ i32 NuDatFileFindHash(NUDATHDR *header, char *name) {
 
     return -1;
 }
-
-i32 NuMcFormat(i32 port, i32 slot);
 
 i32 NuFileFormat(char *path) {
     i32 result = 0;
@@ -7528,8 +7501,6 @@ static void NuFileAddExtensionPC(const char *extension, i32 type, i32 platform) 
     ++num_extensions;
 }
 
-extern u32 dat_0091ef20;
-
 void NuTimeStartFrame(void) {
     dat_0091ef20 = PCThreadMilliseconds();
 }
@@ -8087,8 +8058,6 @@ FRAME_PAD_PC *NuPadOpen(i32 device, i32 slot) {
     return pad;
 }
 
-void NuPadClosePS(FRAME_PAD_PC *pad);
-
 void NuPadClose(FRAME_PAD_PC *pad) {
     NuPadClosePS(pad);
     NuFree(pad, "d:\\projects\\game_saga\\nu2api.saga\\nucore\\nupad.cpp", 204);
@@ -8514,8 +8483,6 @@ i32 NuPadRead(FRAME_PAD_PC *pad) {
     return 0;
 }
 
-void NuPadSetMotorsPS(i32 port, i32 motor0, i32 motor1);
-
 void NuPadSetMotors(FRAME_PAD_PC *pad, i32 motor0, i32 motor1) {
     if (FramePadDirectMappingPc && g_nupadScannedPads[pad->device].is_valid) {
         NuPadSetMotorsPS(pad->device, motor0, motor1);
@@ -8815,12 +8782,6 @@ void NuVideoSetBrightness(f32 brightness) {
 }
 
 typedef void (*NUONLINEACHIEVEMENTCALLBACK)(i32, i32);
-
-i32 NuOnlineAchievementAchievedPS(i32 achievement, NUONLINEACHIEVEMENTCALLBACK callback);
-i32 NuOnlineAchievementAchievedExPS(i32 player, i32 achievement, NUONLINEACHIEVEMENTCALLBACK callback);
-void NuOnlineInitPS(void);
-i32 NuOnlineHasPlayerSignedInPS(void);
-i32 NuOnlineHasPlayerDownloadedPS(u32 argument);
 
 i32 NuOnlineAchievementAchieved(i32 achievement, NUONLINEACHIEVEMENTCALLBACK callback) {
     return NuOnlineAchievementAchievedPS(achievement, callback);

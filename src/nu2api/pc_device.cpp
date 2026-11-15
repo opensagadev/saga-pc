@@ -672,11 +672,6 @@ extern "C" void PCDeviceCreateTexture(u32 width, u32 height, u32 levels, u32 usa
     PCDeviceLastResult = device->methods->create_texture(device, width, height, levels, usage, format, pool, texture, NULL);
 }
 
-extern "C" {
-    void PCDeviceEvictManagedResources();
-    void PCDeviceSetSoftwareVertexProcessing(BOOL enabled);
-}
-
 static i32 PCGraphicsModeCompare(const void *left_ptr, const void *right_ptr) {
     const GRAPHICS_DISPLAY_MODE *left = static_cast<const GRAPHICS_DISPLAY_MODE *>(left_ptr);
     const GRAPHICS_DISPLAY_MODE *right = static_cast<const GRAPHICS_DISPLAY_MODE *>(right_ptr);
@@ -742,12 +737,6 @@ u32 PC_DEVICE_BACKEND_PC::FindMode(u32 width, u32 height, u32 refresh) {
         }
     }
     return selected;
-}
-
-extern "C" {
-    i32 PCGraphicsPrepareVendor();
-    void PCGraphicsRecreateResources(i32 reset_available);
-    extern void (*PCGraphicsDeviceLostCallback)(GRAPHICS_PRESENT_PARAMETERS *);
 }
 
 void PC_DEVICE_BACKEND_PC::CreateOrResetDevice(i32 reposition_window) {
@@ -1082,12 +1071,6 @@ void PC_DEVICE_BACKEND_PC::InitializeAdapter() {
     PCDeviceCreateVertexDeclaration(PCGraphicsScreenColourUvDeclaration, &declaration6ac);
 }
 
-extern "C" {
-    void NuVpSetZRange(f32, f32);
-    void NuVpSetPosition(f32, f32);
-    void NuVpSetSize2(f32, f32);
-}
-
 void PC_DEVICE_BACKEND_PC::SetRenderTarget(i32 index, PC_TEXTURE_RESOURCE *surface) {
     u16 limit = multisample_index == 0 && PCDeviceHardwareVertexProcessingPC >= 2 ? (u16)caps.simultaneous_render_targets : 1;
     if (index <= limit - 1 && target_cache[index] != surface) {
@@ -1365,11 +1348,6 @@ void PC_DEVICE_BACKEND_PC::BeginDefaultTargets() {
         }
     }
     ConfigureCurrentTargets();
-}
-
-extern "C" {
-    void PCDeviceLockIndexBuffer(u32, u32, void **, u32, PC_BUFFER_RESOURCE *);
-    HRESULT PCDeviceUnlockIndexBuffer(PC_BUFFER_RESOURCE *);
 }
 
 struct PC_GRAPHICS_CLIP_VERTEX { // size 0x14

@@ -577,6 +577,21 @@ extern "C" {
         u32 end_command;                      // 0x420
     };
 
+    extern GRAPHICS_RENDER_TEXTURE *PCGraphicsPostEffectBackBufferTexture;
+    extern PC_EFFECT_SURFACE *PcSurfaceRegistry[256];
+    extern PC_FRAMEBUFFER *PcBoundFramebuffer;
+    extern PC_FRAMEBUFFER *PcSecondaryFramebuffer;
+    extern PC_FRAMEBUFFER PcFramebufferPool[32];
+    extern u32 PCGraphicsPostEffectHeight;
+    extern u32 PCGraphicsPostEffectWidth;
+    extern u8 DwaBlockTable[0x400];
+    extern u8 PcFramebufferActive[32];
+    extern u8 PcSurfaceRegistryInitialized;
+    void NuRndrGeometryBufferRelease(void);
+    void NuRndrGeometryBufferRestore(void);
+    void PCGraphicsDestroyPostEffectTextures(void);
+    void PCGraphicsResizePostEffectTextures(u32, u32);
+    void PcGeometryOriginRelease(void);
 #ifdef __cplusplus
 }
 #endif

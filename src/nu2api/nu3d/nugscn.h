@@ -98,6 +98,7 @@ extern "C" {
 
     /* Globals and constants. */
     void NuGScnRndr3(NUGSCN *);
+    void NuGScnFixupPS(NUGSCN *);
 #ifdef __cplusplus
 }
 #endif

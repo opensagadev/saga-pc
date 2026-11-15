@@ -75,6 +75,8 @@ extern "C" {
     extern i32 nuline;
     extern void (*nuerror_handler)(char *arg0);
     extern void (*nuwarning_handler)(char *arg0);
+    void PCNativeErrorPrint(PC_NATIVE_DEBUG_STATE *state, const char *format, ...);
+    void PCNativeWarningPrint(PC_NATIVE_DEBUG_STATE *state, const char *format, ...);
 #ifdef __cplusplus
 }
 #endif

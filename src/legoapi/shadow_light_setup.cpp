@@ -3,7 +3,6 @@
 extern "C" {
     extern NUMTX PostShadowProjection;
     extern NUMTX PostShadowView;
-    extern NUCAMERA *EdMainCurrentCamera;
 }
 
 void PC_SPECIAL_SHADOW_LIGHT::SetupCustomCameraFrustum(NUCAMERA *camera, const f32 *splits, i32 split_count) {

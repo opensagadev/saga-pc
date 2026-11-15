@@ -4,8 +4,6 @@
 #include <stdarg.h>
 #include <stdio.h>
 
-extern char NuHtmlUnknownText[8];
-
 char NuHtmlUnknownText[8] = "unknown";
 
 void NuHtmlWrite(char *text, ...) {

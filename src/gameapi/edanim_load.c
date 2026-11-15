@@ -966,7 +966,6 @@ void edanimcbLocalSoundMenu(eduimenu_s *parent, eduiitem_s *unused1, u32 unused2
 }
 
 extern i32 edbits_cubecount;
-extern i32 NuRndrDoingScreenGrab;
 
 void edanimcbCubeMap(eduimenu_s *unused0, eduiitem_s *unused1, u32 unused2) {
     edanim_active_menu = NULL;

@@ -738,6 +738,13 @@ extern "C" {
 #endif
     extern char TextInputActionLabelBufferPc[128];
     char *TextInputActionLabelPc(i32, i32, i32, i32);
+    f32 fun_006d5c50(void);
+    f32 fun_006d5c60(void);
 #ifdef __cplusplus
 }
+#endif
+
+#ifdef __cplusplus
+extern const char *PcInputBindingKindNames[14];
+extern u8 PcInputWriteTextProfiles;
 #endif

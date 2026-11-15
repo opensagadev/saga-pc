@@ -99,6 +99,12 @@ extern "C" {
     void PCDeviceSetPixelShaderPc(PC_TEXTURE_RESOURCE *);
 #ifdef __cplusplus
     void PCDeviceStretchRectPc(PC_TEXTURE_RESOURCE *, const RECT *, PC_TEXTURE_RESOURCE *, const RECT *, i32);
+    HRESULT PCDeviceUnlockIndexBuffer(PC_BUFFER_RESOURCE *);
+    i32 PCDeviceSetCursorPositionPc(i32 x, i32 y);
+    i32 PCDeviceShowCursorPc(i32 show);
+    i32 PCGraphicsPrepareVendor();
+    void PCDeviceLockIndexBuffer(u32, u32, void **, u32, PC_BUFFER_RESOURCE *);
+    void PCDeviceSetSoftwareVertexProcessing(BOOL enabled);
 #ifdef __cplusplus
 }
 #endif

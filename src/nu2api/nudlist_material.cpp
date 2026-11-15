@@ -480,19 +480,7 @@ extern "C" void NuMtlSetRenderStatesPS(NUMTL *arg) {
 
 extern "C" {
     extern GRAPHICS_RENDER_TEXTURE *PCGraphicsPostEffectWorkTexture;
-    extern PC_FRAMEBUFFER *PostBlurFramebuffer;
-    extern POST_SHADER_PROGRAM_PC *PostBlur7x7Program;
-    extern POST_SHADER_PROGRAM_PC *PostCopyAuxProgram;
-    extern POST_SHADER_PROGRAM_PC *PostBlurAuxProgram;
-    extern f32 PostBlurInputBiasPc;
-    void NuShaderProgramMakeCurrent(POST_SHADER_PROGRAM_PC *);
-    void PCGraphicsAttachFramebuffer(PC_FRAMEBUFFER *, i32, GRAPHICS_RENDER_TEXTURE *, i32);
-    void PCGraphicsEffectTextureSetWrapFields(GRAPHICS_RENDER_TEXTURE *, i32, i32);
-    void PCGraphicsEffectTextureSetFilterFields(GRAPHICS_RENDER_TEXTURE *, i32, i32, i32);
-    void PCGraphicsEffectTextureSetLowNibbles(GRAPHICS_RENDER_TEXTURE *, i32, i32);
 }
-extern "C" void PostBlur7x7High(GRAPHICS_RENDER_TEXTURE *source, i32 source_lod, GRAPHICS_RENDER_TEXTURE *textures, i32 first_lod,
-                                i32 iterations, i32 levels, bool mip_chain, f32 radius, POST_SHADER_PROGRAM_PC *program);
 
 // NuShaderProgramMakeCurrent and the per-stage sampler binds, inlined here.
 #define POST_BLUR_BIND_PROGRAM(bound_program)                                                                                              \
@@ -706,17 +694,6 @@ extern "C" {
     f32 PostBlurDirectInputBiasPc = 0;
 }
 
-extern "C" {
-    extern u8 PostBloomAttachPending;
-    extern const WCHAR PostEffectRenderLabel[];
-    extern u32 PCGraphicsPostEffectWidth;
-    extern u32 PCGraphicsPostEffectHeight;
-    extern GRAPHICS_RENDER_TEXTURE *PCGraphicsPostEffectBackBufferTexture;
-    extern POST_SHADER_PROGRAM_PC *PostCopyTexProgram;
-    extern POST_SHADER_PROGRAM_PC *PostBlur5x5Program;
-    extern PC_EFFECT_SURFACE *PcSurfaceRegistry[256];
-}
-
 /* Header-inline: ??_GNuMainFilter (emitted here with the ctor) expands both. */
 inline PC_EFFECT_SURFACE::~PC_EFFECT_SURFACE() {
     Reset();
@@ -914,8 +891,6 @@ extern "C" void PostFilterCopyTexture(GRAPHICS_RENDER_TEXTURE *destination, i32 
     }
     PostFilterBlitTexture(destination, destination_level, source, source_level, program, extra);
 }
-
-extern "C" void PCGraphicsDestroyFramebuffer(PC_FRAMEBUFFER *);
 
 void NuMainFilter::destroyResources() {
     NuMainFilterGen::destroyResources();

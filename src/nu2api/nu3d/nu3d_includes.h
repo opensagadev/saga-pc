@@ -1465,6 +1465,37 @@ extern "C" {
     void NuRndrGradRect2di(i32 x, i32 y, i32 width, i32 height, u32 *colours, NUMTL *material);
     void NuRndrLineStrip2di(i32 *positions, f32 *uvs, i32 count, i32 colour, NUMTL *material);
     void NuRndrTriStrip2di(i32 *positions, f32 *uvs, i32 count, i32 colour, NUMTL *material);
+    extern NUMTL *NuTimeBar_FrameOutMtl;
+    extern NUVEC4 PostShadowWhite;
+    extern PC_FRAMEBUFFER *PostBlurFramebuffer;
+    extern PC_FRAMEBUFFER *PostCopyFramebuffer;
+    extern PC_TEXTURE_RESOURCE *RendererVertexDeclaration;
+    extern const WCHAR PostDeferredLabel[17];
+    extern const WCHAR PostEffectRenderLabel[];
+    extern const WCHAR PostShadowRenderLabel[14];
+    extern i32 NuCameraScissorHeight;
+    extern i32 NuCameraScissorWidth;
+    extern i32 RendererArenaVertexCount;
+    extern i32 dat_00806b84;
+    extern i32 dat_00806b88;
+    extern i32 dat_00806b8c;
+    extern i32 dat_00806b90;
+    extern i32 dat_00806b94;
+    extern i32 dat_0080b6e4;
+    extern i32 dat_00973868;
+    extern i32 motionBlurAccumActiveThisFrame;
+    extern i32 mtl_animation_mask;
+    extern i32 nuqfnt_initialised;
+    extern u8 PostBloomAttachPending;
+    extern u8 dat_009737ff;
+    extern void *dat_00971ad8;
+    void NuDisplayListHtmlEnd(void);
+    void NuRndrArenaBuildShadowVolumes(i32 unused0, i32 unused1);
+    void NuRndrInitLeaf(VARIPTR *buffer, VARIPTR end);
+    void NuRndrRectUV2dNoScale(f32 x, f32 y, f32 z, f32 width, f32 height, f32 u0, f32 v0, f32 u1, f32 v1, i32 colour, NUMTL *material);
+    void NuRndrSphereMtx(NUMTX *matrix, i32 colour, i32 segments, NUMTL *material);
+    void PostFilterInitSharedResources(void);
+    void fun_005f1f50(i32 texture_id);
 #ifdef __cplusplus
 }
 #endif

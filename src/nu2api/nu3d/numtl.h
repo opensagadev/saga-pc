@@ -89,6 +89,8 @@ extern "C" {
     void NuMtlAnimateShaderMtlTextures(f32 frame_time);
 
     void NuMtlInitEx(VARIPTR *buffer, i32 material_count);
+    i32 NuMtlSetCurrentRenderPlane(i32 render_plane);
+    void NuMtlInitExPS(VARIPTR *buffer);
 #ifdef __cplusplus
 }
 #endif

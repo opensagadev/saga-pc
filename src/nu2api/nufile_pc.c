@@ -25,7 +25,6 @@ void NuPSFileInitDevices(i32 device_id, i32 reboot_iop, i32 eject) {
     (void)eject;
 }
 
-extern i32 FileDirectoryHostOpenPc(char *path);
 char *FileDirectoryPathSlotsPc[16] = {0};
 i32 bgproc_initialized = 0;
 HANDLE FileDirectoryHostHandlesPc[16] = {0};
@@ -53,13 +52,10 @@ i32 PcStartupCriticalSectionInitialized = 0;
 i32 FileDirectoryOpenCountPc = 0;
 i32 PCThreadCriticalSectionCount = 0;
 NUFILE_DEVICE *FileDirectoryDefaultDevicePc = &host_device;
-void FileDirectoryErrorPc(i32 error);
 
 i32 NuFileExists(char *filepath) {
     return NuFileExistQuiet(filepath);
 }
-
-extern void NuFileReldirFix(NUFILE_DEVICE *device, char *path);
 
 i32 DEV_FormatName(NUFILE_DEVICE *device, char *formatted_name, char *path, i32 buf_size) {
     char buffer[512];
@@ -285,8 +281,6 @@ i32 FileDirectoryHostClosePc(i32 slot) {
 i32 FileHostDeletePath(const char *path) {
     return DeleteFileA(path);
 }
-
-extern i32 FileDeviceFormatDefaultNamePc(char *destination, char *path, i32 maximum_size);
 
 i32 FileHostMovePath(char *destination, char *source) {
     char formatted_destination[256];

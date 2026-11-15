@@ -1776,7 +1776,6 @@ void DebrisGlassInit(void) {
     DebrisGlassInitialized = 1;
 }
 
-i32 NuRndrBeginSceneEx(i32 flags, i32 layer, i32 mode);
 i32 NuTexGetReqSize(i32 tex_id, i32 level);
 i32 NuTexReserve(i32 size);
 void NuTexUnReserve(void);

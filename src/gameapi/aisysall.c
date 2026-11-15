@@ -333,8 +333,6 @@ __declspec(allocate(".bss$aieditorsettings")) AIEDITORSETTINGS aieditorsettings 
 
 AIPATHSYS *pathEditorCreateData(VARIPTR *, VARIPTR *, void **, void **);
 
-i32 NuFileCopy(char *, char *);
-
 void creatureEditorSaveData(AIPATHSYS *);
 
 static eduiiattr_s AiEditorSaveMessageColours = {0x80000000, 0x80ff0000, 0x80808080, 0x80404040};

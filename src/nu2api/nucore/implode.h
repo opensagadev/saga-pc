@@ -19,6 +19,15 @@ extern "C" {
     extern u32 implode_origsize;
 
     i32 ExplodeBufferNoHeader(char *, char *, i32, i32);
+    u32 ImplodeDecodeC(void);
+    u32 ImplodeDecodeOffset(void);
+    u32 ImplodeGetBits(i32 count);
+    u8 ImplodeGetByteFromMem(void);
+    void ImplodeError(char *msg, ...);
+    void ImplodeFillBuf(i32 count);
+    void ImplodeHufDecodeStart(void);
+    void ImplodeInitGetBits(void);
+    void ImplodeMakeTable(i32, u8 *, i32, u16 *);
 #ifdef __cplusplus
 }
 #endif

@@ -417,8 +417,6 @@ static void eduiFilePickAllocDirList(void) {
     }
 }
 
-extern NUCAMERA *EdMainCurrentCamera;
-extern i32 edmain_cursor_enabled;
 void PcEditorCursorEnablePc(i32 enabled);
 
 typedef struct EDUI_PRIM_VERTEX { // size 0x10

@@ -24,7 +24,6 @@ typedef struct BURN_SET {
 } BURN_SET;
 
 extern "C" {
-    void NuMtxSetOrthoBlend(NUMTX *, f32, f32, f32, f32, f32, f32);
     extern f32 ShadowLightSplitScale;
     extern f32 ShadowLightWarp;
     extern f32 ShadowLightNearOffset;

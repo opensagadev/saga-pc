@@ -131,7 +131,6 @@ extern "C" POST_SHADER_PROGRAM_PC *PostShaderProgramCreatePc(i32 mode, const DWO
     return NULL;
 }
 
-extern "C" void PostFilterInitSharedResources(void);
 extern "C" {
     extern const DWORD dat_007656f0[];
     extern const DWORD dat_00765798[];

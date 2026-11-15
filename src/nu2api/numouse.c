@@ -2,8 +2,6 @@
 #include "nu2api/nucore/numouse.h"
 #include "nu2api/nuwin32/nu2api_windows.h"
 
-i32 PCDeviceSetCursorPositionPc(i32 x, i32 y);
-
 void NuMouseRead(void) {
 }
 

@@ -27,6 +27,7 @@ extern "C" {
     char *NuGetErrN(i32 entry);
 
     char *NuStrStr(char *text, const char *needle);
+    extern i32 FileDeviceFormatDefaultNamePc(char *destination, char *path, i32 maximum_size);
 #ifdef __cplusplus
 }
 #endif

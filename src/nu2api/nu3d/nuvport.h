@@ -23,6 +23,9 @@ extern "C" {
 
     void NuPs2GetViewport(NUVPCURRENT *viewport);
     void NuVpInit(void);
+    void NuVpSetPosition(f32, f32);
+    void NuVpSetSize2(f32, f32);
+    void NuVpSetZRange(f32, f32);
 #ifdef __cplusplus
 }
 #endif

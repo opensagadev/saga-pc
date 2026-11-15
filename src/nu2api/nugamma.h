@@ -18,6 +18,7 @@ extern "C" {
     void NuDisplayListCamera(void *);
     void NuDisplayListVertexGroups(void *);
     void NuDisplayListVertexOffsets(void *);
+    void PostShadowSelectHandlers(i32 mode);
 #ifdef __cplusplus
 }
 #endif

@@ -9,6 +9,7 @@
 extern "C" {
 #endif
     void bgProcDataOversize(i32 size);
+    void FileDirectoryErrorPc(i32 error);
 #ifdef __cplusplus
 }
 #endif
