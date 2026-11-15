@@ -339,7 +339,7 @@ extern "C" void fun_006da460(i32 player) {
                 runtime->InstallConfig(found, port, player, 1, player);
                 runtime->ExportConfig(port, &config, 1, player, player);
                 runtime->PromoteConfig(runtime->primary, 64, &config);
-                runtime->SaveConfigurationPc();
+                runtime->SaveConfiguration();
                 runtime->InstallConfig(&config, port, player, 0, -1);
             }
             NuPadMapPlayerToPort(player, port);

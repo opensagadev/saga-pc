@@ -85,11 +85,11 @@ typedef struct nugscn_anim_lookup_s { // size 0xc
 typedef struct NUHGOBJ_JOINT_OVERRIDE { // size 0x34
     NUVEC rotation;                     // 0x00
     NUVEC translation;                  // 0x0c
-    NUVEC scale_pc;                     // 0x18
+    NUVEC scale;                        // 0x18
     i16 rotation_max[3];                // 0x24
     i16 rotation_min[3];                // 0x2a
     u8 joint_index;                     // 0x30
-    u8 flags_pc;                        // 0x31
+    u8 flags;                           // 0x31
     u8 unknown_32[2];                   // 0x32
 } NUHGOBJ_JOINT_OVERRIDE;
 
@@ -690,10 +690,10 @@ typedef void (*ANI3_EVAL_CALLBACK)(NUMTX *, void *, NUQUAT *);
 
 typedef struct NUHGOBJ_EVAL_JOINT { // size 0x60
     NUMTX bind_matrix;              // 0x00
-    NUVEC pivot_pc;                 // 0x40
+    NUVEC pivot;                    // 0x40
     u8 unknown_4c_4f[4];            // 0x4c
     u8 parent_index;                // 0x50
-    u8 flags_pc;                    // 0x51
+    u8 flags;                       // 0x51
     u8 unknown_52_5f[14];           // 0x52
 } NUHGOBJ_EVAL_JOINT;
 
@@ -942,9 +942,9 @@ typedef struct NU_LIGHT_SHADOW_LIST_VIEW {     // size 0x44
 } NU_LIGHT_SHADOW_LIST_VIEW;
 
 typedef struct nurndrlightrecord_s {           // size 0x380
-    NUMTX view_pc;                             // 0x000
-    NUMTX projection_pc;                       // 0x040
-    NUMTX shadow_matrix_pc;                    // 0x080
+    NUMTX view;                                // 0x000
+    NUMTX projection;                          // 0x040
+    NUMTX shadow_matrix;                       // 0x080
     NUMTX texture_matrix;                      // 0x0c0
     f32 parameter_100;                         // 0x100
     f32 parameter_104;                         // 0x104
@@ -952,14 +952,14 @@ typedef struct nurndrlightrecord_s {           // size 0x380
     f32 parameter_10c;                         // 0x10c
     f32 parameter_110;                         // 0x110
     u8 opaque_114_120[0xc];                    // 0x114
-    NUVEC4 corners_pc[8];                      // 0x120
-    NUVEC4 planes_pc[12];                      // 0x1a0
+    NUVEC4 corners[8];                         // 0x120
+    NUVEC4 planes[12];                         // 0x1a0
     i32 shadow_plane_count;                    // 0x260
     u8 opaque_264_270[0xc];                    // 0x264
-    NUVEC4 far_plane_pc;                       // 0x270
-    NUVEC4 endpoint0_pc;                       // 0x280
-    NUVEC4 endpoint1_pc;                       // 0x290
-    f32 shadow_radius_pc;                      // 0x2a0
+    NUVEC4 far_plane;                          // 0x270
+    NUVEC4 endpoint0;                          // 0x280
+    NUVEC4 endpoint1;                          // 0x290
+    f32 shadow_radius;                         // 0x2a0
     NU_LIGHT_SHADOW_LIST_VIEW shadow_lists[2]; // 0x2a4
     NURNDRLIBSTATE *render_states[2];          // 0x32c
     NUDISPLAYLISTITEM *list_items[2];          // 0x334
@@ -1033,7 +1033,7 @@ extern "C" {
         f32 motion_falloff;                           // 0x118
         i32 accumulation_frames;                      // 0x11c
         f32 accumulation_blend;                       // 0x120
-        f32 accumulation_mode_pc;                     // 0x124
+        f32 accumulation_weight_exponent;             // 0x124
     } NU_POST_MAIN_VIEW;
 
     typedef struct NU_POST_MOTION_VIEW { // size 0xa0
@@ -1053,7 +1053,7 @@ extern "C" {
         u8 unknown_005[0x13];           // 0x05
         i32 frames;                     // 0x18
         f32 blend;                      // 0x1c
-        f32 mode_pc;                    // 0x20
+        f32 weight_exponent;            // 0x20
     } NU_POST_ACCUM_VIEW;
 
     typedef struct NU_POST_SPEED_VIEW {                    // size 0x20
@@ -1265,16 +1265,16 @@ struct PC_SPECIAL_SHADOW_LIGHT {      // size 0x828
     i32 active_render_set_count; // 0x710
     u8 unknown_714[0xc];         // 0x714
     NUVEC4 split_planes[2];      // 0x720
-    NUVEC4 camera_position_pc;   // 0x740
+    NUVEC4 eye_position;         // 0x740
     NUVEC4 camera_forward;       // 0x750
     NUVEC4 light_position;       // 0x760
 
     union { // size 0x10
         NUVEC4 light_direction4;
 
-        struct {                       // size 0x10
-            NUVEC shadow_direction_pc; // 0x770
-            f32 light_direction_w;     // 0x77c
+        struct {                    // size 0x10
+            NUVEC shadow_direction; // 0x770
+            f32 light_direction_w;  // 0x77c
         };
     }; // 0x770
 
@@ -1299,7 +1299,7 @@ struct PC_SPECIAL_SHADOW_LIGHT {      // size 0x828
     void SetupShadow(NURNDRLIGHTRECORD *);
     void RenderShadow(i32, PC_FRAMEBUFFER *);
     void RenderConstants(void *);
-    void SetEnabledPc(i32 enabled);
+    void SetEnabled(i32 enabled);
     void SetParameterf(i32 parameter, f32 value);
     i32 fun_005c2eb0();
     void fun_005c2ec0(i32 used);

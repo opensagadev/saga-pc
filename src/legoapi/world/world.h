@@ -132,9 +132,9 @@ typedef struct WORLDINFO_s { // size 0x51ac
     union { // size 0x8
         u32 unknown_0114[2];
 
-        struct {                 // size 0x8
-            u32 unknown_0114_pc; // 0x0114
-            i32 reset_flags;     // 0x0118
+        struct {                    // size 0x8
+            u32 unknown_0114_first; // 0x0114
+            i32 reset_flags;        // 0x0118
         };
     }; // 0x0114
 

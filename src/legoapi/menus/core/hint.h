@@ -65,7 +65,7 @@ extern "C" {
     extern HINTSYS hintsys;
     void Hint_SetComplete(i32);
     i32 Hint_isComplete(HINT *);
-    void Hint_SetCompletePc(HINT *);
+    void Hint_SetHintComplete(HINT *);
     void RegisterWithHintSys(void (*draw_fn)(HINT *, i32), HINT *hints, u32 *save_bits, i32 save_word_count);
     i32 Hint_CurrentId(void);
     void Hint_SetHintFromId(i32, i32, i32);

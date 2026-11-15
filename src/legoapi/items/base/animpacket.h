@@ -7,8 +7,8 @@ struct CHARACTER_MODEL_LAYERS;
 typedef struct animpacket_s {   // size 0x44
     f32 current_time;           // 0x00
     f32 previous_time;          // 0x04
-    f32 blend_elapsed_pc;       // 0x08
-    f32 blend_duration_pc;      // 0x0c
+    f32 blend_elapsed;          // 0x08
+    f32 blend_duration;         // 0x0c
     f32 blend_source_time;      // 0x10
     f32 blend_target_time;      // 0x14
     u32 unknown_18[6];          // 0x18

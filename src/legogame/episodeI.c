@@ -649,11 +649,11 @@ void PodRaceAUpdate(void) {
 }
 
 /* Private owner of the active PodRace block. */
-static PODRACE_RESOURCE *PodRacePc = NULL;
+static PODRACE_RESOURCE *ActivePodRace = NULL;
 i32 Lap = 0;
 
 static RACEPOD_RESOURCE *RacePodAllocatePrivate(void) {
-    PODRACE_RESOURCE *race = PodRacePc;
+    PODRACE_RESOURCE *race = ActivePodRace;
     i32 slot;
     for (slot = 0; slot < 16; ++slot) {
         if (race->lap_entries[slot].next == NULL) {
@@ -755,7 +755,7 @@ static i32 PodRaceUpdatePod(RACEPOD_RESOURCE *pod, WORLDINFO *world) {
         memset(pod, 0, sizeof(*pod));
         return 0;
     }
-    if (!(PodRacePc->lap_countdown > 0.0f)) {
+    if (!(ActivePodRace->lap_countdown > 0.0f)) {
         point = &pod->previous_position;
         direction.x = point->x - pod->matrix.m30;
         direction.y = point->y - pod->matrix.m31;
@@ -788,7 +788,7 @@ static i32 PodRaceUpdatePod(RACEPOD_RESOURCE *pod, WORLDINFO *world) {
             RacePodAlignPrivate(pod, &direction, (f32)(length / 5.0), 0);
             pod->previous_displacement = direction;
         } else if (length != 0.0f) {
-            ratio = PodRacePc->mushroom_timer / PodRacePc->previous_lap_display;
+            ratio = ActivePodRace->mushroom_timer / ActivePodRace->previous_lap_display;
             speed = pod->speed;
             if (ratio > 1.0f) {
                 ratio = 1.0f;
@@ -911,18 +911,18 @@ void PodRaceUpdate(WORLDINFO *world, f32 dt) {
     char reason[128];
     f32 old;
     i32 i;
-    // MATCH-EXCEPTION: race caches PodRacePc for the first countdown test only; it changes the operand order of the
+    // MATCH-EXCEPTION: race caches ActivePodRace for the first countdown test only; it changes the operand order of the
     // later mushroom_timer add (fld dt; fadd timer), which no other rewrite reproduced.
-    PODRACE_RESOURCE *race = PodRacePc;
+    PODRACE_RESOURCE *race = ActivePodRace;
     if (netclient != 0) {
-        PodRacePc->lap_countdown = podrace_netpacket->start_countdown;
-        PodRacePc->lap_display = podrace_netpacket->remaining_time;
-        PodRacePc->previous_lap_display = podrace_netpacket->available_time;
+        ActivePodRace->lap_countdown = podrace_netpacket->start_countdown;
+        ActivePodRace->lap_display = podrace_netpacket->remaining_time;
+        ActivePodRace->previous_lap_display = podrace_netpacket->available_time;
         Lap = podrace_netpacket->lap;
     }
     if (race->lap_countdown > 0.0f) {
-        old = PodRacePc->lap_countdown;
-        PodRacePc->lap_display = PodRacePc->previous_lap_display;
+        old = ActivePodRace->lap_countdown;
+        ActivePodRace->lap_display = ActivePodRace->previous_lap_display;
         avg_currentspeed_mul = 0.0f;
         if (Player[0] != NULL && (Player[0]->flags_1fc & APIOBJECT_FLAG_PLAYER_ACTIVE) != 0) {
             Player[0]->current_speed_mul = 0.0f;
@@ -931,52 +931,52 @@ void PodRaceUpdate(WORLDINFO *world, f32 dt) {
             Player[1]->current_speed_mul = 0.0f;
         }
         if (netclient == 0 && FadeSys.fade == 0.0f) {
-            PodRacePc->lap_countdown -= dt;
+            ActivePodRace->lap_countdown -= dt;
         }
-        if (PodRacePc->lap_countdown < 2.9f && old >= 2.9f) {
+        if (ActivePodRace->lap_countdown < 2.9f && old >= 2.9f) {
             PlaySfx("PodX_EngStartup1", NULL);
         }
-        if (PodRacePc->lap_countdown < 1.5f && old >= 1.5f) {
+        if (ActivePodRace->lap_countdown < 1.5f && old >= 1.5f) {
             PlaySfx("PodX_EngStartup2", NULL);
         }
-        if (PodRacePc->lap_countdown <= 0.0f) {
+        if (ActivePodRace->lap_countdown <= 0.0f) {
             PlaySfx("Pod_Race_Go", NULL);
-        } else if ((i32)PodRacePc->lap_countdown != (i32)old) {
+        } else if ((i32)ActivePodRace->lap_countdown != (i32)old) {
             PlaySfx("Pod_Race_Light", NULL);
         }
     } else if (netclient == 0) {
-        PodRacePc->mushroom_timer = dt + PodRacePc->mushroom_timer;
-        if (PodRacePc->previous_lap_display > 0.0f) {
-            PodRacePc->lap_display = PodRacePc->previous_lap_display - PodRacePc->mushroom_timer;
-            if (PodRacePc->lap_display < 0.0f && FadeSys.fade == 0.0f) {
-                PodRacePc->lap_display = 0.0f;
+        ActivePodRace->mushroom_timer = dt + ActivePodRace->mushroom_timer;
+        if (ActivePodRace->previous_lap_display > 0.0f) {
+            ActivePodRace->lap_display = ActivePodRace->previous_lap_display - ActivePodRace->mushroom_timer;
+            if (ActivePodRace->lap_display < 0.0f && FadeSys.fade == 0.0f) {
+                ActivePodRace->lap_display = 0.0f;
                 if (Player[0] != NULL && (Player[0]->flags_1fc & APIOBJECT_FLAG_PLAYER_ACTIVE) != 0) {
                     LoseCoins(Player[0], 1);
                 }
                 if (Player[1] != NULL && (Player[1]->flags_1fc & APIOBJECT_FLAG_PLAYER_ACTIVE) != 0) {
                     LoseCoins(Player[1], 1);
                 }
-                PodRacePc->flags |= 2;
+                ActivePodRace->flags |= 2;
                 KillPlayer(player, 2, 1, NULL);
-                PodRacePc->attempts++;
-                if (PodRacePc->previous_lap_display < PodRacePc->max_lap_time && PodRacePc->attempts_per_increment != 0 &&
-                    PodRacePc->attempts % PodRacePc->attempts_per_increment == 0) {
-                    PodRacePc->previous_lap_display = PodRacePc->lap_time_increment + PodRacePc->previous_lap_display;
-                    if (PodRacePc->previous_lap_display > PodRacePc->max_lap_time) {
-                        PodRacePc->previous_lap_display = PodRacePc->max_lap_time;
+                ActivePodRace->attempts++;
+                if (ActivePodRace->previous_lap_display < ActivePodRace->max_lap_time && ActivePodRace->attempts_per_increment != 0 &&
+                    ActivePodRace->attempts % ActivePodRace->attempts_per_increment == 0) {
+                    ActivePodRace->previous_lap_display = ActivePodRace->lap_time_increment + ActivePodRace->previous_lap_display;
+                    if (ActivePodRace->previous_lap_display > ActivePodRace->max_lap_time) {
+                        ActivePodRace->previous_lap_display = ActivePodRace->max_lap_time;
                     }
                 }
             }
         }
     }
     for (i = 0; i < 16; i++) {
-        if (PodRacePc->lap_entries[i].next != NULL) {
-            PodRaceUpdatePod(&PodRacePc->lap_entries[i], world);
+        if (ActivePodRace->lap_entries[i].next != NULL) {
+            PodRaceUpdatePod(&ActivePodRace->lap_entries[i], world);
         }
     }
-    if ((PodRacePc->flags & 1) == 0 && ((Player[0] != NULL && Player[0]->dead != 0) || (Player[1] != NULL && Player[1]->dead != 0))) {
-        PodRacePc->flags |= 1;
-        if ((PodRacePc->flags & 2) != 0) {
+    if ((ActivePodRace->flags & 1) == 0 && ((Player[0] != NULL && Player[0]->dead != 0) || (Player[1] != NULL && Player[1]->dead != 0))) {
+        ActivePodRace->flags |= 1;
+        if ((ActivePodRace->flags & 2) != 0) {
             NuStrCpy(reason, "Ep1_PodRace_OutOfTime");
         } else {
             NuStrCpy(reason, "EP1_PODRACE_PODEXPLODE");
@@ -984,10 +984,10 @@ void PodRaceUpdate(WORLDINFO *world, f32 dt) {
         ResetLevel(world, reason, 1);
     }
     if (netclient == 0) {
-        podrace_netpacket->start_countdown = PodRacePc->lap_countdown;
+        podrace_netpacket->start_countdown = ActivePodRace->lap_countdown;
         podrace_netpacket->lap = Lap;
-        podrace_netpacket->remaining_time = PodRacePc->lap_display;
-        podrace_netpacket->available_time = PodRacePc->previous_lap_display;
+        podrace_netpacket->remaining_time = ActivePodRace->lap_display;
+        podrace_netpacket->available_time = ActivePodRace->previous_lap_display;
     }
 }
 
@@ -1016,10 +1016,10 @@ void PodRacePanel(WORLDINFO *world) {
                               &world->level_objects[object_index].special, 0, podlapalpha);
         }
     }
-    if (podhurryalpha > 0.0f && PodRacePc->lap_display > 0.0f) {
-        count = (i32)PodRacePc->lap_display + 1;
+    if (podhurryalpha > 0.0f && ActivePodRace->lap_display > 0.0f) {
+        count = (i32)ActivePodRace->lap_display + 1;
         sprintf(text, "%i", count);
-        scale = NuFmod(PodRacePc->lap_display, 1.0f);
+        scale = NuFmod(ActivePodRace->lap_display, 1.0f);
         if (scale >= 0.7f) {
             scale = (f32)(((f64)scale - (f64)0.7f) / (f64)0.3f + 1.0);
         } else {
@@ -1028,10 +1028,10 @@ void PodRacePanel(WORLDINFO *world) {
         scale = PodSprintCountdownScale * scale;
         Text3DEx(text, 0.0f, PodSprintCountdownY, 1.0f, scale, scale, scale, 0, 255, 63, 0, (u8)(i32)(podhurryalpha * 128.0));
     }
-    if (podstartracealpha != 0.0f && PodRacePc->lap_countdown > 0.0f) {
-        count = (i32)PodRacePc->lap_countdown + 1;
+    if (podstartracealpha != 0.0f && ActivePodRace->lap_countdown > 0.0f) {
+        count = (i32)ActivePodRace->lap_countdown + 1;
         sprintf(text, "%i", count);
-        scale = NuFmod(PodRacePc->lap_countdown, 1.0f);
+        scale = NuFmod(ActivePodRace->lap_countdown, 1.0f);
         if (scale >= 0.7f) {
             scale = (f32)(((f64)scale - (f64)0.7f) / (f64)0.3f + 1.0);
         } else {
@@ -1059,8 +1059,8 @@ void UpdatePodRaceLapDisplay(f32 dt) {
         podstartracealpha = 0.0f;
     }
     oldhurry = podhurry_i;
-    if (Paused == 0 && PodRacePc != NULL && PodRacePc->lap_display < 10.0f) {
-        podhurry_i = (i32)PodRacePc->lap_display;
+    if (Paused == 0 && ActivePodRace != NULL && ActivePodRace->lap_display < 10.0f) {
+        podhurry_i = (i32)ActivePodRace->lap_display;
         if (podhurryalpha < 1.0f) {
             podhurryalpha += dt + dt;
             if (podhurryalpha > 1.0f) {
@@ -1076,7 +1076,7 @@ void UpdatePodRaceLapDisplay(f32 dt) {
     if (Paused != 0) {
         return;
     }
-    if (PodRacePc != NULL && PodRacePc->lap_countdown > 0.0f && podstartracealpha < 1.0f) {
+    if (ActivePodRace != NULL && ActivePodRace->lap_countdown > 0.0f && podstartracealpha < 1.0f) {
         podstartracealpha += dt + dt;
         if (podstartracealpha > 1.0f) {
             podstartracealpha = 1.0f;
@@ -1123,11 +1123,11 @@ void fun_004daa50(void) {
 }
 
 i32 PodRace_InStartCountdown(WORLDINFO *world) {
-    POD_RACE_COUNTDOWN_READER *race = (POD_RACE_COUNTDOWN_READER *)PodRacePc;
+    POD_RACE_COUNTDOWN_READER *race = (POD_RACE_COUNTDOWN_READER *)ActivePodRace;
     return world->area != NULL && world->area == PODRACE_ADATA && race != NULL && race->lap_countdown > 0.0f;
 }
 
-void PodRaceAUpdatePc(WORLDINFO *world) {
+void PodRaceA_Update(WORLDINFO *world) {
     UpdatePacemakerDisplay(world);
     PodRaceUpdate(world, FRAMETIME);
     if (netclient == 0) {
@@ -1151,7 +1151,7 @@ void PodRaceA_AlwaysUpdate(WORLDINFO *world) {
     }
 }
 
-void PodRaceADrawPc(WORLDINFO *world) {
+void PodRaceA_Draw(WORLDINFO *world) {
     PodRaceADraw(world);
 }
 
@@ -1189,7 +1189,7 @@ i32 Action_MushroomCollapse(AISYS_PC *system, AISCRIPTPROCESS *processor, AIPACK
 }
 
 i32 PodSeekMushCutSound(void) {
-    if (WORLD->current_level == PODRACEB_LDATA && Lap == 2 && PodRacePc->mushroom_timer > 1.0f && mushroom_collapse != 0) {
+    if (WORLD->current_level == PODRACEB_LDATA && Lap == 2 && ActivePodRace->mushroom_timer > 1.0f && mushroom_collapse != 0) {
         if (GameCam->sock_position.distance > mushroom0_along - 15.0 && GameCam->sock_position.distance <= mushroom0_along + 5.0) {
             return 1;
         }
@@ -1199,7 +1199,7 @@ i32 PodSeekMushCutSound(void) {
 
 i32 PodSeekSubCutSound(void) {
     if (WORLD->current_level == dat_0087b0b4 && Lap == 3 && GameCam->sock_position.distance > 195.0f) {
-        if (PodRacePc->mushroom_timer < PodRacePc->previous_lap_display - 2.8f + GameCam->sock_position.distance - 195.0) {
+        if (ActivePodRace->mushroom_timer < ActivePodRace->previous_lap_display - 2.8f + GameCam->sock_position.distance - 195.0) {
             return 1;
         }
     }
@@ -1208,7 +1208,7 @@ i32 PodSeekSubCutSound(void) {
 
 i32 PodSeekTuskanCutSound(void) {
     if (WORLD->current_level == PODRACEB_LDATA && Lap == 1 && GameCam->sock_position.distance > 182.0f) {
-        if (PodRacePc->mushroom_timer < PodRacePc->previous_lap_display - 2.8f + GameCam->sock_position.distance - 182.0) {
+        if (ActivePodRace->mushroom_timer < ActivePodRace->previous_lap_display - 2.8f + GameCam->sock_position.distance - 182.0) {
             return 1;
         }
     }
@@ -1234,7 +1234,7 @@ f32 PodDustEmissionRate = 100.0f;
 f32 PodDustHeightScale = 2.0f;
 
 void PodRaceBUpdate(WORLDINFO *world) {
-    if (Lap == 2 && PodRacePc->mushroom_timer > 1.0f && mushroom_collapse != 0) {
+    if (Lap == 2 && ActivePodRace->mushroom_timer > 1.0f && mushroom_collapse != 0) {
         switch (((PODRACE_LEVFLAG *)LevFlag)->mushroom_state) {
             case 0:
                 if (GameCam->sock_position.distance > mushroom0_along) {
@@ -1316,21 +1316,21 @@ i32 Action_SetLapTime(AISYS_PC *system, AISCRIPTPROCESS *process, AIPACKET *pack
     (void)system;
     (void)process;
     (void)ignored;
-    if (first_time != 0 && PodRacePc->previous_lap_display == 0.0f) {
+    if (first_time != 0 && ActivePodRace->previous_lap_display == 0.0f) {
         for (i = 0; i < param_count; ++i) {
             char *value = NuStrIStr(params[i], PodRaceMaxLapTimeKeyword);
             if (value != NULL) {
-                PodRacePc->max_lap_time = AIParamToFloat((AISCRIPTPROCESS *)packet, value + 11);
+                ActivePodRace->max_lap_time = AIParamToFloat((AISCRIPTPROCESS *)packet, value + 11);
             } else if ((value = NuStrIStr(params[i], PodRaceLapTimeKeyword)) != NULL) {
-                PodRacePc->previous_lap_display = AIParamToFloat((AISCRIPTPROCESS *)packet, value + 8);
+                ActivePodRace->previous_lap_display = AIParamToFloat((AISCRIPTPROCESS *)packet, value + 8);
             } else if ((value = NuStrIStr(params[i], PodRaceAttemptsKeyword)) != NULL) {
-                PodRacePc->attempts_per_increment = (i32)AIParamToFloat((AISCRIPTPROCESS *)packet, value + 24);
+                ActivePodRace->attempts_per_increment = (i32)AIParamToFloat((AISCRIPTPROCESS *)packet, value + 24);
             } else if ((value = NuStrIStr(params[i], PodRaceIncrementKeyword)) != NULL) {
-                PodRacePc->lap_time_increment = AIParamToFloat((AISCRIPTPROCESS *)packet, value + 10);
+                ActivePodRace->lap_time_increment = AIParamToFloat((AISCRIPTPROCESS *)packet, value + 10);
             }
         }
-        if (PodRacePc->max_lap_time == 0.0f) {
-            PodRacePc->max_lap_time = PodRacePc->previous_lap_display;
+        if (ActivePodRace->max_lap_time == 0.0f) {
+            ActivePodRace->max_lap_time = ActivePodRace->previous_lap_display;
         }
     }
     return 1;
@@ -2158,7 +2158,7 @@ void PodRaceInit(WORLDINFO *world) {
         ChrisAllocLevelStuff(world);
     }
     podrace = world->level_specific_data;
-    PodRacePc = podrace;
+    ActivePodRace = podrace;
     memset(podrace, 0, sizeof(*podrace));
     if (netclient == 0) {
         FlightSpline_Init(world, podrace->splines, 32);
@@ -2178,7 +2178,7 @@ void PodRaceInit(WORLDINFO *world) {
 }
 
 void PodRaceReset(void) {
-    PODRACE_RESOURCE *podrace = PodRacePc;
+    PODRACE_RESOURCE *podrace = ActivePodRace;
     i32 i;
     podrace->mushroom_timer = 0.0f;
     memset(podrace->lap_entries, 0, sizeof(podrace->lap_entries));
@@ -2221,7 +2221,7 @@ void PodRaceBInit(WORLDINFO *world) {
     mushroom_nattempts_per_increment = 1;
     mushroom_n_attempts = 0;
     if (Lap <= 1) {
-        PodRacePc->lap_countdown = 3.0f;
+        ActivePodRace->lap_countdown = 3.0f;
     }
 }
 
@@ -2361,7 +2361,7 @@ i32 Action_CreatePod(AISYS_PC *system, AISCRIPTPROCESS *process, AIPACKET *packe
     if ((u32)spline_id > 31 || model_id == 0xffff) {
         return 1;
     }
-    race = PodRacePc;
+    race = ActivePodRace;
     for (spline_index = 0; spline_index < 32; ++spline_index) {
         spline = &race->splines[spline_index];
         if (race->splines[spline_index].id == spline_id) {

@@ -1293,7 +1293,7 @@ address,symbol,size,ctype
 0x467cd0,_GizForces_ClearProgress,115,"void __cdecl(void *, void *)"
 0x467d50,_GizForces_StoreProgress,294,"void __cdecl(void *, void *, void *)"
 0x467e80,_GizForces_BoltHitPlat,352,"i32 __cdecl (GIZFORCE *, WORLDINFO *, i32)"
-0x467fe0,_GizForces_BoltHitPlatPc,199,"i32 __cdecl(WORLDINFO *, void *, BOLT_PC *, u8 *)"
+0x467fe0,GizForces_BoltHitPlatAll,199,"i32 __cdecl(WORLDINFO *, void *, BOLT_PC *, u8 *)"
 0x4680b0,_GizForces_GetBestBoltTarget,943,"GIZMO_PC * __cdecl(GIZMOSET *, f32 *, NUVEC *, NUVEC *, void *, NUVEC *, NUVEC *, f32, f32, i32, i32, i32)"
 0x468460,_GizForces_BoltHit,684,"i32 __cdecl (WORLDINFO *, void *, GAMEOBJECT *, NUVEC *, i32, f32, NUVEC *, NUVEC *, BOLT_PC *, i32, u8 *)"
 0x468710,_GizForces_FindForce,41,
@@ -2113,7 +2113,7 @@ address,symbol,size,ctype
 0x4b9090,_DrawInDoubleScoreZone,122,void __cdecl (f32)
 0x4b9110,_DrawPlayerHud,4213,void __cdecl (i32)
 0x4ba190,_Panel_Clear,87,
-0x4ba1f0,_DrawBossHitPointsPc,211,static i32 (GAMEOBJECT *); boss ESI
+0x4ba1f0,DrawBossHitPointsHud,211,static i32 (GAMEOBJECT *); boss ESI
 0x4ba2d0,_DrawBossHitPoints,10,
 0x4ba2e0,_DrawMeleeTargets,496,"void __cdecl (i16 *, u8 *, i32)"
 0x4ba4d0,_DrawMeleeTargetsRows,430,"void __cdecl (i16 *, char *, f32 *, i32)"
@@ -2569,9 +2569,9 @@ address,symbol,size,ctype
 0x4da8c0,_UpdatePacemakerDisplay,399,void __cdecl(WORLDINFO *)
 0x4daa50,_fun_004daa50,17,
 0x4daa70,_PodRace_InStartCountdown,55,i32 __cdecl(WORLDINFO *)
-0x004daab0,_PodRaceAUpdatePc,49,void __cdecl(WORLDINFO *)
+0x004daab0,PodRaceA_Update,49,void __cdecl(WORLDINFO *)
 0x004daaf0,_PodRaceA_AlwaysUpdate,75,void __cdecl(WORLDINFO *)
-0x004dab40,_PodRaceADrawPc,5,void __cdecl(WORLDINFO *)
+0x004dab40,PodRaceA_Draw,5,void __cdecl(WORLDINFO *)
 0x4dab50,_Action_MushroomCollapse,378,
 0x4dacd0,_PodSeekMushCutSound,123,
 0x4dad50,_PodSeekSubCutSound,100,
@@ -2659,9 +2659,9 @@ address,symbol,size,ctype
 0x4e1260,_KaminoE_Reset,507,
 0x004e1460,_KaminoE_CheckPlatHit,229,i32 __cdecl (BOLT *)
 0x4e1550,_KaminoEResetTurrets,107,private same-TU void(void)
-0x4e15c0,_KaminoE_Update,2424,
+0x4e15c0,KaminoE_UpdateSlave1,2424,
 0x004e1f40,_KaminoE_AlwaysUpdate,35,void __cdecl(WORLDINFO *)
-0x004e1f70,_KaminoE_UpdatePc,776,void __cdecl(WORLDINFO *)
+0x004e1f70,KaminoE_Update,776,void __cdecl(WORLDINFO *)
 0x4e2280,_KaminoE_Draw,123,
 0x4e2300,_KaminoInside,101,i32 __cdecl(void)
 0x4e2370,_fun_004e2370,40,
@@ -3658,7 +3658,7 @@ address,symbol,size,ctype
 0x509140,?fun_00509140@PC_DEVICE_BACKEND@@QAEXH@Z,63,
 0x509180,?Changed@MENU_VIDEO_OPTIONS@@QAEEXZ,98,
 0x5091f0,?fun_005091f0@MENU_VIDEO_OPTIONS@@QAEXXZ,64,
-0x509230,?ApplyPc@MENU_VIDEO_OPTIONS@@QAEXXZ,132,
+0x509230,?Apply@MENU_VIDEO_OPTIONS@@QAEXXZ,132,
 0x5092c0,_MenuEnterVideo,78,void __cdecl(MENU *)
 0x509310,_MenuExitVideo,1,void __cdecl(MENU *)
 0x509320,_MenuCanChangeMultisample,59,u8 __cdecl(void)
@@ -4948,7 +4948,7 @@ address,symbol,size,ctype
 0x5557b0,_GizSpinner_GetSpinnerPos,34,"void __cdecl(GIZSPINNER_s *, NUVEC *)"
 0x5557e0,_GizSpinner_UsingSpecial,336,"i32 __cdecl(void *, void *, i32, char *)"
 0x555930,_GizSpinner_BoltHitPlat,138,void private ABI: EAX spinner; ESI bolt; stack flags pointer
-0x5559c0,_GizSpinner_BoltHitPlatPc,174,"i32 __cdecl(WORLDINFO *, void *, BOLT_PC *, u8 *)"
+0x5559c0,GizSpinner_BoltHitPlatAll,174,"i32 __cdecl(WORLDINFO *, void *, BOLT_PC *, u8 *)"
 0x555a70,_GizSpinner_GetBestBoltTarget,1332,
 0x555fb0,_GizSpinner_Find,215,"GIZSPINNER_s * __cdecl(WORLDINFO *, NUVEC *, i32)"
 0x556090,_GizSpinner_FindNearest,213,"GIZSPINNER_s *__cdecl(NUVEC *, WORLDINFO *, f32 *)"
@@ -5146,7 +5146,7 @@ address,symbol,size,ctype
 0x55f360,_CanWearHatsInFreePlay,71,i32 __cdecl(i32)
 0x55f3b0,_WorldinfoNuError,1,
 0x55f3c0,?WorldinfoVuVecMake@@YA?AUVuVec@@MMMM@Z,28,
-0x55f3e0,?SetEnabledPc@PC_SPECIAL_SHADOW_LIGHT@@QAEXH@Z,73,void __thiscall PC_SPECIAL_SHADOW_LIGHT::SetEnabledPc(i32)
+0x55f3e0,?SetEnabled@PC_SPECIAL_SHADOW_LIGHT@@QAEXH@Z,73,void __thiscall PC_SPECIAL_SHADOW_LIGHT::SetEnabled(i32)
 0x0055f430,_WorldInfo_InitOnce,21,void __cdecl (void)
 0x0055f450,_WorldInfo_CurrentlyActive,6,WORLDINFO *__cdecl (void)
 0x0055f460,_WorldInfo_CurrentlyLoading,6,WORLDINFO *__cdecl (void)
@@ -5451,7 +5451,7 @@ address,symbol,size,ctype
 0x56fa60,_GizmoPickups_ReserveBufferSpace,232,void * __cdecl(void *)
 0x56fb50,_GizmoPickup_SetVisibility,32,"void __cdecl(GIZMO_PC *, i32)"
 0x56fb70,_GizmoPickups_Reset,319,
-0x56fcb0,_GizmoPickups_ResetPc,477,"void __cdecl(void *, void *, void *)"
+0x56fcb0,GizmoPickups_ResetAll,477,"void __cdecl(void *, void *, void *)"
 0x56fe90,_GizmoPickup_GetPos,15,NUVEC * __cdecl(GIZMO_PC *)
 0x56fea0,_GizmoPickups_Load,309,
 0x56ffe0,_GizmoPickups_TotalScore,79,u32 __cdecl (WORLDINFO *)
@@ -5584,7 +5584,7 @@ address,symbol,size,ctype
 0x576860,_Hint_SetHint,165,"void __cdecl (HINT *,i32,i32)"
 0x576910,_Hint_SetHintFromId,70,"void __cdecl (i32,i32,i32)"
 0x00576960,_Hint_SetComplete,72,void __cdecl(i32)
-0x5769b0,_Hint_SetCompletePc,28,void __cdecl(HINT *)
+0x5769b0,Hint_SetHintComplete,28,void __cdecl(HINT *)
 0x5769d0,_Hint_Process,483,
 0x576bc0,_fun_00576bc0,1,
 0x576bd0,_MinicamcutNuError,1,
@@ -6643,7 +6643,7 @@ address,symbol,size,ctype
 0x5ab9f0,_GizmoTurret_SetVisibility,63,"void __cdecl(GIZMO_PC *, i32)"
 0x5aba30,_GizmoTurret_GetPos,21,NUVEC * __cdecl(GIZMO_PC *)
 0x5aba50,_GizTurrets_Reset,423,
-0x5abc00,_GizTurrets_ResetPc,376,"void __cdecl(void *, void *, void *)"
+0x5abc00,GizTurrets_ResetAll,376,"void __cdecl(void *, void *, void *)"
 0x5abd80,_GizTurret_GetTgt,384,
 0x5abf00,_GizTurret_CalculateInterceptVector,377,
 0x5ac080,_GizTurrets_Update,3409,
@@ -9000,7 +9000,7 @@ address,symbol,size,ctype
 0x605910,_fun_00605910,110,
 0x605980,_fun_00605980,43,
 0x6059b0,_fun_006059b0,5,
-0x6059c0,_PCGraphicsBindEffectTexturePc,66,normalized source ABI; native private ESI stage/EDI texture
+0x6059c0,PCGraphicsBindStageTexture,66,normalized source ABI; native private ESI stage/EDI texture
 0x605a10,_PCGraphicsCreateFramebuffer,190,
 0x605ad0,_PCGraphicsDestroyFramebuffer,141,
 0x605b60,_PCGraphicsAttachFramebuffer,50,
@@ -13480,7 +13480,7 @@ address,symbol,size,ctype
 0x006d96b0,?InitializeDefaultRecords@PC_INPUT_RUNTIME@@QAEXXZ,802,void __thiscall (void)
 0x6d99e0,?fun_006d99e0@PC_INPUT_RUNTIME@@QAEHHE@Z,26,
 0x6d9a00,?WriteConfiguration@PC_INPUT_RUNTIME@@QAEXPAUPC_INPUT_CONFIG@@HPBD@Z,267,
-0x6d9b10,?SaveConfigurationPc@PC_INPUT_RUNTIME@@QAEXXZ,97,
+0x6d9b10,?SaveConfiguration@PC_INPUT_RUNTIME@@QAEXXZ,97,
 0x6d9b80,?BindPreferredConfig@PC_INPUT_RUNTIME@@QAEXHH@Z,70,"void __thiscall(i32,i32)"
 0x6d9bd0,?InitKeyboardProfiles@PC_INPUT_RUNTIME@@QAEXXZ,496,void __thiscall(void)
 0x6d9dc0,?fun_006d9dc0@TEXT_INPUT_MANAGER@@QAEHHHPADHH@Z,42,
@@ -13621,13 +13621,13 @@ address,symbol,size,ctype
 0x6de0e0,_WinMain@16,200,"i32 __stdcall(HINSTANCE,HINSTANCE,LPSTR,i32)"
 0x6de1b0,_PcQuitToWindows,13,void __cdecl(void)
 0x6de1c0,_WindowProc@16,751,"LRESULT __stdcall(HWND,UINT,WPARAM,LPARAM)"
-0x6de4b0,_CreateWindowPc,420,"i32 __cdecl(HINSTANCE,i32,u16)"
+0x6de4b0,CreateGameWindow,420,"i32 __cdecl(HINSTANCE,i32,u16)"
 0x6de660,?StubsVuVecMake@@YA?AUVuVec@@MMMM@Z,28,
 0x6de680,_fun_006de680,1,
 0x6de690,_fun_006de690,1,
 0x6de6a0,_StubsNuError,1,
 0x6de6b0,_fun_006de6b0,28,
-0x006de6d0,_NuPadSetMotorsPc,1,"void __cdecl(NUPAD_INIT_STATE *, i32, i32)"
+0x006de6d0,NuPadSetDeviceMotors,1,"void __cdecl(NUPAD_INIT_STATE *, i32, i32)"
 0x6de6e0,_fun_006de6e0,1,
 0x6de6f0,_fun_006de6f0,1,
 0x6de700,_fun_006de700,1,
@@ -40908,7 +40908,7 @@ address,symbol,size,ctype
 0x882a7c,_podlapalpha,4,f32
 0x882a80,_clients_mines_bitfield,8,i32[2]
 0x882a88,_PodPacemaker,4,GAMEOBJECT *
-0x882a8c,_PodRacePc,4,void *
+0x882a8c,ActivePodRace,4,void *
 0x882a90,_Lap,4,i32
 0x882a94,_mushroom0_cut,4,CUTINFO *
 0x882a98,_mushroom_collapse,4,i32
@@ -43441,7 +43441,7 @@ address,symbol,size,ctype
 0x02972c50,_NuSoundDat,4,NUDATHDR *
 0x2972c54,_PCSoundCommitTarget,4,PC_SOUND_COMMIT *
 0x02972c58,_NuSound3Listener,4,NUMTX *
-0x2972c60,_NuSound3LoadingSfxPc,4,i32
+0x2972c60,NuSound3SfxLoading,4,i32
 0x02972c68,_SoundVoiceManager,3496,SoundVoiceManagerPC
 0x2973a10,_PCSoundStreamSerial,4,i32
 0x2973a14,_PCSoundDrainStart,4,i32

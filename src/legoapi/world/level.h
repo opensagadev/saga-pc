@@ -40,7 +40,7 @@ typedef struct level_progress_s { // size 0x2e28
         u8 unknown_2824[0x544];
 
         struct {                         // size 0x544
-            u8 unknown_2824_pc[0x400];   // 0x2824
+            u8 unknown_2824_head[0x400]; // 0x2824
             u8 giz_flow_progress[0x144]; // 0x2c24
         };
     }; // 0x2824

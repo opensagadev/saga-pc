@@ -1011,7 +1011,7 @@ extern "C" {
     }
 }
 
-extern "C" i32 GizSpinner_BoltHitPlatPc(WORLDINFO *, void *spinner_ptr, BOLT_PC *bolt, u8 *hit_flags) {
+extern "C" i32 GizSpinner_BoltHitPlatAll(WORLDINFO *, void *spinner_ptr, BOLT_PC *bolt, u8 *hit_flags) {
     GIZSPINNER_s *spinner = (GIZSPINNER_s *)spinner_ptr;
     if (spinner == NULL || (spinner->flags & 1) == 0 || (spinner->flags & 4) != 0) {
         return 0;
@@ -1492,7 +1492,7 @@ extern "C" ADDGIZMOTYPE *Spinner_RegisterGizmo(i32 type_id) {
     addtype->fns.set_visibility_fn = (void (*)(GIZMO_PC *, i32))GizSpinner_SetVisibility;
     addtype->fns.get_pos_fn = (void *)GizSpinner_GetPos;
     addtype->fns.using_special_fn = (void *)GizSpinner_UsingSpecial;
-    addtype->fns.bolt_hit_plat_fn = (void *)GizSpinner_BoltHitPlatPc;
+    addtype->fns.bolt_hit_plat_fn = (void *)GizSpinner_BoltHitPlatAll;
     addtype->fns.get_best_bolt_target_fn =
         (GIZMO_PC * (*)(GIZMOSET *, f32 *, NUVEC *, NUVEC *, void *, NUVEC *, NUVEC *, f32, f32, i32, i32, i32))
             GizSpinner_GetBestBoltTarget;

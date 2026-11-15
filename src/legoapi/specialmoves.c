@@ -159,7 +159,7 @@ i32 SpecialMove_Check(GAMEOBJECT *attacker, GAMEOBJECT *victim) {
 }
 
 static void SpecialMove_KillVictim(GAMEOBJECT *victim) {
-    if (SpecialMove_GetFlags(victim->special_move_pc, 0x10) != 0) {
+    if (SpecialMove_GetFlags(victim->special_move, 0x10) != 0) {
         objhitobj_throwkillpartsup = 1;
     }
     ObjHitObj(victim->force_target, victim,
@@ -171,14 +171,14 @@ static void SpecialMove_KillVictim(GAMEOBJECT *victim) {
 i32 SpecialMove_ReleaseVictim(GAMEOBJECT *object) {
     GAMEOBJECT *victim;
     if (LEGOCONTEXT_SPECIALMOVE_ATTACKER == -1 || object->character_context != LEGOCONTEXT_SPECIALMOVE_ATTACKER ||
-        object->special_move_pc == -1 || object->force_target == NULL) {
+        object->special_move == -1 || object->force_target == NULL) {
         return 0;
     }
     victim = object->force_target;
     if (LEGOCONTEXT_SPECIALMOVE_VICTIM == -1 || victim->character_context != LEGOCONTEXT_SPECIALMOVE_VICTIM) {
         return 0;
     }
-    if (SpecialMove_GetFlags(object->special_move_pc, 4) != 0) {
+    if (SpecialMove_GetFlags(object->special_move, 4) != 0) {
         SpecialMove_KillVictim(victim);
     }
     victim = object->force_target;
@@ -191,12 +191,12 @@ i32 SpecialMove_ReleaseVictim(GAMEOBJECT *object) {
 void SpecialMove_Cancel(GAMEOBJECT *object) {
     GAMEOBJECT *other;
     if ((LEGOCONTEXT_SPECIALMOVE_ATTACKER != -1 && object->character_context == LEGOCONTEXT_SPECIALMOVE_ATTACKER &&
-         object->special_move_pc != -1) ||
+         object->special_move != -1) ||
         (LEGOCONTEXT_SPECIALMOVE_VICTIM != -1 && object->character_context == LEGOCONTEXT_SPECIALMOVE_VICTIM)) {
         object->character_context = CHARACTER_CONTEXT_NONE;
         other = object->force_target;
         if (other != NULL && ((LEGOCONTEXT_SPECIALMOVE_ATTACKER != -1 && other->character_context == LEGOCONTEXT_SPECIALMOVE_ATTACKER &&
-                               other->special_move_pc != -1) ||
+                               other->special_move != -1) ||
                               (LEGOCONTEXT_SPECIALMOVE_VICTIM != -1 && other->character_context == LEGOCONTEXT_SPECIALMOVE_VICTIM))) {
             other->character_context = CHARACTER_CONTEXT_NONE;
         }
@@ -212,7 +212,7 @@ void SpecialMove_VictimCode(GAMEOBJECT *object) {
         object->context_timer -= FRAMETIME;
         if (object->context_timer <= 0.0f) {
             object->character_context = CHARACTER_CONTEXT_NONE;
-            if (SpecialMove_GetFlags(object->special_move_pc, 2) != 0) {
+            if (SpecialMove_GetFlags(object->special_move, 2) != 0) {
                 SpecialMove_KillVictim(object);
             }
         }
@@ -220,7 +220,7 @@ void SpecialMove_VictimCode(GAMEOBJECT *object) {
 }
 
 void SpecialMove_Attacker_SetTargetMom(GAMEOBJECT *object) {
-    i32 move = object->special_move_pc;
+    i32 move = object->special_move;
     f32 distance = move != -1 ? SpecialMove[move].distance_apart : 0.0f;
     NUVEC target;
     target.x = object->force_target->position.x - NuTrigTable[object->movement_facing_angle >> 1] * distance;

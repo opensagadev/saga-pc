@@ -184,7 +184,7 @@ extern "C" {
 /* gameobject_s.context_variant_flags in the punch context (PunchCode). */
 #define APIOBJECT_PUNCH_COMBO 0x1          /* a combo style was chosen: queued_context_animation follows */
 #define APIOBJECT_PUNCH_BEHIND 0x80        /* ACTION_PUNCH_BEHIND, the target is behind */
-#define APIOBJECT_PUNCH_SPECIAL_MOVE 0x200 /* SpecialMove_Check found one: special_move_pc */
+#define APIOBJECT_PUNCH_SPECIAL_MOVE 0x200 /* SpecialMove_Check found one: special_move */
 
 /* gameobject_s.context_variant_flags in the sabre combo context (LightSabreComboCode). */
 #define APIOBJECT_COMBO_ENDED 0x2   /* the combo context ended (animation end, blend-out or no press in time) */
@@ -856,7 +856,7 @@ typedef struct gameobject_s { // size 0x10d8
 
     union { // size 0x4
         u8 unknown_0224[4];
-        f32 roof_height_pc;
+        f32 roof_height;
     }; // 0x0224
 
     f32 velocity_magnitude;                                       // 0x0228
@@ -1049,7 +1049,7 @@ typedef struct gameobject_s { // size 0x10d8
     u8 big_jump_animation;    // 0x07b4
     i8 character_context;     // 0x07b5
     u8 context_variant;       // 0x07b6
-    i8 special_move_pc;       // 0x07b7
+    i8 special_move;          // 0x07b7
     u8 action_movement_state; // 0x07b8
     u8 jump_sequence;         // 0x07b9
     i8 whip_action;           // 0x07ba
@@ -1059,7 +1059,7 @@ typedef struct gameobject_s { // size 0x10d8
         u32 context_variant_flags;
 
         struct {                     // size 0x4
-            u8 context_flags_pc;     // 0x07bc
+            u8 context_flags;        // 0x07bc
             i8 context_variant_bits; // 0x07bd
             u8 jump_flags;           // 0x07be
             u8 unknown_7bf[0x1];     // 0x07bf

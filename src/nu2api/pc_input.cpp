@@ -1933,7 +1933,7 @@ extern "C" void fun_006da360(i32 player) {
     i32 port = NuPadGetPort(player);
     state->ExportConfig(port, &config, 0, 0, 0);
     state->PromoteConfig(state->primary, 64, &config);
-    state->SaveConfigurationPc();
+    state->SaveConfiguration();
 }
 
 /* Add out-of-line definitions to existing pc_input.cpp. The actual global

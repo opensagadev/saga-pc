@@ -122,8 +122,8 @@ void GetSurfaceInfo(GAMEOBJECT *object, i32 update_fields, f32 floor_height) {
         object->unknown_283 = -1;
     }
 
-    object->roof_height_pc = GetSurfaceInfoRoofHeight;
-    if (object->roof_height_pc != GameObjectNearFloorNoFloorHeight) {
+    object->roof_height = GetSurfaceInfoRoofHeight;
+    if (object->roof_height != GameObjectNearFloorNoFloorHeight) {
         roof_surface = (i8)ShadowRoofInfo();
         object->roof_surface_id = (u8)roof_surface;
         if (roof_surface < 0 || roof_surface >= 32) {
@@ -233,7 +233,7 @@ void InitSurfaceInfo(GAMEOBJECT *object) {
                                object->water_height >= object->collision_min.y;
 
     object->water_height = LevelConfigFarDistance;
-    object->roof_height_pc = LevelConfigFarDistance;
+    object->roof_height = LevelConfigFarDistance;
     object->unknown_283 = -1;
     object->roof_surface_id = 0xff;
     GetSurfaceInfo(object, 1, object->floor_height);

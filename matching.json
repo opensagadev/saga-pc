@@ -32725,8 +32725,8 @@
       "objdiff_percent": 100.0
     },
     {
-      "name": "GizForces_BoltHitPlatPc",
-      "symbol": "_GizForces_BoltHitPlatPc",
+      "name": "GizForces_BoltHitPlatAll",
+      "symbol": "GizForces_BoltHitPlatAll",
       "address": "0x00467fe0",
       "units": [
         "src/legogame/gizforce.c"
@@ -52804,8 +52804,8 @@
       "objdiff_percent": 100.0
     },
     {
-      "name": "DrawBossHitPointsPc",
-      "symbol": "_DrawBossHitPointsPc",
+      "name": "DrawBossHitPointsHud",
+      "symbol": "DrawBossHitPointsHud",
       "address": "0x004ba1f0",
       "units": [
         "src/legogame/panel.cpp"
@@ -63401,8 +63401,8 @@
       "objdiff_percent": 100.0
     },
     {
-      "name": "PodRaceAUpdatePc",
-      "symbol": "_PodRaceAUpdatePc",
+      "name": "PodRaceA_Update",
+      "symbol": "PodRaceA_Update",
       "address": "0x004daab0",
       "units": [
         "src/legogame/episodeI.c"
@@ -63449,8 +63449,8 @@
       "objdiff_percent": 100.0
     },
     {
-      "name": "PodRaceADrawPc",
-      "symbol": "_PodRaceADrawPc",
+      "name": "PodRaceA_Draw",
+      "symbol": "PodRaceA_Draw",
       "address": "0x004dab40",
       "units": [
         "src/legogame/episodeI.c"
@@ -65573,8 +65573,8 @@
       "objdiff_percent": 100.0
     },
     {
-      "name": "KaminoE_Update",
-      "symbol": "_KaminoE_Update",
+      "name": "KaminoE_UpdateSlave1",
+      "symbol": "KaminoE_UpdateSlave1",
       "address": "0x004e15c0",
       "units": [
         "src/legogame/episodeII.c"
@@ -65626,8 +65626,8 @@
       "objdiff_percent": 100.0
     },
     {
-      "name": "KaminoE_UpdatePc",
-      "symbol": "_KaminoE_UpdatePc",
+      "name": "KaminoE_Update",
+      "symbol": "KaminoE_Update",
       "address": "0x004e1f70",
       "units": [
         "src/legogame/episodeII.c"
@@ -89901,8 +89901,8 @@
       "objdiff_percent": 100.0
     },
     {
-      "name": "?ApplyPc@MENU_VIDEO_OPTIONS@@QAEXXZ",
-      "symbol": "?ApplyPc@MENU_VIDEO_OPTIONS@@QAEXXZ",
+      "name": "?Apply@MENU_VIDEO_OPTIONS@@QAEXXZ",
+      "symbol": "?Apply@MENU_VIDEO_OPTIONS@@QAEXXZ",
       "address": "0x00509230",
       "units": [
         "src/legoapi/menu_video.cpp"
@@ -121619,8 +121619,8 @@
       "objdiff_percent": 84.97959
     },
     {
-      "name": "GizSpinner_BoltHitPlatPc",
-      "symbol": "_GizSpinner_BoltHitPlatPc",
+      "name": "GizSpinner_BoltHitPlatAll",
+      "symbol": "GizSpinner_BoltHitPlatAll",
       "address": "0x005559c0",
       "units": [
         "src/legoapi/gizspinner.cpp"
@@ -126347,8 +126347,8 @@
       "status": "not implemented"
     },
     {
-      "name": "?SetEnabledPc@PC_SPECIAL_SHADOW_LIGHT@@QAEXH@Z",
-      "symbol": "?SetEnabledPc@PC_SPECIAL_SHADOW_LIGHT@@QAEXH@Z",
+      "name": "?SetEnabled@PC_SPECIAL_SHADOW_LIGHT@@QAEXH@Z",
+      "symbol": "?SetEnabled@PC_SPECIAL_SHADOW_LIGHT@@QAEXH@Z",
       "address": "0x0055f3e0",
       "units": [
         "src/legoapi/worldinfo.cpp"
@@ -133516,8 +133516,8 @@
       "objdiff_percent": 100.0
     },
     {
-      "name": "GizmoPickups_ResetPc",
-      "symbol": "_GizmoPickups_ResetPc",
+      "name": "GizmoPickups_ResetAll",
+      "symbol": "GizmoPickups_ResetAll",
       "address": "0x0056fcb0",
       "units": [
         "src/legoapi/gizmopickups.c"
@@ -136681,8 +136681,8 @@
       "objdiff_percent": 100.0
     },
     {
-      "name": "Hint_SetCompletePc",
-      "symbol": "_Hint_SetCompletePc",
+      "name": "Hint_SetHintComplete",
+      "symbol": "Hint_SetHintComplete",
       "address": "0x005769b0",
       "units": [
         "src/legoapi/hint.c"
@@ -161869,8 +161869,8 @@
       "objdiff_percent": 94.54225
     },
     {
-      "name": "GizTurrets_ResetPc",
-      "symbol": "_GizTurrets_ResetPc",
+      "name": "GizTurrets_ResetAll",
+      "symbol": "GizTurrets_ResetAll",
       "address": "0x005abc00",
       "units": [
         "src/legoapi/gizturret.cpp"
@@ -216833,8 +216833,8 @@
       "objdiff_percent": 100.0
     },
     {
-      "name": "PCGraphicsBindEffectTexturePc",
-      "symbol": "_PCGraphicsBindEffectTexturePc",
+      "name": "PCGraphicsBindStageTexture",
+      "symbol": "PCGraphicsBindStageTexture",
       "address": "0x006059c0",
       "units": [
         "src/nu2api/nudlist_material.cpp"
@@ -324190,8 +324190,8 @@
       "objdiff_percent": 81.56626
     },
     {
-      "name": "?SaveConfigurationPc@PC_INPUT_RUNTIME@@QAEXXZ",
-      "symbol": "?SaveConfigurationPc@PC_INPUT_RUNTIME@@QAEXXZ",
+      "name": "?SaveConfiguration@PC_INPUT_RUNTIME@@QAEXXZ",
+      "symbol": "?SaveConfiguration@PC_INPUT_RUNTIME@@QAEXXZ",
       "address": "0x006d9b10",
       "units": [
         "src/nu2api/input_runtime.cpp"
@@ -327551,8 +327551,8 @@
       "objdiff_percent": 100.0
     },
     {
-      "name": "CreateWindowPc",
-      "symbol": "_CreateWindowPc",
+      "name": "CreateGameWindow",
+      "symbol": "CreateGameWindow",
       "address": "0x006de4b0",
       "units": [
         "src/nu2api/pc_window.cpp"
@@ -327653,8 +327653,8 @@
       "status": "not implemented"
     },
     {
-      "name": "NuPadSetMotorsPc",
-      "symbol": "_NuPadSetMotorsPc",
+      "name": "NuPadSetDeviceMotors",
+      "symbol": "NuPadSetDeviceMotors",
       "address": "0x006de6d0",
       "units": [
         "src/nu2api/nupad_pc.c"
@@ -830990,8 +830990,8 @@
       "status": "exact"
     },
     {
-      "name": "PodRacePc",
-      "symbol": "_PodRacePc",
+      "name": "ActivePodRace",
+      "symbol": "ActivePodRace",
       "address": "0x00882a8c",
       "units": [
         "src/legogame/episodeI.c"
@@ -884108,8 +884108,8 @@
       "status": "exact"
     },
     {
-      "name": "NuSound3LoadingSfxPc",
-      "symbol": "_NuSound3LoadingSfxPc",
+      "name": "NuSound3SfxLoading",
+      "symbol": "NuSound3SfxLoading",
       "address": "0x02972c60",
       "units": [
         "src/nu2api/nusound3/pc/nusound.cpp"
@@ -895218,7 +895218,7 @@
     },
     {
       "unit": "src/nu2api/input_runtime.cpp",
-      "symbol": "?EndFramePc@PC_INPUT_RUNTIME@@QAEXXZ",
+      "symbol": "?EndFrame@PC_INPUT_RUNTIME@@QAEXXZ",
       "kind": "function"
     }
   ],

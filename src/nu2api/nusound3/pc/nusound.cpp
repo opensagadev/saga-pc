@@ -29,7 +29,7 @@ extern "C" {
     NUDATHDR *NuSoundDat = 0;
     PC_SOUND_COMMIT *PCSoundCommitTarget = 0;
     NUMTX *NuSound3Listener = 0;
-    i32 NuSound3LoadingSfxPc = 0;
+    i32 NuSound3SfxLoading = 0;
 }
 static i32 PCSoundUpdateClock = 0;
 extern "C" {

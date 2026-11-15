@@ -113,7 +113,7 @@ extern "C" LRESULT __stdcall WindowProc(HWND window, UINT message, WPARAM wparam
     }
 }
 
-extern "C" i32 CreateWindowPc(HINSTANCE instance, i32 show, u16 icon_resource) {
+extern "C" i32 CreateGameWindow(HINSTANCE instance, i32 show, u16 icon_resource) {
     HICON icon = LoadIconA(instance, MAKEINTRESOURCEA(icon_resource));
     memset(&win_message, 0, sizeof(win_message));
     PcWindowClass.cbSize = sizeof(PcWindowClass);

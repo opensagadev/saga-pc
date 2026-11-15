@@ -84,7 +84,7 @@ GAMEOBJECT *AddGameObject(void) {
         object->movement_mode = 2;
         identity = (u64)1 << object->hostility_group;
         object->collision_identity_mask[0] = (u32)identity;
-        object->roof_height_pc = 2000000.0f;
+        object->roof_height = 2000000.0f;
         object->collision_identity_mask[1] = (u32)(identity >> 32);
         object->water_height = 2000000.0f;
         object->layer_mask = 1;

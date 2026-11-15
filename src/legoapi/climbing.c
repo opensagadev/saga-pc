@@ -71,7 +71,7 @@ static i32 LedgeTerrain_Attach(GAMEOBJECT *object, u16 facing, NUVEC *position, 
     if (height_difference > (f64)0.025f || height_difference < (f64)-0.1f) {
         return 0;
     }
-    if (object->roof_height_pc != 2000000.0f && height > object->roof_height_pc) {
+    if (object->roof_height != 2000000.0f && height > object->roof_height) {
         return 0;
     }
     position->y = height;

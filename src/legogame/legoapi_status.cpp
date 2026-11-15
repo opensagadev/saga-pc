@@ -332,9 +332,9 @@ extern "C" {
                 } else {
                     motor1 = 0;
                 }
-                NuPadSetMotorsPc(GamePadStorage[player].pad, packet->duration > 0.0f || packet->active > 0, motor1);
+                NuPadSetDeviceMotors(GamePadStorage[player].pad, packet->duration > 0.0f || packet->active > 0, motor1);
             } else {
-                NuPadSetMotorsPc(GamePadStorage[player].pad, 0, 0);
+                NuPadSetDeviceMotors(GamePadStorage[player].pad, 0, 0);
             }
         }
     }

@@ -55,7 +55,7 @@ class NuMainFilterGen : public NuPostFilter { // size 0x128
     f32 motion_falloff;                          // 0x118
     i32 accumulation_frames;                     // 0x11c
     f32 accumulation_blend;                      // 0x120
-    f32 accumulation_mode_pc;                    // 0x124
+    f32 accumulation_weight_exponent;            // 0x124
 };
 
 #endif

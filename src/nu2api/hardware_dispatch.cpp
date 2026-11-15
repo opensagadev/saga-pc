@@ -362,7 +362,7 @@ extern "C" i32 NuInitHardware(VARIPTR *buffer, VARIPTR *end, i32 allocate, ...) 
         if (show == 0) {
             NuHwShowCommand = 0;
         }
-        if (!CreateWindowPc(PCInputWindow, NuHwShowCommand, (u16)icon)) {
+        if (!CreateGameWindow(PCInputWindow, NuHwShowCommand, (u16)icon)) {
             exit(1);
         }
     } else {

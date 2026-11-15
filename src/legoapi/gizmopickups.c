@@ -597,7 +597,7 @@ static void GizmoPickups_Reset(WORLDINFO *world, PICKUP_RESET_RECORD *pickup) {
     pickup->flags = (pickup->flags & ~0x40) | 0x20;
 }
 
-void GizmoPickups_ResetPc(void *world_ptr, void *unused, void *progress_ptr) {
+void GizmoPickups_ResetAll(void *world_ptr, void *unused, void *progress_ptr) {
     WORLDINFO *world = world_ptr;
     PICKUP_RESET_PROGRESS *progress = progress_ptr;
     struct GIZMOPICKUPRUNTIMESYS_s *system;
@@ -1433,7 +1433,7 @@ ADDGIZMOTYPE *GizmoPickups_RegisterGizmo(i32 type_id) {
     addtype->fns.allocate_progress_data_fn = (void *(*)(VARIPTR *, VARIPTR *))GizmoPickups_AllocateProgressData;
     addtype->fns.clear_progress_fn = (void (*)(void *, void *))GizmoPickups_ClearProgress;
     addtype->fns.store_progress_fn = (void (*)(void *, void *, void *))GizmoPickups_StoreProgress;
-    addtype->fns.reset_fn = (void (*)(void *, void *, void *))GizmoPickups_ResetPc;
+    addtype->fns.reset_fn = (void (*)(void *, void *, void *))GizmoPickups_ResetAll;
     addtype->fns.reserve_buffer_space_fn = (void *(*)(void *))GizmoPickups_ReserveBufferSpace;
     addtype->fns.load_fn = (i32(*)(void *, void *))GizmoPickups_Load;
     addtype->fns.post_load_fn = (void (*)(void *, void *))GizmoPickups_PostLoad;

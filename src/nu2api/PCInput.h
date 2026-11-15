@@ -518,7 +518,7 @@ struct PC_INPUT_RUNTIME {          // size 0x68b4
     void ServicePendingCapture();
     void AdvanceCaptureRecords();
 
-    void EndFramePc() {
+    void EndFrame() {
         ServicePendingCapture();
         AdvanceCaptureRecords();
         read_mask = 0;
@@ -547,7 +547,7 @@ struct PC_INPUT_RUNTIME {          // size 0x68b4
     void FormatConfigText(char *, PC_INPUT_CONFIG *);
     void WriteConfigText(const char *, PC_INPUT_CONFIG *);
     void WriteConfiguration(PC_INPUT_CONFIG *, i32, const char *);
-    void SaveConfigurationPc();
+    void SaveConfiguration();
     i32 fun_006d38b0(PC_INPUT_CONFIG *config);
     void fun_006d3970(PC_INPUT_CONFIG *config);
     void fun_006d3980(i32);

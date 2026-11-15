@@ -41,7 +41,7 @@ extern "C" {
     f32 PodSprint_InStartCountdown(WORLDINFO *);
     extern i32 Lap;
     i32 Action_CreatePod(AISYS_PC *, AISCRIPTPROCESS *, AIPACKET *, char **, i32, i32, f32);
-    /* PodRacePc is a private static of episodeI.c. */
+    /* ActivePodRace is a private static of episodeI.c. */
     extern GAMEOBJECT *PodPacemaker;
     extern f32 PodRaceSplineIncrement;
     extern char PodCreateSplineKeyword[11];

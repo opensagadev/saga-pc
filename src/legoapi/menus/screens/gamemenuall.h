@@ -15,7 +15,7 @@ typedef struct MENU_VIDEO_OPTIONS { // size 0x14
 #ifdef __cplusplus
     u8 Changed();
     void fun_005091f0();
-    void ApplyPc();
+    void Apply();
 #endif
 } MENU_VIDEO_OPTIONS;
 

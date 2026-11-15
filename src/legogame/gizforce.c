@@ -1080,7 +1080,7 @@ static i32 GizForces_BoltHitPlat(GIZFORCE *force, WORLDINFO *world, i32 player_i
     return 1;
 }
 
-i32 GizForces_BoltHitPlatPc(WORLDINFO *world, void *system_pointer, BOLT_PC *bolt, u8 *hit_flags) {
+i32 GizForces_BoltHitPlatAll(WORLDINFO *world, void *system_pointer, BOLT_PC *bolt, u8 *hit_flags) {
     GIZFORCESYS_s *system = system_pointer;
     GIZFORCE *force;
     GAMEANIMOBJ *animation;
@@ -1928,7 +1928,7 @@ ADDGIZMOTYPE *GizForce_RegisterGizmo(i32 type_id) {
     addtype->fns.activate_rev_fn = (i32(*)(GIZMO_PC *, i32, i32))GizmoForce_ActivateRev;
     addtype->fns.set_visibility_fn = (void (*)(GIZMO_PC *, i32))GizmoForce_SetVisibility;
     addtype->fns.get_pos_fn = (void *)GizmoForce_GetPos;
-    addtype->fns.bolt_hit_plat_fn = (void *)GizForces_BoltHitPlatPc;
+    addtype->fns.bolt_hit_plat_fn = (void *)GizForces_BoltHitPlatAll;
     addtype->fns.get_best_bolt_target_fn =
         (GIZMO_PC * (*)(GIZMOSET *, f32 *, NUVEC *, NUVEC *, void *, NUVEC *, NUVEC *, f32, f32, i32, i32, i32))
             GizForces_GetBestBoltTarget;

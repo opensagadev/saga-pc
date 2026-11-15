@@ -222,9 +222,9 @@ extern "C" void PodRaceBReset(WORLDINFO *);
 extern "C" void PodRaceBUpdate(WORLDINFO *);
 extern "C" void PodRaceAInit(WORLDINFO *);
 extern "C" void PodRaceAReset(WORLDINFO *);
-extern "C" void PodRaceAUpdatePc(WORLDINFO *);
+extern "C" void PodRaceA_Update(WORLDINFO *);
 extern "C" void PodRaceA_AlwaysUpdate(WORLDINFO *);
-extern "C" void PodRaceADrawPc(WORLDINFO *);
+extern "C" void PodRaceA_Draw(WORLDINFO *);
 extern "C" void PodRaceCInit(WORLDINFO *);
 extern "C" void PodRaceCReset(WORLDINFO *);
 extern "C" void PodRaceCUpdate(WORLDINFO *);
@@ -280,7 +280,7 @@ extern "C" void KaminoOutro_Init(WORLDINFO *);
 extern "C" void KaminoE_Reset(WORLDINFO *);
 extern "C" void KaminoE_Init(WORLDINFO *);
 extern "C" void KaminoE_AlwaysUpdate(WORLDINFO *);
-extern "C" void KaminoE_UpdatePc(WORLDINFO *);
+extern "C" void KaminoE_Update(WORLDINFO *);
 extern "C" void KaminoE_Draw(WORLDINFO *);
 extern "C" void CruiserAInit(WORLDINFO *);
 extern "C" void CruiserAUpdate(WORLDINFO *);
@@ -2936,9 +2936,9 @@ extern "C" void FixUpLevels(struct level_fixup_s *fixup) {
             if (level != NULL) {
                 PODRACEA_LDATA->callbacks[1] = (void *)PodRaceAInit;
                 PODRACEA_LDATA->callbacks[2] = (void *)PodRaceAReset;
-                PODRACEA_LDATA->callbacks[3] = (void *)PodRaceAUpdatePc;
+                PODRACEA_LDATA->callbacks[3] = (void *)PodRaceA_Update;
                 PODRACEA_LDATA->callbacks[4] = (void *)PodRaceA_AlwaysUpdate;
-                PODRACEA_LDATA->callbacks[5] = (void *)PodRaceADrawPc;
+                PODRACEA_LDATA->callbacks[5] = (void *)PodRaceA_Draw;
             }
             level = Level_FindByName("podrace_c", NULL);
             dat_0087b0b4 = level;
@@ -3138,7 +3138,7 @@ extern "C" void FixUpLevels(struct level_fixup_s *fixup) {
                 KAMINOE_LDATA->callbacks[2] = (void *)KaminoE_Reset;
                 KAMINOE_LDATA->callbacks[1] = (void *)KaminoE_Init;
                 KAMINOE_LDATA->callbacks[4] = (void *)KaminoE_AlwaysUpdate;
-                KAMINOE_LDATA->callbacks[3] = (void *)KaminoE_UpdatePc;
+                KAMINOE_LDATA->callbacks[3] = (void *)KaminoE_Update;
                 KAMINOE_LDATA->callbacks[5] = (void *)KaminoE_Draw;
             }
             level = Level_FindByName("Dogfight_A", NULL);

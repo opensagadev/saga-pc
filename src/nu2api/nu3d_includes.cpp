@@ -814,7 +814,7 @@ extern "C" {
                 continue;
             }
             joint = &target->joints[index];
-            flags = item->flags_pc;
+            flags = item->flags;
             if ((flags & 1) != 0) {
                 joint->rotation.x = item->rotation.x + joint->rotation.x;
                 joint->rotation.y = item->rotation.y + joint->rotation.y;
@@ -836,9 +836,9 @@ extern "C" {
                 joint->rotation.z = (f32)(angles.z * PC_RADIAN_PER_NUANG);
             }
             if ((flags & 4) != 0) {
-                joint->scale.x = item->scale_pc.x + joint->scale.x;
-                joint->scale.y = item->scale_pc.y + joint->scale.y;
-                joint->scale.z = item->scale_pc.z + joint->scale.z;
+                joint->scale.x = item->scale.x + joint->scale.x;
+                joint->scale.y = item->scale.y + joint->scale.y;
+                joint->scale.z = item->scale.z + joint->scale.z;
             }
             if ((flags & 2) != 0) {
                 joint->translation.x = item->translation.x + joint->translation.x;
@@ -2715,7 +2715,7 @@ extern "C" {
                                           NUANIM_TIME2 *second_time, f32 blend, NUHGOBJ_EVAL_JOINT *joint, NUVEC *scale,
                                           NUVEC *parent_scale, NUMTX *matrix, NUHGOBJ_JOINT_OVERRIDE *override_anim) {
         f32 inverse_blend = 1.0f - blend;
-        u8 flags = override_anim ? override_anim->flags_pc : 0;
+        u8 flags = override_anim ? override_anim->flags : 0;
         NUANGVEC angles;
         f32 r0[3];
         f32 r1[3];
@@ -2815,9 +2815,9 @@ extern "C" {
             scale->y = blend * s0[1] + inverse_blend * s1[1];
             scale->z = blend * s0[2] + inverse_blend * s1[2];
             if (flags & 4) {
-                scale->x += override_anim->scale_pc.x;
-                scale->y += override_anim->scale_pc.y;
-                scale->z += override_anim->scale_pc.z;
+                scale->x += override_anim->scale.x;
+                scale->y += override_anim->scale.y;
+                scale->z += override_anim->scale.z;
             }
             NuMtxPreScaleVU0(matrix, scale);
             scale->x *= parent_scale->x;
@@ -2853,8 +2853,8 @@ extern "C" {
             translation.z += override_anim->translation.z;
         }
         NuMtxTranslate(matrix, &translation);
-        if (joint->flags_pc & 8) {
-            NUVEC *pivot = &joint->pivot_pc;
+        if (joint->flags & 8) {
+            NUVEC *pivot = &joint->pivot;
             NuMtxPreTranslate(matrix, pivot);
             temporary.x = -pivot->x;
             temporary.y = -pivot->y;
@@ -2883,7 +2883,7 @@ extern "C" {
         if (locator_translation != NULL) {
             locator_translation->x = locator_translation->y = locator_translation->z = 0.0f;
         }
-        override_flags = override != NULL ? override->flags_pc : 0;
+        override_flags = override != NULL ? override->flags : 0;
 
         if ((node_flags & 1) == 0 && (override_flags & 1) == 0) {
             NuMtxSetIdentity(matrix);
@@ -2935,9 +2935,9 @@ extern "C" {
                 scale->x = scale->y = scale->z = 0.0f;
             }
             if ((override_flags & 4) != 0) {
-                scale->x = (f32)((f64)scale->x + override->scale_pc.x);
-                scale->y = (f32)((f64)scale->y + override->scale_pc.y);
-                scale->z = (f32)((f64)scale->z + override->scale_pc.z);
+                scale->x = (f32)((f64)scale->x + override->scale.x);
+                scale->y = (f32)((f64)scale->y + override->scale.y);
+                scale->z = (f32)((f64)scale->z + override->scale.z);
             }
             NuMtxPreScaleVU0(matrix, scale);
             scale->x = (f32)((f64)scale->x * parent_scale->x);
@@ -2978,15 +2978,15 @@ extern "C" {
             translation.z = (f32)((f64)translation.z + override->translation.z);
         }
         NuMtxTranslate(matrix, &translation);
-        if ((joint->flags_pc & 8) != 0) {
-            NuMtxPreTranslate(matrix, &joint->pivot_pc);
-            negative_pivot.x = -joint->pivot_pc.x;
-            negative_pivot.y = -joint->pivot_pc.y;
-            negative_pivot.z = -joint->pivot_pc.z;
+        if ((joint->flags & 8) != 0) {
+            NuMtxPreTranslate(matrix, &joint->pivot);
+            negative_pivot.x = -joint->pivot.x;
+            negative_pivot.y = -joint->pivot.y;
+            negative_pivot.z = -joint->pivot.z;
             NuMtxTranslate(matrix, &negative_pivot);
             if (locator_translation != NULL) {
-                NuVecMtxRotate(locator_translation, &joint->pivot_pc, matrix);
-                NuVecSub(locator_translation, locator_translation, &joint->pivot_pc);
+                NuVecMtxRotate(locator_translation, &joint->pivot, matrix);
+                NuVecSub(locator_translation, locator_translation, &joint->pivot);
                 locator_translation->z = (f32)(locator_translation->z * -1.0);
             }
         }
@@ -11688,17 +11688,17 @@ void NuPostEffectMotionBlur(const NUMTX *previous, const NUMTX *current, f32 sca
     motion->falloff = falloff;
 }
 
-void NuPostEffectAccumulationMotionBlur(i32 frames, f32 blend, f32 mode_pc) {
+void NuPostEffectAccumulationMotionBlur(i32 frames, f32 blend, f32 weight_exponent) {
     NU_POST_MAIN_VIEW *main = mainFilter;
     if (main == NULL) {
         return;
     }
     main->accumulation_frames = frames;
     main->accumulation_blend = blend;
-    main->accumulation_mode_pc = mode_pc;
+    main->accumulation_weight_exponent = weight_exponent;
     NU_POST_ACCUM_VIEW *accum = motionAccumFilter;
     if (accum != NULL) {
-        accum->mode_pc = mode_pc;
+        accum->weight_exponent = weight_exponent;
         accum->frames = frames;
         accum->blend = blend;
     }
@@ -12157,7 +12157,7 @@ void NuMainFilterGen::fun_005c23b0(const NUMTX *previous, const NUMTX *current, 
 void NuMainFilterGen::fun_005c2400(i32 frames, f32 blend, f32 mode) {
     accumulation_blend = blend;
     accumulation_frames = frames;
-    accumulation_mode_pc = mode;
+    accumulation_weight_exponent = mode;
 }
 
 extern "C" i32 fun_005c2470(void) {
@@ -12269,13 +12269,14 @@ void NuMainFilterGen::destroyResources() {
 
 #define POST_FILTER_BIND_TEXTURE(stage, texture)                                                                                           \
     do {                                                                                                                                   \
-        GRAPHICS_RENDER_TEXTURE *texture_pc = (texture);                                                                                   \
-        if (texture_pc != NULL) {                                                                                                          \
-            u32 *tuple_pc = PCGraphicsEffectTextureSampler(texture_pc);                                                                    \
-            if ((u32)PCDeviceSamplerInvalidation[stage][0] != tuple_pc[0] || (u32)PCDeviceSamplerInvalidation[stage][1] != tuple_pc[1])    \
-                PCGraphicsSetSamplerTuple(stage, PCGraphicsEffectTextureSampler(texture_pc));                                              \
+        GRAPHICS_RENDER_TEXTURE *bound_texture = (texture);                                                                                \
+        if (bound_texture != NULL) {                                                                                                       \
+            u32 *sampler_tuple = PCGraphicsEffectTextureSampler(bound_texture);                                                            \
+            if ((u32)PCDeviceSamplerInvalidation[stage][0] != sampler_tuple[0] ||                                                          \
+                (u32)PCDeviceSamplerInvalidation[stage][1] != sampler_tuple[1])                                                            \
+                PCGraphicsSetSamplerTuple(stage, PCGraphicsEffectTextureSampler(bound_texture));                                           \
         }                                                                                                                                  \
-        PCGraphicsBindEffectTexture(texture_pc, stage);                                                                                    \
+        PCGraphicsBindEffectTexture(bound_texture, stage);                                                                                 \
     } while (0)
 
 extern "C" f32 NuMotionFilterCentre;
@@ -12441,7 +12442,7 @@ void NuMotionAccumFilterGen::render() {
     f32 sum = 0.0f;
     for (i32 i = 0; i < frames; ++i) {
         f32 position = (f32)(i + 1) / frames;
-        weights[i] = NuPow(position, mode_pc);
+        weights[i] = NuPow(position, weight_exponent);
         sum += weights[i];
     }
     for (i32 i = 0; i < frames; ++i) {
@@ -12780,7 +12781,7 @@ void NuMotionAccumFilterGen::fun_005c3100(bool enable) {
 }
 
 void NuMotionAccumFilterGen::fun_005c3110(i32 frames, f32 blend, f32 mode) {
-    mode_pc = mode;
+    weight_exponent = mode;
     this->frames = frames;
     this->blend = blend;
 }
@@ -13985,7 +13986,7 @@ extern "C" i32 NuDynamicLightIsEnabled(NURNDRLIGHTRECORD *records) {
 }
 
 extern "C" void NuDynamicLightSetEnabled(PC_SPECIAL_SHADOW_LIGHT *light, i32 enabled) {
-    light->SetEnabledPc(enabled);
+    light->SetEnabled(enabled);
 }
 
 extern "C" i32 NuDynamicLightGetActiveRenderSetCount(PC_SPECIAL_SHADOW_LIGHT *light) {
@@ -17004,8 +17005,8 @@ void NuDeferredFilterGen::resetAll() {
 /* Original nudynamiclight/nucore helper; proposed named fields are documented
  * in light-reset-field-contract.json. No byte-cast/unknown-layout bypass. */
 void NuDynamicLight::resetGeometry() {
-    for (i32 i = 0; i < render_set_count_pc; ++i) {
-        NURNDRLIGHTRECORD &set = render_sets_pc[i];
+    for (i32 i = 0; i < render_set_count; ++i) {
+        NURNDRLIGHTRECORD &set = render_sets[i];
         set.count = 0;
         for (i32 j = 0; j < 2; ++j) {
             NuDisplayListResetStateCache(set.shadow_lists[j].state);
@@ -17143,9 +17144,9 @@ nurndrlightrecord_s::nurndrlightrecord_s() {
 
 nurndrlightrecord_s &nurndrlightrecord_s::operator=(const nurndrlightrecord_s &other) {
     i32 i;
-    view_pc = other.view_pc;
-    projection_pc = other.projection_pc;
-    shadow_matrix_pc = other.shadow_matrix_pc;
+    view = other.view;
+    projection = other.projection;
+    shadow_matrix = other.shadow_matrix;
     texture_matrix = other.texture_matrix;
     parameter_100 = other.parameter_100;
     parameter_104 = other.parameter_104;
@@ -17153,31 +17154,31 @@ nurndrlightrecord_s &nurndrlightrecord_s::operator=(const nurndrlightrecord_s &o
     parameter_10c = other.parameter_10c;
     parameter_110 = other.parameter_110;
     for (i = 0; i < 8; ++i) {
-        corners_pc[i].x = other.corners_pc[i].x;
-        corners_pc[i].y = other.corners_pc[i].y;
-        corners_pc[i].z = other.corners_pc[i].z;
-        corners_pc[i].w = other.corners_pc[i].w;
+        corners[i].x = other.corners[i].x;
+        corners[i].y = other.corners[i].y;
+        corners[i].z = other.corners[i].z;
+        corners[i].w = other.corners[i].w;
     }
     for (i = 0; i < 12; ++i) {
-        planes_pc[i].x = other.planes_pc[i].x;
-        planes_pc[i].y = other.planes_pc[i].y;
-        planes_pc[i].z = other.planes_pc[i].z;
-        planes_pc[i].w = other.planes_pc[i].w;
+        planes[i].x = other.planes[i].x;
+        planes[i].y = other.planes[i].y;
+        planes[i].z = other.planes[i].z;
+        planes[i].w = other.planes[i].w;
     }
     shadow_plane_count = other.shadow_plane_count;
-    far_plane_pc.x = other.far_plane_pc.x;
-    far_plane_pc.y = other.far_plane_pc.y;
-    far_plane_pc.z = other.far_plane_pc.z;
-    far_plane_pc.w = other.far_plane_pc.w;
-    endpoint0_pc.x = other.endpoint0_pc.x;
-    endpoint0_pc.y = other.endpoint0_pc.y;
-    endpoint0_pc.z = other.endpoint0_pc.z;
-    endpoint0_pc.w = other.endpoint0_pc.w;
-    endpoint1_pc.x = other.endpoint1_pc.x;
-    endpoint1_pc.y = other.endpoint1_pc.y;
-    endpoint1_pc.z = other.endpoint1_pc.z;
-    endpoint1_pc.w = other.endpoint1_pc.w;
-    shadow_radius_pc = other.shadow_radius_pc;
+    far_plane.x = other.far_plane.x;
+    far_plane.y = other.far_plane.y;
+    far_plane.z = other.far_plane.z;
+    far_plane.w = other.far_plane.w;
+    endpoint0.x = other.endpoint0.x;
+    endpoint0.y = other.endpoint0.y;
+    endpoint0.z = other.endpoint0.z;
+    endpoint0.w = other.endpoint0.w;
+    endpoint1.x = other.endpoint1.x;
+    endpoint1.y = other.endpoint1.y;
+    endpoint1.z = other.endpoint1.z;
+    endpoint1.w = other.endpoint1.w;
+    shadow_radius = other.shadow_radius;
     shadow_lists[0] = other.shadow_lists[0];
     shadow_lists[1] = other.shadow_lists[1];
     render_states[0] = other.render_states[0];
@@ -18308,10 +18309,10 @@ PC_SPECIAL_SHADOW_LIGHT &PC_SPECIAL_SHADOW_LIGHT::operator=(const PC_SPECIAL_SHA
     split_planes[1].y = other.split_planes[1].y;
     split_planes[1].z = other.split_planes[1].z;
     split_planes[1].w = other.split_planes[1].w;
-    camera_position_pc.x = other.camera_position_pc.x;
-    camera_position_pc.y = other.camera_position_pc.y;
-    camera_position_pc.z = other.camera_position_pc.z;
-    camera_position_pc.w = other.camera_position_pc.w;
+    eye_position.x = other.eye_position.x;
+    eye_position.y = other.eye_position.y;
+    eye_position.z = other.eye_position.z;
+    eye_position.w = other.eye_position.w;
     camera_forward.x = other.camera_forward.x;
     camera_forward.y = other.camera_forward.y;
     camera_forward.z = other.camera_forward.z;
@@ -18398,8 +18399,8 @@ extern "C" {
     } while (0)
 
 void PC_SPECIAL_SHADOW_LIGHT::ComputeShadowMatrix(NURNDRLIGHTRECORD *set) {
-    NUMTX *shadow_matrix = &set->shadow_matrix_pc;
-    NUMTX original = set->view_pc;
+    NUMTX *shadow_matrix = &set->shadow_matrix;
+    NUMTX original = set->view;
     NUMTX captured = PostShadowView;
     NUMTX combined;
     NUMTX combined_inverse;
@@ -18419,27 +18420,27 @@ void PC_SPECIAL_SHADOW_LIGHT::ComputeShadowMatrix(NURNDRLIGHTRECORD *set) {
     NUVEC camera_direction;
     NUVEC offset;
     NUVEC camera_position;
-    NuMtxMulH(&combined, &original, &set->projection_pc);
+    NuMtxMulH(&combined, &original, &set->projection);
     NuMtxInvH(&combined_inverse, &combined);
     NuMtxInv(&original_inverse, &original);
     NuMtxInv(&captured_inverse, &captured);
     light_direction = *(NUVEC *)&original_inverse.m20;
     camera_direction = *(NUVEC *)&captured_inverse.m20;
     PostShadowBuildBasis(&light_direction, &camera_direction, &basis, &basis_inverse);
-    PostShadowCopyVectors(corners, set->corners_pc, 8);
+    PostShadowCopyVectors(corners, set->corners, 8);
     {
         NUVEC temporary;
         NUVEC4 sum;
-        temporary.x = shadow_direction_pc.x * 200.0;
-        temporary.y = shadow_direction_pc.y * 200.0;
-        temporary.z = shadow_direction_pc.z * 200.0;
+        temporary.x = shadow_direction.x * 200.0;
+        temporary.y = shadow_direction.y * 200.0;
+        temporary.z = shadow_direction.z * 200.0;
         sum.x = captured_inverse.m30 + temporary.x;
         sum.y = captured_inverse.m31 + temporary.y;
         sum.z = captured_inverse.m32 + temporary.z;
         SHADOW_COPY_VEC4(corners[8], sum);
-        temporary.x = shadow_direction_pc.x * 200.0;
-        temporary.y = shadow_direction_pc.y * 200.0;
-        temporary.z = shadow_direction_pc.z * 200.0;
+        temporary.x = shadow_direction.x * 200.0;
+        temporary.y = shadow_direction.y * 200.0;
+        temporary.z = shadow_direction.z * 200.0;
         sum.x = captured_inverse.m30 - temporary.x;
         sum.y = captured_inverse.m31 - temporary.y;
         sum.z = captured_inverse.m32 - temporary.z;
@@ -18576,7 +18577,7 @@ void PC_SPECIAL_SHADOW_LIGHT::SetupShadow(NURNDRLIGHTRECORD *set) {
     bias.m31 = 0.5f;
     bias.m32 = 0.5f;
     bias.m33 = 1.0f;
-    NuMtxMulH(&set->texture_matrix, &inverse, &set->shadow_matrix_pc);
+    NuMtxMulH(&set->texture_matrix, &inverse, &set->shadow_matrix);
     NuMtxMulH(&set->texture_matrix, &set->texture_matrix, &bias);
 }
 
@@ -18606,7 +18607,7 @@ void PC_SPECIAL_SHADOW_LIGHT::RenderShadow(i32 index, PC_FRAMEBUFFER *) {
     axis.m31 = 0.0f;
     axis.m32 = 0.5f;
     axis.m33 = 1.0f;
-    NuMtxMulH(&view_projection, &set.shadow_matrix_pc, &axis);
+    NuMtxMulH(&view_projection, &set.shadow_matrix, &axis);
     PcUpdateGeometryCameraOrigin(&view_projection, &NuMtxSetIdentityTemplate);
     for (i32 i = 0; i < 2; ++i) {
         NU_LIGHT_SHADOW_LIST_VIEW &list = set.shadow_lists[i];
@@ -18681,7 +18682,7 @@ void PC_SPECIAL_SHADOW_LIGHT::RenderConstants(void *) {
         NUMTX matrix;
         NuMtxTranspose(&transposed, &set.texture_matrix);
         PCDeviceSetPixelShaderConstantsF(i * 7 + 0x89, &transposed.m00, 4);
-        NuMtxMulH(&matrix, &inverse, &set.shadow_matrix_pc);
+        NuMtxMulH(&matrix, &inverse, &set.shadow_matrix);
         NuMtxMulH(&matrix, &matrix, &bias);
         NuMtxInvH(&matrix, &matrix);
         f32 column2[4] = {matrix.m02, matrix.m12, matrix.m22, matrix.m32};
@@ -18777,54 +18778,54 @@ void NuDeferredFilterGen::render() {
         light->RenderConstants(program);
         PCGraphicsEffectTextureSetFilterFields(depth_texture, 2, 2, 0);
         {
-            const u32 stage_pc = 0;
-            GRAPHICS_RENDER_TEXTURE *texture_pc = depth_texture;
-            if (texture_pc != NULL) {
-                u32 *tuple_pc = PCGraphicsEffectTextureSampler(texture_pc);
-                if ((u32)PCDeviceSamplerInvalidation[stage_pc][0] != tuple_pc[0] ||
-                    (u32)PCDeviceSamplerInvalidation[stage_pc][1] != tuple_pc[1]) {
-                    PCGraphicsSetSamplerTuple(stage_pc, PCGraphicsEffectTextureSampler(texture_pc));
+            const u32 bound_stage = 0;
+            GRAPHICS_RENDER_TEXTURE *bound_texture = depth_texture;
+            if (bound_texture != NULL) {
+                u32 *sampler_tuple = PCGraphicsEffectTextureSampler(bound_texture);
+                if ((u32)PCDeviceSamplerInvalidation[bound_stage][0] != sampler_tuple[0] ||
+                    (u32)PCDeviceSamplerInvalidation[bound_stage][1] != sampler_tuple[1]) {
+                    PCGraphicsSetSamplerTuple(bound_stage, PCGraphicsEffectTextureSampler(bound_texture));
                 }
             }
-            PCGraphicsBindEffectTexture(texture_pc, stage_pc);
+            PCGraphicsBindEffectTexture(bound_texture, bound_stage);
         }
         {
-            const u32 stage_pc = 1;
-            GRAPHICS_RENDER_TEXTURE *texture_pc = textures[4];
-            if (texture_pc != NULL) {
-                u32 *tuple_pc = PCGraphicsEffectTextureSampler(texture_pc);
-                if ((u32)PCDeviceSamplerInvalidation[stage_pc][0] != tuple_pc[0] ||
-                    (u32)PCDeviceSamplerInvalidation[stage_pc][1] != tuple_pc[1]) {
-                    PCGraphicsSetSamplerTuple(stage_pc, PCGraphicsEffectTextureSampler(texture_pc));
+            const u32 bound_stage = 1;
+            GRAPHICS_RENDER_TEXTURE *bound_texture = textures[4];
+            if (bound_texture != NULL) {
+                u32 *sampler_tuple = PCGraphicsEffectTextureSampler(bound_texture);
+                if ((u32)PCDeviceSamplerInvalidation[bound_stage][0] != sampler_tuple[0] ||
+                    (u32)PCDeviceSamplerInvalidation[bound_stage][1] != sampler_tuple[1]) {
+                    PCGraphicsSetSamplerTuple(bound_stage, PCGraphicsEffectTextureSampler(bound_texture));
                 }
             }
-            PCGraphicsBindEffectTexture(texture_pc, stage_pc);
+            PCGraphicsBindEffectTexture(bound_texture, bound_stage);
         }
         {
-            const u32 stage_pc = 4;
-            GRAPHICS_RENDER_TEXTURE *texture_pc = textures[5];
-            if (texture_pc != NULL) {
-                u32 *tuple_pc = PCGraphicsEffectTextureSampler(texture_pc);
-                if ((u32)PCDeviceSamplerInvalidation[stage_pc][0] != tuple_pc[0] ||
-                    (u32)PCDeviceSamplerInvalidation[stage_pc][1] != tuple_pc[1]) {
-                    PCGraphicsSetSamplerTuple(stage_pc, PCGraphicsEffectTextureSampler(texture_pc));
+            const u32 bound_stage = 4;
+            GRAPHICS_RENDER_TEXTURE *bound_texture = textures[5];
+            if (bound_texture != NULL) {
+                u32 *sampler_tuple = PCGraphicsEffectTextureSampler(bound_texture);
+                if ((u32)PCDeviceSamplerInvalidation[bound_stage][0] != sampler_tuple[0] ||
+                    (u32)PCDeviceSamplerInvalidation[bound_stage][1] != sampler_tuple[1]) {
+                    PCGraphicsSetSamplerTuple(bound_stage, PCGraphicsEffectTextureSampler(bound_texture));
                 }
             }
-            PCGraphicsBindEffectTexture(texture_pc, stage_pc);
+            PCGraphicsBindEffectTexture(bound_texture, bound_stage);
         }
         if (normal_texture != NULL) {
             PCGraphicsEffectTextureSetFilterFields(normal_texture, 1, 1, 0);
             {
-                const u32 stage_pc = 2;
-                GRAPHICS_RENDER_TEXTURE *texture_pc = normal_texture;
-                if (texture_pc != NULL) {
-                    u32 *tuple_pc = PCGraphicsEffectTextureSampler(texture_pc);
-                    if ((u32)PCDeviceSamplerInvalidation[stage_pc][0] != tuple_pc[0] ||
-                        (u32)PCDeviceSamplerInvalidation[stage_pc][1] != tuple_pc[1]) {
-                        PCGraphicsSetSamplerTuple(stage_pc, PCGraphicsEffectTextureSampler(texture_pc));
+                const u32 bound_stage = 2;
+                GRAPHICS_RENDER_TEXTURE *bound_texture = normal_texture;
+                if (bound_texture != NULL) {
+                    u32 *sampler_tuple = PCGraphicsEffectTextureSampler(bound_texture);
+                    if ((u32)PCDeviceSamplerInvalidation[bound_stage][0] != sampler_tuple[0] ||
+                        (u32)PCDeviceSamplerInvalidation[bound_stage][1] != sampler_tuple[1]) {
+                        PCGraphicsSetSamplerTuple(bound_stage, PCGraphicsEffectTextureSampler(bound_texture));
                     }
                 }
-                PCGraphicsBindEffectTexture(texture_pc, stage_pc);
+                PCGraphicsBindEffectTexture(bound_texture, bound_stage);
             }
         }
         PCDeviceSetRenderState(22, 1);
@@ -18856,21 +18857,21 @@ void NuDeferredFilterGen::render() {
         program = (POST_SHADER_PROGRAM *)programs[3];
     }
     NuShaderProgramMakeCurrent(program);
-    f32 parameters_pc[4] = {parameters[1], last_sample, parameters[2], parameters[3]};
-    PCDeviceSetPixelShaderConstantsF(0xa0, parameters_pc, 1);
+    f32 shader_parameters[4] = {parameters[1], last_sample, parameters[2], parameters[3]};
+    PCDeviceSetPixelShaderConstantsF(0xa0, shader_parameters, 1);
     if (output == NuFramebufferGetObject(1) && PCDeviceBackend.textures[0] != NULL) {
         PCGraphicsEffectTextureSetFilterFields(color_texture, 2, 2, 0);
         {
-            const u32 stage_pc = 4;
-            GRAPHICS_RENDER_TEXTURE *texture_pc = color_texture;
-            if (texture_pc != NULL) {
-                u32 *tuple_pc = PCGraphicsEffectTextureSampler(texture_pc);
-                if ((u32)PCDeviceSamplerInvalidation[stage_pc][0] != tuple_pc[0] ||
-                    (u32)PCDeviceSamplerInvalidation[stage_pc][1] != tuple_pc[1]) {
-                    PCGraphicsSetSamplerTuple(stage_pc, PCGraphicsEffectTextureSampler(texture_pc));
+            const u32 bound_stage = 4;
+            GRAPHICS_RENDER_TEXTURE *bound_texture = color_texture;
+            if (bound_texture != NULL) {
+                u32 *sampler_tuple = PCGraphicsEffectTextureSampler(bound_texture);
+                if ((u32)PCDeviceSamplerInvalidation[bound_stage][0] != sampler_tuple[0] ||
+                    (u32)PCDeviceSamplerInvalidation[bound_stage][1] != sampler_tuple[1]) {
+                    PCGraphicsSetSamplerTuple(bound_stage, PCGraphicsEffectTextureSampler(bound_texture));
                 }
             }
-            PCGraphicsBindEffectTexture(texture_pc, stage_pc);
+            PCGraphicsBindEffectTexture(bound_texture, bound_stage);
         }
         PCDeviceSetRenderState(27, 0);
         PCDeviceSetRenderState(15, 0);
@@ -18887,16 +18888,16 @@ void NuDeferredFilterGen::render() {
     PCGraphicsEffectTextureSetFilterFields(textures[0], 2, 2, 2);
     PCGraphicsEffectTextureSetLowNibbles(textures[0], 0, (i32)last_sample + 1);
     {
-        const u32 stage_pc = 5;
-        GRAPHICS_RENDER_TEXTURE *texture_pc = textures[0];
-        if (texture_pc != NULL) {
-            u32 *tuple_pc = PCGraphicsEffectTextureSampler(texture_pc);
-            if ((u32)PCDeviceSamplerInvalidation[stage_pc][0] != tuple_pc[0] ||
-                (u32)PCDeviceSamplerInvalidation[stage_pc][1] != tuple_pc[1]) {
-                PCGraphicsSetSamplerTuple(stage_pc, PCGraphicsEffectTextureSampler(texture_pc));
+        const u32 bound_stage = 5;
+        GRAPHICS_RENDER_TEXTURE *bound_texture = textures[0];
+        if (bound_texture != NULL) {
+            u32 *sampler_tuple = PCGraphicsEffectTextureSampler(bound_texture);
+            if ((u32)PCDeviceSamplerInvalidation[bound_stage][0] != sampler_tuple[0] ||
+                (u32)PCDeviceSamplerInvalidation[bound_stage][1] != sampler_tuple[1]) {
+                PCGraphicsSetSamplerTuple(bound_stage, PCGraphicsEffectTextureSampler(bound_texture));
             }
         }
-        PCGraphicsBindEffectTexture(texture_pc, stage_pc);
+        PCGraphicsBindEffectTexture(bound_texture, bound_stage);
     }
     PCGraphicsDrawPostEffectQuad();
     color->texture = destination;

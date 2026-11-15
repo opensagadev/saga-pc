@@ -1,0 +1,50 @@
+old,new,evidence
+PodRacePc,ActivePodRace,the active pod race block; PodRace is a level name string
+texture_pc,bound_texture,local of the sampler-bind blocks; texture and stage are other locals there
+stage_pc,bound_stage,local of the sampler-bind blocks; stage is another local there
+tuple_pc,sampler_tuple,local of the sampler-bind blocks
+parameters_pc,shader_parameters,local next to the parameters argument
+mode_pc,weight_exponent,NuMotionAccumFilterGen member and argument: the NuPow exponent of the blur weights; mode is the setter's argument
+accumulation_mode_pc,accumulation_weight_exponent,the same exponent in the main filter
+camera_position_pc,eye_position,PC_SPECIAL_SHADOW_LIGHT member; camera_position is a local of its user
+special_move_pc,special_move,member; plain name free in its record
+flags_pc,flags,member; plain name free in its record
+context_flags_pc,context_flags,member; plain name free in its record
+blend_duration_pc,blend_duration,member; plain name free in its record
+blend_elapsed_pc,blend_elapsed,member; plain name free in its record
+corners_pc,corners,member; plain name free in its record
+roof_height_pc,roof_height,member; plain name free in its record
+far_plane_pc,far_plane,member; plain name free in its record
+planes_pc,planes,member; plain name free in its record
+endpoint0_pc,endpoint0,member; plain name free in its record
+endpoint1_pc,endpoint1,member; plain name free in its record
+scale_pc,scale,member; plain name free in its record
+pivot_pc,pivot,member; plain name free in its record
+shadow_matrix_pc,shadow_matrix,member; plain name free in its record
+shadow_direction_pc,shadow_direction,member; plain name free in its record
+view_pc,view,member; plain name free in its record
+projection_pc,projection,member; plain name free in its record
+shadow_radius_pc,shadow_radius,member; plain name free in its record
+render_set_count_pc,render_set_count,member; plain name free in its record
+render_sets_pc,render_sets,member; plain name free in its record
+unknown_2824_pc,unknown_2824_head,the first 0x400 bytes inside the unknown_2824 union
+unknown_0114_pc,unknown_0114_first,the first word inside the unknown_0114 union
+SetEnabledPc,SetEnabled,PC_SPECIAL_SHADOW_LIGHT method; other SetEnabled methods belong to other classes
+SaveConfigurationPc,SaveConfiguration,PC_INPUT_RUNTIME method; the other SaveConfiguration belongs to PC_CONTROL_SCREEN
+ApplyPc,Apply,MENU_VIDEO_OPTIONS method
+EndFramePc,EndFrame,PC_INPUT_RUNTIME method; the other EndFrame belongs to OcclusionManager
+PodRaceAUpdatePc,PodRaceA_Update,level update callback (X_Update like the other levels); PodRaceAUpdate is the race helper it calls
+PodRaceADrawPc,PodRaceA_Draw,level draw callback; PodRaceADraw is the helper it calls
+KaminoE_Update,KaminoE_UpdateSlave1,moves Slave 1 on its orbit; the level callback takes the plain name
+KaminoE_UpdatePc,KaminoE_Update,level update callback
+PCGraphicsBindEffectTexturePc,PCGraphicsBindStageTexture,stage-first copy of PCGraphicsBindEffectTexture
+NuSound3LoadingSfxPc,NuSound3SfxLoading,the flag NuSound3LoadingSfx() reads
+GizmoPickups_ResetPc,GizmoPickups_ResetAll,the add-type reset of every pickup (like GizSpinner_ResetAll)
+GizTurrets_ResetPc,GizTurrets_ResetAll,the add-type reset of every turret
+GizSpinner_BoltHitPlatPc,GizSpinner_BoltHitPlatAll,the add-type bolt hit over every spinner
+GizForces_BoltHitPlatPc,GizForces_BoltHitPlatAll,the add-type bolt hit over every force object
+DrawBossHitPointsPc,DrawBossHitPointsHud,the HUD part; DrawBossHitPoints is the mapped episode helper
+Hint_SetCompletePc,Hint_SetHintComplete,takes the HINT; Hint_SetComplete takes its id
+NuPadSetMotorsPc,NuPadSetDeviceMotors,takes the device; NuPadSetMotors takes the frame pad
+CreateWindowPc,CreateGameWindow,CreateWindow is a windows.h macro
+StreamInfoPc,StreamPlaybackInfo,local record of NuMusic::Debug

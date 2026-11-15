@@ -1532,7 +1532,7 @@ extern "C" i32 fun_006d5d40(i32 port, i32 kind, i32 value) {
 }
 
 extern "C" void PcInputEndFrame(void) {
-    ((PC_INPUT_RUNTIME *)nu_input_state)->EndFramePc();
+    ((PC_INPUT_RUNTIME *)nu_input_state)->EndFrame();
 }
 
 // Append to input_runtime.cpp; declarations/mappings in B-contract.json.
@@ -2339,7 +2339,7 @@ void PC_INPUT_RUNTIME::WriteConfiguration(PC_INPUT_CONFIG *records, i32 count, c
     }
 }
 
-void PC_INPUT_RUNTIME::SaveConfigurationPc() {
+void PC_INPUT_RUNTIME::SaveConfiguration() {
     char directory[1024];
     /* Retail passes only the folder; the two missing %s read the company and product arguments that
        PcGetUserFolder left on the stack (cdecl cleanup is deferred). */
@@ -2348,7 +2348,7 @@ void PC_INPUT_RUNTIME::SaveConfigurationPc() {
 }
 
 extern "C" void PcInputSaveConfiguration() {
-    ((PC_INPUT_RUNTIME *)nu_input_state)->SaveConfigurationPc();
+    ((PC_INPUT_RUNTIME *)nu_input_state)->SaveConfiguration();
 }
 
 u8 PcInputAxisRemap[16] = {0};

@@ -1623,7 +1623,7 @@ f32 KaminoShipYAmplitude = 0.2f;
 f32 KaminoShipYPeriod = 3.0f;
 KAMINO_SHIP_ZERO_ANGLES KaminoShipZeroAngles = {0};
 
-void KaminoE_Update(WORLDINFO *world) {
+void KaminoE_UpdateSlave1(WORLDINFO *world) {
     f32 best_distance = 1000000000.0f;
     GAMEOBJECT *nearest = NULL;
     NUMTX *matrix;
@@ -1832,7 +1832,7 @@ void KaminoE_AlwaysUpdate(WORLDINFO *world) {
     debris_object_switches[1] = CUTSTOPGAME != 0 || GameCam->sock_position.sock_index == 0x1e;
 }
 
-void KaminoE_UpdatePc(WORLDINFO *world) {
+void KaminoE_Update(WORLDINFO *world) {
     GAMEOBJECT *jango;
     GAMEOBJECT *other;
     GAMEOBJECT *target;
@@ -1868,7 +1868,7 @@ void KaminoE_UpdatePc(WORLDINFO *world) {
         instNuGCutSceneIsFinished(((CUTINFO_READER *)kamino_e.intro_cutscene)->instance) != 0) {
         kamino_e.jango_fight->value = 1.0f;
     }
-    KaminoE_Update(world);
+    KaminoE_UpdateSlave1(world);
     connection = AIPAthFindPathCnx(world->ai_sys, world->ai_sys->path_sys->active_path, "Bridge1_a", "Bridge1_b", &direction);
     fight_area = AISysFindArea(WORLD->ai_sys, "Fight");
     if (target == NULL || connection == NULL || fight_area == NULL) {

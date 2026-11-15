@@ -493,7 +493,7 @@ extern "C" {
         SetLights(&intensity[0], &direction[0], &intensity[1], &direction[1], &intensity[2], &direction[2], &ambient);
     }
 
-    /* PC_SPECIAL_SHADOW_LIGHT::SetEnabledPc, inlined here. */
+    /* PC_SPECIAL_SHADOW_LIGHT::SetEnabled, inlined here. */
     static void EnableShadowLight(struct PC_SPECIAL_SHADOW_LIGHT *light, i32 enabled) {
         if (enabled != 0 && light->enabled == 0) {
             i32 i;

@@ -953,7 +953,7 @@ extern "C" {
         Arcade_ResetPanel();
     }
 
-    static i32 DrawBossHitPointsPc(GAMEOBJECT *boss) {
+    static i32 DrawBossHitPointsHud(GAMEOBJECT *boss) {
         if (boss != NULL && boss->dead == 0 && (boss->flags_1fc & APIOBJECT_FLAG_PLAYER_ACTIVE) == 0) {
             if (FadeSys.fade == 0.0f) {
                 f32 alpha = statstime;
@@ -1408,7 +1408,7 @@ extern "C" {
                                 HudLevelTitleScale, 0, 255, 255, 255, HudLevelTitleWidth, 1, NULL, 0, (u8)(i32)((f64)alpha * 64.0));
                 }
             }
-            i32 hide_super_story_target = drawbosshitpoints != NULL ? DrawBossHitPointsPc(drawbosshitpoints) : 0;
+            i32 hide_super_story_target = drawbosshitpoints != NULL ? DrawBossHitPointsHud(drawbosshitpoints) : 0;
             if (WORLD->area == HUB_ADATA) {
                 DrawCoinTotal(0, hide_super_story_target);
             } else if (SuperStory != 0) {

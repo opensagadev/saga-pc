@@ -21,10 +21,10 @@ void PC_SPECIAL_SHADOW_LIGHT::SetupCustomCameraFrustum(NUCAMERA *camera, const f
         f32 x = camera->mtx.m30;
         f32 y = camera->mtx.m31;
         f32 z = camera->mtx.m32;
-        camera_position_pc.x = x;
-        camera_position_pc.y = y;
-        camera_position_pc.z = z;
-        camera_position_pc.w = 1.0f;
+        eye_position.x = x;
+        eye_position.y = y;
+        eye_position.z = z;
+        eye_position.w = 1.0f;
     }
     {
         f32 x = camera->mtx.m20;
@@ -46,11 +46,11 @@ void PC_SPECIAL_SHADOW_LIGHT::SetupCustomCameraFrustum(NUCAMERA *camera, const f
         NURNDRLIGHTRECORD &set = render_sets[i];
         camera->near_clip = splits[i];
         camera->far_clip = splits[i + 1];
-        PostShadowComputeFrustumCube(camera, set.corners_pc, &set.far_plane_pc);
-        set.shadow_plane_count = PostShadowComputePlanes(&light_direction4, set.corners_pc, set.planes_pc);
-        set.view_pc = view;
-        set.projection_pc = projection;
-        PostShadowComputeCapsule(&light_direction4, set.corners_pc, &set.endpoint0_pc, &set.endpoint1_pc, &set.shadow_radius_pc);
+        PostShadowComputeFrustumCube(camera, set.corners, &set.far_plane);
+        set.shadow_plane_count = PostShadowComputePlanes(&light_direction4, set.corners, set.planes);
+        set.view = view;
+        set.projection = projection;
+        PostShadowComputeCapsule(&light_direction4, set.corners, &set.endpoint0, &set.endpoint1, &set.shadow_radius);
     }
     for (i32 i = 0; i < set_count; ++i) {
         split_planes[i].x = 0.0f;

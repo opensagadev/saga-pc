@@ -22,7 +22,7 @@ extern "C" LRESULT __stdcall WindowProc(HWND, UINT, WPARAM, LPARAM);
 #ifdef __cplusplus
 extern "C" {
 #endif
-    i32 CreateWindowPc(HINSTANCE, i32, u16);
+    i32 CreateGameWindow(HINSTANCE, i32, u16);
     void RegisterWindowCallback(PC_WINDOW_CALLBACK);
     void SetAccessibility(u8);
     void ParsePlatformArguments(char *);
@@ -50,7 +50,7 @@ extern "C" {
     extern BOOL PcScreenSaverEnabled;
     extern char PcModuleFilename[260];
     extern char PcExecutableFilename[260];
-    i32 CreateWindowPc(HINSTANCE, i32, u16);
+    i32 CreateGameWindow(HINSTANCE, i32, u16);
     extern char *PcArgv[];
     extern PC_WINDOW_CALLBACK PcWindowCallbacks[];
     void PcQuitToWindows(void);

@@ -28,7 +28,7 @@ void MENU_VIDEO_OPTIONS::fun_005091f0() {
     hires_enabled = PcWindowOptions.usehirespending != 0;
 }
 
-void MENU_VIDEO_OPTIONS::ApplyPc() {
+void MENU_VIDEO_OPTIONS::Apply() {
     PcWindowOptions.SetAspectMode(aspect_mode);
     PcWindowOptions.Save();
     i32 aspect = PcWindowOptions.aspect_mode;
@@ -92,7 +92,7 @@ extern "C" void MenuExitEffects(MENU *) {
 extern "C" void MenuApplyVideo(void) {
     if (PCDeviceBackend.HasRequestedModeChanged()) {
         MenuSFX = MENUSFX_MENUSELECT;
-        MenuVideoOptions.ApplyPc();
+        MenuVideoOptions.Apply();
         PCDeviceBackend.CreateOrResetDevice(1);
         BackupMenu();
         NewMenu(1027, 0, -1);
@@ -100,7 +100,7 @@ extern "C" void MenuApplyVideo(void) {
     }
     if (MenuVideoOptions.Changed()) {
         MenuSFX = MENUSFX_MENUSELECT;
-        MenuVideoOptions.ApplyPc();
+        MenuVideoOptions.Apply();
         if (PcWindowOptions.usehirespending != PcWindowOptions.usehires) {
             BackupMenu();
             NewMenu(1028, 0, -1);

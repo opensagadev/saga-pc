@@ -21,7 +21,7 @@ extern "C" {
     extern MENU_PC_STRING_ENTRY dat_00827e40[40];
     extern MENU_PC_STRING_ENTRY dat_00827f80[40];
     void PCAnimationEffectCheckpoint(void);
-    void NuPadSetMotorsPc(NUPAD_INIT_STATE *, i32, i32);
+    void NuPadSetDeviceMotors(NUPAD_INIT_STATE *, i32, i32);
     extern u8 *ps2_scratch_free;
     extern u8 NuScratchBackingAccess[0x4000];
 #ifdef __cplusplus

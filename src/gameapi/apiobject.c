@@ -1694,7 +1694,7 @@ void EvalModelAnim(CHARACTER_MODEL_LAYERS *model, ANIMPACKET *packet, NUMTX *wor
             packet->blend_source_animation < apicharsys->model_id_capacity && model->model_data_c[packet->blend_source_animation] != NULL &&
             packet->blend_target_animation >= 0 && packet->blend_target_animation < apicharsys->model_id_capacity &&
             model->model_data_c[packet->blend_target_animation] != NULL) {
-            f32 fraction = packet->blend_elapsed_pc / packet->blend_duration_pc;
+            f32 fraction = packet->blend_elapsed / packet->blend_duration;
             *dwa_output = NuHGobjEvalDwaBlend2(render_count, render_indices, model->model_data_c[packet->blend_source_animation],
                                                packet->blend_source_time, model->model_data_c[packet->blend_target_animation],
                                                packet->blend_target_time, fraction);
@@ -1718,7 +1718,7 @@ void EvalModelAnim(CHARACTER_MODEL_LAYERS *model, ANIMPACKET *packet, NUMTX *wor
     if (packet->blending != 0 && packet->blend_source_animation >= 0 && packet->blend_source_animation < apicharsys->model_id_capacity &&
         model->model_data_b[packet->blend_source_animation] != NULL && packet->blend_target_animation >= 0 &&
         packet->blend_target_animation < apicharsys->model_id_capacity && model->model_data_b[packet->blend_target_animation] != NULL) {
-        f32 fraction = packet->blend_elapsed_pc / packet->blend_duration_pc;
+        f32 fraction = packet->blend_elapsed / packet->blend_duration;
         NuHGobjEvalAnimBlend2(model->hierarchy, model->model_data_b[packet->blend_source_animation], packet->blend_source_time,
                               model->model_data_b[packet->blend_target_animation], packet->blend_target_time, fraction, 0, NULL,
                               joint_matrices);
@@ -1941,8 +1941,8 @@ void UpdateAnimPacket(CHARACTER_MODEL_LAYERS *model, ANIMPACKET *packet, f32 fra
                 goto update_timers;
             }
 
-            packet->blend_elapsed_pc += blend_step;
-            if (packet->blend_elapsed_pc >= packet->blend_duration_pc) {
+            packet->blend_elapsed += blend_step;
+            if (packet->blend_elapsed >= packet->blend_duration) {
                 packet->blending = 0;
                 packet->animation_index = packet->blend_target_animation;
                 packet->current_time = packet->blend_target_time;
@@ -1956,7 +1956,7 @@ void UpdateAnimPacket(CHARACTER_MODEL_LAYERS *model, ANIMPACKET *packet, f32 fra
                 goto update_timers;
             }
 
-            if (packet->blend_elapsed_pc < packet->blend_duration_pc * 0.5f) {
+            if (packet->blend_elapsed < packet->blend_duration * 0.5f) {
                 packet->previous_animation = packet->blend_source_animation;
                 interrupted_reversed = (i8)packet->reversed_3c;
                 interrupted = 1;
@@ -2007,10 +2007,10 @@ void UpdateAnimPacket(CHARACTER_MODEL_LAYERS *model, ANIMPACKET *packet, f32 fra
                     packet->reversed_3d = 0;
                     packet->blend_target_time = 1.0f;
                 }
-                packet->blend_elapsed_pc = 0.0f;
-                packet->blend_duration_pc = model->animation_configs[packet->blend_target_animation]->blend_in_time;
-                if (model->animation_configs[packet->blend_source_animation]->blend_out_time < packet->blend_duration_pc) {
-                    packet->blend_duration_pc = model->animation_configs[packet->blend_source_animation]->blend_out_time;
+                packet->blend_elapsed = 0.0f;
+                packet->blend_duration = model->animation_configs[packet->blend_target_animation]->blend_in_time;
+                if (model->animation_configs[packet->blend_source_animation]->blend_out_time < packet->blend_duration) {
+                    packet->blend_duration = model->animation_configs[packet->blend_source_animation]->blend_out_time;
                 }
                 packet->flags |= 0x04;
                 goto update_timers;
@@ -2076,8 +2076,8 @@ update_timers:
 void AnimPacketMiniToFull(DRAW_ATTACHMENTS_MINI *source, ANIMPACKET *destination) {
     destination->current_time = source->current_time;
     destination->previous_time = source->previous_time;
-    destination->blend_elapsed_pc = source->blend_elapsed;
-    destination->blend_duration_pc = source->blend_duration;
+    destination->blend_elapsed = source->blend_elapsed;
+    destination->blend_duration = source->blend_duration;
     destination->blend_source_time = source->source_time;
     destination->blend_target_time = source->target_time;
     destination->flags = source->flags;
@@ -2096,8 +2096,8 @@ void AnimPacketMiniToFull(DRAW_ATTACHMENTS_MINI *source, ANIMPACKET *destination
 void AnimPacketFullToMini(ANIMPACKET *source, DRAW_ATTACHMENTS_MINI *destination) {
     destination->current_time = source->current_time;
     destination->previous_time = source->previous_time;
-    destination->blend_elapsed = source->blend_elapsed_pc;
-    destination->blend_duration = source->blend_duration_pc;
+    destination->blend_elapsed = source->blend_elapsed;
+    destination->blend_duration = source->blend_duration;
     destination->source_time = source->blend_source_time;
     destination->target_time = source->blend_target_time;
     destination->flags = source->flags;
@@ -2553,7 +2553,7 @@ i32 APIDrawCharacterModel(CHARACTER_MODEL_LAYERS *model, APICHARACTERDATA *chara
                     model->model_data_c[animation->blend_target_animation] != NULL) {
                     dwa = NuHGobjEvalDwaBlend2(render_count, render_indices, model->model_data_c[animation->blend_source_animation],
                                                animation->blend_source_time, model->model_data_c[animation->blend_target_animation],
-                                               animation->blend_target_time, animation->blend_elapsed_pc / animation->blend_duration_pc);
+                                               animation->blend_target_time, animation->blend_elapsed / animation->blend_duration);
                 } else if (animation->blending != 0 && animation->blend_target_animation >= 0 &&
                            animation->blend_target_animation < apicharsys->model_id_capacity &&
                            model->model_data_c[animation->blend_target_animation] != NULL) {
@@ -2599,12 +2599,12 @@ i32 APIDrawCharacterModel(CHARACTER_MODEL_LAYERS *model, APICHARACTERDATA *chara
                     (model->animation_configs[animation->blend_target_animation]->flags & CHARANIM_TRANSLATE) != 0) {
                     NuHGobjEvalAnimBlend2Root(model->hierarchy, model->model_data_b[animation->blend_source_animation],
                                               animation->blend_source_time, model->model_data_b[animation->blend_target_animation],
-                                              animation->blend_target_time, animation->blend_elapsed_pc / animation->blend_duration_pc,
+                                              animation->blend_target_time, animation->blend_elapsed / animation->blend_duration,
                                               joint_override_count, joint_overrides, output_matrices, BlendRootFn, object);
                 } else {
                     NuHGobjEvalAnimBlend2(model->hierarchy, model->model_data_b[animation->blend_source_animation],
                                           animation->blend_source_time, model->model_data_b[animation->blend_target_animation],
-                                          animation->blend_target_time, animation->blend_elapsed_pc / animation->blend_duration_pc,
+                                          animation->blend_target_time, animation->blend_elapsed / animation->blend_duration,
                                           joint_override_count, joint_overrides, output_matrices);
                 }
                 evaluated = 1;

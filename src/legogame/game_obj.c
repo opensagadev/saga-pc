@@ -686,7 +686,7 @@ void CollideGameObjects(WORLDINFO *world) {
             context == CHARACTER_CONTEXT_GET_IN || context == CHARACTER_CONTEXT_TELEPORT || context == CHARACTER_CONTEXT_EATEN) {
             continue;
         }
-        if (context == CHARACTER_CONTEXT_PUNCH && object->special_move_pc != -1 &&
+        if (context == CHARACTER_CONTEXT_PUNCH && object->special_move != -1 &&
             (object->context_variant_flags & APIOBJECT_PUNCH_SPECIAL_MOVE)) {
             continue;
         }
@@ -1822,7 +1822,7 @@ i32 Tag_UpdateHint(HINT *hint) {
                 break;
             }
             if (Tag_DoneFirst != 0) {
-                Hint_SetCompletePc(hint);
+                Hint_SetHintComplete(hint);
                 return 0;
             }
             if (VehicleArea != 0 || world->current_level == HUB_LDATA) {
@@ -1861,7 +1861,7 @@ i32 Tag_UpdateHint(HINT *hint) {
             if ((hint_flags & 4) != 0) {
                 previous = Hint_FindHint(602);
                 if (Tag_DoneFirst == 2) {
-                    Hint_SetCompletePc(hint);
+                    Hint_SetHintComplete(hint);
                     return 0;
                 }
                 if (Tag_DoneFirst != 1) {

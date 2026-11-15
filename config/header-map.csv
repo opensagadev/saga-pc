@@ -4501,7 +4501,7 @@ function:Shop_UpdateHint,function,Shop_UpdateHint,12481,12481,1,legoapi/menus/sc
 function:Percent_UpdateHint,function,Percent_UpdateHint,12482,12482,1,legoapi/lib/hub.h,symbol,legogame/hub.cpp android-path
 function:IndyUnlocked_UpdateHint,function,IndyUnlocked_UpdateHint,12483,12483,1,legoapi/lib/hub.h,symbol,legogame/hub.cpp android-path
 function:Hint_isComplete,function,Hint_isComplete,12484,12484,1,legoapi/menus/core/hint.h,symbol,legoapi/hint.c android-path
-function:Hint_SetCompletePc,function,Hint_SetCompletePc,12485,12485,1,legoapi/menus/core/hint.h,symbol,legoapi/hint.c android-path
+function:Hint_SetHintComplete,function,Hint_SetHintComplete,12485,12485,1,legoapi/menus/core/hint.h,symbol,legoapi/hint.c android-path
 function:RegisterWithHintSys,function,RegisterWithHintSys,12486,12486,1,legoapi/menus/core/hint.h,android,RegisterWithHintSys
 function:initGameHintSys_LSW,function,initGameHintSys_LSW,12487,12487,1,legoapi/menus/core/gamehint.h,android,initGameHintSys_LSW
 function:Hint_CurrentId,function,Hint_CurrentId,12488,12488,1,legoapi/menus/core/hint.h,symbol,legoapi/hint.c android-path
@@ -10829,7 +10829,7 @@ assert:-#4238,assert,,21401,21401,1,decomp.h,decomp,data model check of SDK type
 function:SetPadDescriptor,function,SetPadDescriptor,21406,21406,1,nu2api/PCInput.h,symbol,nu2api/PCInput.cpp pc-path
 function:InitPadDescriptors,function,InitPadDescriptors,21407,21407,1,nu2api/PCInput.h,symbol,nu2api/PCInput.cpp pc-path
 function:QueueKeyPress,function,QueueKeyPress,21408,21408,1,nu2api/PCInput.h,symbol,nu2api/PCInput.cpp pc-path
-function:CreateWindowPc,function,CreateWindowPc,21409,21409,1,nu2api/nuwin32/nu2api_windows.h,symbol,nu2api/nuwin32/windows.cpp pc-path; renamed from nu2api/nuwin32/windows.h (SDK/CRT header name)
+function:CreateGameWindow,function,CreateGameWindow,21409,21409,1,nu2api/nuwin32/nu2api_windows.h,symbol,nu2api/nuwin32/windows.cpp pc-path; renamed from nu2api/nuwin32/windows.h (SDK/CRT header name)
 function:PublishWindow,function,PublishWindow,21410,21410,1,nu2api/nuwin32/pcapi.h,rule,used most in nu2api/nuwin32/pcapi.cpp (1) pc-path
 function:RegisterWindowCallback,function,RegisterWindowCallback,21411,21411,1,nu2api/nuwin32/nu2api_windows.h,users,RegisterWindowCallback: only nu2api/nuwin32/windows.cpp pc-path; renamed from nu2api/nuwin32/windows.h (SDK/CRT header name)
 function:SetAccessibility,function,SetAccessibility,21412,21412,1,nu2api/nuwin32/nu2api_windows.h,users,SetAccessibility: only nu2api/nuwin32/windows.cpp pc-path; renamed from nu2api/nuwin32/windows.h (SDK/CRT header name)
@@ -10940,7 +10940,7 @@ assert:-#4248,assert,,21543,21543,1,nu2api/nuwin32/d3dCore.h,follow-type,PC_DEVI
 assert:-#4249,assert,,21544,21544,1,nu2api/nuwin32/d3dCore.h,follow-type,PC_DEVICE_BACKEND
 assert:-#4250,assert,,21545,21545,1,nu2api/nucore/nuapi.h,follow-type,NUAPI
 function:InitPadDescriptors#2,function,InitPadDescriptors,21551,21551,2,nu2api/PCInput.h,symbol,nu2api/PCInput.cpp pc-path
-function:CreateWindowPc#2,function,CreateWindowPc,21552,21552,1,nu2api/nuwin32/nu2api_windows.h,symbol,nu2api/nuwin32/windows.cpp pc-path; renamed from nu2api/nuwin32/windows.h (SDK/CRT header name)
+function:CreateGameWindow#2,function,CreateGameWindow,21552,21552,1,nu2api/nuwin32/nu2api_windows.h,symbol,nu2api/nuwin32/windows.cpp pc-path; renamed from nu2api/nuwin32/windows.h (SDK/CRT header name)
 function:PublishWindow#2,function,PublishWindow,21553,21553,1,nu2api/nuwin32/pcapi.h,rule,used most in nu2api/nuwin32/pcapi.cpp (1) pc-path
 function:PCDeviceIsAbsent#2,function,PCDeviceIsAbsent,21554,21554,1,nu2api/nuwin32/pcapi.h,rule,used most in nu2api/nuwin32/pcapi.cpp (1) pc-path
 function:NuInitHardware,function,NuInitHardware,21555,21555,1,nu2api/nuwin32/pcapi.h,symbol,nu2api/nuwin32/pcapi.cpp pc-path
@@ -11348,7 +11348,7 @@ variable:editor_active,variable,editor_active,22660,22660,1,batman.h,android-wea
 variable:GAMEPAD_MENUSELECT,variable,GAMEPAD_MENUSELECT,22661,22661,1,legoapi/core/input/gamepads.h,android,GAMEPAD_MENUSELECT
 variable:GAMEPAD_MENUCANCEL,variable,GAMEPAD_MENUCANCEL,22662,22662,1,legoapi/core/input/gamepads.h,android,GAMEPAD_MENUCANCEL
 variable:GAMEPAD_SELECT,variable,GAMEPAD_SELECT,22663,22663,1,legoapi/core/input/gamepads.h,android,GAMEPAD_SELECT
-variable:NuSound3LoadingSfxPc,variable,NuSound3LoadingSfxPc,22664,22664,1,nu2api/nusound/nusound.h,android-stem,NuSound3LoadingSfxPc -> NuSound3LoadingSfx
+variable:NuSound3SfxLoading,variable,NuSound3SfxLoading,22664,22664,1,nu2api/nusound/nusound.h,android-stem,NuSound3SfxLoading -> NuSound3LoadingSfx
 variable:MiniKitCollection,variable,MiniKitCollection,22665,22665,1,legoapi/world/world_shared.h,android,MiniKitCollection (also globals.h)
 function:MenuRepeat,function,MenuRepeat,22673,22673,1,legoapi/menus/screens/gamemenuall.h,android,MenuRepeat
 function:UpdateMenu,function,UpdateMenu,22674,22674,1,gameapi/gui/apimenu.h,android,UpdateMenu
@@ -14391,7 +14391,7 @@ function:StatusRumbleUpdate,function,StatusRumbleUpdate,30122,30122,1,legoapi/mi
 function:UpdateStatusScreen,function,UpdateStatusScreen,30123,30123,1,legoapi/menus/screens/gamestatus_lsw.h,android,UpdateStatusScreen
 function:FinishStatusPacket,function,FinishStatusPacket,30124,30124,1,legoapi/misc/legoapi_status.h,android,FinishStatusPacket
 function:InitMission,function,InitMission,30125,30125,1,legoapi/menus/screens/missions.h,android,InitMission
-function:NuPadSetMotorsPc,function,NuPadSetMotorsPc,30126,30126,1,nu2api/nuwin32/Stubs.h,symbol,nu2api/nuwin32/Stubs.cpp pc-path
+function:NuPadSetDeviceMotors,function,NuPadSetDeviceMotors,30126,30126,1,nu2api/nuwin32/Stubs.h,symbol,nu2api/nuwin32/Stubs.cpp pc-path
 function:NeedScreenGrab,function,NeedScreenGrab,30127,30127,1,legoapi/render/core/screen.h,android,NeedScreenGrab
 variable:DrawGoldBrick_Stage,variable,DrawGoldBrick_Stage,30128,30128,1,legoapi/misc/legoapi_status.h,definition,legogame/legoapi_status.cpp android-path
 variable:DrawGoldBrick_Phase,variable,DrawGoldBrick_Phase,30129,30129,1,legoapi/misc/legoapi_status.h,definition,legogame/legoapi_status.cpp android-path

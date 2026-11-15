@@ -106,7 +106,7 @@ extern "C" {
         NUGSCN *icons_scene;                       // 0x2964
     } WORLD_RESOURCE_ICONS_READER;
 
-    void PC_SPECIAL_SHADOW_LIGHT::SetEnabledPc(i32 enabled) {
+    void PC_SPECIAL_SHADOW_LIGHT::SetEnabled(i32 enabled) {
         if (enabled != 0 && this->enabled == 0) {
             i32 index;
             for (index = 0; index < render_set_count; ++index) {
@@ -599,7 +599,7 @@ extern "C" {
         switch (world->current_level->shadow_type) {
             case 0:
                 if (PCShadowCurrentLight != NULL) {
-                    PCShadowCurrentLight->SetEnabledPc(1);
+                    PCShadowCurrentLight->SetEnabled(1);
                 }
                 break;
             case 2:

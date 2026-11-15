@@ -324,7 +324,7 @@ void Hint_SetComplete(i32 hint_id) {
     }
 }
 
-void Hint_SetCompletePc(HINT *hint) {
+void Hint_SetHintComplete(HINT *hint) {
     if (hint != NULL && hint->completed == 0) {
         hint->completed = 1;
         Hint_SaveGameState(hint);

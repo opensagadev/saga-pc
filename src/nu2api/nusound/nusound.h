@@ -220,7 +220,7 @@ extern "C" DWORD __stdcall PCSoundStreamWorker(void *);
 #ifdef __cplusplus
 extern "C" {
 #endif
-    extern i32 NuSound3LoadingSfxPc;
+    extern i32 NuSound3SfxLoading;
     i32 NuSound3LoadingSfx(void);
     extern CRITICAL_SECTION SoundSampleCriticalSection;
     extern HANDLE PCSoundSampleWorkerHandle;

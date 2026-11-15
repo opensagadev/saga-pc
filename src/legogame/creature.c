@@ -1736,7 +1736,7 @@ static void TerrainPlayerResetContact(GAMEOBJECT *object) {
     object->raw_surface_id = 0;
     object->surface_normal = v010;
     object->water_height = 2000000.0f;
-    object->roof_height_pc = 2000000.0f;
+    object->roof_height = 2000000.0f;
     object->unknown_283 = -1;
     object->roof_surface_id = (u8)-1;
     object->terrain_platform_id = -1;

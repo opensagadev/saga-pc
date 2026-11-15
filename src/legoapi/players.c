@@ -692,8 +692,8 @@ void Player_ToggleCharacter(GAMEOBJECT *object, i32 direction, i32 sound) {
                 }
             }
         }
-        if (object->floor_height != 2000000.0f && object->roof_height_pc != 2000000.0f && object->character_data->move_fn != Move_DEFAULT &&
-            CDataList[id].top - CDataList[id].bottom >= (f32)((f64)object->roof_height_pc - object->floor_height)) {
+        if (object->floor_height != 2000000.0f && object->roof_height != 2000000.0f && object->character_data->move_fn != Move_DEFAULT &&
+            CDataList[id].top - CDataList[id].bottom >= (f32)((f64)object->roof_height - object->floor_height)) {
             GameAudio_PlaySfx(0x32, &object->collision_position, 0, 0);
             goto next_character;
         }

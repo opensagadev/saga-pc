@@ -205,7 +205,7 @@ struct PC_DL_SHADER_PROGRAM_PAIR {      // size 0x8
 };
 
 extern "C" {
-    static void PCGraphicsBindEffectTexturePc(u32 stage, GRAPHICS_RENDER_TEXTURE *texture) {
+    static void PCGraphicsBindStageTexture(u32 stage, GRAPHICS_RENDER_TEXTURE *texture) {
         if (texture != NULL) {
             const u32 *tuple = &texture->flags;
             if ((u32)PCDeviceSamplerInvalidation[stage][0] != tuple[0] || (u32)PCDeviceSamplerInvalidation[stage][1] != tuple[1]) {
@@ -837,7 +837,7 @@ void NuMainFilter::RenderBloom() {
     }
     if (output == PcBootSecondaryFramebuffer && PCDeviceBackend.textures[0] != NULL) {
         color_texture->flags = (color_texture->flags & 0xfc25ffff) | 0x240000;
-        PCGraphicsBindEffectTexturePc(0, color_texture);
+        PCGraphicsBindStageTexture(0, color_texture);
     }
     PCGraphicsPostEffectBackBufferTexture->flags =
         ((PCGraphicsPostEffectBackBufferTexture->flags & 0xfff5ffff) | 0x40000) & 0xfc2fffff | 0x200000;
@@ -934,7 +934,7 @@ void NuSpeedBlurFilter::render() {
     if (output == PcBootSecondaryFramebuffer && PCDeviceBackend.textures[0] != NULL) {
         color_texture->flags = (color_texture->flags & 0xfc13ffff) | 0x120000;
         PCDisplayHandlerBindPrograms((PC_DL_SHADER_PROGRAM_PAIR *)PostCopyTexProgram);
-        PCGraphicsBindEffectTexturePc(0, color_texture);
+        PCGraphicsBindStageTexture(0, color_texture);
         PCDeviceBackend.DrawPostEffectQuad();
     }
     PCDisplayHandlerBindPrograms((PC_DL_SHADER_PROGRAM_PAIR *)programs[0]);

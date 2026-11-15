@@ -383,7 +383,7 @@
   },
   {
    "unit": "src/nu2api/input_runtime.cpp",
-   "symbol": "?EndFramePc@PC_INPUT_RUNTIME@@QAEXXZ",
+   "symbol": "?EndFrame@PC_INPUT_RUNTIME@@QAEXXZ",
    "kind": "function"
   }
  ]

@@ -616,7 +616,7 @@ void Punch_Hit(GAMEOBJECT *attacker, GAMEOBJECT *target, f32 unused, f32 gap) {
                     impulse /= attacker->scaled_radius;
                 }
                 angle = attacker->movement_facing_angle;
-                if (attacker->context_flags_pc & 0x80) {
+                if (attacker->context_flags & 0x80) {
                     angle += 0x8000;
                 }
                 target->velocity.x += NuTrigTable[angle >> 1] * impulse;

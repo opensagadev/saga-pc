@@ -1121,7 +1121,7 @@ char *GetSfxName(i32 sound_id) {
 }
 
 i32 NuSound3LoadingSfx(void) {
-    return NuSound3LoadingSfxPc != 0;
+    return NuSound3SfxLoading != 0;
 }
 
 SFX_RECORD *SfxRevertInfo = 0;

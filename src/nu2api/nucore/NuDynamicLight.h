@@ -34,9 +34,9 @@ struct VuMtx { // size 0x40
 
 struct NuDynamicLight { // size 0x710
     void resetGeometry();
-    NURNDRLIGHTRECORD render_sets_pc[2]; // 0x000
-    u8 unknown_700[0xc];                 // 0x700
-    i32 render_set_count_pc;             // 0x70c
+    NURNDRLIGHTRECORD render_sets[2]; // 0x000
+    u8 unknown_700[0xc];              // 0x700
+    i32 render_set_count;             // 0x70c
 };
 
 #endif

@@ -11,7 +11,7 @@ struct PC_FRAMEBUFFER;
 
 class NuMotionAccumFilterGen : public NuPostFilter { // size 0x28
   public:
-    NuMotionAccumFilterGen() : frames(0), blend(1.0f), mode_pc(0.0f) {
+    NuMotionAccumFilterGen() : frames(0), blend(1.0f), weight_exponent(0.0f) {
     }
 
     void fun_005c3100(bool enable);
@@ -27,7 +27,7 @@ class NuMotionAccumFilterGen : public NuPostFilter { // size 0x28
     GRAPHICS_RENDER_TEXTURE *accumulation_texture; // 0x14
     i32 frames;                                    // 0x18
     f32 blend;                                     // 0x1c
-    f32 mode_pc;                                   // 0x20
+    f32 weight_exponent;                           // 0x20
     i32 current_frame;                             // 0x24
 };
 

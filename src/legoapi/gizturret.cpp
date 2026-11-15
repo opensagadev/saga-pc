@@ -358,7 +358,7 @@ extern "C" {
         }
     }
 
-    void GizTurrets_ResetPc(WORLDINFO *world, GIZTURRETSYS_s *system, void *progress_pointer) {
+    void GizTurrets_ResetAll(WORLDINFO *world, GIZTURRETSYS_s *system, void *progress_pointer) {
         i32 index;
         TURRET_PROGRESS *progress = (TURRET_PROGRESS *)progress_pointer;
         GAMEANIMOBJ *object;
@@ -1478,7 +1478,7 @@ extern "C" {
         addtype->fns.allocate_progress_data_fn = (void *(*)(VARIPTR *, VARIPTR *))GizTurrets_AllocateProgressData;
         addtype->fns.clear_progress_fn = (void (*)(void *, void *))GizTurrets_ClearProgress;
         addtype->fns.store_progress_fn = (void (*)(void *, void *, void *))GizTurrets_StoreProgress;
-        addtype->fns.reset_fn = (void (*)(void *, void *, void *))GizTurrets_ResetPc;
+        addtype->fns.reset_fn = (void (*)(void *, void *, void *))GizTurrets_ResetAll;
         addtype->fns.reserve_buffer_space_fn = (void *(*)(void *))GizTurrets_ReserveBufferSpace;
         addtype->fns.load_fn = (i32(*)(void *, void *))GizTurrets_Load;
         addtype->fns.post_load_fn = (void (*)(void *, void *))GizTurrets_PostLoad;

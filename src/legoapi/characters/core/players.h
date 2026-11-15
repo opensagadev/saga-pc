@@ -148,7 +148,7 @@ extern "C" {
     extern i32 FULLDEBUGTOGGLE;
     extern i32 (*Player_ToggleSubCharacterFn)(GAMEOBJECT *, i32, i32);
     extern void (*Player_ToggledCharacterFn)(GAMEOBJECT *, i32);
-    /* Replace existing declarations: LevArea[4], LevSfxFlag[4], LevAIMessage[8]. PodRacePc remains its current
+    /* Replace existing declarations: LevArea[4], LevSfxFlag[4], LevAIMessage[8]. ActivePodRace remains its current
      * canonical owner. */
 
     extern i32 PlayerStartSplineIndex;

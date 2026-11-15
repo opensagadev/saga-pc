@@ -508,7 +508,7 @@ void NuMusic::Debug(i32 unused, i32 y) {
     (void)unused;
     const char *class_names[] = {"INVALID", "QUIET", "ACTION", "SIGNATURE", "OVERLAY", "CUTSCENE", "NOMUSIC"};
 
-    struct StreamInfoPc { // size 0x10
+    struct StreamPlaybackInfo { // size 0x10
         u32 unknown_0000[3];
         f32 playback_position; // 0xc
     } stream_info;

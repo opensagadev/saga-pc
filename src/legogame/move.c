@@ -3220,7 +3220,7 @@ static GAMEOBJECT *BlockFindAttack(GAMEOBJECT *object) {
     candidate = Obj;
     for (i = 0; i < HIGHGAMEOBJECT; ++i, ++candidate) {
         if (candidate != object && (candidate->flags_1fc_word & APIOBJECT_FLAG_CHARACTER) != 0 && candidate->dead == 0 &&
-            candidate->character_context == CHARACTER_CONTEXT_COMBO && (candidate->context_flags_pc & 0xc) == 0 &&
+            candidate->character_context == CHARACTER_CONTEXT_COMBO && (candidate->context_flags & 0xc) == 0 &&
             candidate->force_target == object) {
             return candidate;
         }
@@ -3245,7 +3245,7 @@ static GAMEOBJECT *BlockFindSpecialAttack(GAMEOBJECT *object) {
         if (candidate != object && (candidate->flags_1fc_word & APIOBJECT_FLAG_CHARACTER) != 0 && candidate->dead == 0 &&
             candidate->character_context == CHARACTER_CONTEXT_PUNCH && candidate->force_target == object &&
             (candidate->id != (u16)id_GAMORREANGUARD || candidate->unknown_7aa != ACTION_PUNCH3 ||
-             (candidate->context_flags_pc & APIOBJECT_CONTEXT_EVENT_DONE) == 0)) {
+             (candidate->context_flags & APIOBJECT_CONTEXT_EVENT_DONE) == 0)) {
             return candidate;
         }
     }
@@ -3371,7 +3371,7 @@ static void BlockCode(GAMEOBJECT *object, i32 pressed, i32 held, i32 jump_presse
                         if (attacker->character_context == CHARACTER_CONTEXT_PUNCH &&
                             attacker->unknown_7aa == (i16)state->blocked_attack_stage &&
                             (attacker->id != (u16)id_GAMORREANGUARD || attacker->unknown_7aa != ACTION_PUNCH3 ||
-                             (attacker->context_flags_pc & APIOBJECT_CONTEXT_EVENT_DONE) == 0)) {
+                             (attacker->context_flags & APIOBJECT_CONTEXT_EVENT_DONE) == 0)) {
                             return;
                         }
                         state->blocked_attack_stage = 0;
@@ -3421,7 +3421,7 @@ static void BlockCode(GAMEOBJECT *object, i32 pressed, i32 held, i32 jump_presse
             if (held != 0) {
                 attacker = object->block_attacker;
                 if (attacker == NULL || attacker->id != (u16)id_GAMORREANGUARD || attacker->character_context != CHARACTER_CONTEXT_PUNCH ||
-                    attacker->unknown_7aa != ACTION_PUNCH3 || (attacker->context_flags_pc & APIOBJECT_CONTEXT_EVENT_DONE) == 0) {
+                    attacker->unknown_7aa != ACTION_PUNCH3 || (attacker->context_flags & APIOBJECT_CONTEXT_EVENT_DONE) == 0) {
                     StartHold(object);
                     return;
                 }
@@ -3543,7 +3543,7 @@ static void PunchCode(GAMEOBJECT *object, i32 pressed, i32 held, i32 require_tar
 
     if (object->character_context == CHARACTER_CONTEXT_PUNCH) {
         f32 *frame;
-        if (object->special_move_pc != -1 && object->force_target == NULL) {
+        if (object->special_move != -1 && object->force_target == NULL) {
             if ((object->flags_e20 & 0x40000000) != 0) {
                 FastWeaponOut(object, 1);
             }
@@ -3561,7 +3561,7 @@ static void PunchCode(GAMEOBJECT *object, i32 pressed, i32 held, i32 require_tar
         if (object->combo_input_latched == 0 && pressed != 0) {
             if ((object->flags_1fc & APIOBJECT_FLAG_PLAYER_ACTIVE) == 0) {
                 object->combo_input_latched = qrand() / 0x8000 + 1;
-            } else if ((object->context_flags_pc & APIOBJECT_CONTEXT_EVENT_DONE) == 0 &&
+            } else if ((object->context_flags & APIOBJECT_CONTEXT_EVENT_DONE) == 0 &&
                        !(object->context_timer <= object->context_duration)) {
                 object->combo_input_latched = 1;
             } else {
@@ -3576,8 +3576,8 @@ static void PunchCode(GAMEOBJECT *object, i32 pressed, i32 held, i32 require_tar
         }
         if (object->context_timer <= 0.0f) {
             object->character_context = CHARACTER_CONTEXT_NONE;
-            if (object->special_move_pc != -1) {
-                if (SpecialMove_GetFlags(object->special_move_pc, 8) != 0) {
+            if (object->special_move != -1) {
+                if (SpecialMove_GetFlags(object->special_move, 8) != 0) {
                     if (object->force_target != NULL) {
                         SetFlicker(object->force_target, 0.4f);
                         if ((object->force_target->flags_1fc & APIOBJECT_FLAG_PLAYER_ACTIVE) != 0) {
@@ -3587,10 +3587,10 @@ static void PunchCode(GAMEOBJECT *object, i32 pressed, i32 held, i32 require_tar
                     HitRumble(object);
                 }
             } else {
-                if ((object->context_flags_pc & APIOBJECT_CONTEXT_EVENT_DONE) == 0) {
+                if ((object->context_flags & APIOBJECT_CONTEXT_EVENT_DONE) == 0) {
                     Punch_Hit(object, object->force_target, punch_gap, punch_charge_gap);
                 }
-                if (suppress_combo == 0 && (object->context_flags_pc & APIOBJECT_PUNCH_BEHIND) == 0 && object->combo_stage < 2 &&
+                if (suppress_combo == 0 && (object->context_flags & APIOBJECT_PUNCH_BEHIND) == 0 && object->combo_stage < 2 &&
                     object->combo_input_latched != 0 && object->attack_override != 6) {
                     object->force_target = NULL;
                     object->blowup_target = NULL;
@@ -3608,7 +3608,7 @@ static void PunchCode(GAMEOBJECT *object, i32 pressed, i32 held, i32 require_tar
                         i32 alternate_animations[4];
                         i32 i;
                         object->combo_stage++;
-                        if ((object->context_flags_pc & APIOBJECT_PUNCH_COMBO) != 0) {
+                        if ((object->context_flags & APIOBJECT_PUNCH_COMBO) != 0) {
                             alternate_animations[1] = -1;
                             alternate_animations[2] = -1;
                             alternate_animations[3] = -1;
@@ -3687,7 +3687,7 @@ static void PunchCode(GAMEOBJECT *object, i32 pressed, i32 held, i32 require_tar
             return;
         } else {
             f32 hit_frame;
-            if ((object->context_flags_pc & APIOBJECT_CONTEXT_EVENT_DONE) != 0) {
+            if ((object->context_flags & APIOBJECT_CONTEXT_EVENT_DONE) != 0) {
                 return;
             }
             hit_frame = AnimListFrame(object->character_model, object->unknown_7aa, 0);
@@ -3729,22 +3729,22 @@ static void PunchCode(GAMEOBJECT *object, i32 pressed, i32 held, i32 require_tar
         i32 special_move = SpecialMove_Check(object, object->force_target);
         if (special_move != -1) {
             object->context_variant_flags |= APIOBJECT_PUNCH_SPECIAL_MOVE;
-            object->special_move_pc = special_move;
-            object->unknown_7aa = SpecialMove_GetAttackerAction(object->special_move_pc);
+            object->special_move = special_move;
+            object->unknown_7aa = SpecialMove_GetAttackerAction(object->special_move);
             object->combo_stage = 2;
             object->context_variant_flags &= ~APIOBJECT_PUNCH_BEHIND;
             goto start_attack;
         }
     }
     if ((object->force_target != NULL && ComboOpponent_Behind != 0) || (object->blowup_target != NULL && GizmoBlowUpOpponent_Behind != 0)) {
-        object->special_move_pc = -1;
+        object->special_move = -1;
         object->context_variant_flags |= APIOBJECT_PUNCH_BEHIND;
         object->unknown_7aa = ACTION_PUNCH_BEHIND;
         object->combo_stage = 0;
         goto start_attack;
     }
 
-    object->special_move_pc = -1;
+    object->special_move = -1;
     if (object->attack_override == 0) {
         object->combo_stage = 0;
         object->unknown_7aa = ACTION_PUNCH;
@@ -3856,12 +3856,12 @@ start_attack:
             SetWeaponIn(object);
         }
 
-        if (object->force_target != NULL && object->special_move_pc != -1) {
+        if (object->force_target != NULL && object->special_move != -1) {
             GAMEOBJECT *target = object->force_target;
             target->character_context = CHARACTER_CONTEXT_SPECIAL_MOVE_VICTIM;
-            target->special_move_pc = object->special_move_pc;
+            target->special_move = object->special_move;
             target->force_target = object;
-            target->unknown_7aa = SpecialMove_GetVictimAction(target->special_move_pc);
+            target->unknown_7aa = SpecialMove_GetVictimAction(target->special_move);
             target->context_timer = AnimDuration((i16)target->id, target->unknown_7aa, 0.0f, 0.0f, 0);
             ResetAnimPacket(&target->anim_packet, -1);
             angle = NuAtan2D(target->position.x - object->position.x, target->position.z - object->position.z);
@@ -5741,7 +5741,7 @@ static void ForceThrowCode(GAMEOBJECT *object, i32 pressed) {
         } else {
             force = target->force;
             if (force != NULL) {
-                if ((object->context_flags_pc & APIOBJECT_CONTEXT_EVENT_DONE) != 0) {
+                if ((object->context_flags & APIOBJECT_CONTEXT_EVENT_DONE) != 0) {
                     object->flags_e20 |= 0x20000;
                     if (force->anim_set != NULL && force->anim_set->object_count == 1) {
                         part = Part_FindFromHSpecial(&force->anim_set->objects->special);
@@ -8143,7 +8143,7 @@ void PeriscodeCode(GAMEOBJECT *object) {
         if (locator != -1 && object->character_model->points_of_interest[locator] != NULL &&
             object->locator_matrices[locator].m31 < object->water_height) {
             f32 gap;
-            if (object->roof_height_pc == 2000000.0f || !((gap = object->roof_height_pc - object->water_height) > 0.0f) || !(gap < 0.26f)) {
+            if (object->roof_height == 2000000.0f || !((gap = object->roof_height - object->water_height) > 0.0f) || !(gap < 0.26f)) {
                 if (object->floor_height == 2000000.0f || !((gap = (f32)(object->floor_height > object->water_height)) > 0.0f) ||
                     !(gap < 0.26f)) {
                     target = 1.0f;
@@ -9528,7 +9528,7 @@ void MovePlayer_DIRECTIONAL(GAMEOBJECT *object) {
                 }
                 object->movement_facing_angle = NuAtan2D(position.x - object->position.x, position.z - object->position.z);
             }
-        } else if (object->character_context == CHARACTER_CONTEXT_SWIPE && (object->context_flags_pc & APIOBJECT_CONTEXT_EVENT_DONE) == 0) {
+        } else if (object->character_context == CHARACTER_CONTEXT_SWIPE && (object->context_flags & APIOBJECT_CONTEXT_EVENT_DONE) == 0) {
             if (FaceOpponent(object, NULL) != 0) {
                 object->movement_facing_angle += 0x8000;
             }
@@ -9537,11 +9537,11 @@ void MovePlayer_DIRECTIONAL(GAMEOBJECT *object) {
                 object->movement_facing_angle = NuAtan2D(object->velocity.x, object->velocity.z);
             }
         } else if (object->character_context == CHARACTER_CONTEXT_COMBO) {
-            if ((object->context_flags_pc & 0x0c) == 0) {
+            if ((object->context_flags & 0x0c) == 0) {
                 FaceOpponent(object, NULL);
             }
         } else if (object->character_context == CHARACTER_CONTEXT_PUNCH) {
-            if (object->special_move_pc == -1 && FaceOpponent(object, NULL) != 0 && (object->context_flags_pc & 0x80) != 0) {
+            if (object->special_move == -1 && FaceOpponent(object, NULL) != 0 && (object->context_flags & 0x80) != 0) {
                 object->movement_facing_angle += 0x8000;
             }
         } else if (object->character_context == CHARACTER_CONTEXT_SUPER_CARRY) {
@@ -9802,7 +9802,7 @@ void MovePlayer_DIRECTIONAL(GAMEOBJECT *object) {
                             NuVecRotateY(&object->target_velocity, &object->target_velocity, 0x4000);
                         }
                     }
-                } else if (object->character_context == CHARACTER_CONTEXT_PUNCH && object->special_move_pc != -1 &&
+                } else if (object->character_context == CHARACTER_CONTEXT_PUNCH && object->special_move != -1 &&
                            object->force_target != NULL) {
                     SpecialMove_Attacker_SetTargetMom(object);
                 } else if (object->character_context == CHARACTER_CONTEXT_SLIDE) {
@@ -9892,7 +9892,7 @@ void MovePlayer_DIRECTIONAL(GAMEOBJECT *object) {
                             object->target_velocity.x = object->target_velocity.z = 0.0f;
                         }
                     } else if (object->character_context == CHARACTER_CONTEXT_COMBO) {
-                        if ((object->context_flags_pc & 0x1c) == 0) {
+                        if ((object->context_flags & 0x1c) == 0) {
                             if (StepBackFromTarget(object) == 0) {
                                 f32 speed;
                                 speed = AnimSpeed(object->character_model, object->unknown_7aa);

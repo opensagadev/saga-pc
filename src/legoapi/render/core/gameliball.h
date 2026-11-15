@@ -500,7 +500,7 @@ extern "C" {
         f32 opacity;                             // 0x10
     } CHARACTER_SHADOW_RESET_SLOT;
 
-    /* PodRacePc: see episodeI.c. */
+    /* ActivePodRace: see episodeI.c. */
 
     i32 DebrisSingleCollisionCheckScaleYFlag(i32, NUVEC *, f32, f32, u8);
     i32 DebrisSingleTorusCollisionCheckScaleYFlag(i32, NUVEC *, f32, f32, u8);
