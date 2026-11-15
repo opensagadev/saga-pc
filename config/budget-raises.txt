@@ -200,3 +200,5 @@ config/oddscan-budget.json view-type 181 tools/selfcontain.py spells the two sha
 config/castscan-budget.json raw-offset 368 PC_EDGRACLUMP.vector_buffer is NUVEC *: edgraSortVectorBuffer's byte arithmetic on the free pointer now casts its result to the field type (was an implicit void * assignment); the unit loses 20 other casts
 config/castscan-budget.json redundant-identity 26 main counts 26 (identity casts in units this change does not touch, e.g. gcutscn.c, nudlist_material.cpp); the budget file kept 25
 config/oddscan-budget.json data-file 5 src/nu2api/nuvertexdecl.c includes the module headers it uses instead of saga.h and passes 200 lines with two blank ones (a table); the count drops by one again when saga.h goes
+config/oddscan-budget.json pc-suffix 10653 2674d959 counted 10650 before its rebase onto c55b33d4; main counts 10653 after both, 10 fewer than before 2674d959 (no new suffix)
+config/oddscan-budget.json data-file 6 src/nu2api/nurndr_swap.cpp lost its extern "C" declaration block to nurndr headers (2674d959) and now passes the 200-line, few-blank-lines rule; no new data
