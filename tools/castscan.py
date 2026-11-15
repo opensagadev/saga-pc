@@ -1123,12 +1123,16 @@ class Classifier:
         self.entities = {}
         self.refs = Counter()
         header_refs = {}
-        # In unit order: units report the same record key with different facts (a header type seen as `local`
-        # from its own unit), and the last one wins; cache hits and parallel parses must not choose it.
+        # A record key is its declaration's place, and units report the same key with different facts: one sees the
+        # record incomplete (size -2, no fields) where another sees it whole. Keep the complete layout, and merge in
+        # unit order, whatever order the facts come in (cache or parse, finishing order of the workers).
         for _, unit_facts in sorted(facts.items()):
             if "failed" in unit_facts:
                 continue
-            self.records.update(unit_facts["records"])
+            for key, layout in unit_facts["records"].items():
+                known = self.records.get(key)
+                if known is None or (known["size"] < 0 <= layout["size"]):
+                    self.records[key] = layout
             self.entities.update(unit_facts["entities"])
             self.refs.update(unit_facts["refs"])
             header_refs.update(unit_facts["header_refs"])
