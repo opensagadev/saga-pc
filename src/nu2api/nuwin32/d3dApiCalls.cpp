@@ -38,13 +38,6 @@ extern "C" {
     f32 fun_005d0920(void);
     f32 fun_005d0930(void);
 }
-extern "C" void fun_006d3120(void);
-extern "C" u32 dat_02974ccc;
-extern "C" u32 dat_02974cd0;
-extern "C" u32 dat_02974cd4;
-extern "C" u32 dat_02974cd8;
-extern "C" u32 dat_02974cec;
-extern "C" u32 dat_02974cf0;
 
 /* The D3DX matrix type with its sixteen-float constructor (only the parts used here). */
 struct D3DXMATRIX { // size 0x40
@@ -102,12 +95,7 @@ u32 PC_DEVICE_BACKEND::fun_006df070() {
 }
 
 extern "C" {
-    u32 dat_02974ccc = 0;
-    u32 dat_02974cd0 = 0;
-    u32 dat_02974cd4 = 0;
-    u32 dat_02974cd8 = 0;
-    u32 dat_02974cec = 0;
-    u32 dat_02974cf0 = 0;
+    PC_FRAME_STATS PcFrameStats = {0};
     i32 PCFrameCriticalSectionIndex = 0;
 }
 
@@ -322,22 +310,22 @@ extern "C" {
         }
         fun_006df340(0x80008080, x, y, 0x10, "FPS %3.1f", fps);
         y += line_height;
-        fun_006df340(0x80008080, x, y, 0x10, "Scene Gobj drawn %d of %d", dat_02974cd0, dat_02974ccc);
+        fun_006df340(0x80008080, x, y, 0x10, "Scene Gobj drawn %d of %d", PcFrameStats.scene_gobjs_drawn, PcFrameStats.scene_gobjs);
         y += line_height;
-        fun_006df340(0x80008080, x, y, 0x10, "Opaque Geoms drawn %d", dat_02974cec);
+        fun_006df340(0x80008080, x, y, 0x10, "Opaque Geoms drawn %d", PcFrameStats.opaque_geoms_drawn);
         y += line_height;
-        fun_006df340(0x80008080, x, y, 0x10, "Trans Geoms drawn %d", dat_02974cf0);
+        fun_006df340(0x80008080, x, y, 0x10, "Trans Geoms drawn %d", PcFrameStats.trans_geoms_drawn);
         y += line_height;
-        fun_006df340(0x80008080, x, y, 0x10, "Total 3d geoms drawn %d", dat_02974cd8);
+        fun_006df340(0x80008080, x, y, 0x10, "Total 3d geoms drawn %d", PcFrameStats.geoms_drawn);
         y += line_height;
-        fun_006df340(0x80008080, x, y, 0x10, "Total DIP calls %d", PCDeviceIndexedPrimitiveCallCountPc);
+        fun_006df340(0x80008080, x, y, 0x10, "Total DIP calls %d", PcFrameStats.indexed_primitive_calls);
         y += line_height;
-        fun_006df340(0x80008080, x, y, 0x10, "Total DP calls %d", PCDevicePrimitiveCallCountPc);
+        fun_006df340(0x80008080, x, y, 0x10, "Total DP calls %d", PcFrameStats.primitive_calls);
         y += line_height;
-        fun_006df340(0x80008080, x, y, 0x10, "Blank 3d Gobjs drawn %d", dat_02974cd4);
+        fun_006df340(0x80008080, x, y, 0x10, "Blank 3d Gobjs drawn %d", PcFrameStats.blank_gobjs_drawn);
         NuQFntPopPrintMode();
         NuQFntPopCoordinateSystem();
-        fun_006d3120();
+        PcFrameStatsReset();
     }
 }
 

@@ -179,11 +179,26 @@ extern "C" {
     extern HRESULT PCDeviceLastResult;
     extern u8 PCDeviceStateCacheEnabled;
     extern PC_DEVICE_STATE_CACHE PCDeviceStateCachePc;
-    extern u32 PCDevicePrimitiveUPCallCountPc;
     void PCDeviceDrawIndexedPrimitiveUPPc(i32, u32, u32, u32, const void *, i32, const void *, u32);
-    extern u32 PCDeviceIndexedPrimitiveUPCallCountPc;
-    extern u32 PCDevicePrimitiveCallCountPc;
-    extern u32 PCDeviceIndexedPrimitiveCallCountPc;
+
+    /* Per-frame draw counters for the stats overlay; PcFrameStatsReset clears them after each frame. */
+    typedef struct PC_FRAME_STATS {     // size 0x48
+        u32 scene_gobjs;                // 0x00
+        u32 scene_gobjs_drawn;          // 0x04
+        u32 blank_gobjs_drawn;          // 0x08
+        u32 geoms_drawn;                // 0x0c
+        u32 unknown_10[4];              // 0x10
+        u32 opaque_geoms_drawn;         // 0x20
+        u32 trans_geoms_drawn;          // 0x24
+        u32 primitive_calls;            // 0x28
+        u32 indexed_primitive_calls;    // 0x2c
+        u32 primitive_up_calls;         // 0x30
+        u32 indexed_primitive_up_calls; // 0x34
+        u32 unknown_38[4];              // 0x38
+    } PC_FRAME_STATS;
+
+    extern PC_FRAME_STATS PcFrameStats;
+    void PcFrameStatsReset(void);
 #ifdef __cplusplus
 }
 #endif

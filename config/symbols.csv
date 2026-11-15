@@ -13249,7 +13249,7 @@ address,symbol,size,ctype
 0x6d30f0,_fun_006d30f0,7,
 0x6d3100,_fun_006d3100,13,
 0x6d3110,_fun_006d3110,6,
-0x6d3120,_fun_006d3120,18,
+0x6d3120,_PcFrameStatsReset,18,
 0x6d3140,_fun_006d3140,1,
 0x6d3150,_PcConfigureInputGraphicsCaps,632,i32 __cdecl(void)
 0x6d33d0,_NuKeyboardPlatformStartup,59,i32 __cdecl(void)
@@ -43501,16 +43501,7 @@ address,symbol,size,ctype
 0x2973c10,?theLevelEditor@@3VLevelEditor@@A,4272,LevelEditor
 0x2974cc0,_bezierdraw_depth,4,i32
 0x2974cc4,?EdInputUseMouse@@3EA,1,u8
-0x2974ccc,_dat_02974ccc,4,u32
-0x2974cd0,_dat_02974cd0,4,u32
-0x2974cd4,_dat_02974cd4,4,u32
-0x2974cd8,_dat_02974cd8,4,u32
-0x2974cec,_dat_02974cec,4,u32
-0x2974cf0,_dat_02974cf0,4,u32
-0x2974cf4,_PCDevicePrimitiveCallCountPc,4,u32
-0x2974cf8,_PCDeviceIndexedPrimitiveCallCountPc,4,u32
-0x2974cfc,_PCDevicePrimitiveUPCallCountPc,4,u32
-0x2974d00,_PCDeviceIndexedPrimitiveUPCallCountPc,4,u32
+0x2974ccc,_PcFrameStats,72,PC_FRAME_STATS
 0x02974d14,_StartupDatList,28,NUDATHDR *[7]
 0x2974d3c,_PCDeviceHardwareVertexProcessingPC,4,i32
 0x2974d40,_PcIntelShaderFallback,4,i32

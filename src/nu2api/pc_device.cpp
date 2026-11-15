@@ -290,12 +290,13 @@ struct PRIMITIVE_D3D_DEVICE_VIEW {
     PRIMITIVE_D3D_VTABLE_VIEW *methods;
 };
 
-extern "C" {
-    u32 PCDevicePrimitiveUPCallCountPc = 0;
+/* Clears the frame counters after the stats overlay has shown them. */
+extern "C" void PcFrameStatsReset(void) {
+    memset(&PcFrameStats, 0, sizeof(PcFrameStats));
 }
 
 extern "C" void PCDeviceDrawPrimitiveUPPc(i32 type, u32 count, const void *vertices, u32 stride) {
-    ++PCDevicePrimitiveUPCallCountPc;
+    ++PcFrameStats.primitive_up_calls;
     PCDeviceStateCachePc.vertex_buffer = NULL;
     PCDeviceStateCachePc.index_buffer = NULL;
     PRIMITIVE_D3D_DEVICE_VIEW *device = reinterpret_cast<PRIMITIVE_D3D_DEVICE_VIEW *>(PCDeviceBackend.device);
@@ -308,16 +309,12 @@ extern "C" void fun_006e49f0(void) {
 extern "C" void fun_006e4a00(void) {
 }
 
-extern "C" {
-    u32 PCDeviceIndexedPrimitiveUPCallCountPc = 0;
-}
-
 // noinline: the original calls PCDeviceDrawIndexedPrimitiveUPPc out of line from PCGraphicsDrawUnitBox; VC8 would
 // inline it there.
 extern "C" __declspec(noinline) void PCDeviceDrawIndexedPrimitiveUPPc(i32 type, u32 minimum_vertex, u32 vertex_count, u32 primitive_count,
                                                                       const void *indices, i32 index_format, const void *vertices,
                                                                       u32 stride) {
-    ++PCDeviceIndexedPrimitiveUPCallCountPc;
+    ++PcFrameStats.indexed_primitive_up_calls;
     PCDeviceStateCachePc.vertex_buffer = NULL;
     PCDeviceStateCachePc.index_buffer = NULL;
     PRIMITIVE_D3D_DEVICE_VIEW *device = reinterpret_cast<PRIMITIVE_D3D_DEVICE_VIEW *>(PCDeviceBackend.device);
@@ -2257,7 +2254,7 @@ extern "C" void PCDeviceSetStreamSourcePc(u32 stream, PC_BUFFER_RESOURCE *buffer
 // noinline: the original calls PCDeviceDrawPrimitivePc out of line from PC_DEVICE_BACKEND::DrawPostEffectQuad; VC8
 // would inline it there.
 extern "C" __declspec(noinline) void PCDeviceDrawPrimitivePc(i32 type, u32 start, u32 count) {
-    ++PCDevicePrimitiveCallCountPc;
+    ++PcFrameStats.primitive_calls;
     PCDeviceLastResult = PCDeviceBackend.device->methods->draw_primitive(PCDeviceBackend.device, type, start, count);
 }
 
@@ -2277,7 +2274,7 @@ extern "C" __declspec(noinline) void PCDeviceSetIndicesPc(PC_BUFFER_RESOURCE *bu
 // PC_DEVICE_BACKEND::DrawPostEffectIndexed; VC8 would inline it there.
 extern "C" __declspec(noinline) void PCDeviceDrawIndexedPrimitivePc(i32 type, i32 base_vertex, u32 minimum_vertex, u32 vertex_count,
                                                                     u32 start_index, u32 primitive_count) {
-    ++PCDeviceIndexedPrimitiveCallCountPc;
+    ++PcFrameStats.indexed_primitive_calls;
     PCDeviceLastResult = PCDeviceBackend.device->methods->draw_indexed_primitive(PCDeviceBackend.device, type, base_vertex, minimum_vertex,
                                                                                  vertex_count, start_index, primitive_count);
 }

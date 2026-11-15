@@ -5967,8 +5967,6 @@ extern "C" {
 
 extern "C" {
     i32 NuDisplayHandlerZMode = -1;
-    u32 PCDevicePrimitiveCallCountPc = 0;
-    u32 PCDeviceIndexedPrimitiveCallCountPc = 0;
 }
 
 extern "C" {

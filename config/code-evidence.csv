@@ -2088,7 +2088,7 @@ address,size,symbol,evidence,proposed,compiland,signals,port
 0x006d30f0,7,_fun_006d30f0,extent,,,unreferenced,
 0x006d3100,13,_fun_006d3100,extent,,,unreferenced,
 0x006d3110,6,_fun_006d3110,extent,,,unreferenced,
-0x006d3120,18,_fun_006d3120,extent,,,unreferenced,
+0x006d3120,18,_PcFrameStatsReset,extent,,,unreferenced,
 0x006d3140,1,_fun_006d3140,extent,,,unreferenced,
 0x006d3410,3,_fun_006d3410,extent,,,unreferenced,
 0x006d34f0,35,_fun_006d34f0,extent,,,unreferenced,
