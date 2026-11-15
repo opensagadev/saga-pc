@@ -552,7 +552,7 @@ extern "C" {
         LedgeAddType.name = name;
         LedgeAddType.prefix = dat_007516c0;
         LedgeAddType.fns.options = 0x20;
-        LedgeAddType.fns.get_max_gizmos_fn = (i32 (*)(void *))Ledges_GetMaxGizmos;
+        LedgeAddType.fns.get_max_gizmos_fn = (i32(*)(void *))Ledges_GetMaxGizmos;
         LedgeAddType.fns.add_gizmos_fn = (void *)Ledges_AddGizmos;
         LedgeAddType.fns.early_update_fn = NULL;
         LedgeAddType.fns.late_update_fn = NULL;
@@ -576,7 +576,7 @@ extern "C" {
         LedgeAddType.fns.store_progress_fn = (void (*)(void *, void *, void *))Ledges_StoreProgress;
         LedgeAddType.fns.reset_fn = (void (*)(void *, void *, void *))Ledges_Reset;
         LedgeAddType.fns.reserve_buffer_space_fn = (void *(*)(void *))Ledges_ReserveBufferSpace;
-        LedgeAddType.fns.load_fn = (i32 (*)(void *, void *))Ledges_Load;
+        LedgeAddType.fns.load_fn = (i32(*)(void *, void *))Ledges_Load;
         LedgeAddType.fns.post_load_fn = NULL;
         LedgeAddType.fns.add_level_sfx_fn = NULL;
         return &LedgeAddType;

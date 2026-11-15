@@ -1150,12 +1150,12 @@ ADDGIZMOTYPE *GizPanel_RegisterGizmo(i32 type_id) {
     addtype->name = "Panel";
     addtype->prefix = "";
     addtype->fns.options = 0xc;
-    addtype->fns.get_max_gizmos_fn = (i32 (*)(void *))GizPanel_GetMaxGizmos;
+    addtype->fns.get_max_gizmos_fn = (i32(*)(void *))GizPanel_GetMaxGizmos;
     addtype->fns.add_gizmos_fn = (void *)GizPanel_AddGizmos;
     addtype->fns.late_update_fn = (void (*)(void *, void *, f32))GizPanel_Update;
     addtype->fns.draw_fn = (void (*)(void *, void *, f32))GizPanel_Draw;
     addtype->fns.get_gizmo_name_fn = (char *(*)(GIZMO_PC *))GizPanel_GetGizmoName;
-    addtype->fns.get_output_fn = (i32 (*)(GIZMO_PC *, i32, i32))GizPanel_GetOutput;
+    addtype->fns.get_output_fn = (i32(*)(GIZMO_PC *, i32, i32))GizPanel_GetOutput;
     addtype->fns.get_output_name_fn = (char *(*)(GIZMO_PC *, i32))GizPanel_GetOutputName;
     addtype->fns.get_num_outputs_fn = (void *)GizPanel_GetNumOutputs;
     addtype->fns.activate_fn = (void (*)(GIZMO_PC *, i32))GizPanel_Activate;
@@ -1165,6 +1165,6 @@ ADDGIZMOTYPE *GizPanel_RegisterGizmo(i32 type_id) {
     addtype->fns.store_progress_fn = (void (*)(void *, void *, void *))GizPanels_StoreProgress;
     addtype->fns.reset_fn = (void (*)(void *, void *, void *))GizPanels_Reset;
     addtype->fns.reserve_buffer_space_fn = (void *(*)(void *))GizPanels_ReserveBufferSpace;
-    addtype->fns.load_fn = (i32 (*)(void *, void *))GizPanel_Load;
+    addtype->fns.load_fn = (i32(*)(void *, void *))GizPanel_Load;
     return addtype;
 }

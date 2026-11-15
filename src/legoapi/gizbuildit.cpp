@@ -1728,13 +1728,13 @@ extern "C" {
         addtype->fns.add_level_sfx_fn = NULL;
         addtype->prefix = "";
         addtype->fns.options = 0x60;
-        addtype->fns.get_max_gizmos_fn = (i32 (*)(void *))GizBuildIts_GetMaxGizmos;
+        addtype->fns.get_max_gizmos_fn = (i32(*)(void *))GizBuildIts_GetMaxGizmos;
         addtype->fns.add_gizmos_fn = (void *)GizBuildIts_AddGizmos;
         addtype->fns.early_update_fn = (void (*)(void *, void *, f32))GizBuildIts_EarlyUpdate;
         addtype->fns.late_update_fn = (void (*)(void *, void *, f32))GizBuildIts_LateUpdate;
         addtype->fns.draw_fn = (void (*)(void *, void *, f32))GizBuildIts_Draw;
         addtype->fns.get_gizmo_name_fn = (char *(*)(GIZMO_PC *))GizmoBuildit_GetGizmoName;
-        addtype->fns.get_output_fn = (i32 (*)(GIZMO_PC *, i32, i32))GizmoBuildit_GetOutput;
+        addtype->fns.get_output_fn = (i32(*)(GIZMO_PC *, i32, i32))GizmoBuildit_GetOutput;
         addtype->fns.get_output_name_fn = (char *(*)(GIZMO_PC *, i32))GizmoBuildit_GetOutputName;
         addtype->fns.get_num_outputs_fn = (void *)GizmoBuildit_GetNumOutputs;
         addtype->fns.activate_fn = (void (*)(GIZMO_PC *, i32))GizmoBuildit_Activate;
@@ -1745,7 +1745,7 @@ extern "C" {
         addtype->fns.store_progress_fn = (void (*)(void *, void *, void *))GizBuildIts_StoreProgress;
         addtype->fns.reset_fn = (void (*)(void *, void *, void *))GizBuildIts_Reset;
         addtype->fns.reserve_buffer_space_fn = (void *(*)(void *))GizBuildIts_ReserveBufferSpace;
-        addtype->fns.load_fn = (i32 (*)(void *, void *))GizBuildIts_Load;
+        addtype->fns.load_fn = (i32(*)(void *, void *))GizBuildIts_Load;
         addtype->fns.post_load_fn = (void (*)(void *, void *))GizBuildIts_PostLoad;
         gizbuildit_gizmotype_id = type_id;
         return addtype;

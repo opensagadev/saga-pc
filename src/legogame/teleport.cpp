@@ -770,14 +770,14 @@ extern "C" {
         addtype->fns.post_load_fn = NULL;
         addtype->fns.add_level_sfx_fn = NULL;
         addtype->name = "Teleport";
-        addtype->fns.get_max_gizmos_fn = (i32 (*)(void *))Teleport_GetMaxGizmos;
+        addtype->fns.get_max_gizmos_fn = (i32(*)(void *))Teleport_GetMaxGizmos;
         addtype->fns.add_gizmos_fn = (void *)Teleport_AddGizmos;
         addtype->fns.get_gizmo_name_fn = (char *(*)(GIZMO_PC *))Teleport_GetGizmoName;
-        addtype->fns.get_output_fn = (i32 (*)(GIZMO_PC *, i32, i32))Teleport_GetOutput;
+        addtype->fns.get_output_fn = (i32(*)(GIZMO_PC *, i32, i32))Teleport_GetOutput;
         addtype->fns.get_output_name_fn = (char *(*)(GIZMO_PC *, i32))Teleport_GetOutputName;
         addtype->fns.get_num_outputs_fn = (void *)Teleport_GetNumOutputs;
         addtype->fns.activate_fn = (void (*)(GIZMO_PC *, i32))Teleport_Activate;
-        addtype->fns.activate_rev_fn = (i32 (*)(GIZMO_PC *, i32, i32))Teleport_ActivateRev;
+        addtype->fns.activate_rev_fn = (i32(*)(GIZMO_PC *, i32, i32))Teleport_ActivateRev;
         teleport_gizmotype_id = type_id;
         return addtype;
     }

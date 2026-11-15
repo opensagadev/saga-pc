@@ -836,12 +836,12 @@ extern "C" {
         addtype->fns.add_level_sfx_fn = NULL;
         addtype->prefix = "";
         addtype->fns.options = 0x8;
-        addtype->fns.get_max_gizmos_fn = (i32 (*)(void *))Grapples_GetMaxGizmos;
+        addtype->fns.get_max_gizmos_fn = (i32(*)(void *))Grapples_GetMaxGizmos;
         addtype->fns.add_gizmos_fn = (void *)Grapples_AddGizmos;
         addtype->fns.late_update_fn = (void (*)(void *, void *, f32))Grapples_Update;
         addtype->fns.draw_fn = (void (*)(void *, void *, f32))Grapples_Draw;
         addtype->fns.get_gizmo_name_fn = (char *(*)(GIZMO_PC *))Grapple_GetGizmoName;
-        addtype->fns.get_output_fn = (i32 (*)(GIZMO_PC *, i32, i32))Grapple_GetOutput;
+        addtype->fns.get_output_fn = (i32(*)(GIZMO_PC *, i32, i32))Grapple_GetOutput;
         addtype->fns.get_output_name_fn = (char *(*)(GIZMO_PC *, i32))Grapple_GetOutputName;
         addtype->fns.get_num_outputs_fn = (void *)Grapple_GetNumOutputs;
         addtype->fns.activate_fn = (void (*)(GIZMO_PC *, i32))Grapple_Activate;
@@ -851,7 +851,7 @@ extern "C" {
         addtype->fns.store_progress_fn = (void (*)(void *, void *, void *))Grapples_StoreProgress;
         addtype->fns.reset_fn = (void (*)(void *, void *, void *))Grapples_Reset;
         addtype->fns.reserve_buffer_space_fn = (void *(*)(void *))Grapples_ReserveBufferSpace;
-        addtype->fns.load_fn = (i32 (*)(void *, void *))Grapples_Load;
+        addtype->fns.load_fn = (i32(*)(void *, void *))Grapples_Load;
         grapple_gizmotype_id = type_id;
         return addtype;
     }

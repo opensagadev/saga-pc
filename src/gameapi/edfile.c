@@ -431,7 +431,7 @@ void FS_SetFileSelPathFromName(char *name) {
         }
     }
     if (file_name[0] != '\0') {
-        ((i32 (*)(char *, char *, i32))(&NuFileExtConvert))(FS_LastFileName, file_name, 255);
+        ((i32(*)(char *, char *, i32))(&NuFileExtConvert))(FS_LastFileName, file_name, 255);
     } else {
         FS_LastFileName[0] = '\0';
     }
@@ -4319,7 +4319,7 @@ static void eduicbAttachDirectoryList(eduimenu_s *menu, edui_file_pick_s *picker
             dir_size++;
         }
         if (picker->compare_entries) {
-            qsort(dir_list, dir_size, sizeof(FILE_DIRECTORY_ENTRY), (i32 (*)(const void *, const void *))picker->compare_entries);
+            qsort(dir_list, dir_size, sizeof(FILE_DIRECTORY_ENTRY), (i32(*)(const void *, const void *))picker->compare_entries);
         }
         if (picker->filename[0]) {
             item = eduiItemSelCreate(9999, picker->base.colours, 0, 1, eduicbSelectDirectoryEntry, "<..>");

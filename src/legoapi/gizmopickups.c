@@ -1418,12 +1418,12 @@ ADDGIZMOTYPE *GizmoPickups_RegisterGizmo(i32 type_id) {
     addtype->fns.add_level_sfx_fn = NULL;
     addtype->prefix = "";
     addtype->fns.options = 0x100;
-    addtype->fns.get_max_gizmos_fn = (i32 (*)(void *))GizmoPickups_GetMaxGizmos;
+    addtype->fns.get_max_gizmos_fn = (i32(*)(void *))GizmoPickups_GetMaxGizmos;
     addtype->fns.add_gizmos_fn = (void *)GizmoPickups_AddGizmos;
     addtype->fns.late_update_fn = (void (*)(void *, void *, f32))GizmoPickups_Update;
     addtype->fns.draw_fn = (void (*)(void *, void *, f32))GizmoPickups_Draw;
     addtype->fns.get_gizmo_name_fn = (char *(*)(GIZMO_PC *))GizmoPickup_GetGizmoName;
-    addtype->fns.get_output_fn = (i32 (*)(GIZMO_PC *, i32, i32))GizmoPickup_GetOutput;
+    addtype->fns.get_output_fn = (i32(*)(GIZMO_PC *, i32, i32))GizmoPickup_GetOutput;
     addtype->fns.get_output_name_fn = (char *(*)(GIZMO_PC *, i32))GizmoPickup_GetOutputName;
     addtype->fns.get_num_outputs_fn = (void *)GizmoPickup_GetNumOutputs;
     addtype->fns.activate_fn = (void (*)(GIZMO_PC *, i32))GizmoPickup_Activate;
@@ -1434,7 +1434,7 @@ ADDGIZMOTYPE *GizmoPickups_RegisterGizmo(i32 type_id) {
     addtype->fns.store_progress_fn = (void (*)(void *, void *, void *))GizmoPickups_StoreProgress;
     addtype->fns.reset_fn = (void (*)(void *, void *, void *))GizmoPickups_ResetPc;
     addtype->fns.reserve_buffer_space_fn = (void *(*)(void *))GizmoPickups_ReserveBufferSpace;
-    addtype->fns.load_fn = (i32 (*)(void *, void *))GizmoPickups_Load;
+    addtype->fns.load_fn = (i32(*)(void *, void *))GizmoPickups_Load;
     addtype->fns.post_load_fn = (void (*)(void *, void *))GizmoPickups_PostLoad;
     gizmopickup_typeid = type_id;
     return addtype;

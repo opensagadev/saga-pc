@@ -376,7 +376,7 @@ ADDGIZMOTYPE *SecurityDoors_RegisterGizmo(i32 unused_type_id) {
     SecurityDoorAddType.name = name;
     SecurityDoorAddType.prefix = dat_007516c0;
     SecurityDoorAddType.fns.options = 12;
-    SecurityDoorAddType.fns.get_max_gizmos_fn = (i32 (*)(void *))SecurityDoors_GetMaxGizmos;
+    SecurityDoorAddType.fns.get_max_gizmos_fn = (i32(*)(void *))SecurityDoors_GetMaxGizmos;
     SecurityDoorAddType.fns.add_gizmos_fn = (void *)SecurityDoors_AddGizmos;
     SecurityDoorAddType.fns.early_update_fn = NULL;
     SecurityDoorAddType.fns.late_update_fn = (void (*)(void *, void *, f32))SecurityDoors_Update;
@@ -400,7 +400,7 @@ ADDGIZMOTYPE *SecurityDoors_RegisterGizmo(i32 unused_type_id) {
     SecurityDoorAddType.fns.store_progress_fn = (void *)SecurityDoors_StoreProgress;
     SecurityDoorAddType.fns.reset_fn = (void *)SecurityDoors_Reset;
     SecurityDoorAddType.fns.reserve_buffer_space_fn = (void *(*)(void *))SecurityDoors_ReserveBufferSpace;
-    SecurityDoorAddType.fns.load_fn = (i32 (*)(void *, void *))SecurityDoors_Load;
+    SecurityDoorAddType.fns.load_fn = (i32(*)(void *, void *))SecurityDoors_Load;
     SecurityDoorAddType.fns.post_load_fn = NULL;
     SecurityDoorAddType.fns.add_level_sfx_fn = NULL;
     return &SecurityDoorAddType;

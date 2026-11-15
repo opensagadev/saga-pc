@@ -2244,10 +2244,10 @@ ADDGIZMOTYPE *AI_RegisterGizmo(i32 type_id) {
     addtype->fns.add_level_sfx_fn = NULL;
     addtype->name = "AIProcessor";
     addtype->prefix = "ai_";
-    addtype->fns.get_max_gizmos_fn = (i32 (*)(void *))AI_GetMaxGizmos;
+    addtype->fns.get_max_gizmos_fn = (i32(*)(void *))AI_GetMaxGizmos;
     addtype->fns.add_gizmos_fn = (void *)AI_AddGizmos;
     addtype->fns.get_gizmo_name_fn = (char *(*)(GIZMO_PC *))AI_GetGizmoName;
-    addtype->fns.get_output_fn = (i32 (*)(GIZMO_PC *, i32, i32))AI_GetOutput;
+    addtype->fns.get_output_fn = (i32(*)(GIZMO_PC *, i32, i32))AI_GetOutput;
     addtype->fns.get_output_name_fn = (char *(*)(GIZMO_PC *, i32))AI_GetOutputName;
     addtype->fns.get_num_outputs_fn = (void *)AI_GetNumOutputs;
     addtype->fns.activate_fn = (void (*)(GIZMO_PC *, i32))AI_Activate;

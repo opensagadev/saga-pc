@@ -45,7 +45,7 @@ extern "C" {
         }
         buffer->addr = (buffer->addr + 3U) & ~3U;
         destination = buffer->char_ptr;
-        MovieList = (char (*)[32])destination;
+        MovieList = (char(*)[32])destination;
         MovieCount = 0;
         while (NuFParGetLine(parser) != 0) {
             NuFParGetWord(parser);

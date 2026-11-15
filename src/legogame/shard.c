@@ -340,7 +340,7 @@ ADDGIZMOTYPE *Shards_RegisterGizmo(i32 unused_type_id) {
     ShardAddType.name = name;
     ShardAddType.prefix = dat_007516c0;
     ShardAddType.fns.options = 0x30;
-    ShardAddType.fns.get_max_gizmos_fn = (i32 (*)(void *))Shards_GetMaxGizmos;
+    ShardAddType.fns.get_max_gizmos_fn = (i32(*)(void *))Shards_GetMaxGizmos;
     ShardAddType.fns.add_gizmos_fn = (void *)Shards_AddGizmos;
     ShardAddType.fns.early_update_fn = Shards_UpdateBeforeCharacters;
     ShardAddType.fns.late_update_fn = (void (*)(void *, void *, f32))Shards_UpdateAfterCharacters;
@@ -364,7 +364,7 @@ ADDGIZMOTYPE *Shards_RegisterGizmo(i32 unused_type_id) {
     ShardAddType.fns.store_progress_fn = (void *)Shards_StoreProgress;
     ShardAddType.fns.reset_fn = (void *)Shards_Reset;
     ShardAddType.fns.reserve_buffer_space_fn = (void *(*)(void *))Shards_ReserveBufferSpace;
-    ShardAddType.fns.load_fn = (i32 (*)(void *, void *))Shards_Load;
+    ShardAddType.fns.load_fn = (i32(*)(void *, void *))Shards_Load;
     ShardAddType.fns.post_load_fn = NULL;
     ShardAddType.fns.add_level_sfx_fn = NULL;
     return &ShardAddType;

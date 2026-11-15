@@ -566,7 +566,7 @@ i32 GizmoGetNumOutputs(void *system, GIZMO_PC *gizmo) {
         return 0;
     }
     if (gizmo->type_id < types->count) {
-        get_count = (i32 (*)(GIZMO_PC *))types->types[gizmo->type_id].fns.get_num_outputs_fn;
+        get_count = (i32(*)(GIZMO_PC *))types->types[gizmo->type_id].fns.get_num_outputs_fn;
         if (get_count != NULL) {
             return get_count(gizmo);
         }

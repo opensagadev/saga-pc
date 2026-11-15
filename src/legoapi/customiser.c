@@ -516,7 +516,7 @@ void Customiser_LoadAll(CUSTOMISER_LAYERS *input, WORLDINFO *world) {
                     i32 item;
                     i32 size;
                     void *data;
-                    ((i32 (*)(char *, char *, i32))NuFileExtConvert)(converted_path, path, 0x80);
+                    ((i32(*)(char *, char *, i32))NuFileExtConvert)(converted_path, path, 0x80);
                     item = NuFilePakGetItem(texture_pack, converted_path);
                     if (item != -1 && NuFilePakGetItemInfo(texture_pack, item, &data, &size) != 0) {
                         data = NuPtrBlockFix(data);

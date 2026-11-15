@@ -1108,7 +1108,7 @@ extern ADDGIZMOTYPE *ZipUps_RegisterGizmo(i32 type_id) {
     ZipUpAddTypePc.fns.store_progress_fn = (void (*)(void *, void *, void *))ZipUps_StoreProgress;
     ZipUpAddTypePc.fns.reset_fn = (void (*)(void *, void *, void *))ZipUps_Reset;
     ZipUpAddTypePc.fns.reserve_buffer_space_fn = (void *(*)(void *))ZipUps_ReserveBufferSpace;
-    ZipUpAddTypePc.fns.load_fn = (i32 (*)(void *, void *))ZipUps_Load;
+    ZipUpAddTypePc.fns.load_fn = (i32(*)(void *, void *))ZipUps_Load;
     ZipUpAddTypePc.fns.post_load_fn = NULL;
     ZipUpAddTypePc.fns.add_level_sfx_fn = NULL;
     zipup_gizmotype_id = type_id;

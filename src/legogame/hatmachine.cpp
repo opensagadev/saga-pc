@@ -604,7 +604,7 @@ extern "C" ADDGIZMOTYPE *HatMachine_RegisterGizmo(i32 type_id) {
     HatMachineAddType.fns.draw_fn = HatMachine_Draw;
     HatMachineAddType.fns.panel_draw_fn = NULL;
     HatMachineAddType.fns.get_gizmo_name_fn = (char *(*)(struct gizmo_s *))HatMachine_GetGizmoName;
-    HatMachineAddType.fns.get_output_fn = (i32 (*)(struct gizmo_s *, i32, i32))HatMachine_GetOutput;
+    HatMachineAddType.fns.get_output_fn = (i32(*)(struct gizmo_s *, i32, i32))HatMachine_GetOutput;
     HatMachineAddType.fns.get_output_name_fn = (char *(*)(struct gizmo_s *, i32))HatMachine_GetOutputName;
     HatMachineAddType.fns.get_num_outputs_fn = (void *)HatMachine_GetNumOutputs;
     HatMachineAddType.fns.activate_fn = (void (*)(struct gizmo_s *, i32))HatMachine_Activate;

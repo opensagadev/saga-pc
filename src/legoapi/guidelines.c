@@ -193,7 +193,7 @@ ADDGIZMOTYPE *GuideLines_RegisterGizmo(i32 unused_type_id) {
     GuideLineAddType.name = name;
     GuideLineAddType.prefix = dat_007516c0;
     GuideLineAddType.fns.options = 8;
-    GuideLineAddType.fns.get_max_gizmos_fn = (i32 (*)(void *))GuideLines_GetMaxGizmos;
+    GuideLineAddType.fns.get_max_gizmos_fn = (i32(*)(void *))GuideLines_GetMaxGizmos;
     GuideLineAddType.fns.add_gizmos_fn = (void *)GuideLines_AddGizmos;
     GuideLineAddType.fns.early_update_fn = NULL;
     GuideLineAddType.fns.late_update_fn = NULL;

@@ -444,7 +444,7 @@ ADDGIZMOTYPE *Attractos_RegisterGizmo(i32 unused_type_id) {
     AttractoAddType.name = name;
     AttractoAddType.prefix = dat_007516c0;
     AttractoAddType.fns.options = 0x2c;
-    AttractoAddType.fns.get_max_gizmos_fn = (i32 (*)(void *))Attractos_GetMaxGizmos;
+    AttractoAddType.fns.get_max_gizmos_fn = (i32(*)(void *))Attractos_GetMaxGizmos;
     AttractoAddType.fns.add_gizmos_fn = (void *)Attractos_AddGizmos;
     AttractoAddType.fns.early_update_fn = NULL;
     AttractoAddType.fns.late_update_fn = (void (*)(void *, void *, f32))Attractos_Update;
@@ -468,7 +468,7 @@ ADDGIZMOTYPE *Attractos_RegisterGizmo(i32 unused_type_id) {
     AttractoAddType.fns.store_progress_fn = (void *)Attractos_StoreProgress;
     AttractoAddType.fns.reset_fn = (void *)Attractos_Reset;
     AttractoAddType.fns.reserve_buffer_space_fn = (void *(*)(void *))Attractos_ReserveBufferSpace;
-    AttractoAddType.fns.load_fn = (i32 (*)(void *, void *))Attractos_Load;
+    AttractoAddType.fns.load_fn = (i32(*)(void *, void *))Attractos_Load;
     AttractoAddType.fns.post_load_fn = NULL;
     AttractoAddType.fns.add_level_sfx_fn = NULL;
     return &AttractoAddType;

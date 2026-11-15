@@ -397,7 +397,7 @@ extern "C" {
         TightRopeAddType.name = name;
         TightRopeAddType.prefix = dat_007516c0;
         TightRopeAddType.fns.options = 8;
-        TightRopeAddType.fns.get_max_gizmos_fn = (i32 (*)(void *))TightRopes_GetMaxGizmos;
+        TightRopeAddType.fns.get_max_gizmos_fn = (i32(*)(void *))TightRopes_GetMaxGizmos;
         TightRopeAddType.fns.add_gizmos_fn = (void *)TightRopes_AddGizmos;
         TightRopeAddType.fns.early_update_fn = NULL;
         TightRopeAddType.fns.late_update_fn = NULL;
@@ -421,7 +421,7 @@ extern "C" {
         TightRopeAddType.fns.store_progress_fn = (void (*)(void *, void *, void *))TightRopes_StoreProgress;
         TightRopeAddType.fns.reset_fn = (void (*)(void *, void *, void *))TightRopes_Reset;
         TightRopeAddType.fns.reserve_buffer_space_fn = (void *(*)(void *))TightRopes_ReserveBufferSpace;
-        TightRopeAddType.fns.load_fn = (i32 (*)(void *, void *))TightRopes_Load;
+        TightRopeAddType.fns.load_fn = (i32(*)(void *, void *))TightRopes_Load;
         TightRopeAddType.fns.post_load_fn = NULL;
         TightRopeAddType.fns.add_level_sfx_fn = NULL;
         return &TightRopeAddType;
