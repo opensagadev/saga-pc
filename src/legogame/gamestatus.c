@@ -53,17 +53,17 @@ void DrawStatusBG_LSW(STATUSPACKET_s *packet) {
 
 f32 getFinishedStatusAlpha(STATUSPACKET_s *packet) {
     STATUS_STAGE_s *stage = packet->stage;
-    if (stage->type == 12 || stage->type == 11) {
+    if (stage->type == STATUS_STAGE_FADE || stage->type == STATUS_STAGE_SAVE) {
         return 0.0f;
     }
-    if (stage->type == 10) {
+    if (stage->type == STATUS_STAGE_EXIT) {
         if (stage->unknown_18 < 1.0f) {
             f32 alpha = 1.0 - (f64)stage->unknown_18;
             return alpha;
         }
         return 0.0f;
     }
-    if (stage->type == 19) {
+    if (stage->type == STATUS_STAGE_GOLD_BRICK) {
         if (stage->unknown_14 == 0) {
             return 1.0f;
         }
@@ -133,7 +133,7 @@ void TrueHero_LSW_Update(STATUS_STAGE_s *stage, STATUSPACKET_s *packet, f32 elap
             if (stage->unknown_18 > stage->unknown_1c) {
                 stage->unknown_18 = 0.0f;
                 stage->unknown_1c = 1.0f;
-                if (stage->type == 2) {
+                if (stage->type == STATUS_STAGE_TRUE_JEDI_SCORE) {
                     stage->unknown_14 = 6;
                     PlaySfx("TrueJedi_NOT", NULL);
                 } else {
@@ -228,7 +228,7 @@ void TrueHero_LSW_Draw(STATUS_STAGE_s *stage, STATUSPACKET_s *packet, i32 curren
             f32 ratio;
             f32 blend;
             alpha = 1.0f - stage->unknown_18;
-            if (stage->type == 2 && alpha > 0.0f) {
+            if (stage->type == STATUS_STAGE_TRUE_JEDI_SCORE && alpha > 0.0f) {
                 sprintf(text, "%i%%", (i32)packet->true_hero_percent);
                 Text3DEx(text, 0.0f, StatusTrueHeroTextY, 1.0f, StatusTrueHeroTextScale, StatusTrueHeroTextScale, StatusTrueHeroTextScale,
                          0, 255, 191, 0, (u8)(alpha * 128.0f));
@@ -1259,10 +1259,10 @@ void CollectCharactersOff_Draw(STATUS_STAGE_s *stage, STATUSPACKET_s *packet, i3
 }
 
 void LevelComplete_LSW_Skip(STATUS_STAGE_s *stage, STATUSPACKET_s *packet) {
-    if (stage->type == 26 && packet->mission_state == 2) {
+    if (stage->type == STATUS_STAGE_MISSION && packet->mission_state == 2) {
         *packet->score = packet->reward_score;
     }
-    if (stage->type == 23 && packet->challenge_state == 2) {
+    if (stage->type == STATUS_STAGE_CHALLENGE && packet->challenge_state == 2) {
         *packet->score = packet->reward_score;
     }
     NextStatusStage(packet);
@@ -1281,17 +1281,18 @@ void LevelComplete_LSW_Update(STATUS_STAGE_s *stage, STATUSPACKET_s *packet, f32
             previous = stage->unknown_18;
             stage->unknown_18 += elapsed;
             if (stage->unknown_18 >= stage->unknown_1c) {
-                if (stage->type == 26 && packet->mission_state == 2) {
+                if (stage->type == STATUS_STAGE_MISSION && packet->mission_state == 2) {
                     *packet->score = packet->reward_score;
                 }
-                if (stage->type == 23 && packet->challenge_state == 2) {
+                if (stage->type == STATUS_STAGE_CHALLENGE && packet->challenge_state == 2) {
                     *packet->score = packet->reward_score;
                 }
                 NextStatusStage(packet);
                 return;
             }
             if (previous < 0.5f && stage->unknown_18 >= 0.5f) {
-                if ((stage->type == 23 && packet->challenge_state == 3) || (stage->type == 26 && packet->mission_state == 3)) {
+                if ((stage->type == STATUS_STAGE_CHALLENGE && packet->challenge_state == 3) ||
+                    (stage->type == STATUS_STAGE_MISSION && packet->mission_state == 3)) {
                     GameAudio_PlaySfx(0x32, NULL, 0, 0);
                 } else {
                     PlaySfx("StatusAward", NULL);
@@ -1299,7 +1300,8 @@ void LevelComplete_LSW_Update(STATUS_STAGE_s *stage, STATUSPACKET_s *packet, f32
                 NewStatusRumbleBuzz(-1, 0.6f, 0.0f, 0);
                 return;
             }
-            if ((stage->type == 26 && packet->mission_state == 2) || (stage->type == 23 && packet->challenge_state == 2)) {
+            if ((stage->type == STATUS_STAGE_MISSION && packet->mission_state == 2) ||
+                (stage->type == STATUS_STAGE_CHALLENGE && packet->challenge_state == 2)) {
                 f32 reward_end = stage->unknown_1c - 0.75;
                 if (previous < reward_end && stage->unknown_18 >= reward_end) {
                     CoinTotalScale = 1.5f;
@@ -1335,7 +1337,7 @@ void LevelComplete_LSW_Draw(STATUS_STAGE_s *stage, STATUSPACKET_s *packet, i32 c
             }
             if (alpha > 0.0f) {
                 i32 opacity = (i32)(alpha * 128.0f);
-                if (stage->type == 14) {
+                if (stage->type == STATUS_STAGE_SUPER_STORY_COMPLETE) {
                     f32 scale;
                     sprintf(text, "%s", TTab[EDataList[packet->episode_id].text_id]);
                     scale = StatusTextScale * 0.75f;
@@ -1343,7 +1345,7 @@ void LevelComplete_LSW_Draw(STATUS_STAGE_s *stage, STATUSPACKET_s *packet, i32 c
                                 1.7f, 1, NULL, 0, opacity);
                     SmartTextEx(TTab[dat_0088073c], 0.0f, StatusSecondaryTitleY, 1.0f, StatusTextScale, StatusTextScale, StatusTextScale, 0,
                                 (u8)StatusRed, (u8)StatusGreen, (u8)StatusBlue, 1.7f, 1, NULL, 0, opacity);
-                } else if (stage->type == 13) {
+                } else if (stage->type == STATUS_STAGE_LEVEL_COMPLETE) {
                     if ((PODRACE_ADATA != NULL && packet->area == PODRACE_ADATA) ||
                         (BONUS_GUNSHIP_ADATA != NULL && packet->area == BONUS_GUNSHIP_ADATA)) {
                         SmartTextEx(TTab[dat_00880728], 0.0f, (StatusSecondaryTitleY + StatusTitleY) * 0.5f, 1.0f, StatusTextScale,
@@ -1355,7 +1357,7 @@ void LevelComplete_LSW_Draw(STATUS_STAGE_s *stage, STATUSPACKET_s *packet, i32 c
                         SmartTextEx(TTab[dat_0088072c], 0.0f, StatusSecondaryTitleY, 1.0f, StatusTextScale, StatusTextScale,
                                     StatusTextScale, 0, (u8)StatusRed, (u8)StatusGreen, (u8)StatusBlue, 1.7f, 1, NULL, 0, opacity);
                     }
-                } else if (stage->type == 8) {
+                } else if (stage->type == STATUS_STAGE_GOTHAM_COMPLETE) {
                     SmartTextEx(TTab[dat_008810cc], 0.0f, StatusTitleY, 1.0f, StatusTextScale, StatusTextScale, StatusTextScale, 0,
                                 (u8)StatusRed, (u8)StatusGreen, (u8)StatusBlue, 1.7f, 1, NULL, 0, opacity);
                     SmartTextEx(TTab[dat_008810d0], 0.0f, StatusSecondaryTitleY, 1.0f, StatusTextScale, StatusTextScale, StatusTextScale, 0,
@@ -1363,7 +1365,7 @@ void LevelComplete_LSW_Draw(STATUS_STAGE_s *stage, STATUSPACKET_s *packet, i32 c
                 } else if (stage->type == 28) {
                     SmartTextEx(TTab[dat_00880710], 0.0f, 0.0f, 1.0f, StatusTextScale, StatusTextScale, StatusTextScale, 0, (u8)StatusRed,
                                 (u8)StatusGreen, (u8)StatusBlue, 1.7f, 1, NULL, 0, opacity);
-                } else if (stage->type == 23) {
+                } else if (stage->type == STATUS_STAGE_CHALLENGE) {
                     i16 label;
                     u32 red;
                     u32 green;
@@ -1379,7 +1381,7 @@ void LevelComplete_LSW_Draw(STATUS_STAGE_s *stage, STATUSPACKET_s *packet, i32 c
                     }
                     SmartTextEx(TTab[label], 0.0f, 0.0f, 1.0f, StatusTextScale, StatusTextScale, StatusTextScale, 0, red, green, blue, 1.7f,
                                 1, NULL, 0, opacity);
-                } else if (stage->type == 26) {
+                } else if (stage->type == STATUS_STAGE_MISSION) {
                     i16 label;
                     u32 red;
                     u32 green;
@@ -1417,7 +1419,7 @@ void LevelComplete_LSW_Draw(STATUS_STAGE_s *stage, STATUSPACKET_s *packet, i32 c
                 }
             }
         }
-        if (stage->type != 23 && stage->type != 26) {
+        if (stage->type != STATUS_STAGE_CHALLENGE && stage->type != STATUS_STAGE_MISSION) {
             return;
         }
         if (stage->unknown_14 == 0) {
@@ -1430,11 +1432,11 @@ void LevelComplete_LSW_Draw(STATUS_STAGE_s *stage, STATUSPACKET_s *packet, i32 c
                 iconalphaoverride = (stage->unknown_18 - fade_start) * 2.0f;
             }
         }
-        if (stage->type == 26 && packet->mission_state == 2) {
+        if (stage->type == STATUS_STAGE_MISSION && packet->mission_state == 2) {
             if (Game.gold_bricks > packet->previous_gold_bricks) {
                 iconalphaoverride = 0.0f;
             }
-        } else if (stage->type != 23 || packet->challenge_state != 2) {
+        } else if (stage->type != STATUS_STAGE_CHALLENGE || packet->challenge_state != 2) {
             return;
         }
         if (stage->unknown_18 < 0.75f) {
@@ -1458,7 +1460,7 @@ void LevelComplete_LSW_Draw(STATUS_STAGE_s *stage, STATUSPACKET_s *packet, i32 c
         IncreaseScore(&score, (i32)((packet->reward_score - packet->original_score) * progress), 0);
         CoinTotal_Draw((i32)score, (STATSPOSY - STATSPOS2Y) * NuTrigTable[((i32)(coin_slide * 16384.0f) >> 1) & 0x7fff] + STATSPOS2Y,
                        CoinTotalScale, 1, 1.0f, 255, 191, 0);
-        if (stage->type == 26) {
+        if (stage->type == STATUS_STAGE_MISSION) {
             f32 remaining = packet->mission->time - packet->elapsed_time;
             if (remaining < 0.0f) {
                 remaining = 0.0f;
@@ -1467,7 +1469,7 @@ void LevelComplete_LSW_Draw(STATUS_STAGE_s *stage, STATUSPACKET_s *packet, i32 c
             Text3D(text, 0.0f, -((STATSPOSY - STATSPOS2Y) * NuTrigTable[((i32)(slide * 16384.0f) >> 1) & 0x7fff] + STATSPOS2Y), 1.0f, 0.6f,
                    0.6f, 0.6f, 0, 255, 191, 0);
         }
-        if (stage->type == 23) {
+        if (stage->type == STATUS_STAGE_CHALLENGE) {
             f32 remaining = packet->area->challenge_trial_time - packet->elapsed_time;
             if (remaining < 0.0f) {
                 remaining = 0.0f;
@@ -1478,7 +1480,8 @@ void LevelComplete_LSW_Draw(STATUS_STAGE_s *stage, STATUSPACKET_s *packet, i32 c
         }
     } else if (stage->unknown_12 != 0) {
         f32 alpha = getFinishedStatusAlpha(packet);
-        if ((stage->type == 26 && packet->mission_state == 2) || (stage->type == 23 && packet->challenge_state == 2)) {
+        if ((stage->type == STATUS_STAGE_MISSION && packet->mission_state == 2) ||
+            (stage->type == STATUS_STAGE_CHALLENGE && packet->challenge_state == 2)) {
             CoinTotal_Draw((i32)*packet->score, STATSPOSY, CoinTotalScale, 1, alpha, 255, 191, 0);
         }
     }
@@ -1915,7 +1918,7 @@ void BonusWin_LSW_Draw(STATUS_STAGE_s *stage, STATUSPACKET_s *packet, i32 curren
                         (u32)opacity);
         }
         DrawBonusScore(STATSPOSY, StatusPacket.player0_active, StatusPacket.player1_active, iconalphaoverride, BonusScore);
-    } else if (stage->unknown_12 != 0 && packet->stage->type != 25) {
+    } else if (stage->unknown_12 != 0 && packet->stage->type != STATUS_STAGE_CHALLENGE_CASH) {
         f32 alpha = getFinishedStatusAlpha(packet);
         DrawBonusScore(STATSPOSY, StatusPacket.player0_active, StatusPacket.player1_active, alpha, BonusScore);
     }
@@ -2080,40 +2083,44 @@ void Fade_LSW_Update(STATUS_STAGE_s *stage, STATUSPACKET_s *packet, f32 elapsed)
 }
 
 static STATUS_STAGE_s StatusStagesLsw[34] = {
-    {RedBrick_LSW_Draw,         RedBrick_LSW_Update,         RedBrick_LSW_Skip,         18, 0xffff, 0, 0, 0, 0.0f, 0.0f},
-    {CollectCharcters_Draw,     CollectCharcters_Update,     CollectCharcters_Skip,     35, 0xffff, 0, 0, 0, 0.0f, 0.0f},
-    {CollectCharactersOff_Draw, CollectCharactersOff_Update, CollectCharactersOff_Skip, 36, 0xffff, 0, 0, 0, 0.0f, 0.0f},
-    {Coins_LSW_Draw,            Coins_LSW_Update,            Coins_LSW_Skip,            3,  0xffff, 0, 0, 0, 0.0f, 0.0f},
-    {TrueHero_LSW_Draw,         TrueHero_LSW_Update,         TrueHero_LSW_Skip,         1,  0xffff, 0, 0, 0, 0.0f, 0.0f},
-    {TrueHero_LSW_Draw,         TrueHero_LSW_Update,         TrueHero_LSW_Skip,         2,  0xffff, 0, 0, 0, 0.0f, 0.0f},
-    {MiniKit_LSW_Draw,          MiniKit_LSW_Update,          MiniKit_LSW_Skip,          4,  0xffff, 0, 0, 0, 0.0f, 0.0f},
-    {AllMiniKits_LSW_Draw,      AllMiniKits_LSW_Update,      AllMiniKits_LSW_Skip,      17, 0xffff, 0, 0, 0, 0.0f, 0.0f},
-    {GoldBrick_LSW_Draw,        GoldBrick_LSW_Update,        GoldBrick_LSW_Skip,        19, 0xffff, 0, 0, 0, 0.0f, 0.0f},
-    {LevelComplete_LSW_Draw,    LevelComplete_LSW_Update,    LevelComplete_LSW_Skip,    13, 0xffff, 0, 0, 0, 0.0f, 0.0f},
-    {LevelComplete_LSW_Draw,    LevelComplete_LSW_Update,    LevelComplete_LSW_Skip,    8,  0xffff, 0, 0, 0, 0.0f, 0.0f},
-    {LevelComplete_LSW_Draw,    LevelComplete_LSW_Update,    LevelComplete_LSW_Skip,    28, 0xffff, 0, 0, 0, 0.0f, 0.0f},
-    {LevelComplete_LSW_Draw,    LevelComplete_LSW_Update,    LevelComplete_LSW_Skip,    29, 0xffff, 0, 0, 0, 0.0f, 0.0f},
-    {LevelComplete_LSW_Draw,    LevelComplete_LSW_Update,    LevelComplete_LSW_Skip,    30, 0xffff, 0, 0, 0, 0.0f, 0.0f},
-    {LevelComplete_LSW_Draw,    LevelComplete_LSW_Update,    LevelComplete_LSW_Skip,    31, 0xffff, 0, 0, 0, 0.0f, 0.0f},
-    {LevelComplete_LSW_Draw,    LevelComplete_LSW_Update,    LevelComplete_LSW_Skip,    32, 0xffff, 0, 0, 0, 0.0f, 0.0f},
-    {LevelComplete_LSW_Draw,    LevelComplete_LSW_Update,    LevelComplete_LSW_Skip,    33, 0xffff, 0, 0, 0, 0.0f, 0.0f},
-    {LevelComplete_LSW_Draw,    LevelComplete_LSW_Update,    LevelComplete_LSW_Skip,    34, 0xffff, 0, 0, 0, 0.0f, 0.0f},
-    {LevelComplete_LSW_Draw,    LevelComplete_LSW_Update,    LevelComplete_LSW_Skip,    14, 0xffff, 0, 0, 0, 0.0f, 0.0f},
-    {LevelComplete_LSW_Draw,    LevelComplete_LSW_Update,    LevelComplete_LSW_Skip,    23, 0xffff, 0, 0, 0, 0.0f, 0.0f},
-    {BonusTime_LSW_Draw,        BonusTime_LSW_Update,        BonusTime_LSW_Skip,        24, 0xffff, 0, 0, 0, 0.0f, 0.0f},
-    {ChallangeCash_Draw,        ChallangeCash_Update,        ChallangeCash_Skip,        25, 0xffff, 0, 0, 0, 0.0f, 0.0f},
-    {LevelComplete_LSW_Draw,    LevelComplete_LSW_Update,    LevelComplete_LSW_Skip,    26, 0xffff, 0, 0, 0, 0.0f, 0.0f},
-    {BonusTime_LSW_Draw,        BonusTime_LSW_Update,        BonusTime_LSW_Skip,        27, 0xffff, 0, 0, 0, 0.0f, 0.0f},
-    {SuperStoryTime_LSW_Draw,   SuperStoryTime_LSW_Update,   SuperStoryTime_LSW_Skip,   15, 0xffff, 0, 0, 0, 0.0f, 0.0f},
-    {SuperStoryScore_LSW_Draw,  SuperStoryScore_LSW_Update,  SuperStoryScore_LSW_Skip,  16, 0xffff, 0, 0, 0, 0.0f, 0.0f},
-    {BonusComplete_LSW_Draw,    BonusComplete_LSW_Update,    BonusComplete_LSW_Skip,    22, 0xffff, 0, 0, 0, 0.0f, 0.0f},
-    {BonusWin_LSW_Draw,         BonusWin_LSW_Update,         BonusWin_LSW_Skip,         20, 0xffff, 0, 0, 0, 0.0f, 0.0f},
-    {BonusTime_LSW_Draw,        BonusTime_LSW_Update,        BonusTime_LSW_Skip,        21, 0xffff, 0, 0, 0, 0.0f, 0.0f},
-    {Prompt_LSW_Draw,           Prompt_LSW_Update,           NULL,                      9,  0xffff, 0, 0, 0, 0.0f, 0.0f},
-    {NULL,                      Exit_LSW_Update,             NULL,                      10, 0xffff, 0, 0, 0, 0.0f, 0.0f},
-    {NULL,                      Save_LSW_Update,             NULL,                      11, 0xffff, 0, 0, 0, 0.0f, 0.0f},
-    {NULL,                      Fade_LSW_Update,             NULL,                      12, 0xffff, 0, 0, 0, 0.0f, 0.0f},
-    {NULL,                      NULL,                        NULL,                      -1, 0xffff, 0, 0, 0, 0.0f, 0.0f},
+    {RedBrick_LSW_Draw,         RedBrick_LSW_Update,         RedBrick_LSW_Skip,         STATUS_STAGE_RED_BRICK,              0xffff, 0, 0, 0, 0.0f, 0.0f},
+    {CollectCharcters_Draw,     CollectCharcters_Update,     CollectCharcters_Skip,     STATUS_STAGE_COLLECT_CHARACTERS,     0xffff, 0, 0, 0, 0.0f, 0.0f},
+    {CollectCharactersOff_Draw, CollectCharactersOff_Update, CollectCharactersOff_Skip, STATUS_STAGE_COLLECT_CHARACTERS_OFF, 0xffff, 0, 0,
+     0,                                                                                                                                       0.0f, 0.0f},
+    {Coins_LSW_Draw,            Coins_LSW_Update,            Coins_LSW_Skip,            STATUS_STAGE_COINS,                  0xffff, 0, 0, 0, 0.0f, 0.0f},
+    {TrueHero_LSW_Draw,         TrueHero_LSW_Update,         TrueHero_LSW_Skip,         STATUS_STAGE_TRUE_JEDI,              0xffff, 0, 0, 0, 0.0f, 0.0f},
+    {TrueHero_LSW_Draw,         TrueHero_LSW_Update,         TrueHero_LSW_Skip,         STATUS_STAGE_TRUE_JEDI_SCORE,        0xffff, 0, 0, 0, 0.0f, 0.0f},
+    {MiniKit_LSW_Draw,          MiniKit_LSW_Update,          MiniKit_LSW_Skip,          STATUS_STAGE_MINIKIT,                0xffff, 0, 0, 0, 0.0f, 0.0f},
+    {AllMiniKits_LSW_Draw,      AllMiniKits_LSW_Update,      AllMiniKits_LSW_Skip,      STATUS_STAGE_ALL_MINIKITS,           0xffff, 0, 0, 0, 0.0f, 0.0f},
+    {GoldBrick_LSW_Draw,        GoldBrick_LSW_Update,        GoldBrick_LSW_Skip,        STATUS_STAGE_GOLD_BRICK,             0xffff, 0, 0, 0, 0.0f, 0.0f},
+    {LevelComplete_LSW_Draw,    LevelComplete_LSW_Update,    LevelComplete_LSW_Skip,    STATUS_STAGE_LEVEL_COMPLETE,         0xffff, 0, 0, 0, 0.0f, 0.0f},
+    {LevelComplete_LSW_Draw,    LevelComplete_LSW_Update,    LevelComplete_LSW_Skip,    STATUS_STAGE_GOTHAM_COMPLETE,        0xffff, 0, 0, 0, 0.0f, 0.0f},
+    {LevelComplete_LSW_Draw,    LevelComplete_LSW_Update,    LevelComplete_LSW_Skip,    28,                                  0xffff, 0, 0, 0, 0.0f, 0.0f},
+    {LevelComplete_LSW_Draw,    LevelComplete_LSW_Update,    LevelComplete_LSW_Skip,    29,                                  0xffff, 0, 0, 0, 0.0f, 0.0f},
+    {LevelComplete_LSW_Draw,    LevelComplete_LSW_Update,    LevelComplete_LSW_Skip,    30,                                  0xffff, 0, 0, 0, 0.0f, 0.0f},
+    {LevelComplete_LSW_Draw,    LevelComplete_LSW_Update,    LevelComplete_LSW_Skip,    31,                                  0xffff, 0, 0, 0, 0.0f, 0.0f},
+    {LevelComplete_LSW_Draw,    LevelComplete_LSW_Update,    LevelComplete_LSW_Skip,    32,                                  0xffff, 0, 0, 0, 0.0f, 0.0f},
+    {LevelComplete_LSW_Draw,    LevelComplete_LSW_Update,    LevelComplete_LSW_Skip,    33,                                  0xffff, 0, 0, 0, 0.0f, 0.0f},
+    {LevelComplete_LSW_Draw,    LevelComplete_LSW_Update,    LevelComplete_LSW_Skip,    34,                                  0xffff, 0, 0, 0, 0.0f, 0.0f},
+    {LevelComplete_LSW_Draw,    LevelComplete_LSW_Update,    LevelComplete_LSW_Skip,    STATUS_STAGE_SUPER_STORY_COMPLETE,   0xffff, 0, 0, 0, 0.0f,
+     0.0f                                                                                                                                               },
+    {LevelComplete_LSW_Draw,    LevelComplete_LSW_Update,    LevelComplete_LSW_Skip,    STATUS_STAGE_CHALLENGE,              0xffff, 0, 0, 0, 0.0f, 0.0f},
+    {BonusTime_LSW_Draw,        BonusTime_LSW_Update,        BonusTime_LSW_Skip,        24,                                  0xffff, 0, 0, 0, 0.0f, 0.0f},
+    {ChallangeCash_Draw,        ChallangeCash_Update,        ChallangeCash_Skip,        STATUS_STAGE_CHALLENGE_CASH,         0xffff, 0, 0, 0, 0.0f, 0.0f},
+    {LevelComplete_LSW_Draw,    LevelComplete_LSW_Update,    LevelComplete_LSW_Skip,    STATUS_STAGE_MISSION,                0xffff, 0, 0, 0, 0.0f, 0.0f},
+    {BonusTime_LSW_Draw,        BonusTime_LSW_Update,        BonusTime_LSW_Skip,        27,                                  0xffff, 0, 0, 0, 0.0f, 0.0f},
+    {SuperStoryTime_LSW_Draw,   SuperStoryTime_LSW_Update,   SuperStoryTime_LSW_Skip,   STATUS_STAGE_SUPER_STORY_TIME,       0xffff, 0, 0, 0, 0.0f,
+     0.0f                                                                                                                                               },
+    {SuperStoryScore_LSW_Draw,  SuperStoryScore_LSW_Update,  SuperStoryScore_LSW_Skip,  STATUS_STAGE_SUPER_STORY_SCORE,      0xffff, 0, 0, 0, 0.0f,
+     0.0f                                                                                                                                               },
+    {BonusComplete_LSW_Draw,    BonusComplete_LSW_Update,    BonusComplete_LSW_Skip,    STATUS_STAGE_BONUS_COMPLETE,         0xffff, 0, 0, 0, 0.0f, 0.0f},
+    {BonusWin_LSW_Draw,         BonusWin_LSW_Update,         BonusWin_LSW_Skip,         STATUS_STAGE_BONUS_WIN,              0xffff, 0, 0, 0, 0.0f, 0.0f},
+    {BonusTime_LSW_Draw,        BonusTime_LSW_Update,        BonusTime_LSW_Skip,        STATUS_STAGE_BONUS_TIME,             0xffff, 0, 0, 0, 0.0f, 0.0f},
+    {Prompt_LSW_Draw,           Prompt_LSW_Update,           NULL,                      STATUS_STAGE_PROMPT,                 0xffff, 0, 0, 0, 0.0f, 0.0f},
+    {NULL,                      Exit_LSW_Update,             NULL,                      STATUS_STAGE_EXIT,                   0xffff, 0, 0, 0, 0.0f, 0.0f},
+    {NULL,                      Save_LSW_Update,             NULL,                      STATUS_STAGE_SAVE,                   0xffff, 0, 0, 0, 0.0f, 0.0f},
+    {NULL,                      Fade_LSW_Update,             NULL,                      STATUS_STAGE_FADE,                   0xffff, 0, 0, 0, 0.0f, 0.0f},
+    {NULL,                      NULL,                        NULL,                      -1,                                  0xffff, 0, 0, 0, 0.0f, 0.0f},
 };
 static struct STATUSPACKET_LSW_s StatusPacketLsw = {0};
 

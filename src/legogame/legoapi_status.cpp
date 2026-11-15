@@ -296,7 +296,7 @@ extern "C" {
             }
             packet->current_gold_brick = (i8)((u8)packet->current_gold_brick + 1);
             if (packet->current_gold_brick + 1 >= packet->stage_count) {
-                packet->next_stage = FindStatusStage(10);
+                packet->next_stage = FindStatusStage(STATUS_STAGE_EXIT);
             } else {
                 packet->next_stage = FindStatusStage(packet->stage_types[packet->current_gold_brick + 1]);
             }
@@ -304,11 +304,11 @@ extern "C" {
         StatusStage_Reset(packet->stage);
         packet->flags_word &= ~2u;
         status_prompt = 0;
-        if ((packet->stage != NULL && packet->stage->type == 11) || packet->stage->type == 10) {
+        if ((packet->stage != NULL && packet->stage->type == STATUS_STAGE_SAVE) || packet->stage->type == STATUS_STAGE_EXIT) {
             ResetRumble((RUMBLE_PACKET_RESOURCE *)&packet->player0_rumble_amount);
             ResetRumble((RUMBLE_PACKET_RESOURCE *)&packet->player1_rumble_amount);
         }
-        if (packet->stage != NULL && packet->stage->type == 11) {
+        if (packet->stage != NULL && packet->stage->type == STATUS_STAGE_SAVE) {
             ReCalculateCompletionPoints();
         }
     }
@@ -529,18 +529,18 @@ extern "C" {
                 }
                 p->final_reward_score = p->time_reward_score;
                 IncreaseScore(&p->final_reward_score, p->superstory_score, 0);
-                STATUS_APPEND_STAGE_INLINE(p, 14, gold);
-                STATUS_APPEND_STAGE_INLINE(p, 15, 0);
-                STATUS_APPEND_STAGE_INLINE(p, 16, 0);
+                STATUS_APPEND_STAGE_INLINE(p, STATUS_STAGE_SUPER_STORY_COMPLETE, gold);
+                STATUS_APPEND_STAGE_INLINE(p, STATUS_STAGE_SUPER_STORY_TIME, 0);
+                STATUS_APPEND_STAGE_INLINE(p, STATUS_STAGE_SUPER_STORY_SCORE, 0);
                 if (Game.gold_bricks > p->previous_gold_bricks) {
-                    AddStatusStage(p, 19, 0);
+                    AddStatusStage(p, STATUS_STAGE_GOLD_BRICK, 0);
                 }
                 if (netclient == 0 && (p->new_best_time != 0.0f || p->new_best_score != 0 || p->superstory_score != 0)) {
-                    AddStatusStage(p, 11, 0);
+                    AddStatusStage(p, STATUS_STAGE_SAVE, 0);
                 }
                 hub_from_superstory = p->area->episode_index;
             }
-            STATUS_APPEND_STAGE_INLINE(p, 10, 0);
+            STATUS_APPEND_STAGE_INLINE(p, STATUS_STAGE_EXIT, 0);
             p->stage_types[p->stage_count] = -1;
             p->current_gold_brick = -1;
             p->next_stage = FindStatusStage(p->stage_types[0]);
@@ -575,21 +575,21 @@ extern "C" {
                         gold = AddGoldBrickMessage(p, dat_00880728);
                     }
                 }
-                AddStatusStage(p, 22, gold);
+                AddStatusStage(p, STATUS_STAGE_BONUS_COMPLETE, gold);
                 gold = 0;
             } else {
-                AddStatusStage(p, 20, 0);
+                AddStatusStage(p, STATUS_STAGE_BONUS_WIN, 0);
             }
-            AddStatusStage(p, 21, gold);
+            AddStatusStage(p, STATUS_STAGE_BONUS_TIME, gold);
             if (Game.gold_bricks > p->previous_gold_bricks) {
-                AddStatusStage(p, 19, 0);
+                AddStatusStage(p, STATUS_STAGE_GOLD_BRICK, 0);
             }
-            AddStatusStage(p, 9, 0);
-            AddStatusStage(p, 10, 0);
+            AddStatusStage(p, STATUS_STAGE_PROMPT, 0);
+            AddStatusStage(p, STATUS_STAGE_EXIT, 0);
             if (netclient == 0) {
-                AddStatusStage(p, 11, 0);
+                AddStatusStage(p, STATUS_STAGE_SAVE, 0);
             }
-            AddStatusStage(p, 12, 0);
+            AddStatusStage(p, STATUS_STAGE_FADE, 0);
             p->stage_types[p->stage_count] = -1;
             p->current_gold_brick = -1;
             p->next_stage = FindStatusStage(p->stage_types[0]);
@@ -627,16 +627,16 @@ extern "C" {
                     }
                 }
             }
-            AddStatusStage(p, 26, gold);
+            AddStatusStage(p, STATUS_STAGE_MISSION, gold);
             if (Game.gold_bricks > p->previous_gold_bricks) {
-                AddStatusStage(p, 19, 0);
+                AddStatusStage(p, STATUS_STAGE_GOLD_BRICK, 0);
             }
-            STATUS_APPEND_STAGE_INLINE(p, 9, 0);
-            STATUS_APPEND_STAGE_INLINE(p, 10, 0);
+            STATUS_APPEND_STAGE_INLINE(p, STATUS_STAGE_PROMPT, 0);
+            STATUS_APPEND_STAGE_INLINE(p, STATUS_STAGE_EXIT, 0);
             if (netclient == 0) {
-                AddStatusStage(p, 11, 0);
+                AddStatusStage(p, STATUS_STAGE_SAVE, 0);
             }
-            STATUS_APPEND_STAGE_INLINE(p, 12, 0);
+            STATUS_APPEND_STAGE_INLINE(p, STATUS_STAGE_FADE, 0);
             p->stage_types[p->stage_count] = -1;
             p->current_gold_brick = -1;
             p->next_stage = FindStatusStage(p->stage_types[0]);
@@ -666,16 +666,16 @@ extern "C" {
                     IncreaseScore(&p->reward_score, reward, 0);
                 }
             }
-            AddStatusStage(p, 23, 0);
+            AddStatusStage(p, STATUS_STAGE_CHALLENGE, 0);
             if (p->challenge_state == 2 && first != 0) {
-                AddStatusStage(p, 25, 0);
+                AddStatusStage(p, STATUS_STAGE_CHALLENGE_CASH, 0);
             }
-            AddStatusStage(p, 9, 0);
-            AddStatusStage(p, 10, 0);
+            AddStatusStage(p, STATUS_STAGE_PROMPT, 0);
+            AddStatusStage(p, STATUS_STAGE_EXIT, 0);
             if (netclient == 0) {
-                AddStatusStage(p, 11, 0);
+                AddStatusStage(p, STATUS_STAGE_SAVE, 0);
             }
-            AddStatusStage(p, 12, 0);
+            AddStatusStage(p, STATUS_STAGE_FADE, 0);
             p->stage_types[p->stage_count] = -1;
             p->current_gold_brick = -1;
             p->next_stage = FindStatusStage(p->stage_types[0]);
@@ -767,19 +767,19 @@ extern "C" {
                 }
             }
             if (p->newly_completed != 0) {
-                AddStatusStage(p, 13, gold);
+                AddStatusStage(p, STATUS_STAGE_LEVEL_COMPLETE, gold);
             }
             if (completed_episode != 0) {
                 AddStatusStage(p, completed_episode + 29, 0);
             }
         }
         if (GOTHAMSTREETS_ADATA != NULL && p->newly_completed != 0 && p->area == GOTHAMSTREETS_ADATA) {
-            AddStatusStage(p, 8, 0);
+            AddStatusStage(p, STATUS_STAGE_GOTHAM_COMPLETE, 0);
         }
         if (p->area != NULL && (u8)p->area->cheat != 0xff && Game.area_save[area].red_brick_collected == 0 && AreaGlobals.unknown_08 != 0) {
             AddToCompletionPoints(POINTS_PER_REDBRICK);
             Game.area_save[area].red_brick_collected = 1;
-            AddStatusStage(p, 18, 0);
+            AddStatusStage(p, STATUS_STAGE_RED_BRICK, 0);
         }
         if (p->newly_completed != 0 && newCharactersCollected(p) > 0) {
             if (StartupGameFlag1 == 0) {
@@ -790,8 +790,8 @@ extern "C" {
                     AddStatusStage(p, 7, 0);
                 }
             } else {
-                AddStatusStage(p, 35, 0);
-                AddStatusStage(p, 36, 0);
+                AddStatusStage(p, STATUS_STAGE_COLLECT_CHARACTERS, 0);
+                AddStatusStage(p, STATUS_STAGE_COLLECT_CHARACTERS_OFF, 0);
             }
             RememberPlayerIDs(1, (i16)p->player0_model, (i16)p->player1_model);
         }
@@ -803,9 +803,9 @@ extern "C" {
                     if ((p->unknown_b0 & 4) != 0) {
                         *complete = 1;
                         AddToCompletionPoints(POINTS_PER_TRUEJEDI);
-                        AddStatusStage(p, 1, AddGoldBrickMessage(p, dat_00880818));
+                        AddStatusStage(p, STATUS_STAGE_TRUE_JEDI, AddGoldBrickMessage(p, dat_00880818));
                     } else if (p->collected_score > 0.0f) {
-                        AddStatusStage(p, 2, 0);
+                        AddStatusStage(p, STATUS_STAGE_TRUE_JEDI_SCORE, 0);
                     }
                 }
             } else if (Game.area_save[area].true_hero_complete[0] == 0 && Game.area_save[area].true_hero_complete[1] == 0) {
@@ -813,14 +813,14 @@ extern "C" {
                     Game.area_save[area].true_hero_complete[1] = 1;
                     Game.area_save[area].true_hero_complete[0] = 1;
                     AddToCompletionPoints(POINTS_PER_TRUEJEDI);
-                    AddStatusStage(p, 1, AddGoldBrickMessage(p, dat_00880818));
+                    AddStatusStage(p, STATUS_STAGE_TRUE_JEDI, AddGoldBrickMessage(p, dat_00880818));
                 } else if (p->collected_score > 0.0f && (p->flags_word & 0x800) == 0) {
-                    AddStatusStage(p, 2, 0);
+                    AddStatusStage(p, STATUS_STAGE_TRUE_JEDI_SCORE, 0);
                 }
             }
         }
         if (p->collected_score > 0.0f) {
-            AddStatusStage(p, 3, 0);
+            AddStatusStage(p, STATUS_STAGE_COINS, 0);
         }
         if (p->minikit_max > 0 &&
             (p->area->flags & (AREAFLAG_ENDING_AREA | AREAFLAG_BONUS_AREA | AREAFLAG_MINIKIT | AREAFLAG_TEST_AREA)) == 0x10 &&
@@ -834,24 +834,24 @@ extern "C" {
                 gold = AddGoldBrickMessage(p, dat_008808d0);
             }
             if (PauseSaveAndExit == 0 || p->new_minikits != 0) {
-                AddStatusStage(p, 4, gold);
+                AddStatusStage(p, STATUS_STAGE_MINIKIT, gold);
             }
             if ((p->unknown_b0 & 0x10) != 0 && AllMiniKitsDone((AREASAVE_s *)Game.area_save) != 0) {
                 AddToCollection(dat_007f195c);
-                AddStatusStage(p, 17, 0);
+                AddStatusStage(p, STATUS_STAGE_ALL_MINIKITS, 0);
             }
         }
         if (Game.gold_bricks > p->previous_gold_bricks) {
-            AddStatusStage(p, 19, 0);
+            AddStatusStage(p, STATUS_STAGE_GOLD_BRICK, 0);
         }
         if ((p->flags_word & 0x800) == 0) {
-            AddStatusStage(p, 9, 0);
+            AddStatusStage(p, STATUS_STAGE_PROMPT, 0);
         }
-        STATUS_APPEND_STAGE_INLINE(p, 10, 0);
+        STATUS_APPEND_STAGE_INLINE(p, STATUS_STAGE_EXIT, 0);
         if (netclient == 0) {
-            AddStatusStage(p, 11, 0);
+            AddStatusStage(p, STATUS_STAGE_SAVE, 0);
         }
-        STATUS_APPEND_STAGE_INLINE(p, 12, 0);
+        STATUS_APPEND_STAGE_INLINE(p, STATUS_STAGE_FADE, 0);
         p->stage_types[p->stage_count] = -1;
         p->current_gold_brick = -1;
         p->next_stage = FindStatusStage(p->stage_types[0]);
@@ -1332,14 +1332,14 @@ extern "C" void DrawStatusScreen(WORLDINFO *) {
             }
         }
         f32 alpha;
-        if (StatusPacket.stage->type == 11) {
+        if (StatusPacket.stage->type == STATUS_STAGE_SAVE) {
             return;
         }
-        if (StatusPacket.stage->type == 12) {
+        if (StatusPacket.stage->type == STATUS_STAGE_FADE) {
             alpha = 0.0f;
-        } else if (StatusPacket.stage->type == 10) {
+        } else if (StatusPacket.stage->type == STATUS_STAGE_EXIT) {
             alpha = StatusPacket.stage->unknown_18 < 1.0f ? 1.0f - StatusPacket.stage->unknown_18 : 0.0f;
-        } else if (StatusPacket.stage->type == 19 && StatusPacket.stage->unknown_14 != 0) {
+        } else if (StatusPacket.stage->type == STATUS_STAGE_GOLD_BRICK && StatusPacket.stage->unknown_14 != 0) {
             if (StatusPacket.stage->unknown_18 < 1.0f) {
                 alpha = 1.0f - StatusPacket.stage->unknown_18;
             } else {

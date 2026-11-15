@@ -1009,8 +1009,8 @@ static void BackDrop_Alpha(f32 *alpha) {
             *alpha *= CreditsAlpha;
             return;
         }
-        if ((WORLD->current_level->flags & LEVEL_STATUS) != 0 && StatusPacket.status_flags != 0 && StatusPacket.stage->type == 12 &&
-            (StatusPacket.flags_word & 0x1000) == 0) {
+        if ((WORLD->current_level->flags & LEVEL_STATUS) != 0 && StatusPacket.status_flags != 0 &&
+            StatusPacket.stage->type == STATUS_STAGE_FADE && (StatusPacket.flags_word & 0x1000) == 0) {
             if (StatusPacket.stage->unknown_18 < 0.5f) {
                 *alpha = 1.0f - StatusPacket.stage->unknown_18 * 2.0f;
             } else {

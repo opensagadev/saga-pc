@@ -80,26 +80,27 @@ extern "C" {
 
     /* unknown_10 is the panel object drawn for the stage on the background grid. */
     STATUS_STAGE_s StatusStagesAlt[20] = {
-        {LevelComplete_Alt_Draw, LevelComplete_Alt_Update, LevelComplete_Alt_Skip, 13, 3,      0, 0, 0, 0.0f, 0.0f},
-        {RedBrick_Alt_Draw,      RedBrick_Alt_Update,      RedBrick_Alt_Skip,      18, 4,      0, 0, 0, 0.0f, 0.0f},
-        {Stage5_Alt_Draw,        Stage5_Alt_Update,        Stage5_Alt_Skip,        5,  5,      0, 0, 0, 0.0f, 0.0f},
-        {Stage6_Alt_Draw,        Stage6_Alt_Update,        Stage6_Alt_Skip,        6,  6,      0, 0, 0, 0.0f, 0.0f},
-        {Coins_Alt_Draw,         Coins_Alt_Update,         Coins_Alt_Skip,         3,  7,      0, 0, 0, 0.0f, 0.0f},
-        {TrueHero_Alt_Draw,      TrueHero_Alt_Update,      TrueHero_Alt_Skip,      1,  8,      0, 0, 0, 0.0f, 0.0f},
-        {TrueHero_Alt_Draw,      TrueHero_Alt_Update,      TrueHero_Alt_Skip,      2,  3,      0, 0, 0, 0.0f, 0.0f},
-        {MiniKit_Alt_Draw,       MiniKit_Alt_Update,       MiniKit_Alt_Skip,       4,  4,      0, 0, 0, 0.0f, 0.0f},
-        {AllMiniKits_Alt_Draw,   AllMiniKits_Alt_Update,   AllMiniKits_Alt_Skip,   17, 5,      0, 0, 0, 0.0f, 0.0f},
-        {GoldBrick_Alt_Draw,     GoldBrick_Alt_Update,     GoldBrick_Alt_Skip,     19, 6,      0, 0, 0, 0.0f, 0.0f},
-        {LevelComplete_Alt_Draw, LevelComplete_Alt_Update, LevelComplete_Alt_Skip, 8,  7,      0, 0, 0, 0.0f, 0.0f},
-        {LevelComplete_Alt_Draw, LevelComplete_Alt_Update, LevelComplete_Alt_Skip, 14, 8,      0, 0, 0, 0.0f, 0.0f},
-        {LevelComplete_Alt_Draw, LevelComplete_Alt_Update, LevelComplete_Alt_Skip, 23, 3,      0, 0, 0, 0.0f, 0.0f},
-        {LevelComplete_Alt_Draw, LevelComplete_Alt_Update, LevelComplete_Alt_Skip, 26, 4,      0, 0, 0, 0.0f, 0.0f},
-        {BonusComplete_Alt_Draw, BonusComplete_Alt_Update, BonusComplete_Alt_Skip, 22, 5,      0, 0, 0, 0.0f, 0.0f},
-        {Prompt_Alt_Draw,        Prompt_Alt_Update,        NULL,                   9,  6,      0, 0, 0, 0.0f, 0.0f},
-        {NULL,                   Exit_Alt_Update,          NULL,                   10, 0xffff, 0, 0, 0, 0.0f, 0.0f},
-        {NULL,                   Save_Alt_Update,          NULL,                   11, 0xffff, 0, 0, 0, 0.0f, 0.0f},
-        {NULL,                   Fade_Alt_Update,          NULL,                   12, 0xffff, 0, 0, 0, 0.0f, 0.0f},
-        {NULL,                   NULL,                     NULL,                   -1, 0xffff, 0, 0, 0, 0.0f, 0.0f},
+        {LevelComplete_Alt_Draw, LevelComplete_Alt_Update, LevelComplete_Alt_Skip, STATUS_STAGE_LEVEL_COMPLETE,       3,      0, 0, 0, 0.0f, 0.0f},
+        {RedBrick_Alt_Draw,      RedBrick_Alt_Update,      RedBrick_Alt_Skip,      STATUS_STAGE_RED_BRICK,            4,      0, 0, 0, 0.0f, 0.0f},
+        {Stage5_Alt_Draw,        Stage5_Alt_Update,        Stage5_Alt_Skip,        5,                                 5,      0, 0, 0, 0.0f, 0.0f},
+        {Stage6_Alt_Draw,        Stage6_Alt_Update,        Stage6_Alt_Skip,        6,                                 6,      0, 0, 0, 0.0f, 0.0f},
+        {Coins_Alt_Draw,         Coins_Alt_Update,         Coins_Alt_Skip,         STATUS_STAGE_COINS,                7,      0, 0, 0, 0.0f, 0.0f},
+        {TrueHero_Alt_Draw,      TrueHero_Alt_Update,      TrueHero_Alt_Skip,      STATUS_STAGE_TRUE_JEDI,            8,      0, 0, 0, 0.0f, 0.0f},
+        {TrueHero_Alt_Draw,      TrueHero_Alt_Update,      TrueHero_Alt_Skip,      STATUS_STAGE_TRUE_JEDI_SCORE,      3,      0, 0, 0, 0.0f, 0.0f},
+        {MiniKit_Alt_Draw,       MiniKit_Alt_Update,       MiniKit_Alt_Skip,       STATUS_STAGE_MINIKIT,              4,      0, 0, 0, 0.0f, 0.0f},
+        {AllMiniKits_Alt_Draw,   AllMiniKits_Alt_Update,   AllMiniKits_Alt_Skip,   STATUS_STAGE_ALL_MINIKITS,         5,      0, 0, 0, 0.0f, 0.0f},
+        {GoldBrick_Alt_Draw,     GoldBrick_Alt_Update,     GoldBrick_Alt_Skip,     STATUS_STAGE_GOLD_BRICK,           6,      0, 0, 0, 0.0f, 0.0f},
+        {LevelComplete_Alt_Draw, LevelComplete_Alt_Update, LevelComplete_Alt_Skip, STATUS_STAGE_GOTHAM_COMPLETE,      7,      0, 0, 0, 0.0f, 0.0f},
+        {LevelComplete_Alt_Draw, LevelComplete_Alt_Update, LevelComplete_Alt_Skip, STATUS_STAGE_SUPER_STORY_COMPLETE, 8,      0, 0, 0, 0.0f,
+         0.0f                                                                                                                                    },
+        {LevelComplete_Alt_Draw, LevelComplete_Alt_Update, LevelComplete_Alt_Skip, STATUS_STAGE_CHALLENGE,            3,      0, 0, 0, 0.0f, 0.0f},
+        {LevelComplete_Alt_Draw, LevelComplete_Alt_Update, LevelComplete_Alt_Skip, STATUS_STAGE_MISSION,              4,      0, 0, 0, 0.0f, 0.0f},
+        {BonusComplete_Alt_Draw, BonusComplete_Alt_Update, BonusComplete_Alt_Skip, STATUS_STAGE_BONUS_COMPLETE,       5,      0, 0, 0, 0.0f, 0.0f},
+        {Prompt_Alt_Draw,        Prompt_Alt_Update,        NULL,                   STATUS_STAGE_PROMPT,               6,      0, 0, 0, 0.0f, 0.0f},
+        {NULL,                   Exit_Alt_Update,          NULL,                   STATUS_STAGE_EXIT,                 0xffff, 0, 0, 0, 0.0f, 0.0f},
+        {NULL,                   Save_Alt_Update,          NULL,                   STATUS_STAGE_SAVE,                 0xffff, 0, 0, 0, 0.0f, 0.0f},
+        {NULL,                   Fade_Alt_Update,          NULL,                   STATUS_STAGE_FADE,                 0xffff, 0, 0, 0, 0.0f, 0.0f},
+        {NULL,                   NULL,                     NULL,                   -1,                                0xffff, 0, 0, 0, 0.0f, 0.0f},
     };
 
     i32 StatusStageOrderAlt[30] = {1,  2,  3,  4,  5,  7,  13, 14, 15, 16, 17, 18, 19, 20, 21,
@@ -277,10 +278,10 @@ extern "C" {
 
     /* Stage types 8, 13, 14, 23 and 26. */
     void LevelComplete_Alt_Skip(STATUS_STAGE_s *stage, STATUSPACKET_s *packet) {
-        if (stage->type == 26 && packet->mission_state == 2) {
+        if (stage->type == STATUS_STAGE_MISSION && packet->mission_state == 2) {
             *packet->score = packet->reward_score;
         }
-        if (stage->type == 23 && packet->challenge_state == 2) {
+        if (stage->type == STATUS_STAGE_CHALLENGE && packet->challenge_state == 2) {
             *packet->score = packet->reward_score;
         }
         NextStatusStage(packet);
@@ -1106,7 +1107,7 @@ extern "C" {
                 if (stage->unknown_18 > stage->unknown_1c) {
                     stage->unknown_18 = 0.0f;
                     stage->unknown_1c = 1.0f;
-                    if (packet->stage->type == 2) {
+                    if (packet->stage->type == STATUS_STAGE_TRUE_JEDI_SCORE) {
                         stage->unknown_14 = 7;
                         PlaySfx("TrueJedi_NOT", NULL);
                     } else {
@@ -1937,17 +1938,17 @@ extern "C" {
                 scale2 = StatusAltScale * scale2;
                 a1 = alpha1 * 255.0;
                 a2 = alpha2 * 255.0;
-                if (stage->type == 13) {
+                if (stage->type == STATUS_STAGE_LEVEL_COMPLETE) {
                     DrawStatusText(TTab[dat_00880728], angle1, 0.0f, scale1 * StatusCoinsTitleY, scale1,
                                    (((((u8)StatusBlue | (a1 << 8)) << 8) | (u8)StatusGreen) << 8) | (u8)StatusRed, 0);
                     DrawStatusText(TTab[dat_0088072c], angle2, 0.0f, -StatusCoinsTitleY * scale2, scale2,
                                    (((((u8)StatusBlue | (a2 << 8)) << 8) | (u8)StatusGreen) << 8) | (u8)StatusRed, 0);
-                } else if (stage->type == 8) {
+                } else if (stage->type == STATUS_STAGE_GOTHAM_COMPLETE) {
                     DrawStatusText(TTab[dat_00880864], angle1, 0.0f, scale1 * StatusCoinsTitleY, scale1,
                                    (((((u8)StatusBlue | (a1 << 8)) << 8) | (u8)StatusGreen) << 8) | (u8)StatusRed, 0);
                     DrawStatusText(TTab[dat_00880874], angle2, 0.0f, -StatusCoinsTitleY * scale2, scale2,
                                    (((((u8)StatusBlue | (a2 << 8)) << 8) | (u8)StatusGreen) << 8) | (u8)StatusRed, 0);
-                } else if (stage->type == 23) {
+                } else if (stage->type == STATUS_STAGE_CHALLENGE) {
                     i32 red;
                     i32 green;
                     i32 blue;
@@ -1960,7 +1961,7 @@ extern "C" {
                     }
                     DrawStatusText(TTab[dat_00880864], angle2, 0.0f, scale2 * StatusCoinsTitleY, scale2,
                                    (((((u8)blue | (a2 << 8)) << 8) | (u8)green) << 8) | (u8)red, 0);
-                } else if (stage->type == 26) {
+                } else if (stage->type == STATUS_STAGE_MISSION) {
                     i32 red;
                     i32 green;
                     i32 blue;
@@ -1979,8 +1980,9 @@ extern "C" {
                 }
             }
         }
-        if (stage->type == 23 || stage->type == 26) {
-            if ((stage->type == 26 && packet->mission_state == 2) || (stage->type == 23 && packet->challenge_state == 2)) {
+        if (stage->type == STATUS_STAGE_CHALLENGE || stage->type == STATUS_STAGE_MISSION) {
+            if ((stage->type == STATUS_STAGE_MISSION && packet->mission_state == 2) ||
+                (stage->type == STATUS_STAGE_CHALLENGE && packet->challenge_state == 2)) {
                 f32 progress;
                 f32 slide;
                 f32 coin_slide;
@@ -2007,7 +2009,7 @@ extern "C" {
                 CoinTotal_Draw((i32)score,
                                (STATSPOSY - STATSPOS2Y) * NuTrigTable[((i32)(coin_slide * 16384.0f) >> 1) & 0x7fff] + STATSPOS2Y,
                                CoinTotalScale, 1, 1.0f, 255, 191, 0);
-                if (stage->type == 26) {
+                if (stage->type == STATUS_STAGE_MISSION) {
                     f32 remaining = packet->mission->time - packet->elapsed_time;
                     if (remaining < 0.0f) {
                         remaining = 0.0f;
@@ -2016,7 +2018,7 @@ extern "C" {
                     Text3D(text, 0.0f, -((STATSPOSY - STATSPOS2Y) * NuTrigTable[((i32)(slide * 16384.0f) >> 1) & 0x7fff] + STATSPOS2Y),
                            1.0f, 0.6f, 0.6f, 0.6f, 0, 255, 191, 0);
                 }
-                if (stage->type == 23) {
+                if (stage->type == STATUS_STAGE_CHALLENGE) {
                     f32 remaining = ADataList[packet->area_id].challenge_trial_time - packet->elapsed_time;
                     if (remaining < 0.0f) {
                         remaining = 0.0f;
@@ -2059,10 +2061,10 @@ extern "C" {
                     StatusAltSpin = 0;
                 }
                 if (stage->unknown_18 >= stage->unknown_1c) {
-                    if (packet->stage->type == 26 && packet->mission_state == 2) {
+                    if (packet->stage->type == STATUS_STAGE_MISSION && packet->mission_state == 2) {
                         *packet->score = packet->reward_score;
                     }
-                    if (packet->stage->type == 23 && packet->challenge_state == 2) {
+                    if (packet->stage->type == STATUS_STAGE_CHALLENGE && packet->challenge_state == 2) {
                         *packet->score = packet->reward_score;
                     }
                     NextStatusStage(packet);
@@ -2070,8 +2072,8 @@ extern "C" {
                 }
                 if ((previous < dat_007f8220 && stage->unknown_18 >= dat_007f8220) ||
                     (previous < (f64)dat_007f8220 * 2.0 + dat_007f8224 && stage->unknown_18 >= (f64)dat_007f8220 * 2.0 + dat_007f8224)) {
-                    if ((packet->stage->type == 23 && packet->challenge_state == 3) ||
-                        (packet->stage->type == 26 && packet->mission_state == 3)) {
+                    if ((packet->stage->type == STATUS_STAGE_CHALLENGE && packet->challenge_state == 3) ||
+                        (packet->stage->type == STATUS_STAGE_MISSION && packet->mission_state == 3)) {
                         GameAudio_PlaySfx(0x32, NULL, 0, 0);
                     } else {
                         PlaySfx("StatusAward", NULL);
@@ -2079,7 +2081,8 @@ extern "C" {
                     NewStatusRumbleBuzz(-1, 0.6f, 0.0f, 0);
                     return;
                 }
-                if ((packet->stage->type == 26 && packet->mission_state == 2) || (stage->type == 23 && packet->challenge_state == 2)) {
+                if ((packet->stage->type == STATUS_STAGE_MISSION && packet->mission_state == 2) ||
+                    (stage->type == STATUS_STAGE_CHALLENGE && packet->challenge_state == 2)) {
                     f32 reward_end = stage->unknown_1c - 0.75;
                     if (previous < reward_end && stage->unknown_18 >= reward_end) {
                         CoinTotalScale = 1.5f;

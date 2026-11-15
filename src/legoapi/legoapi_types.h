@@ -1693,6 +1693,33 @@ struct STATUSPACKET_s {                                                         
     u8 unknown_12c[32];                      // 0x12c
 };
 
+/* STATUS_STAGE_s.type: named after the stage callbacks of the status screen tables (StatusStagesLsw,
+ * StatusStagesAlt) and the conditions AddStatusStage is called under; 5-7, 24 and 27-34 are not known yet. */
+#define STATUS_STAGE_TRUE_JEDI 1       /* True Jedi reached (POINTS_PER_TRUEJEDI) */
+#define STATUS_STAGE_TRUE_JEDI_SCORE 2 /* the studs collected, True Jedi not reached */
+#define STATUS_STAGE_COINS 3
+#define STATUS_STAGE_MINIKIT 4
+#define STATUS_STAGE_GOTHAM_COMPLETE 8 /* GOTHAMSTREETS_ADATA newly completed */
+#define STATUS_STAGE_PROMPT 9
+#define STATUS_STAGE_EXIT 10
+#define STATUS_STAGE_SAVE 11
+#define STATUS_STAGE_FADE 12
+#define STATUS_STAGE_LEVEL_COMPLETE 13       /* a newly completed level */
+#define STATUS_STAGE_SUPER_STORY_COMPLETE 14 /* the super story reward */
+#define STATUS_STAGE_SUPER_STORY_TIME 15
+#define STATUS_STAGE_SUPER_STORY_SCORE 16
+#define STATUS_STAGE_ALL_MINIKITS 17
+#define STATUS_STAGE_RED_BRICK 18
+#define STATUS_STAGE_GOLD_BRICK 19
+#define STATUS_STAGE_BONUS_WIN 20
+#define STATUS_STAGE_BONUS_TIME 21
+#define STATUS_STAGE_BONUS_COMPLETE 22
+#define STATUS_STAGE_CHALLENGE 23 /* challenge_state */
+#define STATUS_STAGE_CHALLENGE_CASH 25
+#define STATUS_STAGE_MISSION 26 /* mission_state */
+#define STATUS_STAGE_COLLECT_CHARACTERS 35
+#define STATUS_STAGE_COLLECT_CHARACTERS_OFF 36
+
 struct STATUS_STAGE_s {                                                                          // size 0x20
     void (*draw_callback)(struct STATUS_STAGE_s *arg0, struct STATUSPACKET_s *arg1, i32 arg2);   // 0x00
     void (*update_callback)(struct STATUS_STAGE_s *arg0, struct STATUSPACKET_s *arg1, f32 arg2); // 0x04
