@@ -245,9 +245,9 @@ extern "C" {
 void PlayJumpSfx(GAMEOBJECT *object, i32 type) {
     i32 sfx;
     u32 flags = object->character_data->model_flags;
-    if ((flags & 0x40) != 0) {
+    if ((flags & CHARACTER_MODEL_ASTROMECH) != 0) {
         sfx = GameAudio->sfx_ids[1];
-    } else if ((flags & 8) != 0) {
+    } else if ((flags & CHARACTER_MODEL_JEDI) != 0) {
         switch (type) {
             case 0:
                 sfx = GameAudio->sfx_ids[2];
@@ -437,7 +437,7 @@ extern "C" void PlayDieSfx(GAMEOBJECT *object) {
     i32 sfx;
     if (object->character_data->game_character->sfx_die != -1) {
         sfx = object->character_data->game_character->sfx_die;
-    } else if ((object->character_data->game_character->flags_090 & 0x800) != 0) {
+    } else if ((object->character_data->game_character->flags_090 & CHARACTER_RUNTIME_CANNON) != 0) {
         sfx = GameAudio->sfx_ids[0x18];
     } else if ((object->character_data->model_flags & CHARACTER_MODEL_VEHICLE) != 0) {
         sfx = GameAudio->sfx_ids[0x18];

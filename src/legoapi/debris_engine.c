@@ -1315,14 +1315,16 @@ void DebrisReScale(i32 effect_index, f32 scale) {
     effect->momentum_base *= scale;
     effect->gravity *= scale;
     generator = (u8)effect->generator_type;
-    if (generator == 0 || generator == 8 || generator == 9 || generator == 10) {
+    if (generator == DEBRIS_GENERATOR_NORMAL || generator == DEBRIS_GENERATOR_SPHEROID || generator == DEBRIS_GENERATOR_BOUNCE_Y ||
+        generator == DEBRIS_GENERATOR_BOUNCE_XZ) {
         effect->emitter_random_extent.x *= scale;
         effect->emitter_random_extent.y *= scale;
         effect->emitter_random_extent.z *= scale;
         effect->momentum_random_x *= scale;
         effect->rotor_speed_x *= scale;
         effect->rotor_speed_y *= scale;
-    } else if (generator == 6 || generator == 7 || generator == 11 || generator == 12) {
+    } else if (generator == DEBRIS_GENERATOR_RADIAL || generator == DEBRIS_GENERATOR_RADIAL_ROTOR ||
+               generator == DEBRIS_GENERATOR_IMPROVED_RADIAL || generator == DEBRIS_GENERATOR_STAR_RADIAL) {
         effect->emitter_random_extent.x *= scale;
         effect->momentum_random_x *= scale;
     }

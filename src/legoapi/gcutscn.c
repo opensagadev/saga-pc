@@ -31,7 +31,7 @@ void instNuGCutSceneEndButNotSystems(INSTNUGCUTSCENE *owner) {
     instance->current_frame = instance->scene->duration;
     instance->render_frame = instance->scene->duration;
     instance->flags_8c &= ~0x40U;
-    instance->flags_88 = (instance->flags_88 & ~2U) | 0x1000;
+    instance->flags_88 = (instance->flags_88 & ~NUGCUTSCENE_INST_PLAYING) | NUGCUTSCENE_INST_ENDED;
     if (instance->camera_instance != NULL && instance->camera_instance->camera_index >= 0) {
         CutSceneCameraCTRL = 0;
     }
@@ -219,7 +219,7 @@ void instNuGCutSceneResetCleanUp(void *list_storage, void *cut_base, void *cut_e
 void instNuGCutSceneAddCleanUpItem(void *handle, i32 enabled) {
     CUT_MEMORY_INSTANCE_PC *instance = DefragGetInstFn(handle);
     CUT_MEMORY_ENTRY_PC *entry;
-    if ((instance->flags_88 & 2) != 0) {
+    if ((instance->flags_88 & NUGCUTSCENE_INST_PLAYING) != 0) {
         ((void (*)(void))CutSceneLoadDiagnostic)();
     }
     entry = DefragCutSceneList++;

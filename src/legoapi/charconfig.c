@@ -948,27 +948,27 @@ static void CC_SetRuntimeFlag(NUFPAR_PC *parser, u32 flag) {
 }
 
 static void CC_banking(NUFPAR_PC *parser) {
-    CC_SetRuntimeFlag(parser, 0x1);
+    CC_SetRuntimeFlag(parser, CHARACTER_RUNTIME_BANKING);
 }
 
 static void CC_choke(NUFPAR_PC *parser) {
-    CC_SetRuntimeFlag(parser, 0x2);
+    CC_SetRuntimeFlag(parser, CHARACTER_RUNTIME_CHOKE);
 }
 
 static void CC_lightning(NUFPAR_PC *parser) {
-    CC_SetRuntimeFlag(parser, 0x4);
+    CC_SetRuntimeFlag(parser, CHARACTER_RUNTIME_LIGHTNING);
 }
 
 static void CC_resist_zap(NUFPAR_PC *parser) {
-    CC_SetRuntimeFlag(parser, 0x4000);
+    CC_SetRuntimeFlag(parser, CHARACTER_RUNTIME_RESIST_ZAP);
 }
 
 static void CC_ghost(NUFPAR_PC *parser) {
-    CC_SetRuntimeFlag(parser, 0x8000);
+    CC_SetRuntimeFlag(parser, CHARACTER_RUNTIME_GHOST);
 }
 
 static void CC_has_no_turn(NUFPAR_PC *parser) {
-    CC_SetRuntimeFlag(parser, 0x10000);
+    CC_SetRuntimeFlag(parser, CHARACTER_RUNTIME_HAS_NO_TURN);
 }
 
 static void CC_speed_up_time(NUFPAR_PC *parser) {
@@ -988,59 +988,59 @@ static void CC_loop_height(NUFPAR_PC *parser) {
 }
 
 static void CC_no_tiptoe(NUFPAR_PC *parser) {
-    CC_SetRuntimeFlag(parser, 0x8);
+    CC_SetRuntimeFlag(parser, CHARACTER_RUNTIME_NO_TIPTOE);
 }
 
 static void CC_already_got_hat(NUFPAR_PC *parser) {
-    CC_SetRuntimeFlag(parser, 0x10);
+    CC_SetRuntimeFlag(parser, CHARACTER_RUNTIME_ALREADY_GOT_HAT);
 }
 
 static void CC_not_got_hat(NUFPAR_PC *parser) {
-    charconfig.runtime->flags_090 &= ~0x10u;
+    charconfig.runtime->flags_090 &= ~CHARACTER_RUNTIME_ALREADY_GOT_HAT;
 }
 
 static void CC_punch_weapon_out(NUFPAR_PC *parser) {
-    CC_SetRuntimeFlag(parser, 0x20);
+    CC_SetRuntimeFlag(parser, CHARACTER_RUNTIME_PUNCH_WEAPON_OUT);
 }
 
 static void CC_can_take_over(NUFPAR_PC *parser) {
-    CC_SetRuntimeFlag(parser, 0x40);
+    CC_SetRuntimeFlag(parser, CHARACTER_RUNTIME_CAN_TAKE_OVER);
 }
 
 static void CC_turning_circle(NUFPAR_PC *parser) {
-    CC_SetRuntimeFlag(parser, 0x100);
+    CC_SetRuntimeFlag(parser, CHARACTER_RUNTIME_TURNING_CIRCLE);
 }
 
 static void CC_slide_orientation(NUFPAR_PC *parser) {
-    CC_SetRuntimeFlag(parser, 0x200);
+    CC_SetRuntimeFlag(parser, CHARACTER_RUNTIME_SLIDE_ORIENTATION);
 }
 
 static void CC_can_drag_bombs(NUFPAR_PC *parser) {
-    CC_SetRuntimeFlag(parser, 0x400);
+    CC_SetRuntimeFlag(parser, CHARACTER_RUNTIME_CAN_DRAG_BOMBS);
 }
 
 static void CC_extra_toggle(NUFPAR_PC *parser) {
-    CC_SetRuntimeFlag(parser, 0x80000000);
+    CC_SetRuntimeFlag(parser, CHARACTER_RUNTIME_EXTRA_TOGGLE);
 }
 
 static void CC_can_flatten(NUFPAR_PC *parser) {
-    CC_SetRuntimeFlag(parser, 0x1000);
+    CC_SetRuntimeFlag(parser, CHARACTER_RUNTIME_CAN_FLATTEN);
 }
 
 static void CC_tightrope_walk(NUFPAR_PC *parser) {
-    CC_SetRuntimeFlag(parser, 0x80000);
+    CC_SetRuntimeFlag(parser, CHARACTER_RUNTIME_TIGHTROPE_WALK);
 }
 
 static void CC_car_wheels(NUFPAR_PC *parser) {
-    CC_SetRuntimeFlag(parser, 0x100000);
+    CC_SetRuntimeFlag(parser, CHARACTER_RUNTIME_CAR_WHEELS);
 }
 
 static void CC_is_a_girl(NUFPAR_PC *parser) {
-    charconfig.runtime->flags_090 |= 0x20000;
+    charconfig.runtime->flags_090 |= CHARACTER_RUNTIME_IS_A_GIRL;
 }
 
 static void CC_is_a_boy(NUFPAR_PC *parser) {
-    charconfig.runtime->flags_090 &= ~0x20000u;
+    charconfig.runtime->flags_090 &= ~CHARACTER_RUNTIME_IS_A_GIRL;
 }
 
 static void CC_icon(NUFPAR_PC *parser) {
@@ -1152,7 +1152,7 @@ static void CC_astromech(NUFPAR_PC *parser) {
 }
 
 static void CC_cannon(NUFPAR_PC *parser) {
-    CC_SetRuntimeFlag(parser, 0x800);
+    CC_SetRuntimeFlag(parser, CHARACTER_RUNTIME_CANNON);
 }
 
 static void CC_bounty_hunter(NUFPAR_PC *parser) {
@@ -1188,7 +1188,7 @@ static void CC_complex_shadow(NUFPAR_PC *parser) {
 }
 
 static void CC_shadow_orientation(NUFPAR_PC *parser) {
-    CC_SetRuntimeFlag(parser, 0x200000);
+    CC_SetRuntimeFlag(parser, CHARACTER_RUNTIME_SHADOW_ORIENTATION);
 }
 
 static void CC_can_open_doors(NUFPAR_PC *parser) {
@@ -1368,11 +1368,11 @@ static void CC_dontpush(NUFPAR_PC *parser) {
 }
 
 static void CC_dont_move_out_of_way(NUFPAR_PC *parser) {
-    CC_SetRuntimeFlag(parser, 0x2000);
+    CC_SetRuntimeFlag(parser, CHARACTER_RUNTIME_DONT_MOVE_OUT_OF_WAY);
 }
 
 static void CC_dontmove(NUFPAR_PC *parser) {
-    CC_SetRuntimeFlag(parser, 0x80);
+    CC_SetRuntimeFlag(parser, CHARACTER_RUNTIME_DONT_MOVE);
 }
 
 static void CC_jetpack(NUFPAR_PC *parser) {
@@ -1400,44 +1400,44 @@ static void CC_no_kill_parts(NUFPAR_PC *parser) {
 }
 
 static void CC_high_jump(NUFPAR_PC *parser) {
-    CC_SetRuntimeFlag(parser, 0x400000);
+    CC_SetRuntimeFlag(parser, CHARACTER_RUNTIME_HIGH_JUMP);
 }
 
 static void CC_super_strength(NUFPAR_PC *parser) {
-    CC_SetRuntimeFlag(parser, 0x800000);
+    CC_SetRuntimeFlag(parser, CHARACTER_RUNTIME_SUPER_STRENGTH);
 }
 
 static void CC_transformatron(NUFPAR_PC *parser) {
-    CC_SetRuntimeFlag(parser, 0x1000000);
+    CC_SetRuntimeFlag(parser, CHARACTER_RUNTIME_TRANSFORMATRON);
 }
 
 static void CC_bypass_security(NUFPAR_PC *parser) {
-    CC_SetRuntimeFlag(parser, 0x2000000);
+    CC_SetRuntimeFlag(parser, CHARACTER_RUNTIME_BYPASS_SECURITY);
 }
 
 static void CC_hazard_protection(NUFPAR_PC *parser) {
-    CC_SetRuntimeFlag(parser, 0x4000000);
+    CC_SetRuntimeFlag(parser, CHARACTER_RUNTIME_HAZARD_PROTECTION);
 }
 
 static void CC_wall_jump(NUFPAR_PC *parser) {
-    CC_SetRuntimeFlag(parser, 0x8000000);
+    CC_SetRuntimeFlag(parser, CHARACTER_RUNTIME_WALL_JUMP);
 }
 
 static void CC_got_batarang(NUFPAR_PC *parser) {
-    CC_SetRuntimeFlag(parser, 0x20000000);
+    CC_SetRuntimeFlag(parser, CHARACTER_RUNTIME_GOT_BATARANG);
 }
 
 static void CC_tightrope_tilt(NUFPAR_PC *parser) {
-    CC_SetRuntimeFlag(parser, 0x10000000);
+    CC_SetRuntimeFlag(parser, CHARACTER_RUNTIME_TIGHTROPE_TILT);
 }
 
 static void CC_combat_roll(NUFPAR_PC *parser) {
-    charconfig.runtime->flags_090 |= 0x40000000;
+    charconfig.runtime->flags_090 |= CHARACTER_RUNTIME_COMBAT_ROLL;
     CC_FLAGS094.combat_roll_can_get_up = 0;
     CC_FLAGS094.combat_roll_can_direct_land = 0;
     while (NuFParGetWord(parser) != 0) {
         if (NuStrICmp(parser->word_buffer_ptr, "off") == 0) {
-            charconfig.runtime->flags_090 &= ~0x40000000u;
+            charconfig.runtime->flags_090 &= ~CHARACTER_RUNTIME_COMBAT_ROLL;
         } else if (NuStrICmp(parser->word_buffer_ptr, "can_get_up") == 0) {
             CC_FLAGS094.combat_roll_can_get_up = 1;
         } else if (NuStrICmp(parser->word_buffer_ptr, "can_direct_land") == 0) {

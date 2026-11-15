@@ -465,14 +465,14 @@ static u32 CanPushObstacles_Game(GAMEOBJECT *object) {
     if (StartupGameFlag0 != 0) {
         return 1;
     }
-    return (object->character_data->game_character->flags_090 & 0x00800000) != 0;
+    return (object->character_data->game_character->flags_090 & CHARACTER_RUNTIME_SUPER_STRENGTH) != 0;
 }
 
 static u32 CanSuperCarry_Game(GAMEOBJECT *object) {
     if (StartupGameFlag0 != 0) {
         return 1;
     }
-    return (object->character_data->game_character->flags_090 & 0x00800000) != 0;
+    return (object->character_data->game_character->flags_090 & CHARACTER_RUNTIME_SUPER_STRENGTH) != 0;
 }
 
 static u32 CanPushBlocks_Game(GAMEOBJECT *object) {
@@ -482,7 +482,7 @@ static u32 CanPushBlocks_Game(GAMEOBJECT *object) {
     if (StartupGameFlag1 != 0) {
         return 1;
     }
-    return (object->character_data->game_character->flags_090 & 0x00800000) != 0;
+    return (object->character_data->game_character->flags_090 & CHARACTER_RUNTIME_SUPER_STRENGTH) != 0;
 }
 
 static i32 CanGlide_Game(GAMEOBJECT *object) {
@@ -497,7 +497,7 @@ static i32 CanStartHold_Game(GAMEOBJECT *object) {
     if (StartupGameFlag1 != 0 && StartupGameFlag0 == 0) {
         return 1;
     }
-    if ((object->character_data->game_character->flags_090 & 0x20000000) != 0 && Batarang_StartTargetting(object)) {
+    if ((object->character_data->game_character->flags_090 & CHARACTER_RUNTIME_GOT_BATARANG) != 0 && Batarang_StartTargetting(object)) {
         return 0;
     }
     return 2;
@@ -2023,7 +2023,7 @@ extern "C" {
             }
             if ((part->flags & 0x40) == 0) {
                 character = api->character_data->game_character;
-                if ((character->flags_090 & 0x8000) != 0) {
+                if ((character->flags_090 & CHARACTER_RUNTIME_GHOST) != 0) {
                     continue;
                 }
                 if (!SphereSphereOverlapScaleY(&part->position, part->unknown_e4, part->unknown_e4, &api->collision_position,

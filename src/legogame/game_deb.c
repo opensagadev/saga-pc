@@ -40,7 +40,7 @@ void DebrisKillPlayers(void) {
         if (player != NULL && (player->flags_1fc_word & APIOBJECT_FLAG_CHARACTER) != 0 && player->dead == 0 &&
             player->vehicle_hit_timer <= 0.0f && !(player->spawn_protection_timer > 0.0f) && (player->flags_ef0 & 0x400000) == 0 &&
             CannotKill(player) == 0 && Player_HasInvincibility(player) == 0 &&
-            (player->character_data->game_character->flags_090 & 0x4008000) == 0) {
+            (player->character_data->game_character->flags_090 & (CHARACTER_RUNTIME_GHOST | CHARACTER_RUNTIME_HAZARD_PROTECTION)) == 0) {
             if (DebrisCollisionCheckScaleY(&player->collision_position, player->collision_radius, player->collision_y_scale) != -1) {
                 ObjHitObj(NULL, player, 1, 0, 0, 1);
             }

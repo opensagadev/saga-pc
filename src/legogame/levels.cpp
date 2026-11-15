@@ -458,9 +458,9 @@ void MakeFreePlayModelList(i32 model1, i32 model2, i32 area, i32 level, i32 para
             }
         }
         if (makefreeplaymodellist != 0) {
-            Collection_GetIDList(&MiniKitCollection, 0x4000000, 0x4000000, ids, NULL, NULL, 1);
+            Collection_GetIDList(&MiniKitCollection, CHARACTER_MODEL_MINIKIT, 0x4000000, ids, NULL, NULL, 1);
         } else {
-            Collection_GetIDList(&MiniKitCollection, 0x4000000, 0x4000000, ids, NULL, NULL, 0);
+            Collection_GetIDList(&MiniKitCollection, CHARACTER_MODEL_MINIKIT, 0x4000000, ids, NULL, NULL, 0);
         }
         for (index = 0; ids[index] != -1; ++index) {
             World_AppendFreePlayPrivate(ids[index]);
@@ -1162,17 +1162,18 @@ extern "C" {
         Collection_CreateMaster("All", NULL, &MasterCollection, 15, PermCollectionScale);
         Collection_CreateCustom("Characters", &PermanentAllTitleId, &CharacterCollection, 0, 0x04002000, 0, 0, 22, &permbuffer_ptr,
                                 &permbuffer_end, 0, 0.515f);
-        Collection_CreateCustom("Vehicles", NULL, &VehicleCollection, 0x2000, 0x04000000, 0, 0, 7, &permbuffer_ptr, &permbuffer_end, 0,
-                                PermCollectionScale);
-        Collection_CreateCustom("Minikits", NULL, &MiniKitCollection, 0x04000000, 0, 0, 0, 12, &permbuffer_ptr, &permbuffer_end, 0,
-                                PermCollectionScale);
-        Collection_CreateCustom("Shop", NULL, &ShopCollection, 0, 0, 0, 1, 10, &permbuffer_ptr, &permbuffer_end, 0, PermCollectionScale);
-        Collection_CreateCustom("Jedi", &PermanentJediTitleId, &JediCollection, 8, 0, 0, 0, 7, &permbuffer_ptr, &permbuffer_end, 0,
-                                PermCollectionScale);
-        Collection_CreateCustom("BlasterZipUps", &PermanentBlasterTitleId, &BlasterCollection, 0x100080, 0x01000000, 0, 0, 11,
-                                &permbuffer_ptr, &permbuffer_end, 0, PermCollectionScale);
-        Collection_CreateCustom("BountyHunters", &PermanentBountyTitleId, &BountyHunterCollection, 0x01000000, 0, 0, 0, 4, &permbuffer_ptr,
+        Collection_CreateCustom("Vehicles", NULL, &VehicleCollection, CHARACTER_MODEL_VEHICLE, 0x04000000, 0, 0, 7, &permbuffer_ptr,
                                 &permbuffer_end, 0, PermCollectionScale);
+        Collection_CreateCustom("Minikits", NULL, &MiniKitCollection, CHARACTER_MODEL_MINIKIT, 0, 0, 0, 12, &permbuffer_ptr,
+                                &permbuffer_end, 0, PermCollectionScale);
+        Collection_CreateCustom("Shop", NULL, &ShopCollection, 0, 0, 0, 1, 10, &permbuffer_ptr, &permbuffer_end, 0, PermCollectionScale);
+        Collection_CreateCustom("Jedi", &PermanentJediTitleId, &JediCollection, CHARACTER_MODEL_JEDI, 0, 0, 0, 7, &permbuffer_ptr,
+                                &permbuffer_end, 0, PermCollectionScale);
+        Collection_CreateCustom("BlasterZipUps", &PermanentBlasterTitleId, &BlasterCollection,
+                                CHARACTER_MODEL_BLASTER | CHARACTER_MODEL_ZIPUP, 0x01000000, 0, 0, 11, &permbuffer_ptr, &permbuffer_end, 0,
+                                PermCollectionScale);
+        Collection_CreateCustom("BountyHunters", &PermanentBountyTitleId, &BountyHunterCollection, CHARACTER_MODEL_BOUNTY_HUNTER, 0, 0, 0,
+                                4, &permbuffer_ptr, &permbuffer_end, 0, PermCollectionScale);
         Areas_ConfigureResidents(&permbuffer_ptr, &permbuffer_end);
         CharacterCustomiser =
             Customiser_Configure("chars\\customiser.txt", &permbuffer_ptr, &permbuffer_end, PermanentWeirdo1Id, PermanentWeirdo2Id,
@@ -1683,7 +1684,7 @@ extern "C" {
             } else {
                 SCENE_STATE(progress, i).frame = 1;
             }
-            SCENE_STATE(progress, i).playing = animation->flags & 1;
+            SCENE_STATE(progress, i).playing = animation->flags & NUINSTANIM_FLAG_PLAYING;
             SCENE_STATE(progress, i).waiting = (animation->flags >> 2) & 1;
             SCENE_STATE(progress, i).repeating = (animation->flags >> 3) & 1;
             SCENE_STATE(progress, i).tfactor = animation->tfactor;
@@ -1733,11 +1734,11 @@ void ResetScene(NUGSCN *scene, SCENEPROGRESS *progress) {
         }
         animation->ltime = (f32)(progress->specials[i].flags & 0x7ff);
         packed = progress->specials[i].flags;
-        animation->flags = (animation->flags & ~1u) | ((packed >> 12) & 1);
+        animation->flags = (animation->flags & ~NUINSTANIM_FLAG_PLAYING) | ((packed >> 12) & 1);
         packed = progress->specials[i].flags;
         animation->flags = (animation->flags & ~4u) | ((packed >> 11) & 4);
         packed = progress->specials[i].flags;
-        animation->flags = (animation->flags & ~8u) | ((packed >> 11) & 8);
+        animation->flags = (animation->flags & ~NUINSTANIM_FLAG_REPEATING) | ((packed >> 11) & 8);
         animation->tfactor = progress->specials[i].tfactor;
         animation->prev_eval_time = animation->ltime;
         NuAnimData2CalcMatrix(data, 0, animation->ltime, &animation->matrix);

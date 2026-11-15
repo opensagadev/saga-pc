@@ -986,8 +986,8 @@ static void HubDrawBonusModeMenu(i32 selected, f32 alpha) {
         NuStrCpy(text[0], TTab[dat_00880724]);
         NuStrCpy(text[1], TTab[TextCrawlCharacterBonusId]);
         NuStrCpy(text[2], TTab[TextCrawlVehicleBonusId]);
-        const i32 character_area = Episode_FindAreaFromFlags(&EDataList[hub_bonusepisode], 5, 4);
-        const i32 vehicle_area = Episode_FindAreaFromFlags(&EDataList[hub_bonusepisode], 5, 5);
+        const i32 character_area = Episode_FindAreaFromFlags(&EDataList[hub_bonusepisode], AREAFLAG_VEHICLE_AREA | AREAFLAG_BONUS_AREA, 4);
+        const i32 vehicle_area = Episode_FindAreaFromFlags(&EDataList[hub_bonusepisode], AREAFLAG_VEHICLE_AREA | AREAFLAG_BONUS_AREA, 5);
         if (character_area != -1) {
             const i32 name = ADataList[character_area].name_id;
             if (name != -1 && TTab[name] != NULL) {
@@ -1036,7 +1036,7 @@ static void HubDrawBonusModeMenu(i32 selected, f32 alpha) {
             blue = MENUENTRYB;
         }
         i32 opacity = full_opacity;
-        if (i == 2 && Collection_GetIDList(&MiniKitCollection, 0x4000000, 0x4000000, NULL, NULL, NULL, 0) < 1) {
+        if (i == 2 && Collection_GetIDList(&MiniKitCollection, CHARACTER_MODEL_MINIKIT, 0x4000000, NULL, NULL, NULL, 0) < 1) {
             opacity = full_opacity / 4;
         }
         SmartTextEx(text[i], 0.0f, y, 1.0f, .7f, .7f, .7f, 0, red, green, blue, 1.7f, 1, NULL, 0, opacity);
@@ -1046,8 +1046,8 @@ static void HubDrawBonusModeMenu(i32 selected, f32 alpha) {
 
 static inline COLLECTION_BUILD_PC *HubFreePlayCollection(i32 area) {
     const u16 flags = ADataList[area].flags;
-    if ((flags & 1) != 0) {
-        if ((flags & 4) != 0) {
+    if ((flags & AREAFLAG_VEHICLE_AREA) != 0) {
+        if ((flags & AREAFLAG_BONUS_AREA) != 0) {
             return &MiniKitCollection;
         }
         return &VehicleCollection;
@@ -2454,8 +2454,8 @@ static void HubDrawBonusStats(f32 alpha, i32 area, i32 episode, i32 mode) {
         }
     }
     const i32 opacity = (i32)(alpha * 128.0);
-    const i32 character_area = Episode_FindAreaFromFlags(&EDataList[episode], 5, 4);
-    const i32 vehicle_area = Episode_FindAreaFromFlags(&EDataList[episode], 5, 5);
+    const i32 character_area = Episode_FindAreaFromFlags(&EDataList[episode], AREAFLAG_VEHICLE_AREA | AREAFLAG_BONUS_AREA, 4);
+    const i32 vehicle_area = Episode_FindAreaFromFlags(&EDataList[episode], AREAFLAG_VEHICLE_AREA | AREAFLAG_BONUS_AREA, 5);
     i32 title;
     if (episode == 0) {
         title = dat_00881018;
@@ -3674,7 +3674,8 @@ static void HubUpdateSelectMode(void) {
                             if ((ADataList[area].flags & AREAFLAG_VEHICLE_AREA) != 0) {
                                 i32 first;
                                 i32 second;
-                                const i32 count = Collection_GetIDList(&VehicleCollection, 0x4002000, 0x2000, ids, &first, &second, 0);
+                                const i32 count = Collection_GetIDList(
+                                    &VehicleCollection, CHARACTER_MODEL_VEHICLE | CHARACTER_MODEL_MINIKIT, 0x2000, ids, &first, &second, 0);
                                 if (count == 1) {
                                     selectmodemode = count;
                                     MissionMenuPacket.player_model[1] = ids[0];
@@ -3957,7 +3958,8 @@ static void HubUpdateBonusMode(void) {
                         return;
                     case 1:
                         if (hub_bonusepisode != -1) {
-                            const i32 area = Episode_FindAreaFromFlags(&EDataList[hub_bonusepisode], 5, 4);
+                            const i32 area =
+                                Episode_FindAreaFromFlags(&EDataList[hub_bonusepisode], AREAFLAG_VEHICLE_AREA | AREAFLAG_BONUS_AREA, 4);
                             if (area != -1) {
                                 HubDoorNewLevel = ADataList[area].levels[0];
                                 hub_freeplaysource = 1;
@@ -3973,12 +3975,14 @@ static void HubUpdateBonusMode(void) {
                         }
                         i32 first;
                         i32 second;
-                        const i32 count = Collection_GetIDList(&MiniKitCollection, 0x4000000, 0x4000000, NULL, &first, &second, 0);
+                        const i32 count =
+                            Collection_GetIDList(&MiniKitCollection, CHARACTER_MODEL_MINIKIT, 0x4000000, NULL, &first, &second, 0);
                         if (count < 1) {
                             GameAudio_PlaySfx(0x32, NULL, 0, 0);
                             return;
                         }
-                        const i32 area = Episode_FindAreaFromFlags(&EDataList[SuperStoryEpisode], 5, 5);
+                        const i32 area =
+                            Episode_FindAreaFromFlags(&EDataList[SuperStoryEpisode], AREAFLAG_VEHICLE_AREA | AREAFLAG_BONUS_AREA, 5);
                         if (area == -1) {
                             GameAudio_PlaySfx(0x32, NULL, 0, 0);
                             return;
@@ -4025,7 +4029,7 @@ static void HubUpdateBonusMode(void) {
                     if (hub_bonusmode != 1) {
                         return;
                     }
-                    if (Collection_GetIDList(&MiniKitCollection, 0x4000000, 0x4000000, NULL, NULL, NULL, 0) == 0) {
+                    if (Collection_GetIDList(&MiniKitCollection, CHARACTER_MODEL_MINIKIT, 0x4000000, NULL, NULL, NULL, 0) == 0) {
                         return;
                     }
                 }
@@ -5006,9 +5010,9 @@ extern "C" {
 
     void PlayerInitCapabilitiesVariant0(GAMEOBJECT *object) {
         object->ai_packet.capabilities = 0x20000000;
-        if ((object->flags_1f8 & 1) != 0) {
+        if ((object->flags_1f8 & APIOBJECT_SIDE_BADDIE) != 0) {
             object->ai_packet.capabilities |= 0x200;
-        } else if ((object->flags_1f8 & 4) == 0) {
+        } else if ((object->flags_1f8 & APIOBJECT_SIDE_NEUTRAL) == 0) {
             object->ai_packet.capabilities |= 0x100;
         }
         if (object->character_model->action_animations[6] != NULL) {

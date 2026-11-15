@@ -318,7 +318,7 @@ i32 StarWars_PrepareTakeOverJump(AIPACKET *packet, APIOBJECT *object, i32 checks
     AIPATHNODE *destination;
 
     owner = object->owner;
-    if ((owner->character_data->game_character->flags_090 & 0x40) != 0) {
+    if ((owner->character_data->game_character->flags_090 & CHARACTER_RUNTIME_CAN_TAKE_OVER) != 0) {
         participant = owner->takeover_source;
         if (participant != NULL) {
             destination = &packet->path_info.path->nodes[packet->path_info.connection->node_indices[packet->path_info.direction == 0]];
@@ -413,8 +413,8 @@ i32 StarWars_PreparingForSpecialMove(AIPACKET *packet, APIOBJECT *apiobject, i32
     flags = packet->path_info.connection->traversal_flags[packet->path_info.direction];
     if (flags != 0 && (flags & 0x40000000) == 0) {
         capabilities = flags & packet->capabilities;
-        if ((flags & 0x8000) != 0 && (owner->character_data->game_character->flags_090 & 0x40) == 0 && owner->takeover_target == NULL &&
-            owner->character_context != CHARACTER_CONTEXT_GET_IN && (capabilities & 0xffff7fff) == 0) {
+        if ((flags & 0x8000) != 0 && (owner->character_data->game_character->flags_090 & CHARACTER_RUNTIME_CAN_TAKE_OVER) == 0 &&
+            owner->takeover_target == NULL && owner->character_context != CHARACTER_CONTEXT_GET_IN && (capabilities & 0xffff7fff) == 0) {
             AIScriptSetBaseScriptStateByName(&apiobject->ai->script_processor, "TakeOverJump");
             return 1;
         }
@@ -486,9 +486,9 @@ void StarWars_GameAISysInit(void) {
 void PlayerInitCapabilitiesVariant1(GAMEOBJECT *object) {
     CHARACTERDATA_PC *character = object->character_data;
     object->ai_packet.capabilities = ((CHARACTER_AI_CAPABILITIES *)character)->path_capabilities | 0x20180040;
-    if ((object->flags_1f8 & 1) != 0) {
+    if ((object->flags_1f8 & APIOBJECT_SIDE_BADDIE) != 0) {
         object->ai_packet.capabilities |= 0x100;
-    } else if ((object->flags_1f8 & 4) == 0) {
+    } else if ((object->flags_1f8 & APIOBJECT_SIDE_NEUTRAL) == 0) {
         object->ai_packet.capabilities |= 0x80;
     }
     if (object->character_model->action_animations[6] != NULL) {
@@ -500,7 +500,7 @@ void PlayerInitCapabilitiesVariant1(GAMEOBJECT *object) {
     if ((character->model_flags & CHARACTER_MODEL_JEDI) != 0) {
         object->ai_packet.capabilities |= 3;
     }
-    if ((character->game_character->flags_090 & 0x400000) != 0) {
+    if ((character->game_character->flags_090 & CHARACTER_RUNTIME_HIGH_JUMP) != 0) {
         object->ai_packet.capabilities |= 0x23;
     }
     if ((character->model_flags & CHARACTER_MODEL_TELEPORT) != 0) {
@@ -516,7 +516,7 @@ void PlayerInitCapabilitiesVariant1(GAMEOBJECT *object) {
         object->ai_packet.capabilities |= 0x10000;
     }
     if ((character->model_flags & (CHARACTER_MODEL_JEDI | CHARACTER_MODEL_BLASTER)) != 0 ||
-        (character->game_character->flags_090 & 0x40) != 0) {
+        (character->game_character->flags_090 & CHARACTER_RUNTIME_CAN_TAKE_OVER) != 0) {
         object->ai_packet.capabilities |= 0x8000;
     }
     if (object->unknown_280 != 0xff) {

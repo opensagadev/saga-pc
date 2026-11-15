@@ -461,7 +461,7 @@ void GizAction_SetAIState(GIZFLOW *unused0, FLOWBOX *unused1, char **params, int
         i32 type_index;
         GAMEOBJECT *object = &Obj[object_index];
         if ((object->flags_1fc_word & APIOBJECT_FLAG_IN_USE) == 0 || (object->flags_1fc_word & APIOBJECT_FLAG_CHARACTER) == 0 ||
-            (object->flags_1f8 & 0x400) == 0) {
+            (object->flags_1f8 & APIOBJECT_CREATURE) == 0) {
             continue;
         }
         NuVecSub(&difference, &origin, &object->position);

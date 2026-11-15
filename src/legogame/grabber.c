@@ -361,7 +361,7 @@ void PartKill_Grabber(PART_PC *part, i32 unused1) {
 }
 
 static i32 IsGrabbable(GAMEOBJECT *object) {
-    return (object->character_data->game_character->flags_090 & 0x8000) == 0;
+    return (object->character_data->game_character->flags_090 & CHARACTER_RUNTIME_GHOST) == 0;
 }
 
 void Grabber_Draw(WORLDINFO *world) {
@@ -801,8 +801,8 @@ void Grabber_Update(WORLDINFO *world) {
             high.z = position->z + 0.5f;
             pickup = GizmoPickup_InBox(world, 4, &low, &high);
             if (pickup != NULL) {
-                pickup->flags = (pickup->flags & 0xf9) | 8;
-                if ((pickup->flags & 0x40) != 0) {
+                pickup->flags = (pickup->flags & 0xf9) | GIZMOPICKUP_STATE_COLLECTED;
+                if ((pickup->flags & GIZMOPICKUP_STATE_ALTERNATE_TYPE) != 0) {
                     Pup_CollectCoin(world, pickup, 2, control, 1);
                 } else {
                     CollectMinikit(&pickup->position, "m_pup1", 1);
@@ -928,8 +928,8 @@ void Grabber_Update(WORLDINFO *world) {
                 }
                 NewRumbleAllPlayers(0.0f, 0.0f, 2, 0);
             } else if (grabber->character_id == GrabMagnetId) {
-                grabber->victim =
-                    FindNearestGameObject(Grabber_GetGrabPos(grabber, NULL), NULL, 0x10, 0.5f, 0.0f, -1, -1, -1, NULL, 1, IsGrabbable);
+                grabber->victim = FindNearestGameObject(Grabber_GetGrabPos(grabber, NULL), NULL, CHARACTER_MODEL_DROID, 0.5f, 0.0f, -1, -1,
+                                                        -1, NULL, 1, IsGrabbable);
                 if (grabber->victim != NULL) {
                     GrabberGrabVictim(grabber->victim);
                     grabber->stuck_timer = 0.0f;
@@ -976,7 +976,7 @@ void Grabber_Update(WORLDINFO *world) {
             if ((object->flags_1fc_word & APIOBJECT_FLAG_IN_USE) == 0 || (object->flags_1fc_word & APIOBJECT_FLAG_CHARACTER) == 0) {
                 continue;
             }
-            if ((object->character_data->game_character->flags_090 & 0x8000) == 0) {
+            if ((object->character_data->game_character->flags_090 & CHARACTER_RUNTIME_GHOST) == 0) {
                 mask |= (i32)((i64)1 << object->hostility_group);
             } else {
                 found = 1;

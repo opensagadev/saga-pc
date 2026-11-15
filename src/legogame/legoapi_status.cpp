@@ -755,8 +755,8 @@ extern "C" {
                 if ((p->unknown_b0 & 8) != 0) {
                     Game.area_save[p->next_area].complete = 1;
                 } else if (p->episode != NULL) {
-                    i32 bonus = Episode_FindAreaFromFlags(p->episode, 5, 4);
-                    i32 bonus2 = Episode_FindAreaFromFlags(p->episode, 5, 5);
+                    i32 bonus = Episode_FindAreaFromFlags(p->episode, AREAFLAG_VEHICLE_AREA | AREAFLAG_BONUS_AREA, 4);
+                    i32 bonus2 = Episode_FindAreaFromFlags(p->episode, AREAFLAG_VEHICLE_AREA | AREAFLAG_BONUS_AREA, 5);
                     if (bonus != -1) {
                         Game.area_save[bonus].complete = 1;
                     }

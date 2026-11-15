@@ -11,9 +11,9 @@ u16 ObjHitObj_Flags(GAMEOBJECT *object) {
         if (((object->flags_1fc_word >> 7) & 1) != 0) {
             flags |= 0x804;
         }
-        if ((object->flags_1f8 & 0x10001) != 0) {
+        if ((object->flags_1f8 & (APIOBJECT_SIDE_BADDIE | APIOBJECT_SIDE_GOODIE_BADDIE)) != 0) {
             flags |= 0x10;
-        } else if ((object->flags_1f8 & 4) != 0) {
+        } else if ((object->flags_1f8 & APIOBJECT_SIDE_NEUTRAL) != 0) {
             flags |= 0x20;
         } else {
             flags |= 8;
@@ -42,7 +42,7 @@ i32 NoLayerKill(GAMEOBJECT *object) {
 }
 
 GAMEOBJECT *BossKilled(i32 character_id) {
-    GAMEOBJECT *object = FindGameObject(character_id, 1, 1, 1, 0);
+    GAMEOBJECT *object = FindGameObject(character_id, APIOBJECT_SIDE_BADDIE, 1, 1, 0);
     if (object != NULL && (object->portal_flags & 0x08000000) != 0) {
         if (object->dead != 0 || object->current_hp == 0) {
             return object;

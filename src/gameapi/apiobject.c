@@ -126,7 +126,7 @@ f32 AnimEndFrame(CHARACTER_MODEL_LAYERS *model, i32 animation) {
 }
 
 i32 AnimMiscFlags(CHARACTER_MODEL_LAYERS *model, i32 animation) {
-    if (animation != -1 && model->model_data_b[animation] != NULL) {
+    if (animation != ACTION_NONE && model->model_data_b[animation] != NULL) {
         return model->animations[animation]->misc_flags;
     }
     return 0;
@@ -2164,7 +2164,7 @@ f32 AnimStopFrame(CHARACTER_MODEL_LAYERS *model, i32 animation) {
 }
 
 f32 *AnimListFrameArray(CHARACTER_MODEL_LAYERS *model, i32 animation) {
-    if (animation == -1 || model->model_data_b[animation] == NULL) {
+    if (animation == ACTION_NONE || model->model_data_b[animation] == NULL) {
         return NULL;
     }
     return model->animation_configs[animation]->event_frames;

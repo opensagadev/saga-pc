@@ -161,7 +161,8 @@ extern "C" i32 Batarang_FindTarget(WORLDINFO *world, GAMEOBJECT *object, i32 aut
             candidate->dead != 0 || (U64_PAIR(&CInfo[candidate->character_context].flags) & 0x8000) != 0 ||
             candidate->model_draw_result == 0 || candidate == object || candidate->unknown_280 != 0xff ||
             candidate->character_context == CHARACTER_CONTEXT_BEEN_TAKEN_OVER || candidate->character_context == CHARACTER_CONTEXT_EATEN ||
-            candidate->character_context == CHARACTER_CONTEXT_GET_IN || (object->flags_1f8 & 0x10004) != 0 ||
+            candidate->character_context == CHARACTER_CONTEXT_GET_IN ||
+            (object->flags_1f8 & (APIOBJECT_SIDE_NEUTRAL | APIOBJECT_SIDE_GOODIE_BADDIE)) != 0 ||
             ((object->flags_1f8 ^ candidate->flags_1f8) & 1) == 0) {
             continue;
         }
@@ -520,7 +521,7 @@ extern "C" void Batarang_GetSightInfo(i32 character, i32 *red, i32 *green, i32 *
 
 i32 Batarang_StartTargetting(GAMEOBJECT *object) {
     PLAYER_BATARANG_SLOT_PC *packet;
-    if ((object->character_data->game_character->flags_090 & 0x20000000) != 0) {
+    if ((object->character_data->game_character->flags_090 & CHARACTER_RUNTIME_GOT_BATARANG) != 0) {
         packet = object->batarang;
         packet->cooldown = (object->id == (u16)ID_DEFAULTCHARACTER_B) ? 51 : 50;
         packet = object->batarang;
@@ -710,8 +711,8 @@ extern "C" void Batarang_MoveCode(GAMEOBJECT *object) {
     } else {
         PLAYERCHARACTERCONFIG *runtime = object->character_data->game_character;
         batarang = BATARANG_PACKET(object);
-        if (((object->flags_1fc & APIOBJECT_FLAG_PLAYER_ACTIVE) == 0 || (runtime->flags_090 & 0x20000000) == 0 || batarang == NULL ||
-             batarang->flight_state.in_flight != 0 || object->use_model_origin == 0 || (object->flags_e24 & 8) == 0 ||
+        if (((object->flags_1fc & APIOBJECT_FLAG_PLAYER_ACTIVE) == 0 || (runtime->flags_090 & CHARACTER_RUNTIME_GOT_BATARANG) == 0 ||
+             batarang == NULL || batarang->flight_state.in_flight != 0 || object->use_model_origin == 0 || (object->flags_e24 & 8) == 0 ||
              object->model_draw_result == 0 || !(object->camera_screen_position.z > 0.0f) || !(object->hold_timer >= 0.25f) ||
              object->unknown_281 == 0 || ObjLandReady(object) == 0)) {
             return;
@@ -1567,7 +1568,7 @@ extern "C" {
         AIPATHNODE *destination;
 
         owner = object->owner;
-        if ((owner->character_data->game_character->flags_090 & 0x40) != 0) {
+        if ((owner->character_data->game_character->flags_090 & CHARACTER_RUNTIME_CAN_TAKE_OVER) != 0) {
             participant = owner->takeover_source;
             if (participant != NULL) {
                 destination = &packet->path_info.path->nodes[packet->path_info.connection->node_indices[packet->path_info.direction == 0]];
@@ -1600,6 +1601,7 @@ extern "C" {
         GAMEOBJECT *owner = apiobject->owner;
         u32 capabilities;
         BATMAN_PREPARE_PC *entry;
+
         if (owner->character_context == CHARACTER_CONTEXT_LEDGE) {
             owner->pad->buttons_pressed |= GAMEPAD_JUMP;
         }
@@ -1607,8 +1609,9 @@ extern "C" {
             (packet->path_info.connection->traversal_flags[packet->path_info.direction] & 0x40000000) == 0) {
             capabilities = packet->path_info.connection->traversal_flags[packet->path_info.direction] & packet->capabilities;
             if ((packet->path_info.connection->traversal_flags[packet->path_info.direction] & 0x8000) != 0 &&
-                (owner->character_data->game_character->flags_090 & 0x40) == 0 && owner->takeover_target == NULL &&
-                owner->character_context != CHARACTER_CONTEXT_GET_IN && (capabilities & 0xffff7fff) == 0) {
+                (owner->character_data->game_character->flags_090 & CHARACTER_RUNTIME_CAN_TAKE_OVER) == 0 &&
+                owner->takeover_target == NULL && owner->character_context != CHARACTER_CONTEXT_GET_IN &&
+                (capabilities & 0xffff7fff) == 0) {
                 AIScriptSetBaseScriptStateByName(&apiobject->ai->script_processor, "TakeOverJump");
                 return 1;
             }
@@ -1683,7 +1686,7 @@ extern "C" {
         CHARACTERDATA_PC *character = object->character_data;
         object->ai_packet.capabilities = ((CHARACTER_AI_CAPABILITIES *)character)->path_capabilities | 0x20000040;
         if (model->action_animations[0x88] != NULL && model->action_animations[0x89] != NULL) {
-            if ((character->game_character->flags_090 & 0x80000) != 0) {
+            if ((character->game_character->flags_090 & CHARACTER_RUNTIME_TIGHTROPE_WALK) != 0) {
                 object->ai_packet.capabilities |= 0x40000;
             } else {
                 object->ai_packet.capabilities |= 0x80000;
@@ -1698,18 +1701,18 @@ extern "C" {
         if (model->action_animations[6] != NULL) {
             object->ai_packet.capabilities |= 1;
         }
-        if ((character->game_character->flags_090 & 0x400000) != 0) {
+        if ((character->game_character->flags_090 & CHARACTER_RUNTIME_HIGH_JUMP) != 0) {
             object->ai_packet.capabilities |= 0x20;
         }
-        if ((character->game_character->flags_090 & 0x40000000) != 0) {
+        if ((character->game_character->flags_090 & CHARACTER_RUNTIME_COMBAT_ROLL) != 0) {
             object->ai_packet.capabilities |= 2;
         }
         if (object->suit != NULL) {
             object->ai_packet.capabilities |= ((SUIT_AI_CAPABILITIES *)object->suit)->path_capabilities;
         }
-        if ((object->flags_1f8 & 1) != 0) {
+        if ((object->flags_1f8 & APIOBJECT_SIDE_BADDIE) != 0) {
             object->ai_packet.capabilities |= 0x100;
-        } else if ((object->flags_1f8 & 4) == 0) {
+        } else if ((object->flags_1f8 & APIOBJECT_SIDE_NEUTRAL) == 0) {
             object->ai_packet.capabilities |= 0x80;
         }
         object->ai_packet.capabilities |= 0x1000;
@@ -1723,13 +1726,13 @@ extern "C" {
             object->ai_packet.capabilities |= 0x10000;
         }
         if ((character->model_flags & (CHARACTER_MODEL_JEDI | CHARACTER_MODEL_BLASTER)) != 0 ||
-            (character->game_character->flags_090 & 0x40) != 0) {
+            (character->game_character->flags_090 & CHARACTER_RUNTIME_CAN_TAKE_OVER) != 0) {
             object->ai_packet.capabilities |= 0x8000;
         }
         if (object->unknown_280 != 0xff) {
             object->ai_packet.capabilities |= 0x20000;
         }
-        if ((character->game_character->flags_090 & 0x4000000) != 0) {
+        if ((character->game_character->flags_090 & CHARACTER_RUNTIME_HAZARD_PROTECTION) != 0) {
             object->ai_packet.capabilities |= 0x800000;
         }
     }

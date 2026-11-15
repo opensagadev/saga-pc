@@ -764,7 +764,7 @@ void SoundUpdate(f32 frame_time) {
         case MUSIC_PLAYBACK_DUAL_STREAM:
         case MUSIC_PLAYBACK_DUAL_STREAM_THEN_STOP:
         case MUSIC_PLAYBACK_DUAL_STREAM_PENDING:
-            if ((Music.track_data != NULL && (((INSTNUGCUTSCENE *)Music.track_data)->flags_88 & 2) != 0) ||
+            if ((Music.track_data != NULL && (((INSTNUGCUTSCENE *)Music.track_data)->flags_88 & NUGCUTSCENE_INST_PLAYING) != 0) ||
                 NuSoundGetStereoStreamStatus(1 - Music.primary_stream) == 2) {
                 Music.resume_frames = 0;
             } else {

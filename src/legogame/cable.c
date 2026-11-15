@@ -303,7 +303,7 @@ void UpdateCables(void) {
                     count = 2;
                 }
                 if (release == 0) {
-                    if (!(cable->source->character_data->game_character->flags_090 & 0x400)) {
+                    if (!(cable->source->character_data->game_character->flags_090 & CHARACTER_RUNTIME_CAN_DRAG_BOMBS)) {
                         release = 1;
                     } else {
                         f32 distance_sq = NuVecDistSqr(&path[0], &path[1], &delta);

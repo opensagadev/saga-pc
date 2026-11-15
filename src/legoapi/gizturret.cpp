@@ -353,7 +353,7 @@ extern "C" {
         GAMEOBJECT *object = Obj;
         for (i32 i = 0; i < HIGHGAMEOBJECT; ++i, ++object) {
             if ((object->flags_1fc_word & APIOBJECT_FLAG_IN_USE) && (object->flags_1fc_word & APIOBJECT_FLAG_CHARACTER) &&
-                object->dead == 0 && (object->flags_1f8 & 1) && object->model_draw_result != 0) {
+                object->dead == 0 && (object->flags_1f8 & APIOBJECT_SIDE_BADDIE) && object->model_draw_result != 0) {
                 NUVEC direction;
                 f32 distance = NuVecDistSqr(&object->collision_position, reinterpret_cast<NUVEC *>(&matrix->m30), &direction);
                 if (distance < best_distance) {

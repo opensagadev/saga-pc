@@ -867,11 +867,11 @@ extern "C" void SuperCounter_ActivateGizmoPickup(GIZMO_PC *gizmo, GIZMOPICKUP *g
     AREA_SUPERCOUNTER_PICKUP_PC *pickup;
     AREA_SUPERCOUNTER_PC *counter = SuperCounters_FindPickup(WORLD, gizmo, &position, &pickup);
     if (counter != NULL) {
-        gizmo_pickup->flags &= (u8)~6;
+        gizmo_pickup->flags &= (u8) ~(GIZMOPICKUP_STATE_ENABLED | GIZMOPICKUP_STATE_VISIBLE);
         if (counter->collected_count < counter->pickup_count) {
             ++counter->collected_count;
             if (counter->collected_count == counter->pickup_count) {
-                gizmo_pickup->flags |= 6;
+                gizmo_pickup->flags |= GIZMOPICKUP_STATE_ENABLED | GIZMOPICKUP_STATE_VISIBLE;
             }
             NUVEC *message_position;
             if (pickup->position_gizmo != NULL) {

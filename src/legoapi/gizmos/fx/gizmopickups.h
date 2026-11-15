@@ -29,6 +29,21 @@ struct player_coin_packet_s;
 
 typedef struct game_message_s GAME_MESSAGE_PC;
 
+/* SPECIAL_MINIKIT.flags (gizmopickups.c): the specialminikit keywords that set them. */
+#define SPECIAL_MINIKIT_DRAW_ALWAYS 0x1          /* until a draw_at_* keyword */
+#define SPECIAL_MINIKIT_DRAW_AT_START 0x2        /* draw_at_start */
+#define SPECIAL_MINIKIT_DRAW_WHILE_ANIMATING 0x4 /* draw_while_animating */
+#define SPECIAL_MINIKIT_DRAW_AT_END 0x8          /* draw_at_end */
+#define SPECIAL_MINIKIT_ORIENTATE 0x10           /* orientate */
+#define SPECIAL_MINIKIT_AT_GIZMO 0x20            /* at_gizmo (at_object clears it) */
+
+/* GIZMOPICKUP.flags: GizmoPickup_TurnOnPickup sets ENABLED and VISIBLE, the draw loop skips a pickup without
+ * VISIBLE or with COLLECTED, collecting sets COLLECTED, and a minikit already saved draws the alternate type. */
+#define GIZMOPICKUP_STATE_ENABLED 0x2
+#define GIZMOPICKUP_STATE_VISIBLE 0x4
+#define GIZMOPICKUP_STATE_COLLECTED 0x8
+#define GIZMOPICKUP_STATE_ALTERNATE_TYPE 0x40
+
 typedef struct GIZMOPICKUP { // size 0x2c
     char name[8];            // 0x00
     NUVEC position;          // 0x08

@@ -1062,8 +1062,8 @@ extern "C" void Bolt_HitGameObjectRC(NETMESSAGE &message) {
         Bolt_PlayHitSfx(bolt);
         GAMEOBJECT *owner = bolt->owner;
         if (owner != NULL && (owner->flags_1fc_word & APIOBJECT_FLAG_IN_USE) != 0 &&
-            (owner->flags_1fc_word & APIOBJECT_FLAG_PLAYER_ACTIVE) == 0 && (owner->flags_1f8 & 1) != 0 &&
-            (owner->flags_1f8 & 1) == (object->flags_1f8 & 1)) {
+            (owner->flags_1fc_word & APIOBJECT_FLAG_PLAYER_ACTIVE) == 0 && (owner->flags_1f8 & APIOBJECT_SIDE_BADDIE) != 0 &&
+            (owner->flags_1f8 & APIOBJECT_SIDE_BADDIE) == (object->flags_1f8 & APIOBJECT_SIDE_BADDIE)) {
             goto owner_feedback;
         }
         objhitobj_bolt = bolt;
@@ -1264,7 +1264,7 @@ extern "C" i32 Bolt_HitGameObjects(BOLT_PC *bolt, NUVEC *points, NUVEC *minimum,
         if (VehicleArea != 0 && BonusArea == 0 && owner != NULL && owner->unknown_280 != 0xff && object->unknown_280 != 0xff) {
             continue;
         }
-        if ((object->character_data->game_character->flags_090 & 0x8000) != 0) {
+        if ((object->character_data->game_character->flags_090 & CHARACTER_RUNTIME_GHOST) != 0) {
             continue;
         }
         if (object->collision_max.x < minimum->x || object->collision_min.x > maximum->x || object->collision_max.z < minimum->z ||
@@ -1353,8 +1353,8 @@ extern "C" void Bolt_Init(void *storage, NETMESSAGE &message) {
         bool add_speed = InitBolt_AddMomentumType != NULL && InitBolt_AddMomentumType(bolt, owner, &momentum) != 0;
         if (!add_speed) {
             u32 model_flags = owner->character_data->model_flags;
-            add_speed =
-                (model_flags & 0x4000000) != 0 || ((owner->flags_1fc & APIOBJECT_FLAG_PLAYER_ACTIVE) != 0 && (model_flags & 0x2000) != 0);
+            add_speed = (model_flags & CHARACTER_MODEL_MINIKIT) != 0 ||
+                        ((owner->flags_1fc & APIOBJECT_FLAG_PLAYER_ACTIVE) != 0 && (model_flags & CHARACTER_MODEL_VEHICLE) != 0);
         }
         if (add_speed && !no_momentum) {
             f32 speed = (owner->facing_direction.x * owner->velocity.x) + (owner->facing_direction.z * owner->velocity.z);
@@ -1446,7 +1446,7 @@ extern "C" void Bolt_Init(void *storage, NETMESSAGE &message) {
     f32 back_distance;
     if (owner != NULL) {
         if ((owner->character_data->model_flags & CHARACTER_MODEL_VEHICLE) == 0 &&
-            (owner->character_data->game_character->flags_090 & 0x80) == 0) {
+            (owner->character_data->game_character->flags_090 & CHARACTER_RUNTIME_DONT_MOVE) == 0) {
             back_distance = owner->collision_radius * 3.0f;
         } else {
             back_distance = owner->collision_radius;
@@ -1702,7 +1702,7 @@ extern "C" void Bolts_Update(WORLDINFO *world) {
                 if (VehicleArea != 0 && BonusArea == 0 && owner != NULL && owner->unknown_280 != 0xff && object->unknown_280 != 0xff) {
                     continue;
                 }
-                if ((object->character_data->game_character->flags_090 & 0x8000) != 0) {
+                if ((object->character_data->game_character->flags_090 & CHARACTER_RUNTIME_GHOST) != 0) {
                     continue;
                 }
                 if (object->collision_max.x < bolt->bounds_min.x || object->collision_min.x > bolt->bounds_max.x ||
@@ -1809,7 +1809,7 @@ extern "C" {
             GAMEOBJECT *target = object->field_ea0_target;
             intercept_position = &target->collision_position;
             velocity = &target->velocity;
-            if ((object->character_data->model_flags & CHARACTER_MODEL_VEHICLE) == 0 && (object->flags_1f8 & 1) != 0) {
+            if ((object->character_data->model_flags & CHARACTER_MODEL_VEHICLE) == 0 && (object->flags_1f8 & APIOBJECT_SIDE_BADDIE) != 0) {
                 adjusted_position = target->collision_position;
                 adjusted_position.y += Bolt_ObjTargetPosYAdjust(target);
                 target_position = &adjusted_position;

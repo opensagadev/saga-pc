@@ -141,7 +141,7 @@ void Players_InitPositions(WORLDINFO *world) {
     if (HUB_ADATA != NULL && world->area == HUB_ADATA && last_area != world->area_index && RenderHubFromCutscenePlayer == 0) {
         void *door = NULL;
         if (hub_from_superstory != -1) {
-            i32 area = Episode_FindAreaFromFlags(&EDataList[hub_from_superstory], 5, 5);
+            i32 area = Episode_FindAreaFromFlags(&EDataList[hub_from_superstory], AREAFLAG_VEHICLE_AREA | AREAFLAG_BONUS_AREA, 5);
             door = Door_FindByIndex(world, area, -1, NULL);
         } else if (hub_from_mission != -1) {
             door = Door_FindByName(world, PlayerMissionStartDoor);
@@ -153,7 +153,7 @@ void Players_InitPositions(WORLDINFO *world) {
             i32 area = last_area;
             i32 episode;
             if ((ADataList[area].flags & AREAFLAG_BONUS_AREA) != 0 && (episode = ADataList[area].episode_index) != -1) {
-                area = Episode_FindAreaFromFlags(&EDataList[episode], 5, 5);
+                area = Episode_FindAreaFromFlags(&EDataList[episode], AREAFLAG_VEHICLE_AREA | AREAFLAG_BONUS_AREA, 5);
                 if (area == -1) {
                     area = last_area;
                 }
@@ -292,10 +292,10 @@ void SetPlayer(void) {
 
 i32 CanPullLevers(i32 id) {
     u32 flags = CDataList[id].model_flags;
-    if ((flags & 0x1000010) == 0x1000010) {
+    if ((flags & (CHARACTER_MODEL_DROID | CHARACTER_MODEL_BOUNTY_HUNTER)) == (CHARACTER_MODEL_DROID | CHARACTER_MODEL_BOUNTY_HUNTER)) {
         return 0;
     }
-    return (flags & 0x40088) != 0;
+    return (flags & (CHARACTER_MODEL_JEDI | CHARACTER_MODEL_BLASTER | CHARACTER_MODEL_TELEPORT)) != 0;
 }
 
 PLAYER_CLEAR_CONTEXT_CALLBACK_PC Player_ClearContextFn = 0;
@@ -402,7 +402,7 @@ void PushAway(NUVEC *position, f32 radius, NUVEC *minimum, NUVEC *maximum, GAMEO
         if (U64_PAIR(&CInfo[object->character_context].flags) & 0x40000000) {
             continue;
         }
-        if (object->character_data->game_character->flags_090 & 0x8000) {
+        if (object->character_data->game_character->flags_090 & CHARACTER_RUNTIME_GHOST) {
             continue;
         }
         if (minimum->x > object->collision_max.x || maximum->x < object->collision_min.x || minimum->z > object->collision_max.z ||
@@ -584,14 +584,15 @@ void Player_ToggleCharacter(GAMEOBJECT *object, i32 direction, i32 sound) {
         if ((apicharsys->models[index].flags & 1) == 0) {
             goto next_character;
         }
-        if (collected == -1 && (GCDataList[id].flags_090 & 0x80000000) == 0 && ((GCDataList[id].flags_094 >> 24) & 1) == 0 &&
+        if (collected == -1 && (GCDataList[id].flags_090 & CHARACTER_RUNTIME_EXTRA_TOGGLE) == 0 &&
+            ((GCDataList[id].flags_094 >> 24) & 1) == 0 &&
             !(VehicleArea != 0 && BonusArea != 0 && Cheats_CheckFlags(0x100) != 0 && (GCDataList[id].flags_094 & 0x2000000) != 0)) {
             goto next_character;
         }
         if (VehicleArea != 0) {
             if ((CDataList[id].model_flags & CHARACTER_MODEL_VEHICLE) == 0 &&
                 !(BonusArea != 0 && (CDataList[id].model_flags & CHARACTER_MODEL_MINIKIT) != 0) &&
-                (GCDataList[id].flags_090 & 0x80000000) == 0 &&
+                (GCDataList[id].flags_090 & CHARACTER_RUNTIME_EXTRA_TOGGLE) == 0 &&
                 !(BonusArea != 0 && Cheats_CheckFlags(0x100) != 0 && (GCDataList[id].flags_094 & 0x2000000) != 0)) {
                 goto next_character;
             }
@@ -601,7 +602,7 @@ void Player_ToggleCharacter(GAMEOBJECT *object, i32 direction, i32 sound) {
                     if (Game_AreaSave == NULL || Game_AreaSave[area].minikit_complete == 0) {
                         goto next_character;
                     }
-                } else if ((GCDataList[id].flags_090 & 0x80000000) == 0 &&
+                } else if ((GCDataList[id].flags_090 & CHARACTER_RUNTIME_EXTRA_TOGGLE) == 0 &&
                            !(BonusArea != 0 && Cheats_CheckFlags(0x100) != 0 && (GCDataList[id].flags_094 & 0x2000000) != 0)) {
                     goto next_character;
                 }
@@ -610,11 +611,12 @@ void Player_ToggleCharacter(GAMEOBJECT *object, i32 direction, i32 sound) {
                     goto next_character;
                 }
             }
-        } else if ((CDataList[id].model_flags & CHARACTER_MODEL_VEHICLE) != 0 || (GCDataList[id].flags_090 & 0x40) != 0) {
+        } else if ((CDataList[id].model_flags & CHARACTER_MODEL_VEHICLE) != 0 ||
+                   (GCDataList[id].flags_090 & CHARACTER_RUNTIME_CAN_TAKE_OVER) != 0) {
             goto next_character;
         }
         if (BonusArea == 0 || VehicleArea == 0) {
-            if ((GCDataList[id].flags_090 & 0x80000000) != 0) {
+            if ((GCDataList[id].flags_090 & CHARACTER_RUNTIME_EXTRA_TOGGLE) != 0) {
                 if ((object->flags_1fc_word & APIOBJECT_FLAG_PLAYER_ACTIVE) == 0 || Cheats_CheckFlags(0x100) == 0) {
                     goto next_character;
                 }
@@ -725,14 +727,14 @@ i32 Player_HasDoubleWeaponDamage(GAMEOBJECT *object) {
 
 i32 CanWearHatsInFreePlay(i32 id) {
     u32 flags;
-    if ((GCDataList[id].flags_090 & 0x10) != 0) {
+    if ((GCDataList[id].flags_090 & CHARACTER_RUNTIME_ALREADY_GOT_HAT) != 0) {
         return 0;
     }
     flags = CDataList[id].model_flags;
-    if ((flags & 0x1000010) == 0x1000010) {
+    if ((flags & (CHARACTER_MODEL_DROID | CHARACTER_MODEL_BOUNTY_HUNTER)) == (CHARACTER_MODEL_DROID | CHARACTER_MODEL_BOUNTY_HUNTER)) {
         return 0;
     }
-    if ((flags & 0x40000) == 0 && (flags & 0x88) == 0) {
+    if ((flags & CHARACTER_MODEL_TELEPORT) == 0 && (flags & (CHARACTER_MODEL_JEDI | CHARACTER_MODEL_BLASTER)) == 0) {
         return 0;
     }
     return 1;

@@ -292,7 +292,7 @@ extern "C" {
             if ((objects[index].flags & 1) && (objects[index].flags & 0x1000)) {
                 objects[index].dynamic_light_id = rtlDynamicAlloc();
                 if (objects[index].dynamic_light_id != -1) {
-                    rtlDynamicSetType(objects[index].dynamic_light_id, 2);
+                    rtlDynamicSetType(objects[index].dynamic_light_id, RTL_LIGHT_POINT);
                     rtlDynamicEnable(objects[index].dynamic_light_id, 0);
                 }
             }
@@ -402,7 +402,8 @@ extern "C" {
                 green = 1.85f;
                 blue = 2.0f;
             }
-        } else if ((owner->character_data->game_character->flags_090 & 0x8000) && !(owner->flags_1fc_word & APIOBJECT_FLAG_PLAYER_ACTIVE)) {
+        } else if ((owner->character_data->game_character->flags_090 & CHARACTER_RUNTIME_GHOST) &&
+                   !(owner->flags_1fc_word & APIOBJECT_FLAG_PLAYER_ACTIVE)) {
             red = 1.4f;
             green = 1.85f;
             blue = 2.0f;
@@ -438,7 +439,7 @@ extern "C" {
             blue *= scale;
         }
         character = owner->character_data->game_character;
-        if (character->flags_090 & 0x8000) {
+        if (character->flags_090 & CHARACTER_RUNTIME_GHOST) {
             red *= GhostLightMul;
             if (red > 2.0f) {
                 red = 2.0f;

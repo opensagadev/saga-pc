@@ -215,6 +215,39 @@ extern "C" {
 
 #if SAGA_LEGOAPI_CHARACTERS_MOTION_MOVE_H_PART == 2 && !defined(SAGA_LEGOAPI_CHARACTERS_MOTION_MOVE_H_STOP)
 
+/* PLAYERCHARACTERCONFIG.flags_090: the character config keywords that set them (CC_SetRuntimeFlag). */
+#define CHARACTER_RUNTIME_BANKING 0x1                 /* banking */
+#define CHARACTER_RUNTIME_CHOKE 0x2                   /* choke */
+#define CHARACTER_RUNTIME_LIGHTNING 0x4               /* lightning */
+#define CHARACTER_RUNTIME_NO_TIPTOE 0x8               /* no_tiptoe */
+#define CHARACTER_RUNTIME_ALREADY_GOT_HAT 0x10        /* already_got_hat; a customised character's hat */
+#define CHARACTER_RUNTIME_PUNCH_WEAPON_OUT 0x20       /* punch_weapon_out */
+#define CHARACTER_RUNTIME_CAN_TAKE_OVER 0x40          /* can_take_over */
+#define CHARACTER_RUNTIME_DONT_MOVE 0x80              /* dontmove */
+#define CHARACTER_RUNTIME_TURNING_CIRCLE 0x100        /* turning_circle */
+#define CHARACTER_RUNTIME_SLIDE_ORIENTATION 0x200     /* slide_orientation */
+#define CHARACTER_RUNTIME_CAN_DRAG_BOMBS 0x400        /* can_drag_bombs */
+#define CHARACTER_RUNTIME_CANNON 0x800                /* cannon */
+#define CHARACTER_RUNTIME_CAN_FLATTEN 0x1000          /* can_flatten */
+#define CHARACTER_RUNTIME_DONT_MOVE_OUT_OF_WAY 0x2000 /* dont_move_out_of_way */
+#define CHARACTER_RUNTIME_RESIST_ZAP 0x4000           /* resist_zap */
+#define CHARACTER_RUNTIME_GHOST 0x8000                /* ghost */
+#define CHARACTER_RUNTIME_HAS_NO_TURN 0x10000         /* has_no_turn */
+#define CHARACTER_RUNTIME_IS_A_GIRL 0x20000           /* is_a_girl */
+#define CHARACTER_RUNTIME_TIGHTROPE_WALK 0x80000      /* tightrope_walk */
+#define CHARACTER_RUNTIME_CAR_WHEELS 0x100000         /* car_wheels */
+#define CHARACTER_RUNTIME_SHADOW_ORIENTATION 0x200000 /* shadow_orientation */
+#define CHARACTER_RUNTIME_HIGH_JUMP 0x400000          /* high_jump */
+#define CHARACTER_RUNTIME_SUPER_STRENGTH 0x800000     /* super_strength */
+#define CHARACTER_RUNTIME_TRANSFORMATRON 0x1000000    /* transformatron */
+#define CHARACTER_RUNTIME_BYPASS_SECURITY 0x2000000   /* bypass_security */
+#define CHARACTER_RUNTIME_HAZARD_PROTECTION 0x4000000 /* hazard_protection */
+#define CHARACTER_RUNTIME_WALL_JUMP 0x8000000         /* wall_jump */
+#define CHARACTER_RUNTIME_TIGHTROPE_TILT 0x10000000   /* tightrope_tilt */
+#define CHARACTER_RUNTIME_GOT_BATARANG 0x20000000     /* got_batarang */
+#define CHARACTER_RUNTIME_COMBAT_ROLL 0x40000000      /* combat_roll */
+#define CHARACTER_RUNTIME_EXTRA_TOGGLE 0x80000000     /* extra_toggle */
+
 typedef struct PLAYERCHARACTERCONFIG {                                   // size 0x120
     i32 (*make_layer_list)(struct CHARACTER_MODEL_LAYERS *, i16 *, u32); // 0x000
     struct GAMECHARACTERLAYER *layers;                                   // 0x004

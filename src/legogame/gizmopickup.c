@@ -894,7 +894,7 @@ i32 LoseCoins(GAMEOBJECT *object, i32 cause) {
     if (Player_HasInvincibility(object)) {
         return 0;
     }
-    if (object->character_data->game_character->flags_090 & 0x8000) {
+    if (object->character_data->game_character->flags_090 & CHARACTER_RUNTIME_GHOST) {
         return 0;
     }
     if (object->coin_packet == NULL) {
@@ -1037,7 +1037,7 @@ static void PartStop_Coin(PART_PC *part) {
     pickup->timer = 5.0f;
     pickup->shadow_x = 0;
     pickup->shadow_z = 0;
-    pickup->flags = (pickup->flags | 0x20) & ~0x40;
+    pickup->flags = (pickup->flags | 0x20) & ~GIZMOPICKUP_STATE_ALTERNATE_TYPE;
     part->active &= ~1;
 }
 

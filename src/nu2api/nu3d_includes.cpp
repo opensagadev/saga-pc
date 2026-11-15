@@ -7055,7 +7055,7 @@ extern "C" {
             if (end_frame == 0.0f) {
                 continue;
             }
-            if ((instance->flags & 1) != 0) {
+            if ((instance->flags & NUINSTANIM_FLAG_PLAYING) != 0) {
                 instance->ltime += delta * instance->tfactor;
                 if ((instance->flags & 4) != 0 && instance->ltime >= instance->first_frame) {
                     instance->flags &= ~4U;
@@ -7063,20 +7063,20 @@ extern "C" {
                 }
                 if ((instance->flags & 4) == 0) {
                     if (instance->ltime >= instance->interval + end_frame) {
-                        if ((instance->flags & 8) != 0) {
+                        if ((instance->flags & NUINSTANIM_FLAG_REPEATING) != 0) {
                             f32 repeats = NuFloor((instance->ltime - 1.0f) / (instance->interval + end_frame - 1.0f));
                             f32 elapsed = (instance->interval + end_frame - 1.0f) * repeats;
                             instance->ltime -= elapsed;
                             frame = instance->ltime;
                         } else {
-                            instance->flags &= ~1U;
+                            instance->flags &= ~NUINSTANIM_FLAG_PLAYING;
                             instance->ltime = end_frame;
                             frame = end_frame;
                         }
                     } else if (instance->ltime > end_frame) {
                         frame = end_frame;
                     } else if (instance->ltime < 1.0f) {
-                        instance->flags &= ~1U;
+                        instance->flags &= ~NUINSTANIM_FLAG_PLAYING;
                         instance->ltime = 1.0f;
                         frame = 1.0f;
                     } else {

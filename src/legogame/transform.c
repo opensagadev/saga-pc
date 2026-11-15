@@ -61,8 +61,8 @@ void Transform_MoveCode(WORLDINFO *world, GAMEOBJECT *object) {
         f32 nearest_distance;
         f32 distance;
         i32 i;
-        if (!(object->character_data->game_character->flags_090 & 0x01000000) || !(object->flags_1fc_low & APIOBJECT_FLAG_PLAYER_ACTIVE) ||
-            object->unknown_281 == 0 || !ObjLandReady(object)) {
+        if (!(object->character_data->game_character->flags_090 & CHARACTER_RUNTIME_TRANSFORMATRON) ||
+            !(object->flags_1fc_low & APIOBJECT_FLAG_PLAYER_ACTIVE) || object->unknown_281 == 0 || !ObjLandReady(object)) {
             return;
         }
         candidate = world->gizmo_blowups;
@@ -168,7 +168,7 @@ GAMEOBJECT *Transform_TargettedByObj(void *target) {
     i32 index;
     for (index = 0; index < count; ++index, ++object) {
         if ((object->flags_1fc_word & APIOBJECT_FLAG_IN_USE) && (object->flags_1fc_word & APIOBJECT_FLAG_CHARACTER) && object->dead == 0 &&
-            (object->character_data->game_character->flags_090 & 0x01000000) != 0 && object->transform_alpha > 0.0f &&
+            (object->character_data->game_character->flags_090 & CHARACTER_RUNTIME_TRANSFORMATRON) != 0 && object->transform_alpha > 0.0f &&
             object->transform_target_scale > 0.0f && object->transform_target == target) {
             return object;
         }

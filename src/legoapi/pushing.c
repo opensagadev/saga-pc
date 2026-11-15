@@ -235,7 +235,7 @@ void PushCode(GAMEOBJECT *object, i32 allow_push) {
         }
     } else {
         i32 jump_nine = LEGOCONTEXT_JUMP != -1 && object->character_context == LEGOCONTEXT_JUMP && object->action_movement_state == 9;
-        if ((object->character_data->game_character->flags_090 & 0x8000000) != 0 && LEGOCONTEXT_WALLJUMPWAIT != -1 &&
+        if ((object->character_data->game_character->flags_090 & CHARACTER_RUNTIME_WALL_JUMP) != 0 && LEGOCONTEXT_WALLJUMPWAIT != -1 &&
             object->supporting_platform_id == -1 && !((u32)surface <= 31 && (TerSurface[surface].flags & 0x10581) != 0) &&
             (object->pad->input_magnitude == object->character_data->game_character->run_speed || jump_nine) && pushing &&
             abs(angle_difference) > 0x6aaa &&

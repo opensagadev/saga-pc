@@ -141,7 +141,7 @@ static i32 Shadow_Load(void *world_ptr, void *data) {
         if (version >= 8) {
             shadow->preset = EdFileReadInt();
         } else if (world->area != NULL) {
-            shadow->preset = (world->area->flags & 1) ? 2 : 1;
+            shadow->preset = (world->area->flags & AREAFLAG_VEHICLE_AREA) ? 2 : 1;
         }
         Shadow_ApplyPreset(shadow, shadow->preset);
     }

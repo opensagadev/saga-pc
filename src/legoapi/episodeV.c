@@ -777,7 +777,7 @@ void CloudCityTrapA_Update(WORLDINFO *world) {
         UpdateTrooperCannons(world);
     }
     if (LevGameObject[0] == NULL) {
-        LevGameObject[0] = FindGameObject(dat_007f199c, 1, 1, 1, 0);
+        LevGameObject[0] = FindGameObject(dat_007f199c, APIOBJECT_SIDE_BADDIE, 1, 1, 0);
     }
     if (netclient == 0) {
         if (LevAIMessage[0] != NULL && LevAIMessage[0]->value == 1.0f) {
@@ -795,13 +795,13 @@ void CloudCityTrapA_Update(WORLDINFO *world) {
 void CloudCityTrapB_Init(WORLDINFO *world) {
     LevAIMessage[0] = CheckGizAIMessage(gizaimessagesys, "ShowHearts", NULL);
     LevAIMessage[1] = CheckGizAIMessage(gizaimessagesys, "TrapBEndFight", NULL);
-    LevGameObject[0] = FindGameObject(dat_007f199c, 1, 1, 1, 0);
+    LevGameObject[0] = FindGameObject(dat_007f199c, APIOBJECT_SIDE_BADDIE, 1, 1, 0);
 }
 
 void CloudCityTrapB_Update(WORLDINFO *unused0) {
     struct gameobject_s *vader;
     if (LevGameObject[0] == NULL) {
-        LevGameObject[0] = FindGameObject(dat_007f199c, 1, 1, 1, 0);
+        LevGameObject[0] = FindGameObject(dat_007f199c, APIOBJECT_SIDE_BADDIE, 1, 1, 0);
     }
     if (netclient != 0) {
         return;
@@ -826,7 +826,7 @@ void CloudCityTrapB_Update(WORLDINFO *unused0) {
 
 void CloudCityTrapC_Reset(WORLDINFO *world) {
     struct gizmo_s *gizmo;
-    LevGameObject[0] = FindGameObject(dat_007f199c, 1, 1, 0, 0);
+    LevGameObject[0] = FindGameObject(dat_007f199c, APIOBJECT_SIDE_BADDIE, 1, 0, 0);
     LevAIMessage[0] = CheckGizAIMessage(gizaimessagesys, "ShowHearts", NULL);
     LevPathCnx[0] = AIPAthFindPathCnx(world->ai_sys, world->ai_sys->path_sys->active_path, "gap1_a", "gap1_b", &LevPathCnxDir);
     gizmo = GizmoFindByName(world->gizmo_sys, obstacle_gizmotype_id, "obstacle3");
@@ -925,7 +925,7 @@ void CloudCityEscapeA_Update(WORLDINFO *world) {
 void CloudCityEscapeA_Panel(WORLDINFO *world) {
     GAMEOBJECT *boba;
     if (netclient == 0) {
-        boba = FindGameObject(id_BOBAFETT, 1, 1, 1, 0);
+        boba = FindGameObject(id_BOBAFETT, APIOBJECT_SIDE_BADDIE, 1, 1, 0);
         if (boba != NULL && LevAIMessage[0] != NULL && LevAIMessage[0]->value == 1.0f) {
             DrawBossHitPoints(boba);
         } else if (LevAIMessage[0] != NULL && LevAIMessage[0]->value == 0.0f) {
@@ -1014,7 +1014,7 @@ void DagobahE_Init(WORLDINFO *world) {
 }
 
 void DagobahC_Init(WORLDINFO *world) {
-    Vader_obj = FindGameObject(dat_007f199c, 1, 1, 0, 0);
+    Vader_obj = FindGameObject(dat_007f199c, APIOBJECT_SIDE_BADDIE, 1, 0, 0);
     LevGizmo[0] = GizmoFindByName(world->gizmo_sys, force_gizmotype_id, "force20");
 }
 
@@ -1073,7 +1073,7 @@ void HothBattleA_Reset(WORLDINFO *world) {
         return;
     }
     pickup = gizmo->object;
-    if (minikitCounter_A == 10 && (pickup->flags & 8) == 0) {
+    if (minikitCounter_A == 10 && (pickup->flags & GIZMOPICKUP_STATE_COLLECTED) == 0) {
         GizmoActivate(world->gizmo_sys, gizmo, 1, 1);
         return;
     }
@@ -1139,7 +1139,7 @@ void HothBattleC_Reset(WORLDINFO *world) {
     }
 
     pickup = gizmo->object;
-    if (minikitCounter_C == 10 && (pickup->flags & 8) == 0) {
+    if (minikitCounter_C == 10 && (pickup->flags & GIZMOPICKUP_STATE_COLLECTED) == 0) {
         GizmoActivate(world->gizmo_sys, gizmo, 1, 1);
         return;
     }

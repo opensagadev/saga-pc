@@ -456,7 +456,7 @@ void EmperorFightA_Update(WORLDINFO *world) {
     NUVEC delta;
 
     if (LevGameObject[0] == NULL) {
-        LevGameObject[0] = FindGameObject(id_THEEMPEROR, 1, 1, 0, 0);
+        LevGameObject[0] = FindGameObject(id_THEEMPEROR, APIOBJECT_SIDE_BADDIE, 1, 0, 0);
     }
     if (FreePlay) {
         KillBossCompleteLevel(id_THEEMPEROR, 0, 0.0f);
@@ -883,7 +883,7 @@ void SarlaccPitA_Draw(WORLDINFO *unused0) {
     if (message == NULL || message->value != 0.0f) {
         DrawBossHitPoints(NULL);
     } else {
-        GAMEOBJECT *boba = FindGameObject(id_BOBAFETT, 1, 1, 1, 0);
+        GAMEOBJECT *boba = FindGameObject(id_BOBAFETT, APIOBJECT_SIDE_BADDIE, 1, 1, 0);
         if (gizaimessagesys != NULL) {
             message = CheckGizAIMessage(gizaimessagesys, "BobaFightStarted", NULL);
         }
@@ -959,17 +959,17 @@ void SarlaccPitB_SpecialUpdate(WORLDINFO *world) {
         if (NuSpecialExistsFn(&SarlaccLevSpecial[4])) {
             animation = NuSpecialGetInstAnim(&SarlaccLevSpecial[4]);
             if (animation != NULL) {
-                animation->flags |= 1;
+                animation->flags |= NUINSTANIM_FLAG_PLAYING;
             }
         }
         if (NuSpecialExistsFn(&SarlaccLevSpecial[5]) && NuSpecialExistsFn(&SarlaccLevSpecial[6])) {
             animation = NuSpecialGetInstAnim(&SarlaccLevSpecial[5]);
             if (animation != NULL) {
-                animation->flags |= 1;
+                animation->flags |= NUINSTANIM_FLAG_PLAYING;
             }
             animation = NuSpecialGetInstAnim(&SarlaccLevSpecial[6]);
             if (animation != NULL) {
-                animation->flags |= 1;
+                animation->flags |= NUINSTANIM_FLAG_PLAYING;
             }
         }
         if (sarlaccb_netpacket->completion_sound_played == 0) {
@@ -1445,7 +1445,7 @@ void LegoCity_Reset(WORLDINFO *world) {
     prevOnTownCar = 0;
     pickup = world->pickup_runtime_sys->pickups;
     for (i = 0; pickup != NULL && i < world->pickup_runtime_sys->pickup_count; i++, pickup++) {
-        if ((pickup->flags & 8) == 0) {
+        if ((pickup->flags & GIZMOPICKUP_STATE_COLLECTED) == 0) {
             switch (pickup->activation_group) {
                 case 3:
                 case 4:
@@ -1527,7 +1527,7 @@ void LegoCity_Update(WORLDINFO *world) {
     }
     pickup = pickup_system->pickups;
     for (index = 0; pickup != NULL && index < world->pickup_runtime_sys->pickup_count; ++index, ++pickup) {
-        if ((pickup->flags & 8) == 0) {
+        if ((pickup->flags & GIZMOPICKUP_STATE_COLLECTED) == 0) {
             switch (pickup->activation_group) {
                 case 3:
                     pickup->collected = onTractor;
@@ -1565,7 +1565,7 @@ void NewTown_Reset(WORLDINFO *world) {
     prevOnLifeBoat = 0;
     pickup = world->pickup_runtime_sys->pickups;
     for (i = 0; pickup != NULL && i < world->pickup_runtime_sys->pickup_count; i++, pickup++) {
-        if ((pickup->flags & 8) == 0) {
+        if ((pickup->flags & GIZMOPICKUP_STATE_COLLECTED) == 0) {
             switch (pickup->activation_group) {
                 case 2:
                 case 3:
@@ -1641,7 +1641,7 @@ void NewTown_Update(WORLDINFO *world) {
     }
     pickup = pickup_system->pickups;
     for (index = 0; pickup != NULL && index < world->pickup_runtime_sys->pickup_count; ++index, ++pickup) {
-        if ((pickup->flags & 8) == 0) {
+        if ((pickup->flags & GIZMOPICKUP_STATE_COLLECTED) == 0) {
             switch (pickup->activation_group) {
                 case 2:
                     pickup->collected = onTaunTaun;
@@ -1667,7 +1667,7 @@ static f32 EndorBattleAPartTimer = 0.75f;
 
 void EndorBattleA_Update(WORLDINFO *world) {
     NUINSTANIM *animation = NuSpecialGetInstAnim(&LevHSpecial[0]);
-    if (animation != NULL && (animation->flags & 1) != 0 && NuSpecialGetVisibilityFn(&LevHSpecial[0]) != 0) {
+    if (animation != NULL && (animation->flags & NUINSTANIM_FLAG_PLAYING) != 0 && NuSpecialGetVisibilityFn(&LevHSpecial[0]) != 0) {
         if (EndorBattleAPartTimer >= EndorBattleAPartTime) {
             AddPartDebris(WORLD->part_debris_sys, 7, NuSpecialGetDrawPos(&LevHSpecial[0]));
         }

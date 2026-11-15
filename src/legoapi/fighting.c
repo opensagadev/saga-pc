@@ -61,7 +61,7 @@ i32 ObjOpponentStillThere(GAMEOBJECT *object, GAMEOBJECT *opponent, f32 gap) {
 
 void SetWeaponOut(GAMEOBJECT *object) {
     i8 context = object->character_context;
-    if (context != -1 && (context == LEGOCONTEXT_WEAPONIN || context == LEGOCONTEXT_WEAPONOUT)) {
+    if (context != CHARACTER_CONTEXT_NONE && (context == LEGOCONTEXT_WEAPONIN || context == LEGOCONTEXT_WEAPONOUT)) {
         object->character_context = CHARACTER_CONTEXT_NONE;
     }
     object->weapon_scale = 1.0f;
@@ -74,7 +74,7 @@ i32 WeaponInOut_NoAIJediSfx = 0;
 void FastWeaponOut(GAMEOBJECT *object, i32 force_sound) {
     i8 context = object->character_context;
     i32 animation;
-    if (context != -1 && (context == LEGOCONTEXT_WEAPONIN || context == LEGOCONTEXT_WEAPONOUT)) {
+    if (context != CHARACTER_CONTEXT_NONE && (context == LEGOCONTEXT_WEAPONIN || context == LEGOCONTEXT_WEAPONOUT)) {
         object->character_context = CHARACTER_CONTEXT_NONE;
     }
     if (force_sound != 0 && object->weapon_scale == 0.0f && object->unknown_e33 != 1) {
@@ -184,7 +184,7 @@ void KeepWeaponOut(GAMEOBJECT *object) {
 
 void SetWeaponIn(GAMEOBJECT *object) {
     i8 context = object->character_context;
-    if (context != -1 && (context == LEGOCONTEXT_WEAPONIN || context == LEGOCONTEXT_WEAPONOUT)) {
+    if (context != CHARACTER_CONTEXT_NONE && (context == LEGOCONTEXT_WEAPONIN || context == LEGOCONTEXT_WEAPONOUT)) {
         object->character_context = CHARACTER_CONTEXT_NONE;
     }
     object->weapon_scale = 0.0f;
@@ -195,7 +195,7 @@ void SetWeaponIn(GAMEOBJECT *object) {
 void FastWeaponIn(GAMEOBJECT *object, i32 force_sound) {
     i8 context = object->character_context;
     i32 animation;
-    if (context != -1 && (context == LEGOCONTEXT_WEAPONIN || context == LEGOCONTEXT_WEAPONOUT)) {
+    if (context != CHARACTER_CONTEXT_NONE && (context == LEGOCONTEXT_WEAPONIN || context == LEGOCONTEXT_WEAPONOUT)) {
         object->character_context = CHARACTER_CONTEXT_NONE;
     }
     if (force_sound != 0 && object->weapon_scale == 1.0f && object->unknown_e33 != 2) {
@@ -310,7 +310,7 @@ void AutoWeaponOnOff(GAMEOBJECT *object) {
     i32 animation;
     u32 flags;
     i8 context = object->character_context;
-    if (context != -1 && (context == LEGOCONTEXT_WEAPONOUT || context == LEGOCONTEXT_WEAPONIN)) {
+    if (context != CHARACTER_CONTEXT_NONE && (context == LEGOCONTEXT_WEAPONOUT || context == LEGOCONTEXT_WEAPONIN)) {
         return;
     }
     animation = CurrentAnim(&object->anim_packet);
@@ -404,7 +404,8 @@ i32 CanStepBack(GAMEOBJECT *object) {
     if (LEGOCONTEXT_JUMP != -1 && context == LEGOCONTEXT_JUMP && object->action_movement_state == 3) {
         return 1;
     }
-    if ((object->character_data->game_character->flags_090 & 0x8000) && LEGOCONTEXT_COMBO != 0 && context == LEGOCONTEXT_COMBO) {
+    if ((object->character_data->game_character->flags_090 & CHARACTER_RUNTIME_GHOST) && LEGOCONTEXT_COMBO != 0 &&
+        context == LEGOCONTEXT_COMBO) {
         return 1;
     }
     return 0;
@@ -429,7 +430,7 @@ i32 StepBackFromTarget(GAMEOBJECT *object) {
             outer_distance = object->collision_radius * 1.25 + blowup->target_radius;
         }
     } else {
-        if (!(object->character_data->game_character->flags_090 & 0x8000) || object->force_target == NULL) {
+        if (!(object->character_data->game_character->flags_090 & CHARACTER_RUNTIME_GHOST) || object->force_target == NULL) {
             return 0;
         }
         if ((LEGOCONTEXT_COMBO == -1 || object->character_context != LEGOCONTEXT_COMBO) &&

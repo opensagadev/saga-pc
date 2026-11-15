@@ -500,7 +500,7 @@ void TrenchMove(GAMEOBJECT *object) {
     object->position.z = SeekValF(object->position.z, target.z, TrenchSeekZ);
     NuVecSub(&object->velocity, &object->position, &object->start_position);
     NuVecScale(&object->velocity, &object->velocity, 1.0f / FRAMETIME);
-    if ((object->character_data->game_character->flags_090 & 1) != 0) {
+    if ((object->character_data->game_character->flags_090 & CHARACTER_RUNTIME_BANKING) != 0) {
         if (object->character_context != CHARACTER_CONTEXT_TURN && object->character_context != CHARACTER_CONTEXT_LOOP &&
             object->character_context != CHARACTER_CONTEXT_BARREL_ROLL) {
             roll = (i32)(object->velocity.z * TrenchRollScale);

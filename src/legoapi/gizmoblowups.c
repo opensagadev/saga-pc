@@ -366,9 +366,9 @@ static void Blowup_Reset(GIZMOBLOWUP_PC *blowup) {
     blowup->remaining_health = initial->initial_health;
     blowup->damage = initial->initial_damage;
     animation = NuSpecialGetInstAnim(&blowup->type->animated_special);
-    if (animation != NULL && (animation->flags & 1)) {
+    if (animation != NULL && (animation->flags & NUINSTANIM_FLAG_PLAYING)) {
         blowup->status_flags |= 0x100000;
-        if (animation->flags & 8) {
+        if (animation->flags & NUINSTANIM_FLAG_REPEATING) {
             blowup->status_flags |= 0x480000;
         }
     }
@@ -401,9 +401,9 @@ void GizBlowup_Respawn(GIZMOBLOWUP_PC *blowup) {
     animation = NuSpecialGetInstAnim(&blowup->type->animated_special);
     if (animation != NULL) {
         if (BonusArea && VehicleArea && (blowup->draw_flags & 0x1000000) && (blowup->status_flags & 0x100000)) {
-            animation->flags |= 1;
+            animation->flags |= NUINSTANIM_FLAG_PLAYING;
         }
-        if ((animation->flags & 1) && (animation->flags & 8)) {
+        if ((animation->flags & NUINSTANIM_FLAG_PLAYING) && (animation->flags & NUINSTANIM_FLAG_REPEATING)) {
             blowup->status_flags |= 0x480000;
         }
     }
@@ -752,7 +752,7 @@ i32 GizmoBlowupBlowup(GIZMOBLOWUP_PC *blowup, i32 effects, i32 hit_type, i32 dam
     if (has_burst) {
         burst = NuSpecialGetInstAnim(&type->burst_special);
         if (burst != NULL) {
-            burst->flags |= 1;
+            burst->flags |= NUINSTANIM_FLAG_PLAYING;
         }
     }
     if (damage != -1) {
@@ -949,7 +949,7 @@ void GizmoBlowupEarlyUpdate(void *world_ptr, void *data, f32 delta_time) {
                         blowup->type->animation_base_frame += FRAMETIME * 60.0f * animation->tfactor;
                         blowup->status_flags |= 0x10000;
                         if (blowup->type->animation_base_frame >= end_frame) {
-                            if (animation->flags & 8) {
+                            if (animation->flags & NUINSTANIM_FLAG_REPEATING) {
                                 blowup->type->animation_base_frame = 1.0f;
                             } else {
                                 blowup->status_flags |= 0x1000000;
@@ -964,7 +964,7 @@ void GizmoBlowupEarlyUpdate(void *world_ptr, void *data, f32 delta_time) {
                     blowup->mid_position.y = blowup->position.y + matrix.translation.y;
                     blowup->mid_position.z = blowup->position.z + matrix.translation.z;
                     if (blowup->animation_time >= end_frame) {
-                        if (animation->flags & 8) {
+                        if (animation->flags & NUINSTANIM_FLAG_REPEATING) {
                             blowup->animation_time = 0.0f;
                         } else {
                             blowup->animation_time = blowup->type->animation_start_frame;
@@ -1001,8 +1001,8 @@ void GizmoBlowupEarlyUpdate(void *world_ptr, void *data, f32 delta_time) {
                                                       NULL);
                 }
             }
-        } else if (!(blowup->status_flags & 0x800000) && animation && (animation->flags & 1)) {
-            animation->flags &= ~1;
+        } else if (!(blowup->status_flags & 0x800000) && animation && (animation->flags & NUINSTANIM_FLAG_PLAYING)) {
+            animation->flags &= ~NUINSTANIM_FLAG_PLAYING;
         }
     }
     (void)data;
@@ -1010,7 +1010,7 @@ void GizmoBlowupEarlyUpdate(void *world_ptr, void *data, f32 delta_time) {
 }
 
 void PlayAnim(NUINSTANIM *animation, f32 *playback, f32 speed, i32 backwards) {
-    animation->flags |= 1;
+    animation->flags |= NUINSTANIM_FLAG_PLAYING;
     if (speed >= 0.0f) {
         *playback = SeekLinearF(*playback, backwards != 0 ? 1.0f : -1.0f, speed);
     }
@@ -1556,9 +1556,9 @@ void GizmoBlowupsFinalSetup(WORLDINFO *world) {
             blowup->bounds_max.y = centre.y + blowup->target_scale;
             blowup->bounds_max.z = centre.z + blowup->target_scale;
             animation = NuSpecialGetInstAnim(&blowup->type->animated_special);
-            if (animation && (animation->flags & 1)) {
+            if (animation && (animation->flags & NUINSTANIM_FLAG_PLAYING)) {
                 blowup->status_flags |= 0x100000;
-                if (animation->flags & 8) {
+                if (animation->flags & NUINSTANIM_FLAG_REPEATING) {
                     blowup->status_flags |= 0x480000;
                 }
             }
@@ -2119,11 +2119,11 @@ void Blowup_Activate(GIZMO_PC *gizmo, i32 active) {
     animation = NuSpecialGetInstAnim(&blowup->type->animated_special);
     if (animation != NULL) {
         if (active == 0) {
-            animation->flags &= ~1u;
+            animation->flags &= ~NUINSTANIM_FLAG_PLAYING;
             return;
         }
         if ((blowup->status_flags & 0x100000) != 0) {
-            animation->flags |= 1;
+            animation->flags |= NUINSTANIM_FLAG_PLAYING;
         }
     }
     if (active != 0) {

@@ -792,7 +792,7 @@ extern void ZipUps_Update(WORLDINFO *world, void *unused, f32 time) {
     if (zipup == NULL) {
         return;
     }
-    CanDrawZipUpSwirls = AvailableToPlayer(0x100000, -1, 0, 0);
+    CanDrawZipUpSwirls = AvailableToPlayer(CHARACTER_MODEL_ZIPUP, -1, 0, 0);
 
     for (index = 0; index < world->zipup_count; ++index, ++zipup) {
         if (zipup->occupant != NULL && zipup->occupant->character_context == CHARACTER_CONTEXT_NONE) {

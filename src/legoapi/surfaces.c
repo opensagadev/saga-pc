@@ -53,7 +53,8 @@ void GetSurfaceInfo(GAMEOBJECT *object, i32 update_fields, f32 floor_height) {
             surface_index = 0;
         }
         object->reflection_enabled = 2;
-        if ((object->character_data->game_character->flags_090 & 0x8000u) == 0 && (TerSurface[surface_index].flags & 2u) != 0) {
+        if ((object->character_data->game_character->flags_090 & CHARACTER_RUNTIME_GHOST) == 0 &&
+            (TerSurface[surface_index].flags & 2u) != 0) {
             object->reflection_height = floor_height;
         } else {
             object->reflection_height = 2000000.0f;
@@ -218,8 +219,8 @@ void InitSurfaceInfo(GAMEOBJECT *object) {
     object->roof_surface_id = 0xff;
     GetSurfaceInfo(object, 1, object->floor_height);
 
-    if (!(object->character_data->game_character->flags_090 & 0x8000) && object->reflection_height == GameObjectNearFloorNoFloorHeight &&
-        object->terrain_platform_id != -1) {
+    if (!(object->character_data->game_character->flags_090 & CHARACTER_RUNTIME_GHOST) &&
+        object->reflection_height == GameObjectNearFloorNoFloorHeight && object->terrain_platform_id != -1) {
         f32 reflection = FindReflectionNoPlatforms(&object->position);
         if (reflection != GameObjectNearFloorNoFloorHeight) {
             object->reflection_height = reflection;

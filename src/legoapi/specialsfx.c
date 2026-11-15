@@ -147,7 +147,7 @@ void UpdateSpecialSfx(WORLDINFO *world_info) {
         }
         end_frame = NuAnimEndFrameOld(entry->special.scene->instance_animation_data[animation->animation_index]);
         frame = animation->ltime;
-        if ((animation->flags & 1) == 0 && entry->animation_playing == 0) {
+        if ((animation->flags & NUINSTANIM_FLAG_PLAYING) == 0 && entry->animation_playing == 0) {
             for (j = 0; j < entry->event_count; ++j) {
                 if (event != NULL) {
                     event->flags &= ~1u;
@@ -201,7 +201,7 @@ void UpdateSpecialSfx(WORLDINFO *world_info) {
             }
             event = event->next;
         }
-        entry->animation_playing = (i8)(animation->flags & 1);
+        entry->animation_playing = (i8)(animation->flags & NUINSTANIM_FLAG_PLAYING);
     }
 }
 

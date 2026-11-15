@@ -118,7 +118,7 @@ void SpeederChaseA_Update(WORLDINFO *world) {
                     }
                 }
             } else {
-                if ((animation->flags & 1) == 0) {
+                if ((animation->flags & NUINSTANIM_FLAG_PLAYING) == 0) {
                     animation_time = animation->ltime;
                     if (animation_time == NuAnimEndFrameOld(animation_data)) {
                         PlaySfx("env_laser_gate_off", position);

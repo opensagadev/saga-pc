@@ -254,11 +254,11 @@ i32 GameAnimSet_IsAnimationReset(GAMEANIMSET *set) {
                 continue;
             }
             ++animated_count;
-            if ((animation->flags & 8) != 0) {
+            if ((animation->flags & NUINSTANIM_FLAG_REPEATING) != 0) {
                 ++repeating_count;
                 continue;
             }
-            if ((animation->flags & 1) != 0) {
+            if ((animation->flags & NUINSTANIM_FLAG_PLAYING) != 0) {
                 return 0;
             }
             direction = object->start_frame > object->end_frame ? -1.0f : 1.0f;
@@ -279,7 +279,7 @@ i32 GameAnimSet_Reset(GAMEANIMSET *set) {
     if (set != NULL) {
         for (object = set->objects; object != NULL; object = object->next) {
             if (object->instance_animation != NULL) {
-                object->instance_animation->flags &= ~1u;
+                object->instance_animation->flags &= ~NUINSTANIM_FLAG_PLAYING;
                 object->instance_animation->flags &= ~4u;
                 object->instance_animation->ltime = object->start_frame;
                 object->instance_animation->tfactor = 1.0f;
@@ -312,7 +312,7 @@ i32 GameAnimSet_Play(GAMEANIMSET *set, f32 speed, i32 evaluate_state) {
     }
     for (object = set->objects; object != NULL; object = object->next) {
         if (object->instance_animation != NULL) {
-            object->instance_animation->flags |= 1;
+            object->instance_animation->flags |= NUINSTANIM_FLAG_PLAYING;
             object->instance_animation->flags &= ~4u;
             direction = object->start_frame > object->end_frame ? -1.0f : 1.0f;
             if (object->instance_animation->ltime * direction < object->start_frame * direction) {
@@ -340,7 +340,7 @@ i32 GameAnimSet_Stop(GAMEANIMSET *set) {
         set->flags = (u16)(set->flags | 2);
         for (object = set->objects; object != NULL; object = object->next) {
             if (object->instance_animation != NULL) {
-                object->instance_animation->flags &= ~1u;
+                object->instance_animation->flags &= ~NUINSTANIM_FLAG_PLAYING;
             }
         }
     }
@@ -353,7 +353,8 @@ i32 GameAnimSet_SetRepeating(GAMEANIMSET *set, i32 repeating) {
     if (set != NULL) {
         for (object = set->objects; object != NULL; object = object->next) {
             if (object->instance_animation != NULL) {
-                object->instance_animation->flags = (object->instance_animation->flags & ~8u) | (((u32)repeating & 1) << 3);
+                object->instance_animation->flags =
+                    (object->instance_animation->flags & ~NUINSTANIM_FLAG_REPEATING) | (((u32)repeating & 1) << 3);
             }
         }
     }
@@ -366,7 +367,7 @@ i32 GameAnimSet_JumpToEnd(GAMEANIMSET *set) {
     if (set != NULL) {
         for (object = set->objects; object != NULL; object = object->next) {
             if (object->instance_animation != NULL) {
-                object->instance_animation->flags &= ~1u;
+                object->instance_animation->flags &= ~NUINSTANIM_FLAG_PLAYING;
                 object->instance_animation->ltime = object->end_frame;
             }
         }
@@ -380,7 +381,7 @@ i32 GameAnimSet_JumpToStart(GAMEANIMSET *set) {
     if (set != NULL) {
         for (object = set->objects; object != NULL; object = object->next) {
             if (object->instance_animation != NULL) {
-                object->instance_animation->flags &= ~1u;
+                object->instance_animation->flags &= ~NUINSTANIM_FLAG_PLAYING;
                 object->instance_animation->ltime = object->start_frame;
             }
         }
@@ -397,7 +398,7 @@ void GameAnimSet_JumpToAnimPos(GAMEANIMSET *set, f32 position) {
     }
     for (object = set->objects; object != NULL; object = object->next) {
         if (object->instance_animation != NULL && object->animation != NULL) {
-            object->instance_animation->flags &= ~1u;
+            object->instance_animation->flags &= ~NUINSTANIM_FLAG_PLAYING;
             object->instance_animation->ltime = (object->end_frame - object->start_frame) * position + object->start_frame;
             direction = object->start_frame > object->end_frame ? -1.0f : 1.0f;
             if (object->end_frame * direction < object->instance_animation->ltime * direction) {
@@ -415,7 +416,7 @@ i32 GameAnimSet_Playing(GAMEANIMSET *set) {
 
     if (set != NULL) {
         for (object = set->objects; object != NULL; object = object->next) {
-            if (object->instance_animation != NULL && (object->instance_animation->flags & 1) == 0) {
+            if (object->instance_animation != NULL && (object->instance_animation->flags & NUINSTANIM_FLAG_PLAYING) == 0) {
                 return 0;
             }
         }
@@ -821,28 +822,28 @@ void GameAnimSys_Update(GAMEANIMSYS *system) {
                 if (object->instance_animation->ltime * direction >= object->end_frame * direction) {
                     if (object->instance_animation->tfactor * direction < 0.0f) {
                         object->instance_animation->ltime = object->end_frame;
-                    } else if ((object->instance_animation->flags & 8) != 0) {
+                    } else if ((object->instance_animation->flags & NUINSTANIM_FLAG_REPEATING) != 0) {
                         overshoot = object->instance_animation->ltime - object->end_frame;
                         object->instance_animation->ltime = overshoot + object->start_frame;
                     } else {
                         object->instance_animation->ltime = object->end_frame;
-                        object->instance_animation->flags &= ~1u;
+                        object->instance_animation->flags &= ~NUINSTANIM_FLAG_PLAYING;
                     }
                 } else if (object->instance_animation->ltime * direction <= object->start_frame * direction) {
                     if (object->instance_animation->tfactor * direction > 0.0f) {
                         object->instance_animation->ltime = object->start_frame;
-                    } else if ((object->instance_animation->flags & 8) != 0) {
+                    } else if ((object->instance_animation->flags & NUINSTANIM_FLAG_REPEATING) != 0) {
                         overshoot = object->start_frame - object->instance_animation->ltime;
                         object->instance_animation->ltime = object->end_frame - overshoot;
                     } else {
                         object->instance_animation->ltime = object->start_frame;
-                        object->instance_animation->flags &= ~1u;
+                        object->instance_animation->flags &= ~NUINSTANIM_FLAG_PLAYING;
                     }
                 }
                 if (previous_frame != object->instance_animation->ltime) {
                     EvalAnim2(&object->special, object->instance_animation->ltime);
                 }
-                if ((object->instance_animation->flags & 1) != 0) {
+                if ((object->instance_animation->flags & NUINSTANIM_FLAG_PLAYING) != 0) {
                     set->flags |= 1;
                     if (object->instance_animation->tfactor * direction < 0.0f) {
                         all_playing_forward = 0;

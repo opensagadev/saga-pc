@@ -297,7 +297,7 @@ extern "C" TELEPORT_MOTION *Teleport_Find(GAMEOBJECT *object, f32 range_squared)
         if (NuSpecialExistsFn(&teleport->blocking_special)) {
             NUINSTANIM *animation = (NUINSTANIM *)NuSpecialGetInstAnim(&teleport->blocking_special);
             if (animation != NULL) {
-                if ((animation->flags & 1) || animation->ltime == 1.0f) {
+                if ((animation->flags & NUINSTANIM_FLAG_PLAYING) || animation->ltime == 1.0f) {
                     continue;
                 }
             } else if (NuSpecialGetVisibilityFn(&teleport->blocking_special)) {
@@ -629,7 +629,7 @@ extern "C" {
         if (WORLD->area != NULL && WORLD->area == HUB_ADATA) {
             return 0;
         }
-        if (((HINT_WORLD_TELEPORT *)WORLD)->teleport_count <= 0 || AvailableToPlayer(0x40000, -1, -1, 0) == 0) {
+        if (((HINT_WORLD_TELEPORT *)WORLD)->teleport_count <= 0 || AvailableToPlayer(CHARACTER_MODEL_TELEPORT, -1, -1, 0) == 0) {
             return 0;
         }
         if ((Player[0] != NULL && ((Player[0]->flags_e24 & 0x20) != 0 || Teleport_Find(Player[0], 1.5625f) != NULL)) ||

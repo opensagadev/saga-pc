@@ -724,7 +724,8 @@ void JumpCode(GAMEOBJECT *object, i32 jump_pressed, i32 jump_held, u32 animation
                         FastWeaponOut(object, 1);
                         return;
                     }
-                    if ((animation_set & 0x110) == 0 && (game_character->flags_090 & 0x40400000) == 0) {
+                    if ((animation_set & 0x110) == 0 &&
+                        (game_character->flags_090 & (CHARACTER_RUNTIME_HIGH_JUMP | CHARACTER_RUNTIME_COMBAT_ROLL)) == 0) {
                         return;
                     }
                     if ((animation_set & 0x100) != 0) {
@@ -741,8 +742,9 @@ void JumpCode(GAMEOBJECT *object, i32 jump_pressed, i32 jump_held, u32 animation
                     }
                     object->jump_sequence++;
                     object->context_variant_flags |= 0x4000;
-                    if ((animation_set & 0x110) == 0 && 0 == ((object->character_data->game_character->flags_090 & 0x400000))) {
-                        if ((object->character_data->game_character->flags_090 & 0x40000000) != 0) {
+                    if ((animation_set & 0x110) == 0 &&
+                        0 == ((object->character_data->game_character->flags_090 & CHARACTER_RUNTIME_HIGH_JUMP))) {
+                        if ((object->character_data->game_character->flags_090 & CHARACTER_RUNTIME_COMBAT_ROLL) != 0) {
                             object->action_movement_state = 8;
                             object->context_variant_flags &= ~0x8000u;
                             object->unknown_7aa = LEGOACT_COMBATROLL_JUMP;

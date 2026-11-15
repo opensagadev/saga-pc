@@ -1147,7 +1147,7 @@ void PodRaceBUpdate(WORLDINFO *world) {
                 }
                 break;
             case 1:
-                if (mushroom0_cut != NULL && (((CUT_INSTANCE_READER *)mushroom0_cut->instance)->flags_88 & 0x1000) != 0) {
+                if (mushroom0_cut != NULL && (((CUT_INSTANCE_READER *)mushroom0_cut->instance)->flags_88 & NUGCUTSCENE_INST_ENDED) != 0) {
                     NewCutScene(NULL, world->cutscene_sys, "EP1_PODRACE_MUSHROOM1", 1);
                     mushroom_countdown = mushroom_time_available;
                     ((PODRACE_LEVFLAG *)LevFlag)->mushroom_state = 2;
@@ -1195,7 +1195,7 @@ void PodRaceCUpdate(WORLDINFO *world) {
     PodRaceSnipersUpdate();
     if (((PODRACE_LEVFLAG *)LevFlag)->podrace_state == 0) {
         CUTINFO *cutscene = CutScene_Find(world->cutscene_sys, "Ep1_Podrace_TuskenRaiders");
-        if (cutscene != NULL && (((CUT_INSTANCE_READER *)cutscene->instance)->flags_88 & 0x1000) != 0) {
+        if (cutscene != NULL && (((CUT_INSTANCE_READER *)cutscene->instance)->flags_88 & NUGCUTSCENE_INST_ENDED) != 0) {
             ((PODRACE_LEVFLAG *)LevFlag)->podrace_state = 1;
         }
     }
@@ -1981,7 +1981,7 @@ void MaulA_Reset(WORLDINFO *world) {
     NuSpecialSetVisibility(&slots[5], 0);
     NuSpecialSetVisibility(&slots[6], 0);
     NuSpecialSetVisibility(&slots[7], 0);
-    Maul_obj = FindGameObject(id_DARTHMAUL, 1, 1, 0, 0);
+    Maul_obj = FindGameObject(id_DARTHMAUL, APIOBJECT_SIDE_BADDIE, 1, 0, 0);
 }
 
 void MaulA_Panel(WORLDINFO *world) {
@@ -2011,7 +2011,7 @@ void MaulF_Init(WORLDINFO *world) {
 }
 
 void MaulF_Reset(WORLDINFO *world) {
-    Maul_obj = FindGameObject(id_DARTHMAUL, 1, 1, 0, 0);
+    Maul_obj = FindGameObject(id_DARTHMAUL, APIOBJECT_SIDE_BADDIE, 1, 0, 0);
 }
 
 void MaulF_Panel(WORLDINFO *world) {

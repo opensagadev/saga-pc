@@ -159,7 +159,8 @@ i32 OpponentCanAcquire(APIOBJECT *observer, APIOBJECT *target, f32 distance, u64
 void AlertSurroundingCreatures(GAMEOBJECT *object, NUVEC *position) {
     if (object != NULL &&
         ((object->flags_1fc_word & APIOBJECT_FLAG_IN_USE) == 0 || (object->flags_1fc_word & APIOBJECT_FLAG_CHARACTER) == 0 ||
-         (object->flags_1f8 & 5) != 0 || (object->character_data->game_character->flags_090 & 0x8000) != 0)) {
+         (object->flags_1f8 & (APIOBJECT_SIDE_BADDIE | APIOBJECT_SIDE_NEUTRAL)) != 0 ||
+         (object->character_data->game_character->flags_090 & CHARACTER_RUNTIME_GHOST) != 0)) {
         return;
     }
     alert_obj = object;
@@ -197,8 +198,9 @@ void GameCreatureOpponentSelection(AISYS_PC *system, i32 count, APIOBJECT **obje
     if (baddy_count == 0) {
         complete = 1;
     }
-    if (alert_obj != NULL && (alert_obj->flags_1fc_word & APIOBJECT_FLAG_CHARACTER) != 0 && (alert_obj->flags_1f8 & 5) == 0 &&
-        (alert_obj->character_data->game_character->flags_090 & 0x8000) == 0) {
+    if (alert_obj != NULL && (alert_obj->flags_1fc_word & APIOBJECT_FLAG_CHARACTER) != 0 &&
+        (alert_obj->flags_1f8 & (APIOBJECT_SIDE_BADDIE | APIOBJECT_SIDE_NEUTRAL)) == 0 &&
+        (alert_obj->character_data->game_character->flags_090 & CHARACTER_RUNTIME_GHOST) == 0) {
         for (i = 0; i < baddy_count; ++i) {
             object = baddies[i];
             if ((((u64)1 << alert_obj->hostility_group) & OPPONENT_OBJECT(object)->awareness) != 0) {
@@ -481,10 +483,10 @@ void MakeBaddiesForgetAboutParty(i32 check_hostility) {
             object->dead != 0) {
             continue;
         }
-        if ((object->flags_1f8 & 1) != 0) {
+        if ((object->flags_1f8 & APIOBJECT_SIDE_BADDIE) != 0) {
             ++party_count;
             *party_cursor++ = object;
-        } else if ((object->flags_1f8 & 4) == 0) {
+        } else if ((object->flags_1f8 & APIOBJECT_SIDE_NEUTRAL) == 0) {
             ++baddie_count;
             *baddie_cursor++ = object;
         }
@@ -833,9 +835,9 @@ static void GameAIUpdateArea(AIAREA *area) {
             if ((object->flags_1fc_half & APIOBJECT_FLAG_PLAYER_ACTIVE) != 0) {
                 area->runtime_flags |= 1;
             }
-            if ((object->flags_1f8 & 1) != 0) {
+            if ((object->flags_1f8 & APIOBJECT_SIDE_BADDIE) != 0) {
                 area->runtime_flags |= 4;
-            } else if ((object->flags_1f8 & 4) == 0) {
+            } else if ((object->flags_1f8 & APIOBJECT_SIDE_NEUTRAL) == 0) {
                 area->runtime_flags |= 2;
             }
         } else {
@@ -1138,7 +1140,7 @@ APIOBJECT *GetNamedAPIObject(void *system_pointer, char *name) {
             if ((Obj[index].flags_1fc & APIOBJECT_FLAG_IN_USE) == 0) {
                 continue;
             }
-            if ((Obj[index].flags_1f8 & 0x400u) != 0 && Obj[index].ai_packet.creature_index != 0xff) {
+            if ((Obj[index].flags_1f8 & APIOBJECT_CREATURE) != 0 && Obj[index].ai_packet.creature_index != 0xff) {
                 creature = &system->creatures[Obj[index].ai_packet.creature_index];
                 if (creature != NULL && NuStrICmp(creature->name, name) == 0) {
                     object = &Obj[index];
@@ -1345,7 +1347,7 @@ void GameAISysInit(void) {
 
 i32 TryToTeleportToNextNode(GAMEOBJECT *object, AIPATHNODE *node, i32 tightrope) {
     NUVEC position;
-    if ((object->flags_1f8 & 0x400) == 0 && (object->ai_packet.path_info.flags & 1) != 0 &&
+    if ((object->flags_1f8 & APIOBJECT_CREATURE) == 0 && (object->ai_packet.path_info.flags & 1) != 0 &&
         (object->unknown_f10 >= OFFSCREEN_CATCHUP_TIME ||
          (object->model_draw_result == 0 && (object->tag_flags & 2) == 0 && drop_back_in_timer > 0.0f))) {
         position = node->position;
@@ -1883,12 +1885,12 @@ GAMEOBJECT *AddDynamicCreature(i32 model, NUVEC *position, i32 angle, char *scri
     object = AddCreature(model, 0);
     if (object != NULL) {
         api = (APIOBJECT *)object;
-        object->flags_1f8 |= 0x400;
+        object->flags_1f8 |= APIOBJECT_CREATURE;
         flags = apicharsys->char_data[model].model_flags;
         if ((flags & 0x200) != 0) {
-            object->flags_1f8 |= 4;
+            object->flags_1f8 |= APIOBJECT_SIDE_NEUTRAL;
         } else if ((flags & 4) != 0) {
-            object->flags_1f8 |= 1;
+            object->flags_1f8 |= APIOBJECT_SIDE_BADDIE;
         }
         object->flags_1044 |= 1;
         if ((apicharsys->char_data[model].model_flags & CHARACTER_MODEL_CAN_SHOOT_OFFSCREEN) != 0) {
@@ -2187,10 +2189,10 @@ u32 GameAI_TotalScore(void) {
     u32 total = 0;
     i32 i;
     for (i = 0; i < HIGHGAMEOBJECT; i++, object++) {
-        if ((object->flags_1fc & APIOBJECT_FLAG_IN_USE) != 0 && (object->flags_1f8 & 0x400) != 0 &&
+        if ((object->flags_1fc & APIOBJECT_FLAG_IN_USE) != 0 && (object->flags_1f8 & APIOBJECT_CREATURE) != 0 &&
             object->ai_packet.creature_index != 0xff) {
             config = object->character_data->game_character;
-            if ((config->flags_090 & 0x40) == 0 && object->id != id_GONKDROID) {
+            if ((config->flags_090 & CHARACTER_RUNTIME_CAN_TAKE_OVER) == 0 && object->id != id_GONKDROID) {
                 total += (u16)config->coin_value;
             }
         }
@@ -2353,10 +2355,10 @@ void GameAIProcess(void) {
                 object->ai_packet.target_dc = NULL;
                 object->ai_packet.opponent = NULL;
                 object->ai_packet.target_ec = NULL;
-            } else if ((object->flags_1f8 & 1) != 0) {
+            } else if ((object->flags_1f8 & APIOBJECT_SIDE_BADDIE) != 0) {
                 ++baddy_count;
                 *baddy_cursor++ = (APIOBJECT *)object;
-            } else if ((object->flags_1f8 & 4) != 0) {
+            } else if ((object->flags_1f8 & APIOBJECT_SIDE_NEUTRAL) != 0) {
                 ++neutral_count;
                 *neutral_cursor++ = (APIOBJECT *)object;
             } else {
@@ -2399,16 +2401,16 @@ void GameAIProcess(void) {
         }
 
         ai_update_flags = object->ai_update_flags;
-        if ((object->flags_1f8 & 0x400) != 0) {
-            if ((object->flags_1f8 & 0x10000) != 0) {
+        if ((object->flags_1f8 & APIOBJECT_CREATURE) != 0) {
+            if ((object->flags_1f8 & APIOBJECT_SIDE_GOODIE_BADDIE) != 0) {
                 ++baddy_count;
                 *baddy_cursor++ = (APIOBJECT *)object;
                 ++goody_count;
                 *goody_cursor++ = (APIOBJECT *)object;
-            } else if ((object->flags_1f8 & 1) != 0) {
+            } else if ((object->flags_1f8 & APIOBJECT_SIDE_BADDIE) != 0) {
                 ++baddy_count;
                 *baddy_cursor++ = (APIOBJECT *)object;
-            } else if ((object->flags_1f8 & 4) != 0) {
+            } else if ((object->flags_1f8 & APIOBJECT_SIDE_NEUTRAL) != 0) {
                 ++neutral_count;
                 *neutral_cursor++ = (APIOBJECT *)object;
             } else {
@@ -2418,7 +2420,7 @@ void GameAIProcess(void) {
         }
         if ((object->flags_1f8 & 0x40000) != 0) {
             if ((object->flags_1fc_word & APIOBJECT_FLAG_CHARACTER) != 0 && object->dead == 0 && object->context_target_position == NULL &&
-                (object->character_data->game_character->flags_090 & 0x8000) == 0) {
+                (object->character_data->game_character->flags_090 & CHARACTER_RUNTIME_GHOST) == 0) {
                 ++interactive_count;
                 *interactive_cursor++ = (APIOBJECT *)object;
                 object->ai_packet.flags |= 0x2000;
@@ -2529,7 +2531,7 @@ void GameAIProcess(void) {
                 }
             }
         }
-        if (FreePlay != 0 && (object->flags_1f8 & 0x400) == 0) {
+        if (FreePlay != 0 && (object->flags_1f8 & APIOBJECT_CREATURE) == 0) {
             if ((object->flags_1fc_word & APIOBJECT_FLAG_PLAYER_ACTIVE) == 0 && object->character_context != CHARACTER_CONTEXT_INTERFACE) {
                 if (drop_in_teleport == 1 && VehicleArea == 0 && (Arcade != 0 || teleport_all_freeplay_modes != 0) &&
                     object->model_draw_result == 0 && (object->tag_flags & 2) == 0 && drop_back_in_timer > 0.0f) {
@@ -2628,11 +2630,11 @@ void GameAIProcess(void) {
                 }
                 defend = 1;
             }
-            if (FreePlay != 0 && (object->flags_1f8 & 0x400) == 0 && object->id == (u16)id_DROIDEKA) {
+            if (FreePlay != 0 && (object->flags_1f8 & APIOBJECT_CREATURE) == 0 && object->id == (u16)id_DROIDEKA) {
                 object->pad->buttons_pressed |= GAMEPAD_TOGGLERIGHT;
             }
             if ((object->combat_flags & 2) != 0 &&
-                ((object->flags_1f8 & 0x400) != 0 || party_under_cover == 0 || (object->flags_ef3 & 1) != 0) &&
+                ((object->flags_1f8 & APIOBJECT_CREATURE) != 0 || party_under_cover == 0 || (object->flags_ef3 & 1) != 0) &&
                 ((CharCategory_IsCategory(object, 0) != 0 || object->id == (u16)id_GRIEVOUS || object->id == (u16)id_BODYGUARD ||
                   object->id == (u16)id_IMPERIALGUARD) != 0 ||
                  object->id == (u16)id_GAMORREANGUARD)) {
@@ -2694,7 +2696,7 @@ void GameAIProcess(void) {
         }
     interaction:
         if ((object->flags_1fc_word & APIOBJECT_FLAG_CHARACTER) != 0 && object->dead == 0 && object->context_target_position == NULL &&
-            (object->character_data->game_character->flags_090 & 0x8000) == 0) {
+            (object->character_data->game_character->flags_090 & CHARACTER_RUNTIME_GHOST) == 0) {
             ++interactive_count;
             *interactive_cursor++ = (APIOBJECT *)object;
             object->ai_collision_priority = HIGHGAMEOBJECT - object->hostility_group;

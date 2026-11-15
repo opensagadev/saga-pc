@@ -532,7 +532,7 @@ void Customiser_SetUpCharacterData(CUSTOMISER_LAYERS *input) {
             }
         }
         if ((customiser->piece_sets[1][selection[1]].availability_flags & CUSTOM_PIECE_NO_HAT) != 0) {
-            config->flags_090 |= 0x10;
+            config->flags_090 |= CHARACTER_RUNTIME_ALREADY_GOT_HAT;
         }
         config->weapon_model = customiser->piece_sets[2][selection[2]].weapon_model;
         config->blade_colour = (i8)LightSabre_ColourFromObj(config->weapon_model, NULL);

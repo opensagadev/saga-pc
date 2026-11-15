@@ -157,13 +157,13 @@ void CruiserCUpdate(WORLDINFO *world) {
         cruiser_c.dooku_fight->value = (f32)crusiserc_netpacket->dooku_fight;
     }
     if (cruiser_c.palpatine == NULL) {
-        cruiser_c.palpatine = FindGameObject(dat_007f1a0c, 0x400, 1, 1, 0);
+        cruiser_c.palpatine = FindGameObject(dat_007f1a0c, APIOBJECT_CREATURE, 1, 1, 0);
     }
     if (cruiser_c.palpatine_locator == NULL) {
         cruiser_c.palpatine_locator = AIPathFindLocator(WORLD->ai_sys, "Palpatine");
     }
     if (cruiser_c.count_dooku == NULL) {
-        cruiser_c.count_dooku = FindGameObject(id_DOOKU, 1, 1, 1, 0);
+        cruiser_c.count_dooku = FindGameObject(id_DOOKU, APIOBJECT_SIDE_BADDIE, 1, 1, 0);
     }
     if (FreePlay == 0 && cruiser_c.palpatine != NULL && cruiser_c.palpatine_locator != NULL && cruiser_c.free_palpatine != NULL &&
         cruiser_c.free_palpatine->value < 2.0f) {
@@ -293,7 +293,7 @@ void GrievousA_Reset(WORLDINFO *world) {
     if (netclient != 0) {
         return;
     }
-    Grievous_obj = FindGameObject(id_GRIEVOUS, 1, 1, 0, 0);
+    Grievous_obj = FindGameObject(id_GRIEVOUS, APIOBJECT_SIDE_BADDIE, 1, 0, 0);
     if (Grievous_obj != NULL) {
         DrawBossHitPoints(Grievous_obj);
     }
@@ -370,7 +370,7 @@ void KashyyykD_Reset(WORLDINFO *world) {
             NuSpecialSetVisibility(&LevHSpecial[i], 0);
             LevInstAnimReset.animations[i] = NuSpecialGetInstAnim(&LevHSpecial[i]);
             LevInstAnimReset.animations[i]->ltime = 0.0f;
-            LevInstAnimReset.animations[i]->flags &= ~1u;
+            LevInstAnimReset.animations[i]->flags &= ~NUINSTANIM_FLAG_PLAYING;
         }
     }
 }
@@ -398,7 +398,7 @@ void Boulder_Move(PART_PC *part, f32 unused) {
         reciprocal = 1.0f / FRAMETIME;
         NuVecScale(&part->velocity, &part->velocity, reciprocal);
     }
-    if (LevInstAnimReset.animations[index]->ltime > 1.0f && !(LevInstAnimReset.animations[index]->flags & 1)) {
+    if (LevInstAnimReset.animations[index]->ltime > 1.0f && !(LevInstAnimReset.animations[index]->flags & NUINSTANIM_FLAG_PLAYING)) {
         KillPart(part, 0);
     } else if (part->active & 1) {
         PlaySfx("Kas_BoulderLoop", &part->position);
@@ -422,7 +422,7 @@ void Boulder_Kill(PART_PC *part, i32 unused) {
     }
     NuSpecialSetVisibility(&LevHSpecial[index], 0);
     LevInstAnimReset.animations[index]->ltime = 0.0f;
-    LevInstAnimReset.animations[index]->flags &= ~1u;
+    LevInstAnimReset.animations[index]->flags &= ~NUINSTANIM_FLAG_PLAYING;
     boulder_part[index] = NULL;
 }
 
@@ -449,7 +449,7 @@ static void BoulderSpawn(i32 index) {
             boulder_part[index] = part;
         }
         (*animation)->ltime = 1.0f;
-        (*animation)->flags |= 1;
+        (*animation)->flags |= NUINSTANIM_FLAG_PLAYING;
         (*animation)->matrix = NuMtxSetIdentityTemplate;
         NuSpecialSetVisibility(&LevHSpecial[index], 1);
     }

@@ -77,7 +77,7 @@ extern "C" {
     void WorldInfo_ReArrangeBuffers(i32 area1, i32 area2) {
         VARIPTR *buffer_end = &WorldInfo[1].buffer_end;
         AREA_DATA_PC *areas;
-        u8 single_buffer = 8;
+        u8 single_buffer = AREAFLAG_SINGLE_BUFFER;
         u32 end;
 
         if (area1 != -1) {

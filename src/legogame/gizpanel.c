@@ -957,7 +957,7 @@ i32 GizPanel_UpdateHint(HINT *hint) {
         return 0;
     }
     if (bountyhunter != 0 && ((u16)hint->id == 0x261 || (u16)hint->id == 0x26a)) {
-        if (AvailableToPlayer(0x1000000, -1, 6, 0) != 0) {
+        if (AvailableToPlayer(CHARACTER_MODEL_BOUNTY_HUNTER, -1, 6, 0) != 0) {
             if ((u16)hint->id == 0x261) {
                 return 1;
             }

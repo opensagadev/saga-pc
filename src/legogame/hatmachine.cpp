@@ -196,7 +196,7 @@ extern "C" void HatMachine_MoveCode(WORLDINFO *world, GAMEOBJECT *object, i32 sp
                     return;
                 }
                 if (object->character_model->model_data_b[0x6d] != NULL &&
-                    ((object->character_data->game_character->flags_090 & 0x10) != 0 ||
+                    ((object->character_data->game_character->flags_090 & CHARACTER_RUNTIME_ALREADY_GOT_HAT) != 0 ||
                      (object->id == (u16)id_PRINCESSLEIABOUSHH && FreePlay != 0))) {
                     if (machine->animation_state == 2) {
                         object->unknown_7aa = ACTION_HELMETON2;
@@ -232,7 +232,7 @@ extern "C" void HatMachine_MoveCode(WORLDINFO *world, GAMEOBJECT *object, i32 sp
                 if (machine->animation_state != 4) {
                     return;
                 }
-                if ((object->character_data->game_character->flags_090 & 0x10) == 0 &&
+                if ((object->character_data->game_character->flags_090 & CHARACTER_RUNTIME_ALREADY_GOT_HAT) == 0 &&
                     (object->id != (u16)id_PRINCESSLEIABOUSHH || FreePlay == 0)) {
                     PlaySfx("HatOn", &object->upper_position);
                     object->helmet = ((HATMACHINE *)object->grapple)->displayed_hat;

@@ -2785,7 +2785,7 @@ i32 Action_ResetToOrigin(AISYS_PC *sys, AISCRIPTPROCESS *processor, AIPACKET *pa
     origin = GetOriginPositionFn != NULL ? GetOriginPositionFn(sys, packet) : NULL;
     if (origin != NULL) {
         packet->owner->position = *origin;
-    } else if (packet->owner != NULL && (packet->owner->flags_1f8 & 0x400) != 0 && packet->creature_index != 0xff) {
+    } else if (packet->owner != NULL && (packet->owner->flags_1f8 & APIOBJECT_CREATURE) != 0 && packet->creature_index != 0xff) {
         packet->owner->position = sys->creatures[packet->creature_index].position;
     }
     return 1;
@@ -2829,10 +2829,10 @@ i32 Action_NoShadows(AISYS_PC *sys, AISCRIPTPROCESS *processor, AIPACKET *packet
     if (packet == NULL || first_time == 0 || packet->owner == NULL) {
         return 1;
     }
-    packet->owner->flags_1f8 |= 0x2000u;
+    packet->owner->flags_1f8 |= APIOBJECT_NO_SHADOWS;
     for (i = 0; i < count; i++) {
         if (NuStrICmp(params[i], AIScriptFalse) == 0) {
-            packet->owner->flags_1f8 &= ~0x2000u;
+            packet->owner->flags_1f8 &= ~APIOBJECT_NO_SHADOWS;
         }
     }
     return 1;
@@ -4582,7 +4582,8 @@ void AIPathNodeUpdatePos(void *context, AIPATH *path, AIPATHNODE *node) {
     }
 
     if (node->position.x != previous_position.x || node->position.y != previous_position.y || node->position.z != previous_position.z ||
-        ((animation = NuSpecialGetInstAnim(&node->special_handle)) != NULL && (animation->flags & 1) != 0 && animation->tfactor != 0.0f)) {
+        ((animation = NuSpecialGetInstAnim(&node->special_handle)) != NULL && (animation->flags & NUINSTANIM_FLAG_PLAYING) != 0 &&
+         animation->tfactor != 0.0f)) {
         node->runtime_flags |= 0x02;
     } else {
         node->runtime_flags &= (u8)~0x02;
@@ -15818,7 +15819,7 @@ i32 Action_GoToOrigin(AISYS_PC *sys, AISCRIPTPROCESS *processor, AIPACKET *packe
     f32 range;
 
     if (packet == NULL || packet->owner == NULL || packet->path_info.path == NULL || packet->path_info.connection == NULL ||
-        (packet->owner->flags_1f8 & 0x400) == 0 || packet->creature_index == 0xff) {
+        (packet->owner->flags_1f8 & APIOBJECT_CREATURE) == 0 || packet->creature_index == 0xff) {
         return 1;
     }
     creature = &sys->creatures[packet->creature_index];

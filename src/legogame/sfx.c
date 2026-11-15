@@ -500,7 +500,7 @@ void SetLevelSfxBits(WORLDINFO *world) {
             ADD_SFX("drd_r2_scope_down");
             ADD_SFX("drd_r2_mvt_water_lp");
         }
-        if ((game_character->flags_090 & 0x400) != 0) {
+        if ((game_character->flags_090 & CHARACTER_RUNTIME_CAN_DRAG_BOMBS) != 0) {
             ADD_SFX("TowCable_Fire");
             ADD_SFX("TowCable_Latch");
             ADD_SFX("TowCable_Detach");
@@ -530,9 +530,9 @@ void SetLevelSfxBits(WORLDINFO *world) {
             ADD_SFX("wpn_bomb_drop");
             ADD_SFX("exp_bomb");
         }
-        if ((game_character->flags_090 & 4) != 0) {
+        if ((game_character->flags_090 & CHARACTER_RUNTIME_LIGHTNING) != 0) {
             ADD_SFX("ForceLightningLp");
-        } else if ((game_character->flags_090 & 2) != 0) {
+        } else if ((game_character->flags_090 & CHARACTER_RUNTIME_CHOKE) != 0) {
             ADD_SFX("ForceChokeCrunch");
         } else if ((character->model_flags & CHARACTER_MODEL_JEDI) != 0) {
             ADD_SFX("ForceMindTrick");

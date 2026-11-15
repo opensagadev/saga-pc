@@ -48,54 +48,55 @@ void edanimUpdateObjects(f32 elapsed) {
         if (animation != NULL) {
             switch (AnimParams[index].control_mode) {
                 case 1:
-                    animation->flags &= ~1U;
+                    animation->flags &= ~NUINSTANIM_FLAG_PLAYING;
                     if (AnimParams[index].control_switch != -1 && debris_object_switches[AnimParams[index].control_switch] != 0) {
-                        animation->flags |= 1;
+                        animation->flags |= NUINSTANIM_FLAG_PLAYING;
                     }
                     break;
                 case 2:
-                    animation->flags &= ~8U;
+                    animation->flags &= ~NUINSTANIM_FLAG_REPEATING;
                     if (AnimParams[index].control_switch != -1 && debris_object_switches[AnimParams[index].control_switch] != 0 &&
-                        (animation->flags & 1) == 0) {
+                        (animation->flags & NUINSTANIM_FLAG_PLAYING) == 0) {
                         animation->ltime = 1.0f;
-                        animation->flags = (animation->flags & ~6U) | 1;
+                        animation->flags = (animation->flags & ~6U) | NUINSTANIM_FLAG_PLAYING;
                     }
                     break;
                 case 3:
-                    animation->flags |= 8;
+                    animation->flags |= NUINSTANIM_FLAG_REPEATING;
                     if (AnimParams[index].control_switch != -1 && debris_object_switches[AnimParams[index].control_switch] != 0) {
-                        animation->flags |= 1;
+                        animation->flags |= NUINSTANIM_FLAG_PLAYING;
                     }
                     break;
                 case 4:
                     if (edanimPlayerAnimDistance(index) < AnimParams[index].control_distance) {
-                        animation->flags |= 1;
+                        animation->flags |= NUINSTANIM_FLAG_PLAYING;
                     } else {
-                        animation->flags &= ~1U;
+                        animation->flags &= ~NUINSTANIM_FLAG_PLAYING;
                     }
                     break;
                 case 5:
-                    animation->flags &= ~8U;
-                    if (edanimPlayerAnimDistance(index) < AnimParams[index].control_distance && (animation->flags & 1) == 0) {
+                    animation->flags &= ~NUINSTANIM_FLAG_REPEATING;
+                    if (edanimPlayerAnimDistance(index) < AnimParams[index].control_distance &&
+                        (animation->flags & NUINSTANIM_FLAG_PLAYING) == 0) {
                         animation->ltime = 1.0f;
-                        animation->flags = (animation->flags & ~6U) | 1;
+                        animation->flags = (animation->flags & ~6U) | NUINSTANIM_FLAG_PLAYING;
                     }
                     break;
                 case 6:
-                    animation->flags |= 8;
+                    animation->flags |= NUINSTANIM_FLAG_REPEATING;
                     if (edanimPlayerAnimDistance(index) < AnimParams[index].control_distance) {
-                        animation->flags |= 1;
+                        animation->flags |= NUINSTANIM_FLAG_PLAYING;
                     }
                     break;
                 case 10:
                     animation->ltime = 1.0f;
-                    animation->flags &= ~1U;
+                    animation->flags &= ~NUINSTANIM_FLAG_PLAYING;
                     break;
                 case 11:
-                    animation->flags |= 1;
+                    animation->flags |= NUINSTANIM_FLAG_PLAYING;
                     break;
                 case 12:
-                    animation->flags |= 9;
+                    animation->flags |= NUINSTANIM_FLAG_PLAYING | NUINSTANIM_FLAG_REPEATING;
                     break;
             }
             if (index == edanim_nearest_param_id && (edanim_particle_mode != 0 || edanim_sound_mode != 0)) {
@@ -105,7 +106,8 @@ void edanimUpdateObjects(f32 elapsed) {
         if (NuSpecialGetVisibilityFn(&special) != 0) {
             for (particle_index = 0; particle_index < AnimParams[index].effect_count; ++particle_index) {
                 if (AnimParams[index].effect_ids[particle_index] != -1 && debtab[AnimParams[index].effect_ids[particle_index]] != NULL) {
-                    if (AnimParams[index].effect_flags[particle_index] == 0 || (animation != NULL && (animation->flags & 1) != 0)) {
+                    if (AnimParams[index].effect_flags[particle_index] == 0 ||
+                        (animation != NULL && (animation->flags & NUINSTANIM_FLAG_PLAYING) != 0)) {
                         NUMTX matrix;
                         NUVEC position;
                         NuMtxInvRSS(&matrix, NuSpecialGetMtx(&special));

@@ -23,8 +23,9 @@ macro expansion or a macro argument is left alone. Only the literal's text
 changes, so the object code must stay the same: prove each run (`make proof`).
 
     python3 tools/magicnames.py gameobject_s.flags_1fc --names APIOBJECT_FLAG_ --dry-run
-    python3 tools/magicnames.py STATUS_STAGE_s.type --names STATUS_STAGE_ [PATHS]
-    python3 tools/magicnames.py AIPACKET.flags --names AIPACKET_ --unnamed   # values left without a name
+    python3 tools/magicnames.py STATUS_STAGE_s.type --names STATUS_STAGE_ --paths src/legoapi
+    python3 tools/magicnames.py AIPACKET.flags --names AIPACKET_ --dry-run --unnamed   # also the sites left literal
+    python3 tools/magicnames.py --batch FILE   # lines `FIELD PREFIXES [flags|states]`, one parse for all
 
 The libclang parses take turns with other scans on SAGA_SCAN_LOCK and run on
 `--jobs` workers (default 4).
@@ -82,27 +83,30 @@ def is_single_bit(value):
     return value != 0 and value & (value - 1) == 0
 
 
-class Field:
-    """Which declaration the field is: `struct.member` or a global's name."""
+class Fields:
+    """The fields being named: a declaration -> the index of the field it is, or None.
 
-    def __init__(self, spec):
+    Each field is `struct.member` (tag or typedef name) or a global's name, or several such views of one value
+    separated by commas."""
+
+    def __init__(self, fields):
         self.specs = []
-        for one in spec.split(","):
-            record, _, member = one.strip().rpartition(".")
-            self.specs.append((record or (self.specs[-1][0] if self.specs and "." not in one else ""), member))
+        for index, field in enumerate(fields):
+            for one in field.split(","):
+                record, _, member = one.strip().rpartition(".")
+                self.specs.append((index, record, member))
+        self.members = {member for _, _, member in self.specs}
         self.cache = {}
 
-    def matches(self, decl):
-        if decl is None:
-            return False
+    def match(self, decl):
+        if decl is None or decl.spelling not in self.members:
+            return None
         if decl.hash not in self.cache:
-            self.cache[decl.hash] = self._matches(decl)
+            self.cache[decl.hash] = next((index for index, record, member in self.specs
+                                          if self._matches(decl, record, member)), None)
         return self.cache[decl.hash]
 
-    def _matches(self, decl):
-        return any(self._matches_one(decl, record, member) for record, member in self.specs)
-
-    def _matches_one(self, decl, record, member):
+    def _matches(self, decl, record, member):
         ci = cindex()
         if decl.spelling != member:
             return False
@@ -114,7 +118,7 @@ class Field:
         while parent is not None and parent.kind in (ci.CursorKind.STRUCT_DECL, ci.CursorKind.UNION_DECL,
                                                      ci.CursorKind.CLASS_DECL):
             names = {parent.spelling, parent.type.spelling.replace("struct ", "").replace("union ", "")}
-            names |= typedef_names(parent)
+            names |= _typedefs.get(parent.hash, set())
             if record in names:
                 return True
             if parent.spelling and not parent.is_anonymous():
@@ -124,33 +128,32 @@ class Field:
 
 
 _typedefs = {}
-
-
-def typedef_names(record):
-    """Typedef names of a record (from the typedefs seen in the parse)."""
-    return _typedefs.get(record.hash, set())
+NOT_FIELD = None
 
 
 class Unit:
-    """Facts of one parse: literal sites and the carrier relations, keyed by declaration."""
+    """Facts of one parse for every field at once: literal sites and the carrier relations, keyed by declaration.
 
-    def __init__(self, tu, field, flags_mode, root):
+    A carrier is (field index or None, keys, bits): the index when the value is a field's own, None when it comes
+    from locals, parameters or results only (`keys`, which must all carry one field); `bits` when it went through
+    a mask, which only a flag set follows."""
+
+    def __init__(self, tu, fields, root):
         self.ci = cindex()
         self.tu = tu
-        self.field = field
-        self.flags = flags_mode
+        self.fields = fields
         self.root = str(root) + "/"
-        self.sites = {}         # (file, offset) -> [text, value, needs_parens, deps(set) list]
-        self.writes = []        # (key, deps or None)            None: a value that is not the field
-        self.links = set()      # keys stored into the field
-        self.bad = set()        # keys incremented, arithmetic-assigned or address-taken
-        self.calls = set()      # function keys called directly
-        self.referenced = set()  # function keys referenced in any other way
-        self.defined = {}       # function key -> parameter keys in order
-        self.enums = {}         # enum constant name -> value
+        self.sites = {}          # (file, offset) -> [text, value, needs_parens, {(field, keys, bits)}]
+        self.writes = []         # (key, carrier | "literal" | None)
+        self.links = set()       # (key, field): stored into, masked with or compared with the field
+        self.bad = set()         # keys incremented, arithmetic-assigned or address-taken
+        self.bit_assigned = set()  # keys with `|=`, `&=`, `^=`: bad for an enumeration
+        self.calls = set()
+        self.referenced = set()
+        self.defined = {}
+        self.enums = {}
         self.texts = {}
-
-    # ---------------------------------------------------------------------------------- helpers
+        self.callees = set()
 
     def binop(self, cursor):
         return self.ci.conf.lib.clang_getCursorBinaryOperatorKind(cursor)
@@ -160,14 +163,12 @@ class Unit:
 
     def strip(self, cursor):
         K = self.ci.CursorKind
-        while True:
-            if cursor.kind in (K.PAREN_EXPR, K.UNEXPOSED_EXPR) or cursor.kind in CASTS:
-                children = [c for c in cursor.get_children() if c.kind.is_expression()]
-                if len(children) != 1:
-                    return cursor
-                cursor = children[0]
-            else:
+        while cursor.kind in (K.PAREN_EXPR, K.UNEXPOSED_EXPR) or cursor.kind in CASTS:
+            children = [c for c in cursor.get_children() if c.kind.is_expression()]
+            if len(children) != 1:
                 return cursor
+            cursor = children[0]
+        return cursor
 
     def key(self, decl):
         K = self.ci.CursorKind
@@ -202,78 +203,80 @@ class Unit:
         return name[len(self.root):], start.offset, text
 
     def carrier(self, cursor):
-        """Keys the expression's value depends on being carriers (empty: the field itself), or None."""
+        """(field index or None, keys, bits) of an expression that carries a field's value, or None."""
         K = self.ci.CursorKind
         cursor = self.strip(cursor)
         if cursor.kind in (K.MEMBER_REF_EXPR, K.DECL_REF_EXPR):
             decl = cursor.referenced
-            if self.field.matches(decl):
-                return frozenset()
+            index = self.fields.match(decl)
+            if index is not None:
+                return (index, frozenset(), False)
             key = self.key(decl)
             if key and not key.startswith("F:"):
-                return frozenset([key])
+                return (None, frozenset([key]), False)
             return None
         if cursor.kind == K.CALL_EXPR:
             key = self.key(cursor.referenced)
             if key and key.startswith("F:"):
-                return frozenset([key])
+                return (None, frozenset([key]), False)
             return None
-        if self.flags and cursor.kind == K.BINARY_OPERATOR and self.binop(cursor) in BIT_OPS:
-            left, right = [c for c in cursor.get_children()][:2]
-            for one, other in ((left, right), (right, left)):
-                deps = self.carrier(one)
-                if deps is not None and self.literals(other) is not None:
-                    return deps
-            return None
+        if cursor.kind == K.BINARY_OPERATOR and self.binop(cursor) in BIT_OPS:
+            children = list(cursor.get_children())
+            if len(children) != 2:
+                return None
+            for one, other in ((children[0], children[1]), (children[1], children[0])):
+                found = self.carrier(one)
+                if found is not None and self.literals(other) is not None:
+                    return (found[0], found[1], True)
         return None
 
     def literals(self, cursor, negate=False):
-        """The literal sites of a pure literal expression: [(cursor-or-minus, text, value)], or None."""
+        """The literal sites of a pure literal expression: [((file, offset, text), value, bits)], or None."""
         K = self.ci.CursorKind
         cursor = self.strip(cursor)
         if cursor.kind == K.INTEGER_LITERAL:
             found = self.text_at(cursor)
-            if found is None:
-                return None
-            value = literal_value(found[2])
+            value = literal_value(found[2]) if found else None
             if value is None:
                 return None
-            return [(found, -value if negate else value)]
+            return [(found, -value if negate else value, False)]
         if cursor.kind == K.UNARY_OPERATOR:
             op = self.unop(cursor)
-            inner = [c for c in cursor.get_children()]
+            inner = list(cursor.get_children())
             if len(inner) != 1:
                 return None
-            if op == NOT and self.flags:
-                return self.literals(inner[0])
-            if op == MINUS and not self.flags:
+            if op == NOT:
+                sites = self.literals(inner[0])
+                return [(f, v, True) for f, v, _ in sites] if sites else None
+            if op == MINUS:
                 sites = self.literals(inner[0], not negate)
                 found = self.text_at(cursor)
                 if sites is None or len(sites) != 1 or found is None:
                     return None
-                return [(found, sites[0][1])]
+                return [(found, sites[0][1], sites[0][2])]
             return None
-        if self.flags and cursor.kind == K.BINARY_OPERATOR and self.binop(cursor) == OR:
-            left, right = list(cursor.get_children())[:2]
-            a, b = self.literals(left), self.literals(right)
+        if cursor.kind == K.BINARY_OPERATOR and self.binop(cursor) == OR:
+            children = list(cursor.get_children())
+            if len(children) != 2:
+                return None
+            a, b = self.literals(children[0]), self.literals(children[1])
             if a is None or b is None:
                 return None
-            return a + b
+            return [(f, v, True) for f, v, _ in a + b]
         return None
 
-    def site(self, literal_cursor, deps, parent_ok):
+    def site(self, literal_cursor, found, parent_ok, bits=False):
+        """Record the literals of `literal_cursor` as values of the carrier `found`."""
         sites = self.literals(literal_cursor)
         if not sites:
             return False
         # A literal that is the whole operand keeps its context; one inside `~` or `|` sits in an
         # expression that already binds it, so an OR there needs parentheses unless the operand is `|`.
         whole = len(sites) == 1 and self.strip(literal_cursor).kind == self.ci.CursorKind.INTEGER_LITERAL
-        for (file, offset, text), value in sites:
+        for (file, offset, text), value, inner_bits in sites:
             entry = self.sites.setdefault((file, offset), [text, value, not (whole and parent_ok), set()])
-            entry[3].add(deps)
+            entry[3].add((found[0], found[1], found[2] or bits or inner_bits))
         return True
-
-    # ---------------------------------------------------------------------------------- walk
 
     def run(self):
         self.walk(self.tu.cursor, None, None)
@@ -290,15 +293,14 @@ class Unit:
             self.enums[cursor.spelling] = cursor.enum_value
         elif kind in FUNCTIONS and cursor.is_definition():
             key = self.key(cursor)
-            self.defined[key] = [f"P:{cursor.get_usr()}#{i}" for i, _ in enumerate(cursor.get_arguments())]
+            self.defined[key] = len(list(cursor.get_arguments()))
             function = key
         elif kind == K.BINARY_OPERATOR:
             self.binary(cursor)
         elif kind == K.COMPOUND_ASSIGNMENT_OPERATOR:
             self.compound(cursor)
         elif kind == K.UNARY_OPERATOR:
-            op = self.unop(cursor)
-            if PRE_INC <= op <= ADDRESS_OF:
+            if PRE_INC <= self.unop(cursor) <= ADDRESS_OF:
                 inner = list(cursor.get_children())
                 if inner:
                     target = self.strip(inner[0])
@@ -319,13 +321,13 @@ class Unit:
             self.call(cursor)
         elif kind == K.DECL_REF_EXPR:
             decl = cursor.referenced
-            if decl is not None and decl.kind in FUNCTIONS and cursor.hash not in self._callees:
+            if decl is not None and decl.kind in FUNCTIONS and cursor.hash not in self.callees:
                 self.referenced.add(self.key(decl))
         elif kind == K.SWITCH_STMT:
             children = list(cursor.get_children())
-            deps = self.carrier(children[0]) if children else None
+            found = self.carrier(children[0]) if children else None
             for child in children:
-                self.walk(child, function, deps)
+                self.walk(child, function, found)
             return
         elif kind == K.CASE_STMT and switch is not None:
             children = list(cursor.get_children())
@@ -335,18 +337,27 @@ class Unit:
                 self.walk(child, function, switch)
             return
         for child in cursor.get_children():
-            self.walk(child, function, None if kind == K.SWITCH_STMT else switch)
-
-    _callees = set()
+            self.walk(child, function, switch)
 
     def write(self, key, value):
-        deps = self.carrier(value)
-        if deps is not None:
-            self.writes.append((key, deps))
-        elif self.site(value, frozenset([key]), True):
+        found = self.carrier(value)
+        if found is not None:
+            self.writes.append((key, found))
+        elif self.site(value, (None, frozenset([key]), False), True):
             self.writes.append((key, "literal"))
         else:
             self.writes.append((key, None))
+
+    def link(self, cursor, index):
+        """A variable that is stored into, masked with or compared with field `index` (through `~`)."""
+        K = self.ci.CursorKind
+        cursor = self.strip(cursor)
+        if cursor.kind == K.UNARY_OPERATOR and self.unop(cursor) == NOT:
+            cursor = self.strip(next(iter(cursor.get_children())))
+        if cursor.kind == K.DECL_REF_EXPR:
+            key = self.key(cursor.referenced)
+            if key and not key.startswith("F:"):
+                self.links.add((key, index))
 
     def binary(self, cursor):
         K = self.ci.CursorKind
@@ -355,22 +366,22 @@ class Unit:
         if len(children) != 2:
             return
         left, right = children
-        if op in (EQ, NE) or (self.flags and op in BIT_OPS):
+        if op in (EQ, NE) or op in BIT_OPS:
             for one, other in ((left, right), (right, left)):
-                deps = self.carrier(one)
-                if deps is not None:
-                    self.site(other, deps, op == OR)  # `==` binds tighter than `|`
+                found = self.carrier(one)
+                if found is None:
+                    continue
+                # `==` binds tighter than `|`: only an operand of `|` takes an OR without parentheses
+                if not self.site(other, found, op == OR, op in BIT_OPS) and found[0] is not None and not found[1]:
+                    self.link(other, found[0])
             return
         if op == ASSIGN:
             target = self.strip(left)
-            if self.field.matches(target.referenced if target.kind in (K.MEMBER_REF_EXPR, K.DECL_REF_EXPR)
-                                  else None):
-                if not self.site(right, frozenset(), True):
-                    value = self.strip(right)
-                    if value.kind == K.DECL_REF_EXPR:
-                        key = self.key(value.referenced)
-                        if key:
-                            self.links.add(key)
+            index = self.fields.match(target.referenced) if target.kind in (K.MEMBER_REF_EXPR, K.DECL_REF_EXPR) \
+                else None
+            if index is not None:
+                if not self.site(right, (index, frozenset(), False), True):
+                    self.link(right, index)
                 return
             if target.kind == K.DECL_REF_EXPR:
                 key = self.key(target.referenced)
@@ -386,13 +397,16 @@ class Unit:
         left, right = children
         target = self.strip(left)
         key = self.key(target.referenced) if target.kind == K.DECL_REF_EXPR else None
-        if not (self.flags and op in BIT_ASSIGNS):
+        if op not in BIT_ASSIGNS:
             if key:
                 self.bad.add(key)
             return
-        deps = self.carrier(left)
-        if deps is not None:
-            self.site(right, deps, True)
+        if key:
+            self.bit_assigned.add(key)
+        found = self.carrier(left)
+        if found is not None:
+            if not self.site(right, found, True, True) and found[0] is not None and not found[1]:
+                self.link(right, found[0])
         elif key:
             self.bad.add(key)
 
@@ -403,14 +417,33 @@ class Unit:
             return
         callee = self.strip(children[0])
         if callee.kind == K.DECL_REF_EXPR:
-            self._callees.add(callee.hash)
+            self.callees.add(callee.hash)
         decl = cursor.referenced
         if decl is None or decl.kind not in FUNCTIONS:
             return
-        key = self.key(decl)
-        self.calls.add(key)
+        self.calls.add(self.key(decl))
         for index, argument in enumerate(cursor.get_arguments()):
             self.write(f"P:{decl.get_usr()}#{index}", argument)
+
+    def facts(self, index, flags_mode):
+        """The plain facts for field `index` (the per-field form `carriers` and `plan` read)."""
+        def own(found):
+            return found is not None and found[0] in (index, None) and (flags_mode or not found[2])
+        sites = []
+        for (file, offset), (text, value, parens, founds) in self.sites.items():
+            deps = [sorted(f[1]) for f in founds if own(f) and (f[0] is not None or f[1])]
+            if deps:
+                sites.append((file, offset, text, value, parens, deps))
+        writes = []
+        for key, found in self.writes:
+            if found == "literal":
+                writes.append((key, "literal"))
+            else:
+                writes.append((key, sorted(found[1]) if own(found) else None))
+        bad = self.bad if flags_mode else self.bad | self.bit_assigned
+        return {"sites": sites, "writes": writes, "links": sorted(k for k, i in self.links if i == index),
+                "bad": sorted(bad), "calls": sorted(k for k in self.calls if k),
+                "referenced": sorted(k for k in self.referenced if k), "defined": self.defined, "enums": self.enums}
 
 
 CASTS = ()
@@ -425,27 +458,23 @@ def init_kinds():
     FUNCTIONS = (K.FUNCTION_DECL, K.CXX_METHOD)
 
 
-def collect(tu, field, flags_mode, root=ROOT):
-    """The facts of one translation unit, as plain data."""
+def collect(tu, specs, root=ROOT):
+    """The facts of one translation unit for every (field, flag set?) in `specs`, as plain data."""
     init_kinds()
     _typedefs.clear()
-    Unit._callees = set()
-    unit = Unit(tu, field, flags_mode, root).run()
-    return {
-        "sites": [(f, o, e[0], e[1], e[2], [sorted(d) for d in e[3]]) for (f, o), e in unit.sites.items()],
-        "writes": [(k, sorted(d) if isinstance(d, frozenset) else d) for k, d in unit.writes],
-        "links": sorted(unit.links), "bad": sorted(unit.bad), "calls": sorted(unit.calls),
-        "referenced": sorted(k for k in unit.referenced if k), "defined": unit.defined, "enums": unit.enums,
-    }
+    unit = Unit(tu, Fields([field for field, _ in specs]), root).run()
+    return [unit.facts(index, flags_mode) for index, (_, flags_mode) in enumerate(specs)]
 
 
 def _work(job):
-    unit, path, flags, debug, field, flags_mode = job
+    """One unit, parsed once (twice with the Debug flags), collected for every (field, flag set?)."""
+    unit, path, flags, debug, specs = job
     from tools import declscan  # noqa: PLC0415
-    results = []
+    results = [[] for _ in specs]
     for args in ([flags, declscan.debug_flags(flags)] if debug else [flags]):
         tu = declscan.parse(path, args)
-        results.append(collect(tu, Field(field), flags_mode))
+        for index, facts in enumerate(collect(tu, specs)):
+            results[index].append(facts)
     return unit, results
 
 
@@ -545,7 +574,7 @@ def spell(value, names, flags_mode, parens):
 def plan(facts, names, flags_mode):
     """Edits {file: [(offset, old, new)]} and the literal values that have no name."""
     keys = carriers(facts)
-    sites, unnamed = {}, collections.Counter()
+    sites, unnamed, unnamed_sites = {}, collections.Counter(), []
     for fact in facts:
         for file, offset, text, value, parens, deps_list in fact["sites"]:
             if not any(set(d) <= keys for d in deps_list):
@@ -556,16 +585,17 @@ def plan(facts, names, flags_mode):
     for (file, offset), (text, value, parens) in sorted(sites.items()):
         if text in names:
             continue
-        if flags_mode and value & 0xFFFFFFFF in (0, 0xFFFFFFFF):
+        if flags_mode and (value < 0 or value & 0xFFFFFFFF in (0, 0xFFFFFFFF)):
             continue  # no bit, or every bit: a test of the whole value
         if not flags_mode and value == 0 and value not in names.values():
             continue
         new = spell(value, names, flags_mode, parens)
         if new is None:
             unnamed[value] += 1
+            unnamed_sites.append((file, offset, text))
             continue
         edits[file].append((offset, text, new))
-    return edits, unnamed, keys
+    return edits, unnamed, keys, unnamed_sites
 
 
 def apply(edits, root=ROOT):
@@ -607,50 +637,71 @@ def line_of(file, offset, root=ROOT):
 
 def main(argv=None):
     parser = argparse.ArgumentParser(description=__doc__.split("\n\n")[0])
-    parser.add_argument("field", help="struct.member (tag or typedef name) or a global's name; several views of "
-                        "one value separated by commas (gameobject_s.flags_1fc,flags_1fc_word: the struct carries on)")
-    parser.add_argument("--names", required=True, help="comma-separated name prefixes of the values")
+    parser.add_argument("field", nargs="?", help="struct.member (tag or typedef name) or a global's name; several "
+                        "views of one value separated by commas (gameobject_s.flags_1fc,gameobject_s.flags_1fc_word)")
+    parser.add_argument("--names", help="comma-separated name prefixes of the values")
     parser.add_argument("--flags", action="store_true", help="a flag set (default: when every name is one bit)")
     parser.add_argument("--states", action="store_true", help="an enumeration")
+    parser.add_argument("--batch", help="file of `FIELD PREFIXES [flags|states]` lines, all in one parse of the tree")
     parser.add_argument("--dry-run", action="store_true", help="list the edits, change nothing")
     parser.add_argument("--unnamed", action="store_true", help="also list the sites of values without a name")
     parser.add_argument("--jobs", type=int, default=None)
-    parser.add_argument("paths", nargs="*", help="limit the units parsed (prefixes under src/)")
+    parser.add_argument("--paths", nargs="*", default=[], help="limit the units parsed (prefixes under src/)")
     args = parser.parse_args(argv)
     from tools import castscan, declscan  # noqa: PLC0415
-    prefixes = args.names.split(",")
+    specs = []
+    if args.batch:
+        for line in Path(args.batch).read_text().splitlines():
+            words = line.split("#")[0].split()
+            if words:
+                specs.append((words[0], words[1].split(","), words[2] if len(words) > 2 else ""))
+    if args.field:
+        if not args.names:
+            parser.error("--names is required with a field")
+        specs.append((args.field, args.names.split(","), "flags" if args.flags else "states" if args.states else ""))
+    if not specs:
+        parser.error("give a field and --names, or --batch")
+    modes = []
+    for field, prefixes, mode in specs:
+        names = name_table(prefixes, {})
+        modes.append(mode == "flags" or (mode != "states" and bool(names) and all(is_single_bit(v) for v in names.values())))
     base = declscan.base_flags()
-    names = name_table(prefixes, {})
-    flags_mode = args.flags or (not args.states and names and all(is_single_bit(v) for v in names.values()))
+    work = [(field, flags_mode) for (field, _, _), flags_mode in zip(specs, modes)]
     jobs = [(u, str(ROOT / u), declscan.unit_flags(u, base),
-             castscan.needs_debug((ROOT / u).read_bytes().decode("latin-1")), args.field, bool(flags_mode))
-            for u in units(args.paths)]
-    facts = []
+             castscan.needs_debug((ROOT / u).read_bytes().decode("latin-1")), work) for u in units(args.paths)]
+    facts = [[] for _ in specs]
     with ScanLock(), multiprocessing.Pool(max(1, clang_jobs(args.jobs))) as pool:
         for done, (_, results) in enumerate(pool.imap_unordered(_work, jobs), 1):
-            facts.extend(results)
+            for index, result in enumerate(results):
+                facts[index].extend(result)
             if done % 50 == 0:
                 print(f"magicnames: {done}/{len(jobs)}", file=sys.stderr)
     enums = {}
-    for fact in facts:
+    for fact in facts[0]:
         enums.update(fact["enums"])
-    names = name_table(prefixes, enums)
-    if not names:
-        raise SystemExit(f"no names start with {args.names}")
-    edits, unnamed, keys = plan(facts, names, flags_mode)
-    total = sum(len(v) for v in edits.values())
-    if args.dry_run:
-        for key in sorted(keys):
-            print(f"carrier {key}")
-    for file, changes in sorted(edits.items()):
-        for offset, old, new in sorted(changes):
-            if args.dry_run:
-                print(f"{file}:{line_of(file, offset)}: {old} -> {new}")
-    print(f"magicnames: {args.field}: {total} literals named in {len(edits)} files; "
-          f"{len(keys)} carrier locals/parameters/results; "
-          f"unnamed values: {', '.join(f'{hex(v) if flags_mode else v} x{n}' for v, n in sorted(unnamed.items())) or 'none'}")
+    all_edits = collections.defaultdict(list)
+    for (field, prefixes, _), flags_mode, field_facts in zip(specs, modes, facts):
+        names = name_table(prefixes, enums)
+        if not names:
+            raise SystemExit(f"no names start with {','.join(prefixes)}")
+        edits, unnamed, keys, unnamed_sites = plan(field_facts, names, flags_mode)
+        total = sum(len(v) for v in edits.values())
+        if args.dry_run:
+            for key in sorted(keys):
+                print(f"carrier {key}")
+            for file, changes in sorted(edits.items()):
+                for offset, old, new in sorted(changes):
+                    print(f"{file}:{line_of(file, offset)}: {old} -> {new}")
+        if args.unnamed:
+            for file, offset, text in sorted(unnamed_sites):
+                print(f"unnamed {file}:{line_of(file, offset)}: {text}")
+        values = ", ".join(f"{hex(v) if flags_mode else v} x{n}" for v, n in sorted(unnamed.items())) or "none"
+        print(f"magicnames: {field}: {total} literals named in {len(edits)} files; {len(keys)} carrier "
+              f"locals/parameters/results; unnamed values: {values}")
+        for file, changes in edits.items():
+            all_edits[file].extend(changes)
     if not args.dry_run:
-        apply(edits)
+        apply(all_edits)
     return 0
 
 

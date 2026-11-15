@@ -706,6 +706,11 @@ typedef struct levelspline_s { // size 0x10
     i16 area;                  // 0xe
 } LEVELSPLINE_PC;
 
+/* nuinstanim_s.flags: the animation editor's control modes start (0x1) and loop (0x8) instance animations, and the
+ * game animation sets copy their `repeating` setting into 0x8. */
+#define NUINSTANIM_FLAG_PLAYING 0x1
+#define NUINSTANIM_FLAG_REPEATING 0x8
+
 typedef struct nuinstanim_s { // size 0x60
     NUMTX matrix;             // 0x00
     f32 tfactor;              // 0x40

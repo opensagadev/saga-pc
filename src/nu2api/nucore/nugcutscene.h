@@ -28,6 +28,15 @@ struct NUHGOBJ_EVAL;
 struct cut_load_locator_instance_s;
 struct nuhspecial_s;
 
+/* instnugcutscene_s.flags_88 (and the cut scene instance views): what instNuGCutSceneStart, End, the
+ * instNuGCutSceneSet* transforms and instNuGCutSceneClipTest set and test. */
+#define NUGCUTSCENE_INST_PLAYING 0x2       /* set by Start, cleared by End */
+#define NUGCUTSCENE_INST_OWN_MATRIX 0x80   /* set by every SetTranslation/Rotate call: draw and clip with the instance matrix */
+#define NUGCUTSCENE_INST_CLIP_BOUNDS 0x100 /* ClipTest tests the scene bounds */
+#define NUGCUTSCENE_INST_CLIP_RADIUS 0x200 /* ClipTest tests the camera distance */
+#define NUGCUTSCENE_INST_VISIBLE 0x400     /* ClipTest's result */
+#define NUGCUTSCENE_INST_ENDED 0x1000      /* set by End, cleared by Start and Reset */
+
 typedef struct instnugcutscene_s {              // size 0xf8
     struct instnugcutscene_s *next;             // 0x00
     struct instnugcutscene_s *previous;         // 0x04

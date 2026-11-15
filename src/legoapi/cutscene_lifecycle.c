@@ -206,7 +206,7 @@ static void CutSceneEndRigidsPC(INSTNUGCUTSCENE *owner, f32 frame) {
                 continue;
             }
             NuGCutRigidCalcMtx(&source->generic, frame, &matrix);
-            if ((instance->flags_88 & 0x80) != 0) {
+            if ((instance->flags_88 & NUGCUTSCENE_INST_OWN_MATRIX) != 0) {
                 NuMtxMul(&matrix, &matrix, &instance->matrix);
             }
             NuSpecialSetDrawMtx(&object->special, &matrix);
@@ -229,7 +229,7 @@ i32 instNuGCutGetNextRigidInfo(INSTNUGCUTSCENE *owner, f32 frame, i32 index, NUM
     object = &instance->rigid_instance->rigids[index];
     if ((rigid->flags & 6) != 0) {
         NuGCutRigidCalcMtx(&rigid->generic, frame, matrix);
-        if ((instance->flags_88 & 0x80) != 0) {
+        if ((instance->flags_88 & NUGCUTSCENE_INST_OWN_MATRIX) != 0) {
             NuMtxMul(matrix, matrix, &instance->matrix);
         }
         *special = object->special;
@@ -348,7 +348,7 @@ void instNuGCutSceneEnd(INSTNUGCUTSCENE *owner) {
     CUT_SCENE_LIFECYCLE *scene = instance->scene;
     instNuGCutSceneEndButNotSystems(owner);
     instance->current_frame = scene->duration;
-    instance->flags_88 = (instance->flags_88 & ~2U) | 0x1000;
+    instance->flags_88 = (instance->flags_88 & ~NUGCUTSCENE_INST_PLAYING) | NUGCUTSCENE_INST_ENDED;
     instance->flags_8c &= ~0x40U;
     ForcePlayEndFrame = 1;
     if ((instance->flags_88 & 0x40000) != 0) {
@@ -378,7 +378,7 @@ void instNuGCutSceneEnd(INSTNUGCUTSCENE *owner) {
 void instNuGCutSceneDestroy(INSTNUGCUTSCENE *owner) {
     CUT_INSTANCE_LIFECYCLE_PC *instance = (CUT_INSTANCE_LIFECYCLE_PC *)owner;
     instance->scene = instance->saved_scene;
-    if ((instance->flags_88 & 2) != 0) {
+    if ((instance->flags_88 & NUGCUTSCENE_INST_PLAYING) != 0) {
         instNuGCutSceneEnd(owner);
     }
     if (instance->character_instance != NULL) {
@@ -1214,7 +1214,7 @@ void instNuGCutSceneEndFirstFrame(INSTNUGCUTSCENE *owner) {
     CUT_SCENE_LIFECYCLE *scene = instance->scene;
     instance->current_frame = 1.0f;
     instance->render_frame = 1.0f;
-    instance->flags_88 &= ~0x1002U;
+    instance->flags_88 &= ~(NUGCUTSCENE_INST_PLAYING | NUGCUTSCENE_INST_ENDED);
     instance->flags_8c &= ~0x40U;
     if ((instance->flags_88 & 0x40000) != 0) {
         if (scene->rigid_system != NULL) {
@@ -1242,7 +1242,7 @@ void instNuGCutSceneEndFirstFrame(INSTNUGCUTSCENE *owner) {
 /* Jumps an instance to its last frame and settles the rigid and locator systems there. */
 static void CutSceneJumpToEnd(CUT_INSTANCE_LIFECYCLE_PC *instance, u16 flag) {
     CUT_SCENE_LIFECYCLE *scene;
-    u32 flags = (instance->flags_88 & ~2U) | ((flag & 1) << 1) | 0x1001;
+    u32 flags = (instance->flags_88 & ~NUGCUTSCENE_INST_PLAYING) | ((flag & 1) << 1) | 0x1001;
     scene = instance->scene;
     instance->current_frame = scene->duration;
     instance->flags_88 = flags;
@@ -1277,15 +1277,15 @@ void instNuGCutSceneJumpToEndFlagged(INSTNUGCUTSCENE *owner) {
 
 void instNuGCutSceneSetTranslation(INSTNUGCUTSCENE *owner, NUVEC *translation) {
     CUT_INSTANCE_LOAD_PC *instance = (CUT_INSTANCE_LOAD_PC *)owner;
-    instance->flags_88 |= 0x80;
+    instance->flags_88 |= NUGCUTSCENE_INST_OWN_MATRIX;
     NuMtxSetTranslation(&instance->matrix, translation);
     NuGCutSceneUpdateMtx(instance, &instance->matrix);
 }
 
 void instNuGCutSceneTranslate(INSTNUGCUTSCENE *owner, NUVEC *translation) {
     CUT_INSTANCE_LOAD_PC *instance = (CUT_INSTANCE_LOAD_PC *)owner;
-    if ((instance->flags_88 & 0x80) == 0) {
-        instance->flags_88 |= 0x80;
+    if ((instance->flags_88 & NUGCUTSCENE_INST_OWN_MATRIX) == 0) {
+        instance->flags_88 |= NUGCUTSCENE_INST_OWN_MATRIX;
         NuMtxSetIdentity(&instance->matrix);
     }
     NuMtxTranslate(&instance->matrix, translation);
@@ -1294,14 +1294,14 @@ void instNuGCutSceneTranslate(INSTNUGCUTSCENE *owner, NUVEC *translation) {
 
 void instNuGCutSceneSetMtx(INSTNUGCUTSCENE *owner, NUMTX *mtx) {
     CUT_INSTANCE_LOAD_PC *instance = (CUT_INSTANCE_LOAD_PC *)owner;
-    instance->flags_88 |= 0x80;
+    instance->flags_88 |= NUGCUTSCENE_INST_OWN_MATRIX;
     instance->matrix = *mtx;
     NuGCutSceneUpdateMtx(instance, &instance->matrix);
 }
 
 void instNuGCutSceneRotateY(INSTNUGCUTSCENE *owner, NUANG angle) {
     CUT_INSTANCE_LOAD_PC *instance = (CUT_INSTANCE_LOAD_PC *)owner;
-    instance->flags_88 |= 0x80;
+    instance->flags_88 |= NUGCUTSCENE_INST_OWN_MATRIX;
     NuMtxRotateY(&instance->matrix, angle);
     NuGCutSceneUpdateMtx(instance, &instance->matrix);
 }
@@ -1327,7 +1327,7 @@ static void CutSceneRigidSysRender(INSTNUGCUTSCENE *owner, f32 frame, i32 paused
             continue;
         }
         NuGCutRigidCalcMtx((CUT_RIGID_GENERIC *)rigid, frame, &matrix);
-        if ((instance->flags_88 & 0x80) != 0) {
+        if ((instance->flags_88 & NUGCUTSCENE_INST_OWN_MATRIX) != 0) {
             NuMtxMul(&matrix, &matrix, &instance->matrix);
         }
         if (instance->alpha == 1.0f) {
@@ -1361,7 +1361,7 @@ static void CutSceneLocatorSysUpdate(INSTNUGCUTSCENE *owner, f32 frame, i32 paus
     for (i = 0; i < system->count; ++i) {
         CUT_LOAD_LOCATOR *locator = &system->locators[i];
         if ((locator->flags & 3) == 0) {
-            if ((instance->flags_88 & 0x80) != 0) {
+            if ((instance->flags_88 & NUGCUTSCENE_INST_OWN_MATRIX) != 0) {
                 instNuGCutLocatorUpdate(owner, system, &states->locators[i], locator, frame, &instance->matrix, paused);
             } else {
                 instNuGCutLocatorUpdate(owner, system, &states->locators[i], locator, frame, NULL, paused);
@@ -1388,7 +1388,9 @@ static void CutSceneCharacterSysRender(INSTNUGCUTSCENE *owner, f32 frame, i32 pa
 
 static void CutSceneInstanceRender(CUT_INSTANCE_LOAD_PC *instance, i32 paused) {
     INSTNUGCUTSCENE *owner = (INSTNUGCUTSCENE *)instance;
-    if ((instance->flags_88 & 0x800) != 0 || (instance->flags_88 & 2) == 0 || (instance->flags_88 & 0x400) == 0) {
+
+    if ((instance->flags_88 & 0x800) != 0 || (instance->flags_88 & NUGCUTSCENE_INST_PLAYING) == 0 ||
+        (instance->flags_88 & NUGCUTSCENE_INST_VISIBLE) == 0) {
         return;
     }
     if ((instance->flags_88 & 0x40000) != 0) {
@@ -1533,7 +1535,7 @@ static void CutSceneCameraSysUpdate(INSTNUGCUTSCENE *owner, f32 frame) {
                     if ((locator->flags & 4) != 0) {
                         NuMtxPreTranslate(&focus_matrix, &locator->pivot);
                     }
-                    if ((instance->flags_88 & 0x80) != 0) {
+                    if ((instance->flags_88 & NUGCUTSCENE_INST_OWN_MATRIX) != 0) {
                         NuMtxMul(&focus_matrix, &focus_matrix, &instance->matrix);
                     }
                     NuMtxGetTranslation(&focus_matrix, &CutSceneFocusLocation);
@@ -1548,7 +1550,7 @@ static void CutSceneCameraSysUpdate(INSTNUGCUTSCENE *owner, f32 frame) {
             ((void (*)(void))CutSceneLoadDiagnostic)();
         }
     }
-    if ((instance->flags_88 & 0x80) != 0) {
+    if ((instance->flags_88 & NUGCUTSCENE_INST_OWN_MATRIX) != 0) {
         NuMtxMul(&CutSceneCameraMatrix, &CutSceneCameraMatrix, &instance->matrix);
     }
     CutSceneCameraMatrixSet = 1;
@@ -1606,7 +1608,7 @@ static void CutSceneRigidSysUpdate(INSTNUGCUTSCENE *owner, f32 frame, i32 paused
             continue;
         }
         NuGCutRigidCalcMtx((CUT_RIGID_GENERIC *)rigid, frame, &matrix);
-        if ((instance->flags_88 & 0x80) != 0) {
+        if ((instance->flags_88 & NUGCUTSCENE_INST_OWN_MATRIX) != 0) {
             NuMtxMul(&matrix, &matrix, &instance->matrix);
         }
         NuSpecialSetDrawMtx(&object->special, &matrix);
@@ -1691,7 +1693,7 @@ void instNuGCutSceneStart(INSTNUGCUTSCENE *owner) {
     instance->current_frame = 1.0f;
     instance->render_frame = 1.0f;
     instance->flags_8c &= ~0x1000U;
-    instance->flags_88 = (instance->flags_88 & ~0x1001U) | 2;
+    instance->flags_88 = (instance->flags_88 & ~0x1001U) | NUGCUTSCENE_INST_PLAYING;
     if (instance->rate < 0.0f) {
         instance->rate = -instance->rate;
     }
@@ -1971,27 +1973,27 @@ void CutSceneSwapStreamAsset(CUT_INSTANCE_LOAD_PC *instance) {
 
 static void instNuGCutSceneClipTest(CUT_INSTANCE_LOAD_PC *instance) {
     CUT_SCENE_LOAD_PC *scene = instance->scene;
-    instance->flags_88 |= 0x400;
+    instance->flags_88 |= NUGCUTSCENE_INST_VISIBLE;
     if (scene->bounds == NULL) {
         return;
     }
-    if ((instance->flags_88 & 0x200) != 0) {
+    if ((instance->flags_88 & NUGCUTSCENE_INST_CLIP_RADIUS) != 0) {
         f32 distance = NuCameraDistSqr(&instance->center);
         if (distance > instance->radius_squared) {
-            instance->flags_88 &= ~0x400U;
+            instance->flags_88 &= ~NUGCUTSCENE_INST_VISIBLE;
             return;
         }
     }
-    if ((instance->flags_88 & 0x100) != 0) {
+    if ((instance->flags_88 & NUGCUTSCENE_INST_CLIP_BOUNDS) != 0) {
         CUT_LOAD_BOUNDS *bounds = scene->bounds;
         i32 visible;
-        if ((instance->flags_88 & 0x80) != 0) {
+        if ((instance->flags_88 & NUGCUTSCENE_INST_OWN_MATRIX) != 0) {
             visible = NuCameraClipTestExtents(&bounds->min, &bounds->max, &instance->matrix, 0.0f, 0);
         } else {
             visible = NuCameraClipTestExtents(&bounds->min, &bounds->max, &NuMtxSetIdentityTemplate, 0.0f, 0);
         }
         if (visible == 0) {
-            instance->flags_88 &= ~0x400U;
+            instance->flags_88 &= ~NUGCUTSCENE_INST_VISIBLE;
         }
     }
 }
@@ -2112,7 +2114,7 @@ static void instNuGCutSceneUpdate(CUT_INSTANCE_LOAD_PC *instance, i32 paused, i3
         instance->flags_88 |= 0x40000000;
         paused = 1;
     }
-    if ((instance->flags_88 & 2) == 0) {
+    if ((instance->flags_88 & NUGCUTSCENE_INST_PLAYING) == 0) {
         if ((instance->flags_88 & 1) != 0 || (instance->flags_88 & 0x40) == 0) {
             return;
         }
@@ -2132,7 +2134,7 @@ static void instNuGCutSceneUpdate(CUT_INSTANCE_LOAD_PC *instance, i32 paused, i3
         }
     }
     instNuGCutSceneClipTest(instance);
-    if ((instance->flags_88 & 0x400) == 0) {
+    if ((instance->flags_88 & NUGCUTSCENE_INST_VISIBLE) == 0) {
         return;
     }
     if ((instance->flags_88 & 4) != 0) {
@@ -2204,7 +2206,7 @@ static void instNuGCutSceneUpdate(CUT_INSTANCE_LOAD_PC *instance, i32 paused, i3
                 if (current->version >= 2 && (current->flags & 1) != 0) {
                     if (instance->stream_index >= (u8)instance->saved_scene->unknown_40) {
                         if ((instance->flags_8c & 0x40) != 0) {
-                            instance->flags_88 |= 0x1000;
+                            instance->flags_88 |= NUGCUTSCENE_INST_ENDED;
                             instance->current_frame = ((f64)scene->duration - 1.0);
                         } else {
                             instNuGCutSceneEnd((INSTNUGCUTSCENE *)instance);
@@ -2251,7 +2253,7 @@ static void instNuGCutSceneUpdate(CUT_INSTANCE_LOAD_PC *instance, i32 paused, i3
                         instance->rate = -instance->rate;
                     }
                 } else if ((instance->flags_8c & 0x40) != 0) {
-                    instance->flags_88 |= 0x1000;
+                    instance->flags_88 |= NUGCUTSCENE_INST_ENDED;
                     instance->current_frame = ((f64)scene->duration - 1.0);
                 } else {
                     if (instance->end_callback != NULL) {
@@ -2300,7 +2302,7 @@ static void instNuGCutSceneUpdate(CUT_INSTANCE_LOAD_PC *instance, i32 paused, i3
     } else if (paused == 0) {
         instance->flags_88 |= 1;
     }
-    if ((instance->flags_88 & 2) == 0) {
+    if ((instance->flags_88 & NUGCUTSCENE_INST_PLAYING) == 0) {
         return;
     }
     instance->render_frame = instance->current_frame;
@@ -2602,7 +2604,7 @@ i32 instNuGCutSceneCharGetStartMtx(INSTNUGCUTSCENE *owner, char *name, NUMTX *ou
 
 void instNuGCutScenePlay(INSTNUGCUTSCENE *owner, i32 forward) {
     CUT_INSTANCE_LOAD_PC *instance = (CUT_INSTANCE_LOAD_PC *)owner;
-    if ((instance->flags_88 & 2) != 0) {
+    if ((instance->flags_88 & NUGCUTSCENE_INST_PLAYING) != 0) {
         if (forward != 0) {
             if (instance->rate < 0.0f) {
                 instance->rate = -instance->rate;
@@ -2610,9 +2612,9 @@ void instNuGCutScenePlay(INSTNUGCUTSCENE *owner, i32 forward) {
         } else if (instance->rate > 0.0f) {
             instance->rate = -instance->rate;
         }
-    } else if ((instance->flags_88 & 0x1000) != 0) {
+    } else if ((instance->flags_88 & NUGCUTSCENE_INST_ENDED) != 0) {
         if (forward == 0) {
-            instance->flags_88 = (instance->flags_88 & ~0x1000) | 2;
+            instance->flags_88 = (instance->flags_88 & ~NUGCUTSCENE_INST_ENDED) | NUGCUTSCENE_INST_PLAYING;
             instance->current_frame = (f32)(instance->scene->duration - 1.0);
             if (instance->rate > 0.0f) {
                 instance->rate = -instance->rate;

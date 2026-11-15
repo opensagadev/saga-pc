@@ -160,6 +160,14 @@ extern "C" {
 #define APIOBJECT_FLAG_CAN_FIRE 0x200     /* copy of CHARACTER_MODEL_CAN_FIRE for an active player */
 #define APIOBJECT_FLAG_CHARACTER 0x1000
 
+/* gameobject_s.flags_1f8: the SetSide AI action (neutral, baddie, goodiebaddie; goodie sets none; default takes the
+ * creature's CHARACTER_MODEL_NEUTRAL or _BADDIE), the NoShadows action, and creatures made by AddCreature. */
+#define APIOBJECT_SIDE_BADDIE 0x1
+#define APIOBJECT_SIDE_NEUTRAL 0x4
+#define APIOBJECT_CREATURE 0x400
+#define APIOBJECT_NO_SHADOWS 0x2000
+#define APIOBJECT_SIDE_GOODIE_BADDIE 0x10000
+
 /* gameobject_s.character_context: the index into CInfo (PCContextInfoTable[1 + context]), whose rows name them. */
 #define CHARACTER_CONTEXT_NONE (-1)
 #define CHARACTER_CONTEXT_JUMP 0

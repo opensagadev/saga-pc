@@ -249,7 +249,7 @@ void SecurityDoors_Draw(WORLDINFO *world, void *unused, f32 delta_time) {
             NuMtxRotateX(&matrix, door->terrain_angle_z);
         }
         NuMtxTranslate(&matrix, &door->player_position);
-        if (FindNearestPlayerToVec(&door->position, &nearest_player, &distance, 1, 0x2000000)) {
+        if (FindNearestPlayerToVec(&door->position, &nearest_player, &distance, 1, CHARACTER_RUNTIME_BYPASS_SECURITY)) {
             f64 phase = (f64)distance / 6.0 < 1.0 ? (f64)distance / 6.0 : 1.0;
             f32 alpha;
             alpha = (f64)pulse - (f64)NuTrigTable[((i32)(phase * 16384.0 + 49152.0 + 16384.0) >> 1) & 0x7fff];
@@ -433,7 +433,7 @@ void SecurityDoor_MoveCode(WORLDINFO *world, GAMEOBJECT *object) {
         }
         return;
     }
-    if ((object->character_data->game_character->flags_090 & 0x2000000) == 0 ||
+    if ((object->character_data->game_character->flags_090 & CHARACTER_RUNTIME_BYPASS_SECURITY) == 0 ||
         (object->flags_1fc_word & APIOBJECT_FLAG_PLAYER_ACTIVE) == 0 || object->unknown_281 == 0 || ObjLandReady(object) == 0) {
         return;
     }

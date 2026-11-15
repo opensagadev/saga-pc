@@ -1162,7 +1162,7 @@ extern "C" {
         } else {
             GameAnimSet_SetVisibility(buildit->anim_set, 1);
             for (i = restored_count; i < buildit->anim_object_count; ++i) {
-                buildit->anim_objects[i]->instance_animation->flags &= ~1u;
+                buildit->anim_objects[i]->instance_animation->flags &= ~NUINSTANIM_FLAG_PLAYING;
                 buildit->anim_objects[i]->instance_animation->ltime = buildit->anim_objects[i]->start_frame;
             }
             buildit->reset_step_timer = buildit->reset_step_duration = 0.3f;
@@ -1494,7 +1494,7 @@ extern "C" {
                         } else {
                             NuSpecialSetVisibility(&piece->special, 1);
                             if (piece->instance_animation != NULL) {
-                                piece->instance_animation->flags &= ~1u;
+                                piece->instance_animation->flags &= ~NUINSTANIM_FLAG_PLAYING;
                                 piece->instance_animation->ltime = piece->end_frame;
                                 EvalAnim2(&piece->special, piece->instance_animation->ltime);
                             }
@@ -1534,7 +1534,7 @@ extern "C" {
                             GameAudio_PlaySfx(0x3b, (NUVEC *)&data->draw_mtx.m30, 0, 0);
                         } else {
                             NuSpecialSetVisibility(&piece->special, 1);
-                            piece->instance_animation->flags &= ~1u;
+                            piece->instance_animation->flags &= ~NUINSTANIM_FLAG_PLAYING;
                             piece->instance_animation->ltime = piece->end_frame;
                             EvalAnim2(&piece->special, piece->instance_animation->ltime);
                             GameAudio_PlaySfx(0x3b, NuSpecialGetDrawPos(&piece->special), 0, 0);

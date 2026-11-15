@@ -318,7 +318,7 @@ static i32 PartyMemberInWay(GAMEOBJECT *object, GAMEOBJECT *opponent) {
     f32 radius_squared;
     i32 index;
     GAMEOBJECT *member;
-    if ((object->flags_1f8 & 5u) != 0) {
+    if ((object->flags_1f8 & (APIOBJECT_SIDE_BADDIE | APIOBJECT_SIDE_NEUTRAL)) != 0) {
         return 0;
     }
     target_distance = NuVecDistSqr(&opponent->collision_position, &object->collision_position, &difference);
@@ -798,28 +798,29 @@ f32 Condition_CanFightLikeAJedi(AISYS_PC *system, AISCRIPTPROCESS *process, AIPA
 }
 
 f32 Condition_IAmAGoody(AISYS_PC *system, AISCRIPTPROCESS *process, AIPACKET *packet, char *name, void *argument) {
-    if (packet != NULL && packet->owner != NULL && (packet->owner->flags_1f8 & 5) == 0) {
+    if (packet != NULL && packet->owner != NULL && (packet->owner->flags_1f8 & (APIOBJECT_SIDE_BADDIE | APIOBJECT_SIDE_NEUTRAL)) == 0) {
         return 1.0f;
     }
     return 0.0f;
 }
 
 f32 Condition_IAmABaddy(AISYS_PC *system, AISCRIPTPROCESS *process, AIPACKET *packet, char *name, void *argument) {
-    if (packet != NULL && packet->owner != NULL && (packet->owner->flags_1f8 & 0x10001) != 0) {
+    if (packet != NULL && packet->owner != NULL &&
+        (packet->owner->flags_1f8 & (APIOBJECT_SIDE_BADDIE | APIOBJECT_SIDE_GOODIE_BADDIE)) != 0) {
         return 1.0f;
     }
     return 0.0f;
 }
 
 f32 Condition_IAmANeutral(AISYS_PC *system, AISCRIPTPROCESS *process, AIPACKET *packet, char *name, void *argument) {
-    if (packet != NULL && packet->owner != NULL && (packet->owner->flags_1f8 & 4) != 0) {
+    if (packet != NULL && packet->owner != NULL && (packet->owner->flags_1f8 & APIOBJECT_SIDE_NEUTRAL) != 0) {
         return 1.0f;
     }
     return 0.0f;
 }
 
 f32 Condition_IAmAGoodieBaddie(AISYS_PC *system, AISCRIPTPROCESS *process, AIPACKET *packet, char *name, void *argument) {
-    if (packet != NULL && packet->owner != NULL && (packet->owner->flags_1f8 & 0x10000) != 0) {
+    if (packet != NULL && packet->owner != NULL && (packet->owner->flags_1f8 & APIOBJECT_SIDE_GOODIE_BADDIE) != 0) {
         return 1.0f;
     }
     return 0.0f;
@@ -1649,7 +1650,7 @@ f32 Condition_NumBaddies(AISYS_PC *system, AISCRIPTPROCESS *process, AIPACKET *p
     GAMEOBJECT *object = Obj;
     for (index = 0; index < HIGHGAMEOBJECT; index++, object++) {
         if ((object->flags_1fc_word & APIOBJECT_FLAG_IN_USE) && (object->flags_1fc_word & APIOBJECT_FLAG_CHARACTER) &&
-            (object->flags_1f8 & 1)) {
+            (object->flags_1f8 & APIOBJECT_SIDE_BADDIE)) {
             count++;
         }
     }
@@ -1763,7 +1764,7 @@ f32 Condition_AnimationFinished(AISYS_PC *system, AISCRIPTPROCESS *process, AIPA
     NUINSTANIM *instance = argument;
     void *animation;
     f64 time;
-    if (instance != NULL && (instance->flags & 1) == 0) {
+    if (instance != NULL && (instance->flags & NUINSTANIM_FLAG_PLAYING) == 0) {
         animation = WORLD->current_gscn->instance_animation_data[instance->animation_index];
         if (animation != NULL) {
             time = instance->ltime;
@@ -2442,7 +2443,7 @@ f32 Condition_EmptyTakeOver(AISYS_PC *system, AISCRIPTPROCESS *process, AIPACKET
         for (index = 0; index < HIGHGAMEOBJECT; ++index) {
             object = &Obj[index];
             if ((object->flags_1fc_word & APIOBJECT_FLAG_IN_USE) != 0 && (object->flags_1fc_word & APIOBJECT_FLAG_CHARACTER) != 0 &&
-                (object->flags_1f8 & 0x400) != 0 && (i16)object->id == character) {
+                (object->flags_1f8 & APIOBJECT_CREATURE) != 0 && (i16)object->id == character) {
                 if (object->takeover_target == NULL || object->takeover_source == NULL ||
                     object->takeover_source->character_context != CHARACTER_CONTEXT_BEEN_TAKEN_OVER) {
                     return 1.0f;
@@ -2520,19 +2521,19 @@ f32 Condition_Side(AISYS_PC *system, AISCRIPTPROCESS *process, AIPACKET *packet,
     }
     side = (i32)argument;
     if (side == 2) {
-        if ((packet->owner->flags_1f8 & 0x10000) != 0) {
+        if ((packet->owner->flags_1f8 & APIOBJECT_SIDE_GOODIE_BADDIE) != 0) {
             return 1.0f;
         }
     } else if (side == 1) {
-        if ((packet->owner->flags_1f8 & 5) == 0) {
+        if ((packet->owner->flags_1f8 & (APIOBJECT_SIDE_BADDIE | APIOBJECT_SIDE_NEUTRAL)) == 0) {
             return 1.0f;
         }
     } else if (side == -1) {
-        if ((packet->owner->flags_1f8 & 1) != 0) {
+        if ((packet->owner->flags_1f8 & APIOBJECT_SIDE_BADDIE) != 0) {
             return 1.0f;
         }
     } else if (side == 0) {
-        if ((packet->owner->flags_1f8 & 4) != 0) {
+        if ((packet->owner->flags_1f8 & APIOBJECT_SIDE_NEUTRAL) != 0) {
             return 1.0f;
         }
     }
@@ -2881,8 +2882,9 @@ i32 Action_SetTakeOverTarget(AISYS_PC *system, AISCRIPTPROCESS *processor, AIPAC
             object->takeover_target = NULL;
             return 1;
         }
-        if (check_takeover && (target->takeover_source != NULL || !(target->character_data->game_character->flags_090 & 0x40) ||
-                               (object->character_data->model_flags & CHARACTER_MODEL_DROID))) {
+        if (check_takeover &&
+            (target->takeover_source != NULL || !(target->character_data->game_character->flags_090 & CHARACTER_RUNTIME_CAN_TAKE_OVER) ||
+             (object->character_data->model_flags & CHARACTER_MODEL_DROID))) {
             return 1;
         }
         previous = object->takeover_target;
@@ -3218,35 +3220,35 @@ i32 Action_SetSide(AISYS_PC *sys, AISCRIPTPROCESS *processor, AIPACKET *packet, 
 
         if (type_count <= 0 && !(range_squared > 0.0f)) {
             if (object != NULL) {
-                old_side = object->flags_1f8 & 0x10005;
+                old_side = object->flags_1f8 & (APIOBJECT_SIDE_BADDIE | APIOBJECT_SIDE_NEUTRAL | APIOBJECT_SIDE_GOODIE_BADDIE);
                 object->flags_1f8 &= 0xfffefffau;
                 switch (side) {
                     case 0:
-                        object->flags_1f8 |= 4;
+                        object->flags_1f8 |= APIOBJECT_SIDE_NEUTRAL;
                         break;
                     case 1:
-                        object->flags_1f8 |= 1;
+                        object->flags_1f8 |= APIOBJECT_SIDE_BADDIE;
                         break;
                     case 2:
-                        object->flags_1f8 |= 0x10000;
+                        object->flags_1f8 |= APIOBJECT_SIDE_GOODIE_BADDIE;
                         break;
                     case 3:
-                        if ((object->flags_1f8 & 0x400u) != 0 && object->ai_packet.creature_index != 0xff) {
+                        if ((object->flags_1f8 & APIOBJECT_CREATURE) != 0 && object->ai_packet.creature_index != 0xff) {
                             creature = sys->creatures + object->ai_packet.creature_index;
                             model_flags = apicharsys->char_data[creature->type].model_flags;
                             if ((model_flags & 0x200) != 0) {
-                                object->flags_1f8 |= 4;
+                                object->flags_1f8 |= APIOBJECT_SIDE_NEUTRAL;
                             } else if ((model_flags & 4) != 0) {
-                                object->flags_1f8 |= 1;
+                                object->flags_1f8 |= APIOBJECT_SIDE_BADDIE;
                             }
                         }
                         break;
                 }
 
                 object->ai_packet.capabilities &= ~(LEGO_AIPATHCNX_FORBADDIES | LEGO_AIPATHCNX_FORGOODIES);
-                if ((object->flags_1f8 & 1) != 0) {
+                if ((object->flags_1f8 & APIOBJECT_SIDE_BADDIE) != 0) {
                     object->ai_packet.capabilities |= LEGO_AIPATHCNX_FORBADDIES;
-                } else if ((object->flags_1f8 & 4) == 0) {
+                } else if ((object->flags_1f8 & APIOBJECT_SIDE_NEUTRAL) == 0) {
                     object->ai_packet.capabilities |= LEGO_AIPATHCNX_FORGOODIES;
                 }
 
@@ -3262,7 +3264,7 @@ i32 Action_SetSide(AISYS_PC *sys, AISCRIPTPROCESS *processor, AIPACKET *packet, 
                 candidate = &Obj[index];
                 type_matches = 0;
                 if ((candidate->flags_1fc_word & APIOBJECT_FLAG_IN_USE) == 0 ||
-                    (candidate->flags_1fc_word & APIOBJECT_FLAG_CHARACTER) == 0 || (candidate->flags_1f8 & 0x400u) == 0) {
+                    (candidate->flags_1fc_word & APIOBJECT_FLAG_CHARACTER) == 0 || (candidate->flags_1f8 & APIOBJECT_CREATURE) == 0) {
                     continue;
                 }
 
@@ -3277,35 +3279,35 @@ i32 Action_SetSide(AISYS_PC *sys, AISCRIPTPROCESS *processor, AIPACKET *packet, 
                 }
                 if ((type_matches == 1 && (distance_squared < range_squared || range_squared == 0.0f)) ||
                     (type_count == 0 && distance_squared < range_squared)) {
-                    old_side = candidate->flags_1f8 & 0x10005;
+                    old_side = candidate->flags_1f8 & (APIOBJECT_SIDE_BADDIE | APIOBJECT_SIDE_NEUTRAL | APIOBJECT_SIDE_GOODIE_BADDIE);
                     candidate->flags_1f8 &= 0xfffefffau;
                     switch (side) {
                         case 0:
-                            candidate->flags_1f8 |= 4;
+                            candidate->flags_1f8 |= APIOBJECT_SIDE_NEUTRAL;
                             break;
                         case 1:
-                            candidate->flags_1f8 |= 1;
+                            candidate->flags_1f8 |= APIOBJECT_SIDE_BADDIE;
                             break;
                         case 2:
-                            candidate->flags_1f8 |= 0x10000;
+                            candidate->flags_1f8 |= APIOBJECT_SIDE_GOODIE_BADDIE;
                             break;
                         case 3:
-                            if ((candidate->flags_1f8 & 0x400u) != 0 && candidate->ai_packet.creature_index != 0xff) {
+                            if ((candidate->flags_1f8 & APIOBJECT_CREATURE) != 0 && candidate->ai_packet.creature_index != 0xff) {
                                 creature = sys->creatures + candidate->ai_packet.creature_index;
                                 model_flags = apicharsys->char_data[creature->type].model_flags;
                                 if ((model_flags & 0x200) != 0) {
-                                    candidate->flags_1f8 |= 4;
+                                    candidate->flags_1f8 |= APIOBJECT_SIDE_NEUTRAL;
                                 } else if ((model_flags & 4) != 0) {
-                                    candidate->flags_1f8 |= 1;
+                                    candidate->flags_1f8 |= APIOBJECT_SIDE_BADDIE;
                                 }
                             }
                             break;
                     }
 
                     candidate->ai_packet.capabilities &= ~(LEGO_AIPATHCNX_FORBADDIES | LEGO_AIPATHCNX_FORGOODIES);
-                    if ((candidate->flags_1f8 & 1) != 0) {
+                    if ((candidate->flags_1f8 & APIOBJECT_SIDE_BADDIE) != 0) {
                         candidate->ai_packet.capabilities |= LEGO_AIPATHCNX_FORBADDIES;
-                    } else if ((candidate->flags_1f8 & 4) == 0) {
+                    } else if ((candidate->flags_1f8 & APIOBJECT_SIDE_NEUTRAL) == 0) {
                         candidate->ai_packet.capabilities |= LEGO_AIPATHCNX_FORGOODIES;
                     }
 
@@ -3380,7 +3382,7 @@ i32 Action_SetStateArea(AISYS_PC *sys, AISCRIPTPROCESS *processor, AIPACKET *pac
     for (object_index = 0; object_index < HIGHGAMEOBJECT; ++object_index) {
         object = &Obj[object_index];
         if (!(object->flags_1fc_word & APIOBJECT_FLAG_IN_USE) || !(object->flags_1fc_word & APIOBJECT_FLAG_CHARACTER) ||
-            (object->flags_1f8 & 0x400) == 0) {
+            (object->flags_1f8 & APIOBJECT_CREATURE) == 0) {
             continue;
         }
 
@@ -3483,7 +3485,7 @@ i32 Action_Kill(AISYS_PC *system, AISCRIPTPROCESS *processor, AIPACKET *packet, 
         candidate = Obj;
         for (index = 0; index < HIGHGAMEOBJECT; ++index, ++candidate) {
             if ((candidate->flags_1fc_word & APIOBJECT_FLAG_IN_USE) && (candidate->flags_1fc_word & APIOBJECT_FLAG_CHARACTER) &&
-                (candidate->flags_1f8 & 0x400) && candidate != excluded &&
+                (candidate->flags_1f8 & APIOBJECT_CREATURE) && candidate != excluded &&
                 (!check_dead || (candidate->dead == 0 && candidate->unknown_1010 <= 0.0f))) {
                 candidate->portal_flags = (candidate->portal_flags & ~0x00300000u) | ((u32)((respawn & 1) | ((origin & 1) << 1)) << 20);
                 if (parts) {
@@ -4062,7 +4064,7 @@ i32 Action_BigJump(AISYS_PC *sys, AISCRIPTPROCESS *processor, AIPACKET *packet, 
             }
         }
 
-        if (to_origin != 0 && (object->flags_1f8 & 0x400) != 0 && object->ai_packet.creature_index != 0xff) {
+        if (to_origin != 0 && (object->flags_1f8 & APIOBJECT_CREATURE) != 0 && object->ai_packet.creature_index != 0xff) {
             creature = &sys->creatures[object->ai_packet.creature_index];
             StartBigJump(object, &creature->position, slam, jump_factor, 1.0f, 0);
             object->ai_packet.path_info = creature->path_info;
@@ -4229,7 +4231,7 @@ i32 Action_SnapToOrigin(AISYS_PC *sys, AISCRIPTPROCESS *processor, AIPACKET *pac
         }
     }
 
-    if (object == NULL || (object->flags_1f8 & 0x400) == 0 || object->ai_packet.creature_index == 0xff) {
+    if (object == NULL || (object->flags_1f8 & APIOBJECT_CREATURE) == 0 || object->ai_packet.creature_index == 0xff) {
         return 1;
     }
 
@@ -4691,7 +4693,7 @@ i32 Action_EngageOpponent(AISYS_PC *sys, AISCRIPTPROCESS *processor, AIPACKET *p
     }
 
     if (goal_range == 0.0f) {
-        if ((object->character_data->game_character->flags_090 & 0x100) == 0) {
+        if ((object->character_data->game_character->flags_090 & CHARACTER_RUNTIME_TURNING_CIRCLE) == 0) {
             packet->movement_look_target = &opponent->position;
         }
     } else {
@@ -4699,7 +4701,7 @@ i32 Action_EngageOpponent(AISYS_PC *sys, AISCRIPTPROCESS *processor, AIPACKET *p
         if ((object->unknown_ef2 & 1) == 0) {
             processor->action_data_1 &= (u8)(~0x10u);
         }
-        if ((object->unknown_ef2 & 1) != 0 && (object->character_data->game_character->flags_090 & 0x100) != 0) {
+        if ((object->unknown_ef2 & 1) != 0 && (object->character_data->game_character->flags_090 & CHARACTER_RUNTIME_TURNING_CIRCLE) != 0) {
             if ((processor->action_data_1 & 0x10) != 0) {
                 if (distance_squared > (goal_range + aitol) * (goal_range + aitol)) {
                     processor->action_data_1 &= (u8)(~0x10u);
@@ -4716,12 +4718,12 @@ i32 Action_EngageOpponent(AISYS_PC *sys, AISCRIPTPROCESS *processor, AIPACKET *p
                 AIMoveInstruction(packet, &opponent->ai_packet.last_path_position, 0.0f, &opponent->ai_packet.path_info, 1, 0.01f);
                 packet->goal_speed_mode = 0;
             }
-        } else if ((object->character_data->game_character->flags_090 & 0x100) != 0 &&
+        } else if ((object->character_data->game_character->flags_090 & CHARACTER_RUNTIME_TURNING_CIRCLE) != 0 &&
                    distance_squared < (goal_range - aitol) * (goal_range - aitol)) {
             AIMoveInstruction(packet, &opponent->ai_packet.last_path_position, stopping_distance, &opponent->ai_packet.path_info, 2,
                               goal_range);
             packet->goal_speed_mode = 1;
-            if ((object->character_data->game_character->flags_090 & 0x100) != 0) {
+            if ((object->character_data->game_character->flags_090 & CHARACTER_RUNTIME_TURNING_CIRCLE) != 0) {
                 object->flags_ef0 |= 0x8000u;
             }
         } else if ((processor->action_data_1 & 0x20) != 0 && distance_squared < (goal_range - aitol) * (goal_range - aitol)) {
@@ -4743,7 +4745,7 @@ i32 Action_EngageOpponent(AISYS_PC *sys, AISCRIPTPROCESS *processor, AIPACKET *p
             AIMoveInstruction(packet, &opponent->ai_packet.last_path_position, stopping_distance, &opponent->ai_packet.path_info, 3,
                               goal_range);
             packet->goal_speed_mode = 0;
-        } else if ((object->character_data->game_character->flags_090 & 0x100) == 0) {
+        } else if ((object->character_data->game_character->flags_090 & CHARACTER_RUNTIME_TURNING_CIRCLE) == 0) {
             packet->movement_look_target = &opponent->position;
         }
     }
@@ -4751,7 +4753,7 @@ i32 Action_EngageOpponent(AISYS_PC *sys, AISCRIPTPROCESS *processor, AIPACKET *p
     if ((((u64)1 << opponent->hostility_group) & WORLD->object_sys->hostility_masks[object->hostility_group]) == 0) {
         return 0;
     }
-    character_flags_2 = object->character_data->game_character->flags_090 & 0x100;
+    character_flags_2 = object->character_data->game_character->flags_090 & CHARACTER_RUNTIME_TURNING_CIRCLE;
     if (character_flags_2 != 0 && (object->unknown_ef2 & 1) != 0) {
         return 0;
     }
@@ -5204,7 +5206,7 @@ i32 Action_SetInvulnerable(AISYS_PC *sys, AISCRIPTPROCESS *processor, AIPACKET *
 
         for (object_index = 0; object_index < HIGHGAMEOBJECT; ++object_index, ++candidate) {
             if (!(candidate->flags_1fc_word & APIOBJECT_FLAG_IN_USE) || !(candidate->flags_1fc_word & APIOBJECT_FLAG_CHARACTER) ||
-                (candidate->flags_1f8 & 0x400) == 0) {
+                (candidate->flags_1f8 & APIOBJECT_CREATURE) == 0) {
                 continue;
             }
             for (type_index = 0; type_index < type_count; ++type_index) {
@@ -5218,7 +5220,7 @@ i32 Action_SetInvulnerable(AISYS_PC *sys, AISCRIPTPROCESS *processor, AIPACKET *
                 }
             }
         }
-    } else if (object != NULL && (object->flags_1f8 & 0x400) != 0) {
+    } else if (object != NULL && (object->flags_1f8 & APIOBJECT_CREATURE) != 0) {
         if (enabled) {
             object->invulnerable = 1;
             object->still_take_hit = still_take_hit;
@@ -5317,7 +5319,7 @@ i32 Action_GameDontPush(AISYS_PC *sys, AISCRIPTPROCESS *processor, AIPACKET *pac
         candidate = Obj;
         for (object_index = 0; object_index < HIGHGAMEOBJECT; ++object_index, ++candidate) {
             if ((candidate->flags_1fc_word & APIOBJECT_FLAG_IN_USE) == 0 || (candidate->flags_1fc_word & APIOBJECT_FLAG_CHARACTER) == 0 ||
-                (candidate->flags_1f8 & 0x400u) == 0) {
+                (candidate->flags_1f8 & APIOBJECT_CREATURE) == 0) {
                 continue;
             }
             for (type_index = 0; type_index < type_count; ++type_index) {
@@ -6486,7 +6488,7 @@ i32 Action_SetMaxMovementRange(AISYS_PC *system, AISCRIPTPROCESS *processor, AIP
             object = Obj;
             for (index = 0; index < HIGHGAMEOBJECT; index++, object++) {
                 if ((object->flags_1fc_word & APIOBJECT_FLAG_IN_USE) != 0 && (object->flags_1fc_word & APIOBJECT_FLAG_CHARACTER) != 0 &&
-                    (object->flags_1f8 & 0x400u) != 0) {
+                    (object->flags_1f8 & APIOBJECT_CREATURE) != 0) {
                     object->ai_packet.movement_target_radius = range;
                     if (range > 0.0f) {
                         object->ai_packet.flags = (object->ai_packet.flags & ~0x08000000u) | 0x04000000u;
@@ -7562,7 +7564,7 @@ i32 Action_GoToOriginalPath(AISYS_PC *sys, AISCRIPTPROCESS *processor, AIPACKET 
         return 1;
     }
     object = packet->owner->objptr;
-    if (sys == NULL || sys->path_sys == NULL || (object->flags_1f8 & 0x400) == 0 || object->ai_packet.creature_index == 0xff) {
+    if (sys == NULL || sys->path_sys == NULL || (object->flags_1f8 & APIOBJECT_CREATURE) == 0 || object->ai_packet.creature_index == 0xff) {
         return 0;
     }
     original_path = sys->creatures[packet->creature_index].path_info.path;
@@ -10510,7 +10512,7 @@ i32 Action_TakeOver(AISYS_PC *sys, AISCRIPTPROCESS *processor, AIPACKET *packet,
             return 0;
         }
         target_config = target->character_data->game_character;
-        if (target->takeover_source == NULL && (target_config->flags_090 & 0x40) != 0 &&
+        if (target->takeover_source == NULL && (target_config->flags_090 & CHARACTER_RUNTIME_CAN_TAKE_OVER) != 0 &&
             (object->character_data->model_flags & CHARACTER_MODEL_DROID) == 0) {
             TakeOverGameObject(object, target, 1, 0);
         }

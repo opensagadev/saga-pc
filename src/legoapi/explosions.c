@@ -102,7 +102,7 @@ void UpdateExplosion_Generic(EXPLOSION_PC *explosion) {
                 (U64_PAIR(&CInfo[target->character_context].flags) & 0x20000000) != 0) {
                 continue;
             }
-            if ((object->character_data->game_character->flags_090 & 0x8000) != 0) {
+            if ((object->character_data->game_character->flags_090 & CHARACTER_RUNTIME_GHOST) != 0) {
                 continue;
             }
             if ((explosion->flags & 0x80) != 0 && (object->character_data->model_flags & CHARACTER_MODEL_DROID) != 0) {

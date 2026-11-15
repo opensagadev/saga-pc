@@ -34,6 +34,10 @@ static i32 Mode(THING *thing) {
     return thing->mode;
 }
 
+static void SetFlag(THING *thing, u32 flag) {
+    thing->flags |= flag;
+}
+
 static void SetMode(THING *thing, i32 mode) {
     thing->mode = mode;
 }
@@ -50,6 +54,7 @@ i32 Run(THING *thing) {
     switch (Mode(thing)) {
     case 2:
         SetMode(thing, 3);
+        SetFlag(thing, 0x10);
         break;
     case 7:
         break;
@@ -65,7 +70,7 @@ i32 Run(THING *thing) {
 """
 
 
-def plan(field, prefix, flags_mode):
+def plan(field, prefix, flags_mode, other=None):
     with tempfile.TemporaryDirectory() as directory:
         root = Path(directory).resolve()
         (root / "src").mkdir()
@@ -73,9 +78,10 @@ def plan(field, prefix, flags_mode):
         (root / "src/unit.c").write_text(UNIT)
         args = ["--target=i686-pc-windows-msvc", "-x", "c", "-std=c89", f"-I{root / 'src'}"]
         tu = magicnames.cindex().Index.create().parse(str(root / "src/unit.c"), args=args)
-        facts = [magicnames.collect(tu, magicnames.Field(field), flags_mode, root)]
+        specs = [(field, flags_mode)] + ([other] if other else [])
+        facts = magicnames.collect(tu, specs, root)[:1]
         names = magicnames.name_table([prefix], facts[0]["enums"], root)
-        edits, unnamed, _ = magicnames.plan(facts, names, flags_mode)
+        edits, unnamed, _, _ = magicnames.plan(facts, names, flags_mode)
         magicnames.apply(edits, root)
         return (root / "src/unit.c").read_text() + (root / "src/thing.h").read_text(), unnamed
 
@@ -88,7 +94,8 @@ class MagicNamesTests(unittest.TestCase):
         self.assertIn("(thing->flags & (THING_ALIVE | THING_SEEN)) == (THING_ALIVE | THING_SEEN)", text)
         self.assertIn("thing->flags |= THING_ALIVE | THING_SEEN;", text)
         self.assertIn("thing->flags &= ~(THING_SEEN | THING_LOUD);", text)
-        self.assertIn("thing->flags & 0x8;", text)  # no name for 0x8
+        self.assertIn("thing->flags & 0x8;", text)
+        self.assertIn("SetFlag(thing, THING_LOUD);", text)  # the parameter is ORed into the field  # no name for 0x8
         self.assertIn("(((t)->flags & 0x10) != 0)", text)  # macro bodies stay
         self.assertEqual(unnamed, {8: 1})
 
@@ -104,6 +111,10 @@ class MagicNamesTests(unittest.TestCase):
         self.assertIn("i < 3", text)
         self.assertIn("case 7:", text)
         self.assertEqual(unnamed, {7: 1})
+
+    def test_one_walk_serves_several_fields(self):
+        alone = plan("THING.mode", "MODE_", False)
+        self.assertEqual(plan("THING.mode", "MODE_", False, ("thing_s.flags", True)), alone)
 
 
 if __name__ == "__main__":

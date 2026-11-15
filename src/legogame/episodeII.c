@@ -625,7 +625,7 @@ static void JediBTickPhase(void) {
         case 7:
             boss = jedi_b.boss;
             if (boss == NULL) {
-                boss = FindGameObject(id_JANGOFETT, 1, 1, 0, 0);
+                boss = FindGameObject(id_JANGOFETT, APIOBJECT_SIDE_BADDIE, 1, 0, 0);
                 jedi_b.boss = boss;
                 if (boss == NULL) {
                     break;
@@ -934,7 +934,7 @@ void JediB_DrawPanel(WORLDINFO *world) {
                     break;
                 case 7:
                     if (jedi_b.boss == NULL) {
-                        jedi_b.boss = FindGameObject(id_JANGOFETT, 1, 1, 0, 0);
+                        jedi_b.boss = FindGameObject(id_JANGOFETT, APIOBJECT_SIDE_BADDIE, 1, 0, 0);
                     }
                     if (jedi_b.boss != NULL) {
                         DrawBossHitPoints(jedi_b.boss);
@@ -952,7 +952,7 @@ void FactoryB_Reset(WORLDINFO *world) {
     ResetPaintPuzzle(world);
     factoryb_cut = NewCutScene(NULL, world->cutscene_sys, "ep2_droidfactory_conveyor", 0);
     if (factoryb_cut != NULL && factoryb_cut->instance != NULL) {
-        ((CUT_INSTANCE_READER *)factoryb_cut->instance)->flags_88 |= 2;
+        ((CUT_INSTANCE_READER *)factoryb_cut->instance)->flags_88 |= NUGCUTSCENE_INST_PLAYING;
         ((CUT_INSTANCE_READER *)factoryb_cut->instance)->flags_88 |= 8;
     }
     factoryb_conveyor_stopped_msg = CheckGizAIMessage(gizaimessagesys, "conveyor_stop", NULL);
@@ -969,7 +969,7 @@ void FactoryB_Update(WORLDINFO *world) {
     if (message != NULL && message->value != 0.0f && ((CUTINFO_READER *)factoryb_cut)->previous_frame > 50.0 &&
         ((CUTINFO_READER *)factoryb_cut)->previous_frame < 54.0) {
         ((CUT_INSTANCE_READER *)factoryb_cut->instance)->current_frame = 0.0f;
-        ((CUT_INSTANCE_READER *)factoryb_cut->instance)->flags_88 &= ~2u;
+        ((CUT_INSTANCE_READER *)factoryb_cut->instance)->flags_88 &= ~NUGCUTSCENE_INST_PLAYING;
         world->current_level->conveyor_x_speed = 0.0f;
         world->current_level->conveyor_z_speed = 0.0f;
     } else if (((CUT_INSTANCE_READER *)factoryb_cut->instance)->current_frame > FactoryBConveyorStopFrame) {
@@ -1013,7 +1013,7 @@ void DookuC_DrawPanel(WORLDINFO *world) {
     if (netclient != 0) {
         return;
     }
-    dooku = FindGameObject(id_DOOKU, 1, 1, 1, 0);
+    dooku = FindGameObject(id_DOOKU, APIOBJECT_SIDE_BADDIE, 1, 1, 0);
     if (dooku != NULL && dooku_c.hit_message != NULL && dooku_c.hit_message->value == 1.0f) {
         DrawBossHitPoints(dooku);
     }
@@ -1066,14 +1066,14 @@ void FactoryG_Update(WORLDINFO *world) {
         return;
     }
     if (ObiWan == NULL) {
-        ObiWan = FindGameObject(dat_007f19d0, 0x400, 0, 1, 0);
+        ObiWan = FindGameObject(dat_007f19d0, APIOBJECT_CREATURE, 0, 1, 0);
         return;
     }
     if (FreePlay != 0) {
         CompleteLevel(WORLD);
     } else {
         CUTINFO *cut = NewCutScene(NULL, world->cutscene_sys, "ep2_factory_outro", 1);
-        ((CUT_INSTANCE_READER *)((CUTINFO_READER *)cut)->instance)->flags_88 |= 2;
+        ((CUT_INSTANCE_READER *)((CUTINFO_READER *)cut)->instance)->flags_88 |= NUGCUTSCENE_INST_PLAYING;
     }
 }
 
@@ -1772,8 +1772,8 @@ void KaminoE_UpdatePc(WORLDINFO *world) {
     if (netclient != 0) {
         return;
     }
-    jango = FindGameObject(id_JANGOFETT, 1, 1, 1, 0);
-    other = FindGameObject(id_JANGOFETT, 4, 1, 1, 0);
+    jango = FindGameObject(id_JANGOFETT, APIOBJECT_SIDE_BADDIE, 1, 1, 0);
+    other = FindGameObject(id_JANGOFETT, APIOBJECT_SIDE_NEUTRAL, 1, 1, 0);
     target = NULL;
     if (jango != NULL) {
         target = jango;
@@ -1828,7 +1828,7 @@ void KaminoE_UpdatePc(WORLDINFO *world) {
 /* Reads the Kamino_E state block. */
 void KaminoE_Draw(WORLDINFO *world) {
     if (netclient == 0 && kamino_e.show_hearts->value > 0.0f) {
-        GAMEOBJECT *jango = FindGameObject(id_JANGOFETT, 1, 1, 1, 0);
+        GAMEOBJECT *jango = FindGameObject(id_JANGOFETT, APIOBJECT_SIDE_BADDIE, 1, 1, 0);
         if (jango != NULL && kamino_e.show_hearts != NULL && kamino_e.show_hearts->value == 1.0f) {
             DrawBossHitPoints(jango);
         }

@@ -17,12 +17,12 @@ void RegisterTakeOverObject(GAMEOBJECT *object) {
     i32 index;
     AISCRIPT *script;
     i32 level;
-    if ((object->character_data->game_character->flags_090 & 0x80) != 0 || (object->flags_1f8 & 0x4000) == 0 ||
+    if ((object->character_data->game_character->flags_090 & CHARACTER_RUNTIME_DONT_MOVE) != 0 || (object->flags_1f8 & 0x4000) == 0 ||
         (WORLD->current_level->flags & LEVEL_FORGET_TAKEOVERS) != 0) {
         return;
     }
     level = WORLD->current_level->area_level_index;
-    if (num_takeoverobjects >= 8 || (object->flags_1f8 & 0x400) == 0) {
+    if (num_takeoverobjects >= 8 || (object->flags_1f8 & APIOBJECT_CREATURE) == 0) {
         return;
     }
     for (index = 0; index < num_takeoverobjects; ++index) {

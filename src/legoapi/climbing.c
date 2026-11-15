@@ -383,8 +383,8 @@ i32 Climb_SetTargetMom(GAMEOBJECT *object, u16 input_angle) {
     u16 side_angle;
     f32 lateral;
     speed.value = 0.0f;
-    if (animation != -1 && (animation == LEGOACT_CLIMB_UP || animation == LEGOACT_CLIMB_DOWN || animation == LEGOACT_CLIMB_LEFT ||
-                            animation == LEGOACT_CLIMB_RIGHT || animation == LEGOACT_MAGNET_WALK_METAL)) {
+    if (animation != ACTION_NONE && (animation == LEGOACT_CLIMB_UP || animation == LEGOACT_CLIMB_DOWN || animation == LEGOACT_CLIMB_LEFT ||
+                                     animation == LEGOACT_CLIMB_RIGHT || animation == LEGOACT_MAGNET_WALK_METAL)) {
         if (object->character_model->model_data_b[animation] != NULL) {
             raw_speed.value = AnimSpeed(object->character_model, animation);
             speed.bits = raw_speed.bits & 0x7fffffff;

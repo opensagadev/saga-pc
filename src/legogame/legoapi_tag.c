@@ -110,38 +110,38 @@ i16 id_TROOPERCANNON = -1;
 static void TakeOver_SetAction(GAMEOBJECT *rider, GAMEOBJECT *vehicle) {
     i32 action;
     if (vehicle->id == GameObjectRotationBuggyId) {
-        action = 0x70;
+        action = ACTION_RIDE2;
     } else if (vehicle->id == (u16)id_GYROCOPTER) {
-        action = 0x83;
+        action = ACTION_RIDE3;
     } else if (StartupGameFlag1 == 0) {
         goto no_action;
     } else if (vehicle->character_data->game_character->weapon_action == 12) {
         if (CurrentAnim(&vehicle->anim_packet) == 3 || CurrentAnim(&vehicle->anim_packet) == 0x17) {
-            action = 0xc4;
+            action = ACTION_RIDE10;
         } else {
-            action = 0xc3;
+            action = ACTION_RIDE9;
         }
     } else if (vehicle->id == (u16)id_BANTHA || vehicle->id == (u16)id_BOMARRMONK) {
-        action = 0x70;
+        action = ACTION_RIDE2;
     } else if (vehicle->id == (u16)id_DEWBACK) {
-        action = 0x83;
+        action = ACTION_RIDE3;
     } else if (vehicle->id == (u16)id_LANDSPEEDER || vehicle->id == (u16)id_FLASHSPEEDER) {
-        action = 0x84;
+        action = ACTION_RIDE4;
     } else if (vehicle->id == (u16)id_TAUNTAUN) {
-        action = 0x86;
+        action = ACTION_RIDE5;
     } else if (vehicle->id == (u16)id_SPEEDERBIKE) {
-        action = 0xc0;
+        action = ACTION_RIDE6;
     } else if (vehicle->id == (u16)id_HEAVYREPEATINGCANNON || vehicle->id == (u16)id_BIGGUN) {
-        action = 0xc1;
+        action = ACTION_RIDE7;
     } else if (vehicle->id == (u16)id_TROOPERCANNON) {
-        action = 0xc2;
+        action = ACTION_RIDE8;
         if (rider->character_model->action_animations[0xc2] == NULL) {
-            action = 0xc1;
+            action = ACTION_RIDE7;
         }
     } else if (vehicle->id == (u16)id_STAP2) {
-        action = 0xc1;
+        action = ACTION_RIDE7;
     } else if (vehicle->id == (u16)id_CLONEWALKER) {
-        action = 0xc0;
+        action = ACTION_RIDE6;
     } else {
         goto no_action;
     }
@@ -821,7 +821,7 @@ void TakeOverCode(GAMEOBJECT *object, i32 tag_pressed) {
             if ((candidate->flags_1fc_word & APIOBJECT_FLAG_IN_USE) == 0 || (candidate->flags_1fc_word & APIOBJECT_FLAG_CHARACTER) == 0 ||
                 candidate->dead != 0 || candidate->unknown_280 != 0xff ||
                 (U64_PAIR(&CInfo[candidate->character_context].flags) & 0x8000) != 0 || candidate->rider != NULL ||
-                (candidate->character_data->game_character->flags_090 & 0x40) == 0 ||
+                (candidate->character_data->game_character->flags_090 & CHARACTER_RUNTIME_CAN_TAKE_OVER) == 0 ||
                 ((candidate->character_data->model_flags & CHARACTER_MODEL_BEAST) != 0 &&
                  (candidate->character_context == CHARACTER_CONTEXT_DEACTIVATED ||
                   candidate->character_context == CHARACTER_CONTEXT_BUCK)) ||

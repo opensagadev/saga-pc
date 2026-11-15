@@ -454,11 +454,12 @@ void UpdateLastSafePosition(GAMEOBJECT *object) {
                 break;
             }
             if (object->unknown_281 == 0 &&
-                (context == -1 || (context != LEGOCONTEXT_BEENTAKENOVER && context != LEGOCONTEXT_EATEN && context != LEGOCONTEXT_GETIN)) &&
+                (context == CHARACTER_CONTEXT_NONE ||
+                 (context != LEGOCONTEXT_BEENTAKENOVER && context != LEGOCONTEXT_EATEN && context != LEGOCONTEXT_GETIN)) &&
                 !VehicleArea) {
                 model_flags = object->character_data->model_flags;
-                if (((model_flags & 0x2000) == 0 || !(object->character_data->game_character->unknown_028 > 0.0f)) &&
-                    ((model_flags & 0x8000) == 0 || object->jump_variant_state != 1)) {
+                if (((model_flags & CHARACTER_MODEL_VEHICLE) == 0 || !(object->character_data->game_character->unknown_028 > 0.0f)) &&
+                    ((model_flags & CHARACTER_MODEL_JETPACK) == 0 || object->jump_variant_state != 1)) {
                     break;
                 }
             }

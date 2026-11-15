@@ -1773,7 +1773,7 @@ extern "C" {
             reinterpret_cast<CUT_DRAW_HIERARCHY *>(hierarchy)->suppress_shadow_surface_points = 1;
         }
 
-        if ((game_data->flags_090 & 0x8000) != 0) {
+        if ((game_data->flags_090 & CHARACTER_RUNTIME_GHOST) != 0) {
             APITransparentCharDraw(hierarchy, &world_matrix, render_count, render_indices, joint_matrices, dwa, character->flags & 8);
         }
         NuHGobjRndrMtxDwa(hierarchy, &world_matrix, render_count, render_indices, joint_matrices, dwa, character->flags & 8);
@@ -1860,7 +1860,7 @@ extern "C" {
             }
         }
 
-        if ((character->flags & 0x20) != 0 && (game_data->flags_090 & 0x8000) == 0 &&
+        if ((character->flags & 0x20) != 0 && (game_data->flags_090 & CHARACTER_RUNTIME_GHOST) == 0 &&
             NuVecDistSqr(reinterpret_cast<NUVEC *>(&world_matrix.m30),
                          reinterpret_cast<NUVEC *>(&reinterpret_cast<CUT_DRAW_CAMERA *>(GameCam)->render_matrix.m30),
                          NULL) < CutReflectRange2) {
@@ -2259,7 +2259,7 @@ extern "C" {
         for (i32 i = 0; i < world->cutscene_sys->count; ++i) {
             if ((reinterpret_cast<CUT_CONTROLLER_INSTANCE *>(reinterpret_cast<CUT_LOAD_RECORD *>(world->cutscene_sys->records[i])->instance)
                      ->flags_88 &
-                 2) != 0) {
+                 NUGCUTSCENE_INST_PLAYING) != 0) {
                 if (reinterpret_cast<CUT_LOAD_RECORD *>(world->cutscene_sys->records[i]) != cut &&
                     reinterpret_cast<CUT_LOAD_RECORD *>(world->cutscene_sys->records[i])->instance != NULL &&
                     (reinterpret_cast<CUT_LOAD_RECORD *>(world->cutscene_sys->records[i])->flags & 1) != 0) {
@@ -2379,7 +2379,7 @@ extern "C" {
         for (stop_index = 0; stop_index < world->cutscene_sys->count; ++stop_index) {
             CUT_LOAD_RECORD *cut = reinterpret_cast<CUT_LOAD_RECORD *>(world->cutscene_sys->records[stop_index]);
             CUT_CONTROLLER_INSTANCE *instance = reinterpret_cast<CUT_CONTROLLER_INSTANCE *>(cut->instance);
-            if (instance != NULL && (instance->flags_88 & 2) != 0) {
+            if (instance != NULL && (instance->flags_88 & NUGCUTSCENE_INST_PLAYING) != 0) {
                 if ((cut->flags & 1) != 0) {
                     SetStopCutFlags(cut);
                     CutFrame = static_cast<i32>(static_cast<u32>(CutFrame) + 1U);
@@ -2400,7 +2400,7 @@ extern "C" {
             if (instance == NULL) {
                 continue;
             }
-            if ((instance->flags_88 & 2) != 0) {
+            if ((instance->flags_88 & NUGCUTSCENE_INST_PLAYING) != 0) {
                 cut->previous_frame = instance->current_frame;
                 active_before[i] = 1;
                 f32 elapsed = cut->unknown_58 + FRAMETIME;
@@ -2477,7 +2477,7 @@ extern "C" {
                     if (CutInstEndCount < 4) {
                         INSTNUGCUTSCENE *ended_instance = cut->instance;
                         CutInstEnd[CutInstEndCount] = ended_instance;
-                        reinterpret_cast<CUT_CONTROLLER_INSTANCE *>(ended_instance)->flags_88 |= 2;
+                        reinterpret_cast<CUT_CONTROLLER_INSTANCE *>(ended_instance)->flags_88 |= NUGCUTSCENE_INST_PLAYING;
                         ++CutInstEndCount;
                     }
                 }
@@ -2545,7 +2545,7 @@ extern "C" {
         if (CutInstEndCount < 4) {
             INSTNUGCUTSCENE *ended_instance = stop_cut->instance;
             CutInstEnd[CutInstEndCount] = ended_instance;
-            reinterpret_cast<CUT_CONTROLLER_INSTANCE *>(ended_instance)->flags_88 |= 2;
+            reinterpret_cast<CUT_CONTROLLER_INSTANCE *>(ended_instance)->flags_88 |= NUGCUTSCENE_INST_PLAYING;
             CutInstEndStop = CutInstEndCount;
             ++CutInstEndCount;
         }
