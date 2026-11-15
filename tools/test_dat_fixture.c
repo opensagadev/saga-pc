@@ -47,7 +47,7 @@ i32 nufile_try_packed;
 i32 nufile_lsn_allowed = 1;
 PC_FILEEXTINFO extensions[64];
 i32 num_extensions;
-PC_WINDOW_OPTIONS_PC PcWindowOptions;
+PC_WINDOW_OPTIONS PcWindowOptions;
 i32 PCThreadCriticalSectionCount_candidate;
 CRITICAL_SECTION PCThreadCriticalSections_candidate[13];
 i32 PCFrameCriticalSectionIndex_candidate;
@@ -63,11 +63,11 @@ u16 **BadWords;
 i32 NumBadWords;
 const u16 bad_fluff[26] = {0};
 u16 bad_equiv[8][2];
-NUFPAR_PC NuFParRecords[4];
+NUFPAR NuFParRecords[4];
 char NuFParBuffers[4][0x1000];
-NUFPAR_PC *NuFParRecordBase;
+NUFPAR *NuFParRecordBase;
 char *NuFParBufferBase;
-void(__cdecl *fnInterpreterError)(NUFPAR_PC *);
+void(__cdecl *fnInterpreterError)(NUFPAR *);
 
 extern i32 __cdecl PCThreadCriticalSectionCreate_candidate(void);
 
