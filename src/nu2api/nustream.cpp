@@ -1,4 +1,8 @@
-#include "saga.h"
+#include "nu2api/nualloc.h"
+#include "nu2api/nucore/nustring.h"
+#include "nu2api/nufile/nufile.h"
+#include "nu2api/nusound/nusound.h"
+#include "nu2api/wavreader.h"
 /* vorbisfile.h's static seek callback (the OV_CALLBACKS tables use it): each unit including the header carries
  * its own copy; this one is named apart from the other units' copies. */
 // NOLINTNEXTLINE(readability-identifier-naming): vorbisfile.h names the static

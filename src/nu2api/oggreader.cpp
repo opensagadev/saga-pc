@@ -1,4 +1,13 @@
-#include "saga.h"
+#include "gameapi/edtools/edui.h"
+#include "legoapi/items/collect/bolts.h"
+#include "nu2api/nu3d/nu3d_includes.h"
+#include "nu2api/nualloc.h"
+#include "nu2api/nucore/nustring.h"
+#include "nu2api/nucore/nuthread.h"
+#include "nu2api/nudir_gen.h"
+#include "nu2api/nufile/nufile.h"
+#include "nu2api/oggreader.h"
+#include "nu2api/wavreader.h"
 #include <string.h>
 /* vorbisfile.h's static seek callback (the OV_CALLBACKS tables use it): each unit including the header carries
  * its own copy; this one is named apart from the other units' copies. */
