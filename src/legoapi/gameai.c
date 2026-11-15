@@ -1,4 +1,12 @@
-#include "saga.h"
+#include "gameapi/ai/aisys/aisys.h"
+#include "legoapi/ai/core/gameai.h"
+#include "legoapi/characters/core/character.h"
+#include "legoapi/items/base/apiobject.h"
+#include "nu2api/nu3d/nu3d_includes.h"
+#include "nu2api/nu3d/nuhspecial.h"
+#include "nu2api/nucore/nuhgobj.h"
+#include "nu2api/numath/numtx.h"
+#include "nu2api/numath/nuvec.h"
 #include <string.h>
 #include <stdio.h>
 

@@ -1,4 +1,4 @@
-#include "saga.h"
+#include "legoapi/render/core/rtl.h"
 
 /* Empty on PC; the linker folds both bodies to one address. Every call to them is kept, and VC8
    drops calls to an empty body it can see, so the definitions live outside rtl.c. */

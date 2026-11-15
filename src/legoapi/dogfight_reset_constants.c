@@ -1,4 +1,4 @@
-#include "saga.h"
+#include "nu2api/nucore/common.h"
 
 /* Native readonly origin scalars; separate TU prevents invented folded pool values. */
 const f32 DogfightOriginEndXPc = -141.0f;

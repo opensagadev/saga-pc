@@ -1,4 +1,4 @@
-#include "saga.h"
+#include "nu2api/nucore/common.h"
 
 extern "C" {
     i32 ShopCodeCharacter = 0;

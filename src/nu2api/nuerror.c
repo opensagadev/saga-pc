@@ -1,4 +1,9 @@
-#include "saga.h"
+#include "gamelib/util/CRC16.h"
+#include "legoapi/gizmo/base/gizmessage.h"
+#include "nu2api/PCInput.h"
+#include "nu2api/nucore/nucore_includes.h"
+#include "nu2api/nucore/nustring.h"
+#include "nu2api/nuerror_gen.h"
 #include <stdarg.h>
 #include <stdio.h>
 

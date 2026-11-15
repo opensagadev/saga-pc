@@ -1,4 +1,4 @@
-#include "saga.h"
+#include "legoapi/audio/audio.h"
 
 void SetBackgroundMusic(i32 track) {
     (void)track;

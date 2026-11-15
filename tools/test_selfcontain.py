@@ -61,6 +61,15 @@ class SelfContainTest(unittest.TestCase):
                                                     ("respell", line, 23, "THING_s", "struct", "THING_s")])
             self.assertEqual([r[2:] for r in residue], [("LOOP", "t.h includes this header back (cycle)")])
 
+    def test_respell_two_uses_on_a_line(self):
+        text = "void f(T *a, T *b);\n"
+        fixes = {"u.h": [("respell", 1, 8, "T", "struct", "T"), ("respell", 1, 14, "T", "struct", "T")]}
+        texts = {"u.h": text}
+        with mock.patch.object(selfcontain, "SRC", Path("/nonexistent")), \
+                mock.patch.object(Path, "write_text", lambda *a, **k: None):
+            selfcontain.apply(fixes, texts)
+        self.assertEqual(texts["u.h"], "void f(struct T *a, struct T *b);\n")
+
     def test_statement_start_skips_extern_c_and_comments(self):
         text = '#pragma once\nextern "C" {\n    int a;\n    /* c */\n    typedef struct U {\n        X x;\n    } U;\n}\n'
         self.assertEqual(selfcontain.statement_start(text, 6), 5)

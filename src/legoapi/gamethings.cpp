@@ -1,4 +1,5 @@
-#include "saga.h"
+#include "legoapi/items/objects/things.h"
+#include "legoapi/legoapi_types.h"
 
 /* The game's ThingManager. LoadPermData creates it with four slots; the PC
  * build registers no things in it. */

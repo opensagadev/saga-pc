@@ -1,4 +1,5 @@
-#include "saga.h"
+#include "nu2api/nu3d/nushader_plain.h"
+#include "nu2api/nu3d/nushadermanager_gen.h"
 
 PC_SHADER_RECORD_VIEW *PCShaderRecordFromHandle(u32 handle) {
     if (handle <= 400) {

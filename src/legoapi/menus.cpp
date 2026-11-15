@@ -1,4 +1,5 @@
-#include "saga.h"
+#include "gameapi/gui/apimenu.h"
+#include "legoapi/menus/screens/gamemenuall.h"
 
 #include <string.h>
 extern "C" {

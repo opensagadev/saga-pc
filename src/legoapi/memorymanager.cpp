@@ -1,4 +1,5 @@
-#include "saga.h"
+#include "gamelib/util/Refpack.h"
+#include "legoapi/misc/supportall.h"
 #include <string.h>
 
 /* theMemoryManager's 32-byte size-class pools (supportall unit, C++).

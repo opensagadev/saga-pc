@@ -1,4 +1,5 @@
-#include "saga.h"
+#include "gamelib/util/Utilities.h"
+#include "nu2api/nucore/nutime.h"
 
 /* Frame timing helpers. */
 

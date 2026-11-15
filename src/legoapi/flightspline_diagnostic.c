@@ -1,4 +1,4 @@
-#include "saga.h"
+#include "nu2api/nucore/common.h"
 
 /* Original source name unknown. The native diagnostic entry is exactly RET;
    exceeding capacity therefore does not stop or truncate the native loader.

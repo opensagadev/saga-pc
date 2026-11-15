@@ -14,6 +14,7 @@
 
 /* The module headers this header uses. saga.h includes every header itself, so the shim skips these. */
 #ifndef SAGA_SHIM
+#include "gameapi/edtools/edtools_types.h"
 #include "nu2api/nu3d/nuhspecial.h"
 #include "nu2api/numath/nuang.h"
 #include "nu2api/numath/numtx.h"
@@ -22,6 +23,7 @@
 #endif
 
 struct TERRAIN_GROUP_PC;
+struct nucamera_s;
 
 /* 11 parts: saga.h includes this header once per part, each where its declarations belong; included directly, it gives
  * all parts at once. */
@@ -990,7 +992,7 @@ extern "C" {
     void RemoveChunkFromRenderStack(struct debris_render_chunk_s *, struct debris_render_chunk_s **);
     char *GetSfxName(i32 sound_id);
     extern EDBITS_GAME_SOUND edbitsGameSound[320];
-    extern NUCAMERA *cubemapcam;
+    extern struct nucamera_s *cubemapcam;
     extern char edbits_level_filename[256];
     extern i32 edbitsSfxVol;
     extern i32 edbits_particle_char_page;
@@ -1000,16 +1002,16 @@ extern "C" {
     extern i32 edqseed;
     extern i8 edbits_what_game;
     f32 edanimPlayerAnimDistance(i32 parameter_index);
-    void cbPtlReadoutMenu(eduimenu_s *menu, eduiitem_s *unused1, u32 unused2);
-    void edanimcbCancelLocalSoundMenu(eduimenu_s *unused0, eduimenu_s *unused1);
-    void edanimcbCancelOptMenu(eduimenu_s *unused0, eduimenu_s *unused1);
-    void edanimcbFileSave(eduimenu_s *menu, eduiitem_s *unused1, u32 unused2);
-    void edanimcbMCTBMenu(eduimenu_s *parent, eduiitem_s *unused1, u32 unused2);
-    void edanimcbParticleMenu(eduimenu_s *parent, eduiitem_s *unused1, u32 unused2);
-    void edanimcbSetSoundTiming(eduimenu_s *unused0, eduiitem_s *item, u32 unused2);
-    void edanimcbSwitchMenu(eduimenu_s *parent, eduiitem_s *unused1, u32 unused2);
-    void edanimcbToggleSoundType(eduimenu_s *menu, eduiitem_s *item, u32 unused2);
-    void edbitsDrawSphere(NUVEC *centre, f32 radius, i32 colour, NUMTL *material);
+    void cbPtlReadoutMenu(struct eduimenu_s *menu, struct eduiitem_s *unused1, u32 unused2);
+    void edanimcbCancelLocalSoundMenu(struct eduimenu_s *unused0, struct eduimenu_s *unused1);
+    void edanimcbCancelOptMenu(struct eduimenu_s *unused0, struct eduimenu_s *unused1);
+    void edanimcbFileSave(struct eduimenu_s *menu, struct eduiitem_s *unused1, u32 unused2);
+    void edanimcbMCTBMenu(struct eduimenu_s *parent, struct eduiitem_s *unused1, u32 unused2);
+    void edanimcbParticleMenu(struct eduimenu_s *parent, struct eduiitem_s *unused1, u32 unused2);
+    void edanimcbSetSoundTiming(struct eduimenu_s *unused0, struct eduiitem_s *item, u32 unused2);
+    void edanimcbSwitchMenu(struct eduimenu_s *parent, struct eduiitem_s *unused1, u32 unused2);
+    void edanimcbToggleSoundType(struct eduimenu_s *menu, struct eduiitem_s *item, u32 unused2);
+    void edbitsDrawSphere(NUVEC *centre, f32 radius, i32 colour, struct numtl_s *material);
 #ifdef __cplusplus
 }
 #endif

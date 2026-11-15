@@ -211,12 +211,13 @@ def respell(text, line_no, column, name, keyword, tag):
     lines = text.splitlines(True)
     line = lines[line_no - 1]
     start = column - 1
+    keyword_before = re.compile(r"\b(struct|union|enum|class)\s+$")
     if line[start:start + len(name)] != name:
         found = re.search(r"(?<![\w.>])%s\b" % re.escape(name), line)
         if not found:
             return text
         start = found.start()
-    if re.search(r"\b(struct|union|enum)\s+$", line[:start]):
+    if keyword_before.search(line[:start]):
         return text
     lines[line_no - 1] = line[:start] + f"{keyword} {tag}" + line[start + len(name):]
     return "".join(lines)
@@ -239,7 +240,7 @@ def plan(errors, index, texts, graph_cache):
         if not names:
             continue
         name = names[-1] if message.startswith("must use") else names[0]
-        key = (file, line, name)
+        key = (file, line, column, name)
         if key in seen:
             continue
         seen.add(key)

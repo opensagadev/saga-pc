@@ -1,4 +1,5 @@
-#include "saga.h"
+#include "gameapi/ai/aisys/gameaiscript.h"
+#include "legoapi/characters/core/players.h"
 
 i16 GetGenericGoon(i32 armed) {
     if (armed) {

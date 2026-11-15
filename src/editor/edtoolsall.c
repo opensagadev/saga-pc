@@ -1,4 +1,5 @@
-#include "saga.h"
+#include "gameapi/edtools/edui.h"
+#include "nu2api/nu3d/nurndr.h"
 
 #ifdef __cplusplus
 extern "C" {

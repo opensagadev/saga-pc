@@ -1,4 +1,6 @@
-#include "saga.h"
+#include "nu2api/bgproc_pc.h"
+#include "nu2api/nucore/nutime.h"
+#include "nu2api/nudir_gen.h"
 
 /* PC timing leaves of nutimebar outside nu3d; the time bars themselves live
  * in nu3d_includes.cpp. */

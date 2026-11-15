@@ -1,4 +1,4 @@
-#include "saga.h"
+#include "nu2api/nucore/common.h"
 
 /* Original source name unknown. Empty on PC. Levels_ConfigureList
    calls it when the level list cannot be opened or holds no levels. VC8 drops

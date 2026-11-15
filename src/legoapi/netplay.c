@@ -1,4 +1,9 @@
-#include "saga.h"
+#include "globals.h"
+#include "legoapi/characters/motion.h"
+#include "legoapi/core/net/netplay.h"
+#include "legoapi/items/base/apiobject.h"
+#include "legoapi/world/level.h"
+#include "legogame/startup.h"
 #include <string.h>
 
 void *LevelHackData = 0;

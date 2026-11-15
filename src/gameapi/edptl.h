@@ -260,12 +260,12 @@ extern "C" {
     } DEBRIS_RENDER_CHUNK_PC;
 
     extern i32 EdAnimLocalFrameCount;
-    void cbPtlAddEffect(eduimenu_s *menu, eduiitem_s *unused1, u32 unused2);
-    void cbPtlInstanceSettingsMenu(eduimenu_s *parent, eduiitem_s *unused1, u32 unused2);
-    void cbPtlQuickDeleteMenu(eduimenu_s *menu, eduiitem_s *unused1, u32 unused2);
-    void cbPtlTextureMenu(eduimenu_s *menu, eduiitem_s *unused1, u32 unused2);
-    void edbricbFileLoad(eduimenu_s *menu, eduiitem_s *unused1, u32 unused2);
-    void edptlcbApplyNumGhosts(eduimenu_s *unused0, eduiitem_s *item, u32 unused2);
+    void cbPtlAddEffect(struct eduimenu_s *menu, struct eduiitem_s *unused1, u32 unused2);
+    void cbPtlInstanceSettingsMenu(struct eduimenu_s *parent, struct eduiitem_s *unused1, u32 unused2);
+    void cbPtlQuickDeleteMenu(struct eduimenu_s *menu, struct eduiitem_s *unused1, u32 unused2);
+    void cbPtlTextureMenu(struct eduimenu_s *menu, struct eduiitem_s *unused1, u32 unused2);
+    void edbricbFileLoad(struct eduimenu_s *menu, struct eduiitem_s *unused1, u32 unused2);
+    void edptlcbApplyNumGhosts(struct eduimenu_s *unused0, struct eduiitem_s *item, u32 unused2);
 #ifdef __cplusplus
 }
 #endif

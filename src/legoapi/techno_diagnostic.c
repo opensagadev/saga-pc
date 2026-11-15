@@ -1,4 +1,4 @@
-#include "saga.h"
+#include "nu2api/nucore/common.h"
 
 /* Empty on PC. Technos_FindTgt calls it for each failed target lookup, and
    VC8 drops calls to an empty body it can see, so the definition lives

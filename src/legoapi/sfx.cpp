@@ -1,4 +1,8 @@
-#include "saga.h"
+#include "legoapi/audio/audio.h"
+#include "legoapi/items/base/apiobject.h"
+#include "legoapi/render/core/gameliball.h"
+#include "nu2api/numath/nuvec.h"
+#include "nu2api/numusic/sfx.h"
 #include <stdio.h>
 
 extern "C" f32 AUDIOFADELEVEL;

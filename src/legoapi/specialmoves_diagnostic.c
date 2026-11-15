@@ -1,4 +1,4 @@
-#include "saga.h"
+#include "nu2api/nucore/common.h"
 
 /* Original source name unknown. Empty on PC (a bare RET). SpecialMoves_Configure
    calls it when the configuration file cannot be opened, and VC8 drops calls to

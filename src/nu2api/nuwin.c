@@ -1,4 +1,5 @@
-#include "saga.h"
+#include "nu2api/huffdecode.h"
+#include "nu2api/nuwin32/nu2api_windows.h"
 
 i32 NuWindowsProcessMessages(void) {
     while (PeekMessageA(&win_message, NULL, 0, 0, PM_REMOVE)) {

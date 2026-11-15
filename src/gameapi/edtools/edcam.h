@@ -26,9 +26,9 @@ extern "C" {
     void edcamGetPosAng(struct nuvec_s *position, i32 *pitch, i32 *yaw);
     void edcamMove(struct FRAME_PAD_PC *pad);
     void edcamSetDist(f32 distance);
-    void edcamGetPosAngSnap(NUVEC *position, i32 *angle_x, i32 *angle_y);
+    void edcamGetPosAngSnap(struct nuvec_s *position, i32 *angle_x, i32 *angle_y);
     void edcamSetAng(i32 pitch, i32 yaw);
-    void edcamSetPosAng(NUVEC *position, i32 pitch, i32 yaw);
+    void edcamSetPosAng(struct nuvec_s *position, i32 pitch, i32 yaw);
 #ifdef __cplusplus
 }
 #endif

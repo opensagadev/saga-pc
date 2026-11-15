@@ -1,4 +1,11 @@
-#include "saga.h"
+#include "gameapi/edpart.h"
+#include "legoapi/items/objects/objectsall.h"
+#include "legoapi/render/fx/parts.h"
+#include "legoapi/world/level.h"
+#include "legoapi/world/world.h"
+#include "legoapi/world/world_shared.h"
+#include "nu2api/nuerror_gen.h"
+#include "nu2api/nufile/nufile.h"
 #include <stdio.h>
 
 char **PDebNameList = NULL;

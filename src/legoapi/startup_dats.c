@@ -1,4 +1,9 @@
-#include "saga.h"
+#include "legoapi/startup_dats.h"
+#include "legoapi/world/levels.h"
+#include "nu2api/nufile/nufile.h"
+#include "nu2api/nusound/nusound.h"
+#include "nu2api/nuwin32/d3dCore.h"
+#include "nu2api/nuwin32/pcapi.h"
 
 NUDATHDR *StartupDatList[7] = {0};
 i32 StartupDatCount = 0;

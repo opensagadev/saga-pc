@@ -1,4 +1,9 @@
-#include "saga.h"
+#include "nu2api/PCInput.h"
+#include "nu2api/nuwin32/nu2api_windows.h"
+#include "nu2api/nuwin32/pcapi.h"
+#include "nu2api/pc_options.h"
+#include "nu2api/platform_files.h"
+#include "nu2api/save_folder.h"
 
 extern i32 PcSaveFolderRegisteredPc;
 

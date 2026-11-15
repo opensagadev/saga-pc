@@ -17,6 +17,8 @@
 #endif
 
 struct AIPATH;
+struct EDAIPATH_s;
+struct nurnd_vertex3d_s;
 
 #ifdef __cplusplus
 extern "C" {
@@ -86,9 +88,9 @@ extern "C" {
     extern f32 default_zspacing;
     extern u8 default_nacross;
     extern u8 default_ngroup;
-    extern void (*AIPathDeletedFn)(EDAIPATH_s *path);
+    extern void (*AIPathDeletedFn)(struct EDAIPATH_s *path);
     extern void (*GameAISaveFn)(AIPATHSYS *);
-    extern void AiRndrLine3d(NURND_VERTEX3D_PC *, NUMTL *, NUMTX *);
+    extern void AiRndrLine3d(struct nurnd_vertex3d_s *, NUMTL *, NUMTX *);
     void AIRetreatFromDestination2(AISYS_PC *, AIPACKET *, APIOBJECT *, i32);
     void areaEditor_Render(i32 x, i32 y, f32 xscale, f32 yscale);
     void routeEditor_Render(i32 x, i32 y, f32 xscale, f32 yscale);

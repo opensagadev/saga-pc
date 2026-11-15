@@ -1,4 +1,4 @@
-#include "saga.h"
+#include "nu2api/nucore/common.h"
 
 /* Original source name unknown. Empty on PC (a bare RET). Episodes_ConfigureList
    calls it with the config path when the file cannot be opened and when it holds

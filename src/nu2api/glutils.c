@@ -1,4 +1,9 @@
-#include "saga.h"
+#include "nu2api/nu3d/glutils.h"
+#include "nu2api/nu3d/numtl.h"
+#include "nu2api/nu3d/nutex.h"
+#include "nu2api/nualloc.h"
+#include "nu2api/nudynamiclight_gen.h"
+#include "nu2api/numath/nuvec.h"
 
 NUMTL *CreateAlphaBlendTexture(VARIPTR *buffer, VARIPTR buffer_end, char *name, i32 disable_depth_write, i32 alpha_mode, i32 sort_priority,
                                i32 depth_mode) {

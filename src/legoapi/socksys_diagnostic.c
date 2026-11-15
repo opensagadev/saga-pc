@@ -1,4 +1,4 @@
-#include "saga.h"
+#include "nu2api/nucore/common.h"
 
 /* Empty on PC: the missing sock-end warning was compiled out.
    SockSysConfigureNuFPar still calls it. */
