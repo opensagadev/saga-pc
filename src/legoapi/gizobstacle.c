@@ -497,8 +497,6 @@ typedef struct gizobstacle_object_data_s { // size 0x4
     i16 platform_id;                       // 0x2
 } GIZOBSTACLE_OBJECT_DATA;
 
-extern i32 (*GizObstacleExcludeFn)(GIZOBSTACLE *, GAMEOBJECT *);
-
 void GizObstacle_Stop(GIZOBSTACLE *obstacle) {
     if (obstacle) {
         GameAnimSet_Stop(obstacle->anim_set);

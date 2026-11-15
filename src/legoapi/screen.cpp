@@ -22,9 +22,6 @@ typedef struct STILL_RENDER_MATERIAL {   // size 0x2bc
 extern "C" NUMTL *FadeMtl;
 extern "C" NUMTL *FadeMtl2;
 extern "C" NUMTL *ScreenFadeMtl;
-extern "C" {
-    extern void (*RenderBackdropAlphaFn)(f32 *);
-}
 extern "C" GRAPHICS_RENDER_TEXTURE *PCGraphicsFrameRenderTexture(i32);
 
 typedef struct CUT_DISPLAY_VIEW { // size 0xec

@@ -2,7 +2,6 @@
 #include <string.h>
 
 extern "C" void NuMainTrailerLeaf(void);
-extern "C" void NuRndrLine3dDbgFlush(void);
 
 extern "C" {
     extern i32 NuMainRendererControl;

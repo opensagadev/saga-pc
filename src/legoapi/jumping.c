@@ -1,10 +1,5 @@
 #include "saga.h"
 
-extern i32 LEGOCONTEXT_JUMP;
-extern i32 (*FindSlamOrigin_UseCPosFn)(GAMEOBJECT *);
-extern void (*BigJump_EndOfLandFn)(GAMEOBJECT *);
-extern i32 (*BigJump_LandActionFn)(GAMEOBJECT *);
-
 struct minianimpacket_s {       // size 0x24
     f32 current_time;           // 0x00
     f32 previous_time;          // 0x04
@@ -25,9 +20,6 @@ typedef struct beast_fall_land_view_s { // size 0xdb0
     f32 fall_animation_time;            // 0xdac
 } BEAST_FALL_LAND_VIEW;
 
-extern i32 (*IsWearingBackPackFn)(GAMEOBJECT *);
-extern i32 (*UsingExtraActionsFn)(GAMEOBJECT *);
-
 typedef struct jump_auxiliary_fields_s {
     u8 unknown_000[0x7b1];
     u8 landing_followup;
@@ -45,11 +37,6 @@ typedef struct jump_auxiliary_fields_s {
     u8 unknown_db0[0x8b];
     u8 action_suppressed;
 } JUMP_AUXILIARY_FIELDS;
-
-extern i32 (*Jump_PreventJumpFn)(GAMEOBJECT *);
-extern void (*Jump_EndOfLandContextFn)(GAMEOBJECT *);
-extern i32 (*Slam_GetDebrisFn)(GAMEOBJECT *, i32);
-extern i32 (*CanGlideFn)(GAMEOBJECT *);
 
 void StartJump(GAMEOBJECT *object, i32 movement_state) {
     if (LEGOCONTEXT_JUMP != -1) {

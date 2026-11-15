@@ -9,8 +9,6 @@ void EdFileWriteInt(i32 value);
 void EdFileWriteShort(i16 value);
 void EdFileWriteChar(char value);
 void EdFileWriteNuVec(NUVEC *value);
-void edcamMove(FRAME_PAD_PC *pad);
-void edcamGetPosAng(NUVEC *position, i32 *angle_x, i32 *angle_y);
 void edbricbFileLoad(eduimenu_s *menu, eduiitem_s *unused1, u32 unused2);
 extern NUMTL *edbri_mtl;
 

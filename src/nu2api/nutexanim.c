@@ -999,8 +999,6 @@ TEXTURE_ANIM_PROGRAM *NuTexAnimProgReadScript(char *path, VARIPTR *buffer, VARIP
     return program;
 }
 
-extern i32 nutexanim_usepakfile;
-extern i32 NuTexAnimMissingPakDiagnostic;
 extern void PCSpecialEmptyHandler(void);
 
 #define TEXANIM_DIAGNOSTIC(value) ((void (*)(const void *))AnimationDiagnosticNoOp)(value)

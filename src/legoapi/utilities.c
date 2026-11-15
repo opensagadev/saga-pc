@@ -21,15 +21,12 @@ struct shadow_platform_list_pc_s {
     SHADOW_PLATFORM_ENTRY_PC entries[1];
 };
 
-extern void (*DisguiseAdjustFn)(i32, i32, NUVEC *, NUVEC *);
-
 typedef struct USEFUL_MATERIAL {
     u8 unknown_00[0x40];
     u32 attributes;
 } USEFUL_MATERIAL;
 
 extern NUMTL *SolidMtl;
-extern i32 (*MatrixReflection_CanOverrideFn)(void);
 
 static f32 UtilitiesFabs(f32 value);
 

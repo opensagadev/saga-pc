@@ -146,6 +146,8 @@ extern "C" {
     VUFNT *NuQFntCreate(struct FONT_LEGACY_READER *, i32, i32, VARIPTR *, VARIPTR *);
     f32 NuQFntPrintJustifiedW(VUFNT *, u16 *, f32, f32, f32, f32, f32, f32, f32, u32, struct numtx_s *);
     void NuQFntSetMtxRS(void *stream, VUFNT *font, struct numtx_s *matrix);
+    void NuFntScale(i32 x, i32 y);
+    void NuFntSet(i32 font);
 #ifdef __cplusplus
 }
 #endif

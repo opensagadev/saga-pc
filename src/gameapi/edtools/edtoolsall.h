@@ -30,6 +30,10 @@ extern "C" {
     void FS_BuildFilterBlocks(char *arg0);
     void FS_BuildFilterOutBlocks(char *arg0);
     extern i32 ui_bgmtl;
+    void eduiAddPropTextPickEnt(eduimenu_s *menu, eduiitem_s *item);
+    void eduiSetCameraEnabled(i32 enabled);
+    void eduiSetCursorColour(u32 colour);
+    void eduiSetFontScale(f32 x, f32 y);
 #ifdef __cplusplus
 }
 #endif

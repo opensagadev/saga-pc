@@ -56,6 +56,8 @@ extern "C" {
     i32 NuSpecialFindMulti(NUGSCN *, nuhspecial_s *, char *, i32, i32);
     i32 NuSpecialSetClipping(i32, i32);
     void NuSpecialClearShadowClipTestResults(void);
+    NUMTL *NuSpecialGetMtl(nuhspecial_s *special, i32 index);
+    i32 NuSpecialNumMtls(nuhspecial_s *special);
 #ifdef __cplusplus
 }
 #endif

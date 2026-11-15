@@ -225,9 +225,6 @@ i32 FileDirectoryHostReadPc(i32 file, FILE_DIRECTORY_HOST_ENTRY_PC *entry) {
     return strlen(entry->name);
 }
 
-extern i32 FileDirectoryOpenCountPc;
-extern char *FileDirectoryPathSlotsPc[16];
-
 i32 FileDirectoryHostOpenPc(char *path) {
     char search[200];
     i32 slot;

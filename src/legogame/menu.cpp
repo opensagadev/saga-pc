@@ -38,9 +38,6 @@ extern "C" {
     void Hub_UpdateKit(void);
     extern i16 dat_00880fc4;
     extern i16 dat_00880838;
-    extern i16 dat_00880850;
-    extern i16 dat_00880bc4;
-    extern i16 dat_0088090c;
     extern i16 dat_0088089c;
     extern i16 dat_008808ec;
     extern i16 dat_008806f8;
@@ -48,8 +45,6 @@ extern "C" {
 }
 extern "C" {
     extern i16 dat_00880840;
-    extern i16 dat_00880864;
-    extern i16 dat_00880874;
     extern i16 dat_008806fc;
     extern i16 dat_00880910;
     extern i16 dat_008808f0;
@@ -60,7 +55,6 @@ extern "C" {
     extern i16 dat_00880794;
     extern i16 dat_00880700;
     extern i16 dat_00880754;
-    extern i16 dat_00880890;
 }
 void legoSetMusicVolume(f32);
 extern "C" {
@@ -73,7 +67,6 @@ extern "C" {
 extern "C" f32 MenuNewGameY;
 extern "C" {
     extern i32 MenuOptionsPlayerFlag;
-    extern i32 pause_i_pad;
 }
 
 extern "C" {

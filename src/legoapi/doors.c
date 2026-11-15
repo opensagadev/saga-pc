@@ -545,7 +545,6 @@ void Doors_Configure(WORLDINFO *world_ptr, char *config) {
     }
 }
 
-extern void *Door_Last;
 i32 CutScene_HasPlayed(CUTINFO *cutscene);
 i32 NuPtInPoly(NUVEC *, NUVEC *, NUVEC *, NUVEC *, NUPLANE *);
 

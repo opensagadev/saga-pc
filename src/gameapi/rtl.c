@@ -2527,8 +2527,6 @@ void cbCopyLight(eduimenu_s *menu, eduiitem_s *item, u32 buttons) {
     }
 }
 
-extern i32 hide_types[8];
-
 void cbSetControls(eduimenu_s *menu, eduiitem_s *item, u32 value) {
     (void)menu;
     (void)value;
@@ -2593,8 +2591,6 @@ static RTL_LIGHT **rtl_locked_undo = NULL;
 static RTL_LIGHT **base_rtl_undo = NULL;
 eduiitem_s *undo_item = NULL;
 eduiitem_s *redo_item = NULL;
-
-void edcamGetPosAng(NUVEC *position, i32 *pitch, i32 *yaw);
 
 void edrtlSaveUndo(void) {
     if (maxundo != 0 && curr_set != NULL) {
@@ -3684,7 +3680,6 @@ void edrtlRedo(void) {
     }
 }
 
-static i32 rtlCmp(RTL_LIGHT *first, RTL_LIGHT *second);
 char *rtlGetEnvPath(void);
 char *rtlGetEnvSceneName(void);
 
@@ -3780,7 +3775,6 @@ NUVEC edrtl_dragstart = {0};
 NUVEC edrtl_dragoff = {0};
 
 void edcamSetAng(i32 pitch, i32 yaw);
-f32 edcamGetDist(void);
 
 static RTL_LIGHT *FindNearestRTL(NUVEC *position, int ignore_radius) {
     i32 i;

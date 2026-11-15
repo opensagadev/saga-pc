@@ -170,9 +170,6 @@ typedef struct CUT_LOAD_INSTANCE_RATE { // size 0x9c
     f32 rate;                           // 0x98
 } CUT_LOAD_INSTANCE_RATE;
 
-extern "C" {
-    extern void (*CutScene_OverrideConfigFileNameFn)(char *, i32, i32);
-}
 typedef struct CUT_DRAW_LOCATOR CUT_DRAW_LOCATOR;
 
 typedef struct CUT_DRAW_CHARACTER { // size 0x64
@@ -356,10 +353,6 @@ typedef struct CUT_PLAYER_RECORD {
     CUT_PLAYER_STATE *states;
     u8 state_count;
 } CUT_PLAYER_RECORD;
-
-extern "C" {
-    extern i32 (*CutScenePlayer_AcceptFn)(CUT_PLAYER_CLIP_CONFIG *);
-}
 
 extern "C" {
     static void LocatorFunction_Blaster(INSTNUGCUTSCENE *, CUT_DRAW_LOCATOR_SYS *, CUT_DRAW_LOCATOR_INSTANCE *, CUT_DRAW_LOCATOR *locator,

@@ -602,8 +602,6 @@ void SoundVoiceManagerPC::SetSampleName(const char *name, i32 sample_index) {
     NuStrCat(this->samples[sample_index].file_name, PCSoundOggExtension);
 }
 
-extern SoundQueue *NuSound3StereoStreams[2];
-
 extern "C" {
     i32 PCStereoChannel0B = 1;
     i32 PCStereoChannel1B = 3;
@@ -1016,8 +1014,6 @@ extern "C" {
         return 1;
     }
 }
-
-extern SoundQueue *NuSound3StereoStreams[2];
 
 extern "C" void fun_00697eb0(void) {
     if (NuSound3Initialized) {

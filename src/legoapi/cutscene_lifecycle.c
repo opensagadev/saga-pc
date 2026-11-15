@@ -1123,7 +1123,6 @@ INSTNUGCUTSCENE *instNuGCutSceneCreate(void *asset, NUGSCN *gscene, void *extra_
 typedef void (*CUT_DRAW_RENDER_CALLBACK_PC)(INSTNUGCUTSCENE *, void *, void *, void *, f32, i32);
 typedef void (*CUT_DRAW_EVAL_CALLBACK_PC)(INSTNUGCUTSCENE *, void *, void *, void *, f32);
 typedef void (*CUT_DRAW_RIGID_CALLBACK_PC)(void *, nuhspecial_s *, NUMTX *);
-extern void (*NuCutSceneResetCharacters)(INSTNUGCUTSCENE *);
 
 void fun_005000c0(void) {
     CutSceneBackgroundInstances = NULL;
@@ -1306,8 +1305,6 @@ void instNuGCutSceneRotateY(INSTNUGCUTSCENE *owner, NUANG angle) {
     NuMtxRotateY(&instance->matrix, angle);
     NuGCutSceneUpdateMtx(instance, &instance->matrix);
 }
-
-extern void (*NuCutSceneRigidCollisionCheck)(CUT_LOAD_RIGID *, NUMTX *);
 
 static void CutSceneRigidSysRender(INSTNUGCUTSCENE *owner, f32 frame, i32 paused) {
     CUT_INSTANCE_LOAD_PC *instance = (CUT_INSTANCE_LOAD_PC *)owner;
@@ -2069,8 +2066,6 @@ void (*NuCutSceneSFXUpdate)(CUT_LOAD_LOCATOR_SYSTEM *, CUT_LOAD_LOCATOR_INSTANCE
 void (*NuCutSceneSFXFixUp)(INSTNUGCUTSCENE *) = NULL;
 CUT_LOCATOR_FUNCTION_ENTRY_PC *CutSceneLocatorFunctions = 0;
 i32 CutSceneStreamLoadGuard = 0;
-extern void (*NuCutSceneSFXFixUp)(INSTNUGCUTSCENE *);
-extern void (*NuCutSceneCharacterProcess)(INSTNUGCUTSCENE *, void *, void *, void *, f32, i32);
 
 static void CutSceneCharacterSysUpdate(INSTNUGCUTSCENE *owner, f32 frame, i32 paused) {
     CUT_INSTANCE_LOAD_PC *instance = (CUT_INSTANCE_LOAD_PC *)owner;

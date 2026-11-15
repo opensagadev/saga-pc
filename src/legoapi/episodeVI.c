@@ -106,11 +106,6 @@ typedef struct JABBA_ANTINODE_VIEW { // size 0x4c
 
 extern i16 dat_007f1a7c;
 extern i16 dat_007f1a88;
-extern i32 EmperorFloorRouteOn;
-extern f32 EmperorFloorRadius;
-extern f32 EmperorFloorJitter;
-extern f32 EmperorFloorPush;
-extern f32 EmperorFloorSafeXMinimum;
 #define EMPEROR_PACKET ((EMPEROR_UPDATE_PACKET *)emperorfighta_netpacket)
 #define EMPEROR_FLOOR_AREA_MASK(world, area) (1 << ((area) - (world)->ai_sys->areas))
 

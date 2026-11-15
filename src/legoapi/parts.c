@@ -903,8 +903,6 @@ typedef struct PART_TERRAIN_STATE { // size 0x20c
 
 #define PART_NORM PartImpactNormalPrivate
 i32 edpartPlace(i32 index, NUVEC *position);
-void edcamMove(FRAME_PAD_PC *pad);
-void edcamGetPosAng(NUVEC *position, i32 *pitch, i32 *yaw);
 void edcamGetPosAngSnap(NUVEC *position, i32 *pitch, i32 *yaw);
 void edpartOptMenu(void);
 void edmainSetLocVec(NUVEC *location);

@@ -25,6 +25,12 @@ extern "C" {
     void edmainExtCamera(struct nucamera_s *camera);
     void edcamSet(void);
     void edcamMoveEx(struct FRAME_PAD_PC *pad, f32 delta_time);
+    NUCAMERA *edmainGetCamera(void);
+    f32 edcamGetDist(void);
+    i32 edmainGetCursorEnabled(void);
+    void edcamGetPosAng(NUVEC *position, i32 *pitch, i32 *yaw);
+    void edcamMove(FRAME_PAD_PC *pad);
+    void edcamSetDist(f32 distance);
 #ifdef __cplusplus
 }
 #endif

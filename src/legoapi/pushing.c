@@ -19,8 +19,6 @@ typedef struct PUSH_OBJECT_LOCAL {  // size 0x7b4
     u8 landing_followup;            // 0x7b1
 } PUSH_OBJECT_LOCAL;
 
-extern u32 (*CanPushObstaclesFn)(GAMEOBJECT *);
-
 typedef struct PUSH_OBSTACLE_WORLD { // size 0x46a8
     u8 unknown_000[0x46a4];          // 0x0000
     void *obstacle_sys;              // 0x46a4

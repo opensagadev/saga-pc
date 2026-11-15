@@ -5,7 +5,6 @@
 extern "C" {
 
     extern TerrainQuery_s *TerI;
-    extern void *TerrOverRideScan;
     extern TERRAIN_POLYGON_INFO *ScaleTerrain;
     void TerrainSkinAllocate(TERRAIN_GROUP_PC *);
 
@@ -2095,7 +2094,6 @@ extern "C" {
     extern f32 TerrainShadowHeight;
     extern i16 TerrainShadowFloorIndex;
     extern u16 TerrainWaterCastIndex;
-    extern u16 TerrainSurfaceClass;
     extern u16 NuTerrPlatsOff;
     extern TERRAIN_POLYGON_INFO *TerrainCastAuxPolygon;
     f32 NewCast(NUVEC *, f32, f32);

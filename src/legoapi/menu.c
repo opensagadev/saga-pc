@@ -277,10 +277,6 @@ typedef struct menu_draw_state_s { // size 0xb0
     i32 paused;                    // 0xac
 } MENU_DRAW_STATE;
 
-extern void (*memcard_drawasiconfn)(void);
-extern void (*predrawfn)(MENU *);
-extern void (*headerdrawfn)(void);
-
 void (*headerdrawfn)(void) = DrawMenuHeader;
 void (*predrawfn)(MENU *) = 0;
 

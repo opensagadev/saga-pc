@@ -90,9 +90,6 @@ nuhspecial_s extrasils[44] = {0};
 nuhspecial_s arrow2 = {0};
 f32 ShopOldPickedPush = 0;
 NUVEC BrickCurPos[7] = {0};
-extern f32 TopBigScale[6];
-extern f32 TopShelfPush[6];
-extern f32 TopBigPush[6];
 static f32 SubBigCharPush;
 i32 ShopEaseSubIn = 0;
 i32 SHOPEXTRACOUNT = 0;
@@ -129,26 +126,18 @@ f32 ShopCharTopOffset = 0;
 i32 ShopSubMenu = 0;
 i32 ShopMoveSfxLock = 0;
 i32 ShopItemChanged = 0;
-extern f32 codeshelfscale[6];
 extern f32 codemenuscale[6];
-extern f32 codebigscale[6];
-extern struct CUT_PLAYER_ACTIVE *shopcutsceneplayer;
 extern f32 ShopNativeScale[6];
 extern f32 ShopNativeBigFactor[6];
 extern f32 ShopNativePush[6];
 extern f32 ShopNativeSubInitA;
 extern f32 ShopNativeSubInitB;
-extern f32 ShopSubInitA;
-extern f32 ShopSubInitB;
-extern f32 ShopCharTopOffset;
 extern f32 ShopTopBrickOffset;
 extern f32 ShopNativeSubNormCharPush;
 extern f32 ShopCodeExitPush;
 extern f32 ShopTopCodeOffset;
 extern f32 ShopTopExtraOffset;
 extern f32 ShopTopHintOffset;
-extern i32 (*menuptr)(void *menu);
-extern void (*ShopDrawPanelFn)(void);
 
 /* Shop state machine. */
 typedef struct SHOP_INPUT_PC {
@@ -166,41 +155,18 @@ typedef struct SHOP_INPUT_PC {
 
 typedef i32 (*SHOP_MENU_CALLBACK)(void *);
 typedef void (*SHOP_DRAW_CALLBACK)(void);
-extern SHOP_MENU_CALLBACK ShopMenuParent[3];
-extern SHOP_MENU_CALLBACK ShopOldMenuParent[3];
-extern SHOP_MENU_CALLBACK ShopOldMenuFn;
-extern SHOP_DRAW_CALLBACK ShopDrawParent[3];
 extern SHOP_DRAW_CALLBACK ShopOldDrawParent[3];
-extern SHOP_DRAW_CALLBACK ShopOldDrawPanelFn;
-extern SHOP_DRAW_CALLBACK ShopOldDrawFn;
 extern i32 ShopMenuLevel;
 extern i32 ShopDrawLevel;
-extern i32 ShopOldMenuLevel;
 extern i32 ShopOldDrawLevel;
-extern i32 ShopExit;
-extern i32 ShopLastItem;
-extern i32 ShopEntered;
-extern i32 ShopItemChanged;
-extern i32 ShopMoveSfxLock;
-extern i32 ShopSubMenu;
-extern i32 ShopEaseSubIn;
 extern i32 ShopMenu;
-extern i32 ShopColumn;
 extern f32 ShopSlideTimer;
-extern f32 ShopHintDrawWait;
-extern f32 ShopOldPickedScale;
-extern f32 ShopOldPickedPush;
-extern f32 ShopScaleOverride[7];
-extern f32 ShopInOutScale;
-extern char *ShopCheatName;
 extern char ShopUserCode[6];
 /* The interaction batch shares SHOP_INPUT_PC and the Shop*Pc state above.
  * Movement mode is 1=left, 2=right. */
 extern i32 ShopMoveItems;
 extern i32 ShopSubMoveSfxLock;
-extern i32 ShopScrollKeyHit;
 void AddToCompletionPoints(u32 points);
-extern f32 ShopPurchasePulse;
 extern i32 HubForceShopSave;
 extern f32 ShopPurchasePulseDuration;
 #define SHOP_RESET_SHELF_POSITIONS()                                                                                                       \
@@ -216,7 +182,6 @@ extern f32 ShopPurchasePulseDuration;
     positions[i].x = SubShelfPos[i].x + (SubShelfPos[j].x - SubShelfPos[i].x) * t;                                                         \
     positions[i].y = SubShelfPos[i].y + (SubShelfPos[j].y - SubShelfPos[i].y) * t;                                                         \
     positions[i].z = SubShelfPos[i].z + (SubShelfPos[j].z - SubShelfPos[i].z) * t;
-extern f32 ShopCheatTimer;
 extern AREA_DATA_PC *ANEWHOPE_ADATA;
 extern AREA_DATA_PC *ANAKINSFLIGHT_ADATA;
 extern i32 ShopCodeCharacter;
@@ -225,7 +190,6 @@ extern i32 ShopCodeMoveSfxLock;
 extern i32 ShopCodeItemChanged;
 extern f32 ShopCodeRepeatTimer;
 extern f32 ShopCodeRepeatInterval;
-extern f32 ShopCodeExitPush;
 extern char ShopCodeCharacters[37];
 extern i16 dat_00880708;
 extern i16 dat_0088074c;

@@ -547,7 +547,6 @@ void edpartGravMenu(eduimenu_s *menu, eduiitem_s *unused1, u32 unused2) {
     }
 }
 
-extern struct eduimenu_s *edpart_instanceorphans_menu;
 extern i32 edpart_nearest_orphans;
 extern i32 edpart_nearest_duplicates;
 
@@ -1062,12 +1061,6 @@ void fun_0064a430(void) {
 }
 
 extern struct eduimenu_s *edpart_sscale_menu;
-extern struct eduimenu_s *edpart_switch_menu;
-extern struct eduimenu_s *edpart_switchtype_menu;
-extern struct eduimenu_s *edpart_sounds_menu;
-extern struct eduimenu_s *edpart_soundx_menu;
-extern struct eduimenu_s *edpart_soundid_menu;
-extern struct eduimenu_s *edpart_soundcontrol_menu;
 extern const char dat_0076b274[4];
 void edpartDebrisSettingsMenu(eduimenu_s *menu, eduiitem_s *item, u32 value);
 

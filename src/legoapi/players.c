@@ -87,8 +87,6 @@ typedef union player_position_sock_pc_u { // size 0x38
     } start;
 } PLAYER_POSITION_SOCK;
 
-extern i32 (*Player_ToggleSubCharacterFn)(GAMEOBJECT *, i32, i32);
-extern void (*Player_ToggledCharacterFn)(GAMEOBJECT *, i32);
 extern i32 complexsockposition_forcesock;
 extern i32 movegamecamera_forcesock;
 

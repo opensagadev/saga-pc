@@ -39,8 +39,6 @@ class TEXT_INPUT_MANAGER_PC { // size 0x68b0
 };
 
 extern "C" {
-    extern void (*TextInputNameCallbackPc)(i32, char *);
-
     i32 PcInput_GetCtrlStringPlayer(void) {
         return TextInputLastDeviceIndexPc;
     }

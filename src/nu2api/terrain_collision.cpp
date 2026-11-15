@@ -5,7 +5,6 @@
 extern "C" {
 
     extern TerrainQuery_s *TerI;
-    extern void *TerrOverRideScan;
     extern TERRAIN_POLYGON_INFO *ScaleTerrain;
     void TerrainSkinAllocate(TERRAIN_GROUP_PC *);
 

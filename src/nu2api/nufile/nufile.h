@@ -202,6 +202,7 @@ extern "C" {
     void NuFileUpCase(struct nufile_device_s *device, char *filepath);
     void NuFileCloseDir(i32 file);
     i32 NuFileOpenDir(char *path);
+    i32 NuFileAlign(NUFILE file, i32 mask);
 #ifdef __cplusplus
 }
 #endif

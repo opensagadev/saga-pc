@@ -283,8 +283,6 @@ typedef struct NuKeyboardInitLayout_PC {                // size 0x68b4
     u8 *keyboard_state;                                 // 0x68b0
 } NuKeyboardInitLayout_PC;
 
-extern void (*PcInputStateInitializedCallback)(PC_INPUT_RUNTIME_PC *);
-
 void PC_INPUT_RUNTIME_PC::ReadConfiguration(PC_INPUT_CONFIG_PC *records, const char *directory) {
     char path[1024];
     u32 version = 0;

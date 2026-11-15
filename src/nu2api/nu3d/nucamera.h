@@ -93,6 +93,7 @@ extern "C" {
     i32 NuCameraSaveState(void);
     void NuCameraClearStateBuffer(void);
     f32 NuCameraDistSqr(NUVEC *);
+    void NuCameraCalcRay(f32 screen_x, f32 screen_y, NUVEC *ray_start, NUVEC *ray_end, NUCAMERA *camera);
 #ifdef __cplusplus
 }
 #endif

@@ -19,3 +19,7 @@ extern "C" {
 #ifdef __cplusplus
 }
 #endif
+
+#ifdef __cplusplus
+extern i32 MemoryManagerTraceFailures;
+#endif

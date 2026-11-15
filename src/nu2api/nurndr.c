@@ -293,10 +293,6 @@ void NuRndrEndReflectionRender(void) {
     RndrStateSetReflection(0);
 }
 
-extern i32 dat_00973934;
-extern i32 dat_00973938;
-extern i32 dat_0097393c;
-
 i32 fun_005d46d0(void) {
     return dat_00973934;
 }

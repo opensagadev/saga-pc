@@ -3,8 +3,6 @@
 extern "C" void FmvOptionErrorPc(i32, const char *, i32) {
 }
 
-extern "C" void NuFntSet(i32 font);
-
 extern "C" void fun_00630d70(void) {
     if (FmvDrawCallbackPc != NULL && NuRndrBeginScene(1)) {
         NuFntSet(0);

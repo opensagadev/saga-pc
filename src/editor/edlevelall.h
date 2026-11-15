@@ -39,6 +39,38 @@ extern "C" {
     void EdDrawEnd(void);
     void EdDrawPolyCylinder(struct numtx_s *matrix, f32 half_height, f32 radius, f32 top_radius, i32 segments, i32 colour, i32 cap_bottom,
                             i32 cap_top);
+    extern NUMTL *edLevel2dMtl;
+    extern NUMTL *edLevel3dMtl;
+    extern NUMTL *edLevelTexMtl;
+    extern NUMTX *NewMtx;
+    extern eduimenu_s *edLevelActiveMenu;
+    extern eduimenu_s *edLevelDestroyThisMenu2;
+    extern eduimenu_s *edLevelDestroyThisMenu;
+    extern eduimenu_s *edLevelNextMenu;
+    extern eduimenu_s *edLevelPinnedMenu;
+    extern i32 EdLevelFnt;
+    extern i32 EdLevelFntScale;
+    extern i32 NewMtl;
+    extern i32 NewPrim;
+    extern i32 edLevelDestroyActiveMenu;
+    extern i32 edlevel_mouseandkeyboard;
+    extern i32 pad_disabled;
+    extern struct eduiiattr_s EdLevelAttr;
+    void EdDrawLineArrow(NUMTX *transform, f32 size, i32 colour);
+    void EdDrawLineCircleX(NUVEC *centre, f32 radius, i32 colour, i32 segments);
+    void EdDrawLineCircleY(NUVEC *centre, f32 radius, i32 colour, i32 segments);
+    void EdDrawLineCircleZ(NUVEC *centre, f32 radius, i32 colour, i32 segments);
+    void EdDrawLineCross(NUVEC *position, f32 size, i32 colour);
+    void EdDrawLineCube(NUMTX *transform, f32 size, i32 colour);
+    void EdDrawLineSegment(NUVEC *a, NUVEC *b, i32 colour);
+    void EdDrawLineSphere(NUVEC *center, f32 radius, f32 scale, i32 colour);
+    void EdDrawMtx(NUMTX *matrix);
+    void EdDrawPolyArrow(NUVEC *from, NUVEC *to, i32 segments, i32 colour, f32 min_radius, f32 max_radius, f32 radius_scale,
+                         f32 radius_bias);
+    void EdDrawPolyAxis(NUMTX *transform, f32 size, i32 opacity);
+    void EdDrawPolyCylinderEx(NUVEC *start, NUVEC *end, i32 sides, i32 colour, i32 cap_colour, f32 radius, f32 limit, f32 offset);
+    void EdDrawPolySector(NUVEC *center, f32 radius, i32 axis, i32 first_angle, i32 last_angle, i32 colour, i32 segments);
+    void EdDrawPolyTri(NUVEC *a, NUVEC *b, NUVEC *c, i32 colour);
 #ifdef __cplusplus
 }
 #endif
@@ -606,3 +638,7 @@ struct EdInputContext {       // size 0x260
 #endif
 
 #undef SAGA_EDITOR_EDLEVELALL_H_STOP
+
+#ifdef __cplusplus
+extern EdManipulator theDefaultManipulator;
+#endif

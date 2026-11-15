@@ -28,3 +28,5 @@ during the cleanup; each flip is logged here and they get one tuning pass once t
 | fold NUSPECIALHANDLE (641acdcb) | BoltTypes_Configure | legoapi/bolts.cpp | 99.88 % | exact |
 | legoapi data into its units | BoltTypes_Configure | legoapi/bolts.cpp | exact | 99.88 % |
 | records out of legoapi_types.h | DebrisSetup2 | legoapi/parts.c | exact | 99.95 % |
+| editor declarations into headers | BoltTypes_Configure | legoapi/bolts.cpp | 99.88 % | exact |
+| editor declarations into headers | DebrisSetup2 | legoapi/parts.c | 99.95 % | exact |

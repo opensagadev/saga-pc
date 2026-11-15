@@ -188,7 +188,6 @@ extern "C" {
     }
 }
 
-extern "C" void PCShaderSetMaterialParametersPc(NuShaderObject *, NUMTL *);
 static void PCDisplayHandlerBindPrograms(PC_DL_SHADER_PROGRAM_PAIR_PC *);
 
 static void PCDisplayHandlerBindPrograms(PC_DL_SHADER_PROGRAM_PAIR_PC *programs) {

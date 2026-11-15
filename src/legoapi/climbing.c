@@ -4,8 +4,6 @@
 extern i32 LEGO_AIPATHCNX_VARIANT_FLAG0;
 extern i32 LEGO_AIPATHCNX_VARIANT_FLAG1;
 
-extern i32 (*CanMagnetClimbFn)(GAMEOBJECT *);
-
 static __inline f32 ClimbingFabs(f32 value) {
     u32 bits = *(u32 *)&value & 0x7fffffff;
     return *(f32 *)&bits;

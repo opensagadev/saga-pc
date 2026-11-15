@@ -209,7 +209,6 @@ extern NUCAMERA *cubemapcam;
 extern f32 edbits_cubemap_fov;
 extern f32 edbits_cubemap_aspect;
 void edcamSetAng(i32 pitch, i32 yaw);
-void edcamSetDist(f32 distance);
 
 f32 edbits_cubemap_fov = 1.5708f;
 f32 edbits_cubemap_aspect = 1.0f;

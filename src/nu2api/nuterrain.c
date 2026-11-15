@@ -669,17 +669,11 @@ void TerrainSkinAllocate(TERRAIN_GROUP_PC *group) {
     SkinMemInfo[selected].last_use = (i32)TerrainUpadteCnt;
 }
 
-extern TerrainQuery_s *TerI;
 extern TERRAIN_POLYGON_INFO *ScaleTerrain;
 extern u16 NuTerrPlatsOff;
-extern i16 castnum;
 extern i16 TerrainShadowFloorIndex;
-extern TERRAIN_POLYGON_INFO *TerrainCastAuxPolygon;
 extern f32 TerrainShadowHeight;
-extern NUVEC TerrainCastAuxNormal;
-extern u16 TerrainCastAuxValid;
 extern i16 TerrainCastAuxIndex;
-extern u16 TerrainWaterCastIndex;
 extern u16 TerrainRoofValid;
 extern i16 TerrainRoofIndex;
 extern NUVEC TerrainRoofNormal;

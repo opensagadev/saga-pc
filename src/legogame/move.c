@@ -190,10 +190,8 @@ typedef struct COMBO_AI_VIEW {
     f32 nearest_opponent_metric;
 } COMBO_AI_VIEW;
 
-extern void (*VehicleSlowdownCallback)(GAMEOBJECT *);
 extern AREA_DATA_PC *DEATHSTARBATTLE_ADATA;
 extern AREA_DATA_PC *ANAKINSFLIGHT_ADATA;
-extern AREA_DATA_PC *BOUNTYHUNTERPURSUIT_ADATA;
 
 typedef struct vehicle_thrust_view_s {
     u8 unknown_000[0xdcc];
@@ -414,7 +412,6 @@ typedef struct forcepush_feedback_view_s {
 } FORCEPUSH_FEEDBACK_VIEW;
 
 extern const f64 GameObjectNearFloorNoFloorHeight;
-extern i32 objopponent_ignoreaiopponent;
 
 static f32 MoveFabs(f32 value) {
     u32 bits = *(u32 *)&value & 0x7fffffff;

@@ -42,8 +42,6 @@ enum {
 extern "C" {
     ThingManager *theThingManager = NULL;
     extern const char dat_0076b274[4];
-    void NuFntSet(i32 font);
-    void NuFntScale(i32 x, i32 y);
 }
 
 /* Editor "Timings" menu: per-pass time bars, globally or per thing. */

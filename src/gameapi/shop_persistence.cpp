@@ -31,11 +31,8 @@ extern "C" {
     i32 SaveloadPending = 0;
     u8 PcSaveHeaderMetadata[16] = {0};
     i32 saveload_slotid = 0;
-    extern i32 SaveloadPending;
-    extern u32 savetimer;
     extern i32 saveload_slotused[6];
     extern char *fullslotname(i32);
-    extern char SaveSlotName[256];
 
     void PcRegisterSaveMetadata(const void *metadata) {
         if (metadata != NULL) {

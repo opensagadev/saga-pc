@@ -988,6 +988,7 @@ extern "C" {
     extern struct debris_render_chunk_s *ParticleChunkRenderStack[5];
     void AddChunkToRenderStack(struct debris_render_chunk_s *, struct debris_render_chunk_s **);
     void RemoveChunkFromRenderStack(struct debris_render_chunk_s *, struct debris_render_chunk_s **);
+    char *GetSfxName(i32 sound_id);
 #ifdef __cplusplus
 }
 #endif

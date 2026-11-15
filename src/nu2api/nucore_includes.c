@@ -221,9 +221,6 @@ static i32 NUAPI_PADREC_DEFAULT_BUFFERSIZE = 0x500000;
 i32 min_delay = 20;
 f32 FrameStartupDelay = 6.0f;
 
-extern i32 min_delay;
-extern f32 FrameStartupDelay;
-extern i32 NuApiTextLine;
 extern f32 NuFrameAccumulatedTime;
 extern const char *GetPCStartupMessage(void);
 extern u32 PcGetRefreshRate(void);
@@ -240,8 +237,6 @@ extern void FmvPlatformUpdatePc(void);
         (elapsed).low = (now).low - (start).low;                                                                                           \
         (elapsed).high -= 1;                                                                                                               \
     }
-
-extern void (*NuApiEndFrameCallback)(void);
 
 typedef void (*NUDEBUGMSGFUNCTION)(char *, ...);
 
@@ -5403,8 +5398,6 @@ char *NuStrIStr(char *text, char *substring) {
     }
     return NULL;
 }
-
-extern i32 dat_0091eeec;
 
 void fun_004f8af0(const char *a, const char *b) {
     if (NuStrCmp(a, b) == 0) {

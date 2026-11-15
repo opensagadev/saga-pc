@@ -1161,7 +1161,6 @@ extern "C" {
     f32 EduiColourTempGreen = 0.0f;
     f32 EduiColourTempBlue = 0.0f;
     f32 EduiColourTempAlpha = 0.0f;
-    void eduiSetActiveMenu(eduimenu_s *menu);
 }
 
 extern "C" void AddColourPick(eduimenu_s *parent, eduiitem_s *item, f32 *red, f32 *green, f32 *blue, u32 *rgba) {

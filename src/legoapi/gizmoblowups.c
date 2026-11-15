@@ -75,9 +75,6 @@ typedef struct blowup_effect_type_s {   // size 0xfc
     u8 fragment_count;                  // 0xfa
 } BLOWUP_EFFECT_TYPE;
 
-extern void (*GizmoBlowUp_SfxFn)(GIZMOBLOWUP_PC *, NUVEC *);
-extern i32 (*BlowupExFunc)(GIZMOBLOWUP_PC *, i32);
-
 /* Bit view of GIZMOBLOWUP_PC.status_flags, whose bits are stored as bitfields. Stands in for a
  * bitfield member of the shared struct. */
 typedef struct BLOWUP_STATUS_BITS { // size 0x4

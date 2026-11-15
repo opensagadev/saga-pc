@@ -1326,8 +1326,6 @@ extern "C" {
     } PC_TEXTURE_LEVEL_COUNT_METHODS;
 
     extern "C" {
-        extern u32 PCGraphicsPostEffectWidth;
-        extern u32 PCGraphicsPostEffectHeight;
         extern GRAPHICS_RENDER_TEXTURE *PCGraphicsPostEffectWorkTexture;
     }
 
@@ -1449,8 +1447,6 @@ extern "C" {
         (elapsed).low = (now).low - (start).low;                                                                                           \
         (elapsed).high -= 1;                                                                                                               \
     }
-
-    extern void (*NuApiEndFrameCallback)(void);
 
     typedef struct screengrab_tile_params_s SCREENGRAB_TILE_PARAMS_PC;
     PC_BUFFER_RESOURCE *NuWaterVertexBuffer = 0;
@@ -7515,12 +7511,6 @@ extern "C" void NuDisplayListShadowMaterial(void *data) {
 
 /* nurndr's platform members, in nurndr order. */
 extern "C" {
-    extern i32 DwaWeightCapacity;
-    extern i32 DwaPointerCapacity;
-    extern i32 DwaBlockCapacity;
-    extern i32 DwaEnabled;
-    extern i32 DwaStreamCapacity;
-    extern i32 DwaBlockCount;
     extern u8 DwaBlockTable[0x400];
 
     void NuRndrGradClear(i32 clear_flags, i32 top_colour, i32 bottom_colour, f32 alpha) {

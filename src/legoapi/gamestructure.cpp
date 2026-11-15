@@ -4,11 +4,6 @@ extern "C" void DumpAreaData(i32 mode, i32 last_area);
 extern "C" void BackDrop_Dump(void);
 
 extern "C" {
-    extern void (*PauseGame_ExtraCodeFn)(void);
-    extern void (*ResumeGame_ExtraCodeFn)(void);
-}
-
-extern "C" {
     i32 pause_i_pad = -1;
     void (*PauseGame_ExtraCodeFn)(void) = NULL;
 }

@@ -90,6 +90,7 @@ extern "C" {
     void NuRndrEndSceneEx(i32 flags);
     void NuRndrRectUV2di(i32 x, i32 y, i32 width, i32 height, f32 u0, f32 v0, f32 u1, f32 v1, i32 colour, struct numtl_s *material);
     void NuRndrGradRectUV2di(i32 x, i32 y, i32 width, i32 height, f32 u0, f32 v0, f32 u1, f32 v1, u32 *colours, void *material);
+    void NuRndrLine3dDbgFlush(void);
 #ifdef __cplusplus
 }
 #endif

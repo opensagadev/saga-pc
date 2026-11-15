@@ -45,8 +45,6 @@ typedef struct CUT_LOOKAT_STATE {     // size 0x18
     CUT_LOOKAT_LOCATOR_INFO *locator; // 0x14
 } CUT_LOOKAT_STATE;
 
-extern NUHGOBJ_EVAL *(*NuCutSceneGetHGObj)(INSTNUGCUTSCENE *, i32);
-
 i32 FindMtlInHGObj(NUHGOBJ_EVAL *hierarchy, i32 material_type) {
     CUT_LOOKAT_HIERARCHY *view = (CUT_LOOKAT_HIERARCHY *)hierarchy;
     i32 index;
@@ -154,10 +152,6 @@ typedef struct CUT_UPDATE_ENTRY { // size 0x14
     void (*update)(INSTNUGCUTSCENE *, CUT_LOAD_LOCATOR_SYSTEM *, CUT_LOAD_LOCATOR_INSTANCE *, CUT_LOAD_LOCATOR *, f32, NUMTX *,
                    i32); // 0x10
 } CUT_UPDATE_ENTRY;
-
-extern i32 (*TriggerLocatorVfxFn)(i32, NUMTX *);
-extern void (*UpdateLocatorVfxFn)(i32, NUMTX *);
-extern void (*NuCutSceneSFXUpdate)(CUT_LOAD_LOCATOR_SYSTEM *, CUT_LOAD_LOCATOR_INSTANCE *, CUT_LOAD_LOCATOR *, f32, NUMTX *, i32);
 
 f32 CutSceneDebrisAxisSize = 0;
 i32 CutSceneDebrisProcessMode = 0;

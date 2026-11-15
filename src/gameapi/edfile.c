@@ -408,7 +408,6 @@ void FS_SetFileSelPathFromName(char *name) {
     }
 }
 
-extern i32 editor_return;
 extern struct FILE_DIRECTORY_ENTRY_PC *dir_list;
 extern i32 edui_filepick_listsize;
 
@@ -419,7 +418,6 @@ static void eduiFilePickAllocDirList(void) {
 }
 
 extern NUCAMERA *EdMainCurrentCamera;
-extern NUVEC *ed_loc;
 extern i32 edmain_cursor_enabled;
 void PcEditorCursorEnablePc(i32 enabled);
 
@@ -1245,9 +1243,7 @@ i32 edmainRegister(ed_module_s *module) {
     return 1;
 }
 
-extern i32 edmain_render_interacts;
 void edmainRender(void);
-void eduiFlushInteracts(void);
 void eduiRenderInteracts(void);
 
 /* Renders the active editor module (the main menu without one) and the
@@ -2072,8 +2068,6 @@ void eduicbMenuCloseAllexpanders(eduimenu_s *menu) {
 }
 
 extern i32 EduiSelectionMaterial;
-extern f32 EduiScaleX;
-extern f32 EduiScaleY;
 i32 NuVSPrintf(char *dest, const char *format, va_list args);
 void NuRndrLineRect2di(i32 x, i32 y, i32 width, i32 height, i32 colour, NUMTL *material);
 
@@ -2834,8 +2828,6 @@ typedef struct edui_filter_s { // size 0x8c
     i32 reserved_84;           // 0x84
     u32 sorted;                // 0x88
 } edui_filter_s;
-
-void eduiMenuRemoveItem(eduimenu_s *menu, eduiitem_s *item);
 
 void eduiItemFilterAddChild(eduiitem_s *item, eduiitem_s *child) {
     edui_filter_s *filter = (edui_filter_s *)item;

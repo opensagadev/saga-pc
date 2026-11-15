@@ -565,8 +565,6 @@ void edanimRender() {
     }
 }
 
-void edcamMove(FRAME_PAD_PC *pad);
-void edcamGetPosAng(NUVEC *position, i32 *angle_x, i32 *angle_y);
 i32 edanimParamCreate(i32 instance);
 
 i32 edanim_emitrotz = 0;

@@ -7561,7 +7561,6 @@ extern "C" {
         return frustum;
     }
 
-    extern u8 NuPortalVisibilityBits[625];
     static void drawInitialFrustum(NUPORTAL_FRUSTUM *);
     static void drawFullPortal(NUPORTAL *, NUGSCNROOM *);
     static void drawPartialPortal(NUVEC *, NUPORTAL *, NUGSCNROOM *, NUVEC *);
@@ -8691,8 +8690,6 @@ extern "C" {
         i32 next_child;
     } BOXTREE_STACK_ENTRY;
 
-    void NuRndrBoundingBox(NUVEC *minimum, NUVEC *maximum, NUMTX *matrix, i32 colour);
-
     i32 do_boxtree = 0;
     i32 VisibilityLoadedOcclusion = 0;
     i32 VisibilityCameraLock = 0;
@@ -8801,8 +8798,6 @@ extern "C" {
 
 /* Original nutimebar module. */
 extern "C" {
-
-    extern NUMTL *NuTimeBar_FrameOutMtl;
 
     typedef struct TimeBarSet {  // size 0x2c
         i32 uses_buffer;         // 0x00
@@ -11215,7 +11210,6 @@ typedef struct PC_DISPLAY_DEBUG_NAME_READER { // size 0x4
 } PC_DISPLAY_DEBUG_NAME_READER;
 
 extern "C" {
-    extern void (**CurrentItemTable)(void *);
     void NuHtmlHeading(char *text, ...);
     static void DisplayListPrintItems(NUDISPLAYLISTITEM *item, u32 flags, i32 type_count, i32 *types, i32 file_handle);
 }
@@ -12925,7 +12919,6 @@ extern "C" void NuPostEffectReleasePorts(void) {
 extern "C" {
     extern POST_SHADER_PROGRAM_PC *PostBlendTexProgram;
     extern PC_FRAMEBUFFER *PostBlurFramebuffer;
-    extern f32 PostGaussianTexelBias;
     void PostGaussianKernel(i32 width, i32 height, NUVEC4 *taps, f32 scale);
 }
 
@@ -14323,7 +14316,6 @@ extern "C" {
     }
 
     extern void *dat_00971ad8;
-    extern i32 dat_0097401c;
 
     void *fun_005e5680(void) {
         return dat_00971ad8;
@@ -15037,7 +15029,6 @@ extern "C" {
         u32 state;                         // 0x28
     } NUBOXTREEVISIBILITY;
 
-    extern i32 dat_00973984;
     void NuFileWriteString(NUFILE file, const char *text);
 
     void BoxTreeRndrRec(NUVISIBOXTREE *tree, u8 *results, NUVISIBOXTREENODE *node, i32 instance_count, f32 far_clip, NUGSCN *scene) {
@@ -17273,11 +17264,6 @@ extern "C" {
         NuMtxMulVU0(result, &point->matrix, &joint_matrices[point->joint_index]);
         NuMtxMulVU0(result, result, world_matrix);
     }
-
-    extern i32 dat_009739b4;
-    extern i32 dat_009739b8;
-    extern i32 dat_009739bc;
-    extern i32 dat_009739c0;
 
     void fun_005dab30(i32 value) {
         dat_009739b4 = value;

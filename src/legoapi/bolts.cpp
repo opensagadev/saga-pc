@@ -4,10 +4,6 @@
    private helpers inline into their callers. C entry points keep C linkage
    via extern "C". */
 
-extern "C" {
-    extern i32 (*BoltInitSfxFn)(GAMEOBJECT *);
-}
-
 /* The SDK's inline NuFdiv: a quotient that is 0 when either operand is 0. */
 static f32 BoltsFdiv(f32 a, f32 b) {
     if (a == 0.0f || b == 0.0f) {

@@ -542,6 +542,33 @@ extern "C" {
     void eduiItemFilePickSetFmt(struct edui_file_pick_s *item, char *format);
     extern struct edui_interact_s *eduiInteractLocked;
     extern edui_interact_s eduiInteracts[64];
+    eduiitem_s *eduiItemExpanderCreate(u32 data, const void *colours, void *callback, char *text);
+    eduiitem_s *eduiItemFilterCreate(u32 data, void *colours, char *text, char *value);
+    eduiitem_s *eduiItemPropCreate(u32 data, void *colours, void *selected, void *changed, void *button, i32 button_type, char *text,
+                                   char *value);
+    eduiitem_s *eduiItemPropCreateEx(u32 data, void *colours, void *selected, void *changed, void *button, i32 button_type, char *text,
+                                     char *value, i32 extra_data);
+    eduiitem_s *eduiItemSeparatorCreate(u32 data, const void *colours);
+    eduimenu_s *eduiGetActiveMenuParent(void);
+    extern i32 eduiPropTextPos;
+    f32 eduiGetAnalougePadValue(FRAME_PAD_PC *pad);
+    i32 eduiGetCameraEnabled(void);
+    i32 eduiItemPropSetText(edui_prop_s *item, char *text);
+    i32 eduiUsedAlgPad(FRAME_PAD_PC *pad);
+    void eduiFlushInteracts(void);
+    void eduiGetCursorCoords(f32 *x, f32 *y);
+    void eduiGetCursorDelta(f32 *x, f32 *y);
+    void eduiItemExpanderAddChild(eduiitem_s *item, eduiitem_s *child);
+    void eduiMenuFitOnScreen(eduimenu_s *menu, i32 padding);
+    void eduiMenuRemoveItem(eduimenu_s *menu, eduiitem_s *item);
+    void eduiMenuSetAttr(eduimenu_s *menu, const u32 *colours);
+    void eduiMenuSortItemsByTxt(eduimenu_s *menu);
+    void eduiProcessCursor(f32 delta_time, FRAME_PAD_PC *pad);
+    void eduiRenderCursor(void);
+    void eduiSetActiveMenu(eduimenu_s *menu);
+    void eduiSetCursorCoords(f32 x, f32 y);
+    void eduiSetDefaultActiveMenu(eduimenu_s *menu);
+    void eduiSetUsingMenuFocus(i32 enabled);
 #ifdef __cplusplus
 }
 #endif

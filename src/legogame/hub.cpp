@@ -5,7 +5,6 @@
 extern "C" {
     extern i32 HubDoorNewLevel;
     extern void *Door_Last;
-    void NewGameMode(void);
     void InitSuperStory(i32 episode);
 }
 
@@ -145,8 +144,6 @@ typedef struct hub_init_world_reader_s {
     void *gizmo_system;
 } HUB_INIT_WORLD_READER;
 
-extern void (*HubInitAIFn)(WORLDINFO *);
-
 typedef struct hub_door_object_reader_s {
     u8 unknown_00[0x9c];
     u32 flags;
@@ -156,7 +153,6 @@ typedef struct hub_door_reader_s {
     HUB_DOOR_OBJECT_READER *object;
 } HUB_DOOR_READER;
 
-extern void (*HubResetAIFn)(WORLDINFO *);
 struct GIZBUILDIT;
 #define HUB_PC_MENU_PLAYER(p, mode)                                                                                                        \
     ((p) != NULL && ((p)->flags_1fc & 0x80) != 0 && (p)->unknown_281 != 0 &&                                                               \
@@ -212,17 +208,6 @@ extern "C" f32 BlipD[2];
 extern "C" i32 freeplaymode;
 extern "C" i32 freeplay_selected[2];
 extern "C" i32 fpcount;
-extern i32 hub_selectmode;
-extern i32 hub_bonusmode;
-extern i32 hub_bonusarea;
-extern i32 hub_bonusepisode;
-extern f32 bonusmodetime;
-extern f32 bonusmodeduration;
-extern f32 uprepeattime[2];
-extern f32 downrepeattime[2];
-extern f32 leftrepeattime[2];
-extern f32 rightrepeattime[2];
-extern i32 HubIconWibbleRate[4];
 
 typedef struct hub_freeplay_pad_reader_pc_s {
     u8 unknown_00[0x78];

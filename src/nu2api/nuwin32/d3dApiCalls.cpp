@@ -29,7 +29,6 @@ extern "C" {
     void PCGraphicsClearFrameTextures(void);
     f32 fun_005d0920(void);
     f32 fun_005d0930(void);
-    void PCDeviceSetGammaRampPc(const void *ramp);
 }
 extern "C" void NuPostEffectResize(void);
 extern "C" void fun_006d3120(void);

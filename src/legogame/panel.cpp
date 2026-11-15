@@ -23,7 +23,6 @@ extern "C" f32 HubBuildBarScale;
 extern "C" f32 HubBuildBarOverallScale;
 extern "C" TIMER ChallengeTimer;
 extern "C" {
-    extern f32 STATSPOS2Y;
     extern f32 HudCoinAdjustY;
     extern i32 DrawBossHitPointsTwoRows;
     extern f32 PanelHeartSpacing;
@@ -39,8 +38,6 @@ extern "C" {
     extern f32 DrawCoinTotalY;
     extern f32 HudBossHeartY;
     extern f32 HudBossHeartScale;
-    extern f32 HudBossIconY;
-    extern f32 HudBossIconScale;
     i32 PcInput_GetFirstKeyboardPort(void);
     extern i32 NuMainSkipCutBorders;
     extern i32 drawautosaveicon;
@@ -81,8 +78,6 @@ typedef struct PANEL_PRIM_VERTEX {
     f32 z;
     u32 colour;
 } PANEL_PRIM_VERTEX;
-
-extern i32 (*Tag_NoHiddenIconFn)(GAMEOBJECT *);
 
 static void NuRndrPrimSetColour(i32 colour) {
     i32 converted;

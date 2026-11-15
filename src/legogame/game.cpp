@@ -71,7 +71,6 @@ extern "C" {
     extern i16 dat_007f1828; /* character id fixed up from "PenguinBomb" */
 }
 
-extern "C" i32 Hub_PanelBusy(void);
 #define GAME_PUBLISHER_ASSERT(expression) typedef char SAGA_JOIN(game_publisher_static_assert_, __COUNTER__)[(expression) ? 1 : -1]
 GAME_PUBLISHER_ASSERT(offsetof(GAMEOBJECT, suit) == 0xcbc);
 GAME_PUBLISHER_ASSERT(offsetof(SUIT_LAYERS, flags) == 0xc);
@@ -166,7 +165,6 @@ extern "C" {
 }
 extern "C" i32 GetRandomCoinType(void);
 extern "C" void GameFog_Reset(void);
-extern "C" f32 GetVehicleAreaRememberSpeed(void);
 extern "C" {
     void SetAnimBlendMode(i32 mode);
     void GameRegisterGizActions(void);
@@ -205,19 +203,12 @@ GAME_PUBLISHER_ASSERT(offsetof(GAMEOBJECT, ai_packet) + offsetof(AIPACKET, oppon
 GAME_PUBLISHER_ASSERT(offsetof(GAMEOBJECT, position) == 0x5c);
 GAME_PUBLISHER_ASSERT(offsetof(GAMEOBJECT, reflection_height) == 0x1014);
 GAME_PUBLISHER_ASSERT(offsetof(GAMEOBJECT, reflection_enabled) == 0x107b);
-extern i32 selectmodemode;
-extern i32 deathstar_hold_count;
-extern i32 (*CheckMusicOtherFn)(void);
-extern i32 (*GameAudio_ActionMusicFn)(void);
-extern i32 (*PauseRenderOffFn)(void);
-i32 Hub_Outside(void);
 #define ACTION_MUSIC_PLAYER_FIGHTING(player)                                                                                               \
     ((player) != NULL && ((player)->ai_packet.opponent != NULL ||                                                                          \
                           ((player)->ai_packet.nearest_opponent != NULL && (player)->ai_packet.nearest_opponent->dead == 0 &&              \
                            (player)->ai_packet.nearest_opponent_metric < 3.0f)))
 GAME_PUBLISHER_ASSERT(offsetof(WORLDINFO, current_level) == 0x128);
 GAME_PUBLISHER_ASSERT(offsetof(GAMECAMERA, sock_position.sock_index) == 0x1);
-extern f32 minikittime;
 GAME_PUBLISHER_ASSERT(offsetof(GAME_MESSAGE_PC, score) == 0xdc);
 GAME_PUBLISHER_ASSERT(offsetof(GAME_MESSAGE_PC, target_is_coin_total) == 0xfe);
 GAME_PUBLISHER_ASSERT(offsetof(GAME_MESSAGE_PC, position_a) == 0x7c);
@@ -243,12 +234,10 @@ GAME_PUBLISHER_ASSERT(offsetof(GAMESAVE, gold_bricks) == 0x7c1a);
 GAME_PUBLISHER_ASSERT(offsetof(GAMESAVE, purchased_extra_bits_high) == 0x7c04);
 GAME_PUBLISHER_ASSERT(offsetof(WORLDINFO, part_debris_sys) == 0x138);
 extern "C" i16 dat_00880ff0;
-extern i32 freeplaymode;
 GAME_PUBLISHER_ASSERT(sizeof(MISSION_MENU_PACKET) == 0xa);
 GAME_PUBLISHER_ASSERT(offsetof(MISSION_MENU_PACKET, player_model) == 0);
 GAME_PUBLISHER_ASSERT(offsetof(MISSION_MENU_PACKET, active_player) == 4);
 GAME_PUBLISHER_ASSERT(offsetof(WORLDINFO, current_level) == 0x128);
-extern "C" void Hub_ResetPanel(void);
 GAME_PUBLISHER_ASSERT(offsetof(GAMEOBJECT, unknown_7b3) == 0x7b3);
 
 /* Local minimum reader; no GAMECAMERA size or backing claim. */
@@ -269,7 +258,6 @@ GAME_PUBLISHER_ASSERT(offsetof(GAMEOBJECT, hud_icon_timer) == 0xd60);
 GAME_PUBLISHER_ASSERT(offsetof(GAMEOBJECT, character_top) == 0xff4);
 GAME_PUBLISHER_ASSERT(offsetof(GAMEOBJECT, origin_scale) == 0xa8);
 GAME_PUBLISHER_ASSERT(offsetof(PLAYERCHARACTERCONFIG, hover_fall_mode) == 0x116);
-extern i32 (*Tag_NoHiddenIconFn)(GAMEOBJECT *);
 /* Reuse TAG_CHARACTER_DATA_READER from the LSW callback contract. */
 GAME_PUBLISHER_ASSERT(offsetof(GAMEOBJECT, pause_context_state) == 0xee8);
 GAME_PUBLISHER_ASSERT(offsetof(GAMEOBJECT, upper_position) == 0x190);

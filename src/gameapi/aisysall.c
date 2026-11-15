@@ -261,10 +261,6 @@ typedef struct ai_system_load_s { // size 0x1398
 
 static f32 AiLoadStartStagger = 0.0f;
 
-extern i32 (*GlobalCharacterTypeIDFn)(char *);
-
-extern void (*GameAILoadFn)(AISYS_PC *, i32, NUGSCN *, VARIPTR *, VARIPTR *);
-
 typedef struct ai_path_system_load_s {  // size 0x10
     u8 path_count;                      // 0x0
     u8 unknown_01;                      // 0x1
@@ -398,8 +394,6 @@ i32 AIPathConnectionTypeCount = 0;
 f32 AiEditorUpperHeightOverride = 0;
 f32 AiEditorLowerHeightOverride = 0;
 
-NUCAMERA *edmainGetCamera(void);
-
 extern i32 near_clip_at_cursor;
 
 f32 AiEditorNearClipOffset = 5.0f;
@@ -409,15 +403,11 @@ extern const char dat_0075f2c0[3];
 
 extern const char dat_0075f2c4[4];
 
-extern i32 AiEditorRouteModeId;
-
 void cbNearClipAtCursor(eduimenu_s *menu, eduiitem_s *item, u32 buttons);
 
 extern f32 default_path_radius;
 
 extern void pathEditor_OnPathCheck(NUVEC *, EDAIPATHCHECK_s *, EDAIPATH_s *, f32);
-
-extern NUVEC edpath_addoffset;
 
 #define PATH_EDITOR_FIND_CONNECTION(result, from, to)                                                                                      \
     do {                                                                                                                                   \
@@ -433,14 +423,10 @@ extern NUVEC edpath_addoffset;
         }                                                                                                                                  \
     } while (0)
 
-extern i32 AiEditorAntinodeModeId;
-
 static const char *AiEditorAntinodeTypeNames[3] = {"Circle", "Ellipse", "Rectangle"};
 i32 aisys_maxnumcreaturesets = 32;
 
 f32 AiEditorPickHeightTolerance = 0.1f;
-
-extern f32 AiEditorPickHeightTolerance;
 
 extern void *(*GlobalCharacterHGobjFn)(i32);
 
@@ -454,16 +440,6 @@ typedef struct AI_PATH_DRAW_FLAGS { // size 0xc
     u8 unknown_08[2];               // 0x8
     i16 flags;                      // 0xa
 } AI_PATH_DRAW_FLAGS;
-
-extern i32 AiEditorPathsModeId;
-
-extern i32 AiEditorCreaturesModeId;
-
-extern i32 AiEditorLocatorsModeId;
-
-extern f32 AiEditorUpperHeightOverride;
-
-extern f32 AiEditorLowerHeightOverride;
 
 extern void (*GlobalCharacterRenderFn)(NUVEC *, i16, i32, i32, void *);
 
@@ -482,13 +458,9 @@ typedef struct AI_CREATURE_MODEL_BOUNDS { // size 0x1d0
     f32 radius;                           // 0x1cc
 } AI_CREATURE_MODEL_BOUNDS;
 
-extern i32 aisys_maxnumcreaturesets;
-
 extern void (*ClearAICreaturesFn)(void);
 
 i32 geom = 0;
-
-void edcamGetPosAng(NUVEC *position, i32 *angle_x, i32 *angle_y);
 
 i32 NewRayCastScaleY(NUVEC *position, NUVEC *movement, f32 radius, f32 scale_y, i32 scan_flags);
 
@@ -498,8 +470,6 @@ f32 AiEditorCursorRayScalePc = 1e-17f;
 
 #pragma section(".data$AiEditorRouteYOffsetPc", read, write)
 __declspec(allocate(".data$AiEditorRouteYOffsetPc")) f32 AiEditorRouteYOffset = 0.1f;
-
-extern i32 AiEditorAreasModeId;
 
 void routeEditor_Render(i32 x, i32 y, f32 xscale, f32 yscale);
 
@@ -688,7 +658,6 @@ typedef APIOBJECT *(*AI_GET_NAMED_OBJECT)(void *, char *);
 typedef NUVEC *(*AI_GET_CREATURE_ORIGIN)(AISYS_PC *, AIPACKET *);
 
 extern AI_CHARACTER_NAME LevelCharacterNameFn;
-extern AI_CHARACTER_NAME SpecialRouteCharacterNameFn;
 
 typedef void (*AI_LOAD)(AISYS_PC *, i32, NUGSCN *, VARIPTR *, VARIPTR *);
 

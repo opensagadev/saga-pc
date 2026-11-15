@@ -36,7 +36,6 @@ extern "C" {
     extern i32 ShadowLightSplitCount;
 }
 
-extern "C" NUCAMERA *edmainGetCamera(void);
 extern "C" void NuLightSpotFadeSet(u32 fade);
 
 extern "C" {
