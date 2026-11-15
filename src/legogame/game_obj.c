@@ -984,7 +984,8 @@ i32 PlayerTakeHitReaction(GAMEOBJECT *target, GAMEOBJECT *attacker, f32 duration
                              attacker->collision_position.z - target->collision_position.z);
             }
             index = target->unknown_7aa;
-            if (target->character_model->model_data_b[index] != NULL && (target->character_model->animation_configs[index]->flags & 2)) {
+            if (target->character_model->model_data_b[index] != NULL &&
+                (target->character_model->animation_configs[index]->flags & CHARANIM_CYCLE)) {
                 target->context_timer = (f32)(((f64)qrand() * 1.5259021893143654e-05) * 0.5 + 1.0);
             } else {
                 timer = AnimDuration((i16)target->id, index, 0.0f, 0.0f, index != 0xb9);
@@ -1022,7 +1023,7 @@ i32 DeactivatePlayer(GAMEOBJECT *object, f32 duration, GAMEOBJECT *source) {
                 duration = 4.0f;
                 object->unknown_7aa = 0x62;
             } else if (object->character_model->model_data_b[0x81] != NULL &&
-                       !(object->character_model->animation_configs[0x81]->flags & 2)) {
+                       !(object->character_model->animation_configs[0x81]->flags & CHARANIM_CYCLE)) {
                 object->unknown_7aa = 0x81;
             } else {
                 object->unknown_7aa = object->character_model->model_data_b[0x41] != NULL ? 0x41 : 1;

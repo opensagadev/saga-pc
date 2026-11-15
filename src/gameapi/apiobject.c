@@ -1025,32 +1025,33 @@ void AddAnimEffects(CHARACTER_MODEL_LAYERS *model, APICHARACTERDATA *character_d
 
         if (object != NULL) {
             api = object;
-            if ((effects->flags & 0x400) != 0 && api->unknown_280 == 255) {
+            if ((effects->flags & CHAREFFECT_PLAYER_ONLY) != 0 && api->unknown_280 == 255) {
                 continue;
             }
-            if ((effects->flags & 0x10) != 0 && (api->unknown_281 & 2) == 0) {
+            if ((effects->flags & CHAREFFECT_ON_GROUND) != 0 && (api->unknown_281 & 2) == 0) {
                 continue;
             }
-            if ((effects->flags & 0x40) != 0 && api->is_underwater != 0) {
+            if ((effects->flags & CHAREFFECT_ABOVE_WATER) != 0 && api->is_underwater != 0) {
                 continue;
             }
-            if ((effects->flags & 0x20) != 0 && api->is_underwater == 0) {
+            if ((effects->flags & CHAREFFECT_UNDER_WATER) != 0 && api->is_underwater == 0) {
                 continue;
             }
-            if ((effects->flags & 0x80) != 0 && api->water_intersects == 0) {
+            if ((effects->flags & CHAREFFECT_INTERSECT_WATER) != 0 && api->water_intersects == 0) {
                 continue;
             }
-            if ((effects->flags & 0x03000000) != 0 && (api->model_draw_result == 0 || (api->unknown_281 & 2) == 0)) {
+            if ((effects->flags & (CHAREFFECT_LEFT_FOOTPRINT | CHAREFFECT_RIGHT_FOOTPRINT)) != 0 &&
+                (api->model_draw_result == 0 || (api->unknown_281 & 2) == 0)) {
                 continue;
             }
-        } else if ((effects->flags & 0x03000000) != 0) {
+        } else if ((effects->flags & (CHAREFFECT_LEFT_FOOTPRINT | CHAREFFECT_RIGHT_FOOTPRINT)) != 0) {
             continue;
         }
 
         active = 0;
-        if ((effects->flags & 0x4) != 0) {
+        if ((effects->flags & CHAREFFECT_TIMING_CONSTANT) != 0) {
             active = 1;
-        } else if ((effects->flags & 0x8) != 0) {
+        } else if ((effects->flags & CHAREFFECT_TIMING_BETWEEN) != 0) {
             if (effects->frame[1] > 1.0f && effects->frame[1] < effects->frame[0]) {
                 active = animation_time >= effects->frame[0] || animation_time <= effects->frame[1];
             } else {
@@ -1095,16 +1096,16 @@ void AddAnimEffects(CHARACTER_MODEL_LAYERS *model, APICHARACTERDATA *character_d
             }
             locator_indices[locator_count] = locator;
             locator_positions[locator_count] = locator_matrices[locator].translation;
-            if (locator_count == 0 || (effects->flags & 0x800) != 0) {
+            if (locator_count == 0 || (effects->flags & CHAREFFECT_AT_LOCATOR_AVERAGE) != 0) {
                 NuVecAdd(&position, &position, &locator_matrices[locator].translation);
             }
             ++locator_count;
         }
-        if (locator_count > 0 && (effects->flags & 0x800) != 0) {
+        if (locator_count > 0 && (effects->flags & CHAREFFECT_AT_LOCATOR_AVERAGE) != 0) {
             NuVecScale(&position, &position, 1.0f / (f32)locator_count);
         }
         position_count = locator_count;
-        if ((effects->flags & 0x1000) != 0 && object != NULL) {
+        if ((effects->flags & CHAREFFECT_AT_OBJ_BOTTOM) != 0 && object != NULL) {
             position.x = object->position.x;
             position.y = object->collision_min.y;
             position.z = object->position.z;
@@ -1116,29 +1117,31 @@ void AddAnimEffects(CHARACTER_MODEL_LAYERS *model, APICHARACTERDATA *character_d
                 locator_positions[0] = object->position;
                 position = locator_positions[0];
                 position_count = 1;
-                if ((effects->flags & 0x2000) != 0 && object->floor_height != 2000000.0) {
+                if ((effects->flags & CHAREFFECT_AT_TER_SURFACE) != 0 && object->floor_height != 2000000.0) {
                     position.y = object->floor_height;
-                } else if ((effects->flags & 0x4000) != 0 && object->water_height != 2000000.0) {
+                } else if ((effects->flags & CHAREFFECT_AT_TER_LAYER) != 0 && object->water_height != 2000000.0) {
                     position.y = object->water_height;
                 }
-            } else if ((effects->flags & 0x2000) != 0 && object->floor_height != 2000000.0) {
+            } else if ((effects->flags & CHAREFFECT_AT_TER_SURFACE) != 0 && object->floor_height != 2000000.0) {
                 for (i = 0; i < locator_count; ++i) {
                     locator_positions[i].y = object->floor_height;
                 }
-            } else if ((effects->flags & 0x4000) != 0 && object->water_height != 2000000.0) {
+            } else if ((effects->flags & CHAREFFECT_AT_TER_LAYER) != 0 && object->water_height != 2000000.0) {
                 for (i = 0; i < locator_count; ++i) {
                     locator_positions[i].y = object->water_height;
                 }
             }
         }
 
-        if (footprint_callback != NULL && locator_count == 0 && (effects->flags & 0x03000000) != 0) {
-            footprint_callback(&object->position, object, effects->flags & 0x01000000, 1);
-        } else if (footprint_callback != NULL && position_count > 0 && (effects->flags & 0x03000000) != 0) {
+        if (footprint_callback != NULL && locator_count == 0 &&
+            (effects->flags & (CHAREFFECT_LEFT_FOOTPRINT | CHAREFFECT_RIGHT_FOOTPRINT)) != 0) {
+            footprint_callback(&object->position, object, effects->flags & CHAREFFECT_LEFT_FOOTPRINT, 1);
+        } else if (footprint_callback != NULL && position_count > 0 &&
+                   (effects->flags & (CHAREFFECT_LEFT_FOOTPRINT | CHAREFFECT_RIGHT_FOOTPRINT)) != 0) {
             for (i = 0; i < locator_count; ++i) {
                 locator_index = locator_indices[i];
                 if (object->character_model->points_of_interest[locator_index] != NULL) {
-                    footprint_callback(&locator_matrices[locator_index], object, effects->flags & 0x01000000, 0);
+                    footprint_callback(&locator_matrices[locator_index], object, effects->flags & CHAREFFECT_LEFT_FOOTPRINT, 0);
                 }
             }
         }
@@ -1152,26 +1155,26 @@ void AddAnimEffects(CHARACTER_MODEL_LAYERS *model, APICHARACTERDATA *character_d
             }
         }
         if (position_count > 0 && object != NULL &&
-            (((effects->flags & 0x40) != 0 && object->is_underwater != 0) ||
-             ((effects->flags & 0x20) != 0 && object->is_underwater == 0))) {
+            (((effects->flags & CHAREFFECT_ABOVE_WATER) != 0 && object->is_underwater != 0) ||
+             ((effects->flags & CHAREFFECT_UNDER_WATER) != 0 && object->is_underwater == 0))) {
             continue;
         }
 
         if (object != NULL) {
-            if ((effects->flags & 0x100000) != 0) {
+            if ((effects->flags & CHAREFFECT_MIN_XYZ_SPEED) != 0) {
                 if (object->velocity_magnitude < effects->minimum) {
                     goto checkpoint;
                 }
-            } else if ((effects->flags & 0x40000) != 0) {
+            } else if ((effects->flags & CHAREFFECT_MIN_XZ_SPEED) != 0) {
                 if (object->horizontal_velocity_magnitude < effects->minimum) {
                     goto checkpoint;
                 }
             }
-            if ((effects->flags & 0x200000) != 0) {
+            if ((effects->flags & CHAREFFECT_MAX_XYZ_SPEED) != 0) {
                 if (object->velocity_magnitude > effects->maximum) {
                     goto checkpoint;
                 }
-            } else if ((effects->flags & 0x80000) != 0) {
+            } else if ((effects->flags & CHAREFFECT_MAX_XZ_SPEED) != 0) {
                 if (object->horizontal_velocity_magnitude > effects->maximum) {
                     goto checkpoint;
                 }
@@ -1179,50 +1182,50 @@ void AddAnimEffects(CHARACTER_MODEL_LAYERS *model, APICHARACTERDATA *character_d
         }
 
         if (position_count != 0 && effects->debris_id != -1 && effects->debris_id < debris_sys->capacity) {
-            if ((effects->flags & 1) != 0) {
-                count = effects->particle_rate > 0.0f
-                            ? ((effects->flags & 0x800000) != 0 ? ParticlesPerSecond(effects->particle_rate, frame_time)
-                                                                : ParticlesPerFrame(effects->particle_rate, frame_time))
-                            : effects->particle_count;
+            if ((effects->flags & CHAREFFECT_PARTICLE_COUNT) != 0) {
+                count = effects->particle_rate > 0.0f ? ((effects->flags & CHAREFFECT_PARTICLES_PER_SECOND) != 0
+                                                             ? ParticlesPerSecond(effects->particle_rate, frame_time)
+                                                             : ParticlesPerFrame(effects->particle_rate, frame_time))
+                                                      : effects->particle_count;
                 if (count < 0) {
                     count = 1;
                 }
                 if (count > 0 && (effects->random == 0 || (NuRandInt() >> 16) <= (effects->random << 8))) {
-                    if ((effects->flags & 0x1000) != 0) {
-                        if ((effects->flags & 0x400000) != 0 && object != NULL) {
+                    if ((effects->flags & CHAREFFECT_AT_OBJ_BOTTOM) != 0) {
+                        if ((effects->flags & CHAREFFECT_AT_OBJ_SPEED) != 0 && object != NULL) {
                             AddGameDebrisMom(debris_sys, effects->debris_id, &position, count, &object->velocity);
                         } else {
                             AddGameDebrisRot(debris_sys, effects->debris_id, &position, count, 0, 0);
                         }
-                    } else if ((effects->flags & 0x800) != 0) {
-                        if ((effects->flags & 0x400000) != 0 && object != NULL) {
+                    } else if ((effects->flags & CHAREFFECT_AT_LOCATOR_AVERAGE) != 0) {
+                        if ((effects->flags & CHAREFFECT_AT_OBJ_SPEED) != 0 && object != NULL) {
                             AddGameDebrisMom(debris_sys, effects->debris_id, &position, count, &object->velocity);
                         } else {
                             AddGameDebrisRot(debris_sys, effects->debris_id, &position, count, 0, 0);
                         }
                     } else if (locator_count != 0) {
                         for (i = 0; i < locator_count; ++i) {
-                            if ((effects->flags & 0x400000) != 0 && object != NULL) {
+                            if ((effects->flags & CHAREFFECT_AT_OBJ_SPEED) != 0 && object != NULL) {
                                 NuVecSub(&velocity, &object->position, &object->start_position);
                                 NuVecScale(&velocity, &velocity, 1.0f / frame_time);
                                 AddGameDebrisMom(debris_sys, effects->debris_id, &locator_positions[i], count, &velocity);
-                            } else if ((effects->flags & 0x4000000) != 0) {
+                            } else if ((effects->flags & CHAREFFECT_USE_LOCATOR_MATRIX) != 0) {
                                 AddGameDebrisMtx(debris_sys, effects->debris_id, &locator_positions[i], count, &locator_matrices[i]);
                             } else {
                                 AddGameDebrisRot(debris_sys, effects->debris_id, &locator_positions[i], count, 0, 0);
                             }
                         }
                     } else {
-                        if ((effects->flags & 0x400000) != 0 && object != NULL) {
+                        if ((effects->flags & CHAREFFECT_AT_OBJ_SPEED) != 0 && object != NULL) {
                             AddGameDebrisMom(debris_sys, effects->debris_id, &position, count, &object->velocity);
                         } else {
                             AddGameDebrisRot(debris_sys, effects->debris_id, &position, count, 0, 0);
                         }
                     }
                 }
-            } else if ((effects->flags & 0x1000) != 0) {
+            } else if ((effects->flags & CHAREFFECT_AT_OBJ_BOTTOM) != 0) {
                 AddGameDebris(debris_sys, effects->debris_id, &position);
-            } else if ((effects->flags & 0x800) != 0) {
+            } else if ((effects->flags & CHAREFFECT_AT_LOCATOR_AVERAGE) != 0) {
                 AddGameDebris(debris_sys, effects->debris_id, &position);
             } else if (locator_count != 0) {
                 for (i = 0; i < position_count; ++i) {
@@ -1235,7 +1238,7 @@ void AddAnimEffects(CHARACTER_MODEL_LAYERS *model, APICHARACTERDATA *character_d
     checkpoint:
         PCAnimationEffectCheckpoint();
         if (APIObjPlaySfxByIdFn != NULL && object != NULL && effects->sound_id != -1) {
-            APIObjPlaySfxByIdFn(effects->sound_id, (effects->flags & 0x8000) != 0 ? &object->collision_position : NULL);
+            APIObjPlaySfxByIdFn(effects->sound_id, (effects->flags & CHAREFFECT_SFX_3D) != 0 ? &object->collision_position : NULL);
         }
     }
 }
@@ -1424,7 +1427,7 @@ void APILoadCharacterModels(APICHARACTERMODELLIST *list, i32 area_animation, VAR
                             NuFilePakSetItemRequired(pak, item, 1);
                         }
                     }
-                    if ((animation->flags & 8) != 0 && model->model_data_c[animation->action_id] == NULL) {
+                    if ((animation->flags & CHARANIM_BSA) != 0 && model->model_data_c[animation->action_id] == NULL) {
                         if (RedirectAnimFn == NULL || RedirectAnimFn(RedirectAnimDir, RedirectAnimList, animation, path) == 0) {
                             NuStrCpy(path, directory);
                             NuStrCat(path, animation->name);
@@ -1470,7 +1473,7 @@ void APILoadCharacterModels(APICHARACTERMODELLIST *list, i32 area_animation, VAR
                             model->animation_configs[animation->action_id] = animation;
                         }
                     }
-                    if ((animation->flags & 8) != 0 && model->model_data_c[animation->action_id] == NULL) {
+                    if ((animation->flags & CHARANIM_BSA) != 0 && model->model_data_c[animation->action_id] == NULL) {
                         if (RedirectAnimFn == NULL || RedirectAnimFn(RedirectAnimDir, RedirectAnimList, animation, path) == 0) {
                             NuStrCpy(path, directory);
                             NuStrCat(path, animation->name);
@@ -1485,7 +1488,7 @@ void APILoadCharacterModels(APICHARACTERMODELLIST *list, i32 area_animation, VAR
                         }
                     }
                 }
-                if ((animation->flags & 8) != 0 && model->model_data_c[animation->action_id] == NULL) {
+                if ((animation->flags & CHARANIM_BSA) != 0 && model->model_data_c[animation->action_id] == NULL) {
                     NuStrCpy(path, directory);
                     NuStrCat(path, animation->name);
                     NuStrCat(path, ".bsa");
@@ -1512,7 +1515,7 @@ void APILoadCharacterModels(APICHARACTERMODELLIST *list, i32 area_animation, VAR
                             model->animation_configs[animation->action_id] = animation;
                         }
                     }
-                    if ((animation->flags & 8) != 0 && model->model_data_c[animation->action_id] == NULL) {
+                    if ((animation->flags & CHARANIM_BSA) != 0 && model->model_data_c[animation->action_id] == NULL) {
                         NuStrCpy(path, directory);
                         NuStrCat(path, animation->name);
                         NuStrCat(path, ".bsa");
@@ -1825,7 +1828,7 @@ static f32 UpdateAnimTimer(CHARACTER_MODEL_LAYERS *model, ANIMPACKET_PC *packet,
                 packet->flags |= 0x08;
             }
             if (time < 1.0f) {
-                if ((model->animation_configs[animation]->flags & 0x02) != 0) {
+                if ((model->animation_configs[animation]->flags & CHARANIM_CYCLE) != 0) {
                     if (end_frame > 1.0f) {
                         while (time < 1.0f) {
                             time += end_frame - 1.0f;
@@ -1846,7 +1849,7 @@ static f32 UpdateAnimTimer(CHARACTER_MODEL_LAYERS *model, ANIMPACKET_PC *packet,
             }
         } else {
             if (time > end_frame) {
-                if ((model->animation_configs[animation]->flags & 0x02) != 0) {
+                if ((model->animation_configs[animation]->flags & CHARANIM_CYCLE) != 0) {
                     if (end_frame > 1.0f) {
                         while (time > end_frame) {
                             time -= end_frame - 1.0f;
@@ -1871,7 +1874,7 @@ static f32 UpdateAnimTimer(CHARACTER_MODEL_LAYERS *model, ANIMPACKET_PC *packet,
     if (looped) {
         if (*reversed != 0 && backwards == 0) {
             *reversed = 0;
-        } else if (*reversed == 0 && backwards != 0 && (model->animation_configs[animation]->flags & 0x80) != 0) {
+        } else if (*reversed == 0 && backwards != 0 && (model->animation_configs[animation]->flags & CHARANIM_CAN_PLAY_BACKWARDS) != 0) {
             *reversed = 1;
         }
     }
@@ -1914,7 +1917,7 @@ void UpdateAnimPacket(CHARACTER_MODEL_LAYERS *model, ANIMPACKET_PC *packet, f32 
                 model->animation_configs[packet->requested_animation]->blend_in_time == 0.0f) {
                 packet->animation_index = packet->requested_animation;
                 if (backwards != 0 && model->model_data_b[packet->animation_index] != NULL &&
-                    (model->animation_configs[packet->animation_index]->flags & 0x80) != 0) {
+                    (model->animation_configs[packet->animation_index]->flags & CHARANIM_CAN_PLAY_BACKWARDS) != 0) {
                     packet->reversed_3e = 1;
                     packet->current_time = NuAnimEndFrame(model->model_data_b[packet->animation_index]);
                 } else {
@@ -1972,21 +1975,21 @@ void UpdateAnimPacket(CHARACTER_MODEL_LAYERS *model, ANIMPACKET_PC *packet, f32 
                 packet->reversed_3c = packet->reversed_3e;
 
                 // End-frame callbacks can change the animation entries and packet indices.
-                if ((model->animation_configs[packet->blend_source_animation]->flags & 0x02) != 0 &&
-                    (model->animation_configs[packet->blend_target_animation]->flags & 0x02) != 0 &&
+                if ((model->animation_configs[packet->blend_source_animation]->flags & CHARANIM_CYCLE) != 0 &&
+                    (model->animation_configs[packet->blend_target_animation]->flags & CHARANIM_CYCLE) != 0 &&
                     model->animation_configs[packet->blend_source_animation]->playback_rate ==
                         model->animation_configs[packet->blend_target_animation]->playback_rate &&
                     NuAnimEndFrame(model->model_data_b[packet->blend_source_animation]) ==
                         NuAnimEndFrame(model->model_data_b[packet->blend_target_animation])) {
                     packet->blend_target_time = packet->blend_source_time;
                     if (backwards != 0 && model->model_data_b[packet->blend_target_animation] != NULL &&
-                        (model->animation_configs[packet->blend_target_animation]->flags & 0x80) != 0) {
+                        (model->animation_configs[packet->blend_target_animation]->flags & CHARANIM_CAN_PLAY_BACKWARDS) != 0) {
                         packet->reversed_3d = 1;
                     } else {
                         packet->reversed_3d = 0;
                     }
                 } else if (backwards != 0 && model->model_data_b[packet->blend_target_animation] != NULL &&
-                           (model->animation_configs[packet->blend_target_animation]->flags & 0x80) != 0) {
+                           (model->animation_configs[packet->blend_target_animation]->flags & CHARANIM_CAN_PLAY_BACKWARDS) != 0) {
                     packet->reversed_3d = 1;
                     packet->blend_target_time = NuAnimEndFrame(model->model_data_b[packet->blend_target_animation]);
                 } else {
@@ -2005,7 +2008,7 @@ void UpdateAnimPacket(CHARACTER_MODEL_LAYERS *model, ANIMPACKET_PC *packet, f32 
 
         packet->animation_index = packet->requested_animation;
         if (backwards != 0 && model->model_data_b[packet->animation_index] != NULL &&
-            (model->animation_configs[packet->animation_index]->flags & 0x80) != 0) {
+            (model->animation_configs[packet->animation_index]->flags & CHARANIM_CAN_PLAY_BACKWARDS) != 0) {
             packet->reversed_3e = 1;
             packet->current_time = NuAnimEndFrame(model->model_data_b[packet->animation_index]);
         } else {
@@ -2268,7 +2271,7 @@ void BlendRootFn(NUMTX *matrix, void *data, NUVEC *source_root, NUVEC *target_ro
 
     object = data;
 
-    if ((BLEND_SOURCE_CONFIG(object)->flags & 0x20) != 0) {
+    if ((BLEND_SOURCE_CONFIG(object)->flags & CHARANIM_TRANSLATE) != 0) {
         if (object->previous_animation_root_time > object->anim_packet.blend_source_time ||
             BLEND_SOURCE_CONFIG(object) != object->previous_animation_root_info) {
             object->previous_animation_root = *source_root;
@@ -2300,7 +2303,7 @@ void BlendRootFn(NUMTX *matrix, void *data, NUVEC *source_root, NUVEC *target_ro
     source_offset.y = BLEND_SOURCE_CONFIG(object)->root_translation.y;
     source_offset.z = BLEND_SOURCE_CONFIG(object)->root_translation.z;
 
-    if ((BLEND_TARGET_CONFIG(object)->flags & 0x20) != 0) {
+    if ((BLEND_TARGET_CONFIG(object)->flags & CHARANIM_TRANSLATE) != 0) {
         if (object->previous_blend_target_root_time > object->anim_packet.blend_target_time ||
             BLEND_TARGET_CONFIG(object) != object->previous_blend_target_root_info) {
             object->previous_blend_target_root = *target_root;
@@ -2581,8 +2584,8 @@ i32 APIDrawCharacterModel(CHARACTER_MODEL_LAYERS *model, APICHARACTERDATA *chara
                        model->model_data_b[animation->blend_source_animation] != NULL && animation->blend_target_animation >= 0 &&
                        animation->blend_target_animation < apicharsys->model_id_capacity &&
                        model->model_data_b[animation->blend_target_animation] != NULL) {
-                if ((model->animation_configs[animation->blend_source_animation]->flags & 0x20) != 0 ||
-                    (model->animation_configs[animation->blend_target_animation]->flags & 0x20) != 0) {
+                if ((model->animation_configs[animation->blend_source_animation]->flags & CHARANIM_TRANSLATE) != 0 ||
+                    (model->animation_configs[animation->blend_target_animation]->flags & CHARANIM_TRANSLATE) != 0) {
                     NuHGobjEvalAnimBlend2Root(model->hierarchy, model->model_data_b[animation->blend_source_animation],
                                               animation->blend_source_time, model->model_data_b[animation->blend_target_animation],
                                               animation->blend_target_time, animation->blend_elapsed_pc / animation->blend_duration_pc,
@@ -2600,7 +2603,7 @@ i32 APIDrawCharacterModel(CHARACTER_MODEL_LAYERS *model, APICHARACTERDATA *chara
                 CHARACTERANIM_CONFIG *selected;
 
                 selected = model->animation_configs[animation->blend_target_animation];
-                if ((selected->flags & 0x20) != 0) {
+                if ((selected->flags & CHARANIM_TRANSLATE) != 0) {
                     NuHGobjEvalAnim2Root(model->hierarchy, model->model_data_b[animation->blend_target_animation],
                                          animation->blend_target_time, joint_override_count, joint_overrides, output_matrices,
                                          (selected->flags & 0x200) != 0 ? RootFnY : RootFn, object);
@@ -2615,7 +2618,7 @@ i32 APIDrawCharacterModel(CHARACTER_MODEL_LAYERS *model, APICHARACTERDATA *chara
                 CHARACTERANIM_CONFIG *selected;
 
                 selected = model->animation_configs[animation->blend_source_animation];
-                if ((selected->flags & 0x20) != 0) {
+                if ((selected->flags & CHARANIM_TRANSLATE) != 0) {
                     NuHGobjEvalAnim2Root(model->hierarchy, model->model_data_b[animation->blend_source_animation],
                                          animation->blend_source_time, joint_override_count, joint_overrides, output_matrices,
                                          (selected->flags & 0x200) != 0 ? RootFnY : RootFn, object);
@@ -2630,7 +2633,7 @@ i32 APIDrawCharacterModel(CHARACTER_MODEL_LAYERS *model, APICHARACTERDATA *chara
                 CHARACTERANIM_CONFIG *selected;
 
                 selected = model->animation_configs[animation->animation_index];
-                if ((selected->flags & 0x20) != 0) {
+                if ((selected->flags & CHARANIM_TRANSLATE) != 0) {
                     NuHGobjEvalAnim2Root(model->hierarchy, model->model_data_b[animation->animation_index], animation->current_time,
                                          joint_override_count, joint_overrides, output_matrices,
                                          (selected->flags & 0x200) != 0 ? RootFnY : RootFn, object);

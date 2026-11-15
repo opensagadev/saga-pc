@@ -78,7 +78,7 @@ void FastWeaponOut(GAMEOBJECT *object, i32 force_sound) {
     if (force_sound != 0 && object->weapon_scale == 0.0f && object->unknown_e33 != 1) {
         animation = CurrentAnim(&object->anim_packet);
         if (animation == -1 || object->character_model->animation_configs[animation] == NULL ||
-            (object->character_model->animation_configs[animation]->flags & 0x400) == 0) {
+            (object->character_model->animation_configs[animation]->flags & CHARANIM_GUN_OFF) == 0) {
             if (object->character_data->model_flags & CHARACTER_MODEL_JEDI) {
                 if (object->unknown_280 != 0xff || WeaponInOut_NoAIJediSfx == 0) {
                     GameAudio_PlaySfx(0x3e, &object->collision_position, GameAudio_GetPlrSfxBits(object), 1);
@@ -197,7 +197,7 @@ void FastWeaponIn(GAMEOBJECT *object, i32 force_sound) {
     if (force_sound != 0 && object->weapon_scale == 1.0f && object->unknown_e33 != 2) {
         animation = CurrentAnim(&object->anim_packet);
         if (animation == -1 || object->character_model->animation_configs[animation] == NULL ||
-            (object->character_model->animation_configs[animation]->flags & 0x800) == 0) {
+            (object->character_model->animation_configs[animation]->flags & CHARANIM_GUN_ON) == 0) {
             if (object->character_data->model_flags & CHARACTER_MODEL_JEDI) {
                 if (object->unknown_280 != 0xff || WeaponInOut_NoAIJediSfx == 0) {
                     GameAudio_PlaySfx(0x3d, &object->collision_position, GameAudio_GetPlrSfxBits(object), 1);

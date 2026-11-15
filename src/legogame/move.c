@@ -2221,7 +2221,7 @@ void TakeHitCode(GAMEOBJECT *object) {
                     animation = object->unknown_7aa;
                     object->unknown_7b3 = 1;
                     if (object->character_model->model_data_b[animation] != NULL &&
-                        (object->character_model->animation_configs[animation]->flags & 2) == 0) {
+                        (object->character_model->animation_configs[animation]->flags & CHARANIM_CYCLE) == 0) {
                         object->context_timer = AnimDuration((i16)object->id, animation, 0.0f, 0.0f, 1);
                     } else {
                         object->context_timer = object->context_hover_target_y;
@@ -9095,7 +9095,7 @@ void MovePlayer_DIRECTIONAL(GAMEOBJECT *object) {
                     stopped = stop_frame > 1.0f && frame != NULL && *frame >= stop_frame;
                     if (!stopped && frame != NULL && object->unknown_281 != 0 &&
                         object->character_model->model_data_b[current_animation] != NULL &&
-                        (object->character_model->animation_configs[current_animation]->flags & 2) == 0 &&
+                        (object->character_model->animation_configs[current_animation]->flags & CHARANIM_CYCLE) == 0 &&
                         (object->anim_packet.flags & 1u) != 0) {
                         stopped = 1;
                     }
@@ -9292,7 +9292,7 @@ void MovePlayer_DIRECTIONAL(GAMEOBJECT *object) {
                                 speed = AnimSpeed(object->character_model, object->anim_packet.blend_source_animation);
                                 if (speed != 0.0f) {
                                     if ((object->character_model->animation_configs[object->anim_packet.blend_source_animation]->flags &
-                                         2) != 0 ||
+                                         CHARANIM_CYCLE) != 0 ||
                                         object->anim_packet.blend_source_time <
                                             NuAnimEndFrame(
                                                 object->character_model->model_data_b[object->anim_packet.blend_source_animation])) {
@@ -10273,7 +10273,7 @@ static void DeactivatedCode(GAMEOBJECT *object) {
                 }
                 object->context_duration = 0.0f;
             }
-        } else if ((object->character_model->animation_configs[object->unknown_7aa]->flags & 2) == 0 &&
+        } else if ((object->character_model->animation_configs[object->unknown_7aa]->flags & CHARANIM_CYCLE) == 0 &&
                    AnimDuration((i16)object->id, object->unknown_7aa, 0.0f, 0.0f, 1) <= elapsed) {
             ActivatePlayer(object);
             return;

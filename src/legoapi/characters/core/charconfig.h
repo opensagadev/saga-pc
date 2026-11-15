@@ -38,6 +38,33 @@ typedef struct GAMECHARACTERLAYER { // size 0x1c
     i16 hierarchy_layer_index;      // 0x1a
 } GAMECHARACTERLAYER;
 
+/* CHARACTER_EFFECT_CONFIG.flags: the keywords of an effect_start block of a character's animation (CC_ReadAnimEffect). */
+#define CHAREFFECT_PARTICLE_COUNT 0x1            /* num_particles, particles_per_frame */
+#define CHAREFFECT_TIMING_CONSTANT 0x4           /* timing constant */
+#define CHAREFFECT_TIMING_BETWEEN 0x8            /* timing between */
+#define CHAREFFECT_ON_GROUND 0x10                /* condition on_ground */
+#define CHAREFFECT_UNDER_WATER 0x20              /* condition under_water */
+#define CHAREFFECT_ABOVE_WATER 0x40              /* condition above_water */
+#define CHAREFFECT_INTERSECT_WATER 0x80          /* condition intersect_water */
+#define CHAREFFECT_IN_ONLY 0x100                 /* in_only */
+#define CHAREFFECT_NOT_IN 0x200                  /* not_in */
+#define CHAREFFECT_PLAYER_ONLY 0x400             /* player_only */
+#define CHAREFFECT_AT_LOCATOR_AVERAGE 0x800      /* at_locator_average */
+#define CHAREFFECT_AT_OBJ_BOTTOM 0x1000          /* at_obj_bottom */
+#define CHAREFFECT_AT_TER_SURFACE 0x2000         /* at_ter_surface */
+#define CHAREFFECT_AT_TER_LAYER 0x4000           /* at_ter_layer */
+#define CHAREFFECT_SFX_3D 0x8000                 /* set by default, sfx_2d clears it */
+#define CHAREFFECT_VOLUME 0x10000                /* volume */
+#define CHAREFFECT_MIN_XZ_SPEED 0x40000          /* min_mode xz_speed */
+#define CHAREFFECT_MAX_XZ_SPEED 0x80000          /* max_mode xz_speed */
+#define CHAREFFECT_MIN_XYZ_SPEED 0x100000        /* min_mode xyz_speed */
+#define CHAREFFECT_MAX_XYZ_SPEED 0x200000        /* max_mode xyz_speed */
+#define CHAREFFECT_AT_OBJ_SPEED 0x400000         /* at_obj_speed */
+#define CHAREFFECT_PARTICLES_PER_SECOND 0x800000 /* particles_per_second (with CHAREFFECT_PARTICLE_COUNT) */
+#define CHAREFFECT_LEFT_FOOTPRINT 0x1000000      /* left_footprint */
+#define CHAREFFECT_RIGHT_FOOTPRINT 0x2000000     /* right_footprint */
+#define CHAREFFECT_USE_LOCATOR_MATRIX 0x4000000  /* use_locator_matrix */
+
 typedef struct CHARACTER_EFFECT_CONFIG { // size 0x34
     i16 character_id;                    // 0x00
     i16 debris_id;                       // 0x02

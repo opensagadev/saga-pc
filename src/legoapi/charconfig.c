@@ -365,26 +365,26 @@ static void CC_ReadAnimEffect(NUFPAR_PC *parser, CHARACTERANIM_CONFIG *animation
         } else if (NuStrICmp(parser->word_buffer_ptr, "condition") == 0) {
             if (NuFParGetWord(parser) != 0) {
                 if (NuStrICmp(parser->word_buffer_ptr, "on_ground") == 0) {
-                    effect->flags |= 0x10;
+                    effect->flags |= CHAREFFECT_ON_GROUND;
                 } else if (NuStrICmp(parser->word_buffer_ptr, "under_water") == 0) {
-                    effect->flags |= 0x20;
+                    effect->flags |= CHAREFFECT_UNDER_WATER;
                 } else if (NuStrICmp(parser->word_buffer_ptr, "above_water") == 0) {
-                    effect->flags |= 0x40;
+                    effect->flags |= CHAREFFECT_ABOVE_WATER;
                 } else if (NuStrICmp(parser->word_buffer_ptr, "intersect_water") == 0) {
-                    effect->flags |= 0x80;
+                    effect->flags |= CHAREFFECT_INTERSECT_WATER;
                 }
             }
         } else if (NuStrICmp(parser->word_buffer_ptr, "in_only") == 0) {
-            effect->flags |= 0x100;
+            effect->flags |= CHAREFFECT_IN_ONLY;
         } else if (NuStrICmp(parser->word_buffer_ptr, "not_in") == 0) {
-            effect->flags |= 0x200;
+            effect->flags |= CHAREFFECT_NOT_IN;
         } else if (NuStrICmp(parser->word_buffer_ptr, "player_only") == 0) {
-            effect->flags |= 0x400;
+            effect->flags |= CHAREFFECT_PLAYER_ONLY;
         } else if (NuStrICmp(parser->word_buffer_ptr, "num_particles") == 0) {
             const i32 count = NuFParGetInt(parser);
             if (count > 0) {
                 effect->particle_count = (u8)(count);
-                effect->flags |= 1;
+                effect->flags |= CHAREFFECT_PARTICLE_COUNT;
             }
         } else if (NuStrICmp(parser->word_buffer_ptr, "frame") == 0 || NuStrICmp(parser->word_buffer_ptr, "frame1") == 0) {
             effect->frame[0] = NuFParGetFloat(parser);
@@ -401,19 +401,19 @@ static void CC_ReadAnimEffect(NUFPAR_PC *parser, CHARACTERANIM_CONFIG *animation
         } else if (NuStrICmp(parser->word_buffer_ptr, "timing") == 0) {
             if (NuFParGetWord(parser) != 0) {
                 if (NuStrICmp(parser->word_buffer_ptr, "constant") == 0) {
-                    effect->flags |= 4;
+                    effect->flags |= CHAREFFECT_TIMING_CONSTANT;
                 } else if (NuStrICmp(parser->word_buffer_ptr, "between") == 0) {
-                    effect->flags |= 8;
+                    effect->flags |= CHAREFFECT_TIMING_BETWEEN;
                 }
             }
         } else if (NuStrICmp(parser->word_buffer_ptr, "particles_per_frame") == 0) {
             const f32 rate = CharConfigAbsFloat(NuFParGetFloat(parser));
             effect->particle_rate = rate;
-            effect->flags |= 1;
+            effect->flags |= CHAREFFECT_PARTICLE_COUNT;
         } else if (NuStrICmp(parser->word_buffer_ptr, "particles_per_second") == 0) {
             const f32 rate = CharConfigAbsFloat(NuFParGetFloat(parser));
             effect->particle_rate = rate;
-            effect->flags |= 0x800001;
+            effect->flags |= CHAREFFECT_PARTICLE_COUNT | CHAREFFECT_PARTICLES_PER_SECOND;
         } else if (NuStrICmp(parser->word_buffer_ptr, "locators") == 0) {
             while (NuFParGetWord(parser) != 0) {
                 const u32 locator = NuAToI(parser->word_buffer_ptr);
@@ -426,36 +426,36 @@ static void CC_ReadAnimEffect(NUFPAR_PC *parser, CHARACTERANIM_CONFIG *animation
                 effect->sound_id = (i16)(GetSfxId(parser->word_buffer_ptr));
             }
         } else if (NuStrICmp(parser->word_buffer_ptr, "sfx_2d") == 0) {
-            effect->flags &= ~0x8000u;
+            effect->flags &= ~CHAREFFECT_SFX_3D;
         } else if (NuStrICmp(parser->word_buffer_ptr, "volume") == 0) {
             effect->minimum = CharConfigAbsFloat(NuFParGetFloat(parser));
-            effect->flags |= 0x10000;
+            effect->flags |= CHAREFFECT_VOLUME;
         } else if (NuStrICmp(parser->word_buffer_ptr, "surfaces") == 0) {
             if (NuFParGetWord(parser) != 0 && NuStrICmp(parser->word_buffer_ptr, "non_solid") == 0) {
                 effect->surfaces = ~SURFACEBITS_DUST;
             }
         } else if (NuStrICmp(parser->word_buffer_ptr, "at_ter_surface") == 0) {
-            effect->flags |= 0x2000;
+            effect->flags |= CHAREFFECT_AT_TER_SURFACE;
         } else if (NuStrICmp(parser->word_buffer_ptr, "at_obj_bottom") == 0) {
-            effect->flags |= 0x1000;
+            effect->flags |= CHAREFFECT_AT_OBJ_BOTTOM;
         } else if (NuStrICmp(parser->word_buffer_ptr, "at_locator_average") == 0) {
-            effect->flags |= 0x800;
+            effect->flags |= CHAREFFECT_AT_LOCATOR_AVERAGE;
         } else if (NuStrICmp(parser->word_buffer_ptr, "at_ter_layer") == 0) {
-            effect->flags |= 0x4000;
+            effect->flags |= CHAREFFECT_AT_TER_LAYER;
         } else if (NuStrICmp(parser->word_buffer_ptr, "min_mode") == 0) {
             if (NuFParGetWord(parser) != 0) {
                 if (NuStrICmp(parser->word_buffer_ptr, "xz_speed") == 0) {
-                    effect->flags |= 0x40000;
+                    effect->flags |= CHAREFFECT_MIN_XZ_SPEED;
                 } else if (NuStrICmp(parser->word_buffer_ptr, "xyz_speed") == 0) {
-                    effect->flags |= 0x100000;
+                    effect->flags |= CHAREFFECT_MIN_XYZ_SPEED;
                 }
             }
         } else if (NuStrICmp(parser->word_buffer_ptr, "max_mode") == 0) {
             if (NuFParGetWord(parser) != 0) {
                 if (NuStrICmp(parser->word_buffer_ptr, "xz_speed") == 0) {
-                    effect->flags |= 0x80000;
+                    effect->flags |= CHAREFFECT_MAX_XZ_SPEED;
                 } else if (NuStrICmp(parser->word_buffer_ptr, "xyz_speed") == 0) {
-                    effect->flags |= 0x200000;
+                    effect->flags |= CHAREFFECT_MAX_XYZ_SPEED;
                 }
             }
         } else if (NuStrICmp(parser->word_buffer_ptr, "min_val") == 0) {
@@ -463,13 +463,13 @@ static void CC_ReadAnimEffect(NUFPAR_PC *parser, CHARACTERANIM_CONFIG *animation
         } else if (NuStrICmp(parser->word_buffer_ptr, "max_val") == 0) {
             effect->maximum = NuFParGetFloat(parser);
         } else if (NuStrICmp(parser->word_buffer_ptr, "at_obj_speed") == 0) {
-            effect->flags |= 0x400000;
+            effect->flags |= CHAREFFECT_AT_OBJ_SPEED;
         } else if (NuStrICmp(parser->word_buffer_ptr, "left_footprint") == 0) {
-            effect->flags |= 0x1000000;
+            effect->flags |= CHAREFFECT_LEFT_FOOTPRINT;
         } else if (NuStrICmp(parser->word_buffer_ptr, "right_footprint") == 0) {
-            effect->flags |= 0x2000000;
+            effect->flags |= CHAREFFECT_RIGHT_FOOTPRINT;
         } else if (NuStrICmp(parser->word_buffer_ptr, "use_locator_matrix") == 0) {
-            effect->flags |= 0x4000000;
+            effect->flags |= CHAREFFECT_USE_LOCATOR_MATRIX;
         } else if (NuStrICmp(parser->word_buffer_ptr, "bits_on") == 0) {
             while (NuFParGetWord(parser) != 0) {
                 const u32 bit = NuAToI(parser->word_buffer_ptr);
@@ -533,25 +533,25 @@ static void CC_anim_start(NUFPAR_PC *parser) {
         } else if (NuStrICmp(parser->word_buffer_ptr, "bsa") == 0) {
             if (NuFParGetWord(parser) != 0) {
                 if (NuStrICmp(parser->word_buffer_ptr, "on") == 0) {
-                    animation.flags |= 8;
+                    animation.flags |= CHARANIM_BSA;
                 } else if (NuStrICmp(parser->word_buffer_ptr, "off") == 0) {
-                    animation.flags &= ~8u;
+                    animation.flags &= ~CHARANIM_BSA;
                 }
             }
         } else if (NuStrICmp(parser->word_buffer_ptr, "cycle") == 0) {
             if (NuFParGetWord(parser) != 0) {
                 if (NuStrICmp(parser->word_buffer_ptr, "on") == 0) {
-                    animation.flags |= 2;
+                    animation.flags |= CHARANIM_CYCLE;
                 } else if (NuStrICmp(parser->word_buffer_ptr, "off") == 0) {
-                    animation.flags &= ~2u;
+                    animation.flags &= ~CHARANIM_CYCLE;
                 }
             }
         } else if (NuStrICmp(parser->word_buffer_ptr, "type") == 0) {
             if (NuFParGetWord(parser) != 0) {
                 if (NuStrICmp(parser->word_buffer_ptr, "idle") == 0) {
-                    animation.flags |= 0x10;
+                    animation.flags |= CHARANIM_IDLE;
                 } else {
-                    animation.flags &= ~0x10u;
+                    animation.flags &= ~CHARANIM_IDLE;
                 }
             }
         } else if (NuStrICmp(parser->word_buffer_ptr, "fpsec") == 0) {
@@ -565,30 +565,31 @@ static void CC_anim_start(NUFPAR_PC *parser) {
         } else if (NuStrICmp(parser->word_buffer_ptr, "speedmul_maxfps") == 0) {
             animation.movement_rate_cap = NuFParGetFloat(parser);
         } else if (NuStrICmp(parser->word_buffer_ptr, "translate") == 0) {
-            CC_SetAnimFlags(parser, &animation, 0x20);
+            CC_SetAnimFlags(parser, &animation, CHARANIM_TRANSLATE);
         } else if (NuStrICmp(parser->word_buffer_ptr, "can_play_backwards") == 0) {
-            CC_SetAnimFlags(parser, &animation, 0x80);
+            CC_SetAnimFlags(parser, &animation, CHARANIM_CAN_PLAY_BACKWARDS);
         } else if (NuStrICmp(parser->word_buffer_ptr, "footsteps") == 0) {
-            animation.flags |= 0x100;
+            animation.flags |= CHARANIM_FOOTSTEPS;
             while (NuFParGetWord(parser) != 0) {
                 if (NuStrICmp(parser->word_buffer_ptr, "off") == 0) {
-                    animation.flags &= ~0x70100u;
+                    animation.flags &=
+                        ~(CHARANIM_FOOTSTEPS | CHARANIM_FOOTSTEPS_4FRAMES | CHARANIM_FOOTSTEPS_JUDDER | CHARANIM_FOOTSTEPS_SHAKE);
                     break;
                 } else if (NuStrICmp(parser->word_buffer_ptr, "4frames") == 0) {
-                    animation.flags |= 0x10000;
+                    animation.flags |= CHARANIM_FOOTSTEPS_4FRAMES;
                 } else if (NuStrICmp(parser->word_buffer_ptr, "judder") == 0) {
-                    animation.flags |= 0x20000;
+                    animation.flags |= CHARANIM_FOOTSTEPS_JUDDER;
                 } else if (NuStrICmp(parser->word_buffer_ptr, "shake") == 0) {
-                    animation.flags |= 0x40000;
+                    animation.flags |= CHARANIM_FOOTSTEPS_SHAKE;
                 }
             }
         } else if (NuStrICmp(parser->word_buffer_ptr, "no_headturn") == 0 || NuStrICmp(parser->word_buffer_ptr, "headturn_off") == 0) {
-            animation.flags |= 0x40;
+            animation.flags |= CHARANIM_NO_HEADTURN;
         } else if (NuStrICmp(parser->word_buffer_ptr, "headturn") == 0) {
             if (NuFParGetWord(parser) != 0 && NuStrICmp(parser->word_buffer_ptr, "off") == 0) {
-                animation.flags |= 0x40;
+                animation.flags |= CHARANIM_NO_HEADTURN;
             } else {
-                animation.flags &= ~0x40u;
+                animation.flags &= ~CHARANIM_NO_HEADTURN;
             }
         } else if (NuStrICmp(parser->word_buffer_ptr, "minreps") == 0) {
             animation.minimum_repetitions = (u8)(abs(NuFParGetInt(parser)));
@@ -610,15 +611,15 @@ static void CC_anim_start(NUFPAR_PC *parser) {
         } else if (NuStrICmp(parser->word_buffer_ptr, "priority") == 0) {
             animation.priority = (u8)(NuFParGetInt(parser));
         } else if (NuStrICmp(parser->word_buffer_ptr, "gun_off") == 0) {
-            animation.flags |= 0x400;
+            animation.flags |= CHARANIM_GUN_OFF;
         } else if (NuStrICmp(parser->word_buffer_ptr, "gun_on") == 0) {
-            animation.flags |= 0x800;
+            animation.flags |= CHARANIM_GUN_ON;
         } else if (NuStrICmp(parser->word_buffer_ptr, "gun") == 0) {
             if (NuFParGetWord(parser) != 0) {
                 if (NuStrICmp(parser->word_buffer_ptr, "on") == 0) {
-                    animation.flags |= 0x800;
+                    animation.flags |= CHARANIM_GUN_ON;
                 } else if (NuStrICmp(parser->word_buffer_ptr, "off") == 0) {
-                    animation.flags |= 0x400;
+                    animation.flags |= CHARANIM_GUN_OFF;
                 }
             }
         } else if (NuStrICmp(parser->word_buffer_ptr, "locator") == 0) {
@@ -629,13 +630,13 @@ static void CC_anim_start(NUFPAR_PC *parser) {
                 }
             }
         } else if (NuStrICmp(parser->word_buffer_ptr, "is_punch") == 0) {
-            CC_SetAnimMiscFlags(parser, &animation, 1);
+            CC_SetAnimMiscFlags(parser, &animation, CHARANIM_MISC_IS_PUNCH);
         } else if (NuStrICmp(parser->word_buffer_ptr, "is_kick") == 0) {
-            CC_SetAnimMiscFlags(parser, &animation, 2);
+            CC_SetAnimMiscFlags(parser, &animation, CHARANIM_MISC_IS_KICK);
         } else if (NuStrICmp(parser->word_buffer_ptr, "is_whip") == 0) {
-            CC_SetAnimMiscFlags(parser, &animation, 4);
+            CC_SetAnimMiscFlags(parser, &animation, CHARANIM_MISC_IS_WHIP);
         } else if (NuStrICmp(parser->word_buffer_ptr, "extra_character_off") == 0) {
-            CC_SetAnimMiscFlags(parser, &animation, 8);
+            CC_SetAnimMiscFlags(parser, &animation, CHARANIM_MISC_EXTRA_CHARACTER_OFF);
         } else if (NuStrICmp(parser->word_buffer_ptr, "effect_start") == 0) {
             if ((charconfig.flags & 0x40) != 0 && (charconfig.flags & 0x20) != 0) {
                 if (charconfig.effect_count < 32) {

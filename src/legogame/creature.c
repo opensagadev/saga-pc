@@ -885,14 +885,14 @@ static void NewCharacterIdle(GAMEOBJECT *object, i32 default_idle) {
             continue;
         }
         info = object->character_model->animation_configs[animation];
-        if ((info->flags & 0x10) == 0) {
+        if ((info->flags & CHARANIM_IDLE) == 0) {
             continue;
         }
         if (default_idle == alternate) {
-            if ((info->flags & 0x800) == 0) {
+            if ((info->flags & CHARANIM_GUN_ON) == 0) {
                 continue;
             }
-        } else if ((info->flags & 0x800) != 0) {
+        } else if ((info->flags & CHARANIM_GUN_ON) != 0) {
             continue;
         }
         candidates[count++] = animation;
@@ -912,7 +912,7 @@ static void NewCharacterIdle(GAMEOBJECT *object, i32 default_idle) {
             }
         }
         state->previous_idle_animation = state->idle_animation;
-        if (repetitions > 1 && (object->character_model->animation_configs[state->idle_animation]->flags & 2) == 0) {
+        if (repetitions > 1 && (object->character_model->animation_configs[state->idle_animation]->flags & CHARANIM_CYCLE) == 0) {
             repetitions = 1;
         }
         state->idle_animation_time = 0.0f;

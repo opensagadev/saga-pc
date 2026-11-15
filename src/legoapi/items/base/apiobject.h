@@ -519,6 +519,26 @@ typedef struct APIOBJECT {                          // size 0x29c
     struct APIOBJECT *collision_link;                             // 0x298
 } APIOBJECT;
 
+/* CHARACTERANIM_CONFIG.flags: the keywords of an anim_start block of a character config (CC_anim_start). */
+#define CHARANIM_CYCLE 0x2                 /* cycle on */
+#define CHARANIM_BSA 0x8                   /* bsa on */
+#define CHARANIM_IDLE 0x10                 /* type idle */
+#define CHARANIM_TRANSLATE 0x20            /* translate */
+#define CHARANIM_NO_HEADTURN 0x40          /* no_headturn, headturn_off, headturn off */
+#define CHARANIM_CAN_PLAY_BACKWARDS 0x80   /* can_play_backwards */
+#define CHARANIM_FOOTSTEPS 0x100           /* footsteps */
+#define CHARANIM_GUN_OFF 0x400             /* gun_off, gun off */
+#define CHARANIM_GUN_ON 0x800              /* gun_on, gun on */
+#define CHARANIM_FOOTSTEPS_4FRAMES 0x10000 /* footsteps 4frames */
+#define CHARANIM_FOOTSTEPS_JUDDER 0x20000  /* footsteps judder */
+#define CHARANIM_FOOTSTEPS_SHAKE 0x40000   /* footsteps shake */
+
+/* CHARACTERANIM_CONFIG.misc_flags (CC_SetAnimMiscFlags). */
+#define CHARANIM_MISC_IS_PUNCH 0x1            /* is_punch */
+#define CHARANIM_MISC_IS_KICK 0x2             /* is_kick */
+#define CHARANIM_MISC_IS_WHIP 0x4             /* is_whip */
+#define CHARANIM_MISC_EXTRA_CHARACTER_OFF 0x8 /* extra_character_off */
+
 typedef struct CHARACTERANIM_CONFIG { // size 0x4c
     char *name;                       // 0x00
     u32 flags;                        // 0x04

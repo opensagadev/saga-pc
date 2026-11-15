@@ -42,7 +42,7 @@ void AddFootSteps(GAMEOBJECT *object) {
         return;
     }
     config = object->character_model->animation_configs[index];
-    if ((config->flags & 0x100) == 0) {
+    if ((config->flags & CHARANIM_FOOTSTEPS) == 0) {
         return;
     }
     previous = packet->previous_time;
@@ -60,10 +60,10 @@ void AddFootSteps(GAMEOBJECT *object) {
         valid_interval = 1;
     }
     /* Tests the four-footstep flag again before each of the first two events. */
-    if ((config->flags & 0x10000) != 0) {
+    if ((config->flags & CHARANIM_FOOTSTEPS_4FRAMES) != 0) {
         FOOTSTEP_CHECK(0)
     }
-    if ((config->flags & 0x10000) != 0) {
+    if ((config->flags & CHARANIM_FOOTSTEPS_4FRAMES) != 0) {
         FOOTSTEP_CHECK(1)
     }
     FOOTSTEP_CHECK(2)
@@ -133,19 +133,19 @@ static void HeadMovementLegacy(GAMEOBJECT *object) {
     if (object->anim_packet.blending) {
         animation = object->anim_packet.blend_target_animation;
         if (animation >= 0 && animation < apicharsys->model_id_capacity && object->character_model->model_data_b[animation] != NULL &&
-            (object->character_model->animation_configs[animation]->flags & 0x40) != 0) {
+            (object->character_model->animation_configs[animation]->flags & CHARANIM_NO_HEADTURN) != 0) {
             allowed = 0;
         } else {
             animation = object->anim_packet.blend_source_animation;
             if (animation >= 0 && animation < apicharsys->model_id_capacity && object->character_model->model_data_b[animation] != NULL &&
-                (object->character_model->animation_configs[animation]->flags & 0x40) != 0) {
+                (object->character_model->animation_configs[animation]->flags & CHARANIM_NO_HEADTURN) != 0) {
                 allowed = 0;
             }
         }
     } else {
         animation = object->anim_packet.animation_index;
         if (animation >= 0 && animation < apicharsys->model_id_capacity && object->character_model->model_data_b[animation] != NULL &&
-            (object->character_model->animation_configs[animation]->flags & 0x40) != 0) {
+            (object->character_model->animation_configs[animation]->flags & CHARANIM_NO_HEADTURN) != 0) {
             allowed = 0;
         }
     }
@@ -229,20 +229,20 @@ static void HeadMovementAlternate(GAMEOBJECT *object) {
         if (object->anim_packet.blending) {
             animation = object->anim_packet.blend_target_animation;
             if (animation >= 0 && animation < apicharsys->model_id_capacity && object->character_model->model_data_b[animation] != NULL &&
-                (object->character_model->animation_configs[animation]->flags & 0x40) != 0) {
+                (object->character_model->animation_configs[animation]->flags & CHARANIM_NO_HEADTURN) != 0) {
                 allowed = 0;
             } else {
                 animation = object->anim_packet.blend_source_animation;
                 if (animation >= 0 && animation < apicharsys->model_id_capacity &&
                     object->character_model->model_data_b[animation] != NULL &&
-                    (object->character_model->animation_configs[animation]->flags & 0x40) != 0) {
+                    (object->character_model->animation_configs[animation]->flags & CHARANIM_NO_HEADTURN) != 0) {
                     allowed = 0;
                 }
             }
         } else {
             animation = object->anim_packet.animation_index;
             if (animation >= 0 && animation < apicharsys->model_id_capacity && object->character_model->model_data_b[animation] != NULL &&
-                (object->character_model->animation_configs[animation]->flags & 0x40) != 0) {
+                (object->character_model->animation_configs[animation]->flags & CHARANIM_NO_HEADTURN) != 0) {
                 allowed = 0;
             }
         }
@@ -332,20 +332,20 @@ static void HeadMovementOrdinary(GAMEOBJECT *object) {
         if (object->anim_packet.blending) {
             animation = object->anim_packet.blend_target_animation;
             if (animation >= 0 && animation < apicharsys->model_id_capacity && object->character_model->model_data_b[animation] != NULL &&
-                (object->character_model->animation_configs[animation]->flags & 0x40) != 0) {
+                (object->character_model->animation_configs[animation]->flags & CHARANIM_NO_HEADTURN) != 0) {
                 allowed = 0;
             } else {
                 animation = object->anim_packet.blend_source_animation;
                 if (animation >= 0 && animation < apicharsys->model_id_capacity &&
                     object->character_model->model_data_b[animation] != NULL &&
-                    (object->character_model->animation_configs[animation]->flags & 0x40) != 0) {
+                    (object->character_model->animation_configs[animation]->flags & CHARANIM_NO_HEADTURN) != 0) {
                     allowed = 0;
                 }
             }
         } else {
             animation = object->anim_packet.animation_index;
             if (animation >= 0 && animation < apicharsys->model_id_capacity && object->character_model->model_data_b[animation] != NULL &&
-                (object->character_model->animation_configs[animation]->flags & 0x40) != 0) {
+                (object->character_model->animation_configs[animation]->flags & CHARANIM_NO_HEADTURN) != 0) {
                 allowed = 0;
             }
         }

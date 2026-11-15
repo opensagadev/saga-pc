@@ -1718,7 +1718,7 @@ extern "C" {
                 instance->animation_frame_b += FRAMETIME * 60.0f * animation_rate;
                 if (instance->animation_frame_b > end_frame) {
                     CHARACTERANIM_CONFIG *animation_info = model->animation_configs[current_animation];
-                    if ((animation_info->flags & 2) != 0) {
+                    if ((animation_info->flags & CHARANIM_CYCLE) != 0) {
                         instance->animation_frame_b = instance->animation_frame_b - end_frame + 1.0f;
                     } else {
                         instance->animation_frame_b = end_frame;
@@ -1750,7 +1750,7 @@ extern "C" {
             instance->animation_frame_a += FRAMETIME * 60.0f * animation_rate;
             if (instance->animation_frame_a > end_frame) {
                 CHARACTERANIM_CONFIG *animation_info = model->animation_configs[current_animation];
-                if ((animation_info->flags & 2) != 0) {
+                if ((animation_info->flags & CHARANIM_CYCLE) != 0) {
                     instance->animation_frame_a = instance->animation_frame_a - end_frame + 1.0f;
                 } else {
                     instance->animation_frame_a = end_frame;

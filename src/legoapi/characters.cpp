@@ -102,7 +102,7 @@ i32 RedirectAnim(char *directory, void *list, CHARACTERANIM_CONFIG *animation, c
         if (redirect->animation_id == animation->action_id && NuStrICmp(name, animation->name) == 0) {
             NuStrCpy(output_path, directory);
             NuStrCat(output_path, animation->name);
-            animation->flags &= ~8u;
+            animation->flags &= ~CHARANIM_BSA;
             return 1;
         }
     }
