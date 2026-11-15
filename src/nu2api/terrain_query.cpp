@@ -1,4 +1,17 @@
-#include "saga.h"
+#include "globals.h"
+#include "legoapi/characters/motion/move.h"
+#include "legoapi/legoapi_types.h"
+#include "legoapi/render/core/gameliball.h"
+#include "legoapi/render/core/terrain.h"
+#include "legoapi/world/world_shared.h"
+#include "nu2api/nu3d/nucamera.h"
+#include "nu2api/nucore/numem.h"
+#include "nu2api/numath/nuang.h"
+#include "nu2api/numath/nufloat.h"
+#include "nu2api/numath/numtx.h"
+#include "nu2api/numath/nutrig.h"
+#include "nu2api/numath/nuvec.h"
+#include "nu2api/numath/nuvec4.h"
 #include <string.h>
 #include <math.h>
 

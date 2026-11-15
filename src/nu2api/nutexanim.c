@@ -1,4 +1,22 @@
-#include "saga.h"
+#include "gameapi/edtools/edui.h"
+#include "nu2api/nu3d/nu3d_includes.h"
+#include "nu2api/nu3d/nucamera.h"
+#include "nu2api/nu3d/numtl.h"
+#include "nu2api/nu3d/nuqfnt.h"
+#include "nu2api/nu3d/nurndr.h"
+#include "nu2api/nu3d/nutexanm.h"
+#include "nu2api/nucore/nucore_includes.h"
+#include "nu2api/nucore/nustring.h"
+#include "nu2api/nucore/nuthread.h"
+#include "nu2api/nudir_gen.h"
+#include "nu2api/nufile/nufile.h"
+#include "nu2api/nufile/nufilepak.h"
+#include "nu2api/nufile/nufpar.h"
+#include "nu2api/nufpar_gen.h"
+#include "nu2api/numath/numaths.h"
+#include "nu2api/numath/numtx.h"
+#include "nu2api/numath/nurand.h"
+#include "nu2api/numath/nuvec.h"
 #include <string.h>
 static i32 nutexanm_critical_section = -1;
 static PC_TEXTURE_ANIM_LIST *ntal_free = 0;

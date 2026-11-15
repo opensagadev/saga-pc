@@ -1,5 +1,8 @@
 #define SAGA_SHADER_PARSER_TYPES
-#include "saga.h"
+#include "gamelib/util/CRC16.h"
+#include "gamelib/util/gamelib_util_types.h"
+#include "nu2api/nufile/nufile.h"
+#include "nu2api/shader_parser.h"
 #include <string.h>
 #include <stdio.h>
 #include <stdlib.h>

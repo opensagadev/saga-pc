@@ -1,4 +1,11 @@
-#include "saga.h"
+#include "legoapi/legoapi_types.h"
+#include "legoapi/render/core/gameliball.h"
+#include "legoapi/render/core/terrain.h"
+#include "legoapi/render/core/terrain_internal.h"
+#include "nu2api/numath/nufloat.h"
+#include "nu2api/numath/numtx.h"
+#include "nu2api/numath/nuvec.h"
+#include "nu2api/numath/nuvec4.h"
 
 extern "C" {
 

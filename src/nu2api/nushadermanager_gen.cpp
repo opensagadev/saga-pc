@@ -2,7 +2,13 @@
  * NuShaderManager C entry points. The material filter view and
  * ShaderManagerHLSL live in other units, so calls into them stay real calls
  * here. */
-#include "saga.h"
+#include "nu2api/PCInput.h"
+#include "nu2api/ShaderManagerHLSL.h"
+#include "nu2api/nu3d/ShaderManager.h"
+#include "nu2api/nu3d/nushader_plain.h"
+#include "nu2api/nu3d/nushadermanager_gen.h"
+#include "nu2api/nu3d/nushaderobject.h"
+#include "nu2api/nuwin32/d3dCalls.h"
 
 template <> bool PC_SHADER_MANAGER_VIEW::CreateShader(const PC_SHADER_MATERIAL_FILTER_VIEW *, bool, NuShaderObject *, i32);
 template <> void PC_SHADER_MANAGER_VIEW::AdaptDescriptor(const PC_SHADER_FILTER_DESC_VIEW *, const PC_SHADER_FILTER_MATERIAL_VIEW *);

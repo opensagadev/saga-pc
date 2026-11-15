@@ -1,4 +1,16 @@
-#include "saga.h"
+#include "globals.h"
+#include "legoapi/items/collect/bolts.h"
+#include "legoapi/render/core/gameliball.h"
+#include "nu2api/nu3d/nuqfnt.h"
+#include "nu2api/nucore/nustring.h"
+#include "nu2api/nufile/nufpar.h"
+#include "nu2api/numath/nufloat.h"
+#include "nu2api/numath/nutrig.h"
+#include "nu2api/numath/nuvec.h"
+#include "nu2api/numusic/numusic.h"
+#include "nu2api/numusic_gen.h"
+#include "nu2api/nusound/nusound.h"
+#include "nu2api/nusound/nusound3_include.h"
 
 #include <string.h>
 #include <float.h>

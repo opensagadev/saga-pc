@@ -1,4 +1,4 @@
-#include "saga.h"
+#include "nu2api/nucore/common.h"
 
 extern "C" {
     extern const DWORD dat_007656f0[42] = {

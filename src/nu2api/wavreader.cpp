@@ -1,4 +1,5 @@
-#include "saga.h"
+#include "nu2api/nufile/nufile.h"
+#include "nu2api/wavreader.h"
 #include <string.h>
 
 extern "C" void PCDecoderDiagnosticNoOp(...) {

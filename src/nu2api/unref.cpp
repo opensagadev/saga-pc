@@ -1,4 +1,4 @@
-#include "saga.h"
+#include "nu2api/nucore/common.h"
 
 /* RefPack decompressor, the counterpart of refpack. Returns
  * the number of bytes written to destination. */

@@ -1,4 +1,11 @@
-#include "saga.h"
+#include "gameframework/saveload.h"
+#include "nu2api/PCInput.h"
+#include "nu2api/nufile/nufile.h"
+#include "nu2api/nufile/nufpar.h"
+#include "nu2api/nuwin32/d3dCore.h"
+#include "nu2api/nuwin32/pcapi.h"
+#include "nu2api/pc_options.h"
+#include "nu2api/platform_files.h"
 #include <stdio.h>
 #include <shlobj.h>
 #include <string.h>

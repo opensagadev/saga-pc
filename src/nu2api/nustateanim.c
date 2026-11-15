@@ -1,4 +1,9 @@
-#include "saga.h"
+#include "legoapi/legoapi_types.h"
+#include "nu2api/nu3d/nu3d_includes.h"
+#include "nu2api/nu3d/nugscn.h"
+#include "nu2api/nucore/nuanimdata.h"
+#include "nu2api/nufile/nufile.h"
+#include "nu2api/numath/numtx.h"
 
 void *fun_00601de0(i32 size, i32 alignment);
 

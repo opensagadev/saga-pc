@@ -1,4 +1,5 @@
-#include "saga.h"
+#include "gamelib/util/CRC16.h"
+#include "gamelib/util/gamelib_util_types.h"
 #include <stdio.h>
 
 ShaderCompilerBufferAllocatorPc::ShaderCompilerBufferAllocatorPc(i32 size, bool owns) {

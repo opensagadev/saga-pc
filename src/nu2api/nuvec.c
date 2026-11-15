@@ -1,4 +1,8 @@
-#include "saga.h"
+#include "nu2api/nu3d/nu3d_includes.h"
+#include "nu2api/numath/numaths.h"
+#include "nu2api/numath/numtx.h"
+#include "nu2api/numath/nuquat.h"
+#include "nu2api/numath/nuvec4.h"
 #include <xmmintrin.h>
 
 /* Retail is a hand-written SSE block: four points per iteration, three outputs (x, y, z blocks) and one outcode

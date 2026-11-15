@@ -1,4 +1,11 @@
-#include "saga.h"
+#include "gamelib/nuwind/nuwind.h"
+#include "nu2api/nu3d/nu3d_includes.h"
+#include "nu2api/nu3d/nucamera.h"
+#include "nu2api/nu3d/nuhspecial.h"
+#include "nu2api/numath/nufloat.h"
+#include "nu2api/numath/numtx.h"
+#include "nu2api/numath/nutrig.h"
+#include "nu2api/numath/nuvec.h"
 
 i32 NuWindMaxMatsPC = 0;
 i32 NuWindMaxGroupsPC = 0;

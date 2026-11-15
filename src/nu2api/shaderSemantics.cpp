@@ -1,4 +1,6 @@
-#include "saga.h"
+#include "nu2api/nu3d/ShaderManager.h"
+#include "nu2api/nu3d/nushader.h"
+#include "nu2api/nu3d/shaderSemantics.h"
 #include <string.h>
 
 extern "C" {

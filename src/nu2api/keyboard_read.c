@@ -2,6 +2,7 @@
 #include "gameapi/edtools/edtoolsall.h"
 #include "gameapi/edtools/edui.h"
 #include "legoapi/legoapi_types.h"
+#include "legoapi/render/light/lighting.h"
 #include "nu2api/PCInput.h"
 #include "nu2api/nu3d/nucamera.h"
 #include "nu2api/nucore/nucore_plain_types.h"
@@ -51,9 +52,6 @@ void cbSel(eduimenu_s *unused0, eduiitem_s *item) {
 
 void cbGradChange(void) {
 }
-
-f32 NuMouseReadX(void);
-f32 NuMouseReadY(void);
 
 i32 cbInteractMenuTitle(edui_interact_s *interact) {
     static f32 offsetx = 0;
@@ -183,8 +181,6 @@ void do_mouse_flymode_camera(edcam_s *camera, f32 delta_time) {
     }
 }
 
-extern i32 edmain_cursor_enabled;
-
 void edcamMoveEx(FRAME_PAD_PC *pad, f32 delta_time) {
     if (edmain_cursor_enabled != 0) {
         if (PadFlyMode == 0 || NuKeyboard(0x38) != 0) {
@@ -276,8 +272,6 @@ void edcamMtx(NUMTX *matrix) {
         ed_remap_mtx = NULL;
     }
 }
-
-extern NUCAMERA *EdMainCurrentCamera;
 
 void edcamSet(void) {
     NUMTX matrix;

@@ -1,4 +1,20 @@
-#include "saga.h"
+#include "gameapi/edptl.h"
+#include "globals.h"
+#include "legoapi/audio/audio.h"
+#include "legoapi/items/collect/bolts.h"
+#include "legoapi/legoapi_types.h"
+#include "legoapi/render/core/gameliball.h"
+#include "nu2api/nucore/nugcutscene.h"
+#include "nu2api/nucore/nustring.h"
+#include "nu2api/nufile/nufile.h"
+#include "nu2api/nufile/nufpar.h"
+#include "nu2api/numath/numtx.h"
+#include "nu2api/numath/nurand.h"
+#include "nu2api/numath/nuvec.h"
+#include "nu2api/numusic/numusic.h"
+#include "nu2api/numusic/sfx.h"
+#include "nu2api/nusound/nusound.h"
+#include "nu2api/nusound/nusound3_include.h"
 i32 NumSfx = 0;
 i32 NumSfxNames = 0;
 static i32 NumSfxInst = 0;

@@ -1,4 +1,10 @@
-#include "saga.h"
+#include "nu2api/nu3d/nu3d_includes.h"
+#include "nu2api/nu3d/numtl.h"
+#include "nu2api/nucore/nuthread.h"
+#include "nu2api/nucore/nutime.h"
+#include "nu2api/nudir_gen.h"
+#include "nu2api/numainfilter_gen.h"
+#include "nu2api/numath/numaths.h"
 
 /* PC-only state for the critical-section wrappers; their higher-level names
  * remain provisional until the original thread initialization path is mapped. */

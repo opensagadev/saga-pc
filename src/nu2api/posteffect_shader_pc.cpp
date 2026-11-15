@@ -1,4 +1,9 @@
-#include "saga.h"
+#include "nu2api/PCInput.h"
+#include "nu2api/nu3d/nu3d_includes.h"
+#include "nu2api/nucamera_dlist.h"
+#include "nu2api/nustencilshadows_PC.h"
+#include "nu2api/nuwin32/d3dCalls.h"
+#include "nu2api/nuwin32/d3dCore.h"
 #include <vector>
 
 struct POST_VERTEX_SHADER_CACHE_ENTRY_PC { // size 0x8

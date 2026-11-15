@@ -1,4 +1,10 @@
-#include "saga.h"
+#include "nu2api/PCInput.h"
+#include "nu2api/nu3d/ShaderManager.h"
+#include "nu2api/nu3d/nushader.h"
+#include "nu2api/nu3d/nushader_internal.h"
+#include "nu2api/nu3d/nushaderobject.h"
+#include "nu2api/nu3d/nushaderobjectbase.h"
+#include "nu2api/nu3d/shaderSemantics.h"
 
 void NuShaderObjectUnInit(NuShaderObject *shader) {
     NuShaderObjectBaseUnInit(shader);

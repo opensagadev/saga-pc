@@ -1,4 +1,17 @@
-#include "saga.h"
+#include "gameapi/edtools/edui.h"
+#include "nu2api/nu3d/ShaderManager.h"
+#include "nu2api/nu3d/nucamera.h"
+#include "nu2api/nu3d/nushader.h"
+#include "nu2api/nu3d/nushaderobject.h"
+#include "nu2api/nu3d/nushaderobjectbase.h"
+#include "nu2api/nualloc.h"
+#include "nu2api/nucore/nuapi.h"
+#include "nu2api/numath/numtx.h"
+#include "nu2api/numath/nurand.h"
+#include "nu2api/numath/nutrig.h"
+#include "nu2api/numath/nuvec.h"
+#include "nu2api/numath/nuvec4.h"
+#include "nu2api/nuwin32/d3dCalls.h"
 
 /* Minimum accessed cohort, not a whole NUMTL allocation/size claim. */
 

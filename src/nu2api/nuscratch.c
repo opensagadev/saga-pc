@@ -1,7 +1,5 @@
 #include "nu2api/nucore/numem.h"
-
-extern u8 *ps2_scratch_free;
-extern u8 NuScratchBackingAccess[0x4000];
+#include "nu2api/nuwin32/Stubs.h"
 
 u8 *ps2_scratch_free = NuScratchBackingAccess;
 __declspec(align(4)) u8 NuScratchBackingAccess[0x4000] = {0};

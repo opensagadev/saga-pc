@@ -1,4 +1,9 @@
-#include "saga.h"
+#include "gamelib/util/CRC16.h"
+#include "gamelib/util/gamelib_util_types.h"
+#include "legoapi/items/collect/bolts.h"
+#include "nu2api/nu3d/ShaderManager.h"
+#include "nu2api/nu3d/nushader.h"
+#include "nu2api/nucore/nustring.h"
 #include <stdio.h>
 #include <new>
 // Repeats saga.h, but deleting it changes ShaderCompilerDictionaryPc::EmitAttribute (declaration noise).

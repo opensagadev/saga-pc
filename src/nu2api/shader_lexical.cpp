@@ -1,5 +1,7 @@
 #define SAGA_SHADER_PARSER_TYPES
-#include "saga.h"
+#include "gamelib/util/CRC16.h"
+#include "gamelib/util/gamelib_util_types.h"
+#include "nu2api/shader_parser.h"
 static u8 ShaderLexicalClassesPc[256] = {0};
 
 extern "C" void ShaderLexicalClassesInitPc(void) {

@@ -1,4 +1,8 @@
-#include "saga.h"
+#include "nu2api/PCInput.h"
+#include "nu2api/nuwin32/d3dCore.h"
+#include "nu2api/nuwin32/pcapi.h"
+#include "nu2api/pc_options.h"
+#include "nu2api/platform_files.h"
 #include <shlobj.h>
 #include <stdio.h>
 #include <string.h>

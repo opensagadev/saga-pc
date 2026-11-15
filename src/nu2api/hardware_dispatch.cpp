@@ -34,6 +34,7 @@
 #include "nu2api/nuonline_gen.h"
 #include "nu2api/nusound/nusound.h"
 #include "nu2api/nustencilshadows_PC.h"
+#include "nu2api/nuwin32/d3dCalls.h"
 #include "nu2api/nuwin32/d3dCore.h"
 #include "nu2api/nuwin32/nu2api_windows.h"
 #include "nu2api/nuwin32/pcapi.h"
@@ -41,16 +42,11 @@
 
 extern "C" {
     void NuRndrConfigureLeaf(f32 a, f32 b, i32 c);
-    void NuRndrInitLeaf(VARIPTR *buffer, VARIPTR end);
-    i32 PCDeviceShowCursorPc(i32 show);
     void NuRndrDwaInit(void);
-    void NuQFntInit(VARIPTR *buffer, VARIPTR end);
     void PcCreateCursorMaterialPc(void);
-    void NuHwSetParameter33(void *value);
 }
 
 extern "C" void PcRegisterSaveMetadata(const void *);
-extern "C" void PcSetDefaultParameter(const char *);
 
 /* Incomplete entry-connected reconstruction. Every skipped native call remains
  * marked at its actual site; this is not a complete dispatcher implementation. */

@@ -1,5 +1,15 @@
 #define SAGA_SHADER_PARSER_TYPES
-#include "saga.h"
+#include "gamelib/util/CRC16.h"
+#include "gamelib/util/gamelib_util_types.h"
+#include "legoapi/items/collect/bolts.h"
+#include "nu2api/PCInput.h"
+#include "nu2api/nu3d/ShaderManager.h"
+#include "nu2api/nu3d/ShaderObjectKey.h"
+#include "nu2api/nu3d/nu3d_includes.h"
+#include "nu2api/nufile/nufile.h"
+#include "nu2api/nuwin32/d3dCore.h"
+#include "nu2api/nuwin32/pcapi.h"
+#include "nu2api/shader_parser.h"
 #include <stdio.h>
 #include <string.h>
 
