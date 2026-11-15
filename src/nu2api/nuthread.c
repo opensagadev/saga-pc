@@ -10,6 +10,7 @@
  * remain provisional until the original thread initialization path is mapped. */
 extern i32 PCThreadCriticalSectionCount;
 
+i64 NuTime_PerformanceFrequency = 0;
 CRITICAL_SECTION PCThreadCriticalSections[13] = {0};
 
 i32 PCThreadCriticalSectionCreate_candidate(void) {

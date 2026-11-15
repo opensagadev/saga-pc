@@ -22,6 +22,8 @@ CRC16::CRC16() {
     }
 }
 
+CRC16 CRC16InstancePC;
+
 u32 CRC16::hash(const unsigned char *data, i32 length) {
     i32 crc = 0xffff;
     for (i32 i = 0; i < length; ++i) {

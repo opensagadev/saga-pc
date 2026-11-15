@@ -996,6 +996,10 @@ extern "C" i32 NewRayCastEx(NUVEC *position, NUVEC *movement, f32 radius, i32 sc
     return NewRayCast(position, movement, radius, scan_flags);
 }
 
+extern "C" {
+    NUVEC ShadNorm = {0};
+}
+
 extern "C" i32 NewRayCastScaleYMask(NUVEC *position, NUVEC *movement, f32 radius, f32 scale_y, i32 scan_flags, u32 terrain_mask) {
     plathitid = -1;
     TerrPolyObj = -1;

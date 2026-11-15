@@ -124,6 +124,10 @@ NuShaderObject *PC_SHADER_MANAGER_VIEW::Retrieve(const PC_SHADER_FILTER_DESC_VIE
     return NULL;
 }
 
+extern "C" {
+    PC_SHADER_SLOT_VIEW *PCShaderSlots = 0;
+}
+
 extern "C" NuShaderObject *NuShaderManagerRetrieveShader(const PC_SHADER_FILTER_DESC_VIEW *desc,
                                                          const PC_SHADER_FILTER_MATERIAL_VIEW *material) {
     return reinterpret_cast<PC_SHADER_MANAGER_VIEW *>(PCShaderSlots)->Retrieve(desc, material, 0, 0, false);

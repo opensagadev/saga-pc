@@ -907,6 +907,7 @@ void NuMainFilter::destroyTextureResources() {
 
 extern "C" f32 NuSpeedBlurVertexScale;
 extern "C" {
+    i32 NuDisplayHandlerZMode = -1;
     NUVEC4 NuDisplayHandlerDefaultTint = {1.0f, 1.0f, 1.0f, 1.0f};
 }
 f32 NuSpeedBlurVertexScale = 40000.0f;

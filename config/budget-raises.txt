@@ -230,3 +230,7 @@ config/declscan-budget.json A 34 legoapi/legogame data move: globals data.cpp de
 config/declscan-budget.json C 555 legoapi/legogame data move: a unit's extern of a global that moved into it is now a forward declaration (same construct, new place)
 config/declscan-budget.json D 1412 legoapi/legogame data move: the prototypes and externs data.cpp declared for the moved tables go with them into their units until the declaration pass moves them into headers
 config/castscan-budget.json scalar-pun 301 the U64_PAIR test of an explosion's hit identities reads the hit_identity_mask array instead of the address of the unknown_00 field: the same casts, classed scalar-pun instead of field-address (which goes down by 2)
+config/oddscan-budget.json pc-suffix 5014 thermaldetonators.c and game_deb.c name the real EXPLOSION_PC that Detonate and AddExplosion return instead of the unrelated struct EXPLOSION (newer libclang could not parse them); the suffix goes when the two explosion types are resolved
+config/oddscan-budget.json declspec-align 191 nu2api data move: NuMtxSetIdentityTemplate is a matrix retail keeps 16-aligned; it declares the alignment now that it left data.cpp's aligned run
+config/declscan-budget.json A 35 nu2api data move: a global data.cpp defined now sits in a unit that also kept its own extern of it (same construct, new place)
+config/declscan-budget.json C 556 nu2api data move: a unit's extern of a global that moved into it is now a forward declaration (same construct, new place)

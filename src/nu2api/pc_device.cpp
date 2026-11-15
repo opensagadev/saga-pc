@@ -1046,6 +1046,12 @@ extern "C" {
     void (*PCGraphicsDeviceLostCallback)(GRAPHICS_PRESENT_PARAMETERS *) = NULL;
 }
 
+extern "C" {
+    i32 PS2_VCNTR_X = 320;
+    i32 PS2_VCNTR_Y = 240;
+    HWND PCInputInstance = 0;
+}
+
 void PC_DEVICE_BACKEND::CreateOrResetDevice(i32 reposition_window) {
     NudxFw_D3DBeginCriticalSection();
     saved_windowed = parameters.windowed == 1;
@@ -1990,6 +1996,7 @@ void PC_DEVICE_BACKEND::ConfigureTargetKinds() {
 extern "C" {
     i32 PCGraphicsGpuSelectionEnabled = 0;
     PC_GRAPHICS_GPU_RECORD *PCGraphicsSelectedGpuRecord = NULL;
+    i32 MenuAppliedAspect = 0;
 }
 
 extern "C" i32 PCGraphicsPrepareVendor() {

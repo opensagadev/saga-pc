@@ -73,6 +73,13 @@ i32 PC_INPUT_RUNTIME::fun_006d37a0(i32 previous, i32 value) {
     return (previous * 2) ^ value ^ 0x12345678;
 }
 
+extern const GUID PcWbemClassId = {
+    0x4590f811, 0x1d3a, 0x11d0, {0x89, 0x1f, 0x00, 0xaa, 0x00, 0x4b, 0x2e, 0x24}
+};
+extern const GUID PcWbemInterfaceId = {
+    0xdc12a687, 0x737f, 0x11cf, {0x88, 0x4d, 0x00, 0xaa, 0x00, 0x4b, 0x2e, 0x24}
+};
+
 // The DirectX SDK "XInput and DirectInput" IsXInputDevice sample.
 extern "C" BOOL IsXInputProductPc(const GUID *product) {
     IWbemLocator *locator = NULL;

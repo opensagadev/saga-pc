@@ -8647,6 +8647,9 @@ extern "C" {
         f32 v;                        // 0x14
     } RNDR_MASK_VERTEX;
 
+    // PC checks each byte index is less than 16.
+    const u8 CurveGroupMasks[4] = {2, 1, 8, 0};
+    const u8 KeyStructSizes[16] = {3, 4, 4, 3, 4, 3, 4, 8, 4, 8, 4, 0, 0, 0, 0, 0};
     i32 kPRIM_COORD_LOOKUP[3] = {0, 1, 2};
 
     void RndrMaskScreen(i32 texture, f32 clear_x, f32 clear_y, f32 clear_width, f32 clear_height, f32 mask_x, f32 mask_y, f32 mask_width,
@@ -8784,6 +8787,7 @@ extern "C" {
     VARIPTR PCDisplayMaterialStreamStart = {0};
     VARIPTR PCDisplayMaterialStreamEnd = {0};
     u8 *PCDisplayMaterialStreamUsed = 0;
+    i32 nudlist_field_fc4 = 0;
     u32 numtl_renderplane = 0;
     NULSTHDR *g_overrideList = 0;
     i32 dat_0097401c = 0;
@@ -8791,9 +8795,15 @@ extern "C" {
     i32 BoxTreeDrawBounds = 1;
     i32 VisibilityEvaluateEnabled = 1;
     i32 VisibilityOcclusionEnabled = 1;
+    NUMTX vpmtx = {1.0f, 0.0f, 0.0f, 0.0f, 0.0f, 1.0f, 0.0f, 0.0f, 0.0f, 0.0f, 1.0f, 0.0f, 0.0f, 0.0f, 0.0f, 1.0f};
     i32 VisibilityCurrentViewBox = -1;
     extern i32 NuTimeBarPeakResetInterval = 30;
+    extern const u32 NuTimeBar_EngineColours[7] = {0x7f00007f, 0x7f007f00, 0x7f007f50, 0x7f507f50, 0x7f000050, 0x7f40407f, 0x7f7f0000};
     i32 do_InstTree = 1;
+    extern const u32 NuTimeBar_DefaultColours[16] = {
+        0x00000040, 0x22222240, 0x00004440, 0x00008840, 0x44000040, 0x88000040, 0x44004440, 0x88008840,
+        0x00440040, 0x00880040, 0x00444440, 0x00888840, 0x44440040, 0x88880040, 0x44444440, 0x88888840,
+    };
     i32 PCPortalsEnabled = 1;
     i32 NuPortalDebugDraw = -1;
     i32 nudlist_frame_active = 2;
@@ -13945,6 +13955,10 @@ extern "C" {
     PC_POST_DATA_PORT PostLocalPortMotionVelocityBuffer = {-1, NULL};
     u8 PostBloomAttachPending = 1;
     const WCHAR PostEffectRenderLabel[] = L"Post-processing-effect render";
+    extern const char GHGSceneFormatWarningPC[87] =
+        "Your Scene version is %d, whereas the Engine only accepts Scene versions from %d to %d";
+    extern const char GHGJointFormatWarningPC[95] =
+        "Your Character version is %d, whereas the Engine only accepts Character versions from %d to %d";
 }
 
 PC_POST_DATA_PORT_MANAGER::PC_POST_DATA_PORT_MANAGER() {
@@ -18942,7 +18956,18 @@ extern "C" {
     NUMTX NuPortalProjectionScratch = {0};
 }
 extern "C" NUMTX PostShadowProjection = {0};
+extern "C" {
+    const NUVEC NuPortalBoundsOne = {1.0f, 1.0f, 1.0f};
+    const NUVEC NuPortalBoundsMinusOne = {-1.0f, -1.0f, -1.0f};
+    extern const __declspec(align(16)) NUMTX ANI3_EVAL_IDENTITY_MATRIX = {
+        1.0f, 0.0f, 0.0f, 0.0f, 0.0f, 1.0f, 0.0f, 0.0f, 0.0f, 0.0f, 1.0f, 0.0f, 0.0f, 0.0f, 0.0f, 1.0f,
+    };
+}
 extern "C" __declspec(align(16)) NUVEC4 PostShadowWhite = {1.0f, 1.0f, 1.0f, 1.0f};
+extern "C" {
+    __declspec(align(16)) NUMTX NuMtxSetIdentityTemplate = {1.0f, 0.0f, 0.0f, 0.0f, 0.0f, 1.0f, 0.0f, 0.0f,
+                                                            0.0f, 0.0f, 1.0f, 0.0f, 0.0f, 0.0f, 0.0f, 1.0f};
+}
 extern "C" {
     extern const WCHAR PostDeferredLabel[17] = L"Deferred shading";
     extern const WCHAR PostShadowRenderLabel[14] = L"Shadow render";

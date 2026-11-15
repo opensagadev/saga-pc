@@ -582,6 +582,15 @@ extern "C" void NuSound3Update(void) {
     }
 }
 
+extern "C" {
+    extern const GUID SoundVoice3DBufferIID = {
+        0x279afa86,
+        0x4981,
+        0x11ce,
+        {0xa5, 0x21, 0x00, 0x20, 0xaf, 0x0b, 0xe5, 0x60},
+    };
+}
+
 void SoundVoiceManagerPC::Setup3DVoice(i32 voice_id, const NUVEC *position, i32 update_mode) {
     SoundVoiceSlotPC *slot = &voices[voice_id];
     DWORD update_flag = update_mode == 0;
@@ -737,6 +746,12 @@ extern "C" void fun_00696bd0(NUMTX *listener) {
     NuSound3Listener = listener;
 }
 
+extern "C" {
+    extern const IID PCSoundListenerIID = {
+        0x279afa84, 0x4981, 0x11ce, {0xa5, 0x21, 0x00, 0x20, 0xaf, 0x0b, 0xe5, 0x60}
+    };
+}
+
 void SoundVoiceManagerPC::Init(i32 unused, u8 option5_value, u8 option6_value) {
     (void)unused;
     option5 = option5_value;
@@ -788,6 +803,12 @@ extern "C" char *PCSampleFilenameExtension;
 
 extern "C" {
     i32 PCSampleLoadEnabled = 1;
+}
+
+extern "C" {
+    extern const GUID PCSampleBufferAlgorithm = {
+        0x00000000, 0x0000, 0x0000, {0x00, 0x00, 0x00, 0x00, 0x00, 0x00, 0x00, 0x00}
+    };
 }
 
 i32 SoundVoiceManagerPC::LoadWavSample(const char *name, i32 index) {

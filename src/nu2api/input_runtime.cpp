@@ -43,6 +43,7 @@ extern "C" {
     f32 PcMouseRadiusPc = 0;
     i8 TextInputLastDeviceIndexPc = 0;
     f32 PcMouseInterpolationPc = 0;
+    PC_NATIVE_DEBUG_STATE PCNativeWarningDebugState;
 }
 
 extern "C" u32 fun_006d58c0(void) {
@@ -343,6 +344,7 @@ extern "C" void fun_006d3b20(void) {
 
 extern "C" {
     char **TextInputKeyNamesPc = TextInputKeyNameTablePc;
+    extern const u8 PcInputPovBitsPc[8] = {1, 3, 2, 6, 4, 12, 8, 9};
 }
 
 PC_INPUT_RUNTIME::PC_INPUT_RUNTIME() {

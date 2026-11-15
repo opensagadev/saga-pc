@@ -5,6 +5,8 @@
 /* PC timing leaves of nutimebar outside nu3d; the time bars themselves live
  * in nu3d_includes.cpp. */
 
+i64 NuTime_TickBase = 0;
+
 void NuTimeGetTicksPS(u32 *low, i32 *high) {
     LARGE_INTEGER counter;
     i64 elapsed;

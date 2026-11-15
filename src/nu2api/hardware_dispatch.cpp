@@ -48,6 +48,14 @@ extern "C" {
 
 extern "C" void PcRegisterSaveMetadata(const void *);
 
+extern "C" {
+    extern char dat_007516c0[];
+    const char *NuHwSoundDfsName = dat_007516c0;
+    const char *NuHwDfsName = dat_007516c0;
+    HINSTANCE PCInputWindow = 0;
+    i32 NuHwShowCommand = 0;
+}
+
 /* Incomplete entry-connected reconstruction. Every skipped native call remains
  * marked at its actual site; this is not a complete dispatcher implementation. */
 extern "C" i32 NuInitHardware(VARIPTR *buffer, VARIPTR *end, i32 allocate, ...) {

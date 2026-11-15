@@ -2,7 +2,11 @@
 #include <excpt.h>
 
 extern "C" {
+    extern const CPU_VENDOR_WORDS CpuVendorAmd = {0x68747541u, 0x69746e65u, 0x444d4163u, {0}};
+    extern const CPU_VENDOR_WORDS CpuVendorCyrix = {0x69727943u, 0x736e4978u, 0x64616574u, {0}};
     CPU_VENDOR_WORDS CpuVendorName = {0x3f3f3f3fu, 0x3f3f3f3fu, 0x3f3f3f3fu, {0}};
+    extern const CPU_VENDOR_WORDS CpuVendorNoCpuid = {0x6f4e5f5fu, 0x5550435fu, 0x5f5f4449u, {0}};
+    extern const CPU_VENDOR_WORDS CpuVendorIntel = {0x756e6547u, 0x49656e69u, 0x6c65746eu, {0}};
     u32 CpuVendor = 0;
     u32 CpuHas3dnow = 0;
     i32 PCClipUseSSE = 0;

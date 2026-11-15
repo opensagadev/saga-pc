@@ -41,6 +41,8 @@ typedef struct lever_trigger_flags_s { // size 0x95
     u8 flags;                          // 0x94
 } LEVER_TRIGGER_FLAGS;
 
+char dat_0075ac34[5] = "Down";
+
 /* The SDK's inline NuFabs (nufloat.h): a masked copy of the float bits. */
 static f32 LeverFabs(f32 f) {
     f32 rv;

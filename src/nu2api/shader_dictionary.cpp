@@ -159,6 +159,10 @@ __declspec(noinline) void ShaderCompilerDictionaryPc::AddDefinition(const char *
     SHADER_ADD_DEFINITION(this, name, value, emit);
 }
 
+extern "C" {
+    extern const char NuBlankStringValue[2] = " ";
+}
+
 void ShaderCompilerDictionaryPc::BindOutputBuffer(ShaderCompilerBufferAllocatorPc *buffer) {
     ShaderMacroDefinitionPc **cursor = programs;
     ShaderMacroDefinitionPc **end = programs + program_count;

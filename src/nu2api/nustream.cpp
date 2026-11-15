@@ -10,6 +10,7 @@
 #include "vorbis/vorbisfile.h"
 #undef _ov_header_fseek_wrap
 #include <stdio.h>
+#include "nu2api/nu3d/nushaderobject.h"
 
 #pragma pack(push, 4)
 
@@ -410,6 +411,12 @@ SoundQueue::~SoundQueue(void) {
     }
     volume_sink = NULL;
     active = 0;
+}
+
+extern "C" {
+    extern const IID PCSoundBuffer8IID = {
+        0x6825a449, 0x7524, 0x4d82, {0x92, 0xf, 0x50, 0xe3, 0x6a, 0xb3, 0xab, 0x1e}
+    };
 }
 
 i32 SoundQueue::SetFormat(const WAVEFORMATEX *format) {

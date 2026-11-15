@@ -24,8 +24,10 @@ static i32 PcArgc = 1; // not address-exposed: kept in a register across the tok
 extern "C" {
     PC_WINDOW_CALLBACK PcWindowCallbacks[1] = {NULL};
     WNDCLASSEXA PcWindowClass = {0};
+    MSG win_message = {0};
     /* Command line: module slot 0 and scratch slot 1. */
     char *PcArgv[2] = {NULL, NULL};
+    i32 PcNoFocusPolicy = 0;
 }
 
 extern "C" void RegisterWindowCallbackPc(PC_WINDOW_CALLBACK callback) {
@@ -43,6 +45,10 @@ extern "C" i32 PublishWindowPc(HWND window, i32 show) {
     UpdateWindow(window);
     PCInputInstance = window;
     return 1;
+}
+
+extern "C" {
+    i32 PcWindowQuit = 0;
 }
 
 extern "C" LRESULT __stdcall WindowProcPc(HWND window, UINT message, WPARAM wparam, LPARAM lparam) {
@@ -217,6 +223,10 @@ extern "C" {
     i32 PcWindowCallbackCount = 0;
     BOOL PcScreenSaverEnabled = 0;
     char PcModuleFilename[260] = {0};
+}
+
+extern "C" {
+    char PcExecutableFilename[260] = {0};
 }
 
 extern "C" void ParsePlatformArgumentsPc(char *command_line) {

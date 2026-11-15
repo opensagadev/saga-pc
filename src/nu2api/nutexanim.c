@@ -144,6 +144,7 @@ NUVPCURRENT vpDevice = {0};
 NUFILE nudlist_field_958 = 0;
 static i32 nta_iframetime = 0;
 static u16 nta_script_mask = 0;
+void *GHGTextureProgramsPC = 0;
 PC_TEXTURE_ANIM_LIST *ntal_first = 0;
 static u32 nta_sig_old = 0;
 CAMERA_SAVED_STATE CameraSavedStates[16] = {{0}};

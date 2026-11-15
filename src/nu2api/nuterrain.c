@@ -65,9 +65,18 @@ f32 GetSurfaceInfoRoofHeight = 0;
 i32 edbri_cam_ax = 0;
 TerrainQuery_s *TerI = 0;
 static i16 debug_index = 0;
+TERRAIN_SET *CurrentTerrain = 0;
 TERRAIN_POLYGON_INFO *EShadPoly = 0;
 i32 TerrPolyObj = 0;
 u16 TerrainWaterCastIndex = 0;
+
+const f32 TerrainUnusedSpatialBlock = 2147483648.0f;
+const f32 TerrainBoundsMinimum = -200000000.0f;
+const f32 TerrainBoundsMaximum = 200000000.0f;
+const f64 TerrainSkinSampleIndexScale = -8.0;
+const f32 TerrainSkinBoundsMin = -123456792.0f;
+const f32 TerrainSkinBoundsMax = 123456792.0f;
+const f32 TerrainCastLowerSentinel = -2000000.0f;
 
 void TerrainSetCur(void *terrain) {
     CurrentTerrain = terrain;
@@ -1581,9 +1590,14 @@ void NuVecCheckForSNANs(NUVEC *v) {
         (normal).y = 1;                                                                                                                    \
     }
 
+i32 curPickInst = 0;
+i32 PlatImpactId = 0;
 i16 castnum = 0;
 i32 terraincnt = 0;
 NUVEC GetSurfaceInfoWaterNormal = {0};
+// Accessed terrain state and literals; full original allocation extents remain unknown.
+struct TERRAIN_SKIN_USE_RECORD *SkinMemInfo = 0;
+void *ScaleTerrainT2 = 0;
 
 void *TerrainInitEx(i32 level_num, void *buf, void *buf_end, i32 options, char *path, void *gscn, i32 scene_id, u32 max_group_indices,
                     u32 max_groups, u32 max_platforms) {
@@ -3139,7 +3153,10 @@ f32 TerrWallDeflectYScale = 0;
 i16 TerrainCastAuxIndex = 0;
 i32 TerrShapeAdjCnt = 0;
 struct TERRAIN_SKIN_INFO *PlatSkinInfo = 0;
+void *TempScanStack = 0;
 i32 PlatCodeCallback = 0;
+i32 TerImpactDataMax = 0;
+i32 *TerImpactDataCount = 0;
 static i32 TerrainSkinOriginalGroupCount = -1;
 i32 TerrPlatDis = -1;
 f32 TerConTol = 0.1f;

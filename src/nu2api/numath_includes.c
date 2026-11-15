@@ -256,6 +256,8 @@ void NuVecInvMtxScale(NUVEC *out, NUVEC *v, NUMTX *matrix) {
     out->z = v->z / matrix->m22;
 }
 
+f32 NuTrigTable[32768] = {0};
+
 void NuVecRotateX(NUVEC *out, NUVEC *vector, NUANG angle) {
     f32 cosine = NuTrigTable[((angle + 0x4000) >> 1) & 0x7fff];
     f32 sine = NuTrigTable[(angle >> 1) & 0x7fff];

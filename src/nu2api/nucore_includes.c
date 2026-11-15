@@ -43,6 +43,8 @@
 #include <stdio.h>
 #include <stdlib.h>
 #include <string.h>
+#include "gamelib/util/CRC16.h"
+#include "nu2api/nufile_pc.h"
 
 static char *NuFParBufferBase = 0;
 void (*fnInterpreterError)(NUFPAR *parser) = 0;
@@ -61,12 +63,18 @@ typedef struct numemblk_s {  // size 0x10
 } NUMEMBLK;
 
 i32 decode_buffer_left = 0;
+char NuFParBuffers[4][0x1000] = {0};
+FILEINFO file_info[33] = {0};
+PC_FILEEXTINFO extensions[64] = {0};
+PC_NUFILE_READBLOCK nufile_blkinfo[1024] = {0};
 static i32 decode_buffer_pos = 0;
 static u8 decode_buffer[262144] = {0};
 static u8 read_buffer[0x40000] = {0};
 i32 read_buffer_size = 0;
+NUDATOPENFILEINFO *unpack_file_odi = 0;
 i32 NuApiTextLine = 0;
 static i32 read_buffer_decoded_size = 0;
+NUFPAR NuFParRecords[4] = {0};
 
 // Fetch one control bit; the marker bit refills the buffer from the next input byte.
 #define NUPP_GETBIT()                                                                                                                      \
@@ -98,6 +106,11 @@ struct NUPPHEADER {    // size 0xc
 static i32 old_line_pos;
 static i32 fpk_err;
 static i32 file_time_count;
+i32 nufile_buffering_enabled = 0;
+i32 nufile_try_packed = 0;
+i32 datsys_offset = 0;
+i32 NuFile_SwapEndianOnWrite = 0;
+i32 nufile_lasterror = 0;
 
 #define CLAMP_LINE(position) ((position) & (parser->line_buffer_size - 1))
 #define CLAMP_WORD(position) ((position) & (parser->word_buffer_size - 1))
@@ -176,10 +189,15 @@ static FRAME_PAD_RAMP FramePadRampValuesPc[5] = {
 i32 FramePadProfilePortPc = -1;
 i32 MaxGamePads = 2;
 i16 PlayerLastPort[8] = {-1, -1, -1, -1, -1, -1, -1, -1};
+u32 PCImplodeWordMask = 0xffffffff;
+i32 gExplodeInitialised = 1;
 static i32 FramePadDirectMappingPc = 0;
 static i32 FramePadActivatedPc = 0;
 
+i32 num_extensions = 0;
 static i32 ImplodePendingCopy = 0;
+i64 unpack_file_pos = 0;
+i32 file_criticalsection = 0;
 static i32 inlen = 0;
 
 static unsigned char ImplodeRingBuffer[0x2000] = {0};
@@ -206,6 +224,7 @@ static unsigned char ImplodeRingBuffer[0x2000] = {0};
     } while (0)
 
 static u32 blocksize = 0;
+FILEBUFF file_buff[4] = {0};
 
 static u16 ImplodeOffsetTable[0x100] = {0};
 static u8 ImplodeOffsetLengths[0x13] = {0};
@@ -518,6 +537,7 @@ NUFILE_DEVICE *NuFileFindDevice(i32 id, i32 unit) {
 
 NUFILE_DEVICE enum_devices[16] = {0};
 i32 enum_numdevices = 0;
+u32 implode_origsize = 0;
 
 i32 NuFileEnumerateDevices(NUFILE_DEVICE **result) {
     i32 count = 0;
@@ -1676,10 +1696,19 @@ typedef struct NUFILE_ADDRESS { // size 0x10
     i64 position;               // 0x8
 } NUFILE_ADDRESS;
 
+i32 nufile_blkcnt = 1;
 static i32 nufile_wblkcnt = 1;
 static i32 iff_padsize = 16;
+char *iop_image_name = "ioprp300.img";
+i32 nufile_lsn_allowed = 1;
+NUFILE_DEVICE *default_device = &host_device;
+u32 nustring_format = 1;
+char *NuBlankString = (char *)NuBlankStringValue;
 static NUFILE_WRITEBLOCK nufile_wblkinfo[1024];
+PC_NUDATFILEINFO *unpack_file_info = 0;
 static i32 ref_count;
+i32 DontDoFileUpperCaseHack = 0;
+NUDATHDR *curr_dat = 0;
 static i32 pos_count;
 static i32 MAX_FILE_ADDRESS;
 static NUFILE_ADDRESS *addr_ref;
@@ -4444,6 +4473,8 @@ typedef struct NUMEMHIGHBLOCK {  // size 0x10
 
 static NUMEMHIGHBLOCK *freep = 0;
 i32 dat_0091eeec = 0;
+NUSTRINGBANK StringBank[3] = {0};
+i16 CurrentStringBank = 0;
 u8 UseCorrectDeadZoning = 0;
 
 void NuAllocHighInit(u32 buffer, u32 size) {
@@ -7208,6 +7239,8 @@ static u16 **BadWords;
 static i32 NumBadWords;
 u32 dat_0091ef20 = 0;
 void (*NuApiEndFrameCallback)(void) = 0;
+i32 argc = 0;
+char **argv = 0;
 i32 ShowingError = 0;
 
 void NuStringFilterLoad(char *path, VARIPTR *buf, VARIPTR buf_end) {
@@ -7541,6 +7574,8 @@ void NuTimeSub(NuTime *time, NuTime *a, NuTime *b) {
     }
 }
 
+const f64 NuTime_LowScale = 4294967295.0;
+
 f32 NuTimeSeconds(NuTime *time) {
     u32 low;
     u32 high;
@@ -7755,6 +7790,11 @@ void NuErrorSleep(void) {
 }
 
 f32 NuFrameAccumulatedTime = 0;
+NUFILE_DEVICE devices[16] = {0};
+u32 implode_compsize = 0;
+u16 implode_left[0x3fb] = {0};
+u16 implode_right[0x3fb] = {0};
+PC_NUMEMFILE pc_memfiles[20] = {0};
 
 f32 NuFrameEnd(void) {
     NuTime elapsed;
@@ -8208,6 +8248,7 @@ void NuPadSetMaxGamePads(i32 count) {
 }
 
 NUPADMAPPING g_nupadMapping[3] = {0};
+i32 numdevices = 0;
 
 void fun_004f47a0(i32 pad, i32 port) {
     if (g_nupadMapping[pad].port >= 0) {
@@ -8747,7 +8788,12 @@ void NuVideoSetResolution(i32 width, i32 height) {
     nuapi.screen_height = height;
 }
 
+NUAPI nuapi = {0};
 f32 NuVideoFrameRate = 0;
+char *implode_inbuffer = 0;
+PC_NUDATFILEINFO pc_dat_file_infos[20] = {0};
+char *implode_outbuffer = 0;
+u32 implode_bitbuf = 0;
 
 i32 NuVideoSetSwapMode(i32 mode) {
     i32 previous_mode = nuapi.video_swap_mode;

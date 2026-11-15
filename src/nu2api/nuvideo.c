@@ -10,6 +10,8 @@
 #include <stdarg.h>
 #include <stdio.h>
 
+const char GizAIMessage_NameFormat[3] = "%s";
+
 void bgProcDataOversize(i32 size) {
 }
 
@@ -165,6 +167,7 @@ NUDEBUGTTYFUNCTION NuDebugMsgPrologTTY(char *file, i32 line) {
     return NuDebugMsgFunctionTTY;
 }
 
+void (*PCWarningHandler)(char *) = 0;
 GAMECAMERA GameCamera = {0};
 GAMECAMERA *GameCam = &GameCamera;
 i32 part_debris_count = 0;

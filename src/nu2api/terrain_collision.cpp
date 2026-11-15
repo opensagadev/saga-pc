@@ -871,6 +871,7 @@ extern "C" {
 
     TERRAIN_POLYGON_INFO PlatImpactTer = {0};
     NUVEC PlatImpactNorm = {0};
+    void *TerImpactData = 0;
 
     void StorePlatImpact() {
         TerrainQuery_s *query = TerI;
@@ -921,6 +922,7 @@ extern "C" {
     }
 
     f32 wallover = 0;
+    TERRAIN_TRACK_SLOT *CurTrackInfo = 0;
 
     void TerrainImpact(NUVEC *position, NUVEC *movement, u8 *hit_flags) {
         f32 walkable_normal_y = 0.0f;
@@ -2158,6 +2160,7 @@ extern "C" i32 AddMSituExtraTerrRot(i32 source_index, NUMTX *matrix, NUMTX *prev
 
 extern "C" {
     NUVEC TerrImpactPos = {0};
+    i32 curSphereter = 0;
     TERRAIN_LAST_IMPACT TerrLastImpact = {0};
     NUVEC TerrImpactNormal = {0};
 }

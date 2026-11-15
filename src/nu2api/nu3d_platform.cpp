@@ -234,6 +234,7 @@ extern "C" {
     extern u32 RendererArenaCount;
     extern PC_BUFFER_RESOURCE *RendererQuadVertexBuffer;
 
+    NUMTX cmtx = {1.0f, 0.0f, 0.0f, 0.0f, 0.0f, 1.0f, 0.0f, 0.0f, 0.0f, 0.0f, 1.0f, 0.0f, 0.0f, 0.0f, 0.0f, 1.0f};
     u8 NuUnresolvedTextureDds[0x2080] = {
         0x44, 0x44, 0x53, 0x20, 0x7c, 0x00, 0x00, 0x00, 0x07, 0x10, 0x08, 0x00, 0x80, 0x00, 0x00, 0x00, 0x80, 0x00, 0x00, 0x00, 0x00, 0x20,
         0x00, 0x00, 0x00, 0x00, 0x00, 0x00, 0x00, 0x00, 0x00, 0x00, 0x00, 0x00, 0x00, 0x00, 0x00, 0x00, 0x00, 0x00, 0x00, 0x00, 0x00, 0x00,
@@ -637,6 +638,7 @@ extern "C" {
     u32 dat_0280d838 = 0;
     NUMTX PcGeometryProjectionMatrix = {0};
     NUMTX PcGeometryInverseViewProjectionMatrix = {0};
+    u32 nudlist_field_1598 = 0;
     i32 dat_0097391c = 0;
     static NUMTX RndrStateScaledTransform = {0};
     i32 nurndr_tritot_this_frame = 0;
@@ -2031,6 +2033,14 @@ extern "C" {
             PCGraphicsRenderTextureBytes += (u32)(memory_delta * multiplier);
         }
     }
+
+    __declspec(align(16)) extern const u32 ClipOutcodeMask32[4] = {32, 32, 32, 32};
+    __declspec(align(16)) extern const u32 ClipOutcodeMask16[4] = {16, 16, 16, 16};
+    __declspec(align(16)) extern const u32 ClipOutcodeMask1[4] = {1, 1, 1, 1};
+    __declspec(align(16)) extern const u32 ClipOutcodeMask2[4] = {2, 2, 2, 2};
+    __declspec(align(16)) extern const u32 ClipOutcodeMask8[4] = {8, 8, 8, 8};
+    __declspec(align(16)) extern const u32 ClipOutcodeMask4[4] = {4, 4, 4, 4};
+    __declspec(align(16)) extern const f32 ClipOutcodeMinusOne[4] = {-1.0f, -1.0f, -1.0f, -1.0f};
 
     u32 *PCGraphicsEffectTextureSampler(GRAPHICS_RENDER_TEXTURE *texture) {
         return &texture->flags;

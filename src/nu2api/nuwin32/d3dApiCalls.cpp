@@ -97,6 +97,7 @@ u32 PC_DEVICE_BACKEND::fun_006df070() {
 extern "C" {
     PC_FRAME_STATS PcFrameStats = {0};
     i32 PCFrameCriticalSectionIndex = 0;
+    u8 PCFrameLoadingYieldEnabledPC = 0;
 }
 
 extern "C" void NuKeyboardCreateWindowState(HWND window, HINSTANCE instance) {
