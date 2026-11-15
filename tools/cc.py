@@ -197,6 +197,10 @@ def main():
             command = [part for part in command if not part.upper().startswith(("/DEBUG", "/PDB:"))]
             output.unlink(missing_ok=True)
             result, log = run_linker(command, env)
+        if args.link:
+            # The static CRT libraries name libcmt.pdb/libcpmt.pdb, which the toolchain download does not ship;
+            # VC8's linker cannot /ignore LNK4099, so drop those lines (one per CRT object, no effect on the image).
+            log = re.sub(r"[^\n]*\bLNK4099: PDB 'libc[mp]*t\.pdb' was not found[^\n]*\n?", "", log)
         print(log, end="", flush=True)
         # Ignored options and forced unresolved links can otherwise exit successfully.
         if args.link and args.allow_unresolved:
