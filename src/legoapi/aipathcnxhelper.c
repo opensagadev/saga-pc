@@ -1,4 +1,9 @@
-#include "saga.h"
+#include "gameapi/ai/aisys/aipath.h"
+#include "gameapi/ai/aisys/aisys.h"
+#include "legoapi/ai/game/aipathcnxhelper.h"
+#include "legoapi/items/base/apiobject.h"
+#include "legoapi/world/world.h"
+#include "legoapi/world/world_shared.h"
 
 #include <float.h>
 

@@ -1,4 +1,13 @@
-#include "saga.h"
+#include "globals.h"
+#include "legoapi/characters/core/players.h"
+#include "legoapi/items/base/apiobject.h"
+#include "legoapi/misc/buffers.h"
+#include "legoapi/world/area.h"
+#include "legoapi/world/areas.h"
+#include "legoapi/world/world.h"
+#include "legogame/pcbatman.h"
+#include "legogame/startup.h"
+#include "nu2api/nu3d/nugscn.h"
 
 extern "C" {
 

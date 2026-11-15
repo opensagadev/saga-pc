@@ -1,4 +1,11 @@
-#include "saga.h"
+#include "gameapi/edptl.h"
+#include "legoapi/items/objects/objectsall.h"
+#include "legoapi/render/core/gameliball.h"
+#include "legogame/batman_gameai.h"
+#include "nu2api/numath/nufloat.h"
+#include "nu2api/numath/numtx.h"
+#include "nu2api/numath/nutrig.h"
+#include "nu2api/numath/nuvec.h"
 
 void NuVecMtxTransformVU0(NUVEC *out, NUVEC *v, NUMTX *m) {
     f32 y = v->x * m->m01 + v->y * m->m11 + v->z * m->m21 + m->m31;

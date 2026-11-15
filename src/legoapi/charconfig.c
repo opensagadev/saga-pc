@@ -1,4 +1,22 @@
-#include "saga.h"
+#include "globals.h"
+#include "legoapi/characters/core/character.h"
+#include "legoapi/characters/core/charconfig.h"
+#include "legoapi/characters/core/players.h"
+#include "legoapi/characters/motion/move.h"
+#include "legoapi/gizmo/base/gizactions.h"
+#include "legoapi/items/base/apiobject.h"
+#include "legoapi/items/collect/bolts.h"
+#include "legoapi/misc/buffers.h"
+#include "legoapi/render/core/gameliball.h"
+#include "legoapi/render/fx.h"
+#include "legoapi/render/light/surfaces.h"
+#include "legoapi/world/level.h"
+#include "legoapi/world/levels/levels.h"
+#include "nu2api/nucore/nustring.h"
+#include "nu2api/nufile/nufile.h"
+#include "nu2api/nufile/nufilepak.h"
+#include "nu2api/nufile/nufpar.h"
+#include "nu2api/numusic/sfx.h"
 extern i32 configureallcharacters_perm;
 
 typedef struct CHARCONFIG {            // size 0xfc8

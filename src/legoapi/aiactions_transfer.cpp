@@ -1,4 +1,17 @@
-#include "saga.h"
+#include "gameapi/ai/aisys/aisys.h"
+#include "gameapi/edtools/edfile.h"
+#include "legoapi/ai/core/gameai.h"
+#include "legoapi/gizmos/transport/ledges.h"
+#include "legoapi/items/base/apiobject.h"
+#include "legoapi/legoapi_types.h"
+#include "legoapi/props/system/socksys.h"
+#include "legoapi/world/world.h"
+#include "nu2api/nu3d/nu3d_includes.h"
+#include "nu2api/nu3d/nugscn.h"
+#include "nu2api/nu3d/nuhspecial.h"
+#include "nu2api/nuanimation_gen.h"
+#include "nu2api/nucore/nustring.h"
+#include "nu2api/numath/numtx.h"
 
 extern "C" i32 special_debug;
 extern "C" void PCSpecialEmptyHandler(...);

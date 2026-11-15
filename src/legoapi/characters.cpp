@@ -1,6 +1,31 @@
 #include <stdio.h>
 #include <string.h>
-#include "saga.h"
+#include "globals.h"
+#include "legoapi/characters/core/character.h"
+#include "legoapi/characters/core/characters.h"
+#include "legoapi/characters/core/charconfig.h"
+#include "legoapi/characters/core/players.h"
+#include "legoapi/characters/motion.h"
+#include "legoapi/characters/motion/move.h"
+#include "legoapi/core/input/qrand.h"
+#include "legoapi/cutscenes/cutscenes.h"
+#include "legoapi/items/base/apiobject.h"
+#include "legoapi/items/base/collection.h"
+#include "legoapi/legoapi_types.h"
+#include "legoapi/menus/screens/customise.h"
+#include "legoapi/render/core/render.h"
+#include "legoapi/world/area.h"
+#include "legoapi/world/level.h"
+#include "legoapi/world/levels.h"
+#include "legoapi/world/world.h"
+#include "legoapi/world/world_shared.h"
+#include "legogame/game.h"
+#include "nu2api/nu3d/nu3d_includes.h"
+#include "nu2api/nu3d/nugscn.h"
+#include "nu2api/nu3d/nuhspecial.h"
+#include "nu2api/nuanimation_gen.h"
+#include "nu2api/nucore/nustring.h"
+#include "nu2api/numath/numtx.h"
 
 extern "C" {
     extern char AreaFixUpName_Jedi[8];

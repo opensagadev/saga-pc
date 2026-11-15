@@ -1,4 +1,21 @@
-#include "saga.h"
+#include "batman.h"
+#include "gameapi/gui/apimenu.h"
+#include "gamelib/util/Utilities.h"
+#include "globals.h"
+#include "legoapi/audio/audio.h"
+#include "legoapi/core/input/gamepads.h"
+#include "legoapi/legoapi_types.h"
+#include "legoapi/menus/core/text.h"
+#include "legoapi/menus/screens/credits.h"
+#include "legoapi/misc/gamemain.h"
+#include "legoapi/render/core/render.h"
+#include "legoapi/world/level.h"
+#include "legoapi/world/levels/levels.h"
+#include "legoapi/world/world.h"
+#include "nu2api/nucore/nustring.h"
+#include "nu2api/nufile/nufpar.h"
+#include "nu2api/numath/nutrig.h"
+#include "nu2api/numusic/numusic.h"
 #include <stdio.h>
 
 struct credit_record_s { // size 0x18

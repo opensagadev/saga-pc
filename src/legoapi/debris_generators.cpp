@@ -1,4 +1,13 @@
-#include "saga.h"
+#include "gameapi/edptl.h"
+#include "gameapi/edtools/edgra.h"
+#include "legoapi/items/objects/objectsall.h"
+#include "legoapi/render/core/gameliball.h"
+#include "legoapi/render/fx/game_deb.h"
+#include "nu2api/nu3d/nuptl.h"
+#include "nu2api/numath/nurand.h"
+#include "nu2api/numath/nutrig.h"
+#include "nu2api/numath/nuvec.h"
+#include "nu2api/nustencilshadows_PC.h"
 
 #define DEBRIS_PARTICLE_AT(key, index, type)                                                                                               \
     (&(key)->particle_chunks[(i16)(index) / ((type) == 7 ? 12 : 32)]->particles[(i16)(index) % ((type) == 7 ? 12 : 32)])

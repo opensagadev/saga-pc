@@ -1,4 +1,17 @@
-#include "saga.h"
+#include "globals.h"
+#include "legoapi/characters/core/character.h"
+#include "legoapi/characters/core/players.h"
+#include "legoapi/characters/motion/move.h"
+#include "legoapi/core/save_values.h"
+#include "legoapi/items/base/apiobject.h"
+#include "legoapi/items/base/collection.h"
+#include "legoapi/legoapi_types.h"
+#include "legoapi/lib/hub.h"
+#include "legoapi/menus/screens/gamestructure.h"
+#include "legoapi/menus/screens/store.h"
+#include "legoapi/world/area.h"
+#include "nu2api/nucore/nustring.h"
+#include "nu2api/nufile/nufpar.h"
 
 static i32 CollectCount = 0;
 static COLLECTID_PC *CollectList = 0;

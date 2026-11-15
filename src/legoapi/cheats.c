@@ -1,4 +1,21 @@
-#include "saga.h"
+#include "globals.h"
+#include "legoapi/ai/core/legoai.h"
+#include "legoapi/audio/audio.h"
+#include "legoapi/characters/core/players.h"
+#include "legoapi/characters/motion/move.h"
+#include "legoapi/core/config/cheat.h"
+#include "legoapi/core/config/cheats.h"
+#include "legoapi/core/input/gamepads.h"
+#include "legoapi/core/input/qrand.h"
+#include "legoapi/gizmo/object/gizmopickup.h"
+#include "legoapi/gizmos/fx/gizmopickups.h"
+#include "legoapi/items/base/apiobject.h"
+#include "legoapi/lib/camera.h"
+#include "legoapi/menus/core/gamemessage.h"
+#include "legoapi/misc/gamemain.h"
+#include "legoapi/world/area.h"
+#include "nu2api/nucore/nustring.h"
+#include "nu2api/numath/nuvec.h"
 
 static f32 Cheat_PowerUpTime = 0;
 i32 POWERUP_TEXTID = 0;

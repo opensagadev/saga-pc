@@ -1,4 +1,13 @@
-#include "saga.h"
+#include "legoapi/characters/core/character.h"
+#include "legoapi/characters/motion.h"
+#include "legoapi/characters/motion/charpivot.h"
+#include "legoapi/items/base/animpacket.h"
+#include "legoapi/items/base/apiobject.h"
+#include "legoapi/legoapi_types.h"
+#include "legoapi/misc/gamemain.h"
+#include "legoapi/misc/utilities.h"
+#include "nu2api/numath/numtx.h"
+#include "nu2api/numath/nuvec.h"
 
 static CHARPIVOT *CharPivot = 0;
 

@@ -1,4 +1,22 @@
-#include "saga.h"
+#include "globals.h"
+#include "legoapi/characters/core/character.h"
+#include "legoapi/characters/core/players.h"
+#include "legoapi/characters/motion/action_info.h"
+#include "legoapi/characters/motion/charshadows.h"
+#include "legoapi/characters/motion/move.h"
+#include "legoapi/items/base/apiobject.h"
+#include "legoapi/misc/utilities.h"
+#include "legoapi/render/core/gameliball.h"
+#include "legoapi/render/core/terrain.h"
+#include "legoapi/world/level.h"
+#include "legoapi/world/levels/levels.h"
+#include "legoapi/world/world.h"
+#include "legoapi/world/world_shared.h"
+#include "nu2api/nu3d/nurndr.h"
+#include "nu2api/numath/numtx.h"
+#include "nu2api/numath/nuvec.h"
+#include "nu2api/nuwin32/d3dCore.h"
+#include "nu2api/nuwin32/pcapi.h"
 
 extern i32 CharacterBlobShadowsOn;
 f32 DropInOutScale(GAMEOBJECT *object);

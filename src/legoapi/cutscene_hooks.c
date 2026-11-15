@@ -1,4 +1,12 @@
-#include "saga.h"
+#include "legoapi/characters/motion/move.h"
+#include "legoapi/cutscenes/gcutscn.h"
+#include "legogame/game.h"
+#include "nu2api/nu3d/nu3d_includes.h"
+#include "nu2api/nucore/nuanim3.h"
+#include "nu2api/nucore/nuanimdata.h"
+#include "nu2api/nucore/nugcutscene.h"
+#include "nu2api/numath/numtx.h"
+#include "nu2api/numath/nuvec.h"
 
 #include <string.h>
 
