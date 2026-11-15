@@ -517,7 +517,7 @@
     "tools/test_binary.py": "7dfafcb528d4aa651fd116259d045bc5928cd455c805170f05fa1f8fdfbabe20",
     "tools/test_bink_imports.py": "51fdaeb952f0f4f4d38fe412dd9d659a04381ef34f796b03101a1e335d4b8506",
     "tools/test_budget.py": "858d3adfa33e1191d3c2145deaf0b885731f171302bfe801a26facd894195ad4",
-    "tools/test_build_kinds.py": "d8348245ef5eaf66610a4e1be2f0a92cd24122a602bc1d6038812f1566a675bd",
+    "tools/test_build_kinds.py": "0a294168ae282140f056914a7e88160c641f2c79d0d07fa8265d7f31d88ac56b",
     "tools/test_callset.py": "5f52ef7d81cf4b649669b40238a2be1818eb5f95e59c3f02c0b4d1d3e3318474",
     "tools/test_candidate_only.py": "a25566a14da80a33f34f65f8f603626dbbb524c9f55e1c9d78eba68aabd7eedd",
     "tools/test_castscan.py": "f9a05f45a13bcedadf3d178aaae1af9236115c29f64777a62ba0ff76bdbd6518",
@@ -897305,7 +897305,7 @@
       "metadata_sha256": "71f8de7e6cdf8dbec103f52d22eb2084e3dad52ad6a14d7fcba50d135b85a71b",
       "header_path": "src/saga.h",
       "header_sha256": "af340d53d5ac3b386412e42901ffbd92acdf34c373c36a1018dc978f9cc13dc9",
-      "geometry_object_sha256": "4a9b37b9a916f66b722572871269d1665bb79bfb0678c52b15c2aba321682c87",
+      "geometry_object_sha256": "ee51a64ccbee0bbaee032c9be574d708770891f68a0956f703c3a729f9c94cb8",
       "toolchain_sha256": "c4a1b51fa201190a0f051049684f4203be44a19e5a9c5b6265e7c14a0d5311bc",
       "implementation_sha256": "d6a33be911d095a6d07dccd4443ccbfd6b514fd89fd7e200d9caa1827944e218",
       "headers": {

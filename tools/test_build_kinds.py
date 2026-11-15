@@ -162,7 +162,7 @@ class BuildKindTests(unittest.TestCase):
     def test_only_exact_initialized_save_path_exceptions_are_accepted(self):
         with tempfile.TemporaryDirectory() as temp:
             root = Path(temp)
-            for unit in ("src/data.cpp", "src/gameapi/saveload.cpp", "src/gameapi/shop_persistence.cpp"):
+            for unit in ("src/nu2api/pc_options.cpp",):
                 source = root / unit
                 source.parent.mkdir(parents=True, exist_ok=True)
                 original = (ROOT / unit).read_text()
@@ -171,12 +171,9 @@ class BuildKindTests(unittest.TestCase):
                     check.check_diagnostic_boundaries()
                     changed_cases = [
                         original + "\n#ifdef SAGA_DEBUG\nvoid unrelated_work(void);\n#endif\n",
-                        original.replace('"SavedGames"', '"OtherGames"'),
+                        original.replace("    destination[0] = 0;\n    return;\n#endif", "    destination[1] = 0;\n    return;\n#endif"),
+                        original.replace("PCOptionsBuildFolder(char *destination) {\n#ifdef", "OtherFolder(char *destination) {\n#ifdef"),
                     ]
-                    if unit == "src/gameapi/saveload.cpp":
-                        changed_cases.append(original.replace("fullslotname(i32 slot)", "other_slot(i32 slot)"))
-                    if unit == "src/gameapi/shop_persistence.cpp":
-                        changed_cases.append(original.replace("createslotfolder(i32)", "other_folder(i32)"))
                     for changed in changed_cases:
                         source.write_text(changed)
                         with self.assertRaisesRegex(ValueError, "diagnostics-only"):
