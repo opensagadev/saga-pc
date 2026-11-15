@@ -1311,7 +1311,7 @@ extern "C" void DrawStatusScreen(WORLDINFO *) {
             f32 scale = StatusGoldBrickScale * alpha;
             DrawPanel3DObjectNoAlpha(StatusGoldBrickX, StatusGoldBrickY, 1.0f, scale, scale, scale, tilt, rotation, 0,
                                      &WORLD->level_objects[211].special, 2);
-            if (Text_Language != 0) {
+            if (Text_Language != NULANGUAGE_JAPANESE) {
                 Text3DEx((char *)"+1", StatusGoldBrickX, StatusGoldBrickY - 0.15f, 1.0f, 0.5f, 0.5f, 0.5f, 0, 255, 0, 255,
                          (u8)(alpha * 128.0f));
             }
@@ -1519,7 +1519,7 @@ extern "C" {
             return;
         }
         if (!(StatusPacket.newly_completed != 0 && StatusPacket.area != NULL && StatusPacket.area == NEGOTIATIONS_ADATA)) {
-            u32 button = Text_Language != 0 ? GAMEPAD_JUMP : GAMEPAD_MENUSELECT;
+            u32 button = Text_Language != NULANGUAGE_JAPANESE ? GAMEPAD_JUMP : GAMEPAD_MENUSELECT;
             if ((StatusPacket.player0_active != 0 && (GamePadStorage[0].menu_buttons_pressed & button) != 0) ||
                 (StatusPacket.player1_active != 0 && (GamePadStorage[1].menu_buttons_pressed & button) != 0) ||
                 (StatusPacket.unknown_b0 & 2) != 0) {

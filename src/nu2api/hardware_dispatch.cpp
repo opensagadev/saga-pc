@@ -458,119 +458,119 @@ extern "C" i32 PcNativeSelectLanguage(const char *configuration_name) {
     } else {
         language = GetUserDefaultLangID();
     }
-    if (NuHwParameter4f == 0 && language == 0x409) {
-        language = 0x809;
+    if (NuHwParameter4f == 0 && language == MAKELANGID(LANG_ENGLISH, SUBLANG_ENGLISH_US)) {
+        language = MAKELANGID(LANG_ENGLISH, SUBLANG_ENGLISH_UK);
     }
     NuRegionSet(3);
     switch (language) {
-        case 0x409:
-            NuLanguageSet(18);
+        case MAKELANGID(LANG_ENGLISH, SUBLANG_ENGLISH_US):
+            NuLanguageSet(NULANGUAGE_US_ENGLISH);
             NuRegionSet(2);
             break;
-        case 0x40b:
-            NuLanguageSet(17);
+        case MAKELANGID(LANG_FINNISH, SUBLANG_DEFAULT):
+            NuLanguageSet(NULANGUAGE_FINNISH);
             break;
-        case 0x406:
-            NuLanguageSet(8);
+        case MAKELANGID(LANG_DANISH, SUBLANG_DEFAULT):
+            NuLanguageSet(NULANGUAGE_DANISH);
             break;
-        case 0x40e:
-            NuLanguageSet(20);
+        case MAKELANGID(LANG_HUNGARIAN, SUBLANG_DEFAULT):
+            NuLanguageSet(NULANGUAGE_HUNGARIAN);
             break;
-        case 0x415:
-            NuLanguageSet(11);
+        case MAKELANGID(LANG_POLISH, SUBLANG_DEFAULT):
+            NuLanguageSet(NULANGUAGE_POLISH);
             break;
-        case 0x419:
-            NuLanguageSet(12);
+        case MAKELANGID(LANG_RUSSIAN, SUBLANG_DEFAULT):
+            NuLanguageSet(NULANGUAGE_RUSSIAN);
             break;
-        case 0x408:
-            NuLanguageSet(9);
+        case MAKELANGID(LANG_GREEK, SUBLANG_DEFAULT):
+            NuLanguageSet(NULANGUAGE_GREEK);
             break;
-        case 0x405:
-            NuLanguageSet(10);
+        case MAKELANGID(LANG_CZECH, SUBLANG_DEFAULT):
+            NuLanguageSet(NULANGUAGE_CZECH);
             break;
-        case 0x411:
-            NuLanguageSet(0);
+        case MAKELANGID(LANG_JAPANESE, SUBLANG_DEFAULT):
+            NuLanguageSet(NULANGUAGE_JAPANESE);
             NuRegionSet(1);
             break;
-        case 0x412:
-            NuLanguageSet(13);
+        case MAKELANGID(LANG_KOREAN, SUBLANG_KOREAN):
+            NuLanguageSet(NULANGUAGE_KOREAN);
             break;
-        case 0x41d:
-            NuLanguageSet(14);
+        case MAKELANGID(LANG_SWEDISH, SUBLANG_SWEDISH):
+            NuLanguageSet(NULANGUAGE_SWEDISH);
             break;
-        case 0x414:
-            NuLanguageSet(15);
+        case MAKELANGID(LANG_NORWEGIAN, SUBLANG_NORWEGIAN_BOKMAL):
+            NuLanguageSet(NULANGUAGE_NORWEGIAN);
             break;
-        case 0x416:
-            NuLanguageSet(16);
+        case MAKELANGID(LANG_PORTUGUESE, SUBLANG_PORTUGUESE_BRAZILIAN):
+            NuLanguageSet(NULANGUAGE_BRAZILIAN_PORTUGUESE);
             break;
-        case 0x410:
-        case 0x810:
-            NuLanguageSet(5);
+        case MAKELANGID(LANG_ITALIAN, SUBLANG_ITALIAN):
+        case MAKELANGID(LANG_ITALIAN, SUBLANG_ITALIAN_SWISS):
+            NuLanguageSet(NULANGUAGE_ITALIAN);
             break;
-        case 0x80a:
-            NuLanguageSet(3);
+        case MAKELANGID(LANG_SPANISH, SUBLANG_SPANISH_MEXICAN):
+            NuLanguageSet(NULANGUAGE_SPANISH);
             NuRegionSet(2);
             break;
-        case 0x413:
-        case 0x813:
-            NuLanguageSet(6);
+        case MAKELANGID(LANG_DUTCH, SUBLANG_DUTCH):
+        case MAKELANGID(LANG_DUTCH, SUBLANG_DUTCH_BELGIAN):
+            NuLanguageSet(NULANGUAGE_DUTCH);
             break;
-        case 0x816:
-            NuLanguageSet(7);
+        case MAKELANGID(LANG_PORTUGUESE, SUBLANG_PORTUGUESE):
+            NuLanguageSet(NULANGUAGE_PORTUGUESE);
             break;
-        case 0xc0c:
-            NuLanguageSet(2);
+        case MAKELANGID(LANG_FRENCH, SUBLANG_FRENCH_CANADIAN):
+            NuLanguageSet(NULANGUAGE_FRENCH);
             NuRegionSet(2);
             break;
-        case 0x40c:
-        case 0x80c:
-        case 0x100c:
-        case 0x140c:
-        case 0x180c:
-            NuLanguageSet(2);
+        case MAKELANGID(LANG_FRENCH, SUBLANG_FRENCH):
+        case MAKELANGID(LANG_FRENCH, SUBLANG_FRENCH_BELGIAN):
+        case MAKELANGID(LANG_FRENCH, SUBLANG_FRENCH_SWISS):
+        case MAKELANGID(LANG_FRENCH, SUBLANG_FRENCH_LUXEMBOURG):
+        case MAKELANGID(LANG_FRENCH, SUBLANG_FRENCH_MONACO):
+            NuLanguageSet(NULANGUAGE_FRENCH);
             break;
-        case 0x407:
-        case 0x807:
-        case 0xc07:
-        case 0x1007:
-        case 0x1407:
-            NuLanguageSet(4);
+        case MAKELANGID(LANG_GERMAN, SUBLANG_GERMAN):
+        case MAKELANGID(LANG_GERMAN, SUBLANG_GERMAN_SWISS):
+        case MAKELANGID(LANG_GERMAN, SUBLANG_GERMAN_AUSTRIAN):
+        case MAKELANGID(LANG_GERMAN, SUBLANG_GERMAN_LUXEMBOURG):
+        case MAKELANGID(LANG_GERMAN, SUBLANG_GERMAN_LIECHTENSTEIN):
+            NuLanguageSet(NULANGUAGE_GERMAN);
             break;
-        case 0x809:
-        case 0xc09:
-        case 0x1009:
-        case 0x1409:
-        case 0x1809:
-        case 0x1c09:
-        case 0x2009:
-        case 0x2409:
-        case 0x2809:
-        case 0x2c09:
-        case 0x3009:
-        case 0x3409:
-            NuLanguageSet(1);
+        case MAKELANGID(LANG_ENGLISH, SUBLANG_ENGLISH_UK):
+        case MAKELANGID(LANG_ENGLISH, SUBLANG_ENGLISH_AUS):
+        case MAKELANGID(LANG_ENGLISH, SUBLANG_ENGLISH_CAN):
+        case MAKELANGID(LANG_ENGLISH, SUBLANG_ENGLISH_NZ):
+        case MAKELANGID(LANG_ENGLISH, SUBLANG_ENGLISH_EIRE):
+        case MAKELANGID(LANG_ENGLISH, SUBLANG_ENGLISH_SOUTH_AFRICA):
+        case MAKELANGID(LANG_ENGLISH, SUBLANG_ENGLISH_JAMAICA):
+        case MAKELANGID(LANG_ENGLISH, SUBLANG_ENGLISH_CARIBBEAN):
+        case MAKELANGID(LANG_ENGLISH, SUBLANG_ENGLISH_BELIZE):
+        case MAKELANGID(LANG_ENGLISH, SUBLANG_ENGLISH_TRINIDAD):
+        case MAKELANGID(LANG_ENGLISH, SUBLANG_ENGLISH_ZIMBABWE):
+        case MAKELANGID(LANG_ENGLISH, SUBLANG_ENGLISH_PHILIPPINES):
+            NuLanguageSet(NULANGUAGE_ENGLISH);
             break;
-        case 0x40a:
-        case 0xc0a:
-        case 0x100a:
-        case 0x140a:
-        case 0x180a:
-        case 0x1c0a:
-        case 0x200a:
-        case 0x240a:
-        case 0x280a:
-        case 0x2c0a:
-        case 0x300a:
-        case 0x340a:
-        case 0x380a:
-        case 0x3c0a:
-        case 0x400a:
-        case 0x440a:
-        case 0x480a:
-        case 0x4c0a:
-        case 0x500a:
-            NuLanguageSet(3);
+        case MAKELANGID(LANG_SPANISH, SUBLANG_SPANISH):
+        case MAKELANGID(LANG_SPANISH, SUBLANG_SPANISH_MODERN):
+        case MAKELANGID(LANG_SPANISH, SUBLANG_SPANISH_GUATEMALA):
+        case MAKELANGID(LANG_SPANISH, SUBLANG_SPANISH_COSTA_RICA):
+        case MAKELANGID(LANG_SPANISH, SUBLANG_SPANISH_PANAMA):
+        case MAKELANGID(LANG_SPANISH, SUBLANG_SPANISH_DOMINICAN_REPUBLIC):
+        case MAKELANGID(LANG_SPANISH, SUBLANG_SPANISH_VENEZUELA):
+        case MAKELANGID(LANG_SPANISH, SUBLANG_SPANISH_COLOMBIA):
+        case MAKELANGID(LANG_SPANISH, SUBLANG_SPANISH_PERU):
+        case MAKELANGID(LANG_SPANISH, SUBLANG_SPANISH_ARGENTINA):
+        case MAKELANGID(LANG_SPANISH, SUBLANG_SPANISH_ECUADOR):
+        case MAKELANGID(LANG_SPANISH, SUBLANG_SPANISH_CHILE):
+        case MAKELANGID(LANG_SPANISH, SUBLANG_SPANISH_URUGUAY):
+        case MAKELANGID(LANG_SPANISH, SUBLANG_SPANISH_PARAGUAY):
+        case MAKELANGID(LANG_SPANISH, SUBLANG_SPANISH_BOLIVIA):
+        case MAKELANGID(LANG_SPANISH, SUBLANG_SPANISH_EL_SALVADOR):
+        case MAKELANGID(LANG_SPANISH, SUBLANG_SPANISH_HONDURAS):
+        case MAKELANGID(LANG_SPANISH, SUBLANG_SPANISH_NICARAGUA):
+        case MAKELANGID(LANG_SPANISH, SUBLANG_SPANISH_PUERTO_RICO):
+            NuLanguageSet(NULANGUAGE_SPANISH);
             break;
         default:
             switch (language & 0x3ff) {

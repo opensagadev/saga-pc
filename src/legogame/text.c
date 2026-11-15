@@ -7,27 +7,27 @@ extern i16 dat_00880898;
 
 void Text_SetLanguage_Game(i32 language) {
     switch (language) {
-        case 4:
+        case NULANGUAGE_GERMAN:
             INTROTEXT_Y = 0.13f;
             INTROTEXT_SCALE = 0.575f;
             break;
-        case 2:
+        case NULANGUAGE_FRENCH:
             INTROTEXT_Y = 0.115f;
             INTROTEXT_SCALE = 0.5f;
             break;
-        case 3:
+        case NULANGUAGE_SPANISH:
             INTROTEXT_Y = 0.14f;
             INTROTEXT_SCALE = 0.61f;
             break;
-        case 8:
+        case NULANGUAGE_DANISH:
             INTROTEXT_Y = 0.15f;
             INTROTEXT_SCALE = 0.67f;
             break;
-        case 5:
+        case NULANGUAGE_ITALIAN:
             INTROTEXT_Y = 0.17f;
             INTROTEXT_SCALE = 0.76f;
             break;
-        case 0:
+        case NULANGUAGE_JAPANESE:
             INTROTEXT_Y = 0.0f;
             INTROTEXT_SCALE = 1.8f;
             break;

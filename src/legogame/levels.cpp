@@ -690,7 +690,7 @@ static void WorldGetTitlesNamePrivate(char *titles) {
             break;
         default:
             if (StartupGameFlag1 != 0) {
-                if (Text_Language == 18) {
+                if (Text_Language == NULANGUAGE_US_ENGLISH) {
                     NuStrCpy(titles, "titles_us");
                 } else {
                     NuStrCpy(titles, "titles_uk");

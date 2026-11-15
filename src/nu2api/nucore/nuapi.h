@@ -58,6 +58,30 @@ typedef struct nuapi_s {   // size 0x90
 
 extern CRC16 CRC16InstancePC;
 #endif
+/* NuLanguageGet/NuLanguageSet values. PcNativeSelectLanguage sets them from the Windows language ID
+ * (MAKELANGID(LANG_ENGLISH, SUBLANG_ENGLISH_UK) and the other English variants give NULANGUAGE_ENGLISH,
+ * SUBLANG_ENGLISH_US NULANGUAGE_US_ENGLISH); Text_GetLanguagePath picks the text files by them. 19 is not set. */
+#define NULANGUAGE_JAPANESE 0
+#define NULANGUAGE_ENGLISH 1
+#define NULANGUAGE_FRENCH 2
+#define NULANGUAGE_SPANISH 3
+#define NULANGUAGE_GERMAN 4
+#define NULANGUAGE_ITALIAN 5
+#define NULANGUAGE_DUTCH 6
+#define NULANGUAGE_PORTUGUESE 7
+#define NULANGUAGE_DANISH 8
+#define NULANGUAGE_GREEK 9
+#define NULANGUAGE_CZECH 10
+#define NULANGUAGE_POLISH 11
+#define NULANGUAGE_RUSSIAN 12
+#define NULANGUAGE_KOREAN 13
+#define NULANGUAGE_SWEDISH 14
+#define NULANGUAGE_NORWEGIAN 15
+#define NULANGUAGE_BRAZILIAN_PORTUGUESE 16
+#define NULANGUAGE_FINNISH 17
+#define NULANGUAGE_US_ENGLISH 18
+#define NULANGUAGE_HUNGARIAN 20
+
 #ifdef __cplusplus
 extern "C" {
 #endif

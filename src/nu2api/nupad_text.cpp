@@ -157,7 +157,7 @@ i32 TEXT_INPUT_MANAGER_PC::ButtonName(i32 device, i32 button, char *destination,
                     sprintf(destination, "%s %s", labels->axis_names[value], labels->axis_negative);
                 }
             } else {
-                i32 reversed = NuLanguageGet() == 11;
+                i32 reversed = NuLanguageGet() == NULANGUAGE_POLISH;
                 if (kind->kind == expected) {
                     if (reversed == 0) {
                         sprintf(destination, labels->axis_format, value, labels->axis_positive);

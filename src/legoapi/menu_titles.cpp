@@ -136,22 +136,22 @@ extern "C" {
 extern "C" void MenuPcStringsInit(void) {
     MENU_PC_STRING_ENTRY *entry = dat_00827940;
     switch (NuLanguageGet()) {
-        case 18:
+        case NULANGUAGE_US_ENGLISH:
             entry = dat_00827800;
             break;
-        case 2:
+        case NULANGUAGE_FRENCH:
             entry = dat_00827a80;
             break;
-        case 4:
+        case NULANGUAGE_GERMAN:
             entry = dat_00827bc0;
             break;
-        case 5:
+        case NULANGUAGE_ITALIAN:
             entry = dat_00827d00;
             break;
-        case 3:
+        case NULANGUAGE_SPANISH:
             entry = dat_00827e40;
             break;
-        case 8:
+        case NULANGUAGE_DANISH:
             entry = dat_00827f80;
             break;
     }

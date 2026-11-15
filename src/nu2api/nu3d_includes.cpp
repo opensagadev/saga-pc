@@ -4998,7 +4998,7 @@ extern "C" {
             NuQFntSetMtxRS(stream, font, matrix);
         }
         line_height = font->height * *font->y_scale * qfnt_height_scale;
-        hyphen = NuLanguageGet() == 0 ? 0xfffe : UnicodeToIndexFast(font->unicode_map, font->unicode_count, '-');
+        hyphen = NuLanguageGet() == NULANGUAGE_JAPANESE ? 0xfffe : UnicodeToIndexFast(font->unicode_map, font->unicode_count, '-');
         do {
             u16 line[256];
             u16 *line_start;

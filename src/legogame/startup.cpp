@@ -94,17 +94,17 @@ extern "C" {
         static void LoadPermBuildLegalTextureName(char *name) {
             i32 pal = NuRegionGet() != 2;
             NuStrCpy(name, "legal");
-            if (!pal && (Text_Language == 1 || Text_Language == 0x12)) {
+            if (!pal && (Text_Language == NULANGUAGE_ENGLISH || Text_Language == NULANGUAGE_US_ENGLISH)) {
                 NuStrCat(name, "_us");
-            } else if (!pal && Text_Language == 2) {
+            } else if (!pal && Text_Language == NULANGUAGE_FRENCH) {
                 NuStrCat(name, "_usfrench");
-            } else if (!pal && Text_Language == 3) {
+            } else if (!pal && Text_Language == NULANGUAGE_SPANISH) {
                 NuStrCat(name, "_usspanish");
             } else {
                 NuStrCat(name, "_");
                 NuStrCat(name, Text_GetLanguagePath(Text_Language));
             }
-            if (Text_Language == 0) {
+            if (Text_Language == NULANGUAGE_JAPANESE) {
                 TextScaleX = PermLegalScale;
                 TextScaleY = PermLegalScale;
             }
@@ -129,7 +129,7 @@ extern "C" {
                 NuStrCpy(path, "stuff\\legal\\");
                 NuStrCat(path, "pc\\pc_");
                 NuStrCat(path, "legal");
-                if (PAL != 0 || (Text_Language != 1 && Text_Language != 0x12)) {
+                if (PAL != 0 || (Text_Language != NULANGUAGE_ENGLISH && Text_Language != NULANGUAGE_US_ENGLISH)) {
                     NuStrCat(path, "_");
                     NuStrCat(path, Text_GetLanguagePath(Text_Language));
                 }
@@ -176,7 +176,7 @@ extern "C" {
             if (StartupGameFlag0 != 0) {
                 Text_LoadFont("stuff\\text\\pc_font", &permbuffer_ptr, &permbuffer_end);
             } else if (StartupGameFlag1 != 0) {
-                if (Text_Language == 0) {
+                if (Text_Language == NULANGUAGE_JAPANESE) {
                     Text_LoadFont("stuff\\text\\starwars_font_j", &permbuffer_ptr, &permbuffer_end);
                 } else {
                     Text_LoadFont("stuff\\text\\starwars_font", &permbuffer_ptr, &permbuffer_end);

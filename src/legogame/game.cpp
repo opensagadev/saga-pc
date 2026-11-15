@@ -430,7 +430,7 @@ extern "C" void InitGameBeforeConfig(void) {
     GameSetSoundVolume(&Game.options_save);
     GameSetMusicVolume(&Game.options_save);
     Text_GameSetLanguageFn = Text_SetLanguage_Game;
-    if (Text_Language != 0 && Text_Language != 13 && PAL != 0) {
+    if (Text_Language != NULANGUAGE_JAPANESE && Text_Language != NULANGUAGE_KOREAN && PAL != 0) {
         Text_SetLanguage(NuLanguageGet());
     }
     GameRegisterGizActions();

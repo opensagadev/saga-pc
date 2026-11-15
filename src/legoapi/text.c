@@ -40,17 +40,17 @@ void Text_InitLanguageList(LANGUAGEDATA *language_list) {
 
 char *Text_GetLanguagePath(i32 language) {
     switch (language) {
-        case 2:
+        case NULANGUAGE_FRENCH:
             return Text_PathFrench;
-        case 4:
+        case NULANGUAGE_GERMAN:
             return Text_PathGerman;
-        case 5:
+        case NULANGUAGE_ITALIAN:
             return Text_PathItalian;
-        case 3:
+        case NULANGUAGE_SPANISH:
             return Text_PathSpanish;
-        case 8:
+        case NULANGUAGE_DANISH:
             return Text_PathDanish;
-        case 0:
+        case NULANGUAGE_JAPANESE:
             return Text_PathJapanese;
         default:
             return Text_PathEnglish;
@@ -118,9 +118,9 @@ void Text_InsertCommasIntoNumber(char *number, char *text, i32 length) {
     i32 count;
     i32 output;
     i32 digit;
-    if (Text_Language == 2) {
+    if (Text_Language == NULANGUAGE_FRENCH) {
         separator = ' ';
-    } else if (Text_Language != 1 && Text_Language != 18 && Text_Language != 0) {
+    } else if (Text_Language != NULANGUAGE_ENGLISH && Text_Language != NULANGUAGE_US_ENGLISH && Text_Language != NULANGUAGE_JAPANESE) {
         separator = '.';
     }
     if (length < 0) {

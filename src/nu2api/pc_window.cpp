@@ -253,7 +253,7 @@ extern "C" i32 __stdcall WinMain(HINSTANCE instance, HINSTANCE previous, LPSTR c
     SetThreadExecutionState(0x80000003);
     CpuDetectFeatures();
     CoInitializeEx(NULL, 2);
-    NuLanguageSet(1);
+    NuLanguageSet(NULANGUAGE_ENGLISH);
     ParsePlatformArgumentsPc(command_line);
     if (PcPlatformPolicy(1)) {
         SetThreadAffinityMask(GetCurrentThread(), 1);

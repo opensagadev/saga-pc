@@ -18,7 +18,7 @@ i32 FindNextBreak(u8 *text, i32 index) {
     i32 ascii_start;
     i32 length;
     i32 count;
-    if (NuLanguageGet() == 0) {
+    if (NuLanguageGet() == NULANGUAGE_JAPANESE) {
         japanese = 1;
     }
     count = 0;
@@ -59,7 +59,7 @@ i32 FindNearestBreak(u8 *text, i32 index) {
     i32 forward;
     i32 backward;
     i32 count;
-    if (NuLanguageGet() == 0) {
+    if (NuLanguageGet() == NULANGUAGE_JAPANESE) {
         japanese = 1;
     }
     while (text[index] >= 0x80 && text[index] <= 0xbf) {

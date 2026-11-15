@@ -385,82 +385,82 @@ PC_INPUT_RUNTIME_PC::PC_INPUT_RUNTIME_PC() {
     }
     InitKeyboardProfiles();
     switch (NuLanguageGet()) {
-        case 0:
+        case NULANGUAGE_JAPANESE:
             TextInputKeyNamesPc = dat_00821910;
             TextInputDefaultLabelsPc = &dat_00820560;
             TextInputAlternateLabelsPc = &dat_00820560;
             break;
-        case 1:
+        case NULANGUAGE_ENGLISH:
             TextInputKeyNamesPc = TextInputKeyNameTablePc;
             TextInputDefaultLabelsPc = &dat_00820480;
             TextInputAlternateLabelsPc = &dat_00820480;
             break;
-        case 2:
+        case NULANGUAGE_FRENCH:
             TextInputKeyNamesPc = dat_00822080;
             TextInputDefaultLabelsPc = &dat_00820aa0;
             TextInputAlternateLabelsPc = &dat_00820aa0;
             break;
-        case 3:
+        case NULANGUAGE_SPANISH:
             TextInputKeyNamesPc = dat_00822ae8;
             TextInputDefaultLabelsPc = &dat_00820d40;
             TextInputAlternateLabelsPc = &dat_00820d40;
             break;
-        case 4:
+        case NULANGUAGE_GERMAN:
             TextInputKeyNamesPc = dat_00822770;
             TextInputDefaultLabelsPc = &dat_00820c60;
             TextInputAlternateLabelsPc = &dat_00820c60;
             break;
-        case 5:
+        case NULANGUAGE_ITALIAN:
             TextInputKeyNamesPc = dat_008223f8;
             TextInputDefaultLabelsPc = &dat_00820b80;
             TextInputAlternateLabelsPc = &dat_00820b80;
             break;
-        case 6:
+        case NULANGUAGE_DUTCH:
             TextInputKeyNamesPc = dat_008231d8;
             TextInputDefaultLabelsPc = &dat_00820640;
             TextInputAlternateLabelsPc = &dat_00820640;
             break;
-        case 7:
+        case NULANGUAGE_PORTUGUESE:
             TextInputKeyNamesPc = dat_008240b8;
             TextInputDefaultLabelsPc = &dat_008209c0;
             TextInputAlternateLabelsPc = &dat_008209c0;
             break;
-        case 8:
+        case NULANGUAGE_DANISH:
             TextInputKeyNamesPc = dat_00822e60;
             TextInputDefaultLabelsPc = &dat_00820e20;
             TextInputAlternateLabelsPc = &dat_00820e20;
             break;
-        case 10:
+        case NULANGUAGE_CZECH:
             TextInputKeyNamesPc = dat_00821cc8;
             TextInputDefaultLabelsPc = &dat_008210c0;
             TextInputAlternateLabelsPc = &dat_008210c0;
             break;
-        case 11:
+        case NULANGUAGE_POLISH:
             TextInputKeyNamesPc = dat_00823590;
             TextInputDefaultLabelsPc = &dat_00820f00;
             TextInputAlternateLabelsPc = &dat_00820f00;
             break;
-        case 12:
+        case NULANGUAGE_RUSSIAN:
             TextInputKeyNamesPc = dat_00823948;
             TextInputDefaultLabelsPc = &dat_00820fe0;
             TextInputAlternateLabelsPc = &dat_00820fe0;
             break;
-        case 14:
+        case NULANGUAGE_SWEDISH:
             TextInputKeyNamesPc = dat_00824828;
             TextInputDefaultLabelsPc = &dat_00820800;
             TextInputAlternateLabelsPc = &dat_00820800;
             break;
-        case 15:
+        case NULANGUAGE_NORWEGIAN:
             TextInputKeyNamesPc = dat_00824470;
             TextInputDefaultLabelsPc = &dat_00820720;
             TextInputAlternateLabelsPc = &dat_00820720;
             break;
-        case 16:
+        case NULANGUAGE_BRAZILIAN_PORTUGUESE:
             TextInputKeyNamesPc = dat_00823d00;
             TextInputDefaultLabelsPc = &dat_008209c0;
             TextInputAlternateLabelsPc = &dat_008209c0;
             break;
-        case 17:
+        case NULANGUAGE_FINNISH:
             TextInputKeyNamesPc = dat_00824be0;
             TextInputDefaultLabelsPc = &dat_008208e0;
             TextInputAlternateLabelsPc = &dat_008208e0;
@@ -545,33 +545,33 @@ extern "C" i32 PcConfigureInputGraphicsCaps() {
     }
     if (!original_class) {
         switch (NuLanguageGet()) {
-            case 2:
+            case NULANGUAGE_FRENCH:
                 PCGraphicsFatalDiagnostic(&PCNativeWarningDebugState,
                                           "Impossible de lancer ce jeu sur votre ordinateur.\nUne carte graphique compatible avec Pixel "
                                           "Shaders v.1.1 est n\351cessaire.\nLe jeu va maintenant \352tre ferm\351.");
                 break;
-            case 3:
+            case NULANGUAGE_SPANISH:
                 PCGraphicsFatalDiagnostic(
                     &PCNativeWarningDebugState,
                     "Lo sentimos, pero tu ordenador no puede ejecutar este juego.\nSe necesita una tarjeta gr\341fica "
                     "compatible con Pixel Shaders v1.1.\nEl juego finalizar\341 ahora.");
                 break;
-            case 4:
+            case NULANGUAGE_GERMAN:
                 PCGraphicsFatalDiagnostic(&PCNativeWarningDebugState,
                                           "Das Spiel kann auf diesem System leider nicht ausgef\374hrt werden.\nDu brauchst eine Pixel "
                                           "Shader v1.1-kompatible Grafikkarte.\nDas Spiel wird nun beendet.");
                 break;
-            case 5:
+            case NULANGUAGE_ITALIAN:
                 PCGraphicsFatalDiagnostic(&PCNativeWarningDebugState,
                                           "Purtroppo, il tuo sistema non \350 in grado di eseguire il gioco.\n\310 necessaria una scheda "
                                           "video che supporti Pixel Shaders v1.1.\nIl gioco verr\340 chiuso.");
                 break;
-            case 6:
+            case NULANGUAGE_DUTCH:
                 PCGraphicsFatalDiagnostic(&PCNativeWarningDebugState,
                                           "Helaas is je pc niet geschikt voor dit spel.\nJe hebt een grafische kaart "
                                           "met Pixel Shaders v1.1-ondersteuning nodig.\nHet spel wordt nu afgesloten.");
                 break;
-            case 8:
+            case NULANGUAGE_DANISH:
                 PCGraphicsFatalDiagnostic(&PCNativeWarningDebugState,
                                           "Beklager, men din maskine kan ikke k\370re dette spil.\nDen skal have et grafikkort der "
                                           "underst\370tter Pixel Shaders v1.1.\nSpillet vil nu blive lukket.");
