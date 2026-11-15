@@ -737,13 +737,21 @@ def plan(facts, names, flags_mode):
 
 
 def apply(edits, root=ROOT):
+    """Write every edit, or none: two fields may name one literal alike (one edit); different names fail first."""
+    results = {}
     for file, changes in edits.items():
         path = root / file
         data = path.read_bytes()
-        for offset, old, new in sorted(changes, reverse=True):
+        changes = sorted(set(changes), reverse=True)
+        for (offset, _, new), (other, _, other_new) in zip(changes, changes[1:]):
+            if offset == other and new != other_new:
+                raise SystemExit(f"{file}:{offset}: named both {new!r} and {other_new!r}")
+        for offset, old, new in changes:
             if data[offset:offset + len(old)].decode("latin-1") != old:
                 raise SystemExit(f"{file}:{offset}: expected {old!r}")
             data = data[:offset] + new.encode("latin-1") + data[offset + len(old):]
+        results[path] = data
+    for path, data in results.items():
         path.write_bytes(data)
 
 
