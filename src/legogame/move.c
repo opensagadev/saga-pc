@@ -7128,13 +7128,13 @@ void Disorientate(GAMEOBJECT *object, NUVEC *unused) {
         object->unknown_780 = (f32)elapsed_seconds;
         disorientAxis = 0;
         while ((disorientAxis & 5) == 0) {
-            if (NuFloatRand((NURAND *)&GAMERAND) < 0.5f) {
+            if (NuFloatRand(&GAMERAND) < 0.5f) {
                 disorientAxis |= 1;
             }
-            if (NuFloatRand((NURAND *)&GAMERAND) < 0.5f) {
+            if (NuFloatRand(&GAMERAND) < 0.5f) {
                 disorientAxis |= 2;
             }
-            if (NuFloatRand((NURAND *)&GAMERAND) < 0.5f) {
+            if (NuFloatRand(&GAMERAND) < 0.5f) {
                 disorientAxis |= 4;
             }
         }

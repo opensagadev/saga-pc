@@ -5927,7 +5927,7 @@ i32 app_tbaiset = 0;
 i32 app_tbdrawset = 0;
 NUAPI nuapi = {0};
 
-i32 GAMERAND = 0x1f3ad27f;
+NURAND GAMERAND = {0x1f3ad27f};
 u32 partseed = 0x5c0999;
 u32 debrisseed = 0x5c0999;
 

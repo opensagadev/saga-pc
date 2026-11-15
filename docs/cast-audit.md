@@ -277,3 +277,33 @@ byte-identical to the base build. The textual magic-number classes of
 access is gone (`magic-flag` +18, `magic-bound` +14, `magic-mask` +7,
 `magic-state` +1): a reviewed raise in `config/budget-raises.txt`, to be paid
 back by naming the constants.
+
+## 6. Batch 4, first part: `void *` declarations typed
+
+Fourteen globals and fields that every use cast to one type got that type
+(a9010ad6): `Player[8]` (`GAMEOBJECT *`), `CurrentTerrain`, `WallSplList`,
+`edui_font`, `gizmotypes`, `edanim_mtl`, `pause_rndr_mtl`, `LevPathCnx`,
+`APIOBJECT.owner`, `bolt_s.owner`, `nuspecial_handle_s.scene`,
+`nudisplay_list_s.items`, `WORLDINFO.mini_trooper_teams`,
+`TERRAIN_PLATFORM_PC.scene_object`; then `GAMERAND` is the `NURAND` it always
+was. `castscan.py --fix redundant-identity,redundant-implicit` removed the casts
+that became redundant; the terrain alias macros (`TERRAIN_*_SET`,
+`TERRAIN_*_MATRIX`) and `PLAYER_OBJ`, which only hid such a cast, are inlined.
+Uses that read the value as another record keep an explicit cast (they were a
+pun through `void *` before). Every object kept its code and data.
+
+`byte-pointer` 1,046 to 683, `void-pointer-cpp` 1,275 to 984,
+`declaration-type` 1,953 to about 1,630. `record-pun`, `duplicate-type`,
+`layout-compatible`, `view-type` and `int-pointer` rose by 1-11 each: the
+same casts, now between two named records (`config/budget-raises.txt`).
+
+Left in this class, each needing more than a declaration change:
+`NuDebrisVertexData` (also an out parameter of `PCDeviceLockVertexBuffer`),
+`gizmo_s.object` and `gameobject_s.grapple` (one pointer, many gizmo types: a
+union or a cast per type), `CutStopInfo`, `gameobject_s.cable`,
+`nudisplaylist_pc_s.items`/`render_state` (two or three record types each),
+`EdLevelFnt` (an `i32` font handle passed as a pointer), the unit-local types
+`TimeBarSet`, `POST_SHADER_PROGRAM_PC`, `LEDGE_MOTION` and
+`NUANIM_LEGACY_CHUNK` (need moving into headers first), `part_types` and the
+screen material readers (duplicate types), and the signedness roots
+(`id_*` globals, `EdFileReadChar`), which are matching experiments.

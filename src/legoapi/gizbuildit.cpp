@@ -1339,9 +1339,9 @@ extern "C" {
         }
         buildit->reset_step_timer = 5.0f;
         for (index = 0; index < buildit->anim_object_count; ++index) {
-            scatter_position.x = (f32)((f64)NuFloatRand((NURAND *)&GAMERAND) / 5.0 - (f64)0.1f + scatter_position.x);
-            scatter_position.y = (f32)((f64)NuFloatRand((NURAND *)&GAMERAND) / 5.0 - (f64)0.1f + scatter_position.y);
-            scatter_position.z = (f32)((f64)NuFloatRand((NURAND *)&GAMERAND) / 5.0 - (f64)0.1f + scatter_position.z);
+            scatter_position.x = (f32)((f64)NuFloatRand(&GAMERAND) / 5.0 - (f64)0.1f + scatter_position.x);
+            scatter_position.y = (f32)((f64)NuFloatRand(&GAMERAND) / 5.0 - (f64)0.1f + scatter_position.y);
+            scatter_position.z = (f32)((f64)NuFloatRand(&GAMERAND) / 5.0 - (f64)0.1f + scatter_position.z);
             if (buildit->linked_buildit != NULL) {
                 object = buildit->anim_objects[index];
                 object_data = (GIZBUILDITANIMDATA_s *)object->object_data;

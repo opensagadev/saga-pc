@@ -180,15 +180,14 @@ void DeathStar2BattleD_Update(WORLDINFO *world) {
     if (shield_gizmo != NULL) {
         shield = shield_gizmo->object;
         if (shield != NULL && (shield->status_flags & 1)) {
-            if ((i32)AreaTimer.time_elapsed % 3 == 0 && (i32)AreaTimer.last_time_elapsed % 3 != 0 &&
-                NuFloatRand((NURAND *)&GAMERAND) < 0.5f) {
+            if ((i32)AreaTimer.time_elapsed % 3 == 0 && (i32)AreaTimer.last_time_elapsed % 3 != 0 && NuFloatRand(&GAMERAND) < 0.5f) {
                 angle = qrand();
                 shield_position = shield->mid_position;
                 direction.x = NuTrigTable[((angle + 0x4000) >> 1) & 0x7fff];
                 direction.y = 0.0f;
                 direction.z = NuTrigTable[(angle >> 1) & 0x7fff];
-                AddPickups(0, 0, 1, 0, &shield_position, &direction, 3.0f, -1, (f32)((f64)NuFloatRand((NURAND *)&GAMERAND) * 15.0 + 10.0),
-                           2000000.0f, NULL, 1, 0);
+                AddPickups(0, 0, 1, 0, &shield_position, &direction, 3.0f, -1, (f32)((f64)NuFloatRand(&GAMERAND) * 15.0 + 10.0), 2000000.0f,
+                           NULL, 1, 0);
             }
             return;
         }
@@ -1703,7 +1702,7 @@ void DeathStar2BattleFire_Update(WORLDINFO *world) {
         FireDeltaPosition = 30.0f;
     }
 
-    choice = (f32)((f64)NuFloatRand((NURAND *)&GAMERAND) * 4.0);
+    choice = (f32)((f64)NuFloatRand(&GAMERAND) * 4.0);
     if (choice < 1.0f) {
         effect = 33;
     } else if (choice < 2.0f) {
@@ -1713,8 +1712,8 @@ void DeathStar2BattleFire_Update(WORLDINFO *world) {
     } else {
         effect = 36;
     }
-    PointAlongSpline(LevelCodeSpline[0], (f32)((f64)NuFloatRand((NURAND *)&GAMERAND) * 0.1f + (f64)fireSplinePos.normalized_position),
-                     &point, &yaw, &pitch, 0);
+    PointAlongSpline(LevelCodeSpline[0], (f32)((f64)NuFloatRand(&GAMERAND) * 0.1f + (f64)fireSplinePos.normalized_position), &point, &yaw,
+                     &pitch, 0);
     AddVariableShotDebrisEffectTimed1(world->game_debris_sys->entries[effect].effect, &point, 90, FRAMETIME, (i16)qrand(), (i16)qrand(),
                                       NULL);
     NuMtxSetIdentity(&matrix);
@@ -1772,8 +1771,8 @@ void DeathStar2BattleFire_Update(WORLDINFO *world) {
     }
     distance = (f32) - ((f64)FRAMETIME * (f64)FireDeltaPosition);
     MoveSplinePosition(&fireBackPos, distance);
-    if ((f64)NuFloatRand((NURAND *)&GAMERAND) > (f64)0.95f) {
-        switch ((i32)((f64)NuFloatRand((NURAND *)&GAMERAND) * 3.0)) {
+    if ((f64)NuFloatRand(&GAMERAND) > (f64)0.95f) {
+        switch ((i32)((f64)NuFloatRand(&GAMERAND) * 3.0)) {
             case 0:
                 PlaySfx("exp_asteroid", &fireSplinePos.position);
                 break;

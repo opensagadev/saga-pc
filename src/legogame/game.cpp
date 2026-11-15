@@ -2249,7 +2249,7 @@ extern "C" {
         }
         choice = qrand() * (1.0f / 65535.0f) * 100.0f;
         if (choice < 50.0f) {
-            coins = ((i32)(NuFloatRand((NURAND *)(&GAMERAND)) * 1000.0f) / 100) * 100;
+            coins = ((i32)(NuFloatRand(&GAMERAND) * 1000.0f) / 100) * 100;
             if (coins < 100) {
                 coins = 100;
             }
@@ -2261,16 +2261,16 @@ extern "C" {
         }
         choice -= 50.0f;
         if (choice < 50.0f) {
-            count = 1 - (i32)(NuFloatRand((NURAND *)(&GAMERAND)) * -3.0f);
+            count = 1 - (i32)(NuFloatRand(&GAMERAND) * -3.0f);
             for (i = 0; i < count; ++i) {
-                u16 angle = (u16)(NuFloatRand((NURAND *)(&GAMERAND)) * 65536.0f);
+                u16 angle = (u16)(NuFloatRand(&GAMERAND) * 65536.0f);
                 GAMEOBJECT *object = AddDynamicCreature(model, &blowup->mid_position, angle, script, NULL, NULL, 1, NULL, NULL, 0, -1);
                 if (object != NULL) {
                     object->collision_scale_override = 0.0f;
                     object->collision_scale = 0.0f;
                     object->origin_scale = 0.0f * object->character_data->model_scale;
                 } else {
-                    coins = ((i32)(NuFloatRand((NURAND *)(&GAMERAND)) * 1000.0f) / 100) * 100;
+                    coins = ((i32)(NuFloatRand(&GAMERAND) * 1000.0f) / 100) * 100;
                     if (coins < 100) {
                         coins = 100;
                     }
@@ -2286,7 +2286,7 @@ extern "C" {
         if (choice < 0.0f) {
             return;
         }
-        coins = ((i32)(NuFloatRand((NURAND *)(&GAMERAND)) * 1000.0f) / 100) * 100;
+        coins = ((i32)(NuFloatRand(&GAMERAND) * 1000.0f) / 100) * 100;
         if (coins < 100) {
             coins = 100;
         }

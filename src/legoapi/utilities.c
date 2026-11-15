@@ -76,7 +76,7 @@ void ResetSeeds(void) {
     // The PC runtime uses srand.
     srand(0);
     qseed = 0x3039;
-    GAMERAND = 0x1f3ad27f;
+    GAMERAND.value = 0x1f3ad27f;
     NuRandSeed(0);
     DebrisSetSeed(0);
     NuRandSetSeed(NULL, 0);

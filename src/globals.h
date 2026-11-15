@@ -122,7 +122,7 @@ extern "C" {
 
     extern TIMER GamePlayTimer;
 
-    extern i32 GAMERAND;
+    extern NURAND GAMERAND;
     extern f32 PANEL3DMULY;
     extern char **TTab;
     extern char *txt_UNKNOWN;

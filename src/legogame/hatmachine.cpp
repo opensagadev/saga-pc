@@ -473,7 +473,7 @@ extern "C" {
         if (machine->configured_hat != 0) {
             machine->displayed_hat = machine->configured_hat;
         } else {
-            machine->displayed_hat = 1 - (i32)(NuFloatRand((NURAND *)&GAMERAND) * -4.0);
+            machine->displayed_hat = 1 - (i32)(NuFloatRand(&GAMERAND) * -4.0);
         }
         NuMtxSetRotationY(&machine->matrix, machine->yaw);
         NuMtxTranslate(&machine->matrix, &machine->position);
@@ -524,7 +524,7 @@ extern "C" {
                 machine->hat_delay -= FRAMETIME;
                 if (machine->hat_delay <= 0.0f && machine->displayed_hat == 0) {
                     if (machine->configured_hat == 0) {
-                        machine->displayed_hat = 1 - (u8)(NuFloatRand((NURAND *)&GAMERAND) * -4.0);
+                        machine->displayed_hat = 1 - (u8)(NuFloatRand(&GAMERAND) * -4.0);
                     } else {
                         machine->displayed_hat = machine->configured_hat;
                     }

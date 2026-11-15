@@ -1393,7 +1393,7 @@ i32 SpawnMeleeCreatureType(i32 type) {
             return 0;
         }
         offset.y = offset.z = 0.0f;
-        offset.x = (f32)(((f64)NuFloatRand((NURAND *)&GAMERAND) + 1.0) * radius * 2.0);
+        offset.x = (f32)(((f64)NuFloatRand(&GAMERAND) + 1.0) * radius * 2.0);
         NuVecRotateY(&offset, &offset, qrand());
         NuVecAdd(&offset, &offset, &locator->position);
         if (melee.waves[type].character_id == id_ATAT) {

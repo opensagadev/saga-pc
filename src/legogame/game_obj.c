@@ -1142,7 +1142,7 @@ void AtatPart_Stop(PART_PC *part) {
 }
 
 void AtatPart_Update(PART_PC *part) {
-    f32 choice = NuFloatRand(((NURAND *)(&GAMERAND))) * 100.0f + 1.0f;
+    f32 choice = NuFloatRand(&GAMERAND) * 100.0f + 1.0f;
     if (part->scale_time < 1.0f) {
         AddVariableShotDebrisEffectTimed1(WORLD->game_debris_sys->entries[118].effect, &part->position, ((i32)(part->scale_time * 20.0f)),
                                           FRAMETIME, 0, 0, NULL);
@@ -1371,9 +1371,9 @@ void SpeederPart_Update(PART_PC *part) {
             bike->rider->position = bike->rider_position;
             bike->rider->ai_update_position = bike->rider_position;
             bike->rider->velocity = velocity;
-            bike->rider->pitch_angle += ((i32)(NuFloatRand(((NURAND *)(&GAMERAND))) * 2730.0f));
-            bike->rider->unknown_276 += ((i32)(NuFloatRand(((NURAND *)(&GAMERAND))) * 2730.0f));
-            bike->rider->roll_angle += ((i32)(NuFloatRand(((NURAND *)(&GAMERAND))) * 2730.0f));
+            bike->rider->pitch_angle += ((i32)(NuFloatRand(&GAMERAND) * 2730.0f));
+            bike->rider->unknown_276 += ((i32)(NuFloatRand(&GAMERAND) * 2730.0f));
+            bike->rider->roll_angle += ((i32)(NuFloatRand(&GAMERAND) * 2730.0f));
             ((KILLPARTS_RIDER_LIGHT *)bike->rider)->intensity[0].x = 1.0f;
             ((KILLPARTS_RIDER_LIGHT *)bike->rider)->intensity[0].y = 1.0f;
             ((KILLPARTS_RIDER_LIGHT *)bike->rider)->intensity[0].z = 1.0f;
