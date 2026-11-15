@@ -1,5 +1,21 @@
 #include <stdio.h>
-#include "saga.h"
+#include "legoapi/audio/audio.h"
+#include "legoapi/characters/motion.h"
+#include "legoapi/core/input/gamepads.h"
+#include "legoapi/gizmo/object/gizmopickup.h"
+#include "legoapi/gizmos/fx/gizmopickups.h"
+#include "legoapi/menus/core/gamemessage.h"
+#include "legoapi/menus/core/gamemessages.h"
+#include "legoapi/menus/core/text.h"
+#include "legoapi/misc/gamemain.h"
+#include "legoapi/render/core/render.h"
+#include "legoapi/world/levels/levels.h"
+#include "nu2api/nu3d/nucamera.h"
+#include "nu2api/nu3d/nuhspecial.h"
+#include "nu2api/nuanimation_gen.h"
+#include "nu2api/nucore/nustring.h"
+#include "nu2api/numath/nutrig.h"
+#include "nu2api/numath/nuvec.h"
 
 #include <string.h>
 

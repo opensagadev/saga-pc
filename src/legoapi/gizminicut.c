@@ -1,4 +1,22 @@
-#include "saga.h"
+#include "batman.h"
+#include "gameapi/ai/aisys/aipath.h"
+#include "gameapi/ai/aisys/aisys.h"
+#include "gameapi/ai/aisys/gameaiscript.h"
+#include "gameapi/edptl.h"
+#include "gameapi/edtools/edfile.h"
+#include "globals.h"
+#include "legoapi/cutscenes/minicamcut.h"
+#include "legoapi/gizmo/base/gizmo.h"
+#include "legoapi/gizmos/trigger/minicut.h"
+#include "legoapi/items/base/apiobject.h"
+#include "legoapi/world/level.h"
+#include "legoapi/world/levels/levels.h"
+#include "legoapi/world/world.h"
+#include "nu2api/nu3d/nugscn.h"
+#include "nu2api/nu3d/nuhspecial.h"
+#include "nu2api/nuanimation_gen.h"
+#include "nu2api/nucore/nustring.h"
+#include "nu2api/numath/nuvec.h"
 #include <stdio.h>
 
 extern i32 FRAMES_TO_WAIT;

@@ -1,4 +1,16 @@
-#include "saga.h"
+#include "decomp.h"
+#include "globals.h"
+#include "legoapi/gizmo/base/gizactions.h"
+#include "legoapi/gizmo/base/gizflow.h"
+#include "legoapi/gizmo/base/gizmo.h"
+#include "legoapi/gizmos/trigger/gizrandom.h"
+#include "legoapi/gizmos/trigger/gizspecial.h"
+#include "legoapi/gizmos/trigger/giztimer.h"
+#include "legoapi/world/world_shared.h"
+#include "nu2api/nucore/nustring.h"
+#include "nu2api/nufile/nufile.h"
+#include "nu2api/nufile/nufpar.h"
+#include "nu2api/nufpar_gen.h"
 #include <string.h>
 
 void GizFlowStoreProgress(GIZFLOW *system, GIZFLOWPROGRESS *progress) {

@@ -1,4 +1,16 @@
-#include "saga.h"
+#include "gameapi/edptl.h"
+#include "globals.h"
+#include "legoapi/core/input/qrand.h"
+#include "legoapi/legoapi_types.h"
+#include "legoapi/lib/hub.h"
+#include "legoapi/misc/gamemain.h"
+#include "legoapi/render/core/screen.h"
+#include "legoapi/world/level.h"
+#include "legoapi/world/levels/levels.h"
+#include "legoapi/world/world.h"
+#include "nu2api/nu3d/nu3d_includes.h"
+#include "nu2api/nu3d/numtl.h"
+#include "nu2api/numath/nutrig.h"
 
 extern "C" {
     FadeSystem FadeSys;

@@ -1,4 +1,19 @@
-#include "saga.h"
+#include "globals.h"
+#include "legoapi/cutscenes/gcutscn.h"
+#include "nu2api/cutscene_include.h"
+#include "nu2api/nu3d/nu3d_includes.h"
+#include "nu2api/nu3d/nugscn.h"
+#include "nu2api/nu3d/nuhspecial.h"
+#include "nu2api/nu3d/nuprim.h"
+#include "nu2api/nuanimation_gen.h"
+#include "nu2api/nucore/nugcutscene.h"
+#include "nu2api/nucore/nustring.h"
+#include "nu2api/nufile/nufile.h"
+#include "nu2api/nufile/nufpar.h"
+#include "nu2api/numath/numtx.h"
+#include "nu2api/numath/nuvec.h"
+#include "nu2api/nustencilshadows_PC.h"
+#include "nu2api/trigger.h"
 #include <stdio.h>
 
 typedef struct cut_scene_pre_end_s { // size 0xc

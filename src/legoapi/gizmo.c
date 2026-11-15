@@ -1,4 +1,22 @@
-#include "saga.h"
+#include "gameapi/edtools/edfile.h"
+#include "legoapi/gizmo/base/gizactions.h"
+#include "legoapi/gizmo/base/gizflow.h"
+#include "legoapi/gizmo/base/gizmo.h"
+#include "legoapi/gizmos/traps/gizforce.h"
+#include "legoapi/gizmos/trigger/gizspecial.h"
+#include "legoapi/items/base/apiobject.h"
+#include "legoapi/items/collect/bolts.h"
+#include "legoapi/startup_dats.h"
+#include "legoapi/text_tables.h"
+#include "legoapi/world/world.h"
+#include "legoapi/world/world_shared.h"
+#include "nu2api/nu3d/nugscn.h"
+#include "nu2api/nu3d/nuhspecial.h"
+#include "nu2api/nuanimation_gen.h"
+#include "nu2api/nucore/nustring.h"
+#include "nu2api/nufile/nufile.h"
+#include "nu2api/nugscn_gen.h"
+#include "nu2api/numath/nuvec.h"
 #include <stdio.h>
 
 /* One empty diagnostic entry is called with varying arguments (none, or the clashing prefix names); it is

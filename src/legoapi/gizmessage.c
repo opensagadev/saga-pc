@@ -1,5 +1,10 @@
 #include <stdio.h>
-#include "saga.h"
+#include "gameapi/ai/aisys/aisys.h"
+#include "legoapi/gizmo/base/gizmessage.h"
+#include "legoapi/gizmo/base/gizmo.h"
+#include "legoapi/world/levels/levels.h"
+#include "nu2api/nucore/nulist.h"
+#include "nu2api/nucore/nustring.h"
 
 void ResetGizAIMessageSys(GIZAIMESSAGESYS *sys) {
     i32 i;

@@ -1,4 +1,19 @@
-#include "saga.h"
+#include "gameapi/ai/aisys/aisys.h"
+#include "gameapi/edtools/edfile.h"
+#include "legoapi/ai/core/gameai.h"
+#include "legoapi/ai/game/gameantinode.h"
+#include "legoapi/characters/core/players.h"
+#include "legoapi/characters/motion.h"
+#include "legoapi/items/base/apiobject.h"
+#include "legoapi/misc/gamemain.h"
+#include "legoapi/render/fx/edsplines.h"
+#include "legoapi/world/world.h"
+#include "legoapi/world/world_shared.h"
+#include "nu2api/nu3d/nuhspecial.h"
+#include "nu2api/nuanimation_gen.h"
+#include "nu2api/numath/nufloat.h"
+#include "nu2api/numath/numtx.h"
+#include "nu2api/numath/nuvec.h"
 
 typedef struct antinode_s {  // size 0x40
     NUVEC position;          // 0x00

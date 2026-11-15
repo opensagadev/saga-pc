@@ -1,4 +1,10 @@
-#include "saga.h"
+#include "gameapi/edtools/edfile.h"
+#include "legoapi/gizmo/base/gizmo.h"
+#include "legoapi/gizmos/fx/edgizshadow.h"
+#include "legoapi/gizmos/fx/edgizshadowmachine.h"
+#include "legoapi/lib/hub.h"
+#include "legoapi/world/world.h"
+#include "nu2api/numath/nuvec.h"
 #include <string.h>
 
 typedef struct shadow_world_view_s { // size 0x5114

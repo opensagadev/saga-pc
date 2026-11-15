@@ -1,6 +1,32 @@
 #include <stdio.h>
 #include <string.h>
-#include "saga.h"
+#include "gameapi/edptl.h"
+#include "gameapi/edtools/edanim_internal.h"
+#include "gameapi/edtools/edfile.h"
+#include "gameapi/edtools/edui.h"
+#include "gameframework/saveload.h"
+#include "gamelib/util/Utilities.h"
+#include "legoapi/characters/motion/gameanim.h"
+#include "legoapi/gizmo/base/gizmo.h"
+#include "legoapi/items/objects/objectsall.h"
+#include "legoapi/legoapi_types.h"
+#include "legoapi/misc/utilities.h"
+#include "legoapi/render/core/gameliball.h"
+#include "legoapi/render/fx/game_deb.h"
+#include "legoapi/world/level.h"
+#include "legoapi/world/world.h"
+#include "legoapi/world/world_shared.h"
+#include "nu2api/nu3d/nu3d_includes.h"
+#include "nu2api/nu3d/nugscn.h"
+#include "nu2api/nu3d/nuhspecial.h"
+#include "nu2api/nu3d/nurndr.h"
+#include "nu2api/nuanimation_gen.h"
+#include "nu2api/nucore/nulist.h"
+#include "nu2api/nugscn_gen.h"
+#include "nu2api/numath/nufloat.h"
+#include "nu2api/numath/numtx.h"
+#include "nu2api/numath/nuvec.h"
+#include "nu2api/numath/nuvec4.h"
 
 void GameAnimMissingAnimDiagnostic(char *name);
 

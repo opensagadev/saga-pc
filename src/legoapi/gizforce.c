@@ -1,4 +1,17 @@
-#include "saga.h"
+#include "gameapi/edptl.h"
+#include "gamelib/util/Utilities.h"
+#include "legoapi/characters/motion/gameanim.h"
+#include "legoapi/characters/motion/move.h"
+#include "legoapi/core/input/qrand.h"
+#include "legoapi/gizmo/base/gizmo.h"
+#include "legoapi/gizmos/traps/gizforce.h"
+#include "legoapi/items/base/apiobject.h"
+#include "legoapi/legoapi_types.h"
+#include "legoapi/world/level.h"
+#include "legoapi/world/world.h"
+#include "nu2api/nu3d/nulgtlaser.h"
+#include "nu2api/nucore/graphics.h"
+#include "nu2api/numath/nuvec.h"
 
 typedef struct force_glow_reader_s {  // size 0xd1c
     u8 unknown_0000[0xd14];           // 0x000

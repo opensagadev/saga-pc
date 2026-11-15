@@ -1,4 +1,8 @@
-#include "saga.h"
+#include "legoapi/gizmo/base/gizmo.h"
+#include "legoapi/gizmos/transport/gizportal.h"
+#include "legoapi/world/world.h"
+#include "nu2api/nu3d/nugscn.h"
+#include "nu2api/nu3d/nuportal.h"
 #include <string.h>
 
 #include <stdio.h>

@@ -1,4 +1,18 @@
-#include "saga.h"
+#include "gameapi/edmain.h"
+#include "gameapi/edptl.h"
+#include "gameapi/edtools/edanim_internal.h"
+#include "gameapi/edtools/edgra.h"
+#include "gameapi/edtools/edpp_internal.h"
+#include "legoapi/items/objects/objectsall.h"
+#include "legoapi/render/core/gameliball.h"
+#include "legoapi/render/fx.h"
+#include "legoapi/render/fx/game_deb.h"
+#include "nu2api/nu3d/nuhspecial.h"
+#include "nu2api/nuanimation_gen.h"
+#include "nu2api/nucore/nustring.h"
+#include "nu2api/nugscn_gen.h"
+#include "nu2api/numath/nurand.h"
+#include "nu2api/numath/nuvec.h"
 
 i32 LookupDebrisEffectPageIgnore(char *name, i8 page, i32 ignore) {
     i32 i;

@@ -1,4 +1,11 @@
-#include "saga.h"
+#include "globals.h"
+#include "legoapi/lib/hub.h"
+#include "legoapi/world/area.h"
+#include "legoapi/world/levels/episode.h"
+#include "legoapi/world/levels/episodes.h"
+#include "legogame/game.h"
+#include "nu2api/nucore/nustring.h"
+#include "nu2api/nufile/nufpar.h"
 
 typedef struct episode_area_save_reader_s { // size 0xc
     u8 complete;                            // 0x0

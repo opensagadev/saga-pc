@@ -1,4 +1,22 @@
-#include "saga.h"
+#include "gameapi/edptl.h"
+#include "legoapi/cutscenes/gcutscn.h"
+#include "legoapi/items/objects/objectsall.h"
+#include "legoapi/render/core/gameliball.h"
+#include "legoapi/render/fx.h"
+#include "legoapi/render/fx/game_deb.h"
+#include "legoapi/text_tables.h"
+#include "nu2api/nu3d/nu3d_includes.h"
+#include "nu2api/nu3d/numtl.h"
+#include "nu2api/nu3d/nurndr.h"
+#include "nu2api/nucore/nuanimdata.h"
+#include "nu2api/nucore/nugcutscene.h"
+#include "nu2api/nucore/nuhgobj.h"
+#include "nu2api/numath/numath_includes.h"
+#include "nu2api/numath/numtx.h"
+#include "nu2api/numath/nutrig.h"
+#include "nu2api/numath/nuvec.h"
+#include "nu2api/numath/nuvec4.h"
+#include "nu2api/trigger.h"
 
 typedef struct CUT_LOOKAT_TEXTURE { // size 0x20
     char *name;                     // 0x00

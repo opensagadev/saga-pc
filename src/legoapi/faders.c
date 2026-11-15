@@ -1,4 +1,17 @@
-#include "saga.h"
+#include "gamelib/util/Utilities.h"
+#include "globals.h"
+#include "legoapi/legoapi_types.h"
+#include "legoapi/world/world.h"
+#include "legoapi/world/world_shared.h"
+#include "nu2api/nu3d/nucamera.h"
+#include "nu2api/nu3d/nugscn.h"
+#include "nu2api/nu3d/nuhspecial.h"
+#include "nu2api/nuanimation_gen.h"
+#include "nu2api/nucore/NuMotionAccumFilter.h"
+#include "nu2api/nucore/nustring.h"
+#include "nu2api/nufile/nufpar.h"
+#include "nu2api/numath/numtx.h"
+#include "nu2api/numath/nuvec.h"
 
 typedef struct FADER {            // size 0x18
     nuhspecial_s special;         // 0x00
