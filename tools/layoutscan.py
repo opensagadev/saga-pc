@@ -217,7 +217,7 @@ REVIEW = {
     0x630e00: dict(name="nufmv_gen", area="nu2api/nufmv", conf="low",
                    why="one function, Batman nufmv/nufmv_gen.cpp; TCS spelling unknown"),
     0x6310c0: dict(name="dsplay_bink", area="nu2api/nufmv/pc/Bink", lang="cpp", conf="high",
-                   why="marker; retail .\\pc\\Bink\\dsplay_bink.cpp from FmvInitializePc"),
+                   why="marker; retail .\\pc\\Bink\\dsplay_bink.cpp from FmvInitialize"),
     0x633390: dict(name="supportall", lang="cpp", conf="medium", why="marker; Batman supportall (C++ classes)"),
     0x633520: dict(name="supportall", join=True, why="continues supportall"),
     0x6335e0: dict(name="supportall", join=True, why="continues supportall"),
@@ -228,7 +228,7 @@ REVIEW = {
     0x6dbab0: dict(name="pcapi", area="nu2api/nuwin32", lang="cpp", conf="high",
                    why="marker; retail .\\pcapi.cpp from NuInitHardware (Mac nuwin32/pcapi.cpp)"),
     0x6dddf0: dict(name="windows", area="nu2api/nuwin32", lang="cpp", conf="medium",
-                   why="retail .\\windows.cpp from PcCreateCursorMaterialPc, Batman WinMain in windows.cpp; "
+                   why="retail .\\windows.cpp from PcCreateCursorMaterial, Batman WinMain in windows.cpp; "
                    "start between 0x6ddd40 and 0x6ddec0 (no marker)"),
     0x6de6d0: dict(name="Stubs", area="nu2api/nuwin32", lang="cpp", conf="low",
                    why="Batman nuwin32 Stubs.cpp (NuScratch*, NuPs2*); start between 0x6de6d0 and 0x6de8c0"),

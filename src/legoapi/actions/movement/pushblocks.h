@@ -30,13 +30,13 @@ extern "C" {
     extern f32 PushCornerInset;
     extern f32 PushGroundOffset;
     extern f32 PushRumblePeriod;
-    extern f32 PushRumbleWindowPc;
+    extern f32 PushRumbleWindow;
     extern f32 PushBlockOverlapShrink;
     extern i32 PushBlockHintId;
     void KnockPushBlock(PUSH_BLOCK *, NUVEC *);
     PUSH_BLOCK *NearestPushBlock(WORLDINFO *, NUVEC *, f32);
     extern char *PushBlocksName;
-    extern f32 PushRumbleWindowPc;
+    extern f32 PushRumbleWindow;
     extern f32 PushRumblePeriod;
     extern f32 PushFallingSpeed;
     extern f32 PushVelocitySeekRate;

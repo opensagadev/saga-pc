@@ -505,7 +505,7 @@ extern void (*ClearAICreaturesFn)(void);
 
 i32 geom = 0;
 
-f32 AiEditorCursorRayScalePc = 1e-17f;
+f32 AiEditorCursorRayScale = 1e-17f;
 
 /* NUL-terminated instruction strings, each in its own section to keep the data layout. */
 
@@ -544,7 +544,7 @@ static AISCRIPT_CONST_RECORD AIScriptConstantRecords[8] = {0};
 f32 AiRndrCullDistance = 0;
 VARIPTR *aiscript_load_buffer = 0;
 
-static i32 AIScriptConstCursorPc = 0;
+static i32 AIScriptConstCursor = 0;
 i32 AIActionDiagnosticMode = 0;
 
 static char *AIScriptCopyString(char *text, VARIPTR *buffer, VARIPTR *end);
@@ -1221,9 +1221,9 @@ void xConst(NUFPAR *parser) {
         AIScriptMissingStateDiagnostic(parser->word_buffer_ptr);
     }
     NuFParGetWord(parser);
-    NuStrNCpy(AIScriptConstantRecords[AIScriptConstCursorPc].name, parser->word_buffer_ptr, 32);
-    AIScriptConstantRecords[AIScriptConstCursorPc].default_val = NuFParGetFloat(parser);
-    AIScriptConstCursorPc++;
+    NuStrNCpy(AIScriptConstantRecords[AIScriptConstCursor].name, parser->word_buffer_ptr, 32);
+    AIScriptConstantRecords[AIScriptConstCursor].default_val = NuFParGetFloat(parser);
+    AIScriptConstCursor++;
 }
 
 static void AIScriptParseCommands(NUFPAR *parser, VARIPTR *buffer, VARIPTR *end, AISCRIPT *script) {
@@ -1233,7 +1233,7 @@ static void AIScriptParseCommands(NUFPAR *parser, VARIPTR *buffer, VARIPTR *end,
     aiscript_load_buffer = buffer;
     aiscript_load_end_buffer = end;
     aiscript_load_script = script;
-    AIScriptConstCursorPc = 0;
+    AIScriptConstCursor = 0;
     NuFParPushCom(parser, AIScriptCommands);
     while (NuFParGetLine(parser) != 0) {
         NuFParGetWord(parser);
@@ -11532,7 +11532,7 @@ void xConditions(NUFPAR *parser) {
                     }
 
                     if (!(cond->flags & 4)) {
-                        for (i = 0; i < AIScriptConstCursorPc; i++) {
+                        for (i = 0; i < AIScriptConstCursor; i++) {
                             char *const_name = AIScriptConstantRecords[i].name;
 
                             if (const_name != NULL && NuStrICmp(const_name, parser->word_buffer_ptr) == 0) {
@@ -11542,7 +11542,7 @@ void xConditions(NUFPAR *parser) {
                             }
                         }
 
-                        if (i == AIScriptConstCursorPc) {
+                        if (i == AIScriptConstCursor) {
                             cond->param_value = AiParseExpression(parser->word_buffer_ptr);
 
                             if (AiParseExpressionFailed) {
@@ -13781,7 +13781,7 @@ i32 aieditor_Proc(f32 menu_delta_time, FRAME_PAD *pad, f32 frame_delta_time, u32
             aieditor->cursor_position.y > aieditor->camera_position.y && aieditor->camera_position.y == terrain_height) {
             NuVecSub(&movement, &aieditor->camera_position, &aieditor->cursor_position);
             hit = NewRayCastScaleY(&aieditor->cursor_position, &movement, aieditor->current_path->current_node->radius,
-                                   AiEditorCursorRayScalePc, 0);
+                                   AiEditorCursorRayScale, 0);
             if (hit != 0 && (hit & 0x10) == 0) {
                 NuVecAdd(&aieditor->camera_position, &aieditor->cursor_position, &movement);
             }

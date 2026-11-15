@@ -68,8 +68,8 @@ template <> void PC_SHADER_MANAGER_VIEW::BindShader(NuShaderObject *slot) {
     }
     bound_slot = slot;
     if (slot != NULL) {
-        PCDeviceSetVertexShaderPc(slot->vertex_shader);
-        PCDeviceSetPixelShaderPc(slot->pixel_shader);
+        PCDeviceSetVertexShader(slot->vertex_shader);
+        PCDeviceSetPixelShader(slot->pixel_shader);
     }
 }
 
@@ -142,7 +142,7 @@ extern "C" i32 fun_00741860(void) {
     return PCDeviceHardwareVertexProcessingPC;
 }
 
-extern "C" void *PCShaderCurrentObjectPc(void) {
+extern "C" void *PCShaderCurrentObject(void) {
     return reinterpret_cast<PC_SHADER_MANAGER_VIEW *>(PCShaderSlots)->bound_slot;
 }
 
@@ -167,8 +167,8 @@ extern "C" void NuShaderManagerBindShader(NuShaderObject *shader) {
     if (manager->bound_slot != shader) {
         manager->bound_slot = shader;
         if (shader != NULL) {
-            PCDeviceSetVertexShaderPc(shader->vertex_shader);
-            PCDeviceSetPixelShaderPc(shader->pixel_shader);
+            PCDeviceSetVertexShader(shader->vertex_shader);
+            PCDeviceSetPixelShader(shader->pixel_shader);
         }
     }
 }

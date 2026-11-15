@@ -745,11 +745,11 @@ extern "C" {
         return 1;
     }
 
-    static ADDGIZMOTYPE GizmoRegistryTeleportAddTypePc = {0};
+    static ADDGIZMOTYPE GizmoRegistryTeleportAddType = {0};
     i32 teleport_gizmotype_id = -1;
 
     ADDGIZMOTYPE *Teleport_RegisterGizmo(i32 type_id) {
-        ADDGIZMOTYPE *addtype = &GizmoRegistryTeleportAddTypePc;
+        ADDGIZMOTYPE *addtype = &GizmoRegistryTeleportAddType;
         *addtype = Default_ADDGIZMOTYPE;
         addtype->prefix = TeleportConfigData.name_prefix;
         addtype->fns.options = 0x0;

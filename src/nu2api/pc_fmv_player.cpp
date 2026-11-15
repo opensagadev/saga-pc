@@ -14,59 +14,59 @@
 #include "pc_fmv_native.h"
 #include <string.h>
 extern "C" {
-    PC_FMV_MOVIE FmvMoviePc = {0};          // 0x02913198
-    i32 FmvInitializedPc = 0;               // 0x029131e0
-    i32 FmvState1Pc = 0;                    // 0x029131e4
-    i32 FmvState2Pc = 0;                    // 0x029131e8
-    RADFMV_CONTEXT *FmvContextPc = NULL;    // 0x029131ec
-    IDirectSound8 *FmvSoundPc = NULL;       // 0x029131f0
-    u32 FmvFormatsPc[10] = {0};             // 0x029131f4
-    HWND FmvWindowPc = NULL;                // 0x0291321c
-    i32 FmvMutedPc = 0;                     // 0x02913220
-    i32 FmvCopyFlagsPc = 1;                 // 0x0080fc60
-    f32 FmvVolumePc = 1.0f;                 // 0x0080fc64
-    i32 FmvSleepErrorPc = 0;                // 0x02913240
-    i32 FmvSleepCarryPc = 0;                // 0x02913244
-    i32 FmvFrequencyReadyPc = 0;            // 0x02913248
-    LARGE_INTEGER FmvFrequencyPc = {1000};  // 0x0080fcd0
-    void (*FmvDrawCallbackPc)(void) = NULL; // 0x02913170
+    PC_FMV_MOVIE FmvMovie = {0};          // 0x02913198
+    i32 FmvInitialized = 0;               // 0x029131e0
+    i32 FmvState1 = 0;                    // 0x029131e4
+    i32 FmvState2 = 0;                    // 0x029131e8
+    RADFMV_CONTEXT *FmvContext = NULL;    // 0x029131ec
+    IDirectSound8 *FmvSound = NULL;       // 0x029131f0
+    u32 FmvFormats[10] = {0};             // 0x029131f4
+    HWND FmvWindow = NULL;                // 0x0291321c
+    i32 FmvMuted = 0;                     // 0x02913220
+    i32 FmvCopyFlags = 1;                 // 0x0080fc60
+    f32 FmvVolume = 1.0f;                 // 0x0080fc64
+    i32 FmvSleepError = 0;                // 0x02913240
+    i32 FmvSleepCarry = 0;                // 0x02913244
+    i32 FmvFrequencyReady = 0;            // 0x02913248
+    LARGE_INTEGER FmvFrequency = {1000};  // 0x0080fcd0
+    void (*FmvDrawCallback)(void) = NULL; // 0x02913170
 }
-PC_EFFECT_SURFACE FmvSurfacePc; // 0x02913224
+PC_EFFECT_SURFACE FmvSurface; // 0x02913224
 
-extern "C" void FmvInitializeFormatsPc(void) {
-    FmvFormatsPc[8] = 1;
-    FmvFormatsPc[9] = 2;
-    FmvFormatsPc[0] = 3;
-    FmvFormatsPc[6] = 4;
-    FmvFormatsPc[1] = 5;
-    FmvFormatsPc[7] = 6;
-    FmvFormatsPc[2] = 9;
-    FmvFormatsPc[3] = 10;
-    FmvFormatsPc[4] = 8;
-    FmvFormatsPc[5] = 7;
+extern "C" void FmvInitializeFormats(void) {
+    FmvFormats[8] = 1;
+    FmvFormats[9] = 2;
+    FmvFormats[0] = 3;
+    FmvFormats[6] = 4;
+    FmvFormats[1] = 5;
+    FmvFormats[7] = 6;
+    FmvFormats[2] = 9;
+    FmvFormats[3] = 10;
+    FmvFormats[4] = 8;
+    FmvFormats[5] = 7;
 }
 
-extern "C" void FmvSleepPc(i32 duration) {
+extern "C" void FmvSleep(i32 duration) {
     LARGE_INTEGER before;
     LARGE_INTEGER after;
-    if (FmvFrequencyReadyPc == 0) {
-        FmvFrequencyReadyPc = 1;
-        QueryPerformanceFrequency(&FmvFrequencyPc);
+    if (FmvFrequencyReady == 0) {
+        FmvFrequencyReady = 1;
+        QueryPerformanceFrequency(&FmvFrequency);
     }
-    FmvSleepCarryPc += duration;
-    i32 adjusted = FmvSleepCarryPc - FmvSleepErrorPc;
+    FmvSleepCarry += duration;
+    i32 adjusted = FmvSleepCarry - FmvSleepError;
     if (adjusted > 1000) {
-        FmvSleepCarryPc = adjusted;
+        FmvSleepCarry = adjusted;
         QueryPerformanceCounter(&before);
-        Sleep(FmvSleepCarryPc / 1000);
+        Sleep(FmvSleepCarry / 1000);
         QueryPerformanceCounter(&after);
-        after.QuadPart = (u64)((after.QuadPart - before.QuadPart) * 1000000) / FmvFrequencyPc.QuadPart;
-        FmvSleepErrorPc = (i32)after.QuadPart - FmvSleepCarryPc;
-        FmvSleepCarryPc %= 1000;
+        after.QuadPart = (u64)((after.QuadPart - before.QuadPart) * 1000000) / FmvFrequency.QuadPart;
+        FmvSleepError = (i32)after.QuadPart - FmvSleepCarry;
+        FmvSleepCarry %= 1000;
     }
 }
 
-extern "C" void FmvDrawPc(PC_FMV_MOVIE *movie) {
+extern "C" void FmvDraw(PC_FMV_MOVIE *movie) {
     f32 opacity = 1.0f;
     NUMTX world;
     NUMTX view;
@@ -74,16 +74,16 @@ extern "C" void FmvDrawPc(PC_FMV_MOVIE *movie) {
     if (SoundVoiceEnabledGate == 0) {
         return;
     }
-    PC_D3D9_DEVICE *device = FmvContextPc->device;
+    PC_D3D9_DEVICE *device = FmvContext->device;
     if (movie->target != NULL) {
-        PCDeviceBackend.SetSurfaceRenderTarget(&FmvSurfacePc, 0);
+        PCDeviceBackend.SetSurfaceRenderTarget(&FmvSurface, 0);
     } else {
         PCDeviceBackend.ResetTargets();
     }
     if (movie->fading != 0) {
         opacity = movie->fade_remaining / movie->fade_duration;
     }
-    RadFmvBeginScenePc(FmvContextPc);
+    RadFmvBeginScene(FmvContext);
     SAGA_SKIN_CALL(skin_trace_invalidate, (unsigned)device);
     device->methods->set_vertex_shader(device, NULL);
     device->methods->set_pixel_shader(device, NULL);
@@ -118,9 +118,9 @@ extern "C" void FmvDrawPc(PC_FMV_MOVIE *movie) {
         0.0f;
     view.m00 = view.m11 = view.m22 = view.m33 = 1.0f;
     device->methods->set_transform(device, 2, &view);
-    RadFmvBlitImagePc(movie->image, movie->x, movie->y, movie->x_scale, movie->y_scale, opacity);
+    RadFmvBlitImage(movie->image, movie->x, movie->y, movie->x_scale, movie->y_scale, opacity);
     if (movie->target == NULL) {
-        RadFmvEndScenePc(FmvContextPc);
+        RadFmvEndScene(FmvContext);
     } else {
         device->methods->end_scene(device);
     }
@@ -133,7 +133,7 @@ extern "C" void FmvDrawPc(PC_FMV_MOVIE *movie) {
     }
 }
 
-extern "C" i32 FmvDecodePc(PC_FMV_MOVIE *movie, RADFMV_IMAGE *image, u32 unused) {
+extern "C" i32 FmvDecode(PC_FMV_MOVIE *movie, RADFMV_IMAGE *image, u32 unused) {
     void *pixels;
     u32 pitch;
     u32 format;
@@ -142,38 +142,38 @@ extern "C" i32 FmvDecodePc(PC_FMV_MOVIE *movie, RADFMV_IMAGE *image, u32 unused)
     u32 width;
     u32 height;
     BinkDoFrame(movie->bink);
-    if (RadFmvLockImagePc(image, &pixels, &pitch, &format, &x, &y, &width, &height, 1)) {
+    if (RadFmvLockImage(image, &pixels, &pitch, &format, &x, &y, &width, &height, 1)) {
         do {
             BinkCopyToBufferRect(movie->bink, pixels, pitch, movie->bink->height, 0, 0, x, y, width, height,
-                                 FmvFormatsPc[format] | (FmvCopyFlagsPc != 0 ? 0x80000000u : 0));
-            RadFmvUnlockImagePc(image);
-        } while (RadFmvLockImagePc(image, &pixels, &pitch, &format, &x, &y, &width, &height, 1));
+                                 FmvFormats[format] | (FmvCopyFlags != 0 ? 0x80000000u : 0));
+            RadFmvUnlockImage(image);
+        } while (RadFmvLockImage(image, &pixels, &pitch, &format, &x, &y, &width, &height, 1));
     }
     return 0;
 }
 
-extern "C" i32 FmvInitializePc(HWND window, GRAPHICS_FACTORY *factory, PC_D3D9_DEVICE *device, IDirectSound8 *sound) {
+extern "C" i32 FmvInitialize(HWND window, GRAPHICS_FACTORY *factory, PC_D3D9_DEVICE *device, IDirectSound8 *sound) {
     GRAPHICS_DISPLAY_MODE mode;
-    FmvInitializeFormatsPc();
+    FmvInitializeFormats();
     factory->methods->get_adapter_display_mode(factory, 0, &mode);
-    FmvContextPc = (RADFMV_CONTEXT *)NuAlloc(sizeof(RADFMV_CONTEXT), ".\\pc\\Bink\\dsplay_bink.cpp", 0x173);
-    if (FmvContextPc == NULL) {
+    FmvContext = (RADFMV_CONTEXT *)NuAlloc(sizeof(RADFMV_CONTEXT), ".\\pc\\Bink\\dsplay_bink.cpp", 0x173);
+    if (FmvContext == NULL) {
         return 0;
     }
-    RadFmvInitializeFormatsPc(factory, mode.format, FmvContextPc);
+    RadFmvInitializeFormats(factory, mode.format, FmvContext);
     // GRAPHICS_CAPS.texture_caps is being exposed at its verified PC offset by
     // integration.
-    FmvContextPc->permits_nonpow2 = (PCDeviceBackend.caps.texture_caps >> 8) & 1;
-    FmvContextPc->factory = factory;
-    FmvContextPc->device = device;
-    FmvContextPc->window = window;
-    FmvSoundPc = sound;
+    FmvContext->permits_nonpow2 = (PCDeviceBackend.caps.texture_caps >> 8) & 1;
+    FmvContext->factory = factory;
+    FmvContext->device = device;
+    FmvContext->window = window;
+    FmvSound = sound;
     BinkSetSoundSystem(BinkOpenDirectSound, sound);
-    FmvWindowPc = window;
+    FmvWindow = window;
     return 1;
 }
 
-extern "C" i32 FmvOpenPc(PC_FMV_MOVIE *movie, const char *path, i32 render_to_texture, f32 volume, i32 option) {
+extern "C" i32 FmvOpen(PC_FMV_MOVIE *movie, const char *path, i32 render_to_texture, f32 volume, i32 option) {
     memset(movie, 0, sizeof(*movie));
     movie->fade_duration = 1.0f;
     movie->fade_remaining = 0.0f;
@@ -206,21 +206,21 @@ extern "C" i32 FmvOpenPc(PC_FMV_MOVIE *movie, const char *path, i32 render_to_te
         return 0;
     }
     LOG_INFO("FMV ready: %s (%u x %u, %u frames)", path, movie->bink->width, movie->bink->height, movie->bink->frames);
-    FmvVolumePc = volume;
+    FmvVolume = volume;
     BinkSetVolume(movie->bink, language, (i32)(volume * 32768.0));
-    movie->image = RadFmvCreateImagePc(FmvContextPc, movie->bink->width, movie->bink->height, 0, 256);
+    movie->image = RadFmvCreateImage(FmvContext, movie->bink->width, movie->bink->height, 0, 256);
     if (render_to_texture != 0) {
         movie->width = movie->bink->width;
         movie->height = movie->bink->height;
         movie->target = PCGraphicsCreateEffectTexture(movie->width, movie->height, 1, 1, 2);
-        FmvSurfacePc.Attach(movie->target, 0, false);
+        FmvSurface.Attach(movie->target, 0, false);
         movie->y = movie->x = 0.5f;
         movie->x_scale = (f32)movie->width / movie->bink->width;
         movie->y_scale = (f32)movie->height / movie->bink->height;
     } else {
         movie->width = PCDeviceBackend.parameters.width;
         movie->height = PCDeviceBackend.parameters.height;
-        FmvSurfacePc.Reset();
+        FmvSurface.Reset();
         movie->target = NULL;
         f32 ratio = (f32)movie->bink->width / movie->bink->height;
         f32 display_ratio;
@@ -252,26 +252,26 @@ extern "C" i32 FmvOpenPc(PC_FMV_MOVIE *movie, const char *path, i32 render_to_te
     return 1;
 }
 
-extern "C" void FmvFramePc(PC_FMV_MOVIE *movie) {
+extern "C" void FmvFrame(PC_FMV_MOVIE *movie) {
     if (SoundVoiceEnabledGate != 0) {
-        if (FmvMutedPc != 0) {
-            BinkSetVolume(movie->bink, 0, (i32)(FmvVolumePc * 32768.0));
-            FmvMutedPc = 0;
+        if (FmvMuted != 0) {
+            BinkSetVolume(movie->bink, 0, (i32)(FmvVolume * 32768.0));
+            FmvMuted = 0;
         }
         if (BinkWait(movie->bink) == 0) {
-            FmvDecodePc(movie, movie->image, 3);
-            FmvDrawPc(movie);
+            FmvDecode(movie, movie->image, 3);
+            FmvDraw(movie);
             if (movie->bink->frame_number == movie->bink->frames) {
                 movie->playing = 0;
             } else {
                 BinkNextFrame(movie->bink);
             }
         } else {
-            FmvSleepPc(500);
+            FmvSleep(500);
         }
     } else {
         BinkSetVolume(movie->bink, 0, 0);
-        FmvMutedPc = 1;
+        FmvMuted = 1;
     }
 }
 
@@ -279,16 +279,16 @@ extern "C" void fun_00631ce0(PC_FMV_MOVIE *movie, u32 frame, u32 flags) {
     BinkGoto(movie->bink, frame, flags);
 }
 
-extern "C" void FmvClosePc(PC_FMV_MOVIE *movie) {
-    if (FmvContextPc != NULL) {
-        PC_D3D9_DEVICE *device = FmvContextPc->device;
+extern "C" void FmvClose(PC_FMV_MOVIE *movie) {
+    if (FmvContext != NULL) {
+        PC_D3D9_DEVICE *device = FmvContext->device;
         if (device != NULL) {
             ((HRESULT(__stdcall *)(PC_D3D9_DEVICE *, u32, void *))device->methods->set_texture)(device, 0, NULL);
         }
         PCDeviceBackend.ResetTargets();
     }
     if (movie->image != NULL) {
-        RadFmvDestroyImagePc(movie->image);
+        RadFmvDestroyImage(movie->image);
         movie->image = NULL;
     }
     if (movie->bink != NULL) {
@@ -296,7 +296,7 @@ extern "C" void FmvClosePc(PC_FMV_MOVIE *movie) {
         movie->bink = NULL;
     }
     if (movie->target != NULL) {
-        FmvSurfacePc.Reset();
+        FmvSurface.Reset();
         PCGraphicsDestroyRenderTexture(movie->target);
     }
 }
@@ -305,32 +305,32 @@ extern "C" void fun_00631d80(void) {
 }
 
 /* Drops the movie image before a D3D reset and remembers to recreate it. */
-extern "C" void FmvReleaseImagePc(PC_FMV_MOVIE *movie) {
+extern "C" void FmvReleaseImage(PC_FMV_MOVIE *movie) {
     movie->restore_image = 0;
     if (movie->bink != NULL && movie->image != NULL) {
-        if (FmvContextPc != NULL) {
-            PC_D3D9_DEVICE *device = FmvContextPc->device;
+        if (FmvContext != NULL) {
+            PC_D3D9_DEVICE *device = FmvContext->device;
             if (device != NULL) {
                 device->methods->set_texture(device, 0, NULL);
             }
         }
-        RadFmvDestroyImagePc(movie->image);
+        RadFmvDestroyImage(movie->image);
         movie->image = NULL;
         movie->restore_image = 1;
     }
 }
 
-/* Recreates the movie image released by FmvReleaseImagePc. */
-extern "C" void FmvRestoreImagePc(PC_FMV_MOVIE *movie) {
-    if (movie->bink != NULL && FmvContextPc != NULL && movie->restore_image != 0) {
+/* Recreates the movie image released by FmvReleaseImage. */
+extern "C" void FmvRestoreImage(PC_FMV_MOVIE *movie) {
+    if (movie->bink != NULL && FmvContext != NULL && movie->restore_image != 0) {
         if (movie->restore_image & 1) {
-            movie->image = RadFmvCreateImagePc(FmvContextPc, movie->bink->width, movie->bink->height, 0, 256);
+            movie->image = RadFmvCreateImage(FmvContext, movie->bink->width, movie->bink->height, 0, 256);
         }
         movie->restore_image = 0;
     }
 }
 
-extern "C" void FmvFadePc(PC_FMV_MOVIE *movie, f32 duration) {
+extern "C" void FmvFade(PC_FMV_MOVIE *movie, f32 duration) {
     if (movie->fading == 0) {
         movie->fading = 1;
         movie->fade_duration = duration;

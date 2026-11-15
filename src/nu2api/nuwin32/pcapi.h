@@ -98,8 +98,8 @@ typedef struct PC_WINDOW_OPTIONS { // size 0x460
 extern "C" {
 #endif
     void StartupOpenDats(const char **names, i32 count, VARIPTR *arena);
-    void PcRegisterSaveFolderPc(const char *company, const char *product, const char *parameter, i32 personal);
-    i32 PublishWindowPc(HWND, i32);
+    void PcRegisterSaveFolder(const char *company, const char *product, const char *parameter, i32 personal);
+    i32 PublishWindow(HWND, i32);
 #ifdef __cplusplus
     i32 PCDeviceIsAbsent(void);
 #ifdef __cplusplus
@@ -128,8 +128,8 @@ extern "C" {
 #define NUHW_VIDEO_HEIGHT 33 /* an ignored value, then the height */
 #define NUHW_MATERIAL_COUNT 37
 #define NUHW_CONFIG_NAME 47         /* the registry key */
-#define NUHW_SAVE_FOLDER_COMPANY 48 /* PcRegisterSaveFolderPc */
-#define NUHW_SAVE_FOLDER_GAME 49    /* PcRegisterSaveFolderPc */
+#define NUHW_SAVE_FOLDER_COMPANY 48 /* PcRegisterSaveFolder */
+#define NUHW_SAVE_FOLDER_GAME 49    /* PcRegisterSaveFolder */
 #define NUHW_SHOW_COMMAND 52        /* the window's show command */
 #define NUHW_WINDOW 60
 #define NUHW_ANIMATION_COUNT 68
@@ -146,7 +146,7 @@ extern "C" {
     extern i32 NuHwShowCommand;
     extern u32 NuHwParameter19;
     extern u32 NuHwParameter4f;
-    i32 PublishWindowPc(HWND, i32);
+    i32 PublishWindow(HWND, i32);
     i32 PCDeviceIsAbsent(void);
     i32 NuInitHardware(VARIPTR *, VARIPTR *, i32, ...);
 #ifdef __cplusplus

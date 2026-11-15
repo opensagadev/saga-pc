@@ -1100,10 +1100,10 @@ void GizPanel_Activate(void *input, i32 active) {
 u8 PanelStormActive = 0;
 u8 PanelDroidActive = 0;
 u8 PanelBountyHunterActive = 0;
-static ADDGIZMOTYPE GizmoRegistryGizPanelAddTypePc = {0};
+static ADDGIZMOTYPE GizmoRegistryGizPanelAddType = {0};
 
 ADDGIZMOTYPE *GizPanel_RegisterGizmo(i32 type_id) {
-    ADDGIZMOTYPE *addtype = &GizmoRegistryGizPanelAddTypePc;
+    ADDGIZMOTYPE *addtype = &GizmoRegistryGizPanelAddType;
     *addtype = Default_ADDGIZMOTYPE;
     addtype->fns.early_update_fn = NULL;
     addtype->fns.panel_draw_fn = NULL;

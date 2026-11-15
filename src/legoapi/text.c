@@ -330,12 +330,12 @@ void TextRegisterButtonMapFn(void (*fn)(char *, char *)) {
     }
 }
 
-const char *TextInputButtonGlyphsPc[12] = {
+const char *TextInputButtonGlyphs[12] = {
     "\xd4\xb1", "\xd4\xb2", "\xd4\xb3",   "\xd4\xb4",   "\xd4\xb5", "\xd4\xb6",
     "\xd4\xbd", "\xd4\xbe", dat_007516c0, dat_007516c0, "\xd4\xb8", "\xd4\xb7",
 };
 
-const char *TextInputAxisGlyphsPc[4] = {
+const char *TextInputAxisGlyphs[4] = {
     "\xd4\xbc",
     "\xd4\xba",
     "\xd4\xb9",
@@ -344,11 +344,11 @@ const char *TextInputAxisGlyphsPc[4] = {
 char HubButtonStringBuffer[72] = "???";
 u32 GAMEPAD_MENUSELECT = PAD_BUTTON_CROSS;
 
-void TextInputGlyphNamePc(i32 code, char *destination) {
+void TextInputGlyphName(i32 code, char *destination) {
     if ((u32)code <= 11U) {
-        NuStrCpy(destination, (char *)TextInputButtonGlyphsPc[code]);
+        NuStrCpy(destination, (char *)TextInputButtonGlyphs[code]);
     } else if ((u32)code - 128U <= 3U) {
-        NuStrCpy(destination, (char *)TextInputAxisGlyphsPc[(u32)code - 128U]);
+        NuStrCpy(destination, (char *)TextInputAxisGlyphs[(u32)code - 128U]);
     } else {
         *destination = 0;
     }

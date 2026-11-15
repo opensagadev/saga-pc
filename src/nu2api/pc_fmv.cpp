@@ -49,7 +49,7 @@ extern "C" i32 NuFmvPlayV(i32 option, ...) {
                 callback = va_arg(args, FMV_INPUT_CALLBACK);
                 break;
             case 15:
-                FmvDrawCallbackPc = va_arg(args, FMV_DRAW_CALLBACK);
+                FmvDrawCallback = va_arg(args, FMV_DRAW_CALLBACK);
                 break;
             case 8:
                 va_arg(args, i32);
@@ -60,7 +60,7 @@ extern "C" i32 NuFmvPlayV(i32 option, ...) {
                 break;
             default: {
                 const char *suffixes[10] = {"th", "st", "nd", "rd", "th", "th", "th", "th", "th", "th"};
-                FmvOptionErrorPc(count, suffixes[count % 10], option);
+                FmvOptionError(count, suffixes[count % 10], option);
                 break;
             }
         }
@@ -68,7 +68,7 @@ extern "C" i32 NuFmvPlayV(i32 option, ...) {
     }
     va_end(args);
     if (name != NULL) {
-        NuFmvStopSoundPc(stop_sound);
+        NuFmvStopSound(stop_sound);
         NuFileGetCurrentDirectory(path);
         NuStrCat(path, name);
         char *extension = NuStrIStr(path + 1, ".");
@@ -77,31 +77,31 @@ extern "C" i32 NuFmvPlayV(i32 option, ...) {
         }
         NuStrCat(path, ".bik");
         LOG_INFO("FMV requested: %s -> %s", name, path);
-        if (FmvStartPc(path, volume, mode) != 0) {
+        if (FmvStart(path, volume, mode) != 0) {
             result = 1;
             NuPadUpdatePads();
             NuWindowsProcessMessages();
-            FmvPlatformUpdatePc();
-            while (FmvStepPc() != 0) {
+            FmvPlatformUpdate();
+            while (FmvStep() != 0) {
                 if (callback != NULL) {
                     i32 callback_result = callback();
                     if (callback_result == 1) {
                         break;
                     }
                     if (callback_result == 2) {
-                        FmvSkipPc();
+                        FmvSkip();
                     }
                 }
-                PcInputEndFramePc();
+                PcInputEndFrame();
                 NuPadUpdatePads();
                 NuWindowsProcessMessages();
-                FmvPlatformUpdatePc();
+                FmvPlatformUpdate();
             }
         }
-        FmvStopPc();
+        FmvStop();
         LOG_INFO("FMV finished: %s (opened=%d)", path, result);
     }
-    FmvPlatformFinishPc();
+    FmvPlatformFinish();
     NuPadUpdatePads();
     return result;
 }

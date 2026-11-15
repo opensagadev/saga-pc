@@ -593,7 +593,7 @@ were already not exact: `InitGameAfterConfig` and `Minicam_Update` (score
 unchanged), `DrawSubItems` (82.98 -> 82.95 %) and `NuRndrParticleGroup`
 (95.92 -> 94.56 %, C++; the kept asserts are tuned for C ids only). The
 exact set by address is unchanged (11,804). In the plain object compare,
-`PCDeviceSetRenderState` and `ShaderCompilerDictionaryPc::EmitAttribute`
+`PCDeviceSetRenderState` and `ShaderCompilerDictionary::EmitAttribute`
 differ only in the name of a local label (`$submit$N`) and link to the same
 bytes. A compare must ignore those names.
 

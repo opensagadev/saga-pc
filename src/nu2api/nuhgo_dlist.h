@@ -40,9 +40,9 @@ extern "C" {
     extern NUVEC4 NuDisplayHandlerDefaultTint;
     GRAPHICS_RENDER_TEXTURE *PCGraphicsFrameRenderTexture(i32 texture_id);
     PC_FRAMEBUFFER *PCGraphicsCreateFramebuffer(void);
-    extern f32 PostBlurDirectInputBiasPc;
-    extern f32 PostBlurDirectOutputBiasPc;
-    extern f32 PostBlurInputBiasPc;
+    extern f32 PostBlurDirectInputBias;
+    extern f32 PostBlurDirectOutputBias;
+    extern f32 PostBlurInputBias;
     void PCGraphicsAttachFramebuffer(PC_FRAMEBUFFER *, i32, GRAPHICS_RENDER_TEXTURE *, i32);
     void PCGraphicsCreatePostEffectTextures(u32, u32);
     void PCGraphicsDestroyFramebuffer(PC_FRAMEBUFFER *);

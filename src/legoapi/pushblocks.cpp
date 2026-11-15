@@ -599,7 +599,7 @@ extern "C" {
         } else {
             MoveBlocksOverBlock(opaque_world, opaque_block, index, &delta);
             if (block->pushing_object != NULL && (PushblocksFabs(delta.x) > 0.001f || PushblocksFabs(delta.z) > 0.001f) &&
-                NuFmod(GameTimer.time_elapsed, PushRumblePeriod) < PushRumbleWindowPc) {
+                NuFmod(GameTimer.time_elapsed, PushRumblePeriod) < PushRumbleWindow) {
                 NewRumble(block->pushing_object->pad->bound_pad, (f32)((f64)qrand() * 0.000015259021893143654 * (f64)0.05f), 0);
             }
         }
@@ -1222,7 +1222,7 @@ static i32 GizPush_GetOutput(GIZMO_PC *gizmo, i32 output_index, i32) {
 static char outputName[13] = "Any Complete";
 extern "C" {
     u16 PushBlockFacingTolerance = 910;
-    f32 PushRumbleWindowPc = 0.1f;
+    f32 PushRumbleWindow = 0.1f;
     f32 PushRumblePeriod = 0.25f;
     f32 PushFallingSpeed = 10.0f;
     f32 PushVelocitySeekRate = 1.0f;

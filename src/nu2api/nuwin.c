@@ -12,16 +12,16 @@ i32 NuWindowsProcessMessages(void) {
     return 1;
 }
 
-static i32 NuWindowsConfigValuesPc[19] = {0};
+static i32 NuWindowsConfigValues[19] = {0};
 
 i32 *fun_006dd360(void) {
-    return NuWindowsConfigValuesPc;
+    return NuWindowsConfigValues;
 }
 
 void fun_006dd370(i32 index, i32 value) {
-    NuWindowsConfigValuesPc[index] = value;
+    NuWindowsConfigValues[index] = value;
 }
 
-i32 NuWindowsGetConfigValuePc(i32 index) {
-    return NuWindowsConfigValuesPc[index];
+i32 NuWindowsGetConfigValue(i32 index) {
+    return NuWindowsConfigValues[index];
 }

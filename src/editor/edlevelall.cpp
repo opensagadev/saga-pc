@@ -45,7 +45,7 @@
 /* Level editor. The unit is C++ and also holds the EdDraw primitives. */
 
 extern "C" {
-    void PcGetMousePositionPc(f32 *x, f32 *y);
+    void PcGetMousePosition(f32 *x, f32 *y);
 }
 
 /* A bump allocator over a variptr range; blocks are 16-byte aligned and
@@ -5519,7 +5519,7 @@ void EdInputContext::Update(NUCAMERA *camera, FRAME_PAD *new_pad, f32 elapsed, b
         EdInputUseMouse = 0;
         cursor_x = cursor_y = 0.5f;
     } else {
-        PcGetMousePositionPc(&mouse_x, &mouse_y);
+        PcGetMousePosition(&mouse_x, &mouse_y);
         if (mouse_x != EdInputMouseX || mouse_y != EdInputMouseY) {
             EdInputUseMouse = 1;
             EdInputMouseX = mouse_x;

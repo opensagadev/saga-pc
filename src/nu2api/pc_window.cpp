@@ -30,7 +30,7 @@ extern "C" {
     i32 PcNoFocusPolicy = 0;
 }
 
-extern "C" void RegisterWindowCallbackPc(PC_WINDOW_CALLBACK callback) {
+extern "C" void RegisterWindowCallback(PC_WINDOW_CALLBACK callback) {
     PcWindowCallbacks[PcWindowCallbackCount++] = callback;
 }
 
@@ -40,7 +40,7 @@ extern "C" void fun_006dc780(u32 mask) {
     _controlfp(control, _MCW_EM);
 }
 
-extern "C" i32 PublishWindowPc(HWND window, i32 show) {
+extern "C" i32 PublishWindow(HWND window, i32 show) {
     ShowWindow(window, show);
     UpdateWindow(window);
     PCInputInstance = window;
@@ -51,7 +51,7 @@ extern "C" {
     i32 PcWindowQuit = 0;
 }
 
-extern "C" LRESULT __stdcall WindowProcPc(HWND window, UINT message, WPARAM wparam, LPARAM lparam) {
+extern "C" LRESULT __stdcall WindowProc(HWND window, UINT message, WPARAM wparam, LPARAM lparam) {
     for (i32 index = 0; index < PcWindowCallbackCount; ++index) {
         i32 handled = 0;
         LRESULT result = PcWindowCallbacks[index](window, message, wparam, lparam, &handled);
@@ -118,7 +118,7 @@ extern "C" i32 CreateWindowPc(HINSTANCE instance, i32 show, u16 icon_resource) {
     memset(&win_message, 0, sizeof(win_message));
     PcWindowClass.cbSize = sizeof(PcWindowClass);
     PcWindowClass.style = 3;
-    PcWindowClass.lpfnWndProc = WindowProcPc;
+    PcWindowClass.lpfnWndProc = WindowProc;
     PcWindowClass.cbClsExtra = 0;
     PcWindowClass.cbWndExtra = 0;
     PcWindowClass.hInstance = instance;
@@ -188,7 +188,7 @@ extern "C" void SetAccessibility(u8 restore) {
     }
 }
 
-// Standalone cdecl copies of both tokenizer helpers are kept next to ParsePlatformArgumentsPc, which
+// Standalone cdecl copies of both tokenizer helpers are kept next to ParsePlatformArguments, which
 // inlines them.
 char *SkipArgumentSpaces(char *cursor) {
     while (*cursor == ' ') {
@@ -219,7 +219,7 @@ char *ParseArgumentToken(char *cursor, char terminator, char **argument) {
 
 extern "C" {
     i32 PcRelaunchMce = 0;
-    NUMTL *PcCursorMaterialPc = 0;
+    NUMTL *PcCursorMaterial = 0;
     i32 PcWindowCallbackCount = 0;
     BOOL PcScreenSaverEnabled = 0;
     char PcModuleFilename[260] = {0};
@@ -229,7 +229,7 @@ extern "C" {
     char PcExecutableFilename[260] = {0};
 }
 
-extern "C" void ParsePlatformArgumentsPc(char *command_line) {
+extern "C" void ParsePlatformArguments(char *command_line) {
     PcArgc = 1;
     GetModuleFileNameA(GetModuleHandleA(NULL), PcModuleFilename, 260);
     PcArgv[0] = PcModuleFilename;
@@ -285,7 +285,7 @@ extern "C" i32 __stdcall WinMain(HINSTANCE instance, HINSTANCE previous, LPSTR c
     CpuDetectFeatures();
     CoInitializeEx(NULL, 2);
     NuLanguageSet(NULANGUAGE_ENGLISH);
-    ParsePlatformArgumentsPc(command_line);
+    ParsePlatformArguments(command_line);
     if (PcPlatformPolicy(1)) {
         SetThreadAffinityMask(GetCurrentThread(), 1);
         NuMain(PcArgc, PcArgv);
@@ -306,11 +306,11 @@ extern "C" void PcRelaunchMediaCenter(void) {
 }
 
 extern "C" {
-    void PcCreateCursorMaterialPc(void);
+    void PcCreateCursorMaterial(void);
 }
 
 /* Embedded mouse cursor DDS image (0x1080 bytes). */
-extern "C" u8 PcCursorImagePc[0x1080] = {
+extern "C" u8 PcCursorImage[0x1080] = {
     0x44, 0x44, 0x53, 0x20, 0x7c, 0x00, 0x00, 0x00, 0x07, 0x10, 0x08, 0x00, 0x40, 0x00, 0x00, 0x00, 0x40, 0x00, 0x00, 0x00, 0x00, 0x10,
     0x00, 0x00, 0x00, 0x00, 0x00, 0x00, 0x00, 0x00, 0x00, 0x00, 0x00, 0x00, 0x00, 0x00, 0x00, 0x00, 0x00, 0x00, 0x00, 0x00, 0x00, 0x00,
     0x00, 0x00, 0x00, 0x00, 0x00, 0x00, 0x00, 0x00, 0x00, 0x00, 0x00, 0x00, 0x00, 0x00, 0x00, 0x00, 0x00, 0x00, 0x00, 0x00, 0x00, 0x00,
@@ -511,31 +511,31 @@ i32 PcUsePersonalFolder = 1;
 extern "C" {
     u32 PcClientWidth = 800;
     u32 PcClientHeight = 600;
-    i32 PcCursorTextureIdPc = -1;
+    i32 PcCursorTextureId = -1;
     STICKYKEYS PcStickyKeys = {8, 0};
     TOGGLEKEYS PcToggleKeys = {8, 0};
     FILTERKEYS PcFilterKeys = {24, 0, 0, 0, 0, 0};
 }
 
-extern "C" void PcCreateCursorMaterialPc(void) {
-    if (PcCursorTextureIdPc == -1) {
+extern "C" void PcCreateCursorMaterial(void) {
+    if (PcCursorTextureId == -1) {
         NUTEXDIM *texture = static_cast<NUTEXDIM *>(NuAlloc(sizeof(NUTEXDIM), ".\\windows.cpp", 0x642));
         memset(texture, 0, sizeof(*texture));
-        texture->image_data = PcCursorImagePc;
-        texture->image_size = sizeof(PcCursorImagePc);
-        PcCursorTextureIdPc = NuTexCreateNative(texture);
+        texture->image_data = PcCursorImage;
+        texture->image_size = sizeof(PcCursorImage);
+        PcCursorTextureId = NuTexCreateNative(texture);
     }
-    PcCursorMaterialPc = NuMtlCreate(1);
-    PcCursorMaterialPc->diffuse_r = 1.0f;
-    PcCursorMaterialPc->diffuse_g = 1.0f;
-    PcCursorMaterialPc->diffuse_b = 1.0f;
-    PcCursorMaterialPc->attribs.cull_mode = 2;
-    PcCursorMaterialPc->attribs.z_mode = 3;
-    PcCursorMaterialPc->opacity = 1.0f;
-    PcCursorMaterialPc->attribs.alpha_mode = 1;
-    PcCursorMaterialPc->attribs.unknown_2_4 = 1;
-    PcCursorMaterialPc->texture_id = (i16)PcCursorTextureIdPc;
-    NuMtlUpdate(PcCursorMaterialPc);
+    PcCursorMaterial = NuMtlCreate(1);
+    PcCursorMaterial->diffuse_r = 1.0f;
+    PcCursorMaterial->diffuse_g = 1.0f;
+    PcCursorMaterial->diffuse_b = 1.0f;
+    PcCursorMaterial->attribs.cull_mode = 2;
+    PcCursorMaterial->attribs.z_mode = 3;
+    PcCursorMaterial->opacity = 1.0f;
+    PcCursorMaterial->attribs.alpha_mode = 1;
+    PcCursorMaterial->attribs.unknown_2_4 = 1;
+    PcCursorMaterial->texture_id = (i16)PcCursorTextureId;
+    NuMtlUpdate(PcCursorMaterial);
 }
 
 extern "C" void fun_006ddfa0(f32 size) {
@@ -543,10 +543,10 @@ extern "C" void fun_006ddfa0(f32 size) {
     f32 y = fun_006d5c60();
     f32 width;
     size *= NuTimeBarSlotWidth;
-    width = size / PcInputAspectRatioPc();
+    width = size / PcInputAspectRatio();
     ++NuPrimCSPos;
     NuPrimSetCoordinateSystem(2);
-    NuRndrRectUV2dNoScale(x, y, 0.0f, width, size, 0.0f, 0.0f, 1.0f, 1.0f, -1, PcCursorMaterialPc);
+    NuRndrRectUV2dNoScale(x, y, 0.0f, width, size, 0.0f, 0.0f, 1.0f, 1.0f, -1, PcCursorMaterial);
     NuPrimSetCoordinateSystem(NuPrimCoordSystemStack[--NuPrimCSPos]);
 }
 

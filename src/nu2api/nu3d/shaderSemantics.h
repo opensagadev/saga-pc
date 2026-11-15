@@ -7,7 +7,7 @@
 #ifdef __cplusplus
 extern "C" {
 #endif
-    extern ShaderUniformRecordPc ShaderUniformRecordsPc[100];
+    extern ShaderUniformRecord ShaderUniformRecords[100];
 #ifdef __cplusplus
 }
 #endif

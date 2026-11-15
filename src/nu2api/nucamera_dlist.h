@@ -19,16 +19,16 @@ extern "C" {
 #ifdef __cplusplus
 extern "C" {
 #endif
-    extern f32 RenderFrameShaderTimePc;
+    extern f32 RenderFrameShaderTime;
     extern void (*RenderFrameCallback)(void);
-    HRESULT PCDeviceEndScenePc(void);
+    HRESULT PCDeviceEndScene(void);
     i32 NuTexRegisterRenderTarget(struct GRAPHICS_RENDER_TEXTURE *target);
-    void NuGobjRegistryCleanupPc(void);
-    void NuGobjRegistryInitPc(void);
+    void NuGobjRegistryCleanup(void);
+    void NuGobjRegistryInit(void);
 #ifdef __cplusplus
     void PostFilterCopyTexture(GRAPHICS_RENDER_TEXTURE *, i32, GRAPHICS_RENDER_TEXTURE *, i32, POST_SHADER_PROGRAM *,
                                GRAPHICS_RENDER_TEXTURE *);
-    POST_SHADER_PROGRAM *PostShaderProgramCreatePc(i32, const DWORD *, const DWORD *);
+    POST_SHADER_PROGRAM *PostShaderProgramCreate(i32, const DWORD *, const DWORD *);
     extern POST_SHADER_PROGRAM *PostBlendTexProgram;
     extern POST_SHADER_PROGRAM *PostBlur5x5Program;
     extern POST_SHADER_PROGRAM *PostBlur7x7Program;

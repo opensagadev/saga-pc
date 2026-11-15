@@ -27,9 +27,9 @@ struct POST_SHADER_PROGRAM_POOL {     // size 0x40c
 };
 
 extern "C" {
-    POST_SHADER_PROGRAM_POOL PostShaderProgramPoolPc = {0};
-    std::vector<POST_VERTEX_SHADER_CACHE_ENTRY> PostVertexShaderCachePc;
-    std::vector<POST_PIXEL_SHADER_CACHE_ENTRY> PostPixelShaderCachePc;
+    POST_SHADER_PROGRAM_POOL PostShaderProgramPool = {0};
+    std::vector<POST_VERTEX_SHADER_CACHE_ENTRY> PostVertexShaderCache;
+    std::vector<POST_PIXEL_SHADER_CACHE_ENTRY> PostPixelShaderCache;
 }
 
 POST_SHADER_PROGRAM *POST_SHADER_PROGRAM_POOL::Allocate(void) {
@@ -98,11 +98,11 @@ void FRAME_NATIVE_TEXTURE_POOL::fun_0060a010(FRAME_NATIVE_TEXTURE *record) {
     cursor = index;
 }
 
-extern "C" POST_SHADER_PROGRAM *PostShaderProgramCreatePc(i32 mode, const DWORD *vertex_tokens, const DWORD *pixel_tokens) {
+extern "C" POST_SHADER_PROGRAM *PostShaderProgramCreate(i32 mode, const DWORD *vertex_tokens, const DWORD *pixel_tokens) {
     POST_VERTEX_SHADER_CACHE_ENTRY vertex = {NULL, vertex_tokens};
     POST_PIXEL_SHADER_CACHE_ENTRY pixel = {NULL, pixel_tokens};
-    std::vector<POST_VERTEX_SHADER_CACHE_ENTRY>::iterator vertex_it = PostVertexShaderCachePc.begin();
-    for (; vertex_it != PostVertexShaderCachePc.end(); ++vertex_it) {
+    std::vector<POST_VERTEX_SHADER_CACHE_ENTRY>::iterator vertex_it = PostVertexShaderCache.begin();
+    for (; vertex_it != PostVertexShaderCache.end(); ++vertex_it) {
         if (vertex_it->tokens == vertex.tokens) {
             vertex = *vertex_it;
             break;
@@ -110,10 +110,10 @@ extern "C" POST_SHADER_PROGRAM *PostShaderProgramCreatePc(i32 mode, const DWORD 
     }
     if (vertex.shader == NULL) {
         PCDeviceCreateVertexShader(vertex.tokens, &vertex.shader);
-        PostVertexShaderCachePc.push_back(vertex);
+        PostVertexShaderCache.push_back(vertex);
     }
-    std::vector<POST_PIXEL_SHADER_CACHE_ENTRY>::iterator pixel_it = PostPixelShaderCachePc.begin();
-    for (; pixel_it != PostPixelShaderCachePc.end(); ++pixel_it) {
+    std::vector<POST_PIXEL_SHADER_CACHE_ENTRY>::iterator pixel_it = PostPixelShaderCache.begin();
+    for (; pixel_it != PostPixelShaderCache.end(); ++pixel_it) {
         if (pixel_it->tokens == pixel.tokens) {
             pixel = *pixel_it;
             break;
@@ -121,10 +121,10 @@ extern "C" POST_SHADER_PROGRAM *PostShaderProgramCreatePc(i32 mode, const DWORD 
     }
     if (pixel.shader == NULL) {
         PCDeviceCreatePixelShader(pixel.tokens, &pixel.shader);
-        PostPixelShaderCachePc.push_back(pixel);
+        PostPixelShaderCache.push_back(pixel);
     }
     if (vertex.shader != NULL && pixel.shader != NULL) {
-        POST_SHADER_PROGRAM *program = PostShaderProgramPoolPc.Allocate();
+        POST_SHADER_PROGRAM *program = PostShaderProgramPool.Allocate();
         program->vertex_shader = vertex.shader;
         program->pixel_shader = pixel.shader;
         return program;
@@ -149,8 +149,8 @@ extern "C" {
     POST_SHADER_PROGRAM *PostBlendTexProgram = 0;
     POST_SHADER_PROGRAM *PostBlur5x5Program = 0;
     POST_SHADER_PROGRAM *PostBlur7x7Program = 0;
-    PC_TEXTURE_RESOURCE *NuDisplayHandlerVertexShaderCachePc = NULL;
-    PC_TEXTURE_RESOURCE *NuDisplayHandlerPixelShaderCachePc = NULL;
+    PC_TEXTURE_RESOURCE *NuDisplayHandlerVertexShaderCache = NULL;
+    PC_TEXTURE_RESOURCE *NuDisplayHandlerPixelShaderCache = NULL;
     POST_SHADER_PROGRAM *PostCopyAuxProgram = 0;
     POST_SHADER_PROGRAM *PostBlurAuxProgram = 0;
 }
@@ -159,32 +159,32 @@ extern "C" void PostFilterInitPrograms(i32 width, i32 height) {
     (void)width;
     (void)height;
     PostFilterInitSharedResources();
-    PostCopyTexProgram = PostShaderProgramCreatePc(2, dat_007656f0, dat_00765798);
+    PostCopyTexProgram = PostShaderProgramCreate(2, dat_007656f0, dat_00765798);
     PostCopyTexLodProgram = NULL;
     PostBlendTexProgram = NULL;
     if (PCDeviceHardwareVertexProcessingPC > 1) {
-        PostBlur5x5Program = PostShaderProgramCreatePc(2, dat_00765848, dat_00765aa8);
-        PostBlur7x7Program = PostShaderProgramCreatePc(2, dat_00765ca0, dat_00765d90);
+        PostBlur5x5Program = PostShaderProgramCreate(2, dat_00765848, dat_00765aa8);
+        PostBlur7x7Program = PostShaderProgramCreate(2, dat_00765ca0, dat_00765d90);
     }
-    PostCopyAuxProgram = PostShaderProgramCreatePc(2, dat_00765f30, dat_007660d0);
-    PostBlurAuxProgram = PostShaderProgramCreatePc(2, dat_00765e40, dat_00765d90);
+    PostCopyAuxProgram = PostShaderProgramCreate(2, dat_00765f30, dat_007660d0);
+    PostBlurAuxProgram = PostShaderProgramCreate(2, dat_00765e40, dat_00765d90);
 }
 
 extern "C" void NuShaderProgramMakeCurrent(POST_SHADER_PROGRAM *program) {
     if (program != NULL) {
-        if (NuDisplayHandlerVertexShaderCachePc != program->vertex_shader) {
-            PCDeviceSetVertexShaderPc(program->vertex_shader);
-            NuDisplayHandlerVertexShaderCachePc = program->vertex_shader;
+        if (NuDisplayHandlerVertexShaderCache != program->vertex_shader) {
+            PCDeviceSetVertexShader(program->vertex_shader);
+            NuDisplayHandlerVertexShaderCache = program->vertex_shader;
         }
-        if (NuDisplayHandlerPixelShaderCachePc != program->pixel_shader) {
-            PCDeviceSetPixelShaderPc(program->pixel_shader);
-            NuDisplayHandlerPixelShaderCachePc = program->pixel_shader;
+        if (NuDisplayHandlerPixelShaderCache != program->pixel_shader) {
+            PCDeviceSetPixelShader(program->pixel_shader);
+            NuDisplayHandlerPixelShaderCache = program->pixel_shader;
         }
     } else {
-        PCDeviceSetVertexShaderPc(NULL);
-        PCDeviceSetPixelShaderPc(NULL);
-        NuDisplayHandlerVertexShaderCachePc = NULL;
-        NuDisplayHandlerPixelShaderCachePc = NULL;
+        PCDeviceSetVertexShader(NULL);
+        PCDeviceSetPixelShader(NULL);
+        NuDisplayHandlerVertexShaderCache = NULL;
+        NuDisplayHandlerPixelShaderCache = NULL;
     }
 }
 

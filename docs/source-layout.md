@@ -401,25 +401,25 @@ into a target file in retail order and rewrites `config/*.json` owners.
 
    Deferred merges, engine side (`src/nu2api`, `src/gameapi` targets):
    - `dsplay_bink`: with `pc_fmv_player.cpp` and `pc_fmv_control.cpp` merged,
-     six FMV functions leave exact (`FmvRestorePc`, `FmvSkipPc`, `FmvDrawPc`,
-     `FmvDecodePc`, `FmvClosePc`, `FmvReleaseImagePc`); without
+     six FMV functions leave exact (`FmvRestore`, `FmvSkip`, `FmvDraw`,
+     `FmvDecode`, `FmvClose`, `FmvReleaseImage`); without
      `SAGA_VENDORED_LIBRARY` the RAD blitter functions leave exact too.
    - `supportall`: with `memorymanager.cpp` merged, the COMDAT inline
      `ThingManager::operator delete` and its deleting destructor (retail
      0x5b15f0, emitted by another compiland) inline `FreePool` and leave
      exact.
-   - `VertexDeclarations` (0x741970): `PCShaderMaterialTextureNativePc`,
-     `PCShaderUnpackColourPc` and `PCShaderSamplerWrapPc` are statics with a
+   - `VertexDeclarations` (0x741970): `PCShaderMaterialTextureNative`,
+     `PCShaderUnpackColour` and `PCShaderSamplerWrap` are statics with a
      register ABI whose callers are in the next compiland
      (`nushaderobject_pc.cpp`); made extern to move them, all three leave
      exact. The 0x741970/0x742330 boundary is doubtful (see the
-     `nushaderobject` open question). `PCShaderFindConstantPc` (static, its
+     `nushaderobject` open question). `PCShaderFindConstant` (static, its
      caller in `nushaderobject.c`) has the same problem.
    - `nuwin32/windows.cpp` (0x6dddf0): `WinMain` reads `PcArgc`, which is a
-     static of `pc_window.cpp` that `ParsePlatformArgumentsPc` (pcapi) keeps
-     in a register; as an extern variable `ParsePlatformArgumentsPc` leaves
+     static of `pc_window.cpp` that `ParsePlatformArguments` (pcapi) keeps
+     in a register; as an extern variable `ParsePlatformArguments` leaves
      exact. `pcapi.cpp` has the same blocker.
-   - `nurain.c`: `NuFmvTextureReleasePc/RestorePc` (`pc_fmv_texture.cpp`)
+   - `nurain.c`: `NuFmvTextureRelease/RestorePc` (`pc_fmv_texture.cpp`)
      are C++ (`pc_fmv_native.h` is C++ only); moving them into the C file
      needs code changes.
    - `rtl.c` (`c` by retail `__FILE__`): `legoapi/rtlhelper.cpp` is C++

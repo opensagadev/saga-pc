@@ -41,13 +41,13 @@ u32 CRC16::hashInverse(const unsigned char *data, i32 length) {
     return crc;
 }
 
-extern "C" i32 fun_00746400(i32 count, ShaderCompilerBufferAllocatorPc *buffer) {
+extern "C" i32 fun_00746400(i32 count, ShaderCompilerBufferAllocator *buffer) {
     i32 offset = buffer->length;
     buffer->length = offset + count;
     return offset;
 }
 
-void ShaderCompilerBufferAllocatorPc::fun_00746450(char value) {
+void ShaderCompilerBufferAllocator::fun_00746450(char value) {
     if (length + 1 > capacity) {
         Resize((3 * (length + 1)) / 2);
     }
@@ -55,7 +55,7 @@ void ShaderCompilerBufferAllocatorPc::fun_00746450(char value) {
     ++length;
 }
 
-u8 *ShaderCompilerBufferAllocatorPc::fun_00746490() {
+u8 *ShaderCompilerBufferAllocator::fun_00746490() {
     if (length > 0 && data[length - 1] != 0) {
         fun_00746450(0);
     }

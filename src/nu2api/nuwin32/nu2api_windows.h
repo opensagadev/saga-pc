@@ -17,15 +17,15 @@ typedef LRESULT (*PC_WINDOW_CALLBACK)(HWND, UINT, WPARAM, LPARAM, i32 *);
 #ifdef __cplusplus
 
 extern "C" void PcShutdown(void);
-extern "C" LRESULT __stdcall WindowProcPc(HWND, UINT, WPARAM, LPARAM);
+extern "C" LRESULT __stdcall WindowProc(HWND, UINT, WPARAM, LPARAM);
 #endif
 #ifdef __cplusplus
 extern "C" {
 #endif
     i32 CreateWindowPc(HINSTANCE, i32, u16);
-    void RegisterWindowCallbackPc(PC_WINDOW_CALLBACK);
+    void RegisterWindowCallback(PC_WINDOW_CALLBACK);
     void SetAccessibility(u8);
-    void ParsePlatformArgumentsPc(char *);
+    void ParsePlatformArguments(char *);
 #ifdef __cplusplus
     void PcRelaunchMediaCenter(void);
 #ifdef __cplusplus

@@ -123,18 +123,18 @@ u8 fun_006def30(void) {
     return 0;
 }
 
-i32 FileDirectoryMcOpenPc(i32 port, i32 slot, char *path) {
+i32 FileDirectoryMcOpen(i32 port, i32 slot, char *path) {
     (void)port;
     (void)slot;
     (void)path;
     return 0;
 }
 
-void FileDirectoryMcClosePc(i32 file) {
+void FileDirectoryMcClose(i32 file) {
     (void)file;
 }
 
-i32 FileDirectoryMcReadPc(i32 file, struct FILE_DIRECTORY_ENTRY *entry) {
+i32 FileDirectoryMcRead(i32 file, struct FILE_DIRECTORY_ENTRY *entry) {
     (void)file;
     (void)entry;
     return 0;

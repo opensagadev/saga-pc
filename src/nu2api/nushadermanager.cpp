@@ -553,7 +553,7 @@ void ShaderManagerHLSL::fun_007459a0(i32 flags, i32 selector, const char *vertex
 }
 
 extern "C" {
-    ShaderUniformRecordPc ShaderUniformRecordsPc[100] = {
+    ShaderUniformRecord ShaderUniformRecords[100] = {
         {"ambientColor",              "ambientColor",             1,  1, 7, -1,  0, {0}},
         {"vs_sceneAmbientColor",      "sceneAmbientColor",        1,  1, 3, 28,  2, {0}},
         {"incandescentGlow",          "incandescentGlow",         1,  1, 7, -1,  0, {0}},
@@ -658,19 +658,19 @@ extern "C" {
 }
 
 void ShaderManagerHLSL::SetUniformValues(i32 semantic, const f32 *values) {
-    ShaderUniformRecordPc *uniform = &ShaderUniformRecordsPc[semantic];
+    ShaderUniformRecord *uniform = &ShaderUniformRecords[semantic];
     if (compiler->dictionary.profile != 4) {
-        if (uniform->unknown_18 != 0 || PCShaderCurrentObjectPc() == NULL) {
+        if (uniform->unknown_18 != 0 || PCShaderCurrentObject() == NULL) {
             if (uniform->value_count <= 4) {
                 memcpy(uniform->values, values, uniform->value_count * 16);
             } else {
-                PCShaderCurrentObjectPc();
+                PCShaderCurrentObject();
             }
         }
-        if ((uniform->unknown_18 == 0 || uniform->unknown_18 == 2) && PCShaderCurrentObjectPc() != NULL) {
-            NuShaderObject *bound = (NuShaderObject *)PCShaderCurrentObjectPc();
+        if ((uniform->unknown_18 == 0 || uniform->unknown_18 == 2) && PCShaderCurrentObject() != NULL) {
+            NuShaderObject *bound = (NuShaderObject *)PCShaderCurrentObject();
             if (bound->parameters[semantic].register_index >= 0) {
-                NuShaderObjectSetElementsfv((NuShaderObject *)PCShaderCurrentObjectPc(), semantic, 0, 1, values);
+                NuShaderObjectSetElementsfv((NuShaderObject *)PCShaderCurrentObject(), semantic, 0, 1, values);
             }
         }
         return;
@@ -7950,7 +7950,7 @@ ShaderManagerHLSL::~ShaderManagerHLSL() {
 }
 
 // for the header: NuShaderObject::stage_flags is a bitfield (each path bit is stored with xor/and/xor).
-struct NuShaderObjectPathsPc {
+struct NuShaderObjectPaths {
     u32 base : 1;
     u32 first : 1;
     u32 layer : 1;
@@ -7966,7 +7966,7 @@ bool ShaderManagerHLSL::CreateShader(const PC_SHADER_MATERIAL_FILTER_VIEW *filte
     compiler->Generate(const_cast<PC_SHADER_MATERIAL_FILTER_VIEW *>(filter), &vertex_source, &pixel_source);
     PCShaderObjectInitHLSLPc(shader, &key, index, reinterpret_cast<const char *>(vertex_source.data), vertex_source.length,
                              reinterpret_cast<const char *>(pixel_source.data), pixel_source.length, compiler->dictionary.profile);
-    NuShaderObjectPathsPc *paths = reinterpret_cast<NuShaderObjectPathsPc *>(&shader->stage_flags);
+    NuShaderObjectPaths *paths = reinterpret_cast<NuShaderObjectPaths *>(&shader->stage_flags);
     paths->base = filter->variant == 0;
     paths->first = filter->first_path != 0;
     paths->layer = filter->variant != 0 ? false : (bool)((filter->descriptor->layer_flags >> 16) & 1);
@@ -7984,19 +7984,19 @@ extern "C" void NuShaderManagerInit(VARIPTR *arena, VARIPTR arena_end) {
 }
 
 void ShaderManagerHLSL::setElementfv(i32 semantic, i32 element, const f32 *values) {
-    ShaderUniformRecordPc *uniform = &ShaderUniformRecordsPc[semantic];
+    ShaderUniformRecord *uniform = &ShaderUniformRecords[semantic];
     if (compiler->dictionary.profile != 4) {
-        if (uniform->unknown_18 != 0 || PCShaderCurrentObjectPc() == NULL) {
+        if (uniform->unknown_18 != 0 || PCShaderCurrentObject() == NULL) {
             if (uniform->value_count <= 4) {
                 memcpy(uniform->values, values, uniform->value_count * 16);
             } else {
-                PCShaderCurrentObjectPc();
+                PCShaderCurrentObject();
             }
         }
-        if ((uniform->unknown_18 == 0 || uniform->unknown_18 == 2) && PCShaderCurrentObjectPc() != NULL) {
-            NuShaderObject *bound = (NuShaderObject *)PCShaderCurrentObjectPc();
+        if ((uniform->unknown_18 == 0 || uniform->unknown_18 == 2) && PCShaderCurrentObject() != NULL) {
+            NuShaderObject *bound = (NuShaderObject *)PCShaderCurrentObject();
             if (bound->parameters[semantic].register_index >= 0) {
-                NuShaderObjectSetElementsfv((NuShaderObject *)PCShaderCurrentObjectPc(), semantic, element, 1, values);
+                NuShaderObjectSetElementsfv((NuShaderObject *)PCShaderCurrentObject(), semantic, element, 1, values);
             }
         }
         return;
@@ -8024,19 +8024,19 @@ void ShaderManagerHLSL::setElementfv(i32 semantic, i32 element, const f32 *value
 }
 
 void ShaderManagerHLSL::setElementsfv_transpose(i32 semantic, i32 first_element, i32 count, const f32 *values) {
-    ShaderUniformRecordPc *uniform = &ShaderUniformRecordsPc[semantic];
+    ShaderUniformRecord *uniform = &ShaderUniformRecords[semantic];
     if (compiler->dictionary.profile != 4) {
-        if (uniform->unknown_18 != 0 || PCShaderCurrentObjectPc() == NULL) {
+        if (uniform->unknown_18 != 0 || PCShaderCurrentObject() == NULL) {
             if (uniform->value_count <= 4) {
                 memcpy(uniform->values, values, uniform->value_count * 16);
             } else {
-                PCShaderCurrentObjectPc();
+                PCShaderCurrentObject();
             }
         }
-        if ((uniform->unknown_18 == 0 || uniform->unknown_18 == 2) && PCShaderCurrentObjectPc() != NULL) {
-            NuShaderObject *bound = (NuShaderObject *)PCShaderCurrentObjectPc();
+        if ((uniform->unknown_18 == 0 || uniform->unknown_18 == 2) && PCShaderCurrentObject() != NULL) {
+            NuShaderObject *bound = (NuShaderObject *)PCShaderCurrentObject();
             if (bound->parameters[semantic].register_index >= 0) {
-                NuShaderObjectSetElementsfv_transpose((NuShaderObject *)PCShaderCurrentObjectPc(), semantic, first_element, count, values);
+                NuShaderObjectSetElementsfv_transpose((NuShaderObject *)PCShaderCurrentObject(), semantic, first_element, count, values);
             }
         }
         return;
@@ -8056,19 +8056,19 @@ void ShaderManagerHLSL::setElementsfv_transpose(i32 semantic, i32 first_element,
 }
 
 void ShaderManagerHLSL::setElementsfv(i32 semantic, i32 first_element, i32 count, const f32 *values) {
-    ShaderUniformRecordPc *uniform = &ShaderUniformRecordsPc[semantic];
+    ShaderUniformRecord *uniform = &ShaderUniformRecords[semantic];
     if (compiler->dictionary.profile != 4) {
-        if (uniform->unknown_18 != 0 || PCShaderCurrentObjectPc() == NULL) {
+        if (uniform->unknown_18 != 0 || PCShaderCurrentObject() == NULL) {
             if (uniform->value_count <= 4) {
                 memcpy(uniform->values, values, uniform->value_count * 16);
             } else {
-                PCShaderCurrentObjectPc();
+                PCShaderCurrentObject();
             }
         }
-        if ((uniform->unknown_18 == 0 || uniform->unknown_18 == 2) && PCShaderCurrentObjectPc() != NULL) {
-            NuShaderObject *bound = (NuShaderObject *)PCShaderCurrentObjectPc();
+        if ((uniform->unknown_18 == 0 || uniform->unknown_18 == 2) && PCShaderCurrentObject() != NULL) {
+            NuShaderObject *bound = (NuShaderObject *)PCShaderCurrentObject();
             if (bound->parameters[semantic].register_index >= 0) {
-                NuShaderObjectSetElementsfv((NuShaderObject *)PCShaderCurrentObjectPc(), semantic, first_element, count, values);
+                NuShaderObjectSetElementsfv((NuShaderObject *)PCShaderCurrentObject(), semantic, first_element, count, values);
             }
         }
         return;

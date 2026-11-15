@@ -22,7 +22,7 @@ typedef struct PC_SAVE_HEADER {   // size 0x2028
 } PC_SAVE_HEADER;
 
 extern "C" {
-    char SaveCreateFolderPathPc[256] = {0};
+    char SaveCreateFolderPath[256] = {0};
     u32 savetimer = 0;
     char SaveSlotName[256] = {0};
     i32 saveload_status = 0;
@@ -38,16 +38,16 @@ extern "C" {
         }
     }
 
-    i32 SaveCreateDirectoryPc(char *path);
+    i32 SaveCreateDirectory(char *path);
 
     void createslotfolder(i32) {
-        PCOptionsBuildFolder(SaveFolderPathPc);
-        strcat(SaveFolderPathPc, "SavedGames");
+        PCOptionsBuildFolder(SaveFolderPath);
+        strcat(SaveFolderPath, "SavedGames");
         i32 i = 0;
         do {
-            SaveCreateFolderPathPc[i] = SaveFolderPathPc[i];
-        } while (SaveFolderPathPc[i++] != 0);
-        SaveCreateDirectoryPc(SaveCreateFolderPathPc);
+            SaveCreateFolderPath[i] = SaveFolderPath[i];
+        } while (SaveFolderPath[i++] != 0);
+        SaveCreateDirectory(SaveCreateFolderPath);
     }
 
     i32 PCSaveSlot(i32 slot, void *buffer, i32 size, u32 hash) {

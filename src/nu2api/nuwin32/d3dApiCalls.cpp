@@ -25,7 +25,7 @@
 #include "nu2api/nuwin32/pcapi.h"
 
 extern "C" {
-    void PCDeviceBeginScenePc(void);
+    void PCDeviceBeginScene(void);
     void NuRndrDwaRelease(void);
     i32 GameReleaseResources(void);
     i32 GameRestoreResources(void);
@@ -33,8 +33,8 @@ extern "C" {
     void DebrisRestoreResources(void);
     void NuGScnReleaseDynamicBuffers(void);
     void NuGScnRestoreDynamicBuffers(void);
-    void NuFmvTextureReleasePc(void);
-    void NuFmvTextureRestorePc(void);
+    void NuFmvTextureRelease(void);
+    void NuFmvTextureRestore(void);
     f32 fun_005d0920(void);
     f32 fun_005d0930(void);
 }
@@ -104,7 +104,7 @@ extern "C" void NuKeyboardCreateWindowState(HWND window, HINSTANCE instance) {
     PCFrameCriticalSectionIndex = PCThreadCriticalSectionCreate_candidate();
     PCDeviceBackend.InitializeAdapter();
     nu_keyboard_owner.Setup(window, instance);
-    NuKeyboardWindowStateLeafPc();
+    NuKeyboardWindowStateLeaf();
     PCNativeWarningDebugState.Initialize();
 }
 
@@ -121,10 +121,10 @@ extern "C" void PcRendererShutdown(i32 unused) {
         PCDeviceSetTexture(1, NULL);
         PCDeviceSetTexture(2, NULL);
         PCDeviceSetTexture(3, NULL);
-        PCDeviceSetStreamSourcePc(0, NULL, 0, 0);
-        PCDeviceSetStreamSourcePc(1, NULL, 0, 0);
-        PCDeviceSetStreamSourcePc(2, NULL, 0, 0);
-        PCDeviceSetStreamSourcePc(3, NULL, 0, 0);
+        PCDeviceSetStreamSource(0, NULL, 0, 0);
+        PCDeviceSetStreamSource(1, NULL, 0, 0);
+        PCDeviceSetStreamSource(2, NULL, 0, 0);
+        PCDeviceSetStreamSource(3, NULL, 0, 0);
     }
     PCGraphicsReleaseFramebuffers();
     PCDeviceBackend.ReleaseDefaultPoolResources();
@@ -139,8 +139,8 @@ extern "C" void PcRendererShutdown(i32 unused) {
     NuWaterReleaseVertexBuffer();
     NuGScnReleaseDynamicBuffers();
     NuTexReleaseResources();
-    FmvReleasePc();
-    NuFmvTextureReleasePc();
+    FmvRelease();
+    NuFmvTextureRelease();
 }
 
 extern "C" void fun_006df1a0(u32 width, u32 height, u32 refresh, i32 windowed, i32 reposition_window) {
@@ -193,7 +193,7 @@ extern "C" u32 fun_006df280(void) {
     return mode;
 }
 
-extern "C" f32 PcInputAspectRatioPc(void) {
+extern "C" f32 PcInputAspectRatio(void) {
     f32 value;
     switch (PcWindowOptions.aspect_mode) {
         case 0:
@@ -330,7 +330,7 @@ extern "C" {
     }
 }
 
-extern "C" void PCDeviceSetWorldIdentityPc(void) {
+extern "C" void PCDeviceSetWorldIdentity(void) {
     static D3DXMATRIX identity(1.0f, 0.0f, 0.0f, 0.0f, 0.0f, 1.0f, 0.0f, 0.0f, 0.0f, 0.0f, 1.0f, 0.0f, 0.0f, 0.0f, 0.0f, 1.0f);
     PCDeviceSetTransform(0x100, (const NUMTX *)&identity);
 }
@@ -365,7 +365,7 @@ extern "C" {
     }
 }
 
-extern "C" void PCDeviceResetSamplerDefaultsPc(void) {
+extern "C" void PCDeviceResetSamplerDefaults(void) {
     u32 stage = 0;
     if (PCDeviceBackend.caps.sampler_count == 0) {
         return;
@@ -393,7 +393,7 @@ extern "C" void fun_006dfa70(f32 gamma) {
         ramp[1][i] = value;
         ramp[2][i] = value;
     }
-    PCDeviceSetGammaRampPc(ramp);
+    PCDeviceSetGammaRamp(ramp);
 }
 
 extern "C" void fun_006dfb30(f32 gamma) {
@@ -412,7 +412,7 @@ extern "C" void fun_006dfb30(f32 gamma) {
         ramp[1][i] = value;
         ramp[2][i] = value;
     }
-    PCDeviceSetGammaRampPc(ramp);
+    PCDeviceSetGammaRamp(ramp);
 }
 
 extern "C" void fun_006dfbf0(PC_TEXTURE_RESOURCE *texture, u32 level, const void *rect, u32 flags, PC_LOCKED_RECT *locked) {
@@ -466,14 +466,14 @@ extern "C" void fun_006dfd20(void) {
 
 extern "C" i32 PCFrameBeginScene(i32 begin) {
     (void)begin;
-    PCDeviceBeginScenePc();
+    PCDeviceBeginScene();
     return 0;
 }
 
 extern "C" i32 PCFramePresentNative(i32 mode_unused, i32 flag_unused) {
     PCFramePresentationState = 0;
     PCDeviceBackend.Present(NULL, NULL, NULL, NULL);
-    PCPresentationPlatformLeafPc();
+    PCPresentationPlatformLeaf();
     return 0;
 }
 
@@ -485,7 +485,7 @@ extern "C" void PCFrameConfigureTargets(void) {
     PCDeviceBackend.ConfigureCurrentTargets();
 }
 
-extern "C" void PCDevicePostEffectBarrierPc(void) {
+extern "C" void PCDevicePostEffectBarrier(void) {
     PCDeviceBackend.PostEffectBarrier();
 }
 
@@ -529,7 +529,7 @@ extern "C" void PCGraphicsRecreateResources(i32 reset_available) {
     PCGraphicsRestoreEffectTextures(reset_available == 1);
     PC_EFFECT_SURFACE::RestoreResources();
     PCGraphicsRestoreFramebuffers();
-    NuKeyboardWindowStateLeafPc();
+    NuKeyboardWindowStateLeaf();
     NuRndrGeometryBufferRestore();
     debris_InitializeD3D();
     DebrisRestoreResources();
@@ -537,8 +537,8 @@ extern "C" void PCGraphicsRecreateResources(i32 reset_available) {
     NuTexRestoreResources();
     NuGScnRestoreDynamicBuffers();
     PCDeviceResetState();
-    FmvRestorePc();
-    NuFmvTextureRestorePc();
+    FmvRestore();
+    NuFmvTextureRestore();
     PCGraphicsClearFrameTextures();
 }
 

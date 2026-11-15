@@ -185,8 +185,8 @@ struct GRAPHICS_FACTORY {                    // size 0x4
 #ifdef __cplusplus
 extern "C" {
 #endif
-    void FmvReleasePc(void);
-    void FmvRestorePc(void);
+    void FmvRelease(void);
+    void FmvRestore(void);
 #ifdef __cplusplus
 }
 #endif

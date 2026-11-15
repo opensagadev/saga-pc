@@ -448,7 +448,7 @@ static void eduiFilePickAllocDirList(void) {
     }
 }
 
-void PcEditorCursorEnablePc(i32 enabled);
+void PcEditorCursorEnable(i32 enabled);
 
 typedef struct EDUI_PRIM_VERTEX { // size 0x10
     f32 x;                        // 0x0
@@ -524,7 +524,7 @@ void edmainExtCamera(NUCAMERA *camera) {
 
 void edmainSetCursorEnabled(i32 enabled) {
     edmain_cursor_enabled = enabled;
-    PcEditorCursorEnablePc(enabled);
+    PcEditorCursorEnable(enabled);
 }
 
 i32 edmainGetCursorEnabled(void) {
@@ -589,7 +589,7 @@ NUVEC *edmainQueryLocVec(void) {
     return ed_loc;
 }
 
-extern f32 EduiSliderGlobalAccelerationPc;
+extern f32 EduiSliderGlobalAcceleration;
 extern f32 EduiScaleX;
 extern f32 EduiScaleY;
 
@@ -599,7 +599,7 @@ void eduiSetGlobalSliderAccel(f32 acceleration) {
     } else if (acceleration > 1.0f) {
         acceleration = 1.0f;
     }
-    EduiSliderGlobalAccelerationPc = acceleration;
+    EduiSliderGlobalAcceleration = acceleration;
 }
 
 i32 fun_00617fe0(f32 x) {
@@ -1840,7 +1840,7 @@ i32 eduiUsedAlgPad(FRAME_PAD *pad) {
 }
 
 /* The PC cursor follows the mouse elsewhere; this only keeps it on screen. */
-void EduiClampCursorPc(void) {
+void EduiClampCursor(void) {
     if (edui_cursor_x < 0.0f) {
         edui_cursor_x = 0.0f;
     } else if (edui_cursor_x > 640.0f) {
@@ -1965,8 +1965,8 @@ eduimenu_s *eduiGetActiveMenu(void) {
     return active_menu;
 }
 
-void PcGetMousePositionPc(f32 *x, f32 *y);
-void PcSetMousePositionPc(f32 x, f32 y);
+void PcGetMousePosition(f32 *x, f32 *y);
+void PcSetMousePosition(f32 x, f32 y);
 u32 edui_cursor_buttons_old;
 i32 edui_cursor_locked;
 struct FILE_DIRECTORY_ENTRY *dir_list = 0;
@@ -1986,21 +1986,21 @@ void eduiProcessCursorDefault(f32 delta_time, FRAME_PAD *pad) {
     }
     if (NuKeyboard(0x38)) {
         if (edui_cursor_locked == 0) {
-            PcEditorCursorEnablePc(0);
+            PcEditorCursorEnable(0);
             edui_cursor_locked = 1;
         }
     } else if (edui_cursor_locked == 1) {
-        PcEditorCursorEnablePc(1);
+        PcEditorCursorEnable(1);
         edui_cursor_locked = 0;
     }
     if (edui_cursor_locked) {
-        PcSetMousePositionPc(edui_cursor_x / 640.0, edui_cursor_y / 224.0);
+        PcSetMousePosition(edui_cursor_x / 640.0, edui_cursor_y / 224.0);
     } else if (!centred) {
-        PcGetMousePositionPc(&edui_cursor_x, &edui_cursor_y);
+        PcGetMousePosition(&edui_cursor_x, &edui_cursor_y);
         edui_cursor_x *= 640.0;
         edui_cursor_y *= 224.0;
     }
-    EduiClampCursorPc();
+    EduiClampCursor();
     edui_cursor_buttons_old = edui_cursor_buttons;
     edui_cursor_buttons = 0;
     edui_cursor_buttons |= NuMouseReadButtons() == 1 ? 0x40 : 0;
@@ -2023,7 +2023,7 @@ void fun_00627540(f32 delta_time, FRAME_PAD *pad) {
         edui_cursor_x += edui_cursor_dx;
         edui_cursor_y += edui_cursor_dy;
     }
-    EduiClampCursorPc();
+    EduiClampCursor();
     edui_cursor_buttons_old = edui_cursor_buttons;
     edui_cursor_buttons = 0;
     edui_cursor_buttons |= NuMouseReadButtons() == 1 ? 0x40 : 0;
@@ -2254,7 +2254,7 @@ void EduiMenuEnsureSelected(eduimenu_s *menu) {
     }
 }
 
-i32 EduiMenuContainsCursorPc(eduimenu_s *menu) {
+i32 EduiMenuContainsCursor(eduimenu_s *menu) {
     if (edui_cursor_x >= menu->x && edui_cursor_y >= menu->y && edui_cursor_x < menu->x + menu->width &&
         edui_cursor_y < menu->y + menu->height) {
         return 1;
@@ -2454,7 +2454,7 @@ static i32 EduiPropDragLabel(edui_prop_s *property, eduimenu_s *menu) {
 }
 
 /* Keyboard editing of the value text in eduiPropTextEdit. */
-static i32 EduiPropKeyboardPc(edui_prop_s *property, eduimenu_s *menu) {
+static i32 EduiPropKeyboard(edui_prop_s *property, eduimenu_s *menu) {
     u32 modifiers;
     i32 length;
     i32 key;
@@ -2544,7 +2544,7 @@ static i32 EduiPropButton(edui_prop_s *property, eduimenu_s *menu, FRAME_PAD *pa
 static i32 eduicbProcessProp(eduimenu_s *menu, eduiitem_s *item, f32 delta_time, FRAME_PAD *pad) {
     (void)delta_time;
     EduiPropDragLabel((edui_prop_s *)item, menu);
-    EduiPropKeyboardPc((edui_prop_s *)item, menu);
+    EduiPropKeyboard((edui_prop_s *)item, menu);
     EduiPropButton((edui_prop_s *)item, menu, pad);
     return 0;
 }
@@ -2903,7 +2903,7 @@ static i32 eduicbProcessFilter(eduimenu_s *menu, eduiitem_s *item, f32 delta_tim
     eduiitem_s *next;
     (void)delta_time;
     EduiPropDragLabel(&filter->prop, menu);
-    EduiPropKeyboardPc(&filter->prop, menu);
+    EduiPropKeyboard(&filter->prop, menu);
     EduiPropButton(&filter->prop, menu, pad);
     if (filter->prop.editing) {
         query = eduiPropTextEdit;
@@ -3309,7 +3309,7 @@ eduiitem_s *eduiItemColourSliderCreate(u32 data, void *colours, i32 group, void 
 
 extern char *edui_textrow_default[4];
 extern char *edui_textrow_lower[4];
-extern char EduiTextCopyBufferPc[64];
+extern char EduiTextCopyBuffer[64];
 
 /* On-screen keyboard of the text picker: rows 0-3 are the letter rows, rows
  * 4 and 5 the copy/paste row when the picker allows pasting (flag 2). */
@@ -3353,8 +3353,8 @@ static void EduiTextPickNextColumn(edui_textpicker_s *picker) {
 static void EduiTextPickPaste(edui_textpicker_s *picker) {
     picker->cursor = 0;
     picker->value[0] = '\0';
-    if ((picker->keyboard_flag_bits & 2) && EduiTextCopyBufferPc[0]) {
-        NuStrNCpy(picker->value, EduiTextCopyBufferPc, picker->max_length - 1);
+    if ((picker->keyboard_flag_bits & 2) && EduiTextCopyBuffer[0]) {
+        NuStrNCpy(picker->value, EduiTextCopyBuffer, picker->max_length - 1);
         picker->value[picker->max_length - 1] = '\0';
         picker->cursor = NuStrLen(picker->value);
     }
@@ -3371,7 +3371,7 @@ static void EduiTextPickInsert(edui_textpicker_s *picker, char character) {
     picker->value[picker->cursor++] = character;
 }
 
-static void EduiTextPickCursorRightPc(edui_textpicker_s *picker) {
+static void EduiTextPickCursorRight(edui_textpicker_s *picker) {
     picker->cursor = EDUI_MIN(NuStrLen(picker->value), picker->cursor + 1);
 }
 
@@ -3403,7 +3403,7 @@ i32 fun_00619fe0(void) {
     return 0;
 }
 
-static i32 EduiTextPickKeyboardPc(edui_textpicker_s *picker, eduimenu_s *menu, FRAME_PAD *pad) {
+static i32 EduiTextPickKeyboard(edui_textpicker_s *picker, eduimenu_s *menu, FRAME_PAD *pad) {
     u32 modifiers;
     i32 key = NuKeyGet(&modifiers);
     NuStrLen(picker->value);
@@ -3491,7 +3491,7 @@ void eduiAddPropTextPickEnt(eduimenu_s *menu, eduiitem_s *item) {
     }
 }
 
-static i32 EduiTextPickPadPc(edui_textpicker_s *picker, eduimenu_s *menu, FRAME_PAD *pad) {
+static i32 EduiTextPickPad(edui_textpicker_s *picker, eduimenu_s *menu, FRAME_PAD *pad) {
     if (picker == NULL || !picker->editing) {
         if (pad->digital_buttons_pressed & PAD_BUTTON_CROSS) {
             eduiAddTextPickEnt(menu, &picker->base);
@@ -3517,14 +3517,14 @@ static i32 EduiTextPickPadPc(edui_textpicker_s *picker, eduimenu_s *menu, FRAME_
         EduiTextPickPaste(picker);
     }
     if ((pad->digital_buttons & (PAD_BUTTON_L2 | PAD_BUTTON_R2)) == 3 && (picker->keyboard_flag_bits & 2)) {
-        NuStrNCpy(EduiTextCopyBufferPc, picker->value, sizeof(EduiTextCopyBufferPc));
-        picker->value[sizeof(EduiTextCopyBufferPc) - 1] = '\0';
+        NuStrNCpy(EduiTextCopyBuffer, picker->value, sizeof(EduiTextCopyBuffer));
+        picker->value[sizeof(EduiTextCopyBuffer) - 1] = '\0';
     }
     if (pad->digital_buttons_pressed & PAD_BUTTON_L1) {
         picker->cursor = EDUI_MAX(0, picker->cursor - 1);
     }
     if (pad->digital_buttons_pressed & PAD_BUTTON_R1) {
-        EduiTextPickCursorRightPc(picker);
+        EduiTextPickCursorRight(picker);
     }
     if (pad->digital_buttons_pressed & PAD_BUTTON_CROSS) {
         EduiTextPickInsert(picker, textrow[picker->keyboard_row][picker->keyboard_column]);
@@ -3540,8 +3540,8 @@ static i32 EduiTextPickPadPc(edui_textpicker_s *picker, eduimenu_s *menu, FRAME_
 
 i32 eduicbProcessTextPick(eduimenu_s *menu, eduiitem_s *item, f32 delta_time, FRAME_PAD *pad) {
     (void)delta_time;
-    EduiTextPickKeyboardPc((edui_textpicker_s *)item, menu, pad);
-    EduiTextPickPadPc((edui_textpicker_s *)item, menu, pad);
+    EduiTextPickKeyboard((edui_textpicker_s *)item, menu, pad);
+    EduiTextPickPad((edui_textpicker_s *)item, menu, pad);
     return 0;
 }
 
@@ -4511,7 +4511,7 @@ static i32 EduiInteractPressed(edui_interact_s *interact) {
     return (interact->buttons & edui_cursor_buttons_db) != 0;
 }
 
-static i32 EduiInteractionContainsCursorPc(edui_interact_s *interact) {
+static i32 EduiInteractionContainsCursor(edui_interact_s *interact) {
     f32 edge;
     if (edui_cursor_x >= interact->x && edui_cursor_y >= interact->y) {
         edge = interact->width + interact->x;
@@ -4536,7 +4536,7 @@ static i32 EduiProcessLockedInteraction(eduimenu_s *menu) {
 static i32 fun_006272a0(eduimenu_s *menu, edui_interact_s *interact) {
     i32 result = 0;
     if (interact->menu == menu) {
-        if (EduiInteractPressed(interact) && EduiInteractionContainsCursorPc(interact)) {
+        if (EduiInteractPressed(interact) && EduiInteractionContainsCursor(interact)) {
             result = 1;
             EduiInteractSelectItem(interact);
             if (interact->unknown_20 != 0) {

@@ -181,8 +181,8 @@ typedef struct move_gunship_level_flags_s {
     u8 reserved[14];
 } MOVE_GUNSHIP_LEVEL_FLAGS;
 
-extern f32 DirectionalGrappleSeekScalePc;
-extern f32 DirectionalZipUpSeekRatePc;
+extern f32 DirectionalGrappleSeekScale;
+extern f32 DirectionalZipUpSeekRate;
 
 typedef struct directional_zipup_pc_s {
     u8 unknown_00[0x1c];
@@ -5847,7 +5847,7 @@ AREA_DATA *PODRACE_ADATA = 0;
 AREA_DATA *ANAKINSFLIGHT_ADATA = 0;
 f32 avg_currentspeed_mul = 0;
 f32 PlayerOpponent_Range2 = 0.0f;
-static f32 ForceBackRadiusPc = 0;
+static f32 ForceBackRadius = 0;
 f32 ForceBackRadius2 = 0;
 i32 ComboOpponent_Behind = 0;
 f32 ComboOpponent_Range2 = 0;
@@ -5863,7 +5863,7 @@ i32 lightning_type = 0;
 void SetForceBack(GAMEOBJECT *object, NUVEC *position, f32 radius, i32 type) {
     ForceBackObj = object;
     ForceBackPos = object != NULL ? &object->collision_position : position;
-    ForceBackRadiusPc = radius;
+    ForceBackRadius = radius;
     ForceBackRadius2 = radius * radius;
     ForceBackType = type;
 }
@@ -5883,7 +5883,7 @@ void DrawForceBackEffect(nuhspecial_s *special) {
         position.y = 0.005f + ForceBackObj->floor_height;
         position.z = ForceBackObj->lower_position.z;
         scale = scale;
-        scale.x = scale.y = scale.z = ForceBackRadiusPc;
+        scale.x = scale.y = scale.z = ForceBackRadius;
         NuMtxSetTranslation(&matrix, &position);
         NuMtxPreScale(&matrix, &scale);
         NuSpecialSetDrawMtx(special, &matrix);
@@ -5912,7 +5912,7 @@ void ForcedBackCode(GAMEOBJECT *object) {
                 object->context_timer = 0.0f;
             }
         }
-        if (ForceBackPos == NULL || distance > (radius = (f32)((f64)ForceBackRadiusPc + (f64)0.2f)) * radius) {
+        if (ForceBackPos == NULL || distance > (radius = (f32)((f64)ForceBackRadius + (f64)0.2f)) * radius) {
             if (object->context_timer <= 0.0f) {
                 object->character_context = CHARACTER_CONTEXT_NONE;
                 object->flags_ef0 &= ~0x02000000;
@@ -5930,7 +5930,7 @@ void ForcedBackCode(GAMEOBJECT *object) {
     } else if (ForceBackPos != NULL && object != ForceBackObj &&
                (ForceBackType != 2 || (object->character_data->model_flags & CHARACTER_MODEL_DROID) != 0) &&
                !MosEisleyC_PastBarrier(object) && (ForceBackType != 3 || ForceBackObj == NULL || ForceBackObj->force_target == object)) {
-        radius = (f32)((f64)ForceBackRadiusPc - (f64)0.2f);
+        radius = (f32)((f64)ForceBackRadius - (f64)0.2f);
         if (distance < radius * radius) {
             Player_ClearContext(object, 1);
             Player_ResetContexts(&((TERRAIN_PARENT_CONTEXT_VIEW *)object)->reset_context);
@@ -6190,8 +6190,8 @@ NUVEC PodSprintLiftPositions[3] = {
     {-375.38f, -5.04f, -286.5f },
     {-354.91f, -4.85f, -299.32f}
 };
-f32 DirectionalGrappleSeekScalePc = 0.5f;
-f32 DirectionalZipUpSeekRatePc = 8.0f;
+f32 DirectionalGrappleSeekScale = 0.5f;
+f32 DirectionalZipUpSeekRate = 8.0f;
 i32 LandspeederExhaustJoints[3] = {2, 3, 4};
 
 void BobaRocket_Move(PART_PC *part, f32 elapsed) {
@@ -9492,7 +9492,7 @@ void MovePlayer_DIRECTIONAL(GAMEOBJECT *object) {
                 (object->character_data->game_character->flags_094 & CHARACTER_OPTION_COMBAT_ROLL_CAN_DIRECT_LAND) != 0) &&
                ((object->flags_ef0 & 0x2000000) != 0 || CurrentAnim(&object->anim_packet) != 5) &&
                object->character_context != CHARACTER_CONTEXT_ZIP_DOWN) {
-        if (object->character_context == CHARACTER_CONTEXT_GRAPPLE && (object->unknown_7b3 == 1 || PlayerGrappleSwingModePc == 1)) {
+        if (object->character_context == CHARACTER_CONTEXT_GRAPPLE && (object->unknown_7b3 == 1 || PlayerGrappleSwingMode == 1)) {
         } else if ((object->flags_1fc & APIOBJECT_FLAG_PLAYER_ACTIVE) != 0 && object->character_context == CHARACTER_CONTEXT_FORCE_PUSH &&
                    (object->flags_e20 & APIOBJECT_FORCE_TAKE_OVER) == 0) {
             if (object->unknown_7b3 == 1) {
@@ -9938,7 +9938,7 @@ void MovePlayer_DIRECTIONAL(GAMEOBJECT *object) {
                             DIRECTIONAL_ZIPUP *zipup;
                             zipup = object->grapple;
                             if ((zipup->flags & 1) != 0) {
-                                SeekVec(&object->position, &object->position, &zipup->rider_target_position, DirectionalZipUpSeekRatePc);
+                                SeekVec(&object->position, &object->position, &zipup->rider_target_position, DirectionalZipUpSeekRate);
                             } else {
                                 NuVecSub(&object->target_velocity, &zipup->hook_origin, &object->position);
                                 NuVecNorm(&object->target_velocity, &object->target_velocity);
@@ -10227,9 +10227,9 @@ void MovePlayer_DIRECTIONAL(GAMEOBJECT *object) {
     } else {
         // The vertical path tests the grapple's byte at +0x68 without a type gate.
         if (object->grapple != NULL && (((DIRECTIONAL_ZIPUP *)object->grapple)->flags & 1) != 0) {
-            seek_rates.x *= DirectionalGrappleSeekScalePc;
-            seek_rates.y *= DirectionalGrappleSeekScalePc;
-            seek_rates.z *= DirectionalGrappleSeekScalePc;
+            seek_rates.x *= DirectionalGrappleSeekScale;
+            seek_rates.y *= DirectionalGrappleSeekScale;
+            seek_rates.z *= DirectionalGrappleSeekScale;
         }
         object->velocity.x = SeekValF(object->velocity.x, object->target_velocity.x, seek_rates.x);
         object->velocity.y = SeekValF(object->velocity.y, object->target_velocity.y, seek_rates.y);

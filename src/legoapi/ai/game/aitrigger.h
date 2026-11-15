@@ -20,7 +20,7 @@ typedef struct trigger_system_s TRIGGER_SYSTEM;
 #ifdef __cplusplus
 extern "C" {
 #endif
-    extern const char DeathStarEscapeBWindowCleanPc[12];
+    extern const char DeathStarEscapeBWindowClean[12];
     extern const char DeathStarEscapeBWasher2[9];
     extern const char DeathStarEscapeBWasher1[9];
     void AITriggerSetSysReset(TRIGGER_SYSTEM *);

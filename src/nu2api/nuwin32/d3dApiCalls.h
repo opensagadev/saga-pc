@@ -32,13 +32,13 @@ extern "C" {
 
     extern i32 PCFramePresentationState;
     i32 PCFramePresentNative(i32, i32);
-    void PCDeviceResetSamplerDefaultsPc(void);
-    f32 PcInputAspectRatioPc(void);
+    void PCDeviceResetSamplerDefaults(void);
+    f32 PcInputAspectRatio(void);
 #ifdef __cplusplus
-    void PCDevicePostEffectBarrierPc(void);
+    void PCDevicePostEffectBarrier(void);
     extern u32 PcGetRefreshRate(void);
     i32 PCFrameBeginScene(i32 begin);
-    void PCDeviceSetWorldIdentityPc(void);
+    void PCDeviceSetWorldIdentity(void);
     void PCFrameConfigureTargets(void);
     void PCFrameResetTargets(void);
     void PCGraphicsRecreateResources(i32 reset_available);

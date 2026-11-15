@@ -494,9 +494,9 @@ f32 GameShadow(GAMEOBJECT *object, NUVEC *position, f32 probe, i32 mask) {
         if (object->level_object_index != -1) {
             handles[handle_count++] = object->level_object_index;
         }
-        if (world != NULL && world->shadow_platform_list_pc != NULL && VehicleArea == 0 &&
+        if (world != NULL && world->shadow_platform_list != NULL && VehicleArea == 0 &&
             (object->flags_1fc & APIOBJECT_FLAG_PLAYER_ACTIVE) == 0) {
-            struct shadow_platform_list_pc_s *list = world->shadow_platform_list_pc;
+            struct shadow_platform_list_pc_s *list = world->shadow_platform_list;
             for (i = 0; i < list->count; ++i) {
                 if (list->entries[i].object != NULL) {
                     handles[handle_count++] = list->entries[i].object->level_object_index;

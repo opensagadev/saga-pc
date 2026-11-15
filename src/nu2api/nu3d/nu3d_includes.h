@@ -417,7 +417,7 @@ extern "C" {
     extern i32 nuspecial_vertex_noffsets;
     extern f32 (*nuspecial_vertex_offsets)[4];
     extern u32 NuPostEffectInitialisedFlags;
-    extern char *PCDisplayCaptureCursorPc;
+    extern char *PCDisplayCaptureCursor;
     extern char *nudlist_field_18b0;
     extern char PCDisplayCaptureBuffer[0x1000];
     i32 NuTexGetWidth(i32 id);
@@ -526,7 +526,7 @@ extern "C" {
     void NuDeferredShadingRender(void);
     extern i32 PostShadowCubeFaceIndices[6][4];
     extern f32 PostShadowPlaneExtrusion;
-    extern f32 PostBlurHighInputBiasPc;
+    extern f32 PostBlurHighInputBias;
     extern f32 PostBlurHighOutputBias;
 #ifdef __cplusplus
 }
@@ -1270,7 +1270,7 @@ struct PC_SPECIAL_SHADOW_LIGHT {      // size 0x828
     NUVEC4 light_position;       // 0x760
 
     union { // size 0x10
-        NUVEC4 light_direction4_pc;
+        NUVEC4 light_direction4;
 
         struct {                       // size 0x10
             NUVEC shadow_direction_pc; // 0x770

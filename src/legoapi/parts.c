@@ -4806,7 +4806,7 @@ void UpdateParts(f32 time) {
                     }
                     if ((part->active & 4) != 0) {
                         if ((part->flags & 0x80000) != 0 && (part->active & 0x10) != 0 && part_platimpactcnt < 4) {
-                            PartPlatformImpactListPc[part_platimpactcnt++] = state->platform_id;
+                            PartPlatformImpactList[part_platimpactcnt++] = state->platform_id;
                         }
                         if ((part->flags & PART_FLAG_NO_BOUNCE) != 0) {
                             part->active |= 2;

@@ -44,14 +44,14 @@ class TEXT_INPUT_MANAGER { // size 0x68b0
 
 extern "C" {
     i32 PcInput_GetCtrlStringPlayer(void) {
-        return TextInputLastDeviceIndexPc;
+        return TextInputLastDeviceIndex;
     }
 }
 
 extern "C" {
-    u8 TextInputKeyboardOverridePc[24] = {0, 0, 0, 0, 0, 0, 0, 0, 200, 205, 208, 203, 60, 1, 28, 59, 0, 0, 0, 0, 0, 0, 0, 0};
-    i8 TextInputAxisLabelIndexPc[16] = {14, 15, 16, 17, 0, 0, 18, 19, 20, 21, 0, 0, 28, 28, 29, 29};
-    i8 TextInputButtonLabelIndexPc[11] = {24, 23, 25, 22, 26, 27, 33, 32, 30, 31, 0};
+    u8 TextInputKeyboardOverride[24] = {0, 0, 0, 0, 0, 0, 0, 0, 200, 205, 208, 203, 60, 1, 28, 59, 0, 0, 0, 0, 0, 0, 0, 0};
+    i8 TextInputAxisLabelIndex[16] = {14, 15, 16, 17, 0, 0, 18, 19, 20, 21, 0, 0, 28, 28, 29, 29};
+    i8 TextInputButtonLabelIndex[11] = {24, 23, 25, 22, 26, 27, 33, 32, 30, 31, 0};
 }
 
 i32 TEXT_INPUT_MANAGER::ButtonName(i32 device, i32 button, char *destination, i32 custom, i32 custom_index, i32 use_callback,
@@ -60,16 +60,16 @@ i32 TEXT_INPUT_MANAGER::ButtonName(i32 device, i32 button, char *destination, i3
     i32 open = 0;
     i32 close = 0;
     if (button >= 256) {
-        if (TextInputNameCallbackPc != NULL) {
-            TextInputNameCallbackPc(button, destination);
+        if (TextInputNameCallback != NULL) {
+            TextInputNameCallback(button, destination);
         } else {
             NuStrCpy(destination, "GFX?");
         }
         return 1;
     }
-    TEXT_INPUT_LABELS *labels = TextInputDefaultLabelsPc;
+    TEXT_INPUT_LABELS *labels = TextInputDefaultLabels;
     if (alternate_labels != 0) {
-        labels = TextInputAlternateLabelsPc;
+        labels = TextInputAlternateLabels;
     }
     i32 simple = device < 4;
     if (delimiters != NULL && delimiters[0] != 0 && delimiters[1] != 0) {
@@ -89,9 +89,9 @@ i32 TEXT_INPUT_MANAGER::ButtonName(i32 device, i32 button, char *destination, i3
         value = devices[device].bindings[button].value;
     }
     if (use_keyboard_override != 0 && custom_active == 0 && ((u32)(device - 10) <= 3 || device < 0) &&
-        TextInputKeyboardOverridePc[button] > 0) {
+        TextInputKeyboardOverride[button] > 0) {
         type = 7;
-        value = TextInputKeyboardOverridePc[button];
+        value = TextInputKeyboardOverride[button];
     }
     i32 expected = 2;
     switch (type) {
@@ -99,8 +99,8 @@ i32 TEXT_INPUT_MANAGER::ButtonName(i32 device, i32 button, char *destination, i3
             char text[5];
             *destination = 0;
             if (simple != 0) {
-                if (TextInputNameCallbackPc != NULL && use_callback != 0) {
-                    TextInputNameCallbackPc(value, text);
+                if (TextInputNameCallback != NULL && use_callback != 0) {
+                    TextInputNameCallback(value, text);
                     if (text[0] != 0) {
                         if (open != 0) {
                             --destination;
@@ -111,7 +111,7 @@ i32 TEXT_INPUT_MANAGER::ButtonName(i32 device, i32 button, char *destination, i3
                     }
                 }
                 if (value <= 10) {
-                    NuStrCpy(destination, labels->indexed_names[TextInputButtonLabelIndexPc[value]]);
+                    NuStrCpy(destination, labels->indexed_names[TextInputButtonLabelIndex[value]]);
                     break;
                 }
             }
@@ -136,11 +136,11 @@ i32 TEXT_INPUT_MANAGER::ButtonName(i32 device, i32 button, char *destination, i3
                 char text[5] = "";
                 value = value * 2 + (kind->kind == expected);
                 *destination = 0;
-                if (TextInputNameCallbackPc != NULL) {
+                if (TextInputNameCallback != NULL) {
                     if (value == 13 || value == 14) {
-                        TextInputNameCallbackPc(11, text);
+                        TextInputNameCallback(11, text);
                     } else if (value == 15 || value == 12) {
-                        TextInputNameCallbackPc(10, text);
+                        TextInputNameCallback(10, text);
                     }
                     if (text[0] != 0) {
                         if (open != 0) {
@@ -151,7 +151,7 @@ i32 TEXT_INPUT_MANAGER::ButtonName(i32 device, i32 button, char *destination, i3
                         break;
                     }
                 }
-                NuStrCpy(destination, labels->indexed_names[TextInputAxisLabelIndexPc[value]]);
+                NuStrCpy(destination, labels->indexed_names[TextInputAxisLabelIndex[value]]);
             } else if (value < 6) {
                 if (kind->kind == expected) {
                     sprintf(destination, "%s %s", labels->axis_names[value], labels->axis_positive);
@@ -219,7 +219,7 @@ i32 TEXT_INPUT_MANAGER::ButtonName(i32 device, i32 button, char *destination, i3
         case 8:
         case 9:
             if (value >= 1) {
-                NuStrCpy(destination, TextInputKeyNamesPc[value]);
+                NuStrCpy(destination, TextInputKeyNames[value]);
             }
             break;
         default:
@@ -248,7 +248,7 @@ extern "C" i32 PcInput_GetCtrlInputString(i32 device, i32 button, char *destinat
 }
 
 extern "C" {
-    void TextInputSetKeyboardOverridePc(i32 mode) {
+    void TextInputSetKeyboardOverride(i32 mode) {
         TEXT_INPUT_MANAGER *manager = reinterpret_cast<TEXT_INPUT_MANAGER *>(nu_input_state);
         i32 previous = (i8)manager->use_keyboard_override;
         manager->use_keyboard_override = (u8)mode;
@@ -258,7 +258,7 @@ extern "C" {
     }
 
     void PcInput_SetCtrlStringPlayer(i32 device) {
-        TextInputLastDeviceIndexPc = (i8)device;
+        TextInputLastDeviceIndex = (i8)device;
     }
 
     i32 PcInput_PortIsKeyboard(i32 device) {
@@ -268,7 +268,7 @@ extern "C" {
 
 extern "C" {
     char **PcInput_GetKeyNameTable(void) {
-        return TextInputKeyNamesPc;
+        return TextInputKeyNames;
     }
 
     i32 PcInput_PortIsUC(i32 device) {
@@ -276,7 +276,7 @@ extern "C" {
     }
 }
 
-extern "C" i32 AreaGetKeyboardOverridePc(void) {
+extern "C" i32 AreaGetKeyboardOverride(void) {
     return (i8)((TEXT_INPUT_MANAGER *)nu_input_state)->use_keyboard_override;
 }
 
@@ -304,7 +304,7 @@ extern "C" i32 fun_006d94b0(i32 player, i32 button, char *destination, i32, i32,
     return manager->ButtonName(port, button, destination, 0, 0, use_callback, alternate_labels, delimiters);
 }
 
-extern "C" i32 PcInputBindingButtonNamePc(i32 action, i32 port, char *destination, i32 auxiliary, i32 bank, i32 a, i32 b, char *c) {
+extern "C" i32 PcInputBindingButtonName(i32 action, i32 port, char *destination, i32 auxiliary, i32 bank, i32 a, i32 b, char *c) {
     return ((TEXT_INPUT_MANAGER *)nu_input_state)->ButtonName(action, port, destination, auxiliary, bank, a, b, c);
 }
 
@@ -313,15 +313,15 @@ i32 TEXT_INPUT_MANAGER::fun_006d9dc0(i32 device, i32 button, char *destination, 
 }
 
 /* Append to nupad_text.cpp. Native6da3d0,51 bytes all stack cdecl. */
-extern "C" char TextInputActionLabelBufferPc[128]; /*2975970..29759ef*/
+extern "C" char TextInputActionLabelBuffer[128]; /*2975970..29759ef*/
 
 extern "C" {
-    char TextInputActionLabelBufferPc[128] = {0};
+    char TextInputActionLabelBuffer[128] = {0};
 }
 
-extern "C" char *TextInputActionLabelPc(i32 device, i32 action, i32 custom, i32 custom_index) {
-    ((TEXT_INPUT_MANAGER *)nu_input_state)->ButtonName(device, action, TextInputActionLabelBufferPc, custom, custom_index, 1, 1, "()");
-    return TextInputActionLabelBufferPc;
+extern "C" char *TextInputActionLabel(i32 device, i32 action, i32 custom, i32 custom_index) {
+    ((TEXT_INPUT_MANAGER *)nu_input_state)->ButtonName(device, action, TextInputActionLabelBuffer, custom, custom_index, 1, 1, "()");
+    return TextInputActionLabelBuffer;
 }
 
 extern "C" void fun_006da460(i32 player) {

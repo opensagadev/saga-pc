@@ -16,12 +16,12 @@ struct NU_FMV_TEXTURE { // size 0x60
 };
 
 extern "C" {
-    i32 NuFmvTextureActivePc = 0;        // 0x0297dbc8
-    NU_FMV_TEXTURE NuFmvTexturePc = {0}; // 0x029a99e0
+    i32 NuFmvTextureActive = 0;        // 0x0297dbc8
+    NU_FMV_TEXTURE NuFmvTexture = {0}; // 0x029a99e0
 }
 
 extern "C" void fun_0074ead0(NU_FMV_TEXTURE *texture) {
-    FmvClosePc(&texture->movie);
+    FmvClose(&texture->movie);
     if (texture->material != NULL) {
         NuMtlDestroy(texture->material);
     }
@@ -38,18 +38,18 @@ extern "C" void fun_0074eb10(NU_FMV_TEXTURE *texture) {
 
 extern "C" i32 fun_0074eb30(NU_FMV_TEXTURE *texture) {
     Sleep(1);
-    FmvFramePc(&texture->movie);
+    FmvFrame(&texture->movie);
     return texture->movie.playing == 0;
 }
 
-extern "C" void NuFmvTextureReleasePc(void) {
-    if (NuFmvTextureActivePc != 0) {
-        FmvReleaseImagePc(&NuFmvTexturePc.movie);
+extern "C" void NuFmvTextureRelease(void) {
+    if (NuFmvTextureActive != 0) {
+        FmvReleaseImage(&NuFmvTexture.movie);
     }
 }
 
-extern "C" void NuFmvTextureRestorePc(void) {
-    if (NuFmvTextureActivePc != 0) {
-        FmvRestoreImagePc(&NuFmvTexturePc.movie);
+extern "C" void NuFmvTextureRestore(void) {
+    if (NuFmvTextureActive != 0) {
+        FmvRestoreImage(&NuFmvTexture.movie);
     }
 }

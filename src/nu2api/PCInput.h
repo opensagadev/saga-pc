@@ -43,17 +43,17 @@ typedef struct NuKeyboardOwner {   // size 0x44
 #ifdef __cplusplus
     NuKeyboardOwner();
     ~NuKeyboardOwner();
-    void SetMouseEnabledPc(u8 enabled);
-    const struct PC_DI_MOUSE_STATE *PollMousePc();
-    i32 SetMouseCooperativePc(i32 value);
-    void RescanDevicesPc();
+    void SetMouseEnabled(u8 enabled);
+    const struct PC_DI_MOUSE_STATE *PollMouse();
+    i32 SetMouseCooperative(i32 value);
+    void RescanDevices();
     void Setup(HWND window, HINSTANCE instance);
     void ScheduleRescan(f32 interval, i32 repetitions);
     void Shutdown();
     i32 fun_006d5720(i32 *axes, i32 *buttons);
     i32 fun_006d5970();
     i32 fun_006d5980();
-    u8 *PollKeyboardPc();
+    u8 *PollKeyboard();
 #endif
 } NuKeyboardOwner;
 
@@ -125,20 +125,20 @@ extern "C" {
 #endif
     i32 PcInput_GetCtrlStringPlayer(void);
     i32 PcInput_GetCtrlInputString(i32 device, i32 button, char *destination);
-    extern char *TextInputKeyNameTablePc[238];
-    extern char **TextInputKeyNamesPc;
-    extern u8 TextInputKeyboardOverridePc[24];
-    extern i8 TextInputAxisLabelIndexPc[16];
-    extern i8 TextInputButtonLabelIndexPc[11];
-    extern TEXT_INPUT_LABELS *TextInputAlternateLabelsPc;
-    extern TEXT_INPUT_LABELS *TextInputDefaultLabelsPc;
-    extern void (*TextInputNameCallbackPc)(i32, char *);
-    extern i8 TextInputLastDeviceIndexPc;
+    extern char *TextInputKeyNameTable[238];
+    extern char **TextInputKeyNames;
+    extern u8 TextInputKeyboardOverride[24];
+    extern i8 TextInputAxisLabelIndex[16];
+    extern i8 TextInputButtonLabelIndex[11];
+    extern TEXT_INPUT_LABELS *TextInputAlternateLabels;
+    extern TEXT_INPUT_LABELS *TextInputDefaultLabels;
+    extern void (*TextInputNameCallback)(i32, char *);
+    extern i8 TextInputLastDeviceIndex;
 
-    void TextInputSetKeyboardOverridePc(i32);
+    void TextInputSetKeyboardOverride(i32);
     void PcInput_SetCtrlStringPlayer(i32);
     i32 PcInput_PortIsKeyboard(i32);
-    extern i32 (*PcInputCommandFilterPc)(i32, i32);
+    extern i32 (*PcInputCommandFilter)(i32, i32);
     void PcInput_SetIsUsedCallBack(i32 (*filter)(i32, i32));
     i32 PcInput_ScanForAnyInput(u32 excluded, u8 kinds, i32 *kind, i32 *value, i32 skip_active);
     i32 PcInput_RemapVirtualKeyboard(i32 port, i32 player);
@@ -157,7 +157,7 @@ extern "C" {
     extern i32 nu_keyboard_repeat_countdown;
     void PcInput_EnableKeyboards(const i16 *keys, i32 count);
     extern i32 PCDeviceHardwareVertexProcessingPC;
-    void NuPadAutoConfigurePc(i32 count);
+    void NuPadAutoConfigure(i32 count);
     void PcInput_DisableAllKeyboards(void);
     void PCGraphicsFatalDiagnostic(PC_NATIVE_DEBUG_STATE *state, const char *format, ...);
 #ifdef __cplusplus
@@ -256,7 +256,7 @@ extern const PC_DI_DATA_FORMAT PcMouseDataFormat;
 extern const PC_DI_DATA_FORMAT PcKeyboardDataFormat;
 extern const PC_DI_DATA_FORMAT PcJoystickDataFormat;
 extern i32 PcInputSelectedPort;
-extern "C" BOOL __stdcall InputEnumDevicesPc(const PC_DI_INSTANCE *, void *);
+extern "C" BOOL __stdcall InputEnumDevices(const PC_DI_INSTANCE *, void *);
 
 struct PC_INPUT_SAMPLE { // size 0xc
     u8 analog[8];        // 0x0
@@ -497,10 +497,10 @@ struct PC_INPUT_RUNTIME {          // size 0x68b4
     u8 *keyboard_state;            // 0x68b0
     PC_INPUT_RUNTIME();
 
-    i32 PollKeyboardPc() {
+    i32 PollKeyboard() {
         if (!keyboard_polled) {
             keyboard_polled = 1;
-            keyboard_state = nu_keyboard_owner.PollKeyboardPc();
+            keyboard_state = nu_keyboard_owner.PollKeyboard();
         }
         return 1;
     }
@@ -514,7 +514,7 @@ struct PC_INPUT_RUNTIME {          // size 0x68b4
     i32 SelectConfiguration(i32 port, i32 key, i32 auxiliary_index);
     u8 InstallDropInConfiguration(i32 port, i32 player_index);
     void InitKeyboardProfiles();
-    void AutoConfigurePadsPc(i32 count);
+    void AutoConfigurePads(i32 count);
     void ServicePendingCapture();
     void AdvanceCaptureRecords();
 
@@ -528,11 +528,11 @@ struct PC_INPUT_RUNTIME {          // size 0x68b4
     }
 
     i32 ReadSample(i32 port, u8 *, u8 *, u8 *, u8 *, u8 *, u8 *, u8 *, u8 *, u32 *, u8 *, i32 *);
-    i32 SampleDevicePc(i32 port, PC_INPUT_RAW_SAMPLE *sample);
-    i32 UpdateMousePc();
+    i32 SampleDevice(i32 port, PC_INPUT_RAW_SAMPLE *sample);
+    i32 UpdateMouse();
     void CaptureBinding(i32 port);
     i32 TranslateBindings(i32 port, PC_INPUT_SAMPLE *, i32 valid, PC_INPUT_RAW_SAMPLE *, PC_INPUT_MOUSE_RUNTIME *, u8 **keys);
-    void ApplyMouseAxisPc(PC_INPUT_SAMPLE *sample);
+    void ApplyMouseAxis(PC_INPUT_SAMPLE *sample);
     u32 CombineUiButtons(i32 port, u32 buttons);
     void NormalizeAxisPair(i16 *x, i16 *y);
     void InitXInputCaps(const PC_XINPUT_CAPABILITIES *, PC_INPUT_DEVICE *);
@@ -600,37 +600,37 @@ extern u32 PcInputAxisRemapInitialized;
 extern "C" const char PCKeyboardMouse2Name[16];
 extern "C" i32 dat_00824fb8;
 extern "C" u8 PcInput_MappingIsGood(i32 port, i32 player_index);
-extern "C" void PcInputCopyBindingsPc(i32 port, i32 to_auxiliary, i32 bank);
-extern "C" void PcInputResetMouseMotionPc();
-extern "C" char *PcInputDeviceNamePc(i32 port);
-extern "C" void PcInputSuppressKeyOnePc(i32 value);
-extern "C" void PcInputSetMouseFieldPc(i32 value);
-extern "C" void PcInputSetCapturedPortPc(i32 port);
-extern "C" i32 PcInputCapturedPortPc();
-extern "C" void PcInputSetBlockedKeysPc(const char *keys);
-extern "C" i32 PcInputIsMouseDevicePc(i32 port);
-extern "C" i32 PcInputIsJoystickDevicePc(i32 port);
-extern "C" i32 PcInputMixConfigurationHashPc(i32 previous, i32 value);
-extern "C" i32 PcInputHashAuxiliaryBindingsPc();
-extern "C" void PcInputInstallConfigPc(PC_INPUT_CONFIG *config, i32 port, i32 key, i32 auxiliary, i32 bank);
-extern "C" i32 PcInputBindingPresentPc(i32 port, i32 action, i32 auxiliary, i32 bank);
-extern "C" PC_INPUT_CONFIG *PcInputFindConfigPc(u8 mask, i32 port, i32 key);
-extern "C" i32 PcInputBindingAvailablePc(i32 bank, i32 bank_count, i32 kind, i32 value);
-extern "C" void PcInputClearOtherBankConflictsPc(i32 bank, i32 bank_count);
-extern "C" i32 PcInputResolveAuxiliaryConflictsPc(i32 bank, i32 bank_count);
-extern "C" i32 PcInputAlternateDeadzonePc(i32 port);
-extern "C" void PcInputSetDeadzonePc(i32 port, i32 value);
-extern "C" void PcInputSetAlternateDeadzonePc(i32 port, i32 value);
-extern "C" PC_INPUT_COMMAND_FILTER PcInputGetCommandFilterPc();
-extern "C" void PcInputAssignBindingPc(i32 action, i32 port, i32 kind, i32 value, i32 unused, i32 auxiliary, i32 bank, u32 excluded);
-extern "C" i32 PcInputBindingButtonNamePc(i32 action, i32 port, char *destination, i32 auxiliary, i32 bank, i32 a, i32 b, char *c);
-extern "C" void PcInputStageAuxiliaryConfigPc(i32 port, i32 bank, i32 key);
-extern "C" void PcInputSaveConfigurationPc();
+extern "C" void PcInputCopyBindings(i32 port, i32 to_auxiliary, i32 bank);
+extern "C" void PcInputResetMouseMotion();
+extern "C" char *PcInputDeviceName(i32 port);
+extern "C" void PcInputSuppressKeyOne(i32 value);
+extern "C" void PcInputSetMouseField(i32 value);
+extern "C" void PcInputSetCapturedPort(i32 port);
+extern "C" i32 PcInputCapturedPort();
+extern "C" void PcInputSetBlockedKeys(const char *keys);
+extern "C" i32 PcInputIsMouseDevice(i32 port);
+extern "C" i32 PcInputIsJoystickDevice(i32 port);
+extern "C" i32 PcInputMixConfigurationHash(i32 previous, i32 value);
+extern "C" i32 PcInputHashAuxiliaryBindings();
+extern "C" void PcInputInstallConfig(PC_INPUT_CONFIG *config, i32 port, i32 key, i32 auxiliary, i32 bank);
+extern "C" i32 PcInputBindingPresent(i32 port, i32 action, i32 auxiliary, i32 bank);
+extern "C" PC_INPUT_CONFIG *PcInputFindConfig(u8 mask, i32 port, i32 key);
+extern "C" i32 PcInputBindingAvailable(i32 bank, i32 bank_count, i32 kind, i32 value);
+extern "C" void PcInputClearOtherBankConflicts(i32 bank, i32 bank_count);
+extern "C" i32 PcInputResolveAuxiliaryConflicts(i32 bank, i32 bank_count);
+extern "C" i32 PcInputAlternateDeadzone(i32 port);
+extern "C" void PcInputSetDeadzone(i32 port, i32 value);
+extern "C" void PcInputSetAlternateDeadzone(i32 port, i32 value);
+extern "C" PC_INPUT_COMMAND_FILTER PcInputGetCommandFilter();
+extern "C" void PcInputAssignBinding(i32 action, i32 port, i32 kind, i32 value, i32 unused, i32 auxiliary, i32 bank, u32 excluded);
+extern "C" i32 PcInputBindingButtonName(i32 action, i32 port, char *destination, i32 auxiliary, i32 bank, i32 a, i32 b, char *c);
+extern "C" void PcInputStageAuxiliaryConfig(i32 port, i32 bank, i32 key);
+extern "C" void PcInputSaveConfiguration();
 
 extern PC_INPUT_CONFIG PcStaticInputConfigs[24];
 extern PC_DI_CAPS PcKeyboardCapabilities;
-extern "C" BOOL IsXInputProductPc(const GUID *);
-extern "C" void ConfigureJoystickRangesPc(NuKeyboardDevice *);
+extern "C" BOOL IsXInputProduct(const GUID *);
+extern "C" void ConfigureJoystickRanges(NuKeyboardDevice *);
 
 extern const GUID PcWbemClassId;
 extern const GUID PcWbemInterfaceId;
@@ -683,8 +683,8 @@ extern "C" void PcPrepareTiming(void);
 #ifdef __cplusplus
 extern "C" {
 #endif
-    void SetPadDescriptorPc(i32, const u16 *);
-    void InitPadDescriptorsPc(const u16 *, const u16 *, const u16 *, const u16 *, const i8 *);
+    void SetPadDescriptor(i32, const u16 *);
+    void InitPadDescriptors(const u16 *, const u16 *, const u16 *, const u16 *, const i8 *);
     i32 QueueKeyPress(i32, i32);
 #ifdef __cplusplus
 }
@@ -703,7 +703,7 @@ extern "C" {
     extern volatile u8 PcKeyQueueModifiers[256];
     extern u8 PcPressedScanCodes[256];
 
-    void InitPadDescriptorsPc(const u16 *, const u16 *, const u16 *, const u16 *, const i8 *);
+    void InitPadDescriptors(const u16 *, const u16 *, const u16 *, const u16 *, const i8 *);
     extern i8 PcInputActionOrder[20];
 #ifdef __cplusplus
 }
@@ -711,28 +711,28 @@ extern "C" {
 #ifdef __cplusplus
 extern "C" {
 #endif
-    i32 AreaGetKeyboardOverridePc(void);
-    void PCPresentationPlatformLeafPc(void);
+    i32 AreaGetKeyboardOverride(void);
+    void PCPresentationPlatformLeaf(void);
 #ifdef __cplusplus
 }
 #endif
 #ifdef __cplusplus
 extern "C" {
 #endif
-    i32 GamePadReadBackendPc(struct FRAME_PAD *pad, i32 ignored);
-    i32 NuPadReadOutputsPc(i32 port, u8 *, u8 *, u8 *, u8 *, u8 *, u8 *, u8 *, u8 *, u32 *, u8 *, i32 *);
-    void PcInputEndFramePc(void);
-    extern const u8 PcInputPovBitsPc[8];
-    extern u8 PcMouseAxisModesPc[3];
+    i32 GamePadReadBackend(struct FRAME_PAD *pad, i32 ignored);
+    i32 NuPadReadOutputs(i32 port, u8 *, u8 *, u8 *, u8 *, u8 *, u8 *, u8 *, u8 *, u32 *, u8 *, i32 *);
+    void PcInputEndFrame(void);
+    extern const u8 PcInputPovBits[8];
+    extern u8 PcMouseAxisModes[3];
     extern u32 mbuttons;
-    extern f32 PcMouseAxisIdlePc[3];
-    extern i32 PcMouseCurrentAnglePc;
-    extern i32 PcMouseTargetAnglePc;
-    extern f32 PcMouseRadiusPc;
-    extern f32 PcMouseInterpolationPc;
-    extern i8 PcMouseSampleIndexPc;
+    extern f32 PcMouseAxisIdle[3];
+    extern i32 PcMouseCurrentAngle;
+    extern i32 PcMouseTargetAngle;
+    extern f32 PcMouseRadius;
+    extern f32 PcMouseInterpolation;
+    extern i8 PcMouseSampleIndex;
 #ifdef __cplusplus
-    extern PC_DI_MOUSE_STATE PcMouseSamplesPc[2];
+    extern PC_DI_MOUSE_STATE PcMouseSamples[2];
 #ifdef __cplusplus
 }
 #endif
@@ -740,8 +740,8 @@ extern "C" {
 #ifdef __cplusplus
 extern "C" {
 #endif
-    extern char TextInputActionLabelBufferPc[128];
-    char *TextInputActionLabelPc(i32, i32, i32, i32);
+    extern char TextInputActionLabelBuffer[128];
+    char *TextInputActionLabel(i32, i32, i32, i32);
     f32 fun_006d5c50(void);
     f32 fun_006d5c60(void);
 #ifdef __cplusplus

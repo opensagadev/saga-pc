@@ -96,7 +96,7 @@ extern "C" void skin_trace_capture_geometry(TraceWord geometry, TraceWord materi
             out.count = 0;
         }
         if (shader->version == 4) {
-            ShaderUniformRecordPc *uniform = &ShaderUniformRecordsPc[semantics[i]];
+            ShaderUniformRecord *uniform = &ShaderUniformRecords[semantics[i]];
             for (unsigned int stage = 0; stage < 2; ++stage) {
                 if (uniform->stage_mask & (1u << stage)) {
                     TraceParameter &out = draw.parameter[i * 2 + stage];

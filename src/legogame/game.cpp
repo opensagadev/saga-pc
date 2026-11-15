@@ -377,7 +377,7 @@ extern "C" {
     void InitPartTable(char **names);
     void GameAudio_Reset(void);
     u8 NuAnimSetForceEulerToQuat(u8 force);
-    i32 NuWindowsGetConfigValuePc(i32 index);
+    i32 NuWindowsGetConfigValue(i32 index);
 }
 
 typedef struct game_door_callback_s {
@@ -572,8 +572,8 @@ static void InitOptionsSaveDefaults(OPTIONSSAVE *options) {
         options->widescreen = 1;
     }
     options->brightness = 10;
-    options->sound_volume = (u8)NuWindowsGetConfigValuePc(6);
-    options->music_volume = (u8)NuWindowsGetConfigValuePc(5);
+    options->sound_volume = (u8)NuWindowsGetConfigValue(6);
+    options->music_volume = (u8)NuWindowsGetConfigValue(5);
 }
 
 static i32 MakeSaveHash(void) {
@@ -825,9 +825,9 @@ extern "C" {
     i16 LEGOACT_WHIP_CRACK = -1;
     i16 LEGOACT_WHIP_GRAB = -1;
     i16 LEGOACT_WHIP_BREAK = -1;
-    u16 ZipUpSwingStartAnimationPc = 0xffff;
-    u16 ZipUpSwingSwingAnimationPc = 0xffff;
-    u16 ZipUpSwingJumpAnimationPc = 0xffff;
+    u16 ZipUpSwingStartAnimation = 0xffff;
+    u16 ZipUpSwingSwingAnimation = 0xffff;
+    u16 ZipUpSwingJumpAnimation = 0xffff;
 }
 
 extern "C" void InitGameBeforeConfig(void) {
@@ -2335,7 +2335,7 @@ extern "C" void CheckResetBits(void) {
     if (callback != NULL) {
         callback(WORLD);
     }
-    CharPlatforms_Reset((CHARPLATFORMSYS_s *)WORLD->shadow_platform_list_pc);
+    CharPlatforms_Reset((CHARPLATFORMSYS_s *)WORLD->shadow_platform_list);
     SetSoundFadeDist(WORLD, &Game.options_save);
     TempOptions.sound_volume = Game.options_save.sound_volume;
     TempOptions.music_volume = Game.options_save.music_volume;
@@ -3466,9 +3466,9 @@ void InitGameAfterConfig(void) {
     LEGOACT_BUCK = 0x2a;
     LEGOACT_TEETER = 0xdb;
     LEGOACT_WHIP_START = 0xdc;
-    ZipUpSwingStartAnimationPc = 0xe0;
-    ZipUpSwingSwingAnimationPc = 0xe1;
-    ZipUpSwingJumpAnimationPc = 0xe2;
+    ZipUpSwingStartAnimation = 0xe0;
+    ZipUpSwingSwingAnimation = 0xe1;
+    ZipUpSwingJumpAnimation = 0xe2;
     LEGOCONTEXT_TUBE = 0x11;
     LEGOCONTEXT_GLIDE = 0x4f;
     LEGOCONTEXT_HOLD = 0x18;

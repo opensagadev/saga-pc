@@ -19,34 +19,34 @@ extern "C" {
 
 class ShaderBuilderGen { // size 0xbd0
   public:
-    char save_directory[0x100];                    // 0x004
-    char include_directories[0x100];               // 0x104
-    u32 unknown_204;                               // 0x204
-    void *parsed_source;                           // 0x208
-    ShaderCompilerDictionaryPc dictionary;         // 0x20c
-    ShaderCompilerBufferAllocatorPc source_buffer; // 0xbb0
-    VirtualStackAllocator parser_memory;           // 0xbc0
+    char save_directory[0x100];                  // 0x004
+    char include_directories[0x100];             // 0x104
+    u32 unknown_204;                             // 0x204
+    void *parsed_source;                         // 0x208
+    ShaderCompilerDictionary dictionary;         // 0x20c
+    ShaderCompilerBufferAllocator source_buffer; // 0xbb0
+    VirtualStackAllocator parser_memory;         // 0xbc0
     ShaderBuilderGen(VirtualStackAllocator &, i32);
     virtual ~ShaderBuilderGen();
     virtual void SetIncludeDirectories(const char *);
     virtual void SetSaveDirectory(const char *);
     virtual void SetProfile(i32, i32, i32);
     virtual void SetForceMode(bool);
-    virtual void Prepare(const struct PC_SHADER_FILTER_DESC_VIEW *, ShaderCompilerDictionaryPc *);
-    virtual void Configure(struct PC_SHADER_MATERIAL_FILTER_VIEW *, ShaderCompilerDictionaryPc *);
+    virtual void Prepare(const struct PC_SHADER_FILTER_DESC_VIEW *, ShaderCompilerDictionary *);
+    virtual void Configure(struct PC_SHADER_MATERIAL_FILTER_VIEW *, ShaderCompilerDictionary *);
     bool LoadSource(const char *, i32);
-    void *ParseSource(const char *, i32, ShaderCompilerBufferAllocatorPc *, i32, VirtualStackAllocator *);
+    void *ParseSource(const char *, i32, ShaderCompilerBufferAllocator *, i32, VirtualStackAllocator *);
     void SaveFile(const char *suffix, const char *name, const void *data, i32 size);
-    void *ParseFile(const char *name, ShaderCompilerBufferAllocatorPc *buffer, i32 prefix, VirtualStackAllocator *memory);
+    void *ParseFile(const char *name, ShaderCompilerBufferAllocator *buffer, i32 prefix, VirtualStackAllocator *memory);
     bool LoadFile(const char *name);
     i32 CompileEffect(const char *source, i32 length, void *output, i32 unused);
-    void Generate(struct PC_SHADER_MATERIAL_FILTER_VIEW *, ShaderCompilerBufferAllocatorPc *, ShaderCompilerBufferAllocatorPc *);
+    void Generate(struct PC_SHADER_MATERIAL_FILTER_VIEW *, ShaderCompilerBufferAllocator *, ShaderCompilerBufferAllocator *);
     void fun_00745270(const char *name, i32 count);
     bool fun_00745290();
     i32 fun_007452a0();
 };
 
-typedef ShaderBuilderGen ShaderCompilerBasePc;
+typedef ShaderBuilderGen ShaderCompilerBase;
 
 class HLSLShaderBuilder : public ShaderBuilderGen { // size 0xbd0
   public:
@@ -55,8 +55,8 @@ class HLSLShaderBuilder : public ShaderBuilderGen { // size 0xbd0
     virtual ~HLSLShaderBuilder() {
     }
 
-    virtual void Prepare(const struct PC_SHADER_FILTER_DESC_VIEW *, ShaderCompilerDictionaryPc *);
-    virtual void Configure(struct PC_SHADER_MATERIAL_FILTER_VIEW *, ShaderCompilerDictionaryPc *);
+    virtual void Prepare(const struct PC_SHADER_FILTER_DESC_VIEW *, ShaderCompilerDictionary *);
+    virtual void Configure(struct PC_SHADER_MATERIAL_FILTER_VIEW *, ShaderCompilerDictionary *);
 };
 
 typedef HLSLShaderBuilder ShaderCompilerHLSLPc;

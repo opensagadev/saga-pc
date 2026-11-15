@@ -390,7 +390,7 @@ i32 ReadPad(i32 port) {
     gamepad->right_pressed = 0;
     gamepad->held = 0;
     gamepad->pressed = 0;
-    if (pad == NULL || GamePadReadBackendPc(pad, 0) == 0) {
+    if (pad == NULL || GamePadReadBackend(pad, 0) == 0) {
         if (mode != 1) {
             mode = 0;
         }
@@ -504,7 +504,7 @@ void DoInput(WORLDINFO *world) {
                     continue;
                 }
                 if (keyboard_mask == 3) {
-                    MenuKeyboardPendingPc = 1;
+                    MenuKeyboardPending = 1;
                 } else if (!(keyboard_mask & (1 << index))) {
                     continue;
                 }
@@ -574,7 +574,7 @@ i32 GamePads_SkipMovie(void) {
         (GamePadStorage[1].menu_buttons_held & GAMEPAD_SKIP) != 0) {
         skipped = 1;
     }
-    PCPresentationPlatformLeafPc();
+    PCPresentationPlatformLeaf();
     if (NuKeyboard_db(0x1c) != 0 || NuKeyboard_db(0x39) != 0 || 0 != NuKeyboard_db(1)) {
         skipped = 1;
     }

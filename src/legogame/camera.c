@@ -126,7 +126,7 @@ static f32 CameraFabs(f32 f) {
     return rv;
 }
 
-f32 __fastcall PCDeviceBackend_GetActiveAspectPc(PC_DEVICE_BACKEND *backend) {
+f32 __fastcall PCDeviceBackend_GetActiveAspect(PC_DEVICE_BACKEND *backend) {
     switch (PcWindowOptions.aspect_mode) {
         case 1:
             return 1.7777778f;
@@ -436,7 +436,7 @@ void MoveGameCamera(GAMECAMERA *camera) {
             pNuCam->mtx = camera->render_mtx;
             if (CutSceneCameraFocalLength > 0.0f) {
                 pNuCam->fov = NuCameraFocalLenToFOV(CutSceneCameraFocalLength);
-                pNuCam->fov *= (1.0f / PCDeviceBackend_GetActiveAspectPc(&PCDeviceBackend)) / 0.75f;
+                pNuCam->fov *= (1.0f / PCDeviceBackend_GetActiveAspect(&PCDeviceBackend)) / 0.75f;
             }
             NuCameraSet(pNuCam);
             CutCamMtx = camera->render_mtx;

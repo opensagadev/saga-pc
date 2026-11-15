@@ -1266,7 +1266,7 @@ static void HubUpdateIconWibble(void) {
     }
 }
 
-static i32 HubMoveFreePlayCursorPc(COLLECTION_BUILD *collection, i32 player, i32 direction, i32 current) {
+static i32 HubMoveFreePlayCursor(COLLECTION_BUILD *collection, i32 player, i32 direction, i32 current) {
     const i32 other = (player - 1) & 1;
     const i32 count = collection->count;
     const i32 columns = collection->columns;
@@ -1446,13 +1446,13 @@ extern "C" void Hub_UpdateFreePlaySelect(void) {
                     MenuRepeat(&left_held, &left, &leftrepeattime[player], &leftrepeatcount[player], 0.1f, FRAMETIME);
                     MenuRepeat(&right_held, &right, &rightrepeattime[player], &rightrepeatcount[player], 0.1f, FRAMETIME);
                     if (up) {
-                        index = HubMoveFreePlayCursorPc(collection, player, 0, previous);
+                        index = HubMoveFreePlayCursor(collection, player, 0, previous);
                     } else if (down) {
-                        index = HubMoveFreePlayCursorPc(collection, player, 1, previous);
+                        index = HubMoveFreePlayCursor(collection, player, 1, previous);
                     } else if (left) {
-                        index = HubMoveFreePlayCursorPc(collection, player, 2, previous);
+                        index = HubMoveFreePlayCursor(collection, player, 2, previous);
                     } else if (right) {
-                        index = HubMoveFreePlayCursorPc(collection, player, 3, previous);
+                        index = HubMoveFreePlayCursor(collection, player, 3, previous);
                     }
                 }
                 ++active;
@@ -1573,12 +1573,12 @@ extern "C" void Hub_UpdateFreePlaySelect(void) {
     }
 }
 
-static f32 HubFreePlayCursorSizePc = 0.16f;
+static f32 HubFreePlayCursorSize = 0.16f;
 extern "C" {
     f32 HubMiniKitOpenThreshold = 1.0;
 }
 
-static void HubDrawIconCursorsPc(COLLECTION_BUILD *collection, i32 active_cursors, f32 alpha, f32 scale) {
+static void HubDrawIconCursors(COLLECTION_BUILD *collection, i32 active_cursors, f32 alpha, f32 scale) {
     if (alpha <= 0.0f || scale < 0.0f) {
         return;
     }
@@ -1595,7 +1595,7 @@ static void HubDrawIconCursorsPc(COLLECTION_BUILD *collection, i32 active_cursor
         const i32 frame = player != 0 ? 165 : 166;
         if (active_cursors != 0 && MissionMenuPacket.active_player[player] != 0) {
             z = (f32)(z - .0024999999441206455);
-            f32 size = HubFreePlayCursorSizePc;
+            f32 size = HubFreePlayCursorSize;
             if (Game_OptionsSave != NULL && Game_OptionsSave->widescreen != 0) {
                 size = (f32)(size * .875);
             }
@@ -2990,7 +2990,7 @@ static void Hub_DrawFreePlaySelect(void) {
         const f32 offset = -((1.0f - HubFabs(COLLECTION_Y_HUB)) + 1.0f);
         const f32 y = (COLLECTION_Y_HUB - offset) * NuTrigTable[((i32)(freeplaytime / freeplayduration * 16384.0) >> 1) & 0x7fff] + offset;
         Collection_Draw(collection, 0.0f, y, collection->scale, list, 1.0f, 1);
-        HubDrawIconCursorsPc(collection, 1, 1.0f, 1.0f);
+        HubDrawIconCursors(collection, 1, 1.0f, 1.0f);
         return;
     }
     if (freeplaymode == 1) {
@@ -2998,7 +2998,7 @@ static void Hub_DrawFreePlaySelect(void) {
         list[1].model_id = MissionMenuPacket.player_model[1];
         list[2].model_id = -1;
         Collection_Draw(collection, 0.0f, COLLECTION_Y_HUB, collection->scale, list, 1.0f, 1);
-        HubDrawIconCursorsPc(collection, 1, 1.0f, 1.0f);
+        HubDrawIconCursors(collection, 1, 1.0f, 1.0f);
         i32 select[2];
         i32 back[2];
         i32 status[2];
@@ -3051,7 +3051,7 @@ static void Hub_DrawFreePlaySelect(void) {
                 alpha = (f32)(1.0f - freeplaytime / (freeplayduration - .10000000149011612));
             }
             Collection_Draw(collection, 0.0f, COLLECTION_Y_HUB, collection->scale, list, alpha, 1);
-            HubDrawIconCursorsPc(collection, 1, 1.0f, alpha);
+            HubDrawIconCursors(collection, 1, 1.0f, alpha);
             return;
         }
         return;
@@ -4593,7 +4593,7 @@ extern "C" {
         return 1;
     }
 
-    i32 Indy_MidSpecialMove_SwingPc(AISYS_PC *system, AIPACKET *packet, APIOBJECT *object) {
+    i32 Indy_MidSpecialMove_Swing(AISYS_PC *system, AIPACKET *packet, APIOBJECT *object) {
         GAMEOBJECT *owner = object->owner;
         if (owner->character_context == CHARACTER_CONTEXT_GRAPPLE) {
             if (owner->ai_packet.special_move_node->position.y > owner->special_move_source->position.y) {
@@ -4936,7 +4936,7 @@ extern "C" {
         return 1;
     }
 
-    i32 Indy_PrepareWhipSwingPc(AIPACKET *packet, APIOBJECT *object, i32 checks_unused) {
+    i32 Indy_PrepareWhipSwing(AIPACKET *packet, APIOBJECT *object, i32 checks_unused) {
         GAMEOBJECT *owner;
         AIPATHNODE *destination;
         AIPATHCNX *connection;
@@ -4972,7 +4972,7 @@ extern "C" {
         }
     }
 
-    i32 Indy_MidSpecialMove_WhipSwingPc(AISYS_PC *system, AIPACKET *packet, APIOBJECT *object) {
+    i32 Indy_MidSpecialMove_WhipSwing(AISYS_PC *system, AIPACKET *packet, APIOBJECT *object) {
         GAMEOBJECT *owner = object->owner;
         switch ((i8)owner->unknown_1087) {
             case 0:
@@ -4999,13 +4999,13 @@ extern "C" {
     }
 
     INDY_PREPARE_SPECIAL_MOVE IndyPrepareSpecialMove[7] = {
-        {3,          Indy_PrepareJump       },
-        {4,          Indy_PrepareBigJump    },
-        {8,          Indy_PrepareGrapple    },
-        {0x10,       Indy_PrepareClimb      },
-        {0x20000000, Indy_PrepareObstacle   },
-        {0x400,      Indy_PrepareWhipSwingPc},
-        {0,          NULL                   },
+        {3,          Indy_PrepareJump     },
+        {4,          Indy_PrepareBigJump  },
+        {8,          Indy_PrepareGrapple  },
+        {0x10,       Indy_PrepareClimb    },
+        {0x20000000, Indy_PrepareObstacle },
+        {0x400,      Indy_PrepareWhipSwing},
+        {0,          NULL                 },
     };
     f32 COLLECTION_ICONSIZE = 0.16f;
 
@@ -5047,9 +5047,9 @@ extern "C" {
     }
 
     AI_MID_SPECIAL_MOVE IndyMidSpecialMoveFns[10] = {
-        Indy_MidSpecialMove_Default,    Indy_MidSpecialMove_StartJump,  Indy_MidSpecialMove_BigJump,      Indy_MidSpecialMove_ClimbUp,
-        Indy_MidSpecialMove_ClimbDown,  Indy_MidSpecialMove_SwingPc,    Indy_MidSpecialMove_GrappleStart, Indy_MidSpecialMove_GrappleClimb,
-        Indy_MidSpecialMove_GrappleEnd, Indy_MidSpecialMove_WhipSwingPc};
+        Indy_MidSpecialMove_Default,    Indy_MidSpecialMove_StartJump, Indy_MidSpecialMove_BigJump,      Indy_MidSpecialMove_ClimbUp,
+        Indy_MidSpecialMove_ClimbDown,  Indy_MidSpecialMove_Swing,     Indy_MidSpecialMove_GrappleStart, Indy_MidSpecialMove_GrappleClimb,
+        Indy_MidSpecialMove_GrappleEnd, Indy_MidSpecialMove_WhipSwing};
 
     i32 Indy_MidSpecialMove(AISYS_PC *system, AIPACKET *packet, APIOBJECT *apiobject) {
         GAMEOBJECT *owner = apiobject->owner;

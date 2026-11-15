@@ -10,7 +10,7 @@ extern "C" {
 #endif
     void PortalFlagRoomVisible(NUGSCNROOM *, NUGSCN *);
     void PortalClipRoom(NUGSCN *, NUGSCNROOM *, NUPORTAL_FRUSTUM *);
-    void NuKeyboardWindowStateLeafPc(void);
+    void NuKeyboardWindowStateLeaf(void);
     void NuPrimReleaseResources(void);
 #ifdef __cplusplus
 }

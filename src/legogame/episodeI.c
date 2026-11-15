@@ -109,7 +109,7 @@ typedef struct podrace_resource_s {
 
 extern nuhspecial_s SebulbaMineSpecial;
 extern f32 SebulbaDistanceBias;
-extern f32 SebulbaThrowIntervalPc;
+extern f32 SebulbaThrowInterval;
 static f32 PodSebulbaThrowSpeed;
 static f32 PodSebulbaThrowGravity;
 
@@ -426,7 +426,7 @@ static f32 PodMineAreaScale = 1.0f;
 static f32 PodMineHeightScale = 0.5f;
 static u32 mine_max_tile = 0x2000;
 
-static void *CreatePodRaceMinePc(NUVEC *pos) {
+static void *CreatePodRaceMine(NUVEC *pos) {
     NUVEC mine_pos;
     NUVEC ray_pos;
     NUVEC delta;
@@ -640,7 +640,7 @@ void PodRaceAUpdate(void) {
                 vec.z = PodMineAhead;
                 NuVecRotateY(&vec, &vec, player->sock_heading);
                 NuVecAdd(&vec, &vec, &player->collision_position);
-                if (CreatePodRaceMinePc(&vec) != NULL) {
+                if (CreatePodRaceMine(&vec) != NULL) {
                     minesys.spawn_timer = PodMineSockAlong[Lap] + GameCam->sock_position.distance;
                 }
             }
@@ -727,7 +727,7 @@ static f32 PodSebulbaThrowGravity = -10.0f;
 static f32 PodSebulbaFarThrow = 10.0f;
 static f32 PodSebulbaThrowSpread = 3.0f;
 static f32 PodSebulbaThrowAhead = 3.0f;
-f32 SebulbaThrowIntervalPc = 1.0f;
+f32 SebulbaThrowInterval = 1.0f;
 f32 SebulbaDistanceBias = 25.0f;
 
 static i32 PodRaceUpdatePod(RACEPOD_RESOURCE *pod, WORLDINFO *world) {
@@ -1410,9 +1410,9 @@ i32 Action_Sebulba(AISYS_PC *unused0, AISCRIPTPROCESS *process, AIPACKET *packet
         NuVecAdd(&goal, &goal, &ahead.midpoint);
 
         process->action_timer += FRAMETIME;
-        if (process->action_timer > SebulbaThrowIntervalPc) {
+        if (process->action_timer > SebulbaThrowInterval) {
             if (do_mine != 0) {
-                if (CreatePodRaceMinePc(&object->lower_position) != NULL) {
+                if (CreatePodRaceMine(&object->lower_position) != NULL) {
                     process->action_timer = 0.0f;
                 }
             } else if (NuSpecialExistsFn(&SebulbaMineSpecial) != 0) {
@@ -1579,7 +1579,7 @@ float PodSprint_RollMul(GAMEOBJECT *object) {
     return 1.0f;
 }
 
-static void PodSprint_InitAISplinePc(WORLDINFO *world, PODSPRINT_AI *ai, char *name) {
+static void PodSprint_InitAISpline(WORLDINFO *world, PODSPRINT_AI *ai, char *name) {
     NUGSPLINE *line;
     NUVEC *pts;
     i16 *vals;
@@ -1630,8 +1630,8 @@ void PodSprintA_Init(WORLDINFO *world) {
     PODSPRINT->max_speed_msg = CheckGizAIMessage(gizaimessagesys, "sebulba_max_speed", NULL);
     PODSPRINT->min_speed_msg = CheckGizAIMessage(gizaimessagesys, "sebulba_min_speed", NULL);
     PODSPRINT->speed_step_msg = CheckGizAIMessage(gizaimessagesys, "sebulba_speed_step", NULL);
-    PodSprint_InitAISplinePc(world, &PODSPRINT->ai[0], "ai_sebulba");
-    PodSprint_InitAISplinePc(world, &PODSPRINT->ai[1], "ai_general");
+    PodSprint_InitAISpline(world, &PODSPRINT->ai[0], "ai_sebulba");
+    PodSprint_InitAISpline(world, &PODSPRINT->ai[1], "ai_general");
     NuSpecialFind(world->current_gscn, &LevHSpecial[50], "bigrock_five", 1);
     NuSpecialFind(world->current_gscn, &LevHSpecial[51], "bigrock_eight", 1);
 }

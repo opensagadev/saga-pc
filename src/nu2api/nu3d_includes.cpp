@@ -5,7 +5,7 @@
 // block and the nu3d post-blur helpers of nudlist_material.
 // The PS/Pc halves live in the platform unit, nu3d_platform.cpp.
 // nufloat, numtx, nuhtml and nustateanim stay separate: merged, their small leaves inline into nu3d callers
-// that the original compiles as calls (NuFsqrt, NuMtxMulH, NuHtmlFlushPc, StateAnimEvaluate2).
+// that the original compiles as calls (NuFsqrt, NuMtxMulH, NuHtmlFlush, StateAnimEvaluate2).
 // StateAnimEvaluate itself is defined here: it keeps x87 and edx live across its call to
 // PCSpecialEmptyHandler, so it knew the hook's register use (same unit).
 // nuvec, nucamera and nutexanim are separate units for the same reason.
@@ -11258,18 +11258,18 @@ extern "C" void NuDisplayListCaptureBegin(void) {
         NUFILE file = NuFileOpen("dlist.htm", 1);
         nudlist_field_958 = file;
         nudlist_field_988 = file;
-        PCDisplayCaptureCursorPc = PCDisplayCaptureBuffer;
+        PCDisplayCaptureCursor = PCDisplayCaptureBuffer;
         nudlist_field_18b0 = PCDisplayCaptureBuffer + 0xc00;
         NuHtmlWrite("<body bgcolor=#C0C0C0>");
     }
 }
 
-extern "C" void NuHtmlFlushPc(void);
+extern "C" void NuHtmlFlush(void);
 
 extern "C" void NuDisplayListHtmlEnd(void) {
     if (nudlist_field_fe4 != 0) {
         NuHtmlWrite("<table   width=100%c height=20 bgcolor=#FF0000><tr><td><font face=arial size=+2></font></table>", 0x25);
-        NuHtmlFlushPc();
+        NuHtmlFlush();
         NuFileClose(nudlist_field_958);
         nudlist_field_fe4 = 0;
     }
@@ -11756,7 +11756,7 @@ extern "C" GRAPHICS_RENDER_TEXTURE *PCGraphicsPostEffectBackBufferTexture;
 extern "C" u8 NuPostFilterMemory[0x800];
 extern "C" VirtualStackAllocator NuPostFilterAllocator;
 extern "C" NuCopyFilter *NuPostCopyFilter;
-extern "C" u32 NuPostShaderEngineFlagsPc;
+extern "C" u32 NuPostShaderEngineFlags;
 
 GRAPHICS_RENDER_TEXTURE *PC_DEVICE_BACKEND::fun_005c2190(u16 index) {
     return textures[index];
@@ -11836,25 +11836,25 @@ void NuMainFilterGen::initResources() {
 extern "C" {
     static void NuShaderProgramMakeCurrent(POST_SHADER_PROGRAM *program) {
         if (program != NULL) {
-            if (NuDisplayHandlerVertexShaderCachePc != program->vertex_shader) {
-                PCDeviceSetVertexShaderPc(program->vertex_shader);
-                NuDisplayHandlerVertexShaderCachePc = program->vertex_shader;
+            if (NuDisplayHandlerVertexShaderCache != program->vertex_shader) {
+                PCDeviceSetVertexShader(program->vertex_shader);
+                NuDisplayHandlerVertexShaderCache = program->vertex_shader;
             }
-            if (NuDisplayHandlerPixelShaderCachePc != program->pixel_shader) {
-                PCDeviceSetPixelShaderPc(program->pixel_shader);
-                NuDisplayHandlerPixelShaderCachePc = program->pixel_shader;
+            if (NuDisplayHandlerPixelShaderCache != program->pixel_shader) {
+                PCDeviceSetPixelShader(program->pixel_shader);
+                NuDisplayHandlerPixelShaderCache = program->pixel_shader;
             }
         } else {
-            PCDeviceSetVertexShaderPc(NULL);
-            PCDeviceSetPixelShaderPc(NULL);
-            NuDisplayHandlerVertexShaderCachePc = NULL;
-            NuDisplayHandlerPixelShaderCachePc = NULL;
+            PCDeviceSetVertexShader(NULL);
+            PCDeviceSetPixelShader(NULL);
+            NuDisplayHandlerVertexShaderCache = NULL;
+            NuDisplayHandlerPixelShaderCache = NULL;
         }
     }
 
     void fun_005c27d0(void) {
-        NuDisplayHandlerVertexShaderCachePc = NULL;
-        NuDisplayHandlerPixelShaderCachePc = NULL;
+        NuDisplayHandlerVertexShaderCache = NULL;
+        NuDisplayHandlerPixelShaderCache = NULL;
     }
 
     f32 fun_005c27e0(f32 value) {
@@ -11945,7 +11945,7 @@ extern "C" {
 }
 VirtualStackAllocator NuPostFilterAllocator(NuPostFilterMemory, sizeof(NuPostFilterMemory));
 NuCopyFilter *NuPostCopyFilter = NULL;
-u32 NuPostShaderEngineFlagsPc = 0;
+u32 NuPostShaderEngineFlags = 0;
 extern "C" {
     GRAPHICS_RENDER_TEXTURE *PCGraphicsPostEffectAuxTexture = 0;
     GRAPHICS_RENDER_TEXTURE *PCGraphicsPostEffectWorkTexture = 0;
@@ -11972,7 +11972,7 @@ extern "C" void NuPostEffectInit(u32 flags, VARIPTR *buffer, VARIPTR end) {
         object = NuPostFilterAllocator.cursor;
         NuPostFilterAllocator.cursor += sizeof(NuMotionFilter);
         motionFilter = object ? (NU_POST_MOTION_VIEW *)new (object) NuMotionFilter : NULL;
-        NuPostShaderEngineFlagsPc |= 0x20;
+        NuPostShaderEngineFlags |= 0x20;
     }
     accum_mask = flags & 0x40;
     if (accum_mask) {
@@ -11991,7 +11991,7 @@ extern "C" void NuPostEffectInit(u32 flags, VARIPTR *buffer, VARIPTR end) {
         object = NuPostFilterAllocator.cursor;
         NuPostFilterAllocator.cursor += sizeof(NuDeferredFilter);
         deferredFilter = object ? (NU_POST_DEFERRED_VIEW *)new (object) NuDeferredFilter : NULL;
-        NuPostShaderEngineFlagsPc |= 0x10;
+        NuPostShaderEngineFlags |= 0x10;
     }
     object = NuPostFilterAllocator.cursor;
     NuPostFilterAllocator.cursor += sizeof(NuCopyFilter);
@@ -12409,19 +12409,19 @@ extern "C" void fun_005c3cf0(GRAPHICS_RENDER_TEXTURE *first, GRAPHICS_RENDER_TEX
 
 static void PostFilterBindProgram(const POST_SHADER_PROGRAM *program) {
     if (program != NULL) {
-        if (NuDisplayHandlerVertexShaderCachePc != program->vertex_shader) {
-            PCDeviceSetVertexShaderPc(program->vertex_shader);
-            NuDisplayHandlerVertexShaderCachePc = program->vertex_shader;
+        if (NuDisplayHandlerVertexShaderCache != program->vertex_shader) {
+            PCDeviceSetVertexShader(program->vertex_shader);
+            NuDisplayHandlerVertexShaderCache = program->vertex_shader;
         }
-        if (NuDisplayHandlerPixelShaderCachePc != program->pixel_shader) {
-            PCDeviceSetPixelShaderPc(program->pixel_shader);
-            NuDisplayHandlerPixelShaderCachePc = program->pixel_shader;
+        if (NuDisplayHandlerPixelShaderCache != program->pixel_shader) {
+            PCDeviceSetPixelShader(program->pixel_shader);
+            NuDisplayHandlerPixelShaderCache = program->pixel_shader;
         }
     } else {
-        PCDeviceSetVertexShaderPc(NULL);
-        PCDeviceSetPixelShaderPc(NULL);
-        NuDisplayHandlerVertexShaderCachePc = NULL;
-        NuDisplayHandlerPixelShaderCachePc = NULL;
+        PCDeviceSetVertexShader(NULL);
+        PCDeviceSetPixelShader(NULL);
+        NuDisplayHandlerVertexShaderCache = NULL;
+        NuDisplayHandlerPixelShaderCache = NULL;
     }
 }
 
@@ -12556,7 +12556,7 @@ extern "C" {
     i32 dat_0080bf24 = -1;
     f32 PostBlurHighOutputBias = 1.0f;
     /* Mutable half-texel terms read by PostBlur7x7High (input -0.5, output +1.0). */
-    f32 PostBlurHighInputBiasPc = -0.5f;
+    f32 PostBlurHighInputBias = -0.5f;
     f32 PostShadowPlaneExtrusion = 120.0f;
     i32 PCShadowSurfaceSamplingEnabled = 1;
     f32 NuMainFilterDofWeight = 1.0f;
@@ -13848,8 +13848,8 @@ extern "C" {
     PC_FRAMEBUFFER *PostBlurFramebuffer = 0;
     PC_FRAMEBUFFER *PostCopyFramebuffer = 0;
     i32 dat_00973868 = 0;
-    i32 PcGeometryRegistryCountPc = 0;
-    struct PC_GEOMETRY_PUBLISH_RECORD *PcGeometryRegistryPc = NULL;
+    i32 PcGeometryRegistryCount = 0;
+    struct PC_GEOMETRY_PUBLISH_RECORD *PcGeometryRegistry = NULL;
     i32 PcGeometryMatrixCapacity = 0;
     struct PC_GEOMETRY_BASIS *PcGeometryTransforms = NULL;
     i32 PcGeometryOutputCapacity = 0;
@@ -13913,8 +13913,8 @@ extern "C" void NuPostEffectRender(PC_FRAMEBUFFER *output) {
     if (motionAccumFilter != NULL && ((NuPostFilterGen *)motionAccumFilter)->isEnabled()) {
         filters[count++] = (NuPostFilterGen *)motionAccumFilter;
     }
-    NuDisplayHandlerVertexShaderCachePc = NULL;
-    NuDisplayHandlerPixelShaderCachePc = NULL;
+    NuDisplayHandlerVertexShaderCache = NULL;
+    NuDisplayHandlerPixelShaderCache = NULL;
     PCDeviceSetRenderState(22, 1);
     PCDeviceSetRenderState(15, 0);
     PCDeviceSetRenderState(27, 0);
@@ -14303,7 +14303,7 @@ extern "C" {
 
 /* nutex */
 extern "C" {
-    void NuTexAddReferencePc(i32 texture_id) {
+    void NuTexAddReference(i32 texture_id) {
         NUTEXDIM *texture = NuTextureGetDimensions(texture_id);
         if (texture != NULL) {
             ++texture->ref_count;
@@ -14424,7 +14424,7 @@ extern "C" {
         next:;
         }
         if (resolved != 0) {
-            NuTexAddReferencePc(resolved);
+            NuTexAddReference(resolved);
             scene->texture_ids[tid & 0x3fff] = resolved;
         }
         return resolved;
@@ -14755,7 +14755,7 @@ extern "C" {
             if (resolved == 0) {
                 NUTEXDIM *texture;
                 resolved = NuTexGetUnresolvedTextureTIDPS();
-                NuTexAddReferencePc(resolved);
+                NuTexAddReference(resolved);
                 texture = scene->textures[tid & 0x3fff];
                 PCSpecialEmptyHandler(texture->checksum[0], texture->checksum[1], texture->checksum[2], texture->checksum[3],
                                       texture->checksum[4], texture->checksum[5], texture->checksum[6], texture->checksum[7],
@@ -15081,16 +15081,16 @@ extern "C" {
     }
 
     void fun_005d71d0(i32 force) {
-        if ((PCDisplayCaptureCursorPc > nudlist_field_18b0) | force) {
+        if ((PCDisplayCaptureCursor > nudlist_field_18b0) | force) {
             NuFileWriteString(nudlist_field_988, PCDisplayCaptureBuffer);
-            PCDisplayCaptureCursorPc = PCDisplayCaptureBuffer;
+            PCDisplayCaptureCursor = PCDisplayCaptureBuffer;
             nudlist_field_18b0 = PCDisplayCaptureBuffer + 0xc00;
         }
     }
 
     void fun_005d7210(NUFILE file) {
         nudlist_field_988 = file;
-        PCDisplayCaptureCursorPc = PCDisplayCaptureBuffer;
+        PCDisplayCaptureCursor = PCDisplayCaptureBuffer;
         nudlist_field_18b0 = PCDisplayCaptureBuffer + 0xc00;
     }
 
@@ -15278,7 +15278,7 @@ extern "C" {
     NUMTL *PCMaterialPool = 0;
     NUCAMERA *NuPortalCamera = 0;
     i32 NuTextureCapacityPC = 0;
-    char *PCDisplayCaptureCursorPc = NULL;
+    char *PCDisplayCaptureCursor = NULL;
     u8 fstackmem[NU_PORTAL_STACK_SIZE] = {0};
     NUVEC NuRndrDebRangeInv = {0};
     i32 PCMaterialPoolCount = 0;
@@ -18320,10 +18320,10 @@ PC_SPECIAL_SHADOW_LIGHT &PC_SPECIAL_SHADOW_LIGHT::operator=(const PC_SPECIAL_SHA
     light_position.y = other.light_position.y;
     light_position.z = other.light_position.z;
     light_position.w = other.light_position.w;
-    light_direction4_pc.x = other.light_direction4_pc.x;
-    light_direction4_pc.y = other.light_direction4_pc.y;
-    light_direction4_pc.z = other.light_direction4_pc.z;
-    light_direction4_pc.w = other.light_direction4_pc.w;
+    light_direction4.x = other.light_direction4.x;
+    light_direction4.y = other.light_direction4.y;
+    light_direction4.z = other.light_direction4.z;
+    light_direction4.w = other.light_direction4.w;
     view = other.view;
     projection = other.projection;
     parameter_4 = other.parameter_4;
@@ -18770,8 +18770,8 @@ void NuDeferredFilterGen::render() {
             program = (POST_SHADER_PROGRAM *)programs[1];
         }
         if (!first) {
-            NuDisplayHandlerVertexShaderCachePc = NULL;
-            NuDisplayHandlerPixelShaderCachePc = NULL;
+            NuDisplayHandlerVertexShaderCache = NULL;
+            NuDisplayHandlerPixelShaderCache = NULL;
         }
         NuShaderProgramMakeCurrent(program);
         light->RenderConstants(program);
@@ -18996,19 +18996,19 @@ extern "C" PC_DISPLAY_ITEM_HANDLER PCDisplayShadowItemHandlers[49] = {NuDisplayL
     do {                                                                                                                                   \
         POST_SHADER_PROGRAM *bound = (bound_program);                                                                                      \
         if (bound != NULL) {                                                                                                               \
-            if (NuDisplayHandlerVertexShaderCachePc != bound->vertex_shader) {                                                             \
-                PCDeviceSetVertexShaderPc(bound->vertex_shader);                                                                           \
-                NuDisplayHandlerVertexShaderCachePc = bound->vertex_shader;                                                                \
+            if (NuDisplayHandlerVertexShaderCache != bound->vertex_shader) {                                                               \
+                PCDeviceSetVertexShader(bound->vertex_shader);                                                                             \
+                NuDisplayHandlerVertexShaderCache = bound->vertex_shader;                                                                  \
             }                                                                                                                              \
-            if (NuDisplayHandlerPixelShaderCachePc != bound->pixel_shader) {                                                               \
-                PCDeviceSetPixelShaderPc(bound->pixel_shader);                                                                             \
-                NuDisplayHandlerPixelShaderCachePc = bound->pixel_shader;                                                                  \
+            if (NuDisplayHandlerPixelShaderCache != bound->pixel_shader) {                                                                 \
+                PCDeviceSetPixelShader(bound->pixel_shader);                                                                               \
+                NuDisplayHandlerPixelShaderCache = bound->pixel_shader;                                                                    \
             }                                                                                                                              \
         } else {                                                                                                                           \
-            PCDeviceSetVertexShaderPc(NULL);                                                                                               \
-            PCDeviceSetPixelShaderPc(NULL);                                                                                                \
-            NuDisplayHandlerVertexShaderCachePc = NULL;                                                                                    \
-            NuDisplayHandlerPixelShaderCachePc = NULL;                                                                                     \
+            PCDeviceSetVertexShader(NULL);                                                                                                 \
+            PCDeviceSetPixelShader(NULL);                                                                                                  \
+            NuDisplayHandlerVertexShaderCache = NULL;                                                                                      \
+            NuDisplayHandlerPixelShaderCache = NULL;                                                                                       \
         }                                                                                                                                  \
     } while (0)
 
@@ -19060,7 +19060,7 @@ extern "C" void PostBlur7x7High(GRAPHICS_RENDER_TEXTURE *source, i32 source_lod,
             OccluderVertexSet(&vertical[5], 0, (f32) - (dy * 2.0), .10f, 0);
             OccluderVertexSet(&horizontal[6], (f32) - (dx * 3.0), 0, .05f, 0);
             OccluderVertexSet(&vertical[6], 0, (f32) - (dy * 3.0), .05f, 0);
-            f32 bias[4] = {1, 1, PostBlurHighInputBiasPc / (f32)width, PostBlurHighInputBiasPc / (f32)height};
+            f32 bias[4] = {1, 1, PostBlurHighInputBias / (f32)width, PostBlurHighInputBias / (f32)height};
             f32 output_bias[4] = {(f32)output_width / (f32)work_width, (f32)output_height / (f32)work_height,
                                   PostBlurHighOutputBias / (f32)work_width, PostBlurHighOutputBias / (f32)work_height};
             PCGraphicsAttachFramebuffer(PostBlurFramebuffer, 0, PCGraphicsPostEffectWorkTexture, 0);
@@ -19140,8 +19140,8 @@ extern "C" void PostBlur7x7High(GRAPHICS_RENDER_TEXTURE *source, i32 source_lod,
 }
 
 /* Unreferenced 7x7 blur variant: both passes render straight into the output level, no work texture. */
-extern "C" void PostBlur7x7DirectPc(GRAPHICS_RENDER_TEXTURE *source, i32 source_lod, GRAPHICS_RENDER_TEXTURE *textures, i32 first_lod,
-                                    i32 iterations, i32 levels, bool mip_chain, f32 radius, POST_SHADER_PROGRAM *program) {
+extern "C" void PostBlur7x7Direct(GRAPHICS_RENDER_TEXTURE *source, i32 source_lod, GRAPHICS_RENDER_TEXTURE *textures, i32 first_lod,
+                                  i32 iterations, i32 levels, bool mip_chain, f32 radius, POST_SHADER_PROGRAM *program) {
     NuShaderProgramMakeCurrent(program);
     for (i32 lod = 0; lod < levels; ++lod) {
         GRAPHICS_RENDER_TEXTURE *input;
@@ -19183,8 +19183,8 @@ extern "C" void PostBlur7x7DirectPc(GRAPHICS_RENDER_TEXTURE *source, i32 source_
             OccluderVertexSet(&vertical[5], 0, (f32) - (dy * 2.0), .10f, 0);
             OccluderVertexSet(&horizontal[6], (f32) - (dx * 3.0), 0, .05f, 0);
             OccluderVertexSet(&vertical[6], 0, (f32) - (dy * 3.0), .05f, 0);
-            f32 bias[4] = {1, 1, PostBlurDirectInputBiasPc / (f32)width, PostBlurDirectInputBiasPc / (f32)height};
-            f32 output_bias[4] = {1, 1, PostBlurDirectOutputBiasPc / output_width, PostBlurDirectOutputBiasPc / output_height};
+            f32 bias[4] = {1, 1, PostBlurDirectInputBias / (f32)width, PostBlurDirectInputBias / (f32)height};
+            f32 output_bias[4] = {1, 1, PostBlurDirectOutputBias / output_width, PostBlurDirectOutputBias / output_height};
             PCGraphicsAttachFramebuffer(PostBlurFramebuffer, 0, output, output_lod);
             PCGraphicsBindFramebuffer(PostBlurFramebuffer);
             PCGraphicsSubmitViewport(0, 0, output_width, output_height);

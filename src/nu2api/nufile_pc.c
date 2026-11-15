@@ -25,12 +25,12 @@ void NuPSFileInitDevices(i32 device_id, i32 reboot_iop, i32 eject) {
     (void)eject;
 }
 
-char *FileDirectoryPathSlotsPc[16] = {0};
+char *FileDirectoryPathSlots[16] = {0};
 i32 bgproc_initialized = 0;
-HANDLE FileDirectoryHostHandlesPc[16] = {0};
+HANDLE FileDirectoryHostHandles[16] = {0};
 HANDLE bgproc_work_event = 0;
 HANDLE bgproc_resume_event = 0;
-WIN32_FIND_DATAA FileDirectoryFindDataPc[16] = {0};
+WIN32_FIND_DATAA FileDirectoryFindData[16] = {0};
 void (*nuwarning_handler)(char *) = 0;
 char *nufile = 0;
 char PCWarningFormatBuffer[1024] = {0};
@@ -49,9 +49,9 @@ DWORD bgproc_thread_id = 0;
 i32 bgproc_frozen = 0;
 i32 bgproc_freeze = 0;
 i32 PcStartupCriticalSectionInitialized = 0;
-i32 FileDirectoryOpenCountPc = 0;
+i32 FileDirectoryOpenCount = 0;
 i32 PCThreadCriticalSectionCount = 0;
-NUFILE_DEVICE *FileDirectoryDefaultDevicePc = &host_device;
+NUFILE_DEVICE *FileDirectoryDefaultDevice = &host_device;
 
 i32 NuFileExists(char *filepath) {
     return NuFileExistQuiet(filepath);
@@ -119,16 +119,16 @@ i32 fun_004ff2c0(void) {
     return 0;
 }
 
-extern i32 FileDirectoryMcOpenPc(i32 port, i32 slot, char *path);
-extern void FileDirectoryMcClosePc(i32 file);
-extern i32 FileDirectoryMcReadPc(i32 file, FILE_DIRECTORY_ENTRY *entry);
+extern i32 FileDirectoryMcOpen(i32 port, i32 slot, char *path);
+extern void FileDirectoryMcClose(i32 file);
+extern i32 FileDirectoryMcRead(i32 file, FILE_DIRECTORY_ENTRY *entry);
 
 NUFILE NuFileOpenDir(char *path) {
     char formatted[256];
     NUFILE_DEVICE *device = NuFileGetDeviceFromPath(path);
     i32 result;
     if (device == NULL) {
-        device = FileDirectoryDefaultDevicePc;
+        device = FileDirectoryDefaultDevice;
     }
     device->format_name_fn(device, formatted, path, 256);
     if (device->id == 2) {
@@ -137,13 +137,13 @@ NUFILE NuFileOpenDir(char *path) {
     if (device->id == 1) {
         i32 port = formatted[2] - '0';
         i32 slot = formatted[3] - '0';
-        result = FileDirectoryMcOpenPc(port, slot, formatted + device->name_len);
+        result = FileDirectoryMcOpen(port, slot, formatted + device->name_len);
         if (result >= 0) {
             return result + 0x1000;
         }
         return 0;
     }
-    result = FileDirectoryHostOpenPc(formatted);
+    result = FileDirectoryHostOpen(formatted);
     if (result < 0) {
         return 0;
     }
@@ -152,10 +152,10 @@ NUFILE NuFileOpenDir(char *path) {
 
 void NuFileCloseDir(NUFILE file) {
     if (file >= 0x1000) {
-        FileDirectoryMcClosePc(file - 0x1000);
+        FileDirectoryMcClose(file - 0x1000);
         return;
     }
-    FileDirectoryHostClosePc(file - 1);
+    FileDirectoryHostClose(file - 1);
 }
 
 i32 NuFileReadDir(NUFILE file, FILE_DIRECTORY_ENTRY *entry) {
@@ -164,9 +164,9 @@ i32 NuFileReadDir(NUFILE file, FILE_DIRECTORY_ENTRY *entry) {
     u32 flags;
     i32 length = 0;
     if (file >= 0x1000) {
-        return FileDirectoryMcReadPc(file - 0x1000, entry);
+        return FileDirectoryMcRead(file - 0x1000, entry);
     }
-    result = FileDirectoryHostReadPc(file - 1, &host);
+    result = FileDirectoryHostRead(file - 1, &host);
     if (result > 0) {
         flags = (((host.flags >> 2) & 0x800) | (host.flags & 0x100));
         flags = ((flags >> 2) | (host.flags & 0x80));
@@ -187,25 +187,25 @@ i32 NuFileReadDir(NUFILE file, FILE_DIRECTORY_ENTRY *entry) {
         strcpy(entry->name, host.name);
         length = strlen(entry->name);
     } else if (result < 0) {
-        FileDirectoryErrorPc(result);
+        FileDirectoryError(result);
     }
     return length;
 }
 
-i32 FileDirectoryHostReadPc(i32 file, FILE_DIRECTORY_HOST_ENTRY *entry) {
+i32 FileDirectoryHostRead(i32 file, FILE_DIRECTORY_HOST_ENTRY *entry) {
     SYSTEMTIME time;
     u32 flags = 0x100;
-    if ((FileDirectoryFindDataPc[file].dwFileAttributes & 1) != 0) {
+    if ((FileDirectoryFindData[file].dwFileAttributes & 1) != 0) {
         flags = 0x180;
     }
-    if ((FileDirectoryFindDataPc[file].dwFileAttributes & 0x10) != 0) {
+    if ((FileDirectoryFindData[file].dwFileAttributes & 0x10) != 0) {
         flags += 0x2000;
     }
     entry->flags = flags;
-    entry->size = FileDirectoryFindDataPc[file].nFileSizeLow;
+    entry->size = FileDirectoryFindData[file].nFileSizeLow;
     entry->unused_24 = 0;
-    strcpy(entry->name, FileDirectoryFindDataPc[file].cFileName);
-    FileTimeToSystemTime(&FileDirectoryFindDataPc[file].ftCreationTime, &time);
+    strcpy(entry->name, FileDirectoryFindData[file].cFileName);
+    FileTimeToSystemTime(&FileDirectoryFindData[file].ftCreationTime, &time);
     entry->created.second = (u8)time.wSecond;
     entry->created.minute = (u8)time.wMinute;
     entry->created.hour = (u8)time.wHour;
@@ -213,7 +213,7 @@ i32 FileDirectoryHostReadPc(i32 file, FILE_DIRECTORY_HOST_ENTRY *entry) {
     entry->created.month = (u8)time.wMonth;
     entry->created.year_low = (u8)time.wYear;
     entry->created.year_high = 0;
-    FileTimeToSystemTime(&FileDirectoryFindDataPc[file].ftLastWriteTime, &time);
+    FileTimeToSystemTime(&FileDirectoryFindData[file].ftLastWriteTime, &time);
     entry->modified.second = (u8)time.wSecond;
     entry->modified.minute = (u8)time.wMinute;
     entry->modified.hour = (u8)time.wHour;
@@ -221,7 +221,7 @@ i32 FileDirectoryHostReadPc(i32 file, FILE_DIRECTORY_HOST_ENTRY *entry) {
     entry->modified.month = (u8)time.wMonth;
     entry->modified.year_low = (u8)time.wYear;
     entry->modified.year_high = 0;
-    FileTimeToSystemTime(&FileDirectoryFindDataPc[file].ftLastAccessTime, &time);
+    FileTimeToSystemTime(&FileDirectoryFindData[file].ftLastAccessTime, &time);
     entry->accessed.second = (u8)time.wSecond;
     entry->accessed.minute = (u8)time.wMinute;
     entry->accessed.hour = (u8)time.wHour;
@@ -229,23 +229,23 @@ i32 FileDirectoryHostReadPc(i32 file, FILE_DIRECTORY_HOST_ENTRY *entry) {
     entry->accessed.month = (u8)time.wMonth;
     entry->accessed.year_low = (u8)time.wYear;
     entry->accessed.year_high = 0;
-    if (FileDirectoryFindDataPc[file].dwFileAttributes == 0xffffffff) {
+    if (FileDirectoryFindData[file].dwFileAttributes == 0xffffffff) {
         return 0;
     }
-    if (FindNextFileA(FileDirectoryHostHandlesPc[file], &FileDirectoryFindDataPc[file]) != 1) {
-        FileDirectoryFindDataPc[file].dwFileAttributes = 0xffffffff;
+    if (FindNextFileA(FileDirectoryHostHandles[file], &FileDirectoryFindData[file]) != 1) {
+        FileDirectoryFindData[file].dwFileAttributes = 0xffffffff;
     }
     return strlen(entry->name);
 }
 
-i32 FileDirectoryHostOpenPc(char *path) {
+i32 FileDirectoryHostOpen(char *path) {
     char search[200];
     i32 slot;
-    if (FileDirectoryOpenCountPc == 16) {
+    if (FileDirectoryOpenCount == 16) {
         return 0;
     }
     for (slot = 0; slot < 16; ++slot) {
-        if (FileDirectoryPathSlotsPc[slot] == NULL) {
+        if (FileDirectoryPathSlots[slot] == NULL) {
             break;
         }
     }
@@ -257,28 +257,28 @@ i32 FileDirectoryHostOpenPc(char *path) {
         strcat(search, "\\");
     }
     strcat(search, "*.*");
-    FileDirectoryPathSlotsPc[slot] = NuAlloc(strlen(search) + 4, "d:\\projects\\game_saga\\nu2api.saga\\nucore\\pc\\nufile_pc.c", 0x21a);
-    strcpy(FileDirectoryPathSlotsPc[slot], search);
-    ++FileDirectoryOpenCountPc;
-    FileDirectoryHostHandlesPc[slot] = FindFirstFileA(FileDirectoryPathSlotsPc[slot], &FileDirectoryFindDataPc[slot]);
-    if (FileDirectoryHostHandlesPc[slot] == INVALID_HANDLE_VALUE) {
-        NuFree(FileDirectoryPathSlotsPc[slot], "d:\\projects\\game_saga\\nu2api.saga\\nucore\\pc\\nufile_pc.c", 0x222);
-        --FileDirectoryOpenCountPc;
+    FileDirectoryPathSlots[slot] = NuAlloc(strlen(search) + 4, "d:\\projects\\game_saga\\nu2api.saga\\nucore\\pc\\nufile_pc.c", 0x21a);
+    strcpy(FileDirectoryPathSlots[slot], search);
+    ++FileDirectoryOpenCount;
+    FileDirectoryHostHandles[slot] = FindFirstFileA(FileDirectoryPathSlots[slot], &FileDirectoryFindData[slot]);
+    if (FileDirectoryHostHandles[slot] == INVALID_HANDLE_VALUE) {
+        NuFree(FileDirectoryPathSlots[slot], "d:\\projects\\game_saga\\nu2api.saga\\nucore\\pc\\nufile_pc.c", 0x222);
+        --FileDirectoryOpenCount;
         /* Clears the slot before this one (slot 0 hits the word in front of the table). */
-        FileDirectoryPathSlotsPc[slot - 1] = NULL;
+        FileDirectoryPathSlots[slot - 1] = NULL;
         return -1;
     }
     return slot;
 }
 
-i32 FileDirectoryHostClosePc(i32 slot) {
+i32 FileDirectoryHostClose(i32 slot) {
     HANDLE handle;
-    NuFree(FileDirectoryPathSlotsPc[slot], "d:\\projects\\game_saga\\nu2api.saga\\nucore\\pc\\nufile_pc.c", 0x22e);
-    handle = FileDirectoryHostHandlesPc[slot];
-    /* Clears the slot before this one, as in FileDirectoryHostOpenPc. */
-    FileDirectoryPathSlotsPc[slot - 1] = NULL;
+    NuFree(FileDirectoryPathSlots[slot], "d:\\projects\\game_saga\\nu2api.saga\\nucore\\pc\\nufile_pc.c", 0x22e);
+    handle = FileDirectoryHostHandles[slot];
+    /* Clears the slot before this one, as in FileDirectoryHostOpen. */
+    FileDirectoryPathSlots[slot - 1] = NULL;
     FindClose(handle);
-    --FileDirectoryOpenCountPc;
+    --FileDirectoryOpenCount;
     return 0;
 }
 
@@ -289,13 +289,13 @@ i32 FileHostDeletePath(const char *path) {
 i32 FileHostMovePath(char *destination, char *source) {
     char formatted_destination[256];
     char formatted_source[256];
-    FileDeviceFormatDefaultNamePc(formatted_source, source, 256);
-    FileDeviceFormatDefaultNamePc(formatted_destination, destination, 256);
+    FileDeviceFormatDefaultName(formatted_source, source, 256);
+    FileDeviceFormatDefaultName(formatted_destination, destination, 256);
     DeleteFileA(formatted_destination);
     return MoveFileA(formatted_source, formatted_destination);
 }
 
-i32 SaveCreateDirectoryPc(char *path) {
+i32 SaveCreateDirectory(char *path) {
     SECURITY_ATTRIBUTES security;
     security.bInheritHandle = 1;
     security.nLength = sizeof(security);

@@ -47,10 +47,10 @@ void PC_SPECIAL_SHADOW_LIGHT::SetupCustomCameraFrustum(NUCAMERA *camera, const f
         camera->near_clip = splits[i];
         camera->far_clip = splits[i + 1];
         PostShadowComputeFrustumCube(camera, set.corners_pc, &set.far_plane_pc);
-        set.shadow_plane_count = PostShadowComputePlanes(&light_direction4_pc, set.corners_pc, set.planes_pc);
+        set.shadow_plane_count = PostShadowComputePlanes(&light_direction4, set.corners_pc, set.planes_pc);
         set.view_pc = view;
         set.projection_pc = projection;
-        PostShadowComputeCapsule(&light_direction4_pc, set.corners_pc, &set.endpoint0_pc, &set.endpoint1_pc, &set.shadow_radius_pc);
+        PostShadowComputeCapsule(&light_direction4, set.corners_pc, &set.endpoint0_pc, &set.endpoint1_pc, &set.shadow_radius_pc);
     }
     for (i32 i = 0; i < set_count; ++i) {
         split_planes[i].x = 0.0f;

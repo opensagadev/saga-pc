@@ -337,7 +337,7 @@ decrement chain; an if chain compiles to `test`/`cmp` pairs. A jump table over
 `case 0:` with its own (identical) statements as well as `default:`; a
 `case 0: default:` label pair or no `case 0` gives a decrement chain.
 Examples: `GizSpecial_GetOutputName`, `GizMiniCut_GetOutputName`,
-`PcInputAspectRatioPc`.
+`PcInputAspectRatio`.
 
 ### I31: parentheses steer x87 operand order
 
@@ -384,8 +384,8 @@ retail                                   ours
 A call to a small function (even an empty one) that retail keeps, where ours
 inlines it, means the caller's unit only had a declaration: the caller lives
 in another unit than the callee. The neighbours of the caller in retail
-address order name that unit. Examples: `PCDevicePostEffectBarrierPc` (to
-`nuwin32/d3dApiCalls.cpp`), `ShaderCompilerBufferAllocatorPc::operator<<` (to
+address order name that unit. Examples: `PCDevicePostEffectBarrier` (to
+`nuwin32/d3dApiCalls.cpp`), `ShaderCompilerBufferAllocator::operator<<` (to
 `shader_dictionary.cpp`), and the atexit entry `??__FPCDeviceBackend`, which
 calls the destructor because the global itself was defined next to
 `nu_keyboard_owner` in `data.cpp`. `tools/callset.py` lists these as call-set
@@ -421,8 +421,8 @@ together with the test that guarded the call. Retail keeps the calls, so the
 hook lived in another unit: move the definition to the file of the unit
 retail placed it in (the unit's first or last function in address order).
 Examples: `PCSoundFailure` (to `nusound.c`), `MoviesListNoOp` (to
-`movies.cpp`), `FileDirectoryErrorPc` (next to `bgProcDataOversize` in
-`nuvideo.c`), `SaveCreateDirectoryPc` (to `nufile_pc.c`). A C++ varargs hook
+`movies.cpp`), `FileDirectoryError` (next to `bgProcDataOversize` in
+`nuvideo.c`), `SaveCreateDirectory` (to `nufile_pc.c`). A C++ varargs hook
 (`PCSpecialEmptyHandler(...)`) only loses argument-less calls that
 come before its definition; defining it after the last such caller kept
 `NuSpecialGetFirst`'s call and `NuSpecialList`'s register use (retail knew
@@ -613,7 +613,7 @@ as recorded differences.
   `neg/sbb/neg` (or `sbb/and`), retail branches to an earlier shared
   `return 1`. Separate guards, `||`, `!=`/`==` spellings and a result variable
   did not change it. `Text_IsOtherPlatformWord`, `CanWearHatsInFreePlay`,
-  `PcInputSetDeadzonePc`.
+  `PcInputSetDeadzone`.
 - U19 the `else` block of a float `||` test placed before the `then` block
   (or the reverse); every if/else/return arrangement compiled the same.
   Closed for the memory card menus by I46 (`MenuUpdateLoading`,

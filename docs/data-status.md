@@ -91,7 +91,7 @@ changing code; each was moved and its proof failed:
 | global | owner by the rule | why it stays |
 |---|---|---|
 | `bad_fluff`, `bad_equiv` | nu2api/nucore_includes.c | NuStringIsFluff and NuStringBadSubString compile differently with the tables in their unit |
-| `PCDeviceBackend`, `PCDeviceStateCachePc` | nu2api/pc_device.cpp | C++ objects with constructor and destructor: their initialiser and atexit functions come out differently in that unit |
+| `PCDeviceBackend`, `PCDeviceStateCache` | nu2api/pc_device.cpp | C++ objects with constructor and destructor: their initialiser and atexit functions come out differently in that unit |
 | `nu_keyboard_owner` | nu2api/pc_input.cpp | the same |
 | `Text_LanguageList_Default` | legoapi/text.c | its initialiser copies string pointers at startup, which is C++; the owner is a C unit |
 | `debris_box_corners` | nu2api/nuparticle_state.c | NuRndrSetDebBox compiles differently |

@@ -18,7 +18,7 @@ extern "C" {
 #endif
     extern PC_SHADER_SLOT_VIEW *PCShaderSlots;
     PC_SHADER_RECORD_VIEW *PCShaderRecordFromHandle(u32);
-    void *PCShaderCurrentObjectPc(void);
+    void *PCShaderCurrentObject(void);
     extern f32 PCShaderShininessFactorStorage;
     f32 NuShaderManagerGetShininessFactor(void);
 #ifdef __cplusplus

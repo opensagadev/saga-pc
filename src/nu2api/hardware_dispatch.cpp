@@ -43,7 +43,7 @@
 extern "C" {
     void NuRndrConfigureLeaf(f32 a, f32 b, i32 c);
     void NuRndrDwaInit(void);
-    void PcCreateCursorMaterialPc(void);
+    void PcCreateCursorMaterial(void);
 }
 
 extern "C" void PcRegisterSaveMetadata(const void *);
@@ -274,7 +274,7 @@ extern "C" i32 NuInitHardware(VARIPTR *buffer, VARIPTR *end, i32 allocate, ...) 
     } while (selector != NUHW_END);
     va_end(args);
     if (parameter_30 != NULL && parameter_31 != NULL) {
-        PcRegisterSaveFolderPc((const char *)parameter_30, (const char *)parameter_31, parameter_2e, 0);
+        PcRegisterSaveFolder((const char *)parameter_30, (const char *)parameter_31, parameter_2e, 0);
     }
     PCDeviceBackend.InitializeFactory();
     PcWindowOptions.InitializePath();
@@ -366,7 +366,7 @@ extern "C" i32 NuInitHardware(VARIPTR *buffer, VARIPTR *end, i32 allocate, ...) 
             exit(1);
         }
     } else {
-        if (!PublishWindowPc(supplied_window, NuHwShowCommand)) {
+        if (!PublishWindow(supplied_window, NuHwShowCommand)) {
             exit(1);
         }
     }
@@ -376,7 +376,7 @@ extern "C" i32 NuInitHardware(VARIPTR *buffer, VARIPTR *end, i32 allocate, ...) 
     nuapi.video_aspect = PcWindowOptions.aspect_mode == 3 ? PCDeviceBackend.active_aspect_mode : PcWindowOptions.aspect_mode;
     SetCursor(NULL);
     if (!PCDeviceIsAbsent()) {
-        PCDeviceShowCursorPc(0);
+        PCDeviceShowCursor(0);
     }
     NuRndrDwaInit();
     NuLgtInitializeState();
@@ -408,7 +408,7 @@ extern "C" i32 NuInitHardware(VARIPTR *buffer, VARIPTR *end, i32 allocate, ...) 
     NuMtlInitEx(buffer, material_count);
     NuRndrInitEx(stream_size, buffer, *end);
     NuRndrInitStartupMaterials();
-    NuGobjRegistryInitPc();
+    NuGobjRegistryInit();
     NuRndrInitLeaf(buffer, *end);
     NuInitDebrisRenderer(buffer, *end);
     PCGraphicsInitializeFramebuffers(PCDeviceBackend.render_target_flags, 0, buffer, *end);
@@ -444,9 +444,9 @@ extern "C" i32 NuInitHardware(VARIPTR *buffer, VARIPTR *end, i32 allocate, ...) 
         *pads[3] = NuPadOpen(3, 0);
     }
     NuMtlInitOverride(512, buffer, end);
-    NuPadAutoConfigurePc(1);
+    NuPadAutoConfigure(1);
     NuOcclusionManagerInit(occlusion_capacity, buffer, *end);
-    PcCreateCursorMaterialPc();
+    PcCreateCursorMaterial();
     NuRndrBeginScene(1);
     NuRndrClear(0xb00, 0, 1.0f);
     NuRndrEndScene();

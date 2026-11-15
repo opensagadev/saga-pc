@@ -129,7 +129,7 @@
 #include <stdio.h>
 #include "legoapi/world/levels/hub.h"
 
-extern "C" void FmvPlatformUpdatePc(void);
+extern "C" void FmvPlatformUpdate(void);
 extern "C" void Particles_LoadAreaPage(char *);
 extern "C" {
     void NewAreaMusicChanges(void);
@@ -1568,7 +1568,7 @@ void LoadAreaCharacters(void) {
     if (Area == -1 || Area != last_area) {
         Area_Configure(Area, Level, ExtraModelList, id_DEFAULTCHARACTER);
     }
-    saved_override = AreaGetKeyboardOverridePc();
+    saved_override = AreaGetKeyboardOverride();
     VehicleArea = Area != -1 && (ADataList[Area].flags & AREAFLAG_VEHICLE_AREA) != 0;
     BonusArea = -1 != Area && (ADataList[Area].flags & AREAFLAG_BONUS_AREA) != 0;
     AreaGlobals.unknown_04 = VehicleArea != 0 && BonusArea == 0;
@@ -1631,9 +1631,9 @@ void LoadAreaCharacters(void) {
     bgPostRequest(LoadAreaData, NULL, NULL, 0);
     while (AreaDataLoaded == 0 || LoadWait > 0.0f) {
         i32 draw_touch_prompt = 0;
-        TextInputSetKeyboardOverridePc(0);
+        TextInputSetKeyboardOverride(0);
         NuWindowsProcessMessages();
-        FmvPlatformUpdatePc();
+        FmvPlatformUpdate();
         NuFrameBegin();
         NuCameraSet(&global_camera);
         readpads_always = 1;
@@ -1811,7 +1811,7 @@ void LoadAreaCharacters(void) {
         loadareacharacters_loadedlevel = 1;
         loadareadata_loadlevel = 0;
     }
-    TextInputSetKeyboardOverridePc(saved_override);
+    TextInputSetKeyboardOverride(saved_override);
 }
 
 extern "C" {

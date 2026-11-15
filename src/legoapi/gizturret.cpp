@@ -61,14 +61,14 @@ typedef struct {      // size 0x70
 } TURRET_PROGRESS;
 
 extern "C" {
-    extern char *GizmoRegistryGizTurretsNamePtrPc;
+    extern char *GizmoRegistryGizTurretsNamePtr;
     extern i32 turret_gizmotype_id;
     extern char TurretOutputBuffer[32];
     i32 LEGOHINT_SHOOTCAMERAS = -1;
     i32 GizTurretAnimDataVersion = 7;
     i32 gizturret_test_ang = 3640;
     f32 gizturret_rapid_fire_rate = 0.2f;
-    ADDGIZMOTYPE GizmoRegistryGizTurretsAddTypePc = {0};
+    ADDGIZMOTYPE GizmoRegistryGizTurretsAddType = {0};
 
     static void GizTurretClear(GIZTURRET_s *turret) {
         GAMEANIMSET *set;
@@ -1449,9 +1449,9 @@ extern "C" {
     }
 
     ADDGIZMOTYPE *GizTurrets_RegisterGizmo(i32 type_id) {
-        ADDGIZMOTYPE *addtype = &GizmoRegistryGizTurretsAddTypePc;
+        ADDGIZMOTYPE *addtype = &GizmoRegistryGizTurretsAddType;
         *addtype = Default_ADDGIZMOTYPE;
-        addtype->name = GizmoRegistryGizTurretsNamePtrPc;
+        addtype->name = GizmoRegistryGizTurretsNamePtr;
         addtype->fns.early_update_fn = NULL;
         addtype->fns.panel_draw_fn = NULL;
         addtype->fns.get_visibility_fn = NULL;

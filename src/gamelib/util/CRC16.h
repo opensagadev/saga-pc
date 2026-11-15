@@ -21,11 +21,11 @@ extern "C" {
 }
 #endif
 #ifdef __cplusplus
-struct ShaderLexicalSlicePc;
+struct ShaderLexicalSlice;
 
 #endif
-/* ShaderSourceNodePc.semantic: the semantic_* keywords of a declaration (ShaderDeclarationSemanticPc) and the
- * names ShaderSourceNodePc::SemanticName prints; a custom semantic keeps its own text. */
+/* ShaderSourceNode.semantic: the semantic_* keywords of a declaration (ShaderDeclarationSemantic) and the
+ * names ShaderSourceNode::SemanticName prints; a custom semantic keeps its own text. */
 #define SHADER_SEMANTIC_CUSTOM 0
 #define SHADER_SEMANTIC_DEFAULT 1
 #define SHADER_SEMANTIC_POSITION 2
@@ -53,15 +53,15 @@ struct ShaderLexicalSlicePc;
 #define SHADER_SEMANTIC_INDEX 24
 
 #ifdef __cplusplus
-struct ShaderConditionNodePc {    // size 0xc
-    ShaderConditionNodePc *left;  // 0x0
-    ShaderConditionNodePc *right; // 0x4
-    const char *token;            // 0x8
-    ShaderConditionNodePc(const char *token, ShaderConditionNodePc *left, ShaderConditionNodePc *right);
-    ShaderConditionNodePc *AppendOperand(ShaderConditionNodePc *operand);
+struct ShaderConditionNode {    // size 0xc
+    ShaderConditionNode *left;  // 0x0
+    ShaderConditionNode *right; // 0x4
+    const char *token;          // 0x8
+    ShaderConditionNode(const char *token, ShaderConditionNode *left, ShaderConditionNode *right);
+    ShaderConditionNode *AppendOperand(ShaderConditionNode *operand);
 };
 
-struct ShaderSourceNodePc {      // size 0x24
+struct ShaderSourceNode {        // size 0x24
     u32 flags;                   // 0x00
     i32 type;                    // 0x04
     i32 array_count;             // 0x08
@@ -71,17 +71,17 @@ struct ShaderSourceNodePc {      // size 0x24
     i32 vertex_register;         // 0x18
     i32 pixel_register;          // 0x1c
     i32 expansion_state;         // 0x20
-    ShaderSourceNodePc(u32, i32, i32, const char *, i32, const char *, i32, i32);
+    ShaderSourceNode(u32, i32, i32, const char *, i32, const char *, i32, i32);
     const char *SemanticName();
     i32 fun_00746620();
     const char *fun_00746630();
 };
 
-struct ShaderRegisterBlockPc { // size 0x14
-    char name[16];             // 0x00
-    i32 register_count;        // 0x10
+struct ShaderRegisterBlock { // size 0x14
+    char name[16];           // 0x00
+    i32 register_count;      // 0x10
 
-    ShaderRegisterBlockPc() {
+    ShaderRegisterBlock() {
         name[0] = 0;
         register_count = 0;
     }
@@ -89,17 +89,17 @@ struct ShaderRegisterBlockPc { // size 0x14
     void fun_00746760(const char *block_name, i32 count);
 };
 
-struct ShaderMacroDefinitionPc { // size 0xc
-    const char *name;            // 0x0
-    const char *value;           // 0x4
-    u8 emit;                     // 0x8
-    u8 unknown_9[3];             // 0x9
-    ShaderMacroDefinitionPc(const char *name, const char *value, u8 emit);
+struct ShaderMacroDefinition { // size 0xc
+    const char *name;          // 0x0
+    const char *value;         // 0x4
+    u8 emit;                   // 0x8
+    u8 unknown_9[3];           // 0x9
+    ShaderMacroDefinition(const char *name, const char *value, u8 emit);
 };
 
-extern "C" void ShaderLexicalClassesInitPc(void);
+extern "C" void ShaderLexicalClassesInit(void);
 
-/* ShaderParserNodePc.kind and ShaderExpansionNodePc.kind: the node type each ShaderParser*Pc constructor stores. */
+/* ShaderParserNode.kind and ShaderExpansionNode.kind: the node type each ShaderParser*Pc constructor stores. */
 #define SHADER_NODE_BRANCH 0
 #define SHADER_NODE_MACRO 1
 #define SHADER_NODE_UNDEF 2
@@ -109,8 +109,8 @@ extern "C" void ShaderLexicalClassesInitPc(void);
 #define SHADER_NODE_EMIT 6
 #define SHADER_NODE_TEXT 7
 
-/* Shader declaration flags: the storage keyword of nu2_use/nu2_declare (ShaderCompilerParserPc::ParseDeclaration),
- * the stages a uniform is bound to (vreg, freg) and shared (ShaderDeclarationFlagsPc). */
+/* Shader declaration flags: the storage keyword of nu2_use/nu2_declare (ShaderCompilerParser::ParseDeclaration),
+ * the stages a uniform is bound to (vreg, freg) and shared (ShaderDeclarationFlags). */
 #define SHADER_DECL_VS_LOCAL 0x2
 #define SHADER_DECL_FS_LOCAL 0x4
 #define SHADER_DECL_VARYING 0x8
@@ -120,16 +120,16 @@ extern "C" void ShaderLexicalClassesInitPc(void);
 #define SHADER_DECL_VERTEX 0x2000
 #define SHADER_DECL_SHARED 0x4000
 
-struct ShaderExpansionNodePc {   // size 0x28
-    i32 kind;                    // 0x00
-    ShaderExpansionNodePc *next; // 0x04
+struct ShaderExpansionNode {   // size 0x28
+    i32 kind;                  // 0x00
+    ShaderExpansionNode *next; // 0x04
 
     union { // size 0x20
 
-        struct {                              // size 0xc
-            ShaderExpansionNodePc *if_true;   // 0x08
-            ShaderExpansionNodePc *if_false;  // 0x0c
-            ShaderConditionNodePc *condition; // 0x10
+        struct {                            // size 0xc
+            ShaderExpansionNode *if_true;   // 0x08
+            ShaderExpansionNode *if_false;  // 0x0c
+            ShaderConditionNode *condition; // 0x10
         } branch;
 
         struct {               // size 0x8
@@ -172,19 +172,19 @@ struct ShaderExpansionNodePc {   // size 0x28
 #endif
 #ifdef __cplusplus
 
-extern "C" u32 ShaderDeclarationFlagsPc(u8, u8, u8);
+extern "C" u32 ShaderDeclarationFlags(u8, u8, u8);
 #endif
 
 #ifdef __cplusplus
 
-struct ShaderCompilerBufferAllocatorPc { // size 0x10
-    u8 *data;                            // 0x0
-    i32 length;                          // 0x4
-    i32 capacity;                        // 0x8
-    u8 owns_memory;                      // 0xc
-    ShaderCompilerBufferAllocatorPc(i32, bool);
-    ShaderCompilerBufferAllocatorPc(VirtualStackAllocator &, i32);
-    ~ShaderCompilerBufferAllocatorPc();
+struct ShaderCompilerBufferAllocator { // size 0x10
+    u8 *data;                          // 0x0
+    i32 length;                        // 0x4
+    i32 capacity;                      // 0x8
+    u8 owns_memory;                    // 0xc
+    ShaderCompilerBufferAllocator(i32, bool);
+    ShaderCompilerBufferAllocator(VirtualStackAllocator &, i32);
+    ~ShaderCompilerBufferAllocator();
     char *CopyText();
     void Resize(i32);
     void AppendBytes(const char *, i32);
@@ -193,11 +193,11 @@ struct ShaderCompilerBufferAllocatorPc { // size 0x10
     void OverwriteText(i32 start, const char *text);
     void WriteBytes(i32 offset, const void *source, i32 count);
     void AppendText(const char *);
-    ShaderCompilerBufferAllocatorPc &operator<<(const char *);
-    ShaderCompilerBufferAllocatorPc &operator<<(i32);
+    ShaderCompilerBufferAllocator &operator<<(const char *);
+    ShaderCompilerBufferAllocator &operator<<(i32);
     void AppendInt(i32);
-    void AppendSlice(const ShaderLexicalSlicePc &slice);
-    ShaderCompilerBufferAllocatorPc &operator<<(const ShaderLexicalSlicePc &slice);
+    void AppendSlice(const ShaderLexicalSlice &slice);
+    ShaderCompilerBufferAllocator &operator<<(const ShaderLexicalSlice &slice);
     void fun_00746450(char value);
     u8 *fun_00746490();
 };
@@ -205,67 +205,67 @@ struct ShaderCompilerBufferAllocatorPc { // size 0x10
 #endif
 #ifdef __cplusplus
 
-struct ShaderCompilerDictionaryPc {                  // size 0x9a4
-    ShaderMacroDefinitionPc *programs[300];          // 0x000
-    i32 program_count;                               // 0x4b0
-    ShaderSourceNodePc *definitions[250];            // 0x4b4
-    i32 definition_count;                            // 0x89c
-    ShaderRegisterBlockPc register_blocks[8];        // 0x8a0
-    i32 register_block_count;                        // 0x940
-    VirtualStackAllocator scratch;                   // 0x944
-    VirtualStackAllocator output_memory;             // 0x954
-    u8 emit_definitions;                             // 0x964
-    u8 unknown_965;                                  // 0x965
-    u8 unknown_966;                                  // 0x966
-    u8 emit_semantics;                               // 0x967
-    u8 emit_registers;                               // 0x968
-    u8 emit_centroid;                                // 0x969
-    u8 unknown_96a[2];                               // 0x96a
-    const char *register_format;                     // 0x96c
-    bool force_mode;                                 // 0x970
-    u8 unknown_971[3];                               // 0x971
-    i32 profile;                                     // 0x974
-    i32 mode;                                        // 0x978
-    i32 output_stage;                                // 0x97c
-    i32 first_version;                               // 0x980
-    i32 second_version;                              // 0x984
-    const char *profile_name;                        // 0x988
-    ShaderCompilerBufferAllocatorPc register_buffer; // 0x98c
+struct ShaderCompilerDictionary {                  // size 0x9a4
+    ShaderMacroDefinition *programs[300];          // 0x000
+    i32 program_count;                             // 0x4b0
+    ShaderSourceNode *definitions[250];            // 0x4b4
+    i32 definition_count;                          // 0x89c
+    ShaderRegisterBlock register_blocks[8];        // 0x8a0
+    i32 register_block_count;                      // 0x940
+    VirtualStackAllocator scratch;                 // 0x944
+    VirtualStackAllocator output_memory;           // 0x954
+    u8 emit_definitions;                           // 0x964
+    u8 unknown_965;                                // 0x965
+    u8 unknown_966;                                // 0x966
+    u8 emit_semantics;                             // 0x967
+    u8 emit_registers;                             // 0x968
+    u8 emit_centroid;                              // 0x969
+    u8 unknown_96a[2];                             // 0x96a
+    const char *register_format;                   // 0x96c
+    bool force_mode;                               // 0x970
+    u8 unknown_971[3];                             // 0x971
+    i32 profile;                                   // 0x974
+    i32 mode;                                      // 0x978
+    i32 output_stage;                              // 0x97c
+    i32 first_version;                             // 0x980
+    i32 second_version;                            // 0x984
+    const char *profile_name;                      // 0x988
+    ShaderCompilerBufferAllocator register_buffer; // 0x98c
 
     union { // size 0x4
         i32 unknown_99c;
-        ShaderCompilerBufferAllocatorPc *active_output;
+        ShaderCompilerBufferAllocator *active_output;
     }; // 0x99c
 
     u32 unknown_9a0; // 0x9a0
-    ShaderCompilerDictionaryPc(VirtualStackAllocator &, i32);
-    ~ShaderCompilerDictionaryPc();
+    ShaderCompilerDictionary(VirtualStackAllocator &, i32);
+    ~ShaderCompilerDictionary();
     void SetProfile(i32, i32, i32);
     bool GetForceMode() const;
     i32 GetProfile() const;
     void AddRegisterBlock(const char *, i32);
     i32 FindRegisterBlock(const char *);
-    ShaderMacroDefinitionPc *FindDefinition(const char *);
-    void Expand(void *, ShaderCompilerBufferAllocatorPc *);
+    ShaderMacroDefinition *FindDefinition(const char *);
+    void Expand(void *, ShaderCompilerBufferAllocator *);
     void AddDefinition(const char *, const char *, i32);
-    void BindOutputBuffer(ShaderCompilerBufferAllocatorPc *);
+    void BindOutputBuffer(ShaderCompilerBufferAllocator *);
     bool IsNumericToken(const char *);
-    bool EvaluateCondition(ShaderConditionNodePc *, i32 *);
-    i32 EvaluateValue(ShaderConditionNodePc *);
-    const char *RenderASTName(ShaderSourceNodePc *);
-    ShaderSourceNodePc *FindASTExact(const char *, u32);
-    ShaderSourceNodePc *FindASTUniform(const char *);
+    bool EvaluateCondition(ShaderConditionNode *, i32 *);
+    i32 EvaluateValue(ShaderConditionNode *);
+    const char *RenderASTName(ShaderSourceNode *);
+    ShaderSourceNode *FindASTExact(const char *, u32);
+    ShaderSourceNode *FindASTUniform(const char *);
     void fun_00748810(i32 stage);
     void fun_00748820();
     void fun_00748840();
-    void EmitType(ShaderCompilerBufferAllocatorPc *);
-    void EmitRegister(ShaderCompilerBufferAllocatorPc *);
-    void EmitVertexInput(ShaderCompilerBufferAllocatorPc *);
-    void EmitAttribute(ShaderCompilerBufferAllocatorPc *);
-    void EmitProgram(ShaderCompilerBufferAllocatorPc *);
-    void AddASTDefinition(ShaderSourceNodePc *);
+    void EmitType(ShaderCompilerBufferAllocator *);
+    void EmitRegister(ShaderCompilerBufferAllocator *);
+    void EmitVertexInput(ShaderCompilerBufferAllocator *);
+    void EmitAttribute(ShaderCompilerBufferAllocator *);
+    void EmitProgram(ShaderCompilerBufferAllocator *);
+    void AddASTDefinition(ShaderSourceNode *);
     void fun_007451c0(bool force);
-    void fun_00746940(ShaderConditionNodePc *node, char *text);
+    void fun_00746940(ShaderConditionNode *node, char *text);
     void fun_00746bf0(const char *name);
 };
 
@@ -273,9 +273,9 @@ struct ShaderCompilerDictionaryPc {                  // size 0x9a4
 
 #ifdef __cplusplus
 
-struct ShaderLexicalSlicePc { // size 0x8
-    const char *begin;        // 0x0
-    i32 length;               // 0x4
+struct ShaderLexicalSlice { // size 0x8
+    const char *begin;      // 0x0
+    i32 length;             // 0x4
     bool Equals(const char *text);
     bool StartsWith(const char *text);
     char *HeapCopy();
@@ -286,13 +286,13 @@ struct ShaderLexicalSlicePc { // size 0x8
     bool fun_0074b080(const char *text);
 };
 
-struct ShaderLexicalReaderPc {
-    bool Next(ShaderCompilerBufferAllocatorPc *input, i32 *cursor, ShaderLexicalSlicePc *slice);
+struct ShaderLexicalReader {
+    bool Next(ShaderCompilerBufferAllocator *input, i32 *cursor, ShaderLexicalSlice *slice);
     i32 IsWordChar(u8 c);
     i32 IsTokenChar(u8 c);
 };
 
 #endif
 #ifdef __cplusplus
-extern "C" i32 ShaderDeclarationSemanticPc(ShaderLexicalSlicePc *);
+extern "C" i32 ShaderDeclarationSemantic(ShaderLexicalSlice *);
 #endif

@@ -7304,7 +7304,7 @@ i32 Action_CycleCharacter(AISYS_PC *sys, AISCRIPTPROCESS *processor, AIPACKET *p
     return 1;
 }
 
-static u32 ParseAIPathCnxFlagPc(char *name) {
+static u32 ParseAIPathCnxFlag(char *name) {
     u32 flag;
     if (StartupGameFlag0 != 0) {
         flag = AIPathParseIndyFlag(name);
@@ -7472,7 +7472,7 @@ i32 Action_CnxController(struct AISYS_PC *sys, struct AISCRIPTPROCESS *processor
                     off_obstacle_open = 0;
                 }
             } else {
-                *flag_target |= ParseAIPathCnxFlagPc(value);
+                *flag_target |= ParseAIPathCnxFlag(value);
             }
         }
     }
@@ -8923,7 +8923,7 @@ i32 Action_SetPathCnxFlag(AISYS_PC *sys, AISCRIPTPROCESS *processor, AIPACKET *p
             to = match + 3;
             continue;
         }
-        flag = ParseAIPathCnxFlagPc(params[index]);
+        flag = ParseAIPathCnxFlag(params[index]);
         if (flag != 0) {
             add_flags |= flag;
             if (flag == LEGO_AIPATHCNX_JUMP_NOW) {
@@ -12114,9 +12114,9 @@ i32 Action_CreateCreatures(AISYS_PC *sys, AISCRIPTPROCESS *processor, AIPACKET *
                 ballooning = 1;
                 surface = 0;
             } else if ((value = NuStrIStr(params[index], "lose_capability=")) != NULL) {
-                remove_capabilities |= (i32)(ParseAIPathCnxFlagPc(value + NuStrLen("lose_capability=")));
+                remove_capabilities |= (i32)(ParseAIPathCnxFlag(value + NuStrLen("lose_capability=")));
             } else if ((value = NuStrIStr(params[index], "capability=")) != NULL) {
-                add_capabilities |= (i32)(ParseAIPathCnxFlagPc(value + NuStrLen("capability=")));
+                add_capabilities |= (i32)(ParseAIPathCnxFlag(value + NuStrLen("capability=")));
             }
         }
         if (minimum >= 0) {

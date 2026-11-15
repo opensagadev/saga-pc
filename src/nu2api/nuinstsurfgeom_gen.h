@@ -17,8 +17,8 @@ typedef struct PC_GEOMETRY_PUBLISH_RECORD PC_GEOMETRY_PUBLISH_RECORD;
 extern "C" {
 #endif
     i32 PcRegisterDynamicGeometry(PC_GEOMETRY_PUBLISH_FORMAT *);
-    extern i32 PcGeometryRegistryCountPc;
-    extern PC_GEOMETRY_PUBLISH_RECORD *PcGeometryRegistryPc;
+    extern i32 PcGeometryRegistryCount;
+    extern PC_GEOMETRY_PUBLISH_RECORD *PcGeometryRegistry;
     extern i32 PcGeometryMatrixCapacity;
     extern i32 PcGeometryOutputCapacity;
 #ifdef __cplusplus

@@ -204,7 +204,7 @@ extern "C" {
     u8 downrepeatcount[2] = {0};
     f32 newgamealpha = 0.0f;
     u32 MenuButtonHistory[15] = {0};
-    i32 MenuKeyboardPendingPc = 0;
+    i32 MenuKeyboardPending = 0;
     i32 PauseSaveAndExit = 0;
     u8 AlternateHudRgb[3] = {0, 0, 0};
     f32 MenuSaveSlotsStepY = 0;
@@ -216,7 +216,7 @@ extern "C" {
     i32 startnewgame = 0;
     i32 shop_quit = 0;
     i32 shop_save_done = 0;
-    u8 MenuKeyboardOverrideActivePc = 0;
+    u8 MenuKeyboardOverrideActive = 0;
 
     void MenuUpdateButtonHistory(void) {
         const i32 menu_id = GetMenuID();
@@ -716,7 +716,7 @@ extern "C" {
             menu_active = 0;
         }
         if (Menu_InSaveFlow != 0 || Menu_InLoadFlow != 0 || menu_active != 0) {
-            if (MenuKeyboardOverrideActivePc == 0) {
+            if (MenuKeyboardOverrideActive == 0) {
                 active_players = 0;
                 device = NuPadGetPort(PcInput_GetCtrlStringPlayer());
                 if (Player[0] != NULL && (Player[0]->flags_1fc & APIOBJECT_FLAG_PLAYER_ACTIVE) != 0) {
@@ -726,15 +726,15 @@ extern "C" {
                     ++active_players;
                 }
                 if (active_players < 2 || PcInput_PortIsKeyboard(device) != 0) {
-                    TextInputSetKeyboardOverridePc(1);
+                    TextInputSetKeyboardOverride(1);
                 }
-                MenuKeyboardOverrideActivePc = 1;
+                MenuKeyboardOverrideActive = 1;
             }
-        } else if (MenuKeyboardOverrideActivePc != 0) {
+        } else if (MenuKeyboardOverrideActive != 0) {
             PcInput_SetCtrlStringPlayer(-1);
-            TextInputSetKeyboardOverridePc(0);
-            MenuKeyboardOverrideActivePc = 0;
-            MenuKeyboardPendingPc = 0;
+            TextInputSetKeyboardOverride(0);
+            MenuKeyboardOverrideActive = 0;
+            MenuKeyboardPending = 0;
         }
         menu = &GameMenu[GameMenuLevel];
         previous_menu = menu->menu;
@@ -910,7 +910,7 @@ extern "C" void MenuUpdatePauseMain(MENU *menu) {
         return;
     }
     i32 both = Arcade_BothPlayersActive();
-    if (MenuKeyboardPendingPc) {
+    if (MenuKeyboardPending) {
         both = 0;
     }
     MenuSFX = GameAudio_GetSfxId(0x30);
@@ -972,7 +972,7 @@ extern "C" void MenuUpdatePauseMain(MENU *menu) {
 
 extern "C" void MenuDrawPauseMain(MENU *menu) {
     i32 both = Arcade_BothPlayersActive();
-    if (MenuKeyboardPendingPc) {
+    if (MenuKeyboardPending) {
         both = 0;
     }
     dme_r = 0;

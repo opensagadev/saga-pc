@@ -1,3 +1,1 @@
 our_name,original_name,kind,evidence
-GamePadReadBackendPc,NuPCReadPad,function,low: called at the same position in ReadPad
-PCPresentationPlatformLeafPc,NudxInput_Clearflags,function,low: called at the same position in GamePads_SkipMovie

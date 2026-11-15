@@ -184,11 +184,11 @@ void GuideLines_StoreProgress(WORLDINFO *world, void *unused, GUIDELINE_PROGRESS
     }
 }
 
-char *GuideLineRegistryNamePc = "GuideLine";
+char *GuideLineRegistryName = "GuideLine";
 ADDGIZMOTYPE GuideLineAddType = {0};
 
 ADDGIZMOTYPE *GuideLines_RegisterGizmo(i32 unused_type_id) {
-    char *name = GuideLineRegistryNamePc;
+    char *name = GuideLineRegistryName;
     GuideLineAddType = Default_ADDGIZMOTYPE;
     GuideLineAddType.name = name;
     GuideLineAddType.prefix = dat_007516c0;

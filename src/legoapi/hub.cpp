@@ -27,7 +27,7 @@ extern "C" void LostTempleC_Update(WORLDINFO *);
 struct GIZBUILDIT;
 /* Takes action, player0 and player1; the last two are char* values tested
  * for nonzero rather than string contents. */
-extern "C" char *TextInputActionLabelPc(i32 device, i32 action, i32, i32);
+extern "C" char *TextInputActionLabel(i32 device, i32 action, i32, i32);
 extern "C" char HubButtonStringBuffer[];
 extern "C" {}
 
@@ -58,10 +58,10 @@ extern "C" char *TextButtonString(i32 action, const char *player0, const char *p
     const i32 device0 = NuPadGetPort(0);
     const i32 device1 = NuPadGetPort(1);
     if (player0 != NULL && device0 >= 0) {
-        NuStrCpy(first, TextInputActionLabelPc(device0, action, 0, 0));
+        NuStrCpy(first, TextInputActionLabel(device0, action, 0, 0));
     }
     if (player1 != NULL && device1 >= 0) {
-        NuStrCpy(second, TextInputActionLabelPc(device1, action, 0, 0));
+        NuStrCpy(second, TextInputActionLabel(device1, action, 0, 0));
     }
     if (first[0] != 0 && second[0] != 0) {
         NuSPrintf(HubButtonStringBuffer, "~0%s~~ \\ ~0%s~~", first, second);

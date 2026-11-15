@@ -542,11 +542,11 @@ extern "C" {
 
 extern "C" {
     char *LedgeOutputName = "CanUse";
-    char *LedgeRegistryNamePc = "Ledge";
+    char *LedgeRegistryName = "Ledge";
     ADDGIZMOTYPE LedgeAddType = {0};
 
     ADDGIZMOTYPE *Ledges_RegisterGizmo(i32 unused_type_id) {
-        char *name = LedgeRegistryNamePc;
+        char *name = LedgeRegistryName;
         LedgeAddType = Default_ADDGIZMOTYPE;
         LedgeAddType.name = name;
         LedgeAddType.prefix = dat_007516c0;

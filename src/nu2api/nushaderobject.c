@@ -28,7 +28,7 @@ void NuShaderObjectInit(NuShaderObject *shader, const u32 *key, i32 index, const
 }
 
 /* Looks a uniform up in one constant table and marks the stage that provides it. */
-static const char *PCShaderFindConstantPc(ShaderUniformRecordPc *uniform, ID3DXConstantTable *table, const char *name, i32 stage) {
+static const char *PCShaderFindConstant(ShaderUniformRecord *uniform, ID3DXConstantTable *table, const char *name, i32 stage) {
     const char *handle;
     if (name != NULL && table != NULL) {
         handle = table->methods->get_constant_by_name(table, NULL, name);
@@ -45,18 +45,18 @@ void PCShaderProbeHLSLConstants(NuShaderObject *shader, ID3DXConstantTable *vert
     i32 i;
     shader->active_parameters = NULL;
     for (i = 0; i < 100; ++i) {
-        ShaderUniformRecordPc *uniform = &ShaderUniformRecordsPc[i];
+        ShaderUniformRecord *uniform = &ShaderUniformRecords[i];
         ID3DXConstantTable *table = vertex_constants;
         const char *handle;
         i32 stage = 1;
         PC_SHADER_PARAMETER_LOCAL *parameter;
         D3DX_CONSTANT_DESCRIPTION description;
         UINT description_count;
-        handle = PCShaderFindConstantPc(uniform, table, uniform->vertex_name, stage);
+        handle = PCShaderFindConstant(uniform, table, uniform->vertex_name, stage);
         if (handle == NULL) {
             table = pixel_constants;
             stage = 2;
-            handle = PCShaderFindConstantPc(uniform, table, uniform->fragment_name, stage);
+            handle = PCShaderFindConstant(uniform, table, uniform->fragment_name, stage);
         }
         if (handle == NULL) {
             continue;

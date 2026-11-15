@@ -27,7 +27,7 @@
 #include <float.h>
 #include <string.h>
 #include <stdio.h>
-NUVEC LightingUnitDirectionPc = {1.0f, 0.0f, 0.0f};
+NUVEC LightingUnitDirection = {1.0f, 0.0f, 0.0f};
 NUVEC RtlUnitDirectionYPc = {0.0f, 1.0f, 0.0f};
 i32 rtl_dynamic_lights_enabled = 1;
 static i32 curr_version = 5;
@@ -94,7 +94,7 @@ void rtlResetEx(RTL_DATA *data, i32 reset_cached) {
     lighting_data->intensity_vectors[2] = lighting_data->ambient;
     lighting_data->intensity_vectors[1] = lighting_data->intensity_vectors[2];
     lighting_data->intensity_vectors[0] = lighting_data->intensity_vectors[1];
-    lighting_data->direction[2] = LightingUnitDirectionPc;
+    lighting_data->direction[2] = LightingUnitDirection;
     lighting_data->direction[1] = lighting_data->direction[2];
     lighting_data->direction[0] = lighting_data->direction[1];
     lighting_data->unknown_134.x = 1.0f;
@@ -188,7 +188,7 @@ static void InsertAntiLight(RTL_LIGHT *light, RTL_DATA *data, f32 strength) {
     }
 }
 
-static void RtlDirectionStatePc(NUVEC *d0, NUVEC *c0, NUVEC *d1, NUVEC *c1, NUVEC *d2, NUVEC *c2) {
+static void RtlDirectionState(NUVEC *d0, NUVEC *c0, NUVEC *d1, NUVEC *c1, NUVEC *d2, NUVEC *c2) {
     PCGlobalLightingState.direction[0] = *d0;
     PCGlobalLightingState.direction[1] = *d1;
     PCGlobalLightingState.direction[2] = *d2;
@@ -223,8 +223,8 @@ static void RtlSpecularState(const NUVEC *direction, const NUVEC4 *intensity) {
 }
 
 void rtlSetLights(RTL_DATA *data) {
-    RtlDirectionStatePc(&data->direction[0], &data->intensity_vectors[0], &data->direction[1], &data->intensity_vectors[1],
-                        &data->direction[2], &data->intensity_vectors[2]);
+    RtlDirectionState(&data->direction[0], &data->intensity_vectors[0], &data->direction[1], &data->intensity_vectors[1],
+                      &data->direction[2], &data->intensity_vectors[2]);
     RtlAmbientState(&data->ambient);
 }
 

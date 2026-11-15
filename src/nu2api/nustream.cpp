@@ -933,7 +933,7 @@ extern "C" void PCSoundStopStereoChannel(i32 channel) {
     stream->Stop();
 }
 
-extern "C" void NuFmvStopSoundPc(i32 wait) {
+extern "C" void NuFmvStopSound(i32 wait) {
     SoundVoiceManager.StopAllVoices();
     if (wait != 0) {
         PCSoundStopStereoChannel(PCStereoChannel0A);
@@ -944,6 +944,6 @@ extern "C" void NuFmvStopSoundPc(i32 wait) {
     }
 }
 
-extern "C" IDirectSound8 *NuFmvGetSoundFactoryPc(void) {
+extern "C" IDirectSound8 *NuFmvGetSoundFactory(void) {
     return SoundVoiceManager.factory;
 }

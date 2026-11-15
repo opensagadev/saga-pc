@@ -393,7 +393,7 @@ void PC_SHADER_PARAMETER_LOCAL::SetValues(i32 first_element, i32 count, const f3
 
 extern "C" const f32 PCSamplerBiasMinimum;
 
-extern "C" u32 PCShaderSamplerBiasBitsPc(f32 bias) {
+extern "C" u32 PCShaderSamplerBiasBits(f32 bias) {
     f32 value = PCSamplerBiasMinimum > bias ? PCSamplerBiasMinimum : bias > 15.96875 ? 15.96875f : bias;
     return *reinterpret_cast<u32 *>(&value);
 }
@@ -404,7 +404,7 @@ extern "C" u32 PCShaderSamplerBiasBitsPc(f32 bias) {
  * Physical register ABI remains a compiler proof hold until the real dispatcher
  * is compiled in its original TU. No public stack adapters are authorized.
  */
-static void *PCShaderMaterialTextureNativePc(PC_SHADER_MATERIAL_DISPATCH_VIEW *material, u8 slot) {
+static void *PCShaderMaterialTextureNative(PC_SHADER_MATERIAL_DISPATCH_VIEW *material, u8 slot) {
     /* Requires the proposed named diffuse_texture_ids[4] member @b8, reviewed
      * callers slot0/1/2/3; original zero-ID case returnsNULL, else genuine lookup. */
     i32 id = material->diffuse_texture_ids[slot];
@@ -414,7 +414,7 @@ static void *PCShaderMaterialTextureNativePc(PC_SHADER_MATERIAL_DISPATCH_VIEW *m
     return NULL;
 }
 
-static f32 *PCShaderUnpackColourPc(f32 *output, i32 colour) {
+static f32 *PCShaderUnpackColour(f32 *output, i32 colour) {
     output[0] = (colour & 255) / 255.0f;
     output[1] = ((colour >> 8) & 255) / 255.0f;
     output[2] = ((colour >> 16) & 255) / 255.0f;
@@ -426,7 +426,7 @@ extern "C" i32 fun_00742230(i32 value) {
     return value;
 }
 
-static void PCShaderSamplerWrapPc(i32 u_mode, u32 stage, i32 v_mode) {
+static void PCShaderSamplerWrap(i32 u_mode, u32 stage, i32 v_mode) {
     switch (u_mode) {
         case 1:
             PCDeviceSetSamplerState(stage, 1, 3);
@@ -457,7 +457,7 @@ static void PCShaderSamplerWrapPc(i32 u_mode, u32 stage, i32 v_mode) {
     }
 }
 
-extern "C" void PCShaderSetMaterialParametersPc(NuShaderObject *shader, NUMTL *original_material) {
+extern "C" void PCShaderSetMaterialParameters(NuShaderObject *shader, NUMTL *original_material) {
     PC_SHADER_MATERIAL_DISPATCH_VIEW *material = reinterpret_cast<PC_SHADER_MATERIAL_DISPATCH_VIEW *>(original_material);
     PC_SHADER_PARAMETER_LOCAL *parameter = shader->active_parameters;
     NUVEC4 vector_2;
@@ -487,11 +487,11 @@ extern "C" void PCShaderSetMaterialParametersPc(NuShaderObject *shader, NUMTL *o
         const i32 semantic = (i8)parameter->semantic;
         switch (semantic) {
             case 0: {
-                parameter->SetVector(PCShaderUnpackColourPc(&diffuse_vector.x, material->diffuse_colour));
+                parameter->SetVector(PCShaderUnpackColour(&diffuse_vector.x, material->diffuse_colour));
                 break;
             }
             case 2: {
-                const f32 *values = PCShaderUnpackColourPc(&vector_2.x, material->specular_colour);
+                const f32 *values = PCShaderUnpackColour(&vector_2.x, material->specular_colour);
                 vector_2.w = material->parameter_1b4;
                 parameter->SetVector(values);
                 break;
@@ -540,7 +540,7 @@ extern "C" void PCShaderSetMaterialParametersPc(NuShaderObject *shader, NUMTL *o
             case 84: {
                 for (i32 i = 0; i < 4; ++i) {
                     NUVEC4 vector_84;
-                    const f32 *unpacked = PCShaderUnpackColourPc(&vector_84.x, material->palette_colours[i]);
+                    const f32 *unpacked = PCShaderUnpackColour(&vector_84.x, material->palette_colours[i]);
                     palette[i] = *reinterpret_cast<const NUVEC4 *>(unpacked);
                 }
                 if ((parameter->metadata & 0xf0000000u) == 0x10000000u) {
@@ -608,41 +608,41 @@ extern "C" void PCShaderSetMaterialParametersPc(NuShaderObject *shader, NUMTL *o
             }
             case 36: {
                 const i32 stage = parameter->register_index;
-                PCDeviceSetTexture(stage, PCShaderMaterialTextureNativePc(material, 0));
-                PCShaderSamplerWrapPc((material->sampler_address_modes >> 8) & 3, parameter->register_index,
-                                      (material->sampler_address_modes >> 10) & 3);
+                PCDeviceSetTexture(stage, PCShaderMaterialTextureNative(material, 0));
+                PCShaderSamplerWrap((material->sampler_address_modes >> 8) & 3, parameter->register_index,
+                                    (material->sampler_address_modes >> 10) & 3);
                 PCDeviceSetSamplerState(parameter->register_index, 5, 2);
                 PCDeviceSetSamplerState(parameter->register_index, 6, 2);
                 PCDeviceSetSamplerState(parameter->register_index, 7, 2);
-                const f32 bias = material->texture_bias[0] + PCShaderMaterialSamplerBiasOffsetPc;
-                PCDeviceSetSamplerState(parameter->register_index, 8, PCShaderSamplerBiasBitsPc(bias));
+                const f32 bias = material->texture_bias[0] + PCShaderMaterialSamplerBiasOffset;
+                PCDeviceSetSamplerState(parameter->register_index, 8, PCShaderSamplerBiasBits(bias));
                 break;
             }
             case 37: {
                 const i32 stage = parameter->register_index;
-                PCDeviceSetTexture(stage, PCShaderMaterialTextureNativePc(material, 1));
-                PCShaderSamplerWrapPc((material->sampler_address_modes >> 8) & 3, parameter->register_index,
-                                      (material->sampler_address_modes >> 10) & 3);
-                const f32 bias = material->texture_bias[1] + PCShaderMaterialSamplerBiasOffsetPc;
-                PCDeviceSetSamplerState(parameter->register_index, 8, PCShaderSamplerBiasBitsPc(bias));
+                PCDeviceSetTexture(stage, PCShaderMaterialTextureNative(material, 1));
+                PCShaderSamplerWrap((material->sampler_address_modes >> 8) & 3, parameter->register_index,
+                                    (material->sampler_address_modes >> 10) & 3);
+                const f32 bias = material->texture_bias[1] + PCShaderMaterialSamplerBiasOffset;
+                PCDeviceSetSamplerState(parameter->register_index, 8, PCShaderSamplerBiasBits(bias));
                 break;
             }
             case 38: {
                 const i32 stage = parameter->register_index;
-                PCDeviceSetTexture(stage, PCShaderMaterialTextureNativePc(material, 2));
-                PCShaderSamplerWrapPc((material->sampler_address_modes >> 8) & 3, parameter->register_index,
-                                      (material->sampler_address_modes >> 10) & 3);
-                const f32 bias = material->texture_bias[2] + PCShaderMaterialSamplerBiasOffsetPc;
-                PCDeviceSetSamplerState(parameter->register_index, 8, PCShaderSamplerBiasBitsPc(bias));
+                PCDeviceSetTexture(stage, PCShaderMaterialTextureNative(material, 2));
+                PCShaderSamplerWrap((material->sampler_address_modes >> 8) & 3, parameter->register_index,
+                                    (material->sampler_address_modes >> 10) & 3);
+                const f32 bias = material->texture_bias[2] + PCShaderMaterialSamplerBiasOffset;
+                PCDeviceSetSamplerState(parameter->register_index, 8, PCShaderSamplerBiasBits(bias));
                 break;
             }
             case 39: {
                 const i32 stage = parameter->register_index;
-                PCDeviceSetTexture(stage, PCShaderMaterialTextureNativePc(material, 3));
-                PCShaderSamplerWrapPc((material->sampler_address_modes >> 8) & 3, parameter->register_index,
-                                      (material->sampler_address_modes >> 10) & 3);
-                const f32 bias = material->texture_bias[3] + PCShaderMaterialSamplerBiasOffsetPc;
-                PCDeviceSetSamplerState(parameter->register_index, 8, PCShaderSamplerBiasBitsPc(bias));
+                PCDeviceSetTexture(stage, PCShaderMaterialTextureNative(material, 3));
+                PCShaderSamplerWrap((material->sampler_address_modes >> 8) & 3, parameter->register_index,
+                                    (material->sampler_address_modes >> 10) & 3);
+                const f32 bias = material->texture_bias[3] + PCShaderMaterialSamplerBiasOffset;
+                PCDeviceSetSamplerState(parameter->register_index, 8, PCShaderSamplerBiasBits(bias));
                 break;
             }
             case 40: {
@@ -656,8 +656,8 @@ extern "C" void PCShaderSetMaterialParametersPc(NuShaderObject *shader, NUMTL *o
                 PCDeviceSetTexture(parameter->register_index, texture);
                 PCDeviceSetSamplerState(parameter->register_index, 1, 1);
                 PCDeviceSetSamplerState(parameter->register_index, 2, 1);
-                const f32 bias = material->texture_bias[4] + PCShaderMaterialSamplerBiasOffsetPc;
-                PCDeviceSetSamplerState(parameter->register_index, 8, PCShaderSamplerBiasBitsPc(bias));
+                const f32 bias = material->texture_bias[4] + PCShaderMaterialSamplerBiasOffset;
+                PCDeviceSetSamplerState(parameter->register_index, 8, PCShaderSamplerBiasBits(bias));
                 break;
             }
             case 41: {
@@ -671,8 +671,8 @@ extern "C" void PCShaderSetMaterialParametersPc(NuShaderObject *shader, NUMTL *o
                 PCDeviceSetTexture(parameter->register_index, texture);
                 PCDeviceSetSamplerState(parameter->register_index, 1, 1);
                 PCDeviceSetSamplerState(parameter->register_index, 2, 1);
-                const f32 bias = material->parameter_1b0 + PCShaderMaterialSamplerBiasOffsetPc;
-                PCDeviceSetSamplerState(parameter->register_index, 8, PCShaderSamplerBiasBitsPc(bias));
+                const f32 bias = material->parameter_1b0 + PCShaderMaterialSamplerBiasOffset;
+                PCDeviceSetSamplerState(parameter->register_index, 8, PCShaderSamplerBiasBits(bias));
                 break;
             }
             case 42: {
@@ -689,8 +689,8 @@ extern "C" void PCShaderSetMaterialParametersPc(NuShaderObject *shader, NUMTL *o
                 PCDeviceSetSamplerState(parameter->register_index, 5, 2);
                 PCDeviceSetSamplerState(parameter->register_index, 6, 2);
                 PCDeviceSetSamplerState(parameter->register_index, 7, 2);
-                const f32 bias = material->texture_bias[5] + PCShaderMaterialSamplerBiasOffsetPc;
-                PCDeviceSetSamplerState(parameter->register_index, 8, PCShaderSamplerBiasBitsPc(bias));
+                const f32 bias = material->texture_bias[5] + PCShaderMaterialSamplerBiasOffset;
+                PCDeviceSetSamplerState(parameter->register_index, 8, PCShaderSamplerBiasBits(bias));
                 break;
             }
             case 43: {
@@ -704,8 +704,8 @@ extern "C" void PCShaderSetMaterialParametersPc(NuShaderObject *shader, NUMTL *o
                 PCDeviceSetTexture(parameter->register_index, texture);
                 PCDeviceSetSamplerState(parameter->register_index, 1, 1);
                 PCDeviceSetSamplerState(parameter->register_index, 2, 1);
-                const f32 bias = material->parameter_1ac + PCShaderMaterialSamplerBiasOffsetPc;
-                PCDeviceSetSamplerState(parameter->register_index, 8, PCShaderSamplerBiasBitsPc(bias));
+                const f32 bias = material->parameter_1ac + PCShaderMaterialSamplerBiasOffset;
+                PCDeviceSetSamplerState(parameter->register_index, 8, PCShaderSamplerBiasBits(bias));
                 break;
             }
             case 45: {
@@ -735,8 +735,8 @@ extern "C" void PCShaderSetMaterialParametersPc(NuShaderObject *shader, NUMTL *o
                 PCDeviceSetTexture(parameter->register_index, texture);
                 PCDeviceSetSamplerState(parameter->register_index, 1, 1);
                 PCDeviceSetSamplerState(parameter->register_index, 2, 1);
-                const f32 bias = material->parameter_1a8 + PCShaderMaterialSamplerBiasOffsetPc;
-                PCDeviceSetSamplerState(parameter->register_index, 8, PCShaderSamplerBiasBitsPc(bias));
+                const f32 bias = material->parameter_1a8 + PCShaderMaterialSamplerBiasOffset;
+                PCDeviceSetSamplerState(parameter->register_index, 8, PCShaderSamplerBiasBits(bias));
                 break;
             }
             case 82: {
@@ -783,19 +783,19 @@ extern "C" void PCShaderSetMaterialParametersPc(NuShaderObject *shader, NUMTL *o
                 break;
             }
             case 51: {
-                parameter->SetVector(PCShaderUnpackColourPc(&vector_51.x, material->channel_colours[0]));
+                parameter->SetVector(PCShaderUnpackColour(&vector_51.x, material->channel_colours[0]));
                 break;
             }
             case 52: {
-                parameter->SetVector(PCShaderUnpackColourPc(&vector_52.x, material->channel_colours[1]));
+                parameter->SetVector(PCShaderUnpackColour(&vector_52.x, material->channel_colours[1]));
                 break;
             }
             case 53: {
-                parameter->SetVector(PCShaderUnpackColourPc(&vector_53.x, material->channel_colours[2]));
+                parameter->SetVector(PCShaderUnpackColour(&vector_53.x, material->channel_colours[2]));
                 break;
             }
             case 54: {
-                parameter->SetVector(PCShaderUnpackColourPc(&vector_54.x, material->channel_colours[3]));
+                parameter->SetVector(PCShaderUnpackColour(&vector_54.x, material->channel_colours[3]));
                 break;
             }
             case 55: {
@@ -807,15 +807,15 @@ extern "C" void PCShaderSetMaterialParametersPc(NuShaderObject *shader, NUMTL *o
                 break;
             }
             case 57: {
-                parameter->SetVector(PCShaderUnpackColourPc(&vector_57.x, material->shadow_colour));
+                parameter->SetVector(PCShaderUnpackColour(&vector_57.x, material->shadow_colour));
                 break;
             }
             case 58: {
-                parameter->SetVector(PCShaderUnpackColourPc(&vector_58.x, material->reflection_colour));
+                parameter->SetVector(PCShaderUnpackColour(&vector_58.x, material->reflection_colour));
                 break;
             }
             case 59: {
-                const f32 *values = PCShaderUnpackColourPc(&vector_59.x, material->tint_colour);
+                const f32 *values = PCShaderUnpackColour(&vector_59.x, material->tint_colour);
                 vector_59.w = material->parameter_158;
                 parameter->SetVector(values);
                 break;
@@ -923,7 +923,7 @@ extern "C" void PCShaderSetMaterialParametersPc(NuShaderObject *shader, NUMTL *o
             }
         }
         if (shader->version != 4) {
-            ShaderUniformRecordPc *uniform = &ShaderUniformRecordsPc[semantic];
+            ShaderUniformRecord *uniform = &ShaderUniformRecords[semantic];
             if (uniform->unknown_18 != 0) {
                 switch ((i32)(parameter->metadata << 4) >> 28) {
                     case 1:

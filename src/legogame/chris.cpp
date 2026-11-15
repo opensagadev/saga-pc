@@ -236,7 +236,7 @@ extern "C" {
         {0.0f,   0.0f},
     };
 
-    f32 DogfightWingSpeedPc = 35.0f;
+    f32 DogfightWingSpeed = 35.0f;
     static f32 DogfightPassingSpeed = 200.0f;
 
     f32 SpeedDist = 5.0f;
@@ -2487,7 +2487,7 @@ extern "C" {
         if (mode != 0) {
             group->state = 0;
             NuMtxPreRotateY(&group->matrix, 0x8000);
-            group->speed = DogfightWingSpeedPc;
+            group->speed = DogfightWingSpeed;
         } else {
             group->state = 1;
             group->speed = DogfightPassingSpeed;

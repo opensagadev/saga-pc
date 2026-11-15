@@ -20,14 +20,14 @@
 extern "C" {
     u8 PcCapsConfigured = 0;
     const char *dat_02974d58[256] = {0};
-    TEXT_INPUT_LABELS *TextInputAlternateLabelsPc = 0;
-    u8 PcMouseAxisModesPc[3] = {0};
+    TEXT_INPUT_LABELS *TextInputAlternateLabels = 0;
+    u8 PcMouseAxisModes[3] = {0};
     NuKeyboardState *nu_input_state = 0;
     i8 PcInputActionOrder[20] = {0};
-    TEXT_INPUT_LABELS *TextInputDefaultLabelsPc = 0;
+    TEXT_INPUT_LABELS *TextInputDefaultLabels = 0;
     u32 mbuttons = 0;
 }
-static u32 PcMousePressedMaskPc = 0;
+static u32 PcMousePressedMask = 0;
 extern "C" {
     u8 nu_keyboard_pages[0x200] = {0};
     char dat_029753c0[512] = {0};
@@ -35,24 +35,24 @@ extern "C" {
 }
 void (*PcInputStateInitializedCallback)(PC_INPUT_RUNTIME *) = NULL;
 extern "C" {
-    i32 (*PcInputCommandFilterPc)(i32, i32) = NULL;
-    f32 PcMouseAxisIdlePc[3] = {0};
-    void (*TextInputNameCallbackPc)(i32, char *) = 0;
-    i32 PcMouseCurrentAnglePc = 0;
-    i32 PcMouseTargetAnglePc = 0;
-    f32 PcMouseRadiusPc = 0;
-    i8 TextInputLastDeviceIndexPc = 0;
-    f32 PcMouseInterpolationPc = 0;
+    i32 (*PcInputCommandFilter)(i32, i32) = NULL;
+    f32 PcMouseAxisIdle[3] = {0};
+    void (*TextInputNameCallback)(i32, char *) = 0;
+    i32 PcMouseCurrentAngle = 0;
+    i32 PcMouseTargetAngle = 0;
+    f32 PcMouseRadius = 0;
+    i8 TextInputLastDeviceIndex = 0;
+    f32 PcMouseInterpolation = 0;
     PC_NATIVE_DEBUG_STATE PCNativeWarningDebugState;
 }
 
 extern "C" u32 fun_006d58c0(void) {
-    return PcMousePressedMaskPc;
+    return PcMousePressedMask;
 }
 
 extern "C" u32 fun_006d58f0(i32 button) {
     if (button >= 0 && button < 4u) {
-        return (1 << button) & PcMousePressedMaskPc;
+        return (1 << button) & PcMousePressedMask;
     }
     return 0;
 }
@@ -107,7 +107,7 @@ i32 PC_INPUT_RUNTIME::ResolveAuxiliaryConflicts(i32 auxiliary_index, i32 bank_co
     }
     for (i32 index = 0; PcInputActionOrder[index] >= 0; ++index) {
         i32 command = PcInputActionOrder[index];
-        if ((PcInputCommandFilterPc == NULL || PcInputCommandFilterPc(auxiliary_ports[auxiliary_index], command)) &&
+        if ((PcInputCommandFilter == NULL || PcInputCommandFilter(auxiliary_ports[auxiliary_index], command)) &&
             bindings[command].kind == 0) {
             missing = 1;
             break;
@@ -240,7 +240,7 @@ extern "C" u8 PcInput_SafeGetMapping(i32 port, i32 key, i32 auxiliary_index) {
 }
 
 extern "C" void PcInput_SetIsUsedCallBack(i32 (*filter)(i32, i32)) {
-    PcInputCommandFilterPc = filter;
+    PcInputCommandFilter = filter;
 }
 
 typedef struct NuKeyboardInitKeyRecord { // size 0x6
@@ -343,8 +343,8 @@ extern "C" void fun_006d3b20(void) {
 }
 
 extern "C" {
-    char **TextInputKeyNamesPc = TextInputKeyNameTablePc;
-    extern const u8 PcInputPovBitsPc[8] = {1, 3, 2, 6, 4, 12, 8, 9};
+    char **TextInputKeyNames = TextInputKeyNameTable;
+    extern const u8 PcInputPovBits[8] = {1, 3, 2, 6, 4, 12, 8, 9};
 }
 
 PC_INPUT_RUNTIME::PC_INPUT_RUNTIME() {
@@ -403,89 +403,89 @@ PC_INPUT_RUNTIME::PC_INPUT_RUNTIME() {
     InitKeyboardProfiles();
     switch (NuLanguageGet()) {
         case NULANGUAGE_JAPANESE:
-            TextInputKeyNamesPc = dat_00821910;
-            TextInputDefaultLabelsPc = &dat_00820560;
-            TextInputAlternateLabelsPc = &dat_00820560;
+            TextInputKeyNames = dat_00821910;
+            TextInputDefaultLabels = &dat_00820560;
+            TextInputAlternateLabels = &dat_00820560;
             break;
         case NULANGUAGE_ENGLISH:
-            TextInputKeyNamesPc = TextInputKeyNameTablePc;
-            TextInputDefaultLabelsPc = &dat_00820480;
-            TextInputAlternateLabelsPc = &dat_00820480;
+            TextInputKeyNames = TextInputKeyNameTable;
+            TextInputDefaultLabels = &dat_00820480;
+            TextInputAlternateLabels = &dat_00820480;
             break;
         case NULANGUAGE_FRENCH:
-            TextInputKeyNamesPc = dat_00822080;
-            TextInputDefaultLabelsPc = &dat_00820aa0;
-            TextInputAlternateLabelsPc = &dat_00820aa0;
+            TextInputKeyNames = dat_00822080;
+            TextInputDefaultLabels = &dat_00820aa0;
+            TextInputAlternateLabels = &dat_00820aa0;
             break;
         case NULANGUAGE_SPANISH:
-            TextInputKeyNamesPc = dat_00822ae8;
-            TextInputDefaultLabelsPc = &dat_00820d40;
-            TextInputAlternateLabelsPc = &dat_00820d40;
+            TextInputKeyNames = dat_00822ae8;
+            TextInputDefaultLabels = &dat_00820d40;
+            TextInputAlternateLabels = &dat_00820d40;
             break;
         case NULANGUAGE_GERMAN:
-            TextInputKeyNamesPc = dat_00822770;
-            TextInputDefaultLabelsPc = &dat_00820c60;
-            TextInputAlternateLabelsPc = &dat_00820c60;
+            TextInputKeyNames = dat_00822770;
+            TextInputDefaultLabels = &dat_00820c60;
+            TextInputAlternateLabels = &dat_00820c60;
             break;
         case NULANGUAGE_ITALIAN:
-            TextInputKeyNamesPc = dat_008223f8;
-            TextInputDefaultLabelsPc = &dat_00820b80;
-            TextInputAlternateLabelsPc = &dat_00820b80;
+            TextInputKeyNames = dat_008223f8;
+            TextInputDefaultLabels = &dat_00820b80;
+            TextInputAlternateLabels = &dat_00820b80;
             break;
         case NULANGUAGE_DUTCH:
-            TextInputKeyNamesPc = dat_008231d8;
-            TextInputDefaultLabelsPc = &dat_00820640;
-            TextInputAlternateLabelsPc = &dat_00820640;
+            TextInputKeyNames = dat_008231d8;
+            TextInputDefaultLabels = &dat_00820640;
+            TextInputAlternateLabels = &dat_00820640;
             break;
         case NULANGUAGE_PORTUGUESE:
-            TextInputKeyNamesPc = dat_008240b8;
-            TextInputDefaultLabelsPc = &dat_008209c0;
-            TextInputAlternateLabelsPc = &dat_008209c0;
+            TextInputKeyNames = dat_008240b8;
+            TextInputDefaultLabels = &dat_008209c0;
+            TextInputAlternateLabels = &dat_008209c0;
             break;
         case NULANGUAGE_DANISH:
-            TextInputKeyNamesPc = dat_00822e60;
-            TextInputDefaultLabelsPc = &dat_00820e20;
-            TextInputAlternateLabelsPc = &dat_00820e20;
+            TextInputKeyNames = dat_00822e60;
+            TextInputDefaultLabels = &dat_00820e20;
+            TextInputAlternateLabels = &dat_00820e20;
             break;
         case NULANGUAGE_CZECH:
-            TextInputKeyNamesPc = dat_00821cc8;
-            TextInputDefaultLabelsPc = &dat_008210c0;
-            TextInputAlternateLabelsPc = &dat_008210c0;
+            TextInputKeyNames = dat_00821cc8;
+            TextInputDefaultLabels = &dat_008210c0;
+            TextInputAlternateLabels = &dat_008210c0;
             break;
         case NULANGUAGE_POLISH:
-            TextInputKeyNamesPc = dat_00823590;
-            TextInputDefaultLabelsPc = &dat_00820f00;
-            TextInputAlternateLabelsPc = &dat_00820f00;
+            TextInputKeyNames = dat_00823590;
+            TextInputDefaultLabels = &dat_00820f00;
+            TextInputAlternateLabels = &dat_00820f00;
             break;
         case NULANGUAGE_RUSSIAN:
-            TextInputKeyNamesPc = dat_00823948;
-            TextInputDefaultLabelsPc = &dat_00820fe0;
-            TextInputAlternateLabelsPc = &dat_00820fe0;
+            TextInputKeyNames = dat_00823948;
+            TextInputDefaultLabels = &dat_00820fe0;
+            TextInputAlternateLabels = &dat_00820fe0;
             break;
         case NULANGUAGE_SWEDISH:
-            TextInputKeyNamesPc = dat_00824828;
-            TextInputDefaultLabelsPc = &dat_00820800;
-            TextInputAlternateLabelsPc = &dat_00820800;
+            TextInputKeyNames = dat_00824828;
+            TextInputDefaultLabels = &dat_00820800;
+            TextInputAlternateLabels = &dat_00820800;
             break;
         case NULANGUAGE_NORWEGIAN:
-            TextInputKeyNamesPc = dat_00824470;
-            TextInputDefaultLabelsPc = &dat_00820720;
-            TextInputAlternateLabelsPc = &dat_00820720;
+            TextInputKeyNames = dat_00824470;
+            TextInputDefaultLabels = &dat_00820720;
+            TextInputAlternateLabels = &dat_00820720;
             break;
         case NULANGUAGE_BRAZILIAN_PORTUGUESE:
-            TextInputKeyNamesPc = dat_00823d00;
-            TextInputDefaultLabelsPc = &dat_008209c0;
-            TextInputAlternateLabelsPc = &dat_008209c0;
+            TextInputKeyNames = dat_00823d00;
+            TextInputDefaultLabels = &dat_008209c0;
+            TextInputAlternateLabels = &dat_008209c0;
             break;
         case NULANGUAGE_FINNISH:
-            TextInputKeyNamesPc = dat_00824be0;
-            TextInputDefaultLabelsPc = &dat_008208e0;
-            TextInputAlternateLabelsPc = &dat_008208e0;
+            TextInputKeyNames = dat_00824be0;
+            TextInputDefaultLabels = &dat_008208e0;
+            TextInputAlternateLabels = &dat_008208e0;
             break;
         default:
-            TextInputKeyNamesPc = dat_00821558;
-            TextInputDefaultLabelsPc = &dat_00820480;
-            TextInputAlternateLabelsPc = &dat_00820480;
+            TextInputKeyNames = dat_00821558;
+            TextInputDefaultLabels = &dat_00820480;
+            TextInputAlternateLabels = &dat_00820480;
             break;
     }
 }
@@ -604,7 +604,7 @@ extern "C" i32 PcConfigureInputGraphicsCaps() {
 }
 
 extern "C" void NuKeyboardRead(void) {
-    ((PC_INPUT_RUNTIME *)nu_input_state)->PollKeyboardPc();
+    ((PC_INPUT_RUNTIME *)nu_input_state)->PollKeyboard();
 }
 
 // Uncompiled PC reconstruction draft. Append to input_runtime.cpp only after shared contract review.
@@ -615,8 +615,8 @@ extern "C" i32 NuPadGetDeadzoneByPortPS(i32 port) {
     return ((PC_INPUT_RUNTIME *)nu_input_state)->devices[port].deadzone;
 }
 
-extern "C" i32 NuPadReadOutputsPc(i32 port, u8 *lx, u8 *ly, u8 *rx, u8 *ry, u8 *l1, u8 *l2, u8 *r1, u8 *r2, u32 *buttons, u8 *unknown,
-                                  i32 *flags) {
+extern "C" i32 NuPadReadOutputs(i32 port, u8 *lx, u8 *ly, u8 *rx, u8 *ry, u8 *l1, u8 *l2, u8 *r1, u8 *r2, u32 *buttons, u8 *unknown,
+                                i32 *flags) {
     if (nu_input_state != NULL) {
         return ((PC_INPUT_RUNTIME *)nu_input_state)->ReadSample(port, lx, ly, rx, ry, l1, l2, r1, r2, buttons, unknown, flags);
     }
@@ -635,32 +635,32 @@ i32 PC_INPUT_RUNTIME::ReadSample(i32 port, u8 *lx, u8 *ly, u8 *rx, u8 *ry, u8 *l
             if (nu_keyboard_owner.unknown_0008 <= 0.0f) {
                 nu_keyboard_owner.unknown_0008 += nu_keyboard_owner.unknown_0000;
                 --nu_keyboard_owner.unknown_0004;
-                nu_keyboard_owner.RescanDevicesPc();
+                nu_keyboard_owner.RescanDevices();
             }
         }
         if (!keyboard_polled) {
             keyboard_polled = 1;
-            keyboard_state = nu_keyboard_owner.PollKeyboardPc();
+            keyboard_state = nu_keyboard_owner.PollKeyboard();
         }
     }
-    UpdateMousePc();
+    UpdateMouse();
     u32 mask = 1u << port;
     PC_INPUT_SAMPLE *sample = &devices[port].sample;
     if (!(read_mask & mask)) {
         read_mask |= mask;
-        valid = SampleDevicePc(port, &raw_sample);
+        valid = SampleDevice(port, &raw_sample);
         if ((action_mask & mask) && valid) {
             CaptureBinding(port);
         }
         TranslateBindings(port, sample, valid, &raw_sample, &mouse, &keyboard_state);
         if ((port == 10 || port == 12) && !keyboard_ui_override) {
-            ApplyMouseAxisPc(sample);
+            ApplyMouseAxis(sample);
         }
         if (keyboard_ui_override && valid) {
             if ((u32)(port - 10) <= 3) {
                 sample->buttons = 0;
             }
-            i32 linked = NuPadGetPort(TextInputLastDeviceIndexPc);
+            i32 linked = NuPadGetPort(TextInputLastDeviceIndex);
             if (linked == port || (linked == -1 && (u32)(port - 10) <= 3)) {
                 sample->buttons = CombineUiButtons(port, sample->buttons);
             }
@@ -754,7 +754,7 @@ struct PC_DI_JOYSTICK_STATE { // size 0x110
     i32 extended_axes[24];    // 0x0b0
 };
 
-i32 PC_INPUT_RUNTIME::SampleDevicePc(i32 port, PC_INPUT_RAW_SAMPLE *sample) {
+i32 PC_INPUT_RUNTIME::SampleDevice(i32 port, PC_INPUT_RAW_SAMPLE *sample) {
     memset(sample->axes, 0, sizeof(sample->axes));
     memset(sample->buttons, 0, sizeof(sample->buttons));
     if (port < 0) {
@@ -834,7 +834,7 @@ i32 PC_INPUT_RUNTIME::SampleDevicePc(i32 port, PC_INPUT_RAW_SAMPLE *sample) {
         }
         PCByteCopy(sample->buttons, state.buttons, devices[port].button_count);
         if (state.pov[3] >= 0) {
-            u8 direction = PcInputPovBitsPc[state.pov[3] / 4500];
+            u8 direction = PcInputPovBits[state.pov[3] / 4500];
             for (i32 bit = 0; bit < 4; ++bit) {
                 sample->buttons[128 + bit] = (u8)((direction >> bit) & 1);
             }
@@ -848,11 +848,11 @@ i32 PC_INPUT_RUNTIME::SampleDevicePc(i32 port, PC_INPUT_RAW_SAMPLE *sample) {
 // Uncompiled drafts retaining native mouse accumulation and cursor behavior.
 extern u32 mbuttons;
 
-i32 PC_INPUT_RUNTIME::UpdateMousePc() {
+i32 PC_INPUT_RUNTIME::UpdateMouse() {
     if (!(nu_keyboard_device_flags & 1) && !mouse_polled) {
         i32 button_count = nu_keyboard_owner.mouse_axes && nu_keyboard_owner.mouse_buttons ? nu_keyboard_owner.mouse_buttons : 0;
         mouse_polled = 1;
-        const PC_DI_MOUSE_STATE *state = nu_keyboard_owner.PollMousePc();
+        const PC_DI_MOUSE_STATE *state = nu_keyboard_owner.PollMouse();
         for (i32 axis = 0; axis < 3; ++axis) {
             mouse.previous[axis] = mouse.current[axis];
         }
@@ -884,7 +884,7 @@ i32 PC_INPUT_RUNTIME::UpdateMousePc() {
             mouse.accumulated[0] += mouse.delta[0] * 0.00390625;
             mouse.accumulated[1] += mouse.delta[1] * 0.00390625;
             mouse.accumulated[2] += mouse.delta[2];
-            f32 reciprocal = 1.0f / PcInputAspectRatioPc();
+            f32 reciprocal = 1.0f / PcInputAspectRatio();
             mouse.position[0] += mouse.delta[0] * reciprocal * 7.62939453125e-6;
             mouse.position[1] += mouse.delta[1] * 7.62939453125e-6;
             if (mouse.position[0] < 0.0f) {
@@ -906,7 +906,7 @@ i32 PC_INPUT_RUNTIME::UpdateMousePc() {
                 }
             }
             mbuttons = mask;
-            PcMousePressedMaskPc = (mask ^ previous) & mask;
+            PcMousePressedMask = (mask ^ previous) & mask;
             memset(mouse.buttons, 0, 8);
             PCByteCopy(mouse.buttons, state->buttons, button_count);
             return 1;
@@ -920,7 +920,7 @@ i32 PC_INPUT_RUNTIME::UpdateMousePc() {
     return 0;
 }
 
-void PC_INPUT_RUNTIME::ApplyMouseAxisPc(PC_INPUT_SAMPLE *sample) {
+void PC_INPUT_RUNTIME::ApplyMouseAxis(PC_INPUT_SAMPLE *sample) {
     (void)NuTimeGetFrameTime();
     PC_INPUT_RUNTIME *runtime = (PC_INPUT_RUNTIME *)nu_input_state;
     f32 goal = 0.0f;
@@ -928,22 +928,22 @@ void PC_INPUT_RUNTIME::ApplyMouseAxisPc(PC_INPUT_SAMPLE *sample) {
     f32 y = (f32)(runtime->mouse.delta[1] * -4.0);
     f32 square = x * x + y * y;
     if (square > 100000.0f) {
-        PcMouseTargetAnglePc = NuAtan2D(y, x);
-        i32 difference = PcMouseTargetAnglePc - PcMouseCurrentAnglePc;
+        PcMouseTargetAngle = NuAtan2D(y, x);
+        i32 difference = PcMouseTargetAngle - PcMouseCurrentAngle;
         if (difference > 32768) {
-            PcMouseCurrentAnglePc += 65536;
+            PcMouseCurrentAngle += 65536;
         } else if (difference < -32768) {
-            PcMouseCurrentAnglePc -= 65536;
+            PcMouseCurrentAngle -= 65536;
         }
     }
     f32 elapsed = NuTimeGetFrameTime();
     f32 exponent = (f32)(elapsed * 4.0);
-    PcMouseInterpolationPc = 1.0f - 1.0f / NuPow(2.0f, exponent);
-    i32 difference = PcMouseTargetAnglePc - PcMouseCurrentAnglePc;
-    f32 movement = PcMouseInterpolationPc * (f32)difference;
-    f32 angle = movement + (f32)PcMouseCurrentAnglePc;
-    PcMouseCurrentAnglePc = (i32)angle;
-    difference = PcMouseTargetAnglePc - PcMouseCurrentAnglePc;
+    PcMouseInterpolation = 1.0f - 1.0f / NuPow(2.0f, exponent);
+    i32 difference = PcMouseTargetAngle - PcMouseCurrentAngle;
+    f32 movement = PcMouseInterpolation * (f32)difference;
+    f32 angle = movement + (f32)PcMouseCurrentAngle;
+    PcMouseCurrentAngle = (i32)angle;
+    difference = PcMouseTargetAngle - PcMouseCurrentAngle;
     if (difference > 32768) {
         difference -= 65536;
     } else if (difference < -32768) {
@@ -958,14 +958,14 @@ void PC_INPUT_RUNTIME::ApplyMouseAxisPc(PC_INPUT_SAMPLE *sample) {
     if (sample->analog[1] > 144) {
         goal = 1.0f;
     }
-    f32 radius_delta = goal - PcMouseRadiusPc;
-    radius_delta *= PcMouseInterpolationPc;
-    PcMouseRadiusPc += radius_delta;
-    i32 cosine = ((PcMouseCurrentAnglePc + 16384) >> 1) & 32767;
-    i32 sine = (PcMouseCurrentAnglePc >> 1) & 32767;
-    f32 fx = -NuTrigTable[cosine] * PcMouseRadiusPc;
+    f32 radius_delta = goal - PcMouseRadius;
+    radius_delta *= PcMouseInterpolation;
+    PcMouseRadius += radius_delta;
+    i32 cosine = ((PcMouseCurrentAngle + 16384) >> 1) & 32767;
+    i32 sine = (PcMouseCurrentAngle >> 1) & 32767;
+    f32 fx = -NuTrigTable[cosine] * PcMouseRadius;
     fx += 1.0f;
-    f32 fy = -NuTrigTable[sine] * PcMouseRadiusPc;
+    f32 fy = -NuTrigTable[sine] * PcMouseRadius;
     fy += 1.0f;
     sample->analog[0] = (u8)(i32)(fy * 127.5);
     f32 scaled_x = (f32)(fx * 127.5);
@@ -973,7 +973,7 @@ void PC_INPUT_RUNTIME::ApplyMouseAxisPc(PC_INPUT_SAMPLE *sample) {
 }
 
 // Uncompiled PC control-flow reconstruction. All indexed records require native initialized domains.
-extern u8 PcMouseAxisModesPc[3];
+extern u8 PcMouseAxisModes[3];
 
 i32 PC_INPUT_RUNTIME::TranslateBindings(i32 port, PC_INPUT_SAMPLE *out, i32 valid, PC_INPUT_RAW_SAMPLE *raw, PC_INPUT_MOUSE_RUNTIME *motion,
                                         u8 **keys) {
@@ -1007,7 +1007,7 @@ i32 PC_INPUT_RUNTIME::TranslateBindings(i32 port, PC_INPUT_SAMPLE *out, i32 vali
                 case 5:
                 case 6:
                     if (valid) {
-                        if (PcMouseAxisModesPc[index] == 0) {
+                        if (PcMouseAxisModes[index] == 0) {
                             value = (i32)motion->delta[index];
                             if (binding->kind == 6) {
                                 value = -value;
@@ -1015,7 +1015,7 @@ i32 PC_INPUT_RUNTIME::TranslateBindings(i32 port, PC_INPUT_SAMPLE *out, i32 vali
                             pressed = value > 0;
                             value *= 8;
                         } else {
-                            if (PcMouseAxisModesPc[index] == 2) {
+                            if (PcMouseAxisModes[index] == 2) {
                                 if (motion->accumulated[index] > 256.0f) {
                                     motion->accumulated[index] = 256.0f;
                                 }
@@ -1024,11 +1024,11 @@ i32 PC_INPUT_RUNTIME::TranslateBindings(i32 port, PC_INPUT_SAMPLE *out, i32 vali
                                 }
                                 i32 moved = (i32)motion->delta[index];
                                 if ((moved < 0 ? -moved : moved) < 5) {
-                                    PcMouseAxisIdlePc[index] += NuTimeGetFrameTime();
+                                    PcMouseAxisIdle[index] += NuTimeGetFrameTime();
                                 } else {
-                                    PcMouseAxisIdlePc[index] = 0.0f;
+                                    PcMouseAxisIdle[index] = 0.0f;
                                 }
-                                if (PcMouseAxisIdlePc[index] > 0.5f) {
+                                if (PcMouseAxisIdle[index] > 0.5f) {
                                     f32 accumulated = motion->accumulated[index];
                                     if (accumulated != 0.0f) {
                                         if (accumulated > 0.0f && accumulated < 128.0f) {
@@ -1325,9 +1325,9 @@ void PC_INPUT_RUNTIME::ServicePendingCapture() {
     }
     if (!keyboard_polled) {
         keyboard_polled = 1;
-        keyboard_state = nu_keyboard_owner.PollKeyboardPc();
+        keyboard_state = nu_keyboard_owner.PollKeyboard();
     }
-    UpdateMousePc();
+    UpdateMouse();
     for (i32 port = 0; port < 14; ++port) {
         u32 mask = 1u << port;
         // Native 6d87a7 JNE skips SET bits: preserve this condition, even though
@@ -1335,7 +1335,7 @@ void PC_INPUT_RUNTIME::ServicePendingCapture() {
         if (!(action_mask & mask)) {
             read_mask |= mask;
             action_mask &= ~mask;
-            i32 valid = SampleDevicePc(port, &raw_sample);
+            i32 valid = SampleDevice(port, &raw_sample);
             if (valid || (u32)(port - 10) <= 3) {
                 CaptureBinding(port);
             }
@@ -1517,7 +1517,7 @@ extern "C" void fun_006d5050(const i8 *order) {
 }
 
 extern "C" void PcInput_SetStringUCGfxRemapFn(void (*callback)(i32, char *)) {
-    TextInputNameCallbackPc = callback;
+    TextInputNameCallback = callback;
 }
 
 i32 PC_INPUT_RUNTIME::fun_006d4de0(i32 port, i32 action, i32 auxiliary, i32 bank) {
@@ -1531,7 +1531,7 @@ extern "C" i32 fun_006d5d40(i32 port, i32 kind, i32 value) {
     return ((PC_INPUT_RUNTIME *)nu_input_state)->fun_006d4fe0(port, kind, value);
 }
 
-extern "C" void PcInputEndFramePc(void) {
+extern "C" void PcInputEndFrame(void) {
     ((PC_INPUT_RUNTIME *)nu_input_state)->EndFramePc();
 }
 
@@ -1549,7 +1549,7 @@ void PC_INPUT_RUNTIME::CopyBindings(i32 port, i32 to_auxiliary, i32 bank) {
     }
 }
 
-extern "C" void PcInputCopyBindingsPc(i32 port, i32 to_auxiliary, i32 bank) {
+extern "C" void PcInputCopyBindings(i32 port, i32 to_auxiliary, i32 bank) {
     ((PC_INPUT_RUNTIME *)nu_input_state)->CopyBindings(port, to_auxiliary, bank);
 }
 
@@ -1568,7 +1568,7 @@ extern "C" f32 fun_006d5b20(void) {
     return runtime->mouse.accumulated[2];
 }
 
-extern "C" void PcInputResetMouseMotionPc() {
+extern "C" void PcInputResetMouseMotion() {
     PC_INPUT_RUNTIME *runtime = (PC_INPUT_RUNTIME *)nu_input_state;
     runtime->mouse.accumulated[2] = 0.0f;
     runtime->mouse.accumulated[1] = 0.0f;
@@ -1670,27 +1670,27 @@ extern "C" i32 fun_006d5f20(u32 buttons, u32 axes) {
     return -1;
 }
 
-extern "C" char *PcInputDeviceNamePc(i32 port) {
+extern "C" char *PcInputDeviceName(i32 port) {
     return ((PC_INPUT_RUNTIME *)nu_input_state)->devices[port].name;
 }
 
-extern "C" void PcInputSuppressKeyOnePc(i32 value) {
+extern "C" void PcInputSuppressKeyOne(i32 value) {
     ((PC_INPUT_RUNTIME *)nu_input_state)->suppress_key_1 = (u8)value;
 }
 
-extern "C" void PcInputSetMouseFieldPc(i32 value) {
+extern "C" void PcInputSetMouseField(i32 value) {
     ((PC_INPUT_RUNTIME *)nu_input_state)->mouse.unknown_58 = value;
 }
 
-extern "C" void PcInputSetCapturedPortPc(i32 port) {
+extern "C" void PcInputSetCapturedPort(i32 port) {
     ((PC_INPUT_RUNTIME *)nu_input_state)->captured_port = port;
 }
 
-extern "C" i32 PcInputCapturedPortPc() {
+extern "C" i32 PcInputCapturedPort() {
     return ((PC_INPUT_RUNTIME *)nu_input_state)->captured_port;
 }
 
-extern "C" void PcInputSetBlockedKeysPc(const char *keys) {
+extern "C" void PcInputSetBlockedKeys(const char *keys) {
     PC_INPUT_RUNTIME *runtime = (PC_INPUT_RUNTIME *)nu_input_state;
     runtime->blocked_keys[0] = 0;
     if (keys != NULL) {
@@ -1709,15 +1709,15 @@ extern "C" i32 fun_006d6760(void) {
     return 0;
 }
 
-extern "C" i32 PcInputIsMouseDevicePc(i32 port) {
+extern "C" i32 PcInputIsMouseDevice(i32 port) {
     return port == 10 || port == 12;
 }
 
-extern "C" i32 PcInputIsJoystickDevicePc(i32 port) {
+extern "C" i32 PcInputIsJoystickDevice(i32 port) {
     return (u32)port <= 9;
 }
 
-extern "C" i32 PcInputMixConfigurationHashPc(i32 previous, i32 value) {
+extern "C" i32 PcInputMixConfigurationHash(i32 previous, i32 value) {
     if (previous & 0x80000000) {
         return (previous * 2 + 1) ^ value ^ 0x12345678;
     }
@@ -1744,20 +1744,20 @@ i32 PC_INPUT_RUNTIME::fun_006d38b0(PC_INPUT_CONFIG *config) {
     return -1;
 }
 
-extern "C" i32 PcInputHashAuxiliaryBindingsPc() {
+extern "C" i32 PcInputHashAuxiliaryBindings() {
     return ((PC_INPUT_RUNTIME *)nu_input_state)->HashAuxiliaryBindings();
 }
 
-extern "C" void PcInputInstallConfigPc(PC_INPUT_CONFIG *config, i32 port, i32 key, i32 auxiliary, i32 bank) {
+extern "C" void PcInputInstallConfig(PC_INPUT_CONFIG *config, i32 port, i32 key, i32 auxiliary, i32 bank) {
     ((PC_INPUT_RUNTIME *)nu_input_state)->InstallConfig(config, port, key, auxiliary, bank);
 }
 
-extern "C" i32 PcInputBindingPresentPc(i32 port, i32 action, i32 auxiliary, i32 bank) {
+extern "C" i32 PcInputBindingPresent(i32 port, i32 action, i32 auxiliary, i32 bank) {
     return auxiliary ? ((PC_INPUT_RUNTIME *)nu_input_state)->auxiliary_bindings[bank][action].kind != 0
                      : ((PC_INPUT_RUNTIME *)nu_input_state)->devices[port].bindings[action].kind != 0;
 }
 
-extern "C" PC_INPUT_CONFIG *PcInputFindConfigPc(u8 mask, i32 port, i32 key) {
+extern "C" PC_INPUT_CONFIG *PcInputFindConfig(u8 mask, i32 port, i32 key) {
     return ((PC_INPUT_RUNTIME *)nu_input_state)->FindConfig(mask, port, key);
 }
 
@@ -1807,7 +1807,7 @@ i32 PC_INPUT_RUNTIME::BindingAvailable(i32 bank, i32 bank_count, i32 kind, i32 v
     return 1;
 }
 
-extern "C" i32 PcInputBindingAvailablePc(i32 bank, i32 bank_count, i32 kind, i32 value) {
+extern "C" i32 PcInputBindingAvailable(i32 bank, i32 bank_count, i32 kind, i32 value) {
     return ((PC_INPUT_RUNTIME *)nu_input_state)->BindingAvailable(bank, bank_count, kind, value);
 }
 
@@ -1839,11 +1839,11 @@ void PC_INPUT_RUNTIME::ClearOtherBankConflicts(i32 bank, i32 bank_count) {
     }
 }
 
-extern "C" void PcInputClearOtherBankConflictsPc(i32 bank, i32 bank_count) {
+extern "C" void PcInputClearOtherBankConflicts(i32 bank, i32 bank_count) {
     ((PC_INPUT_RUNTIME *)nu_input_state)->ClearOtherBankConflicts(bank, bank_count);
 }
 
-extern "C" i32 PcInputResolveAuxiliaryConflictsPc(i32 bank, i32 bank_count) {
+extern "C" i32 PcInputResolveAuxiliaryConflicts(i32 bank, i32 bank_count) {
     return ((PC_INPUT_RUNTIME *)nu_input_state)->ResolveAuxiliaryConflicts(bank, bank_count);
 }
 
@@ -1879,14 +1879,14 @@ i32 PC_INPUT_RUNTIME::fun_006d99e0(i32 port, u8 mask) {
     return FindConfig(mask, port, 0) != NULL;
 }
 
-extern "C" i32 PcInputAlternateDeadzonePc(i32 port) {
+extern "C" i32 PcInputAlternateDeadzone(i32 port) {
     if ((u32)(port - 10) > 3) {
         return 0;
     }
     return ((PC_INPUT_RUNTIME *)nu_input_state)->devices[port].alternate_deadzone;
 }
 
-extern "C" void PcInputSetDeadzonePc(i32 port, i32 value) {
+extern "C" void PcInputSetDeadzone(i32 port, i32 value) {
     PC_INPUT_DEVICE *device = &((PC_INPUT_RUNTIME *)nu_input_state)->devices[port];
     if ((u32)(port - 10) > 3) {
         device->deadzone = value;
@@ -1895,7 +1895,7 @@ extern "C" void PcInputSetDeadzonePc(i32 port, i32 value) {
     }
 }
 
-extern "C" void PcInputSetAlternateDeadzonePc(i32 port, i32 value) {
+extern "C" void PcInputSetAlternateDeadzone(i32 port, i32 value) {
     PC_INPUT_DEVICE *device = &((PC_INPUT_RUNTIME *)nu_input_state)->devices[port];
     if ((u32)(port - 10) <= 3) {
         device->alternate_deadzone = value;
@@ -1922,8 +1922,8 @@ extern "C" i32 fun_006d9490(i32 player) {
     return port >= 0 && port <= 3;
 }
 
-extern "C" PC_INPUT_COMMAND_FILTER PcInputGetCommandFilterPc() {
-    return PcInputCommandFilterPc;
+extern "C" PC_INPUT_COMMAND_FILTER PcInputGetCommandFilter() {
+    return PcInputCommandFilter;
 }
 
 i32 PC_INPUT_RUNTIME::fun_006d6db0(i32 port, i32 index) {
@@ -2036,7 +2036,7 @@ void PC_INPUT_RUNTIME::AssignBinding(i32 action, i32 port, i32 kind, i32 value, 
     }
 }
 
-extern "C" void PcInputAssignBindingPc(i32 action, i32 port, i32 kind, i32 value, i32 unused, i32 auxiliary, i32 bank, u32 excluded) {
+extern "C" void PcInputAssignBinding(i32 action, i32 port, i32 kind, i32 value, i32 unused, i32 auxiliary, i32 bank, u32 excluded) {
     ((PC_INPUT_RUNTIME *)nu_input_state)->AssignBinding(action, port, kind, value, unused, auxiliary, bank, excluded);
 }
 
@@ -2191,7 +2191,7 @@ void PC_INPUT_RUNTIME::fun_006d3970(PC_INPUT_CONFIG *config) {
 void PC_INPUT_RUNTIME::fun_006d3980(i32) {
 }
 
-extern "C" void PcInputStageAuxiliaryConfigPc(i32 port, i32 bank, i32 key) {
+extern "C" void PcInputStageAuxiliaryConfig(i32 port, i32 bank, i32 key) {
     PC_INPUT_CONFIG config;
     PC_INPUT_RUNTIME *runtime = (PC_INPUT_RUNTIME *)nu_input_state;
     runtime->ExportConfig(port, &config, 1, bank, key);
@@ -2347,7 +2347,7 @@ void PC_INPUT_RUNTIME::SaveConfigurationPc() {
     WriteConfiguration(primary, 64, directory);
 }
 
-extern "C" void PcInputSaveConfigurationPc() {
+extern "C" void PcInputSaveConfiguration() {
     ((PC_INPUT_RUNTIME *)nu_input_state)->SaveConfigurationPc();
 }
 

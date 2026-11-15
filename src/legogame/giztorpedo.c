@@ -269,11 +269,11 @@ i32 GizTorp_GetNumOutputs(void *unused) {
     return 1;
 }
 
-static ADDGIZMOTYPE GizmoRegistryGizTorpMachineAddTypePc = {0};
+static ADDGIZMOTYPE GizmoRegistryGizTorpMachineAddType = {0};
 i32 giztorpmachine_gizmotype_id = 0;
 
 ADDGIZMOTYPE *GizTorpMachine_RegisterGizmo(i32 type_id) {
-    ADDGIZMOTYPE *addtype = &GizmoRegistryGizTorpMachineAddTypePc;
+    ADDGIZMOTYPE *addtype = &GizmoRegistryGizTorpMachineAddType;
     *addtype = Default_ADDGIZMOTYPE;
     addtype->fns.options = 0x0;
     addtype->fns.early_update_fn = NULL;

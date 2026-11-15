@@ -13,20 +13,20 @@ void NuHtmlWrite(char *text, ...) {
         text = NuHtmlUnknownText;
     }
     va_start(args, text);
-    vsprintf(PCDisplayCaptureCursorPc, text, args);
-    length = NuStrLen(PCDisplayCaptureCursorPc);
-    PCDisplayCaptureCursorPc += length;
-    if (PCDisplayCaptureCursorPc > nudlist_field_18b0) {
+    vsprintf(PCDisplayCaptureCursor, text, args);
+    length = NuStrLen(PCDisplayCaptureCursor);
+    PCDisplayCaptureCursor += length;
+    if (PCDisplayCaptureCursor > nudlist_field_18b0) {
         NuFileWriteString(nudlist_field_988, PCDisplayCaptureBuffer);
-        PCDisplayCaptureCursorPc = PCDisplayCaptureBuffer;
+        PCDisplayCaptureCursor = PCDisplayCaptureBuffer;
         nudlist_field_18b0 = PCDisplayCaptureBuffer + 0xc00;
     }
 }
 
-void NuHtmlFlushPc(void) {
-    if (nudlist_field_18b0 != PCDisplayCaptureCursorPc) {
+void NuHtmlFlush(void) {
+    if (nudlist_field_18b0 != PCDisplayCaptureCursor) {
         NuFileWriteString(nudlist_field_988, PCDisplayCaptureBuffer);
-        PCDisplayCaptureCursorPc = PCDisplayCaptureBuffer;
+        PCDisplayCaptureCursor = PCDisplayCaptureBuffer;
         nudlist_field_18b0 = PCDisplayCaptureBuffer + 0xc00;
     }
     nudlist_field_988 = 0;
@@ -40,8 +40,8 @@ void NuHtmlHeading(char *text, ...) {
     }
     NuHtmlWrite("<table width=100%c bgcolor=#CFCFE5><tr><td><font face=arial size=+3> ", 0x25);
     va_start(args, text);
-    vsprintf(PCDisplayCaptureCursorPc, text, args);
-    PCDisplayCaptureCursorPc += NuStrLen(PCDisplayCaptureCursorPc);
+    vsprintf(PCDisplayCaptureCursor, text, args);
+    PCDisplayCaptureCursor += NuStrLen(PCDisplayCaptureCursor);
     NuHtmlWrite("</font></table>\n");
 }
 
@@ -52,8 +52,8 @@ void NuHtmlHeading2(char *text, ...) {
     }
     NuHtmlWrite("<table width=100%c bgcolor=#DFDFE5><tr><td><font face=arial size=+2> ", 0x25);
     va_start(args, text);
-    vsprintf(PCDisplayCaptureCursorPc, text, args);
-    PCDisplayCaptureCursorPc += NuStrLen(PCDisplayCaptureCursorPc);
+    vsprintf(PCDisplayCaptureCursor, text, args);
+    PCDisplayCaptureCursor += NuStrLen(PCDisplayCaptureCursor);
     NuHtmlWrite("</font></table>\n");
 }
 
@@ -64,8 +64,8 @@ void NuHtmlHeading3(char *text, ...) {
     }
     NuHtmlWrite("<table width=100%c bgcolor=#FFDFE5><tr><td><font face=arial size=+0> ", 0x25);
     va_start(args, text);
-    vsprintf(PCDisplayCaptureCursorPc, text, args);
-    PCDisplayCaptureCursorPc += NuStrLen(PCDisplayCaptureCursorPc);
+    vsprintf(PCDisplayCaptureCursor, text, args);
+    PCDisplayCaptureCursor += NuStrLen(PCDisplayCaptureCursor);
     NuHtmlWrite("</font></table>\n");
 }
 

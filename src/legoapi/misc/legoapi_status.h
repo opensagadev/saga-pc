@@ -53,13 +53,13 @@ extern "C" {
     extern f32 DrawStatusScaleY;
 
     /* Additive shared contracts only; existing RTL/flight/game/player types reused. */
-    extern NUVEC PanelLightingDirectionsPc[3];
+    extern NUVEC PanelLightingDirections[3];
 
     extern i32 StatusNewMinikitCount;
     extern i32 currentminikit;
     extern i16 StatusNewCharacterIds[8];
     extern u32 StatusCollectedSuitBits;
-    extern f32 StatusMiniKitDirectionOffsetPc;
+    extern f32 StatusMiniKitDirectionOffset;
     extern f32 slideseek;
     void AddStatusMiniKitParts(void);
     extern f32 jibberlen;

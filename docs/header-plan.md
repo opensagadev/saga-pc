@@ -403,7 +403,7 @@ The 50 largest `rule` rows:
 | `PC_WINDOW_OPTIONS` | struct | 73 | `nu2api/pc_options.h` | used most in nu2api/pc_options.cpp (33) |
 | `debris_key_s` | struct | 71 | `gameapi/edptl.h` | with its typedef DEBRISKEY (rule) |
 | `FRAME_PAD` | struct | 59 | `gameapi/edtools/edui.h` | used most in gameapi/edtoolsall.cpp[edui.cpp] (52) |
-| `ShaderCompilerDictionaryPc` | struct | 58 | `gamelib/util/CRC16.h` | used most in nu2api/CRC16.cpp (25) |
+| `ShaderCompilerDictionary` | struct | 58 | `gamelib/util/CRC16.h` | used most in nu2api/CRC16.cpp (25) |
 | `PC_SPECIAL_SHADOW_LIGHT` | struct | 57 | `nu2api/nu3d/nu3d_includes.h` | used most in nu2api/nu3d_includes.cpp (16) |
 | `parttype_lookup_s` | struct | 53 | `legoapi/items/objects/objectsall.h` | used most in gameapi/objectsall.cpp (9) |
 | `nurndrlibscene_s` | struct | 52 | `nu2api/nu3d/nu3d_includes.h` | used most in nu2api/nu3d_includes.cpp (3) |
@@ -414,7 +414,7 @@ The 50 largest `rule` rows:
 | `nudisplay_list_s` | struct | 42 | `nu2api/nu3d/nu3d_includes.h` | used most in nu2api/nu3d_includes.cpp (45) |
 | `player_batarang_slot_s` | struct | 41 | `legogame/batman_gameai.h` | used most in legogame/batman_gameai.c (9) |
 | `PC_INPUT_CONFIG` | pack | 40 | `nu2api/PCInput.h` | used most in nu2api/PCInput.cpp (20) |
-| `ShaderCompilerParserPc` | class | 40 | `nu2api/shader_parser.h` | used most in nu2api/shader_parser.cpp (25) |
+| `ShaderCompilerParser` | class | 40 | `nu2api/shader_parser.h` | used most in nu2api/shader_parser.cpp (25) |
 | `FLOWBOX` | struct | 39 | `legoapi/gizmo/base/gizflow.h` | used most in legoapi/gizflow.c (36) |
 | `HINT` | struct | 36 | `legoapi/menus/core/hint.h` | used most in legoapi/hint.c (20) |
 | `GRAPPLE_MOTION` | struct | 36 | `legoapi/gizmos/transport/grapples.h` | used most in legoapi/grapples.c (68) |

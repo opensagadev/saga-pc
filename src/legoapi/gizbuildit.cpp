@@ -1708,17 +1708,17 @@ extern "C" {
     f32 GIZBUILDITWOBBLEJUMPHEIGHT = 0.05f;
     i16 GizBuilditGDeb[6] = {-1, -1, -1, -1, -1, -1};
     i32 gizbuildit_gizmotype_id = -1;
-    char *GizmoRegistryGizBuildItsNamePtrPc = "GizBuildit";
+    char *GizmoRegistryGizBuildItsNamePtr = "GizBuildit";
     f32 BuilditHopSfxWait = 0;
     i32 (*GizBuildit_AutoBuildPosFn)(void *context, NUVEC *position, NUVEC *result, u16 *angle) = NULL;
     i32 (*GizBuildIt_CanStartBuildingFn)(struct GIZBUILDIT *input, GAMEOBJECT *object) = NULL;
     void (*GizBuildIt_FinishFn)(struct GIZBUILDIT *input) = NULL;
-    static ADDGIZMOTYPE GizmoRegistryGizBuildItsAddTypePc = {0};
+    static ADDGIZMOTYPE GizmoRegistryGizBuildItsAddType = {0};
 
     ADDGIZMOTYPE *GizBuildIts_RegisterGizmo(i32 type_id) {
-        ADDGIZMOTYPE *addtype = &GizmoRegistryGizBuildItsAddTypePc;
+        ADDGIZMOTYPE *addtype = &GizmoRegistryGizBuildItsAddType;
         *addtype = Default_ADDGIZMOTYPE;
-        addtype->name = GizmoRegistryGizBuildItsNamePtrPc;
+        addtype->name = GizmoRegistryGizBuildItsNamePtr;
         addtype->fns.panel_draw_fn = NULL;
         addtype->fns.activate_rev_fn = NULL;
         addtype->fns.get_visibility_fn = NULL;

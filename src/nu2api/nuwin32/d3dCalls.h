@@ -11,7 +11,7 @@ struct PC_TEXTURE_RESOURCE;
 #ifdef __cplusplus
 extern "C" {
 #endif
-    void PCDeviceSetGammaRampPc(const void *ramp);
+    void PCDeviceSetGammaRamp(const void *ramp);
 
     void PCDeviceLockVertexBuffer(u32, u32, void **, u32, PC_BUFFER_RESOURCE *);
     HRESULT PCDeviceUnlockVertexBuffer(PC_BUFFER_RESOURCE *);
@@ -85,17 +85,17 @@ extern "C" {
     void CpuDetectFeatures(void);
     void PCDeviceSetVertexShaderConstantsF(UINT start, const f32 *values, UINT count);
     void PCDeviceSetPixelShaderConstantsF(UINT start, const f32 *values, UINT count);
-    void PCDeviceSetStreamSourcePc(u32, PC_BUFFER_RESOURCE *, u32, u32);
-    void PCDeviceSetIndicesPc(PC_BUFFER_RESOURCE *);
-    void PCDeviceSetStreamSourceFreqPc(u32, u32);
-    void PCDeviceSetVertexDeclarationPc(PC_TEXTURE_RESOURCE *);
-    void PCDeviceSetVertexShaderPc(PC_TEXTURE_RESOURCE *);
-    void PCDeviceSetPixelShaderPc(PC_TEXTURE_RESOURCE *);
+    void PCDeviceSetStreamSource(u32, PC_BUFFER_RESOURCE *, u32, u32);
+    void PCDeviceSetIndices(PC_BUFFER_RESOURCE *);
+    void PCDeviceSetStreamSourceFreq(u32, u32);
+    void PCDeviceSetVertexDeclaration(PC_TEXTURE_RESOURCE *);
+    void PCDeviceSetVertexShader(PC_TEXTURE_RESOURCE *);
+    void PCDeviceSetPixelShader(PC_TEXTURE_RESOURCE *);
 #ifdef __cplusplus
-    void PCDeviceStretchRectPc(PC_TEXTURE_RESOURCE *, const RECT *, PC_TEXTURE_RESOURCE *, const RECT *, i32);
+    void PCDeviceStretchRect(PC_TEXTURE_RESOURCE *, const RECT *, PC_TEXTURE_RESOURCE *, const RECT *, i32);
     HRESULT PCDeviceUnlockIndexBuffer(PC_BUFFER_RESOURCE *);
-    i32 PCDeviceSetCursorPositionPc(i32 x, i32 y);
-    i32 PCDeviceShowCursorPc(i32 show);
+    i32 PCDeviceSetCursorPosition(i32 x, i32 y);
+    i32 PCDeviceShowCursor(i32 show);
     i32 PCGraphicsPrepareVendor();
     void PCDeviceLockIndexBuffer(u32, u32, void **, u32, PC_BUFFER_RESOURCE *);
     void PCDeviceSetSoftwareVertexProcessing(BOOL enabled);

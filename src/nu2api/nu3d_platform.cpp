@@ -123,11 +123,11 @@ extern "C" {
     VARIPTR SceneUploadBufferStartPC = {0};
     VARIPTR SceneUploadBufferCursorPC = {0};
     VARIPTR SceneUploadBufferEndPC = {0};
-    i32 NuGobjRegistryInitializedPc = 0;
+    i32 NuGobjRegistryInitialized = 0;
     NUGSCN *PCRegisteredNativeScenes[100] = {0};
-    PC_GOBJ_REGISTRY_ENTRY *NuGobjRegistryFirstPc = 0;
+    PC_GOBJ_REGISTRY_ENTRY *NuGobjRegistryFirst = 0;
     i32 dat_02854f54 = 0;
-    i32 NuGobjRegistryCountPc = 0;
+    i32 NuGobjRegistryCount = 0;
     NUVEC4BLOCK ClipCornerBlocks[2] = {0};
     NUVEC4BLOCK ClipTransformedBlocks[2] = {0};
     FRAME_NATIVE_TEXTURE_POOL FrameNativeTexturePool = {0};
@@ -1224,22 +1224,22 @@ extern "C" {
 
     extern "C" void Nu360MtlInit(void) {
         NuDisplayMaterialDebrisPrograms =
-            reinterpret_cast<PC_DL_SHADER_PROGRAM_PAIR *>(PostShaderProgramCreatePc(2, dat_00769710, dat_00769840));
+            reinterpret_cast<PC_DL_SHADER_PROGRAM_PAIR *>(PostShaderProgramCreate(2, dat_00769710, dat_00769840));
         if (PCDeviceHardwareVertexProcessingPC > 1) {
             NuDisplayMaterialGlassPrograms =
-                reinterpret_cast<PC_DL_SHADER_PROGRAM_PAIR *>(PostShaderProgramCreatePc(2, dat_007698f0, dat_00769a58));
+                reinterpret_cast<PC_DL_SHADER_PROGRAM_PAIR *>(PostShaderProgramCreate(2, dat_007698f0, dat_00769a58));
         } else {
             NuDisplayMaterialGlassPrograms =
-                reinterpret_cast<PC_DL_SHADER_PROGRAM_PAIR *>(PostShaderProgramCreatePc(2, dat_00769c48, dat_00769da8));
+                reinterpret_cast<PC_DL_SHADER_PROGRAM_PAIR *>(PostShaderProgramCreate(2, dat_00769c48, dat_00769da8));
         }
         if (PCDeviceHardwareVertexProcessingPC > 1) {
             NuDisplayMaterialFaceOnDecalPrograms =
-                reinterpret_cast<PC_DL_SHADER_PROGRAM_PAIR *>(PostShaderProgramCreatePc(2, dat_00769e80, dat_0076a3c8));
+                reinterpret_cast<PC_DL_SHADER_PROGRAM_PAIR *>(PostShaderProgramCreate(2, dat_00769e80, dat_0076a3c8));
         }
         NuDisplayMaterialFaceOnPrograms =
-            reinterpret_cast<PC_DL_SHADER_PROGRAM_PAIR *>(PostShaderProgramCreatePc(2, dat_00769e80, dat_0076a298));
+            reinterpret_cast<PC_DL_SHADER_PROGRAM_PAIR *>(PostShaderProgramCreate(2, dat_00769e80, dat_0076a298));
         NuDisplayMaterialDefaultPrograms =
-            reinterpret_cast<PC_DL_SHADER_PROGRAM_PAIR *>(PostShaderProgramCreatePc(2, dat_0076a538, dat_0076a5e8));
+            reinterpret_cast<PC_DL_SHADER_PROGRAM_PAIR *>(PostShaderProgramCreate(2, dat_0076a538, dat_0076a5e8));
         PCDeviceCreateVertexDeclaration(NuMaterialFaceOnElements, &NuDisplayMaterialFaceOnDeclaration);
         PCDeviceCreateVertexDeclaration(NuMaterialDebrisElements, &NuDisplayMaterialDebrisDeclaration);
         PCDeviceCreateVertexDeclaration(NuMaterialDefaultElements, &NuDisplayMaterialDefaultDeclaration);
@@ -1560,7 +1560,7 @@ extern "C" {
 
     extern f32 NuFrameAccumulatedTime;
     extern const char *GetPCStartupMessage(void);
-    extern void FmvPlatformUpdatePc(void);
+    extern void FmvPlatformUpdate(void);
 
 #define NUFRAME_ELAPSED(elapsed, now, start)                                                                                               \
     if ((now).low >= (start).low) {                                                                                                        \
@@ -1729,7 +1729,7 @@ extern "C" {
     }
 
     void PC_DEVICE_BACKEND::fun_005f78c0() {
-        PCDeviceSetVertexDeclarationPc(declaration6ac);
+        PCDeviceSetVertexDeclaration(declaration6ac);
     }
 
     static i32 fun_005f7900(i32 mode) {
@@ -2565,8 +2565,8 @@ extern "C" {
     }
 
     void NuRndrShadowVolumeFinish(void) {
-        PCDeviceSetVertexShaderPc(NULL);
-        PCDeviceSetPixelShaderPc(NULL);
+        PCDeviceSetVertexShader(NULL);
+        PCDeviceSetPixelShader(NULL);
         PCDeviceSetRenderState(27, 1);
         PCDeviceSetRenderState(14, 0);
         PCDeviceSetRenderState(137, 0);
@@ -2586,15 +2586,15 @@ extern "C" {
         PCDeviceSetRenderState(171, 1);
         PCDeviceSetRenderState(19, 5);
         PCDeviceSetRenderState(20, 6);
-        PCDeviceSetVertexDeclarationPc(PCDeviceBackend.declaration6ac);
-        PCDeviceSetStreamSourcePc(0, RendererQuadVertexBuffer, 0, 0x1c);
-        PCDeviceDrawPrimitivePc(6, 0, 2);
+        PCDeviceSetVertexDeclaration(PCDeviceBackend.declaration6ac);
+        PCDeviceSetStreamSource(0, RendererQuadVertexBuffer, 0, 0x1c);
+        PCDeviceDrawPrimitive(6, 0, 2);
     }
 
     void NuRndrShadowVolumeDraw(void) {
         i32 i;
         u32 n;
-        PCDeviceSetVertexDeclarationPc(RendererVertexDeclaration);
+        PCDeviceSetVertexDeclaration(RendererVertexDeclaration);
         PCDeviceSetRenderState(14, 0);
         PCDeviceSetRenderState(27, 1);
         PCDeviceSetRenderState(19, 1);
@@ -2625,12 +2625,12 @@ extern "C" {
     /* Renders the queued hierarchy shadow packets as stencil shadow volumes; never called. */
     void NuRndrShadowVolumes(void) {
         if (PcWindowOptions.shadowsenabled != 0 && PcWindowOptions.shadowmethod == 1 && PCShadowPacketCount != 0) {
-            PCDeviceSetVertexShaderPc(NULL);
-            PCDeviceSetPixelShaderPc(NULL);
+            PCDeviceSetVertexShader(NULL);
+            PCDeviceSetPixelShader(NULL);
             PCDeviceSetRenderState(15, 0);
             PCDeviceSetRenderState(23, 4);
             PCDeviceSetTexture(0, NULL);
-            PCDeviceSetWorldIdentityPc();
+            PCDeviceSetWorldIdentity();
             NuRndrArenaBuildShadowVolumes(0x80, 0);
             NuRndrShadowVolumeDraw();
             NuRndrShadowVolumeFinish();
@@ -2912,7 +2912,7 @@ extern "C" {
         return 0xffff;
     }
 
-    i32 NuQFntMapAddPc(VUCHARIDX *map, i32 slot, u16 unicode, u16 index) {
+    i32 NuQFntMapAdd(VUCHARIDX *map, i32 slot, u16 unicode, u16 index) {
         if (slot > 808 || slot < 0) {
             NuQFntAtlasError();
         }
@@ -3088,13 +3088,13 @@ extern "C" {
                 glyphs[*text].x = x;
                 glyphs[*text].y = y;
                 glyphs[*text].width = width;
-                next = NuQFntMapAddPc(map, *text, *text, *text);
+                next = NuQFntMapAdd(map, *text, *text, *text);
             } else {
                 NUQFNT_ATLAS_NEXT_GLYPH();
                 glyphs[index].x = x;
                 glyphs[index].y = y;
                 glyphs[index].width = width;
-                index = NuQFntMapAddPc(map, index, *text, (u16)index);
+                index = NuQFntMapAdd(map, index, *text, (u16)index);
                 next = index + 1;
             }
             if (max_count <= next) {
@@ -3114,7 +3114,7 @@ extern "C" {
             if (map[c].unicode == 0xffff) {
                 glyph = NuQFntMapLookup(map, count, NuToUpper((u8)c));
                 if (glyph != 0xffff) {
-                    NuQFntMapAddPc(map, c, (u16)c, glyph);
+                    NuQFntMapAdd(map, c, (u16)c, glyph);
                     if (max_count <= c) {
                         max_count = c;
                     }
@@ -3126,7 +3126,7 @@ extern "C" {
             if (NuQFntMapLookup(map, index, (u16)c) == 0xffff) {
                 glyph = NuQFntMapLookup(map, count, NuToUpper((u8)c));
                 if (glyph != 0xffff) {
-                    index = NuQFntMapAddPc(map, index, (u16)c, glyph);
+                    index = NuQFntMapAdd(map, index, (u16)c, glyph);
                 }
             }
         }
@@ -3134,13 +3134,13 @@ extern "C" {
         if (NuQFntMapLookup(map, index, 0x91) == 0xffff) {
             glyph = NuQFntMapLookup(map, count, '\'');
             if (glyph != 0xffff) {
-                index = NuQFntMapAddPc(map, index, 0x91, glyph);
+                index = NuQFntMapAdd(map, index, 0x91, glyph);
             }
         }
         if (NuQFntMapLookup(map, index, 0x92) == 0xffff) {
             glyph = NuQFntMapLookup(map, count, '\'');
             if (glyph != 0xffff) {
-                index = NuQFntMapAddPc(map, index, 0x92, glyph);
+                index = NuQFntMapAdd(map, index, 0x92, glyph);
             }
         }
         if (index <= 'z') {
@@ -3274,7 +3274,7 @@ extern "C" {
 
     void PC_EFFECT_SURFACE::fun_005fb920(PC_EFFECT_SURFACE *source) {
         bool resize = width != source->width || height != source->height;
-        PCDeviceStretchRectPc(source->surface, NULL, surface, NULL, resize ? 2 : 0);
+        PCDeviceStretchRect(source->surface, NULL, surface, NULL, resize ? 2 : 0);
     }
 
     void PC_EFFECT_SURFACE::ReleaseResources() {
@@ -3973,7 +3973,7 @@ extern "C" {
         const void *vertices;
         u32 point_size;
         f32 point_size_float;
-        if (packet == NULL || PCShaderCurrentObjectPc() == NULL || packet->vertex_count == 0) {
+        if (packet == NULL || PCShaderCurrentObject() == NULL || packet->vertex_count == 0) {
             return;
         }
         count = packet->vertex_count;
@@ -4024,7 +4024,7 @@ extern "C" {
         PC_DL_SKIN_PALETTE_READER *packet = (PC_DL_SKIN_PALETTE_READER *)arg;
         i32 count = packet->count;
         void *elements = packet->elements;
-        NuShaderObject *shader = (NuShaderObject *)PCShaderCurrentObjectPc();
+        NuShaderObject *shader = (NuShaderObject *)PCShaderCurrentObject();
         if (shader != NULL) {
             if (count > 8) {
                 NuPtlDmaSlotsExhausted();
@@ -4039,8 +4039,8 @@ extern "C" {
         if (packet == NULL) {
             return;
         }
-        PCDeviceSetStreamSourcePc(0, packet->vertex_buffer, 0, 32);
-        PCDeviceDrawPrimitivePc(4, packet->first_vertex, packet->primitive_count * 2u);
+        PCDeviceSetStreamSource(0, packet->vertex_buffer, 0, 32);
+        PCDeviceDrawPrimitive(4, packet->first_vertex, packet->primitive_count * 2u);
     }
 
     void NuDisplayListLights(void *arg) {
@@ -4262,16 +4262,16 @@ extern "C" {
         values.z = 0.0f;
         values.w = 0.0f;
         PCDeviceSetPixelShaderConstantsF(0xd4, &values.x, 1);
-        PCDeviceSetStreamSourcePc(0, packet->vertex_buffer, 0, 0x10);
-        PCDeviceSetStreamSourceFreqPc(0, instances | 0x40000000u);
-        PCDeviceSetStreamSourcePc(1, packet->instance_buffer, 0, 0x50);
-        PCDeviceSetStreamSourceFreqPc(1, 0x80000001u);
-        PCDeviceSetIndicesPc(packet->index_buffer);
+        PCDeviceSetStreamSource(0, packet->vertex_buffer, 0, 0x10);
+        PCDeviceSetStreamSourceFreq(0, instances | 0x40000000u);
+        PCDeviceSetStreamSource(1, packet->instance_buffer, 0, 0x50);
+        PCDeviceSetStreamSourceFreq(1, 0x80000001u);
+        PCDeviceSetIndices(packet->index_buffer);
         vertex_count = (u32)segments * 2u + 2u;
-        PCDeviceDrawIndexedPrimitivePc(5, 0, 0, vertex_count, 0, vertex_count - 2u);
-        PCDeviceSetStreamSourcePc(0, NULL, 0, 0);
-        PCDeviceSetStreamSourceFreqPc(0, 1);
-        PCDeviceSetStreamSourceFreqPc(1, 1);
+        PCDeviceDrawIndexedPrimitive(5, 0, 0, vertex_count, 0, vertex_count - 2u);
+        PCDeviceSetStreamSource(0, NULL, 0, 0);
+        PCDeviceSetStreamSourceFreq(0, 1);
+        PCDeviceSetStreamSourceFreq(1, 1);
     }
 
     void NuRndrScreenGrabTileInit(SCREENGRAB_TILE_PARAMS *params, i32 tiles, f32 b, f32 a, f32 c) {
@@ -4553,8 +4553,8 @@ extern "C" {
             const void *vertices = (const u8 *)NuDebrisSystemBuffers[packet->buffer_index] + packet->first_vertex * 24u;
             PCDeviceDrawPrimitiveUPPc(4, packet->vertex_count / 3u, vertices, 24);
         } else {
-            PCDeviceSetStreamSourcePc(0, NuDebrisVertexBuffers[packet->buffer_index], 0, 24);
-            PCDeviceDrawPrimitivePc(4, packet->first_vertex, packet->vertex_count / 3u);
+            PCDeviceSetStreamSource(0, NuDebrisVertexBuffers[packet->buffer_index], 0, 24);
+            PCDeviceDrawPrimitive(4, packet->first_vertex, packet->vertex_count / 3u);
         }
     }
 
@@ -4827,7 +4827,7 @@ extern "C" {
     void NuPrimReleaseResources(void) {
     }
 
-    void NuKeyboardWindowStateLeafPc(void) {
+    void NuKeyboardWindowStateLeaf(void) {
     }
 
     void Initialise_PS(NUGSCN *scene) {
@@ -6259,7 +6259,7 @@ extern "C" {
         PC_DL_GEOMETRY_MATERIAL_READER *material = (PC_DL_GEOMETRY_MATERIAL_READER *)NuDisplayHandlerMaterial;
         u32 primitive_count;
         const void *vertices;
-        if (packet == NULL || PCShaderCurrentObjectPc() == NULL || packet->vertex_count == 0) {
+        if (packet == NULL || PCShaderCurrentObject() == NULL || packet->vertex_count == 0) {
             return;
         }
         primitive_count = packet->primitive_count;
@@ -6274,18 +6274,18 @@ extern "C" {
                     PCDeviceLockVertexBuffer(0, 0, &locked, 0x2000, packet->dynamic_buffer);
                     PCByteCopy(locked, packet->dynamic_vertices, packet->vertex_stride * packet->vertex_count);
                     PCDeviceUnlockVertexBuffer(packet->dynamic_buffer);
-                    PCDeviceSetStreamSourcePc(0, packet->dynamic_buffer, 0, packet->vertex_stride);
-                    PCDeviceSetIndicesPc(packet->index_buffer);
+                    PCDeviceSetStreamSource(0, packet->dynamic_buffer, 0, packet->vertex_stride);
+                    PCDeviceSetIndices(packet->index_buffer);
                     SAGA_SKIN_CALL(skin_trace_capture_geometry, (unsigned)packet, (unsigned)NuDisplayHandlerMaterial, PCShaderSlots,
                                    (unsigned)packet->dynamic_buffer, (unsigned)packet->index_buffer, 0, packet->start_index);
-                    PCDeviceDrawIndexedPrimitivePc(5, 0, 0, packet->vertex_count, packet->start_index, primitive_count);
+                    PCDeviceDrawIndexedPrimitive(5, 0, 0, packet->vertex_count, packet->start_index, primitive_count);
                 } else {
-                    PCDeviceSetStreamSourcePc(0, packet->vertex_buffer, 0, packet->vertex_stride);
-                    PCDeviceSetIndicesPc(packet->index_buffer);
+                    PCDeviceSetStreamSource(0, packet->vertex_buffer, 0, packet->vertex_stride);
+                    PCDeviceSetIndices(packet->index_buffer);
                     SAGA_SKIN_CALL(skin_trace_capture_geometry, (unsigned)packet, (unsigned)NuDisplayHandlerMaterial, PCShaderSlots,
                                    (unsigned)packet->vertex_buffer, (unsigned)packet->index_buffer, packet->base_vertex,
                                    packet->start_index);
-                    PCDeviceDrawIndexedPrimitivePc(5, packet->base_vertex, 0, packet->vertex_count, packet->start_index, primitive_count);
+                    PCDeviceDrawIndexedPrimitive(5, packet->base_vertex, 0, packet->vertex_count, packet->start_index, primitive_count);
                 }
                 break;
             case 12:
@@ -7253,7 +7253,7 @@ extern "C" {
             entry->previous->next = entry->next;
         }
         next = entry->next;
-        --NuGobjRegistryCountPc;
+        --NuGobjRegistryCount;
         if (next != NULL) {
             next->previous = entry->previous;
         }
@@ -7364,9 +7364,9 @@ extern "C" {
         }
     }
 
-    void NuGobjRegistryCleanupPc(void) {
-        if (NuGobjRegistryInitializedPc != 0) {
-            PC_GOBJ_REGISTRY_ENTRY *entry = NuGobjRegistryFirstPc;
+    void NuGobjRegistryCleanup(void) {
+        if (NuGobjRegistryInitialized != 0) {
+            PC_GOBJ_REGISTRY_ENTRY *entry = NuGobjRegistryFirst;
             while (entry != NULL) {
                 PC_GOBJ_REGISTRY_ENTRY *next = entry->next;
                 PC_GOBJ_REGISTRY_CHILD *child = entry->children;
@@ -7385,38 +7385,38 @@ extern "C" {
                 if (entry->next != NULL) {
                     entry->next->previous = entry->previous;
                 }
-                --NuGobjRegistryCountPc;
+                --NuGobjRegistryCount;
                 entry = next;
-                NuGobjRegistryFirstPc = entry;
+                NuGobjRegistryFirst = entry;
             }
         }
     }
 
-    void NuGobjRegistryInitPc(void) {
-        if (NuGobjRegistryInitializedPc != 0) {
-            NuGobjRegistryCleanupPc();
+    void NuGobjRegistryInit(void) {
+        if (NuGobjRegistryInitialized != 0) {
+            NuGobjRegistryCleanup();
         }
-        NuGobjRegistryFirstPc = NULL;
-        NuGobjRegistryInitializedPc = 1;
+        NuGobjRegistryFirst = NULL;
+        NuGobjRegistryInitialized = 1;
     }
 
     void NuMainFilter::initResources() {
         NuMainFilterGen::initResources();
         void *last_program;
         if (PCDeviceHardwareVertexProcessingPC > 1) {
-            programs[6] = PostShaderProgramCreatePc(2, dat_007662d8, dat_00766578);
-            programs[8] = PostShaderProgramCreatePc(2, dat_00766820, dat_00766578);
-            platform_programs[0] = PostShaderProgramCreatePc(2, dat_007662d8, dat_007666f0);
-            last_program = PostShaderProgramCreatePc(2, dat_00766820, dat_007666f0);
+            programs[6] = PostShaderProgramCreate(2, dat_007662d8, dat_00766578);
+            programs[8] = PostShaderProgramCreate(2, dat_00766820, dat_00766578);
+            platform_programs[0] = PostShaderProgramCreate(2, dat_007662d8, dat_007666f0);
+            last_program = PostShaderProgramCreate(2, dat_00766820, dat_007666f0);
             platform_uniforms[0] = 0x82;
             platform_uniforms[1] = 0x88;
             platform_uniforms[2] = 0x89;
             platform_uniforms[3] = 0x8a;
         } else {
-            programs[6] = PostShaderProgramCreatePc(2, dat_00766c38, dat_00766ed8);
-            programs[8] = PostShaderProgramCreatePc(2, dat_00767180, dat_00766ed8);
-            platform_programs[0] = PostShaderProgramCreatePc(2, dat_00766c38, dat_00767050);
-            last_program = PostShaderProgramCreatePc(2, dat_00767180, dat_00767050);
+            programs[6] = PostShaderProgramCreate(2, dat_00766c38, dat_00766ed8);
+            programs[8] = PostShaderProgramCreate(2, dat_00767180, dat_00766ed8);
+            platform_programs[0] = PostShaderProgramCreate(2, dat_00766c38, dat_00767050);
+            last_program = PostShaderProgramCreate(2, dat_00767180, dat_00767050);
             platform_uniforms[0] = 0;
             platform_uniforms[1] = 1;
             platform_uniforms[2] = 2;
@@ -7428,20 +7428,20 @@ extern "C" {
 
     void NuDeferredFilter::initResources() {
         NuDeferredFilterGen::initResources();
-        programs[0] = PostShaderProgramCreatePc(2, dat_00767598, dat_007676f0);
-        programs[1] = PostShaderProgramCreatePc(2, dat_00767598, dat_00767fc8);
-        programs[2] = PostShaderProgramCreatePc(2, dat_00768d20, dat_00768870);
-        programs[3] = PostShaderProgramCreatePc(2, dat_00768d20, dat_00768ae0);
+        programs[0] = PostShaderProgramCreate(2, dat_00767598, dat_007676f0);
+        programs[1] = PostShaderProgramCreate(2, dat_00767598, dat_00767fc8);
+        programs[2] = PostShaderProgramCreate(2, dat_00768d20, dat_00768870);
+        programs[3] = PostShaderProgramCreate(2, dat_00768d20, dat_00768ae0);
     }
 
     void NuSpeedBlurFilter::initResources() {
         NuPostFilterGen::initResources();
         void *program;
         if (PCDeviceHardwareVertexProcessingPC > 1) {
-            program = PostShaderProgramCreatePc(2, dat_00768de0, dat_007690b0);
+            program = PostShaderProgramCreate(2, dat_00768de0, dat_007690b0);
             platform_uniform = 0x80;
         } else {
-            program = PostShaderProgramCreatePc(2, dat_007692c0, dat_00769580);
+            program = PostShaderProgramCreate(2, dat_007692c0, dat_00769580);
             platform_uniform = 0;
         }
         programs[0] = program;
@@ -7595,9 +7595,9 @@ extern "C" void NuDisplayListShadowMaterial(void *data) {
     if (shader != NULL) {
         NuDisplayHandlerMaterial = material;
         if (!(material->vertex_format & 0x300000) && material->common.display_list != NULL) {
-            PCShaderSetMaterialParametersPc(shader, &material->common);
+            PCShaderSetMaterialParameters(shader, &material->common);
             NuShaderManagerBindShader(shader);
-            PCDeviceSetVertexDeclarationPc(material->vertex_declaration);
+            PCDeviceSetVertexDeclaration(material->vertex_declaration);
         }
         u32 flags = material->attributes_word;
         u32 z_mode = flags & 0xc000;
@@ -7778,14 +7778,14 @@ extern "C" {
             (PC_GOBJ_REGISTRY_ENTRY *)NuAlloc(0x70, "d:\\projects\\game_saga\\nu2api.saga\\nu3d\\pc\\nugobj.c", 107);
         PC_GOBJ_REGISTRY_ENTRY *first;
         memset(entry, 0, 0x70);
-        first = NuGobjRegistryFirstPc;
+        first = NuGobjRegistryFirst;
         if (first != NULL) {
             first->previous = entry;
         }
-        ++NuGobjRegistryCountPc;
+        ++NuGobjRegistryCount;
         entry->next = first;
         entry->previous = NULL;
-        NuGobjRegistryFirstPc = entry;
+        NuGobjRegistryFirst = entry;
         return entry;
     }
 
@@ -7863,7 +7863,7 @@ extern "C" {
             ramp[1][i] = entry;
             ramp[2][i] = entry;
         }
-        PCDeviceSetGammaRampPc(ramp);
+        PCDeviceSetGammaRamp(ramp);
     }
 
     void fun_006031f0(void) {
@@ -8285,16 +8285,16 @@ extern "C" {
         return 1;
     }
 
-    static f32 FrameShaderMaterialAnimationTimePc = 0;
+    static f32 FrameShaderMaterialAnimationTime = 0;
     NUMTX PCSpecialProjectionTranslate = {0};
     NUMTX PCSpecialProjectionScale = {0};
-    static i32 FrameShaderMaterialFirstCallPc = 1;
+    static i32 FrameShaderMaterialFirstCall = 1;
     i32 NuDisplayHandlerCameraId = -1;
 
     void NuMtlAnimateShaderMtlTextures(f32 frame_time) {
         i32 i;
-        FrameShaderMaterialAnimationTimePc += frame_time;
-        if (FrameShaderMaterialFirstCallPc != 0) {
+        FrameShaderMaterialAnimationTime += frame_time;
+        if (FrameShaderMaterialFirstCall != 0) {
             for (i = 0; i < (i32)nudlist_field_9d8; ++i) {
                 NUDISPLAY_LIST *scene = PCDisplayScenes[i];
                 if (((FRAME_MTL_SCENE *)scene->gscene)->shader_texture_animation_enabled != 0) {
@@ -8309,7 +8309,7 @@ extern "C" {
                     }
                 }
             }
-            FrameShaderMaterialFirstCallPc = 0;
+            FrameShaderMaterialFirstCall = 0;
         }
     }
 

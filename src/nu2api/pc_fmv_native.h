@@ -59,16 +59,16 @@ struct RADFMV_IMAGE {            // size 0x50
 };
 
 extern "C" {
-    i32 RadFmvInitializeFormatsPc(GRAPHICS_FACTORY *, u32, RADFMV_CONTEXT *);
-    void RadFmvBeginScenePc(RADFMV_CONTEXT *);
-    void RadFmvEndScenePc(RADFMV_CONTEXT *);
-    void RadFmvResizePc(RADFMV_CONTEXT *, u32, u32);
-    void RadFmvBlitImagePc(RADFMV_IMAGE *, f32, f32, f32, f32, f32);
-    void RadFmvDrawLinesPc(RADFMV_IMAGE *, f32, f32, f32, f32);
-    i32 RadFmvLockImagePc(RADFMV_IMAGE *, void **, u32 *, u32 *, u32 *, u32 *, u32 *, u32 *, u32);
-    void RadFmvUnlockImagePc(RADFMV_IMAGE *);
-    RADFMV_IMAGE *RadFmvCreateImagePc(RADFMV_CONTEXT *, u32, u32, u32, u32);
-    void RadFmvDestroyImagePc(RADFMV_IMAGE *);
+    i32 RadFmvInitializeFormats(GRAPHICS_FACTORY *, u32, RADFMV_CONTEXT *);
+    void RadFmvBeginScene(RADFMV_CONTEXT *);
+    void RadFmvEndScene(RADFMV_CONTEXT *);
+    void RadFmvResize(RADFMV_CONTEXT *, u32, u32);
+    void RadFmvBlitImage(RADFMV_IMAGE *, f32, f32, f32, f32, f32);
+    void RadFmvDrawLines(RADFMV_IMAGE *, f32, f32, f32, f32);
+    i32 RadFmvLockImage(RADFMV_IMAGE *, void **, u32 *, u32 *, u32 *, u32 *, u32 *, u32 *, u32);
+    void RadFmvUnlockImage(RADFMV_IMAGE *);
+    RADFMV_IMAGE *RadFmvCreateImage(RADFMV_CONTEXT *, u32, u32, u32, u32);
+    void RadFmvDestroyImage(RADFMV_IMAGE *);
 }
 
 struct PC_FMV_BINK {              // size 0x254
@@ -104,27 +104,27 @@ struct PC_FMV_MOVIE {                // size 0x48
 };
 
 extern "C" {
-    extern PC_FMV_MOVIE FmvMoviePc;
-    extern i32 FmvInitializedPc;
-    extern i32 FmvState1Pc;
-    extern i32 FmvState2Pc;
-    i32 FmvInitializePc(HWND, GRAPHICS_FACTORY *, PC_D3D9_DEVICE *, IDirectSound8 *);
-    i32 FmvOpenPc(PC_FMV_MOVIE *, const char *, i32, f32, i32);
-    void FmvFramePc(PC_FMV_MOVIE *);
-    void FmvClosePc(PC_FMV_MOVIE *);
-    void FmvFadePc(PC_FMV_MOVIE *, f32);
-    void FmvReleaseImagePc(PC_FMV_MOVIE *);
-    void FmvRestoreImagePc(PC_FMV_MOVIE *);
-    void FmvReleasePc(void);
-    void FmvRestorePc(void);
-    void FmvOptionErrorPc(i32, const char *, i32);
-    void FmvPlatformUpdatePc(void);
-    void FmvPlatformFinishPc(void);
-    i32 FmvStartPc(const char *, f32, i32);
-    void FmvStopPc(void);
-    i32 FmvStepPc(void);
-    void FmvSkipPc(void);
-    void NuFmvStopSoundPc(i32);
-    IDirectSound8 *NuFmvGetSoundFactoryPc(void);
-    extern void (*FmvDrawCallbackPc)(void);
+    extern PC_FMV_MOVIE FmvMovie;
+    extern i32 FmvInitialized;
+    extern i32 FmvState1;
+    extern i32 FmvState2;
+    i32 FmvInitialize(HWND, GRAPHICS_FACTORY *, PC_D3D9_DEVICE *, IDirectSound8 *);
+    i32 FmvOpen(PC_FMV_MOVIE *, const char *, i32, f32, i32);
+    void FmvFrame(PC_FMV_MOVIE *);
+    void FmvClose(PC_FMV_MOVIE *);
+    void FmvFade(PC_FMV_MOVIE *, f32);
+    void FmvReleaseImage(PC_FMV_MOVIE *);
+    void FmvRestoreImage(PC_FMV_MOVIE *);
+    void FmvRelease(void);
+    void FmvRestore(void);
+    void FmvOptionError(i32, const char *, i32);
+    void FmvPlatformUpdate(void);
+    void FmvPlatformFinish(void);
+    i32 FmvStart(const char *, f32, i32);
+    void FmvStop(void);
+    i32 FmvStep(void);
+    void FmvSkip(void);
+    void NuFmvStopSound(i32);
+    IDirectSound8 *NuFmvGetSoundFactory(void);
+    extern void (*FmvDrawCallback)(void);
 }

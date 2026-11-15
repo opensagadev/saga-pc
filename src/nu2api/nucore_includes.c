@@ -178,21 +178,21 @@ typedef struct FRAME_PAD_RAMP {
 } FRAME_PAD_RAMP;
 
 static FRAME_SCANNED_PAD g_nupadScannedPads[16] = {0};
-static f32 FramePadRampRatePc = 0.1f;
-static FRAME_PAD_RAMP FramePadRampValuesPc[5] = {
+static f32 FramePadRampRate = 0.1f;
+static FRAME_PAD_RAMP FramePadRampValues[5] = {
     {0.0f,  0.0f },
     {0.5f,  0.1f },
     {0.75f, 0.25f},
     {0.85f, 0.5f },
     {1.0f,  1.0f }
 };
-i32 FramePadProfilePortPc = -1;
+i32 FramePadProfilePort = -1;
 i32 MaxGamePads = 2;
 i16 PlayerLastPort[8] = {-1, -1, -1, -1, -1, -1, -1, -1};
 u32 PCImplodeWordMask = 0xffffffff;
 i32 gExplodeInitialised = 1;
-static i32 FramePadDirectMappingPc = 0;
-static i32 FramePadActivatedPc = 0;
+static i32 FramePadDirectMapping = 0;
+static i32 FramePadActivated = 0;
 
 i32 num_extensions = 0;
 static i32 ImplodePendingCopy = 0;
@@ -255,7 +255,7 @@ f32 FrameStartupDelay = 6.0f;
 
 extern f32 NuFrameAccumulatedTime;
 extern const char *GetPCStartupMessage(void);
-extern void FmvPlatformUpdatePc(void);
+extern void FmvPlatformUpdate(void);
 
 #define NUFRAME_ELAPSED(elapsed, now, start)                                                                                               \
     if ((now).low >= (start).low) {                                                                                                        \
@@ -504,7 +504,7 @@ void NuFileSetCurrentDllDirectory(const char *path) {
     }
 }
 
-i32 FileDeviceFormatDefaultNamePc(char *destination, char *path, i32 maximum_size) {
+i32 FileDeviceFormatDefaultName(char *destination, char *path, i32 maximum_size) {
     return default_device->format_name_fn(default_device, destination, path, maximum_size);
 }
 
@@ -7833,7 +7833,7 @@ f32 NuFrameEnd(void) {
                     break;
                 }
             }
-            FmvPlatformUpdatePc();
+            FmvPlatformUpdate();
             NuTimeGetTicksPS(&nuapi.time.low, &nuapi.time.high);
             if (nuapi.time.high < 0) {
                 NuFileError();
@@ -7842,7 +7842,7 @@ f32 NuFrameEnd(void) {
         }
     } else {
         NuWindowsProcessMessages();
-        FmvPlatformUpdatePc();
+        FmvPlatformUpdate();
     }
     NuPadRecordEndFrame();
     NuTimeBarSetRender(-1);
@@ -8115,9 +8115,9 @@ static f32 CalcRamp(f32 ramp) {
     if (!(ramp < 1.0f)) {
         ramp = 1.0f;
     }
-    for (i = 0; ramp > FramePadRampValuesPc[i].threshold; ++i) {
+    for (i = 0; ramp > FramePadRampValues[i].threshold; ++i) {
     }
-    return FramePadRampValuesPc[i].value;
+    return FramePadRampValues[i].value;
 }
 
 void NuPadProcessReadData(NUGENERICPAD *pad) {
@@ -8198,7 +8198,7 @@ void NuPadProcessReadData(NUGENERICPAD *pad) {
         pad->analog_left_pad_up = pad->unknown_7e;
         pad->analog_left_pad_down = pad->unknown_7f;
     } else {
-        ramp_rate_normal = FramePadRampRatePc / 30.0f;
+        ramp_rate_normal = FramePadRampRate / 30.0f;
 
         if ((pad->digital_buttons & PAD_BUTTON_UP) != 0) {
             pad->left_up_ramp = MIN(1.0f, pad->left_up_ramp + ramp_rate_normal);
@@ -8264,7 +8264,7 @@ void NuPadSetValid(i32 port, i32 valid) {
 }
 
 i32 fun_004f4360(void) {
-    return FramePadProfilePortPc;
+    return FramePadProfilePort;
 }
 
 void NuPadUpdatePads(void) {
@@ -8279,7 +8279,7 @@ void NuPadUpdatePads(void) {
     max_game_pads = MaxGamePads;
 
     for (i = 0; i < max_interface_devices; i++) {
-        g_nupadScannedPads[i].is_valid = (u8)NuPadReadOutputsPc(
+        g_nupadScannedPads[i].is_valid = (u8)NuPadReadOutputs(
             i, &g_nupadScannedPads[i].analog_left_x, &g_nupadScannedPads[i].analog_left_y, &g_nupadScannedPads[i].analog_right_x,
             &g_nupadScannedPads[i].analog_right_y, &g_nupadScannedPads[i].analog_l1, &g_nupadScannedPads[i].analog_l2,
             &g_nupadScannedPads[i].analog_r1, &g_nupadScannedPads[i].analog_r2, &g_nupadScannedPads[i].digital_buttons,
@@ -8323,7 +8323,7 @@ void NuPadUpdatePads(void) {
         g_nupadScannedPads[i].mapped_to_pad = -1;
     }
 
-    if (!FramePadActivatedPc) {
+    if (!FramePadActivated) {
         g_nupadMapping[0].port = -1;
 
         for (j = 0; j < max_interface_devices; j++) {
@@ -8347,7 +8347,7 @@ void NuPadUpdatePads(void) {
         }
     }
 
-    if (FramePadActivatedPc) {
+    if (FramePadActivated) {
         for (i = 0; i < max_game_pads; i++) {
             if (g_nupadMapping[i].is_active == 1 && !g_nupadScannedPads[g_nupadMapping[i].port].is_valid) {
                 for (j = 0; j < max_interface_devices; j++) {
@@ -8459,18 +8459,18 @@ void NuPadInit(void) {
         g_nupadMapping[i].port = -1;
         g_nupadMapping[i].is_active = 0;
     }
-    FramePadActivatedPc = 0;
+    FramePadActivated = 0;
 }
 
 void NuPadSetDirectMappingState(i32 state) {
-    FramePadDirectMappingPc = state;
+    FramePadDirectMapping = state;
 }
 
 i32 NuPadRead(FRAME_PAD *pad) {
     i32 device;
 
-    if (g_nupadMapping[pad->device].port != -1 || (FramePadDirectMappingPc && g_nupadScannedPads[pad->device].is_valid)) {
-        if (FramePadDirectMappingPc != 0) {
+    if (g_nupadMapping[pad->device].port != -1 || (FramePadDirectMapping && g_nupadScannedPads[pad->device].is_valid)) {
+        if (FramePadDirectMapping != 0) {
             device = pad->device;
         } else {
             device = g_nupadMapping[pad->device].port;
@@ -8534,7 +8534,7 @@ i32 NuPadRead(FRAME_PAD *pad) {
 }
 
 void NuPadSetMotors(FRAME_PAD *pad, i32 motor0, i32 motor1) {
-    if (FramePadDirectMappingPc && g_nupadScannedPads[pad->device].is_valid) {
+    if (FramePadDirectMapping && g_nupadScannedPads[pad->device].is_valid) {
         NuPadSetMotorsPS(pad->device, motor0, motor1);
     } else if (g_nupadMapping[pad->device].port != -1) {
         NuPadSetMotorsPS(g_nupadMapping[pad->device].port, motor0, motor1);
@@ -8568,8 +8568,8 @@ void NuPadRecordEndFrame() {
 }
 
 void NuPadResetState(i32 preserve_scanned_state) {
-    FramePadActivatedPc = 0;
-    FramePadProfilePortPc = -1;
+    FramePadActivated = 0;
+    FramePadProfilePort = -1;
     g_nupadMapping[0].port = -1;
     g_nupadMapping[1].port = -1;
 
@@ -8597,10 +8597,10 @@ void NuPadSetStatus(i32 pad, i32 status) {
         }
     }
     if (status == 1) {
-        if (FramePadActivatedPc == 0) {
-            FramePadProfilePortPc = device;
+        if (FramePadActivated == 0) {
+            FramePadProfilePort = device;
         }
-        FramePadActivatedPc = 1;
+        FramePadActivated = 1;
     }
     g_nupadMapping[pad].is_active = status;
 }
@@ -9093,7 +9093,7 @@ void ExplodeExit(void) {
 }
 
 static void decode(u32 size, unsigned char *buf) {
-    static u32 ImplodeRingCursorPc = 0;
+    static u32 ImplodeRingCursor = 0;
 
     u32 c;
     u32 n;
@@ -9101,8 +9101,8 @@ static void decode(u32 size, unsigned char *buf) {
     n = 0;
 
     while (--ImplodePendingCopy >= 0) {
-        buf[n] = buf[ImplodeRingCursorPc];
-        ImplodeRingCursorPc = (ImplodeRingCursorPc + 1) & 0x1fff;
+        buf[n] = buf[ImplodeRingCursor];
+        ImplodeRingCursor = (ImplodeRingCursor + 1) & 0x1fff;
 
         if (++n == size) {
             return;
@@ -9120,11 +9120,11 @@ static void decode(u32 size, unsigned char *buf) {
             }
         } else {
             ImplodePendingCopy = c - 0xfd;
-            ImplodeRingCursorPc = (n - ImplodeDecodeOffset() - 1) & 0x1fff;
+            ImplodeRingCursor = (n - ImplodeDecodeOffset() - 1) & 0x1fff;
 
             while (--ImplodePendingCopy >= 0) {
-                buf[n] = buf[ImplodeRingCursorPc];
-                ImplodeRingCursorPc = (ImplodeRingCursorPc + 1) & 0x1fff;
+                buf[n] = buf[ImplodeRingCursor];
+                ImplodeRingCursor = (ImplodeRingCursor + 1) & 0x1fff;
 
                 if (++n == size) {
                     return;

@@ -29,7 +29,7 @@ inline PC_EFFECT_SURFACE::~PC_EFFECT_SURFACE() {
 
 extern "C" i32 NuRndrSwapScreen(i32 mode) {
     i32 last_effect_scene = -1;
-    RenderFrameShaderTimePc += nuapi.frame_time;
+    RenderFrameShaderTime += nuapi.frame_time;
     rndr_blend_shape_deformer_wt_cnt = 0xef00;
     rndr_blend_shape_deformer_wt_ptrs_cnt = 0x800;
     PCFrameBeginScene(1);
@@ -38,10 +38,10 @@ extern "C" i32 NuRndrSwapScreen(i32 mode) {
     PCDeviceSetTexture(1, NULL);
     PCDeviceSetTexture(2, NULL);
     PCDeviceSetTexture(3, NULL);
-    PCDeviceSetStreamSourcePc(0, NULL, 0, 0);
-    PCDeviceSetStreamSourcePc(1, NULL, 0, 0);
-    PCDeviceSetStreamSourcePc(2, NULL, 0, 0);
-    PCDeviceSetStreamSourcePc(3, NULL, 0, 0);
+    PCDeviceSetStreamSource(0, NULL, 0, 0);
+    PCDeviceSetStreamSource(1, NULL, 0, 0);
+    PCDeviceSetStreamSource(2, NULL, 0, 0);
+    PCDeviceSetStreamSource(3, NULL, 0, 0);
     NuShaderManagerBindShader(NULL);
     NuDebrisRendererFlushBuffers();
     NuDisplayListSwapBuffersEndFrame();
@@ -52,8 +52,8 @@ extern "C" i32 NuRndrSwapScreen(i32 mode) {
     for (i32 i = 0; i < nuspecial_vertex_noffsets && i * 16 < 0x80; ++i) {
         NuShaderManagerSetElementfv(0x4e, i, nuspecial_vertex_offsets[i]);
     }
-    NuShaderManagerSetfv(0x3f, &RenderFrameShaderTimePc);
-    PCDeviceResetSamplerDefaultsPc();
+    NuShaderManagerSetfv(0x3f, &RenderFrameShaderTime);
+    PCDeviceResetSamplerDefaults();
     NuPostEffectReset();
     for (i32 i = 0; i < sceneParametersCount; ++i) {
         NURNDRLIBSCENE *scene = &sceneParameters[i];
@@ -150,11 +150,11 @@ extern "C" i32 NuRndrSwapScreen(i32 mode) {
             D3DPERF_EndEvent();
         }
         if (rendered_effect) {
-            PCDevicePostEffectBarrierPc();
+            PCDevicePostEffectBarrier();
             NuShaderManagerBindShader(NULL);
             NuPostEffectRender(destination);
             NuShaderManagerBindShader(NULL);
-            PCDeviceResetSamplerDefaultsPc();
+            PCDeviceResetSamplerDefaults();
         }
         if (scene->unknown_214 != 0) {
             FRAME_NATIVE_TEXTURE *texture = reinterpret_cast<FRAME_NATIVE_TEXTURE *>(NuTextureGetDimensions((i32)scene->unknown_214));
@@ -187,8 +187,8 @@ extern "C" i32 NuRndrSwapScreen(i32 mode) {
         RenderFrameCallback();
     }
     NuRndrEndSceneEx(0);
-    PCDeviceEndScenePc();
-    PcInputEndFramePc();
+    PCDeviceEndScene();
+    PcInputEndFrame();
     PCFramePresentNative(mode, 1);
     NudxFw_D3DEndCriticalSection();
     NuTimeBarSlotReset(-1, 0);

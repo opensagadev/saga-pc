@@ -147,7 +147,7 @@ char SpinnerOutputBuffer[14] = "100% Complete";
 i32 blowup_gizmotype_id = -1;
 i32 MAXBLOWUPRANDSPANG = 60;
 char TurretOutputBuffer[32] = {0};
-char *GizmoRegistryGizTurretsNamePtrPc = "GizTurret";
+char *GizmoRegistryGizTurretsNamePtr = "GizTurret";
 
 LEVEL_INST_ANIM_RESET_VIEW LevInstAnimReset = {0};
 
@@ -2367,7 +2367,7 @@ void GizmoBlowupBurstDraw(void *world_pointer, void *data, f32 frame_time) {
     ResetShadowMapRendering();
 }
 
-char *GizmoRegistryNewBlowupNamePtrPc = "blowup";
+char *GizmoRegistryNewBlowupNamePtr = "blowup";
 i32 GizmoBlowupNameCount = 0;
 u32 EXBLOWUPFLAGS = 0;
 char GizmoBlowupNameTable[32][32] = {0};
@@ -2378,12 +2378,12 @@ i32 (*BlowupExFunc)(GIZMOBLOWUP_PC *, i32) = 0;
 void (*GizmoBlowup_TransformDrawFn)(GIZMOBLOWUP_PC *target) = NULL;
 void (*GizmoBlowUp_SfxFn)(GIZMOBLOWUP_PC *, NUVEC *) = 0;
 i32 (*GizmoBlowUp_NoTargetFn)(WORLDINFO *, GAMEOBJECT *) = 0;
-static ADDGIZMOTYPE GizmoRegistryNewBlowupAddTypePc = {0};
+static ADDGIZMOTYPE GizmoRegistryNewBlowupAddType = {0};
 
 ADDGIZMOTYPE *NewBlowup_RegisterGizmo(i32 type_id) {
-    ADDGIZMOTYPE *addtype = &GizmoRegistryNewBlowupAddTypePc;
+    ADDGIZMOTYPE *addtype = &GizmoRegistryNewBlowupAddType;
     *addtype = Default_ADDGIZMOTYPE;
-    addtype->name = GizmoRegistryNewBlowupNamePtrPc;
+    addtype->name = GizmoRegistryNewBlowupNamePtr;
     addtype->fns.panel_draw_fn = NULL;
     addtype->fns.activate_rev_fn = NULL;
     addtype->fns.using_special_fn = NULL;

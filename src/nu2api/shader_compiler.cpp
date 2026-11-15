@@ -13,13 +13,13 @@
 #include <stdio.h>
 #include <string.h>
 
-void ShaderCompilerBasePc::Prepare(const PC_SHADER_FILTER_DESC_VIEW *descriptor, ShaderCompilerDictionaryPc *dictionary) {
+void ShaderCompilerBase::Prepare(const PC_SHADER_FILTER_DESC_VIEW *descriptor, ShaderCompilerDictionary *dictionary) {
     PC_SHADER_MATERIAL_FILTER_VIEW filter;
     filter.Initialize(descriptor, NULL, 0, 0);
     Configure(&filter, dictionary);
 }
 
-void ShaderCompilerBasePc::Configure(PC_SHADER_MATERIAL_FILTER_VIEW *filter, ShaderCompilerDictionaryPc *definitions) {
+void ShaderCompilerBase::Configure(PC_SHADER_MATERIAL_FILTER_VIEW *filter, ShaderCompilerDictionary *definitions) {
     u8 used_uvs[4] = {0, 0, 0, 0};
     const PC_SHADER_FILTER_DESC_VIEW *descriptor = filter->descriptor;
     const i32 profile = definitions->profile;
@@ -349,14 +349,14 @@ void ShaderCompilerBasePc::Configure(PC_SHADER_MATERIAL_FILTER_VIEW *filter, Sha
     definitions->AddDefinition("SKIN_WORLD", NULL, 0);
 }
 
-void ShaderCompilerHLSLPc::Prepare(const PC_SHADER_FILTER_DESC_VIEW *descriptor, ShaderCompilerDictionaryPc *dictionary) {
+void ShaderCompilerHLSLPc::Prepare(const PC_SHADER_FILTER_DESC_VIEW *descriptor, ShaderCompilerDictionary *dictionary) {
     PC_SHADER_MATERIAL_FILTER_VIEW filter;
     filter.Initialize(descriptor, NULL, 0, 0);
     Configure(&filter, dictionary);
 }
 
-void ShaderCompilerHLSLPc::Configure(PC_SHADER_MATERIAL_FILTER_VIEW *filter, ShaderCompilerDictionaryPc *dictionary) {
-    ShaderCompilerBasePc::Configure(filter, dictionary);
+void ShaderCompilerHLSLPc::Configure(PC_SHADER_MATERIAL_FILTER_VIEW *filter, ShaderCompilerDictionary *dictionary) {
+    ShaderCompilerBase::Configure(filter, dictionary);
     dictionary->AddDefinition("BUILD_VERTEX_SHADER", NULL, 0);
     dictionary->AddDefinition("BUILD_PIXEL_SHADER", NULL, 0);
     dictionary->AddDefinition("HLSL_LANGUAGE", NULL, 0);
@@ -372,39 +372,39 @@ ShaderBuilderGen::~ShaderBuilderGen() {
     parsed_source = NULL;
 }
 
-HLSLShaderBuilder::HLSLShaderBuilder(VirtualStackAllocator &allocator) : ShaderCompilerBasePc(allocator, 0) {
+HLSLShaderBuilder::HLSLShaderBuilder(VirtualStackAllocator &allocator) : ShaderCompilerBase(allocator, 0) {
 }
 
-void ShaderCompilerBasePc::SetIncludeDirectories(const char *paths) {
+void ShaderCompilerBase::SetIncludeDirectories(const char *paths) {
     strcpy(include_directories, paths);
 }
 
-void ShaderCompilerBasePc::SetSaveDirectory(const char *path) {
+void ShaderCompilerBase::SetSaveDirectory(const char *path) {
     strcpy(save_directory, path);
 }
 
-void ShaderCompilerBasePc::SetProfile(i32 profile, i32 first, i32 second) {
+void ShaderCompilerBase::SetProfile(i32 profile, i32 first, i32 second) {
     dictionary.SetProfile(profile, first, second);
 }
 
-void ShaderCompilerBasePc::fun_00745270(const char *name, i32 count) {
+void ShaderCompilerBase::fun_00745270(const char *name, i32 count) {
     dictionary.AddRegisterBlock(name, count);
 }
 
-void ShaderCompilerBasePc::SetForceMode(bool force) {
+void ShaderCompilerBase::SetForceMode(bool force) {
     dictionary.force_mode = force;
 }
 
-bool ShaderCompilerBasePc::fun_00745290() {
+bool ShaderCompilerBase::fun_00745290() {
     return dictionary.force_mode;
 }
 
-i32 ShaderCompilerBasePc::fun_007452a0() {
+i32 ShaderCompilerBase::fun_007452a0() {
     return dictionary.profile;
 }
 
-void *ShaderCompilerBasePc::ParseSource(const char *source, i32 length, ShaderCompilerBufferAllocatorPc *buffer, i32 prefix,
-                                        VirtualStackAllocator *memory) {
+void *ShaderCompilerBase::ParseSource(const char *source, i32 length, ShaderCompilerBufferAllocator *buffer, i32 prefix,
+                                      VirtualStackAllocator *memory) {
     if (length < 0) {
         length = (i32)strlen(source);
     }
@@ -419,19 +419,19 @@ void *ShaderCompilerBasePc::ParseSource(const char *source, i32 length, ShaderCo
     for (i32 i = 0; i < prefix; i += 100) {
         buffer->data[i] = '\n';
     }
-    ShaderCompilerParserPc parser;
+    ShaderCompilerParser parser;
     parser.SetIncludeDirectories(include_directories);
     return parser.Parse(buffer, prefix, 1, memory);
 }
 
-bool ShaderCompilerBasePc::LoadSource(const char *source, i32 length) {
+bool ShaderCompilerBase::LoadSource(const char *source, i32 length) {
     parsed_source = ParseSource(source, length, &source_buffer, 0x5000, &parser_memory);
     return parsed_source != NULL;
 }
 
-void ShaderCompilerBasePc::Generate(PC_SHADER_MATERIAL_FILTER_VIEW *filter, ShaderCompilerBufferAllocatorPc *vertex,
-                                    ShaderCompilerBufferAllocatorPc *pixel) {
-    ShaderCompilerDictionaryPc *dict = &dictionary;
+void ShaderCompilerBase::Generate(PC_SHADER_MATERIAL_FILTER_VIEW *filter, ShaderCompilerBufferAllocator *vertex,
+                                  ShaderCompilerBufferAllocator *pixel) {
+    ShaderCompilerDictionary *dict = &dictionary;
     for (i32 i = 0; i < dict->definition_count; ++i) {
         dict->definitions[i]->expansion_state = 0;
     }
@@ -470,7 +470,7 @@ void ShaderCompilerBasePc::Generate(PC_SHADER_MATERIAL_FILTER_VIEW *filter, Shad
 }
 
 /* Writes data to "<save directory>\<name><suffix>"; no caller. */
-void ShaderCompilerBasePc::SaveFile(const char *suffix, const char *name, const void *data, i32 size) {
+void ShaderCompilerBase::SaveFile(const char *suffix, const char *name, const void *data, i32 size) {
     char path[0x100];
     NUFILE file;
     sprintf(path, "%s\\%s%s", save_directory, name, suffix);
@@ -482,7 +482,7 @@ void ShaderCompilerBasePc::SaveFile(const char *suffix, const char *name, const 
 }
 
 /* Copies the next ';'-separated entry of list from *position into entry. */
-bool ShaderNextDirectoryPc(const char *list, i32 *position, char *entry) {
+bool ShaderNextDirectory(const char *list, i32 *position, char *entry) {
     if (*position >= (i32)strlen(list)) {
         return false;
     }
@@ -499,11 +499,10 @@ bool ShaderNextDirectoryPc(const char *list, i32 *position, char *entry) {
 }
 
 /* Diagnostics compiled out; varargs keeps the calls. */
-static void ShaderBuilderTracePc(...) {
+static void ShaderBuilderTrace(...) {
 }
 
-void *ShaderCompilerBasePc::ParseFile(const char *name, ShaderCompilerBufferAllocatorPc *buffer, i32 prefix,
-                                      VirtualStackAllocator *memory) {
+void *ShaderCompilerBase::ParseFile(const char *name, ShaderCompilerBufferAllocator *buffer, i32 prefix, VirtualStackAllocator *memory) {
     char directory[0x100];
     char path[0x100];
     i32 position = 0;
@@ -512,7 +511,7 @@ void *ShaderCompilerBasePc::ParseFile(const char *name, ShaderCompilerBufferAllo
     i32 size;
     NuDatSet(NULL);
     do {
-        if (!ShaderNextDirectoryPc(include_directories, &position, directory)) {
+        if (!ShaderNextDirectory(include_directories, &position, directory)) {
             break;
         }
         sprintf(path, "%s\\%s", directory, name);
@@ -520,11 +519,11 @@ void *ShaderCompilerBasePc::ParseFile(const char *name, ShaderCompilerBufferAllo
     } while (file == 0);
     NuDatSet(dat);
     if (file == 0) {
-        ShaderBuilderTracePc(path, include_directories);
+        ShaderBuilderTrace(path, include_directories);
     }
     size = (i32)NuFileOpenSize(file);
     if (size <= 0) {
-        ShaderBuilderTracePc();
+        ShaderBuilderTrace();
         return NULL;
     }
     buffer->length = 0;
@@ -538,12 +537,12 @@ void *ShaderCompilerBasePc::ParseFile(const char *name, ShaderCompilerBufferAllo
     for (i32 i = 0; i < prefix; i += 100) {
         buffer->data[i] = '\n';
     }
-    ShaderCompilerParserPc parser;
+    ShaderCompilerParser parser;
     parser.SetIncludeDirectories(directory);
     return parser.Parse(buffer, prefix, 1, memory);
 }
 
-bool ShaderCompilerBasePc::LoadFile(const char *name) {
+bool ShaderCompilerBase::LoadFile(const char *name) {
     parsed_source = ParseFile(name, &source_buffer, 0x5000, &parser_memory);
     return parsed_source != NULL;
 }
@@ -562,7 +561,7 @@ struct ID3DXEffectCompiler {
 };
 
 /* Compiles an effect from source into output; returns the compiled size. No caller. */
-i32 ShaderCompilerBasePc::CompileEffect(const char *source, i32 length, void *output, i32 unused) {
+i32 ShaderCompilerBase::CompileEffect(const char *source, i32 length, void *output, i32 unused) {
     ID3DXBuffer *effect;
     ID3DXEffectCompiler *compiler;
     i32 size;
@@ -636,7 +635,7 @@ static void FormatColour(i32 colour, char *out) {
 }
 
 /* The default value of shader parameter id as an HLSL literal; ids without one leave out untouched. */
-void __stdcall ShaderParameterDefaultPc(const PC_SHADER_DEFAULTS_VIEW *material, i32 id, char *out, i32 unused) {
+void __stdcall ShaderParameterDefault(const PC_SHADER_DEFAULTS_VIEW *material, i32 id, char *out, i32 unused) {
     switch (id) {
         case 0:
             FormatColour(material->diffuse_colour, out);

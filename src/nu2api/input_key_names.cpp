@@ -1058,7 +1058,7 @@ TEXT_INPUT_LABELS dat_008210c0 = {
 extern "C" {
     char dat_00771aac[11] = "Num. COMMA";
     char dat_00771ba4[11] = "Num. Point";
-    char *TextInputKeyNameTablePc[238] = {
+    char *TextInputKeyNameTable[238] = {
         dat_00771d80, dat_00771d7c, "1",          dat_00771d78, dat_00771d74, dat_00771d70, dat_00771d6c, dat_00771d68, dat_00771d64,
         dat_00771d60, dat_00771d5c, dat_00771d58, dat_00771d50, dat_00771d48, dat_00771d3c, dat_00771d38, dat_00771d34, dat_00771d30,
         dat_00771d2c, dat_00771d28, dat_00771d24, dat_00774184, dat_00771d20, dat_00771d1c, dat_00771d18, dat_00771d14, dat_00753374,

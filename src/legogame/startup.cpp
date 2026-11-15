@@ -87,7 +87,7 @@
 #include "legoapi/world/levels/episodeVI.h"
 
 extern "C" char *lsw_memcard_objname;
-extern "C" void TextInputGlyphNamePc(i32, char *);
+extern "C" void TextInputGlyphName(i32, char *);
 extern "C" void RegisterLswGizmoTypes(VARIPTR *, VARIPTR *);
 extern "C" void RegisterAlternateGizmoTypes(VARIPTR *, VARIPTR *);
 extern "C" void RegisterDefaultGizmoTypes(VARIPTR *, VARIPTR *);
@@ -102,7 +102,7 @@ extern "C" {
 }
 extern "C" void PcInput_SetStringUCGfxRemapFn(void (*)(i32, char *));
 
-static i32 PcInputCommandAllowedPc(i32 port, i32 command) {
+static i32 PcInputCommandAllowed(i32 port, i32 command) {
     if (PcInput_PortIsKeyboard(port) && ((command >= 4 && command <= 7) || (u32)(command - 8) <= 3)) {
         return 0;
     }
@@ -1056,8 +1056,8 @@ extern "C" {
             control_config.blocked_keys = blocked_keys;
             PcControlRegister(&control_config, &permbuffer_ptr, &permbuffer_end);
 
-            PcInput_SetStringUCGfxRemapFn(TextInputGlyphNamePc);
-            PcInput_SetIsUsedCallBack(PcInputCommandAllowedPc);
+            PcInput_SetStringUCGfxRemapFn(TextInputGlyphName);
+            PcInput_SetIsUsedCallBack(PcInputCommandAllowed);
 
             permbuffer_ptr.addr = (permbuffer_ptr.addr + 0xfU) & ~0xfU;
             PermDataLoaded = 1;

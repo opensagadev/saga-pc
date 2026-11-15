@@ -210,8 +210,8 @@ extern "C" {
     extern i32 NuDisplayHandlerCameraId;
     extern f32 NuDisplayHandlerShadow;
     extern i32 PCGraphicsBoundShader;
-    void PCDeviceDrawPrimitivePc(i32, u32, u32);
-    void PCDeviceDrawIndexedPrimitivePc(i32, i32, u32, u32, u32, u32);
+    void PCDeviceDrawPrimitive(i32, u32, u32);
+    void PCDeviceDrawIndexedPrimitive(i32, i32, u32, u32, u32, u32);
     extern i32 NuDisplayMaterialDistortTexture;
     typedef void (*PC_DISPLAY_ITEM_HANDLER)(void *);
 
@@ -243,8 +243,8 @@ extern "C" {
         void *payload;                     // 0xc
     } PC_GOBJ_REGISTRY_AUX;
 
-    extern i32 NuGobjRegistryInitializedPc;
-    extern i32 NuGobjRegistryCountPc;
+    extern i32 NuGobjRegistryInitialized;
+    extern i32 NuGobjRegistryCount;
 #ifdef __cplusplus
     void PCGraphicsSubmitViewport(i32, i32, i32, i32);
     void PCGraphicsSetSamplerTuple(u32, const u32 *);
@@ -303,8 +303,8 @@ extern "C" {
     extern struct PC_TEXTURE_RESOURCE *NuTexturePhongCube;
     void PCDeviceCreateDepthSurface(u32, u32, i32, i32, u32, BOOL, struct PC_TEXTURE_RESOURCE **, HANDLE *);
     void PCDeviceCreateTexture(u32, u32, u32, u32, i32, i32, struct PC_TEXTURE_RESOURCE **);
-    extern struct PC_TEXTURE_RESOURCE *NuDisplayHandlerVertexShaderCachePc;
-    extern struct PC_TEXTURE_RESOURCE *NuDisplayHandlerPixelShaderCachePc;
+    extern struct PC_TEXTURE_RESOURCE *NuDisplayHandlerVertexShaderCache;
+    extern struct PC_TEXTURE_RESOURCE *NuDisplayHandlerPixelShaderCache;
     extern struct PC_TEXTURE_RESOURCE *NuDisplayMaterialDebrisDeclaration;
     extern struct PC_TEXTURE_RESOURCE *NuDisplayMaterialFaceOnDeclaration;
     extern struct PC_TEXTURE_RESOURCE *NuDisplayMaterialDefaultDeclaration;
@@ -332,7 +332,7 @@ extern "C" {
         PC_GOBJ_REGISTRY_AUX *auxiliary;         // 0x10
     } PC_GOBJ_REGISTRY_ENTRY;
 
-    extern PC_GOBJ_REGISTRY_ENTRY *NuGobjRegistryFirstPc;
+    extern PC_GOBJ_REGISTRY_ENTRY *NuGobjRegistryFirst;
 #ifdef __cplusplus
 }
 #endif

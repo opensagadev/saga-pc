@@ -1011,14 +1011,14 @@ static void GizFlowConfigConditionType(NUFPAR *parser) {
     }
 }
 
-static void GizFlowConfigMonitorInputsPc(NUFPAR *parser) {
+static void GizFlowConfigMonitorInputs(NUFPAR *parser) {
     load_flowbox->state_flags |= 0x200;
 }
 
 static NUFPCOMJMP cfgtab_condition[] = {
-    {"Type",          GizFlowConfigConditionType  },
-    {"MonitorInputs", GizFlowConfigMonitorInputsPc},
-    {NULL,            NULL                        },
+    {"Type",          GizFlowConfigConditionType},
+    {"MonitorInputs", GizFlowConfigMonitorInputs},
+    {NULL,            NULL                      },
 };
 
 static void GizFlowConfigCondition(NUFPAR *parser) {

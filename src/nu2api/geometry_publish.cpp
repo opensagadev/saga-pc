@@ -90,18 +90,18 @@ extern "C" i32 PcRegisterDynamicGeometry(PC_GEOMETRY_PUBLISH_FORMAT *format) {
         return 0;
     }
 
-    PC_GEOMETRY_PUBLISH_RECORD *old = PcGeometryRegistryPc;
-    PcGeometryRegistryPc =
-        (PC_GEOMETRY_PUBLISH_RECORD *)NuAlloc((i32)(((u32)PcGeometryRegistryCountPc + 1) * sizeof(PC_GEOMETRY_PUBLISH_RECORD)),
+    PC_GEOMETRY_PUBLISH_RECORD *old = PcGeometryRegistry;
+    PcGeometryRegistry =
+        (PC_GEOMETRY_PUBLISH_RECORD *)NuAlloc((i32)(((u32)PcGeometryRegistryCount + 1) * sizeof(PC_GEOMETRY_PUBLISH_RECORD)),
                                               "d:\\projects\\game_saga\\nu2api.saga\\nu3d\\nuinstsurfgeom_gen.cpp", 0x7c);
-    for (i32 i = 0; i < PcGeometryRegistryCountPc; ++i) {
-        PcGeometryRegistryPc[i] = old[i];
+    for (i32 i = 0; i < PcGeometryRegistryCount; ++i) {
+        PcGeometryRegistry[i] = old[i];
     }
     if (old != NULL) {
         NuFree(old, "d:\\projects\\game_saga\\nu2api.saga\\nu3d\\nuinstsurfgeom_gen.cpp", 0x81);
     }
-    ++PcGeometryRegistryCountPc;
-    PC_GEOMETRY_PUBLISH_RECORD *record = &PcGeometryRegistryPc[PcGeometryRegistryCountPc - 1];
+    ++PcGeometryRegistryCount;
+    PC_GEOMETRY_PUBLISH_RECORD *record = &PcGeometryRegistry[PcGeometryRegistryCount - 1];
     record->format = format;
     record->element_count = count;
     record->frame_stamp = 0;
@@ -148,38 +148,38 @@ extern "C" i32 PcRegisterDynamicGeometry(PC_GEOMETRY_PUBLISH_FORMAT *format) {
 extern "C" i32 fun_005fbd40(PC_GEOMETRY_PUBLISH_RECORD *record);
 
 extern "C" i32 PcUnregisterDynamicGeometry(PC_GEOMETRY_PUBLISH_FORMAT *format) {
-    for (i32 i = 0; i < PcGeometryRegistryCountPc; ++i) {
-        if (format == PcGeometryRegistryPc[i].format) {
-            fun_005fbd40(&PcGeometryRegistryPc[i]);
-            if (PcGeometryRegistryCountPc != 0) {
-                PC_GEOMETRY_PUBLISH_RECORD *old = PcGeometryRegistryPc;
-                PcGeometryRegistryPc =
-                    (PC_GEOMETRY_PUBLISH_RECORD *)NuAlloc(((PcGeometryRegistryCountPc - 1) * sizeof(PC_GEOMETRY_PUBLISH_RECORD)),
+    for (i32 i = 0; i < PcGeometryRegistryCount; ++i) {
+        if (format == PcGeometryRegistry[i].format) {
+            fun_005fbd40(&PcGeometryRegistry[i]);
+            if (PcGeometryRegistryCount != 0) {
+                PC_GEOMETRY_PUBLISH_RECORD *old = PcGeometryRegistry;
+                PcGeometryRegistry =
+                    (PC_GEOMETRY_PUBLISH_RECORD *)NuAlloc(((PcGeometryRegistryCount - 1) * sizeof(PC_GEOMETRY_PUBLISH_RECORD)),
                                                           "d:\\projects\\game_saga\\nu2api.saga\\nu3d\\nuinstsurfgeom_gen.cpp", 0xd0);
                 i32 count = 0;
-                for (i32 j = 0; j < PcGeometryRegistryCountPc; ++j) {
+                for (i32 j = 0; j < PcGeometryRegistryCount; ++j) {
                     if (format != old[j].format) {
-                        PcGeometryRegistryPc[count++] = old[j];
+                        PcGeometryRegistry[count++] = old[j];
                     }
                 }
                 if (old != NULL) {
                     NuFree(old, "d:\\projects\\game_saga\\nu2api.saga\\nu3d\\nuinstsurfgeom_gen.cpp", 0xdf);
                 }
-                --PcGeometryRegistryCountPc;
+                --PcGeometryRegistryCount;
                 return 1;
             }
-            NuFree(PcGeometryRegistryPc, "d:\\projects\\game_saga\\nu2api.saga\\nu3d\\nuinstsurfgeom_gen.cpp", 0xc8);
-            PcGeometryRegistryPc = NULL;
-            PcGeometryRegistryCountPc = 0;
+            NuFree(PcGeometryRegistry, "d:\\projects\\game_saga\\nu2api.saga\\nu3d\\nuinstsurfgeom_gen.cpp", 0xc8);
+            PcGeometryRegistry = NULL;
+            PcGeometryRegistryCount = 0;
         }
     }
     return 0;
 }
 
 extern "C" PC_GEOMETRY_PUBLISH_RECORD *fun_005c6470(PC_GEOMETRY_PUBLISH_FORMAT *format) {
-    for (i32 i = 0; i < PcGeometryRegistryCountPc; ++i) {
-        if (format == PcGeometryRegistryPc[i].format) {
-            return &PcGeometryRegistryPc[i];
+    for (i32 i = 0; i < PcGeometryRegistryCount; ++i) {
+        if (format == PcGeometryRegistry[i].format) {
+            return &PcGeometryRegistry[i];
         }
     }
     return NULL;

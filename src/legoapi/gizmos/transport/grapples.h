@@ -34,10 +34,10 @@ extern "C" {
 
     GRAPPLE_DYNAMIC *Grapple_AddDynamic(void *, i32);
     GRAPPLE_DYNAMIC *Grapple_RemoveDynamic(void *);
-    extern GRAPPLE_DYNAMIC DynamicGrapplePc[4];
+    extern GRAPPLE_DYNAMIC DynamicGrapple[4];
     void Grapple_SetRotOrder(GAMEOBJECT *);
 
-    extern i32 PlayerGrappleSwingModePc;
+    extern i32 PlayerGrappleSwingMode;
     void Grapple_SetPlayerTargetPoint(GAMEOBJECT *object, NUVEC *target);
     i32 Grapple_SetTargetMom(GAMEOBJECT *object);
     extern LANGUAGEDATA Text_LanguageList_Default[7];

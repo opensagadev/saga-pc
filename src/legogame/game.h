@@ -245,9 +245,9 @@ extern "C" {
     extern const f32 ApplyGravityMinimumFrameTime;
     extern i32 reset_reimport;
     extern GIZMO_BLOWUP_HIT_MULTIPLIER_STORAGE GizmoBlowupHitMultiplier;
-    extern u16 ZipUpSwingStartAnimationPc;
-    extern u16 ZipUpSwingSwingAnimationPc;
-    extern u16 ZipUpSwingJumpAnimationPc;
+    extern u16 ZipUpSwingStartAnimation;
+    extern u16 ZipUpSwingSwingAnimation;
+    extern u16 ZipUpSwingJumpAnimation;
     extern i16 ZipUpLineCharacterId;
 
     typedef struct ADAPTIVEDIFFICULTY { // size 0xc

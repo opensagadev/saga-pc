@@ -10,7 +10,7 @@
 #include <string.h>
 
 extern "C" {
-    PC_DI_MOUSE_STATE PcMouseSamplesPc[2] = {0};
+    PC_DI_MOUSE_STATE PcMouseSamples[2] = {0};
     i32 nu_keyboard_device_flags = 0;
     i32 nu_keyboard_key_index = 0;
     i32 nu_keyboard_repeat_countdown = 0;
@@ -19,7 +19,7 @@ static i32 PcXInputDeviceCount; // XInput pads found by the current device enume
 extern "C" {
     i32 nu_keyboard_previous_key_index = 0;
     i32 nu_keyboard_no_key_state = 0;
-    i8 PcMouseSampleIndexPc = 0;
+    i8 PcMouseSampleIndex = 0;
 }
 PC_DI_CAPS PcKeyboardCapabilities = {0};
 
@@ -293,7 +293,7 @@ struct PC_DI_FACTORY_INTERFACE {
     virtual HRESULT __stdcall EnumDevices(DWORD, BOOL(__stdcall *)(const PC_DI_INSTANCE *, void *), void *, DWORD) = 0;
 };
 
-extern "C" void ConfigureJoystickRangesPc(NuKeyboardDevice *device) {
+extern "C" void ConfigureJoystickRanges(NuKeyboardDevice *device) {
     if (device == NULL) {
         return;
     }
@@ -834,10 +834,10 @@ extern "C" {
 }
 extern const PC_DI_DATA_FORMAT PcJoystickDataFormat = {24, 16, 1, 272, 164, PcJoystickDataFormatObjects};
 
-extern "C" BOOL __stdcall InputEnumDevicesPc(const PC_DI_INSTANCE *instance, void *unused) {
+extern "C" BOOL __stdcall InputEnumDevices(const PC_DI_INSTANCE *instance, void *unused) {
     PC_INPUT_RUNTIME *state = (PC_INPUT_RUNTIME *)nu_input_state;
     PC_INPUT_DEVICE *devices = state->devices;
-    if (IsXInputProductPc(&instance->product)) {
+    if (IsXInputProduct(&instance->product)) {
         i32 port = PcXInputDeviceCount;
         PcInputSelectedPort = port;
         devices[port].product = instance->product;
@@ -914,7 +914,7 @@ extern "C" BOOL __stdcall InputEnumDevicesPc(const PC_DI_INSTANCE *instance, voi
         ((PC_DI_DEVICE_INTERFACE *)device)->SetDataFormat(&PcJoystickDataFormat);
         ((PC_DI_DEVICE_INTERFACE *)device)->SetCooperativeLevel(PCInputInstance, 9);
         ((PC_DI_DEVICE_INTERFACE *)device)->Acquire();
-        ConfigureJoystickRangesPc(device);
+        ConfigureJoystickRanges(device);
         state->BindPreferredConfig(7, port);
         ++nu_keyboard_owner.device_count;
         return TRUE;
@@ -997,9 +997,9 @@ void NuKeyboardOwner::Setup(HWND window, HINSTANCE instance) {
     PcInput_EnableKeyboards(NULL, 0);
     device_count = 0;
     PcXInputDeviceCount = 0;
-    ((PC_DI_FACTORY_INTERFACE *)factory)->EnumDevices(3, InputEnumDevicesPc, NULL, 1);
-    ((PC_DI_FACTORY_INTERFACE *)factory)->EnumDevices(2, InputEnumDevicesPc, NULL, 1);
-    ((PC_DI_FACTORY_INTERFACE *)factory)->EnumDevices(4, InputEnumDevicesPc, NULL, 1);
+    ((PC_DI_FACTORY_INTERFACE *)factory)->EnumDevices(3, InputEnumDevices, NULL, 1);
+    ((PC_DI_FACTORY_INTERFACE *)factory)->EnumDevices(2, InputEnumDevices, NULL, 1);
+    ((PC_DI_FACTORY_INTERFACE *)factory)->EnumDevices(4, InputEnumDevices, NULL, 1);
     nu_keyboard_owner.unknown_0000 = 0.2f;
     nu_keyboard_owner.unknown_0008 = 0.2f;
     PcInputSelectedPort = -1;
@@ -1055,7 +1055,7 @@ extern "C" void PcInput_DisableAllKeyboards(void) {
     }
 }
 
-void PC_INPUT_RUNTIME::AutoConfigurePadsPc(i32 count) {
+void PC_INPUT_RUNTIME::AutoConfigurePads(i32 count) {
     i32 device = 0;
     for (i32 pad = 0; pad < count; ++pad) {
         i32 linked = NuPadGetPort(pad);
@@ -1079,17 +1079,17 @@ void PC_INPUT_RUNTIME::AutoConfigurePadsPc(i32 count) {
     }
 }
 
-extern "C" void NuPadAutoConfigurePc(i32 count) {
-    ((PC_INPUT_RUNTIME *)nu_input_state)->AutoConfigurePadsPc(count);
+extern "C" void NuPadAutoConfigure(i32 count) {
+    ((PC_INPUT_RUNTIME *)nu_input_state)->AutoConfigurePads(count);
 }
 
-extern "C" i32 GamePadReadBackendPc(FRAME_PAD *pad, i32 ignored) {
+extern "C" i32 GamePadReadBackend(FRAME_PAD *pad, i32 ignored) {
     (void)ignored;
     return NuPadRead(pad);
 }
 
 extern "C" PC_DI_MOUSE_STATE *fun_006d6080(void) {
-    return &PcMouseSamplesPc[PcMouseSampleIndexPc ^ 1];
+    return &PcMouseSamples[PcMouseSampleIndex ^ 1];
 }
 
 extern "C" void fun_006d6030(void) {
@@ -1104,7 +1104,7 @@ extern "C" i32 fun_006d6050(void) {
 }
 
 extern "C" PC_DI_MOUSE_STATE *fun_006d6060(void) {
-    return &PcMouseSamplesPc[PcMouseSampleIndexPc];
+    return &PcMouseSamples[PcMouseSampleIndex];
 }
 
 extern "C" i32 NuPad_Interface_GetMaxDevices(void) {
@@ -1151,7 +1151,7 @@ extern "C" void fun_006d6160(void) {
 }
 
 // Native NuKeyboardOwner cohort, append to pc_input.cpp.
-i32 NuKeyboardOwner::SetMouseCooperativePc(i32 value) {
+i32 NuKeyboardOwner::SetMouseCooperative(i32 value) {
     i32 previous = mouse_cooperative;
     if (previous == value) {
         return value;
@@ -1169,7 +1169,7 @@ i32 NuKeyboardOwner::SetMouseCooperativePc(i32 value) {
     return previous;
 }
 
-const PC_DI_MOUSE_STATE *NuKeyboardOwner::PollMousePc() {
+const PC_DI_MOUSE_STATE *NuKeyboardOwner::PollMouse() {
     if ((nu_keyboard_device_flags & 1) || mouse == NULL || !mouse_enabled) {
         return NULL;
     }
@@ -1177,12 +1177,12 @@ const PC_DI_MOUSE_STATE *NuKeyboardOwner::PollMousePc() {
         mouse->methods->acquire(mouse);
         i32 old = mouse_cooperative;
         mouse_cooperative = old == 0;
-        SetMouseCooperativePc(old);
+        SetMouseCooperative(old);
         return NULL;
     }
-    PcMouseSampleIndexPc ^= 1;
-    mouse->methods->get_state(mouse, 20, &PcMouseSamplesPc[PcMouseSampleIndexPc]);
-    return &PcMouseSamplesPc[PcMouseSampleIndexPc];
+    PcMouseSampleIndex ^= 1;
+    mouse->methods->get_state(mouse, 20, &PcMouseSamples[PcMouseSampleIndex]);
+    return &PcMouseSamples[PcMouseSampleIndex];
 }
 
 extern "C" void fun_006d5860(void) {
@@ -1877,7 +1877,7 @@ extern "C" i32 fun_006d5880(void) {
 extern "C" void fun_006d5890(void) {
 }
 
-void NuKeyboardOwner::RescanDevicesPc() {
+void NuKeyboardOwner::RescanDevices() {
     PC_INPUT_DEVICE *devices = ((PC_INPUT_RUNTIME *)nu_input_state)->devices;
     PC_INPUT_RUNTIME *runtime = (PC_INPUT_RUNTIME *)nu_input_state;
     device_count = 0;
@@ -1922,9 +1922,9 @@ void NuKeyboardOwner::RescanDevicesPc() {
     }
     device_count = 0;
     PcXInputDeviceCount = 0;
-    ((PC_DI_FACTORY_INTERFACE *)factory)->EnumDevices(3, InputEnumDevicesPc, NULL, 1);
-    ((PC_DI_FACTORY_INTERFACE *)factory)->EnumDevices(2, InputEnumDevicesPc, NULL, 1);
-    ((PC_DI_FACTORY_INTERFACE *)factory)->EnumDevices(4, InputEnumDevicesPc, NULL, 1);
+    ((PC_DI_FACTORY_INTERFACE *)factory)->EnumDevices(3, InputEnumDevices, NULL, 1);
+    ((PC_DI_FACTORY_INTERFACE *)factory)->EnumDevices(2, InputEnumDevices, NULL, 1);
+    ((PC_DI_FACTORY_INTERFACE *)factory)->EnumDevices(4, InputEnumDevices, NULL, 1);
 }
 
 extern "C" void fun_006da360(i32 player) {
@@ -1952,7 +1952,7 @@ i32 NuKeyboardOwner::fun_006d5980() {
     return device != NULL;
 }
 
-u8 *NuKeyboardOwner::PollKeyboardPc() {
+u8 *NuKeyboardOwner::PollKeyboard() {
     u8 *page;
     i8 page_index;
     i32 i;
@@ -2044,7 +2044,7 @@ i32 NuKeyboardOwner::fun_006d5720(i32 *axes, i32 *buttons) {
     return 0;
 }
 
-void NuKeyboardOwner::SetMouseEnabledPc(u8 enabled) {
+void NuKeyboardOwner::SetMouseEnabled(u8 enabled) {
     mouse_enabled = enabled;
 }
 
@@ -2057,7 +2057,7 @@ static f32 PCInputFabs(f32 f) {
 }
 
 /* Eases the smoothed mouse axis towards the latest delta and returns it scaled, with a small dead zone. */
-extern "C" f32 NuMouseSmoothAxisPc(i32 axis) {
+extern "C" f32 NuMouseSmoothAxis(i32 axis) {
     f32 value = nu_input_state->mouse_delta[axis] - nu_input_state->mouse_smoothed[axis];
     value = value * 0.125 + nu_input_state->mouse_smoothed[axis];
     nu_input_state->mouse_smoothed[axis] = value;
@@ -2069,11 +2069,11 @@ extern "C" f32 NuMouseSmoothAxisPc(i32 axis) {
 }
 
 extern "C" f32 NuMouseReadXRel(void) {
-    return NuMouseSmoothAxisPc(0);
+    return NuMouseSmoothAxis(0);
 }
 
 extern "C" f32 NuMouseReadYRel(void) {
-    return NuMouseSmoothAxisPc(1);
+    return NuMouseSmoothAxis(1);
 }
 
 extern "C" f32 NuMouseReadZRel(void) {

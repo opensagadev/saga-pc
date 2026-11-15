@@ -2242,10 +2242,10 @@ void AI_Activate(void *input, i32 active) {
     }
 }
 
-static ADDGIZMOTYPE GizmoRegistryAIAddTypePc = {0};
+static ADDGIZMOTYPE GizmoRegistryAIAddType = {0};
 
 ADDGIZMOTYPE *AI_RegisterGizmo(i32 type_id) {
-    ADDGIZMOTYPE *addtype = &GizmoRegistryAIAddTypePc;
+    ADDGIZMOTYPE *addtype = &GizmoRegistryAIAddType;
     *addtype = Default_ADDGIZMOTYPE;
     addtype->fns.options = 0x0;
     addtype->fns.early_update_fn = NULL;

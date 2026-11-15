@@ -23,58 +23,58 @@ struct PC_FMV_REALTIME {   // size 0x38
 };
 
 /* Uncalled. Seconds played of the current movie. */
-extern "C" f32 FmvGetTimePc(void) {
+extern "C" f32 FmvGetTime(void) {
     PC_FMV_REALTIME realtime;
-    BinkGetRealtime(FmvMoviePc.bink, &realtime, 0);
+    BinkGetRealtime(FmvMovie.bink, &realtime, 0);
     return (f32)(realtime.frame_number * realtime.frame_rate_div) / (f32)realtime.frame_rate;
 }
 
-extern "C" i32 FmvStartPc(const char *path, f32 volume, i32 option) {
-    FmvState2Pc = 0;
-    FmvState1Pc = 0;
-    if (FmvInitializedPc == 0) {
+extern "C" i32 FmvStart(const char *path, f32 volume, i32 option) {
+    FmvState2 = 0;
+    FmvState1 = 0;
+    if (FmvInitialized == 0) {
         PC_D3D9_DEVICE *device = PCDeviceBackend.device;
         GRAPHICS_FACTORY *factory = PCDeviceBackend.factory;
-        if (FmvInitializePc(PCInputInstance, factory, device, NuFmvGetSoundFactoryPc()) == 0) {
-            FmvClosePc(&FmvMoviePc);
+        if (FmvInitialize(PCInputInstance, factory, device, NuFmvGetSoundFactory()) == 0) {
+            FmvClose(&FmvMovie);
             return 0;
         }
-        FmvInitializedPc = 1;
+        FmvInitialized = 1;
     }
-    i32 result = FmvOpenPc(&FmvMoviePc, path, 0, volume, option);
+    i32 result = FmvOpen(&FmvMovie, path, 0, volume, option);
     if (result == 1) {
-        FmvMoviePc.playing = 1;
+        FmvMovie.playing = 1;
         return result;
     }
-    FmvMoviePc.playing = 0;
-    FmvClosePc(&FmvMoviePc);
+    FmvMovie.playing = 0;
+    FmvClose(&FmvMovie);
     return 0;
 }
 
-extern "C" void FmvStopPc(void) {
-    FmvClosePc(&FmvMoviePc);
+extern "C" void FmvStop(void) {
+    FmvClose(&FmvMovie);
 }
 
-extern "C" i32 FmvStepPc(void) {
+extern "C" i32 FmvStep(void) {
     Sleep(1);
-    FmvFramePc(&FmvMoviePc);
-    return FmvMoviePc.playing;
+    FmvFrame(&FmvMovie);
+    return FmvMovie.playing;
 }
 
-extern "C" void FmvReleasePc(void) {
-    if (FmvInitializedPc != 0) {
-        FmvReleaseImagePc(&FmvMoviePc);
+extern "C" void FmvRelease(void) {
+    if (FmvInitialized != 0) {
+        FmvReleaseImage(&FmvMovie);
     }
 }
 
-extern "C" void FmvRestorePc(void) {
-    if (FmvInitializedPc != 0) {
-        FmvRestoreImagePc(&FmvMoviePc);
+extern "C" void FmvRestore(void) {
+    if (FmvInitialized != 0) {
+        FmvRestoreImage(&FmvMovie);
     }
 }
 
-extern "C" void FmvSkipPc(void) {
-    FmvFadePc(&FmvMoviePc, 1000.0f);
+extern "C" void FmvSkip(void) {
+    FmvFade(&FmvMovie, 1000.0f);
 }
 
 extern "C" void fun_00631290(NUMTX *matrix) {

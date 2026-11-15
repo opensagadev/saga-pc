@@ -330,11 +330,11 @@ void Shards_StoreProgress(WORLDINFO *world, void *unused, SHARD_PROGRESS *progre
     }
 }
 
-char *ShardRegistryNamePc = "Shard";
+char *ShardRegistryName = "Shard";
 ADDGIZMOTYPE ShardAddType = {0};
 
 ADDGIZMOTYPE *Shards_RegisterGizmo(i32 unused_type_id) {
-    char *name = ShardRegistryNamePc;
+    char *name = ShardRegistryName;
     ShardAddType = Default_ADDGIZMOTYPE;
     ShardAddType.name = name;
     ShardAddType.prefix = dat_007516c0;

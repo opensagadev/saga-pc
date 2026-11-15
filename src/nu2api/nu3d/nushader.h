@@ -24,12 +24,12 @@ typedef struct shader_uniform_record_pc_s { // size 0x5c
     i32 register_index;                     // 0x14
     i32 unknown_18;                         // 0x18
     f32 values[16];                         // 0x1c
-} ShaderUniformRecordPc;
+} ShaderUniformRecord;
 
 #ifdef __cplusplus
 extern "C" {
 #endif
-    ShaderUniformRecordPc *NuShaderUniformGetByString(const char *name);
+    ShaderUniformRecord *NuShaderUniformGetByString(const char *name);
 #ifdef __cplusplus
 }
 #endif

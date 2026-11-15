@@ -76,7 +76,7 @@ extern "C" {
     extern f32 RipplePerturbation;
     extern f32 RippleSfxCooldown;
     extern f32 ForceFieldRippleRate;
-    extern const char RippleForceFieldSoundNamePc[10];
+    extern const char RippleForceFieldSoundName[10];
     extern f32 GunshipDustEmissionRate;
     void InitRippleMtl(char *, struct numtl_s **, VARIPTR *, VARIPTR *);
     void BurnoutApply(i32);

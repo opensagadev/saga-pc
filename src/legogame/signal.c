@@ -387,11 +387,11 @@ void Signals_StoreProgress(WORLDINFO *world, void *unused, SIGNALPROGRESS_s *pro
     }
 }
 
-char *SignalRegistryNamePc = "Signal";
+char *SignalRegistryName = "Signal";
 ADDGIZMOTYPE SignalAddType = {0};
 
 ADDGIZMOTYPE *Signals_RegisterGizmo(i32 unused_type_id) {
-    char *name = SignalRegistryNamePc;
+    char *name = SignalRegistryName;
     SignalAddType = Default_ADDGIZMOTYPE;
     SignalAddType.name = name;
     SignalAddType.prefix = dat_007516c0;

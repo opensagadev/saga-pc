@@ -5,16 +5,16 @@
 #include "nu2api/platform_files.h"
 #include "nu2api/save_folder.h"
 
-extern i32 PcSaveFolderRegisteredPc;
+extern i32 PcSaveFolderRegistered;
 
-i32 PcSaveFolderRegisteredPc = 0;
+i32 PcSaveFolderRegistered = 0;
 
-extern "C" void PcRegisterSaveFolderPc(const char *company, const char *product, const char *parameter, i32 personal) {
+extern "C" void PcRegisterSaveFolder(const char *company, const char *product, const char *parameter, i32 personal) {
     PcCompanyName = company;
     PcProductName = product;
     NuHwDefaultParameter = parameter;
     PcUsePersonalFolder = personal;
-    PcSaveFolderRegisteredPc = 1;
+    PcSaveFolderRegistered = 1;
 }
 
 extern "C" void PcSetDefaultParameter(const char *parameter) {

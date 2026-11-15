@@ -81,7 +81,7 @@ extern const GUID PcWbemInterfaceId = {
 };
 
 // The DirectX SDK "XInput and DirectInput" IsXInputDevice sample.
-extern "C" BOOL IsXInputProductPc(const GUID *product) {
+extern "C" BOOL IsXInputProduct(const GUID *product) {
     IWbemLocator *locator = NULL;
     IEnumWbemClassObject *enumerator = NULL;
     IWbemClassObject *devices[20] = {NULL};

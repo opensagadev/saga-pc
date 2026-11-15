@@ -977,7 +977,7 @@ i32 UpdateNewMiniKits(STATUSPACKET_s *packet, STATUS_STAGE_s *stage) {
 }
 
 extern "C" {
-    f32 StatusMiniKitDirectionOffsetPc = 0.035f;
+    f32 StatusMiniKitDirectionOffset = 0.035f;
     STATUS_MINIKIT_DRAW_CACHE StatusMiniKitDrawCache[10] = {0};
     struct STATUS_STAGE_s *StatusStages = 0;
     STATUSPACKET_s StatusPacket = {0};
@@ -995,22 +995,22 @@ void DrawStatusMiniKit(f32 x, f32 y, f32 z, f32 scale, f32 collected_scale, i32 
     growing.x = growing.y = growing.z = collected_scale;
     switch ((i8)view->minikit.pieces[currentminikit].direction) {
         case 0:
-            offset.x += NuTrigTable[((i32)(phase * 32768.0) >> 1) & 0x7fff] * StatusMiniKitDirectionOffsetPc;
+            offset.x += NuTrigTable[((i32)(phase * 32768.0) >> 1) & 0x7fff] * StatusMiniKitDirectionOffset;
             break;
         case 1:
-            offset.x -= NuTrigTable[((i32)(phase * 32768.0) >> 1) & 0x7fff] * StatusMiniKitDirectionOffsetPc;
+            offset.x -= NuTrigTable[((i32)(phase * 32768.0) >> 1) & 0x7fff] * StatusMiniKitDirectionOffset;
             break;
         case 2:
-            offset.y += NuTrigTable[((i32)(phase * 32768.0) >> 1) & 0x7fff] * StatusMiniKitDirectionOffsetPc;
+            offset.y += NuTrigTable[((i32)(phase * 32768.0) >> 1) & 0x7fff] * StatusMiniKitDirectionOffset;
             break;
         case 3:
-            offset.y -= NuTrigTable[((i32)(phase * 32768.0) >> 1) & 0x7fff] * StatusMiniKitDirectionOffsetPc;
+            offset.y -= NuTrigTable[((i32)(phase * 32768.0) >> 1) & 0x7fff] * StatusMiniKitDirectionOffset;
             break;
         case 4:
-            offset.z -= NuTrigTable[((i32)(phase * 32768.0) >> 1) & 0x7fff] * StatusMiniKitDirectionOffsetPc;
+            offset.z -= NuTrigTable[((i32)(phase * 32768.0) >> 1) & 0x7fff] * StatusMiniKitDirectionOffset;
             break;
         case 5:
-            offset.z += NuTrigTable[((i32)(phase * 32768.0) >> 1) & 0x7fff] * StatusMiniKitDirectionOffsetPc;
+            offset.z += NuTrigTable[((i32)(phase * 32768.0) >> 1) & 0x7fff] * StatusMiniKitDirectionOffset;
             break;
     }
     for (i32 index = 0; index < packet->minikit_max; index++) {
@@ -1079,11 +1079,11 @@ void AddStatusMiniKitParts(void) {
     f32 delay = 0.0f;
     NUVEC target_position = {0.0f, STATSPOSY, 1.0f};
     StatusMiniKitPartLighting.values[0] = PanelLightingColours[0];
-    StatusMiniKitPartLighting.values[3] = PanelLightingDirectionsPc[0];
+    StatusMiniKitPartLighting.values[3] = PanelLightingDirections[0];
     StatusMiniKitPartLighting.values[1] = PanelLightingColours[1];
-    StatusMiniKitPartLighting.values[4] = PanelLightingDirectionsPc[1];
+    StatusMiniKitPartLighting.values[4] = PanelLightingDirections[1];
     StatusMiniKitPartLighting.values[2] = PanelLightingColours[2];
-    StatusMiniKitPartLighting.values[5] = PanelLightingDirectionsPc[2];
+    StatusMiniKitPartLighting.values[5] = PanelLightingDirections[2];
     StatusMiniKitPartLighting.values[6] = PanelLightingAmbient;
     for (i32 i = 0; i < 10; ++i) {
         if (StatusMiniKitDrawCache[i].active == 0) {
@@ -1243,7 +1243,7 @@ extern "C" {
         {0.5f, 1.0f, 0.5f},
         {0.5f, 0.5f, 1.0f}
     };
-    NUVEC PanelLightingDirectionsPc[3] = {
+    NUVEC PanelLightingDirections[3] = {
         {-1.0f, 0.0f, 0.0f },
         {0.0f,  1.0f, 1.0f },
         {0.0f,  0.0f, -1.0f}

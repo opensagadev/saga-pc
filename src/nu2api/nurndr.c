@@ -30,7 +30,7 @@
 #include <float.h>
 
 NURNDRLIBSCENE currentScene = {0};
-f32 PCShaderMaterialSamplerBiasOffsetPc = 0.0f;
+f32 PCShaderMaterialSamplerBiasOffset = 0.0f;
 u32 PCWindFrameCount = 0;
 i32 global_frame_count_paused = 0;
 i32 dat_00973934 = 0;
@@ -522,7 +522,7 @@ void fun_005d5250(i32 value) {
 }
 
 void fun_005d5260(f32 offset) {
-    PCShaderMaterialSamplerBiasOffsetPc = offset;
+    PCShaderMaterialSamplerBiasOffset = offset;
 }
 
 typedef struct locator_prim_vertex_s { // size 0x18
@@ -1406,7 +1406,7 @@ void NuRndrAnglesBetweenPoints(NUVEC *direction, f32 *pitch, f32 *yaw) {
     *pitch = (f32)NuAtan2D(-direction->y, NuFsqrt(direction->x * direction->x + direction->z * direction->z));
 }
 
-NUVEC NuRndrShadowDirectionsPc[8] = {0};
+NUVEC NuRndrShadowDirections[8] = {0};
 
 void NuRndrRotateVec(NUVEC *vector, f32 pitch, f32 yaw) {
     f32 sin_pitch = NuTrigTable[((i32)pitch >> 1) & 0x7fff];
@@ -1419,7 +1419,7 @@ void NuRndrRotateVec(NUVEC *vector, f32 pitch, f32 yaw) {
     vector->x = cos_yaw * vector->x + z * sin_yaw;
 }
 
-void NuRndrShadowDirectionsSetupPc(NUVEC *direction) {
+void NuRndrShadowDirectionsSetup(NUVEC *direction) {
     NUVEC angles; /* x: pitch, y: yaw */
     f32 length;
     i32 i;
@@ -1434,10 +1434,10 @@ void NuRndrShadowDirectionsSetupPc(NUVEC *direction) {
     NuRndrRotateVec(direction, angles.x, angles.y);
     for (i = 0; i < 8; i++) {
         i32 angle = i * 0x10000 / 8;
-        NuRndrShadowDirectionsPc[i].x = NU_COS_LUT(angle);
-        NuRndrShadowDirectionsPc[i].y = -NU_SIN_LUT(angle);
-        NuRndrShadowDirectionsPc[i].z = 0.0f;
-        NuRndrRotateVec(&NuRndrShadowDirectionsPc[i], angles.x, angles.y);
+        NuRndrShadowDirections[i].x = NU_COS_LUT(angle);
+        NuRndrShadowDirections[i].y = -NU_SIN_LUT(angle);
+        NuRndrShadowDirections[i].z = 0.0f;
+        NuRndrRotateVec(&NuRndrShadowDirections[i], angles.x, angles.y);
     }
 }
 
@@ -1816,26 +1816,26 @@ void NuRndrArenaAddEllipsoidVolume(NUVEC *axes, PC_HG_SHADOW_PACKET *packet, NUV
     }
     for (i = 0; i < 8; i++) {
         RendererArenaIndexCount += 2;
-        local.x = (NuRndrShadowDirectionsPc[i].x * axis[0].x + NuRndrShadowDirectionsPc[i].y * axis[0].y +
-                   NuRndrShadowDirectionsPc[i].z * axis[0].z) *
-                  scale[0];
-        local.y = (NuRndrShadowDirectionsPc[i].x * axis[1].x + NuRndrShadowDirectionsPc[i].y * axis[1].y +
-                   NuRndrShadowDirectionsPc[i].z * axis[1].z) *
-                  scale[1];
-        local.z = (NuRndrShadowDirectionsPc[i].x * axis[2].x + NuRndrShadowDirectionsPc[i].y * axis[2].y +
-                   NuRndrShadowDirectionsPc[i].z * axis[2].z) *
-                  scale[2];
+        local.x =
+            (NuRndrShadowDirections[i].x * axis[0].x + NuRndrShadowDirections[i].y * axis[0].y + NuRndrShadowDirections[i].z * axis[0].z) *
+            scale[0];
+        local.y =
+            (NuRndrShadowDirections[i].x * axis[1].x + NuRndrShadowDirections[i].y * axis[1].y + NuRndrShadowDirections[i].z * axis[1].z) *
+            scale[1];
+        local.z =
+            (NuRndrShadowDirections[i].x * axis[2].x + NuRndrShadowDirections[i].y * axis[2].y + NuRndrShadowDirections[i].z * axis[2].z) *
+            scale[2];
         v[0].x = axis[0].x * local.x + axis[1].x * local.y + axis[2].x * local.z;
         v[0].y = axis[0].y * local.x + axis[1].y * local.y + axis[2].y * local.z;
         v[0].z = axis[0].z * local.x + axis[1].z * local.y + axis[2].z * local.z;
-        local.x = (NuRndrShadowDirectionsPc[(i + 1) & 7].x * axis[0].x + NuRndrShadowDirectionsPc[(i + 1) & 7].y * axis[0].y +
-                   NuRndrShadowDirectionsPc[(i + 1) & 7].z * axis[0].z) *
+        local.x = (NuRndrShadowDirections[(i + 1) & 7].x * axis[0].x + NuRndrShadowDirections[(i + 1) & 7].y * axis[0].y +
+                   NuRndrShadowDirections[(i + 1) & 7].z * axis[0].z) *
                   scale[0];
-        local.y = (NuRndrShadowDirectionsPc[(i + 1) & 7].x * axis[1].x + NuRndrShadowDirectionsPc[(i + 1) & 7].y * axis[1].y +
-                   NuRndrShadowDirectionsPc[(i + 1) & 7].z * axis[1].z) *
+        local.y = (NuRndrShadowDirections[(i + 1) & 7].x * axis[1].x + NuRndrShadowDirections[(i + 1) & 7].y * axis[1].y +
+                   NuRndrShadowDirections[(i + 1) & 7].z * axis[1].z) *
                   scale[1];
-        local.z = (NuRndrShadowDirectionsPc[(i + 1) & 7].x * axis[2].x + NuRndrShadowDirectionsPc[(i + 1) & 7].y * axis[2].y +
-                   NuRndrShadowDirectionsPc[(i + 1) & 7].z * axis[2].z) *
+        local.z = (NuRndrShadowDirections[(i + 1) & 7].x * axis[2].x + NuRndrShadowDirections[(i + 1) & 7].y * axis[2].y +
+                   NuRndrShadowDirections[(i + 1) & 7].z * axis[2].z) *
                   scale[2];
         v[1].x = axis[0].x * local.x + axis[1].x * local.y + axis[2].x * local.z;
         v[1].y = axis[0].y * local.x + axis[1].y * local.y + axis[2].y * local.z;
@@ -1981,7 +1981,7 @@ void NuRndrArenaBuildShadowVolumes(i32 unused0, i32 unused1) {
                 offset.x = 0.0f;
                 offset.y = -1.0f;
                 offset.z = 0.0f;
-                NuRndrShadowDirectionsSetupPc(&offset);
+                NuRndrShadowDirectionsSetup(&offset);
                 offset.y = -4.0f;
                 if (mode != 5 && direction->z == 0.0f) {
                     mode = 5;
@@ -1995,7 +1995,7 @@ void NuRndrArenaBuildShadowVolumes(i32 unused0, i32 unused1) {
                 if (mode != 1) {
                     mode = 1;
                 }
-                NuRndrShadowDirectionsSetupPc(&offset);
+                NuRndrShadowDirectionsSetup(&offset);
                 offset.x *= 4.0;
                 offset.y *= 4.0;
                 offset.z *= 4.0;

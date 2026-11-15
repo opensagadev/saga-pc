@@ -2086,7 +2086,7 @@ void TerrainPlayer(GAMEOBJECT *object) {
                             excluded_platforms[excluded_count++] = blowup->platform_id;
                         }
                     }
-                    platforms = ((TERRAIN_PLAYER_PLATFORM_SYS *)(WORLD->shadow_platform_list_pc));
+                    platforms = ((TERRAIN_PLAYER_PLATFORM_SYS *)(WORLD->shadow_platform_list));
                     if (platforms != NULL && VehicleArea == 0) {
                         i32 player;
 
@@ -2267,7 +2267,7 @@ void TerrainPlayer(GAMEOBJECT *object) {
                 } else {
                     GAMEOBJECT *platform_owner;
 
-                    platform_owner = CharPlatform_FindObjFromPlatID(((TERRAIN_PLAYER_PLATFORM_SYS *)(WORLD->shadow_platform_list_pc)),
+                    platform_owner = CharPlatform_FindObjFromPlatID(((TERRAIN_PLAYER_PLATFORM_SYS *)(WORLD->shadow_platform_list)),
                                                                     api->supporting_platform_id);
                     if (platform_owner != NULL && platform_owner->character_data->game_character->unknown_028 > 0.0f) {
                         platform_owner->velocity.y = entry_vertical_velocity * 0.5f + platform_owner->velocity.y;
@@ -2287,7 +2287,7 @@ void TerrainPlayer(GAMEOBJECT *object) {
                     GAMEOBJECT *platform_owner;
 
                     platform_owner =
-                        CharPlatform_FindObjFromPlatID(((TERRAIN_PLAYER_PLATFORM_SYS *)(WORLD->shadow_platform_list_pc)), entry_platform);
+                        CharPlatform_FindObjFromPlatID(((TERRAIN_PLAYER_PLATFORM_SYS *)(WORLD->shadow_platform_list)), entry_platform);
                     if (platform_owner != NULL && platform_owner->character_data->game_character->unknown_028 > 0.0f) {
                         platform_owner->velocity.y -= entry_vertical_velocity * 0.5f;
                     }
@@ -2297,7 +2297,7 @@ void TerrainPlayer(GAMEOBJECT *object) {
             if (VehicleArea == 0 && ((api->flags_1fc_word & APIOBJECT_FLAG_PLAYER_ACTIVE) != 0) && api->supporting_platform_id != -1) {
                 GAMEOBJECT *platform_owner;
 
-                platform_owner = CharPlatform_FindObjFromPlatID(((TERRAIN_PLAYER_PLATFORM_SYS *)(WORLD->shadow_platform_list_pc)),
+                platform_owner = CharPlatform_FindObjFromPlatID(((TERRAIN_PLAYER_PLATFORM_SYS *)(WORLD->shadow_platform_list)),
                                                                 api->supporting_platform_id);
                 if (platform_owner != NULL) {
                     const PLAYERCHARACTERCONFIG *data;

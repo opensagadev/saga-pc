@@ -160,7 +160,7 @@ extern "C" {
     extern HWND PCInputInstance;
     extern HRESULT PCDeviceLastResult;
     extern u8 PCDeviceStateCacheEnabled;
-    extern PC_DEVICE_STATE_CACHE PCDeviceStateCachePc;
+    extern PC_DEVICE_STATE_CACHE PCDeviceStateCache;
     void PCDeviceDrawIndexedPrimitiveUPPc(i32, u32, u32, u32, const void *, i32, const void *, u32);
 
     /* Per-frame draw counters for the stats overlay; PcFrameStatsReset clears them after each frame. */

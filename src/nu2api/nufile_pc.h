@@ -37,7 +37,7 @@ extern "C" {
 extern "C" {
 #endif
     extern struct nufile_device_s host_device;
-    extern i32 FileDirectoryHostOpenPc(char *path);
+    extern i32 FileDirectoryHostOpen(char *path);
 #ifdef __cplusplus
 }
 #endif

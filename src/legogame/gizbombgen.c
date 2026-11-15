@@ -371,14 +371,14 @@ void GizBombGens_StoreProgress(void *world_ptr, void *data, void *progress_ptr) 
 }
 
 i32 bombgen_gizmotype_id = -1;
-char *GizmoRegistryGizBombGenNamePtrPc = "BombGenerator";
+char *GizmoRegistryGizBombGenNamePtr = "BombGenerator";
 GAMEOBJECT *BombGenerator_PlayerBomb[2] = {0};
-static ADDGIZMOTYPE GizmoRegistryGizBombGenAddTypePc = {0};
+static ADDGIZMOTYPE GizmoRegistryGizBombGenAddType = {0};
 
 ADDGIZMOTYPE *GizBombGen_RegisterGizmo(i32 type_id) {
-    ADDGIZMOTYPE *addtype = &GizmoRegistryGizBombGenAddTypePc;
+    ADDGIZMOTYPE *addtype = &GizmoRegistryGizBombGenAddType;
     *addtype = Default_ADDGIZMOTYPE;
-    addtype->name = GizmoRegistryGizBombGenNamePtrPc;
+    addtype->name = GizmoRegistryGizBombGenNamePtr;
     addtype->fns.early_update_fn = NULL;
     addtype->fns.draw_fn = NULL;
     addtype->fns.panel_draw_fn = NULL;

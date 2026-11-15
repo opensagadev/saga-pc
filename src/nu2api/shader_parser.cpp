@@ -28,14 +28,14 @@
         }                                                                                                                                  \
     } while (0)
 
-void ShaderCompilerParserPc::FlushText() {
+void ShaderCompilerParser::FlushText() {
     i32 count = text.length;
     if (count > 0) {
         char *bytes = reinterpret_cast<char *>(arena->cursor);
         arena->cursor += count;
         memcpy(bytes, text.data, count);
-        ShaderParserTextNodePc *node = reinterpret_cast<ShaderParserTextNodePc *>(arena->cursor);
-        arena->cursor += sizeof(ShaderParserTextNodePc);
+        ShaderParserTextNode *node = reinterpret_cast<ShaderParserTextNode *>(arena->cursor);
+        arena->cursor += sizeof(ShaderParserTextNode);
         if (node != NULL) {
             node->kind = SHADER_NODE_TEXT;
             node->next = NULL;
@@ -54,7 +54,7 @@ void ShaderCompilerParserPc::FlushText() {
 extern "C" void fun_0074bef0(void) {
 }
 
-void ShaderCompilerParserPc::DefineMacro(const char *name, const char *value) {
+void ShaderCompilerParser::DefineMacro(const char *name, const char *value) {
     FlushText();
     char *copy_name;
     ARENA_COPY_STRING(copy_name, name);
@@ -64,8 +64,8 @@ void ShaderCompilerParserPc::DefineMacro(const char *name, const char *value) {
     } else {
         copy_value = NULL;
     }
-    ShaderParserMacroNodePc *node = reinterpret_cast<ShaderParserMacroNodePc *>(arena->cursor);
-    arena->cursor += sizeof(ShaderParserMacroNodePc);
+    ShaderParserMacroNode *node = reinterpret_cast<ShaderParserMacroNode *>(arena->cursor);
+    arena->cursor += sizeof(ShaderParserMacroNode);
     if (node != NULL) {
         node->kind = SHADER_NODE_MACRO;
         node->next = NULL;
@@ -79,12 +79,12 @@ void ShaderCompilerParserPc::DefineMacro(const char *name, const char *value) {
     APPEND_NODE(node);
 }
 
-void ShaderCompilerParserPc::UndefineMacro(const char *name) {
+void ShaderCompilerParser::UndefineMacro(const char *name) {
     FlushText();
     char *copy;
     ARENA_COPY_STRING(copy, name);
-    ShaderParserUndefNodePc *node = reinterpret_cast<ShaderParserUndefNodePc *>(arena->cursor);
-    arena->cursor += sizeof(ShaderParserUndefNodePc);
+    ShaderParserUndefNode *node = reinterpret_cast<ShaderParserUndefNode *>(arena->cursor);
+    arena->cursor += sizeof(ShaderParserUndefNode);
     if (node != NULL) {
         node->kind = SHADER_NODE_UNDEF;
         node->next = NULL;
@@ -97,10 +97,10 @@ void ShaderCompilerParserPc::UndefineMacro(const char *name) {
     APPEND_NODE(node);
 }
 
-void ShaderCompilerParserPc::BeginIf(ShaderConditionNodePc *condition) {
+void ShaderCompilerParser::BeginIf(ShaderConditionNode *condition) {
     FlushText();
-    ShaderParserBranchNodePc *node = reinterpret_cast<ShaderParserBranchNodePc *>(arena->cursor);
-    arena->cursor += sizeof(ShaderParserBranchNodePc);
+    ShaderParserBranchNode *node = reinterpret_cast<ShaderParserBranchNode *>(arena->cursor);
+    arena->cursor += sizeof(ShaderParserBranchNode);
     if (node != NULL) {
         node->kind = SHADER_NODE_BRANCH;
         node->next = NULL;
@@ -118,16 +118,16 @@ void ShaderCompilerParserPc::BeginIf(ShaderConditionNodePc *condition) {
     tail = &node->if_true;
 }
 
-void ShaderCompilerParserPc::BeginElse() {
+void ShaderCompilerParser::BeginElse() {
     FlushText();
     tail = &branches[branch_count - 1]->if_false;
 }
 
-void ShaderCompilerParserPc::BeginElseIf(ShaderConditionNodePc *condition) {
+void ShaderCompilerParser::BeginElseIf(ShaderConditionNode *condition) {
     FlushText();
     tail = &branches[branch_count - 1]->if_false;
-    ShaderParserBranchNodePc *node = reinterpret_cast<ShaderParserBranchNodePc *>(arena->cursor);
-    arena->cursor += sizeof(ShaderParserBranchNodePc);
+    ShaderParserBranchNode *node = reinterpret_cast<ShaderParserBranchNode *>(arena->cursor);
+    arena->cursor += sizeof(ShaderParserBranchNode);
     if (node != NULL) {
         node->kind = SHADER_NODE_BRANCH;
         node->next = NULL;
@@ -144,7 +144,7 @@ void ShaderCompilerParserPc::BeginElseIf(ShaderConditionNodePc *condition) {
     tail = &node->if_true;
 }
 
-void ShaderCompilerParserPc::EndIf() {
+void ShaderCompilerParser::EndIf() {
     FlushText();
     while (branches[branch_count - 1] != scopes[scope_count - 1]) {
         --branch_count;
@@ -154,81 +154,81 @@ void ShaderCompilerParserPc::EndIf() {
     --scope_count;
 }
 
-struct ShaderParserTogglePc : ShaderParserNodePc { // size 0xc
-    u8 enabled;                                    // 0x8
-    u8 unknown_9[3];                               // 0x9
-    ShaderParserTogglePc(u8 enabled);
+struct ShaderParserToggle : ShaderParserNode { // size 0xc
+    u8 enabled;                                // 0x8
+    u8 unknown_9[3];                           // 0x9
+    ShaderParserToggle(u8 enabled);
 };
 
-struct ShaderParserReferencePc : ShaderParserNodePc { // size 0x14
-    u32 flags;                                        // 0x08
-    i32 alias_depth;                                  // 0x0c
-    char *name;                                       // 0x10
-    ShaderParserReferencePc(u32 flags, i32 alias_depth, char *name);
+struct ShaderParserReference : ShaderParserNode { // size 0x14
+    u32 flags;                                    // 0x08
+    i32 alias_depth;                              // 0x0c
+    char *name;                                   // 0x10
+    ShaderParserReference(u32 flags, i32 alias_depth, char *name);
 };
 
-struct ShaderParserDeclarationPc : ShaderParserNodePc { // size 0x28
-    u32 flags;                                          // 0x08
-    i32 type;                                           // 0x0c
-    i32 array_count;                                    // 0x10
-    char *name;                                         // 0x14
-    i32 semantic;                                       // 0x18
-    char *custom_semantic;                              // 0x1c
-    i32 vertex_register;                                // 0x20
-    i32 pixel_register;                                 // 0x24
-    ShaderParserDeclarationPc(u32 flags, i32 type, i32 array_count, char *name, i32 semantic, char *custom_semantic, i32 vertex_register,
-                              i32 pixel_register);
+struct ShaderParserDeclaration : ShaderParserNode { // size 0x28
+    u32 flags;                                      // 0x08
+    i32 type;                                       // 0x0c
+    i32 array_count;                                // 0x10
+    char *name;                                     // 0x14
+    i32 semantic;                                   // 0x18
+    char *custom_semantic;                          // 0x1c
+    i32 vertex_register;                            // 0x20
+    i32 pixel_register;                             // 0x24
+    ShaderParserDeclaration(u32 flags, i32 type, i32 array_count, char *name, i32 semantic, char *custom_semantic, i32 vertex_register,
+                            i32 pixel_register);
 };
 
-struct ShaderParserEmitPc : ShaderParserNodePc { // size 0xc
-    u32 flags;                                   // 0x8
-    ShaderParserEmitPc(u32 flags);
+struct ShaderParserEmit : ShaderParserNode { // size 0xc
+    u32 flags;                               // 0x8
+    ShaderParserEmit(u32 flags);
 };
 
-ShaderParserNodePc::ShaderParserNodePc(i32 kind) : kind(kind), next(NULL) {
+ShaderParserNode::ShaderParserNode(i32 kind) : kind(kind), next(NULL) {
 }
 
-ShaderParserBranchNodePc::ShaderParserBranchNodePc(ShaderConditionNodePc *condition)
-    : ShaderParserNodePc(0), if_true(NULL), if_false(NULL), condition(condition) {
+ShaderParserBranchNode::ShaderParserBranchNode(ShaderConditionNode *condition)
+    : ShaderParserNode(0), if_true(NULL), if_false(NULL), condition(condition) {
 }
 
-ShaderParserMacroNodePc::ShaderParserMacroNodePc(char *name, char *value) : ShaderParserNodePc(1), name(name), value(value) {
+ShaderParserMacroNode::ShaderParserMacroNode(char *name, char *value) : ShaderParserNode(1), name(name), value(value) {
 }
 
-ShaderParserUndefNodePc::ShaderParserUndefNodePc(char *name) : ShaderParserNodePc(2), name(name) {
+ShaderParserUndefNode::ShaderParserUndefNode(char *name) : ShaderParserNode(2), name(name) {
 }
 
-ShaderParserDeclarationPc::ShaderParserDeclarationPc(u32 flags, i32 type, i32 array_count, char *name, i32 semantic, char *custom_semantic,
-                                                     i32 vertex_register, i32 pixel_register)
-    : ShaderParserNodePc(3), flags(flags), type(type), array_count(array_count), name(name), semantic(semantic),
+ShaderParserDeclaration::ShaderParserDeclaration(u32 flags, i32 type, i32 array_count, char *name, i32 semantic, char *custom_semantic,
+                                                 i32 vertex_register, i32 pixel_register)
+    : ShaderParserNode(3), flags(flags), type(type), array_count(array_count), name(name), semantic(semantic),
       custom_semantic(custom_semantic), vertex_register(vertex_register), pixel_register(pixel_register) {
 }
 
-ShaderParserReferencePc::ShaderParserReferencePc(u32 flags, i32 alias_depth, char *name)
-    : ShaderParserNodePc(4), flags(flags), alias_depth(alias_depth), name(name) {
+ShaderParserReference::ShaderParserReference(u32 flags, i32 alias_depth, char *name)
+    : ShaderParserNode(4), flags(flags), alias_depth(alias_depth), name(name) {
 }
 
-ShaderParserEmitPc::ShaderParserEmitPc(u32 flags) : ShaderParserNodePc(6), flags(flags) {
+ShaderParserEmit::ShaderParserEmit(u32 flags) : ShaderParserNode(6), flags(flags) {
 }
 
-ShaderParserTogglePc::ShaderParserTogglePc(u8 enabled) : ShaderParserNodePc(5), enabled(enabled) {
+ShaderParserToggle::ShaderParserToggle(u8 enabled) : ShaderParserNode(5), enabled(enabled) {
 }
 
-ShaderParserTextNodePc::ShaderParserTextNodePc(char *bytes, i32 count) : ShaderParserNodePc(7), bytes(bytes), count(count) {
+ShaderParserTextNode::ShaderParserTextNode(char *bytes, i32 count) : ShaderParserNode(7), bytes(bytes), count(count) {
 }
 
-void ShaderCompilerParserPc::fun_0074b330(const ShaderLexicalSlicePc &slice) {
+void ShaderCompilerParser::fun_0074b330(const ShaderLexicalSlice &slice) {
     text.AppendBytes(slice.begin, slice.length);
 }
 
-void ShaderCompilerParserPc::fun_0074b6b0(ShaderParserNodePc *node) {
+void ShaderCompilerParser::fun_0074b6b0(ShaderParserNode *node) {
     APPEND_NODE(node);
 }
 
-void ShaderCompilerParserPc::SetShowDefinitions(u8 enabled) {
+void ShaderCompilerParser::SetShowDefinitions(u8 enabled) {
     FlushText();
-    ShaderParserTogglePc *node = reinterpret_cast<ShaderParserTogglePc *>(arena->cursor);
-    arena->cursor += sizeof(ShaderParserTogglePc);
+    ShaderParserToggle *node = reinterpret_cast<ShaderParserToggle *>(arena->cursor);
+    arena->cursor += sizeof(ShaderParserToggle);
     if (node != NULL) {
         node->kind = SHADER_NODE_TOGGLE;
         node->next = NULL;
@@ -241,12 +241,12 @@ void ShaderCompilerParserPc::SetShowDefinitions(u8 enabled) {
     APPEND_NODE(node);
 }
 
-void ShaderCompilerParserPc::UseDeclaration(u32 flags, i32 depth, const char *name) {
+void ShaderCompilerParser::UseDeclaration(u32 flags, i32 depth, const char *name) {
     FlushText();
     char *copy;
     ARENA_COPY_STRING(copy, name);
-    ShaderParserReferencePc *node = reinterpret_cast<ShaderParserReferencePc *>(arena->cursor);
-    arena->cursor += sizeof(ShaderParserReferencePc);
+    ShaderParserReference *node = reinterpret_cast<ShaderParserReference *>(arena->cursor);
+    arena->cursor += sizeof(ShaderParserReference);
     if (node != NULL) {
         node->kind = SHADER_NODE_REFERENCE;
         node->next = NULL;
@@ -261,8 +261,8 @@ void ShaderCompilerParserPc::UseDeclaration(u32 flags, i32 depth, const char *na
     APPEND_NODE(node);
 }
 
-void ShaderCompilerParserPc::AddDeclaration(u32 flags, i32 type, i32 count, const char *name, i32 semantic, const char *custom, i32 vertex,
-                                            i32 pixel) {
+void ShaderCompilerParser::AddDeclaration(u32 flags, i32 type, i32 count, const char *name, i32 semantic, const char *custom, i32 vertex,
+                                          i32 pixel) {
     FlushText();
     char *copy;
     ARENA_COPY_STRING(copy, name);
@@ -272,8 +272,8 @@ void ShaderCompilerParserPc::AddDeclaration(u32 flags, i32 type, i32 count, cons
     } else {
         custom_copy = NULL;
     }
-    ShaderParserDeclarationPc *node = reinterpret_cast<ShaderParserDeclarationPc *>(arena->cursor);
-    arena->cursor += sizeof(ShaderParserDeclarationPc);
+    ShaderParserDeclaration *node = reinterpret_cast<ShaderParserDeclaration *>(arena->cursor);
+    arena->cursor += sizeof(ShaderParserDeclaration);
     if (node != NULL) {
         node->kind = SHADER_NODE_DECLARATION;
         node->next = NULL;
@@ -293,10 +293,10 @@ void ShaderCompilerParserPc::AddDeclaration(u32 flags, i32 type, i32 count, cons
     APPEND_NODE(node);
 }
 
-void ShaderCompilerParserPc::EmitDeclarations(u32 flags) {
+void ShaderCompilerParser::EmitDeclarations(u32 flags) {
     FlushText();
-    ShaderParserEmitPc *node = reinterpret_cast<ShaderParserEmitPc *>(arena->cursor);
-    arena->cursor += sizeof(ShaderParserEmitPc);
+    ShaderParserEmit *node = reinterpret_cast<ShaderParserEmit *>(arena->cursor);
+    arena->cursor += sizeof(ShaderParserEmit);
     if (node != NULL) {
         node->kind = SHADER_NODE_EMIT;
         node->next = NULL;
@@ -309,7 +309,7 @@ void ShaderCompilerParserPc::EmitDeclarations(u32 flags) {
     APPEND_NODE(node);
 }
 
-void ShaderCompilerParserPc::ParseDeclaration(ShaderCompilerBufferAllocatorPc *input, i32 *cursor) {
+void ShaderCompilerParser::ParseDeclaration(ShaderCompilerBufferAllocator *input, i32 *cursor) {
     char temporary[200];
     VirtualStackAllocator memory(temporary, sizeof(temporary));
     i32 count = -1;
@@ -322,9 +322,9 @@ void ShaderCompilerParserPc::ParseDeclaration(ShaderCompilerBufferAllocatorPc *i
     u8 shared = 0;
     u32 flags = 1;
     i32 depth = 0;
-    ShaderLexicalSlicePc token = {NULL, 0};
+    ShaderLexicalSlice token = {NULL, 0};
     i32 semantic = SHADER_SEMANTIC_DEFAULT;
-    ShaderLexicalReaderPc *reader = reinterpret_cast<ShaderLexicalReaderPc *>(&lexical_state);
+    ShaderLexicalReader *reader = reinterpret_cast<ShaderLexicalReader *>(&lexical_state);
     while (state != 26 && reader->Next(input, cursor, &token)) {
         switch (state) {
             case 0:
@@ -444,7 +444,7 @@ void ShaderCompilerParserPc::ParseDeclaration(ShaderCompilerBufferAllocatorPc *i
                 break;
             case 11:
                 if (token.Equals(",")) {
-                    flags = ShaderDeclarationFlagsPc(shared, vertex >= 0, pixel >= 0);
+                    flags = ShaderDeclarationFlags(shared, vertex >= 0, pixel >= 0);
                     state = 13;
                 } else {
                     if (token.StartsWith("vreg")) {
@@ -458,7 +458,7 @@ void ShaderCompilerParserPc::ParseDeclaration(ShaderCompilerBufferAllocatorPc *i
             case 12:
                 token.Equals(",");
                 if ((flags & SHADER_DECL_UNIFORM) != 0) {
-                    flags = ShaderDeclarationFlagsPc(shared, vertex >= 0, pixel >= 0);
+                    flags = ShaderDeclarationFlags(shared, vertex >= 0, pixel >= 0);
                 }
                 state = 13;
                 break;
@@ -559,7 +559,7 @@ void ShaderCompilerParserPc::ParseDeclaration(ShaderCompilerBufferAllocatorPc *i
                 state = 20;
                 break;
             case 20:
-                semantic = ShaderDeclarationSemanticPc(&token);
+                semantic = ShaderDeclarationSemantic(&token);
                 if (semantic == SHADER_SEMANTIC_CUSTOM) {
                     custom = token.ArenaCopy(&memory);
                 }
@@ -611,22 +611,22 @@ template <class T> inline void SafeDeleteArray(T *&pointer) {
     }
 }
 
-struct ShaderParserIncludePc {              // size 0x14
-    const char *name;                       // 0x00
-    ShaderCompilerBufferAllocatorPc buffer; // 0x04
+struct ShaderParserInclude {              // size 0x14
+    const char *name;                     // 0x00
+    ShaderCompilerBufferAllocator buffer; // 0x04
 
   private:
-    friend class ShaderCompilerParserPc;
+    friend class ShaderCompilerParser;
 
-    ShaderParserIncludePc(const char *name, i32 size) : name(name), buffer(size, true) {
+    ShaderParserInclude(const char *name, i32 size) : name(name), buffer(size, true) {
     }
 
-    ~ShaderParserIncludePc() {
+    ~ShaderParserInclude() {
         SafeDeleteArray(name);
     }
 };
 
-ShaderCompilerParserPc::ShaderCompilerParserPc() : text((ShaderLexicalClassesInitPc(), 0x1000), true) {
+ShaderCompilerParser::ShaderCompilerParser() : text((ShaderLexicalClassesInit(), 0x1000), true) {
     include_directories[0] = 0;
     head = NULL;
     tail = NULL;
@@ -638,27 +638,27 @@ ShaderCompilerParserPc::ShaderCompilerParserPc() : text((ShaderLexicalClassesIni
     scope_count = 0;
 }
 
-void ShaderCompilerParserPc::ClearIncludes() {
-    for (std::vector<ShaderParserIncludePc *>::iterator i = includes.begin(); i != includes.end(); ++i) {
+void ShaderCompilerParser::ClearIncludes() {
+    for (std::vector<ShaderParserInclude *>::iterator i = includes.begin(); i != includes.end(); ++i) {
         delete *i;
     }
     includes.erase(includes.begin(), includes.end());
 }
 
 /* Out-of-line copies of the include-list members the parser's loops inline. */
-template void std::vector<ShaderParserIncludePc *>::clear();
+template void std::vector<ShaderParserInclude *>::clear();
 template bool
-std::vector<ShaderParserIncludePc *>::const_iterator::operator<(const std::vector<ShaderParserIncludePc *>::const_iterator &) const;
+std::vector<ShaderParserInclude *>::const_iterator::operator<(const std::vector<ShaderParserInclude *>::const_iterator &) const;
 
-ShaderCompilerParserPc::~ShaderCompilerParserPc() {
+ShaderCompilerParser::~ShaderCompilerParser() {
     ClearIncludes();
 }
 
-void ShaderCompilerParserPc::SetIncludeDirectories(const char *paths) {
+void ShaderCompilerParser::SetIncludeDirectories(const char *paths) {
     strcpy(include_directories, paths);
 }
 
-extern "C" bool fun_0074b2f0(ShaderCompilerBufferAllocatorPc *line, i32 *position) {
+extern "C" bool fun_0074b2f0(ShaderCompilerBufferAllocator *line, i32 *position) {
     for (i32 i = 0; i < line->length; ++i) {
         u8 c = line->data[i];
         if (c != ' ' && c != '\t') {
@@ -672,7 +672,7 @@ extern "C" bool fun_0074b2f0(ShaderCompilerBufferAllocatorPc *line, i32 *positio
     return false;
 }
 
-bool ShaderCompilerParserPc::NextIncludeDirectory(const char *paths, i32 *cursor, char *directory) {
+bool ShaderCompilerParser::NextIncludeDirectory(const char *paths, i32 *cursor, char *directory) {
     if (*cursor >= (i32)strlen(paths)) {
         return false;
     }
@@ -694,8 +694,8 @@ extern "C" void fun_0074b9f0(void) {
 extern "C" void fun_0074bae0(void) {
 }
 
-ShaderCompilerBufferAllocatorPc *ShaderCompilerParserPc::LoadInclude(const char *name) {
-    for (std::vector<ShaderParserIncludePc *>::iterator i = includes.begin(); i != includes.end(); ++i) {
+ShaderCompilerBufferAllocator *ShaderCompilerParser::LoadInclude(const char *name) {
+    for (std::vector<ShaderParserInclude *>::iterator i = includes.begin(); i != includes.end(); ++i) {
         if (strcmp((*i)->name, name) == 0) {
             return &(*i)->buffer;
         }
@@ -718,7 +718,7 @@ ShaderCompilerBufferAllocatorPc *ShaderCompilerParserPc::LoadInclude(const char 
     if (size <= 0) {
         return NULL;
     }
-    ShaderParserIncludePc *include = new ShaderParserIncludePc(_strdup(name), size);
+    ShaderParserInclude *include = new ShaderParserInclude(_strdup(name), size);
     if (include->buffer.capacity < size) {
         include->buffer.Resize(size);
     }
@@ -729,13 +729,13 @@ ShaderCompilerBufferAllocatorPc *ShaderCompilerParserPc::LoadInclude(const char 
     return &include->buffer;
 }
 
-void ShaderCompilerParserPc::ProcessDirective(ShaderCompilerBufferAllocatorPc *input, i32 *cursor) {
+void ShaderCompilerParser::ProcessDirective(ShaderCompilerBufferAllocator *input, i32 *cursor) {
     char temporary[200];
     VirtualStackAllocator memory(temporary, sizeof(temporary));
     char *name = NULL;
-    ShaderLexicalSlicePc token = {NULL, 0};
+    ShaderLexicalSlice token = {NULL, 0};
     i32 state = 0;
-    ShaderLexicalReaderPc *reader = reinterpret_cast<ShaderLexicalReaderPc *>(&lexical_state);
+    ShaderLexicalReader *reader = reinterpret_cast<ShaderLexicalReader *>(&lexical_state);
     while (state != 5 && reader->Next(input, cursor, &token)) {
         switch (state) {
             case 0:
@@ -782,7 +782,7 @@ void ShaderCompilerParserPc::ProcessDirective(ShaderCompilerBufferAllocatorPc *i
                 break;
             case 4: {
                 char *path = token.HeapCopy();
-                ShaderCompilerBufferAllocatorPc *included = LoadInclude(path + 1);
+                ShaderCompilerBufferAllocator *included = LoadInclude(path + 1);
                 if (included != NULL) {
                     LoadSourceLines(included, 0);
                 }
@@ -797,10 +797,10 @@ void ShaderCompilerParserPc::ProcessDirective(ShaderCompilerBufferAllocatorPc *i
     }
 }
 
-void ShaderCompilerParserPc::LoadSourceLines(ShaderCompilerBufferAllocatorPc *input, i32 offset) {
+void ShaderCompilerParser::LoadSourceLines(ShaderCompilerBufferAllocator *input, i32 offset) {
     char line_memory[512];
     VirtualStackAllocator memory(line_memory, sizeof(line_memory));
-    ShaderCompilerBufferAllocatorPc line(memory, sizeof(line_memory));
+    ShaderCompilerBufferAllocator line(memory, sizeof(line_memory));
     while (offset < input->length) {
         const char *first = reinterpret_cast<const char *>(input->data) + offset;
         const char *end = reinterpret_cast<const char *>(input->data) + input->length;
@@ -830,8 +830,7 @@ void ShaderCompilerParserPc::LoadSourceLines(ShaderCompilerBufferAllocatorPc *in
     }
 }
 
-ShaderParserNodePc *ShaderCompilerParserPc::Parse(ShaderCompilerBufferAllocatorPc *input, i32 offset, u8 emit,
-                                                  VirtualStackAllocator *memory) {
+ShaderParserNode *ShaderCompilerParser::Parse(ShaderCompilerBufferAllocator *input, i32 offset, u8 emit, VirtualStackAllocator *memory) {
     arena = memory;
     emit_text = emit;
     head = NULL;
@@ -840,7 +839,7 @@ ShaderParserNodePc *ShaderCompilerParserPc::Parse(ShaderCompilerBufferAllocatorP
     scope_count = 0;
     LoadSourceLines(input, offset);
     FlushText();
-    ShaderParserNodePc *result = head;
+    ShaderParserNode *result = head;
     arena = NULL;
     emit_text = 0;
     return result;

@@ -163,7 +163,7 @@ extern "C" {
     void UpdatePartEmits(f32 time);
     i32 PartRayCast(NUVEC *position, NUVEC *movement, f32 radius, i32 flags);
 
-    extern i16 PartPlatformImpactListPc[4];
+    extern i16 PartPlatformImpactList[4];
     extern f32 PartCollisionInterval;
     extern f32 PartStopSpeedSquared;
 

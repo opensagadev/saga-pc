@@ -23,12 +23,12 @@
   },
   {
    "unit": "src/nu2api/shader_parser.cpp",
-   "symbol": "??$_Destroy_range@PAUShaderParserIncludePc@@V?$allocator@PAUShaderParserIncludePc@@@std@@@std@@YAXPAPAUShaderParserIncludePc@@0AAV?$allocator@PAUShaderParserIncludePc@@@0@@Z",
+   "symbol": "??$_Destroy_range@PAUShaderParserInclude@@V?$allocator@PAUShaderParserInclude@@@std@@@std@@YAXPAPAUShaderParserInclude@@0AAV?$allocator@PAUShaderParserInclude@@@0@@Z",
    "kind": "function"
   },
   {
    "unit": "src/nu2api/shader_parser.cpp",
-   "symbol": "??$_Destroy_range@PAUShaderParserIncludePc@@V?$allocator@PAUShaderParserIncludePc@@@std@@@std@@YAXPAPAUShaderParserIncludePc@@0AAV?$allocator@PAUShaderParserIncludePc@@@0@U_Scalar_ptr_iterator_tag@0@@Z",
+   "symbol": "??$_Destroy_range@PAUShaderParserInclude@@V?$allocator@PAUShaderParserInclude@@@std@@@std@@YAXPAPAUShaderParserInclude@@0AAV?$allocator@PAUShaderParserInclude@@@0@U_Scalar_ptr_iterator_tag@0@@Z",
    "kind": "function"
   },
   {

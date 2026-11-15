@@ -9,7 +9,7 @@
 #ifdef __cplusplus
 extern "C" {
 #endif
-    extern NUVEC LightingUnitDirectionPc;
+    extern NUVEC LightingUnitDirection;
     extern struct PC_SPECIAL_SHADOW_LIGHT *PCShadowCurrentLight;
     extern struct PC_SPECIAL_SHADOW_LIGHT *PCShadowSecondaryLight;
     void SetZeroLights(void);

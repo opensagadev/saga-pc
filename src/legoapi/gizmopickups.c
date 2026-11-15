@@ -1398,16 +1398,16 @@ void GizmoPickups_Update(void *world_pointer, void *unused_system, f32 unused_ti
     GizmoPickups_UpdateList(world, system->temporary_pickups, 64, 0);
 }
 
-char *GizmoRegistryGizmoPickupsNamePtrPc = "GizmoPickup";
+char *GizmoRegistryGizmoPickupsNamePtr = "GizmoPickup";
 f32 AreaPickupGravity = 0;
 f32 AreaPickupScale = 0;
 f32 (*GizmoPickups_Collide2DFn)(GAMEOBJECT *) = NULL;
-static ADDGIZMOTYPE GizmoRegistryGizmoPickupsAddTypePc = {0};
+static ADDGIZMOTYPE GizmoRegistryGizmoPickupsAddType = {0};
 
 ADDGIZMOTYPE *GizmoPickups_RegisterGizmo(i32 type_id) {
-    ADDGIZMOTYPE *addtype = &GizmoRegistryGizmoPickupsAddTypePc;
+    ADDGIZMOTYPE *addtype = &GizmoRegistryGizmoPickupsAddType;
     *addtype = Default_ADDGIZMOTYPE;
-    addtype->name = GizmoRegistryGizmoPickupsNamePtrPc;
+    addtype->name = GizmoRegistryGizmoPickupsNamePtr;
     addtype->fns.early_update_fn = NULL;
     addtype->fns.panel_draw_fn = NULL;
     addtype->fns.activate_rev_fn = NULL;

@@ -1903,13 +1903,13 @@ choose:
     return 0;
 }
 
-char *GizmoRegistryGizForceNamePtrPc = "GizForce";
-static ADDGIZMOTYPE GizmoRegistryGizForceAddTypePc = {0};
+char *GizmoRegistryGizForceNamePtr = "GizForce";
+static ADDGIZMOTYPE GizmoRegistryGizForceAddType = {0};
 
 ADDGIZMOTYPE *GizForce_RegisterGizmo(i32 type_id) {
-    ADDGIZMOTYPE *addtype = &GizmoRegistryGizForceAddTypePc;
+    ADDGIZMOTYPE *addtype = &GizmoRegistryGizForceAddType;
     *addtype = Default_ADDGIZMOTYPE;
-    addtype->name = GizmoRegistryGizForceNamePtrPc;
+    addtype->name = GizmoRegistryGizForceNamePtr;
     addtype->fns.early_update_fn = NULL;
     addtype->fns.panel_draw_fn = NULL;
     addtype->fns.get_visibility_fn = NULL;

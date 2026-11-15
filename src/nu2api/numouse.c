@@ -31,10 +31,10 @@ f32 NuMouseReadY(void) {
     return PcMouseY;
 }
 
-void PcEditorCursorEnablePc(i32 enabled) {
+void PcEditorCursorEnable(i32 enabled) {
 }
 
-void PcGetMousePositionPc(f32 *x, f32 *y) {
+void PcGetMousePosition(f32 *x, f32 *y) {
     if (x != NULL) {
         *x = PcMouseX;
     }
@@ -44,7 +44,7 @@ void PcGetMousePositionPc(f32 *x, f32 *y) {
 }
 
 /* Moves the OS cursor to a normalised client position. */
-void PcSetMousePositionPc(f32 x, f32 y) {
+void PcSetMousePosition(f32 x, f32 y) {
     i32 client_x;
     i32 client_y;
     PcMouseX = x;
@@ -52,5 +52,5 @@ void PcSetMousePositionPc(f32 x, f32 y) {
     client_x = (i32)(x * (f32)PcClientWidth);
     client_y = (i32)(y * (f32)PcClientHeight);
     SetCursorPos(client_x, client_y);
-    PCDeviceSetCursorPositionPc(client_x, client_y);
+    PCDeviceSetCursorPosition(client_x, client_y);
 }

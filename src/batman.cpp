@@ -429,7 +429,7 @@ static void NuMainUpdateFrame(WORLDINFO *world, i32 *frame_flag) {
             NuFadeObjUpdateArray(wind_objects);
         }
         rtlProcessLights(world->rtl_set, FRAMETIME);
-        CharPlatforms_Update((CHARPLATFORMSYS_s *)world->shadow_platform_list_pc);
+        CharPlatforms_Update((CHARPLATFORMSYS_s *)world->shadow_platform_list);
         Grabber_Update(world);
         TrafficAnimSys_Update(world->trafficanim_sys);
         SAGA_SOUND_CHECK("after TrafficAnimSys_Update");

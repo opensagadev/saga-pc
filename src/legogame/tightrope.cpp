@@ -383,11 +383,11 @@ extern "C" {
         }
     }
 
-    char *TightRopeRegistryNamePc = "TightRope";
+    char *TightRopeRegistryName = "TightRope";
     ADDGIZMOTYPE TightRopeAddType = {0};
 
     ADDGIZMOTYPE *TightRopes_RegisterGizmo(i32 unused_type_id) {
-        char *name = TightRopeRegistryNamePc;
+        char *name = TightRopeRegistryName;
         TightRopeAddType = Default_ADDGIZMOTYPE;
         TightRopeAddType.name = name;
         TightRopeAddType.prefix = dat_007516c0;

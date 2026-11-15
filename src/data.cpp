@@ -33,7 +33,7 @@ extern "C" {
     // initialiser and atexit functions come out differently.
     PC_DEVICE_BACKEND PCDeviceBackend;
     NuKeyboardOwner nu_keyboard_owner;
-    PC_DEVICE_STATE_CACHE PCDeviceStateCachePc;
+    PC_DEVICE_STATE_CACHE PCDeviceStateCache;
 
     // legoapi/text.c is C; this initialiser copies string pointers at startup, which only C++ does.
     LANGUAGEDATA Text_LanguageList_Default[7] = {

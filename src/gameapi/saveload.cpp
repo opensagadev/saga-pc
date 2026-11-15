@@ -13,20 +13,20 @@ extern "C" {
 
     /* the folder holding every save slot. */
     char *slotfolder(i32) {
-        PCOptionsBuildFolder(SaveFolderPathPc);
-        strcat(SaveFolderPathPc, "SavedGames");
-        return SaveFolderPathPc;
+        PCOptionsBuildFolder(SaveFolderPath);
+        strcat(SaveFolderPath, "SavedGames");
+        return SaveFolderPath;
     }
 
     char SaveFullSlotPath[256] = {0};
 
     char *fullslotname(i32 slot) {
-        PCOptionsBuildFolder(SaveFolderPathPc);
-        strcat(SaveFolderPathPc, "SavedGames");
+        PCOptionsBuildFolder(SaveFolderPath);
+        strcat(SaveFolderPath, "SavedGames");
         i32 i = 0;
         do {
-            SaveFullSlotPath[i] = SaveFolderPathPc[i];
-        } while (SaveFolderPathPc[i++] != 0);
+            SaveFullSlotPath[i] = SaveFolderPath[i];
+        } while (SaveFolderPath[i++] != 0);
         strcat(SaveFullSlotPath, "\\");
         sprintf(SaveSlotName, "SaveGame%d.%s_SavedGame", slot, PcProductName);
         strcat(SaveFullSlotPath, SaveSlotName);
@@ -34,16 +34,16 @@ extern "C" {
     }
 
     char SaveFullCodePath[256] = {0};
-    char SaveFolderPathPc[256] = {0};
+    char SaveFolderPath[256] = {0};
 
     /* the path of the slot's code file. */
     char *fullcodename(i32 slot) {
-        PCOptionsBuildFolder(SaveFolderPathPc);
-        strcat(SaveFolderPathPc, "SavedGames");
+        PCOptionsBuildFolder(SaveFolderPath);
+        strcat(SaveFolderPath, "SavedGames");
         i32 i = 0;
         do {
-            SaveFullCodePath[i] = SaveFolderPathPc[i];
-        } while (SaveFolderPathPc[i++] != 0);
+            SaveFullCodePath[i] = SaveFolderPath[i];
+        } while (SaveFolderPath[i++] != 0);
         strcat(SaveFullCodePath, "\\");
         strcat(SaveFullCodePath, "code.bin");
         return SaveFullCodePath;

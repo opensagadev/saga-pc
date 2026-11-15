@@ -366,11 +366,11 @@ NUVEC *SecurityDoor_GetPos(GIZMO_PC *gizmo) {
 
 char *SecurityDoor_OutputName = "Opened";
 
-char *SecurityDoorRegistryNamePc = "SecurityDoor";
+char *SecurityDoorRegistryName = "SecurityDoor";
 ADDGIZMOTYPE SecurityDoorAddType = {0};
 
 ADDGIZMOTYPE *SecurityDoors_RegisterGizmo(i32 unused_type_id) {
-    char *name = SecurityDoorRegistryNamePc;
+    char *name = SecurityDoorRegistryName;
     SecurityDoorAddType = Default_ADDGIZMOTYPE;
     SecurityDoorAddType.name = name;
     SecurityDoorAddType.prefix = dat_007516c0;

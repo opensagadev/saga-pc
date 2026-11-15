@@ -69,7 +69,7 @@ void MiniKit_Load(MINIKIT *minikit, i32 id, VARIPTR *buffer, VARIPTR *end, void 
     minikit->scene = NuGScnRead(buffer, *end, path);
 }
 
-static const char *MiniKitDirectionNamesPc[6] = {"NegX", "PosX", "NegY", "PosY", "NegZ", "PosZ"};
+static const char *MiniKitDirectionNames[6] = {"NegX", "PosX", "NegY", "PosY", "NegZ", "PosZ"};
 f32 KITPOSX = -0.725f;
 f32 KITPOSY = -0.7f;
 f32 KITPOS2X = -1.27499998f;
@@ -94,7 +94,7 @@ void MiniKit_InitPieces(MINIKIT *minikit, i32 count, VARIPTR *buffer, VARIPTR *e
         minikit->piece_count = 0;
         for (index = 0; index < count; ++index) {
             for (direction = 0; direction < 6; ++direction) {
-                sprintf(name, "%s_%s_%i", CDataList[minikit->model_id].name, MiniKitDirectionNamesPc[direction], index);
+                sprintf(name, "%s_%s_%i", CDataList[minikit->model_id].name, MiniKitDirectionNames[direction], index);
                 if (NuSpecialFind(minikit->scene, &minikit->pieces[minikit->piece_count].special, name, 1) != 0) {
                     minikit->pieces[minikit->piece_count].matrix = *NuSpecialGetInstanceMtx(&minikit->pieces[minikit->piece_count].special);
                     minikit->pieces[minikit->piece_count].direction = (u8)direction;

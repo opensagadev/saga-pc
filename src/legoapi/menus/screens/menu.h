@@ -55,8 +55,8 @@ extern "C" {
 #ifdef __cplusplus
 extern "C" {
 #endif
-    extern u8 MenuKeyboardOverrideActivePc;
-    extern i32 MenuKeyboardPendingPc;
+    extern u8 MenuKeyboardOverrideActive;
+    extern i32 MenuKeyboardPending;
     void UpdateGameMenu(GAMEPAD *, i32);
     extern char *apitxt_PCPRESSSTARTFE;
     extern f32 newgamewait;

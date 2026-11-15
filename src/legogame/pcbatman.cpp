@@ -88,7 +88,7 @@ extern "C" void InitOnce(i32 argc, char **argv) {
     i16 third[] = {0xcb, 0xcd, 0xc8, 0xd0, -1, -1, -1,   -1, -1, -1, 0x9d, 0x52, 0x51,
                    0x50, 0x4c, 0x4f, -1,   -1, -1, 0x9c, -1, -1, -1, -1,   -1};
     i8 order[] = {0, 1, 2, 3, 12, 13, 14, 15, 16, 18, 23, 4, 5, 6, 7, 8, 10, 11, 9, -1};
-    InitPadDescriptorsPc((const u16 *)first, NULL, (const u16 *)third, NULL, order);
+    InitPadDescriptors((const u16 *)first, NULL, (const u16 *)third, NULL, order);
     NuInitHardware(&permbuffer_base, &superbuffer_end, 0, NUHW_HOSTFS, InitOnceHostFs, NUHW_DAT_NAMES, StartupDatNames, 7, NUHW_FILE_MODE,
                    InitOnceFileMode, NUHW_EJECT, InitOnceEject, NUHW_STREAM_SIZE, 0x500000, NUHW_VIDEO_MODE, PAL ? 8 : 0, NUHW_VIDEO_HEIGHT,
                    512, PAL ? 256 : 224, NUHW_TEXTURE_COUNT, 0x1000, 21, 1, 5, &InitOnceDvd, NOSOUND ? NUHW_NO_AUDIO : NUHW_AUDIO, 0, 0x640,

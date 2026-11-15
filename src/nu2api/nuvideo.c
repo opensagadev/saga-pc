@@ -16,7 +16,7 @@ void bgProcDataOversize(i32 size) {
 }
 
 /* Empty, next to the other empty error hooks; NuFileReadDir in nufile_pc.c keeps its call. */
-void FileDirectoryErrorPc(i32 error) {
+void FileDirectoryError(i32 error) {
     (void)error;
 }
 

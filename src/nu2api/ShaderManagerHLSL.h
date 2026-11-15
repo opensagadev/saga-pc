@@ -17,9 +17,9 @@ extern "C" {
 
 class ShaderManagerHLSL : public PC_SHADER_MANAGER_VIEW { // size 0x791b0
   public:
-    ShaderCompilerBasePc *compiler;                // 0x7918c
-    ShaderCompilerBufferAllocatorPc vertex_source; // 0x79190
-    ShaderCompilerBufferAllocatorPc pixel_source;  // 0x791a0
+    ShaderCompilerBase *compiler;                // 0x7918c
+    ShaderCompilerBufferAllocator vertex_source; // 0x79190
+    ShaderCompilerBufferAllocator pixel_source;  // 0x791a0
     ShaderManagerHLSL(VirtualStackAllocator &);
     void SetUniformValues(i32 semantic, const f32 *values);
     void setElementfv(i32 semantic, i32 element, const f32 *values);

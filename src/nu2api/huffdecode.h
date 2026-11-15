@@ -217,7 +217,7 @@ extern "C" {
     extern void (*NuApiEndFrameCallback)(void);
     extern const char NuTextureDdsExtension[4];
     extern i32 gExplodeInitialised;
-    extern i32 FramePadProfilePortPc;
+    extern i32 FramePadProfilePort;
     extern char *iop_image_name;
     extern NUFILE_DEVICE enum_devices[16];
     extern f32 FrameStartupDelay;

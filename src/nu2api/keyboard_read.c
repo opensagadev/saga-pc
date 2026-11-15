@@ -318,13 +318,13 @@ NUVEC *edcamGetPosPointer(void) {
 /* PC input startup remains structurally incomplete at the marked platform
  * dependencies; these candidates preserve the verified wrapper ABI/order. */
 extern HINSTANCE PCInputWindow;
-i32 PCDeviceShowCursorPc(i32 show);
+i32 PCDeviceShowCursor(i32 show);
 
 i32 NuKeyboardPlatformStartup(void) {
     PcConfigureInputGraphicsCaps();
     NuKeyboardCreateWindowState(PCInputInstance, PCInputWindow);
     SetCursor(NULL);
-    PCDeviceShowCursorPc(0);
+    PCDeviceShowCursor(0);
     PCDeviceSetRenderState(0x16, 1);
     return 1;
 }

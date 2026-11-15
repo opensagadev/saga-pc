@@ -94,8 +94,8 @@ bool NuShaderObject::fun_00741260() const {
 }
 
 void NuShaderObject::fun_00741270() {
-    PCDeviceSetVertexShaderPc(vertex_shader);
-    PCDeviceSetPixelShaderPc(pixel_shader);
+    PCDeviceSetVertexShader(vertex_shader);
+    PCDeviceSetPixelShader(pixel_shader);
 }
 
 extern "C" void fun_00741290() {

@@ -6,13 +6,13 @@
 #include "nu2api/nucore/nustring.h"
 #include <stdio.h>
 #include <new>
-// Repeats its header, but deleting it changes ShaderCompilerDictionaryPc::EmitAttribute (declaration noise).
-extern "C" void ShaderLexicalClassesInitPc(void);
+// Repeats its header, but deleting it changes ShaderCompilerDictionary::EmitAttribute (declaration noise).
+extern "C" void ShaderLexicalClassesInit(void);
 
-ShaderCompilerDictionaryPc::ShaderCompilerDictionaryPc(VirtualStackAllocator &parent, i32 input_mode)
+ShaderCompilerDictionary::ShaderCompilerDictionary(VirtualStackAllocator &parent, i32 input_mode)
     : scratch(parent, 0x3000), output_memory(parent, 0x4000), register_buffer(parent, 0x100) {
     unknown_99c = 0;
-    ShaderLexicalClassesInitPc();
+    ShaderLexicalClassesInit();
     mode = input_mode;
     program_count = 0;
     definition_count = 0;
@@ -42,10 +42,10 @@ ShaderCompilerDictionaryPc::ShaderCompilerDictionaryPc(VirtualStackAllocator &pa
     }
 }
 
-ShaderCompilerDictionaryPc::~ShaderCompilerDictionaryPc() {
+ShaderCompilerDictionary::~ShaderCompilerDictionary() {
 }
 
-void ShaderCompilerDictionaryPc::SetProfile(i32 input_profile, i32 first, i32 second) {
+void ShaderCompilerDictionary::SetProfile(i32 input_profile, i32 first, i32 second) {
     profile = input_profile;
     first_version = first;
     second_version = second;
@@ -78,27 +78,27 @@ PC_SHADER_MATERIAL_FILTER_VIEW::PC_SHADER_MATERIAL_FILTER_VIEW(const PC_SHADER_F
     Initialize(descriptor, NULL, flags, parameter);
 }
 
-void ShaderCompilerDictionaryPc::fun_007451c0(bool force) {
+void ShaderCompilerDictionary::fun_007451c0(bool force) {
     force_mode = force;
 }
 
-bool ShaderCompilerDictionaryPc::GetForceMode() const {
+bool ShaderCompilerDictionary::GetForceMode() const {
     return force_mode;
 }
 
-i32 ShaderCompilerDictionaryPc::GetProfile() const {
+i32 ShaderCompilerDictionary::GetProfile() const {
     return profile;
 }
 
-void ShaderCompilerDictionaryPc::AddRegisterBlock(const char *name, i32 count) {
-    ShaderRegisterBlockPc *block = &register_blocks[register_block_count++];
+void ShaderCompilerDictionary::AddRegisterBlock(const char *name, i32 count) {
+    ShaderRegisterBlock *block = &register_blocks[register_block_count++];
     PCByteCopy(block->name, name, NuStrLen(name) + 1);
     block->register_count = count;
 }
 
-i32 ShaderCompilerDictionaryPc::FindRegisterBlock(const char *name) {
-    ShaderRegisterBlockPc *cursor = register_blocks;
-    ShaderRegisterBlockPc *end = register_blocks + register_block_count;
+i32 ShaderCompilerDictionary::FindRegisterBlock(const char *name) {
+    ShaderRegisterBlock *cursor = register_blocks;
+    ShaderRegisterBlock *end = register_blocks + register_block_count;
     for (; cursor < end; ++cursor) {
         if (strcmp(name, cursor->name) == 0) {
             return cursor->register_count;
@@ -107,7 +107,7 @@ i32 ShaderCompilerDictionaryPc::FindRegisterBlock(const char *name) {
     return 0;
 }
 
-ShaderMacroDefinitionPc *ShaderCompilerDictionaryPc::FindDefinition(const char *name) {
+ShaderMacroDefinition *ShaderCompilerDictionary::FindDefinition(const char *name) {
     i32 count = program_count;
     for (i32 i = 0; i < count; ++i) {
         if (strcmp(programs[i]->name, name) == 0) {
@@ -118,29 +118,29 @@ ShaderMacroDefinitionPc *ShaderCompilerDictionaryPc::FindDefinition(const char *
 }
 
 // AddDefinition body; inlined into EmitProgram only.
-char *ShaderCloneArenaStringPc(const char *source, VirtualStackAllocator *arena);
+char *ShaderCloneArenaString(const char *source, VirtualStackAllocator *arena);
 #define SHADER_ADD_DEFINITION(DICTIONARY, NAME, VALUE, EMIT)                                                                               \
     do {                                                                                                                                   \
-        ShaderMacroDefinitionPc *definition = (DICTIONARY)->FindDefinition(NAME);                                                          \
+        ShaderMacroDefinition *definition = (DICTIONARY)->FindDefinition(NAME);                                                            \
         if (definition != NULL) {                                                                                                          \
             const char *stored_value;                                                                                                      \
             if ((VALUE) != NULL) {                                                                                                         \
-                stored_value = ShaderCloneArenaStringPc(VALUE, &(DICTIONARY)->scratch);                                                    \
+                stored_value = ShaderCloneArenaString(VALUE, &(DICTIONARY)->scratch);                                                      \
             } else {                                                                                                                       \
                 stored_value = NULL;                                                                                                       \
             }                                                                                                                              \
             definition->value = stored_value;                                                                                              \
             definition->emit = (u8)(EMIT);                                                                                                 \
         } else {                                                                                                                           \
-            char *stored_name = ShaderCloneArenaStringPc(NAME, &(DICTIONARY)->scratch);                                                    \
+            char *stored_name = ShaderCloneArenaString(NAME, &(DICTIONARY)->scratch);                                                      \
             const char *stored_value;                                                                                                      \
             if ((VALUE) != NULL) {                                                                                                         \
-                stored_value = ShaderCloneArenaStringPc(VALUE, &(DICTIONARY)->scratch);                                                    \
+                stored_value = ShaderCloneArenaString(VALUE, &(DICTIONARY)->scratch);                                                      \
             } else {                                                                                                                       \
                 stored_value = NULL;                                                                                                       \
             }                                                                                                                              \
-            ShaderMacroDefinitionPc *storage = reinterpret_cast<ShaderMacroDefinitionPc *>((DICTIONARY)->scratch.cursor);                  \
-            (DICTIONARY)->scratch.cursor += sizeof(ShaderMacroDefinitionPc);                                                               \
+            ShaderMacroDefinition *storage = reinterpret_cast<ShaderMacroDefinition *>((DICTIONARY)->scratch.cursor);                      \
+            (DICTIONARY)->scratch.cursor += sizeof(ShaderMacroDefinition);                                                                 \
             if (storage != NULL) {                                                                                                         \
                 storage->name = stored_name;                                                                                               \
                 storage->value = stored_value;                                                                                             \
@@ -153,9 +153,9 @@ char *ShaderCloneArenaStringPc(const char *source, VirtualStackAllocator *arena)
         }                                                                                                                                  \
     } while (0)
 
-// noinline: the original calls AddDefinition out of line from ShaderCompilerDictionaryPc::EmitVertexInput; VC8 would
+// noinline: the original calls AddDefinition out of line from ShaderCompilerDictionary::EmitVertexInput; VC8 would
 // inline it there.
-__declspec(noinline) void ShaderCompilerDictionaryPc::AddDefinition(const char *name, const char *value, i32 emit) {
+__declspec(noinline) void ShaderCompilerDictionary::AddDefinition(const char *name, const char *value, i32 emit) {
     SHADER_ADD_DEFINITION(this, name, value, emit);
 }
 
@@ -163,11 +163,11 @@ extern "C" {
     extern const char NuBlankStringValue[2] = " ";
 }
 
-void ShaderCompilerDictionaryPc::BindOutputBuffer(ShaderCompilerBufferAllocatorPc *buffer) {
-    ShaderMacroDefinitionPc **cursor = programs;
-    ShaderMacroDefinitionPc **end = programs + program_count;
+void ShaderCompilerDictionary::BindOutputBuffer(ShaderCompilerBufferAllocator *buffer) {
+    ShaderMacroDefinition **cursor = programs;
+    ShaderMacroDefinition **end = programs + program_count;
     for (; cursor != end; ++cursor) {
-        ShaderMacroDefinitionPc *definition = *cursor;
+        ShaderMacroDefinition *definition = *cursor;
         if (definition->emit != 0) {
             const char *value = definition->value != NULL ? definition->value : "";
             buffer->AppendText("#define ");
@@ -179,7 +179,7 @@ void ShaderCompilerDictionaryPc::BindOutputBuffer(ShaderCompilerBufferAllocatorP
     }
 }
 
-bool ShaderCompilerDictionaryPc::EvaluateCondition(ShaderConditionNodePc *node, i32 *result) {
+bool ShaderCompilerDictionary::EvaluateCondition(ShaderConditionNode *node, i32 *result) {
     for (;;) {
         if (strcmp(node->token, "defined") == 0) {
             *result = FindDefinition(node->left->left->token) != NULL;
@@ -260,10 +260,10 @@ bool ShaderCompilerDictionaryPc::EvaluateCondition(ShaderConditionNodePc *node, 
         *result = left != right;
         return true;
     }
-    ShaderMacroDefinitionPc *definition = FindDefinition(token);
+    ShaderMacroDefinition *definition = FindDefinition(token);
     const char *value;
     if (definition != NULL) {
-        ShaderMacroDefinitionPc *next;
+        ShaderMacroDefinition *next;
         do {
             next = FindDefinition(definition->value);
             if (next != NULL) {
@@ -273,7 +273,7 @@ bool ShaderCompilerDictionaryPc::EvaluateCondition(ShaderConditionNodePc *node, 
         value = definition->value;
     } else {
         // This input is reloaded after the definition lookup.
-        value = reinterpret_cast<const volatile ShaderConditionNodePc *>(node)->token;
+        value = reinterpret_cast<const volatile ShaderConditionNode *>(node)->token;
     }
     if (value == NULL || !IsNumericToken(value)) {
         return false;
@@ -282,13 +282,13 @@ bool ShaderCompilerDictionaryPc::EvaluateCondition(ShaderConditionNodePc *node, 
     return true;
 }
 
-i32 ShaderCompilerDictionaryPc::EvaluateValue(ShaderConditionNodePc *node) {
+i32 ShaderCompilerDictionary::EvaluateValue(ShaderConditionNode *node) {
     i32 value;
     return EvaluateCondition(node, &value) ? value : 0;
 }
 
-ShaderSourceNodePc::ShaderSourceNodePc(u32 input_flags, i32 input_type, i32 input_array_count, const char *input_name, i32 input_semantic,
-                                       const char *input_custom_semantic, i32 input_vertex_register, i32 input_pixel_register) {
+ShaderSourceNode::ShaderSourceNode(u32 input_flags, i32 input_type, i32 input_array_count, const char *input_name, i32 input_semantic,
+                                   const char *input_custom_semantic, i32 input_vertex_register, i32 input_pixel_register) {
     flags = input_flags;
     type = input_type;
     array_count = input_array_count;
@@ -300,7 +300,7 @@ ShaderSourceNodePc::ShaderSourceNodePc(u32 input_flags, i32 input_type, i32 inpu
     expansion_state = 0;
 }
 
-const char *ShaderCompilerDictionaryPc::RenderASTName(ShaderSourceNodePc *node) {
+const char *ShaderCompilerDictionary::RenderASTName(ShaderSourceNode *node) {
     register_buffer.length = 0;
     switch ((i32)node->flags) {
         case 0x1004:
@@ -329,7 +329,7 @@ const char *ShaderCompilerDictionaryPc::RenderASTName(ShaderSourceNodePc *node) 
             register_buffer.AppendText(node->name);
             break;
     }
-    ShaderCompilerBufferAllocatorPc *buffer = &register_buffer;
+    ShaderCompilerBufferAllocator *buffer = &register_buffer;
     if (buffer->length > 0 && buffer->data[buffer->length - 1] != 0) {
         if (buffer->length + 1 > buffer->capacity) {
             buffer->Resize((3 * (buffer->length + 1)) / 2);
@@ -339,10 +339,10 @@ const char *ShaderCompilerDictionaryPc::RenderASTName(ShaderSourceNodePc *node) 
     return reinterpret_cast<const char *>(buffer->data);
 }
 
-ShaderSourceNodePc *ShaderCompilerDictionaryPc::FindASTExact(const char *name, u32 flags) {
+ShaderSourceNode *ShaderCompilerDictionary::FindASTExact(const char *name, u32 flags) {
     i32 count = definition_count;
     for (i32 i = 0; i < count; ++i) {
-        ShaderSourceNodePc *node = definitions[i];
+        ShaderSourceNode *node = definitions[i];
         if (node->flags == flags && strcmp(node->name, name) == 0) {
             return node;
         }
@@ -350,10 +350,10 @@ ShaderSourceNodePc *ShaderCompilerDictionaryPc::FindASTExact(const char *name, u
     return NULL;
 }
 
-ShaderSourceNodePc *ShaderCompilerDictionaryPc::FindASTUniform(const char *name) {
+ShaderSourceNode *ShaderCompilerDictionary::FindASTUniform(const char *name) {
     i32 count = definition_count;
     for (i32 i = 0; i < count; ++i) {
-        ShaderSourceNodePc *node = definitions[i];
+        ShaderSourceNode *node = definitions[i];
         if ((node->flags & 0x4020) == 0x4020 && strcmp(node->name, name) == 0) {
             return node;
         }
@@ -361,11 +361,11 @@ ShaderSourceNodePc *ShaderCompilerDictionaryPc::FindASTUniform(const char *name)
     return NULL;
 }
 
-static const char *ShaderCompilerTypeNamesPc[22] = {
+static const char *ShaderCompilerTypeNames[22] = {
     "undefined", "float", "float",   "float2",  "float3", "float4", "float3x3",  "float4x4",  "half",      "half",        "half2",
     "half3",     "half4", "half3x3", "half4x4", "bool",   "int",    "sampler1D", "sampler2D", "sampler3D", "samplerCUBE", "hook"};
 
-const char *ShaderSourceNodePc::SemanticName() {
+const char *ShaderSourceNode::SemanticName() {
     switch (semantic) {
         case SHADER_SEMANTIC_CUSTOM:
             return custom_semantic;
@@ -418,16 +418,16 @@ const char *ShaderSourceNodePc::SemanticName() {
     }
 }
 
-void ShaderCompilerDictionaryPc::EmitType(ShaderCompilerBufferAllocatorPc *output) {
+void ShaderCompilerDictionary::EmitType(ShaderCompilerBufferAllocator *output) {
     for (i32 i = 0; i < definition_count; ++i) {
-        ShaderSourceNodePc *node = definitions[i];
+        ShaderSourceNode *node = definitions[i];
         if (node->flags == 0x2002 && node->expansion_state > 0) {
             const char *alias = RenderASTName(node);
             output->AppendText("#define ");
             output->AppendText(alias);
             output->AppendText("\r\n");
             AddDefinition(alias, NULL, 0);
-            output->AppendText(ShaderCompilerTypeNamesPc[node->type]);
+            output->AppendText(ShaderCompilerTypeNames[node->type]);
             output->AppendText(NuBlankStringValue);
             output->AppendText(node->name);
             output->AppendText(";\r\n");
@@ -435,16 +435,16 @@ void ShaderCompilerDictionaryPc::EmitType(ShaderCompilerBufferAllocatorPc *outpu
     }
 }
 
-void ShaderCompilerDictionaryPc::EmitRegister(ShaderCompilerBufferAllocatorPc *output) {
+void ShaderCompilerDictionary::EmitRegister(ShaderCompilerBufferAllocator *output) {
     for (i32 i = 0; i < definition_count; ++i) {
-        ShaderSourceNodePc *node = definitions[i];
+        ShaderSourceNode *node = definitions[i];
         if (node->flags == 0x1004 && node->expansion_state > 0) {
             const char *alias = RenderASTName(node);
             output->AppendText("#define ");
             output->AppendText(alias);
             output->AppendText("\r\n");
             AddDefinition(alias, NULL, 0);
-            output->AppendText(ShaderCompilerTypeNamesPc[node->type]);
+            output->AppendText(ShaderCompilerTypeNames[node->type]);
             output->AppendText(NuBlankStringValue);
             output->AppendText(node->name);
             if (node->semantic != SHADER_SEMANTIC_DEFAULT) {
@@ -456,10 +456,10 @@ void ShaderCompilerDictionaryPc::EmitRegister(ShaderCompilerBufferAllocatorPc *o
     }
 }
 
-void ShaderCompilerDictionaryPc::EmitVertexInput(ShaderCompilerBufferAllocatorPc *output) {
+void ShaderCompilerDictionary::EmitVertexInput(ShaderCompilerBufferAllocator *output) {
     output->AppendText("struct VertexInput { \r\n");
     for (i32 i = 0; i < definition_count; ++i) {
-        ShaderSourceNodePc *node = definitions[i];
+        ShaderSourceNode *node = definitions[i];
         if (node->flags == 0x2010 && node->expansion_state > 0) {
             char array_suffix[64];
             if (node->array_count >= 0) {
@@ -472,7 +472,7 @@ void ShaderCompilerDictionaryPc::EmitVertexInput(ShaderCompilerBufferAllocatorPc
             output->AppendText(alias);
             output->AppendText("\r\n");
             AddDefinition(alias, NULL, 0);
-            const char *type_name = ShaderCompilerTypeNamesPc[node->type];
+            const char *type_name = ShaderCompilerTypeNames[node->type];
             output->AppendText("\t");
             output->AppendText(type_name);
             output->AppendText(NuBlankStringValue);
@@ -486,9 +486,9 @@ void ShaderCompilerDictionaryPc::EmitVertexInput(ShaderCompilerBufferAllocatorPc
     output->AppendText("};\r\n");
 }
 
-static const i32 ShaderCompilerTypeComponentsPc[22] = {-1, 1, 1, 2, 3, 4, 9, 16, 1, 1, 2, 3, 4, 9, 16, 1, 1, -1, -1, -1, -1, -1};
+static const i32 ShaderCompilerTypeComponents[22] = {-1, 1, 1, 2, 3, 4, 9, 16, 1, 1, 2, 3, 4, 9, 16, 1, 1, -1, -1, -1, -1, -1};
 
-const char *ShaderRegisterComponentsPc(i32 first, i32 count) {
+const char *ShaderRegisterComponents(i32 first, i32 count) {
     switch (first) {
         case 0:
             if (count == 1) {
@@ -533,7 +533,7 @@ const char *ShaderRegisterComponentsPc(i32 first, i32 count) {
     }
 }
 
-void ShaderCompilerDictionaryPc::EmitAttribute(ShaderCompilerBufferAllocatorPc *output) {
+void ShaderCompilerDictionary::EmitAttribute(ShaderCompilerBufferAllocator *output) {
     i32 allocated = 0;
     i32 colors = 0;
     bool overflow = false;
@@ -542,7 +542,7 @@ void ShaderCompilerDictionaryPc::EmitAttribute(ShaderCompilerBufferAllocatorPc *
                              "texcoord8", "texcoord9", "texcoord10", "texcoord11", "texcoord12", "texcoord13", "texcoord14", "texcoord15"};
     output->AppendText("struct VertexOutput { \r\n");
     for (i32 i = 0; i < definition_count; ++i) {
-        ShaderSourceNodePc *node = definitions[i];
+        ShaderSourceNode *node = definitions[i];
         if (node->flags != 0x3008 || node->expansion_state <= 0) {
             continue;
         }
@@ -571,7 +571,7 @@ void ShaderCompilerDictionaryPc::EmitAttribute(ShaderCompilerBufferAllocatorPc *
                     output->AppendText(" vout._");
                     output->AppendText(node->name);
                     output->AppendText("\r\n");
-                    const char *type_name = ShaderCompilerTypeNamesPc[node->type];
+                    const char *type_name = ShaderCompilerTypeNames[node->type];
                     output->AppendText("\t");
                     output->AppendText(type_name);
                     output->AppendText(" _");
@@ -589,18 +589,18 @@ void ShaderCompilerDictionaryPc::EmitAttribute(ShaderCompilerBufferAllocatorPc *
                 i32 slot = -1;
                 for (i32 j = 0; j < first_version; ++j) {
                     if (used[j] == 0) {
-                        used[j] += ShaderCompilerTypeComponentsPc[node->type];
+                        used[j] += ShaderCompilerTypeComponents[node->type];
                         ++allocated;
                         slot = j;
                         break;
                     }
                 }
-                i32 count = ShaderCompilerTypeComponentsPc[node->type];
+                i32 count = ShaderCompilerTypeComponents[node->type];
                 output->AppendText("\t#define ");
                 output->AppendText(node->name);
                 output->AppendText(" vout.");
                 output->AppendText(names[slot]);
-                output->AppendText(ShaderRegisterComponentsPc(used[slot] - count, count));
+                output->AppendText(ShaderRegisterComponents(used[slot] - count, count));
                 output->AppendText("\r\n");
                 AddDefinition(node->name, node->name, 0);
                 break;
@@ -608,14 +608,14 @@ void ShaderCompilerDictionaryPc::EmitAttribute(ShaderCompilerBufferAllocatorPc *
             case 14:
             case 15: {
                 i32 slot = node->semantic - 14;
-                i32 count = ShaderCompilerTypeComponentsPc[node->type];
+                i32 count = ShaderCompilerTypeComponents[node->type];
                 used[slot] += count;
                 ++allocated;
                 output->AppendText("\t#define ");
                 output->AppendText(node->name);
                 output->AppendText(" vout.");
                 output->AppendText(names[slot]);
-                output->AppendText(ShaderRegisterComponentsPc(used[slot] - count, count));
+                output->AppendText(ShaderRegisterComponents(used[slot] - count, count));
                 output->AppendText("\r\n");
                 AddDefinition(node->name, node->name, 0);
                 break;
@@ -645,7 +645,7 @@ void ShaderCompilerDictionaryPc::EmitAttribute(ShaderCompilerBufferAllocatorPc *
         }
     }
     for (i32 i = 0; i < definition_count; ++i) {
-        ShaderSourceNodePc *node = definitions[i];
+        ShaderSourceNode *node = definitions[i];
         if (node->flags != 0x3008 || node->expansion_state <= 0 || node->semantic != SHADER_SEMANTIC_DEFAULT) {
             continue;
         }
@@ -653,7 +653,7 @@ void ShaderCompilerDictionaryPc::EmitAttribute(ShaderCompilerBufferAllocatorPc *
         if (!overflow) {
             for (i32 j = 0; j < first_version; ++j) {
                 if (used[j] == 0) {
-                    used[j] += ShaderCompilerTypeComponentsPc[node->type];
+                    used[j] += ShaderCompilerTypeComponents[node->type];
                     ++allocated;
                     slot = j;
                     break;
@@ -662,7 +662,7 @@ void ShaderCompilerDictionaryPc::EmitAttribute(ShaderCompilerBufferAllocatorPc *
             overflow = slot == -1 || allocated >= 11;
         }
         if (slot == -1) {
-            i32 count = ShaderCompilerTypeComponentsPc[node->type];
+            i32 count = ShaderCompilerTypeComponents[node->type];
             for (i32 j = 0; j < 16; ++j) {
                 if (4 - used[j] >= count) {
                     used[j] += count;
@@ -671,13 +671,13 @@ void ShaderCompilerDictionaryPc::EmitAttribute(ShaderCompilerBufferAllocatorPc *
                 }
             }
         }
-        i32 count = ShaderCompilerTypeComponentsPc[node->type];
+        i32 count = ShaderCompilerTypeComponents[node->type];
         output->AppendText("\t#define ");
         output->AppendText(node->name);
         output->AppendText(" vout.");
         const char *alias = names[slot];
         output->AppendText(alias);
-        output->AppendText(ShaderRegisterComponentsPc(used[slot] - count, count));
+        output->AppendText(ShaderRegisterComponents(used[slot] - count, count));
         output->AppendText("\r\n");
         AddDefinition(node->name, alias, 0);
     }
@@ -698,28 +698,28 @@ void ShaderCompilerDictionaryPc::EmitAttribute(ShaderCompilerBufferAllocatorPc *
     output->AppendText("};\r\n");
 }
 
-ShaderCompilerBufferAllocatorPc &ShaderCompilerBufferAllocatorPc::operator<<(i32 value) {
+ShaderCompilerBufferAllocator &ShaderCompilerBufferAllocator::operator<<(i32 value) {
     AppendInt(value);
     return *this;
 }
 
-ShaderMacroDefinitionPc::ShaderMacroDefinitionPc(const char *name, const char *value, u8 emit) : name(name), value(value), emit(emit) {
+ShaderMacroDefinition::ShaderMacroDefinition(const char *name, const char *value, u8 emit) : name(name), value(value), emit(emit) {
 }
 
-i32 ShaderSourceNodePc::fun_00746620() {
-    return ShaderCompilerTypeComponentsPc[type];
+i32 ShaderSourceNode::fun_00746620() {
+    return ShaderCompilerTypeComponents[type];
 }
 
-const char *ShaderSourceNodePc::fun_00746630() {
-    return ShaderCompilerTypeNamesPc[type];
+const char *ShaderSourceNode::fun_00746630() {
+    return ShaderCompilerTypeNames[type];
 }
 
-void ShaderRegisterBlockPc::fun_00746760(const char *block_name, i32 count) {
+void ShaderRegisterBlock::fun_00746760(const char *block_name, i32 count) {
     PCByteCopy(name, block_name, NuStrLen(block_name) + 1);
     register_count = count;
 }
 
-void ShaderCompilerDictionaryPc::fun_00746940(ShaderConditionNodePc *node, char *text) {
+void ShaderCompilerDictionary::fun_00746940(ShaderConditionNode *node, char *text) {
     if (node->left != NULL) {
         fun_00746940(node->left, text);
     }
@@ -729,7 +729,7 @@ void ShaderCompilerDictionaryPc::fun_00746940(ShaderConditionNodePc *node, char 
     }
 }
 
-void ShaderCompilerDictionaryPc::fun_00746bf0(const char *name) {
+void ShaderCompilerDictionary::fun_00746bf0(const char *name) {
     i32 i;
     for (i = 0; i < program_count; ++i) {
         if (strcmp(programs[i]->name, name) == 0) {
@@ -742,10 +742,10 @@ void ShaderCompilerDictionaryPc::fun_00746bf0(const char *name) {
     program_count--;
 }
 
-void ShaderCompilerDictionaryPc::AddASTDefinition(ShaderSourceNodePc *node) {
+void ShaderCompilerDictionary::AddASTDefinition(ShaderSourceNode *node) {
     i32 i;
     for (i = 0; i < definition_count; ++i) {
-        if (ShaderCompilerTypeComponentsPc[definitions[i]->type] < ShaderCompilerTypeComponentsPc[node->type]) {
+        if (ShaderCompilerTypeComponents[definitions[i]->type] < ShaderCompilerTypeComponents[node->type]) {
             for (i32 j = definition_count; j > i; --j) {
                 definitions[j] = definitions[j - 1];
             }
@@ -758,9 +758,9 @@ void ShaderCompilerDictionaryPc::AddASTDefinition(ShaderSourceNodePc *node) {
     ++definition_count;
 }
 
-void ShaderCompilerDictionaryPc::EmitProgram(ShaderCompilerBufferAllocatorPc *output) {
+void ShaderCompilerDictionary::EmitProgram(ShaderCompilerBufferAllocator *output) {
     for (i32 i = 0; i < definition_count; ++i) {
-        ShaderSourceNodePc *node = definitions[i];
+        ShaderSourceNode *node = definitions[i];
         if (!(emit_centroid != 0 && (node->flags & 0x4020) == 0x4020)) {
             bool uniform = (node->flags >> 5) & 1;
             if (!uniform || node->expansion_state <= 0 || FindDefinition(node->name) != NULL) {
@@ -798,7 +798,7 @@ void ShaderCompilerDictionaryPc::EmitProgram(ShaderCompilerBufferAllocatorPc *ou
         bool uniform = (node->flags >> 5) & 1;
         if (!unavailable && uniform) {
             i32 index = output_stage == 0 ? node->vertex_register : node->pixel_register;
-            ShaderUniformRecordPc *record = NuShaderUniformGetByString(node->name);
+            ShaderUniformRecord *record = NuShaderUniformGetByString(node->name);
             if (record != NULL) {
                 index = record->register_index;
             }
@@ -810,7 +810,7 @@ void ShaderCompilerDictionaryPc::EmitProgram(ShaderCompilerBufferAllocatorPc *ou
         } else {
             register_suffix[0] = 0;
         }
-        const char *type_name = ShaderCompilerTypeNamesPc[node->type];
+        const char *type_name = ShaderCompilerTypeNames[node->type];
         output->AppendText(shared);
         output->AppendText("uniform ");
         output->AppendText(type_name);
@@ -824,12 +824,12 @@ void ShaderCompilerDictionaryPc::EmitProgram(ShaderCompilerBufferAllocatorPc *ou
     }
 }
 
-ShaderCompilerBufferAllocatorPc &ShaderCompilerBufferAllocatorPc::operator<<(const char *source) {
+ShaderCompilerBufferAllocator &ShaderCompilerBufferAllocator::operator<<(const char *source) {
     AppendText(source);
     return *this;
 }
 
-char *ShaderCloneArenaStringPc(const char *source, VirtualStackAllocator *arena) {
+char *ShaderCloneArenaString(const char *source, VirtualStackAllocator *arena) {
     i32 length = (i32)strlen(source);
     char *result = reinterpret_cast<char *>(arena->cursor);
     arena->cursor += length + 1;
@@ -837,15 +837,15 @@ char *ShaderCloneArenaStringPc(const char *source, VirtualStackAllocator *arena)
     return result;
 }
 
-void ShaderCompilerDictionaryPc::Expand(void *input, ShaderCompilerBufferAllocatorPc *output) {
-    ShaderCompilerBufferAllocatorPc *saved_output = active_output;
+void ShaderCompilerDictionary::Expand(void *input, ShaderCompilerBufferAllocator *output) {
+    ShaderCompilerBufferAllocator *saved_output = active_output;
     active_output = output;
-    ShaderExpansionNodePc *node = static_cast<ShaderExpansionNodePc *>(input);
+    ShaderExpansionNode *node = static_cast<ShaderExpansionNode *>(input);
     while (node != NULL) {
         switch (node->kind) {
             case SHADER_NODE_BRANCH: {
                 i32 value;
-                ShaderConditionNodePc *condition = node->data.branch.condition;
+                ShaderConditionNode *condition = node->data.branch.condition;
                 if (EvaluateCondition(condition, &value) && value != 0) {
                     Expand(node->data.branch.if_true, output);
                 } else if (node->data.branch.if_false != NULL) {
@@ -874,16 +874,16 @@ void ShaderCompilerDictionaryPc::Expand(void *input, ShaderCompilerBufferAllocat
             case SHADER_NODE_DECLARATION:
                 if (FindASTExact(node->data.declaration.name, node->data.declaration.flags) == NULL) {
                     VirtualStackAllocator *arena = &output_memory;
-                    const char *name = ShaderCloneArenaStringPc(node->data.declaration.name, arena);
+                    const char *name = ShaderCloneArenaString(node->data.declaration.name, arena);
                     const char *custom = node->data.declaration.custom_semantic != NULL
-                                             ? ShaderCloneArenaStringPc(node->data.declaration.custom_semantic, arena)
+                                             ? ShaderCloneArenaString(node->data.declaration.custom_semantic, arena)
                                              : NULL;
-                    ShaderSourceNodePc *storage = reinterpret_cast<ShaderSourceNodePc *>(arena->cursor);
-                    arena->cursor += sizeof(ShaderSourceNodePc);
-                    AddASTDefinition(
-                        new (storage) ShaderSourceNodePc(node->data.declaration.flags, node->data.declaration.type,
-                                                         node->data.declaration.array_count, name, node->data.declaration.semantic, custom,
-                                                         node->data.declaration.vertex_register, node->data.declaration.pixel_register));
+                    ShaderSourceNode *storage = reinterpret_cast<ShaderSourceNode *>(arena->cursor);
+                    arena->cursor += sizeof(ShaderSourceNode);
+                    AddASTDefinition(new (storage)
+                                         ShaderSourceNode(node->data.declaration.flags, node->data.declaration.type,
+                                                          node->data.declaration.array_count, name, node->data.declaration.semantic, custom,
+                                                          node->data.declaration.vertex_register, node->data.declaration.pixel_register));
                 }
                 break;
             case SHADER_NODE_REFERENCE: {
@@ -891,7 +891,7 @@ void ShaderCompilerDictionaryPc::Expand(void *input, ShaderCompilerBufferAllocat
                 for (i32 i = 0; i < node->data.reference.alias_depth; ++i) {
                     name = FindDefinition(name)->value;
                 }
-                ShaderSourceNodePc *definition = FindASTExact(name, node->data.reference.flags);
+                ShaderSourceNode *definition = FindASTExact(name, node->data.reference.flags);
                 bool uniform = (node->data.reference.flags >> 5) & 1;
                 if (definition == NULL && uniform) {
                     definition = FindASTUniform(name);

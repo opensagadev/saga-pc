@@ -91,7 +91,7 @@ extern "C" {
 
     extern const f32 PCSamplerBiasMinimum;
     extern const f32 PCSamplerBiasMaximum;
-    extern f32 PCShaderMaterialSamplerBiasOffsetPc;
+    extern f32 PCShaderMaterialSamplerBiasOffset;
 #ifdef __cplusplus
 }
 #endif
@@ -108,7 +108,7 @@ extern "C" {
 #ifdef __cplusplus
 extern "C" {
 #endif
-    void PCShaderSetMaterialParametersPc(NuShaderObject *, struct numtl_s *);
+    void PCShaderSetMaterialParameters(NuShaderObject *, struct numtl_s *);
 #ifdef __cplusplus
 }
 #endif

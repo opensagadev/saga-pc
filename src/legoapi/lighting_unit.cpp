@@ -101,7 +101,7 @@ NUVEC4 &NUVEC4::fun_00595290(const NUVEC &v) {
 }
 
 void PC_SPECIAL_SHADOW_LIGHT::LookAt(NUVEC *eye, NUVEC *target, NUVEC *up) {
-    NUVEC4 *direction = &light_direction4_pc;
+    NUVEC4 *direction = &light_direction4;
     f32 direction_y = target->y - eye->y;
     f32 direction_z = target->z - eye->z;
     direction->x = target->x - eye->x;
@@ -247,8 +247,8 @@ extern "C" {
             selected_colours = PanelLightingColours;
             selected_ambient = &PanelLightingAmbient;
         }
-        ZeroLightSetupPrivate(&PanelLightingDirectionsPc[0], &selected_colours[0], &PanelLightingDirectionsPc[1], &selected_colours[1],
-                              &PanelLightingDirectionsPc[2], &selected_colours[2]);
+        ZeroLightSetupPrivate(&PanelLightingDirections[0], &selected_colours[0], &PanelLightingDirections[1], &selected_colours[1],
+                              &PanelLightingDirections[2], &selected_colours[2]);
         PCGlobalLightingState.ambient = *selected_ambient;
         NuRndrSetAmbientLightPS(selected_ambient);
     }
@@ -277,7 +277,7 @@ extern "C" {
 
     void SetZeroLights(void) {
         NUVEC black = {0, 0, 0};
-        ZeroLightSetupPrivate(&LightingUnitDirectionPc, &black, &LightingUnitDirectionPc, &black, &LightingUnitDirectionPc, &black);
+        ZeroLightSetupPrivate(&LightingUnitDirection, &black, &LightingUnitDirection, &black, &LightingUnitDirection, &black);
         PCGlobalLightingState.ambient = APIObjectZeroMomentumPC;
         NuRndrSetAmbientLightPS(&APIObjectZeroMomentumPC);
     }

@@ -221,8 +221,8 @@ extern "C" {
     i32 Indy_MidSpecialMove_StartJump(struct AISYS_PC *system, struct AIPACKET *packet, struct APIOBJECT *object);
     i32 Indy_MidSpecialMove_BigJump(struct AISYS_PC *system, struct AIPACKET *packet, struct APIOBJECT *object);
     i32 Indy_PrepareObstacle(struct AIPACKET *packet, struct APIOBJECT *object, i32 checks_unused);
-    i32 Indy_PrepareWhipSwingPc(struct AIPACKET *packet, struct APIOBJECT *object, i32 checks_unused);
-    i32 Indy_MidSpecialMove_WhipSwingPc(struct AISYS_PC *system, struct AIPACKET *packet, struct APIOBJECT *object);
+    i32 Indy_PrepareWhipSwing(struct AIPACKET *packet, struct APIOBJECT *object, i32 checks_unused);
+    i32 Indy_MidSpecialMove_WhipSwing(struct AISYS_PC *system, struct AIPACKET *packet, struct APIOBJECT *object);
     i32 Indy_PrepareBigJump(struct AIPACKET *packet, struct APIOBJECT *apiobject, i32 checks_unused);
     i32 Indy_PreparingForSpecialMove(struct AIPACKET *packet, struct APIOBJECT *apiobject, i32 checks);
     i32 Indy_MidSpecialMove(struct AISYS_PC *system, struct AIPACKET *packet, struct APIOBJECT *apiobject);
@@ -232,7 +232,7 @@ extern "C" {
     i32 Indy_MidSpecialMove_GrappleStart(struct AISYS_PC *system, struct AIPACKET *packet, struct APIOBJECT *object);
     i32 Indy_MidSpecialMove_GrappleClimb(struct AISYS_PC *system, struct AIPACKET *packet, struct APIOBJECT *object);
     i32 Indy_MidSpecialMove_GrappleEnd(struct AISYS_PC *system, struct AIPACKET *packet, struct APIOBJECT *object);
-    i32 Indy_MidSpecialMove_SwingPc(struct AISYS_PC *system, struct AIPACKET *packet, struct APIOBJECT *object);
+    i32 Indy_MidSpecialMove_Swing(struct AISYS_PC *system, struct AIPACKET *packet, struct APIOBJECT *object);
     i32 Indy_PrepareJump(struct AIPACKET *packet, struct APIOBJECT *object, i32 checks);
     i32 Indy_PrepareGrapple(struct AIPACKET *packet, struct APIOBJECT *object, i32 checks);
 #ifdef __cplusplus

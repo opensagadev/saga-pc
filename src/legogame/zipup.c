@@ -49,16 +49,16 @@ char GrapAttach_text[11] = "GrapAttach";
 static char GrapSwing_text[10] = "GrapSwing";
 static f32 ZipUpRiderHeight = 0.5f;
 static f32 ZipUpRiderOffsetScale = 0.9f;
-static f32 ZipUpSwingDurationPc = 1.5f;
+static f32 ZipUpSwingDuration = 1.5f;
 char *ZipUpTypeNamePtr = "ZipUp";
 u32 ZipUpRopeCheatColour = 0xff103f10;
-static f32 ZipUpSwingOffsetHeightPc = 0.251503f;
+static f32 ZipUpSwingOffsetHeight = 0.251503f;
 const NUVEC ZipUpHookOffset = {0.0f, -0.1143f, -0.0859f};
 i32 zipup_gizmotype_id = -1;
 f32 ZipUpRopeHalfWidth = 0.01f;
 f32 ZipUpMarkerOffsetZ = 0.9229f;
 f32 ZipUpMarkerOffsetY = 0.84f;
-static f32 ZipUpSwingOffsetLengthPc = 1.9236159f;
+static f32 ZipUpSwingOffsetLength = 1.9236159f;
 
 struct zipup_s {   // size 0x7c
     char name[16]; // 0x00
@@ -518,7 +518,7 @@ void ZipUp_MoveCode(GAMEOBJECT *object, i32 special_pressed) {
                     NuVecAdd(&object->position, &transport->entry, &delta);
                     if (object->context_timer >= object->context_duration) {
                         object->unknown_7b3 = 1;
-                        object->unknown_7aa = ZipUpSwingSwingAnimationPc;
+                        object->unknown_7aa = ZipUpSwingSwingAnimation;
                         object->context_timer = 0.0f;
                         duration = AnimDuration((i16)object->id, object->unknown_7aa, 0.0f, 0.0f, 0);
                         object->context_duration = duration;
@@ -535,7 +535,7 @@ void ZipUp_MoveCode(GAMEOBJECT *object, i32 special_pressed) {
                     NuVecAdd(&object->position, &transport->start, &delta);
                     if (object->context_timer >= object->context_duration) {
                         object->unknown_7b3 = 2;
-                        object->unknown_7aa = ZipUpSwingJumpAnimationPc;
+                        object->unknown_7aa = ZipUpSwingJumpAnimation;
                         object->context_timer = 0.0f;
                         duration = AnimDuration((i16)object->id, object->unknown_7aa, 0.0f, 0.0f, 0);
                         object->context_duration = duration;
@@ -593,7 +593,7 @@ void ZipUp_MoveCode(GAMEOBJECT *object, i32 special_pressed) {
             return;
         }
         if ((zipup->flags_word & 1) != 0) {
-            if (object->context_timer >= ZipUpSwingDurationPc) {
+            if (object->context_timer >= ZipUpSwingDuration) {
                 object->context_timer = 0.0f;
                 object->character_context = CHARACTER_CONTEXT_NONE;
                 ((ZIPUP_PC *)object->grapple)->occupant = NULL;
@@ -636,7 +636,7 @@ void ZipUp_MoveCode(GAMEOBJECT *object, i32 special_pressed) {
                 }
                 offset = zipup->rider_start_offset;
                 NuVecRotateY(&offset, &offset, (u16)-axis);
-                normalized_time = object->context_timer / ZipUpSwingDurationPc;
+                normalized_time = object->context_timer / ZipUpSwingDuration;
                 phase = normalized_time * 32768.0;
                 swing_pitch = (i32)((1.0f - (NU_SIN_LUT((i32)(phase + 16384.0)) + 1.0f) * 0.5) * zipup->pitch_adjustment);
                 NuVecRotateX(&zipup->rider_target_position, &offset, swing_pitch);
@@ -650,7 +650,7 @@ void ZipUp_MoveCode(GAMEOBJECT *object, i32 special_pressed) {
 
                 old_time = object->context_timer;
                 object->context_timer += FRAMETIME;
-                threshold = (f32)(ZipUpSwingDurationPc * 0.5 - (f64)0.2f);
+                threshold = (f32)(ZipUpSwingDuration * 0.5 - (f64)0.2f);
                 if (old_time < threshold && object->context_timer >= threshold) {
                     PlaySfx(GrapSwing_text, &object->collision_position);
                 }
@@ -712,7 +712,7 @@ void ZipUp_MoveCode(GAMEOBJECT *object, i32 special_pressed) {
             SetWeaponIn(object);
             GameAudio_PlaySfx(0x4c, &object->collision_position, GameAudio_GetPlrSfxBits(object), 0);
             object->unknown_7b3 = 0;
-            object->unknown_7aa = ZipUpSwingStartAnimationPc;
+            object->unknown_7aa = ZipUpSwingStartAnimation;
             object->context_timer = 0.0f;
             duration = AnimDuration((i16)object->id, object->unknown_7aa, 0.0f, 0.0f, 0);
             object->context_duration = duration;
@@ -727,9 +727,9 @@ void ZipUp_MoveCode(GAMEOBJECT *object, i32 special_pressed) {
             NuVecSub(&offset, &transport->landing, &transport->start);
             offset.y = 0.0f;
             NuVecNorm(&offset, &offset);
-            NuVecScale(&offset, &offset, ZipUpSwingOffsetLengthPc);
+            NuVecScale(&offset, &offset, ZipUpSwingOffsetLength);
             NuVecAdd(&transport->swing, &transport->start, &offset);
-            transport->swing.y = transport->swing.y + ZipUpSwingOffsetHeightPc;
+            transport->swing.y = transport->swing.y + ZipUpSwingOffsetHeight;
             object->movement_facing_angle = NuAtan2D(transport->landing.x - transport->start.x, transport->landing.z - transport->start.z);
             object->unknown_281 = 0;
         } else {
@@ -1077,43 +1077,43 @@ static i32 ZipUp_GetNumOutputs(GIZMO_PC *gizmo) {
 
 NUMTL *ropemtl = 0;
 i32 CanDrawZipUpSwirls = 0;
-static ADDGIZMOTYPE ZipUpAddTypePc = {0};
+static ADDGIZMOTYPE ZipUpAddType = {0};
 i32 ZipUpRopeModulation = 0;
 
 extern ADDGIZMOTYPE *ZipUps_RegisterGizmo(i32 type_id) {
-    ZipUpAddTypePc = Default_ADDGIZMOTYPE;
-    ZipUpAddTypePc.name = ZipUpTypeNamePtr;
-    ZipUpAddTypePc.prefix = "";
-    ZipUpAddTypePc.fns.options = 8;
-    ZipUpAddTypePc.fns.get_max_gizmos_fn = ZipUps_GetMaxGizmos;
-    ZipUpAddTypePc.fns.add_gizmos_fn = (void *)ZipUps_AddGizmos;
-    ZipUpAddTypePc.fns.early_update_fn = NULL;
-    ZipUpAddTypePc.fns.late_update_fn = (void (*)(void *, void *, f32))ZipUps_Update;
-    ZipUpAddTypePc.fns.draw_fn = (void (*)(void *, void *, f32))ZipUps_Draw;
-    ZipUpAddTypePc.fns.panel_draw_fn = NULL;
-    ZipUpAddTypePc.fns.get_gizmo_name_fn = (void *)ZipUp_GetGizmoName;
-    ZipUpAddTypePc.fns.get_output_fn = (void *)ZipUp_GetOutput;
-    ZipUpAddTypePc.fns.get_output_name_fn = (void *)ZipUp_GetOutputName;
-    ZipUpAddTypePc.fns.get_num_outputs_fn = (void *)ZipUp_GetNumOutputs;
-    ZipUpAddTypePc.fns.activate_fn = (void *)ZipUp_Activate;
-    ZipUpAddTypePc.fns.activate_rev_fn = (void *)ZipUp_ActivateRev;
-    ZipUpAddTypePc.fns.set_visibility_fn = (void *)ZipUp_SetVisibility;
-    ZipUpAddTypePc.fns.get_visibility_fn = NULL;
-    ZipUpAddTypePc.fns.get_pos_fn = NULL;
-    ZipUpAddTypePc.fns.using_special_fn = NULL;
-    ZipUpAddTypePc.fns.bolt_hit_plat_fn = NULL;
-    ZipUpAddTypePc.fns.get_best_bolt_target_fn = NULL;
-    ZipUpAddTypePc.fns.bolt_hit_fn = NULL;
-    ZipUpAddTypePc.fns.allocate_progress_data_fn = ZipUps_AllocateProgressData;
-    ZipUpAddTypePc.fns.clear_progress_fn = (void (*)(void *, void *))ZipUps_ClearProgress;
-    ZipUpAddTypePc.fns.store_progress_fn = (void (*)(void *, void *, void *))ZipUps_StoreProgress;
-    ZipUpAddTypePc.fns.reset_fn = (void (*)(void *, void *, void *))ZipUps_Reset;
-    ZipUpAddTypePc.fns.reserve_buffer_space_fn = (void *(*)(void *))ZipUps_ReserveBufferSpace;
-    ZipUpAddTypePc.fns.load_fn = (i32(*)(void *, void *))ZipUps_Load;
-    ZipUpAddTypePc.fns.post_load_fn = NULL;
-    ZipUpAddTypePc.fns.add_level_sfx_fn = NULL;
+    ZipUpAddType = Default_ADDGIZMOTYPE;
+    ZipUpAddType.name = ZipUpTypeNamePtr;
+    ZipUpAddType.prefix = "";
+    ZipUpAddType.fns.options = 8;
+    ZipUpAddType.fns.get_max_gizmos_fn = ZipUps_GetMaxGizmos;
+    ZipUpAddType.fns.add_gizmos_fn = (void *)ZipUps_AddGizmos;
+    ZipUpAddType.fns.early_update_fn = NULL;
+    ZipUpAddType.fns.late_update_fn = (void (*)(void *, void *, f32))ZipUps_Update;
+    ZipUpAddType.fns.draw_fn = (void (*)(void *, void *, f32))ZipUps_Draw;
+    ZipUpAddType.fns.panel_draw_fn = NULL;
+    ZipUpAddType.fns.get_gizmo_name_fn = (void *)ZipUp_GetGizmoName;
+    ZipUpAddType.fns.get_output_fn = (void *)ZipUp_GetOutput;
+    ZipUpAddType.fns.get_output_name_fn = (void *)ZipUp_GetOutputName;
+    ZipUpAddType.fns.get_num_outputs_fn = (void *)ZipUp_GetNumOutputs;
+    ZipUpAddType.fns.activate_fn = (void *)ZipUp_Activate;
+    ZipUpAddType.fns.activate_rev_fn = (void *)ZipUp_ActivateRev;
+    ZipUpAddType.fns.set_visibility_fn = (void *)ZipUp_SetVisibility;
+    ZipUpAddType.fns.get_visibility_fn = NULL;
+    ZipUpAddType.fns.get_pos_fn = NULL;
+    ZipUpAddType.fns.using_special_fn = NULL;
+    ZipUpAddType.fns.bolt_hit_plat_fn = NULL;
+    ZipUpAddType.fns.get_best_bolt_target_fn = NULL;
+    ZipUpAddType.fns.bolt_hit_fn = NULL;
+    ZipUpAddType.fns.allocate_progress_data_fn = ZipUps_AllocateProgressData;
+    ZipUpAddType.fns.clear_progress_fn = (void (*)(void *, void *))ZipUps_ClearProgress;
+    ZipUpAddType.fns.store_progress_fn = (void (*)(void *, void *, void *))ZipUps_StoreProgress;
+    ZipUpAddType.fns.reset_fn = (void (*)(void *, void *, void *))ZipUps_Reset;
+    ZipUpAddType.fns.reserve_buffer_space_fn = (void *(*)(void *))ZipUps_ReserveBufferSpace;
+    ZipUpAddType.fns.load_fn = (i32(*)(void *, void *))ZipUps_Load;
+    ZipUpAddType.fns.post_load_fn = NULL;
+    ZipUpAddType.fns.add_level_sfx_fn = NULL;
     zipup_gizmotype_id = type_id;
-    return &ZipUpAddTypePc;
+    return &ZipUpAddType;
 }
 
 void InitRopeMtl(char *name, VARIPTR *buffer, VARIPTR *buffer_end) {

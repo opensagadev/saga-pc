@@ -1,6 +1,6 @@
 #include "nu2api/PCInput.h"
 
-extern "C" void SetPadDescriptorPc(i32 product_id, const u16 *descriptor) {
+extern "C" void SetPadDescriptor(i32 product_id, const u16 *descriptor) {
     if (descriptor == NULL) {
         return;
     }
@@ -43,11 +43,11 @@ extern "C" void SetPadDescriptorPc(i32 product_id, const u16 *descriptor) {
     }
 }
 
-extern "C" void InitPadDescriptorsPc(const u16 *first, const u16 *second, const u16 *third, const u16 *fourth, const i8 *order) {
-    SetPadDescriptorPc(3, first);
-    SetPadDescriptorPc(1, second);
-    SetPadDescriptorPc(4, third);
-    SetPadDescriptorPc(2, fourth);
+extern "C" void InitPadDescriptors(const u16 *first, const u16 *second, const u16 *third, const u16 *fourth, const i8 *order) {
+    SetPadDescriptor(3, first);
+    SetPadDescriptor(1, second);
+    SetPadDescriptor(4, third);
+    SetPadDescriptor(2, fourth);
     PcInputActionOrder[0] = -1;
     if (order != NULL) {
         i32 index = 0;

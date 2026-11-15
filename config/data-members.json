@@ -405,10 +405,10 @@
       "qualification": "Canonical native fallback display list; existing Init/CreateDynMtlList/AddRenderScene writers and Begin/LinkMtl readers establish named fields. Preserve three original four-byte field extents; parent owning extent remains unknown, with no new allocation credit."
     },
     {
-      "id": "PCDeviceStateCachePc.vertex_declaration",
+      "id": "PCDeviceStateCache.vertex_declaration",
       "kind": "data_member",
-      "owner_symbol": "_PCDeviceStateCachePc",
-      "owner_identifier": "PCDeviceStateCachePc",
+      "owner_symbol": "_PCDeviceStateCache",
+      "owner_identifier": "PCDeviceStateCache",
       "owner_unit": "src/data.cpp",
       "owner_type": "PC_DEVICE_STATE_CACHE",
       "member_path": "vertex_declaration",
@@ -419,10 +419,10 @@
       "qualification": "Historical complete initializer comparison preserved at the same native owner offset; original field extent unknown and no new coverage credit."
     },
     {
-      "id": "PCDeviceStateCachePc.index_buffer",
+      "id": "PCDeviceStateCache.index_buffer",
       "kind": "data_member",
-      "owner_symbol": "_PCDeviceStateCachePc",
-      "owner_identifier": "PCDeviceStateCachePc",
+      "owner_symbol": "_PCDeviceStateCache",
+      "owner_identifier": "PCDeviceStateCache",
       "owner_unit": "src/data.cpp",
       "owner_type": "PC_DEVICE_STATE_CACHE",
       "member_path": "index_buffer",
@@ -433,10 +433,10 @@
       "qualification": "Historical complete initializer comparison preserved at the same native owner offset; original field extent unknown and no new coverage credit."
     },
     {
-      "id": "PCDeviceStateCachePc.vertex_buffer",
+      "id": "PCDeviceStateCache.vertex_buffer",
       "kind": "data_member",
-      "owner_symbol": "_PCDeviceStateCachePc",
-      "owner_identifier": "PCDeviceStateCachePc",
+      "owner_symbol": "_PCDeviceStateCache",
+      "owner_identifier": "PCDeviceStateCache",
       "owner_unit": "src/data.cpp",
       "owner_type": "PC_DEVICE_STATE_CACHE",
       "member_path": "vertex_buffer",
@@ -447,10 +447,10 @@
       "qualification": "Historical complete initializer comparison preserved at the same native owner offset; original field extent unknown and no new coverage credit."
     },
     {
-      "id": "PCDeviceStateCachePc.stream_stride",
+      "id": "PCDeviceStateCache.stream_stride",
       "kind": "data_member",
-      "owner_symbol": "_PCDeviceStateCachePc",
-      "owner_identifier": "PCDeviceStateCachePc",
+      "owner_symbol": "_PCDeviceStateCache",
+      "owner_identifier": "PCDeviceStateCache",
       "owner_unit": "src/data.cpp",
       "owner_type": "PC_DEVICE_STATE_CACHE",
       "member_path": "stream_stride",
@@ -461,10 +461,10 @@
       "qualification": "Historical complete initializer comparison preserved at the same native owner offset; original field extent unknown and no new coverage credit."
     },
     {
-      "id": "PCDeviceStateCachePc.stream_number",
+      "id": "PCDeviceStateCache.stream_number",
       "kind": "data_member",
-      "owner_symbol": "_PCDeviceStateCachePc",
-      "owner_identifier": "PCDeviceStateCachePc",
+      "owner_symbol": "_PCDeviceStateCache",
+      "owner_identifier": "PCDeviceStateCache",
       "owner_unit": "src/data.cpp",
       "owner_type": "PC_DEVICE_STATE_CACHE",
       "member_path": "stream_number",
@@ -475,10 +475,10 @@
       "qualification": "Historical complete initializer comparison preserved at the same native owner offset; original field extent unknown and no new coverage credit."
     },
     {
-      "id": "PCDeviceStateCachePc.stream_offset",
+      "id": "PCDeviceStateCache.stream_offset",
       "kind": "data_member",
-      "owner_symbol": "_PCDeviceStateCachePc",
-      "owner_identifier": "PCDeviceStateCachePc",
+      "owner_symbol": "_PCDeviceStateCache",
+      "owner_identifier": "PCDeviceStateCache",
       "owner_unit": "src/data.cpp",
       "owner_type": "PC_DEVICE_STATE_CACHE",
       "member_path": "stream_offset",
@@ -489,10 +489,10 @@
       "qualification": "Historical complete initializer comparison preserved at the same native owner offset; original field extent unknown and no new coverage credit."
     },
     {
-      "id": "PCDeviceStateCachePc.textures",
+      "id": "PCDeviceStateCache.textures",
       "kind": "data_member",
-      "owner_symbol": "_PCDeviceStateCachePc",
-      "owner_identifier": "PCDeviceStateCachePc",
+      "owner_symbol": "_PCDeviceStateCache",
+      "owner_identifier": "PCDeviceStateCache",
       "owner_unit": "src/data.cpp",
       "owner_type": "PC_DEVICE_STATE_CACHE",
       "member_path": "textures",
@@ -503,10 +503,10 @@
       "qualification": "Historical complete initializer comparison preserved at the same native owner offset; original field extent unknown and no new coverage credit."
     },
     {
-      "id": "PCDeviceStateCachePc.sampler_states",
+      "id": "PCDeviceStateCache.sampler_states",
       "kind": "data_member",
-      "owner_symbol": "_PCDeviceStateCachePc",
-      "owner_identifier": "PCDeviceStateCachePc",
+      "owner_symbol": "_PCDeviceStateCache",
+      "owner_identifier": "PCDeviceStateCache",
       "owner_unit": "src/data.cpp",
       "owner_type": "PC_DEVICE_STATE_CACHE",
       "member_path": "sampler_states",
@@ -517,10 +517,10 @@
       "qualification": "Historical complete initializer comparison preserved at the same native owner offset; original field extent unknown and no new coverage credit."
     },
     {
-      "id": "PCDeviceStateCachePc.state_key",
+      "id": "PCDeviceStateCache.state_key",
       "kind": "data_member",
-      "owner_symbol": "_PCDeviceStateCachePc",
-      "owner_identifier": "PCDeviceStateCachePc",
+      "owner_symbol": "_PCDeviceStateCache",
+      "owner_identifier": "PCDeviceStateCache",
       "owner_unit": "src/data.cpp",
       "owner_type": "PC_DEVICE_STATE_CACHE",
       "member_path": "state_key",
@@ -531,10 +531,10 @@
       "qualification": "Existing known complete 4-byte state key initializer comparison preserved through native owner+0x1ec."
     },
     {
-      "id": "PCDeviceStateCachePc.render_states",
+      "id": "PCDeviceStateCache.render_states",
       "kind": "data_member",
-      "owner_symbol": "_PCDeviceStateCachePc",
-      "owner_identifier": "PCDeviceStateCachePc",
+      "owner_symbol": "_PCDeviceStateCache",
+      "owner_identifier": "PCDeviceStateCache",
       "owner_unit": "src/data.cpp",
       "owner_type": "PC_DEVICE_STATE_CACHE",
       "member_path": "render_states",

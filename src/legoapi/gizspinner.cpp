@@ -82,7 +82,7 @@ extern "C" {
     i32 MatrixReflectionVU0_AXISY(NUMTX *, f32, f32, NUMTX *);
     nuhspecial_s thingsSceneArm = {0};
     nuhspecial_s thingsSceneBase = {0};
-    static ADDGIZMOTYPE GizmoRegistrySpinnerAddTypePc = {0};
+    static ADDGIZMOTYPE GizmoRegistrySpinnerAddType = {0};
 }
 
 extern "C" void SpinnerMissingSpecial(char *format, ...) {
@@ -1468,7 +1468,7 @@ extern "C" i32 GizSpinner_HasBoltHit(void *, void *, void *, NUVEC *, i32, f32, 
 }
 
 extern "C" ADDGIZMOTYPE *Spinner_RegisterGizmo(i32 type_id) {
-    ADDGIZMOTYPE *addtype = &GizmoRegistrySpinnerAddTypePc;
+    ADDGIZMOTYPE *addtype = &GizmoRegistrySpinnerAddType;
     *addtype = Default_ADDGIZMOTYPE;
     addtype->fns.late_update_fn = NULL;
     addtype->fns.activate_rev_fn = NULL;

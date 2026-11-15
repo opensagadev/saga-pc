@@ -41,8 +41,8 @@ base build, and the exact function set stayed the same.
 Deleting a redundant declaration is not always codegen-neutral. In two of
 the 178 units it changed the code of a function that does not use the
 declaration ("declaration noise", the same effect as the saga.h noise):
-`ShaderLexicalClassesInitPc` in `shader_dictionary.cpp` (it changed
-`ShaderCompilerDictionaryPc::EmitAttribute`) and five declarations in
+`ShaderLexicalClassesInit` in `shader_dictionary.cpp` (it changed
+`ShaderCompilerDictionary::EmitAttribute`) and five declarations in
 `nu3d_includes.cpp` (they changed `NuDeferredFilterGen::render`). They were
 found by bisecting the deletions against the object code. They stay, each
 with a comment that says why, so the tool keeps them.

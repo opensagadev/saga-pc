@@ -1458,11 +1458,11 @@ extern "C" i32 eduicbInteractColourPick(edui_interact_s *interact) {
 }
 
 extern "C" {
-    f32 EduiSliderAccelerationPc = 1.0f;
-    i32 EduiSliderRepeatTimerPc = 30;
-    f32 EduiSliderDynamicScalePc = 0.0f;
-    f32 EduiSliderGlobalAccelerationPc = 0.0f;
-    f32 EduiNominalFrameTimePc = 1.0f / 60.0f;
+    f32 EduiSliderAcceleration = 1.0f;
+    i32 EduiSliderRepeatTimer = 30;
+    f32 EduiSliderDynamicScale = 0.0f;
+    f32 EduiSliderGlobalAcceleration = 0.0f;
+    f32 EduiNominalFrameTime = 1.0f / 60.0f;
 }
 
 extern "C" i32 eduicbRenderTexturePick(eduimenu_s *unused_menu, eduiitem_s *item, i32 x, i32 y, i32 width, i32 unused_selected) {
@@ -1920,7 +1920,7 @@ extern "C" i32 eduicbProcessSlider(eduimenu_s *menu, eduiitem_s *item, f32 delta
         } else if (slider->minimum <= 1.0f && 1.0f <= slider->minimum + slider->range) {
             value = 1.0f;
         } else {
-            EduiSliderRepeatTimerPc = 30;
+            EduiSliderRepeatTimer = 30;
             return 0;
         }
         slider->value = value;
@@ -1929,16 +1929,16 @@ extern "C" i32 eduicbProcessSlider(eduimenu_s *menu, eduiitem_s *item, f32 delta
         if (slider->changed) {
             slider->changed(menu, item, pad->digital_buttons);
         }
-        EduiSliderRepeatTimerPc = 30;
+        EduiSliderRepeatTimer = 30;
     } else if (buttons & 4) {
-        i32 timer = EduiSliderRepeatTimerPc - 1;
+        i32 timer = EduiSliderRepeatTimer - 1;
         if (timer < 0) {
-            EduiSliderRepeatTimerPc = 0;
+            EduiSliderRepeatTimer = 0;
         } else {
-            EduiSliderRepeatTimerPc = timer;
+            EduiSliderRepeatTimer = timer;
         }
-        if (!EduiSliderRepeatTimerPc || (pad->digital_buttons_pressed & PAD_BUTTON_L1)) {
-            f64 step = (f64)slider->granularity * EduiSliderAccelerationPc;
+        if (!EduiSliderRepeatTimer || (pad->digital_buttons_pressed & PAD_BUTTON_L1)) {
+            f64 step = (f64)slider->granularity * EduiSliderAcceleration;
             slider->value = MAX(slider->minimum, slider->value - step);
             if (slider->value > 0.0f) {
                 slider->value += step * 0.5;
@@ -1951,19 +1951,19 @@ extern "C" i32 eduicbProcessSlider(eduimenu_s *menu, eduiitem_s *item, f32 delta
             if (slider->changed) {
                 slider->changed(menu, item, pad->digital_buttons);
             }
-            EduiSliderAccelerationPc += EduiSliderGlobalAccelerationPc;
+            EduiSliderAcceleration += EduiSliderGlobalAcceleration;
             return 0;
         }
     } else if (buttons & 8) {
-        i32 timer = EduiSliderRepeatTimerPc - 1;
+        i32 timer = EduiSliderRepeatTimer - 1;
         if (timer < 0) {
-            EduiSliderRepeatTimerPc = 0;
+            EduiSliderRepeatTimer = 0;
         } else {
-            EduiSliderRepeatTimerPc = timer;
+            EduiSliderRepeatTimer = timer;
         }
-        if (!EduiSliderRepeatTimerPc || (pad->digital_buttons_pressed & PAD_BUTTON_R1)) {
+        if (!EduiSliderRepeatTimer || (pad->digital_buttons_pressed & PAD_BUTTON_R1)) {
             f32 maximum = slider->minimum + slider->range;
-            f64 step = (f64)slider->granularity * EduiSliderAccelerationPc;
+            f64 step = (f64)slider->granularity * EduiSliderAcceleration;
             slider->value = MIN(maximum, slider->value + step);
             if (slider->value > 0.0f) {
                 slider->value += step * 0.5;
@@ -1976,22 +1976,22 @@ extern "C" i32 eduicbProcessSlider(eduimenu_s *menu, eduiitem_s *item, f32 delta
             if (slider->changed) {
                 slider->changed(menu, item, pad->digital_buttons);
             }
-            EduiSliderAccelerationPc += EduiSliderGlobalAccelerationPc;
+            EduiSliderAcceleration += EduiSliderGlobalAcceleration;
             return 0;
         }
     } else {
-        EduiSliderAccelerationPc = 1.0f;
-        EduiSliderRepeatTimerPc = 30;
+        EduiSliderAcceleration = 1.0f;
+        EduiSliderRepeatTimer = 30;
         u8 l2 = pad->analog_l2;
         if (l2) {
             if (buttons & 0x20) {
-                EduiSliderDynamicScalePc *= (f64)1.05f;
+                EduiSliderDynamicScale *= (f64)1.05f;
                 slider->normalized_value =
-                    MAX(0.0f, slider->normalized_value - (u32)l2 * delta_time / EduiNominalFrameTimePc * EduiSliderDynamicScalePc);
+                    MAX(0.0f, slider->normalized_value - (u32)l2 * delta_time / EduiNominalFrameTime * EduiSliderDynamicScale);
             } else {
-                EduiSliderDynamicScalePc = 1.6276043e-7f;
+                EduiSliderDynamicScale = 1.6276043e-7f;
                 slider->normalized_value =
-                    (f32)MAX(0.0f, slider->normalized_value - (u32)l2 * delta_time / EduiNominalFrameTimePc * (f64)0.000016276043f);
+                    (f32)MAX(0.0f, slider->normalized_value - (u32)l2 * delta_time / EduiNominalFrameTime * (f64)0.000016276043f);
             }
             slider->value = slider->normalized_value * slider->range + slider->minimum;
             slider->change_timer = 60;
@@ -2003,13 +2003,13 @@ extern "C" i32 eduicbProcessSlider(eduimenu_s *menu, eduiitem_s *item, f32 delta
         u8 r2 = pad->analog_r2;
         if (r2) {
             if (buttons & 0x20) {
-                EduiSliderDynamicScalePc *= (f64)1.05f;
+                EduiSliderDynamicScale *= (f64)1.05f;
                 slider->normalized_value =
-                    MIN(1.0f, slider->normalized_value + (u32)r2 * delta_time / EduiNominalFrameTimePc * EduiSliderDynamicScalePc);
+                    MIN(1.0f, slider->normalized_value + (u32)r2 * delta_time / EduiNominalFrameTime * EduiSliderDynamicScale);
             } else {
-                EduiSliderDynamicScalePc = 1.6276043e-7f;
+                EduiSliderDynamicScale = 1.6276043e-7f;
                 slider->normalized_value =
-                    (f32)MIN(1.0f, slider->normalized_value + (u32)r2 * delta_time / EduiNominalFrameTimePc * (f64)0.000016276043f);
+                    (f32)MIN(1.0f, slider->normalized_value + (u32)r2 * delta_time / EduiNominalFrameTime * (f64)0.000016276043f);
             }
             slider->value = slider->normalized_value * slider->range + slider->minimum;
             slider->change_timer = 60;
@@ -2017,7 +2017,7 @@ extern "C" i32 eduicbProcessSlider(eduimenu_s *menu, eduiitem_s *item, f32 delta
                 slider->changed(menu, item, pad->digital_buttons);
             }
         } else {
-            EduiSliderDynamicScalePc = 1.6276043e-7f;
+            EduiSliderDynamicScale = 1.6276043e-7f;
         }
     }
     return 0;
@@ -2026,19 +2026,19 @@ extern "C" i32 eduicbProcessSlider(eduimenu_s *menu, eduiitem_s *item, f32 delta
 extern "C" i32 EduiRenderWidth;
 
 extern "C" {
-    char *EduiTextCopyHelpPc = "Copy L2+R2 Paste L1+R1";
-    i32 EduiTextCursorPeriodPc = 32;
+    char *EduiTextCopyHelp = "Copy L2+R2 Paste L1+R1";
+    i32 EduiTextCursorPeriod = 32;
     i32 edui_filepick_listsize = 8;
-    i32 EduiTextCursorCountdownPc = 0;
-    char EduiTextCopyBufferPc[64] = {0};
+    i32 EduiTextCursorCountdown = 0;
+    char EduiTextCopyBuffer[64] = {0};
 }
 
-static void EduiRenderTextCursorPc(char *value, i32 position, i32 x, i32 y, u32 colour) {
+static void EduiRenderTextCursor(char *value, i32 position, i32 x, i32 y, u32 colour) {
     char at_cursor[2] = "@";
-    if (--EduiTextCursorCountdownPc <= 0) {
-        EduiTextCursorCountdownPc = EduiTextCursorPeriodPc;
+    if (--EduiTextCursorCountdown <= 0) {
+        EduiTextCursorCountdown = EduiTextCursorPeriod;
     }
-    if (EduiTextCursorCountdownPc >= (EduiTextCursorPeriodPc >> 1)) {
+    if (EduiTextCursorCountdown >= (EduiTextCursorPeriod >> 1)) {
         i32 length = NuStrLen(value);
         i32 offset;
         if (position) {
@@ -2107,7 +2107,7 @@ extern "C" i32 eduicbRenderTextPick(eduimenu_s *unused_menu, eduiitem_s *item, i
         }
         i32 value_y = ((y + height * row) << 3) + baseline;
         EduiPrintAlignedText(edui_font, x << 4, value_y, 16, picker->value);
-        EduiRenderTextCursorPc(picker->value, picker->cursor, x << 4, value_y, item->colours[1] ^ 0xffffff);
+        EduiRenderTextCursor(picker->value, picker->cursor, x << 4, value_y, item->colours[1] ^ 0xffffff);
         ++row;
         if (picker->keyboard_flags & 2) {
             if (edui_donotdraw == 0) {
@@ -2117,7 +2117,7 @@ extern "C" i32 eduicbRenderTextPick(eduimenu_s *unused_menu, eduiitem_s *item, i
                 }
             }
             EduiPrintAlignedText(edui_font, x << 4, ((y + height * row) << 3) + baseline, 16,
-                                 EduiTextCopyBufferPc[0] ? EduiTextCopyBufferPc : EduiTextCopyHelpPc);
+                                 EduiTextCopyBuffer[0] ? EduiTextCopyBuffer : EduiTextCopyHelp);
             return height * 6;
         }
         return height * 5;
@@ -2153,8 +2153,8 @@ extern "C" i32 eduicbRenderTextPick(eduimenu_s *unused_menu, eduiitem_s *item, i
 }
 
 extern "C" {
-    i32 EduiColourSliderRepeatTimerPc = 30;
-    f32 EduiColourSliderDynamicScalePc = 0.0f;
+    i32 EduiColourSliderRepeatTimer = 30;
+    f32 EduiColourSliderDynamicScale = 0.0f;
 }
 
 static void EduiColourSliderSet(edui_slider_s *slider, eduimenu_s *menu, eduiitem_s *item, f32 value, FRAME_PAD *pad) {
@@ -2188,38 +2188,38 @@ extern "C" i32 eduicbProcessColourSlider(eduimenu_s *menu, eduiitem_s *item, f32
         if (slider && slider->minimum <= 0.0f && slider->minimum + slider->range >= 0.0) {
             EduiColourSliderSet(slider, menu, item, 0.0f, pad);
         }
-        EduiColourSliderRepeatTimerPc = 30;
+        EduiColourSliderRepeatTimer = 30;
     } else if ((pad->digital_buttons & PAD_BUTTON_L2) && (pad->digital_buttons & PAD_BUTTON_R2)) {
         if (slider && slider->minimum <= 0.0f && slider->minimum + slider->range >= 255.0) {
             EduiColourSliderSet(slider, menu, item, 255.0f, pad);
         }
-        EduiColourSliderRepeatTimerPc = 30;
+        EduiColourSliderRepeatTimer = 30;
     } else if (pad->digital_buttons & PAD_BUTTON_L1) {
-        EduiColourSliderRepeatTimerPc = (i32)((u32)EduiColourSliderRepeatTimerPc - 1u);
-        if (EduiColourSliderRepeatTimerPc < 0) {
-            EduiColourSliderRepeatTimerPc = 0;
+        EduiColourSliderRepeatTimer = (i32)((u32)EduiColourSliderRepeatTimer - 1u);
+        if (EduiColourSliderRepeatTimer < 0) {
+            EduiColourSliderRepeatTimer = 0;
         }
-        if (!EduiColourSliderRepeatTimerPc || (pad->digital_buttons_pressed & PAD_BUTTON_L1)) {
+        if (!EduiColourSliderRepeatTimer || (pad->digital_buttons_pressed & PAD_BUTTON_L1)) {
             f32 value = MAX(slider->minimum, slider->value - slider->granularity);
             EduiColourSliderRound(slider, menu, item, pad, value);
         }
     } else if (pad->digital_buttons & PAD_BUTTON_R1) {
-        EduiColourSliderRepeatTimerPc = (i32)((u32)EduiColourSliderRepeatTimerPc - 1u);
-        if (EduiColourSliderRepeatTimerPc < 0) {
-            EduiColourSliderRepeatTimerPc = 0;
+        EduiColourSliderRepeatTimer = (i32)((u32)EduiColourSliderRepeatTimer - 1u);
+        if (EduiColourSliderRepeatTimer < 0) {
+            EduiColourSliderRepeatTimer = 0;
         }
-        if (!EduiColourSliderRepeatTimerPc || (pad->digital_buttons_pressed & PAD_BUTTON_R1)) {
+        if (!EduiColourSliderRepeatTimer || (pad->digital_buttons_pressed & PAD_BUTTON_R1)) {
             f32 value = MIN(slider->minimum + slider->range, slider->value + slider->granularity);
             EduiColourSliderRound(slider, menu, item, pad, value);
         }
     } else {
-        EduiColourSliderRepeatTimerPc = 30;
+        EduiColourSliderRepeatTimer = 30;
         if (pad->analog_l2) {
             if (pad->reserved98[1]) {
-                EduiColourSliderDynamicScalePc *= (f64)1.05f;
-                slider->normalized_value = MAX(0.0f, slider->normalized_value - (u32)pad->analog_l2 * EduiColourSliderDynamicScalePc);
+                EduiColourSliderDynamicScale *= (f64)1.05f;
+                slider->normalized_value = MAX(0.0f, slider->normalized_value - (u32)pad->analog_l2 * EduiColourSliderDynamicScale);
             } else {
-                EduiColourSliderDynamicScalePc = 1.6276043e-7f;
+                EduiColourSliderDynamicScale = 1.6276043e-7f;
                 slider->normalized_value = (f32)MAX(0.0f, slider->normalized_value - (u32)pad->analog_l2 * (f64)0.000016276043f);
             }
             slider->value = slider->normalized_value * slider->range + slider->minimum;
@@ -2229,10 +2229,10 @@ extern "C" i32 eduicbProcessColourSlider(eduimenu_s *menu, eduiitem_s *item, f32
             }
         } else if (pad->analog_r2) {
             if (pad->reserved98[1]) {
-                EduiColourSliderDynamicScalePc *= (f64)1.05f;
-                slider->normalized_value = MIN(1.0f, slider->normalized_value + (u32)pad->analog_r2 * EduiColourSliderDynamicScalePc);
+                EduiColourSliderDynamicScale *= (f64)1.05f;
+                slider->normalized_value = MIN(1.0f, slider->normalized_value + (u32)pad->analog_r2 * EduiColourSliderDynamicScale);
             } else {
-                EduiColourSliderDynamicScalePc = 1.6276043e-7f;
+                EduiColourSliderDynamicScale = 1.6276043e-7f;
                 slider->normalized_value = (f32)MIN(1.0f, slider->normalized_value + (u32)pad->analog_r2 * (f64)0.000016276043f);
             }
             slider->value = slider->normalized_value * slider->range + slider->minimum;
@@ -2241,7 +2241,7 @@ extern "C" i32 eduicbProcessColourSlider(eduimenu_s *menu, eduiitem_s *item, f32
                 slider->changed(menu, item, pad->digital_buttons);
             }
         } else {
-            EduiColourSliderDynamicScalePc = 1.6276043e-7f;
+            EduiColourSliderDynamicScale = 1.6276043e-7f;
         }
     }
     return 0;

@@ -3592,7 +3592,7 @@ variable:VehicleGunshipHoverOther,variable,VehicleGunshipHoverOther,11250,11250,
 variable:VehicleGunshipHoverSeparation,variable,VehicleGunshipHoverSeparation,11251,11251,1,legoapi/characters/motion/move.h,users,VehicleGunshipHoverSeparation: only legogame/move.c android-path
 function:Grapple_AddDynamic,function,Grapple_AddDynamic,11254,11254,3,legoapi/gizmos/transport/grapples.h,android,Grapple_AddDynamic
 function:Grapple_RemoveDynamic,function,Grapple_RemoveDynamic,11255,11255,1,legoapi/gizmos/transport/grapples.h,android,Grapple_RemoveDynamic
-variable:DynamicGrapplePc,variable,DynamicGrapplePc,11256,11256,1,legoapi/gizmos/transport/grapples.h,users,DynamicGrapplePc: only legoapi/grapples.c android-path
+variable:DynamicGrapple,variable,DynamicGrapple,11256,11256,1,legoapi/gizmos/transport/grapples.h,users,DynamicGrapple: only legoapi/grapples.c android-path
 function:SetWeaponIn,function,SetWeaponIn,11258,11258,2,legoapi/actions/movement/climbing.h,android,SetWeaponIn
 variable:LEGOCONTEXT_WEAPONIN,variable,LEGOCONTEXT_WEAPONIN,11259,11259,1,legoapi/characters/motion/contexts.h,android,LEGOCONTEXT_WEAPONIN
 variable:LEGOCONTEXT_WEAPONOUT,variable,LEGOCONTEXT_WEAPONOUT,11260,11260,1,legoapi/characters/motion/contexts.h,android,LEGOCONTEXT_WEAPONOUT
@@ -3669,7 +3669,7 @@ variable:dat_02854c90,variable,dat_02854c90,11335,11335,1,nu2api/nustencilshadow
 variable:dat_02854c94,variable,dat_02854c94,11336,11336,1,nu2api/nustencilshadows_PC.h,users,dat_02854c94: only nu2api/nu3d_pc_includes.cpp[nustencilshadows_PC.cpp] pc-path
 variable:dat_02854d00,variable,dat_02854d00,11337,11337,1,nu2api/nustencilshadows_PC.h,users,dat_02854d00: only nu2api/nu3d_pc_includes.cpp[nustencilshadows_PC.cpp] pc-path
 function:fun_006df670,function,fun_006df670,11338,11338,1,nu2api/nuwin32/d3dApiCalls.h,symbol,nu2api/nuwin32/d3dApiCalls.cpp pc-path
-function:PCDeviceSetGammaRampPc,function,PCDeviceSetGammaRampPc,11339,11339,1,nu2api/nuwin32/d3dCalls.h,symbol,nu2api/nuwin32/d3dCalls.cpp pc-path
+function:PCDeviceSetGammaRamp,function,PCDeviceSetGammaRamp,11339,11339,1,nu2api/nuwin32/d3dCalls.h,symbol,nu2api/nuwin32/d3dCalls.cpp pc-path
 function:NuRndrRectUV2diZ,function,NuRndrRectUV2diZ,11340,11341,2,nu2api/nu3d/nu3d_includes.h,symbol,nu2api/nu3d_includes.cpp android-path
 variable:dat_0080e6a4,variable,dat_0080e6a4,11342,11342,1,nu2api/nustencilshadows_PC.h,users,dat_0080e6a4: only nu2api/nu3d_pc_includes.cpp[nustencilshadows_PC.cpp] pc-path
 variable:dat_0097f990,variable,dat_0097f990,11343,11343,1,nu2api/nustencilshadows_PC.h,users,dat_0097f990: only nu2api/nu3d_pc_includes.cpp[nustencilshadows_PC.cpp] pc-path
@@ -3804,19 +3804,19 @@ variable:text_preset_g,variable,text_preset_g,11479,11479,1,gameapi/apitext.h,us
 variable:text_preset_b,variable,text_preset_b,11480,11480,1,gameapi/apitext.h,users,text_preset_b: only gameapi/gamemenuall.cpp[apitext.c] pc-path
 variable:current_rgba,variable,current_rgba,11481,11481,1,gameapi/apitext.h,users,current_rgba: only gameapi/gamemenuall.cpp[apitext.c] pc-path
 variable:apitext_half_rgb,variable,apitext_half_rgb,11482,11482,1,gameapi/apitext.h,users,apitext_half_rgb: only gameapi/gamemenuall.cpp[apitext.c] pc-path
-variable:TextInputKeyNameTablePc,variable,TextInputKeyNameTablePc,11483,11483,1,nu2api/PCInput.h,users,TextInputKeyNameTablePc: only nu2api/PCInput.cpp pc-path
-variable:TextInputKeyNamesPc,variable,TextInputKeyNamesPc,11484,11484,1,nu2api/PCInput.h,users,TextInputKeyNamesPc: only nu2api/PCInput.cpp pc-path
-variable:TextInputKeyboardOverridePc,variable,TextInputKeyboardOverridePc,11485,11485,1,nu2api/PCInput.h,users,TextInputKeyboardOverridePc: only nu2api/PCInput.cpp pc-path
-variable:TextInputAxisLabelIndexPc,variable,TextInputAxisLabelIndexPc,11486,11486,1,nu2api/PCInput.h,users,TextInputAxisLabelIndexPc: only nu2api/PCInput.cpp pc-path
-variable:TextInputButtonLabelIndexPc,variable,TextInputButtonLabelIndexPc,11487,11487,1,nu2api/PCInput.h,users,TextInputButtonLabelIndexPc: only nu2api/PCInput.cpp pc-path
+variable:TextInputKeyNameTable,variable,TextInputKeyNameTable,11483,11483,1,nu2api/PCInput.h,users,TextInputKeyNameTable: only nu2api/PCInput.cpp pc-path
+variable:TextInputKeyNames,variable,TextInputKeyNames,11484,11484,1,nu2api/PCInput.h,users,TextInputKeyNames: only nu2api/PCInput.cpp pc-path
+variable:TextInputKeyboardOverride,variable,TextInputKeyboardOverride,11485,11485,1,nu2api/PCInput.h,users,TextInputKeyboardOverride: only nu2api/PCInput.cpp pc-path
+variable:TextInputAxisLabelIndex,variable,TextInputAxisLabelIndex,11486,11486,1,nu2api/PCInput.h,users,TextInputAxisLabelIndex: only nu2api/PCInput.cpp pc-path
+variable:TextInputButtonLabelIndex,variable,TextInputButtonLabelIndex,11487,11487,1,nu2api/PCInput.h,users,TextInputButtonLabelIndex: only nu2api/PCInput.cpp pc-path
 variable:text3d_height,variable,text3d_height,11488,11488,1,legoapi/menus/core/text.h,android,text3d_height
 variable:text3d_width,variable,text3d_width,11489,11489,1,legoapi/menus/core/text.h,android,text3d_width
 variable:followon_line,variable,followon_line,11490,11490,1,gameapi/apitext.h,users,followon_line: only gameapi/gamemenuall.cpp[apitext.c] pc-path
 variable:TextPrintMode,variable,TextPrintMode,11491,11491,1,gameapi/apitext.h,users,TextPrintMode: only gameapi/gamemenuall.cpp[apitext.c] pc-path
-variable:TextInputAlternateLabelsPc,variable,TextInputAlternateLabelsPc,11492,11492,1,nu2api/PCInput.h,users,TextInputAlternateLabelsPc: only nu2api/PCInput.cpp pc-path
-variable:TextInputDefaultLabelsPc,variable,TextInputDefaultLabelsPc,11493,11493,1,nu2api/PCInput.h,users,TextInputDefaultLabelsPc: only nu2api/PCInput.cpp pc-path
-variable:TextInputNameCallbackPc,variable,TextInputNameCallbackPc,11494,11494,1,nu2api/PCInput.h,rule,used most in nu2api/PCInput.cpp (8) pc-path
-variable:TextInputLastDeviceIndexPc,variable,TextInputLastDeviceIndexPc,11495,11495,1,nu2api/PCInput.h,users,TextInputLastDeviceIndexPc: only nu2api/PCInput.cpp pc-path
+variable:TextInputAlternateLabels,variable,TextInputAlternateLabels,11492,11492,1,nu2api/PCInput.h,users,TextInputAlternateLabels: only nu2api/PCInput.cpp pc-path
+variable:TextInputDefaultLabels,variable,TextInputDefaultLabels,11493,11493,1,nu2api/PCInput.h,users,TextInputDefaultLabels: only nu2api/PCInput.cpp pc-path
+variable:TextInputNameCallback,variable,TextInputNameCallback,11494,11494,1,nu2api/PCInput.h,rule,used most in nu2api/PCInput.cpp (8) pc-path
+variable:TextInputLastDeviceIndex,variable,TextInputLastDeviceIndex,11495,11495,1,nu2api/PCInput.h,users,TextInputLastDeviceIndex: only nu2api/PCInput.cpp pc-path
 variable:g_nupadMapping,variable,g_nupadMapping,11496,11496,1,nu2api/nucore/nupad.h,android,g_nupadMapping
 function:InStory,function,InStory,11498,11498,2,legoapi/menus/screens/gamestructure.h,android,InStory
 function:Move_VEHICLE,function,Move_VEHICLE,11500,11500,2,legoapi/characters/motion.h,android,Move_VEHICLE
@@ -4028,10 +4028,10 @@ variable:backdrop_scene,variable,backdrop_scene,11860,11860,1,legoapi/render/cor
 variable:RenderBackdropAlphaFn,variable,RenderBackdropAlphaFn,11861,11861,1,legoapi/render/core/screen.h,rule,used most in legoapi/screen.cpp (5) android-path
 variable:SURFACEBITS_NODUST,variable,SURFACEBITS_NODUST,11862,11862,1,legoapi/render/light/surfaces.h,users,SURFACEBITS_NODUST: only legoapi/surfaces.c android-path
 variable:RenderHubFromCutscenePlayer,variable,RenderHubFromCutscenePlayer,11863,11863,1,legoapi/characters/core/players.h,rule,used most in legoapi/players.c (3) android-path
-function:TextInputSetKeyboardOverridePc,function,TextInputSetKeyboardOverridePc,11865,11865,2,nu2api/PCInput.h,symbol,nu2api/PCInput.cpp pc-path
+function:TextInputSetKeyboardOverride,function,TextInputSetKeyboardOverride,11865,11865,2,nu2api/PCInput.h,symbol,nu2api/PCInput.cpp pc-path
 function:PcInput_SetCtrlStringPlayer,function,PcInput_SetCtrlStringPlayer,11866,11866,1,nu2api/PCInput.h,symbol,nu2api/PCInput.cpp pc-path
 function:PcInput_PortIsKeyboard,function,PcInput_PortIsKeyboard,11867,11867,1,nu2api/PCInput.h,symbol,nu2api/PCInput.cpp pc-path
-variable:PcInputCommandFilterPc,variable,PcInputCommandFilterPc,11868,11868,1,nu2api/PCInput.h,users,PcInputCommandFilterPc: only nu2api/PCInput.cpp pc-path
+variable:PcInputCommandFilter,variable,PcInputCommandFilter,11868,11868,1,nu2api/PCInput.h,users,PcInputCommandFilter: only nu2api/PCInput.cpp pc-path
 function:PcInput_SetIsUsedCallBack,function,PcInput_SetIsUsedCallBack,11869,11869,1,nu2api/PCInput.h,symbol,nu2api/PCInput.cpp pc-path
 function:PcInput_ScanForAnyInput,function,PcInput_ScanForAnyInput,11870,11870,1,nu2api/PCInput.h,symbol,nu2api/PCInput.cpp pc-path
 function:PcInput_RemapVirtualKeyboard,function,PcInput_RemapVirtualKeyboard,11871,11871,1,nu2api/PCInput.h,symbol,nu2api/PCInput.cpp pc-path
@@ -4049,7 +4049,7 @@ assert:-#2968,assert,,11899,11899,1,legoapi/render/fx/game_deb.h,follow-type,PC_
 assert:-#2969,assert,,11900,11900,1,legoapi/render/fx/game_deb.h,follow-type,PC_GLOBAL_LIGHTING_STATE
 assert:-#2970,assert,,11901,11901,1,legoapi/render/fx/game_deb.h,follow-type,PC_GLOBAL_LIGHTING_STATE
 variable:PCGlobalLightingState,variable,PCGlobalLightingState,11902,11902,1,nu2api/nu3d/nu3d_includes.h,data-order,retail 0x971708 between 0x971704 and 0x971780
-variable:LightingUnitDirectionPc,variable,LightingUnitDirectionPc,11903,11903,1,legoapi/render/light/lighting.h,rule,used most in legoapi/lighting.cpp (3) android-path
+variable:LightingUnitDirection,variable,LightingUnitDirection,11903,11903,1,legoapi/render/light/lighting.h,rule,used most in legoapi/lighting.cpp (3) android-path
 variable:PCShadowCurrentLight,variable,PCShadowCurrentLight,11904,11904,1,legoapi/render/light/lighting.h,data-order,retail 0x955b58 between 0x955b50 and 0x955b5c
 variable:PCShadowSecondaryLight,variable,PCShadowSecondaryLight,11905,11905,1,legoapi/render/light/lighting.h,users,PCShadowSecondaryLight: only legoapi/lighting.cpp android-path
 variable:NuRndrShadowCnt,variable,NuRndrShadowCnt,11906,11906,1,nu2api/nu3d/nurndr.h,android,NuRndrShadowCnt
@@ -5205,7 +5205,7 @@ variable:MenuLoadOccurred,variable,MenuLoadOccurred,13222,13222,1,globals.h,andr
 variable:startnewgame_initiated,variable,startnewgame_initiated,13223,13223,1,legoapi/menus/screens/gamemenuall.h,android,startnewgame_initiated
 variable:startnewgame,variable,startnewgame,13224,13224,1,legoapi/menus/screens/gamemenuall.h,android,startnewgame
 variable:saveload_autosave,variable,saveload_autosave,13225,13225,1,gameframework/saveload.h,android,saveload_autosave
-function:PcRegisterSaveFolderPc,function,PcRegisterSaveFolderPc,13226,13226,1,nu2api/nuwin32/pcapi.h,users,PcRegisterSaveFolderPc: only nu2api/nuwin32/pcapi.cpp pc-path
+function:PcRegisterSaveFolder,function,PcRegisterSaveFolder,13226,13226,1,nu2api/nuwin32/pcapi.h,users,PcRegisterSaveFolder: only nu2api/nuwin32/pcapi.cpp pc-path
 function:saveloadInit,function,saveloadInit,13227,13228,2,gameframework/saveload.h,android,saveloadInit
 variable:SaveProductCode,variable,SaveProductCode,13229,13229,1,legogame/game.h,rule,used most in legogame/game.c (2) android-path
 variable:SaveIconName,variable,SaveIconName,13230,13230,1,legogame/pcbatman.h,users,SaveIconName: only legogame/pcbatman.cpp pc-path
@@ -5588,7 +5588,7 @@ variable:PlayerExtraActionInfo,variable,PlayerExtraActionInfo,13729,13729,1,lego
 function:SetActionInfo,function,SetActionInfo,13730,13730,1,legoapi/gizmo/base/gizactions.h,android,SetActionInfo
 variable:PlayerActionInfoList,variable,PlayerActionInfoList,13731,13731,1,legoapi/characters/core/character.h,data-nearest,"only data.cpp mentions it; retail 0x7fb778, nearest 0x7fb0e8"
 variable:PlayerBlockActionInfo,variable,PlayerBlockActionInfo,13732,13732,1,legogame/startup.h,rule,used most in legogame/startup.cpp (1) android-path
-variable:PlayerGrappleSwingModePc,variable,PlayerGrappleSwingModePc,13734,13734,2,legoapi/gizmos/transport/grapples.h,rule,used most in legoapi/grapples.c (6) android-path
+variable:PlayerGrappleSwingMode,variable,PlayerGrappleSwingMode,13734,13734,2,legoapi/gizmos/transport/grapples.h,rule,used most in legoapi/grapples.c (6) android-path
 variable:PlayerGrappleWindSoundPc,variable,PlayerGrappleWindSoundPc,13735,13735,1,legoapi/characters/motion/move.h,rule,used most in legogame/move.c (1) android-path
 function:NuMtlUpdate,function,NuMtlUpdate,13737,13737,2,nu2api/nu3d/numtl.h,android,NuMtlUpdate
 function:NuDisplaySceneClone,function,NuDisplaySceneClone,13738,13738,1,nu2api/nu3d/nudlist.h,android,NuDisplaySceneClone
@@ -8358,9 +8358,9 @@ variable:PCSoundStreamSerial,variable,PCSoundStreamSerial,17005,17005,1,nu2api/n
 variable:PCContextName_ZipUp,variable,PCContextName_ZipUp,17006,17006,1,legoapi/characters/core/characters.h,users,PCContextName_ZipUp: only legoapi/characters.c android-path
 variable:GameAntinodeGrid,variable,GameAntinodeGrid,17007,17007,1,legoapi/ai/game/gameantinode.h,users,GameAntinodeGrid: only legoapi/gameantinode.c android-path
 variable:ZipUpHookOffset,variable,ZipUpHookOffset,17008,17008,1,legoapi/props/objects/zipup.h,users,ZipUpHookOffset: only legogame/zipup.c android-path
-variable:ZipUpSwingStartAnimationPc,variable,ZipUpSwingStartAnimationPc,17009,17009,1,legogame/game.h,rule,used most in legogame/game.c (1) android-path
-variable:ZipUpSwingSwingAnimationPc,variable,ZipUpSwingSwingAnimationPc,17010,17010,1,legogame/game.h,rule,used most in legogame/game.c (1) android-path
-variable:ZipUpSwingJumpAnimationPc,variable,ZipUpSwingJumpAnimationPc,17011,17011,1,legogame/game.h,rule,used most in legogame/game.c (1) android-path
+variable:ZipUpSwingStartAnimation,variable,ZipUpSwingStartAnimation,17009,17009,1,legogame/game.h,rule,used most in legogame/game.c (1) android-path
+variable:ZipUpSwingSwingAnimation,variable,ZipUpSwingSwingAnimation,17010,17010,1,legogame/game.h,rule,used most in legogame/game.c (1) android-path
+variable:ZipUpSwingJumpAnimation,variable,ZipUpSwingJumpAnimation,17011,17011,1,legogame/game.h,rule,used most in legogame/game.c (1) android-path
 variable:CanDrawZipUpSwirls,variable,CanDrawZipUpSwirls,17012,17012,1,legoapi/props/objects/zipup.h,users,CanDrawZipUpSwirls: only legogame/zipup.c android-path
 variable:ropemtl,variable,ropemtl,17013,17013,1,legoapi/gizmos/door/zipups.h,android,ropemtl
 variable:ZipUpMarkerOffsetY,variable,ZipUpMarkerOffsetY,17014,17014,1,legoapi/props/objects/zipup.h,users,ZipUpMarkerOffsetY: only legogame/zipup.c android-path
@@ -8630,7 +8630,7 @@ function:PCDeviceSetSamplerState,function,PCDeviceSetSamplerState,17293,17293,1,
 function:PCDeviceSetTexture,function,PCDeviceSetTexture,17294,17294,1,nu2api/nuwin32/d3dCalls.h,symbol,nu2api/nuwin32/d3dCalls.cpp pc-path
 function:PCDeviceSetTextureStageState,function,PCDeviceSetTextureStageState,17295,17295,1,nu2api/nuwin32/d3dCalls.h,symbol,nu2api/nuwin32/d3dCalls.cpp pc-path
 variable:PCDeviceStateCacheEnabled,variable,PCDeviceStateCacheEnabled,17296,17296,1,nu2api/nuwin32/d3dCore.h,users,PCDeviceStateCacheEnabled: only nu2api/nuwin32/d3dCore.cpp pc-path
-variable:PCDeviceStateCachePc,variable,PCDeviceStateCachePc,17297,17297,1,nu2api/nuwin32/d3dCore.h,users,PCDeviceStateCachePc: only nu2api/nuwin32/d3dCore.cpp pc-path
+variable:PCDeviceStateCache,variable,PCDeviceStateCache,17297,17297,1,nu2api/nuwin32/d3dCore.h,users,PCDeviceStateCache: only nu2api/nuwin32/d3dCore.cpp pc-path
 variable:PCDeviceSamplerInvalidation,variable,PCDeviceSamplerInvalidation,17298,17298,1,nu2api/nustencilshadows_PC.h,data-order,retail 0x97f9d8 between 0x97f998 and 0x981c68
 function:Customiser_DumpAll,function,Customiser_DumpAll,17299,17299,1,legoapi/characters/core/customiser.h,android,Customiser_DumpAll
 function:ClearAreaProgress,function,ClearAreaProgress,17300,17300,1,legoapi/world/levels.h,symbol,legogame/levels.cpp android-path
@@ -9313,7 +9313,7 @@ variable:tMAGNETSUIT,variable,tMAGNETSUIT,18212,18212,1,legoapi/menus/screens/me
 variable:dat_0075d20c,variable,dat_0075d20c,18213,18213,1,legoapi/lib/text.h,data-nearest,"only data.cpp mentions it; retail 0x75d20c, nearest 0x75d3a4"
 variable:tATTRACTSUIT,variable,tATTRACTSUIT,18214,18214,1,legoapi/menus/screens/menu.h,data-order,retail 0x880988 between 0x88093c and 0x880bc4
 function:NuDisplayListDrawPrimitive2D,function,NuDisplayListDrawPrimitive2D,18215,18215,1,nu2api/nustream.h,symbol,nu2api/nu3d_pc_includes.cpp[nustream.c] pc-path
-function:PCShaderCurrentObjectPc,function,PCShaderCurrentObjectPc,18216,18216,1,nu2api/nu3d/nushadermanager_gen.h,symbol,nu2api/nushadermanager_gen.cpp android-dir
+function:PCShaderCurrentObject,function,PCShaderCurrentObject,18216,18216,1,nu2api/nu3d/nushadermanager_gen.h,symbol,nu2api/nushadermanager_gen.cpp android-dir
 function:PCDeviceDrawPrimitiveUPPc,function,PCDeviceDrawPrimitiveUPPc,18217,18217,1,nu2api/nustencilshadows_PC.h,rule,used most in nu2api/nu3d_pc_includes.cpp[nustencilshadows_PC.cpp] (16) pc-path
 variable:PCDevicePrimitiveUPCallCountPc,variable,PCDevicePrimitiveUPCallCountPc,18218,18218,1,nu2api/nuwin32/d3dCore.h,users,PCDevicePrimitiveUPCallCountPc: only nu2api/nuwin32/d3dCore.cpp pc-path
 function:PCDeviceDrawIndexedPrimitiveUPPc,function,PCDeviceDrawIndexedPrimitiveUPPc,18219,18219,1,nu2api/nuwin32/d3dCore.h,users,PCDeviceDrawIndexedPrimitiveUPPc: only nu2api/nuwin32/d3dCore.cpp pc-path
@@ -9992,7 +9992,7 @@ macro:RENDER_POST_ALPHA_CACHE,macro,RENDER_POST_ALPHA_CACHE,19144,19144,2,nu2api
 function:PartRayCast,function,PartRayCast,19145,19145,1,legoapi/items/objects/objectsall.h,android,PartRayCast
 function:CastPart,function,CastPart,19146,19146,1,legoapi/items/objects/objectsall.h,android,CastPart
 function:GameCreatureOpponentSelection,function,GameCreatureOpponentSelection,19148,19149,3,legoapi/ai/core/gameai.h,android,GameCreatureOpponentSelection
-variable:PartPlatformImpactListPc,variable,PartPlatformImpactListPc,19151,19151,2,legoapi/items/objects/objectsall.h,users,PartPlatformImpactListPc: only gameapi/objectsall.cpp android-path
+variable:PartPlatformImpactList,variable,PartPlatformImpactList,19151,19151,2,legoapi/items/objects/objectsall.h,users,PartPlatformImpactList: only gameapi/objectsall.cpp android-path
 variable:PartCollisionInterval,variable,PartCollisionInterval,19152,19152,1,legoapi/items/objects/objectsall.h,users,PartCollisionInterval: only gameapi/objectsall.cpp android-path
 variable:PartStopSpeedSquared,variable,PartStopSpeedSquared,19153,19153,1,legoapi/items/objects/objectsall.h,users,PartStopSpeedSquared: only gameapi/objectsall.cpp android-path
 variable:id_UGNAUGHT,variable,id_UGNAUGHT,19154,19154,1,legoapi/characters/core/character.h,android,id_UGNAUGHT
@@ -10283,7 +10283,7 @@ variable:RippleSet,variable,RippleSet,20191,20191,2,legoapi/render/fx/game_deb.h
 variable:RipplePerturbation,variable,RipplePerturbation,20192,20192,1,legoapi/render/fx/game_deb.h,users,RipplePerturbation: only legogame/game_deb.c android-path
 variable:RippleSfxCooldown,variable,RippleSfxCooldown,20193,20193,1,legoapi/render/fx/game_deb.h,users,RippleSfxCooldown: only legogame/game_deb.c android-path
 variable:ForceFieldRippleRate,variable,ForceFieldRippleRate,20194,20194,1,legoapi/render/fx/game_deb.h,users,ForceFieldRippleRate: only legogame/game_deb.c android-path
-variable:RippleForceFieldSoundNamePc,variable,RippleForceFieldSoundNamePc,20195,20195,1,legoapi/render/fx/game_deb.h,unused,no unit uses it; PC declaration; owner by saga.h neighbour
+variable:RippleForceFieldSoundName,variable,RippleForceFieldSoundName,20195,20195,1,legoapi/render/fx/game_deb.h,unused,no unit uses it; PC declaration; owner by saga.h neighbour
 variable:PodDustLocatorIndices,variable,PodDustLocatorIndices,20196,20196,1,legoapi/world/levels/episodeI.h,users,PodDustLocatorIndices: only legogame/episodeI.c android-path
 variable:PodDustEmissionRate,variable,PodDustEmissionRate,20197,20197,1,legoapi/world/levels/episodeI.h,users,PodDustEmissionRate: only legogame/episodeI.c android-path
 variable:PodDustHeightScale,variable,PodDustHeightScale,20198,20198,1,legoapi/world/levels/episodeI.h,users,PodDustHeightScale: only legogame/episodeI.c android-path
@@ -10435,7 +10435,7 @@ variable:PlayPlane,variable,PlayPlane,20450,20450,2,legoapi/ai/game/creature.h,r
 variable:KEEPONSCREEN_SIDESONLY,variable,KEEPONSCREEN_SIDESONLY,20451,20451,1,globals.h,android-weak,catch-all (needs a module owner); KEEPONSCREEN_SIDESONLY
 variable:GunshipANorm,variable,GunshipANorm,20452,20452,1,legoapi/world/levels/episodeII.h,data-order,retail 0x882be4 between 0x882b80 and 0x882bf0
 variable:UseCorrectDeadZoning,variable,UseCorrectDeadZoning,20454,20454,2,nu2api/nucore/nupad.h,android,UseCorrectDeadZoning
-variable:FramePadProfilePortPc,variable,FramePadProfilePortPc,20455,20455,1,nu2api/huffdecode.h,users,FramePadProfilePortPc: only nu2api/nucore_includes.cpp[huffdecode.c] pc-path
+variable:FramePadProfilePort,variable,FramePadProfilePort,20455,20455,1,nu2api/huffdecode.h,users,FramePadProfilePort: only nu2api/nucore_includes.cpp[huffdecode.c] pc-path
 variable:MaxGamePads,variable,MaxGamePads,20456,20456,1,nu2api/nucore/nupad.h,android,MaxGamePads
 variable:FrameMaterialAnimationSpeed,variable,FrameMaterialAnimationSpeed,20457,20457,1,nu2api/nu3d/nu3d_includes.h,rule,used most in nu2api/nu3d_includes.cpp (1) android-path
 function:NuPadOpen,function,NuPadOpen,20458,20458,1,nu2api/nucore/nupad.h,android,NuPadOpen
@@ -10443,7 +10443,7 @@ function:NuPadRead,function,NuPadRead,20459,20459,1,nu2api/nucore/nupad.h,androi
 function:NuPadSetStatus,function,NuPadSetStatus,20460,20460,1,nu2api/nucore/nupad.h,android,NuPadSetStatus
 function:NuPadSetValid,function,NuPadSetValid,20461,20461,1,nu2api/nucore/nupad.h,android,NuPadSetValid
 function:NuPadMapPlayerToPort,function,NuPadMapPlayerToPort,20462,20462,1,nu2api/nucore/nupad.h,android,NuPadMapPlayerToPort
-function:NuPadAutoConfigurePc,function,NuPadAutoConfigurePc,20463,20463,1,nu2api/PCInput.h,symbol,nu2api/PCInput.cpp pc-path
+function:NuPadAutoConfigure,function,NuPadAutoConfigure,20463,20463,1,nu2api/PCInput.h,symbol,nu2api/PCInput.cpp pc-path
 function:PcInput_DisableAllKeyboards,function,PcInput_DisableAllKeyboards,20464,20464,1,nu2api/PCInput.h,symbol,nu2api/PCInput.cpp pc-path
 function:NuRndrInitStartupMaterials,function,NuRndrInitStartupMaterials,20465,20465,1,nu2api/numainfilter_gen.h,symbol,nu2api/nu3d_pc_includes.cpp[numainfilter_gen.cpp] pc-path
 variable:PCStartupMaterial1,variable,PCStartupMaterial1,20466,20466,1,nu2api/nustencilshadows_PC.h,users,PCStartupMaterial1: only nu2api/nu3d_pc_includes.cpp[nustencilshadows_PC.cpp] pc-path
@@ -10516,7 +10516,7 @@ variable:PcMouseDataFormat,variable,PcMouseDataFormat,20638,20638,1,nu2api/PCInp
 variable:PcKeyboardDataFormat,variable,PcKeyboardDataFormat,20639,20639,1,nu2api/PCInput.h,users,PcKeyboardDataFormat: only nu2api/PCInput.cpp pc-path
 variable:PcJoystickDataFormat,variable,PcJoystickDataFormat,20640,20640,1,nu2api/PCInput.h,users,PcJoystickDataFormat: only nu2api/PCInput.cpp pc-path
 variable:PcInputSelectedPort,variable,PcInputSelectedPort,20641,20641,1,nu2api/PCInput.h,users,PcInputSelectedPort: only nu2api/PCInput.cpp pc-path
-function:InputEnumDevicesPc,function,InputEnumDevicesPc,20642,20642,1,nu2api/PCInput.h,symbol,nu2api/PCInput.cpp pc-path
+function:InputEnumDevices,function,InputEnumDevices,20642,20642,1,nu2api/PCInput.h,symbol,nu2api/PCInput.cpp pc-path
 assert:-#4053,assert,,20643,20643,1,nu2api/PCInput.h,follow-type,PC_DI_CAPS
 assert:-#4054,assert,,20644,20644,1,nu2api/PCInput.h,follow-type,PC_DI_CAPS
 assert:-#4055,assert,,20645,20645,1,nu2api/PCInput.h,follow-type,PC_DI_CAPS
@@ -10648,36 +10648,36 @@ struct:PC_INPUT_RUNTIME,struct,PC_INPUT_RUNTIME,21034,21196,164,nu2api/PCInput.h
 typedef:PC_INPUT_COMMAND_FILTER,typedef,PC_INPUT_COMMAND_FILTER,21199,21199,3,nu2api/PCInput.h,users,PC_INPUT_COMMAND_FILTER: only nu2api/PCInput.cpp pc-path
 variable:PcInputAxisRemap,variable,PcInputAxisRemap,21200,21200,1,nu2api/PCInput.h,definition,nu2api/PCInput.cpp pc-path
 variable:PcInputAxisRemapInitialized,variable,PcInputAxisRemapInitialized,21201,21201,1,nu2api/PCInput.h,definition,nu2api/PCInput.cpp pc-path
-function:PcInputCopyBindingsPc,function,PcInputCopyBindingsPc,21202,21202,1,nu2api/PCInput.h,symbol,nu2api/PCInput.cpp pc-path
-function:PcInputResetMouseMotionPc,function,PcInputResetMouseMotionPc,21203,21203,1,nu2api/PCInput.h,symbol,nu2api/PCInput.cpp pc-path
-function:PcInputDeviceNamePc,function,PcInputDeviceNamePc,21204,21204,1,nu2api/PCInput.h,symbol,nu2api/PCInput.cpp pc-path
-function:PcInputSuppressKeyOnePc,function,PcInputSuppressKeyOnePc,21205,21205,1,nu2api/PCInput.h,symbol,nu2api/PCInput.cpp pc-path
-function:PcInputSetMouseFieldPc,function,PcInputSetMouseFieldPc,21206,21206,1,nu2api/PCInput.h,symbol,nu2api/PCInput.cpp pc-path
-function:PcInputSetCapturedPortPc,function,PcInputSetCapturedPortPc,21207,21207,1,nu2api/PCInput.h,symbol,nu2api/PCInput.cpp pc-path
-function:PcInputCapturedPortPc,function,PcInputCapturedPortPc,21208,21208,1,nu2api/PCInput.h,symbol,nu2api/PCInput.cpp pc-path
-function:PcInputSetBlockedKeysPc,function,PcInputSetBlockedKeysPc,21209,21209,1,nu2api/PCInput.h,symbol,nu2api/PCInput.cpp pc-path
-function:PcInputIsMouseDevicePc,function,PcInputIsMouseDevicePc,21210,21210,1,nu2api/PCInput.h,symbol,nu2api/PCInput.cpp pc-path
-function:PcInputIsJoystickDevicePc,function,PcInputIsJoystickDevicePc,21211,21211,1,nu2api/PCInput.h,symbol,nu2api/PCInput.cpp pc-path
-function:PcInputMixConfigurationHashPc,function,PcInputMixConfigurationHashPc,21212,21212,1,nu2api/PCInput.h,symbol,nu2api/PCInput.cpp pc-path
-function:PcInputHashAuxiliaryBindingsPc,function,PcInputHashAuxiliaryBindingsPc,21213,21213,1,nu2api/PCInput.h,symbol,nu2api/PCInput.cpp pc-path
-function:PcInputInstallConfigPc,function,PcInputInstallConfigPc,21214,21214,1,nu2api/PCInput.h,symbol,nu2api/PCInput.cpp pc-path
-function:PcInputBindingPresentPc,function,PcInputBindingPresentPc,21215,21215,1,nu2api/PCInput.h,symbol,nu2api/PCInput.cpp pc-path
-function:PcInputFindConfigPc,function,PcInputFindConfigPc,21216,21216,1,nu2api/PCInput.h,symbol,nu2api/PCInput.cpp pc-path
-function:PcInputBindingAvailablePc,function,PcInputBindingAvailablePc,21217,21217,1,nu2api/PCInput.h,symbol,nu2api/PCInput.cpp pc-path
-function:PcInputClearOtherBankConflictsPc,function,PcInputClearOtherBankConflictsPc,21218,21218,1,nu2api/PCInput.h,symbol,nu2api/PCInput.cpp pc-path
-function:PcInputResolveAuxiliaryConflictsPc,function,PcInputResolveAuxiliaryConflictsPc,21219,21219,1,nu2api/PCInput.h,symbol,nu2api/PCInput.cpp pc-path
-function:PcInputAlternateDeadzonePc,function,PcInputAlternateDeadzonePc,21220,21220,1,nu2api/PCInput.h,symbol,nu2api/PCInput.cpp pc-path
-function:PcInputSetDeadzonePc,function,PcInputSetDeadzonePc,21221,21221,1,nu2api/PCInput.h,symbol,nu2api/PCInput.cpp pc-path
-function:PcInputSetAlternateDeadzonePc,function,PcInputSetAlternateDeadzonePc,21222,21222,1,nu2api/PCInput.h,symbol,nu2api/PCInput.cpp pc-path
-function:PcInputGetCommandFilterPc,function,PcInputGetCommandFilterPc,21223,21223,1,nu2api/PCInput.h,symbol,nu2api/PCInput.cpp pc-path
-function:PcInputAssignBindingPc,function,PcInputAssignBindingPc,21224,21225,2,nu2api/PCInput.h,symbol,nu2api/PCInput.cpp pc-path
-function:PcInputBindingButtonNamePc,function,PcInputBindingButtonNamePc,21226,21227,2,nu2api/PCInput.h,symbol,nu2api/PCInput.cpp pc-path
-function:PcInputStageAuxiliaryConfigPc,function,PcInputStageAuxiliaryConfigPc,21228,21228,1,nu2api/PCInput.h,symbol,nu2api/PCInput.cpp pc-path
-function:PcInputSaveConfigurationPc,function,PcInputSaveConfigurationPc,21229,21229,1,nu2api/PCInput.h,symbol,nu2api/PCInput.cpp pc-path
+function:PcInputCopyBindings,function,PcInputCopyBindings,21202,21202,1,nu2api/PCInput.h,symbol,nu2api/PCInput.cpp pc-path
+function:PcInputResetMouseMotion,function,PcInputResetMouseMotion,21203,21203,1,nu2api/PCInput.h,symbol,nu2api/PCInput.cpp pc-path
+function:PcInputDeviceName,function,PcInputDeviceName,21204,21204,1,nu2api/PCInput.h,symbol,nu2api/PCInput.cpp pc-path
+function:PcInputSuppressKeyOne,function,PcInputSuppressKeyOne,21205,21205,1,nu2api/PCInput.h,symbol,nu2api/PCInput.cpp pc-path
+function:PcInputSetMouseField,function,PcInputSetMouseField,21206,21206,1,nu2api/PCInput.h,symbol,nu2api/PCInput.cpp pc-path
+function:PcInputSetCapturedPort,function,PcInputSetCapturedPort,21207,21207,1,nu2api/PCInput.h,symbol,nu2api/PCInput.cpp pc-path
+function:PcInputCapturedPort,function,PcInputCapturedPort,21208,21208,1,nu2api/PCInput.h,symbol,nu2api/PCInput.cpp pc-path
+function:PcInputSetBlockedKeys,function,PcInputSetBlockedKeys,21209,21209,1,nu2api/PCInput.h,symbol,nu2api/PCInput.cpp pc-path
+function:PcInputIsMouseDevice,function,PcInputIsMouseDevice,21210,21210,1,nu2api/PCInput.h,symbol,nu2api/PCInput.cpp pc-path
+function:PcInputIsJoystickDevice,function,PcInputIsJoystickDevice,21211,21211,1,nu2api/PCInput.h,symbol,nu2api/PCInput.cpp pc-path
+function:PcInputMixConfigurationHash,function,PcInputMixConfigurationHash,21212,21212,1,nu2api/PCInput.h,symbol,nu2api/PCInput.cpp pc-path
+function:PcInputHashAuxiliaryBindings,function,PcInputHashAuxiliaryBindings,21213,21213,1,nu2api/PCInput.h,symbol,nu2api/PCInput.cpp pc-path
+function:PcInputInstallConfig,function,PcInputInstallConfig,21214,21214,1,nu2api/PCInput.h,symbol,nu2api/PCInput.cpp pc-path
+function:PcInputBindingPresent,function,PcInputBindingPresent,21215,21215,1,nu2api/PCInput.h,symbol,nu2api/PCInput.cpp pc-path
+function:PcInputFindConfig,function,PcInputFindConfig,21216,21216,1,nu2api/PCInput.h,symbol,nu2api/PCInput.cpp pc-path
+function:PcInputBindingAvailable,function,PcInputBindingAvailable,21217,21217,1,nu2api/PCInput.h,symbol,nu2api/PCInput.cpp pc-path
+function:PcInputClearOtherBankConflicts,function,PcInputClearOtherBankConflicts,21218,21218,1,nu2api/PCInput.h,symbol,nu2api/PCInput.cpp pc-path
+function:PcInputResolveAuxiliaryConflicts,function,PcInputResolveAuxiliaryConflicts,21219,21219,1,nu2api/PCInput.h,symbol,nu2api/PCInput.cpp pc-path
+function:PcInputAlternateDeadzone,function,PcInputAlternateDeadzone,21220,21220,1,nu2api/PCInput.h,symbol,nu2api/PCInput.cpp pc-path
+function:PcInputSetDeadzone,function,PcInputSetDeadzone,21221,21221,1,nu2api/PCInput.h,symbol,nu2api/PCInput.cpp pc-path
+function:PcInputSetAlternateDeadzone,function,PcInputSetAlternateDeadzone,21222,21222,1,nu2api/PCInput.h,symbol,nu2api/PCInput.cpp pc-path
+function:PcInputGetCommandFilter,function,PcInputGetCommandFilter,21223,21223,1,nu2api/PCInput.h,symbol,nu2api/PCInput.cpp pc-path
+function:PcInputAssignBinding,function,PcInputAssignBinding,21224,21225,2,nu2api/PCInput.h,symbol,nu2api/PCInput.cpp pc-path
+function:PcInputBindingButtonName,function,PcInputBindingButtonName,21226,21227,2,nu2api/PCInput.h,symbol,nu2api/PCInput.cpp pc-path
+function:PcInputStageAuxiliaryConfig,function,PcInputStageAuxiliaryConfig,21228,21228,1,nu2api/PCInput.h,symbol,nu2api/PCInput.cpp pc-path
+function:PcInputSaveConfiguration,function,PcInputSaveConfiguration,21229,21229,1,nu2api/PCInput.h,symbol,nu2api/PCInput.cpp pc-path
 variable:PcStaticInputConfigs,variable,PcStaticInputConfigs,21231,21231,2,nu2api/PCInput.h,users,PcStaticInputConfigs: only nu2api/PCInput.cpp pc-path
 variable:PcKeyboardCapabilities,variable,PcKeyboardCapabilities,21232,21232,1,nu2api/PCInput.h,users,PcKeyboardCapabilities: only nu2api/PCInput.cpp pc-path
-function:IsXInputProductPc,function,IsXInputProductPc,21233,21233,1,nu2api/PCInput.h,symbol,nu2api/PCInput.cpp pc-path
-function:ConfigureJoystickRangesPc,function,ConfigureJoystickRangesPc,21234,21234,1,nu2api/PCInput.h,symbol,nu2api/PCInput.cpp pc-path
+function:IsXInputProduct,function,IsXInputProduct,21233,21233,1,nu2api/PCInput.h,symbol,nu2api/PCInput.cpp pc-path
+function:ConfigureJoystickRanges,function,ConfigureJoystickRanges,21234,21234,1,nu2api/PCInput.h,symbol,nu2api/PCInput.cpp pc-path
 assert:-#4142,assert,,21235,21235,1,nu2api/PCInput.h,follow-type,PC_INPUT_CONFIG
 assert:-#4143,assert,,21236,21236,1,nu2api/PCInput.h,follow-type,PC_INPUT_CONFIG
 assert:-#4144,assert,,21237,21237,1,nu2api/PCInput.h,follow-type,PC_INPUT_CONFIG
@@ -10809,7 +10809,7 @@ function:PcShutdown,function,PcShutdown,21380,21380,2,nu2api/nuwin32/nu2api_wind
 function:PcKeyDown,function,PcKeyDown,21381,21381,1,nu2api/PCInput.h,symbol,nu2api/PCInput.cpp pc-path
 function:PcKeyUp,function,PcKeyUp,21382,21382,1,nu2api/PCInput.h,symbol,nu2api/PCInput.cpp pc-path
 function:PcPrepareTiming,function,PcPrepareTiming,21383,21383,1,nu2api/PCInput.h,unused,no unit uses it; PC declaration; owner by saga.h neighbour
-function:WindowProcPc,function,WindowProcPc,21384,21384,1,nu2api/nuwin32/nu2api_windows.h,symbol,nu2api/nuwin32/windows.cpp pc-path; renamed from nu2api/nuwin32/windows.h (SDK/CRT header name)
+function:WindowProc,function,WindowProc,21384,21384,1,nu2api/nuwin32/nu2api_windows.h,symbol,nu2api/nuwin32/windows.cpp pc-path; renamed from nu2api/nuwin32/windows.h (SDK/CRT header name)
 assert:-#4223,assert,,21386,21386,2,decomp.h,decomp,data model check of SDK type WNDCLASSEXA
 assert:-#4224,assert,,21387,21387,1,decomp.h,decomp,data model check of SDK type WNDCLASSEXA
 assert:-#4225,assert,,21388,21388,1,decomp.h,decomp,data model check of SDK type WNDCLASSEXA
@@ -10826,14 +10826,14 @@ assert:-#4235,assert,,21398,21398,1,decomp.h,decomp,data model check of SDK type
 assert:-#4236,assert,,21399,21399,1,decomp.h,decomp,data model check of SDK type STICKYKEYS
 assert:-#4237,assert,,21400,21400,1,decomp.h,decomp,data model check of SDK type TOGGLEKEYS
 assert:-#4238,assert,,21401,21401,1,decomp.h,decomp,data model check of SDK type FILTERKEYS
-function:SetPadDescriptorPc,function,SetPadDescriptorPc,21406,21406,1,nu2api/PCInput.h,symbol,nu2api/PCInput.cpp pc-path
-function:InitPadDescriptorsPc,function,InitPadDescriptorsPc,21407,21407,1,nu2api/PCInput.h,symbol,nu2api/PCInput.cpp pc-path
+function:SetPadDescriptor,function,SetPadDescriptor,21406,21406,1,nu2api/PCInput.h,symbol,nu2api/PCInput.cpp pc-path
+function:InitPadDescriptors,function,InitPadDescriptors,21407,21407,1,nu2api/PCInput.h,symbol,nu2api/PCInput.cpp pc-path
 function:QueueKeyPress,function,QueueKeyPress,21408,21408,1,nu2api/PCInput.h,symbol,nu2api/PCInput.cpp pc-path
 function:CreateWindowPc,function,CreateWindowPc,21409,21409,1,nu2api/nuwin32/nu2api_windows.h,symbol,nu2api/nuwin32/windows.cpp pc-path; renamed from nu2api/nuwin32/windows.h (SDK/CRT header name)
-function:PublishWindowPc,function,PublishWindowPc,21410,21410,1,nu2api/nuwin32/pcapi.h,rule,used most in nu2api/nuwin32/pcapi.cpp (1) pc-path
-function:RegisterWindowCallbackPc,function,RegisterWindowCallbackPc,21411,21411,1,nu2api/nuwin32/nu2api_windows.h,users,RegisterWindowCallbackPc: only nu2api/nuwin32/windows.cpp pc-path; renamed from nu2api/nuwin32/windows.h (SDK/CRT header name)
+function:PublishWindow,function,PublishWindow,21410,21410,1,nu2api/nuwin32/pcapi.h,rule,used most in nu2api/nuwin32/pcapi.cpp (1) pc-path
+function:RegisterWindowCallback,function,RegisterWindowCallback,21411,21411,1,nu2api/nuwin32/nu2api_windows.h,users,RegisterWindowCallback: only nu2api/nuwin32/windows.cpp pc-path; renamed from nu2api/nuwin32/windows.h (SDK/CRT header name)
 function:SetAccessibility,function,SetAccessibility,21412,21412,1,nu2api/nuwin32/nu2api_windows.h,users,SetAccessibility: only nu2api/nuwin32/windows.cpp pc-path; renamed from nu2api/nuwin32/windows.h (SDK/CRT header name)
-function:ParsePlatformArgumentsPc,function,ParsePlatformArgumentsPc,21413,21413,1,nu2api/nuwin32/nu2api_windows.h,users,ParsePlatformArgumentsPc: only nu2api/nuwin32/windows.cpp pc-path; renamed from nu2api/nuwin32/windows.h (SDK/CRT header name)
+function:ParsePlatformArguments,function,ParsePlatformArguments,21413,21413,1,nu2api/nuwin32/nu2api_windows.h,users,ParsePlatformArguments: only nu2api/nuwin32/windows.cpp pc-path; renamed from nu2api/nuwin32/windows.h (SDK/CRT header name)
 function:PcFreeApiCallBuffer,function,PcFreeApiCallBuffer,21420,21420,1,nu2api/nuwin32/d3dApiCalls.h,symbol,nu2api/nuwin32/d3dApiCalls.cpp pc-path
 function:PcRendererCleanup,function,PcRendererCleanup,21421,21421,1,nu2api/nuwin32/d3dApiCalls.h,symbol,nu2api/nuwin32/d3dApiCalls.cpp pc-path
 function:PcRendererShutdown,function,PcRendererShutdown,21422,21422,1,nu2api/nuwin32/d3dApiCalls.h,symbol,nu2api/nuwin32/d3dApiCalls.cpp pc-path
@@ -10939,9 +10939,9 @@ assert:-#4247,assert,,21542,21542,1,nu2api/nuwin32/d3dCore.h,follow-type,PC_DEVI
 assert:-#4248,assert,,21543,21543,1,nu2api/nuwin32/d3dCore.h,follow-type,PC_DEVICE_BACKEND
 assert:-#4249,assert,,21544,21544,1,nu2api/nuwin32/d3dCore.h,follow-type,PC_DEVICE_BACKEND
 assert:-#4250,assert,,21545,21545,1,nu2api/nucore/nuapi.h,follow-type,NUAPI
-function:InitPadDescriptorsPc#2,function,InitPadDescriptorsPc,21551,21551,2,nu2api/PCInput.h,symbol,nu2api/PCInput.cpp pc-path
+function:InitPadDescriptors#2,function,InitPadDescriptors,21551,21551,2,nu2api/PCInput.h,symbol,nu2api/PCInput.cpp pc-path
 function:CreateWindowPc#2,function,CreateWindowPc,21552,21552,1,nu2api/nuwin32/nu2api_windows.h,symbol,nu2api/nuwin32/windows.cpp pc-path; renamed from nu2api/nuwin32/windows.h (SDK/CRT header name)
-function:PublishWindowPc#2,function,PublishWindowPc,21553,21553,1,nu2api/nuwin32/pcapi.h,rule,used most in nu2api/nuwin32/pcapi.cpp (1) pc-path
+function:PublishWindow#2,function,PublishWindow,21553,21553,1,nu2api/nuwin32/pcapi.h,rule,used most in nu2api/nuwin32/pcapi.cpp (1) pc-path
 function:PCDeviceIsAbsent#2,function,PCDeviceIsAbsent,21554,21554,1,nu2api/nuwin32/pcapi.h,rule,used most in nu2api/nuwin32/pcapi.cpp (1) pc-path
 function:NuInitHardware,function,NuInitHardware,21555,21555,1,nu2api/nuwin32/pcapi.h,symbol,nu2api/nuwin32/pcapi.cpp pc-path
 function:NuPrimInit,function,NuPrimInit,21564,21564,1,nu2api/nu3d/nuprim.h,android,NuPrimInit
@@ -11022,7 +11022,7 @@ variable:DeathStarEscapeBNetPacket,variable,DeathStarEscapeBNetPacket,21718,2171
 variable:DeathStarEscapeBSponge,variable,DeathStarEscapeBSponge,21719,21719,1,legoapi/world/levels/episodeIV.h,unused,no unit uses it; PC declaration; owner by saga.h neighbour
 variable:DeathStarEscapeBLiftDown,variable,DeathStarEscapeBLiftDown,21720,21720,1,legoapi/world/levels/episodeIV.h,unused,no unit uses it; PC declaration; owner by saga.h neighbour
 variable:DeathStarEscapeBLiftUp,variable,DeathStarEscapeBLiftUp,21721,21721,1,legoapi/world/levels/episodeIV.h,unused,no unit uses it; PC declaration; owner by saga.h neighbour
-variable:DeathStarEscapeBWindowCleanPc,variable,DeathStarEscapeBWindowCleanPc,21722,21722,1,legoapi/ai/game/aitrigger.h,unused,no unit uses it; PC declaration; owner by saga.h neighbour
+variable:DeathStarEscapeBWindowClean,variable,DeathStarEscapeBWindowClean,21722,21722,1,legoapi/ai/game/aitrigger.h,unused,no unit uses it; PC declaration; owner by saga.h neighbour
 variable:DeathStarEscapeBWasher2,variable,DeathStarEscapeBWasher2,21723,21723,1,legoapi/ai/game/aitrigger.h,unused,no unit uses it; PC declaration; owner by saga.h neighbour
 variable:DeathStarEscapeBWasher1,variable,DeathStarEscapeBWasher1,21724,21724,1,legoapi/ai/game/aitrigger.h,unused,no unit uses it; PC declaration; owner by saga.h neighbour
 function:AITriggerSetSysReset,function,AITriggerSetSysReset,21725,21725,1,legoapi/ai/game/aitrigger.h,android,AITriggerSetSysReset
@@ -11046,134 +11046,134 @@ assert:-#4261,assert,,21789,21789,1,gamelib/util/gamelib_util_types.h,follow-typ
 assert:-#4262,assert,,21790,21790,1,gamelib/util/gamelib_util_types.h,follow-type,VirtualStackAllocator
 assert:-#4263,assert,,21791,21791,1,gamelib/util/gamelib_util_types.h,follow-type,VirtualStackAllocator
 assert:-#4264,assert,,21792,21792,1,gamelib/util/gamelib_util_types.h,follow-type,VirtualStackAllocator
-forward:ShaderLexicalSlicePc,forward,ShaderLexicalSlicePc,21793,21793,1,gamelib/util/CRC16.h,users,ShaderLexicalSlicePc: only nu2api/CRC16.cpp android-path
-struct:ShaderCompilerBufferAllocatorPc,struct,ShaderCompilerBufferAllocatorPc,21795,21818,25,gamelib/util/CRC16.h,rule,used most in nu2api/CRC16.cpp (18) android-path
-assert:-#4265,assert,,21820,21820,2,gamelib/util/CRC16.h,follow-type,ShaderCompilerBufferAllocatorPc
-assert:-#4266,assert,,21821,21821,1,gamelib/util/CRC16.h,follow-type,ShaderCompilerBufferAllocatorPc
-assert:-#4267,assert,,21822,21822,1,gamelib/util/CRC16.h,follow-type,ShaderCompilerBufferAllocatorPc
-assert:-#4268,assert,,21823,21823,1,gamelib/util/CRC16.h,follow-type,ShaderCompilerBufferAllocatorPc
-assert:-#4269,assert,,21824,21824,1,gamelib/util/CRC16.h,follow-type,ShaderCompilerBufferAllocatorPc
-struct:ShaderConditionNodePc,struct,ShaderConditionNodePc,21828,21834,7,gamelib/util/CRC16.h,users,ShaderConditionNodePc: only nu2api/CRC16.cpp android-path
-struct:ShaderSourceNodePc,struct,ShaderSourceNodePc,21836,21850,16,gamelib/util/CRC16.h,users,ShaderSourceNodePc: only nu2api/CRC16.cpp android-path
-assert:-#4270,assert,,21852,21852,2,gamelib/util/CRC16.h,follow-type,ShaderSourceNodePc
-struct:ShaderRegisterBlockPc,struct,ShaderRegisterBlockPc,21854,21864,12,gamelib/util/CRC16.h,users,ShaderRegisterBlockPc: only nu2api/CRC16.cpp android-path
-assert:-#4271,assert,,21866,21866,2,gamelib/util/CRC16.h,follow-type,ShaderRegisterBlockPc
-assert:-#4272,assert,,21867,21867,1,gamelib/util/CRC16.h,follow-type,ShaderRegisterBlockPc
-struct:ShaderMacroDefinitionPc,struct,ShaderMacroDefinitionPc,21869,21875,8,gamelib/util/CRC16.h,users,ShaderMacroDefinitionPc: only nu2api/CRC16.cpp android-path
-assert:-#4273,assert,,21877,21877,2,gamelib/util/CRC16.h,follow-type,ShaderMacroDefinitionPc
-assert:-#4274,assert,,21878,21878,1,gamelib/util/CRC16.h,follow-type,ShaderMacroDefinitionPc
-assert:-#4275,assert,,21879,21879,1,gamelib/util/CRC16.h,follow-type,ShaderMacroDefinitionPc
-assert:-#4276,assert,,21880,21880,1,gamelib/util/CRC16.h,follow-type,ShaderMacroDefinitionPc
-struct:ShaderCompilerDictionaryPc,struct,ShaderCompilerDictionaryPc,21882,21941,61,gamelib/util/CRC16.h,rule,used most in nu2api/CRC16.cpp (28) android-path
-assert:-#4277,assert,,21943,21943,2,gamelib/util/CRC16.h,follow-type,ShaderConditionNodePc
-assert:-#4278,assert,,21944,21944,1,gamelib/util/CRC16.h,follow-type,ShaderConditionNodePc
-assert:-#4279,assert,,21945,21945,1,gamelib/util/CRC16.h,follow-type,ShaderConditionNodePc
-assert:-#4280,assert,,21946,21946,1,gamelib/util/CRC16.h,follow-type,ShaderConditionNodePc
-assert:-#4281,assert,,21947,21947,1,gamelib/util/CRC16.h,follow-type,ShaderSourceNodePc
-assert:-#4282,assert,,21948,21948,1,gamelib/util/CRC16.h,follow-type,ShaderSourceNodePc
-assert:-#4283,assert,,21949,21949,1,gamelib/util/CRC16.h,follow-type,ShaderSourceNodePc
-assert:-#4284,assert,,21950,21950,1,gamelib/util/CRC16.h,follow-type,ShaderSourceNodePc
-assert:-#4285,assert,,21951,21951,1,gamelib/util/CRC16.h,follow-type,ShaderSourceNodePc
-assert:-#4286,assert,,21952,21952,1,gamelib/util/CRC16.h,follow-type,ShaderSourceNodePc
-assert:-#4287,assert,,21953,21953,1,gamelib/util/CRC16.h,follow-type,ShaderSourceNodePc
-assert:-#4288,assert,,21954,21954,1,gamelib/util/CRC16.h,follow-type,ShaderSourceNodePc
-assert:-#4289,assert,,21955,21955,1,gamelib/util/CRC16.h,follow-type,ShaderSourceNodePc
-assert:-#4290,assert,,21956,21956,1,gamelib/util/CRC16.h,follow-type,ShaderSourceNodePc
-assert:-#4291,assert,,21958,21958,2,gamelib/util/CRC16.h,follow-type,ShaderCompilerDictionaryPc
-assert:-#4292,assert,,21959,21959,1,gamelib/util/CRC16.h,follow-type,ShaderCompilerDictionaryPc
-assert:-#4293,assert,,21960,21960,1,gamelib/util/CRC16.h,follow-type,ShaderCompilerDictionaryPc
-assert:-#4294,assert,,21961,21961,1,gamelib/util/CRC16.h,follow-type,ShaderCompilerDictionaryPc
-assert:-#4295,assert,,21962,21962,1,gamelib/util/CRC16.h,follow-type,ShaderCompilerDictionaryPc
-assert:-#4296,assert,,21963,21963,1,gamelib/util/CRC16.h,follow-type,ShaderCompilerDictionaryPc
-assert:-#4297,assert,,21964,21964,1,gamelib/util/CRC16.h,follow-type,ShaderCompilerDictionaryPc
-assert:-#4298,assert,,21965,21965,1,gamelib/util/CRC16.h,follow-type,ShaderCompilerDictionaryPc
-assert:-#4299,assert,,21966,21966,1,gamelib/util/CRC16.h,follow-type,ShaderCompilerDictionaryPc
-assert:-#4300,assert,,21967,21967,1,gamelib/util/CRC16.h,follow-type,ShaderCompilerDictionaryPc
-assert:-#4301,assert,,21968,21968,1,gamelib/util/CRC16.h,follow-type,ShaderCompilerDictionaryPc
-assert:-#4302,assert,,21969,21969,1,gamelib/util/CRC16.h,follow-type,ShaderCompilerDictionaryPc
-assert:-#4303,assert,,21970,21970,1,gamelib/util/CRC16.h,follow-type,ShaderCompilerDictionaryPc
-assert:-#4304,assert,,21971,21971,1,gamelib/util/CRC16.h,follow-type,ShaderCompilerDictionaryPc
-assert:-#4305,assert,,21972,21972,1,gamelib/util/CRC16.h,follow-type,ShaderCompilerDictionaryPc
-assert:-#4306,assert,,21974,21974,2,gamelib/util/CRC16.h,follow-type,ShaderCompilerDictionaryPc
-assert:-#4307,assert,,21975,21975,1,gamelib/util/CRC16.h,follow-type,ShaderCompilerDictionaryPc
-assert:-#4308,assert,,21976,21976,1,gamelib/util/CRC16.h,follow-type,ShaderCompilerDictionaryPc
-assert:-#4309,assert,,21977,21977,1,gamelib/util/CRC16.h,follow-type,ShaderCompilerDictionaryPc
-assert:-#4310,assert,,21978,21978,1,gamelib/util/CRC16.h,follow-type,ShaderCompilerDictionaryPc
-assert:-#4311,assert,,21979,21979,1,gamelib/util/CRC16.h,follow-type,ShaderCompilerDictionaryPc
-assert:-#4312,assert,,21980,21980,1,gamelib/util/CRC16.h,follow-type,ShaderCompilerDictionaryPc
-assert:-#4313,assert,,21982,21982,2,gamelib/util/CRC16.h,follow-type,ShaderRegisterBlockPc
-assert:-#4314,assert,,21983,21983,1,gamelib/util/CRC16.h,follow-type,ShaderCompilerDictionaryPc
-assert:-#4315,assert,,21984,21984,1,gamelib/util/CRC16.h,follow-type,ShaderCompilerDictionaryPc
-assert:-#4316,assert,,21985,21985,1,gamelib/util/CRC16.h,follow-type,ShaderCompilerDictionaryPc
-function:ShaderLexicalClassesInitPc,function,ShaderLexicalClassesInitPc,21986,21986,1,gamelib/util/CRC16.h,users,ShaderLexicalClassesInitPc: only nu2api/CRC16.cpp android-path
-assert:-#4317,assert,,21988,21988,2,gamelib/util/CRC16.h,follow-type,ShaderCompilerDictionaryPc
-struct:ShaderExpansionNodePc,struct,ShaderExpansionNodePc,21990,22036,48,gamelib/util/CRC16.h,users,ShaderExpansionNodePc: only nu2api/CRC16.cpp android-path
-assert:-#4318,assert,,22038,22038,2,gamelib/util/CRC16.h,follow-type,ShaderExpansionNodePc
-assert:-#4319,assert,,22039,22039,1,gamelib/util/CRC16.h,follow-type,ShaderExpansionNodePc
-assert:-#4320,assert,,22040,22040,1,gamelib/util/CRC16.h,follow-type,ShaderExpansionNodePc
-assert:-#4321,assert,,22041,22041,1,gamelib/util/CRC16.h,follow-type,ShaderExpansionNodePc
-assert:-#4322,assert,,22042,22042,1,gamelib/util/CRC16.h,follow-type,ShaderExpansionNodePc
-assert:-#4323,assert,,22043,22043,1,gamelib/util/CRC16.h,follow-type,ShaderExpansionNodePc
-assert:-#4324,assert,,22044,22044,1,gamelib/util/CRC16.h,follow-type,ShaderExpansionNodePc
-assert:-#4325,assert,,22045,22045,1,gamelib/util/CRC16.h,follow-type,ShaderExpansionNodePc
-assert:-#4326,assert,,22046,22046,1,gamelib/util/CRC16.h,follow-type,ShaderExpansionNodePc
-assert:-#4327,assert,,22047,22047,1,gamelib/util/CRC16.h,follow-type,ShaderExpansionNodePc
-assert:-#4328,assert,,22048,22048,1,gamelib/util/CRC16.h,follow-type,ShaderExpansionNodePc
-assert:-#4329,assert,,22049,22049,1,gamelib/util/CRC16.h,follow-type,ShaderExpansionNodePc
-assert:-#4330,assert,,22050,22050,1,gamelib/util/CRC16.h,follow-type,ShaderExpansionNodePc
-assert:-#4331,assert,,22051,22051,1,gamelib/util/CRC16.h,follow-type,ShaderExpansionNodePc
-assert:-#4332,assert,,22052,22052,1,gamelib/util/CRC16.h,follow-type,ShaderExpansionNodePc
-assert:-#4333,assert,,22053,22053,1,gamelib/util/CRC16.h,follow-type,ShaderExpansionNodePc
-assert:-#4334,assert,,22054,22054,1,gamelib/util/CRC16.h,follow-type,ShaderExpansionNodePc
-assert:-#4335,assert,,22055,22055,1,gamelib/util/CRC16.h,follow-type,ShaderExpansionNodePc
-assert:-#4336,assert,,22056,22056,1,gamelib/util/CRC16.h,follow-type,ShaderExpansionNodePc
-assert:-#4337,assert,,22057,22057,1,gamelib/util/CRC16.h,follow-type,ShaderExpansionNodePc
-assert:-#4338,assert,,22058,22058,1,gamelib/util/CRC16.h,follow-type,ShaderExpansionNodePc
-assert:-#4339,assert,,22059,22059,1,gamelib/util/CRC16.h,follow-type,ShaderExpansionNodePc
-assert:-#4340,assert,,22060,22060,1,gamelib/util/CRC16.h,follow-type,ShaderExpansionNodePc
-struct:ShaderParserNodePc,struct,ShaderParserNodePc,22062,22066,6,nu2api/shader_parser.h,rule,used most in nu2api/shader_parser.cpp (17) pc-path
-struct:ShaderParserTextNodePc,struct,ShaderParserTextNodePc,22068,22072,6,nu2api/shader_parser.h,rule,used most in nu2api/shader_parser.cpp (5) pc-path
-struct:ShaderParserMacroNodePc,struct,ShaderParserMacroNodePc,22074,22078,6,nu2api/shader_parser.h,rule,used most in nu2api/shader_parser.cpp (5) pc-path
-struct:ShaderParserUndefNodePc,struct,ShaderParserUndefNodePc,22080,22083,5,nu2api/shader_parser.h,rule,used most in nu2api/shader_parser.cpp (5) pc-path
-struct:ShaderParserBranchNodePc,struct,ShaderParserBranchNodePc,22085,22090,7,nu2api/shader_parser.h,rule,used most in nu2api/shader_parser.cpp (8) pc-path
-forward:ShaderCompilerParserPc,forward,ShaderCompilerParserPc,22091,22091,1,nu2api/shader_parser.h,rule,used most in nu2api/shader_parser.cpp (27) pc-path
-include:vector,include,vector,22093,22093,1,nu2api/shader_parser.h,follow-next,forward:ShaderParserIncludePc
-forward:ShaderParserIncludePc,forward,ShaderParserIncludePc,22094,22094,1,nu2api/shader_parser.h,rule,used most in nu2api/shader_parser.cpp (7) pc-path
-class:ShaderCompilerParserPc,class,ShaderCompilerParserPc,22096,22136,42,nu2api/shader_parser.h,rule,used most in nu2api/shader_parser.cpp (27) pc-path
-assert:-#4341,assert,,22138,22138,2,nu2api/shader_parser.h,follow-type,ShaderCompilerParserPc
-assert:-#4342,assert,,22139,22139,1,nu2api/shader_parser.h,follow-type,ShaderCompilerParserPc
-assert:-#4343,assert,,22140,22140,1,nu2api/shader_parser.h,follow-type,ShaderCompilerParserPc
+forward:ShaderLexicalSlice,forward,ShaderLexicalSlice,21793,21793,1,gamelib/util/CRC16.h,users,ShaderLexicalSlice: only nu2api/CRC16.cpp android-path
+struct:ShaderCompilerBufferAllocator,struct,ShaderCompilerBufferAllocator,21795,21818,25,gamelib/util/CRC16.h,rule,used most in nu2api/CRC16.cpp (18) android-path
+assert:-#4265,assert,,21820,21820,2,gamelib/util/CRC16.h,follow-type,ShaderCompilerBufferAllocator
+assert:-#4266,assert,,21821,21821,1,gamelib/util/CRC16.h,follow-type,ShaderCompilerBufferAllocator
+assert:-#4267,assert,,21822,21822,1,gamelib/util/CRC16.h,follow-type,ShaderCompilerBufferAllocator
+assert:-#4268,assert,,21823,21823,1,gamelib/util/CRC16.h,follow-type,ShaderCompilerBufferAllocator
+assert:-#4269,assert,,21824,21824,1,gamelib/util/CRC16.h,follow-type,ShaderCompilerBufferAllocator
+struct:ShaderConditionNode,struct,ShaderConditionNode,21828,21834,7,gamelib/util/CRC16.h,users,ShaderConditionNode: only nu2api/CRC16.cpp android-path
+struct:ShaderSourceNode,struct,ShaderSourceNode,21836,21850,16,gamelib/util/CRC16.h,users,ShaderSourceNode: only nu2api/CRC16.cpp android-path
+assert:-#4270,assert,,21852,21852,2,gamelib/util/CRC16.h,follow-type,ShaderSourceNode
+struct:ShaderRegisterBlock,struct,ShaderRegisterBlock,21854,21864,12,gamelib/util/CRC16.h,users,ShaderRegisterBlock: only nu2api/CRC16.cpp android-path
+assert:-#4271,assert,,21866,21866,2,gamelib/util/CRC16.h,follow-type,ShaderRegisterBlock
+assert:-#4272,assert,,21867,21867,1,gamelib/util/CRC16.h,follow-type,ShaderRegisterBlock
+struct:ShaderMacroDefinition,struct,ShaderMacroDefinition,21869,21875,8,gamelib/util/CRC16.h,users,ShaderMacroDefinition: only nu2api/CRC16.cpp android-path
+assert:-#4273,assert,,21877,21877,2,gamelib/util/CRC16.h,follow-type,ShaderMacroDefinition
+assert:-#4274,assert,,21878,21878,1,gamelib/util/CRC16.h,follow-type,ShaderMacroDefinition
+assert:-#4275,assert,,21879,21879,1,gamelib/util/CRC16.h,follow-type,ShaderMacroDefinition
+assert:-#4276,assert,,21880,21880,1,gamelib/util/CRC16.h,follow-type,ShaderMacroDefinition
+struct:ShaderCompilerDictionary,struct,ShaderCompilerDictionary,21882,21941,61,gamelib/util/CRC16.h,rule,used most in nu2api/CRC16.cpp (28) android-path
+assert:-#4277,assert,,21943,21943,2,gamelib/util/CRC16.h,follow-type,ShaderConditionNode
+assert:-#4278,assert,,21944,21944,1,gamelib/util/CRC16.h,follow-type,ShaderConditionNode
+assert:-#4279,assert,,21945,21945,1,gamelib/util/CRC16.h,follow-type,ShaderConditionNode
+assert:-#4280,assert,,21946,21946,1,gamelib/util/CRC16.h,follow-type,ShaderConditionNode
+assert:-#4281,assert,,21947,21947,1,gamelib/util/CRC16.h,follow-type,ShaderSourceNode
+assert:-#4282,assert,,21948,21948,1,gamelib/util/CRC16.h,follow-type,ShaderSourceNode
+assert:-#4283,assert,,21949,21949,1,gamelib/util/CRC16.h,follow-type,ShaderSourceNode
+assert:-#4284,assert,,21950,21950,1,gamelib/util/CRC16.h,follow-type,ShaderSourceNode
+assert:-#4285,assert,,21951,21951,1,gamelib/util/CRC16.h,follow-type,ShaderSourceNode
+assert:-#4286,assert,,21952,21952,1,gamelib/util/CRC16.h,follow-type,ShaderSourceNode
+assert:-#4287,assert,,21953,21953,1,gamelib/util/CRC16.h,follow-type,ShaderSourceNode
+assert:-#4288,assert,,21954,21954,1,gamelib/util/CRC16.h,follow-type,ShaderSourceNode
+assert:-#4289,assert,,21955,21955,1,gamelib/util/CRC16.h,follow-type,ShaderSourceNode
+assert:-#4290,assert,,21956,21956,1,gamelib/util/CRC16.h,follow-type,ShaderSourceNode
+assert:-#4291,assert,,21958,21958,2,gamelib/util/CRC16.h,follow-type,ShaderCompilerDictionary
+assert:-#4292,assert,,21959,21959,1,gamelib/util/CRC16.h,follow-type,ShaderCompilerDictionary
+assert:-#4293,assert,,21960,21960,1,gamelib/util/CRC16.h,follow-type,ShaderCompilerDictionary
+assert:-#4294,assert,,21961,21961,1,gamelib/util/CRC16.h,follow-type,ShaderCompilerDictionary
+assert:-#4295,assert,,21962,21962,1,gamelib/util/CRC16.h,follow-type,ShaderCompilerDictionary
+assert:-#4296,assert,,21963,21963,1,gamelib/util/CRC16.h,follow-type,ShaderCompilerDictionary
+assert:-#4297,assert,,21964,21964,1,gamelib/util/CRC16.h,follow-type,ShaderCompilerDictionary
+assert:-#4298,assert,,21965,21965,1,gamelib/util/CRC16.h,follow-type,ShaderCompilerDictionary
+assert:-#4299,assert,,21966,21966,1,gamelib/util/CRC16.h,follow-type,ShaderCompilerDictionary
+assert:-#4300,assert,,21967,21967,1,gamelib/util/CRC16.h,follow-type,ShaderCompilerDictionary
+assert:-#4301,assert,,21968,21968,1,gamelib/util/CRC16.h,follow-type,ShaderCompilerDictionary
+assert:-#4302,assert,,21969,21969,1,gamelib/util/CRC16.h,follow-type,ShaderCompilerDictionary
+assert:-#4303,assert,,21970,21970,1,gamelib/util/CRC16.h,follow-type,ShaderCompilerDictionary
+assert:-#4304,assert,,21971,21971,1,gamelib/util/CRC16.h,follow-type,ShaderCompilerDictionary
+assert:-#4305,assert,,21972,21972,1,gamelib/util/CRC16.h,follow-type,ShaderCompilerDictionary
+assert:-#4306,assert,,21974,21974,2,gamelib/util/CRC16.h,follow-type,ShaderCompilerDictionary
+assert:-#4307,assert,,21975,21975,1,gamelib/util/CRC16.h,follow-type,ShaderCompilerDictionary
+assert:-#4308,assert,,21976,21976,1,gamelib/util/CRC16.h,follow-type,ShaderCompilerDictionary
+assert:-#4309,assert,,21977,21977,1,gamelib/util/CRC16.h,follow-type,ShaderCompilerDictionary
+assert:-#4310,assert,,21978,21978,1,gamelib/util/CRC16.h,follow-type,ShaderCompilerDictionary
+assert:-#4311,assert,,21979,21979,1,gamelib/util/CRC16.h,follow-type,ShaderCompilerDictionary
+assert:-#4312,assert,,21980,21980,1,gamelib/util/CRC16.h,follow-type,ShaderCompilerDictionary
+assert:-#4313,assert,,21982,21982,2,gamelib/util/CRC16.h,follow-type,ShaderRegisterBlock
+assert:-#4314,assert,,21983,21983,1,gamelib/util/CRC16.h,follow-type,ShaderCompilerDictionary
+assert:-#4315,assert,,21984,21984,1,gamelib/util/CRC16.h,follow-type,ShaderCompilerDictionary
+assert:-#4316,assert,,21985,21985,1,gamelib/util/CRC16.h,follow-type,ShaderCompilerDictionary
+function:ShaderLexicalClassesInit,function,ShaderLexicalClassesInit,21986,21986,1,gamelib/util/CRC16.h,users,ShaderLexicalClassesInit: only nu2api/CRC16.cpp android-path
+assert:-#4317,assert,,21988,21988,2,gamelib/util/CRC16.h,follow-type,ShaderCompilerDictionary
+struct:ShaderExpansionNode,struct,ShaderExpansionNode,21990,22036,48,gamelib/util/CRC16.h,users,ShaderExpansionNode: only nu2api/CRC16.cpp android-path
+assert:-#4318,assert,,22038,22038,2,gamelib/util/CRC16.h,follow-type,ShaderExpansionNode
+assert:-#4319,assert,,22039,22039,1,gamelib/util/CRC16.h,follow-type,ShaderExpansionNode
+assert:-#4320,assert,,22040,22040,1,gamelib/util/CRC16.h,follow-type,ShaderExpansionNode
+assert:-#4321,assert,,22041,22041,1,gamelib/util/CRC16.h,follow-type,ShaderExpansionNode
+assert:-#4322,assert,,22042,22042,1,gamelib/util/CRC16.h,follow-type,ShaderExpansionNode
+assert:-#4323,assert,,22043,22043,1,gamelib/util/CRC16.h,follow-type,ShaderExpansionNode
+assert:-#4324,assert,,22044,22044,1,gamelib/util/CRC16.h,follow-type,ShaderExpansionNode
+assert:-#4325,assert,,22045,22045,1,gamelib/util/CRC16.h,follow-type,ShaderExpansionNode
+assert:-#4326,assert,,22046,22046,1,gamelib/util/CRC16.h,follow-type,ShaderExpansionNode
+assert:-#4327,assert,,22047,22047,1,gamelib/util/CRC16.h,follow-type,ShaderExpansionNode
+assert:-#4328,assert,,22048,22048,1,gamelib/util/CRC16.h,follow-type,ShaderExpansionNode
+assert:-#4329,assert,,22049,22049,1,gamelib/util/CRC16.h,follow-type,ShaderExpansionNode
+assert:-#4330,assert,,22050,22050,1,gamelib/util/CRC16.h,follow-type,ShaderExpansionNode
+assert:-#4331,assert,,22051,22051,1,gamelib/util/CRC16.h,follow-type,ShaderExpansionNode
+assert:-#4332,assert,,22052,22052,1,gamelib/util/CRC16.h,follow-type,ShaderExpansionNode
+assert:-#4333,assert,,22053,22053,1,gamelib/util/CRC16.h,follow-type,ShaderExpansionNode
+assert:-#4334,assert,,22054,22054,1,gamelib/util/CRC16.h,follow-type,ShaderExpansionNode
+assert:-#4335,assert,,22055,22055,1,gamelib/util/CRC16.h,follow-type,ShaderExpansionNode
+assert:-#4336,assert,,22056,22056,1,gamelib/util/CRC16.h,follow-type,ShaderExpansionNode
+assert:-#4337,assert,,22057,22057,1,gamelib/util/CRC16.h,follow-type,ShaderExpansionNode
+assert:-#4338,assert,,22058,22058,1,gamelib/util/CRC16.h,follow-type,ShaderExpansionNode
+assert:-#4339,assert,,22059,22059,1,gamelib/util/CRC16.h,follow-type,ShaderExpansionNode
+assert:-#4340,assert,,22060,22060,1,gamelib/util/CRC16.h,follow-type,ShaderExpansionNode
+struct:ShaderParserNode,struct,ShaderParserNode,22062,22066,6,nu2api/shader_parser.h,rule,used most in nu2api/shader_parser.cpp (17) pc-path
+struct:ShaderParserTextNode,struct,ShaderParserTextNode,22068,22072,6,nu2api/shader_parser.h,rule,used most in nu2api/shader_parser.cpp (5) pc-path
+struct:ShaderParserMacroNode,struct,ShaderParserMacroNode,22074,22078,6,nu2api/shader_parser.h,rule,used most in nu2api/shader_parser.cpp (5) pc-path
+struct:ShaderParserUndefNode,struct,ShaderParserUndefNode,22080,22083,5,nu2api/shader_parser.h,rule,used most in nu2api/shader_parser.cpp (5) pc-path
+struct:ShaderParserBranchNode,struct,ShaderParserBranchNode,22085,22090,7,nu2api/shader_parser.h,rule,used most in nu2api/shader_parser.cpp (8) pc-path
+forward:ShaderCompilerParser,forward,ShaderCompilerParser,22091,22091,1,nu2api/shader_parser.h,rule,used most in nu2api/shader_parser.cpp (27) pc-path
+include:vector,include,vector,22093,22093,1,nu2api/shader_parser.h,follow-next,forward:ShaderParserInclude
+forward:ShaderParserInclude,forward,ShaderParserInclude,22094,22094,1,nu2api/shader_parser.h,rule,used most in nu2api/shader_parser.cpp (7) pc-path
+class:ShaderCompilerParser,class,ShaderCompilerParser,22096,22136,42,nu2api/shader_parser.h,rule,used most in nu2api/shader_parser.cpp (27) pc-path
+assert:-#4341,assert,,22138,22138,2,nu2api/shader_parser.h,follow-type,ShaderCompilerParser
+assert:-#4342,assert,,22139,22139,1,nu2api/shader_parser.h,follow-type,ShaderCompilerParser
+assert:-#4343,assert,,22140,22140,1,nu2api/shader_parser.h,follow-type,ShaderCompilerParser
 assert:-#4344,assert,,22141,22141,1,decomp.h,decomp,data model check of SDK type std
-assert:-#4345,assert,,22143,22143,1,nu2api/shader_parser.h,follow-type,ShaderParserNodePc
-assert:-#4346,assert,,22144,22144,1,nu2api/shader_parser.h,follow-type,ShaderParserNodePc
-assert:-#4347,assert,,22145,22145,1,nu2api/shader_parser.h,follow-type,ShaderParserNodePc
-assert:-#4348,assert,,22146,22146,1,nu2api/shader_parser.h,follow-type,ShaderParserTextNodePc
-assert:-#4349,assert,,22147,22147,1,nu2api/shader_parser.h,follow-type,ShaderParserTextNodePc
-assert:-#4350,assert,,22148,22148,1,nu2api/shader_parser.h,follow-type,ShaderParserTextNodePc
-assert:-#4351,assert,,22149,22149,1,nu2api/shader_parser.h,follow-type,ShaderParserMacroNodePc
-assert:-#4352,assert,,22150,22150,1,nu2api/shader_parser.h,follow-type,ShaderParserMacroNodePc
-assert:-#4353,assert,,22151,22151,1,nu2api/shader_parser.h,follow-type,ShaderParserMacroNodePc
-assert:-#4354,assert,,22152,22152,1,nu2api/shader_parser.h,follow-type,ShaderParserUndefNodePc
-assert:-#4355,assert,,22153,22153,1,nu2api/shader_parser.h,follow-type,ShaderParserUndefNodePc
-assert:-#4356,assert,,22154,22154,1,nu2api/shader_parser.h,follow-type,ShaderParserBranchNodePc
-assert:-#4357,assert,,22155,22155,1,nu2api/shader_parser.h,follow-type,ShaderParserBranchNodePc
-assert:-#4358,assert,,22156,22156,1,nu2api/shader_parser.h,follow-type,ShaderParserBranchNodePc
-assert:-#4359,assert,,22157,22157,1,nu2api/shader_parser.h,follow-type,ShaderParserBranchNodePc
-assert:-#4360,assert,,22159,22159,1,nu2api/shader_parser.h,follow-type,ShaderCompilerParserPc
-assert:-#4361,assert,,22160,22160,1,nu2api/shader_parser.h,follow-type,ShaderCompilerParserPc
-assert:-#4362,assert,,22161,22161,1,nu2api/shader_parser.h,follow-type,ShaderCompilerParserPc
-assert:-#4363,assert,,22162,22162,1,nu2api/shader_parser.h,follow-type,ShaderCompilerParserPc
-assert:-#4364,assert,,22163,22163,1,nu2api/shader_parser.h,follow-type,ShaderCompilerParserPc
-assert:-#4365,assert,,22164,22164,1,nu2api/shader_parser.h,follow-type,ShaderCompilerParserPc
-assert:-#4366,assert,,22165,22165,1,nu2api/shader_parser.h,follow-type,ShaderCompilerParserPc
-assert:-#4367,assert,,22166,22166,1,nu2api/shader_parser.h,follow-type,ShaderCompilerParserPc
-assert:-#4368,assert,,22167,22167,1,nu2api/shader_parser.h,follow-type,ShaderCompilerParserPc
-assert:-#4369,assert,,22168,22168,1,nu2api/shader_parser.h,follow-type,ShaderCompilerParserPc
-struct:ShaderLexicalSlicePc,struct,ShaderLexicalSlicePc,22171,22182,13,gamelib/util/CRC16.h,users,ShaderLexicalSlicePc: only nu2api/CRC16.cpp android-path
-struct:ShaderLexicalReaderPc,struct,ShaderLexicalReaderPc,22184,22188,6,gamelib/util/CRC16.h,users,ShaderLexicalReaderPc: only nu2api/CRC16.cpp android-path
-assert:-#4370,assert,,22190,22190,2,gamelib/util/CRC16.h,follow-type,ShaderLexicalSlicePc
-assert:-#4371,assert,,22191,22191,1,gamelib/util/CRC16.h,follow-type,ShaderLexicalSlicePc
-assert:-#4372,assert,,22192,22192,1,gamelib/util/CRC16.h,follow-type,ShaderLexicalSlicePc
+assert:-#4345,assert,,22143,22143,1,nu2api/shader_parser.h,follow-type,ShaderParserNode
+assert:-#4346,assert,,22144,22144,1,nu2api/shader_parser.h,follow-type,ShaderParserNode
+assert:-#4347,assert,,22145,22145,1,nu2api/shader_parser.h,follow-type,ShaderParserNode
+assert:-#4348,assert,,22146,22146,1,nu2api/shader_parser.h,follow-type,ShaderParserTextNode
+assert:-#4349,assert,,22147,22147,1,nu2api/shader_parser.h,follow-type,ShaderParserTextNode
+assert:-#4350,assert,,22148,22148,1,nu2api/shader_parser.h,follow-type,ShaderParserTextNode
+assert:-#4351,assert,,22149,22149,1,nu2api/shader_parser.h,follow-type,ShaderParserMacroNode
+assert:-#4352,assert,,22150,22150,1,nu2api/shader_parser.h,follow-type,ShaderParserMacroNode
+assert:-#4353,assert,,22151,22151,1,nu2api/shader_parser.h,follow-type,ShaderParserMacroNode
+assert:-#4354,assert,,22152,22152,1,nu2api/shader_parser.h,follow-type,ShaderParserUndefNode
+assert:-#4355,assert,,22153,22153,1,nu2api/shader_parser.h,follow-type,ShaderParserUndefNode
+assert:-#4356,assert,,22154,22154,1,nu2api/shader_parser.h,follow-type,ShaderParserBranchNode
+assert:-#4357,assert,,22155,22155,1,nu2api/shader_parser.h,follow-type,ShaderParserBranchNode
+assert:-#4358,assert,,22156,22156,1,nu2api/shader_parser.h,follow-type,ShaderParserBranchNode
+assert:-#4359,assert,,22157,22157,1,nu2api/shader_parser.h,follow-type,ShaderParserBranchNode
+assert:-#4360,assert,,22159,22159,1,nu2api/shader_parser.h,follow-type,ShaderCompilerParser
+assert:-#4361,assert,,22160,22160,1,nu2api/shader_parser.h,follow-type,ShaderCompilerParser
+assert:-#4362,assert,,22161,22161,1,nu2api/shader_parser.h,follow-type,ShaderCompilerParser
+assert:-#4363,assert,,22162,22162,1,nu2api/shader_parser.h,follow-type,ShaderCompilerParser
+assert:-#4364,assert,,22163,22163,1,nu2api/shader_parser.h,follow-type,ShaderCompilerParser
+assert:-#4365,assert,,22164,22164,1,nu2api/shader_parser.h,follow-type,ShaderCompilerParser
+assert:-#4366,assert,,22165,22165,1,nu2api/shader_parser.h,follow-type,ShaderCompilerParser
+assert:-#4367,assert,,22166,22166,1,nu2api/shader_parser.h,follow-type,ShaderCompilerParser
+assert:-#4368,assert,,22167,22167,1,nu2api/shader_parser.h,follow-type,ShaderCompilerParser
+assert:-#4369,assert,,22168,22168,1,nu2api/shader_parser.h,follow-type,ShaderCompilerParser
+struct:ShaderLexicalSlice,struct,ShaderLexicalSlice,22171,22182,13,gamelib/util/CRC16.h,users,ShaderLexicalSlice: only nu2api/CRC16.cpp android-path
+struct:ShaderLexicalReader,struct,ShaderLexicalReader,22184,22188,6,gamelib/util/CRC16.h,users,ShaderLexicalReader: only nu2api/CRC16.cpp android-path
+assert:-#4370,assert,,22190,22190,2,gamelib/util/CRC16.h,follow-type,ShaderLexicalSlice
+assert:-#4371,assert,,22191,22191,1,gamelib/util/CRC16.h,follow-type,ShaderLexicalSlice
+assert:-#4372,assert,,22192,22192,1,gamelib/util/CRC16.h,follow-type,ShaderLexicalSlice
 struct:PC_SHADER_FILTER_DESC_VIEW,struct,PC_SHADER_FILTER_DESC_VIEW,22198,22223,27,decomp.h,decomp,view type
 assert:-#4373,assert,,22225,22225,2,decomp.h,follow-type,PC_SHADER_FILTER_DESC_VIEW
 assert:-#4374,assert,,22226,22226,1,decomp.h,follow-type,PC_SHADER_FILTER_DESC_VIEW
@@ -11206,15 +11206,15 @@ assert:-#4398,assert,,22342,22342,1,decomp.h,follow-type,PC_SHADER_MATERIAL_FILT
 assert:-#4399,assert,,22343,22343,1,nu2api/nuwin32/d3dCore.h,follow-type,PC_DEVICE_BACKEND
 assert:-#4400,assert,,22344,22344,1,nu2api/nuwin32/pcapi.h,follow-type,PC_WINDOW_OPTIONS
 class:ShaderBuilderGen,class,ShaderBuilderGen,22346,22375,31,nu2api/nu3d/ShaderObjectKey.h,users,ShaderBuilderGen: only nu2api/ShaderObjectKey.cpp android-dir
-typedef:ShaderCompilerBasePc,typedef,ShaderCompilerBasePc,22377,22377,2,nu2api/nu3d/ShaderObjectKey.h,users,ShaderCompilerBasePc: only nu2api/ShaderObjectKey.cpp android-dir
-assert:-#4401,assert,,22378,22378,1,nu2api/nu3d/ShaderObjectKey.h,follow-type,ShaderCompilerBasePc
-assert:-#4402,assert,,22379,22379,1,nu2api/nu3d/ShaderObjectKey.h,follow-type,ShaderCompilerBasePc
-assert:-#4403,assert,,22380,22380,1,nu2api/nu3d/ShaderObjectKey.h,follow-type,ShaderCompilerBasePc
-assert:-#4404,assert,,22381,22381,1,nu2api/nu3d/ShaderObjectKey.h,follow-type,ShaderCompilerBasePc
-assert:-#4405,assert,,22382,22382,1,nu2api/nu3d/ShaderObjectKey.h,follow-type,ShaderCompilerBasePc
-assert:-#4406,assert,,22383,22383,1,nu2api/nu3d/ShaderObjectKey.h,follow-type,ShaderCompilerBasePc
-assert:-#4407,assert,,22384,22384,1,nu2api/nu3d/ShaderObjectKey.h,follow-type,ShaderCompilerBasePc
-assert:-#4408,assert,,22385,22385,1,nu2api/nu3d/ShaderObjectKey.h,follow-type,ShaderCompilerBasePc
+typedef:ShaderCompilerBase,typedef,ShaderCompilerBase,22377,22377,2,nu2api/nu3d/ShaderObjectKey.h,users,ShaderCompilerBase: only nu2api/ShaderObjectKey.cpp android-dir
+assert:-#4401,assert,,22378,22378,1,nu2api/nu3d/ShaderObjectKey.h,follow-type,ShaderCompilerBase
+assert:-#4402,assert,,22379,22379,1,nu2api/nu3d/ShaderObjectKey.h,follow-type,ShaderCompilerBase
+assert:-#4403,assert,,22380,22380,1,nu2api/nu3d/ShaderObjectKey.h,follow-type,ShaderCompilerBase
+assert:-#4404,assert,,22381,22381,1,nu2api/nu3d/ShaderObjectKey.h,follow-type,ShaderCompilerBase
+assert:-#4405,assert,,22382,22382,1,nu2api/nu3d/ShaderObjectKey.h,follow-type,ShaderCompilerBase
+assert:-#4406,assert,,22383,22383,1,nu2api/nu3d/ShaderObjectKey.h,follow-type,ShaderCompilerBase
+assert:-#4407,assert,,22384,22384,1,nu2api/nu3d/ShaderObjectKey.h,follow-type,ShaderCompilerBase
+assert:-#4408,assert,,22385,22385,1,nu2api/nu3d/ShaderObjectKey.h,follow-type,ShaderCompilerBase
 function:PCShaderObjectCreateHLSLPc,function,PCShaderObjectCreateHLSLPc,22387,22387,2,nu2api/nu3d/nushaderobjectbase.h,symbol,nu2api/nushaderobjectbase.cpp android-dir
 function:PCShaderObjectDestroyHLSLPc,function,PCShaderObjectDestroyHLSLPc,22388,22388,1,nu2api/nu3d/nushaderobjectbase.h,symbol,nu2api/nushaderobjectbase.cpp android-dir
 class:NuShaderObject,class,NuShaderObject,22390,22422,34,nu2api/nu3d/ShaderManager.h,android,NuShaderObject
@@ -11236,8 +11236,8 @@ assert:-#4417,assert,,22487,22487,1,nu2api/ShaderManagerHLSL.h,follow-type,Shade
 assert:-#4418,assert,,22488,22488,1,nu2api/ShaderManagerHLSL.h,follow-type,ShaderManagerHLSLPc
 assert:-#4419,assert,,22489,22489,1,nu2api/ShaderManagerHLSL.h,follow-type,ShaderManagerHLSLPc
 assert:-#4420,assert,,22490,22490,1,nu2api/ShaderManagerHLSL.h,follow-type,ShaderManagerHLSLPc
-function:ShaderDeclarationFlagsPc,function,ShaderDeclarationFlagsPc,22492,22492,2,gamelib/util/CRC16.h,users,ShaderDeclarationFlagsPc: only nu2api/CRC16.cpp android-path
-function:ShaderDeclarationSemanticPc,function,ShaderDeclarationSemanticPc,22493,22493,1,gamelib/util/CRC16.h,users,ShaderDeclarationSemanticPc: only nu2api/CRC16.cpp android-path
+function:ShaderDeclarationFlags,function,ShaderDeclarationFlags,22492,22492,2,gamelib/util/CRC16.h,users,ShaderDeclarationFlags: only nu2api/CRC16.cpp android-path
+function:ShaderDeclarationSemantic,function,ShaderDeclarationSemantic,22493,22493,1,gamelib/util/CRC16.h,users,ShaderDeclarationSemantic: only nu2api/CRC16.cpp android-path
 function:instNuGCutSceneEndFirstFrame,function,instNuGCutSceneEndFirstFrame,22500,22500,1,legoapi/cutscenes/gcutscn.h,android,instNuGCutSceneEndFirstFrame
 function:instNuGCutSceneStart,function,instNuGCutSceneStart,22501,22501,1,legoapi/cutscenes/gcutscn.h,android,instNuGCutSceneStart
 function:instNuGCutSceneReset,function,instNuGCutSceneReset,22502,22502,1,legoapi/cutscenes/gcutscn.h,android,instNuGCutSceneReset
@@ -11341,8 +11341,8 @@ variable:MenuSuppressRightHeld,variable,MenuSuppressRightHeld,22653,22653,1,game
 variable:MENUSFX_MENUMOVE,variable,MENUSFX_MENUMOVE,22654,22654,1,legoapi/menus/screens/gamemenuall.h,android,MENUSFX_MENUMOVE
 variable:Menu_InSaveFlow,variable,Menu_InSaveFlow,22655,22655,1,legoapi/menus/screens/gamemenuall.h,android,Menu_InSaveFlow
 variable:Menu_InLoadFlow,variable,Menu_InLoadFlow,22656,22656,1,legoapi/menus/screens/gamemenuall.h,android,Menu_InLoadFlow
-variable:MenuKeyboardOverrideActivePc,variable,MenuKeyboardOverrideActivePc,22657,22657,1,legoapi/menus/screens/menu.h,users,MenuKeyboardOverrideActivePc: only legogame/menu.cpp android-path
-variable:MenuKeyboardPendingPc,variable,MenuKeyboardPendingPc,22658,22658,1,legoapi/menus/screens/menu.h,rule,used most in legogame/menu.cpp (3) android-path
+variable:MenuKeyboardOverrideActive,variable,MenuKeyboardOverrideActive,22657,22657,1,legoapi/menus/screens/menu.h,users,MenuKeyboardOverrideActive: only legogame/menu.cpp android-path
+variable:MenuKeyboardPending,variable,MenuKeyboardPending,22658,22658,1,legoapi/menus/screens/menu.h,rule,used most in legogame/menu.cpp (3) android-path
 variable:pause_i_pad,variable,pause_i_pad,22659,22659,1,globals.h,android-weak,catch-all (needs a module owner); pause_i_pad
 variable:editor_active,variable,editor_active,22660,22660,1,batman.h,android-weak,editor_active
 variable:GAMEPAD_MENUSELECT,variable,GAMEPAD_MENUSELECT,22661,22661,1,legoapi/core/input/gamepads.h,android,GAMEPAD_MENUSELECT
@@ -11353,7 +11353,7 @@ variable:MiniKitCollection,variable,MiniKitCollection,22665,22665,1,legoapi/worl
 function:MenuRepeat,function,MenuRepeat,22673,22673,1,legoapi/menus/screens/gamemenuall.h,android,MenuRepeat
 function:UpdateMenu,function,UpdateMenu,22674,22674,1,gameapi/gui/apimenu.h,android,UpdateMenu
 function:UpdateGameMenu,function,UpdateGameMenu,22675,22675,1,legoapi/menus/screens/menu.h,android,UpdateGameMenu (also batman.h)
-function:AreaGetKeyboardOverridePc,function,AreaGetKeyboardOverridePc,22676,22676,1,nu2api/PCInput.h,symbol,nu2api/PCInput.cpp pc-path
+function:AreaGetKeyboardOverride,function,AreaGetKeyboardOverride,22676,22676,1,nu2api/PCInput.h,symbol,nu2api/PCInput.cpp pc-path
 function:NuKeyboard,function,NuKeyboard,22677,22677,1,nu2api/nucore/nukeyboard.h,android,NuKeyboard
 function:NuKeyboard_db,function,NuKeyboard_db,22678,22678,1,nu2api/nucore/nukeyboard.h,android,NuKeyboard_db
 function:NuSound3LoadingSfx,function,NuSound3LoadingSfx,22679,22679,1,nu2api/nusound/nusound.h,android,NuSound3LoadingSfx
@@ -11387,17 +11387,17 @@ function:CutScenePlayer_Configure,function,CutScenePlayer_Configure,22732,22732,
 function:Batarang_StartTargetting,function,Batarang_StartTargetting,22733,22733,1,legoapi/items/collect/batarang.h,android,Batarang_StartTargetting
 function:BatarangGetObjectFromCharId,function,BatarangGetObjectFromCharId,22734,22734,1,legoapi/items/collect/batarang.h,symbol,legogame/batarang.c android-path
 function:KeepPointOnScreen,function,KeepPointOnScreen,22735,22735,1,legoapi/characters/motion.h,android,KeepPointOnScreen
-struct:shader_uniform_record_pc_s,struct,shader_uniform_record_pc_s ShaderUniformRecordPc,22741,22750,11,nu2api/nu3d/nushader.h,android-stem,ShaderUniformRecordPc -> ShaderUniformRecord
-assert:-#4452,assert,,22752,22752,2,nu2api/nu3d/nushader.h,follow-type,ShaderUniformRecordPc
-assert:-#4453,assert,,22753,22753,1,nu2api/nu3d/nushader.h,follow-type,ShaderUniformRecordPc
-assert:-#4454,assert,,22754,22754,1,nu2api/nu3d/nushader.h,follow-type,ShaderUniformRecordPc
-assert:-#4455,assert,,22755,22755,1,nu2api/nu3d/nushader.h,follow-type,ShaderUniformRecordPc
-assert:-#4456,assert,,22756,22756,1,nu2api/nu3d/nushader.h,follow-type,ShaderUniformRecordPc
-assert:-#4457,assert,,22757,22757,1,nu2api/nu3d/nushader.h,follow-type,ShaderUniformRecordPc
-assert:-#4458,assert,,22758,22758,1,nu2api/nu3d/nushader.h,follow-type,ShaderUniformRecordPc
-assert:-#4459,assert,,22759,22759,1,nu2api/nu3d/nushader.h,follow-type,ShaderUniformRecordPc
-assert:-#4460,assert,,22760,22760,1,nu2api/nu3d/nushader.h,follow-type,ShaderUniformRecordPc
-variable:ShaderUniformRecordsPc,variable,ShaderUniformRecordsPc,22764,22764,1,nu2api/nu3d/shaderSemantics.h,rule,used most in nu2api/shaderSemantics.cpp (5) android-dir
+struct:shader_uniform_record_pc_s,struct,shader_uniform_record_pc_s ShaderUniformRecord,22741,22750,11,nu2api/nu3d/nushader.h,android-stem,ShaderUniformRecord -> ShaderUniformRecord
+assert:-#4452,assert,,22752,22752,2,nu2api/nu3d/nushader.h,follow-type,ShaderUniformRecord
+assert:-#4453,assert,,22753,22753,1,nu2api/nu3d/nushader.h,follow-type,ShaderUniformRecord
+assert:-#4454,assert,,22754,22754,1,nu2api/nu3d/nushader.h,follow-type,ShaderUniformRecord
+assert:-#4455,assert,,22755,22755,1,nu2api/nu3d/nushader.h,follow-type,ShaderUniformRecord
+assert:-#4456,assert,,22756,22756,1,nu2api/nu3d/nushader.h,follow-type,ShaderUniformRecord
+assert:-#4457,assert,,22757,22757,1,nu2api/nu3d/nushader.h,follow-type,ShaderUniformRecord
+assert:-#4458,assert,,22758,22758,1,nu2api/nu3d/nushader.h,follow-type,ShaderUniformRecord
+assert:-#4459,assert,,22759,22759,1,nu2api/nu3d/nushader.h,follow-type,ShaderUniformRecord
+assert:-#4460,assert,,22760,22760,1,nu2api/nu3d/nushader.h,follow-type,ShaderUniformRecord
+variable:ShaderUniformRecords,variable,ShaderUniformRecords,22764,22764,1,nu2api/nu3d/shaderSemantics.h,rule,used most in nu2api/shaderSemantics.cpp (5) android-dir
 function:NuShaderUniformGetByString,function,NuShaderUniformGetByString,22765,22765,1,nu2api/nu3d/nushader.h,android,NuShaderUniformGetByString
 variable:RenderBackdropTopR,variable,RenderBackdropTopR,22773,22773,1,legoapi/render/core/screen.h,data-order,retail 0x950744 between 0x95072c and 0x950760
 variable:RenderBackdropTopG,variable,RenderBackdropTopG,22774,22774,1,legoapi/render/core/screen.h,data-order,retail 0x950748 between 0x95072c and 0x950760
@@ -12000,7 +12000,7 @@ variable:LevelFixupStartup,variable,LevelFixupStartup,23625,23625,1,legogame/pcb
 function:FixUpLevels,function,FixUpLevels,23626,23626,1,legoapi/world/level.h,android,FixUpLevels
 variable:LevelLightingData,variable,LevelLightingData,23635,23635,1,legoapi/render/light/lighting.h,rule,used most in legoapi/lighting.cpp (10) android-path
 variable:PanelLightingColours,variable,PanelLightingColours,23636,23636,1,legoapi/render/light/lighting.h,rule,used most in legoapi/lighting.cpp (10) android-path
-variable:PanelLightingDirectionsPc,variable,PanelLightingDirectionsPc,23637,23637,1,legoapi/misc/legoapi_status.h,rule,used most in legogame/legoapi_status.cpp (3) android-path
+variable:PanelLightingDirections,variable,PanelLightingDirections,23637,23637,1,legoapi/misc/legoapi_status.h,rule,used most in legogame/legoapi_status.cpp (3) android-path
 variable:PanelLightingAmbient,variable,PanelLightingAmbient,23638,23638,1,legoapi/render/light/lighting.h,rule,used most in legoapi/lighting.cpp (4) android-path
 variable:LightingSurfaceFadeSlope,variable,LightingSurfaceFadeSlope,23639,23639,1,legoapi/render/light/lighting.h,users,LightingSurfaceFadeSlope: only legoapi/lighting.cpp android-path
 variable:Lighting_RedFlashRed,variable,Lighting_RedFlashRed,23640,23640,1,legoapi/render/light/lighting.h,users,Lighting_RedFlashRed: only legoapi/lighting.cpp android-path
@@ -12130,8 +12130,8 @@ function:PcResetGeometryOriginState,function,PcResetGeometryOriginState,23809,23
 function:PCGraphicsInitializeFramebuffers,function,PCGraphicsInitializeFramebuffers,23810,23810,1,nu2api/nugobj.h,symbol,nu2api/nu3d_pc_includes.cpp[nugobj.c] pc-path
 function:PcUpdateGeometryCameraOrigin,function,PcUpdateGeometryCameraOrigin,23811,23811,1,nu2api/nustencilshadows_PC.h,symbol,nu2api/nu3d_pc_includes.cpp[nustencilshadows_PC.cpp] pc-path
 function:NuMtxGetPerspectiveD3D,function,NuMtxGetPerspectiveD3D,23812,23812,1,nu2api/numath/numtx.h,android,NuMtxGetPerspectiveD3D
-variable:PcGeometryRegistryCountPc,variable,PcGeometryRegistryCountPc,23813,23813,1,nu2api/nuinstsurfgeom_gen.h,users,PcGeometryRegistryCountPc: only nu2api/nu3d_includes.cpp[nuinstsurfgeom_gen.cpp] pc-path
-variable:PcGeometryRegistryPc,variable,PcGeometryRegistryPc,23814,23814,1,nu2api/nuinstsurfgeom_gen.h,users,PcGeometryRegistryPc: only nu2api/nu3d_includes.cpp[nuinstsurfgeom_gen.cpp] pc-path
+variable:PcGeometryRegistryCount,variable,PcGeometryRegistryCount,23813,23813,1,nu2api/nuinstsurfgeom_gen.h,users,PcGeometryRegistryCount: only nu2api/nu3d_includes.cpp[nuinstsurfgeom_gen.cpp] pc-path
+variable:PcGeometryRegistry,variable,PcGeometryRegistry,23814,23814,1,nu2api/nuinstsurfgeom_gen.h,users,PcGeometryRegistry: only nu2api/nu3d_includes.cpp[nuinstsurfgeom_gen.cpp] pc-path
 variable:PcGeometryMatrixCapacity,variable,PcGeometryMatrixCapacity,23815,23815,1,nu2api/nuinstsurfgeom_gen.h,data-order,retail 0x973874 between 0x973870 and 0x97387c
 variable:PcGeometryOutputCapacity,variable,PcGeometryOutputCapacity,23816,23816,1,nu2api/nuinstsurfgeom_gen.h,users,PcGeometryOutputCapacity: only nu2api/nu3d_includes.cpp[nuinstsurfgeom_gen.cpp] pc-path
 variable:PcGeometryDefaultOrigin,variable,PcGeometryDefaultOrigin,23817,23817,1,nu2api/nustencilshadows_PC.h,users,PcGeometryDefaultOrigin: only nu2api/nu3d_pc_includes.cpp[nustencilshadows_PC.cpp] pc-path
@@ -12202,7 +12202,7 @@ variable:PushFallingSpeed,variable,PushFallingSpeed,23988,23988,1,legoapi/action
 variable:PushCornerInset,variable,PushCornerInset,23989,23989,1,legoapi/actions/movement/pushblocks.h,users,PushCornerInset: only legoapi/pushblocks.c android-path
 variable:PushGroundOffset,variable,PushGroundOffset,23990,23990,1,legoapi/actions/movement/pushblocks.h,users,PushGroundOffset: only legoapi/pushblocks.c android-path
 variable:PushRumblePeriod,variable,PushRumblePeriod,23991,23991,1,legoapi/actions/movement/pushblocks.h,users,PushRumblePeriod: only legoapi/pushblocks.c android-path
-variable:PushRumbleWindowPc,variable,PushRumbleWindowPc,23992,23992,1,legoapi/actions/movement/pushblocks.h,users,PushRumbleWindowPc: only legoapi/pushblocks.c android-path
+variable:PushRumbleWindow,variable,PushRumbleWindow,23992,23992,1,legoapi/actions/movement/pushblocks.h,users,PushRumbleWindow: only legoapi/pushblocks.c android-path
 variable:PushBlockOverlapShrink,variable,PushBlockOverlapShrink,23993,23993,1,legoapi/actions/movement/pushblocks.h,users,PushBlockOverlapShrink: only legoapi/pushblocks.c android-path
 variable:PushBlockHintId,variable,PushBlockHintId,23994,23994,1,legoapi/actions/movement/pushblocks.h,rule,used most in legoapi/pushblocks.c (2) android-path
 function:KnockPushBlock,function,KnockPushBlock,23995,23995,1,legoapi/actions/movement/pushblocks.h,android,KnockPushBlock
@@ -12231,7 +12231,7 @@ variable:MissionDropInAlpha,variable,MissionDropInAlpha,24025,24025,1,legoapi/li
 variable:MissionPlayerIconSize,variable,MissionPlayerIconSize,24026,24026,1,legoapi/menus/screens/customise.h,rule,used most in legogame/customise.c (8) android-path
 variable:id_PRINCESSLEIABOUSHH,variable,id_PRINCESSLEIABOUSHH,24027,24027,1,legoapi/characters/core/character.h,android,id_PRINCESSLEIABOUSHH
 variable:hatmachine_gizmotype_id,variable,hatmachine_gizmotype_id,24028,24028,1,legoapi/gizmos/object/hatmachine.h,android,hatmachine_gizmotype_id
-variable:PushRumbleWindowPc#2,variable,PushRumbleWindowPc,24029,24029,1,legoapi/actions/movement/pushblocks.h,users,PushRumbleWindowPc: only legoapi/pushblocks.c android-path
+variable:PushRumbleWindow#2,variable,PushRumbleWindow,24029,24029,1,legoapi/actions/movement/pushblocks.h,users,PushRumbleWindow: only legoapi/pushblocks.c android-path
 variable:PushRumblePeriod#2,variable,PushRumblePeriod,24030,24030,1,legoapi/actions/movement/pushblocks.h,users,PushRumblePeriod: only legoapi/pushblocks.c android-path
 variable:PushFallingSpeed#2,variable,PushFallingSpeed,24031,24031,1,legoapi/actions/movement/pushblocks.h,users,PushFallingSpeed: only legoapi/pushblocks.c android-path
 variable:PushVelocitySeekRate#2,variable,PushVelocitySeekRate,24032,24032,1,legoapi/actions/movement/pushblocks.h,users,PushVelocitySeekRate: only legoapi/pushblocks.c android-path
@@ -12653,7 +12653,7 @@ assert:-#4594,assert,,24734,24734,1,nu2api/nustencilshadows_PC.h,follow-type,FRA
 assert:-#4595,assert,,24735,24735,1,nu2api/nustencilshadows_PC.h,follow-type,FRAME_NATIVE_TEXTURE_POOL
 assert:-#4596,assert,,24736,24736,1,nu2api/nustencilshadows_PC.h,follow-type,FRAME_NATIVE_TEXTURE_POOL
 assert:-#4597,assert,,24737,24737,1,nu2api/nustencilshadows_PC.h,follow-type,FRAME_NATIVE_TEXTURE_POOL
-variable:RenderFrameShaderTimePc,variable,RenderFrameShaderTimePc,24741,24741,1,nu2api/nucamera_dlist.h,users,RenderFrameShaderTimePc: only nu2api/nu3d_pc_includes.cpp[nucamera_dlist.cpp] pc-path
+variable:RenderFrameShaderTime,variable,RenderFrameShaderTime,24741,24741,1,nu2api/nucamera_dlist.h,users,RenderFrameShaderTime: only nu2api/nu3d_pc_includes.cpp[nucamera_dlist.cpp] pc-path
 variable:nuspecial_vertex_noffsets,variable,nuspecial_vertex_noffsets,24742,24742,1,nu2api/nu3d/nu3d_includes.h,data-order,retail 0x9738bc between 0x9738b8 and 0x9738c8
 variable:nuspecial_vertex_offsets,variable,nuspecial_vertex_offsets,24743,24743,1,nu2api/nu3d/nu3d_includes.h,data-order,retail 0x9738c0 between 0x9738b8 and 0x9738c8
 variable:RenderFrameSceneFlags,variable,RenderFrameSceneFlags,24744,24744,1,nu2api/nustencilshadows_PC.h,data-order,retail 0x2854bd0 between 0x2854bac and 0x2854be0
@@ -12663,7 +12663,7 @@ variable:NuPostEffectInitialisedFlags,variable,NuPostEffectInitialisedFlags,2474
 variable:FrameNativeTexturePool,variable,FrameNativeTexturePool,24748,24748,1,nu2api/nustencilshadows_PC.h,data-order,retail 0x2855070 between 0x2854ff0 and 0x2856c28
 variable:nudlist_field_958,variable,nudlist_field_958,24749,24749,1,nu2api/nu3d/nu3d_includes.h,users,nudlist_field_958: only nu2api/nu3d_includes.cpp android-path
 variable:nudlist_field_988,variable,nudlist_field_988,24750,24750,1,nu2api/nu3d/nu3d_includes.h,data-order,retail 0x973988 between 0x973980 and 0x97398c
-variable:PCDisplayCaptureCursorPc,variable,PCDisplayCaptureCursorPc,24751,24751,1,nu2api/nu3d/nu3d_includes.h,data-order,retail 0x96e594 between 0x96e590 and 0x96e598
+variable:PCDisplayCaptureCursor,variable,PCDisplayCaptureCursor,24751,24751,1,nu2api/nu3d/nu3d_includes.h,data-order,retail 0x96e594 between 0x96e590 and 0x96e598
 variable:nudlist_field_18b0,variable,nudlist_field_18b0,24752,24752,1,nu2api/nu3d/nu3d_includes.h,data-order,retail 0x9718b0 between 0x9718a0 and 0x9718b4
 variable:PCDisplayCaptureBuffer,variable,PCDisplayCaptureBuffer,24753,24753,1,nu2api/nu3d/nu3d_includes.h,data-order,retail 0x9720d8 between 0x971b20 and 0x9730d8
 union:PC_BOOT_FRAMEBUFFER_VIEW,union,PC_BOOT_FRAMEBUFFER_VIEW,24758,24765,9,decomp.h,decomp,view type
@@ -12679,7 +12679,7 @@ function:NuDynamicLightIsEnabled,function,NuDynamicLightIsEnabled,24779,24779,1,
 function:NuDynamicLightAddRenderScene,function,NuDynamicLightAddRenderScene,24780,24780,1,nu2api/nucore/NuDynamicLight.h,android,NuDynamicLightAddRenderScene
 function:NuTexGetWidth,function,NuTexGetWidth,24781,24781,1,nu2api/nu3d/nu3d_includes.h,symbol,nu2api/nu3d_includes.cpp android-path
 function:NuTexGetHeight,function,NuTexGetHeight,24782,24782,1,nu2api/nu3d/nu3d_includes.h,symbol,nu2api/nu3d_includes.cpp android-path
-function:PCDeviceEndScenePc,function,PCDeviceEndScenePc,24783,24783,1,nu2api/nucamera_dlist.h,rule,used most in nu2api/nu3d_pc_includes.cpp[nucamera_dlist.cpp] (1) pc-path
+function:PCDeviceEndScene,function,PCDeviceEndScene,24783,24783,1,nu2api/nucamera_dlist.h,rule,used most in nu2api/nu3d_pc_includes.cpp[nucamera_dlist.cpp] (1) pc-path
 function:NuTexRegisterDimensions,function,NuTexRegisterDimensions,24784,24784,1,nu2api/nu3d/nu3d_includes.h,symbol,nu2api/nu3d_includes.cpp android-path
 function:NuTexRegisterRenderTarget,function,NuTexRegisterRenderTarget,24785,24785,1,nu2api/nucamera_dlist.h,symbol,nu2api/nu3d_pc_includes.cpp[nucamera_dlist.cpp] pc-path
 function:NuDisplayListCaptureBegin,function,NuDisplayListCaptureBegin,24786,24786,1,nu2api/nu3d/nudlist.h,android,NuDisplayListCaptureBegin
@@ -12747,14 +12747,14 @@ function:NuDisplayListUpdateLightmap,function,NuDisplayListUpdateLightmap,24884,
 function:NuDisplayListDrawGeometry,function,NuDisplayListDrawGeometry,24885,24885,1,nu2api/nu3d_pc_includes.h,symbol,nu2api/nu3d_pc_includes.cpp pc-path
 function:NuDisplayListDrawFaceOn,function,NuDisplayListDrawFaceOn,24886,24886,1,nu2api/nustream.h,symbol,nu2api/nu3d_pc_includes.cpp[nustream.c] pc-path
 function:NuDisplayListDrawDebris,function,NuDisplayListDrawDebris,24887,24887,1,nu2api/nuptl_dlist.h,symbol,nu2api/nu3d_pc_includes.cpp[nuptl_dlist.cpp] pc-path
-function:PCDeviceSetStreamSourcePc,function,PCDeviceSetStreamSourcePc,24888,24888,1,nu2api/nuwin32/d3dCalls.h,symbol,nu2api/nuwin32/d3dCalls.cpp pc-path
-function:PCDeviceDrawPrimitivePc,function,PCDeviceDrawPrimitivePc,24889,24889,1,nu2api/nustencilshadows_PC.h,rule,used most in nu2api/nu3d_pc_includes.cpp[nustencilshadows_PC.cpp] (3) pc-path
-function:PCDeviceSetIndicesPc,function,PCDeviceSetIndicesPc,24890,24890,1,nu2api/nuwin32/d3dCalls.h,symbol,nu2api/nuwin32/d3dCalls.cpp pc-path
-function:PCDeviceDrawIndexedPrimitivePc,function,PCDeviceDrawIndexedPrimitivePc,24891,24891,1,nu2api/nustencilshadows_PC.h,rule,used most in nu2api/nu3d_pc_includes.cpp[nustencilshadows_PC.cpp] (3) pc-path
-function:PCDeviceSetStreamSourceFreqPc,function,PCDeviceSetStreamSourceFreqPc,24892,24892,1,nu2api/nuwin32/d3dCalls.h,symbol,nu2api/nuwin32/d3dCalls.cpp pc-path
-function:PCDeviceSetVertexDeclarationPc,function,PCDeviceSetVertexDeclarationPc,24893,24893,1,nu2api/nuwin32/d3dCalls.h,symbol,nu2api/nuwin32/d3dCalls.cpp pc-path
-function:PCDeviceSetVertexShaderPc,function,PCDeviceSetVertexShaderPc,24894,24894,1,nu2api/nuwin32/d3dCalls.h,symbol,nu2api/nuwin32/d3dCalls.cpp pc-path
-function:PCDeviceSetPixelShaderPc,function,PCDeviceSetPixelShaderPc,24895,24895,1,nu2api/nuwin32/d3dCalls.h,symbol,nu2api/nuwin32/d3dCalls.cpp pc-path
+function:PCDeviceSetStreamSource,function,PCDeviceSetStreamSource,24888,24888,1,nu2api/nuwin32/d3dCalls.h,symbol,nu2api/nuwin32/d3dCalls.cpp pc-path
+function:PCDeviceDrawPrimitive,function,PCDeviceDrawPrimitive,24889,24889,1,nu2api/nustencilshadows_PC.h,rule,used most in nu2api/nu3d_pc_includes.cpp[nustencilshadows_PC.cpp] (3) pc-path
+function:PCDeviceSetIndices,function,PCDeviceSetIndices,24890,24890,1,nu2api/nuwin32/d3dCalls.h,symbol,nu2api/nuwin32/d3dCalls.cpp pc-path
+function:PCDeviceDrawIndexedPrimitive,function,PCDeviceDrawIndexedPrimitive,24891,24891,1,nu2api/nustencilshadows_PC.h,rule,used most in nu2api/nu3d_pc_includes.cpp[nustencilshadows_PC.cpp] (3) pc-path
+function:PCDeviceSetStreamSourceFreq,function,PCDeviceSetStreamSourceFreq,24892,24892,1,nu2api/nuwin32/d3dCalls.h,symbol,nu2api/nuwin32/d3dCalls.cpp pc-path
+function:PCDeviceSetVertexDeclaration,function,PCDeviceSetVertexDeclaration,24893,24893,1,nu2api/nuwin32/d3dCalls.h,symbol,nu2api/nuwin32/d3dCalls.cpp pc-path
+function:PCDeviceSetVertexShader,function,PCDeviceSetVertexShader,24894,24894,1,nu2api/nuwin32/d3dCalls.h,symbol,nu2api/nuwin32/d3dCalls.cpp pc-path
+function:PCDeviceSetPixelShader,function,PCDeviceSetPixelShader,24895,24895,1,nu2api/nuwin32/d3dCalls.h,symbol,nu2api/nuwin32/d3dCalls.cpp pc-path
 function:NuShaderManagerBindShader,function,NuShaderManagerBindShader,24896,24896,1,nu2api/nu3d/nushader_plain.h,android,NuShaderManagerBindShader
 forward:PC_SHADER_WATER_MATERIAL_VIEW,forward,PC_SHADER_WATER_MATERIAL_VIEW,24901,24901,2,decomp.h,decomp,view type
 forward:PC_DL_SHADER_PROGRAM_PAIR,forward,PC_DL_SHADER_PROGRAM_PAIR,24902,24902,1,nu2api/nuhgo_dlist.h,rule,used most in nu2api/nu3d_pc_includes.cpp[nuhgo_dlist.cpp] (8) pc-path
@@ -12769,10 +12769,10 @@ variable:PCShaderWaterLastFrame,variable,PCShaderWaterLastFrame,24913,24913,1,nu
 variable:PCShaderWaterTable,variable,PCShaderWaterTable,24914,24914,1,nu2api/nu3d/nushaderobjectbase.h,users,PCShaderWaterTable: only nu2api/nushaderobjectbase.cpp android-dir
 variable:PCShaderWaterPreviousMaterial,variable,PCShaderWaterPreviousMaterial,24915,24915,1,nu2api/nu3d/nushaderobjectbase.h,users,PCShaderWaterPreviousMaterial: only nu2api/nushaderobjectbase.cpp android-dir
 variable:PCShaderWaterInitializationBits,variable,PCShaderWaterInitializationBits,24916,24916,1,nu2api/nu3d/nushaderobjectbase.h,users,PCShaderWaterInitializationBits: only nu2api/nushaderobjectbase.cpp android-dir
-variable:PCShaderMaterialSamplerBiasOffsetPc,variable,PCShaderMaterialSamplerBiasOffsetPc,24917,24917,1,nu2api/nu3d/nushaderobject.h,rule,used most in nu2api/nushaderobject.cpp (9) android-dir
+variable:PCShaderMaterialSamplerBiasOffset,variable,PCShaderMaterialSamplerBiasOffset,24917,24917,1,nu2api/nu3d/nushaderobject.h,rule,used most in nu2api/nushaderobject.cpp (9) android-dir
 variable:NuDisplayMaterialLast,variable,NuDisplayMaterialLast,24918,24918,1,nu2api/nuhgo_dlist.h,users,NuDisplayMaterialLast: only nu2api/nu3d_pc_includes.cpp[nuhgo_dlist.cpp] pc-path
-variable:NuDisplayHandlerVertexShaderCachePc,variable,NuDisplayHandlerVertexShaderCachePc,24919,24919,1,nu2api/nustencilshadows_PC.h,data-order,retail 0x2854c38 between 0x2854c00 and 0x2854c90
-variable:NuDisplayHandlerPixelShaderCachePc,variable,NuDisplayHandlerPixelShaderCachePc,24920,24920,1,nu2api/nustencilshadows_PC.h,data-order,retail 0x2854c3c between 0x2854c00 and 0x2854c90
+variable:NuDisplayHandlerVertexShaderCache,variable,NuDisplayHandlerVertexShaderCache,24919,24919,1,nu2api/nustencilshadows_PC.h,data-order,retail 0x2854c38 between 0x2854c00 and 0x2854c90
+variable:NuDisplayHandlerPixelShaderCache,variable,NuDisplayHandlerPixelShaderCache,24920,24920,1,nu2api/nustencilshadows_PC.h,data-order,retail 0x2854c3c between 0x2854c00 and 0x2854c90
 variable:NuDisplayMaterialDebrisPrograms,variable,NuDisplayMaterialDebrisPrograms,24921,24921,1,nu2api/nustencilshadows_PC.h,rule,used most in nu2api/nu3d_pc_includes.cpp[nustencilshadows_PC.cpp] (1) pc-path
 variable:NuDisplayMaterialGlassPrograms,variable,NuDisplayMaterialGlassPrograms,24922,24922,1,nu2api/nustencilshadows_PC.h,rule,used most in nu2api/nu3d_pc_includes.cpp[nustencilshadows_PC.cpp] (2) pc-path
 variable:NuDisplayMaterialFaceOnDecalPrograms,variable,NuDisplayMaterialFaceOnDecalPrograms,24923,24923,1,nu2api/nustencilshadows_PC.h,rule,used most in nu2api/nu3d_pc_includes.cpp[nustencilshadows_PC.cpp] (1) pc-path
@@ -12789,7 +12789,7 @@ variable:NuPostEffectBackBufferCopy,variable,NuPostEffectBackBufferCopy,24933,24
 assert:-#4614,assert,,24938,24938,2,gamelib/nuwind/nuwind.h,follow-type,NUWIND
 assert:-#4615,assert,,24939,24939,1,gamelib/nuwind/nuwind.h,follow-type,NUWIND
 assert:-#4616,assert,,24940,24940,1,gamelib/nuwind/nuwind.h,follow-type,NUWIND
-function:PCShaderSetMaterialParametersPc,function,PCShaderSetMaterialParametersPc,24944,24944,1,nu2api/nu3d/nushaderobject.h,symbol,nu2api/nushaderobject.cpp android-dir
+function:PCShaderSetMaterialParameters,function,PCShaderSetMaterialParameters,24944,24944,1,nu2api/nu3d/nushaderobject.h,symbol,nu2api/nushaderobject.cpp android-dir
 function:NuWindCurrent,function,NuWindCurrent,24945,24945,1,gamelib/nuwind/nuwind.h,android,NuWindCurrent
 function:PCGraphicsBindTextureDimensions,function,PCGraphicsBindTextureDimensions,24946,24946,1,nu2api/nutex_pc.h,symbol,nu2api/nu3d_pc_includes.cpp[nutex_pc.cpp] pc-path
 function:NuShaderManagerGetShininessFactor,function,NuShaderManagerGetShininessFactor,24947,24947,1,nu2api/nu3d/nushadermanager_gen.h,symbol,nu2api/nushadermanager_gen.cpp android-dir
@@ -12802,7 +12802,7 @@ function:NuDisplayListDrawRenderScene,function,NuDisplayListDrawRenderScene,2496
 function:NuDisplayListDrawItems,function,NuDisplayListDrawItems,24961,24961,1,nu2api/nu3d/nudlist.h,android,NuDisplayListDrawItems
 variable:PCFramePresentationState,variable,PCFramePresentationState,24969,24969,1,nu2api/nuwin32/d3dApiCalls.h,users,PCFramePresentationState: only nu2api/nuwin32/d3dApiCalls.cpp pc-path
 function:PCFramePresentNative,function,PCFramePresentNative,24970,24970,1,nu2api/nuwin32/d3dApiCalls.h,symbol,nu2api/nuwin32/d3dApiCalls.cpp pc-path
-function:PCPresentationPlatformLeafPc,function,PCPresentationPlatformLeafPc,24971,24971,1,nu2api/PCInput.h,symbol,nu2api/PCInput.cpp pc-path
+function:PCPresentationPlatformLeaf,function,PCPresentationPlatformLeaf,24971,24971,1,nu2api/PCInput.h,symbol,nu2api/PCInput.cpp pc-path
 typedef:PC_DISPLAY_ITEM_HANDLER,typedef,PC_DISPLAY_ITEM_HANDLER,24976,24976,2,nu2api/nustencilshadows_PC.h,rule,used most in nu2api/nu3d_includes.cpp (2) android-path
 assert:-#4617,assert,,24977,24977,1,nu2api/nustencilshadows_PC.h,follow-type,PC_DISPLAY_ITEM_HANDLER
 function:NuDisplayListMaterial,function,NuDisplayListMaterial,24981,24981,1,nu2api/nu3d_pc_includes.h,symbol,nu2api/nu3d_pc_includes.cpp pc-path
@@ -12886,7 +12886,7 @@ variable:motionAccumFilter,variable,motionAccumFilter,25198,25198,1,nu2api/nu3d/
 variable:speedBlurFilter,variable,speedBlurFilter,25199,25199,1,nu2api/nu3d/nu3d_includes.h,users,speedBlurFilter: only nu2api/nu3d_includes.cpp android-path
 variable:NuPostEffectsRan,variable,NuPostEffectsRan,25200,25200,1,nu2api/nu3d/nu3d_includes.h,users,NuPostEffectsRan: only nu2api/nu3d_includes.cpp android-path
 variable:NuPostLastFrameEffect,variable,NuPostLastFrameEffect,25201,25201,1,nu2api/nu3d/nu3d_includes.h,users,NuPostLastFrameEffect: only nu2api/nu3d_includes.cpp android-path
-function:PCDeviceResetSamplerDefaultsPc,function,PCDeviceResetSamplerDefaultsPc,25202,25202,1,nu2api/nuwin32/d3dApiCalls.h,symbol,nu2api/nuwin32/d3dApiCalls.cpp pc-path
+function:PCDeviceResetSamplerDefaults,function,PCDeviceResetSamplerDefaults,25202,25202,1,nu2api/nuwin32/d3dApiCalls.h,symbol,nu2api/nuwin32/d3dApiCalls.cpp pc-path
 function:NuPostEffectReset,function,NuPostEffectReset,25203,25203,1,nu2api/nu3d/nupostfilter.h,android,NuPostEffectReset
 function:NuPostEffectEnable,function,NuPostEffectEnable,25204,25204,1,nu2api/nu3d/nupostfilter.h,android,NuPostEffectEnable
 function:NuPostEffectDisable,function,NuPostEffectDisable,25205,25205,1,nu2api/nu3d/nupostfilter.h,android,NuPostEffectDisable
@@ -12969,13 +12969,13 @@ assert:-#4714,assert,,25520,25520,1,nu2api/nustencilshadows_PC.h,follow-type,PC_
 struct:PC_GOBJ_REGISTRY_ENTRY,struct,PC_GOBJ_REGISTRY_ENTRY,25522,25528,8,nu2api/nustencilshadows_PC.h,users,PC_GOBJ_REGISTRY_ENTRY: only nu2api/nu3d_pc_includes.cpp[nustencilshadows_PC.cpp] pc-path
 assert:-#4715,assert,,25530,25530,2,nu2api/nustencilshadows_PC.h,follow-type,PC_GOBJ_REGISTRY_ENTRY
 assert:-#4716,assert,,25531,25531,1,nu2api/nustencilshadows_PC.h,follow-type,PC_GOBJ_REGISTRY_ENTRY
-variable:NuGobjRegistryInitializedPc,variable,NuGobjRegistryInitializedPc,25532,25532,1,nu2api/nustencilshadows_PC.h,users,NuGobjRegistryInitializedPc: only nu2api/nu3d_pc_includes.cpp[nustencilshadows_PC.cpp] pc-path
-variable:NuGobjRegistryCountPc,variable,NuGobjRegistryCountPc,25533,25533,1,nu2api/nustencilshadows_PC.h,users,NuGobjRegistryCountPc: only nu2api/nu3d_pc_includes.cpp[nustencilshadows_PC.cpp] pc-path
-variable:NuGobjRegistryFirstPc,variable,NuGobjRegistryFirstPc,25534,25534,1,nu2api/nustencilshadows_PC.h,users,NuGobjRegistryFirstPc: only nu2api/nu3d_pc_includes.cpp[nustencilshadows_PC.cpp] pc-path
+variable:NuGobjRegistryInitialized,variable,NuGobjRegistryInitialized,25532,25532,1,nu2api/nustencilshadows_PC.h,users,NuGobjRegistryInitialized: only nu2api/nu3d_pc_includes.cpp[nustencilshadows_PC.cpp] pc-path
+variable:NuGobjRegistryCount,variable,NuGobjRegistryCount,25533,25533,1,nu2api/nustencilshadows_PC.h,users,NuGobjRegistryCount: only nu2api/nu3d_pc_includes.cpp[nustencilshadows_PC.cpp] pc-path
+variable:NuGobjRegistryFirst,variable,NuGobjRegistryFirst,25534,25534,1,nu2api/nustencilshadows_PC.h,users,NuGobjRegistryFirst: only nu2api/nu3d_pc_includes.cpp[nustencilshadows_PC.cpp] pc-path
 variable:NuGobjSourcePathPc,variable,NuGobjSourcePathPc,25535,25535,1,nu2api/nustencilshadows_PC.h,users,NuGobjSourcePathPc: only nu2api/nu3d_pc_includes.cpp[nustencilshadows_PC.cpp] pc-path
 function:NuGobjReleaseChild,function,NuGobjReleaseChild,25536,25536,1,nu2api/nugobj.h,symbol,nu2api/nu3d_pc_includes.cpp[nugobj.c] pc-path
-function:NuGobjRegistryCleanupPc,function,NuGobjRegistryCleanupPc,25537,25537,1,nu2api/nucamera_dlist.h,symbol,nu2api/nu3d_pc_includes.cpp[nucamera_dlist.cpp] pc-path
-function:NuGobjRegistryInitPc,function,NuGobjRegistryInitPc,25538,25538,1,nu2api/nucamera_dlist.h,symbol,nu2api/nu3d_pc_includes.cpp[nucamera_dlist.cpp] pc-path
+function:NuGobjRegistryCleanup,function,NuGobjRegistryCleanup,25537,25537,1,nu2api/nucamera_dlist.h,symbol,nu2api/nu3d_pc_includes.cpp[nucamera_dlist.cpp] pc-path
+function:NuGobjRegistryInit,function,NuGobjRegistryInit,25538,25538,1,nu2api/nucamera_dlist.h,symbol,nu2api/nu3d_pc_includes.cpp[nucamera_dlist.cpp] pc-path
 function:NuPs2GetViewport,function,NuPs2GetViewport,25540,25540,2,nu2api/nu3d/nuvport.h,android,NuPs2GetViewport
 function:NuVpInit,function,NuVpInit,25541,25541,1,nu2api/nu3d/nuvport.h,android,NuVpInit
 variable:JIMTEST_ADATA,variable,JIMTEST_ADATA,25549,25549,1,legogame/game.h,users,JIMTEST_ADATA: only legogame/game.c android-path
@@ -12996,7 +12996,7 @@ assert:-#4718,assert,,25573,25573,1,decomp.h,decomp,data model check of SDK type
 assert:-#4719,assert,,25574,25574,1,decomp.h,decomp,data model check of SDK type LARGE_INTEGER
 function:ReadPad,function,ReadPad,25579,25579,1,legoapi/core/input/gamepads.h,android,ReadPad
 function:ReadPads,function,ReadPads,25580,25580,1,legoapi/core/input/gamepads.h,android,ReadPads
-function:GamePadReadBackendPc,function,GamePadReadBackendPc,25581,25581,1,nu2api/PCInput.h,symbol,nu2api/PCInput.cpp pc-path
+function:GamePadReadBackend,function,GamePadReadBackend,25581,25581,1,nu2api/PCInput.h,symbol,nu2api/PCInput.cpp pc-path
 variable:pActivePad,variable,pActivePad,25582,25582,1,legoapi/core/input/gamepads.h,users,pActivePad: only legoapi/gamepads.c android-path
 struct:PC_SOUND_INIT_CONFIG,struct,PC_SOUND_INIT_CONFIG,25587,25598,13,nu2api/numusic_gen.h,rule,used most in nu2api/nusound3_include.cpp[numusic_gen.cpp] (1) pc-path
 assert:-#4720,assert,,25600,25600,2,nu2api/numusic_gen.h,follow-type,PC_SOUND_INIT_CONFIG
@@ -13032,20 +13032,20 @@ function:NuSound3InitV,function,NuSound3InitV,25633,25633,1,nu2api/nusound/nusou
 function:PCSoundInitialize,function,PCSoundInitialize,25634,25634,1,nu2api/nusound/nusound.h,symbol,nu2api/nusound3/pc/nusound.cpp android-path
 function:ConfigureMusic,function,ConfigureMusic,25635,25635,1,nu2api/nusound/nusound.h,android,ConfigureMusic
 function:NuPadGetDeadzoneByPortPS,function,NuPadGetDeadzoneByPortPS,25643,25643,1,nu2api/nucore/nupad.h,android,NuPadGetDeadzoneByPortPS
-function:NuPadReadOutputsPc,function,NuPadReadOutputsPc,25644,25644,1,nu2api/PCInput.h,symbol,nu2api/PCInput.cpp pc-path
-function:PcInputAspectRatioPc,function,PcInputAspectRatioPc,25645,25645,1,nu2api/nuwin32/d3dApiCalls.h,symbol,nu2api/nuwin32/d3dApiCalls.cpp pc-path
+function:NuPadReadOutputs,function,NuPadReadOutputs,25644,25644,1,nu2api/PCInput.h,symbol,nu2api/PCInput.cpp pc-path
+function:PcInputAspectRatio,function,PcInputAspectRatio,25645,25645,1,nu2api/nuwin32/d3dApiCalls.h,symbol,nu2api/nuwin32/d3dApiCalls.cpp pc-path
 function:NuPadUpdatePads,function,NuPadUpdatePads,25646,25646,1,nu2api/nucore/nupad.h,android,NuPadUpdatePads
-function:PcInputEndFramePc,function,PcInputEndFramePc,25647,25647,1,nu2api/PCInput.h,symbol,nu2api/PCInput.cpp pc-path
-variable:PcInputPovBitsPc,variable,PcInputPovBitsPc,25648,25648,1,nu2api/PCInput.h,users,PcInputPovBitsPc: only nu2api/PCInput.cpp pc-path
-variable:PcMouseAxisModesPc,variable,PcMouseAxisModesPc,25649,25649,1,nu2api/PCInput.h,users,PcMouseAxisModesPc: only nu2api/PCInput.cpp pc-path
+function:PcInputEndFrame,function,PcInputEndFrame,25647,25647,1,nu2api/PCInput.h,symbol,nu2api/PCInput.cpp pc-path
+variable:PcInputPovBits,variable,PcInputPovBits,25648,25648,1,nu2api/PCInput.h,users,PcInputPovBits: only nu2api/PCInput.cpp pc-path
+variable:PcMouseAxisModes,variable,PcMouseAxisModes,25649,25649,1,nu2api/PCInput.h,users,PcMouseAxisModes: only nu2api/PCInput.cpp pc-path
 variable:mbuttons,variable,mbuttons,25650,25650,1,nu2api/PCInput.h,data-order,retail 0x2975190 between 0x297518c and 0x2975194
-variable:PcMouseAxisIdlePc,variable,PcMouseAxisIdlePc,25651,25651,1,nu2api/PCInput.h,users,PcMouseAxisIdlePc: only nu2api/PCInput.cpp pc-path
-variable:PcMouseCurrentAnglePc,variable,PcMouseCurrentAnglePc,25652,25652,1,nu2api/PCInput.h,users,PcMouseCurrentAnglePc: only nu2api/PCInput.cpp pc-path
-variable:PcMouseTargetAnglePc,variable,PcMouseTargetAnglePc,25653,25653,1,nu2api/PCInput.h,users,PcMouseTargetAnglePc: only nu2api/PCInput.cpp pc-path
-variable:PcMouseRadiusPc,variable,PcMouseRadiusPc,25654,25654,1,nu2api/PCInput.h,users,PcMouseRadiusPc: only nu2api/PCInput.cpp pc-path
-variable:PcMouseInterpolationPc,variable,PcMouseInterpolationPc,25655,25655,1,nu2api/PCInput.h,users,PcMouseInterpolationPc: only nu2api/PCInput.cpp pc-path
-variable:PcMouseSampleIndexPc,variable,PcMouseSampleIndexPc,25656,25656,1,nu2api/PCInput.h,users,PcMouseSampleIndexPc: only nu2api/PCInput.cpp pc-path
-variable:PcMouseSamplesPc,variable,PcMouseSamplesPc,25658,25658,1,nu2api/PCInput.h,users,PcMouseSamplesPc: only nu2api/PCInput.cpp pc-path
+variable:PcMouseAxisIdle,variable,PcMouseAxisIdle,25651,25651,1,nu2api/PCInput.h,users,PcMouseAxisIdle: only nu2api/PCInput.cpp pc-path
+variable:PcMouseCurrentAngle,variable,PcMouseCurrentAngle,25652,25652,1,nu2api/PCInput.h,users,PcMouseCurrentAngle: only nu2api/PCInput.cpp pc-path
+variable:PcMouseTargetAngle,variable,PcMouseTargetAngle,25653,25653,1,nu2api/PCInput.h,users,PcMouseTargetAngle: only nu2api/PCInput.cpp pc-path
+variable:PcMouseRadius,variable,PcMouseRadius,25654,25654,1,nu2api/PCInput.h,users,PcMouseRadius: only nu2api/PCInput.cpp pc-path
+variable:PcMouseInterpolation,variable,PcMouseInterpolation,25655,25655,1,nu2api/PCInput.h,users,PcMouseInterpolation: only nu2api/PCInput.cpp pc-path
+variable:PcMouseSampleIndex,variable,PcMouseSampleIndex,25656,25656,1,nu2api/PCInput.h,users,PcMouseSampleIndex: only nu2api/PCInput.cpp pc-path
+variable:PcMouseSamples,variable,PcMouseSamples,25658,25658,1,nu2api/PCInput.h,users,PcMouseSamples: only nu2api/PCInput.cpp pc-path
 function:NuPow,function,NuPow,25665,25665,1,nu2api/numath/nufloat.h,android,NuPow
 function:NuPadRecordSave,function,NuPadRecordSave,25666,25666,1,nu2api/nucore/nupad.h,android,NuPadRecordSave
 function:NuFileWriteInt,function,NuFileWriteInt,25667,25667,1,nu2api/nufile/nufile.h,android,NuFileWriteInt
@@ -14340,7 +14340,7 @@ variable:StatusNewMinikitCount,variable,StatusNewMinikitCount,30071,30071,1,lego
 variable:currentminikit,variable,currentminikit,30072,30072,1,legoapi/misc/legoapi_status.h,definition,legogame/legoapi_status.cpp android-path
 variable:StatusNewCharacterIds,variable,StatusNewCharacterIds,30073,30073,1,legoapi/misc/legoapi_status.h,definition,legogame/legoapi_status.cpp android-path
 variable:StatusCollectedSuitBits,variable,StatusCollectedSuitBits,30074,30074,1,legoapi/misc/legoapi_status.h,definition,legogame/legoapi_status.cpp android-path
-variable:StatusMiniKitDirectionOffsetPc,variable,StatusMiniKitDirectionOffsetPc,30075,30075,1,legoapi/misc/legoapi_status.h,definition,legogame/legoapi_status.cpp android-path
+variable:StatusMiniKitDirectionOffset,variable,StatusMiniKitDirectionOffset,30075,30075,1,legoapi/misc/legoapi_status.h,definition,legogame/legoapi_status.cpp android-path
 variable:slideseek,variable,slideseek,30076,30076,1,legoapi/misc/legoapi_status.h,android,slideseek
 variable:StatusMiniKitDrawCache,variable,StatusMiniKitDrawCache,30077,30077,1,legoapi/misc/legoapi_status.h,definition,legogame/legoapi_status.cpp android-path
 function:DrawStatusMiniKit,function,DrawStatusMiniKit,30078,30078,1,legoapi/misc/legoapi_status.h,android,DrawStatusMiniKit
@@ -15465,7 +15465,7 @@ variable:HubPromptOnColour,variable,HubPromptOnColour,31342,31342,1,legoapi/menu
 variable:HubDrawMiniKitCharacter,variable,HubDrawMiniKitCharacter,31343,31343,1,legoapi/lib/hub.h,users,HubDrawMiniKitCharacter: only legogame/hub.cpp android-path
 variable:HubEpisodeBlue,variable,HubEpisodeBlue,31344,31344,1,legoapi/lib/hub.h,users,HubEpisodeBlue: only legogame/hub.cpp android-path
 variable:HubArcadeMenuY,variable,HubArcadeMenuY,31345,31345,1,legoapi/lib/hub.h,users,HubArcadeMenuY: only legogame/hub.cpp android-path
-variable:TextInputActionLabelBufferPc,variable,TextInputActionLabelBufferPc,31346,31346,1,nu2api/PCInput.h,users,TextInputActionLabelBufferPc: only nu2api/PCInput.cpp pc-path
+variable:TextInputActionLabelBuffer,variable,TextInputActionLabelBuffer,31346,31346,1,nu2api/PCInput.h,users,TextInputActionLabelBuffer: only nu2api/PCInput.cpp pc-path
 variable:HubButtonStringBuffer,variable,HubButtonStringBuffer,31347,31347,1,legogame/pcbatman.h,users,HubButtonStringBuffer: only legogame/pcbatman.cpp pc-path
 variable:dat_00880714,variable,dat_00880714,31350,31350,3,legoapi/lib/hub.h,users,dat_00880714: only legogame/hub.cpp android-path
 variable:dat_00880718,variable,dat_00880718,31351,31351,1,legoapi/lib/hub.h,users,dat_00880718: only legogame/hub.cpp android-path
@@ -15497,7 +15497,7 @@ variable:dat_00881040,variable,dat_00881040,31376,31376,1,legoapi/lib/hub.h,user
 variable:dat_008810c0,variable,dat_008810c0,31377,31377,1,legoapi/text_tables.h,rule,used most in legoapi/text_tables.cpp (2) pc-path
 function:SmartText,function,SmartText,31380,31380,3,legoapi/menus/core/text.h,android,SmartText
 function:TextButtonString,function,TextButtonString,31381,31381,1,gameapi/apitext.h,symbol,gameapi/gamemenuall.cpp[apitext.c] pc-path
-function:TextInputActionLabelPc,function,TextInputActionLabelPc,31382,31382,1,nu2api/PCInput.h,symbol,nu2api/PCInput.cpp pc-path
+function:TextInputActionLabel,function,TextInputActionLabel,31382,31382,1,nu2api/PCInput.h,symbol,nu2api/PCInput.cpp pc-path
 function:Text_ExpandButtonString,function,Text_ExpandButtonString,31383,31383,1,legoapi/menus/core/text.h,android,Text_ExpandButtonString
 function:DrawPlayerIconPrompts,function,DrawPlayerIconPrompts,31384,31384,1,legoapi/menus/core/panel.h,android,DrawPlayerIconPrompts
 function:Hub_DrawImportantBrick,function,Hub_DrawImportantBrick,31385,31385,1,legoapi/world/levels/levels.h,android,Hub_DrawImportantBrick
@@ -15653,10 +15653,10 @@ function:PCGraphicsSubmitViewport,function,PCGraphicsSubmitViewport,31642,31642,
 function:PCGraphicsSetSamplerTuple,function,PCGraphicsSetSamplerTuple,31643,31643,1,nu2api/nustencilshadows_PC.h,symbol,nu2api/nu3d_pc_includes.cpp[nustencilshadows_PC.cpp] pc-path
 function:PCGraphicsDrawPostEffectQuad,function,PCGraphicsDrawPostEffectQuad,31644,31644,1,nu2api/nustencilshadows_PC.h,symbol,nu2api/nu3d_pc_includes.cpp[nustencilshadows_PC.cpp] pc-path
 function:PCGraphicsDrawPostEffectIndexed,function,PCGraphicsDrawPostEffectIndexed,31645,31645,1,nu2api/nustencilshadows_PC.h,symbol,nu2api/nu3d_pc_includes.cpp[nustencilshadows_PC.cpp] pc-path
-function:PCDeviceStretchRectPc,function,PCDeviceStretchRectPc,31646,31646,1,nu2api/nuwin32/d3dCalls.h,symbol,nu2api/nuwin32/d3dCalls.cpp pc-path
+function:PCDeviceStretchRect,function,PCDeviceStretchRect,31646,31646,1,nu2api/nuwin32/d3dCalls.h,symbol,nu2api/nuwin32/d3dCalls.cpp pc-path
 function:PostFilterBlitTexture,function,PostFilterBlitTexture,31647,31648,2,nu2api/numotionaccumfilter_gen.h,symbol,nu2api/nu3d_includes.cpp[numotionaccumfilter_gen.cpp] pc-path
 function:PostFilterCopyTexture,function,PostFilterCopyTexture,31649,31650,2,nu2api/nucamera_dlist.h,symbol,nu2api/nu3d_pc_includes.cpp[nucamera_dlist.cpp] pc-path
-function:PCDevicePostEffectBarrierPc,function,PCDevicePostEffectBarrierPc,31651,31651,1,nu2api/nuwin32/d3dApiCalls.h,symbol,nu2api/nuwin32/d3dApiCalls.cpp pc-path
+function:PCDevicePostEffectBarrier,function,PCDevicePostEffectBarrier,31651,31651,1,nu2api/nuwin32/d3dApiCalls.h,symbol,nu2api/nuwin32/d3dApiCalls.cpp pc-path
 function:NuRndrEndFrameAction,function,NuRndrEndFrameAction,31652,31652,1,nu2api/nu3d/nu3d_includes.h,symbol,nu2api/nu3d_includes.cpp android-path
 function:NuPostEffectEnd,function,NuPostEffectEnd,31653,31653,1,nu2api/nu3d/nupostfilter.h,android,NuPostEffectEnd
 assert:-#5068,assert,,31658,31658,2,legoapi/world/world.h,follow-type,WORLDINFO
@@ -15684,7 +15684,7 @@ assert:-#5081,assert,,31694,31694,1,nu2api/nu3d/nu3d_includes.h,follow-type,PC_S
 function:SetShadowLight,function,SetShadowLight,31699,31699,1,legoapi/render/light/lighting.h,android,SetShadowLight
 variable:PostShadowCubeFaceIndices,variable,PostShadowCubeFaceIndices,31700,31700,1,nu2api/nu3d/nu3d_includes.h,users,PostShadowCubeFaceIndices: only nu2api/nu3d_includes.cpp android-path
 variable:PostShadowPlaneExtrusion,variable,PostShadowPlaneExtrusion,31701,31701,1,nu2api/nu3d/nu3d_includes.h,users,PostShadowPlaneExtrusion: only nu2api/nu3d_includes.cpp android-path
-variable:PostBlurHighInputBiasPc,variable,PostBlurHighInputBiasPc,31702,31702,1,nu2api/nu3d/nu3d_includes.h,users,PostBlurHighInputBiasPc: only nu2api/nu3d_includes.cpp android-path
+variable:PostBlurHighInputBias,variable,PostBlurHighInputBias,31702,31702,1,nu2api/nu3d/nu3d_includes.h,users,PostBlurHighInputBias: only nu2api/nu3d_includes.cpp android-path
 variable:PostBlurHighOutputBias,variable,PostBlurHighOutputBias,31703,31703,1,nu2api/nu3d/nu3d_includes.h,users,PostBlurHighOutputBias: only nu2api/nu3d_includes.cpp android-path
 function:PostShadowComputeFrustumCube,function,PostShadowComputeFrustumCube,31704,31704,1,nu2api/nudynamiclight_renderset_gen.h,symbol,nu2api/nu3d_includes.cpp[nudynamiclight_renderset_gen.cpp] pc-path
 function:PostShadowComputePlanes,function,PostShadowComputePlanes,31705,31705,1,nu2api/nudynamiclight_renderset_gen.h,symbol,nu2api/nu3d_includes.cpp[nudynamiclight_renderset_gen.cpp] pc-path
@@ -15738,8 +15738,8 @@ function:Indy_MidSpecialMove_Default,function,Indy_MidSpecialMove_Default,31781,
 function:Indy_MidSpecialMove_StartJump,function,Indy_MidSpecialMove_StartJump,31782,31782,1,legoapi/lib/hub.h,users,Indy_MidSpecialMove_StartJump: only legogame/hub.cpp android-path
 function:Indy_MidSpecialMove_BigJump,function,Indy_MidSpecialMove_BigJump,31783,31783,1,legoapi/lib/hub.h,users,Indy_MidSpecialMove_BigJump: only legogame/hub.cpp android-path
 function:Indy_PrepareObstacle,function,Indy_PrepareObstacle,31784,31784,1,legoapi/lib/hub.h,users,Indy_PrepareObstacle: only legogame/hub.cpp android-path
-function:Indy_PrepareWhipSwingPc,function,Indy_PrepareWhipSwingPc,31785,31785,1,legoapi/lib/hub.h,users,Indy_PrepareWhipSwingPc: only legogame/hub.cpp android-path
-function:Indy_MidSpecialMove_WhipSwingPc,function,Indy_MidSpecialMove_WhipSwingPc,31786,31786,1,legoapi/lib/hub.h,users,Indy_MidSpecialMove_WhipSwingPc: only legogame/hub.cpp android-path
+function:Indy_PrepareWhipSwing,function,Indy_PrepareWhipSwing,31785,31785,1,legoapi/lib/hub.h,users,Indy_PrepareWhipSwing: only legogame/hub.cpp android-path
+function:Indy_MidSpecialMove_WhipSwing,function,Indy_MidSpecialMove_WhipSwing,31786,31786,1,legoapi/lib/hub.h,users,Indy_MidSpecialMove_WhipSwing: only legogame/hub.cpp android-path
 function:Indy_PrepareBigJump,function,Indy_PrepareBigJump,31787,31787,1,legoapi/lib/hub.h,users,Indy_PrepareBigJump: only legogame/hub.cpp android-path
 function:Indy_PreparingForSpecialMove,function,Indy_PreparingForSpecialMove,31788,31788,1,legoapi/lib/hub.h,users,Indy_PreparingForSpecialMove: only legogame/hub.cpp android-path
 function:Indy_MidSpecialMove,function,Indy_MidSpecialMove,31789,31789,1,legoapi/lib/hub.h,users,Indy_MidSpecialMove: only legogame/hub.cpp android-path
@@ -15750,7 +15750,7 @@ function:Indy_MidSpecialMove_ClimbDown,function,Indy_MidSpecialMove_ClimbDown,31
 function:Indy_MidSpecialMove_GrappleStart,function,Indy_MidSpecialMove_GrappleStart,31794,31794,1,legoapi/lib/hub.h,users,Indy_MidSpecialMove_GrappleStart: only legogame/hub.cpp android-path
 function:Indy_MidSpecialMove_GrappleClimb,function,Indy_MidSpecialMove_GrappleClimb,31795,31795,1,legoapi/lib/hub.h,users,Indy_MidSpecialMove_GrappleClimb: only legogame/hub.cpp android-path
 function:Indy_MidSpecialMove_GrappleEnd,function,Indy_MidSpecialMove_GrappleEnd,31796,31796,1,legoapi/lib/hub.h,users,Indy_MidSpecialMove_GrappleEnd: only legogame/hub.cpp android-path
-function:Indy_MidSpecialMove_SwingPc,function,Indy_MidSpecialMove_SwingPc,31797,31797,1,legoapi/lib/hub.h,users,Indy_MidSpecialMove_SwingPc: only legogame/hub.cpp android-path
+function:Indy_MidSpecialMove_Swing,function,Indy_MidSpecialMove_Swing,31797,31797,1,legoapi/lib/hub.h,users,Indy_MidSpecialMove_Swing: only legogame/hub.cpp android-path
 function:Indy_PrepareJump,function,Indy_PrepareJump,31798,31798,1,legoapi/lib/hub.h,users,Indy_PrepareJump: only legogame/hub.cpp android-path
 function:IndyGrappleHelperOccupied,function,IndyGrappleHelperOccupied,31799,31800,2,legoapi/lib/hub.h,users,IndyGrappleHelperOccupied: only legogame/hub.cpp android-path
 function:Indy_PrepareGrapple,function,Indy_PrepareGrapple,31801,31801,1,legoapi/lib/hub.h,users,Indy_PrepareGrapple: only legogame/hub.cpp android-path

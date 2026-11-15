@@ -434,11 +434,11 @@ void Attracto_GetPos_Top(ATTRACTO *attracto, NUVEC *position) {
     }
 }
 
-char *AttractoRegistryNamePc = "Attracto";
+char *AttractoRegistryName = "Attracto";
 ADDGIZMOTYPE AttractoAddType = {0};
 
 ADDGIZMOTYPE *Attractos_RegisterGizmo(i32 unused_type_id) {
-    char *name = AttractoRegistryNamePc;
+    char *name = AttractoRegistryName;
     AttractoAddType = Default_ADDGIZMOTYPE;
     AttractoAddType.name = name;
     AttractoAddType.prefix = dat_007516c0;
