@@ -199,6 +199,8 @@ void PartKill_ThermalDetonator(PART_PC *part, i32 unused1) {
     }
 }
 
+PC_SURFACE_MASK GetSurfaceInfoDefaultMask = {0x20};
+
 void ThermalDetonator_Throw(GAMEOBJECT *object) {
     NUVEC movement;
     NUVEC velocity;

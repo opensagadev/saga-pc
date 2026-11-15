@@ -44,6 +44,7 @@
 #include "nu2api/numath/nutrig.h"
 #include "nu2api/numath/nuvec.h"
 #include <string.h>
+#include "gameapi/edtools/edui.h"
 
 typedef void (*CHARACTER_UPDATE_CALLBACK)(GAMEOBJECT *);
 
@@ -138,6 +139,8 @@ char PlayerArcadeStartDoor[16] = "door_to_network";
 char PlayerMissionStartDoor[13] = "mission_door";
 PLAYERPROGRESS PlayerProgress[8] = {0};
 PLAYER_START_INITIALIZER_RECORD PlayerStart[8] = {0};
+
+i32 RenderHubFromCutscenePlayer = 0;
 
 void Players_InitPositions(WORLDINFO *world) {
     i32 bonus = world->area != NULL && (world->area->flags & AREAFLAG_BONUS_AREA) != 0;
@@ -237,10 +240,18 @@ void Players_InitPositions(WORLDINFO *world) {
     }
 }
 
+u32 GAMEPAD_TOGGLELEFT = PAD_BUTTON_L2 | PAD_BUTTON_L1;
+u32 GAMEPAD_TOGGLERIGHT = PAD_BUTTON_R2 | PAD_BUTTON_R1;
+i32 GAMEPAD_LIFT = PAD_BUTTON_R1;
 i32 DEFAULT_PLAYERHITPOINTS = 8;
 i32 PlayerID[2] = {-1, -1};
 f32 TOGGLEHOLDTIME = 1.0f;
 f32 TOGGLEREPEATTIME = 0.25f;
+i32 LEGOHINT_FREEPLAYTOGGLE = -1;
+i32 hub_from_superstory = -1;
+i32 hub_from_mission = -1;
+i32 hub_startoutsidebonusdoor_area = -1;
+i32 hub_from_arcade = -1;
 
 void RememberPlayerIDs(i32 force, i32 first_id, i32 second_id) {
     i32 ids[2];
@@ -790,6 +801,8 @@ i32 CanWearHatsInFreePlay(i32 id) {
     }
     return 1;
 }
+
+AREA_DATA *BONUS_GUNSHIP_ADATA = 0;
 
 void ResetPlayer(GAMEOBJECT *object, i32 reset_moves, NUVEC *position, i32 snap_to_surface) {
     f32 surface_y = 2000000.0f;

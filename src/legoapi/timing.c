@@ -82,7 +82,13 @@ typedef struct GAME_TIMING_AREA_SAVE { // size 0xc
     f32 challenge_trial_time;          // 0x8
 } GAME_TIMING_AREA_SAVE;
 
+TIMER GamePlayTimer = {0};
+MAINFRAMECOUNTERS MainFrameCounters = {0};
+TIMER SuperStoryTimer = {0};
+f32 LevelNameTime = 0.0f;
 f32 global_pulse = 0.0f;
+
+TIMER ChallengeTimer = {0};
 
 void GameTiming(WORLDINFO *world, f32 *game_time) {
     f32 target;

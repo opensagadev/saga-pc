@@ -371,43 +371,84 @@ const char dat_00757db4[9];
 const char dat_00757de4[9];
 const char dat_00757e18[9];
 const char dat_00757e40[10];
+const char dat_00757e40[10] = "on_frames";
 const char dat_00757dc8[14];
 const char dat_00757da4[7];
+const char dat_00757da4[7] = "force=";
 const char dat_00757e10[8];
+const char dat_00757e18[9] = "bothways";
 const char dat_00757d60[12];
 const char dat_00757dac[8];
+const char dat_00757dac[8] = "blowup=";
+const char dat_00757db4[9] = "flowbox=";
 const char dat_00757dc0[7];
+const char dat_00757dc0[7] = "gizmo=";
+const char dat_00757dc8[14] = "gizmo_output=";
 const char dat_00757dfc[5];
 const char dat_00757d6c[3];
+const char dat_00757d6c[3] = "to";
+const char dat_00757d70[16] = "OBSTACLE_CLOSED";
 const char dat_00757d80[14];
+const char dat_00757d80[14] = "OBSTACLE_OPEN";
 const char dat_00757e04[9];
+const char dat_00757e04[9] = "off_flag";
+const char dat_00757e10[8] = "on_flag";
 const char dat_00757d54[10];
+const char dat_00757d60[12] = "lastframe-1";
 const char dat_00757dd8[12];
+const char dat_00757dd8[12] = "fakeanimid=";
+const char dat_00757de4[9] = "buildit=";
 const char dat_00757d90[7];
+const char dat_00757d90[7] = "zipup=";
+const char dat_00757d98[10] = "obstacle=";
 const char dat_00757e24[13];
+const char dat_00757e24[13] = "CheckVisible";
+const char dat_00757e34[10] = "pathname=";
 const char dat_00757df0[10];
+const char dat_00757df0[10] = "cutscene=";
+const char dat_00757dfc[5] = "obj=";
 i32 turret_gizmotype_id;
 i32 obstacle_gizmotype_id;
 i32 turret_gizmotype_id = -1;
 const char GizmoSnapOptionName[5];
 const char dat_00758274[];
+const char dat_00758274[] = "reserve";
 const char dat_0075827c[];
+const char dat_0075827c[] = "set";
 const char dat_00758280[];
+const char dat_00758280[] = "locator";
 const char dat_00758288[];
+const char dat_00758288[] = "locator=mylocator";
 const char dat_0075829c[];
+const char dat_0075829c[] = "nearest_either_player";
 const char dat_007582b4[];
+const char dat_007582b4[] = "furthest_from_either_player";
 const char dat_007582d0[];
+const char dat_007582d0[] = "furthest_from_opponent";
 const char dat_007582e8[];
+const char dat_007582e8[] = "ignore_assigned=FALSE";
 const char dat_00758300[];
+const char dat_00758300[] = "ignore_assigned=TRUE";
 const char dat_00758318[];
+const char dat_00758318[] = "finish_at_end";
 const char dat_00758328[];
+const char dat_00758328[] = "first";
 const char dat_00758330[];
+const char dat_00758330[] = "next";
 const char dat_00758338[];
+const char dat_00758338[] = "off_screen_radius=";
 const char dat_0075834c[];
+const char dat_0075834c[] = "max_opponent_range=";
 const char dat_00758360[];
+const char dat_00758360[] = "max_player_range=";
 const char dat_00758374[];
+const f64 MoveSplineRunSpeedSentinel = 1000000000.0;
+const char dat_00758374[] = "max_range=";
 const char dat_00757824[];
+const char dat_00757824[7] = "random";
 const char dat_00757a7c[];
+const char dat_00757a7c[8] = "looping";
+const char dat_00757d54[10] = "lastframe";
 
 GAMEOBJECT *GetNamedGameObject(void *sys, char *name) {
     APIOBJECT *result;
@@ -6577,6 +6618,8 @@ i32 Action_UseCurrentSpeed(AISYS_PC *system, AISCRIPTPROCESS *processor, AIPACKE
     }
     return 1;
 }
+
+f32 DEFAULT_MOVE_RANGE = 0;
 
 i32 Action_SetMaxMovementRange(AISYS_PC *system, AISCRIPTPROCESS *processor, AIPACKET *packet, char **params, i32 count, i32 first_time,
                                f32 elapsed) {

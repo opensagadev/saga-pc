@@ -23,6 +23,8 @@ void *AIPathCnxHelperSysCreate(VARIPTR *buffer, VARIPTR *end, i32 count) {
     return system;
 }
 
+void (*AIPathCnxHelperSysInitFn)(WORLDINFO *) = 0;
+
 void AIPathCnxHelperSysReset(WORLDINFO *world, AI_HELPER_SYSTEM *system) {
     if (system != NULL) {
         if (system->count != 0) {

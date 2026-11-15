@@ -411,6 +411,8 @@ extern "C" {
         return nearest;
     }
 
+    NUMTL *ZipUpLineMaterial = 0;
+
     static void GrapplesDrawList(WORLDINFO *world, GRAPPLE_MOTION *grapple, i32 count, u16 target_rotation, f32 target_alpha) {
         GAMEOBJECT *nearest_player = NULL;
         NUMTX matrix;

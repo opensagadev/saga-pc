@@ -782,6 +782,8 @@ i32 SuperCarry_SetTargetMom(GAMEOBJECT *object, f32 input_speed) {
     return 0;
 }
 
+const f64 TerrainSkinSampleCount = 8.0;
+
 i32 SuperCarry_YRotation(GAMEOBJECT *object, u16 input_angle) {
     if (object->unknown_7b3 == 0) {
         object->facing_angle = SeekRot(object->facing_angle, object->movement_facing_angle, 12.0f);
@@ -828,6 +830,7 @@ u8 SuperCarryPlayerRgb[2][3] = {
     {0, 127, 255},
     {0, 255, 0  }
 };
+f32 PUNCHGAP = 0.3f;
 f32 SUPERCARRY_THROWSPEED_XZ = 3.0f;
 f32 SUPERCARRY_THROWSPEED_Y = 3.0f;
 f32 SUPERCARRY_RELEASESPEED_XZ = 2.0f;

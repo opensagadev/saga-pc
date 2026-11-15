@@ -308,6 +308,21 @@ typedef struct hub_freeplay_pad_reader_pc_s {
     u32 digital_buttons_pressed;
 } HUB_FREEPLAY_PAD_READER;
 
+extern "C" {
+    extern i16 PCArcadeModeText0;
+    extern i16 PCArcadeModeText1;
+    extern i16 PCArcadeModeText2;
+    extern char AreaFixUpName_Senate[8] = "senate";
+    extern char AreaFixUpName_Losttemple[12] = "losttemple";
+    extern char AreaFixUpName_Emperorfight[16] = "emperorfight";
+    extern char AreaFixUpName_Moseisley[12] = "moseisley";
+    extern char AreaFixUpName_Tatooine[12] = "tatooine";
+    extern char AreaFixUpName_Gunship[8] = "gunship";
+    extern char AreaFixUpName_Pursuit[8] = "pursuit";
+    extern char AreaFixUpName_Podsprint[12] = "podsprint";
+    extern char AreaFixUpName_Negotiations[16] = "negotiations";
+}
+
 static f32 HubFabs(f32 value) {
     u32 bits = *(u32 *)&value & 0x7fffffff;
     return *(f32 *)&bits;
@@ -2218,6 +2233,15 @@ extern "C" {
     AREA_DATA **ArcadeLevel[12] = {&SENATE_ADATA,      &UTAPAU_ADATA,        &HOTH_ADATA,        &BONUSDAGOBAH_ADATA,
                                    &BONUSKAMINO_ADATA, &BONUSKASHYYYK_ADATA, &E1CHARACTER_ADATA, &E2CHARACTER_ADATA,
                                    &E3CHARACTER_ADATA, &E4CHARACTER_ADATA,   &E5CHARACTER_ADATA, &E6CHARACTER_ADATA};
+    ARCADE_MODE Arcade_Mode[7] = {
+        {&PCArcadeModeText0, 0,      0x19},
+        {&PCArcadeModeText1, 10,     0x12},
+        {&PCArcadeModeText1, 25,     0x12},
+        {&PCArcadeModeText1, 50,     0x12},
+        {&PCArcadeModeText2, 50000,  4   },
+        {&PCArcadeModeText2, 100000, 4   },
+        {&PCArcadeModeText2, 250000, 4   },
+    };
     ARCADE_ITEM ArcadeItem = {
         {&PCArcadeLevelText,
          0, 12,
@@ -5176,6 +5200,12 @@ extern "C" {
     APICHARACTERMODELLIST FreePlayModelList[49] = {0};
     i32 FreePlayResidentCount = 0;
     u8 LevLock[5] = {0};
+    AREA_DATA *E4CHARACTER_ADATA = 0;
+    AREA_DATA *E5CHARACTER_ADATA = 0;
+    AREA_DATA *E6CHARACTER_ADATA = 0;
+    f32 rightrepeattime[2] = {0};
+    f32 downrepeattime[2] = {0};
+    f32 uprepeattime[2] = {0};
     i16 TextCrawlChapterId = 0;
     i16 TextCrawlVehicleBonusId = 0;
     i16 TextCrawlCharacterBonusId = 0;

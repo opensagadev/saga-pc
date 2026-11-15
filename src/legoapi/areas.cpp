@@ -416,6 +416,7 @@ extern "C" void Areas_CompleteAllBuildUps(AREASAVE_s *save) {
 extern "C" {
     APICHARACTERMODELLIST *CurrentCList = NULL;
     APICHARACTERMODELLIST *CurrentStoryCList = NULL;
+    NEW_MINI_PIECE NewMiniPiece[10] = {0};
 }
 
 extern "C" i8 Area_CharIDInCurrentList(i32 character_id) {

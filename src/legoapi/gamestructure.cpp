@@ -38,8 +38,15 @@ extern "C" void BackDrop_Dump(void);
 extern "C" {
     i32 SuperStoryEpisode = -1;
     i32 pause_i_pad = -1;
+    i32 reset_load = 1;
+    i32 LEGOMENU_PAUSEMAIN = -1;
     i32 LEGOMENU_PAUSESYNC = -1;
     void (*PauseGame_ExtraCodeFn)(void) = NULL;
+}
+
+extern "C" {
+    TIMER PauseTimer = {0};
+    f32 DoubleScoreTime = 0;
 }
 
 extern "C" void PauseGame(i32 pad) {
@@ -139,6 +146,7 @@ extern "C" {
         }
     }
 
+    OPTIONSSAVE *Game_OptionsSave = 0;
     u32 SuperStoryScore = 0;
     i32 NextArea_FreePlay = 0;
     i32 save_paused = 0;
@@ -167,6 +175,10 @@ extern "C" i32 InStory(void) {
         return 0;
     }
     return 1;
+}
+
+extern "C" {
+    NUGSCN *save_icon_scene = 0;
 }
 
 i32 Game_Exit(i32 last_area) {
@@ -248,6 +260,7 @@ extern "C" {
     i32 EpisodeGoldBrickForSuperStory = 0;
     i32 EpisodeGoldBrickForChallenge = 0;
     void (*Game_AllGoldBricksFn)(void) = NULL;
+    GAMEOBJECT *Player[8] = {0};
 }
 
 extern "C" void AddToGoldBricks() {

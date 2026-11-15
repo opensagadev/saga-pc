@@ -979,6 +979,11 @@ struct GIZFLOW_CONDITION_TYPE { // size 0xc
     void (*load)(NUFPAR *);     // 0x8
 };
 
+const FLOWBOX_CALLBACKS flowbox_callbacks[3] = {
+    {ResetGizmoFlowBox, ProcessGizmoFlowBox,     CheckOutputGizmoFlowBox    },
+    {NULL,              ProcessConditionFlowBox, CheckOutputConditionFlowBox},
+    {NULL,              ProcessActionFlowBox,    CheckOutputActionFlowBox   },
+};
 static GIZFLOW_CONDITION_TYPE gizflow_condition_types[] = {
     {0,  "All",     NULL               },
     {1,  "Any",     NULL               },

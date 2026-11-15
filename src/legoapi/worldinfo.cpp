@@ -506,6 +506,7 @@ extern "C" {
     }
 
     i32 Grass_Available = 0;
+    i32 newlevelfrommenu_newmenuy = 0;
 
     void LoadGrassFile(WORLDINFO *world) {
         char path[256];
@@ -528,6 +529,8 @@ extern "C" {
             world->page_bridge = edbriLoadPage(path, world->current_gscn);
         }
     }
+
+    i32 new_level_from_menu = 0;
 
     i32 WorldInfo_Reset(WORLDINFO *world, i32 level_index) {
         void *start;
@@ -739,6 +742,41 @@ extern "C" {
     }
 
     i32 level_already_loaded = -1;
+    TERRAIN_SURFACE TerSurface[32] = {
+        {1.0f, 0,      0xffff},
+        {1.0f, 65,     0xffff},
+        {1.0f, 2,      0xffff},
+        {1.0f, 8,      0xffff},
+        {1.0f, 65536,  0xffff},
+        {1.0f, 66560,  0xffff},
+        {1.0f, 0,      0xffff},
+        {1.0f, 2048,   0xffff},
+        {1.0f, 0,      0xffff},
+        {1.0f, 8192,   0xffff},
+        {1.0f, 10,     0xffff},
+        {1.0f, 67,     0xffff},
+        {1.0f, 16,     0xffff},
+        {1.0f, 16,     0xffff},
+        {1.0f, 8192,   0xffff},
+        {1.0f, 8192,   0xffff},
+        {0.1f, 1088,   0xffff},
+        {0.2f, 131074, 0xffff},
+        {1.0f, 81,     0xffff},
+        {1.0f, 512,    0xffff},
+        {1.0f, 8192,   0xffff},
+        {1.0f, 514,    0xffff},
+        {1.0f, 64,     0xffff},
+        {1.0f, 192,    0xffff},
+        {1.0f, 8192,   0xffff},
+        {1.0f, 4160,   0xffff},
+        {1.0f, 0,      0xffff},
+        {1.0f, 5184,   0xffff},
+        {1.0f, 256,    0xffff},
+        {1.0f, 320,    0xffff},
+        {1.0f, 64,     0xffff},
+        {1.0f, 64,     0xffff},
+    };
+    i32 Area = -1;
 
     void WorldInfo_ClearAllIfScreenFaded(void) {
         if (LastLData == TITLES_LDATA || new_level_from_menu != 0 || Area != last_area || BGLOAD == 0) {
@@ -751,6 +789,7 @@ extern "C" {
     }
 
     i32 next_level = 0;
+    volatile i32 waiting_for_level = 0;
 
     void WorldInfo_StreamLevel(BGPROCINFO *bg_info) {
         (void)bg_info;

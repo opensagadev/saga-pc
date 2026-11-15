@@ -96,6 +96,9 @@ extern void (*AiEditorMovePlayersCallback)(NUVEC *);
 extern i32 ai_onlyusepackfile;
 
 extern char dat_007516c0[1];
+char dat_007516c0[1] = "";
+const char AIScriptFalse[6] = "false";
+const char GizObstacleActionNamePC[5] = "Name";
 const char dat_0075f2c0[3] = "No";
 const char dat_0075f2c4[4] = "Yes";
 static const u32 iAISysPathColoursG[5] = {0xffff0000, 0xff00ff00, 0xff00ffff, 0xffff00ff, 0xffffff00};

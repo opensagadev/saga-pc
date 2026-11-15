@@ -15,6 +15,16 @@
 #include "nu2api/numath/nufloat.h"
 #include "nu2api/numath/nutrig.h"
 #include <stdio.h>
+#include "legoapi/actions/movement/pushblocks.h"
+#include "legoapi/characters/motion/move.h"
+#include "legoapi/gizmos/object/gizbuildits.h"
+#include "legoapi/gizmos/transport/teleport.h"
+#include "legoapi/gizmos/traps/gizforce.h"
+#include "legoapi/gizmos/traps/gizturret.h"
+#include "legoapi/items/collect/thermaldetonators.h"
+#include "legoapi/menus/core/panel.h"
+#include "legoapi/menus/screens/shop.h"
+#include "legoapi/props/objects/zipup.h"
 
 void Text_ExpandAllButtonStrings(char *, char *);
 
@@ -119,6 +129,74 @@ void DrawHint_LSW(HINT *hint, i32 max_lines) {
         DrawPanel3DObjectNoAlpha(-wave_x, text_y, 1.0f, 0.5f, 0.5f, 0.5f, 0, rotation, 0, &icon->special, 2);
     }
 }
+
+HINT Hints_LSW[65] = {
+    {{{600, 0, -1, 0, 7.5f}},     15.0f, {Tag_UpdateHint},          0, {0, 0, 0}, 0.0f},
+    {{{601, 0, -1, 0, 6.0f}},     4.0f,  {GizForce_UpdateHint},     0, {0, 0, 0}, 0.0f},
+    {{{602, 0, -1, 0, 6.0f}},     4.0f,  {Tag_UpdateHint},          0, {0, 0, 0}, 0.0f},
+    {{{603, 0, -1, 0, 6.0f}},     4.0f,  {Tag_UpdateHint},          0, {0, 0, 0}, 0.0f},
+    {{{604, 0, -1, 0, 6.0f}},     4.0f,  {GizBuildIts_UpdateHint},  0, {0, 0, 0}, 0.0f},
+    {{{605, 0, -1, 0, 6.0f}},     4.0f,  {Tag_UpdateHint},          0, {0, 0, 0}, 0.0f},
+    {{{606, 0, -1, 0, 6.0f}},     4.0f,  {Tag_UpdateHint},          0, {0, 0, 0}, 0.0f},
+    {{{607, 0, -1, 0, 6.0f}},     4.0f,  {GizPanel_UpdateHint},     0, {0, 0, 0}, 0.0f},
+    {{{608, 0, -1, 0, 6.0f}},     4.0f,  {GizPanel_UpdateHint},     0, {0, 0, 0}, 0.0f},
+    {{{609, 0, -1, 0, 6.0f}},     4.0f,  {GizPanel_UpdateHint},     0, {0, 0, 0}, 0.0f},
+    {{{610, 0, -1, 0, 6.0f}},     4.0f,  {ZipUps_UpdateHint},       0, {0, 0, 0}, 0.0f},
+    {{{611, 0, -1, 0, 6.0f}},     4.0f,  {Tag_UpdateHint},          0, {0, 0, 0}, 0.0f},
+    {{{612, 0, -1, 0, 6.0f}},     4.0f,  {NULL},                    0, {0, 0, 0}, 0.0f},
+    {{{613, 1, -1, 0, 10.0f}},    3.0f,  {Dodge_UpdateHint},        0, {0, 0, 0}, 0.0f},
+    {{{614, 1, -1, 0, 10.0f}},    3.0f,  {GizTurrets_UpdateHint},   0, {0, 0, 0}, 0.0f},
+    {{{615, 0, -1, 0, 10.0f}},    3.0f,  {Push_UpdateHints},        0, {0, 0, 0}, 0.0f},
+    {{{616, 0, -1, 0, 10.0f}},    3.0f,  {Teleport_UpdateHints},    0, {0, 0, 0}, 0.0f},
+    {{{617, 0, -1, 0, 10.0f}},    3.0f,  {GizPanel_UpdateHint},     0, {0, 0, 0}, 0.0f},
+    {{{618, 0, -1, 0, 10.0f}},    3.0f,  {GizPanel_UpdateHint},     0, {0, 0, 0}, 0.0f},
+    {{{620, 4, -1, 0, 6.0f}},     2.0f,  {NULL},                    0, {0, 0, 0}, 0.0f},
+    {{{623, 0, -1, 0, 7.5f}},     0.0f,  {NULL},                    0, {0, 0, 0}, 0.0f},
+    {{{624, 0, -1, 0, 7.5f}},     0.0f,  {NULL},                    0, {0, 0, 0}, 0.0f},
+    {{{625, 0, -1, 0, 7.5f}},     0.0f,  {NULL},                    0, {0, 0, 0}, 0.0f},
+    {{{626, 0, -1, 0, 0.0f}},     0.0f,  {NULL},                    0, {0, 0, 0}, 0.0f},
+    {{{627, 0, -1, 0, 0.0f}},     0.0f,  {NULL},                    0, {0, 0, 0}, 0.0f},
+    {{{628, 0, -1, 0, 0.0f}},     0.0f,  {NULL},                    0, {0, 0, 0}, 0.0f},
+    {{{630, 0, -1, 0, 10.0f}},    3.0f,  {NULL},                    0, {0, 0, 0}, 0.0f},
+    {{{631, 0, -1, 0, 10.0f}},    3.0f,  {NULL},                    0, {0, 0, 0}, 0.0f},
+    {{{632, 0, -1, 0, 10.0f}},    3.0f,  {NULL},                    0, {0, 0, 0}, 0.0f},
+    {{{633, 0, -1, 0, 10.0f}},    3.0f,  {NULL},                    0, {0, 0, 0}, 0.0f},
+    {{{634, 0, -1, 0, 10.0f}},    3.0f,  {NULL},                    0, {0, 0, 0}, 0.0f},
+    {{{635, 0, -1, 100, 10.0f}},  3.0f,  {NULL},                    0, {0, 0, 0}, 0.0f},
+    {{{636, 0, -1, 100, 10.0f}},  3.0f,  {NULL},                    0, {0, 0, 0}, 0.0f},
+    {{{637, 0, -1, 100, 10.0f}},  3.0f,  {NULL},                    0, {0, 0, 0}, 0.0f},
+    {{{638, 0, -1, 100, 10.0f}},  3.0f,  {NULL},                    0, {0, 0, 0}, 0.0f},
+    {{{639, 0, -1, 100, 10.0f}},  3.0f,  {NULL},                    0, {0, 0, 0}, 0.0f},
+    {{{640, 0, -1, 100, 10.0f}},  3.0f,  {NULL},                    0, {0, 0, 0}, 0.0f},
+    {{{641, 0, -1, 100, 10.0f}},  3.0f,  {NULL},                    0, {0, 0, 0}, 0.0f},
+    {{{642, 0, -1, 100, 10.0f}},  3.0f,  {NULL},                    0, {0, 0, 0}, 0.0f},
+    {{{643, 0, -1, 1000, 10.0f}}, 3.0f,  {ShinyMetal_UpdateHint},   0, {0, 0, 0}, 0.0f},
+    {{{644, 0, -1, 0, 0.0f}},     0.0f,  {NULL},                    0, {0, 0, 0}, 0.0f},
+    {{{645, 0, -1, 0, 0.0f}},     0.0f,  {NULL},                    0, {0, 0, 0}, 0.0f},
+    {{{646, 0, -1, 0, 0.0f}},     0.0f,  {NULL},                    0, {0, 0, 0}, 0.0f},
+    {{{647, 0, -1, 0, 6.0f}},     4.0f,  {Tag_UpdateHint},          0, {0, 0, 0}, 0.0f},
+    {{{648, 0, -1, 0, 10.0f}},    4.0f,  {NULL},                    0, {0, 0, 0}, 0.0f},
+    {{{649, 0, -1, 0, 6.0f}},     4.0f,  {Tag_UpdateHint},          0, {0, 0, 0}, 0.0f},
+    {{{650, 0, -1, 0, 6.0f}},     4.0f,  {Tag_UpdateHint},          0, {0, 0, 0}, 0.0f},
+    {{{651, 0, -1, 0, 6.0f}},     4.0f,  {Tag_UpdateHint},          0, {0, 0, 0}, 0.0f},
+    {{{652, 0, -1, 0, 6.0f}},     4.0f,  {NULL},                    0, {0, 0, 0}, 0.0f},
+    {{{653, 0, -1, 0, 5.0f}},     10.0f, {Tag_UpdateHint},          0, {0, 0, 0}, 0.0f},
+    {{{654, 0, -1, 0, 6.0f}},     4.0f,  {Tag_UpdateHint},          0, {0, 0, 0}, 0.0f},
+    {{{655, 0, -1, 0, 6.0f}},     4.0f,  {NULL},                    0, {0, 0, 0}, 0.0f},
+    {{{656, 0, -1, 0, 6.0f}},     4.0f,  {NULL},                    0, {0, 0, 0}, 0.0f},
+    {{{657, 0, -1, 0, 10.0f}},    4.0f,  {NULL},                    0, {0, 0, 0}, 0.0f},
+    {{{658, 0, -1, 0, 10.0f}},    4.0f,  {NULL},                    0, {0, 0, 0}, 0.0f},
+    {{{659, 0, -1, 0, 10.0f}},    4.0f,  {NULL},                    0, {0, 0, 0}, 0.0f},
+    {{{696, 0, -1, 0, 6.0f}},     4.0f,  {NULL},                    0, {0, 0, 0}, 0.0f},
+    {{{697, 0, -1, 0, 6.0f}},     4.0f,  {NULL},                    0, {0, 0, 0}, 0.0f},
+    {{{1675, 1, -1, 0, 8.0f}},    0.0f,  {Shop_UpdateHint},         0, {0, 0, 0}, 0.0f},
+    {{{1676, 1, -1, 0, 8.0f}},    0.0f,  {Shop_UpdateHint},         0, {0, 0, 0}, 0.0f},
+    {{{1677, 1, -1, 0, 8.0f}},    0.0f,  {Shop_UpdateHint},         0, {0, 0, 0}, 0.0f},
+    {{{1678, 1, -1, 0, 8.0f}},    0.0f,  {Shop_UpdateHint},         0, {0, 0, 0}, 0.0f},
+    {{{1449, 1, 4, 0, 8.0f}},     0.0f,  {Percent_UpdateHint},      0, {0, 0, 0}, 0.0f},
+    {{{1447, 1, 4, 0, 8.0f}},     0.0f,  {IndyUnlocked_UpdateHint}, 0, {0, 0, 0}, 0.0f},
+    {{{-1, 0, -1, 1000, 1.0f}},   1.0f,  {NULL},                    0, {0, 0, 0}, 0.0f},
+};
 
 void initGameHintSys_LSW(void) {
     RegisterWithHintSys(DrawHint_LSW, Hints_LSW, Game.hint_completion_bits, 3);

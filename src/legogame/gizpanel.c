@@ -139,6 +139,11 @@ void GizPanel_InitTerrain(WORLDINFO *world) {
     }
 }
 
+const f64 PanelVariantTwoTargetZ = 0.19f;
+const f64 PanelVariantTwoTargetY = 0.245f;
+const f64 PanelVariantThreeTargetZ = 0.17f;
+const f64 PanelVariantThreeTargetY = 0.34f;
+
 static NUVEC *PanelGetTrackingPosition(PANEL_MOVEMENT *panel, NUVEC *position) {
     *position = panel->position;
     switch (panel->model_variant) {

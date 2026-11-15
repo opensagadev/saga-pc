@@ -312,6 +312,7 @@ void MiniKit_LSW_Skip(STATUS_STAGE_s *stage, STATUSPACKET_s *packet) {
 }
 
 f32 slideseek = 0.0f;
+f32 iconalphaoverride = 0;
 f32 jibberlen = 0.1f;
 static f32 StatusMiniKitPieceDuration = 0.4f;
 

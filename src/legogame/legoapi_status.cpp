@@ -980,6 +980,7 @@ extern "C" {
     f32 StatusMiniKitDirectionOffsetPc = 0.035f;
     STATUS_MINIKIT_DRAW_CACHE StatusMiniKitDrawCache[10] = {0};
     struct STATUS_STAGE_s *StatusStages = 0;
+    STATUSPACKET_s StatusPacket = {0};
 }
 
 void DrawStatusMiniKit(f32 x, f32 y, f32 z, f32 scale, f32 collected_scale, i32 max_pieces, STATUSPACKET_s *packet, f32 phase) {

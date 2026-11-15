@@ -484,6 +484,27 @@ extern "C" {
     f32 WaitingForCharacterTime = 0;
 }
 
+extern "C" {
+    extern AREA_DATA *ANAKINSFLIGHT_ADATA;
+    extern char AreaFixUpName_Emperorfight[16];
+    extern char AreaFixUpName_Gunship[8];
+    extern char AreaFixUpName_Jedi[8];
+    extern char AreaFixUpName_Losttemple[12];
+    extern char AreaFixUpName_Moseisley[12];
+    extern char AreaFixUpName_Negotiations[16];
+    extern char AreaFixUpName_Podsprint[12];
+    extern char AreaFixUpName_Pursuit[8];
+    extern char AreaFixUpName_Senate[8];
+    extern char AreaFixUpName_Tatooine[12];
+    extern AREA_DATA *DEATHSTARBATTLE_ADATA;
+    extern AREA_DATA *DEATHSTARRESCUE_ADATA;
+    extern AREA_DATA *EMPERORFIGHT_ADATA;
+    extern AREA_DATA *MOSEISLEY_ADATA;
+    extern AREA_DATA *ROOFTOPS_ADATA;
+    extern AREA_DATA *TATOOINE_ADATA;
+    extern char AreaFixUpName_Gungan[8] = "Gungan";
+}
+
 static i32 World_HasImperialPrivate(APICHARACTERMODELLIST *list) {
     if (list == NULL) {
         return 0;
@@ -2349,8 +2370,25 @@ extern "C" {
     f32 CreditsPictureScale = 2.5f;
     f32 CreditsPictureBaseY = 0.0f;
     f32 CreditsPictureBaseZ = 1.0f;
+    AREAFIXUP AreaFixUpLostTemple[2] = {
+        {AreaFixUpName_Losttemple, &LOSTTEMPLE_ADATA},
+        {NULL,                     NULL             },
+    };
+    extern char AreaFixUpName_Fairground[12] = "Fairground";
+    extern char AreaFixUpName_Rooftops[12] = "Rooftops";
+    extern char AreaFixUpName_Gothamstreets[16] = "GothamStreets";
+    extern char AreaFixUpName_Batcave[8] = "batcave";
+    AREA_DATA *FAIRGROUND_ADATA = 0;
+    AREAFIXUP AreaFixUpGotham[5] = {
+        {AreaFixUpName_Batcave,       &HUB_ADATA          },
+        {AreaFixUpName_Gothamstreets, &GOTHAMSTREETS_ADATA},
+        {AreaFixUpName_Rooftops,      &ROOFTOPS_ADATA     },
+        {AreaFixUpName_Fairground,    &FAIRGROUND_ADATA   },
+        {NULL,                        NULL                },
+    };
     i32 WorldLightUserId = 1;
     i32 BGLOAD = 1;
+    i32 g_lowEndLevelBehaviour = 1;
     i32 PARTPAGE_GENERAL = -1;
     f32 PermCollectionScale = 0.600000024f;
 }
@@ -2390,6 +2428,7 @@ extern "C" void Credits_Update_Game(WORLDINFO *world) {
 }
 
 extern "C" {
+    i16 dat_007f17d0 = -1;
     AREA_EXTRA_MODEL ExtraModelList[6] = {
         {&ID_DEFAULTCHARACTER_A, &dat_007f17bc         },
         {&PunchRangeUnitId,      &PunchRangeCompanionId},
@@ -2401,6 +2440,8 @@ extern "C" {
     i16 id_DEFAULTCHARACTER[2] = {-1, -1};
     i16 id_JEDISTARFIGHTERYELLOWEP3 = -1;
     i16 dat_007f19e8 = -1;
+    i16 dat_007f1a48 = -1;
+    i16 dat_007f1a4c = -1;
     i16 dat_007f1aac = -1;
     i16 dat_007f1ab0 = -1;
     i16 dat_007f1ab4 = -1;
@@ -2550,14 +2591,17 @@ extern "C" {
     LEVELDATA *MOSEISLEYB_LDATA = 0;
     LEVELDATA *MOSEISLEYC_LDATA = 0;
     LEVELDATA *dat_0087b1bc = NULL;
+    LEVELDATA *dat_0087b1c0 = NULL;
     LEVELDATA *DEATHSTARRESCUEA_LDATA = 0;
     LEVELDATA *DEATHSTARRESCUEB_LDATA = 0;
     LEVELDATA *DEATHSTARRESCUEC_LDATA = 0;
     LEVELDATA *DEATHSTARESCAPEB_LDATA = 0;
+    LEVELDATA *DEATHSTARESCAPEC_LDATA = 0;
     LEVELDATA *DEATHSTARESCAPED_LDATA = 0;
     LEVELDATA *DEATHSTARBATTLEA_LDATA = 0;
     LEVELDATA *DEATHSTARBATTLEB_LDATA = 0;
     LEVELDATA *DEATHSTARBATTLEC_LDATA = 0;
+    LEVELDATA *DEATHSTARBATTLED_LDATA = 0;
     LEVELDATA *HOTHBATTLEA_LDATA = 0;
     LEVELDATA *dat_0087b200 = NULL;
     LEVELDATA *dat_0087b204 = NULL;
@@ -2614,6 +2658,142 @@ extern "C" {
     static LEVELDATA *dat_0087af5c = NULL;
     static LEVELDATA *dat_0087af60 = NULL;
     AREA_DATA *VADER_ADATA = 0;
+    extern char AreaFixUpName_Jimtest[8] = "JimTest";
+    extern char AreaFixUpName_NbKashyyyk[12] = "nb_kashyyyk";
+    extern char AreaFixUpName_NbKamino[12] = "nb_kamino";
+    extern char AreaFixUpName_NbDagobah[12] = "nb_dagobah";
+    extern char AreaFixUpName_Hoth[8] = "hoth";
+    extern char AreaFixUpName_Utapau[8] = "utapau";
+    extern char AreaFixUpName_LostTemple[12] = "LostTemple";
+    extern char AreaFixUpName_Bonus[8] = "Bonus";
+    extern char AreaFixUpName_Bonus2[8] = "Bonus2";
+    extern char AreaFixUpName_Anewhope[12] = "ANewHope";
+    extern char AreaFixUpName_BonusGunship[16] = "Bonus_Gunship";
+    extern char AreaFixUpName_Anakinsflight[16] = "AnakinsFlight";
+    extern char AreaFixUpName_Podrace[8] = "PodRace";
+    extern char AreaFixUpName_E6characterbonus[20] = "E6CharacterBonus";
+    extern char AreaFixUpName_E5characterbonus[20] = "E5CharacterBonus";
+    extern char AreaFixUpName_E4characterbonus[20] = "E4CharacterBonus";
+    extern char AreaFixUpName_E3characterbonus[20] = "E3CharacterBonus";
+    extern char AreaFixUpName_E2characterbonus[20] = "E2CharacterBonus";
+    extern char AreaFixUpName_E1characterbonus[20] = "E1CharacterBonus";
+    extern char AreaFixUpName_Deathstar2battle[20] = "DeathStar2Battle";
+    extern char AreaFixUpName_Endorbattle[12] = "EndorBattle";
+    extern char AreaFixUpName_Speederchase[16] = "SpeederChase";
+    extern char AreaFixUpName_Sarlaccpit[12] = "SarlaccPit";
+    extern char AreaFixUpName_Jabbaspalace[16] = "JabbasPalace";
+    extern char AreaFixUpName_Cloudcityescape[16] = "CloudCityEscape";
+    extern char AreaFixUpName_Cloudcitytrap[16] = "CloudCityTrap";
+    extern char AreaFixUpName_Dagobah[8] = "Dagobah";
+    extern char AreaFixUpName_Asteroidchase[16] = "AsteroidChase";
+    extern char AreaFixUpName_Hothescape[12] = "HothEscape";
+    extern char AreaFixUpName_Hothbattle[12] = "HothBattle";
+    extern char AreaFixUpName_Deathstarbattle[16] = "DeathStarBattle";
+    extern char AreaFixUpName_Deathstarescape[16] = "DeathStarEscape";
+    extern char AreaFixUpName_Deathstarrescue[16] = "DeathStarRescue";
+    extern char AreaFixUpName_Blockaderunner[16] = "BlockadeRunner";
+    extern char AreaFixUpName_Vader[8] = "Vader";
+    extern char AreaFixUpName_Temple[8] = "Temple";
+    extern char AreaFixUpName_Kashyyyk[12] = "Kashyyyk";
+    extern char AreaFixUpName_Grievous[12] = "Grievous";
+    extern char AreaFixUpName_Cruiser[8] = "Cruiser";
+    extern char AreaFixUpName_Dogfight[12] = "Dogfight";
+    extern char AreaFixUpName_Dooku[8] = "Dooku";
+    extern char AreaFixUpName_Factory[8] = "Factory";
+    extern char AreaFixUpName_Kamino[8] = "Kamino";
+    extern char AreaFixUpName_Maul[8] = "Maul";
+    extern char AreaFixUpName_Retakepalace[16] = "RetakePalace";
+    extern char AreaFixUpName_Palacerescue[16] = "PalaceRescue";
+    extern char AreaFixUpName_Map[4] = "map";
+    AREA_DATA *GUNGAN_ADATA = 0;
+    AREA_DATA *RESCUE_ADATA = 0;
+    AREA_DATA *RETAKE_ADATA = 0;
+    AREA_DATA *MAUL_ADATA = 0;
+    AREA_DATA *FACTORY_ADATA = 0;
+    AREA_DATA *CRUISER_ADATA = 0;
+    AREA_DATA *GRIEVOUS_ADATA = 0;
+    AREA_DATA *KASHYYYK_ADATA = 0;
+    AREA_DATA *TEMPLE_ADATA = 0;
+    AREA_DATA *BLOCKADERUNNER_ADATA = 0;
+    AREA_DATA *CLOUDCITYTRAP_ADATA = 0;
+    AREA_DATA *CLOUDCITYESCAPE_ADATA = 0;
+    AREA_DATA *SARLACCPIT_ADATA = 0;
+    AREA_DATA *ENDORBATTLE_ADATA = 0;
+    AREA_DATA *E1VEHICLE_ADATA = 0;
+    AREA_DATA *E2VEHICLE_ADATA = 0;
+    AREA_DATA *E3VEHICLE_ADATA = 0;
+    AREA_DATA *E4VEHICLE_ADATA = 0;
+    AREA_DATA *E5VEHICLE_ADATA = 0;
+    AREA_DATA *E6VEHICLE_ADATA = 0;
+    AREA_DATA *ANEWHOPE_ADATA = 0;
+    AREA_DATA *LEGOCITY_ADATA = 0;
+    AREAFIXUP AreaFixUpLSW[65] = {
+        {AreaFixUpName_Map,              &HUB_ADATA                },
+        {AreaFixUpName_Negotiations,     &NEGOTIATIONS_ADATA       },
+        {AreaFixUpName_Gungan,           &GUNGAN_ADATA             },
+        {AreaFixUpName_Palacerescue,     &RESCUE_ADATA             },
+        {AreaFixUpName_Podsprint,        &PODSPRINT_ADATA          },
+        {AreaFixUpName_Retakepalace,     &RETAKE_ADATA             },
+        {AreaFixUpName_Maul,             &MAUL_ADATA               },
+        {AreaFixUpName_Pursuit,          &BOUNTYHUNTERPURSUIT_ADATA},
+        {AreaFixUpName_Kamino,           &KAMINO_ADATA             },
+        {AreaFixUpName_Factory,          &FACTORY_ADATA            },
+        {AreaFixUpName_Jedi,             &JEDI_ADATA               },
+        {AreaFixUpName_Gunship,          &GUNSHIP_ADATA            },
+        {AreaFixUpName_Dooku,            &DOOKU_ADATA              },
+        {AreaFixUpName_Dogfight,         &DOGFIGHT_ADATA           },
+        {AreaFixUpName_Dogfight,         &BATTLEOVERCORUSCANT_ADATA},
+        {AreaFixUpName_Cruiser,          &CRUISER_ADATA            },
+        {AreaFixUpName_Grievous,         &GRIEVOUS_ADATA           },
+        {AreaFixUpName_Kashyyyk,         &KASHYYYK_ADATA           },
+        {AreaFixUpName_Temple,           &TEMPLE_ADATA             },
+        {AreaFixUpName_Vader,            &VADER_ADATA              },
+        {AreaFixUpName_Blockaderunner,   &BLOCKADERUNNER_ADATA     },
+        {AreaFixUpName_Tatooine,         &TATOOINE_ADATA           },
+        {AreaFixUpName_Moseisley,        &MOSEISLEY_ADATA          },
+        {AreaFixUpName_Deathstarrescue,  &DEATHSTARRESCUE_ADATA    },
+        {AreaFixUpName_Deathstarescape,  &DEATHSTARESCAPE_ADATA    },
+        {AreaFixUpName_Deathstarbattle,  &DEATHSTARBATTLE_ADATA    },
+        {AreaFixUpName_Hothbattle,       &HOTHBATTLE_ADATA         },
+        {AreaFixUpName_Hothescape,       &HOTHESCAPE_ADATA         },
+        {AreaFixUpName_Asteroidchase,    &ASTEROIDCHASE_ADATA      },
+        {AreaFixUpName_Dagobah,          &DAGOBAH_ADATA            },
+        {AreaFixUpName_Cloudcitytrap,    &CLOUDCITYTRAP_ADATA      },
+        {AreaFixUpName_Cloudcityescape,  &CLOUDCITYESCAPE_ADATA    },
+        {AreaFixUpName_Jabbaspalace,     &JABBASPALACE_ADATA       },
+        {AreaFixUpName_Sarlaccpit,       &SARLACCPIT_ADATA         },
+        {AreaFixUpName_Speederchase,     &SPEEDERCHASE_ADATA       },
+        {AreaFixUpName_Endorbattle,      &ENDORBATTLE_ADATA        },
+        {AreaFixUpName_Deathstar2battle, &DEATHSTARBATTLE2_ADATA   },
+        {AreaFixUpName_Emperorfight,     &EMPERORFIGHT_ADATA       },
+        {AreaFixUpName_E1characterbonus, &E1CHARACTER_ADATA        },
+        {AreaFixUpName_E2characterbonus, &E2CHARACTER_ADATA        },
+        {AreaFixUpName_E3characterbonus, &E3CHARACTER_ADATA        },
+        {AreaFixUpName_E4characterbonus, &E4CHARACTER_ADATA        },
+        {AreaFixUpName_E5characterbonus, &E5CHARACTER_ADATA        },
+        {AreaFixUpName_E6characterbonus, &E6CHARACTER_ADATA        },
+        {AreaFixUpName_E1characterbonus, &E1VEHICLE_ADATA          },
+        {AreaFixUpName_E2characterbonus, &E2VEHICLE_ADATA          },
+        {AreaFixUpName_E3characterbonus, &E3VEHICLE_ADATA          },
+        {AreaFixUpName_E4characterbonus, &E4VEHICLE_ADATA          },
+        {AreaFixUpName_E5characterbonus, &E5VEHICLE_ADATA          },
+        {AreaFixUpName_E6characterbonus, &E6VEHICLE_ADATA          },
+        {AreaFixUpName_Podrace,          &PODRACE_ADATA            },
+        {AreaFixUpName_Anakinsflight,    &ANAKINSFLIGHT_ADATA      },
+        {AreaFixUpName_BonusGunship,     &BONUS_GUNSHIP_ADATA      },
+        {AreaFixUpName_Anewhope,         &ANEWHOPE_ADATA           },
+        {AreaFixUpName_Bonus2,           &LEGOCITY_ADATA           },
+        {AreaFixUpName_Bonus,            &NEWTOWN_ADATA            },
+        {AreaFixUpName_LostTemple,       &LOSTTEMPLE_ADATA         },
+        {AreaFixUpName_Senate,           &SENATE_ADATA             },
+        {AreaFixUpName_Utapau,           &UTAPAU_ADATA             },
+        {AreaFixUpName_Hoth,             &HOTH_ADATA               },
+        {AreaFixUpName_NbDagobah,        &BONUSDAGOBAH_ADATA       },
+        {AreaFixUpName_NbKamino,         &BONUSKAMINO_ADATA        },
+        {AreaFixUpName_NbKashyyyk,       &BONUSKASHYYYK_ADATA      },
+        {AreaFixUpName_Jimtest,          &JIMTEST_ADATA            },
+        {NULL,                           NULL                      },
+    };
     LEVELDATA *NEGOTIATIONSA_LDATA = 0;
     LEVELDATA *NEGOTIATIONSB_LDATA = 0;
     LEVELDATA *NEGOTIATIONSC_LDATA = 0;

@@ -70,6 +70,7 @@ DEBRIS_CHUNK_CONTROL *debris_chunk_controls = 0;
 i32 freedebchkptr = 0;
 DEBRIS_RENDER_CHUNK *ParticleChunkToRender = 0;
 i32 debris_setup_called = 0;
+void *debris_cutoff_camera_vec = 0;
 
 void DebrisTrashableSetup(VARIPTR *buffer, VARIPTR *end) {
     u32 cursor;
@@ -1445,6 +1446,7 @@ typedef struct debris_collision_effect_s { // size 0x428
 } DEBRIS_COLLISION_EFFECT;
 
 NUVEC debris_collide_pt = {0};
+i32 freechunkcontrolsptr = 0;
 
 i32 DebrisSingleCollisionCheckScaleYFlag(i32 key_index, NUVEC *position, f32 radius, f32 y_scale, u8 flags) {
     DEBRIS_INFO *effect;

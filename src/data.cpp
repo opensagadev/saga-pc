@@ -177,8 +177,6 @@ struct text_crawl_view_s {     // size 0x10
 
 extern "C" {
 
-    i16 dat_007f1a4c = -1;
-    i16 dat_007f1a48 = -1;
     struct text_crawl_view_s TextCrawlLsw = {
         &TextCrawlChapterId, &TextCrawlVehicleBonusId, &TextCrawlCharacterBonusId, 3, 0, {0, 0}
     };
@@ -189,18 +187,7 @@ extern "C" {
 }
 
 extern "C" {
-    u32 GAMEPAD_MENUCANCEL = PAD_BUTTON_TRIANGLE;
-    u32 GAMEPAD_SELECT = PAD_BUTTON_SELECT;
-}
-
-extern "C" {
-    LEVELDATA *dat_0087b1c0 = NULL;
-    LEVELDATA *dat_0087b1d0 = NULL;
-}
-
-extern "C" {
     extern char dat_007516c0[];
-    char *apiGameSubTitle = dat_007516c0;
 }
 
 extern "C" {
@@ -3320,65 +3307,25 @@ char *dat_00824be0[238] = {
     dat_007719dc, dat_007719d0, dat_007719c8, dat_007719bc};
 
 extern "C" {
-
-    i32 hub_startoutsidebonusdoor_area = -1;
-
-}
-extern "C" {
-
-    i32 hub_from_superstory = -1;
-
-    i32 hub_from_mission = -1;
-
-    i32 newlevelfrommenu_newmenuy = 0;
-}
-extern "C" {
-    LEVEL_INST_ANIM_RESET_VIEW LevInstAnimReset = {0};
-}
-extern "C" {
     extern const IID PCSoundBuffer8IID = {
         0x6825a449, 0x7524, 0x4d82, {0x92, 0xf, 0x50, 0xe3, 0x6a, 0xb3, 0xab, 0x1e}
     };
-
-    PLAYER_BATARANG_SLOT BatarangPackets[8] = {0};
-
-    i32 Hub_UsePlayerList = 0;
 
 }
 
 struct SoundQueue;
 struct PC_SOUND_COMMIT;
 
-// Startup and main-loop state; defaults follow the PC executable.
-i32 ChallengeMode = 0;
-i32 fade_draw_suppressed = 0;
-i32 PLAYERCOUNT = 0;
-i32 Area = -1;
-i32 new_level_from_menu = 0;
-i32 NewMode = 0;
-i32 reset_load = 1;
-volatile i32 waiting_for_level = 0;
-i32 CUTSTOPGAME = 0;
-MAINFRAMECOUNTERS MainFrameCounters = {0};
-i32 hub_from_arcade = -1;
-i32 UsePlayerList = 0;
-
 extern "C" {
     u32 PCImplodeWordMask = 0xffffffff;
-    BOLTSYS GlobalBoltSystem_Default = {
-        &GlobalBoltType_Default, 1, NULL, Bolt_Debris_Default, Bolt_GetShootOrigin_Default, Bolt_GetShootDirection_Default, NULL, NULL,
-    };
     NUSTRINGBANK StringBank[3] = {0};
     i16 CurrentStringBank = 0;
     u32 nustring_format = 1;
     extern const u16 bad_fluff[26] = {
         '!', '$', '%', '^', '&', '*', '(', ')', '_', '+', '-', '=', '{', '}', '[', ']', '@', '~', '#', '?', '<', '>', ',', '.', ' ', 0,
     };
-    extern const f64 VehicleTurnPhaseScale = 65536.0;
     extern const f64 VehicleTurnPhaseOffset = 16384.0;
-    extern const f64 MoveSplineRunSpeedSentinel = 1000000000.0;
     extern const f64 BoltTargetRandomDenominator = 65535.0;
-    u16 GameObjectRotationAtstId = 0xffff;
     char *NuBlankString = (char *)NuBlankStringValue;
     extern const f64 GameObjectNearFloorNoFloorHeight = 2000000.0;
     extern const f64 AIPathAngularScale = 10430.3779296875;
@@ -3423,36 +3370,9 @@ extern "C" {
         1.0f, 0.0f, 0.0f, 0.0f, 0.0f, 1.0f, 0.0f, 0.0f, 0.0f, 0.0f, 1.0f, 0.0f, 0.0f, 0.0f, 0.0f, 1.0f,
     };
     TERRAIN_SET *CurrentTerrain = 0;
-    TERRAIN_LAYER TerLayer[17] = {
-        {0x00000000, 0x0000ffff, 0x40000000},
-        {0x00000000, 0x0000ffff, 0x40000000},
-        {0x00000000, 0x0000ffff, 0x3f800000},
-        {0x00000001, 0x0000ffff, 0x3f800000},
-        {0x00000000, 0x0000ffff, 0x3f800000},
-        {0x00000020, 0x0000ffff, 0x3f800000},
-        {0x00000001, 0x0000ffff, 0x3f800000},
-        {0x00000000, 0x0000ffff, 0x3f800000},
-        {0x00000000, 0x0000ffff, 0x3f800000},
-        {0x00000000, 0x0000ffff, 0x3f800000},
-        {0x00000000, 0x0000ffff, 0x3f800000},
-        {0x00000000, 0x0000ffff, 0x3f800000},
-        {0x00000000, 0x0000ffff, 0x3f800000},
-        {0x00000000, 0x0000ffff, 0x3f800000},
-        {0x00000000, 0x0000ffff, 0x3f800000},
-        {0x00000000, 0x0000ffff, 0x3f800000},
-        {0x00000000, 0x0000ffff, 0x00000000},
-    };
-    const FLOWBOX_CALLBACKS flowbox_callbacks[3] = {
-        {ResetGizmoFlowBox, ProcessGizmoFlowBox,     CheckOutputGizmoFlowBox    },
-        {NULL,              ProcessConditionFlowBox, CheckOutputConditionFlowBox},
-        {NULL,              ProcessActionFlowBox,    CheckOutputActionFlowBox   },
-    };
-    extern const char AIScriptFalse[6] = "false";
     i32 nufile_blkcnt = 1;
     PC_NUFILE_READBLOCK nufile_blkinfo[1024] = {0};
 
-    void *debris_cutoff_camera_vec = 0;
-    f32 FRAMETIME = 0;
     extern const f32 NuPrimPS2XScale = 0.003125f;
     extern const f32 NuPrimPS2YScale = -1.0f / 112.0f;
     NUFPAR NuFParRecords[4] = {0};
@@ -3463,23 +3383,9 @@ extern "C" {
     i64 unpack_file_pos = 0;
     extern const char PCKeyboardMouse2Name[16] = "KeyboardMouse2";
     extern const f64 NuQFntHalfScale = 0.5;
-    GAMESAVE Game = {0};
     extern const f32 PermLegalScale = 2.2f;
-    NUGSCN *save_icon_scene = 0;
     i32 nudlist_field_fc4 = 0;
     u32 nudlist_field_1598 = 0;
-    LEVELDATA *DEATHSTARBATTLED_LDATA = 0;
-    i16 id_ANAKINSPOD = -1;
-    i16 id_ANAKINSPODGREEN = -1;
-    i16 id_ANAKINSNEWPODGREEN = -1;
-    i16 id_REPUBLICGUNSHIP_GREEN = -1;
-    i16 id_NEW_REPUBLIC_GUNSHIP = -1;
-    i16 id_NEW_REPUBLIC_GUNSHIP_GREEN = -1;
-    GAMEOBJECT *Player[8] = {0};
-    i16 ID_DEFAULTCHARACTER_A = -1;
-    i16 ID_DEFAULTCHARACTER_B = -1;
-    f32 DEFAULTFRAMETIME = 0;
-    GAMEPAD_INIT_RECORD GamePadStorage[64] = {0};
     HANDLE pc_file_handles[32] = {
         INVALID_HANDLE_VALUE, INVALID_HANDLE_VALUE, INVALID_HANDLE_VALUE, INVALID_HANDLE_VALUE, INVALID_HANDLE_VALUE, INVALID_HANDLE_VALUE,
         INVALID_HANDLE_VALUE, INVALID_HANDLE_VALUE, INVALID_HANDLE_VALUE, INVALID_HANDLE_VALUE, INVALID_HANDLE_VALUE, INVALID_HANDLE_VALUE,
@@ -3535,7 +3441,6 @@ extern "C" {
     __declspec(align(16)) extern const u32 ClipOutcodeMask8[4] = {8, 8, 8, 8};
     __declspec(align(16)) extern const u32 ClipOutcodeMask4[4] = {4, 4, 4, 4};
     __declspec(align(16)) extern const f32 ClipOutcodeMinusOne[4] = {-1.0f, -1.0f, -1.0f, -1.0f};
-    NUCAMERA *pNuCam = 0;
 #define IDENTITY_NUMTX 1.0f, 0.0f, 0.0f, 0.0f, 0.0f, 1.0f, 0.0f, 0.0f, 0.0f, 0.0f, 1.0f, 0.0f, 0.0f, 0.0f, 0.0f, 1.0f
     NUMTX NuMtxSetIdentityTemplate = {IDENTITY_NUMTX};
     NUMTX vmtx = {IDENTITY_NUMTX};
@@ -3559,188 +3464,7 @@ extern "C" {
     };
     PC_NUDATFILEINFO pc_dat_file_infos[20] = {0};
     PC_NUMEMFILE pc_memfiles[20] = {0};
-    CHEATSYSTEM CheatSystem = {0};
 
-    extern char AreaFixUpName_Jedi[8] = "Jedi";
-    extern char AreaFixUpName_Gungan[8] = "Gungan";
-    extern char AreaFixUpName_Senate[8] = "senate";
-    extern char AreaFixUpName_Losttemple[12] = "losttemple";
-    extern char AreaFixUpName_Emperorfight[16] = "emperorfight";
-    extern char AreaFixUpName_Moseisley[12] = "moseisley";
-    extern char AreaFixUpName_Tatooine[12] = "tatooine";
-    extern char AreaFixUpName_Gunship[8] = "gunship";
-    extern char AreaFixUpName_Pursuit[8] = "pursuit";
-    extern char AreaFixUpName_Podsprint[12] = "podsprint";
-    extern char AreaFixUpName_Negotiations[16] = "negotiations";
-    extern char AreaFixUpName_Fairground[12] = "Fairground";
-    extern char AreaFixUpName_Rooftops[12] = "Rooftops";
-    extern char AreaFixUpName_Gothamstreets[16] = "GothamStreets";
-    extern char AreaFixUpName_Batcave[8] = "batcave";
-    extern char AreaFixUpName_Jimtest[8] = "JimTest";
-    extern char AreaFixUpName_NbKashyyyk[12] = "nb_kashyyyk";
-    extern char AreaFixUpName_NbKamino[12] = "nb_kamino";
-    extern char AreaFixUpName_NbDagobah[12] = "nb_dagobah";
-    extern char AreaFixUpName_Hoth[8] = "hoth";
-    extern char AreaFixUpName_Utapau[8] = "utapau";
-    extern char AreaFixUpName_LostTemple[12] = "LostTemple";
-    extern char AreaFixUpName_Bonus[8] = "Bonus";
-    extern char AreaFixUpName_Bonus2[8] = "Bonus2";
-    extern char AreaFixUpName_Anewhope[12] = "ANewHope";
-    extern char AreaFixUpName_BonusGunship[16] = "Bonus_Gunship";
-    extern char AreaFixUpName_Anakinsflight[16] = "AnakinsFlight";
-    extern char AreaFixUpName_Podrace[8] = "PodRace";
-    extern char AreaFixUpName_E6characterbonus[20] = "E6CharacterBonus";
-    extern char AreaFixUpName_E5characterbonus[20] = "E5CharacterBonus";
-    extern char AreaFixUpName_E4characterbonus[20] = "E4CharacterBonus";
-    extern char AreaFixUpName_E3characterbonus[20] = "E3CharacterBonus";
-    extern char AreaFixUpName_E2characterbonus[20] = "E2CharacterBonus";
-    extern char AreaFixUpName_E1characterbonus[20] = "E1CharacterBonus";
-    extern char AreaFixUpName_Deathstar2battle[20] = "DeathStar2Battle";
-    extern char AreaFixUpName_Endorbattle[12] = "EndorBattle";
-    extern char AreaFixUpName_Speederchase[16] = "SpeederChase";
-    extern char AreaFixUpName_Sarlaccpit[12] = "SarlaccPit";
-    extern char AreaFixUpName_Jabbaspalace[16] = "JabbasPalace";
-    extern char AreaFixUpName_Cloudcityescape[16] = "CloudCityEscape";
-    extern char AreaFixUpName_Cloudcitytrap[16] = "CloudCityTrap";
-    extern char AreaFixUpName_Dagobah[8] = "Dagobah";
-    extern char AreaFixUpName_Asteroidchase[16] = "AsteroidChase";
-    extern char AreaFixUpName_Hothescape[12] = "HothEscape";
-    extern char AreaFixUpName_Hothbattle[12] = "HothBattle";
-    extern char AreaFixUpName_Deathstarbattle[16] = "DeathStarBattle";
-    extern char AreaFixUpName_Deathstarescape[16] = "DeathStarEscape";
-    extern char AreaFixUpName_Deathstarrescue[16] = "DeathStarRescue";
-    extern char AreaFixUpName_Blockaderunner[16] = "BlockadeRunner";
-    extern char AreaFixUpName_Vader[8] = "Vader";
-    extern char AreaFixUpName_Temple[8] = "Temple";
-    extern char AreaFixUpName_Kashyyyk[12] = "Kashyyyk";
-    extern char AreaFixUpName_Grievous[12] = "Grievous";
-    extern char AreaFixUpName_Cruiser[8] = "Cruiser";
-    extern char AreaFixUpName_Dogfight[12] = "Dogfight";
-    extern char AreaFixUpName_Dooku[8] = "Dooku";
-    extern char AreaFixUpName_Factory[8] = "Factory";
-    extern char AreaFixUpName_Kamino[8] = "Kamino";
-    extern char AreaFixUpName_Maul[8] = "Maul";
-    extern char AreaFixUpName_Retakepalace[16] = "RetakePalace";
-    extern char AreaFixUpName_Palacerescue[16] = "PalaceRescue";
-    extern char AreaFixUpName_Map[4] = "map";
-
-    AREA_DATA *ROOFTOPS_ADATA = 0;
-    AREA_DATA *FAIRGROUND_ADATA = 0;
-    AREA_DATA *GUNGAN_ADATA = 0;
-    AREA_DATA *RESCUE_ADATA = 0;
-    AREA_DATA *RETAKE_ADATA = 0;
-    AREA_DATA *MAUL_ADATA = 0;
-    AREA_DATA *FACTORY_ADATA = 0;
-    AREA_DATA *CRUISER_ADATA = 0;
-    AREA_DATA *GRIEVOUS_ADATA = 0;
-    AREA_DATA *KASHYYYK_ADATA = 0;
-    AREA_DATA *TEMPLE_ADATA = 0;
-    AREA_DATA *BLOCKADERUNNER_ADATA = 0;
-    AREA_DATA *TATOOINE_ADATA = 0;
-    AREA_DATA *MOSEISLEY_ADATA = 0;
-    AREA_DATA *DEATHSTARRESCUE_ADATA = 0;
-    AREA_DATA *DEATHSTARBATTLE_ADATA = 0;
-    AREA_DATA *HOTHBATTLE_ADATA = 0;
-    AREA_DATA *CLOUDCITYTRAP_ADATA = 0;
-    AREA_DATA *CLOUDCITYESCAPE_ADATA = 0;
-    AREA_DATA *SARLACCPIT_ADATA = 0;
-    AREA_DATA *ENDORBATTLE_ADATA = 0;
-    AREA_DATA *EMPERORFIGHT_ADATA = 0;
-    AREA_DATA *E4CHARACTER_ADATA = 0;
-    AREA_DATA *E5CHARACTER_ADATA = 0;
-    AREA_DATA *E6CHARACTER_ADATA = 0;
-    AREA_DATA *E1VEHICLE_ADATA = 0;
-    AREA_DATA *E2VEHICLE_ADATA = 0;
-    AREA_DATA *E3VEHICLE_ADATA = 0;
-    AREA_DATA *E4VEHICLE_ADATA = 0;
-    AREA_DATA *E5VEHICLE_ADATA = 0;
-    AREA_DATA *E6VEHICLE_ADATA = 0;
-    AREA_DATA *PODRACE_ADATA = 0;
-    AREA_DATA *ANAKINSFLIGHT_ADATA = 0;
-    AREA_DATA *BONUS_GUNSHIP_ADATA = 0;
-    AREA_DATA *ANEWHOPE_ADATA = 0;
-    AREA_DATA *LEGOCITY_ADATA = 0;
-
-    AREAFIXUP AreaFixUpLSW[65] = {
-        {AreaFixUpName_Map,              &HUB_ADATA                },
-        {AreaFixUpName_Negotiations,     &NEGOTIATIONS_ADATA       },
-        {AreaFixUpName_Gungan,           &GUNGAN_ADATA             },
-        {AreaFixUpName_Palacerescue,     &RESCUE_ADATA             },
-        {AreaFixUpName_Podsprint,        &PODSPRINT_ADATA          },
-        {AreaFixUpName_Retakepalace,     &RETAKE_ADATA             },
-        {AreaFixUpName_Maul,             &MAUL_ADATA               },
-        {AreaFixUpName_Pursuit,          &BOUNTYHUNTERPURSUIT_ADATA},
-        {AreaFixUpName_Kamino,           &KAMINO_ADATA             },
-        {AreaFixUpName_Factory,          &FACTORY_ADATA            },
-        {AreaFixUpName_Jedi,             &JEDI_ADATA               },
-        {AreaFixUpName_Gunship,          &GUNSHIP_ADATA            },
-        {AreaFixUpName_Dooku,            &DOOKU_ADATA              },
-        {AreaFixUpName_Dogfight,         &DOGFIGHT_ADATA           },
-        {AreaFixUpName_Dogfight,         &BATTLEOVERCORUSCANT_ADATA},
-        {AreaFixUpName_Cruiser,          &CRUISER_ADATA            },
-        {AreaFixUpName_Grievous,         &GRIEVOUS_ADATA           },
-        {AreaFixUpName_Kashyyyk,         &KASHYYYK_ADATA           },
-        {AreaFixUpName_Temple,           &TEMPLE_ADATA             },
-        {AreaFixUpName_Vader,            &VADER_ADATA              },
-        {AreaFixUpName_Blockaderunner,   &BLOCKADERUNNER_ADATA     },
-        {AreaFixUpName_Tatooine,         &TATOOINE_ADATA           },
-        {AreaFixUpName_Moseisley,        &MOSEISLEY_ADATA          },
-        {AreaFixUpName_Deathstarrescue,  &DEATHSTARRESCUE_ADATA    },
-        {AreaFixUpName_Deathstarescape,  &DEATHSTARESCAPE_ADATA    },
-        {AreaFixUpName_Deathstarbattle,  &DEATHSTARBATTLE_ADATA    },
-        {AreaFixUpName_Hothbattle,       &HOTHBATTLE_ADATA         },
-        {AreaFixUpName_Hothescape,       &HOTHESCAPE_ADATA         },
-        {AreaFixUpName_Asteroidchase,    &ASTEROIDCHASE_ADATA      },
-        {AreaFixUpName_Dagobah,          &DAGOBAH_ADATA            },
-        {AreaFixUpName_Cloudcitytrap,    &CLOUDCITYTRAP_ADATA      },
-        {AreaFixUpName_Cloudcityescape,  &CLOUDCITYESCAPE_ADATA    },
-        {AreaFixUpName_Jabbaspalace,     &JABBASPALACE_ADATA       },
-        {AreaFixUpName_Sarlaccpit,       &SARLACCPIT_ADATA         },
-        {AreaFixUpName_Speederchase,     &SPEEDERCHASE_ADATA       },
-        {AreaFixUpName_Endorbattle,      &ENDORBATTLE_ADATA        },
-        {AreaFixUpName_Deathstar2battle, &DEATHSTARBATTLE2_ADATA   },
-        {AreaFixUpName_Emperorfight,     &EMPERORFIGHT_ADATA       },
-        {AreaFixUpName_E1characterbonus, &E1CHARACTER_ADATA        },
-        {AreaFixUpName_E2characterbonus, &E2CHARACTER_ADATA        },
-        {AreaFixUpName_E3characterbonus, &E3CHARACTER_ADATA        },
-        {AreaFixUpName_E4characterbonus, &E4CHARACTER_ADATA        },
-        {AreaFixUpName_E5characterbonus, &E5CHARACTER_ADATA        },
-        {AreaFixUpName_E6characterbonus, &E6CHARACTER_ADATA        },
-        {AreaFixUpName_E1characterbonus, &E1VEHICLE_ADATA          },
-        {AreaFixUpName_E2characterbonus, &E2VEHICLE_ADATA          },
-        {AreaFixUpName_E3characterbonus, &E3VEHICLE_ADATA          },
-        {AreaFixUpName_E4characterbonus, &E4VEHICLE_ADATA          },
-        {AreaFixUpName_E5characterbonus, &E5VEHICLE_ADATA          },
-        {AreaFixUpName_E6characterbonus, &E6VEHICLE_ADATA          },
-        {AreaFixUpName_Podrace,          &PODRACE_ADATA            },
-        {AreaFixUpName_Anakinsflight,    &ANAKINSFLIGHT_ADATA      },
-        {AreaFixUpName_BonusGunship,     &BONUS_GUNSHIP_ADATA      },
-        {AreaFixUpName_Anewhope,         &ANEWHOPE_ADATA           },
-        {AreaFixUpName_Bonus2,           &LEGOCITY_ADATA           },
-        {AreaFixUpName_Bonus,            &NEWTOWN_ADATA            },
-        {AreaFixUpName_LostTemple,       &LOSTTEMPLE_ADATA         },
-        {AreaFixUpName_Senate,           &SENATE_ADATA             },
-        {AreaFixUpName_Utapau,           &UTAPAU_ADATA             },
-        {AreaFixUpName_Hoth,             &HOTH_ADATA               },
-        {AreaFixUpName_NbDagobah,        &BONUSDAGOBAH_ADATA       },
-        {AreaFixUpName_NbKamino,         &BONUSKAMINO_ADATA        },
-        {AreaFixUpName_NbKashyyyk,       &BONUSKASHYYYK_ADATA      },
-        {AreaFixUpName_Jimtest,          &JIMTEST_ADATA            },
-        {NULL,                           NULL                      },
-    };
-
-    AREAFIXUP AreaFixUpLostTemple[2] = {
-        {AreaFixUpName_Losttemple, &LOSTTEMPLE_ADATA},
-        {NULL,                     NULL             },
-    };
-
-    AREAFIXUP AreaFixUpGotham[5] = {
-        {AreaFixUpName_Batcave,       &HUB_ADATA          },
-        {AreaFixUpName_Gothamstreets, &GOTHAMSTREETS_ADATA},
-        {AreaFixUpName_Rooftops,      &ROOFTOPS_ADATA     },
-        {AreaFixUpName_Fairground,    &FAIRGROUND_ADATA   },
-        {NULL,                        NULL                },
-    };
     extern const u32 NuTimeBar_EngineColours[7] = {0x7f00007f, 0x7f007f00, 0x7f007f50, 0x7f507f50, 0x7f000050, 0x7f40407f, 0x7f7f0000};
     extern const u32 NuTimeBar_DefaultColours[16] = {
         0x00000040, 0x22222240, 0x00004440, 0x00008840, 0x44000040, 0x88000040, 0x44004440, 0x88008840,
@@ -3754,8 +3478,6 @@ extern "C" {
     extern const f64 NuTimeBarNegativeSlotWidth = -0.02500000037252903;
     extern const f64 NuTimeBarLinesPerSecond = 15734.0;
 
-    i16 PlayerList[8] = {0};
-    i32 netclient = 0;
     extern const char GizAIMessage_NameFormat[3] = "%s";
     LANGUAGEDATA Text_LanguageList_Default[7] = {
         {1,  apitxt_ENGLISH},
@@ -3772,40 +3494,6 @@ extern "C" {
     extern const f64 NuTime_LowScale = 4294967295.0;
     extern const f64 NuTime_MicroScale = 1000000.0;
     extern const f64 NuTime_RefreshRate = 60.0;
-    TERRAIN_SURFACE TerSurface[32] = {
-        {1.0f, 0,      0xffff},
-        {1.0f, 65,     0xffff},
-        {1.0f, 2,      0xffff},
-        {1.0f, 8,      0xffff},
-        {1.0f, 65536,  0xffff},
-        {1.0f, 66560,  0xffff},
-        {1.0f, 0,      0xffff},
-        {1.0f, 2048,   0xffff},
-        {1.0f, 0,      0xffff},
-        {1.0f, 8192,   0xffff},
-        {1.0f, 10,     0xffff},
-        {1.0f, 67,     0xffff},
-        {1.0f, 16,     0xffff},
-        {1.0f, 16,     0xffff},
-        {1.0f, 8192,   0xffff},
-        {1.0f, 8192,   0xffff},
-        {0.1f, 1088,   0xffff},
-        {0.2f, 131074, 0xffff},
-        {1.0f, 81,     0xffff},
-        {1.0f, 512,    0xffff},
-        {1.0f, 8192,   0xffff},
-        {1.0f, 514,    0xffff},
-        {1.0f, 64,     0xffff},
-        {1.0f, 192,    0xffff},
-        {1.0f, 8192,   0xffff},
-        {1.0f, 4160,   0xffff},
-        {1.0f, 0,      0xffff},
-        {1.0f, 5184,   0xffff},
-        {1.0f, 256,    0xffff},
-        {1.0f, 320,    0xffff},
-        {1.0f, 64,     0xffff},
-        {1.0f, 64,     0xffff},
-    };
 
     extern const f32 LevelConfigFarDistance = 2000000.0f;
 
@@ -3825,9 +3513,6 @@ extern "C" {
     void fun_005094a0(MENU *);
 
     extern const f32 PCKeyboardDefaultValue = 0.1f;
-    f32 dme_sy = 1.0f;
-    AREA_DATA *GUNSHIP_ADATA = 0;
-    OPTIONSSAVE *Game_OptionsSave = 0;
 
     // The 23-record PC table: IDs, callbacks, remembered cursors, and prompt flags.
     void MenuUpdatePauseRestart(MENU *);
@@ -3850,14 +3535,10 @@ extern "C" {
 }
 NUAPI nuapi = {0};
 
-u32 debrisseed = 0x5c0999;
-
 i32 argc = 0;
 char **argv = 0;
 NUDATHDR *curr_dat = 0;
 MSG win_message = {0};
-
-WORLDINFO *WORLD = &WorldInfo[0];
 
 // PC reads pairs of 16-bit code points, ending with a zero pair.
 u16 bad_equiv[8][2] = {
@@ -3878,73 +3559,21 @@ const u8 KeyStructSizes[16] = {3, 4, 4, 3, 4, 3, 4, 8, 4, 8, 4, 0, 0, 0, 0, 0};
 // 513 angular samples including both endpoints.
 
 // Movement, object and AI state recovered from the PC image.
-extern "C" {
-    i32 HIGHGAMEOBJECT = 0;
-    GAMEOBJECT *Obj = 0;
-    NUVEC v000 = {0};
-}
 
 // Additional PC movement, targeting, arcade and callback state.
 extern "C" {
-    f32 TargetDist_Near2 = 0;
 
     extern const f32 ForcePushApproachInnerSquare = 0.010000001f;
-    extern const f32 ForcePushApproachOuterSquare = 0.040000003f;
-    i16 PCArcadeModeText0 = 0;
-    i16 PCArcadeModeText1 = 0;
-    i16 PCArcadeModeText2 = 0;
-    ARCADE_MODE Arcade_Mode[7] = {
-        {&PCArcadeModeText0, 0,      0x19},
-        {&PCArcadeModeText1, 10,     0x12},
-        {&PCArcadeModeText1, 25,     0x12},
-        {&PCArcadeModeText1, 50,     0x12},
-        {&PCArcadeModeText2, 50000,  4   },
-        {&PCArcadeModeText2, 100000, 4   },
-        {&PCArcadeModeText2, 250000, 4   },
-    };
 
 }
 
 // PC movement tuning, timers, input masks and parser path.
 extern "C" {
-    TIMER GamePlayTimer = {0};
-    u32 GAMEPAD_JUMP = PAD_BUTTON_CROSS;
-    u32 GAMEPAD_ACTION = PAD_BUTTON_SQUARE;
-    u32 GAMEPAD_SPECIAL = PAD_BUTTON_CIRCLE;
-    u32 GAMEPAD_TAG = PAD_BUTTON_TRIANGLE;
-    extern const f64 ApplyGravityVelocityFactor = 0.3330000042915344;
-    extern const f64 ApplyGravityFrameScale = 180.0;
     extern const f32 ApplyGravityMinimumFrameTime = 0.016666668f;
 }
 
 extern "C" {
-    i16 id_GEONOSIAN = -1;
-    i16 id_CHEWBACCA = -1;
-}
-
-extern "C" {
-
-    GIZOBSTACLE *LevGizObst[8] = {0};
-}
-
-extern "C" {
-    GAMEOBJECT *CarWashHack = 0;
-    i16 id_GRIEVOUS = -1;
-}
-
-extern "C" {
-    APIDEBRISSYS *perm_debrissys = 0;
-}
-
-extern "C" {
     i16 id_TIEFIGHTER = -1;
-    i16 id_XWING = -1;
-}
-
-extern "C" {
-    CHECK_LOST_DATA CheckLostDataFn = 0;
-// Includes the utility WORD at +0x10000.
-    CONFIG_BUFFER ConfigBuffer = {0};
 }
 
 extern "C" {
@@ -3953,32 +3582,7 @@ extern "C" {
     i32 do_player_tag = 0;
 }
 
-extern "C" {
-    i16 id_LUKESKYWALKERDAGOBAH = -1;
-    i16 id_ATAT = -1;
-}
-
-extern "C" {
-    u8 aicreature_sets_alive[16] = {0};
-}
-
-extern "C" {
-    i32 nethost = 0;
-}
-
-extern "C" {
-    u16 PlayerPadCurrentAngle[2] = {0};
-}
-
 extern "C" {}
-
-extern "C" {
-    i32 GAMEPAD_LIFT = PAD_BUTTON_R1;
-}
-
-extern "C" {
-    f32 DEFAULT_MOVE_RANGE = 0;
-}
 
 extern "C" {
     i8 adtabentries[9][4] = {
@@ -3992,13 +3596,7 @@ extern "C" {
         {1,  1,  1,  0 },
         {1,  1,  1,  1 }
     };
-    ADAPTIVEDIFFICULTY adaptivedifficulty = {0};
-    i16 id_YWING = -1;
-    i16 id_TIEBOMBER = -1;
-    u32 LEGO_AIPATHCNX_FORGOODIES = 0;
-    u32 LEGO_AIPATHCNX_FORBADDIES = 0;
     NUVEC ShadNorm = {0};
-    PC_SURFACE_MASK GetSurfaceInfoDefaultMask = {0x20};
 }
 
 extern "C" {
@@ -4007,7 +3605,6 @@ extern "C" {
 }
 
 extern "C" {
-    extern const f64 TerrainSkinSampleCount = 8.0;
     extern const f64 TerrainSkinSampleIndexScale = -8.0;
     extern const f32 TerrainSkinBoundsMax = 123456792.0f;
     extern const f32 TerrainSkinBoundsMin = -123456792.0f;
@@ -4032,10 +3629,6 @@ extern "C" {
 }
 
 extern "C" {
-    extern const char dat_00757a7c[8] = "looping";
-}
-
-extern "C" {
     PC_DEVICE_STATE_CACHE PCDeviceStateCachePc;
     i32 nufile_lsn_allowed = 1;
 }
@@ -4048,33 +3641,11 @@ extern "C" {
 extern "C" {}
 
 extern "C" {
-    TIMER AreaTimer = {0};
-}
-
-extern "C" {
-    extern const char GizmoSnapOptionName[5] = "SNAP";
-}
-
-extern "C" {
-    extern const char dat_00757824[7] = "random";
-    extern const char GizObstacleActionNamePC[5] = "Name";
-    extern const char GizObstacleActionBackwardPC[9] = "BACKWARD";
-    extern const char GizObstacleActionForwardPC[8] = "FORWARD";
-    extern const char GizObstacleActionStayOpenPC[9] = "STAYOPEN";
-    extern const char GizObstacleActionStayShutPC[9] = "STAYSHUT";
-
-}
-
-extern "C" {
     void edgraInit(void);
     void edgraClose(void);
     void edgraEnter(void);
     i32 edgraProc(f32 delta_time, FRAME_PAD *pad);
     void edgraRender(void);
-}
-
-extern "C" {
-    i32 freechunkcontrolsptr = 0;
 }
 
 extern "C" {
@@ -4105,11 +3676,7 @@ extern "C" {
 }
 
 extern "C" {
-    extern const f64 PlayerSlideSpeed = 1.2000000476837158;
     extern const f64 PlayerRandomScale = 1.5259021893143654e-05;
-    extern const f64 PlayerStepInnerAction = 1.75;
-    extern const f64 PlayerStepOuterAction = 2.25;
-    extern const f32 PlayerBuildItNegativeLimit = -1000000000.0f;
 }
 
 extern "C" {
@@ -4137,8 +3704,6 @@ extern "C" {
         "Your Scene version is %d, whereas the Engine only accepts Scene versions from %d to %d";
     i16 id_GRABCONTROL = -1;
     i16 id_GRABR2CONTROL = -1;
-    i16 id_ATST_LOWRES = -1;
-    i16 id_DROIDEKA = -1;
 }
 
 extern "C" {
@@ -4158,88 +3723,14 @@ extern "C" {
     void edanimRender(void);
 }
 
-extern "C" {
-    char ScorePanelName[9] = "MK-Panel";
-    ADD_GAME_MESSAGE AddGameMsg_Default = {NULL, &v000, &v000, 1.0f, 1.0f, 255,  255,  255,  128,  0,  1.0f, 0.0f, 0, -1,
-                                              NULL, 0,     0.0f,  0.0f, NULL, NULL, NULL, NULL, NULL, -1, 0,    255,  0};
-    u32 BonusCoinTarget = 0;
-    i32 BonusWinFlag = 0;
-    f32 DoubleScoreTime = 0;
-    i32 LookAtBoth = 0;
-    f32 AddCoinDelay[2] = {0};
-}
-
-extern "C" {
-    char dat_00758c00[9] = "Power Up";
-    char dat_00758c0c[8] = "Torpedo";
-}
-
-extern "C" {
-    f32 coinimpactwait = 0;
-}
-extern "C" {}
-extern "C" {
-    extern const char PickupCoinSfx[11] = "PickupCoin";
-}
 extern "C" {}
 extern "C" {}
 extern "C" {}
-extern "C" {
-    i16 id_BOBAFETT = -1;
-}
-extern "C" {
-    RTL_DATA KillPartsZeroLighting = {0};
-}
-extern "C" {
-    f32 brickimpactwait = 0;
-}
+extern "C" {}
 
 extern "C" {}
 
 extern "C" {
-
-    i16 id_SNAKE = -1;
-
-    i16 id_WOOKIEE = -1;
-
-    i16 id_ROYALGUARD = -1;
-
-}
-
-extern "C" {
-
-    TIMER LevelTimer = {0};
-}
-
-extern "C" {
-
-    i16 dat_007f17d0 = -1;
-
-    i16 dat_007f18b4 = -1;
-
-    i16 dat_007f195c = -1;
-
-    i16 dat_007f196c = -1;
-
-    i16 id_JAWA = -1;
-
-    i16 dat_007f19a4 = -1;
-
-    i16 dat_007f19a8 = -1;
-
-    i16 id_REPUBLICGUNSHIP = -1;
-
-    i16 id_SENTRYDROID = -1;
-
-    i16 dat_007f1b34 = -1;
-
-    i16 id_ZAMSSPEEDER = -1;
-
-    f32 DEACTIVATEDTIME = 8.0f;
-}
-
-extern "C" {
-    char dat_007516c0[1] = "";
 
     char dat_00753370[2] = "]";
 
@@ -4557,65 +4048,11 @@ extern "C" {
 
 extern "C" {
 
-    f32 PUNCHGAP = 0.3f;
-
-    f32 PUNCHCHARGAP = 0.6f;
-
-    i32 CanPunchGirls = 1;
-
-    i32 (*UsingExtraActionsFn)(GAMEOBJECT *) = 0;
-}
-
-extern "C" {
-
-    LEVELDATA *DEATHSTARRESCUEE_LDATA = 0;
-
-    LEVELDATA *DEATHSTARESCAPEA_LDATA = 0;
-
-    LEVELDATA *DEATHSTARESCAPEC_LDATA = 0;
-
-}
-
-extern "C" {
-
     u32 LswForceUsedHintFlags = 0;
 
-    i32 LEGO_AIPATHCNX_BLOCKAGE = 0;
-
-    i32 LEGO_AIPATHCNX_WALLSHUFFLE = 0;
 }
 
 extern "C" {
-
-    i32 RenderHubFromCutscenePlayer = 0;
-}
-
-extern "C" {
-    char UiBackPromptLiteral[5] = "Back";
-
-    char UiSelectPromptLiteral[7] = "Select";
-}
-
-extern "C" {
-    char dat_0075314c[7] = "batman";
-
-    char dat_0075d280[14] = "batman_shadow";
-
-    char dat_0075d270[13] = "batman_glide";
-
-    char dat_0075d25c[18] = "batman_demolition";
-
-    char dat_0075d24c[13] = "batman_sonar";
-
-    char dat_00753144[6] = "robin";
-
-    char dat_0075d240[12] = "robin_water";
-
-    char dat_0075d22c[17] = "robin_technology";
-
-    char dat_0075d21c[13] = "robin_magnet";
-
-    char dat_0075d20c[14] = "robin_attract";
 
     /* PodRacePc is defined as a private static in legoapi/episodeI.c. */
     /* (was: void *PodRacePc) */
@@ -4623,12 +4060,6 @@ extern "C" {
 
 extern "C" {
     i32 gExplodeInitialised = 1;
-
-    u32 GAMEPAD_TOGGLELEFT = PAD_BUTTON_L2 | PAD_BUTTON_L1;
-
-    u32 GAMEPAD_TOGGLERIGHT = PAD_BUTTON_R2 | PAD_BUTTON_R1;
-
-    i32 LEGOHINT_FREEPLAYTOGGLE = -1;
 
     char *implode_inbuffer = 0;
 
@@ -4656,97 +4087,14 @@ extern "C" {
 }
 
 extern "C" {
-    extern const NUVEC ZipUpHookOffset = {0.0f, -0.1143f, -0.0859f};
-    NUMTL *ZipUpLineMaterial = 0;
-}
-
-extern "C" {
     const NUVEC NuPortalBoundsOne = {1.0f, 1.0f, 1.0f};
     const NUVEC NuPortalBoundsMinusOne = {-1.0f, -1.0f, -1.0f};
-}
-
-extern "C" {
-    u32 GAMEPAD_START = PAD_BUTTON_START;
-    i32 LEGO_AIPATHCNX_R2D2GLIDE = 0;
-}
-
-extern "C" {
-    __declspec(align(16)) KEEP_SCREEN_PLANE PlayPlane[6] = {};
-    i32 KEEPONSCREEN_SIDESONLY = 0;
-    NUVEC GunshipANorm = {};
-}
-
-extern "C" {
-    f32 (*GizmoPickups_Collide2DFn)(GAMEOBJECT *) = NULL;
-}
-
-extern "C" {
-    f32 LevelNameTime = 0.0f;
-}
-
-extern "C" {
-    i16 PermanentWeirdo1Id = -1;
-    i16 PermanentWeirdo2Id = -1;
-}
-
-extern "C" {
-    i32 DefaultMotionLedgeTerrainEnabled = 0;
-}
-
-extern "C" {
-    i16 DefaultAnimationJabbaId = -1;
-    f32 dme_sx = 1.0f;
-    u8 dme_r = 0;
-    u8 dme_g = 0;
-    u8 dme_b = 0;
-    f32 SLAMJUMPSPEED = 3.0f;
 }
 
 struct PC_GEOMETRY_BASIS;
 struct PC_GEOMETRY_OUTPUT;
 
 struct PC_GEOMETRY_PUBLISH_RECORD;
-
-extern "C" {
-    char *LeverOutputDownNamePtr = dat_0075ac34;
-    i32 PushBlockHintId = -1;
-}
-
-extern "C" {
-    i16 id_MOUSEDROID = -1;
-    i16 id_BATTLEDROID = -1;
-}
-
-extern "C" {
-    i16 id_BARMAN = -1;
-}
-
-extern "C" {
-    i32 Tag_DoneAny = 0;
-    u32 GAMEPAD_SKIP = PAD_BUTTON_TRIANGLE | PAD_BUTTON_CROSS | PAD_BUTTON_START;
-}
-
-extern "C" {
-    i32 (*Tag_NoHiddenIconFn)(GAMEOBJECT *) = NULL;
-    TIMER ChallengeTimer = {0};
-}
-
-extern "C" {
-    const char *TagAsciiDown = "\xC2\xA3";
-}
-
-extern "C" {
-    i32 (*AlternateGameCallback)(GAMEOBJECT *object) = NULL;
-    i32 (*Hub_PanelBusyFn)(void) = NULL;
-
-    i32 LEGOMENU_PAUSEMAIN = -1;
-    i32 LEGOMENU_CREDITS = -1;
-    i32 LEGOCAMMODE_DOORCUT = -1;
-    i32 LEGOCAMMODE_OBSTACLE = -1;
-    i32 PlayerHitPointsTwoHearts = 1;
-    i32 LEGOHINT_SHOOTCAMERAS = -1;
-    i32 LEGOHINT_BUILD = -1;
-}
 
 extern "C" {
     i32 NuDisplayHandlerZMode = -1;
@@ -4768,62 +4116,9 @@ extern "C" {
 
 extern "C" {}
 
-extern "C" {
-    char SaveProductCode[12] = {0};
-}
-
-extern "C" {
-    extern const char dat_00758274[] = "reserve";
-    extern const char dat_0075827c[] = "set";
-    extern const char dat_00758280[] = "locator";
-    extern const char dat_00758288[] = "locator=mylocator";
-    extern const char dat_0075829c[] = "nearest_either_player";
-    extern const char dat_007582b4[] = "furthest_from_either_player";
-    extern const char dat_007582d0[] = "furthest_from_opponent";
-    extern const char dat_007582e8[] = "ignore_assigned=FALSE";
-    extern const char dat_00758300[] = "ignore_assigned=TRUE";
-    extern const char dat_00758318[] = "finish_at_end";
-    extern const char dat_00758328[] = "first";
-    extern const char dat_00758330[] = "next";
-    extern const char dat_00758338[] = "off_screen_radius=";
-    extern const char dat_0075834c[] = "max_opponent_range=";
-    extern const char dat_00758360[] = "max_player_range=";
-    extern const char dat_00758374[] = "max_range=";
-}
-
-extern "C" {
-    extern const char dat_007589f0[] = "NO_TARGET";
-    extern const char dat_007589fc[] = "CREATURE";
-    extern const char dat_00758a08[] = "HSPECIAL";
-    extern const char dat_00758a14[] = "GIZMO";
-    extern const char dat_00758a1c[] = "Move_Vertical";
-    extern const char dat_00758a2c[] = "Move_Horizontal";
-    extern const char dat_00758a3c[] = "Move_Spin";
-    extern const char dat_00758a48[] = "Move_Waggle";
-    extern const char dat_00758a54[] = "techno=";
-}
-
-extern "C" {
-    u32 LEGO_AIPATHCNX_BIGJUMP = 0;
-}
-
-extern "C" {
-    i16 id_WATTO = -1;
-}
-
-extern "C" {
-
-    TIMER PauseTimer = {0};
-
-}
-
 extern "C" {}
 
 extern "C" {}
-
-extern "C" {
-    i32 g_lowEndLevelBehaviour = 1;
-}
 
 extern "C" {
 
@@ -4834,21 +4129,6 @@ extern "C" {
     i32 edppProc(f32 delta_time, FRAME_PAD *pad);
     void edppRender(void);
 
-}
-
-extern "C" {
-    f32 iconalphaoverride = 0;
-}
-
-extern "C" {
-    TIMER SuperStoryTimer = {0};
-}
-
-extern "C" {
-
-    STATUSPACKET_s StatusPacket = {0};
-
-    i32 status_prompt = 0;
 }
 
 extern "C" {}
@@ -4866,12 +4146,6 @@ extern "C" {
     void edbriEnter(void);
     i32 edbriProc(f32 delta_time, FRAME_PAD *pad);
     void edbriRender(void);
-}
-
-extern "C" {
-    i32 PauseMenus_Align = 0;
-
-    f32 PauseMenus_X = 0;
 }
 
 extern "C" {}
@@ -4911,450 +4185,19 @@ extern "C" {
 extern "C" {}
 
 extern "C" {
-    DETONATOR_s Detonator[10] = {0};
-}
-
-extern "C" {
 
     // Frontend strings: language-selected index/string tables.
 
     extern const char dat_0075f2c0[3];
     extern const char dat_0075f2c4[4];
     extern const char dat_0076b274[4];
-    MENU_PC_STRING_ENTRY dat_00827800[40] = {
-        {0,  "Quit"                                                       },
-        {1,  "Quit to Windows"                                            },
-        {2,  "Quit to Demos Menu"                                         },
-        {3,  "Return to game"                                             },
-        {4,  "Low"                                                        },
-        {5,  "Medium"                                                     },
-        {6,  "High"                                                       },
-        {7,  "Resume"                                                     },
-        {8,  "Accept"                                                     },
-        {10, "Back"                                                       },
-        {9,  "Decline"                                                    },
-        {11, dat_0075f2c4                                                 },
-        {12, dat_0075f2c0                                                 },
-        {13, "OK"                                                         },
-        {14, "Cancel"                                                     },
-        {15, "On"                                                         },
-        {16, dat_0076b274                                                 },
-        {17, "Reset To Defaults"                                          },
-        {18, "Video Settings"                                             },
-        {19, "Screen Resolution"                                          },
-        {20, "Refresh Rate"                                               },
-        {21, "Vertical Sync"                                              },
-        {22, "Aspect Ratio"                                               },
-        {23, "Enhanced Graphics"                                          },
-        {24, "From Screen-Res"                                            },
-        {25, "Use current settings"                                       },
-        {26, "Texture Quality"                                            },
-        {27, "Revert"                                                     },
-        {28, "You must restart the game for these changes to take effect!"},
-        {29, "Effects Settings"                                           },
-        {30, "FSAA"                                                       },
-        {31, "Externally Set"                                             },
-        {32, "Shadows"                                                    },
-        {33, "Bloom"                                                      },
-        {34, "Depth of Field"                                             },
-        {35, "Speed Blur"                                                 },
-        {36, "Dynamic Light Quality"                                      },
-        {37, "Edge AA"                                                    },
-        {38, "Show Game Controls"                                         },
-        {39, NULL                                                         },
-    };
-    MENU_PC_STRING_ENTRY dat_00827940[40] = {
-        {0,  "Quit"                                                       },
-        {1,  "Quit to Windows"                                            },
-        {2,  "Quit to Demos Menu"                                         },
-        {3,  "Return to game"                                             },
-        {4,  "Low"                                                        },
-        {5,  "Medium"                                                     },
-        {6,  "High"                                                       },
-        {7,  "Resume"                                                     },
-        {8,  "Accept"                                                     },
-        {9,  "Decline"                                                    },
-        {10, "Back"                                                       },
-        {11, dat_0075f2c4                                                 },
-        {12, dat_0075f2c0                                                 },
-        {13, "OK"                                                         },
-        {14, "Cancel"                                                     },
-        {15, "On"                                                         },
-        {16, dat_0076b274                                                 },
-        {17, "Reset To Defaults"                                          },
-        {18, "Video Settings"                                             },
-        {19, "Screen Resolution"                                          },
-        {20, "Refresh Rate"                                               },
-        {21, "Vertical Sync"                                              },
-        {22, "Aspect Ratio"                                               },
-        {23, "Enhanced Graphics"                                          },
-        {24, "From Screen-Res"                                            },
-        {25, "Use current settings"                                       },
-        {26, "Texture Quality"                                            },
-        {27, "Revert"                                                     },
-        {28, "You must restart the game for these changes to take effect!"},
-        {29, "Effects Settings"                                           },
-        {30, "FSAA"                                                       },
-        {31, "Externally Set"                                             },
-        {32, "Shadows"                                                    },
-        {33, "Bloom"                                                      },
-        {34, "Depth of Field"                                             },
-        {35, "Speed Blur"                                                 },
-        {36, "Dynamic Light Quality"                                      },
-        {37, "Edge AA"                                                    },
-        {38, "Show Game Controls"                                         },
-        {39, NULL                                                         },
-    };
-    MENU_PC_STRING_ENTRY dat_00827d00[40] = {
-        {0,  "Esci"                                                                 },
-        {1,  "Torna a Windows"                                                      },
-        {2,  "Esci al Menu Demo"                                                    },
-        {3,  "Torna al gioco"                                                       },
-        {4,  "Bassa"                                                                },
-        {5,  "Media"                                                                },
-        {6,  "Alta"                                                                 },
-        {7,  "Riprendi"                                                             },
-        {8,  "Accetta"                                                              },
-        {9,  "Annulla"                                                              },
-        {10, "Indietro"                                                             },
-        {11, "S\303\254"                                                            },
-        {12, dat_0075f2c0                                                           },
-        {13, "OK"                                                                   },
-        {14, "Annulla"                                                              },
-        {15, "On"                                                                   },
-        {16, dat_0076b274                                                           },
-        {17, "Impostazioni predefinite"                                             },
-        {18, "Video"                                                                },
-        {19, "Risoluzione schermo"                                                  },
-        {20, "Frequenza di aggiornamento"                                           },
-        {21, "Sincronizzazione verticale"                                           },
-        {22, "Rapporto"                                                             },
-        {23, "Grafica migliorata"                                                   },
-        {24, "Da risoluzione"                                                       },
-        {25, "Usa impostazioni attuali"                                             },
-        {26, "Qualit\303\240 texture"                                               },
-        {27, "Ripristina"                                                           },
-        {28, "Devi riavviare il gioco affinch\303\251 le modifiche abbiano effetto."},
-        {29, "Effetti"                                                              },
-        {30, "FSAA"                                                                 },
-        {31, "Impostato esternamente"                                               },
-        {32, "Ombre"                                                                },
-        {33, "Luminosit\303\240"                                                    },
-        {34, "Profondit\303\240 di campo"                                           },
-        {35, "Sfumatura movimento"                                                  },
-        {36, "Qualit\303\240 luci dinamiche"                                        },
-        {37, "Edge AA"                                                              },
-        {38, "Show Game Controls"                                                   },
-        {39, NULL                                                                   },
-    };
-    MENU_PC_STRING_ENTRY dat_00827e40[40] = {
-        {0,  "Salir"                                                        },
-        {1,  "Salir a Windows"                                              },
-        {2,  "Salir al menu del demo"                                       },
-        {3,  "Volver al juego"                                              },
-        {4,  "Baja"                                                         },
-        {5,  "Media"                                                        },
-        {6,  "Alta"                                                         },
-        {7,  "Reanudar"                                                     },
-        {8,  "Aceptar"                                                      },
-        {9,  "Rechazar"                                                     },
-        {10, "Atr\303\241s"                                                 },
-        {11, "S\303\255"                                                    },
-        {12, dat_0075f2c0                                                   },
-        {13, "Aceptar"                                                      },
-        {14, "Cancelar"                                                     },
-        {15, "S\303\255"                                                    },
-        {16, dat_0075f2c0                                                   },
-        {17, "Restablecer predeterminados"                                  },
-        {18, "Ajustes de v\303\255deo"                                      },
-        {19, "Resoluci\303\263n"                                            },
-        {20, "Tasa de actualizaci\303\263n"                                 },
-        {21, "Sincronizaci\303\263n vertical"                               },
-        {22, "Relaci\303\263n de aspecto"                                   },
-        {23, "Gr\303\241ficos mejorados"                                    },
-        {24, "R. pantalla"                                                  },
-        {25, "Usar ajustes de actuales"                                     },
-        {26, "Calidad de textura"                                           },
-        {27, "Revertir"                                                     },
-        {28, "Debes reiniciar el juego para que estos cambios tengan efecto"},
-        {29, "Ajustes de efectos"                                           },
-        {30, "AAPC"                                                         },
-        {31, "Ajustado externamente"                                        },
-        {32, "Sombras"                                                      },
-        {33, "Bloom"                                                        },
-        {34, "Profundidad de campo"                                         },
-        {35, "Distorsi\303\263n de velocidad"                               },
-        {36, "Calidad de luz din\303\241mica"                               },
-        {37, "Suavizado de bordes"                                          },
-        {38, "Show Game Controls"                                           },
-        {39, NULL                                                           },
-    };
 }
 
 extern "C" {}
 
 extern "C" {}
 
-extern "C" {
-    i16 dat_007f1810 = -1;
-    i16 dat_007f1820 = -1;
-    i16 dat_007f1824 = -1;
-    i16 dat_007f1828 = -1;
-    i16 dat_007f1844 = -1;
-    i16 dat_007f1854 = -1;
-    i16 dat_007f1858 = -1;
-    i16 dat_007f1864 = -1;
-    i16 dat_007f1870 = -1;
-    i16 dat_007f18a8 = -1;
-    i16 dat_007f18c4 = -1;
-    i16 dat_007f19ac = -1;
-    i16 dat_007f19b0 = -1;
-    i16 dat_007f19b4 = -1;
-    i16 dat_007f1a0c = -1;
-    i16 dat_007f1a10 = -1;
-    i16 dat_007f1a14 = -1;
-    i16 dat_007f1a3c = -1;
-    i16 dat_007f1a40 = -1;
-    i16 dat_007f1a78 = -1;
-    i16 dat_007f1a7c = -1;
-    i16 dat_007f1a88 = -1;
-    i16 dat_007f1ac0 = -1;
-    i16 dat_007f1b10 = -1;
-    i16 dat_007f1b20 = -1;
-    i16 dat_007f1b24 = -1;
-    i16 dat_007f1b28 = -1;
-    i16 dat_007f1b48 = -1;
-    CHARFIXUP CharacterFixupTable[219] = {
-        {const_cast<char *>("weirdo1"),                    &PermanentWeirdo1Id                                    },
-        {const_cast<char *>("weirdo2"),                    &PermanentWeirdo2Id                                    },
-        {const_cast<char *>(dat_0075314c),                 &ID_DEFAULTCHARACTER_A                                 },
-        {const_cast<char *>(dat_00753144),                 &ID_DEFAULTCHARACTER_B                                 },
-        {"henchman",                                       &dat_007f1810                                          },
-        {const_cast<char *>("buggy"),                      reinterpret_cast<i16 *>(&GameObjectRotationBuggyId)    },
-        {const_cast<char *>("glide_pack"),                 &dat_007f17bc                                          },
-        {const_cast<char *>("radiocar"),                   reinterpret_cast<i16 *>(&GameObjectRotationRadioCarId) },
-        {const_cast<char *>("policecar"),                  reinterpret_cast<i16 *>(&GameObjectRotationPoliceCarId)},
-        {const_cast<char *>("twoface"),                    &dat_007f1820                                          },
-        {const_cast<char *>("harlequinn"),                 &dat_007f1824                                          },
-        {const_cast<char *>("catwoman"),                   &PunchRangeUnitId                                      },
-        {const_cast<char *>("whip"),                       &PunchRangeCompanionId                                 },
-        {const_cast<char *>("PenguinBomb"),                &dat_007f1828                                          },
-        {const_cast<char *>("p_goon"),                     &id_PENGUIN_GOON                                       },
-        {const_cast<char *>("p_goon_gun"),                 &id_PENGUIN_GOON_GUN                                   },
-        {const_cast<char *>("j_goon"),                     &id_JOKER_GOON                                         },
-        {const_cast<char *>("j_goon_gun"),                 &id_JOKER_GOON_GUN                                     },
-        {const_cast<char *>("r_goon"),                     &id_RIDDLER_GOON                                       },
-        {const_cast<char *>("r_goon_gun"),                 &id_RIDDLER_GOON_GUN                                   },
-        {const_cast<char *>("jackinabox"),                 &dat_007f1844                                          },
-        {const_cast<char *>("mower"),                      reinterpret_cast<i16 *>(&GameObjectRotationMowerId)    },
-        {const_cast<char *>("dodgem"),                     &id_DODGEM                                             },
-        {const_cast<char *>("gyrocopter"),                 &id_GYROCOPTER                                         },
-        {const_cast<char *>("clayface"),                   &dat_007f1854                                          },
-        {const_cast<char *>("penguin"),                    &dat_007f17c8                                          },
-        {const_cast<char *>("umbrella"),                   &dat_007f17cc                                          },
-        {const_cast<char *>("poisonivy"),                  &dat_007f1858                                          },
-        {const_cast<char *>("quigonjinn"),                 &ID_DEFAULTCHARACTER_LSW_A                             },
-        {"obiwankenobi",                                   &ID_DEFAULTCHARACTER_LSW_B                             },
-        {const_cast<char *>("princessleia"),               &dat_007f1864                                          },
-        {const_cast<char *>("princessleia_slave"),         &DefaultAnimationLeiaSlaveId                           },
-        {const_cast<char *>("princessleia_Boushh"),        &id_PRINCESSLEIABOUSHH                                 },
-        {const_cast<char *>("captainantilles"),            &dat_007f1870                                          },
-        {const_cast<char *>("captaintarpals"),             &id_CAPTAINTARPALS                                     },
-        {const_cast<char *>("imperialguard"),              &id_IMPERIALGUARD                                      },
-        {const_cast<char *>("bodyguard"),                  &id_BODYGUARD                                          },
-        {const_cast<char *>("darthmaul"),                  &id_DARTHMAUL                                          },
-        {const_cast<char *>("gamorreanguard"),             &id_GAMORREANGUARD                                     },
-        {"battledroid",                                    &id_BATTLEDROID                                        },
-        {const_cast<char *>("battledroid_commander"),      &id_BATTLEDROIDCOMMANDER                               },
-        {const_cast<char *>("battledroid_geonosian"),      &id_BATTLEDROIDGEONOSIAN                               },
-        {const_cast<char *>("battledroid_security"),       &id_BATTLEDROIDSECURITY                                },
-        {const_cast<char *>("Clone_Ep3"),                  &id_CLONEEP3                                           },
-        {const_cast<char *>("Clone_Ep3_Sand"),             &id_CLONEEP3SAND                                       },
-        {const_cast<char *>("naffdroid1"),                 &id_NAFFDROID1                                         },
-        {const_cast<char *>("naffdroid2"),                 &id_NAFFDROID2                                         },
-        {const_cast<char *>("naffdroid3"),                 &dat_007f18a8                                          },
-        {const_cast<char *>("naffdroid4"),                 &id_NAFFDROID4                                         },
-        {const_cast<char *>("mousedroid"),                 &id_MOUSEDROID                                         },
-        {const_cast<char *>("probedroid"),                 &dat_007f18b4                                          },
-        {const_cast<char *>("pkdroid"),                    &id_PKDROID                                            },
-        {const_cast<char *>("snake"),                      &id_SNAKE                                              },
-        {const_cast<char *>("bat"),                        &id_BAT                                                },
-        {const_cast<char *>("womprat"),                    &dat_007f18c4                                          },
-        {const_cast<char *>("yoda"),                       &id_YODA                                               },
-        {const_cast<char *>("yoda_ghost"),                 &id_YODAGHOST                                          },
-        {const_cast<char *>("moseisleycitizen"),           &id_MOSEISLEYCITIZEN                                   },
-        {const_cast<char *>("cantinaaliens"),              &id_CANTINAALIEN                                       },
-        {const_cast<char *>("cloudcitycitizen"),           &id_CLOUDCITYCITIZEN                                   },
-        {const_cast<char *>("geonosian"),                  &id_GEONOSIAN                                          },
-        {const_cast<char *>("watto"),                      &id_WATTO                                              },
-        {const_cast<char *>("weirdo1"),                    &PermanentWeirdo1Id                                    },
-        {const_cast<char *>("weirdo2"),                    &PermanentWeirdo2Id                                    },
-        {const_cast<char *>("chewbacca"),                  &id_CHEWBACCA                                          },
-        {const_cast<char *>("wookie"),                     &id_WOOKIEE                                            },
-        {"atst",                                           reinterpret_cast<i16 *>(&GameObjectRotationAtstId)     },
-        {"atst_lowres",                                    &id_ATST_LOWRES                                        },
-        {const_cast<char *>("barman"),                     &id_BARMAN                                             },
-        {const_cast<char *>("destroyer"),                  &id_DROIDEKA                                           },
-        {const_cast<char *>("superbattledroid"),           &id_SUPERBATTLEDROID                                   },
-        {const_cast<char *>("bobafett"),                   &id_BOBAFETT                                           },
-        {const_cast<char *>("4lom"),                       &dat_007f190c                                          },
-        {const_cast<char *>("trainingremote"),             &dat_007f1910                                          },
-        {const_cast<char *>("atat"),                       &id_ATAT                                               },
-        {const_cast<char *>("service_car"),                &id_SERVICECAR                                         },
-        {const_cast<char *>("dragbomb"),                   reinterpret_cast<i16 *>(&id_DRAGBOMB)                  },
-        {"clonewalker",                                    &id_CLONEWALKER                                        },
-        {const_cast<char *>("ewok"),                       &dat_007f1924                                          },
-        {const_cast<char *>("wicket"),                     &dat_007f1928                                          },
-        {const_cast<char *>("catapult"),                   &id_CATAPULT                                           },
-        {const_cast<char *>("basketcannon"),               &id_BASKETCANNON                                       },
-        {const_cast<char *>("bantha"),                     &id_BANTHA                                             },
-        {const_cast<char *>("bomarrmonk"),                 &id_BOMARRMONK                                         },
-        {const_cast<char *>("dewback"),                    &id_DEWBACK                                            },
-        {const_cast<char *>("speeder_land"),               &id_LANDSPEEDER                                        },
-        {const_cast<char *>("tauntaun"),                   &id_TAUNTAUN                                           },
-        {const_cast<char *>("speederbike"),                &id_SPEEDERBIKE                                        },
-        {const_cast<char *>("heavyrepeatingcannon"),       &id_HEAVYREPEATINGCANNON                               },
-        {const_cast<char *>("biggun"),                     &id_BIGGUN                                             },
-        {const_cast<char *>("troopercannon"),              &id_TROOPERCANNON                                      },
-        {const_cast<char *>("jabba"),                      &DefaultAnimationJabbaId                               },
-        {const_cast<char *>("slave1"),                     &dat_007f195c                                          },
-        {const_cast<char *>("ywing"),                      &id_YWING                                              },
-        {const_cast<char *>("tiebomber"),                  &id_TIEBOMBER                                          },
-        {const_cast<char *>("grievous"),                   &id_GRIEVOUS                                           },
-        {const_cast<char *>("tiefighterdarth"),            &dat_007f196c                                          },
-        {const_cast<char *>("tiefighter"),                 &id_TIEFIGHTER                                         },
-        {const_cast<char *>("grabberControl"),             &id_GRABCONTROL                                        },
-        {const_cast<char *>("grabberr2control"),           &id_GRABR2CONTROL                                      },
-        {"grabber",                                        &GrabMachineId                                         },
-        {const_cast<char *>("magnet"),                     &GrabMagnetId                                          },
-        {const_cast<char *>("robot_base"),                 &RobotBaseId                                           },
-        {const_cast<char *>("jawa"),                       &id_JAWA                                               },
-        {const_cast<char *>("lukeskywalker_dagobah"),      &id_LUKESKYWALKERDAGOBAH                               },
-        {const_cast<char *>("SnowMob"),                    &id_SNOWMOB                                            },
-        {const_cast<char *>("snowtrooper"),                &id_SNOWTROOPER                                        },
-        {const_cast<char *>("deathstartrooper"),           &id_DEATHSTARTROOPER                                   },
-        {const_cast<char *>("darthvader"),                 &dat_007f199c                                          },
-        {const_cast<char *>("theemperor"),                 &id_THEEMPEROR                                         },
-        {const_cast<char *>("millenniumfalcon"),           &dat_007f19a4                                          },
-        {const_cast<char *>("speederbikesnow"),            &dat_007f19a8                                          },
-        {const_cast<char *>("Kaadu"),                      &dat_007f19ac                                          },
-        {const_cast<char *>(AreaFixUpName_Gungan),         &dat_007f19b0                                          },
-        {const_cast<char *>("Falumpaset"),                 &dat_007f19b4                                          },
-        {const_cast<char *>("Stap"),                       &id_STAP                                               },
-        {const_cast<char *>("Stap2"),                      &id_STAP2                                              },
-        {const_cast<char *>("jumbohomingdroid"),           &id_JUMBOHOMINGDROID                                   },
-        {const_cast<char *>("JarJarBinks"),                &dat_007f19c4                                          },
-        {const_cast<char *>("PadmeClawed"),                &dat_007f19c8                                          },
-        {const_cast<char *>("Anakin_padawan"),             &id_ANAKINPADAWAN                                      },
-        {const_cast<char *>("ObiWanKenobi_JediMaster"),    &dat_007f19d0                                          },
-        {const_cast<char *>("shaakti"),                    &dat_007f19d4                                          },
-        {const_cast<char *>("luminara"),                   &dat_007f19d8                                          },
-        {const_cast<char *>("bob"),                        &id_BOB                                                },
-        {const_cast<char *>("JangoFett"),                  &id_JANGOFETT                                          },
-        {const_cast<char *>("JediStarfighter_Yellow_Ep3"), &id_JEDISTARFIGHTERYELLOWEP3                           },
-        {const_cast<char *>("JediStarfighter_Red_Ep3"),    &dat_007f19e8                                          },
-        {const_cast<char *>("Rancor"),                     &id_RANCOR                                             },
-        {const_cast<char *>("obiwankenobi_ep3"),           &id_OBIWANKENOBIEP3                                    },
-        {const_cast<char *>("anakin_jedi"),                &id_ANAKINJEDI                                         },
-        {"republicgunship",                                &id_REPUBLICGUNSHIP                                    },
-        {const_cast<char *>("republicgunship_green"),      &id_REPUBLICGUNSHIP_GREEN                              },
-        {const_cast<char *>("newrepublicgunship"),         &id_NEW_REPUBLIC_GUNSHIP                               },
-        {const_cast<char *>("newrepublicgunship_green"),   &id_NEW_REPUBLIC_GUNSHIP_GREEN                         },
-        {const_cast<char *>("countdooku"),                 &id_DOOKU                                              },
-        {const_cast<char *>("palpatine"),                  &dat_007f1a0c                                          },
-        {const_cast<char *>("kitfisto"),                   &dat_007f1a10                                          },
-        {const_cast<char *>("r2d2"),                       &dat_007f1a14                                          },
-        {const_cast<char *>("r2q5"),                       &id_R2Q5                                               },
-        {const_cast<char *>("xwing"),                      &id_XWING                                              },
-        {const_cast<char *>("royalguard"),                 &id_ROYALGUARD                                         },
-        {const_cast<char *>("snowspeeder"),                &dat_007f1a24                                          },
-        {const_cast<char *>("tieinterceptor"),             &dat_007f1a28                                          },
-        {const_cast<char *>("imperialshuttle"),            &dat_007f1a2c                                          },
-        {const_cast<char *>("ugnaught"),                   &id_UGNAUGHT                                           },
-        {const_cast<char *>("sentrydroid"),                &id_SENTRYDROID                                        },
-        {const_cast<char *>("kaminoandroid"),              &dat_007f1a38                                          },
-        {"stormtrooper",                                   &dat_007f1a3c                                          },
-        {const_cast<char *>("beachtrooper"),               &dat_007f1a40                                          },
-        {const_cast<char *>("ImperialShuttlePilot"),       &dat_007f1a44                                          },
-        {const_cast<char *>("imperialofficer"),            &dat_007f1a48                                          },
-        {const_cast<char *>("grandmofftarkin"),            &dat_007f1a4c                                          },
-        {const_cast<char *>("gonkdroid"),                  reinterpret_cast<i16 *>(&id_GONKDROID)                 },
-        {const_cast<char *>("c3po"),                       &id_C3PO                                               },
-        {const_cast<char *>("tc14"),                       &id_TC14                                               },
-        {const_cast<char *>("mooncar"),                    &id_MOONCAR                                            },
-        {const_cast<char *>("mapcar"),                     &id_MAPCAR                                             },
-        {const_cast<char *>("wookieflyer"),                &id_WOOKIEFLYER                                        },
-        {const_cast<char *>("imperialspy"),                &id_IMPERIALSPY                                        },
-        {const_cast<char *>("greedo"),                     &id_GREEDO                                             },
-        {const_cast<char *>("bossk"),                      &id_BOSSK                                              },
-        {const_cast<char *>("cantinaband"),                &id_CANTINABAND                                        },
-        {const_cast<char *>("pitdroid"),                   &dat_007f1a78                                          },
-        {const_cast<char *>("TownCar"),                    &dat_007f1a7c                                          },
-        {const_cast<char *>("Tractor"),                    &id_TRACTOR                                            },
-        {const_cast<char *>("fireTruck"),                  &id_FIRETRUCK                                          },
-        {const_cast<char *>("lifeBoat"),                   &dat_007f1a88                                          },
-        {const_cast<char *>("lamasu"),                     &DefaultAnimationLamaSuId                              },
-        {const_cast<char *>("taunwe"),                     &DefaultAnimationTaunWeId                              },
-        {const_cast<char *>("buzzdroid"),                  &id_BUZZDROID                                          },
-        {const_cast<char *>("clonearc"),                   &dat_007f1a98                                          },
-        {"naboostarfighter",                               &dat_007f1a9c                                          },
-        {const_cast<char *>("naboostarfighter_lime"),      &dat_007f1aa0                                          },
-        {const_cast<char *>("hansolo_indy"),               &dat_007f17d4                                          },
-        {const_cast<char *>("flashspeeder"),               &id_FLASHSPEEDER                                       },
-        {const_cast<char *>("skeleton"),                   &DefaultMotionSkeletonId                               },
-        {const_cast<char *>("indianajones"),               &dat_007f17d0                                          },
-        {const_cast<char *>("satipo"),                     &dat_007f1aac                                          },
-        {const_cast<char *>("chuck"),                      &dat_007f1ab0                                          },
-        {const_cast<char *>("belloq"),                     &dat_007f1ab4                                          },
-        {const_cast<char *>("hovitostribesman"),           &VehicleSpecialShooterId                               },
-        {const_cast<char *>("barranca"),                   &dat_007f1abc                                          },
-        {const_cast<char *>("crocodile"),                  &dat_007f1ac0                                          },
-        {const_cast<char *>("indyspider"),                 &ZipUpLineCharacterId                                  },
-        {const_cast<char *>("indysnake"),                  &DefaultMotionIndySnakeId                              },
-        {const_cast<char *>("mini_x_wing"),                &id_MINIXWING                                          },
-        {const_cast<char *>("mini_y_wing"),                &id_MINIYWING                                          },
-        {const_cast<char *>("mini_tie_interceptor"),       &dat_007f1ad8                                          },
-        {const_cast<char *>("mini_tie_bomber"),            &id_MINITIEBOMBER                                      },
-        {const_cast<char *>("mini_atat"),                  &id_MINIATAT                                           },
-        {const_cast<char *>("mini_star_destroyer"),        &id_MINISTARDESTROYER                                  },
-        {const_cast<char *>("mini_royal_starship"),        &id_MINIROYALSTARSHIP                                  },
-        {const_cast<char *>("mini_imperial_shuttle"),      &dat_007f1aec                                          },
-        {const_cast<char *>("Mini_Millennium_Falcon"),     &dat_007f1af0                                          },
-        {"mini_atst",                                      &id_MINIATST                                           },
-        {const_cast<char *>("mini_atte"),                  &id_MINIATTE                                           },
-        {const_cast<char *>("mini_slave1"),                &id_MINISLAVE1                                         },
-        {const_cast<char *>("mini_droideka"),              &id_MINIDROIDEKA                                       },
-        {const_cast<char *>("mini_tie_fighter"),           &dat_007f1b00                                          },
-        {const_cast<char *>("mini_tie_advanced"),          &dat_007f1b04                                          },
-        {const_cast<char *>("mini_sith_infiltrator"),      &dat_007f1b08                                          },
-        {const_cast<char *>("mini_solar_sailor"),          &dat_007f1b0c                                          },
-        {const_cast<char *>("mini_sand_crawler"),          &dat_007f1b10                                          },
-        {const_cast<char *>("anakinspod"),                 &id_ANAKINSPOD                                         },
-        {const_cast<char *>("anakinspod_green"),           &id_ANAKINSPODGREEN                                    },
-        {const_cast<char *>("sebulbaspod"),                &id_SEBULBASPOD                                        },
-        {const_cast<char *>("gasganospod"),                &dat_007f1b20                                          },
-        {const_cast<char *>("anothermiscpod"),             &dat_007f1b24                                          },
-        {const_cast<char *>("anothermiscpod2"),            &dat_007f1b28                                          },
-        {const_cast<char *>("newanakinspod"),              &id_ANAKINSNEWPOD                                      },
-        {const_cast<char *>("newanakinspod_green"),        &id_ANAKINSNEWPODGREEN                                 },
-        {const_cast<char *>("anakinsspeeder"),             &dat_007f1b34                                          },
-        {const_cast<char *>("anakinsspeeder_green"),       &dat_007f1b38                                          },
-        {const_cast<char *>("ZamsSpeeder"),                &id_ZAMSSPEEDER                                        },
-        {const_cast<char *>("vulturedroid"),               &dat_007f1b40                                          },
-        {const_cast<char *>("droidtrifighter"),            &dat_007f1b44                                          },
-        {const_cast<char *>("droidstarfighter"),           &dat_007f1b48                                          },
-        {NULL,                                             NULL                                                   },
-    };
-}
-
 extern "C" {}
-
-extern "C" {
-    extern const f64 PanelVariantTwoTargetZ = 0.19f;
-    extern const f64 PanelVariantTwoTargetY = 0.245f;
-    extern const f64 PanelVariantThreeTargetZ = 0.17f;
-    extern const f64 PanelVariantThreeTargetY = 0.34f;
-}
 
 extern "C" {}
 
@@ -5461,189 +4304,6 @@ extern "C" {
     extern i16 dat_008810b0;
     extern i16 dat_008810b4;
     extern i16 dat_008810b8;
-    /* Install in extern C data section. */
-    char dat_00754f5c[] = "extratoggle";
-    char dat_00754f54[] = "MZY419";
-    char dat_00754f48[] = "shop_tool1";
-    char dat_00754f44[] = "poo";
-    char dat_00754f3c[] = "6HUJ56";
-    char dat_00754f30[] = "shop_tool2";
-    char dat_00754f24[] = "disguises";
-    char dat_00754f1c[] = "BRJ437";
-    char dat_00754f10[] = "shop_tool3";
-    char dat_00754f04[] = "daisychains";
-    char dat_00754efc[] = "KAU532";
-    char dat_00754ef0[] = "shop_tool4";
-    char dat_00754ee4[] = "c3pobits";
-    char dat_00754edc[] = "5HD9TY";
-    char dat_00754ed0[] = "shop_tool5";
-    char dat_00754ec0[] = "towdeathstar";
-    char dat_00754eb8[] = "JNK8J4";
-    char dat_00754eac[] = "shop_tool6";
-    char dat_00754ea0[] = "silhouettes";
-    char dat_00754e98[] = "5HD86H";
-    char dat_00754e88[] = "shop_silhouette";
-    char dat_00754e7c[] = "beepbeep";
-    char dat_00754e74[] = "VXZ3K2";
-    char dat_00754e64[] = "shop_beepbeep";
-    char dat_00754e58[] = "supergonk";
-    char dat_00754e50[] = "SPRGNK";
-    char dat_00754e40[] = "shop_supergonk";
-    char dat_00754e34[] = "poomoney";
-    char dat_00754e2c[] = "PMN904";
-    char dat_00754e1c[] = "shop_poomoney";
-    char dat_00754e08[] = "walkietalkiedisable";
-    char dat_00754e00[] = "JKJ589";
-    char dat_00754dec[] = "shop_walkietalkie";
-    char dat_00754dd8[] = "powerbrickdetector";
-    char dat_00754dd0[] = "FBM834";
-    char dat_00754dc0[] = "shop_powerbrick";
-    char dat_00754db4[] = "superslap";
-    char dat_00754dac[] = "294NMB";
-    char dat_00754d9c[] = "shop_superslap";
-    char dat_00754d90[] = "forcezipup";
-    char dat_00754d88[] = "CLZ738";
-    char dat_00754d74[] = "shop_forcegrapple";
-    char dat_00754d68[] = "coinmagnet";
-    char dat_00754d60[] = "VXZ193";
-    char dat_00754d50[] = "shop_coinmagnet";
-    char dat_00754d40[] = "disarmtroopers";
-    char dat_00754d38[] = "HJU848";
-    char dat_00754d24[] = "shop_disarmtroopers";
-    char dat_00754d14[] = "characterstuds";
-    char dat_00754d0c[] = "DHY782";
-    char dat_00754cf8[] = "shop_characterstuds";
-    char dat_00754ce8[] = "perfectdeflect";
-    char dat_00754ce0[] = "PER894";
-    char dat_00754ccc[] = "shop_perfectdeflect";
-    char dat_00754cb4[] = "explodingblasterbolts";
-    char dat_00754cac[] = "EXP912";
-    char dat_00754c98[] = "shop_explodingbolts";
-    char dat_00754c8c[] = "forcepull";
-    char dat_00754c84[] = "PUL966";
-    char dat_00754c74[] = "shop_forcepull";
-    char dat_00754c60[] = "vehiclesmartbomb";
-    char dat_00754c58[] = "SMA293";
-    char dat_00754c44[] = "shop_vehiclesmart";
-    char dat_00754c34[] = "superastromech";
-    char dat_00754c2c[] = "R2D222";
-    char dat_00754c18[] = "shop_superastromech";
-    char dat_00754c08[] = "superjedislam";
-    char dat_00754c00[] = "SLM768";
-    char dat_00754bec[] = "shop_superjedislam";
-    char dat_00754bd4[] = "superthermaldetonator";
-    char dat_00754bcc[] = "THE931";
-    char dat_00754bb8[] = "shop_superthermal";
-    char dat_00754ba8[] = "deflectbolts";
-    char dat_00754ba0[] = "BNL435";
-    char dat_00754b8c[] = "shop_deflectbolts";
-    char dat_00754b80[] = "darkside";
-    char dat_00754b78[] = "DRK328";
-    char dat_00754b68[] = "shop_darkside";
-    char dat_00754b58[] = "superblasters";
-    char dat_00754b50[] = "HHD647";
-    char dat_00754b44[] = "shop_tool7";
-    char dat_00754b38[] = "fastforce";
-    char dat_00754b30[] = "BYY492";
-    char dat_00754b24[] = "shop_tool8";
-    char dat_00754b18[] = "supersabres";
-    char dat_00754b10[] = "GHL978";
-    char dat_00754b04[] = "shop_tool9";
-    char dat_00754af8[] = "tractorbeam";
-    char dat_00754af0[] = "53NKH3";
-    char dat_00754ae4[] = "shop_tool10";
-    char dat_00754ad4[] = "invincibility";
-    char dat_00754acc[] = "HS9K44";
-    char dat_00754ac0[] = "shop_tool11";
-    char dat_00754ab8[] = "scorex2";
-    char dat_00754ab0[] = "HBF899";
-    char dat_00754aa4[] = "shop_tool13";
-    char dat_00754a94[] = "selfdestruct";
-    char dat_00754a8c[] = "DRX444";
-    char dat_00754a80[] = "shop_tool12";
-    char dat_00754a74[] = "fastbuild";
-    char dat_00754a6c[] = "KJU233";
-    char dat_00754a60[] = "shop_tool14";
-    char dat_00754a58[] = "scorex4";
-    char dat_00754a50[] = "DQY857";
-    char dat_00754a44[] = "shop_tool15";
-    char dat_00754a38[] = "regenerate";
-    char dat_00754a30[] = "528HBB";
-    char dat_00754a24[] = "shop_tool16";
-    char dat_00754a14[] = "minikitdetector";
-    char dat_00754a0c[] = "FBM152";
-    char dat_00754a00[] = "shop_tool17";
-    char dat_007549f8[] = "scorex6";
-    char dat_007549f0[] = "NMP499";
-    char dat_007549e4[] = "shop_tool18";
-    char dat_007549d8[] = "superzapper";
-    char dat_007549d0[] = "DFY111";
-    char dat_007549c4[] = "shop_tool19";
-    char dat_007549bc[] = "rockets";
-    char dat_007549b4[] = "BKJ462";
-    char dat_007549a8[] = "shop_tool20";
-    char dat_007549a0[] = "scorex8";
-    char dat_00754998[] = "XXY99G";
-    char dat_0075498c[] = "shop_tool21";
-    char dat_00754978[] = "superewokcatapult";
-    char dat_00754970[] = "ERF893";
-    char dat_00754964[] = "shop_tool22";
-    char dat_00754950[] = "infinitetorpedos";
-    char dat_00754948[] = "NUJ866";
-    char dat_0075493c[] = "shop_tool23";
-    char dat_00754930[] = "scorex10";
-    char dat_00754928[] = "VXZ123";
-    char dat_0075491c[] = "shop_tool24";
-    char dat_00754908[] = "adaptivedifficulty";
-    char dat_00754900[] = "------";
-    CHEAT ExtrasCheats[46] = {
-        {dat_00754f5c, &dat_00880990, 0, {0, 0}, -1, -1, dat_00754f54, 25000, dat_00754f48, 0x100},
-        {dat_00754f44, &dat_0088104c, 0, {0, 0}, -1, -1, dat_00754f3c, 8000, dat_00754f30, 0x0},
-        {dat_00754f24, &dat_00880994, 0, {0, 0}, -1, -1, dat_00754f1c, 10000, dat_00754f10, 0x0},
-        {dat_00754f04, &dat_00881058, 0, {0, 0}, -1, -1, dat_00754efc, 5000, dat_00754ef0, 0x0},
-        {dat_00754ee4, &dat_00881048, 0, {0, 0}, -1, -1, dat_00754edc, 10000, dat_00754ed0, 0x0},
-        {dat_00754ec0, &dat_0088105c, 0, {0, 0}, -1, -1, dat_00754eb8, 5000, dat_00754eac, 0x0},
-        {dat_00754ea0, &dat_008809d0, 0, {0, 0}, -1, -1, dat_00754e98, 10000, dat_00754e88, 0x1},
-        {dat_00754e7c, &dat_00881074, 0, {0, 0}, -1, -1, dat_00754e74, 7500, dat_00754e64, 0x0},
-        {dat_00754e58, &dat_00881070, 0, {0, 0}, -1, -1, dat_00754e50, 100000, dat_00754e40, 0x0},
-        {dat_00754e34, &dat_0088107c, 0, {0, 0}, -1, -1, dat_00754e2c, 100000, dat_00754e1c, 0x200000},
-        {dat_00754e08, &dat_008810a0, 0, {0, 0}, -1, -1, dat_00754e00, 5000, dat_00754dec, 0x0},
-        {dat_00754dd8, &dat_00881080, 0, {0, 0}, -1, -1, dat_00754dd0, 125000, dat_00754dc0, 0x40000},
-        {dat_00754db4, &dat_00881084, 0, {0, 0}, -1, -1, dat_00754dac, 5000, dat_00754d9c, 0x0},
-        {dat_00754d90, &dat_0088108c, 0, {0, 0}, -1, -1, dat_00754d88, 15000, dat_00754d74, 0x0},
-        {dat_00754d68, &dat_00881078, 0, {0, 0}, -1, -1, dat_00754d60, 100000, dat_00754d50, 0x238000},
-        {dat_00754d40, &dat_00881094, 0, {0, 0}, -1, -1, dat_00754d38, 100000, dat_00754d24, 0x0},
-        {dat_00754d14, &dat_008810b8, 0, {0, 0}, -1, -1, dat_00754d0c, 100000, dat_00754cf8, 0x200000},
-        {dat_00754ce8, &dat_008810a4, 0, {0, 0}, -1, -1, dat_00754ce0, 20000, dat_00754ccc, 0x100000},
-        {dat_00754cb4, &dat_00881098, 0, {0, 0}, -1, -1, dat_00754cac, 20000, dat_00754c98, 0x0},
-        {dat_00754c8c, &dat_008810a8, 0, {0, 0}, -1, -1, dat_00754c84, 12000, dat_00754c74, 0x0},
-        {dat_00754c60, &dat_0088109c, 0, {0, 0}, -1, -1, dat_00754c58, 15000, dat_00754c44, 0x0},
-        {dat_00754c34, &dat_008810ac, 0, {0, 0}, -1, -1, dat_00754c2c, 10000, dat_00754c18, 0x0},
-        {dat_00754c08, &dat_008810b4, 0, {0, 0}, -1, -1, dat_00754c00, 11000, dat_00754bec, 0x0},
-        {dat_00754bd4, &dat_00881090, 0, {0, 0}, -1, -1, dat_00754bcc, 25000, dat_00754bb8, 0x0},
-        {dat_00754ba8, &dat_00881088, 0, {0, 0}, -1, -1, dat_00754ba0, 150000, dat_00754b8c, 0xb0000},
-        {dat_00754b80, &dat_008810b0, 0, {0, 0}, -1, -1, dat_00754b78, 25000, dat_00754b68, 0x0},
-        {dat_00754b58, &dat_00880998, 0, {0, 0}, -1, -1, dat_00754b50, 15000, dat_00754b44, 0x32002},
-        {dat_00754b38, &dat_0088099c, 0, {0, 0}, -1, -1, dat_00754b30, 40000, dat_00754b24, 0x412000},
-        {dat_00754b18, &dat_00881044, 0, {0, 0}, -1, -1, dat_00754b10, 40000, dat_00754b04, 0x12400},
-        {dat_00754af8, &dat_00881068, 0, {0, 0}, -1, -1, dat_00754af0, 15000, dat_00754ae4, 0x20000},
-        {dat_00754ad4, &dat_008809a0, 0, {0, 0}, -1, -1, dat_00754acc, 1000000, dat_00754ac0, 0x32080},
-        {dat_00754ab8, &dat_008809a4, 0, {0, 0}, -1, -1, dat_00754ab0, 1250000, dat_00754aa4, 0x230004},
-        {dat_00754a94, &dat_00881060, 0, {0, 0}, -1, -1, dat_00754a8c, 25000, dat_00754a80, 0x0},
-        {dat_00754a74, &dat_008809a8, 0, {0, 0}, -1, -1, dat_00754a6c, 30000, dat_00754a60, 0x16000},
-        {dat_00754a58, &dat_008809ac, 0, {0, 0}, -1, -1, dat_00754a50, 2500000, dat_00754a44, 0x200008},
-        {dat_00754a38, &dat_008809b0, 0, {0, 0}, -1, -1, dat_00754a30, 150000, dat_00754a24, 0x33000},
-        {dat_00754a14, &dat_008809b4, 0, {0, 0}, -1, -1, dat_00754a0c, 250000, dat_00754a00, 0x200},
-        {dat_007549f8, &dat_008809b8, 0, {0, 0}, -1, -1, dat_007549f0, 5000000, dat_007549e4, 0x200010},
-        {dat_007549d8, &dat_008809bc, 0, {0, 0}, -1, -1, dat_007549d0, 14000, dat_007549c4, 0x2000},
-        {dat_007549bc, &dat_008809c0, 0, {0, 0}, -1, -1, dat_007549b4, 20000, dat_007549a8, 0x2000},
-        {dat_007549a0, &dat_008809c4, 0, {0, 0}, -1, -1, dat_00754998, 10000000, dat_0075498c, 0x200020},
-        {dat_00754978, &dat_0088106c, 0, {0, 0}, -1, -1, dat_00754970, 25000, dat_00754964, 0x0},
-        {dat_00754950, &dat_00881064, 0, {0, 0}, -1, -1, dat_00754948, 25000, dat_0075493c, 0x0},
-        {dat_00754930, &dat_008809c8, 0, {0, 0}, -1, -1, dat_00754928, 20000000, dat_0075491c, 0x200040},
-        {dat_00754908, &dat_008809cc, 0, {0, 0}, -1, 0, dat_00754900, 0, dat_00754f48, 0x0},
-        {0},
-    };
 }
 
 extern "C" {
@@ -5654,125 +4314,11 @@ extern "C" {
 
 }
 
-extern "C" {
-    GAMESAVE TempGame = {0};
-}
-
-extern "C" {
-    f32 COLLECTION_DX = 0.15f;
-    f32 COLLECTION_DY = -0.2f;
-}
-
 /* Append inside data.cpp; each original new owner gets its own section. */
-extern "C" {
-    f32 uprepeattime[2] = {0};
-    f32 downrepeattime[2] = {0};
-    f32 rightrepeattime[2] = {0};
-    u8 rightrepeatcount[2] = {0};
-}
-
-extern "C" {
-    void (*AIPathCnxHelperSysInitFn)(WORLDINFO *) = 0;
-}
-
-extern "C" {
-    extern const char dat_00757e34[10] = "pathname=";
-    extern const char dat_00757d98[10] = "obstacle=";
-    extern const char dat_00757d70[16] = "OBSTACLE_CLOSED";
-    extern const char dat_00757db4[9] = "flowbox=";
-    extern const char dat_00757de4[9] = "buildit=";
-    extern const char dat_00757e18[9] = "bothways";
-    extern const char dat_00757e40[10] = "on_frames";
-    extern const char dat_00757dc8[14] = "gizmo_output=";
-    extern const char dat_00757da4[7] = "force=";
-    extern const char dat_00757e10[8] = "on_flag";
-    extern const char dat_00757d60[12] = "lastframe-1";
-    extern const char dat_00757dac[8] = "blowup=";
-    extern const char dat_00757dc0[7] = "gizmo=";
-    extern const char dat_00757dfc[5] = "obj=";
-    extern const char dat_00757d6c[3] = "to";
-    extern const char dat_00757d80[14] = "OBSTACLE_OPEN";
-    extern const char dat_00757e04[9] = "off_flag";
-    extern const char dat_00757d54[10] = "lastframe";
-    extern const char dat_00757dd8[12] = "fakeanimid=";
-    extern const char dat_00757d90[7] = "zipup=";
-    extern const char dat_00757e24[13] = "CheckVisible";
-    extern const char dat_00757df0[10] = "cutscene=";
-}
 
 extern "C" {}
 
 extern "C" {}
-
-extern "C" {
-    HINT Hints_LSW[65] = {
-        {{{600, 0, -1, 0, 7.5f}},     15.0f, {Tag_UpdateHint},          0, {0, 0, 0}, 0.0f},
-        {{{601, 0, -1, 0, 6.0f}},     4.0f,  {GizForce_UpdateHint},     0, {0, 0, 0}, 0.0f},
-        {{{602, 0, -1, 0, 6.0f}},     4.0f,  {Tag_UpdateHint},          0, {0, 0, 0}, 0.0f},
-        {{{603, 0, -1, 0, 6.0f}},     4.0f,  {Tag_UpdateHint},          0, {0, 0, 0}, 0.0f},
-        {{{604, 0, -1, 0, 6.0f}},     4.0f,  {GizBuildIts_UpdateHint},  0, {0, 0, 0}, 0.0f},
-        {{{605, 0, -1, 0, 6.0f}},     4.0f,  {Tag_UpdateHint},          0, {0, 0, 0}, 0.0f},
-        {{{606, 0, -1, 0, 6.0f}},     4.0f,  {Tag_UpdateHint},          0, {0, 0, 0}, 0.0f},
-        {{{607, 0, -1, 0, 6.0f}},     4.0f,  {GizPanel_UpdateHint},     0, {0, 0, 0}, 0.0f},
-        {{{608, 0, -1, 0, 6.0f}},     4.0f,  {GizPanel_UpdateHint},     0, {0, 0, 0}, 0.0f},
-        {{{609, 0, -1, 0, 6.0f}},     4.0f,  {GizPanel_UpdateHint},     0, {0, 0, 0}, 0.0f},
-        {{{610, 0, -1, 0, 6.0f}},     4.0f,  {ZipUps_UpdateHint},       0, {0, 0, 0}, 0.0f},
-        {{{611, 0, -1, 0, 6.0f}},     4.0f,  {Tag_UpdateHint},          0, {0, 0, 0}, 0.0f},
-        {{{612, 0, -1, 0, 6.0f}},     4.0f,  {NULL},                    0, {0, 0, 0}, 0.0f},
-        {{{613, 1, -1, 0, 10.0f}},    3.0f,  {Dodge_UpdateHint},        0, {0, 0, 0}, 0.0f},
-        {{{614, 1, -1, 0, 10.0f}},    3.0f,  {GizTurrets_UpdateHint},   0, {0, 0, 0}, 0.0f},
-        {{{615, 0, -1, 0, 10.0f}},    3.0f,  {Push_UpdateHints},        0, {0, 0, 0}, 0.0f},
-        {{{616, 0, -1, 0, 10.0f}},    3.0f,  {Teleport_UpdateHints},    0, {0, 0, 0}, 0.0f},
-        {{{617, 0, -1, 0, 10.0f}},    3.0f,  {GizPanel_UpdateHint},     0, {0, 0, 0}, 0.0f},
-        {{{618, 0, -1, 0, 10.0f}},    3.0f,  {GizPanel_UpdateHint},     0, {0, 0, 0}, 0.0f},
-        {{{620, 4, -1, 0, 6.0f}},     2.0f,  {NULL},                    0, {0, 0, 0}, 0.0f},
-        {{{623, 0, -1, 0, 7.5f}},     0.0f,  {NULL},                    0, {0, 0, 0}, 0.0f},
-        {{{624, 0, -1, 0, 7.5f}},     0.0f,  {NULL},                    0, {0, 0, 0}, 0.0f},
-        {{{625, 0, -1, 0, 7.5f}},     0.0f,  {NULL},                    0, {0, 0, 0}, 0.0f},
-        {{{626, 0, -1, 0, 0.0f}},     0.0f,  {NULL},                    0, {0, 0, 0}, 0.0f},
-        {{{627, 0, -1, 0, 0.0f}},     0.0f,  {NULL},                    0, {0, 0, 0}, 0.0f},
-        {{{628, 0, -1, 0, 0.0f}},     0.0f,  {NULL},                    0, {0, 0, 0}, 0.0f},
-        {{{630, 0, -1, 0, 10.0f}},    3.0f,  {NULL},                    0, {0, 0, 0}, 0.0f},
-        {{{631, 0, -1, 0, 10.0f}},    3.0f,  {NULL},                    0, {0, 0, 0}, 0.0f},
-        {{{632, 0, -1, 0, 10.0f}},    3.0f,  {NULL},                    0, {0, 0, 0}, 0.0f},
-        {{{633, 0, -1, 0, 10.0f}},    3.0f,  {NULL},                    0, {0, 0, 0}, 0.0f},
-        {{{634, 0, -1, 0, 10.0f}},    3.0f,  {NULL},                    0, {0, 0, 0}, 0.0f},
-        {{{635, 0, -1, 100, 10.0f}},  3.0f,  {NULL},                    0, {0, 0, 0}, 0.0f},
-        {{{636, 0, -1, 100, 10.0f}},  3.0f,  {NULL},                    0, {0, 0, 0}, 0.0f},
-        {{{637, 0, -1, 100, 10.0f}},  3.0f,  {NULL},                    0, {0, 0, 0}, 0.0f},
-        {{{638, 0, -1, 100, 10.0f}},  3.0f,  {NULL},                    0, {0, 0, 0}, 0.0f},
-        {{{639, 0, -1, 100, 10.0f}},  3.0f,  {NULL},                    0, {0, 0, 0}, 0.0f},
-        {{{640, 0, -1, 100, 10.0f}},  3.0f,  {NULL},                    0, {0, 0, 0}, 0.0f},
-        {{{641, 0, -1, 100, 10.0f}},  3.0f,  {NULL},                    0, {0, 0, 0}, 0.0f},
-        {{{642, 0, -1, 100, 10.0f}},  3.0f,  {NULL},                    0, {0, 0, 0}, 0.0f},
-        {{{643, 0, -1, 1000, 10.0f}}, 3.0f,  {ShinyMetal_UpdateHint},   0, {0, 0, 0}, 0.0f},
-        {{{644, 0, -1, 0, 0.0f}},     0.0f,  {NULL},                    0, {0, 0, 0}, 0.0f},
-        {{{645, 0, -1, 0, 0.0f}},     0.0f,  {NULL},                    0, {0, 0, 0}, 0.0f},
-        {{{646, 0, -1, 0, 0.0f}},     0.0f,  {NULL},                    0, {0, 0, 0}, 0.0f},
-        {{{647, 0, -1, 0, 6.0f}},     4.0f,  {Tag_UpdateHint},          0, {0, 0, 0}, 0.0f},
-        {{{648, 0, -1, 0, 10.0f}},    4.0f,  {NULL},                    0, {0, 0, 0}, 0.0f},
-        {{{649, 0, -1, 0, 6.0f}},     4.0f,  {Tag_UpdateHint},          0, {0, 0, 0}, 0.0f},
-        {{{650, 0, -1, 0, 6.0f}},     4.0f,  {Tag_UpdateHint},          0, {0, 0, 0}, 0.0f},
-        {{{651, 0, -1, 0, 6.0f}},     4.0f,  {Tag_UpdateHint},          0, {0, 0, 0}, 0.0f},
-        {{{652, 0, -1, 0, 6.0f}},     4.0f,  {NULL},                    0, {0, 0, 0}, 0.0f},
-        {{{653, 0, -1, 0, 5.0f}},     10.0f, {Tag_UpdateHint},          0, {0, 0, 0}, 0.0f},
-        {{{654, 0, -1, 0, 6.0f}},     4.0f,  {Tag_UpdateHint},          0, {0, 0, 0}, 0.0f},
-        {{{655, 0, -1, 0, 6.0f}},     4.0f,  {NULL},                    0, {0, 0, 0}, 0.0f},
-        {{{656, 0, -1, 0, 6.0f}},     4.0f,  {NULL},                    0, {0, 0, 0}, 0.0f},
-        {{{657, 0, -1, 0, 10.0f}},    4.0f,  {NULL},                    0, {0, 0, 0}, 0.0f},
-        {{{658, 0, -1, 0, 10.0f}},    4.0f,  {NULL},                    0, {0, 0, 0}, 0.0f},
-        {{{659, 0, -1, 0, 10.0f}},    4.0f,  {NULL},                    0, {0, 0, 0}, 0.0f},
-        {{{696, 0, -1, 0, 6.0f}},     4.0f,  {NULL},                    0, {0, 0, 0}, 0.0f},
-        {{{697, 0, -1, 0, 6.0f}},     4.0f,  {NULL},                    0, {0, 0, 0}, 0.0f},
-        {{{1675, 1, -1, 0, 8.0f}},    0.0f,  {Shop_UpdateHint},         0, {0, 0, 0}, 0.0f},
-        {{{1676, 1, -1, 0, 8.0f}},    0.0f,  {Shop_UpdateHint},         0, {0, 0, 0}, 0.0f},
-        {{{1677, 1, -1, 0, 8.0f}},    0.0f,  {Shop_UpdateHint},         0, {0, 0, 0}, 0.0f},
-        {{{1678, 1, -1, 0, 8.0f}},    0.0f,  {Shop_UpdateHint},         0, {0, 0, 0}, 0.0f},
-        {{{1449, 1, 4, 0, 8.0f}},     0.0f,  {Percent_UpdateHint},      0, {0, 0, 0}, 0.0f},
-        {{{1447, 1, 4, 0, 8.0f}},     0.0f,  {IndyUnlocked_UpdateHint}, 0, {0, 0, 0}, 0.0f},
-        {{{-1, 0, -1, 1000, 1.0f}},   1.0f,  {NULL},                    0, {0, 0, 0}, 0.0f},
-    };
-}
 
 extern "C" {}
 
@@ -5784,6 +4330,3 @@ extern "C" {
     /* DDS image used for textures that fail to resolve (128x128, 0x2080 bytes). */
 }
 
-extern "C" {
-    NEW_MINI_PIECE NewMiniPiece[10] = {0};
-}

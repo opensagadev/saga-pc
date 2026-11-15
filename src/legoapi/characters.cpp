@@ -89,6 +89,10 @@ extern "C" {
     i32 drawcharicon_i_panel = -1;
 }
 
+extern "C" {
+    extern char AreaFixUpName_Jedi[8] = "Jedi";
+}
+
 i32 CharIDFromName(const char *name) {
     i32 index;
 

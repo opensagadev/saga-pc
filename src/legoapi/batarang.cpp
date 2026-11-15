@@ -47,7 +47,11 @@
 #include "nu2api/numath/numtx.h"
 #include "nu2api/numath/nutrig.h"
 #include "nu2api/numath/nuvec.h"
+#include "gameapi/edtools/edui.h"
 static i16 id_ROBIN = -1;
+extern "C" {
+    const char *TagAsciiDown = "\xC2\xA3";
+}
 
 extern "C" {
     i32 Batman_PrepareJump(AIPACKET *packet, APIOBJECT *object, i32 checks);
@@ -171,6 +175,10 @@ static i32 BatarangAppendTarget(BATARANG_NATIVE *batarang, void *selected, i32 t
     batarang->targets[batarang->active].lost = 0;
     ++batarang->active;
     return 2;
+}
+
+extern "C" {
+    DETONATOR_s Detonator[10] = {0};
 }
 
 extern "C" i32 Batarang_FindTarget(WORLDINFO *world, GAMEOBJECT *object, i32 automatic) {
@@ -414,6 +422,10 @@ extern "C" void Batarang_StartThrowQuick(GAMEOBJECT *object) {
     object->context_timer = AnimDuration((i16)object->id, 0xb2, 0.0f, 0.0f, 1);
 }
 
+extern "C" {
+    PLAYER_BATARANG_SLOT BatarangPackets[8] = {0};
+}
+
 void Batarangs_Reset(void) {
     i32 i;
     for (i = 0; i < 8; ++i) {
@@ -594,6 +606,13 @@ i32 Batarang_StartTargetting(GAMEOBJECT *object) {
         }
     }
     return 0;
+}
+
+extern "C" {
+    u32 GAMEPAD_JUMP = PAD_BUTTON_CROSS;
+    u32 GAMEPAD_ACTION = PAD_BUTTON_SQUARE;
+    ADD_GAME_MESSAGE AddGameMsg_Default = {NULL, &v000, &v000, 1.0f, 1.0f, 255,  255,  255,  128,  0,  1.0f, 0.0f, 0, -1,
+                                           NULL, 0,     0.0f,  0.0f, NULL, NULL, NULL, NULL, NULL, -1, 0,    255,  0};
 }
 
 extern "C" void Batarang_MoveCode(GAMEOBJECT *object) {
@@ -1160,6 +1179,8 @@ extern "C" {
         return 0;
     }
 
+    u32 GAMEPAD_SPECIAL = PAD_BUTTON_CIRCLE;
+
     i32 Batman_PrepareSpecialUse(AIPACKET *packet, APIOBJECT *object, i32 checks_unused) {
         GAMEOBJECT *owner;
         AIPATHNODE *destination;
@@ -1640,6 +1661,7 @@ extern "C" {
         {0x300000,   Batman_PrepareClimb       },
         {0,          NULL                      },
     };
+    i16 ID_DEFAULTCHARACTER_B = -1;
 
     i32 Batman_PreparingForSpecialMove(AIPACKET *packet, APIOBJECT *apiobject, i32 checks) {
         GAMEOBJECT *owner = apiobject->owner;
@@ -1705,6 +1727,11 @@ extern "C" {
         }
         return 0;
     }
+
+    i32 LEGO_AIPATHCNX_BLOCKAGE = 0;
+    i32 LEGO_AIPATHCNX_WALLSHUFFLE = 0;
+    u32 LEGO_AIPATHCNX_FORGOODIES = 0;
+    u32 LEGO_AIPATHCNX_FORBADDIES = 0;
 
     void Batman_GameAISysInit(void) {
         LEGO_AIPATHCNX_BLOCKAGE = 0x4000;

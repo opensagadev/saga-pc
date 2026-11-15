@@ -163,6 +163,8 @@ void DeathStarEscapeB_Update(WORLDINFO *world) {
     }
 }
 
+i16 dat_007f1a3c = -1;
+i16 dat_007f1a40 = -1;
 i16 dat_007f1a44 = -1;
 /* Episode IV FixUpLevels callbacks (Mos Eisley, Blockade Runner, Death Star rescue and escape). */
 i32 test_tb = 1;
@@ -426,6 +428,8 @@ void DeathStarEscapeB_AlwaysUpdate(WORLDINFO *world) {
     }
 }
 
+LEVELDATA *dat_0087b1d0 = NULL;
+LEVELDATA *DEATHSTARESCAPEA_LDATA = 0;
 /* Death Star battle midtro level slot (never assigned by FixUpLevels). */
 LEVELDATA *DEATHSTARBATTLEMIDTRO_LDATA = NULL;
 

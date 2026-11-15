@@ -225,3 +225,8 @@ config/declscan-budget.json C 533 gameapi data move: a unit's extern of a global
 config/declscan-budget.json D 1360 gameapi data move: the menu and parser tables carry the prototypes and string externs data.cpp declared for them into their units (same declarations, new place; the declaration pass moves them into headers)
 config/oddscan-budget.json address-name 16289 gameapi data move: the carried prototypes of the unported menu callbacks (fun_00509470 ...) and string externs name the same addresses a second time, in the units their tables moved to
 config/oddscan-budget.json long-file 13 parts.c passes 5000 lines (5012) only by the 65 module-header includes that replace #include "saga.h" (narrowing); no code was added
+config/oddscan-budget.json address-name 16352 legoapi/legogame data move: tables carry their address-named strings, prototypes and externs (fun_*, dat_*) into the units that own them, so those names are written there a second time (same names, new place)
+config/oddscan-budget.json data-file 8 legoapi/legogame data move: menu_titles.cpp receives its title and credit tables from data.cpp and is now mostly data (same tables, new place)
+config/declscan-budget.json A 34 legoapi/legogame data move: globals data.cpp defined now sit in units that also kept their own extern of them (same construct, new place)
+config/declscan-budget.json C 555 legoapi/legogame data move: a unit's extern of a global that moved into it is now a forward declaration (same construct, new place)
+config/declscan-budget.json D 1412 legoapi/legogame data move: the prototypes and externs data.cpp declared for the moved tables go with them into their units until the declaration pass moves them into headers

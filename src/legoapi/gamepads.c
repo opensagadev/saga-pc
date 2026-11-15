@@ -41,6 +41,10 @@
 void NuMainRenderLeaf(void) {
 }
 
+u32 GAMEPAD_TAG = PAD_BUTTON_TRIANGLE;
+u32 GAMEPAD_SKIP = PAD_BUTTON_TRIANGLE | PAD_BUTTON_CROSS | PAD_BUTTON_START;
+u32 GAMEPAD_MENUCANCEL = PAD_BUTTON_TRIANGLE;
+
 void GamePad_InitButtons(void) {
     GAMEPAD_JUMP = PAD_BUTTON_CROSS;
     GAMEPAD_ACTION = PAD_BUTTON_SQUARE;
@@ -114,6 +118,8 @@ void fun_0054a670(void) {
 void fun_0054a680(void) {
 }
 
+u16 PlayerPadCurrentAngle[2] = {0};
+GAMEPAD_INIT_RECORD GamePadStorage[64] = {0};
 f32 PlayerPadPreviousSpeed[2] = {0};
 u16 PlayerPadPreviousAngle[2] = {0};
 // Two-entry reconstruction access views; all observed PC readers/producers select 0 or 1.
@@ -296,6 +302,8 @@ void ConstantRumble(GAMEOBJECT *object, f32 strength, f32 phase) {
     }
 }
 
+i32 LEGOMENU_CREDITS = -1;
+
 i32 fun_0054ace0(i32 index, i32 require_ready) {
     i32 menu = GetMenuID();
     if ((require_ready && !((GAMEPAD_RUNTIME_INPUT *)GamePadStorage)[index].input_ready) ||
@@ -307,6 +315,8 @@ i32 fun_0054ace0(i32 index, i32 require_ready) {
 }
 
 i32 (*GamePads_IgnoreInputFn)(void) = NULL;
+
+i32 NewMode = 0;
 
 void PadOutPause(i32 index, WORLDINFO *world) {
     i32 menu;
@@ -349,6 +359,9 @@ void PadOutPause(i32 index, WORLDINFO *world) {
 
 FRAME_PAD *pActivePad = 0;
 i32 readpads_always = 0;
+
+u32 GAMEPAD_START = PAD_BUTTON_START;
+i32 PLAYERCOUNT = 0;
 
 i32 ReadPad(i32 port) {
     GAMEPAD_RUNTIME_INPUT *gamepad = (GAMEPAD_RUNTIME_INPUT *)&GamePadStorage[port];

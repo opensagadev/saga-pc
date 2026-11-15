@@ -255,6 +255,7 @@ void CruiserDInit(WORLDINFO *world) {
 }
 
 i16 id_DOOKU = -1;
+i16 dat_007f1a0c = -1;
 static f32 CruiserD_LiftSpeed = 0.1f;
 static f32 CruiserD_frame = 1.0f;
 static i32 CruiserD_direction = 1;

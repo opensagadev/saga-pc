@@ -207,6 +207,8 @@ extern "C" {
         return particle;
     }
 
+    u32 debrisseed = 0x5c0999;
+
     DEBRISPARTICLE *GenDebIndexImprovedRadial(DEBRISKEY *key, DEBRIS_INFO *effect, float time) {
         if (key->particle_cursor >= key->particle_count) {
             key->particle_cursor = 0;

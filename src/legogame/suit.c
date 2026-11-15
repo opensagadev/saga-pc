@@ -20,6 +20,17 @@ SUIT_INITIALIZER_RECORD SuitRecordInit[10] = {
     {dat_00753144, dat_0075d20c, &tATTRACTSUIT,    384, 114, 'd', 0x0,      0, 0, 0}
 };
 
+char dat_00753144[6] = "robin";
+char dat_0075314c[7] = "batman";
+char dat_0075d20c[14] = "robin_attract";
+char dat_0075d21c[13] = "robin_magnet";
+char dat_0075d22c[17] = "robin_technology";
+char dat_0075d240[12] = "robin_water";
+char dat_0075d24c[13] = "batman_sonar";
+char dat_0075d25c[18] = "batman_demolition";
+char dat_0075d270[13] = "batman_glide";
+char dat_0075d280[14] = "batman_shadow";
+
 SUIT_LAYERS *Suit_GetDefault(i32 character_id) {
     i32 index;
     for (index = 0; index < 10; ++index) {

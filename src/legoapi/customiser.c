@@ -254,6 +254,7 @@ i32 Customiser_NextPieceRight(CUSTOMISER_LAYERS *input, i32 index, i32 count, i3
 
 KILLPARTS_ACCESSORY KillPartsAccessories[2][9] = {0};
 i32 Customiser_AccessoriesLoaded = 0;
+RTL_DATA KillPartsZeroLighting = {0};
 
 void Customiser_LoadAccessories(CUSTOMISER_LAYERS *input, APICHARACTERMODELLIST *models) {
     CUSTOMISER_CONFIG *customiser = (CUSTOMISER_CONFIG *)input;

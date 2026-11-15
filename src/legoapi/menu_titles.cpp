@@ -6,8 +6,106 @@
 #include "legoapi/world/levels/levels.h"
 #include "nu2api/nucore/nuapi.h"
 #include "nu2api/nuwin32/Stubs.h"
+#include "gameapi/edptl.h"
+#include "legoapi/audio/audio.h"
+#include "legoapi/characters/core/players.h"
+#include "legoapi/characters/motion/move.h"
+#include "legoapi/items/base/apiobject.h"
+#include "legoapi/render/core/rtl.h"
+#include "nu2api/nu3d/numtl.h"
+#include "nu2api/nucore/nustring.h"
+#include "nu2api/nusound/nusound.h"
+#include "nu2api/nuwin32/d3dCore.h"
+#include "nu2api/nuwin32/pcapi.h"
 
 extern "C" {
+    extern const char dat_0075f2c0[3];
+    extern const char dat_0075f2c4[4];
+    extern const char dat_0076b274[4];
+    MENU_PC_STRING_ENTRY dat_00827800[40] = {
+        {0,  "Quit"                                                       },
+        {1,  "Quit to Windows"                                            },
+        {2,  "Quit to Demos Menu"                                         },
+        {3,  "Return to game"                                             },
+        {4,  "Low"                                                        },
+        {5,  "Medium"                                                     },
+        {6,  "High"                                                       },
+        {7,  "Resume"                                                     },
+        {8,  "Accept"                                                     },
+        {10, "Back"                                                       },
+        {9,  "Decline"                                                    },
+        {11, dat_0075f2c4                                                 },
+        {12, dat_0075f2c0                                                 },
+        {13, "OK"                                                         },
+        {14, "Cancel"                                                     },
+        {15, "On"                                                         },
+        {16, dat_0076b274                                                 },
+        {17, "Reset To Defaults"                                          },
+        {18, "Video Settings"                                             },
+        {19, "Screen Resolution"                                          },
+        {20, "Refresh Rate"                                               },
+        {21, "Vertical Sync"                                              },
+        {22, "Aspect Ratio"                                               },
+        {23, "Enhanced Graphics"                                          },
+        {24, "From Screen-Res"                                            },
+        {25, "Use current settings"                                       },
+        {26, "Texture Quality"                                            },
+        {27, "Revert"                                                     },
+        {28, "You must restart the game for these changes to take effect!"},
+        {29, "Effects Settings"                                           },
+        {30, "FSAA"                                                       },
+        {31, "Externally Set"                                             },
+        {32, "Shadows"                                                    },
+        {33, "Bloom"                                                      },
+        {34, "Depth of Field"                                             },
+        {35, "Speed Blur"                                                 },
+        {36, "Dynamic Light Quality"                                      },
+        {37, "Edge AA"                                                    },
+        {38, "Show Game Controls"                                         },
+        {39, NULL                                                         },
+    };
+    MENU_PC_STRING_ENTRY dat_00827940[40] = {
+        {0,  "Quit"                                                       },
+        {1,  "Quit to Windows"                                            },
+        {2,  "Quit to Demos Menu"                                         },
+        {3,  "Return to game"                                             },
+        {4,  "Low"                                                        },
+        {5,  "Medium"                                                     },
+        {6,  "High"                                                       },
+        {7,  "Resume"                                                     },
+        {8,  "Accept"                                                     },
+        {9,  "Decline"                                                    },
+        {10, "Back"                                                       },
+        {11, dat_0075f2c4                                                 },
+        {12, dat_0075f2c0                                                 },
+        {13, "OK"                                                         },
+        {14, "Cancel"                                                     },
+        {15, "On"                                                         },
+        {16, dat_0076b274                                                 },
+        {17, "Reset To Defaults"                                          },
+        {18, "Video Settings"                                             },
+        {19, "Screen Resolution"                                          },
+        {20, "Refresh Rate"                                               },
+        {21, "Vertical Sync"                                              },
+        {22, "Aspect Ratio"                                               },
+        {23, "Enhanced Graphics"                                          },
+        {24, "From Screen-Res"                                            },
+        {25, "Use current settings"                                       },
+        {26, "Texture Quality"                                            },
+        {27, "Revert"                                                     },
+        {28, "You must restart the game for these changes to take effect!"},
+        {29, "Effects Settings"                                           },
+        {30, "FSAA"                                                       },
+        {31, "Externally Set"                                             },
+        {32, "Shadows"                                                    },
+        {33, "Bloom"                                                      },
+        {34, "Depth of Field"                                             },
+        {35, "Speed Blur"                                                 },
+        {36, "Dynamic Light Quality"                                      },
+        {37, "Edge AA"                                                    },
+        {38, "Show Game Controls"                                         },
+        {39, NULL                                                         },
+    };
     MENU_PC_STRING_ENTRY dat_00827a80[40] = {
         {0,  "Quitter"                                                                     },
         {1,  "Revenir sous Windows"                                                        },
@@ -92,6 +190,90 @@ extern "C" {
         {38, "Show Game Controls"                                                               },
         {39, NULL                                                                               },
     };
+    MENU_PC_STRING_ENTRY dat_00827d00[40] = {
+        {0,  "Esci"                                                                 },
+        {1,  "Torna a Windows"                                                      },
+        {2,  "Esci al Menu Demo"                                                    },
+        {3,  "Torna al gioco"                                                       },
+        {4,  "Bassa"                                                                },
+        {5,  "Media"                                                                },
+        {6,  "Alta"                                                                 },
+        {7,  "Riprendi"                                                             },
+        {8,  "Accetta"                                                              },
+        {9,  "Annulla"                                                              },
+        {10, "Indietro"                                                             },
+        {11, "S\303\254"                                                            },
+        {12, dat_0075f2c0                                                           },
+        {13, "OK"                                                                   },
+        {14, "Annulla"                                                              },
+        {15, "On"                                                                   },
+        {16, dat_0076b274                                                           },
+        {17, "Impostazioni predefinite"                                             },
+        {18, "Video"                                                                },
+        {19, "Risoluzione schermo"                                                  },
+        {20, "Frequenza di aggiornamento"                                           },
+        {21, "Sincronizzazione verticale"                                           },
+        {22, "Rapporto"                                                             },
+        {23, "Grafica migliorata"                                                   },
+        {24, "Da risoluzione"                                                       },
+        {25, "Usa impostazioni attuali"                                             },
+        {26, "Qualit\303\240 texture"                                               },
+        {27, "Ripristina"                                                           },
+        {28, "Devi riavviare il gioco affinch\303\251 le modifiche abbiano effetto."},
+        {29, "Effetti"                                                              },
+        {30, "FSAA"                                                                 },
+        {31, "Impostato esternamente"                                               },
+        {32, "Ombre"                                                                },
+        {33, "Luminosit\303\240"                                                    },
+        {34, "Profondit\303\240 di campo"                                           },
+        {35, "Sfumatura movimento"                                                  },
+        {36, "Qualit\303\240 luci dinamiche"                                        },
+        {37, "Edge AA"                                                              },
+        {38, "Show Game Controls"                                                   },
+        {39, NULL                                                                   },
+    };
+    MENU_PC_STRING_ENTRY dat_00827e40[40] = {
+        {0,  "Salir"                                                        },
+        {1,  "Salir a Windows"                                              },
+        {2,  "Salir al menu del demo"                                       },
+        {3,  "Volver al juego"                                              },
+        {4,  "Baja"                                                         },
+        {5,  "Media"                                                        },
+        {6,  "Alta"                                                         },
+        {7,  "Reanudar"                                                     },
+        {8,  "Aceptar"                                                      },
+        {9,  "Rechazar"                                                     },
+        {10, "Atr\303\241s"                                                 },
+        {11, "S\303\255"                                                    },
+        {12, dat_0075f2c0                                                   },
+        {13, "Aceptar"                                                      },
+        {14, "Cancelar"                                                     },
+        {15, "S\303\255"                                                    },
+        {16, dat_0075f2c0                                                   },
+        {17, "Restablecer predeterminados"                                  },
+        {18, "Ajustes de v\303\255deo"                                      },
+        {19, "Resoluci\303\263n"                                            },
+        {20, "Tasa de actualizaci\303\263n"                                 },
+        {21, "Sincronizaci\303\263n vertical"                               },
+        {22, "Relaci\303\263n de aspecto"                                   },
+        {23, "Gr\303\241ficos mejorados"                                    },
+        {24, "R. pantalla"                                                  },
+        {25, "Usar ajustes de actuales"                                     },
+        {26, "Calidad de textura"                                           },
+        {27, "Revertir"                                                     },
+        {28, "Debes reiniciar el juego para que estos cambios tengan efecto"},
+        {29, "Ajustes de efectos"                                           },
+        {30, "AAPC"                                                         },
+        {31, "Ajustado externamente"                                        },
+        {32, "Sombras"                                                      },
+        {33, "Bloom"                                                        },
+        {34, "Profundidad de campo"                                         },
+        {35, "Distorsi\303\263n de velocidad"                               },
+        {36, "Calidad de luz din\303\241mica"                               },
+        {37, "Suavizado de bordes"                                          },
+        {38, "Show Game Controls"                                           },
+        {39, NULL                                                           },
+    };
     MENU_PC_STRING_ENTRY dat_00827f80[40] = {
         {0,  "Forlad"                                                                    },
         {1,  "Forlad til Windows"                                                        },
@@ -166,6 +348,11 @@ extern "C" void MenuPcStringsInit(void) {
         ++entry;
     }
     MenuPcStringsInitialized = 1;
+}
+
+extern "C" {
+    i32 PauseMenus_Align = 0;
+    f32 PauseMenus_X = 0;
 }
 
 extern "C" void GameDrawMenuEntry(MENU *menu, char *text) {

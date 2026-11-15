@@ -38,6 +38,9 @@
 #include "nu2api/numath/numtx.h"
 #include "nu2api/numath/nutrig.h"
 #include "nu2api/numath/nuvec.h"
+extern "C" {
+    i32 PushBlockHintId = -1;
+}
 static f32 PushBlockGapEpsilon = 0.00999999978f;
 
 extern "C" ADDGIZMOTYPE Default_ADDGIZMOTYPE;

@@ -131,6 +131,7 @@ void RemoveGameObject(GAMEOBJECT *object, i32 unused) {
     }
 }
 
+i32 HIGHGAMEOBJECT = 0;
 void (*GameObjectDimensionsExtraFn)(GAMEOBJECT *) = 0;
 
 void GameObjectDimensions(GAMEOBJECT *object) {
@@ -333,6 +334,8 @@ void GameObjectToCameraDistances() {
         object->ai_update_distance = NuFsqrt(dx * dx + dy * dy + dz * dz);
     }
 }
+
+f32 FRAMETIME = 0;
 
 void GameObjectOrigin(GAMEOBJECT *object) {
     f32 min_y;
@@ -554,6 +557,25 @@ safe_position_done:
 }
 
 u8 grapple_attach_frames = 5;
+TERRAIN_LAYER TerLayer[17] = {
+    {0x00000000, 0x0000ffff, 0x40000000},
+    {0x00000000, 0x0000ffff, 0x40000000},
+    {0x00000000, 0x0000ffff, 0x3f800000},
+    {0x00000001, 0x0000ffff, 0x3f800000},
+    {0x00000000, 0x0000ffff, 0x3f800000},
+    {0x00000020, 0x0000ffff, 0x3f800000},
+    {0x00000001, 0x0000ffff, 0x3f800000},
+    {0x00000000, 0x0000ffff, 0x3f800000},
+    {0x00000000, 0x0000ffff, 0x3f800000},
+    {0x00000000, 0x0000ffff, 0x3f800000},
+    {0x00000000, 0x0000ffff, 0x3f800000},
+    {0x00000000, 0x0000ffff, 0x3f800000},
+    {0x00000000, 0x0000ffff, 0x3f800000},
+    {0x00000000, 0x0000ffff, 0x3f800000},
+    {0x00000000, 0x0000ffff, 0x3f800000},
+    {0x00000000, 0x0000ffff, 0x3f800000},
+    {0x00000000, 0x0000ffff, 0x00000000},
+};
 
 void GameObjectSetCanUse(GAMEOBJECT *object, void *target, u8 action, u8 unused, f32 parameter) {
     object->can_use_object = target;

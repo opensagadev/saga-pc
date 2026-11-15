@@ -57,6 +57,235 @@ extern "C" {
     extern f32 CoinTotalCoinOffset;
     extern i16 dat_00880778;
 
+    extern i16 dat_00880990;
+    extern i16 dat_00880994;
+    extern i16 dat_00880998;
+    extern i16 dat_0088099c;
+    extern i16 dat_008809a0;
+    extern i16 dat_008809a4;
+    extern i16 dat_008809a8;
+    extern i16 dat_008809ac;
+    extern i16 dat_008809b0;
+    extern i16 dat_008809b4;
+    extern i16 dat_008809b8;
+    extern i16 dat_008809bc;
+    extern i16 dat_008809c0;
+    extern i16 dat_008809c4;
+    extern i16 dat_008809c8;
+    extern i16 dat_008809cc;
+    extern i16 dat_008809d0;
+    extern i16 dat_00881044;
+    extern i16 dat_00881048;
+    extern i16 dat_0088104c;
+    extern i16 dat_00881058;
+    extern i16 dat_0088105c;
+    extern i16 dat_00881060;
+    extern i16 dat_00881064;
+    extern i16 dat_00881068;
+    extern i16 dat_0088106c;
+    extern i16 dat_00881070;
+    extern i16 dat_00881074;
+    extern i16 dat_00881078;
+    extern i16 dat_0088107c;
+    extern i16 dat_00881080;
+    extern i16 dat_00881084;
+    extern i16 dat_00881088;
+    extern i16 dat_0088108c;
+    extern i16 dat_00881090;
+    extern i16 dat_00881094;
+    extern i16 dat_00881098;
+    extern i16 dat_0088109c;
+    extern i16 dat_008810a0;
+    extern i16 dat_008810a4;
+    extern i16 dat_008810a8;
+    extern i16 dat_008810ac;
+    extern i16 dat_008810b0;
+    extern i16 dat_008810b4;
+    extern i16 dat_008810b8;
+    i16 dat_007f195c = -1;
+    char dat_00754900[] = "------";
+    char dat_00754908[] = "adaptivedifficulty";
+    char dat_0075491c[] = "shop_tool24";
+    char dat_00754928[] = "VXZ123";
+    char dat_00754930[] = "scorex10";
+    char dat_0075493c[] = "shop_tool23";
+    char dat_00754948[] = "NUJ866";
+    char dat_00754950[] = "infinitetorpedos";
+    char dat_00754964[] = "shop_tool22";
+    char dat_00754970[] = "ERF893";
+    char dat_00754978[] = "superewokcatapult";
+    char dat_0075498c[] = "shop_tool21";
+    char dat_00754998[] = "XXY99G";
+    char dat_007549a0[] = "scorex8";
+    char dat_007549a8[] = "shop_tool20";
+    char dat_007549b4[] = "BKJ462";
+    char dat_007549bc[] = "rockets";
+    char dat_007549c4[] = "shop_tool19";
+    char dat_007549d0[] = "DFY111";
+    char dat_007549d8[] = "superzapper";
+    char dat_007549e4[] = "shop_tool18";
+    char dat_007549f0[] = "NMP499";
+    char dat_007549f8[] = "scorex6";
+    char dat_00754a00[] = "shop_tool17";
+    char dat_00754a0c[] = "FBM152";
+    char dat_00754a14[] = "minikitdetector";
+    char dat_00754a24[] = "shop_tool16";
+    char dat_00754a30[] = "528HBB";
+    char dat_00754a38[] = "regenerate";
+    char dat_00754a44[] = "shop_tool15";
+    char dat_00754a50[] = "DQY857";
+    char dat_00754a58[] = "scorex4";
+    char dat_00754a60[] = "shop_tool14";
+    char dat_00754a6c[] = "KJU233";
+    char dat_00754a74[] = "fastbuild";
+    char dat_00754a80[] = "shop_tool12";
+    char dat_00754a8c[] = "DRX444";
+    char dat_00754a94[] = "selfdestruct";
+    char dat_00754aa4[] = "shop_tool13";
+    char dat_00754ab0[] = "HBF899";
+    char dat_00754ab8[] = "scorex2";
+    char dat_00754ac0[] = "shop_tool11";
+    char dat_00754acc[] = "HS9K44";
+    char dat_00754ad4[] = "invincibility";
+    char dat_00754ae4[] = "shop_tool10";
+    char dat_00754af0[] = "53NKH3";
+    char dat_00754af8[] = "tractorbeam";
+    char dat_00754b04[] = "shop_tool9";
+    char dat_00754b10[] = "GHL978";
+    char dat_00754b18[] = "supersabres";
+    char dat_00754b24[] = "shop_tool8";
+    char dat_00754b30[] = "BYY492";
+    char dat_00754b38[] = "fastforce";
+    char dat_00754b44[] = "shop_tool7";
+    char dat_00754b50[] = "HHD647";
+    char dat_00754b58[] = "superblasters";
+    char dat_00754b68[] = "shop_darkside";
+    char dat_00754b78[] = "DRK328";
+    char dat_00754b80[] = "darkside";
+    char dat_00754b8c[] = "shop_deflectbolts";
+    char dat_00754ba0[] = "BNL435";
+    char dat_00754ba8[] = "deflectbolts";
+    char dat_00754bb8[] = "shop_superthermal";
+    char dat_00754bcc[] = "THE931";
+    char dat_00754bd4[] = "superthermaldetonator";
+    char dat_00754bec[] = "shop_superjedislam";
+    char dat_00754c00[] = "SLM768";
+    char dat_00754c08[] = "superjedislam";
+    char dat_00754c18[] = "shop_superastromech";
+    char dat_00754c2c[] = "R2D222";
+    char dat_00754c34[] = "superastromech";
+    char dat_00754c44[] = "shop_vehiclesmart";
+    char dat_00754c58[] = "SMA293";
+    char dat_00754c60[] = "vehiclesmartbomb";
+    char dat_00754c74[] = "shop_forcepull";
+    char dat_00754c84[] = "PUL966";
+    char dat_00754c8c[] = "forcepull";
+    char dat_00754c98[] = "shop_explodingbolts";
+    char dat_00754cac[] = "EXP912";
+    char dat_00754cb4[] = "explodingblasterbolts";
+    char dat_00754ccc[] = "shop_perfectdeflect";
+    char dat_00754ce0[] = "PER894";
+    char dat_00754ce8[] = "perfectdeflect";
+    char dat_00754cf8[] = "shop_characterstuds";
+    char dat_00754d0c[] = "DHY782";
+    char dat_00754d14[] = "characterstuds";
+    char dat_00754d24[] = "shop_disarmtroopers";
+    char dat_00754d38[] = "HJU848";
+    char dat_00754d40[] = "disarmtroopers";
+    char dat_00754d50[] = "shop_coinmagnet";
+    char dat_00754d60[] = "VXZ193";
+    char dat_00754d68[] = "coinmagnet";
+    char dat_00754d74[] = "shop_forcegrapple";
+    char dat_00754d88[] = "CLZ738";
+    char dat_00754d90[] = "forcezipup";
+    char dat_00754d9c[] = "shop_superslap";
+    char dat_00754dac[] = "294NMB";
+    char dat_00754db4[] = "superslap";
+    char dat_00754dc0[] = "shop_powerbrick";
+    char dat_00754dd0[] = "FBM834";
+    char dat_00754dd8[] = "powerbrickdetector";
+    char dat_00754dec[] = "shop_walkietalkie";
+    char dat_00754e00[] = "JKJ589";
+    char dat_00754e08[] = "walkietalkiedisable";
+    char dat_00754e1c[] = "shop_poomoney";
+    char dat_00754e2c[] = "PMN904";
+    char dat_00754e34[] = "poomoney";
+    char dat_00754e40[] = "shop_supergonk";
+    char dat_00754e50[] = "SPRGNK";
+    char dat_00754e58[] = "supergonk";
+    char dat_00754e64[] = "shop_beepbeep";
+    char dat_00754e74[] = "VXZ3K2";
+    char dat_00754e7c[] = "beepbeep";
+    char dat_00754e88[] = "shop_silhouette";
+    char dat_00754e98[] = "5HD86H";
+    char dat_00754ea0[] = "silhouettes";
+    char dat_00754eac[] = "shop_tool6";
+    char dat_00754eb8[] = "JNK8J4";
+    char dat_00754ec0[] = "towdeathstar";
+    char dat_00754ed0[] = "shop_tool5";
+    char dat_00754edc[] = "5HD9TY";
+    char dat_00754ee4[] = "c3pobits";
+    char dat_00754ef0[] = "shop_tool4";
+    char dat_00754efc[] = "KAU532";
+    char dat_00754f04[] = "daisychains";
+    char dat_00754f10[] = "shop_tool3";
+    char dat_00754f1c[] = "BRJ437";
+    char dat_00754f24[] = "disguises";
+    char dat_00754f30[] = "shop_tool2";
+    char dat_00754f3c[] = "6HUJ56";
+    char dat_00754f44[] = "poo";
+    char dat_00754f48[] = "shop_tool1";
+    char dat_00754f54[] = "MZY419";
+    /* Install in extern C data section. */
+    char dat_00754f5c[] = "extratoggle";
+    CHEAT ExtrasCheats[46] = {
+        {dat_00754f5c, &dat_00880990, 0, {0, 0}, -1, -1, dat_00754f54, 25000, dat_00754f48, 0x100},
+        {dat_00754f44, &dat_0088104c, 0, {0, 0}, -1, -1, dat_00754f3c, 8000, dat_00754f30, 0x0},
+        {dat_00754f24, &dat_00880994, 0, {0, 0}, -1, -1, dat_00754f1c, 10000, dat_00754f10, 0x0},
+        {dat_00754f04, &dat_00881058, 0, {0, 0}, -1, -1, dat_00754efc, 5000, dat_00754ef0, 0x0},
+        {dat_00754ee4, &dat_00881048, 0, {0, 0}, -1, -1, dat_00754edc, 10000, dat_00754ed0, 0x0},
+        {dat_00754ec0, &dat_0088105c, 0, {0, 0}, -1, -1, dat_00754eb8, 5000, dat_00754eac, 0x0},
+        {dat_00754ea0, &dat_008809d0, 0, {0, 0}, -1, -1, dat_00754e98, 10000, dat_00754e88, 0x1},
+        {dat_00754e7c, &dat_00881074, 0, {0, 0}, -1, -1, dat_00754e74, 7500, dat_00754e64, 0x0},
+        {dat_00754e58, &dat_00881070, 0, {0, 0}, -1, -1, dat_00754e50, 100000, dat_00754e40, 0x0},
+        {dat_00754e34, &dat_0088107c, 0, {0, 0}, -1, -1, dat_00754e2c, 100000, dat_00754e1c, 0x200000},
+        {dat_00754e08, &dat_008810a0, 0, {0, 0}, -1, -1, dat_00754e00, 5000, dat_00754dec, 0x0},
+        {dat_00754dd8, &dat_00881080, 0, {0, 0}, -1, -1, dat_00754dd0, 125000, dat_00754dc0, 0x40000},
+        {dat_00754db4, &dat_00881084, 0, {0, 0}, -1, -1, dat_00754dac, 5000, dat_00754d9c, 0x0},
+        {dat_00754d90, &dat_0088108c, 0, {0, 0}, -1, -1, dat_00754d88, 15000, dat_00754d74, 0x0},
+        {dat_00754d68, &dat_00881078, 0, {0, 0}, -1, -1, dat_00754d60, 100000, dat_00754d50, 0x238000},
+        {dat_00754d40, &dat_00881094, 0, {0, 0}, -1, -1, dat_00754d38, 100000, dat_00754d24, 0x0},
+        {dat_00754d14, &dat_008810b8, 0, {0, 0}, -1, -1, dat_00754d0c, 100000, dat_00754cf8, 0x200000},
+        {dat_00754ce8, &dat_008810a4, 0, {0, 0}, -1, -1, dat_00754ce0, 20000, dat_00754ccc, 0x100000},
+        {dat_00754cb4, &dat_00881098, 0, {0, 0}, -1, -1, dat_00754cac, 20000, dat_00754c98, 0x0},
+        {dat_00754c8c, &dat_008810a8, 0, {0, 0}, -1, -1, dat_00754c84, 12000, dat_00754c74, 0x0},
+        {dat_00754c60, &dat_0088109c, 0, {0, 0}, -1, -1, dat_00754c58, 15000, dat_00754c44, 0x0},
+        {dat_00754c34, &dat_008810ac, 0, {0, 0}, -1, -1, dat_00754c2c, 10000, dat_00754c18, 0x0},
+        {dat_00754c08, &dat_008810b4, 0, {0, 0}, -1, -1, dat_00754c00, 11000, dat_00754bec, 0x0},
+        {dat_00754bd4, &dat_00881090, 0, {0, 0}, -1, -1, dat_00754bcc, 25000, dat_00754bb8, 0x0},
+        {dat_00754ba8, &dat_00881088, 0, {0, 0}, -1, -1, dat_00754ba0, 150000, dat_00754b8c, 0xb0000},
+        {dat_00754b80, &dat_008810b0, 0, {0, 0}, -1, -1, dat_00754b78, 25000, dat_00754b68, 0x0},
+        {dat_00754b58, &dat_00880998, 0, {0, 0}, -1, -1, dat_00754b50, 15000, dat_00754b44, 0x32002},
+        {dat_00754b38, &dat_0088099c, 0, {0, 0}, -1, -1, dat_00754b30, 40000, dat_00754b24, 0x412000},
+        {dat_00754b18, &dat_00881044, 0, {0, 0}, -1, -1, dat_00754b10, 40000, dat_00754b04, 0x12400},
+        {dat_00754af8, &dat_00881068, 0, {0, 0}, -1, -1, dat_00754af0, 15000, dat_00754ae4, 0x20000},
+        {dat_00754ad4, &dat_008809a0, 0, {0, 0}, -1, -1, dat_00754acc, 1000000, dat_00754ac0, 0x32080},
+        {dat_00754ab8, &dat_008809a4, 0, {0, 0}, -1, -1, dat_00754ab0, 1250000, dat_00754aa4, 0x230004},
+        {dat_00754a94, &dat_00881060, 0, {0, 0}, -1, -1, dat_00754a8c, 25000, dat_00754a80, 0x0},
+        {dat_00754a74, &dat_008809a8, 0, {0, 0}, -1, -1, dat_00754a6c, 30000, dat_00754a60, 0x16000},
+        {dat_00754a58, &dat_008809ac, 0, {0, 0}, -1, -1, dat_00754a50, 2500000, dat_00754a44, 0x200008},
+        {dat_00754a38, &dat_008809b0, 0, {0, 0}, -1, -1, dat_00754a30, 150000, dat_00754a24, 0x33000},
+        {dat_00754a14, &dat_008809b4, 0, {0, 0}, -1, -1, dat_00754a0c, 250000, dat_00754a00, 0x200},
+        {dat_007549f8, &dat_008809b8, 0, {0, 0}, -1, -1, dat_007549f0, 5000000, dat_007549e4, 0x200010},
+        {dat_007549d8, &dat_008809bc, 0, {0, 0}, -1, -1, dat_007549d0, 14000, dat_007549c4, 0x2000},
+        {dat_007549bc, &dat_008809c0, 0, {0, 0}, -1, -1, dat_007549b4, 20000, dat_007549a8, 0x2000},
+        {dat_007549a0, &dat_008809c4, 0, {0, 0}, -1, -1, dat_00754998, 10000000, dat_0075498c, 0x200020},
+        {dat_00754978, &dat_0088106c, 0, {0, 0}, -1, -1, dat_00754970, 25000, dat_00754964, 0x0},
+        {dat_00754950, &dat_00881064, 0, {0, 0}, -1, -1, dat_00754948, 25000, dat_0075493c, 0x0},
+        {dat_00754930, &dat_008809c8, 0, {0, 0}, -1, -1, dat_00754928, 20000000, dat_0075491c, 0x200040},
+        {dat_00754908, &dat_008809cc, 0, {0, 0}, -1, 0, dat_00754900, 0, dat_00754f48, 0x0},
+        {0},
+    };
     f32 dat_007f8214 = 1.2f;
     f32 StatusAltScale = 1.0f;
     f32 StatusAltTitleY = 0.5f;
@@ -155,6 +384,7 @@ extern "C" {
     f32 StatusAltTrueHeroX;
     f32 StatusAltMiniKitY;
     i32 StatusAltCoinsDone;
+    i32 status_prompt = 0;
     f32 dat_00876df4;
     u32 StatusAltSuitsShown;
     i32 StatusAltSuitIndex;
@@ -240,6 +470,8 @@ extern "C" {
         (void)stage;
         NextStatusStage(packet);
     }
+
+    GAMESAVE Game = {0};
 
     /* Stage type 19. */
     void GoldBrick_Alt_Skip(STATUS_STAGE_s *stage, STATUSPACKET_s *packet) {
@@ -911,6 +1143,8 @@ extern "C" {
         }
     }
 
+    extern const char PickupCoinSfx[11] = "PickupCoin";
+
     /* Stage type 3. Counts the remaining coins into the score. */
     void Coins_Alt_Update(STATUS_STAGE_s *stage, STATUSPACKET_s *packet, f32 elapsed) {
         switch (stage->unknown_14) {
@@ -1197,6 +1431,8 @@ extern "C" {
             }
         }
     }
+
+    char ScorePanelName[9] = "MK-Panel";
 
     /* Stage type 4. */
     void MiniKit_Alt_Update(STATUS_STAGE_s *stage, STATUSPACKET_s *packet, f32 elapsed) {

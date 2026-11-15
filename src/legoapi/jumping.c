@@ -343,6 +343,7 @@ i32 (*Jump_PreventJumpFn)(GAMEOBJECT *) = NULL;
 void (*Jump_EndOfLandContextFn)(GAMEOBJECT *) = NULL;
 i32 (*Slam_GetDebrisFn)(GAMEOBJECT *, i32) = NULL;
 i32 (*CanGlideFn)(GAMEOBJECT *) = NULL;
+i32 (*UsingExtraActionsFn)(GAMEOBJECT *) = 0;
 
 void JumpCode(GAMEOBJECT *object, i32 jump_pressed, i32 jump_held, u32 animation_set, i32 action_pressed, i32 action_held, i32 hit_effect) {
     JUMP_AUXILIARY_FIELDS *aux = (JUMP_AUXILIARY_FIELDS *)object;
@@ -918,6 +919,8 @@ void JumpCode(GAMEOBJECT *object, i32 jump_pressed, i32 jump_held, u32 animation
 }
 
 i32 (*BigJump_LandActionFn)(GAMEOBJECT *) = BigJump_LandAction_Default;
+f32 SLAMJUMPSPEED = 3.0f;
+f32 PUNCHCHARGAP = 0.6f;
 
 void (*BigJump_EndOfLandFn)(GAMEOBJECT *) = 0;
 

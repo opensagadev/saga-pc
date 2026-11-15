@@ -68,6 +68,7 @@ extern "C" {
     i32 wait_till_next_frame = 0;
     i32 FRAMES_TO_WAIT = 1;
 }
+i32 fade_draw_suppressed = 0;
 
 FadeBase::~FadeBase() {
 }

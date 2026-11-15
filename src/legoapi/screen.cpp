@@ -162,6 +162,8 @@ extern "C" {
     static f32 RenderBackdropTargetTopB = 0.0f;
     static f32 RenderBackdropTargetBottomR = 0.0f;
     static f32 RenderBackdropTargetBottomG = 0.0f;
+    i32 LEGOCAMMODE_DOORCUT = -1;
+    i32 LEGOCAMMODE_OBSTACLE = -1;
     i32 FinishLoop_On = 1;
     f32 RenderBackdropTopR = 0.0f;
     f32 RenderBackdropTopG = 0.0f;
@@ -305,6 +307,8 @@ extern "C" {
             NuGScnRemove(backdrop_scene);
         }
     }
+
+    NUCAMERA *pNuCam = 0;
 
     void DrawParallax(nuhspecial_s *special) {
         NUVEC scale;

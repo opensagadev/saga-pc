@@ -53,6 +53,7 @@ static f32 ZipUpSwingDurationPc = 1.5f;
 char *ZipUpTypeNamePtr = "ZipUp";
 u32 ZipUpRopeCheatColour = 0xff103f10;
 static f32 ZipUpSwingOffsetHeightPc = 0.251503f;
+const NUVEC ZipUpHookOffset = {0.0f, -0.1143f, -0.0859f};
 i32 zipup_gizmotype_id = -1;
 f32 ZipUpRopeHalfWidth = 0.01f;
 f32 ZipUpMarkerOffsetZ = 0.9229f;

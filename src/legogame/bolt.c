@@ -41,9 +41,13 @@ typedef struct VEHICLE_FIRE_STATE { // size 0xe3c
 
 i16 dat_007f190c = -1;
 i16 dat_007f1910 = -1;
+i16 id_TIEBOMBER = -1;
+i16 dat_007f196c = -1;
+i16 id_XWING = -1;
 i16 dat_007f1a24 = -1;
 i16 dat_007f1a28 = -1;
 i16 dat_007f1a2c = -1;
+i16 id_SENTRYDROID = -1;
 i16 dat_007f1a38 = -1;
 i16 id_MINIDROIDEKA = -1;
 i16 dat_007f1ad8 = -1;
@@ -56,6 +60,7 @@ i16 dat_007f1b00 = -1;
 i16 dat_007f1b04 = -1;
 i16 dat_007f1b08 = -1;
 i16 dat_007f1b0c = -1;
+i16 dat_007f1b34 = -1;
 i16 dat_007f1b38 = -1;
 
 i32 BoltType_FindIDByCreature(GAMEOBJECT *object, i32 fallback) {

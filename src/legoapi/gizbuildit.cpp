@@ -1704,6 +1704,7 @@ extern "C" {
         }
     }
 
+    i32 LEGOHINT_BUILD = -1;
     f32 GIZBUILDITWOBBLEJUMPHEIGHT = 0.05f;
     i16 GizBuilditGDeb[6] = {-1, -1, -1, -1, -1, -1};
     i32 gizbuildit_gizmotype_id = -1;

@@ -194,6 +194,7 @@ extern "C" {
         }
     }
 
+    i32 BonusWinFlag = 0;
     i32 newgamefade = 0;
     u8 leftrepeatcount[2] = {0};
     u8 uprepeatcount[2] = {0};
@@ -1149,6 +1150,8 @@ extern "C" {
         MenuReset();
         ReCalculateCompletionPoints();
     }
+
+    GAMESAVE TempGame = {0};
 
     void MenuUpdateShop(MENU *menu) {
         if (shop_save_done != 0) {

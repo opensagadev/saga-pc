@@ -97,6 +97,12 @@ static void Hub_MakeListCharactersAvailable(i16 *characters) {
 /* HubAI producer family. */
 extern const char *HubAreaNames[10];
 
+i16 dat_007f18c4 = -1;
+i16 PermanentWeirdo1Id = -1;
+i16 PermanentWeirdo2Id = -1;
+i16 id_BARMAN = -1;
+i16 id_DROIDEKA = -1;
+i16 DefaultAnimationJabbaId = -1;
 const char *HubAreaNames[10] = {"MAINROOM", "EPISODE1", "EPISODE2", "EPISODE3", "EPISODE4",
                                 "EPISODE5", "EPISODE6", "JUNKYARD", "BONUS",    "BOUNTY"};
 

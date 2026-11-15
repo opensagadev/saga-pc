@@ -162,12 +162,19 @@ extern "C" NARROWSOCKEXCEPTION NarrowSockExceptionsLsw[4] = {
     {NULL,                 0,  0, 0.0f,  0.0f  },
 };
 extern "C" {
+    i32 PlayerHitPointsTwoHearts = 1;
+    i16 dat_007f1828 = -1;
+}
+extern "C" {
     i16 id_SERVICECAR = -1;
+    i16 id_YWING = -1;
     i16 id_SNOWMOB = -1;
     i16 id_SNOWTROOPER = -1;
     i16 id_DEATHSTARTROOPER = -1;
     i16 dat_007f199c = -1;
     i16 id_THEEMPEROR = -1;
+    i16 id_NEW_REPUBLIC_GUNSHIP = -1;
+    i16 id_NEW_REPUBLIC_GUNSHIP_GREEN = -1;
     i16 id_MOONCAR = -1;
     i16 id_MAPCAR = -1;
     i16 id_WOOKIEFLYER = -1;
@@ -175,6 +182,8 @@ extern "C" {
     i16 id_GREEDO = -1;
     i16 id_BOSSK = -1;
     i16 id_CANTINABAND = -1;
+    i16 id_ANAKINSPODGREEN = -1;
+    i16 id_ANAKINSNEWPODGREEN = -1;
     ANIM_REDIRECT_VIEW AnimRedirectList_LSW[41] = {
         {"ride_bantha_new_blasterchar",      112, {0, 0}},
         {"ride_bantha_new_jedichar",         112, {0, 0}},
@@ -577,12 +586,14 @@ static i32 MakeSaveHash(void) {
 }
 
 extern "C" {
+    i32 DefaultMotionLedgeTerrainEnabled = 0;
     i32 ConvertOldPickups = 0;
     u8 *Game_LevelSave = 0;
     GAMEOBJECT *CutDeadVehiclePlayer = 0;
     // Hub arrays are two-entry source views; full original capacities remain unknown.
     MISSIONSYS *MissionSys = 0;
     MISSION_SAVE_READER *Game_MissionSave = 0;
+    i32 (*Tag_NoHiddenIconFn)(GAMEOBJECT *) = NULL;
     f32 DEFAULTFPS = 0;
     TIMER GlobalTimer = {0};
     TIMER JoinInTimer = {0};
@@ -591,7 +602,9 @@ extern "C" {
     TIMER GameTimer = {0};
     TIMER OverallGamePlayTimer = {0};
     i32 PAL = 0;
+    i32 LookAtBoth = 0;
     i32 GameDrawCharacterModelFlag = 1;
+    i32 CanPunchGirls = 1;
     i32 LegoGameDebrisSplash = -1;
     char *partdebris_name[] = {"TRAINING_P",   "PART_MOUSE", "PART_BLACK_3", "DRAG_PART_1", "SMALL_PART_2", "RAT_PART",
                                "BOULDER_PART", "POPCORN",    "PART_THROW",   "ENG_POP",     "DOOKU_PART",   "MAUL_P_1",
@@ -1812,6 +1825,7 @@ void NewGame(void) {
 }
 
 extern "C" {
+    u32 BonusCoinTarget = 0;
     i32 CompletionPointInfoRecalculate[7] = {0};
     i32 makebaddiesforgetinresetbits = 0;
     i32 reset_restart = 0;
@@ -1832,6 +1846,9 @@ extern "C" {
     u16 podrace_die_angle_c = 0;
     i32 deathstar_hold_count = 0;
     RIPPLE_SET *RippleSet = NULL;
+    AREA_DATA *ROOFTOPS_ADATA = 0;
+    AREA_DATA *TATOOINE_ADATA = 0;
+    AREA_DATA *MOSEISLEY_ADATA = 0;
     AREA_DATA *ASTEROIDCHASE_ADATA = 0;
     AREA_DATA *DAGOBAH_ADATA = 0;
     AREA_DATA *JABBASPALACE_ADATA = 0;
@@ -1848,6 +1865,8 @@ extern "C" {
     AREA_DATA *BONUSKAMINO_ADATA = 0;
     AREA_DATA *BONUSKASHYYYK_ADATA = 0;
     AREA_DATA *JIMTEST_ADATA = 0;
+    LEVELDATA *DEATHSTARRESCUEE_LDATA = 0;
+    char SaveProductCode[12] = {0};
 
     i32 POINTS_PER_CHARACTER = 0;
     i32 POINTS_PER_SUPERSTORY = 0;
@@ -1862,6 +1881,7 @@ extern "C" {
     i32 POINTS_PER_CHEAT = 0;
     i32 POINTS_PER_HINT = 0;
     i32 POINTS_PER_GOLDBRICK = 0;
+    i32 Hub_UsePlayerList = 0;
 
     void ReCalculateCompletionPoints(void) {
         SHOP_COMPLETION_GAME *save = reinterpret_cast<SHOP_COMPLETION_GAME *>(&Game);
@@ -3122,6 +3142,7 @@ extern "C" {
     ANIM_REDIRECT_VIEW AnimRedirectList_Batman[1] = {
         {NULL, 0, {0, 0}},
     };
+    ADAPTIVEDIFFICULTY adaptivedifficulty = {0};
     i32 CompletionPointInfo[7] = {0};
 }
 

@@ -1168,6 +1168,8 @@ void AddPartDebris(PARTDEBRISSYS *sys, i32 index, NUVEC *position) {
 
 char KillPartsLegoSingleText[11] = "LegoSingle";
 
+f32 brickimpactwait = 0;
+
 void PartImpact_Brick(PART_PC *part) {
     if (brickimpactwait <= 0.0f) {
         f32 speed = NuVecMag(&part->velocity);

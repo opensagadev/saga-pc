@@ -64,6 +64,7 @@ extern "C" {
     extern char *GizmoRegistryGizTurretsNamePtrPc;
     extern i32 turret_gizmotype_id;
     extern char TurretOutputBuffer[32];
+    i32 LEGOHINT_SHOOTCAMERAS = -1;
     i32 GizTurretAnimDataVersion = 7;
     i32 gizturret_test_ang = 3640;
     f32 gizturret_rapid_fire_rate = 0.2f;

@@ -498,6 +498,8 @@ static void EndRedBrickMessage(GAME_MESSAGE *message) {
     GameCam_Judder(GameCam, -0.2f, 0, NULL);
 }
 
+    char dat_00758c00[9] = "Power Up";
+    char dat_00758c0c[8] = "Torpedo";
     char dat_00758c14[10] = "MK-Pickup";
 void CollectRedBrick(NUVEC *position) {
     ADD_GAME_MESSAGE message;
@@ -575,6 +577,7 @@ void CollectMinikit(NUVEC *position, char *name, i32 flags) {
     GameAudio_PlaySfxById(GetSfxId(dat_00758c14), position, 3, 0);
 }
 
+    f32 coinimpactwait = 0;
 static void PartImpact_Coin(PART_PC *part) {
     f32 speed;
     f32 volume;
@@ -1195,6 +1198,7 @@ void AddCoinsAsParts(i32 type_id, NUVEC *position, NUVEC *velocity, f32 lifetime
 }
 
     char PickupCoinsLandName[10] = "CoinsLand";
+    f32 AddCoinDelay[2] = {0};
 void AddCoinsToPanel(i32 coins, NUVEC *position, i32 player, f32 unused, GAMEOBJECT *owner, i32 random_types) {
     WORLDINFO *world = WorldInfo_CurrentlyActive();
     i32 remainder;

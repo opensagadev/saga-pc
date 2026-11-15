@@ -308,12 +308,16 @@ f32 DrawGameObjectsFarClip = 20.0f;
 f32 DrawGameObjectsVehicleFarClip = 50.0f;
 f32 TerrainPlayerOtherMovementScale = 2.5f;
 f32 TerrainPlayerBikeMovementScale = 15.0f;
+i16 ID_DEFAULTCHARACTER_A = -1;
 i16 dat_007f17bc = -1;
 i16 PunchRangeUnitId = -1;
 i16 PunchRangeCompanionId = -1;
 i16 dat_007f17c8 = -1;
 i16 dat_007f17cc = -1;
 i16 dat_007f17d4 = -1;
+i16 dat_007f1810 = -1;
+i16 dat_007f1820 = -1;
+i16 id_MOUSEDROID = -1;
 i32 waiting_for_character = -1;
 i32 hub_character_ready = -1;
 i16 dat_007f18c4;
@@ -322,6 +326,11 @@ i16 id_YODAGHOST = -1;
 i16 id_MOSEISLEYCITIZEN = -1;
 i16 id_CANTINAALIEN = -1;
 i16 id_CLOUDCITYCITIZEN = -1;
+i16 id_GEONOSIAN = -1;
+i16 id_CHEWBACCA = -1;
+i16 id_WOOKIEE = -1;
+i16 id_REPUBLICGUNSHIP = -1;
+i16 id_REPUBLICGUNSHIP_GREEN = -1;
 f32 default_mover_extra = 0.05f;
 f32 TerrainPlayerPlatConnectTolerance = 0.01f;
 f32 spline_seek_pos = 10.0f;
@@ -923,9 +932,11 @@ void PlayerSetCurrentHp(GAMEOBJECT *object, i8 hitpoints) {
     }
 }
 
+i32 KEEPONSCREEN_SIDESONLY = 0;
 SUIT_LAYERS *PlayerSuit[8] = {0};
 i32 makeplayerlist_freeplay = 0;
 u8 PlayerTorpedoCount[8] = {0};
+NUVEC GunshipANorm = {0};
 
 i32 MakePlayerList(i32 count) {
     i32 player_count = 0;
@@ -4938,6 +4949,7 @@ PLAYER_COIN_PACKET_PC CoinPacket[2] = {0};
 PLAYER_FORCE_LOS_SLOT GizForceLOSInfo[2] = {0};
 GAMEOBJECT BackUpPlayers[2] = {0};
 SOCKPOSITION OldPlrSPos[8] = {0};
+i32 UsePlayerList = 0;
 
 void Players_Init(void) {
     GAMEOBJECT **players = (GAMEOBJECT **)Player;

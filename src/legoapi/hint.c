@@ -333,6 +333,7 @@ void Hint_SetCompletePc(HINT *hint) {
 
 i32 LEGOHINT_PUNCH = 1;
 f32 (*Hint_AlphaTargetFn)(void) = NULL;
+i32 (*Hub_PanelBusyFn)(void) = NULL;
 
 void Hint_Process(f32 elapsed) {
     i32 available = 1;

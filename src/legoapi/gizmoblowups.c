@@ -150,6 +150,8 @@ i32 MAXBLOWUPRANDSPANG = 60;
 char TurretOutputBuffer[32] = {0};
 char *GizmoRegistryGizTurretsNamePtrPc = "GizTurret";
 
+LEVEL_INST_ANIM_RESET_VIEW LevInstAnimReset = {0};
+
 void SetLevelExBlowupFlags(u32 flags) {
     EXBLOWUPFLAGS = flags;
 }
@@ -700,6 +702,8 @@ void GizmoBlowUp_AddEffects(NUVEC *position, GIZMOBLOWUP_PC *blowup, i32 offset,
         AddExplosion(position, blowup->effect_delay, 0.5f, NULL, -1, explosion_flags);
     }
 }
+
+CHECK_LOST_DATA CheckLostDataFn = 0;
 
 i32 GizmoBlowupBlowup(GIZMOBLOWUP_PC *blowup, i32 effects, i32 hit_type, i32 damage, GAMEOBJECT *object, i32 hit_context) {
     NUINSTANIM *animation;
@@ -1866,6 +1870,8 @@ GIZMOBLOWUP_PC *GizmoBlowUp_FindByName(WORLDINFO *world, char *name) {
     }
     return NULL;
 }
+
+f32 TargetDist_Near2 = 0;
 
 GIZMOBLOWUP_PC *GizmoBlowUp_Target(GAMEOBJECT *object, NUVEC *position, NUVEC *direction, f32 radius, f32 range_squared, i32 directional,
                                    i32 planar, i32 bolt_id) {

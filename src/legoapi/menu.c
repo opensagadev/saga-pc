@@ -31,6 +31,10 @@ void (*drawslotinfofn)(f32, f32, i32, i32) = APIMenuDrawGameState;
 void (*drawslotsfn)(MENU *, f32) = APIMenuDrawMemCardSlots;
 i32 MenuFadeEnabled = 0;
 
+extern char dat_007516c0[1];
+char UiBackPromptLiteral[5] = "Back";
+char UiSelectPromptLiteral[7] = "Select";
+
 void MenuInitialiseEx(MENUFNINFO *menu_info, i32 menu_id_count, i32 language_count, void (*draw_save_slots_info_fn)(f32, f32, i32, i32),
                       i32 is_fade_enabled, i32 is_shadow_enabled) {
     char menus_used_str[64];
@@ -365,6 +369,9 @@ void DrawMenu(i32 paused) {
 
 f32 MenuTopY = 0.8f;
 char *apiGameName = "Game";
+u8 dme_b = 0;
+u8 dme_r = 0;
+u8 dme_g = 0;
 i32 MenuDisableHeaders = 0;
 
 void DrawMenuHeader(void) {
@@ -379,11 +386,14 @@ void fun_0050f620(char *text, u32 red, u32 green, u32 blue) {
 }
 
 char *apiGameTitle = "Game";
+char *apiGameSubTitle = dat_007516c0;
 u8 MENUNORMALR = 255;
 u8 MENUNORMALG = 127;
 u8 MENUHEADERG = 0x7f;
 u8 MENUHEADERB = 0xff;
 u8 MENUWARNR = 255;
+f32 dme_sx = 1.0f;
+f32 dme_sy = 1.0f;
 char *apitxt_CONTINUE = "Continue";
 char *apitxt_SAVEGAME = "Save Game";
 char *apitxt_LOADGAME = "Load Game";

@@ -64,6 +64,9 @@ extern "C" {
     i16 dat_008807a0 = 0;
     i16 dat_008807a4 = 0;
     i16 PermanentBountyTitleId = 0;
+    i16 PCArcadeModeText0 = 0;
+    i16 PCArcadeModeText1 = 0;
+    i16 PCArcadeModeText2 = 0;
     extern i16 PCArcadeModeText0;
     extern i16 PCArcadeModeText1;
     extern i16 PCArcadeModeText2;

@@ -538,7 +538,10 @@ i16 id_NAFFDROID1 = -1;
 i16 id_NAFFDROID2 = -1;
 i16 id_NAFFDROID4 = -1;
 i16 id_PKDROID = -1;
+i16 id_SNAKE = -1;
 i16 id_BAT = -1;
+i16 id_WATTO = -1;
+u16 GameObjectRotationAtstId = 0xffff;
 i16 id_SUPERBATTLEDROID = -1;
 u16 id_DRAGBOMB = 0xffff;
 i16 id_CLONEWALKER = -1;
@@ -546,6 +549,9 @@ i16 dat_007f1924 = -1;
 i16 dat_007f1928 = -1;
 i16 id_CATAPULT = -1;
 i16 id_BASKETCANNON = -1;
+i16 id_GRIEVOUS = -1;
+i16 id_JAWA = -1;
+i16 id_LUKESKYWALKERDAGOBAH = -1;
 i16 id_STAP = -1;
 i16 id_STAP2 = -1;
 i16 id_JUMBOHOMINGDROID = -1;
@@ -556,6 +562,7 @@ i16 id_UGNAUGHT = -1;
 u16 id_GONKDROID = 0xffff;
 i16 id_C3PO = -1;
 i16 id_TC14 = -1;
+i16 dat_007f1a78 = -1;
 i16 DefaultAnimationLamaSuId = -1;
 i16 DefaultAnimationTaunWeId = -1;
 i16 id_BUZZDROID = -1;
@@ -569,6 +576,7 @@ i16 DefaultMotionIndySnakeId = -1;
 i16 id_MINIATST = -1;
 i16 id_MINIATTE = -1;
 i16 id_MINISLAVE1 = -1;
+i16 id_ZAMSSPEEDER = -1;
 u8 CheatPooPartsEnabled = 0;
 u8 CheatPooCoinsEnabled = 0;
 u8 TractorBeamEnabled = 0;
@@ -761,6 +769,8 @@ static i32 IsAFallAnim(i32 animation) {
     }
     return animation == 0x74;
 }
+
+const f64 VehicleTurnPhaseScale = 65536.0;
 
 f32 VehicleTurnOrLoopOffset(GAMEOBJECT *object) {
     f32 phase;
@@ -1221,6 +1231,7 @@ static f32 MovementWalkingSpeedPC(GAMEOBJECT *object, f32 scale) {
 
 static f32 magdif = 0;
 f32 PodCollisionMagnitude = 0;
+GAMEOBJECT *CarWashHack = 0;
 
 void VehicleCollisionCode(GAMEOBJECT *object) {
     i32 speeder_level;
@@ -5570,6 +5581,8 @@ static void ForcePushed_MoveCode(GAMEOBJECT *object) {
     }
 }
 
+const f32 ForcePushApproachOuterSquare = 0.040000003f;
+
 i32 ForcePushed_SetTargetMom(GAMEOBJECT *object, f32 *seek_rate) {
     GAMEOBJECT *source = object->force_target;
     GAMEOBJECT *nearest;
@@ -5829,8 +5842,13 @@ void ResetForceBack(void) {
 
 AREA_DATA *PODSPRINT_ADATA = 0;
 AREA_DATA *BOUNTYHUNTERPURSUIT_ADATA = 0;
+AREA_DATA *GUNSHIP_ADATA = 0;
 AREA_DATA *DOGFIGHT_ADATA = 0;
 AREA_DATA *BATTLEOVERCORUSCANT_ADATA = 0;
+AREA_DATA *DEATHSTARBATTLE_ADATA = 0;
+AREA_DATA *EMPERORFIGHT_ADATA = 0;
+AREA_DATA *PODRACE_ADATA = 0;
+AREA_DATA *ANAKINSFLIGHT_ADATA = 0;
 f32 avg_currentspeed_mul = 0;
 f32 PlayerOpponent_Range2 = 0.0f;
 static f32 ForceBackRadiusPc = 0;
@@ -9001,6 +9019,9 @@ i32 ForcePush_Waft = 0;
 i32 ForcePush_SuperPush = 0;
 i32 ForcePush_SuperMindTrick = 0;
 i32 VehicleGunshipAngleBPlayer2 = 0;
+
+const f64 ApplyGravityVelocityFactor = 0.3330000042915344;
+const f64 ApplyGravityFrameScale = 180.0;
 
 void ApplyGravity(GAMEOBJECT *object, f32 *gravity, f32 hover_height, f32 seek_rate, f32 *ground_height) {
     CHARACTERDATA *character;

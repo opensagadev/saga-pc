@@ -75,6 +75,9 @@ static CUT_LOAD_SYS *CS_cutsys = 0;
 extern "C" {
     i32 CUTDRAWWORLD = 0;
 }
+extern "C" {
+    i32 CUTSTOPGAME = 0;
+}
 static VARIPTR *CS_buffend = 0;
 extern "C" {
     void *CutStopInfo = 0;
@@ -1053,6 +1056,8 @@ extern "C" {
             CutSceneFindCharacterPrivate(scene, &system->characters[i], CS_cutsys);
         }
     }
+
+    f32 DEFAULTFRAMETIME = 0;
 
     static CUT_LOAD_SYS *CutScenesLoadListed(NUGSCN *gscn1, NUGSCN *gscn2, i32 fixup_mode, VARIPTR *buf, VARIPTR *buf_end, i32 area,
                                              i32 level, WORLDINFO *world) {

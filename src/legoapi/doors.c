@@ -157,6 +157,8 @@ void *Door_FindByName(WORLDINFO *world, char *name) {
     return NULL;
 }
 
+i16 PlayerList[8] = {0};
+
 i32 StartDoorPositions(void) {
     PLAYER_DOOR *door;
     PLAYER_POSITION_RECORD *start;
@@ -594,6 +596,9 @@ void Door_SetCutCam(DOOR_s *door) {
     Door_CutCamBlendTime = door->camera_blend_time;
     Door_CutLookAtPlayers = door->flags & DOOR_FLAG_CAMERA_LOOK_AT_PLAYERS;
 }
+
+// Startup and main-loop state; defaults follow the PC executable.
+i32 ChallengeMode = 0;
 
 void Door_GoThrough(WORLDINFO *world, DOOR_s *door, i32 player_triggered) {
     void *cutscene;

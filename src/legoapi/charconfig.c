@@ -343,6 +343,8 @@ static void CC_SetAnimMiscFlags(NUFPAR *parser, CHARACTERANIM_CONFIG *animation,
     }
 }
 
+APIDEBRISSYS *perm_debrissys = 0;
+
 static void CC_ReadAnimEffect(NUFPAR *parser, CHARACTERANIM_CONFIG *animation, i32 character_id, CHARACTER_EFFECT_CONFIG *effects,
                               i32 *effect_count) {
     CHARACTER_EFFECT_CONFIG *effect;
@@ -1752,6 +1754,8 @@ i32 SecondCharConfigure = 0;
 i32 configureallcharacters_perm = 0;
 i32 CHARPAK = 0;
 char MiniBuffer[0x4000] = {0};
+// Includes the utility WORD at +0x10000.
+CONFIG_BUFFER ConfigBuffer = {0};
 
 static f32 CharConfigFdiv(f32 a, f32 b) {
     if (a == 0.0f || b == 0.0f) {

@@ -257,6 +257,7 @@ static void MakePlayPlane(KEEP_SCREEN_PLANE *plane, NUVEC *a, NUVEC *b, NUVEC *c
     NuVecNorm(&plane->normal, &plane->normal);
 }
 
+i32 (*AlternateGameCallback)(GAMEOBJECT *object) = NULL;
 i32 PlayPlanesUseRenderMtx = 0;
 
 void MakePlayPlanes(GAMECAMERA *camera) {

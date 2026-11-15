@@ -69,6 +69,7 @@
 #include "nu2api/numath/nutrig.h"
 #include "nu2api/numath/nuvec.h"
 #include "nu2api/numusic/sfx.h"
+#include "legoapi/gizmo/base/gizactions.h"
 
 typedef struct GIZFORCE_GROUP_BEST {
     GIZFORCE *forces[9];
@@ -181,6 +182,9 @@ ADDGIZMOTYPE *GizBombGen_RegisterGizmo(i32);
 ADDGIZMOTYPE *GizPanel_RegisterGizmo(i32);
 ADDGIZMOTYPE *Teleport_RegisterGizmo(i32);
 ADDGIZMOTYPE *GizTorpMachine_RegisterGizmo(i32);
+
+const f32 PlayerBuildItNegativeLimit = -1000000000.0f;
+const f64 PlayerSlideSpeed = 1.2000000476837158;
 
 void GizForce_ResetLOS(GAMEOBJECT *object) {
     if (object->gizforce_los_info != NULL) {

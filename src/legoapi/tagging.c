@@ -174,6 +174,8 @@ void Tag_ResetTransfers(void) {
     TagTransfers[1].elapsed = 0.5f;
 }
 
+i32 Tag_DoneAny = 0;
+
 void Tag_NewTransfer(GAMEOBJECT *source, GAMEOBJECT *target) {
     i32 particle;
     f32 height;

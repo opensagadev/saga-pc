@@ -368,6 +368,8 @@ i32 MiniCutCam = 0;
 f32 PodCamDist = 0;
 i32 netcamera = 0;
 
+u32 GAMEPAD_SELECT = PAD_BUTTON_SELECT;
+
 void MoveGameCamera(GAMECAMERA *camera) {
     i32 menu_id;
     i32 previous_mode;

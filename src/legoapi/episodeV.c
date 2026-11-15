@@ -61,6 +61,8 @@
 #include "nu2api/numath/nuvec.h"
 
 #include <string.h>
+#include "nu2api/nusound/nusound.h"
+#include "nu2api/nustencilshadows_PC.h"
 
 /* Episode V FixUpLevels callbacks (Hoth escape, Dagobah, Cloud City trap). */
 GAMEOBJECT *Vader_obj = NULL;
@@ -129,6 +131,8 @@ static void AsteroidSetAngVec(NUANGVEC *out, NUANG x, NUANG y, NUANG z) {
 }
 
 TROOPERCANNON troopercannons[4] = {0};
+
+i32 netclient = 0;
 
 static void KilledTrooperCannon(GAMEOBJECT *object) {
     i32 index;
@@ -388,6 +392,7 @@ u8 minikitCounter_A = 0;
 u8 minikitCounter_C = 0;
 nuhspecial_s escape[8] = {0};
 i32 maxrotspd[3] = {0x1555, 0x38e, 0x16c};
+WORLDINFO *WORLD = &WorldInfo[0];
 
 void Asteroids_Reset(WORLDINFO *world) {
     nuhspecial_s specials[128];
@@ -497,6 +502,12 @@ void Asteroids_Update(void) {
 /* Falcon spotlight phases. */
 f32 spotLightA_yrot[2] = {0};
 f32 spotLightA_zrot[2] = {0};
+i16 dat_007f18b4 = -1;
+i16 id_ATST_LOWRES = -1;
+i16 id_BOBAFETT = -1;
+i16 id_ATAT = -1;
+i16 dat_007f19a4 = -1;
+i16 dat_007f19a8 = -1;
 f32 spotLightB_yrot[2] = {0.5f, 0.5f};
 f32 spotLightB_zrot[2] = {0.5f, 0.5f};
 i8 melee_wavePhase = -1;
@@ -668,6 +679,8 @@ void AsteroidChaseC_Reset(WORLDINFO *world) {
 NUMTX *mtxOrig = NULL;
 f32 melee_waveDelay = 0;
 i32 dagobah_training = 0;
+
+i32 nethost = 0;
 
 void AsteroidChaseC_Update(WORLDINFO *world) {
     NUMTX matrix;
@@ -903,6 +916,9 @@ void CloudCityTrapC_Reset(WORLDINFO *world) {
     }
 }
 
+i32 LEGO_AIPATHCNX_R2D2GLIDE = 0;
+u32 LEGO_AIPATHCNX_BIGJUMP = 0;
+
 void CloudCityTrapC_Update(WORLDINFO *world) {
     u32 active = 0;
     if (netclient != 0 || LevPathCnx[0] == NULL) {
@@ -932,6 +948,7 @@ void CloudCityTrapC_Panel(WORLDINFO *world) {
     }
 }
 
+u8 aicreature_sets_alive[16] = {0};
 GAMEOBJECT *LevGameObject[8] = {0};
 struct panel_movement_s *LevGizPanel = NULL;
 static const char CloudCityEscapePanelName[8] = "panel5";
@@ -1412,6 +1429,8 @@ void HothBattle_ManageBackgroundCreatures(void) {
         }
     }
 }
+
+__declspec(align(16)) KEEP_SCREEN_PLANE PlayPlane[6] = {0};
 
 i32 SpawnMeleeCreatureType(i32 type) {
     i32 index;

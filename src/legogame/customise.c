@@ -648,6 +648,8 @@ static i32 CustomiseNameX[2] = {0};
 GAMESAVE OldCustomiseGame = {0};
 static i32 CustomiseNameY[2] = {0};
 
+u8 rightrepeatcount[2] = {0};
+
 /* 00424810..004252bc: PC control returns its quit decision to the wrapper. */
 i32 CustomiserMenu_Update(void) {
     i32 quit = 0;

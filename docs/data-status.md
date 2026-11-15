@@ -53,17 +53,26 @@ move out by this rule, applied by script from the build objects' relocations:
 2. Used by several units of one module (`src/<module>/`): defined in the unit
    that references it most (ties: the lower layer, then the name); the others
    see the module header's declaration.
-3. Used by several modules: a pooled literal (a `const` float, double or
-   string that VC8 would emit as one `__real@`/`??_C@` constant shared by
-   every module) goes to `src/shared_constants.c`; any other object goes to
-   the lowest layer that uses it (nu2api, gamelib, gameframework, gameapi,
-   legoapi, legogame, editor, then the top level), in its most-referencing unit.
+3. Used by several modules: a `float` or `double` constant goes to
+   `src/float_constants.c` (see below); any other object goes to the lowest
+   layer that uses it (nu2api, gamelib, gameframework, gameapi, legoapi,
+   legogame, editor, then the top level), in its most-referencing unit.
 4. Used only by other data (a string or a sub-table that only a table names):
    defined with that table. When the tables that name it go to different
    units, rule 2 or 3 picks among those units. A `static` string stays
    `static`; no static is shared by tables of two units.
 5. Used by nothing: defined in the unit its retail address lies among (the
    original object order), or by the subsystem its name gives.
+
+Two refinements keep the code identical and the files readable:
+
+- A `float` or `double` constant whose owner is a C++ unit goes to
+  `src/float_constants.c`: VC8 folds a `const` defined in the same C++ unit
+  into an immediate or a `__real@` constant, while retail reads the named
+  object from memory.
+- The key names and input labels of every language that
+  nu2api/input_runtime.cpp selects by language are a unit of their own,
+  nu2api/input_key_names.cpp.
 
 A table goes after the definitions in its unit that its initialiser names, and
 the unit includes the module headers those names come from. A definition that

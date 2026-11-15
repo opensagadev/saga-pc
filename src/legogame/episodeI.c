@@ -237,6 +237,12 @@ void GunganA_Init(WORLDINFO *world) {
     }
 }
 
+i16 id_BATTLEDROID = -1;
+i16 dat_007f19ac = -1;
+i16 dat_007f19b0 = -1;
+i16 dat_007f19b4 = -1;
+i16 id_ROYALGUARD = -1;
+i16 id_ANAKINSPOD = -1;
 f32 sockstep = 10.0f;
 f32 gungan_a_time = 0.5f;
 f32 PodRace_sniper_fire_time = 0.25f;

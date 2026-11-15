@@ -87,14 +87,17 @@ f32 SarlaccDiscoBaseOffset = -0.12f;
 
 static SARLACC_DISCO sarlaccdisco = {0};
 nuhspecial_s SarlaccLevSpecial[7] = {0};
+GIZOBSTACLE *LevGizObst[8] = {0};
 void *SarlaccLevelBuildits[2] = {0};
 f32 runningTotalPos = 0;
 GIZMO_PC *SarlaccObstMirrorBall = NULL;
 u64 routemask_efloor_on = 0;
 GIZMO_PC *SarlaccForceMirrorBall = NULL;
 
+i16 dat_007f1a7c = -1;
 i16 id_TRACTOR = -1;
 i16 id_FIRETRUCK = -1;
+i16 dat_007f1a88 = -1;
 f32 DeathStarZapSizeWidth = 1.0f;
 f32 DeathStarZapSizeLength = 1.0f;
 f32 DeathStarZapWidthBias = 0.01f;
@@ -220,6 +223,8 @@ GIZMOBLOWUP_PC *DeathStar2BattleD_InZapRange(GAMEOBJECT *object) {
     }
     return nearest;
 }
+
+TIMER AreaTimer = {0};
 
 void DeathStar2BattleD_Update(WORLDINFO *world) {
     GIZMO_PC *shield_gizmo;
@@ -1747,6 +1752,8 @@ void DeathStar2BattleFire_Init(WORLDINFO *world) {
     runningTotalPos = 0.0f;
     fireSpeedScale = 1.0f;
 }
+
+TIMER LevelTimer = {0};
 
 void DeathStar2BattleFire_Update(WORLDINFO *world) {
     u16 yaw = 0;

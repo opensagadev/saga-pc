@@ -178,6 +178,8 @@ f32 cable_gravity = 3.0f;
 f32 cable_damping = 2.0f;
 f32 cable_ground_damping = 20.0f;
 
+AREA_DATA *HOTHBATTLE_ADATA = 0;
+
 void UpdateCables(void) {
     CABLE_RECORD *cable = (CABLE_RECORD *)cables;
     NUVEC closest;

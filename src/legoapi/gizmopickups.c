@@ -1401,6 +1401,7 @@ void GizmoPickups_Update(void *world_pointer, void *unused_system, f32 unused_ti
 char *GizmoRegistryGizmoPickupsNamePtrPc = "GizmoPickup";
 f32 AreaPickupGravity = 0;
 f32 AreaPickupScale = 0;
+f32 (*GizmoPickups_Collide2DFn)(GAMEOBJECT *) = NULL;
 static ADDGIZMOTYPE GizmoRegistryGizmoPickupsAddTypePc = {0};
 
 ADDGIZMOTYPE *GizmoPickups_RegisterGizmo(i32 type_id) {

@@ -741,6 +741,7 @@ extern "C" {
         {("single_debris"),     BT_single_debris    },
         {NULL,                  NULL                },
     };
+    f32 DEACTIVATEDTIME = 8.0f;
 
     BOLTTYPE *BoltType_FindByID(i32 id, WORLDINFO *world) {
         BOLTSYS *system = BoltSys;
@@ -908,6 +909,10 @@ extern "C" {
         }
     }
 
+    BOLTSYS GlobalBoltSystem_Default = {
+        &GlobalBoltType_Default, 1, NULL, Bolt_Debris_Default, Bolt_GetShootOrigin_Default, Bolt_GetShootDirection_Default, NULL, NULL,
+    };
+
     void BoltSys_Init(BOLTSYS *system) {
         i32 i;
         for (i = 0; i < system->count; ++i) {
@@ -990,6 +995,10 @@ static i32 Bolt_HitBlowupPrivate(BOLT_PC *bolt, NUVEC *points, NUVEC *minimum, N
         return 1;
     }
     return 0;
+}
+
+extern "C" {
+    GAMEOBJECT *Obj = 0;
 }
 
 extern "C" void Bolt_HitGameObjectRC(NETMESSAGE &message) {

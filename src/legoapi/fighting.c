@@ -440,6 +440,9 @@ i32 CanStepBack(GAMEOBJECT *object) {
     return 0;
 }
 
+const f64 PlayerStepInnerAction = 1.75;
+const f64 PlayerStepOuterAction = 2.25;
+
 i32 StepBackFromTarget(GAMEOBJECT *object) {
     NUVEC *target_position;
     BLOWUP_MOVEMENT *blowup = (BLOWUP_MOVEMENT *)object->blowup_target;
