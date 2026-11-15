@@ -224,7 +224,7 @@ void Bolt_Debris_LSW(BOLT *bolt, NUVEC *points, i32 point, NUVEC *unused, i32 no
             continue;
         }
         AddGameDebris(world->game_debris_sys, effect, &points[i]);
-        if (!(bolt->flags & 0x10000000) && Player_HasDoubleBoltDamage_FromBolt(bolt)) {
+        if (!(bolt->flags & BOLT_DEFLECTED) && Player_HasDoubleBoltDamage_FromBolt(bolt)) {
             AddGameDebris(world->game_debris_sys, effect, &points[i]);
         }
     }

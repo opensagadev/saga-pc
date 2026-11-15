@@ -1806,7 +1806,7 @@ void KaminoE_UpdateSlave1(WORLDINFO *world) {
                         BoltNoSfx = 1;
                         bolt = Bolt_Add(NULL, &origin, &bolt_matrix, 0x27, 0x800);
                         if (bolt != NULL) {
-                            bolt->flags |= 0x10;
+                            bolt->flags |= BOLT_SHOOTS_OBSTRUCTIONS;
                         }
                         kamino_e.fire_index = !kamino_e.fire_index;
                     }

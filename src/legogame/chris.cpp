@@ -2228,7 +2228,7 @@ extern "C" {
             return 0;
         }
         space = (DOGFIGHT_SPACE *)WORLD->level_specific_data;
-        if (space == NULL || (bolt->flags & 3) == 0) {
+        if (space == NULL || (bolt->flags & (BOLT_PLAYER_1 | BOLT_PLAYER_2)) == 0) {
             return 0;
         }
         position.xyz = points[1];

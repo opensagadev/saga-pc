@@ -1789,7 +1789,7 @@ GIZMOBLOWUP *GizmoBlowUp_Hit(GAMEOBJECT *object, NUVEC *points, i32 point_count,
             damage = 1;
             if (bolt != NULL) {
                 damage = BoltType_FindByID(bolt->type_id, WORLD)->unknown_3c;
-                if (Cheats_CheckFlags(CHEAT_DOUBLE_BOLT_DAMAGE) && (bolt->flags & 3)) {
+                if (Cheats_CheckFlags(CHEAT_DOUBLE_BOLT_DAMAGE) && (bolt->flags & (BOLT_PLAYER_1 | BOLT_PLAYER_2))) {
                     damage *= 2;
                 }
             }

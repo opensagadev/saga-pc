@@ -2724,7 +2724,7 @@ extern "C" {
         NUVEC translation;
         NUVEC temporary;
         i32 component;
-        if ((first->flags & ANI3_NODE_ROTATION) || (second->flags & ANI3_NODE_ROTATION) || (flags & 1)) {
+        if ((first->flags & ANI3_NODE_ROTATION) || (second->flags & ANI3_NODE_ROTATION) || (flags & NUJOINT_OVERRIDE_ROTATE)) {
             for (component = 0; component < 3; ++component) {
                 if (first->curves[component + 3] != NULL) {
                     r0[component] = NuAnimCurveCalcVal2(first->curves[component + 3], first_time);
@@ -2746,14 +2746,14 @@ extern "C" {
             r0[0] = r0[0] * inverse_blend + r1[0] * blend;
             r0[1] = r0[1] * inverse_blend + r1[1] * blend;
             r0[2] = r0[2] * inverse_blend + r1[2] * blend;
-            if (flags & 1) {
+            if (flags & NUJOINT_OVERRIDE_ROTATE) {
                 r0[0] += override_anim->rotation.x;
                 r0[1] += override_anim->rotation.y;
                 r0[2] += override_anim->rotation.z;
                 angles.x = (i32)(r0[0] * PC_NUANG_PER_RADIAN);
                 angles.y = (i32)(r0[1] * PC_NUANG_PER_RADIAN);
                 angles.z = (i32)(r0[2] * PC_NUANG_PER_RADIAN);
-                if (flags & 8) {
+                if (flags & NUJOINT_OVERRIDE_LIMIT_X) {
                     angles.x &= 0xffff;
                     if (angles.x >= 32768) {
                         angles.x -= 65536;
@@ -2764,7 +2764,7 @@ extern "C" {
                         angles.x = override_anim->rotation_min[0];
                     }
                 }
-                if (flags & 16) {
+                if (flags & NUJOINT_OVERRIDE_LIMIT_Y) {
                     angles.y &= 0xffff;
                     if (angles.y > 32767) {
                         angles.y -= 65536;
@@ -2775,7 +2775,7 @@ extern "C" {
                         angles.y = override_anim->rotation_min[1];
                     }
                 }
-                if (flags & 32) {
+                if (flags & NUJOINT_OVERRIDE_LIMIT_Z) {
                     angles.z &= 0xffff;
                     if (angles.z > 32767) {
                         angles.z -= 65536;
@@ -2798,7 +2798,7 @@ extern "C" {
         if ((first->flags & ANI3_NODE_BIND_ROTATION) || (second->flags & ANI3_NODE_BIND_ROTATION)) {
             NuMtxMulRVU0(matrix, matrix, &joint->bind_matrix);
         }
-        if ((first->flags & ANI3_NODE_SCALE) || (second->flags & ANI3_NODE_SCALE) || (flags & 4)) {
+        if ((first->flags & ANI3_NODE_SCALE) || (second->flags & ANI3_NODE_SCALE) || (flags & NUJOINT_OVERRIDE_SCALE)) {
             for (component = 0; component < 3; ++component) {
                 if (first->curves[component + 6] != NULL) {
                     s0[component] = NuAnimCurveCalcVal2(first->curves[component + 6], first_time);
@@ -2814,7 +2814,7 @@ extern "C" {
             scale->x = blend * s0[0] + inverse_blend * s1[0];
             scale->y = blend * s0[1] + inverse_blend * s1[1];
             scale->z = blend * s0[2] + inverse_blend * s1[2];
-            if (flags & 4) {
+            if (flags & NUJOINT_OVERRIDE_SCALE) {
                 scale->x += override_anim->scale.x;
                 scale->y += override_anim->scale.y;
                 scale->z += override_anim->scale.z;
@@ -2847,7 +2847,7 @@ extern "C" {
                 (second->curves[component] ? NuAnimCurveCalcVal2(second->curves[component], second_time) : second->constants[component]) *
                 blend;
         }
-        if (flags & 2) {
+        if (flags & NUJOINT_OVERRIDE_TRANSLATE) {
             translation.x += override_anim->translation.x;
             translation.y += override_anim->translation.y;
             translation.z += override_anim->translation.z;

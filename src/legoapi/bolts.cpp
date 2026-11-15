@@ -404,7 +404,7 @@ extern "C" {
     BOLT *Bolt_Alloc(void) {
         BOLT *bolt = NULL;
         i32 attempts = 0;
-        while (Bolt[i_bolt].active != 0 && (Bolt[i_bolt].flags & 8) != 0 && attempts < 32) {
+        while (Bolt[i_bolt].active != 0 && (Bolt[i_bolt].flags & BOLT_KEEP) != 0 && attempts < 32) {
             if (++i_bolt == 32) {
                 i_bolt = 0;
             }
@@ -466,7 +466,7 @@ extern "C" void Bolt_AddDeflectedBolt(BOLT *bolt, NUVEC *incoming, NUVEC *normal
     BoltNoSfx = 1;
     BOLT *created = Bolt_Add(NULL, &position, &matrix, type_id, bolt->hit_flags);
     if (created) {
-        created->flags |= 0x10000000;
+        created->flags |= BOLT_DEFLECTED;
         if (processed) {
             processed[created->index] = 1;
         }
@@ -1086,7 +1086,7 @@ extern "C" void Bolt_HitGameObjectRC(NETMESSAGE &message) {
         NuMtxSetRotationXYVU0(&matrix, &angles);
         BOLT *reflected_bolt = Bolt_Add(object, &points[hit], &matrix, bolt->type_id, 0);
         if (reflected_bolt != NULL) {
-            reflected_bolt->flags |= 0x10000000;
+            reflected_bolt->flags |= BOLT_DEFLECTED;
         }
     } else if (object->origin_scale_override == 1.0f ||
                ((object->character_data->game_character->flags_094 & CHARACTER_OPTION_DEFLECT_BOLTS_IN_MINIKIT_BONUS) != 0 &&
@@ -1113,7 +1113,7 @@ extern "C" void Bolt_HitGameObjectRC(NETMESSAGE &message) {
                 BoltNoSfx = 1;
                 BOLT *reflected_bolt = Bolt_Add(object, &points[hit], &matrix, bolt->type_id, 0);
                 if (reflected_bolt != NULL) {
-                    reflected_bolt->flags |= 0x10000000;
+                    reflected_bolt->flags |= BOLT_DEFLECTED;
                 }
             }
         }
@@ -1222,7 +1222,7 @@ extern "C" void Bolts_Draw(WORLDINFO *world) {
         }
         if (drawn[0] != 0 || drawn[1] != 0) {
             bolt->unknown_102 = 1;
-        } else if (Paused == 0 && bolt->unknown_102 != 0 && (bolt->flags & 0x20) == 0) {
+        } else if (Paused == 0 && bolt->unknown_102 != 0 && (bolt->flags & BOLT_KEEP_OFF_SCREEN) == 0) {
             bolt->active = 0;
         }
     }
@@ -1547,7 +1547,7 @@ extern "C" void Bolt_Init(void *storage, NETMESSAGE &message) {
             if ((bolt->flags & BOLT_NO_COLLIDE) == 0 &&
                 !Bolt_HitGameObjects(bolt, points, &bolt->bounds_min, &bolt->bounds_max, bolt->collision_radius, NULL)) {
                 i32 hit = 0;
-                if ((bolt->flags & 0x13) != 0 ||
+                if ((bolt->flags & (BOLT_PLAYER_1 | BOLT_PLAYER_2 | BOLT_SHOOTS_OBSTRUCTIONS)) != 0 ||
                     (bolt->owner != NULL &&
                      ((bolt->owner->portal_flags & APIOBJECT_CAN_SHOOT_OBSTRUCTIONS) != 0 || bolt->owner->unknown_f00 == 5))) {
                     hit = bolt->hit_platform != -1 && Bolt_HitPlatPrivate(bolt, NULL);
@@ -1703,8 +1703,9 @@ extern "C" void Bolts_Update(WORLDINFO *world) {
             if (Bolt_HitGameObjects(bolt, points, &bolt->bounds_min, &bolt->bounds_max, bolt->collision_radius, NULL) != 0) {
                 continue;
             }
-            if ((bolt->flags & 0x13) != 0 || (bolt->owner != NULL && ((bolt->owner->portal_flags & APIOBJECT_CAN_SHOOT_OBSTRUCTIONS) != 0 ||
-                                                                      bolt->owner->unknown_f00 == 5))) {
+            if ((bolt->flags & (BOLT_PLAYER_1 | BOLT_PLAYER_2 | BOLT_SHOOTS_OBSTRUCTIONS)) != 0 ||
+                (bolt->owner != NULL &&
+                 ((bolt->owner->portal_flags & APIOBJECT_CAN_SHOOT_OBSTRUCTIONS) != 0 || bolt->owner->unknown_f00 == 5))) {
                 if (bolt->hit_platform != -1) {
                     if (Bolt_HitPlatFn == NULL || !Bolt_HitPlatFn(bolt)) {
                         Bolt_HitPlatPrivate(bolt, processed);
@@ -1790,8 +1791,9 @@ extern "C" void Bolts_Update(WORLDINFO *world) {
                     goto next_bolt;
                 }
             }
-            if ((bolt->flags & 0x13) != 0 || (bolt->owner != NULL && ((bolt->owner->portal_flags & APIOBJECT_CAN_SHOOT_OBSTRUCTIONS) != 0 ||
-                                                                      bolt->owner->unknown_f00 == 5))) {
+            if ((bolt->flags & (BOLT_PLAYER_1 | BOLT_PLAYER_2 | BOLT_SHOOTS_OBSTRUCTIONS)) != 0 ||
+                (bolt->owner != NULL &&
+                 ((bolt->owner->portal_flags & APIOBJECT_CAN_SHOOT_OBSTRUCTIONS) != 0 || bolt->owner->unknown_f00 == 5))) {
                 if (GizmoSys_BoltHit(world->gizmo_sys, world, bolt, points, &bolt->bounds_min, &bolt->bounds_max, bolt->collision_radius,
                                      processed)) {
                     continue;

@@ -1798,7 +1798,7 @@ struct STATUS_STAGE_s {                                                         
 
 /* GIZTURRET_s.behavior_flags: the level file's options (GizTurret_Reset sets ORIGIN_AT_ANIMATION and
  * OPPONENT_RANGE_FIRES), from what the turret code does with each; 0x8 and 0x10 (a droid preference in the
- * target choice), 0x8000 (bolt flag 0x10) are not named yet. */
+ * target choice) are not named yet. */
 #define TURRET_BOUNDED 0x1                 /* targets only inside opponent_bounds around opponent_origin */
 #define TURRET_ORIGIN_AT_ANIMATION 0x2     /* opponent_origin is the animation set's average position */
 #define TURRET_TARGETS_BADDIES 0x4         /* targets baddies, not goodies */
@@ -1812,6 +1812,7 @@ struct STATUS_STAGE_s {                                                         
 #define TURRET_REFLECTION 0x1000           /* drawn in reflections */
 #define TURRET_STAYS_WHEN_DESTROYED 0x2000 /* destroyed, it keeps its fixed angles instead of hiding */
 #define TURRET_CAMERA 0x4000               /* a security camera: never fires, the shoot-cameras hint */
+#define TURRET_SHOOTS_OBSTRUCTIONS 0x8000  /* its bolts get BOLT_SHOOTS_OBSTRUCTIONS */
 #define TURRET_RIDER_BOLTS_ONLY 0x10000    /* only bolts of a riding owner damage it */
 #define TURRET_PLAYER_BOLTS_ONLY 0x20000   /* only bolts of an active player damage it */
 #define TURRET_REWARD_EVERY_TIME 0x40000   /* the completion score is released at every destruction */

@@ -786,8 +786,8 @@ extern "C" {
                                         }
                                         BOLT *bolt = Bolt_Add(NULL, reinterpret_cast<NUVEC *>(&muzzle_matrix.m30), &direction_matrix,
                                                               turret->bolt_type_id, flags);
-                                        if (bolt != NULL && (turret->behavior_flags & 0x8000)) {
-                                            bolt->flags |= 0x10;
+                                        if (bolt != NULL && (turret->behavior_flags & TURRET_SHOOTS_OBSTRUCTIONS)) {
+                                            bolt->flags |= BOLT_SHOOTS_OBSTRUCTIONS;
                                         }
                                     }
                                 }
