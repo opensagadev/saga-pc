@@ -588,6 +588,8 @@ i32 edanimParamCreate(i32 instance);
 
 i32 edanim_emitrotz = 0;
 i32 edanim_emitroty = 0;
+NUGSCN *edbits_base_scene = 0;
+char edbits_level_filename[256] = {0};
 
 void edanimRenderParticleEmitters(i32 parameter_index) {
     nuhspecial_s special;
@@ -854,7 +856,9 @@ void edanimDoInput(FRAME_PAD *pad) {
     }
 }
 
+i8 edbits_what_game = 0;
 struct PC_SCENE_MTL_VIEW *edanim_mtl_zoff = 0;
+NUVEC edanim_cam_pos = {0};
 
 void edanimDrawCursor(void) {
     NURND_VERTEX3D line[2];

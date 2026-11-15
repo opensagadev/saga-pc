@@ -30,9 +30,11 @@
 #include "nu2api/nustencilshadows_PC.h"
 static eduiiattr_s ed_attr = {0x80000000, 0x80ff0000, 0x80808080, 0x80404040};
 static struct eduimenu_s *ed_cfg_menu = 0;
+NUCAMERA *edinternalcam = 0;
 NUVEC *ed_loc = 0;
 void *ed_fnt = 0;
 i32 edmain_render_interacts = 0;
+i32 edmain_cursor_enabled = 0;
 static struct ed_module_s *ed_curr = 0;
 static struct ed_module_s *ed_list = 0;
 static struct eduimenu_s *ed_main_menu = 0;
@@ -2409,6 +2411,8 @@ eduiitem_s *eduiItemExpanderCreate(u32 data, const void *colours, void *callback
  * and an optional button (1 arrow, 2 up/down arrows, 3 colour swatch). */
 static char eduiPropTextStore[256] = {0};
 static char eduiPropTextEdit[256] = {0};
+struct PC_SCENE_MTL_VIEW *uimtls[5] = {0};
+struct eduiitem_s *edui_last_item = 0;
 char FS_FileList[65536] = {0};
 f32 EduiPropLabelWidth = 50.0f;
 extern void NuKeyFlush(void);
@@ -4480,6 +4484,10 @@ void FS_GetDirList(char *path, char *filter, char *filter_out) {
 }
 
 f32 edui_cursor_y = 50.0f;
+f32 edui_font_scale_x = 0.9f;
+f32 edui_font_scale_y = 0.9f;
+f32 EduiScaleX = 16.0f;
+f32 EduiScaleY = 8.0f;
 char *edui_textrow_default[4] = {"1234567890", "QWERTYUIOP", "ASDFGHJKL_", "ZXCVBNM<>?"};
 char *edui_textrow_lower[4] = {"1234567890", "qwertyuiop", "asdfghjkl_", "zxcvbnm<>?"};
 

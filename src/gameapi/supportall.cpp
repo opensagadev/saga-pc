@@ -53,6 +53,9 @@ extern "C" {
 
 /* Editor "Timings" menu: per-pass time bars, globally or per thing. */
 static eduimenu_s *edTimingMenu = NULL;
+extern "C" {
+    MEMORYMANAGER theMemoryManager = {0};
+}
 static u32 EdAttr[4] = {0x80000000, 0x80ff0000, 0x80808080, 0x80404040};
 
 /* The thing array comes from the permanent buffer; without room the manager

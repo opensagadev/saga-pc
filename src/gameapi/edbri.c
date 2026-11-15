@@ -48,6 +48,7 @@ void edbriBridgesReset(void) {
     edbri_bridges_used = 0;
 }
 
+struct eduimenu_s *edbri_active_menu = 0;
 struct eduimenu_s *edbri_options_menu = 0;
 
 void edbriClose(void) {
@@ -805,6 +806,7 @@ void edbricbFileLoad(eduimenu_s *menu, eduiitem_s *unused1, u32 unused2) {
 i32 edbri_nearest = 0;
 struct PC_SCENE_MTL_VIEW *edbri_mtl_zoff = 0;
 NUMTL *edbri_mtl = NULL;
+PC_EDBRIDGE edBridges[64] = {0};
 i32 edbri_page_on[8] = {0};
 
 void edbriDrawCursor(void) {

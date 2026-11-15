@@ -151,6 +151,7 @@ void edgracbCancelGlobalsMenu(eduimenu_s *unused0, eduimenu_s *unused1) {
 }
 
 struct PC_SCENE_MTL_VIEW *edgra_mtl_zoff = 0;
+NUVEC edgra_cam_pos = {0};
 struct PC_SCENE_MTL_VIEW *edgra_mtl = 0;
 
 void edgraDrawCursor(void) {
@@ -308,6 +309,11 @@ static void edgracbChangeSScale(eduimenu_s *unused0, eduiitem_s *item, u32 unuse
 }
 
 struct eduimenu_s *edgra_sscale_menu = 0;
+struct eduimenu_s *edgra_globals_menu = 0;
+struct edui_slider_s *fadeinitem = 0;
+struct edui_slider_s *fadeoutitem = 0;
+struct edui_slider_s *globalfadeinitem = 0;
+struct edui_slider_s *globalfadeoutitem = 0;
 
 static void edgracbCancelSScaleMenu(eduimenu_s *unused0, eduimenu_s *unused1) {
     eduiMenuDestroy(edgra_sscale_menu);
@@ -385,6 +391,8 @@ extern VARIPTR *gra_ptr;
 extern VARIPTR *gra_end;
 
 VARIPTR *gra_ptr = 0;
+
+VARIPTR *gra_end = 0;
 
 void edgraSetMemoryBuffer(VARIPTR *start, VARIPTR *end) {
     gra_ptr = start;

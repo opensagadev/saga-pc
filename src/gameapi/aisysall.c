@@ -545,7 +545,31 @@ static AISCRIPT *AIScriptLoadPakFile(void *pak, char *filename, char *path, VARI
 /* Set by AiSysOnlyUsePakFile; warns when a package lacks a script file. */
 i32 ai_onlyusepackfile = 0;
 AISCRIPTPROCESS *AiSysStateDebugee = 0;
+AI_LEVEL_CHARACTER_TYPE_ID LevelCharacterTypeIDFn = 0;
 AI_LEVEL_CHARACTER_TYPE_ID SpecialRouteCharacterTypeIDFn = 0;
+AI_SCRIPT_FIRST_ACTION ScriptProcessFirstTimeActionFn = 0;
+AI_PARSE_SPEED AIActionParseSpeedFn = 0;
+AI_RESPAWN_ON_PATH AIRespawnOnPathFn = 0;
+AI_BIG_JUMP_TO_DESTINATION AIBigJumpToDestinationFn = 0;
+void (*GameAILoadFn)(AISYS_PC *, i32, NUGSCN *, VARIPTR *, VARIPTR *) = NULL;
+AI_GAME_PARAM_TO_FLOAT GameParamToFloatFn = 0;
+AI_CHARACTER_GOAL_SPEED GetCharacterGoalSpeedFn = 0;
+AI_CHARACTER_DISTANCE GetViewRangeFn = 0;
+AI_CHARACTER_DISTANCE GetHearDistanceFn = 0;
+AI_CHARACTER_DISTANCE GetMaxViewHeightFn = 0;
+AI_CHARACTER_DISTANCE GetMinViewHeightFn = 0;
+AISYS_SPECIAL_NODE_CALLBACK AISysSpecialNodeCallback = 0;
+APIOBJECT_FROM_ID APIOBJECTFromObjIDFn = 0;
+struct AIEDITOR_RENDER_STATE *aieditor = 0;
+void (*GameAISYSRebuildFromEditorDataFn)(AISYS_PC *, VARIPTR *, VARIPTR *) = NULL;
+void (*GameAISaveFn)(AIPATHSYS *) = NULL;
+void (*AIPathNodeDeletedFn)(struct EDAIPATHNODE_s *) = NULL;
+void (*AIPathNodeMovedFn)(struct EDAIPATHNODE_s *) = NULL;
+void (*AIPathDeletedFn)(struct EDAIPATH_s *) = NULL;
+AI_PREPARING_SPECIAL_MOVE PreparingForSpecialMoveFn = 0;
+AI_MID_SPECIAL_MOVE MidSpecialMoveFn = 0;
+GAMEOBJECT_LOOKUP_CALLBACK GetNamedGameObjectCallback = 0;
+AI_ORIGIN_POSITION GetOriginPositionFn = 0;
 
 i32 aidata_version = 20;
 static NUFPCOMJMP AIScriptCommands[9] = {

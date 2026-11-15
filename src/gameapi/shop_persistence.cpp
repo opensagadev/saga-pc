@@ -28,6 +28,7 @@ extern "C" {
     i32 saveload_status = 0;
     i32 SaveloadPending = 0;
     u8 PcSaveHeaderMetadata[16] = {0};
+    i32 saveload_slotused[6] = {0};
     i32 saveload_slotid = 0;
     extern i32 saveload_slotused[6];
 

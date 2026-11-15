@@ -104,6 +104,7 @@ void edppPtlShelve(i32 index) {
 }
 
 struct eduimenu_s *messagemenu = 0;
+struct eduimenu_s *edptl_quickdel_menu = 0;
 
 void cbCancelMessageMenu(eduimenu_s *unused0, eduimenu_s *unused1) {
     eduiMenuDestroy(messagemenu);
@@ -641,6 +642,7 @@ NUVEC edpp_copy_source_vec = {0};
 /* The repeat-box submenu, its X and Z sliders and the XZ lock that keeps the box square. */
 eduimenu_s *ptlrepeatboxmenu = NULL;
 SFX_RECORD *SfxInfo = 0;
+TERRAIN_POLYGON_INFO TerrPolyInfo = {0};
 NUGSCN *EdppPageScenes[8] = {0};
 struct PC_SCENE_MTL_VIEW *edpp_boxmtl = 0;
 struct eduimenu_s *edpp_active_menu = 0;
@@ -653,6 +655,7 @@ struct eduimenu_s *ptlclipmenu = 0;
 i32 edpp_curr = 0;
 static edui_slider_s *ptlrepeatbox_x_slider = NULL;
 static edui_slider_s *ptlrepeatbox_z_slider = NULL;
+i32 debris_detail_level = 4;
 DEBRISGENERATOR gensorttab[13] = {GenDebIndex,          GenDebDummy,        GenDebDummy,         GenDebDummy,
                                   GenDebDummy,          GenDebDummy,        GenDebIndexRadial,   GenDebIndexRadialRotor,
                                   GenDebIndexSpheroid,  GenDebIndexBounceY, GenDebIndexBounceXZ, GenDebIndexImprovedRadial,

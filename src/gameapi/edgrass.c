@@ -25,6 +25,9 @@
 #include "nu2api/numath/nuvec.h"
 
 i32 EDGRA_MAX_INDIVIDUAL_CLUMPS = 0;
+i32 EDGRA_MAX_UNITS_PER_INDIVIDUAL_CLUMP = 0;
+PC_EDGRACLUMP *GrassClumps = 0;
+PC_EDGRAINDIVIDUAL *IndGrassClumps = 0;
 i32 *IndGrassClumpsUsed = 0;
 i32 edgra_ind_clumps_used = 0;
 
@@ -586,7 +589,15 @@ void edgraClearPage(i8 page) {
     edgra_page_calculate_done[page] = 0;
 }
 
+i32 edgra_clumpthin = 1;
+i32 edgra_elementthin = 1;
+char edgra_filter_string[16] = "GRASS";
+i32 edgra_mode = 1;
 i32 edgra_last_clump_in_buffer = -1;
+i32 edgra_copy_source = -1;
+i32 edgra_superscale = 1;
+f32 edgra_global_fadein = 15.0f;
+f32 edgra_global_fadeout = 25.0f;
 
 void edgraSortVectorBuffer(i32 index) {
     NUVEC temporary[256];
@@ -910,6 +921,14 @@ void edgraInstancePlace(i32 index, NUVEC *position) {
 }
 
 i32 edgra_pageid = 0;
+i32 edgra_rotz = 0;
+i32 edgra_roty = 0;
+i32 edgra_dpadmode = 0;
+i32 edgra_editormode = 0;
+void *edgra_free_vecbuffer = 0;
+NUMTX *edgra_mtxbuffer = 0;
+NUVEC *edgra_vecbuffer = 0;
+i32 EDGRA_MAX_CLUMPS = 0;
 
 i32 edgraClumpCreate(NUVEC *position) {
     i32 index = 0;

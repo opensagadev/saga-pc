@@ -19,6 +19,7 @@
 extern i32 saveload_slotused[];
 
 i32 SAVESLOTS = 6;
+f32 memcard_autosavecanceldelay = 1.5f;
 
 void SaveSystemInitialise(i32 slots, SAVE_HASH_FN hashfn, void *save, i32 save_size, i32 autosave, SAVE_VOID_FN draw_save_icon) {
     SAVESLOTS = slots;
@@ -333,6 +334,10 @@ void MenuDrawDoNotRemoveCard(MENU *menu) {
 }
 
 i32 SAVESIZE_ADDITIONAL = 3;
+i32 saveload_cardtype = 2;
+i32 saveload_freespace = 2048;
+i32 saveload_cardformatted = 1;
+i32 saveload_autosave = -1;
 
 void MenuUpdateSave(MENU *menu) {
     i32 slot;
@@ -741,6 +746,7 @@ i32 MenuSaveOccurred = 0;
 i32 Menu_Overwriteflag = 0;
 i32 MenuCardWarningState = 0;
 i32 MenuASCancelFinished = 0;
+i32 MenuValidated = 0;
 i32 Menu_InSaveFlow = 0;
 i32 Menu_InLoadFlow = 0;
 i32 Menu_InWarningFlow = 0;
@@ -760,6 +766,14 @@ i32 MenuSuppressDownHeld = 0;
 i32 MenuSuppressLeftHeld = 0;
 i32 MenuSuppressRightHeld = 0;
 f32 sfx_wait = 0.0f;
+u8 MENUNORMALB = 0;
+u8 MENUENTRYR = 0;
+u8 MENUHEADERR = 0;
+u8 MENUWARNG = 0;
+u8 MENUWARNB = 0;
+u8 MENUFLASH0R = 0;
+u8 MENUFLASH1G = 0;
+i32 dme_rgb = 0;
 i32 dme_align = 0;
 i32 memcard_slot = 0;
 i32 memcard_loadneeded = 0;
@@ -1221,6 +1235,10 @@ static void MenuDrawFormattedMessage(void) {
 }
 
 static i32 MenuLoadResultShown = 0;
+i32 saveload_error = 0;
+i32 saveload_cardchanged = 0;
+i32 saveload_autosavedisabled = 0;
+i32 saveload_filecorrupt = 0;
 
 void MenuDrawLoading(MENU *menu) {
     (void)menu;

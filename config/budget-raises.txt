@@ -219,3 +219,4 @@ config/castscan-budget.json int-pointer 832 initializer casts of globals moved f
 config/oddscan-budget.json long-file 12 a legogame unit passes the long-file limit with its globals moved out of data.cpp
 config/castscan-budget.json size-literal 4 new class (tools/sizeofnames.py): the size literals whose sizeof would spell a placeholder, PC-suffixed or view name keep their literal until the name is fixed
 config/castscan-budget.json declaration-type 1550 scanner change: names in a sizeof operand are no longer uses of their declaration, so two declarations are now cast at most of their (evaluated) uses; same casts, same tree
+config/declscan-budget.json C 528 a unit's extern of a global moved into the same unit is now a forward declaration of it (gameapi data move, same construct)

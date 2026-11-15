@@ -217,7 +217,6 @@ extern "C" {
 
 extern "C" {
     char *AiLevelPathName = dat_007516c0;
-    void (*GameAILoadFn)(AISYS_PC *, i32, NUGSCN *, VARIPTR *, VARIPTR *) = NULL;
 }
 
 extern "C" {
@@ -3438,12 +3437,10 @@ extern "C" {
         {-0.2f, 0.0f, -0.2f},
     };
 
-    AISYS_SPECIAL_NODE_CALLBACK AISysSpecialNodeCallback = 0;
     extern const __declspec(align(16)) NUMTX ANI3_EVAL_IDENTITY_MATRIX = {
         1.0f, 0.0f, 0.0f, 0.0f, 0.0f, 1.0f, 0.0f, 0.0f, 0.0f, 0.0f, 1.0f, 0.0f, 0.0f, 0.0f, 0.0f, 1.0f,
     };
     TERRAIN_SET *CurrentTerrain = 0;
-    GAMEOBJECT_LOOKUP_CALLBACK GetNamedGameObjectCallback = 0;
     TERRAIN_LAYER TerLayer[17] = {
         {0x00000000, 0x0000ffff, 0x40000000},
         {0x00000000, 0x0000ffff, 0x40000000},
@@ -3485,7 +3482,6 @@ extern "C" {
     extern const char PCKeyboardMouse2Name[16] = "KeyboardMouse2";
     extern const f64 NuQFntHalfScale = 0.5;
     GAMESAVE Game = {0};
-    i32 saveload_autosave = -1;
     extern const f32 PermLegalScale = 2.2f;
     NUGSCN *save_icon_scene = 0;
     i32 nudlist_field_fc4 = 0;
@@ -3500,7 +3496,6 @@ extern "C" {
     GAMEOBJECT *Player[8] = {0};
     i16 ID_DEFAULTCHARACTER_A = -1;
     i16 ID_DEFAULTCHARACTER_B = -1;
-    MEMORYMANAGER theMemoryManager = {0};
     f32 DEFAULTFRAMETIME = 0;
     GAMEPAD_INIT_RECORD GamePadStorage[64] = {0};
     HANDLE pc_file_handles[32] = {
@@ -3804,8 +3799,6 @@ extern "C" {
     extern const f64 NuTime_LowScale = 4294967295.0;
     extern const f64 NuTime_MicroScale = 1000000.0;
     extern const f64 NuTime_RefreshRate = 60.0;
-    NUGSCN *edbits_base_scene = 0;
-    void *edbits_base_terrain = 0;
     TERRAIN_SURFACE TerSurface[32] = {
         {1.0f, 0,      0xffff},
         {1.0f, 65,     0xffff},
@@ -3899,7 +3892,6 @@ extern "C" {
         {1030, NULL,                     NULL,                    NULL,                      NULL,                 -1, -1, 0, 0, 0, 0},
     };
     i32 MenuSFX = -1;
-    u8 MENUHEADERR = 0;
     extern const f64 nu_wind_phase_scale = 1.0 / 256.0;
     extern const f32 PCKeyboardDefaultValue = 0.1f;
     f32 dme_sy = 1.0f;
@@ -3992,7 +3984,6 @@ extern "C" {
 
     extern const f32 ForcePushApproachInnerSquare = 0.010000001f;
     extern const f32 ForcePushApproachOuterSquare = 0.040000003f;
-    APIOBJECT_FROM_ID APIOBJECTFromObjIDFn = 0;
     i16 PCArcadeModeText0 = 0;
     i16 PCArcadeModeText1 = 0;
     i16 PCArcadeModeText2 = 0;
@@ -4021,11 +4012,6 @@ extern "C" {
 }
 
 extern "C" {
-    AI_RESPAWN_ON_PATH AIRespawnOnPathFn = 0;
-    AI_CHARACTER_GOAL_SPEED GetCharacterGoalSpeedFn = 0;
-}
-
-extern "C" {
     i16 id_GEONOSIAN = -1;
     i16 id_CHEWBACCA = -1;
 }
@@ -4046,24 +4032,12 @@ extern "C" {
 }
 
 extern "C" {
-
-    AI_SCRIPT_FIRST_ACTION ScriptProcessFirstTimeActionFn = 0;
-}
-
-extern "C" {
-    AI_GAME_PARAM_TO_FLOAT GameParamToFloatFn = 0;
     APIDEBRISSYS *perm_debrissys = 0;
 }
 
 extern "C" {
     i16 id_TIEFIGHTER = -1;
     i16 id_XWING = -1;
-    AI_PARSE_SPEED AIActionParseSpeedFn = 0;
-    AI_CHARACTER_DISTANCE GetViewRangeFn = 0;
-    AI_CHARACTER_DISTANCE GetHearDistanceFn = 0;
-    AI_CHARACTER_DISTANCE GetMaxViewHeightFn = 0;
-    AI_CHARACTER_DISTANCE GetMinViewHeightFn = 0;
-    AI_ORIGIN_POSITION GetOriginPositionFn = 0;
 }
 
 extern "C" {
@@ -4081,10 +4055,6 @@ extern "C" {
 extern "C" {
     i16 id_LUKESKYWALKERDAGOBAH = -1;
     i16 id_ATAT = -1;
-}
-
-extern "C" {
-    AI_BIG_JUMP_TO_DESTINATION AIBigJumpToDestinationFn = 0;
 }
 
 extern "C" {
@@ -4107,7 +4077,6 @@ extern "C" {
 
 extern "C" {
     f32 DEFAULT_MOVE_RANGE = 0;
-    AI_LEVEL_CHARACTER_TYPE_ID LevelCharacterTypeIDFn = 0;
 }
 
 extern "C" {
@@ -4196,21 +4165,10 @@ extern "C" {
 }
 
 extern "C" {
-    PC_EDBRIDGE edBridges[64] = {0};
     i32 edgra_page_used[8] = {0};
     NUGSCN *edgra_page_scene[8] = {0};
     NUMTX *edgra_page_matrix_stack[8] = {0};
-    NUVEC edgra_cam_pos = {0};
-    NUMTX *edgra_mtxbuffer = 0;
-    NUVEC *edgra_vecbuffer = 0;
-    void *edgra_free_vecbuffer = 0;
-    i32 EDGRA_MAX_CLUMPS = 0;
-    i32 EDGRA_MAX_UNITS_PER_INDIVIDUAL_CLUMP = 0;
-    PC_EDGRACLUMP *GrassClumps = 0;
-    PC_EDGRAINDIVIDUAL *IndGrassClumps = 0;
     i32 edgra_clumps_used = 0;
-    f32 edgra_global_fadein = 15.0f;
-    f32 edgra_global_fadeout = 25.0f;
     void edgraInit(void);
     void edgraClose(void);
     void edgraEnter(void);
@@ -4218,8 +4176,6 @@ extern "C" {
     void edgraRender(void);
     ed_module_s edgradesc = {NULL, NULL, "Grass Editor", edgraInit,  edgraClose, edgraEnter,  NULL,
                              NULL, NULL, NULL,           0x73617267, edgraProc,  edgraRender, NULL};
-    i32 edgra_clumpthin = 1;
-    i32 edgra_elementthin = 1;
 }
 
 extern "C" {
@@ -4244,7 +4200,6 @@ extern "C" {
     i32 edbits_anim_page = 0;
     i32 edanim_particle_mode = 0;
     i32 edanim_nearest_param_id = 0;
-    NUVEC edanim_cam_pos = {0};
 }
 
 extern "C" {
@@ -4260,7 +4215,6 @@ extern "C" {
     extern const f32 TerrainUnusedSpatialBlock = 2147483648.0f;
     extern const f32 TerrainBoundsMinimum = -200000000.0f;
     extern const f32 TerrainBoundsMaximum = 200000000.0f;
-    i32 debris_detail_level = 4;
 }
 
 extern "C" {
@@ -4303,7 +4257,6 @@ extern "C" {
 extern "C" {
     extern const f64 TerrainOpposingContactThreshold = -0.7f;
 
-    TERRAIN_POLYGON_INFO TerrPolyInfo = {0};
     TERRAIN_TRACK_SLOT *CurTrackInfo = 0;
     i32 TerImpactDataMax = 0;
     i32 *TerImpactDataCount = 0;
@@ -4327,7 +4280,6 @@ extern "C" {
                                               NULL, 0,     0.0f,  0.0f, NULL, NULL, NULL, NULL, NULL, -1, 0,    255,  0};
     u32 BonusCoinTarget = 0;
     i32 BonusWinFlag = 0;
-    i32 MenuValidated = 0;
     f32 DoubleScoreTime = 0;
     i32 LookAtBoth = 0;
     f32 AddCoinDelay[2] = {0};
@@ -4755,21 +4707,9 @@ extern "C" {
 }
 
 extern "C" {
-
-    NUVEC LightingUnitDirectionPc = {1.0f, 0.0f, 0.0f};
-
-    NUVEC RtlUnitDirectionYPc = {0.0f, 1.0f, 0.0f};
-}
-
-extern "C" {
     char UiBackPromptLiteral[5] = "Back";
 
     char UiSelectPromptLiteral[7] = "Select";
-}
-
-extern "C" {
-
-    u8 MENUNORMALB = 0;
 }
 
 extern "C" {
@@ -4871,32 +4811,17 @@ extern "C" {
 
 extern "C" {
     i16 DefaultAnimationJabbaId = -1;
-    f32 memcard_autosavecanceldelay = 1.5f;
-    i32 saveload_cardtype = 2;
-    i32 saveload_cardformatted = 1;
-    i32 saveload_error = 0;
-    i32 saveload_cardchanged = 0;
-    i32 saveload_autosavedisabled = 0;
-    i32 saveload_slotused[6] = {0};
-    i32 saveload_freespace = 2048;
-    i32 saveload_filecorrupt = 0;
-    u8 MENUENTRYR = 0;
     u8 MENUENTRYG = 127;
     u8 MENUENTRYB = 255;
-    u8 MENUFLASH0R = 0;
     u8 MENUFLASH0G = 255;
     u8 MENUFLASH0B = 255;
     u8 MENUFLASH1R = 127;
-    u8 MENUFLASH1G = 0;
     u8 MENUFLASH1B = 255;
     f32 dme_sx = 1.0f;
-    i32 dme_rgb = 0;
     u8 dme_r = 0;
     u8 dme_g = 0;
     u8 dme_b = 0;
     f32 SLAMJUMPSPEED = 3.0f;
-    u8 MENUWARNG = 0;
-    u8 MENUWARNB = 0;
 }
 
 struct PC_GEOMETRY_BASIS;
@@ -5029,11 +4954,6 @@ extern "C" {
 
 extern "C" {
 
-    struct AIEDITOR_RENDER_STATE *aieditor = 0;
-}
-
-extern "C" {
-
     void edppInit(void);
     void edppClose(void);
     void edppEnter(void);
@@ -5044,11 +4964,8 @@ extern "C" {
         NULL,       NULL, "Particle Positioner", edppInit, edppClose, edppEnter, NULL, edppApply, NULL, NULL, 0x706c7470, edppProc,
         edppRender, NULL};
 
-    i8 edbits_what_game = 0;
-
     u8 edpp_effect_list = 0;
 
-    VARIPTR *gra_end = 0;
 }
 
 extern "C" {
@@ -5091,51 +5008,11 @@ extern "C" {
 }
 
 extern "C" {
-    struct eduimenu_s *edptl_quickdel_menu = 0;
-}
-
-extern "C" {
-    struct eduimenu_s *edgra_clumparea_menu = 0;
-
-    struct eduimenu_s *edgra_clumpfade_menu = 0;
-
-    i32 edgra_superscale = 1;
-
-    char edgra_filter_string[16] = "GRASS";
-
-    i32 edgra_copy_source = -1;
-
-    i32 edgra_rotz = 0;
-
-    i32 edgra_roty = 0;
 
     struct eduimenu_s *edgra_options_menu = 0;
 
-    struct eduimenu_s *edgra_changeinstance_menu = 0;
-
-    struct eduimenu_s *edgra_clumpsizes_menu = 0;
-
-    struct eduiitem_s *edui_last_item = 0;
-
-    struct edui_slider_s *fadeinitem = 0;
-
-    struct edui_slider_s *fadeoutitem = 0;
-
-    struct eduimenu_s *edgra_clumpproperties_menu = 0;
-
-    struct eduimenu_s *edgra_clumpmode_menu = 0;
-
-    i32 edgra_mode = 1;
-
-    struct eduimenu_s *edgra_globals_menu = 0;
-
-    struct edui_slider_s *globalfadeinitem = 0;
-
-    struct edui_slider_s *globalfadeoutitem = 0;
-
     struct eduimenu_s *edgra_active_menu = 0;
 
-    i32 edgra_editormode = 0;
 }
 
 extern "C" {
@@ -5153,7 +5030,6 @@ extern "C" {
 
     i32 edgra_filter = 0;
 
-    i32 edgra_dpadmode = 0;
 }
 
 extern "C" {
@@ -5162,30 +5038,15 @@ extern "C" {
     f32 PauseMenus_X = 0;
 }
 
-extern "C" {
-    struct eduimenu_s *edbri_active_menu = 0;
-}
-
 extern "C" {}
 
 extern "C" {
     struct eduimenu_s *active_menu = 0;
 
-    f32 edui_font_scale_y = 0.9f;
-
-    f32 edui_font_scale_x = 0.9f;
-
     f32 edui_cursor_x = 50.0f;
-
-    f32 EduiScaleX = 16.0f;
-
-    f32 EduiScaleY = 8.0f;
 
     char *textrow[4] = {0};
 
-    struct PC_SCENE_MTL_VIEW *uimtls[5] = {0};
-
-    char edbits_datapath[256] = {0};
 }
 
 extern "C" {
@@ -5194,34 +5055,12 @@ extern "C" {
 
 extern "C" {
 
-    i32 edbits_cubecount = 0;
-
-    NUCAMERA *edinternalcam = 0;
-
-    i32 edmain_cursor_enabled = 0;
-
     i32 edanim_nearest_sound = 0;
-}
-
-extern "C" {
-    struct eduimenu_s *edgra_clumpdist_menu = 0;
-
-    struct eduimenu_s *edgra_clumpterrain_menu = 0;
 }
 
 extern "C" {
 
     i32 edanim_nearest_particle = 0;
-}
-
-extern "C" {
-    char edbits_level_filename[256] = {0};
-
-    char edbits_general_save_directory[256] = {0};
-
-    char edbits_general_save_name[256] = {0};
-
-    char edbits_general_save_extension[256] = {0};
 }
 
 extern "C" {
@@ -6127,19 +5966,6 @@ extern "C" {
 }
 
 extern "C" {}
-
-extern "C" {
-    void (*GameAISaveFn)(AIPATHSYS *) = NULL;
-    void (*AIPathNodeDeletedFn)(struct EDAIPATHNODE_s *) = NULL;
-    void (*AIPathNodeMovedFn)(struct EDAIPATHNODE_s *) = NULL;
-    void (*AIPathDeletedFn)(struct EDAIPATH_s *) = NULL;
-    AI_PREPARING_SPECIAL_MOVE PreparingForSpecialMoveFn = 0;
-    AI_MID_SPECIAL_MOVE MidSpecialMoveFn = 0;
-}
-
-extern "C" {
-    void (*GameAISYSRebuildFromEditorDataFn)(AISYS_PC *, VARIPTR *, VARIPTR *) = NULL;
-}
 
 extern "C" {
     AI_PATH_CONNECTION_TYPE AIPathConnectionTypes[32] = {};

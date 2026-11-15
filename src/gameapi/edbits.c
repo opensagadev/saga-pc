@@ -79,7 +79,13 @@ void edbitsRegisterBaseScene(NUGSCN *scene) {
     edbits_base_scene = scene;
 }
 
+char edbits_general_save_directory[256] = {0};
+char edbits_general_save_name[256] = {0};
+char edbits_general_save_extension[256] = {0};
+char edbits_datapath[256] = {0};
 struct NUGSCN_s *edbits_things_scene = 0;
+void *edbits_base_terrain = 0;
+i32 edbits_cubecount = 0;
 
 void edbitsRegisterThingsScene(NUGSCN *scene) {
     edbits_things_scene = scene;
@@ -218,8 +224,6 @@ void edbitsDoSingleDump(i32 face) {
     sprintf(filename, "pictures\\cub%03d_", index);
     NuPs2VideoScreenDump(filename, 1, 1.0f, 1.0f, face, 0, 0);
 }
-
-extern i32 edbits_cubecount;
 
 i32 edbitsStartCubemapDump(void) {
     if (edbits_cubecount != 0) {
@@ -693,6 +697,14 @@ void edgracbToggleClumpReactive(eduimenu_s *unused0, eduiitem_s *item, u32 unuse
 }
 
 struct eduimenu_s *edgra_instance_menu = 0;
+struct eduimenu_s *edgra_changeinstance_menu = 0;
+struct eduimenu_s *edgra_clumpproperties_menu = 0;
+struct eduimenu_s *edgra_clumpsizes_menu = 0;
+struct eduimenu_s *edgra_clumparea_menu = 0;
+struct eduimenu_s *edgra_clumpdist_menu = 0;
+struct eduimenu_s *edgra_clumpfade_menu = 0;
+struct eduimenu_s *edgra_clumpterrain_menu = 0;
+struct eduimenu_s *edgra_clumpmode_menu = 0;
 
 void edgracbCancelInstanceMenu(eduimenu_s *unused0, eduimenu_s *unused1) {
     eduiMenuDestroy(edgra_instance_menu);

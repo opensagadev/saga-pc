@@ -27,6 +27,8 @@
 #include <float.h>
 #include <string.h>
 #include <stdio.h>
+NUVEC LightingUnitDirectionPc = {1.0f, 0.0f, 0.0f};
+NUVEC RtlUnitDirectionYPc = {0.0f, 1.0f, 0.0f};
 i32 rtl_dynamic_lights_enabled = 1;
 static i32 curr_version = 5;
 f32 rtl_shadow_blend_rate = 2.0f;
