@@ -256,6 +256,31 @@ class DepfileTests(unittest.TestCase):
             self.assertEqual(depfile.read_text(), 'build/obj/unit.obj: \\\n src/saga.h \\\n src/sub/Thing.h \\\n\n'
                                                   'src/saga.h:\nsrc/sub/Thing.h:\n')
 
+    def test_name_stamps_change_only_with_the_files_of_their_name(self):
+        with tempfile.TemporaryDirectory() as temp, patch.object(cc, 'ROOT', Path(temp)):
+            root = Path(temp)
+            (root / 'src/sub').mkdir(parents=True)
+            (root / 'src/saga.h').write_text('')
+            (root / 'src/unit.c').write_text('')
+            stamps = root / 'build/obj/.names'
+            cc.update_name_stamps(stamps)
+            self.assertEqual(sorted(p.name for p in stamps.iterdir()), ['saga.h'])
+            log = ('Note: including file: Z:' + str(root / 'src/saga.h').replace('/', '\\') + '\r\n'
+                   'Note: including file: Z:\\sdk\\Windows.h\r\n')
+            cc.write_depfile(root / 'build/obj/unit.d', root / 'build/obj/unit.obj', log, stamps)
+            self.assertIn(' build/obj/.names/windows.h \\', (root / 'build/obj/unit.d').read_text())
+            self.assertEqual((stamps / 'windows.h').stat().st_mtime, 0)
+            before = {p.name: p.stat().st_mtime_ns for p in stamps.iterdir()}
+            (root / 'src/other.h').write_text('')
+            cc.update_name_stamps(stamps)
+            self.assertEqual({p.name: p.stat().st_mtime_ns for p in stamps.iterdir() if p.name in before}, before)
+            (root / 'src/sub/WINDOWS.H').write_text('')
+            cc.update_name_stamps(stamps)
+            self.assertEqual((stamps / 'windows.h').read_text(), 'src/sub/WINDOWS.H\n')
+            (root / 'src/sub/WINDOWS.H').unlink()
+            cc.update_name_stamps(stamps)
+            self.assertEqual((stamps / 'windows.h').read_text(), '')
+
 
 if __name__ == '__main__':
     unittest.main()

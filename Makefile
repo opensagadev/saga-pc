@@ -144,20 +144,20 @@ $(XINPUT_LIB): tools/xinput1_3.def tools/cc.py Makefile
 	$(PYTHON) tools/cc.py --implib $@ $<
 
 # Each object depends on the headers it read (its .d file, written by cl /showIncludes through tools/cc.py),
-# and on the list of project headers: an added or removed header can change what an include resolves to, so it
-# rebuilds everything. An object without a .d file (built before them) depends on every project header.
-HEADER_LIST := $(OBJ_DIR)/.project-headers
-$(shell mkdir -p $(OBJ_DIR) && printf '%s\n' $(PROJECT_HEADERS) > $(HEADER_LIST).new && \
-  { cmp -s $(HEADER_LIST).new $(HEADER_LIST) && rm -f $(HEADER_LIST).new || mv -f $(HEADER_LIST).new $(HEADER_LIST); })
+# and on a stamp per base name of every file it read (SDK headers too): an added or removed project file of
+# that name may be what an #include finds now (tools/cc.py update_name_stamps). An object without a .d file
+# (built before them) depends on every project header.
+NAME_STAMPS := $(OBJ_DIR)/.names
+$(shell $(PYTHON) tools/cc.py --name-stamps $(NAME_STAMPS))
 DEPFILES := $(wildcard $(OBJECTS:.obj=.d))
 -include $(DEPFILES)
 $(filter-out $(DEPFILES:.d=.obj),$(OBJECTS)): $(PROJECT_HEADERS)
 
-$(OBJ_DIR)/%.obj: src/%.cpp $(HEADER_LIST) config/toolchain.json Makefile tools/cc.py tools/lib.py | build/tools/wine/.ready
-	$(PYTHON) tools/cc.py --depfile $(@:.obj=.d) $< $@ $(CPPFLAGS) $(CXXFLAGS)
+$(OBJ_DIR)/%.obj: src/%.cpp config/toolchain.json Makefile tools/cc.py tools/lib.py | build/tools/wine/.ready
+	$(PYTHON) tools/cc.py --depfile $(@:.obj=.d) --name-stamps $(NAME_STAMPS) $< $@ $(CPPFLAGS) $(CXXFLAGS)
 
-$(OBJ_DIR)/%.obj: src/%.c $(HEADER_LIST) config/toolchain.json Makefile tools/cc.py tools/lib.py | build/tools/wine/.ready
-	$(PYTHON) tools/cc.py --depfile $(@:.obj=.d) $< $@ $(CPPFLAGS) $(CXXFLAGS)
+$(OBJ_DIR)/%.obj: src/%.c config/toolchain.json Makefile tools/cc.py tools/lib.py | build/tools/wine/.ready
+	$(PYTHON) tools/cc.py --depfile $(@:.obj=.d) --name-stamps $(NAME_STAMPS) $< $@ $(CPPFLAGS) $(CXXFLAGS)
 
 # Serialize first-time Wine setup, then compile distinct objects concurrently.
 build/tools/wine/.ready:
@@ -171,8 +171,8 @@ dependencies:
 $(DEPENDENCY_FILES): | dependencies
 	@test -f $@
 
-$(OBJ_DIR)/vendored/%.obj: lib/ogg-vorbis/%.c $(DEPENDENCY_FILES) $(HEADER_LIST) config/ogg-vorbis.json tools/dependencies.py config/toolchain.json Makefile tools/cc.py tools/lib.py | build/tools/wine/.ready
-	$(PYTHON) tools/cc.py --depfile $(@:.obj=.d) $(if $(TOOLCHAIN),--toolchain $(TOOLCHAIN) )$< $@ $(CPPFLAGS) $(CXXFLAGS)
+$(OBJ_DIR)/vendored/%.obj: lib/ogg-vorbis/%.c $(DEPENDENCY_FILES) config/ogg-vorbis.json tools/dependencies.py config/toolchain.json Makefile tools/cc.py tools/lib.py | build/tools/wine/.ready
+	$(PYTHON) tools/cc.py --depfile $(@:.obj=.d) --name-stamps $(NAME_STAMPS) $(if $(TOOLCHAIN),--toolchain $(TOOLCHAIN) )$< $@ $(CPPFLAGS) $(CXXFLAGS)
 
 setup: dependencies
 	$(PYTHON) tools/setup.py

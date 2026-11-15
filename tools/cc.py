@@ -51,14 +51,48 @@ def unix_path(name):
     return path
 
 
-def write_depfile(depfile, output, log):
-    """A make rule naming the project files (outside build/) the compilation read, each also as an empty
-    rule so a deleted header rebuilds instead of failing; returns the log without the include notes."""
-    headers = set()
+# Files an #include can find in the project: everything under these directories but the units.
+INCLUDABLE = ("src", "lib/ogg-vorbis")
+
+
+def update_name_stamps(directory):
+    """One file per lower-case base name of an includable project file, holding the project files of that name,
+    rewritten only when that list changes. An object depends on the stamps of the names it read (SDK headers
+    too, whose stamps are empty until a project file takes the name): a new or removed header rebuilds only the
+    objects that read a file of its name, where an #include may now find another file."""
+    table = {}
+    for top in INCLUDABLE:
+        for path in (ROOT / top).rglob("*"):
+            if path.is_file() and path.suffix not in {".c", ".cpp"}:
+                table.setdefault(path.name.lower(), []).append(path.relative_to(ROOT).as_posix())
+    directory.mkdir(parents=True, exist_ok=True)
+    for name in set(table) | {stamp.name for stamp in directory.iterdir() if not stamp.name.endswith(".tmp")}:
+        text = "".join(f"{path}\n" for path in sorted(table.get(name, [])))
+        stamp = directory / name
+        if not stamp.is_file() or stamp.read_text() != text:
+            partial = stamp.with_name(f"{name}.{os.getpid()}.tmp")
+            partial.write_text(text)
+            os.replace(partial, stamp)
+
+
+def write_depfile(depfile, output, log, stamps=None):
+    """A make rule naming the project files (outside build/) the compilation read and, with `stamps` (the
+    directory of update_name_stamps), the stamps of the base names of every file it read; each also as an
+    empty rule so a deleted header rebuilds instead of failing. Returns the log without the include notes."""
+    headers, read = set(), set()
     for name in INCLUDE_NOTE.findall(log):
         path = unix_path(name)
+        read.add(path.name.lower())
         if path.is_relative_to(ROOT) and not path.is_relative_to(ROOT / "build"):
             headers.add(path.relative_to(ROOT).as_posix())
+    if stamps is not None:
+        for name in read:
+            stamp = stamps / name
+            if not stamp.exists():  # a name only the SDK has: no project file shadows it yet
+                stamps.mkdir(parents=True, exist_ok=True)
+                stamp.touch()
+                os.utime(stamp, (0, 0))
+            headers.add(Path(os.path.relpath(stamp, ROOT)).as_posix())
     target = Path(os.path.relpath(output, ROOT)).as_posix()
     names = sorted(headers)
     lines = [f"{target}: \\", *(f" {name} \\" for name in names), "", *(f"{name}:" for name in names)]
@@ -156,11 +190,19 @@ def main():
                         help="With --implib: preserve the DLL export decorations in the .def")
     parser.add_argument("--depfile", type=Path,
                         help="When compiling: write a make rule of the headers the unit read here (/showIncludes)")
+    parser.add_argument("--name-stamps", type=Path, metavar="DIRECTORY",
+                        help="With --depfile: also depend on the stamps of the names read (update_name_stamps); "
+                             "alone: bring the stamps up to date")
     parser.add_argument("--toolchain", metavar="NAME",
                         help="Compile with this secondary compiler from config/toolchain.json (default: the primary)")
-    parser.add_argument("first", type=Path, help="Source when compiling; output for --link/--implib")
+    parser.add_argument("first", type=Path, nargs="?", help="Source when compiling; output for --link/--implib")
     parser.add_argument("arguments", nargs=argparse.REMAINDER)
     args = parser.parse_args()
+    if args.name_stamps and args.first is None:
+        update_name_stamps(args.name_stamps.resolve())
+        return 0
+    if args.first is None:
+        parser.error("the source (or output) is required")
     if args.decorated_exports and not args.implib:
         parser.error("--decorated-exports requires --implib")
     if args.depfile and (args.link or args.implib):
@@ -236,7 +278,8 @@ def main():
             args.depfile.unlink(missing_ok=True)
         result, log = (run_linker if args.link else run_tool)(command, env)
         if args.depfile and not result.returncode:
-            log = write_depfile(args.depfile.resolve(), output, log)
+            log = write_depfile(args.depfile.resolve(), output, log,
+                                args.name_stamps.resolve() if args.name_stamps else None)
         if args.link and args.optional_pdb and re.search(r"\bLNK1101\b", log):
             # Symbols are a convenience for the Matching executable; the code does not depend on them.
             print("warning: this installation cannot write a PDB (LNK1101); linking without /DEBUG", flush=True)

@@ -27,10 +27,11 @@ class BuildKindTests(unittest.TestCase):
         self.assertEqual(result.returncode, 0, result.stderr)
         # Every object also writes the headers it read (--depfile OBJECT.d) for make.
         lines = result.stdout.splitlines()
-        self.assertTrue(all(re.match(r"python3 tools/cc.py --depfile (\S+)\.d .* \1\.obj ", line)
+        depfile = r"python3 tools/cc.py --depfile (\S+)\.d --name-stamps \S+/\.names .* \1\.obj "
+        self.assertTrue(all(re.match(depfile, line)
                             for line in lines if line.startswith("python3 tools/cc.py") and ".obj " in line
                             and "--link" not in line and "build/Debug/" not in line))
-        lines = [re.sub(r"--depfile \S+ ", "", line) for line in lines]
+        lines = [re.sub(r"--depfile \S+ --name-stamps \S+ ", "", line) for line in lines]
         commands = [line.replace("--toolchain rtm ", "") for line in lines
                     if line.startswith(("python3 tools/cc.py lib/ogg-vorbis/",
                                         "python3 tools/cc.py --toolchain rtm lib/ogg-vorbis/"))]
