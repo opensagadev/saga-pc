@@ -365,7 +365,7 @@ found:
         light->secondary_colour.x = 0.5f;
         light->secondary_colour.y = 0.5f;
         light->secondary_colour.z = 0.5f;
-        light->type = 2;
+        light->type = RTL_LIGHT_POINT;
         light->flags &= static_cast<u8>(~1u);
         light->unknown_5e = 0;
         light->unknown_60 = 0;

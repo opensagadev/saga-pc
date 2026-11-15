@@ -45,6 +45,16 @@ extern "C" {
 #endif
 
     /* Private-register helpers remain local; no public stack prototypes. */
+/* RTL_LIGHT.type; 0 is an unused slot. The light editor's Light Type menu names the others. */
+#define RTL_LIGHT_AMBIENT 1
+#define RTL_LIGHT_POINT 2
+#define RTL_LIGHT_POINT_FLICKER 3
+#define RTL_LIGHT_DIRECTIONAL 4
+#define RTL_LIGHT_CAMDIR 5
+#define RTL_LIGHT_POINT_BLEND 6
+#define RTL_LIGHT_ANTILIGHT 7
+#define RTL_LIGHT_JON_FLICKER 8
+
     typedef struct RTL_LIGHT {  // size 0x8c
         NUVEC position;         // 0x00
         NUVEC direction;        // 0x0c

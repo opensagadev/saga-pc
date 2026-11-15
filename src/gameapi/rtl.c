@@ -90,7 +90,7 @@ static void InsertLight(RTL_LIGHT *light, RTL_DATA *lighting_data, float strengt
     i32 slot;
     i32 move;
     switch (light->type) {
-        case 1:
+        case RTL_LIGHT_AMBIENT:
             for (slot = 0; slot < 3; ++slot) {
                 if (lighting_data->ambient_strengths[slot] < strength) {
                     for (move = 2; move != slot; --move) {
@@ -228,10 +228,10 @@ static void rtlCalcLights(NUVEC *position, NUMTX *rotation, f32 scale, RTL_DATA 
         if (lighting_data->directional_lights[slot] != NULL) {
             i32 invalid = 0;
             switch (lighting_data->directional_lights[slot]->type) {
-                case 4:
+                case RTL_LIGHT_DIRECTIONAL:
                     lighting_data->direction[slot] = lighting_data->directional_lights[slot]->direction;
                     break;
-                case 2:
+                case RTL_LIGHT_POINT:
                     if (position == NULL) {
                         invalid = 1;
                     } else {
@@ -239,9 +239,9 @@ static void rtlCalcLights(NUVEC *position, NUMTX *rotation, f32 scale, RTL_DATA 
                         NuVecNorm(&lighting_data->direction[slot], &lighting_data->direction[slot]);
                     }
                     break;
-                case 3:
-                case 6:
-                case 8:
+                case RTL_LIGHT_POINT_FLICKER:
+                case RTL_LIGHT_POINT_BLEND:
+                case RTL_LIGHT_JON_FLICKER:
                     if (position == NULL) {
                         invalid = 1;
                     } else {
@@ -367,12 +367,13 @@ static void rtlApplySetScaleLoop(void *set, RTL_DATA *lighting_data, NUVEC *posi
                 light = GetNextRTL(set, light, indices, &index);
                 continue;
             }
-            if (identity >= 0 && light->type != 7) {
+            if (identity >= 0 && light->type != RTL_LIGHT_ANTILIGHT) {
                 if ((1 << identity) & (u16)light->unknown_60) {
                     light = GetNextRTL(set, light, indices, &index);
                     continue;
                 }
-                if (light->unknown_5e != 0 && light->type == 5 && (identity == -1 || !((1 << identity) & (u16)light->unknown_5e))) {
+                if (light->unknown_5e != 0 && light->type == RTL_LIGHT_CAMDIR &&
+                    (identity == -1 || !((1 << identity) & (u16)light->unknown_5e))) {
                     light = GetNextRTL(set, light, indices, &index);
                     continue;
                 }
@@ -386,7 +387,7 @@ static void rtlApplySetScaleLoop(void *set, RTL_DATA *lighting_data, NUVEC *posi
             }
             if (!(light->flags & 1)) {
                 switch (light->type) {
-                    case 1:
+                    case RTL_LIGHT_AMBIENT:
                         if (position != NULL) {
                             distance_sq = RTL_DISTANCE_SQ;
                         } else {
@@ -399,11 +400,11 @@ static void rtlApplySetScaleLoop(void *set, RTL_DATA *lighting_data, NUVEC *posi
                             }
                         }
                         break;
-                    case 2:
-                    case 3:
-                    case 4:
-                    case 6:
-                    case 8:
+                    case RTL_LIGHT_POINT:
+                    case RTL_LIGHT_POINT_FLICKER:
+                    case RTL_LIGHT_DIRECTIONAL:
+                    case RTL_LIGHT_POINT_BLEND:
+                    case RTL_LIGHT_JON_FLICKER:
                         if (position != NULL) {
                             distance_sq = RTL_DISTANCE_SQ;
                         } else {
@@ -435,7 +436,7 @@ static void rtlApplySetScaleLoop(void *set, RTL_DATA *lighting_data, NUVEC *posi
                                         lighting_data->cached_light = light;
                                         lighting_data->cached_light_uid = light->uid;
                                         lighting_data->cached_value = strength;
-                                        if (light->type == 4) {
+                                        if (light->type == RTL_LIGHT_DIRECTIONAL) {
                                             NuVecScale(&lighting_data->shadow_direction, &light->direction, -1.0f);
                                             lighting_data->shadow_blend = 1.0f;
                                         } else {
@@ -445,7 +446,7 @@ static void rtlApplySetScaleLoop(void *set, RTL_DATA *lighting_data, NUVEC *posi
                                     }
                                 } else {
                                     lighting_data->cached_value = strength;
-                                    if (light->type == 4) {
+                                    if (light->type == RTL_LIGHT_DIRECTIONAL) {
                                         NuVecScale(&lighting_data->shadow_direction, &light->direction, -1.0f);
                                     } else {
                                         NuVecSub(&lighting_data->shadow_direction, position, &light->position);
@@ -456,10 +457,10 @@ static void rtlApplySetScaleLoop(void *set, RTL_DATA *lighting_data, NUVEC *posi
                             lighting_data->cached_value = 0.0000001f;
                         }
                         break;
-                    case 5:
+                    case RTL_LIGHT_CAMDIR:
                         InsertLight(light, lighting_data, 2.0f);
                         break;
-                    case 7:
+                    case RTL_LIGHT_ANTILIGHT:
                         if (position != NULL && (distance_sq = RTL_DISTANCE_SQ) < light->outer_radius * light->outer_radius) {
                             RTL_FALLOFF;
                             if (strength != 0.0f) {
@@ -481,7 +482,8 @@ static void rtlApplySetScaleLoop(void *set, RTL_DATA *lighting_data, NUVEC *posi
 }
 
 static void rtlCalcShadow(RTL_DATA *data) {
-    if (data->cached_light != NULL && rtl_frametime != 0.0f && (data->cached_light->type == 3 || data->cached_light->type == 8)) {
+    if (data->cached_light != NULL && rtl_frametime != 0.0f &&
+        (data->cached_light->type == RTL_LIGHT_POINT_FLICKER || data->cached_light->type == RTL_LIGHT_JON_FLICKER)) {
         data->shadow_direction.x += (NuRandFloat() - 0.5f) * rtl_shadow_flicker.x;
         data->shadow_direction.y += (NuRandFloat() - 0.5f) * rtl_shadow_flicker.y;
         data->shadow_direction.z += (NuRandFloat() - 0.5f) * rtl_shadow_flicker.z;
@@ -551,7 +553,7 @@ i32 rtlDynamicAlloc(void) {
     }
     light = (RTL_LIGHT *)NuLstAllocTail(rtl_dynamic_pool);
     if (light != NULL) {
-        light->type = 4;
+        light->type = RTL_LIGHT_DIRECTIONAL;
         light->position.x = light->position.y = light->position.z = 0.0f;
         light->inner_radius = 1.0f;
         light->outer_radius = 2.0f;
@@ -561,7 +563,7 @@ i32 rtlDynamicAlloc(void) {
         light->secondary_colour.x = 0.5f;
         light->secondary_colour.y = 0.5f;
         light->secondary_colour.z = 0.5f;
-        light->type = 2;
+        light->type = RTL_LIGHT_POINT;
         light->disabled = 0;
         light->unknown_5e = 0;
         light->unknown_60 = 0;
@@ -711,7 +713,7 @@ static void RtlProcessLightPrivate(RTL_LIGHT *light, f32 elapsed) {
     switch (light->type) {
         case 0:
             return;
-        case 3:
+        case RTL_LIGHT_POINT_FLICKER:
             if (light->parameter_54 >= 0.0f) {
                 light->parameter_54 -= elapsed;
                 light->ambient = light->colour;
@@ -726,7 +728,7 @@ static void RtlProcessLightPrivate(RTL_LIGHT *light, f32 elapsed) {
                 }
             }
             break;
-        case 6:
+        case RTL_LIGHT_POINT_BLEND:
             if (light->unknown_64 == 0.0f) {
                 light->ambient.x = light->colour.x;
                 light->ambient.y = light->colour.y;
@@ -755,7 +757,7 @@ static void RtlProcessLightPrivate(RTL_LIGHT *light, f32 elapsed) {
                 }
             }
             break;
-        case 8:
+        case RTL_LIGHT_JON_FLICKER:
             light->ambient.x = light->secondary_colour.x * light->blend + light->colour.x * (1.0f - light->blend);
             light->ambient.y = light->secondary_colour.y * light->blend + light->colour.y * (1.0f - light->blend);
             light->ambient.z = light->secondary_colour.z * light->blend + light->colour.z * (1.0f - light->blend);
@@ -874,7 +876,7 @@ void IndexLights(RTL_SET *set, VARIPTR *buffer, i32 buffer_end) {
             minimum_x = (f32)(column) / grid->scale - grid->offset_x;
             maximum_x = (f32)(column + 1) / grid->scale - grid->offset_x;
             for (index = 0, light = set->lights; light->type != 0; ++index, ++light) {
-                if (light->type == 5 ||
+                if (light->type == RTL_LIGHT_CAMDIR ||
                     !(light->position.x + light->outer_radius < minimum_x || light->position.x - light->outer_radius > maximum_x ||
                       light->position.z + light->outer_radius < minimum_z || light->position.z - light->outer_radius > maximum_z)) {
                     ++*indices;
@@ -1500,7 +1502,7 @@ void edrtlDrawRTLInfo(void) {
         if (curr_rtl->unknown_68 != 0) {
             lines++;
         }
-        if (curr_rtl->type == 5 && curr_rtl->unknown_5e != 0) {
+        if (curr_rtl->type == RTL_LIGHT_CAMDIR && curr_rtl->unknown_5e != 0) {
             lines++;
         }
         if (curr_rtl->unknown_60 != 0) {
@@ -1546,7 +1548,7 @@ void edrtlDrawRTLInfo(void) {
             NuQFntPrintEx(system_qfont, x, y, 16, "MODIFIER: %s", modifier_names[MAX(0, MIN(modifier_cnt - 1, curr_rtl->unknown_7b))]);
             y += height;
         }
-        if (curr_rtl->type == 5 && curr_rtl->unknown_5e != 0) {
+        if (curr_rtl->type == RTL_LIGHT_CAMDIR && curr_rtl->unknown_5e != 0) {
             NuQFntPrintEx(system_qfont, x, y, 16, "[HAS ASSOCS]");
             y += height;
         }
@@ -2385,10 +2387,10 @@ void edrtlDrawLightEx(i32 index, i32 style) {
         outer_colour = ~outer_colour;
     }
     switch (curr_set->lights[index].type) {
-        case 1:
+        case RTL_LIGHT_AMBIENT:
             EDRTL_RADIUS_PAIR(curr_set->lights[index]);
             return;
-        case 4:
+        case RTL_LIGHT_DIRECTIONAL:
             line[0].colour = line[1].colour = colour;
             line[0].position = curr_set->lights[index].position;
             NuVecScale(&line[1].position, &curr_set->lights[index].direction, curr_set->lights[index].outer_radius);
@@ -2396,7 +2398,7 @@ void edrtlDrawLightEx(i32 index, i32 style) {
             EDRTL_RNDR_VTX_LINE(line);
             EDRTL_RADIUS_PAIR(curr_set->lights[index]);
             return;
-        case 5:
+        case RTL_LIGHT_CAMDIR:
             line[0].colour = line[1].colour = colour;
             line[0].position = curr_set->lights[index].position;
             NuVecScale(&line[1].position, &curr_set->lights[index].direction, 2.0f);
@@ -2408,11 +2410,11 @@ void edrtlDrawLightEx(i32 index, i32 style) {
                 RndrOSquare(&curr_set->lights[index].position, 2.0f, -1, EDRTL_LIGHT_MTL());
             }
             return;
-        case 2:
-        case 3:
-        case 6:
-        case 7:
-        case 8:
+        case RTL_LIGHT_POINT:
+        case RTL_LIGHT_POINT_FLICKER:
+        case RTL_LIGHT_POINT_BLEND:
+        case RTL_LIGHT_ANTILIGHT:
+        case RTL_LIGHT_JON_FLICKER:
             EDRTL_RADIUS_PAIR(curr_set->lights[index]);
             return;
     }
@@ -2960,21 +2962,21 @@ void InitUI(void) {
     if (menu == NULL) {
         RtlUiCreateFailed();
     }
-    created = eduiItemCheckCreate(2, colours, 0, 2, cbLightType, "Point");
+    created = eduiItemCheckCreate(RTL_LIGHT_POINT, colours, 0, 2, cbLightType, "Point");
     point_item = eduiMenuAddItem(type_menu, created);
-    created = eduiItemCheckCreate(8, colours, 0, 2, cbLightType, "Jon Flicker");
+    created = eduiItemCheckCreate(RTL_LIGHT_JON_FLICKER, colours, 0, 2, cbLightType, "Jon Flicker");
     jonflicker_item = eduiMenuAddItem(type_menu, created);
-    created = eduiItemCheckCreate(3, colours, 0, 2, cbLightType, "Point Flicker");
+    created = eduiItemCheckCreate(RTL_LIGHT_POINT_FLICKER, colours, 0, 2, cbLightType, "Point Flicker");
     pointflicker_item = eduiMenuAddItem(type_menu, created);
-    created = eduiItemCheckCreate(6, colours, 0, 2, cbLightType, "Point Blend");
+    created = eduiItemCheckCreate(RTL_LIGHT_POINT_BLEND, colours, 0, 2, cbLightType, "Point Blend");
     pointblend_item = eduiMenuAddItem(type_menu, created);
-    created = eduiItemCheckCreate(1, colours, 0, 2, cbLightType, "Ambient");
+    created = eduiItemCheckCreate(RTL_LIGHT_AMBIENT, colours, 0, 2, cbLightType, "Ambient");
     ambient_item = eduiMenuAddItem(type_menu, created);
-    created = eduiItemCheckCreate(4, colours, 0, 2, cbLightType, "Directional");
+    created = eduiItemCheckCreate(RTL_LIGHT_DIRECTIONAL, colours, 0, 2, cbLightType, "Directional");
     directional_item = eduiMenuAddItem(type_menu, created);
-    created = eduiItemCheckCreate(7, colours, 0, 2, cbLightType, "Antilight");
+    created = eduiItemCheckCreate(RTL_LIGHT_ANTILIGHT, colours, 0, 2, cbLightType, "Antilight");
     antilight_item = eduiMenuAddItem(type_menu, created);
-    created = eduiItemCheckCreate(5, colours, 0, 2, cbLightType, "Camdir");
+    created = eduiItemCheckCreate(RTL_LIGHT_CAMDIR, colours, 0, 2, cbLightType, "Camdir");
     camdir_item = eduiMenuAddItem(type_menu, created);
     eduiMenuFitWidth(type_menu, 5);
     menu = eduiMenuCreate(100, 70, 180, 300, 0, (void *)&cbCancelSubMenu, "Modifiers");
@@ -3063,19 +3065,19 @@ void InitUI(void) {
     if (menu == NULL) {
         RtlUiCreateFailed();
     }
-    created = eduiItemToggleCreate(2, colours, 0, 1, cbHideType, "Point");
+    created = eduiItemToggleCreate(RTL_LIGHT_POINT, colours, 0, 1, cbHideType, "Point");
     hide_point_item = eduiMenuAddItem(hide_menu, created);
-    created = eduiItemToggleCreate(3, colours, 0, 2, cbHideType, "Point Flicker");
+    created = eduiItemToggleCreate(RTL_LIGHT_POINT_FLICKER, colours, 0, 2, cbHideType, "Point Flicker");
     hide_pointflicker_item = eduiMenuAddItem(hide_menu, created);
-    created = eduiItemToggleCreate(6, colours, 0, 2, cbHideType, "Point Blend");
+    created = eduiItemToggleCreate(RTL_LIGHT_POINT_BLEND, colours, 0, 2, cbHideType, "Point Blend");
     hide_pointblend_item = eduiMenuAddItem(hide_menu, created);
-    created = eduiItemToggleCreate(1, colours, 0, 3, cbHideType, "Ambient");
+    created = eduiItemToggleCreate(RTL_LIGHT_AMBIENT, colours, 0, 3, cbHideType, "Ambient");
     hide_ambient_item = eduiMenuAddItem(hide_menu, created);
-    created = eduiItemToggleCreate(4, colours, 0, 4, cbHideType, "Directional");
+    created = eduiItemToggleCreate(RTL_LIGHT_DIRECTIONAL, colours, 0, 4, cbHideType, "Directional");
     hide_directional_item = eduiMenuAddItem(hide_menu, created);
-    created = eduiItemToggleCreate(7, colours, 0, 4, cbHideType, "Antilight");
+    created = eduiItemToggleCreate(RTL_LIGHT_ANTILIGHT, colours, 0, 4, cbHideType, "Antilight");
     hide_antilight_item = eduiMenuAddItem(hide_menu, created);
-    created = eduiItemToggleCreate(5, colours, 0, 4, cbHideType, "Camdir");
+    created = eduiItemToggleCreate(RTL_LIGHT_CAMDIR, colours, 0, 4, cbHideType, "Camdir");
     hide_camdir_item = eduiMenuAddItem(hide_menu, created);
     eduiMenuFitWidth(hide_menu, 5);
     menu = eduiMenuCreate(100, 70, 180, 300, 0, (void *)edrtlcbCancelDeleteMenu, "Delete Light?");
@@ -3316,32 +3318,32 @@ void RefreshUI(void) {
             colour_item->disabled = 0;
         }
         switch (curr_rtl->type) {
-            case 1:
+            case RTL_LIGHT_AMBIENT:
                 eduiMenuHighlight(type_menu, ambient_item);
                 break;
-            case 2:
+            case RTL_LIGHT_POINT:
                 eduiMenuHighlight(type_menu, point_item);
                 break;
-            case 3:
+            case RTL_LIGHT_POINT_FLICKER:
                 eduiMenuHighlight(type_menu, pointflicker_item);
                 flicker_item->data_ptr = flicker_menu;
                 flicker_item->disabled = 0;
                 break;
-            case 6:
+            case RTL_LIGHT_POINT_BLEND:
                 eduiMenuHighlight(type_menu, pointblend_item);
                 flicker_item->data_ptr = flicker_menu;
                 flicker_item->disabled = 0;
                 break;
-            case 4:
+            case RTL_LIGHT_DIRECTIONAL:
                 eduiMenuHighlight(type_menu, directional_item);
                 break;
-            case 7:
+            case RTL_LIGHT_ANTILIGHT:
                 eduiMenuHighlight(type_menu, antilight_item);
                 break;
-            case 5:
+            case RTL_LIGHT_CAMDIR:
                 eduiMenuHighlight(type_menu, camdir_item);
                 break;
-            case 8:
+            case RTL_LIGHT_JON_FLICKER:
                 eduiMenuHighlight(type_menu, jonflicker_item);
                 flicker_item->data_ptr = jonflicker_menu;
                 flicker_item->disabled = 0;
@@ -3941,7 +3943,7 @@ i32 edrtlProcRTL(f32 delta_time, FRAME_PAD_PC *pad) {
                     curr_rtl->secondary_colour.x = 0.5f;
                     curr_rtl->secondary_colour.y = 0.5f;
                     curr_rtl->secondary_colour.z = 0.5f;
-                    curr_rtl->type = 2;
+                    curr_rtl->type = RTL_LIGHT_POINT;
                     curr_rtl->flags &= (u8)~1u;
                     curr_rtl->unknown_5e = 0;
                     curr_rtl->unknown_60 = 0;
