@@ -4675,8 +4675,9 @@ void DrawParaphernalia(GAMEOBJECT *object) {
         reflected = object->draw_tertiary_mtx;
         CharScene_Draw(WORLD, ((i16)(object->id)), &matrix, extra->draw_reflection ? &reflected : NULL);
     } else if (((i16)(object->id)) == id_CATAPULT &&
-               (object->character_context != CHARACTER_CONTEXT_SHOOT || (object->context_variant_flags & 0x40) == 0 ||
-                object->quick_shoot_bolt_id != -1 || (object->context_timer < 0.5f && GameTimer.update_count % 6 < 3))) {
+               (object->character_context != CHARACTER_CONTEXT_SHOOT ||
+                (object->context_variant_flags & APIOBJECT_CONTEXT_EVENT_DONE) == 0 || object->quick_shoot_bolt_id != -1 ||
+                (object->context_timer < 0.5f && GameTimer.update_count % 6 < 3))) {
         dco_prerotatez = 0xc000;
         DrawObjectOnCharacter(WORLD, object, 0xf0, NULL, object->character_data->game_character->weapon_shoot_joints[0], -1,
                               object->locator_matrices, 0, object->layer_mask, NULL, NULL, 1.0f, 1.0f);

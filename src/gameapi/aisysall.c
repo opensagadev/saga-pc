@@ -368,6 +368,18 @@ typedef struct AI_EDITOR_MODE_BANK { // size 0x184
     i16 current;                     // 0x182
 } AI_EDITOR_MODE_BANK;
 
+/* AIEDITORSETTINGS.display_options: the AI editor menu toggles that set them (label in the comment). */
+enum AIEDITOR_DISPLAY_OPTION {
+    AIEDITOR_DRAW_ALL_PATHS = 0x2,           /* "Draw All Paths" */
+    AIEDITOR_SHOW_CREATURES = 0x8,           /* "Show Creatures" */
+    AIEDITOR_SNAP_HEIGHT = 0x10,             /* "Snap Height" */
+    AIEDITOR_STOP_PLATFORMS = 0x40,          /* "Stop Platforms" */
+    AIEDITOR_SOLID_PATH_DISPLAY = 0x80,      /* "Solid Path Display" */
+    AIEDITOR_SOLID_ANTINODE_DISPLAY = 0x100, /* "Solid Antinode Display" */
+    AIEDITOR_DRAW_WALLSPLINES = 0x200,       /* "Draw Wallsplines" */
+    AIEDITOR_SHOW_CURRENT_SET = 0x400        /* "Show Current Set" */
+};
+
 /* AI editor settings block (0x200 bytes, zeroed by the editor initializer). */
 typedef struct AIEDITORSETTINGS {                                     // size 0x200
     char path_name[16]; /* restored current path on enter */          // 0x000
@@ -7049,7 +7061,7 @@ void aieditor_Enter(AISYS_PC *system, NUVEC *camera_position, void *context, voi
             aieditorsettings.modes.entries[index].enter();
         }
     }
-    aieditorsettings.display_options |= 0x10;
+    aieditorsettings.display_options |= AIEDITOR_SNAP_HEIGHT;
 }
 
 i32 NuSpecialFindByPlatformID(NUGSCN *scene, struct nuhspecial_s *result, i32 platform_id) {
@@ -7085,7 +7097,7 @@ void aieditor_Render(f32 x_scale, f32 y_scale) {
         camera->near_clip = 0.15f;
     }
     edcamSet();
-    if (aieditorsettings.display_options & 0x10) {
+    if (aieditorsettings.display_options & AIEDITOR_SNAP_HEIGHT) {
         edbitsDrawCross(aieditor->cursor_position.x, aieditor->cursor_position.y, aieditor->cursor_position.z, 0.5f, -1,
                         (struct PC_SCENE_MTL_VIEW *)aieditorsettings.path_material);
         edbitsDrawCross(aieditor->camera_position.x, aieditor->camera_position.y, aieditor->camera_position.z, 0.25f, 0xff00ff00,
@@ -8306,7 +8318,7 @@ static void pathEditorDrawPath(EDAIPATH_s *path, i32 path_index) {
     i32 route_index = 0;
     u32 colour;
     EDAIPATHNODE_s *node;
-    solid = (aieditorsettings.display_options & 0x80) &&
+    solid = (aieditorsettings.display_options & AIEDITOR_SOLID_PATH_DISPLAY) &&
             (aieditorsettings.modes.current == AiEditorPathsModeId || aieditorsettings.modes.current == AiEditorCreaturesModeId ||
              aieditorsettings.modes.current == AiEditorLocatorsModeId);
     if (aieditorsettings.modes.current == AiEditorRouteModeId) {
@@ -8423,7 +8435,7 @@ void pathEditorDrawPaths(void) {
         wall = (EDAIPATHWALL_s *)NuLinkedListGetNext(&aieditor->path_walls, &wall->link);
     }
 
-    if ((aieditorsettings.display_options & 2)) {
+    if ((aieditorsettings.display_options & AIEDITOR_DRAW_ALL_PATHS)) {
         i32 index = 0;
         EDAIPATH_s *path = (EDAIPATH_s *)NuLinkedListGetHead(&aieditor->paths);
         while (path != NULL) {
@@ -9050,7 +9062,7 @@ void pathEditor_cbRenameNodeMenu(eduimenu_s *parent, eduiitem_s *item, u32 event
 void pathEditor_cbDrawWallsplinesToggle(eduimenu_s *menu, eduiitem_s *item, u32 event) {
     (void)menu;
     (void)event;
-    aieditorsettings.display_options = (aieditorsettings.display_options & ~512u) | (((u32)item->flags & 1) << 9);
+    aieditorsettings.display_options = (aieditorsettings.display_options & ~AIEDITOR_DRAW_WALLSPLINES) | (((u32)item->flags & 1) << 9);
 }
 
 void pathEditor_cbCnxFlagsToggle(eduimenu_s *menu, eduiitem_s *item, u32 event) {
@@ -9638,43 +9650,44 @@ static void AiEditorClearMainMenu(void) {
 void aieditor_cbDrawAllToggle(eduimenu_s *menu, eduiitem_s *item, u32 event) {
     (void)menu;
     (void)event;
-    aieditorsettings.display_options = (aieditorsettings.display_options & ~2u) | (((u32)item->flags & 1) << 1);
+    aieditorsettings.display_options = (aieditorsettings.display_options & ~AIEDITOR_DRAW_ALL_PATHS) | (((u32)item->flags & 1) << 1);
 }
 
 static void AiEditorDisplayBit4(eduimenu_s *menu, eduiitem_s *item, u32 event) {
     (void)menu;
     (void)event;
-    aieditorsettings.display_options = (aieditorsettings.display_options & ~16u) | (((u32)item->flags & 1) << 4);
+    aieditorsettings.display_options = (aieditorsettings.display_options & ~AIEDITOR_SNAP_HEIGHT) | (((u32)item->flags & 1) << 4);
 }
 
 void aieditor_cbSolidPathDisplayToggle(eduimenu_s *menu, eduiitem_s *item, u32 event) {
     (void)menu;
     (void)event;
-    aieditorsettings.display_options = (aieditorsettings.display_options & ~128u) | (((u32)item->flags & 1) << 7);
+    aieditorsettings.display_options = (aieditorsettings.display_options & ~AIEDITOR_SOLID_PATH_DISPLAY) | (((u32)item->flags & 1) << 7);
 }
 
 static void AiEditorDisplayBit8(eduimenu_s *menu, eduiitem_s *item, u32 event) {
     (void)menu;
     (void)event;
-    aieditorsettings.display_options = (aieditorsettings.display_options & ~256u) | (((u32)item->flags & 1) << 8);
+    aieditorsettings.display_options =
+        (aieditorsettings.display_options & ~AIEDITOR_SOLID_ANTINODE_DISPLAY) | (((u32)item->flags & 1) << 8);
 }
 
 static void AiEditorDisplayBit6(eduimenu_s *menu, eduiitem_s *item, u32 event) {
     (void)menu;
     (void)event;
-    aieditorsettings.display_options = (aieditorsettings.display_options & ~64u) | (((u32)item->flags & 1) << 6);
+    aieditorsettings.display_options = (aieditorsettings.display_options & ~AIEDITOR_STOP_PLATFORMS) | (((u32)item->flags & 1) << 6);
 }
 
 void aieditor_cbShowCreaturesToggle(eduimenu_s *menu, eduiitem_s *item, u32 event) {
     (void)menu;
     (void)event;
-    aieditorsettings.display_options = (aieditorsettings.display_options & ~8u) | (((u32)item->flags & 1) << 3);
+    aieditorsettings.display_options = (aieditorsettings.display_options & ~AIEDITOR_SHOW_CREATURES) | (((u32)item->flags & 1) << 3);
 }
 
 void aieditor_cbShowCreaturesSetToggle(eduimenu_s *menu, eduiitem_s *item, u32 event) {
     (void)menu;
     (void)event;
-    aieditorsettings.display_options = (aieditorsettings.display_options & ~1024u) | (((u32)item->flags & 1) << 10);
+    aieditorsettings.display_options = (aieditorsettings.display_options & ~AIEDITOR_SHOW_CURRENT_SET) | (((u32)item->flags & 1) << 10);
 }
 
 static void AiEditorModeCancel(eduimenu_s *menu, eduimenu_s *child) {
@@ -10387,7 +10400,7 @@ void creatureEditorSaveData(AIPATHSYS *system) {
 
 i32 creatureEditor_IsSelectable(EDAICREATURE_s *creature) {
     i32 selectable = 1;
-    if ((aieditorsettings.display_options & 0x400) && aieditor->selected_creature != NULL &&
+    if ((aieditorsettings.display_options & AIEDITOR_SHOW_CURRENT_SET) && aieditor->selected_creature != NULL &&
         aieditor->selected_creature->set != creature->set) {
         selectable = 0;
     }
@@ -13750,7 +13763,7 @@ i32 aieditor_Proc(f32 menu_delta_time, FRAME_PAD *pad, f32 frame_delta_time, u32
     terrain_height = AITerrShadow(&aieditor->cursor_position, 0.0f, 5.0f, -1);
     platform = AITerrShadowOnPlatform();
     NuSpecialFindByPlatformID(aieditor->enter_context, &aieditor->cursor_platform, platform);
-    if (aieditorsettings.display_options & 0x10) {
+    if (aieditorsettings.display_options & AIEDITOR_SNAP_HEIGHT) {
         ground_height = EShadY;
         roof_height = GetSurfaceInfoRoofHeight;
         closest = 2000000.0f;
@@ -13895,7 +13908,7 @@ void areaEditor_Render(i32 x, i32 y, f32 xscale, f32 yscale) {
     }
     areaEditorDrawAreas();
     pathEditorDrawPaths();
-    if (aieditorsettings.display_options & 8) {
+    if (aieditorsettings.display_options & AIEDITOR_SHOW_CREATURES) {
         creatureEditor_RenderAllCreatures();
     }
     antinodeEditorDrawAntinodes();
@@ -14287,7 +14300,7 @@ void locatorEditor_Render(i32 x, i32 y, f32 xscale, f32 yscale) {
     locatorEditorDrawLocators();
     pathEditorDrawPaths();
     antinodeEditorDrawAntinodes();
-    if (aieditorsettings.display_options & 8) {
+    if (aieditorsettings.display_options & AIEDITOR_SHOW_CREATURES) {
         creatureEditor_RenderAllCreatures();
     }
     if (aieditor->current_locator_set != NULL) {
@@ -15022,7 +15035,7 @@ void pathEditor_Render(i32 x, i32 y, f32 xscale, f32 yscale) {
         pathEditorDrawRoute();
     }
     pathEditorDrawPaths();
-    if (aieditorsettings.display_options & 8) {
+    if (aieditorsettings.display_options & AIEDITOR_SHOW_CREATURES) {
         creatureEditor_RenderAllCreatures();
     }
     areaEditorDrawAreas();
@@ -15148,7 +15161,7 @@ void routeEditor_Render(i32 x, i32 y, f32 xscale, f32 yscale) {
         }
     }
     pathEditorDrawPaths();
-    if (aieditorsettings.display_options & 8) {
+    if (aieditorsettings.display_options & AIEDITOR_SHOW_CREATURES) {
         creatureEditor_RenderAllCreatures();
     }
     areaEditorDrawAreas();
@@ -15217,7 +15230,7 @@ void antinodeEditor_Render(i32 x, i32 y, f32 xscale, f32 yscale) {
     antinodeEditorDrawAntinodes();
     areaEditorDrawAreas();
     pathEditorDrawPaths();
-    if (aieditorsettings.display_options & 8) {
+    if (aieditorsettings.display_options & AIEDITOR_SHOW_CREATURES) {
         creatureEditor_RenderAllCreatures();
     }
     locatorEditorDrawLocators();
@@ -17117,7 +17130,7 @@ eduimenu_s *antinodeEditor_Process(FRAME_PAD *pad) {
             }
         }
     } else if (pad->digital_buttons & PAD_BUTTON_UP) {
-        if ((aieditorsettings.display_options & 0x100) && aieditor->selected_antinode != NULL &&
+        if ((aieditorsettings.display_options & AIEDITOR_SOLID_ANTINODE_DISPLAY) && aieditor->selected_antinode != NULL &&
             aieditor->selected_antinode == aieditor->nearest_antinode) {
             aieditor->flags |= 4;
             step = (aieditor->selected_antinode->upper_height - aieditor->selected_antinode->lower_height) * ((double)0.05f);
@@ -17131,7 +17144,7 @@ eduimenu_s *antinodeEditor_Process(FRAME_PAD *pad) {
             }
         }
     } else if (pad->digital_buttons & PAD_BUTTON_DOWN) {
-        if ((aieditorsettings.display_options & 0x100) && aieditor->selected_antinode != NULL &&
+        if ((aieditorsettings.display_options & AIEDITOR_SOLID_ANTINODE_DISPLAY) && aieditor->selected_antinode != NULL &&
             aieditor->selected_antinode == aieditor->nearest_antinode) {
             aieditor->flags |= 4;
             step = (aieditor->selected_antinode->upper_height - aieditor->selected_antinode->lower_height) * ((double)0.05f);
@@ -18032,7 +18045,7 @@ eduimenu_s *pathEditor_Process(FRAME_PAD *pad) {
             return pathEditor_DeleteNodeMenu();
         }
         if (pad->digital_buttons_pressed & PAD_BUTTON_SELECT) {
-            if (aieditorsettings.display_options & 2) {
+            if (aieditorsettings.display_options & AIEDITOR_DRAW_ALL_PATHS) {
                 pathEditor_SelectNearestPath();
             } else {
                 aieditor->current_path->current_node = pathEditor_GetNearestNode(aieditor->current_path, 0);
@@ -18070,7 +18083,7 @@ eduimenu_s *pathEditor_Process(FRAME_PAD *pad) {
                     AIPathNodeDeletedFn(aieditor->current_path->current_node);
                 }
             }
-            if (aieditorsettings.display_options & 0x80) {
+            if (aieditorsettings.display_options & AIEDITOR_SOLID_PATH_DISPLAY) {
                 if (pad->digital_buttons & PAD_BUTTON_UP) {
                     aieditor->flags |= 4;
                     step = aieditor->current_path->current_node->upper_height * (f64)0.05f;
@@ -18108,7 +18121,7 @@ eduimenu_s *pathEditor_Process(FRAME_PAD *pad) {
         } else if ((pad->digital_buttons & PAD_BUTTON_SELECT) && (pad->digital_buttons_pressed & PAD_BUTTON_L2)) {
             forward = 0;
             named = 1;
-        } else if (aieditorsettings.display_options & 0x80) {
+        } else if (aieditorsettings.display_options & AIEDITOR_SOLID_PATH_DISPLAY) {
             goto done;
         } else if (pad->digital_buttons_pressed & PAD_BUTTON_UP) {
             forward = 1;
@@ -18335,7 +18348,8 @@ void aieditor_Init(AIEDITOR_RENDER_STATE *state, void **scratch_cursor, void **s
     aieditorsettings.script_params[1] = 0.0f;
     aieditorsettings.script_params[2] = 0.0f;
     aieditorsettings.script_params[3] = 0.0f;
-    aieditorsettings.display_options = (aieditorsettings.display_options & 0xfffffb5c) | 0x318;
+    aieditorsettings.display_options = (aieditorsettings.display_options & 0xfffffb5c) | AIEDITOR_SHOW_CREATURES | AIEDITOR_SNAP_HEIGHT |
+                                       AIEDITOR_SOLID_ANTINODE_DISPLAY | AIEDITOR_DRAW_WALLSPLINES;
     aieditorsettings.character_type = -1;
     aieditorsettings.script_flags = 0;
     aieditorsettings.modes.count = 0;

@@ -168,6 +168,13 @@ extern "C" {
 #define APIOBJECT_DETONATOR_WAIT_RELEASE 0x8000 /* Detonator_MoveCode ignores the held special button until it is released */
 #define APIOBJECT_SHOT_FIRED 0x40000            /* the shot of the current shoot animation has been fired */
 
+/* gameobject_s.context_variant_flags: the bits whose meaning is the same in every character context; the others
+ * mean something else per context. */
+/* APIOBJECT_CONTEXT_EVENT_DONE: the context's action has happened (its animation's event frame or the timer); cleared
+ * when the context starts. */
+#define APIOBJECT_CONTEXT_EVENT_DONE 0x40
+#define APIOBJECT_CONTEXT_INVULNERABLE 0x20000 /* hits do nothing while the context's info has the flag for it */
+
 /* gameobject_s.portal_flags: the AI script actions that set them (keyword in the action table). */
 #define APIOBJECT_CAN_DEFEND 0x2                    /* CanDefend */
 #define APIOBJECT_CAN_USE_WEAPON 0x8                /* CanUseWeapon */

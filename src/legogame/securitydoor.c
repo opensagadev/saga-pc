@@ -407,7 +407,7 @@ ADDGIZMOTYPE *SecurityDoors_RegisterGizmo(i32 unused_type_id) {
 }
 
 static void SecurityDoorStart(GAMEOBJECT *object, SECURITY_DOOR_RECORD *door, i32 facing) {
-    object->context_variant_flags &= ~0x40u;
+    object->context_variant_flags &= ~APIOBJECT_CONTEXT_EVENT_DONE;
     object->context_timer = 0.0f;
     object->character_context = CHARACTER_CONTEXT_SECURITY;
     object->grapple = door;
@@ -439,7 +439,7 @@ void SecurityDoor_MoveCode(WORLDINFO *world, GAMEOBJECT *object) {
         object->context_timer = elapsed;
         if (elapsed >= object->context_duration) {
             object->character_context = CHARACTER_CONTEXT_NONE;
-            if ((object->context_variant_flags & 0x40) != 0) {
+            if ((object->context_variant_flags & APIOBJECT_CONTEXT_EVENT_DONE) != 0) {
                 return;
             }
         } else {
@@ -453,7 +453,7 @@ void SecurityDoor_MoveCode(WORLDINFO *world, GAMEOBJECT *object) {
             }
         }
         if ((object->context_variant_flags & 0x20) != 0) {
-            object->context_variant_flags |= 0x40;
+            object->context_variant_flags |= APIOBJECT_CONTEXT_EVENT_DONE;
             ((SECURITY_DOOR_RECORD *)object->grapple)->state = 2;
             NewRumble(object->pad->bound_pad, 0.6f, 0);
         }

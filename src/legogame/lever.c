@@ -158,11 +158,11 @@ void Lever_MoveCode(WORLDINFO *world, GAMEOBJECT *object) {
         object->context_timer += FRAMETIME;
         if (object->context_timer >= object->context_duration) {
             object->character_context = CHARACTER_CONTEXT_NONE;
-            if ((object->context_variant_flags & 0x40) != 0) {
+            if ((object->context_variant_flags & APIOBJECT_CONTEXT_EVENT_DONE) != 0) {
                 return;
             }
         } else {
-            if ((object->context_variant_flags & 0x40) != 0) {
+            if ((object->context_variant_flags & APIOBJECT_CONTEXT_EVENT_DONE) != 0) {
                 return;
             }
             if (object->character_model->model_data_b[object->unknown_7aa] != NULL) {
@@ -183,7 +183,7 @@ void Lever_MoveCode(WORLDINFO *world, GAMEOBJECT *object) {
             ((GIZMO_LEVER *)object->grapple)->flags |= 4;
         }
         ((GIZMO_LEVER *)object->grapple)->flags |= 0x800;
-        object->context_variant_flags |= 0x40;
+        object->context_variant_flags |= APIOBJECT_CONTEXT_EVENT_DONE;
         return;
     }
     if (object->character_model->model_data_b[0x5d] == NULL || object->unknown_281 == 0) {
@@ -218,7 +218,7 @@ void Lever_MoveCode(WORLDINFO *world, GAMEOBJECT *object) {
         if (object->context_duration <= 0.0f) {
             object->context_duration = 1.0f;
         }
-        object->context_variant_flags &= ~0x40;
+        object->context_variant_flags &= ~APIOBJECT_CONTEXT_EVENT_DONE;
         object->movement_facing_angle = ((GIZMO_LEVER *)object->grapple)->yaw;
         ((GIZMO_LEVER *)object->grapple)->flags |= 1;
         ((GIZMO_LEVER *)object->grapple)->pull_progress = 0.0f;

@@ -9,6 +9,52 @@
 extern "C" {
 #endif
 
+/* GameCameraMakeMiniCut3 flags: the DynamicCameraCut AI action's keywords that set them. */
+#define MINICUT_RANGE 0x1                 /* range= */
+#define MINICUT_ROTX 0x2                  /* rotx= */
+#define MINICUT_ROTY 0x4                  /* roty= */
+#define MINICUT_ROTZ 0x8                  /* rotz= */
+#define MINICUT_CONT_ROTX 0x10            /* cont_rotx= */
+#define MINICUT_CONT_ROTY 0x20            /* cont_roty= */
+#define MINICUT_CONT_ROTZ 0x40            /* cont_rotz= */
+#define MINICUT_TARGET 0x80               /* tgt_locator=, tgt_character=, tgt_obj= or tgtpos_* found a target */
+#define MINICUT_CAMERA_POSITION 0x100     /* use_current_campos, campos_* or cam_locator= */
+#define MINICUT_START_TIME 0x200          /* start_time= */
+#define MINICUT_END_TIME 0x400            /* end_time= */
+#define MINICUT_BLEND_TIME 0x800          /* blend_time= */
+#define MINICUT_HOLD_TIME 0x1000          /* hold_time= */
+#define MINICUT_ATTACH_TO_SPLINE 0x2000   /* attach_to_spline= */
+#define MINICUT_SPLINE_DIST_OFFSET 0x4000 /* spline_dist_offset= */
+
+/* MINICAM_COMMAND.type: what MiniCam's command loop does with each (Minicam_AddCommand, GameCameraMakeMiniCut3). */
+#define MINICAM_COMMAND_START 1 /* blend in */
+#define MINICAM_COMMAND_END_TIME 3
+#define MINICAM_COMMAND_BLEND 4
+#define MINICAM_COMMAND_HOLD 5
+#define MINICAM_COMMAND_MODE 6
+#define MINICAM_COMMAND_EASING 7
+#define MINICAM_COMMAND_FOCUS 8
+#define MINICAM_COMMAND_DISTANCE 9
+#define MINICAM_COMMAND_PITCH 10
+#define MINICAM_COMMAND_YAW 11
+#define MINICAM_COMMAND_ROLL 12
+#define MINICAM_COMMAND_PITCH_RATE 13
+#define MINICAM_COMMAND_YAW_RATE 14
+#define MINICAM_COMMAND_ROLL_RATE 15
+#define MINICAM_COMMAND_POSITION 16
+#define MINICAM_COMMAND_SPLINE 17
+
+/* MINICAM.mode and .easing: the DynamicCameraCut keywords mode=follow, mode=static (a spline camera is mode 2) and
+ * linear, slowfast, slowfastslow, fastslow, fastslowfast. */
+#define MINICAM_MODE_FOLLOW 0
+#define MINICAM_MODE_STATIC 1
+#define MINICAM_MODE_SPLINE 2
+#define MINICAM_EASING_LINEAR 0
+#define MINICAM_EASING_SLOWFAST 1
+#define MINICAM_EASING_SLOWFASTSLOW 2
+#define MINICAM_EASING_FASTSLOW 3
+#define MINICAM_EASING_FASTSLOWFAST 4
+
     typedef struct MINICAM_COMMAND { // size 0x1c
         i32 type;                    // 0x00
         f32 duration;                // 0x04

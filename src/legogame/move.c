@@ -2471,7 +2471,7 @@ void GrabVictim(GAMEOBJECT *object, GAMEOBJECT *victim) {
     }
     object->flags_e24 &= ~1u;
     object->context_timer = zero;
-    object->context_variant_flags &= ~0x40u;
+    object->context_variant_flags &= ~APIOBJECT_CONTEXT_EVENT_DONE;
     object->force_target = victim;
     object->blowup_target = NULL;
     object->force_throw_target = NULL;
@@ -2493,7 +2493,7 @@ static void GrabCode(GAMEOBJECT *object) {
         goto clear;
     }
     target = object->force_target;
-    if (target == NULL || (object->context_variant_flags & 0x40) != 0) {
+    if (target == NULL || (object->context_variant_flags & APIOBJECT_CONTEXT_EVENT_DONE) != 0) {
         return;
     }
     if (object->character_model->model_data_b[animation] != NULL) {
@@ -2532,7 +2532,7 @@ static void GrabCode(GAMEOBJECT *object) {
         return;
     }
     if (target->id == (u16)id_GAMORREANGUARD && object->unknown_7aa == ACTION_LUNGE) {
-        object->context_variant_flags |= 0x40;
+        object->context_variant_flags |= APIOBJECT_CONTEXT_EVENT_DONE;
         if (target->character_context == CHARACTER_CONTEXT_FORCE_PUSHED && target->force_target != NULL) {
             target->force_target->force_target = NULL;
         }
@@ -2547,7 +2547,7 @@ static void GrabCode(GAMEOBJECT *object) {
     } else if ((target->character_data->game_character->flags_090 & CHARACTER_RUNTIME_GHOST) == 0) {
         u16 angle;
         NUVEC direction;
-        object->context_variant_flags |= 0x40;
+        object->context_variant_flags |= APIOBJECT_CONTEXT_EVENT_DONE;
         GameAudio_PlaySfx(0x4a, &target->collision_position, 0, 0);
         objhitobj_noimpactsfx = 1;
         ObjHitObj(object, target, 2, 0, 0, 1);
@@ -2574,7 +2574,7 @@ static void BeastCrushCode(GAMEOBJECT *object) {
     object->context_timer -= FRAMETIME;
     if (object->context_timer <= 0.0f) {
         object->character_context = CHARACTER_CONTEXT_NONE;
-        if ((object->context_variant_flags & 0x40) != 0) {
+        if ((object->context_variant_flags & APIOBJECT_CONTEXT_EVENT_DONE) != 0) {
             return;
         }
     } else {
@@ -2591,7 +2591,7 @@ static void BeastCrushCode(GAMEOBJECT *object) {
         KillGameObject(object->force_target, 2, 0);
     }
     object->flags_e24 &= ~1;
-    object->context_variant_flags |= 0x40;
+    object->context_variant_flags |= APIOBJECT_CONTEXT_EVENT_DONE;
 }
 
 void EatVictim(GAMEOBJECT *object) {
@@ -2605,7 +2605,7 @@ void EatVictim(GAMEOBJECT *object) {
     }
     object->character_context = CHARACTER_CONTEXT_EAT;
     object->context_timer = AnimDuration((i16)object->id, 0x4e, 0.0f, 0.0f, 1);
-    object->context_variant_flags &= ~0x40u;
+    object->context_variant_flags &= ~APIOBJECT_CONTEXT_EVENT_DONE;
 }
 
 GAMEOBJECT *ObjOpponent(GAMEOBJECT *object, f32 range, f32 extra_radius, i32 allow_untargeted, i32 mode, i32 player_filter) {
@@ -3253,7 +3253,7 @@ static GAMEOBJECT *BlockFindSpecialAttack(GAMEOBJECT *object) {
         if (candidate != object && (candidate->flags_1fc_word & APIOBJECT_FLAG_CHARACTER) != 0 && candidate->dead == 0 &&
             candidate->character_context == CHARACTER_CONTEXT_PUNCH && candidate->force_target == object &&
             (candidate->id != (u16)id_GAMORREANGUARD || candidate->unknown_7aa != ACTION_PUNCH3 ||
-             (candidate->context_flags_pc & 0x40) == 0)) {
+             (candidate->context_flags_pc & APIOBJECT_CONTEXT_EVENT_DONE) == 0)) {
             return candidate;
         }
     }
@@ -3378,7 +3378,7 @@ static void BlockCode(GAMEOBJECT *object, i32 pressed, i32 held, i32 jump_presse
                         if (attacker->character_context == CHARACTER_CONTEXT_PUNCH &&
                             attacker->unknown_7aa == (i16)state->blocked_attack_stage &&
                             (attacker->id != (u16)id_GAMORREANGUARD || attacker->unknown_7aa != ACTION_PUNCH3 ||
-                             (attacker->context_flags_pc & 0x40) == 0)) {
+                             (attacker->context_flags_pc & APIOBJECT_CONTEXT_EVENT_DONE) == 0)) {
                             return;
                         }
                         state->blocked_attack_stage = 0;
@@ -3428,7 +3428,7 @@ static void BlockCode(GAMEOBJECT *object, i32 pressed, i32 held, i32 jump_presse
             if (held != 0) {
                 attacker = object->block_attacker;
                 if (attacker == NULL || attacker->id != (u16)id_GAMORREANGUARD || attacker->character_context != CHARACTER_CONTEXT_PUNCH ||
-                    attacker->unknown_7aa != ACTION_PUNCH3 || (attacker->context_flags_pc & 0x40) == 0) {
+                    attacker->unknown_7aa != ACTION_PUNCH3 || (attacker->context_flags_pc & APIOBJECT_CONTEXT_EVENT_DONE) == 0) {
                     StartHold(object);
                     return;
                 }
@@ -3568,7 +3568,8 @@ static void PunchCode(GAMEOBJECT *object, i32 pressed, i32 held, i32 require_tar
         if (object->combo_input_latched == 0 && pressed != 0) {
             if ((object->flags_1fc & APIOBJECT_FLAG_PLAYER_ACTIVE) == 0) {
                 object->combo_input_latched = qrand() / 0x8000 + 1;
-            } else if ((object->context_flags_pc & 0x40) == 0 && !(object->context_timer <= object->context_duration)) {
+            } else if ((object->context_flags_pc & APIOBJECT_CONTEXT_EVENT_DONE) == 0 &&
+                       !(object->context_timer <= object->context_duration)) {
                 object->combo_input_latched = 1;
             } else {
                 object->combo_input_latched = 2;
@@ -3593,7 +3594,7 @@ static void PunchCode(GAMEOBJECT *object, i32 pressed, i32 held, i32 require_tar
                     HitRumble(object);
                 }
             } else {
-                if ((object->context_flags_pc & 0x40) == 0) {
+                if ((object->context_flags_pc & APIOBJECT_CONTEXT_EVENT_DONE) == 0) {
                     Punch_Hit(object, object->force_target, punch_gap, punch_charge_gap);
                 }
                 if (suppress_combo == 0 && (object->context_flags_pc & 0x80) == 0 && object->combo_stage < 2 &&
@@ -3658,7 +3659,7 @@ static void PunchCode(GAMEOBJECT *object, i32 pressed, i32 held, i32 require_tar
                                 object->character_context = CHARACTER_CONTEXT_PUNCH;
                                 object->context_duration =
                                     (object->context_variant_flags & 1) != 0 && object->combo_stage < 2 ? 0.2f : 0.0f;
-                                object->context_variant_flags &= ~0x40;
+                                object->context_variant_flags &= ~APIOBJECT_CONTEXT_EVENT_DONE;
                                 object->context_timer += object->context_duration;
                                 object->combo_input_latched = 0;
                                 ResetAnimPacket(&object->anim_packet, -1);
@@ -3693,7 +3694,7 @@ static void PunchCode(GAMEOBJECT *object, i32 pressed, i32 held, i32 require_tar
             return;
         } else {
             f32 hit_frame;
-            if ((object->context_flags_pc & 0x40) != 0) {
+            if ((object->context_flags_pc & APIOBJECT_CONTEXT_EVENT_DONE) != 0) {
                 return;
             }
             hit_frame = AnimListFrame(object->character_model, object->unknown_7aa, 0);
@@ -3835,7 +3836,7 @@ start_attack:
     duration = AnimDuration((i16)object->id, object->unknown_7aa, 0.0f, 0.0f, 0);
     if (duration > 0.0f) {
         f32 extra;
-        object->context_variant_flags &= ~0x40;
+        object->context_variant_flags &= ~APIOBJECT_CONTEXT_EVENT_DONE;
         object->context_timer = duration;
         object->character_context = CHARACTER_CONTEXT_PUNCH;
         object->combo_input_latched = 0;
@@ -4189,12 +4190,12 @@ static void LightSabreStreakCode(GAMEOBJECT *object, i32 blade, i32 effect) {
                     object->character_context != CHARACTER_CONTEXT_LAND_SLAM &&
                     (U64_PAIR(&CInfo[object->character_context].flags) & 0x04000000) == 0 &&
                     ((U64_PAIR(&CInfo[object->character_context].flags) & 0x08000000) == 0 ||
-                     (0x20000 & object->context_variant_flags) == 0) &&
+                     (APIOBJECT_CONTEXT_INVULNERABLE & object->context_variant_flags) == 0) &&
                     target->character_context != CHARACTER_CONTEXT_COMBO && target->character_context != CHARACTER_CONTEXT_SWIPE &&
                     target->character_context != CHARACTER_CONTEXT_LAND_LUNGE && target->character_context != CHARACTER_CONTEXT_LAND_SLAM &&
                     (U64_PAIR(&CInfo[target->character_context].flags) & 0x04000000) == 0 &&
                     ((U64_PAIR(&CInfo[target->character_context].flags) & 0x08000000) == 0 ||
-                     (target->context_variant_flags & 0x20000) == 0)) {
+                     (target->context_variant_flags & APIOBJECT_CONTEXT_INVULNERABLE) == 0)) {
                     PlaySfx("SaberSparks", &points[point]);
                     SaberSparksTimer = (f32)(((f64)qrand() * (f64)(1.0f / 65535.0f)) * (f64)0.3f + (f64)0.3f);
                     NewRumble(object->pad->bound_pad, (f32)((f64)qrand() * (f64)(1.0f / 65535.0f) * (f64)0.2f + (f64)0.2f), 0);
@@ -4550,10 +4551,10 @@ static void LightSabreComboCode(GAMEOBJECT *object, i32 action_pressed, i32 acti
             object->anim_packet.requested_animation == object->unknown_7aa &&
             (object->combo_stage == 2 || (object->anim_packet.flags & 1) != 0)) {
             if (object->combo_stage == 2) {
-                i32 previous_hit_frame = (object->context_variant_flags & 0x40) != 0;
+                i32 previous_hit_frame = (object->context_variant_flags & APIOBJECT_CONTEXT_EVENT_DONE) != 0;
                 f32 *frames = AnimListFrameArray(object->character_model, object->unknown_7aa);
                 f32 frame;
-                if ((object->context_variant_flags & 0x40) == 0) {
+                if ((object->context_variant_flags & APIOBJECT_CONTEXT_EVENT_DONE) == 0) {
                     frame = frames[0];
                     if (frame > 0.0f && object->anim_packet.current_time >= frame) {
                         ComboHitFrame(object, object->combo_branch == 6 ? 3 : 1);
@@ -4576,7 +4577,7 @@ static void LightSabreComboCode(GAMEOBJECT *object, i32 action_pressed, i32 acti
                     }
                 }
                 object->sabre_flags |= 2;
-                if ((object->context_variant_flags & 0x40) == 0 &&
+                if ((object->context_variant_flags & APIOBJECT_CONTEXT_EVENT_DONE) == 0 &&
                     (((object->context_variant_flags & 8) != 0 && AnimListFrame(object->character_model, object->unknown_7aa, 0) == 0.0f) ||
                      (object->context_variant_flags & 2) != 0)) {
                     ComboHitFrame(object, object->combo_branch == 6 ? 3 : 1);
@@ -4585,7 +4586,7 @@ static void LightSabreComboCode(GAMEOBJECT *object, i32 action_pressed, i32 acti
                     (object->id != (u16)id_IMPERIALGUARD || object->combo_stage != 2)) {
                     StartHold(object);
                 }
-                if ((object->context_variant_flags & 0x40) != 0 && !previous_hit_frame) {
+                if ((object->context_variant_flags & APIOBJECT_CONTEXT_EVENT_DONE) != 0 && !previous_hit_frame) {
                     f32 strength = object->combo_branch == 6 ? 0.7f : 0.35f;
                     NewRumble(object->pad->bound_pad, strength, 0);
                 }
@@ -4594,7 +4595,7 @@ static void LightSabreComboCode(GAMEOBJECT *object, i32 action_pressed, i32 acti
                 object->context_variant_flags |= 4;
                 BlockSfx(object);
                 object->sabre_flags |= 2;
-                if ((object->context_variant_flags & 0x40) == 0) {
+                if ((object->context_variant_flags & APIOBJECT_CONTEXT_EVENT_DONE) == 0) {
                     ComboHitFrame(object, 1);
                 }
             }
@@ -4604,7 +4605,7 @@ static void LightSabreComboCode(GAMEOBJECT *object, i32 action_pressed, i32 acti
             i32 can_queue = 0;
             f32 *time = AnimPlaying(&object->anim_packet, object->unknown_7aa, 1, 0);
             if (time != NULL) {
-                if ((object->context_variant_flags & 0x40) == 0) {
+                if ((object->context_variant_flags & APIOBJECT_CONTEXT_EVENT_DONE) == 0) {
                     f32 frame = AnimListFrame(object->character_model, object->unknown_7aa, 0);
                     if (frame > 0.0f && *time >= frame) {
                         ComboHitFrame(object, object->combo_branch == 2 ? 2 : 1);
@@ -4718,7 +4719,8 @@ static void LightSabreComboCode(GAMEOBJECT *object, i32 action_pressed, i32 acti
             context != CHARACTER_CONTEXT_LAND_LUNGE && context != CHARACTER_CONTEXT_LAND_SLAM &&
             context != CHARACTER_CONTEXT_THROW_DETONATOR && (object->flags_e20 & 0x1000000) == 0 &&
             (((COMBO_CONTEXT_INFO *)CInfo)[context].flags & 0x4000000) == 0 &&
-            ((((COMBO_CONTEXT_INFO *)CInfo)[context].flags & 0x8000000) == 0 || (object->context_variant_flags & 0x20000) == 0) &&
+            ((((COMBO_CONTEXT_INFO *)CInfo)[context].flags & 0x8000000) == 0 ||
+             (object->context_variant_flags & APIOBJECT_CONTEXT_INVULNERABLE) == 0) &&
             context != CHARACTER_CONTEXT_FORCE) {
             if (object->unknown_281 && object->pad->input_magnitude == 0.0f &&
                 object->character_model->model_data_b[object->character_data->game_character->hover_fall_mode == 0 &&
@@ -4743,7 +4745,7 @@ static void SwipeCode(GAMEOBJECT *object, i32 pressed, i32 held) {
     if (object->character_context == CHARACTER_CONTEXT_SWIPE) {
         f32 *frame = AnimPlaying(&object->anim_packet, object->unknown_7aa, 1, 0);
         if (frame != NULL) {
-            if ((object->context_variant_flags & 0x40) == 0) {
+            if ((object->context_variant_flags & APIOBJECT_CONTEXT_EVENT_DONE) == 0) {
                 f32 hit_frame = AnimListFrame(object->character_model, object->unknown_7aa, 0);
                 if (hit_frame >= 1.0f && hit_frame <= *frame) {
                     ComboHitFrame(object, 1);
@@ -4754,7 +4756,7 @@ static void SwipeCode(GAMEOBJECT *object, i32 pressed, i32 held) {
                 object->flags_e20 |= 4;
                 object->character_context = CHARACTER_CONTEXT_NONE;
                 if (object->unknown_7aa == ACTION_WEAPONBACK) {
-                    if ((object->context_variant_flags & 0x40) == 0) {
+                    if ((object->context_variant_flags & APIOBJECT_CONTEXT_EVENT_DONE) == 0) {
                         ComboHitFrame(object, 1);
                         object->character_context = CHARACTER_CONTEXT_SWIPE;
                         object->context_timer = 0.001f;
@@ -4790,7 +4792,7 @@ static void SwipeCode(GAMEOBJECT *object, i32 pressed, i32 held) {
                 object->context_timer = AnimDuration((i16)object->id, 0x29, 0.0f, 0.0f, 1);
                 if (object->context_timer > 0.0f) {
                     object->character_context = CHARACTER_CONTEXT_SWIPE;
-                    object->context_variant_flags &= ~0x40;
+                    object->context_variant_flags &= ~APIOBJECT_CONTEXT_EVENT_DONE;
                     PlaySabreSfx(NULL, object, NULL, 1);
                     NewRumble(object->pad->bound_pad, 0.4f, 0);
                 }
@@ -5745,7 +5747,7 @@ static void ForceThrowCode(GAMEOBJECT *object, i32 pressed) {
         } else {
             force = target->force;
             if (force != NULL) {
-                if ((object->context_flags_pc & 0x40) != 0) {
+                if ((object->context_flags_pc & APIOBJECT_CONTEXT_EVENT_DONE) != 0) {
                     object->flags_e20 |= 0x20000;
                     if (force->anim_set != NULL && force->anim_set->object_count == 1) {
                         part = Part_FindFromHSpecial(&force->anim_set->objects->special);
@@ -5778,7 +5780,7 @@ static void ForceThrowCode(GAMEOBJECT *object, i32 pressed) {
             gravity = GameDeflectPartGravity;
         }
         object->force_throw_part = GizForce_Throw(object, target->force, speed, gravity, 1);
-        object->context_variant_flags |= 0x40;
+        object->context_variant_flags |= APIOBJECT_CONTEXT_EVENT_DONE;
         return;
     }
     if (pressed == 0 && (object->pad->runtime_flags & 4) == 0) {
@@ -5795,7 +5797,7 @@ static void ForceThrowCode(GAMEOBJECT *object, i32 pressed) {
     if (object->character_model->model_data_b[0x27] == NULL) {
         object->unknown_7aa = ACTION_FORCE;
     }
-    object->context_variant_flags &= ~0x40u;
+    object->context_variant_flags &= ~APIOBJECT_CONTEXT_EVENT_DONE;
     object->context_timer = 2.0f;
     object->force_throw_part = NULL;
     object->force_throw_target = NULL;
@@ -6473,12 +6475,12 @@ static void ZapCode(GAMEOBJECT *object, i32 pressed, i32 retract_weapon) {
 
         target = object->force_target;
         origin = GetZapOrigin(object);
-        if ((object->context_variant_flags & 0x40) == 0) {
+        if ((object->context_variant_flags & APIOBJECT_CONTEXT_EVENT_DONE) == 0) {
             temp = AnimListFrame(object->character_model, object->unknown_7aa, 0);
             if (!(temp >= 1.0f) || *frame >= temp) {
-                object->context_variant_flags |= 0x40;
+                object->context_variant_flags |= APIOBJECT_CONTEXT_EVENT_DONE;
             }
-            if ((object->context_variant_flags & 0x40) != 0) {
+            if ((object->context_variant_flags & APIOBJECT_CONTEXT_EVENT_DONE) != 0) {
                 AddGameDebris(WORLD->game_debris_sys, object->id == (u16)id_R2Q5 ? 1 : 3, origin);
                 NewBuzz(object->pad->bound_pad, 0.1f, 0);
                 if (object->character_data->game_character->shoot_sfx != -1) {
@@ -6609,7 +6611,7 @@ static void ZapCode(GAMEOBJECT *object, i32 pressed, i32 retract_weapon) {
         object->character_context = CHARACTER_CONTEXT_ZAP;
         object->unknown_7aa = animation;
         object->context_timer = AnimDuration((i16)object->id, animation, 0.0f, 0.0f, 1);
-        object->context_variant_flags &= ~0x40;
+        object->context_variant_flags &= ~APIOBJECT_CONTEXT_EVENT_DONE;
         SetWeaponOut(object);
         return;
     }
@@ -9531,7 +9533,7 @@ void MovePlayer_DIRECTIONAL(GAMEOBJECT *object) {
                 }
                 object->movement_facing_angle = NuAtan2D(position.x - object->position.x, position.z - object->position.z);
             }
-        } else if (object->character_context == CHARACTER_CONTEXT_SWIPE && (object->context_flags_pc & 0x40) == 0) {
+        } else if (object->character_context == CHARACTER_CONTEXT_SWIPE && (object->context_flags_pc & APIOBJECT_CONTEXT_EVENT_DONE) == 0) {
             if (FaceOpponent(object, NULL) != 0) {
                 object->movement_facing_angle += 0x8000;
             }
@@ -11308,7 +11310,7 @@ void GameObjectStuffAfterAnimation(void) {
                 } else {
                     Bolt_Shoot(object, object->quick_shoot_bolt_id, object->quick_shoot_flags);
                     if (object->quick_shoot_bolt_id == 29) {
-                        object->context_variant_flags |= 0x40;
+                        object->context_variant_flags |= APIOBJECT_CONTEXT_EVENT_DONE;
                     }
                 }
             }
@@ -11328,7 +11330,7 @@ void GameObjectStuffAfterAnimation(void) {
         if (object->character_context == CHARACTER_CONTEXT_PUNCH) {
             CHARACTER_ANIMATION_LOCATOR *animation = object->character_model->animations[object->unknown_7aa];
             if (animation != NULL && animation->locator != -1 &&
-                ((object->context_variant_flags & 0x40) == 0 || object->debris_joint != -1)) {
+                ((object->context_variant_flags & APIOBJECT_CONTEXT_EVENT_DONE) == 0 || object->debris_joint != -1)) {
                 i32 joint = animation->locator;
                 f64 original_y;
                 memcpy(&points[0], &object->locator_matrices[joint].m30, sizeof(points[0]));
@@ -11474,7 +11476,7 @@ void GameObjectStuffAfterAnimation(void) {
                             object->character_context != CHARACTER_CONTEXT_LAND_SLAM &&
                             (U64_PAIR(&CInfo[object->character_context].flags) & 0x04000000) == 0 &&
                             ((U64_PAIR(&CInfo[object->character_context].flags) & 0x08000000) == 0 ||
-                             (object->context_variant_flags & 0x20000) == 0)) {
+                             (object->context_variant_flags & APIOBJECT_CONTEXT_INVULNERABLE) == 0)) {
                             PlaySabreSfx("SaberSparks", object, &points[blade], 1);
                             SaberSparksTimer = (f32)(((f64)qrand() * PlayerRandomScale) * (f64)0.3f + (f64)0.3f);
                             if (GetMenuID() == -1) {
@@ -12305,7 +12307,7 @@ finish:
     if (object->character_context != CHARACTER_CONTEXT_SHOOT) {
         object->unknown_7aa = previous_animation;
     } else {
-        object->context_variant_flags &= ~0x40;
+        object->context_variant_flags &= ~APIOBJECT_CONTEXT_EVENT_DONE;
         if (object->character_data->move_fn == Move_CANNON) {
             object->facing_angle = object->unknown_276;
             object->movement_facing_angle = object->unknown_276;

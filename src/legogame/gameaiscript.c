@@ -1548,7 +1548,8 @@ f32 Condition_Blocking(AISYS_PC *system, AISCRIPTPROCESS *process, AIPACKET *pac
         object = packet->owner->objptr;
         if (object != NULL) {
             flags = U64_PAIR(&CInfo[object->character_context].flags);
-            if ((flags & 0x04000000u) != 0 || ((flags & 0x08000000u) != 0 && (object->context_variant_flags & 0x20000u) != 0)) {
+            if ((flags & 0x04000000u) != 0 ||
+                ((flags & 0x08000000u) != 0 && (object->context_variant_flags & APIOBJECT_CONTEXT_INVULNERABLE) != 0)) {
                 return 1.0f;
             }
         }
@@ -9287,30 +9288,30 @@ i32 Action_DynamicCameraCut(AISYS_PC *system, AISCRIPTPROCESS *processor, AIPACK
         for (index = 0; index < param_count; ++index) {
             if (NuStrICmp("use_current_campos", params[index]) == 0) {
                 use_current_position = 1;
-                flags |= 0x100;
+                flags |= MINICUT_CAMERA_POSITION;
             } else if ((value = NuStrIStr(params[index], "attach_to_spline=")) != NULL) {
-                flags |= 0x2000;
+                flags |= MINICUT_ATTACH_TO_SPLINE;
                 spline = NuSplineFind(WORLD->current_gscn, value + 17);
             } else if ((value = NuStrIStr(params[index], "spline_dist_offset=")) != NULL) {
-                flags |= 0x4000;
+                flags |= MINICUT_SPLINE_DIST_OFFSET;
                 range = AIParamToFloat(processor, value + 17);
             } else if ((value = NuStrIStr(params[index], "start_time=")) != NULL) {
-                flags |= 0x200;
+                flags |= MINICUT_START_TIME;
                 start_time = AIParamToFloat(processor, value + 11);
             } else if ((value = NuStrIStr(params[index], "blend_time=")) != NULL) {
-                flags |= 0x800;
+                flags |= MINICUT_BLEND_TIME;
                 blend_time = AIParamToFloat(processor, value + 11);
             } else if ((value = NuStrIStr(params[index], "blend_in_time=")) != NULL) {
                 blend_in_time = AIParamToFloat(processor, value + 14);
             } else if ((value = NuStrIStr(params[index], "blend_out_time=")) != NULL) {
                 blend_out_time = AIParamToFloat(processor, value + 15);
             } else if ((value = NuStrIStr(params[index], "end_time=")) != NULL) {
-                flags |= 0x400;
+                flags |= MINICUT_END_TIME;
                 end_time = AIParamToFloat(processor, value + 9);
             } else if ((value = NuStrIStr(params[index], "max_time=")) != NULL) {
                 max_time = AIParamToFloat(processor, value + 9);
             } else if ((value = NuStrIStr(params[index], "hold_time=")) != NULL) {
-                flags |= 0x1000;
+                flags |= MINICUT_HOLD_TIME;
                 hold_time = AIParamToFloat(processor, value + 10);
             } else if ((value = NuStrIStr(params[index], "tgt_locator=")) != NULL) {
                 target_locator = value + 12;
@@ -9321,25 +9322,25 @@ i32 Action_DynamicCameraCut(AISYS_PC *system, AISCRIPTPROCESS *processor, AIPACK
             } else if ((value = NuStrIStr(params[index], "cam_locator=")) != NULL) {
                 camera_locator = value + 12;
             } else if ((value = NuStrIStr(params[index], "range=")) != NULL) {
-                flags |= 1;
+                flags |= MINICUT_RANGE;
                 range = AIParamToFloat(processor, value + 6);
             } else if ((value = NuStrIStr(params[index], "cont_roty=")) != NULL) {
-                flags |= 0x20;
+                flags |= MINICUT_CONT_ROTY;
                 rotation_y = (i32)((i32)AIParamToFloat(processor, value + 10) * 182.04445f);
             } else if ((value = NuStrIStr(params[index], "roty=")) != NULL) {
-                flags |= 0x4;
+                flags |= MINICUT_ROTY;
                 rotation_y = (i32)((i32)AIParamToFloat(processor, value + 5) * 182.04445f);
             } else if ((value = NuStrIStr(params[index], "cont_rotx=")) != NULL) {
-                flags |= 0x10;
+                flags |= MINICUT_CONT_ROTX;
                 rotation_x = (i32)((i32)AIParamToFloat(processor, value + 10) * 182.04445f);
             } else if ((value = NuStrIStr(params[index], "rotx=")) != NULL) {
-                flags |= 0x2;
+                flags |= MINICUT_ROTX;
                 rotation_x = (i32)(-(i32)AIParamToFloat(processor, value + 5) * 182.04445f);
             } else if ((value = NuStrIStr(params[index], "cont_rotz=")) != NULL) {
-                flags |= 0x40;
+                flags |= MINICUT_CONT_ROTZ;
                 rotation_z = (i32)((i32)AIParamToFloat(processor, value + 10) * 182.04445f);
             } else if ((value = NuStrIStr(params[index], "rotz=")) != NULL) {
-                flags |= 0x8;
+                flags |= MINICUT_ROTZ;
                 rotation_z = (i32)(-(i32)AIParamToFloat(processor, value + 5) * 182.04445f);
             } else if ((value = NuStrIStr(params[index], "campos_x=")) != NULL) {
                 camera_position.x = AIParamToFloat(processor, value + 9);
@@ -9362,19 +9363,19 @@ i32 Action_DynamicCameraCut(AISYS_PC *system, AISCRIPTPROCESS *processor, AIPACK
             } else if (NuStrICmp("no_borders", params[index]) == 0) {
                 borders = 0;
             } else if (NuStrICmp("mode=follow", params[index]) == 0) {
-                mode = 0;
+                mode = MINICAM_MODE_FOLLOW;
             } else if (NuStrICmp("mode=static", params[index]) == 0) {
-                mode = 1;
+                mode = MINICAM_MODE_STATIC;
             } else if (NuStrICmp("linear", params[index]) == 0) {
-                interpolation = 0;
+                interpolation = MINICAM_EASING_LINEAR;
             } else if (NuStrICmp("slowfastslow", params[index]) == 0) {
-                interpolation = 2;
+                interpolation = MINICAM_EASING_SLOWFASTSLOW;
             } else if (NuStrICmp("slowfast", params[index]) == 0) {
-                interpolation = 1;
+                interpolation = MINICAM_EASING_SLOWFAST;
             } else if (NuStrICmp("fastslowfast", params[index]) == 0) {
-                interpolation = 4;
+                interpolation = MINICAM_EASING_FASTSLOWFAST;
             } else if (NuStrICmp("fastslow", params[index]) == 0) {
-                interpolation = 3;
+                interpolation = MINICAM_EASING_FASTSLOW;
             }
         }
         if (target_locator != NULL) {
@@ -9400,7 +9401,7 @@ i32 Action_DynamicCameraCut(AISYS_PC *system, AISCRIPTPROCESS *processor, AIPACK
             target = &target_position;
         }
         if (target != NULL) {
-            flags |= 0x80;
+            flags |= MINICUT_TARGET;
         }
 
         if (use_current_position != 0) {
@@ -9421,13 +9422,13 @@ i32 Action_DynamicCameraCut(AISYS_PC *system, AISCRIPTPROCESS *processor, AIPACK
         if (spline != NULL) {
             PointAlongSpline(spline, 0.0f, &camera_position, NULL, NULL, 0);
             if (mode == -1) {
-                mode = 2;
+                mode = MINICAM_MODE_SPLINE;
             }
         } else if (have_camera_position != 0) {
-            flags |= 0x100;
+            flags |= MINICUT_CAMERA_POSITION;
             NuVecAdd(&camera_position, &camera_position, &camera_offset);
             if (mode == -1) {
-                mode = 1;
+                mode = MINICAM_MODE_STATIC;
             }
         } else {
             if (target != NULL) {
@@ -9439,7 +9440,7 @@ i32 Action_DynamicCameraCut(AISYS_PC *system, AISCRIPTPROCESS *processor, AIPACK
                 NuVecAdd(&camera_position, &camera_position, target);
             }
             if (mode == -1) {
-                mode = 0;
+                mode = MINICAM_MODE_FOLLOW;
             }
         }
         GameCameraMakeMiniCut3(flags, range, rotation_x, rotation_y, rotation_z, target, 0, &camera_position, start_time, blend_in_time,
@@ -11135,7 +11136,7 @@ i32 Action_ThrowDetonator(AISYS_PC *system, AISCRIPTPROCESS *processor, AIPACKET
     if (model->model_data_b[object->unknown_7aa] == NULL) {
         object->unknown_7aa = ACTION_THROW;
     }
-    object->context_variant_flags &= ~0x40u;
+    object->context_variant_flags &= ~APIOBJECT_CONTEXT_EVENT_DONE;
     if (model->model_data_b[object->unknown_7aa] != NULL) {
         object->context_timer = AnimDuration((i16)object->id, object->unknown_7aa, 0.0f, 0.0f, 1);
     } else {

@@ -356,10 +356,10 @@ i32 ThermalDetonator_MoveCode(GAMEOBJECT *object) {
         object->context_timer -= FRAMETIME;
         if (object->context_timer <= 0.0f) {
             object->character_context = CHARACTER_CONTEXT_NONE;
-            if ((object->context_variant_flags & 0x40) == 0) {
+            if ((object->context_variant_flags & APIOBJECT_CONTEXT_EVENT_DONE) == 0) {
                 object->flags_e24 |= 0x4000;
             }
-        } else if ((object->context_variant_flags & 0x40) == 0) {
+        } else if ((object->context_variant_flags & APIOBJECT_CONTEXT_EVENT_DONE) == 0) {
             if (object->character_model->action_animations[object->unknown_7aa] != NULL) {
                 release_frame = AnimListFrame(object->character_model, object->unknown_7aa, 2);
                 if (frame != NULL && *frame > 0.0f && *frame >= release_frame) {
@@ -370,7 +370,7 @@ i32 ThermalDetonator_MoveCode(GAMEOBJECT *object) {
             }
         }
         if ((object->flags_e24 & 0x4000) != 0) {
-            object->context_variant_flags |= 0x40;
+            object->context_variant_flags |= APIOBJECT_CONTEXT_EVENT_DONE;
         }
         return 0;
     }
@@ -408,7 +408,7 @@ i32 ThermalDetonator_MoveCode(GAMEOBJECT *object) {
     if (AnimPlaying(&object->anim_packet, object->unknown_7aa, 1, 1) != NULL) {
         ResetAnimPacket(&object->anim_packet, -1);
     }
-    object->context_variant_flags &= ~0x40;
+    object->context_variant_flags &= ~APIOBJECT_CONTEXT_EVENT_DONE;
     object->context_timer = object->character_model->action_animations[object->unknown_7aa] != NULL
                                 ? AnimDuration((i16)object->id, object->unknown_7aa, 0.0f, 0.0f, 1)
                                 : 1.0f;

@@ -47,7 +47,7 @@ void Minicam_InitSystem(void) {
 NUVEC v000 = {0};
 
 void Minicam_AddCommand(i32 type, f32 duration, i32 argument, void *target, NUVEC position) {
-    if (type == 6 || type == 7) {
+    if (type == MINICAM_COMMAND_MODE || type == MINICAM_COMMAND_EASING) {
         i32 i;
         for (i = MiniCam.command_count; i >= 0; --i) {
             if (MiniCam.duplicate_search[i].type == type) {
@@ -62,113 +62,113 @@ void Minicam_AddCommand(i32 type, f32 duration, i32 argument, void *target, NUVE
         return;
     }
     switch (type) {
-        case 1:
-            MiniCam.commands[MiniCam.command_count].type = 1;
+        case MINICAM_COMMAND_START:
+            MiniCam.commands[MiniCam.command_count].type = MINICAM_COMMAND_START;
             MiniCam.commands[MiniCam.command_count].duration = duration;
             MiniCam.commands[MiniCam.command_count].argument = 0;
             MiniCam.commands[MiniCam.command_count].position = v000;
             MiniCam.commands[MiniCam.command_count].target = NULL;
             break;
-        case 3:
-            MiniCam.commands[MiniCam.command_count].type = 3;
+        case MINICAM_COMMAND_END_TIME:
+            MiniCam.commands[MiniCam.command_count].type = MINICAM_COMMAND_END_TIME;
             MiniCam.commands[MiniCam.command_count].duration = duration;
             MiniCam.commands[MiniCam.command_count].argument = 0;
             MiniCam.commands[MiniCam.command_count].position = v000;
             MiniCam.commands[MiniCam.command_count].target = NULL;
             break;
-        case 4:
-            MiniCam.commands[MiniCam.command_count].type = 4;
+        case MINICAM_COMMAND_BLEND:
+            MiniCam.commands[MiniCam.command_count].type = MINICAM_COMMAND_BLEND;
             MiniCam.commands[MiniCam.command_count].duration = duration;
             MiniCam.commands[MiniCam.command_count].argument = 0;
             MiniCam.commands[MiniCam.command_count].position = v000;
             MiniCam.commands[MiniCam.command_count].target = NULL;
             break;
-        case 5:
-            MiniCam.commands[MiniCam.command_count].type = 5;
+        case MINICAM_COMMAND_HOLD:
+            MiniCam.commands[MiniCam.command_count].type = MINICAM_COMMAND_HOLD;
             MiniCam.commands[MiniCam.command_count].duration = duration;
             MiniCam.commands[MiniCam.command_count].argument = 0;
             MiniCam.commands[MiniCam.command_count].position = v000;
             MiniCam.commands[MiniCam.command_count].target = NULL;
             break;
-        case 6:
-            MiniCam.commands[MiniCam.command_count].type = 6;
+        case MINICAM_COMMAND_MODE:
+            MiniCam.commands[MiniCam.command_count].type = MINICAM_COMMAND_MODE;
             MiniCam.commands[MiniCam.command_count].duration = 0.0f;
             MiniCam.commands[MiniCam.command_count].argument = argument;
             MiniCam.commands[MiniCam.command_count].position = v000;
             MiniCam.commands[MiniCam.command_count].target = NULL;
             break;
-        case 7:
-            MiniCam.commands[MiniCam.command_count].type = 7;
+        case MINICAM_COMMAND_EASING:
+            MiniCam.commands[MiniCam.command_count].type = MINICAM_COMMAND_EASING;
             MiniCam.commands[MiniCam.command_count].duration = 0.0f;
             MiniCam.commands[MiniCam.command_count].argument = argument;
             MiniCam.commands[MiniCam.command_count].position = v000;
             MiniCam.commands[MiniCam.command_count].target = NULL;
             break;
-        case 8:
-            MiniCam.commands[MiniCam.command_count].type = 8;
+        case MINICAM_COMMAND_FOCUS:
+            MiniCam.commands[MiniCam.command_count].type = MINICAM_COMMAND_FOCUS;
             MiniCam.commands[MiniCam.command_count].duration = 0.0f;
             MiniCam.commands[MiniCam.command_count].argument = 0;
             MiniCam.commands[MiniCam.command_count].position = v000;
             MiniCam.commands[MiniCam.command_count].target = target;
             break;
-        case 9:
-            MiniCam.commands[MiniCam.command_count].type = 9;
+        case MINICAM_COMMAND_DISTANCE:
+            MiniCam.commands[MiniCam.command_count].type = MINICAM_COMMAND_DISTANCE;
             MiniCam.commands[MiniCam.command_count].duration = duration;
             MiniCam.commands[MiniCam.command_count].argument = 0;
             MiniCam.commands[MiniCam.command_count].position = v000;
             MiniCam.commands[MiniCam.command_count].target = NULL;
             break;
-        case 10:
-            MiniCam.commands[MiniCam.command_count].type = 10;
+        case MINICAM_COMMAND_PITCH:
+            MiniCam.commands[MiniCam.command_count].type = MINICAM_COMMAND_PITCH;
             MiniCam.commands[MiniCam.command_count].duration = 0.0f;
             MiniCam.commands[MiniCam.command_count].argument = argument;
             MiniCam.commands[MiniCam.command_count].position = v000;
             MiniCam.commands[MiniCam.command_count].target = NULL;
             break;
-        case 11:
-            MiniCam.commands[MiniCam.command_count].type = 11;
+        case MINICAM_COMMAND_YAW:
+            MiniCam.commands[MiniCam.command_count].type = MINICAM_COMMAND_YAW;
             MiniCam.commands[MiniCam.command_count].duration = 0.0f;
             MiniCam.commands[MiniCam.command_count].argument = argument;
             MiniCam.commands[MiniCam.command_count].position = v000;
             MiniCam.commands[MiniCam.command_count].target = NULL;
             break;
-        case 12:
-            MiniCam.commands[MiniCam.command_count].type = 12;
+        case MINICAM_COMMAND_ROLL:
+            MiniCam.commands[MiniCam.command_count].type = MINICAM_COMMAND_ROLL;
             MiniCam.commands[MiniCam.command_count].duration = 0.0f;
             MiniCam.commands[MiniCam.command_count].argument = argument;
             MiniCam.commands[MiniCam.command_count].position = v000;
             MiniCam.commands[MiniCam.command_count].target = NULL;
             break;
-        case 16:
-            MiniCam.commands[MiniCam.command_count].type = 16;
+        case MINICAM_COMMAND_POSITION:
+            MiniCam.commands[MiniCam.command_count].type = MINICAM_COMMAND_POSITION;
             MiniCam.commands[MiniCam.command_count].duration = 0.0f;
             MiniCam.commands[MiniCam.command_count].argument = 0;
             MiniCam.commands[MiniCam.command_count].position = position;
             MiniCam.commands[MiniCam.command_count].target = NULL;
             break;
-        case 13:
-            MiniCam.commands[MiniCam.command_count].type = 13;
+        case MINICAM_COMMAND_PITCH_RATE:
+            MiniCam.commands[MiniCam.command_count].type = MINICAM_COMMAND_PITCH_RATE;
             MiniCam.commands[MiniCam.command_count].duration = 0.0f;
             MiniCam.commands[MiniCam.command_count].argument = argument;
             MiniCam.commands[MiniCam.command_count].position = v000;
             MiniCam.commands[MiniCam.command_count].target = NULL;
             break;
-        case 14:
-            MiniCam.commands[MiniCam.command_count].type = 14;
+        case MINICAM_COMMAND_YAW_RATE:
+            MiniCam.commands[MiniCam.command_count].type = MINICAM_COMMAND_YAW_RATE;
             MiniCam.commands[MiniCam.command_count].duration = 0.0f;
             MiniCam.commands[MiniCam.command_count].argument = argument;
             MiniCam.commands[MiniCam.command_count].position = v000;
             MiniCam.commands[MiniCam.command_count].target = NULL;
             break;
-        case 15:
-            MiniCam.commands[MiniCam.command_count].type = 15;
+        case MINICAM_COMMAND_ROLL_RATE:
+            MiniCam.commands[MiniCam.command_count].type = MINICAM_COMMAND_ROLL_RATE;
             MiniCam.commands[MiniCam.command_count].duration = 0.0f;
             MiniCam.commands[MiniCam.command_count].argument = argument;
             MiniCam.commands[MiniCam.command_count].position = v000;
             MiniCam.commands[MiniCam.command_count].target = NULL;
             break;
-        case 17:
-            MiniCam.commands[MiniCam.command_count].type = 17;
+        case MINICAM_COMMAND_SPLINE:
+            MiniCam.commands[MiniCam.command_count].type = MINICAM_COMMAND_SPLINE;
             MiniCam.commands[MiniCam.command_count].duration = 0.0f;
             MiniCam.commands[MiniCam.command_count].argument = 0;
             MiniCam.commands[MiniCam.command_count].position = v000;
@@ -179,17 +179,17 @@ void Minicam_AddCommand(i32 type, f32 duration, i32 argument, void *target, NUVE
 }
 
 void MiniCam_ChangeMode(i32 mode) {
-    if (mode == 0) {
+    if (mode == MINICAM_MODE_FOLLOW) {
         NUVEC delta;
         MiniCam.distance = NuVecDist(&MiniCam.target, &MiniCam.position, &delta);
         FindAnglesXY(&delta, &MiniCam.pitch, &MiniCam.yaw);
         MiniCam.yaw += 0x8000;
         MiniCam.pitch = -MiniCam.pitch;
-        MiniCam.mode = 0;
-    } else if (mode == 1) {
-        MiniCam.mode = 1;
-    } else if (mode == 2) {
-        MiniCam.mode = 2;
+        MiniCam.mode = MINICAM_MODE_FOLLOW;
+    } else if (mode == MINICAM_MODE_STATIC) {
+        MiniCam.mode = MINICAM_MODE_STATIC;
+    } else if (mode == MINICAM_MODE_SPLINE) {
+        MiniCam.mode = MINICAM_MODE_SPLINE;
     }
 }
 
@@ -202,16 +202,16 @@ void Minicam_AddDeltas(float duration) {
         fraction = 1.0f;
     }
     switch (MiniCam.easing) {
-        case 1:
+        case MINICAM_EASING_SLOWFAST:
             fraction = 1.0f + NuTrigTable[(((i32)(fraction * 16384.0f + 32768.0f + 16384.0f)) >> 1) & 0x7fff];
             break;
-        case 2:
+        case MINICAM_EASING_SLOWFASTSLOW:
             fraction = 1.0f - (NuTrigTable[(((i32)(fraction * 32768.0f + 16384.0f)) >> 1) & 0x7fff] + 1.0f) * 0.5f;
             break;
-        case 3:
+        case MINICAM_EASING_FASTSLOW:
             fraction = NuTrigTable[(((i32)(fraction * 16384.0f + 49152.0f + 16384.0f)) >> 1) & 0x7fff];
             break;
-        case 4:
+        case MINICAM_EASING_FASTSLOWFAST:
             if (fraction < 0.5f) {
                 f32 doubled_fraction = fraction + fraction;
                 fraction = NuTrigTable[(((i32)(doubled_fraction * 16384.0f)) >> 1) & 0x7fff] * 0.5f;
@@ -223,7 +223,7 @@ void Minicam_AddDeltas(float duration) {
             }
             break;
     }
-    if (MiniCam.mode == 0) {
+    if (MiniCam.mode == MINICAM_MODE_FOLLOW) {
         i32 pitch_delta;
         i32 yaw_delta;
         i32 roll_delta;
@@ -249,11 +249,11 @@ void Minicam_AddDeltas(float duration) {
         MiniCam.yaw = SeekRot(MiniCam.yaw, (u16)(i32)(MiniCam.start_yaw + yaw_delta * fraction), 10.0f);
         MiniCam.roll = SeekRot(MiniCam.roll, (u16)(i32)(MiniCam.start_roll + roll_delta * fraction), 10.0f);
         MiniCam.distance = (MiniCam.target_distance - MiniCam.start_distance) * fraction + MiniCam.start_distance;
-    } else if (MiniCam.mode == 1) {
+    } else if (MiniCam.mode == MINICAM_MODE_STATIC) {
         MiniCam.position.x += MiniCam.position_velocity.x * FRAMETIME;
         MiniCam.position.y += MiniCam.position_velocity.y * FRAMETIME;
         MiniCam.position.z += MiniCam.position_velocity.z * FRAMETIME;
-    } else if (MiniCam.mode == 2) {
+    } else if (MiniCam.mode == MINICAM_MODE_SPLINE) {
         PointAlongSpline(MiniCam.position_spline, fraction, &MiniCam.position, NULL, NULL, 0);
     }
     MiniCam.focus_offset.x -= MiniCam.focus_velocity.x * FRAMETIME;
@@ -295,7 +295,7 @@ void fun_005776f0(void) {
 i16 ObstacleCamRotZ = 0;
 
 void Minicam_CalcCamPos(void) {
-    if (MiniCam.mode == 0) {
+    if (MiniCam.mode == MINICAM_MODE_FOLLOW) {
         MiniCam.position.y = MiniCam.position.x = 0.0f;
         MiniCam.position.z = MiniCam.distance;
         NuVecRotateX(&MiniCam.position, &MiniCam.position, MiniCam.pitch);
@@ -388,21 +388,21 @@ void Minicam_Update(void) {
         switch (MiniCam.commands[MiniCam.current_command].type) {
             case 0:
                 return;
-            case 1:
-            case 3:
-            case 4:
+            case MINICAM_COMMAND_START:
+            case MINICAM_COMMAND_END_TIME:
+            case MINICAM_COMMAND_BLEND:
                 command_duration = MiniCam.commands[MiniCam.current_command].duration;
                 done = 1;
                 break;
             case 2:
                 done = 1;
                 break;
-            case 5:
+            case MINICAM_COMMAND_HOLD:
                 command_duration = MiniCam.commands[MiniCam.current_command].duration;
                 Minicam_ClearDeltas();
                 done = 1;
                 break;
-            case 6: {
+            case MINICAM_COMMAND_MODE: {
                 i32 target_pitch;
                 i32 old_yaw;
                 i32 old_roll;
@@ -429,37 +429,37 @@ void Minicam_Update(void) {
                 }
                 break;
             }
-            case 7:
+            case MINICAM_COMMAND_EASING:
                 MiniCam.easing = MiniCam.commands[MiniCam.current_command].argument;
                 break;
-            case 8:
+            case MINICAM_COMMAND_FOCUS:
                 focus = MiniCam.commands[MiniCam.current_command].target;
                 break;
-            case 9:
+            case MINICAM_COMMAND_DISTANCE:
                 distance = MiniCam.commands[MiniCam.current_command].duration;
                 break;
-            case 10:
+            case MINICAM_COMMAND_PITCH:
                 pitch = MiniCam.commands[MiniCam.current_command].argument;
                 break;
-            case 11:
+            case MINICAM_COMMAND_YAW:
                 yaw = MiniCam.commands[MiniCam.current_command].argument;
                 break;
-            case 12:
+            case MINICAM_COMMAND_ROLL:
                 roll = MiniCam.commands[MiniCam.current_command].argument;
                 break;
-            case 13:
+            case MINICAM_COMMAND_PITCH_RATE:
                 pitch_rate = MiniCam.commands[MiniCam.current_command].argument;
                 break;
-            case 14:
+            case MINICAM_COMMAND_YAW_RATE:
                 yaw_rate = MiniCam.commands[MiniCam.current_command].argument;
                 break;
-            case 15:
+            case MINICAM_COMMAND_ROLL_RATE:
                 roll_rate = MiniCam.commands[MiniCam.current_command].argument;
                 break;
-            case 16:
+            case MINICAM_COMMAND_POSITION:
                 position = MiniCam.commands[MiniCam.current_command].position;
                 break;
-            case 17:
+            case MINICAM_COMMAND_SPLINE:
                 MiniCam.position_spline = (NUGSPLINE *)MiniCam.commands[MiniCam.current_command].target;
                 break;
             default:
@@ -491,7 +491,7 @@ void Minicam_Update(void) {
         return;
     }
     type = MiniCam.commands[MiniCam.current_command].type;
-    if (type == 1) {
+    if (type == MINICAM_COMMAND_START) {
         if (MiniCam.delta_time < command_duration) {
             MiniCam.delta_time += FRAMETIME;
         } else {
@@ -507,7 +507,7 @@ void Minicam_Update(void) {
         }
         return;
     }
-    if (type == 3) {
+    if (type == MINICAM_COMMAND_END_TIME) {
         if (MiniCam.delta_time < command_duration) {
             MiniCam.delta_time += FRAMETIME;
             Minicam_AddDeltas(command_duration);
@@ -526,7 +526,7 @@ void Minicam_Update(void) {
         }
         return;
     }
-    if (type == 4 && MiniCam.delta_time == 0.0f) {
+    if (type == MINICAM_COMMAND_BLEND && MiniCam.delta_time == 0.0f) {
         if (command_duration == 0.0f) {
             MiniCam.focus = focus;
             MiniCam.distance = distance;
@@ -583,13 +583,13 @@ void GameCameraMakeMiniCut3(u32 flags, float distance, i32 pitch, i32 yaw, i32 r
     NUVEC command_origin;
     f32 remaining_duration;
     GameCam->blend_time = 0.0f;
-    if (flags & 0x200) {
+    if (flags & MINICUT_START_TIME) {
         NUVEC reset_origin;
         memset(&MiniCam, 0, sizeof(MiniCam));
         reset_origin = v000;
-        Minicam_AddCommand(1, blend_in_time, 0, NULL, reset_origin);
+        Minicam_AddCommand(MINICAM_COMMAND_START, blend_in_time, 0, NULL, reset_origin);
         MiniCam.duration = max_time;
-        if ((flags & 0x80) && focus != NULL) {
+        if ((flags & MINICUT_TARGET) && focus != NULL) {
             MiniCam.focus = focus;
             MiniCam.focus_offset = reset_origin;
             MiniCam.target = *(NUVEC *)focus;
@@ -606,73 +606,73 @@ void GameCameraMakeMiniCut3(u32 flags, float distance, i32 pitch, i32 yaw, i32 r
         }
     }
 
-    if ((flags & 0x1c00) == 0) {
+    if ((flags & (MINICUT_END_TIME | MINICUT_BLEND_TIME | MINICUT_HOLD_TIME)) == 0) {
         blend_time = 0.0f;
-        flags |= 0x800;
+        flags |= MINICUT_BLEND_TIME;
     }
     command_origin = v000;
-    if (flags & 0x80) {
-        Minicam_AddCommand(8, 0.0f, 0, focus, command_origin);
+    if (flags & MINICUT_TARGET) {
+        Minicam_AddCommand(MINICAM_COMMAND_FOCUS, 0.0f, 0, focus, command_origin);
     }
-    if (flags & 0x100) {
-        Minicam_AddCommand(16, 0.0f, 0, NULL, *position);
-    } else if (flags & 0x2000) {
-        Minicam_AddCommand(17, 0.0f, 0, spline, command_origin);
-    } else if (flags & 1) {
-        Minicam_AddCommand(9, distance, 0, NULL, command_origin);
+    if (flags & MINICUT_CAMERA_POSITION) {
+        Minicam_AddCommand(MINICAM_COMMAND_POSITION, 0.0f, 0, NULL, *position);
+    } else if (flags & MINICUT_ATTACH_TO_SPLINE) {
+        Minicam_AddCommand(MINICAM_COMMAND_SPLINE, 0.0f, 0, spline, command_origin);
+    } else if (flags & MINICUT_RANGE) {
+        Minicam_AddCommand(MINICAM_COMMAND_DISTANCE, distance, 0, NULL, command_origin);
     }
-    if (flags & 0x10) {
-        Minicam_AddCommand(13, 0.0f, pitch, NULL, command_origin);
-    } else if (flags & 2) {
-        Minicam_AddCommand(10, 0.0f, pitch, NULL, command_origin);
+    if (flags & MINICUT_CONT_ROTX) {
+        Minicam_AddCommand(MINICAM_COMMAND_PITCH_RATE, 0.0f, pitch, NULL, command_origin);
+    } else if (flags & MINICUT_ROTX) {
+        Minicam_AddCommand(MINICAM_COMMAND_PITCH, 0.0f, pitch, NULL, command_origin);
     }
-    if (flags & 0x20) {
-        Minicam_AddCommand(14, 0.0f, yaw, NULL, command_origin);
-    } else if (flags & 4) {
-        Minicam_AddCommand(11, 0.0f, yaw, NULL, command_origin);
+    if (flags & MINICUT_CONT_ROTY) {
+        Minicam_AddCommand(MINICAM_COMMAND_YAW_RATE, 0.0f, yaw, NULL, command_origin);
+    } else if (flags & MINICUT_ROTY) {
+        Minicam_AddCommand(MINICAM_COMMAND_YAW, 0.0f, yaw, NULL, command_origin);
     }
-    if (flags & 0x40) {
-        Minicam_AddCommand(15, 0.0f, roll, NULL, command_origin);
+    if (flags & MINICUT_CONT_ROTZ) {
+        Minicam_AddCommand(MINICAM_COMMAND_ROLL_RATE, 0.0f, roll, NULL, command_origin);
     }
-    if (flags & 8) {
-        Minicam_AddCommand(12, 0.0f, roll, NULL, command_origin);
+    if (flags & MINICUT_ROTZ) {
+        Minicam_AddCommand(MINICAM_COMMAND_ROLL, 0.0f, roll, NULL, command_origin);
     }
     if (mode != -1) {
-        Minicam_AddCommand(6, 0.0f, mode, NULL, command_origin);
+        Minicam_AddCommand(MINICAM_COMMAND_MODE, 0.0f, mode, NULL, command_origin);
     }
     if (easing != -1) {
-        Minicam_AddCommand(7, 0.0f, easing, NULL, command_origin);
+        Minicam_AddCommand(MINICAM_COMMAND_EASING, 0.0f, easing, NULL, command_origin);
     }
 
-    if ((flags & 1) && (flags & 4) && blend_in_time > 0.0f && blend_time == 0.0f) {
+    if ((flags & MINICUT_RANGE) && (flags & MINICUT_ROTY) && blend_in_time > 0.0f && blend_time == 0.0f) {
         blend_time = 0.01f;
     }
-    if ((flags & 0x800) && (flags & 0x1000)) {
+    if ((flags & MINICUT_BLEND_TIME) && (flags & MINICUT_HOLD_TIME)) {
         if (hold_time > blend_time) {
-            Minicam_AddCommand(4, blend_time, 0, NULL, command_origin);
-            Minicam_AddCommand(5, hold_time - blend_time, 0, NULL, command_origin);
+            Minicam_AddCommand(MINICAM_COMMAND_BLEND, blend_time, 0, NULL, command_origin);
+            Minicam_AddCommand(MINICAM_COMMAND_HOLD, hold_time - blend_time, 0, NULL, command_origin);
         } else {
-            Minicam_AddCommand(4, blend_time, 0, NULL, command_origin);
+            Minicam_AddCommand(MINICAM_COMMAND_BLEND, blend_time, 0, NULL, command_origin);
         }
-    } else if (flags & 0x800) {
-        Minicam_AddCommand(4, blend_time, 0, NULL, command_origin);
-    } else if (flags & 0x1000) {
-        Minicam_AddCommand(5, hold_time, 0, NULL, command_origin);
+    } else if (flags & MINICUT_BLEND_TIME) {
+        Minicam_AddCommand(MINICAM_COMMAND_BLEND, blend_time, 0, NULL, command_origin);
+    } else if (flags & MINICUT_HOLD_TIME) {
+        Minicam_AddCommand(MINICAM_COMMAND_HOLD, hold_time, 0, NULL, command_origin);
     }
-    if (flags & 0x400) {
+    if (flags & MINICUT_END_TIME) {
         remaining_duration = end_time;
-        if ((flags & 0x800) && (flags & 0x1000)) {
+        if ((flags & MINICUT_BLEND_TIME) && (flags & MINICUT_HOLD_TIME)) {
             if (hold_time > blend_time) {
                 remaining_duration = end_time - hold_time;
             } else {
                 remaining_duration = end_time - blend_time;
             }
-        } else if (flags & 0x800) {
+        } else if (flags & MINICUT_BLEND_TIME) {
             remaining_duration = end_time - blend_time;
-        } else if (flags & 0x1000) {
+        } else if (flags & MINICUT_HOLD_TIME) {
             remaining_duration = end_time - hold_time;
         }
-        Minicam_AddCommand(3, MAX(0.0f, remaining_duration), 0, NULL, command_origin);
+        Minicam_AddCommand(MINICAM_COMMAND_END_TIME, MAX(0.0f, remaining_duration), 0, NULL, command_origin);
         ObstacleCamBlendOutTime = blend_out_time;
     }
     if (borders != 0) {

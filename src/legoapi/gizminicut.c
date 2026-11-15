@@ -136,7 +136,7 @@ static void GizMiniCut_Play(MINICUT *cut) {
         }
         GameCameraMakeMiniCut3(flags, part->distance, part->pitch, part->yaw, part->roll, part->resolved_position, 0, &position,
                                cut->blend_in, cut->blend_out, cut->tracking_speed, cut->hold_time, part->duration, part->field_of_view,
-                               cut->end_time, 0, NULL, -1, 2);
+                               cut->end_time, 0, NULL, -1, MINICAM_EASING_SLOWFASTSLOW);
         if (editor_active == 0) {
             cut->played = 1;
         }

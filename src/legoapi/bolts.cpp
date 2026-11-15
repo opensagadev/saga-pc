@@ -1037,7 +1037,7 @@ extern "C" void Bolt_HitGameObjectRC(NETMESSAGE &message) {
     if (((bolt->flags & 0x100) == 0 || deflect) &&
         ((reinterpret_cast<BOLT_CONTEXT_INFO *>(CInfo)[object->character_context].flags & 0x4000000) != 0 ||
          ((reinterpret_cast<BOLT_CONTEXT_INFO *>(CInfo)[object->character_context].flags & 0x8000000) != 0 &&
-          (object->context_variant_flags & 0x20000) != 0) ||
+          (object->context_variant_flags & APIOBJECT_CONTEXT_INVULNERABLE) != 0) ||
          deflect || (reinterpret_cast<BOLT_CONTEXT_INFO *>(CInfo)[object->character_context].flags & 0x800000) != 0 ||
          ((reinterpret_cast<BOLT_CONTEXT_INFO *>(CInfo)[object->character_context].flags & 0x1000000) != 0 &&
           (object->jump_flags & 1) != 0) ||

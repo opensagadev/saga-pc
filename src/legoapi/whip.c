@@ -48,7 +48,7 @@ void Whip_MoveCode(GAMEOBJECT *object) {
                             object->context_timer = 0.0f;
                             object->unknown_7b3 = 3;
                             object->context_duration = AnimDuration((i16)object->id, object->unknown_7aa, 0.0f, 0.0f, 1);
-                            object->context_variant_flags &= ~0x40u;
+                            object->context_variant_flags &= ~APIOBJECT_CONTEXT_EVENT_DONE;
                             target = object->grapple;
                             object->movement_facing_angle =
                                 NuAtan2D(target->position.x - object->position.x, target->position.z - object->position.z);
@@ -63,7 +63,7 @@ void Whip_MoveCode(GAMEOBJECT *object) {
                             object->context_timer = 0.0f;
                             object->unknown_7b3 = 2;
                             object->context_duration = AnimDuration((i16)object->id, object->unknown_7aa, 0.0f, 0.0f, 1);
-                            object->context_variant_flags &= ~0x40u;
+                            object->context_variant_flags &= ~APIOBJECT_CONTEXT_EVENT_DONE;
                             target = object->grapple;
                             object->movement_facing_angle =
                                 NuAtan2D(target->position.x - object->position.x, target->position.z - object->position.z);
@@ -78,7 +78,7 @@ void Whip_MoveCode(GAMEOBJECT *object) {
                 object->context_timer = 0.0f;
                 object->unknown_7b3 = 1;
                 object->context_duration = AnimDuration((i16)object->id, object->unknown_7aa, 0.0f, 0.0f, 1);
-                object->context_variant_flags &= ~0x40u;
+                object->context_variant_flags &= ~APIOBJECT_CONTEXT_EVENT_DONE;
             }
             return;
         }
@@ -97,16 +97,16 @@ void Whip_MoveCode(GAMEOBJECT *object) {
         frame = AnimPlaying(&object->anim_packet, object->unknown_7aa, 1, 0);
         if (frame != NULL) {
             object->context_timer += FRAMETIME;
-            if (!(object->context_variant_flags & 0x40)) {
+            if (!(object->context_variant_flags & APIOBJECT_CONTEXT_EVENT_DONE)) {
                 action_frame = AnimListFrame(object->character_model, object->unknown_7aa, 0);
                 if (action_frame >= 1.0f && *frame >= action_frame) {
-                    object->context_variant_flags |= 0x40;
+                    object->context_variant_flags |= APIOBJECT_CONTEXT_EVENT_DONE;
                     activate = 1;
                 }
             }
             if (object->context_timer >= object->context_duration) {
                 object->character_context = CHARACTER_CONTEXT_NONE;
-                if (!(object->context_variant_flags & 0x40)) {
+                if (!(object->context_variant_flags & APIOBJECT_CONTEXT_EVENT_DONE)) {
                     activate = 1;
                 }
             }

@@ -598,7 +598,7 @@ extern "C" eduiitem_s *eduiItemTextSelectorCreate(u32 data, void *colours, i32 g
     if (item) {
         memset(item, 0, sizeof(EduiTextSelectorView));
         item->slider.base.data = data;
-        item->slider.base.type = 6;
+        item->slider.base.type = EDUIITEM_SLIDER;
         memcpy(item->slider.base.colours, colours, sizeof(item->slider.base.colours));
         item->slider.base.text_alignment = 0x40;
         item->slider.base.selection_group = group;
@@ -655,7 +655,7 @@ extern "C" eduiitem_s *eduiItemSeparatorCreate(u32 data, const void *colours) {
     if (item != NULL) {
         memset(item, 0, sizeof(*item));
         item->base.data = data;
-        item->base.type = 18;
+        item->base.type = EDUIITEM_SEPARATOR;
         memcpy(item->base.colours, colours, sizeof(item->base.colours));
         item->base.highlighted = 0;
         item->base.text_alignment = 0x40;
@@ -722,12 +722,12 @@ extern "C" void cbgpcfgCopy(eduimenu_s *menu, eduiitem_s *item, u32 value) {
     edui_gradient_node_s *stage = picker->selected_stage;
     if (stage != NULL) {
         i32 type = item->type;
-        if (type == 7) {
+        if (type == EDUIITEM_GRAD_PICK) {
             EduiColourClipboard.hue = stage->hue;
             EduiColourClipboard.saturation = stage->saturation;
             EduiColourClipboard.value = stage->value;
         }
-        if (type == 8) {
+        if (type == EDUIITEM_GREY_GRAD_PICK) {
             EduiColourClipboard.gray = stage->value;
         }
         if (picker->copy != NULL) {
@@ -742,10 +742,10 @@ extern "C" void cbgpcfgPaste(eduimenu_s *menu, eduiitem_s *item, u32 value) {
     edui_gradient_pick_s *picker = (edui_gradient_pick_s *)item->data_ptr;
     edui_gradient_node_s *stage = picker->selected_stage;
     if (stage != NULL) {
-        if (item->type == 7) {
+        if (item->type == EDUIITEM_GRAD_PICK) {
             eduiGradStageSetHSV(stage, EduiColourClipboard.hue, EduiColourClipboard.saturation, EduiColourClipboard.value);
         }
-        if (item->type == 8) {
+        if (item->type == EDUIITEM_GREY_GRAD_PICK) {
             eduiGradStageSetHSV(picker->selected_stage, 0.0f, 0.0f, EduiColourClipboard.gray);
         }
         if (picker->paste != NULL) {
@@ -759,7 +759,7 @@ extern "C" void cbgpcfgPaste(eduimenu_s *menu, eduiitem_s *item, u32 value) {
 extern "C" void cbgpcfgCPPress(eduimenu_s *menu, eduiitem_s *item, u32 value) {
     edui_gradient_pick_s *picker = (edui_gradient_pick_s *)item->data_ptr;
     if (picker->selected_stage != NULL) {
-        if (item->type == 10 || item->type == 11) {
+        if (item->type == EDUIITEM_COLOUR_PICK || item->type == EDUIITEM_GREY_PICK) {
             edui_colour_pick_s *colour = (edui_colour_pick_s *)item;
             eduiGradStageSetHSV(picker->selected_stage, colour->hue, colour->saturation, colour->value);
         }
@@ -1530,7 +1530,7 @@ extern "C" i32 eduicbRenderTexturePick(eduimenu_s *unused_menu, eduiitem_s *item
 extern "C" void eduiItemGraphAddOnionSkin(eduiitem_s *item, nugraph_s *graph) {
     edui_graph_s *picker = (edui_graph_s *)item;
     i32 slot;
-    if (item->type == 15) {
+    if (item->type == EDUIITEM_GRAPH) {
         for (slot = 0; slot < 8; slot++) {
             if (picker->onion_skins[slot] == NULL) {
                 picker->onion_skins[slot] = graph;
@@ -1542,7 +1542,7 @@ extern "C" void eduiItemGraphAddOnionSkin(eduiitem_s *item, nugraph_s *graph) {
 
 extern "C" void eduiItemGraphSetCursor(eduiitem_s *item, f32 x, f32 y) {
     edui_graph_s *picker = (edui_graph_s *)item;
-    if (item->type == 15) {
+    if (item->type == EDUIITEM_GRAPH) {
         picker->cursor_x = EDUI_GRAPH_MIN(1.0f, EDUI_GRAPH_MAX(0.0f, x));
         picker->cursor_y = EDUI_GRAPH_MIN(1.0f, EDUI_GRAPH_MAX(0.0f, y));
     }
@@ -1550,7 +1550,7 @@ extern "C" void eduiItemGraphSetCursor(eduiitem_s *item, f32 x, f32 y) {
 
 extern "C" void eduiItemGraphSetLabels(eduiitem_s *item, char *x_label, char *y_label, char *title) {
     edui_graph_s *picker = (edui_graph_s *)item;
-    if (item->type == 15) {
+    if (item->type == EDUIITEM_GRAPH) {
         if (x_label != NULL) {
             NuStrCpy(picker->x_label, x_label);
         }
@@ -2321,7 +2321,7 @@ extern "C" i32 eduicbRenderSelWithClipColour(eduimenu_s *menu, eduiitem_s *item,
     f32 red;
     f32 green;
     f32 blue;
-    if (item->type == 7) {
+    if (item->type == EDUIITEM_GRAD_PICK) {
         eduiHSVToRGB(EduiColourClipboard.hue, EduiColourClipboard.saturation, EduiColourClipboard.value, red, green, blue);
     } else {
         eduiHSVToRGB(0.0f, 0.0f, EduiColourClipboard.gray, red, green, blue);

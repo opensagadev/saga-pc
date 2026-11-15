@@ -159,11 +159,11 @@ void SuperCarry_DrawObject(struct gameobject_s *object) {
     struct GIZMOBLOWUP_PC *blowup;
     if ((object->flags_e20 & 0x800000) != 0 ||
         (LEGOCONTEXT_SUPERCARRY != -1 && object->character_context == LEGOCONTEXT_SUPERCARRY &&
-         ((object->unknown_7b3 == 0 && (object->context_variant_flags & 0x40) != 0) ||
-          (object->unknown_7b3 == 1 && (object->context_variant_flags & 0x40) == 0) || object->unknown_7b3 == 2 ||
+         ((object->unknown_7b3 == 0 && (object->context_variant_flags & APIOBJECT_CONTEXT_EVENT_DONE) != 0) ||
+          (object->unknown_7b3 == 1 && (object->context_variant_flags & APIOBJECT_CONTEXT_EVENT_DONE) == 0) || object->unknown_7b3 == 2 ||
           object->unknown_7b3 == 3 || object->unknown_7b3 == 6 || object->unknown_7b3 == 7 ||
-          (object->unknown_7b3 == 4 && (object->context_variant_flags & 0x40) == 0) ||
-          (object->unknown_7b3 == 5 && (object->context_variant_flags & 0x40) == 0)))) {
+          (object->unknown_7b3 == 4 && (object->context_variant_flags & APIOBJECT_CONTEXT_EVENT_DONE) == 0) ||
+          (object->unknown_7b3 == 5 && (object->context_variant_flags & APIOBJECT_CONTEXT_EVENT_DONE) == 0)))) {
         translation = NULL;
         if (SuperCarry_AlignObject != 0) {
             NuVecRotateY(&offset, &((CARRY_BASIS *)object)->basis[0], object->unknown_276);
@@ -317,7 +317,7 @@ i32 SuperCarry_Possible(GAMEOBJECT *object, i32 require_grounded) {
 
 void SuperCarry_Start(struct gameobject_s *object, GIZMOBLOWUP_PC *blowup, i32 immediate) {
     object->character_context = ((i8)(LEGOCONTEXT_SUPERCARRY));
-    object->context_variant_flags &= ~0x40u;
+    object->context_variant_flags &= ~APIOBJECT_CONTEXT_EVENT_DONE;
     object->action_movement_state = 0;
     object->grapple = blowup;
     if (immediate == 0 && LEGOACT_SUPERCARRY_PICKUP != -1 && object->character_model->model_data_b[LEGOACT_SUPERCARRY_PICKUP] != NULL) {
@@ -402,7 +402,7 @@ void SuperCarry_MoveCode(WORLDINFO *world, struct gameobject_s *object) {
         switch (object->unknown_7b3) {
             case 0: {
                 i32 event = 0;
-                if ((object->context_variant_flags & 0x40) == 0) {
+                if ((object->context_variant_flags & APIOBJECT_CONTEXT_EVENT_DONE) == 0) {
                     GIZMOBLOWUP_PC *blowup = object->grapple;
                     object->movement_facing_angle = NuAtan2D(blowup->mid_position.x - object->collision_position.x,
                                                              blowup->mid_position.z - object->collision_position.z);
@@ -417,12 +417,12 @@ void SuperCarry_MoveCode(WORLDINFO *world, struct gameobject_s *object) {
                 if (object->context_timer <= 0.0f) {
                     object->unknown_7b3 = 2;
                     object->unknown_7aa = LEGOACT_SUPERCARRY_IDLE;
-                    if ((object->context_variant_flags & 0x40) == 0) {
+                    if ((object->context_variant_flags & APIOBJECT_CONTEXT_EVENT_DONE) == 0) {
                         event = 1;
                     }
                 }
                 if (event) {
-                    object->context_variant_flags |= 0x40;
+                    object->context_variant_flags |= APIOBJECT_CONTEXT_EVENT_DONE;
                     GizmoBlowupBlowup(object->grapple, 0, BLOWUP_HIT_CARRIED, -1, NULL, 1);
                     NewBuzzFrames(object->pad->bound_pad, 1, 0);
                 }
@@ -430,7 +430,7 @@ void SuperCarry_MoveCode(WORLDINFO *world, struct gameobject_s *object) {
             }
             case 1: {
                 i32 event = 0;
-                if ((object->context_variant_flags & 0x40) == 0) {
+                if ((object->context_variant_flags & APIOBJECT_CONTEXT_EVENT_DONE) == 0) {
                     if (frame != NULL) {
                         f32 marker = AnimListFrame(object->character_model, object->unknown_7aa, 0);
                         if (marker >= 1.0f && *frame >= marker) {
@@ -443,14 +443,14 @@ void SuperCarry_MoveCode(WORLDINFO *world, struct gameobject_s *object) {
                 object->context_timer -= FRAMETIME;
                 if (object->context_timer <= 0.0f) {
                     object->character_context = CHARACTER_CONTEXT_NONE;
-                    if ((object->context_variant_flags & 0x40) == 0) {
+                    if ((object->context_variant_flags & APIOBJECT_CONTEXT_EVENT_DONE) == 0) {
                         event = 1;
                     }
                 }
                 if (event) {
                     struct GIZMOBLOWUP_PC *blowup;
                     NUVEC *drop;
-                    object->context_variant_flags |= 0x40;
+                    object->context_variant_flags |= APIOBJECT_CONTEXT_EVENT_DONE;
                     NewBuzzFrames(object->pad->bound_pad, 1, 0);
                     blowup = object->grapple;
                     drop = &((CARRY_DROP *)object)->drop_position;
@@ -496,7 +496,7 @@ void SuperCarry_MoveCode(WORLDINFO *world, struct gameobject_s *object) {
                             if (object->force_target != NULL) {
                                 object->unknown_7b3 = 5;
                                 object->unknown_7aa = LEGOACT_SUPERCARRY_BASH;
-                                object->context_variant_flags &= ~0x40u;
+                                object->context_variant_flags &= ~APIOBJECT_CONTEXT_EVENT_DONE;
                                 object->context_timer = AnimDuration((i16)object->id, object->unknown_7aa, 0.0f, 0.0f, 1);
                                 if (object->context_timer <= 0.0f) {
                                     object->context_timer = 0.5f;
@@ -509,7 +509,7 @@ void SuperCarry_MoveCode(WORLDINFO *world, struct gameobject_s *object) {
                                 ((CARRY_MODEL *)object->character_model)->model_data_b[LEGOACT_SUPERCARRY_THROW] != NULL) {
                                 object->unknown_7b3 = 4;
                                 object->unknown_7aa = LEGOACT_SUPERCARRY_THROW;
-                                object->context_variant_flags &= ~0x40u;
+                                object->context_variant_flags &= ~APIOBJECT_CONTEXT_EVENT_DONE;
                                 object->context_timer = AnimDuration((i16)object->id, object->unknown_7aa, 0.0f, 0.0f, 1);
                                 if (object->context_timer <= 0.0f) {
                                     object->context_timer = 0.5f;
@@ -528,7 +528,7 @@ void SuperCarry_MoveCode(WORLDINFO *world, struct gameobject_s *object) {
                             NUVEC offset;
                             object->unknown_7b3 = 1;
                             object->unknown_7aa = LEGOACT_SUPERCARRY_PUTDOWN;
-                            object->context_variant_flags &= ~0x40u;
+                            object->context_variant_flags &= ~APIOBJECT_CONTEXT_EVENT_DONE;
                             object->context_timer = AnimDuration((i16)object->id, object->unknown_7aa, 0.0f, 0.0f, 1);
                             if (object->context_timer <= 0.0f) {
                                 object->context_timer = 0.5f;
@@ -566,12 +566,12 @@ void SuperCarry_MoveCode(WORLDINFO *world, struct gameobject_s *object) {
             }
             case 4: {
                 i32 event;
-                if (object->context_timer <= 0.0f && (object->context_variant_flags & 0x40) != 0) {
+                if (object->context_timer <= 0.0f && (object->context_variant_flags & APIOBJECT_CONTEXT_EVENT_DONE) != 0) {
                     object->character_context = CHARACTER_CONTEXT_NONE;
                     return;
                 }
                 event = 0;
-                if (frame != NULL && (object->context_variant_flags & 0x40) == 0) {
+                if (frame != NULL && (object->context_variant_flags & APIOBJECT_CONTEXT_EVENT_DONE) == 0) {
                     f32 marker = AnimListFrame(object->character_model, object->unknown_7aa, 0);
                     if (marker >= 1.0f && *frame >= marker) {
                         event = 1;
@@ -579,7 +579,7 @@ void SuperCarry_MoveCode(WORLDINFO *world, struct gameobject_s *object) {
                 }
                 object->context_timer -= FRAMETIME;
                 if (object->context_timer <= 0.0f) {
-                    if ((object->context_variant_flags & 0x40) == 0) {
+                    if ((object->context_variant_flags & APIOBJECT_CONTEXT_EVENT_DONE) == 0) {
                         event = 1;
                     } else {
                         object->character_context = CHARACTER_CONTEXT_NONE;
@@ -588,19 +588,19 @@ void SuperCarry_MoveCode(WORLDINFO *world, struct gameobject_s *object) {
                 if (!event) {
                     return;
                 }
-                object->context_variant_flags |= 0x40;
+                object->context_variant_flags |= APIOBJECT_CONTEXT_EVENT_DONE;
                 object->flags_e20 |= 0x800000;
                 NewRumble(object->pad->bound_pad, 0.6f, 0);
                 return;
             }
             case 5: {
                 i32 event;
-                if (object->context_timer <= 0.0f && (object->context_variant_flags & 0x40) != 0) {
+                if (object->context_timer <= 0.0f && (object->context_variant_flags & APIOBJECT_CONTEXT_EVENT_DONE) != 0) {
                     object->character_context = CHARACTER_CONTEXT_NONE;
                     return;
                 }
                 event = 0;
-                if (frame != NULL && (object->context_variant_flags & 0x40) == 0) {
+                if (frame != NULL && (object->context_variant_flags & APIOBJECT_CONTEXT_EVENT_DONE) == 0) {
                     f32 marker = AnimListFrame(object->character_model, object->unknown_7aa, 0);
                     if (marker >= 1.0f && *frame >= marker) {
                         event = 1;
@@ -608,7 +608,7 @@ void SuperCarry_MoveCode(WORLDINFO *world, struct gameobject_s *object) {
                 }
                 object->context_timer -= FRAMETIME;
                 if (object->context_timer <= 0.0f) {
-                    if ((object->context_variant_flags & 0x40) == 0) {
+                    if ((object->context_variant_flags & APIOBJECT_CONTEXT_EVENT_DONE) == 0) {
                         event = 1;
                     } else {
                         object->character_context = CHARACTER_CONTEXT_NONE;
@@ -617,13 +617,13 @@ void SuperCarry_MoveCode(WORLDINFO *world, struct gameobject_s *object) {
                 if (!event) {
                     return;
                 }
-                object->context_variant_flags |= 0x40;
+                object->context_variant_flags |= APIOBJECT_CONTEXT_EVENT_DONE;
                 if (ObjOpponentStillThere(object, object->force_target, PUNCHGAP)) {
                     ObjHitObj(object, object->force_target, 1, 0x2000, 0, 1);
                 } else if (object->character_context != CHARACTER_CONTEXT_NONE && object->context_timer > 0.0f) {
-                    object->context_variant_flags &= ~0x40u;
+                    object->context_variant_flags &= ~APIOBJECT_CONTEXT_EVENT_DONE;
                 }
-                if ((object->context_variant_flags & 0x40) != 0) {
+                if ((object->context_variant_flags & APIOBJECT_CONTEXT_EVENT_DONE) != 0) {
                     struct GIZMOBLOWUP_PC *blowup;
                     NUVEC position;
                     i32 effect;

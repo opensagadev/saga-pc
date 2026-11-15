@@ -92,6 +92,28 @@ struct nufile_device_s {                                         // size 0x234
     i32 (*interrogate_fn)(NUFILE_DEVICE *);                      // 0x230
 };
 
+/* PC_FILEEXTINFO.type: the kind of file, by the PC extension NuFileExtInit registers for it; .tex, .pnt and .dds
+ * are the platforms' textures, .wav, .vag, .msf their sounds, .bik, .pss, .wmv their videos. */
+#define NUFILEEXT_AN3 0
+#define NUFILEEXT_BSA 1
+#define NUFILEEXT_GHG 2
+#define NUFILEEXT_GSC 3
+#define NUFILEEXT_TEXTURE 4
+#define NUFILEEXT_CU2 5
+#define NUFILEEXT_SOUND 6
+#define NUFILEEXT_MIB 7
+#define NUFILEEXT_VIDEO 8
+
+/* PC_FILEEXTINFO.platform: the platform of each extension set (_ps3, _360 and _pc in the names; .vag/.pss, .dsp/.h4m,
+ * .at3 and .wavx/.wmv in the others). NuFileExtInit converts any other platform's extension to the PC one. */
+#define NUFILEEXT_PLATFORM_PS2 0
+#define NUFILEEXT_PLATFORM_XBOX 1
+#define NUFILEEXT_PLATFORM_GAMECUBE 2
+#define NUFILEEXT_PLATFORM_PSP 3
+#define NUFILEEXT_PLATFORM_WINDOWS 4
+#define NUFILEEXT_PLATFORM_PS3 5
+#define NUFILEEXT_PLATFORM_XBOX360 6
+
 #ifdef __cplusplus
 extern "C" {
 #endif

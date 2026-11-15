@@ -3486,7 +3486,7 @@ i32 ObjHitObj(GAMEOBJECT *attacker, GAMEOBJECT *target, i32 damage, u16 flags, i
     if ((target->portal_flags & APIOBJECT_IMMUNE_TO_BOLTS) && (flags & 0x80)) {
         damage = 0;
     } else {
-        if (WORLD->current_level == SPEEDERCHASEA_LDATA && !disable_narrow_socks && (flags & 4) &&
+        if (WORLD->current_level == SPEEDERCHASEA_LDATA && !disable_narrow_socks && (flags & OBJHIT_FROM_PLAYER) &&
             ((target->flags_1fc_word & APIOBJECT_FLAG_PLAYER_ACTIVE))) {
             damage = 0;
             goto attributed_hit;
@@ -3517,7 +3517,7 @@ i32 ObjHitObj(GAMEOBJECT *attacker, GAMEOBJECT *target, i32 damage, u16 flags, i
         if (flags & 1) {
             goto attributed_hit;
         }
-        if ((flags & 2) && !(APIOBJECT_FLAG_PLAYER_ACTIVE & target->flags_1fc_word) && WORLD->current_level != HUB_LDATA) {
+        if ((flags & OBJHIT_FROM_AI) && !(APIOBJECT_FLAG_PLAYER_ACTIVE & target->flags_1fc_word) && WORLD->current_level != HUB_LDATA) {
             if (!StartupGameFlag1 && !(target->portal_flags & APIOBJECT_BOSS) && CombatHitReactionInterval != 0 && attacker != NULL &&
                 attacker->player_index != -1 && target->player_index == -1 && !(target->flags_1fc_word & APIOBJECT_FLAG_DONT_PUSH)) {
                 COMBAT_ATTACK_COUNTER *counter = (COMBAT_ATTACK_COUNTER *)attacker;
@@ -3530,14 +3530,14 @@ i32 ObjHitObj(GAMEOBJECT *attacker, GAMEOBJECT *target, i32 damage, u16 flags, i
             damage = 0;
             goto attributed_hit;
         }
-        if ((4 & flags) && (target->flags_1f8 & APIOBJECT_CREATURE) &&
+        if ((OBJHIT_FROM_PLAYER & flags) && (target->flags_1f8 & APIOBJECT_CREATURE) &&
             !(target->flags_1f8 & (APIOBJECT_SIDE_BADDIE | APIOBJECT_SIDE_NEUTRAL | APIOBJECT_SIDE_GOODIE_BADDIE)) &&
             WORLD->current_level != HUB_LDATA) {
             damage = 0;
             goto attributed_hit;
         }
-        if ((flags & 8) && !(flags & 4) && ((target->flags_1fc_word & APIOBJECT_FLAG_PLAYER_ACTIVE)) && WORLD->current_level != HUB_LDATA &&
-            VADERC_LDATA != WORLD->current_level) {
+        if ((flags & OBJHIT_FROM_GOODIE) && !(flags & OBJHIT_FROM_PLAYER) && ((target->flags_1fc_word & APIOBJECT_FLAG_PLAYER_ACTIVE)) &&
+            WORLD->current_level != HUB_LDATA && VADERC_LDATA != WORLD->current_level) {
             damage = 0;
             goto attributed_hit;
         }
@@ -3547,8 +3547,8 @@ i32 ObjHitObj(GAMEOBJECT *attacker, GAMEOBJECT *target, i32 damage, u16 flags, i
             damage = 0;
         } else if ((target->character_data->model_flags & CHARACTER_MODEL_ONLY_ACTIVE_WHEN_TAKEN_OVER) && target->rider == NULL) {
             damage = 0;
-        } else if ((flags & 4) && !(target->flags_1fc_word & APIOBJECT_FLAG_PLAYER_ACTIVE) && !(target->portal_flags & APIOBJECT_BOSS) &&
-                   !StartupGameFlag1 && CombatHitReactionInterval != 0 && attacker != NULL &&
+        } else if ((flags & OBJHIT_FROM_PLAYER) && !(target->flags_1fc_word & APIOBJECT_FLAG_PLAYER_ACTIVE) &&
+                   !(target->portal_flags & APIOBJECT_BOSS) && !StartupGameFlag1 && CombatHitReactionInterval != 0 && attacker != NULL &&
                    !(APIOBJECT_FLAG_DONT_PUSH & target->flags_1fc_word)) {
             COMBAT_ATTACK_COUNTER *counter = (COMBAT_ATTACK_COUNTER *)attacker;
             counter->attack_count = (u8)((counter->attack_count + 1) % CombatHitReactionInterval);
@@ -3794,9 +3794,9 @@ impact:
             GameCam_Judder(GameCam, 0.2f, 0, NULL);
         }
         if (attacker != NULL && (attacker->flags_1fc_word & APIOBJECT_FLAG_PLAYER_ACTIVE) && (target->flags_1f8 & APIOBJECT_SIDE_BADDIE) &&
-            !(target->character_data->model_flags & CHARACTER_MODEL_UNTARGETABLE) && (flags & 4)) {
+            !(target->character_data->model_flags & CHARACTER_MODEL_UNTARGETABLE) && (flags & OBJHIT_FROM_PLAYER)) {
             AdaptiveDifficultyChange(&adaptivedifficulty, CombatNpcKillDifficultyAmount);
-        } else if ((target->flags_1fc_word & APIOBJECT_FLAG_PLAYER_ACTIVE) && (flags & 2)) {
+        } else if ((target->flags_1fc_word & APIOBJECT_FLAG_PLAYER_ACTIVE) && (flags & OBJHIT_FROM_AI)) {
             AdaptiveDifficultyChange(&adaptivedifficulty, CombatPlayerDeathDifficultyAmount);
         }
         result = 2;

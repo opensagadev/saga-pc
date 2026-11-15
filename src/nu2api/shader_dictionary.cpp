@@ -843,7 +843,7 @@ void ShaderCompilerDictionaryPc::Expand(void *input, ShaderCompilerBufferAllocat
     ShaderExpansionNodePc *node = static_cast<ShaderExpansionNodePc *>(input);
     while (node != NULL) {
         switch (node->kind) {
-            case 0: {
+            case SHADER_NODE_BRANCH: {
                 i32 value;
                 ShaderConditionNodePc *condition = node->data.branch.condition;
                 if (EvaluateCondition(condition, &value) && value != 0) {
@@ -853,7 +853,7 @@ void ShaderCompilerDictionaryPc::Expand(void *input, ShaderCompilerBufferAllocat
                 }
                 break;
             }
-            case 1:
+            case SHADER_NODE_MACRO:
                 AddDefinition(node->data.definition.name, node->data.definition.value, 0);
                 if (unknown_965 == 0 && output != NULL) {
                     const char *value = node->data.definition.value != NULL ? node->data.definition.value : "";
@@ -864,14 +864,14 @@ void ShaderCompilerDictionaryPc::Expand(void *input, ShaderCompilerBufferAllocat
                     output->AppendText("\r\n");
                 }
                 break;
-            case 2:
+            case SHADER_NODE_UNDEF:
                 if (output != NULL) {
                     output->AppendText("#undef ");
                     output->AppendText(node->data.definition.name);
                     output->AppendText("\r\n");
                 }
                 break;
-            case 3:
+            case SHADER_NODE_DECLARATION:
                 if (FindASTExact(node->data.declaration.name, node->data.declaration.flags) == NULL) {
                     VirtualStackAllocator *arena = &output_memory;
                     const char *name = ShaderCloneArenaStringPc(node->data.declaration.name, arena);
@@ -886,7 +886,7 @@ void ShaderCompilerDictionaryPc::Expand(void *input, ShaderCompilerBufferAllocat
                                                          node->data.declaration.vertex_register, node->data.declaration.pixel_register));
                 }
                 break;
-            case 4: {
+            case SHADER_NODE_REFERENCE: {
                 const char *name = node->data.reference.name;
                 for (i32 i = 0; i < node->data.reference.alias_depth; ++i) {
                     name = FindDefinition(name)->value;
@@ -903,10 +903,10 @@ void ShaderCompilerDictionaryPc::Expand(void *input, ShaderCompilerBufferAllocat
                 }
                 break;
             }
-            case 5:
+            case SHADER_NODE_TOGGLE:
                 unknown_965 = node->data.toggle.enabled == 0;
                 break;
-            case 6:
+            case SHADER_NODE_EMIT:
                 if (output != NULL) {
                     u32 flags = node->data.emit.flags;
                     bool program = (flags >> 5) & 1;
@@ -923,7 +923,7 @@ void ShaderCompilerDictionaryPc::Expand(void *input, ShaderCompilerBufferAllocat
                     }
                 }
                 break;
-            case 7:
+            case SHADER_NODE_TEXT:
                 if (output != NULL) {
                     output->AppendBytes(node->data.text.bytes, node->data.text.count);
                 }

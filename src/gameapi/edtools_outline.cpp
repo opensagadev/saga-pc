@@ -99,7 +99,7 @@ void RndrOSquare(NUVEC *centre, f32 radius, i32 colour, NUMTL *) {
 extern "C" void FlushMenuHighlights(eduimenu_s *menu) {
     eduiitem_s *item;
     for (item = menu->first; item != NULL; item = item->next) {
-        if (item->type == 0) {
+        if (item->type == EDUIITEM_SEL) {
             item->highlighted = 0;
         }
     }

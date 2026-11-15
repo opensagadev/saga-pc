@@ -444,12 +444,12 @@ void Signal_MoveCode(WORLDINFO *world, GAMEOBJECT *object) {
         object->context_timer = elapsed;
         if (elapsed >= object->context_duration) {
             object->character_context = CHARACTER_CONTEXT_NONE;
-            if ((object->context_variant_flags & 0x40) == 0) {
+            if ((object->context_variant_flags & APIOBJECT_CONTEXT_EVENT_DONE) == 0) {
                 exchange = 1;
             }
             StartEndOfJump(object);
         } else {
-            if ((object->context_variant_flags & 0x40) != 0) {
+            if ((object->context_variant_flags & APIOBJECT_CONTEXT_EVENT_DONE) != 0) {
                 return;
             }
             if (animation_time != NULL) {
@@ -466,7 +466,7 @@ void Signal_MoveCode(WORLDINFO *world, GAMEOBJECT *object) {
             i32 index;
             /* Context 0x4c uses the attachment union and the full 24-byte suit record. */
             ((SIGNAL_s *)object->grapple)->flags |= 4;
-            object->context_variant_flags |= 0x40;
+            object->context_variant_flags |= APIOBJECT_CONTEXT_EVENT_DONE;
             old_suit = (SUIT_INITIALIZER_RECORD *)object->suit;
             object->ai_packet.capabilities &= ~old_suit->character_flags;
             signal = object->grapple;
@@ -484,7 +484,7 @@ void Signal_MoveCode(WORLDINFO *world, GAMEOBJECT *object) {
             NewBuzz(object->pad->bound_pad, 0.1f, 0);
             NewRumble(object->pad->bound_pad, 0.6f, 0);
         }
-        if ((object->context_variant_flags & 0x40) == 0) {
+        if ((object->context_variant_flags & APIOBJECT_CONTEXT_EVENT_DONE) == 0) {
             NewRumble(object->pad->bound_pad, (f32)((f64)qrand() * (f64)(1.0f / 65535.0f) * (f64)0.4f), 0);
         }
         return;
@@ -506,7 +506,7 @@ void Signal_MoveCode(WORLDINFO *world, GAMEOBJECT *object) {
             if (object->context_duration <= 0.0f) {
                 object->context_duration = 1.0f;
             }
-            object->context_variant_flags &= ~0x40u;
+            object->context_variant_flags &= ~APIOBJECT_CONTEXT_EVENT_DONE;
         }
     }
 }

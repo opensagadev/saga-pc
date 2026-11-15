@@ -120,6 +120,27 @@ typedef struct eduiiattr_s eduiiattr_s;
 typedef struct eduiitem_s eduiitem_s;
 typedef struct eduimenu_s eduimenu_s;
 
+/* eduiitem_s.type: the item kind each eduiItem*Create constructor stores (4, 5 and 14 have no constructor in the
+ * source yet). */
+#define EDUIITEM_SEL 0
+#define EDUIITEM_TEXT_PICK 1 /* also eduiItemFilePickCreate */
+#define EDUIITEM_CHECK 2
+#define EDUIITEM_TOGGLE 3
+#define EDUIITEM_SLIDER 6
+#define EDUIITEM_GRAD_PICK 7
+#define EDUIITEM_GREY_GRAD_PICK 8
+#define EDUIITEM_DATA_GRAD_PICK 9
+#define EDUIITEM_COLOUR_PICK 10
+#define EDUIITEM_GREY_PICK 11
+#define EDUIITEM_TEXTURE_PICK 12
+#define EDUIITEM_COLOUR_SLIDER 13
+#define EDUIITEM_GRAPH 15
+#define EDUIITEM_FILE_SEL 16
+#define EDUIITEM_PROP 17
+#define EDUIITEM_SEPARATOR 18
+#define EDUIITEM_EXPANDER 19
+#define EDUIITEM_FILTER 20
+
 struct eduiitem_s {              // size 0x48
     struct eduiitem_s *next;     // 0x00
     struct eduiitem_s *previous; // 0x04

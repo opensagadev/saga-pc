@@ -660,7 +660,7 @@ void eduiMenuHighlight(eduimenu_s *menu, eduiitem_s *item) {
     if (item->selection_group != 0) {
         for (entry = menu->first; entry != NULL; entry = entry->next) {
             if (entry == item) {
-                if (entry->type != 3) {
+                if (entry->type != EDUIITEM_TOGGLE) {
                     entry->highlighted = 1;
                 } else {
                     entry->highlighted = 1 - entry->highlighted;
@@ -741,7 +741,7 @@ void eduiMenuSortItemsByTxt(eduimenu_s *menu) {
             eduiitem_s *item = first;
             sorted = 1;
             while (item->next != NULL && item->text != NULL && item->next->text != NULL) {
-                if (item->type != 20 && (item->next->type == 20 || NuStrICmp(item->text, item->next->text) > 0)) {
+                if (item->type != EDUIITEM_FILTER && (item->next->type == EDUIITEM_FILTER || NuStrICmp(item->text, item->next->text) > 0)) {
                     if (item != menu->last) {
                         eduiitem_s *next = item->next;
                         eduiitem_s *previous = item->previous;
@@ -904,7 +904,7 @@ i32 eduiMenuDetach(eduimenu_s *menu) {
 eduiitem_s *eduiItemCheckCreate(size_t data, const void *colours, i32 selected, i32 group, EdUiItemCallback callback, char *text) {
     eduiitem_s *item = eduiItemSelCreate(data, colours, selected, group, callback, text);
     if (item) {
-        item->type = 2;
+        item->type = EDUIITEM_CHECK;
         item->process = eduicbProcessSel;
         item->render = eduicbRenderCheck;
     }
@@ -914,7 +914,7 @@ eduiitem_s *eduiItemCheckCreate(size_t data, const void *colours, i32 selected, 
 eduiitem_s *eduiItemToggleCreate(size_t data, const void *colours, i32 selected, i32 group, EdUiItemCallback callback, char *text) {
     eduiitem_s *item = eduiItemSelCreate(data, colours, selected, group, callback, text);
     if (item) {
-        item->type = 3;
+        item->type = EDUIITEM_TOGGLE;
         item->process = eduicbProcessSel;
         item->render = eduicbRenderCheck;
     }
@@ -977,10 +977,10 @@ static void eduicbProcessGradPick(eduimenu_s *menu, eduiitem_s *item) {
         return;
     }
     switch (item->type) {
-        case 8:
+        case EDUIITEM_GREY_GRAD_PICK:
             pick = eduiItemColourPickCreate((u32)item, &ed_attr, cbgpcfgCPPress, "Colourpick");
             if (pick) {
-                pick->type = 11;
+                pick->type = EDUIITEM_GREY_PICK;
                 pick->process = eduicbProcessGreyPick;
                 pick->render = eduicbRenderGreyPick;
             }
@@ -996,7 +996,7 @@ static void eduicbProcessGradPick(eduimenu_s *menu, eduiitem_s *item) {
                 colour->cursor_y = value;
             }
             break;
-        case 9:
+        case EDUIITEM_DATA_GRAD_PICK:
             pick = eduiItemSelCreate((u32)item, &ed_attr, 0, 0, cbgpcfgCPPress, "Edit");
             break;
         default:
@@ -1194,7 +1194,7 @@ i32 eduiMenuProcessInput(eduimenu_s *menu, f32 delta_time, FRAME_PAD *pad, i32 i
                 menu->unknown_0c = menu->selected->previous;
             }
             item = menu->selected->previous;
-            while (item->type == 18) {
+            while (item->type == EDUIITEM_SEPARATOR) {
                 item = item->previous;
             }
             menu->selected = item;
@@ -1204,7 +1204,7 @@ i32 eduiMenuProcessInput(eduimenu_s *menu, f32 delta_time, FRAME_PAD *pad, i32 i
     if (down && menu->selected && menu->selected->next) {
         do {
             eduiitem_s *item = menu->selected->next;
-            while (item->type == 18) {
+            while (item->type == EDUIITEM_SEPARATOR) {
                 item = item->next;
             }
             menu->selected = item;
@@ -1448,7 +1448,7 @@ eduiitem_s *eduiItemGradPickCreate(u32 data, void *colours, void *callback, char
     if (item) {
         memset(item, 0, sizeof(edui_gradient_pick_s));
         item->base.data = data;
-        item->base.type = 7;
+        item->base.type = EDUIITEM_GRAD_PICK;
         memcpy(item->base.colours, colours, sizeof(item->base.colours));
         item->base.text_alignment = 0x40;
         item->base.selection_group = 0;
@@ -1466,7 +1466,7 @@ eduiitem_s *eduiItemGradPickCreate(u32 data, void *colours, void *callback, char
 eduiitem_s *eduiItemGreyGradPickCreate(size_t data, const void *colours, EdUiItemCallback callback, char *text) {
     eduiitem_s *item = eduiItemGradPickCreate(data, colours, callback, text);
     if (item) {
-        item->type = 8;
+        item->type = EDUIITEM_GREY_GRAD_PICK;
     }
     return item;
 }
@@ -1475,7 +1475,7 @@ eduiitem_s *eduiItemDataGradPickCreate(size_t data, void *colours, EdUiItemCallb
                                        EdUiItemCallback remove, EdUiItemCallback copy, EdUiItemCallback paste, char *text) {
     edui_gradient_pick_s *item = (edui_gradient_pick_s *)eduiItemGradPickCreate(data, colours, callback, text);
     if (item) {
-        item->base.type = 9;
+        item->base.type = EDUIITEM_DATA_GRAD_PICK;
         item->press = press;
         item->add = add;
         item->remove = remove;
@@ -1662,7 +1662,7 @@ eduiitem_s *eduiItemSelCreate(u32 data, void *colours, i32 selected, i32 group, 
     if (item) {
         memset(item, 0, sizeof(edui_sel_s));
         item->base.data = data;
-        item->base.type = 0;
+        item->base.type = EDUIITEM_SEL;
         memcpy(item->base.colours, colours, sizeof(item->base.colours));
         item->base.selection_group = group;
         item->base.highlighted = selected;
@@ -2062,7 +2062,7 @@ void eduicbItemExpanderClose(eduiitem_s *item) {
     EDUI_EXPANDER *expander = (EDUI_EXPANDER *)item;
     eduiitem_s *child;
     for (child = expander->first_child; child; child = child->next) {
-        if (child->type == 19) {
+        if (child->type == EDUIITEM_EXPANDER) {
             eduicbItemExpanderClose(child);
         }
         if (child == expander->last_child) {
@@ -2082,7 +2082,7 @@ void eduicbItemExpanderClose(eduiitem_s *item) {
 void eduicbMenuCloseAllexpanders(eduimenu_s *menu) {
     eduiitem_s *item;
     for (item = menu->last; item; item = item->previous) {
-        if (item->type == 19) {
+        if (item->type == EDUIITEM_EXPANDER) {
             eduicbItemExpanderClose(item);
         }
     }
@@ -2171,10 +2171,10 @@ void eduiIitemExpanderSetDepth(eduiitem_s *item, i32 depth) {
     eduiitem_s *child;
     expander->depth = depth;
     for (child = expander->first_child; child; child = child->next) {
-        if (child->type == 19) {
+        if (child->type == EDUIITEM_EXPANDER) {
             eduiIitemExpanderSetDepth(child, depth + 1);
         }
-        if (child->type == 17) {
+        if (child->type == EDUIITEM_PROP) {
             ((edui_prop_s *)child)->depth = depth + 1;
         }
         if (child == expander->last_child) {
@@ -2194,10 +2194,10 @@ void eduiItemExpanderAddChild(eduiitem_s *item, eduiitem_s *child) {
         expander->first_child = child;
     }
     child->next = NULL;
-    if (child->type == 19) {
+    if (child->type == EDUIITEM_EXPANDER) {
         eduiIitemExpanderSetDepth(child, expander->depth + 1);
     }
-    if (child->type == 17) {
+    if (child->type == EDUIITEM_PROP) {
         ((edui_prop_s *)child)->depth = expander->depth + 1;
     }
 }
@@ -2391,7 +2391,7 @@ eduiitem_s *eduiItemExpanderCreate(u32 data, const void *colours, void *callback
     if (item != NULL) {
         memset(item, 0, sizeof(EDUI_EXPANDER));
         item->base.data = data;
-        item->base.type = 19;
+        item->base.type = EDUIITEM_EXPANDER;
         memcpy(item->base.colours, colours, sizeof(item->base.colours));
         item->base.highlighted = 0;
         item->base.text_alignment = 0x40;
@@ -2442,7 +2442,7 @@ static i32 EduiPropDragLabel(edui_prop_s *property, eduimenu_s *menu) {
             property->label_width = 5.0f;
         }
         for (other = menu->first; other != NULL; other = other->next) {
-            if (other->type == 17 && other != &property->base) {
+            if (other->type == EDUIITEM_PROP && other != &property->base) {
                 ((edui_prop_s *)other)->label_width = property->label_width;
             }
         }
@@ -2528,7 +2528,7 @@ static i32 EduiPropKeyboardPc(edui_prop_s *property, eduimenu_s *menu) {
 /* Runs the button callback while it is held (or the item is activated). */
 static i32 EduiPropButton(edui_prop_s *property, eduimenu_s *menu, FRAME_PAD *pad) {
     edui_camera_enabled = 1;
-    if (property->button_held || (property->base.type == 17 && (pad->digital_buttons & PAD_BUTTON_CROSS))) {
+    if (property->button_held || (property->base.type == EDUIITEM_PROP && (pad->digital_buttons & PAD_BUTTON_CROSS))) {
         if (property->button) {
             edui_camera_enabled = 0;
             property->button(menu, &property->base, edui_cursor_buttons);
@@ -2815,7 +2815,7 @@ eduiitem_s *eduiItemPropCreateEx(u32 data, void *colours, void *selected, void *
     if (item) {
         memset(item, 0, sizeof(edui_prop_s));
         item->base.data = data;
-        item->base.type = 17;
+        item->base.type = EDUIITEM_PROP;
         memcpy(item->base.colours, colours, sizeof(item->base.colours));
         item->base.highlighted = 0;
         item->base.text_alignment = 0x40;
@@ -2913,7 +2913,7 @@ static i32 eduicbProcessFilter(eduimenu_s *menu, eduiitem_s *item, f32 delta_tim
     if (*query) {
         for (candidate = menu->first; candidate != NULL; candidate = next) {
             next = candidate->next;
-            if (candidate->type != 20 && candidate->type != 18 && !NuStrIStr(candidate->text, query)) {
+            if (candidate->type != EDUIITEM_FILTER && candidate->type != EDUIITEM_SEPARATOR && !NuStrIStr(candidate->text, query)) {
                 eduiMenuRemoveItem(menu, candidate);
                 candidate->previous = NULL;
                 candidate->next = filter->first_child;
@@ -2976,7 +2976,7 @@ eduiitem_s *eduiItemFilterCreate(u32 data, void *colours, char *text, char *valu
     if (item) {
         memset(item, 0, sizeof(edui_filter_s));
         item->prop.base.data = data;
-        item->prop.base.type = 20;
+        item->prop.base.type = EDUIITEM_FILTER;
         memcpy(item->prop.base.colours, colours, sizeof(item->prop.base.colours));
         item->prop.base.highlighted = 0;
         item->prop.base.text_alignment = 0x40;
@@ -3082,7 +3082,7 @@ eduiitem_s *eduiItemColourPickCreate(u32 data, void *colours, void *callback, ch
     if (item) {
         memset(item, 0, sizeof(edui_colour_pick_s));
         item->base.data = data;
-        item->base.type = 10;
+        item->base.type = EDUIITEM_COLOUR_PICK;
         memcpy(item->base.colours, colours, sizeof(item->base.colours));
         item->base.text_alignment = 0x40;
         item->base.selection_group = 0;
@@ -3105,7 +3105,7 @@ eduiitem_s *eduiItemColourPickCreate(u32 data, void *colours, void *callback, ch
 eduiitem_s *eduiItemGreyPickCreate(u32 data, void *colours, void *callback, char *text) {
     eduiitem_s *item = eduiItemColourPickCreate(data, colours, callback, text);
     if (item) {
-        item->type = 11;
+        item->type = EDUIITEM_GREY_PICK;
         item->process = eduicbProcessGreyPick;
         item->render = eduicbRenderGreyPick;
     }
@@ -3183,7 +3183,7 @@ eduiitem_s *eduiItemTexturePickCreate(u32 data, void *colours, void *callback, c
     if (item) {
         memset(item, 0, sizeof(edui_texture_pick_s));
         item->base.data = data;
-        item->base.type = 12;
+        item->base.type = EDUIITEM_TEXTURE_PICK;
         memcpy(item->base.colours, colours, sizeof(item->base.colours));
         item->base.text_alignment = 0x40;
         item->base.selection_group = 0;
@@ -3214,7 +3214,7 @@ eduiitem_s *eduiItemGraphCreate(u32 data, void *colours, void *callback, nugraph
     if (item) {
         memset(item, 0, sizeof(edui_graph_s));
         item->base.data = data;
-        item->base.type = 15;
+        item->base.type = EDUIITEM_GRAPH;
         memcpy(item->base.colours, colours, sizeof(item->base.colours));
         item->cursor_x = 0.5f;
         item->cursor_y = 0.5f;
@@ -3247,7 +3247,7 @@ eduiitem_s *eduiItemSliderCreate(u32 data, void *colours, i32 group, void *callb
     if (item) {
         memset(item, 0, sizeof(edui_slider_s));
         item->base.data = data;
-        item->base.type = 6;
+        item->base.type = EDUIITEM_SLIDER;
         memcpy(item->base.colours, colours, sizeof(item->base.colours));
         item->base.text_alignment = 0x40;
         item->base.selection_group = group;
@@ -3284,7 +3284,7 @@ eduiitem_s *eduiItemColourSliderCreate(u32 data, void *colours, i32 group, void 
     if (item) {
         memset(item, 0, sizeof(edui_colour_slider_s));
         item->base.base.data = data;
-        item->base.base.type = 13;
+        item->base.base.type = EDUIITEM_COLOUR_SLIDER;
         memcpy(item->base.base.colours, colours, sizeof(item->base.base.colours));
         item->base.base.text_alignment = 0x40;
         item->base.base.selection_group = group;
@@ -3564,7 +3564,7 @@ eduiitem_s *eduiItemTextPickCreate(u32 data, void *colours, void *callback, char
     if (item) {
         memset(item, 0, sizeof(edui_textpicker_s));
         item->base.data = data;
-        item->base.type = 1;
+        item->base.type = EDUIITEM_TEXT_PICK;
         memcpy(item->base.colours, colours, sizeof(item->base.colours));
         item->base.text_alignment = 0x40;
         item->base.selection_group = 0;
@@ -3602,7 +3602,7 @@ eduiitem_s *eduiItemFilePickCreate(u32 data, void *colours, void *callback, char
     if (item) {
         memset(item, 0, sizeof(edui_file_pick_s));
         item->base.data = data;
-        item->base.type = 1;
+        item->base.type = EDUIITEM_TEXT_PICK;
         memcpy(item->base.colours, colours, sizeof(item->base.colours));
         item->base.text_alignment = 0x40;
         item->base.selection_group = 0;
@@ -3777,18 +3777,18 @@ void eduiMenuFitWidth(eduimenu_s *menu, i32 padding) {
     }
     for (item = first; item != NULL; item = item->next) {
         switch (item->type) {
-            case 1:
+            case EDUIITEM_TEXT_PICK:
                 item_text_width = ((i32)(NuQFntHeight(edui_font) * 1.25) >> 3) * 10;
                 break;
-            case 2:
-            case 3:
+            case EDUIITEM_CHECK:
+            case EDUIITEM_TOGGLE:
                 if (item->text != NULL) {
                     i32 icon_width = (i32)(NuQFntHeight(edui_font) * 1.25) >> 3;
                     i32 text_width = (i32)NuQFntPrintLenU(edui_font, item->text) >> 4;
                     item_text_width = icon_width + text_width;
                 }
                 break;
-            case 6: {
+            case EDUIITEM_SLIDER: {
                 edui_slider_s *slider = (edui_slider_s *)item;
                 char format[512];
                 char text[512];
@@ -3798,7 +3798,7 @@ void eduiMenuFitWidth(eduimenu_s *menu, i32 padding) {
                 item_text_width = (i32)NuQFntPrintLenU(edui_font, text) >> 4;
                 break;
             }
-            case 17: {
+            case EDUIITEM_PROP: {
                 edui_prop_s *property = (edui_prop_s *)item;
                 i32 label_width = item->text != NULL ? (i32)NuQFntPrintLenU(edui_font, item->text) >> 4 : 30;
                 if (label_width > property_label_width) {
@@ -3825,7 +3825,7 @@ void eduiMenuFitWidth(eduimenu_s *menu, i32 padding) {
         width = property_width;
     }
     for (item = menu->first; item != NULL; item = item->next) {
-        if (item->type == 17) {
+        if (item->type == EDUIITEM_PROP) {
             ((edui_prop_s *)item)->label_width = (f32)(property_label_width + 1);
         }
     }
@@ -3837,7 +3837,7 @@ void eduiMenuFitWidth(eduimenu_s *menu, i32 padding) {
 void eduicbMenuOpenAllexpanders(eduimenu_s *menu) {
     eduiitem_s *item;
     for (item = menu->first; item != NULL; item = item->next) {
-        if (item->type == 19) {
+        if (item->type == EDUIITEM_EXPANDER) {
             EDUI_EXPANDER *expander = (EDUI_EXPANDER *)item;
             if (expander->first_child != NULL && !expander->open) {
                 expander->last_child->next = expander->base.next;
@@ -4502,7 +4502,7 @@ static void EduiReleaseStaleInteract(void) {
 }
 
 static void EduiInteractSelectItem(edui_interact_s *interact) {
-    if (interact && interact->menu && interact->item && interact->item->type != 18) {
+    if (interact && interact->menu && interact->item && interact->item->type != EDUIITEM_SEPARATOR) {
         interact->menu->selected = interact->item;
     }
 }
@@ -5121,7 +5121,7 @@ eduiitem_s *eduiItemFileSelCreate(u32 data, void *colours, void *callback, char 
     if (item) {
         memset(item, 0, sizeof(EDUI_FILE_SELECT));
         item->base.data = data;
-        item->base.type = 16;
+        item->base.type = EDUIITEM_FILE_SEL;
         memcpy(item->base.colours, colours, sizeof(item->base.colours));
         item->base.text_alignment = 0x40;
         item->base.selection_group = 0;

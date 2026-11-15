@@ -37,7 +37,7 @@ void ShaderCompilerParserPc::FlushText() {
         ShaderParserTextNodePc *node = reinterpret_cast<ShaderParserTextNodePc *>(arena->cursor);
         arena->cursor += sizeof(ShaderParserTextNodePc);
         if (node != NULL) {
-            node->kind = 7;
+            node->kind = SHADER_NODE_TEXT;
             node->next = NULL;
             node->bytes = bytes;
             node->count = count;
@@ -67,7 +67,7 @@ void ShaderCompilerParserPc::DefineMacro(const char *name, const char *value) {
     ShaderParserMacroNodePc *node = reinterpret_cast<ShaderParserMacroNodePc *>(arena->cursor);
     arena->cursor += sizeof(ShaderParserMacroNodePc);
     if (node != NULL) {
-        node->kind = 1;
+        node->kind = SHADER_NODE_MACRO;
         node->next = NULL;
         node->name = copy_name;
         node->value = copy_value;
@@ -86,7 +86,7 @@ void ShaderCompilerParserPc::UndefineMacro(const char *name) {
     ShaderParserUndefNodePc *node = reinterpret_cast<ShaderParserUndefNodePc *>(arena->cursor);
     arena->cursor += sizeof(ShaderParserUndefNodePc);
     if (node != NULL) {
-        node->kind = 2;
+        node->kind = SHADER_NODE_UNDEF;
         node->next = NULL;
         node->name = copy;
     } else {
@@ -102,7 +102,7 @@ void ShaderCompilerParserPc::BeginIf(ShaderConditionNodePc *condition) {
     ShaderParserBranchNodePc *node = reinterpret_cast<ShaderParserBranchNodePc *>(arena->cursor);
     arena->cursor += sizeof(ShaderParserBranchNodePc);
     if (node != NULL) {
-        node->kind = 0;
+        node->kind = SHADER_NODE_BRANCH;
         node->next = NULL;
         node->if_true = NULL;
         node->if_false = NULL;
@@ -129,7 +129,7 @@ void ShaderCompilerParserPc::BeginElseIf(ShaderConditionNodePc *condition) {
     ShaderParserBranchNodePc *node = reinterpret_cast<ShaderParserBranchNodePc *>(arena->cursor);
     arena->cursor += sizeof(ShaderParserBranchNodePc);
     if (node != NULL) {
-        node->kind = 0;
+        node->kind = SHADER_NODE_BRANCH;
         node->next = NULL;
         node->if_true = NULL;
         node->if_false = NULL;
@@ -230,7 +230,7 @@ void ShaderCompilerParserPc::SetShowDefinitions(u8 enabled) {
     ShaderParserTogglePc *node = reinterpret_cast<ShaderParserTogglePc *>(arena->cursor);
     arena->cursor += sizeof(ShaderParserTogglePc);
     if (node != NULL) {
-        node->kind = 5;
+        node->kind = SHADER_NODE_TOGGLE;
         node->next = NULL;
         node->enabled = enabled;
     } else {
@@ -248,7 +248,7 @@ void ShaderCompilerParserPc::UseDeclaration(u32 flags, i32 depth, const char *na
     ShaderParserReferencePc *node = reinterpret_cast<ShaderParserReferencePc *>(arena->cursor);
     arena->cursor += sizeof(ShaderParserReferencePc);
     if (node != NULL) {
-        node->kind = 4;
+        node->kind = SHADER_NODE_REFERENCE;
         node->next = NULL;
         node->flags = flags;
         node->alias_depth = depth;
@@ -275,7 +275,7 @@ void ShaderCompilerParserPc::AddDeclaration(u32 flags, i32 type, i32 count, cons
     ShaderParserDeclarationPc *node = reinterpret_cast<ShaderParserDeclarationPc *>(arena->cursor);
     arena->cursor += sizeof(ShaderParserDeclarationPc);
     if (node != NULL) {
-        node->kind = 3;
+        node->kind = SHADER_NODE_DECLARATION;
         node->next = NULL;
         node->flags = flags;
         node->type = type;
@@ -298,7 +298,7 @@ void ShaderCompilerParserPc::EmitDeclarations(u32 flags) {
     ShaderParserEmitPc *node = reinterpret_cast<ShaderParserEmitPc *>(arena->cursor);
     arena->cursor += sizeof(ShaderParserEmitPc);
     if (node != NULL) {
-        node->kind = 6;
+        node->kind = SHADER_NODE_EMIT;
         node->next = NULL;
         node->flags = flags;
     } else {
@@ -361,15 +361,15 @@ void ShaderCompilerParserPc::ParseDeclaration(ShaderCompilerBufferAllocatorPc *i
                 break;
             case 3:
                 if (token.Equals("vs_local")) {
-                    flags = 0x2002;
+                    flags = SHADER_DECL_VS_LOCAL | SHADER_DECL_VERTEX;
                 } else if (token.Equals("fs_local")) {
-                    flags = 0x1004;
+                    flags = SHADER_DECL_FS_LOCAL | SHADER_DECL_PIXEL;
                 } else if (token.Equals("varying")) {
-                    flags = 0x3008;
+                    flags = SHADER_DECL_VARYING | SHADER_DECL_PIXEL | SHADER_DECL_VERTEX;
                 } else if (token.Equals("attribute")) {
-                    flags = 0x2010;
+                    flags = SHADER_DECL_ATTRIBUTE | SHADER_DECL_VERTEX;
                 } else if (token.Equals("uniform")) {
-                    flags = 0x3020;
+                    flags = SHADER_DECL_UNIFORM | SHADER_DECL_PIXEL | SHADER_DECL_VERTEX;
                 } else {
                     state = 26;
                     break;
@@ -400,19 +400,19 @@ void ShaderCompilerParserPc::ParseDeclaration(ShaderCompilerBufferAllocatorPc *i
                 break;
             case 8:
                 if (token.Equals("vs_local")) {
-                    flags = 0x2002;
+                    flags = SHADER_DECL_VS_LOCAL | SHADER_DECL_VERTEX;
                     state = 12;
                 } else if (token.Equals("fs_local")) {
-                    flags = 0x1004;
+                    flags = SHADER_DECL_FS_LOCAL | SHADER_DECL_PIXEL;
                     state = 12;
                 } else if (token.Equals("varying")) {
-                    flags = 0x3008;
+                    flags = SHADER_DECL_VARYING | SHADER_DECL_PIXEL | SHADER_DECL_VERTEX;
                     state = 12;
                 } else if (token.Equals("attribute")) {
-                    flags = 0x2010;
+                    flags = SHADER_DECL_ATTRIBUTE | SHADER_DECL_VERTEX;
                     state = 12;
                 } else if (token.Equals("uniform")) {
-                    flags = 0x3020;
+                    flags = SHADER_DECL_UNIFORM | SHADER_DECL_PIXEL | SHADER_DECL_VERTEX;
                     state = 10;
                 } else if (token.Equals("shared")) {
                     state = 9;
@@ -423,7 +423,7 @@ void ShaderCompilerParserPc::ParseDeclaration(ShaderCompilerBufferAllocatorPc *i
                 break;
             case 9:
                 if (token.Equals("uniform")) {
-                    flags = 0x3020;
+                    flags = SHADER_DECL_UNIFORM | SHADER_DECL_PIXEL | SHADER_DECL_VERTEX;
                     state = 10;
                 } else {
                     state = 26;
@@ -457,7 +457,7 @@ void ShaderCompilerParserPc::ParseDeclaration(ShaderCompilerBufferAllocatorPc *i
                 break;
             case 12:
                 token.Equals(",");
-                if ((flags & 0x20) != 0) {
+                if ((flags & SHADER_DECL_UNIFORM) != 0) {
                     flags = ShaderDeclarationFlagsPc(shared, vertex >= 0, pixel >= 0);
                 }
                 state = 13;
@@ -577,15 +577,15 @@ void ShaderCompilerParserPc::ParseDeclaration(ShaderCompilerBufferAllocatorPc *i
                 break;
             case 23:
                 if (token.Equals("uniform")) {
-                    flags = 0x3020;
+                    flags = SHADER_DECL_UNIFORM | SHADER_DECL_PIXEL | SHADER_DECL_VERTEX;
                 } else if (token.Equals("attribute")) {
-                    flags = 0x2010;
+                    flags = SHADER_DECL_ATTRIBUTE | SHADER_DECL_VERTEX;
                 } else if (token.Equals("varying")) {
-                    flags = 0x3008;
+                    flags = SHADER_DECL_VARYING | SHADER_DECL_PIXEL | SHADER_DECL_VERTEX;
                 } else if (token.Equals("vs_local")) {
-                    flags = 0x2002;
+                    flags = SHADER_DECL_VS_LOCAL | SHADER_DECL_VERTEX;
                 } else if (token.Equals("fs_local")) {
-                    flags = 0x1004;
+                    flags = SHADER_DECL_FS_LOCAL | SHADER_DECL_PIXEL;
                 } else {
                     state = 26;
                     break;

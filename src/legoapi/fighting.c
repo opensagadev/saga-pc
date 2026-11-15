@@ -419,7 +419,8 @@ void BlockSfx(GAMEOBJECT *object) {
     GAMEOBJECT *target = object->force_target;
     if (target != NULL) {
         if ((U64_PAIR(&CInfo[target->character_context].flags) & 0x4000000) != 0 ||
-            ((U64_PAIR(&CInfo[target->character_context].flags) & 0x8000000) != 0 && (target->context_variant_flags & 0x20000) != 0)) {
+            ((U64_PAIR(&CInfo[target->character_context].flags) & 0x8000000) != 0 &&
+             (target->context_variant_flags & APIOBJECT_CONTEXT_INVULNERABLE) != 0)) {
             GameAudio_PlaySfx(0x3f, &object->collision_position, GameAudio_GetPlrSfxBits(target), 0);
         }
     }
@@ -496,7 +497,7 @@ i32 StepBackFromTarget(GAMEOBJECT *object) {
 }
 
 void ComboHitFrame(GAMEOBJECT *object, i32 damage) {
-    object->context_variant_flags |= 0x40;
+    object->context_variant_flags |= APIOBJECT_CONTEXT_EVENT_DONE;
     object->sabre_flags |= 5;
     object->sabre_damage = (u8)damage;
     if ((object->flags_1fc & APIOBJECT_FLAG_PLAYER_ACTIVE) != 0 && Player_HasDoubleWeaponDamage(object)) {
@@ -557,7 +558,7 @@ void Punch_Hit(GAMEOBJECT *attacker, GAMEOBJECT *target, f32 unused, f32 gap) {
     i32 damage;
     PUNCH_BLOWUP_VIEW *blowup;
     (void)unused;
-    attacker->context_variant_flags |= 0x40;
+    attacker->context_variant_flags |= APIOBJECT_CONTEXT_EVENT_DONE;
     if (LEGOCONTEXT_PUNCH != -1 && attacker->character_context == LEGOCONTEXT_PUNCH) {
         if (attacker->character_model->animations[attacker->unknown_7aa] != NULL) {
             attacker->debris_joint = attacker->character_model->animations[attacker->unknown_7aa]->locator;
@@ -596,7 +597,8 @@ void Punch_Hit(GAMEOBJECT *attacker, GAMEOBJECT *target, f32 unused, f32 gap) {
             }
             flags = U64_PAIR(&CInfo[target->character_context].flags);
             if (!(flags & 0x80)) {
-                if ((flags & 0x04000000) || ((flags & 0x08000000) && (target->context_variant_flags & 0x20000)) || CannotKill(target)) {
+                if ((flags & 0x04000000) || ((flags & 0x08000000) && (target->context_variant_flags & APIOBJECT_CONTEXT_INVULNERABLE)) ||
+                    CannotKill(target)) {
                     NewRumble(attacker->pad->bound_pad, 0.5f, 0);
                     NewRumble(target->pad->bound_pad, 0.5f, 0);
                     if (!(U64_PAIR(&CInfo[target->character_context].flags) & 0x80000000)) {

@@ -586,7 +586,7 @@ i32 Batarang_StartTargetting(GAMEOBJECT *object) {
         packet->cooldown = (object->id == (u16)ID_DEFAULTCHARACTER_B) ? 51 : 50;
         packet = object->batarang;
         if (WORLD->level_objects[packet->cooldown].active != 0) {
-            object->context_variant_flags |= 0x20000;
+            object->context_variant_flags |= APIOBJECT_CONTEXT_INVULNERABLE;
             object->unknown_7b3 = 0;
             object->context_timer = 0.0f;
             object->landing_followup = 0;
@@ -647,14 +647,14 @@ extern "C" void Batarang_MoveCode(GAMEOBJECT *object) {
     if (object->character_context == CHARACTER_CONTEXT_BATARANG) {
         if (object->unknown_7b3 == 0) {
             object->flags_e20 |= 0x00400000;
-            object->context_variant_flags |= 0x20000;
+            object->context_variant_flags |= APIOBJECT_CONTEXT_INVULNERABLE;
             if (((object->pad->buttons_pressed & GAMEPAD_JUMP) != 0)) {
                 StartJump(object, 0);
                 return;
             }
             if ((object->pad->buttons_held & GAMEPAD_ACTION) == 0 && !(object->context_timer < 0.3f)) {
                 if (BATARANG_PACKET(object)->active > 0) {
-                    object->context_variant_flags &= ~0x20000U;
+                    object->context_variant_flags &= ~APIOBJECT_CONTEXT_INVULNERABLE;
                     object->unknown_7b3 = 1;
                     object->unknown_7aa = ACTION_THROW;
                     f32 duration = AnimDuration((i16)object->id, 0x65, 0.0f, 0.0f, 1);
@@ -663,13 +663,13 @@ extern "C" void Batarang_MoveCode(GAMEOBJECT *object) {
                         object->context_duration = 0.5f;
                     }
                     object->context_timer = 0.0f;
-                    object->context_variant_flags &= ~0x40U;
+                    object->context_variant_flags &= ~APIOBJECT_CONTEXT_EVENT_DONE;
                     if (object->character_model->model_data_b[object->unknown_7aa] == NULL ||
                         AnimListFrame(object->character_model, object->unknown_7aa, 0) != 0.0f) {
-                        object->context_variant_flags |= 0x40;
+                        object->context_variant_flags |= APIOBJECT_CONTEXT_EVENT_DONE;
                         object->batarang_release = 1;
                     } else {
-                        object->context_variant_flags &= ~0x40U;
+                        object->context_variant_flags &= ~APIOBJECT_CONTEXT_EVENT_DONE;
                     }
                 } else {
                     object->character_context = CHARACTER_CONTEXT_NONE;
@@ -728,7 +728,7 @@ extern "C" void Batarang_MoveCode(GAMEOBJECT *object) {
             }
         } else if (object->unknown_7b3 == 1) {
             f32 *frame = NULL;
-            object->context_variant_flags &= ~0x20000U;
+            object->context_variant_flags &= ~APIOBJECT_CONTEXT_INVULNERABLE;
             if ((object->pad->buttons_pressed & GAMEPAD_JUMP) != 0) {
                 object->landing_followup = 1;
             }
@@ -752,11 +752,11 @@ extern "C" void Batarang_MoveCode(GAMEOBJECT *object) {
             object->context_timer = timer;
             if (object->context_duration <= timer) {
                 object->character_context = CHARACTER_CONTEXT_NONE;
-                if ((object->context_variant_flags & 0x40) != 0) {
+                if ((object->context_variant_flags & APIOBJECT_CONTEXT_EVENT_DONE) != 0) {
                     return;
                 }
             } else {
-                if ((object->context_variant_flags & 0x40) != 0) {
+                if ((object->context_variant_flags & APIOBJECT_CONTEXT_EVENT_DONE) != 0) {
                     return;
                 }
                 if (object->character_model->model_data_b[object->unknown_7aa] != NULL) {
@@ -772,7 +772,7 @@ extern "C" void Batarang_MoveCode(GAMEOBJECT *object) {
                     }
                 }
             }
-            object->context_variant_flags |= 0x40;
+            object->context_variant_flags |= APIOBJECT_CONTEXT_EVENT_DONE;
             object->batarang_release = 1;
         }
     } else {
@@ -792,7 +792,7 @@ extern "C" void Batarang_MoveCode(GAMEOBJECT *object) {
         return;
     }
 finish:
-    if ((object->context_variant_flags & 0x40) == 0 && object->batarang_release == 0) {
+    if ((object->context_variant_flags & APIOBJECT_CONTEXT_EVENT_DONE) == 0 && object->batarang_release == 0) {
         object->flags_e20 |= 0x00400000;
     }
 }

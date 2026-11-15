@@ -378,7 +378,7 @@ void JumpCode(GAMEOBJECT *object, i32 jump_pressed, i32 jump_held, u32 animation
          object->character_context == LEGOCONTEXT_LAND_FLIP || object->character_context == LEGOCONTEXT_LAND_COMBOJUMP ||
          object->character_context == LEGOCONTEXT_LAND_LUNGE || object->character_context == LEGOCONTEXT_LAND_SLAM ||
          object->character_context == ZipUpLandCombatRollContext)) {
-        if (object->character_context == LEGOCONTEXT_LAND_LUNGE && (object->context_variant_flags & 0x40) == 0) {
+        if (object->character_context == LEGOCONTEXT_LAND_LUNGE && (object->context_variant_flags & APIOBJECT_CONTEXT_EVENT_DONE) == 0) {
             const f32 frame = AnimListFrame(object->character_model, object->unknown_7aa, 0);
             if (frame > 0.0f) {
                 f32 *time = AnimPlaying(&object->anim_packet, object->unknown_7aa, 1, 0);
@@ -447,7 +447,8 @@ void JumpCode(GAMEOBJECT *object, i32 jump_pressed, i32 jump_held, u32 animation
                 return;
             }
             if (LEGOCONTEXT_LAND_LUNGE != -1 && object->character_context == LEGOCONTEXT_LAND_LUNGE &&
-                (object->context_variant_flags & 0x40) == 0 && (object->character_data->model_flags & CHARACTER_MODEL_JEDI) != 0) {
+                (object->context_variant_flags & APIOBJECT_CONTEXT_EVENT_DONE) == 0 &&
+                (object->character_data->model_flags & CHARACTER_MODEL_JEDI) != 0) {
                 ComboHitFrame(object, 1);
             }
             if ((object->character_context == LEGOCONTEXT_LAND_LUNGE || object->character_context == LEGOCONTEXT_LAND_SLAM) &&
@@ -551,7 +552,7 @@ void JumpCode(GAMEOBJECT *object, i32 jump_pressed, i32 jump_held, u32 animation
                             object->character_context = LEGOCONTEXT_LAND_LUNGE;
                             object->unknown_7aa = LEGOACT_LUNGELAND;
                             object->context_timer = AnimDuration((i16)object->id, object->unknown_7aa, 0.0f, 0.0f, 1);
-                            object->context_variant_flags = object->context_variant_flags & (~0x40u);
+                            object->context_variant_flags = object->context_variant_flags & (~APIOBJECT_CONTEXT_EVENT_DONE);
                             aux->jump_reentry_timer = 0.0f;
                             if (!restart_jump) {
                                 ResetAnimPacket(&object->anim_packet, -1);
@@ -629,7 +630,7 @@ void JumpCode(GAMEOBJECT *object, i32 jump_pressed, i32 jump_held, u32 animation
                             object->unknown_7b3 = 0;
                             object->unknown_7aa = LEGOACT_COMBATROLL_LAND;
                             object->context_timer = AnimDuration((i16)object->id, object->unknown_7aa, 0.0f, 0.0f, 1);
-                            object->context_variant_flags &= ~0x40u;
+                            object->context_variant_flags &= ~APIOBJECT_CONTEXT_EVENT_DONE;
                             aux->jump_reentry_timer = 0.0f;
                             if (!restart_jump) {
                                 ResetAnimPacket(&object->anim_packet, -1);

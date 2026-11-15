@@ -2543,7 +2543,8 @@ extern "C" {
                 if ((part->flags & 8) != 0 && !((part->flags & 0x1000000) != 0 && (part->active & 2) != 0) &&
                     ((api->flags_1fc_word & APIOBJECT_FLAG_PLAYER_ACTIVE) != 0 || (part->flags & 0x800000) == 0)) {
                     flags = U64_PAIR(&CInfo[(object->character_context)].flags);
-                    if ((flags & 0x4000000) != 0 || ((flags & 0x8000000) != 0 && (object->context_variant_flags & 0x20000) != 0)) {
+                    if ((flags & 0x4000000) != 0 ||
+                        ((flags & 0x8000000) != 0 && (object->context_variant_flags & APIOBJECT_CONTEXT_INVULNERABLE) != 0)) {
                         if (object->id == (u16)id_BOB) {
                             effect = (object->flags_ef0 & 0x200) != 0 ? 2 : 3;
                         } else if (object->blade_index != -1) {

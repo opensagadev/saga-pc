@@ -57,7 +57,7 @@ void Transform_MoveCode(WORLDINFO *world, GAMEOBJECT *object) {
         trigger = 0;
         object->movement_facing_angle =
             NuAtan2D(target->mid_position.x - object->collision_position.x, target->mid_position.z - object->collision_position.z);
-        if (frame != NULL && !(object->context_variant_flags & 0x40)) {
+        if (frame != NULL && !(object->context_variant_flags & APIOBJECT_CONTEXT_EVENT_DONE)) {
             f32 marker = AnimListFrame(object->character_model, object->unknown_7aa, 0);
             if (marker >= 1.0f && *frame >= marker) {
                 trigger = 1;
@@ -66,12 +66,12 @@ void Transform_MoveCode(WORLDINFO *world, GAMEOBJECT *object) {
         object->context_timer += FRAMETIME;
         if (object->context_timer >= object->context_duration) {
             object->character_context = CHARACTER_CONTEXT_NONE;
-            if (!(object->context_variant_flags & 0x40)) {
+            if (!(object->context_variant_flags & APIOBJECT_CONTEXT_EVENT_DONE)) {
                 trigger = 1;
             }
         }
         if (trigger) {
-            object->context_variant_flags |= 0x40;
+            object->context_variant_flags |= APIOBJECT_CONTEXT_EVENT_DONE;
             GizmoBlowupBlowup(object->grapple, 1, BLOWUP_HIT_TRANSFORM, 1, NULL, 1);
         }
     } else {
@@ -127,7 +127,7 @@ void Transform_MoveCode(WORLDINFO *world, GAMEOBJECT *object) {
             object->transform_target_scale = nearest->target_scale;
             object->transform_alpha = 1.0f;
             if (object->pad->buttons_held & GAMEPAD_SPECIAL) {
-                object->context_variant_flags &= ~0x40u;
+                object->context_variant_flags &= ~APIOBJECT_CONTEXT_EVENT_DONE;
                 object->context_timer = 0.0f;
                 object->character_context = CHARACTER_CONTEXT_TRANSFORM;
                 object->grapple = nearest;

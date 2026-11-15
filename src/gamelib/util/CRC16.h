@@ -71,6 +71,27 @@ struct ShaderMacroDefinitionPc { // size 0xc
 
 extern "C" void ShaderLexicalClassesInitPc(void);
 
+/* ShaderParserNodePc.kind and ShaderExpansionNodePc.kind: the node type each ShaderParser*Pc constructor stores. */
+#define SHADER_NODE_BRANCH 0
+#define SHADER_NODE_MACRO 1
+#define SHADER_NODE_UNDEF 2
+#define SHADER_NODE_DECLARATION 3
+#define SHADER_NODE_REFERENCE 4
+#define SHADER_NODE_TOGGLE 5
+#define SHADER_NODE_EMIT 6
+#define SHADER_NODE_TEXT 7
+
+/* Shader declaration flags: the storage keyword of nu2_use/nu2_declare (ShaderCompilerParserPc::ParseDeclaration),
+ * the stages a uniform is bound to (vreg, freg) and shared (ShaderDeclarationFlagsPc). */
+#define SHADER_DECL_VS_LOCAL 0x2
+#define SHADER_DECL_FS_LOCAL 0x4
+#define SHADER_DECL_VARYING 0x8
+#define SHADER_DECL_ATTRIBUTE 0x10
+#define SHADER_DECL_UNIFORM 0x20
+#define SHADER_DECL_PIXEL 0x1000
+#define SHADER_DECL_VERTEX 0x2000
+#define SHADER_DECL_SHARED 0x4000
+
 struct ShaderExpansionNodePc {   // size 0x28
     i32 kind;                    // 0x00
     ShaderExpansionNodePc *next; // 0x04

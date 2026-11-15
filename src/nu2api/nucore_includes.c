@@ -2478,80 +2478,80 @@ void NuFileExtInit(i32 low_resolution) {
     memset(extensions, 0, sizeof(extensions));
     num_extensions = 0;
 
-    NuFileAddExtensionPC(".ca3", 0, 6);
-    NuFileAddExtensionPC(".cbs", 1, 6);
-    NuFileAddExtensionPC("_360.ghg", 2, 6);
-    NuFileAddExtensionPC("_360.gsc", 3, 6);
-    NuFileAddExtensionPC("_360.tex", 4, 6);
-    NuFileAddExtensionPC(".cc2", 5, 6);
-    NuFileAddExtensionPC(".wavx", 6, 6);
-    NuFileAddExtensionPC(".wavm", 7, 6);
-    NuFileAddExtensionPC(".wmv", 8, 6);
+    NuFileAddExtensionPC(".ca3", NUFILEEXT_AN3, NUFILEEXT_PLATFORM_XBOX360);
+    NuFileAddExtensionPC(".cbs", NUFILEEXT_BSA, NUFILEEXT_PLATFORM_XBOX360);
+    NuFileAddExtensionPC("_360.ghg", NUFILEEXT_GHG, NUFILEEXT_PLATFORM_XBOX360);
+    NuFileAddExtensionPC("_360.gsc", NUFILEEXT_GSC, NUFILEEXT_PLATFORM_XBOX360);
+    NuFileAddExtensionPC("_360.tex", NUFILEEXT_TEXTURE, NUFILEEXT_PLATFORM_XBOX360);
+    NuFileAddExtensionPC(".cc2", NUFILEEXT_CU2, NUFILEEXT_PLATFORM_XBOX360);
+    NuFileAddExtensionPC(".wavx", NUFILEEXT_SOUND, NUFILEEXT_PLATFORM_XBOX360);
+    NuFileAddExtensionPC(".wavm", NUFILEEXT_MIB, NUFILEEXT_PLATFORM_XBOX360);
+    NuFileAddExtensionPC(".wmv", NUFILEEXT_VIDEO, NUFILEEXT_PLATFORM_XBOX360);
 
-    NuFileAddExtensionPC(".ca3", 0, 5);
-    NuFileAddExtensionPC(".cbs", 1, 5);
-    NuFileAddExtensionPC("_ps3.ghg", 2, 5);
-    NuFileAddExtensionPC("_ps3.gsc", 3, 5);
-    NuFileAddExtensionPC("_ps3.tex", 4, 5);
-    NuFileAddExtensionPC(".cc2", 5, 5);
-    NuFileAddExtensionPC(".msf", 6, 5);
-    NuFileAddExtensionPC(".mib", 7, 5);
-    NuFileAddExtensionPC(".pam", 8, 5);
+    NuFileAddExtensionPC(".ca3", NUFILEEXT_AN3, NUFILEEXT_PLATFORM_PS3);
+    NuFileAddExtensionPC(".cbs", NUFILEEXT_BSA, NUFILEEXT_PLATFORM_PS3);
+    NuFileAddExtensionPC("_ps3.ghg", NUFILEEXT_GHG, NUFILEEXT_PLATFORM_PS3);
+    NuFileAddExtensionPC("_ps3.gsc", NUFILEEXT_GSC, NUFILEEXT_PLATFORM_PS3);
+    NuFileAddExtensionPC("_ps3.tex", NUFILEEXT_TEXTURE, NUFILEEXT_PLATFORM_PS3);
+    NuFileAddExtensionPC(".cc2", NUFILEEXT_CU2, NUFILEEXT_PLATFORM_PS3);
+    NuFileAddExtensionPC(".msf", NUFILEEXT_SOUND, NUFILEEXT_PLATFORM_PS3);
+    NuFileAddExtensionPC(".mib", NUFILEEXT_MIB, NUFILEEXT_PLATFORM_PS3);
+    NuFileAddExtensionPC(".pam", NUFILEEXT_VIDEO, NUFILEEXT_PLATFORM_PS3);
 
-    NuFileAddExtensionPC(".an3", 0, 4);
-    NuFileAddExtensionPC(".bsa", 1, 4);
+    NuFileAddExtensionPC(".an3", NUFILEEXT_AN3, NUFILEEXT_PLATFORM_WINDOWS);
+    NuFileAddExtensionPC(".bsa", NUFILEEXT_BSA, NUFILEEXT_PLATFORM_WINDOWS);
 
-    NuFileAddExtensionPC("_pc.dds", 4, 4);
-    NuFileAddExtensionPC(".cu2", 5, 4);
-    NuFileAddExtensionPC(".wav", 6, 4);
-    NuFileAddExtensionPC(".mib", 7, 4);
-    NuFileAddExtensionPC(".bik", 8, 4);
-    NuFileAddExtensionPC("_pc.gsc", 3, 4);
+    NuFileAddExtensionPC("_pc.dds", NUFILEEXT_TEXTURE, NUFILEEXT_PLATFORM_WINDOWS);
+    NuFileAddExtensionPC(".cu2", NUFILEEXT_CU2, NUFILEEXT_PLATFORM_WINDOWS);
+    NuFileAddExtensionPC(".wav", NUFILEEXT_SOUND, NUFILEEXT_PLATFORM_WINDOWS);
+    NuFileAddExtensionPC(".mib", NUFILEEXT_MIB, NUFILEEXT_PLATFORM_WINDOWS);
+    NuFileAddExtensionPC(".bik", NUFILEEXT_VIDEO, NUFILEEXT_PLATFORM_WINDOWS);
+    NuFileAddExtensionPC("_pc.gsc", NUFILEEXT_GSC, NUFILEEXT_PLATFORM_WINDOWS);
     if (low_resolution) {
-        NuFileAddExtensionPC("_lr_pc.ghg", 2, 4);
+        NuFileAddExtensionPC("_lr_pc.ghg", NUFILEEXT_GHG, NUFILEEXT_PLATFORM_WINDOWS);
     } else {
-        NuFileAddExtensionPC("_pc.ghg", 2, 4);
+        NuFileAddExtensionPC("_pc.ghg", NUFILEEXT_GHG, NUFILEEXT_PLATFORM_WINDOWS);
     }
 
-    NuFileAddExtensionPC(".an3", 0, 0);
-    NuFileAddExtensionPC(".bsa", 1, 0);
-    NuFileAddExtensionPC(".ghg", 2, 0);
-    NuFileAddExtensionPC(".gsc", 3, 0);
-    NuFileAddExtensionPC(".pnt", 4, 0);
-    NuFileAddExtensionPC(".cu2", 5, 0);
-    NuFileAddExtensionPC(".vag", 6, 0);
-    NuFileAddExtensionPC(".mib", 7, 0);
-    NuFileAddExtensionPC(".pss", 8, 0);
+    NuFileAddExtensionPC(".an3", NUFILEEXT_AN3, NUFILEEXT_PLATFORM_PS2);
+    NuFileAddExtensionPC(".bsa", NUFILEEXT_BSA, NUFILEEXT_PLATFORM_PS2);
+    NuFileAddExtensionPC(".ghg", NUFILEEXT_GHG, NUFILEEXT_PLATFORM_PS2);
+    NuFileAddExtensionPC(".gsc", NUFILEEXT_GSC, NUFILEEXT_PLATFORM_PS2);
+    NuFileAddExtensionPC(".pnt", NUFILEEXT_TEXTURE, NUFILEEXT_PLATFORM_PS2);
+    NuFileAddExtensionPC(".cu2", NUFILEEXT_CU2, NUFILEEXT_PLATFORM_PS2);
+    NuFileAddExtensionPC(".vag", NUFILEEXT_SOUND, NUFILEEXT_PLATFORM_PS2);
+    NuFileAddExtensionPC(".mib", NUFILEEXT_MIB, NUFILEEXT_PLATFORM_PS2);
+    NuFileAddExtensionPC(".pss", NUFILEEXT_VIDEO, NUFILEEXT_PLATFORM_PS2);
 
-    NuFileAddExtensionPC(".ca3", 0, 2);
-    NuFileAddExtensionPC(".cbs", 1, 2);
-    NuFileAddExtensionPC(".chg", 2, 2);
-    NuFileAddExtensionPC(".csc", 3, 2);
-    NuFileAddExtensionPC(".ctx", 4, 2);
-    NuFileAddExtensionPC(".cc2", 5, 2);
-    NuFileAddExtensionPC(".dsp", 6, 2);
-    NuFileAddExtensionPC(".gcm", 7, 2);
-    NuFileAddExtensionPC(".h4m", 8, 2);
+    NuFileAddExtensionPC(".ca3", NUFILEEXT_AN3, NUFILEEXT_PLATFORM_GAMECUBE);
+    NuFileAddExtensionPC(".cbs", NUFILEEXT_BSA, NUFILEEXT_PLATFORM_GAMECUBE);
+    NuFileAddExtensionPC(".chg", NUFILEEXT_GHG, NUFILEEXT_PLATFORM_GAMECUBE);
+    NuFileAddExtensionPC(".csc", NUFILEEXT_GSC, NUFILEEXT_PLATFORM_GAMECUBE);
+    NuFileAddExtensionPC(".ctx", NUFILEEXT_TEXTURE, NUFILEEXT_PLATFORM_GAMECUBE);
+    NuFileAddExtensionPC(".cc2", NUFILEEXT_CU2, NUFILEEXT_PLATFORM_GAMECUBE);
+    NuFileAddExtensionPC(".dsp", NUFILEEXT_SOUND, NUFILEEXT_PLATFORM_GAMECUBE);
+    NuFileAddExtensionPC(".gcm", NUFILEEXT_MIB, NUFILEEXT_PLATFORM_GAMECUBE);
+    NuFileAddExtensionPC(".h4m", NUFILEEXT_VIDEO, NUFILEEXT_PLATFORM_GAMECUBE);
 
-    NuFileAddExtensionPC(".an3", 0, 1);
-    NuFileAddExtensionPC(".bsa", 1, 1);
-    NuFileAddExtensionPC(".hx2", 2, 1);
-    NuFileAddExtensionPC(".nx2", 3, 1);
-    NuFileAddExtensionPC(".dds", 4, 1);
-    NuFileAddExtensionPC(".cu2", 5, 1);
-    NuFileAddExtensionPC(".wavx", 6, 1);
-    NuFileAddExtensionPC(".wavm", 7, 1);
-    NuFileAddExtensionPC(".wmv", 8, 1);
+    NuFileAddExtensionPC(".an3", NUFILEEXT_AN3, NUFILEEXT_PLATFORM_XBOX);
+    NuFileAddExtensionPC(".bsa", NUFILEEXT_BSA, NUFILEEXT_PLATFORM_XBOX);
+    NuFileAddExtensionPC(".hx2", NUFILEEXT_GHG, NUFILEEXT_PLATFORM_XBOX);
+    NuFileAddExtensionPC(".nx2", NUFILEEXT_GSC, NUFILEEXT_PLATFORM_XBOX);
+    NuFileAddExtensionPC(".dds", NUFILEEXT_TEXTURE, NUFILEEXT_PLATFORM_XBOX);
+    NuFileAddExtensionPC(".cu2", NUFILEEXT_CU2, NUFILEEXT_PLATFORM_XBOX);
+    NuFileAddExtensionPC(".wavx", NUFILEEXT_SOUND, NUFILEEXT_PLATFORM_XBOX);
+    NuFileAddExtensionPC(".wavm", NUFILEEXT_MIB, NUFILEEXT_PLATFORM_XBOX);
+    NuFileAddExtensionPC(".wmv", NUFILEEXT_VIDEO, NUFILEEXT_PLATFORM_XBOX);
 
-    NuFileAddExtensionPC(".an3", 0, 3);
-    NuFileAddExtensionPC(".bsa", 1, 3);
-    NuFileAddExtensionPC(".phg", 2, 3);
-    NuFileAddExtensionPC(".psc", 3, 3);
-    NuFileAddExtensionPC(".pnt", 4, 3);
-    NuFileAddExtensionPC(".cu2", 5, 3);
-    NuFileAddExtensionPC(".vag", 6, 3);
-    NuFileAddExtensionPC(".at3", 7, 3);
-    NuFileAddExtensionPC(".pss", 8, 3);
+    NuFileAddExtensionPC(".an3", NUFILEEXT_AN3, NUFILEEXT_PLATFORM_PSP);
+    NuFileAddExtensionPC(".bsa", NUFILEEXT_BSA, NUFILEEXT_PLATFORM_PSP);
+    NuFileAddExtensionPC(".phg", NUFILEEXT_GHG, NUFILEEXT_PLATFORM_PSP);
+    NuFileAddExtensionPC(".psc", NUFILEEXT_GSC, NUFILEEXT_PLATFORM_PSP);
+    NuFileAddExtensionPC(".pnt", NUFILEEXT_TEXTURE, NUFILEEXT_PLATFORM_PSP);
+    NuFileAddExtensionPC(".cu2", NUFILEEXT_CU2, NUFILEEXT_PLATFORM_PSP);
+    NuFileAddExtensionPC(".vag", NUFILEEXT_SOUND, NUFILEEXT_PLATFORM_PSP);
+    NuFileAddExtensionPC(".at3", NUFILEEXT_MIB, NUFILEEXT_PLATFORM_PSP);
+    NuFileAddExtensionPC(".pss", NUFILEEXT_VIDEO, NUFILEEXT_PLATFORM_PSP);
 }
 
 static i32 NuFileMatchExtensionPC(char *extension, char *path_end, i32 path_len) {
@@ -2616,12 +2616,12 @@ i32 NuFileExtConvert(char *dest, char *path) {
     if (source != NULL) {
         i32 type = source->type;
 
-        if (source->platform == 4) {
+        if (source->platform == NUFILEEXT_PLATFORM_WINDOWS) {
             return 1;
         }
         /* Uses the same pointer termination here. */
         for (target = extensions; target != NULL; ++target) {
-            if (target->platform == 4 && target->type == type) {
+            if (target->platform == NUFILEEXT_PLATFORM_WINDOWS && target->type == type) {
                 char *extension;
                 out = dest + path_len - source->len + target->len;
                 *out = '\0';
@@ -2639,7 +2639,7 @@ i32 NuFileExtGetExt(char *dest, i32 dest_size, i32 type) {
     PC_FILEEXTINFO *info;
     /* Terminates this scan when the pointer wraps to zero. */
     for (info = extensions; info != NULL; ++info) {
-        if (info->platform == 4 && info->type == type) {
+        if (info->platform == NUFILEEXT_PLATFORM_WINDOWS && info->type == type) {
             i32 i;
             const char *source;
             if (info->len > dest_size) {

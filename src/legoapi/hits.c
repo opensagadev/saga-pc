@@ -15,17 +15,17 @@ u16 ObjHitObj_Flags(GAMEOBJECT *object) {
     u16 flags = 0;
     if (object != NULL) {
         if (((object->flags_1fc_word >> 7) & 1) == 0) {
-            flags = 2;
+            flags = OBJHIT_FROM_AI;
         }
         if (((object->flags_1fc_word >> 7) & 1) != 0) {
-            flags |= 0x804;
+            flags |= OBJHIT_FROM_PLAYER | OBJHIT_HITS_GIZMOS;
         }
         if ((object->flags_1f8 & (APIOBJECT_SIDE_BADDIE | APIOBJECT_SIDE_GOODIE_BADDIE)) != 0) {
-            flags |= 0x10;
+            flags |= OBJHIT_FROM_BADDIE;
         } else if ((object->flags_1f8 & APIOBJECT_SIDE_NEUTRAL) != 0) {
-            flags |= 0x20;
+            flags |= OBJHIT_FROM_NEUTRAL;
         } else {
-            flags |= 8;
+            flags |= OBJHIT_FROM_GOODIE;
         }
     }
     return flags;
