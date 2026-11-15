@@ -116,7 +116,7 @@ static void ReleaseCable(CABLE_RECORD *cable, i32 snapped) {
 static void CableAtstToppled(GAMEOBJECT *target) {
     GAMEOBJECT *object;
     i32 i;
-    target->character_context = 0x3d;
+    target->character_context = CHARACTER_CONTEXT_FLATTEN;
     target->unknown_7aa = 0x85;
     target->context_duration = AnimDuration((i16)target->id, 0x85, 0.0f, 0.0f, 1);
     target->flags_ef4 |= 0x800000;
@@ -200,7 +200,7 @@ void UpdateCables(void) {
         }
         source = cable->source;
         if (source == NULL || !(source->flags_1fc_word & 0x1000) || source->dead != 0 || (source->unknown_e20 & 0x20) ||
-            (target != NULL && target->character_context == 0x17) ||
+            (target != NULL && target->character_context == CHARACTER_CONTEXT_DEACTIVATED) ||
             ((flags & 2) && source->pad->bound_pad != NULL && (source->pad->bound_pad->digital_buttons_pressed & GAMEPAD_SPECIAL))) {
             release = 1;
         } else {
@@ -288,7 +288,7 @@ void UpdateCables(void) {
                         }
                     }
                 } else if (target->id == id_DRAGBOMB) {
-                    target->character_context = 0x34;
+                    target->character_context = CHARACTER_CONTEXT_BEEN_DRAGGED;
                     cable->target->context_timer = 0.0f;
                 }
                 if (cable->wrap_count != 0) {

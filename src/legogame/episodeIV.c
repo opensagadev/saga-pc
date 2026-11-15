@@ -467,15 +467,15 @@ void TrenchMove(GAMEOBJECT *object) {
     } else {
         object->unknown_f10 = FRAMETIME + object->unknown_f10;
     }
-    if (object->character_context == 0x2b) {
+    if (object->character_context == CHARACTER_CONTEXT_DOOMED) {
         object->turn_braking += FRAMETIME;
     }
-    if (object->character_context != 0x2a) {
+    if (object->character_context != CHARACTER_CONTEXT_TURN) {
         if ((object->movement_facing_angle > 0x8000) != (player->movement_facing_angle > 0x8000)) {
             StartTurn(object);
-        } else if (player->character_context == 0x2a && player->context_timer < 0.5 * TURNTIME) {
+        } else if (player->character_context == CHARACTER_CONTEXT_TURN && player->context_timer < 0.5 * TURNTIME) {
             StartTurn(object);
-        } else if (object->character_context != 0x36 && player->character_context == 0x36 &&
+        } else if (object->character_context != CHARACTER_CONTEXT_LOOP && player->character_context == CHARACTER_CONTEXT_LOOP &&
                    player->context_timer < 0.75 * VehicleLoopTime) {
             object->character_context = player->character_context;
             object->unknown_7aa = 1;
@@ -483,7 +483,7 @@ void TrenchMove(GAMEOBJECT *object) {
             object->context_timer = VehicleLoopTime;
         }
     }
-    if (object->character_context == 0x2a) {
+    if (object->character_context == CHARACTER_CONTEXT_TURN) {
         phase = object->context_timer / TURNTIME;
         if (object->movement_facing_angle <= 0x8000) {
             target.x = (1.0f - phase) * TrenchLaneOffset + phase * -TrenchLaneOffset;
@@ -508,7 +508,8 @@ void TrenchMove(GAMEOBJECT *object) {
     NuVecSub(&object->velocity, &object->position, &object->start_position);
     NuVecScale(&object->velocity, &object->velocity, 1.0f / FRAMETIME);
     if ((object->character_data->game_character->flags_090 & 1) != 0) {
-        if (object->character_context != 0x2a && object->character_context != 0x36 && object->character_context != 0x3a) {
+        if (object->character_context != CHARACTER_CONTEXT_TURN && object->character_context != CHARACTER_CONTEXT_LOOP &&
+            object->character_context != CHARACTER_CONTEXT_BARREL_ROLL) {
             roll = (i32)(object->velocity.z * TrenchRollScale);
         } else {
             roll = 0;

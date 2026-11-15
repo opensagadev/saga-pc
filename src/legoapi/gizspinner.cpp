@@ -1319,7 +1319,7 @@ extern "C" void GizSpinners_Update(void *world_pointer, void *unused, f32 unused
         if ((spinner->flags & 8) != 0 && ShadowMode == 0) {
             spinner->state_flags = (spinner->state_flags & ~0x40u) | 0x20;
             if (SpinnerOwner(spinner) != NULL) {
-                Player[index]->character_context = -1;
+                Player[index]->character_context = CHARACTER_CONTEXT_NONE;
                 Player[index]->grapple = NULL;
             }
         }

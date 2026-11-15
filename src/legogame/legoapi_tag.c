@@ -41,7 +41,7 @@ i32 Tag_FindGameObject_CYCLICAL(GAMEOBJECT *object) {
 }
 
 static GAMEOBJECT *Tag_FindGameObject_TRANSFER(GAMEOBJECT *object) {
-    f32 nearest_distance = object->character_context == 0x17 ? 1.44f : 0.48999998f;
+    f32 nearest_distance = object->character_context == CHARACTER_CONTEXT_DEACTIVATED ? 1.44f : 0.48999998f;
     GAMEOBJECT *nearest = NULL;
     i32 count = Tag_Mode == 3 ? HIGHGAMEOBJECT : 8;
     i32 index;
@@ -53,7 +53,7 @@ static GAMEOBJECT *Tag_FindGameObject_TRANSFER(GAMEOBJECT *object) {
             candidate->dead != 0 || (candidate->tag_flags & 2) != 0) {
             continue;
         }
-        if (candidate->character_context == 0x17 || candidate->character_context == 0x3d ||
+        if (candidate->character_context == CHARACTER_CONTEXT_DEACTIVATED || candidate->character_context == CHARACTER_CONTEXT_FLATTEN ||
             (U64_PAIR(&CInfo[candidate->character_context].flags) & 0x8000) != 0 ||
             ((candidate->flags_ef4 & 2) != 0 && object->id != (u16)id_LUKESKYWALKERDAGOBAH)) {
             continue;
@@ -158,7 +158,7 @@ i32 TakeOverYoda(GAMEOBJECT *rider, GAMEOBJECT *vehicle, i32 blend_camera, i32 u
     rider->takeover_target = NULL;
     vehicle->takeover_target = NULL;
     rider->takeover_owner = vehicle;
-    rider->character_context = 0x3b;
+    rider->character_context = CHARACTER_CONTEXT_BEEN_TAKEN_OVER;
     TakeOver_SetAction(rider, rider->rider);
     rider->takeover_timer = 1.0f;
     rider->external_force = rider->position;
@@ -177,8 +177,8 @@ void TakeOver2GetIn(GAMEOBJECT *rider, GAMEOBJECT *vehicle) {
     i32 count = HIGHGAMEOBJECT;
     CHARACTER_MODEL_LAYERS *model;
     for (i = 0; i < count; ++i, ++object) {
-        if ((object->flags_1fc_word & 1) != 0 && (object->flags_1fc_word & 0x1000) != 0 && object->character_context == 0x3c &&
-            object->force_target == vehicle) {
+        if ((object->flags_1fc_word & 1) != 0 && (object->flags_1fc_word & 0x1000) != 0 &&
+            object->character_context == CHARACTER_CONTEXT_GET_IN && object->force_target == vehicle) {
             return;
         }
     }
@@ -186,7 +186,7 @@ void TakeOver2GetIn(GAMEOBJECT *rider, GAMEOBJECT *vehicle) {
         rider->rider != NULL || vehicle->rider != NULL) {
         return;
     }
-    rider->character_context = 0x3c;
+    rider->character_context = CHARACTER_CONTEXT_GET_IN;
     model = rider->character_model;
     if (model->action_animations[6] != NULL) {
         ResetAnimPacket(&rider->anim_packet, -1);
@@ -371,7 +371,7 @@ i32 TagCode(GAMEOBJECT *source, GAMEOBJECT *destination, i32 takeover, i32 blend
             source->takeover_target = NULL;
             destination->takeover_target = NULL;
             source->takeover_owner = destination;
-            source->character_context = 0x3b;
+            source->character_context = CHARACTER_CONTEXT_BEEN_TAKEN_OVER;
             TakeOver_SetAction(source, source->rider);
             source->takeover_timer = 1.0f;
             source->external_force = source->position;
@@ -422,8 +422,8 @@ found:
 void Tag_Check(GAMEOBJECT *object) {
     GAMEOBJECT *target;
     i32 result;
-    if (Arcade != 0 || (object->tag_flags & 1) != 0 || object->character_context == 0x51) {
-        if ((object->tag_flags & 1) != 0 || object->character_context == 0x51) {
+    if (Arcade != 0 || (object->tag_flags & 1) != 0 || object->character_context == CHARACTER_CONTEXT_TECHNO) {
+        if ((object->tag_flags & 1) != 0 || object->character_context == CHARACTER_CONTEXT_TECHNO) {
             object->hud_icon_timer = 0.0f;
         }
         object->flags_ef0 &= ~0x180000u;
@@ -570,7 +570,7 @@ void ReleaseTakeOver(GAMEOBJECT *target, i32 unused) {
     if (target->rider == NULL) {
         return;
     }
-    if (target->character_context == 0x3b) {
+    if (target->character_context == CHARACTER_CONTEXT_BEEN_TAKEN_OVER) {
         rider = target;
         object = target->rider;
     } else {
@@ -602,7 +602,7 @@ void ReleaseTakeOver(GAMEOBJECT *target, i32 unused) {
     }
     GameObjectOrigin(rider);
     rider->rider = NULL;
-    rider->character_context = -1;
+    rider->character_context = CHARACTER_CONTEXT_NONE;
     if (object->id == (u16)id_ATAT && WORLD->current_level == SPEEDERCHASEA_LDATA) {
         f32 multiplier = SpeederChaseATATInOutMul(&rider->position, &SpeederChaseATATExitLandPos);
         f32 duration = SpeederChaseATATExitHeight * multiplier;
@@ -675,19 +675,19 @@ void TakeOverGameObject(GAMEOBJECT *rider, GAMEOBJECT *vehicle, i32 blend_camera
 
 void TakeOverCode(GAMEOBJECT *object, i32 tag_pressed) {
     GAMEOBJECT *target;
-    if (object->character_context == 0x3c) {
+    if (object->character_context == CHARACTER_CONTEXT_GET_IN) {
         f32 fraction;
         NUVEC destination;
         f32 height;
         f64 phase;
         target = object->force_target;
         if (target == NULL) {
-            object->character_context = -1;
+            object->character_context = CHARACTER_CONTEXT_NONE;
             return;
         }
         object->context_timer += FRAMETIME;
         if (object->context_timer >= object->context_duration) {
-            object->character_context = -1;
+            object->character_context = CHARACTER_CONTEXT_NONE;
             if ((object->flags_1fc_word & 0x80) != 0) {
                 if (target->id == (u16)id_GRABCONTROL || target->id == (u16)id_GRABR2CONTROL) {
                     Hint_SetComplete(0x28a);
@@ -741,13 +741,13 @@ void TakeOverCode(GAMEOBJECT *object, i32 tag_pressed) {
     object->tag_flags &= ~1u;
     target = object->rider;
     if (target != NULL) {
-        if (object->character_context == 0x3b) {
+        if (object->character_context == CHARACTER_CONTEXT_BEEN_TAKEN_OVER) {
             if (!(players_cannot_exit_speeder != 0 && target->id == (u16)id_SPEEDERBIKE)) {
                 u32 buttons = target->pad->buttons_pressed;
                 if ((object->flags_ef4 & 2) != 0) {
                     buttons &= ~GAMEPAD_JUMP;
                 }
-                if (target->character_context != 0x2a && (buttons & (GAMEPAD_JUMP | GAMEPAD_TAG)) != 0) {
+                if (target->character_context != CHARACTER_CONTEXT_TURN && (buttons & (GAMEPAD_JUMP | GAMEPAD_TAG)) != 0) {
                     ReleaseTakeOver(object, 1);
                     if ((object->flags_1fc_word & 0x80) != 0) {
                         if (StartupGameFlag1 != 0) {
@@ -777,9 +777,10 @@ void TakeOverCode(GAMEOBJECT *object, i32 tag_pressed) {
         return;
     }
     if (MiniCutCam != 0 || (object->flags_1fc_word & 0x80) == 0 || object->dead != 0 || !(object->takeover_timer <= 0.0f) ||
-        object->character_context == 0x2b ||
-        (object->character_context != -1 &&
-         (object->character_context != 0 || object->action_movement_state == 3 || object->action_movement_state == 4))) {
+        object->character_context == CHARACTER_CONTEXT_DOOMED ||
+        (object->character_context != CHARACTER_CONTEXT_NONE &&
+         (object->character_context != CHARACTER_CONTEXT_JUMP || object->action_movement_state == 3 ||
+          object->action_movement_state == 4))) {
         return;
     }
     {
@@ -801,7 +802,8 @@ void TakeOverCode(GAMEOBJECT *object, i32 tag_pressed) {
                 candidate->unknown_280 != 0xff || (U64_PAIR(&CInfo[candidate->character_context].flags) & 0x8000) != 0 ||
                 candidate->rider != NULL || (candidate->character_data->game_character->flags_090 & 0x40) == 0 ||
                 ((candidate->character_data->model_flags & 0x40000000) != 0 &&
-                 (candidate->character_context == 0x17 || candidate->character_context == 0x3e)) ||
+                 (candidate->character_context == CHARACTER_CONTEXT_DEACTIVATED ||
+                  candidate->character_context == CHARACTER_CONTEXT_BUCK)) ||
                 (candidate->tag_flags & 2) != 0) {
                 continue;
             }

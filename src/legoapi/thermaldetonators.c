@@ -299,7 +299,7 @@ i32 ThermalDetonator_MoveCode(GAMEOBJECT *object) {
     f32 *frame = NULL;
     PART_PC *part;
     f32 release_frame;
-    if (object->character_context == 0x2e) {
+    if (object->character_context == CHARACTER_CONTEXT_THROW_DETONATOR) {
         if (object->character_model->action_animations[object->unknown_7aa] != NULL) {
             frame = AnimPlaying(&object->anim_packet, object->unknown_7aa, 1, 0);
             if (frame == NULL) {
@@ -308,7 +308,7 @@ i32 ThermalDetonator_MoveCode(GAMEOBJECT *object) {
         }
         object->context_timer -= FRAMETIME;
         if (object->context_timer <= 0.0f) {
-            object->character_context = -1;
+            object->character_context = CHARACTER_CONTEXT_NONE;
             if ((object->context_variant_flags & 0x40) == 0) {
                 object->flags_e24 |= 0x4000;
             }
@@ -335,8 +335,8 @@ i32 ThermalDetonator_MoveCode(GAMEOBJECT *object) {
         (object->unknown_281 == 0 && object->jump_variant_state != 1)) {
         return 0;
     }
-    if (object->character_context != -1 && object->character_context != 6 && object->character_context != 7 &&
-        (U64_PAIR(&CInfo[object->character_context].flags) & 4) == 0) {
+    if (object->character_context != CHARACTER_CONTEXT_NONE && object->character_context != CHARACTER_CONTEXT_WEAPON_IN &&
+        object->character_context != CHARACTER_CONTEXT_WEAPON_OUT && (U64_PAIR(&CInfo[object->character_context].flags) & 4) == 0) {
         return 0;
     }
     part = FindPart(NULL, 0, object);
@@ -347,7 +347,7 @@ i32 ThermalDetonator_MoveCode(GAMEOBJECT *object) {
         KillPart(part, 0);
         return 1;
     }
-    object->character_context = 0x2e;
+    object->character_context = CHARACTER_CONTEXT_THROW_DETONATOR;
     if (object->jump_variant_state == 1) {
         object->unknown_7aa = 0x6f;
     } else if ((object->flags_e20 & 0x10000) != 0) {

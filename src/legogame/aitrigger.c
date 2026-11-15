@@ -223,7 +223,7 @@ static i32 TriggerGizmoAvailable(GIZMO_PC *gizmo) {
 }
 
 i32 GameObjectUsingLever(GAMEOBJECT *object, void *lever) {
-    return object->character_context == 0x4a && object->grapple == lever;
+    return object->character_context == CHARACTER_CONTEXT_PULL_LEVER && object->grapple == lever;
 }
 
 void AITriggerSetSysProcess(TRIGGER_SYSTEM_PC *system) {
@@ -260,9 +260,9 @@ void AITriggerSetSysProcess(TRIGGER_SYSTEM_PC *system) {
             if (gizmo != NULL) {
                 if (gizmo->type_id == lever_gizmotype_id) {
                     TRIGGER_LEVER *lever = gizmo->object;
-                    if (player->character_context == 0x4a && player->grapple == lever) {
+                    if (player->character_context == CHARACTER_CONTEXT_PULL_LEVER && player->grapple == lever) {
                         set->occupied |= 1 << index;
-                    } else if (player2 != NULL && player2->character_context == 0x4a && player2->grapple == lever) {
+                    } else if (player2 != NULL && player2->character_context == CHARACTER_CONTEXT_PULL_LEVER && player2->grapple == lever) {
                         set->occupied |= 1 << index;
                     } else if ((set->occupied & (1 << index)) != 0 && !Lever_BeingPulled(lever)) {
                         set->occupied &= ~(1 << index);
@@ -293,9 +293,10 @@ void AITriggerSetSysProcess(TRIGGER_SYSTEM_PC *system) {
                     if ((spinner->flags & 6) != 0 || ((spinner->flags & 8) != 0 && ShadowMode == 0) || spinner->progress == 1.0f ||
                         (spinner->state_flags & 0x20) != 0) {
                         set->occupied &= ~(1 << index);
-                    } else if (player->character_context == 0x28 && player->grapple == spinner) {
+                    } else if (player->character_context == CHARACTER_CONTEXT_PUSH_SPINNER && player->grapple == spinner) {
                         set->occupied |= 1 << index;
-                    } else if (player2 != NULL && player2->character_context == 0x28 && player2->grapple == spinner) {
+                    } else if (player2 != NULL && player2->character_context == CHARACTER_CONTEXT_PUSH_SPINNER &&
+                               player2->grapple == spinner) {
                         set->occupied |= 1 << index;
                     } else if ((set->occupied & (1 << index)) != 0 && spinner->room_index == -1) {
                         set->occupied &= ~(1 << index);

@@ -362,7 +362,8 @@ void GameCreatureOpponentSelection(AISYS_PC *system, i32 count, APIOBJECT **obje
                              (OPPONENT_LOS(WORLD->object_sys)->line_of_sight[goody->object_id] & ((u64)1 << baddy->object_id)))) {
                             if (metric < packet->pending_opponent_metric ||
                                 (packet->pending_opponent != NULL && packet->pending_opponent->owner != NULL &&
-                                 packet->pending_opponent->owner->character_context == 0x5a && baddy->owner->character_context != 0x5a)) {
+                                 packet->pending_opponent->owner->character_context == CHARACTER_CONTEXT_STUNNED &&
+                                 baddy->owner->character_context != CHARACTER_CONTEXT_STUNNED)) {
                                 packet->pending_opponent = baddy;
                                 OPPONENT_PACKET(goody->ai)->pending_opponent_metric = distance;
                             }
@@ -724,7 +725,7 @@ static i32 GameAIWallShuffle(GAMEOBJECT *object) {
                       ->nodes[object->ai_packet.path_info.connection->node_indices[object->ai_packet.path_info.direction == 0]];
     node = &object->ai_packet.path_info.path
                 ->nodes[object->ai_packet.path_info.connection->node_indices[object->ai_packet.path_info.direction]];
-    if (object->character_context == 0x45) {
+    if (object->character_context == CHARACTER_CONTEXT_WALL_SHUFFLE) {
         angle = object->takeover_start_angle;
         wall_direction.x = 0.0f;
         wall_direction.y = 0.0f;
@@ -1230,7 +1231,7 @@ void GameAILoad(AISYS_PC *system, i32 version, NUGSCN *unused2, VARIPTR *buffer,
 i32 AIRespawnOnPath(APIOBJECT *apiobject) {
     GAMEOBJECT *object = (GAMEOBJECT *)apiobject;
     if (object->dead == 0 && (apiobject->ai->path_info.flags & 1) == 0 && (object->flags_1fc_word & 0x2000) != 0 &&
-        (object->character_data->model_flags & 0x400000) == 0 && object->objptr->character_context != 0x2b &&
+        (object->character_data->model_flags & 0x400000) == 0 && object->objptr->character_context != CHARACTER_CONTEXT_DOOMED &&
         object->objptr->takeover_source == NULL && object->respawn_timer > 2.0f) {
         if ((object->character_data->model_flags & 0x200000) == 0) {
             StartBigJump(object->objptr, &object->respawn_position, 0, 0.5f, 1.0f, 0);
@@ -1248,7 +1249,8 @@ i32 AIRespawnOnPath(APIOBJECT *apiobject) {
 i32 AIBigJumpToDestination(APIOBJECT *apiobject, NUVEC *destination) {
     GAMEOBJECT *object = (GAMEOBJECT *)apiobject;
     GAMEOBJECT *owner;
-    if (destination != NULL && object != NULL && object->objptr != NULL && object->dead == 0 && object->objptr->character_context != 0x2b) {
+    if (destination != NULL && object != NULL && object->objptr != NULL && object->dead == 0 &&
+        object->objptr->character_context != CHARACTER_CONTEXT_DOOMED) {
         owner = object->objptr;
         if (owner->takeover_source != NULL) {
             SnapCreaturePos(owner, destination, 0, NULL, 0);
@@ -1987,7 +1989,7 @@ GAMEOBJECT *AddDynamicCreature(i32 model, NUVEC *position, i32 angle, char *scri
         object->flags_1fc_word &= ~4;
         object->collision_scale = 1.0f;
         object->dead = 0;
-        object->character_context = -1;
+        object->character_context = CHARACTER_CONTEXT_NONE;
         object->effect_flags = 0;
         object->flags_1f8 |= 0x100;
         object->flags_1f8 ^= 0x100;
@@ -2338,7 +2340,8 @@ void GameAIProcess(void) {
             object = Player[index];
         }
         if (object != NULL && (object->flags_1fc_word & 1) != 0 && (object->flags_1fc_word & 0x1000) != 0 &&
-            (object->dead == 0 || object->unknown_1010 > 0.0f) && object->character_context != 0x17 && object->character_context != 0x5a) {
+            (object->dead == 0 || object->unknown_1010 > 0.0f) && object->character_context != CHARACTER_CONTEXT_DEACTIVATED &&
+            object->character_context != CHARACTER_CONTEXT_STUNNED) {
             if (party_under_cover != 0 && (object->ai_packet.flags & 0x4000) != 0) {
                 party_under_cover = 0;
             }
@@ -2374,19 +2377,20 @@ void GameAIProcess(void) {
     for (index = 0; index < HIGHGAMEOBJECT; ++index, ++object) {
         object->active_trigger_set = NULL;
         if ((object->flags_1fc_word & 1) == 0 || (object->flags_1fc_word & 0x1000) == 0 || object->dead != 0 ||
-            object->character_context == 0x3b) {
+            object->character_context == CHARACTER_CONTEXT_BEEN_TAKEN_OVER) {
             goto interaction;
         }
 
         if (StartupGameFlag0 != 0) {
-            ground_checks =
-                object->unknown_281 != 0 || (object->character_data->model_flags & 0x2000) != 0 || object->character_context == 0x4b;
+            ground_checks = object->unknown_281 != 0 || (object->character_data->model_flags & 0x2000) != 0 ||
+                            object->character_context == CHARACTER_CONTEXT_FLOAT;
         } else if (StartupGameFlag1 != 0) {
             ground_checks = object->unknown_281 != 0 || (object->character_data->model_flags & 0x2000) != 0;
         } else {
             ground_checks = object->unknown_281 != 0 || (object->character_data->model_flags & 0x2000) != 0 ||
-                            object->character_context == 0x44 || object->character_context == 0x4b;
-            if (object->character_context == 0x17) {
+                            object->character_context == CHARACTER_CONTEXT_TIGHTROPE ||
+                            object->character_context == CHARACTER_CONTEXT_FLOAT;
+            if (object->character_context == CHARACTER_CONTEXT_DEACTIVATED) {
                 if ((object->ai_update_flags & 8) != 0) {
                     AISysUpdateCharacterPathPos(WORLD->ai_sys, (APIOBJECT *)object, &object->ai_packet, ground_checks,
                                                 object->ai_elapsed_time);
@@ -2474,7 +2478,7 @@ void GameAIProcess(void) {
                                   (ai_update_flags >> 3) & 1);
         }
         if (((object->flags_1fc_word & 0x80) == 0)) {
-            if (object->character_context == 0x5d) {
+            if (object->character_context == CHARACTER_CONTEXT_BALLOONING) {
                 SetBallooningHeight(object, object->ai_packet.movement_destination.y);
             }
             if ((WORLD->current_level == JEDI_B_LDATA) && object->id == (u16)id_JANGOFETT && (object->portal_flags & 0x8000000u) != 0 &&
@@ -2485,7 +2489,7 @@ void GameAIProcess(void) {
                 (object->ai_packet.capabilities & LEGO_AIPATHCNX_R2D2GLIDE) == 0) {
                 object->jump_variant_state = 0;
             }
-            if (object->character_context == 0x4b && object->suit != NULL && (object->suit->flags & 0x10) != 0) {
+            if (object->character_context == CHARACTER_CONTEXT_FLOAT && object->suit != NULL && (object->suit->flags & 0x10) != 0) {
                 object->pad->buttons_held |= GAMEPAD_SPECIAL;
             }
             connection = object->ai_packet.path_info.connection;
@@ -2526,7 +2530,7 @@ void GameAIProcess(void) {
             }
         }
         if (FreePlay != 0 && (object->flags_1f8 & 0x400) == 0) {
-            if ((object->flags_1fc_word & 0x80) == 0 && object->character_context != 0x0b) {
+            if ((object->flags_1fc_word & 0x80) == 0 && object->character_context != CHARACTER_CONTEXT_INTERFACE) {
                 if (drop_in_teleport == 1 && VehicleArea == 0 && (Arcade != 0 || teleport_all_freeplay_modes != 0) &&
                     object->model_draw_result == 0 && (object->tag_flags & 2) == 0 && drop_back_in_timer > 0.0f) {
                     position = player->last_safe_position;
@@ -2651,11 +2655,12 @@ void GameAIProcess(void) {
             if (0 != (object->combat_flags & 8) && (defend || (object->combat_flags & 0x30) != 0 ||
                                                     ((object->id == (u16)id_YODA || object->id == (u16)id_YODAGHOST) &&
                                                      (object->flags_1fc_word & 0x80) == 0 && object->unknown_280 != 0xff))) {
-                if ((object->unknown_e22 & 1) == 0 && object->character_context != 7 && object->unknown_e33 == 0) {
+                if ((object->unknown_e22 & 1) == 0 && object->character_context != CHARACTER_CONTEXT_WEAPON_OUT &&
+                    object->unknown_e33 == 0) {
                     object->pad->buttons_pressed |= GAMEPAD_ACTION;
                 }
             } else if ((object->pad->buttons_pressed & GAMEPAD_ACTION) == 0 && (object->unknown_e22 & 1) != 0 &&
-                       object->character_context != 6 && object->unknown_e33 == 0) {
+                       object->character_context != CHARACTER_CONTEXT_WEAPON_IN && object->unknown_e33 == 0) {
                 object->pad->buttons_pressed |= GAMEPAD_SPECIAL;
             }
         }

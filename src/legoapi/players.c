@@ -736,7 +736,7 @@ void ResetPlayer(GAMEOBJECT *object, i32 reset_moves, NUVEC *position, i32 snap_
     if (object == NULL) {
         return;
     }
-    restore_hitpoints = object->unknown_280 != 0xff && object->character_context == 0x2b;
+    restore_hitpoints = object->unknown_280 != 0xff && object->character_context == CHARACTER_CONTEXT_DOOMED;
     if (reset_moves != 0) {
         if (position == NULL) {
             position = Player_StartPos(object);

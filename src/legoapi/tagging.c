@@ -285,9 +285,9 @@ void Buck_MoveCode(GAMEOBJECT *object, i32 start) {
     if (LEGOCONTEXT_BUCK != -1 && object->character_context == LEGOCONTEXT_BUCK) {
         object->context_timer -= FRAMETIME;
         if (object->context_timer <= 0.0f) {
-            object->character_context = -1;
+            object->character_context = CHARACTER_CONTEXT_NONE;
         }
-    } else if (object->character_context == -1 && start != 0) {
+    } else if (object->character_context == CHARACTER_CONTEXT_NONE && start != 0) {
         Buck_Start(object, object->takeover_source);
     }
 }

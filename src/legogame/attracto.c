@@ -507,7 +507,7 @@ static ATTRACTO_SHARD_READER *AttractoSelectShard(WORLDINFO *world, GAMEOBJECT *
 }
 
 static void AttractoStartSuction(GAMEOBJECT *object) {
-    object->character_context = 0x52;
+    object->character_context = CHARACTER_CONTEXT_ATTRACTO_TARGET;
     object->context_timer = 0.0f;
     object->unknown_7aa = 0x9a;
     object->context_duration = 0.2f;
@@ -536,7 +536,7 @@ void Attracto_MoveCode(WORLDINFO *world, GAMEOBJECT *object) {
             message->alpha = (u8)(i32)(((f64)game_pulse * (f64)0.2f + (f64)0.6f) * 128.0);
         }
     }
-    if (object->character_context == 0x53) {
+    if (object->character_context == CHARACTER_CONTEXT_ATTRACTO_DEPOSIT) {
         if (object->character_model->action_animations[object->unknown_7aa] != NULL &&
             AnimPlaying(&object->anim_packet, object->unknown_7aa, 1, 0) == NULL) {
             return;
@@ -561,25 +561,25 @@ void Attracto_MoveCode(WORLDINFO *world, GAMEOBJECT *object) {
                     }
                 }
             }
-            object->character_context = -1;
+            object->character_context = CHARACTER_CONTEXT_NONE;
         check_context:
-            if (object->character_context == -1) {
+            if (object->character_context == CHARACTER_CONTEXT_NONE) {
                 AttractoStartSuction(object);
             }
         } else {
             object->context_duration = (f64)object->context_duration - (f64)FRAMETIME;
             if (object->context_duration <= 0.0f) {
-                object->character_context = -1;
+                object->character_context = CHARACTER_CONTEXT_NONE;
             }
         }
         return;
     }
-    if (object->character_context == 0x52) {
+    if (object->character_context == CHARACTER_CONTEXT_ATTRACTO_TARGET) {
         i32 red;
         i32 green;
         i32 blue;
         if ((object->pad->buttons_held & GAMEPAD_SPECIAL) == 0 && !(object->context_timer < 0.3f)) {
-            object->character_context = -1;
+            object->character_context = CHARACTER_CONTEXT_NONE;
             return;
         }
         if (object->character_model->action_animations[object->unknown_7aa] == NULL ||
@@ -623,7 +623,7 @@ void Attracto_MoveCode(WORLDINFO *world, GAMEOBJECT *object) {
         if (attracto != NULL) {
             radius = (f64)radius * (f64)radius;
             if (distance < radius && object->unknown_1062 > 0 && (object->pad->buttons_pressed & GAMEPAD_SPECIAL) != 0) {
-                object->character_context = 0x53;
+                object->character_context = CHARACTER_CONTEXT_ATTRACTO_DEPOSIT;
                 object->context_timer = 0.0f;
                 object->grapple = attracto;
                 object->unknown_7aa = 0x9b;

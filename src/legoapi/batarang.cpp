@@ -171,9 +171,9 @@ extern "C" i32 Batarang_FindTarget(WORLDINFO *world, GAMEOBJECT *object, i32 aut
     for (i = 0; i < HIGHGAMEOBJECT; ++i, ++candidate) {
         if ((candidate->flags_1fc_word & 1) == 0 || (candidate->flags_1fc_word & 0x1000) == 0 || candidate->dead != 0 ||
             (U64_PAIR(&CInfo[candidate->character_context].flags) & 0x8000) != 0 || candidate->model_draw_result == 0 ||
-            candidate == object || candidate->unknown_280 != 0xff || candidate->character_context == 0x3b ||
-            candidate->character_context == 0x39 || candidate->character_context == 0x3c || (object->flags_1f8 & 0x10004) != 0 ||
-            ((object->flags_1f8 ^ candidate->flags_1f8) & 1) == 0) {
+            candidate == object || candidate->unknown_280 != 0xff || candidate->character_context == CHARACTER_CONTEXT_BEEN_TAKEN_OVER ||
+            candidate->character_context == CHARACTER_CONTEXT_EATEN || candidate->character_context == CHARACTER_CONTEXT_GET_IN ||
+            (object->flags_1f8 & 0x10004) != 0 || ((object->flags_1f8 ^ candidate->flags_1f8) & 1) == 0) {
             continue;
         }
         if (BatarangContainsTarget(batarang, candidate)) {
@@ -371,7 +371,7 @@ extern "C" {
 
 extern "C" void Batarang_StartThrowQuick(GAMEOBJECT *object) {
     ResetAnimPacket(&object->anim_packet, -1);
-    object->character_context = 0x5e;
+    object->character_context = CHARACTER_CONTEXT_THROW_QUICK;
     object->unknown_7aa = 0xb2;
     object->context_timer = AnimDuration((i16)object->id, 0xb2, 0.0f, 0.0f, 1);
 }
@@ -540,7 +540,7 @@ i32 Batarang_StartTargetting(GAMEOBJECT *object) {
             object->unknown_7b3 = 0;
             object->context_timer = 0.0f;
             object->landing_followup = 0;
-            object->character_context = 0x4d;
+            object->character_context = CHARACTER_CONTEXT_BATARANG;
             object->unknown_7aa = 0x90;
             packet->owner = object;
             object->batarang->active = 0;
@@ -560,7 +560,7 @@ i32 Batarang_StartTargetting(GAMEOBJECT *object) {
 
 extern "C" void Batarang_MoveCode(GAMEOBJECT *object) {
     BATARANG_NATIVE *batarang;
-    if (object->character_context == 0x50) {
+    if (object->character_context == CHARACTER_CONTEXT_CATCH) {
         object->flags_e20 |= 0x00400000;
         if (object->hold_timer >= 0.25f) {
             Batarang_StartTargetting(object);
@@ -570,7 +570,7 @@ extern "C" void Batarang_MoveCode(GAMEOBJECT *object) {
             return;
         }
         if (object->pad->input_magnitude > 0.0f) {
-            object->character_context = -1;
+            object->character_context = CHARACTER_CONTEXT_NONE;
             return;
         }
         f32 timer = object->context_timer - FRAMETIME;
@@ -584,10 +584,10 @@ extern "C" void Batarang_MoveCode(GAMEOBJECT *object) {
             }
             object->hold_timer = 0.0f;
         }
-        object->character_context = -1;
+        object->character_context = CHARACTER_CONTEXT_NONE;
         return;
     }
-    if (object->character_context == 0x4d) {
+    if (object->character_context == CHARACTER_CONTEXT_BATARANG) {
         if (object->unknown_7b3 == 0) {
             object->flags_e20 |= 0x00400000;
             object->context_variant_flags |= 0x20000;
@@ -615,7 +615,7 @@ extern "C" void Batarang_MoveCode(GAMEOBJECT *object) {
                         object->context_variant_flags &= ~0x40U;
                     }
                 } else {
-                    object->character_context = -1;
+                    object->character_context = CHARACTER_CONTEXT_NONE;
                 }
             } else {
                 if ((object->character_model->model_data_b[object->unknown_7aa] == NULL ||
@@ -682,7 +682,7 @@ extern "C" void Batarang_MoveCode(GAMEOBJECT *object) {
                 goto finish;
             }
             if (released && object->pad->input_magnitude > 0.0f && object->context_timer >= 0.3f) {
-                object->character_context = -1;
+                object->character_context = CHARACTER_CONTEXT_NONE;
                 goto finish;
             }
             if (object->character_model->model_data_b[object->unknown_7aa] != NULL) {
@@ -694,7 +694,7 @@ extern "C" void Batarang_MoveCode(GAMEOBJECT *object) {
             f32 timer = object->context_timer + FRAMETIME;
             object->context_timer = timer;
             if (object->context_duration <= timer) {
-                object->character_context = -1;
+                object->character_context = CHARACTER_CONTEXT_NONE;
                 if ((object->context_variant_flags & 0x40) != 0) {
                     return;
                 }
@@ -815,9 +815,9 @@ extern "C" void Batarangs_Update(void) {
             GAMEOBJECT *owner = batarang->owner;
             if (owner->pad->buttons_held & GAMEPAD_ACTION) {
                 Batarang_StartTargetting(owner);
-            } else if (owner->pad->input_magnitude == 0 && owner->character_context == -1 &&
+            } else if (owner->pad->input_magnitude == 0 && owner->character_context == CHARACTER_CONTEXT_NONE &&
                        owner->character_model->model_data_b[0x98] != NULL) {
-                owner->character_context = 0x50;
+                owner->character_context = CHARACTER_CONTEXT_CATCH;
                 owner->unknown_7aa = 0x98;
                 batarang->owner->context_timer = AnimDuration((i16)batarang->owner->id, batarang->owner->unknown_7aa, 0, 0, 1);
             }
@@ -867,7 +867,7 @@ extern "C" {
         NuVecNorm(&owner->special_move_look_position, &owner->special_move_look_position);
         NuVecAdd(&owner->special_move_look_position, &owner->special_move_look_position, &destination->position);
         packet->movement_look_target = &owner->special_move_look_position;
-        if (owner->character_context == 0x5b) {
+        if (owner->character_context == CHARACTER_CONTEXT_LEDGE) {
             owner->pad->buttons_pressed |= GAMEPAD_JUMP;
         } else {
             owner->flags_ef4 |= 0x8000;
@@ -895,7 +895,7 @@ extern "C" {
              owner->ai_packet.inside_path_node == owner->ai_packet.special_move_node - owner->ai_packet.path_info.path->nodes &&
              (owner->unknown_281 != 0 || owner->velocity.y < 0.0f))) {
             ClearSpecialMove(owner);
-        } else if (owner->character_context != 0 &&
+        } else if (owner->character_context != CHARACTER_CONTEXT_JUMP &&
                    (owner->position.y < owner->ai_packet.special_move_node->min_height ||
                     (packet->path_info.connection->traversal_flags[packet->path_info.direction] & 0x80000000) != 0)) {
             ClearSpecialMove(owner);
@@ -984,7 +984,7 @@ extern "C" {
             NuVecAdd(&packet->movement_destination, &source->position, &offset);
             distance = NuVecXZDistSqr(&object->position, &packet->movement_destination, &offset);
             if (checks != 0 && (distance < (f64)ai_moveradius * ai_moveradius || owner->respawn_timer > jump_stuck_time ||
-                                owner->character_context == 0x44)) {
+                                owner->character_context == CHARACTER_CONTEXT_TIGHTROPE)) {
                 packet->movement_destination = object->position;
                 ready = 1;
             }
@@ -1133,7 +1133,7 @@ extern "C" {
         owner = object->owner;
         if (owner->special_move_timer <= 0.0f) {
             destination = &packet->path_info.path->nodes[packet->path_info.connection->node_indices[packet->path_info.direction == 0]];
-            if (owner->character_context == 0x0f) {
+            if (owner->character_context == CHARACTER_CONTEXT_TELEPORT) {
                 packet->movement_destination = destination->position;
                 packet->movement_stopping_distance = 0.0f;
                 SetSpecialMove(owner, destination, NULL, 2);
@@ -1164,7 +1164,7 @@ extern "C" {
         GAMEOBJECT *owner = object->owner;
         switch ((i8)owner->unknown_1087) {
             case 0:
-                if (owner->character_context == 0x0f) {
+                if (owner->character_context == CHARACTER_CONTEXT_TELEPORT) {
                     owner->ai_packet.movement_destination = owner->ai_packet.special_move_node->position;
                     owner->ai_packet.movement_stopping_distance = 0.0f;
                     ((GAMEOBJECT *)object)->ai_collision_priority |= 0x4000;
@@ -1207,7 +1207,7 @@ extern "C" {
 
     i32 Batman_MidSpecialMove_BigJump(AISYS_PC *system, AIPACKET *packet, APIOBJECT *object) {
         GAMEOBJECT *owner = object->owner;
-        if (owner->character_context == 0x1f) {
+        if (owner->character_context == CHARACTER_CONTEXT_BIG_JUMP) {
             owner->launch_origin = owner->ai_packet.special_move_node->position;
             ((GAMEOBJECT *)object)->ai_collision_priority |= 0x4000;
             return 1;
@@ -1223,7 +1223,7 @@ extern "C" {
         if (TryToTeleportToNextNode(owner, destination, 1) != 0) {
             return 1;
         }
-        if (owner->character_context != 0x44 && owner->special_move_timer <= 0.0f) {
+        if (owner->character_context != CHARACTER_CONTEXT_TIGHTROPE && owner->special_move_timer <= 0.0f) {
             SetSpecialMove(owner, destination, NULL, 4);
             ((GAMEOBJECT *)object)->ai_collision_priority |= 0x2000;
             return 1;
@@ -1238,15 +1238,15 @@ extern "C" {
         ((GAMEOBJECT *)object)->ai_collision_priority |= 0x4000;
         owner->flags_ef4 |= 0x4000;
         if (owner->unknown_1087 == 0) {
-            if (owner->character_context == 0) {
+            if (owner->character_context == CHARACTER_CONTEXT_JUMP) {
                 owner->unknown_1087 = 1;
             } else {
                 owner->pad->buttons_pressed |= GAMEPAD_JUMP;
                 return 1;
             }
         }
-        if (owner->character_context == 0x44 ||
-            (owner->character_context != 0 &&
+        if (owner->character_context == CHARACTER_CONTEXT_TIGHTROPE ||
+            (owner->character_context != CHARACTER_CONTEXT_JUMP &&
              (owner->unknown_281 != 0 || owner->position.y < owner->ai_packet.special_move_node->min_height))) {
             ClearSpecialMove(owner);
             return 0;
@@ -1291,7 +1291,7 @@ extern "C" {
                 SetSpecialMove(owner, owner->ai_packet.special_move_node, NULL, 0);
                 return 1;
             }
-            if (owner->character_context == 0x43) {
+            if (owner->character_context == CHARACTER_CONTEXT_CLIMB) {
                 guide = GuideLine_FindNearest(&owner->upper_position, WORLD, &endpoint, &distance);
                 if (guide != NULL && distance < 0.2f &&
                     !(owner->indy_guideline_state.endpoint == -1 && owner->indy_guideline_state.guideline == guide)) {
@@ -1339,7 +1339,7 @@ extern "C" {
         f32 distance;
         f32 height;
         if (owner->indy_climb != NULL && owner->indy_climb->connection == packet->path_info.connection) {
-            if (owner->character_context == 0x43) {
+            if (owner->character_context == CHARACTER_CONTEXT_CLIMB) {
                 guide = GuideLine_FindNearest(&owner->upper_position, WORLD, &endpoint, &distance);
                 if (guide != NULL && distance < 0.2f &&
                     !(owner->indy_guideline_state.endpoint == -1 && owner->indy_guideline_state.guideline == guide)) {
@@ -1396,7 +1396,7 @@ extern "C" {
             return 1;
         }
         ((GAMEOBJECT *)object)->ai_collision_priority |= 0x2000;
-        if (owner->character_context == 0x46) {
+        if (owner->character_context == CHARACTER_CONTEXT_GRAPPLE) {
             GameObjectSetCanUse(owner, owner->grapple, 1, 0x32, 0.0f);
             SetSpecialMove(owner, destination, source, 7);
             return 1;
@@ -1413,7 +1413,7 @@ extern "C" {
 
     i32 Batman_MidSpecialMove_Grapple(AISYS_PC *system, AIPACKET *packet, APIOBJECT *object) {
         GAMEOBJECT *owner = object->owner;
-        if (owner->character_context == 0x46) {
+        if (owner->character_context == CHARACTER_CONTEXT_GRAPPLE) {
             GameObjectSetCanUse(owner, owner->grapple, 1, 0x32, 0.0f);
             if (owner->ai_packet.special_move_node->position.y > owner->special_move_source->position.y) {
                 if (IndyGrappleCanJump(owner) != 0) {
@@ -1445,7 +1445,7 @@ extern "C" {
 
     i32 Batman_MidSpecialMove_StartJump(AISYS_PC *system, AIPACKET *packet, APIOBJECT *object) {
         GAMEOBJECT *owner = object->owner;
-        if (owner->character_context == 0) {
+        if (owner->character_context == CHARACTER_CONTEXT_JUMP) {
             SetSpecialMove(owner, owner->ai_packet.special_move_node, NULL, 0);
             owner->ai_packet.movement_destination = owner->ai_packet.special_move_node->position;
             owner->ai_packet.movement_stopping_distance = 0.0f;
@@ -1611,7 +1611,7 @@ extern "C" {
         GAMEOBJECT *owner = apiobject->owner;
         u32 capabilities;
         BATMAN_PREPARE_PC *entry;
-        if (owner->character_context == 0x5b) {
+        if (owner->character_context == CHARACTER_CONTEXT_LEDGE) {
             owner->pad->buttons_pressed |= GAMEPAD_JUMP;
         }
         if (packet->path_info.connection->traversal_flags[packet->path_info.direction] != 0 &&
@@ -1619,7 +1619,7 @@ extern "C" {
             capabilities = packet->path_info.connection->traversal_flags[packet->path_info.direction] & packet->capabilities;
             if ((packet->path_info.connection->traversal_flags[packet->path_info.direction] & 0x8000) != 0 &&
                 (owner->character_data->game_character->flags_090 & 0x40) == 0 && owner->takeover_target == NULL &&
-                owner->character_context != 0x3c && (capabilities & 0xffff7fff) == 0) {
+                owner->character_context != CHARACTER_CONTEXT_GET_IN && (capabilities & 0xffff7fff) == 0) {
                 AIScriptSetBaseScriptStateByName(&apiobject->ai->script_processor, "TakeOverJump");
                 return 1;
             }

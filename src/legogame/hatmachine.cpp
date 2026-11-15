@@ -128,7 +128,7 @@ extern "C" void HatMachine_MoveCode(WORLDINFO *world, GAMEOBJECT *object, i32 sp
     if (object->unknown_db0 > 0.0f) {
         object->unknown_db0 -= FRAMETIME;
     }
-    if (object->character_context != 0x61 || machine == NULL) {
+    if (object->character_context != CHARACTER_CONTEXT_HAT_MACHINE || machine == NULL) {
         if (object->character_model->model_data_b[0x5d] == NULL || object->unknown_281 == 0 || ObjLandReady(object) == 0) {
             return;
         }
@@ -146,7 +146,7 @@ extern "C" void HatMachine_MoveCode(WORLDINFO *world, GAMEOBJECT *object, i32 sp
             object->context_hover_target_y = 0.0f;
             object->delayed_turn_timer = 0.0f;
             object->flags_e20 &= ~0x1000;
-            object->character_context = 0x61;
+            object->character_context = CHARACTER_CONTEXT_HAT_MACHINE;
             object->unknown_7b3 = 0;
             FastWeaponIn(object, 0);
             object->flags_e24 |= 0x200;
@@ -253,7 +253,7 @@ extern "C" void HatMachine_MoveCode(WORLDINFO *world, GAMEOBJECT *object, i32 sp
         if (!(object->context_timer <= 0.0f)) {
             return;
         }
-        object->character_context = -1;
+        object->character_context = CHARACTER_CONTEXT_NONE;
         object->context_timer = 0.0f;
         machine = (HATMACHINE *)object->grapple;
         if (machine == NULL) {
@@ -284,7 +284,7 @@ extern "C" void HatMachine_MoveCode(WORLDINFO *world, GAMEOBJECT *object, i32 sp
             NewRumble(object->pad->bound_pad, 0.5f, 0);
         }
         object->grapple = NULL;
-        object->character_context = -1;
+        object->character_context = CHARACTER_CONTEXT_NONE;
     }
 }
 

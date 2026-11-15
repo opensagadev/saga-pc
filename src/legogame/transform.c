@@ -29,7 +29,7 @@ void Transform_MoveCode(WORLDINFO *world, GAMEOBJECT *object) {
     TRANSFORM_GLOW *glow = (TRANSFORM_GLOW *)object;
     GIZMOBLOWUP_PC *target;
     ResetForceGlow(object->ai_player_packet);
-    if (object->character_context == 86) {
+    if (object->character_context == CHARACTER_CONTEXT_TRANSFORM) {
         i32 trigger;
         f32 *frame = NULL;
         if (object->character_model->model_data_b[object->unknown_7aa] != NULL) {
@@ -50,7 +50,7 @@ void Transform_MoveCode(WORLDINFO *world, GAMEOBJECT *object) {
         }
         object->context_timer += FRAMETIME;
         if (object->context_timer >= object->context_duration) {
-            object->character_context = -1;
+            object->character_context = CHARACTER_CONTEXT_NONE;
             if (!(object->context_variant_flags & 0x40)) {
                 trigger = 1;
             }
@@ -113,7 +113,7 @@ void Transform_MoveCode(WORLDINFO *world, GAMEOBJECT *object) {
             if (object->pad->buttons_held & GAMEPAD_SPECIAL) {
                 object->context_variant_flags &= ~0x40u;
                 object->context_timer = 0.0f;
-                object->character_context = 86;
+                object->character_context = CHARACTER_CONTEXT_TRANSFORM;
                 object->grapple = nearest;
                 object->unknown_7aa = 160;
                 object->context_duration = AnimDuration((i16)object->id, 160, 0.0f, 0.0f, 1);

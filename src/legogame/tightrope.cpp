@@ -245,8 +245,8 @@ extern "C" {
             count = 0;
             object = Obj;
             for (object_index = 0; object_index < HIGHGAMEOBJECT; ++object_index, ++object) {
-                if ((object->flags_1fc_word & 0x1001) != 0x1001 || object->character_context != 0x44 || object->unknown_7aa == 6 ||
-                    object->unknown_7aa == 5 || object->grapple != rope) {
+                if ((object->flags_1fc_word & 0x1001) != 0x1001 || object->character_context != CHARACTER_CONTEXT_TIGHTROPE ||
+                    object->unknown_7aa == 6 || object->unknown_7aa == 5 || object->grapple != rope) {
                     continue;
                 }
                 positions[count] =
@@ -483,7 +483,7 @@ static i32 TightRope_Attach(GAMEOBJECT *object, WORLDINFO *world) {
     NUVEC position;
     TIGHTROPE_MOTION *rope = TightRope_InRange(object, world, &position);
     if (rope != NULL) {
-        object->character_context = 0x44;
+        object->character_context = CHARACTER_CONTEXT_TIGHTROPE;
         object->grapple = rope;
         object->context_variant_flags =
             (object->context_variant_flags & ~0x800) | ((((object->character_data->game_character->flags_090 >> 19) ^ 1) & 1) << 11);
@@ -549,7 +549,7 @@ extern "C" i32 TightRope_SnapTo(GAMEOBJECT *object, NUVEC *position) {
 }
 
 extern "C" void TightRope_MoveCode(GAMEOBJECT *object, i32 jump_pressed) {
-    if (object->character_context == 0x44) {
+    if (object->character_context == CHARACTER_CONTEXT_TIGHTROPE) {
         u16 state = object->unknown_7aa;
         if (state != 0x8f) {
             object->external_force.y = FRAMETIME + object->external_force.y;
@@ -570,18 +570,18 @@ extern "C" void TightRope_MoveCode(GAMEOBJECT *object, i32 jump_pressed) {
                 object->flags_e24 |= 0x400;
                 if (object->unknown_7aa != 5 || StartFallLand(object, -1) == 0) {
                     if (object->character_model->model_data_b[7] != NULL && object->pad->input_magnitude == 0.0f) {
-                        object->character_context = 1;
+                        object->character_context = CHARACTER_CONTEXT_LAND_JUMP;
                         object->unknown_7aa = 7;
                         object->context_timer = AnimDuration((i16)object->id, 7, 0.0f, 0.0f, 1);
                         ((TIGHTROPE_OBJECT_AUX *)object)->jump_reentry_timer = 0.2f;
                         ResetAnimPacket(&object->anim_packet, -1);
                     } else {
-                        object->character_context = -1;
+                        object->character_context = CHARACTER_CONTEXT_NONE;
                     }
                 }
                 object->flags_e24 &= ~0x400;
             }
-            if (object->character_context == 0x44 && object->grapple == rope) {
+            if (object->character_context == CHARACTER_CONTEXT_TIGHTROPE && object->grapple == rope) {
                 TightRope_MoveUpdate(object, 1);
                 object->context_hover_target_y =
                     NuVecXZDist(&object->collision_position, &((TIGHTROPE_MOTION *)(object->grapple))->start, NULL);
@@ -635,9 +635,9 @@ extern "C" void TightRope_MoveCode(GAMEOBJECT *object, i32 jump_pressed) {
     if (object->unknown_281 != 0 || !(object->velocity.y <= 0.0f) || object->character_model->model_data_b[0x88] == NULL) {
         return;
     }
-    if (object->character_context != -1) {
-        if (object->character_context != 0 || !(object->context_timer >= (f64)0.1f) || object->action_movement_state == 3 ||
-            object->action_movement_state == 4 || object->action_movement_state == 8) {
+    if (object->character_context != CHARACTER_CONTEXT_NONE) {
+        if (object->character_context != CHARACTER_CONTEXT_JUMP || !(object->context_timer >= (f64)0.1f) ||
+            object->action_movement_state == 3 || object->action_movement_state == 4 || object->action_movement_state == 8) {
             return;
         }
     }

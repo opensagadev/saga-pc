@@ -49,7 +49,7 @@ typedef struct LEVER_NET_WAIT { // size 0x7a4
 } LEVER_NET_WAIT;
 
 void ReleaseLever(GAMEOBJECT *object) {
-    if (object->character_context == 0x4a) {
+    if (object->character_context == CHARACTER_CONTEXT_PULL_LEVER) {
         if (object->grapple != NULL && !LEVER_BITS((GIZMO_LEVER *)object->grapple)->being_pulled) {
             LEVER_BITS((GIZMO_LEVER *)object->grapple)->interacting = 0;
         }
@@ -112,14 +112,14 @@ i32 Lever_FullyPulledDown(GIZMO_LEVER *lever) {
 void Lever_MoveCode(WORLDINFO *world, GAMEOBJECT *object) {
     f32 distance = 1.0e9f;
     GIZMO_LEVER *lever;
-    if (object->character_context == 0x4a) {
+    if (object->character_context == CHARACTER_CONTEXT_PULL_LEVER) {
         object->context_hover_target_y += FRAMETIME;
         if (object->context_hover_target_y > 1.0f) {
             object->context_hover_target_y = 1.0f;
         }
         object->context_timer += FRAMETIME;
         if (object->context_timer >= object->context_duration) {
-            object->character_context = -1;
+            object->character_context = CHARACTER_CONTEXT_NONE;
             if ((object->context_variant_flags & 0x40) != 0) {
                 return;
             }
@@ -158,7 +158,7 @@ void Lever_MoveCode(WORLDINFO *world, GAMEOBJECT *object) {
     if (objInNetWaitContext(object, 0x4a) != 0) {
         object->context_timer -= FRAMETIME;
         if (object->context_timer <= 0.0f) {
-            object->character_context = -1;
+            object->character_context = CHARACTER_CONTEXT_NONE;
             ((LEVER_NET_WAIT *)object)->net_wait_info = NULL;
         }
     }
@@ -173,7 +173,7 @@ void Lever_MoveCode(WORLDINFO *world, GAMEOBJECT *object) {
         }
         object->context_timer = 0.0f;
         object->context_hover_target_y = 0.0f;
-        object->character_context = 0x4a;
+        object->character_context = CHARACTER_CONTEXT_PULL_LEVER;
         object->grapple = lever;
         object->unknown_7aa = 0x5d;
         object->context_duration = AnimDuration((i16)object->id, 0x5d, 0.0f, 0.0f, 1);

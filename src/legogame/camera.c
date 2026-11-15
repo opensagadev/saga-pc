@@ -94,7 +94,8 @@ static void PlayerCamPos(GAMEOBJECT *object, NUVEC *position, NUVEC *reference) 
     NUVEC focus;
     NUVEC look;
     NUVEC *target;
-    if ((object->dead != 0 || object->character_context == 0x2b) && (WORLD->current_level->flags & LEVEL_IN_SPACE) == 0) {
+    if ((object->dead != 0 || object->character_context == CHARACTER_CONTEXT_DOOMED) &&
+        (WORLD->current_level->flags & LEVEL_IN_SPACE) == 0) {
         if (object->dead != 0) {
             *position = object->position;
         } else {
@@ -114,7 +115,8 @@ static void PlayerCamPos(GAMEOBJECT *object, NUVEC *position, NUVEC *reference) 
         return;
     }
     target = NULL;
-    if (object->character_context == 0x0f && object->techno != NULL && (((CAMERA_CONTEXT_PATH *)object->techno)->flags & 0x10) != 0) {
+    if (object->character_context == CHARACTER_CONTEXT_TELEPORT && object->techno != NULL &&
+        (((CAMERA_CONTEXT_PATH *)object->techno)->flags & 0x10) != 0) {
         NUVEC *points = ((CAMERA_CONTEXT_PATH *)object->techno)->path->pts;
         f32 scale;
         NuVecSub(&direction, &points[0], &points[3]);
@@ -138,27 +140,27 @@ static void PlayerCamPos(GAMEOBJECT *object, NUVEC *position, NUVEC *reference) 
         target = &((CAMERA_CABLE *)object->cable)->target->collision_position;
     }
     switch (object->character_context) {
-        case 0x08:
+        case CHARACTER_CONTEXT_FORCE:
             if (object->gizforce_target != NULL) {
                 target = &((CAMERA_GIZFORCE_TARGET *)object->gizforce_target)->position;
             }
             break;
-        case 0x1b:
+        case CHARACTER_CONTEXT_FORCE_PUSH:
             if (object->force_target != NULL) {
                 target = &object->force_target->collision_position;
             }
             break;
-        case 0x1d:
+        case CHARACTER_CONTEXT_FORCE_DEFLECT:
             if (object->force_part != NULL && (object->force_part->active & 1) != 0) {
                 target = &object->force_part->position;
             }
             break;
-        case 0x2d:
+        case CHARACTER_CONTEXT_BUILD_IT:
             if (object->techno != NULL) {
                 target = &((CAMERA_CONTEXT_BUILDIT *)object->techno)->position;
             }
             break;
-        case 0x51:
+        case CHARACTER_CONTEXT_TECHNO:
             target = Technos_TgtPos((TECHNO_s *)object->techno);
             if (target != NULL) {
                 NuVecSub(&direction, target, &object->position);
@@ -168,12 +170,12 @@ static void PlayerCamPos(GAMEOBJECT *object, NUVEC *position, NUVEC *reference) 
                 target = NULL;
             }
             break;
-        case 0x59:
+        case CHARACTER_CONTEXT_PUSH_OBSTACLE:
             if (object->techno != NULL) {
                 target = &((CAMERA_CONTEXT_FOCUS *)object->techno)->focus;
             }
             break;
-        case 0x46:
+        case CHARACTER_CONTEXT_GRAPPLE:
             if (Grapple_LookAtPos(object, &look) != 0) {
                 target = &look;
             }
@@ -249,8 +251,9 @@ void UpdatePlayerCameraOcclusion(void) {
             if (object == NULL || (object->flags_1fc & 0x80) == 0) {
                 continue;
             }
-            if (FadeSys.fade != 0.0f || object->dead != 0 || object->character_context == 0x2b || object->hud_icon_timer > 0.0f ||
-                GetMenuID() != -1 || object->character_context == 0x0f || object->rider != NULL || (object->unknown_e24 & 8) == 0 ||
+            if (FadeSys.fade != 0.0f || object->dead != 0 || object->character_context == CHARACTER_CONTEXT_DOOMED ||
+                object->hud_icon_timer > 0.0f || GetMenuID() != -1 || object->character_context == CHARACTER_CONTEXT_TELEPORT ||
+                object->rider != NULL || (object->unknown_e24 & 8) == 0 ||
                 ((object->character_data->model_flags & 0x40) != 0 && object->communicate_blend > 0.0f)) {
                 object->tag_reset_timer = 0.0f;
                 object->pause_context_state = 0.0f;
@@ -566,9 +569,9 @@ mode_selected:
                     PlayerCamPos(object, &player_focus[player_count], &camera->position);
                 }
                 source_position = &object->position;
-                if (object->character_context == 0x2b && !object->dead) {
+                if (object->character_context == CHARACTER_CONTEXT_DOOMED && !object->dead) {
                     source_position = &object->previous_position;
-                } else if (object->character_context == 0x51 && object->techno != NULL) {
+                } else if (object->character_context == CHARACTER_CONTEXT_TECHNO && object->techno != NULL) {
                     NUVEC *techno_position = Technos_TgtPos(((TECHNO_s *)(object->techno)));
                     if (techno_position != NULL) {
                         source_position = techno_position;

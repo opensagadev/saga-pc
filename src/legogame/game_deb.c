@@ -69,7 +69,7 @@ void AddSurfaceDebris(GAMEOBJECT *object) {
     NUVEC current;
     NUVEC previous;
     NUVEC position;
-    if (object->character_context == 0x2b) {
+    if (object->character_context == CHARACTER_CONTEXT_DOOMED) {
         return;
     }
     layer = object->unknown_283;

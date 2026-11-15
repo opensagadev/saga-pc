@@ -357,7 +357,8 @@ void ManageGameObjects(void) {
                         AISysGetCharacterPathPos(WORLD->ai_sys, (APIOBJECT *)object, &object->ai_packet, 0xff, 1);
                         vehicle = object->takeover_owner;
                         if (vehicle != NULL && (vehicle->rider == NULL || vehicle->rider == object) &&
-                            (vehicle->flags_1fc_word & 0x1000) != 0 && vehicle->character_context != 0x2b && vehicle->dead == 0) {
+                            (vehicle->flags_1fc_word & 0x1000) != 0 && vehicle->character_context != CHARACTER_CONTEXT_DOOMED &&
+                            vehicle->dead == 0) {
                             GetTakeOverPos(vehicle, &object->position);
                             TakeOverGameObject(object, object->takeover_owner, 0, 1);
                         }
@@ -562,7 +563,7 @@ void CollideGameObjects(WORLDINFO *world) {
         if ((is_player || (object->flags_ef4 & 0x80000)) && !(data->flags_090 & 0x40)) {
             player_collision_mask |= bit;
         }
-        if (object->character_context == 0x3d && !is_player) {
+        if (object->character_context == CHARACTER_CONTEXT_FLATTEN && !is_player) {
             flattened_mask |= bit;
         }
         if (WORLD->current_level == SPEEDERCHASEA_LDATA && disable_narrow_socks == 0 && object->id == (u16)id_SPEEDERBIKE &&
@@ -585,7 +586,7 @@ void CollideGameObjects(WORLDINFO *world) {
         if (context == 0x26 && object->special_move_pc != -1 && (object->context_variant_flags & 0x200)) {
             continue;
         }
-        if (object->character_context == 0x1f && object->unknown_7b3 == 1) {
+        if (object->character_context == CHARACTER_CONTEXT_BIG_JUMP && object->unknown_7b3 == 1) {
             continue;
         }
         data = object->character_data->game_character;
@@ -622,7 +623,7 @@ void CollideGameObjects(WORLDINFO *world) {
                 object->movement_direction_z = direction.z;
             }
         }
-        if (object->character_context == 0 && object->airborne_collision_target != NULL) {
+        if (object->character_context == CHARACTER_CONTEXT_JUMP && object->airborne_collision_target != NULL) {
             exclusion->exclusion_mask |= (u64)1 << object->airborne_collision_target->hostility_group;
         }
         if (WORLD->current_level == SPEEDERCHASEA_LDATA && disable_narrow_socks == 0 && object->id == (u16)id_SPEEDERBIKE &&
@@ -759,9 +760,9 @@ void GameObjectRotation(GAMEOBJECT *object, i32 mode) {
     temp_xrot = z;
     game = object->character_data->game_character;
     flags = game->flags_090;
-    sliding = (flags & 0x200) != 0 && object->character_context == 0x33;
-    magnet = (flags & 0x10000000) != 0 && object->character_context == 0x44;
-    grapple = object->character_context == 0x46 && object->unknown_7b3 == 0;
+    sliding = (flags & 0x200) != 0 && object->character_context == CHARACTER_CONTEXT_SLIDE;
+    magnet = (flags & 0x10000000) != 0 && object->character_context == CHARACTER_CONTEXT_TIGHTROPE;
+    grapple = object->character_context == CHARACTER_CONTEXT_GRAPPLE && object->unknown_7b3 == 0;
 
     if (object->flags_107a == 2 && ((object->character_data->model_flags & 0x100) != 0 || (flags & 0x200000) != 0 || sliding)) {
         f32 hover = (object->character_data->model_flags & 0x2000) != 0 ? GetVehicleHoverHeight(object, NULL) : game->unknown_028;
@@ -897,14 +898,15 @@ void PlayerTakeHit(GAMEOBJECT *object, GAMEOBJECT *attacker) {
         return;
     }
     state = object->jump_variant_state;
-    if (object->character_context == 0x1b && object->force_target != NULL && object->force_target->character_context == 0x1c) {
-        object->force_target->character_context = -1;
+    if (object->character_context == CHARACTER_CONTEXT_FORCE_PUSH && object->force_target != NULL &&
+        object->force_target->character_context == CHARACTER_CONTEXT_FORCE_PUSHED) {
+        object->force_target->character_context = CHARACTER_CONTEXT_NONE;
     }
     object->unknown_7aa = (i16)animation;
     ResetAnimPacket(&object->anim_packet, -1);
     Player_ClearContext(object, 1);
     Player_ResetContexts(object->ai_player_packet);
-    object->character_context = 0x15;
+    object->character_context = CHARACTER_CONTEXT_TAKE_HIT;
     duration = AnimDuration((i16)object->id, object->unknown_7aa, 0.0f, 0.0f, 1);
     object->context_timer = duration;
     if (duration <= 0.0f) {
@@ -970,7 +972,7 @@ i32 PlayerTakeHitReaction(GAMEOBJECT *target, GAMEOBJECT *attacker, f32 duration
             Player_ClearContext(target, 1);
             Player_ResetContexts(&view->reset_contexts);
             view->reaction_duration = duration;
-            target->character_context = 0x5a;
+            target->character_context = CHARACTER_CONTEXT_STUNNED;
             target->unknown_7b3 = 0;
             if (attacker != NULL) {
                 target->facing_angle = target->movement_facing_angle = target->unknown_276 =
@@ -1001,12 +1003,12 @@ i32 PlayerTakeHitReaction(GAMEOBJECT *target, GAMEOBJECT *attacker, f32 duration
 
 i32 DeactivatePlayer(GAMEOBJECT *object, f32 duration, GAMEOBJECT *source) {
     f32 model_state;
-    if (object->character_context != 0x17 || object->context_timer < duration) {
+    if (object->character_context != CHARACTER_CONTEXT_DEACTIVATED || object->context_timer < duration) {
         model_state = object->origin_scale_override;
         Player_ClearContext(object, 1);
-        if (object->character_context != 0x3e) {
+        if (object->character_context != CHARACTER_CONTEXT_BUCK) {
             Player_ResetContexts(object->ai_player_packet);
-            object->character_context = 0x17;
+            object->character_context = CHARACTER_CONTEXT_DEACTIVATED;
             object->origin_scale_override = model_state;
             if (AIScriptSetBaseScriptStateByName((AISCRIPTPROCESS *)&object->ai_packet, "BeenDeactivated")) {
                 AIScriptProcess(WORLD->ai_sys, (APIOBJECT *)object, &object->ai_packet, (AISCRIPTPROCESS *)&object->ai_packet, FRAMETIME);
@@ -1036,9 +1038,9 @@ i32 DeactivatePlayer(GAMEOBJECT *object, f32 duration, GAMEOBJECT *source) {
 }
 
 void ActivatePlayer(GAMEOBJECT *object) {
-    object->character_context = -1;
+    object->character_context = CHARACTER_CONTEXT_NONE;
     if (object->character_model->model_data_b[0x80] != NULL) {
-        object->character_context = 0x41;
+        object->character_context = CHARACTER_CONTEXT_ACTIVATE;
         object->unknown_7aa = 0x80;
         object->context_timer = AnimDuration((i16)object->id, 0x80, 0.0f, 0.0f, 1);
         object->context_duration = 0.0f;
@@ -1448,7 +1450,7 @@ void ObjHitShield(GAMEOBJECT *attacker, GAMEOBJECT *target, i32 damage, void *un
         attacker = NULL;
     }
     if (shield->shield_enabled == 1.0f && shield->shield_timer > 0.0f) {
-        if (attacker != NULL && !(attacker->flags_1fc_word & 0x80) && attacker->character_context != 0x39) {
+        if (attacker != NULL && !(attacker->flags_1fc_word & 0x80) && attacker->character_context != CHARACTER_CONTEXT_EATEN) {
             damage = 0;
         }
     }
@@ -1931,7 +1933,7 @@ void UpdateGameObjects(WORLDINFO *world) {
             if (timebase_updates != 0 && (object->flags_1f8 & 0x400) != 0) {
                 if ((object->portal_flags & 0x8000000) != 0 || (0x20 & object->flags_ef4) != 0 ||
                     0 != (U64_PAIR(&CInfo[object->character_context].flags) & 0x200) || object->supporting_platform_id != -1 ||
-                    (object->rider != NULL && object->character_context == 0x3b)) {
+                    (object->rider != NULL && object->character_context == CHARACTER_CONTEXT_BEEN_TAKEN_OVER)) {
                     object->flags_ef4 |= 0x10;
                     interval = 1;
                 } else if (Technos_FindControllingTechno(object) != NULL) {
@@ -1989,7 +1991,7 @@ void UpdateGameObjects(WORLDINFO *world) {
         if ((object->flags_1fc_word & 1) == 0 || (object->flags_1fc_word & 0x1000) == 0 || (object->flags_1f8 & 0x400) == 0) {
             continue;
         }
-        object->flags_1fc_word ^= (((object->character_context == 0) << 14) ^ object->flags_1fc_word) & 0x4000;
+        object->flags_1fc_word ^= (((object->character_context == CHARACTER_CONTEXT_JUMP) << 14) ^ object->flags_1fc_word) & 0x4000;
         flicker_decay = object->vehicle_hit_timer - FRAMETIME;
         object->vehicle_hit_timer = flicker_decay;
         if (flicker_decay < -1.0f) {
@@ -2082,7 +2084,7 @@ void UpdateGameObjects(WORLDINFO *world) {
         if (object->unknown_d54 > 0.0f) {
             object->unknown_d54 -= FRAMETIME;
         }
-        object->flags_1fc_word ^= (((object->character_context == 0) << 14) ^ object->flags_1fc_word) & 0x4000;
+        object->flags_1fc_word ^= (((object->character_context == CHARACTER_CONTEXT_JUMP) << 14) ^ object->flags_1fc_word) & 0x4000;
         if ((object->flags_1f8 & 0x40000) != 0) {
             MovePlayer_NETWORK(object);
         } else {
@@ -2262,8 +2264,8 @@ void UpdateGameObjects(WORLDINFO *world) {
             DoubleScore |= (i32)(1u << (object->unknown_280 & 31));
         }
         UpdateCoinPacket(object->coin_packet, (object->flags_1fc_word >> 7) & 1, (i8)object->unknown_280);
-        if ((object->flags_1fc_word & 0x80) != 0 && object->dead == 0 && object->character_context != 0x2b &&
-            !(object->character_context == 0x0f && object->unknown_7b3 == 1)) {
+        if ((object->flags_1fc_word & 0x80) != 0 && object->dead == 0 && object->character_context != CHARACTER_CONTEXT_DOOMED &&
+            !(object->character_context == CHARACTER_CONTEXT_TELEPORT && object->unknown_7b3 == 1)) {
             GizmoPickups_Collide(world, object, 1);
         } else {
             ResetCoinPacket(object->coin_packet);
@@ -2528,7 +2530,7 @@ i32 KillGameObject(GAMEOBJECT *object, i32 reason, i32 unused) {
             debris[0] = 130;
             debris[1] = 133;
         }
-        if (object->character_context != 43) {
+        if (object->character_context != CHARACTER_CONTEXT_DOOMED) {
             PlayDieSfx(object);
         }
         if ((object->flags_1fc_word & 0x80) != 0) {
@@ -2557,8 +2559,8 @@ i32 KillGameObject(GAMEOBJECT *object, i32 reason, i32 unused) {
     } else {
         DestroySnakeBody(object);
     }
-    if (object->character_context == 43) {
-        object->character_context = -1;
+    if (object->character_context == CHARACTER_CONTEXT_DOOMED) {
+        object->character_context = CHARACTER_CONTEXT_NONE;
         if ((object->flags_1fc_word & 0x80) != 0 && (WORLD->current_level == HOTHBATTLEA_LDATA || WORLD->current_level == GUNSHIPA_LDATA)) {
             GameCam_Blend(GameCam, 0.5f, 0.0f, 1);
         }
@@ -2586,9 +2588,9 @@ i32 KillGameObject(GAMEOBJECT *object, i32 reason, i32 unused) {
     }
     object->dead = (u8)reason;
     object->current_hp = 0;
-    if (object->character_context == 7 || object->unknown_e33 == 1) {
+    if (object->character_context == CHARACTER_CONTEXT_WEAPON_OUT || object->unknown_e33 == 1) {
         object->flags_e20 |= 0x10000;
-    } else if (object->character_context == 6 || object->unknown_e33 == 2) {
+    } else if (object->character_context == CHARACTER_CONTEXT_WEAPON_IN || object->unknown_e33 == 2) {
         object->flags_e20 = object->flags_e20 & (~0x10000);
     }
     if (object->helmet != 0) {
@@ -2704,7 +2706,7 @@ i32 KillGameObject(GAMEOBJECT *object, i32 reason, i32 unused) {
         object->reciprocal_target->reciprocal_target = NULL;
         object->reciprocal_target = NULL;
     }
-    if (object->character_context == 71 && object->grapple != NULL) {
+    if (object->character_context == CHARACTER_CONTEXT_ZIP_UP && object->grapple != NULL) {
         ((KILL_ZIPUP *)object->grapple)->runtime_flags &= ~0x100;
         object->grapple = NULL;
     }
@@ -2718,7 +2720,7 @@ i32 KillGameObject(GAMEOBJECT *object, i32 reason, i32 unused) {
         if ((candidate->flags_1fc_word & 1) == 0 || (candidate->flags_1fc_word & 0x1000) == 0 || candidate == object) {
             continue;
         }
-        if (candidate->character_context == 27 && candidate->force_target == object) {
+        if (candidate->character_context == CHARACTER_CONTEXT_FORCE_PUSH && candidate->force_target == object) {
             ReleaseForce(candidate, 0);
         }
         if (candidate->force_target == object) {
@@ -3182,17 +3184,19 @@ i32 ObjHitObj(GAMEOBJECT *attacker, GAMEOBJECT *target, i32 damage, u16 flags, i
     if (target->character_data->game_character->flags_090 & 0x8000) {
         return 0;
     }
-    if (target->character_context == 95 || target->character_context == 96) {
+    if (target->character_context == CHARACTER_CONTEXT_DIE_AIR || target->character_context == CHARACTER_CONTEXT_DIE_GROUND) {
         return 0;
     }
-    if (target->character_context == 90 && (!target->unknown_7b3 || (attacker && !(attacker->flags_1fc_word & 0x80)))) {
+    if (target->character_context == CHARACTER_CONTEXT_STUNNED &&
+        (!target->unknown_7b3 || (attacker && !(attacker->flags_1fc_word & 0x80)))) {
         return 0;
     }
     if (!(damage == -1 && (flags & 0x200))) {
-        if (target->character_context == 0 && (target->action_movement_state == 4 || target->action_movement_state == 3)) {
+        if (target->character_context == CHARACTER_CONTEXT_JUMP &&
+            (target->action_movement_state == 4 || target->action_movement_state == 3)) {
             return 0;
         }
-        if (target->character_context == 14 || target->character_context == 13) {
+        if (target->character_context == CHARACTER_CONTEXT_LAND_SLAM || target->character_context == CHARACTER_CONTEXT_LAND_LUNGE) {
             return 0;
         }
     }
@@ -3205,7 +3209,7 @@ i32 ObjHitObj(GAMEOBJECT *attacker, GAMEOBJECT *target, i32 damage, u16 flags, i
     if (target->unknown_280 != 0xff) {
         ObstacleCamHoldUntilPlayersMove = 0;
     }
-    if (target->character_context == 81 || target->character_context == 76) {
+    if (target->character_context == CHARACTER_CONTEXT_TECHNO || target->character_context == CHARACTER_CONTEXT_SIGNAL) {
         damage = 0;
     }
     if (attacker && ((attacker->flags_1fc_word & 0x80))) {
@@ -3216,7 +3220,7 @@ i32 ObjHitObj(GAMEOBJECT *attacker, GAMEOBJECT *target, i32 damage, u16 flags, i
     }
     if (flags & 0x100) {
         if ((U64_PAIR(&CInfo[target->character_context].flags) & 0x4000000) ||
-            (target->character_context != -1 &&
+            (target->character_context != CHARACTER_CONTEXT_NONE &&
              (target->character_context == LEGOCONTEXT_LAND_SLAM || target->character_context == LEGOCONTEXT_LAND_LUNGE))) {
             i32 rotation_difference = abs(RotDiff(attacker->movement_facing_angle, target->movement_facing_angle));
             if (rotation_difference > 16384 &&
@@ -3227,7 +3231,7 @@ i32 ObjHitObj(GAMEOBJECT *attacker, GAMEOBJECT *target, i32 damage, u16 flags, i
                 if (LEGOCONTEXT_HOLD != -1 && target->character_context == LEGOCONTEXT_HOLD) {
                     NewBlockAction(target);
                     if ((target->id == (u16)id_IMPERIALGUARD || target->id == (u16)id_GAMORREANGUARD) &&
-                        (target->character_context == 12 || target->character_context == 24)) {
+                        (target->character_context == CHARACTER_CONTEXT_BLOCK || target->character_context == CHARACTER_CONTEXT_HOLD)) {
                         GameAudio_PlaySfx(74, &target->collision_position, 0, 0);
                     }
                 }
@@ -3255,7 +3259,7 @@ i32 ObjHitObj(GAMEOBJECT *attacker, GAMEOBJECT *target, i32 damage, u16 flags, i
         if (damage > 1 || damage < 0) {
             damage = 1;
         }
-    } else if (attacker && (flags & 0x100) && attacker->character_context == 5 && attacker->combo_branch == 6 &&
+    } else if (attacker && (flags & 0x100) && attacker->character_context == CHARACTER_CONTEXT_COMBO && attacker->combo_branch == 6 &&
                target->unknown_280 == 0xff) {
         damage = -1;
     }
@@ -3276,9 +3280,9 @@ i32 ObjHitObj(GAMEOBJECT *attacker, GAMEOBJECT *target, i32 damage, u16 flags, i
         }
         if (WORLD->area == HOTHBATTLE_ADATA && (target->id == (u16)id_ATAT || (attacker && attacker->id == (u16)id_ATAT)) &&
             !(target->flags_1fc_word & 0x80) && (!attacker || !(attacker->flags_1fc_word & 0x80))) {
-            if (damage == -1 && target->id == (u16)id_ATAT && target->character_context != 23) {
+            if (damage == -1 && target->id == (u16)id_ATAT && target->character_context != CHARACTER_CONTEXT_DEACTIVATED) {
                 damage = 0;
-            } else if (damage == -1 && target->id == (u16)id_ATAT && target->character_context == 23) {
+            } else if (damage == -1 && target->id == (u16)id_ATAT && target->character_context == CHARACTER_CONTEXT_DEACTIVATED) {
                 damage = -1;
             } else if (attacker && attacker->id == (u16)id_ATAT && target->id == id_DRAGBOMB) {
                 damage = -1;
@@ -3355,7 +3359,8 @@ impact:
             i32 bits = attacker && attacker->unknown_280 <= 1 ? 1 << attacker->unknown_280 : 0;
             GameAudio_PlaySfx(40, &target->collision_position, bits, 0);
         } else if (flags & 0x40) {
-            if (attacker && attacker->character_context == 38 && (AnimMiscFlags(attacker->character_model, attacker->unknown_7aa) & 4)) {
+            if (attacker && attacker->character_context == CHARACTER_CONTEXT_PUNCH &&
+                (AnimMiscFlags(attacker->character_model, attacker->unknown_7aa) & 4)) {
                 PlaySfx("WhipHit", &target->collision_position);
             } else {
                 i32 bits = attacker && attacker->unknown_280 <= 1 ? 1 << attacker->unknown_280 : 0;
@@ -3375,7 +3380,7 @@ impact:
         }
         goto finish;
     }
-    if (target->character_context == 21 && (target->portal_flags & 0x08000000)) {
+    if (target->character_context == CHARACTER_CONTEXT_TAKE_HIT && (target->portal_flags & 0x08000000)) {
         target->spawn_protection_timer = 2.5f;
         goto finish;
     }
@@ -3386,7 +3391,7 @@ impact:
     if (damage != -1 && !(target->vehicle_hit_timer <= 0.0f) && (!attacker || !(attacker->flags_1fc_word & 0x80))) {
         goto finish;
     }
-    if (target->character_context == 45 && !Player_HasFastBuild(target)) {
+    if (target->character_context == CHARACTER_CONTEXT_BUILD_IT && !Player_HasFastBuild(target)) {
         GizBuildIt_SetToStart(target->grapple, 1, 1);
     }
     Player_ClearContext(target, 0);
@@ -3426,7 +3431,7 @@ impact:
             goto hurt;
         }
     }
-    if ((target->character_data->model_flags & 0x40000000) && (health <= 0 || target->character_context == 23)) {
+    if ((target->character_data->model_flags & 0x40000000) && (health <= 0 || target->character_context == CHARACTER_CONTEXT_DEACTIVATED)) {
         goto refill;
     }
     if (health <= 0 && !((target->portal_flags & 0x08000000) && (!FreePlay || WORLD->current_level != CRUISERC_LDATA))) {
@@ -3434,7 +3439,7 @@ impact:
             result = 2;
             goto finish;
         }
-        if (target->character_context == 93) {
+        if (target->character_context == CHARACTER_CONTEXT_BALLOONING) {
             PopBalloon(target);
             target->current_hp = 1;
             goto hurt;
@@ -3458,7 +3463,7 @@ impact:
                 (target->portal_flags & 0x08000000) || 0x8000 <= qrand() || (target->flags_1fc_word & 2)) {
                 goto ordinary_death;
             }
-            target->character_context = 95;
+            target->character_context = CHARACTER_CONTEXT_DIE_AIR;
             target->unknown_7aa = 0xb8;
             if (target->character_model->model_data_b[0xb8] == NULL) {
                 target->unknown_7aa = 5;
@@ -3604,7 +3609,7 @@ impact:
     }
     goto hurt;
 hurt:
-    if (!no_hurt && result != 2 && target->character_context != 23) {
+    if (!no_hurt && result != 2 && target->character_context != CHARACTER_CONTEXT_DEACTIVATED) {
         PlayHurtSfx(target);
     }
     goto finish;
@@ -3630,7 +3635,7 @@ refill:
     }
     AddPickups(coins, 0, 0, 0, &target->collision_position, NULL, 2.0f, attacker ? (i8)attacker->unknown_280 : -1, 1.0f, 2000000.0f,
                attacker, 1, 0);
-    if (target->character_context != 23) {
+    if (target->character_context != CHARACTER_CONTEXT_DEACTIVATED) {
         SetFlicker(target, 0.4f);
     }
     Player_ClearContext(target, 1);

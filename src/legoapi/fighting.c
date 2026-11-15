@@ -62,7 +62,7 @@ i32 ObjOpponentStillThere(GAMEOBJECT *object, GAMEOBJECT *opponent, f32 gap) {
 void SetWeaponOut(GAMEOBJECT *object) {
     i8 context = object->character_context;
     if (context != -1 && (context == LEGOCONTEXT_WEAPONIN || context == LEGOCONTEXT_WEAPONOUT)) {
-        object->character_context = -1;
+        object->character_context = CHARACTER_CONTEXT_NONE;
     }
     object->weapon_scale = 1.0f;
     object->flags_e20 |= 0x10000;
@@ -73,7 +73,7 @@ void FastWeaponOut(GAMEOBJECT *object, i32 force_sound) {
     i8 context = object->character_context;
     i32 animation;
     if (context != -1 && (context == LEGOCONTEXT_WEAPONIN || context == LEGOCONTEXT_WEAPONOUT)) {
-        object->character_context = -1;
+        object->character_context = CHARACTER_CONTEXT_NONE;
     }
     if (force_sound != 0 && object->weapon_scale == 0.0f && object->unknown_e33 != 1) {
         animation = CurrentAnim(&object->anim_packet);
@@ -134,7 +134,7 @@ void WeaponOutCode(GAMEOBJECT *object) {
         if (object->weapon_scale == 0.0f && object->unknown_e33 != 1) {
             FastWeaponOut(object, 0);
         }
-        object->character_context = -1;
+        object->character_context = CHARACTER_CONTEXT_NONE;
         return;
     }
     if ((object->anim_packet.blending && object->anim_packet.blend_target_animation != object->unknown_7aa) ||
@@ -145,7 +145,7 @@ void WeaponOutCode(GAMEOBJECT *object) {
     start = AnimListFrame(object->character_model, object->unknown_7aa, 0);
     object->context_timer -= FRAMETIME;
     if (object->context_timer <= 0.0f) {
-        object->character_context = -1;
+        object->character_context = CHARACTER_CONTEXT_NONE;
         if (object->weapon_scale != 0.0f) {
             return;
         }
@@ -181,7 +181,7 @@ void KeepWeaponOut(GAMEOBJECT *object) {
 void SetWeaponIn(GAMEOBJECT *object) {
     i8 context = object->character_context;
     if (context != -1 && (context == LEGOCONTEXT_WEAPONIN || context == LEGOCONTEXT_WEAPONOUT)) {
-        object->character_context = -1;
+        object->character_context = CHARACTER_CONTEXT_NONE;
     }
     object->weapon_scale = 0.0f;
     object->flags_e20 &= ~0x10000u;
@@ -192,7 +192,7 @@ void FastWeaponIn(GAMEOBJECT *object, i32 force_sound) {
     i8 context = object->character_context;
     i32 animation;
     if (context != -1 && (context == LEGOCONTEXT_WEAPONIN || context == LEGOCONTEXT_WEAPONOUT)) {
-        object->character_context = -1;
+        object->character_context = CHARACTER_CONTEXT_NONE;
     }
     if (force_sound != 0 && object->weapon_scale == 1.0f && object->unknown_e33 != 2) {
         animation = CurrentAnim(&object->anim_packet);
@@ -256,7 +256,7 @@ void WeaponInCode(GAMEOBJECT *object) {
         if (object->weapon_scale == 1.0f && object->unknown_e33 != 2) {
             FastWeaponIn(object, 0);
         }
-        object->character_context = -1;
+        object->character_context = CHARACTER_CONTEXT_NONE;
         return;
     }
     if ((object->anim_packet.blending && object->anim_packet.blend_target_animation != object->unknown_7aa) ||
@@ -267,7 +267,7 @@ void WeaponInCode(GAMEOBJECT *object) {
     start = AnimListFrame(object->character_model, object->unknown_7aa, 0);
     object->context_timer -= FRAMETIME;
     if (object->context_timer <= 0.0f) {
-        object->character_context = -1;
+        object->character_context = CHARACTER_CONTEXT_NONE;
         if (object->weapon_scale != 1.0f) {
             return;
         }
@@ -472,7 +472,7 @@ void StartHold(GAMEOBJECT *object) {
     }
     if (CanStartHoldFn(object) == 2) {
         ((HOLD_RUNTIME_VIEW *)object)->hold_timer = 0.0f;
-        object->character_context = -1;
+        object->character_context = CHARACTER_CONTEXT_NONE;
         return;
     }
     if (LEGOCONTEXT_HOLD != -1 && NewBlockAction(object)) {
@@ -481,7 +481,7 @@ void StartHold(GAMEOBJECT *object) {
         PlaySabreSfx(NULL, object, NULL, 1);
         return;
     }
-    object->character_context = -1;
+    object->character_context = CHARACTER_CONTEXT_NONE;
 }
 
 void HoldCode(GAMEOBJECT *object) {
@@ -489,7 +489,7 @@ void HoldCode(GAMEOBJECT *object) {
         if (object->context_timer > 0.0f) {
             object->context_timer -= FRAMETIME;
         } else if ((object->pad->buttons_held & GAMEPAD_ACTION) == 0) {
-            object->character_context = -1;
+            object->character_context = CHARACTER_CONTEXT_NONE;
         }
     }
 }
@@ -499,7 +499,7 @@ void fun_0058e480(GAMEOBJECT *object) {
         if (object->context_timer > 0.0f) {
             object->context_timer -= FRAMETIME;
         } else if ((object->pad->buttons_held & GAMEPAD_ACTION) == 0) {
-            object->character_context = -1;
+            object->character_context = CHARACTER_CONTEXT_NONE;
         }
     }
 }

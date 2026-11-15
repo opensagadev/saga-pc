@@ -263,9 +263,9 @@ static void Grapple_FindNearestInList(NUVEC *position, GRAPPLE_MOTION *grapple, 
                 if (Grapple_Occupied(grapple, NULL, NULL) != NULL) {
                     continue;
                 }
-                if ((object->flags_1fc & 0x80) != 0 &&
-                    (object->unknown_281 != 0 || !(object->velocity.y <= 0.0f) ||
-                     (object->character_context != -1 && (LEGOCONTEXT_JUMP == -1 || object->character_context != LEGOCONTEXT_JUMP ||
+                if ((object->flags_1fc & 0x80) != 0 && (object->unknown_281 != 0 || !(object->velocity.y <= 0.0f) ||
+                                                        (object->character_context != CHARACTER_CONTEXT_NONE &&
+                                                         (LEGOCONTEXT_JUMP == -1 || object->character_context != LEGOCONTEXT_JUMP ||
                                                           !(object->context_timer >= (f64)0.1f))))) {
                     continue;
                 }
@@ -888,7 +888,7 @@ extern "C" void Grapple_MoveCode(GAMEOBJECT *object) {
     if (object->character_context == LEGOCONTEXT_GRAPPLE) {
         if ((object->flags_1fc & 0x80) == 0 && ((OBJECT_GRAPPLE_MOTION_VIEW *)object)->can_use_object != object->grapple) {
             GRAPPLE_CURRENT->activation_progress = 0.0f;
-            object->character_context = -1;
+            object->character_context = CHARACTER_CONTEXT_NONE;
             return;
         }
         if (object->unknown_7b3 == 1) {
@@ -924,7 +924,7 @@ extern "C" void Grapple_MoveCode(GAMEOBJECT *object) {
             (0 != GRAPPLE_CURRENT->has_terrain_platform &&
              (GRAPPLE_CURRENT->attached_object == NULL || GRAPPLE_CURRENT->ground_position.y == 2000000.0f))) {
             GRAPPLE_CURRENT->activation_progress = 0.0f;
-            object->character_context = -1;
+            object->character_context = CHARACTER_CONTEXT_NONE;
             GameCam_Blend(NULL, 0.5f, 0.0f, 1);
             return;
         }

@@ -20,8 +20,8 @@ void CheckForPlayersTurnedOff(void) {
             i32 target_index;
             for (target_index = 2; target_index < 8; ++target_index) {
                 GAMEOBJECT *target = Player[target_index];
-                if (target == NULL || (target->tag_flags & 2) || (target->portal_flags & 0x4000000) || target->character_context == 0x24 ||
-                    target->character_context == 0x1f) {
+                if (target == NULL || (target->tag_flags & 2) || (target->portal_flags & 0x4000000) ||
+                    target->character_context == CHARACTER_CONTEXT_DROP_OUT || target->character_context == CHARACTER_CONTEXT_BIG_JUMP) {
                     continue;
                 }
                 if (target->unknown_281 != 0 ||
@@ -51,7 +51,7 @@ i32 FreePlay_DropInToPlayerPos(GAMEOBJECT *object) {
     }
     if (player != NULL && FreePlay != 0 && drop_in_teleport >= 2 && VehicleArea == 0 && (Arcade != 0 || teleport_all_freeplay_modes != 0) &&
         object->takeover_source == NULL && (U64_PAIR(&CInfo[object->character_context].flags) & 0x8000) == 0 &&
-        object->character_context != 0x2b && object->model_draw_result == 0 && (object->tag_flags & 2) == 0) {
+        object->character_context != CHARACTER_CONTEXT_DOOMED && object->model_draw_result == 0 && (object->tag_flags & 2) == 0) {
         NUVEC position = player->last_safe_position;
         if (position.x == player->position.x && position.y == player->position.y && position.z == player->position.z) {
             position.z = (f32)((f64)position.z + (f64)0.01f);
@@ -99,7 +99,7 @@ void DropInOutCode(GAMEOBJECT *object) {
             other = object == Player[0] ? Player[1] : Player[0];
             object->position = other->position;
         }
-        object->character_context = -1;
+        object->character_context = CHARACTER_CONTEXT_NONE;
         if ((object->character_data->model_flags & 0x2000) == 0) {
             object->unknown_281 = 0;
             object->velocity.y = -0.1f;
@@ -168,7 +168,7 @@ void DropOut(i32 player, i32 resume, i32 silent, i32 unused) {
     if (VehicleArea) {
         StartDropOut(object);
     }
-    if (object->dead || object->character_context == 0x2b) {
+    if (object->dead || object->character_context == CHARACTER_CONTEXT_DOOMED) {
         PlayerProgress[player].hitpoints = object->unknown_107e;
     } else {
         PlayerProgress[player].hitpoints = object->current_hp;
@@ -318,9 +318,9 @@ i32 PlayersDropInOut(void) {
             continue;
         }
         object->model_draw_result = 1;
-        join = VehicleArea != 0 && object->character_context != 0x24;
+        join = VehicleArea != 0 && object->character_context != CHARACTER_CONTEXT_DROP_OUT;
         if (!join && CUTSTOPGAME == 0 && MiniCutCam != 2 && !(object->tag_flags & 2) && !(object->portal_flags & 0x4000000) &&
-            object->character_context != 0x24 && object->character_context != 0x1f) {
+            object->character_context != CHARACTER_CONTEXT_DROP_OUT && object->character_context != CHARACTER_CONTEXT_BIG_JUMP) {
             if (DROPIN_SCREEN_INSIDE(object) &&
                 (force_join || object->unknown_281 != 0 || object->id == (u16)id_SPEEDERBIKE ||
                  (object->jump_variant_state == 1 && object->character_data->game_character->unknown_028 > 0.0f))) {
@@ -337,9 +337,10 @@ i32 PlayersDropInOut(void) {
                 if (target == NULL) {
                     continue;
                 }
-                tag = VehicleArea != 0 && object->character_context != 0x24;
+                tag = VehicleArea != 0 && object->character_context != CHARACTER_CONTEXT_DROP_OUT;
                 if (!tag && CUTSTOPGAME == 0 && MiniCutCam != 2 && !(target->tag_flags & 2) && !(target->portal_flags & 0x4000000) &&
-                    target->character_context != 0x24 && target->character_context != 0x1f && target->model_draw_result != 0 &&
+                    target->character_context != CHARACTER_CONTEXT_DROP_OUT && target->character_context != CHARACTER_CONTEXT_BIG_JUMP &&
+                    target->model_draw_result != 0 &&
                     (target->unknown_281 != 0 ||
                      (target->jump_variant_state == 1 && target->character_data->game_character->unknown_028 > 0.0f)) &&
                     DROPIN_SCREEN_INSIDE(target)) {
@@ -377,7 +378,7 @@ i32 PlayersDropInOut(void) {
         if (MiniCutCam != 2 && VehicleArea == 0) {
             GameCam_Blend(GameCam, 1.0f, 0.0f, 1);
         }
-        if (VehicleArea != 0 && object->character_context != 0x24) {
+        if (VehicleArea != 0 && object->character_context != CHARACTER_CONTEXT_DROP_OUT) {
             StartDropIn(object);
         }
         object->flags_ef0 |= 0x80;
@@ -393,8 +394,8 @@ i32 PlayersDropInOut(void) {
     drop_index = -1;
     for (index = 0; index < 2; ++index) {
         object = Player[index];
-        if (object == NULL || object->dead != 0 || object->character_context == 0x2b || object->character_context == 0x51 ||
-            object->character_context == 0x1f) {
+        if (object == NULL || object->dead != 0 || object->character_context == CHARACTER_CONTEXT_DOOMED ||
+            object->character_context == CHARACTER_CONTEXT_TECHNO || object->character_context == CHARACTER_CONTEXT_BIG_JUMP) {
             continue;
         }
         if (object->flags_ef0 & 0x200000) {

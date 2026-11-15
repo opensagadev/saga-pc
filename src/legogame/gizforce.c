@@ -727,7 +727,8 @@ i32 GizForce_Complete(GIZFORCE_PC *force) {
 }
 
 i32 GizForce_GameObjUsingForce(GAMEOBJECT *object, GIZFORCE_PC *force) {
-    return force != NULL && object != NULL && object->character_context == 8 && ((TRIGGER_FORCE_OBJECT *)object)->force == force;
+    return force != NULL && object != NULL && object->character_context == CHARACTER_CONTEXT_FORCE &&
+           ((TRIGGER_FORCE_OBJECT *)object)->force == force;
 }
 
 PART_PC *GizForce_Throw(GAMEOBJECT *object, GIZFORCE_PC *force, f32 speed, f32 gravity, i32 unused) {
@@ -1385,8 +1386,8 @@ void GizForces_Update(void *world_pointer, void *system_pointer, f32 unused_time
         GAMEANIMOBJ *object;
         FORCE_RESET_GROUP *group;
         if (force->using_object != NULL && force->group != NULL && (force->runtime_flags & 0x20) == 0 &&
-            (force->group->runtime_flags & 1) != 0 && force->using_object->character_context == 8) {
-            force->using_object->character_context = -1;
+            (force->group->runtime_flags & 1) != 0 && force->using_object->character_context == CHARACTER_CONTEXT_FORCE) {
+            force->using_object->character_context = CHARACTER_CONTEXT_NONE;
             ((GIZFORCE_OBJECT_BEST *)force->using_object)->target = NULL;
             force->using_object = NULL;
         }

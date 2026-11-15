@@ -370,7 +370,7 @@ extern "C" i32 PushBlock(GAMEOBJECT *object) {
         AlertSurroundingCreatures(object, &object->collision_position);
         return 1;
     }
-    object->character_context = -1;
+    object->character_context = CHARACTER_CONTEXT_NONE;
     return 0;
 }
 

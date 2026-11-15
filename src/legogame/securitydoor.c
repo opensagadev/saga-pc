@@ -389,7 +389,7 @@ ADDGIZMOTYPE_PC *SecurityDoors_RegisterGizmo(i32 unused_type_id) {
 static void SecurityDoorStart(GAMEOBJECT *object, SECURITY_DOOR_RECORD_PC *door, i32 facing) {
     object->context_variant_flags &= ~0x40u;
     object->context_timer = 0.0f;
-    object->character_context = 0x5c;
+    object->character_context = CHARACTER_CONTEXT_SECURITY;
     object->grapple = door;
     object->unknown_7aa = 0xad;
     object->context_duration = AnimDuration((i16)object->id, 0xad, 0.0f, 0.0f, 1);
@@ -407,7 +407,7 @@ static void SecurityDoorStart(GAMEOBJECT *object, SECURITY_DOOR_RECORD_PC *door,
 
 void SecurityDoor_MoveCode(WORLDINFO *world, GAMEOBJECT *object) {
     f32 *playing = NULL;
-    if (object->character_context == 0x5c) {
+    if (object->character_context == CHARACTER_CONTEXT_SECURITY) {
         f32 elapsed;
         if (object->character_model->action_animations[object->unknown_7aa] != NULL) {
             playing = AnimPlaying(&object->anim_packet, object->unknown_7aa, 1, 0);
@@ -418,7 +418,7 @@ void SecurityDoor_MoveCode(WORLDINFO *world, GAMEOBJECT *object) {
         elapsed = (f64)object->context_timer + (f64)FRAMETIME;
         object->context_timer = elapsed;
         if (elapsed >= object->context_duration) {
-            object->character_context = -1;
+            object->character_context = CHARACTER_CONTEXT_NONE;
             if ((object->context_variant_flags & 0x40) != 0) {
                 return;
             }

@@ -195,7 +195,8 @@ extern "C" {
     }
 
     void ChatterSfx(GAMEOBJECT *object, i32 sound, f32 interval) {
-        if (TerrainChatterWait <= 0.0f && ParticlesPerSecond(2.0f, FRAMETIME) > 0 && object->dead == 0 && object->character_context == -1) {
+        if (TerrainChatterWait <= 0.0f && ParticlesPerSecond(2.0f, FRAMETIME) > 0 && object->dead == 0 &&
+            object->character_context == CHARACTER_CONTEXT_NONE) {
             if (sound != TerrainLastChatterSfx || !(interval > 0.0f)) {
                 PlaySfxById(sound, &object->collision_position);
                 TerrainChatterWait = (f32)((f64)qrand() * (f64)(1.0f / 65535.0f) * 2.0 + 3.0);

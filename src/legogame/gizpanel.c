@@ -782,7 +782,7 @@ void GizPanel_MoveCode(WORLDINFO *world, GAMEOBJECT *object, i32 use) {
     PanelStormActive = 0;
     PanelDroidActive = 0;
     PanelBountyHunterActive = 0;
-    if (object->character_context == 0x0b && object->grapple != NULL) {
+    if (object->character_context == CHARACTER_CONTEXT_INTERFACE && object->grapple != NULL) {
         if (object->character_model->model_data_b[object->unknown_7aa] == NULL ||
             AnimPlaying(&object->anim_packet, object->unknown_7aa, 1, 0) != NULL) {
             object->context_hover_target_y += FRAMETIME;
@@ -791,7 +791,7 @@ void GizPanel_MoveCode(WORLDINFO *world, GAMEOBJECT *object, i32 use) {
             }
             object->context_timer -= FRAMETIME;
             if (object->context_timer <= 0.0f) {
-                object->character_context = -1;
+                object->character_context = CHARACTER_CONTEXT_NONE;
                 ((PANEL_MOVEMENT *)object->grapple)->flags &= (u8)~1;
                 ((PANEL_MOVEMENT *)object->grapple)->flags |= 2;
                 object->grapple = NULL;
@@ -828,7 +828,7 @@ void GizPanel_MoveCode(WORLDINFO *world, GAMEOBJECT *object, i32 use) {
                         Hint_SetComplete(0x261);
                     }
                 }
-                object->character_context = -1;
+                object->character_context = CHARACTER_CONTEXT_NONE;
                 ((PANEL_MOVEMENT *)object->grapple)->flags &= (u8)~1;
                 ((PANEL_MOVEMENT *)object->grapple)->flags |= 2;
                 object->grapple = NULL;
@@ -838,8 +838,8 @@ void GizPanel_MoveCode(WORLDINFO *world, GAMEOBJECT *object, i32 use) {
         }
         return;
     }
-    if (object->character_context != -1 && object->character_context != 1 && object->character_context != 2 &&
-        !objInNetWaitContext(object, 0x0b)) {
+    if (object->character_context != CHARACTER_CONTEXT_NONE && object->character_context != CHARACTER_CONTEXT_LAND_JUMP &&
+        object->character_context != CHARACTER_CONTEXT_LAND_JUMP_2 && !objInNetWaitContext(object, 0x0b)) {
         return;
     }
     panel = GizPanel_FindNearest(WORLD, &object->position, object, &distance, 1);
@@ -853,7 +853,7 @@ void GizPanel_MoveCode(WORLDINFO *world, GAMEOBJECT *object, i32 use) {
         object->context_hover_target_y = 0.0f;
         object->delayed_turn_timer = 0.0f;
         object->flags_e20 &= ~0x1000u;
-        object->character_context = 0x0b;
+        object->character_context = CHARACTER_CONTEXT_INTERFACE;
         object->grapple = panel;
         object->unknown_7b3 = 0;
         FastWeaponIn(object, 0);

@@ -730,7 +730,7 @@ void TorpedoCode(GAMEOBJECT *object, i32 fire, f32 fire_cooldown) {
         TORPEDO_PACKET(object)->flags &= (u8)~2;
     }
     /* Tests the pickup timer twice before firing. */
-    if (fire != 0 && object->character_context == -1 && timers->fire_cooldown <= 0.0f && object->dead == 0 &&
+    if (fire != 0 && object->character_context == CHARACTER_CONTEXT_NONE && timers->fire_cooldown <= 0.0f && object->dead == 0 &&
         (TORPEDO_PACKET(object)->flags & 2) == 0 && TORPEDO_PACKET(object)->pickup_timer >= 0.8f && TORPEDO_PACKET(object)->count > 0 &&
         TORPEDO_PACKET(object)->pickup_timer >= 0.8f) {
         PlaySfx("XWing_Torpedo", &object->collision_position);

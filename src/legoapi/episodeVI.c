@@ -508,8 +508,8 @@ void EmperorFightA_Update(WORLDINFO *world) {
     for (i = 0; i < 2; ++i) {
         GAMEOBJECT *player;
         player = Player[i];
-        if (player != NULL && player->character_context == 0x42) {
-            player->character_context = -1;
+        if (player != NULL && player->character_context == CHARACTER_CONTEXT_ZAPPED_BY_FLOOR) {
+            player->character_context = CHARACTER_CONTEXT_NONE;
         }
     }
     if (netclient && EMPEROR_PACKET->zap && EMPEROR_PACKET->player_floor_mask && LevGameObject[0] != NULL) {
@@ -593,7 +593,7 @@ void EmperorFightA_Update(WORLDINFO *world) {
                 if (!(dz < radius && dz > negative_radius)) {
                     continue;
                 }
-                player->character_context = 0x42;
+                player->character_context = CHARACTER_CONTEXT_ZAPPED_BY_FLOOR;
                 player = Player[i];
                 if (!(player->flags_1f8 & 0x40000)) {
                     ObjHitObj(NULL, player, 1, 0, 0, 1);
@@ -1484,7 +1484,7 @@ void LegoCity_Update(WORLDINFO *world) {
     for (index = 0; index < 8; ++index) {
         object = Player[index];
         if (!(object != NULL && (object->flags_1fc_word & 0x1000) != 0 && object->dead == 0 && object->rider != NULL &&
-              object->rider->character_context == 0x3b)) {
+              object->rider->character_context == CHARACTER_CONTEXT_BEEN_TAKEN_OVER)) {
             continue;
         }
         if (object->id == (u16)id_TRACTOR) {
@@ -1605,7 +1605,7 @@ void NewTown_Update(WORLDINFO *world) {
     for (index = 0; index < 8; ++index) {
         object = Player[index];
         if (!(object != NULL && (object->flags_1fc_word & 0x1000) != 0 && object->dead == 0 && object->rider != NULL &&
-              object->rider->character_context == 0x3b)) {
+              object->rider->character_context == CHARACTER_CONTEXT_BEEN_TAKEN_OVER)) {
             continue;
         }
         if (object->id == (u16)id_TAUNTAUN) {

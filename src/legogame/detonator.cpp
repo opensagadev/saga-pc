@@ -175,7 +175,8 @@ extern "C" void Detonators_Draw(void) {
 }
 
 extern "C" void Detonator_MoveCode(GAMEOBJECT *object) {
-    if (object->character_context != 0x49 && object->character_context != 0x48) {
+    if (object->character_context != CHARACTER_CONTEXT_PICK_UP_DETONATOR &&
+        object->character_context != CHARACTER_CONTEXT_PLACE_DETONATOR) {
         if (WORLD->level_objects[0xec].active == 0 || (object->flags_1fc & 0x80) == 0 ||
             (object->unknown_281 == 0 && object->jump_variant_state != 1) ||
             (ObjLandReady(object) == 0 && (*(u64 *)&CInfo[object->character_context].flags & 0x2000) == 0)) {
@@ -205,7 +206,7 @@ extern "C" void Detonator_MoveCode(GAMEOBJECT *object) {
             DETONATOR_s *nearest = Detonator_FindNearest(&object->lower_position, object->bounds_radius + 0.0775f, object);
             if (nearest != NULL) {
                 object->unknown_7b3 = 0;
-                object->character_context = 0x49;
+                object->character_context = CHARACTER_CONTEXT_PICK_UP_DETONATOR;
                 FastWeaponIn(object, 0);
                 object->unknown_7aa = 0x66;
                 object->grapple = nearest;
@@ -222,7 +223,7 @@ extern "C" void Detonator_MoveCode(GAMEOBJECT *object) {
                 object->launch_origin.z = object->lower_position.z;
                 if (Detonator_FindNearest(&object->launch_origin, 0.155f, NULL) == NULL) {
                     object->unknown_7b3 = 0;
-                    object->character_context = 0x48;
+                    object->character_context = CHARACTER_CONTEXT_PLACE_DETONATOR;
                     FastWeaponIn(object, 0);
                     object->unknown_7aa = 0x8d;
                     object->unknown_7a4 = object->unknown_1056;
@@ -234,7 +235,8 @@ extern "C" void Detonator_MoveCode(GAMEOBJECT *object) {
             } else {
                 GameAudio_PlaySfx(0x32, NULL, 0, 0);
             }
-            if (object->character_context == 0x48 || object->character_context == 0x49) {
+            if (object->character_context == CHARACTER_CONTEXT_PLACE_DETONATOR ||
+                object->character_context == CHARACTER_CONTEXT_PICK_UP_DETONATOR) {
                 object->velocity.z = 0.0f;
                 object->velocity.x = 0.0f;
                 if (AnimPlaying(&object->anim_packet, object->unknown_7aa, 1, 1) != NULL) {
@@ -263,7 +265,7 @@ extern "C" void Detonator_MoveCode(GAMEOBJECT *object) {
     }
     object->context_timer -= FRAMETIME;
     if (object->context_timer <= 0.0f) {
-        object->character_context = -1;
+        object->character_context = CHARACTER_CONTEXT_NONE;
         if (object->unknown_7b3 != 0) {
             return;
         }
@@ -272,7 +274,8 @@ extern "C" void Detonator_MoveCode(GAMEOBJECT *object) {
             return;
         }
         if (object->character_model->model_data_b[object->unknown_7aa] != NULL) {
-            f32 marker = AnimListFrame(object->character_model, object->unknown_7aa, object->character_context == 0x49 ? 0 : 2);
+            f32 marker = AnimListFrame(object->character_model, object->unknown_7aa,
+                                       object->character_context == CHARACTER_CONTEXT_PICK_UP_DETONATOR ? 0 : 2);
             if (frame == NULL || !(*frame > 0.0f)) {
                 return;
             }
@@ -284,7 +287,7 @@ extern "C" void Detonator_MoveCode(GAMEOBJECT *object) {
         }
     }
     object->unknown_7b3 = 1;
-    if (object->character_context == 0x49) {
+    if (object->character_context == CHARACTER_CONTEXT_PICK_UP_DETONATOR) {
         DETONATOR_s *detonator = (DETONATOR_s *)object->grapple;
         if (detonator != NULL) {
             detonator->active = 0;

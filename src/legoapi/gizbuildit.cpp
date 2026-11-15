@@ -663,7 +663,7 @@ extern "C" {
         if (LEGOCONTEXT_BUILDIT == -1 || player->character_context != LEGOCONTEXT_BUILDIT) {
             return;
         }
-        player->character_context = -1;
+        player->character_context = CHARACTER_CONTEXT_NONE;
         completion_blend = completed != 0 ? 0.6f : 0.0f;
         GameCam_Blend(GameCam, 0.5f, completion_blend, 1);
     }
@@ -1718,7 +1718,7 @@ extern "C" {
             GizBuildIt_SetHeadTarget((GIZBUILDIT_s *)buildit, player);
             buildit = (GIZBUILDIT *)player->grapple;
             if ((buildit->state_flags & 0x80) != 0 && ShadowMode == 0) {
-                player->character_context = -1;
+                player->character_context = CHARACTER_CONTEXT_NONE;
                 buildit->builders_active = 1;
                 ((GIZBUILDIT *)player->grapple)->availability_flags |= 4;
             }
@@ -1733,10 +1733,10 @@ extern "C" {
                 timer = (f64)player->context_timer - FRAMETIME;
                 player->context_timer = timer;
                 if (timer <= 0.0f) {
-                    player->character_context = -1;
+                    player->character_context = CHARACTER_CONTEXT_NONE;
                 }
             }
-            if (player->character_context != -1) {
+            if (player->character_context != CHARACTER_CONTEXT_NONE) {
                 buildit->builders_active = 1;
                 ((GIZBUILDIT *)player->grapple)->availability_flags |= 4;
             }
@@ -1759,7 +1759,7 @@ extern "C" {
             timer = (f64)player->context_timer - FRAMETIME;
             player->context_timer = timer;
             if (timer <= 0.0f) {
-                player->character_context = -1;
+                player->character_context = CHARACTER_CONTEXT_NONE;
                 player->panel_request_data = NULL;
             }
         }

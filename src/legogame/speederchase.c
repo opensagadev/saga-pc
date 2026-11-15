@@ -96,7 +96,7 @@ void SpeederChaseA_Update(WORLDINFO *world) {
     for (i = 0; i < 2; ++i) {
         object = Player[i];
         if (object != NULL && (object->flags_1fc & 0x80) != 0 && (object->flags_1f8 & 0x40000) == 0) {
-            if (GoingForwardsAlongNarrowSock(object) == 0 || Player[i]->character_context == 0x2a) {
+            if (GoingForwardsAlongNarrowSock(object) == 0 || Player[i]->character_context == CHARACTER_CONTEXT_TURN) {
                 players_going_forward = 0;
                 break;
             }
@@ -325,7 +325,7 @@ i32 Action_SpeederBeingChased(AISYS_PC *system, AISCRIPTPROCESS *processor, AIPA
             speeder_hitpoints_lost++;
             processor->action_data_2 = object->current_hp;
         }
-        if (object->character_context != -1) {
+        if (object->character_context != CHARACTER_CONTEXT_NONE) {
             return 0;
         }
         if (processor->action_data_1 != (u8)set_speedermode) {
@@ -363,14 +363,15 @@ i32 Action_SpeederBeingChased(AISYS_PC *system, AISCRIPTPROCESS *processor, AIPA
                     return 0;
                 }
                 processor->action_timer -= elapsed;
-                if (!(processor->action_timer > 0.0f) && processor->action_timer < -1.0f && player->character_context == 0x36) {
+                if (!(processor->action_timer > 0.0f) && processor->action_timer < -1.0f &&
+                    player->character_context == CHARACTER_CONTEXT_LOOP) {
                     SpeederChase_SetMode(processor, 3);
                     return 0;
                 }
                 break;
             case 2:
                 if (players_going_forward != 0) {
-                    if (player->character_context == 0x36) {
+                    if (player->character_context == CHARACTER_CONTEXT_LOOP) {
                         SpeederChase_SetMode(processor, 3);
                     }
                     if (speeder_shootrate > 0.0f) {

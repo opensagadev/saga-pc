@@ -54,7 +54,7 @@ i32 StarWars_MidSpecialMove_Default(AISYS_PC *system, AIPACKET *packet, APIOBJEC
         (skip_inside == 0 &&
          owner->ai_packet.inside_path_node == owner->ai_packet.special_move_node - owner->ai_packet.path_info.path->nodes)) {
         ClearSpecialMove(owner);
-    } else if (owner->character_context != 0 &&
+    } else if (owner->character_context != CHARACTER_CONTEXT_JUMP &&
                (owner->position.y < owner->ai_packet.special_move_node->min_height ||
                 (packet->path_info.connection->traversal_flags[packet->path_info.direction] & 0x80000000) != 0 ||
                 ((capabilities & 0x40) != 0 && owner->unknown_281 != 0))) {
@@ -84,7 +84,7 @@ i32 StarWars_MidSpecialMove_Default(AISYS_PC *system, AIPACKET *packet, APIOBJEC
 
 i32 StarWars_MidSpecialMove_StartJump(AISYS_PC *system, AIPACKET *packet, APIOBJECT *object) {
     GAMEOBJECT *owner = object->owner;
-    if (owner->character_context == 0) {
+    if (owner->character_context == CHARACTER_CONTEXT_JUMP) {
         SetSpecialMove(owner, owner->ai_packet.special_move_node, NULL, 0);
         owner->ai_packet.movement_destination = owner->ai_packet.special_move_node->position;
         owner->ai_packet.movement_stopping_distance = 0.0f;
@@ -158,8 +158,8 @@ i32 StarWars_PrepareHatch(AIPACKET *packet, APIOBJECT *object, i32 checks_unused
     owner = object->owner;
     if (owner->special_move_timer <= 0.0f) {
         destination = &packet->path_info.path->nodes[packet->path_info.connection->node_indices[packet->path_info.direction == 0]];
-        if (owner->character_context == 0x0f || owner->character_context == 0x47 ||
-            (owner->character_context == 0 && owner->action_movement_state == 6)) {
+        if (owner->character_context == CHARACTER_CONTEXT_TELEPORT || owner->character_context == CHARACTER_CONTEXT_ZIP_UP ||
+            (owner->character_context == CHARACTER_CONTEXT_JUMP && owner->action_movement_state == 6)) {
             packet->movement_destination = destination->position;
             packet->movement_stopping_distance = 0.0f;
             SetSpecialMove(owner, destination, NULL, 2);
@@ -195,8 +195,8 @@ i32 StarWars_MidSpecialMove_UseHatch(AISYS_PC *system, AIPACKET *packet, APIOBJE
     GAMEOBJECT *owner = object->owner;
     switch ((i8)owner->unknown_1087) {
         case 0:
-            if (owner->character_context == 0x0f || owner->character_context == 0x47 ||
-                (owner->character_context == 0 && owner->action_movement_state == 6)) {
+            if (owner->character_context == CHARACTER_CONTEXT_TELEPORT || owner->character_context == CHARACTER_CONTEXT_ZIP_UP ||
+                (owner->character_context == CHARACTER_CONTEXT_JUMP && owner->action_movement_state == 6)) {
                 owner->ai_packet.movement_destination = owner->ai_packet.special_move_node->position;
                 owner->ai_packet.movement_stopping_distance = 0.0f;
                 ((GAMEOBJECT *)object)->ai_collision_priority |= 0x4000;
@@ -276,7 +276,7 @@ i32 StarWars_PrepareBigJump(AIPACKET *packet, APIOBJECT *object, i32 checks_unus
     owner = object->owner;
     destination_index = packet->path_info.connection->node_indices[packet->path_info.direction == 0];
     destination = &packet->path_info.path->nodes[destination_index];
-    if (owner->ai_packet.inside_path_node == destination_index || owner->character_context == 0x2b) {
+    if (owner->ai_packet.inside_path_node == destination_index || owner->character_context == CHARACTER_CONTEXT_DOOMED) {
         return 0;
     }
     if ((packet->path_info.connection->traversal_flags[packet->path_info.direction] & 0x800) != 0) {
@@ -303,7 +303,7 @@ i32 StarWars_PrepareBigJump(AIPACKET *packet, APIOBJECT *object, i32 checks_unus
 
 i32 StarWars_MidSpecialMove_BigJump(AISYS_PC *system, AIPACKET *packet, APIOBJECT *object) {
     GAMEOBJECT *owner = object->owner;
-    if (owner->character_context == 0x1f) {
+    if (owner->character_context == CHARACTER_CONTEXT_BIG_JUMP) {
         owner->launch_origin = owner->ai_packet.special_move_node->position;
         ((GAMEOBJECT *)object)->ai_collision_priority |= 0x4000;
         return 1;
@@ -407,14 +407,14 @@ i32 StarWars_PreparingForSpecialMove(AIPACKET *packet, APIOBJECT *apiobject, i32
     u32 flags;
     u32 capabilities;
     STARWARS_PREPARE *entry;
-    if (owner->character_context == 0x5b) {
+    if (owner->character_context == CHARACTER_CONTEXT_LEDGE) {
         owner->pad->buttons_pressed |= GAMEPAD_JUMP;
     }
     flags = packet->path_info.connection->traversal_flags[packet->path_info.direction];
     if (flags != 0 && (flags & 0x40000000) == 0) {
         capabilities = flags & packet->capabilities;
         if ((flags & 0x8000) != 0 && (owner->character_data->game_character->flags_090 & 0x40) == 0 && owner->takeover_target == NULL &&
-            owner->character_context != 0x3c && (capabilities & 0xffff7fff) == 0) {
+            owner->character_context != CHARACTER_CONTEXT_GET_IN && (capabilities & 0xffff7fff) == 0) {
             AIScriptSetBaseScriptStateByName(&apiobject->ai->script_processor, "TakeOverJump");
             return 1;
         }
@@ -645,8 +645,8 @@ check:
         NuVecScale(&offset, &offset, radius / packet->path_info.connection->horizontal_distance);
         NuVecAdd(&packet->movement_destination, &source->position, &offset);
         distance = NuVecXZDistSqr(&object->position, &packet->movement_destination, &offset);
-        if (checks != 0 &&
-            (distance < ai_moveradius * ai_moveradius || owner->respawn_timer > jump_stuck_time || owner->character_context == 0x44)) {
+        if (checks != 0 && (distance < ai_moveradius * ai_moveradius || owner->respawn_timer > jump_stuck_time ||
+                            owner->character_context == CHARACTER_CONTEXT_TIGHTROPE)) {
             ready = 1;
             packet->movement_destination = object->position;
         }

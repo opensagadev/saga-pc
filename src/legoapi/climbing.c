@@ -81,7 +81,7 @@ void LedgeTerrain_MoveCode(GAMEOBJECT *object) {
             return;
         }
         if ((object->unknown_281 & 2) != 0) {
-            object->character_context = -1;
+            object->character_context = CHARACTER_CONTEXT_NONE;
             return;
         }
         if (object->unknown_7b3 != 0 || object->unknown_7aa != LEGOACT_LEDGE_GRAB ||
@@ -106,7 +106,7 @@ void LedgeTerrain_MoveCode(GAMEOBJECT *object) {
         } else {
             object->context_duration -= FRAMETIME;
             if (object->context_duration <= 0.0f) {
-                object->character_context = -1;
+                object->character_context = CHARACTER_CONTEXT_NONE;
                 return;
             }
             travelled = 0.0f;
@@ -170,7 +170,8 @@ void LedgeTerrain_MoveCode(GAMEOBJECT *object) {
     if (LedgeTerrain_CheckAnims != 0 && (LEGOACT_LEDGE_IDLE == -1 || object->character_model->model_data_b[LEGOACT_LEDGE_IDLE] == NULL)) {
         return;
     }
-    if (object->character_context != -1 && !(LEGOCONTEXT_CLIMB != -1 && object->character_context == LEGOCONTEXT_CLIMB) &&
+    if (object->character_context != CHARACTER_CONTEXT_NONE &&
+        !(LEGOCONTEXT_CLIMB != -1 && object->character_context == LEGOCONTEXT_CLIMB) &&
         !(LEGOCONTEXT_JUMP != -1 && object->character_context == LEGOCONTEXT_JUMP && object->context_timer >= (f64)0.1f)) {
         return;
     }
@@ -265,10 +266,10 @@ void Climb_MoveCode(GAMEOBJECT *object) {
         }
         input_angle = GamePad_InputAngle(object, object->pad);
         if ((object->unknown_281 & 2) != 0 && object->jump_animation_state == object->context_variant) {
-            object->character_context = -1;
+            object->character_context = CHARACTER_CONTEXT_NONE;
         } else if ((object->unknown_281 & 2) != 0 && object->jump_animation_state != object->context_variant &&
                    object->pad->input_magnitude > 0.0f && PushingTowardsAngle(input_angle, object->movement_facing_angle) < 0.0f) {
-            object->character_context = -1;
+            object->character_context = CHARACTER_CONTEXT_NONE;
         } else if (object->contact_count != 0 && object->contact_material[0] == object->context_variant) {
             object->context_duration = 0.25f;
             object->movement_facing_angle =
@@ -279,7 +280,7 @@ void Climb_MoveCode(GAMEOBJECT *object) {
         } else {
             object->context_duration -= FRAMETIME;
             if (object->context_duration <= 0.0f) {
-                object->character_context = -1;
+                object->character_context = CHARACTER_CONTEXT_NONE;
             }
         }
         if (object->character_context != LEGOCONTEXT_CLIMB) {
@@ -318,7 +319,7 @@ void Climb_MoveCode(GAMEOBJECT *object) {
         NUVEC forward;
         f32 x;
         f32 z;
-        if (object->character_context == -1) {
+        if (object->character_context == CHARACTER_CONTEXT_NONE) {
             goto enter_climb;
         }
         if (ZipUpWallShuffleContext != -1 && object->character_context == ZipUpWallShuffleContext) {
@@ -413,16 +414,16 @@ void Hang_MoveCode(GAMEOBJECT *object) {
     if (object->character_context == LEGOCONTEXT_HANG) {
         if ((object->pad->buttons_pressed & GAMEPAD_JUMP) != 0 && object->context_variant != 5) {
             object->velocity.y = 0.0f;
-            object->character_context = -1;
+            object->character_context = CHARACTER_CONTEXT_NONE;
             return;
         }
         if (object->unknown_281 != 0) {
-            object->character_context = -1;
+            object->character_context = CHARACTER_CONTEXT_NONE;
             return;
         }
         variant = object->context_variant;
         if ((u8)object->roof_surface_id != variant) {
-            object->character_context = -1;
+            object->character_context = CHARACTER_CONTEXT_NONE;
             object->velocity.y = 0.0f;
             return;
         }
@@ -436,7 +437,7 @@ void Hang_MoveCode(GAMEOBJECT *object) {
         } else {
             object->context_duration -= FRAMETIME;
             if (object->context_duration <= 0.0f) {
-                object->character_context = -1;
+                object->character_context = CHARACTER_CONTEXT_NONE;
             }
         }
         return;
@@ -445,7 +446,8 @@ void Hang_MoveCode(GAMEOBJECT *object) {
         !(object->contact_normal.y < -NuTrigTable[0x3000])) {
         return;
     }
-    if (object->character_context != -1 && !(LEGOCONTEXT_CLIMB != -1 && object->character_context == LEGOCONTEXT_CLIMB) &&
+    if (object->character_context != CHARACTER_CONTEXT_NONE &&
+        !(LEGOCONTEXT_CLIMB != -1 && object->character_context == LEGOCONTEXT_CLIMB) &&
         !(LEGOCONTEXT_JUMP != -1 && object->character_context == LEGOCONTEXT_JUMP && object->context_timer >= (f64)0.1f)) {
         return;
     }

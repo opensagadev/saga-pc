@@ -401,7 +401,7 @@ void SuperCarry_MoveCode(WORLDINFO *world, struct gameobject_s *object) {
                 }
                 object->context_timer -= FRAMETIME;
                 if (object->context_timer <= 0.0f) {
-                    object->character_context = -1;
+                    object->character_context = CHARACTER_CONTEXT_NONE;
                     if ((object->context_variant_flags & 0x40) == 0) {
                         event = 1;
                     }
@@ -474,7 +474,7 @@ void SuperCarry_MoveCode(WORLDINFO *world, struct gameobject_s *object) {
                                     object->context_timer = 0.5f;
                                 }
                             } else {
-                                object->character_context = -1;
+                                object->character_context = CHARACTER_CONTEXT_NONE;
                                 object->flags_e20 |= 0x800000;
                                 NewRumble(object->pad->bound_pad, 0.6f, 0);
                             }
@@ -526,7 +526,7 @@ void SuperCarry_MoveCode(WORLDINFO *world, struct gameobject_s *object) {
             case 4: {
                 i32 event;
                 if (object->context_timer <= 0.0f && (object->context_variant_flags & 0x40) != 0) {
-                    object->character_context = -1;
+                    object->character_context = CHARACTER_CONTEXT_NONE;
                     return;
                 }
                 event = 0;
@@ -541,7 +541,7 @@ void SuperCarry_MoveCode(WORLDINFO *world, struct gameobject_s *object) {
                     if ((object->context_variant_flags & 0x40) == 0) {
                         event = 1;
                     } else {
-                        object->character_context = -1;
+                        object->character_context = CHARACTER_CONTEXT_NONE;
                     }
                 }
                 if (!event) {
@@ -555,7 +555,7 @@ void SuperCarry_MoveCode(WORLDINFO *world, struct gameobject_s *object) {
             case 5: {
                 i32 event;
                 if (object->context_timer <= 0.0f && (object->context_variant_flags & 0x40) != 0) {
-                    object->character_context = -1;
+                    object->character_context = CHARACTER_CONTEXT_NONE;
                     return;
                 }
                 event = 0;
@@ -570,7 +570,7 @@ void SuperCarry_MoveCode(WORLDINFO *world, struct gameobject_s *object) {
                     if ((object->context_variant_flags & 0x40) == 0) {
                         event = 1;
                     } else {
-                        object->character_context = -1;
+                        object->character_context = CHARACTER_CONTEXT_NONE;
                     }
                 }
                 if (!event) {
@@ -579,7 +579,7 @@ void SuperCarry_MoveCode(WORLDINFO *world, struct gameobject_s *object) {
                 object->context_variant_flags |= 0x40;
                 if (ObjOpponentStillThere(object, object->force_target, PUNCHGAP)) {
                     ObjHitObj(object, object->force_target, 1, 0x2000, 0, 1);
-                } else if (object->character_context != -1 && object->context_timer > 0.0f) {
+                } else if (object->character_context != CHARACTER_CONTEXT_NONE && object->context_timer > 0.0f) {
                     object->context_variant_flags &= ~0x40u;
                 }
                 if ((object->context_variant_flags & 0x40) != 0) {
@@ -774,7 +774,7 @@ void SuperCarry_Release(GAMEOBJECT *object) {
     if (LEGOCONTEXT_SUPERCARRY != -1 && object->character_context == LEGOCONTEXT_SUPERCARRY &&
         (object->unknown_7b3 == 2 || object->unknown_7b3 == 3 || object->unknown_7b3 == 6)) {
         SuperCarry_Throw(object, 1);
-        object->character_context = -1;
+        object->character_context = CHARACTER_CONTEXT_NONE;
     }
 }
 

@@ -3296,7 +3296,7 @@ extern "C" void Hub_Update(WORLDINFO *world) {
             GIZMO_PC *gizmo = (GIZMO_PC *)HubAreaInfo[i].bonus_gizmo;
             if (gizmo != NULL && GizmoGetOutput(world->gizmo_sys, gizmo, 0, 0) == 0) {
                 GAMEOBJECT *player = Player[0];
-                if (player != NULL && (player->flags_1fc & 0x80) != 0 && player->character_context != 0x2d) {
+                if (player != NULL && (player->flags_1fc & 0x80) != 0 && player->character_context != CHARACTER_CONTEXT_BUILD_IT) {
                     gizmo = (GIZMO_PC *)HubAreaInfo[i].bonus_gizmo;
                     GIZBUILDIT *buildit = (GIZBUILDIT *)gizmo->object;
                     if ((buildit->availability_flags & 4) != 0 || (nearest != NULL && nearest == buildit)) {
@@ -3309,7 +3309,7 @@ extern "C" void Hub_Update(WORLDINFO *world) {
             if (selected == -1 && GizmoGetOutput(world->gizmo_sys, LevGizmo[0], 0, 0) == 0) {
                 GAMEOBJECT *player = Player[0];
                 GIZBUILDIT *buildit = (GIZBUILDIT *)HubBuildIt;
-                if (player != NULL && (player->flags_1fc & 0x80) != 0 && player->character_context != 0x2d &&
+                if (player != NULL && (player->flags_1fc & 0x80) != 0 && player->character_context != CHARACTER_CONTEXT_BUILD_IT &&
                     ((buildit->availability_flags & 4) != 0 || (nearest != NULL && nearest == buildit))) {
                     selected = 999;
                 }
@@ -4028,7 +4028,7 @@ extern "C" {
         NuVecNorm(&owner->special_move_look_position, &owner->special_move_look_position);
         NuVecAdd(&owner->special_move_look_position, &owner->special_move_look_position, &destination->position);
         packet->movement_look_target = &owner->special_move_look_position;
-        if (owner->character_context == 0x5b || owner->character_context == 0x55) {
+        if (owner->character_context == CHARACTER_CONTEXT_LEDGE || owner->character_context == CHARACTER_CONTEXT_LEDGE_TERRAIN) {
             owner->pad->buttons_pressed |= GAMEPAD_JUMP;
         } else {
             owner->flags_ef4 |= 0x8000;
@@ -4056,7 +4056,8 @@ extern "C" {
             (skip_inside == 0 &&
              owner->ai_packet.inside_path_node == owner->ai_packet.special_move_node - owner->ai_packet.path_info.path->nodes)) {
             ClearSpecialMove(owner);
-        } else if (owner->character_context != 0 && owner->character_context != 0x5b && owner->character_context != 0x55 &&
+        } else if (owner->character_context != CHARACTER_CONTEXT_JUMP && owner->character_context != CHARACTER_CONTEXT_LEDGE &&
+                   owner->character_context != CHARACTER_CONTEXT_LEDGE_TERRAIN &&
                    (owner->position.y < owner->ai_packet.special_move_node->min_height ||
                     (packet->path_info.connection->traversal_flags[packet->path_info.direction] & 0x80000000) != 0 ||
                     owner->special_move_timer < -5.0f)) {
@@ -4115,7 +4116,7 @@ extern "C" {
             SetSpecialMove(owner, owner->ai_packet.special_move_node, NULL, 0);
             return 1;
         }
-        if (owner->character_context == 0x43) {
+        if (owner->character_context == CHARACTER_CONTEXT_CLIMB) {
             guide = GuideLine_FindNearest(&owner->upper_position, WORLD, &endpoint, &distance);
             if (guide != NULL && (f64)distance < (f64)0.2f &&
                 !(owner->indy_guideline_state.endpoint == -1 && owner->indy_guideline_state.guideline == guide)) {
@@ -4165,7 +4166,7 @@ extern "C" {
             ClearSpecialMove(owner);
             return 0;
         }
-        if (owner->character_context == 0x43) {
+        if (owner->character_context == CHARACTER_CONTEXT_CLIMB) {
             guide = GuideLine_FindNearest(&owner->upper_position, WORLD, &endpoint, &distance);
             if (guide != NULL && (f64)distance < (f64)0.2f &&
                 !(owner->indy_guideline_state.endpoint == -1 && owner->indy_guideline_state.guideline == guide)) {
@@ -4298,7 +4299,7 @@ extern "C" {
             SetSpecialMove(owner, owner->ai_packet.special_move_node, owner->special_move_source, 7);
             return 1;
         }
-        if (owner->special_move_timer < -1.0f && owner->character_context != 0) {
+        if (owner->special_move_timer < -1.0f && owner->character_context != CHARACTER_CONTEXT_JUMP) {
             ClearSpecialMove(owner);
             return 0;
         }
@@ -4308,7 +4309,7 @@ extern "C" {
         }
         owner->ai_packet.movement_destination = grapple->ground_position;
         owner->ai_packet.movement_stopping_distance = 0;
-        if (owner->character_context != 0) {
+        if (owner->character_context != CHARACTER_CONTEXT_JUMP) {
             owner->pad->buttons_pressed |= GAMEPAD_JUMP;
         }
         return 1;
@@ -4373,7 +4374,7 @@ extern "C" {
         GameObjectSetCanUse(owner, grapple, 1, 0x32, 0.0f);
         owner->ai_packet.movement_destination = owner->ai_packet.special_move_node->position;
         owner->ai_packet.movement_stopping_distance = 0;
-        if (owner->character_context == 0) {
+        if (owner->character_context == CHARACTER_CONTEXT_JUMP) {
             SetSpecialMove(owner, owner->ai_packet.special_move_node, NULL, 0);
             GameObjectSetCanUse(owner, NULL, 0, 0, 0.0f);
             return 1;
@@ -4397,7 +4398,7 @@ extern "C" {
 
     i32 Indy_MidSpecialMove_SwingPc(AISYS_PC *system, AIPACKET *packet, APIOBJECT *object) {
         GAMEOBJECT *owner = object->owner;
-        if (owner->character_context == 0x46) {
+        if (owner->character_context == CHARACTER_CONTEXT_GRAPPLE) {
             if (owner->ai_packet.special_move_node->position.y > owner->special_move_source->position.y) {
                 if (IndyGrappleCanJump(owner)) {
                     owner->ai_packet.movement_destination = owner->ai_packet.special_move_node->position;
@@ -4428,7 +4429,7 @@ extern "C" {
 
     i32 Indy_MidSpecialMove_StartJump(AISYS_PC *system, AIPACKET *packet, APIOBJECT *object) {
         GAMEOBJECT *owner = object->owner;
-        if (owner->character_context == 0) {
+        if (owner->character_context == CHARACTER_CONTEXT_JUMP) {
             SetSpecialMove(owner, owner->ai_packet.special_move_node, NULL, 0);
             owner->ai_packet.movement_destination = owner->ai_packet.special_move_node->position;
             owner->ai_packet.movement_stopping_distance = 0.0f;
@@ -4500,8 +4501,8 @@ extern "C" {
             NuVecScale(&offset, &offset, radius / packet->path_info.connection->horizontal_distance);
             NuVecAdd(&packet->movement_destination, &source->position, &offset);
             distance = NuVecXZDistSqr(&object->position, &packet->movement_destination, &offset);
-            if (checks != 0 &&
-                (distance < ai_moveradius * ai_moveradius || owner->respawn_timer > jump_stuck_time || owner->character_context == 0x44)) {
+            if (checks != 0 && (distance < ai_moveradius * ai_moveradius || owner->respawn_timer > jump_stuck_time ||
+                                owner->character_context == CHARACTER_CONTEXT_TIGHTROPE)) {
                 ready = 1;
                 packet->movement_destination = object->position;
             }
@@ -4655,7 +4656,7 @@ extern "C" {
 
     i32 Indy_MidSpecialMove_BigJump(AISYS_PC *system, AIPACKET *packet, APIOBJECT *object) {
         GAMEOBJECT *owner = object->owner;
-        if (owner->character_context == 0x1f) {
+        if (owner->character_context == CHARACTER_CONTEXT_BIG_JUMP) {
             owner->launch_origin = owner->ai_packet.special_move_node->position;
             ((GAMEOBJECT *)object)->ai_collision_priority |= 0x4000;
             return 1;
@@ -4744,7 +4745,7 @@ extern "C" {
         owner = object->owner;
         if (owner->special_move_timer <= 0.0f) {
             destination = &packet->path_info.path->nodes[packet->path_info.connection->node_indices[packet->path_info.direction == 0]];
-            if (owner->character_context == 0x47) {
+            if (owner->character_context == CHARACTER_CONTEXT_ZIP_UP) {
                 packet->movement_destination = destination->position;
                 packet->movement_stopping_distance = 0.0f;
                 SetSpecialMove(owner, destination, NULL, 9);
@@ -4775,7 +4776,7 @@ extern "C" {
         GAMEOBJECT *owner = object->owner;
         switch ((i8)owner->unknown_1087) {
             case 0:
-                if (owner->character_context == 0x47) {
+                if (owner->character_context == CHARACTER_CONTEXT_ZIP_UP) {
                     owner->ai_packet.movement_destination = owner->ai_packet.special_move_node->position;
                     owner->ai_packet.movement_stopping_distance = 0.0f;
                     ((GAMEOBJECT *)object)->ai_collision_priority |= 0x4000;
@@ -4812,7 +4813,7 @@ extern "C" {
         INDY_PREPARE_SPECIAL_MOVE *entry;
         u32 flags;
         u32 capabilities;
-        if (owner->character_context == 0x5b) {
+        if (owner->character_context == CHARACTER_CONTEXT_LEDGE) {
             owner->pad->buttons_pressed |= GAMEPAD_JUMP;
         }
         flags = packet->path_info.connection->traversal_flags[packet->path_info.direction];

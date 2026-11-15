@@ -312,7 +312,7 @@ static i32 GrabberFindShadow(NUVEC *position, GRABBER_PC *grabber) {
 }
 
 static void GrabberGrabVictim(GAMEOBJECT *victim) {
-    victim->character_context = 0x2f;
+    victim->character_context = CHARACTER_CONTEXT_GRABBED;
     victim->unknown_7aa = 0x68;
     if (victim->character_model->model_data_b[104] == NULL) {
         victim->unknown_7aa = 5;
@@ -531,7 +531,7 @@ void Grabber_Reset(WORLDINFO *world) {
     grabber->state = 0;
     if (grabber->victim != NULL) {
         Grabber_SetVictimPos(grabber);
-        grabber->victim->character_context = -1;
+        grabber->victim->character_context = CHARACTER_CONTEXT_NONE;
     }
     grabber->victim = NULL;
     grabber->carried_blowup = NULL;
@@ -565,7 +565,7 @@ void Grabber_Drop(GRABBER_PC *grabber, NUVEC *previous) {
             grabber->victim->velocity.y = -1.0f;
         }
         grabber->victim->velocity.z = (grabber->grab_position.z - previous->z) / FRAMETIME * 0.5f;
-        grabber->victim->character_context = -1;
+        grabber->victim->character_context = CHARACTER_CONTEXT_NONE;
         grabber->victim = NULL;
     } else if (grabber->carried_blowup != NULL) {
         params = Default_ADDPART;

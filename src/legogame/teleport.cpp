@@ -426,7 +426,7 @@ extern "C" void Teleports_UpdateAfterGameObjects(WORLDINFO *world) {
 }
 
 extern "C" void Teleport_NetMoveCode(GAMEOBJECT *object) {
-    if (object->character_context != 15 || object->unknown_7b3 != 0) {
+    if (object->character_context != CHARACTER_CONTEXT_TELEPORT || object->unknown_7b3 != 0) {
         return;
     }
     i32 rotation = (object->context_variant_flags & 0x400) != 0 ? 0x4000 : 0xc000;
@@ -452,7 +452,7 @@ extern "C" void Teleport_MoveCode(GAMEOBJECT *object, i32 start_immediately) {
     if ((object->character_data->model_flags & 0x40000) == 0 && SuperWeirdo(object) == 0) {
         return;
     }
-    if (object->character_context == 15) {
+    if (object->character_context == CHARACTER_CONTEXT_TELEPORT) {
         if (object->unknown_7b3 == 0) {
             i32 first_rotation = (object->context_variant_flags & 0x400) != 0 ? 0x4000 : 0xc000;
             for (i32 i = 0; i < 2; ++i) {
@@ -477,7 +477,7 @@ extern "C" void Teleport_MoveCode(GAMEOBJECT *object, i32 start_immediately) {
                     CurrentAnim(&object->anim_packet) == object->unknown_7aa) {
                     object->context_timer -= FRAMETIME;
                     if (object->context_timer <= 0.0f) {
-                        object->character_context = -1;
+                        object->character_context = CHARACTER_CONTEXT_NONE;
                         object->context_timer = 0.0f;
                         ((TELEPORT_MOTION *)object->grapple)->active = 0;
                         completed = 1;
@@ -517,7 +517,7 @@ extern "C" void Teleport_MoveCode(GAMEOBJECT *object, i32 start_immediately) {
                     return;
                 }
                 object->big_jump_animation = 1;
-                object->character_context = 15;
+                object->character_context = CHARACTER_CONTEXT_TELEPORT;
                 object->unknown_7b3 = 1;
                 object->context_timer = 2.0f;
                 object->start_position = teleport->path->pts[(object->context_variant_flags & 0x400) != 0 ? 1 : 2];
@@ -574,8 +574,9 @@ extern "C" void Teleport_MoveCode(GAMEOBJECT *object, i32 start_immediately) {
         if (object->unknown_281 == 0 || object->dead != 0) {
             return;
         }
-        if (object->character_context != -1 && object->character_context != 1 && object->character_context != 2 &&
-            object->character_context != 3 && object->character_context != 4 && objInNetWaitContext(object, 15) == 0) {
+        if (object->character_context != CHARACTER_CONTEXT_NONE && object->character_context != CHARACTER_CONTEXT_LAND_JUMP &&
+            object->character_context != CHARACTER_CONTEXT_LAND_JUMP_2 && object->character_context != CHARACTER_CONTEXT_LAND_FLIP &&
+            object->character_context != CHARACTER_CONTEXT_LAND_COMBO_JUMP && objInNetWaitContext(object, 15) == 0) {
             return;
         }
         if (!(object->flags_1fc & 0x80) && object->unknown_f00 != 3) {
@@ -588,7 +589,7 @@ extern "C" void Teleport_MoveCode(GAMEOBJECT *object, i32 start_immediately) {
         if (objInNetWaitContext(object, 15) != 0) {
             object->context_timer -= FRAMETIME;
             if (object->context_timer <= 0.0f) {
-                object->character_context = -1;
+                object->character_context = CHARACTER_CONTEXT_NONE;
                 ((TELEPORT_NET_WAIT_VIEW *)object)->net_wait_info = NULL;
             }
         }
@@ -598,7 +599,7 @@ extern "C" void Teleport_MoveCode(GAMEOBJECT *object, i32 start_immediately) {
             }
             return;
         }
-        object->character_context = 15;
+        object->character_context = CHARACTER_CONTEXT_TELEPORT;
         object->grapple = teleport;
         teleport->active = 1;
         ((TELEPORT_VARIANT_VIEW *)object)->forwards = FindTeleport_Direction == 0;

@@ -177,10 +177,11 @@ void PushCode(GAMEOBJECT *object, i32 allow_push) {
                 if (LEGOCONTEXT_PUSHOBSTACLE != -1 && object->character_context == LEGOCONTEXT_PUSHOBSTACLE) {
                     GameCam_Blend(NULL, 0.5f, 0.0f, 1);
                 }
-                object->character_context = -1;
+                object->character_context = CHARACTER_CONTEXT_NONE;
             }
         }
-    } else if ((object->unknown_281 != 0 || GameObjectNearFloor(object, 1.25f, NULL) != 0) && object->character_context == -1 &&
+    } else if ((object->unknown_281 != 0 || GameObjectNearFloor(object, 1.25f, NULL) != 0) &&
+               object->character_context == CHARACTER_CONTEXT_NONE &&
                (allow_push == 0 || (LEGOACT_PUSH != -1 && object->character_model->model_data_b[LEGOACT_PUSH] != NULL))) {
         if (((PART_RELEASE_PUSH *)object)->push_timer >= 0.25f) {
             i32 push_surface = surface;
@@ -225,7 +226,7 @@ void PushCode(GAMEOBJECT *object, i32 allow_push) {
             } else {
                 object->character_context = LEGOCONTEXT_PUSH;
             }
-            if (object->character_context != -1) {
+            if (object->character_context != CHARACTER_CONTEXT_NONE) {
                 object->unknown_7aa = LEGOACT_PUSH;
                 SetPushAngle(object);
             }
@@ -313,7 +314,7 @@ void PushCode(GAMEOBJECT *object, i32 allow_push) {
             ((PUSH_OBJECT_LOCAL *)object)->obstacle_timer -= FRAMETIME;
             if (((PUSH_OBJECT_LOCAL *)object)->obstacle_timer <= 0.0f) {
                 GameCam_Blend(NULL, 0.5f, 0.0f, 1);
-                object->character_context = -1;
+                object->character_context = CHARACTER_CONTEXT_NONE;
                 return;
             }
         }
@@ -341,7 +342,7 @@ void PushCode(GAMEOBJECT *object, i32 allow_push) {
                 object->character_context = ZipUpWallShuffleContext;
                 object->unknown_7aa = LEGOACT_WALLSHUFFLE_IDLE;
             } else {
-                object->character_context = -1;
+                object->character_context = CHARACTER_CONTEXT_NONE;
             }
         }
     }
@@ -399,6 +400,6 @@ void ReleasePush(GAMEOBJECT *object) {
             GameCam_Blend(NULL, 0.5f, 0.0f, 1);
         }
         ((PART_RELEASE_PUSH *)object)->push_timer = 0.0f;
-        object->character_context = -1;
+        object->character_context = CHARACTER_CONTEXT_NONE;
     }
 }

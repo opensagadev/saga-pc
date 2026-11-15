@@ -162,7 +162,7 @@ i32 SpecialMove_ReleaseVictim(GAMEOBJECT *object) {
     }
     victim = object->force_target;
     if (victim != NULL) {
-        victim->character_context = -1;
+        victim->character_context = CHARACTER_CONTEXT_NONE;
     }
     return 1;
 }
@@ -172,12 +172,12 @@ void SpecialMove_Cancel(GAMEOBJECT *object) {
     if ((LEGOCONTEXT_SPECIALMOVE_ATTACKER != -1 && object->character_context == LEGOCONTEXT_SPECIALMOVE_ATTACKER &&
          object->special_move_pc != -1) ||
         (LEGOCONTEXT_SPECIALMOVE_VICTIM != -1 && object->character_context == LEGOCONTEXT_SPECIALMOVE_VICTIM)) {
-        object->character_context = -1;
+        object->character_context = CHARACTER_CONTEXT_NONE;
         other = object->force_target;
         if (other != NULL && ((LEGOCONTEXT_SPECIALMOVE_ATTACKER != -1 && other->character_context == LEGOCONTEXT_SPECIALMOVE_ATTACKER &&
                                other->special_move_pc != -1) ||
                               (LEGOCONTEXT_SPECIALMOVE_VICTIM != -1 && other->character_context == LEGOCONTEXT_SPECIALMOVE_VICTIM))) {
-            other->character_context = -1;
+            other->character_context = CHARACTER_CONTEXT_NONE;
         }
     }
 }
@@ -185,12 +185,12 @@ void SpecialMove_Cancel(GAMEOBJECT *object) {
 void SpecialMove_VictimCode(GAMEOBJECT *object) {
     if (LEGOCONTEXT_SPECIALMOVE_VICTIM != -1 && object->character_context == LEGOCONTEXT_SPECIALMOVE_VICTIM) {
         if (object->force_target == NULL) {
-            object->character_context = -1;
+            object->character_context = CHARACTER_CONTEXT_NONE;
             return;
         }
         object->context_timer -= FRAMETIME;
         if (object->context_timer <= 0.0f) {
-            object->character_context = -1;
+            object->character_context = CHARACTER_CONTEXT_NONE;
             if (SpecialMove_GetFlags(object->special_move_pc, 2) != 0) {
                 SpecialMove_KillVictim(object);
             }

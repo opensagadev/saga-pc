@@ -449,7 +449,7 @@ void ZipUp_MoveCode(GAMEOBJECT *object, i32 special_pressed) {
     NUVEC end_offset;
 
     transport = (ZIPUP_TRANSPORT_VIEW *)object;
-    if (object->character_context == 0x47) {
+    if (object->character_context == CHARACTER_CONTEXT_ZIP_UP) {
         if (object->action_movement_state == 1) {
             NUVEC delta;
             f32 *playing;
@@ -522,7 +522,7 @@ void ZipUp_MoveCode(GAMEOBJECT *object, i32 special_pressed) {
                         object->velocity.x = 0.0f;
                         object->velocity.y = -2.0f;
                         object->velocity.z = 0.0f;
-                        object->character_context = -1;
+                        object->character_context = CHARACTER_CONTEXT_NONE;
                         StartFallLand(object, BigJumpLandFallback);
                     }
                     break;
@@ -555,7 +555,7 @@ void ZipUp_MoveCode(GAMEOBJECT *object, i32 special_pressed) {
         if ((zipup->flags_word & 0x40) == 0 || (zipup->flags_word & 0x80) == 0 || (zipup->flags_word & 0x100) == 0 ||
             (object->context_variant_flags & 0x20) == 0) {
             object->context_variant_flags &= ~0x20u;
-            object->character_context = -1;
+            object->character_context = CHARACTER_CONTEXT_NONE;
             zipup->flags_word &= ~0x100u;
             object->grapple = NULL;
             return;
@@ -563,7 +563,7 @@ void ZipUp_MoveCode(GAMEOBJECT *object, i32 special_pressed) {
         if ((zipup->flags_word & 1) != 0) {
             if (object->context_timer >= ZipUpSwingDurationPc) {
                 object->context_timer = 0.0f;
-                object->character_context = -1;
+                object->character_context = CHARACTER_CONTEXT_NONE;
                 ((ZIPUP_PC *)object->grapple)->occupant = NULL;
                 object->context_variant_flags &= ~0x20u;
                 ((ZIPUP_PC *)object->grapple)->flags_word &= ~0x100u;
@@ -651,7 +651,7 @@ void ZipUp_MoveCode(GAMEOBJECT *object, i32 special_pressed) {
     if (objInNetWaitContext(object, 0x47)) {
         object->context_timer -= FRAMETIME;
         if (object->context_timer <= 0.0f) {
-            object->character_context = -1;
+            object->character_context = CHARACTER_CONTEXT_NONE;
         }
     }
     if (zipup == NULL) {
@@ -667,7 +667,7 @@ void ZipUp_MoveCode(GAMEOBJECT *object, i32 special_pressed) {
         }
         Hint_SetComplete(0x262);
         object->grapple = zipup;
-        object->character_context = 0x47;
+        object->character_context = CHARACTER_CONTEXT_ZIP_UP;
         zipup->occupant = object;
         object->context_variant_flags |= 0x20;
         ((ZIPUP_PC *)object->grapple)->flags_word |= 0x100;
@@ -808,7 +808,7 @@ extern void ZipUps_Update(WORLDINFO *world, void *unused, f32 time) {
     CanDrawZipUpSwirls = AvailableToPlayer(0x100000, -1, 0, 0);
 
     for (index = 0; index < world->zipup_count; ++index, ++zipup) {
-        if (zipup->occupant != NULL && zipup->occupant->character_context == -1) {
+        if (zipup->occupant != NULL && zipup->occupant->character_context == CHARACTER_CONTEXT_NONE) {
             zipup->occupant->context_variant_flags &= ~0x20;
             zipup->flags_word &= ~0x100;
             zipup->occupant->grapple = NULL;
@@ -1292,7 +1292,7 @@ void ZipUps_DrawLines() {
 
         start = &vertices[0];
         end = &vertices[1];
-        if (object->character_context == 0x47) {
+        if (object->character_context == CHARACTER_CONTEXT_ZIP_UP) {
             if (object->action_movement_state == 0) {
                 ZipUp_GetStartPoint(object, &start->position);
                 start->colour = 0xffffffff;
@@ -1308,7 +1308,7 @@ void ZipUps_DrawLines() {
                 end->colour = 0xff808080;
                 DrawRopeSingle(&start->position, &end->position, 1.0f, ropemtl, object->context_timer, 0.2f, 3.5f, 1.0f);
             }
-        } else if (object->character_context == 0x35) {
+        } else if (object->character_context == CHARACTER_CONTEXT_ZIP_DOWN) {
             start->colour = 0xffffffff;
             end->colour = 0xff808080;
             end->position = ((ZIPUP_TRANSPORT_VIEW *)object)->entry;

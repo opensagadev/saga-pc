@@ -4,7 +4,7 @@ i32 Techno_FindOperator(void *target, GAMEPAD_PC **pad, GAMEOBJECT **operator_ob
     i32 index;
     TECHNO_PC *techno;
     for (index = 0; index < 8; ++index) {
-        if (Player[index] != NULL && Player[index]->character_context == 0x51 && Player[index]->techno != NULL) {
+        if (Player[index] != NULL && Player[index]->character_context == CHARACTER_CONTEXT_TECHNO && Player[index]->techno != NULL) {
             techno = Player[index]->techno;
             if ((techno->target_mode == 2 && NuSpecialCompare(target, techno->controlled_object) != 0) ||
                 Player[index]->techno->controlled_object == target) {
@@ -635,7 +635,7 @@ void Techno_MoveCode(WORLDINFO *world, GAMEOBJECT *object) {
     f32 distance;
     f32 range;
     f32 hint_range;
-    if (object->character_context == 0x51) {
+    if (object->character_context == CHARACTER_CONTEXT_TECHNO) {
         ((TECHNO_CALLBACK *)object->techno)->flags |= 4;
         if (object->character_model->model_data_b[object->unknown_7aa] != NULL &&
             AnimPlaying(&object->anim_packet, object->unknown_7aa, 1, 0) == NULL) {
@@ -646,7 +646,7 @@ void Techno_MoveCode(WORLDINFO *world, GAMEOBJECT *object) {
             GameCam_Blend(GameCam, 0.5f, 0.0f, 1);
             object->tag_flags |= 1;
             object->movement_facing_angle += 0x8000;
-            object->character_context = -1;
+            object->character_context = CHARACTER_CONTEXT_NONE;
             Technos_MoveTarget(object->techno, NULL);
         } else {
             Technos_MoveTarget(object->techno, object);
@@ -671,7 +671,7 @@ void Techno_MoveCode(WORLDINFO *world, GAMEOBJECT *object) {
             return;
         }
         if (Techno_isReady((TECHNO_s *)techno) != 0) {
-            object->character_context = 0x51;
+            object->character_context = CHARACTER_CONTEXT_TECHNO;
             object->context_timer = 0.0f;
             object->techno = (TECHNO_PC *)techno;
             object->unknown_7aa = 0x99;

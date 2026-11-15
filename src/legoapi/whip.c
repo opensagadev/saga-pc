@@ -87,7 +87,7 @@ void Whip_MoveCode(GAMEOBJECT *object) {
                 }
             }
             if (object->context_timer >= object->context_duration) {
-                object->character_context = -1;
+                object->character_context = CHARACTER_CONTEXT_NONE;
                 if (!(object->context_variant_flags & 0x40)) {
                     activate = 1;
                 }
@@ -115,7 +115,7 @@ void Whip_MoveCode(GAMEOBJECT *object) {
                 }
             }
         }
-        if (object->character_context == -1 && object->unknown_7b3 == 3 && object->grapple != NULL) {
+        if (object->character_context == CHARACTER_CONTEXT_NONE && object->unknown_7b3 == 3 && object->grapple != NULL) {
             SuperCarry_Start(object, object->grapple, 1);
         }
     } else {

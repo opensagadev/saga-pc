@@ -82,7 +82,7 @@ void Tube_MoveCode(GAMEOBJECT *object, WORLDINFO *world) {
     }
     if (object->character_context == LEGOCONTEXT_TUBE) {
         if (Tube_InCylinder(object, (TUBE *)object->techno, NULL, 0) == 0) {
-            object->character_context = -1;
+            object->character_context = CHARACTER_CONTEXT_NONE;
         }
         return;
     }
