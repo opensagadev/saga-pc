@@ -46,6 +46,12 @@ extern "C" {
     }
 }
 
+extern "C" {
+    u8 TextInputKeyboardOverridePc[24] = {0, 0, 0, 0, 0, 0, 0, 0, 200, 205, 208, 203, 60, 1, 28, 59, 0, 0, 0, 0, 0, 0, 0, 0};
+    i8 TextInputAxisLabelIndexPc[16] = {14, 15, 16, 17, 0, 0, 18, 19, 20, 21, 0, 0, 28, 28, 29, 29};
+    i8 TextInputButtonLabelIndexPc[11] = {24, 23, 25, 22, 26, 27, 33, 32, 30, 31, 0};
+}
+
 i32 TEXT_INPUT_MANAGER_PC::ButtonName(i32 device, i32 button, char *destination, i32 custom, i32 custom_index, i32 use_callback,
                                       i32 alternate_labels, char *delimiters) {
     i32 result = 0;
@@ -306,6 +312,10 @@ i32 TEXT_INPUT_MANAGER_PC::fun_006d9dc0(i32 device, i32 button, char *destinatio
 
 /* Append to nupad_text.cpp. Native6da3d0,51 bytes all stack cdecl. */
 extern "C" char TextInputActionLabelBufferPc[128]; /*2975970..29759ef*/
+
+extern "C" {
+    char TextInputActionLabelBufferPc[128] = {0};
+}
 
 extern "C" char *TextInputActionLabelPc(i32 device, i32 action, i32 custom, i32 custom_index) {
     ((TEXT_INPUT_MANAGER_PC *)nu_input_state)->ButtonName(device, action, TextInputActionLabelBufferPc, custom, custom_index, 1, 1, "()");

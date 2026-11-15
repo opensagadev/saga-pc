@@ -1,10 +1,49 @@
 #include "saga.h"
+TERRAIN_POLYGON_INFO *TerrainCastAuxPolygon = 0;
+f32 EShadY = 0;
+u16 TerrainCastAuxValid = 0;
+i32 cntrots = 0;
 #pragma bss_seg(".bss$TerrainCrashDataPc")
 static u8 *TerrainCrashData = 0;
 #pragma bss_seg()
+i32 edanim_cam_ax = 0;
+i32 platinrange = 0;
+struct eduimenu_s *ptlrotmenu = 0;
+struct eduimenu_s *ptlstartvelmenu = 0;
+i32 edgra_page_on[8] = {0};
+i32 edbri_page_used[8] = {0};
+i32 freedebkeyptr = 0;
+i32 edgra_instance_type = 0;
+struct eduimenu_s *ptlemitvelmenu = 0;
+NUMTL *edanim_mtl = 0;
+struct eduimenu_s *ptlreadoutmenu = 0;
+DEBRIS_PARTICLE_CHUNK_PC **freedebchunksglass = 0;
+DEBRIS_PARTICLE_CHUNK_PC **freedebchunks = 0;
+NUVEC TerrainCastAuxNormal = {0};
+struct eduimenu_s *emittimemenu = 0;
+TERRAIN_CALLBACK_LIFECYCLE PlatCallback[8] = {0};
+i32 terrhitflags = 0;
+i16 TerrImpact = 0;
+u8 TerrWallInfo = 0;
+i16 NuSound3GroupSampleIds[512] = {0};
+TERRAIN_SPHERE_PC SphereData[16] = {0};
+u16 SfxBits[100] = {0};
+TERRAIN_POLYGON_INFO *ShadRoofPoly = 0;
+struct eduimenu_s *ptldatamenu = 0;
+i32 PlatCrush = 0;
+TERRAIN_AXIS_FREEDOM_SHAPE_PC *TerrShape = 0;
+struct eduimenu_s *ptlsizemenu = 0;
+struct eduimenu_s *ptlcolmenu = 0;
+void *edgra_page_terrain[8] = {0};
+f32 GetSurfaceInfoRoofHeight = 0;
+i32 edbri_cam_ax = 0;
+TerrainQuery_s *TerI = 0;
 #pragma bss_seg(".bss$debug_index")
 static i16 debug_index = 0;
 #pragma bss_seg()
+TERRAIN_POLYGON_INFO *EShadPoly = 0;
+i32 TerrPolyObj = 0;
+u16 TerrainWaterCastIndex = 0;
 
 void TerrainSetCur(void *terrain) {
     CurrentTerrain = terrain;
@@ -1551,6 +1590,8 @@ void NuVecCheckForSNANs(NUVEC *v) {
         (normal).y = 1;                                                                                                                    \
     }
 
+i32 terraincnt = 0;
+
 void *TerrainInitEx(i32 level_num, void *buf, void *buf_end, i32 options, char *path, void *gscn, i32 scene_id, u32 max_group_indices,
                     u32 max_groups, u32 max_platforms) {
     i32 level;
@@ -2317,6 +2358,37 @@ typedef struct TERRAIN_PICKUP_SET {      // size 0xa490
 } TERRAIN_PICKUP_SET;
 
 static TERRAIN_PICKUP_SET *PickupTerr = 0;
+i32 edanim_sound_mode = 0;
+i32 edanim_sound_type = 0;
+f32 TerrainShadowHeight = 0;
+u16 TerrainRoofValid = 0;
+i32 edpp_page_used[8] = {0};
+struct eduimenu_s *namemenu = 0;
+TERRAIN_POLYGON_INFO *ScaleTerrain = 0;
+struct eduimenu_s *ptlcutoffmenu = 0;
+struct eduimenu_s *ptlvaremitmenu = 0;
+u8 TerrWallTab[4] = {0};
+i32 freeDmaDebType = 0;
+i32 PlatSkinMaxStore = 0;
+u8 *PlatSkinMem = 0;
+EDPP_PARTICLE_PC edpp_ptls[512] = {0};
+TERRAIN_WALL_POINT *WallSplList = 0;
+u16 NuTerrPlatsOff = 0;
+struct eduimenu_s *edptl_damage_menu = 0;
+i32 edbri_cam_ay = 0;
+i32 plathitid = 0;
+i32 edanim_cam_ay = 0;
+u8 debris_object_switches[128] = {0};
+TERRAIN_POLYGON_INFO *ShadPoly = 0;
+i16 TerrainShadowFloorIndex = 0;
+i32 edgra_cam_ax = 0;
+DEBRIS_CHUNK_CONTROL_PC *debris_chunk_control_stack[2] = {0};
+u32 TerrainUpadteCnt = 0;
+i32 PlatSkinMaxSize = 0;
+i32 edgra_page_calculate_done[8] = {0};
+i32 edpp_cam_ay = 0;
+NUVEC TerrainRoofNormal = {0};
+NUGSCN *edbri_page_scene[8] = {0};
 
 i32 ReadTerrainPickup(unsigned char *base_path, i16 **buffer, TERRAIN_PICKUP_SET *terrain) {
     char path[100];
@@ -3055,8 +3127,34 @@ void DrawWallSpline(f32 height) {
 }
 
 static i32 TerrainSkinInfoCapacity = 0;
+NUVEC4 tertempvec4 = {0};
+i32 edgra_nearest = 0;
+i32 SfxRefCounts[1601] = {0};
+i32 edgra_clump_size = 0;
+i32 edpp_snap_enabled = 0;
+i32 edanim_nearest = 0;
+DEBRIS_CHUNK_CONTROL_PC **freechunkcontrols = 0;
+struct eduimenu_s *ptlgravmenu = 0;
+i16 TerrainRoofIndex = 0;
+i32 edpp_cam_ax = 0;
+i32 edpp_nearest = 0;
+NUVEC TerrWallNorm = {0};
+EDBITS_GAME_SOUND edbitsGameSound[320] = {0};
+i32 WallSplCount = 0;
+NUVEC edbri_cam_pos = {0};
+i32 edanim_particle_type = 0;
+i32 edpp_copy_source[8] = {0};
+struct eduimenu_s *effectlistmenu = 0;
 static u8 *TerrainSkinArenaEnd = 0;
+i32 PlatSkinCnt = 0;
+i16 TerrainCastAuxIndex = 0;
+struct TERRAIN_SKIN_INFO *PlatSkinInfo = 0;
+i32 PlatCodeCallback = 0;
 static i32 TerrainSkinOriginalGroupCount = -1;
+i32 TerrPlatDis = -1;
+f32 TerConTol = 0.1f;
+f32 TerrPlatScanDist = 10.0f;
+i32 SkinFlipTab[8] = {0, 1, 2, 3, 0, 2, 1, 3};
 /* This preparation updates group bounds/radius, leaving the copied polygon
  * and batch bounds intact. */
 #define TERRAIN_SKIN_BOUND(value, lo, hi)                                                                                                  \

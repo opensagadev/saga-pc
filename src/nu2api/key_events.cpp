@@ -27,6 +27,10 @@ extern "C" i32 QueueKeyPress(i32 scan_code, i32 modifiers) {
     return 0;
 }
 
+extern "C" {
+    u8 PcPressedScanCodes[256] = {0};
+}
+
 extern "C" void PcKeyDown(i32 scan_code) {
     PcPressedScanCodes[scan_code] = 1;
     i32 modifiers = 0;

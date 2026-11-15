@@ -183,3 +183,5 @@ config/oddscan-budget.json magic-state 8742 see magic-flag 7685
 config/oddscan-budget.json view-use 743 see magic-flag 7685 (existing view locals now visible to the textual scan)
 config/declscan-budget.json A 185 moved data definitions: a unit's own extern of a global that data.cpp defined (class D) now repeats the definition moved into the unit
 config/declscan-budget.json C 425 moved data definitions: a unit's own extern of a global that data.cpp defined (class D) now forward-declares the definition moved into the unit
+config/declscan-budget.json A 217 moved data definitions: a unit's own extern of a global that data.cpp defined (class D) now repeats the definition moved into the unit
+config/declscan-budget.json C 450 moved data definitions: a unit's own extern of a global that data.cpp defined (class D) now forward-declares the definition moved into the unit

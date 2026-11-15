@@ -318,6 +318,10 @@ extern "C" void NuSound3PauseStereoStream(i32 index) {
     NuSound3StereoStreams[index]->Pause();
 }
 
+extern "C" {
+    i32 NuSound3VolumeOffset = -300;
+}
+
 extern "C" i32 NuSound3SetStreamVolume(i32 index, i32 volume) {
     if (index != 0) {
         index = 1;

@@ -37,6 +37,11 @@ class OggReader : public WavReader { // size 0x338
 
 #pragma pack(pop)
 
+extern "C" {
+    struct PC_OGG_CACHE_RECORD *PCOggCachePool = 0;
+    i32 PCOggCriticalSection = 0;
+}
+
 OggReader::OggReader(void) {
     compressed = 0;
     cache = NULL;

@@ -1,5 +1,9 @@
 #include "saga.h"
 
+i32 NuWindMaxMatsPC = 0;
+i32 NuWindMaxGroupsPC = 0;
+PC_NUWINDGROUP *NuWindGroup = 0;
+
 void NuWindSetup(VARIPTR *buffer, VARIPTR end, i32 matrix_count, i32 group_count) {
     NuWindMaxMatsPC = matrix_count;
     NuWindMaxGroupsPC = group_count;
@@ -289,6 +293,8 @@ void NuWindUpdate(NUVEC *wind) {
     winds[0] = wind;
     NuWindUpdateArray(winds);
 }
+
+PC_NUWINDGROUP *NuWindCurGrp = 0;
 
 void NuWindDraw(void) {
     i32 instance;

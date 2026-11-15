@@ -5,6 +5,7 @@
 #include <string.h>
 
 static char *NuFParBufferBase = 0;
+void (*fnInterpreterError)(NUFPAR_PC *parser) = 0;
 static NUFPAR_PC *NuFParRecordBase = 0;
 
 typedef struct numemblklink_s {  // size 0x4
@@ -24,6 +25,7 @@ static i32 decode_buffer_pos = 0;
 static u8 decode_buffer[262144] = {0};
 static u8 read_buffer[0x40000] = {0};
 i32 read_buffer_size = 0;
+i32 NuApiTextLine = 0;
 static i32 read_buffer_decoded_size = 0;
 
 extern NUFILE_DEVICE enum_devices[16];
@@ -139,6 +141,9 @@ static FRAME_PAD_RAMP_PC FramePadRampValuesPc[5] = {
     {0.85f, 0.5f },
     {1.0f,  1.0f }
 };
+i32 FramePadProfilePortPc = -1;
+i32 MaxGamePads = 2;
+i16 PlayerLastPort[8] = {-1, -1, -1, -1, -1, -1, -1, -1};
 static i32 FramePadDirectMappingPc = 0;
 static i32 FramePadActivatedPc = 0;
 
@@ -215,6 +220,8 @@ typedef struct TimeBarSet {  // size 0x2c
 /* Original source: nu2api/nucore/nuapi.cpp; PC initializes only the fields
  * below after clearing the real 0x90-byte API record. */
 static i32 NUAPI_PADREC_DEFAULT_BUFFERSIZE = 0x500000;
+i32 min_delay = 20;
+f32 FrameStartupDelay = 6.0f;
 
 extern i32 min_delay;
 extern f32 FrameStartupDelay;
@@ -4436,6 +4443,8 @@ typedef struct NUMEMHIGHBLOCK {  // size 0x10
 } NUMEMHIGHBLOCK;
 
 static NUMEMHIGHBLOCK *freep = 0;
+i32 dat_0091eeec = 0;
+u8 UseCorrectDeadZoning = 0;
 
 void NuAllocHighInit(u32 buffer, u32 size) {
     if (buffer & 15) {
@@ -7199,6 +7208,7 @@ void NuStrSubstituteString(char *dst, char *src, char *search, char *replacement
 
 static u16 **BadWords;
 static i32 NumBadWords;
+i32 ShowingError = 0;
 
 void NuStringFilterLoad(char *path, VARIPTR *buf, VARIPTR buf_end) {
     i32 count;

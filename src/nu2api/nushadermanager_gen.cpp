@@ -67,6 +67,10 @@ template <> void PC_SHADER_MANAGER_VIEW::BindShader(NuShaderObject *slot) {
     }
 }
 
+extern "C" {
+    f32 PCShaderShininessFactorStorage = 1.0f;
+}
+
 template <> void PC_SHADER_MANAGER_VIEW::SetShininessFactor(f32 shininess) {
     PCShaderShininessFactorStorage = shininess;
 }

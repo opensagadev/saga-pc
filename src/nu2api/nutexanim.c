@@ -6,6 +6,7 @@ static i32 nutexanm_critical_section = -1;
 #pragma bss_seg(".bss$ntal_free")
 static PC_TEXTURE_ANIM_LIST *ntal_free = 0;
 #pragma bss_seg()
+i32 NuTexAnimMissingPakDiagnostic = 0;
 
 void NuTexAnimAddList(void *animation) {
     PC_TEXTURE_ANIM_LIST *node;
@@ -123,10 +124,17 @@ typedef struct TEXTURE_ANIM_MATERIAL { // size 0xbc
 } TEXTURE_ANIM_MATERIAL;
 
 static u32 nta_sig_off = 0;
+NURAND texanim_rand = {0};
 static u32 nta_sig_on = 0;
+NUVPCURRENT vpDevice = {0};
+NUFILE nudlist_field_958 = 0;
 static i32 nta_iframetime = 0;
 static u16 nta_script_mask = 0;
+PC_TEXTURE_ANIM_LIST *ntal_first = 0;
 static u32 nta_sig_old = 0;
+CAMERA_SAVED_STATE CameraSavedStates[16] = {{0}};
+i32 NuQFntCSModeStack[16] = {0};
+NUPORTAL_FRUSTUM **NuPortalFrusta = 0;
 
 void NuTexAnimSetSignals(u32 signals) {
     u32 changed = nta_sig_old ^ signals;
@@ -468,7 +476,16 @@ void NuTexAnimDestroy(TEXTURE_ANIMATION *animation) {
 
 static TEXTURE_ANIM_PROGRAM *TextureAnimationParseProgramPrivate = 0;
 static char TextureAnimationLabelsPrivate[64][21] = {0};
+char PCDisplayCaptureBuffer[0x1000] = {0};
+NUCAMERAREFLECT global_reflect = {0};
+f32 zy = 0;
+VARIPTR *NuDisplayListStreamCursor = 0;
 static i32 TextureAnimationLabelCountPrivate = 0;
+NUMTX VisibilityAlternateWorldMatrix = {0};
+NUMTX VisibilityAlternatePlaneMatrix = {0};
+VARIPTR fstack_top = {0};
+NUVEC NuRndrDebBase = {0};
+struct PC_SPECIAL_SHADOW_LIGHT *PCSpecialShadowLights[4] = {0};
 static char TextureAnimationExternalLabelsPrivate[256][21] = {0};
 static i32 xdeflabtabcnt = 0;
 static i32 TextureAnimationLabelOffsetsPrivate[64] = {0};
@@ -782,6 +799,7 @@ static NUFPCOMJMP TextureAnimationCommandsPrivate[] = {
     {"xref",       TextureAnimationExternalReferencePrivate },
     {NULL,         NULL                                     }
 };
+i32 nutexanim_usepakfile = 1;
 
 void NuTexAnimProgInit(TEXTURE_ANIM_PROGRAM *program) {
     i32 i;

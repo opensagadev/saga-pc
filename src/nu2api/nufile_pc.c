@@ -14,9 +14,31 @@ void NuPSFileInitDevices(i32 device_id, i32 reboot_iop, i32 eject) {
 
 extern i32 FileDirectoryHostOpenPc(char *path);
 char *FileDirectoryPathSlotsPc[16] = {0};
+i32 bgproc_initialized = 0;
 HANDLE FileDirectoryHostHandlesPc[16] = {0};
+HANDLE bgproc_work_event = 0;
+HANDLE bgproc_resume_event = 0;
 WIN32_FIND_DATAA FileDirectoryFindDataPc[16] = {0};
+void (*nuwarning_handler)(char *) = 0;
+char *nufile = 0;
+char PCWarningFormatBuffer[1024] = {0};
+i32 nuline = 0;
+CRITICAL_SECTION PcStartupCriticalSection = {0};
+void (*nuerror_handler)(char *) = 0;
+char PCWarningMessages[1024] = {0};
+char PCWarningOutputBuffer[1024] = {0};
+CRITICAL_SECTION bgproc_critical_section = {0};
+char err_msg_filter[32] = {0};
+i32 DisableDebugMsg = 0;
+i32 bHaveErr = 0;
+BGPROCINFO *bgproc_active = 0;
+HANDLE bgproc_thread_handle = NULL;
+DWORD bgproc_thread_id = 0;
+i32 bgproc_frozen = 0;
+i32 bgproc_freeze = 0;
+i32 PcStartupCriticalSectionInitialized = 0;
 i32 FileDirectoryOpenCountPc = 0;
+i32 PCThreadCriticalSectionCount = 0;
 NUFILE_DEVICE *FileDirectoryDefaultDevicePc = &host_device;
 void FileDirectoryErrorPc(i32 error);
 

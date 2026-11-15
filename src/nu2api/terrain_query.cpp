@@ -1289,7 +1289,14 @@ extern "C" i32 NewRayCastSetMask(NUVEC *position, NUVEC *movement, f32 radius, f
     return TerI->hit_type;
 }
 
+extern "C" {
+    TERRAIN_POLYGON_INFO *TerrPoly = 0;
+    u16 TerrainSurfaceClass = 0;
+}
 static u8 *TempStackPtr = 0;
+extern "C" {
+    void *TerrOverRideScan = 0;
+}
 
 struct TERRAIN_HANDLE_WALL_PAIR { // size 0x8
     TERRAIN_WALL_POINT *first;    // 0x0

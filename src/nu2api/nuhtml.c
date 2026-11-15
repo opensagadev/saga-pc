@@ -4,6 +4,8 @@
 
 extern char NuHtmlUnknownText[8];
 
+char NuHtmlUnknownText[8] = "unknown";
+
 void NuHtmlWrite(char *text, ...) {
     va_list args;
     i32 length;

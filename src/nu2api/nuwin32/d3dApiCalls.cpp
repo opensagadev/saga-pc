@@ -95,6 +95,10 @@ u32 PC_DEVICE_BACKEND_PC::fun_006df070() {
     return state604;
 }
 
+extern "C" {
+    i32 PCFrameCriticalSectionIndex = 0;
+}
+
 extern "C" void NuKeyboardCreateWindowState(HWND window, HINSTANCE instance) {
     PCFrameCriticalSectionIndex = PCThreadCriticalSectionCreate_candidate();
     PCDeviceBackend.InitializeAdapter();
@@ -484,8 +488,16 @@ extern "C" void PCDevicePostEffectBarrierPc(void) {
     PCDeviceBackend.PostEffectBarrier();
 }
 
+extern "C" {
+    i32 PcApiCallBufferCount = 0;
+}
+
 extern "C" i32 PcApiGetCallBufferCount(void) {
     return PcApiCallBufferCount;
+}
+
+extern "C" {
+    void *PcApiCallBuffer = NULL;
 }
 
 extern "C" void *PcApiGetCallBuffer(void) {

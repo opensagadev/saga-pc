@@ -1,5 +1,5 @@
 {
-  "pragma-seg": 5564,
+  "pragma-seg": 4754,
   "pragma-optimizer": 4,
   "pragma-pack": 16,
   "pragma-warning": 0,
@@ -61,7 +61,7 @@
   "long-function": 19,
   "long-file": 10,
   "multi-statement-line": 0,
-  "data-file": 5,
+  "data-file": 4,
   "commented-code": 0,
   "enum-anonymous": 112,
   "enum-value-name": 6,

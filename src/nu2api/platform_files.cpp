@@ -10,6 +10,8 @@ extern "C" void fun_006dd400(void) {
     fun_0050ed40(0, 0, 0);
 }
 
+char PcUserFolder[260] = {};
+
 extern "C" char *PcGetUserFolder(const char *unused_company, const char *unused_product) {
     i32 folder = CSIDL_LOCAL_APPDATA;
     if (PcUsePersonalFolder) {
@@ -67,6 +69,8 @@ extern "C" i32 fun_006dd690(const char *name, const char *prefix, i32 use_user_f
     fclose(file);
     return 1;
 }
+
+char PcFileDirectory[128] = {};
 
 extern "C" FILE *PcOpenPlatformFile(const char *name, const char *prefix, i32 use_user_folder, const char *mode) {
     if (use_user_folder == 1) {

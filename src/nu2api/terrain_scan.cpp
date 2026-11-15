@@ -127,6 +127,11 @@ extern "C" {
         } break;                                                                                                                           \
     }
 
+extern "C" {
+    i32 IgnoreWallSplines = 0;
+    i32 WallSplinesOnly = 0;
+}
+
 extern "C" void ScanTerrain(i32 scan_type, i32 terrain_mask, i32 scan_flags) {
     i32 scaled_shape_count = 0;
     if (WallSplinesOnly != 0) {

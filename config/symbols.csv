@@ -40160,10 +40160,10 @@ address,symbol,size,ctype
 0x8806b8,_TextCrawlCharacterBonusId,2,i16
 0x008806bc,_tNULL,2,i16
 0x008806c0,_tUNKNOWN,2,i16
-0x008806c4,_tENGLISH,2,i16
-0x008806c8,_tFRENCH,2,i16
-0x008806cc,_tGERMAN,2,i16
-0x008806d0,_tITALIAN,2,i16
+0x008806c4,_tENGLISH,4,i16
+0x008806c8,_tFRENCH,4,i16
+0x008806cc,_tGERMAN,4,i16
+0x008806d0,_tITALIAN,4,i16
 0x008806d4,_tSPANISH,4,i16
 0x008806d8,_tDANISH,4,i16
 0x008806dc,_dat_008806dc,2,i16
@@ -43038,7 +43038,7 @@ address,symbol,size,ctype
 0x2921238,_PlatCallback,64,TERRAIN_CALLBACK_LIFECYCLE[8]
 0x2921278,_terrhitflags,4,i32
 0x292127c,_TerrImpact,2,i16
-0x292127e,_TerrWallInfo,1,u8
+0x292127e,_TerrWallInfo,2,u8
 0x02921280,_NuSound3GroupSampleIds,1024,i16[512]
 0x2921680,_SphereData,256,TERRAIN_SPHERE_PC[16]
 0x02921780,_SfxBits,200,u16[100]
@@ -43413,7 +43413,7 @@ address,symbol,size,ctype
 0x2962b6c,_DebrisDmaCleanupDelay,4,i32
 0x02962b70,_nusound_special_positions,60,NUVEC[5]
 0x02962bac,?the_music_player@@3PAVNuMusic@@A,4,NuMusic *
-0x2962bb0,_PCSoundStorageLock,24,CRITICAL_SECTION
+0x2962bb0,_PCSoundStorageLock,28,CRITICAL_SECTION
 0x02962bcc,_NuSound3Initialized,4,i32
 0x02962bd0,_NuSound3VolumeTable,65536,f32[0x4000]
 0x2972bd0,_SoundSampleCriticalSection,24,CRITICAL_SECTION
@@ -43435,7 +43435,7 @@ address,symbol,size,ctype
 0x2972c40,_PCSoundOneShotVoiceCount,4,i32
 0x2972c44,_PCSoundMixEvent,4,HANDLE
 0x2972c48,_PCSoundSampleWorkerHandle,4,HANDLE
-0x2972c4c,_PCSoundSampleWorkerStop,1,volatile u8
+0x2972c4c,_PCSoundSampleWorkerStop,4,volatile u8
 0x02972c50,_NuSoundDat,4,NUDATHDR *
 0x2972c54,_PCSoundCommitTarget,4,PC_SOUND_COMMIT *
 0x02972c58,_NuSound3Listener,4,NUMTX *
@@ -43573,7 +43573,7 @@ address,symbol,size,ctype
 0x2975c7c,_PcWindowCallbackCount,4,i32
 0x2975c80,_PcScreenSaverEnabled,4,BOOL
 0x2975c88,_PcModuleFilename,260,char[260]
-0x2975d90,?PcUserFolder@@3PADA,260,char[260]
+0x2975d90,?PcUserFolder@@3PADA,264,char[260]
 0x2975e98,?PcFilePath@@3PADA,128,char[128]
 0x2975f98,?PcFileDirectory@@3PADA,128,char[128]
 0x2976098,_PCNativeWarningDebugState,1288,PC_NATIVE_DEBUG_STATE
@@ -43616,7 +43616,7 @@ address,symbol,size,ctype
 0x297c110,_CpuFamily,4,u32
 0x297c114,_CpuModel,4,u32
 0x297c118,_CpuStepping,4,u32
-0x297c11c,_CpuBrandIndex,1,u8
+0x297c11c,_CpuBrandIndex,4,u8
 0x297c120,_CpuUnsetValue1,4,u32
 0x297c124,_CpuHasFpu,4,u32
 0x297c128,_CpuHasVme,4,u32

@@ -144,14 +144,18 @@ extern "C" {
     extern const DWORD dat_007660d0[];
 #pragma bss_seg(".bss$PostCopyTexProgramPc")
     POST_SHADER_PROGRAM_PC *PostCopyTexProgram = 0;
+    POST_SHADER_PROGRAM_PC *dat_00973820 = 0;
 #pragma bss_seg(".bss$PostCopyTexLodProgramPc")
     POST_SHADER_PROGRAM_PC *PostCopyTexLodProgram = 0;
+    POST_SHADER_PROGRAM_PC *dat_0097382c = 0;
 #pragma bss_seg(".bss$PostBlendTexProgramPc")
     POST_SHADER_PROGRAM_PC *PostBlendTexProgram = 0;
 #pragma bss_seg(".bss$PostBlur5x5ProgramPc")
     POST_SHADER_PROGRAM_PC *PostBlur5x5Program = 0;
 #pragma bss_seg(".bss$PostBlur7x7ProgramPc")
     POST_SHADER_PROGRAM_PC *PostBlur7x7Program = 0;
+    PC_TEXTURE_RESOURCE *NuDisplayHandlerVertexShaderCachePc = NULL;
+    PC_TEXTURE_RESOURCE *NuDisplayHandlerPixelShaderCachePc = NULL;
 #pragma bss_seg(".bss$PostCopyAuxProgramPc")
     POST_SHADER_PROGRAM_PC *PostCopyAuxProgram = 0;
 #pragma bss_seg(".bss$PostBlurAuxProgramPc")

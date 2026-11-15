@@ -3,6 +3,9 @@
 extern u8 *ps2_scratch_free;
 extern u8 NuScratchBackingAccess[0x4000];
 
+u8 *ps2_scratch_free = NuScratchBackingAccess;
+__declspec(align(4)) u8 NuScratchBackingAccess[0x4000] = {0};
+
 void NuScratchReset(void) {
     ps2_scratch_free = NuScratchBackingAccess;
 }

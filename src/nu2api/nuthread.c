@@ -4,6 +4,8 @@
  * remain provisional until the original thread initialization path is mapped. */
 extern i32 PCThreadCriticalSectionCount;
 
+CRITICAL_SECTION PCThreadCriticalSections[13] = {0};
+
 i32 PCThreadCriticalSectionCreate_candidate(void) {
     if (PCThreadCriticalSectionCount <= 12) {
         ++PCThreadCriticalSectionCount;

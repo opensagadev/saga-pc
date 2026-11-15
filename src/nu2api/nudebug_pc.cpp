@@ -18,6 +18,11 @@ PC_NATIVE_DEBUG_STATE *PC_NATIVE_DEBUG_STATE::fun_006dff70() {
     return this;
 }
 
+extern "C" {
+    char PCNativeDebugOutputBuffer[2048] = {0};
+    char PCNativeDebugFormatBuffer[2048] = {0};
+}
+
 void PCNativeDebugPrint(PC_NATIVE_DEBUG_STATE *state, const char *format, ...) {
     va_list args;
     if (format != NULL) {

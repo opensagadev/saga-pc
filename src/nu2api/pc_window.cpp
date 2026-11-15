@@ -6,6 +6,10 @@
 
 static i32 PcArgc = 1; // not address-exposed: kept in a register across the tokenizer
 
+extern "C" {
+    PC_WINDOW_CALLBACK_PC PcWindowCallbacks[1] = {NULL};
+}
+
 extern "C" void RegisterWindowCallbackPc(PC_WINDOW_CALLBACK_PC callback) {
     PcWindowCallbacks[PcWindowCallbackCount++] = callback;
 }
@@ -187,6 +191,11 @@ char *ParseArgumentToken(char *cursor, char terminator, char **argument) {
         *argument = NULL;
     }
     return cursor;
+}
+
+extern "C" {
+    i32 PcRelaunchMce = 0;
+    char PcModuleFilename[260] = {0};
 }
 
 extern "C" void ParsePlatformArgumentsPc(char *command_line) {
@@ -467,6 +476,19 @@ extern "C" u8 PcCursorImagePc[0x1080] = {
     0x00, 0x00, 0x00, 0x00, 0xff, 0xff, 0x00, 0x00, 0x00, 0x00, 0x00, 0x00, 0x00, 0x01, 0x00, 0x00, 0x00, 0x00, 0x00, 0x00, 0xff, 0xff,
     0x00, 0x00, 0x00, 0x00, 0x00, 0x00, 0x00, 0x01, 0x00, 0x00, 0x00, 0x00, 0x00, 0x00, 0xff, 0xff, 0x00, 0x00, 0x00, 0x00, 0x00, 0x00};
 #pragma data_seg()
+extern "C" {
+    i32 SoundVoiceEnabledGate = 1;
+    const char *NuHwDefaultParameter = "TitleNotSet";
+}
+i32 PcUsePersonalFolder = 1;
+extern "C" {
+    u32 PcClientWidth = 800;
+    u32 PcClientHeight = 600;
+    i32 PcCursorTextureIdPc = -1;
+    STICKYKEYS PcStickyKeys = {8, 0};
+    TOGGLEKEYS PcToggleKeys = {8, 0};
+    FILTERKEYS PcFilterKeys = {24, 0, 0, 0, 0, 0};
+}
 
 extern "C" void PcCreateCursorMaterialPc(void) {
     if (PcCursorTextureIdPc == -1) {

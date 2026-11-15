@@ -2,7 +2,31 @@
 #include <stdio.h>
 #include <string.h>
 
+extern "C" {
+    const char *dat_02974d58[256] = {0};
+    TEXT_INPUT_LABELS_PC *TextInputAlternateLabelsPc = 0;
+    u8 PcMouseAxisModesPc[3] = {0};
+    NuKeyboardState_PC *nu_input_state = 0;
+    i8 PcInputActionOrder[20] = {0};
+    TEXT_INPUT_LABELS_PC *TextInputDefaultLabelsPc = 0;
+    u32 mbuttons = 0;
+}
 static u32 PcMousePressedMaskPc = 0;
+extern "C" {
+    u8 nu_keyboard_pages[0x200] = {0};
+    char dat_029753c0[512] = {0};
+}
+void (*PcInputStateInitializedCallback)(PC_INPUT_RUNTIME_PC *) = NULL;
+extern "C" {
+    i32 (*PcInputCommandFilterPc)(i32, i32) = NULL;
+    f32 PcMouseAxisIdlePc[3] = {0};
+    void (*TextInputNameCallbackPc)(i32, char *) = 0;
+    i32 PcMouseCurrentAnglePc = 0;
+    i32 PcMouseTargetAnglePc = 0;
+    f32 PcMouseRadiusPc = 0;
+    i8 TextInputLastDeviceIndexPc = 0;
+    f32 PcMouseInterpolationPc = 0;
+}
 
 extern "C" u32 fun_006d58c0(void) {
     return PcMousePressedMaskPc;
@@ -300,6 +324,10 @@ void PC_INPUT_RUNTIME_PC::fun_006d3b10(i32) {
 }
 
 extern "C" void fun_006d3b20(void) {
+}
+
+extern "C" {
+    char **TextInputKeyNamesPc = TextInputKeyNameTablePc;
 }
 
 PC_INPUT_RUNTIME_PC::PC_INPUT_RUNTIME_PC() {

@@ -673,6 +673,7 @@ extern "C" void PostBlur7x7Dispatch(GRAPHICS_RENDER_TEXTURE *source, i32 source_
 extern "C" {
 #pragma bss_seg(".bss$PostBlurInputBiasPc")
     f32 PostBlurInputBiasPc = 0;
+    f32 RenderFrameShaderTimePc = 0.0f;
 #pragma bss_seg(".bss$PostBlurDirectOutputBiasPc")
     f32 PostBlurDirectOutputBiasPc = 0;
 #pragma bss_seg(".bss$PostBlurDirectInputBiasPc")
@@ -905,6 +906,9 @@ void NuMainFilter::destroyTextureResources() {
 }
 
 extern "C" f32 NuSpeedBlurVertexScale;
+extern "C" {
+    NUVEC4 NuDisplayHandlerDefaultTint = {1.0f, 1.0f, 1.0f, 1.0f};
+}
 f32 NuSpeedBlurVertexScale = 40000.0f;
 
 void NuSpeedBlurFilter::render() {

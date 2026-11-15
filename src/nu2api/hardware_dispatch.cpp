@@ -440,6 +440,10 @@ i32 PC_DEVICE_BACKEND_PC::fun_006dc750() {
     return parameters.windowed == 1;
 }
 
+extern "C" {
+    u32 PcUseUserGeoRegion = 0;
+}
+
 extern "C" i32 PcNativeSelectLanguage(const char *configuration_name) {
     char path[256];
     DWORD language;

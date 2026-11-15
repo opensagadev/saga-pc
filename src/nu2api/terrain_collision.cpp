@@ -866,6 +866,9 @@ extern "C" {
         }
     }
 
+    TERRAIN_POLYGON_INFO PlatImpactTer = {0};
+    NUVEC PlatImpactNorm = {0};
+
     void StorePlatImpact() {
         TerrainQuery_s *query = TerI;
         const u8 hit_type = query->hit_type;
@@ -913,6 +916,8 @@ extern "C" {
                 break;
         }
     }
+
+    f32 wallover = 0;
 
     void TerrainImpact(NUVEC *position, NUVEC *movement, u8 *hit_flags) {
         f32 walkable_normal_y = 0.0f;
@@ -1216,6 +1221,8 @@ extern "C" {
 
         castnum = CurrentTerrain->platforms[platform_index].terrain_group_index;
     }
+
+    NUMTX tertempmat = {0};
 
     i32 PlatformChecks(i32 count, NUVEC *movement) {
         TerrainQuery_s *old_query = TerI;
@@ -2149,6 +2156,12 @@ extern "C" i32 AddMSituExtraTerrRot(i32 source_index, NUMTX *matrix, NUMTX *prev
 }
 
 #undef CurrentTerrain
+
+extern "C" {
+    NUVEC TerrImpactPos = {0};
+    TERRAIN_LAST_IMPACT TerrLastImpact = {0};
+    NUVEC TerrImpactNormal = {0};
+}
 
 extern "C" void NewTerrainScaleYMask(NUVEC *position, NUVEC *movement, u8 *hit_flags, i32 object_index, f32 radius, f32 collision_radius,
                                      f32 object_scale, i32 embedded_retry, i32 scan_flags, i32 terrain_mask) {

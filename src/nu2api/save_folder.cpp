@@ -2,6 +2,8 @@
 
 extern i32 PcSaveFolderRegisteredPc;
 
+i32 PcSaveFolderRegisteredPc = 0;
+
 extern "C" void PcRegisterSaveFolderPc(const char *company, const char *product, const char *parameter, i32 personal) {
     PcCompanyName = company;
     PcProductName = product;
@@ -15,6 +17,10 @@ extern "C" void PcSetDefaultParameter(const char *parameter) {
 }
 
 extern "C" void *NuHwParameter33;
+
+extern "C" {
+    void *NuHwParameter33 = 0;
+}
 
 extern "C" void NuHwSetParameter33(void *value) {
     NuHwParameter33 = value;

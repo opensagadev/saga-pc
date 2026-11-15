@@ -10,13 +10,42 @@ static i32 PCSoundLoopVoiceCount = 0;
 #pragma bss_seg(".bss$PCSoundOneShotVoiceCount")
 static i32 PCSoundOneShotVoiceCount = 0;
 #pragma bss_seg()
+extern "C" {
+    HANDLE PCSoundMixEvent = 0;
+    HANDLE PCSoundSampleWorkerHandle = 0;
+    volatile u8 PCSoundSampleWorkerStop = 0;
+    NUDATHDR *NuSoundDat = 0;
+    PC_SOUND_COMMIT *PCSoundCommitTarget = 0;
+    NUMTX *NuSound3Listener = 0;
+    i32 NuSound3LoadingSfxPc = 0;
+}
 #pragma bss_seg(".bss$PCSoundUpdateClock")
 static i32 PCSoundUpdateClock = 0;
 #pragma bss_seg()
+extern "C" {
+    CRITICAL_SECTION SoundSampleCriticalSection = {0};
+}
 #pragma bss_seg(".bss$PCStereoSampleMetadata")
 static SFX_FILE_INFO_PC *PCStereoSampleMetadata = 0;
 #pragma bss_seg()
+extern "C" {
+    CRITICAL_SECTION SoundVoiceCriticalSection = {0};
+}
 static i32 SoundSampleCount = 0;
+extern "C" {
+    void *PCSoundMixSource = 0;
+    i32 PCSoundMixSampleCount = 0;
+    void *PCSoundMixDestination = 0;
+    i32 PCStereoChannel0A = 0;
+    i32 PCSoundSampleLimit = 0;
+}
+SoundQueue *NuSound3StereoStreams[2] = {0};
+extern "C" {
+    i32 PCSoundStorageLockReady = 0;
+    i32 PCSoundStartedOneShotCount = 0;
+    i32 PCSoundStartedLoopCount = 0;
+    i32 PCSoundUpdatedLoopCount = 0;
+}
 
 extern "C" void PCSoundAlreadyPlayingHook(...) {
 }
@@ -68,6 +97,10 @@ extern "C" void fun_006988b0(void) {
 extern "C" void fun_006988f0(void) {
 }
 
+extern "C" {
+    i32 PCSoundVolumeMultiplier = 0x4000;
+}
+
 extern "C" void PCSoundPlayUnpositioned(i32 sample_id, i32 volume_index, i32 arg3, i32 arg4, f32 arg5, i32 arg6, f32 arg7, f32 arg8,
                                         i32 arg9) {
     SoundSamplePC *sample;
@@ -116,6 +149,9 @@ extern "C" void PCSoundPlayUnpositionedWrapper(i32 arg1, i32 arg2, i32 arg3, i32
 }
 
 extern "C" {
+    f32 nusound_fade_end = 15.0f;
+    f32 nusound_fade_start = 2.0f;
+
     static i32 PCSoundPositionVolume(NUVEC *relative, NUVEC *position, i32 volume) {
         f32 distance_squared;
         f32 distance;
@@ -210,6 +246,11 @@ bool SoundVoiceManagerPC::FindLoopVoice(NUVEC *position, i32 sample_id, i32 *voi
     }
     *voice_id = AllocateVoice(sample_id, 1);
     return false;
+}
+
+extern "C" {
+    // PC NuSound3 state and loop-hold conversion constants.
+    i32 NuSound3LoopHoldTime = 133;
 }
 
 extern "C" void PCSoundPlayPositionedLoop(NUVEC *position, i32 sample_id, i32 volume_left, i32 volume_right, i32 pitch, f32 buzz_timer,
@@ -321,6 +362,10 @@ i32 SoundVoiceManagerPC::AllocateVoice(i32 sample_id, i32 bank) {
         }
     }
     return -1;
+}
+
+extern "C" {
+    i32 SoundVoiceVolumeOffset = -300;
 }
 
 void SoundVoiceManagerPC::SetVoice(i32 voice_id, i32 spatial, f32 volume, i32 parameter) {
@@ -547,6 +592,10 @@ void SoundVoiceManagerPC::Setup3DVoice(i32 voice_id, const NUVEC *position, i32 
     slot->aux->vtable->set_position(slot->aux, position->x, position->y, position->z, update_flag);
 }
 
+extern "C" {
+    const char *PCSoundOggExtension = ".ogg";
+}
+
 void SoundVoiceManagerPC::SetSampleName(const char *name, i32 sample_index) {
     i32 name_length;
 
@@ -562,6 +611,11 @@ void SoundVoiceManagerPC::SetSampleName(const char *name, i32 sample_index) {
 }
 
 extern SoundQueue *NuSound3StereoStreams[2];
+
+extern "C" {
+    i32 PCStereoChannel0B = 1;
+    i32 PCStereoChannel1B = 3;
+}
 
 extern "C" void PCStereoStartPacket(PC_STEREO_PLAY_PACKET *packet) {
     i32 channel_a;
@@ -634,6 +688,10 @@ extern "C" i32 fun_006986b0(void) {
 
 extern "C" i32 fun_006986c0(void) {
     return 1;
+}
+
+extern "C" {
+    CRITICAL_SECTION PCSoundStorageLock = {0};
 }
 
 SoundVoiceManagerPC::SoundVoiceManagerPC() {
@@ -718,6 +776,10 @@ extern "C" i32 PCSampleLoadEnabled;
 extern "C" i32 PCSoundSampleLimit;
 extern "C" const GUID PCSampleBufferAlgorithm;
 extern "C" char *PCSampleFilenameExtension;
+
+extern "C" {
+    i32 PCSampleLoadEnabled = 1;
+}
 
 i32 SoundVoiceManagerPC::LoadWavSample(const char *name, i32 index) {
     WavReader reader;
@@ -875,6 +937,8 @@ extern "C" void fun_00698780(void) {
 }
 
 extern "C" {
+    char *PCSampleFilenameExtension = ".wav";
+
     static DWORD WINAPI PCSoundSampleWorker(void *unused) {
         char directory[0x104];
         char filename[0x104];

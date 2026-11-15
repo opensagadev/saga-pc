@@ -4,7 +4,17 @@
 #include <math.h>
 #include <float.h>
 
+PC_GLOBAL_LIGHTING_STATE PCGlobalLightingState = {0};
+i32 NuCameraMode = 0;
+i32 cam_state_count = 0;
+i32 NuCameraClipScissorToViewport = 0;
+i32 NuCameraPreviousClipScissorToViewport = 0;
+i32 NuCameraOrthographic = 0;
 static i32 force_camera_farclip = 0;
+NUVEC cam_axes = {1.0f, 1.0f, 1.0f};
+NUMTX psmtx = {1.0f, 0.0f, 0.0f, 0.0f, 0.0f, 1.0f, 0.0f, 0.0f, 0.0f, 0.0f, 1.0f, 0.0f, 0.0f, 0.0f, 0.0f, 1.0f};
+f32 NuCameraProjectionFarClipBias = 0.1f;
+NUMTX NuCameraScissorProjectionScratch = {0};
 static f32 NuCameraOrthoScale = 0.1f;
 
 NUCAMERA *NuCameraCreate(void) {

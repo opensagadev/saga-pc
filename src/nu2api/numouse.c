@@ -19,9 +19,13 @@ u32 fun_006d58d0(i32 button) {
 void fun_006d5940(void) {
 }
 
+f32 PcMouseX = 0.0f;
+
 f32 NuMouseReadX(void) {
     return PcMouseX;
 }
+
+f32 PcMouseY = 0.0f;
 
 f32 NuMouseReadY(void) {
     return PcMouseY;

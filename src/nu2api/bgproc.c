@@ -14,6 +14,7 @@ i32 dat_0297ad5c = 0;
 i32 dat_0297ad60 = 0;
 BGPROC_HANDLER *dat_0297ad68 = 0;
 volatile u32 nu_current_thread_id = 0;
+volatile i32 nuvideo_global_vbcnt = 0;
 
 /* The PC build has no debug-print lock; both halves are empty. */
 void PcDebugPrintUnlock(void) {

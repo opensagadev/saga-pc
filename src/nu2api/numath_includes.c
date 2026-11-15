@@ -6,9 +6,14 @@
 #include <xmmintrin.h>
 
 static f32 fetol = 0.01f;
+u32 NuWindQS = 0x1365;
 static i32 NuExp10FirstTime = 1;
 static f32 *NuExp10Table = 0;
+f32 NuPowBases[32] = {0};
+NUVEC APIObjectZeroMomentumPC = {0};
 static i32 RenderPostLogFirst = 1;
+f32 NuPowExponents[32] = {0};
+f32 NuPowResults[32] = {0};
 static f32 *RenderPostLogTable = 0;
 
 typedef struct NuMtxIndexedView { // size 0x40
@@ -36,9 +41,13 @@ static f32 NumathIncludesFabs(f32 f) {
 #define QUAT_COS(angle) NuTrigTable[(((angle) + 0x4000) >> 1) & 0x7fff]
 static i32 curve_points;
 static NUVEC *curve;
+NUVEC4 PcGeometryDefaultOrigin = {0};
+NUMTX VisibilityZeroMatrixTemplate = {0};
 static NUVEC *control;
+i32 NuPowCacheIndex = 0;
 u32 fseed = 0;
 static NURAND global_rand = {1};
+i32 NuPowFirstTime = 1;
 u16 ang[513] = {
     0x0000, 0x0014, 0x0029, 0x003d, 0x0051, 0x0066, 0x007a, 0x008f, 0x00a3, 0x00b7, 0x00cc, 0x00e0, 0x00f4, 0x0109, 0x011d, 0x0131, 0x0146,
     0x015a, 0x016f, 0x0183, 0x0197, 0x01ac, 0x01c0, 0x01d4, 0x01e9, 0x01fd, 0x0211, 0x0226, 0x023a, 0x024e, 0x0262, 0x0277, 0x028b, 0x029f,

@@ -19,6 +19,10 @@ union PC_SHADER_KEY_BLOCK_PC {
     } words;
 };
 
+extern "C" {
+    u32 ShaderProgramHashPC[4] = {1482109315U, 2845988928U, 4140572740U, 1211123114U};
+}
+
 extern "C" void NuShaderObjectKeyGenerate3(u32 *key, const PC_SHADER_MATERIAL_FILTER_VIEW *filter, i32 pixel_stage) {
     const PC_SHADER_FILTER_DESC_VIEW *desc = filter->descriptor;
     PC_SHADER_KEY_BLOCK_PC block;
@@ -116,6 +120,10 @@ extern "C" void NuShaderObjectKeyGeneratePc(u32 *key, const PC_SHADER_FILTER_DES
 }
 
 extern "C" u8 dat_0297d6a8[16];
+
+extern "C" {
+    u8 dat_0297d6a8[16] = {0};
+}
 
 /* Installs the 16-byte hash of the uber shader source that every key mixes in. */
 extern "C" void NuShaderObjectKeySetUberShaderHash(const u8 *hash) {

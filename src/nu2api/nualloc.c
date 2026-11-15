@@ -5,6 +5,9 @@
 static void *NuAllocPeakEnd1 = 0;
 NUALLOC_POOL *NuAllocPool = 0;
 static u32 NuAllocRecordSerial = 0;
+NUALLOC_ARENA *NuAllocArena = 0;
+void *NuAllocManager = 0;
+void *NuAllocPeakEnd0 = 0;
 
 struct nualloc_record_s {              // size 0x20
     struct nualloc_record_s *next;     // 0x00
@@ -47,6 +50,8 @@ void *NuAllocManagerAllocateAligned(NUALLOC_MANAGER_PREFIX_PC *manager, u32 size
 void NuAllocManagerFree(NUALLOC_MANAGER_PREFIX_PC *manager, void *memory);
 
 static NUALLOC_ARENA NuAllocArenaStorage;
+NUALLOC_RECORD *NuAllocRecordHead = 0;
+u32 NuAllocTrackedBytes = 0;
 
 void NuAllocSetManager(void *manager) {
     NuAllocManager = manager;
@@ -136,6 +141,9 @@ void NuFreeUntracked(void *memory) {
     }
     free(memory);
 }
+
+u32 NuAllocHeaderMetadata[3] = {0x424d454d, 0x45484b4c, 0x52454441};
+u32 NuAllocTailMetadata[3] = {0x424d454d, 0x41544b4c, 0x31304c49};
 
 void *NuAlloc(i32 size, const char *file, i32 line) {
     NUALLOC_ARENA *arena;

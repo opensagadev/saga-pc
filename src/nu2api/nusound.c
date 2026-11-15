@@ -1,5 +1,16 @@
 #include "saga.h"
+i32 NumSfx = 0;
+i32 NumSfxNames = 0;
 static i32 NumSfxInst = 0;
+i32 NuSound3GroupSampleCount = 0;
+i32 NuSound3GroupCount = 0;
+SFX_FILE_INFO_PC *SfxFileTable = 0;
+i32 SfxFileCount = 0;
+f32 SfxAudioVersion = 0;
+i32 NOSOUND = 0;
+i32 NOMUSIC = 0;
+i32 SfxCRCTableInitialized = 0;
+NUVEC PCSoundListenerLoopPosition = {0};
 
 void PlaySfx(char *name, NUVEC *position) {
     i32 sfx_id = GetSfxId(name);
@@ -36,6 +47,8 @@ void PlaySfxById(i32 sfx_id, NUVEC *position) {
 void PlaySfxByIdAndSetVolume(i32 sfx_id, NUVEC *position, f32 volume) {
     PlaySfxByIdEx(sfx_id, position, volume, 1.0f);
 }
+
+SFX_GROUP NuSound3Groups[128] = {0};
 
 void GroupBuffer_MoveToEnd(i32 group_id) {
     i32 buffer_length = NuSound3GroupSampleCount;
@@ -351,6 +364,8 @@ void SfxSetFileTable(SFX_FILE_INFO_PC *records) {
     }
 }
 
+u32 *SfxCRCTable = 0;
+
 void SfxBuildCRCTable(VARIPTR *buffer_cursor, VARIPTR end) {
     u32 index;
     u32 value;
@@ -448,6 +463,8 @@ u32 SfxNameHashN(const char *name, u32 max_length) {
     }
     return reg;
 }
+
+i16 *SfxHashHeads = 0;
 
 i32 GetSfxId(char *name) {
     i32 index;
@@ -623,6 +640,11 @@ void MaskSounds(const u16 *mask) {
 
 f32 MusicVolume = 1.0f;
 f32 CutVolume = 0.8f;
+const char *SfxMusicExtension = ".vag";
+u32 nusound_seed = 0x20558057;
+char SfxConfigFilename[256] = "Audio/audio.cfg";
+f32 MASTERVOLUME = 1.0f;
+f32 AUDIOFADELEVEL = 1.0f;
 i32 NuSoundGetStereoStreamStatus(i32 stream);
 
 static void MusicPlayStream(i32 stream, i32 track, i32 volume, f32 seek_offset, i32 one_shot) {
@@ -866,6 +888,8 @@ void RestoreGameCut(void) {
     NuSound3ResumeStereoStream(1 - music->primary_stream);
 }
 
+u16 GlobalSfxBits[100] = {0};
+
 void ResetSounds(void) {
     PCByteCopy(SfxBits, GlobalSfxBits, 0xc8);
 }
@@ -1085,6 +1109,11 @@ i32 NuSound3LoadingSfx(void) {
 void InitSoundInfo(i32);
 void LoadSfx(const char *, VARIPTR *, VARIPTR);
 
+SFX_RECORD_PC *SfxRevertInfo = 0;
+char SfxNameSlots[1601][32] = {0};
+SFX_FILE_INFO_PC *SfxFileInfo = 0;
+char SfxFilenameSlots[1601][64] = {0};
+
 static void fnAudioSample(NUFPAR_PC *fpar) {
     char *str;
     u32 hash;
@@ -1266,6 +1295,7 @@ static NUFPCOMJMP audioCom[] = {
     {"Group",  AudioGroup_Parse},
     {NULL,     NULL            }
 };
+MUSICPLAYBACK_PC Music = {0, -1, 0, -1, 0, -1, 0, 0, 0, 0, 0, 0, 0.0f, 0.0f, 0, -1, NULL};
 
 void InitSoundInfo(i32 index) {
     SfxInfo[index].sample_id_flags |= 0x7fff;

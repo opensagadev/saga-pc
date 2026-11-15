@@ -1,7 +1,16 @@
 #include "saga.h"
 #include <string.h>
 
+extern "C" {
+    PC_DI_MOUSE_STATE_PC PcMouseSamplesPc[2] = {0};
+    i32 nu_keyboard_key_index = 0;
+}
 static i32 PcXInputDeviceCount; // XInput pads found by the current device enumeration
+extern "C" {
+    i32 nu_keyboard_previous_key_index = 0;
+    i32 nu_keyboard_no_key_state = 0;
+    i8 PcMouseSampleIndexPc = 0;
+}
 
 PC_INPUT_CONFIG_PC *PC_INPUT_RUNTIME_PC::FindConfig(u8 mask, i32 port, i32 key) {
     if (port < 0) {
@@ -346,6 +355,9 @@ extern "C" void ConfigureJoystickRangesPc(NuKeyboardDevice_PC *device) {
     input->SetProperty(*(const GUID *)4, (const PC_DI_PROPERTY *)&range);
 }
 
+// clang-format on
+i32 PcInputSelectedPort = -1;
+
 extern "C" BOOL __stdcall InputEnumDevicesPc(const PC_DI_INSTANCE *instance, void *unused) {
     PC_INPUT_RUNTIME_PC *state = (PC_INPUT_RUNTIME_PC *)nu_input_state;
     PC_INPUT_DEVICE_PC *devices = state->devices;
@@ -675,6 +687,10 @@ const PC_DI_MOUSE_STATE_PC *NuKeyboardOwner_PC::PollMousePc() {
 }
 
 extern "C" void fun_006d5860(void) {
+}
+
+extern "C" {
+    i32 dat_00824fb8 = 20;
 }
 
 extern "C" i32 fun_006d5870(void) {

@@ -23,6 +23,10 @@ extern "C" i32 fun_00630db0(void) {
 
 extern "C" i32 dat_0080fbf0;
 
+extern "C" {
+    i32 dat_0080fbf0 = 1;
+}
+
 extern "C" void fun_00630de0(void) {
     if (dat_0080fbf0 != 0) {
         dat_0080fbf0 = 0;

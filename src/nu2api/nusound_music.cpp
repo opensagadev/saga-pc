@@ -4,6 +4,8 @@
 #include <float.h>
 #include <stdarg.h>
 
+NuMusic *the_music_player = 0;
+
 void NuMusic::SetFader(f32 target, f32 fade_seconds) {
     if (this == NULL || the_music_player == NULL) {
         return;
@@ -482,6 +484,12 @@ i32 NuMusic::GetStatus(u32 class_mask, i32 *per_class_status) {
     return result;
 }
 
+extern "C" {
+    const char *NuMusicVoiceStatusText[8] = {"IDLE_PENDING",    "IDLE",    "PAUSED_PENDING", "PAUSED",
+                                             "SEEKING_PENDING", "SEEKING", "PLAYPENDING",    "PLAYING"};
+    u32 NuMusicDebugColour = 0x80ffffff;
+}
+
 void NuMusic::Debug(i32 unused, i32 y) {
     (void)unused;
     const char *class_names[] = {"INVALID", "QUIET", "ACTION", "SIGNATURE", "OVERLAY", "CUTSCENE", "NOMUSIC"};
@@ -622,6 +630,10 @@ i32 NuMusic::Voice::Unload(void) {
         }
     }
     return 1;
+}
+
+extern "C" {
+    f32 PCMusicDuckOverride = 1.0f;
 }
 
 void NuMusic::Process(f32 delta) {

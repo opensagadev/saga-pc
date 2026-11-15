@@ -4530,6 +4530,12 @@ extern "C" {
         0x2c, 0xb7, 0xff, 0xff, 0x2c, 0xb7, 0xff, 0xff, 0x2c, 0xb7, 0xff, 0xff, 0x2c, 0xb7, 0xff, 0xff, 0x2c, 0xb7, 0xff, 0xff, 0x2c, 0xb7,
         0xff, 0xff, 0x2c, 0xb7, 0xff, 0xff, 0x2c, 0xb7, 0xff, 0xff, 0x2c, 0xb7, 0xff, 0xff};
 #pragma data_seg()
+    f32 qfnt_rezscale_w = 1.0f;
+    f32 qfnt_rezscale_h = 1.0f;
+    f32 qfnt_len_scale = 1.0f;
+    f32 qfnt_height_scale = 1.0f;
+    f32 qfnt_justify_squash = 1.0f;
+    f32 qfnt_justify_stretch = 1.0f;
 
     void NuQFntSetPrintMode(u32 mode) {
         NuQFntMode = mode;
@@ -8237,6 +8243,7 @@ extern "C" {
 
     static NUMTL *RendererZClearMaterial = 0;
     static NUMTL *RendererAlphaMaskMaterial = 0;
+    i32 NuRndrDoingScreenGrab = 0;
 
     void NuRndrInitGeneric(void) {
         i32 saved_plane = (i32)numtl_renderplane;
@@ -8687,7 +8694,52 @@ extern "C" {
     void NuRndrBoundingBox(NUVEC *minimum, NUVEC *maximum, NUMTX *matrix, i32 colour);
 
     i32 do_boxtree = 0;
+    i32 VisibilityLoadedOcclusion = 0;
+    i32 VisibilityCameraLock = 0;
+    i32 NuPortalCameraSelect = 0;
+    i32 VisibilityUsingOcclusion = 0;
+    i32 dat_00973984 = 0;
+    i32 NuTimeBar_Initialised = 0;
+    i32 NuTimeBar_EngineEnabled = 0;
+    i32 NuTimeBar_GpuFrameOutEnabled = 0;
+    i32 NuTimeBar_PeakReset = 0;
+    NUMTL *NuTimeBar_FrameOutMtl = 0;
+    i32 TreeInitialised = 0;
+    VISIBILITY_RESULT_READER_PC *myvisi = 0;
+    i32 NuPortalDebugEnabled = 0;
+    NUVEC *NuPortalOverrideCamera = 0;
+    i32 dat_009739b4 = 0;
+    i32 dat_009739b8 = 0;
+    i32 dat_009739bc = 0;
+    i32 dat_009739c0 = 0;
+    u8 CutSceneBoundingBoxTrackRoot = 0;
+    u32 nudlist_field_9d0 = 0;
+    u32 nudlist_field_9d8 = 0;
+    NUDISPLAY_LIST_PC *PCDisplayScenes[256] = {0};
+    NUDISPLAY_LIST_PC PCDynamicDisplayScene = {0};
+    i32 PCDisplayMaterialAddCount = 0;
+    NUMTL **PCDisplayMaterialAddQueue = 0;
+    i32 PCDisplayMaterialDeleteCount = 0;
+    NUMTL **PCDisplayMaterialDeleteQueue = 0;
+    u8 *PCDisplayMaterialReferenceCounts = 0;
+    u32 nudlist_field_e80 = 0;
+    VARIPTR PCDisplayMaterialStreamStart = {0};
+    VARIPTR PCDisplayMaterialStreamEnd = {0};
+    u8 *PCDisplayMaterialStreamUsed = 0;
+    u32 numtl_renderplane = 0;
+    NULSTHDR *g_overrideList = 0;
+    i32 dat_0097401c = 0;
+    i32 dat_00974020 = 0;
     i32 BoxTreeDrawBounds = 1;
+    i32 VisibilityEvaluateEnabled = 1;
+    i32 VisibilityOcclusionEnabled = 1;
+    i32 VisibilityCurrentViewBox = -1;
+    extern i32 NuTimeBarPeakResetInterval = 30;
+    i32 do_InstTree = 1;
+    i32 PCPortalsEnabled = 1;
+    i32 NuPortalDebugDraw = -1;
+    i32 nudlist_frame_active = 2;
+    NUMTX NuVpIdentityMatrix = {1.0f, 0.0f, 0.0f, 0.0f, 0.0f, 1.0f, 0.0f, 0.0f, 0.0f, 0.0f, 1.0f, 0.0f, 0.0f, 0.0f, 0.0f, 1.0f};
 
     static void BoxTreeSetClipResults(u8 *results, i32 *instances, i32 clip, i32 count) {
         i32 i;
@@ -9282,6 +9334,13 @@ extern "C" {
 
 extern "C" {
     static i32 PCMaterialBlockItemCount = 8;
+    i32 PCMaterialGeometryItemIndex = 6;
+    i32 PCMaterialLinkItemIndex = 7;
+    i32 VisibilityPortalFilterEnabled = 1;
+    i32 dat_0080bab8 = 1;
+    i32 PCShadowSubmissionEnabled = 1;
+    i32 mtl_animation_mask = 0xffffff;
+    f32 FrameMaterialAnimationSpeed = 1.0f;
 
     void NuDisplaySceneDestroy(NUDISPLAY_LIST_PC *scene) {
         i32 i;
@@ -11045,6 +11104,10 @@ typedef struct FRAME_MTL_SCENE {          // size 0x15c
 } FRAME_MTL_SCENE;
 
 static f32 FrameMaterialAnimationTime = 0;
+extern "C" {
+    f32 PostGaussianTexelBias = 0.0f;
+    NUVEC ANI3_EVAL_SCALE_ARRAY[256] = {0};
+}
 
 void NuDisplayListAnimateMtls(f32 frame_time) {
     FRAME_MTL_ANIM_SET *set;
@@ -11297,6 +11360,54 @@ extern "C" void PCGraphicsAttachFramebuffer(PC_FRAMEBUFFER *, i32, GRAPHICS_REND
 
 static f32 motionFactorPan = 0.01f;
 static f32 motionFactorPull = -0.024f;
+extern "C" {
+    i32 dat_00806b84 = 1;
+    i32 dat_00806b88 = 1;
+    i32 dat_00806b8c = 1;
+    i32 dat_00806b90 = 1;
+    i32 dat_00806b94 = 1;
+    f32 nuspecial_const_alpha = 1.0f;
+    /* Static-shadow frustum topology and mutable extrusion distance. */
+    i32 PostShadowCubeFaceIndices[6][4] = {
+        {0, 1, 2, 3},
+        {3, 2, 6, 7},
+        {7, 6, 5, 4},
+        {4, 5, 1, 0},
+        {1, 5, 6, 2},
+        {4, 0, 3, 7}
+    };
+    // Each of the 12 cube edges has two vertex indices and two incident faces.
+    i32 cubeEdgeIndices[12][2] = {
+        {0, 1},
+        {1, 2},
+        {2, 3},
+        {3, 0},
+        {4, 5},
+        {5, 6},
+        {6, 7},
+        {7, 4},
+        {0, 4},
+        {1, 5},
+        {2, 6},
+        {3, 7}
+    };
+    i32 cubeEdgeTopologies[12][2] = {
+        {3, 0},
+        {4, 0},
+        {1, 0},
+        {5, 0},
+        {2, 3},
+        {2, 4},
+        {2, 1},
+        {2, 5},
+        {5, 3},
+        {3, 4},
+        {4, 1},
+        {1, 5}
+    };
+    NUVEC nuspecial_const_tint = {1.0f, 1.0f, 1.0f};
+    i32 PCSpecialClipState = -1;
+}
 static f32 motionFactorPanClamp = 0.02f;
 
 void NuSpeedBlurSetMotionFactors(f32 pan, f32 pull, f32 clamp) {
@@ -11777,6 +11888,9 @@ void NuCopyFilter::initResources() {
 
 extern "C" u8 NuPostFilterMemory[0x800];
 u8 NuPostFilterMemory[0x800] = {0};
+extern "C" {
+    u8 AnimQuatSaved[4] = {0};
+}
 VirtualStackAllocator NuPostFilterAllocator(NuPostFilterMemory, sizeof(NuPostFilterMemory));
 NuCopyFilter *NuPostCopyFilter = NULL;
 u32 NuPostShaderEngineFlagsPc = 0;
@@ -12114,6 +12228,11 @@ void NuMainFilterGen::destroyResources() {
 
 extern "C" f32 NuMotionFilterCentre;
 f32 NuMotionFilterCentre = 0.5f;
+extern "C" {
+    const char *PCDynamicDisplaySceneNamePointer = "Dynamic Material Display Scene";
+    extern i32 NuTimeBarRenderPeakReset = 1;
+    extern i32 NuTimeBarHorizontalPeakReset = 1;
+}
 
 void NuMotionFilterGen::render() {
     PC_FRAMEBUFFER *output = (PC_FRAMEBUFFER *)PostPortOutFramebuffer.manager->entries[PostPortOutFramebuffer.index].data;
@@ -12385,6 +12504,13 @@ extern "C" {
     void PostBlur7x7Dispatch(GRAPHICS_RENDER_TEXTURE *, i32, GRAPHICS_RENDER_TEXTURE *, i32, i32, i32, bool, f32, POST_SHADER_PROGRAM_PC *);
     void PCGraphicsResolveFramebuffer(i32);
     f32 NuMainFilterDofBlurScale = 1.5f;
+    i32 NuPostEffectBackBufferFrame = -1;
+    i32 dat_0080bf24 = -1;
+    f32 PostBlurHighOutputBias = 1.0f;
+    /* Mutable half-texel terms read by PostBlur7x7High (input -0.5, output +1.0). */
+    f32 PostBlurHighInputBiasPc = -0.5f;
+    f32 PostShadowPlaneExtrusion = 120.0f;
+    i32 PCShadowSurfaceSamplingEnabled = 1;
     f32 NuMainFilterDofWeight = 1.0f;
 }
 
@@ -13001,6 +13127,13 @@ extern "C" {
     }
 
     static f32 nu2api_paused = 0;
+    i32 MaxAnimJoints = 0;
+    ANI3_EVAL_CALLBACK_PC AnimBuffEvalCB = 0;
+    void **AnimBuffEvalData = 0;
+    i32 *AnimBuffEvalJoint = 0;
+    ANI3_GLOBALBUFFER *globalbuffer = 0;
+    NUJOINTPROCANIMFN_PC JointProcAnimFn = 0;
+    i32 NumQuatPushes = 0;
 
     void NuPause(i32 paused) {
         nu2api_paused = (f32)paused;
@@ -13721,6 +13854,14 @@ extern "C" {
 #pragma bss_seg(".bss$PostCopyFramebufferPc")
     PC_FRAMEBUFFER *PostCopyFramebuffer = 0;
 #pragma bss_seg()
+    i32 dat_00973868 = 0;
+    i32 PcGeometryRegistryCountPc = 0;
+    struct PC_GEOMETRY_PUBLISH_RECORD *PcGeometryRegistryPc = NULL;
+    i32 PcGeometryMatrixCapacity = 0;
+    struct PC_GEOMETRY_BASIS *PcGeometryTransforms = NULL;
+    i32 PcGeometryOutputCapacity = 0;
+    struct PC_GEOMETRY_OUTPUT *PcGeometryOutput = NULL;
+    i32 NuAnimDataBitCountInitialized = 0;
 }
 
 extern "C" const WCHAR PostEffectRenderLabel[];
@@ -15153,10 +15294,59 @@ extern "C" {
     }
 
     f32 curx;
+    NUPLANE VisibilityAbsoluteDepthPlane = {0};
+    u32 PCSpecialShadowClipResults[4] = {0};
+    NUMTL *PCMaterialPool = 0;
+    NUCAMERA *NuPortalCamera = 0;
+    i32 NuTextureCapacityPC = 0;
+    u8 fstackmem[NU_PORTAL_STACK_SIZE] = {0};
+    NUVEC NuRndrDebRangeInv = {0};
+    i32 PCMaterialPoolCount = 0;
+    u32 NuPostEffectInitialisedFlags = 0;
     f32 cury;
+    i32 PCSpecialShadowClipResultsPresent = 0;
+    NUVEC NuRndrDebRange = {0};
+    NUMTX NuCameraScalingTemplate = {0};
+    NUMTX VisibilityAlternateAbsoluteMatrix = {0};
+    void *NuTimeBar_SetList[16] = {0};
+    i32 *NuTextureLoadOrderPC = 0;
+    u8 NuAnimDataBitCount[256] = {0};
+    NUPLANE NuPortalNearPlane = {0};
     f32 nextx;
+    NUMTL *numtl_defaultmtl3d = 0;
+    i32 vport_inval = 0;
+    NUMTX NuPortalLocalView = {0};
+    GRAPHICS_RENDER_TEXTURE *NuPostEffectBackBufferTexture = NULL;
+    i16 NuPortalRoomsVisited[16] = {0};
+    NUPLANE NuPortalCameraPlane = {0};
+    f32 zxs = 0;
+    f32 zx = 0;
+    void *PCDisplayClipSet = 0;
+    i32 PCDisplayClipGroupIndex = 0;
+    void *dat_00971ad8 = 0;
+    i16 NuPortalCameraRoom = 0;
+    NUCAMERA global_camera = {0};
+    NUCAMERA NuPortalDebugCamera = {0};
+    i32 NuPostEffectsRan = 0;
+    u8 NuPostLastFrameEffect = 0;
+    u8 ForcePlayEndFrame = 0;
+    u8 ForceEulerToQuat = 0;
+    NU_POST_MAIN_VIEW *mainFilter = NULL;
+    NU_POST_DEFERRED_VIEW *deferredFilter = NULL;
+    NU_POST_MOTION_VIEW *motionFilter = NULL;
+    NU_POST_ACCUM_VIEW *motionAccumFilter = NULL;
+    NU_POST_SPEED_VIEW *speedBlurFilter = NULL;
     f32 dx;
+    i32 NuTextureLoadCountPC = 0;
+    i32 PCSpecialActiveShadowLights = 0;
+    VARIPTR fstack_limit = {0};
+    u8 OcclusionBitArray[0x320] = {0};
+    u32 NuQFntModeStack[16] = {0};
+    NUMTX VisibilityPrimaryPlaneMatrix = {0};
+    NUMTL *numtl_defaultmtl2d = 0;
+    f32 zys = 0;
     i32 size;
+    NUMTX VisibilityPrimaryWorldMatrix = {0};
 
     static void setpoint(f32 x) {
         curx = x;
@@ -16521,6 +16711,30 @@ extern "C" {
     }
 
     i32 special_debug = 0;
+    i32 nuspecial_const_alpha_enabled = 0;
+    i32 nuspecial_const_tint_enabled = 0;
+    i32 nuspecial_draw_state = 0;
+    i32 nuspecial_vertex_noffsets = 0;
+    f32 (*nuspecial_vertex_offsets)[4] = NULL;
+    NUPRIM_VERTEX_GROUP_SOURCE_PC *NuPrimVertexGroupSource = 0;
+    i32 PCSpecialReflectionPass = 0;
+    f32 qfnt_offscale_x = 0;
+    f32 qfnt_offscale_y = 0;
+    f32 nuqfnt_space_width = 0;
+    VUFNT *system_qfont = 0;
+    i32 nuqfnt_initialised = 0;
+    i32 nuqfnt_cs_mode = 0;
+    u32 NuQFntMode = 0;
+    i32 NuQFntCSModeStackIndex = 0;
+    i32 NuQFntModeStackIndex = 0;
+    i32 ddmaxjoints = 0;
+    i32 motionBlurAccumActiveThisFrame = 0;
+    i32 PCSpecialForcedLOD = 0;
+    NUMTL *PCSpecialForcedMaterial = 0;
+    NUMTL **PCSpecialForcedMaterialTable = 0;
+    i32 PCSpecialForceMaterialCount = 0;
+    i32 PS2_REZ_W = 0;
+    i32 PS2_REZ_H = 0;
 
     /* Debug listing of a scene's specials; the print call is the empty handler. */
     void NuSpecialList(NUGSCN *scene) {
@@ -18769,6 +18983,12 @@ void NuDeferredFilterGen::render() {
 
 #pragma bss_seg(".bss$PostShadowViewPc")
 extern "C" NUMTX PostShadowView = {0};
+extern "C" {
+    GRAPHICS_RENDER_TEXTURE *NuPostEffectBackBufferCopy = NULL;
+    GRAPHICS_RENDER_TEXTURE *dat_0097ace4 = NULL;
+    NUMTX NuPortalProjectionInverse = {0};
+    NUMTX NuPortalProjectionScratch = {0};
+}
 #pragma bss_seg(".bss$PostShadowProjectionPc")
 extern "C" NUMTX PostShadowProjection = {0};
 #pragma bss_seg()

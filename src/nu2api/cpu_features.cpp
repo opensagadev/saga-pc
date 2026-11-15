@@ -1,6 +1,39 @@
 #include "saga.h"
 #include <excpt.h>
 
+extern "C" {
+    CPU_VENDOR_WORDS CpuVendorName = {0x3f3f3f3fu, 0x3f3f3f3fu, 0x3f3f3f3fu, {0}};
+    u32 CpuVendor = 0;
+    u32 CpuHas3dnow = 0;
+    i32 PCClipUseSSE = 0;
+    u32 CpuHasSse2 = 0;
+    u32 CpuExtendedLeafMax = 0;
+    u32 CpuExtendedFeatures = 0;
+    u32 CpuHasCpuid = 0;
+    u32 CpuBasicLeafMax = 0;
+    u32 CpuProcessorType = 0;
+    u32 CpuFamily = 0;
+    u32 CpuModel = 0;
+    u32 CpuStepping = 0;
+    u8 CpuBrandIndex = 0;
+    u32 CpuHasFpu = 0;
+    u32 CpuHasVme = 0;
+    u32 CpuHasDe = 0;
+    u32 CpuHasPse = 0;
+    u32 CpuHasTsc = 0;
+    u32 CpuHasMsr = 0;
+    u32 CpuHasPae = 0;
+    u32 CpuHasMce = 0;
+    u32 CpuHasCmpxchg8b = 0;
+    u32 CpuHasApic = 0;
+    u32 CpuHasPge = 0;
+    u32 CpuHasMca = 0;
+    u32 CpuHasCmov = 0;
+    u32 CpuHasPat = 0;
+    u32 CpuHasMmx = 0;
+    u32 CpuInitialized = 0;
+}
+
 /* Detects the CPU with a hand-written inline assembly block; the shifts by
    zero come from its uniform field-extraction pattern. */
 extern "C" void CpuDetectFeatures(void) {
@@ -248,6 +281,10 @@ extern "C" u32 CpuGetStepping(void) {
     return CpuStepping;
 }
 
+extern "C" {
+    u32 CpuUnsetValue0 = 0;
+}
+
 extern "C" u32 CpuGetUnsetValue0(void) {
     if (CpuInitialized == 0) {
         CpuDetectFeatures();
@@ -262,6 +299,10 @@ extern "C" u32 CpuGetBasicLeafMax(void) {
         CpuInitialized = 1;
     }
     return CpuBasicLeafMax;
+}
+
+extern "C" {
+    u32 CpuUnsetValue1 = 0;
 }
 
 extern "C" u32 CpuGetUnsetValue1(void) {
@@ -392,12 +433,20 @@ extern "C" u32 CpuGetHasCmov(void) {
     return CpuHasCmov;
 }
 
+extern "C" {
+    u32 CpuUnsetFeature0 = 0;
+}
+
 extern "C" u32 CpuGetUnsetFeature0(void) {
     if (CpuInitialized == 0) {
         CpuDetectFeatures();
         CpuInitialized = 1;
     }
     return CpuUnsetFeature0;
+}
+
+extern "C" {
+    u32 CpuUnsetFeature1 = 0;
 }
 
 extern "C" u32 CpuGetUnsetFeature1(void) {
@@ -408,12 +457,20 @@ extern "C" u32 CpuGetUnsetFeature1(void) {
     return CpuUnsetFeature1;
 }
 
+extern "C" {
+    u32 CpuUnsetFeature2 = 0;
+}
+
 extern "C" u32 CpuGetUnsetFeature2(void) {
     if (CpuInitialized == 0) {
         CpuDetectFeatures();
         CpuInitialized = 1;
     }
     return CpuUnsetFeature2;
+}
+
+extern "C" {
+    u32 CpuUnsetFeature3 = 0;
 }
 
 extern "C" u32 CpuGetUnsetFeature3(void) {

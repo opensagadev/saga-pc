@@ -4,14 +4,35 @@
 #include <float.h>
 
 NURNDRLIBSCENE currentScene = {0};
+f32 PCShaderMaterialSamplerBiasOffsetPc = 0.0f;
+u32 PCWindFrameCount = 0;
+i32 global_frame_count_paused = 0;
+i32 dat_00973934 = 0;
+i32 dat_00973938 = 0;
+i32 dat_0097393c = 0;
 NUVPCURRENT vpCurrent = {0};
 i32 sceneParametersCount = 0;
 NUDISPLAYLIST PCDisplayList2d = {0};
+NUDISPLAYLISTITEM nudlist_2d_static = {0};
 i32 nused_sort_pris = 0;
 NUSORTPRI *sort_list = 0;
 i32 render_scene_index = 0;
 NURNDRLIBSCENE sceneParameters[16] = {0};
+u8 cacheValues[256] = {0};
 NUDISPLAYLISTRENDERSCENE *render_scene_ptrs[24] = {0};
+NUDISPLAYLISTRENDERSCENE *PCSafeRenderScenes[24] = {0};
+i32 nudlist_alloc_count = 0;
+u32 nudlist_alloc_base = 0;
+u32 nudlist_alloc_end = 0;
+u32 nudlist_item_base = 0;
+u32 nudlist_field_fc8 = 0;
+u32 nudlist_field_fe4 = 0;
+i32 DisplaySceneRenderDisabled = 0;
+i32 noscenespecials = 0;
+i32 PCShadowPacketSequence = 0;
+f32 PCShadowNearValue = 0;
+f32 PCShadowFarValue = 0;
+i32 PCShadowPacketCount = 0;
 
 i32 NuRndrBeginScene(i32 begin_flags) {
     currentScene.clear_alpha_4c = 0.0f;
@@ -1332,6 +1353,7 @@ u8 NuPrim2DAddCLR(i32 minimum_unused, i32 maximum_unused, f32 value) {
 
 PC_TEXTURE_RESOURCE *RendererVertexDeclaration = 0;
 PC_BUFFER_RESOURCE *RendererQuadVertexBuffer = 0;
+PC_HG_SHADOW_STATE_VIEW PCShadowState = {0};
 
 /* Stencil shadow-volume arena vertex: D3DDECLTYPE_FLOAT3 position and D3DCOLOR. */
 typedef struct RENDERER_ARENA_VERTEX { // size 0x10
@@ -1340,11 +1362,17 @@ typedef struct RENDERER_ARENA_VERTEX { // size 0x10
 } RENDERER_ARENA_VERTEX;
 
 RENDERER_ARENA_VERTEX *RendererArenaData = 0;
+i32 *NuPortalFrustumCount = 0;
+CAMERA_CLIP_PLANES CameraClipPlanes = {0};
 u32 *RendererArenaOffsets = 0;
+VARIPTR fstack = {0};
 i32 *RendererArenaTypes = 0;
+NUTEXDIM_PC **NuTextureDimensions = 0;
 i32 RendererArenaCount = 0;
 i32 RendererArenaVertexCount = 0;
 i32 RendererArenaIndexCount = 0;
+NUPLANE VisibilityDepthPlane = {0};
+char *nudlist_field_18b0 = NULL;
 
 /* Shadow outline records: a direction or point with a count (or a -1 marker in the arena) in the fourth word. */
 typedef struct pc_shadow_edge_s { // size 0x10
@@ -2155,6 +2183,8 @@ void NuRndrLineRect2di(i32 x, i32 y, i32 width, i32 height, i32 colour, NUMTL *m
     NuPrimSetCoordinateSystem(NuPrimCoordSystemStack[NuPrimCSPos]);
 }
 
+f32 global_windscale = 1.0f;
+f32 global_windspeed = 1.0f;
 i32 dat_0080b6e4 = 13;
 
 /* Native speed-blur state has distinct writable storage. */

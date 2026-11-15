@@ -25,8 +25,21 @@ extern "C" {
     }
 }
 
+extern "C" {
+    f32 PCShaderWaterThetaStep = 0.26666668f;
+}
+
 extern "C" void NuShaderObjectBaseSetWaterSpeed(f32 speed) {
     PCShaderWaterThetaStep = (f32)((f64)speed * TerrainScanMargin10);
+}
+
+extern "C" {
+    f32 PCShaderWaterAmplitudeScale = 4.0f;
+    f32 PCShaderWaterTheta = 0.7f;
+    i32 PCShaderWaterLastFrame = -1;
+    NUVEC4 PCShaderWaterTable[32] = {0};
+    struct PC_SHADER_WATER_MATERIAL_VIEW *PCShaderWaterPreviousMaterial = NULL;
+    u32 PCShaderWaterInitializationBits = 0;
 }
 
 extern "C" void NuShaderObjectBaseUpdateWaterTable(NuShaderObject *shader, PC_SHADER_WATER_MATERIAL_VIEW *material) {
