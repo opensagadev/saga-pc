@@ -40,3 +40,4 @@ during the cleanup; each flip is logged here and they get one tuning pass once t
 | editor pseudo ids and door flags (f87fb539) | BlockadeRunnerDEjectCreature | legogame/episodeIV.c | 90.96 % | exact |
 | frame stats struct (PcFrameStatsReset) | DebrisSetup2 | legoapi/parts.c | 99.95 % | exact |
 | frame stats struct (PcFrameStatsReset) | BlockadeRunnerDEjectCreature | legogame/episodeIV.c | exact | 90.96 % |
+| episodeIII.c narrowed (87894ba9) | BoulderSpawn | legogame/episodeIII.c | 83.28 % | exact |
