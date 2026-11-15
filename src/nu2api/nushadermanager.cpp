@@ -1,4 +1,18 @@
-#include "saga.h"
+#include "gamelib/util/CRC16.h"
+#include "gamelib/util/gamelib_util_types.h"
+#include "nu2api/PCInput.h"
+#include "nu2api/ShaderManagerHLSL.h"
+#include "nu2api/nu3d/ShaderManager.h"
+#include "nu2api/nu3d/ShaderObjectKey.h"
+#include "nu2api/nu3d/nushader.h"
+#include "nu2api/nu3d/nushader_plain.h"
+#include "nu2api/nu3d/nushadermanager_gen.h"
+#include "nu2api/nu3d/nushaderobject.h"
+#include "nu2api/nu3d/shaderSemantics.h"
+#include "nu2api/numath/numtx.h"
+#include "nu2api/nuwin32/d3dCalls.h"
+#include "nu2api/nuwin32/d3dCore.h"
+#include "nu2api/nuwin32/pcapi.h"
 #include <string.h>
 
 template <> bool PC_SHADER_MANAGER_VIEW::CreateShader(const PC_SHADER_MATERIAL_FILTER_VIEW *, bool, NuShaderObject *, i32);

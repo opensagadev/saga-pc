@@ -17,6 +17,9 @@
 #include "nu2api/numath/nuvec4.h"
 #endif
 
+struct KEEP_SCREEN_PLANE;
+struct parttype_lookup_s;
+
 #define QRAND_FLOAT() (qrand() * (1.0f / 65535.0f))
 
 /* Types used by the units below. */

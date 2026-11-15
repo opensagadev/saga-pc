@@ -1,4 +1,10 @@
 #include "debug/diagnostics.h"
+#include "decomp.h"
+#include "nu2api/PCInput.h"
+#include "nu2api/huffdecode.h"
+#include "nu2api/nucore/nupad.h"
+#include "nu2api/nucore/nustring.h"
+#include "nu2api/nufile/nufile.h"
 #include "pc_fmv_native.h"
 #include <stdarg.h>
 #include <string.h>

@@ -1,4 +1,5 @@
-#include "saga.h"
+#include "gameapi/apisave.h"
+#include "nu2api/nufile/nufile.h"
 
 /* The memory-card device stubs form their own unit; the nucore file
    functions call them out of line. */

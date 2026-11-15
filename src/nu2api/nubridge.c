@@ -1,4 +1,18 @@
-#include "saga.h"
+#include "legoapi/render/core/gameliball.h"
+#include "legoapi/render/core/terrain.h"
+#include "nu2api/nu3d/nu3d_includes.h"
+#include "nu2api/nu3d/nubridge.h"
+#include "nu2api/nu3d/nucamera.h"
+#include "nu2api/nu3d/nugscn.h"
+#include "nu2api/nu3d/nuhspecial.h"
+#include "nu2api/nu3d/numtl.h"
+#include "nu2api/nuanimation_gen.h"
+#include "nu2api/nubridge.h"
+#include "nu2api/numath/nufloat.h"
+#include "nu2api/numath/numtx.h"
+#include "nu2api/numath/nutrig.h"
+#include "nu2api/numath/nuvec.h"
+#include "nu2api/numath/nuvec4.h"
 #include <stdio.h>
 
 /* NuFabs: copies the value with the sign bit cleared into a new float. */

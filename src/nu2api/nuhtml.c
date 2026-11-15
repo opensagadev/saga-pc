@@ -1,4 +1,6 @@
-#include "saga.h"
+#include "nu2api/nu3d/nu3d_includes.h"
+#include "nu2api/nu3d/nudlist.h"
+#include "nu2api/nucore/nustring.h"
 #include <stdarg.h>
 #include <stdio.h>
 

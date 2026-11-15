@@ -16,6 +16,8 @@
 #ifndef SAGA_SHIM
 #include "editor/edlevelall.h"
 #include "gameapi/edtools/EdObjectNotifier.h"
+#include "gameapi/edtools/edfile.h"
+#include "gamelib/net/NetMessagePc.h"
 #include "legoapi/items/collect/bolts.h"
 #endif
 

@@ -1,4 +1,17 @@
-#include "saga.h"
+#include "gameapi/apisave.h"
+#include "gameapi/edtools/edui.h"
+#include "nu2api/bgproc_pc.h"
+#include "nu2api/huffdecode.h"
+#include "nu2api/nu3d/nu3d_includes.h"
+#include "nu2api/nucore/bgproc.h"
+#include "nu2api/nucore/nucore_includes.h"
+#include "nu2api/nucore/nustring.h"
+#include "nu2api/nudir_gen.h"
+#include "nu2api/nuerror_gen.h"
+#include "nu2api/nufile/nufile.h"
+#include "nu2api/nufile_pc.h"
+#include "nu2api/nuwin32/d3dCore.h"
+#include "nu2api/nuwin32/pcapi.h"
 #include <windows.h>
 #include <string.h>
 

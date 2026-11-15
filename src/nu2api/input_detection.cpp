@@ -1,4 +1,4 @@
-#include "saga.h"
+#include "nu2api/PCInput.h"
 #include <WbemIdl.h>
 #include <stdio.h>
 #include <wchar.h>

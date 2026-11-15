@@ -11,6 +11,8 @@
 #include "nu2api/numath/nuvec.h"
 #endif
 
+struct carry_plug_sys_s;
+
 #ifdef __cplusplus
 extern "C" {
 #endif

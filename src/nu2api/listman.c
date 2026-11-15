@@ -1,4 +1,7 @@
-#include "saga.h"
+#include "gameapi/edtools/edui.h"
+#include "nu2api/nu3d/nu3d_includes.h"
+#include "nu2api/nucore/nulst.h"
+#include "nu2api/nucore/nuthread.h"
 
 NULNKHDR *NuLstAllocTail(NULSTHDR *list) {
     u32 current_thread;

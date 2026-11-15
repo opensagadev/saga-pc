@@ -1,4 +1,8 @@
-#include "saga.h"
+#include "nu2api/PCInput.h"
+#include "nu2api/nucore/nuapi.h"
+#include "nu2api/nucore/nupad.h"
+#include "nu2api/nucore/nustring.h"
+#include "nu2api/numath/nufloat.h"
 #include <stdio.h>
 
 #pragma pack(push, 1)

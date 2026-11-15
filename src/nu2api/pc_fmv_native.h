@@ -1,6 +1,8 @@
 #pragma once
 
-#include "saga.h"
+#include "externals/bink.h"
+#include "nu2api/nu3d/nu3d_includes.h"
+#include "nu2api/nufmv/pc/Bink/dsplay_bink.h"
 struct RADFMV_TEXTURE_PC;
 
 struct RADFMV_LOCK_PC {

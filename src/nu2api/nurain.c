@@ -1,4 +1,15 @@
-#include "saga.h"
+#include "gameapi/edptl.h"
+#include "legoapi/render/core/gameliball.h"
+#include "legoapi/render/fx.h"
+#include "legoapi/render/fx/game_deb.h"
+#include "nu2api/nu3d/nucamera.h"
+#include "nu2api/nu3d/nuptl.h"
+#include "nu2api/nu3d/nutimebar_plain.h"
+#include "nu2api/numath/numath_includes.h"
+#include "nu2api/numath/numtx.h"
+#include "nu2api/numath/nutrig.h"
+#include "nu2api/numath/nuvec.h"
+#include "nu2api/nustencilshadows_PC.h"
 
 /* PC rain: a DAVE_RAIN debris key fed around the camera. The code is kept but never called. */
 i32 NuRainKey = -1;

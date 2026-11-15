@@ -1,3 +1,6 @@
+#include "externals/bink.h"
+#include "nu2api/nu3d/numtl.h"
+#include "nu2api/nu3d/nutex.h"
 #include "pc_fmv_native.h"
 
 /* A Bink movie played into a material texture. PC never opens one in the shipped game,

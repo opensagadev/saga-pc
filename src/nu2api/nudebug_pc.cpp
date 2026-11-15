@@ -1,4 +1,8 @@
-#include "saga.h"
+#include "nu2api/PCInput.h"
+#include "nu2api/nudebug_pc.h"
+#include "nu2api/nuerror_gen.h"
+#include "nu2api/nufile/nufile.h"
+#include "nu2api/nuwin32/d3dCore.h"
 #include <stdarg.h>
 #include <stdio.h>
 #include <signal.h>

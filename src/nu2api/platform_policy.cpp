@@ -1,4 +1,7 @@
-#include "saga.h"
+#include "nu2api/nucore/nuapi.h"
+#include "nu2api/nuwin32/d3dCore.h"
+#include "nu2api/nuwin32/nu2api_windows.h"
+#include "nu2api/platform_policy.h"
 #include <string.h>
 
 struct PC_PLATFORM_POLICY_PC;

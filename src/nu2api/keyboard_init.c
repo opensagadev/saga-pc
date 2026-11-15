@@ -1,4 +1,4 @@
-#include "saga.h"
+#include "nu2api/PCInput.h"
 #include <string.h>
 
 typedef struct NuKeyboardProfile_PC {   // size 0x17c

@@ -5,6 +5,10 @@
 
 #include "nu2api/nucore/common.h"
 
+struct FRAME_PAD_PC;
+struct edcam_s;
+struct edui_colour_pick_s;
+struct edui_interact_s;
 struct eduiitem_s;
 struct eduimenu_s;
 

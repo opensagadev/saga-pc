@@ -1,4 +1,15 @@
-#include "saga.h"
+#include "gameapi/edtools/edui.h"
+#include "legoapi/cutscenes/cutscenes.h"
+#include "legoapi/items/base/apiobject.h"
+#include "nu2api/PCInput.h"
+#include "nu2api/cutscene_include.h"
+#include "nu2api/nu3d/nuhspecial.h"
+#include "nu2api/nu3d_pc_includes.h"
+#include "nu2api/nucore/numem.h"
+#include "nu2api/nucore/nuvideo.h"
+#include "nu2api/numath/numaths.h"
+#include "nu2api/numath/numtx.h"
+#include "nu2api/nuwin32/Stubs.h"
 
 extern i32 dat_00973868;
 extern i32 dat_00806b84;

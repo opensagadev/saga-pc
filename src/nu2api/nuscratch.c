@@ -1,4 +1,4 @@
-#include "saga.h"
+#include "nu2api/nucore/numem.h"
 
 extern u8 *ps2_scratch_free;
 extern u8 NuScratchBackingAccess[0x4000];

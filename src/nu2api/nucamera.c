@@ -1,4 +1,18 @@
-#include "saga.h"
+#include "gameapi/edtools/edui.h"
+#include "legoapi/cutscenes/gcutscn.h"
+#include "legoapi/legoapi_types.h"
+#include "legoapi/render/fx/game_deb.h"
+#include "nu2api/nu3d/nu3d_includes.h"
+#include "nu2api/nu3d/nucamera.h"
+#include "nu2api/nu3d/nurndr.h"
+#include "nu2api/nu3d/nuvport.h"
+#include "nu2api/numath/nufloat.h"
+#include "nu2api/numath/numath_includes.h"
+#include "nu2api/numath/numtx.h"
+#include "nu2api/numath/nutrig.h"
+#include "nu2api/numath/nuvec.h"
+#include "nu2api/numath/nuvec4.h"
+#include "nu2api/nustencilshadows_PC.h"
 
 #include <string.h>
 #include <math.h>

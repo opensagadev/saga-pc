@@ -6,6 +6,7 @@
 #include "nu2api/nucore/common.h"
 
 struct FRAME_PAD_PC;
+struct edcam_s;
 struct nucamera_s;
 struct nuvec_s;
 

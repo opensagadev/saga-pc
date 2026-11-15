@@ -1,4 +1,6 @@
-#include "saga.h"
+#include "legoapi/menus/screens/movies.h"
+#include "nu2api/nucore/nupad.h"
+#include "nu2api/nuwin32/Stubs.h"
 
 void NuPadSetMotorsPc(NUPAD_INIT_STATE *pad, i32 motor0, i32 motor1) {
     (void)pad;

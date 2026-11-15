@@ -1,4 +1,8 @@
-#include "saga.h"
+#include "gamelib/util/CRC16.h"
+#include "nu2api/nu3d/ShaderManager.h"
+#include "nu2api/nu3d/ShaderObjectKey.h"
+#include "nu2api/nu3d/nu3d_includes.h"
+#include "nu2api/nuwin32/d3dCore.h"
 
 // The filter predicates below are small PC_SHADER_MATERIAL_FILTER_VIEW helpers inlined here; each one
 // rereads filter->descriptor.

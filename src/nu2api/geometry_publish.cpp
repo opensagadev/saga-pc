@@ -1,4 +1,14 @@
-#include "saga.h"
+#include "gameapi/edtools/edui.h"
+#include "nu2api/PCInput.h"
+#include "nu2api/nu3d/nu3d_includes.h"
+#include "nu2api/nu3d/nucamera.h"
+#include "nu2api/nu3d/nudlist.h"
+#include "nu2api/nucore/NuSpeedBlurFilter.h"
+#include "nu2api/nuinstsurfgeom_gen.h"
+#include "nu2api/numath/numtx.h"
+#include "nu2api/numath/nuvec.h"
+#include "nu2api/numath/nuvec4.h"
+#include "nu2api/nustencilshadows_PC.h"
 
 struct PC_GEOMETRY_PUBLISH_FORMAT_RECORD { // size 0x78
     u32 unknown_00;                        // 0x00

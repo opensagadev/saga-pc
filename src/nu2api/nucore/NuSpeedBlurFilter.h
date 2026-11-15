@@ -11,6 +11,12 @@
 #include "nu2api/nucore/NuSpeedBlurFilterGen.h"
 #endif
 
+struct PC_DYNAMIC_GEOMETRY;
+struct PC_GEOMETRY_MESH;
+struct PC_GEOMETRY_OUTPUT;
+struct PC_GEOMETRY_SKIN;
+struct PC_GEOMETRY_SORT_ITEM;
+
 #ifdef __cplusplus
 extern "C" {
 #endif

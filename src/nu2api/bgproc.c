@@ -1,4 +1,11 @@
-#include "saga.h"
+#include "batman.h"
+#include "nu2api/bgproc_pc.h"
+#include "nu2api/nucore/bgproc.h"
+#include "nu2api/nucore/bgproc_platform.h"
+#include "nu2api/nucore/nulst.h"
+#include "nu2api/nucore/nustring.h"
+#include "nu2api/nucore/nuthread.h"
+#include "nu2api/nucore_pc_includes.h"
 
 NULSTHDR *bgproc_procinfo_pool = 0;
 

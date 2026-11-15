@@ -1,4 +1,21 @@
-#include "saga.h"
+#include "gameapi/edtools/edui.h"
+#include "legoapi/items/collect/bolts.h"
+#include "legoapi/legoapi_types.h"
+#include "legoapi/render/light/lighting.h"
+#include "legogame/batman_gameai.h"
+#include "nu2api/nu3d/nu3d_includes.h"
+#include "nu2api/nufile/nufile.h"
+#include "nu2api/numath/nuang.h"
+#include "nu2api/numath/nufloat.h"
+#include "nu2api/numath/numath_includes.h"
+#include "nu2api/numath/numtx.h"
+#include "nu2api/numath/nuplane.h"
+#include "nu2api/numath/nuquat.h"
+#include "nu2api/numath/nurand.h"
+#include "nu2api/numath/nutrig.h"
+#include "nu2api/numath/nuvec.h"
+#include "nu2api/numath/nuvec4.h"
+#include "nu2api/nustencilshadows_PC.h"
 
 #include <float.h>
 #include <math.h>

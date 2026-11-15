@@ -10,6 +10,9 @@
 #include "nu2api/numath/nuvec.h"
 #endif
 
+struct eduiitem_s;
+struct eduimenu_s;
+
 #ifdef __cplusplus
 extern "C" {
 #endif

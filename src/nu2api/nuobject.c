@@ -1,4 +1,17 @@
-#include "saga.h"
+#include "legoapi/render/core/terrain.h"
+#include "legoapi/world/world_shared.h"
+#include "nu2api/nu3d/nu3d_includes.h"
+#include "nu2api/nu3d/nucamera.h"
+#include "nu2api/nu3d/nugeom.h"
+#include "nu2api/nu3d/nuhspecial.h"
+#include "nu2api/nu3d/nuobject.h"
+#include "nu2api/numath/nuang.h"
+#include "nu2api/numath/nufloat.h"
+#include "nu2api/numath/numtx.h"
+#include "nu2api/numath/nutrig.h"
+#include "nu2api/numath/nuvec.h"
+#include "nu2api/numath/nuvec4.h"
+#include "nu2api/nuobject.h"
 
 static void (*NuFadeObjGlobalSetLightsFn)(void);
 static void (*NuFadeObjSetLightsFn)(void);

@@ -1,4 +1,5 @@
-#include "saga.h"
+#include "gamelib/net/NetMessagePc.h"
+#include "gamelib/util/gamelib_util_types.h"
 
 /* Network message pool support object. */
 

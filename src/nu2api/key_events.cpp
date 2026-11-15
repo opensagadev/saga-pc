@@ -1,4 +1,5 @@
-#include "saga.h"
+#include "nu2api/PCInput.h"
+#include "nu2api/nucore/nukeyboard.h"
 
 extern "C" i32 NuKeyGet(u32 *modifiers) {
     i32 scan_code;

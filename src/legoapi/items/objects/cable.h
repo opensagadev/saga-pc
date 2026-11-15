@@ -13,6 +13,8 @@
 #include "nu2api/numath/nuvec.h"
 #endif
 
+struct CABLE_s;
+
 typedef struct CABLE_RECORD CABLE_RECORD;
 #ifdef __cplusplus
 extern "C" {

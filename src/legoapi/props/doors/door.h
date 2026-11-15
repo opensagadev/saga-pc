@@ -20,6 +20,8 @@
 #include "nu2api/numath/nuvec.h"
 #endif
 
+struct game_door_callback_s;
+
 /* 4 parts: saga.h includes this header once per part, each where its declarations belong; included directly, it gives
  * all parts at once. */
 

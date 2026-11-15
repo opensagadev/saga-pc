@@ -11,6 +11,8 @@
 #include "nu2api/nu3d/nuqfnt.h"
 #endif
 
+struct text_crawl_view_s;
+
 #ifdef __cplusplus
 extern "C" {
 #endif

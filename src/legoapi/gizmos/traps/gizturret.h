@@ -11,6 +11,8 @@
 #include "legoapi/menus/core/hint.h"
 #endif
 
+struct GIZTURRETSYS_s;
+
 #ifdef __cplusplus
 extern "C" {
 #endif

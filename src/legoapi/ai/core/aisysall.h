@@ -18,6 +18,7 @@
 
 struct AIPATH;
 struct EDAIPATH_s;
+struct eduiitem_s;
 struct nurnd_vertex3d_s;
 
 #ifdef __cplusplus

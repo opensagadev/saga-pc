@@ -5,6 +5,8 @@
 
 #include "nu2api/nucore/common.h"
 
+struct GIZSPINNER_s;
+
 #ifdef __cplusplus
 extern "C" {
 #endif

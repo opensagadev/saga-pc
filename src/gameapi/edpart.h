@@ -5,6 +5,9 @@
 
 #include "nu2api/nucore/common.h"
 
+struct eduiitem_s;
+struct eduimenu_s;
+
 #ifdef __cplusplus
 extern "C" {
 #endif

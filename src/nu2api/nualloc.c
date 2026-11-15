@@ -1,4 +1,7 @@
-#include "saga.h"
+#include "gameapi/edtools/edui.h"
+#include "nu2api/huffdecode.h"
+#include "nu2api/nu3d/nu3d_includes.h"
+#include "nu2api/nualloc.h"
 #include <stdlib.h>
 #include <string.h>
 

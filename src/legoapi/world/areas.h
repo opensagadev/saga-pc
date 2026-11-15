@@ -12,6 +12,8 @@
 
 #include "nu2api/nucore/common.h"
 
+struct nuvec_s;
+
 /* 4 parts: saga.h includes this header once per part, each where its declarations belong; included directly, it gives
  * all parts at once. */
 

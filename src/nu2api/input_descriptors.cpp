@@ -1,4 +1,4 @@
-#include "saga.h"
+#include "nu2api/PCInput.h"
 
 extern "C" void SetPadDescriptorPc(i32 product_id, const u16 *descriptor) {
     if (descriptor == NULL) {

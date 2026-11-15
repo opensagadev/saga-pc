@@ -1,4 +1,10 @@
-#include "saga.h"
+#include "nu2api/nu3d/nu3d_includes.h"
+#include "nu2api/nu3d/nucamera.h"
+#include "nu2api/nu3d/nuptl.h"
+#include "nu2api/nu3d/nurndr.h"
+#include "nu2api/numath/numtx.h"
+#include "nu2api/numath/nuvec.h"
+#include "nu2api/nustencilshadows_PC.h"
 
 void NuRndrSetParticleRotation(NUMTX *rotation) {
     NuRndr_DebrisRotMtxPtr = rotation;

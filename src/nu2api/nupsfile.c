@@ -1,4 +1,5 @@
-#include "saga.h"
+#include "nu2api/nucore/nuthread.h"
+#include "nu2api/nufile/nufile.h"
 
 /* Original bugs: scans 64 entries of the 32-entry table, and NuPSFileOpen then stores
    into entry -1 when none is free. */

@@ -1,4 +1,16 @@
 #include "debug/diagnostics.h"
+#include "decomp.h"
+#include "externals/bink.h"
+#include "gameapi/edtools/edui.h"
+#include "nu2api/NuEffectTex_pc.h"
+#include "nu2api/PCInput.h"
+#include "nu2api/huffdecode.h"
+#include "nu2api/nucore/nuapi.h"
+#include "nu2api/nufmv/pc/Bink/dsplay_bink.h"
+#include "nu2api/nuhgo_dlist.h"
+#include "nu2api/numath/numtx.h"
+#include "nu2api/nuwin32/d3dCore.h"
+#include "nu2api/nuwin32/pcapi.h"
 #include "pc_fmv_native.h"
 #include <string.h>
 extern "C" {

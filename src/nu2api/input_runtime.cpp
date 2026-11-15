@@ -1,4 +1,19 @@
-#include "saga.h"
+#include "gameapi/edtools/edui.h"
+#include "legoapi/items/collect/bolts.h"
+#include "legoapi/world/levels.h"
+#include "nu2api/PCInput.h"
+#include "nu2api/huffdecode.h"
+#include "nu2api/nucore/nuapi.h"
+#include "nu2api/nucore/nukeyboard.h"
+#include "nu2api/nucore/nupad.h"
+#include "nu2api/nucore/nustring.h"
+#include "nu2api/nucore/nutime.h"
+#include "nu2api/numath/nufloat.h"
+#include "nu2api/numath/nutrig.h"
+#include "nu2api/nuwin32/d3dApiCalls.h"
+#include "nu2api/nuwin32/d3dCore.h"
+#include "nu2api/nuwin32/pcapi.h"
+#include "nu2api/platform_files.h"
 #include <stdio.h>
 #include <string.h>
 

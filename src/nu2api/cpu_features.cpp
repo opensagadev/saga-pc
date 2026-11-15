@@ -1,4 +1,4 @@
-#include "saga.h"
+#include "nu2api/nuwin32/d3dCalls.h"
 #include <excpt.h>
 
 extern "C" {
