@@ -361,7 +361,9 @@ void DrawGameMessages(void) {
             progress = 1.0f - NuTrigTable[((i32)(progress * 32768.0) >> 1) & 0x7fff];
         }
 
-        scale = (flags & (GAMEMSG_WORLD_POSITION | GAMEMSG_WORLD_SCALE)) == (GAMEMSG_WORLD_POSITION | GAMEMSG_WORLD_SCALE) ? message->scale_current : message->scale_initial;
+        scale = (flags & (GAMEMSG_WORLD_POSITION | GAMEMSG_WORLD_SCALE)) == (GAMEMSG_WORLD_POSITION | GAMEMSG_WORLD_SCALE)
+                    ? message->scale_current
+                    : message->scale_initial;
         position = message->start_position;
         if (message->parameter_d4 != 0.0f && message->parameter_fb == 0) {
             const f32 limit = message->parameter_d4;
@@ -450,7 +452,8 @@ void AddGameMsgCount(NUVEC *position, i32 count, i32 total, unsigned char red, u
     char text[32];
     sprintf(text, "%i/%i", count, total);
 
-    message = position != NULL ? AddGameMessage(text, position, 0.6f, NULL, 0.8f, red, green, blue, GAMEMSG_WORLD_POSITION | GAMEMSG_FOLLOW | GAMEMSG_DRAW_SCALE | GAMEMSG_FADE, 1.0f)
+    message = position != NULL ? AddGameMessage(text, position, 0.6f, NULL, 0.8f, red, green, blue,
+                                                GAMEMSG_WORLD_POSITION | GAMEMSG_FOLLOW | GAMEMSG_DRAW_SCALE | GAMEMSG_FADE, 1.0f)
                                : AddGameMessage(text, &v001, 0.6f, NULL, 0.8f, red, green, blue, GAMEMSG_DRAW_SCALE | GAMEMSG_FADE, 1.0f);
     if (message != NULL) {
         message->parameter_d4 = value;
@@ -472,8 +475,10 @@ void AddFancyMessageRGB(char *text, f32 x, f32 y, f32 scale, f32 duration, i32 m
     position.y = y;
     position.z = 1.0f;
     half_scale = (f64)doubled_scale * 0.5;
-    AddGameMessage(text, &position, doubled_scale, &position, (f32)((f64)doubled_scale + half_scale), red, green, blue, GAMEMSG_DRAW_SCALE | GAMEMSG_FADE, duration);
-    AddGameMessage(text, &position, doubled_scale, &position, (f32)((f64)doubled_scale - half_scale), red, green, blue, GAMEMSG_DRAW_SCALE | GAMEMSG_FADE, duration);
+    AddGameMessage(text, &position, doubled_scale, &position, (f32)((f64)doubled_scale + half_scale), red, green, blue,
+                   GAMEMSG_DRAW_SCALE | GAMEMSG_FADE, duration);
+    AddGameMessage(text, &position, doubled_scale, &position, (f32)((f64)doubled_scale - half_scale), red, green, blue,
+                   GAMEMSG_DRAW_SCALE | GAMEMSG_FADE, duration);
 }
 
 void AddFancyMessage(char *text, float x, float y, float scale, float duration, i32 message_id, i32 colour_type) {

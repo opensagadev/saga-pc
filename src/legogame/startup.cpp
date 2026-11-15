@@ -1140,7 +1140,7 @@ extern "C" {
 
                 if (menu_timer < 0.5f && language_timer >= 3.3f && Text_IsFontLoaded() != NULL) {
                     if (LoadPerm_LanguageSelect == 0) {
-                        NewMenu(7, 0, -1);
+                        NewMenu(MENU_SELECT_LANGUAGE, 0, -1);
                         FadeSys.fade = -1.0f;
                         LoadPerm_LanguageSelect = 1;
                     }

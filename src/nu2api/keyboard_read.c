@@ -325,7 +325,7 @@ i32 NuKeyboardPlatformStartup(void) {
     NuKeyboardCreateWindowState(PCInputInstance, PCInputWindow);
     SetCursor(NULL);
     PCDeviceShowCursor(0);
-    PCDeviceSetRenderState(0x16, 1);
+    PCDeviceSetRenderState(D3DRS_CULLMODE, 1);
     return 1;
 }
 

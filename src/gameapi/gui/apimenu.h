@@ -57,6 +57,61 @@ typedef struct menu_s {       // size 0xe0
     i32 state;                // 0xdc
 } MENU;
 
+/* Menu ids (menufninfo_s.id, NewMenu, GetMenuID), named after the update or enter function the menu tables
+ * (GameMenuInfo, MenuInfo) give each id. */
+#define MENU_TITLES 0
+#define MENU_NEW_GAME 1
+#define MENU_PAUSE_MAIN 2
+#define MENU_PAUSE_RESTART 3
+#define MENU_OPTIONS 4
+#define MENU_EXTRAS 5
+#define MENU_PAUSE_EXIT 6
+#define MENU_SELECT_LANGUAGE 7
+#define MENU_MISSIONS 8
+#define MENU_END_MISSION 9
+#define MENU_END_CHALLENGE 10
+#define MENU_ARCADE_END 11
+#define MENU_CUSTOMISER 12
+#define MENU_SHOP 13
+#define MENU_MINIKIT 14
+#define MENU_SELECT_MODE 15
+#define MENU_BONUS_MODE 16
+#define MENU_FREE_PLAY 17
+#define MENU_CREDITS 18
+#define MENU_BONUS_WIN 19
+#define MENU_BONUS_COMPLETE 20
+#define MENU_CONTROL_SETUP 21
+#define MENU_SELECT_CONTROLS 22
+#define MENU_SAVE 1000
+#define MENU_DO_NOT_REMOVE_CARD 1001
+#define MENU_INSERT_CARD 1002
+#define MENU_NOT_ENOUGH_SPACE 1003
+#define MENU_NO_MEMORY_CARD 1004
+#define MENU_NO_DATA 1005
+#define MENU_FORMAT_CONFIRM 1006
+#define MENU_FORMATTING 1007
+#define MENU_SAVE_CONFIRM 1008
+#define MENU_SAVING 1009
+#define MENU_AUTO_SAVE_WARNING 1010
+#define MENU_AUTO_SAVE_CANCEL 1011
+#define MENU_LOAD 1012
+#define MENU_LOAD_CONFIRM 1013
+#define MENU_LOADING 1014
+#define MENU_DELETING 1015
+#define MENU_SAVE_CANCEL 1016
+#define MENU_LOAD_CANCEL 1017
+#define MENU_FORMAT_CANCEL 1018
+#define MENU_CARD_WARNING 1019
+#define MENU_FILE_CORRUPT 1020
+#define MENU_HEADER_SAVE 1021
+#define MENU_START_NEW_GAME 1022
+#define MENU_DELETE_CONFIRM 1023
+#define MENU_VIDEO 1025
+#define MENU_EFFECTS 1026
+#define MENU_VIDEO_CONFIRM 1027
+#define MENU_HIRES_NOTICE 1028
+#define MENU_QUIT 1029
+
 typedef struct menufninfo_s {  // size 0x1c
     i32 id;                    // 0x00
     void (*enter_fn)(MENU *);  // 0x04

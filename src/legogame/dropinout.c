@@ -325,7 +325,7 @@ i32 PlayersDropInOut(void) {
                             NuPadMapPlayerToPort(index, port);
                             PauseGame(index);
                             PcControlInitialize(2, index, index, 0);
-                            NewMenu(0x15, 0, -1);
+                            NewMenu(MENU_CONTROL_SETUP, 0, -1);
                             input_join = 0;
                             DropInConfigurationPlayer = (i8)index;
                         }

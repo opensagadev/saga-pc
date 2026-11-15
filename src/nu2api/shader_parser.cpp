@@ -317,7 +317,7 @@ void ShaderCompilerParser::ParseDeclaration(ShaderCompilerBufferAllocator *input
     char *custom = NULL;
     i32 vertex = -1;
     char *name = NULL;
-    i32 state = 0;
+    i32 state = SHADER_PARSE_KEYWORD;
     i32 type = 0;
     u8 shared = 0;
     u32 flags = 1;
@@ -325,23 +325,23 @@ void ShaderCompilerParser::ParseDeclaration(ShaderCompilerBufferAllocator *input
     ShaderLexicalSlice token = {NULL, 0};
     i32 semantic = SHADER_SEMANTIC_DEFAULT;
     ShaderLexicalReader *reader = reinterpret_cast<ShaderLexicalReader *>(&lexical_state);
-    while (state != 26 && reader->Next(input, cursor, &token)) {
+    while (state != SHADER_PARSE_DONE && reader->Next(input, cursor, &token)) {
         switch (state) {
-            case 0:
+            case SHADER_PARSE_KEYWORD:
                 if (token.Equals("nu2_use")) {
-                    state = 2;
+                    state = SHADER_PARSE_USE_OPEN;
                 } else if (token.Equals("nu2_declare")) {
-                    state = 7;
+                    state = SHADER_PARSE_DECLARE_OPEN;
                 } else if (token.Equals("nu2_anchorPoint")) {
-                    state = 22;
+                    state = SHADER_PARSE_ANCHOR_OPEN;
                 } else if (token.Equals("nu2_showDefine")) {
-                    state = 1;
+                    state = SHADER_PARSE_SHOW_DEFINE_VALUE;
                 } else {
                     token.Equals("nu2_debug");
-                    state = 26;
+                    state = SHADER_PARSE_DONE;
                 }
                 break;
-            case 1:
+            case SHADER_PARSE_SHOW_DEFINE_VALUE:
                 if (token.Equals("true")) {
                     SetShowDefinitions(1);
                 } else {
@@ -350,16 +350,16 @@ void ShaderCompilerParser::ParseDeclaration(ShaderCompilerBufferAllocator *input
                     }
                     SetShowDefinitions((u8)count);
                 }
-                state = 26;
+                state = SHADER_PARSE_DONE;
                 break;
-            case 2:
+            case SHADER_PARSE_USE_OPEN:
                 if (token.Equals("(")) {
-                    state = 3;
+                    state = SHADER_PARSE_USE_STORAGE;
                 } else {
-                    state = 26;
+                    state = SHADER_PARSE_DONE;
                 }
                 break;
-            case 3:
+            case SHADER_PARSE_USE_STORAGE:
                 if (token.Equals("vs_local")) {
                     flags = SHADER_DECL_VS_LOCAL | SHADER_DECL_VERTEX;
                 } else if (token.Equals("fs_local")) {
@@ -371,211 +371,211 @@ void ShaderCompilerParser::ParseDeclaration(ShaderCompilerBufferAllocator *input
                 } else if (token.Equals("uniform")) {
                     flags = SHADER_DECL_UNIFORM | SHADER_DECL_PIXEL | SHADER_DECL_VERTEX;
                 } else {
-                    state = 26;
+                    state = SHADER_PARSE_DONE;
                     break;
                 }
-                state = 4;
+                state = SHADER_PARSE_USE_COMMA;
                 break;
-            case 4:
+            case SHADER_PARSE_USE_COMMA:
                 token.Equals(",");
-                state = 5;
+                state = SHADER_PARSE_USE_NAME;
                 break;
-            case 5:
+            case SHADER_PARSE_USE_NAME:
                 if (token.Equals("*")) {
                     ++depth;
                 } else {
                     name = token.ArenaCopy(&memory);
-                    state = 6;
+                    state = SHADER_PARSE_USE_CLOSE;
                 }
                 break;
-            case 6:
+            case SHADER_PARSE_USE_CLOSE:
                 if (token.Equals(")")) {
                     UseDeclaration(flags, depth, name);
                 }
-                state = 26;
+                state = SHADER_PARSE_DONE;
                 break;
-            case 7:
+            case SHADER_PARSE_DECLARE_OPEN:
                 token.Equals("(");
-                state = 8;
+                state = SHADER_PARSE_DECLARE_STORAGE;
                 break;
-            case 8:
+            case SHADER_PARSE_DECLARE_STORAGE:
                 if (token.Equals("vs_local")) {
                     flags = SHADER_DECL_VS_LOCAL | SHADER_DECL_VERTEX;
-                    state = 12;
+                    state = SHADER_PARSE_DECLARE_STORAGE_COMMA;
                 } else if (token.Equals("fs_local")) {
                     flags = SHADER_DECL_FS_LOCAL | SHADER_DECL_PIXEL;
-                    state = 12;
+                    state = SHADER_PARSE_DECLARE_STORAGE_COMMA;
                 } else if (token.Equals("varying")) {
                     flags = SHADER_DECL_VARYING | SHADER_DECL_PIXEL | SHADER_DECL_VERTEX;
-                    state = 12;
+                    state = SHADER_PARSE_DECLARE_STORAGE_COMMA;
                 } else if (token.Equals("attribute")) {
                     flags = SHADER_DECL_ATTRIBUTE | SHADER_DECL_VERTEX;
-                    state = 12;
+                    state = SHADER_PARSE_DECLARE_STORAGE_COMMA;
                 } else if (token.Equals("uniform")) {
                     flags = SHADER_DECL_UNIFORM | SHADER_DECL_PIXEL | SHADER_DECL_VERTEX;
-                    state = 10;
+                    state = SHADER_PARSE_DECLARE_REGISTER;
                 } else if (token.Equals("shared")) {
-                    state = 9;
+                    state = SHADER_PARSE_DECLARE_SHARED_UNIFORM;
                     shared = 1;
                 } else {
-                    state = 26;
+                    state = SHADER_PARSE_DONE;
                 }
                 break;
-            case 9:
+            case SHADER_PARSE_DECLARE_SHARED_UNIFORM:
                 if (token.Equals("uniform")) {
                     flags = SHADER_DECL_UNIFORM | SHADER_DECL_PIXEL | SHADER_DECL_VERTEX;
-                    state = 10;
+                    state = SHADER_PARSE_DECLARE_REGISTER;
                 } else {
-                    state = 26;
+                    state = SHADER_PARSE_DONE;
                 }
                 break;
-            case 10:
+            case SHADER_PARSE_DECLARE_REGISTER:
                 if (token.Equals(",")) {
                     flags |= shared ? 0x4000 : 0;
-                    state = 13;
+                    state = SHADER_PARSE_DECLARE_TYPE;
                 } else {
                     if (token.StartsWith("vreg")) {
                         vertex = token.AsInteger(4);
                     } else if (token.StartsWith("freg")) {
                         pixel = token.AsInteger(4);
                     }
-                    state = 11;
+                    state = SHADER_PARSE_DECLARE_REGISTER2;
                 }
                 break;
-            case 11:
+            case SHADER_PARSE_DECLARE_REGISTER2:
                 if (token.Equals(",")) {
                     flags = ShaderDeclarationFlags(shared, vertex >= 0, pixel >= 0);
-                    state = 13;
+                    state = SHADER_PARSE_DECLARE_TYPE;
                 } else {
                     if (token.StartsWith("vreg")) {
                         vertex = token.AsInteger(4);
                     } else if (token.StartsWith("freg")) {
                         pixel = token.AsInteger(4);
                     }
-                    state = 12;
+                    state = SHADER_PARSE_DECLARE_STORAGE_COMMA;
                 }
                 break;
-            case 12:
+            case SHADER_PARSE_DECLARE_STORAGE_COMMA:
                 token.Equals(",");
                 if ((flags & SHADER_DECL_UNIFORM) != 0) {
                     flags = ShaderDeclarationFlags(shared, vertex >= 0, pixel >= 0);
                 }
-                state = 13;
+                state = SHADER_PARSE_DECLARE_TYPE;
                 break;
-            case 13:
+            case SHADER_PARSE_DECLARE_TYPE:
                 if (token.Equals("1")) {
-                    type = 1;
+                    type = SHADER_TYPE_FLOAT;
                 } else if (token.Equals("2")) {
-                    type = 3;
+                    type = SHADER_TYPE_FLOAT2;
                 } else if (token.Equals("3")) {
-                    type = 4;
+                    type = SHADER_TYPE_FLOAT3;
                 } else if (token.Equals("4")) {
-                    type = 5;
+                    type = SHADER_TYPE_FLOAT4;
                 } else if (token.Equals("float")) {
-                    type = 1;
+                    type = SHADER_TYPE_FLOAT;
                 } else if (token.Equals("float1")) {
-                    type = 2;
+                    type = SHADER_TYPE_FLOAT1;
                 } else if (token.Equals("float2")) {
-                    type = 3;
+                    type = SHADER_TYPE_FLOAT2;
                 } else if (token.Equals("float3")) {
-                    type = 4;
+                    type = SHADER_TYPE_FLOAT3;
                 } else if (token.Equals("float4")) {
-                    type = 5;
+                    type = SHADER_TYPE_FLOAT4;
                 } else if (token.Equals("float3x3")) {
-                    type = 6;
+                    type = SHADER_TYPE_FLOAT3X3;
                 } else if (token.Equals("float4x4")) {
-                    type = 7;
+                    type = SHADER_TYPE_FLOAT4X4;
                 } else if (token.Equals("half")) {
-                    type = 8;
+                    type = SHADER_TYPE_HALF;
                 } else if (token.Equals("half1")) {
-                    type = 9;
+                    type = SHADER_TYPE_HALF1;
                 } else if (token.Equals("half2")) {
-                    type = 10;
+                    type = SHADER_TYPE_HALF2;
                 } else if (token.Equals("half3")) {
-                    type = 11;
+                    type = SHADER_TYPE_HALF3;
                 } else if (token.Equals("half4")) {
-                    type = 12;
+                    type = SHADER_TYPE_HALF4;
                 } else if (token.Equals("half3x3")) {
-                    type = 13;
+                    type = SHADER_TYPE_HALF3X3;
                 } else if (token.Equals("half4x4")) {
-                    type = 14;
+                    type = SHADER_TYPE_HALF4X4;
                 } else if (token.Equals("bool")) {
-                    type = 15;
+                    type = SHADER_TYPE_BOOL;
                 } else if (token.Equals("hook")) {
-                    type = 21;
+                    type = SHADER_TYPE_HOOK;
                 } else if (token.Equals("int")) {
-                    type = 16;
+                    type = SHADER_TYPE_INT;
                 } else if (token.Equals("sampler")) {
-                    type = 18;
+                    type = SHADER_TYPE_SAMPLER2D;
                 } else if (token.Equals("sampler1D")) {
-                    type = 17;
+                    type = SHADER_TYPE_SAMPLER1D;
                 } else if (token.Equals("sampler2D")) {
-                    type = 18;
+                    type = SHADER_TYPE_SAMPLER2D;
                 } else if (token.Equals("sampler3D")) {
-                    type = 19;
+                    type = SHADER_TYPE_SAMPLER3D;
                 } else if (token.Equals("samplerCUBE")) {
-                    type = 20;
+                    type = SHADER_TYPE_SAMPLERCUBE;
                 }
                 state = type != 0 ? 14 : 26;
                 break;
-            case 14:
+            case SHADER_PARSE_DECLARE_ARRAY:
                 if (token.Equals("[")) {
-                    state = 15;
+                    state = SHADER_PARSE_DECLARE_ARRAY_COUNT;
                 } else if (token.Equals(",")) {
-                    state = 18;
+                    state = SHADER_PARSE_DECLARE_NAME;
                 } else {
-                    state = 26;
+                    state = SHADER_PARSE_DONE;
                 }
                 break;
-            case 15:
+            case SHADER_PARSE_DECLARE_ARRAY_COUNT:
                 if (token.Equals("]")) {
                     count = -2;
-                    state = 17;
+                    state = SHADER_PARSE_DECLARE_ARRAY_COMMA;
                 } else {
                     count = token.AsInteger(0);
-                    state = 16;
+                    state = SHADER_PARSE_DECLARE_ARRAY_CLOSE;
                 }
                 break;
-            case 16:
+            case SHADER_PARSE_DECLARE_ARRAY_CLOSE:
                 if (token.Equals("]")) {
-                    state = 17;
+                    state = SHADER_PARSE_DECLARE_ARRAY_COMMA;
                 } else {
-                    state = 26;
+                    state = SHADER_PARSE_DONE;
                 }
                 break;
-            case 17:
+            case SHADER_PARSE_DECLARE_ARRAY_COMMA:
                 if (token.Equals(",")) {
-                    state = 18;
+                    state = SHADER_PARSE_DECLARE_NAME;
                 } else {
-                    state = 26;
+                    state = SHADER_PARSE_DONE;
                 }
                 break;
-            case 18:
+            case SHADER_PARSE_DECLARE_NAME:
                 name = token.ArenaCopy(&memory);
-                state = 19;
+                state = SHADER_PARSE_DECLARE_NAME_COMMA;
                 break;
-            case 19:
+            case SHADER_PARSE_DECLARE_NAME_COMMA:
                 token.Equals(",");
-                state = 20;
+                state = SHADER_PARSE_DECLARE_SEMANTIC;
                 break;
-            case 20:
+            case SHADER_PARSE_DECLARE_SEMANTIC:
                 semantic = ShaderDeclarationSemantic(&token);
                 if (semantic == SHADER_SEMANTIC_CUSTOM) {
                     custom = token.ArenaCopy(&memory);
                 }
-                state = 21;
+                state = SHADER_PARSE_DECLARE_CLOSE;
                 break;
-            case 21:
+            case SHADER_PARSE_DECLARE_CLOSE:
                 if (token.Equals(")")) {
                     AddDeclaration(flags, type, count, name, semantic, custom, vertex, pixel);
                 }
-                state = 26;
+                state = SHADER_PARSE_DONE;
                 break;
-            case 22:
+            case SHADER_PARSE_ANCHOR_OPEN:
                 token.Equals("(");
-                state = 23;
+                state = SHADER_PARSE_ANCHOR_STORAGE;
                 break;
-            case 23:
+            case SHADER_PARSE_ANCHOR_STORAGE:
                 if (token.Equals("uniform")) {
                     flags = SHADER_DECL_UNIFORM | SHADER_DECL_PIXEL | SHADER_DECL_VERTEX;
                 } else if (token.Equals("attribute")) {
@@ -587,16 +587,16 @@ void ShaderCompilerParser::ParseDeclaration(ShaderCompilerBufferAllocator *input
                 } else if (token.Equals("fs_local")) {
                     flags = SHADER_DECL_FS_LOCAL | SHADER_DECL_PIXEL;
                 } else {
-                    state = 26;
+                    state = SHADER_PARSE_DONE;
                     break;
                 }
-                state = 24;
+                state = SHADER_PARSE_ANCHOR_CLOSE;
                 break;
-            case 24:
+            case SHADER_PARSE_ANCHOR_CLOSE:
                 if (token.Equals(")")) {
                     EmitDeclarations(flags);
                 }
-                state = 26;
+                state = SHADER_PARSE_DONE;
                 break;
             default:
                 break;
@@ -734,65 +734,65 @@ void ShaderCompilerParser::ProcessDirective(ShaderCompilerBufferAllocator *input
     VirtualStackAllocator memory(temporary, sizeof(temporary));
     char *name = NULL;
     ShaderLexicalSlice token = {NULL, 0};
-    i32 state = 0;
+    i32 state = SHADER_DIRECTIVE_KEYWORD;
     ShaderLexicalReader *reader = reinterpret_cast<ShaderLexicalReader *>(&lexical_state);
-    while (state != 5 && reader->Next(input, cursor, &token)) {
+    while (state != SHADER_DIRECTIVE_DONE && reader->Next(input, cursor, &token)) {
         switch (state) {
-            case 0:
+            case SHADER_DIRECTIVE_KEYWORD:
                 if (token.Equals("define")) {
-                    state = 1;
+                    state = SHADER_DIRECTIVE_DEFINE_NAME;
                 } else if (token.Equals("ifdef")) {
                     // Not handled; the following tokens are still scanned.
                 } else if (token.Equals("ifndef")) {
                     // Not handled; the following tokens are still scanned.
                 } else if (token.Equals("undef")) {
-                    state = 3;
+                    state = SHADER_DIRECTIVE_UNDEF_NAME;
                 } else if (token.Equals("include")) {
-                    state = 4;
+                    state = SHADER_DIRECTIVE_INCLUDE_PATH;
                 } else if (token.Equals("pragma")) {
                     ParseDeclaration(input, cursor);
-                    state = 5;
+                    state = SHADER_DIRECTIVE_DONE;
                 } else if (token.Equals("if")) {
                     BeginIf(ParseExpression(input, cursor));
-                    state = 5;
+                    state = SHADER_DIRECTIVE_DONE;
                 } else if (token.Equals("else")) {
                     BeginElse();
-                    state = 5;
+                    state = SHADER_DIRECTIVE_DONE;
                 } else if (token.Equals("elif")) {
                     BeginElseIf(ParseExpression(input, cursor));
-                    state = 5;
+                    state = SHADER_DIRECTIVE_DONE;
                 } else if (token.Equals("endif")) {
                     EndIf();
-                    state = 5;
+                    state = SHADER_DIRECTIVE_DONE;
                 } else {
-                    state = 5;
+                    state = SHADER_DIRECTIVE_DONE;
                 }
                 break;
-            case 1:
+            case SHADER_DIRECTIVE_DEFINE_NAME:
                 name = token.ArenaCopy(&memory);
-                state = 2;
+                state = SHADER_DIRECTIVE_DEFINE_VALUE;
                 break;
-            case 2:
+            case SHADER_DIRECTIVE_DEFINE_VALUE:
                 DefineMacro(name, token.ArenaCopy(&memory));
-                state = 5;
+                state = SHADER_DIRECTIVE_DONE;
                 break;
-            case 3:
+            case SHADER_DIRECTIVE_UNDEF_NAME:
                 UndefineMacro(token.ArenaCopy(&memory));
-                state = 5;
+                state = SHADER_DIRECTIVE_DONE;
                 break;
-            case 4: {
+            case SHADER_DIRECTIVE_INCLUDE_PATH: {
                 char *path = token.HeapCopy();
                 ShaderCompilerBufferAllocator *included = LoadInclude(path + 1);
                 if (included != NULL) {
                     LoadSourceLines(included, 0);
                 }
                 delete path;
-                state = 5;
+                state = SHADER_DIRECTIVE_DONE;
                 break;
             }
         }
     }
-    if (state == 2) {
+    if (state == SHADER_DIRECTIVE_DEFINE_VALUE) {
         DefineMacro(name, NULL);
     }
 }

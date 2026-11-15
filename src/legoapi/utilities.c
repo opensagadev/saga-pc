@@ -1657,19 +1657,19 @@ void CreateUsefulMaterials(void) {
 void IncreaseScore(u32 *total, u64 amount, i32 apply_multiplier) {
     u64 score;
     if (apply_multiplier != 0 && BonusArea == 0) {
-        if (Cheats_CheckFlags(4) != 0) {
+        if (Cheats_CheckFlags(CHEAT_SCORE_X2) != 0) {
             amount *= 2;
         }
-        if (Cheats_CheckFlags(8) != 0) {
+        if (Cheats_CheckFlags(CHEAT_SCORE_X4) != 0) {
             amount *= 4;
         }
-        if (Cheats_CheckFlags(0x10) != 0) {
+        if (Cheats_CheckFlags(CHEAT_SCORE_X6) != 0) {
             amount *= 6;
         }
-        if (Cheats_CheckFlags(0x20) != 0) {
+        if (Cheats_CheckFlags(CHEAT_SCORE_X8) != 0) {
             amount *= 8;
         }
-        if (Cheats_CheckFlags(0x40) != 0) {
+        if (Cheats_CheckFlags(CHEAT_SCORE_X10) != 0) {
             amount *= 10;
         }
     }

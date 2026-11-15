@@ -289,17 +289,17 @@ i32 getMaxTorpedos(GAMEOBJECT *object) {
 static NUVEC *GetTorpTargetPositionAndRadius(void *target, u8 target_type, f32 *radius) {
     if (target != NULL) {
         switch (target_type) {
-            case 0:
+            case TORPEDO_TARGET_BLOWUP:
                 if (radius != NULL) {
                     *radius = ((GIZMOBLOWUP *)target)->target_scale;
                 }
                 return &((GIZMOBLOWUP *)target)->mid_position;
-            case 1:
+            case TORPEDO_TARGET_TURRET:
                 if (radius != NULL) {
                     *radius = NuSpecialGetOriginRadius(&((TORPEDO_TURRET_QUERY *)target)->primary_anim_obj->special);
                 }
                 return NuSpecialGetDrawPos(&((TORPEDO_TURRET_QUERY *)target)->primary_anim_obj->special);
-            case 2:
+            case TORPEDO_TARGET_OBSTACLE:
                 if (radius != NULL) {
                     *radius = ((TORPEDO_OBSTACLE_QUERY *)target)->target_radius;
                 }
@@ -314,13 +314,13 @@ static void TorpedoHitDispatch(void *target, NUVEC *position, i32 player, u8 tar
         return;
     }
     switch (target_type) {
-        case 0:
+        case TORPEDO_TARGET_BLOWUP:
             GizmoBlowupBlowup(target, 1, BLOWUP_HIT_TORPEDO, 1, NULL, 1);
             break;
-        case 1:
+        case TORPEDO_TARGET_TURRET:
             GizTurrets_Hit(WORLD, target, position, player, -1);
             break;
-        case 2:
+        case TORPEDO_TARGET_OBSTACLE:
             GizObstacles_Hit(WORLD, target, position, player, -1);
             break;
     }
@@ -430,7 +430,7 @@ void *FindNearestTorpTarget(WORLDINFO *world, NUVEC *position, f32 distance_squa
     }
     best = distance_squared;
     nearest = NULL;
-    type = 0;
+    type = TORPEDO_TARGET_BLOWUP;
     for (index = 0; index < world->gizmo_blowup_count; ++index) {
         GIZMOBLOWUP *blowup = &world->gizmo_blowups[index];
         f32 distance;
@@ -443,7 +443,7 @@ void *FindNearestTorpTarget(WORLDINFO *world, NUVEC *position, f32 distance_squa
         if (distance < best) {
             best = distance;
             nearest = blowup;
-            type = 0;
+            type = TORPEDO_TARGET_BLOWUP;
         }
     }
     if (WORLD->area != NULL && WORLD->area == BOUNTYHUNTERPURSUIT_ADATA && view->turrets != NULL) {
@@ -456,7 +456,7 @@ void *FindNearestTorpTarget(WORLDINFO *world, NUVEC *position, f32 distance_squa
                     if (distance < best) {
                         best = distance;
                         nearest = turret;
-                        type = 1;
+                        type = TORPEDO_TARGET_TURRET;
                     }
                 }
             }
@@ -471,7 +471,7 @@ void *FindNearestTorpTarget(WORLDINFO *world, NUVEC *position, f32 distance_squa
                 if (distance < best) {
                     best = distance;
                     nearest = obstacle;
-                    type = 2;
+                    type = TORPEDO_TARGET_OBSTACLE;
                 }
             }
         }
@@ -878,20 +878,21 @@ void TorpedoCode(GAMEOBJECT *object, i32 fire, f32 fire_cooldown) {
     if ((object->flags_1fc & APIOBJECT_FLAG_PLAYER_ACTIVE) != 0 && TORPEDO_PACKET(object)->target != NULL && timers->target_timer > 0.0f) {
         target_position = NULL;
         switch (TORPEDO_PACKET(object)->target_type) {
-            case 0:
+            case TORPEDO_TARGET_BLOWUP:
                 target_position = &((BLOWUP_TARGET *)TORPEDO_PACKET(object)->target)->mid_position;
                 break;
-            case 1:
+            case TORPEDO_TARGET_TURRET:
                 target_position =
                     NuSpecialGetDrawPos(&((TORPEDO_TURRET_READER *)TORPEDO_PACKET(object)->target)->primary_anim_obj->special);
                 break;
-            case 2:
+            case TORPEDO_TARGET_OBSTACLE:
                 target_position = &((TORPEDO_OBSTACLE_READER *)TORPEDO_PACKET(object)->target)->position;
                 break;
         }
         if (target_position != NULL) {
-            message =
-                AddGameMessage(dat_00759770, target_position, (f32)((f64)AreaPickupScale * 5.0), NULL, 0.0f, 255, 0, 255, GAMEMSG_WORLD_POSITION | GAMEMSG_FOLLOW | GAMEMSG_WORLD_SCALE | GAMEMSG_SCALE | GAMEMSG_ONE_FRAME | GAMEMSG_KEEP, 0.0f);
+            message = AddGameMessage(
+                dat_00759770, target_position, (f32)((f64)AreaPickupScale * 5.0), NULL, 0.0f, 255, 0, 255,
+                GAMEMSG_WORLD_POSITION | GAMEMSG_FOLLOW | GAMEMSG_WORLD_SCALE | GAMEMSG_SCALE | GAMEMSG_ONE_FRAME | GAMEMSG_KEEP, 0.0f);
             if (message != NULL) {
                 message->target_is_coin_total = 4;
                 message->parameter_10c = (void *)DrawGameMessage_Targets;

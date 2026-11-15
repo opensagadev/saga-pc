@@ -229,17 +229,17 @@ void NuMtxCalcDebrisFaceOn(NUMTX *m) {
 #define NUCAMERA_CLIP_CODE_EX(code, v, near_enabled, horizontal, vertical)                                                                 \
     {                                                                                                                                      \
         if ((v).z < global_camera.near_clip && (near_enabled))                                                                             \
-            (code) |= NUCAMERA_CLIP_NEAR;                                                                                                                \
+            (code) |= NUCAMERA_CLIP_NEAR;                                                                                                  \
         if ((v).z > far_clip)                                                                                                              \
-            (code) |= NUCAMERA_CLIP_FAR;                                                                                                                \
+            (code) |= NUCAMERA_CLIP_FAR;                                                                                                   \
         if ((v).x < -(v).z * (horizontal))                                                                                                 \
-            (code) |= NUCAMERA_CLIP_LEFT;                                                                                                                   \
+            (code) |= NUCAMERA_CLIP_LEFT;                                                                                                  \
         if ((v).x > (v).z * (horizontal))                                                                                                  \
-            (code) |= NUCAMERA_CLIP_RIGHT;                                                                                                                   \
+            (code) |= NUCAMERA_CLIP_RIGHT;                                                                                                 \
         if ((v).y < -(v).z * (vertical))                                                                                                   \
-            (code) |= NUCAMERA_CLIP_BOTTOM;                                                                                                                   \
+            (code) |= NUCAMERA_CLIP_BOTTOM;                                                                                                \
         if ((v).y > (v).z * (vertical))                                                                                                    \
-            (code) |= NUCAMERA_CLIP_TOP;                                                                                                                   \
+            (code) |= NUCAMERA_CLIP_TOP;                                                                                                   \
     }
 
 #define NUCAMERA_CLIP_CODE(code, v) NUCAMERA_CLIP_CODE_EX(code, v, 1, zx, zy)

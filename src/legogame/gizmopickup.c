@@ -159,7 +159,8 @@ void CollectPowerUp(GAMEOBJECT *object, NUVEC *position, u16 rotation, i32 flags
         message.tick_fn = PowerUp_UpdateMsg;
         message.end_fn = PowerUp_EndMsg;
         message.allow_temporary = 1;
-        message.flags = GAMEMSG_WORLD_POSITION | GAMEMSG_WORLD_SCALE | GAMEMSG_DRAW_MOVE | GAMEMSG_DRAW_SCALE | GAMEMSG_EASE_IN | GAMEMSG_KEEP | GAMEMSG_OBJECT_NO_ALPHA;
+        message.flags = GAMEMSG_WORLD_POSITION | GAMEMSG_WORLD_SCALE | GAMEMSG_DRAW_MOVE | GAMEMSG_DRAW_SCALE | GAMEMSG_EASE_IN |
+                        GAMEMSG_KEEP | GAMEMSG_OBJECT_NO_ALPHA;
         message.player_index = object->player_index;
         message.target_is_coin_total = 7;
         queued = AddGameMsg(&message);
@@ -213,7 +214,8 @@ void Pup_CollectCharKit(WORLDINFO *world, GIZMOPICKUP *pickup, i32 type, GAMEOBJ
     message.target_position = &target;
     message.scale = AreaPickupScale;
     message.target_scale = PANEL_MINIKITSCALE;
-    message.flags = GAMEMSG_WORLD_POSITION | GAMEMSG_WORLD_SCALE | GAMEMSG_DRAW_MOVE | GAMEMSG_DRAW_SCALE | GAMEMSG_EASE_IN | GAMEMSG_KEEP | GAMEMSG_OBJECT_NO_ALPHA;
+    message.flags = GAMEMSG_WORLD_POSITION | GAMEMSG_WORLD_SCALE | GAMEMSG_DRAW_MOVE | GAMEMSG_DRAW_SCALE | GAMEMSG_EASE_IN | GAMEMSG_KEEP |
+                    GAMEMSG_OBJECT_NO_ALPHA;
     message.duration = 1.0f;
     message.icon = 0xcf;
     message.special = &objects[0xcf].special;
@@ -297,7 +299,7 @@ void EndScoreMessage(GAME_MESSAGE *message) {
                         BonusCoinTotal = (i32)BonusCoinTarget;
                         SetBonusWinner(message->player_index);
                         BonusWinFlag = 0;
-                        NewMenu(20, -1, -1);
+                        NewMenu(MENU_BONUS_COMPLETE, -1, -1);
                         PlaySfx((char *)ScorePanelName, NULL);
                         ResetGameMessages();
                     }
@@ -331,7 +333,7 @@ void EndScoreMessage(GAME_MESSAGE *message) {
             player->coin_packet->coins = 1000000;
             SetBonusWinner(message->player_index);
             BonusWinFlag = 0;
-            NewMenu(19, -1, -1);
+            NewMenu(MENU_BONUS_WIN, -1, -1);
             PlaySfx((char *)ScorePanelName, NULL);
             ResetGameMessages();
         }
@@ -1034,7 +1036,7 @@ i32 LoseCoins(GAMEOBJECT *object, i32 cause) {
     } else if (lost > 0) {
         ((LOSE_COINS_PACKET *)object->coin_packet)->coins -= lost;
     }
-    if (Cheats_CheckFlags(0x7c) || DoubleScoreTime > 0.0f) {
+    if (Cheats_CheckFlags(CHEAT_SCORE_X2 | CHEAT_SCORE_X4 | CHEAT_SCORE_X6 | CHEAT_SCORE_X8 | CHEAT_SCORE_X10) || DoubleScoreTime > 0.0f) {
         lost = 0;
     }
     return (i32)lost;

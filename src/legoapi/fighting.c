@@ -592,7 +592,7 @@ void Punch_Hit(GAMEOBJECT *attacker, GAMEOBJECT *target, f32 unused, f32 gap) {
             if (Punch_GetDamageFn != NULL) {
                 damage = Punch_GetDamageFn(attacker, target);
             }
-            if (damage != -1 && Cheats_CheckFlags(0x800)) {
+            if (damage != -1 && Cheats_CheckFlags(CHEAT_DOUBLE_PUNCH_DAMAGE)) {
                 damage *= 2;
             }
             flags = U64_PAIR(&CInfo[target->character_context].flags);

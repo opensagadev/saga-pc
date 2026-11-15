@@ -1973,79 +1973,79 @@ void NetworkObjectManager::Receive(NETMESSAGE message, u8, const V2Peer &peer) {
         message.Read8(type);
         *last++ = type;
         switch (type) {
-            case 9:
+            case NETOBJ_MSG_START:
                 ReceiveStartMessage(message, peer);
                 break;
-            case 10:
+            case NETOBJ_MSG_STOP:
                 ReceiveStopMessage(message, peer);
                 break;
-            case 11:
+            case NETOBJ_MSG_STATUS:
                 ReceiveStatusMessage(message, peer);
                 break;
-            case 0:
+            case NETOBJ_MSG_GUID_GROUP:
                 if (active && IsPeerReady(peer)) {
                     message.Read32(guid_group);
                 } else {
                     error = 1;
                 }
                 break;
-            case 1:
+            case NETOBJ_MSG_CONSTRUCTOR:
                 if (active && IsPeerStarted(peer)) {
                     ReceiveConstructorMessage(message, peer);
                 } else {
                     error = 1;
                 }
                 break;
-            case 2:
+            case NETOBJ_MSG_REPLICA:
                 if (active && IsPeerStarted(peer)) {
                     ReceiveReplicaMessage(message, peer);
                 } else {
                     error = 1;
                 }
                 break;
-            case 3:
+            case NETOBJ_MSG_ACQUIRE:
                 if (active && IsPeerReady(peer)) {
                     ReceiveAcquireMessage(message, peer);
                 } else {
                     error = 1;
                 }
                 break;
-            case 4:
+            case NETOBJ_MSG_ACQUIRED:
                 if (active && IsPeerReady(peer)) {
                     ReceiveAcquiredMessage(message, peer);
                 } else {
                     error = 1;
                 }
                 break;
-            case 5:
+            case NETOBJ_MSG_ADOPTED:
                 if (active && IsPeerReady(peer)) {
                     ReceiveAdoptedMessage(message, peer);
                 } else {
                     error = 1;
                 }
                 break;
-            case 6:
+            case NETOBJ_MSG_RELEASE:
                 if (active && IsPeerReady(peer)) {
                     ReceiveReleaseMessage(message, peer);
                 } else {
                     error = 1;
                 }
                 break;
-            case 7:
+            case NETOBJ_MSG_REMOTE_CALL:
                 if (active && IsPeerReady(peer)) {
                     ReceiveRemoteCallMessage(message, peer);
                 } else {
                     error = 1;
                 }
                 break;
-            case 8:
+            case NETOBJ_MSG_OBJECT_CALL:
                 if (active && IsPeerReady(peer)) {
                     ReceiveObjectCallMessage(message, peer);
                 } else {
                     error = 1;
                 }
                 break;
-            case 12:
+            case NETOBJ_MSG_CONTINUITY_BREAK:
                 if (active && IsPeerReady(peer)) {
                     ReceiveContinuityBreak(message, peer);
                 } else {

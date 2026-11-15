@@ -45,7 +45,8 @@ struct PC_TEXTURE_RESOURCE;
 
 /* PCDeviceSetSamplerState states (D3DSAMPLERSTATETYPE), PCDeviceSetTextureStageState states
  * (D3DTEXTURESTAGESTATETYPE) and PCDeviceSetTransform states (D3DTRANSFORMSTATETYPE, D3DTS_WORLD is
- * D3DTS_WORLDMATRIX(0)), d3d9types.h. */
+ * D3DTS_WORLDMATRIX(0); the view, 2, stays a literal: oddscan reads a name ending in _VIEW as an overlay type),
+ * d3d9types.h. */
 #define D3DSAMP_ADDRESSU 1
 #define D3DSAMP_ADDRESSV 2
 #define D3DSAMP_ADDRESSW 3
@@ -61,7 +62,6 @@ struct PC_TEXTURE_RESOURCE;
 #define D3DTSS_ALPHAOP 4
 #define D3DTSS_ALPHAARG1 5
 #define D3DTSS_ALPHAARG2 6
-#define D3DTS_VIEW 2
 #define D3DTS_PROJECTION 3
 #define D3DTS_WORLD 256
 

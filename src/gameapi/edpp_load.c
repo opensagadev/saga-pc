@@ -195,7 +195,8 @@ void cbPtlSelTextureType(eduimenu_s *menu, eduiitem_s *item, u32 unused2) {
             debtab[debkeydata[edpp_ptls[edpp_nearest].instance_id].effect_index]->particle_type == DEBRIS_PARTICLE_GLASS) {
             i32 index;
             for (index = 0; index < 512; ++index) {
-                if (edpp_ptls[index].effect_index == type && edpp_ptls[index].instance_id != -1 && edpp_ptls[index].instance_id != EDPP_SHELVED) {
+                if (edpp_ptls[index].effect_index == type && edpp_ptls[index].instance_id != -1 &&
+                    edpp_ptls[index].instance_id != EDPP_SHELVED) {
                     DebFreeInstantly(&edpp_ptls[index].instance_id);
                     edpp_ptls[index].instance_id = EDPP_SHELVED;
                 }
@@ -358,7 +359,8 @@ void cbPtlQuickDeleteMenu(eduimenu_s *menu, eduiitem_s *unused1, u32 unused2) {
 
             used = 0;
             for (index = 0; index < 512; ++index) {
-                if (edpp_ptls[index].instance_id != -1 && edpp_ptls[index].instance_id != EDPP_SHELVED && edpp_ptls[index].effect_index == type) {
+                if (edpp_ptls[index].instance_id != -1 && edpp_ptls[index].instance_id != EDPP_SHELVED &&
+                    edpp_ptls[index].effect_index == type) {
                     used = 1;
                     break;
                 }

@@ -891,7 +891,7 @@ extern "C" {
                 if (goal > 0 && Arcade_Points[player_index] >= goal) {
                     SetBonusWinner(player_index);
                     BonusWinFlag = 0;
-                    NewMenu(11, -1, -1);
+                    NewMenu(MENU_ARCADE_END, -1, -1);
                     Arcade_Score[player_index]++;
                 }
             } else {
@@ -3261,7 +3261,7 @@ extern "C" void Hub_Update(WORLDINFO *world) {
         SHOPACTIVE = 1;
         MakeMenuPacket();
         Hint_CancelCurrent();
-        NewMenu(13, -1, -1);
+        NewMenu(MENU_SHOP, -1, -1);
         ShopNameAlpha = 0;
         shop_save_done = 0;
         ShopLockedScale = 1;
@@ -3287,7 +3287,7 @@ extern "C" void Hub_Update(WORLDINFO *world) {
     } else if (GetMenuID() == -1 && available != 0) {
         memcpy(&OldCustomiseGame, &Game, sizeof(OldCustomiseGame));
         MakeMenuPacket();
-        NewMenu(12, -1, -1);
+        NewMenu(MENU_CUSTOMISER, -1, -1);
         Hint_CancelCurrent();
         customiser_save_done = 0;
         customiser_quit = 0;
@@ -3313,7 +3313,7 @@ extern "C" void Hub_Update(WORLDINFO *world) {
         }
     } else if (GetMenuID() == -1 && available != 0) {
         MakeMenuPacket();
-        NewMenu(8, -1, -1);
+        NewMenu(MENU_MISSIONS, -1, -1);
         Hint_CancelCurrent();
     }
 
@@ -3472,7 +3472,7 @@ extern "C" void Hub_Update(WORLDINFO *world) {
         if (HubMiniKitOpenTime >= HubMiniKitOpenThreshold) {
             MakeMenuPacket();
             Hint_CancelCurrent();
-            NewMenu(14, -1, -1);
+            NewMenu(MENU_MINIKIT, -1, -1);
             PlaySfxAndSetPitch("JForcePush", NULL, 1.5f);
         }
     }
@@ -3799,17 +3799,17 @@ static void HubUpdateSelectMode(void) {
                                 }
                                 hub_freeplaysource = 0;
                                 HubInitFreePlaySelect(area, first, second);
-                                NewMenu(17, -1, -1);
+                                NewMenu(MENU_FREE_PLAY, -1, -1);
                                 return;
                             }
                             hub_freeplaysource = 0;
                             HubInitFreePlaySelect(area, -1, -1);
-                            NewMenu(17, -1, -1);
+                            NewMenu(MENU_FREE_PLAY, -1, -1);
                             return;
                         case 2:
                             hub_freeplaysource = 0;
                             HubInitFreePlaySelect(area, -1, -1);
-                            NewMenu(17, -1, -1);
+                            NewMenu(MENU_FREE_PLAY, -1, -1);
                             return;
                         default:
                             return;
@@ -4013,7 +4013,7 @@ static void HubUpdateBonusMode(void) {
                             HubDoorNewLevel = area->levels[0];
                             hub_freeplaysource = 1;
                             HubInitFreePlaySelect(area->index, -1, -1);
-                            NewMenu(17, -1, -1);
+                            NewMenu(MENU_FREE_PLAY, -1, -1);
                         }
                     }
                 } else if (cancel) {
@@ -4068,7 +4068,7 @@ static void HubUpdateBonusMode(void) {
                         } else {
                             hub_freeplaysource = 1;
                             HubInitFreePlaySelect(LDataList[HubDoorNewLevel].area_index, -1, -1);
-                            NewMenu(17, -1, -1);
+                            NewMenu(MENU_FREE_PLAY, -1, -1);
                         }
                         return;
                     case 1:
@@ -4079,7 +4079,7 @@ static void HubUpdateBonusMode(void) {
                                 HubDoorNewLevel = ADataList[area].levels[0];
                                 hub_freeplaysource = 1;
                                 HubInitFreePlaySelect(LDataList[HubDoorNewLevel].area_index, -1, -1);
-                                NewMenu(17, -1, -1);
+                                NewMenu(MENU_FREE_PLAY, -1, -1);
                             }
                         }
                         return;
@@ -4106,7 +4106,7 @@ static void HubUpdateBonusMode(void) {
                             HubDoorNewLevel = ADataList[area].levels[0];
                             hub_freeplaysource = 1;
                             HubInitFreePlaySelect(LDataList[HubDoorNewLevel].area_index, first, second);
-                            NewMenu(17, -1, -1);
+                            NewMenu(MENU_FREE_PLAY, -1, -1);
                         } else if (first != -1) {
                             HubDoorNewLevel = ADataList[area].levels[0];
                             bonusmodemode = 2;

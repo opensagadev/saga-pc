@@ -92,7 +92,7 @@ extern "C" void NuShaderObjectBaseUpdateWaterTable(NuShaderObject *shader, PC_SH
             NuVecMtxTransformH((NUVEC *)&PCShaderWaterTable[i], &displacement, &inverse);
         }
     }
-    NuShaderObjectSetElementsfv(shader, 23, 0, 32, (const f32 *)PCShaderWaterTable);
+    NuShaderObjectSetElementsfv(shader, SHADER_UNIFORM_WATER_TABLE, 0, 32, (const f32 *)PCShaderWaterTable);
     PCShaderWaterPreviousMaterial = material;
     PCShaderWaterLastFrame = nuapi.frame_count;
 }

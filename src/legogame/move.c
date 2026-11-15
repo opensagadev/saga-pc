@@ -746,19 +746,19 @@ i32 ObjZappedBlue(GAMEOBJECT *object) {
 }
 
 static i32 IsAFallAnim(i32 animation) {
-    if (animation == 5) {
+    if (animation == ACTION_FALL) {
         return 1;
     }
-    if (animation == 0x28) {
+    if (animation == ACTION_FALL2) {
         return 1;
     }
-    if (animation == 0x4b) {
+    if (animation == ACTION_FALL3) {
         return 1;
     }
-    if (animation == 0x4c) {
+    if (animation == ACTION_FALL4) {
         return 1;
     }
-    return animation == 0x74;
+    return animation == ACTION_EXTRA_FALL;
 }
 
 const f64 VehicleTurnPhaseScale = 65536.0;
@@ -6832,8 +6832,9 @@ void CableCode(GAMEOBJECT *object, i32 special_pressed, f32 unused) {
     ForceGlowCode(object, 0xe3);
     if ((object->flags_1fc & APIOBJECT_FLAG_PLAYER_ACTIVE) != 0 && view->candidate_kind != 0 && view->glow_candidate != NULL &&
         view->glow_alpha > 0.0f) {
-        message = AddGameMessage("X", &view->glow_candidate->collision_position, AreaPickupScale * CableTargetScale, NULL, 0.0f, 0xff, 0, 0,
-                                 GAMEMSG_WORLD_POSITION | GAMEMSG_FOLLOW | GAMEMSG_WORLD_SCALE | GAMEMSG_SCALE | GAMEMSG_ONE_FRAME | GAMEMSG_KEEP, 0.0f);
+        message = AddGameMessage(
+            "X", &view->glow_candidate->collision_position, AreaPickupScale * CableTargetScale, NULL, 0.0f, 0xff, 0, 0,
+            GAMEMSG_WORLD_POSITION | GAMEMSG_FOLLOW | GAMEMSG_WORLD_SCALE | GAMEMSG_SCALE | GAMEMSG_ONE_FRAME | GAMEMSG_KEEP, 0.0f);
         if (message != NULL) {
             message->target_is_coin_total = 5;
             ((MESSAGE_DRAW_VIEW *)message)->draw = DrawGameMessage_Targets;
@@ -7521,8 +7522,8 @@ void Animate_CHARACTER(GAMEOBJECT *object) {
     }
     UpdateCharacterIdle(object);
     animation = object->anim_packet.requested_animation;
-    if (animation == 5 || ((object->character_data->model_flags & CHARACTER_MODEL_PROTOCOL) != 0 &&
-                           (animation == 0x28 || animation == 0x4b || animation == 0x4c))) {
+    if (animation == ACTION_FALL || ((object->character_data->model_flags & CHARACTER_MODEL_PROTOCOL) != 0 &&
+                                     (animation == ACTION_FALL2 || animation == ACTION_FALL3 || animation == ACTION_FALL4))) {
         timers->fall_animation_timer += FRAMETIME;
     } else {
         timers->fall_animation_timer = 0.0f;
@@ -7532,7 +7533,7 @@ void Animate_CHARACTER(GAMEOBJECT *object) {
         if (model_id == -1) {
             return;
         }
-        if (animation != -1 && apicharsys->models[model_id].model_data_b[animation] != NULL) {
+        if (animation != ACTION_NONE && apicharsys->models[model_id].model_data_b[animation] != NULL) {
             mini->packet.requested_animation = animation;
         } else {
             mini->packet.requested_animation = 1;
@@ -7684,8 +7685,8 @@ void Animate_BEAST(GAMEOBJECT *object) {
     }
     UpdateCharacterIdle(object);
     animation = object->anim_packet.requested_animation;
-    if (animation == 5 || ((object->character_data->model_flags & CHARACTER_MODEL_PROTOCOL) != 0 &&
-                           (animation == 40 || animation == 75 || animation == 76))) {
+    if (animation == ACTION_FALL || ((object->character_data->model_flags & CHARACTER_MODEL_PROTOCOL) != 0 &&
+                                     (animation == ACTION_FALL2 || animation == ACTION_FALL3 || animation == ACTION_FALL4))) {
         ((CHARACTER_FALL_ANIMATION_READER *)object)->fall_animation_timer += FRAMETIME;
     } else {
         ((CHARACTER_FALL_ANIMATION_READER *)object)->fall_animation_timer = 0.0f;
@@ -7751,8 +7752,8 @@ void Animate_WEIRDO(GAMEOBJECT *object) {
     }
     UpdateCharacterIdle(object);
     animation = object->anim_packet.requested_animation;
-    if (animation == 5 || ((object->character_data->model_flags & CHARACTER_MODEL_PROTOCOL) != 0 &&
-                           (animation == 40 || animation == 75 || animation == 76))) {
+    if (animation == ACTION_FALL || ((object->character_data->model_flags & CHARACTER_MODEL_PROTOCOL) != 0 &&
+                                     (animation == ACTION_FALL2 || animation == ACTION_FALL3 || animation == ACTION_FALL4))) {
         state->fall_animation_timer += FRAMETIME;
     } else {
         state->fall_animation_timer = 0.0f;
@@ -7836,8 +7837,8 @@ void Animate_JEDI(GAMEOBJECT *object) {
     }
     UpdateCharacterIdle(object);
     animation = object->anim_packet.requested_animation;
-    if (animation == 5 || ((object->character_data->model_flags & CHARACTER_MODEL_PROTOCOL) != 0 &&
-                           (animation == 40 || animation == 75 || animation == 76))) {
+    if (animation == ACTION_FALL || ((object->character_data->model_flags & CHARACTER_MODEL_PROTOCOL) != 0 &&
+                                     (animation == ACTION_FALL2 || animation == ACTION_FALL3 || animation == ACTION_FALL4))) {
         state->fall_animation_timer += FRAMETIME;
     } else {
         state->fall_animation_timer = 0.0f;
@@ -7876,8 +7877,8 @@ void Animate_ASTROMECH(GAMEOBJECT *object) {
     }
     UpdateCharacterIdle(object);
     animation = object->anim_packet.requested_animation;
-    if (animation == 5 || ((object->character_data->model_flags & CHARACTER_MODEL_PROTOCOL) != 0 &&
-                           (animation == 40 || animation == 75 || animation == 76))) {
+    if (animation == ACTION_FALL || ((object->character_data->model_flags & CHARACTER_MODEL_PROTOCOL) != 0 &&
+                                     (animation == ACTION_FALL2 || animation == ACTION_FALL3 || animation == ACTION_FALL4))) {
         state->fall_animation_timer += FRAMETIME;
     } else {
         state->fall_animation_timer = 0.0f;
@@ -8016,8 +8017,8 @@ void Animate_PROTOCOL(GAMEOBJECT *object) {
     }
     UpdateCharacterIdle(object);
     animation = object->anim_packet.requested_animation;
-    if (animation == 5 || ((object->character_data->model_flags & CHARACTER_MODEL_PROTOCOL) != 0 &&
-                           (animation == 40 || animation == 75 || animation == 76))) {
+    if (animation == ACTION_FALL || ((object->character_data->model_flags & CHARACTER_MODEL_PROTOCOL) != 0 &&
+                                     (animation == ACTION_FALL2 || animation == ACTION_FALL3 || animation == ACTION_FALL4))) {
         state->fall_animation_timer += FRAMETIME;
     } else {
         state->fall_animation_timer = 0.0f;
@@ -8047,8 +8048,8 @@ void Animate_BATTLEDROID(GAMEOBJECT *object) {
         }
     }
     animation = object->anim_packet.requested_animation;
-    if (animation == 5 || ((object->character_data->model_flags & CHARACTER_MODEL_PROTOCOL) != 0 &&
-                           (animation == 40 || animation == 75 || animation == 76))) {
+    if (animation == ACTION_FALL || ((object->character_data->model_flags & CHARACTER_MODEL_PROTOCOL) != 0 &&
+                                     (animation == ACTION_FALL2 || animation == ACTION_FALL3 || animation == ACTION_FALL4))) {
         state->fall_animation_timer += FRAMETIME;
     } else {
         state->fall_animation_timer = 0.0f;
@@ -8121,8 +8122,8 @@ void Animate_SUPERBATTLEDROID(GAMEOBJECT *object) {
     }
     UpdateCharacterIdle(object);
     animation = object->anim_packet.requested_animation;
-    if (animation == 5 || ((object->character_data->model_flags & CHARACTER_MODEL_PROTOCOL) != 0 &&
-                           (animation == 40 || animation == 75 || animation == 76))) {
+    if (animation == ACTION_FALL || ((object->character_data->model_flags & CHARACTER_MODEL_PROTOCOL) != 0 &&
+                                     (animation == ACTION_FALL2 || animation == ACTION_FALL3 || animation == ACTION_FALL4))) {
         state->fall_animation_timer += FRAMETIME;
     } else {
         state->fall_animation_timer = 0.0f;
@@ -8292,9 +8293,10 @@ static void ShieldCode(GAMEOBJECT *object) {
             target = VehicleShieldTarget;
         } else {
             animation = CurrentAnim(&object->anim_packet);
-            if ((object->unknown_281 != 0 || ((VEHICLE_WEAPONS_STATE *)object)->ground_contact_grace_timer > 0.0f) && animation != -1 &&
-                animation != 3 && animation != 0x23 && animation != 5 && animation != 0x6a &&
-                object->character_context != CHARACTER_CONTEXT_DEACTIVATED && object->character_context != CHARACTER_CONTEXT_FLATTEN) {
+            if ((object->unknown_281 != 0 || ((VEHICLE_WEAPONS_STATE *)object)->ground_contact_grace_timer > 0.0f) &&
+                animation != ACTION_NONE && animation != ACTION_RUN && animation != ACTION_OPEN && animation != ACTION_FALL &&
+                animation != ACTION_SLIDE && object->character_context != CHARACTER_CONTEXT_DEACTIVATED &&
+                object->character_context != CHARACTER_CONTEXT_FLATTEN) {
                 target = 1.0f;
             }
         }
@@ -8325,8 +8327,8 @@ void Animate_DROIDEKA(GAMEOBJECT *object) {
         }
     }
     animation = object->anim_packet.requested_animation;
-    if (animation == 5 || ((object->character_data->model_flags & CHARACTER_MODEL_PROTOCOL) != 0 &&
-                           (animation == 40 || animation == 75 || animation == 76))) {
+    if (animation == ACTION_FALL || ((object->character_data->model_flags & CHARACTER_MODEL_PROTOCOL) != 0 &&
+                                     (animation == ACTION_FALL2 || animation == ACTION_FALL3 || animation == ACTION_FALL4))) {
         state->fall_animation_timer += FRAMETIME;
     } else {
         state->fall_animation_timer = 0.0f;
@@ -8355,8 +8357,8 @@ void Animate_GEONOSIAN(GAMEOBJECT *object) {
     }
     UpdateCharacterIdle(object);
     animation = object->anim_packet.requested_animation;
-    if (animation == 5 || ((object->character_data->model_flags & CHARACTER_MODEL_PROTOCOL) != 0 &&
-                           (animation == 40 || animation == 75 || animation == 76))) {
+    if (animation == ACTION_FALL || ((object->character_data->model_flags & CHARACTER_MODEL_PROTOCOL) != 0 &&
+                                     (animation == ACTION_FALL2 || animation == ACTION_FALL3 || animation == ACTION_FALL4))) {
         state->fall_animation_timer += FRAMETIME;
     } else {
         state->fall_animation_timer = 0.0f;
@@ -13111,7 +13113,8 @@ void PostResetCode(GAMEOBJECT *object) {
         ChatterSfx(object, object->character_data->game_character->sfx_chatter,
                    (f32)(u32)object->character_data->game_character->flags_11e);
     }
-    if (object->character_data->move_fn != Move_VEHICLE && object->tertiary_lean_angle != 0 && (object->flags_e24 & APIOBJECT_MAGNET_CLIMB) == 0) {
+    if (object->character_data->move_fn != Move_VEHICLE && object->tertiary_lean_angle != 0 &&
+        (object->flags_e24 & APIOBJECT_MAGNET_CLIMB) == 0) {
         object->tertiary_lean_angle = 0;
     }
 }

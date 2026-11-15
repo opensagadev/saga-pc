@@ -191,7 +191,8 @@ i32 GizmoObstacle_ActivateRev(GIZMO *gizmo, i32 activate, i32 flags) {
     if (!obstacle) {
         return 0;
     }
-    if ((obstacle->progress_flags & 0x100) && (obstacle->anim_set->state == GAMEANIMSET_STATE_AT_END || obstacle->anim_set->state == GAMEANIMSET_STATE_FORWARD)) {
+    if ((obstacle->progress_flags & 0x100) &&
+        (obstacle->anim_set->state == GAMEANIMSET_STATE_AT_END || obstacle->anim_set->state == GAMEANIMSET_STATE_FORWARD)) {
         obstacle->progress_flags = (obstacle->progress_flags & ~0x100u) | OBSTACLE_ACTIVE;
     }
     ai_active = (obstacle->runtime_flags >> 2) & 1;
@@ -691,7 +692,8 @@ static void GizObstacleUpdate_Proximity(GIZOBSTACLE *obstacle) {
         }
     }
     state = obstacle->anim_set->state;
-    if (state != GAMEANIMSET_STATE_AT_START && state != GAMEANIMSET_STATE_AT_END && !(WORLD->current_level == ObstacleReturnLevel && obstacle == LevGizObst[0] && state == GAMEANIMSET_STATE_PART_WAY)) {
+    if (state != GAMEANIMSET_STATE_AT_START && state != GAMEANIMSET_STATE_AT_END &&
+        !(WORLD->current_level == ObstacleReturnLevel && obstacle == LevGizObst[0] && state == GAMEANIMSET_STATE_PART_WAY)) {
         return;
     }
     if (state == GAMEANIMSET_STATE_AT_END && !obstacle->playback_state) {
@@ -804,7 +806,8 @@ void GizObstacles_Update(void *world_ptr, void *data, f32 time) {
                 }
             }
             if (obstacle->animation_speed < 0.0f) {
-                if (obstacle->stop_sfx_id != -1 && (obstacle->anim_set->state == GAMEANIMSET_STATE_AT_END || IsSfxLooping(obstacle->stop_sfx_id))) {
+                if (obstacle->stop_sfx_id != -1 &&
+                    (obstacle->anim_set->state == GAMEANIMSET_STATE_AT_END || IsSfxLooping(obstacle->stop_sfx_id))) {
                     GameAudio_PlaySfxById(obstacle->stop_sfx_id, &obstacle->evaluated_position, 0, 0);
                 }
             } else if (obstacle->start_sfx_id != -1 && (!obstacle->anim_set->state || IsSfxLooping(obstacle->start_sfx_id))) {
@@ -1207,7 +1210,7 @@ static i32 GizObstacles_BoltHit(void *world, void *data, void *attacker_ptr, NUV
             i32 player;
             if (hit_type != 2 && hit_type != 7 && bolt) {
                 BoltType_FindByID(bolt->type_id, WORLD);
-                Cheats_CheckFlags(2);
+                Cheats_CheckFlags(CHEAT_DOUBLE_BOLT_DAMAGE);
             }
             type = BoltType_FindByID(bolt->type_id, world);
             owner = bolt->owner;

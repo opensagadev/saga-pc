@@ -429,30 +429,30 @@ extern "C" i32 fun_00742230(i32 value) {
 static void PCShaderSamplerWrap(i32 u_mode, u32 stage, i32 v_mode) {
     switch (u_mode) {
         case 1:
-            PCDeviceSetSamplerState(stage, 1, 3);
+            PCDeviceSetSamplerState(stage, D3DSAMP_ADDRESSU, 3);
             break;
         case 2:
-            PCDeviceSetSamplerState(stage, 1, 2);
+            PCDeviceSetSamplerState(stage, D3DSAMP_ADDRESSU, 2);
             break;
         case 3:
-            PCDeviceSetSamplerState(stage, 1, 4);
+            PCDeviceSetSamplerState(stage, D3DSAMP_ADDRESSU, 4);
             break;
         default:
-            PCDeviceSetSamplerState(stage, 1, 1);
+            PCDeviceSetSamplerState(stage, D3DSAMP_ADDRESSU, 1);
             break;
     }
     switch (v_mode) {
         case 1:
-            PCDeviceSetSamplerState(stage, 2, 3);
+            PCDeviceSetSamplerState(stage, D3DSAMP_ADDRESSV, 3);
             break;
         case 2:
-            PCDeviceSetSamplerState(stage, 2, 2);
+            PCDeviceSetSamplerState(stage, D3DSAMP_ADDRESSV, 2);
             break;
         case 3:
-            PCDeviceSetSamplerState(stage, 2, 4);
+            PCDeviceSetSamplerState(stage, D3DSAMP_ADDRESSV, 4);
             break;
         default:
-            PCDeviceSetSamplerState(stage, 2, 1);
+            PCDeviceSetSamplerState(stage, D3DSAMP_ADDRESSV, 1);
             break;
     }
 }
@@ -486,22 +486,22 @@ extern "C" void PCShaderSetMaterialParameters(NuShaderObject *shader, NUMTL *ori
     while (parameter != NULL) {
         const i32 semantic = (i8)parameter->semantic;
         switch (semantic) {
-            case 0: {
+            case SHADER_UNIFORM_AMBIENT_COLOR: {
                 parameter->SetVector(PCShaderUnpackColour(&diffuse_vector.x, material->diffuse_colour));
                 break;
             }
-            case 2: {
+            case SHADER_UNIFORM_INCANDESCENT_GLOW: {
                 const f32 *values = PCShaderUnpackColour(&vector_2.x, material->specular_colour);
                 vector_2.w = material->parameter_1b4;
                 parameter->SetVector(values);
                 break;
             }
-            case 9: {
+            case SHADER_UNIFORM_BITANGENT_FLIP: {
                 const f32 sign = material->flip_sign == 0 ? 1.0f : -1.0f;
                 parameter->SetScalar(sign);
                 break;
             }
-            case 10: {
+            case SHADER_UNIFORM_SURFACE_PARAMS: {
                 vector_10.x = material->parameter_134;
                 vector_10.y = 1.0f;
                 vector_10.z = (f64)0.035f * material->parameter_138;
@@ -509,7 +509,7 @@ extern "C" void PCShaderSetMaterialParameters(NuShaderObject *shader, NUMTL *ori
                 parameter->SetVector(&vector_10.x);
                 break;
             }
-            case 11: {
+            case SHADER_UNIFORM_SURFACE_PARAMS2: {
                 vector_11.x = material->texture_lerp;
                 vector_11.y = material->parameter_284 / material->parameter_274;
                 vector_11.z = 0.0f;
@@ -517,11 +517,11 @@ extern "C" void PCShaderSetMaterialParameters(NuShaderObject *shader, NUMTL *ori
                 parameter->SetVector(&vector_11.x);
                 break;
             }
-            case 15: {
+            case SHADER_UNIFORM_VTF_K_NORMAL: {
                 parameter->SetScalar(material->parameter_118);
                 break;
             }
-            case 16: {
+            case SHADER_UNIFORM_GOOCH_PARAMS: {
                 vector_16.x = material->parameter_1b8;
                 vector_16.y = material->parameter_1bc;
                 vector_16.z = 0.0f;
@@ -529,7 +529,7 @@ extern "C" void PCShaderSetMaterialParameters(NuShaderObject *shader, NUMTL *ori
                 parameter->SetVector(&vector_16.x);
                 break;
             }
-            case 83: {
+            case SHADER_UNIFORM_CARPAINT_PARAMS: {
                 vector_83.x = material->parameter_260;
                 vector_83.y = material->parameter_264;
                 vector_83.z = 0.0f;
@@ -537,7 +537,7 @@ extern "C" void PCShaderSetMaterialParameters(NuShaderObject *shader, NUMTL *ori
                 parameter->SetVector(&vector_83.x);
                 break;
             }
-            case 84: {
+            case SHADER_UNIFORM_CARPAINT_TINTS: {
                 for (i32 i = 0; i < 4; ++i) {
                     NUVEC4 vector_84;
                     const f32 *unpacked = PCShaderUnpackColour(&vector_84.x, material->palette_colours[i]);
@@ -550,7 +550,7 @@ extern "C" void PCShaderSetMaterialParameters(NuShaderObject *shader, NUMTL *ori
                 }
                 break;
             }
-            case 91: {
+            case SHADER_UNIFORM_EDGELIT_PARAMS: {
                 vector_91.x = 1.0 / material->parameter_290;
                 vector_91.y = material->parameter_288;
                 vector_91.z = material->parameter_28c;
@@ -558,7 +558,7 @@ extern "C" void PCShaderSetMaterialParameters(NuShaderObject *shader, NUMTL *ori
                 parameter->SetVector(&vector_91.x);
                 break;
             }
-            case 92: {
+            case SHADER_UNIFORM_FRACTAL_PARAMS: {
                 vector_92.x = (f64)0.1f * material->parameter_274;
                 vector_92.y = material->parameter_27c;
                 vector_92.z = material->parameter_280;
@@ -566,11 +566,11 @@ extern "C" void PCShaderSetMaterialParameters(NuShaderObject *shader, NUMTL *ori
                 parameter->SetVector(&vector_92.x);
                 break;
             }
-            case 14: {
+            case SHADER_UNIFORM_VTF_K_HEIGHT: {
                 parameter->SetScalar(material->parameter_114);
                 break;
             }
-            case 12: {
+            case SHADER_UNIFORM_SPECULAR_PARAMS: {
                 vector_12.x = NuShaderManagerGetShininessFactor() * material->parameter_130;
                 vector_12.y = material->parameter_12c;
                 vector_12.z = material->parameter_144;
@@ -578,7 +578,7 @@ extern "C" void PCShaderSetMaterialParameters(NuShaderObject *shader, NUMTL *ori
                 parameter->SetVector(&vector_12.x);
                 break;
             }
-            case 13: {
+            case SHADER_UNIFORM_ENVMAP_PARAMS: {
                 vector_13.x = material->parameter_140;
                 vector_13.y = material->parameter_13c;
                 vector_13.z = material->parameter_248;
@@ -586,7 +586,7 @@ extern "C" void PCShaderSetMaterialParameters(NuShaderObject *shader, NUMTL *ori
                 parameter->SetVector(&vector_13.x);
                 break;
             }
-            case 80: {
+            case SHADER_UNIFORM_FX_ATTRIBUTES: {
                 if ((material->phase_flags & 0x8000u) && material->phase_speed == 0.0f) {
                     vector_80_0.x = 1.0f;
                     vector_80_0.y = material->phase_scale;
@@ -602,50 +602,50 @@ extern "C" void PCShaderSetMaterialParameters(NuShaderObject *shader, NUMTL *ori
                 }
                 break;
             }
-            case 23: {
+            case SHADER_UNIFORM_WATER_TABLE: {
                 NuShaderObjectBaseUpdateWaterTable(shader, reinterpret_cast<PC_SHADER_WATER_MATERIAL_VIEW *>(material));
                 break;
             }
-            case 36: {
+            case SHADER_UNIFORM_LAYER0_SAMPLER: {
                 const i32 stage = parameter->register_index;
                 PCDeviceSetTexture(stage, PCShaderMaterialTextureNative(material, 0));
                 PCShaderSamplerWrap((material->sampler_address_modes >> 8) & 3, parameter->register_index,
                                     (material->sampler_address_modes >> 10) & 3);
-                PCDeviceSetSamplerState(parameter->register_index, 5, 2);
-                PCDeviceSetSamplerState(parameter->register_index, 6, 2);
-                PCDeviceSetSamplerState(parameter->register_index, 7, 2);
+                PCDeviceSetSamplerState(parameter->register_index, D3DSAMP_MAGFILTER, 2);
+                PCDeviceSetSamplerState(parameter->register_index, D3DSAMP_MINFILTER, 2);
+                PCDeviceSetSamplerState(parameter->register_index, D3DSAMP_MIPFILTER, 2);
                 const f32 bias = material->texture_bias[0] + PCShaderMaterialSamplerBiasOffset;
-                PCDeviceSetSamplerState(parameter->register_index, 8, PCShaderSamplerBiasBits(bias));
+                PCDeviceSetSamplerState(parameter->register_index, D3DSAMP_MIPMAPLODBIAS, PCShaderSamplerBiasBits(bias));
                 break;
             }
-            case 37: {
+            case SHADER_UNIFORM_LAYER1_SAMPLER: {
                 const i32 stage = parameter->register_index;
                 PCDeviceSetTexture(stage, PCShaderMaterialTextureNative(material, 1));
                 PCShaderSamplerWrap((material->sampler_address_modes >> 8) & 3, parameter->register_index,
                                     (material->sampler_address_modes >> 10) & 3);
                 const f32 bias = material->texture_bias[1] + PCShaderMaterialSamplerBiasOffset;
-                PCDeviceSetSamplerState(parameter->register_index, 8, PCShaderSamplerBiasBits(bias));
+                PCDeviceSetSamplerState(parameter->register_index, D3DSAMP_MIPMAPLODBIAS, PCShaderSamplerBiasBits(bias));
                 break;
             }
-            case 38: {
+            case SHADER_UNIFORM_LAYER2_SAMPLER: {
                 const i32 stage = parameter->register_index;
                 PCDeviceSetTexture(stage, PCShaderMaterialTextureNative(material, 2));
                 PCShaderSamplerWrap((material->sampler_address_modes >> 8) & 3, parameter->register_index,
                                     (material->sampler_address_modes >> 10) & 3);
                 const f32 bias = material->texture_bias[2] + PCShaderMaterialSamplerBiasOffset;
-                PCDeviceSetSamplerState(parameter->register_index, 8, PCShaderSamplerBiasBits(bias));
+                PCDeviceSetSamplerState(parameter->register_index, D3DSAMP_MIPMAPLODBIAS, PCShaderSamplerBiasBits(bias));
                 break;
             }
-            case 39: {
+            case SHADER_UNIFORM_LAYER3_SAMPLER: {
                 const i32 stage = parameter->register_index;
                 PCDeviceSetTexture(stage, PCShaderMaterialTextureNative(material, 3));
                 PCShaderSamplerWrap((material->sampler_address_modes >> 8) & 3, parameter->register_index,
                                     (material->sampler_address_modes >> 10) & 3);
                 const f32 bias = material->texture_bias[3] + PCShaderMaterialSamplerBiasOffset;
-                PCDeviceSetSamplerState(parameter->register_index, 8, PCShaderSamplerBiasBits(bias));
+                PCDeviceSetSamplerState(parameter->register_index, D3DSAMP_MIPMAPLODBIAS, PCShaderSamplerBiasBits(bias));
                 break;
             }
-            case 40: {
+            case SHADER_UNIFORM_SPECULAR_SAMPLER: {
                 const i32 id = material->specular_texture_id;
                 void *texture;
                 if (id != 0) {
@@ -654,13 +654,13 @@ extern "C" void PCShaderSetMaterialParameters(NuShaderObject *shader, NUMTL *ori
                     texture = NULL;
                 }
                 PCDeviceSetTexture(parameter->register_index, texture);
-                PCDeviceSetSamplerState(parameter->register_index, 1, 1);
-                PCDeviceSetSamplerState(parameter->register_index, 2, 1);
+                PCDeviceSetSamplerState(parameter->register_index, D3DSAMP_ADDRESSU, 1);
+                PCDeviceSetSamplerState(parameter->register_index, D3DSAMP_ADDRESSV, 1);
                 const f32 bias = material->texture_bias[4] + PCShaderMaterialSamplerBiasOffset;
-                PCDeviceSetSamplerState(parameter->register_index, 8, PCShaderSamplerBiasBits(bias));
+                PCDeviceSetSamplerState(parameter->register_index, D3DSAMP_MIPMAPLODBIAS, PCShaderSamplerBiasBits(bias));
                 break;
             }
-            case 41: {
+            case SHADER_UNIFORM_SPECULAR2_SAMPLER: {
                 const i32 id = material->height_texture_id;
                 void *texture;
                 if (id != 0) {
@@ -669,13 +669,13 @@ extern "C" void PCShaderSetMaterialParameters(NuShaderObject *shader, NUMTL *ori
                     texture = NULL;
                 }
                 PCDeviceSetTexture(parameter->register_index, texture);
-                PCDeviceSetSamplerState(parameter->register_index, 1, 1);
-                PCDeviceSetSamplerState(parameter->register_index, 2, 1);
+                PCDeviceSetSamplerState(parameter->register_index, D3DSAMP_ADDRESSU, 1);
+                PCDeviceSetSamplerState(parameter->register_index, D3DSAMP_ADDRESSV, 1);
                 const f32 bias = material->parameter_1b0 + PCShaderMaterialSamplerBiasOffset;
-                PCDeviceSetSamplerState(parameter->register_index, 8, PCShaderSamplerBiasBits(bias));
+                PCDeviceSetSamplerState(parameter->register_index, D3DSAMP_MIPMAPLODBIAS, PCShaderSamplerBiasBits(bias));
                 break;
             }
-            case 42: {
+            case SHADER_UNIFORM_SURFACE_SAMPLER: {
                 const i32 id = material->bump_texture_id;
                 void *texture;
                 if (id != 0) {
@@ -684,16 +684,16 @@ extern "C" void PCShaderSetMaterialParameters(NuShaderObject *shader, NUMTL *ori
                     texture = NULL;
                 }
                 PCDeviceSetTexture(parameter->register_index, texture);
-                PCDeviceSetSamplerState(parameter->register_index, 1, 1);
-                PCDeviceSetSamplerState(parameter->register_index, 2, 1);
-                PCDeviceSetSamplerState(parameter->register_index, 5, 2);
-                PCDeviceSetSamplerState(parameter->register_index, 6, 2);
-                PCDeviceSetSamplerState(parameter->register_index, 7, 2);
+                PCDeviceSetSamplerState(parameter->register_index, D3DSAMP_ADDRESSU, 1);
+                PCDeviceSetSamplerState(parameter->register_index, D3DSAMP_ADDRESSV, 1);
+                PCDeviceSetSamplerState(parameter->register_index, D3DSAMP_MAGFILTER, 2);
+                PCDeviceSetSamplerState(parameter->register_index, D3DSAMP_MINFILTER, 2);
+                PCDeviceSetSamplerState(parameter->register_index, D3DSAMP_MIPFILTER, 2);
                 const f32 bias = material->texture_bias[5] + PCShaderMaterialSamplerBiasOffset;
-                PCDeviceSetSamplerState(parameter->register_index, 8, PCShaderSamplerBiasBits(bias));
+                PCDeviceSetSamplerState(parameter->register_index, D3DSAMP_MIPMAPLODBIAS, PCShaderSamplerBiasBits(bias));
                 break;
             }
-            case 43: {
+            case SHADER_UNIFORM_SURFACE2_SAMPLER: {
                 const i32 id = material->normal_texture_id;
                 void *texture;
                 if (id != 0) {
@@ -702,13 +702,13 @@ extern "C" void PCShaderSetMaterialParameters(NuShaderObject *shader, NUMTL *ori
                     texture = NULL;
                 }
                 PCDeviceSetTexture(parameter->register_index, texture);
-                PCDeviceSetSamplerState(parameter->register_index, 1, 1);
-                PCDeviceSetSamplerState(parameter->register_index, 2, 1);
+                PCDeviceSetSamplerState(parameter->register_index, D3DSAMP_ADDRESSU, 1);
+                PCDeviceSetSamplerState(parameter->register_index, D3DSAMP_ADDRESSV, 1);
                 const f32 bias = material->parameter_1ac + PCShaderMaterialSamplerBiasOffset;
-                PCDeviceSetSamplerState(parameter->register_index, 8, PCShaderSamplerBiasBits(bias));
+                PCDeviceSetSamplerState(parameter->register_index, D3DSAMP_MIPMAPLODBIAS, PCShaderSamplerBiasBits(bias));
                 break;
             }
-            case 45: {
+            case SHADER_UNIFORM_VERTEX_FETCH_SAMPLER: {
                 const i32 id = material->depth_texture_id;
                 void *texture;
                 if (id != 0) {
@@ -717,14 +717,14 @@ extern "C" void PCShaderSetMaterialParameters(NuShaderObject *shader, NUMTL *ori
                     texture = NULL;
                 }
                 PCDeviceSetTexture(parameter->register_index, texture);
-                PCDeviceSetSamplerState(parameter->register_index, 1, 1);
-                PCDeviceSetSamplerState(parameter->register_index, 2, 1);
-                PCDeviceSetSamplerState(parameter->register_index, 5, 1);
-                PCDeviceSetSamplerState(parameter->register_index, 6, 1);
-                PCDeviceSetSamplerState(parameter->register_index, 7, 0);
+                PCDeviceSetSamplerState(parameter->register_index, D3DSAMP_ADDRESSU, 1);
+                PCDeviceSetSamplerState(parameter->register_index, D3DSAMP_ADDRESSV, 1);
+                PCDeviceSetSamplerState(parameter->register_index, D3DSAMP_MAGFILTER, 1);
+                PCDeviceSetSamplerState(parameter->register_index, D3DSAMP_MINFILTER, 1);
+                PCDeviceSetSamplerState(parameter->register_index, D3DSAMP_MIPFILTER, 0);
                 break;
             }
-            case 49: {
+            case SHADER_UNIFORM_VTF_NORMAL_SAMPLER: {
                 const i32 id = material->lighting_texture_id;
                 void *texture;
                 if (id != 0) {
@@ -733,13 +733,13 @@ extern "C" void PCShaderSetMaterialParameters(NuShaderObject *shader, NUMTL *ori
                     texture = NULL;
                 }
                 PCDeviceSetTexture(parameter->register_index, texture);
-                PCDeviceSetSamplerState(parameter->register_index, 1, 1);
-                PCDeviceSetSamplerState(parameter->register_index, 2, 1);
+                PCDeviceSetSamplerState(parameter->register_index, D3DSAMP_ADDRESSU, 1);
+                PCDeviceSetSamplerState(parameter->register_index, D3DSAMP_ADDRESSV, 1);
                 const f32 bias = material->parameter_1a8 + PCShaderMaterialSamplerBiasOffset;
-                PCDeviceSetSamplerState(parameter->register_index, 8, PCShaderSamplerBiasBits(bias));
+                PCDeviceSetSamplerState(parameter->register_index, D3DSAMP_MIPMAPLODBIAS, PCShaderSamplerBiasBits(bias));
                 break;
             }
-            case 82: {
+            case SHADER_UNIFORM_DIFFENVMAP_SAMPLER_CUBE: {
                 const i32 id = material->clamp_texture_id;
                 void *texture;
                 if (id != 0) {
@@ -748,12 +748,12 @@ extern "C" void PCShaderSetMaterialParameters(NuShaderObject *shader, NUMTL *ori
                     texture = NULL;
                 }
                 PCDeviceSetTexture(parameter->register_index, texture);
-                PCDeviceSetSamplerState(parameter->register_index, 1, 3);
-                PCDeviceSetSamplerState(parameter->register_index, 2, 3);
-                PCDeviceSetSamplerState(parameter->register_index, 3, 3);
+                PCDeviceSetSamplerState(parameter->register_index, D3DSAMP_ADDRESSU, 3);
+                PCDeviceSetSamplerState(parameter->register_index, D3DSAMP_ADDRESSV, 3);
+                PCDeviceSetSamplerState(parameter->register_index, D3DSAMP_ADDRESSW, 3);
                 break;
             }
-            case 46: {
+            case SHADER_UNIFORM_ENVMAP_SAMPLER_CUBE: {
                 PC_TEXTURE_RESOURCE *texture;
                 if (PCDeviceHardwareVertexProcessingPC == 1 &&
                     ((material->texture_flags & 8u) != 0 || (material->texture_flags & 0x50000u) != 0)) {
@@ -764,12 +764,12 @@ extern "C" void PCShaderSetMaterialParameters(NuShaderObject *shader, NUMTL *ori
                     texture = material->cube_texture_id > 0 ? NuTextureGetDimensions(material->cube_texture_id)->resource : NULL;
                 }
                 PCDeviceSetTexture(parameter->register_index, texture);
-                PCDeviceSetSamplerState(parameter->register_index, 1, 3);
-                PCDeviceSetSamplerState(parameter->register_index, 2, 3);
-                PCDeviceSetSamplerState(parameter->register_index, 3, 3);
+                PCDeviceSetSamplerState(parameter->register_index, D3DSAMP_ADDRESSU, 3);
+                PCDeviceSetSamplerState(parameter->register_index, D3DSAMP_ADDRESSV, 3);
+                PCDeviceSetSamplerState(parameter->register_index, D3DSAMP_ADDRESSW, 3);
                 break;
             }
-            case 48: {
+            case SHADER_UNIFORM_PS2_SHINEMAP_SAMPLER: {
                 const i32 id = material->reflection_texture_id;
                 void *texture;
                 if (id != 0) {
@@ -778,27 +778,27 @@ extern "C" void PCShaderSetMaterialParameters(NuShaderObject *shader, NUMTL *ori
                     texture = NULL;
                 }
                 PCDeviceSetTexture(parameter->register_index, texture);
-                PCDeviceSetSamplerState(parameter->register_index, 1, 3);
-                PCDeviceSetSamplerState(parameter->register_index, 2, 3);
+                PCDeviceSetSamplerState(parameter->register_index, D3DSAMP_ADDRESSU, 3);
+                PCDeviceSetSamplerState(parameter->register_index, D3DSAMP_ADDRESSV, 3);
                 break;
             }
-            case 51: {
+            case SHADER_UNIFORM_LAYER0_DIFFUSE: {
                 parameter->SetVector(PCShaderUnpackColour(&vector_51.x, material->channel_colours[0]));
                 break;
             }
-            case 52: {
+            case SHADER_UNIFORM_LAYER1_DIFFUSE: {
                 parameter->SetVector(PCShaderUnpackColour(&vector_52.x, material->channel_colours[1]));
                 break;
             }
-            case 53: {
+            case SHADER_UNIFORM_LAYER2_DIFFUSE: {
                 parameter->SetVector(PCShaderUnpackColour(&vector_53.x, material->channel_colours[2]));
                 break;
             }
-            case 54: {
+            case SHADER_UNIFORM_LAYER3_DIFFUSE: {
                 parameter->SetVector(PCShaderUnpackColour(&vector_54.x, material->channel_colours[3]));
                 break;
             }
-            case 55: {
+            case SHADER_UNIFORM_LAYER_K_OPACITIES: {
                 vector_55.x = material->parameter_d8;
                 vector_55.y = material->parameter_dc;
                 vector_55.z = material->parameter_e0;
@@ -806,50 +806,50 @@ extern "C" void PCShaderSetMaterialParameters(NuShaderObject *shader, NUMTL *ori
                 parameter->SetVector(&vector_55.x);
                 break;
             }
-            case 57: {
+            case SHADER_UNIFORM_SPECULAR_SPECULAR: {
                 parameter->SetVector(PCShaderUnpackColour(&vector_57.x, material->shadow_colour));
                 break;
             }
-            case 58: {
+            case SHADER_UNIFORM_SPECULAR2_SPECULAR: {
                 parameter->SetVector(PCShaderUnpackColour(&vector_58.x, material->reflection_colour));
                 break;
             }
-            case 59: {
+            case SHADER_UNIFORM_REFRACTION_COLOR: {
                 const f32 *values = PCShaderUnpackColour(&vector_59.x, material->tint_colour);
                 vector_59.w = material->parameter_158;
                 parameter->SetVector(values);
                 break;
             }
-            case 60: {
+            case SHADER_UNIFORM_REFRACTION_K_INDEX: {
                 const f32 value = (material->parameter_150 - 1.0) * (f64)0.1f;
                 parameter->SetScalar(value);
                 break;
             }
-            case 61: {
+            case SHADER_UNIFORM_BACK_BUFFER_SAMPLER: {
                 GRAPHICS_RENDER_TEXTURE *texture = NuPostEffectGetBackBuffer(nuapi.frame_count);
                 PCGraphicsBindEffectTexture(texture, parameter->register_index);
-                PCDeviceSetSamplerState(parameter->register_index, 1, 3);
-                PCDeviceSetSamplerState(parameter->register_index, 2, 3);
-                PCDeviceSetSamplerState(parameter->register_index, 7, 0);
+                PCDeviceSetSamplerState(parameter->register_index, D3DSAMP_ADDRESSU, 3);
+                PCDeviceSetSamplerState(parameter->register_index, D3DSAMP_ADDRESSV, 3);
+                PCDeviceSetSamplerState(parameter->register_index, D3DSAMP_MIPFILTER, 0);
                 break;
             }
-            case 64: {
+            case SHADER_UNIFORM_UV_OFFSET0: {
                 parameter->SetFloat2(&material->uv_upload_lanes[0]);
                 break;
             }
-            case 65: {
+            case SHADER_UNIFORM_UV_OFFSET1: {
                 parameter->SetFloat2(&material->uv_upload_lanes[2]);
                 break;
             }
-            case 66: {
+            case SHADER_UNIFORM_UV_OFFSET2: {
                 parameter->SetFloat2(&material->uv_upload_lanes[4]);
                 break;
             }
-            case 67: {
+            case SHADER_UNIFORM_UV_OFFSET3: {
                 parameter->SetFloat2(&material->uv_upload_lanes[6]);
                 break;
             }
-            case 72: {
+            case SHADER_UNIFORM_LEGO_PARAMS: {
                 vector_72.x = 0.05f;
                 vector_72.y = material->phase_speed * (f64)0.32f;
                 vector_72.z = 0.2f;
@@ -857,19 +857,19 @@ extern "C" void PCShaderSetMaterialParameters(NuShaderObject *shader, NUMTL *ori
                 parameter->SetFloat3(&vector_72.x);
                 break;
             }
-            case 86: {
+            case SHADER_UNIFORM_WIND_SAMPLER: {
                 if (NuWindCurrent(static_cast<NUWIND *>(nuapi.wind)) >= 0) {
                     const i32 id = NuWindCurrent(static_cast<NUWIND *>(nuapi.wind));
                     PCGraphicsBindTextureDimensions(NuTextureGetDimensions(id), parameter->register_index);
-                    PCDeviceSetSamplerState(parameter->register_index, 1, 1);
-                    PCDeviceSetSamplerState(parameter->register_index, 2, 1);
-                    PCDeviceSetSamplerState(parameter->register_index, 3, 1);
-                    PCDeviceSetSamplerState(parameter->register_index, 7, 0);
-                    PCDeviceSetSamplerState(parameter->register_index, 8, 0);
+                    PCDeviceSetSamplerState(parameter->register_index, D3DSAMP_ADDRESSU, 1);
+                    PCDeviceSetSamplerState(parameter->register_index, D3DSAMP_ADDRESSV, 1);
+                    PCDeviceSetSamplerState(parameter->register_index, D3DSAMP_ADDRESSW, 1);
+                    PCDeviceSetSamplerState(parameter->register_index, D3DSAMP_MIPFILTER, 0);
+                    PCDeviceSetSamplerState(parameter->register_index, D3DSAMP_MIPMAPLODBIAS, 0);
                 }
                 break;
             }
-            case 87: {
+            case SHADER_UNIFORM_WIND_PARAMS: {
                 NUWIND *wind = static_cast<NUWIND *>(nuapi.wind);
                 if (wind != NULL) {
                     const f32 parameter24 = wind->parameter_24;
@@ -885,7 +885,7 @@ extern "C" void PCShaderSetMaterialParameters(NuShaderObject *shader, NUMTL *ori
                 }
                 break;
             }
-            case 97: {
+            case SHADER_UNIFORM_TEX_ANIM_MAP_SAMPLER: {
                 const i32 id = material->point_texture_id;
                 void *texture;
                 if (id != 0) {
@@ -894,14 +894,14 @@ extern "C" void PCShaderSetMaterialParameters(NuShaderObject *shader, NUMTL *ori
                     texture = NULL;
                 }
                 PCDeviceSetTexture(parameter->register_index, texture);
-                PCDeviceSetSamplerState(parameter->register_index, 1, 1);
-                PCDeviceSetSamplerState(parameter->register_index, 2, 1);
-                PCDeviceSetSamplerState(parameter->register_index, 5, 1);
-                PCDeviceSetSamplerState(parameter->register_index, 6, 1);
-                PCDeviceSetSamplerState(parameter->register_index, 7, 0);
+                PCDeviceSetSamplerState(parameter->register_index, D3DSAMP_ADDRESSU, 1);
+                PCDeviceSetSamplerState(parameter->register_index, D3DSAMP_ADDRESSV, 1);
+                PCDeviceSetSamplerState(parameter->register_index, D3DSAMP_MAGFILTER, 1);
+                PCDeviceSetSamplerState(parameter->register_index, D3DSAMP_MINFILTER, 1);
+                PCDeviceSetSamplerState(parameter->register_index, D3DSAMP_MIPFILTER, 0);
                 break;
             }
-            case 98: {
+            case SHADER_UNIFORM_TEX_ANIM_CURVES_SAMPLER: {
                 const i32 id = material->unfiltered_texture_id;
                 void *texture;
                 if (id != 0) {
@@ -910,14 +910,14 @@ extern "C" void PCShaderSetMaterialParameters(NuShaderObject *shader, NUMTL *ori
                     texture = NULL;
                 }
                 PCDeviceSetTexture(parameter->register_index, texture);
-                PCDeviceSetSamplerState(parameter->register_index, 1, 1);
-                PCDeviceSetSamplerState(parameter->register_index, 2, 1);
-                PCDeviceSetSamplerState(parameter->register_index, 5, 0);
-                PCDeviceSetSamplerState(parameter->register_index, 6, 0);
-                PCDeviceSetSamplerState(parameter->register_index, 7, 0);
+                PCDeviceSetSamplerState(parameter->register_index, D3DSAMP_ADDRESSU, 1);
+                PCDeviceSetSamplerState(parameter->register_index, D3DSAMP_ADDRESSV, 1);
+                PCDeviceSetSamplerState(parameter->register_index, D3DSAMP_MAGFILTER, 0);
+                PCDeviceSetSamplerState(parameter->register_index, D3DSAMP_MINFILTER, 0);
+                PCDeviceSetSamplerState(parameter->register_index, D3DSAMP_MIPFILTER, 0);
                 break;
             }
-            case 81: {
+            case SHADER_UNIFORM_DAPPLE_LIMIT: {
                 parameter->SetScalar(material->parameter_154);
                 break;
             }

@@ -410,8 +410,8 @@ void Customiser_AddPartAccessories(CUSTOMISER_LAYERS *customiser, GAMEOBJECT *ob
         params.matrix = &object->locator_matrices[joint];
         params.velocity = &momentum;
         params.special = special;
-        params.lighting_data =
-            Cheats_CheckFlags(1) ? ((PART_LIGHTING_DATA *)(&KillPartsZeroLighting)) : &((KILLPARTS_OBJECT_LIGHT *)object)->lighting;
+        params.lighting_data = Cheats_CheckFlags(CHEAT_ZERO_LIGHTING) ? ((PART_LIGHTING_DATA *)(&KillPartsZeroLighting))
+                                                                      : &((KILLPARTS_OBJECT_LIGHT *)object)->lighting;
         params.time_step = FRAMETIME;
         params.flags = mode == 0 ? 0x480 : 0x90;
         params.stop_fn = PartStop_Flickerer;

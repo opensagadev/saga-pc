@@ -1827,7 +1827,7 @@ extern "C" {
         }
 
         EnableShadowMapRendering(0);
-        if (Cheats_CheckFlags(1) != 0) {
+        if (Cheats_CheckFlags(CHEAT_ZERO_LIGHTING) != 0) {
             SetZeroLights();
         } else {
             FindAndSetLights(reinterpret_cast<NUVEC *>(&world_matrix.m30), 1.0f, world->rtl_set);

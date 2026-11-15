@@ -50,9 +50,9 @@ extern "C" i32 NuRndrSwapScreen(i32 mode) {
     NuDisplayListCaptureBegin();
     _NuTimeBarSlotBegin(-1, 4, "CPU_QUEUE_DRAW");
     for (i32 i = 0; i < nuspecial_vertex_noffsets && i * 16 < 0x80; ++i) {
-        NuShaderManagerSetElementfv(0x4e, i, nuspecial_vertex_offsets[i]);
+        NuShaderManagerSetElementfv(SHADER_UNIFORM_OFFSET_TABLE, i, nuspecial_vertex_offsets[i]);
     }
-    NuShaderManagerSetfv(0x3f, &RenderFrameShaderTime);
+    NuShaderManagerSetfv(SHADER_UNIFORM_TIME, &RenderFrameShaderTime);
     PCDeviceResetSamplerDefaults();
     NuPostEffectReset();
     for (i32 i = 0; i < sceneParametersCount; ++i) {
@@ -121,13 +121,13 @@ extern "C" i32 NuRndrSwapScreen(i32 mode) {
         } else {
             PCFrameResetTargets();
         }
-        NuShaderManagerSetfv(0x3e, &dimensions.x);
+        NuShaderManagerSetfv(SHADER_UNIFORM_SCREEN_SIZE, &dimensions.x);
         if (scene->clear_flags_08 != 0) {
             u32 flags = scene->clear_flags_08;
             u32 clear = 0;
-            PCDeviceSetRenderState(7, 1);
-            PCDeviceSetRenderState(14, 1);
-            PCDeviceSetRenderState(52, 1);
+            PCDeviceSetRenderState(D3DRS_ZENABLE, 1);
+            PCDeviceSetRenderState(D3DRS_ZWRITEENABLE, 1);
+            PCDeviceSetRenderState(D3DRS_STENCILENABLE, 1);
             if (flags & 0x100) {
                 clear = 1;
             }
@@ -142,7 +142,7 @@ extern "C" i32 NuRndrSwapScreen(i32 mode) {
             const u8 *rgba = reinterpret_cast<const u8 *>(&colour);
             const u32 argb = (((colour >> 24) * 256 + rgba[0]) * 256 + rgba[1]) * 256 + rgba[2];
             PCDeviceClear(0, NULL, clear, argb, scene->clear_alpha, 0x60);
-            PCDeviceSetRenderState(52, 0);
+            PCDeviceSetRenderState(D3DRS_STENCILENABLE, 0);
         }
         if (scene->scene_id != -1) {
             D3DPERF_BeginEvent((D3DCOLOR)-1, L"3D render");

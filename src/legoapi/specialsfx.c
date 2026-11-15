@@ -96,7 +96,7 @@ i32 SpecialSfxLoad(char *path, void *world_ptr) {
             name[length] = 0;
             event->sfx_id = (i16)GetSfxId(name);
             event->flags = EdFileReadChar();
-            event->flags = (event->flags & ~2) | ((IsSfxLooping(event->sfx_id) & 1) << 1);
+            event->flags = (event->flags & ~SPECIALSFX_EVENT_LOOPING) | ((IsSfxLooping(event->sfx_id) & 1) << 1);
             event->trigger_frame = EdFileReadFloat();
             event->previous_frame = EdFileReadFloat();
             ++world->special_sfx_event_count;
@@ -174,7 +174,7 @@ void UpdateSpecialSfx(WORLDINFO *world_info) {
             for (j = 0; j < entry->event_count; ++j) {
                 if (event != NULL) {
                     event->flags &= ~1u;
-                    if ((event->flags & 2) == 0 && frame < end_frame) {
+                    if ((event->flags & SPECIALSFX_EVENT_LOOPING) == 0 && frame < end_frame) {
                         event->previous_frame = 0.0f;
                     }
                 }
@@ -189,17 +189,19 @@ void UpdateSpecialSfx(WORLDINFO *world_info) {
             if (event != NULL) {
                 play = 0;
                 flags = event->flags;
-                if ((flags & 2) != 0) {
-                    if ((direction == 0 && (flags & 4) != 0) || (flags & 4) != 0 && (flags & 8) != 0) {
+                if ((flags & SPECIALSFX_EVENT_LOOPING) != 0) {
+                    if ((direction == 0 && (flags & SPECIALSFX_EVENT_FORWARD) != 0) ||
+                        (flags & SPECIALSFX_EVENT_FORWARD) != 0 && (flags & SPECIALSFX_EVENT_BACKWARD) != 0) {
                         if (event->trigger_frame <= frame && frame <= event->previous_frame) {
                             play = 1;
                         }
-                    } else if (direction == 1 && (flags & 8) != 0 && frame <= event->trigger_frame && frame >= event->previous_frame) {
+                    } else if (direction == 1 && (flags & SPECIALSFX_EVENT_BACKWARD) != 0 && frame <= event->trigger_frame &&
+                               frame >= event->previous_frame) {
                         play = 1;
                     }
                     // MATCH-EXCEPTION: bit 2 is read as (flags >> 2) & 1, the code VC8 emits for a one-bit
                     // bitfield member; the event flags are a plain u8 in the header
-                } else if (((flags >> 2) & 1) != 0 && (flags & 8) != 0) {
+                } else if (((flags >> 2) & 1) != 0 && (flags & SPECIALSFX_EVENT_BACKWARD) != 0) {
                     if ((event->previous_frame < event->trigger_frame && event->trigger_frame <= frame) ||
                         (event->previous_frame > event->trigger_frame && frame <= event->trigger_frame)) {
                         play = 1;
@@ -209,7 +211,7 @@ void UpdateSpecialSfx(WORLDINFO *world_info) {
                         (event->previous_frame == 0.0f && event->trigger_frame == 1.0f)) {
                         play = 1;
                     }
-                } else if ((flags & 8) != 0) {
+                } else if ((flags & SPECIALSFX_EVENT_BACKWARD) != 0) {
                     if ((event->previous_frame > event->trigger_frame && frame <= event->trigger_frame) ||
                         (event->previous_frame == end_frame && event->trigger_frame == end_frame)) {
                         play = 1;
@@ -218,7 +220,7 @@ void UpdateSpecialSfx(WORLDINFO *world_info) {
                 if (play != 0) {
                     GameAudio_PlaySfxById(event->sfx_id, position, 0, 0);
                 }
-                if ((event->flags & 2) == 0) {
+                if ((event->flags & SPECIALSFX_EVENT_LOOPING) == 0) {
                     event->previous_frame = frame;
                 }
             }

@@ -37,7 +37,7 @@ extern "C" {
                 return;
             }
             g_enableButtonPrompts = 1;
-            NewMenu(1000, -1, -1);
+            NewMenu(MENU_SAVE, -1, -1);
             memcard_autosavecanceldelay = 5.0f;
             MenuASCancelFinished = 1;
             MenuAutoSaveCancelFirst = 1;

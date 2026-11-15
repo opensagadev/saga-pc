@@ -1331,7 +1331,7 @@ void MenuUpdateCustomiser(MENU *menu) {
             return;
         }
         customiser_save_done = 1;
-        NewMenu(1000, -1, -1);
+        NewMenu(MENU_SAVE, -1, -1);
         return;
     }
     CustomiserMenu_End();

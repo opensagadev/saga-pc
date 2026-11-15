@@ -3659,7 +3659,7 @@ extern "C" {
                 BonusWinner = BonusWinner == 0;
             }
             BonusWinFlag = 0;
-            NewMenu(10, -1, -1);
+            NewMenu(MENU_END_CHALLENGE, -1, -1);
             ResetGameMessages();
             if (state == 3) {
                 PlaySfx(ScorePanelName, NULL);

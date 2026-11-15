@@ -645,7 +645,7 @@ void Player_ToggleCharacter(GAMEOBJECT *object, i32 direction, i32 sound) {
         }
         if (collected == -1 && (GCDataList[id].flags_090 & CHARACTER_RUNTIME_EXTRA_TOGGLE) == 0 &&
             ((GCDataList[id].flags_094 >> 24) & 1) == 0 &&
-            !(VehicleArea != 0 && BonusArea != 0 && Cheats_CheckFlags(0x100) != 0 &&
+            !(VehicleArea != 0 && BonusArea != 0 && Cheats_CheckFlags(CHEAT_EXTRA_TOGGLE) != 0 &&
               (GCDataList[id].flags_094 & CHARACTER_OPTION_TOGGLE_IF_IN_MINIKIT_BONUS) != 0)) {
             goto next_character;
         }
@@ -653,7 +653,7 @@ void Player_ToggleCharacter(GAMEOBJECT *object, i32 direction, i32 sound) {
             if ((CDataList[id].model_flags & CHARACTER_MODEL_VEHICLE) == 0 &&
                 !(BonusArea != 0 && (CDataList[id].model_flags & CHARACTER_MODEL_MINIKIT) != 0) &&
                 (GCDataList[id].flags_090 & CHARACTER_RUNTIME_EXTRA_TOGGLE) == 0 &&
-                !(BonusArea != 0 && Cheats_CheckFlags(0x100) != 0 &&
+                !(BonusArea != 0 && Cheats_CheckFlags(CHEAT_EXTRA_TOGGLE) != 0 &&
                   (GCDataList[id].flags_094 & CHARACTER_OPTION_TOGGLE_IF_IN_MINIKIT_BONUS) != 0)) {
                 goto next_character;
             }
@@ -664,7 +664,7 @@ void Player_ToggleCharacter(GAMEOBJECT *object, i32 direction, i32 sound) {
                         goto next_character;
                     }
                 } else if ((GCDataList[id].flags_090 & CHARACTER_RUNTIME_EXTRA_TOGGLE) == 0 &&
-                           !(BonusArea != 0 && Cheats_CheckFlags(0x100) != 0 &&
+                           !(BonusArea != 0 && Cheats_CheckFlags(CHEAT_EXTRA_TOGGLE) != 0 &&
                              (GCDataList[id].flags_094 & CHARACTER_OPTION_TOGGLE_IF_IN_MINIKIT_BONUS) != 0)) {
                     goto next_character;
                 }
@@ -679,7 +679,7 @@ void Player_ToggleCharacter(GAMEOBJECT *object, i32 direction, i32 sound) {
         }
         if (BonusArea == 0 || VehicleArea == 0) {
             if ((GCDataList[id].flags_090 & CHARACTER_RUNTIME_EXTRA_TOGGLE) != 0) {
-                if ((object->flags_1fc_word & APIOBJECT_FLAG_PLAYER_ACTIVE) == 0 || Cheats_CheckFlags(0x100) == 0) {
+                if ((object->flags_1fc_word & APIOBJECT_FLAG_PLAYER_ACTIVE) == 0 || Cheats_CheckFlags(CHEAT_EXTRA_TOGGLE) == 0) {
                     goto next_character;
                 }
             } else {
@@ -733,28 +733,28 @@ i32 Arcade_BothPlayersActive(void) {
 }
 
 i32 Player_HasInvincibility(GAMEOBJECT *object) {
-    if (Cheats_CheckFlags(0x80) != 0) {
+    if (Cheats_CheckFlags(CHEAT_INVINCIBILITY) != 0) {
         return 1;
     }
     return object != NULL && object->powerup_time > 0.0f;
 }
 
 i32 Player_HasFastBuild(GAMEOBJECT *object) {
-    if (Cheats_CheckFlags(0x4000) != 0) {
+    if (Cheats_CheckFlags(CHEAT_FAST_BUILD) != 0) {
         return 1;
     }
     return object != NULL && object->powerup_time > 0.0f;
 }
 
 i32 Player_HasDeflectBolts(GAMEOBJECT *object) {
-    if (Cheats_CheckFlags(0x80000) != 0) {
+    if (Cheats_CheckFlags(CHEAT_DEFLECT_BOLTS) != 0) {
         return 1;
     }
     return object != NULL && object->powerup_time > 0.0f;
 }
 
 i32 fun_0055f290(GAMEOBJECT *object) {
-    if (Cheats_CheckFlags(2)) {
+    if (Cheats_CheckFlags(CHEAT_DOUBLE_BOLT_DAMAGE)) {
         return 1;
     }
     if (object != NULL && object->powerup_time > 0.0f) {
@@ -774,14 +774,14 @@ i32 Player_HasDoubleBoltDamage_FromBolt(BOLT *bolt) {
         return 0;
     }
     object = Player[player];
-    if (Cheats_CheckFlags(2) != 0) {
+    if (Cheats_CheckFlags(CHEAT_DOUBLE_BOLT_DAMAGE) != 0) {
         return 1;
     }
     return object != NULL && object->powerup_time > 0.0f;
 }
 
 i32 Player_HasDoubleWeaponDamage(GAMEOBJECT *object) {
-    if (Cheats_CheckFlags(0x400) != 0) {
+    if (Cheats_CheckFlags(CHEAT_DOUBLE_WEAPON_DAMAGE) != 0) {
         return 1;
     }
     return object != NULL && object->powerup_time > 0.0f;

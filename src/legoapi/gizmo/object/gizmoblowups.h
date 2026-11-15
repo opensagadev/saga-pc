@@ -109,21 +109,21 @@ typedef struct GIZMOBLOWUPTYPE {        // size 0x100
 /* GIZMOBLOWUP.draw_flags: the per-instance options the level file stores, named from what the game does with
  * each. The other bits (0x100 and 0x40000000 before version 30 move to secondary_flags; 0x2000, 0x4000, 0x10000,
  * 0x80000, 0x200000, 0x800000, 0x1000000, 0x10000000, 0x20000000) are listed in docs/magic-values.md. */
-#define BLOWUP_OPTION_BATARANG_TARGET 0x1   /* the batarang's target search takes it */
-#define BLOWUP_OPTION_TERRAIN 0x4           /* GizBlowup_InitTerrain gives it a collision platform */
-#define BLOWUP_OPTION_CHARACTER_SMASH 0x8   /* smashed by a character walking into it */
-#define BLOWUP_OPTION_TRANSFORMABLE 0x10    /* a transform target (GizmoBlowup_TransformDrawFn, transform.c) */
-#define BLOWUP_OPTION_SHADOW_MODE_ONLY 0x20 /* ignored while ShadowMode is 0 */
-#define BLOWUP_OPTION_CARRIED_ONLY 0x40     /* only a carried object's hit (BLOWUP_HIT_CARRIED) smashes it */
-#define BLOWUP_OPTION_VEHICLE_SMASH 0x200   /* smashed by a vehicle walking into it */
-#define BLOWUP_OPTION_NO_DECAL 0x400        /* no decal special after it is blown up */
-#define BLOWUP_OPTION_CREATE_STUFF 0x800    /* GizmoBlowupCreateStuff when it is blown up */
-#define BLOWUP_OPTION_MID_AT_ORIGIN 0x1000  /* the mid point is the transform's origin, not the bounds' centre */
-#define BLOWUP_OPTION_SHOOTABLE 0x8000      /* bolts smash it */
-#define BLOWUP_OPTION_NO_SHADOW 0x20000     /* no shadow special, no shadow map rendering */
-#define BLOWUP_OPTION_SHAKE 0x40000         /* the blow up shakes the camera and rumbles the pads */
-#define BLOWUP_OPTION_FOLLOW_ANIMATION 0x400000 /* the transform follows the animated special's instance matrix */
-#define BLOWUP_OPTION_REFLECTION 0x40000000     /* drawn again mirrored at reflection_height */
+#define BLOWUP_OPTION_BATARANG_TARGET 0x1          /* the batarang's target search takes it */
+#define BLOWUP_OPTION_TERRAIN 0x4                  /* GizBlowup_InitTerrain gives it a collision platform */
+#define BLOWUP_OPTION_CHARACTER_SMASH 0x8          /* smashed by a character walking into it */
+#define BLOWUP_OPTION_TRANSFORMABLE 0x10           /* a transform target (GizmoBlowup_TransformDrawFn, transform.c) */
+#define BLOWUP_OPTION_SHADOW_MODE_ONLY 0x20        /* ignored while ShadowMode is 0 */
+#define BLOWUP_OPTION_CARRIED_ONLY 0x40            /* only a carried object's hit (BLOWUP_HIT_CARRIED) smashes it */
+#define BLOWUP_OPTION_VEHICLE_SMASH 0x200          /* smashed by a vehicle walking into it */
+#define BLOWUP_OPTION_NO_DECAL 0x400               /* no decal special after it is blown up */
+#define BLOWUP_OPTION_CREATE_STUFF 0x800           /* GizmoBlowupCreateStuff when it is blown up */
+#define BLOWUP_OPTION_MID_AT_ORIGIN 0x1000         /* the mid point is the transform's origin, not the bounds' centre */
+#define BLOWUP_OPTION_SHOOTABLE 0x8000             /* bolts smash it */
+#define BLOWUP_OPTION_NO_SHADOW 0x20000            /* no shadow special, no shadow map rendering */
+#define BLOWUP_OPTION_SHAKE 0x40000                /* the blow up shakes the camera and rumbles the pads */
+#define BLOWUP_OPTION_FOLLOW_ANIMATION 0x400000    /* the transform follows the animated special's instance matrix */
+#define BLOWUP_OPTION_REFLECTION 0x40000000        /* drawn again mirrored at reflection_height */
 #define BLOWUP_OPTION_FRAGMENTS_PER_HIT 0x80000000 /* fragments fly at every hit, not only the last */
 #define BLOWUP_STATUS_PLUGGING 0x10000000
 

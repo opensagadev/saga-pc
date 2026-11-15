@@ -43,22 +43,22 @@ static void PCDisplayHandlerSetZMode(i32 mode) {
     NuDisplayHandlerZMode = mode;
     switch (mode) {
         case 0:
-            PCDeviceSetRenderState(7, 1);
-            PCDeviceSetRenderState(0xe, 1);
-            PCDeviceSetRenderState(0x17, 4);
+            PCDeviceSetRenderState(D3DRS_ZENABLE, 1);
+            PCDeviceSetRenderState(D3DRS_ZWRITEENABLE, 1);
+            PCDeviceSetRenderState(D3DRS_ZFUNC, 4);
             break;
         case 1:
-            PCDeviceSetRenderState(7, 1);
-            PCDeviceSetRenderState(0xe, 0);
-            PCDeviceSetRenderState(0x17, 4);
+            PCDeviceSetRenderState(D3DRS_ZENABLE, 1);
+            PCDeviceSetRenderState(D3DRS_ZWRITEENABLE, 0);
+            PCDeviceSetRenderState(D3DRS_ZFUNC, 4);
             break;
         case 2:
-            PCDeviceSetRenderState(7, 1);
-            PCDeviceSetRenderState(0xe, 1);
-            PCDeviceSetRenderState(0x17, 8);
+            PCDeviceSetRenderState(D3DRS_ZENABLE, 1);
+            PCDeviceSetRenderState(D3DRS_ZWRITEENABLE, 1);
+            PCDeviceSetRenderState(D3DRS_ZFUNC, 8);
             break;
         case 3:
-            PCDeviceSetRenderState(7, 0);
+            PCDeviceSetRenderState(D3DRS_ZENABLE, 0);
             break;
     }
 }
@@ -80,14 +80,14 @@ extern "C" void NuDisplayListTransform(void *arg) {
         if (opacity < 1.0f) {
             tint.w *= opacity;
             NuDisplayHandlerZMode = 1;
-            PCDeviceSetRenderState(7, 1);
-            PCDeviceSetRenderState(0xe, 0);
-            PCDeviceSetRenderState(0x17, 4);
-            NuShaderManagerSetfv(0x38, &tint.x);
+            PCDeviceSetRenderState(D3DRS_ZENABLE, 1);
+            PCDeviceSetRenderState(D3DRS_ZWRITEENABLE, 0);
+            PCDeviceSetRenderState(D3DRS_ZFUNC, 4);
+            NuShaderManagerSetfv(SHADER_UNIFORM_K_TINT, &tint.x);
         } else {
             PC_DL_MATERIAL_READER *material = (PC_DL_MATERIAL_READER *)NuDisplayHandlerMaterial;
             PCDisplayHandlerSetZMode((material->reflection_flags >> 14) & 3);
-            NuShaderManagerSetfv(0x38, &tint.x);
+            NuShaderManagerSetfv(SHADER_UNIFORM_K_TINT, &tint.x);
         }
         if (PCDeviceHardwareVertexProcessingPC == 4) {
             NuDisplayHandlerOpacity = opacity;
@@ -95,12 +95,12 @@ extern "C" void NuDisplayListTransform(void *arg) {
     }
     if ((f64)shadow != (f64)PCGraphicsFrameState) {
         NuDisplayHandlerShadow = shadow;
-        NuShaderManagerSetfv(0x63, &NuDisplayHandlerShadow);
+        NuShaderManagerSetfv(SHADER_UNIFORM_SHADOW_CASTING_OBJECT, &NuDisplayHandlerShadow);
         PCGraphicsFrameState = (i32)shadow;
     }
     matrix->m33 = 1.0f;
     matrix->m23 = 0.0f;
-    NuShaderManagerSetfv(0x11, &matrix->m00);
+    NuShaderManagerSetfv(SHADER_UNIFORM_WORLD, &matrix->m00);
     matrix->m33 = opacity;
     matrix->m23 = shadow;
 }
@@ -114,15 +114,15 @@ extern "C" void NuDisplayListTransformTranspose(void *arg) {
         if (opacity < 1.0f) {
             tint.w *= opacity;
             NuDisplayHandlerZMode = 1;
-            PCDeviceSetRenderState(7, 1);
-            PCDeviceSetRenderState(0xe, 0);
-            PCDeviceSetRenderState(0x17, 4);
-            NuShaderManagerSetfv(0x38, &tint.x);
+            PCDeviceSetRenderState(D3DRS_ZENABLE, 1);
+            PCDeviceSetRenderState(D3DRS_ZWRITEENABLE, 0);
+            PCDeviceSetRenderState(D3DRS_ZFUNC, 4);
+            NuShaderManagerSetfv(SHADER_UNIFORM_K_TINT, &tint.x);
         } else {
             PC_DL_MATERIAL_READER *material = (PC_DL_MATERIAL_READER *)NuDisplayHandlerMaterial;
             if (material != NULL) {
                 PCDisplayHandlerSetZMode((material->reflection_flags >> 14) & 3);
-                NuShaderManagerSetfv(0x38, &tint.x);
+                NuShaderManagerSetfv(SHADER_UNIFORM_K_TINT, &tint.x);
             }
         }
         if (PCDeviceHardwareVertexProcessingPC == 4) {
@@ -131,12 +131,12 @@ extern "C" void NuDisplayListTransformTranspose(void *arg) {
     }
     if ((f64)shadow != (f64)PCGraphicsFrameState) {
         NuDisplayHandlerShadow = shadow;
-        NuShaderManagerSetfv(0x63, &NuDisplayHandlerShadow);
+        NuShaderManagerSetfv(SHADER_UNIFORM_SHADOW_CASTING_OBJECT, &NuDisplayHandlerShadow);
         PCGraphicsFrameState = (i32)shadow;
     }
     matrix->m33 = 1.0f;
     matrix->m32 = 0.0f;
-    NuShaderManagerSetElementsfv_transpose(0x11, 0, 1, &matrix->m00);
+    NuShaderManagerSetElementsfv_transpose(SHADER_UNIFORM_WORLD, 0, 1, &matrix->m00);
     matrix->m33 = opacity;
     matrix->m32 = shadow;
 }
@@ -173,9 +173,9 @@ extern "C" void NuDisplayListFaceOnTransform(void *arg) {
     if (opacity < 1.0f) {
         tint.w *= opacity;
         NuDisplayHandlerZMode = 1;
-        PCDeviceSetRenderState(7, 1);
-        PCDeviceSetRenderState(0xe, 0);
-        PCDeviceSetRenderState(0x17, 4);
+        PCDeviceSetRenderState(D3DRS_ZENABLE, 1);
+        PCDeviceSetRenderState(D3DRS_ZWRITEENABLE, 0);
+        PCDeviceSetRenderState(D3DRS_ZFUNC, 4);
         /* The count is 4 registers despite only four initialized tint floats. */
         PCDeviceSetVertexShaderConstantsF(0x28, &tint.x, 4);
     } else {
@@ -292,9 +292,9 @@ extern "C" void NuDisplayListMaterial(void *arg) {
             } else {
                 PCDeviceSetTexture(0, NULL);
             }
-            PCDeviceSetSamplerState(0, 1, 3);
-            PCDeviceSetSamplerState(0, 2, 3);
-            PCDeviceSetSamplerState(0, 7, 0);
+            PCDeviceSetSamplerState(0, D3DSAMP_ADDRESSU, 3);
+            PCDeviceSetSamplerState(0, D3DSAMP_ADDRESSV, 3);
+            PCDeviceSetSamplerState(0, D3DSAMP_MIPFILTER, 0);
             PCDeviceSetTexture(1, NuTextureGetDimensions(NuDisplayMaterialDistortTexture)->resource);
         } else if (material->texture_id != 0) {
             PCDeviceSetTexture(0, NuTextureGetDimensions(material->texture_id)->resource);
@@ -360,7 +360,7 @@ extern "C" void NuDisplayListMaterial(void *arg) {
                 group.y = 1.0f;
                 group.z = 1.0f;
                 group.w = 1.0f;
-                NuShaderManagerSetElementfv(0x4f, i, &group.x);
+                NuShaderManagerSetElementfv(SHADER_UNIFORM_VERTEX_GROUP_STATES, i, &group.x);
             }
         }
         i32 count = nuspecial_vertex_noffsets;
@@ -368,7 +368,8 @@ extern "C" void NuDisplayListMaterial(void *arg) {
             if (count >= 8) {
                 count = 8;
             }
-            NuShaderObjectSetElementsfv((NuShaderObject *)PCShaderCurrentObject(), 0x4e, 0, count, &nuspecial_vertex_offsets[0][0]);
+            NuShaderObjectSetElementsfv((NuShaderObject *)PCShaderCurrentObject(), SHADER_UNIFORM_OFFSET_TABLE, 0, count,
+                                        &nuspecial_vertex_offsets[0][0]);
         }
     }
 }
@@ -388,55 +389,55 @@ extern "C" void NuMtlSetRenderStatesPS(NUMTL *arg) {
     u32 alpha;
     PCDisplayHandlerSetZMode((material->attributes >> 14) & 3);
     if (material->variant_flags & 0x100000) {
-        PCDeviceSetRenderState(15, 1);
-        PCDeviceSetRenderState(24, 2);
-        PCDeviceSetRenderState(25, 5);
+        PCDeviceSetRenderState(D3DRS_ALPHATESTENABLE, 1);
+        PCDeviceSetRenderState(D3DRS_ALPHAREF, 2);
+        PCDeviceSetRenderState(D3DRS_ALPHAFUNC, 5);
     } else {
         alpha = (material->attributes >> 20) & 7;
         switch (alpha) {
             case 0:
             case 1:
-                PCDeviceSetRenderState(15, 0);
+                PCDeviceSetRenderState(D3DRS_ALPHATESTENABLE, 0);
                 break;
             case 5:
-                PCDeviceSetRenderState(15, 1);
-                PCDeviceSetRenderState(24, (material->attributes >> 23) & 0xff);
-                PCDeviceSetRenderState(25, 5);
+                PCDeviceSetRenderState(D3DRS_ALPHATESTENABLE, 1);
+                PCDeviceSetRenderState(D3DRS_ALPHAREF, (material->attributes >> 23) & 0xff);
+                PCDeviceSetRenderState(D3DRS_ALPHAFUNC, 5);
                 break;
             default:
-                PCDeviceSetRenderState(15, 1);
-                PCDeviceSetRenderState(24, 0);
-                PCDeviceSetRenderState(25, 5);
+                PCDeviceSetRenderState(D3DRS_ALPHATESTENABLE, 1);
+                PCDeviceSetRenderState(D3DRS_ALPHAREF, 0);
+                PCDeviceSetRenderState(D3DRS_ALPHAFUNC, 5);
                 break;
         }
     }
     switch (material->attributes & 15) {
         case 0:
-            PCDeviceSetRenderState(27, 0);
+            PCDeviceSetRenderState(D3DRS_ALPHABLENDENABLE, 0);
             break;
         case 1:
-            PCDeviceSetRenderState(27, 1);
-            PCDeviceSetRenderState(171, 1);
-            PCDeviceSetRenderState(19, 5);
-            PCDeviceSetRenderState(20, 6);
+            PCDeviceSetRenderState(D3DRS_ALPHABLENDENABLE, 1);
+            PCDeviceSetRenderState(D3DRS_BLENDOP, 1);
+            PCDeviceSetRenderState(D3DRS_SRCBLEND, 5);
+            PCDeviceSetRenderState(D3DRS_DESTBLEND, 6);
             break;
         case 2:
-            PCDeviceSetRenderState(27, 1);
-            PCDeviceSetRenderState(171, 1);
-            PCDeviceSetRenderState(19, 5);
-            PCDeviceSetRenderState(20, 2);
+            PCDeviceSetRenderState(D3DRS_ALPHABLENDENABLE, 1);
+            PCDeviceSetRenderState(D3DRS_BLENDOP, 1);
+            PCDeviceSetRenderState(D3DRS_SRCBLEND, 5);
+            PCDeviceSetRenderState(D3DRS_DESTBLEND, 2);
             break;
         case 3:
-            PCDeviceSetRenderState(27, 1);
-            PCDeviceSetRenderState(171, 3);
-            PCDeviceSetRenderState(19, 1);
-            PCDeviceSetRenderState(20, 6);
+            PCDeviceSetRenderState(D3DRS_ALPHABLENDENABLE, 1);
+            PCDeviceSetRenderState(D3DRS_BLENDOP, 3);
+            PCDeviceSetRenderState(D3DRS_SRCBLEND, 1);
+            PCDeviceSetRenderState(D3DRS_DESTBLEND, 6);
             break;
         case 10:
-            PCDeviceSetRenderState(27, 0);
-            PCDeviceSetRenderState(15, 1);
-            PCDeviceSetRenderState(24, (material->attributes >> 23) & 0xff);
-            PCDeviceSetRenderState(25, 7);
+            PCDeviceSetRenderState(D3DRS_ALPHABLENDENABLE, 0);
+            PCDeviceSetRenderState(D3DRS_ALPHATESTENABLE, 1);
+            PCDeviceSetRenderState(D3DRS_ALPHAREF, (material->attributes >> 23) & 0xff);
+            PCDeviceSetRenderState(D3DRS_ALPHAFUNC, 7);
             break;
         case 13:
             write_colour = 0;
@@ -445,20 +446,20 @@ extern "C" void NuMtlSetRenderStatesPS(NUMTL *arg) {
     switch ((material->attributes >> 12) & 3) {
         case 0:
             if (NuDisplayHandlerReflection != 0) {
-                PCDeviceSetRenderState(22, 2);
+                PCDeviceSetRenderState(D3DRS_CULLMODE, 2);
             } else {
-                PCDeviceSetRenderState(22, 3);
+                PCDeviceSetRenderState(D3DRS_CULLMODE, 3);
             }
             break;
         case 1:
             if (NuDisplayHandlerReflection != 0) {
-                PCDeviceSetRenderState(22, 3);
+                PCDeviceSetRenderState(D3DRS_CULLMODE, 3);
             } else {
-                PCDeviceSetRenderState(22, 2);
+                PCDeviceSetRenderState(D3DRS_CULLMODE, 2);
             }
             break;
         case 2:
-            PCDeviceSetRenderState(22, 1);
+            PCDeviceSetRenderState(D3DRS_CULLMODE, 1);
             break;
     }
     if (!(material->attributes & 0x80000)) {
@@ -467,14 +468,14 @@ extern "C" void NuMtlSetRenderStatesPS(NUMTL *arg) {
     if (RenderFrameSceneFlags != 0) {
         PCDeviceBackend.SetColorWriteMask(1, 1, 0);
         NuDisplayHandlerZMode = 0;
-        PCDeviceSetRenderState(7, 1);
-        PCDeviceSetRenderState(14, 1);
-        PCDeviceSetRenderState(23, 4);
+        PCDeviceSetRenderState(D3DRS_ZENABLE, 1);
+        PCDeviceSetRenderState(D3DRS_ZWRITEENABLE, 1);
+        PCDeviceSetRenderState(D3DRS_ZFUNC, 4);
     } else {
         PCDeviceBackend.SetColorWriteMask(write_colour == 0, write_alpha == 0, 0);
     }
     NuDisplayHandlerTint = NuDisplayHandlerDefaultTint;
-    NuShaderManagerSetfv(0x38, &NuDisplayHandlerDefaultTint.x);
+    NuShaderManagerSetfv(SHADER_UNIFORM_K_TINT, &NuDisplayHandlerDefaultTint.x);
     NuDisplayHandlerOpacity = -1.0f;
 }
 
@@ -844,20 +845,20 @@ void NuMainFilter::RenderBloom() {
     PCGraphicsPostEffectBackBufferTexture->flags =
         ((PCGraphicsPostEffectBackBufferTexture->flags & 0xfffffbff) | 0x300) & 0xffffdfff | 0x1800;
     POST_BIND_GLOBAL_TEXTURE(3, PCGraphicsPostEffectBackBufferTexture);
-    PCDeviceSetRenderState(22, 1);
-    PCDeviceSetRenderState(15, 0);
-    PCDeviceSetRenderState(27, 0);
-    PCDeviceSetRenderState(7, 0);
-    PCDeviceSetRenderState(168, 15);
+    PCDeviceSetRenderState(D3DRS_CULLMODE, 1);
+    PCDeviceSetRenderState(D3DRS_ALPHATESTENABLE, 0);
+    PCDeviceSetRenderState(D3DRS_ALPHABLENDENABLE, 0);
+    PCDeviceSetRenderState(D3DRS_ZENABLE, 0);
+    PCDeviceSetRenderState(D3DRS_COLORWRITEENABLE, 15);
     if (output == PcBootSecondaryFramebuffer && PCDeviceBackend.textures[0] != NULL) {
-        PCDeviceSetRenderState(27, 0);
-        PCDeviceSetRenderState(15, 0);
+        PCDeviceSetRenderState(D3DRS_ALPHABLENDENABLE, 0);
+        PCDeviceSetRenderState(D3DRS_ALPHATESTENABLE, 0);
     } else {
-        PCDeviceSetRenderState(27, 1);
-        PCDeviceSetRenderState(19, 2);
-        PCDeviceSetRenderState(20, 2);
-        PCDeviceSetRenderState(171, 1);
-        PCDeviceSetRenderState(15, 0);
+        PCDeviceSetRenderState(D3DRS_ALPHABLENDENABLE, 1);
+        PCDeviceSetRenderState(D3DRS_SRCBLEND, 2);
+        PCDeviceSetRenderState(D3DRS_DESTBLEND, 2);
+        PCDeviceSetRenderState(D3DRS_BLENDOP, 1);
+        PCDeviceSetRenderState(D3DRS_ALPHATESTENABLE, 0);
     }
     PCDeviceBackend.DrawPostEffectIndexed();
     PCDeviceSetTexture(0, NULL);
@@ -925,11 +926,11 @@ void NuSpeedBlurFilter::render() {
     constants[1] = parameters->scale * NuSpeedBlurVertexScale;
     computeSpeedBlur((NUVEC4 *)(constants + 4));
     PCDeviceBackend.CopySurfaceTarget(&texture_surface, 2, 0);
-    PCDeviceSetRenderState(22, 1);
-    PCDeviceSetRenderState(15, 0);
-    PCDeviceSetRenderState(27, 0);
-    PCDeviceSetRenderState(7, 0);
-    PCDeviceSetRenderState(168, 15);
+    PCDeviceSetRenderState(D3DRS_CULLMODE, 1);
+    PCDeviceSetRenderState(D3DRS_ALPHATESTENABLE, 0);
+    PCDeviceSetRenderState(D3DRS_ALPHABLENDENABLE, 0);
+    PCDeviceSetRenderState(D3DRS_ZENABLE, 0);
+    PCDeviceSetRenderState(D3DRS_COLORWRITEENABLE, 15);
     PCGraphicsBindFramebuffer(output);
     if (output == PcBootSecondaryFramebuffer && PCDeviceBackend.textures[0] != NULL) {
         color_texture->flags = (color_texture->flags & 0xfc13ffff) | 0x120000;
@@ -949,15 +950,15 @@ void NuSpeedBlurFilter::render() {
         POST_BIND_GLOBAL_TEXTURE(2, PCGraphicsPostEffectBackBufferTexture);
         POST_BIND_GLOBAL_TEXTURE(3, PCGraphicsPostEffectBackBufferTexture);
     }
-    PCDeviceSetRenderState(27, 1);
-    PCDeviceSetRenderState(15, 0);
-    PCDeviceSetRenderState(19, 5);
-    PCDeviceSetRenderState(20, 6);
-    PCDeviceSetRenderState(171, 1);
+    PCDeviceSetRenderState(D3DRS_ALPHABLENDENABLE, 1);
+    PCDeviceSetRenderState(D3DRS_ALPHATESTENABLE, 0);
+    PCDeviceSetRenderState(D3DRS_SRCBLEND, 5);
+    PCDeviceSetRenderState(D3DRS_DESTBLEND, 6);
+    PCDeviceSetRenderState(D3DRS_BLENDOP, 1);
     PCDeviceBackend.DrawPostEffectIndexed();
-    PCDeviceSetRenderState(22, 1);
-    PCDeviceSetRenderState(15, 0);
-    PCDeviceSetRenderState(27, 0);
-    PCDeviceSetRenderState(7, 0);
-    PCDeviceSetRenderState(168, 15);
+    PCDeviceSetRenderState(D3DRS_CULLMODE, 1);
+    PCDeviceSetRenderState(D3DRS_ALPHATESTENABLE, 0);
+    PCDeviceSetRenderState(D3DRS_ALPHABLENDENABLE, 0);
+    PCDeviceSetRenderState(D3DRS_ZENABLE, 0);
+    PCDeviceSetRenderState(D3DRS_COLORWRITEENABLE, 15);
 }

@@ -1076,68 +1076,82 @@ void edanimcbSwitchTypeMenu(eduimenu_s *parent, eduiitem_s *unused1, u32 unused2
     if (!edanim_switchtype_menu) {
         return;
     }
-    eduiMenuAddItem(edanim_switchtype_menu, eduiItemCheckCreate(0, colours, AnimParams[edanim_nearest_param_id].control_mode == 0, 1,
-                                                                edanimcbSetSwitchType, (char *)("None")));
+    eduiMenuAddItem(edanim_switchtype_menu,
+                    eduiItemCheckCreate(0, colours, AnimParams[edanim_nearest_param_id].control_mode == EDANIM_CONTROL_NONE, 1,
+                                        edanimcbSetSwitchType, (char *)("None")));
     if (edui_last_item->highlighted) {
         edanim_switchtype_menu->selected = edui_last_item;
     }
-    eduiMenuAddItem(edanim_switchtype_menu, eduiItemCheckCreate(1, colours, AnimParams[edanim_nearest_param_id].control_mode == 1, 1,
-                                                                edanimcbSetSwitchType, (char *)("Switch")));
+    eduiMenuAddItem(edanim_switchtype_menu,
+                    eduiItemCheckCreate(1, colours, AnimParams[edanim_nearest_param_id].control_mode == EDANIM_CONTROL_SWITCH, 1,
+                                        edanimcbSetSwitchType, (char *)("Switch")));
     if (edui_last_item->highlighted) {
         edanim_switchtype_menu->selected = edui_last_item;
     }
-    eduiMenuAddItem(edanim_switchtype_menu, eduiItemCheckCreate(2, colours, AnimParams[edanim_nearest_param_id].control_mode == 2, 1,
-                                                                edanimcbSetSwitchType, (char *)("Switch One Cycle")));
+    eduiMenuAddItem(edanim_switchtype_menu,
+                    eduiItemCheckCreate(2, colours, AnimParams[edanim_nearest_param_id].control_mode == EDANIM_CONTROL_SWITCH_ONE_CYCLE, 1,
+                                        edanimcbSetSwitchType, (char *)("Switch One Cycle")));
     if (edui_last_item->highlighted) {
         edanim_switchtype_menu->selected = edui_last_item;
     }
-    eduiMenuAddItem(edanim_switchtype_menu, eduiItemCheckCreate(3, colours, AnimParams[edanim_nearest_param_id].control_mode == 3, 1,
-                                                                edanimcbSetSwitchType, (char *)("Switch Continuous")));
+    eduiMenuAddItem(edanim_switchtype_menu,
+                    eduiItemCheckCreate(3, colours, AnimParams[edanim_nearest_param_id].control_mode == EDANIM_CONTROL_SWITCH_CONTINUOUS, 1,
+                                        edanimcbSetSwitchType, (char *)("Switch Continuous")));
     if (edui_last_item->highlighted) {
         edanim_switchtype_menu->selected = edui_last_item;
     }
-    eduiMenuAddItem(edanim_switchtype_menu, eduiItemCheckCreate(4, colours, AnimParams[edanim_nearest_param_id].control_mode == 4, 1,
-                                                                edanimcbSetSwitchType, (char *)("Proximity")));
+    eduiMenuAddItem(edanim_switchtype_menu,
+                    eduiItemCheckCreate(4, colours, AnimParams[edanim_nearest_param_id].control_mode == EDANIM_CONTROL_PROXIMITY, 1,
+                                        edanimcbSetSwitchType, (char *)("Proximity")));
     if (edui_last_item->highlighted) {
         edanim_switchtype_menu->selected = edui_last_item;
     }
-    eduiMenuAddItem(edanim_switchtype_menu, eduiItemCheckCreate(5, colours, AnimParams[edanim_nearest_param_id].control_mode == 5, 1,
-                                                                edanimcbSetSwitchType, (char *)("Proximity One Cycle")));
+    eduiMenuAddItem(edanim_switchtype_menu,
+                    eduiItemCheckCreate(5, colours, AnimParams[edanim_nearest_param_id].control_mode == EDANIM_CONTROL_PROXIMITY_ONE_CYCLE,
+                                        1, edanimcbSetSwitchType, (char *)("Proximity One Cycle")));
     if (edui_last_item->highlighted) {
         edanim_switchtype_menu->selected = edui_last_item;
     }
-    eduiMenuAddItem(edanim_switchtype_menu, eduiItemCheckCreate(6, colours, AnimParams[edanim_nearest_param_id].control_mode == 6, 1,
-                                                                edanimcbSetSwitchType, (char *)("Proximity Continuous")));
+    eduiMenuAddItem(edanim_switchtype_menu,
+                    eduiItemCheckCreate(6, colours, AnimParams[edanim_nearest_param_id].control_mode == EDANIM_CONTROL_PROXIMITY_CONTINUOUS,
+                                        1, edanimcbSetSwitchType, (char *)("Proximity Continuous")));
     if (edui_last_item->highlighted) {
         edanim_switchtype_menu->selected = edui_last_item;
     }
-    eduiMenuAddItem(edanim_switchtype_menu, eduiItemCheckCreate(7, colours, AnimParams[edanim_nearest_param_id].control_mode == 7, 1,
-                                                                edanimcbSetSwitchType, (char *)("Terrain")));
+    eduiMenuAddItem(edanim_switchtype_menu,
+                    eduiItemCheckCreate(7, colours, AnimParams[edanim_nearest_param_id].control_mode == EDANIM_CONTROL_TERRAIN, 1,
+                                        edanimcbSetSwitchType, (char *)("Terrain")));
     if (edui_last_item->highlighted) {
         edanim_switchtype_menu->selected = edui_last_item;
     }
-    eduiMenuAddItem(edanim_switchtype_menu, eduiItemCheckCreate(8, colours, AnimParams[edanim_nearest_param_id].control_mode == 8, 1,
-                                                                edanimcbSetSwitchType, (char *)("Terrain One Cycle")));
+    eduiMenuAddItem(edanim_switchtype_menu,
+                    eduiItemCheckCreate(8, colours, AnimParams[edanim_nearest_param_id].control_mode == EDANIM_CONTROL_TERRAIN_ONE_CYCLE, 1,
+                                        edanimcbSetSwitchType, (char *)("Terrain One Cycle")));
     if (edui_last_item->highlighted) {
         edanim_switchtype_menu->selected = edui_last_item;
     }
-    eduiMenuAddItem(edanim_switchtype_menu, eduiItemCheckCreate(9, colours, AnimParams[edanim_nearest_param_id].control_mode == 9, 1,
-                                                                edanimcbSetSwitchType, (char *)("Terrain Continuous")));
+    eduiMenuAddItem(edanim_switchtype_menu,
+                    eduiItemCheckCreate(9, colours, AnimParams[edanim_nearest_param_id].control_mode == EDANIM_CONTROL_TERRAIN_CONTINUOUS,
+                                        1, edanimcbSetSwitchType, (char *)("Terrain Continuous")));
     if (edui_last_item->highlighted) {
         edanim_switchtype_menu->selected = edui_last_item;
     }
-    eduiMenuAddItem(edanim_switchtype_menu, eduiItemCheckCreate(10, colours, AnimParams[edanim_nearest_param_id].control_mode == 10, 1,
-                                                                edanimcbSetSwitchType, (char *)("Override NoAnim")));
+    eduiMenuAddItem(edanim_switchtype_menu,
+                    eduiItemCheckCreate(10, colours, AnimParams[edanim_nearest_param_id].control_mode == EDANIM_CONTROL_OVERRIDE_NO_ANIM, 1,
+                                        edanimcbSetSwitchType, (char *)("Override NoAnim")));
     if (edui_last_item->highlighted) {
         edanim_switchtype_menu->selected = edui_last_item;
     }
-    eduiMenuAddItem(edanim_switchtype_menu, eduiItemCheckCreate(11, colours, AnimParams[edanim_nearest_param_id].control_mode == 11, 1,
-                                                                edanimcbSetSwitchType, (char *)("Override Play")));
+    eduiMenuAddItem(edanim_switchtype_menu,
+                    eduiItemCheckCreate(11, colours, AnimParams[edanim_nearest_param_id].control_mode == EDANIM_CONTROL_OVERRIDE_PLAY, 1,
+                                        edanimcbSetSwitchType, (char *)("Override Play")));
     if (edui_last_item->highlighted) {
         edanim_switchtype_menu->selected = edui_last_item;
     }
-    eduiMenuAddItem(edanim_switchtype_menu, eduiItemCheckCreate(12, colours, AnimParams[edanim_nearest_param_id].control_mode == 12, 1,
-                                                                edanimcbSetSwitchType, (char *)("Override PlayCont")));
+    eduiMenuAddItem(edanim_switchtype_menu,
+                    eduiItemCheckCreate(12, colours,
+                                        AnimParams[edanim_nearest_param_id].control_mode == EDANIM_CONTROL_OVERRIDE_PLAY_CONTINUOUS, 1,
+                                        edanimcbSetSwitchType, (char *)("Override PlayCont")));
     if (edui_last_item->highlighted) {
         edanim_switchtype_menu->selected = edui_last_item;
     }

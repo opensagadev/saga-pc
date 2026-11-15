@@ -77,40 +77,40 @@ extern "C" __declspec(noinline) void PCDeviceSetRenderState(i32 state, u32 value
 
     if (PCDeviceStateCacheEnabled != 0) {
         switch (state) {
-            case 168:
+            case D3DRS_COLORWRITEENABLE:
                 cache_index = 0;
                 break;
-            case 190:
+            case D3DRS_COLORWRITEENABLE1:
                 cache_index = 1;
                 break;
-            case 191:
+            case D3DRS_COLORWRITEENABLE2:
                 cache_index = 2;
                 break;
-            case 192:
+            case D3DRS_COLORWRITEENABLE3:
                 cache_index = 3;
                 break;
-            case 7:
+            case D3DRS_ZENABLE:
                 cache_index = 4;
                 break;
-            case 14:
+            case D3DRS_ZWRITEENABLE:
                 cache_index = 5;
                 break;
-            case 23:
+            case D3DRS_ZFUNC:
                 cache_index = 6;
                 break;
-            case 22:
+            case D3DRS_CULLMODE:
                 cache_index = 7;
                 break;
-            case 15:
+            case D3DRS_ALPHATESTENABLE:
                 cache_index = 8;
                 break;
-            case 27:
+            case D3DRS_ALPHABLENDENABLE:
                 cache_index = 9;
                 break;
-            case 19:
+            case D3DRS_SRCBLEND:
                 cache_index = 10;
                 break;
-            case 20:
+            case D3DRS_DESTBLEND:
                 cache_index = 11;
                 break;
             default:
@@ -132,7 +132,7 @@ submit:
 extern "C" __declspec(noinline) void PCDeviceSetSamplerState(u32 stage, i32 state, u32 value) {
     PCDeviceSamplerInvalidation[stage][0] = -1;
     PCDeviceSamplerInvalidation[stage][1] = -1;
-    if (PCDeviceStateCacheEnabled != 0 && stage < 8 && state < 14 && state != 4) {
+    if (PCDeviceStateCacheEnabled != 0 && stage < 8 && state < 14 && state != D3DSAMP_BORDERCOLOR) {
         if ((u32)PCDeviceStateCache.sampler_states[stage][state] == value) {
             return;
         }
@@ -1254,14 +1254,14 @@ void PC_DEVICE_BACKEND::CreateOrResetDevice(i32 reposition_window) {
     view = reinterpret_cast<GRAPHICS_DEVICE *>(device);
     present_result = view->methods->present(view, NULL, NULL, NULL, NULL);
     for (i32 i = 0; i != 8; ++i) {
-        PCDeviceSetSamplerState(i, 5, 2);
-        PCDeviceSetSamplerState(i, 6, 2);
-        PCDeviceSetSamplerState(i, 7, 2);
+        PCDeviceSetSamplerState(i, D3DSAMP_MAGFILTER, 2);
+        PCDeviceSetSamplerState(i, D3DSAMP_MINFILTER, 2);
+        PCDeviceSetSamplerState(i, D3DSAMP_MIPFILTER, 2);
     }
     if (PCDeviceHardwareVertexProcessingPC == 0) {
         PCDeviceSetSoftwareVertexProcessing(0);
     }
-    PCDeviceSetRenderState(161, multisample_index != 0);
+    PCDeviceSetRenderState(D3DRS_MULTISAMPLEANTIALIAS, multisample_index != 0);
     for (i32 i = 0; i != 4; ++i) {
         target_cache[i] = NULL;
     }
@@ -1377,8 +1377,8 @@ void PC_DEVICE_BACKEND::InitializeAdapter() {
     requested_mode = selected < mode_count ? selected : active_mode;
     requested_multisample = PcWindowOptions.multisample;
     CreateOrResetDevice(1);
-    PCDeviceSetRenderState(7, 1);
-    PCDeviceSetRenderState(137, 0);
+    PCDeviceSetRenderState(D3DRS_ZENABLE, 1);
+    PCDeviceSetRenderState(D3DRS_LIGHTING, 0);
     PCDeviceCreateVertexDeclaration(PCGraphicsPositionUvDeclaration, &declaration68c);
     PCDeviceCreateVertexDeclaration(PCGraphicsScreenUvDeclaration, &declaration684);
     PCDeviceCreateVertexDeclaration(PCGraphicsScreenColourUvDeclaration, &declaration6ac);
@@ -2181,7 +2181,7 @@ void PC_DEVICE_BACKEND::SetSurfaceRenderTarget(PC_EFFECT_SURFACE *target, u32 in
         }
         if (multisample_index != 0) {
             SetRenderTarget(0, back_buffer);
-            PCDeviceSetRenderState(168, 0);
+            PCDeviceSetRenderState(D3DRS_COLORWRITEENABLE, 0);
             current_surface = back_buffer;
         } else {
             SetRenderTarget(0, target_surfaces[0]);
@@ -2326,13 +2326,13 @@ void PC_DEVICE_BACKEND::SetColorWriteMask(u8 colour_enabled, u8 alpha_enabled, i
     }
     switch (target) {
         case 0:
-            PCDeviceSetRenderState(168, disabled);
+            PCDeviceSetRenderState(D3DRS_COLORWRITEENABLE, disabled);
             break;
         case 1:
-            PCDeviceSetRenderState(190, disabled);
+            PCDeviceSetRenderState(D3DRS_COLORWRITEENABLE1, disabled);
             break;
         case 3:
-            PCDeviceSetRenderState(191, disabled);
+            PCDeviceSetRenderState(D3DRS_COLORWRITEENABLE2, disabled);
             break;
     }
 }

@@ -436,7 +436,7 @@ enum { EDCAM_FREEDOM_YAW = 16 };
 
 /* gameanimset_s.state, from GameAnimSet_EvaluateState and GameAnimSys_Update: where the set's animations are. */
 #define GAMEANIMSET_STATE_AT_START 0
-#define GAMEANIMSET_STATE_FORWARD 1  /* playing, all forward */
+#define GAMEANIMSET_STATE_FORWARD 1 /* playing, all forward */
 #define GAMEANIMSET_STATE_AT_END 2
 #define GAMEANIMSET_STATE_BACKWARD 3 /* playing, some backward */
 #define GAMEANIMSET_STATE_PART_WAY 4 /* stopped between start and end */
@@ -848,6 +848,19 @@ struct shopitem_s {              // size 0x74
     i32 price;                   // 0x64
     struct nuhspecial_s special; // 0x68
 };
+
+/* AIPATHCNXCONTROLLER_s.target_type: what AIPathCnxControllerCreate looks the target name up as (the
+ * controller script action's target keyword). */
+#define AIPATHCNX_TARGET_SPECIAL 0
+#define AIPATHCNX_TARGET_CUTSCENE 1
+#define AIPATHCNX_TARGET_BUILDIT 2
+#define AIPATHCNX_TARGET_GIZMO 3
+#define AIPATHCNX_TARGET_BLOWUP 4
+#define AIPATHCNX_TARGET_FAKE_ANIMATION 5 /* no target object, fake_animation_id */
+#define AIPATHCNX_TARGET_FLOW 6
+#define AIPATHCNX_TARGET_FORCE 7
+#define AIPATHCNX_TARGET_OBSTACLE 8
+#define AIPATHCNX_TARGET_ZIPUP 9
 
 struct AIPATHCNXCONTROLLER_s {    // size 0xa8
     NULISTLNK links;              // 0x00

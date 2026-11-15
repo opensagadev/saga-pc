@@ -95,7 +95,7 @@ extern "C" void MenuApplyVideo(void) {
         MenuVideoOptions.Apply();
         PCDeviceBackend.CreateOrResetDevice(1);
         BackupMenu();
-        NewMenu(1027, 0, -1);
+        NewMenu(MENU_VIDEO_CONFIRM, 0, -1);
         return;
     }
     if (MenuVideoOptions.Changed()) {
@@ -103,7 +103,7 @@ extern "C" void MenuApplyVideo(void) {
         MenuVideoOptions.Apply();
         if (PcWindowOptions.usehirespending != PcWindowOptions.usehires) {
             BackupMenu();
-            NewMenu(1028, 0, -1);
+            NewMenu(MENU_HIRES_NOTICE, 0, -1);
             return;
         }
     } else {
@@ -519,7 +519,7 @@ extern "C" void MenuUpdateVideoConfirm(MENU *menu) {
         MenuSFX = MENUSFX_MENUBACK;
         BackupMenu();
         if (PcWindowOptions.usehirespending != PcWindowOptions.usehires) {
-            NewMenu(1028, 0, -1);
+            NewMenu(MENU_HIRES_NOTICE, 0, -1);
         }
         return;
     }

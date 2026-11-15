@@ -1535,7 +1535,8 @@ void GizForces_Update(void *world_pointer, void *system_pointer, f32 unused_time
                 force->unknown_50 = 0.0f;
             } else {
                 force->unknown_48 = force->force_strength;
-                if (force->force_range > 0.0f && (force->runtime_flags & GIZFORCE_SHAKE_DONE) == 0 && force->anim_set->state == GAMEANIMSET_STATE_AT_END) {
+                if (force->force_range > 0.0f && (force->runtime_flags & GIZFORCE_SHAKE_DONE) == 0 &&
+                    force->anim_set->state == GAMEANIMSET_STATE_AT_END) {
                     if (force->unknown_50 == 0.0f) {
                         started_shaking = 1;
                     }
@@ -1651,7 +1652,8 @@ void GizForces_Update(void *world_pointer, void *system_pointer, f32 unused_time
                 }
                 force->runtime_flags |= GIZFORCE_COMPLETION_RELEASED;
             }
-        } else if (!updating_animation && force->anim_set->state == GAMEANIMSET_STATE_AT_START && (force->runtime_flags & GIZFORCE_IN_STACK) != 0) {
+        } else if (!updating_animation && force->anim_set->state == GAMEANIMSET_STATE_AT_START &&
+                   (force->runtime_flags & GIZFORCE_IN_STACK) != 0) {
             ForceGroupPop(force);
             force->runtime_flags &= ~GIZFORCE_STACK_COMPLETE;
         }

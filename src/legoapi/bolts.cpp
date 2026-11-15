@@ -1322,7 +1322,8 @@ extern "C" i32 Bolt_HitGameObjects(BOLT *bolt, NUVEC *points, NUVEC *minimum, NU
             continue;
         }
         flags = bolt->flags;
-        if ((flags & BOLT_CAN_ONLY_HIT_PLAYERS) != 0 && object->player_index == -1 && (object->rider == NULL || object->rider->player_index == -1)) {
+        if ((flags & BOLT_CAN_ONLY_HIT_PLAYERS) != 0 && object->player_index == -1 &&
+            (object->rider == NULL || object->rider->player_index == -1)) {
             continue;
         }
         if ((reinterpret_cast<BOLT_CONTEXT_INFO *>(CInfo)[object->character_context].flags & 0x8080) != 0 ||
@@ -1761,7 +1762,8 @@ extern "C" void Bolts_Update(WORLDINFO *world) {
                     continue;
                 }
                 u32 flags = bolt->flags;
-                if ((flags & BOLT_CAN_ONLY_HIT_PLAYERS) != 0 && object->player_index == -1 && (object->rider == NULL || object->rider->player_index == -1)) {
+                if ((flags & BOLT_CAN_ONLY_HIT_PLAYERS) != 0 && object->player_index == -1 &&
+                    (object->rider == NULL || object->rider->player_index == -1)) {
                     continue;
                 }
                 if ((reinterpret_cast<BOLT_CONTEXT_INFO *>(CInfo)[object->character_context].flags & 0x8080) != 0 ||

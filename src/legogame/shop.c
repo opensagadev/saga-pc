@@ -678,7 +678,7 @@ void InitShop(WORLDINFO *world) {
                 CutShelfIds[i] = (SHOPCUTCOUNT + i - 3) % SHOPCUTCOUNT;
             }
         }
-        picked = 0;
+        picked = SHOP_SHELF_HINTS;
     } else {
         picked = oldpicked;
     }
@@ -1001,23 +1001,23 @@ void SelectSubItem(void) {
     i32 index;
     i32 result;
     switch (picked) {
-        case 0:
+        case SHOP_SHELF_HINTS:
             items = HintItems;
             index = HintShelfIds[3];
             break;
-        case 1:
+        case SHOP_SHELF_CHARACTERS:
             items = CharItems;
             index = CharShelfIds[3];
             break;
-        case 2:
+        case SHOP_SHELF_EXTRAS:
             items = ExtraItems;
             index = ExtraShelfIds[3];
             break;
-        case 4:
+        case SHOP_SHELF_GOLD_BRICKS:
             items = BrickItems;
             index = BrickShelfIds[3];
             break;
-        case 5:
+        case SHOP_SHELF_CUTSCENES:
             items = CutItems;
             index = CutShelfIds[3];
             break;
@@ -1061,7 +1061,7 @@ i32 SubItemMenu(void *menu) {
     if (ShopExit != 0) {
         ShopNameAlpha = 0.0f;
     }
-    if (picked == 0) {
+    if (picked == SHOP_SHELF_HINTS) {
         items = HintItems;
         ids = HintShelfIds;
         positions = HintCurPos;
@@ -1073,25 +1073,25 @@ i32 SubItemMenu(void *menu) {
             Hint_CancelCurrent();
         }
         ypush = SubNormCharPush;
-    } else if (picked == 1) {
+    } else if (picked == SHOP_SHELF_CHARACTERS) {
         items = CharItems;
         ids = CharShelfIds;
         positions = CharCurPos;
         count = &SHOPCHARCOUNT;
         ypush = SubNormCharPush;
-    } else if (picked == 2) {
+    } else if (picked == SHOP_SHELF_EXTRAS) {
         items = ExtraItems;
         ids = ExtraShelfIds;
         positions = ExtraCurPos;
         count = &SHOPEXTRACOUNT;
         ypush = SubNormCharPush;
-    } else if (picked == 4) {
+    } else if (picked == SHOP_SHELF_GOLD_BRICKS) {
         items = BrickItems;
         ids = BrickShelfIds;
         positions = BrickCurPos;
         count = &SHOPGOLDBRICKS;
         ypush = SubNormCharPush;
-    } else if (picked == 5) {
+    } else if (picked == SHOP_SHELF_CUTSCENES) {
         items = CutItems;
         ids = CutShelfIds;
         positions = CutCurPos;
@@ -1706,31 +1706,31 @@ void DrawSubItems(void) {
     phase_angle = (i32)((f64)ShopPurchasePulse * 32768.0 + 16384.0);
     bing_scale = (f32)(1.0 - ((f64)NuTrigTable[(phase_angle >> 1) & 0x7fff] + 1.0) * 0.5);
     switch (picked) {
-        case 0:
+        case SHOP_SHELF_HINTS:
             items = HintItems;
             shelf_ids = HintShelfIds;
             positions = HintCurPos;
             item_scale = ShopNativeScale[0];
             break;
-        case 1:
+        case SHOP_SHELF_CHARACTERS:
             items = CharItems;
             shelf_ids = CharShelfIds;
             positions = CharCurPos;
             item_scale = ShopNativeScale[2];
             break;
-        case 2:
+        case SHOP_SHELF_EXTRAS:
             items = ExtraItems;
             shelf_ids = ExtraShelfIds;
             positions = ExtraCurPos;
             item_scale = ShopNativeScale[1];
             break;
-        case 4:
+        case SHOP_SHELF_GOLD_BRICKS:
             items = BrickItems;
             shelf_ids = BrickShelfIds;
             positions = BrickCurPos;
             item_scale = ShopNativeScale[4];
             break;
-        case 5:
+        case SHOP_SHELF_CUTSCENES:
             items = CutItems;
             shelf_ids = CutShelfIds;
             positions = CutCurPos;
@@ -1775,7 +1775,7 @@ void DrawSubItems(void) {
         }
         item = &items[shelf_ids[slot]];
         switch (picked) {
-            case 0:
+            case SHOP_SHELF_HINTS:
                 if (item->unlocked == 1) {
                     if (ShopPurchasePulse > 0.0f) {
                         if (slot == 3) {
@@ -1795,7 +1795,7 @@ void DrawSubItems(void) {
                     DrawItem(&TopShelf[3].special, &positions[slot], scale, 1.0f, ypush, 0, angle, 0);
                 }
                 break;
-            case 1:
+            case SHOP_SHELF_CHARACTERS:
                 rotation = (u16)(i32)((f64)NuTrigTable[(((u16)(i32)((f64)NuFmod(GameTimer.time_elapsed, ShopCharacterPeriod) /
                                                                     (f64)ShopCharacterPeriod * 65536.0) +
                                                          0x4000) >>
@@ -1808,7 +1808,7 @@ void DrawSubItems(void) {
                 angle = shelfang + rotation;
                 Shop_DrawCharacter(&items[shelf_ids[slot]], &positions[slot], scale, ypush, 0, angle, 0);
                 break;
-            case 2:
+            case SHOP_SHELF_EXTRAS:
                 if (item->unlocked == 1) {
                     if (ShopPurchasePulse > 0.0f) {
                         if (slot == 3) {
@@ -1835,7 +1835,7 @@ void DrawSubItems(void) {
                     }
                 }
                 break;
-            case 4:
+            case SHOP_SHELF_GOLD_BRICKS:
                 if (item->unlocked == 1) {
                     if (ShopPurchasePulse > 0.0f) {
                         if (slot == 3) {
@@ -1852,7 +1852,7 @@ void DrawSubItems(void) {
                 angle = shelfang + (item->unlocked == 1 ? rotation : 0);
                 Shop_DrawBrick(&items[shelf_ids[slot]], &positions[slot], scale, ypush, 0, angle, 0);
                 break;
-            case 5:
+            case SHOP_SHELF_CUTSCENES:
                 blank = &cutblank;
                 film = &cutfilm_locked;
                 id = (u16)item->item_id;
@@ -1887,15 +1887,15 @@ void DrawSubItems(void) {
 void DrawItemMenu2D(void) {
     i32 text_id;
     if (ShopNameAlpha > 0.0f) {
-        if (picked == 0) {
+        if (picked == SHOP_SHELF_HINTS) {
             text_id = dat_00880904;
-        } else if (picked == 1) {
+        } else if (picked == SHOP_SHELF_CHARACTERS) {
             text_id = dat_0088070c;
-        } else if (picked == 2) {
+        } else if (picked == SHOP_SHELF_EXTRAS) {
             text_id = dat_0088090c;
-        } else if (picked == 4) {
+        } else if (picked == SHOP_SHELF_GOLD_BRICKS) {
             text_id = dat_0088077c;
-        } else if (picked == 5) {
+        } else if (picked == SHOP_SHELF_CUTSCENES) {
             text_id = dat_00880800;
         } else {
             text_id = dat_00880908;
@@ -1918,19 +1918,19 @@ void DrawSubItemMenu2D(void) {
     i32 price;
     f32 scale;
     f32 y;
-    if (picked == 0) {
+    if (picked == SHOP_SHELF_HINTS) {
         items = HintItems;
         ids = HintShelfIds;
-    } else if (picked == 1) {
+    } else if (picked == SHOP_SHELF_CHARACTERS) {
         items = CharItems;
         ids = CharShelfIds;
-    } else if (picked == 2) {
+    } else if (picked == SHOP_SHELF_EXTRAS) {
         items = ExtraItems;
         ids = ExtraShelfIds;
-    } else if (picked == 4) {
+    } else if (picked == SHOP_SHELF_GOLD_BRICKS) {
         items = BrickItems;
         ids = BrickShelfIds;
-    } else if (picked == 5) {
+    } else if (picked == SHOP_SHELF_CUTSCENES) {
         items = CutItems;
         ids = CutShelfIds;
     } else {
@@ -2065,16 +2065,16 @@ static i32 Shop_CanSelect(void) {
     i32 id;
     i32 index;
     switch (picked) {
-        case 1:
+        case SHOP_SHELF_CHARACTERS:
             if (Game.coins < (u32)CharItems[CharShelfIds[3]].price) {
                 return 0;
             }
             item = &CharItems[CharShelfIds[3]];
             return Shop_CharacterUnlocked((u16)item->item_id) != 0 && item->unlocked != 1;
-        case 0:
+        case SHOP_SHELF_HINTS:
             index = HintShelfIds[3];
             return Game.coins >= (u32)HintItems[index].price && HintItems[index].unlocked != 1;
-        case 2:
+        case SHOP_SHELF_EXTRAS:
             if (Game.coins < (u32)ExtraItems[ExtraShelfIds[3]].price) {
                 return 0;
             }
@@ -2084,10 +2084,10 @@ static i32 Shop_CanSelect(void) {
                 return 0;
             }
             return (save->extra_purchased_bits[id / 32] & (1u << (id & 31))) == 0 && item->unlocked != 1;
-        case 4:
+        case SHOP_SHELF_GOLD_BRICKS:
             index = BrickShelfIds[3];
             return Game.coins >= (u32)BrickItems[index].price && !(Game.game_time < index * 3600);
-        case 5:
+        case SHOP_SHELF_CUTSCENES:
             return CutScenePlayer_CanStart(CutShelfIds[3]) != 0;
     }
     return 0;
@@ -2153,9 +2153,9 @@ i32 ItemMenu(void *menu) {
         ShopLastItem = picked;
         picked = candidate;
         if (candidate < 0) {
-            picked = 0;
+            picked = SHOP_SHELF_HINTS;
         } else if (candidate > 5) {
-            picked = 5;
+            picked = SHOP_SHELF_CUTSCENES;
         }
         ShopSlideTimer = 0.125f;
         if (ShopMoveSfxLock == 0) {
@@ -2288,7 +2288,7 @@ i32 UpdateShop(void *menu) {
             menuptr = ItemMenu;
             ShopExit = 0;
             ShopEntered = 1;
-            picked = 0;
+            picked = SHOP_SHELF_HINTS;
             ShopLastItem = 0;
             ShopDrawPanelFn = DrawItemMenu2D;
             ShopDrawLevel = 0;
@@ -2323,7 +2323,7 @@ void DrawShopPrompts(void) {
         back = dat_00880844;
         select = dat_00880888;
     } else if (menuptr == SubItemMenu) {
-        select = picked == 5 ? dat_008808c0 : dat_008808c4;
+        select = picked == SHOP_SHELF_CUTSCENES ? dat_008808c0 : dat_008808c4;
         if (Shop_CanSelect() == 0) {
             alpha = 0.25f;
         }

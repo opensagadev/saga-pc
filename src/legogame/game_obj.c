@@ -541,8 +541,9 @@ void ManageGameObjects(void) {
                     }
                 }
             }
-        } else if (nethost != 0 && (object->flags_1fc_word & APIOBJECT_FLAG_CHARACTER) == 0 && object->ai_packet.creature_index == AIPACKET_NO_CREATURE &&
-                   object->ai_packet.reset_mode != 1 && object->ai_packet.reset_mode != 3 && (object->flags_1f8 & 0x4000) != 0) {
+        } else if (nethost != 0 && (object->flags_1fc_word & APIOBJECT_FLAG_CHARACTER) == 0 &&
+                   object->ai_packet.creature_index == AIPACKET_NO_CREATURE && object->ai_packet.reset_mode != 1 &&
+                   object->ai_packet.reset_mode != 3 && (object->flags_1f8 & 0x4000) != 0) {
             AIScriptProcess(WORLD->ai_sys, (APIOBJECT *)object, &object->ai_packet, &object->ai_packet.script_processor, FRAMETIME);
         }
     }
@@ -2253,7 +2254,7 @@ void UpdateGameObjects(WORLDINFO *world) {
         }
         PowerUp_Update(object);
         if ((object->flags_1fc_word & APIOBJECT_FLAG_PLAYER_ACTIVE) != 0 &&
-            (Cheats_CheckFlags(0x1000) != 0 || object->powerup_time > 0.0f)) {
+            (Cheats_CheckFlags(CHEAT_REGENERATE_HEARTS) != 0 || object->powerup_time > 0.0f)) {
             RegenerateHearts(object);
         }
         object->flags_ef4 &= ~0x10000000u;
@@ -3188,8 +3189,8 @@ void KillParts(GAMEOBJECT *object, i32 animation, i32 excluded_layer, i32 mode, 
             params.unknown_18 = 0.2f;
             params.gravity = -10.0f;
             params.special = &pieces->pieces[i].special;
-            params.lighting_data =
-                Cheats_CheckFlags(1) ? ((PART_LIGHTING_DATA *)(&KillPartsZeroLighting)) : (&((KILLPARTS_OBJECT_LIGHT *)object)->lighting);
+            params.lighting_data = Cheats_CheckFlags(CHEAT_ZERO_LIGHTING) ? ((PART_LIGHTING_DATA *)(&KillPartsZeroLighting))
+                                                                          : (&((KILLPARTS_OBJECT_LIGHT *)object)->lighting);
             params.time_step = FRAMETIME;
             params.flags = mode == 0 ? 0x480 : 0x90;
             params.unknown_c4 = 1;
@@ -3282,8 +3283,8 @@ void KillParts(GAMEOBJECT *object, i32 animation, i32 excluded_layer, i32 mode, 
             params.matrix = &matrix;
             params.velocity = &momentum;
             params.special = render->rigid_specials[joint];
-            params.lighting_data =
-                Cheats_CheckFlags(1) ? ((PART_LIGHTING_DATA *)(&KillPartsZeroLighting)) : (&((KILLPARTS_OBJECT_LIGHT *)object)->lighting);
+            params.lighting_data = Cheats_CheckFlags(CHEAT_ZERO_LIGHTING) ? ((PART_LIGHTING_DATA *)(&KillPartsZeroLighting))
+                                                                          : (&((KILLPARTS_OBJECT_LIGHT *)object)->lighting);
             if (((i16)object->id) == id_TIEFIGHTER) {
                 KillParts_TIEFIGHTER(&params, part_index, mode, object, random_variant, random_rotation_a, random_rotation_b, &momentum);
             } else if (((i16)object->id) == id_ATAT) {
@@ -3328,8 +3329,8 @@ void KillParts(GAMEOBJECT *object, i32 animation, i32 excluded_layer, i32 mode, 
             params.unknown_18 = 0.4f;
             params.gravity = -10.0f;
             params.special = special;
-            params.lighting_data =
-                Cheats_CheckFlags(1) ? ((PART_LIGHTING_DATA *)(&KillPartsZeroLighting)) : (&((KILLPARTS_OBJECT_LIGHT *)object)->lighting);
+            params.lighting_data = Cheats_CheckFlags(CHEAT_ZERO_LIGHTING) ? ((PART_LIGHTING_DATA *)(&KillPartsZeroLighting))
+                                                                          : (&((KILLPARTS_OBJECT_LIGHT *)object)->lighting);
             params.time_step = FRAMETIME;
             params.flags = mode == 0 ? 0x480 : 0x90;
             params.unknown_c4 = 1;

@@ -368,7 +368,8 @@ ShaderConditionNode *ShaderCompilerParser::ParseExpression(ShaderCompilerBufferA
         } else if ((ShaderLexicalClasses[(u8)token[0]] & SHADER_CHAR_OPERATOR) != 0 || strcmp(token, "defined") == 0) {
             if (strcmp(current->token, "(") == 0) {
                 stack[count++] = current;
-            } else if (((ShaderLexicalClasses[(u8)current->token[0]] & SHADER_CHAR_OPERATOR) != 0 || strcmp(current->token, "defined") == 0) &&
+            } else if (((ShaderLexicalClasses[(u8)current->token[0]] & SHADER_CHAR_OPERATOR) != 0 ||
+                        strcmp(current->token, "defined") == 0) &&
                        ShaderConditionPrecedence(token) > ShaderConditionPrecedence(current->token)) {
                 stack[count++] = current;
                 current = current->AppendOperand(node);

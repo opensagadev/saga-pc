@@ -1507,47 +1507,47 @@ struct AIPATHCNXCONTROLLER_s *AIPathCnxControllerCreate(AI_CONTROL_SYSTEM *syste
         connection = AIPAthFindPathCnx(ai, path, from, to, &direction);
         if (connection != NULL) {
             switch (target_type) {
-                case 0:
+                case AIPATHCNX_TARGET_SPECIAL:
                     if (target_name != NULL) {
                         NuSpecialFind(((AI_CONTROLLER_SCENE_VIEW *)ai)->scene, &special, target_name, 1);
                     }
                     break;
-                case 1:
+                case AIPATHCNX_TARGET_CUTSCENE:
                     target = CutScene_FindInst(WORLD->cutscene_sys, target_name);
                     break;
-                case 2:
+                case AIPATHCNX_TARGET_BUILDIT:
                     target = GizBuildIt_Find(WORLD, target_name);
                     break;
-                case 3:
+                case AIPATHCNX_TARGET_GIZMO:
                     target = GizmoFindByName(WORLD->gizmo_sys, -1, target_name);
                     break;
-                case 4:
+                case AIPATHCNX_TARGET_BLOWUP:
                     gizmo = GizmoFindByName(WORLD->gizmo_sys, blowup_gizmotype_id, target_name);
                     if (gizmo != NULL) {
                         target = gizmo->object;
                     }
                     break;
-                case 5:
+                case AIPATHCNX_TARGET_FAKE_ANIMATION:
                     if (fake_animation_id < 0 || fake_animation_id >= 1) {
                         return NULL;
                     }
                     break;
-                case 6:
+                case AIPATHCNX_TARGET_FLOW:
                     target = FlowBoxFindByName(WORLD->giz_flow, target_name);
                     break;
-                case 7:
+                case AIPATHCNX_TARGET_FORCE:
                     gizmo = GizmoFindByName(WORLD->gizmo_sys, force_gizmotype_id, target_name);
                     if (gizmo != NULL) {
                         target = gizmo->object;
                     }
                     break;
-                case 8:
+                case AIPATHCNX_TARGET_OBSTACLE:
                     gizmo = GizmoFindByName(WORLD->gizmo_sys, obstacle_gizmotype_id, target_name);
                     if (gizmo != NULL) {
                         target = gizmo->object;
                     }
                     break;
-                case 9:
+                case AIPATHCNX_TARGET_ZIPUP:
                     gizmo = GizmoFindByName(WORLD->gizmo_sys, zipup_gizmotype_id, target_name);
                     if (gizmo != NULL) {
                         target = gizmo->object;
@@ -1555,7 +1555,7 @@ struct AIPATHCNXCONTROLLER_s *AIPathCnxControllerCreate(AI_CONTROL_SYSTEM *syste
                     break;
             }
         }
-        if (target != NULL || NuSpecialExistsFn(&special) != 0 || target_type == 5) {
+        if (target != NULL || NuSpecialExistsFn(&special) != 0 || target_type == AIPATHCNX_TARGET_FAKE_ANIMATION) {
             controller = (struct AIPATHCNXCONTROLLER_s *)NuLinkedListGetHead(&system->available);
             if (controller != NULL) {
                 NuLinkedListRemove(&system->available, &controller->links);
@@ -1602,7 +1602,7 @@ void AIPathCnxControllerSetOnRange(struct AIPATHCNXCONTROLLER_s *controller, i32
     }
     end = 1;
     switch (controller->target_type) {
-        case 0:
+        case AIPATHCNX_TARGET_SPECIAL:
             animation = NuSpecialGetInstAnim(&controller->special);
             if (animation != NULL) {
                 scene = controller->special.scene;
@@ -1612,15 +1612,15 @@ void AIPathCnxControllerSetOnRange(struct AIPATHCNXCONTROLLER_s *controller, i32
                 }
             }
             break;
-        case 1:
+        case AIPATHCNX_TARGET_CUTSCENE:
             end = (i32)((CONTROLLER_CUT_VIEW *)controller->target)->animation->end_frame;
             break;
-        case 2:
-        case 3:
-        case 4:
-        case 6:
+        case AIPATHCNX_TARGET_BUILDIT:
+        case AIPATHCNX_TARGET_GIZMO:
+        case AIPATHCNX_TARGET_BLOWUP:
+        case AIPATHCNX_TARGET_FLOW:
             return;
-        case 5:
+        case AIPATHCNX_TARGET_FAKE_ANIMATION:
             end = (i32)fakeanimendframe[controller->fake_animation_id];
             break;
     }
@@ -1667,7 +1667,7 @@ void AIPathCnxControlSysUpdate(AI_CONTROL_SYSTEM *system) {
         controller->flags_word &= (u16)~0x20u;
         active = 1;
         switch (controller->target_type) {
-            case 0:
+            case AIPATHCNX_TARGET_SPECIAL:
                 if ((controller->flags_word & 4) != 0 && NuSpecialGetVisibilityFn(&controller->special) == 0) {
                     active = 0;
                     break;
@@ -1694,7 +1694,7 @@ void AIPathCnxControlSysUpdate(AI_CONTROL_SYSTEM *system) {
                 --frame;
                 active = controller->on_frames[frame / 32] & (1 << (frame % 32));
                 break;
-            case 1:
+            case AIPATHCNX_TARGET_CUTSCENE:
                 cut = controller->target;
                 end = (i32)cut->animation->end_frame;
                 if (end > 1024) {
@@ -1711,27 +1711,27 @@ void AIPathCnxControlSysUpdate(AI_CONTROL_SYSTEM *system) {
                 --frame;
                 active = controller->on_frames[frame / 32] & (1 << (frame % 32));
                 break;
-            case 2:
+            case AIPATHCNX_TARGET_BUILDIT:
                 if (((GIZBUILDIT *)controller->target)->build_state != 2) {
                     active = 0;
                 }
                 break;
-            case 3:
+            case AIPATHCNX_TARGET_GIZMO:
                 if (GizmoGetOutput(WORLD->gizmo_sys, controller->target, controller->gizmo_output, 1) == 0) {
                     active = 0;
                 }
                 break;
-            case 4:
+            case AIPATHCNX_TARGET_BLOWUP:
                 if ((((GIZMOBLOWUP *)controller->target)->status_flags & BLOWUP_STATUS_BLOWN_UP) != 0) {
                     active = 0;
                 }
                 break;
-            case 6:
+            case AIPATHCNX_TARGET_FLOW:
                 if ((((FLOWBOX *)controller->target)->state_flags_low & 2) == 0) {
                     active = 0;
                 }
                 break;
-            case 5:
+            case AIPATHCNX_TARGET_FAKE_ANIMATION:
                 end = (i32)fakeanimendframe[controller->fake_animation_id];
                 if (end > 1024) {
                     end = 1024;
@@ -1747,17 +1747,17 @@ void AIPathCnxControlSysUpdate(AI_CONTROL_SYSTEM *system) {
                 --frame;
                 active = controller->on_frames[frame / 32] & (1 << (frame % 32));
                 break;
-            case 7:
+            case AIPATHCNX_TARGET_FORCE:
                 if (GizForce_Complete(controller->target) == 0) {
                     active = 0;
                 }
                 break;
-            case 8:
+            case AIPATHCNX_TARGET_OBSTACLE:
                 if (((GIZOBSTACLE *)controller->target)->anim_set->state != GAMEANIMSET_STATE_AT_END) {
                     active = 0;
                 }
                 break;
-            case 9:
+            case AIPATHCNX_TARGET_ZIPUP:
                 zipup_flags = *(u16 *)&((struct ZIPUP_s *)controller->target)->flags;
                 if ((zipup_flags & 0x40) == 0 || (zipup_flags & 0x80) == 0) {
                     active = 0;

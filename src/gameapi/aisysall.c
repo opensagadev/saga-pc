@@ -2870,7 +2870,8 @@ i32 Action_ResetToOrigin(AISYS *sys, AISCRIPTPROCESS *processor, AIPACKET *packe
     origin = GetOriginPositionFn != NULL ? GetOriginPositionFn(sys, packet) : NULL;
     if (origin != NULL) {
         packet->owner->position = *origin;
-    } else if (packet->owner != NULL && (packet->owner->flags_1f8 & APIOBJECT_CREATURE) != 0 && packet->creature_index != AIPACKET_NO_CREATURE) {
+    } else if (packet->owner != NULL && (packet->owner->flags_1f8 & APIOBJECT_CREATURE) != 0 &&
+               packet->creature_index != AIPACKET_NO_CREATURE) {
         packet->owner->position = sys->creatures[packet->creature_index].position;
     }
     return 1;
@@ -4982,14 +4983,16 @@ void AISysGetPathPosEx(AISYS *system, NUVEC *position, AIPATHINFO *info, AIPATH 
         node = &info->path->nodes[current->node_indices[info->direction]];
         for (index = 0; index < node->connection_count; ++index) {
             AIPATHCNX *candidate = node->connections[index];
-            if (candidate != current && WithinConnection(system, position, path, candidate, 1, NULL, AIPACKET_NO_ROUTE, 0xff, info, 0.0f, 1)) {
+            if (candidate != current &&
+                WithinConnection(system, position, path, candidate, 1, NULL, AIPACKET_NO_ROUTE, 0xff, info, 0.0f, 1)) {
                 return;
             }
         }
         node = &info->path->nodes[current->node_indices[info->direction == 0]];
         for (index = 0; index < node->connection_count; ++index) {
             AIPATHCNX *candidate = node->connections[index];
-            if (candidate != current && WithinConnection(system, position, path, candidate, 1, NULL, AIPACKET_NO_ROUTE, 0xff, info, 0.0f, 1)) {
+            if (candidate != current &&
+                WithinConnection(system, position, path, candidate, 1, NULL, AIPACKET_NO_ROUTE, 0xff, info, 0.0f, 1)) {
                 return;
             }
         }
@@ -5971,7 +5974,8 @@ void AIMoveToDestination(AISYS *system, AIPACKET *packet, APIOBJECT *object, i32
                 packet->flags |= 0x00100000u;
             }
             for (;;) {
-                if (packet->current_route != AIPACKET_NO_ROUTE && (((u64)1 << packet->current_route) & (destination_connection->route_mask)) == 0) {
+                if (packet->current_route != AIPACKET_NO_ROUTE &&
+                    (((u64)1 << packet->current_route) & (destination_connection->route_mask)) == 0) {
                     node = &path->nodes[destination_connection->node_indices[0]];
                     if ((((u64)1 << packet->current_route) & (node->route_membership_mask & ~node->route_boundary_mask)) != 0) {
                         destination_distance_0 = FLT_MAX;

@@ -62,13 +62,13 @@ void edanimUpdateObjects(f32 elapsed) {
         }
         if (animation != NULL) {
             switch (AnimParams[index].control_mode) {
-                case 1:
+                case EDANIM_CONTROL_SWITCH:
                     animation->flags &= ~NUINSTANIM_FLAG_PLAYING;
                     if (AnimParams[index].control_switch != -1 && debris_object_switches[AnimParams[index].control_switch] != 0) {
                         animation->flags |= NUINSTANIM_FLAG_PLAYING;
                     }
                     break;
-                case 2:
+                case EDANIM_CONTROL_SWITCH_ONE_CYCLE:
                     animation->flags &= ~NUINSTANIM_FLAG_REPEATING;
                     if (AnimParams[index].control_switch != -1 && debris_object_switches[AnimParams[index].control_switch] != 0 &&
                         (animation->flags & NUINSTANIM_FLAG_PLAYING) == 0) {
@@ -76,20 +76,20 @@ void edanimUpdateObjects(f32 elapsed) {
                         animation->flags = (animation->flags & ~6U) | NUINSTANIM_FLAG_PLAYING;
                     }
                     break;
-                case 3:
+                case EDANIM_CONTROL_SWITCH_CONTINUOUS:
                     animation->flags |= NUINSTANIM_FLAG_REPEATING;
                     if (AnimParams[index].control_switch != -1 && debris_object_switches[AnimParams[index].control_switch] != 0) {
                         animation->flags |= NUINSTANIM_FLAG_PLAYING;
                     }
                     break;
-                case 4:
+                case EDANIM_CONTROL_PROXIMITY:
                     if (edanimPlayerAnimDistance(index) < AnimParams[index].control_distance) {
                         animation->flags |= NUINSTANIM_FLAG_PLAYING;
                     } else {
                         animation->flags &= ~NUINSTANIM_FLAG_PLAYING;
                     }
                     break;
-                case 5:
+                case EDANIM_CONTROL_PROXIMITY_ONE_CYCLE:
                     animation->flags &= ~NUINSTANIM_FLAG_REPEATING;
                     if (edanimPlayerAnimDistance(index) < AnimParams[index].control_distance &&
                         (animation->flags & NUINSTANIM_FLAG_PLAYING) == 0) {
@@ -97,20 +97,20 @@ void edanimUpdateObjects(f32 elapsed) {
                         animation->flags = (animation->flags & ~6U) | NUINSTANIM_FLAG_PLAYING;
                     }
                     break;
-                case 6:
+                case EDANIM_CONTROL_PROXIMITY_CONTINUOUS:
                     animation->flags |= NUINSTANIM_FLAG_REPEATING;
                     if (edanimPlayerAnimDistance(index) < AnimParams[index].control_distance) {
                         animation->flags |= NUINSTANIM_FLAG_PLAYING;
                     }
                     break;
-                case 10:
+                case EDANIM_CONTROL_OVERRIDE_NO_ANIM:
                     animation->ltime = 1.0f;
                     animation->flags &= ~NUINSTANIM_FLAG_PLAYING;
                     break;
-                case 11:
+                case EDANIM_CONTROL_OVERRIDE_PLAY:
                     animation->flags |= NUINSTANIM_FLAG_PLAYING;
                     break;
-                case 12:
+                case EDANIM_CONTROL_OVERRIDE_PLAY_CONTINUOUS:
                     animation->flags |= NUINSTANIM_FLAG_PLAYING | NUINSTANIM_FLAG_REPEATING;
                     break;
             }

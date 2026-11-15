@@ -584,7 +584,7 @@ extern "C" {
             Text_FillInExtendedSaveInfo();
             if (TriggerAutoSave() == 0) {
                 packet->save_state = 3;
-                NewMenu(1000, -1, -1);
+                NewMenu(MENU_SAVE, -1, -1);
             }
         } else if (memcard_autosaveinprogress == 0) {
             packet->save_state = 3;

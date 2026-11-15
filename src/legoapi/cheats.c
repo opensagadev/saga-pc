@@ -62,10 +62,10 @@ void Cheats_SetFlags(void) {
                 continue;
             }
             if (VehicleArea != 0) {
-                if ((cheat->flags & 0x20000) == 0) {
+                if ((cheat->flags & CHEAT_POWERUP_IN_VEHICLE) == 0) {
                     continue;
                 }
-            } else if ((cheat->flags & 0x10000) == 0) {
+            } else if ((cheat->flags & CHEAT_POWERUP_ON_FOOT) == 0) {
                 continue;
             }
         }
@@ -104,10 +104,10 @@ i32 Cheat_IsOn(i32 cheat) {
     }
     if (ONEPLAYERPOWERUPS == 0 && Cheat_PowerUpTime > 0.0f) {
         if (VehicleArea != 0) {
-            if (cheats[cheat].flags & 0x20000) {
+            if (cheats[cheat].flags & CHEAT_POWERUP_IN_VEHICLE) {
                 return 1;
             }
-        } else if (cheats[cheat].flags & 0x10000) {
+        } else if (cheats[cheat].flags & CHEAT_POWERUP_ON_FOOT) {
             return 1;
         }
     }
@@ -126,19 +126,19 @@ void Cheat_GetOnOffBitfield(u32 *onoffs, i32 count) {
 
 u32 Cheat_MultiplyScore(u32 score) {
     u32 flags = CheatSystemPtr->flags;
-    if ((flags & 4) != 0) {
+    if ((flags & CHEAT_SCORE_X2) != 0) {
         score *= 2;
     }
-    if ((flags & 8) != 0) {
+    if ((flags & CHEAT_SCORE_X4) != 0) {
         score *= 4;
     }
-    if ((flags & 16) != 0) {
+    if ((flags & CHEAT_SCORE_X6) != 0) {
         score *= 6;
     }
-    if ((flags & 32) != 0) {
+    if ((flags & CHEAT_SCORE_X8) != 0) {
         score *= 8;
     }
-    if ((flags & 64) != 0) {
+    if ((flags & CHEAT_SCORE_X10) != 0) {
         score *= 10;
     }
     return score;
@@ -148,7 +148,7 @@ void Cheats_TurnOff(i32 only_powerups) {
     CHEATSYSTEM *system = CheatSystemPtr;
     i32 index;
     for (index = 0; index < system->count; ++index) {
-        if (only_powerups == 0 || (system->cheats[index].flags & 0x200000) != 0) {
+        if (only_powerups == 0 || (system->cheats[index].flags & CHEAT_POWERUP) != 0) {
             system->cheats[index].enabled = 0;
         }
     }
@@ -170,11 +170,13 @@ void Cheat_StartPowerUp(NUVEC *position, GAMEOBJECT *object) {
         NewRumbleAllPlayers(0.7f, 0.0f, 0, 0);
         Cheat_PowerUpTime = CHEAT_POWERUPTIME;
     }
-    display = AddGameMessage(TTab[POWERUP_TEXTID], position, 0.5f, position, 0.75f, 255, 255, 255, GAMEMSG_WORLD_POSITION | GAMEMSG_FOLLOW | GAMEMSG_DRAW_SCALE | GAMEMSG_FADE, 1.0f);
+    display = AddGameMessage(TTab[POWERUP_TEXTID], position, 0.5f, position, 0.75f, 255, 255, 255,
+                             GAMEMSG_WORLD_POSITION | GAMEMSG_FOLLOW | GAMEMSG_DRAW_SCALE | GAMEMSG_FADE, 1.0f);
     if (display != NULL) {
         display->parameter_d4 = 0.75f;
     }
-    display = AddGameMessage(TTab[POWERUP_TEXTID], position, 0.5f, position, 0.25f, 255, 255, 255, GAMEMSG_WORLD_POSITION | GAMEMSG_FOLLOW | GAMEMSG_DRAW_SCALE | GAMEMSG_FADE, 1.0f);
+    display = AddGameMessage(TTab[POWERUP_TEXTID], position, 0.5f, position, 0.25f, 255, 255, 255,
+                             GAMEMSG_WORLD_POSITION | GAMEMSG_FOLLOW | GAMEMSG_DRAW_SCALE | GAMEMSG_FADE, 1.0f);
     if (display != NULL) {
         display->parameter_d4 = 0.75f;
     }

@@ -2567,25 +2567,25 @@ extern "C" {
     void NuRndrShadowVolumeFinish(void) {
         PCDeviceSetVertexShader(NULL);
         PCDeviceSetPixelShader(NULL);
-        PCDeviceSetRenderState(27, 1);
-        PCDeviceSetRenderState(14, 0);
-        PCDeviceSetRenderState(137, 0);
-        PCDeviceSetRenderState(29, 0);
+        PCDeviceSetRenderState(D3DRS_ALPHABLENDENABLE, 1);
+        PCDeviceSetRenderState(D3DRS_ZWRITEENABLE, 0);
+        PCDeviceSetRenderState(D3DRS_LIGHTING, 0);
+        PCDeviceSetRenderState(D3DRS_SPECULARENABLE, 0);
         PCDeviceSetTexture(0, NULL);
-        PCDeviceSetTextureStageState(0, 1, 2);
-        PCDeviceSetTextureStageState(0, 2, 0);
-        PCDeviceSetTextureStageState(0, 4, 2);
-        PCDeviceSetTextureStageState(0, 5, 0);
-        PCDeviceSetTextureStageState(1, 1, 1);
-        PCDeviceSetTextureStageState(1, 4, 1);
-        PCDeviceSetRenderState(56, RendererStencilFunc);
-        PCDeviceSetRenderState(55, RendererStencilPass);
-        PCDeviceSetRenderState(57, RendererStencilRef);
-        PCDeviceSetRenderState(7, 0);
-        PCDeviceSetRenderState(22, 1);
-        PCDeviceSetRenderState(171, 1);
-        PCDeviceSetRenderState(19, 5);
-        PCDeviceSetRenderState(20, 6);
+        PCDeviceSetTextureStageState(0, D3DTSS_COLOROP, 2);
+        PCDeviceSetTextureStageState(0, D3DTSS_COLORARG1, 0);
+        PCDeviceSetTextureStageState(0, D3DTSS_ALPHAOP, 2);
+        PCDeviceSetTextureStageState(0, D3DTSS_ALPHAARG1, 0);
+        PCDeviceSetTextureStageState(1, D3DTSS_COLOROP, 1);
+        PCDeviceSetTextureStageState(1, D3DTSS_ALPHAOP, 1);
+        PCDeviceSetRenderState(D3DRS_STENCILFUNC, RendererStencilFunc);
+        PCDeviceSetRenderState(D3DRS_STENCILPASS, RendererStencilPass);
+        PCDeviceSetRenderState(D3DRS_STENCILREF, RendererStencilRef);
+        PCDeviceSetRenderState(D3DRS_ZENABLE, 0);
+        PCDeviceSetRenderState(D3DRS_CULLMODE, 1);
+        PCDeviceSetRenderState(D3DRS_BLENDOP, 1);
+        PCDeviceSetRenderState(D3DRS_SRCBLEND, 5);
+        PCDeviceSetRenderState(D3DRS_DESTBLEND, 6);
         PCDeviceSetVertexDeclaration(PCDeviceBackend.declaration6ac);
         PCDeviceSetStreamSource(0, RendererQuadVertexBuffer, 0, 0x1c);
         PCDeviceDrawPrimitive(6, 0, 2);
@@ -2595,25 +2595,25 @@ extern "C" {
         i32 i;
         u32 n;
         PCDeviceSetVertexDeclaration(RendererVertexDeclaration);
-        PCDeviceSetRenderState(14, 0);
-        PCDeviceSetRenderState(27, 1);
-        PCDeviceSetRenderState(19, 1);
-        PCDeviceSetRenderState(20, 2);
-        PCDeviceSetRenderState(7, 1);
-        PCDeviceSetRenderState(54, 1);
-        PCDeviceSetRenderState(52, 1);
-        PCDeviceSetRenderState(56, 8);
-        PCDeviceSetRenderState(55, 4);
-        PCDeviceSetRenderState(57, 1);
-        PCDeviceSetRenderState(22, 3);
+        PCDeviceSetRenderState(D3DRS_ZWRITEENABLE, 0);
+        PCDeviceSetRenderState(D3DRS_ALPHABLENDENABLE, 1);
+        PCDeviceSetRenderState(D3DRS_SRCBLEND, 1);
+        PCDeviceSetRenderState(D3DRS_DESTBLEND, 2);
+        PCDeviceSetRenderState(D3DRS_ZENABLE, 1);
+        PCDeviceSetRenderState(D3DRS_STENCILZFAIL, 1);
+        PCDeviceSetRenderState(D3DRS_STENCILENABLE, 1);
+        PCDeviceSetRenderState(D3DRS_STENCILFUNC, 8);
+        PCDeviceSetRenderState(D3DRS_STENCILPASS, 4);
+        PCDeviceSetRenderState(D3DRS_STENCILREF, 1);
+        PCDeviceSetRenderState(D3DRS_CULLMODE, 3);
         for (i = 0; i != RendererArenaVertexCount; i += 4) {
             PCDeviceDrawPrimitiveUPPc(6, 2, &RendererArenaData[i], 0x10);
         }
         for (n = 0; n < RendererArenaCount; n++) {
             PCDeviceDrawPrimitiveUPPc(6, RendererArenaTypes[n] - 2, &RendererArenaData[RendererArenaOffsets[n]], 0x40);
         }
-        PCDeviceSetRenderState(22, 2);
-        PCDeviceSetRenderState(55, 5);
+        PCDeviceSetRenderState(D3DRS_CULLMODE, 2);
+        PCDeviceSetRenderState(D3DRS_STENCILPASS, 5);
         for (i = 0; i != RendererArenaVertexCount; i += 4) {
             PCDeviceDrawPrimitiveUPPc(6, 2, &RendererArenaData[i], 0x10);
         }
@@ -2627,18 +2627,18 @@ extern "C" {
         if (PcWindowOptions.shadowsenabled != 0 && PcWindowOptions.shadowmethod == 1 && PCShadowPacketCount != 0) {
             PCDeviceSetVertexShader(NULL);
             PCDeviceSetPixelShader(NULL);
-            PCDeviceSetRenderState(15, 0);
-            PCDeviceSetRenderState(23, 4);
+            PCDeviceSetRenderState(D3DRS_ALPHATESTENABLE, 0);
+            PCDeviceSetRenderState(D3DRS_ZFUNC, 4);
             PCDeviceSetTexture(0, NULL);
             PCDeviceSetWorldIdentity();
             NuRndrArenaBuildShadowVolumes(0x80, 0);
             NuRndrShadowVolumeDraw();
             NuRndrShadowVolumeFinish();
-            PCDeviceSetRenderState(7, 1);
-            PCDeviceSetRenderState(52, 0);
-            PCDeviceSetRenderState(14, 1);
-            PCDeviceSetRenderState(27, 0);
-            PCDeviceSetRenderState(22, 3);
+            PCDeviceSetRenderState(D3DRS_ZENABLE, 1);
+            PCDeviceSetRenderState(D3DRS_STENCILENABLE, 0);
+            PCDeviceSetRenderState(D3DRS_ZWRITEENABLE, 1);
+            PCDeviceSetRenderState(D3DRS_ALPHABLENDENABLE, 0);
+            PCDeviceSetRenderState(D3DRS_CULLMODE, 3);
             RendererArenaVertexCount = 0;
             RendererArenaCount = 0;
         }
@@ -2717,21 +2717,21 @@ extern "C" {
         PcGeometryDistanceOrigin.w = 1.0f;
         NuMtxMulH(&PcGeometryViewProjectionMatrix, &PcGeometryViewMatrix, &PcGeometryProjectionMatrix);
         NuMtxInvH(&PcGeometryInverseViewProjectionMatrix, &PcGeometryViewProjectionMatrix);
-        NuShaderManagerSetfv(0x12, &PcGeometryViewMatrix.m00);
-        NuShaderManagerSetfv(0x13, &PcGeometryViewProjectionMatrix.m00);
-        NuShaderManagerSetfv(0x5a, &PcGeometryDistanceOrigin.x);
+        NuShaderManagerSetfv(SHADER_UNIFORM_VIEW_MATRIX, &PcGeometryViewMatrix.m00);
+        NuShaderManagerSetfv(SHADER_UNIFORM_VIEW_PROJ, &PcGeometryViewProjectionMatrix.m00);
+        NuShaderManagerSetfv(SHADER_UNIFORM_WORLD_CAM_POS, &PcGeometryDistanceOrigin.x);
         f32 fovy;
         f32 aspect;
         f32 z_near;
         f32 z_far;
         NuMtxGetPerspectiveD3D(&PcGeometryProjectionMatrix, &fovy, &aspect, &z_near, &z_far);
         NUVEC4 depth = {z_near, z_far, z_far - z_near, 1.0f / PcGeometryProjectionMatrix.m22};
-        NuShaderManagerSetfv(0x46, &depth.x);
+        NuShaderManagerSetfv(SHADER_UNIFORM_PROJECTION_PARAMS, &depth.x);
         NUVEC4 frustum;
         NuMtxGetFrustumD3D(&PcGeometryProjectionMatrix, &frustum.x, &frustum.y, &frustum.z, &frustum.w, &z_near, &z_far);
         frustum.y -= frustum.x;
         frustum.w -= frustum.z;
-        NuShaderManagerSetfv(0x47, &frustum.x);
+        NuShaderManagerSetfv(SHADER_UNIFORM_FRUSTUM_PARAMS, &frustum.x);
     }
 
     i32 fun_005fa530(i32 value) {
@@ -2744,21 +2744,21 @@ extern "C" {
             u32 bits;
         } bias;
 
-        PCDeviceSetSamplerState(stage, 9, tuple[0] & 15);
+        PCDeviceSetSamplerState(stage, D3DSAMP_MAXMIPLEVEL, tuple[0] & 15);
         if ((((tuple[0] >> 4) ^ tuple[0]) & 15) == 0) {
             bias.value = -10.0f;
-            PCDeviceSetSamplerState(stage, 8, bias.bits);
+            PCDeviceSetSamplerState(stage, D3DSAMP_MIPMAPLODBIAS, bias.bits);
         } else {
             bias.value = 0.0f;
-            PCDeviceSetSamplerState(stage, 8, bias.bits);
+            PCDeviceSetSamplerState(stage, D3DSAMP_MIPMAPLODBIAS, bias.bits);
         }
-        PCDeviceSetSamplerState(stage, 1, (tuple[0] >> 8) & 7);
-        PCDeviceSetSamplerState(stage, 2, (tuple[0] >> 11) & 7);
-        PCDeviceSetSamplerState(stage, 3, (tuple[0] >> 14) & 7);
-        PCDeviceSetSamplerState(stage, 5, (tuple[0] >> 17) & 7);
-        PCDeviceSetSamplerState(stage, 6, (tuple[0] >> 20) & 7);
-        PCDeviceSetSamplerState(stage, 7, (tuple[0] >> 23) & 7);
-        PCDeviceSetSamplerState(stage, 4, tuple[1]);
+        PCDeviceSetSamplerState(stage, D3DSAMP_ADDRESSU, (tuple[0] >> 8) & 7);
+        PCDeviceSetSamplerState(stage, D3DSAMP_ADDRESSV, (tuple[0] >> 11) & 7);
+        PCDeviceSetSamplerState(stage, D3DSAMP_ADDRESSW, (tuple[0] >> 14) & 7);
+        PCDeviceSetSamplerState(stage, D3DSAMP_MAGFILTER, (tuple[0] >> 17) & 7);
+        PCDeviceSetSamplerState(stage, D3DSAMP_MINFILTER, (tuple[0] >> 20) & 7);
+        PCDeviceSetSamplerState(stage, D3DSAMP_MIPFILTER, (tuple[0] >> 23) & 7);
+        PCDeviceSetSamplerState(stage, D3DSAMP_BORDERCOLOR, tuple[1]);
         PCDeviceSamplerInvalidation[stage][0] = tuple[0];
         PCDeviceSamplerInvalidation[stage][1] = tuple[1];
     }
@@ -4003,11 +4003,11 @@ extern "C" {
             case 18:
                 point_size_float = 32.0f;
                 memcpy(&point_size, &point_size_float, sizeof(point_size));
-                PCDeviceSetRenderState(154, point_size);
+                PCDeviceSetRenderState(D3DRS_POINTSIZE, point_size);
                 PCDeviceDrawPrimitiveUPPc(1, packet->vertex_count, vertices, 24);
                 point_size_float = 1.0f;
                 memcpy(&point_size, &point_size_float, sizeof(point_size));
-                PCDeviceSetRenderState(154, point_size);
+                PCDeviceSetRenderState(D3DRS_POINTSIZE, point_size);
                 break;
         }
     }
@@ -4015,7 +4015,7 @@ extern "C" {
     void fun_005fd670(f32 shadow) {
         if (shadow != PCGraphicsFrameState) {
             NuDisplayHandlerShadow = shadow;
-            NuShaderManagerSetfv(0x63, &NuDisplayHandlerShadow);
+            NuShaderManagerSetfv(SHADER_UNIFORM_SHADOW_CASTING_OBJECT, &NuDisplayHandlerShadow);
             PCGraphicsFrameState = shadow;
         }
     }
@@ -4029,7 +4029,7 @@ extern "C" {
             if (count > 8) {
                 NuPtlDmaSlotsExhausted();
             }
-            NuShaderObjectSetElementsfv(shader, 0x18, 0, count, (const f32 *)elements);
+            NuShaderObjectSetElementsfv(shader, SHADER_UNIFORM_SKIN_MATRIX, 0, count, (const f32 *)elements);
             SAGA_SKIN_CALL(skin_trace_palette, (unsigned)arg, count);
         }
     }
@@ -4046,16 +4046,16 @@ extern "C" {
     void NuDisplayListLights(void *arg) {
         PC_DL_LIGHTS_READER *packet = (PC_DL_LIGHTS_READER *)arg;
         if (PCDeviceHardwareVertexProcessingPC != 4) {
-            NuShaderManagerSetfv(1, &packet->ambient.x);
-            NuShaderManagerSetfv(6, &packet->direction[0].x);
-            NuShaderManagerSetfv(7, &packet->direction[1].x);
-            NuShaderManagerSetfv(8, &packet->direction[2].x);
-            NuShaderManagerSetfv(3, &packet->intensity[0].x);
-            NuShaderManagerSetfv(4, &packet->intensity[1].x);
-            NuShaderManagerSetfv(5, &packet->intensity[2].x);
-            NuShaderManagerSetfv(0x49, &packet->shine_matrix.m00);
+            NuShaderManagerSetfv(SHADER_UNIFORM_SCENE_AMBIENT_COLOR, &packet->ambient.x);
+            NuShaderManagerSetfv(SHADER_UNIFORM_LIGHT_POSITION0, &packet->direction[0].x);
+            NuShaderManagerSetfv(SHADER_UNIFORM_LIGHT_POSITION1, &packet->direction[1].x);
+            NuShaderManagerSetfv(SHADER_UNIFORM_LIGHT_POSITION2, &packet->direction[2].x);
+            NuShaderManagerSetfv(SHADER_UNIFORM_LIGHT_COLOR0, &packet->intensity[0].x);
+            NuShaderManagerSetfv(SHADER_UNIFORM_LIGHT_COLOR1, &packet->intensity[1].x);
+            NuShaderManagerSetfv(SHADER_UNIFORM_LIGHT_COLOR2, &packet->intensity[2].x);
+            NuShaderManagerSetfv(SHADER_UNIFORM_PS2_SHINE_MTX, &packet->shine_matrix.m00);
         } else {
-            NuShaderManagerSetfv(0x23, &packet->ambient.x);
+            NuShaderManagerSetfv(SHADER_UNIFORM_LIGHT_PARAMS, &packet->ambient.x);
         }
         if (PCDeviceHardwareVertexProcessingPC != 4) {
             PC_DL_NORMALIZED_DIRECTION direction;
@@ -4063,7 +4063,7 @@ extern "C" {
             NuVec4Add(&direction.four, &packet->direction[0], &packet->direction[1]);
             NuVec4Add(&direction.four, &direction.four, &packet->direction[2]);
             NuVecNorm(&direction.normalized.three, &direction.normalized.three);
-            NuShaderManagerSetfv(0x4c, &direction.four.x);
+            NuShaderManagerSetfv(SHADER_UNIFORM_AVERAGE_LIGHT_DIR, &direction.four.x);
             direction.four.x =
                 packet->intensity[0].x > (packet->intensity[1].x > packet->intensity[2].x ? packet->intensity[1].x : packet->intensity[2].x)
                     ? packet->intensity[0].x
@@ -4077,14 +4077,14 @@ extern "C" {
                     ? packet->intensity[0].z
                     : (packet->intensity[1].z > packet->intensity[2].z ? packet->intensity[1].z : packet->intensity[2].z);
             direction.four.w = 1.0f;
-            NuShaderManagerSetfv(0x4b, &direction.four.x);
+            NuShaderManagerSetfv(SHADER_UNIFORM_AVERAGE_LIGHT_COLOR, &direction.four.x);
         }
     }
 
     void NuDisplayListTint(void *arg) {
         NUVEC4 tint = {1.0f, 1.0f, 1.0f, *(f32 *)arg};
         NuDisplayHandlerTint = tint;
-        NuShaderManagerSetfv(0x38, &tint.x);
+        NuShaderManagerSetfv(SHADER_UNIFORM_K_TINT, &tint.x);
     }
 
     void NuDisplayListFog(void *arg) {
@@ -4101,11 +4101,11 @@ extern "C" {
             params.y = packet->far_distance;
             params.z = packet->far_distance - packet->near_distance;
             params.w = packet->density;
-            NuShaderManagerSetfv(0x44, &colour.x);
-            NuShaderManagerSetfv(0x45, &params.x);
+            NuShaderManagerSetfv(SHADER_UNIFORM_FOG_COLOR, &colour.x);
+            NuShaderManagerSetfv(SHADER_UNIFORM_FOG_PARAMS, &params.x);
         } else {
             NUVEC4 params = {0.0f, 0.0f, 0.0f, 0.0f};
-            NuShaderManagerSetfv(0x45, &params.x);
+            NuShaderManagerSetfv(SHADER_UNIFORM_FOG_PARAMS, &params.x);
         }
     }
 
@@ -4138,15 +4138,15 @@ extern "C" {
                 texture = NuTextureGetDimensions(1);
             }
             PCDeviceSetTexture(stage, texture->resource);
-            PCDeviceSetSamplerState(stage, 1, 1);
-            PCDeviceSetSamplerState(stage, 2, 1);
-            PCDeviceSetSamplerState(stage, 5, 2);
-            PCDeviceSetSamplerState(stage, 6, 2);
-            PCDeviceSetSamplerState(stage, 7, 0);
+            PCDeviceSetSamplerState(stage, D3DSAMP_ADDRESSU, 1);
+            PCDeviceSetSamplerState(stage, D3DSAMP_ADDRESSV, 1);
+            PCDeviceSetSamplerState(stage, D3DSAMP_MAGFILTER, 2);
+            PCDeviceSetSamplerState(stage, D3DSAMP_MINFILTER, 2);
+            PCDeviceSetSamplerState(stage, D3DSAMP_MIPFILTER, 0);
             offset[0] = packet->x_offset;
             offset[1] = -packet->y_offset;
             offset[2] = 0.0f;
-            NuShaderManagerSetfv(0x60, offset);
+            NuShaderManagerSetfv(SHADER_UNIFORM_LIGHTMAP_OFFSET, offset);
         } else if (packet->mode == 2) {
             for (stage = 0; stage < 3; ++stage) {
                 NUTEXDIM *texture;
@@ -4156,16 +4156,16 @@ extern "C" {
                     texture = NuTextureGetDimensions(1);
                 }
                 PCDeviceSetTexture(stage, texture->resource);
-                PCDeviceSetSamplerState(stage, 1, 1);
-                PCDeviceSetSamplerState(stage, 2, 1);
-                PCDeviceSetSamplerState(stage, 5, 2);
-                PCDeviceSetSamplerState(stage, 6, 2);
-                PCDeviceSetSamplerState(stage, 7, 0);
+                PCDeviceSetSamplerState(stage, D3DSAMP_ADDRESSU, 1);
+                PCDeviceSetSamplerState(stage, D3DSAMP_ADDRESSV, 1);
+                PCDeviceSetSamplerState(stage, D3DSAMP_MAGFILTER, 2);
+                PCDeviceSetSamplerState(stage, D3DSAMP_MINFILTER, 2);
+                PCDeviceSetSamplerState(stage, D3DSAMP_MIPFILTER, 0);
             }
             offset[0] = packet->x_offset;
             offset[1] = -packet->y_offset;
             offset[2] = 0.0f;
-            NuShaderManagerSetfv(0x60, offset);
+            NuShaderManagerSetfv(SHADER_UNIFORM_LIGHTMAP_OFFSET, offset);
         }
     }
 
@@ -4181,10 +4181,10 @@ extern "C" {
                 texture = NuTextureGetDimensions(1);
             }
             PCDeviceSetTexture(i, texture->resource);
-            PCDeviceSetSamplerState(i, 1, 1);
-            PCDeviceSetSamplerState(i, 2, 1);
+            PCDeviceSetSamplerState(i, D3DSAMP_ADDRESSU, 1);
+            PCDeviceSetSamplerState(i, D3DSAMP_ADDRESSV, 1);
         }
-        NuShaderManagerSetfv(0x60, offset);
+        NuShaderManagerSetfv(SHADER_UNIFORM_LIGHTMAP_OFFSET, offset);
     }
 
     void NuDisplayListLegacyLightmapOffset(void *arg) {
@@ -4199,13 +4199,13 @@ extern "C" {
                 texture = NuTextureGetDimensions(1);
             }
             PCDeviceSetTexture(i, texture->resource);
-            PCDeviceSetSamplerState(i, 1, 1);
-            PCDeviceSetSamplerState(i, 2, 1);
+            PCDeviceSetSamplerState(i, D3DSAMP_ADDRESSU, 1);
+            PCDeviceSetSamplerState(i, D3DSAMP_ADDRESSV, 1);
         }
         offset[0] = packet->x_offset;
         offset[1] = -packet->y_offset;
         offset[2] = 0.0f;
-        NuShaderManagerSetfv(0x60, offset);
+        NuShaderManagerSetfv(SHADER_UNIFORM_LIGHTMAP_OFFSET, offset);
     }
 
     void NuDisplayListPacketAd(void *arg) {
@@ -5028,16 +5028,16 @@ extern "C" {
             switch ((material->reflection_flags >> 12) & 3) {
                 case 0:
                     if (reflection != 0) {
-                        PCDeviceSetRenderState(0x16, 2);
+                        PCDeviceSetRenderState(D3DRS_CULLMODE, 2);
                     } else {
-                        PCDeviceSetRenderState(0x16, 3);
+                        PCDeviceSetRenderState(D3DRS_CULLMODE, 3);
                     }
                     break;
                 case 1:
                     if (reflection != 0) {
-                        PCDeviceSetRenderState(0x16, 3);
+                        PCDeviceSetRenderState(D3DRS_CULLMODE, 3);
                     } else {
-                        PCDeviceSetRenderState(0x16, 2);
+                        PCDeviceSetRenderState(D3DRS_CULLMODE, 2);
                     }
                     break;
             }
@@ -5819,7 +5819,7 @@ extern "C" {
         i32 groups = (i32)((u32)packet->count + 3u) / 4;
         i32 i;
         for (i = 0; i < groups && i < 32; ++i, ++values) {
-            NuShaderManagerSetElementfv(0x4f, i, &values->x);
+            NuShaderManagerSetElementfv(SHADER_UNIFORM_VERTEX_GROUP_STATES, i, &values->x);
         }
     }
 
@@ -5829,7 +5829,7 @@ extern "C" {
         i32 i;
         NUVEC4 *values = packet->values;
         for (i = 0; i < count && i < 8; ++i, ++values) {
-            NuShaderManagerSetElementfv(0x4e, i, &values->x);
+            NuShaderManagerSetElementfv(SHADER_UNIFORM_OFFSET_TABLE, i, &values->x);
         }
     }
 
@@ -6312,11 +6312,11 @@ extern "C" {
                 f32 point_size_float;
                 point_size_float = 32.0f;
                 memcpy(&point_size, &point_size_float, sizeof(point_size));
-                PCDeviceSetRenderState(0x9a, point_size);
+                PCDeviceSetRenderState(D3DRS_POINTSIZE, point_size);
                 PCDeviceDrawPrimitiveUPPc(1, packet->vertex_count, vertices, 24);
                 point_size_float = 1.0f;
                 memcpy(&point_size, &point_size_float, sizeof(point_size));
-                PCDeviceSetRenderState(0x9a, point_size);
+                PCDeviceSetRenderState(D3DRS_POINTSIZE, point_size);
                 break;
             }
         }
@@ -7554,7 +7554,7 @@ extern "C" void NuDisplayListShadowTransform(void *data) {
     f32 saved23 = matrix->m23;
     matrix->m33 = 1.0f;
     matrix->m23 = 0.0f;
-    NuShaderManagerSetfv(0x11, &matrix->m00);
+    NuShaderManagerSetfv(SHADER_UNIFORM_WORLD, &matrix->m00);
     matrix->m33 = saved33;
     matrix->m23 = saved23;
 }
@@ -7565,7 +7565,7 @@ extern "C" void NuDisplayListShadowTransformTranspose(void *data) {
     f32 saved32 = matrix->m32;
     matrix->m33 = 1.0f;
     matrix->m32 = 0.0f;
-    NuShaderManagerSetElementsfv_transpose(0x11, 0, 1, &matrix->m00);
+    NuShaderManagerSetElementsfv_transpose(SHADER_UNIFORM_WORLD, 0, 1, &matrix->m00);
     matrix->m33 = saved33;
     matrix->m32 = saved32;
 }
@@ -7605,7 +7605,7 @@ extern "C" void NuDisplayListShadowMaterial(void *data) {
             material->attributes_word = (flags & 0xffff7fff) | z_mode;
         }
         NuMtlSetRenderStatesPS(&material->common);
-        PCDeviceSetRenderState(27, 0);
+        PCDeviceSetRenderState(D3DRS_ALPHABLENDENABLE, 0);
     }
 }
 
@@ -7703,41 +7703,41 @@ extern "C" {
 
     void fun_005fe470(u32 colour) {
         dat_0280d838 = colour & 0xffffff;
-        PCDeviceSetRenderState(34, colour);
+        PCDeviceSetRenderState(D3DRS_FOGCOLOR, colour);
         dat_02854cb0 = 0;
     }
 
     void fun_005fe4a0(u32 density) {
-        PCDeviceSetRenderState(38, density);
+        PCDeviceSetRenderState(D3DRS_FOGDENSITY, density);
     }
 
     void fun_005fe4b0(void) {
         if (dat_02854cb0 == 0) {
-            PCDeviceSetRenderState(34, 0);
+            PCDeviceSetRenderState(D3DRS_FOGCOLOR, 0);
         }
         dat_02854cb0 = 1;
     }
 
     void fun_005fe4d0(void) {
         if (dat_02854cb0 != 0) {
-            PCDeviceSetRenderState(34, dat_0280d838);
+            PCDeviceSetRenderState(D3DRS_FOGCOLOR, dat_0280d838);
             dat_02854cb0 = 0;
         }
     }
 
     void fun_005fe500(u32 start, u32 end) {
-        PCDeviceSetRenderState(36, start);
-        PCDeviceSetRenderState(37, end);
+        PCDeviceSetRenderState(D3DRS_FOGSTART, start);
+        PCDeviceSetRenderState(D3DRS_FOGEND, end);
     }
 
     void fun_005fe520(u32 density) {
-        PCDeviceSetRenderState(38, density);
+        PCDeviceSetRenderState(D3DRS_FOGDENSITY, density);
     }
 
     i32 fun_005fe530(i32 enable) {
         i32 previous = dat_02854cac;
         dat_02854cac = enable != 0;
-        PCDeviceSetRenderState(28, dat_02854cac);
+        PCDeviceSetRenderState(D3DRS_FOGENABLE, dat_02854cac);
         return previous;
     }
 
@@ -8320,15 +8320,15 @@ extern "C" {
 
     void fun_00607b40(i32 enable, i32 mode) {
         dat_02854cac = enable != 0;
-        PCDeviceSetRenderState(28, dat_02854cac);
+        PCDeviceSetRenderState(D3DRS_FOGENABLE, dat_02854cac);
         if (enable) {
             if (mode == 1) {
-                PCDeviceSetRenderState(35, 1);
+                PCDeviceSetRenderState(D3DRS_FOGTABLEMODE, 1);
             } else {
-                PCDeviceSetRenderState(35, 3);
+                PCDeviceSetRenderState(D3DRS_FOGTABLEMODE, 3);
             }
         } else {
-            PCDeviceSetRenderState(35, 0);
+            PCDeviceSetRenderState(D3DRS_FOGTABLEMODE, 0);
         }
     }
 
@@ -8643,7 +8643,7 @@ extern "C" {
         vpc_sci_mtx = vpc_vport_mtx;
 
         PCDeviceSetTransform(2, &vmtx);
-        PCDeviceSetTransform(3, &pmtx);
+        PCDeviceSetTransform(D3DTS_PROJECTION, &pmtx);
     }
 
     void fun_00603d20(NUMTX *mtx, f32 fov, f32 aspect, f32 near_clip, f32 far_clip, f32 portal_nearclip) {
@@ -8659,7 +8659,7 @@ extern "C" {
         NuMtxMulH(&vpc_vport_mtx, &vpmtx, &cmtx);
         vpc_sci_mtx = vpc_vport_mtx;
         PCDeviceSetTransform(2, &vmtx);
-        PCDeviceSetTransform(3, &pmtx);
+        PCDeviceSetTransform(D3DTS_PROJECTION, &pmtx);
     }
 
     void fun_00603dd0(NUMTX *mtx, f32 *fov, f32 *aspect, f32 *near_clip, f32 *far_clip, f32 *portal_nearclip) {
@@ -8710,17 +8710,17 @@ extern "C" {
 #define NUCAMERA_CLIP_CODE_EX(code, v, near_enabled, horizontal, vertical)                                                                 \
     {                                                                                                                                      \
         if ((v).z < global_camera.near_clip && (near_enabled))                                                                             \
-            (code) |= 0x20;                                                                                                                \
+            (code) |= NUCAMERA_CLIP_NEAR;                                                                                                  \
         if ((v).z > far_clip)                                                                                                              \
-            (code) |= 0x10;                                                                                                                \
+            (code) |= NUCAMERA_CLIP_FAR;                                                                                                   \
         if ((v).x < -(v).z * (horizontal))                                                                                                 \
-            (code) |= 1;                                                                                                                   \
+            (code) |= NUCAMERA_CLIP_LEFT;                                                                                                  \
         if ((v).x > (v).z * (horizontal))                                                                                                  \
-            (code) |= 2;                                                                                                                   \
+            (code) |= NUCAMERA_CLIP_RIGHT;                                                                                                 \
         if ((v).y < -(v).z * (vertical))                                                                                                   \
-            (code) |= 8;                                                                                                                   \
+            (code) |= NUCAMERA_CLIP_BOTTOM;                                                                                                \
         if ((v).y > (v).z * (vertical))                                                                                                    \
-            (code) |= 4;                                                                                                                   \
+            (code) |= NUCAMERA_CLIP_TOP;                                                                                                   \
     }
 
 #define NUCAMERA_CLIP_CODE(code, v) NUCAMERA_CLIP_CODE_EX(code, v, 1, zx, zy)

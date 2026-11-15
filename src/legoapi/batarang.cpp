@@ -293,7 +293,8 @@ extern "C" i32 Batarang_FindTarget(WORLDINFO *world, GAMEOBJECT *object, i32 aut
     for (i = 0; i < world->gizmo_blowup_count; ++i, ++candidate_blowup) {
         if ((candidate_blowup->status_flags & BLOWUP_STATUS_BLOWN_UP) != 0 ||
             (candidate_blowup->status_flags & BLOWUP_STATUS_ACTIVE) == 0 || (candidate_blowup->status_flags & BLOWUP_STATUS_VISIBLE) == 0 ||
-            (candidate_blowup->status_flags & BLOWUP_STATUS_DRAWN) == 0 || (candidate_blowup->draw_flags & BLOWUP_OPTION_BATARANG_TARGET) == 0 ||
+            (candidate_blowup->status_flags & BLOWUP_STATUS_DRAWN) == 0 ||
+            (candidate_blowup->draw_flags & BLOWUP_OPTION_BATARANG_TARGET) == 0 ||
             ((candidate_blowup->draw_flags & BLOWUP_OPTION_SHADOW_MODE_ONLY) != 0 && ShadowMode == 0)) {
             continue;
         }

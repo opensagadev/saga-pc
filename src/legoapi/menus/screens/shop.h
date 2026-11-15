@@ -31,6 +31,13 @@ extern "C" {
     extern i32 CutScenePlayCount;
     extern void (*drawptr)(void);
     extern i32 picked;
+
+/* picked: the shop shelf being browsed, by the item list each value selects (shop.c). */
+#define SHOP_SHELF_HINTS 0       /* HintItems */
+#define SHOP_SHELF_CHARACTERS 1  /* CharItems */
+#define SHOP_SHELF_EXTRAS 2      /* ExtraItems */
+#define SHOP_SHELF_GOLD_BRICKS 4 /* BrickItems */
+#define SHOP_SHELF_CUTSCENES 5   /* CutItems */
     extern CHEAT ExtrasCheats[46];
     extern struct shopitem_s *BrickItems;
     extern i32 BrickShelfIds[7];

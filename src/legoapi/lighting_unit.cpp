@@ -387,7 +387,7 @@ extern "C" {
         f32 green;
         f32 blue;
         i32 index;
-        if (Cheats_CheckFlags(1) != 0) {
+        if (Cheats_CheckFlags(CHEAT_ZERO_LIGHTING) != 0) {
             SetZeroLights();
             return;
         }

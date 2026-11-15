@@ -313,7 +313,7 @@ void MenuEnterHeaderSave(MENU *menu) {
     (void)menu;
     Menu_InHeaderSave = 1;
     BackupMenuNoFn();
-    NewMenu(1000, -1, -1);
+    NewMenu(MENU_SAVE, -1, -1);
 }
 
 void MenuEnterStartNewGame(MENU *menu) {
@@ -380,14 +380,14 @@ void MenuUpdateSave(MENU *menu) {
                 MenuSFX = MENUSFX_MENUNOENTRY;
             } else {
                 memcard_slot = slot;
-                NewMenu(1008, 1, -1);
+                NewMenu(MENU_SAVE_CONFIRM, 1, -1);
             }
         } else if (menu->selected_row == menu->last_row && Menu_DisableCancel == 0) {
-            NewMenu(1016, 1, -1);
+            NewMenu(MENU_SAVE_CANCEL, 1, -1);
         }
     } else if (menu->cancel_pressed != 0 && Menu_DisableCancel == 0) {
         MenuSFX = MENUSFX_MENUSELECT;
-        NewMenu(1016, 1, -1);
+        NewMenu(MENU_SAVE_CANCEL, 1, -1);
     }
 }
 
@@ -401,12 +401,12 @@ void MenuUpdateInsertCard(MENU *menu) {
     if (menu->cancel_pressed != 0) {
         MenuSFX = MENUSFX_MENUSELECT;
         BackupMenuNoFn();
-        NewMenu(1016, 1, -1);
+        NewMenu(MENU_SAVE_CANCEL, 1, -1);
     }
     if (menu->confirm_pressed != 0 && menu->selected_row == menu->last_row) {
         MenuSFX = MENUSFX_MENUSELECT;
         BackupMenuNoFn();
-        NewMenu(1016, 1, -1);
+        NewMenu(MENU_SAVE_CANCEL, 1, -1);
     }
 }
 
@@ -417,13 +417,13 @@ void MenuUpdateNoMemoryCard(MENU *menu) {
             BackupMenu();
         } else {
             BackupMenuNoFn();
-            NewMenu(1017, 1, -1);
+            NewMenu(MENU_LOAD_CANCEL, 1, -1);
         }
     }
     if (menu->cancel_pressed != 0) {
         MenuSFX = MENUSFX_MENUSELECT;
         BackupMenuNoFn();
-        NewMenu(1017, 1, -1);
+        NewMenu(MENU_LOAD_CANCEL, 1, -1);
     }
 }
 
@@ -431,7 +431,7 @@ void MenuUpdateNotEnoughSpace(MENU *menu) {
     if (menu->cancel_pressed != 0) {
         MenuSFX = MENUSFX_MENUSELECT;
         BackupMenuNoFn();
-        NewMenu(1016, 1, -1);
+        NewMenu(MENU_SAVE_CANCEL, 1, -1);
     }
 }
 
@@ -451,16 +451,16 @@ void MenuUpdateNoData(MENU *menu) {
 void MenuUpdateFormatConfirm(MENU *menu) {
     if (menu->confirm_pressed != 0) {
         MenuSFX = MENUSFX_MENUSELECT;
-    } else if (menu->cancel_pressed != 0 && MenuInfo[GameMenu[GameMenuLevel - 1].menu].id != 1019) {
+    } else if (menu->cancel_pressed != 0 && MenuInfo[GameMenu[GameMenuLevel - 1].menu].id != MENU_CARD_WARNING) {
         MenuSFX = MENUSFX_MENUSELECT;
         BackupMenuNoFn();
-        NewMenu(1018, 1, -1);
+        NewMenu(MENU_FORMAT_CANCEL, 1, -1);
     }
 }
 
 void MenuUpdateFileCorrupt(MENU *menu) {
     i32 cancel;
-    if (MenuInfo[GameMenu[GameMenuLevel - 1].menu].id == 1019) {
+    if (MenuInfo[GameMenu[GameMenuLevel - 1].menu].id == MENU_CARD_WARNING) {
         MenuInfo[menu->menu].cancel_prompt = 0;
     } else {
         MenuInfo[menu->menu].cancel_prompt = 1;
@@ -469,21 +469,21 @@ void MenuUpdateFileCorrupt(MENU *menu) {
     if (menu->confirm_pressed != 0) {
         MenuSFX = MENUSFX_MENUSELECT;
         cancel = 1;
-    } else if (menu->cancel_pressed != 0 && MenuInfo[GameMenu[GameMenuLevel - 1].menu].id != 1019) {
+    } else if (menu->cancel_pressed != 0 && MenuInfo[GameMenu[GameMenuLevel - 1].menu].id != MENU_CARD_WARNING) {
         MenuSFX = MENUSFX_MENUSELECT;
         cancel = 1;
     }
     if (cancel != 0) {
-        if (MenuInfo[GameMenu[GameMenuLevel - 1].menu].id == 1000) {
+        if (MenuInfo[GameMenu[GameMenuLevel - 1].menu].id == MENU_SAVE) {
             BackupMenuNoFn();
-            NewMenu(1016, 1, -1);
-        } else if (MenuInfo[GameMenu[GameMenuLevel - 1].menu].id == 1019) {
+            NewMenu(MENU_SAVE_CANCEL, 1, -1);
+        } else if (MenuInfo[GameMenu[GameMenuLevel - 1].menu].id == MENU_CARD_WARNING) {
             MenuCardWarningState = 3;
             memcard_cardchanged = 0;
             BackupMenuNoFn();
         } else {
             BackupMenuNoFn();
-            NewMenu(1017, 1, -1);
+            NewMenu(MENU_LOAD_CANCEL, 1, -1);
         }
     }
 }
@@ -516,7 +516,7 @@ void MenuUpdateDeleteConfirm(MENU *menu) {
             memcard_deletestarted = 0;
             BackupMenuNoFn();
             BackupMenuNoFn();
-            NewMenu(1015, 0, -1);
+            NewMenu(MENU_DELETING, 0, -1);
         }
     } else if (menu->cancel_pressed != 0) {
         MenuSFX = MENUSFX_MENUSELECT;
@@ -548,7 +548,7 @@ void MenuUpdateSaveConfirm(MENU *menu) {
             memcard_savestarted = 0;
             memcard_savefailed = 0;
             BackupMenuNoFn();
-            NewMenu(1009, 0, -1);
+            NewMenu(MENU_SAVING, 0, -1);
         }
     } else if (menu->cancel_pressed != 0) {
         BackupMenu();
@@ -574,7 +574,7 @@ void MenuUpdateSaving(MENU *menu) {
         } else if (memcard_autosave != 0 && saveload_autosave != -1) {
             BackupMenuNoFn();
             BackupMenuNoFn();
-            NewMenu(1010, 1, -1);
+            NewMenu(MENU_AUTO_SAVE_WARNING, 1, -1);
         } else {
             BackupMenuNoFn();
             BackupMenu();
@@ -602,15 +602,15 @@ void MenuUpdateLoad(MENU *menu) {
         if (menu->selected_row == 0) {
             memcard_slot = menu->selected_column - menu->first_column;
             if (saveload_slotused[memcard_slot] != 0) {
-                NewMenu(1013, 1, -1);
+                NewMenu(MENU_LOAD_CONFIRM, 1, -1);
             } else {
                 MenuSFX = MENUSFX_MENUNOENTRY;
             }
         } else if (menu->selected_row == menu->last_row) {
-            NewMenu(1017, 1, -1);
+            NewMenu(MENU_LOAD_CANCEL, 1, -1);
         }
     } else if (menu->cancel_pressed != 0) {
-        NewMenu(1017, 1, -1);
+        NewMenu(MENU_LOAD_CANCEL, 1, -1);
         MenuSFX = MENUSFX_MENUSELECT;
     }
 }
@@ -627,7 +627,7 @@ void MenuUpdateLoadConfirm(MENU *menu) {
             memcard_loadfailed = 0;
             memcard_loadcorrupt = 0;
             BackupMenuNoFn();
-            NewMenu(1014, 0, -1);
+            NewMenu(MENU_LOADING, 0, -1);
         }
     } else if (menu->cancel_pressed != 0) {
         MenuSFX = MENUSFX_MENUSELECT;
@@ -652,7 +652,7 @@ void MenuUpdateLoading(MENU *menu) {
             if (memcard_autosave != 0 && saveload_autosave != -1) {
                 BackupMenuNoFn();
                 BackupMenuNoFn();
-                NewMenu(1010, 1, -1);
+                NewMenu(MENU_AUTO_SAVE_WARNING, 1, -1);
                 return;
             }
             BackupMenuNoFn();
@@ -697,24 +697,24 @@ void MenuUpdateFormatCancel(MENU *menu) {
     if (menu->confirm_pressed != 0) {
         if (menu->selected_row == 0) {
             MenuSFX = MENUSFX_MENUSELECT;
-            if (MenuInfo[GameMenu[GameMenuLevel - 1].menu].id == 1000) {
+            if (MenuInfo[GameMenu[GameMenuLevel - 1].menu].id == MENU_SAVE) {
                 BackupMenuNoFn();
-                NewMenu(1016, 1, -1);
-            } else if (MenuInfo[GameMenu[GameMenuLevel - 1].menu].id == 1012) {
+                NewMenu(MENU_SAVE_CANCEL, 1, -1);
+            } else if (MenuInfo[GameMenu[GameMenuLevel - 1].menu].id == MENU_LOAD) {
                 BackupMenuNoFn();
-                NewMenu(1017, 1, -1);
+                NewMenu(MENU_LOAD_CANCEL, 1, -1);
             } else {
                 BackupMenu();
             }
         } else {
             MenuSFX = MENUSFX_MENUSELECT;
             BackupMenuNoFn();
-            NewMenu(1006, 1, -1);
+            NewMenu(MENU_FORMAT_CONFIRM, 1, -1);
         }
     } else if (menu->cancel_pressed != 0) {
         MenuSFX = MENUSFX_MENUSELECT;
         BackupMenuNoFn();
-        NewMenu(1006, 1, -1);
+        NewMenu(MENU_FORMAT_CONFIRM, 1, -1);
     }
 }
 
@@ -877,11 +877,11 @@ void MenuEnterLoad(MENU *menu) {
     MenuLoadOccurred = 0;
     MenuLoadStarted = 0;
     if (saveload_filecorrupt != 0) {
-        NewMenu(1020, -1, -1);
+        NewMenu(MENU_FILE_CORRUPT, -1, -1);
     } else if (saveload_cardtype != 2) {
-        NewMenu(1004, -1, -1);
+        NewMenu(MENU_NO_MEMORY_CARD, -1, -1);
     } else if (saveload_savepresent == 0 || saveload_cardformatted == 0) {
-        NewMenu(1005, -1, -1);
+        NewMenu(MENU_NO_DATA, -1, -1);
     }
 }
 
@@ -909,16 +909,16 @@ void MenuEnterSave(MENU *menu) {
     header_g = MENUHEADERG;
     header_b = MENUHEADERB;
     if (saveload_cardtype != 2) {
-        NewMenu(1002, -1, -1);
+        NewMenu(MENU_INSERT_CARD, -1, -1);
     } else if (saveload_filecorrupt != 0) {
-        NewMenu(1020, -1, -1);
+        NewMenu(MENU_FILE_CORRUPT, -1, -1);
     } else if (saveload_cardformatted == 0) {
-        NewMenu(1006, 1, -1);
+        NewMenu(MENU_FORMAT_CONFIRM, 1, -1);
     } else if (saveload_savepresent == 0 && saveload_freespace < SAVESIZE) {
-        NewMenu(1003, -1, -1);
+        NewMenu(MENU_NOT_ENOUGH_SPACE, -1, -1);
     } else if (Menu_InHeaderSave != 0) {
         memcard_slot = -1;
-        NewMenu(1008, 1, -1);
+        NewMenu(MENU_SAVE_CONFIRM, 1, -1);
     }
 }
 
@@ -1458,35 +1458,35 @@ void MenuDrawAutoSaveWarning(MENU *menu) {
 }
 
 MENUFNINFO MenuInfo[100] = {
-    {1000, MenuEnterSave,            MenuDrawSave,            MenuUpdateSave,            MenuExitSave,         -1, -1, 0, 1, 1, 0},
-    {1001, NULL,                     MenuDrawDoNotRemoveCard, MenuUpdateDoNotRemoveCard, NULL,                 -1, -1, 0, 0, 0, 0},
-    {1002, MenuEnterInsertCard,      MenuDrawInsertCard,      MenuUpdateInsertCard,      NULL,                 -1, -1, 0, 1, 1, 0},
-    {1004, MenuEnterNoMemoryCard,    MenuDrawNoMemoryCard,    MenuUpdateNoMemoryCard,    NULL,                 -1, -1, 0, 1, 1, 0},
-    {1003, NULL,                     MenuDrawNotEnoughSpace,  MenuUpdateNotEnoughSpace,  NULL,                 -1, -1, 0, 1, 1, 0},
-    {1005, NULL,                     MenuDrawNoData,          MenuUpdateNoData,          NULL,                 -1, -1, 0, 1, 1, 0},
-    {1006, NULL,                     MenuDrawFormatConfirm,   MenuUpdateFormatConfirm,   NULL,                 -1, -1, 0, 1, 1, 0},
-    {1007, NULL,                     MenuDrawFormatting,      MenuUpdateFormatting,      NULL,                 -1, -1, 0, 0, 0, 0},
-    {1008, MenuEnterSaveConfirm,     MenuDrawSaveConfirm,     MenuUpdateSaveConfirm,     NULL,                 -1, -1, 0, 1, 1, 0},
-    {1009, NULL,                     MenuDrawSaving,          MenuUpdateSaving,          NULL,                 -1, -1, 0, 0, 0, 0},
-    {1010, MenuEnterAutoSaveWarning, MenuDrawAutoSaveWarning, MenuUpdateAutoSaveWarning, NULL,                 -1, -1, 0, 1, 0, 0},
-    {1011, MenuEnterAutoSaveCancel,  MenuDrawAutoSaveCancel,  MenuUpdateAutoSaveCancel,  NULL,                 -1, -1, 0, 1, 1, 0},
-    {1012, MenuEnterLoad,            MenuDrawLoad,            MenuUpdateLoad,            MenuExitLoad,         -1, -1, 0, 1, 1, 0},
-    {1013, NULL,                     MenuDrawLoadConfirm,     MenuUpdateLoadConfirm,     NULL,                 -1, -1, 0, 1, 1, 0},
-    {1014, NULL,                     MenuDrawLoading,         MenuUpdateLoading,         NULL,                 -1, -1, 0, 0, 0, 0},
-    {1015, NULL,                     MenuDrawDeleting,        MenuUpdateDeleting,        NULL,                 -1, -1, 0, 0, 0, 0},
-    {1016, NULL,                     MenuDrawSaveCancel,      MenuUpdateSaveCancel,      NULL,                 -1, -1, 0, 1, 1, 0},
-    {1017, NULL,                     MenuDrawLoadCancel,      MenuUpdateLoadCancel,      NULL,                 -1, -1, 0, 1, 1, 0},
-    {1018, NULL,                     MenuDrawFormatCancel,    MenuUpdateFormatCancel,    NULL,                 -1, -1, 0, 1, 1, 0},
-    {1019, MenuEnterCardWarning,     MenuDrawCardWarning,     MenuUpdateCardWarning,     MenuExitCardWarning,  -1, -1, 0, 1, 0, 0},
-    {1020, NULL,                     MenuDrawFileCorrupt,     MenuUpdateFileCorrupt,     NULL,                 -1, -1, 0, 1, 1, 0},
-    {1021, MenuEnterHeaderSave,      NULL,                    NULL,                      NULL,                 -1, -1, 0, 0, 0, 0},
-    {1022, MenuEnterStartNewGame,    NULL,                    NULL,                      NULL,                 -1, -1, 0, 0, 0, 0},
-    {1023, NULL,                     MenuDrawDeleteConfirm,   MenuUpdateDeleteConfirm,   NULL,                 -1, -1, 0, 1, 1, 0},
-    {1024, fun_00509470,             fun_00509480,            fun_00509490,              fun_005094a0,         -1, -1, 0, 0, 0, 0},
-    {1025, MenuEnterVideo,           MenuDrawVideo,           MenuUpdateVideo,           MenuExitVideo,        -1, -1, 0, 0, 0, 0},
-    {1026, MenuEnterEffects,         MenuDrawEffects,         MenuUpdateEffects,         MenuExitEffects,      -1, -1, 0, 0, 0, 0},
-    {1027, MenuEnterVideoConfirm,    MenuDrawVideoConfirm,    MenuUpdateVideoConfirm,    MenuExitVideoConfirm, -1, -1, 0, 0, 0, 0},
-    {1028, MenuEnterHiresNotice,     MenuDrawHiresNotice,     MenuUpdateHiresNotice,     MenuExitHiresNotice,  -1, -1, 0, 0, 0, 0},
-    {1029, MenuEnterQuit,            MenuDrawQuit,            MenuUpdateQuit,            MenuExitQuit,         -1, -1, 0, 0, 0, 0},
-    {1030, NULL,                     NULL,                    NULL,                      NULL,                 -1, -1, 0, 0, 0, 0},
+    {MENU_SAVE,               MenuEnterSave,            MenuDrawSave,            MenuUpdateSave,            MenuExitSave,         -1, -1, 0, 1, 1, 0},
+    {MENU_DO_NOT_REMOVE_CARD, NULL,                     MenuDrawDoNotRemoveCard, MenuUpdateDoNotRemoveCard, NULL,                 -1, -1, 0, 0, 0, 0},
+    {MENU_INSERT_CARD,        MenuEnterInsertCard,      MenuDrawInsertCard,      MenuUpdateInsertCard,      NULL,                 -1, -1, 0, 1, 1, 0},
+    {MENU_NO_MEMORY_CARD,     MenuEnterNoMemoryCard,    MenuDrawNoMemoryCard,    MenuUpdateNoMemoryCard,    NULL,                 -1, -1, 0, 1, 1, 0},
+    {MENU_NOT_ENOUGH_SPACE,   NULL,                     MenuDrawNotEnoughSpace,  MenuUpdateNotEnoughSpace,  NULL,                 -1, -1, 0, 1, 1, 0},
+    {MENU_NO_DATA,            NULL,                     MenuDrawNoData,          MenuUpdateNoData,          NULL,                 -1, -1, 0, 1, 1, 0},
+    {MENU_FORMAT_CONFIRM,     NULL,                     MenuDrawFormatConfirm,   MenuUpdateFormatConfirm,   NULL,                 -1, -1, 0, 1, 1, 0},
+    {MENU_FORMATTING,         NULL,                     MenuDrawFormatting,      MenuUpdateFormatting,      NULL,                 -1, -1, 0, 0, 0, 0},
+    {MENU_SAVE_CONFIRM,       MenuEnterSaveConfirm,     MenuDrawSaveConfirm,     MenuUpdateSaveConfirm,     NULL,                 -1, -1, 0, 1, 1, 0},
+    {MENU_SAVING,             NULL,                     MenuDrawSaving,          MenuUpdateSaving,          NULL,                 -1, -1, 0, 0, 0, 0},
+    {MENU_AUTO_SAVE_WARNING,  MenuEnterAutoSaveWarning, MenuDrawAutoSaveWarning, MenuUpdateAutoSaveWarning, NULL,                 -1, -1, 0, 1, 0, 0},
+    {MENU_AUTO_SAVE_CANCEL,   MenuEnterAutoSaveCancel,  MenuDrawAutoSaveCancel,  MenuUpdateAutoSaveCancel,  NULL,                 -1, -1, 0, 1, 1, 0},
+    {MENU_LOAD,               MenuEnterLoad,            MenuDrawLoad,            MenuUpdateLoad,            MenuExitLoad,         -1, -1, 0, 1, 1, 0},
+    {MENU_LOAD_CONFIRM,       NULL,                     MenuDrawLoadConfirm,     MenuUpdateLoadConfirm,     NULL,                 -1, -1, 0, 1, 1, 0},
+    {MENU_LOADING,            NULL,                     MenuDrawLoading,         MenuUpdateLoading,         NULL,                 -1, -1, 0, 0, 0, 0},
+    {MENU_DELETING,           NULL,                     MenuDrawDeleting,        MenuUpdateDeleting,        NULL,                 -1, -1, 0, 0, 0, 0},
+    {MENU_SAVE_CANCEL,        NULL,                     MenuDrawSaveCancel,      MenuUpdateSaveCancel,      NULL,                 -1, -1, 0, 1, 1, 0},
+    {MENU_LOAD_CANCEL,        NULL,                     MenuDrawLoadCancel,      MenuUpdateLoadCancel,      NULL,                 -1, -1, 0, 1, 1, 0},
+    {MENU_FORMAT_CANCEL,      NULL,                     MenuDrawFormatCancel,    MenuUpdateFormatCancel,    NULL,                 -1, -1, 0, 1, 1, 0},
+    {MENU_CARD_WARNING,       MenuEnterCardWarning,     MenuDrawCardWarning,     MenuUpdateCardWarning,     MenuExitCardWarning,  -1, -1, 0, 1, 0, 0},
+    {MENU_FILE_CORRUPT,       NULL,                     MenuDrawFileCorrupt,     MenuUpdateFileCorrupt,     NULL,                 -1, -1, 0, 1, 1, 0},
+    {MENU_HEADER_SAVE,        MenuEnterHeaderSave,      NULL,                    NULL,                      NULL,                 -1, -1, 0, 0, 0, 0},
+    {MENU_START_NEW_GAME,     MenuEnterStartNewGame,    NULL,                    NULL,                      NULL,                 -1, -1, 0, 0, 0, 0},
+    {MENU_DELETE_CONFIRM,     NULL,                     MenuDrawDeleteConfirm,   MenuUpdateDeleteConfirm,   NULL,                 -1, -1, 0, 1, 1, 0},
+    {1024,                    fun_00509470,             fun_00509480,            fun_00509490,              fun_005094a0,         -1, -1, 0, 0, 0, 0},
+    {MENU_VIDEO,              MenuEnterVideo,           MenuDrawVideo,           MenuUpdateVideo,           MenuExitVideo,        -1, -1, 0, 0, 0, 0},
+    {MENU_EFFECTS,            MenuEnterEffects,         MenuDrawEffects,         MenuUpdateEffects,         MenuExitEffects,      -1, -1, 0, 0, 0, 0},
+    {MENU_VIDEO_CONFIRM,      MenuEnterVideoConfirm,    MenuDrawVideoConfirm,    MenuUpdateVideoConfirm,    MenuExitVideoConfirm, -1, -1, 0, 0, 0, 0},
+    {MENU_HIRES_NOTICE,       MenuEnterHiresNotice,     MenuDrawHiresNotice,     MenuUpdateHiresNotice,     MenuExitHiresNotice,  -1, -1, 0, 0, 0, 0},
+    {MENU_QUIT,               MenuEnterQuit,            MenuDrawQuit,            MenuUpdateQuit,            MenuExitQuit,         -1, -1, 0, 0, 0, 0},
+    {1030,                    NULL,                     NULL,                    NULL,                      NULL,                 -1, -1, 0, 0, 0, 0},
 };

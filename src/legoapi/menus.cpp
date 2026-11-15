@@ -24,11 +24,11 @@ extern "C" i32 MenuInMemoryCard(void) {
 extern "C" i32 fun_0050b360() {
     if (MenuValidated != 0) {
         switch (MenuInfo[GameMenu[GameMenuLevel].menu].id) {
-            case 1001:
-            case 1007:
-            case 1009:
-            case 1014:
-            case 1015:
+            case MENU_DO_NOT_REMOVE_CARD:
+            case MENU_FORMATTING:
+            case MENU_SAVING:
+            case MENU_LOADING:
+            case MENU_DELETING:
                 return 1;
         }
     }

@@ -19,6 +19,12 @@ extern "C" {
     i32 getMaxTorpedos(GAMEOBJECT *);
     void FreeTorpedoPacket(TORPEDOPACKET **);
     void *FindNearestTorpTarget(WORLDINFO *, NUVEC *, f32, u8 *);
+
+/* The kind of a torpedo target (FindNearestTorpTarget's result, the packets' target_type): what
+ * TorpedoHitDispatch hits. */
+#define TORPEDO_TARGET_BLOWUP 0
+#define TORPEDO_TARGET_TURRET 1
+#define TORPEDO_TARGET_OBSTACLE 2
     void TorpedoCode(GAMEOBJECT *, i32, f32);
     void Torpedo_UpdateJobbies(GAMEOBJECT *);
     extern u8 TorpedoFillEnabled;

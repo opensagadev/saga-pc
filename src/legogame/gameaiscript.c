@@ -3446,7 +3446,8 @@ i32 Action_SetSide(AISYS *sys, AISCRIPTPROCESS *processor, AIPACKET *packet, cha
                             candidate->flags_1f8 |= APIOBJECT_SIDE_GOODIE_BADDIE;
                             break;
                         case 3:
-                            if ((candidate->flags_1f8 & APIOBJECT_CREATURE) != 0 && candidate->ai_packet.creature_index != AIPACKET_NO_CREATURE) {
+                            if ((candidate->flags_1f8 & APIOBJECT_CREATURE) != 0 &&
+                                candidate->ai_packet.creature_index != AIPACKET_NO_CREATURE) {
                                 creature = sys->creatures + candidate->ai_packet.creature_index;
                                 model_flags = apicharsys->char_data[creature->type].model_flags;
                                 if ((model_flags & 0x200) != 0) {
@@ -7341,7 +7342,7 @@ i32 Action_CnxController(struct AISYS *sys, struct AISCRIPTPROCESS *processor, s
     off_obstacle_open = 0;
     fake_animation_id = -1;
     gizmo_output = 0;
-    target_type = 0;
+    target_type = AIPATHCNX_TARGET_SPECIAL;
     path = NULL;
     if (first_time == 0) {
         return 1;
@@ -7386,23 +7387,23 @@ i32 Action_CnxController(struct AISYS *sys, struct AISCRIPTPROCESS *processor, s
         if (match == NULL) {
             if ((match = NuStrIStr(params[index], (char *)dat_00757dfc)) != NULL) {
                 target_name = match + 4;
-                target_type = 0;
+                target_type = AIPATHCNX_TARGET_SPECIAL;
                 continue;
             }
             if ((match = NuStrIStr(params[index], (char *)dat_00757df0)) != NULL) {
                 target_name = match + 9;
-                target_type = 1;
+                target_type = AIPATHCNX_TARGET_CUTSCENE;
                 continue;
             }
             if ((match = NuStrIStr(params[index], (char *)dat_00757de4)) != NULL) {
                 target_name = match + 8;
-                target_type = 2;
+                target_type = AIPATHCNX_TARGET_BUILDIT;
                 continue;
             }
             match = NuStrIStr(params[index], (char *)dat_00757dd8);
             if (match != NULL) {
                 fake_animation_id = (i32)(AIParamToFloat(processor, match + 11));
-                target_type = 5;
+                target_type = AIPATHCNX_TARGET_FAKE_ANIMATION;
                 continue;
             }
             match = NuStrIStr(params[index], (char *)dat_00757dc8);
@@ -7412,22 +7413,22 @@ i32 Action_CnxController(struct AISYS *sys, struct AISCRIPTPROCESS *processor, s
             }
             if ((match = NuStrIStr(params[index], (char *)dat_00757dc0)) != NULL) {
                 target_name = match + 6;
-                target_type = 3;
+                target_type = AIPATHCNX_TARGET_GIZMO;
             } else if ((match = NuStrIStr(params[index], (char *)dat_00757db4)) != NULL) {
                 target_name = match + NuStrLen(dat_00757db4);
-                target_type = 6;
+                target_type = AIPATHCNX_TARGET_FLOW;
             } else if ((match = NuStrIStr(params[index], (char *)dat_00757dac)) != NULL) {
                 target_name = match + 7;
-                target_type = 4;
+                target_type = AIPATHCNX_TARGET_BLOWUP;
             } else if ((match = NuStrIStr(params[index], (char *)dat_00757da4)) != NULL) {
                 target_name = match + 6;
-                target_type = 7;
+                target_type = AIPATHCNX_TARGET_FORCE;
             } else if ((match = NuStrIStr(params[index], (char *)dat_00757d98)) != NULL) {
                 target_name = match + 9;
-                target_type = 8;
+                target_type = AIPATHCNX_TARGET_OBSTACLE;
             } else if ((match = NuStrIStr(params[index], (char *)dat_00757d90)) != NULL) {
                 target_name = match + 6;
-                target_type = 9;
+                target_type = AIPATHCNX_TARGET_ZIPUP;
             }
         } else {
             if (NuStrIStr(params[index], (char *)dat_00757e10) != NULL) {
@@ -7707,7 +7708,8 @@ i32 Action_GoToOriginalPath(AISYS *sys, AISCRIPTPROCESS *processor, AIPACKET *pa
         return 1;
     }
     object = packet->owner->objptr;
-    if (sys == NULL || sys->path_sys == NULL || (object->flags_1f8 & APIOBJECT_CREATURE) == 0 || object->ai_packet.creature_index == AIPACKET_NO_CREATURE) {
+    if (sys == NULL || sys->path_sys == NULL || (object->flags_1f8 & APIOBJECT_CREATURE) == 0 ||
+        object->ai_packet.creature_index == AIPACKET_NO_CREATURE) {
         return 0;
     }
     original_path = sys->creatures[packet->creature_index].path_info.path;

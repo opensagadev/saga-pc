@@ -332,7 +332,7 @@ extern "C" {
 
 extern "C" void PCDeviceSetWorldIdentity(void) {
     static D3DXMATRIX identity(1.0f, 0.0f, 0.0f, 0.0f, 0.0f, 1.0f, 0.0f, 0.0f, 0.0f, 0.0f, 1.0f, 0.0f, 0.0f, 0.0f, 0.0f, 1.0f);
-    PCDeviceSetTransform(0x100, (const NUMTX *)&identity);
+    PCDeviceSetTransform(D3DTS_WORLD, (const NUMTX *)&identity);
 }
 
 extern "C" {
@@ -341,26 +341,26 @@ extern "C" {
         i32 stage;
 
         NuThreadCriticalSectionBegin(PCFrameCriticalSectionIndex);
-        PCDeviceSetRenderState(137, 0);
-        PCDeviceSetRenderState(7, 1);
-        PCDeviceSetRenderState(14, 1);
-        PCDeviceSetRenderState(15, 0);
-        PCDeviceSetRenderState(19, 2);
-        PCDeviceSetRenderState(20, 1);
-        PCDeviceSetRenderState(24, 0);
-        PCDeviceSetRenderState(25, 8);
-        PCDeviceSetRenderState(27, 0);
-        PCDeviceSetRenderState(52, 0);
+        PCDeviceSetRenderState(D3DRS_LIGHTING, 0);
+        PCDeviceSetRenderState(D3DRS_ZENABLE, 1);
+        PCDeviceSetRenderState(D3DRS_ZWRITEENABLE, 1);
+        PCDeviceSetRenderState(D3DRS_ALPHATESTENABLE, 0);
+        PCDeviceSetRenderState(D3DRS_SRCBLEND, 2);
+        PCDeviceSetRenderState(D3DRS_DESTBLEND, 1);
+        PCDeviceSetRenderState(D3DRS_ALPHAREF, 0);
+        PCDeviceSetRenderState(D3DRS_ALPHAFUNC, 8);
+        PCDeviceSetRenderState(D3DRS_ALPHABLENDENABLE, 0);
+        PCDeviceSetRenderState(D3DRS_STENCILENABLE, 0);
         for (stage = 0; stage < 8; ++stage) {
-            PCDeviceSetSamplerState(stage, 5, 2);
-            PCDeviceSetSamplerState(stage, 6, 2);
-            PCDeviceSetSamplerState(stage, 7, 2);
+            PCDeviceSetSamplerState(stage, D3DSAMP_MAGFILTER, 2);
+            PCDeviceSetSamplerState(stage, D3DSAMP_MINFILTER, 2);
+            PCDeviceSetSamplerState(stage, D3DSAMP_MIPFILTER, 2);
         }
         PCDeviceSetTexture(0, NULL);
         PCDeviceSetTexture(1, NULL);
-        PCDeviceSetRenderState(22, 1);
-        PCDeviceSetTextureStageState(1, 1, 1);
-        PCDeviceSetTextureStageState(1, 4, 1);
+        PCDeviceSetRenderState(D3DRS_CULLMODE, 1);
+        PCDeviceSetTextureStageState(1, D3DTSS_COLOROP, 1);
+        PCDeviceSetTextureStageState(1, D3DTSS_ALPHAOP, 1);
         NuThreadCriticalSectionEnd(PCFrameCriticalSectionIndex);
     }
 }
@@ -371,10 +371,10 @@ extern "C" void PCDeviceResetSamplerDefaults(void) {
         return;
     }
     do {
-        PCDeviceSetSamplerState(stage, 5, 2);
-        PCDeviceSetSamplerState(stage, 6, 2);
-        PCDeviceSetSamplerState(stage, 7, 2);
-        PCDeviceSetSamplerState(stage, 9, 0);
+        PCDeviceSetSamplerState(stage, D3DSAMP_MAGFILTER, 2);
+        PCDeviceSetSamplerState(stage, D3DSAMP_MINFILTER, 2);
+        PCDeviceSetSamplerState(stage, D3DSAMP_MIPFILTER, 2);
+        PCDeviceSetSamplerState(stage, D3DSAMP_MAXMIPLEVEL, 0);
         ++stage;
     } while (stage != PCDeviceBackend.caps.sampler_count);
 }

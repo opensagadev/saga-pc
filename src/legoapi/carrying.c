@@ -147,7 +147,8 @@ static void SuperCarry_PartKill(PART *part, i32 unused) {
     if (view->secondary_flags & 4) {
         SuperCarry_TurnBlowupBackOn(blowup, &part->position, part->rotation_y, 0);
     } else {
-        GizmoBlowUp_AddEffects(&part->position, blowup, 0, BLOWUP_EFFECT_DEBRIS | BLOWUP_EFFECT_PARTICLES | BLOWUP_EFFECT_PICKUPS | BLOWUP_EFFECT_EXPLOSION, NULL);
+        GizmoBlowUp_AddEffects(&part->position, blowup, 0,
+                               BLOWUP_EFFECT_DEBRIS | BLOWUP_EFFECT_PARTICLES | BLOWUP_EFFECT_PICKUPS | BLOWUP_EFFECT_EXPLOSION, NULL);
     }
 }
 

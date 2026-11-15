@@ -56,7 +56,7 @@ extern "C" void PauseGame(i32 pad) {
     music_man.PauseTrack(0x10);
     NuSound3StopRumble();
     if (memcard_autosaveenabled && memcard_autosavedisabled) {
-        NewMenu(1011, 0, -1);
+        NewMenu(MENU_AUTO_SAVE_CANCEL, 0, -1);
     } else {
         NewMenu(LEGOMENU_PAUSEMAIN, 0, -1);
     }

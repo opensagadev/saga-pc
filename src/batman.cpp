@@ -219,29 +219,30 @@ extern "C" {
     void MenuDrawBonusWin(MENU *);
     void MenuUpdatePauseRestart(MENU *);
     MENUFNINFO GameMenuInfo[23] = {
-        {0,  MenuEnterTitles,         MenuDrawTitles,         MenuUpdateTitles,         NULL,                   -1, -1, 0, 0, 0, 0},
-        {1,  MenuEnterNewGame,        MenuDrawNewGame,        MenuUpdateNewGame,        NULL,                   -1, -1, 0, 1, 0, 0},
-        {2,  NULL,                    MenuDrawPauseMain,      MenuUpdatePauseMain,      NULL,                   -1, -1, 0, 0, 0, 0},
-        {3,  NULL,                    MenuDrawPauseRestart,   MenuUpdatePauseRestart,   NULL,                   -1, -1, 0, 0, 0, 0},
-        {4,  MenuEnterOptions,        MenuDrawOptions,        MenuUpdateOptions,        MenuExitOptions,        0,  0,  0, 1, 1, 0},
-        {5,  NULL,                    MenuDrawExtras,         MenuUpdateExtras,         NULL,                   0,  0,  0, 0, 0, 0},
-        {6,  NULL,                    MenuDrawPauseExit,      MenuUpdatePauseExit,      NULL,                   -1, -1, 0, 0, 0, 0},
-        {7,  NULL,                    MenuDrawSelectLanguage, MenuUpdateSelectLanguage, NULL,                   0,  0,  0, 0, 0, 0},
-        {8,  MenuInitMissions,        MenuDrawMissions,       MenuUpdateMissions,       NULL,                   -1, -1, 0, 0, 0, 0},
-        {9,  NULL,                    MenuDrawEndMission,     MenuUpdateEndMission,     NULL,                   -1, -1, 0, 0, 0, 0},
-        {10, NULL,                    MenuDrawEndChallenge,   MenuUpdateEndChallenge,   NULL,                   -1, -1, 0, 0, 0, 0},
-        {11, NULL,                    Arcade_DrawEndMenu,     Arcade_UpdateEndMenu,     NULL,                   -1, -1, 0, 0, 0, 0},
-        {12, NULL,                    MenuDrawCustomiser,     MenuUpdateCustomiser,     NULL,                   -1, -1, 0, 0, 0, 0},
-        {13, NULL,                    MenuDrawShop,           MenuUpdateShop,           NULL,                   -1, -1, 0, 0, 0, 0},
-        {14, NULL,                    MenuDrawMiniKit,        MenuUpdateMiniKit,        NULL,                   -1, -1, 0, 0, 0, 0},
-        {15, MenuInitSelectMode,      MenuDrawSelectMode,     MenuUpdateSelectMode,     NULL,                   -1, -1, 0, 0, 0, 0},
-        {16, MenuInitBonusMode,       MenuDrawBonusMode,      MenuUpdateBonusMode,      NULL,                   -1, -1, 0, 0, 0, 0},
-        {17, MenuInitFreePlay,        MenuDrawFreePlay,       MenuUpdateFreePlay,       NULL,                   -1, -1, 0, 0, 0, 0},
-        {18, NULL,                    NULL,                   Credits_UpdateMenu,       NULL,                   -1, -1, 0, 0, 0, 0},
-        {19, NULL,                    MenuDrawBonusWin,       MenuUpdateBonusWin,       NULL,                   -1, -1, 0, 0, 0, 0},
-        {20, NULL,                    MenuDrawBonusComplete,  MenuUpdateBonusComplete,  NULL,                   -1, -1, 0, 0, 0, 0},
-        {21, MenuEnterControlSetup,   MenuDrawControlSetup,   MenuUpdateControlSetup,   NULL,                   -1, -1, 0, 0, 0, 0},
-        {22, MenuEnterSelectControls, MenuDrawControlSetup,   MenuUpdateSelectControls, MenuExitSelectControls, 0,  0,  0, 0, 0, 0},
+        {MENU_TITLES,          MenuEnterTitles,         MenuDrawTitles,         MenuUpdateTitles,         NULL,                   -1, -1, 0, 0, 0, 0},
+        {MENU_NEW_GAME,        MenuEnterNewGame,        MenuDrawNewGame,        MenuUpdateNewGame,        NULL,                   -1, -1, 0, 1, 0, 0},
+        {MENU_PAUSE_MAIN,      NULL,                    MenuDrawPauseMain,      MenuUpdatePauseMain,      NULL,                   -1, -1, 0, 0, 0, 0},
+        {MENU_PAUSE_RESTART,   NULL,                    MenuDrawPauseRestart,   MenuUpdatePauseRestart,   NULL,                   -1, -1, 0, 0, 0, 0},
+        {MENU_OPTIONS,         MenuEnterOptions,        MenuDrawOptions,        MenuUpdateOptions,        MenuExitOptions,        0,  0,  0, 1, 1, 0},
+        {MENU_EXTRAS,          NULL,                    MenuDrawExtras,         MenuUpdateExtras,         NULL,                   0,  0,  0, 0, 0, 0},
+        {MENU_PAUSE_EXIT,      NULL,                    MenuDrawPauseExit,      MenuUpdatePauseExit,      NULL,                   -1, -1, 0, 0, 0, 0},
+        {MENU_SELECT_LANGUAGE, NULL,                    MenuDrawSelectLanguage, MenuUpdateSelectLanguage, NULL,                   0,  0,  0, 0, 0, 0},
+        {MENU_MISSIONS,        MenuInitMissions,        MenuDrawMissions,       MenuUpdateMissions,       NULL,                   -1, -1, 0, 0, 0, 0},
+        {MENU_END_MISSION,     NULL,                    MenuDrawEndMission,     MenuUpdateEndMission,     NULL,                   -1, -1, 0, 0, 0, 0},
+        {MENU_END_CHALLENGE,   NULL,                    MenuDrawEndChallenge,   MenuUpdateEndChallenge,   NULL,                   -1, -1, 0, 0, 0, 0},
+        {MENU_ARCADE_END,      NULL,                    Arcade_DrawEndMenu,     Arcade_UpdateEndMenu,     NULL,                   -1, -1, 0, 0, 0, 0},
+        {MENU_CUSTOMISER,      NULL,                    MenuDrawCustomiser,     MenuUpdateCustomiser,     NULL,                   -1, -1, 0, 0, 0, 0},
+        {MENU_SHOP,            NULL,                    MenuDrawShop,           MenuUpdateShop,           NULL,                   -1, -1, 0, 0, 0, 0},
+        {MENU_MINIKIT,         NULL,                    MenuDrawMiniKit,        MenuUpdateMiniKit,        NULL,                   -1, -1, 0, 0, 0, 0},
+        {MENU_SELECT_MODE,     MenuInitSelectMode,      MenuDrawSelectMode,     MenuUpdateSelectMode,     NULL,                   -1, -1, 0, 0, 0, 0},
+        {MENU_BONUS_MODE,      MenuInitBonusMode,       MenuDrawBonusMode,      MenuUpdateBonusMode,      NULL,                   -1, -1, 0, 0, 0, 0},
+        {MENU_FREE_PLAY,       MenuInitFreePlay,        MenuDrawFreePlay,       MenuUpdateFreePlay,       NULL,                   -1, -1, 0, 0, 0, 0},
+        {MENU_CREDITS,         NULL,                    NULL,                   Credits_UpdateMenu,       NULL,                   -1, -1, 0, 0, 0, 0},
+        {MENU_BONUS_WIN,       NULL,                    MenuDrawBonusWin,       MenuUpdateBonusWin,       NULL,                   -1, -1, 0, 0, 0, 0},
+        {MENU_BONUS_COMPLETE,  NULL,                    MenuDrawBonusComplete,  MenuUpdateBonusComplete,  NULL,                   -1, -1, 0, 0, 0, 0},
+        {MENU_CONTROL_SETUP,   MenuEnterControlSetup,   MenuDrawControlSetup,   MenuUpdateControlSetup,   NULL,                   -1, -1, 0, 0, 0, 0},
+        {MENU_SELECT_CONTROLS, MenuEnterSelectControls, MenuDrawControlSetup,   MenuUpdateSelectControls, MenuExitSelectControls, 0,  0,  0, 0,
+         0,                                                                                                                                        0},
     };
     LANGUAGEDATA Game_LanguageList[7] = {
         {1,  apitxt_ENGLISH},
@@ -325,9 +326,9 @@ static void NuMainUpdateFrame(WORLDINFO *world, i32 *frame_flag) {
         FadeSys.fade == 0.0f && editor_active == 0 && (GamePads_IgnoreInputFn == NULL || GamePads_IgnoreInputFn() == 0)) {
         if ((CUTSTOPGAME == 0 || CutScene_IsSkippable((CUTINFO *)CutStopInfo) != 0) && MiniCutCam == 0 && CutSceneWaiting == 0) {
             if (GameMenu[GameMenuLevel].menu != -1) {
-                if (MenuInMemoryCard() == 0 && MenuInfo[GameMenu[GameMenuLevel].menu].id != 1 &&
-                    MenuInfo[GameMenu[GameMenuLevel].menu].id != 4) {
-                    NewMenu(0x3f3, 0, -1);
+                if (MenuInMemoryCard() == 0 && MenuInfo[GameMenu[GameMenuLevel].menu].id != MENU_NEW_GAME &&
+                    MenuInfo[GameMenu[GameMenuLevel].menu].id != MENU_OPTIONS) {
+                    NewMenu(MENU_AUTO_SAVE_CANCEL, 0, -1);
                 } else {
                     memcard_autosavedisabled = 0;
                     memcard_autosaveenabled = 0;

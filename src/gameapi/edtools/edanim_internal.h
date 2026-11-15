@@ -5,6 +5,21 @@
 #include "nu2api/nu3d/nugscn.h"
 #include "nu2api/numath/nuvec.h"
 
+/* edanim_param_s.control_mode: the animation editor's Switch Type menu (edanim_switchtype_menu labels). */
+#define EDANIM_CONTROL_NONE 0
+#define EDANIM_CONTROL_SWITCH 1
+#define EDANIM_CONTROL_SWITCH_ONE_CYCLE 2
+#define EDANIM_CONTROL_SWITCH_CONTINUOUS 3
+#define EDANIM_CONTROL_PROXIMITY 4
+#define EDANIM_CONTROL_PROXIMITY_ONE_CYCLE 5
+#define EDANIM_CONTROL_PROXIMITY_CONTINUOUS 6
+#define EDANIM_CONTROL_TERRAIN 7
+#define EDANIM_CONTROL_TERRAIN_ONE_CYCLE 8
+#define EDANIM_CONTROL_TERRAIN_CONTINUOUS 9
+#define EDANIM_CONTROL_OVERRIDE_NO_ANIM 10
+#define EDANIM_CONTROL_OVERRIDE_PLAY 11
+#define EDANIM_CONTROL_OVERRIDE_PLAY_CONTINUOUS 12
+
 typedef struct edanim_param_s { // size 0x2d4
     i32 instance_id;            // 0x000
     i32 effect_count;           // 0x004

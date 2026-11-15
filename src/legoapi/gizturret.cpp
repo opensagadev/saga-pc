@@ -1408,7 +1408,7 @@ extern "C" {
         if (best != NULL) {
             if (hit_type != 2 && hit_type != 7 && bolt != NULL) {
                 (void)BoltType_FindByID(bolt->type_id, WORLD);
-                (void)Cheats_CheckFlags(2);
+                (void)Cheats_CheckFlags(CHEAT_DOUBLE_BOLT_DAMAGE);
             }
             type = BoltType_FindByID(bolt->type_id, world);
             owner = bolt->owner;

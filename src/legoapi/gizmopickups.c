@@ -842,7 +842,7 @@ static GIZMOPICKUP *GizmoPickups_CollideList(GAMEOBJECT *object, GIZMOPICKUP *pi
             collide_2d = 1;
         }
     }
-    coin_magnet = Cheats_CheckFlags(0x8000) != 0 || object->powerup_time > 0.0f;
+    coin_magnet = Cheats_CheckFlags(CHEAT_STUD_MAGNET) != 0 || object->powerup_time > 0.0f;
     normal_pickup = AreaPickupScale;
     scaled_pickup = normal_pickup;
     if (coin_magnet) {

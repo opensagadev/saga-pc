@@ -2004,7 +2004,8 @@ void ChallangeCash_Update(STATUS_STAGE_s *stage, STATUSPACKET_s *packet, f32 ela
                     message.target_scale = COINTOTAL_COINSIZE;
                     message.target_position = &target;
                     message.special = &WORLD->level_objects[message.icon].special;
-                    message.flags = GAMEMSG_WORLD_POSITION | GAMEMSG_WORLD_SCALE | GAMEMSG_DRAW_MOVE | GAMEMSG_DRAW_SCALE | GAMEMSG_EASE_IN | GAMEMSG_KEEP;
+                    message.flags = GAMEMSG_WORLD_POSITION | GAMEMSG_WORLD_SCALE | GAMEMSG_DRAW_MOVE | GAMEMSG_DRAW_SCALE |
+                                    GAMEMSG_EASE_IN | GAMEMSG_KEEP;
                     message.target_is_coin_total = 1;
                     message.duration = COINMSGTIME;
                     message.score = GizmoPickupType[2].score;
@@ -2092,7 +2093,7 @@ void Save_LSW_Update(STATUS_STAGE_s *stage, STATUSPACKET_s *packet, f32 elapsed)
         Text_FillInExtendedSaveInfo();
         if (TriggerAutoSave() == 0) {
             packet->save_state = 2;
-            NewMenu(1000, -1, -1);
+            NewMenu(MENU_SAVE, -1, -1);
         }
     } else if (memcard_autosaveinprogress == 0) {
         packet->save_state = 3;

@@ -1050,18 +1050,18 @@ i32 GetDefaultIdle(GAMEOBJECT *object) {
     void *standard;
     if (((PLAYER_IDLE_CHARACTER *)object->character_data->game_character)->use_standard_idle == 0 &&
         (object->character_data->model_flags & CHARACTER_MODEL_BLASTER) != 0) {
-        animation = 0x76;
+        animation = ACTION_EXTRA_WEAPONIDLE;
     } else {
-        animation = 0x19;
+        animation = ACTION_WEAPONIDLE;
     }
     batarang = (PLAYER_BATARANG_IDLE *)object->batarang;
     if (batarang != NULL && batarang->active != 0) {
-        return 0x97;
+        return ACTION_THROW_WAIT;
     }
     actions = object->character_model->action_animations;
     standard = actions[1];
     if (standard != NULL && actions[animation] == NULL) {
-        return 1;
+        return ACTION_IDLE;
     }
     idle = actions[animation];
     if (idle != NULL && standard == NULL) {
@@ -1070,14 +1070,14 @@ i32 GetDefaultIdle(GAMEOBJECT *object) {
     if (((object->unknown_e22 & 1) != 0 || object->unknown_e33 == 1) && idle != NULL) {
         return animation;
     }
-    return 1;
+    return ACTION_IDLE;
 }
 
 void ResetCharacterIdle(GAMEOBJECT *object, i32 mode, i32 animation) {
     CHARACTERANIM_CONFIG *info;
     i32 minimum;
     i32 maximum;
-    if (animation == 0x97) {
+    if (animation == ACTION_THROW_WAIT) {
         return;
     }
     object->idle_animation = (i16)animation;
@@ -1197,7 +1197,7 @@ void UpdateCharacterIdle(GAMEOBJECT *object) {
             if (state->idle_animation == requested) {
                 NewCharacterIdle(object, 1);
             } else {
-                ResetCharacterIdle(object, 1, 1);
+                ResetCharacterIdle(object, 1, ACTION_IDLE);
             }
         }
         object->anim_packet.requested_animation = state->idle_animation;
@@ -2523,7 +2523,7 @@ void TerrainPlayer(GAMEOBJECT *object) {
                         i32 animation;
 
                         animation = CurrentAnim(&api->anim_packet);
-                        splash = animation == 0x28 || animation == 5 || ((u32)(animation - 0x4b)) <= 1;
+                        splash = animation == ACTION_FALL2 || animation == ACTION_FALL || ((u32)(animation - 0x4b)) <= 1;
                     }
                     if (splash) {
                         AddWaterSplash(object, &api->collision_position);
@@ -3183,7 +3183,7 @@ i32 AvailableToPlayer(u32 character_flags, i32 weapon_action, i32 helmet, i32 re
     if (FreePlay != 0) {
         for (index = 0; index < apicharsys->character_count; ++index) {
             if (apicharsys->playermodelids[index] == -1 || FreePlay == 0 ||
-                (GCDataList[index].flags_090 & CHARACTER_RUNTIME_EXTRA_TOGGLE) == 0 || Cheats_CheckFlags(0x100) == 0) {
+                (GCDataList[index].flags_090 & CHARACTER_RUNTIME_EXTRA_TOGGLE) == 0 || Cheats_CheckFlags(CHEAT_EXTRA_TOGGLE) == 0) {
                 continue;
             }
             if (character_flags != 0) {

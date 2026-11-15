@@ -258,7 +258,7 @@ void EndMission(MISSIONSYS *system, i32 state, i32 show_message) {
             BonusWinner = BonusWinner == 0;
         }
         BonusWinFlag = 0;
-        NewMenu(9, -1, -1);
+        NewMenu(MENU_END_MISSION, -1, -1);
         ResetGameMessages();
         if (state == 3) {
             PlaySfx(ScorePanelName, NULL);
@@ -303,7 +303,7 @@ void CheckMissionEnd(MISSIONSYS *system) {
                 BonusWinner = BonusWinner == 0;
             }
             BonusWinFlag = 0;
-            NewMenu(9, -1, -1);
+            NewMenu(MENU_END_MISSION, -1, -1);
             ResetGameMessages();
             return;
         }

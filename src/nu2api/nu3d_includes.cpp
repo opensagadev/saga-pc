@@ -12323,11 +12323,11 @@ void NuMotionFilterGen::render() {
     PCGraphicsEffectTextureSetFilterFields(velocity_texture, 2, 2, 0);
     PCGraphicsEffectTextureSetWrapFields(velocity_texture, 2, 2);
     POST_FILTER_BIND_TEXTURE(2, velocity_texture);
-    PCDeviceSetRenderState(22, 1);
-    PCDeviceSetRenderState(15, 0);
-    PCDeviceSetRenderState(27, 0);
-    PCDeviceSetRenderState(7, 0);
-    PCDeviceSetRenderState(168, 15);
+    PCDeviceSetRenderState(D3DRS_CULLMODE, 1);
+    PCDeviceSetRenderState(D3DRS_ALPHATESTENABLE, 0);
+    PCDeviceSetRenderState(D3DRS_ALPHABLENDENABLE, 0);
+    PCDeviceSetRenderState(D3DRS_ZENABLE, 0);
+    PCDeviceSetRenderState(D3DRS_COLORWRITEENABLE, 15);
     PCGraphicsBindFramebuffer(output);
     PCGraphicsDrawPostEffectQuad();
     color->texture = destination;
@@ -12389,11 +12389,11 @@ extern "C" void PostFilterBlitTexture(GRAPHICS_RENDER_TEXTURE *destination, i32 
     if (extra != NULL) {
         POST_FILTER_BIND_TEXTURE(1, extra);
     }
-    PCDeviceSetRenderState(22, 1);
-    PCDeviceSetRenderState(15, 0);
-    PCDeviceSetRenderState(27, 0);
-    PCDeviceSetRenderState(7, 0);
-    PCDeviceSetRenderState(168, 15);
+    PCDeviceSetRenderState(D3DRS_CULLMODE, 1);
+    PCDeviceSetRenderState(D3DRS_ALPHATESTENABLE, 0);
+    PCDeviceSetRenderState(D3DRS_ALPHABLENDENABLE, 0);
+    PCDeviceSetRenderState(D3DRS_ZENABLE, 0);
+    PCDeviceSetRenderState(D3DRS_COLORWRITEENABLE, 15);
     PCGraphicsDrawPostEffectQuad();
     PCGraphicsFramebufferBarrier(0, 1);
 }
@@ -12474,11 +12474,11 @@ void NuMotionAccumFilterGen::render() {
     PCGraphicsEffectTextureDimensions(accumulation_texture, 0, &width, &height);
     PCGraphicsBindFramebuffer(accumulation_fbo);
     PCGraphicsSubmitViewport(0, 0, width, height);
-    PCDeviceSetRenderState(22, 1);
-    PCDeviceSetRenderState(15, 0);
-    PCDeviceSetRenderState(27, 0);
-    PCDeviceSetRenderState(7, 0);
-    PCDeviceSetRenderState(168, 15);
+    PCDeviceSetRenderState(D3DRS_CULLMODE, 1);
+    PCDeviceSetRenderState(D3DRS_ALPHATESTENABLE, 0);
+    PCDeviceSetRenderState(D3DRS_ALPHABLENDENABLE, 0);
+    PCDeviceSetRenderState(D3DRS_ZENABLE, 0);
+    PCDeviceSetRenderState(D3DRS_COLORWRITEENABLE, 15);
     PCGraphicsDrawPostEffectQuad();
     PCGraphicsFramebufferBarrier(0, 1);
     PostFilterBindProgram((POST_SHADER_PROGRAM *)program);
@@ -12490,11 +12490,11 @@ void NuMotionAccumFilterGen::render() {
     PCGraphicsEffectTextureSetWrapFields(accumulation_texture, 2, 2);
     POST_FILTER_BIND_TEXTURE(1, accumulation_texture);
     PCGraphicsBindFramebuffer(output);
-    PCDeviceSetRenderState(22, 1);
-    PCDeviceSetRenderState(15, 0);
-    PCDeviceSetRenderState(27, 0);
-    PCDeviceSetRenderState(7, 0);
-    PCDeviceSetRenderState(168, 15);
+    PCDeviceSetRenderState(D3DRS_CULLMODE, 1);
+    PCDeviceSetRenderState(D3DRS_ALPHATESTENABLE, 0);
+    PCDeviceSetRenderState(D3DRS_ALPHABLENDENABLE, 0);
+    PCDeviceSetRenderState(D3DRS_ZENABLE, 0);
+    PCDeviceSetRenderState(D3DRS_COLORWRITEENABLE, 15);
     PCGraphicsDrawPostEffectQuad();
     color->texture = destination;
     color->kind = 4;
@@ -12526,11 +12526,11 @@ void NuSpeedBlurFilterGen::render() {
         PostFilterCopyTexture(texture, 0, color_texture, 0, PostCopyTexProgram, NULL);
     }
     POST_SHADER_PROGRAM *program = (POST_SHADER_PROGRAM *)programs[0];
-    PCDeviceSetRenderState(22, 1);
-    PCDeviceSetRenderState(15, 0);
-    PCDeviceSetRenderState(27, 0);
-    PCDeviceSetRenderState(7, 0);
-    PCDeviceSetRenderState(168, 15);
+    PCDeviceSetRenderState(D3DRS_CULLMODE, 1);
+    PCDeviceSetRenderState(D3DRS_ALPHATESTENABLE, 0);
+    PCDeviceSetRenderState(D3DRS_ALPHABLENDENABLE, 0);
+    PCDeviceSetRenderState(D3DRS_ZENABLE, 0);
+    PCDeviceSetRenderState(D3DRS_COLORWRITEENABLE, 15);
     NuShaderProgramMakeCurrent(program);
     PCDeviceSetVertexShaderConstantsF(0x80, values, 2);
     PCGraphicsEffectTextureSetFilterFields(color_texture, 2, 2, 1);
@@ -12904,18 +12904,18 @@ void NuMainFilterGen::render() {
     if (depth_destination != NULL) {
         PCGraphicsEffectTextureSetFilterFields(depth_texture, 2, 2, 0);
         POST_FILTER_BIND_TEXTURE(2, depth_texture);
-        PCDeviceSetRenderState(22, 1);
-        PCDeviceSetRenderState(15, 0);
-        PCDeviceSetRenderState(27, 0);
-        PCDeviceSetRenderState(7, 1);
-        PCDeviceSetRenderState(14, 1);
-        PCDeviceSetRenderState(23, 8);
+        PCDeviceSetRenderState(D3DRS_CULLMODE, 1);
+        PCDeviceSetRenderState(D3DRS_ALPHATESTENABLE, 0);
+        PCDeviceSetRenderState(D3DRS_ALPHABLENDENABLE, 0);
+        PCDeviceSetRenderState(D3DRS_ZENABLE, 1);
+        PCDeviceSetRenderState(D3DRS_ZWRITEENABLE, 1);
+        PCDeviceSetRenderState(D3DRS_ZFUNC, 8);
     } else {
-        PCDeviceSetRenderState(22, 1);
-        PCDeviceSetRenderState(15, 0);
-        PCDeviceSetRenderState(27, 0);
-        PCDeviceSetRenderState(7, 0);
-        PCDeviceSetRenderState(168, 15);
+        PCDeviceSetRenderState(D3DRS_CULLMODE, 1);
+        PCDeviceSetRenderState(D3DRS_ALPHATESTENABLE, 0);
+        PCDeviceSetRenderState(D3DRS_ALPHABLENDENABLE, 0);
+        PCDeviceSetRenderState(D3DRS_ZENABLE, 0);
+        PCDeviceSetRenderState(D3DRS_COLORWRITEENABLE, 15);
     }
     PCGraphicsBindFramebuffer(output);
     PCGraphicsSubmitViewport(0, 0, PCGraphicsEffectTextureWidth(destination), PCGraphicsEffectTextureHeight(destination));
@@ -13108,18 +13108,18 @@ extern "C" void fun_005c3a50(GRAPHICS_RENDER_TEXTURE *color, GRAPHICS_RENDER_TEX
     PCGraphicsEffectTextureSetFilterFields(depth, filter, filter, 0);
     POST_FILTER_BIND_TEXTURE(0, color);
     POST_FILTER_BIND_TEXTURE(5, depth);
-    PCDeviceSetRenderState(22, 1);
-    PCDeviceSetRenderState(15, 0);
-    PCDeviceSetRenderState(27, 0);
-    PCDeviceSetRenderState(7, 1);
-    PCDeviceSetRenderState(14, 1);
-    PCDeviceSetRenderState(23, 8);
+    PCDeviceSetRenderState(D3DRS_CULLMODE, 1);
+    PCDeviceSetRenderState(D3DRS_ALPHATESTENABLE, 0);
+    PCDeviceSetRenderState(D3DRS_ALPHABLENDENABLE, 0);
+    PCDeviceSetRenderState(D3DRS_ZENABLE, 1);
+    PCDeviceSetRenderState(D3DRS_ZWRITEENABLE, 1);
+    PCDeviceSetRenderState(D3DRS_ZFUNC, 8);
     PCGraphicsDrawPostEffectQuad();
-    PCDeviceSetRenderState(22, 1);
-    PCDeviceSetRenderState(15, 0);
-    PCDeviceSetRenderState(27, 0);
-    PCDeviceSetRenderState(7, 0);
-    PCDeviceSetRenderState(168, 15);
+    PCDeviceSetRenderState(D3DRS_CULLMODE, 1);
+    PCDeviceSetRenderState(D3DRS_ALPHATESTENABLE, 0);
+    PCDeviceSetRenderState(D3DRS_ALPHABLENDENABLE, 0);
+    PCDeviceSetRenderState(D3DRS_ZENABLE, 0);
+    PCDeviceSetRenderState(D3DRS_COLORWRITEENABLE, 15);
 }
 
 extern "C" i32 NuTexCreateFramebufferCopy(VARIPTR *buffer, VARIPTR end) {
@@ -13916,11 +13916,11 @@ extern "C" void NuPostEffectRender(PC_FRAMEBUFFER *output) {
     }
     NuDisplayHandlerVertexShaderCache = NULL;
     NuDisplayHandlerPixelShaderCache = NULL;
-    PCDeviceSetRenderState(22, 1);
-    PCDeviceSetRenderState(15, 0);
-    PCDeviceSetRenderState(27, 0);
-    PCDeviceSetRenderState(7, 0);
-    PCDeviceSetRenderState(168, 15);
+    PCDeviceSetRenderState(D3DRS_CULLMODE, 1);
+    PCDeviceSetRenderState(D3DRS_ALPHATESTENABLE, 0);
+    PCDeviceSetRenderState(D3DRS_ALPHABLENDENABLE, 0);
+    PCDeviceSetRenderState(D3DRS_ZENABLE, 0);
+    PCDeviceSetRenderState(D3DRS_COLORWRITEENABLE, 15);
     for (i32 i = 0; i < count; ++i) {
         PC_FRAMEBUFFER *destination = intermediate;
         if (i + 1 >= count) {
@@ -13933,11 +13933,11 @@ extern "C" void NuPostEffectRender(PC_FRAMEBUFFER *output) {
             PCGraphicsBindEffectTexture(NULL, stage);
         }
     }
-    PCDeviceSetRenderState(22, 1);
-    PCDeviceSetRenderState(15, 1);
-    PCDeviceSetRenderState(27, 1);
-    PCDeviceSetRenderState(7, 1);
-    PCDeviceSetRenderState(23, 4);
+    PCDeviceSetRenderState(D3DRS_CULLMODE, 1);
+    PCDeviceSetRenderState(D3DRS_ALPHATESTENABLE, 1);
+    PCDeviceSetRenderState(D3DRS_ALPHABLENDENABLE, 1);
+    PCDeviceSetRenderState(D3DRS_ZENABLE, 1);
+    PCDeviceSetRenderState(D3DRS_ZFUNC, 4);
     ++NuPostEffectsRan;
     D3DPERF_EndEvent();
 }
@@ -18617,11 +18617,11 @@ void PC_SPECIAL_SHADOW_LIGHT::RenderShadow(i32 index, PC_FRAMEBUFFER *) {
             item->next = NULL;
             item->id = 4;
             NuDisplayHandlerZMode = 0;
-            PCDeviceSetRenderState(7, 1);
-            PCDeviceSetRenderState(14, 1);
-            PCDeviceSetRenderState(23, 4);
+            PCDeviceSetRenderState(D3DRS_ZENABLE, 1);
+            PCDeviceSetRenderState(D3DRS_ZWRITEENABLE, 1);
+            PCDeviceSetRenderState(D3DRS_ZFUNC, 4);
             NuDisplayHandlerTint = PostShadowWhite;
-            NuShaderManagerSetfv(0x38, &PostShadowWhite.x);
+            NuShaderManagerSetfv(SHADER_UNIFORM_K_TINT, &PostShadowWhite.x);
             NuDisplayListDrawItems(list.first);
             list.material_last = list.first;
         }
@@ -18730,11 +18730,11 @@ void NuDeferredFilterGen::render() {
         }
         NUMTX saved_view = PcGeometryViewMatrix;
         NUMTX saved_projection = PcGeometryProjectionMatrix;
-        PCDeviceSetRenderState(22, 1);
-        PCDeviceSetRenderState(15, 1);
-        PCDeviceSetRenderState(27, 1);
-        PCDeviceSetRenderState(7, 1);
-        PCDeviceSetRenderState(23, 4);
+        PCDeviceSetRenderState(D3DRS_CULLMODE, 1);
+        PCDeviceSetRenderState(D3DRS_ALPHATESTENABLE, 1);
+        PCDeviceSetRenderState(D3DRS_ALPHABLENDENABLE, 1);
+        PCDeviceSetRenderState(D3DRS_ZENABLE, 1);
+        PCDeviceSetRenderState(D3DRS_ZFUNC, 4);
         D3DPERF_BeginEvent(0xffffffff, PostShadowRenderLabel);
         for (i32 shadow = 0; shadow < light->active_render_set_count; ++shadow) {
             PCGraphicsAttachFramebuffer(shadow_fbos[shadow], 0, textures[4 + shadow], 0);
@@ -18756,11 +18756,11 @@ void NuDeferredFilterGen::render() {
         PCGraphicsBindFramebuffer(light_fbo);
         if (first) {
             PCGraphicsClearFramebuffer(0x100, 0xff0000ff);
-            PCDeviceSetRenderState(22, 1);
-            PCDeviceSetRenderState(15, 0);
-            PCDeviceSetRenderState(27, 0);
-            PCDeviceSetRenderState(7, 0);
-            PCDeviceSetRenderState(168, 15);
+            PCDeviceSetRenderState(D3DRS_CULLMODE, 1);
+            PCDeviceSetRenderState(D3DRS_ALPHATESTENABLE, 0);
+            PCDeviceSetRenderState(D3DRS_ALPHABLENDENABLE, 0);
+            PCDeviceSetRenderState(D3DRS_ZENABLE, 0);
+            PCDeviceSetRenderState(D3DRS_COLORWRITEENABLE, 15);
         }
         POST_SHADER_PROGRAM *program;
         if (light->parameter_5 == 0) {
@@ -18828,11 +18828,11 @@ void NuDeferredFilterGen::render() {
                 PCGraphicsBindEffectTexture(bound_texture, bound_stage);
             }
         }
-        PCDeviceSetRenderState(22, 1);
-        PCDeviceSetRenderState(15, 0);
-        PCDeviceSetRenderState(27, 0);
-        PCDeviceSetRenderState(7, 0);
-        PCDeviceSetRenderState(168, 15);
+        PCDeviceSetRenderState(D3DRS_CULLMODE, 1);
+        PCDeviceSetRenderState(D3DRS_ALPHATESTENABLE, 0);
+        PCDeviceSetRenderState(D3DRS_ALPHABLENDENABLE, 0);
+        PCDeviceSetRenderState(D3DRS_ZENABLE, 0);
+        PCDeviceSetRenderState(D3DRS_COLORWRITEENABLE, 15);
         PCGraphicsDrawPostEffectQuad();
         PCGraphicsFramebufferBarrier(0, 0);
         for (i32 stage = 0; stage < 6; ++stage) {
@@ -18840,11 +18840,11 @@ void NuDeferredFilterGen::render() {
         }
         first = false;
     }
-    PCDeviceSetRenderState(22, 1);
-    PCDeviceSetRenderState(15, 0);
-    PCDeviceSetRenderState(27, 0);
-    PCDeviceSetRenderState(7, 0);
-    PCDeviceSetRenderState(168, 15);
+    PCDeviceSetRenderState(D3DRS_CULLMODE, 1);
+    PCDeviceSetRenderState(D3DRS_ALPHATESTENABLE, 0);
+    PCDeviceSetRenderState(D3DRS_ALPHABLENDENABLE, 0);
+    PCDeviceSetRenderState(D3DRS_ZENABLE, 0);
+    PCDeviceSetRenderState(D3DRS_COLORWRITEENABLE, 15);
     PostBlur7x7Dispatch(textures[0], 0, textures[0], 1, 1, sample_count - 1, true, 1.0f, PostBlur5x5Program);
     PCGraphicsBindFramebuffer(output);
     i32 width = NuFramebufferGetWidth(output);
@@ -18873,18 +18873,18 @@ void NuDeferredFilterGen::render() {
             }
             PCGraphicsBindEffectTexture(bound_texture, bound_stage);
         }
-        PCDeviceSetRenderState(27, 0);
-        PCDeviceSetRenderState(15, 0);
+        PCDeviceSetRenderState(D3DRS_ALPHABLENDENABLE, 0);
+        PCDeviceSetRenderState(D3DRS_ALPHATESTENABLE, 0);
     } else {
-        PCDeviceSetRenderState(27, 1);
-        PCDeviceSetRenderState(15, 0);
-        PCDeviceSetRenderState(19, 5);
-        PCDeviceSetRenderState(20, 6);
+        PCDeviceSetRenderState(D3DRS_ALPHABLENDENABLE, 1);
+        PCDeviceSetRenderState(D3DRS_ALPHATESTENABLE, 0);
+        PCDeviceSetRenderState(D3DRS_SRCBLEND, 5);
+        PCDeviceSetRenderState(D3DRS_DESTBLEND, 6);
         PCGraphicsBindEffectTexture(NULL, 4);
     }
-    PCDeviceSetRenderState(190, 0);
-    PCDeviceSetRenderState(191, 0);
-    PCDeviceSetRenderState(192, 0);
+    PCDeviceSetRenderState(D3DRS_COLORWRITEENABLE1, 0);
+    PCDeviceSetRenderState(D3DRS_COLORWRITEENABLE2, 0);
+    PCDeviceSetRenderState(D3DRS_COLORWRITEENABLE3, 0);
     PCGraphicsEffectTextureSetFilterFields(textures[0], 2, 2, 2);
     PCGraphicsEffectTextureSetLowNibbles(textures[0], 0, (i32)last_sample + 1);
     {
@@ -18905,14 +18905,14 @@ void NuDeferredFilterGen::render() {
     color->enabled = true;
     color->resolved = false;
     PostPortColorBuffer.manager->entries[PostPortColorBuffer.index].data = color;
-    PCDeviceSetRenderState(190, 0xffffffff);
-    PCDeviceSetRenderState(191, 0xffffffff);
-    PCDeviceSetRenderState(192, 0xffffffff);
-    PCDeviceSetRenderState(22, 1);
-    PCDeviceSetRenderState(15, 0);
-    PCDeviceSetRenderState(27, 0);
-    PCDeviceSetRenderState(7, 0);
-    PCDeviceSetRenderState(168, 15);
+    PCDeviceSetRenderState(D3DRS_COLORWRITEENABLE1, 0xffffffff);
+    PCDeviceSetRenderState(D3DRS_COLORWRITEENABLE2, 0xffffffff);
+    PCDeviceSetRenderState(D3DRS_COLORWRITEENABLE3, 0xffffffff);
+    PCDeviceSetRenderState(D3DRS_CULLMODE, 1);
+    PCDeviceSetRenderState(D3DRS_ALPHATESTENABLE, 0);
+    PCDeviceSetRenderState(D3DRS_ALPHABLENDENABLE, 0);
+    PCDeviceSetRenderState(D3DRS_ZENABLE, 0);
+    PCDeviceSetRenderState(D3DRS_COLORWRITEENABLE, 15);
     D3DPERF_EndEvent();
 }
 

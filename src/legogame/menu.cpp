@@ -190,7 +190,7 @@ extern "C" {
             BackupMenu();
         } else if (result == 3) {
             BackupMenu();
-            NewMenu(1, saveload_savepresent != 0, -1);
+            NewMenu(MENU_NEW_GAME, saveload_savepresent != 0, -1);
         }
     }
 
@@ -304,7 +304,7 @@ extern "C" {
         i32 parent_menu;
         (void)menu;
         parent_menu = GetParentMenuID();
-        if (parent_menu == 2 || parent_menu == 1) {
+        if (parent_menu == MENU_PAUSE_MAIN || parent_menu == MENU_NEW_GAME) {
             TempOptions = Game.options_save;
         }
     }
@@ -415,7 +415,7 @@ extern "C" void MenuUpdateExtras(MENU *menu) {
     if (menu->confirm_pressed) {
         i32 index = (menu->selected_item + 44) % 45;
         i32 locked = 1;
-        if ((save->unlocked[index / 32] & (1u << (index & 31))) && (!BonusArea || !Cheat_CheckFlags(index, 0x200000))) {
+        if ((save->unlocked[index / 32] & (1u << (index & 31))) && (!BonusArea || !Cheat_CheckFlags(index, CHEAT_POWERUP))) {
             locked = 0;
         }
         if (locked) {
@@ -449,7 +449,7 @@ extern "C" void MenuDrawExtras(MENU *menu) {
             if (save->unlocked[index / 32] & (1u << (index & 31))) {
                 alpha = 1.0f;
                 NuStrCpy(number, Cheat_IsOn(index) ? TTab[tON] : TTab[tOFF]);
-                if (BonusArea && Cheat_CheckFlags(index, 0x200000)) {
+                if (BonusArea && Cheat_CheckFlags(index, CHEAT_POWERUP)) {
                     alpha = 0.5f;
                 }
             } else {
@@ -609,26 +609,26 @@ extern "C" void MenuUpdateNewGame(MENU *menu) {
         MenuSFX = GameAudio_GetSfxId(0x30);
         switch (menu->selected_item) {
             case 0:
-                NewMenu(1022, -1, -1);
+                NewMenu(MENU_START_NEW_GAME, -1, -1);
                 startnewgame_initiated = 1;
                 break;
             case 1:
-                NewMenu(1012, -1, -1);
+                NewMenu(MENU_LOAD, -1, -1);
                 break;
             case 2:
-                NewMenu(4, -1, -1);
+                NewMenu(MENU_OPTIONS, -1, -1);
                 break;
             case 3:
-                NewMenu(21, 0, -1);
+                NewMenu(MENU_CONTROL_SETUP, 0, -1);
                 break;
             case 4:
-                NewMenu(1025, 0, -1);
+                NewMenu(MENU_VIDEO, 0, -1);
                 break;
             case 5:
-                NewMenu(1026, 0, -1);
+                NewMenu(MENU_EFFECTS, 0, -1);
                 break;
             case 6:
-                NewMenu(1029, -1, -1);
+                NewMenu(MENU_QUIT, -1, -1);
                 break;
         }
     }
@@ -877,9 +877,9 @@ extern "C" void MenuUpdateTitles(MENU *menu) {
     NuPadSetValid(port, 1);
     PcInput_SetCtrlStringPlayer(0);
     if (PcInput_SafeGetMapping(port, 0, -1)) {
-        NewMenu(1, saveload_savepresent != 0, -1);
+        NewMenu(MENU_NEW_GAME, saveload_savepresent != 0, -1);
     } else {
-        NewMenu(22, 0, -1);
+        NewMenu(MENU_SELECT_CONTROLS, 0, -1);
     }
 }
 
@@ -920,20 +920,20 @@ extern "C" void MenuUpdatePauseMain(MENU *menu) {
         return;
     }
     if (item == 1) {
-        NewMenu(4, -1, -1);
+        NewMenu(MENU_OPTIONS, -1, -1);
         return;
     }
     if (item == 2) {
-        NewMenu(21, 0, -1);
+        NewMenu(MENU_CONTROL_SETUP, 0, -1);
         return;
     }
     if (item == 3) {
-        NewMenu(1025, 0, -1);
+        NewMenu(MENU_VIDEO, 0, -1);
         return;
     }
     i32 next = 5;
     if (item == 4) {
-        NewMenu(1026, 0, -1);
+        NewMenu(MENU_EFFECTS, 0, -1);
         return;
     }
     if (!GAMEDEMO) {
@@ -942,7 +942,7 @@ extern "C" void MenuUpdatePauseMain(MENU *menu) {
             if (SuperStory || ChallengeMode || Mission_Active(NULL)) {
                 GameAudio_PlaySfx(0x32, NULL, 0, 0);
             } else {
-                NewMenu(5, -1, -1);
+                NewMenu(MENU_EXTRAS, -1, -1);
             }
             return;
         }
@@ -966,7 +966,7 @@ extern "C" void MenuUpdatePauseMain(MENU *menu) {
         }
     }
     if (item == next) {
-        NewMenu(6, CanSaveAndExit(WORLD) != NULL ? 2 : 1, -1);
+        NewMenu(MENU_PAUSE_EXIT, CanSaveAndExit(WORLD) != NULL ? 2 : 1, -1);
     }
 }
 
@@ -1181,7 +1181,7 @@ extern "C" {
                 return;
             }
             shop_save_done = 1;
-            NewMenu(1000, -1, -1);
+            NewMenu(MENU_SAVE, -1, -1);
         } else {
             EndShopMenu(0);
         }

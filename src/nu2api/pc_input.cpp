@@ -258,6 +258,40 @@ void PC_INPUT_RUNTIME::InitKeyboardProfiles() {
     }
 }
 
+/* DIJOYSTATE2 (dinput.h): the joystick state whose axes ConfigureJoystickRanges gives a range, by offset. */
+struct PC_DI_JOYSTATE2 {          // size 0x110
+    LONG x;                       // 0x000
+    LONG y;                       // 0x004
+    LONG z;                       // 0x008
+    LONG rx;                      // 0x00c
+    LONG ry;                      // 0x010
+    LONG rz;                      // 0x014
+    LONG sliders[2];              // 0x018
+    DWORD pov[4];                 // 0x020
+    BYTE buttons[128];            // 0x030
+    LONG velocity_x;              // 0x0b0
+    LONG velocity_y;              // 0x0b4
+    LONG velocity_z;              // 0x0b8
+    LONG angular_velocity_x;      // 0x0bc
+    LONG angular_velocity_y;      // 0x0c0
+    LONG angular_velocity_z;      // 0x0c4
+    LONG velocity_sliders[2];     // 0x0c8
+    LONG acceleration_x;          // 0x0d0
+    LONG acceleration_y;          // 0x0d4
+    LONG acceleration_z;          // 0x0d8
+    LONG angular_acceleration_x;  // 0x0dc
+    LONG angular_acceleration_y;  // 0x0e0
+    LONG angular_acceleration_z;  // 0x0e4
+    LONG acceleration_sliders[2]; // 0x0e8
+    LONG force_x;                 // 0x0f0
+    LONG force_y;                 // 0x0f4
+    LONG force_z;                 // 0x0f8
+    LONG torque_x;                // 0x0fc
+    LONG torque_y;                // 0x100
+    LONG torque_z;                // 0x104
+    LONG force_sliders[2];        // 0x108
+};
+
 struct PC_DI_RANGE {   // size 0x18
     DWORD size;        // 0x00
     DWORD header_size; // 0x04
@@ -304,69 +338,69 @@ extern "C" void ConfigureJoystickRanges(NuKeyboardDevice *device) {
     range.how = 1;
     range.minimum = -32768;
     range.maximum = 32767;
-    range.object = 0;
+    range.object = offsetof(PC_DI_JOYSTATE2, x);
     input->SetProperty(*(const GUID *)4, (const PC_DI_PROPERTY *)&range);
-    range.object = 0x4;
+    range.object = offsetof(PC_DI_JOYSTATE2, y);
     input->SetProperty(*(const GUID *)4, (const PC_DI_PROPERTY *)&range);
-    range.object = 0x8;
+    range.object = offsetof(PC_DI_JOYSTATE2, z);
     input->SetProperty(*(const GUID *)4, (const PC_DI_PROPERTY *)&range);
-    range.object = 0xc;
+    range.object = offsetof(PC_DI_JOYSTATE2, rx);
     input->SetProperty(*(const GUID *)4, (const PC_DI_PROPERTY *)&range);
-    range.object = 0x10;
+    range.object = offsetof(PC_DI_JOYSTATE2, ry);
     input->SetProperty(*(const GUID *)4, (const PC_DI_PROPERTY *)&range);
-    range.object = 0x14;
+    range.object = offsetof(PC_DI_JOYSTATE2, rz);
     input->SetProperty(*(const GUID *)4, (const PC_DI_PROPERTY *)&range);
-    range.object = 0x18;
+    range.object = offsetof(PC_DI_JOYSTATE2, sliders[0]);
     input->SetProperty(*(const GUID *)4, (const PC_DI_PROPERTY *)&range);
-    range.object = 0x1c;
+    range.object = offsetof(PC_DI_JOYSTATE2, sliders[1]);
     input->SetProperty(*(const GUID *)4, (const PC_DI_PROPERTY *)&range);
-    range.object = 0xb0;
+    range.object = offsetof(PC_DI_JOYSTATE2, velocity_x);
     input->SetProperty(*(const GUID *)4, (const PC_DI_PROPERTY *)&range);
-    range.object = 0xb4;
+    range.object = offsetof(PC_DI_JOYSTATE2, velocity_y);
     input->SetProperty(*(const GUID *)4, (const PC_DI_PROPERTY *)&range);
-    range.object = 0xb8;
+    range.object = offsetof(PC_DI_JOYSTATE2, velocity_z);
     input->SetProperty(*(const GUID *)4, (const PC_DI_PROPERTY *)&range);
-    range.object = 0xbc;
+    range.object = offsetof(PC_DI_JOYSTATE2, angular_velocity_x);
     input->SetProperty(*(const GUID *)4, (const PC_DI_PROPERTY *)&range);
-    range.object = 0xc0;
+    range.object = offsetof(PC_DI_JOYSTATE2, angular_velocity_y);
     input->SetProperty(*(const GUID *)4, (const PC_DI_PROPERTY *)&range);
-    range.object = 0xc4;
+    range.object = offsetof(PC_DI_JOYSTATE2, angular_velocity_z);
     input->SetProperty(*(const GUID *)4, (const PC_DI_PROPERTY *)&range);
-    range.object = 0xc8;
+    range.object = offsetof(PC_DI_JOYSTATE2, velocity_sliders[0]);
     input->SetProperty(*(const GUID *)4, (const PC_DI_PROPERTY *)&range);
-    range.object = 0xcc;
+    range.object = offsetof(PC_DI_JOYSTATE2, velocity_sliders[1]);
     input->SetProperty(*(const GUID *)4, (const PC_DI_PROPERTY *)&range);
-    range.object = 0xd0;
+    range.object = offsetof(PC_DI_JOYSTATE2, acceleration_x);
     input->SetProperty(*(const GUID *)4, (const PC_DI_PROPERTY *)&range);
-    range.object = 0xd4;
+    range.object = offsetof(PC_DI_JOYSTATE2, acceleration_y);
     input->SetProperty(*(const GUID *)4, (const PC_DI_PROPERTY *)&range);
-    range.object = 0xd8;
+    range.object = offsetof(PC_DI_JOYSTATE2, acceleration_z);
     input->SetProperty(*(const GUID *)4, (const PC_DI_PROPERTY *)&range);
-    range.object = 0xdc;
+    range.object = offsetof(PC_DI_JOYSTATE2, angular_acceleration_x);
     input->SetProperty(*(const GUID *)4, (const PC_DI_PROPERTY *)&range);
-    range.object = 0xe0;
+    range.object = offsetof(PC_DI_JOYSTATE2, angular_acceleration_y);
     input->SetProperty(*(const GUID *)4, (const PC_DI_PROPERTY *)&range);
-    range.object = 0xe4;
+    range.object = offsetof(PC_DI_JOYSTATE2, angular_acceleration_z);
     input->SetProperty(*(const GUID *)4, (const PC_DI_PROPERTY *)&range);
-    range.object = 0xe8;
+    range.object = offsetof(PC_DI_JOYSTATE2, acceleration_sliders[0]);
     input->SetProperty(*(const GUID *)4, (const PC_DI_PROPERTY *)&range);
-    range.object = 0xec;
+    range.object = offsetof(PC_DI_JOYSTATE2, acceleration_sliders[1]);
     input->SetProperty(*(const GUID *)4, (const PC_DI_PROPERTY *)&range);
-    range.object = 0xf0;
+    range.object = offsetof(PC_DI_JOYSTATE2, force_x);
     input->SetProperty(*(const GUID *)4, (const PC_DI_PROPERTY *)&range);
-    range.object = 0xf4;
+    range.object = offsetof(PC_DI_JOYSTATE2, force_y);
     input->SetProperty(*(const GUID *)4, (const PC_DI_PROPERTY *)&range);
-    range.object = 0xf8;
+    range.object = offsetof(PC_DI_JOYSTATE2, force_z);
     input->SetProperty(*(const GUID *)4, (const PC_DI_PROPERTY *)&range);
-    range.object = 0xfc;
+    range.object = offsetof(PC_DI_JOYSTATE2, torque_x);
     input->SetProperty(*(const GUID *)4, (const PC_DI_PROPERTY *)&range);
-    range.object = 0x100;
+    range.object = offsetof(PC_DI_JOYSTATE2, torque_y);
     input->SetProperty(*(const GUID *)4, (const PC_DI_PROPERTY *)&range);
-    range.object = 0x104;
+    range.object = offsetof(PC_DI_JOYSTATE2, torque_z);
     input->SetProperty(*(const GUID *)4, (const PC_DI_PROPERTY *)&range);
-    range.object = 0x108;
+    range.object = offsetof(PC_DI_JOYSTATE2, force_sliders[0]);
     input->SetProperty(*(const GUID *)4, (const PC_DI_PROPERTY *)&range);
-    range.object = 0x10c;
+    range.object = offsetof(PC_DI_JOYSTATE2, force_sliders[1]);
     input->SetProperty(*(const GUID *)4, (const PC_DI_PROPERTY *)&range);
 }
 

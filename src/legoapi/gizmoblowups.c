@@ -653,7 +653,8 @@ void GizmoBlowUp_AddEffects(NUVEC *position, GIZMOBLOWUP *blowup, i32 offset, i3
         GameCam_NewShake(GameCam, 1.0f, 1.0f, 1.0f);
         NewRumbleAllPlayers(1.0f, 0.1f, 0, 0);
     }
-    if (((blowup->draw_flags & BLOWUP_OPTION_FRAGMENTS_PER_HIT) != 0 && (i8)blowup->remaining_health > 0) || (i8)blowup->remaining_health <= 0) {
+    if (((blowup->draw_flags & BLOWUP_OPTION_FRAGMENTS_PER_HIT) != 0 && (i8)blowup->remaining_health > 0) ||
+        (i8)blowup->remaining_health <= 0) {
         for (i = 0; i < 4; ++i) {
             if (!NuSpecialExistsFn(&type->alternate_specials[i])) {
                 continue;
@@ -814,8 +815,8 @@ i32 GizmoBlowupBlowup(GIZMOBLOWUP *blowup, i32 effects, i32 hit_type, i32 damage
             if (blowup->damage != 0) {
                 ObjHitObj(NULL, object, blowup->damage, 1, 0, hit_context);
             }
-        } else if (((blowup->draw_flags & BLOWUP_OPTION_CHARACTER_SMASH) != 0 || (blowup->draw_flags & BLOWUP_OPTION_VEHICLE_SMASH) != 0) && blowup->damage > 0 &&
-                   (!(blowup->proximity_radius <= 0.0f) || !(blowup->effect_delay > 0.0f))) {
+        } else if (((blowup->draw_flags & BLOWUP_OPTION_CHARACTER_SMASH) != 0 || (blowup->draw_flags & BLOWUP_OPTION_VEHICLE_SMASH) != 0) &&
+                   blowup->damage > 0 && (!(blowup->proximity_radius <= 0.0f) || !(blowup->effect_delay > 0.0f))) {
             radius_squared = blowup->proximity_radius * blowup->proximity_radius;
             for (player = 0; player < 8; ++player) {
                 target = Player[player];
@@ -1758,7 +1759,8 @@ GIZMOBLOWUP *GizmoBlowUp_Hit(GAMEOBJECT *object, NUVEC *points, i32 point_count,
         } else if (hit_type == 3 && (blowup->draw_flags & 0x200000)) {
             continue;
         }
-        if (((blowup->draw_flags & BLOWUP_OPTION_SHADOW_MODE_ONLY) && ShadowMode == 0) || (hit_type == 7) != ((blowup->draw_flags & BLOWUP_OPTION_CARRIED_ONLY) != 0)) {
+        if (((blowup->draw_flags & BLOWUP_OPTION_SHADOW_MODE_ONLY) && ShadowMode == 0) ||
+            (hit_type == 7) != ((blowup->draw_flags & BLOWUP_OPTION_CARRIED_ONLY) != 0)) {
             continue;
         }
         if (maximum->x < blowup->mid_position.x - blowup->target_scale || minimum->x > blowup->target_scale + blowup->mid_position.x ||
@@ -1785,7 +1787,7 @@ GIZMOBLOWUP *GizmoBlowUp_Hit(GAMEOBJECT *object, NUVEC *points, i32 point_count,
             damage = 1;
             if (bolt != NULL) {
                 damage = BoltType_FindByID(bolt->type_id, WORLD)->unknown_3c;
-                if (Cheats_CheckFlags(2) && (bolt->flags & 3)) {
+                if (Cheats_CheckFlags(CHEAT_DOUBLE_BOLT_DAMAGE) && (bolt->flags & 3)) {
                     damage *= 2;
                 }
             }
@@ -2326,8 +2328,8 @@ void GizmoBlowupBurstDraw(void *world_pointer, void *data, f32 frame_time) {
                     }
                 }
                 ResetShadowMapRendering();
-                if ((blowup->status_flags & BLOWUP_STATUS_ACTIVE) && (blowup->status_flags & BLOWUP_STATUS_DRAWN) && (blowup->draw_flags & BLOWUP_OPTION_TRANSFORMABLE) &&
-                    GizmoBlowup_TransformDrawFn != NULL) {
+                if ((blowup->status_flags & BLOWUP_STATUS_ACTIVE) && (blowup->status_flags & BLOWUP_STATUS_DRAWN) &&
+                    (blowup->draw_flags & BLOWUP_OPTION_TRANSFORMABLE) && GizmoBlowup_TransformDrawFn != NULL) {
                     GizmoBlowup_TransformDrawFn(blowup);
                 }
                 if (blowup->draw_flags & BLOWUP_OPTION_REFLECTION) {

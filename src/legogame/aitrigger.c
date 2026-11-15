@@ -309,8 +309,9 @@ void AITriggerSetSysProcess(TRIGGER_SYSTEM *system) {
                     } else if (player2 != NULL && player2 == obstacle->triggering_object) {
                         set->occupied |= 1 << index;
                     } else if ((set->occupied & (1 << index)) != 0) {
-                        if (obstacle->anim_set != NULL &&
-                            (obstacle->anim_set->state == GAMEANIMSET_STATE_AT_START || obstacle->anim_set->state == GAMEANIMSET_STATE_BACKWARD || obstacle->anim_set->state == GAMEANIMSET_STATE_PART_WAY)) {
+                        if (obstacle->anim_set != NULL && (obstacle->anim_set->state == GAMEANIMSET_STATE_AT_START ||
+                                                           obstacle->anim_set->state == GAMEANIMSET_STATE_BACKWARD ||
+                                                           obstacle->anim_set->state == GAMEANIMSET_STATE_PART_WAY)) {
                             set->occupied &= ~(1 << index);
                         }
                     } else if ((obstacle->progress_flags & OBSTACLE_VISIBLE) == 0 || (obstacle->progress_flags & OBSTACLE_ACTIVE) == 0) {
