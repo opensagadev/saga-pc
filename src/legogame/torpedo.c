@@ -434,7 +434,7 @@ void *FindNearestTorpTarget(WORLDINFO *world, NUVEC *position, f32 distance_squa
     for (index = 0; index < world->gizmo_blowup_count; ++index) {
         GIZMOBLOWUP *blowup = &world->gizmo_blowups[index];
         f32 distance;
-        if ((blowup->status_flags & BLOWUP_STATUS_VISIBLE) == 0 || (blowup->status_flags & 0x8000) == 0 ||
+        if ((blowup->status_flags & BLOWUP_STATUS_VISIBLE) == 0 || (blowup->status_flags & BLOWUP_STATUS_DRAWN) == 0 ||
             (blowup->status_flags & BLOWUP_STATUS_BLOWN_UP) != 0 || (blowup->status_flags & BLOWUP_STATUS_ACTIVE) == 0 ||
             (blowup->draw_flags & 0x1000000) == 0) {
             continue;
@@ -662,7 +662,7 @@ void fun_004d3450(void) {
 void Torpedo_InitBolt(BOLT *bolt) {
     if (bolt->owner != NULL && bolt->owner->torpedo != NULL) {
         HomeNearestTorpTarget(bolt, bolt->owner->torpedo);
-        bolt->flags &= ~4U;
+        bolt->flags &= ~BOLT_NO_TERRAIN;
     }
 }
 
@@ -891,7 +891,7 @@ void TorpedoCode(GAMEOBJECT *object, i32 fire, f32 fire_cooldown) {
         }
         if (target_position != NULL) {
             message =
-                AddGameMessage(dat_00759770, target_position, (f32)((f64)AreaPickupScale * 5.0), NULL, 0.0f, 255, 0, 255, 0x10c7, 0.0f);
+                AddGameMessage(dat_00759770, target_position, (f32)((f64)AreaPickupScale * 5.0), NULL, 0.0f, 255, 0, 255, GAMEMSG_WORLD_POSITION | GAMEMSG_FOLLOW | GAMEMSG_WORLD_SCALE | GAMEMSG_SCALE | GAMEMSG_ONE_FRAME | GAMEMSG_KEEP, 0.0f);
             if (message != NULL) {
                 message->target_is_coin_total = 4;
                 message->parameter_10c = (void *)DrawGameMessage_Targets;

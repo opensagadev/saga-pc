@@ -1169,7 +1169,7 @@ void Customiser_Update(CUSTOMISER_LAYERS *input, WORLDINFO *world) {
                 message.position = &position;
                 message.scale = 1.5f;
                 message.alpha = 0x60;
-                message.flags = 0x87;
+                message.flags = GAMEMSG_WORLD_POSITION | GAMEMSG_FOLLOW | GAMEMSG_WORLD_SCALE | GAMEMSG_ONE_FRAME;
                 AddGameMsg(&message);
             }
             resources = (CUSTOM_RESOURCE_UPDATE *)world->customiser_resources[category];

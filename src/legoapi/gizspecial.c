@@ -181,9 +181,9 @@ static i32 GizSpecial_GetOutput(GIZMO *gizmo, i32 output, i32 include_inactive) 
     }
     switch (output) {
         case 0:
-            return special->anim_set->state == 2;
+            return special->anim_set->state == GAMEANIMSET_STATE_AT_END;
         case 1:
-            return special->anim_set->state != 0;
+            return special->anim_set->state != GAMEANIMSET_STATE_AT_START;
     }
     return 0;
 }

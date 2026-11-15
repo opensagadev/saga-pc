@@ -588,7 +588,7 @@ extern "C" i32 GizSpinner_GetState(GIZSPINNER_s *spinner) {
     if (GameAnimSet_IsAnimationReset(spinner->anim_set) != 0) {
         return 0;
     }
-    return (spinner->anim_set->state == 2) + 1;
+    return (spinner->anim_set->state == GAMEANIMSET_STATE_AT_END) + 1;
 }
 
 extern "C" {
@@ -620,7 +620,7 @@ extern "C" i32 GizSpinner_Push(GIZSPINNER_s *spinner, i32 context) {
 
     {
         i32 at_start = GameAnimSet_IsAnimationReset(spinner->anim_set);
-        i32 at_end = spinner->anim_set->state == 2;
+        i32 at_end = spinner->anim_set->state == GAMEANIMSET_STATE_AT_END;
         u32 flags = spinner->state_flags;
         i32 clear_context = 0;
         u32 end_flag = flags & 0x400;
@@ -810,7 +810,7 @@ extern "C" void GizSpinner_StoreProgressData(void *world_ptr, void *data, void *
             if (GameAnimSet_IsAnimationReset(spinner->anim_set)) {
                 progress->position = 0.0f;
             }
-            if (spinner->anim_set->state == 2) {
+            if (spinner->anim_set->state == GAMEANIMSET_STATE_AT_END) {
                 progress->position = 1.0f;
             } else if (spinner->anim_set != NULL) {
                 progress->position = GameAnimSet_GetAnimPos(spinner->primary_anim_obj);
@@ -857,7 +857,7 @@ static void SpinnerResetEntry(GIZSPINNER_s *spinner, SpinnerProgressEntry *progr
     spinner->target_rotation = spinner->rotation;
     spinner->previous_rotation = spinner->rotation;
     spinner->room_index = -1;
-    spinner->state = GameAnimSet_IsAnimationReset(spinner->anim_set) != 0 ? 0 : (spinner->anim_set->state == 2) + 1;
+    spinner->state = GameAnimSet_IsAnimationReset(spinner->anim_set) != 0 ? 0 : (spinner->anim_set->state == GAMEANIMSET_STATE_AT_END) + 1;
     spinner->state_flags = (spinner->state_flags & ~0x300u) | 0x10;
     NuMtxSetRotationY(&spinner->matrix, spinner->initial_rotation);
     NuMtxTranslate(&spinner->matrix, &spinner->position);
@@ -1265,7 +1265,7 @@ extern "C" void GizSpinner_Update(GIZSPINNER_s *spinner) {
     if (spinner->room_index != -1) {
         if ((spinner->room_index == 0x1e && (spinner->state_flags & 4) == 0) ||
             (spinner->room_index != 0x1e && (spinner->state_flags & 4) != 0)) {
-            play_speed = spinner->anim_set->state == 2 ? 0.0f : spinner->animation_speed;
+            play_speed = spinner->anim_set->state == GAMEANIMSET_STATE_AT_END ? 0.0f : spinner->animation_speed;
         } else {
             play_speed = GameAnimSet_IsAnimationReset(spinner->anim_set) != 0 ? 0.0f : -spinner->animation_speed;
         }
@@ -1276,7 +1276,7 @@ extern "C" void GizSpinner_Update(GIZSPINNER_s *spinner) {
         }
         goto animation_updated;
     }
-    if ((spinner->flags & 0x10) == 0 || ((spinner->state_flags & 0x400) != 0 && spinner->anim_set->state == 2) ||
+    if ((spinner->flags & 0x10) == 0 || ((spinner->state_flags & 0x400) != 0 && spinner->anim_set->state == GAMEANIMSET_STATE_AT_END) ||
         !(spinner->spin_timer <= 0.0f)) {
         GameAnimSet_Stop(spinner->anim_set);
         spinner->state_flags &= ~0x40u;
@@ -1312,7 +1312,7 @@ animation_updated:
         SpinnerMatrixRotateY(&matrix, -0x222);
     }
     NuMtxTranslate(&matrix, &spinner->position);
-    spinner->state = GameAnimSet_IsAnimationReset(spinner->anim_set) != 0 ? 0 : (spinner->anim_set->state == 2) + 1;
+    spinner->state = GameAnimSet_IsAnimationReset(spinner->anim_set) != 0 ? 0 : (spinner->anim_set->state == GAMEANIMSET_STATE_AT_END) + 1;
     if (initial_no_judder == 0 && previous_state == 1 && spinner->state != 1) {
         NewRumbleAllPlayers(0.0f, 0.1f, 0, 0);
         GameCam_Judder(GameCam, -0.2f, 0, NULL);
@@ -1395,7 +1395,7 @@ extern "C" void GizSpinners_Update(void *world_pointer, void *unused, f32 unused
         }
         if (output != -1) {
             if (spinner->spin_timer == 0.0f && (spinner->flags & 0x32) == 0 && (spinner->state_flags & 8) != 0 &&
-                ((spinner->state_flags & 0x400) == 0 || spinner->anim_set->state != 2)) {
+                ((spinner->state_flags & 0x400) == 0 || spinner->anim_set->state != GAMEANIMSET_STATE_AT_END)) {
                 SpinnerSeekOutput(spinner, output);
             }
         } else {

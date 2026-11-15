@@ -188,7 +188,7 @@ extern "C" void HatMachine_MoveCode(WORLDINFO *world, GAMEOBJECT *object, i32 sp
             object->character_context = CHARACTER_CONTEXT_HAT_MACHINE;
             object->unknown_7b3 = 0;
             FastWeaponIn(object, 0);
-            object->flags_e24 |= 0x200;
+            object->flags_e24 |= APIOBJECT_AT_INTERFACE;
             object->unknown_7aa = ACTION_PULLLEVER;
             machine->animation_state = 1;
             if (StartupGameFlag1 != 0) {

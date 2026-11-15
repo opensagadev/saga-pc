@@ -140,11 +140,11 @@ void GameAnimSet_EvaluateState(GAMEANIMSET *set) {
         }
         object = object->next;
     }
-    set->state = 0;
+    set->state = GAMEANIMSET_STATE_AT_START;
     if (all_at_end != 0) {
-        set->state = 2;
+        set->state = GAMEANIMSET_STATE_AT_END;
     } else if (all_at_start == 0) {
-        set->state = 4;
+        set->state = GAMEANIMSET_STATE_PART_WAY;
     }
 }
 
@@ -171,7 +171,7 @@ void GameAnimSys_ReStoreProgress(GAMEANIMSYS *system, i32 index) {
             break;
         }
         system->sets[i]->state = (i8)progress[i];
-        if (system->sets[i]->state == 1 || system->sets[i]->state == 3) {
+        if (system->sets[i]->state == GAMEANIMSET_STATE_FORWARD || system->sets[i]->state == GAMEANIMSET_STATE_BACKWARD) {
             if ((system->sets[i]->flags & GAMEANIMSET_IN_ACTIVE_LIST) == 0) {
                 GameAnimSet_AddToSystemList(system->sets[i]);
             }
@@ -330,11 +330,11 @@ i32 GameAnimSet_Play(GAMEANIMSET *set, f32 speed, i32 evaluate_state) {
     }
     set->flags = (u16)(set->flags & ~GAMEANIMSET_STOPPED);
     if (speed >= 0.0f) {
-        if (set->state == 2) {
+        if (set->state == GAMEANIMSET_STATE_AT_END) {
             return 1;
         }
     } else if (speed < 0.0f) {
-        if (set->state == 0) {
+        if (set->state == GAMEANIMSET_STATE_AT_START) {
             return 1;
         }
     }
@@ -364,7 +364,7 @@ i32 GameAnimSet_Play(GAMEANIMSET *set, f32 speed, i32 evaluate_state) {
 i32 GameAnimSet_Stop(GAMEANIMSET *set) {
     GAMEANIMOBJ *object;
 
-    if (set != NULL && (set->state == 1 || set->state == 3)) {
+    if (set != NULL && (set->state == GAMEANIMSET_STATE_FORWARD || set->state == GAMEANIMSET_STATE_BACKWARD)) {
         set->flags = (u16)(set->flags | GAMEANIMSET_STOPPED);
         for (object = set->objects; object != NULL; object = object->next) {
             if (object->instance_animation != NULL) {
@@ -835,7 +835,7 @@ void GameAnimSys_Update(GAMEANIMSYS *system) {
             set = next_set;
             continue;
         }
-        set->state = 0;
+        set->state = GAMEANIMSET_STATE_AT_START;
         all_playing_forward = 1;
         all_at_start = 1;
         all_at_end = 1;
@@ -894,9 +894,9 @@ void GameAnimSys_Update(GAMEANIMSYS *system) {
             set->state = all_playing_forward != 0 ? 1 : 3;
         } else {
             if (all_at_end != 0) {
-                set->state = 2;
+                set->state = GAMEANIMSET_STATE_AT_END;
             } else if (all_at_start == 0) {
-                set->state = 4;
+                set->state = GAMEANIMSET_STATE_PART_WAY;
             }
             if (was_no_visibility_test != 0) {
                 set->flags |= GAMEANIMSET_STOPPED;

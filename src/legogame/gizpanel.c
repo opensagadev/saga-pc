@@ -872,7 +872,7 @@ void GizPanel_MoveCode(WORLDINFO *world, GAMEOBJECT *object, i32 use) {
         object->grapple = panel;
         object->unknown_7b3 = 0;
         FastWeaponIn(object, 0);
-        object->flags_e24 |= 0x200;
+        object->flags_e24 |= APIOBJECT_AT_INTERFACE;
         panel = object->grapple;
         if (panel->model_variant == 2) {
             if (object->character_model->model_data_b[0x46] != NULL) {

@@ -117,7 +117,7 @@ static void PowerUp_ExistingIconPrivate(i32 player_index) {
     message.icon = 0x35;
     message.special = &WORLD->level_objects[0x35].special;
     message.position = &position;
-    message.flags = 0x20;
+    message.flags = GAMEMSG_DRAW_SCALE;
     message.scale = 0.6f;
     message.target_scale = 0.0f;
     message.duration = 0.3f;
@@ -159,7 +159,7 @@ void CollectPowerUp(GAMEOBJECT *object, NUVEC *position, u16 rotation, i32 flags
         message.tick_fn = PowerUp_UpdateMsg;
         message.end_fn = PowerUp_EndMsg;
         message.allow_temporary = 1;
-        message.flags = 0x2112d;
+        message.flags = GAMEMSG_WORLD_POSITION | GAMEMSG_WORLD_SCALE | GAMEMSG_DRAW_MOVE | GAMEMSG_DRAW_SCALE | GAMEMSG_EASE_IN | GAMEMSG_KEEP | GAMEMSG_OBJECT_NO_ALPHA;
         message.player_index = object->player_index;
         message.target_is_coin_total = 7;
         queued = AddGameMsg(&message);
@@ -213,7 +213,7 @@ void Pup_CollectCharKit(WORLDINFO *world, GIZMOPICKUP *pickup, i32 type, GAMEOBJ
     message.target_position = &target;
     message.scale = AreaPickupScale;
     message.target_scale = PANEL_MINIKITSCALE;
-    message.flags = 0x2112d;
+    message.flags = GAMEMSG_WORLD_POSITION | GAMEMSG_WORLD_SCALE | GAMEMSG_DRAW_MOVE | GAMEMSG_DRAW_SCALE | GAMEMSG_EASE_IN | GAMEMSG_KEEP | GAMEMSG_OBJECT_NO_ALPHA;
     message.duration = 1.0f;
     message.icon = 0xcf;
     message.special = &objects[0xcf].special;
@@ -470,7 +470,7 @@ void GizmoPickup_CollectCoin(WORLDINFO *world, NUVEC *position, i32 type_index, 
     message.position = position;
     message.target_position = &target;
     message.target_scale = target_scale;
-    message.flags = 0x2012d;
+    message.flags = GAMEMSG_WORLD_POSITION | GAMEMSG_WORLD_SCALE | GAMEMSG_DRAW_MOVE | GAMEMSG_DRAW_SCALE | GAMEMSG_EASE_IN | GAMEMSG_OBJECT_NO_ALPHA;
     message.duration = COINMSGTIME;
     message.end_fn = EndScoreMessage;
     AddGameMsg(&message);
@@ -482,7 +482,7 @@ void GizmoPickup_CollectCoin(WORLDINFO *world, NUVEC *position, i32 type_index, 
         message.text = text;
         message.position = position;
         message.target_position = position;
-        message.flags = 0x8007;
+        message.flags = GAMEMSG_WORLD_POSITION | GAMEMSG_FOLLOW | GAMEMSG_WORLD_SCALE | GAMEMSG_FADE_SMOOTH;
         AddGameMsg(&message);
     }
 }
@@ -519,7 +519,7 @@ void CollectRedBrick(NUVEC *position) {
         message.end_fn = EndRedBrickMessage;
         message.scale = AreaPickupScale;
         message.allow_temporary = 1;
-        message.flags = 0x2112d;
+        message.flags = GAMEMSG_WORLD_POSITION | GAMEMSG_WORLD_SCALE | GAMEMSG_DRAW_MOVE | GAMEMSG_DRAW_SCALE | GAMEMSG_EASE_IN | GAMEMSG_KEEP | GAMEMSG_OBJECT_NO_ALPHA;
         message.target_scale = PANEL_REDBRICKSCALE;
         message.duration = 1.0f;
         AddGameMsg(&message);
@@ -547,7 +547,7 @@ void CollectMinikit(NUVEC *position, char *name, i32 flags) {
     message.target_position = &target;
     message.scale = AreaPickupScale;
     message.target_scale = PANEL_MINIKITSCALE;
-    message.flags = 0x2112d;
+    message.flags = GAMEMSG_WORLD_POSITION | GAMEMSG_WORLD_SCALE | GAMEMSG_DRAW_MOVE | GAMEMSG_DRAW_SCALE | GAMEMSG_EASE_IN | GAMEMSG_KEEP | GAMEMSG_OBJECT_NO_ALPHA;
     message.duration = 1.0f;
     message.icon = 0xce;
     message.special = &WORLD->level_objects[0xce].special;
@@ -1293,7 +1293,7 @@ void AddCoinsToPanel(i32 coins, NUVEC *position, i32 player, f32 unused, GAMEOBJ
             message.player_index = (i8)player;
             message.allow_temporary = 1;
             message.delay = AddCoinDelay[player];
-            message.flags = 0x12d;
+            message.flags = GAMEMSG_WORLD_POSITION | GAMEMSG_WORLD_SCALE | GAMEMSG_DRAW_MOVE | GAMEMSG_DRAW_SCALE | GAMEMSG_EASE_IN;
             message.duration = COINMSGTIME;
             if (main_total) {
                 message.update_fn = GameMsg_DrawAdjustNewPos_CoinToTotal;

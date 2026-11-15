@@ -75,7 +75,7 @@ extern "C" {
 #endif
 
     void NuGScnCreatePS(NUGSCN *, VARIPTR *, VARIPTR *);
-    i32 NuSpecialFind(NUGSCN *scene, struct nuhspecial_s *handle, char *name, i32 flags);
+    i32 NuSpecialFind(NUGSCN *scene, struct nuhspecial_s *handle, char *name, i32 report_missing);
     void NuGScnRemove(NUGSCN *);
     void NuGScnFixupTIDs(NUGSCN *);
     void NuGScnFixupTIDsPS(NUGSCN *);

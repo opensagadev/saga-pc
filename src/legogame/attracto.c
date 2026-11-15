@@ -267,7 +267,7 @@ void Attractos_Update(WORLDINFO *world, void *unused, f32 delta_time) {
         position.x = attracto->position.x;
         position.y = (f64)attracto->position.y + (f64)0.7f;
         position.z = attracto->position.z;
-        message = AddGameMessage(text, &position, 2.3f, NULL, 0.0f, 255, 255, 255, 0x1087, 0.0f);
+        message = AddGameMessage(text, &position, 2.3f, NULL, 0.0f, 255, 255, 255, GAMEMSG_WORLD_POSITION | GAMEMSG_FOLLOW | GAMEMSG_WORLD_SCALE | GAMEMSG_ONE_FRAME | GAMEMSG_KEEP, 0.0f);
         if (message != NULL) {
             message->alpha = (u8)alpha;
         }
@@ -554,7 +554,7 @@ void Attracto_MoveCode(WORLDINFO *world, GAMEOBJECT *object) {
         sprintf(text, "%i", object->unknown_1062);
         NuVecMtxRotate(&position, &AttractoBackPackCountPos, &object->transform);
         NuVecAdd(&position, &position, &object->position);
-        message = AddGameMessage(text, &position, 1.3f, NULL, 0.0f, 255, 255, 255, 0x1087, 0.0f);
+        message = AddGameMessage(text, &position, 1.3f, NULL, 0.0f, 255, 255, 255, GAMEMSG_WORLD_POSITION | GAMEMSG_FOLLOW | GAMEMSG_WORLD_SCALE | GAMEMSG_ONE_FRAME | GAMEMSG_KEEP, 0.0f);
         if (message != NULL) {
             message->alpha = (u8)(i32)(((f64)game_pulse * (f64)0.2f + (f64)0.6f) * 128.0);
         }
@@ -636,7 +636,7 @@ void Attracto_MoveCode(WORLDINFO *world, GAMEOBJECT *object) {
         }
         KeepPointOnScreen(&object->external_force, &object->launch_origin);
         Batarang_GetSightInfo((i16)object->id, &red, &green, &blue, NULL);
-        AddGameMessage("[  ]", &object->external_force, 1.0f, NULL, 0.0f, red, green, blue, 0x1080, 0.0f);
+        AddGameMessage("[  ]", &object->external_force, 1.0f, NULL, 0.0f, red, green, blue, GAMEMSG_ONE_FRAME | GAMEMSG_KEEP, 0.0f);
         return;
     }
     if (available && object->unknown_281 != 0 && ObjLandReady(object)) {

@@ -16239,7 +16239,7 @@ extern "C" {
         }
     }
 
-    i32 NuSpecialGetFirst(NUGSCN *scene, nuhspecial_s *special, i32 flags) {
+    i32 NuSpecialGetFirst(NUGSCN *scene, nuhspecial_s *special, i32 report_missing) {
         if (scene->specials != NULL) {
             special->scene = scene;
             special->special = (NUMTX *)scene->specials;
@@ -16255,7 +16255,7 @@ extern "C" {
         special->scene = NULL;
         special->special = NULL;
         special->display_special = NULL;
-        if (flags != 0) {
+        if (report_missing != 0) {
             PCSpecialEmptyHandler();
         }
         return 0;
@@ -16740,7 +16740,7 @@ extern "C" {
         }
     }
 
-    i32 NuSpecialFindDisplay(NUGSCN *scene, nuhspecial_s *handle, char *name, i32 flags) {
+    i32 NuSpecialFindDisplay(NUGSCN *scene, nuhspecial_s *handle, char *name, i32 report_missing) {
         NUDISPLAY_SPECIAL *special;
         i32 index;
         if (scene == NULL) {
@@ -16755,7 +16755,7 @@ extern "C" {
                 return 1;
             }
         }
-        if (flags != 0 && special_debug != 0) {
+        if (report_missing != 0 && special_debug != 0) {
             PCSpecialEmptyHandler(name);
         }
         handle->scene = NULL;
@@ -16764,10 +16764,10 @@ extern "C" {
         return 0;
     }
 
-    i32 NuSpecialFind(NUGSCN *scene, nuhspecial_s *handle, char *name, i32 flags) {
+    i32 NuSpecialFind(NUGSCN *scene, nuhspecial_s *handle, char *name, i32 report_missing) {
         NUSPECIAL_LEGACY *special;
         i32 index;
-        (void)flags;
+        (void)report_missing;
         if (scene == NULL || name == NULL) {
             handle->scene = NULL;
             handle->special = NULL;

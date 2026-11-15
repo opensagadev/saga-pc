@@ -318,7 +318,7 @@ void PushCode(GAMEOBJECT *object, i32 allow_push) {
             } else if (forward == 0) {
                 goto push_obstacle;
             }
-            if (((GIZOBSTACLE *)object->grapple)->anim_set->state == 0) {
+            if (((GIZOBSTACLE *)object->grapple)->anim_set->state == GAMEANIMSET_STATE_AT_START) {
                 stopped = 1;
             } else {
                 moving = 1;
@@ -326,7 +326,7 @@ void PushCode(GAMEOBJECT *object, i32 allow_push) {
             GizObstacle_SetPushControlled(object->grapple, object, -1.0f);
             goto drive_done;
         push_obstacle:
-            if (((GIZOBSTACLE *)object->grapple)->anim_set->state == 2) {
+            if (((GIZOBSTACLE *)object->grapple)->anim_set->state == GAMEANIMSET_STATE_AT_END) {
                 stopped = 1;
             } else {
                 moving = 1;

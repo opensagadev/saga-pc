@@ -2211,7 +2211,7 @@ f32 Condition_OriginRange(AISYS *system, AISCRIPTPROCESS *process, AIPACKET *pac
         if (origin != NULL) {
             return NuVecDist(&packet->terrain_origin, origin, NULL);
         }
-        if (system != NULL && packet->creature_index != 0xff) {
+        if (system != NULL && packet->creature_index != AIPACKET_NO_CREATURE) {
             AICREATURE *creature = &system->creatures[packet->creature_index];
             return NuVecDist(&packet->terrain_origin, &creature->position, NULL);
         }
@@ -2227,7 +2227,7 @@ f32 Condition_OpponentToOrigin(AISYS *system, AISCRIPTPROCESS *process, AIPACKET
                 return NuVecDist(&packet->opponent->position, origin, NULL);
             }
         }
-        if (system != NULL && packet->creature_index != 0xff) {
+        if (system != NULL && packet->creature_index != AIPACKET_NO_CREATURE) {
             AICREATURE *creature = &system->creatures[packet->creature_index];
             return NuVecDist(&packet->opponent->position, &creature->position, NULL);
         }
@@ -2241,7 +2241,7 @@ f32 Condition_PlayerToOrigin(AISYS *system, AISCRIPTPROCESS *processor, AIPACKET
         if (GetOriginPositionFn != NULL && (origin = GetOriginPositionFn(system, packet)) != NULL) {
             return NuVecDist(&system->player_1->position, origin, NULL);
         }
-        if (packet->creature_index != 0xff) {
+        if (packet->creature_index != AIPACKET_NO_CREATURE) {
             AICREATURE *creature = &system->creatures[packet->creature_index];
             return NuVecDist(&system->player_1->position, &creature->position, NULL);
         }
@@ -2735,7 +2735,7 @@ i32 Action_SetViewDistance(AISYS *system, AISCRIPTPROCESS *processor, AIPACKET *
     if (packet == NULL || packet->owner == NULL || first_time == 0) {
         return 1;
     }
-    if (packet->creature_index != 0xff) {
+    if (packet->creature_index != AIPACKET_NO_CREATURE) {
         ((APIOBJECT *)packet->owner)->view_distance = system->creatures[packet->creature_index].view_distance;
     } else if (GetViewRangeFn != NULL) {
         ((APIOBJECT *)packet->owner)->view_distance = GetViewRangeFn(((APIOBJECT *)packet->owner)->character_model->model_id);
@@ -2753,7 +2753,7 @@ i32 Action_SetMinViewHeight(AISYS *system, AISCRIPTPROCESS *processor, AIPACKET 
     if (packet == NULL || packet->owner == NULL || first_time == 0) {
         return 1;
     }
-    if (packet->creature_index != 0xff) {
+    if (packet->creature_index != AIPACKET_NO_CREATURE) {
         ((APIOBJECT *)packet->owner)->min_view_height = system->creatures[packet->creature_index].min_view_height;
     } else if (GetMinViewHeightFn != NULL) {
         ((APIOBJECT *)packet->owner)->min_view_height = GetMinViewHeightFn(((APIOBJECT *)packet->owner)->character_model->model_id);
@@ -2771,7 +2771,7 @@ i32 Action_SetMaxViewHeight(AISYS *system, AISCRIPTPROCESS *processor, AIPACKET 
     if (packet == NULL || packet->owner == NULL || first_time == 0) {
         return 1;
     }
-    if (packet->creature_index != 0xff) {
+    if (packet->creature_index != AIPACKET_NO_CREATURE) {
         ((APIOBJECT *)packet->owner)->max_view_height = system->creatures[packet->creature_index].max_view_height;
     } else if (GetMaxViewHeightFn != NULL) {
         ((APIOBJECT *)packet->owner)->max_view_height = GetMaxViewHeightFn(((APIOBJECT *)packet->owner)->character_model->model_id);
@@ -2789,7 +2789,7 @@ i32 Action_SetHearDistance(AISYS *system, AISCRIPTPROCESS *processor, AIPACKET *
     if (packet == NULL || packet->owner == NULL || first_time == 0) {
         return 1;
     }
-    if (packet->creature_index != 0xff) {
+    if (packet->creature_index != AIPACKET_NO_CREATURE) {
         ((APIOBJECT *)packet->owner)->hear_distance = system->creatures[packet->creature_index].hear_distance;
     } else if (GetHearDistanceFn != NULL) {
         ((APIOBJECT *)packet->owner)->hear_distance = GetHearDistanceFn(((APIOBJECT *)packet->owner)->character_model->model_id);
@@ -2870,7 +2870,7 @@ i32 Action_ResetToOrigin(AISYS *sys, AISCRIPTPROCESS *processor, AIPACKET *packe
     origin = GetOriginPositionFn != NULL ? GetOriginPositionFn(sys, packet) : NULL;
     if (origin != NULL) {
         packet->owner->position = *origin;
-    } else if (packet->owner != NULL && (packet->owner->flags_1f8 & APIOBJECT_CREATURE) != 0 && packet->creature_index != 0xff) {
+    } else if (packet->owner != NULL && (packet->owner->flags_1f8 & APIOBJECT_CREATURE) != 0 && packet->creature_index != AIPACKET_NO_CREATURE) {
         packet->owner->position = sys->creatures[packet->creature_index].position;
     }
     return 1;
@@ -2931,7 +2931,7 @@ i32 Action_SetParam(AISYS *system, AISCRIPTPROCESS *processor, AIPACKET *packet,
     if (packet == NULL || processor == NULL || processor->script == NULL) {
         return 1;
     }
-    creature = packet->creature_index == 0xff ? NULL : &system->creatures[packet->creature_index];
+    creature = packet->creature_index == AIPACKET_NO_CREATURE ? NULL : &system->creatures[packet->creature_index];
     for (i = 0; i < count - 1; i++) {
         for (index = 0; index < 4; index++) {
             if (NuStrICmp(params[i], processor->script->params[index].name) == 0) {
@@ -4342,7 +4342,7 @@ void AISysCharacterSetPath(AIPACKET *packet, AIPATH *path) {
     packet->path_info.path_index = 0xff;
     packet->available_routes = 0;
     packet->unknown_124 = 0xffff;
-    packet->current_route = 0xff;
+    packet->current_route = AIPACKET_NO_ROUTE;
     packet->next_route = 0;
     packet->current_path_node = NULL;
     if (path != NULL) {
@@ -4375,7 +4375,7 @@ f32 AIPathNodeDistanceToPathNode(AIPATH *path, i32 start_node, i32 destination_n
     }
     start = &path->nodes[start_node];
     destination = &path->nodes[destination_node];
-    if (excluded_route_mask == 0 && route_index == 0xff) {
+    if (excluded_route_mask == 0 && route_index == AIPACKET_NO_ROUTE) {
         if (start->distance_cache_nodes[0] == destination_node) {
             return start->distance_cache[0];
         }
@@ -4391,7 +4391,7 @@ f32 AIPathNodeDistanceToPathNode(AIPATH *path, i32 start_node, i32 destination_n
     nodes = path->nodes;
     node_index = start - nodes;
     node = start;
-    if (route_index != 0xff) {
+    if (route_index != AIPACKET_NO_ROUTE) {
         route = &path->routes[route_index];
         if (((u64)start->route_membership_mask & ((u64)1 << route_index)) == 0) {
             return FLT_MAX;
@@ -4419,7 +4419,7 @@ f32 AIPathNodeDistanceToPathNode(AIPATH *path, i32 start_node, i32 destination_n
                                     : AIPathNodeDistanceToPathNode(path, start_node, route->exit_nodes[index], route_index, 0);
                     f32 second = route->exit_nodes[index] == destination_node
                                      ? 0.0f
-                                     : AIPathNodeDistanceToPathNode(path, route->exit_nodes[index], destination_node, 0xff,
+                                     : AIPathNodeDistanceToPathNode(path, route->exit_nodes[index], destination_node, AIPACKET_NO_ROUTE,
                                                                     (u32)((u64)1 << route_index));
                     f32 candidate;
                     if (first != FLT_MAX && second != FLT_MAX) {
@@ -4697,7 +4697,7 @@ __declspec(noinline) i32 WithinConnection(void *context, NUVEC *position, AIPATH
         connection->last_search_checksum = path->search_checksum;
     }
 
-    if (route_index != 0xff && previous_connection != NULL && (((i64)1 << route_index) & connection->route_mask) == 0) {
+    if (route_index != AIPACKET_NO_ROUTE && previous_connection != NULL && (((i64)1 << route_index) & connection->route_mask) == 0) {
         AIPATHNODE *shared;
 
         if (previous_connection->node_indices[0] == connection->node_indices[0] ||
@@ -4894,7 +4894,7 @@ void AISysCharacterSetPathCnx(AIPACKET *packet, NUVEC *position, AIPATHCNX *conn
 
     if (connection == NULL || path_packet->owner == NULL) {
         path_packet->path_info.connection = connection;
-        path_packet->current_route = 0xff;
+        path_packet->current_route = AIPACKET_NO_ROUTE;
         path_packet->next_route = 0;
         return;
     }
@@ -4934,12 +4934,12 @@ void AISysCharacterSetPathCnx(AIPACKET *packet, NUVEC *position, AIPATHCNX *conn
     }
 
     if (path_packet->path_info.on_path && !path_packet->path_info.route_checked) {
-        if (path_packet->current_route != 0xff) {
+        if (path_packet->current_route != AIPACKET_NO_ROUTE) {
             if ((path_packet->path_info.connection->route_mask & ((u64)1 << path_packet->current_route)) == 0) {
-                path_packet->current_route = 0xff;
+                path_packet->current_route = AIPACKET_NO_ROUTE;
             }
         }
-        if (path_packet->current_route == 0xff) {
+        if (path_packet->current_route == AIPACKET_NO_ROUTE) {
             AISysFindRoute(packet);
         }
         path_packet->path_info.route_checked = 1;
@@ -4976,20 +4976,20 @@ void AISysGetPathPosEx(AISYS *system, NUVEC *position, AIPATHINFO *info, AIPATH 
     AISysResetPathSearchConnectionChecks(info->path);
     current = info->connection;
     if (current != NULL) {
-        if (WithinConnection(system, position, path, current, 1, NULL, 0xff, 0xff, info, 0.0f, 1)) {
+        if (WithinConnection(system, position, path, current, 1, NULL, AIPACKET_NO_ROUTE, 0xff, info, 0.0f, 1)) {
             return;
         }
         node = &info->path->nodes[current->node_indices[info->direction]];
         for (index = 0; index < node->connection_count; ++index) {
             AIPATHCNX *candidate = node->connections[index];
-            if (candidate != current && WithinConnection(system, position, path, candidate, 1, NULL, 0xff, 0xff, info, 0.0f, 1)) {
+            if (candidate != current && WithinConnection(system, position, path, candidate, 1, NULL, AIPACKET_NO_ROUTE, 0xff, info, 0.0f, 1)) {
                 return;
             }
         }
         node = &info->path->nodes[current->node_indices[info->direction == 0]];
         for (index = 0; index < node->connection_count; ++index) {
             AIPATHCNX *candidate = node->connections[index];
-            if (candidate != current && WithinConnection(system, position, path, candidate, 1, NULL, 0xff, 0xff, info, 0.0f, 1)) {
+            if (candidate != current && WithinConnection(system, position, path, candidate, 1, NULL, AIPACKET_NO_ROUTE, 0xff, info, 0.0f, 1)) {
                 return;
             }
         }
@@ -5003,7 +5003,7 @@ void AISysGetPathPosEx(AISYS *system, NUVEC *position, AIPATHINFO *info, AIPATH 
             node = &info->path->nodes[info->next_check];
             for (index = 0; index < node->connection_count; ++index) {
                 AIPATHCNX *candidate = node->connections[index];
-                if (WithinConnection(system, position, path, candidate, 1, NULL, 0xff, 0xff, info, 0.0f, 1)) {
+                if (WithinConnection(system, position, path, candidate, 1, NULL, AIPACKET_NO_ROUTE, 0xff, info, 0.0f, 1)) {
                     return;
                 }
             }
@@ -5041,7 +5041,7 @@ void AISysGetPathPosEx(AISYS *system, NUVEC *position, AIPATHINFO *info, AIPATH 
                 node = &info->path->nodes[info->next_check];
                 for (index = 0; index < node->connection_count; ++index) {
                     AIPATHCNX *candidate = node->connections[index];
-                    if (WithinConnection(system, position, info->path, candidate, 1, NULL, 0xff, 0xff, info, 0.0f, 1)) {
+                    if (WithinConnection(system, position, info->path, candidate, 1, NULL, AIPACKET_NO_ROUTE, 0xff, info, 0.0f, 1)) {
                         return;
                     }
                     if (nearest_distance_squared != NULL) {
@@ -5112,7 +5112,7 @@ static AIPATHCNX *GetNextConnection(const AIPACKET *packet, i32 *direction) {
         *direction = connection->node_indices[0] != node_index;
     }
     route_index = packet->current_route;
-    if (route_index != 0xff) {
+    if (route_index != AIPACKET_NO_ROUTE) {
         if ((((u64)1 << route_index) & node->route_membership_mask) == 0) {
             return NULL;
         }
@@ -5127,7 +5127,7 @@ static AIPATHCNX *GetNextConnection(const AIPACKET *packet, i32 *direction) {
                 for (index = 0; index < route->exit_node_count; ++index) {
                     first = AIPathNodeDistanceToPathNode(packet->path_info.path, node_index, route->exit_nodes[index],
                                                          packet->current_route, 0);
-                    second = AIPathNodeDistanceToPathNode(packet->path_info.path, route->exit_nodes[index], destination, 0xff,
+                    second = AIPathNodeDistanceToPathNode(packet->path_info.path, route->exit_nodes[index], destination, AIPACKET_NO_ROUTE,
                                                           (u32)((u64)(1) << packet->current_route));
                     if (first != FLT_MAX && second != FLT_MAX) {
                         distance = first + second;
@@ -5325,7 +5325,7 @@ static i32 RowMoveWander(AIGROUP *group, AIROW *row, AIROW *previous, APIOBJECT 
                 next = row->next_connection;
                 if (next != row->path_info.connection) {
                     route = leader->ai->current_route;
-                    if (route == 0xff || (((u64)1 << route) & next->route_mask) != 0 ||
+                    if (route == AIPACKET_NO_ROUTE || (((u64)1 << route) & next->route_mask) != 0 ||
                         (((u64)1 << route) & node->route_boundary_mask) != 0) {
                         direction = next->node_indices[0] != node_index;
                         other = &row->path_info.path->nodes[next->node_indices[direction == 0]];
@@ -5967,11 +5967,11 @@ void AIMoveToDestination(AISYS *system, AIPACKET *packet, APIOBJECT *object, i32
             endpoint_distances[1] = AIPathFabs((1.0f - current_distance) * connection->distance);
             destination_distance_0 = AIPathFabs(packet->fallback_path_info.distance * destination_connection->distance);
             destination_distance_1 = AIPathFabs((1.0f - packet->fallback_path_info.distance) * destination_connection->distance);
-            if (packet->current_route != 0xff) {
+            if (packet->current_route != AIPACKET_NO_ROUTE) {
                 packet->flags |= 0x00100000u;
             }
             for (;;) {
-                if (packet->current_route != 0xff && (((u64)1 << packet->current_route) & (destination_connection->route_mask)) == 0) {
+                if (packet->current_route != AIPACKET_NO_ROUTE && (((u64)1 << packet->current_route) & (destination_connection->route_mask)) == 0) {
                     node = &path->nodes[destination_connection->node_indices[0]];
                     if ((((u64)1 << packet->current_route) & (node->route_membership_mask & ~node->route_boundary_mask)) != 0) {
                         destination_distance_0 = FLT_MAX;
@@ -6060,7 +6060,7 @@ void AIMoveToDestination(AISYS *system, AIPACKET *packet, APIOBJECT *object, i32
                 if ((packet->flags & 0x00100000u) == 0) {
                     break;
                 }
-                if (packet->current_route != 0xff) {
+                if (packet->current_route != AIPACKET_NO_ROUTE) {
                     attempted_routes |= 1u << packet->current_route;
                 }
                 AISysFindRoute(packet);
@@ -6125,7 +6125,7 @@ void AIMoveToDestination(AISYS *system, AIPACKET *packet, APIOBJECT *object, i32
         return;
     }
     if (current_2 == destination_connection &&
-        (packet->current_route == 0xff || (((u64)1 << packet->current_route) & (destination_connection->route_mask)) != 0)) {
+        (packet->current_route == AIPACKET_NO_ROUTE || (((u64)1 << packet->current_route) & (destination_connection->route_mask)) != 0)) {
         if ((packet->path_info.flags & 1u) == 0 || packet->movement_parameter == 0.0f) {
             packet->movement_stopping_distance = packet->fallback_stopping_distance;
             packet->movement_destination = packet->fallback_destination;
@@ -6174,7 +6174,7 @@ void AIMoveToDestination(AISYS *system, AIPACKET *packet, APIOBJECT *object, i32
     }
 
     if (shared != NULL &&
-        (packet->current_route == 0xff || (((u64)1 << packet->current_route) & (destination_connection->route_mask)) != 0 ||
+        (packet->current_route == AIPACKET_NO_ROUTE || (((u64)1 << packet->current_route) & (destination_connection->route_mask)) != 0 ||
          (((u64)1 << packet->current_route) & (shared->route_boundary_mask)) != 0)) {
         next = destination_connection;
     } else {
@@ -6308,7 +6308,7 @@ static void AIRetreatFromDestinationPath(AISYS *system, AIPACKET *packet, APIOBJ
         partial_distance_2 = AIPathFabs((1.0f - parameter) * connection->distance);
         destination_a = AIPathFabs(destination_connection->distance * packet->fallback_path_info.distance);
         destination_b = AIPathFabs((1.0f - packet->fallback_path_info.distance) * destination_connection->distance);
-        if (packet->current_route != 0xff && (((u64)1 << packet->current_route) & (destination_connection->route_mask)) == 0) {
+        if (packet->current_route != AIPACKET_NO_ROUTE && (((u64)1 << packet->current_route) & (destination_connection->route_mask)) == 0) {
             node = &path->nodes[destination_connection->node_indices[0]];
             if (((u64)1 << packet->current_route) & (node->route_membership_mask & ~node->route_boundary_mask)) {
                 destination_a = FLT_MAX;
@@ -6368,7 +6368,7 @@ static void AIRetreatFromDestinationPath(AISYS *system, AIPACKET *packet, APIOBJ
             packet->movement_target = node_2->connections[(index + start) % node_2->connection_count];
             target = packet->movement_target;
             if (target != connection &&
-                (packet->current_route == 0xff || (((u64)1 << packet->current_route) & (target->route_mask)) != 0 ||
+                (packet->current_route == AIPACKET_NO_ROUTE || (((u64)1 << packet->current_route) & (target->route_mask)) != 0 ||
                  (((u64)1 << packet->current_route) & (node_2->route_boundary_mask)) != 0) &&
                 target->traversal_flags[target->node_indices[0] != end_node] == 0) {
                 break;
@@ -6495,7 +6495,7 @@ void AIWander(AISYS *system, AIPACKET *packet, APIOBJECT *object, i32 checks) {
             packet->movement_target = node->connections[(index + start) % node->connection_count];
             target = packet->movement_target;
             if (target != packet->path_info.connection) {
-                if (route == 0xff || (((u64)1 << route) & (target->route_mask)) != 0 ||
+                if (route == AIPACKET_NO_ROUTE || (((u64)1 << route) & (target->route_mask)) != 0 ||
                     (((u64)1 << route) & (node->route_boundary_mask)) != 0) {
                     if (target->node_indices[0] == node_index_2) {
                         packet->movement_target_direction = 0;
@@ -8551,7 +8551,7 @@ static i32 TestPointWithinPathCheck(NUVEC *point, EDAIPATHNODE_s *first, EDAIPAT
         connection.horizontal_distance = 0.0001f;
     }
     connection.rotation = (i16)(NuAtan2(horizontal.x, horizontal.z) * AIPathAngularScale);
-    if (WithinConnection(NULL, point, &path, &connection, 1, NULL, 0xff, 0xff, &info, 0.0f, 0)) {
+    if (WithinConnection(NULL, point, &path, &connection, 1, NULL, AIPACKET_NO_ROUTE, 0xff, &info, 0.0f, 0)) {
         TestPointPathCheck(point, first, second, fraction, width, angle, tolerance);
         return 1;
     }
@@ -12181,7 +12181,7 @@ void AIScriptProcess(AISYS *system, APIOBJECT *object, AIPACKET *packet, AISCRIP
                 AIScriptProcessorInit(system, packet, processor, NULL, NULL, NULL, 0, processor->active_refs[index - 1]->script,
                                       reference->return_state);
             } else {
-                creature = packet->creature_index == 0xff ? NULL : &system->creatures[packet->creature_index];
+                creature = packet->creature_index == AIPACKET_NO_CREATURE ? NULL : &system->creatures[packet->creature_index];
                 AIScriptProcessorInit(system, packet, processor, creature, NULL, NULL, 0, processor->base_script, reference->return_state);
             }
             break;
@@ -12195,7 +12195,7 @@ void AIScriptProcess(AISYS *system, APIOBJECT *object, AIPACKET *packet, AISCRIP
             AIScriptProcessorInit(system, packet, processor, NULL, NULL, NULL, 0, processor->active_refs[index - 1]->script,
                                   reference->return_state);
         } else {
-            creature = packet->creature_index == 0xff ? NULL : &system->creatures[packet->creature_index];
+            creature = packet->creature_index == AIPACKET_NO_CREATURE ? NULL : &system->creatures[packet->creature_index];
             AIScriptProcessorInit(system, packet, processor, creature, NULL, NULL, 0, processor->base_script, reference->return_state);
         }
     }
@@ -13059,7 +13059,7 @@ static u32 CharacterTestPathCnx(AISYS *system, APIOBJECT *object, AIPACKET *pack
                 }
             }
         }
-        if ((object->flags_low & 0x80) == 0 && packet->current_route != 0xff &&
+        if ((object->flags_low & 0x80) == 0 && packet->current_route != AIPACKET_NO_ROUTE &&
             ((u64)connection->route_mask & ((u64)1 << packet->current_route)) == 0) {
             current = packet->path_info.connection;
             if (current == NULL || current == connection) {
@@ -13347,7 +13347,7 @@ void AISysGetCharacterPathPos(AISYS *system, APIOBJECT *object, AIPACKET *packet
         AISysCharacterSetPath(packet, NULL);
         packet->path_info.connection = NULL;
         packet->next_route = 0;
-        packet->current_route = 0xff;
+        packet->current_route = AIPACKET_NO_ROUTE;
         return;
     }
 
@@ -13359,7 +13359,7 @@ void AISysGetCharacterPathPos(AISYS *system, APIOBJECT *object, AIPACKET *packet
             AISysCharacterSetPath(packet, system->path_sys->active_path);
         }
         packet->path_info.connection = NULL;
-        packet->current_route = 0xff;
+        packet->current_route = AIPACKET_NO_ROUTE;
         packet->next_route = 0;
         packet->path_info.next_check = 0;
         packet->path_info.path_index = 0;
@@ -13473,7 +13473,7 @@ void AISysGetCharacterPathPos(AISYS *system, APIOBJECT *object, AIPACKET *packet
         path = system->path_sys->paths[packet->path_info.path_index];
         packet->path_info.path = path;
         packet->path_info.connection = NULL;
-        packet->current_route = 0xff;
+        packet->current_route = AIPACKET_NO_ROUTE;
         packet->next_route = 0;
         AISysResetPathSearchConnectionChecks(packet->path_info.path);
         position_inside_path_bounds = 0;
@@ -15512,7 +15512,7 @@ i32 Action_Circle(AISYS *sys, AISCRIPTPROCESS *processor, AIPACKET *packet, char
                 processor->action_data_1 |= 8;
                 processor->action_pos = packet->terrain_origin;
             } else if (NuStrICmp(params[i], "origin") == 0) {
-                if (packet->creature_index != 0xff) {
+                if (packet->creature_index != AIPACKET_NO_CREATURE) {
                     processor->action_data_1 |= 0x20;
                 }
             } else {
@@ -15912,7 +15912,7 @@ i32 Action_GoToOrigin(AISYS *sys, AISCRIPTPROCESS *processor, AIPACKET *packet, 
     f32 range;
 
     if (packet == NULL || packet->owner == NULL || packet->path_info.path == NULL || packet->path_info.connection == NULL ||
-        (packet->owner->flags_1f8 & APIOBJECT_CREATURE) == 0 || packet->creature_index == 0xff) {
+        (packet->owner->flags_1f8 & APIOBJECT_CREATURE) == 0 || packet->creature_index == AIPACKET_NO_CREATURE) {
         return 1;
     }
     creature = &sys->creatures[packet->creature_index];
@@ -16350,7 +16350,7 @@ void AISysProcessCharacter(AISYS *system, APIOBJECT *object, AIPACKET *packet, i
             if ((packet->flags & 0x10000000u) != 0) {
                 switch ((packet->flags >> 26) & 3) {
                     case 1:
-                        if (packet->creature_index != 0xff) {
+                        if (packet->creature_index != AIPACKET_NO_CREATURE) {
                             AICREATURE *creature = &system->creatures[packet->creature_index];
                             AIMoveInstruction(packet, &creature->position, 0.0f, &creature->path_info, 1, 0.0f);
                         }
@@ -16372,7 +16372,7 @@ void AISysProcessCharacter(AISYS *system, APIOBJECT *object, AIPACKET *packet, i
                 NUVEC *source_position = NULL;
                 switch (source) {
                     case 1:
-                        if (packet->creature_index != 0xff) {
+                        if (packet->creature_index != AIPACKET_NO_CREATURE) {
                             source_position = &system->creatures[packet->creature_index].position;
                         }
                         break;

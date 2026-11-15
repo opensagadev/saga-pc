@@ -8,83 +8,83 @@ extern "C" void ShaderLexicalClassesInit(void) {
     if (ShaderLexicalClasses['A'] != 0) {
         return;
     }
-    ShaderLexicalClasses['_'] = 1;
-    ShaderLexicalClasses['Z'] = 1;
-    ShaderLexicalClasses['z'] = 1;
-    ShaderLexicalClasses['Y'] = 1;
-    ShaderLexicalClasses['y'] = 1;
-    ShaderLexicalClasses['X'] = 1;
-    ShaderLexicalClasses['x'] = 1;
-    ShaderLexicalClasses['W'] = 1;
-    ShaderLexicalClasses['w'] = 1;
-    ShaderLexicalClasses['V'] = 1;
-    ShaderLexicalClasses['v'] = 1;
-    ShaderLexicalClasses['U'] = 1;
-    ShaderLexicalClasses['u'] = 1;
-    ShaderLexicalClasses['T'] = 1;
-    ShaderLexicalClasses['t'] = 1;
-    ShaderLexicalClasses['S'] = 1;
-    ShaderLexicalClasses['s'] = 1;
-    ShaderLexicalClasses['R'] = 1;
-    ShaderLexicalClasses['r'] = 1;
-    ShaderLexicalClasses['Q'] = 1;
-    ShaderLexicalClasses['q'] = 1;
-    ShaderLexicalClasses['P'] = 1;
-    ShaderLexicalClasses['p'] = 1;
-    ShaderLexicalClasses['O'] = 1;
-    ShaderLexicalClasses['o'] = 1;
-    ShaderLexicalClasses['N'] = 1;
-    ShaderLexicalClasses['n'] = 1;
-    ShaderLexicalClasses['M'] = 1;
-    ShaderLexicalClasses['m'] = 1;
-    ShaderLexicalClasses['L'] = 1;
-    ShaderLexicalClasses['l'] = 1;
-    ShaderLexicalClasses['K'] = 1;
-    ShaderLexicalClasses['k'] = 1;
-    ShaderLexicalClasses['J'] = 1;
-    ShaderLexicalClasses['j'] = 1;
-    ShaderLexicalClasses['I'] = 1;
-    ShaderLexicalClasses['i'] = 1;
-    ShaderLexicalClasses['H'] = 1;
-    ShaderLexicalClasses['h'] = 1;
-    ShaderLexicalClasses['G'] = 1;
-    ShaderLexicalClasses['g'] = 1;
-    ShaderLexicalClasses['F'] = 1;
-    ShaderLexicalClasses['f'] = 1;
-    ShaderLexicalClasses['E'] = 1;
-    ShaderLexicalClasses['e'] = 1;
-    ShaderLexicalClasses['D'] = 1;
-    ShaderLexicalClasses['d'] = 1;
-    ShaderLexicalClasses['C'] = 1;
-    ShaderLexicalClasses['c'] = 1;
-    ShaderLexicalClasses['B'] = 1;
-    ShaderLexicalClasses['b'] = 1;
-    ShaderLexicalClasses['A'] = 1;
-    ShaderLexicalClasses['a'] = 1;
-    ShaderLexicalClasses['9'] = 2;
-    ShaderLexicalClasses['8'] = 2;
-    ShaderLexicalClasses['7'] = 2;
-    ShaderLexicalClasses['6'] = 2;
-    ShaderLexicalClasses['5'] = 2;
-    ShaderLexicalClasses['4'] = 2;
-    ShaderLexicalClasses['3'] = 2;
-    ShaderLexicalClasses['2'] = 2;
-    ShaderLexicalClasses['1'] = 2;
-    ShaderLexicalClasses['0'] = 2;
-    ShaderLexicalClasses['|'] = 4;
-    ShaderLexicalClasses['&'] = 4;
-    ShaderLexicalClasses['('] = 4;
-    ShaderLexicalClasses['>'] = 4;
-    ShaderLexicalClasses['<'] = 4;
-    ShaderLexicalClasses['='] = 4;
-    ShaderLexicalClasses['!'] = 4;
-    ShaderLexicalClasses['-'] = 4;
-    ShaderLexicalClasses['+'] = 4;
-    ShaderLexicalClasses[0x80] = 4;
-    ShaderLexicalClasses['\t'] = 8;
-    ShaderLexicalClasses[' '] = 8;
-    ShaderLexicalClasses['\n'] = 16;
-    ShaderLexicalClasses['\r'] = 16;
+    ShaderLexicalClasses['_'] = SHADER_CHAR_IDENTIFIER;
+    ShaderLexicalClasses['Z'] = SHADER_CHAR_IDENTIFIER;
+    ShaderLexicalClasses['z'] = SHADER_CHAR_IDENTIFIER;
+    ShaderLexicalClasses['Y'] = SHADER_CHAR_IDENTIFIER;
+    ShaderLexicalClasses['y'] = SHADER_CHAR_IDENTIFIER;
+    ShaderLexicalClasses['X'] = SHADER_CHAR_IDENTIFIER;
+    ShaderLexicalClasses['x'] = SHADER_CHAR_IDENTIFIER;
+    ShaderLexicalClasses['W'] = SHADER_CHAR_IDENTIFIER;
+    ShaderLexicalClasses['w'] = SHADER_CHAR_IDENTIFIER;
+    ShaderLexicalClasses['V'] = SHADER_CHAR_IDENTIFIER;
+    ShaderLexicalClasses['v'] = SHADER_CHAR_IDENTIFIER;
+    ShaderLexicalClasses['U'] = SHADER_CHAR_IDENTIFIER;
+    ShaderLexicalClasses['u'] = SHADER_CHAR_IDENTIFIER;
+    ShaderLexicalClasses['T'] = SHADER_CHAR_IDENTIFIER;
+    ShaderLexicalClasses['t'] = SHADER_CHAR_IDENTIFIER;
+    ShaderLexicalClasses['S'] = SHADER_CHAR_IDENTIFIER;
+    ShaderLexicalClasses['s'] = SHADER_CHAR_IDENTIFIER;
+    ShaderLexicalClasses['R'] = SHADER_CHAR_IDENTIFIER;
+    ShaderLexicalClasses['r'] = SHADER_CHAR_IDENTIFIER;
+    ShaderLexicalClasses['Q'] = SHADER_CHAR_IDENTIFIER;
+    ShaderLexicalClasses['q'] = SHADER_CHAR_IDENTIFIER;
+    ShaderLexicalClasses['P'] = SHADER_CHAR_IDENTIFIER;
+    ShaderLexicalClasses['p'] = SHADER_CHAR_IDENTIFIER;
+    ShaderLexicalClasses['O'] = SHADER_CHAR_IDENTIFIER;
+    ShaderLexicalClasses['o'] = SHADER_CHAR_IDENTIFIER;
+    ShaderLexicalClasses['N'] = SHADER_CHAR_IDENTIFIER;
+    ShaderLexicalClasses['n'] = SHADER_CHAR_IDENTIFIER;
+    ShaderLexicalClasses['M'] = SHADER_CHAR_IDENTIFIER;
+    ShaderLexicalClasses['m'] = SHADER_CHAR_IDENTIFIER;
+    ShaderLexicalClasses['L'] = SHADER_CHAR_IDENTIFIER;
+    ShaderLexicalClasses['l'] = SHADER_CHAR_IDENTIFIER;
+    ShaderLexicalClasses['K'] = SHADER_CHAR_IDENTIFIER;
+    ShaderLexicalClasses['k'] = SHADER_CHAR_IDENTIFIER;
+    ShaderLexicalClasses['J'] = SHADER_CHAR_IDENTIFIER;
+    ShaderLexicalClasses['j'] = SHADER_CHAR_IDENTIFIER;
+    ShaderLexicalClasses['I'] = SHADER_CHAR_IDENTIFIER;
+    ShaderLexicalClasses['i'] = SHADER_CHAR_IDENTIFIER;
+    ShaderLexicalClasses['H'] = SHADER_CHAR_IDENTIFIER;
+    ShaderLexicalClasses['h'] = SHADER_CHAR_IDENTIFIER;
+    ShaderLexicalClasses['G'] = SHADER_CHAR_IDENTIFIER;
+    ShaderLexicalClasses['g'] = SHADER_CHAR_IDENTIFIER;
+    ShaderLexicalClasses['F'] = SHADER_CHAR_IDENTIFIER;
+    ShaderLexicalClasses['f'] = SHADER_CHAR_IDENTIFIER;
+    ShaderLexicalClasses['E'] = SHADER_CHAR_IDENTIFIER;
+    ShaderLexicalClasses['e'] = SHADER_CHAR_IDENTIFIER;
+    ShaderLexicalClasses['D'] = SHADER_CHAR_IDENTIFIER;
+    ShaderLexicalClasses['d'] = SHADER_CHAR_IDENTIFIER;
+    ShaderLexicalClasses['C'] = SHADER_CHAR_IDENTIFIER;
+    ShaderLexicalClasses['c'] = SHADER_CHAR_IDENTIFIER;
+    ShaderLexicalClasses['B'] = SHADER_CHAR_IDENTIFIER;
+    ShaderLexicalClasses['b'] = SHADER_CHAR_IDENTIFIER;
+    ShaderLexicalClasses['A'] = SHADER_CHAR_IDENTIFIER;
+    ShaderLexicalClasses['a'] = SHADER_CHAR_IDENTIFIER;
+    ShaderLexicalClasses['9'] = SHADER_CHAR_DIGIT;
+    ShaderLexicalClasses['8'] = SHADER_CHAR_DIGIT;
+    ShaderLexicalClasses['7'] = SHADER_CHAR_DIGIT;
+    ShaderLexicalClasses['6'] = SHADER_CHAR_DIGIT;
+    ShaderLexicalClasses['5'] = SHADER_CHAR_DIGIT;
+    ShaderLexicalClasses['4'] = SHADER_CHAR_DIGIT;
+    ShaderLexicalClasses['3'] = SHADER_CHAR_DIGIT;
+    ShaderLexicalClasses['2'] = SHADER_CHAR_DIGIT;
+    ShaderLexicalClasses['1'] = SHADER_CHAR_DIGIT;
+    ShaderLexicalClasses['0'] = SHADER_CHAR_DIGIT;
+    ShaderLexicalClasses['|'] = SHADER_CHAR_OPERATOR;
+    ShaderLexicalClasses['&'] = SHADER_CHAR_OPERATOR;
+    ShaderLexicalClasses['('] = SHADER_CHAR_OPERATOR;
+    ShaderLexicalClasses['>'] = SHADER_CHAR_OPERATOR;
+    ShaderLexicalClasses['<'] = SHADER_CHAR_OPERATOR;
+    ShaderLexicalClasses['='] = SHADER_CHAR_OPERATOR;
+    ShaderLexicalClasses['!'] = SHADER_CHAR_OPERATOR;
+    ShaderLexicalClasses['-'] = SHADER_CHAR_OPERATOR;
+    ShaderLexicalClasses['+'] = SHADER_CHAR_OPERATOR;
+    ShaderLexicalClasses[0x80] = SHADER_CHAR_OPERATOR;
+    ShaderLexicalClasses['\t'] = SHADER_CHAR_BLANK;
+    ShaderLexicalClasses[' '] = SHADER_CHAR_BLANK;
+    ShaderLexicalClasses['\n'] = SHADER_CHAR_NEWLINE;
+    ShaderLexicalClasses['\r'] = SHADER_CHAR_NEWLINE;
 }
 
 // This method never reads its receiver. No receiver storage or extent is inferred here.
@@ -93,15 +93,15 @@ struct ShaderLexicalTokenPredicate {
 };
 
 i32 ShaderLexicalTokenPredicate::IsSpecialToken(const char *token) {
-    return (ShaderLexicalClasses[(u8)token[0]] & 4) != 0 || strcmp(token, "defined") == 0;
+    return (ShaderLexicalClasses[(u8)token[0]] & SHADER_CHAR_OPERATOR) != 0 || strcmp(token, "defined") == 0;
 }
 
 bool ShaderCompilerDictionary::IsNumericToken(const char *text) {
-    if ((ShaderLexicalClasses[(u8)*text] & 2) == 0) {
+    if ((ShaderLexicalClasses[(u8)*text] & SHADER_CHAR_DIGIT) == 0) {
         return false;
     }
     while (*++text != 0) {
-        if ((ShaderLexicalClasses[(u8)*text] & 2) == 0) {
+        if ((ShaderLexicalClasses[(u8)*text] & SHADER_CHAR_DIGIT) == 0) {
             return false;
         }
     }
@@ -162,7 +162,7 @@ i32 ShaderLexicalSlice::AsInteger(i32 skipped_prefix) {
 
 bool ShaderLexicalReader::Next(ShaderCompilerBufferAllocator *input, i32 *cursor, ShaderLexicalSlice *slice) {
     const char *p = reinterpret_cast<const char *>(input->data) + *cursor;
-    while (*cursor < input->length && ShaderLexicalClasses[(u8)*p] == 8) {
+    while (*cursor < input->length && ShaderLexicalClasses[(u8)*p] == SHADER_CHAR_BLANK) {
         ++*cursor;
         ++p;
     }
@@ -172,20 +172,20 @@ bool ShaderLexicalReader::Next(ShaderCompilerBufferAllocator *input, i32 *cursor
     slice->begin = p;
     slice->length = 0;
     i32 first = *cursor;
-    if ((ShaderLexicalClasses[(u8) reinterpret_cast<const char *>(input->data)[first]] & 1) != 0) {
+    if ((ShaderLexicalClasses[(u8) reinterpret_cast<const char *>(input->data)[first]] & SHADER_CHAR_IDENTIFIER) != 0) {
         do {
             ++*cursor;
             ++p;
-        } while (*cursor < input->length && (ShaderLexicalClasses[(u8)*p] & 3) != 0);
+        } while (*cursor < input->length && (ShaderLexicalClasses[(u8)*p] & (SHADER_CHAR_IDENTIFIER | SHADER_CHAR_DIGIT)) != 0);
         slice->length = *cursor - first;
         return true;
     }
     u8 token = (u8)*p;
-    if ((ShaderLexicalClasses[token] & 2) != 0) {
+    if ((ShaderLexicalClasses[token] & SHADER_CHAR_DIGIT) != 0) {
         do {
             ++*cursor;
             ++p;
-        } while (*cursor < input->length && (ShaderLexicalClasses[(u8)*p] & 2) != 0);
+        } while (*cursor < input->length && (ShaderLexicalClasses[(u8)*p] & SHADER_CHAR_DIGIT) != 0);
         slice->length = *cursor - first;
         return true;
     }
@@ -365,10 +365,10 @@ ShaderConditionNode *ShaderCompilerParser::ParseExpression(ShaderCompilerBufferA
                 current = stack[--count];
             } while (current != NULL);
             const_cast<char *>(current->token)[0] = '\x80';
-        } else if ((ShaderLexicalClasses[(u8)token[0]] & 4) != 0 || strcmp(token, "defined") == 0) {
+        } else if ((ShaderLexicalClasses[(u8)token[0]] & SHADER_CHAR_OPERATOR) != 0 || strcmp(token, "defined") == 0) {
             if (strcmp(current->token, "(") == 0) {
                 stack[count++] = current;
-            } else if (((ShaderLexicalClasses[(u8)current->token[0]] & 4) != 0 || strcmp(current->token, "defined") == 0) &&
+            } else if (((ShaderLexicalClasses[(u8)current->token[0]] & SHADER_CHAR_OPERATOR) != 0 || strcmp(current->token, "defined") == 0) &&
                        ShaderConditionPrecedence(token) > ShaderConditionPrecedence(current->token)) {
                 stack[count++] = current;
                 current = current->AppendOperand(node);
@@ -392,7 +392,7 @@ ShaderConditionNode *ShaderCompilerParser::ParseExpression(ShaderCompilerBufferA
                 node->left = current;
                 current = node;
             }
-        } else if (strcmp(current->token, "(") == 0 || (ShaderLexicalClasses[(u8)current->token[0]] & 4) != 0 ||
+        } else if (strcmp(current->token, "(") == 0 || (ShaderLexicalClasses[(u8)current->token[0]] & SHADER_CHAR_OPERATOR) != 0 ||
                    strcmp(current->token, "defined") == 0) {
             append = true;
         }
@@ -508,11 +508,11 @@ extern "C" bool fun_0074bd00(const char *left, const char *right) {
 
 /* The accessors below have no caller. */
 i32 ShaderLexicalReader::IsWordChar(u8 c) {
-    return ShaderLexicalClasses[c] & 1;
+    return ShaderLexicalClasses[c] & SHADER_CHAR_IDENTIFIER;
 }
 
 i32 ShaderLexicalReader::IsTokenChar(u8 c) {
-    return (ShaderLexicalClasses[c] & 3) != 0;
+    return (ShaderLexicalClasses[c] & (SHADER_CHAR_IDENTIFIER | SHADER_CHAR_DIGIT)) != 0;
 }
 
 const char *ShaderLexicalSlice::GetBegin() {

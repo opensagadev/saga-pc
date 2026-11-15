@@ -467,3 +467,20 @@ struct cut_locator_function_entry_s { // size 0x14
                   CUT_LOAD_LOCATOR *); // 0x08
     u8 unknown_0c[8];                  // 0x0c
 };
+
+/* cut_script_node_s.type: the cut scene script command each node holds (CutScriptParseBlock keywords). */
+#define CUTSCRIPT_START 0              /* STARTCUTSCENEINST */
+#define CUTSCRIPT_PLAY 1               /* PLAYCUTSCENEINST forward|backward */
+#define CUTSCRIPT_CHAIN 2              /* CHAINCUTSCENEINST */
+#define CUTSCRIPT_REPEAT 3             /* REPEATCUTSCENEINST */
+#define CUTSCRIPT_RESET 4              /* RESETCUTSCENEINST */
+#define CUTSCRIPT_SET_TRIGGER_FLAG 5   /* SETTRIGGERFLAG */
+#define CUTSCRIPT_RESET_TRIGGER 6      /* RESETTRIGGER */
+#define CUTSCRIPT_SET_VISIBILITY 7     /* SETVISIBILITY */
+#define CUTSCRIPT_IF_PARAM 8           /* IFPARAM ... ELSE ... ENDIF */
+#define CUTSCRIPT_SET_PARAM 9          /* SETPARAM */
+#define CUTSCRIPT_IF_TRIGGER_PULLED 10 /* IFTRIGGERPULLED, IFTRIGGERNOTPULLED (branches swapped) */
+#define CUTSCRIPT_ENABLE_TRIGGER 11    /* ENABLETRIGGER */
+#define CUTSCRIPT_PAUSE 12             /* PAUSECUTSCENEINST */
+#define CUTSCRIPT_UNPAUSE 13           /* UNPAUSECUTSCENEINST */
+#define CUTSCRIPT_APP_COMMAND 14       /* APPCOMMAND */

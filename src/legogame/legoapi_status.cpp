@@ -1114,7 +1114,7 @@ void AddStatusMiniKitParts(void) {
             message.target_scale = COINTOTAL_COINSIZE;
             message.icon = GizmoPickupType[2].first_model_id;
             message.special = &WORLD->level_objects[message.icon].special;
-            message.flags = 0x112d;
+            message.flags = GAMEMSG_WORLD_POSITION | GAMEMSG_WORLD_SCALE | GAMEMSG_DRAW_MOVE | GAMEMSG_DRAW_SCALE | GAMEMSG_EASE_IN | GAMEMSG_KEEP;
             message.duration = COINMSGTIME;
             message.score = GizmoPickupType[2].score;
             message.end_fn = EndScoreMessage;

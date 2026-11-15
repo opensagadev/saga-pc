@@ -357,19 +357,19 @@ i32 ThermalDetonator_MoveCode(GAMEOBJECT *object) {
         if (object->context_timer <= 0.0f) {
             object->character_context = CHARACTER_CONTEXT_NONE;
             if ((object->context_variant_flags & APIOBJECT_CONTEXT_EVENT_DONE) == 0) {
-                object->flags_e24 |= 0x4000;
+                object->flags_e24 |= APIOBJECT_DETONATOR_THROW;
             }
         } else if ((object->context_variant_flags & APIOBJECT_CONTEXT_EVENT_DONE) == 0) {
             if (object->character_model->action_animations[object->unknown_7aa] != NULL) {
                 release_frame = AnimListFrame(object->character_model, object->unknown_7aa, 2);
                 if (frame != NULL && *frame > 0.0f && *frame >= release_frame) {
-                    object->flags_e24 |= 0x4000;
+                    object->flags_e24 |= APIOBJECT_DETONATOR_THROW;
                 }
             } else if (object->context_timer < 0.5f) {
-                object->flags_e24 |= 0x4000;
+                object->flags_e24 |= APIOBJECT_DETONATOR_THROW;
             }
         }
-        if ((object->flags_e24 & 0x4000) != 0) {
+        if ((object->flags_e24 & APIOBJECT_DETONATOR_THROW) != 0) {
             object->context_variant_flags |= APIOBJECT_CONTEXT_EVENT_DONE;
         }
         return 0;
@@ -421,7 +421,7 @@ i32 ShinyMetal_UpdateHint(HINT *hint) {
         Game.area_save[JABBASPALACE_ADATA->index].area_complete != 0 || Mission_Active(NULL) != NULL) {
         return 0;
     }
-    if (LevGizObst[0] != NULL && LevGizObst[0]->anim_set->state == 0) {
+    if (LevGizObst[0] != NULL && LevGizObst[0]->anim_set->state == GAMEANIMSET_STATE_AT_START) {
         return 0;
     }
     if (LevBlowUp[0] == NULL || (LevBlowUp[0]->status_flags & BLOWUP_STATUS_BLOWN_UP) != 0) {

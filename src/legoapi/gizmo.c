@@ -947,9 +947,9 @@ static void GizmoAppendSpecialErrorPrivate(void *ptr, const char *text) {
     }
 }
 
-i32 Gizmo_FindNuSpecial(NUGSCN *scene, nuhspecial_s *special, char *name, i32 flags, void *ptr, char *prefix, char *suffix) {
+i32 Gizmo_FindNuSpecial(NUGSCN *scene, nuhspecial_s *special, char *name, i32 report_missing, void *ptr, char *prefix, char *suffix) {
     GIZMOSYS *system = ptr;
-    if (NuSpecialFind(scene, special, name, flags)) {
+    if (NuSpecialFind(scene, special, name, report_missing)) {
         return 1;
     }
     if (!system || !system->error_log || !(system->flags & 4)) {

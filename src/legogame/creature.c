@@ -865,7 +865,7 @@ void ResetPlayerAI(GAMEOBJECT *object) {
     object->route_frame_state = 0;
     memset(&object->ai_packet.path_info, 0, sizeof(object->ai_packet.path_info));
     object->ai_packet.inside_path_node = -1;
-    object->ai_packet.current_route = 0xff;
+    object->ai_packet.current_route = AIPACKET_NO_ROUTE;
     object->ai_packet.next_route = 0;
     AISysGetCharacterPathPos(WORLD->ai_sys, (APIOBJECT *)object, &object->ai_packet, 0xff, 1);
 }
@@ -882,7 +882,7 @@ void DeactivateGameObject(GAMEOBJECT *object) {
         }
     }
     object->flags_1fc_word &= ~APIOBJECT_FLAG_CHARACTER;
-    if (object->ai_packet.creature_index != 0xff &&
+    if (object->ai_packet.creature_index != AIPACKET_NO_CREATURE &&
         AIScriptSetBaseScriptStateByName(&object->ai_packet.script_processor, "InActive") != 0) {
         object->ai_packet.reset_mode = 0;
         WORLD->ai_sys->creatures[object->ai_packet.creature_index].activation_type = 2;
@@ -3839,7 +3839,7 @@ void ResetAICreature(GAMEOBJECT *object, AISYS *system) {
     AIScriptProcessorInit(WORLD->ai_sys, &object->ai_packet, &object->ai_packet.script_processor, creature,
                           ((AI_CREATURE_RESET_VIEW *)creature)->script_name, NULL, 1, NULL, NULL);
     object->ai_packet.inside_path_node = -1;
-    object->ai_packet.current_route = 0xff;
+    object->ai_packet.current_route = AIPACKET_NO_ROUTE;
     object->ai_packet.next_route = 0;
     AISysGetCharacterPathPos(WORLD->ai_sys, (APIOBJECT *)object, &object->ai_packet, 0xff, (i8)object->unknown_281);
     ResetAnimPacket(&object->anim_packet, 1);
@@ -3962,7 +3962,7 @@ i32 InitCreature(GAMEOBJECT *object, i32 id, i32 parameter) {
     object->id = (u16)id;
     object->character_model = &apicharsys->models[apicharsys->playermodelids[id]];
     object->suit = Suit_GetDefault((i16)id);
-    object->ai_packet.creature_index = 0xff;
+    object->ai_packet.creature_index = AIPACKET_NO_CREATURE;
     SetGameObjectCharacterData(object);
     object->death_delay = 0.5f;
     object->start_position = start;
@@ -4643,7 +4643,7 @@ void DrawParaphernalia(GAMEOBJECT *object) {
                 CustomiserDrawAccessories(CharacterCustomiser, carried, attachments);
             }
         }
-    } else if ((object->flags_e24 & 1) != 0 && object->force_target != NULL) {
+    } else if ((object->flags_e24 & APIOBJECT_GOT_VICTIM) != 0 && object->force_target != NULL) {
         passenger = object->force_target;
         passenger_locator = object->character_data->game_character->weapon_joints[0];
         if (passenger_locator != -1 && object->character_model->points_of_interest[passenger_locator] != NULL) {
@@ -4903,7 +4903,7 @@ GAMEOBJECT *ActivateCharacter(char *name, NUVEC *position, i32 angle) {
     }
     if (name != NULL && (object = GetNamedGameObject(WORLD->ai_sys, name)) != NULL &&
         (object->flags_1fc_word & APIOBJECT_FLAG_CHARACTER) == 0 && (FreePlay == 0 || (object->flags_1f8 & APIOBJECT_CREATURE) != 0)) {
-        if (object->ai_packet.creature_index == 0xff) {
+        if (object->ai_packet.creature_index == AIPACKET_NO_CREATURE) {
             object->flags_1fc_word |= APIOBJECT_FLAG_CHARACTER;
             AIScriptSetBaseScriptStateByName(&object->ai_packet.script_processor, "Base");
             if (position != NULL) {

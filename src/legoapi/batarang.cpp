@@ -293,8 +293,8 @@ extern "C" i32 Batarang_FindTarget(WORLDINFO *world, GAMEOBJECT *object, i32 aut
     for (i = 0; i < world->gizmo_blowup_count; ++i, ++candidate_blowup) {
         if ((candidate_blowup->status_flags & BLOWUP_STATUS_BLOWN_UP) != 0 ||
             (candidate_blowup->status_flags & BLOWUP_STATUS_ACTIVE) == 0 || (candidate_blowup->status_flags & BLOWUP_STATUS_VISIBLE) == 0 ||
-            (candidate_blowup->status_flags & 0x8000) == 0 || (candidate_blowup->draw_flags & 1) == 0 ||
-            ((candidate_blowup->draw_flags & 0x20) != 0 && ShadowMode == 0)) {
+            (candidate_blowup->status_flags & BLOWUP_STATUS_DRAWN) == 0 || (candidate_blowup->draw_flags & BLOWUP_OPTION_BATARANG_TARGET) == 0 ||
+            ((candidate_blowup->draw_flags & BLOWUP_OPTION_SHADOW_MODE_ONLY) != 0 && ShadowMode == 0)) {
             continue;
         }
         i32 target;
@@ -711,10 +711,10 @@ extern "C" void Batarang_MoveCode(GAMEOBJECT *object) {
                     message.position = &BATARANG_PACKET(object)->sight_position;
                     message.text = text;
                     message.alpha = static_cast<i32>(((f64)0.2f * game_pulse + (f64)0.8f) * 128.0);
-                    message.flags = 0x1080;
+                    message.flags = GAMEMSG_ONE_FRAME | GAMEMSG_KEEP;
                     AddGameMsg(&message);
                     message.text = TagAsciiDown;
-                    message.flags = 0x87;
+                    message.flags = GAMEMSG_WORLD_POSITION | GAMEMSG_FOLLOW | GAMEMSG_WORLD_SCALE | GAMEMSG_ONE_FRAME;
                     message.scale = 3.0f;
                     message.unknown_4f = 4;
                     message.alpha = static_cast<i32>(128.0 * ((f64)0.8f - (f64)0.2f * game_pulse));
@@ -1489,7 +1489,7 @@ extern "C" {
                 owner->ai_packet.movement_stopping_distance = 0.0f;
                 return 1;
             }
-            if ((owner->flags_e24 & 0x80) != 0) {
+            if ((owner->flags_e24 & APIOBJECT_GRAPPLE_AT_MAX_LENGTH) != 0) {
                 owner->ai_packet.movement_destination = owner->ai_packet.special_move_node->position;
                 owner->ai_packet.movement_stopping_distance = 0.0f;
                 owner->pad->buttons_pressed |= GAMEPAD_JUMP;

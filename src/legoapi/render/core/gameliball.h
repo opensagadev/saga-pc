@@ -745,6 +745,11 @@ extern "C" {
 #endif
     typedef struct SPECIAL_RESOURCE_EVENT SPECIAL_RESOURCE_EVENT;
 
+/* SPECIAL_RESOURCE_EVENT.flags: when UpdateSpecialSfx plays the event's sound at its trigger frame. */
+#define SPECIALSFX_EVENT_LOOPING 0x2  /* the sound loops (IsSfxLooping, set at load) */
+#define SPECIALSFX_EVENT_FORWARD 0x4  /* played when the animation passes the frame forwards */
+#define SPECIALSFX_EVENT_BACKWARD 0x8 /* played when it passes the frame backwards */
+
     struct SPECIAL_RESOURCE_EVENT {   // size 0x10
         f32 previous_frame;           // 0x0
         u8 flags;                     // 0x4

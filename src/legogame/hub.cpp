@@ -925,7 +925,7 @@ extern "C" {
         message.target_position = message.position = &position;
         message.scale = 0.7f;
         message.target_scale = 2.1f;
-        message.flags = 0x4028;
+        message.flags = GAMEMSG_DRAW_MOVE | GAMEMSG_DRAW_SCALE | GAMEMSG_FADE;
         message.duration = 2.0f;
         AddGameMsg(&message);
         if (reset_score != 0) {
@@ -951,7 +951,7 @@ extern "C" {
         message.target_scale = 0.555f;
         message.position = &position;
         message.special = &WORLD->level_objects[icon];
-        message.flags = 0x14120;
+        message.flags = GAMEMSG_DRAW_SCALE | GAMEMSG_EASE_IN | GAMEMSG_FADE | GAMEMSG_OBJECT_ALPHA;
         message.duration = 2.5f;
         AddGameMsg(&message);
         marker = player_index == 0 ? 0xa6 : 0xa5;
@@ -4552,7 +4552,7 @@ extern "C" {
             }
         } else if (difference < -IndyGrappleHeightTolerance) {
             owner->indy_guideline_state.movement_direction = 2;
-            if (!(owner->flags_e24 & 0x80)) {
+            if (!(owner->flags_e24 & APIOBJECT_GRAPPLE_AT_MAX_LENGTH)) {
                 return 1;
             }
         }
@@ -4609,7 +4609,7 @@ extern "C" {
                 owner->ai_packet.movement_stopping_distance = 0;
                 return 1;
             }
-            if (owner->flags_e24 & 0x80) {
+            if (owner->flags_e24 & APIOBJECT_GRAPPLE_AT_MAX_LENGTH) {
                 owner->ai_packet.movement_destination = owner->ai_packet.special_move_node->position;
                 owner->ai_packet.movement_stopping_distance = 0;
                 owner->pad->buttons_pressed |= GAMEPAD_JUMP;

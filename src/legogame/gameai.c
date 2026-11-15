@@ -1217,7 +1217,7 @@ APIOBJECT *GetNamedAPIObject(void *system_pointer, char *name) {
             if ((Obj[index].flags_1fc & APIOBJECT_FLAG_IN_USE) == 0) {
                 continue;
             }
-            if ((Obj[index].flags_1f8 & APIOBJECT_CREATURE) != 0 && Obj[index].ai_packet.creature_index != 0xff) {
+            if ((Obj[index].flags_1f8 & APIOBJECT_CREATURE) != 0 && Obj[index].ai_packet.creature_index != AIPACKET_NO_CREATURE) {
                 creature = &system->creatures[Obj[index].ai_packet.creature_index];
                 if (creature != NULL && NuStrICmp(creature->name, name) == 0) {
                     object = &Obj[index];
@@ -1259,7 +1259,7 @@ NUVEC *GetAICreatureOrigin(AISYS *system, AIPACKET *packet) {
     AICREATURE *creature;
     NUVEC offset;
     i32 across;
-    if (system == NULL || packet == NULL || packet->creature_index == 0xff) {
+    if (system == NULL || packet == NULL || packet->creature_index == AIPACKET_NO_CREATURE) {
         return NULL;
     }
     if ((packet->navigation_flags & 8u) == 0) {
@@ -1753,7 +1753,7 @@ void AIPathCnxControlSysUpdate(AI_CONTROL_SYSTEM *system) {
                 }
                 break;
             case 8:
-                if (((GIZOBSTACLE *)controller->target)->anim_set->state != 2) {
+                if (((GIZOBSTACLE *)controller->target)->anim_set->state != GAMEANIMSET_STATE_AT_END) {
                     active = 0;
                 }
                 break;
@@ -2095,7 +2095,7 @@ GAMEOBJECT *AddDynamicCreature(i32 model, NUVEC *position, i32 angle, char *scri
         object->flags_1f8 ^= 0x100;
         memset(&object->ai_packet.path_info, 0, sizeof(object->ai_packet.path_info));
         object->ai_packet.inside_path_node = -1;
-        object->ai_packet.current_route = 0xff;
+        object->ai_packet.current_route = AIPACKET_NO_ROUTE;
         object->ai_packet.next_route = 0;
         if (spline == NULL) {
             if (path_info != NULL) {
@@ -2291,7 +2291,7 @@ u32 GameAI_TotalScore(void) {
     i32 i;
     for (i = 0; i < HIGHGAMEOBJECT; i++, object++) {
         if ((object->flags_1fc & APIOBJECT_FLAG_IN_USE) != 0 && (object->flags_1f8 & APIOBJECT_CREATURE) != 0 &&
-            object->ai_packet.creature_index != 0xff) {
+            object->ai_packet.creature_index != AIPACKET_NO_CREATURE) {
             config = object->character_data->game_character;
             if ((config->flags_090 & CHARACTER_RUNTIME_CAN_TAKE_OVER) == 0 && object->id != id_GONKDROID) {
                 total += (u16)config->coin_value;
@@ -2654,7 +2654,7 @@ void GameAIProcess(void) {
                     GameObjectOrigin(object);
                     AddGameDebris(WORLD->game_debris_sys, 0x5c, &object->collision_position);
                 } else if ((object->ai_packet.route_flags & 0x10) != 0) {
-                    object->ai_packet.current_route = 0xff;
+                    object->ai_packet.current_route = AIPACKET_NO_ROUTE;
                     object->route_character_id = -1;
                     object->route_frame_state = 0;
                 } else if ((0x40 & (object->ai_packet.route_flags)) != 0 &&

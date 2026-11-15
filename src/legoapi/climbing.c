@@ -317,7 +317,7 @@ void Climb_MoveCode(GAMEOBJECT *object) {
         if (object->context_variant == 5) {
             Climb_SetMagnetAction(object);
             Climb_SetMagnetDrawOffsetTarget(object, &object->context_position_offset);
-            object->flags_e24 |= 0x2000;
+            object->flags_e24 |= APIOBJECT_MAGNET_CLIMB;
             if (object->pad->input_magnitude > 0.0f) {
                 u16 lean = RotDiff(object->movement_facing_angle, input_angle);
                 object->tertiary_lean_angle = SeekRot(object->tertiary_lean_angle, lean, 9.0f);

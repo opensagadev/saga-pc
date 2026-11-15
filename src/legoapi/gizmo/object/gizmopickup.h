@@ -11,6 +11,28 @@ struct gameobject_s;
 
 typedef void (*GAME_MESSAGE_CALLBACK)(struct game_message_s *);
 
+/* add_game_message_s.flags, game_message_s.flags: what UpdateGameMessages, TransformGameMessages and
+ * DrawGameMessages do with a message. The easing bits pick the curve of the move and scale progress. */
+#define GAMEMSG_WORLD_POSITION 0x1      /* the position is in the world: projected to the screen */
+#define GAMEMSG_FOLLOW 0x2              /* projected every frame, not only the first */
+#define GAMEMSG_WORLD_SCALE 0x4         /* the scale is a world width, projected with the position */
+#define GAMEMSG_DRAW_MOVE 0x8           /* drawn on the way from the position to target_position */
+#define GAMEMSG_MOVE 0x10               /* the position moves to target_position over the duration */
+#define GAMEMSG_DRAW_SCALE 0x20         /* drawn scaled on the way to target_scale */
+#define GAMEMSG_SCALE 0x40              /* the scale moves to target_scale over the duration */
+#define GAMEMSG_ONE_FRAME 0x80          /* no duration: expires at its first update */
+#define GAMEMSG_EASE_IN 0x100           /* progress 1 - cos(t * 90) */
+#define GAMEMSG_EASE_OUT 0x200          /* progress sin(t * 90) */
+#define GAMEMSG_ARC 0x400               /* progress sin(t * 180): out and back */
+#define GAMEMSG_DIP 0x800               /* progress 1 - sin(t * 180) */
+#define GAMEMSG_KEEP 0x1000             /* never taken over when all 128 slots are in use */
+#define GAMEMSG_TEXT_POINTER 0x2000     /* the text is kept as a pointer, not copied */
+#define GAMEMSG_FADE 0x4000             /* the alpha fades out linearly */
+#define GAMEMSG_FADE_SMOOTH 0x8000      /* the alpha fades out along a cosine */
+#define GAMEMSG_OBJECT_ALPHA 0x10000    /* an object message is drawn with the message's alpha */
+#define GAMEMSG_OBJECT_NO_ALPHA 0x20000 /* an object message is drawn with DrawPanel3DObjectNoAlpha */
+#define GAMEMSG_BEHIND_CAMERA 0x40000   /* still drawn when the position is behind the camera */
+
 #ifdef __cplusplus
 extern "C" {
 #endif

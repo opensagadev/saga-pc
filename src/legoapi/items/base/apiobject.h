@@ -215,6 +215,17 @@ extern "C" {
 #define APIOBJECT_PREFERS_PLAYERS 0x40000000        /* PrefersPlayers */
 #define APIOBJECT_NO_GRAVITY 0x80000000u            /* ApplyGravity FALSE */
 
+/* gameobject_s.flags_e24: movement runtime bits, from their setters. */
+#define APIOBJECT_GOT_VICTIM 0x1             /* a lunge ate its target (Condition_GotVictim); killed when the eating ends */
+#define APIOBJECT_CABLE_TARGET_FOUND 0x10    /* CableTargetGameObject found a target for the cable in range */
+#define APIOBJECT_TELEPORT_WAITING 0x20      /* an active player waits at a teleport for the other one */
+#define APIOBJECT_ACTION_TAPPED 0x40         /* the action button was released within 0.25 s of its press */
+#define APIOBJECT_GRAPPLE_AT_MAX_LENGTH 0x80 /* the grapple rope is let out to Grapple_MaximumLength */
+#define APIOBJECT_PUNCH_LANDED 0x100         /* the last punch hit something (the hit debris is the next type) */
+#define APIOBJECT_AT_INTERFACE 0x200         /* working a panel or the hat machine (no droid self-destruct) */
+#define APIOBJECT_MAGNET_CLIMB 0x2000        /* climbing a magnet surface (context variant 5): the lean is kept */
+#define APIOBJECT_DETONATOR_THROW 0x4000     /* the detonator's release frame passed: ThermalDetonator_Throw after the animation */
+
 /* gameobject_s.flags_ef0: AI script actions. */
 #define APIOBJECT_IGNORE_SHOVE_SYSTEM 0x1           /* IgnoreShoveSystem */
 #define APIOBJECT_CANNOT_BE_SEEN 0x2                /* CannotBeSeen */
@@ -364,6 +375,11 @@ typedef struct APIDEBRISSYS {        // size 0xc
 #define AIPACKET_CIRCLE_CLOCKWISE 0x200        /* SetCircleDirection Clockwise / AntiClockwise / Reverse / Random */
 #define AIPACKET_PATH_BLOCKED 0x400000         /* the PathBlocked and CannotReachDestination conditions */
 #define AIPACKET_FORMATION_COMMANDER 0x1000000 /* SetFormationCommander */
+
+/* AIPACKET.creature_index and .current_route when the packet has none (creature.c sets the index of a creature; the route
+ * follower clears the route). */
+#define AIPACKET_NO_CREATURE 0xff
+#define AIPACKET_NO_ROUTE 0xff
 
 struct AIPACKET { // size 0x20c
 

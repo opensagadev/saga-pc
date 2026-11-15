@@ -249,7 +249,7 @@ void UpdatePaintPuzzle(WORLDINFO *world) {
             } else {
                 for (i = 0; i < 3; i++) {
                     if (GizmoGetOutput(world->gizmo_sys, paintpanel[i], 0, 0) != 0 &&
-                        ((GIZOBSTACLE *)paintobst[i]->object)->anim_set->state == 0) {
+                        ((GIZOBSTACLE *)paintobst[i]->object)->anim_set->state == GAMEANIMSET_STATE_AT_START) {
                         GizObstacle_PlayForwards(paintobst[i]->object);
                     }
                 }
@@ -1268,7 +1268,7 @@ void KaminoC_Reset(WORLDINFO *world) {
         NuSpecialSetVisibility(&disco_on_spin[i], 0);
         if (netclient == 0) {
             GizmoSetVisibility(world->gizmo_sys, disco_off_spina[i], 1, 0);
-            if (((GIZFORCE_READER *)disco_off_spina[i]->object)->anim_set->state == 0) {
+            if (((GIZFORCE_READER *)disco_off_spina[i]->object)->anim_set->state == GAMEANIMSET_STATE_AT_START) {
                 GizmoActivate(world->gizmo_sys, disco_off_spina[i], 1, 0);
             }
         }

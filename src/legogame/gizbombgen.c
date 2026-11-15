@@ -236,7 +236,7 @@ void GizBombGens_Update(void *world_pointer, void *system_pointer, f32 delta_tim
                 }
             } else {
                 GameAnimSet_Play(generator->anim_set, 1.0f, 1);
-                if (generator->anim_set->state == 2) {
+                if (generator->anim_set->state == GAMEANIMSET_STATE_AT_END) {
                     NUVEC position;
                     GameAnimSet_GetAveragePos(generator->anim_set, &position, 2, 1, 1);
                     if (netclient == 0) {

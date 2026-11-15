@@ -683,6 +683,22 @@ struct NetworkObject { // size 0x18
     void *replicator_data;        // 0x14
 };
 
+/* NetworkObjectManager message types: the first byte of each message, named by the Receive*Message handler
+ * NetworkObjectManager::Receive calls for it. */
+#define NETOBJ_MSG_GUID_GROUP 0
+#define NETOBJ_MSG_CONSTRUCTOR 1
+#define NETOBJ_MSG_REPLICA 2
+#define NETOBJ_MSG_ACQUIRE 3
+#define NETOBJ_MSG_ACQUIRED 4
+#define NETOBJ_MSG_ADOPTED 5
+#define NETOBJ_MSG_RELEASE 6
+#define NETOBJ_MSG_REMOTE_CALL 7
+#define NETOBJ_MSG_OBJECT_CALL 8
+#define NETOBJ_MSG_START 9
+#define NETOBJ_MSG_STOP 10
+#define NETOBJ_MSG_STATUS 11
+#define NETOBJ_MSG_CONTINUITY_BREAK 12
+
 /* Network object system (listener channel 3, TTNetwork+0x3780). */
 class NetworkObjectManager : public NetListenerInterface, public EdObjectNotifier { // size 0xd970
   public:

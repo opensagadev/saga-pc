@@ -211,7 +211,7 @@ GIZMOBLOWUP *DeathStar2BattleD_InZapRange(GAMEOBJECT *object) {
         }
         blowup = LevGizmo[i]->object;
         if ((blowup->status_flags & BLOWUP_STATUS_ACTIVE) && !(blowup->status_flags & BLOWUP_STATUS_BLOWN_UP) && LevGizObst[i] != NULL &&
-            LevGizObst[i]->anim_set->state != 0) {
+            LevGizObst[i]->anim_set->state != GAMEANIMSET_STATE_AT_START) {
             distance = NuVecDistSqr(&object->collision_position, &blowup->mid_position, NULL);
             if (distance < nearest_distance) {
                 nearest_distance = distance;
@@ -1190,7 +1190,7 @@ void SarlaccPitB_Update(WORLDINFO *world) {
         panel = GizmoFindByName(world->gizmo_sys, gizspecial_gizmotype_id, "qaz_panel2");
         GizmoGetOutput(world->gizmo_sys, panel, 0, 0);
         ready = GizBuildIt_AtEnd(SarlaccLevelBuildits[0]) && GizBuildIt_AtEnd(SarlaccLevelBuildits[1]) &&
-                ((struct GIZSPECIAL_s *)panel->object)->anim_set->state == 2;
+                ((struct GIZSPECIAL_s *)panel->object)->anim_set->state == GAMEANIMSET_STATE_AT_END;
         if (ready && sarlaccdisco.complete_message->value == 0.0f) {
             SetGizAIMessage(gizaimessagesys, "discoflooropen", 1.0f, NULL);
         }

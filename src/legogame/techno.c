@@ -393,7 +393,7 @@ static i32 Techno_GetOutput(GIZMO *gizmo, i32 output, i32 include_inactive) {
         case 3:
             if (NuStrICmp(((TECHNO_GIZMO_TYPE_NAME *)gizmotypes->types)[techno->controlled_object->type_id].name, "GIZOBSTACLE") == 0) {
                 target = techno->controlled_object;
-                return ((TECHNO_OBSTACLE_VIEW *)target->object)->anim_set->state == 2;
+                return ((TECHNO_OBSTACLE_VIEW *)target->object)->anim_set->state == GAMEANIMSET_STATE_AT_END;
             }
     }
     return 0;

@@ -2290,7 +2290,7 @@ f32 Condition_CharacterRange(AISYS *system, AISCRIPTPROCESS *process, AIPACKET *
 
 f32 Condition_BeenSpawned(AISYS *system, AISCRIPTPROCESS *process, AIPACKET *packet, char *name, void *argument) {
     // MATCH-EXCEPTION: unknown_280 is a signed char in the original (compared with -1); the header declares u8
-    if (packet != NULL && packet->owner != NULL && packet->owner->player_index == -1 && packet->creature_index == 0xff) {
+    if (packet != NULL && packet->owner != NULL && packet->owner->player_index == -1 && packet->creature_index == AIPACKET_NO_CREATURE) {
         return 1.0f;
     }
     return 0.0f;
@@ -2628,7 +2628,7 @@ f32 Condition_TakeOverRange(AISYS *system, AISCRIPTPROCESS *process, AIPACKET *p
 }
 
 f32 Condition_GotVictim(AISYS *system, AISCRIPTPROCESS *process, AIPACKET *packet, char *name, void *argument) {
-    if (packet != NULL && packet->owner != NULL && (packet->owner->flags_e24 & 1) != 0) {
+    if (packet != NULL && packet->owner != NULL && (packet->owner->flags_e24 & APIOBJECT_GOT_VICTIM) != 0) {
         return 1.0f;
     }
     return 0.0f;
@@ -3100,7 +3100,7 @@ i32 Action_Activate(AISYS *system, AISCRIPTPROCESS *processor, AIPACKET *packet,
         candidate = Obj;
         for (index = 0; index < HIGHGAMEOBJECT; ++index, ++candidate) {
             if ((candidate->flags_1fc_word & APIOBJECT_FLAG_IN_USE) && candidate->ai_packet.creature_set == creature_set) {
-                if (candidate->ai_packet.creature_index == 0xff) {
+                if (candidate->ai_packet.creature_index == AIPACKET_NO_CREATURE) {
                     candidate->flags_1fc_word |= APIOBJECT_FLAG_CHARACTER;
                     AIScriptSetBaseScriptStateByName(&candidate->ai_packet.script_processor, "Base");
                 } else {
@@ -3110,7 +3110,7 @@ i32 Action_Activate(AISYS *system, AISCRIPTPROCESS *processor, AIPACKET *packet,
             }
         }
     } else if (object != NULL) {
-        if (object->ai_packet.creature_index == 0xff) {
+        if (object->ai_packet.creature_index == AIPACKET_NO_CREATURE) {
             object->flags_1fc_word |= APIOBJECT_FLAG_CHARACTER;
             AIScriptSetBaseScriptStateByName(&object->ai_packet.script_processor, "Base");
         } else {
@@ -3387,7 +3387,7 @@ i32 Action_SetSide(AISYS *sys, AISCRIPTPROCESS *processor, AIPACKET *packet, cha
                         object->flags_1f8 |= APIOBJECT_SIDE_GOODIE_BADDIE;
                         break;
                     case 3:
-                        if ((object->flags_1f8 & APIOBJECT_CREATURE) != 0 && object->ai_packet.creature_index != 0xff) {
+                        if ((object->flags_1f8 & APIOBJECT_CREATURE) != 0 && object->ai_packet.creature_index != AIPACKET_NO_CREATURE) {
                             creature = sys->creatures + object->ai_packet.creature_index;
                             model_flags = apicharsys->char_data[creature->type].model_flags;
                             if ((model_flags & 0x200) != 0) {
@@ -3446,7 +3446,7 @@ i32 Action_SetSide(AISYS *sys, AISCRIPTPROCESS *processor, AIPACKET *packet, cha
                             candidate->flags_1f8 |= APIOBJECT_SIDE_GOODIE_BADDIE;
                             break;
                         case 3:
-                            if ((candidate->flags_1f8 & APIOBJECT_CREATURE) != 0 && candidate->ai_packet.creature_index != 0xff) {
+                            if ((candidate->flags_1f8 & APIOBJECT_CREATURE) != 0 && candidate->ai_packet.creature_index != AIPACKET_NO_CREATURE) {
                                 creature = sys->creatures + candidate->ai_packet.creature_index;
                                 model_flags = apicharsys->char_data[creature->type].model_flags;
                                 if ((model_flags & 0x200) != 0) {
@@ -4218,7 +4218,7 @@ i32 Action_BigJump(AISYS *sys, AISCRIPTPROCESS *processor, AIPACKET *packet, cha
             }
         }
 
-        if (to_origin != 0 && (object->flags_1f8 & APIOBJECT_CREATURE) != 0 && object->ai_packet.creature_index != 0xff) {
+        if (to_origin != 0 && (object->flags_1f8 & APIOBJECT_CREATURE) != 0 && object->ai_packet.creature_index != AIPACKET_NO_CREATURE) {
             creature = &sys->creatures[object->ai_packet.creature_index];
             StartBigJump(object, &creature->position, slam, jump_factor, 1.0f, 0);
             object->ai_packet.path_info = creature->path_info;
@@ -4385,7 +4385,7 @@ i32 Action_SnapToOrigin(AISYS *sys, AISCRIPTPROCESS *processor, AIPACKET *packet
         }
     }
 
-    if (object == NULL || (object->flags_1f8 & APIOBJECT_CREATURE) == 0 || object->ai_packet.creature_index == 0xff) {
+    if (object == NULL || (object->flags_1f8 & APIOBJECT_CREATURE) == 0 || object->ai_packet.creature_index == AIPACKET_NO_CREATURE) {
         return 1;
     }
 
@@ -7707,7 +7707,7 @@ i32 Action_GoToOriginalPath(AISYS *sys, AISCRIPTPROCESS *processor, AIPACKET *pa
         return 1;
     }
     object = packet->owner->objptr;
-    if (sys == NULL || sys->path_sys == NULL || (object->flags_1f8 & APIOBJECT_CREATURE) == 0 || object->ai_packet.creature_index == 0xff) {
+    if (sys == NULL || sys->path_sys == NULL || (object->flags_1f8 & APIOBJECT_CREATURE) == 0 || object->ai_packet.creature_index == AIPACKET_NO_CREATURE) {
         return 0;
     }
     original_path = sys->creatures[packet->creature_index].path_info.path;

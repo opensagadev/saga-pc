@@ -638,13 +638,13 @@ void Punch_Hit(GAMEOBJECT *attacker, GAMEOBJECT *target, f32 unused, f32 gap) {
     if (hit_position == NULL) {
         goto finish;
     }
-    attacker->flags_e24 |= 0x100;
+    attacker->flags_e24 |= APIOBJECT_PUNCH_LANDED;
     if (attacker->player_controlled) {
         GameCam_HitJudder();
     }
     goto extra;
 finish:
-    attacker->flags_e24 &= ~0x100;
+    attacker->flags_e24 &= ~APIOBJECT_PUNCH_LANDED;
 extra:
     if (Punch_HitExtraCodeFn != NULL) {
         Punch_HitExtraCodeFn(attacker, hit_position);

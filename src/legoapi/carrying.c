@@ -147,7 +147,7 @@ static void SuperCarry_PartKill(PART *part, i32 unused) {
     if (view->secondary_flags & 4) {
         SuperCarry_TurnBlowupBackOn(blowup, &part->position, part->rotation_y, 0);
     } else {
-        GizmoBlowUp_AddEffects(&part->position, blowup, 0, 15, NULL);
+        GizmoBlowUp_AddEffects(&part->position, blowup, 0, BLOWUP_EFFECT_DEBRIS | BLOWUP_EFFECT_PARTICLES | BLOWUP_EFFECT_PICKUPS | BLOWUP_EFFECT_EXPLOSION, NULL);
     }
 }
 
@@ -629,9 +629,9 @@ void SuperCarry_MoveCode(WORLDINFO *world, struct gameobject_s *object) {
                     i32 effect;
                     SuperCarry_GetObjectPos(object, &position, NULL);
                     blowup = object->grapple;
-                    effect = 3;
+                    effect = BLOWUP_EFFECT_DEBRIS | BLOWUP_EFFECT_PARTICLES;
                     if (blowup->effect_delay > 0.0f) {
-                        effect = 11;
+                        effect = BLOWUP_EFFECT_DEBRIS | BLOWUP_EFFECT_PARTICLES | BLOWUP_EFFECT_EXPLOSION;
                     }
                     GizmoBlowUp_AddEffects(&position, blowup, 0, effect, NULL);
                     NewRumble(object->pad->bound_pad, 0.6f, 0);
@@ -704,12 +704,12 @@ void SuperCarry_MoveCode(WORLDINFO *world, struct gameobject_s *object) {
         }
         for (i = 0; i < world->gizmo_blowup_count; ++i, ++blowup) {
             if ((blowup->status_flags & BLOWUP_STATUS_BLOWN_UP) == 0 && (blowup->status_flags & BLOWUP_STATUS_ACTIVE) != 0 &&
-                (blowup->status_flags & BLOWUP_STATUS_VISIBLE) != 0 && (blowup->status_flags & 0x8000) != 0 &&
+                (blowup->status_flags & BLOWUP_STATUS_VISIBLE) != 0 && (blowup->status_flags & BLOWUP_STATUS_DRAWN) != 0 &&
                 (blowup->secondary_flags & 1) != 0) {
                 NUVEC delta;
                 f32 distance;
                 f32 radius;
-                if ((blowup->draw_flags & 0x20) != 0 && ShadowMode == 0) {
+                if ((blowup->draw_flags & BLOWUP_OPTION_SHADOW_MODE_ONLY) != 0 && ShadowMode == 0) {
                     continue;
                 }
                 if (blowup->platform_id != -1 && object->terrain_platform_id == blowup->platform_id) {
@@ -738,7 +738,7 @@ void SuperCarry_MoveCode(WORLDINFO *world, struct gameobject_s *object) {
             ADD_GAME_MESSAGE message = AddGameMsg_Default;
             message.text = LEGOASCII_DOWN != NULL ? LEGOASCII_DOWN : txt_UNKNOWN;
             message.position = &nearest->mid_position;
-            message.flags = 0x87;
+            message.flags = GAMEMSG_WORLD_POSITION | GAMEMSG_FOLLOW | GAMEMSG_WORLD_SCALE | GAMEMSG_ONE_FRAME;
             message.unknown_4f = 4;
             message.scale = 2.0f;
             if (Player[0] != NULL && (Player[0]->flags_1fc & APIOBJECT_FLAG_PLAYER_ACTIVE) && Player[1] != NULL &&

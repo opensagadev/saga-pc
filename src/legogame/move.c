@@ -992,7 +992,7 @@ void PreResetCode(GAMEOBJECT *object) {
         reset->hold_timer += FRAMETIME;
     } else {
         if (reset->hold_timer > 0.0f && reset->hold_timer < 0.25f) {
-            object->flags_e24 |= 0x40;
+            object->flags_e24 |= APIOBJECT_ACTION_TAPPED;
         }
         object->flags_e24 &= 0xffff5fff;
         reset->hold_timer = 0.0f;
@@ -2432,7 +2432,7 @@ static i32 DeactivatedMindTrickFilter(GAMEOBJECT *target, GAMEOBJECT *owner) {
 
 void ReleaseEat(GAMEOBJECT *object) {
     GAMEOBJECT *eaten = object->force_target;
-    if (eaten != NULL && (object->flags_e24 & 1) != 0) {
+    if (eaten != NULL && (object->flags_e24 & APIOBJECT_GOT_VICTIM) != 0) {
         KillGameObject(eaten, 2, 0);
         object->force_target = NULL;
     }
@@ -2440,7 +2440,7 @@ void ReleaseEat(GAMEOBJECT *object) {
         object->force_target = NULL;
         object->character_context = CHARACTER_CONTEXT_NONE;
     }
-    object->flags_e24 &= ~1u;
+    object->flags_e24 &= ~APIOBJECT_GOT_VICTIM;
 }
 
 void GrabVictim(GAMEOBJECT *object, GAMEOBJECT *victim) {
@@ -2460,7 +2460,7 @@ void GrabVictim(GAMEOBJECT *object, GAMEOBJECT *victim) {
     } else {
         object->context_duration = 2.0f;
     }
-    object->flags_e24 &= ~1u;
+    object->flags_e24 &= ~APIOBJECT_GOT_VICTIM;
     object->context_timer = zero;
     object->context_variant_flags &= ~APIOBJECT_CONTEXT_EVENT_DONE;
     object->force_target = victim;
@@ -2534,7 +2534,7 @@ static void GrabCode(GAMEOBJECT *object) {
         target->force_target = target;
         target->force_throw_target = NULL;
         PlayDieSfx(target);
-        object->flags_e24 |= 1;
+        object->flags_e24 |= APIOBJECT_GOT_VICTIM;
     } else if ((target->character_data->game_character->flags_090 & CHARACTER_RUNTIME_GHOST) == 0) {
         u16 angle;
         NUVEC direction;
@@ -2581,7 +2581,7 @@ static void BeastCrushCode(GAMEOBJECT *object) {
     if (object->force_target != NULL) {
         KillGameObject(object->force_target, 2, 0);
     }
-    object->flags_e24 &= ~1;
+    object->flags_e24 &= ~APIOBJECT_GOT_VICTIM;
     object->context_variant_flags |= APIOBJECT_CONTEXT_EVENT_DONE;
 }
 
@@ -3709,7 +3709,7 @@ static void PunchCode(GAMEOBJECT *object, i32 pressed, i32 held, i32 require_tar
     if (StartupGameFlag1 == 0 && require_target == 0) {
         u32 player = (object->flags_1fc_word >> 7) & 1;
         if (player) {
-            if ((object->flags_e24 & 0x40) == 0) {
+            if ((object->flags_e24 & APIOBJECT_ACTION_TAPPED) == 0) {
                 return;
             }
         } else if (pressed == 0) {
@@ -6792,7 +6792,7 @@ static void FireCode(GAMEOBJECT *object, i32 pressed, i32 held, f32 fire_delay, 
                     part = TargetPart(object, &origin, &direction, range, range_squared, target_mode, bolt_id);
                     if (part != NULL) {
                         SetPartTarget(object, part);
-                    } else if ((bolt->flags_60 & 0x400) != 0) {
+                    } else if ((bolt->flags_60 & BOLT_CONVERGE) != 0) {
                         object->attack_target_position.x = direction.x * range + origin.x + object->velocity.x * bolt->unknown_14;
                         object->attack_target_position.z = direction.z * range + origin.z + object->velocity.z * bolt->unknown_14;
                         object->attack_target_position.y =
@@ -6819,7 +6819,7 @@ void CableCode(GAMEOBJECT *object, i32 special_pressed, f32 unused) {
         view->cable == NULL) {
         target = CableTargetGameObject(object, &object->collision_position, (f32)((f64)max_cable_length * (f64)0.9f));
         if (target != NULL) {
-            object->flags_e24 |= 0x10;
+            object->flags_e24 |= APIOBJECT_CABLE_TARGET_FOUND;
             if (special_pressed) {
                 view->cable = CreateCable(object, target, 1);
                 Hint_SetComplete(0x28e);
@@ -6833,7 +6833,7 @@ void CableCode(GAMEOBJECT *object, i32 special_pressed, f32 unused) {
     if ((object->flags_1fc & APIOBJECT_FLAG_PLAYER_ACTIVE) != 0 && view->candidate_kind != 0 && view->glow_candidate != NULL &&
         view->glow_alpha > 0.0f) {
         message = AddGameMessage("X", &view->glow_candidate->collision_position, AreaPickupScale * CableTargetScale, NULL, 0.0f, 0xff, 0, 0,
-                                 0x10c7, 0.0f);
+                                 GAMEMSG_WORLD_POSITION | GAMEMSG_FOLLOW | GAMEMSG_WORLD_SCALE | GAMEMSG_SCALE | GAMEMSG_ONE_FRAME | GAMEMSG_KEEP, 0.0f);
         if (message != NULL) {
             message->target_is_coin_total = 5;
             ((MESSAGE_DRAW_VIEW *)message)->draw = DrawGameMessage_Targets;
@@ -7274,7 +7274,7 @@ static void MoveAnim_Check(GAMEOBJECT *object) {
 
 static void SelfDestructCode(GAMEOBJECT *object, i32 pressed) {
     EXPLOSION *explosion;
-    if ((object->character_data->model_flags & CHARACTER_MODEL_DROID) == 0 || (object->flags_e24 & 0x200) != 0) {
+    if ((object->character_data->model_flags & CHARACTER_MODEL_DROID) == 0 || (object->flags_e24 & APIOBJECT_AT_INTERFACE) != 0) {
         return;
     }
     if (Cheat_IsOn(0x20) == 0) {
@@ -7674,7 +7674,7 @@ void Animate_BEAST(GAMEOBJECT *object) {
         } else if (object->anim_packet.requested_animation != ACTION_FALL && (object->pad->runtime_flags & GAMEPAD_AI_ATTACK) == 0 &&
                    pad->input_magnitude > 0.0f) {
             MoveAnim_Check(object);
-            if (object->anim_packet.requested_animation == ACTION_WALK && (object->flags_e24 & 1) != 0) {
+            if (object->anim_packet.requested_animation == ACTION_WALK && (object->flags_e24 & APIOBJECT_GOT_VICTIM) != 0) {
                 object->anim_packet.requested_animation = ACTION_WALK2;
             }
         }
@@ -11320,7 +11320,7 @@ void GameObjectStuffAfterAnimation(void) {
             AfterAnimationSabreCode(object, effect);
         }
         if (object->debris_joint != -1) {
-            AddGameDebris(WORLD->game_debris_sys, ((object->flags_e24 & 0x100) | 0x8a00) >> 8,
+            AddGameDebris(WORLD->game_debris_sys, ((object->flags_e24 & APIOBJECT_PUNCH_LANDED) | 0x8a00) >> 8,
                           (NUVEC *)&object->locator_matrices[object->debris_joint].m30);
         }
         if (object->character_context == CHARACTER_CONTEXT_PUNCH) {
@@ -11392,7 +11392,7 @@ void GameObjectStuffAfterAnimation(void) {
                 }
             }
         }
-        if ((object->flags_e24 & 0x4000) != 0) {
+        if ((object->flags_e24 & APIOBJECT_DETONATOR_THROW) != 0) {
             ThermalDetonator_Throw(object);
         }
         if ((object->flags_e20 & 0x02000000) != 0 && object->force_target != NULL) {
@@ -13111,7 +13111,7 @@ void PostResetCode(GAMEOBJECT *object) {
         ChatterSfx(object, object->character_data->game_character->sfx_chatter,
                    (f32)(u32)object->character_data->game_character->flags_11e);
     }
-    if (object->character_data->move_fn != Move_VEHICLE && object->tertiary_lean_angle != 0 && (object->flags_e24 & 0x2000) == 0) {
+    if (object->character_data->move_fn != Move_VEHICLE && object->tertiary_lean_angle != 0 && (object->flags_e24 & APIOBJECT_MAGNET_CLIMB) == 0) {
         object->tertiary_lean_angle = 0;
     }
 }

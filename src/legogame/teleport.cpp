@@ -627,7 +627,7 @@ extern "C" void Teleport_MoveCode(GAMEOBJECT *object, i32 start_immediately) {
         }
         if (start_immediately == 0 && (objInNetWaitContext(object, 15) == 0 || ((TELEPORT_NET_WAIT_VIEW *)object)->net_wait_info == NULL)) {
             if ((object->flags_1fc & APIOBJECT_FLAG_PLAYER_ACTIVE)) {
-                object->flags_e24 |= 0x20;
+                object->flags_e24 |= APIOBJECT_TELEPORT_WAITING;
             }
             return;
         }
@@ -664,8 +664,8 @@ extern "C" {
         if (((HINT_WORLD_TELEPORT *)WORLD)->teleport_count <= 0 || AvailableToPlayer(CHARACTER_MODEL_TELEPORT, -1, -1, 0) == 0) {
             return 0;
         }
-        if ((Player[0] != NULL && ((Player[0]->flags_e24 & 0x20) != 0 || Teleport_Find(Player[0], 1.5625f) != NULL)) ||
-            (Player[1] != NULL && ((Player[1]->flags_e24 & 0x20) != 0 || Teleport_Find(Player[1], 1.5625f) != NULL))) {
+        if ((Player[0] != NULL && ((Player[0]->flags_e24 & APIOBJECT_TELEPORT_WAITING) != 0 || Teleport_Find(Player[0], 1.5625f) != NULL)) ||
+            (Player[1] != NULL && ((Player[1]->flags_e24 & APIOBJECT_TELEPORT_WAITING) != 0 || Teleport_Find(Player[1], 1.5625f) != NULL))) {
             return 1;
         }
         return 0;

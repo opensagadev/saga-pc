@@ -103,11 +103,11 @@ void Transform_MoveCode(WORLDINFO *world, GAMEOBJECT *object) {
         max.z = object->collision_position.z + 2.0;
         for (i = 0; i < world->gizmo_blowup_count; ++i, ++candidate) {
             if ((candidate->status_flags & BLOWUP_STATUS_BLOWN_UP) || !(candidate->status_flags & BLOWUP_STATUS_ACTIVE) ||
-                !(candidate->status_flags & BLOWUP_STATUS_VISIBLE) || !(candidate->status_flags & 0x8000) ||
-                !(candidate->draw_flags & 0x10)) {
+                !(candidate->status_flags & BLOWUP_STATUS_VISIBLE) || !(candidate->status_flags & BLOWUP_STATUS_DRAWN) ||
+                !(candidate->draw_flags & BLOWUP_OPTION_TRANSFORMABLE)) {
                 continue;
             }
-            if ((candidate->draw_flags & 0x20) && ShadowMode == 0) {
+            if ((candidate->draw_flags & BLOWUP_OPTION_SHADOW_MODE_ONLY) && ShadowMode == 0) {
                 continue;
             }
             if (candidate->mid_position.x < min.x || candidate->mid_position.x > max.x || candidate->mid_position.z < min.z ||

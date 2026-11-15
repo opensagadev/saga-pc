@@ -24,6 +24,15 @@ typedef struct nucamera_s { // size 0x78
     NUVEC scale;            // 0x6c
 } NUCAMERA;
 
+/* The clip codes of a camera space point (NuCameraClipTestPoints returns the codes all points share): the side of
+ * the view volume each one lies outside of. */
+#define NUCAMERA_CLIP_LEFT 0x1
+#define NUCAMERA_CLIP_RIGHT 0x2
+#define NUCAMERA_CLIP_TOP 0x4
+#define NUCAMERA_CLIP_BOTTOM 0x8
+#define NUCAMERA_CLIP_FAR 0x10
+#define NUCAMERA_CLIP_NEAR 0x20
+
 #ifdef __cplusplus
 extern "C" {
 #endif

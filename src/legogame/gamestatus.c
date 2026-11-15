@@ -1002,7 +1002,7 @@ void GoldBrick_LSW_Update(STATUS_STAGE_s *stage, STATUSPACKET_s *packet, f32 ela
                     } else {
                         message = TTab[message_id];
                     }
-                    AddGameMessage(message, &position, 0.7f, &position, 0.7f, 255, 0, 127, 0x4020, 2.0f);
+                    AddGameMessage(message, &position, 0.7f, &position, 0.7f, 255, 0, 127, GAMEMSG_DRAW_SCALE | GAMEMSG_FADE, 2.0f);
                     if (total > 60) {
                         IncreaseScore(packet->score, 100000, 0);
                         CoinTotalScale = 1.5f;
@@ -1936,7 +1936,7 @@ void BonusWin_LSW_Update(STATUS_STAGE_s *stage, STATUSPACKET_s *packet, f32 elap
                 message.target_position = &position;
                 message.scale = 0.7f;
                 message.target_scale = 2.1f;
-                message.flags = 0x4028;
+                message.flags = GAMEMSG_DRAW_MOVE | GAMEMSG_DRAW_SCALE | GAMEMSG_FADE;
                 message.duration = 1.0f;
                 AddGameMsg(&message);
             } else if (accumulated < 2.0f && (f64)NuFmod(previous, 0.2f) < (f64)0.1f && (f64)NuFmod(stage->unknown_18, 0.2f) >= (f64)0.1f) {
@@ -2004,7 +2004,7 @@ void ChallangeCash_Update(STATUS_STAGE_s *stage, STATUSPACKET_s *packet, f32 ela
                     message.target_scale = COINTOTAL_COINSIZE;
                     message.target_position = &target;
                     message.special = &WORLD->level_objects[message.icon].special;
-                    message.flags = 0x112d;
+                    message.flags = GAMEMSG_WORLD_POSITION | GAMEMSG_WORLD_SCALE | GAMEMSG_DRAW_MOVE | GAMEMSG_DRAW_SCALE | GAMEMSG_EASE_IN | GAMEMSG_KEEP;
                     message.target_is_coin_total = 1;
                     message.duration = COINMSGTIME;
                     message.score = GizmoPickupType[2].score;
@@ -2053,7 +2053,7 @@ void ChallangeCash_Draw(STATUS_STAGE_s *stage, STATUSPACKET_s *packet, i32 curre
                     0, (i32)(iconalphaoverride * 128.0));
     }
     if (stage->unknown_14 == 1) {
-        AddGameMessage(TTab[dat_008806e8], &position, 0.7f, &position, 0.7f, 255, 0, 127, 0x4020, 2.0f);
+        AddGameMessage(TTab[dat_008806e8], &position, 0.7f, &position, 0.7f, 255, 0, 127, GAMEMSG_DRAW_SCALE | GAMEMSG_FADE, 2.0f);
     }
 }
 

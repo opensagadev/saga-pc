@@ -515,7 +515,7 @@ extern "C" {
 
         BOLT *bolt = Bolt_Add(NULL, &shot_position, &matrix, team->bolt_type, 0);
         if (bolt != NULL) {
-            Bolt[bolt->index].flags &= ~4;
+            Bolt[bolt->index].flags &= ~BOLT_NO_TERRAIN;
         }
         return 1;
     fail:

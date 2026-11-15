@@ -170,11 +170,11 @@ void Cheat_StartPowerUp(NUVEC *position, GAMEOBJECT *object) {
         NewRumbleAllPlayers(0.7f, 0.0f, 0, 0);
         Cheat_PowerUpTime = CHEAT_POWERUPTIME;
     }
-    display = AddGameMessage(TTab[POWERUP_TEXTID], position, 0.5f, position, 0.75f, 255, 255, 255, 0x4023, 1.0f);
+    display = AddGameMessage(TTab[POWERUP_TEXTID], position, 0.5f, position, 0.75f, 255, 255, 255, GAMEMSG_WORLD_POSITION | GAMEMSG_FOLLOW | GAMEMSG_DRAW_SCALE | GAMEMSG_FADE, 1.0f);
     if (display != NULL) {
         display->parameter_d4 = 0.75f;
     }
-    display = AddGameMessage(TTab[POWERUP_TEXTID], position, 0.5f, position, 0.25f, 255, 255, 255, 0x4023, 1.0f);
+    display = AddGameMessage(TTab[POWERUP_TEXTID], position, 0.5f, position, 0.25f, 255, 255, 255, GAMEMSG_WORLD_POSITION | GAMEMSG_FOLLOW | GAMEMSG_DRAW_SCALE | GAMEMSG_FADE, 1.0f);
     if (display != NULL) {
         display->parameter_d4 = 0.75f;
     }

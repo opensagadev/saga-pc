@@ -775,7 +775,7 @@ i32 NetworkObjectManager::SendPushMessage(NETMESSAGE *message, const NetPeerPush
 
 void NetworkObjectManager::SendAcquireMessage(NetworkObject *object) {
     NETMESSAGE message(0x20);
-    message.Write8(3);
+    message.Write8(NETOBJ_MSG_ACQUIRE);
     message.Write16(object->id);
     theTTNetwork.Send(message, 3, (V2Peer *)object->owner);
     message.Release();
@@ -783,7 +783,7 @@ void NetworkObjectManager::SendAcquireMessage(NetworkObject *object) {
 
 void NetworkObjectManager::SendAcquiredMessage(i16 id, const V2Peer &peer) {
     NETMESSAGE message(0x20);
-    message.Write8(4);
+    message.Write8(NETOBJ_MSG_ACQUIRED);
     message.Write16(id);
     theTTNetwork.SendEx(message, 3, (V2Peer *)&peer, 0, 0);
     message.Release();
@@ -791,7 +791,7 @@ void NetworkObjectManager::SendAcquiredMessage(i16 id, const V2Peer &peer) {
 
 void NetworkObjectManager::SendAdoptedMessage(i16 id) {
     NETMESSAGE message(0x20);
-    message.Write8(5);
+    message.Write8(NETOBJ_MSG_ADOPTED);
     message.Write16(id);
     theTTNetwork.BroadcastEx(message, 3);
     message.Release();
@@ -818,7 +818,7 @@ void NetworkObjectManager::PeerJoined(const V2Peer &peer) {
             if (i < 2) {
                 guid_peers[i] = &peer;
                 NETMESSAGE message(0x20);
-                message.Write8(0);
+                message.Write8(NETOBJ_MSG_GUID_GROUP);
                 message.Write32(i);
                 theTTNetwork.SendEx(message, 3, (V2Peer *)&peer, 0, 0);
                 message.Release();
@@ -832,7 +832,7 @@ void NetworkObjectManager::PeerJoined(const V2Peer &peer) {
     }
     if (active) {
         NETMESSAGE message(0x20);
-        message.Write8(9);
+        message.Write8(NETOBJ_MSG_START);
         message.Write(&context, sizeof(context));
         theTTNetwork.SendEx(message, 3, (V2Peer *)&peer, 0, 0);
         message.Release();
@@ -919,7 +919,7 @@ i32 NetworkObjectManager::ReleaseObject(void *object, EdClass *, i32 guid) {
         i16 id = network_object->id;
         i16 class_id = theRegistry.GetClassId(network_object->object_class);
         NETMESSAGE message(0x20);
-        message.Write8(6);
+        message.Write8(NETOBJ_MSG_RELEASE);
         message.Write16(id);
         message.Write16(class_id);
         theTTNetwork.BroadcastEx(message, 3);
@@ -942,7 +942,7 @@ void NetworkObjectManager::ContinuityBreak(i32 id, f32) {
         NETMESSAGE message(0x20);
         i16 object_id = object->id;
         i16 class_id = theRegistry.GetClassId(object->object_class);
-        message.Write8(12);
+        message.Write8(NETOBJ_MSG_CONTINUITY_BREAK);
         message.Write16(object_id);
         message.Write16(class_id);
         theTTNetwork.BroadcastEx(message, 3);
@@ -962,7 +962,7 @@ void NetworkObjectManager::ConstructObject(NetworkObject *object, NetPeerPush *p
     i16 size = object_interface->GetConstructorData(object->object, constructor_data, sizeof(constructor_data));
     i16 class_id = theRegistry.GetClassId(object->object_class);
     NETMESSAGE *message = push->GetReliableMessage(size + 10);
-    message->Write8(1);
+    message->Write8(NETOBJ_MSG_CONSTRUCTOR);
     message->Write16(object->id);
     message->Write16(class_id);
     message->Write16(size);
@@ -1106,7 +1106,7 @@ i32 NetworkObjectManager::Push(const NetworkObject *object, NetReplicator *repli
     i16 class_id = (i16)theRegistry.GetClassId(object->object_class);
     i16 flags = object->flags;
     i16 replicator_id = replicator->id;
-    message->Write8(2);
+    message->Write8(NETOBJ_MSG_REPLICA);
     message->Write16(object_id);
     message->Write16(class_id);
     message->Write16(replicator_id);
@@ -1424,7 +1424,7 @@ void NetworkObjectManager::ReceiveStartMessage(NETMESSAGE &message, const V2Peer
                 peer_push[i].Stop();
             }
             NETMESSAGE reply(0x20);
-            reply.Write8(11);
+            reply.Write8(NETOBJ_MSG_STATUS);
             reply.Write32(accepted);
             reply.Write(&context, sizeof(context));
             theTTNetwork.SendEx(reply, 3, (V2Peer *)&peer, 0, 0);
@@ -1503,7 +1503,7 @@ void NetworkObjectManager::Start(const NOSContext &new_context) {
         active = 1;
         PCByteCopy(&context, &new_context, sizeof(context));
         NETMESSAGE message(0x20);
-        message.Write8(9);
+        message.Write8(NETOBJ_MSG_START);
         message.Write(&context, sizeof(context));
         theTTNetwork.BroadcastEx(message, 3);
         message.Release();
@@ -1514,7 +1514,7 @@ void NetworkObjectManager::Stop() {
     if (active) {
         active = 0;
         NETMESSAGE message(0x20);
-        message.Write8(10);
+        message.Write8(NETOBJ_MSG_STOP);
         theTTNetwork.BroadcastEx(message, 3);
         i32 i = 0;
         do {

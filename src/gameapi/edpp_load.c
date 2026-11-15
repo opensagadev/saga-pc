@@ -81,7 +81,7 @@ static void UpdateTotalPtls(DEBRIS_INFO *effect) {
     effect->max_particles = (i16)(effect->max_particles * (effect->trail_count + 1));
     for (i = 0; i < 512; ++i) {
         i32 id = edpp_ptls[i].instance_id;
-        if (id != -1 && id != 99999) {
+        if (id != -1 && id != EDPP_SHELVED) {
             if (debtab[debkeydata[id].effect_index] == effect) {
                 DebReAlloc(&debkeydata[id], effect->max_particles);
             }
@@ -195,15 +195,15 @@ void cbPtlSelTextureType(eduimenu_s *menu, eduiitem_s *item, u32 unused2) {
             debtab[debkeydata[edpp_ptls[edpp_nearest].instance_id].effect_index]->particle_type == DEBRIS_PARTICLE_GLASS) {
             i32 index;
             for (index = 0; index < 512; ++index) {
-                if (edpp_ptls[index].effect_index == type && edpp_ptls[index].instance_id != -1 && edpp_ptls[index].instance_id != 99999) {
+                if (edpp_ptls[index].effect_index == type && edpp_ptls[index].instance_id != -1 && edpp_ptls[index].instance_id != EDPP_SHELVED) {
                     DebFreeInstantly(&edpp_ptls[index].instance_id);
-                    edpp_ptls[index].instance_id = 99999;
+                    edpp_ptls[index].instance_id = EDPP_SHELVED;
                 }
             }
             effect->particle_type = ((u8)(item->data));
             GenericDebinfoDmaTypeUpdate(effect);
             for (index = 0; index < 512; ++index) {
-                if (edpp_ptls[index].effect_index != type || edpp_ptls[index].instance_id != 99999) {
+                if (edpp_ptls[index].effect_index != type || edpp_ptls[index].instance_id != EDPP_SHELVED) {
                     continue;
                 }
                 edpp_ptls[index].instance_id = -1;
@@ -225,7 +225,7 @@ void cbPtlSelTextureType(eduimenu_s *menu, eduiitem_s *item, u32 unused2) {
                     edppLoadDebrisSetGroupID(edpp_ptls[index].instance_id, edpp_ptls[index].render_group);
                     DebrisSetRoomID(edpp_ptls[index].instance_id, EdppPageScenes[edpp_ptls[index].page]);
                 } else {
-                    edpp_ptls[index].instance_id = 99999;
+                    edpp_ptls[index].instance_id = EDPP_SHELVED;
                 }
             }
         } else {
@@ -358,7 +358,7 @@ void cbPtlQuickDeleteMenu(eduimenu_s *menu, eduiitem_s *unused1, u32 unused2) {
 
             used = 0;
             for (index = 0; index < 512; ++index) {
-                if (edpp_ptls[index].instance_id != -1 && edpp_ptls[index].instance_id != 99999 && edpp_ptls[index].effect_index == type) {
+                if (edpp_ptls[index].instance_id != -1 && edpp_ptls[index].instance_id != EDPP_SHELVED && edpp_ptls[index].effect_index == type) {
                     used = 1;
                     break;
                 }
@@ -490,7 +490,7 @@ i32 edppLoadPage(char *path, i8 flag, NUGSCN *scene) {
                 edpp_ptls[index].start_offset = 0.0f;
             }
             EdFileRead(edpp_ptls[index].name, 16);
-            edpp_ptls[index].instance_id = 99999;
+            edpp_ptls[index].instance_id = EDPP_SHELVED;
             edpp_ptls[index].effect_index = LookupDebrisEffectPageOnly(edpp_ptls[index].name, (char)(page_index));
             if (edpp_ptls[index].effect_index == -1) {
                 ++edpp_num_orphans;

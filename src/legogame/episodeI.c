@@ -1104,7 +1104,7 @@ void UpdatePacemakerDisplay(WORLDINFO *world) {
             position.x = PodPacemaker->upper_position.x;
             position.y = (f32)(PodPacemaker->upper_position.y + 0.75);
             position.z = PodPacemaker->upper_position.z;
-            message = AddGameMessage(" ", &position, PodPacemakerTextScale, NULL, 0.0f, 0xff, 0x3f, 0x3f, 0x10083, 0.0f);
+            message = AddGameMessage(" ", &position, PodPacemakerTextScale, NULL, 0.0f, 0xff, 0x3f, 0x3f, GAMEMSG_WORLD_POSITION | GAMEMSG_FOLLOW | GAMEMSG_ONE_FRAME | GAMEMSG_OBJECT_ALPHA, 0.0f);
             if (message != NULL) {
                 message->alpha = (u8)(NuTrigTable[(i32)(pod_pacemaker_alpha * 16384.0) >> 1 & 0x7fff] * 128.0);
                 message->icon = 0x134;
@@ -1701,7 +1701,7 @@ static void PodSprint_UpdatePacemaker(WORLDINFO *world) {
     if ((f64)NuFmod(GameTimer.time_elapsed_mod_seconds, 0.2f) < (f64)0.1f) {
         position = PODSPRINT_STATE->pacemaker->upper_position;
         position.y += PodSprintArrowHeight;
-        message = AddGameMessage(" ", &position, PodSprintArrowSize, NULL, 0.0f, 0xff, 0x3f, 0x3f, 0x10083, 0.0f);
+        message = AddGameMessage(" ", &position, PodSprintArrowSize, NULL, 0.0f, 0xff, 0x3f, 0x3f, GAMEMSG_WORLD_POSITION | GAMEMSG_FOLLOW | GAMEMSG_ONE_FRAME | GAMEMSG_OBJECT_ALPHA, 0.0f);
         if (message != NULL) {
             message->alpha = (u8)(NuTrigTable[(i32)(PODSPRINT_STATE->arrow_timer * 16384.0) >> 1 & 0x7fff] * 128.0);
             message->icon = 0x134;

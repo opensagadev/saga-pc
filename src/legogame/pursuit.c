@@ -89,7 +89,7 @@ static void UpdateZamArrow(WORLDINFO *world) {
     if (NuFmod(GameTimer.time_elapsed_mod_seconds, 0.2f) < (f64)0.1f) {
         position = zamarrow.object->upper_position;
         position.y += zamarrow_height;
-        message = AddGameMessage(" ", &position, zamarrow_message_size, NULL, 0.0f, 0xff, 0x3f, 0x3f, 0x10083, 0.0f);
+        message = AddGameMessage(" ", &position, zamarrow_message_size, NULL, 0.0f, 0xff, 0x3f, 0x3f, GAMEMSG_WORLD_POSITION | GAMEMSG_FOLLOW | GAMEMSG_ONE_FRAME | GAMEMSG_OBJECT_ALPHA, 0.0f);
         if (message != NULL) {
             message->alpha = (u8)(i32)(NU_SIN_LUT(zamarrow.timer * 16384.0) * 128.0);
             message->icon = 0x134;

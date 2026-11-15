@@ -31,6 +31,16 @@ extern "C" {
 }
 #endif
 
+/* bolt_s.flags, BOLTTYPE_s.flags_60: the bolt type keywords of BoltType_ConfigKeywords that set them; a bolt
+ * starts with its type's flags. */
+#define BOLT_NO_TERRAIN 0x4                /* no_terrain */
+#define BOLT_CAN_ONLY_HIT_PLAYERS 0x80     /* canonlyhitplayers */
+#define BOLT_NO_DEFLECT 0x100              /* nodeflect */
+#define BOLT_CONVERGE 0x400                /* converge */
+#define BOLT_NO_COLLIDE 0x10000            /* no_collide */
+#define BOLT_TROOPER_BOLT 0x80000          /* trooper_bolt */
+#define BOLT_SINGLE_DEBRIS 0x40000000      /* single_debris */
+
 typedef struct bolt_s {         // size 0x138
     struct BOLTTYPE_s *type;    // 0x000
     struct gameobject_s *owner; // 0x004

@@ -40,6 +40,43 @@ class ShaderCompilerParser;
 #include <vector>
 struct ShaderParserInclude;
 
+/* ShaderCompilerParser::ParseDeclaration: the token each state of the #pragma parser expects (nu2_use,
+ * nu2_declare, nu2_anchorPoint, nu2_showDefine). */
+#define SHADER_PARSE_KEYWORD 0
+#define SHADER_PARSE_SHOW_DEFINE_VALUE 1
+#define SHADER_PARSE_USE_OPEN 2
+#define SHADER_PARSE_USE_STORAGE 3
+#define SHADER_PARSE_USE_COMMA 4
+#define SHADER_PARSE_USE_NAME 5 /* after any number of '*' */
+#define SHADER_PARSE_USE_CLOSE 6
+#define SHADER_PARSE_DECLARE_OPEN 7
+#define SHADER_PARSE_DECLARE_STORAGE 8
+#define SHADER_PARSE_DECLARE_SHARED_UNIFORM 9
+#define SHADER_PARSE_DECLARE_REGISTER 10 /* vreg or freg of a uniform, or the comma */
+#define SHADER_PARSE_DECLARE_REGISTER2 11
+#define SHADER_PARSE_DECLARE_STORAGE_COMMA 12
+#define SHADER_PARSE_DECLARE_TYPE 13
+#define SHADER_PARSE_DECLARE_ARRAY 14 /* '[' or the comma */
+#define SHADER_PARSE_DECLARE_ARRAY_COUNT 15
+#define SHADER_PARSE_DECLARE_ARRAY_CLOSE 16
+#define SHADER_PARSE_DECLARE_ARRAY_COMMA 17
+#define SHADER_PARSE_DECLARE_NAME 18
+#define SHADER_PARSE_DECLARE_NAME_COMMA 19
+#define SHADER_PARSE_DECLARE_SEMANTIC 20
+#define SHADER_PARSE_DECLARE_CLOSE 21
+#define SHADER_PARSE_ANCHOR_OPEN 22
+#define SHADER_PARSE_ANCHOR_STORAGE 23
+#define SHADER_PARSE_ANCHOR_CLOSE 24
+#define SHADER_PARSE_DONE 26
+
+/* ShaderCompilerParser::ProcessDirective: the token each state of the directive parser expects. */
+#define SHADER_DIRECTIVE_KEYWORD 0
+#define SHADER_DIRECTIVE_DEFINE_NAME 1
+#define SHADER_DIRECTIVE_DEFINE_VALUE 2
+#define SHADER_DIRECTIVE_UNDEF_NAME 3
+#define SHADER_DIRECTIVE_INCLUDE_PATH 4
+#define SHADER_DIRECTIVE_DONE 5
+
 class ShaderCompilerParser { // size 0x45c
   public:
     char include_directories[0x100];             // 0x000

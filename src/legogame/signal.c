@@ -221,7 +221,7 @@ void Signals_Update(WORLDINFO *world, void *unused, f32 unused_time) {
                 message.green = 0xff;
                 message.blue = 0;
                 message.alpha = 0x30;
-                message.flags = 0x87;
+                message.flags = GAMEMSG_WORLD_POSITION | GAMEMSG_FOLLOW | GAMEMSG_WORLD_SCALE | GAMEMSG_ONE_FRAME;
                 AddGameMsg(&message);
                 target_scale = 1.0f;
             }
@@ -553,7 +553,7 @@ void SuitBlowupCode(WORLDINFO *world, GAMEOBJECT *object) {
                 continue;
             }
             draw = blowup->draw_flags;
-            if ((draw & 0x40) == 0 || ((draw & 0x20) != 0 && ShadowMode == 0)) {
+            if ((draw & BLOWUP_OPTION_CARRIED_ONLY) == 0 || ((draw & BLOWUP_OPTION_SHADOW_MODE_ONLY) != 0 && ShadowMode == 0)) {
                 continue;
             }
             if (blowup->mid_position.x < minimum.x || blowup->mid_position.x > maximum.x || blowup->mid_position.z < minimum.z ||

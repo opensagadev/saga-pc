@@ -286,7 +286,7 @@ void ManageGameObjects(void) {
         }
         if ((object->flags_1f8 & 0x40000) == 0) {
             if ((object->flags_1fc_word & APIOBJECT_FLAG_CHARACTER) == 0) {
-                if (object->ai_packet.creature_index == 0xff) {
+                if (object->ai_packet.creature_index == AIPACKET_NO_CREATURE) {
                     if (object->ai_packet.reset_mode == 1) {
                         object->ai_packet.spawn_delay -= FRAMETIME;
                         if (object->ai_packet.spawn_delay <= 0.0f) {
@@ -541,7 +541,7 @@ void ManageGameObjects(void) {
                     }
                 }
             }
-        } else if (nethost != 0 && (object->flags_1fc_word & APIOBJECT_FLAG_CHARACTER) == 0 && object->ai_packet.creature_index == 0xff &&
+        } else if (nethost != 0 && (object->flags_1fc_word & APIOBJECT_FLAG_CHARACTER) == 0 && object->ai_packet.creature_index == AIPACKET_NO_CREATURE &&
                    object->ai_packet.reset_mode != 1 && object->ai_packet.reset_mode != 3 && (object->flags_1f8 & 0x4000) != 0) {
             AIScriptProcess(WORLD->ai_sys, (APIOBJECT *)object, &object->ai_packet, &object->ai_packet.script_processor, FRAMETIME);
         }
@@ -1967,7 +1967,7 @@ i32 Tag_UpdateHint(HINT *hint) {
                 for (i = 0; found == 0 && i < 2; ++i) {
                     GAMEOBJECT *object = Player[i];
                     if (object != NULL && (object->flags_1fc & APIOBJECT_FLAG_PLAYER_ACTIVE) != 0 && object->dead == 0 &&
-                        (object->flags_e24 & 0x10) != 0) {
+                        (object->flags_e24 & APIOBJECT_CABLE_TARGET_FOUND) != 0) {
                         found = 1;
                     }
                 }
@@ -2536,7 +2536,7 @@ void UpdateGameObjects(WORLDINFO *world) {
                 message.position = &position;
                 phase = (u16)(i32)(((f64)NuFmod(GameTimer.time_elapsed_mod_seconds, 0.5f) * 2.0) * 65536.0);
                 message.alpha = (u8)(i32)(((f64)NuTrigTable[phase >> 1] * 24.0 + 104.0) * object->arrow_blend);
-                message.flags = 0x1083;
+                message.flags = GAMEMSG_WORLD_POSITION | GAMEMSG_FOLLOW | GAMEMSG_ONE_FRAME | GAMEMSG_KEEP;
                 message.unknown_4f = 4;
                 AddGameMsg(&message);
             }
@@ -2642,7 +2642,7 @@ void UpdateGameObjects(WORLDINFO *world) {
             message.green = SuperCarryPlayerRgb[i][1];
             message.blue = SuperCarryPlayerRgb[i][2];
             phase = (u16)(i32)((f64)NuFmod(GameTimer.time_elapsed_mod_seconds, 0.5f) * 2.0 * 65536.0);
-            message.flags = 0x83;
+            message.flags = GAMEMSG_WORLD_POSITION | GAMEMSG_FOLLOW | GAMEMSG_ONE_FRAME;
             message.unknown_4f = 4;
             message.alpha = (u8)(i32)((f64)NuTrigTable[phase >> 1] * 48.0 + 80.0);
             AddGameMsg(&message);

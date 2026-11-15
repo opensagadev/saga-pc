@@ -36,7 +36,7 @@ extern "C" {
     void NuSpecialConstAlpha(i32 enabled, f32 alpha);
     void NuSpecialConstTint(i32 enabled, const NUVEC *tint);
     void NuSpecialGetNext(nuhspecial_s *special);
-    i32 NuSpecialGetFirst(NUGSCN *scene, nuhspecial_s *special, i32 flags);
+    i32 NuSpecialGetFirst(NUGSCN *scene, nuhspecial_s *special, i32 report_missing);
     i32 NuSpecialGetNumSpecials(NUGSCN *scene);
     i32 NuSpecialGetOnScreenFn(nuhspecial_s *special);
     i32 NuSpecialGetVisibilityFn(nuhspecial_s *special);

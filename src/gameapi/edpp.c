@@ -88,7 +88,7 @@ struct eduimenu_s *edptl_orphanlist_menu = 0;
 
 void edppPtlDestroy(i32 index) {
     if (edpp_ptls[index].instance_id != -1) {
-        if (edpp_ptls[index].instance_id != 99999) {
+        if (edpp_ptls[index].instance_id != EDPP_SHELVED) {
             DebFreeInstantly(&edpp_ptls[index].instance_id);
         }
         --edpp_instances_used;
@@ -97,9 +97,9 @@ void edppPtlDestroy(i32 index) {
 }
 
 void edppPtlShelve(i32 index) {
-    if (edpp_ptls[index].instance_id != -1 && edpp_ptls[index].instance_id != 99999) {
+    if (edpp_ptls[index].instance_id != -1 && edpp_ptls[index].instance_id != EDPP_SHELVED) {
         DebFreeInstantly(&edpp_ptls[index].instance_id);
-        edpp_ptls[index].instance_id = 99999;
+        edpp_ptls[index].instance_id = EDPP_SHELVED;
     }
 }
 
@@ -189,12 +189,12 @@ void edppStopPage(i8 page) {
     edpp_page_on[page] = 0;
     for (index = 0; index < 512; ++index) {
         particle = &edpp_ptls[index];
-        if (particle->instance_id == -1 || particle->instance_id == 99999) {
+        if (particle->instance_id == -1 || particle->instance_id == EDPP_SHELVED) {
             continue;
         }
         if (particle->page == page) {
             DebFreeInstantly(&particle->instance_id);
-            particle->instance_id = 99999;
+            particle->instance_id = EDPP_SHELVED;
         } else if (particle->effect_index > 0 && debtab[particle->effect_index] != NULL && debtab[particle->effect_index]->page == page) {
             edppPtlDestroy(index);
         }
@@ -221,7 +221,7 @@ void edppClearPage(i8 page) {
     edpp_page_used[page] = 0;
     for (index = 0; index < 512; ++index) {
         if (edpp_ptls[index].page == page && edpp_ptls[index].instance_id != -1) {
-            if (edpp_ptls[index].instance_id != 99999) {
+            if (edpp_ptls[index].instance_id != EDPP_SHELVED) {
                 DebFreeInstantly(&edpp_ptls[index].instance_id);
             }
             --edpp_instances_used;
@@ -281,12 +281,12 @@ void edppStartPage(i32 page) {
     i32 index;
     for (index = 0; index < 512; ++index) {
         EDPP_PARTICLE *particle = &edpp_ptls[index];
-        if (particle->page == (i8)page && particle->instance_id == 99999) {
+        if (particle->page == (i8)page && particle->instance_id == EDPP_SHELVED) {
             particle->instance_id = -1;
             particle->effect_index = LookupDebrisEffectPageIgnore(particle->name, (i8)page, 0);
             edppStartSingleEffect(index);
             if (particle->instance_id == -1) {
-                particle->instance_id = 99999;
+                particle->instance_id = EDPP_SHELVED;
             }
         }
     }
@@ -299,7 +299,7 @@ void edppDetermineNearest(f32 max_distance_squared) {
     NUVEC delta;
     i32 i;
     f32 distance;
-    if (edpp_nearest != -1 && edpp_ptls[edpp_nearest].instance_id != -1 && edpp_ptls[edpp_nearest].instance_id != 99999) {
+    if (edpp_nearest != -1 && edpp_ptls[edpp_nearest].instance_id != -1 && edpp_ptls[edpp_nearest].instance_id != EDPP_SHELVED) {
         NuVecSub(&delta, &edpp_cam_pos, &edpp_ptls[edpp_nearest].position);
         distance = delta.x * delta.x + delta.y * delta.y + delta.z * delta.z;
         if (distance == 0.0f) {
@@ -308,7 +308,7 @@ void edppDetermineNearest(f32 max_distance_squared) {
     }
     edpp_nearest = -1;
     for (i = 0; i < 512; ++i) {
-        if (edpp_ptls[i].instance_id == -1 || edpp_ptls[i].instance_id == 99999) {
+        if (edpp_ptls[i].instance_id == -1 || edpp_ptls[i].instance_id == EDPP_SHELVED) {
             continue;
         }
         NuVecSub(&delta, &edpp_cam_pos, &edpp_ptls[i].position);
@@ -892,14 +892,14 @@ void edppDeleteEffect(i32 index) {
             if (particle->instance_id == -1) {
                 continue;
             }
-            if (particle->instance_id != 99999) {
+            if (particle->instance_id != EDPP_SHELVED) {
                 DebFreeInstantly(&particle->instance_id);
             }
             --edpp_instances_used;
             particle->instance_id = -1;
         } else {
             i32 handle = particle->instance_id;
-            if (handle != -1 && handle != 99999) {
+            if (handle != -1 && handle != EDPP_SHELVED) {
                 debkeydata[handle].effect_index = (i16)replacement;
             }
             particle->effect_index = replacement;
@@ -1531,7 +1531,7 @@ void edppMultipleCopyCopy(void) {
     NUVEC delta;
     edpp_copy_source_count = 0;
     for (index = 0; index < 512; ++index) {
-        if (edpp_ptls[index].instance_id == -1 || edpp_ptls[index].instance_id == 99999) {
+        if (edpp_ptls[index].instance_id == -1 || edpp_ptls[index].instance_id == EDPP_SHELVED) {
             continue;
         }
         NuVecSub(&delta, &edpp_cam_pos, &edpp_ptls[index].position);
@@ -1587,7 +1587,7 @@ void edppDoInput(FRAME_PAD *pad) {
                     if (edpp_nearest == 512) {
                         edpp_nearest = 0;
                     }
-                } while (edpp_ptls[edpp_nearest].instance_id == -1 || edpp_ptls[edpp_nearest].instance_id == 99999);
+                } while (edpp_ptls[edpp_nearest].instance_id == -1 || edpp_ptls[edpp_nearest].instance_id == EDPP_SHELVED);
             }
             if (pad->digital_buttons_pressed & PAD_BUTTON_R2) {
                 do {
@@ -1595,7 +1595,7 @@ void edppDoInput(FRAME_PAD *pad) {
                     if (edpp_nearest == -1) {
                         edpp_nearest = 511;
                     }
-                } while (edpp_ptls[edpp_nearest].instance_id == -1 || edpp_ptls[edpp_nearest].instance_id == 99999);
+                } while (edpp_ptls[edpp_nearest].instance_id == -1 || edpp_ptls[edpp_nearest].instance_id == EDPP_SHELVED);
             }
         } else {
             edppDetermineNearest(-1.0f);
@@ -1749,7 +1749,7 @@ void edppHighlightNearest(void) {
             if (edpp_ptls[index].instance_id == -1) {
                 continue;
             }
-            if (edpp_ptls[index].instance_id == 99999) {
+            if (edpp_ptls[index].instance_id == EDPP_SHELVED) {
                 continue;
             }
             NuVecSub(&delta, &edpp_cam_pos, &edpp_ptls[index].position);
@@ -2176,7 +2176,7 @@ void edptlcbDeleteOrphans(eduimenu_s *menu, eduiitem_s *unused1, u32 unused2) {
     for (index = 0; index < 512; ++index) {
         if (edpp_ptls[index].effect_index == -1) {
             if (edpp_ptls[index].instance_id != -1) {
-                if (edpp_ptls[index].instance_id != 99999) {
+                if (edpp_ptls[index].instance_id != EDPP_SHELVED) {
                     DebFreeInstantly(&edpp_ptls[index].instance_id);
                 }
                 --edpp_instances_used;
@@ -2220,7 +2220,7 @@ void edppRestartAllEffectsInLevel(void) {
             edppDebrisSetGroupID(edpp_ptls[index].instance_id, edpp_ptls[index].render_group);
             DebrisSetRoomID(edpp_ptls[index].instance_id, EdppPageScenes[edpp_ptls[index].page]);
         } else {
-            edpp_ptls[index].instance_id = 99999;
+            edpp_ptls[index].instance_id = EDPP_SHELVED;
         }
         edpp_page_on[edpp_ptls[index].page] = 1;
     }
@@ -2371,7 +2371,7 @@ void cbPtlTypeMenu(eduimenu_s *parent, eduiitem_s *unused1, u32 unused2) {
         }
         placed = 0;
         for (i = 0; i < 512; ++i) {
-            if (edpp_ptls[i].instance_id != -1 && edpp_ptls[i].instance_id != 99999 && edpp_ptls[i].effect_index == index) {
+            if (edpp_ptls[i].instance_id != -1 && edpp_ptls[i].instance_id != EDPP_SHELVED && edpp_ptls[i].effect_index == index) {
                 placed = 1;
                 break;
             }
@@ -3025,7 +3025,7 @@ void edptlcbSetDetail(eduimenu_s *unused0, eduiitem_s *item, u32 unused2) {
     if (instance_id == -1) {
         return;
     }
-    if (instance_id == 99999) {
+    if (instance_id == EDPP_SHELVED) {
         return;
     }
     edppDebrisSetDetailLevels(instance_id, edpp_ptls[edpp_nearest].detail_levels);
@@ -3809,9 +3809,9 @@ void edppApply(void) {
 void edptlcbResetParticles(eduimenu_s *unused0, eduiitem_s *unused1, u32 unused2) {
     i32 index;
     for (index = 0; index < 512; ++index) {
-        if (edpp_ptls[index].instance_id != -1 && edpp_ptls[index].instance_id != 99999) {
+        if (edpp_ptls[index].instance_id != -1 && edpp_ptls[index].instance_id != EDPP_SHELVED) {
             DebFreeInstantly(&edpp_ptls[index].instance_id);
-            edpp_ptls[index].instance_id = 99999;
+            edpp_ptls[index].instance_id = EDPP_SHELVED;
         }
     }
     edppRestartAllEffectsInLevel();
@@ -4057,7 +4057,7 @@ void edptlcbSetSoundID(eduimenu_s *menu, eduiitem_s *item, u32 unused2) {
         }
     }
     for (index = 0; index < 512; ++index) {
-        if (edpp_ptls[index].instance_id == -1 || edpp_ptls[index].instance_id == 99999) {
+        if (edpp_ptls[index].instance_id == -1 || edpp_ptls[index].instance_id == EDPP_SHELVED) {
             continue;
         }
         debkeydata[edpp_ptls[index].instance_id].process_collision_sound = 0;
@@ -4083,7 +4083,7 @@ void edptlcbSetSoundControl(eduimenu_s *menu, eduiitem_s *item, u32 unused2) {
         debtab[debkeydata[edpp_ptls[edpp_nearest].instance_id].effect_index]->sound_data[sound_index * 3 + 1] = data - (sound_index << 16);
     }
     for (index = 0; index < 512; ++index) {
-        if (edpp_ptls[index].instance_id == -1 || edpp_ptls[index].instance_id == 99999) {
+        if (edpp_ptls[index].instance_id == -1 || edpp_ptls[index].instance_id == EDPP_SHELVED) {
             continue;
         }
         for (slot = 0; slot < 4; ++slot) {
@@ -4332,7 +4332,7 @@ void edppMultipleCopyClear(void) {
 i32 edppPtlChangeType(i32 index, i32 effect_index) {
     if (edpp_ptls[index].effect_index != effect_index) {
         if (edpp_ptls[index].instance_id != -1) {
-            if (edpp_ptls[index].instance_id != 99999) {
+            if (edpp_ptls[index].instance_id != EDPP_SHELVED) {
                 DebFreeInstantly(&edpp_ptls[index].instance_id);
             }
             --edpp_instances_used;
@@ -4352,7 +4352,7 @@ void edppDestroyAllParticles(void) {
     i32 index;
     for (index = 0; index < 512; ++index) {
         if (edpp_ptls[index].instance_id != -1) {
-            if (edpp_ptls[index].instance_id != 99999) {
+            if (edpp_ptls[index].instance_id != EDPP_SHELVED) {
                 DebFreeInstantly(&edpp_ptls[index].instance_id);
             }
             --edpp_instances_used;

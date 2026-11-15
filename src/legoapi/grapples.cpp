@@ -943,7 +943,7 @@ static void Grapple_Jump(GAMEOBJECT *object) {
 }
 
 extern "C" void Grapple_MoveCode(GAMEOBJECT *object) {
-    object->flags_e24 &= ~0x80;
+    object->flags_e24 &= ~APIOBJECT_GRAPPLE_AT_MAX_LENGTH;
     if (LEGOCONTEXT_GRAPPLE == -1) {
         return;
     }
@@ -1104,14 +1104,14 @@ extern "C" void Grapple_MoveCode(GAMEOBJECT *object) {
                     object->context_hover_target_y += speed * FRAMETIME;
                     if (maximum_length < object->context_hover_target_y) {
                         object->context_hover_target_y = maximum_length;
-                        object->flags_e24 |= 0x80;
+                        object->flags_e24 |= APIOBJECT_GRAPPLE_AT_MAX_LENGTH;
                     }
                     object->context_duration = 0.0f;
                     if (0 != Grapple_RopeSwingRotate && GRAPPLE_CURRENT->disabled) {
                         object->movement_facing_angle += static_cast<i32>(FRAMETIME * (static_cast<u16>(Grapple_RopeSwingRotate)));
                     }
                 } else {
-                    object->flags_e24 |= 0x80;
+                    object->flags_e24 |= APIOBJECT_GRAPPLE_AT_MAX_LENGTH;
                     object->unknown_7aa = LEGOACT_GRAPPLE_IDLE;
                 }
             }

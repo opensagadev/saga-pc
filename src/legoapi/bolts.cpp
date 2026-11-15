@@ -680,31 +680,31 @@ extern "C" {
     }
 
     static void BT_nodeflect(NUFPAR *parser) {
-        BT_bolttype->flags_60 |= 0x100;
+        BT_bolttype->flags_60 |= BOLT_NO_DEFLECT;
     }
 
     static void BT_converge(NUFPAR *parser) {
-        BT_bolttype->flags_60 |= 0x400;
+        BT_bolttype->flags_60 |= BOLT_CONVERGE;
     }
 
     static void BT_canonlyhitplayers(NUFPAR *parser) {
-        BT_bolttype->flags_60 |= 0x80;
+        BT_bolttype->flags_60 |= BOLT_CAN_ONLY_HIT_PLAYERS;
     }
 
     static void BT_no_terrain(NUFPAR *parser) {
-        BT_bolttype->flags_60 |= 4;
+        BT_bolttype->flags_60 |= BOLT_NO_TERRAIN;
     }
 
     static void BT_no_collide(NUFPAR *parser) {
-        BT_bolttype->flags_60 |= 0x10000;
+        BT_bolttype->flags_60 |= BOLT_NO_COLLIDE;
     }
 
     static void BT_trooper_bolt(NUFPAR *parser) {
-        BT_bolttype->flags_60 |= 0x80000;
+        BT_bolttype->flags_60 |= BOLT_TROOPER_BOLT;
     }
 
     static void BT_single_debris(NUFPAR *parser) {
-        BT_bolttype->flags_60 |= 0x40000000;
+        BT_bolttype->flags_60 |= BOLT_SINGLE_DEBRIS;
     }
 
     f32 BoltShootParameter = 0.1f;
@@ -949,7 +949,7 @@ static i32 Bolt_HitPlatPrivate(BOLT *bolt, u8 *hit_flags) {
     }
     GIZMOBLOWUP *blowup = GizmoBlowUp_FindFromPlatID(WORLD, bolt->hit_platform);
     if (blowup != NULL) {
-        if ((blowup->draw_flags & 0x8000) != 0) {
+        if ((blowup->draw_flags & BLOWUP_OPTION_SHOOTABLE) != 0) {
             if ((exclude & 1) != 0 && bolt->owner != NULL) {
                 i32 field_028_positive = bolt->owner->character_data->game_character->unknown_028 > 0.0f;
                 if ((blowup->draw_flags & 0x80000) != 0 && field_028_positive) {
@@ -1036,7 +1036,7 @@ extern "C" void Bolt_HitGameObjectRC(NETMESSAGE &message) {
         cheat_deflect = 0;
     }
     NewRumble(object->pad->bound_pad, 0.5f, 0);
-    if (((bolt->flags & 0x100) == 0 || deflect) &&
+    if (((bolt->flags & BOLT_NO_DEFLECT) == 0 || deflect) &&
         ((reinterpret_cast<BOLT_CONTEXT_INFO *>(CInfo)[object->character_context].flags & 0x4000000) != 0 ||
          ((reinterpret_cast<BOLT_CONTEXT_INFO *>(CInfo)[object->character_context].flags & 0x8000000) != 0 &&
           (object->context_variant_flags & APIOBJECT_CONTEXT_INVULNERABLE) != 0) ||
@@ -1322,7 +1322,7 @@ extern "C" i32 Bolt_HitGameObjects(BOLT *bolt, NUVEC *points, NUVEC *minimum, NU
             continue;
         }
         flags = bolt->flags;
-        if ((flags & 0x80) != 0 && object->player_index == -1 && (object->rider == NULL || object->rider->player_index == -1)) {
+        if ((flags & BOLT_CAN_ONLY_HIT_PLAYERS) != 0 && object->player_index == -1 && (object->rider == NULL || object->rider->player_index == -1)) {
             continue;
         }
         if ((reinterpret_cast<BOLT_CONTEXT_INFO *>(CInfo)[object->character_context].flags & 0x8080) != 0 ||
@@ -1529,7 +1529,7 @@ extern "C" void Bolt_Init(void *storage, NETMESSAGE &message) {
     NuVecAdd(&movement, &movement, &back);
     bolt->ray_radius = bolt->collision_radius;
     bolt->ray_time = 0.2f;
-    if ((bolt->flags & 4) == 0 && Bolt_RayCastPrivate(bolt, &start, &movement)) {
+    if ((bolt->flags & BOLT_NO_TERRAIN) == 0 && Bolt_RayCastPrivate(bolt, &start, &movement)) {
         f32 offset_time = (back_distance / initial_distance) * bolt->lifetime;
         bolt->lifetime = offset_time + bolt->ray_time;
         f32 hit_time_product = NewRayCastGetTOFI() * bolt->lifetime;
@@ -1542,7 +1542,7 @@ extern "C" void Bolt_Init(void *storage, NETMESSAGE &message) {
             if (bolt->type && bolt->type->end_callback) {
                 bolt->type->end_callback(bolt);
             }
-            if ((bolt->flags & 0x10000) == 0 &&
+            if ((bolt->flags & BOLT_NO_COLLIDE) == 0 &&
                 !Bolt_HitGameObjects(bolt, points, &bolt->bounds_min, &bolt->bounds_max, bolt->collision_radius, NULL)) {
                 i32 hit = 0;
                 if ((bolt->flags & 0x13) != 0 ||
@@ -1613,7 +1613,7 @@ extern "C" void Bolts_Update(WORLDINFO *world) {
             }
         }
         BOLTTYPE *type = bolt->type;
-        if ((bolt->flags & 4) == 0) {
+        if ((bolt->flags & BOLT_NO_TERRAIN) == 0) {
             bolt->ray_time -= FRAMETIME;
             if (bolt->ray_time <= 0.0f) {
                 NUVEC movement;
@@ -1694,7 +1694,7 @@ extern "C" void Bolts_Update(WORLDINFO *world) {
                 BoltSys->debris(bolt, points, -1, NULL, 0);
             }
             Bolt_End(bolt, 1);
-            if ((bolt->flags & 0x10000) != 0) {
+            if ((bolt->flags & BOLT_NO_COLLIDE) != 0) {
                 continue;
             }
             if (Bolt_HitGameObjects(bolt, points, &bolt->bounds_min, &bolt->bounds_max, bolt->collision_radius, NULL) != 0) {
@@ -1727,7 +1727,7 @@ extern "C" void Bolts_Update(WORLDINFO *world) {
                 (bolt->flags & 0x8000) == 0) {
                 GameAudio_PlaySfx(41, &bolt->position, 0, 0);
                 Bolt_AddDeflectedBolt(bolt, &bolt->velocity, &bolt->hit_normal, processed);
-            } else if ((bolt->flags & 0x80000) == 0) {
+            } else if ((bolt->flags & BOLT_TROOPER_BOLT) == 0) {
                 Bolt_PlayHitSfx(bolt);
             }
         stop_targeting:
@@ -1744,7 +1744,7 @@ extern "C" void Bolts_Update(WORLDINFO *world) {
                                                       &bolt->velocity, type->moving_debris_counts[i], FRAMETIME, NULL, NULL, 20000, 0);
                 }
             }
-            if ((bolt->flags & 0x10000) != 0) {
+            if ((bolt->flags & BOLT_NO_COLLIDE) != 0) {
                 continue;
             }
             GAMEOBJECT *object = Obj;
@@ -1761,7 +1761,7 @@ extern "C" void Bolts_Update(WORLDINFO *world) {
                     continue;
                 }
                 u32 flags = bolt->flags;
-                if ((flags & 0x80) != 0 && object->player_index == -1 && (object->rider == NULL || object->rider->player_index == -1)) {
+                if ((flags & BOLT_CAN_ONLY_HIT_PLAYERS) != 0 && object->player_index == -1 && (object->rider == NULL || object->rider->player_index == -1)) {
                     continue;
                 }
                 if ((reinterpret_cast<BOLT_CONTEXT_INFO *>(CInfo)[object->character_context].flags & 0x8080) != 0 ||

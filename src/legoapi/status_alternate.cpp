@@ -1075,7 +1075,7 @@ extern "C" {
                     } else {
                         message = TTab[message_id];
                     }
-                    AddGameMessage(message, &position, 0.7f, &position, 0.7f, 255, 0, 127, 0x4020, 2.0f);
+                    AddGameMessage(message, &position, 0.7f, &position, 0.7f, 255, 0, 127, GAMEMSG_DRAW_SCALE | GAMEMSG_FADE, 2.0f);
                     if (packet->displayed_gold_bricks > 60) {
                         IncreaseScore(packet->score, 100000, 0);
                         CoinTotalScale = 1.5f;

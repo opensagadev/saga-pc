@@ -167,15 +167,15 @@ i32 GizmoObstacle_GetOutput(GIZMO *gizmo, i32 output, i32 ignore_activation) {
     }
     switch (output) {
         case 0:
-            return obstacle->anim_set && obstacle->anim_set->state == 2;
+            return obstacle->anim_set && obstacle->anim_set->state == GAMEANIMSET_STATE_AT_END;
         case 1:
-            return obstacle->anim_set && obstacle->anim_set->state != 0;
+            return obstacle->anim_set && obstacle->anim_set->state != GAMEANIMSET_STATE_AT_START;
         case 2:
             return obstacle->anim_set && obstacle->proximity_output != 0;
         case 3:
-            return obstacle->anim_set && obstacle->anim_set->state == 0;
+            return obstacle->anim_set && obstacle->anim_set->state == GAMEANIMSET_STATE_AT_START;
         case 4:
-            return obstacle->anim_set && obstacle->anim_set->state == 1;
+            return obstacle->anim_set && obstacle->anim_set->state == GAMEANIMSET_STATE_FORWARD;
         default:
             return 0;
     }
@@ -191,7 +191,7 @@ i32 GizmoObstacle_ActivateRev(GIZMO *gizmo, i32 activate, i32 flags) {
     if (!obstacle) {
         return 0;
     }
-    if ((obstacle->progress_flags & 0x100) && (obstacle->anim_set->state == 2 || obstacle->anim_set->state == 1)) {
+    if ((obstacle->progress_flags & 0x100) && (obstacle->anim_set->state == GAMEANIMSET_STATE_AT_END || obstacle->anim_set->state == GAMEANIMSET_STATE_FORWARD)) {
         obstacle->progress_flags = (obstacle->progress_flags & ~0x100u) | OBSTACLE_ACTIVE;
     }
     ai_active = (obstacle->runtime_flags >> 2) & 1;
@@ -691,10 +691,10 @@ static void GizObstacleUpdate_Proximity(GIZOBSTACLE *obstacle) {
         }
     }
     state = obstacle->anim_set->state;
-    if (state != 0 && state != 2 && !(WORLD->current_level == ObstacleReturnLevel && obstacle == LevGizObst[0] && state == 4)) {
+    if (state != GAMEANIMSET_STATE_AT_START && state != GAMEANIMSET_STATE_AT_END && !(WORLD->current_level == ObstacleReturnLevel && obstacle == LevGizObst[0] && state == GAMEANIMSET_STATE_PART_WAY)) {
         return;
     }
-    if (state == 2 && !obstacle->playback_state) {
+    if (state == GAMEANIMSET_STATE_AT_END && !obstacle->playback_state) {
         return;
     }
     if (!state) {
@@ -704,7 +704,7 @@ static void GizObstacleUpdate_Proximity(GIZOBSTACLE *obstacle) {
         }
     } else if (!obstacle->proximity_output && !(obstacle->runtime_flags & (GIZOBSTACLE_LOCKED_OPEN | GIZOBSTACLE_TRIGGER_LATCHED))) {
         if (obstacle->auto_return_timer > 0.0f) {
-            if (state == 2) {
+            if (state == GAMEANIMSET_STATE_AT_END) {
                 obstacle->auto_return_timer -= FRAMETIME;
             }
         } else {
@@ -733,7 +733,7 @@ static void GizObstacleUpdate_AutoStart(GIZOBSTACLE *obstacle) {
     if (obstacle->config_flags & 0x800) {
         obstacle->runtime_flags |= GIZOBSTACLE_LOCKED_SHUT;
         GizObstacleUpdate_Proximity(obstacle);
-    } else if (!obstacle->anim_set->state || obstacle->anim_set->state == 3) {
+    } else if (!obstacle->anim_set->state || obstacle->anim_set->state == GAMEANIMSET_STATE_BACKWARD) {
         GizObstacle_PlayForwards(obstacle);
     }
 }
@@ -804,19 +804,19 @@ void GizObstacles_Update(void *world_ptr, void *data, f32 time) {
                 }
             }
             if (obstacle->animation_speed < 0.0f) {
-                if (obstacle->stop_sfx_id != -1 && (obstacle->anim_set->state == 2 || IsSfxLooping(obstacle->stop_sfx_id))) {
+                if (obstacle->stop_sfx_id != -1 && (obstacle->anim_set->state == GAMEANIMSET_STATE_AT_END || IsSfxLooping(obstacle->stop_sfx_id))) {
                     GameAudio_PlaySfxById(obstacle->stop_sfx_id, &obstacle->evaluated_position, 0, 0);
                 }
             } else if (obstacle->start_sfx_id != -1 && (!obstacle->anim_set->state || IsSfxLooping(obstacle->start_sfx_id))) {
                 GameAudio_PlaySfxById(obstacle->start_sfx_id, &obstacle->evaluated_position, 0, 0);
             }
         }
-        if (obstacle->anim_set->state == 2) {
+        if (obstacle->anim_set->state == GAMEANIMSET_STATE_AT_END) {
             obstacle->runtime_flags &= ~GIZOBSTACLE_TRIGGER_LATCHED;
         }
         if ((!obstacle->playback_state || obstacle->playback_state == 3 || (obstacle->config_flags & 0x80)) &&
             ((obstacle->anim_set->flags & GAMEANIMSET_STOPPED) || !obstacle->anim_set->animated_object_count) &&
-            obstacle->anim_set->state == 2) {
+            obstacle->anim_set->state == GAMEANIMSET_STATE_AT_END) {
             if (obstacle->blowup_type != -1 || obstacle->pickup_count) {
                 if (obstacle->blowup_type != -1) {
                     if (obstacle->config_flags & 0x200) {
@@ -871,7 +871,7 @@ void GizObstacles_AddTrigger(NUVEC *position) {
     } else {
         message_position = v001;
         AddGameMessage("MAXGIZOBSTACLETRIGGERS needs increasing, ask a programmer!", &message_position, 0.4f, NULL, 0.4f, 200, 200, 200,
-                       0x2080, 0.0f);
+                       GAMEMSG_ONE_FRAME | GAMEMSG_TEXT_POINTER, 0.0f);
     }
 }
 
@@ -881,7 +881,7 @@ void GizObstacle_SetTechnoControlled(GIZOBSTACLE *obstacle, f32 speed) {
 }
 
 void GizObstacle_SetPushControlled(GIZOBSTACLE *obstacle, GAMEOBJECT *object, f32 speed) {
-    if (!obstacle->playback_state && obstacle->anim_set->state == 2 && !(obstacle->config_flags & 0x100)) {
+    if (!obstacle->playback_state && obstacle->anim_set->state == GAMEANIMSET_STATE_AT_END && !(obstacle->config_flags & 0x100)) {
         return;
     }
     obstacle->progress_flags |= OBSTACLE_PUSH_CONTROLLED;

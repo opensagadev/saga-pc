@@ -238,6 +238,10 @@ extern "C" {
         i16 facing_rotation_y;       // 0x56
     } EDPP_PARTICLE;
 
+/* EDPP_PARTICLE.instance_id of a placed effect that has no debris instance (edppPtlShelve, a page that is off, an
+ * AddDebrisEffect without a free key); -1 is a free slot. */
+#define EDPP_SHELVED 99999
+
     struct GIZTURRET_s;
 
     typedef struct ripple_set_s RIPPLE_SET;
@@ -430,7 +434,12 @@ enum { EDCAM_FREEDOM_POSITION_Z = 4 };
 
 enum { EDCAM_FREEDOM_YAW = 16 };
 
-enum { GAMEANIMSET_STATE_AT_END = 2 };
+/* gameanimset_s.state, from GameAnimSet_EvaluateState and GameAnimSys_Update: where the set's animations are. */
+#define GAMEANIMSET_STATE_AT_START 0
+#define GAMEANIMSET_STATE_FORWARD 1  /* playing, all forward */
+#define GAMEANIMSET_STATE_AT_END 2
+#define GAMEANIMSET_STATE_BACKWARD 3 /* playing, some backward */
+#define GAMEANIMSET_STATE_PART_WAY 4 /* stopped between start and end */
 
 enum { GAMEANIMSET_VISIBILITY_ALL = 2 };
 

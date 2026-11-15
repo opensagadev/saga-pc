@@ -212,7 +212,7 @@ void HubGoneThroughDoor(WORLDINFO *world) {
     object = Obj;
     for (index = 0; index < HIGHGAMEOBJECT; ++index, ++object) {
         if ((object->flags_1fc_half & APIOBJECT_FLAG_IN_USE) == 0 || object->player_index != -1 ||
-            object->ai_packet.creature_index != 0xff) {
+            object->ai_packet.creature_index != AIPACKET_NO_CREATURE) {
             continue;
         }
         object->tag_object_callback = NULL;

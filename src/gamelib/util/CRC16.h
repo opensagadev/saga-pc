@@ -99,6 +99,13 @@ struct ShaderMacroDefinition { // size 0xc
 
 extern "C" void ShaderLexicalClassesInit(void);
 
+/* ShaderLexicalClasses: the character classes of the shader preprocessor's lexer. */
+#define SHADER_CHAR_IDENTIFIER 0x1 /* letters and '_' */
+#define SHADER_CHAR_DIGIT 0x2
+#define SHADER_CHAR_OPERATOR 0x4 /* | & ( > < = ! - + and 0x80 */
+#define SHADER_CHAR_BLANK 0x8    /* space and tab */
+#define SHADER_CHAR_NEWLINE 0x10 /* '\n' and '\r' */
+
 /* ShaderParserNode.kind and ShaderExpansionNode.kind: the node type each ShaderParser*Pc constructor stores. */
 #define SHADER_NODE_BRANCH 0
 #define SHADER_NODE_MACRO 1
@@ -119,6 +126,30 @@ extern "C" void ShaderLexicalClassesInit(void);
 #define SHADER_DECL_PIXEL 0x1000
 #define SHADER_DECL_VERTEX 0x2000
 #define SHADER_DECL_SHARED 0x4000
+
+/* ShaderParserDeclaration.type: the type keyword of an nu2_declare (ShaderCompilerParser::ParseDeclaration); a
+ * bare 1-4 is float to float4. */
+#define SHADER_TYPE_FLOAT 1
+#define SHADER_TYPE_FLOAT1 2
+#define SHADER_TYPE_FLOAT2 3
+#define SHADER_TYPE_FLOAT3 4
+#define SHADER_TYPE_FLOAT4 5
+#define SHADER_TYPE_FLOAT3X3 6
+#define SHADER_TYPE_FLOAT4X4 7
+#define SHADER_TYPE_HALF 8
+#define SHADER_TYPE_HALF1 9
+#define SHADER_TYPE_HALF2 10
+#define SHADER_TYPE_HALF3 11
+#define SHADER_TYPE_HALF4 12
+#define SHADER_TYPE_HALF3X3 13
+#define SHADER_TYPE_HALF4X4 14
+#define SHADER_TYPE_BOOL 15
+#define SHADER_TYPE_INT 16
+#define SHADER_TYPE_SAMPLER1D 17
+#define SHADER_TYPE_SAMPLER2D 18 /* also sampler */
+#define SHADER_TYPE_SAMPLER3D 19
+#define SHADER_TYPE_SAMPLERCUBE 20
+#define SHADER_TYPE_HOOK 21
 
 struct ShaderExpansionNode {   // size 0x28
     i32 kind;                  // 0x00

@@ -1623,12 +1623,12 @@ void Tag_DrawIcon_Batman(GAMEOBJECT *object) {
     }
     message.text = TagAsciiDown;
     message.scale = 2.0f;
-    message.flags = 0x1087;
+    message.flags = GAMEMSG_WORLD_POSITION | GAMEMSG_FOLLOW | GAMEMSG_WORLD_SCALE | GAMEMSG_ONE_FRAME | GAMEMSG_KEEP;
     AddGameMsg(&message);
     position.y = (f32)((f64)position.y + (f64)0.1175f);
     message.scale = MissionPlayerIconSize + MissionPlayerIconSize;
     message.text = NULL;
-    message.flags = 0x11087;
+    message.flags = GAMEMSG_WORLD_POSITION | GAMEMSG_FOLLOW | GAMEMSG_WORLD_SCALE | GAMEMSG_ONE_FRAME | GAMEMSG_KEEP | GAMEMSG_OBJECT_ALPHA;
     message.icon = ((TAG_CHARACTER_DATA_READER *)apicharsys->char_data)[(i16)object->id].icon_model;
     message.special = &WORLD->level_objects[message.icon];
     AddGameMsg(&message);
@@ -1663,7 +1663,7 @@ void Tag_DrawIcon_LSW(GAMEOBJECT *object) {
     message.position = &position;
     message.scale = MissionPlayerIconSize + MissionPlayerIconSize;
     message.target_is_coin_total = 2;
-    message.flags = 0x87;
+    message.flags = GAMEMSG_WORLD_POSITION | GAMEMSG_FOLLOW | GAMEMSG_WORLD_SCALE | GAMEMSG_ONE_FRAME;
     message.unknown_34 = 0.0f;
     if (object->unknown_280 == 1) {
         message.unknown_34 += 0.002f;

@@ -229,7 +229,7 @@ static i32 TriggerGizmoAvailable(GIZMO *gizmo) {
         }
     } else if (gizmo->type_id == obstacle_gizmotype_id) {
         GIZOBSTACLE *obstacle = gizmo->object;
-        if ((obstacle->progress_flags & OBSTACLE_ACTIVE) && obstacle->anim_set->state != 2) {
+        if ((obstacle->progress_flags & OBSTACLE_ACTIVE) && obstacle->anim_set->state != GAMEANIMSET_STATE_AT_END) {
             return 1;
         }
     } else if (gizmo->type_id == spinner_gizmotype_id) {
@@ -310,7 +310,7 @@ void AITriggerSetSysProcess(TRIGGER_SYSTEM *system) {
                         set->occupied |= 1 << index;
                     } else if ((set->occupied & (1 << index)) != 0) {
                         if (obstacle->anim_set != NULL &&
-                            (obstacle->anim_set->state == 0 || obstacle->anim_set->state == 3 || obstacle->anim_set->state == 4)) {
+                            (obstacle->anim_set->state == GAMEANIMSET_STATE_AT_START || obstacle->anim_set->state == GAMEANIMSET_STATE_BACKWARD || obstacle->anim_set->state == GAMEANIMSET_STATE_PART_WAY)) {
                             set->occupied &= ~(1 << index);
                         }
                     } else if ((obstacle->progress_flags & OBSTACLE_VISIBLE) == 0 || (obstacle->progress_flags & OBSTACLE_ACTIVE) == 0) {
