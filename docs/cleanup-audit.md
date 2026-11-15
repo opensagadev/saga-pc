@@ -87,7 +87,7 @@ dropping it is codegen-neutral cosmetics and low priority.
 | `placeholder-field` (`unknown_14`, `unknown_102`, `pad_`) | 9,785 | 232 | saga.h 1,689, move.c 737, rtl.c 531 | block (naming; neutral) |
 | `hex-name` (`dat_008808e4`, `FUN_`, `data_0x`) | 12,063 | 110 | data.cpp 8,105, text_tables.cpp 1,482, ai_registry_pc.c 717, saga.h 335 | block (naming; neutral) |
 | `candidate-name` (`_candidate`) | 439 | 63 | nu3d_includes.cpp 45, saga.h 41, nu3d_platform.cpp 31 | block (naming; neutral) |
-| `pc-suffix` (accepted, count only) | 52,581 | 323 | saga.h 8,981 | ok |
+| `pc-suffix` (budget; kept names in [pc-names.md](pc-names.md)) | 52,581 | 323 | saga.h 8,981 | ok |
 | `comment-draft` (`SOURCE DRAFT ONLY`) | 2 | 2 | aisysall.c, rtl.c | block |
 | `comment-todo` | 1 | 1 | pc_input.cpp | ok |
 | `comment-retail` | 459 | 202 | nu3d_includes.cpp 23, edlevelall.cpp 20 | block where it narrates matching; ok as rationale |

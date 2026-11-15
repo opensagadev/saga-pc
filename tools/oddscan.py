@@ -98,7 +98,8 @@ CLASSES = [
     ("address-name", "c", "standard address names fun_XXXXXXXX/dat_XXXXXXXX in src/ and config/symbols.csv "
                           "(config/symbols.md): shrinks by naming"),
     ("candidate-name", "c", "identifiers with a _candidate suffix"),
-    ("pc-suffix", "c", "identifiers ending in Pc/_PC/_pc (accepted, count only)"),
+    ("pc-suffix", "c", "identifiers with a pc platform marker (FooPc, FOO_PC, foo_pc, foo_pc_s) in code; the kept "
+                       "names are listed in docs/pc-names.md"),
     ("comment-draft", "c", "SOURCE DRAFT ONLY comments"),
     ("comment-todo", "c", "TODO/FIXME/XXX/HACK comments"),
     ("comment-retail", "c", "comments that mention retail"),
@@ -134,7 +135,7 @@ CLASSES = [
 ]
 CLASS_IDS = [name for name, _, _ in CLASSES]
 # Classes recorded as counts per file only (their line lists would be very long and carry no news).
-COUNT_ONLY = {"pc-suffix"}
+COUNT_ONLY = set()
 
 KEYWORDS = {
     "auto", "break", "case", "char", "const", "continue", "default", "do", "double", "else", "enum", "extern",
@@ -207,7 +208,9 @@ CODE_PATTERNS = [
 VIEW_NAME = r'\b[A-Za-z_]\w*(?:_VIEW_PC|_VIEW|_view|View_PC|ViewPc)\b'
 VIEW_DEF = re.compile(r'\b(?:struct|union|typedef\s+(?:struct|union))\s+(' + VIEW_NAME[2:-2] + r')\b')
 VIEW_USE = re.compile(VIEW_NAME)
-PC_SUFFIX = re.compile(r'\b[A-Za-z_]\w*(?:Pc|_PC|_pc)\b')
+# A pc marker anywhere in an identifier, not a leading Pc/PC prefix (PcInputReset, PCDeviceSetTexture: the
+# platform layer's own prefix) and not the pcm of Ogg/Vorbis (ov_pcm_total).
+PC_SUFFIX = re.compile(r'\b\w*(?:[a-z0-9]Pc(?![a-z])|_PC(?![a-z])|_pc(?![a-z]))\w*')
 ASSERT = re.compile(r'\bSTATIC_ASSERT\s*\(\s*(offsetof|sizeof)?')
 DUMMY = re.compile(r'\b(?:dummy\w*|\w+_dummy|sink\w*|discard\w*)\b|(?<![\w.>])(\w+)\s*=\s*\1\s*;')
 VOID_CAST = re.compile(r'^\s*\(\s*void\s*\)\s*[A-Za-z_]\w*\s*;')
@@ -710,7 +713,7 @@ class FileScan:
         elif VIEW_USE.search(line):
             self.add("view-use", number, raw)
         for _ in PC_SUFFIX.finditer(line):
-            self.counts["pc-suffix"] += 1
+            self.add("pc-suffix", number, raw)
         for match in ASSERT.finditer(line):
             if match.group(1) == "offsetof":
                 self.add("assert-offsetof-header" if self.header else "assert-offsetof-unit", number, raw)
