@@ -452,7 +452,7 @@ class ContractAndWitnessTests(unittest.TestCase):
             members.load_members(self.metadata)
 
     def test_probe_uses_header_owner_declaration_not_synthetic_extern(self):
-        source=members.witness_source([self.row])
+        source=members.witness_source([self.row],"all_headers.h")
         self.assertIn('OWNER *MemberOwnerProof0 = &Owner;',source)
         self.assertIn('u16 *MemberTypeProof0 = &Owner.fields.word;',source)
         self.assertIn('offsetof(OWNER, fields.word)',source)

@@ -16,6 +16,7 @@ import zipfile
 from tools import setup
 from tools.lib import ROOT, load_symbols, tree_digest
 from tools.binary import COFF, PE
+from tools.standalone import all_headers_source
 
 
 def digest(data):
@@ -479,7 +480,7 @@ class CompilerHeadersTests(unittest.TestCase):
         imports = [r for r in load_symbols()
                    if r["symbol"].startswith(("__imp_", "_saga_import_"))]
         self.assertTrue(imports, "The external declaration inventory must not be empty")
-        source = ['#include "saga.h"']
+        source = [all_headers_source()]
         for index, row in enumerate(imports):
             symbol = row["symbol"]
             self.assertEqual(row["size"], 4, symbol)

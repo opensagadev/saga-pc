@@ -1,14 +1,8 @@
-/* Split from saga.h (tools/headersplit.py, docs/header-plan.md). saga.h includes this header at the place of its
- * declarations. */
-
 #pragma once
 
 #include "nu2api/nucore/common.h"
 
-/* The module headers this header uses. saga.h includes every header itself, so the shim skips these. */
-#ifndef SAGA_SHIM
 #include "nu2api/nufmv/pc/Bink/dsplay_bink.h"
-#endif
 
 // Native PC Bink ABI: opaque decoder records and the verified 32-bit DLL exports.
 typedef struct PC_FMV_BINK PC_FMV_BINK;

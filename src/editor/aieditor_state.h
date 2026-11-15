@@ -1,19 +1,7 @@
-/* Split from saga.h (tools/headersplit.py, docs/header-plan.md). saga.h includes this header at the place of its
- * declarations. */
-
-/* saga.h includes this header once per part (SAGA_SHIM), so `#pragma once` holds for direct includes only; the
- * condition and the _PART selector go away with the shim. */
-#ifndef SAGA_SHIM
 #pragma once
-#endif
-#ifndef SAGA_EDITOR_AIEDITOR_STATE_H_PART
-#define SAGA_EDITOR_AIEDITOR_STATE_H_PART 1
-#endif
 
 #include "nu2api/nucore/common.h"
 
-/* The module headers this header uses. saga.h includes every header itself, so the shim skips these. */
-#ifndef SAGA_SHIM
 #include "editor/antinode_editor_private.h"
 #include "editor/edpath.h"
 #include "editor/edpath_types.h"
@@ -22,12 +10,7 @@
 #include "nu2api/nu3d/nuhspecial.h"
 #include "nu2api/nucore/nulist.h"
 #include "nu2api/numath/nuvec.h"
-#endif
 
-/* 3 parts: saga.h includes this header once per part, each where its declarations belong; included directly, it gives
- * all parts at once. */
-
-#if SAGA_EDITOR_AIEDITOR_STATE_H_PART == 1 && !defined(SAGA_EDITOR_AIEDITOR_STATE_H_STOP)
 typedef struct AIEDITOR_RENDER_STATE AIEDITOR_RENDER_STATE;
 typedef struct EDLOCATORSET_s EDLOCATORSET_s;
 typedef struct EDLOCATOR_s EDLOCATOR_s;
@@ -37,15 +20,6 @@ struct EDLOCATORSET_s {               // size 0x118
     char name[16];                    // 0x008
     struct EDLOCATOR_s *locators[64]; // 0x018
 };
-
-#undef SAGA_EDITOR_AIEDITOR_STATE_H_PART
-#define SAGA_EDITOR_AIEDITOR_STATE_H_PART 2
-#ifdef SAGA_SHIM
-#define SAGA_EDITOR_AIEDITOR_STATE_H_STOP
-#endif
-#endif
-
-#if SAGA_EDITOR_AIEDITOR_STATE_H_PART == 2 && !defined(SAGA_EDITOR_AIEDITOR_STATE_H_STOP)
 
 struct EDLOCATOR_s {                   // size 0x48
     NULISTLNK link;                    // 0x00
@@ -57,15 +31,6 @@ struct EDLOCATOR_s {                   // size 0x48
     u8 drawn;                          // 0x46
     u8 unknown_47;                     // 0x47
 };
-
-#undef SAGA_EDITOR_AIEDITOR_STATE_H_PART
-#define SAGA_EDITOR_AIEDITOR_STATE_H_PART 3
-#ifdef SAGA_SHIM
-#define SAGA_EDITOR_AIEDITOR_STATE_H_STOP
-#endif
-#endif
-
-#if SAGA_EDITOR_AIEDITOR_STATE_H_PART == 3 && !defined(SAGA_EDITOR_AIEDITOR_STATE_H_STOP)
 
 struct AIEDITOR_RENDER_STATE { // size 0xc3940
     /* Each mode: fixed record pool, free list, live list, then its selection pointers. */
@@ -141,11 +106,3 @@ extern "C" {
 #ifdef __cplusplus
 }
 #endif
-#undef SAGA_EDITOR_AIEDITOR_STATE_H_PART
-#define SAGA_EDITOR_AIEDITOR_STATE_H_PART 4
-#ifdef SAGA_SHIM
-#define SAGA_EDITOR_AIEDITOR_STATE_H_STOP
-#endif
-#endif
-
-#undef SAGA_EDITOR_AIEDITOR_STATE_H_STOP

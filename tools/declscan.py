@@ -229,7 +229,7 @@ def collect(tu, main):
         location = cursor.location
         name = location.file.name if location.file else ""
         header[usr].append([seq, name, location.line, ctype, defining])
-        if "/src/" in name and not name.endswith("/saga.h"):
+        if "/src/" in name:
             aux_header.add(usr)
     refs, users = references(tu, main, wanted)
     for diagnostic in tu.diagnostics:

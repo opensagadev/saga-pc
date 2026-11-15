@@ -1,28 +1,10 @@
-/* Split from saga.h (tools/headersplit.py, docs/header-plan.md). saga.h includes this header at the place of its
- * declarations. */
-
-/* saga.h includes this header once per part (SAGA_SHIM), so `#pragma once` holds for direct includes only; the
- * condition and the _PART selector go away with the shim. */
-#ifndef SAGA_SHIM
 #pragma once
-#endif
-#ifndef SAGA_LEGOAPI_WORLD_LEVEL_H_PART
-#define SAGA_LEGOAPI_WORLD_LEVEL_H_PART 1
-#endif
 
 #include "nu2api/nucore/common.h"
 
-/* The module headers this header uses. saga.h includes every header itself, so the shim skips these. */
-#ifndef SAGA_SHIM
 #include "legoapi/world/sceneprogress.h"
 #include "nu2api/nu3d/nuhspecial.h"
 #include "nu2api/numath/nuvec.h"
-#endif
-
-/* 4 parts: saga.h includes this header once per part, each where its declarations belong; included directly, it gives
- * all parts at once. */
-
-#if SAGA_LEGOAPI_WORLD_LEVEL_H_PART == 1 && !defined(SAGA_LEGOAPI_WORLD_LEVEL_H_STOP)
 
 struct BOLTTYPE_PC_s;
 struct WORLDINFO_s;
@@ -88,14 +70,6 @@ extern "C" {
 #ifdef __cplusplus
 }
 #endif
-#undef SAGA_LEGOAPI_WORLD_LEVEL_H_PART
-#define SAGA_LEGOAPI_WORLD_LEVEL_H_PART 2
-#ifdef SAGA_SHIM
-#define SAGA_LEGOAPI_WORLD_LEVEL_H_STOP
-#endif
-#endif
-
-#if SAGA_LEGOAPI_WORLD_LEVEL_H_PART == 2 && !defined(SAGA_LEGOAPI_WORLD_LEVEL_H_STOP)
 
 typedef struct LEVEL_OBJECT_RUNTIME { // size 0x10
     nuhspecial_s special;             // 0x0
@@ -103,15 +77,6 @@ typedef struct LEVEL_OBJECT_RUNTIME { // size 0x10
     u8 active;                        // 0xe
     u8 padding_f;                     // 0xf
 } LEVEL_OBJECT_RUNTIME;
-
-#undef SAGA_LEGOAPI_WORLD_LEVEL_H_PART
-#define SAGA_LEGOAPI_WORLD_LEVEL_H_PART 3
-#ifdef SAGA_SHIM
-#define SAGA_LEGOAPI_WORLD_LEVEL_H_STOP
-#endif
-#endif
-
-#if SAGA_LEGOAPI_WORLD_LEVEL_H_PART == 3 && !defined(SAGA_LEGOAPI_WORLD_LEVEL_H_STOP)
 
 /* level_data_s.flags: levels\\levels.txt keywords (test_level, intro_level, ...) and the level config switches
  * (LevelConfigSetFlag). 0x4 is set on every level by default; its meaning is not known yet. */
@@ -293,14 +258,7 @@ extern "C" {
 #ifdef __cplusplus
 }
 #endif
-#undef SAGA_LEGOAPI_WORLD_LEVEL_H_PART
-#define SAGA_LEGOAPI_WORLD_LEVEL_H_PART 4
-#ifdef SAGA_SHIM
-#define SAGA_LEGOAPI_WORLD_LEVEL_H_STOP
-#endif
-#endif
 
-#if SAGA_LEGOAPI_WORLD_LEVEL_H_PART == 4 && !defined(SAGA_LEGOAPI_WORLD_LEVEL_H_STOP)
 #ifdef __cplusplus
 extern "C" {
 #endif
@@ -308,11 +266,3 @@ extern "C" {
 #ifdef __cplusplus
 }
 #endif
-#undef SAGA_LEGOAPI_WORLD_LEVEL_H_PART
-#define SAGA_LEGOAPI_WORLD_LEVEL_H_PART 5
-#ifdef SAGA_SHIM
-#define SAGA_LEGOAPI_WORLD_LEVEL_H_STOP
-#endif
-#endif
-
-#undef SAGA_LEGOAPI_WORLD_LEVEL_H_STOP

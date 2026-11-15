@@ -73,7 +73,7 @@ extern NULISTLNK *NuLinkedListGetPrev(NULISTHDR *list, NULISTLNK *node);
 
 extern void EdFileWriteUnsignedChar(u8);
 
-/* Script diagnostics, defined variadic at the end of this unit (saga.h leaves their prototypes to this file). */
+/* Script diagnostics, defined variadic at the end of this unit (no header declares them). */
 void AIScriptMissingStateDiagnostic(const char *format, ...);
 void AIScriptMissingStateDiagnosticAlternate(const char *format, ...);
 void AIScriptMissingConditionDiagnostic(const char *format, ...);

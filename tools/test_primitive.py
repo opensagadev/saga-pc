@@ -12,6 +12,7 @@ import unittest
 
 from tools import cc
 from tools.lib import ROOT
+from tools.standalone import all_headers_source
 
 
 def write_provider(directory):
@@ -27,7 +28,7 @@ def write_provider(directory):
     if len(re.findall(r"^void ", body, re.MULTILINE)) != 1:
         raise ValueError("Primitive fixture requires exactly the complete material linker")
     source = directory / "primitive_fixture.c"
-    source.write_text('#include "saga.h"\n' + types + body +
+    source.write_text(all_headers_source() + types + body +
                       (ROOT / "tools/test_primitive_fixture.c").read_text())
     return source
 

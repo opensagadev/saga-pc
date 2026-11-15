@@ -1,28 +1,11 @@
-/* Split from saga.h (tools/headersplit.py, docs/header-plan.md). saga.h includes this header at the place of its
- * declarations. */
-
-/* saga.h includes this header once per part (SAGA_SHIM), so `#pragma once` holds for direct includes only; the
- * condition and the _PART selector go away with the shim. */
-#ifndef SAGA_SHIM
 #pragma once
-#endif
-#ifndef SAGA_EDITOR_EDPATH_TYPES_H_PART
-#define SAGA_EDITOR_EDPATH_TYPES_H_PART 1
-#endif
 
 #include "nu2api/nucore/common.h"
 
-/* The module headers this header uses. saga.h includes every header itself, so the shim skips these. */
-#ifndef SAGA_SHIM
 #include "nu2api/nu3d/nuhspecial.h"
 #include "nu2api/nucore/nulist.h"
 #include "nu2api/numath/nuvec.h"
-#endif
 
-/* 2 parts: saga.h includes this header once per part, each where its declarations belong; included directly, it gives
- * all parts at once. */
-
-#if SAGA_EDITOR_EDPATH_TYPES_H_PART == 1 && !defined(SAGA_EDITOR_EDPATH_TYPES_H_STOP)
 typedef struct EDAIPATHCNX_s EDAIPATHCNX_s;
 typedef struct EDAIPATHNODE_s EDAIPATHNODE_s;
 typedef struct EDAIPATHROUTE_s EDAIPATHROUTE_s;
@@ -49,15 +32,6 @@ struct EDAIPATHWALL_s { // size 0xc
     u8 unknown_08[2];   // 0x8
     u8 flags;           // 0xa
 };
-
-#undef SAGA_EDITOR_EDPATH_TYPES_H_PART
-#define SAGA_EDITOR_EDPATH_TYPES_H_PART 2
-#ifdef SAGA_SHIM
-#define SAGA_EDITOR_EDPATH_TYPES_H_STOP
-#endif
-#endif
-
-#if SAGA_EDITOR_EDPATH_TYPES_H_PART == 2 && !defined(SAGA_EDITOR_EDPATH_TYPES_H_STOP)
 
 struct EDAIPATH_s {                      // size 0x240
     NULISTLNK link;                      // 0x000
@@ -113,12 +87,3 @@ struct EDAISHAREDPATHNODE_s { // size 0xc
     i8 runtime_index;         // 0x9
     u8 draw_flags;            // 0xa
 };
-
-#undef SAGA_EDITOR_EDPATH_TYPES_H_PART
-#define SAGA_EDITOR_EDPATH_TYPES_H_PART 3
-#ifdef SAGA_SHIM
-#define SAGA_EDITOR_EDPATH_TYPES_H_STOP
-#endif
-#endif
-
-#undef SAGA_EDITOR_EDPATH_TYPES_H_STOP

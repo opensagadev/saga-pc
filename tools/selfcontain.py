@@ -3,7 +3,7 @@
 
 tools/standalone.py counts the module headers that do not compile alone. This tool fixes what it can:
 
-1. An index of where each name is declared, from a libclang parse of saga.h (C and C++): typedefs (with the
+1. An index of where each name is declared, from a libclang parse of every module header together (C and C++): typedefs (with the
    struct tag they name), struct definitions, enums and enumerators, macros, variables and functions.
 2. Every failing header is compiled alone (C, then C++, no error limit). Each error that names an unknown
    identifier is fixed in the file where it occurs:
@@ -14,9 +14,9 @@ tools/standalone.py counts the module headers that do not compile alone. This to
    - the rest is the residue: printed, left for hand work.
 3. Repeat until a round changes nothing.
 
-saga.h includes every header itself and the shim skips the include blocks, so a pass changes only the
-spelling of pointer types (no id: the typedef is still declared) and adds `struct T;` lines (a redundant
-`struct T;` costs VC8 no symbol id). Prove the result with a build like any other change.
+A new include changes what the units that reach the header see, and so their symbol ids; a respelled pointer
+or a `struct T;` line does not (a redundant `struct T;` costs VC8 no symbol id). Prove the result with a build
+like any other change.
 
     python3 tools/selfcontain.py                 # fix to a fixpoint, print the residue
     python3 tools/selfcontain.py --dry-run       # one round, print the fixes it would make
@@ -44,10 +44,9 @@ WANTED = ("unknown type name", "use of undeclared identifier", "must use 'struct
           "use of undeclared", "expected a type", "is not a class, namespace, or enumeration",
           "variable has incomplete type", "field has incomplete type", "array has incomplete element type",
           "unknown template name")
-INCLUDE_BLOCK = "#ifndef SAGA_SHIM\n"
-INCLUDE_BLOCK_AT = re.compile(r"^#ifndef SAGA_SHIM\n(?=#include)", re.M)
-BLOCK_COMMENT = ("/* The module headers this header uses. saga.h includes every header itself, so the shim skips "
-                 "these. */\n")
+COMMON = '#include "nu2api/nucore/common.h"\n'
+# The module headers a header uses: the run of quoted includes after the prelude and a blank line.
+INCLUDE_RUN = re.compile(r'^#include "nu2api/nucore/common\.h"\n\n((?:#include "[^"]+"\n)+)', re.M)
 
 
 def rel(path):
@@ -76,12 +75,12 @@ def build_index(flags):
     unit = str(SRC / "saga_selfcontain_index.c")
     for language in standalone.LANGUAGES:
         tu = ci.Index.create().parse(unit, args=[*flags, *standalone.LANGUAGES[language]],
-                                     unsaved_files=[(unit, '#include "saga.h"\n')],
+                                     unsaved_files=[(unit, standalone.all_headers_source())],
                                      options=ci.TranslationUnit.PARSE_SKIP_FUNCTION_BODIES
                                      | ci.TranslationUnit.PARSE_DETAILED_PROCESSING_RECORD)
         for cursor in walk(tu.cursor, K):
             header = rel(cursor.location.file.name) if cursor.location.file else None
-            if not header or header == "saga.h":
+            if not header:
                 continue
             kind = cursor.kind
             name = cursor.spelling
@@ -162,25 +161,23 @@ def includes_of(text):
 
 
 def add_include(text, target):
-    """Add `#include "target"` to the file's SAGA_SHIM include block (created after common.h if missing)."""
+    """Add `#include "target"` to the file's include run after the prelude (created if missing), sorted."""
     line = f'#include "{target}"\n'
     if line in text:
         return text
-    found = INCLUDE_BLOCK_AT.search(text)
+    found = INCLUDE_RUN.search(text)
     if found:
-        start = found.end()
-        end = text.index("#endif", start)
-        lines = sorted(set(text[start:end].splitlines(True)) | {line})
-        return text[:start] + "".join(lines) + text[end:]
-    common = '#include "nu2api/nucore/common.h"\n'
-    at = text.find(common)
+        lines = sorted(set(found.group(1).splitlines(True)) | {line})
+        return text[:found.start(1)] + "".join(lines) + text[found.end(1):]
+    at = text.find(COMMON)
     if at < 0:
         at = text.find("#pragma once\n")
         if at < 0:
             raise ValueError("no place for includes")
-        common = "#pragma once\n"
-    end = at + len(common)
-    return text[:end] + "\n" + BLOCK_COMMENT + INCLUDE_BLOCK + line + "#endif\n" + text[end:]
+        end = at + len("#pragma once\n")
+        return text[:end] + "\n" + COMMON + "\n" + line + "\n" + text[end:].lstrip("\n")
+    end = at + len(COMMON)
+    return text[:end] + "\n" + line + "\n" + text[end:].lstrip("\n")
 
 
 def add_forward(text, keyword, tag):
@@ -188,11 +185,11 @@ def add_forward(text, keyword, tag):
     decl = f"{keyword} {tag};\n"
     if re.search(r"^\s*%s\s+%s\s*;" % (keyword, re.escape(tag)), text, re.M):
         return text
-    found = INCLUDE_BLOCK_AT.search(text)
+    found = INCLUDE_RUN.search(text)
     if found:
-        end = text.index("#endif\n", found.end()) + len("#endif\n")
+        end = found.end(1)
     else:
-        common = '#include "nu2api/nucore/common.h"\n'
+        common = COMMON
         at = text.find(common)
         if at < 0:
             common = "#pragma once\n"
@@ -447,12 +444,12 @@ def retarget_rows(name, old, new, path=ROOT / "config/header-map.csv"):
 
 
 def shim_compiles(compiler):
-    return all(compiler.compile("saga.h", language)[0] for language in standalone.LANGUAGES)
+    return all(standalone.compile_all(compiler.flags, language)[0] for language in standalone.LANGUAGES)
 
 
 def move_residue(residue, index, compiler, refused):
     """Move each type a header needs by value from a header that includes it back into the user (it stays
-    visible to the old header, which reaches the user). Kept when saga.h still compiles."""
+    visible to the old header, which reaches the user). Kept when all module headers still compile together."""
     moved = []
     for file, line, name, why in residue:
         if "(cycle)" not in why or name not in index.blocks or (name, file) in refused:
@@ -496,7 +493,7 @@ def move_residue(residue, index, compiler, refused):
             print(f"  moved the user of {name} ({row[0] if row else '?'}): {file}:{line} -> {header}", flush=True)
         else:
             refused.add((name, file))
-            print(f"  refused {name}: {header} <-> {file} (saga.h no longer compiles either way)", flush=True)
+            print(f"  refused {name}: {header} <-> {file} (the headers no longer compile together either way)", flush=True)
             continue
         moved.append((header, file))
     return moved
@@ -510,7 +507,7 @@ def format_files(paths):
 
 
 def header_needs(flags):
-    """{header: module headers it uses}, from a parse of saga.h (C and C++, function bodies included). A struct
+    """{header: module headers it uses}, from a parse of every module header together (C and C++, function bodies included). A struct
     spelled with its tag behind a pointer or reference does not count: a forward declaration gives it."""
     from tools import layoutcheck
     ci = layoutcheck.cindex()
@@ -520,7 +517,7 @@ def header_needs(flags):
     unit = str(SRC / "saga_selfcontain_needs.c")
     for language in standalone.LANGUAGES:
         tu = ci.Index.create().parse(unit, args=[*flags, *standalone.LANGUAGES[language]],
-                                     unsaved_files=[(unit, '#include "saga.h"\n')],
+                                     unsaved_files=[(unit, standalone.all_headers_source())],
                                      options=ci.TranslationUnit.PARSE_DETAILED_PROCESSING_RECORD)
         for cursor in tu.cursor.walk_preorder():
             if cursor.location.file is None:
@@ -548,25 +545,24 @@ ADDED = set()  # (header, include) pairs this run added because the header did n
 
 
 def prune_includes(needs):
-    """Drop the shim-block includes of module headers a header does not use; returns the files changed."""
+    """Drop the includes of module headers a header does not use; returns the files changed."""
     module = set(standalone.module_headers())
     changed = []
     for header in sorted(module):
         path = SRC / header
         text = path.read_text(encoding="utf-8")
-        found = INCLUDE_BLOCK_AT.search(text)
+        found = INCLUDE_RUN.search(text)
         if not found:
             continue
-        end = text.index("#endif", found.end())
-        lines = text[found.end():end].splitlines(True)
+        lines = found.group(1).splitlines(True)
         keep = [line for line in lines if not (name := re.match(r'#include "([^"]+)"', line))
                 or name.group(1) not in module or name.group(1) in needs.get(header, ())
                 or (header, name.group(1)) in ADDED]
         if keep == lines:
             continue
-        new = text[:found.end()] + "".join(keep) + text[end:]
+        new = text[:found.start(1)] + "".join(keep) + text[found.end(1):]
         if not keep:
-            new = new.replace(BLOCK_COMMENT + INCLUDE_BLOCK + "#endif\n", "").replace(INCLUDE_BLOCK + "#endif\n", "")
+            new = text[:found.start(1)] + text[found.end(1):].lstrip("\n")
         path.write_text(new, encoding="utf-8")
         changed.append(header)
         print(f"  {header}: drops {', '.join(l.strip()[10:-1] for l in lines if l not in keep)}", flush=True)
@@ -574,7 +570,7 @@ def prune_includes(needs):
 
 
 def one_round(round_no, args, compiler, index, jobs, all_headers, refused):
-    """(True when files changed, None when saga.h broke, False when done; the residue)."""
+    """(True when files changed, None when the headers broke, False when done; the residue)."""
     results = standalone.scan(args.headers or all_headers, compiler, jobs)
     failing = sorted(h for h, (ok, _) in results.items() if not ok)
     print(f"round {round_no}: {len(failing)} headers fail", flush=True)
@@ -596,7 +592,7 @@ def one_round(round_no, args, compiler, index, jobs, all_headers, refused):
     changed = apply(fixes, texts)
     print(f"  changed {len(changed)} files", flush=True)
     if changed and not shim_compiles(compiler):
-        print("saga.h no longer compiles after this round; stopping", flush=True)
+        print("the module headers no longer compile together after this round; stopping", flush=True)
         return None, residue
     if not changed:
         changed = prune_includes(header_needs(compiler.flags))

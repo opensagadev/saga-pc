@@ -757,7 +757,7 @@ EdSystem theEdSystem;
 
 i16 Placeable::CurrentLedFile;
 
-/* Layouts of the editor classes declared in saga.h, checked here rather than
+/* Layouts of the editor classes declared in the editor headers, checked here rather than
  * in the header (assert typedefs there shift codegen in unrelated units). */
 
 EdRegistry theRegistry;

@@ -1,15 +1,9 @@
-/* Split from saga.h (tools/headersplit.py, docs/header-plan.md). saga.h includes this header at the place of its
- * declarations. */
-
 #pragma once
 
 #include "nu2api/nucore/common.h"
 
-/* The module headers this header uses. saga.h includes every header itself, so the shim skips these. */
-#ifndef SAGA_SHIM
 #include "gamelib/util/CRC16.h"
 #include "gamelib/util/gamelib_util_types.h"
-#endif
 
 struct PC_SHADER_FILTER_DESC_VIEW;
 struct PC_SHADER_MATERIAL_FILTER_VIEW;

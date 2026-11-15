@@ -4,7 +4,9 @@
 After tools/port.py inserts Android drafts into a unit, this:
   1. compiles the unit and collects undeclared identifiers;
   2. looks them up in the Android sources: globals get an extern declaration
-     (PC type spelling) and enum constants get their value, in src/saga.h;
+     (PC type spelling) and enum constants get their value, in src/globals.h
+     (the catch-all module header; the unit includes it, and a later pass gives
+     each declaration its owner's header);
   3. recompiles and finds relocations to globals that config/symbols.csv does
      not map, then infers each one's PC address by aligning the compiled
      functions with retail (equal instructions carry the address in the same
@@ -42,7 +44,7 @@ else:
 
 K = ci.CursorKind
 T = ci.TypeKind
-HEADER = ROOT / "src/saga.h"
+HEADER = ROOT / "src/globals.h"
 DATA = ROOT / "src/data.cpp"
 SECTION_START = "/* Globals and constants transferred from the Android sources (tools/globals.py). */"
 CFLAGS = ["/nologo", "/c", "/O2", "/Gy", "/GS", "/MT", "/W3"]  # /W3 reports C4013 (no prototype)
@@ -107,7 +109,7 @@ class Android:
 
 
 def project_header_text():
-    """saga.h and the module headers it includes (docs/header-plan.md)."""
+    """The project headers (docs/header-plan.md)."""
     return "\n".join(path.read_text(encoding="latin-1") for path in sorted((ROOT / "src").rglob("*.h")))
 
 
@@ -181,7 +183,7 @@ def function_defined(name):
 
 
 def declare(names, android, translator):
-    """Add externs and enum constants to the transferred section of saga.h."""
+    """Add externs and enum constants to the transferred section of globals.h."""
     text = HEADER.read_text(encoding="latin-1")
     declared = project_header_text()
     externs, constants, missing = [], [], []
@@ -326,7 +328,7 @@ def define(symbol, address, cursor, translator, pe, sections):
     """data.cpp definition text and CSV type for one global, with the retail initial value."""
     name = symbol.lstrip("_")
     spelled = spell_variable(cursor.type, name, translator)
-    # Define it exactly as saga.h (or a module header) declares it, when it does.
+    # Define it exactly as a module header declares it, when one does.
     declared = re.search(r"^\s*extern\s+([^;\n]*?\b" + re.escape(name) + r"\b[^;\n]*);", project_header_text(),
                          re.M)
     if declared and "," not in declared.group(1):

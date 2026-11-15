@@ -713,7 +713,7 @@ def section_mapping_progress(records, target, sections, member_ranges=(), paddin
 
 def clang_jobs(requested=None):
     """Worker count for tools that load libclang translation units (scans, clang-tidy). Each worker holds
-    a parse of saga.h (about 1 GB), so the default is 4 whatever the core count; SAGA_CLANG_JOBS or an
+    a parse of the module headers (about 1 GB), so the default is 4 whatever the core count; SAGA_CLANG_JOBS or an
     explicit --jobs overrides it."""
     if requested:
         return requested

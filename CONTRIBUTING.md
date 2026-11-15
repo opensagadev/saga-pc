@@ -177,9 +177,9 @@ Never commit original game files, assets, compiler binaries or extracted objects
    linker name, size, type; see [config/symbols.md](config/symbols.md)).
 2. Implement it under `src/`; shared types, calling conventions and
    layout comments go in the module header that owns them (see [Layout comments](#layout-comments)).
-   `python3 tools/headersplit.py --place NAME` names it for a new declaration
-   ([docs/header-plan.md](docs/header-plan.md)). Units still include
-   `src/saga.h`, which includes every module header. APIs missing from the
+   Each unit includes the module headers it uses
+   ([docs/header-plan.md](docs/header-plan.md)), and every module header
+   compiles on its own (`tools/standalone.py`). APIs missing from the
    bundled SDK go in `src/externals.h`.
 3. Compare: `make -j"$(nproc)" diff FUNC=NuRand` (C name, exact linker symbol
    or original address).
@@ -250,7 +250,7 @@ the wall time is the build, the match or refresh, and the slowest check):
 | rule | checked by | run locally |
 |---|---|---|
 | Formatting follows [.clang-format](.clang-format) (blank line between definitions, braces on every body, at most one empty line, newline at end of file); the pinned Ogg Vorbis sources keep [their own style](config/clang-format-vendored) | `make lint` | `make format` rewrites `src/`; `python3 tools/check.py --format` checks |
-| No clang-tidy finding: the checks of [.clang-tidy](.clang-tidy) and every Clang compiler warning class that is clean today, on each unit as the Matching build compiles it and once more with `SAGA_DEBUG` | `make lint` | `python3 tools/check.py --tidy` (`--matching-only` for a quick pass); passes are reused while the tool, policy, flags and every file a unit reads are unchanged (build/lint/, `--no-cache` ignores it), so after a small edit `make lint` takes seconds, after a saga.h edit the full 30 CPU minutes |
+| No clang-tidy finding: the checks of [.clang-tidy](.clang-tidy) and every Clang compiler warning class that is clean today, on each unit as the Matching build compiles it and once more with `SAGA_DEBUG` | `make lint` | `python3 tools/check.py --tidy` (`--matching-only` for a quick pass); passes are reused while the tool, policy, flags and every file a unit reads are unchanged (build/lint/, `--no-cache` ignores it), so after a small edit `make lint` takes seconds, after an edit of a header most units include (`nu2api/nucore/common.h`) the full 30 CPU minutes |
 | No new file-scope prototypes or `extern`s in units (classes A-E of [docs/declarations.md](docs/declarations.md)): declare in the owner's header | `make check-core` | `python3 tools/declscan.py --check`; `--list --classes D` shows them |
 | No new oddities ([docs/cleanup-audit.md](docs/cleanup-audit.md): section pragmas, `noinline`, address names, magic numbers, mid-file `#include`s, dense or very long functions, commented-out code, `NOLINT`, `clang-format off`, ...) | `make check-core` | `python3 tools/oddscan.py --check`; `--list --class NAME` |
 | No attributes the code does not need: no explicit `__cdecl` (the default) or `__thiscall` on members; `__stdcall` only where a Win32, COM, SDK or retail callback ABI requires it (`WINAPI`/`CALLBACK` in Win32 callbacks); `__declspec(align)`, `noreturn`, `dllimport`, `__restrict` only where the object code or an SDK header needs them | `make check-core` (oddscan `cdecl`, `thiscall`, `stdcall`, `declspec-align`, `declspec-other`) | `python3 tools/oddscan.py --list --class stdcall` |
@@ -259,7 +259,7 @@ the wall time is the build, the match or refresh, and the slowest check):
 | Floating literals in their shortest form: `0.1f`, not `0.10000000149011612f` (a decompiler prints the widened double); the bits are the same | `make check-core` | `python3 tools/floatlit.py --list`; `--fix` rewrites them |
 | `src/decomp.h` holds decompilation scaffolding only (`STUBBED`, diagnostic and logging macros, small generic helpers), never a game or engine type: a type belongs in its module header, and an overlay (`*_VIEW`) is folded into the real type it overlays | `make check-core` (oddscan `decomp-type`, budget only down, target 0) | `python3 tools/oddscan.py --list --class decomp-type` |
 | One declarator per declaration: `u32 a : 2;` and `u32 b : 1;`, not `u32 a : 2, b : 1;` (fields, bitfields, globals, `extern`s, locals, typedefs, prototypes; a `for` initialisation may declare several) | `make lint` (locals: `readability-isolate-declaration`), `make check-core` (the rest: oddscan `multi-declaration`) | `python3 tools/onedecl.py --fix` splits them, then `make format` |
-| Headers under `src/` start with `#pragma once` (the first directive, after any file comment), never an include guard (`#ifndef X_H` / `#define X_H` ... `#endif`). The headers src/saga.h still includes once per part (`_PART` selectors) have `#ifndef SAGA_SHIM` / `#pragma once` / `#endif` instead, until the shim goes | `make check-core` | `python3 tools/check.py` |
+| Headers under `src/` start with `#pragma once` (the first directive, after any file comment), never an include guard (`#ifndef X_H` / `#define X_H` ... `#endif`). | `make check-core` | `python3 tools/check.py` |
 | Module headers compile on their own (`#include` of the header alone, C and C++, libclang with the lint flags); the count of those that do not only goes down ([docs/header-plan.md](docs/header-plan.md), step 2) | `make check-core` | `python3 tools/standalone.py --list`; `python3 tools/standalone.py HEADER` shows the errors, `--vc8 HEADER` compiles with VC8 |
 | No new MSVC warnings (distinct warnings per code, Matching and Debug) | `make check-warnings` after the build in CI | `make build check-warnings`, `make BUILD_KIND=Debug build check-warnings`; the report is `build/warnings.json` |
 
@@ -563,9 +563,10 @@ no wrong ones. Alternate both tools until neither finds anything.
 
 ## Transferring struct fields
 
-`python3 tools/typexfer.py --android ../saga --write` (not available while
-`src/saga.h` is the include-all shim, see docs/header-plan.md) fills opaque padding in
-`src/saga.h` (`unknown_*`, `opaque_*`, `reserved*`, `padding*` byte arrays)
+`python3 tools/typexfer.py --android ../saga --write` (paused: it edited the
+old monolithic `src/saga.h` in place and has not learned the module headers,
+see docs/header-plan.md) filled opaque padding
+(`unknown_*`, `opaque_*`, `reserved*`, `padding*` byte arrays)
 with named fields from the matching Android structs. Structs are paired by
 shared field names; Android layouts are computed with MSVC rules, and a field's
 PC offset comes from the shift between layouts, which must agree on both sides.
@@ -574,9 +575,9 @@ brace-initialized or locally instantiated structs stays (VC8 code generation for
 local struct instances depends on member types), and edits are dropped for any
 struct whose size or existing offsets would change.
 
-`python3 tools/typeimport.py TYPE... --android ../saga --write` (also paused
-while saga.h is the shim) imports Android
-structs that `src/saga.h` has no counterpart for (nor any unit declares) into a
+`python3 tools/typeimport.py TYPE... --android ../saga --write` (also paused,
+for the same reason) imports Android
+structs that no project header has a counterpart for (nor any unit declares) into a
 section of the header, with dependencies held by value, PC types for paired
 members and a size assertion each; structs whose layout for the MSVC x86 target
 differs from the Android one are dropped. No existing code uses them, so object
@@ -591,7 +592,7 @@ neighbour.
 
 `python3 tools/globals.py UNIT...` then makes the unit compile and link: it
 declares the globals and enum constants the draft uses (from the Android
-sources, in a section of `src/saga.h`), infers each unmapped global's, string
+sources, in `src/globals.h`), infers each unmapped global's, string
 literal's and callee's retail address by aligning the compiled function with
 retail, maps them in `config/symbols.csv` and defines globals in
 `src/data.cpp` with their retail initial values. Callees it maps still need an
@@ -706,7 +707,6 @@ Rich header lists 199 C and 282 C++ objects and no LTCG.
 
 ```text
 config/        Target and tool pins, symbol map, data members, code groups
-src/saga.h     Include-all shim over the module headers (docs/header-plan.md)
 src/nu2api/    Engine, resources, rendering and Windows platform services
 src/legoapi/   Characters, movement, world loading, menus and gameplay
 src/gameapi/   Objects, AI, scripts and collision

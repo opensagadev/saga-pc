@@ -387,7 +387,7 @@ static void DeathStar2BattleFire_UpdateSlowDownMul(f32 dt) {
 }
 
 f32 DeathStar2BattleFire_GetSlowDownMul(GAMEOBJECT *object) {
-    // MATCH-EXCEPTION: the original reads unknown_280 as a signed char (movsx) at each use; saga.h declares it u8
+    // MATCH-EXCEPTION: the original reads unknown_280 as a signed char (movsx) at each use; the header declares it u8
     if (object == NULL || (object->unknown_280 != 0 && object->unknown_280 != 1)) {
         return 1.0f;
     }

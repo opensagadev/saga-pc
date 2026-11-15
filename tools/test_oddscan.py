@@ -147,7 +147,7 @@ void Bar(void) {
         self.assertEqual(self.scan.counts["magic-bound"], 1)
 
     def test_magic_candidates_resolve_owner(self):
-        header = oddscan.FileScan("src/saga.h", "typedef struct gameobject_s {\n    i32 state;\n    u32 flags;\n"
+        header = oddscan.FileScan("src/game.h", "typedef struct gameobject_s {\n    i32 state;\n    u32 flags;\n"
                                   "    i32 count;\n} GAMEOBJECT;\n")
         magic = oddscan.magic_analysis([header, self.scan], limit=0)
         enum = {e["field"]: e for e in magic["enum_candidates"]}
@@ -175,7 +175,7 @@ void Bar(void) {
 
     def test_layout_classes(self):
         body = "".join(f"    x = {n};\n" for n in range(oddscan.DENSE_LINES))
-        text = ('extern "C" {\n#include <string.h>\n}\n#include "saga.h"\nstatic i32 x;\n#include <stdio.h>\n'
+        text = ('extern "C" {\n#include <string.h>\n}\n#include "game.h"\nstatic i32 x;\n#include <stdio.h>\n'
                 f"void Dense(void) {{\n{body}}}\n\nvoid Spaced(void) {{\n    x = 1;\n\n{body}}}\n"
                 "void Packed(void) {\n    x = 1; x = 2;\n    for (x = 0; x < 2; x++) {\n    }\n"
                 "    // x = 3;\n    // keeps x = 3 for the caller\n    /* Foo(x); */\n}\n")

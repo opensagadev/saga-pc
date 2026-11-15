@@ -202,12 +202,12 @@ def check_headers():
         "vorbis/vorbisenc.h", "vorbis/vorbisfile.h",
     }
     # Private headers are limited to the reviewed native FMV and exact Debug support owners.
-    allowed = {"src/saga.h", "src/externals.h", "src/debug/diagnostics.h", "src/debug/skin_trace.h",
+    allowed = {"src/externals.h", "src/debug/diagnostics.h", "src/debug/skin_trace.h",
                "src/debug/support.h",
                "src/nu2api/pc_fmv_native.h"} | {
         "lib/ogg-vorbis/vorbis/" + name for name in vorbis_headers} | split_headers()
-    if "src/saga.h" not in headers or headers - allowed:
-        raise ValueError("Project headers must be src/saga.h, src/debug/diagnostics.h and optional src/externals.h "
+    if headers - allowed:
+        raise ValueError("Project headers must be src/debug/diagnostics.h and optional src/externals.h "
                          "or the reviewed original Vorbis header catalog, native PC FMV ABI header "
                          "or the exact Debug skin-trace header, diagnostics header or support header, "
                          f"or a target header of {HEADER_MAP}; unexpected: "
@@ -216,10 +216,8 @@ def check_headers():
 
 HEADER_MAP = "config/header-map.csv"
 
-# Project headers are `#pragma once` (first directive, after any file comment), never include guards. A header that
-# src/saga.h still includes once per part (SAGA_SHIM) has it only outside the shim, until the shim goes.
+# Project headers are `#pragma once` (first directive, after any file comment), never include guards.
 PRAGMA_ONCE = re.compile(r"#[ \t]*pragma[ \t]+once[ \t]*")
-PART_ONCE = ("#ifndef SAGA_SHIM", "#pragma once", "#endif")
 GUARD_PAIR = re.compile(r"^[ \t]*#[ \t]*ifndef[ \t]+(\w+_H)[ \t]*\n[ \t]*#[ \t]*define[ \t]+\1[ \t]*$", re.MULTILINE)
 DIRECTIVE = re.compile(r"^[ \t]*(#[^\n]*?)[ \t]*$", re.MULTILINE)
 
@@ -228,7 +226,7 @@ def header_guard_errors(path, text):
     """Why `text` (a header under src/) does not follow the `#pragma once` rule, or []."""
     errors = []
     directives = [re.sub(r"[ \t]+", " ", m.group(1)) for m in DIRECTIVE.finditer(text)]
-    if not directives or not (PRAGMA_ONCE.fullmatch(directives[0]) or tuple(directives[:3]) == PART_ONCE):
+    if not directives or not PRAGMA_ONCE.fullmatch(directives[0]):
         errors.append(f"{path}: the first directive must be #pragma once")
     for match in GUARD_PAIR.finditer(text):
         line = text.count("\n", 0, match.start()) + 1
@@ -246,7 +244,7 @@ def check_header_guards(root=None):
 
 
 def split_headers():
-    """The module headers saga.h is split into (docs/header-plan.md): the targets of config/header-map.csv."""
+    """The module headers (docs/header-plan.md): the targets of config/header-map.csv."""
     path = ROOT / HEADER_MAP
     if not path.is_file():
         return set()

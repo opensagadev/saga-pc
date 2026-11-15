@@ -1,15 +1,9 @@
-/* Split from saga.h (tools/headersplit.py, docs/header-plan.md). saga.h includes this header at the place of its
- * declarations. */
-
 #pragma once
 
 #include "nu2api/nucore/common.h"
 
-/* The module headers this header uses. saga.h includes every header itself, so the shim skips these. */
-#ifndef SAGA_SHIM
 #include "legoapi/legoapi_types.h"
 #include "nu2api/nu3d/nuqfnt.h"
-#endif
 
 struct text_crawl_view_s;
 
@@ -53,7 +47,7 @@ extern "C" {
     void TextCrawl_Init(struct text_crawl_view_s *, i32, i32);
     void TextCrawl_Draw(f32, i32, f32, char *);
 
-    /* Append inside saga.h extern "C" block; native C ABI. Existing identical prototypes may be retained once. */
+    /* Native C ABI. */
     void SmartText(char *, f32, f32, f32, f32, f32, f32, i32, i32, i32, i32, f32, i32);
     i32 Text_ExpandButtonString(char *, char *);
 #ifdef __cplusplus

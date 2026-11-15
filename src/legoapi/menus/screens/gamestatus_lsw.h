@@ -1,15 +1,9 @@
-/* Split from saga.h (tools/headersplit.py, docs/header-plan.md). saga.h includes this header at the place of its
- * declarations. */
-
 #pragma once
 
 #include "nu2api/nucore/common.h"
 
-/* The module headers this header uses. saga.h includes every header itself, so the shim skips these. */
-#ifndef SAGA_SHIM
 #include "legoapi/legoapi_types.h"
 #include "legoapi/world/world.h"
-#endif
 
 typedef struct NEW_MINI_PIECE { // size 0xc
     char name[8];               // 0x0

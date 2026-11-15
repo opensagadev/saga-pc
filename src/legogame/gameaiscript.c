@@ -2288,7 +2288,7 @@ f32 Condition_CharacterRange(AISYS_PC *system, AISCRIPTPROCESS *process, AIPACKE
 }
 
 f32 Condition_BeenSpawned(AISYS_PC *system, AISCRIPTPROCESS *process, AIPACKET *packet, char *name, void *argument) {
-    // MATCH-EXCEPTION: unknown_280 is a signed char in the original (compared with -1); saga.h declares u8
+    // MATCH-EXCEPTION: unknown_280 is a signed char in the original (compared with -1); the header declares u8
     if (packet != NULL && packet->owner != NULL && packet->owner->player_index == -1 && packet->creature_index == 0xff) {
         return 1.0f;
     }

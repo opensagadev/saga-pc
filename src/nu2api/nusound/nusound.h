@@ -1,27 +1,9 @@
-/* Split from saga.h (tools/headersplit.py, docs/header-plan.md). saga.h includes this header at the place of its
- * declarations. */
-
-/* saga.h includes this header once per part (SAGA_SHIM), so `#pragma once` holds for direct includes only; the
- * condition and the _PART selector go away with the shim. */
-#ifndef SAGA_SHIM
 #pragma once
-#endif
-#ifndef SAGA_NU2API_NUSOUND_NUSOUND_H_PART
-#define SAGA_NU2API_NUSOUND_NUSOUND_H_PART 1
-#endif
 
 #include "nu2api/nucore/common.h"
 
-/* The module headers this header uses. saga.h includes every header itself, so the shim skips these. */
-#ifndef SAGA_SHIM
 #include "legoapi/render/core/gameliball.h"
 #include "nu2api/numath/nuvec.h"
-#endif
-
-/* 3 parts: saga.h includes this header once per part, each where its declarations belong; included directly, it gives
- * all parts at once. */
-
-#if SAGA_NU2API_NUSOUND_NUSOUND_H_PART == 1 && !defined(SAGA_NU2API_NUSOUND_NUSOUND_H_STOP)
 
 struct PC_SOUND_INIT_CONFIG;
 struct PC_STEREO_PLAY_PACKET;
@@ -275,14 +257,7 @@ extern "C" {
 #ifdef __cplusplus
 }
 #endif
-#undef SAGA_NU2API_NUSOUND_NUSOUND_H_PART
-#define SAGA_NU2API_NUSOUND_NUSOUND_H_PART 2
-#ifdef SAGA_SHIM
-#define SAGA_NU2API_NUSOUND_NUSOUND_H_STOP
-#endif
-#endif
 
-#if SAGA_NU2API_NUSOUND_NUSOUND_H_PART == 2 && !defined(SAGA_NU2API_NUSOUND_NUSOUND_H_STOP)
 #ifdef __cplusplus
 extern "C" {
 #endif
@@ -320,14 +295,7 @@ extern "C" {
 #ifdef __cplusplus
 }
 #endif
-#undef SAGA_NU2API_NUSOUND_NUSOUND_H_PART
-#define SAGA_NU2API_NUSOUND_NUSOUND_H_PART 3
-#ifdef SAGA_SHIM
-#define SAGA_NU2API_NUSOUND_NUSOUND_H_STOP
-#endif
-#endif
 
-#if SAGA_NU2API_NUSOUND_NUSOUND_H_PART == 3 && !defined(SAGA_NU2API_NUSOUND_NUSOUND_H_STOP)
 #ifdef __cplusplus
 
 struct SoundQueue {                    // size 0x400
@@ -416,11 +384,3 @@ struct SoundQueue {                    // size 0x400
 };
 
 #endif
-#undef SAGA_NU2API_NUSOUND_NUSOUND_H_PART
-#define SAGA_NU2API_NUSOUND_NUSOUND_H_PART 4
-#ifdef SAGA_SHIM
-#define SAGA_NU2API_NUSOUND_NUSOUND_H_STOP
-#endif
-#endif
-
-#undef SAGA_NU2API_NUSOUND_NUSOUND_H_STOP

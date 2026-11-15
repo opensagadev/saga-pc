@@ -3811,7 +3811,7 @@ void UpdatePartEmits(f32 time) {
                     if (type->variant_mode == 0) {
                         variant = (i32)(NuRandFloatSeeded(&partseed) * 65535.0f) % type->variant_count;
                     } else if (type->variant_mode == 1) {
-                        // MATCH-EXCEPTION: the original treats unknown_33 as signed; saga.h declares it u8.
+                        // MATCH-EXCEPTION: the original treats unknown_33 as signed; the header declares it u8.
                         if (++*(i8 *)&emitter->unknown_33 >= type->variant_count) {
                             emitter->unknown_33 = 0;
                         }

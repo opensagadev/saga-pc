@@ -267,7 +267,7 @@ void AddLevelSfxGizmoSys(GIZMOSYS_PREFIX *system, WORLDINFO *world, i32 *ids, i3
     }
 }
 
-/* MATCH-EXCEPTION: the original reads the typed gizmotypes global at each use (saga.h declares it void *). */
+/* MATCH-EXCEPTION: the original reads the typed gizmotypes global at each use (the header declares it void *). */
 void GizmoSysClearLevelProgress(void *owner, i32 index) {
     GIZMOTYPE *type;
     i32 i;

@@ -14,6 +14,7 @@ is changed.
 import argparse
 import difflib
 from pathlib import Path
+import re
 import shutil
 import subprocess
 import sys
@@ -81,7 +82,10 @@ def main():
     try:
         if args.cxx:
             wrapper = temp / (unit.stem + "_cxx.cpp")
-            wrapper.write_text('#include "saga.h"\nextern "C" {\n#include "%s"\n}\n'
+            # The unit's module headers first, outside extern "C" (they are #pragma once, so the unit's own
+            # includes of them inside the block are no-ops); then the unit as C.
+            headers = re.findall(r'^[ \t]*#[ \t]*include[ \t]*"[^"\n]+"', source.read_text(encoding="latin-1"), re.M)
+            wrapper.write_text("".join(h.strip() + "\n" for h in headers) + 'extern "C" {\n#include "%s"\n}\n'
                                % windows(source).replace("\\", "/"))
             source = wrapper
         output = temp / "out.obj"

@@ -82,6 +82,12 @@ class Item:
 COMMENT_OR_STRING = re.compile(r'/\*.*?\*/|//[^\n]*|"(?:\\.|[^"\\\n])*"|\'(?:\\.|[^\'\\\n])*\'', re.S)
 
 
+
+def headers_text():
+    """The text of every module header (what a unit can see declared)."""
+    from tools import standalone
+    return "\n".join((ROOT / "src" / header).read_text(encoding="latin-1") for header in standalone.module_headers())
+
 def strip_comments(text):
     """Blank comments and string/char literals, keeping every offset."""
     def blank(match):
@@ -764,11 +770,11 @@ def apply_plan(plan, note=None, write=True):
             text = declare_moved_calls(plan, source, drop, text)
         new_texts[path] = tidy(text)
     if target not in new_texts:
-        body = "\n".join(includes or ['#include "saga.h"']) + "\n\n" + header + "\n" + rename(section, plan.renames)
+        body = "\n".join(includes or ['#include "nu2api/nucore/common.h"']) + "\n\n" + header + "\n" + rename(section, plan.renames)
         new_texts[target] = tidy(body)
     elif header.strip() not in new_texts[target]:
         text = new_texts[target]
-        after = text.find("\n", text.find('#include "saga.h"')) + 1
+        after = after_includes(text)
         new_texts[target] = text[:after] + "\n" + header + text[after:]
     for path in plan.deleted:
         other = [i.text.strip() for i in plan.sources[path].items if i.kind == "include"]
@@ -799,7 +805,7 @@ def declare_moved_calls(plan, source, drop, text):
     Without one, C would call the function implicitly (int return, f32 promoted
     to f64) and C++ would not compile.
     """
-    saga = (ROOT / "src/saga.h").read_text(encoding="latin-1")
+    saga = headers_text()
     stay = [i for i in source.items if i not in drop]
     refs = set()
     for item in stay:
@@ -823,14 +829,19 @@ def declare_moved_calls(plan, source, drop, text):
         return text
     lines = sorted(set(lines))
     plan.notes.append(f"declared {len(lines)} moved function(s) still called in {source.path}")
-    at = text.find('#include "saga.h"')
-    at = text.find("\n", at) + 1 if at >= 0 else 0
+    at = after_includes(text)
     return text[:at] + "\n" + "".join(lines) + text[at:]
+
+
+def after_includes(text):
+    """The offset after a unit's last `#include` line (0 when it has none)."""
+    found = list(re.finditer(r"^[ \t]*#[ \t]*include\b[^\n]*\n", text, re.M))
+    return found[-1].end() if found else 0
 
 
 def implicit_calls(plan, forward, copies_text):
     """Prototypes for functions moved C code calls with no declaration in view."""
-    saga = (ROOT / "src/saga.h").read_text(encoding="latin-1")
+    saga = headers_text()
     known = "\n".join(copies_text + [d for d, _ in forward])
     for source in plan.sources.values():
         known += "\n" + "\n".join(head_text(i) for i in source.items)

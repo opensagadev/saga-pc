@@ -7948,7 +7948,7 @@ ShaderManagerHLSL::~ShaderManagerHLSL() {
     }
 }
 
-// for saga.h: NuShaderObject::stage_flags is a bitfield (each path bit is stored with xor/and/xor).
+// for the header: NuShaderObject::stage_flags is a bitfield (each path bit is stored with xor/and/xor).
 struct NuShaderObjectPathsPc {
     u32 base : 1;
     u32 first : 1;

@@ -359,11 +359,9 @@ class HeaderGuardTests(unittest.TestCase):
         self.assertEqual(check_module.header_guard_errors("a.h", "#pragma once\n#ifndef MIN\n#define MIN 1\n"
                                                           "#endif\n#ifndef LOCAL\n#define LOCAL\n#endif\n"), [])
 
-    def test_part_header_has_pragma_once_outside_the_shim(self):
-        text = ("/* Split. */\n\n#ifndef SAGA_SHIM\n#pragma once\n#endif\n#ifndef SAGA_A_H_PART\n"
-                "#define SAGA_A_H_PART 1\n#endif\n")
-        self.assertEqual(check_module.header_guard_errors("a.h", text), [])
-        self.assertTrue(check_module.header_guard_errors("a.h", text.replace("#pragma once\n", "")))
+    def test_pragma_once_inside_a_condition_is_rejected(self):
+        text = "/* Split. */\n\n#ifndef SAGA_SHIM\n#pragma once\n#endif\n"
+        self.assertTrue(check_module.header_guard_errors("a.h", text))
 
     def test_include_guard_is_rejected(self):
         errors = check_module.header_guard_errors("a.h", "#ifndef SAGA_A_H\n#define SAGA_A_H\nint a;\n#endif\n")
@@ -409,7 +407,6 @@ class HeaderLayoutTests(unittest.TestCase):
             src = Path(temp) / "src"
             debug = src / "debug"
             debug.mkdir(parents=True)
-            (src / "saga.h").write_text("// shared contract\n")
             for name in ("diagnostics.h", "skin_trace.h", "support.h"):
                 (debug / name).write_text("// reviewed Debug support ABI\n")
             check_module.check_headers()
@@ -425,7 +422,6 @@ class HeaderLayoutTests(unittest.TestCase):
             src = Path(temp) / "src"
             native = src / "nu2api"
             native.mkdir(parents=True)
-            (src / "saga.h").write_text("// shared contract\n")
             (native / "pc_fmv_native.h").write_text("// reviewed native FMV ABI\n")
             check_module.check_headers()
             (native / "unreviewed.h").write_text("// unrelated headers remain forbidden\n")
@@ -436,9 +432,6 @@ class HeaderLayoutTests(unittest.TestCase):
         with tempfile.TemporaryDirectory() as temp, patch.object(check_module, "ROOT", Path(temp)):
             src = Path(temp) / "src"
             src.mkdir()
-            with self.assertRaisesRegex(ValueError, "src/saga.h"):
-                check_module.check_headers()
-            (src / "saga.h").write_text("// fixture\n")
             check_module.check_headers()
             (src / "externals.h").write_text("// API declarations\n")
             check_module.check_headers()
@@ -453,7 +446,6 @@ class HeaderLayoutTests(unittest.TestCase):
             src.mkdir()
             vendor = Path(temp) / "lib/ogg-vorbis/vorbis"
             vendor.mkdir(parents=True)
-            (src / "saga.h").write_text("// shared contract\n")
             (vendor / "os.h").write_text("// original library-local header\n")
             check_module.check_headers()
             for path in (vendor / "unreviewed.h", src / "vendored/unrelated.h", src / "vendored/vorbis/os.h", src / "audio/vorbis/os.h"):

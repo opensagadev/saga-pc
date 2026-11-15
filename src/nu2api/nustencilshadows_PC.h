@@ -1,19 +1,7 @@
-/* Split from saga.h (tools/headersplit.py, docs/header-plan.md). saga.h includes this header at the place of its
- * declarations. */
-
-/* saga.h includes this header once per part (SAGA_SHIM), so `#pragma once` holds for direct includes only; the
- * condition and the _PART selector go away with the shim. */
-#ifndef SAGA_SHIM
 #pragma once
-#endif
-#ifndef SAGA_NU2API_NUSTENCILSHADOWS_PC_H_PART
-#define SAGA_NU2API_NUSTENCILSHADOWS_PC_H_PART 1
-#endif
 
 #include "nu2api/nucore/common.h"
 
-/* The module headers this header uses. saga.h includes every header itself, so the shim skips these. */
-#ifndef SAGA_SHIM
 #include "legoapi/render/core/gameliball.h"
 #include "nu2api/nu3d/nu3d_includes.h"
 #include "nu2api/nu3d/nucamera.h"
@@ -21,16 +9,10 @@
 #include "nu2api/numath/numtx.h"
 #include "nu2api/numath/nuvec.h"
 #include "nu2api/numath/nuvec4.h"
-#endif
 
 struct DWA_WEIGHT_BLOCK;
 struct GRAPHICS_RENDER_TEXTURE;
 struct NUHGOBJ_EVAL;
-
-/* 7 parts: saga.h includes this header once per part, each where its declarations belong; included directly, it gives
- * all parts at once. */
-
-#if SAGA_NU2API_NUSTENCILSHADOWS_PC_H_PART == 1 && !defined(SAGA_NU2API_NUSTENCILSHADOWS_PC_H_STOP)
 
 struct NUGSCN_s;
 struct PC_TEXTURE_RESOURCE;
@@ -272,14 +254,6 @@ extern "C" {
 }
 #endif
 #endif
-#undef SAGA_NU2API_NUSTENCILSHADOWS_PC_H_PART
-#define SAGA_NU2API_NUSTENCILSHADOWS_PC_H_PART 2
-#ifdef SAGA_SHIM
-#define SAGA_NU2API_NUSTENCILSHADOWS_PC_H_STOP
-#endif
-#endif
-
-#if SAGA_NU2API_NUSTENCILSHADOWS_PC_H_PART == 2 && !defined(SAGA_NU2API_NUSTENCILSHADOWS_PC_H_STOP)
 
 typedef struct debris_particle_frame_s { // size 0x28
     NUVEC position;                      // 0x00
@@ -362,14 +336,6 @@ extern "C" {
 #ifdef __cplusplus
 }
 #endif
-#undef SAGA_NU2API_NUSTENCILSHADOWS_PC_H_PART
-#define SAGA_NU2API_NUSTENCILSHADOWS_PC_H_PART 3
-#ifdef SAGA_SHIM
-#define SAGA_NU2API_NUSTENCILSHADOWS_PC_H_STOP
-#endif
-#endif
-
-#if SAGA_NU2API_NUSTENCILSHADOWS_PC_H_PART == 3 && !defined(SAGA_NU2API_NUSTENCILSHADOWS_PC_H_STOP)
 
 /* One saved camera of the PC camera stack (0x280a598, 64 entries) with the render-state camera id. */
 typedef struct NU_CAMERA_STACK_ENTRY { // size 0x7c
@@ -421,14 +387,7 @@ extern "C" {
 #ifdef __cplusplus
 }
 #endif
-#undef SAGA_NU2API_NUSTENCILSHADOWS_PC_H_PART
-#define SAGA_NU2API_NUSTENCILSHADOWS_PC_H_PART 4
-#ifdef SAGA_SHIM
-#define SAGA_NU2API_NUSTENCILSHADOWS_PC_H_STOP
-#endif
-#endif
 
-#if SAGA_NU2API_NUSTENCILSHADOWS_PC_H_PART == 4 && !defined(SAGA_NU2API_NUSTENCILSHADOWS_PC_H_STOP)
 struct PC_HG_SHADOW_STATE_VIEW { // size 0x10
 
     union { // size 0xc
@@ -481,14 +440,7 @@ extern "C" {
 #ifdef __cplusplus
 }
 #endif
-#undef SAGA_NU2API_NUSTENCILSHADOWS_PC_H_PART
-#define SAGA_NU2API_NUSTENCILSHADOWS_PC_H_PART 5
-#ifdef SAGA_SHIM
-#define SAGA_NU2API_NUSTENCILSHADOWS_PC_H_STOP
-#endif
-#endif
 
-#if SAGA_NU2API_NUSTENCILSHADOWS_PC_H_PART == 5 && !defined(SAGA_NU2API_NUSTENCILSHADOWS_PC_H_STOP)
 #ifdef __cplusplus
 extern "C" {
 #endif
@@ -503,14 +455,7 @@ extern "C" {
 #ifdef __cplusplus
 }
 #endif
-#undef SAGA_NU2API_NUSTENCILSHADOWS_PC_H_PART
-#define SAGA_NU2API_NUSTENCILSHADOWS_PC_H_PART 6
-#ifdef SAGA_SHIM
-#define SAGA_NU2API_NUSTENCILSHADOWS_PC_H_STOP
-#endif
-#endif
 
-#if SAGA_NU2API_NUSTENCILSHADOWS_PC_H_PART == 6 && !defined(SAGA_NU2API_NUSTENCILSHADOWS_PC_H_STOP)
 typedef union PC_BOOT_FRAMEBUFFER_VIEW { // size 0x8
 
     struct {                                          // size 0x8
@@ -553,14 +498,7 @@ extern "C" {
 #ifdef __cplusplus
 }
 #endif
-#undef SAGA_NU2API_NUSTENCILSHADOWS_PC_H_PART
-#define SAGA_NU2API_NUSTENCILSHADOWS_PC_H_PART 7
-#ifdef SAGA_SHIM
-#define SAGA_NU2API_NUSTENCILSHADOWS_PC_H_STOP
-#endif
-#endif
 
-#if SAGA_NU2API_NUSTENCILSHADOWS_PC_H_PART == 7 && !defined(SAGA_NU2API_NUSTENCILSHADOWS_PC_H_STOP)
 #ifdef __cplusplus
 extern "C" {
 #endif
@@ -595,11 +533,3 @@ extern "C" {
 #ifdef __cplusplus
 }
 #endif
-#undef SAGA_NU2API_NUSTENCILSHADOWS_PC_H_PART
-#define SAGA_NU2API_NUSTENCILSHADOWS_PC_H_PART 8
-#ifdef SAGA_SHIM
-#define SAGA_NU2API_NUSTENCILSHADOWS_PC_H_STOP
-#endif
-#endif
-
-#undef SAGA_NU2API_NUSTENCILSHADOWS_PC_H_STOP

@@ -1,14 +1,8 @@
-/* Split from saga.h (tools/headersplit.py, docs/header-plan.md). saga.h includes this header at the place of its
- * declarations. */
-
 #pragma once
 
 #include "nu2api/nucore/common.h"
 
-/* The module headers this header uses. saga.h includes every header itself, so the shim skips these. */
-#ifndef SAGA_SHIM
 #include "gameapi/gui/apimenu.h"
-#endif
 
 struct FRAME_PAD;
 struct language_data_s;
@@ -71,7 +65,7 @@ extern "C" {
 #endif
 #ifdef __cplusplus
 
-/* Private PC contract proposal. Include after saga.h. */
+/* Private PC contract proposal. */
 struct PC_CONTROL_ITEM { // size 0x8
     u8 kind;             // 0x0
     u8 command;          // 0x1

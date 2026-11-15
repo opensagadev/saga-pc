@@ -1,27 +1,9 @@
-/* Split from saga.h (tools/headersplit.py, docs/header-plan.md). saga.h includes this header at the place of its
- * declarations. */
-
-/* saga.h includes this header once per part (SAGA_SHIM), so `#pragma once` holds for direct includes only; the
- * condition and the _PART selector go away with the shim. */
-#ifndef SAGA_SHIM
 #pragma once
-#endif
-#ifndef SAGA_LEGOAPI_GIZMOS_TRAPS_GIZFORCE_H_PART
-#define SAGA_LEGOAPI_GIZMOS_TRAPS_GIZFORCE_H_PART 1
-#endif
 
 #include "nu2api/nucore/common.h"
 
-/* The module headers this header uses. saga.h includes every header itself, so the shim skips these. */
-#ifndef SAGA_SHIM
 #include "legoapi/menus/core/hint.h"
 #include "nu2api/numath/nuvec.h"
-#endif
-
-/* 3 parts: saga.h includes this header once per part, each where its declarations belong; included directly, it gives
- * all parts at once. */
-
-#if SAGA_LEGOAPI_GIZMOS_TRAPS_GIZFORCE_H_PART == 1 && !defined(SAGA_LEGOAPI_GIZMOS_TRAPS_GIZFORCE_H_STOP)
 
 struct PART_PC;
 struct addgizmotype_s;
@@ -53,14 +35,6 @@ extern "C" {
 #ifdef __cplusplus
 }
 #endif
-#undef SAGA_LEGOAPI_GIZMOS_TRAPS_GIZFORCE_H_PART
-#define SAGA_LEGOAPI_GIZMOS_TRAPS_GIZFORCE_H_PART 2
-#ifdef SAGA_SHIM
-#define SAGA_LEGOAPI_GIZMOS_TRAPS_GIZFORCE_H_STOP
-#endif
-#endif
-
-#if SAGA_LEGOAPI_GIZMOS_TRAPS_GIZFORCE_H_PART == 2 && !defined(SAGA_LEGOAPI_GIZMOS_TRAPS_GIZFORCE_H_STOP)
 
 typedef struct FORCE_RESET_GROUP { // size 0x28
 
@@ -78,15 +52,6 @@ typedef struct FORCE_RESET_GROUP { // size 0x28
     u8 member_count;     // 0x26
     u8 configured_count; // 0x27
 } FORCE_RESET_GROUP;
-
-#undef SAGA_LEGOAPI_GIZMOS_TRAPS_GIZFORCE_H_PART
-#define SAGA_LEGOAPI_GIZMOS_TRAPS_GIZFORCE_H_PART 3
-#ifdef SAGA_SHIM
-#define SAGA_LEGOAPI_GIZMOS_TRAPS_GIZFORCE_H_STOP
-#endif
-#endif
-
-#if SAGA_LEGOAPI_GIZMOS_TRAPS_GIZFORCE_H_PART == 3 && !defined(SAGA_LEGOAPI_GIZMOS_TRAPS_GIZFORCE_H_STOP)
 
 typedef struct gizforce_target_record_s { // size 0x10
     struct gizforce_s *force;             // 0x0
@@ -111,11 +76,3 @@ extern "C" {
 #ifdef __cplusplus
 }
 #endif
-#undef SAGA_LEGOAPI_GIZMOS_TRAPS_GIZFORCE_H_PART
-#define SAGA_LEGOAPI_GIZMOS_TRAPS_GIZFORCE_H_PART 4
-#ifdef SAGA_SHIM
-#define SAGA_LEGOAPI_GIZMOS_TRAPS_GIZFORCE_H_STOP
-#endif
-#endif
-
-#undef SAGA_LEGOAPI_GIZMOS_TRAPS_GIZFORCE_H_STOP

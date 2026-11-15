@@ -29,6 +29,22 @@ Decisions on the first draft of this plan (2026-11-14):
    shim includes and step 3 deletes. Targets that shadow SDK/CRT header
    names are renamed.
 
+## Status (2026-11-15): done, saga.h is gone
+
+Every unit includes the module headers it uses (step 2, `tools/narrow.py`, the six units of the fragile
+functions last, each alone; docs/fragile-flips.md has their rows). The Ogg/Vorbis pin carries the library
+headers (section 1.4). Step 3 then deleted `src/saga.h`, `transitional/unused.h` (only the shim included it)
+and the shim machinery: each header's `#if ..._PART` sections are merged into one body in their order, and the
+`#ifndef SAGA_SHIM` wrappers around `#pragma once` and around the headers' own includes are unwrapped. There is
+no compatibility header. `tools/headersplit.py` (every mode read saga.h) and `tools/narrow.py` (it replaced
+`#include "saga.h"`) went with it; `config/header-map.csv` stays as the list of module headers that
+`tools/check.py` and `tools/standalone.py` accept, with its step-1 evidence columns as history. The tools that
+parsed saga.h parse a translation unit of every module header instead (`standalone.all_headers_source()`);
+`typexfer.py` and `typeimport.py`, which edited saga.h in place, stop with a message until they learn the
+module headers. Every module header compiles on its own (`tools/standalone.py --check`).
+
+The sections below are the history of the plan.
+
 ## Status (2026-11-14): step 1 tried, not applied
 
 The split was applied on origin/main 352eb5eb (branch `wip-split-narrow`,

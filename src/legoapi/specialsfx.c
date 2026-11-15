@@ -198,7 +198,7 @@ void UpdateSpecialSfx(WORLDINFO *world_info) {
                         play = 1;
                     }
                     // MATCH-EXCEPTION: bit 2 is read as (flags >> 2) & 1, the code VC8 emits for a one-bit
-                    // bitfield member; the event flags are a plain u8 in saga.h
+                    // bitfield member; the event flags are a plain u8 in the header
                 } else if (((flags >> 2) & 1) != 0 && (flags & 8) != 0) {
                     if ((event->previous_frame < event->trigger_frame && event->trigger_frame <= frame) ||
                         (event->previous_frame > event->trigger_frame && frame <= event->trigger_frame)) {

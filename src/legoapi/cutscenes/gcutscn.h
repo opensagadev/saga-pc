@@ -1,33 +1,15 @@
-/* Split from saga.h (tools/headersplit.py, docs/header-plan.md). saga.h includes this header at the place of its
- * declarations. */
-
-/* saga.h includes this header once per part (SAGA_SHIM), so `#pragma once` holds for direct includes only; the
- * condition and the _PART selector go away with the shim. */
-#ifndef SAGA_SHIM
 #pragma once
-#endif
-#ifndef SAGA_LEGOAPI_CUTSCENES_GCUTSCN_H_PART
-#define SAGA_LEGOAPI_CUTSCENES_GCUTSCN_H_PART 1
-#endif
 
 #include "nu2api/nucore/common.h"
 
-/* The module headers this header uses. saga.h includes every header itself, so the shim skips these. */
-#ifndef SAGA_SHIM
 #include "nu2api/nu3d/nuhspecial.h"
 #include "nu2api/nucore/nuanimdata.h"
 #include "nu2api/numath/numtx.h"
 #include "nu2api/numath/nuvec.h"
-#endif
 
 struct NUGSCN_s;
 struct cut_load_character_animation_s;
 struct cut_load_locator_instance_system_s;
-
-/* 3 parts: saga.h includes this header once per part, each where its declarations belong; included directly, it gives
- * all parts at once. */
-
-#if SAGA_LEGOAPI_CUTSCENES_GCUTSCN_H_PART == 1 && !defined(SAGA_LEGOAPI_CUTSCENES_GCUTSCN_H_STOP)
 
 struct ANI3_HEADER;
 struct CUT_LOOKAT_STATE;
@@ -125,14 +107,6 @@ extern "C" {
 #ifdef __cplusplus
 }
 #endif
-#undef SAGA_LEGOAPI_CUTSCENES_GCUTSCN_H_PART
-#define SAGA_LEGOAPI_CUTSCENES_GCUTSCN_H_PART 2
-#ifdef SAGA_SHIM
-#define SAGA_LEGOAPI_CUTSCENES_GCUTSCN_H_STOP
-#endif
-#endif
-
-#if SAGA_LEGOAPI_CUTSCENES_GCUTSCN_H_PART == 2 && !defined(SAGA_LEGOAPI_CUTSCENES_GCUTSCN_H_STOP)
 
 typedef struct CUT_RIGID_ANIMATION { // size 0x50
     NUMTX base_matrix;               // 0x00
@@ -151,14 +125,6 @@ extern "C" {
 #ifdef __cplusplus
 }
 #endif
-#undef SAGA_LEGOAPI_CUTSCENES_GCUTSCN_H_PART
-#define SAGA_LEGOAPI_CUTSCENES_GCUTSCN_H_PART 3
-#ifdef SAGA_SHIM
-#define SAGA_LEGOAPI_CUTSCENES_GCUTSCN_H_STOP
-#endif
-#endif
-
-#if SAGA_LEGOAPI_CUTSCENES_GCUTSCN_H_PART == 3 && !defined(SAGA_LEGOAPI_CUTSCENES_GCUTSCN_H_STOP)
 
 typedef struct CUT_LOCATOR_GENERIC {        // size 0x54
     NUMTX base_matrix;                      // 0x00
@@ -501,12 +467,3 @@ struct cut_locator_function_entry_s { // size 0x14
                   CUT_LOAD_LOCATOR *); // 0x08
     u8 unknown_0c[8];                  // 0x0c
 };
-
-#undef SAGA_LEGOAPI_CUTSCENES_GCUTSCN_H_PART
-#define SAGA_LEGOAPI_CUTSCENES_GCUTSCN_H_PART 4
-#ifdef SAGA_SHIM
-#define SAGA_LEGOAPI_CUTSCENES_GCUTSCN_H_STOP
-#endif
-#endif
-
-#undef SAGA_LEGOAPI_CUTSCENES_GCUTSCN_H_STOP

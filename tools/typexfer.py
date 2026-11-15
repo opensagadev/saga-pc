@@ -32,15 +32,15 @@ else:
 K = ci.CursorKind
 T = ci.TypeKind
 HEADER = ROOT / "src/saga.h"
-# saga.h includes the module headers it was split into (docs/header-plan.md): their declarations are PC types too.
+# The module headers (docs/header-plan.md) hold the PC types.
 PROJECT_HEADERS = str(ROOT / "src") + "/"
 
 
 def require_unsplit(tool):
-    """Stop a tool that edits declarations in place in saga.h once saga.h is the include-all shim."""
-    if "#define SAGA_SHIM" in HEADER.read_text(encoding="latin-1"):
-        raise SystemExit(f"{tool}: src/saga.h is the include-all shim of the module headers; this tool still edits "
-                         "saga.h in place (docs/header-plan.md, step 3)")
+    """Stop a tool that edits declarations in place in the old monolithic saga.h: the declarations live in the
+    module headers now (docs/header-plan.md, step 3), and the tool has not learned them yet."""
+    raise SystemExit(f"{tool}: this tool edits declarations in place in the old monolithic src/saga.h; they live in "
+                     "the module headers now (docs/header-plan.md, step 3)")
 PADDING = re.compile(r"^(unknown|opaque|reserved|padding|pad)(_[0-9a-fA-Fx]+)?$|^unknown_")
 ANDROID_PLACEHOLDER = re.compile(r"^(pad|padding|unknown|unk|field|reserved|dummy|spare)(_?(0x)?[0-9a-fA-F]+)?$|^(field|unk|unknown|pad)_")
 PRIMITIVE_NAMES = {"i8", "u8", "i16", "u16", "i32", "u32", "i64", "u64", "f32", "f64", "char"}
@@ -128,10 +128,12 @@ def android_unit(root):
 
 
 def pc_unit(text=None):
+    """A C++ parse of `text` (default: every module header, tools/standalone.py) read as src/saga.h."""
+    from tools import standalone
     _, overlay, flags = analysis_configuration()
     args = [*flags, "-ivfsoverlay", str(overlay), "-x", "c++", "-std=c++98"]
-    unsaved = [(str(HEADER), text)] if text is not None else None
-    return ci.Index.create().parse(str(HEADER), args=args, unsaved_files=unsaved)
+    text = standalone.all_headers_source() if text is None else text
+    return ci.Index.create().parse(str(HEADER), args=args, unsaved_files=[(str(HEADER), text)])
 
 
 def layout(structs, typedefs):

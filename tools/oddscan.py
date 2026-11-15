@@ -1107,21 +1107,9 @@ def magic_analysis(scans, limit=40, constants=None, hints=None):
 def structure(scans, root=ROOT):
     by_path = {scan.path: scan for scan in scans}
     result = {}
-    saga = by_path.get("src/saga.h")
-    if saga:
-        text = (root / "src/saga.h").read_text(encoding="latin-1")
-        result["saga_h_lines"] = text.count("\n")
-        result["saga_h_top_level_declarations"] = sum(
-            1 for _, statement in saga.top_level_statements if "saga_static_assert_" not in statement
-            and not statement.startswith("STATIC_ASSERT"))
-        result["saga_h_aggregates"] = sum(1 for kind, name, _, _ in saga.aggregates if name)
-        result["saga_h_static_asserts"] = len(re.findall(r'\bSTATIC_ASSERT\s*\(', text))
     units = [scan for scan in scans if scan.unit]
     result["units"] = len(units)
     result["headers"] = sorted(scan.path for scan in scans if not scan.unit)
-    result["units_including_other_project_headers"] = sorted(
-        scan.path for scan in units if any(inc.startswith('"') and inc != '"saga.h"' for inc in scan.includes))
-    result["units_without_saga_h"] = sorted(scan.path for scan in units if '"saga.h"' not in scan.includes)
     data = by_path.get("src/data.cpp")
     if data:
         definitions = [s for _, s in data.top_level_statements

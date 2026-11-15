@@ -11472,7 +11472,7 @@ i32 NuPostEffectIsInitialised(u32 mask) {
     return (NuPostEffectInitialisedFlags & mask) != 0;
 }
 
-// Repeats saga.h, but deleting it changes NuDeferredFilterGen::render (declaration noise).
+// Repeats its header, but deleting it changes NuDeferredFilterGen::render (declaration noise).
 void PCGraphicsCopyFramebufferTex2D(i32, GRAPHICS_RENDER_TEXTURE *, i32, i32, i32, i32, i32);
 
 GRAPHICS_RENDER_TEXTURE *NuPostEffectGetBackBuffer(i32 frame) {
@@ -13177,9 +13177,9 @@ extern "C" {
         return &vpCurrent;
     }
 
-    // Repeats saga.h, but deleting it changes NuDeferredFilterGen::render (declaration noise).
+    // Repeats its header, but deleting it changes NuDeferredFilterGen::render (declaration noise).
     extern RENDER_POST_VIEWPORT_PREFIX RenderPostViewportPrefix;
-    // Repeats saga.h, but deleting it changes NuDeferredFilterGen::render (declaration noise).
+    // Repeats its header, but deleting it changes NuDeferredFilterGen::render (declaration noise).
     void RenderPostViewportSet(f32 source_x, f32 source_y, f32 source_right, f32 source_bottom, f32 dest_x, f32 dest_y, f32 dest_right,
                                f32 dest_bottom);
 
@@ -18133,9 +18133,9 @@ extern "C" {
 extern "C" {
     extern NUMTX PostShadowView;
     extern NUMTX PostShadowProjection;
-    // Repeats saga.h, but deleting it changes NuDeferredFilterGen::render (declaration noise).
+    // Repeats its header, but deleting it changes NuDeferredFilterGen::render (declaration noise).
     void PCGraphicsAttachFramebuffer(PC_FRAMEBUFFER *, i32, GRAPHICS_RENDER_TEXTURE *, i32);
-    // Repeats saga.h, but deleting it changes NuDeferredFilterGen::render (declaration noise).
+    // Repeats its header, but deleting it changes NuDeferredFilterGen::render (declaration noise).
     void PostBlur7x7Dispatch(GRAPHICS_RENDER_TEXTURE *, i32, GRAPHICS_RENDER_TEXTURE *, i32, i32, i32, bool, f32, POST_SHADER_PROGRAM *);
     extern PC_DISPLAY_ITEM_HANDLER PCDisplayShadowItemHandlers[49];
 }

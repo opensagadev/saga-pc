@@ -5,8 +5,7 @@ from unittest import mock
 
 from tools import selfcontain
 
-HEADER = ('#pragma once\n\n#include "nu2api/nucore/common.h"\n\n'
-          "/* The module headers this header uses. */\n#ifndef SAGA_SHIM\n#include \"b.h\"\n#endif\n\n"
+HEADER = ('#pragma once\n\n#include "nu2api/nucore/common.h"\n\n#include "b.h"\n\n'
           "struct OTHER;\n\ntypedef struct USER { THING_s *thing; THING_s value; } USER;\n")
 
 
@@ -18,17 +17,16 @@ class SelfContainTest(unittest.TestCase):
 
     def test_add_include_keeps_the_block_sorted(self):
         text = selfcontain.add_include(HEADER, "a.h")
-        self.assertIn('#ifndef SAGA_SHIM\n#include "a.h"\n#include "b.h"\n#endif\n', text)
+        self.assertIn('common.h"\n\n#include "a.h"\n#include "b.h"\n\nstruct OTHER;', text)
         self.assertEqual(selfcontain.add_include(text, "a.h"), text)
 
     def test_add_include_creates_a_block(self):
         text = selfcontain.add_include('#pragma once\n\n#include "nu2api/nucore/common.h"\n\nint x;\n', "a.h")
-        self.assertIn('common.h"\n\n/* The module headers', text)
-        self.assertIn('#ifndef SAGA_SHIM\n#include "a.h"\n#endif\n', text)
+        self.assertEqual(text, '#pragma once\n\n#include "nu2api/nucore/common.h"\n\n#include "a.h"\n\nint x;\n')
 
     def test_add_forward_joins_the_run(self):
         text = selfcontain.add_forward(HEADER, "struct", "THING_s")
-        self.assertIn("#endif\n\nstruct OTHER;\nstruct THING_s;\n\ntypedef", text)
+        self.assertIn('#include "b.h"\n\nstruct OTHER;\nstruct THING_s;\n\ntypedef', text)
         self.assertEqual(selfcontain.add_forward(text, "struct", "THING_s"), text)
 
     def test_respell(self):

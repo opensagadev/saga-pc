@@ -1,19 +1,7 @@
-/* Split from saga.h (tools/headersplit.py, docs/header-plan.md). saga.h includes this header at the place of its
- * declarations. */
-
-/* saga.h includes this header once per part (SAGA_SHIM), so `#pragma once` holds for direct includes only; the
- * condition and the _PART selector go away with the shim. */
-#ifndef SAGA_SHIM
 #pragma once
-#endif
-#ifndef SAGA_NU2API_NU3D_NU3D_INCLUDES_H_PART
-#define SAGA_NU2API_NU3D_NU3D_INCLUDES_H_PART 1
-#endif
 
 #include "nu2api/nucore/common.h"
 
-/* The module headers this header uses. saga.h includes every header itself, so the shim skips these. */
-#ifndef SAGA_SHIM
 #include "legoapi/render/fx/game_deb.h"
 #include "nu2api/nu3d/nucamera.h"
 #include "nu2api/nu3d/nudlist.h"
@@ -33,15 +21,9 @@
 #include "nu2api/numath/nuvec.h"
 #include "nu2api/numath/nuvec4.h"
 #include "nu2api/nuwin32/d3dCore.h"
-#endif
 
 struct NuDynamicLight;
 struct PC_TEXTURE_RESOURCE;
-
-/* 9 parts: saga.h includes this header once per part, each where its declarations belong; included directly, it gives
- * all parts at once. */
-
-#if SAGA_NU2API_NU3D_NU3D_INCLUDES_H_PART == 1 && !defined(SAGA_NU2API_NU3D_NU3D_INCLUDES_H_STOP)
 
 typedef struct NUANGVEC { // size 0xc
     NUANG x;              // 0x0
@@ -549,14 +531,6 @@ extern "C" {
 #ifdef __cplusplus
 }
 #endif
-#undef SAGA_NU2API_NU3D_NU3D_INCLUDES_H_PART
-#define SAGA_NU2API_NU3D_NU3D_INCLUDES_H_PART 2
-#ifdef SAGA_SHIM
-#define SAGA_NU2API_NU3D_NU3D_INCLUDES_H_STOP
-#endif
-#endif
-
-#if SAGA_NU2API_NU3D_NU3D_INCLUDES_H_PART == 2 && !defined(SAGA_NU2API_NU3D_NU3D_INCLUDES_H_STOP)
 
 typedef struct nutexdim_s {        // size 0x28
     i32 width;                     // 0x00
@@ -635,14 +609,6 @@ struct POST_SHADER_PROGRAM {            // size 0x10
 };
 
 #endif
-#undef SAGA_NU2API_NU3D_NU3D_INCLUDES_H_PART
-#define SAGA_NU2API_NU3D_NU3D_INCLUDES_H_PART 3
-#ifdef SAGA_SHIM
-#define SAGA_NU2API_NU3D_NU3D_INCLUDES_H_STOP
-#endif
-#endif
-
-#if SAGA_NU2API_NU3D_NU3D_INCLUDES_H_PART == 3 && !defined(SAGA_NU2API_NU3D_NU3D_INCLUDES_H_STOP)
 
 typedef struct nuspecial_legacy_s { // size 0x4c
     NUMTX matrix;                   // 0x00
@@ -850,15 +816,6 @@ typedef struct NU_POST_SPEED_PARAMETERS { // size 0x8c
     f32 scale;                            // 0x88
 } NU_POST_SPEED_PARAMETERS;
 
-#undef SAGA_NU2API_NU3D_NU3D_INCLUDES_H_PART
-#define SAGA_NU2API_NU3D_NU3D_INCLUDES_H_PART 4
-#ifdef SAGA_SHIM
-#define SAGA_NU2API_NU3D_NU3D_INCLUDES_H_STOP
-#endif
-#endif
-
-#if SAGA_NU2API_NU3D_NU3D_INCLUDES_H_PART == 4 && !defined(SAGA_NU2API_NU3D_NU3D_INCLUDES_H_STOP)
-
 typedef struct NUANIMDATA2_SKELETAL { // size 0x18
     NUANIMDATA2 prefix;               // 0x00
     i8 *node_flags;                   // 0x14
@@ -900,14 +857,6 @@ extern "C" {
 #ifdef __cplusplus
 }
 #endif
-#undef SAGA_NU2API_NU3D_NU3D_INCLUDES_H_PART
-#define SAGA_NU2API_NU3D_NU3D_INCLUDES_H_PART 5
-#ifdef SAGA_SHIM
-#define SAGA_NU2API_NU3D_NU3D_INCLUDES_H_STOP
-#endif
-#endif
-
-#if SAGA_NU2API_NU3D_NU3D_INCLUDES_H_PART == 5 && !defined(SAGA_NU2API_NU3D_NU3D_INCLUDES_H_STOP)
 
 typedef struct nudisplay_list_s {            // size 0x90
     void *allocation;                        // 0x00
@@ -1126,15 +1075,6 @@ extern "C" {
 }
 #endif
 
-#undef SAGA_NU2API_NU3D_NU3D_INCLUDES_H_PART
-#define SAGA_NU2API_NU3D_NU3D_INCLUDES_H_PART 6
-#ifdef SAGA_SHIM
-#define SAGA_NU2API_NU3D_NU3D_INCLUDES_H_STOP
-#endif
-#endif
-
-#if SAGA_NU2API_NU3D_NU3D_INCLUDES_H_PART == 6 && !defined(SAGA_NU2API_NU3D_NU3D_INCLUDES_H_STOP)
-
 typedef struct nurndrlibscene_s { // size 0x218
     i32 scene_id;                 // 0x000
     u32 clear_flags;              // 0x004
@@ -1229,14 +1169,6 @@ extern "C" {
 #ifdef __cplusplus
 }
 #endif
-#undef SAGA_NU2API_NU3D_NU3D_INCLUDES_H_PART
-#define SAGA_NU2API_NU3D_NU3D_INCLUDES_H_PART 7
-#ifdef SAGA_SHIM
-#define SAGA_NU2API_NU3D_NU3D_INCLUDES_H_STOP
-#endif
-#endif
-
-#if SAGA_NU2API_NU3D_NU3D_INCLUDES_H_PART == 7 && !defined(SAGA_NU2API_NU3D_NU3D_INCLUDES_H_STOP)
 
 struct GRAPHICS_RENDER_TEXTURE {   // size 0x30
     PC_TEXTURE_RESOURCE *resource; // 0x00
@@ -1314,14 +1246,6 @@ extern "C" {
 #ifdef __cplusplus
 }
 #endif
-#undef SAGA_NU2API_NU3D_NU3D_INCLUDES_H_PART
-#define SAGA_NU2API_NU3D_NU3D_INCLUDES_H_PART 8
-#ifdef SAGA_SHIM
-#define SAGA_NU2API_NU3D_NU3D_INCLUDES_H_STOP
-#endif
-#endif
-
-#if SAGA_NU2API_NU3D_NU3D_INCLUDES_H_PART == 8 && !defined(SAGA_NU2API_NU3D_NU3D_INCLUDES_H_STOP)
 
 /* PC NuDynamicLight; its pool slots are 0x830 bytes. */
 struct PC_SPECIAL_SHADOW_LIGHT {      // size 0x828
@@ -1440,14 +1364,7 @@ extern "C" {
 #endif
 #ifdef __cplusplus
 #endif
-#undef SAGA_NU2API_NU3D_NU3D_INCLUDES_H_PART
-#define SAGA_NU2API_NU3D_NU3D_INCLUDES_H_PART 9
-#ifdef SAGA_SHIM
-#define SAGA_NU2API_NU3D_NU3D_INCLUDES_H_STOP
-#endif
-#endif
 
-#if SAGA_NU2API_NU3D_NU3D_INCLUDES_H_PART == 9 && !defined(SAGA_NU2API_NU3D_NU3D_INCLUDES_H_STOP)
 typedef struct NU_POST_DEFERRED_VIEW {         // size 0xdc
     void *vtable;                              // 0x00
     u8 enabled;                                // 0x04
@@ -1499,11 +1416,3 @@ extern "C" {
 #ifdef __cplusplus
 }
 #endif
-#undef SAGA_NU2API_NU3D_NU3D_INCLUDES_H_PART
-#define SAGA_NU2API_NU3D_NU3D_INCLUDES_H_PART 10
-#ifdef SAGA_SHIM
-#define SAGA_NU2API_NU3D_NU3D_INCLUDES_H_STOP
-#endif
-#endif
-
-#undef SAGA_NU2API_NU3D_NU3D_INCLUDES_H_STOP

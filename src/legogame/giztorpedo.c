@@ -76,7 +76,7 @@ i32 GizTorp_Load(void *world_pointer, void *unused) {
 }
 
 /* MATCH-EXCEPTION: the original re-reads world->torpedo_machine_sys at each use; the casts stand in for its
- * GIZTORPMACHINESYS_s type (saga.h has the narrower TORPEDO_MACHINE_SYS view). */
+ * GIZTORPMACHINESYS_s type (the header has the narrower TORPEDO_MACHINE_SYS view). */
 void *GizTorps_ReserveBufferSpace(void *pointer) {
     WORLDINFO *world = pointer;
     world->torpedo_machine_sys = NULL;

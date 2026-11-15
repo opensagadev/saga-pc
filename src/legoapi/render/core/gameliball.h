@@ -1,34 +1,16 @@
-/* Split from saga.h (tools/headersplit.py, docs/header-plan.md). saga.h includes this header at the place of its
- * declarations. */
-
-/* saga.h includes this header once per part (SAGA_SHIM), so `#pragma once` holds for direct includes only; the
- * condition and the _PART selector go away with the shim. */
-#ifndef SAGA_SHIM
 #pragma once
-#endif
-#ifndef SAGA_LEGOAPI_RENDER_CORE_GAMELIBALL_H_PART
-#define SAGA_LEGOAPI_RENDER_CORE_GAMELIBALL_H_PART 1
-#endif
 
 #include "nu2api/nucore/common.h"
 
-/* The module headers this header uses. saga.h includes every header itself, so the shim skips these. */
-#ifndef SAGA_SHIM
 #include "gameapi/edtools/edtools_types.h"
 #include "nu2api/nu3d/nuhspecial.h"
 #include "nu2api/numath/nuang.h"
 #include "nu2api/numath/numtx.h"
 #include "nu2api/numath/nuvec.h"
 #include "nu2api/numath/nuvec4.h"
-#endif
 
 struct TERRAIN_GROUP_PC;
 struct nucamera_s;
-
-/* 11 parts: saga.h includes this header once per part, each where its declarations belong; included directly, it gives
- * all parts at once. */
-
-#if SAGA_LEGOAPI_RENDER_CORE_GAMELIBALL_H_PART == 1 && !defined(SAGA_LEGOAPI_RENDER_CORE_GAMELIBALL_H_STOP)
 
 struct APIDEBRISSYS;
 struct FRAME_PAD;
@@ -615,14 +597,6 @@ extern "C" {
 #ifdef __cplusplus
 }
 #endif
-#undef SAGA_LEGOAPI_RENDER_CORE_GAMELIBALL_H_PART
-#define SAGA_LEGOAPI_RENDER_CORE_GAMELIBALL_H_PART 2
-#ifdef SAGA_SHIM
-#define SAGA_LEGOAPI_RENDER_CORE_GAMELIBALL_H_STOP
-#endif
-#endif
-
-#if SAGA_LEGOAPI_RENDER_CORE_GAMELIBALL_H_PART == 2 && !defined(SAGA_LEGOAPI_RENDER_CORE_GAMELIBALL_H_STOP)
 
 struct TerrainScanWriter {
     u8 *group_header;
@@ -648,14 +622,6 @@ extern "C" {
 #ifdef __cplusplus
 }
 #endif
-#undef SAGA_LEGOAPI_RENDER_CORE_GAMELIBALL_H_PART
-#define SAGA_LEGOAPI_RENDER_CORE_GAMELIBALL_H_PART 3
-#ifdef SAGA_SHIM
-#define SAGA_LEGOAPI_RENDER_CORE_GAMELIBALL_H_STOP
-#endif
-#endif
-
-#if SAGA_LEGOAPI_RENDER_CORE_GAMELIBALL_H_PART == 3 && !defined(SAGA_LEGOAPI_RENDER_CORE_GAMELIBALL_H_STOP)
 
 typedef struct TERRAIN_PLATFORM_PC { // size 0x6c
     NUMTX previous_matrix;           // 0x00
@@ -714,14 +680,6 @@ extern "C" {
 #ifdef __cplusplus
 }
 #endif
-#undef SAGA_LEGOAPI_RENDER_CORE_GAMELIBALL_H_PART
-#define SAGA_LEGOAPI_RENDER_CORE_GAMELIBALL_H_PART 4
-#ifdef SAGA_SHIM
-#define SAGA_LEGOAPI_RENDER_CORE_GAMELIBALL_H_STOP
-#endif
-#endif
-
-#if SAGA_LEGOAPI_RENDER_CORE_GAMELIBALL_H_PART == 4 && !defined(SAGA_LEGOAPI_RENDER_CORE_GAMELIBALL_H_STOP)
 
 typedef struct TERRAIN_SPATIAL_NODE TERRAIN_SPATIAL_NODE;
 
@@ -744,14 +702,7 @@ extern "C" {
 #ifdef __cplusplus
 }
 #endif
-#undef SAGA_LEGOAPI_RENDER_CORE_GAMELIBALL_H_PART
-#define SAGA_LEGOAPI_RENDER_CORE_GAMELIBALL_H_PART 5
-#ifdef SAGA_SHIM
-#define SAGA_LEGOAPI_RENDER_CORE_GAMELIBALL_H_STOP
-#endif
-#endif
 
-#if SAGA_LEGOAPI_RENDER_CORE_GAMELIBALL_H_PART == 5 && !defined(SAGA_LEGOAPI_RENDER_CORE_GAMELIBALL_H_STOP)
 #ifdef __cplusplus
 extern "C" {
 #endif
@@ -773,14 +724,7 @@ extern "C" {
 #ifdef __cplusplus
 }
 #endif
-#undef SAGA_LEGOAPI_RENDER_CORE_GAMELIBALL_H_PART
-#define SAGA_LEGOAPI_RENDER_CORE_GAMELIBALL_H_PART 6
-#ifdef SAGA_SHIM
-#define SAGA_LEGOAPI_RENDER_CORE_GAMELIBALL_H_STOP
-#endif
-#endif
 
-#if SAGA_LEGOAPI_RENDER_CORE_GAMELIBALL_H_PART == 6 && !defined(SAGA_LEGOAPI_RENDER_CORE_GAMELIBALL_H_STOP)
 #ifdef __cplusplus
 extern "C" {
 #endif
@@ -790,14 +734,6 @@ extern "C" {
 #ifdef __cplusplus
 }
 #endif
-#undef SAGA_LEGOAPI_RENDER_CORE_GAMELIBALL_H_PART
-#define SAGA_LEGOAPI_RENDER_CORE_GAMELIBALL_H_PART 7
-#ifdef SAGA_SHIM
-#define SAGA_LEGOAPI_RENDER_CORE_GAMELIBALL_H_STOP
-#endif
-#endif
-
-#if SAGA_LEGOAPI_RENDER_CORE_GAMELIBALL_H_PART == 7 && !defined(SAGA_LEGOAPI_RENDER_CORE_GAMELIBALL_H_STOP)
 
 #ifdef __cplusplus
 extern "C" {
@@ -839,14 +775,7 @@ extern "C" {
 #ifdef __cplusplus
 }
 #endif
-#undef SAGA_LEGOAPI_RENDER_CORE_GAMELIBALL_H_PART
-#define SAGA_LEGOAPI_RENDER_CORE_GAMELIBALL_H_PART 8
-#ifdef SAGA_SHIM
-#define SAGA_LEGOAPI_RENDER_CORE_GAMELIBALL_H_STOP
-#endif
-#endif
 
-#if SAGA_LEGOAPI_RENDER_CORE_GAMELIBALL_H_PART == 8 && !defined(SAGA_LEGOAPI_RENDER_CORE_GAMELIBALL_H_STOP)
 #ifdef __cplusplus
 extern "C" {
 #endif
@@ -910,14 +839,7 @@ extern "C" {
 #ifdef __cplusplus
 }
 #endif
-#undef SAGA_LEGOAPI_RENDER_CORE_GAMELIBALL_H_PART
-#define SAGA_LEGOAPI_RENDER_CORE_GAMELIBALL_H_PART 9
-#ifdef SAGA_SHIM
-#define SAGA_LEGOAPI_RENDER_CORE_GAMELIBALL_H_STOP
-#endif
-#endif
 
-#if SAGA_LEGOAPI_RENDER_CORE_GAMELIBALL_H_PART == 9 && !defined(SAGA_LEGOAPI_RENDER_CORE_GAMELIBALL_H_STOP)
 #ifdef __cplusplus
 extern "C" {
 #endif
@@ -937,14 +859,7 @@ extern "C" {
 #ifdef __cplusplus
 }
 #endif
-#undef SAGA_LEGOAPI_RENDER_CORE_GAMELIBALL_H_PART
-#define SAGA_LEGOAPI_RENDER_CORE_GAMELIBALL_H_PART 10
-#ifdef SAGA_SHIM
-#define SAGA_LEGOAPI_RENDER_CORE_GAMELIBALL_H_STOP
-#endif
-#endif
 
-#if SAGA_LEGOAPI_RENDER_CORE_GAMELIBALL_H_PART == 10 && !defined(SAGA_LEGOAPI_RENDER_CORE_GAMELIBALL_H_STOP)
 #ifdef __cplusplus
 extern "C" {
 #endif
@@ -975,14 +890,7 @@ extern "C" {
 #ifdef __cplusplus
 }
 #endif
-#undef SAGA_LEGOAPI_RENDER_CORE_GAMELIBALL_H_PART
-#define SAGA_LEGOAPI_RENDER_CORE_GAMELIBALL_H_PART 11
-#ifdef SAGA_SHIM
-#define SAGA_LEGOAPI_RENDER_CORE_GAMELIBALL_H_STOP
-#endif
-#endif
 
-#if SAGA_LEGOAPI_RENDER_CORE_GAMELIBALL_H_PART == 11 && !defined(SAGA_LEGOAPI_RENDER_CORE_GAMELIBALL_H_STOP)
 #ifdef __cplusplus
 extern "C" {
 #endif
@@ -1038,11 +946,3 @@ extern "C" {
 #ifdef __cplusplus
 }
 #endif
-#undef SAGA_LEGOAPI_RENDER_CORE_GAMELIBALL_H_PART
-#define SAGA_LEGOAPI_RENDER_CORE_GAMELIBALL_H_PART 12
-#ifdef SAGA_SHIM
-#define SAGA_LEGOAPI_RENDER_CORE_GAMELIBALL_H_STOP
-#endif
-#endif
-
-#undef SAGA_LEGOAPI_RENDER_CORE_GAMELIBALL_H_STOP

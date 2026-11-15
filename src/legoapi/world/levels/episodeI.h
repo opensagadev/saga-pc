@@ -1,19 +1,13 @@
-/* Split from saga.h (tools/headersplit.py, docs/header-plan.md). saga.h includes this header at the place of its
- * declarations. */
-
 #pragma once
 
 #include "nu2api/nucore/common.h"
 
-/* The module headers this header uses. saga.h includes every header itself, so the shim skips these. */
-#ifndef SAGA_SHIM
 #include "gameapi/ai/aisys/aiscript_types.h"
 #include "gameapi/ai/aisys/aisys.h"
 #include "legoapi/items/base/animpacket.h"
 #include "legoapi/items/base/apiobject.h"
 #include "legoapi/world/world.h"
 #include "nu2api/nu3d/nuspline.h"
-#endif
 
 typedef struct PODSPRINT_AI { // size 0x10
     NUGSPLINE *spline;        // 0x0

@@ -1,28 +1,11 @@
-/* Split from saga.h (tools/headersplit.py, docs/header-plan.md). saga.h includes this header at the place of its
- * declarations. */
-
-/* saga.h includes this header once per part (SAGA_SHIM), so `#pragma once` holds for direct includes only; the
- * condition and the _PART selector go away with the shim. */
-#ifndef SAGA_SHIM
 #pragma once
-#endif
-#ifndef SAGA_NU2API_NU3D_NUSHADER_PLAIN_H_PART
-#define SAGA_NU2API_NU3D_NUSHADER_PLAIN_H_PART 1
-#endif
 
 #include "nu2api/nucore/common.h"
 
-/* The module headers this header uses. saga.h includes every header itself, so the shim skips these. */
-#ifndef SAGA_SHIM
 #include "nu2api/nu3d/ShaderManager.h"
 #include "nu2api/nu3d/nushadermanager_gen.h"
 #include "nu2api/nu3d/nushaderobject.h"
-#endif
 
-/* 2 parts: saga.h includes this header once per part, each where its declarations belong; included directly, it gives
- * all parts at once. */
-
-#if SAGA_NU2API_NU3D_NUSHADER_PLAIN_H_PART == 1 && !defined(SAGA_NU2API_NU3D_NUSHADER_PLAIN_H_STOP)
 #ifdef __cplusplus
 extern "C" {
 #endif
@@ -39,14 +22,7 @@ extern "C" {
 #ifdef __cplusplus
 }
 #endif
-#undef SAGA_NU2API_NU3D_NUSHADER_PLAIN_H_PART
-#define SAGA_NU2API_NU3D_NUSHADER_PLAIN_H_PART 2
-#ifdef SAGA_SHIM
-#define SAGA_NU2API_NU3D_NUSHADER_PLAIN_H_STOP
-#endif
-#endif
 
-#if SAGA_NU2API_NU3D_NUSHADER_PLAIN_H_PART == 2 && !defined(SAGA_NU2API_NU3D_NUSHADER_PLAIN_H_STOP)
 #ifdef __cplusplus
 extern "C" {
 #endif
@@ -54,11 +30,3 @@ extern "C" {
 #ifdef __cplusplus
 }
 #endif
-#undef SAGA_NU2API_NU3D_NUSHADER_PLAIN_H_PART
-#define SAGA_NU2API_NU3D_NUSHADER_PLAIN_H_PART 3
-#ifdef SAGA_SHIM
-#define SAGA_NU2API_NU3D_NUSHADER_PLAIN_H_STOP
-#endif
-#endif
-
-#undef SAGA_NU2API_NU3D_NUSHADER_PLAIN_H_STOP

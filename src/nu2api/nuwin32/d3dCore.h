@@ -1,29 +1,11 @@
-/* Split from saga.h (tools/headersplit.py, docs/header-plan.md). saga.h includes this header at the place of its
- * declarations. */
-
-/* saga.h includes this header once per part (SAGA_SHIM), so `#pragma once` holds for direct includes only; the
- * condition and the _PART selector go away with the shim. */
-#ifndef SAGA_SHIM
 #pragma once
-#endif
-#ifndef SAGA_NU2API_NUWIN32_D3DCORE_H_PART
-#define SAGA_NU2API_NUWIN32_D3DCORE_H_PART 1
-#endif
 
 #include "nu2api/nucore/common.h"
 
-/* The module headers this header uses. saga.h includes every header itself, so the shim skips these. */
-#ifndef SAGA_SHIM
 #include "nu2api/PCInput.h"
 #include "nu2api/nuwin32/pcapi.h"
-#endif
 
 struct PC_BUFFER_RESOURCE;
-
-/* 2 parts: saga.h includes this header once per part, each where its declarations belong; included directly, it gives
- * all parts at once. */
-
-#if SAGA_NU2API_NUWIN32_D3DCORE_H_PART == 1 && !defined(SAGA_NU2API_NUWIN32_D3DCORE_H_STOP)
 
 struct GRAPHICS_FACTORY;
 struct GRAPHICS_RENDER_TEXTURE;
@@ -202,14 +184,6 @@ extern "C" {
 #ifdef __cplusplus
 }
 #endif
-#undef SAGA_NU2API_NUWIN32_D3DCORE_H_PART
-#define SAGA_NU2API_NUWIN32_D3DCORE_H_PART 2
-#ifdef SAGA_SHIM
-#define SAGA_NU2API_NUWIN32_D3DCORE_H_STOP
-#endif
-#endif
-
-#if SAGA_NU2API_NUWIN32_D3DCORE_H_PART == 2 && !defined(SAGA_NU2API_NUWIN32_D3DCORE_H_STOP)
 
 /* A render-target surface: the texture it wraps, or the device surface it owns. */
 typedef struct PC_EFFECT_SURFACE PC_EFFECT_SURFACE;
@@ -409,11 +383,3 @@ extern "C" {
 #endif
 #ifdef __cplusplus
 #endif
-#undef SAGA_NU2API_NUWIN32_D3DCORE_H_PART
-#define SAGA_NU2API_NUWIN32_D3DCORE_H_PART 3
-#ifdef SAGA_SHIM
-#define SAGA_NU2API_NUWIN32_D3DCORE_H_STOP
-#endif
-#endif
-
-#undef SAGA_NU2API_NUWIN32_D3DCORE_H_STOP

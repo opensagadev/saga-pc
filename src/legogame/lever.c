@@ -53,7 +53,7 @@ i32 Lever_BeingPulled(void *lever) {
     return (((LEVER_TRIGGER_FLAGS *)lever)->flags >> 1) & 1;
 }
 
-/* GIZMO_LEVER.flags as the u16 bitfields that are read and stored (belongs in saga.h). */
+/* GIZMO_LEVER.flags as the u16 bitfields that are read and stored (belongs in the header). */
 typedef struct lever_flag_bits_s { // size 0x2
     u16 interacting : 1;           // 0x0:0
     u16 being_pulled : 1;          // 0x0:1

@@ -1,26 +1,8 @@
-/* Split from saga.h (tools/headersplit.py, docs/header-plan.md). saga.h includes this header at the place of its
- * declarations. */
-
-/* saga.h includes this header once per part (SAGA_SHIM), so `#pragma once` holds for direct includes only; the
- * condition and the _PART selector go away with the shim. */
-#ifndef SAGA_SHIM
 #pragma once
-#endif
-#ifndef SAGA_GAMELIB_UTIL_CRC16_H_PART
-#define SAGA_GAMELIB_UTIL_CRC16_H_PART 1
-#endif
 
 #include "nu2api/nucore/common.h"
 
-/* The module headers this header uses. saga.h includes every header itself, so the shim skips these. */
-#ifndef SAGA_SHIM
 #include "gamelib/util/gamelib_util_types.h"
-#endif
-
-/* 3 parts: saga.h includes this header once per part, each where its declarations belong; included directly, it gives
- * all parts at once. */
-
-#if SAGA_GAMELIB_UTIL_CRC16_H_PART == 1 && !defined(SAGA_GAMELIB_UTIL_CRC16_H_STOP)
 
 #ifdef __cplusplus
 class CRC16 {
@@ -143,14 +125,7 @@ struct ShaderExpansionNodePc {   // size 0x28
 
 extern "C" u32 ShaderDeclarationFlagsPc(u8, u8, u8);
 #endif
-#undef SAGA_GAMELIB_UTIL_CRC16_H_PART
-#define SAGA_GAMELIB_UTIL_CRC16_H_PART 2
-#ifdef SAGA_SHIM
-#define SAGA_GAMELIB_UTIL_CRC16_H_STOP
-#endif
-#endif
 
-#if SAGA_GAMELIB_UTIL_CRC16_H_PART == 2 && !defined(SAGA_GAMELIB_UTIL_CRC16_H_STOP)
 #ifdef __cplusplus
 
 struct ShaderCompilerBufferAllocatorPc { // size 0x10
@@ -246,14 +221,7 @@ struct ShaderCompilerDictionaryPc {                  // size 0x9a4
 };
 
 #endif
-#undef SAGA_GAMELIB_UTIL_CRC16_H_PART
-#define SAGA_GAMELIB_UTIL_CRC16_H_PART 3
-#ifdef SAGA_SHIM
-#define SAGA_GAMELIB_UTIL_CRC16_H_STOP
-#endif
-#endif
 
-#if SAGA_GAMELIB_UTIL_CRC16_H_PART == 3 && !defined(SAGA_GAMELIB_UTIL_CRC16_H_STOP)
 #ifdef __cplusplus
 
 struct ShaderLexicalSlicePc { // size 0x8
@@ -279,11 +247,3 @@ struct ShaderLexicalReaderPc {
 #ifdef __cplusplus
 extern "C" i32 ShaderDeclarationSemanticPc(ShaderLexicalSlicePc *);
 #endif
-#undef SAGA_GAMELIB_UTIL_CRC16_H_PART
-#define SAGA_GAMELIB_UTIL_CRC16_H_PART 4
-#ifdef SAGA_SHIM
-#define SAGA_GAMELIB_UTIL_CRC16_H_STOP
-#endif
-#endif
-
-#undef SAGA_GAMELIB_UTIL_CRC16_H_STOP

@@ -1,16 +1,10 @@
-/* Split from saga.h (tools/headersplit.py, docs/header-plan.md). saga.h includes this header at the place of its
- * declarations. */
-
 #pragma once
 
 #include "nu2api/nucore/common.h"
 
-/* The module headers this header uses. saga.h includes every header itself, so the shim skips these. */
-#ifndef SAGA_SHIM
 #include "legoapi/gizmos/fx/gizmopickups.h"
 #include "legoapi/legoapi_types.h"
 #include "nu2api/numath/nuvec.h"
-#endif
 
 struct WORLDINFO_s;
 struct gameobject_s;

@@ -1,19 +1,7 @@
-/* Split from saga.h (tools/headersplit.py, docs/header-plan.md). saga.h includes this header at the place of its
- * declarations. */
-
-/* saga.h includes this header once per part (SAGA_SHIM), so `#pragma once` holds for direct includes only; the
- * condition and the _PART selector go away with the shim. */
-#ifndef SAGA_SHIM
 #pragma once
-#endif
-#ifndef SAGA_LEGOAPI_LEGOAPI_TYPES_H_PART
-#define SAGA_LEGOAPI_LEGOAPI_TYPES_H_PART 1
-#endif
 
 #include "nu2api/nucore/common.h"
 
-/* The module headers this header uses. saga.h includes every header itself, so the shim skips these. */
-#ifndef SAGA_SHIM
 #include "gameapi/ai/aisys/aipath.h"
 #include "globals.h"
 #include "legoapi/items/objects/basething.h"
@@ -23,7 +11,6 @@
 #include "nu2api/nucore/nulist.h"
 #include "nu2api/numath/numtx.h"
 #include "nu2api/numath/nuvec.h"
-#endif
 
 struct AIAREA;
 struct ClassObject;
@@ -40,11 +27,6 @@ struct TERRAIN_SKIN_STREAM;
 struct ThingProcessData;
 struct VuVec;
 struct debris_particle_s;
-
-/* 12 parts: saga.h includes this header once per part, each where its declarations belong; included directly, it gives
- * all parts at once. */
-
-#if SAGA_LEGOAPI_LEGOAPI_TYPES_H_PART == 1 && !defined(SAGA_LEGOAPI_LEGOAPI_TYPES_H_STOP)
 
 struct BOLTTYPE_PC_s;
 struct FLOWBOX;
@@ -482,14 +464,6 @@ class NetLogFile { // size 0x2114
     u8 buffer[0x2000];  // 0x0114
 };
 #endif
-#undef SAGA_LEGOAPI_LEGOAPI_TYPES_H_PART
-#define SAGA_LEGOAPI_LEGOAPI_TYPES_H_PART 2
-#ifdef SAGA_SHIM
-#define SAGA_LEGOAPI_LEGOAPI_TYPES_H_STOP
-#endif
-#endif
-
-#if SAGA_LEGOAPI_LEGOAPI_TYPES_H_PART == 2 && !defined(SAGA_LEGOAPI_LEGOAPI_TYPES_H_STOP)
 
 typedef struct gamecamera_s { // size 0x230
 
@@ -631,15 +605,6 @@ struct GIZBUILDITANIMDATA_s { // size 0xc8
     u8 pad_c7;                // 0xc7
 };
 
-#undef SAGA_LEGOAPI_LEGOAPI_TYPES_H_PART
-#define SAGA_LEGOAPI_LEGOAPI_TYPES_H_PART 3
-#ifdef SAGA_SHIM
-#define SAGA_LEGOAPI_LEGOAPI_TYPES_H_STOP
-#endif
-#endif
-
-#if SAGA_LEGOAPI_LEGOAPI_TYPES_H_PART == 3 && !defined(SAGA_LEGOAPI_LEGOAPI_TYPES_H_STOP)
-
 typedef struct TERRAIN_INDEX_LEVEL {   // size 0x80c
     i16 cache_age;                     // 0x000
     u8 unknown_02[2];                  // 0x002
@@ -688,14 +653,6 @@ extern "C" {
 #ifdef __cplusplus
 }
 #endif
-#undef SAGA_LEGOAPI_LEGOAPI_TYPES_H_PART
-#define SAGA_LEGOAPI_LEGOAPI_TYPES_H_PART 4
-#ifdef SAGA_SHIM
-#define SAGA_LEGOAPI_LEGOAPI_TYPES_H_STOP
-#endif
-#endif
-
-#if SAGA_LEGOAPI_LEGOAPI_TYPES_H_PART == 4 && !defined(SAGA_LEGOAPI_LEGOAPI_TYPES_H_STOP)
 
 typedef struct levelspline_s { // size 0x10
     struct NUGSCN_s **scene;   // 0x0
@@ -927,14 +884,6 @@ struct LevelEditorScene {    // size 0xa8
     u32 reserved_flags : 29; // 0xa4:3
 };
 
-#undef SAGA_LEGOAPI_LEGOAPI_TYPES_H_PART
-#define SAGA_LEGOAPI_LEGOAPI_TYPES_H_PART 5
-#ifdef SAGA_SHIM
-#define SAGA_LEGOAPI_LEGOAPI_TYPES_H_STOP
-#endif
-#endif
-
-#if SAGA_LEGOAPI_LEGOAPI_TYPES_H_PART == 5 && !defined(SAGA_LEGOAPI_LEGOAPI_TYPES_H_STOP)
 #ifdef __cplusplus
 
 class FadeBase {
@@ -974,14 +923,6 @@ class FadeSystem : public FADEINFO_s { // size 0x2c
 };
 
 #endif
-#undef SAGA_LEGOAPI_LEGOAPI_TYPES_H_PART
-#define SAGA_LEGOAPI_LEGOAPI_TYPES_H_PART 6
-#ifdef SAGA_SHIM
-#define SAGA_LEGOAPI_LEGOAPI_TYPES_H_STOP
-#endif
-#endif
-
-#if SAGA_LEGOAPI_LEGOAPI_TYPES_H_PART == 6 && !defined(SAGA_LEGOAPI_LEGOAPI_TYPES_H_STOP)
 
 typedef struct BOLTSYS_PC_s {                                    // size 0x20
     struct BOLTTYPE_PC_s *types;                                 // 0x00
@@ -1168,15 +1109,6 @@ struct minitrooperteam_s { // size 0x54
     NUVEC position;                     // 0x44
     i32 target_index;                   // 0x50
 };
-
-#undef SAGA_LEGOAPI_LEGOAPI_TYPES_H_PART
-#define SAGA_LEGOAPI_LEGOAPI_TYPES_H_PART 7
-#ifdef SAGA_SHIM
-#define SAGA_LEGOAPI_LEGOAPI_TYPES_H_STOP
-#endif
-#endif
-
-#if SAGA_LEGOAPI_LEGOAPI_TYPES_H_PART == 7 && !defined(SAGA_LEGOAPI_LEGOAPI_TYPES_H_STOP)
 
 typedef struct gameanimobj_s GAMEANIMOBJ;
 
@@ -1992,14 +1924,6 @@ struct GIZTURRETSYS_s {                  // size 0x10
     i8 unknown_0d[3];                    // 0xd
 };
 
-#undef SAGA_LEGOAPI_LEGOAPI_TYPES_H_PART
-#define SAGA_LEGOAPI_LEGOAPI_TYPES_H_PART 8
-#ifdef SAGA_SHIM
-#define SAGA_LEGOAPI_LEGOAPI_TYPES_H_STOP
-#endif
-#endif
-
-#if SAGA_LEGOAPI_LEGOAPI_TYPES_H_PART == 8 && !defined(SAGA_LEGOAPI_LEGOAPI_TYPES_H_STOP)
 typedef struct GIZSPINNER_s GIZSPINNER_s;
 
 struct GIZSPINNER_s {                       // size 0x304
@@ -2073,14 +1997,6 @@ struct GAMEANTINODE_s {          // size 0x38
     struct GAMEANTINODE_s *next; // 0x34
 };
 
-#undef SAGA_LEGOAPI_LEGOAPI_TYPES_H_PART
-#define SAGA_LEGOAPI_LEGOAPI_TYPES_H_PART 9
-#ifdef SAGA_SHIM
-#define SAGA_LEGOAPI_LEGOAPI_TYPES_H_STOP
-#endif
-#endif
-
-#if SAGA_LEGOAPI_LEGOAPI_TYPES_H_PART == 9 && !defined(SAGA_LEGOAPI_LEGOAPI_TYPES_H_STOP)
 #ifdef __cplusplus
 extern "C" {
 #endif
@@ -2108,22 +2024,6 @@ struct nugraph_s {    // size 0x5c
     f32 y_offset;     // 0x58
 };
 
-#undef SAGA_LEGOAPI_LEGOAPI_TYPES_H_PART
-#define SAGA_LEGOAPI_LEGOAPI_TYPES_H_PART 10
-#ifdef SAGA_SHIM
-#define SAGA_LEGOAPI_LEGOAPI_TYPES_H_STOP
-#endif
-#endif
-
-#if SAGA_LEGOAPI_LEGOAPI_TYPES_H_PART == 10 && !defined(SAGA_LEGOAPI_LEGOAPI_TYPES_H_STOP)
-#undef SAGA_LEGOAPI_LEGOAPI_TYPES_H_PART
-#define SAGA_LEGOAPI_LEGOAPI_TYPES_H_PART 11
-#ifdef SAGA_SHIM
-#define SAGA_LEGOAPI_LEGOAPI_TYPES_H_STOP
-#endif
-#endif
-
-#if SAGA_LEGOAPI_LEGOAPI_TYPES_H_PART == 11 && !defined(SAGA_LEGOAPI_LEGOAPI_TYPES_H_STOP)
 #ifdef __cplusplus
 
 /* Fixed-capacity list of BaseThings run once per pass.
@@ -2185,14 +2085,7 @@ class GameThingManager : public ThingManager {
     void AddOnceOnlyThings();
 };
 #endif
-#undef SAGA_LEGOAPI_LEGOAPI_TYPES_H_PART
-#define SAGA_LEGOAPI_LEGOAPI_TYPES_H_PART 12
-#ifdef SAGA_SHIM
-#define SAGA_LEGOAPI_LEGOAPI_TYPES_H_STOP
-#endif
-#endif
 
-#if SAGA_LEGOAPI_LEGOAPI_TYPES_H_PART == 12 && !defined(SAGA_LEGOAPI_LEGOAPI_TYPES_H_STOP)
 typedef struct mine_entry_s { // size 0x1c
     u32 active;               // 0x00
     NUVEC pos;                // 0x04
@@ -2213,12 +2106,3 @@ typedef struct minesys_s {           // size 0x748
     i32 mine_part;                   // 0x740
     f32 update_timer;                // 0x744
 } MINESYS;
-
-#undef SAGA_LEGOAPI_LEGOAPI_TYPES_H_PART
-#define SAGA_LEGOAPI_LEGOAPI_TYPES_H_PART 13
-#ifdef SAGA_SHIM
-#define SAGA_LEGOAPI_LEGOAPI_TYPES_H_STOP
-#endif
-#endif
-
-#undef SAGA_LEGOAPI_LEGOAPI_TYPES_H_STOP

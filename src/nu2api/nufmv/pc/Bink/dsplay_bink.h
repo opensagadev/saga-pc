@@ -1,21 +1,6 @@
-/* Split from saga.h (tools/headersplit.py, docs/header-plan.md). saga.h includes this header at the place of its
- * declarations. */
-
-/* saga.h includes this header once per part (SAGA_SHIM), so `#pragma once` holds for direct includes only; the
- * condition and the _PART selector go away with the shim. */
-#ifndef SAGA_SHIM
 #pragma once
-#endif
-#ifndef SAGA_NU2API_NUFMV_PC_BINK_DSPLAY_BINK_H_PART
-#define SAGA_NU2API_NUFMV_PC_BINK_DSPLAY_BINK_H_PART 1
-#endif
 
 #include "nu2api/nucore/common.h"
-
-/* 2 parts: saga.h includes this header once per part, each where its declarations belong; included directly, it gives
- * all parts at once. */
-
-#if SAGA_NU2API_NUFMV_PC_BINK_DSPLAY_BINK_H_PART == 1 && !defined(SAGA_NU2API_NUFMV_PC_BINK_DSPLAY_BINK_H_STOP)
 
 struct GRAPHICS_ADAPTER_IDENTIFIER;
 struct GRAPHICS_CAPS;
@@ -171,14 +156,6 @@ struct PC_D3D9_DEVICE {             // size 0x4
 typedef struct GRAPHICS_FACTORY GRAPHICS_FACTORY;
 
 typedef struct PC_FMV_REALTIME PC_FMV_REALTIME;
-#undef SAGA_NU2API_NUFMV_PC_BINK_DSPLAY_BINK_H_PART
-#define SAGA_NU2API_NUFMV_PC_BINK_DSPLAY_BINK_H_PART 2
-#ifdef SAGA_SHIM
-#define SAGA_NU2API_NUFMV_PC_BINK_DSPLAY_BINK_H_STOP
-#endif
-#endif
-
-#if SAGA_NU2API_NUFMV_PC_BINK_DSPLAY_BINK_H_PART == 2 && !defined(SAGA_NU2API_NUFMV_PC_BINK_DSPLAY_BINK_H_STOP)
 
 typedef struct GRAPHICS_FACTORY_METHODS {          // size 0x44
     void *unknown_000[2];                          // 0x00
@@ -204,15 +181,6 @@ typedef struct GRAPHICS_FACTORY_METHODS {          // size 0x44
 struct GRAPHICS_FACTORY {                    // size 0x4
     const GRAPHICS_FACTORY_METHODS *methods; // 0x0
 };
-
-#undef SAGA_NU2API_NUFMV_PC_BINK_DSPLAY_BINK_H_PART
-#define SAGA_NU2API_NUFMV_PC_BINK_DSPLAY_BINK_H_PART 3
-#ifdef SAGA_SHIM
-#define SAGA_NU2API_NUFMV_PC_BINK_DSPLAY_BINK_H_STOP
-#endif
-#endif
-
-#undef SAGA_NU2API_NUFMV_PC_BINK_DSPLAY_BINK_H_STOP
 
 #ifdef __cplusplus
 extern "C" {

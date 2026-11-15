@@ -1,19 +1,7 @@
-/* Split from saga.h (tools/headersplit.py, docs/header-plan.md). saga.h includes this header at the place of its
- * declarations. */
-
-/* saga.h includes this header once per part (SAGA_SHIM), so `#pragma once` holds for direct includes only; the
- * condition and the _PART selector go away with the shim. */
-#ifndef SAGA_SHIM
 #pragma once
-#endif
-#ifndef SAGA_LEGOAPI_WORLD_LEVELS_H_PART
-#define SAGA_LEGOAPI_WORLD_LEVELS_H_PART 1
-#endif
 
 #include "nu2api/nucore/common.h"
 
-/* The module headers this header uses. saga.h includes every header itself, so the shim skips these. */
-#ifndef SAGA_SHIM
 #include "gameapi/ai/aisys/aisys.h"
 #include "gameapi/apitext.h"
 #include "legoapi/gizmo/object/gizmoblowups.h"
@@ -23,7 +11,6 @@
 #include "nu2api/nu3d/nuspline.h"
 #include "nu2api/nufile/nufpar.h"
 #include "nu2api/numath/numtx.h"
-#endif
 
 struct AIAREA;
 struct WORLDINFO_s;
@@ -32,10 +19,6 @@ struct gizmo_s;
 struct level_data_s;
 struct levelspline_s;
 
-/* 4 parts: saga.h includes this header once per part, each where its declarations belong; included directly, it gives
- * all parts at once. */
-
-#if SAGA_LEGOAPI_WORLD_LEVELS_H_PART == 1 && !defined(SAGA_LEGOAPI_WORLD_LEVELS_H_STOP)
 #define AREA_GLOBALS_PROGRESS_FLAGS (AreaGlobals.progress_flags)
 
 typedef struct LEVEL_OBJECT_CONFIG { // size 0x8
@@ -151,14 +134,7 @@ extern "C" {
 #ifdef __cplusplus
 }
 #endif
-#undef SAGA_LEGOAPI_WORLD_LEVELS_H_PART
-#define SAGA_LEGOAPI_WORLD_LEVELS_H_PART 2
-#ifdef SAGA_SHIM
-#define SAGA_LEGOAPI_WORLD_LEVELS_H_STOP
-#endif
-#endif
 
-#if SAGA_LEGOAPI_WORLD_LEVELS_H_PART == 2 && !defined(SAGA_LEGOAPI_WORLD_LEVELS_H_STOP)
 #ifdef __cplusplus
 extern "C" {
 #endif
@@ -280,14 +256,7 @@ extern "C" {
 #ifdef __cplusplus
 }
 #endif
-#undef SAGA_LEGOAPI_WORLD_LEVELS_H_PART
-#define SAGA_LEGOAPI_WORLD_LEVELS_H_PART 3
-#ifdef SAGA_SHIM
-#define SAGA_LEGOAPI_WORLD_LEVELS_H_STOP
-#endif
-#endif
 
-#if SAGA_LEGOAPI_WORLD_LEVELS_H_PART == 3 && !defined(SAGA_LEGOAPI_WORLD_LEVELS_H_STOP)
 #ifdef __cplusplus
 extern "C" {
 #endif
@@ -367,19 +336,3 @@ extern "C" {
 #ifdef __cplusplus
 }
 #endif
-#undef SAGA_LEGOAPI_WORLD_LEVELS_H_PART
-#define SAGA_LEGOAPI_WORLD_LEVELS_H_PART 4
-#ifdef SAGA_SHIM
-#define SAGA_LEGOAPI_WORLD_LEVELS_H_STOP
-#endif
-#endif
-
-#if SAGA_LEGOAPI_WORLD_LEVELS_H_PART == 4 && !defined(SAGA_LEGOAPI_WORLD_LEVELS_H_STOP)
-#undef SAGA_LEGOAPI_WORLD_LEVELS_H_PART
-#define SAGA_LEGOAPI_WORLD_LEVELS_H_PART 5
-#ifdef SAGA_SHIM
-#define SAGA_LEGOAPI_WORLD_LEVELS_H_STOP
-#endif
-#endif
-
-#undef SAGA_LEGOAPI_WORLD_LEVELS_H_STOP

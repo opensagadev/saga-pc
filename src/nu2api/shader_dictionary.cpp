@@ -6,7 +6,7 @@
 #include "nu2api/nucore/nustring.h"
 #include <stdio.h>
 #include <new>
-// Repeats saga.h, but deleting it changes ShaderCompilerDictionaryPc::EmitAttribute (declaration noise).
+// Repeats its header, but deleting it changes ShaderCompilerDictionaryPc::EmitAttribute (declaration noise).
 extern "C" void ShaderLexicalClassesInitPc(void);
 
 ShaderCompilerDictionaryPc::ShaderCompilerDictionaryPc(VirtualStackAllocator &parent, i32 input_mode)

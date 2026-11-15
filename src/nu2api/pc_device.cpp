@@ -1419,7 +1419,7 @@ u32 PC_DEVICE_BACKEND::CaptureScreenshot(u32 width, u32 height, void **data) {
     }
     target = NULL;
     copy = NULL;
-    // Typing this slot in saga.h perturbs unrelated C units (episodeIII BoulderSpawn), so it is typed here.
+    // Typing this slot in the header perturbs unrelated C units (episodeIII BoulderSpawn), so it is typed here.
     typedef HRESULT(__stdcall * CREATE_RENDER_TARGET)(PC_D3D9_DEVICE *, u32, u32, i32, i32, u32, BOOL, PC_TEXTURE_RESOURCE **, HANDLE *);
     if (SUCCEEDED(reinterpret_cast<CREATE_RENDER_TARGET>(device->methods->create_render_target)(device, width, height, 0x15, 0, 0, FALSE,
                                                                                                 &target, NULL))) {

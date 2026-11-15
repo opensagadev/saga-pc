@@ -520,13 +520,13 @@ def file_disagreements(reference, matching, targets=()):
 
 
 def our_structs():
-    """{typedef or tag name: (size, {field: (offset, type spelling)})} of src/saga.h, via libclang."""
+    """{typedef or tag name: (size, {field: (offset, type spelling)})} of the module headers, via libclang."""
     if __package__:
         from . import typexfer
     else:
         from tools import typexfer
     unit = typexfer.pc_unit()
-    structs, typedefs = typexfer.parse_structs(unit, str(typexfer.HEADER))
+    structs, typedefs = typexfer.parse_structs(unit, typexfer.PROJECT_HEADERS)
     result = {}
     for key, struct in structs.items():
         fields = {name: (offset, cursor.type.spelling, cursor.type.get_canonical().spelling) for offset, _, name, cursor, _ in struct.fields}
@@ -556,7 +556,7 @@ def main(argv=None):
     parser.add_argument("--overlap", action="store_true", help="list functions in both, non-exact first")
     parser.add_argument("--files", action="store_true",
                         help="compare source files with ours and with config/layout-target.csv")
-    parser.add_argument("--structs", action="store_true", help="compare same-named structs with src/saga.h")
+    parser.add_argument("--structs", action="store_true", help="compare same-named structs with the module headers")
     parser.add_argument("--hints", metavar="JSON", help="write hints for every non-exact function in both")
     parser.add_argument("--no-ours", action="store_true", help="do not parse our source (no libclang)")
     args = parser.parse_args(argv)

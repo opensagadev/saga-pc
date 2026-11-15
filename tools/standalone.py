@@ -1,8 +1,8 @@
 #!/usr/bin/env python3
 """Module headers that do not compile on their own (docs/header-plan.md, step 2).
 
-A unit can only narrow its `#include "saga.h"` to the module headers it uses
-when each of them compiles alone. This tool compiles every module header (the
+A unit includes the module headers it uses, so each of them has to compile
+alone. This tool compiles every module header (the
 targets of config/header-map.csv) in a translation unit of its own,
 
     #include "HEADER"
@@ -11,7 +11,7 @@ targets of config/header-map.csv) in a translation unit of its own,
 once as C (-std=c89) and once as C++ (-std=c++98), with the lint flags of
 tools/check.py, parsed by libclang (as tools/layoutcheck.py does). The second include checks `#pragma once`.
 A header is standalone when both compile without an error. Every header is C
-as well as C++: all C units see every header through saga.h.
+as well as C++.
 
 The number of headers that are not standalone has a budget in
 config/standalone-budget.json, which only goes down (tools/budget.py --guard).
@@ -54,9 +54,27 @@ INCLUDE = re.compile(r'^[ \t]*#[ \t]*include[ \t]*"([^"]+)"', re.M)
 
 
 def module_headers(root=ROOT):
-    """The module headers saga.h is split into, as paths relative to src/."""
+    """The module headers (the targets of config/header-map.csv), as paths relative to src/."""
     from tools import check
     return sorted(path.removeprefix("src/") for path in check.split_headers() if (root / path).is_file())
+
+
+def all_headers_source(root=ROOT):
+    """A translation unit that includes every module header (the tools' view of all declarations)."""
+    return "".join(f'#include "{header}"\n' for header in module_headers(root))
+
+
+def compile_all(flags, language):
+    """(ok, errors) of every module header included together, function bodies skipped."""
+    from tools import layoutcheck
+    ci = layoutcheck.cindex()
+    unit = str(ROOT / "src/saga_all_headers_check.c")
+    tu = ci.Index.create().parse(unit, args=[*flags, *LANGUAGES[language]],
+                                 unsaved_files=[(unit, all_headers_source())],
+                                 options=ci.TranslationUnit.PARSE_SKIP_FUNCTION_BODIES)
+    errors = [f"{relative(d.location.file)}:{d.location.line}: {d.spelling}" for d in tu.diagnostics
+              if d.severity >= ci.Diagnostic.Error]
+    return not errors, "\n".join(errors)
 
 
 def resolve(name, includer, root=ROOT):

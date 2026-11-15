@@ -1,19 +1,7 @@
-/* Split from saga.h (tools/headersplit.py, docs/header-plan.md). saga.h includes this header at the place of its
- * declarations. */
-
-/* saga.h includes this header once per part (SAGA_SHIM), so `#pragma once` holds for direct includes only; the
- * condition and the _PART selector go away with the shim. */
-#ifndef SAGA_SHIM
 #pragma once
-#endif
-#ifndef SAGA_LEGOAPI_LIB_HUB_H_PART
-#define SAGA_LEGOAPI_LIB_HUB_H_PART 1
-#endif
 
 #include "nu2api/nucore/common.h"
 
-/* The module headers this header uses. saga.h includes every header itself, so the shim skips these. */
-#ifndef SAGA_SHIM
 #include "gameapi/gui/apimenu.h"
 #include "legoapi/actions/movement/dropinout.h"
 #include "legoapi/legoapi_types.h"
@@ -21,12 +9,6 @@
 #include "legoapi/menus/screens/store.h"
 #include "legogame/batman_gameai.h"
 #include "nu2api/numath/nuvec.h"
-#endif
-
-/* 4 parts: saga.h includes this header once per part, each where its declarations belong; included directly, it gives
- * all parts at once. */
-
-#if SAGA_LEGOAPI_LIB_HUB_H_PART == 1 && !defined(SAGA_LEGOAPI_LIB_HUB_H_STOP)
 
 struct AIPACKET;
 struct AIPATHCNX;
@@ -165,7 +147,6 @@ extern "C" {
     extern f32 HubMiniKitOpenTime;
     extern i32 HubDoorArea;
 
-    /* Append declarations inside saga.h extern "C" block. */
     extern f32 PANEL_MINIKITCOUNTSCALE;
     extern f32 PANEL_MINIKITCOUNTY;
     extern f32 stats_xscale;
@@ -257,14 +238,6 @@ extern "C" {
 #ifdef __cplusplus
 }
 #endif
-#undef SAGA_LEGOAPI_LIB_HUB_H_PART
-#define SAGA_LEGOAPI_LIB_HUB_H_PART 2
-#ifdef SAGA_SHIM
-#define SAGA_LEGOAPI_LIB_HUB_H_STOP
-#endif
-#endif
-
-#if SAGA_LEGOAPI_LIB_HUB_H_PART == 2 && !defined(SAGA_LEGOAPI_LIB_HUB_H_STOP)
 
 /* area_data_s.flags: the keywords of an area's entry in levels\\areas.txt (Areas_ConfigureList). */
 enum AREA_FLAGS {
@@ -331,14 +304,7 @@ extern "C" {
 #ifdef __cplusplus
 }
 #endif
-#undef SAGA_LEGOAPI_LIB_HUB_H_PART
-#define SAGA_LEGOAPI_LIB_HUB_H_PART 3
-#ifdef SAGA_SHIM
-#define SAGA_LEGOAPI_LIB_HUB_H_STOP
-#endif
-#endif
 
-#if SAGA_LEGOAPI_LIB_HUB_H_PART == 3 && !defined(SAGA_LEGOAPI_LIB_HUB_H_STOP)
 #ifdef __cplusplus
 extern "C" {
 #endif
@@ -358,14 +324,7 @@ extern "C" {
 #ifdef __cplusplus
 }
 #endif
-#undef SAGA_LEGOAPI_LIB_HUB_H_PART
-#define SAGA_LEGOAPI_LIB_HUB_H_PART 4
-#ifdef SAGA_SHIM
-#define SAGA_LEGOAPI_LIB_HUB_H_STOP
-#endif
-#endif
 
-#if SAGA_LEGOAPI_LIB_HUB_H_PART == 4 && !defined(SAGA_LEGOAPI_LIB_HUB_H_STOP)
 #ifdef __cplusplus
 extern "C" {
 #endif
@@ -373,11 +332,3 @@ extern "C" {
 #ifdef __cplusplus
 }
 #endif
-#undef SAGA_LEGOAPI_LIB_HUB_H_PART
-#define SAGA_LEGOAPI_LIB_HUB_H_PART 5
-#ifdef SAGA_SHIM
-#define SAGA_LEGOAPI_LIB_HUB_H_STOP
-#endif
-#endif
-
-#undef SAGA_LEGOAPI_LIB_HUB_H_STOP

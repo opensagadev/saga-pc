@@ -70,7 +70,7 @@ def load_members(path):
     return rows
 
 
-def witness_source(rows, header="saga.h"):
+def witness_source(rows, header):
     # The header must already declare the actual owner. Do not synthesize externs
     # using the metadata's expected type; C++ rejects incompatible pointer types.
     lines = ['#include "' + str(header).replace('\\', '/') + '"',
@@ -298,7 +298,11 @@ def evaluate_members(config, objects, records, target, pe=None):
     out = ROOT / "build/data-members"
     out.mkdir(parents=True, exist_ok=True)
     source, objpath = out / "geometry.cpp", out / "geometry.obj"
-    header = (ROOT / "src/saga.h").resolve()
+    from tools import standalone
+    header = out / "all_headers.h"  # every module header, as the units see them
+    text = "#pragma once\n" + standalone.all_headers_source()
+    if not header.is_file() or header.read_text() != text:
+        header.write_text(text)
     source.write_text(witness_source(rows, header))
     # Every invocation compiles current declarations; there is no stale geometry
     # cache. These analysis witnesses never enter compiled_objects or CSV maps.

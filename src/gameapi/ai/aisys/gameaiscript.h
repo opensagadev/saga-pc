@@ -1,27 +1,9 @@
-/* Split from saga.h (tools/headersplit.py, docs/header-plan.md). saga.h includes this header at the place of its
- * declarations. */
-
-/* saga.h includes this header once per part (SAGA_SHIM), so `#pragma once` holds for direct includes only; the
- * condition and the _PART selector go away with the shim. */
-#ifndef SAGA_SHIM
 #pragma once
-#endif
-#ifndef SAGA_GAMEAPI_AI_AISYS_GAMEAISCRIPT_H_PART
-#define SAGA_GAMEAPI_AI_AISYS_GAMEAISCRIPT_H_PART 1
-#endif
 
 #include "nu2api/nucore/common.h"
 
-/* The module headers this header uses. saga.h includes every header itself, so the shim skips these. */
-#ifndef SAGA_SHIM
 #include "gameapi/ai/aisys/aipath.h"
 #include "nu2api/numath/nuvec.h"
-#endif
-
-/* 3 parts: saga.h includes this header once per part, each where its declarations belong; included directly, it gives
- * all parts at once. */
-
-#if SAGA_GAMEAPI_AI_AISYS_GAMEAISCRIPT_H_PART == 1 && !defined(SAGA_GAMEAPI_AI_AISYS_GAMEAISCRIPT_H_STOP)
 
 struct AIPACKET;
 struct AISCRIPTPROCESS;
@@ -149,14 +131,6 @@ extern "C" {
 #ifdef __cplusplus
 }
 #endif
-#undef SAGA_GAMEAPI_AI_AISYS_GAMEAISCRIPT_H_PART
-#define SAGA_GAMEAPI_AI_AISYS_GAMEAISCRIPT_H_PART 2
-#ifdef SAGA_SHIM
-#define SAGA_GAMEAPI_AI_AISYS_GAMEAISCRIPT_H_STOP
-#endif
-#endif
-
-#if SAGA_GAMEAPI_AI_AISYS_GAMEAISCRIPT_H_PART == 2 && !defined(SAGA_GAMEAPI_AI_AISYS_GAMEAISCRIPT_H_STOP)
 
 typedef struct climb_system_s {   // size 0x8
     struct climb_slot_s *objects; // 0x0
@@ -235,14 +209,7 @@ extern "C" {
 #ifdef __cplusplus
 }
 #endif
-#undef SAGA_GAMEAPI_AI_AISYS_GAMEAISCRIPT_H_PART
-#define SAGA_GAMEAPI_AI_AISYS_GAMEAISCRIPT_H_PART 3
-#ifdef SAGA_SHIM
-#define SAGA_GAMEAPI_AI_AISYS_GAMEAISCRIPT_H_STOP
-#endif
-#endif
 
-#if SAGA_GAMEAPI_AI_AISYS_GAMEAISCRIPT_H_PART == 3 && !defined(SAGA_GAMEAPI_AI_AISYS_GAMEAISCRIPT_H_STOP)
 #ifdef __cplusplus
 extern "C" {
 #endif
@@ -250,11 +217,3 @@ extern "C" {
 #ifdef __cplusplus
 }
 #endif
-#undef SAGA_GAMEAPI_AI_AISYS_GAMEAISCRIPT_H_PART
-#define SAGA_GAMEAPI_AI_AISYS_GAMEAISCRIPT_H_PART 4
-#ifdef SAGA_SHIM
-#define SAGA_GAMEAPI_AI_AISYS_GAMEAISCRIPT_H_STOP
-#endif
-#endif
-
-#undef SAGA_GAMEAPI_AI_AISYS_GAMEAISCRIPT_H_STOP

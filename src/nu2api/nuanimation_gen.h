@@ -1,18 +1,12 @@
-/* Split from saga.h (tools/headersplit.py, docs/header-plan.md). saga.h includes this header at the place of its
- * declarations. */
-
 #pragma once
 
 #include "nu2api/nucore/common.h"
 
-/* The module headers this header uses. saga.h includes every header itself, so the shim skips these. */
-#ifndef SAGA_SHIM
 #include "nu2api/nu3d/nu3d_includes.h"
 #include "nu2api/nu3d/nugscn.h"
 #include "nu2api/nu3d/numtl.h"
 #include "nu2api/numath/numtx.h"
 #include "nu2api/numath/nuvec.h"
-#endif
 
 #ifdef __cplusplus
 extern "C" {

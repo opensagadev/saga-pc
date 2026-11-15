@@ -260,7 +260,7 @@ struct PC_DI_RANGE {   // size 0x18
     LONG maximum;      // 0x14
 };
 
-/* TODO(saga.h): the DirectInput device is called through its C++ interface in retail. */
+/* TODO(header): the DirectInput device is called through its C++ interface in retail. */
 struct PC_DI_DEVICE_INTERFACE {
     virtual HRESULT __stdcall QueryInterface(REFIID, void **) = 0;
     virtual ULONG __stdcall AddRef(void) = 0;

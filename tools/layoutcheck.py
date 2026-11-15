@@ -43,9 +43,9 @@ are parsed in their language, headers as C and as C++, each also with
 `-DSAGA_DEBUG`; a member whose layout differs between these is an error.
 
     python3 tools/layoutcheck.py                  # check every file with layout comments
-    python3 tools/layoutcheck.py src/saga.h       # check named files
+    python3 tools/layoutcheck.py src/nu2api/numath/nuvec.h  # check named files
     python3 tools/layoutcheck.py --stats          # records/members covered by comments, asserts, neither
-    python3 tools/layoutcheck.py --convert src/saga.h:400-1400 [--dry-run]
+    python3 tools/layoutcheck.py --convert src/nu2api/numath/nuvec.h:10-100 [--dry-run]
     python3 tools/layoutcheck.py --convert GIZFLOW
     python3 tools/layoutcheck.py --fix [FILES] [--dry-run]   # rewrite converted records to this format
 
@@ -534,14 +534,15 @@ def analyze(path, args, root=ROOT, text=None):
             "asserts": analyzer.evaluate_asserts(source.splitlines())}
 
 
-def analyze_in_saga(path, args, root=ROOT):
-    """Facts about a header seen the way the units see it: a translation unit of saga.h alone, with the
-    header's own records and asserts picked out (for module headers that do not compile on their own yet)."""
+def analyze_in_all(path, args, root=ROOT):
+    """Facts about a header seen with every module header: a translation unit that includes them all, with the
+    header's own records and asserts picked out (for a header that does not compile on its own)."""
+    from tools import standalone
     ci = cindex()
     path = Path(path).resolve()
     language = "cpp" if "c++" in args else "c"
     probe = root / f"src/layoutcheck_probe.{language}"
-    tu = ci.Index.create().parse(str(probe), args=args, unsaved_files=[(str(probe), '#include "saga.h"\n')],
+    tu = ci.Index.create().parse(str(probe), args=args, unsaved_files=[(str(probe), standalone.all_headers_source(root))],
                                  options=ci.TranslationUnit.PARSE_SKIP_FUNCTION_BODIES)
     errors = [f"{d.location.file}:{d.location.line}: {d.spelling}" for d in tu.diagnostics if d.severity >= 3]
     analyzer = Analyzer(tu, path, root)
@@ -552,15 +553,11 @@ def analyze_in_saga(path, args, root=ROOT):
 def _analyze_job(job):
     rel, args = job
     facts = analyze(ROOT / rel, args)
-    if facts["errors"] and rel.endswith(".h") and rel != "src/saga.h":
-        # A header that relies on saga.h being included first.
-        retry = analyze(ROOT / rel, [*args, "-include", str(ROOT / "src/saga.h")])
-        if not retry["errors"]:
+    if facts["errors"] and rel.endswith(".h"):
+        # A header that relies on others being included first.
+        retry = analyze_in_all(ROOT / rel, args)
+        if not retry["errors"] and retry["records"]:
             facts = retry
-        else:
-            retry = analyze_in_saga(ROOT / rel, args)
-            if not retry["errors"] and retry["records"]:
-                facts = retry
     return rel, args, facts
 
 
@@ -831,7 +828,7 @@ def convert(target, jobs, dry_run=False, all_records=False, scope=None, skip=())
                                                        rf"\}}\s*{re.escape(struct)}\s*;", texts[rel])]
         if not holders:
             raise SystemExit(f"layoutcheck: no definition of {struct} found")
-        file = holders[0] if "src/saga.h" not in holders else "src/saga.h"
+        file = holders[0]
     print(f"layoutcheck: analyzing {file}")
     own = analyze_files([file], jobs)[file]
     merged, conflicts = merge_records(own)
@@ -1036,7 +1033,7 @@ def stats(jobs):
                     offsets[key].add(re.sub(r"\s*\[[^\]]*\]", "", entry["path"]).replace(" ", ""))
     rows = defaultdict(lambda: defaultdict(int))
     for key, record in records.items():
-        area = "src/saga.h" if record["file"] == "src/saga.h" else record["file"].rsplit("/", 1)[0]
+        area = record["file"].rsplit("/", 1)[0]
         row = rows[area]
         if record["converted"]:
             row["rec-comment"] += 1

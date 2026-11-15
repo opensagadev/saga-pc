@@ -1,33 +1,15 @@
-/* Split from saga.h (tools/headersplit.py, docs/header-plan.md). saga.h includes this header at the place of its
- * declarations. */
-
-/* saga.h includes this header once per part (SAGA_SHIM), so `#pragma once` holds for direct includes only; the
- * condition and the _PART selector go away with the shim. */
-#ifndef SAGA_SHIM
 #pragma once
-#endif
-#ifndef SAGA_GAMELIB_UTIL_GAMELIB_UTIL_TYPES_H_PART
-#define SAGA_GAMELIB_UTIL_GAMELIB_UTIL_TYPES_H_PART 1
-#endif
 
 #include "nu2api/nucore/common.h"
 
-/* The module headers this header uses. saga.h includes every header itself, so the shim skips these. */
-#ifndef SAGA_SHIM
 #include "editor/edlevelall.h"
 #include "gameapi/edtools/EdObjectNotifier.h"
 #include "gameapi/edtools/edfile.h"
 #include "gamelib/net/NetMessagePc.h"
 #include "legoapi/items/collect/bolts.h"
-#endif
 
 struct EdClass;
 struct NETMESSAGE;
-
-/* 3 parts: saga.h includes this header once per part, each where its declarations belong; included directly, it gives
- * all parts at once. */
-
-#if SAGA_GAMELIB_UTIL_GAMELIB_UTIL_TYPES_H_PART == 1 && !defined(SAGA_GAMELIB_UTIL_GAMELIB_UTIL_TYPES_H_STOP)
 
 #ifdef __cplusplus
 struct VirtualStackAllocator { // size 0x10
@@ -120,14 +102,7 @@ class NetHost;
 
 enum eHostVisibility { HOST_VISIBILITY_PUBLIC, HOST_VISIBILITY_PRIVATE };
 #endif
-#undef SAGA_GAMELIB_UTIL_GAMELIB_UTIL_TYPES_H_PART
-#define SAGA_GAMELIB_UTIL_GAMELIB_UTIL_TYPES_H_PART 2
-#ifdef SAGA_SHIM
-#define SAGA_GAMELIB_UTIL_GAMELIB_UTIL_TYPES_H_STOP
-#endif
-#endif
 
-#if SAGA_GAMELIB_UTIL_GAMELIB_UTIL_TYPES_H_PART == 2 && !defined(SAGA_GAMELIB_UTIL_GAMELIB_UTIL_TYPES_H_STOP)
 #ifdef __cplusplus
 
 template <typename T, u32 COUNT> struct TPool {
@@ -853,14 +828,7 @@ class NetworkObjectManager : public NetListenerInterface, public EdObjectNotifie
 
 extern NetworkObjectManager *theNos;
 #endif
-#undef SAGA_GAMELIB_UTIL_GAMELIB_UTIL_TYPES_H_PART
-#define SAGA_GAMELIB_UTIL_GAMELIB_UTIL_TYPES_H_PART 3
-#ifdef SAGA_SHIM
-#define SAGA_GAMELIB_UTIL_GAMELIB_UTIL_TYPES_H_STOP
-#endif
-#endif
 
-#if SAGA_GAMELIB_UTIL_GAMELIB_UTIL_TYPES_H_PART == 3 && !defined(SAGA_GAMELIB_UTIL_GAMELIB_UTIL_TYPES_H_STOP)
 #ifdef __cplusplus
 
 class TTNetwork : public NetTransporter, public BaseThing { // size 0x110f4
@@ -1044,11 +1012,3 @@ class NetSessionManager : public V2SessionManager {
 
 extern NetSessionManager *theNetSessionManager;
 #endif
-#undef SAGA_GAMELIB_UTIL_GAMELIB_UTIL_TYPES_H_PART
-#define SAGA_GAMELIB_UTIL_GAMELIB_UTIL_TYPES_H_PART 4
-#ifdef SAGA_SHIM
-#define SAGA_GAMELIB_UTIL_GAMELIB_UTIL_TYPES_H_STOP
-#endif
-#endif
-
-#undef SAGA_GAMELIB_UTIL_GAMELIB_UTIL_TYPES_H_STOP

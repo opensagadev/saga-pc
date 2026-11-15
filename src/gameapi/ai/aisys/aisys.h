@@ -1,33 +1,15 @@
-/* Split from saga.h (tools/headersplit.py, docs/header-plan.md). saga.h includes this header at the place of its
- * declarations. */
-
-/* saga.h includes this header once per part (SAGA_SHIM), so `#pragma once` holds for direct includes only; the
- * condition and the _PART selector go away with the shim. */
-#ifndef SAGA_SHIM
 #pragma once
-#endif
-#ifndef SAGA_GAMEAPI_AI_AISYS_AISYS_H_PART
-#define SAGA_GAMEAPI_AI_AISYS_AISYS_H_PART 1
-#endif
 
 #include "nu2api/nucore/common.h"
 
-/* The module headers this header uses. saga.h includes every header itself, so the shim skips these. */
-#ifndef SAGA_SHIM
 #include "editor/edpath.h"
 #include "gameapi/ai/aisys/aipath.h"
 #include "legoapi/ai/core/gameai.h"
 #include "nu2api/nu3d/nuhspecial.h"
 #include "nu2api/nucore/nulist.h"
 #include "nu2api/numath/nuvec.h"
-#endif
 
 struct nuhspecial_s;
-
-/* 9 parts: saga.h includes this header once per part, each where its declarations belong; included directly, it gives
- * all parts at once. */
-
-#if SAGA_GAMEAPI_AI_AISYS_AISYS_H_PART == 1 && !defined(SAGA_GAMEAPI_AI_AISYS_AISYS_H_STOP)
 
 struct AIPACKET;
 struct AISCRIPTPROCESS;
@@ -198,14 +180,6 @@ extern "C" {
 #ifdef __cplusplus
 }
 #endif
-#undef SAGA_GAMEAPI_AI_AISYS_AISYS_H_PART
-#define SAGA_GAMEAPI_AI_AISYS_AISYS_H_PART 2
-#ifdef SAGA_SHIM
-#define SAGA_GAMEAPI_AI_AISYS_AISYS_H_STOP
-#endif
-#endif
-
-#if SAGA_GAMEAPI_AI_AISYS_AISYS_H_PART == 2 && !defined(SAGA_GAMEAPI_AI_AISYS_AISYS_H_STOP)
 
 typedef f32 (*AICONDITION_EVAL)(AISYS_PC *, struct AISCRIPTPROCESS *, struct AIPACKET *, char *, void *);
 typedef void *(*AICONDITION_INIT)(AISYS_PC *, char *, struct AISCRIPT *);
@@ -236,14 +210,6 @@ extern "C" {
 #ifdef __cplusplus
 }
 #endif
-#undef SAGA_GAMEAPI_AI_AISYS_AISYS_H_PART
-#define SAGA_GAMEAPI_AI_AISYS_AISYS_H_PART 3
-#ifdef SAGA_SHIM
-#define SAGA_GAMEAPI_AI_AISYS_AISYS_H_STOP
-#endif
-#endif
-
-#if SAGA_GAMEAPI_AI_AISYS_AISYS_H_PART == 3 && !defined(SAGA_GAMEAPI_AI_AISYS_AISYS_H_STOP)
 
 struct AIPATHNODE {              // size 0x5c
     char *name;                  // 0x00
@@ -351,14 +317,6 @@ extern "C" {
 #ifdef __cplusplus
 }
 #endif
-#undef SAGA_GAMEAPI_AI_AISYS_AISYS_H_PART
-#define SAGA_GAMEAPI_AI_AISYS_AISYS_H_PART 4
-#ifdef SAGA_SHIM
-#define SAGA_GAMEAPI_AI_AISYS_AISYS_H_STOP
-#endif
-#endif
-
-#if SAGA_GAMEAPI_AI_AISYS_AISYS_H_PART == 4 && !defined(SAGA_GAMEAPI_AI_AISYS_AISYS_H_STOP)
 
 typedef struct APIOBJECT *(*APIOBJECT_FROM_ID)(u8);
 
@@ -486,14 +444,7 @@ extern "C" {
 }
 #endif
 typedef i32 AIFINDALTERNATIVESPECIALOBJECT(AISYS_PC *system, struct nuhspecial_s *special);
-#undef SAGA_GAMEAPI_AI_AISYS_AISYS_H_PART
-#define SAGA_GAMEAPI_AI_AISYS_AISYS_H_PART 5
-#ifdef SAGA_SHIM
-#define SAGA_GAMEAPI_AI_AISYS_AISYS_H_STOP
-#endif
-#endif
 
-#if SAGA_GAMEAPI_AI_AISYS_AISYS_H_PART == 5 && !defined(SAGA_GAMEAPI_AI_AISYS_AISYS_H_STOP)
 #ifdef __cplusplus
 extern "C" {
 #endif
@@ -509,14 +460,7 @@ extern "C" {
 #ifdef __cplusplus
 }
 #endif
-#undef SAGA_GAMEAPI_AI_AISYS_AISYS_H_PART
-#define SAGA_GAMEAPI_AI_AISYS_AISYS_H_PART 6
-#ifdef SAGA_SHIM
-#define SAGA_GAMEAPI_AI_AISYS_AISYS_H_STOP
-#endif
-#endif
 
-#if SAGA_GAMEAPI_AI_AISYS_AISYS_H_PART == 6 && !defined(SAGA_GAMEAPI_AI_AISYS_AISYS_H_STOP)
 #ifdef __cplusplus
 extern "C" {
 #endif
@@ -526,14 +470,7 @@ extern "C" {
 #ifdef __cplusplus
 }
 #endif
-#undef SAGA_GAMEAPI_AI_AISYS_AISYS_H_PART
-#define SAGA_GAMEAPI_AI_AISYS_AISYS_H_PART 7
-#ifdef SAGA_SHIM
-#define SAGA_GAMEAPI_AI_AISYS_AISYS_H_STOP
-#endif
-#endif
 
-#if SAGA_GAMEAPI_AI_AISYS_AISYS_H_PART == 7 && !defined(SAGA_GAMEAPI_AI_AISYS_AISYS_H_STOP)
 #ifdef __cplusplus
 extern "C" {
 #endif
@@ -543,14 +480,6 @@ extern "C" {
 #ifdef __cplusplus
 }
 #endif
-#undef SAGA_GAMEAPI_AI_AISYS_AISYS_H_PART
-#define SAGA_GAMEAPI_AI_AISYS_AISYS_H_PART 8
-#ifdef SAGA_SHIM
-#define SAGA_GAMEAPI_AI_AISYS_AISYS_H_STOP
-#endif
-#endif
-
-#if SAGA_GAMEAPI_AI_AISYS_AISYS_H_PART == 8 && !defined(SAGA_GAMEAPI_AI_AISYS_AISYS_H_STOP)
 
 typedef struct EDAICREATURE_s { // size 0xac
     /* Editor creature record; its area/locator references are editor records. */
@@ -594,14 +523,7 @@ extern "C" {
 #ifdef __cplusplus
 }
 #endif
-#undef SAGA_GAMEAPI_AI_AISYS_AISYS_H_PART
-#define SAGA_GAMEAPI_AI_AISYS_AISYS_H_PART 9
-#ifdef SAGA_SHIM
-#define SAGA_GAMEAPI_AI_AISYS_AISYS_H_STOP
-#endif
-#endif
 
-#if SAGA_GAMEAPI_AI_AISYS_AISYS_H_PART == 9 && !defined(SAGA_GAMEAPI_AI_AISYS_AISYS_H_STOP)
 #ifdef __cplusplus
 extern "C" {
 #endif
@@ -610,11 +532,3 @@ extern "C" {
 #ifdef __cplusplus
 }
 #endif
-#undef SAGA_GAMEAPI_AI_AISYS_AISYS_H_PART
-#define SAGA_GAMEAPI_AI_AISYS_AISYS_H_PART 10
-#ifdef SAGA_SHIM
-#define SAGA_GAMEAPI_AI_AISYS_AISYS_H_STOP
-#endif
-#endif
-
-#undef SAGA_GAMEAPI_AI_AISYS_AISYS_H_STOP

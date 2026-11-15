@@ -239,7 +239,7 @@ def main(argv=None):
         env = dict(os.environ, PYTHONPATH=os.pathsep.join(filter(None, [str(ROOT / "tools"), str(ROOT),
                                                                      os.environ.get("PYTHONPATH")])))
         # Three lanes beside the match, each running its commands one after another: the libclang scans
-        # (each holds parses of saga.h, about 1 GB per worker), the other checks, and the tool tests. A lane
+        # (each holds parses of the module headers, about 1 GB per worker), the other checks, and the tool tests. A lane
         # waits before each command while less than 6 GB of memory is available.
         lanes = [[c for c in CHECKS if c[0] in CLANG_SCANS], [c for c in CHECKS if c[0] not in CLANG_SCANS],
                  [] if args.no_tests else test_groups()]

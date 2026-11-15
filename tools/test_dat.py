@@ -11,6 +11,7 @@ import unittest
 
 from tools import cc
 from tools.lib import ROOT
+from tools.standalone import all_headers_source
 
 
 VALID_CASES = (
@@ -94,7 +95,7 @@ def write_file_constants(directory):
     if len(image_name) != 1:
         raise ValueError("DAT fixture needs the production IOP image-name pointer")
     source = directory / "file_constants.c"
-    source.write_text('#include "saga.h"\n' + writer_state[0].strip() + "\n" + image_name[0].strip() + "\n")
+    source.write_text(all_headers_source() + writer_state[0].strip() + "\n" + image_name[0].strip() + "\n")
     return source
 
 
@@ -120,7 +121,7 @@ def write_clock_provider(directory):
             raise ValueError(f"DAT clock provider is missing the production {name} definition")
         definitions.append(definition.group().strip())
     source = directory / "clock_provider.c"
-    source.write_text('#include "saga.h"\n' + "\n".join(definitions) + "\n" + bodies)
+    source.write_text(all_headers_source() + "\n".join(definitions) + "\n" + bodies)
     return source
 
 
@@ -139,7 +140,7 @@ def write_implode_state(directory):
             raise ValueError(f"DAT fixture needs exactly one production definition of {name}")
         definitions.append(matches[0].strip())
     source = directory / "implode_state.c"
-    source.write_text('#include "saga.h"\n' + "\n".join(definitions) + "\n")
+    source.write_text(all_headers_source() + "\n".join(definitions) + "\n")
     return source
 
 
@@ -184,7 +185,9 @@ class DatParserTests(unittest.TestCase):
             objects = []
             sources = [ROOT / f"src/nu2api/{name}.c" for name in
                        ("nucore_includes", "nualloc", "nudebug", "nufile_pc", "nupsfile", "nufile_mc", "nuthread")]
-            sources.append(ROOT / "tools/test_dat_fixture.c")
+            fixture = directory / "test_dat_fixture.c"
+            fixture.write_text(all_headers_source() + (ROOT / "tools/test_dat_fixture.c").read_text())
+            sources.append(fixture)
             sources.append(write_file_constants(directory))
             sources.append(write_clock_provider(directory))
             sources.append(write_implode_state(directory))

@@ -30,7 +30,7 @@ SOURCES := $(filter-out src/debug/sound_monitor.c src/debug/stream_capture.c src
 DEPENDENCY_SOURCES := $(shell $(PYTHON) tools/dependencies.py --sources)
 DEPENDENCY_FILES := $(shell $(PYTHON) -c 'import json; print(" ".join("lib/ogg-vorbis/"+p for p in json.load(open("config/ogg-vorbis.json"))["files"]))')
 SOURCE_DIRS := $(shell find src -type d)
-# saga.h and the module headers it includes (docs/header-plan.md), with the src/debug headers.
+# The module headers (docs/header-plan.md), with the src/debug headers.
 PROJECT_HEADERS := $(shell find src -type f -name '*.h' | LC_ALL=C sort)
 OBJECTS := $(patsubst src/%,$(OBJ_DIR)/%,$(SOURCES:.cpp=.obj))
 OBJECTS := $(OBJECTS:.c=.obj)
