@@ -553,7 +553,7 @@ void edanimcbFileLoad(eduimenu_s *menu, eduiitem_s *unused1, u32 unused2) {
     }
 }
 
-void edanimRender() {
+void edanimRender(void) {
     if (edbitsProcessCubemapDump()) {
         return;
     }

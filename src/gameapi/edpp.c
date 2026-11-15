@@ -786,7 +786,7 @@ void cbPtlSelType(eduimenu_s *menu, eduiitem_s *item, u32 unused2) {
     eduiMenuDestroy(menu);
 }
 
-void edppRender() {
+void edppRender(void) {
     edcamSet();
     edppDrawCursor();
     edppHighlightNearest();
