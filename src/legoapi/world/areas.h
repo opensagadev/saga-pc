@@ -14,8 +14,6 @@
 
 /* The module headers this header uses. saga.h includes every header itself, so the shim skips these. */
 #ifndef SAGA_SHIM
-#include "legoapi/characters/core/characters.h"
-#include "legogame/game.h"
 #include "nu2api/numath/nuvec.h"
 #endif
 
@@ -104,6 +102,8 @@ typedef struct AREA_EXTRA_MODEL { // size 0x8
 #ifdef __cplusplus
 extern "C" {
 #endif
+    extern AREA_EXTRA_MODEL ExtraModelList[6];
+
     void Area_Configure(i32, i32, AREA_EXTRA_MODEL *, i16 *);
     extern i32 AreaMusic;
     extern i32 Area_FreePlayModelCount;
@@ -151,14 +151,6 @@ extern "C" {
 #endif
 
 #if SAGA_LEGOAPI_WORLD_AREAS_H_PART == 3 && !defined(SAGA_LEGOAPI_WORLD_AREAS_H_STOP)
-#ifdef __cplusplus
-extern "C" {
-#endif
-    extern APICHARACTERMODELLIST Area_FreePlayModelList[49];
-    extern APICHARACTERMODELLIST Area_PlayerModelList[9];
-#ifdef __cplusplus
-}
-#endif
 #undef SAGA_LEGOAPI_WORLD_AREAS_H_PART
 #define SAGA_LEGOAPI_WORLD_AREAS_H_PART 4
 #ifdef SAGA_SHIM
@@ -170,6 +162,21 @@ extern "C" {
 #ifdef __cplusplus
 extern "C" {
 #endif
+    // Access prefix only; the original allocation extent remains unknown.
+    typedef struct area_globals_s { // size 0x34
+        i32 unknown_00;             // 0x00
+        i32 unknown_04;             // 0x04
+        i32 unknown_08;             // 0x08
+        i32 area_phase;             // 0x0c
+        i32 new_minikit_count;      // 0x10
+        i32 progress_flags;         // 0x14
+        i32 unknown_18;             // 0x18
+        i32 unknown_1c;             // 0x1c
+        i32 unknown_20;             // 0x20
+        u32 arcade_player_kills[2]; // 0x24
+        u32 arcade_ai_kills[2];     // 0x2c
+    } AREA_GLOBALS_PC;
+
     extern AREA_GLOBALS_PC AreaGlobals;
 #ifdef __cplusplus
 }

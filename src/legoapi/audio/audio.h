@@ -7,7 +7,6 @@
 
 /* The module headers this header uses. saga.h includes every header itself, so the shim skips these. */
 #ifndef SAGA_SHIM
-#include "legoapi/legoapi_types.h"
 #include "nu2api/numath/nuvec.h"
 #endif
 
@@ -54,6 +53,8 @@ typedef struct optionssave_s { // size 0xd
 #ifdef __cplusplus
 extern "C" {
 #endif
+    extern OPTIONSSAVE TempOptions;
+
     /* ObjHitObj/Shield prototypes belong to the independently reviewed combat SCC packet. */
 
     void EngineNoiseCode(struct gameobject_s *, i32);
@@ -104,12 +105,7 @@ extern "C" {
     extern i32 (*GameAudio_ActionMusicFn)(void);
     void GameAudio_PlaySfxAndSetVolume(i32 sfx, NUVEC *position, f32 volume);
     i32 GameAudio_GetSfxId(i32);
-#ifdef __cplusplus
-}
-#endif
-#ifdef __cplusplus
-extern "C" {
-#endif
+
     extern f32 ActionMusicStickyTimeout[2];
     void GameAudio_SetActionMusicTimes(f32 initial_delay, f32 hold_time);
     extern const char *SfxMusicExtension;

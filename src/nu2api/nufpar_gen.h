@@ -10,6 +10,8 @@
 #include "nu2api/nufile/nufpar.h"
 #endif
 
+struct nualloc_manager_block_s;
+
 #ifdef __cplusplus
 extern "C" {
 #endif
@@ -18,6 +20,6 @@ extern "C" {
 }
 #endif
 
-typedef struct nualloc_manager_trailer_s { // size 0x4
-    NUALLOC_MANAGER_BLOCK *previous_block; // 0x0
+typedef struct nualloc_manager_trailer_s {          // size 0x4
+    struct nualloc_manager_block_s *previous_block; // 0x0
 } NUALLOC_MANAGER_TRAILER;

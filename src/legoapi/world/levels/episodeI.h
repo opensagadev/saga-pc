@@ -106,15 +106,6 @@ typedef struct client_mines_s { // size 0x318
     u32 unknown_310[2];         // 0x310
 } CLIENT_MINES_PC;
 
-typedef struct mine_entry_s { // size 0x1c
-    u32 active;               // 0x00
-    NUVEC pos;                // 0x04
-    f32 grow;                 // 0x10
-    f32 grow_alpha;           // 0x14
-    u16 rotx;                 // 0x18
-    u16 roty;                 // 0x1a
-} MINE_ENTRY_PC;
-
 typedef struct pod_race_countdown_reader_s { // size 0xb004
     u8 unknown_0000[0xb000];                 // 0x0000
     f32 lap_countdown;                       // 0xb000

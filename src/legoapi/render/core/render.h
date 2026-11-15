@@ -10,7 +10,6 @@
 #include "legoapi/gizmos/fx/gizmopickups.h"
 #include "legoapi/items/base/apiobject.h"
 #include "legoapi/world/world.h"
-#include "nu2api/nu3d/nu3d_includes.h"
 #include "nu2api/nu3d/numtl.h"
 #include "nu2api/numath/numtx.h"
 #include "nu2api/numath/nuvec.h"

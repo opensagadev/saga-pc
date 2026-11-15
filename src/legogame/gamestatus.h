@@ -5,6 +5,13 @@
 
 #include "nu2api/nucore/common.h"
 
+/* The module headers this header uses. saga.h includes every header itself, so the shim skips these. */
+#ifndef SAGA_SHIM
+#include "legoapi/text_tables.h"
+#endif
+
+struct coin_packet_s;
+
 #ifdef __cplusplus
 extern "C" {
 #endif
@@ -124,9 +131,9 @@ typedef struct {                    // size 0x158
     FORCE_PROGRESS_GROUP groups[8]; // 0x018
 } FORCE_PROGRESS_SYSTEM;
 
-typedef struct object_coin_packet_s { // size 0x800
-    u8 unknown_000[0x7fc];            // 0x000
-    COIN_PACKET *coin_packet;         // 0x7fc
+typedef struct object_coin_packet_s {  // size 0x800
+    u8 unknown_000[0x7fc];             // 0x000
+    struct coin_packet_s *coin_packet; // 0x7fc
 } OBJECT_COIN_PACKET;
 
 typedef struct {                   // size 0x8

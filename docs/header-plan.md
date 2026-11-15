@@ -180,6 +180,20 @@ units are not ready: `legogame/episodeIII.c` (`BoulderSpawn`) uses 55
 module headers, 39 of them not standalone; `legogame/episodeIV.c` uses 44,
 32 not standalone.
 
+### Step 2 groundwork, tool pass (2026-11-15)
+
+`tools/selfcontain.py` (test `tools/test_selfcontain.py`) fixes failing headers to a fixpoint, one
+round under the scan lock at a time: an index of where each name is declared (libclang parse of saga.h,
+C and C++); each failing header compiled alone (one per distinct first error); a pointer to a struct becomes
+`struct T *` plus `struct T;`, any other use includes the declaring header unless that closes a cycle;
+includes a header no longer uses are dropped (references from a parse with function bodies; a tag behind a
+pointer does not count); with `--move`, a type needed by value across a cycle moves into its user, or the
+using declaration moves next to the type, kept only when saga.h still compiles (a type never moves back to a
+header it lived in). The first pass took the standalone headers from 198 to 241 of 422; the largest include
+cycle went from 30 headers to 12. The residue is the rendering cluster (`nu3d_includes.h`,
+`nustencilshadows_PC.h`, `d3dCore.h`, which reaches `legoapi_types.h` through `gameliball.h`) and the
+legoapi catch-alls (`legoapi_types.h`, `globals.h`, `bolts.h`, `edlevelall.h`, `gamelib_util_types.h`).
+
 The transition has three steps, each with its own proof. VC8's code for a few
 fragile functions depends on how many symbol ids a unit consumes before them
 (docs/cleanup-audit.md, section 7).

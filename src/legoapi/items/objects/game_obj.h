@@ -15,10 +15,10 @@
 /* The module headers this header uses. saga.h includes every header itself, so the shim skips these. */
 #ifndef SAGA_SHIM
 #include "legoapi/items/collect/thermaldetonators.h"
-#include "legoapi/legoapi_types.h"
 #include "legoapi/render/core/rtl.h"
 #include "legoapi/render/fx/edsplines.h"
-#include "legoapi/world/levels/episodeV.h"
+#include "nu2api/nu3d/nuhspecial.h"
+#include "nu2api/numath/numtx.h"
 #include "nu2api/numath/nuvec.h"
 #endif
 
@@ -113,6 +113,99 @@ extern "C" {
 
 #if SAGA_LEGOAPI_ITEMS_OBJECTS_GAME_OBJ_H_PART == 3 && !defined(SAGA_LEGOAPI_ITEMS_OBJECTS_GAME_OBJ_H_STOP)
 
+typedef void (*PART_KILL)(struct PART_PC *, i32);
+
+struct PART_PC { // size 0x220
+
+    union { // size 0x40
+        NUMTX transform;
+
+        struct {                       // size 0x40
+            u8 transform_prefix[0x30]; // 0x000
+            NUVEC position;            // 0x030
+            f32 transform_m33;         // 0x03c
+        };
+    }; // 0x000
+
+    NUMTX previous_transform;       // 0x040
+    NUVEC velocity;                 // 0x080
+    NUVEC collision_min;            // 0x08c
+    NUVEC collision_max;            // 0x098
+    NUVEC impact_position;          // 0x0a4
+    NUVEC impact_normal;            // 0x0b0
+    NUVEC guided_target;            // 0x0bc
+    NUVEC previous_position;        // 0x0c8
+    struct gameobject_s *owner;     // 0x0d4
+    struct gameobject_s *recipient; // 0x0d8
+    f32 radius;                     // 0x0dc
+    f32 unknown_e0;                 // 0x0e0
+    f32 unknown_e4;                 // 0x0e4
+    f32 gravity;                    // 0x0e8
+    f32 field_ec;                   // 0x0ec
+    f32 unknown_f0;                 // 0x0f0
+    f32 unknown_f4;                 // 0x0f4
+    f32 time_step;                  // 0x0f8
+    f32 scale_time;                 // 0x0fc
+    f32 time_remaining;             // 0x100
+    f32 initial_time;               // 0x104
+    u32 flags;                      // 0x108
+
+    union { // size 0x18
+        u32 unknown_10c[6];
+        i32 rotation_parameters[6];
+    }; // 0x10c
+
+    i32 unknown_124[5];           // 0x124
+    u16 rotation_x;               // 0x138
+    u16 rotation_y;               // 0x13a
+    u16 rotation_z;               // 0x13c
+    i16 part_id;                  // 0x13e
+    u16 unknown_140;              // 0x140
+    u8 rotation_axes[2];          // 0x142
+    u32 active;                   // 0x144
+    nuhspecial_s special;         // 0x148
+    nuhspecial_s *source_special; // 0x154
+    NUVEC lighting[7];            // 0x158
+    PART_ACTION callback_1ac;     // 0x1ac
+    PART_MOVE move_fn;            // 0x1b0
+    PART_ACTION deflect_fn;       // 0x1b4
+    PART_ACTION impact_fn;        // 0x1b8
+    PART_ACTION collision_fn;     // 0x1bc
+    PART_KILL kill_fn;            // 0x1c0
+    PART_ACTION update_fn;        // 0x1c4
+    PART_ACTION stop_fn;          // 0x1c8
+    PART_ACTION destroy_fn;       // 0x1cc
+    PART_DRAW draw_fn;            // 0x1d0
+    i32 inline_debris_handle;     // 0x1d4
+    i32 *debris_handle;           // 0x1d8
+    i32 *lighting_handle;         // 0x1dc
+    i32 effect_id_1e0;            // 0x1e0
+    i32 effect_id_1e4;            // 0x1e4
+    f32 unknown_1e8;              // 0x1e8
+    f32 unknown_1ec;              // 0x1ec
+    i32 effect_id_1f0;            // 0x1f0
+    i32 effect_id_1f4;            // 0x1f4
+    i32 effect_id_1f8;            // 0x1f8
+    f32 effect_scale;             // 0x1fc
+    u32 unknown_200;              // 0x200
+    u16 unknown_204;              // 0x204
+    i8 unknown_206;               // 0x206
+    u8 hostility_group;           // 0x207
+    u8 unknown_208;               // 0x208
+    u8 unknown_209;               // 0x209
+    u8 flicker_flags;             // 0x20a
+    i8 unknown_20b;               // 0x20b
+    f32 crate_spawn_delay;        // 0x20c
+    u32 unknown_210;              // 0x210
+    f32 unknown_214;              // 0x214
+    u32 force_flags;              // 0x218
+
+    union { // size 0x4
+        u32 unknown_21c;
+        f32 reflection_height;
+    }; // 0x21c
+};
+
 typedef struct ADDPART {               // size 0xc8
     struct numtx_s *matrix;            // 0x00
     NUVEC *position;                   // 0x04
@@ -184,7 +277,6 @@ extern "C" {
     void KillParts_ATAT(ADDPART *, i32, i32, struct gameobject_s *);
     i32 KillGameObject(struct gameobject_s *, i32, i32);
     extern KILLPARTS_BIKE KillPartsBikes[4];
-    extern EXPLOSION_PC Explosions[8];
     extern struct gameobject_s *player_tag_to;
     void ClearLastSafeTakeOver(struct gameobject_s *);
     void GameObjectToCameraCode(struct gameobject_s *);

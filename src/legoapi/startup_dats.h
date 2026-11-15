@@ -7,8 +7,13 @@
 
 /* The module headers this header uses. saga.h includes every header itself, so the shim skips these. */
 #ifndef SAGA_SHIM
+#include "gameapi/ai/aisys/aiscript_types.h"
+#include "legoapi/text_tables.h"
 #include "nu2api/nufile/nufile.h"
 #endif
+
+struct area_gizmoset_s;
+struct area_gizmotype_s;
 
 #ifdef __cplusplus
 extern "C" {
@@ -25,13 +30,13 @@ typedef struct HOTH_WORLD_SCRIPT {
 } HOTH_WORLD_SCRIPT;
 
 typedef struct area_gizmosys_prefix_s { // size 0x4
-    AREA_GIZMOSET *sets;                // 0x0
+    struct area_gizmoset_s *sets;       // 0x0
 } AREA_GIZMOSYS_PREFIX;
 
-typedef struct area_gizmotypes_s { // size 0xc
-    i32 count;                     // 0x0
-    i32 unknown_0004;              // 0x4
-    AREA_GIZMOTYPE *types;         // 0x8
+typedef struct area_gizmotypes_s {  // size 0xc
+    i32 count;                      // 0x0
+    i32 unknown_0004;               // 0x4
+    struct area_gizmotype_s *types; // 0x8
 } AREA_GIZMOTYPES;
 
 typedef struct {

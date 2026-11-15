@@ -14,17 +14,18 @@
 
 /* The module headers this header uses. saga.h includes every header itself, so the shim skips these. */
 #ifndef SAGA_SHIM
-#include "legoapi/legoapi_types.h"
 #include "legoapi/render/core/gameliball.h"
 #include "nu2api/nu3d/nu3d_includes.h"
 #include "nu2api/nu3d/nucamera.h"
 #include "nu2api/nu3d/nudlist.h"
-#include "nu2api/nu3d/nurndr.h"
-#include "nu2api/nucamera_dlist.h"
 #include "nu2api/numath/numtx.h"
 #include "nu2api/numath/nuvec.h"
 #include "nu2api/numath/nuvec4.h"
 #endif
+
+struct DWA_WEIGHT_BLOCK;
+struct GRAPHICS_RENDER_TEXTURE;
+struct NUHGOBJ_EVAL;
 
 /* 7 parts: saga.h includes this header once per part, each where its declarations belong; included directly, it gives
  * all parts at once. */
@@ -59,15 +60,6 @@ typedef struct nutexbmp_s { // size 0x24
     u32 unknown_18[3];      // 0x18
 } NUTEXBMP_PC;
 
-typedef struct PC_VIEWPORT { // size 0x18
-    u32 x;                   // 0x00
-    u32 y;                   // 0x04
-    u32 width;               // 0x08
-    u32 height;              // 0x0c
-    f32 min_z;               // 0x10
-    f32 max_z;               // 0x14
-} PC_VIEWPORT;
-
 typedef struct nulgtvertex_s { // size 0x18
     f32 x;                     // 0x00
     f32 y;                     // 0x04
@@ -96,6 +88,13 @@ typedef struct PC_EFFECT_SURFACE PC_EFFECT_SURFACE;
 #ifdef __cplusplus
 extern "C" {
 #endif
+    typedef struct PC_SPECIAL_PROJECTION_ADJUST { // size 0x10
+        f32 x_scale;                              // 0x0
+        f32 y_scale;                              // 0x4
+        f32 x_offset;                             // 0x8
+        f32 y_offset;                             // 0xc
+    } PC_SPECIAL_PROJECTION_ADJUST;
+
     extern PC_SPECIAL_PROJECTION_ADJUST PCSpecialProjectionAdjust;
 
     extern i32 PCShadowSubmissionEnabled;
@@ -114,13 +113,6 @@ extern "C" {
     extern f32 PCShadowNearValue;
     extern f32 PCShadowFarValue;
     extern i32 PCShadowPacketCount;
-
-    typedef struct PC_SHADOW_QUEUE_RECORD { // size 0x18
-        NUVEC position;                     // 0x00
-        f32 radius;                         // 0x0c
-        u16 opacity;                        // 0x10
-        u8 unknown_12[6];                   // 0x12
-    } PC_SHADOW_QUEUE_RECORD;
 
     extern i32 NuPrimVertexCount;
     extern i32 *NuPrimVertexCountPointer;
@@ -169,8 +161,7 @@ extern "C" {
     extern NUVEC4BLOCK ClipCornerBlocks[2];
     extern NUVEC4BLOCK ClipTransformedBlocks[2];
     extern i32 PCDeviceSamplerInvalidation[16][2];
-    extern DWA_WEIGHT_BLOCK DwaWeightPool[60669];
-    extern DWA_WEIGHT_BLOCK *DwaPointerPool[2048];
+    extern struct DWA_WEIGHT_BLOCK *DwaPointerPool[2048];
     extern u8 NuPrimNeedsOverbrightening;
     extern i32 NuUnresolvedTextureIDPC;
     extern u8 NuUnresolvedTextureDds[0x2080];
@@ -185,6 +176,22 @@ extern "C" {
 #define nudlist_field_e58 (PCDynamicDisplayScene.native_word) // NOLINT(readability-identifier-naming)
     void PCDeviceDrawPrimitiveUPPc(i32, u32, const void *, u32);
     extern const char NuTexturePhongCubePath[];
+
+    typedef struct render_post_viewport_prefix_s { // size 0x30
+        f32 source_x;                              // 0x00
+        f32 source_y;                              // 0x04
+        f32 source_right;                          // 0x08
+        f32 source_bottom;                         // 0x0c
+        f32 dest_x;                                // 0x10
+        f32 dest_y;                                // 0x14
+        f32 dest_right;                            // 0x18
+        f32 dest_bottom;                           // 0x1c
+        f32 width_scale;                           // 0x20
+        f32 height_scale;                          // 0x24
+        f32 x_offset;                              // 0x28
+        f32 y_offset;                              // 0x2c
+    } RENDER_POST_VIEWPORT_PREFIX_PC;
+
     extern RENDER_POST_VIEWPORT_PREFIX_PC RenderPostViewportPrefix;
     extern u32 NuDebrisIdealDynamicVBSize;
     extern u8 PCGraphicsRenderTextureActive[32];
@@ -226,6 +233,8 @@ extern "C" {
     void PCDeviceDrawPrimitivePc(i32, u32, u32);
     void PCDeviceDrawIndexedPrimitivePc(i32, i32, u32, u32, u32, u32);
     extern i32 NuDisplayMaterialDistortTexture;
+    typedef void (*PC_DISPLAY_ITEM_HANDLER_PC)(void *);
+
     extern PC_DISPLAY_ITEM_HANDLER_PC PCDisplayItemHandlerPrefix[49];
     extern PC_DISPLAY_ITEM_HANDLER_PC *CurrentItemTable;
 #ifdef __cplusplus
@@ -274,6 +283,13 @@ extern "C" {
 
 #if SAGA_NU2API_NUSTENCILSHADOWS_PC_H_PART == 2 && !defined(SAGA_NU2API_NUSTENCILSHADOWS_PC_H_STOP)
 
+typedef struct debris_particle_frame_s { // size 0x28
+    NUVEC position;                      // 0x00
+    NUVEC texture_offset;                // 0x0c
+    NUVEC extent;                        // 0x18
+    u32 colour;                          // 0x24
+} DEBRIS_PARTICLE_FRAME;
+
 typedef struct debris_part_header_s { // size 0xa4c
     u8 fields_000[16];                // 0x000
     f32 gravity;                      // 0x010
@@ -303,7 +319,6 @@ typedef struct SCENE_VIDEO_RESOURCE_HEADER { // size 0x18
 extern "C" {
 #endif
     extern VARIPTR *NuPrimStreamBufferPointer;
-    extern NUVPCURRENT vpDevice;
     extern NUDISPLAYLISTITEM nudlist_2d_static;
     extern VARIPTR nudlist_stream_cursor;
     void PCDeviceCreateVertexDeclaration(const struct PC_VERTEX_ELEMENT *, struct PC_TEXTURE_RESOURCE **);
@@ -368,6 +383,24 @@ extern "C" {
 #endif
     extern NUMTX PCSpecialProjectionTranslate;
     extern NUMTX PCSpecialProjectionScale;
+
+    struct PC_HG_SHADOW_PACKET { // size 0x68
+        NUMTX matrix;            // 0x00
+        void *ellipse;           // 0x40
+        void *cylinder;          // 0x44
+        void *third_shape;       // 0x48
+        i32 state0;              // 0x4c
+        i32 state1;              // 0x50
+        i32 state2;              // 0x54
+        i32 state_byte;          // 0x58
+        f32 near_value;          // 0x5c
+        f32 far_value;           // 0x60
+        u8 ellipse_count;        // 0x64
+        u8 cylinder_count;       // 0x65
+        u8 third_count;          // 0x66
+        u8 sequence;             // 0x67
+    };
+
     extern struct PC_HG_SHADOW_PACKET PCShadowPackets[280];
     extern NU_CAMERA_STACK_ENTRY dat_0280a598[64];
     extern NU_CAMERA_STACK_ENTRY *dat_0080e864;
@@ -427,8 +460,7 @@ extern "C" {
 #endif
     extern struct numtl_s *dat_02854d00;
     extern struct PC_HG_SHADOW_STATE_VIEW PCShadowState;
-    void NuHGobjSubmitShadowGroups(NUHGOBJ_EVAL *, NUMTX *, NUMTX *);
-    extern NURND_VERTEX3D_PC NuRndrShadowVertices[4];
+    void NuHGobjSubmitShadowGroups(struct NUHGOBJ_EVAL *, NUMTX *, NUMTX *);
 
     typedef struct NATIVE_PARTICLE_PACKET { // size 0x14
         u8 vertex_buffer_index;             // 0x00
@@ -464,7 +496,7 @@ extern "C" {
 #endif
 
     struct PC_EFFECT_SURFACE {                                                                             // size 0x1c
-        GRAPHICS_RENDER_TEXTURE *texture;                                                                  // 0x00
+        struct GRAPHICS_RENDER_TEXTURE *texture;                                                           // 0x00
         u8 owns_texture; /* 0x05..0x07 alignment padding; no char arrays, so locals carry no /GS cookie */ // 0x04
         struct PC_TEXTURE_RESOURCE *surface;                                                               // 0x08
         u16 level;                                                                                         // 0x0c
@@ -491,20 +523,6 @@ extern "C" {
 
     extern GRAPHICS_RENDER_TEXTURE PCGraphicsRenderTextures[32];
 
-#ifdef __cplusplus
-}
-#endif
-
-/* Minimum selected native producer/reader view; original allocation unknown. */
-typedef struct FRAME_NATIVE_TEXTURE {        // size 0x30
-    NUTEXDIM_PC dimensions;                  // 0x00
-    GRAPHICS_RENDER_TEXTURE *render_texture; // 0x28
-    i32 texture_id;                          // 0x2c
-} FRAME_NATIVE_TEXTURE;
-
-#ifdef __cplusplus
-extern "C" {
-#endif
     extern struct PC_DL_SHADER_PROGRAM_PAIR_PC *NuDisplayMaterialDebrisPrograms;
     extern struct PC_DL_SHADER_PROGRAM_PAIR_PC *NuDisplayMaterialGlassPrograms;
     extern struct PC_DL_SHADER_PROGRAM_PAIR_PC *NuDisplayMaterialFaceOnDecalPrograms;
@@ -534,6 +552,29 @@ typedef union PC_BOOT_FRAMEBUFFER_VIEW { // size 0x8
 #ifdef __cplusplus
 extern "C" {
 #endif
+
+    /* Minimum selected native producer/reader view; original allocation unknown. */
+    typedef struct FRAME_NATIVE_TEXTURE {               // size 0x30
+        NUTEXDIM_PC dimensions;                         // 0x00
+        struct GRAPHICS_RENDER_TEXTURE *render_texture; // 0x28
+        i32 texture_id;                                 // 0x2c
+    } FRAME_NATIVE_TEXTURE;
+
+    typedef struct FRAME_NATIVE_TEXTURE_POOL { // size 0x308
+        FRAME_NATIVE_TEXTURE records[16];      // 0x000
+        i8 occupied[2];                        // 0x300
+        u8 unknown_302[2];                     // 0x302
+        i32 cursor;                            // 0x304
+#ifdef __cplusplus
+        FRAME_NATIVE_TEXTURE *Allocate();
+        FRAME_NATIVE_TEXTURE_POOL *fun_00605150();
+        i32 fun_00605170(FRAME_NATIVE_TEXTURE *record);
+        void fun_00605300(i32 index, bool set);
+        i32 fun_00605460(i32 index);
+        void fun_0060a010(FRAME_NATIVE_TEXTURE *record);
+#endif
+    } FRAME_NATIVE_TEXTURE_POOL;
+
     extern FRAME_NATIVE_TEXTURE_POOL FrameNativeTexturePool;
     extern PC_FRAMEBUFFER *PcDefaultFramebuffer;
     extern PC_BOOT_FRAMEBUFFER_VIEW PcBootFramebuffers;

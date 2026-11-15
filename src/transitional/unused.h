@@ -18,7 +18,6 @@
 #include "legoapi/lib/camera.h"
 #include "legoapi/render/core/rtl.h"
 #include "legoapi/world/world.h"
-#include "nu2api/nu3d/nu3d_includes.h"
 #include "nu2api/nu3d/nugscn.h"
 #include "nu2api/nu3d/nuhspecial.h"
 #include "nu2api/nucore/nulist.h"

@@ -16,7 +16,6 @@
 #ifndef SAGA_SHIM
 #include "gameapi/gui/apimenu.h"
 #include "legoapi/actions/movement/dropinout.h"
-#include "legoapi/characters/core/characters.h"
 #include "legoapi/legoapi_types.h"
 #include "legoapi/menus/core/hint.h"
 #include "legoapi/menus/screens/store.h"
@@ -40,6 +39,8 @@ struct area_supercounter_s;
 struct gameobject_s;
 struct level_data_s;
 struct nugspline_s;
+
+typedef struct FadeBase FadeBase;
 
 typedef struct FADEINFO { // size 0x2c
     u32 direction;        // 0x00
@@ -105,6 +106,12 @@ typedef struct collection_build_s { // size 0x14
 #ifdef __cplusplus
 extern "C" {
 #endif
+    extern COLLECTION_BUILD_PC BountyHunterCollection;
+
+    extern COLLECTION_BUILD_PC BlasterCollection;
+
+    extern COLLECTION_BUILD_PC JediCollection;
+
     extern f32 hub_minikitviewer_movewait;
     extern f32 hub_minikitviewer_move;
     extern f32 HubMiniKitViewerReflectY;
@@ -317,20 +324,9 @@ extern "C" {
     extern struct nugspline_s *HubMiniKitViewerSpline;
     extern void (*HubInitAIFn)(struct WORLDINFO_s *);
     extern void (*HubResetAIFn)(struct WORLDINFO_s *);
-#ifdef __cplusplus
-}
-#endif
-#ifdef __cplusplus
-extern "C" {
-#endif
-    extern void (*HubUpdateAIFn)(struct WORLDINFO_s *);
-#ifdef __cplusplus
-}
-#endif
 
-#ifdef __cplusplus
-extern "C" {
-#endif
+    extern void (*HubUpdateAIFn)(struct WORLDINFO_s *);
+
     void Indy_AIPathCnxHelperSysInit(struct WORLDINFO_s *world);
 #ifdef __cplusplus
 }
@@ -349,20 +345,12 @@ extern "C" {
     extern GAMEPAD_INIT_RECORD GamePadStorage[64];
     extern struct level_data_s *dat_0087b2dc;
     i32 Hub_BonusBuildIt(struct GIZBUILDIT *);
-    extern APICHARACTERMODELLIST fplist[341];
-    extern APICHARACTERMODELLIST fplist[341];
-#ifdef __cplusplus
-}
-#endif
 
-typedef struct INDY_PREPARE_SPECIAL_MOVE { // size 0x8
-    u32 capabilities;                      // 0x0
-    AI_PREPARING_SPECIAL_MOVE_PC prepare;  // 0x4
-} INDY_PREPARE_SPECIAL_MOVE;
+    typedef struct INDY_PREPARE_SPECIAL_MOVE { // size 0x8
+        u32 capabilities;                      // 0x0
+        AI_PREPARING_SPECIAL_MOVE_PC prepare;  // 0x4
+    } INDY_PREPARE_SPECIAL_MOVE;
 
-#ifdef __cplusplus
-extern "C" {
-#endif
     extern INDY_PREPARE_SPECIAL_MOVE IndyPrepareSpecialMove[7];
     extern AI_MID_SPECIAL_MOVE_PC IndyMidSpecialMoveFns[10];
     i32 IndyGrappleHelperOccupied(struct ai_helper_slot_s *helper, struct gameobject_s *owner, struct AIPATHCNX *connection, u8 direction,

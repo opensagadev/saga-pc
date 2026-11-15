@@ -7,21 +7,48 @@
 
 /* The module headers this header uses. saga.h includes every header itself, so the shim skips these. */
 #ifndef SAGA_SHIM
-#include "globals.h"
 #include "legoapi/audio/audio.h"
-#include "legoapi/characters/core/characters.h"
 #include "legoapi/items/collect/shard.h"
+#include "legoapi/items/objects/game_obj.h"
 #include "legoapi/legoapi_types.h"
 #include "legoapi/world/missions.h"
+#include "nu2api/nu3d/nuhspecial.h"
 #include "nu2api/nufile/nufpar.h"
 #include "nu2api/numath/nuvec.h"
 #endif
 
+struct AISCRIPT;
+struct GIZMOBLOWUP_PC;
 struct PART_PC;
 struct WORLDINFO_s;
 struct area_data_s;
+struct bolt_s;
+struct cutinfo_s;
 struct gameobject_s;
 struct level_data_s;
+struct mission_data_s;
+
+struct EPISODESAVE_s {           // size 0xc
+    f32 superstory_time_limit;   // 0x0
+    i32 superstory_score_target; // 0x4
+
+    union { // size 0x4
+        u32 flags;
+
+        struct {                    // size 0x4
+            u8 superstory_complete; // 0x8
+            u8 reserved_0x9[3];     // 0x9
+        };
+    }; // 0x8
+};
+
+typedef struct GAME_CUSTOMISER_START { // size 0x38
+    u16 pieces[9];                     // 0x00
+    u8 reserved_12[2];                 // 0x12
+    char name[32];                     // 0x14
+    u8 use_saved_name;                 // 0x34
+    u8 reserved_35[3];                 // 0x35
+} GAME_CUSTOMISER_START;
 
 typedef struct gamesave_s { // size 0x7e4c
 
@@ -117,20 +144,15 @@ typedef struct gamesave_s { // size 0x7e4c
     }; // 0x7cf8
 } GAMESAVE;
 
-// Access prefix only; the original allocation extent remains unknown.
-typedef struct area_globals_s { // size 0x34
-    i32 unknown_00;             // 0x00
-    i32 unknown_04;             // 0x04
-    i32 unknown_08;             // 0x08
-    i32 area_phase;             // 0x0c
-    i32 new_minikit_count;      // 0x10
-    i32 progress_flags;         // 0x14
-    i32 unknown_18;             // 0x18
-    i32 unknown_1c;             // 0x1c
-    i32 unknown_20;             // 0x20
-    u32 arcade_player_kills[2]; // 0x24
-    u32 arcade_ai_kills[2];     // 0x2c
-} AREA_GLOBALS_PC;
+#ifdef __cplusplus
+extern "C" {
+#endif
+    extern GAMESAVE Game;
+
+    extern GAMESAVE BackupGame;
+#ifdef __cplusplus
+}
+#endif
 
 typedef struct cutscenecharacter_s {
     u8 opaque_00_40[0x40];
@@ -194,13 +216,13 @@ extern "C" {
     extern const char LevelConfigGameKeyword_max_tightropes[15];
     extern NUFPCOMJMP LevelConfigKeywords_BeforeLoad[45];
     extern char SaveProductCode[12];
-    i32 CutScene_StartFn_LSW(CUTINFO *cut);
-    void CutScene_PreUpdateFn_LSW(CUTINFO *cut);
+    i32 CutScene_StartFn_LSW(struct cutinfo_s *cut);
+    void CutScene_PreUpdateFn_LSW(struct cutinfo_s *cut);
     void CutScene_PostUpdateFn_LSW(void);
-    void CutScene_StoppedFn_LSW(CUTINFO *cut);
-    i32 CutScene_ReplaceCharacterModelFn_LSW(CUTINFO *cut, CUTSCENECHARACTER *character);
-    i32 InitBolt_AddMomentumType_LSW(BOLT *bolt, struct gameobject_s *object, NUVEC *momentum);
-    i32 Bolt_HitPlatFn_LSW(BOLT *bolt);
+    void CutScene_StoppedFn_LSW(struct cutinfo_s *cut);
+    i32 CutScene_ReplaceCharacterModelFn_LSW(struct cutinfo_s *cut, CUTSCENECHARACTER *character);
+    i32 InitBolt_AddMomentumType_LSW(struct bolt_s *bolt, struct gameobject_s *object, NUVEC *momentum);
+    i32 Bolt_HitPlatFn_LSW(struct bolt_s *bolt);
     i32 Bolt_HitCustomFn_LSW(void *bolt, void *points);
     void GameBlowUpBlownUpFn_LSW(void *blowup);
     extern void *game_cutscenes_cutscene;
@@ -216,7 +238,7 @@ extern "C" {
     extern void *game_cutscenes_podsprint_out_of_time;
     extern void *game_cutscenes_podsprint_sebulba;
     extern void *game_cutscenes_dogfight_die;
-    i32 CutScene_ReplaceCharacterModelFn_LSW(CUTINFO *cut, CUTSCENECHARACTER *character);
+    i32 CutScene_ReplaceCharacterModelFn_LSW(struct cutinfo_s *cut, CUTSCENECHARACTER *character);
     extern u16 podrace_die_angle_a;
     extern u16 podrace_die_angle_b;
     extern u16 podrace_die_angle_c;
@@ -340,14 +362,17 @@ extern "C" {
 
     extern struct area_data_s *JIMTEST_ADATA;
     void LSW_SetIndy(i32 area_index);
-#ifdef __cplusplus
-}
-#endif
-#ifdef __cplusplus
-extern "C" {
-#endif
+
     extern MISSION_SAVE_READER *Game_MissionSave;
     void Game_KillPart(struct PART_PC *part, i32 reason);
+
+    typedef struct GAMEAUDIO {                                   // size 0x200
+        i32 (*override_footstep_fn)(struct gameobject_s *, i32); // 0x000
+        i32 (*check_reverb_fn)(void);                            // 0x004
+        char *sfx_names[84];                                     // 0x008
+        i16 sfx_ids[84];                                         // 0x158
+    } GAMEAUDIO;
+
     extern GAMEAUDIO GameAudioLsw;
     extern GAMEAUDIO GameAudioAlternate;
     extern struct area_data_s *UTAPAU_ADATA;
@@ -383,7 +408,7 @@ typedef struct {          // size 0xfc
 
 typedef struct ASTEROID {
     nuhspecial_s special;
-    GIZMOBLOWUP_PC *blowup;
+    struct GIZMOBLOWUP_PC *blowup;
     i16 rotation_speed_x;
     i16 rotation_speed_y;
     i16 rotation_speed_z;
@@ -392,7 +417,7 @@ typedef struct ASTEROID {
 
 typedef struct FINAL_ASTEROID {
     nuhspecial_s special;
-    GIZMOBLOWUP_PC *blowups[8];
+    struct GIZMOBLOWUP_PC *blowups[8];
     i16 blowup_count;
     i16 rotation_speed_x;
     i16 rotation_speed_y;
@@ -407,14 +432,10 @@ typedef struct KILLPARTS_OBJECT_LIGHT {
     PART_LIGHTING_DATA lighting;
 } KILLPARTS_OBJECT_LIGHT;
 
-typedef struct STATUS_RUMBLE_PAIR {
-    RUMBLE_PACKET_RESOURCE players[2];
-} STATUS_RUMBLE_PAIR;
-
 typedef struct ai_gizmo_name_process_s { // size 0xdc
     char name[16];                       // 0x00
     u8 unknown_10[4];                    // 0x10
-    AISCRIPT *script;                    // 0x14
+    struct AISCRIPT *script;             // 0x14
     u8 unknown_18[0x98];                 // 0x18
     char *context_name;                  // 0xb0
     char *locator_name;                  // 0xb4
@@ -472,13 +493,13 @@ typedef struct HINT_ZIPUP { // size 0x7c
     u8 reserved69[0x13];    // 0x69
 } HINT_ZIPUP;
 
-typedef struct MISSION_SYSTEM_READER { // size 0x30
-    MISSIONDATA_PC *missions;          // 0x00
-    MISSIONDATA_PC *active_mission;    // 0x04
-    TIMER timer;                       // 0x08
-    MISSION_SAVE_READER *save;         // 0x18
-    u8 count;                          // 0x1c
-    u8 state;                          // 0x1d
+typedef struct MISSION_SYSTEM_READER {     // size 0x30
+    struct mission_data_s *missions;       // 0x00
+    struct mission_data_s *active_mission; // 0x04
+    TIMER timer;                           // 0x08
+    MISSION_SAVE_READER *save;             // 0x18
+    u8 count;                              // 0x1c
+    u8 state;                              // 0x1d
 
     union { // size 0x1
         u8 flags;

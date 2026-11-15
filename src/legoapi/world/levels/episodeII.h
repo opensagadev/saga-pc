@@ -9,13 +9,13 @@
 #ifndef SAGA_SHIM
 #include "gameapi/ai/aisys/aipath.h"
 #include "legoapi/items/base/apiobject.h"
-#include "legoapi/legoapi_types.h"
 #include "legoapi/lib/hub.h"
 #include "legoapi/world/world.h"
-#include "nu2api/nu3d/nu3d_includes.h"
 #include "nu2api/nu3d/nuhspecial.h"
 #include "nu2api/numath/nuvec.h"
 #endif
+
+struct gizaimessage_s;
 
 typedef struct kaminoeplate_s {
     u8 opaque_00_13a[0x13a];
@@ -92,26 +92,26 @@ typedef struct JEDIB_PHASE { // size 0x8
     const char *script;      // 0x4
 } JEDIB_PHASE;
 
-typedef struct JEDIB_STATE {           // size 0x63f0
-    JEDIB_CREATURE baddies[256];       // 0x0000
-    JEDIB_CREATURE goodies[8];         // 0x6000
-    i16 baddie_count;                  // 0x6300
-    i16 goody_count;                   // 0x6302
-    i16 phase;                         // 0x6304
-    i16 state;                         // 0x6306
-    f32 timer;                         // 0x6308
-    u32 seed;                          // 0x630c
-    nuhspecial_s hero_spawns[3][4];    // 0x6310
-    GAMEOBJECT *heroes[3];             // 0x63a0
-    GIZAIMESSAGE *msg_phase;           // 0x63ac
-    GIZAIMESSAGE *msg_phase_complete;  // 0x63b0
-    GIZAIMESSAGE *msg_objectives_left; // 0x63b4
-    GIZAIMESSAGE *msg_restrain[3];     // 0x63b8
-    i16 wave_ids[6];                   // 0x63c4
-    u8 wave_spawned[6];                // 0x63d0
-    u8 pad_63d6[2];                    // 0x63d6
-    GAMEOBJECT *boss;                  // 0x63d8
-    f32 wave_timer;                    // 0x63dc
+typedef struct JEDIB_STATE {                    // size 0x63f0
+    JEDIB_CREATURE baddies[256];                // 0x0000
+    JEDIB_CREATURE goodies[8];                  // 0x6000
+    i16 baddie_count;                           // 0x6300
+    i16 goody_count;                            // 0x6302
+    i16 phase;                                  // 0x6304
+    i16 state;                                  // 0x6306
+    f32 timer;                                  // 0x6308
+    u32 seed;                                   // 0x630c
+    nuhspecial_s hero_spawns[3][4];             // 0x6310
+    GAMEOBJECT *heroes[3];                      // 0x63a0
+    struct gizaimessage_s *msg_phase;           // 0x63ac
+    struct gizaimessage_s *msg_phase_complete;  // 0x63b0
+    struct gizaimessage_s *msg_objectives_left; // 0x63b4
+    struct gizaimessage_s *msg_restrain[3];     // 0x63b8
+    i16 wave_ids[6];                            // 0x63c4
+    u8 wave_spawned[6];                         // 0x63d0
+    u8 pad_63d6[2];                             // 0x63d6
+    GAMEOBJECT *boss;                           // 0x63d8
+    f32 wave_timer;                             // 0x63dc
 
     union { // size 0x8
         u64 exclusion_mask;

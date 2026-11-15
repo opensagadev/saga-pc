@@ -9,42 +9,100 @@
 #ifndef SAGA_SHIM
 #include "legoapi/gizmos/fx/gizmopickups.h"
 #include "legoapi/legoapi_types.h"
-#include "legoapi/menus/core/gamemessages.h"
 #include "nu2api/numath/nuvec.h"
 #endif
 
 struct WORLDINFO_s;
 struct gameobject_s;
 
-typedef struct add_game_message_s {  // size 0x50
-    const char *text;                // 0x00
-    NUVEC *position;                 // 0x04
-    NUVEC *target_position;          // 0x08
-    f32 scale;                       // 0x0c
-    f32 target_scale;                // 0x10
-    u8 red;                          // 0x14
-    u8 green;                        // 0x15
-    u8 blue;                         // 0x16
-    u8 alpha;                        // 0x17
-    u32 flags;                       // 0x18
-    f32 duration;                    // 0x1c
-    f32 delay;                       // 0x20
-    u16 unknown_24;                  // 0x24
-    i16 icon;                        // 0x26
-    void *special;                   // 0x28
-    u32 score;                       // 0x2c
-    f32 unknown_30;                  // 0x30
-    f32 unknown_34;                  // 0x34
-    GAME_MESSAGE_CALLBACK delay_fn;  // 0x38
-    GAME_MESSAGE_CALLBACK tick_fn;   // 0x3c
-    GAME_MESSAGE_CALLBACK update_fn; // 0x40
-    void *unknown_44;                // 0x44
-    GAME_MESSAGE_CALLBACK end_fn;    // 0x48
-    i8 player_index;                 // 0x4c
-    u8 allow_temporary;              // 0x4d
-    u8 target_is_coin_total;         // 0x4e
-    u8 unknown_4f;                   // 0x4f
-} ADD_GAME_MESSAGE_PC;
+typedef void (*GAME_MESSAGE_CALLBACK)(struct game_message_s *);
+
+#ifdef __cplusplus
+extern "C" {
+#endif
+    typedef struct add_game_message_s {  // size 0x50
+        const char *text;                // 0x00
+        NUVEC *position;                 // 0x04
+        NUVEC *target_position;          // 0x08
+        f32 scale;                       // 0x0c
+        f32 target_scale;                // 0x10
+        u8 red;                          // 0x14
+        u8 green;                        // 0x15
+        u8 blue;                         // 0x16
+        u8 alpha;                        // 0x17
+        u32 flags;                       // 0x18
+        f32 duration;                    // 0x1c
+        f32 delay;                       // 0x20
+        u16 unknown_24;                  // 0x24
+        i16 icon;                        // 0x26
+        void *special;                   // 0x28
+        u32 score;                       // 0x2c
+        f32 unknown_30;                  // 0x30
+        f32 unknown_34;                  // 0x34
+        GAME_MESSAGE_CALLBACK delay_fn;  // 0x38
+        GAME_MESSAGE_CALLBACK tick_fn;   // 0x3c
+        GAME_MESSAGE_CALLBACK update_fn; // 0x40
+        void *unknown_44;                // 0x44
+        GAME_MESSAGE_CALLBACK end_fn;    // 0x48
+        i8 player_index;                 // 0x4c
+        u8 allow_temporary;              // 0x4d
+        u8 target_is_coin_total;         // 0x4e
+        u8 unknown_4f;                   // 0x4f
+    } ADD_GAME_MESSAGE_PC;
+
+    extern ADD_GAME_MESSAGE_PC AddGameMsg_Default;
+#ifdef __cplusplus
+}
+#endif
+
+struct game_message_s {              // size 0x114
+    const char *text;                // 0x000
+    char text_buffer[0x78];          // 0x004
+    NUVEC position_a;                // 0x07c
+    NUVEC target_position;           // 0x088
+    NUVEC position;                  // 0x094
+    NUVEC start_position;            // 0x0a0
+    f32 scale_start;                 // 0x0ac
+    f32 target_scale;                // 0x0b0
+    f32 scale_initial;               // 0x0b4
+    f32 scale_current;               // 0x0b8
+    f32 elapsed;                     // 0x0bc
+    f32 duration;                    // 0x0c0
+    f32 parameter_c4;                // 0x0c4
+    f32 parameter_c8;                // 0x0c8
+    f32 scale_multiplier;            // 0x0cc
+    f32 delay;                       // 0x0d0
+    f32 parameter_d4;                // 0x0d4
+    u32 flags;                       // 0x0d8
+    u32 score;                       // 0x0dc
+    u16 parameter_e0;                // 0x0e0
+    u16 parameter_e2;                // 0x0e2
+    u16 parameter_e4;                // 0x0e4
+    u16 icon;                        // 0x0e6
+    nuhspecial_s special;            // 0x0e8
+    u8 red;                          // 0x0f4
+    u8 green;                        // 0x0f5
+    u8 blue;                         // 0x0f6
+    u8 alpha;                        // 0x0f7
+    u8 active;                       // 0x0f8
+    u8 has_start_position;           // 0x0f9
+    u8 expired;                      // 0x0fa
+    u8 parameter_fb;                 // 0x0fb
+    u8 parameter_fc;                 // 0x0fc
+    i8 player_index;                 // 0x0fd
+    u8 target_is_coin_total;         // 0x0fe
+    u8 allow_temporary;              // 0x0ff
+    GAME_MESSAGE_CALLBACK delay_fn;  // 0x100
+    GAME_MESSAGE_CALLBACK tick_fn;   // 0x104
+    GAME_MESSAGE_CALLBACK update_fn; // 0x108
+
+    union { // size 0x4
+        void *parameter_10c;
+        void (*draw_fn)(struct game_message_s *, NUVEC *, f32);
+    }; // 0x10c
+
+    GAME_MESSAGE_CALLBACK end_fn; // 0x110
+};
 
 #ifdef __cplusplus
 extern "C" {
@@ -108,7 +166,6 @@ extern "C" {
     extern const f64 PlayerSlideSpeed;
     extern const f64 PlayerTightRopePhase;
     void PowerUp_Update(struct gameobject_s *);
-    extern PICKUP_TYPE_SYSTEM GizmoPickupSys_Game;
     extern char ScorePanelName[9];
     extern char dat_00758c14[10];
     void GizmoPickups_SetOnOff(void);

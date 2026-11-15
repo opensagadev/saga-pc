@@ -14,12 +14,7 @@
 
 /* The module headers this header uses. saga.h includes every header itself, so the shim skips these. */
 #ifndef SAGA_SHIM
-#include "gameapi/edtools/edgra.h"
-#include "legoapi/items/collect/thermaldetonators.h"
 #include "legoapi/items/objects/game_obj.h"
-#include "legoapi/legoapi_types.h"
-#include "legoapi/world/levels/episodeV.h"
-#include "nu2api/nu3d/nu3d_includes.h"
 #include "nu2api/numath/numtx.h"
 #include "nu2api/numath/nuvec.h"
 #endif
@@ -119,6 +114,32 @@ extern "C" {
     } DEBRIS_SCALE_CACHE_PC;
 
     extern char KillPartsLegoSingleText[11];
+
+    typedef struct part_emit_s {     // size 0x6c
+        NUVEC position;              // 0x00
+        i32 effect_id;               // 0x0c
+        char name[16];               // 0x10
+        f32 time_20;                 // 0x20
+        f32 time_24;                 // 0x24
+        f32 time_28;                 // 0x28
+        i16 rotation_2c;             // 0x2c
+        i16 rotation_2e;             // 0x2e
+        i16 rotation_30;             // 0x30
+        i8 page;                     // 0x32
+        u8 unknown_33;               // 0x33
+        i32 shots_remaining;         // 0x34
+        f32 time_38;                 // 0x38
+        u8 unknown_3c;               // 0x3c
+        u8 unknown_3d;               // 0x3d
+        u8 unknown_3e;               // 0x3e
+        u8 unknown_3f;               // 0x3f
+        f32 camera_distance;         // 0x40
+        i16 unknown_44;              // 0x44
+        i16 unknown_46;              // 0x46
+        i32 instance_id;             // 0x48
+        i32 trailing_state_words[8]; // 0x4c
+    } PART_EMIT_PC;
+
     extern PART_EMIT_PC part_emits[40];
     extern i32 part_page_on[8];
     extern f32 debris_render_scale;
@@ -226,97 +247,6 @@ extern "C" {
 
 #if SAGA_LEGOAPI_ITEMS_OBJECTS_OBJECTSALL_H_PART == 3 && !defined(SAGA_LEGOAPI_ITEMS_OBJECTS_OBJECTSALL_H_STOP)
 
-struct PART_PC { // size 0x220
-
-    union { // size 0x40
-        NUMTX transform;
-
-        struct {                       // size 0x40
-            u8 transform_prefix[0x30]; // 0x000
-            NUVEC position;            // 0x030
-            f32 transform_m33;         // 0x03c
-        };
-    }; // 0x000
-
-    NUMTX previous_transform;       // 0x040
-    NUVEC velocity;                 // 0x080
-    NUVEC collision_min;            // 0x08c
-    NUVEC collision_max;            // 0x098
-    NUVEC impact_position;          // 0x0a4
-    NUVEC impact_normal;            // 0x0b0
-    NUVEC guided_target;            // 0x0bc
-    NUVEC previous_position;        // 0x0c8
-    struct gameobject_s *owner;     // 0x0d4
-    struct gameobject_s *recipient; // 0x0d8
-    f32 radius;                     // 0x0dc
-    f32 unknown_e0;                 // 0x0e0
-    f32 unknown_e4;                 // 0x0e4
-    f32 gravity;                    // 0x0e8
-    f32 field_ec;                   // 0x0ec
-    f32 unknown_f0;                 // 0x0f0
-    f32 unknown_f4;                 // 0x0f4
-    f32 time_step;                  // 0x0f8
-    f32 scale_time;                 // 0x0fc
-    f32 time_remaining;             // 0x100
-    f32 initial_time;               // 0x104
-    u32 flags;                      // 0x108
-
-    union { // size 0x18
-        u32 unknown_10c[6];
-        i32 rotation_parameters[6];
-    }; // 0x10c
-
-    i32 unknown_124[5];           // 0x124
-    u16 rotation_x;               // 0x138
-    u16 rotation_y;               // 0x13a
-    u16 rotation_z;               // 0x13c
-    i16 part_id;                  // 0x13e
-    u16 unknown_140;              // 0x140
-    u8 rotation_axes[2];          // 0x142
-    u32 active;                   // 0x144
-    nuhspecial_s special;         // 0x148
-    nuhspecial_s *source_special; // 0x154
-    NUVEC lighting[7];            // 0x158
-    PART_ACTION callback_1ac;     // 0x1ac
-    PART_MOVE move_fn;            // 0x1b0
-    PART_ACTION deflect_fn;       // 0x1b4
-    PART_ACTION impact_fn;        // 0x1b8
-    PART_ACTION collision_fn;     // 0x1bc
-    PART_KILL kill_fn;            // 0x1c0
-    PART_ACTION update_fn;        // 0x1c4
-    PART_ACTION stop_fn;          // 0x1c8
-    PART_ACTION destroy_fn;       // 0x1cc
-    PART_DRAW draw_fn;            // 0x1d0
-    i32 inline_debris_handle;     // 0x1d4
-    i32 *debris_handle;           // 0x1d8
-    i32 *lighting_handle;         // 0x1dc
-    i32 effect_id_1e0;            // 0x1e0
-    i32 effect_id_1e4;            // 0x1e4
-    f32 unknown_1e8;              // 0x1e8
-    f32 unknown_1ec;              // 0x1ec
-    i32 effect_id_1f0;            // 0x1f0
-    i32 effect_id_1f4;            // 0x1f4
-    i32 effect_id_1f8;            // 0x1f8
-    f32 effect_scale;             // 0x1fc
-    u32 unknown_200;              // 0x200
-    u16 unknown_204;              // 0x204
-    i8 unknown_206;               // 0x206
-    u8 hostility_group;           // 0x207
-    u8 unknown_208;               // 0x208
-    u8 unknown_209;               // 0x209
-    u8 flicker_flags;             // 0x20a
-    i8 unknown_20b;               // 0x20b
-    f32 crate_spawn_delay;        // 0x20c
-    u32 unknown_210;              // 0x210
-    f32 unknown_214;              // 0x214
-    u32 force_flags;              // 0x218
-
-    union { // size 0x4
-        u32 unknown_21c;
-        f32 reflection_height;
-    }; // 0x21c
-};
-
 #ifdef __cplusplus
 extern "C" {
 #endif
@@ -340,8 +270,110 @@ extern "C" {
 #ifdef __cplusplus
 extern "C" {
 #endif
-    extern DEBRISGENERATOR_PC gensorttab[13];
-    extern DEBRISMOMENTUMADJUSTER_PC gencodetab[7];
+
+    typedef struct debris_colour_key_s { // size 0x8
+        f32 time;                        // 0x0
+        u8 red;                          // 0x4
+        u8 green;                        // 0x5
+        u8 blue;                         // 0x6
+        u8 unknown_7;                    // 0x7
+    } DEBRIS_COLOUR_KEY_PC;
+
+    typedef struct debris_float_key_s { // size 0x8
+        f32 time;                       // 0x0
+        f32 value;                      // 0x4
+    } DEBRIS_FLOAT_KEY_PC;
+
+    typedef struct debris_info_s {   // size 0x428
+        char name[16];               // 0x000
+        u8 category;                 // 0x010
+        i8 page;                     // 0x011
+        u8 cutscene_only;            // 0x012
+        u8 disabled;                 // 0x013
+        i16 max_particles;           // 0x014
+        i16 frequency;               // 0x016
+        f32 emission_start_offset;   // 0x018
+        f32 emission_period;         // 0x01c
+        f32 emission_period_random;  // 0x020
+        f32 emission_pause;          // 0x024
+        f32 emission_pause_random;   // 0x028
+        i8 generator_type;           // 0x02c
+        i8 momentum_adjustment_type; // 0x02d
+        i8 particle_type;            // 0x02e
+        u8 status;                   // 0x02f
+        f32 unknown_030;             // 0x030
+        f32 cut_on;                  // 0x034
+        f32 clip_extent;             // 0x038
+        f32 sound_range;             // 0x03c
+        f32 sound_range_override;    // 0x040
+        f32 unknown_044;             // 0x044
+        f32 momentum_base;           // 0x048
+        f32 momentum_random_x;       // 0x04c
+        f32 rotor_speed_x;           // 0x050
+        f32 rotor_speed_y;           // 0x054
+        NUVEC emitter_random_extent; // 0x058
+        NUVEC emitter_velocity;      // 0x064
+
+        union { // size 0x30
+            f32 unknown_070[12];
+            f32 file_parameters[12];
+        }; // 0x070
+
+        f32 gravity;                              // 0x0a0
+        f32 particle_lifetime;                    // 0x0a4
+        i16 unknown_0a8;                          // 0x0a8
+        i8 unknown_0aa;                           // 0x0aa
+        i8 unknown_0ab;                           // 0x0ab
+        f32 unknown_0ac;                          // 0x0ac
+        f32 jib_x_frequency;                      // 0x0b0
+        f32 jib_x_amplitude;                      // 0x0b4
+        f32 jib_y_frequency;                      // 0x0b8
+        f32 jib_y_amplitude;                      // 0x0bc
+        DEBRIS_COLOUR_KEY_PC colour_keys[8];      // 0x0c0
+        DEBRIS_FLOAT_KEY_PC alpha_keys[8];        // 0x100
+        f32 particle_parameter_a;                 // 0x140
+        f32 particle_parameter_b;                 // 0x144
+        f32 min_size;                             // 0x148
+        f32 max_size;                             // 0x14c
+        DEBRIS_FLOAT_KEY_PC width_keys[8];        // 0x150
+        DEBRIS_FLOAT_KEY_PC height_keys[8];       // 0x190
+        f32 min_rotation;                         // 0x1d0
+        f32 max_rotation;                         // 0x1d4
+        DEBRIS_FLOAT_KEY_PC rotation_keys[8];     // 0x1d8
+        DEBRIS_FLOAT_KEY_PC field_218_keys[8];    // 0x218
+        DEBRIS_FLOAT_KEY_PC field_258_keys[8];    // 0x258
+        f32 texture_u0;                           // 0x298
+        f32 texture_v0;                           // 0x29c
+        f32 texture_u1;                           // 0x2a0
+        f32 texture_v1;                           // 0x2a4
+        struct debris_part_header_s *native_data; // 0x2a8
+        f32 last_render_time;                     // 0x2ac
+        DEBRIS_FLOAT_KEY_PC collision_keys[8];    // 0x2b0
+        i8 process_spheres;                       // 0x2f0
+        i8 time_group;                            // 0x2f1
+        u8 collision_flags;                       // 0x2f2
+        u8 use_explicit_clip_box;                 // 0x2f3
+        f32 thinning;                             // 0x2f4
+        NUVEC particle_box;                       // 0x2f8
+        f32 torus_radius1;                        // 0x304
+        f32 torus_radius2;                        // 0x308
+        f32 torus_lifetime;                       // 0x30c
+        DEBRIS_FLOAT_KEY_PC torus_keys1[8];       // 0x310
+        DEBRIS_FLOAT_KEY_PC torus_keys2[8];       // 0x350
+        DEBRIS_FLOAT_KEY_PC torus_keys3[8];       // 0x390
+        i16 particle_keys[8];                     // 0x3d0
+        i32 sound_data[12];                       // 0x3e0
+        i8 trail_count;                           // 0x410
+        i8 radial_segments;                       // 0x411
+        i8 camera_facing;                         // 0x412
+        u8 unknown_413;                           // 0x413
+        f32 trail_time;                           // 0x414
+        f32 scale_in_time;                        // 0x418
+        f32 radial_floor;                         // 0x41c
+        f32 scale;                                // 0x420
+        i32 base_effect_index;                    // 0x424
+    } DEBRIS_INFO_PC;
+
     extern DEBRIS_INFO_PC DebrisNullEffect;
     extern struct eduimenu_s *edpart_cutoff_menu;
     extern struct eduimenu_s *edpart_scaletype_menu;

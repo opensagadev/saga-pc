@@ -11,7 +11,6 @@
 #include "legoapi/items/objects/game_obj.h"
 #include "legoapi/items/objects/objectsall.h"
 #include "legoapi/world/world.h"
-#include "nu2api/nu3d/nu3d_includes.h"
 #include "nu2api/numath/numtx.h"
 #include "nu2api/numath/nuvec.h"
 #endif

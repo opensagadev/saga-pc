@@ -14,10 +14,12 @@
 
 /* The module headers this header uses. saga.h includes every header itself, so the shim skips these. */
 #ifndef SAGA_SHIM
-#include "nu2api/nu3d/nu3d_includes.h"
+#include "nu2api/nu3d/nuhspecial.h"
 #include "nu2api/numath/numtx.h"
 #include "nu2api/numath/nuvec.h"
 #endif
+
+struct nuhspecial_s;
 
 /* 3 parts: saga.h includes this header once per part, each where its declarations belong; included directly, it gives
  * all parts at once. */
@@ -229,7 +231,7 @@ extern "C" {
     void GizmoBlowUp_AddEffects(NUVEC *position, GIZMOBLOWUP_PC *blowup, i32 add_offset, i32 flags, struct gameobject_s *object);
     i32 GizmoBlowupCheckProximity(struct WORLDINFO_s *, struct gameobject_s *);
     i32 GizmoBlowupBlowup(GIZMOBLOWUP_PC *, i32, i32, i32, struct gameobject_s *, i32);
-    GIZMOBLOWUPTYPE *GizmoBlowupTypeAdd(struct WORLDINFO_s *, nuhspecial_s *, i32, i32 *);
+    GIZMOBLOWUPTYPE *GizmoBlowupTypeAdd(struct WORLDINFO_s *, struct nuhspecial_s *, i32, i32 *);
     void GizmoBlowupTypeRemove(GIZMOBLOWUPTYPE *, struct WORLDINFO_s *);
     void *gizmoblowup_reservebuffers(struct WORLDINFO_s *);
     void GizmoBlowupsFinalSetup(struct WORLDINFO_s *);

@@ -7,7 +7,6 @@
 
 /* The module headers this header uses. saga.h includes every header itself, so the shim skips these. */
 #ifndef SAGA_SHIM
-#include "legoapi/legoapi_types.h"
 #include "nu2api/numath/nuvec.h"
 #endif
 
@@ -17,9 +16,11 @@ struct APIOBJECT;
 struct gameobject_s;
 
 typedef i32 (*AI_PREPARING_SPECIAL_MOVE_PC)(struct AIPACKET *, struct APIOBJECT *, i32);
+
 #ifdef __cplusplus
 extern "C" {
 #endif
+    extern AI_PREPARING_SPECIAL_MOVE_PC PreparingForSpecialMoveFn;
 
     typedef struct BATARANG_TARGET_s { // size 0x14
         void *object;                  // 0x00
@@ -96,6 +97,8 @@ extern "C" {
     extern PLAYER_BATARANG_SLOT_PC BatarangPackets[8];
     extern i16 PunchRangeUnitId;
     typedef i32 (*AI_MID_SPECIAL_MOVE_PC)(struct AISYS_PC *, struct AIPACKET *, struct APIOBJECT *);
+
+    extern AI_MID_SPECIAL_MOVE_PC MidSpecialMoveFn;
     extern const f64 PCPathArcSineCoefficient3;
     extern const f64 PCPathArcSineCoefficient5;
     extern const f64 PCPathArcSineCoefficient7;

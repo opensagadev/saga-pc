@@ -7,12 +7,13 @@
 
 /* The module headers this header uses. saga.h includes every header itself, so the shim skips these. */
 #ifndef SAGA_SHIM
-#include "gameapi/edtools/edgra.h"
 #include "nu2api/nu3d/numtl.h"
 #include "nu2api/numath/numtx.h"
 #include "nu2api/numath/nuvec.h"
 #include "nu2api/nustencilshadows_PC.h"
 #endif
+
+struct debris_info_s;
 
 #ifdef __cplusplus
 extern "C" {
@@ -25,7 +26,7 @@ extern "C" {
     void NuRndrParticleGroup(DEBRIS_PARTICLE_CHUNK_PC *, DEBRIS_PART_HEADER_PC *, NUMTL *, f32, NUMTX *, i32, f32, f32, f32, f32);
     void AddParticleGroupToDisplayList(NATIVE_PARTICLE_PACKET *);
 
-    void GenericDebinfoDmaTypeUpdate(DEBRIS_INFO_PC *effect);
+    void GenericDebinfoDmaTypeUpdate(struct debris_info_s *effect);
     DEBRIS_PARTICLE_CHUNK_PC *CreateDmaParticleSet(void *, i32 *);
     DEBRIS_PARTICLE_CHUNK_PC *CreateDmaParticleSetGlass(void *, i32 *);
     DEBRIS_PART_HEADER_PC *CreateDmaPartEffectList(void *, i32 *);

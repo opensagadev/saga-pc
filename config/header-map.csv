@@ -272,11 +272,11 @@ forward:TERRAIN_SPATIAL_NODE,forward,TERRAIN_SPATIAL_NODE,740,740,1,legoapi/rend
 forward:TERRAIN_SHAPE_BATCH,forward,TERRAIN_SHAPE_BATCH,741,741,1,legoapi/legoapi_types.h,android,catch-all (needs a module owner); TERRAIN_SHAPE_BATCH
 forward:TERRAIN_SKIN_STREAM,forward,TERRAIN_SKIN_STREAM,742,742,1,legoapi/render/core/gameliball.h,users,TERRAIN_SKIN_STREAM: only gameapi/gameliball.cpp android-path
 union:TERRAIN_SCAN_WORD,union,TERRAIN_SCAN_WORD,744,752,10,legoapi/render/core/gameliball.h,users,TERRAIN_SCAN_WORD: only gameapi/gameliball.cpp android-path
-struct:TERRAIN_INDEX_LEVEL,struct,TERRAIN_INDEX_LEVEL,754,760,8,legoapi/render/core/gameliball.h,android-stem,catch-all (needs a module owner); TERRAIN_INDEX_LEVEL -> TERRAIN_INDEX_LEVEL
-struct:TERRAIN_GROUP_PC,struct,TERRAIN_GROUP_PC,762,772,12,legoapi/render/core/gameliball.h,android-stem,catch-all (needs a module owner); TERRAIN_GROUP_PC -> TERRAIN_GROUP
+struct:TERRAIN_INDEX_LEVEL,struct,TERRAIN_INDEX_LEVEL,754,760,8,legoapi/legoapi_types.h,android-stem,catch-all (needs a module owner); TERRAIN_INDEX_LEVEL -> TERRAIN_INDEX_LEVEL
+struct:TERRAIN_GROUP_PC,struct,TERRAIN_GROUP_PC,762,772,12,legoapi/legoapi_types.h,android-stem,catch-all (needs a module owner); TERRAIN_GROUP_PC -> TERRAIN_GROUP
 struct:TERRAIN_PLATFORM_PC,struct,TERRAIN_PLATFORM_PC,774,797,25,legoapi/render/core/gameliball.h,android-stem,catch-all (needs a module owner); TERRAIN_PLATFORM_PC -> TERRAIN_PLATFORM
-struct:TERRAIN_CELL_PC,struct,TERRAIN_CELL_PC,799,806,9,legoapi/render/core/gameliball.h,android-stem,catch-all (needs a module owner); TERRAIN_CELL_PC -> TERRAIN_CELL
-struct:TERRAIN_SET_PC,struct,TERRAIN_SET_PC,808,837,31,legoapi/render/core/gameliball.h,rule,used most in gameapi/gameliball.cpp (118) android-path
+struct:TERRAIN_CELL_PC,struct,TERRAIN_CELL_PC,799,806,9,legoapi/legoapi_types.h,android-stem,catch-all (needs a module owner); TERRAIN_CELL_PC -> TERRAIN_CELL
+struct:TERRAIN_SET_PC,struct,TERRAIN_SET_PC,808,837,31,legoapi/legoapi_types.h,rule,used most in gameapi/gameliball.cpp (118) android-path
 assert:-#176,assert,,839,839,2,legoapi/render/core/gameliball.h,follow-type,TERRAIN_SCAN_WORD
 assert:-#177,assert,,840,840,1,legoapi/legoapi_types.h,follow-type,catch-all (needs a module owner); TERRAIN_INDEX_LEVEL
 assert:-#178,assert,,841,841,1,legoapi/legoapi_types.h,follow-type,catch-all (needs a module owner); TERRAIN_INDEX_LEVEL
@@ -288,15 +288,15 @@ assert:-#183,assert,,846,846,1,legoapi/legoapi_types.h,follow-type,catch-all (ne
 assert:-#184,assert,,847,847,1,legoapi/legoapi_types.h,follow-type,catch-all (needs a module owner); TERRAIN_CELL_PC
 assert:-#185,assert,,848,848,1,legoapi/legoapi_types.h,follow-type,catch-all (needs a module owner); TERRAIN_CELL_PC
 assert:-#186,assert,,849,849,1,legoapi/legoapi_types.h,follow-type,catch-all (needs a module owner); TERRAIN_CELL_PC
-assert:-#187,assert,,850,850,1,legoapi/render/core/gameliball.h,follow-type,TERRAIN_SET_PC
-assert:-#188,assert,,851,851,1,legoapi/render/core/gameliball.h,follow-type,TERRAIN_SET_PC
-assert:-#189,assert,,852,852,1,legoapi/render/core/gameliball.h,follow-type,TERRAIN_SET_PC
-assert:-#190,assert,,853,853,1,legoapi/render/core/gameliball.h,follow-type,TERRAIN_SET_PC
-assert:-#191,assert,,854,854,1,legoapi/render/core/gameliball.h,follow-type,TERRAIN_SET_PC
-assert:-#192,assert,,855,855,1,legoapi/render/core/gameliball.h,follow-type,TERRAIN_SET_PC
-assert:-#193,assert,,856,856,1,legoapi/render/core/gameliball.h,follow-type,TERRAIN_SET_PC
-assert:-#194,assert,,857,857,1,legoapi/render/core/gameliball.h,follow-type,TERRAIN_SET_PC
-assert:-#195,assert,,858,858,1,legoapi/render/core/gameliball.h,follow-type,TERRAIN_SET_PC
+assert:-#187,assert,,850,850,1,legoapi/legoapi_types.h,follow-type,TERRAIN_SET_PC
+assert:-#188,assert,,851,851,1,legoapi/legoapi_types.h,follow-type,TERRAIN_SET_PC
+assert:-#189,assert,,852,852,1,legoapi/legoapi_types.h,follow-type,TERRAIN_SET_PC
+assert:-#190,assert,,853,853,1,legoapi/legoapi_types.h,follow-type,TERRAIN_SET_PC
+assert:-#191,assert,,854,854,1,legoapi/legoapi_types.h,follow-type,TERRAIN_SET_PC
+assert:-#192,assert,,855,855,1,legoapi/legoapi_types.h,follow-type,TERRAIN_SET_PC
+assert:-#193,assert,,856,856,1,legoapi/legoapi_types.h,follow-type,TERRAIN_SET_PC
+assert:-#194,assert,,857,857,1,legoapi/legoapi_types.h,follow-type,TERRAIN_SET_PC
+assert:-#195,assert,,858,858,1,legoapi/legoapi_types.h,follow-type,TERRAIN_SET_PC
 assert:-#196,assert,,859,859,1,legoapi/legoapi_types.h,follow-type,catch-all (needs a module owner); TERRAIN_GROUP_PC
 assert:-#197,assert,,860,860,1,legoapi/legoapi_types.h,follow-type,catch-all (needs a module owner); TERRAIN_GROUP_PC
 assert:-#198,assert,,861,861,1,legoapi/legoapi_types.h,follow-type,catch-all (needs a module owner); TERRAIN_GROUP_PC
@@ -314,23 +314,23 @@ assert:-#209,assert,,872,872,1,legoapi/legoapi_types.h,follow-type,catch-all (ne
 assert:-#210,assert,,873,873,1,legoapi/legoapi_types.h,follow-type,catch-all (needs a module owner); TERRAIN_TRACK_SLOT
 assert:-#211,assert,,874,874,1,legoapi/legoapi_types.h,follow-type,catch-all (needs a module owner); TERRAIN_TRACK_SLOT
 assert:-#212,assert,,875,875,1,legoapi/legoapi_types.h,follow-type,catch-all (needs a module owner); TERRAIN_CELL_PC
-assert:-#213,assert,,876,876,1,legoapi/render/core/gameliball.h,follow-type,TERRAIN_SET_PC
-assert:-#214,assert,,877,877,1,legoapi/render/core/gameliball.h,follow-type,TERRAIN_SET_PC
-assert:-#215,assert,,878,878,1,legoapi/render/core/gameliball.h,follow-type,TERRAIN_SET_PC
-assert:-#216,assert,,879,879,1,legoapi/render/core/gameliball.h,follow-type,TERRAIN_SET_PC
-assert:-#217,assert,,880,880,1,legoapi/render/core/gameliball.h,follow-type,TERRAIN_SET_PC
-assert:-#218,assert,,881,881,1,legoapi/render/core/gameliball.h,follow-type,TERRAIN_SET_PC
-assert:-#219,assert,,882,882,1,legoapi/render/core/gameliball.h,follow-type,TERRAIN_SET_PC
-assert:-#220,assert,,883,883,1,legoapi/render/core/gameliball.h,follow-type,TERRAIN_SET_PC
-assert:-#221,assert,,884,884,1,legoapi/render/core/gameliball.h,follow-type,TERRAIN_SET_PC
-assert:-#222,assert,,885,885,1,legoapi/render/core/gameliball.h,follow-type,TERRAIN_SET_PC
-assert:-#223,assert,,886,886,1,legoapi/render/core/gameliball.h,follow-type,TERRAIN_SET_PC
+assert:-#213,assert,,876,876,1,legoapi/legoapi_types.h,follow-type,TERRAIN_SET_PC
+assert:-#214,assert,,877,877,1,legoapi/legoapi_types.h,follow-type,TERRAIN_SET_PC
+assert:-#215,assert,,878,878,1,legoapi/legoapi_types.h,follow-type,TERRAIN_SET_PC
+assert:-#216,assert,,879,879,1,legoapi/legoapi_types.h,follow-type,TERRAIN_SET_PC
+assert:-#217,assert,,880,880,1,legoapi/legoapi_types.h,follow-type,TERRAIN_SET_PC
+assert:-#218,assert,,881,881,1,legoapi/legoapi_types.h,follow-type,TERRAIN_SET_PC
+assert:-#219,assert,,882,882,1,legoapi/legoapi_types.h,follow-type,TERRAIN_SET_PC
+assert:-#220,assert,,883,883,1,legoapi/legoapi_types.h,follow-type,TERRAIN_SET_PC
+assert:-#221,assert,,884,884,1,legoapi/legoapi_types.h,follow-type,TERRAIN_SET_PC
+assert:-#222,assert,,885,885,1,legoapi/legoapi_types.h,follow-type,TERRAIN_SET_PC
+assert:-#223,assert,,886,886,1,legoapi/legoapi_types.h,follow-type,TERRAIN_SET_PC
 typedef:TERRSET,typedef,TERRSET,888,888,2,legoapi/legoapi_types.h,android,catch-all (needs a module owner); TERRSET
 typedef:TERRAIN_GROUP,typedef,TERRAIN_GROUP,889,889,1,legoapi/legoapi_types.h,android,catch-all (needs a module owner); TERRAIN_GROUP
 typedef:TERRAIN_PLATFORM,typedef,TERRAIN_PLATFORM,890,890,1,legoapi/render/core/gameliball.h,android,catch-all (needs a module owner); TERRAIN_PLATFORM
 typedef:TERRAIN_CELL,typedef,TERRAIN_CELL,891,891,1,legoapi/legoapi_types.h,android,catch-all (needs a module owner); TERRAIN_CELL
 typedef:TERRAIN_SHAPE,typedef,TERRAIN_SHAPE,892,892,1,legoapi/legoapi_types.h,android,catch-all (needs a module owner); TERRAIN_SHAPE (also legoapi/render/core/terrain.h)
-struct:TerrainQuery_s,struct,TerrainQuery_s,894,943,51,legoapi/legoapi_types.h,android,catch-all (needs a module owner); TerrainQuery_s
+struct:TerrainQuery_s,struct,TerrainQuery_s,894,943,51,legoapi/render/core/gameliball.h,android,catch-all (needs a module owner); TerrainQuery_s
 assert:-#224,assert,,945,945,2,legoapi/legoapi_types.h,follow-type,catch-all (needs a module owner); TerrainQuery_s
 assert:-#225,assert,,946,946,1,legoapi/legoapi_types.h,follow-type,catch-all (needs a module owner); TerrainQuery_s
 assert:-#226,assert,,947,947,1,legoapi/legoapi_types.h,follow-type,catch-all (needs a module owner); TerrainQuery_s
@@ -353,11 +353,11 @@ assert:-#237,assert,,997,997,2,legoapi/legoapi_types.h,follow-type,catch-all (ne
 assert:-#238,assert,,998,998,1,legoapi/render/core/gameliball.h,follow-type,TERRAIN_FILE_CHUNK
 assert:-#239,assert,,999,999,1,legoapi/render/core/gameliball.h,follow-type,TERRAIN_FILE_CHUNK
 assert:-#240,assert,,1000,1000,1,legoapi/render/core/gameliball.h,follow-type,TERRAIN_FILE_CHUNK
-assert:-#241,assert,,1001,1001,1,legoapi/render/core/gameliball.h,follow-type,TERRAIN_SET_PC
-assert:-#242,assert,,1002,1002,1,legoapi/render/core/gameliball.h,follow-type,TERRAIN_SET_PC
-assert:-#243,assert,,1003,1003,1,legoapi/render/core/gameliball.h,follow-type,TERRAIN_SET_PC
-assert:-#244,assert,,1004,1004,1,legoapi/render/core/gameliball.h,follow-type,TERRAIN_SET_PC
-assert:-#245,assert,,1005,1005,1,legoapi/render/core/gameliball.h,follow-type,TERRAIN_SET_PC
+assert:-#241,assert,,1001,1001,1,legoapi/legoapi_types.h,follow-type,TERRAIN_SET_PC
+assert:-#242,assert,,1002,1002,1,legoapi/legoapi_types.h,follow-type,TERRAIN_SET_PC
+assert:-#243,assert,,1003,1003,1,legoapi/legoapi_types.h,follow-type,TERRAIN_SET_PC
+assert:-#244,assert,,1004,1004,1,legoapi/legoapi_types.h,follow-type,TERRAIN_SET_PC
+assert:-#245,assert,,1005,1005,1,legoapi/legoapi_types.h,follow-type,TERRAIN_SET_PC
 assert:-#246,assert,,1006,1006,1,legoapi/legoapi_types.h,follow-type,catch-all (needs a module owner); TERRAIN_TRACK_SLOT
 assert:-#247,assert,,1007,1007,1,legoapi/legoapi_types.h,follow-type,catch-all (needs a module owner); TERRAIN_GROUP_PC
 assert:-#248,assert,,1008,1008,1,legoapi/legoapi_types.h,follow-type,catch-all (needs a module owner); TERRAIN_GROUP_PC
@@ -524,16 +524,16 @@ struct:MISSION_SAVE_READER,struct,MISSION_SAVE_READER,2089,2092,5,legoapi/world/
 assert:-#334,assert,,2094,2094,2,legoapi/world/missions.h,follow-type,MISSION_SAVE_READER
 assert:-#335,assert,,2095,2095,1,legoapi/world/missions.h,follow-type,MISSION_SAVE_READER
 assert:-#336,assert,,2096,2096,1,legoapi/world/missions.h,follow-type,MISSION_SAVE_READER
-struct:EPISODESAVE_s,struct,EPISODESAVE_s,2098,2110,14,globals.h,android-weak,catch-all (needs a module owner); EPISODESAVE_s
+struct:EPISODESAVE_s,struct,EPISODESAVE_s,2098,2110,14,legogame/game.h,android-weak,catch-all (needs a module owner); EPISODESAVE_s
 assert:-#337,assert,,2112,2112,2,globals.h,follow-type,catch-all (needs a module owner); EPISODESAVE_s
 assert:-#338,assert,,2113,2113,1,globals.h,follow-type,catch-all (needs a module owner); EPISODESAVE_s
 assert:-#339,assert,,2114,2114,1,globals.h,follow-type,catch-all (needs a module owner); EPISODESAVE_s
 assert:-#340,assert,,2115,2115,1,globals.h,follow-type,catch-all (needs a module owner); EPISODESAVE_s
-struct:GAME_CUSTOMISER_START,struct,GAME_CUSTOMISER_START,2117,2123,8,legoapi/characters/core/characters.h,users,GAME_CUSTOMISER_START: only legoapi/characters.c android-path
-assert:-#341,assert,,2125,2125,2,legoapi/characters/core/characters.h,follow-type,GAME_CUSTOMISER_START
-assert:-#342,assert,,2126,2126,1,legoapi/characters/core/characters.h,follow-type,GAME_CUSTOMISER_START
-assert:-#343,assert,,2127,2127,1,legoapi/characters/core/characters.h,follow-type,GAME_CUSTOMISER_START
-assert:-#344,assert,,2128,2128,1,legoapi/characters/core/characters.h,follow-type,GAME_CUSTOMISER_START
+struct:GAME_CUSTOMISER_START,struct,GAME_CUSTOMISER_START,2117,2123,8,legogame/game.h,users,GAME_CUSTOMISER_START: only legoapi/characters.c android-path
+assert:-#341,assert,,2125,2125,2,legogame/game.h,follow-type,GAME_CUSTOMISER_START
+assert:-#342,assert,,2126,2126,1,legogame/game.h,follow-type,GAME_CUSTOMISER_START
+assert:-#343,assert,,2127,2127,1,legogame/game.h,follow-type,GAME_CUSTOMISER_START
+assert:-#344,assert,,2128,2128,1,legogame/game.h,follow-type,GAME_CUSTOMISER_START
 struct:gamesave_s,struct,gamesave_s GAMESAVE,2130,2218,90,legogame/game.h,rule,used most in legogame/game.c (2) android-path
 assert:-#345,assert,,2220,2220,2,legogame/game.h,follow-type,GAMESAVE
 assert:-#346,assert,,2221,2221,1,legogame/game.h,follow-type,GAMESAVE
@@ -635,7 +635,7 @@ assert:-#424,assert,,2505,2505,1,legoapi/items/objects/objectsall.h,follow-type,
 assert:-#425,assert,,2506,2506,1,legoapi/items/objects/objectsall.h,follow-type,PARTTYPE_LOOKUP_PC
 assert:-#426,assert,,2507,2507,1,legoapi/items/objects/objectsall.h,follow-type,PARTTYPE_LOOKUP_PC
 assert:-#427,assert,,2508,2508,1,legoapi/items/objects/objectsall.h,follow-type,PARTTYPE_LOOKUP_PC
-struct:part_emit_s,struct,part_emit_s PART_EMIT_PC,2510,2533,25,legoapi/legoapi_types.h,android-stem,catch-all (needs a module owner); part_emit_s -> part_emit_s
+struct:part_emit_s,struct,part_emit_s PART_EMIT_PC,2510,2533,25,legoapi/items/objects/objectsall.h,android-stem,catch-all (needs a module owner); part_emit_s -> part_emit_s
 assert:-#428,assert,,2535,2535,2,legoapi/legoapi_types.h,follow-type,catch-all (needs a module owner); PART_EMIT_PC
 assert:-#429,assert,,2536,2536,1,legoapi/legoapi_types.h,follow-type,catch-all (needs a module owner); PART_EMIT_PC
 assert:-#430,assert,,2537,2537,1,legoapi/legoapi_types.h,follow-type,catch-all (needs a module owner); PART_EMIT_PC
@@ -733,7 +733,7 @@ assert:-#502,assert,,2772,2772,1,nu2api/nufile/nufpar.h,follow-type,NUFPCOMJMP
 struct:nufpcomjmpctx_s,struct,nufpcomjmpctx_s NUFPCOMJMPCTX,2774,2777,5,nu2api/nufile/nufpar.h,android,nufpcomjmpctx_s
 assert:-#503,assert,,2779,2779,2,nu2api/nufile/nufpar.h,follow-type,NUFPCOMJMPCTX
 assert:-#504,assert,,2780,2780,1,nu2api/nufile/nufpar.h,follow-type,NUFPCOMJMPCTX
-typedef:NUFPCOMFN,typedef,NUFPCOMFN,2781,2781,1,nu2api/huffdecode.h,rule,used most in nu2api/nucore_includes.cpp[huffdecode.c] (3) pc-path
+typedef:NUFPCOMFN,typedef,NUFPCOMFN,2781,2781,1,nu2api/nufile/nufpar.h,rule,used most in nu2api/nucore_includes.cpp[huffdecode.c] (3) pc-path
 typedef:NURDPGETVARFN,typedef,NURDPGETVARFN,2782,2782,1,nu2api/huffdecode.h,users,NURDPGETVARFN: only nu2api/nucore_includes.cpp[huffdecode.c] pc-path
 struct:nufparpos_s,struct,nufparpos_s NUFPARPOS_PC,2784,2790,8,nu2api/nufile/nufpar.h,android-stem,nufparpos_s -> nufparpos_s
 assert:-#505,assert,,2792,2792,2,nu2api/nufile/nufpar.h,follow-type,NUFPARPOS_PC
@@ -1044,7 +1044,7 @@ assert:-#761,assert,,3683,3683,1,legoapi/legoapi_types.h,follow-type,catch-all (
 assert:-#762,assert,,3684,3684,1,legoapi/legoapi_types.h,follow-type,catch-all (needs a module owner); BOLTSYS_PC
 assert:-#763,assert,,3685,3685,1,legoapi/legoapi_types.h,follow-type,catch-all (needs a module owner); BOLTSYS_PC
 assert:-#764,assert,,3686,3686,1,legoapi/legoapi_types.h,follow-type,catch-all (needs a module owner); BOLTSYS_PC
-struct:bolt_s,struct,bolt_s BOLT,3688,3732,46,legoapi/legoapi_types.h,android-stem,catch-all (needs a module owner); bolt_s -> BOLT_s
+struct:bolt_s,struct,bolt_s BOLT,3688,3732,46,legoapi/items/collect/bolts.h,android-stem,catch-all (needs a module owner); bolt_s -> BOLT_s
 typedef:BOLT_PC,typedef,BOLT_PC,3734,3734,2,legoapi/items/collect/bolts.h,rule,used most in legoapi/bolts.cpp (49) android-path
 assert:-#765,assert,,3735,3735,1,legoapi/items/collect/bolts.h,follow-type,BOLT_PC
 assert:-#766,assert,,3736,3736,1,legoapi/items/collect/bolts.h,follow-type,BOLT_PC
@@ -1227,13 +1227,13 @@ assert:-#927,assert,,4316,4316,1,legoapi/props/objects/techno.h,follow-type,TECH
 assert:-#928,assert,,4317,4317,1,legoapi/props/objects/techno.h,follow-type,TECHNO_PC
 forward:cutsys_s,forward,cutsys_s CUTSYS_PC,4318,4318,1,legoapi/legoapi_types.h,android-stem,catch-all (needs a module owner); CUTSYS_PC -> CUTSYS
 forward:gameanimsys_s,forward,gameanimsys_s GAMEANIMSYS,4319,4319,1,legoapi/legoapi_types.h,android-stem,catch-all (needs a module owner); gameanimsys_s -> GAMEANIMSYS_s
-struct:area_globals_s,struct,area_globals_s AREA_GLOBALS_PC,4322,4334,15,legogame/game.h,rule,used most in legogame/game.c (1) android-path
-assert:-#929,assert,,4336,4336,2,legogame/game.h,follow-type,AREA_GLOBALS_PC
-assert:-#930,assert,,4337,4337,1,legogame/game.h,follow-type,AREA_GLOBALS_PC
-assert:-#931,assert,,4338,4338,1,legogame/game.h,follow-type,AREA_GLOBALS_PC
-assert:-#932,assert,,4339,4339,1,legogame/game.h,follow-type,AREA_GLOBALS_PC
-assert:-#933,assert,,4340,4340,1,legogame/game.h,follow-type,AREA_GLOBALS_PC
-assert:-#934,assert,,4341,4341,1,legogame/game.h,follow-type,AREA_GLOBALS_PC
+struct:area_globals_s,struct,area_globals_s AREA_GLOBALS_PC,4322,4334,15,legoapi/world/areas.h,rule,used most in legogame/game.c (1) android-path
+assert:-#929,assert,,4336,4336,2,legoapi/world/areas.h,follow-type,AREA_GLOBALS_PC
+assert:-#930,assert,,4337,4337,1,legoapi/world/areas.h,follow-type,AREA_GLOBALS_PC
+assert:-#931,assert,,4338,4338,1,legoapi/world/areas.h,follow-type,AREA_GLOBALS_PC
+assert:-#932,assert,,4339,4339,1,legoapi/world/areas.h,follow-type,AREA_GLOBALS_PC
+assert:-#933,assert,,4340,4340,1,legoapi/world/areas.h,follow-type,AREA_GLOBALS_PC
+assert:-#934,assert,,4341,4341,1,legoapi/world/areas.h,follow-type,AREA_GLOBALS_PC
 forward:zipup_s,forward,zipup_s ZIPUP_PC,4343,4343,2,legoapi/gizmos/door/zipups.h,android-stem,zipup_s -> ZIPUP_s
 struct:edgizshadow_s,struct,edgizshadow_s EDGIZSHADOW,4345,4358,15,legoapi/gizmos/fx/edgizshadowmachine.h,android-stem,edgizshadow_s -> EDGIZSHADOW_s
 assert:-#935,assert,,4360,4360,2,legoapi/gizmos/fx/edgizshadowmachine.h,follow-type,EDGIZSHADOW
@@ -1308,9 +1308,9 @@ assert:-#995,assert,,4639,4639,1,legoapi/world/world.h,follow-type,WORLDINFO
 assert:-#996,assert,,4640,4640,1,legoapi/world/world.h,follow-type,WORLDINFO
 assert:-#997,assert,,4641,4641,1,legoapi/world/world.h,follow-type,WORLDINFO
 forward:area_supercounter_s,forward,area_supercounter_s AREA_SUPERCOUNTER_PC,4643,4643,2,legoapi/world/areas.h,follow-definition,area_supercounter_s
-struct:debris_float_key_s,struct,debris_float_key_s DEBRIS_FLOAT_KEY_PC,4645,4648,5,gameapi/edtools/edgra.h,android-stem,catch-all (needs a module owner); debris_float_key_s -> debris_float_key_s
-struct:debris_colour_key_s,struct,debris_colour_key_s DEBRIS_COLOUR_KEY_PC,4650,4656,8,gameapi/edtools/edgra.h,android-stem,catch-all (needs a module owner); debris_colour_key_s -> debris_colour_key_s
-struct:debris_particle_frame_s,struct,debris_particle_frame_s DEBRIS_PARTICLE_FRAME,4658,4663,7,legoapi/legoapi_types.h,android-stem,catch-all (needs a module owner); debris_particle_frame_s -> debris_particle_frame_s
+struct:debris_float_key_s,struct,debris_float_key_s DEBRIS_FLOAT_KEY_PC,4645,4648,5,legoapi/items/objects/objectsall.h,android-stem,catch-all (needs a module owner); debris_float_key_s -> debris_float_key_s
+struct:debris_colour_key_s,struct,debris_colour_key_s DEBRIS_COLOUR_KEY_PC,4650,4656,8,legoapi/items/objects/objectsall.h,android-stem,catch-all (needs a module owner); debris_colour_key_s -> debris_colour_key_s
+struct:debris_particle_frame_s,struct,debris_particle_frame_s DEBRIS_PARTICLE_FRAME,4658,4663,7,nu2api/nustencilshadows_PC.h,android-stem,catch-all (needs a module owner); debris_particle_frame_s -> debris_particle_frame_s
 struct:debris_part_header_s,struct,debris_part_header_s DEBRIS_PART_HEADER_PC,4665,4676,13,nu2api/nustencilshadows_PC.h,rule,used most in nu2api/nu3d_pc_includes.cpp[nustencilshadows_PC.cpp] (7) pc-path
 assert:-#998,assert,,4678,4678,2,legoapi/legoapi_types.h,follow-type,catch-all (needs a module owner); DEBRIS_FLOAT_KEY_PC
 assert:-#999,assert,,4679,4679,1,legoapi/legoapi_types.h,follow-type,catch-all (needs a module owner); DEBRIS_FLOAT_KEY_PC
@@ -1331,80 +1331,80 @@ assert:-#1013,assert,,4693,4693,1,nu2api/nustencilshadows_PC.h,follow-type,DEBRI
 assert:-#1014,assert,,4694,4694,1,nu2api/nustencilshadows_PC.h,follow-type,DEBRIS_PART_HEADER_PC
 assert:-#1015,assert,,4695,4695,1,nu2api/nustencilshadows_PC.h,follow-type,DEBRIS_PART_HEADER_PC
 assert:-#1016,assert,,4696,4696,1,nu2api/nustencilshadows_PC.h,follow-type,DEBRIS_PART_HEADER_PC
-struct:debris_info_s,struct,debris_info_s DEBRIS_INFO_PC,4698,4786,90,gameapi/edtools/edgra.h,rule,used most in gameapi/gameliball.cpp[edgra.c] (65) android-path
+struct:debris_info_s,struct,debris_info_s DEBRIS_INFO_PC,4698,4786,90,legoapi/items/objects/objectsall.h,rule,used most in gameapi/gameliball.cpp[edgra.c] (65) android-path
 assert:-#1017,assert,,4788,4788,2,legoapi/legoapi_types.h,follow-type,catch-all (needs a module owner); DEBRIS_FLOAT_KEY_PC
-assert:-#1018,assert,,4789,4789,1,gameapi/edtools/edgra.h,follow-type,DEBRIS_INFO_PC
-assert:-#1019,assert,,4790,4790,1,gameapi/edtools/edgra.h,follow-type,DEBRIS_INFO_PC
-assert:-#1020,assert,,4791,4791,1,gameapi/edtools/edgra.h,follow-type,DEBRIS_INFO_PC
-assert:-#1021,assert,,4792,4792,1,gameapi/edtools/edgra.h,follow-type,DEBRIS_INFO_PC
-assert:-#1022,assert,,4793,4793,1,gameapi/edtools/edgra.h,follow-type,DEBRIS_INFO_PC
-assert:-#1023,assert,,4794,4794,1,gameapi/edtools/edgra.h,follow-type,DEBRIS_INFO_PC
-assert:-#1024,assert,,4795,4795,1,gameapi/edtools/edgra.h,follow-type,DEBRIS_INFO_PC
+assert:-#1018,assert,,4789,4789,1,legoapi/items/objects/objectsall.h,follow-type,DEBRIS_INFO_PC
+assert:-#1019,assert,,4790,4790,1,legoapi/items/objects/objectsall.h,follow-type,DEBRIS_INFO_PC
+assert:-#1020,assert,,4791,4791,1,legoapi/items/objects/objectsall.h,follow-type,DEBRIS_INFO_PC
+assert:-#1021,assert,,4792,4792,1,legoapi/items/objects/objectsall.h,follow-type,DEBRIS_INFO_PC
+assert:-#1022,assert,,4793,4793,1,legoapi/items/objects/objectsall.h,follow-type,DEBRIS_INFO_PC
+assert:-#1023,assert,,4794,4794,1,legoapi/items/objects/objectsall.h,follow-type,DEBRIS_INFO_PC
+assert:-#1024,assert,,4795,4795,1,legoapi/items/objects/objectsall.h,follow-type,DEBRIS_INFO_PC
 assert:-#1025,assert,,4796,4796,1,decomp.h,decomp,data model check
 assert:-#1026,assert,,4797,4797,1,decomp.h,decomp,data model check
-assert:-#1027,assert,,4798,4798,1,gameapi/edtools/edgra.h,follow-type,DEBRIS_INFO_PC
-assert:-#1028,assert,,4799,4799,1,gameapi/edtools/edgra.h,follow-type,DEBRIS_INFO_PC
-assert:-#1029,assert,,4800,4800,1,gameapi/edtools/edgra.h,follow-type,DEBRIS_INFO_PC
-assert:-#1030,assert,,4801,4801,1,gameapi/edtools/edgra.h,follow-type,DEBRIS_INFO_PC
-assert:-#1031,assert,,4802,4802,1,gameapi/edtools/edgra.h,follow-type,DEBRIS_INFO_PC
-assert:-#1032,assert,,4803,4803,1,gameapi/edtools/edgra.h,follow-type,DEBRIS_INFO_PC
-assert:-#1033,assert,,4804,4804,1,gameapi/edtools/edgra.h,follow-type,DEBRIS_INFO_PC
-assert:-#1034,assert,,4805,4805,1,gameapi/edtools/edgra.h,follow-type,DEBRIS_INFO_PC
-assert:-#1035,assert,,4806,4806,1,gameapi/edtools/edgra.h,follow-type,DEBRIS_INFO_PC
-assert:-#1036,assert,,4807,4807,1,gameapi/edtools/edgra.h,follow-type,DEBRIS_INFO_PC
-assert:-#1037,assert,,4808,4808,1,gameapi/edtools/edgra.h,follow-type,DEBRIS_INFO_PC
-assert:-#1038,assert,,4809,4809,1,gameapi/edtools/edgra.h,follow-type,DEBRIS_INFO_PC
-assert:-#1039,assert,,4810,4810,1,gameapi/edtools/edgra.h,follow-type,DEBRIS_INFO_PC
-assert:-#1040,assert,,4811,4811,1,gameapi/edtools/edgra.h,follow-type,DEBRIS_INFO_PC
-assert:-#1041,assert,,4812,4812,1,gameapi/edtools/edgra.h,follow-type,DEBRIS_INFO_PC
-assert:-#1042,assert,,4813,4813,1,gameapi/edtools/edgra.h,follow-type,DEBRIS_INFO_PC
-assert:-#1043,assert,,4814,4814,1,gameapi/edtools/edgra.h,follow-type,DEBRIS_INFO_PC
-assert:-#1044,assert,,4815,4815,1,gameapi/edtools/edgra.h,follow-type,DEBRIS_INFO_PC
-assert:-#1045,assert,,4816,4816,1,gameapi/edtools/edgra.h,follow-type,DEBRIS_INFO_PC
-assert:-#1046,assert,,4817,4817,1,gameapi/edtools/edgra.h,follow-type,DEBRIS_INFO_PC
-assert:-#1047,assert,,4818,4818,1,gameapi/edtools/edgra.h,follow-type,DEBRIS_INFO_PC
-assert:-#1048,assert,,4819,4819,1,gameapi/edtools/edgra.h,follow-type,DEBRIS_INFO_PC
-assert:-#1049,assert,,4820,4820,1,gameapi/edtools/edgra.h,follow-type,DEBRIS_INFO_PC
-assert:-#1050,assert,,4821,4821,1,gameapi/edtools/edgra.h,follow-type,DEBRIS_INFO_PC
-assert:-#1051,assert,,4822,4822,1,gameapi/edtools/edgra.h,follow-type,DEBRIS_INFO_PC
-assert:-#1052,assert,,4823,4823,1,gameapi/edtools/edgra.h,follow-type,DEBRIS_INFO_PC
-assert:-#1053,assert,,4824,4824,1,gameapi/edtools/edgra.h,follow-type,DEBRIS_INFO_PC
-assert:-#1054,assert,,4825,4825,1,gameapi/edtools/edgra.h,follow-type,DEBRIS_INFO_PC
-assert:-#1055,assert,,4826,4826,1,gameapi/edtools/edgra.h,follow-type,DEBRIS_INFO_PC
-assert:-#1056,assert,,4827,4827,1,gameapi/edtools/edgra.h,follow-type,DEBRIS_INFO_PC
-assert:-#1057,assert,,4828,4828,1,gameapi/edtools/edgra.h,follow-type,DEBRIS_INFO_PC
-assert:-#1058,assert,,4829,4829,1,gameapi/edtools/edgra.h,follow-type,DEBRIS_INFO_PC
-assert:-#1059,assert,,4830,4830,1,gameapi/edtools/edgra.h,follow-type,DEBRIS_INFO_PC
-assert:-#1060,assert,,4831,4831,1,gameapi/edtools/edgra.h,follow-type,DEBRIS_INFO_PC
-assert:-#1061,assert,,4832,4832,1,gameapi/edtools/edgra.h,follow-type,DEBRIS_INFO_PC
-assert:-#1062,assert,,4833,4833,1,gameapi/edtools/edgra.h,follow-type,DEBRIS_INFO_PC
-assert:-#1063,assert,,4834,4834,1,gameapi/edtools/edgra.h,follow-type,DEBRIS_INFO_PC
-assert:-#1064,assert,,4835,4835,1,gameapi/edtools/edgra.h,follow-type,DEBRIS_INFO_PC
-assert:-#1065,assert,,4836,4836,1,gameapi/edtools/edgra.h,follow-type,DEBRIS_INFO_PC
-assert:-#1066,assert,,4837,4837,1,gameapi/edtools/edgra.h,follow-type,DEBRIS_INFO_PC
-assert:-#1067,assert,,4838,4838,1,gameapi/edtools/edgra.h,follow-type,DEBRIS_INFO_PC
-assert:-#1068,assert,,4839,4839,1,gameapi/edtools/edgra.h,follow-type,DEBRIS_INFO_PC
-assert:-#1069,assert,,4840,4840,1,gameapi/edtools/edgra.h,follow-type,DEBRIS_INFO_PC
-assert:-#1070,assert,,4841,4841,1,gameapi/edtools/edgra.h,follow-type,DEBRIS_INFO_PC
-assert:-#1071,assert,,4842,4842,1,gameapi/edtools/edgra.h,follow-type,DEBRIS_INFO_PC
-assert:-#1072,assert,,4843,4843,1,gameapi/edtools/edgra.h,follow-type,DEBRIS_INFO_PC
-assert:-#1073,assert,,4844,4844,1,gameapi/edtools/edgra.h,follow-type,DEBRIS_INFO_PC
-assert:-#1074,assert,,4845,4845,1,gameapi/edtools/edgra.h,follow-type,DEBRIS_INFO_PC
-assert:-#1075,assert,,4846,4846,1,gameapi/edtools/edgra.h,follow-type,DEBRIS_INFO_PC
-assert:-#1076,assert,,4847,4847,1,gameapi/edtools/edgra.h,follow-type,DEBRIS_INFO_PC
-assert:-#1077,assert,,4848,4848,1,gameapi/edtools/edgra.h,follow-type,DEBRIS_INFO_PC
-assert:-#1078,assert,,4849,4849,1,gameapi/edtools/edgra.h,follow-type,DEBRIS_INFO_PC
-assert:-#1079,assert,,4850,4850,1,gameapi/edtools/edgra.h,follow-type,DEBRIS_INFO_PC
-assert:-#1080,assert,,4851,4851,1,gameapi/edtools/edgra.h,follow-type,DEBRIS_INFO_PC
-assert:-#1081,assert,,4852,4852,1,gameapi/edtools/edgra.h,follow-type,DEBRIS_INFO_PC
-assert:-#1082,assert,,4853,4853,1,gameapi/edtools/edgra.h,follow-type,DEBRIS_INFO_PC
-assert:-#1083,assert,,4855,4855,2,gameapi/edtools/edgra.h,follow-type,DEBRIS_INFO_PC
-assert:-#1084,assert,,4856,4856,1,gameapi/edtools/edgra.h,follow-type,DEBRIS_INFO_PC
-assert:-#1085,assert,,4857,4857,1,gameapi/edtools/edgra.h,follow-type,DEBRIS_INFO_PC
-assert:-#1086,assert,,4858,4858,1,gameapi/edtools/edgra.h,follow-type,DEBRIS_INFO_PC
-assert:-#1087,assert,,4859,4859,1,gameapi/edtools/edgra.h,follow-type,DEBRIS_INFO_PC
-assert:-#1088,assert,,4860,4860,1,gameapi/edtools/edgra.h,follow-type,DEBRIS_INFO_PC
-assert:-#1089,assert,,4861,4861,1,gameapi/edtools/edgra.h,follow-type,DEBRIS_INFO_PC
+assert:-#1027,assert,,4798,4798,1,legoapi/items/objects/objectsall.h,follow-type,DEBRIS_INFO_PC
+assert:-#1028,assert,,4799,4799,1,legoapi/items/objects/objectsall.h,follow-type,DEBRIS_INFO_PC
+assert:-#1029,assert,,4800,4800,1,legoapi/items/objects/objectsall.h,follow-type,DEBRIS_INFO_PC
+assert:-#1030,assert,,4801,4801,1,legoapi/items/objects/objectsall.h,follow-type,DEBRIS_INFO_PC
+assert:-#1031,assert,,4802,4802,1,legoapi/items/objects/objectsall.h,follow-type,DEBRIS_INFO_PC
+assert:-#1032,assert,,4803,4803,1,legoapi/items/objects/objectsall.h,follow-type,DEBRIS_INFO_PC
+assert:-#1033,assert,,4804,4804,1,legoapi/items/objects/objectsall.h,follow-type,DEBRIS_INFO_PC
+assert:-#1034,assert,,4805,4805,1,legoapi/items/objects/objectsall.h,follow-type,DEBRIS_INFO_PC
+assert:-#1035,assert,,4806,4806,1,legoapi/items/objects/objectsall.h,follow-type,DEBRIS_INFO_PC
+assert:-#1036,assert,,4807,4807,1,legoapi/items/objects/objectsall.h,follow-type,DEBRIS_INFO_PC
+assert:-#1037,assert,,4808,4808,1,legoapi/items/objects/objectsall.h,follow-type,DEBRIS_INFO_PC
+assert:-#1038,assert,,4809,4809,1,legoapi/items/objects/objectsall.h,follow-type,DEBRIS_INFO_PC
+assert:-#1039,assert,,4810,4810,1,legoapi/items/objects/objectsall.h,follow-type,DEBRIS_INFO_PC
+assert:-#1040,assert,,4811,4811,1,legoapi/items/objects/objectsall.h,follow-type,DEBRIS_INFO_PC
+assert:-#1041,assert,,4812,4812,1,legoapi/items/objects/objectsall.h,follow-type,DEBRIS_INFO_PC
+assert:-#1042,assert,,4813,4813,1,legoapi/items/objects/objectsall.h,follow-type,DEBRIS_INFO_PC
+assert:-#1043,assert,,4814,4814,1,legoapi/items/objects/objectsall.h,follow-type,DEBRIS_INFO_PC
+assert:-#1044,assert,,4815,4815,1,legoapi/items/objects/objectsall.h,follow-type,DEBRIS_INFO_PC
+assert:-#1045,assert,,4816,4816,1,legoapi/items/objects/objectsall.h,follow-type,DEBRIS_INFO_PC
+assert:-#1046,assert,,4817,4817,1,legoapi/items/objects/objectsall.h,follow-type,DEBRIS_INFO_PC
+assert:-#1047,assert,,4818,4818,1,legoapi/items/objects/objectsall.h,follow-type,DEBRIS_INFO_PC
+assert:-#1048,assert,,4819,4819,1,legoapi/items/objects/objectsall.h,follow-type,DEBRIS_INFO_PC
+assert:-#1049,assert,,4820,4820,1,legoapi/items/objects/objectsall.h,follow-type,DEBRIS_INFO_PC
+assert:-#1050,assert,,4821,4821,1,legoapi/items/objects/objectsall.h,follow-type,DEBRIS_INFO_PC
+assert:-#1051,assert,,4822,4822,1,legoapi/items/objects/objectsall.h,follow-type,DEBRIS_INFO_PC
+assert:-#1052,assert,,4823,4823,1,legoapi/items/objects/objectsall.h,follow-type,DEBRIS_INFO_PC
+assert:-#1053,assert,,4824,4824,1,legoapi/items/objects/objectsall.h,follow-type,DEBRIS_INFO_PC
+assert:-#1054,assert,,4825,4825,1,legoapi/items/objects/objectsall.h,follow-type,DEBRIS_INFO_PC
+assert:-#1055,assert,,4826,4826,1,legoapi/items/objects/objectsall.h,follow-type,DEBRIS_INFO_PC
+assert:-#1056,assert,,4827,4827,1,legoapi/items/objects/objectsall.h,follow-type,DEBRIS_INFO_PC
+assert:-#1057,assert,,4828,4828,1,legoapi/items/objects/objectsall.h,follow-type,DEBRIS_INFO_PC
+assert:-#1058,assert,,4829,4829,1,legoapi/items/objects/objectsall.h,follow-type,DEBRIS_INFO_PC
+assert:-#1059,assert,,4830,4830,1,legoapi/items/objects/objectsall.h,follow-type,DEBRIS_INFO_PC
+assert:-#1060,assert,,4831,4831,1,legoapi/items/objects/objectsall.h,follow-type,DEBRIS_INFO_PC
+assert:-#1061,assert,,4832,4832,1,legoapi/items/objects/objectsall.h,follow-type,DEBRIS_INFO_PC
+assert:-#1062,assert,,4833,4833,1,legoapi/items/objects/objectsall.h,follow-type,DEBRIS_INFO_PC
+assert:-#1063,assert,,4834,4834,1,legoapi/items/objects/objectsall.h,follow-type,DEBRIS_INFO_PC
+assert:-#1064,assert,,4835,4835,1,legoapi/items/objects/objectsall.h,follow-type,DEBRIS_INFO_PC
+assert:-#1065,assert,,4836,4836,1,legoapi/items/objects/objectsall.h,follow-type,DEBRIS_INFO_PC
+assert:-#1066,assert,,4837,4837,1,legoapi/items/objects/objectsall.h,follow-type,DEBRIS_INFO_PC
+assert:-#1067,assert,,4838,4838,1,legoapi/items/objects/objectsall.h,follow-type,DEBRIS_INFO_PC
+assert:-#1068,assert,,4839,4839,1,legoapi/items/objects/objectsall.h,follow-type,DEBRIS_INFO_PC
+assert:-#1069,assert,,4840,4840,1,legoapi/items/objects/objectsall.h,follow-type,DEBRIS_INFO_PC
+assert:-#1070,assert,,4841,4841,1,legoapi/items/objects/objectsall.h,follow-type,DEBRIS_INFO_PC
+assert:-#1071,assert,,4842,4842,1,legoapi/items/objects/objectsall.h,follow-type,DEBRIS_INFO_PC
+assert:-#1072,assert,,4843,4843,1,legoapi/items/objects/objectsall.h,follow-type,DEBRIS_INFO_PC
+assert:-#1073,assert,,4844,4844,1,legoapi/items/objects/objectsall.h,follow-type,DEBRIS_INFO_PC
+assert:-#1074,assert,,4845,4845,1,legoapi/items/objects/objectsall.h,follow-type,DEBRIS_INFO_PC
+assert:-#1075,assert,,4846,4846,1,legoapi/items/objects/objectsall.h,follow-type,DEBRIS_INFO_PC
+assert:-#1076,assert,,4847,4847,1,legoapi/items/objects/objectsall.h,follow-type,DEBRIS_INFO_PC
+assert:-#1077,assert,,4848,4848,1,legoapi/items/objects/objectsall.h,follow-type,DEBRIS_INFO_PC
+assert:-#1078,assert,,4849,4849,1,legoapi/items/objects/objectsall.h,follow-type,DEBRIS_INFO_PC
+assert:-#1079,assert,,4850,4850,1,legoapi/items/objects/objectsall.h,follow-type,DEBRIS_INFO_PC
+assert:-#1080,assert,,4851,4851,1,legoapi/items/objects/objectsall.h,follow-type,DEBRIS_INFO_PC
+assert:-#1081,assert,,4852,4852,1,legoapi/items/objects/objectsall.h,follow-type,DEBRIS_INFO_PC
+assert:-#1082,assert,,4853,4853,1,legoapi/items/objects/objectsall.h,follow-type,DEBRIS_INFO_PC
+assert:-#1083,assert,,4855,4855,2,legoapi/items/objects/objectsall.h,follow-type,DEBRIS_INFO_PC
+assert:-#1084,assert,,4856,4856,1,legoapi/items/objects/objectsall.h,follow-type,DEBRIS_INFO_PC
+assert:-#1085,assert,,4857,4857,1,legoapi/items/objects/objectsall.h,follow-type,DEBRIS_INFO_PC
+assert:-#1086,assert,,4858,4858,1,legoapi/items/objects/objectsall.h,follow-type,DEBRIS_INFO_PC
+assert:-#1087,assert,,4859,4859,1,legoapi/items/objects/objectsall.h,follow-type,DEBRIS_INFO_PC
+assert:-#1088,assert,,4860,4860,1,legoapi/items/objects/objectsall.h,follow-type,DEBRIS_INFO_PC
+assert:-#1089,assert,,4861,4861,1,legoapi/items/objects/objectsall.h,follow-type,DEBRIS_INFO_PC
 struct:debris_collision_entry_s,struct,debris_collision_entry_s DEBRIS_COLLISION_ENTRY_PC,4863,4866,5,legoapi/items/objects/objectsall.h,users,DEBRIS_COLLISION_ENTRY_PC: only gameapi/objectsall.cpp android-path
 assert:-#1090,assert,,4868,4868,2,legoapi/items/objects/objectsall.h,follow-type,DEBRIS_COLLISION_ENTRY_PC
 assert:-#1091,assert,,4869,4869,1,legoapi/items/objects/objectsall.h,follow-type,DEBRIS_COLLISION_ENTRY_PC
@@ -1719,7 +1719,7 @@ assert:-#1373,assert,,5689,5689,2,legoapi/core/config/cheats.h,follow-type,CHEAT
 assert:-#1374,assert,,5690,5690,1,legoapi/core/config/cheats.h,follow-type,CHEATSYSTEM_PC
 struct:SoundTable,struct,SoundTable,5692,5694,4,legoapi/legoapi_types.h,android,catch-all (needs a module owner); SoundTable
 assert:-#1375,assert,,5696,5696,2,legoapi/legoapi_types.h,follow-type,catch-all (needs a module owner); SoundTable
-struct:GAMEAUDIO,struct,GAMEAUDIO,5698,5703,7,legoapi/legoapi_types.h,android-stem,catch-all (needs a module owner); GAMEAUDIO -> GAMEAUDIO
+struct:GAMEAUDIO,struct,GAMEAUDIO,5698,5703,7,legogame/game.h,android-stem,catch-all (needs a module owner); GAMEAUDIO -> GAMEAUDIO
 assert:-#1376,assert,,5705,5705,2,legoapi/legoapi_types.h,follow-type,catch-all (needs a module owner); GAMEAUDIO
 assert:-#1377,assert,,5706,5706,1,legoapi/legoapi_types.h,follow-type,catch-all (needs a module owner); GAMEAUDIO
 assert:-#1378,assert,,5707,5707,1,legoapi/legoapi_types.h,follow-type,catch-all (needs a module owner); GAMEAUDIO
@@ -1753,11 +1753,11 @@ assert:-#1403,assert,,5764,5764,1,legoapi/render/core/gameliball.h,follow-type,S
 struct:apicharactermodellist_s,struct,apicharactermodellist_s APICHARACTERMODELLIST,5766,5769,5,legoapi/characters/core/characters.h,rule,used most in legoapi/characters.c (7) android-path
 assert:-#1404,assert,,5771,5771,2,legoapi/characters/core/characters.h,follow-type,APICHARACTERMODELLIST
 assert:-#1405,assert,,5772,5772,1,legoapi/characters/core/characters.h,follow-type,APICHARACTERMODELLIST
-struct:level_display_s,struct,level_display_s LEVEL_DISPLAY_PC,5774,5784,12,legoapi/render/core/screen.h,users,LEVEL_DISPLAY_PC: only legoapi/screen.cpp android-path
-assert:-#1406,assert,,5786,5786,2,legoapi/render/core/screen.h,follow-type,LEVEL_DISPLAY_PC
-assert:-#1407,assert,,5787,5787,1,legoapi/render/core/screen.h,follow-type,LEVEL_DISPLAY_PC
-assert:-#1408,assert,,5788,5788,1,legoapi/render/core/screen.h,follow-type,LEVEL_DISPLAY_PC
-assert:-#1409,assert,,5789,5789,1,legoapi/render/core/screen.h,follow-type,LEVEL_DISPLAY_PC
+struct:level_display_s,struct,level_display_s LEVEL_DISPLAY_PC,5774,5784,12,legoapi/world/level.h,users,LEVEL_DISPLAY_PC: only legoapi/screen.cpp android-path
+assert:-#1406,assert,,5786,5786,2,legoapi/world/level.h,follow-type,LEVEL_DISPLAY_PC
+assert:-#1407,assert,,5787,5787,1,legoapi/world/level.h,follow-type,LEVEL_DISPLAY_PC
+assert:-#1408,assert,,5788,5788,1,legoapi/world/level.h,follow-type,LEVEL_DISPLAY_PC
+assert:-#1409,assert,,5789,5789,1,legoapi/world/level.h,follow-type,LEVEL_DISPLAY_PC
 struct:level_data_s,struct,level_data_s LEVELDATA_PC,5791,5884,95,legoapi/world/level.h,android-stem,LEVELDATA_PC -> LEVELDATA
 assert:-#1410,assert,,5886,5886,2,legoapi/world/level.h,follow-type,LEVELDATA_PC
 assert:-#1411,assert,,5887,5887,1,legoapi/world/level.h,follow-type,LEVELDATA_PC
@@ -2127,7 +2127,7 @@ forward:PART_PC#2,forward,PART_PC,7252,7252,2,legoapi/items/objects/objectsall.h
 forward:PART_LIGHTING_DATA,forward,PART_LIGHTING_DATA,7253,7253,1,legoapi/items/objects/game_obj.h,rule,used most in legogame/game_obj.c (4) android-path
 typedef:PART_ACTION,typedef,PART_ACTION,7254,7254,1,legoapi/items/collect/thermaldetonators.h,rule,used most in legogame/thermaldetonators.c (1) android-path
 typedef:PART_MOVE,typedef,PART_MOVE,7255,7255,1,legoapi/items/objects/game_obj.h,rule,"used in saga.h only, most by legoapi/items/objects/game_obj.h (1)"
-typedef:PART_KILL,typedef,PART_KILL,7256,7256,1,legoapi/world/levels/episodeV.h,users,PART_KILL: only legogame/episodeV.c android-path
+typedef:PART_KILL,typedef,PART_KILL,7256,7256,1,legoapi/items/objects/game_obj.h,users,PART_KILL: only legogame/episodeV.c android-path
 typedef:PART_DRAW,typedef,PART_DRAW,7257,7257,1,legoapi/items/objects/game_obj.h,rule,"used in saga.h only, most by legoapi/items/objects/game_obj.h (1)"
 struct:PART_LIGHTING_DATA,struct,PART_LIGHTING_DATA,7259,7262,5,legoapi/items/objects/game_obj.h,rule,used most in legogame/game_obj.c (4) android-path
 assert:-#1758,assert,,7264,7264,2,legoapi/items/objects/game_obj.h,follow-type,PART_LIGHTING_DATA
@@ -2545,7 +2545,7 @@ assert:-#2114,assert,,8373,8373,1,nu2api/nucore/nucore_plain_types.h,follow-type
 assert:-#2115,assert,,8374,8374,1,nu2api/nucore/nucore_plain_types.h,follow-type,NUKEYCHAR
 struct:NuTime_s,struct,NuTime_s NuTime,8376,8379,5,nu2api/nucore/nutime.h,android-stem,NuTime_s -> nutime_s
 assert:-#2116,assert,,8381,8381,2,nu2api/nucore/nutime.h,follow-type,NuTime
-struct:PC_VIEWPORT,struct,PC_VIEWPORT,8383,8390,9,nu2api/nustencilshadows_PC.h,rule,used most in nu2api/nu3d_pc_includes.cpp[nustencilshadows_PC.cpp] (4) pc-path
+struct:PC_VIEWPORT,struct,PC_VIEWPORT,8383,8390,9,nu2api/nu3d/nu3d_includes.h,rule,used most in nu2api/nu3d_pc_includes.cpp[nustencilshadows_PC.cpp] (4) pc-path
 struct:nuvpcurrent_s,struct,nuvpcurrent_s NUVPCURRENT,8392,8416,26,nu2api/nu3d/nu3d_includes.h,rule,used most in nu2api/nu3d_includes.cpp (8) android-path
 assert:-#2117,assert,,8418,8418,2,nu2api/nu3d/nu3d_includes.h,follow-type,NUVPCURRENT
 assert:-#2118,assert,,8419,8419,1,nu2api/nu3d/nu3d_includes.h,follow-type,NUVPCURRENT
@@ -2659,7 +2659,7 @@ assert:-#2208,assert,,8762,8762,2,nu2api/nucore/nulst.h,follow-type,NULSTHDR
 assert:-#2209,assert,,8763,8763,1,nu2api/nucore/nulst.h,follow-type,NULSTHDR
 assert:-#2210,assert,,8764,8764,1,nu2api/nucore/nulst.h,follow-type,NULSTHDR
 assert:-#2211,assert,,8765,8765,1,nu2api/nucore/nulst.h,follow-type,NULSTHDR
-forward:FadeBase,forward,FadeBase,8767,8767,2,legoapi/legoapi_types.h,android,catch-all (needs a module owner); FadeBase
+forward:FadeBase,forward,FadeBase,8767,8767,2,legoapi/lib/hub.h,android,catch-all (needs a module owner); FadeBase
 struct:FADEINFO,struct,FADEINFO,8769,8778,11,legoapi/lib/hub.h,rule,used most in legogame/hub.cpp (8) android-path
 assert:-#2212,assert,,8780,8780,2,legoapi/lib/hub.h,follow-type,FADEINFO
 assert:-#2213,assert,,8781,8781,1,legoapi/lib/hub.h,follow-type,FADEINFO
@@ -2668,7 +2668,7 @@ assert:-#2215,assert,,8783,8783,1,legoapi/lib/hub.h,follow-type,FADEINFO
 assert:-#2216,assert,,8784,8784,1,legoapi/lib/hub.h,follow-type,FADEINFO
 enum:FADETYPE_VALUE,enum,FADETYPE_VALUE FADE_TYPE_NONE FADE_TYPE_SCREEN FADE_TYPE_WIPE FADE_TYPE_STILL_WIPE FADE_TYPE_STILL,8786,8792,7,legoapi/legoapi_types.h,android,catch-all (needs a module owner); FADETYPE_VALUE
 forward:FADEINFO_s,forward,FADEINFO_s,8794,8794,2,legoapi/legoapi_types.h,android,catch-all (needs a module owner); FADEINFO_s
-class:FadeBase,class,FadeBase,8796,8809,15,legoapi/legoapi_types.h,android,catch-all (needs a module owner); FadeBase
+class:FadeBase,class,FadeBase,8796,8809,15,legoapi/lib/hub.h,android,catch-all (needs a module owner); FadeBase
 struct:FADEINFO_s,struct,FADEINFO_s,8811,8820,11,legoapi/legoapi_types.h,android,catch-all (needs a module owner); FADEINFO_s
 assert:-#2217,assert,,8822,8822,2,legoapi/legoapi_types.h,follow-type,catch-all (needs a module owner); FADEINFO_s
 assert:-#2218,assert,,8823,8823,1,legoapi/legoapi_types.h,follow-type,catch-all (needs a module owner); FADEINFO_s
@@ -3121,13 +3121,13 @@ assert:-#2612,assert,,10123,10123,1,nu2api/nuwin32/d3dCore.h,follow-type,PC_DEVI
 assert:-#2613,assert,,10124,10124,1,nu2api/nuwin32/d3dCore.h,follow-type,PC_DEVICE_BACKEND_PC
 assert:-#2614,assert,,10125,10125,1,nu2api/nufmv/pc/Bink/dsplay_bink.h,follow-type,GRAPHICS_FACTORY
 assert:-#2615,assert,,10126,10126,1,nu2api/nufmv/pc/Bink/dsplay_bink.h,follow-type,GRAPHICS_FACTORY_METHODS
-assert:-#2616,assert,,10128,10128,2,nu2api/nustencilshadows_PC.h,follow-type,PC_VIEWPORT
-assert:-#2617,assert,,10129,10129,1,nu2api/nustencilshadows_PC.h,follow-type,PC_VIEWPORT
-assert:-#2618,assert,,10130,10130,1,nu2api/nustencilshadows_PC.h,follow-type,PC_VIEWPORT
-assert:-#2619,assert,,10131,10131,1,nu2api/nustencilshadows_PC.h,follow-type,PC_VIEWPORT
-assert:-#2620,assert,,10132,10132,1,nu2api/nustencilshadows_PC.h,follow-type,PC_VIEWPORT
-assert:-#2621,assert,,10133,10133,1,nu2api/nustencilshadows_PC.h,follow-type,PC_VIEWPORT
-assert:-#2622,assert,,10134,10134,1,nu2api/nustencilshadows_PC.h,follow-type,PC_VIEWPORT
+assert:-#2616,assert,,10128,10128,2,nu2api/nu3d/nu3d_includes.h,follow-type,PC_VIEWPORT
+assert:-#2617,assert,,10129,10129,1,nu2api/nu3d/nu3d_includes.h,follow-type,PC_VIEWPORT
+assert:-#2618,assert,,10130,10130,1,nu2api/nu3d/nu3d_includes.h,follow-type,PC_VIEWPORT
+assert:-#2619,assert,,10131,10131,1,nu2api/nu3d/nu3d_includes.h,follow-type,PC_VIEWPORT
+assert:-#2620,assert,,10132,10132,1,nu2api/nu3d/nu3d_includes.h,follow-type,PC_VIEWPORT
+assert:-#2621,assert,,10133,10133,1,nu2api/nu3d/nu3d_includes.h,follow-type,PC_VIEWPORT
+assert:-#2622,assert,,10134,10134,1,nu2api/nu3d/nu3d_includes.h,follow-type,PC_VIEWPORT
 assert:-#2623,assert,,10135,10135,1,nu2api/nufmv/pc/Bink/dsplay_bink.h,follow-type,PC_D3D9_METHODS_PC
 assert:-#2624,assert,,10136,10136,1,nu2api/nufmv/pc/Bink/dsplay_bink.h,follow-type,PC_D3D9_METHODS_PC
 assert:-#2625,assert,,10137,10137,1,nu2api/nufmv/pc/Bink/dsplay_bink.h,follow-type,PC_D3D9_METHODS_PC
@@ -3211,7 +3211,7 @@ macro:PlayerCarryRotationScale,macro,PlayerCarryRotationScale,10326,10326,2,nu2a
 macro:PCWarningPrefix,macro,PCWarningPrefix,10328,10328,2,nu2api/nuerror_gen.h,users,PCWarningPrefix: only nu2api/nucore_pc_includes.cpp[nuerror_gen.cpp] pc-path
 macro:PCWarningNativeFormat,macro,PCWarningNativeFormat,10329,10329,1,nu2api/nuerror_gen.h,users,PCWarningNativeFormat: only nu2api/nucore_pc_includes.cpp[nuerror_gen.cpp] pc-path
 forward:game_message_s,forward,game_message_s GAME_MESSAGE_PC,10331,10331,2,legoapi/gizmos/fx/gizmopickups.h,follow-definition,game_message_s
-typedef:GAME_MESSAGE_CALLBACK,typedef,GAME_MESSAGE_CALLBACK,10332,10332,1,legoapi/menus/core/gamemessages.h,users,GAME_MESSAGE_CALLBACK: only legoapi/gamemessages.c android-path
+typedef:GAME_MESSAGE_CALLBACK,typedef,GAME_MESSAGE_CALLBACK,10332,10332,1,legoapi/gizmo/object/gizmopickup.h,users,GAME_MESSAGE_CALLBACK: only legoapi/gamemessages.c android-path
 struct:add_game_message_s,struct,add_game_message_s ADD_GAME_MESSAGE_PC,10334,10362,30,legoapi/gizmo/object/gizmopickup.h,rule,used most in legogame/gizmopickup.c (7) android-path
 struct:game_message_s,struct,game_message_s,10364,10411,49,legoapi/gizmos/fx/gizmopickups.h,type-users,used by its saga.h users only there
 assert:-#2692,assert,,10413,10413,2,legoapi/gizmos/fx/gizmopickups.h,follow-type,GAME_MESSAGE_PC
@@ -3411,12 +3411,12 @@ assert:-#2869,assert,,10847,10847,1,legoapi/legoapi_types.h,follow-type,catch-al
 assert:-#2870,assert,,10848,10848,1,legoapi/legoapi_types.h,follow-type,catch-all (needs a module owner); GAMECAMERA
 assert:-#2871,assert,,10849,10849,1,legoapi/legoapi_types.h,follow-type,catch-all (needs a module owner); GAMECAMERA
 forward:PC_SPECIAL_SHADOW_LIGHT,forward,PC_SPECIAL_SHADOW_LIGHT,10851,10851,2,nu2api/nu3d/nu3d_includes.h,rule,used most in nu2api/nu3d_includes.cpp (59) android-path
-struct:PC_SPECIAL_PROJECTION_ADJUST,struct,PC_SPECIAL_PROJECTION_ADJUST,10853,10858,7,nu2api/nu3d/nu3d_includes.h,users,PC_SPECIAL_PROJECTION_ADJUST: only nu2api/nu3d_includes.cpp android-path
-assert:-#2872,assert,,10860,10860,2,nu2api/nu3d/nu3d_includes.h,follow-type,PC_SPECIAL_PROJECTION_ADJUST
-assert:-#2873,assert,,10861,10861,1,nu2api/nu3d/nu3d_includes.h,follow-type,PC_SPECIAL_PROJECTION_ADJUST
-assert:-#2874,assert,,10862,10862,1,nu2api/nu3d/nu3d_includes.h,follow-type,PC_SPECIAL_PROJECTION_ADJUST
-assert:-#2875,assert,,10863,10863,1,nu2api/nu3d/nu3d_includes.h,follow-type,PC_SPECIAL_PROJECTION_ADJUST
-assert:-#2876,assert,,10864,10864,1,nu2api/nu3d/nu3d_includes.h,follow-type,PC_SPECIAL_PROJECTION_ADJUST
+struct:PC_SPECIAL_PROJECTION_ADJUST,struct,PC_SPECIAL_PROJECTION_ADJUST,10853,10858,7,nu2api/nustencilshadows_PC.h,users,PC_SPECIAL_PROJECTION_ADJUST: only nu2api/nu3d_includes.cpp android-path
+assert:-#2872,assert,,10860,10860,2,nu2api/nustencilshadows_PC.h,follow-type,PC_SPECIAL_PROJECTION_ADJUST
+assert:-#2873,assert,,10861,10861,1,nu2api/nustencilshadows_PC.h,follow-type,PC_SPECIAL_PROJECTION_ADJUST
+assert:-#2874,assert,,10862,10862,1,nu2api/nustencilshadows_PC.h,follow-type,PC_SPECIAL_PROJECTION_ADJUST
+assert:-#2875,assert,,10863,10863,1,nu2api/nustencilshadows_PC.h,follow-type,PC_SPECIAL_PROJECTION_ADJUST
+assert:-#2876,assert,,10864,10864,1,nu2api/nustencilshadows_PC.h,follow-type,PC_SPECIAL_PROJECTION_ADJUST
 struct:GRAPPLE_DYNAMIC,struct,GRAPPLE_DYNAMIC,10866,10882,18,legoapi/gizmos/transport/grapples.h,rule,used most in legoapi/grapples.c (15) android-path
 assert:-#2877,assert,,10884,10884,2,legoapi/gizmos/transport/grapples.h,follow-type,GRAPPLE_DYNAMIC
 assert:-#2878,assert,,10885,10885,1,legoapi/gizmos/transport/grapples.h,follow-type,GRAPPLE_DYNAMIC
@@ -3441,10 +3441,10 @@ assert:-#2889,assert,,11002,11002,2,legoapi/gizmos/traps/gizforce.h,follow-type,
 assert:-#2890,assert,,11003,11003,1,legoapi/gizmos/traps/gizforce.h,follow-type,GIZFORCE_TARGET_RECORD_PC
 assert:-#2891,assert,,11004,11004,1,legoapi/gizmos/traps/gizforce.h,follow-type,GIZFORCE_TARGET_RECORD_PC
 assert:-#2892,assert,,11005,11005,1,legoapi/gizmos/traps/gizforce.h,follow-type,GIZFORCE_TARGET_RECORD_PC
-struct:PC_HG_SHADOW_PACKET,struct,PC_HG_SHADOW_PACKET,11007,11022,17,nu2api/nu3d/nu3d_includes.h,rule,used most in nu2api/nu3d_includes.cpp (24) android-path
+struct:PC_HG_SHADOW_PACKET,struct,PC_HG_SHADOW_PACKET,11007,11022,17,nu2api/nustencilshadows_PC.h,rule,used most in nu2api/nu3d_includes.cpp (24) android-path
 struct:PC_HG_SHADOW_STATE_VIEW,struct,PC_HG_SHADOW_STATE_VIEW,11024,11043,21,decomp.h,decomp,view type
-assert:-#2893,assert,,11045,11045,2,nu2api/nu3d/nu3d_includes.h,follow-type,PC_HG_SHADOW_PACKET
-assert:-#2894,assert,,11046,11046,1,nu2api/nu3d/nu3d_includes.h,follow-type,PC_HG_SHADOW_PACKET
+assert:-#2893,assert,,11045,11045,2,nu2api/nustencilshadows_PC.h,follow-type,PC_HG_SHADOW_PACKET
+assert:-#2894,assert,,11046,11046,1,nu2api/nustencilshadows_PC.h,follow-type,PC_HG_SHADOW_PACKET
 assert:-#2895,assert,,11047,11047,1,decomp.h,follow-type,PC_HG_SHADOW_STATE_VIEW
 assert:-#2896,assert,,11048,11048,1,decomp.h,follow-type,PC_HG_SHADOW_STATE_VIEW
 assert:-#2897,assert,,11049,11049,1,decomp.h,follow-type,PC_HG_SHADOW_STATE_VIEW
@@ -4036,10 +4036,10 @@ function:PcInput_SetIsUsedCallBack,function,PcInput_SetIsUsedCallBack,11869,1186
 function:PcInput_ScanForAnyInput,function,PcInput_ScanForAnyInput,11870,11870,1,nu2api/PCInput.h,symbol,nu2api/PCInput.cpp pc-path
 function:PcInput_RemapVirtualKeyboard,function,PcInput_RemapVirtualKeyboard,11871,11871,1,nu2api/PCInput.h,symbol,nu2api/PCInput.cpp pc-path
 function:PcInput_SafeGetMapping,function,PcInput_SafeGetMapping,11872,11872,1,nu2api/PCInput.h,symbol,nu2api/PCInput.cpp pc-path
-struct:PC_SHADOW_QUEUE_RECORD,struct,PC_SHADOW_QUEUE_RECORD,11874,11879,7,nu2api/nustencilshadows_PC.h,users,PC_SHADOW_QUEUE_RECORD: only nu2api/nu3d_pc_includes.cpp[nustencilshadows_PC.cpp] pc-path
-assert:-#2961,assert,,11881,11881,2,nu2api/nustencilshadows_PC.h,follow-type,PC_SHADOW_QUEUE_RECORD
-assert:-#2962,assert,,11882,11882,1,nu2api/nustencilshadows_PC.h,follow-type,PC_SHADOW_QUEUE_RECORD
-assert:-#2963,assert,,11883,11883,1,nu2api/nustencilshadows_PC.h,follow-type,PC_SHADOW_QUEUE_RECORD
+struct:PC_SHADOW_QUEUE_RECORD,struct,PC_SHADOW_QUEUE_RECORD,11874,11879,7,nu2api/nu3d/nurndr.h,users,PC_SHADOW_QUEUE_RECORD: only nu2api/nu3d_pc_includes.cpp[nustencilshadows_PC.cpp] pc-path
+assert:-#2961,assert,,11881,11881,2,nu2api/nu3d/nurndr.h,follow-type,PC_SHADOW_QUEUE_RECORD
+assert:-#2962,assert,,11882,11882,1,nu2api/nu3d/nurndr.h,follow-type,PC_SHADOW_QUEUE_RECORD
+assert:-#2963,assert,,11883,11883,1,nu2api/nu3d/nurndr.h,follow-type,PC_SHADOW_QUEUE_RECORD
 struct:PC_GLOBAL_LIGHTING_STATE,struct,PC_GLOBAL_LIGHTING_STATE,11885,11893,10,legoapi/render/fx/game_deb.h,users,PC_GLOBAL_LIGHTING_STATE: only legogame/game_deb.c android-path
 assert:-#2964,assert,,11895,11895,2,legoapi/render/fx/game_deb.h,follow-type,PC_GLOBAL_LIGHTING_STATE
 assert:-#2965,assert,,11896,11896,1,legoapi/render/fx/game_deb.h,follow-type,PC_GLOBAL_LIGHTING_STATE
@@ -4054,7 +4054,7 @@ variable:PCShadowCurrentLight,variable,PCShadowCurrentLight,11904,11904,1,legoap
 variable:PCShadowSecondaryLight,variable,PCShadowSecondaryLight,11905,11905,1,legoapi/render/light/lighting.h,users,PCShadowSecondaryLight: only legoapi/lighting.cpp android-path
 variable:NuRndrShadowCnt,variable,NuRndrShadowCnt,11906,11906,1,nu2api/nu3d/nurndr.h,android,NuRndrShadowCnt
 variable:NuRndrShadPolDat,variable,NuRndrShadPolDat,11907,11907,1,nu2api/nu3d/nurndr.h,android,NuRndrShadPolDat
-variable:NuRndrShadowVertices,variable,NuRndrShadowVertices,11908,11908,1,nu2api/nustencilshadows_PC.h,users,NuRndrShadowVertices: only nu2api/nu3d_pc_includes.cpp[nustencilshadows_PC.cpp] pc-path
+variable:NuRndrShadowVertices,variable,NuRndrShadowVertices,11908,11908,1,nu2api/nu3d/nurndr.h,users,NuRndrShadowVertices: only nu2api/nu3d_pc_includes.cpp[nustencilshadows_PC.cpp] pc-path
 assert:-#2971,assert,,11909,11909,1,nu2api/nu3d/nurndr.h,follow-type,NURND_VERTEX3D_PC
 assert:-#2972,assert,,11910,11910,1,nu2api/nu3d/nurndr.h,follow-type,NURND_VERTEX3D_PC
 function:NuRndrShadPolys,function,NuRndrShadPolys,11911,11911,1,nu2api/nu3d/nurndr.h,android,NuRndrShadPolys (also batman.h)
@@ -4663,7 +4663,7 @@ variable:STATSPOSY#2,variable,STATSPOSY,12648,12648,1,globals.h,android-weak,cat
 variable:COINTOTAL_COINSIZE,variable,COINTOTAL_COINSIZE,12649,12649,1,legoapi/menus/core/panel.h,data-order,retail 0x7fc368 between 0x7fc360 and 0x7fc384
 variable:cointotal_i_obj,variable,cointotal_i_obj,12650,12650,1,legoapi/menus/core/panel.h,data-order,retail 0x7fc374 between 0x7fc360 and 0x7fc384
 variable:TerrainLastChatterSfx,variable,TerrainLastChatterSfx,12651,12651,1,legoapi/audio/audio.h,data-order,retail 0x8020c0 between 0x8020bc and 0x8020d0
-variable:AddGameMsg_Default,variable,AddGameMsg_Default,12652,12652,1,legoapi/menus/core/gamemessages.h,android,AddGameMsg_Default
+variable:AddGameMsg_Default,variable,AddGameMsg_Default,12652,12652,1,legoapi/gizmo/object/gizmopickup.h,android,AddGameMsg_Default
 variable:BigJump_LandActionFn,variable,BigJump_LandActionFn,12653,12653,1,legoapi/characters/motion.h,android,BigJump_LandActionFn
 variable:COINMSGTIME,variable,COINMSGTIME,12654,12654,1,legoapi/gizmos/fx/gizmopickups.h,android,COINMSGTIME
 variable:PCArcadeUnpairedIconModel,variable,PCArcadeUnpairedIconModel,12655,12655,1,legoapi/menus/screens/customise.h,rule,used most in legogame/customise.c (1) android-path
@@ -4915,7 +4915,7 @@ function:RndrStateSetConstAlphaTint,function,RndrStateSetConstAlphaTint,12929,12
 function:RndrStateSetReflection,function,RndrStateSetReflection,12930,12930,1,nu2api/nu3d/nurndrstat.h,android,RndrStateSetReflection
 function:NuRndrSetAmbientLightPS,function,NuRndrSetAmbientLightPS,12931,12931,1,nu2api/nu3d/nurndr.h,android,NuRndrSetAmbientLightPS
 function:NuPrim2DAddXYZ,function,NuPrim2DAddXYZ,12932,12932,1,nu2api/nu3d/nuprim.h,android,NuPrim2DAddXYZ
-variable:NuFParRecords,variable,NuFParRecords,12933,12933,1,nu2api/huffdecode.h,users,NuFParRecords: only nu2api/nucore_includes.cpp[huffdecode.c] pc-path
+variable:NuFParRecords,variable,NuFParRecords,12933,12933,1,nu2api/nufile/nufpar.h,users,NuFParRecords: only nu2api/nucore_includes.cpp[huffdecode.c] pc-path
 variable:NuFParBuffers,variable,NuFParBuffers,12934,12934,1,nu2api/huffdecode.h,users,NuFParBuffers: only nu2api/nucore_includes.cpp[huffdecode.c] pc-path
 function:NuFParInit,function,NuFParInit,12935,12935,1,nu2api/nufile/nufpar.h,android,NuFParInit
 function:NuFParOpen,function,NuFParOpen,12936,12936,1,nu2api/nufile/nufpar.h,android,NuFParOpen
@@ -5127,8 +5127,8 @@ variable:SUPERBUFFERSIZE,variable,SUPERBUFFERSIZE,13141,13141,1,legogame/pcbatma
 variable:original_permbuffer_base,variable,original_permbuffer_base,13142,13142,1,legogame/pcbatman.h,users,original_permbuffer_base: only legogame/pcbatman.cpp pc-path
 variable:InitOnceAllocSource,variable,InitOnceAllocSource,13143,13143,1,legogame/pcbatman.h,unused,no unit uses it; PC declaration; owner by saga.h neighbour
 variable:InitOnceCurrentDirectory,variable,InitOnceCurrentDirectory,13144,13144,1,legogame/pcbatman.h,users,InitOnceCurrentDirectory: only legogame/pcbatman.cpp pc-path
-variable:Game,variable,Game,13145,13145,1,globals.h,android-weak,catch-all (needs a module owner); Game
-variable:TempOptions,variable,TempOptions,13146,13146,1,legoapi/world/levels.h,data-order,retail 0x87658c between 0x86e740 and 0x8765a8
+variable:Game,variable,Game,13145,13145,1,legogame/game.h,android-weak,catch-all (needs a module owner); Game
+variable:TempOptions,variable,TempOptions,13146,13146,1,legoapi/audio/audio.h,data-order,retail 0x87658c between 0x86e740 and 0x8765a8
 variable:Game_OptionsSave,variable,Game_OptionsSave,13147,13147,1,batman.h,android-weak,Game_OptionsSave
 variable:PlayerProgress,variable,PlayerProgress,13148,13148,1,legoapi/characters/core/players.h,android,PlayerProgress (also globals.h)
 variable:MenuInfo,variable,MenuInfo,13149,13149,1,gameapi/gui/apimenu.h,android,MenuInfo (also batman.h)
@@ -5334,7 +5334,7 @@ variable:ID_DEFAULTCHARACTER_LSW_B,variable,ID_DEFAULTCHARACTER_LSW_B,13352,1335
 variable:theMemoryManager,variable,theMemoryManager,13353,13353,1,globals.h,android-weak,catch-all (needs a module owner); theMemoryManager
 variable:currentScene,variable,currentScene,13354,13354,1,nu2api/nu3d/nu3d_includes.h,definition,nu2api/nu3d_includes.cpp android-path
 variable:vpCurrent,variable,vpCurrent,13355,13355,1,nu2api/nu3d/nu3d_includes.h,android,vpCurrent
-variable:vpDevice,variable,vpDevice,13356,13356,1,nu2api/nustencilshadows_PC.h,users,vpDevice: only nu2api/nu3d_pc_includes.cpp[nustencilshadows_PC.cpp] pc-path
+variable:vpDevice,variable,vpDevice,13356,13356,1,nu2api/nu3d/nu3d_includes.h,users,vpDevice: only nu2api/nu3d_pc_includes.cpp[nustencilshadows_PC.cpp] pc-path
 variable:PCDisplayList2d,variable,PCDisplayList2d,13357,13357,1,nu2api/nu3d/nu3d_includes.h,definition,nu2api/nu3d_includes.cpp android-path
 variable:nused_sort_pris,variable,nused_sort_pris,13358,13358,1,nu2api/nu3d/nu3d_includes.h,definition,nu2api/nu3d_includes.cpp android-path
 variable:sort_list,variable,sort_list,13359,13359,1,nu2api/nu3d/nu3d_includes.h,definition,nu2api/nu3d_includes.cpp android-path
@@ -5632,7 +5632,7 @@ function:DerotateMovementVector,function,DerotateMovementVector,13776,13776,1,le
 function:RotateVec,function,RotateVec,13777,13777,1,legoapi/render/core/terrain.h,android,RotateVec
 function:DeRotateTerrain,function,DeRotateTerrain,13778,13778,1,legoapi/render/core/terrain.h,android,DeRotateTerrain
 forward:TERRAIN_SPATIAL_NODE#2,forward,TERRAIN_SPATIAL_NODE,13779,13779,1,legoapi/legoapi_types.h,android,catch-all (needs a module owner); TERRAIN_SPATIAL_NODE
-forward:TERRAIN_SET_PC,forward,TERRAIN_SET_PC,13780,13780,1,legoapi/render/core/gameliball.h,rule,used most in gameapi/gameliball.cpp (118) android-path
+forward:TERRAIN_SET_PC,forward,TERRAIN_SET_PC,13780,13780,1,legoapi/legoapi_types.h,rule,used most in gameapi/gameliball.cpp (118) android-path
 function:RotateTerrain,function,RotateTerrain,13781,13781,1,legoapi/render/core/gameliball.h,symbol,gameapi/gameliball.cpp android-path
 function:TerrainScanWallSpline,function,TerrainScanWallSpline,13782,13782,1,legoapi/render/core/gameliball.h,symbol,gameapi/gameliball.cpp android-path
 function:TerrainAddWallSpline,function,TerrainAddWallSpline,13783,13783,1,legoapi/render/core/gameliball.h,symbol,gameapi/gameliball.cpp android-path
@@ -6154,7 +6154,7 @@ variable:nurndr_tritot_this_frame,variable,nurndr_tritot_this_frame,14315,14315,
 variable:openlevels,variable,openlevels,14316,14316,1,legoapi/world/areas.h,android,openlevels
 variable:PlayerID,variable,PlayerID,14317,14317,1,legoapi/characters/core/players.h,android,PlayerID
 variable:PlayerList,variable,PlayerList,14318,14318,1,legoapi/characters/core/players.h,android,PlayerList
-variable:Hub_ModelList,variable,Hub_ModelList,14319,14319,1,globals.h,android-weak,catch-all (needs a module owner); Hub_ModelList
+variable:Hub_ModelList,variable,Hub_ModelList,14319,14319,1,legoapi/characters/core/characters.h,android-weak,catch-all (needs a module owner); Hub_ModelList
 function:Hub_MakeModelList,function,Hub_MakeModelList,14320,14320,1,legoapi/lib/hub.h,symbol,legogame/hub.cpp android-path
 variable:MainFrameCounters,variable,MainFrameCounters,14321,14321,1,globals.h,android-weak,catch-all (needs a module owner); MainFrameCounters
 variable:do_multiframe_update,variable,do_multiframe_update,14322,14322,1,legoapi/core/input/timing.h,users,do_multiframe_update: only legoapi/timing.c android-path
@@ -6162,7 +6162,7 @@ variable:NuBlankString,variable,NuBlankString,14323,14323,1,nu2api/huffdecode.h,
 function:NuStringTableLoadCSV,function,NuStringTableLoadCSV,14324,14324,1,nu2api/nucore/nustring.h,android,NuStringTableLoadCSV
 function:NuStringTableLoadTXT,function,NuStringTableLoadTXT,14325,14325,1,nu2api/nucore/nustring.h,android,NuStringTableLoadTXT
 function:NuStringTableGetByName,function,NuStringTableGetByName,14326,14326,1,nu2api/nucore/nustring.h,android,NuStringTableGetByName
-variable:GlobalBoltType_Default,variable,GlobalBoltType_Default,14327,14327,1,legoapi/items/collect/bolts.h,users,GlobalBoltType_Default: only legoapi/bolts.cpp android-path
+variable:GlobalBoltType_Default,variable,GlobalBoltType_Default,14327,14327,1,legoapi/world/world.h,users,GlobalBoltType_Default: only legoapi/bolts.cpp android-path
 variable:GlobalBoltSystem_Default,variable,GlobalBoltSystem_Default,14328,14328,1,legoapi/characters/core/charconfig.h,data-nearest,"only data.cpp mentions it; retail 0x804198, nearest 0x804224"
 function:Bolt_GetShootOrigin_Default,function,Bolt_GetShootOrigin_Default,14329,14329,1,legoapi/items/collect/bolts.h,symbol,legoapi/bolts.cpp android-path
 function:Bolt_HitPart_LSW,function,Bolt_HitPart_LSW,14330,14330,1,legoapi/items/collect/bolt.h,android,Bolt_HitPart_LSW
@@ -6219,7 +6219,7 @@ variable:bad_fluff,variable,bad_fluff,14380,14380,1,nu2api/huffdecode.h,users,ba
 variable:NuAnimDataBitCount,variable,NuAnimDataBitCount,14381,14381,1,nu2api/nu3d/nu3d_includes.h,users,NuAnimDataBitCount: only nu2api/nu3d_includes.cpp android-path
 variable:NuAnimDataBitCountInitialized,variable,NuAnimDataBitCountInitialized,14382,14382,1,nu2api/nu3d/nu3d_includes.h,users,NuAnimDataBitCountInitialized: only nu2api/nu3d_includes.cpp android-path
 variable:NuAnimDataFloatMax,variable,NuAnimDataFloatMax,14383,14383,1,gameapi/ai/aisys/aisys.h,data-order,retail 0x75fff8 between 0x75ffc8 and 0x760010
-variable:PreparingForSpecialMoveFn,variable,PreparingForSpecialMoveFn,14385,14385,2,gameapi/ai/aisys/aisys.h,android,PreparingForSpecialMoveFn
+variable:PreparingForSpecialMoveFn,variable,PreparingForSpecialMoveFn,14385,14385,2,legogame/batman_gameai.h,android,PreparingForSpecialMoveFn
 variable:new_retreat,variable,new_retreat,14386,14386,1,gameapi/ai/aisys/aisys.h,users,new_retreat: only gameapi/aisysall.cpp[aisys.c] android-path
 variable:ai_moveradius,variable,ai_moveradius,14387,14387,1,gameapi/ai/aisys/aisys.h,data-order,retail 0x801c6c between 0x801c68 and 0x801c70
 variable:AIMovementInstructionPositiveThreshold,variable,AIMovementInstructionPositiveThreshold,14388,14388,1,gameapi/ai/aisys/aisys.h,users,AIMovementInstructionPositiveThreshold: only gameapi/aisysall.cpp[aisys.c] android-path
@@ -6306,7 +6306,7 @@ assert:-#3119,assert,,14495,14495,1,legoapi/legoapi_types.h,follow-type,catch-al
 assert:-#3120,assert,,14496,14496,1,legoapi/legoapi_types.h,follow-type,catch-all (needs a module owner); EXPLOSION_PC
 typedef:CHECK_LOST_DATA_PC,typedef,CHECK_LOST_DATA_PC,14497,14497,1,globals.h,rule,"catch-all (needs a module owner); used in saga.h only, most by globals.h (1)"
 variable:LevGizmo,variable,LevGizmo,14498,14498,1,legoapi/world/levels.h,data-order,retail 0x87a98c between 0x87a958 and 0x87aa50
-variable:Explosions,variable,Explosions,14499,14499,1,legoapi/items/objects/game_obj.h,rule,used most in legogame/game_obj.c (32) android-path
+variable:Explosions,variable,Explosions,14499,14499,1,legoapi/legoapi_types.h,rule,used most in legogame/game_obj.c (32) android-path
 variable:i_explosion,variable,i_explosion,14500,14500,1,legoapi/items/fx/explosions.h,users,i_explosion: only legoapi/explosions.c android-path
 variable:ShadowMode,variable,ShadowMode,14501,14501,1,globals.h,android-weak,catch-all (needs a module owner); ShadowMode
 variable:CheckLostDataFn,variable,CheckLostDataFn,14502,14502,1,globals.h,android-weak,catch-all (needs a module owner); CheckLostDataFn
@@ -7018,8 +7018,8 @@ variable:freedebkeys,variable,freedebkeys,15439,15439,1,legoapi/render/core/game
 variable:freedebkeyptr,variable,freedebkeyptr,15440,15440,1,legoapi/render/core/gameliball.h,android,freedebkeyptr
 variable:maxdebkeys,variable,maxdebkeys,15441,15441,1,legoapi/render/core/gameliball.h,android,maxdebkeys
 variable:debris_keystack,variable,debris_keystack,15442,15442,1,legoapi/render/core/gameliball.h,android,debris_keystack
-variable:gensorttab,variable,gensorttab,15443,15443,1,legoapi/items/objects/objectsall.h,rule,used most in gameapi/objectsall.cpp (2) android-path
-variable:gencodetab,variable,gencodetab,15444,15444,1,legoapi/items/objects/objectsall.h,rule,used most in gameapi/objectsall.cpp (2) android-path
+variable:gensorttab,variable,gensorttab,15443,15443,1,legoapi/legoapi_types.h,rule,used most in gameapi/objectsall.cpp (2) android-path
+variable:gencodetab,variable,gencodetab,15444,15444,1,legoapi/legoapi_types.h,rule,used most in gameapi/objectsall.cpp (2) android-path
 function:DebAlloc,function,DebAlloc,15445,15445,1,legoapi/render/core/gameliball.h,android,DebAlloc
 function:DebrisStartOffsetEx,function,DebrisStartOffsetEx,15446,15446,1,legoapi/render/fx/game_deb.h,android,DebrisStartOffsetEx
 function:DebrisDrawCalculateClipBoxes,function,DebrisDrawCalculateClipBoxes,15447,15447,1,legoapi/render/core/gameliball.h,android,DebrisDrawCalculateClipBoxes
@@ -7310,7 +7310,7 @@ typedef:AI_CHARACTER_GOAL_SPEED_PC,typedef,AI_CHARACTER_GOAL_SPEED_PC,15871,1587
 typedef:AI_MID_SPECIAL_MOVE_PC,typedef,AI_MID_SPECIAL_MOVE_PC,15872,15872,1,legogame/batman_gameai.h,rule,used most in legogame/batman_gameai.c (4) pc-path
 variable:AIRespawnOnPathFn,variable,AIRespawnOnPathFn,15874,15874,2,gameapi/ai/aisys/aisys.h,android,AIRespawnOnPathFn
 variable:GetCharacterGoalSpeedFn,variable,GetCharacterGoalSpeedFn,15875,15875,1,legoapi/characters/core/character.h,android,GetCharacterGoalSpeedFn
-variable:MidSpecialMoveFn,variable,MidSpecialMoveFn,15876,15876,1,gameapi/ai/aisys/aisys.h,users,MidSpecialMoveFn: only gameapi/aisysall.cpp[aisys.c] android-path
+variable:MidSpecialMoveFn,variable,MidSpecialMoveFn,15876,15876,1,legogame/batman_gameai.h,users,MidSpecialMoveFn: only gameapi/aisysall.cpp[aisys.c] android-path
 function:GetOtherActivePlayer,function,GetOtherActivePlayer,15877,15877,1,legoapi/ai/game/creature.h,android,GetOtherActivePlayer
 function:AvailableToPlayer,function,AvailableToPlayer,15878,15878,1,legoapi/characters/core/players.h,android,AvailableToPlayer
 function:Cheats_CheckFlags,function,Cheats_CheckFlags,15879,15879,1,legoapi/core/config/cheat.h,android,Cheats_CheckFlags
@@ -8559,7 +8559,7 @@ variable:WorldGrassFormat,variable,WorldGrassFormat,17222,17222,1,legoapi/items/
 variable:WorldBridgeFormat,variable,WorldBridgeFormat,17223,17223,1,batman.h,unused,no unit uses it; PC declaration; owner by saga.h neighbour
 variable:Grass_Available,variable,Grass_Available,17224,17224,1,batman.h,android-weak,Grass_Available
 variable:APIObjectZeroMomentumPC,variable,APIObjectZeroMomentumPC,17225,17225,1,legoapi/render/light/lighting.h,rule,used most in legoapi/lighting.cpp (3) android-path
-variable:BackupGame,variable,BackupGame,17226,17226,1,legoapi/world/levels.h,users,BackupGame: only legogame/levels.cpp android-path
+variable:BackupGame,variable,BackupGame,17226,17226,1,legogame/game.h,users,BackupGame: only legogame/levels.cpp android-path
 variable:areaSuitBits,variable,areaSuitBits,17227,17227,1,legoapi/world/levels.h,data-order,retail 0x87aaac between 0x87aa78 and 0x87aad4
 variable:SceneFileExtension,variable,SceneFileExtension,17228,17228,1,legoapi/world/levels.h,unused,no unit uses it; PC declaration; owner by saga.h neighbour
 variable:NuFileExt_dds_PC,variable,NuFileExt_dds_PC,17229,17229,1,legogame/startup.h,data-order,retail 0x75d014 between 0x75cff4 and 0x75d024
@@ -8916,7 +8916,7 @@ function:NuAnimCurve2CalcValEx,function,NuAnimCurve2CalcValEx,17602,17602,1,nu2a
 variable:ddmaxjoints,variable,ddmaxjoints,17603,17603,1,nu2api/nu3d/nu3d_includes.h,android,ddmaxjoints
 variable:rndr_blend_shape_deformer_wt_cnt,variable,rndr_blend_shape_deformer_wt_cnt,17604,17604,1,nu2api/nu3d/nurndr.h,android,rndr_blend_shape_deformer_wt_cnt
 variable:rndr_blend_shape_deformer_wt_ptrs_cnt,variable,rndr_blend_shape_deformer_wt_ptrs_cnt,17605,17605,1,nu2api/nu3d/nurndr.h,android,rndr_blend_shape_deformer_wt_ptrs_cnt
-variable:DwaWeightPool,variable,DwaWeightPool,17606,17606,1,nu2api/nustencilshadows_PC.h,users,DwaWeightPool: only nu2api/nu3d_pc_includes.cpp[nustencilshadows_PC.cpp] pc-path
+variable:DwaWeightPool,variable,DwaWeightPool,17606,17606,1,nu2api/nu3d/nu3d_includes.h,users,DwaWeightPool: only nu2api/nu3d_pc_includes.cpp[nustencilshadows_PC.cpp] pc-path
 variable:DwaPointerPool,variable,DwaPointerPool,17607,17607,1,nu2api/nustencilshadows_PC.h,users,DwaPointerPool: only nu2api/nu3d_pc_includes.cpp[nustencilshadows_PC.cpp] pc-path
 function:NuRndrCreateBlendShapeDeformerWeightsArray,function,NuRndrCreateBlendShapeDeformerWeightsArray,17608,17608,1,nu2api/nu3d/nurndr.h,android,NuRndrCreateBlendShapeDeformerWeightsArray
 function:NuRndrCreateBlendShapeDWAPointers,function,NuRndrCreateBlendShapeDWAPointers,17609,17609,1,nu2api/nu3d/nurndr.h,android,NuRndrCreateBlendShapeDWAPointers
@@ -9968,20 +9968,20 @@ function:NewRayCastGetEmbedDist,function,NewRayCastGetEmbedDist,19100,19100,2,le
 function:NewRayCastHitWallSpline,function,NewRayCastHitWallSpline,19101,19101,1,legoapi/render/core/terrain.h,android,NewRayCastHitWallSpline
 function:NewRayCast,function,NewRayCast,19102,19102,1,legoapi/render/core/terrain.h,android,NewRayCast
 function:APIObjectLOSChecks,function,APIObjectLOSChecks,19104,19104,2,legoapi/items/base/apiobject.h,android,APIObjectLOSChecks
-struct:render_post_viewport_prefix_s,struct,render_post_viewport_prefix_s RENDER_POST_VIEWPORT_PREFIX_PC,19106,19119,15,nu2api/nu3d/nu3d_includes.h,rule,used most in nu2api/nu3d_includes.cpp (16) android-path
-assert:-#3766,assert,,19121,19121,2,nu2api/nu3d/nu3d_includes.h,follow-type,RENDER_POST_VIEWPORT_PREFIX_PC
-assert:-#3767,assert,,19122,19122,1,nu2api/nu3d/nu3d_includes.h,follow-type,RENDER_POST_VIEWPORT_PREFIX_PC
-assert:-#3768,assert,,19123,19123,1,nu2api/nu3d/nu3d_includes.h,follow-type,RENDER_POST_VIEWPORT_PREFIX_PC
-assert:-#3769,assert,,19124,19124,1,nu2api/nu3d/nu3d_includes.h,follow-type,RENDER_POST_VIEWPORT_PREFIX_PC
-assert:-#3770,assert,,19125,19125,1,nu2api/nu3d/nu3d_includes.h,follow-type,RENDER_POST_VIEWPORT_PREFIX_PC
-assert:-#3771,assert,,19126,19126,1,nu2api/nu3d/nu3d_includes.h,follow-type,RENDER_POST_VIEWPORT_PREFIX_PC
-assert:-#3772,assert,,19127,19127,1,nu2api/nu3d/nu3d_includes.h,follow-type,RENDER_POST_VIEWPORT_PREFIX_PC
-assert:-#3773,assert,,19128,19128,1,nu2api/nu3d/nu3d_includes.h,follow-type,RENDER_POST_VIEWPORT_PREFIX_PC
-assert:-#3774,assert,,19129,19129,1,nu2api/nu3d/nu3d_includes.h,follow-type,RENDER_POST_VIEWPORT_PREFIX_PC
-assert:-#3775,assert,,19130,19130,1,nu2api/nu3d/nu3d_includes.h,follow-type,RENDER_POST_VIEWPORT_PREFIX_PC
-assert:-#3776,assert,,19131,19131,1,nu2api/nu3d/nu3d_includes.h,follow-type,RENDER_POST_VIEWPORT_PREFIX_PC
-assert:-#3777,assert,,19132,19132,1,nu2api/nu3d/nu3d_includes.h,follow-type,RENDER_POST_VIEWPORT_PREFIX_PC
-assert:-#3778,assert,,19133,19133,1,nu2api/nu3d/nu3d_includes.h,follow-type,RENDER_POST_VIEWPORT_PREFIX_PC
+struct:render_post_viewport_prefix_s,struct,render_post_viewport_prefix_s RENDER_POST_VIEWPORT_PREFIX_PC,19106,19119,15,nu2api/nustencilshadows_PC.h,rule,used most in nu2api/nu3d_includes.cpp (16) android-path
+assert:-#3766,assert,,19121,19121,2,nu2api/nustencilshadows_PC.h,follow-type,RENDER_POST_VIEWPORT_PREFIX_PC
+assert:-#3767,assert,,19122,19122,1,nu2api/nustencilshadows_PC.h,follow-type,RENDER_POST_VIEWPORT_PREFIX_PC
+assert:-#3768,assert,,19123,19123,1,nu2api/nustencilshadows_PC.h,follow-type,RENDER_POST_VIEWPORT_PREFIX_PC
+assert:-#3769,assert,,19124,19124,1,nu2api/nustencilshadows_PC.h,follow-type,RENDER_POST_VIEWPORT_PREFIX_PC
+assert:-#3770,assert,,19125,19125,1,nu2api/nustencilshadows_PC.h,follow-type,RENDER_POST_VIEWPORT_PREFIX_PC
+assert:-#3771,assert,,19126,19126,1,nu2api/nustencilshadows_PC.h,follow-type,RENDER_POST_VIEWPORT_PREFIX_PC
+assert:-#3772,assert,,19127,19127,1,nu2api/nustencilshadows_PC.h,follow-type,RENDER_POST_VIEWPORT_PREFIX_PC
+assert:-#3773,assert,,19128,19128,1,nu2api/nustencilshadows_PC.h,follow-type,RENDER_POST_VIEWPORT_PREFIX_PC
+assert:-#3774,assert,,19129,19129,1,nu2api/nustencilshadows_PC.h,follow-type,RENDER_POST_VIEWPORT_PREFIX_PC
+assert:-#3775,assert,,19130,19130,1,nu2api/nustencilshadows_PC.h,follow-type,RENDER_POST_VIEWPORT_PREFIX_PC
+assert:-#3776,assert,,19131,19131,1,nu2api/nustencilshadows_PC.h,follow-type,RENDER_POST_VIEWPORT_PREFIX_PC
+assert:-#3777,assert,,19132,19132,1,nu2api/nustencilshadows_PC.h,follow-type,RENDER_POST_VIEWPORT_PREFIX_PC
+assert:-#3778,assert,,19133,19133,1,nu2api/nustencilshadows_PC.h,follow-type,RENDER_POST_VIEWPORT_PREFIX_PC
 variable:RenderPostViewportPrefix,variable,RenderPostViewportPrefix,19134,19134,1,nu2api/nustencilshadows_PC.h,data-order,retail 0x80e228 between 0x80e21c and 0x80e268
 function:RenderPostViewportSet,function,RenderPostViewportSet,19135,19136,2,nu2api/nucore/NuMotionAccumFilter.h,symbol,nu2api/nu3d_pc_includes.cpp[NuMotionAccumFilter.cpp] android-path
 function:RenderPostViewportReset,function,RenderPostViewportReset,19137,19137,1,nu2api/nugscn_gen.h,symbol,nu2api/nu3d_includes.cpp[nugscn_gen.cpp] pc-path
@@ -10086,10 +10086,10 @@ assert:-#3845,assert,,19435,19435,1,nu2api/nu3d/nugscn.h,follow-type,NUGSCN
 assert:-#3846,assert,,19436,19436,1,nu2api/nu3d/nugscn.h,follow-type,NUGSCN
 assert:-#3847,assert,,19437,19437,1,nu2api/nu3d/nugscn.h,follow-type,NUGSCN
 assert:-#3848,assert,,19438,19438,1,nu2api/nu3d/nugscn.h,follow-type,NUGSCN
-assert:-#3849,assert,,19439,19439,1,gameapi/edtools/edgra.h,follow-type,DEBRIS_INFO_PC
-assert:-#3850,assert,,19440,19440,1,gameapi/edtools/edgra.h,follow-type,DEBRIS_INFO_PC
-assert:-#3851,assert,,19441,19441,1,gameapi/edtools/edgra.h,follow-type,DEBRIS_INFO_PC
-assert:-#3852,assert,,19442,19442,1,gameapi/edtools/edgra.h,follow-type,DEBRIS_INFO_PC
+assert:-#3849,assert,,19439,19439,1,legoapi/items/objects/objectsall.h,follow-type,DEBRIS_INFO_PC
+assert:-#3850,assert,,19440,19440,1,legoapi/items/objects/objectsall.h,follow-type,DEBRIS_INFO_PC
+assert:-#3851,assert,,19441,19441,1,legoapi/items/objects/objectsall.h,follow-type,DEBRIS_INFO_PC
+assert:-#3852,assert,,19442,19442,1,legoapi/items/objects/objectsall.h,follow-type,DEBRIS_INFO_PC
 assert:-#3853,assert,,19443,19443,1,legoapi/world/world.h,follow-type,WORLDINFO
 assert:-#3854,assert,,19444,19444,1,legoapi/items/base/apiobject.h,follow-type,GAMEOBJECT
 forward:PC_AUDIO_DECODER_VIEW,forward,PC_AUDIO_DECODER_VIEW,19447,19447,1,decomp.h,decomp,view type
@@ -10477,7 +10477,7 @@ assert:-#4052,assert,,20508,20508,1,legoapi/gizmos/fx/gizmopickups.h,follow-type
 variable:PCGraphicsRenderTextures,variable,PCGraphicsRenderTextures,20513,20513,1,nu2api/nustencilshadows_PC.h,users,PCGraphicsRenderTextures: only nu2api/nu3d_pc_includes.cpp[nustencilshadows_PC.cpp] pc-path
 variable:PCGraphicsRenderTextureActive,variable,PCGraphicsRenderTextureActive,20514,20514,1,nu2api/nustencilshadows_PC.h,users,PCGraphicsRenderTextureActive: only nu2api/nu3d_pc_includes.cpp[nustencilshadows_PC.cpp] pc-path
 variable:PCGraphicsRenderTextureBytes,variable,PCGraphicsRenderTextureBytes,20515,20515,1,nu2api/nustencilshadows_PC.h,users,PCGraphicsRenderTextureBytes: only nu2api/nu3d_pc_includes.cpp[nustencilshadows_PC.cpp] pc-path
-variable:GizmoPickupSys_Game,variable,GizmoPickupSys_Game,20516,20516,1,legoapi/gizmo/object/gizmopickup.h,android,GizmoPickupSys_Game
+variable:GizmoPickupSys_Game,variable,GizmoPickupSys_Game,20516,20516,1,legoapi/gizmos/fx/gizmopickups.h,android,GizmoPickupSys_Game
 variable:COINMAGNETSCALE,variable,COINMAGNETSCALE,20517,20517,1,legoapi/gizmos/fx/gizmopickups.h,users,COINMAGNETSCALE: only legoapi/gizmopickups.c android-path
 variable:GizmoPickups_Collide2DFn,variable,GizmoPickups_Collide2DFn,20518,20518,1,legoapi/gizmos/fx/gizmopickups.h,rule,used most in legoapi/gizmopickups.c (2) android-path
 function:UpdateCoinPacket,function,UpdateCoinPacket,20519,20519,1,legoapi/gizmos/fx/gizmopickups.h,android,UpdateCoinPacket (also batman.h)
@@ -11286,7 +11286,7 @@ function:DrawWallSpline,function,DrawWallSpline,22548,22548,1,legoapi/render/cor
 forward:TERRAIN_SKIN_STREAM#2,forward,TERRAIN_SKIN_STREAM,22550,22550,2,legoapi/render/core/gameliball.h,users,TERRAIN_SKIN_STREAM: only gameapi/gameliball.cpp android-path
 forward:TERRAIN_SKIN_INFO,forward,TERRAIN_SKIN_INFO,22551,22551,1,legoapi/render/core/gameliball.h,users,TERRAIN_SKIN_INFO: only gameapi/gameliball.cpp android-path
 forward:TERRAIN_SKIN_BLEND,forward,TERRAIN_SKIN_BLEND,22552,22552,1,legoapi/render/core/gameliball.h,users,TERRAIN_SKIN_BLEND: only gameapi/gameliball.cpp android-path
-forward:TERRAIN_SET_PC#2,forward,TERRAIN_SET_PC,22553,22553,1,legoapi/render/core/gameliball.h,rule,used most in gameapi/gameliball.cpp (118) android-path
+forward:TERRAIN_SET_PC#2,forward,TERRAIN_SET_PC,22553,22553,1,legoapi/legoapi_types.h,rule,used most in gameapi/gameliball.cpp (118) android-path
 function:TerrainSkinPrepareGroup,function,TerrainSkinPrepareGroup,22554,22555,2,legoapi/render/core/gameliball.h,symbol,gameapi/gameliball.cpp android-path
 function:TerrainSkinCreateInfo,function,TerrainSkinCreateInfo,22556,22557,2,legoapi/render/core/gameliball.h,symbol,gameapi/gameliball.cpp android-path
 function:TerrainSkinInitArena,function,TerrainSkinInitArena,22558,22558,1,legoapi/render/core/gameliball.h,symbol,gameapi/gameliball.cpp android-path
@@ -11493,14 +11493,14 @@ assert:-#4467,assert,,22895,22895,1,legoapi/world/worldinfo.h,follow-type,AREA_L
 assert:-#4468,assert,,22896,22896,1,legoapi/world/worldinfo.h,follow-type,AREA_LEVEL_LOAD
 function:Area_Configure,function,Area_Configure,22900,22900,1,legoapi/world/areas.h,android,Area_Configure
 function:LoadAreaCharacters,function,LoadAreaCharacters,22901,22901,1,legoapi/world/levels.h,symbol,legogame/levels.cpp android-path
-variable:ExtraModelList,variable,ExtraModelList,22903,22903,2,legoapi/world/levels.h,users,ExtraModelList: only legogame/levels.cpp android-path
+variable:ExtraModelList,variable,ExtraModelList,22903,22903,2,legoapi/world/areas.h,users,ExtraModelList: only legogame/levels.cpp android-path
 variable:AreaDataLoaded,variable,AreaDataLoaded,22904,22904,1,legoapi/world/levels.h,users,AreaDataLoaded: only legogame/levels.cpp android-path
 variable:AreaCrawlSoundWaitTime,variable,AreaCrawlSoundWaitTime,22905,22905,1,legoapi/world/levels.h,users,AreaCrawlSoundWaitTime: only legogame/levels.cpp android-path
 variable:AreaCrawlMaximumTime,variable,AreaCrawlMaximumTime,22906,22906,1,legoapi/world/levels.h,users,AreaCrawlMaximumTime: only legogame/levels.cpp android-path
 variable:AreaCrawlMusicEnabled,variable,AreaCrawlMusicEnabled,22907,22907,1,legoapi/world/levels.h,users,AreaCrawlMusicEnabled: only legogame/levels.cpp android-path
 variable:AreaCrawlPromptY,variable,AreaCrawlPromptY,22908,22908,1,legoapi/world/levels.h,users,AreaCrawlPromptY: only legogame/levels.cpp android-path
 variable:AreaCrawlPromptScale,variable,AreaCrawlPromptScale,22909,22909,1,legoapi/world/levels.h,users,AreaCrawlPromptScale: only legogame/levels.cpp android-path
-variable:FreePlayModelList,variable,FreePlayModelList,22910,22910,1,globals.h,android-weak,catch-all (needs a module owner); FreePlayModelList
+variable:FreePlayModelList,variable,FreePlayModelList,22910,22910,1,legoapi/characters/core/characters.h,android-weak,catch-all (needs a module owner); FreePlayModelList
 variable:CharacterDataLoad,variable,CharacterDataLoad,22911,22911,1,legoapi/world/levels.h,users,CharacterDataLoad: only legogame/levels.cpp android-path
 variable:loadareacharacters_no_backdrop_reset,variable,loadareacharacters_no_backdrop_reset,22912,22912,1,legoapi/world/area.h,android,loadareacharacters_no_backdrop_reset
 variable:loadareadata_loadlevel,variable,loadareadata_loadlevel,22913,22913,1,legoapi/world/levels.h,users,loadareadata_loadlevel: only legogame/levels.cpp android-path
@@ -11509,13 +11509,13 @@ variable:tTOUCHTOSTART,variable,tTOUCHTOSTART,22915,22915,1,legoapi/world/levels
 variable:AreaMusic,variable,AreaMusic,22916,22916,1,legoapi/world/areas.h,users,AreaMusic: only legoapi/areas.c android-path
 variable:LevelLoad,variable,LevelLoad,22917,22917,1,globals.h,android-weak,catch-all (needs a module owner); LevelLoad
 variable:Area_PlayerModelCount,variable,Area_PlayerModelCount,22918,22918,1,globals.h,android-weak,catch-all (needs a module owner); Area_PlayerModelCount
-variable:Area_FreePlayModelList,variable,Area_FreePlayModelList,22919,22919,1,legoapi/world/areas.h,users,Area_FreePlayModelList: only legoapi/areas.c android-path
+variable:Area_FreePlayModelList,variable,Area_FreePlayModelList,22919,22919,1,legoapi/characters/core/characters.h,users,Area_FreePlayModelList: only legoapi/areas.c android-path
 variable:Area_FreePlayModelCount,variable,Area_FreePlayModelCount,22920,22920,1,legoapi/world/areas.h,users,Area_FreePlayModelCount: only legoapi/areas.c android-path
-variable:Area_PlayerModelList,variable,Area_PlayerModelList,22921,22921,1,legoapi/world/areas.h,data-order,retail 0x951278 between 0x951240 and 0x9512a0
+variable:Area_PlayerModelList,variable,Area_PlayerModelList,22921,22921,1,legoapi/characters/core/characters.h,data-order,retail 0x951278 between 0x951240 and 0x9512a0
 variable:LevelLoadCount,variable,LevelLoadCount,22922,22922,1,legoapi/world/areas.h,data-order,retail 0x95129c between 0x951240 and 0x9512a0
 variable:Area_MissionModelCount,variable,Area_MissionModelCount,22923,22923,1,legoapi/world/areas.h,users,Area_MissionModelCount: only legoapi/areas.c android-path
 variable:Area_StoryModelCount,variable,Area_StoryModelCount,22924,22924,1,legoapi/world/areas.h,users,Area_StoryModelCount: only legoapi/areas.c android-path
-variable:Area_MissionModelList,variable,Area_MissionModelList,22925,22925,1,globals.h,android-weak,catch-all (needs a module owner); Area_MissionModelList
+variable:Area_MissionModelList,variable,Area_MissionModelList,22925,22925,1,legoapi/characters/core/characters.h,android-weak,catch-all (needs a module owner); Area_MissionModelList
 variable:CurrentCList,variable,CurrentCList,22926,22926,1,globals.h,android-weak,catch-all (needs a module owner); CurrentCList
 variable:CurrentStoryCList,variable,CurrentStoryCList,22927,22927,1,globals.h,android-weak,catch-all (needs a module owner); CurrentStoryCList
 variable:netnewgame,variable,netnewgame,22928,22928,1,legoapi/world/levels.h,users,netnewgame: only legogame/levels.cpp android-path
@@ -11558,9 +11558,9 @@ variable:MasterCollection,variable,MasterCollection,23001,23001,1,legoapi/misc/l
 variable:CharacterCollection,variable,CharacterCollection,23002,23002,1,legoapi/lib/hub.h,rule,used most in legogame/hub.cpp (3) android-path
 variable:VehicleCollection,variable,VehicleCollection,23003,23003,1,legoapi/lib/hub.h,rule,used most in legogame/hub.cpp (7) android-path
 variable:ShopCollection,variable,ShopCollection,23004,23004,1,legoapi/menus/screens/shop.h,rule,used most in legogame/shop.c (5) android-path
-variable:JediCollection,variable,JediCollection,23005,23005,1,legoapi/world/levels.h,users,JediCollection: only legogame/levels.cpp android-path
-variable:BlasterCollection,variable,BlasterCollection,23006,23006,1,legoapi/world/levels.h,users,BlasterCollection: only legogame/levels.cpp android-path
-variable:BountyHunterCollection,variable,BountyHunterCollection,23007,23007,1,legoapi/world/levels.h,users,BountyHunterCollection: only legogame/levels.cpp android-path
+variable:JediCollection,variable,JediCollection,23005,23005,1,legoapi/lib/hub.h,users,JediCollection: only legogame/levels.cpp android-path
+variable:BlasterCollection,variable,BlasterCollection,23006,23006,1,legoapi/lib/hub.h,users,BlasterCollection: only legogame/levels.cpp android-path
+variable:BountyHunterCollection,variable,BountyHunterCollection,23007,23007,1,legoapi/lib/hub.h,users,BountyHunterCollection: only legogame/levels.cpp android-path
 variable:PermanentAllTitleId,variable,PermanentAllTitleId,23008,23008,1,legoapi/world/levels.h,users,PermanentAllTitleId: only legogame/levels.cpp android-path
 variable:PermanentJediTitleId,variable,PermanentJediTitleId,23009,23009,1,legoapi/world/levels.h,users,PermanentJediTitleId: only legogame/levels.cpp android-path
 variable:PermanentBlasterTitleId,variable,PermanentBlasterTitleId,23010,23010,1,legoapi/world/levels.h,users,PermanentBlasterTitleId: only legogame/levels.cpp android-path
@@ -12527,9 +12527,9 @@ variable:Game_AllGoldBricksFn,variable,Game_AllGoldBricksFn,24573,24573,1,legoap
 variable:Hint_AlphaTargetFn,variable,Hint_AlphaTargetFn,24574,24574,1,legoapi/menus/core/hint.h,android,Hint_AlphaTargetFn
 variable:Collection_GetSelectingPlayerIDsFn,variable,Collection_GetSelectingPlayerIDsFn,24575,24575,1,legoapi/items/base/collection.h,android,Collection_GetSelectingPlayerIDsFn
 variable:GameMsg_GetExtraObjFn,variable,GameMsg_GetExtraObjFn,24576,24576,1,legoapi/menus/core/gamemessages.h,android,GameMsg_GetExtraObjFn
-variable:GlobalBoltType,variable,GlobalBoltType,24577,24577,1,legoapi/items/collect/bolts.h,definition,legoapi/bolts.cpp android-path
-variable:BoltSys_LSW,variable,BoltSys_LSW,24578,24578,1,legoapi/items/collect/bolts.h,definition,legoapi/bolts.cpp android-path
-variable:BoltSys_Batman,variable,BoltSys_Batman,24579,24579,1,legoapi/items/collect/bolts.h,definition,legoapi/bolts.cpp android-path
+variable:GlobalBoltType,variable,GlobalBoltType,24577,24577,1,legoapi/world/world.h,definition,legoapi/bolts.cpp android-path
+variable:BoltSys_LSW,variable,BoltSys_LSW,24578,24578,1,legoapi/legoapi_types.h,definition,legoapi/bolts.cpp android-path
+variable:BoltSys_Batman,variable,BoltSys_Batman,24579,24579,1,legoapi/legoapi_types.h,definition,legoapi/bolts.cpp android-path
 variable:CharPivot_LSW,variable,CharPivot_LSW,24580,24580,1,legoapi/characters/motion.h,android,CharPivot_LSW
 variable:CharPivot_Batman,variable,CharPivot_Batman,24581,24581,1,legoapi/characters/motion/charpivot.h,definition,legoapi/charpivot.c android-dir
 variable:CompletionPointInfo,variable,CompletionPointInfo,24582,24582,1,legogame/game.h,users,CompletionPointInfo: only legogame/game.c android-path
@@ -12647,12 +12647,12 @@ assert:-#4589,assert,,24713,24713,2,nu2api/nustencilshadows_PC.h,follow-type,FRA
 assert:-#4590,assert,,24714,24714,1,nu2api/nustencilshadows_PC.h,follow-type,FRAME_NATIVE_TEXTURE
 assert:-#4591,assert,,24715,24715,1,nu2api/nustencilshadows_PC.h,follow-type,FRAME_NATIVE_TEXTURE
 assert:-#4592,assert,,24716,24716,1,nu2api/nustencilshadows_PC.h,follow-type,FRAME_NATIVE_TEXTURE
-struct:FRAME_NATIVE_TEXTURE_POOL,struct,FRAME_NATIVE_TEXTURE_POOL,24718,24731,15,nu2api/nucamera_dlist.h,rule,used most in nu2api/nu3d_pc_includes.cpp[nucamera_dlist.cpp] (7) pc-path
-assert:-#4593,assert,,24733,24733,2,nu2api/nucamera_dlist.h,follow-type,FRAME_NATIVE_TEXTURE_POOL
-assert:-#4594,assert,,24734,24734,1,nu2api/nucamera_dlist.h,follow-type,FRAME_NATIVE_TEXTURE_POOL
-assert:-#4595,assert,,24735,24735,1,nu2api/nucamera_dlist.h,follow-type,FRAME_NATIVE_TEXTURE_POOL
-assert:-#4596,assert,,24736,24736,1,nu2api/nucamera_dlist.h,follow-type,FRAME_NATIVE_TEXTURE_POOL
-assert:-#4597,assert,,24737,24737,1,nu2api/nucamera_dlist.h,follow-type,FRAME_NATIVE_TEXTURE_POOL
+struct:FRAME_NATIVE_TEXTURE_POOL,struct,FRAME_NATIVE_TEXTURE_POOL,24718,24731,15,nu2api/nustencilshadows_PC.h,rule,used most in nu2api/nu3d_pc_includes.cpp[nucamera_dlist.cpp] (7) pc-path
+assert:-#4593,assert,,24733,24733,2,nu2api/nustencilshadows_PC.h,follow-type,FRAME_NATIVE_TEXTURE_POOL
+assert:-#4594,assert,,24734,24734,1,nu2api/nustencilshadows_PC.h,follow-type,FRAME_NATIVE_TEXTURE_POOL
+assert:-#4595,assert,,24735,24735,1,nu2api/nustencilshadows_PC.h,follow-type,FRAME_NATIVE_TEXTURE_POOL
+assert:-#4596,assert,,24736,24736,1,nu2api/nustencilshadows_PC.h,follow-type,FRAME_NATIVE_TEXTURE_POOL
+assert:-#4597,assert,,24737,24737,1,nu2api/nustencilshadows_PC.h,follow-type,FRAME_NATIVE_TEXTURE_POOL
 variable:RenderFrameShaderTimePc,variable,RenderFrameShaderTimePc,24741,24741,1,nu2api/nucamera_dlist.h,users,RenderFrameShaderTimePc: only nu2api/nu3d_pc_includes.cpp[nucamera_dlist.cpp] pc-path
 variable:nuspecial_vertex_noffsets,variable,nuspecial_vertex_noffsets,24742,24742,1,nu2api/nu3d/nu3d_includes.h,data-order,retail 0x9738bc between 0x9738b8 and 0x9738c8
 variable:nuspecial_vertex_offsets,variable,nuspecial_vertex_offsets,24743,24743,1,nu2api/nu3d/nu3d_includes.h,data-order,retail 0x9738c0 between 0x9738b8 and 0x9738c8
@@ -12803,8 +12803,8 @@ function:NuDisplayListDrawItems,function,NuDisplayListDrawItems,24961,24961,1,nu
 variable:PCFramePresentationState,variable,PCFramePresentationState,24969,24969,1,nu2api/nuwin32/d3dApiCalls.h,users,PCFramePresentationState: only nu2api/nuwin32/d3dApiCalls.cpp pc-path
 function:PCFramePresentNative,function,PCFramePresentNative,24970,24970,1,nu2api/nuwin32/d3dApiCalls.h,symbol,nu2api/nuwin32/d3dApiCalls.cpp pc-path
 function:PCPresentationPlatformLeafPc,function,PCPresentationPlatformLeafPc,24971,24971,1,nu2api/PCInput.h,symbol,nu2api/PCInput.cpp pc-path
-typedef:PC_DISPLAY_ITEM_HANDLER_PC,typedef,PC_DISPLAY_ITEM_HANDLER_PC,24976,24976,2,nu2api/nu3d/nu3d_includes.h,rule,used most in nu2api/nu3d_includes.cpp (2) android-path
-assert:-#4617,assert,,24977,24977,1,nu2api/nu3d/nu3d_includes.h,follow-type,PC_DISPLAY_ITEM_HANDLER_PC
+typedef:PC_DISPLAY_ITEM_HANDLER_PC,typedef,PC_DISPLAY_ITEM_HANDLER_PC,24976,24976,2,nu2api/nustencilshadows_PC.h,rule,used most in nu2api/nu3d_includes.cpp (2) android-path
+assert:-#4617,assert,,24977,24977,1,nu2api/nustencilshadows_PC.h,follow-type,PC_DISPLAY_ITEM_HANDLER_PC
 function:NuDisplayListMaterial,function,NuDisplayListMaterial,24981,24981,1,nu2api/nu3d_pc_includes.h,symbol,nu2api/nu3d_pc_includes.cpp pc-path
 variable:PCDisplayItemHandlerPrefix,variable,PCDisplayItemHandlerPrefix,24982,24982,1,nu2api/nustencilshadows_PC.h,users,PCDisplayItemHandlerPrefix: only nu2api/nu3d_pc_includes.cpp[nustencilshadows_PC.cpp] pc-path
 variable:CurrentItemTable,variable,CurrentItemTable,24983,24983,1,nu2api/nustencilshadows_PC.h,data-order,retail 0x80e794 between 0x80e6d0 and 0x80e85c
@@ -13142,7 +13142,7 @@ forward:COLLECTION_s,forward,COLLECTION_s,25775,25775,1,legoapi/items/base/colle
 forward:CUSTOMPIECE,forward,CUSTOMPIECE,25776,25776,1,transitional/unused.h,unused,no unit uses it; Android-transferred section; would go to legoapi/legoapi_types.h (android)
 forward:CUSTOMPIECECATEGORY,forward,CUSTOMPIECECATEGORY,25777,25777,1,transitional/unused.h,unused,no unit uses it; Android-transferred section; would go to legoapi/legoapi_types.h (android)
 forward:CUTSYS,forward,CUTSYS,25778,25778,1,transitional/unused.h,unused,no unit uses it; Android-transferred section; would go to legoapi/legoapi_types.h (android)
-forward:DETONATOR_s,forward,DETONATOR_s,25779,25779,1,legoapi/legoapi_types.h,android,catch-all (needs a module owner); DETONATOR_s
+forward:DETONATOR_s,forward,DETONATOR_s,25779,25779,1,globals.h,android,catch-all (needs a module owner); DETONATOR_s
 forward:DOOR_s,forward,DOOR_s,25780,25780,1,legoapi/props/doors/door.h,android,DOOR_s
 forward:EDAIPATHCHECK_s,forward,EDAIPATHCHECK_s,25781,25781,1,editor/edpath.h,android,EDAIPATHCHECK_s
 forward:EDAIPATHCNX_s,forward,EDAIPATHCNX_s,25782,25782,1,editor/edpath_types.h,android,EDAIPATHCNX_s
@@ -13154,7 +13154,7 @@ forward:EDAISHAREDPATHNODE_s,forward,EDAISHAREDPATHNODE_s,25787,25787,1,editor/e
 forward:EDANTINODE_s,forward,EDANTINODE_s,25788,25788,1,editor/antinode_editor_private.h,android,EDANTINODE_s
 forward:EDLOCATORSET_s,forward,EDLOCATORSET_s,25789,25789,1,editor/aieditor_state.h,android,EDLOCATORSET_s
 forward:EDLOCATOR_s,forward,EDLOCATOR_s,25790,25790,1,editor/aieditor_state.h,android,EDLOCATOR_s
-forward:EPISODESAVE_s,forward,EPISODESAVE_s,25791,25791,1,globals.h,android-weak,catch-all (needs a module owner); EPISODESAVE_s
+forward:EPISODESAVE_s,forward,EPISODESAVE_s,25791,25791,1,legogame/game.h,android-weak,catch-all (needs a module owner); EPISODESAVE_s
 forward:EXPLOSION,forward,EXPLOSION,25792,25792,1,legoapi/legoapi_types.h,android,catch-all (needs a module owner); EXPLOSION
 forward:FADER_s,forward,FADER_s,25793,25793,1,legoapi/legoapi_types.h,android,catch-all (needs a module owner); FADER_s
 forward:GAMEANTINODE_s,forward,GAMEANTINODE_s,25794,25794,1,legoapi/legoapi_types.h,android,catch-all (needs a module owner); GAMEANTINODE_s
@@ -13297,7 +13297,7 @@ struct:ATTRACTO_s,struct,ATTRACTO_s,26220,26252,34,legoapi/gizmos/traps/attracto
 assert:-#4743,assert,,26254,26254,2,legoapi/gizmos/traps/attracto.h,follow-type,ATTRACTO_s
 struct:SHARD_s,struct,SHARD_s,26256,26306,52,legoapi/gizmos/traps/shards.h,android,SHARD_s
 assert:-#4744,assert,,26308,26308,2,legoapi/gizmos/traps/shards.h,follow-type,SHARD_s
-struct:DETONATOR_s,struct,DETONATOR_s,26310,26322,14,legoapi/legoapi_types.h,android,catch-all (needs a module owner); DETONATOR_s
+struct:DETONATOR_s,struct,DETONATOR_s,26310,26322,14,globals.h,android,catch-all (needs a module owner); DETONATOR_s
 assert:-#4745,assert,,26324,26324,2,legoapi/legoapi_types.h,follow-type,catch-all (needs a module owner); DETONATOR_s
 struct:EXPLOSION,struct,EXPLOSION,26326,26342,18,legoapi/legoapi_types.h,android,catch-all (needs a module owner); EXPLOSION
 assert:-#4746,assert,,26344,26344,2,legoapi/legoapi_types.h,follow-type,catch-all (needs a module owner); EXPLOSION
@@ -14912,7 +14912,7 @@ function:edgracbSetClumpMaxHeight,function,edgracbSetClumpMaxHeight,30663,30663,
 function:edgracbSetClumpMinHeight,function,edgracbSetClumpMinHeight,30664,30664,1,gameapi/edptl.h,symbol,gameapi/gameliball.cpp[edptl.c] pc-path
 function:GizmoGetName,function,GizmoGetName,30665,30665,1,legoapi/gizmo/base/gizmo.h,android,GizmoGetName
 variable:fpcount,variable,fpcount,30666,30666,1,legoapi/lib/hub.h,users,fpcount: only legogame/hub.cpp android-path
-variable:fplist,variable,fplist,30667,30667,1,legoapi/lib/hub.h,users,fplist: only legogame/hub.cpp android-path
+variable:fplist,variable,fplist,30667,30667,1,legoapi/characters/core/characters.h,users,fplist: only legogame/hub.cpp android-path
 variable:hub_makefreeplaylist_addotherid,variable,hub_makefreeplaylist_addotherid,30668,30668,1,transitional/unused.h,unused,no unit uses it; Android-transferred section; would go to legoapi/lib/hub.h (saga.h neighbour)
 variable:hub_new_level,variable,hub_new_level,30669,30669,1,transitional/unused.h,unused,no unit uses it; Android-transferred section; would go to legoapi/world/levels/hub.h (android)
 variable:force_array,variable,force_array,30670,30670,1,legoapi/world/levels/levels.h,android,force_array
@@ -15130,7 +15130,7 @@ variable:paintobst,variable,paintobst,30886,30886,1,legoapi/world/levels/episode
 variable:paintpanel,variable,paintpanel,30887,30887,1,legoapi/world/levels/episodeII.h,definition,legogame/episodeII.c android-path
 variable:painttargetcolour,variable,painttargetcolour,30888,30888,1,legoapi/world/levels/episodeII.h,android,painttargetcolour
 function:Customiser_SaveModelTextureIDs,function,Customiser_SaveModelTextureIDs,30889,30889,1,legoapi/characters/core/customiser.h,android,Customiser_SaveModelTextureIDs
-variable:ObjTab,variable,ObjTab,30890,30890,1,globals.h,android-weak,catch-all (needs a module owner); ObjTab
+variable:ObjTab,variable,ObjTab,30890,30890,1,legoapi/world/levels.h,android-weak,catch-all (needs a module owner); ObjTab
 variable:CharacterLoadAreaModels,variable,CharacterLoadAreaModels,30891,30891,1,legoapi/ai/game/creature.h,definition,legogame/creature.c android-path
 function:LoadSingleCharacter,function,LoadSingleCharacter,30892,30892,1,legoapi/characters/core/character.h,android,LoadSingleCharacter
 function:UpdateCharacterLoad,function,UpdateCharacterLoad,30893,30893,1,legoapi/characters/core/character.h,android,UpdateCharacterLoad
@@ -15511,7 +15511,7 @@ variable:hub_bonusarea,variable,hub_bonusarea,31396,31396,1,legoapi/lib/hub.h,us
 variable:hub_bonusmode,variable,hub_bonusmode,31397,31397,1,legoapi/lib/hub.h,users,hub_bonusmode: only legogame/hub.cpp android-path
 variable:fpcount#2,variable,fpcount,31398,31398,1,legoapi/lib/hub.h,users,fpcount: only legogame/hub.cpp android-path
 variable:hub_freeplaysource,variable,hub_freeplaysource,31399,31399,1,legoapi/lib/hub.h,users,hub_freeplaysource: only legogame/hub.cpp android-path
-variable:fplist#2,variable,fplist,31400,31400,1,legoapi/lib/hub.h,users,fplist: only legogame/hub.cpp android-path
+variable:fplist#2,variable,fplist,31400,31400,1,legoapi/characters/core/characters.h,users,fplist: only legogame/hub.cpp android-path
 variable:bonusmodemode,variable,bonusmodemode,31401,31401,1,legoapi/lib/hub.h,users,bonusmodemode: only legogame/hub.cpp android-path
 variable:bonusmodeduration,variable,bonusmodeduration,31402,31402,1,legoapi/lib/hub.h,users,bonusmodeduration: only legogame/hub.cpp android-path
 variable:HubIconWibbleTime,variable,HubIconWibbleTime,31403,31403,1,legoapi/lib/hub.h,users,HubIconWibbleTime: only legogame/hub.cpp android-path

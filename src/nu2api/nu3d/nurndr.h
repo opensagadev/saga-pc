@@ -8,7 +8,6 @@
 /* The module headers this header uses. saga.h includes every header itself, so the shim skips these. */
 #ifndef SAGA_SHIM
 #include "nu2api/numath/nuvec.h"
-#include "nu2api/nustencilshadows_PC.h"
 #endif
 
 struct DWA_WEIGHT_BLOCK;
@@ -27,6 +26,8 @@ typedef struct nurnd_vertex3d_s { // size 0x24
 #ifdef __cplusplus
 extern "C" {
 #endif
+    extern NURND_VERTEX3D_PC NuRndrShadowVertices[4];
+
     void WindShear(struct numtx_s *, struct numtx_s *, i32, i32);
     extern f32 global_windscale;
     extern f32 global_windspeed;
@@ -36,6 +37,14 @@ extern "C" {
     void NuRndrCalcRandEllipsePos(struct NUVEC4 *, struct numtx_s *, NUVEC *);
     void NuRndrCalcRandCylinderPos(struct NUVEC4 *, struct numtx_s *, NUVEC *);
     extern i32 NuRndrShadowCnt;
+
+    typedef struct PC_SHADOW_QUEUE_RECORD { // size 0x18
+        NUVEC position;                     // 0x00
+        f32 radius;                         // 0x0c
+        u16 opacity;                        // 0x10
+        u8 unknown_12[6];                   // 0x12
+    } PC_SHADOW_QUEUE_RECORD;
+
     extern PC_SHADOW_QUEUE_RECORD NuRndrShadPolDat[128];
     void NuRndrShadPolys(struct numtl_s *);
     i32 NuRndrSetDirectionalLightsPS(const NUVEC *, const NUVEC *, const NUVEC *, const NUVEC *, const NUVEC *, const NUVEC *);

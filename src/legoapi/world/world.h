@@ -10,8 +10,6 @@
 #include "legoapi/world/sceneprogress.h"
 #include "legoapi/ai/core/gameai.h"
 #include "legoapi/core/input/timer.h"
-#include "legoapi/world/levels.h"
-#include "nu2api/nu3d/nu3d_includes.h"
 #include "nu2api/nu3d/nuhspecial.h"
 #include "nu2api/nucore/bgproc.h"
 #include "nu2api/numath/nuvec.h"
@@ -109,6 +107,16 @@ typedef struct BOLTTYPE_PC_s { // size 0xa4
 
     u8 specials_68[0x3c]; // 0x68
 } BOLTTYPE_PC;
+
+#ifdef __cplusplus
+extern "C" {
+#endif
+    extern BOLTTYPE_PC GlobalBoltType[44];
+
+    extern BOLTTYPE_PC GlobalBoltType_Default;
+#ifdef __cplusplus
+}
+#endif
 
 typedef struct WORLDINFO_s { // size 0x51ac
     char name[0x80];         // 0x0000
@@ -317,13 +325,7 @@ extern "C" {
     extern void (*WorldInfo_InitLastFn)(WORLDINFO *);
 
     void WorldInfo_Init(WORLDINFO *);
-#ifdef __cplusplus
-}
-#endif
 
-#ifdef __cplusplus
-extern "C" {
-#endif
     void WorldInfo_StreamLevel(BGPROCINFO *);
 #ifdef __cplusplus
 }

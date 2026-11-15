@@ -31,6 +31,12 @@
 #include "nu2api/numath/nuvec.h"
 #endif
 
+struct AIAREA;
+struct TERRAIN_PLATFORM_PC;
+struct TERRAIN_POLYGON_INFO;
+struct TERRAIN_SKIN_STREAM;
+struct debris_particle_s;
+
 /* 14 parts: saga.h includes this header once per part, each where its declarations belong; included directly, it gives
  * all parts at once. */
 
@@ -58,59 +64,30 @@ struct numtl_s;
 typedef struct TERRAIN_WALL_POINT TERRAIN_WALL_POINT;
 typedef struct TERRAIN_SHAPE_BATCH TERRAIN_SHAPE_BATCH;
 
+typedef struct TERRAIN_GROUP_PC {     // size 0x38
+    NUVEC origin;                     // 0x00
+    struct TERRAIN_SKIN_STREAM *data; // 0x0c
+    NUVEC bounds_min;                 // 0x10
+    NUVEC bounds_max;                 // 0x1c
+    u32 platform_flags;               // 0x28
+    i32 chunk_type;                   // 0x2c
+    i16 scene_index;                  // 0x30
+    i16 group_info;                   // 0x32
+    f32 radius;                       // 0x34
+} TERRAIN_GROUP_PC;
+
 typedef TERRAIN_GROUP_PC TERRAIN_GROUP;
+
+typedef struct TERRAIN_CELL_PC { // size 0x14
+    i16 first_group;             // 0x00
+    i16 group_count;             // 0x02
+    f32 min_x;                   // 0x04
+    f32 min_z;                   // 0x08
+    f32 max_x;                   // 0x0c
+    f32 max_z;                   // 0x10
+} TERRAIN_CELL_PC;
+
 typedef TERRAIN_CELL_PC TERRAIN_CELL;
-
-typedef struct TerrainQuery_s {            // size 0x948
-    u32 flags;                             // 0x000
-    NUVEC start_position;                  // 0x004
-    NUVEC start_movement;                  // 0x010
-    NUVEC position;                        // 0x01c
-    NUVEC movement;                        // 0x028
-    u8 scan_result;                        // 0x034
-    u8 shape_adjusted;                     // 0x035
-    i16 object_index;                      // 0x036
-    f32 radius;                            // 0x038
-    f32 horizontal_movement_length;        // 0x03c
-    u8 *hit_flags;                         // 0x040
-    f32 movement_pitch;                    // 0x044
-    f32 movement_yaw;                      // 0x048
-    f32 movement_length;                   // 0x04c
-    f32 collision_radius;                  // 0x050
-    f32 collision_radius_sq;               // 0x054
-    f32 inverse_collision_radius;          // 0x058
-    f32 object_scale;                      // 0x05c
-    f32 object_scale_sq;                   // 0x060
-    f32 inverse_object_scale;              // 0x064
-    f32 inverse_object_scale_sq;           // 0x068
-    i16 terrain_group_index;               // 0x06c
-    u8 pad_06e[2];                         // 0x06e
-    NUVEC local_start;                     // 0x070
-    NUVEC local_end;                       // 0x07c
-    u8 hit_type;                           // 0x088
-    u8 hit_edge;                           // 0x089
-    i16 scan_group_index;                  // 0x08a
-    void *scan_list;                       // 0x08c
-    TERRAIN_POLYGON_INFO *surface;         // 0x090
-    TERRAIN_POLYGON_INFO *working_surface; // 0x094
-    f32 hit_time;                          // 0x098
-    f32 unclamped_hit_time;                // 0x09c
-    f32 separation_epsilon;                // 0x0a0
-    f32 compare_epsilon;                   // 0x0a4
-    NUVEC movement_normal;                 // 0x0a8
-    NUVEC impact_normal;                   // 0x0b4
-    NUVEC platform_position;               // 0x0c0
-    NUVEC platform_normal;                 // 0x0cc
-    NUVEC previous_movement_normal;        // 0x0d8
-    u8 pad_0e4[0x18];                      // 0x0e4
-    NUVEC transformed_vertices[4];         // 0x0fc
-    u8 pad_12c[0x1c];                      // 0x12c
-
-    union { // size 0x800
-        u8 scan_list_storage[0x800];
-        TERRAIN_SCAN_WORD scan_words[512];
-    }; // 0x148
-} TerrainQuery_s;
 
 struct TERRAIN_SHAPE_BATCH { // size 0x14
     i16 marker;              // 0x00
@@ -145,31 +122,6 @@ enum {
     TERRAIN_SHAPE_NORMAL_FLAG_SECOND_STEEP = 2
 };
 
-typedef struct part_emit_s {     // size 0x6c
-    NUVEC position;              // 0x00
-    i32 effect_id;               // 0x0c
-    char name[16];               // 0x10
-    f32 time_20;                 // 0x20
-    f32 time_24;                 // 0x24
-    f32 time_28;                 // 0x28
-    i16 rotation_2c;             // 0x2c
-    i16 rotation_2e;             // 0x2e
-    i16 rotation_30;             // 0x30
-    i8 page;                     // 0x32
-    u8 unknown_33;               // 0x33
-    i32 shots_remaining;         // 0x34
-    f32 time_38;                 // 0x38
-    u8 unknown_3c;               // 0x3c
-    u8 unknown_3d;               // 0x3d
-    u8 unknown_3e;               // 0x3e
-    u8 unknown_3f;               // 0x3f
-    f32 camera_distance;         // 0x40
-    i16 unknown_44;              // 0x44
-    i16 unknown_46;              // 0x46
-    i32 instance_id;             // 0x48
-    i32 trailing_state_words[8]; // 0x4c
-} PART_EMIT_PC;
-
 typedef struct terrain_surface_s { // size 0xc
     f32 movement_scale;            // 0x0
     u32 flags;                     // 0x4
@@ -198,23 +150,9 @@ typedef struct narrowsockexception_s { // size 0x10
 typedef struct cutsys_s CUTSYS_PC;
 typedef struct gameanimsys_s GAMEANIMSYS;
 
-typedef struct debris_particle_frame_s { // size 0x28
-    NUVEC position;                      // 0x00
-    NUVEC texture_offset;                // 0x0c
-    NUVEC extent;                        // 0x18
-    u32 colour;                          // 0x24
-} DEBRIS_PARTICLE_FRAME;
-
 typedef struct SoundTable { // size 0xc8
     u16 bits[100];          // 0x00
 } SoundTable;
-
-typedef struct GAMEAUDIO {                                   // size 0x200
-    i32 (*override_footstep_fn)(struct gameobject_s *, i32); // 0x000
-    i32 (*check_reverb_fn)(void);                            // 0x004
-    char *sfx_names[84];                                     // 0x008
-    i16 sfx_ids[84];                                         // 0x158
-} GAMEAUDIO;
 
 typedef struct cutinfo_s { // size 0xf0
     u8 opaque_00_04[0x4];  // 0x00
@@ -239,7 +177,6 @@ typedef struct text_entry_s { // size 0x8
     i16 pad;                  // 0x6
 } TEXTENTRY;
 
-typedef struct FadeBase FadeBase;
 #ifdef __cplusplus
 enum FADETYPE_VALUE {
     FADE_TYPE_NONE = -1,
@@ -345,7 +282,6 @@ typedef struct AREASAVE_s AREASAVE_s;
 typedef struct CABLE_s CABLE_s;
 typedef struct CHARPLATFORMSYS_s CHARPLATFORMSYS_s;
 typedef struct CHARPLATFORM_s CHARPLATFORM_s;
-typedef struct DETONATOR_s DETONATOR_s;
 typedef struct EXPLOSION EXPLOSION;
 typedef struct GAMEANTINODE_s GAMEANTINODE_s;
 typedef struct GIZBUILDITANIMDATA_s GIZBUILDITANIMDATA_s;
@@ -626,13 +562,6 @@ typedef struct gamecamera_s { // size 0x230
     u8 previous_camera_mode; // 0x22e
 } GAMECAMERA;
 
-#ifdef __cplusplus
-extern "C" {
-#endif
-#ifdef __cplusplus
-}
-#endif
-
 struct AITRIGGERSET_TARGET { // size 0x3c
     u8 reserved_00[16];      // 0x00
     NUVEC position;          // 0x10
@@ -706,6 +635,45 @@ struct GIZBUILDITANIMDATA_s { // size 0xc8
 #endif
 
 #if SAGA_LEGOAPI_LEGOAPI_TYPES_H_PART == 3 && !defined(SAGA_LEGOAPI_LEGOAPI_TYPES_H_STOP)
+
+typedef struct TERRAIN_INDEX_LEVEL {   // size 0x80c
+    i16 cache_age;                     // 0x000
+    u8 unknown_02[2];                  // 0x002
+    f32 center_x;                      // 0x004
+    f32 center_z;                      // 0x008
+    TERRAIN_SCAN_WORD scan_words[512]; // 0x00c
+} TERRAIN_INDEX_LEVEL;
+
+typedef struct TERRAIN_SET_PC {                 // size 0xa490
+    struct TERRAIN_GROUP_PC *groups;            // 0x0000
+    u8 unknown_004[0x60];                       // 0x0004
+    void *unknown_064;                          // 0x0064
+    struct TERRAIN_PLATFORM_PC *platforms;      // 0x0068
+    i16 active_platform_groups[96];             // 0x006c
+    i32 active_platform_count;                  // 0x012c
+    f32 platform_query_min_x;                   // 0x0130
+    u8 unknown_134[4];                          // 0x0134
+    f32 platform_query_min_z;                   // 0x0138
+    f32 platform_query_max_x;                   // 0x013c
+    u8 unknown_140[4];                          // 0x0140
+    f32 platform_query_max_z;                   // 0x0144
+    struct TERRAIN_SPATIAL_NODE *spatial_nodes; // 0x0148
+    i16 group_count;                            // 0x014c
+    u16 file_version;                           // 0x014e
+    i32 group_index_count;                      // 0x0150
+    i32 removed_platform_count;                 // 0x0154
+    i16 removed_platforms[32];                  // 0x0158
+    TERRAIN_TRACK_SLOT track_slots[64];         // 0x0198
+    TERRAIN_CELL_PC cells[256];                 // 0x0798
+    TERRAIN_CELL_PC platform_cell;              // 0x1b98
+    i32 minimum_height;                         // 0x1bac
+    i32 used_cell_count;                        // 0x1bb0
+    i16 *group_indices;                         // 0x1bb4
+    TERRAIN_INDEX_LEVEL index_levels[17];       // 0x1bb8
+    i32 max_group_indices;                      // 0xa484
+    i32 max_groups;                             // 0xa488
+    i32 max_platforms;                          // 0xa48c
+} TERRAIN_SET_PC;
 
 typedef TERRAIN_SET_PC TERRSET;
 
@@ -1017,51 +985,15 @@ typedef struct BOLTSYS_PC_s {                                    // size 0x20
     i32 (*alternate_fire)(struct gameobject_s *, i32);           // 0x1c
 } BOLTSYS_PC;
 
-typedef struct bolt_s {         // size 0x138
-    struct BOLTTYPE_PC_s *type; // 0x000
-    struct gameobject_s *owner; // 0x004
-    NUMTX orientation;          // 0x008
-    NUMTX effect_orientation;   // 0x048
-    NUVEC position;             // 0x088
-    NUVEC previous_position;    // 0x094
-    NUVEC velocity;             // 0x0a0
-    NUVEC direction;            // 0x0ac
-    NUVEC ray_end;              // 0x0b8
-    f32 scale;                  // 0x0c4
-    f32 time;                   // 0x0c8
-    f32 speed;                  // 0x0cc
-    f32 lifetime;               // 0x0d0
-    f32 radius;                 // 0x0d4
-    f32 collision_radius;       // 0x0d8
-    f32 ray_time;               // 0x0dc
-    f32 ray_radius;             // 0x0e0
-    f32 unknown_e4;             // 0x0e4
-    f32 reflection_height;      // 0x0e8
-    f32 acceleration_y;         // 0x0ec
-    u32 flags;                  // 0x0f0
-    u16 surface_x_rotation;     // 0x0f4
-    u16 surface_z_rotation;     // 0x0f6
-    u16 hit_flags;              // 0x0f8
+#ifdef __cplusplus
+extern "C" {
+#endif
+    extern BOLTSYS_PC BoltSys_Batman;
 
-    union { // size 0x2
-        i16 hit_platform;
-        u16 unknown_fa;
-    }; // 0x0fa
-
-    i16 hit_debris;              // 0x0fc
-    i16 hit_part_debris;         // 0x0fe
-    u8 active;                   // 0x100
-    u8 type_id;                  // 0x101
-    u8 unknown_102;              // 0x102
-    u8 index;                    // 0x103
-    i8 unknown_104;              // 0x104
-    i8 unknown_105;              // 0x105
-    u16 unknown_106;             // 0x106
-    NUVEC bounds_min;            // 0x108
-    NUVEC bounds_max;            // 0x114
-    NUVEC hit_normal;            // 0x120
-    NUVEC dogfight_hit_position; // 0x12c
-} BOLT;
+    extern BOLTSYS_PC BoltSys_LSW;
+#ifdef __cplusplus
+}
+#endif
 
 // Access prefixes only: the trailing name and complete original sizes are unknown.
 struct cutsys_s {      // size 0x8
@@ -1429,6 +1361,8 @@ extern "C" {
         u8 unknown_34[4];           // 0x34
     } EXPLOSION_PC;
 
+    extern EXPLOSION_PC Explosions[8];
+
 #ifdef __cplusplus
 }
 #endif
@@ -1555,20 +1489,6 @@ struct GIZFORCE_s {                    // size 0xac
 
         u32 packed_state;
     }; // 0xa8
-};
-
-struct DETONATOR_s {             // size 0x38
-    NUVEC position;              // 0x00
-    NUVEC unknown_0c;            // 0x0c
-    NUVEC unknown_18;            // 0x18
-    struct gameobject_s *object; // 0x24
-    u8 active;                   // 0x28
-    u8 draw_result;              // 0x29
-    u16 rotation_x;              // 0x2a
-    u16 rotation_y;              // 0x2c
-    u16 rotation_z;              // 0x2e
-    f32 timer;                   // 0x30
-    void *unknown_34;            // 0x34
 };
 
 struct EXPLOSION {               // size 0x34
@@ -2118,8 +2038,12 @@ struct GAMEANTINODE_s {          // size 0x38
 #ifdef __cplusplus
 extern "C" {
 #endif
-    typedef DEBRISPARTICLE_PC *(*DEBRISGENERATOR_PC)(struct debris_key_s *, struct debris_info_s *, f32);
-    typedef void (*DEBRISMOMENTUMADJUSTER_PC)(struct debris_key_s *, struct debris_info_s *, DEBRISPARTICLE_PC *);
+    typedef struct debris_particle_s *(*DEBRISGENERATOR_PC)(struct debris_key_s *, struct debris_info_s *, f32);
+
+    extern DEBRISGENERATOR_PC gensorttab[13];
+    typedef void (*DEBRISMOMENTUMADJUSTER_PC)(struct debris_key_s *, struct debris_info_s *, struct debris_particle_s *);
+
+    extern DEBRISMOMENTUMADJUSTER_PC gencodetab[7];
 #ifdef __cplusplus
 }
 #endif
@@ -2146,13 +2070,6 @@ struct nugraph_s {    // size 0x5c
 #endif
 
 #if SAGA_LEGOAPI_LEGOAPI_TYPES_H_PART == 10 && !defined(SAGA_LEGOAPI_LEGOAPI_TYPES_H_STOP)
-#ifdef __cplusplus
-extern "C" {
-#endif
-
-#ifdef __cplusplus
-}
-#endif
 #undef SAGA_LEGOAPI_LEGOAPI_TYPES_H_PART
 #define SAGA_LEGOAPI_LEGOAPI_TYPES_H_PART 11
 #ifdef SAGA_SHIM
@@ -2692,16 +2609,25 @@ class TTNetwork : public NetTransporter, public BaseThing { // size 0x110f4
 };
 #endif
 
-typedef struct minesys_s {     // size 0x748
-    nuhspecial_s mine_special; // 0x000
-    MINE_ENTRY_PC mines[64];   // 0x00c
-    f32 mine_radius;           // 0x70c
-    f32 spawn_timer;           // 0x710
-    AIAREA *nomine_areas[10];  // 0x714
-    i16 nomine_count;          // 0x73c
-    i16 mine_debris;           // 0x73e
-    i32 mine_part;             // 0x740
-    f32 update_timer;          // 0x744
+typedef struct mine_entry_s { // size 0x1c
+    u32 active;               // 0x00
+    NUVEC pos;                // 0x04
+    f32 grow;                 // 0x10
+    f32 grow_alpha;           // 0x14
+    u16 rotx;                 // 0x18
+    u16 roty;                 // 0x1a
+} MINE_ENTRY_PC;
+
+typedef struct minesys_s {           // size 0x748
+    nuhspecial_s mine_special;       // 0x000
+    MINE_ENTRY_PC mines[64];         // 0x00c
+    f32 mine_radius;                 // 0x70c
+    f32 spawn_timer;                 // 0x710
+    struct AIAREA *nomine_areas[10]; // 0x714
+    i16 nomine_count;                // 0x73c
+    i16 mine_debris;                 // 0x73e
+    i32 mine_part;                   // 0x740
+    f32 update_timer;                // 0x744
 } MINESYS_PC;
 
 #undef SAGA_LEGOAPI_LEGOAPI_TYPES_H_PART

@@ -14,7 +14,6 @@
 
 /* The module headers this header uses. saga.h includes every header itself, so the shim skips these. */
 #ifndef SAGA_SHIM
-#include "nu2api/huffdecode.h"
 #include "nu2api/nufile/nufile.h"
 #endif
 
@@ -86,6 +85,14 @@ typedef struct nufpar_s {    // size 0x584
     char *separator_tokens; // 0x580
 } NUFPAR_PC;
 
+#ifdef __cplusplus
+extern "C" {
+#endif
+    extern NUFPAR_PC NuFParRecords[4];
+#ifdef __cplusplus
+}
+#endif
+
 typedef struct nufpcomjmp_s {            // size 0x8
     char *keyword;                       // 0x0
     void (*callback)(NUFPAR_PC *parser); // 0x4
@@ -138,6 +145,8 @@ extern "C" {
 #ifdef __cplusplus
 extern "C" {
 #endif
+    typedef void (*NUFPCOMFN)(struct nufpar_s *parser);
+
     NUFPCOMFN NuFParSetInterpreterErrorHandler(NUFPCOMFN handler);
 #ifdef __cplusplus
 }

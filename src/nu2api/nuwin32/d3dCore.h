@@ -19,6 +19,8 @@
 #include "nu2api/nuwin32/pcapi.h"
 #endif
 
+struct PC_BUFFER_RESOURCE;
+
 /* 2 parts: saga.h includes this header once per part, each where its declarations belong; included directly, it gives
  * all parts at once. */
 
@@ -130,8 +132,8 @@ typedef i32 PC_DEVICE_RENDER_CACHE_PC[12];
 
 typedef struct PC_DEVICE_STATE_CACHE_PC {      // size 0x220
     PC_TEXTURE_RESOURCE *vertex_declaration;   // 0x000
-    PC_BUFFER_RESOURCE *index_buffer;          // 0x004
-    PC_BUFFER_RESOURCE *vertex_buffer;         // 0x008
+    struct PC_BUFFER_RESOURCE *index_buffer;   // 0x004
+    struct PC_BUFFER_RESOURCE *vertex_buffer;  // 0x008
     u32 stream_stride;                         // 0x00c
     u32 stream_number;                         // 0x010
     u32 stream_offset;                         // 0x014
@@ -242,11 +244,11 @@ typedef struct PC_DEVICE_BACKEND_PC {       // size 0x700
     u16 unknown_67e;                             // 0x67e
     i32 saved_aspect;                            // 0x680
     PC_TEXTURE_RESOURCE *declaration684;         // 0x684
-    PC_BUFFER_RESOURCE *buffer688;               // 0x688
+    struct PC_BUFFER_RESOURCE *buffer688;        // 0x688
     PC_TEXTURE_RESOURCE *declaration68c;         // 0x68c
-    PC_BUFFER_RESOURCE *buffer690;               // 0x690
-    PC_BUFFER_RESOURCE *buffer694;               // 0x694
-    PC_BUFFER_RESOURCE *buffer698;               // 0x698
+    struct PC_BUFFER_RESOURCE *buffer690;        // 0x690
+    struct PC_BUFFER_RESOURCE *buffer694;        // 0x694
+    struct PC_BUFFER_RESOURCE *buffer698;        // 0x698
     i32 state69c;                                // 0x69c
     i32 state6a0;                                // 0x6a0
     i32 state6a4;                                // 0x6a4

@@ -20,6 +20,9 @@
 #include "nu2api/numath/nuvec.h"
 #endif
 
+struct cut_load_character_animation_s;
+struct cut_load_locator_instance_system_s;
+
 /* 3 parts: saga.h includes this header once per part, each where its declarations belong; included directly, it gives
  * all parts at once. */
 
@@ -303,30 +306,30 @@ typedef struct cut_load_trigger_system_s {
     CUT_LOAD_TRIGGER_EVENT *events;
 } CUT_LOAD_TRIGGER_SYSTEM;
 
-struct cut_scene_load_s {                               // size 0x5c
-    i32 version;                                        // 0x00
-    i32 string_delta;                                   // 0x04
-    f32 duration;                                       // 0x08
-    char *strings;                                      // 0x0c
-    CUT_LOAD_CAMERA_SYSTEM *camera_system;              // 0x10
-    CUT_LOAD_RIGID_SYSTEM *rigid_system;                // 0x14
-    CUT_LOAD_CHARACTER_SYSTEM *character_system;        // 0x18
-    CUT_LOAD_LOCATOR_SYSTEM *locator_system;            // 0x1c
-    CUT_LOAD_BOUNDS *bounds;                            // 0x20
-    CUT_LOAD_TRIGGER_SYSTEM *trigger_system;            // 0x24
-    i32 relocation_delta;                               // 0x28
-    char *filename;                                     // 0x2c
-    void *stream_buffer_0;                              // 0x30
-    void *stream_buffer_1;                              // 0x34
-    u32 flags;                                          // 0x38
-    i32 stream_buffer_size;                             // 0x3c
-    u32 unknown_40;                                     // 0x40
-    NUGSCN *scene;                                      // 0x44
-    void *extra_scene;                                  // 0x48
-    u32 stream_buffer_offset;                           // 0x4c
-    CUT_LOAD_CHARACTER_ANIMATION *character_animations; // 0x50
-    u16 *focus_indices;                                 // 0x54
-    i32 loaded_size;                                    // 0x58
+struct cut_scene_load_s {                                        // size 0x5c
+    i32 version;                                                 // 0x00
+    i32 string_delta;                                            // 0x04
+    f32 duration;                                                // 0x08
+    char *strings;                                               // 0x0c
+    CUT_LOAD_CAMERA_SYSTEM *camera_system;                       // 0x10
+    CUT_LOAD_RIGID_SYSTEM *rigid_system;                         // 0x14
+    CUT_LOAD_CHARACTER_SYSTEM *character_system;                 // 0x18
+    CUT_LOAD_LOCATOR_SYSTEM *locator_system;                     // 0x1c
+    CUT_LOAD_BOUNDS *bounds;                                     // 0x20
+    CUT_LOAD_TRIGGER_SYSTEM *trigger_system;                     // 0x24
+    i32 relocation_delta;                                        // 0x28
+    char *filename;                                              // 0x2c
+    void *stream_buffer_0;                                       // 0x30
+    void *stream_buffer_1;                                       // 0x34
+    u32 flags;                                                   // 0x38
+    i32 stream_buffer_size;                                      // 0x3c
+    u32 unknown_40;                                              // 0x40
+    NUGSCN *scene;                                               // 0x44
+    void *extra_scene;                                           // 0x48
+    u32 stream_buffer_offset;                                    // 0x4c
+    struct cut_load_character_animation_s *character_animations; // 0x50
+    u16 *focus_indices;                                          // 0x54
+    i32 loaded_size;                                             // 0x58
 };
 
 typedef struct cut_load_camera_target_s { // size 0x10
@@ -421,17 +424,17 @@ typedef struct cut_load_trigger_instance_s {
     CUT_LOAD_TRIGGER_STATE *states;
 } CUT_LOAD_TRIGGER_INSTANCE;
 
-typedef struct cut_instance_load_s { // size 0xf8
-    INSTNUGCUTSCENE *next;           // 0x00
-    INSTNUGCUTSCENE *previous;       // 0x04
-    char name[16];                   // 0x08
-    NUMTX matrix;                    // 0x18
-    CUT_SCENE_LOAD_PC *scene;        // 0x58
-    CUT_SCENE_LOAD_PC *saved_scene;  // 0x5c
-    NUVEC center;                    // 0x60
-    NUVEC bounds_min;                // 0x6c
-    NUVEC bounds_max;                // 0x78
-    f32 radius_squared;              // 0x84
+typedef struct cut_instance_load_s {    // size 0xf8
+    struct instnugcutscene_s *next;     // 0x00
+    struct instnugcutscene_s *previous; // 0x04
+    char name[16];                      // 0x08
+    NUMTX matrix;                       // 0x18
+    CUT_SCENE_LOAD_PC *scene;           // 0x58
+    CUT_SCENE_LOAD_PC *saved_scene;     // 0x5c
+    NUVEC center;                       // 0x60
+    NUVEC bounds_min;                   // 0x6c
+    NUVEC bounds_max;                   // 0x78
+    f32 radius_squared;                 // 0x84
 
     union { // size 0x4
         u32 flags_88;
@@ -454,17 +457,17 @@ typedef struct cut_instance_load_s { // size 0xf8
         };
     }; // 0x8c
 
-    f32 current_frame;                                      // 0x90
-    f32 render_frame;                                       // 0x94
-    f32 rate;                                               // 0x98
-    CUT_LOAD_CAMERA_INSTANCE *camera_instance;              // 0x9c
-    CUT_LOAD_RIGID_INSTANCE_SYSTEM *rigid_instance;         // 0xa0
-    CUT_LOAD_CHARACTER_INSTANCE_SYSTEM *character_instance; // 0xa4
-    CUT_LOAD_LOCATOR_INSTANCE_SYSTEM *locator_instance;     // 0xa8
-    CUT_LOAD_TRIGGER_INSTANCE *trigger_instance;            // 0xac
-    INSTNUGCUTSCENE *chained_instance;                      // 0xb0
-    void (*end_callback)(INSTNUGCUTSCENE *);                // 0xb4
-    u32 unknown_b8;                                         // 0xb8
+    f32 current_frame;                                           // 0x90
+    f32 render_frame;                                            // 0x94
+    f32 rate;                                                    // 0x98
+    CUT_LOAD_CAMERA_INSTANCE *camera_instance;                   // 0x9c
+    CUT_LOAD_RIGID_INSTANCE_SYSTEM *rigid_instance;              // 0xa0
+    CUT_LOAD_CHARACTER_INSTANCE_SYSTEM *character_instance;      // 0xa4
+    struct cut_load_locator_instance_system_s *locator_instance; // 0xa8
+    CUT_LOAD_TRIGGER_INSTANCE *trigger_instance;                 // 0xac
+    struct instnugcutscene_s *chained_instance;                  // 0xb0
+    void (*end_callback)(struct instnugcutscene_s *);            // 0xb4
+    u32 unknown_b8;                                              // 0xb8
 
     union { // size 0x8
 
@@ -476,24 +479,24 @@ typedef struct cut_instance_load_s { // size 0xf8
         void *stream_buffers[2];
     }; // 0xbc
 
-    NUGSCN *scene_owner;                       // 0xc4
-    CUT_LOAD_TRIGGER_OWNER *extra_scene_owner; // 0xc8
-    u8 unknown_cc[12];                         // 0xcc
-    u16 skip_countdown;                        // 0xd8
-    u8 unknown_da[5];                          // 0xda
-    u8 stream_index;                           // 0xdf
-    f32 accumulated_duration;                  // 0xe0
-    f32 elapsed;                               // 0xe4
-    f32 alpha;                                 // 0xe8
-    void *pending_stream;                      // 0xec
-    u32 allocation_size;                       // 0xf0
-    INSTNUGCUTSCENE *queued_stream_instance;   // 0xf4
+    NUGSCN *scene_owner;                              // 0xc4
+    CUT_LOAD_TRIGGER_OWNER *extra_scene_owner;        // 0xc8
+    u8 unknown_cc[12];                                // 0xcc
+    u16 skip_countdown;                               // 0xd8
+    u8 unknown_da[5];                                 // 0xda
+    u8 stream_index;                                  // 0xdf
+    f32 accumulated_duration;                         // 0xe0
+    f32 elapsed;                                      // 0xe4
+    f32 alpha;                                        // 0xe8
+    void *pending_stream;                             // 0xec
+    u32 allocation_size;                              // 0xf0
+    struct instnugcutscene_s *queued_stream_instance; // 0xf4
 } CUT_INSTANCE_LOAD_PC;
 
 struct cut_locator_function_entry_s { // size 0x14
     char *name;                       // 0x00
     u32 unknown_04;                   // 0x04
-    void (*reset)(INSTNUGCUTSCENE *, CUT_LOAD_LOCATOR_SYSTEM *, CUT_LOAD_LOCATOR_INSTANCE *,
+    void (*reset)(struct instnugcutscene_s *, CUT_LOAD_LOCATOR_SYSTEM *, CUT_LOAD_LOCATOR_INSTANCE *,
                   CUT_LOAD_LOCATOR *); // 0x08
     u8 unknown_0c[8];                  // 0x0c
 };

@@ -15,12 +15,13 @@
 /* The module headers this header uses. saga.h includes every header itself, so the shim skips these. */
 #ifndef SAGA_SHIM
 #include "legoapi/legoapi_types.h"
-#include "nu2api/nu3d/nu3d_includes.h"
 #include "nu2api/numath/nuang.h"
 #include "nu2api/numath/numtx.h"
 #include "nu2api/numath/nuvec.h"
 #include "nu2api/numath/nuvec4.h"
 #endif
+
+struct TERRAIN_GROUP_PC;
 
 /* 11 parts: saga.h includes this header once per part, each where its declarations belong; included directly, it gives
  * all parts at once. */
@@ -113,34 +114,56 @@ typedef union TERRAIN_SCAN_WORD { // size 0x4
     u32 opaque_bits;
 } TERRAIN_SCAN_WORD;
 
-typedef struct TERRAIN_INDEX_LEVEL {   // size 0x80c
-    i16 cache_age;                     // 0x000
-    u8 unknown_02[2];                  // 0x002
-    f32 center_x;                      // 0x004
-    f32 center_z;                      // 0x008
-    TERRAIN_SCAN_WORD scan_words[512]; // 0x00c
-} TERRAIN_INDEX_LEVEL;
+typedef struct TerrainQuery_s {                   // size 0x948
+    u32 flags;                                    // 0x000
+    NUVEC start_position;                         // 0x004
+    NUVEC start_movement;                         // 0x010
+    NUVEC position;                               // 0x01c
+    NUVEC movement;                               // 0x028
+    u8 scan_result;                               // 0x034
+    u8 shape_adjusted;                            // 0x035
+    i16 object_index;                             // 0x036
+    f32 radius;                                   // 0x038
+    f32 horizontal_movement_length;               // 0x03c
+    u8 *hit_flags;                                // 0x040
+    f32 movement_pitch;                           // 0x044
+    f32 movement_yaw;                             // 0x048
+    f32 movement_length;                          // 0x04c
+    f32 collision_radius;                         // 0x050
+    f32 collision_radius_sq;                      // 0x054
+    f32 inverse_collision_radius;                 // 0x058
+    f32 object_scale;                             // 0x05c
+    f32 object_scale_sq;                          // 0x060
+    f32 inverse_object_scale;                     // 0x064
+    f32 inverse_object_scale_sq;                  // 0x068
+    i16 terrain_group_index;                      // 0x06c
+    u8 pad_06e[2];                                // 0x06e
+    NUVEC local_start;                            // 0x070
+    NUVEC local_end;                              // 0x07c
+    u8 hit_type;                                  // 0x088
+    u8 hit_edge;                                  // 0x089
+    i16 scan_group_index;                         // 0x08a
+    void *scan_list;                              // 0x08c
+    struct TERRAIN_POLYGON_INFO *surface;         // 0x090
+    struct TERRAIN_POLYGON_INFO *working_surface; // 0x094
+    f32 hit_time;                                 // 0x098
+    f32 unclamped_hit_time;                       // 0x09c
+    f32 separation_epsilon;                       // 0x0a0
+    f32 compare_epsilon;                          // 0x0a4
+    NUVEC movement_normal;                        // 0x0a8
+    NUVEC impact_normal;                          // 0x0b4
+    NUVEC platform_position;                      // 0x0c0
+    NUVEC platform_normal;                        // 0x0cc
+    NUVEC previous_movement_normal;               // 0x0d8
+    u8 pad_0e4[0x18];                             // 0x0e4
+    NUVEC transformed_vertices[4];                // 0x0fc
+    u8 pad_12c[0x1c];                             // 0x12c
 
-typedef struct TERRAIN_GROUP_PC { // size 0x38
-    NUVEC origin;                 // 0x00
-    TERRAIN_SKIN_STREAM *data;    // 0x0c
-    NUVEC bounds_min;             // 0x10
-    NUVEC bounds_max;             // 0x1c
-    u32 platform_flags;           // 0x28
-    i32 chunk_type;               // 0x2c
-    i16 scene_index;              // 0x30
-    i16 group_info;               // 0x32
-    f32 radius;                   // 0x34
-} TERRAIN_GROUP_PC;
-
-typedef struct TERRAIN_CELL_PC { // size 0x14
-    i16 first_group;             // 0x00
-    i16 group_count;             // 0x02
-    f32 min_x;                   // 0x04
-    f32 min_z;                   // 0x08
-    f32 max_x;                   // 0x0c
-    f32 max_z;                   // 0x10
-} TERRAIN_CELL_PC;
+    union { // size 0x800
+        u8 scan_list_storage[0x800];
+        TERRAIN_SCAN_WORD scan_words[512];
+    }; // 0x148
+} TerrainQuery_s;
 
 struct TERRAIN_FILE_CHUNK { // size 0x34
     i16 chunk_count;        // 0x00
@@ -664,37 +687,6 @@ typedef struct TERRAIN_PLATFORM_PC { // size 0x6c
 #define TERRAIN_SHAPE_MATERIAL_OK(shape, mask) ((shape)->material[1] == 0 || ((shape)->material[1] & (mask)) != 0)
 
 typedef TERRAIN_PLATFORM_PC TERRAIN_PLATFORM;
-
-typedef struct TERRAIN_SET_PC {                 // size 0xa490
-    TERRAIN_GROUP_PC *groups;                   // 0x0000
-    u8 unknown_004[0x60];                       // 0x0004
-    void *unknown_064;                          // 0x0064
-    TERRAIN_PLATFORM_PC *platforms;             // 0x0068
-    i16 active_platform_groups[96];             // 0x006c
-    i32 active_platform_count;                  // 0x012c
-    f32 platform_query_min_x;                   // 0x0130
-    u8 unknown_134[4];                          // 0x0134
-    f32 platform_query_min_z;                   // 0x0138
-    f32 platform_query_max_x;                   // 0x013c
-    u8 unknown_140[4];                          // 0x0140
-    f32 platform_query_max_z;                   // 0x0144
-    struct TERRAIN_SPATIAL_NODE *spatial_nodes; // 0x0148
-    i16 group_count;                            // 0x014c
-    u16 file_version;                           // 0x014e
-    i32 group_index_count;                      // 0x0150
-    i32 removed_platform_count;                 // 0x0154
-    i16 removed_platforms[32];                  // 0x0158
-    TERRAIN_TRACK_SLOT track_slots[64];         // 0x0198
-    TERRAIN_CELL_PC cells[256];                 // 0x0798
-    TERRAIN_CELL_PC platform_cell;              // 0x1b98
-    i32 minimum_height;                         // 0x1bac
-    i32 used_cell_count;                        // 0x1bb0
-    i16 *group_indices;                         // 0x1bb4
-    TERRAIN_INDEX_LEVEL index_levels[17];       // 0x1bb8
-    i32 max_group_indices;                      // 0xa484
-    i32 max_groups;                             // 0xa488
-    i32 max_platforms;                          // 0xa48c
-} TERRAIN_SET_PC;
 
 #ifdef __cplusplus
 extern "C" {

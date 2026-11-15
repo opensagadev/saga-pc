@@ -19,11 +19,16 @@
 #include "legoapi/core/input/timer.h"
 #include "legoapi/core/input/timing.h"
 #include "legoapi/legoapi_types.h"
-#include "legoapi/world/levels.h"
 #include "legoapi/world/worldinfo.h"
 #include "legogame/game.h"
+#include "nu2api/numath/nurand.h"
 #include "nu2api/numath/nuvec.h"
 #endif
+
+struct apicharactermodellist_s;
+struct char_category_record_s;
+struct customiser_completion_reader_s;
+struct gizobstacle_s;
 
 /* 5 parts: saga.h includes this header once per part, each where its declarations belong; included directly, it gives
  * all parts at once. */
@@ -48,20 +53,6 @@ typedef struct terrain_layer_s { // size 0xc
     u32 unknown_04;              // 0x4
     u32 unknown_08;              // 0x8
 } TERRAIN_LAYER_PC;
-
-struct EPISODESAVE_s {           // size 0xc
-    f32 superstory_time_limit;   // 0x0
-    i32 superstory_score_target; // 0x4
-
-    union { // size 0x4
-        u32 flags;
-
-        struct {                    // size 0x4
-            u8 superstory_complete; // 0x8
-            u8 reserved_0x9[3];     // 0x9
-        };
-    }; // 0x8
-};
 
 #ifdef __cplusplus
 extern "C" {
@@ -239,7 +230,6 @@ extern "C" {
     extern i32 radios_playing;
     extern struct EPISODESAVE_s *Game_EpisodeSave;
     extern void *newmode_cutinfo;
-    extern LEVEL_OBJECT_CONFIG ObjTab[750];
 #ifdef __cplusplus
 }
 #endif
@@ -337,7 +327,7 @@ extern "C" {
     extern struct level_data_s *ASTEROIDCHASEC_LDATA;
     extern struct level_data_s *ENDORBATTLEC_LDATA;
     extern i32 (*FindSlamOrigin_UseCPosFn)(struct gameobject_s *);
-    extern void (*GizObstacle_SetDefaultSFXFn)(void *world, GIZOBSTACLE *obstacle);
+    extern void (*GizObstacle_SetDefaultSFXFn)(void *world, struct gizobstacle_s *obstacle);
     extern struct area_data_s *DOGFIGHT_ADATA;
     extern struct level_data_s *SPEEDERCHASEA_LDATA;
     extern struct level_data_s *DEATHSTARBATTLED_LDATA;
@@ -347,7 +337,6 @@ extern "C" {
     extern struct level_data_s *HUB_LDATA;
     extern struct level_data_s *STATUS_LDATA;
     extern struct level_data_s *CREDITS_LDATA;
-    extern APICHARACTERMODELLIST Hub_ModelList[6];
     extern MAINFRAMECOUNTERS MainFrameCounters;
     extern struct level_data_s *MOSEISLEYB_LDATA;
     extern struct level_data_s *DEATHSTAR2BATTLEE_LDATA;
@@ -355,7 +344,7 @@ extern "C" {
     extern struct level_data_s *DEATHSTAR2BATTLEG_LDATA;
     extern struct gameobject_s *LevGameObject[8];
     extern struct level_data_s *NEGOTIATIONSC_LDATA;
-    extern GIZOBSTACLE *LevGizObst[8];
+    extern struct gizobstacle_s *LevGizObst[8];
 
     extern struct level_data_s *DEATHSTAR2BATTLEA_LDATA;
     extern struct level_data_s *ASTEROIDCHASED_LDATA;
@@ -369,12 +358,10 @@ extern "C" {
     extern struct gameobject_s *BombGenerator_PlayerBomb[2];
     extern struct nugspline_s *script_spline_selected;
     extern struct nugspline_s *script_spline_selected;
-    extern CHAR_CATEGORY_RECORD_PC *CharCategory;
-    extern APICHARACTERMODELLIST FreePlayModelList[49];
+    extern struct char_category_record_s *CharCategory;
     extern AREA_LEVEL_LOAD LevelLoad[12];
-    extern APICHARACTERMODELLIST Area_MissionModelList[49];
-    extern APICHARACTERMODELLIST *CurrentCList;
-    extern APICHARACTERMODELLIST *CurrentStoryCList;
+    extern struct apicharactermodellist_s *CurrentCList;
+    extern struct apicharactermodellist_s *CurrentStoryCList;
     extern i32 (*CanGlideFn)(struct gameobject_s *);
     extern i32 (*Jump_PreventJumpFn)(struct gameobject_s *);
     extern i32 (*Slam_GetDebrisFn)(struct gameobject_s *, i32);
@@ -386,6 +373,22 @@ extern "C" {
     extern struct area_data_s *SENATE_ADATA;
     extern i32 (*SetSoundFadeDistCallBackFn)(struct WORLDINFO_s *);
     extern struct area_data_s *DEATHSTARESCAPE_ADATA;
+    typedef struct DETONATOR_s DETONATOR_s;
+
+    struct DETONATOR_s {             // size 0x38
+        NUVEC position;              // 0x00
+        NUVEC unknown_0c;            // 0x0c
+        NUVEC unknown_18;            // 0x18
+        struct gameobject_s *object; // 0x24
+        u8 active;                   // 0x28
+        u8 draw_result;              // 0x29
+        u16 rotation_x;              // 0x2a
+        u16 rotation_y;              // 0x2c
+        u16 rotation_z;              // 0x2e
+        f32 timer;                   // 0x30
+        void *unknown_34;            // 0x34
+    };
+
     extern DETONATOR_s Detonator[10];
     extern struct area_data_s *SENATE_ADATA;
 #ifdef __cplusplus
@@ -402,9 +405,8 @@ extern "C" {
 #ifdef __cplusplus
 extern "C" {
 #endif
-    extern GAMESAVE Game;
     extern struct CUSTOMISER_LAYERS *CharacterCustomiser;
-    extern CUSTOMISER_COMPLETION_READER_PC *CustomiserCompletionSave;
+    extern struct customiser_completion_reader_s *CustomiserCompletionSave;
 #ifdef __cplusplus
 }
 #endif

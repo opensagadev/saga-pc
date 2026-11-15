@@ -7,30 +7,20 @@
 
 /* The module headers this header uses. saga.h includes every header itself, so the shim skips these. */
 #ifndef SAGA_SHIM
-#include "nu2api/nu3d/nu3d_includes.h"
+#include "nu2api/nu3d/nuhspecial.h"
 #endif
+
+struct nuhspecial_s;
 
 struct NUGSCN_s;
 struct WORLDINFO_s;
-
-typedef struct level_display_s { // size 0x10
-    f32 farclip_hack;            // 0x0
-    f32 near_clip;               // 0x4
-    i16 far_clip;                // 0x8
-    u8 bg_red_top;               // 0xa
-    u8 bg_red_bottom;            // 0xb
-    u8 bg_green_top;             // 0xc
-    u8 bg_green_bottom;          // 0xd
-    u8 bg_blue_top;              // 0xe
-    u8 bg_blue_bottom;           // 0xf
-} LEVEL_DISPLAY_PC;
 
 #ifdef __cplusplus
 extern "C" {
 #endif
     void WidescreenCode(i32);
     void BackDrop_Draw(f32, i32);
-    void DrawParallax(nuhspecial_s *);
+    void DrawParallax(struct nuhspecial_s *);
     void NoRender(void);
     extern nuhspecial_s RenderBackdropSpecials[4];
     extern struct NUGSCN_s *backdrop_scene;

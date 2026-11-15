@@ -161,6 +161,14 @@ typedef struct DWA_WEIGHT_BLOCK { // size 0x208
     f32 values[128];              // 0x008
 } DWA_WEIGHT_BLOCK;
 
+#ifdef __cplusplus
+extern "C" {
+#endif
+    extern DWA_WEIGHT_BLOCK DwaWeightPool[60669];
+#ifdef __cplusplus
+}
+#endif
+
 typedef struct nuprim_vertex_group_source_s { // size 0x8
     u8 count;                                 // 0x0
     u8 block_count;                           // 0x1
@@ -188,13 +196,6 @@ typedef struct GRAPHICS_RENDER_TEXTURE GRAPHICS_RENDER_TEXTURE;
 typedef struct PC_FRAMEBUFFER PC_FRAMEBUFFER;
 
 struct PC_SPECIAL_SHADOW_LIGHT;
-
-typedef struct PC_SPECIAL_PROJECTION_ADJUST { // size 0x10
-    f32 x_scale;                              // 0x0
-    f32 y_scale;                              // 0x4
-    f32 x_offset;                             // 0x8
-    f32 y_offset;                             // 0xc
-} PC_SPECIAL_PROJECTION_ADJUST;
 
 #ifdef __cplusplus
 extern "C" {
@@ -387,21 +388,6 @@ extern "C" {
     void NuTexAnimSetSignals(u32 signals);
     void NuTexAnimProcess(f32 frame_time);
 
-    typedef struct render_post_viewport_prefix_s { // size 0x30
-        f32 source_x;                              // 0x00
-        f32 source_y;                              // 0x04
-        f32 source_right;                          // 0x08
-        f32 source_bottom;                         // 0x0c
-        f32 dest_x;                                // 0x10
-        f32 dest_y;                                // 0x14
-        f32 dest_right;                            // 0x18
-        f32 dest_bottom;                           // 0x1c
-        f32 width_scale;                           // 0x20
-        f32 height_scale;                          // 0x24
-        f32 x_offset;                              // 0x28
-        f32 y_offset;                              // 0x2c
-    } RENDER_POST_VIEWPORT_PREFIX_PC;
-
 #define RENDER_POST_ALPHA_CACHE cacheValues
 
     /* Verified game-local light views may remain source-local: light_data4d8/current61c. No new shared fields or
@@ -460,7 +446,6 @@ extern "C" {
 }
 #endif
 
-typedef void (*PC_DISPLAY_ITEM_HANDLER_PC)(void *);
 /* Working accessed-field views only, not original allocation extents.
  * Pointer-only parameter types remain opaque until an actual read is consumed. */
 typedef struct NU_POST_BLOOM_PARAMETERS NU_POST_BLOOM_PARAMETERS;
@@ -584,6 +569,22 @@ typedef struct nutexdim_s {        // size 0x28
     PC_TEXTURE_RESOURCE *resource; // 0x24
 } NUTEXDIM_PC;
 
+#ifdef __cplusplus
+extern "C" {
+#endif
+#ifdef __cplusplus
+}
+#endif
+
+typedef struct PC_VIEWPORT { // size 0x18
+    u32 x;                   // 0x00
+    u32 y;                   // 0x04
+    u32 width;               // 0x08
+    u32 height;              // 0x0c
+    f32 min_z;               // 0x10
+    f32 max_z;               // 0x14
+} PC_VIEWPORT;
+
 typedef struct nuvpcurrent_s { // size 0x40
 
     union { // size 0x18
@@ -614,6 +615,8 @@ typedef struct nuvpcurrent_s { // size 0x40
 #ifdef __cplusplus
 extern "C" {
 #endif
+    extern NUVPCURRENT vpDevice;
+
     void NuQFntDestroy(VUFNT *);
     extern NUTEXDIM_PC **NuTextureDimensions;
     extern NUVPCURRENT vpCurrent;
@@ -789,23 +792,6 @@ struct PC_OCCLUDER_RECORD { // size 0xa0
 };
 
 #endif
-
-struct PC_HG_SHADOW_PACKET { // size 0x68
-    NUMTX matrix;            // 0x00
-    void *ellipse;           // 0x40
-    void *cylinder;          // 0x44
-    void *third_shape;       // 0x48
-    i32 state0;              // 0x4c
-    i32 state1;              // 0x50
-    i32 state2;              // 0x54
-    i32 state_byte;          // 0x58
-    f32 near_value;          // 0x5c
-    f32 far_value;           // 0x60
-    u8 ellipse_count;        // 0x64
-    u8 cylinder_count;       // 0x65
-    u8 third_count;          // 0x66
-    u8 sequence;             // 0x67
-};
 
 #ifdef __cplusplus
 extern "C" {
@@ -1080,13 +1066,7 @@ extern "C" {
     extern NUDISPLAY_LIST_PC PCDynamicDisplayScene;
 
     void DrawAlphaImage(i32 rows, i32 cols, NUMTL *material, i32 use_pixel_offsets, RENDER_POST_BLOOM_READER_PC *parameters);
-#ifdef __cplusplus
-}
-#endif
 
-#ifdef __cplusplus
-extern "C" {
-#endif
     i32 NuDynamicLightIsEnabled(NURNDRLIGHTRECORD *records);
 
     typedef struct NU_POST_MAIN_VIEW {                // size 0x128
@@ -1146,12 +1126,7 @@ extern "C" {
     extern NU_POST_MOTION_VIEW *motionFilter;
     extern NU_POST_ACCUM_VIEW *motionAccumFilter;
     extern NU_POST_SPEED_VIEW *speedBlurFilter;
-#ifdef __cplusplus
-}
-#endif
-#ifdef __cplusplus
-extern "C" {
-#endif
+
     void NuRndrRect2di(i32 x, i32 y, i32 width, i32 height, i32 colour, NUMTL *material);
     void NuRndrLine2di(i32 x0, i32 y0, i32 x1, i32 y1, i32 colour, NUMTL *material);
     void DisplaySceneRndrSpecials(NUDISPLAY_LIST_PC *, i32, i32);
@@ -1316,13 +1291,7 @@ struct GRAPHICS_RENDER_TEXTURE {   // size 0x30
 extern "C" {
 #endif
     void NuTexAnimResetList(TEXTURE_ANIMATION *animation);
-#ifdef __cplusplus
-}
-#endif
 
-#ifdef __cplusplus
-extern "C" {
-#endif
     extern NUFILE nudlist_field_958;
     extern NUFILE nudlist_field_988;
     extern GRAPHICS_RENDER_TEXTURE *NuPostEffectBackBufferTexture;

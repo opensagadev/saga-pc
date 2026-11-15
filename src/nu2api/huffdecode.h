@@ -12,6 +12,8 @@
 #include "nu2api/nufile/nufpar.h"
 #endif
 
+struct nufpar_s;
+
 typedef struct nualloc_arena_s NUALLOC_ARENA;
 
 typedef struct pc_filepakhdr_v0_s { // size 0xc
@@ -47,7 +49,6 @@ typedef struct pc_filepakitem_s { // size 0x1c
     u32 post_move_callback_va;    // 0x18
 } PC_FILEPAKITEM;
 
-typedef void (*NUFPCOMFN)(NUFPAR_PC *parser);
 typedef i32 (*NURDPGETVARFN)(char *name, f32 *value, i32 *found);
 
 typedef struct pc_nudatfileinfo_s { // size 0x30
@@ -165,10 +166,9 @@ extern "C" {
     extern const f64 NuTime_MicroScale;
     extern const f64 NuTime_ScanlineScale;
     extern f32 NuVideoFrameRate;
-    extern NUFPAR_PC NuFParRecords[4];
     extern char NuFParBuffers[4][0x1000];
     i32 GetLineW(u16 *buffer, NUFILE file);
-    extern void (*fnInterpreterError)(NUFPAR_PC *parser);
+    extern void (*fnInterpreterError)(struct nufpar_s *parser);
     extern i32 ShowingError;
     extern PC_NUDATFILEINFO *unpack_file_info;
     extern NUDATOPENFILEINFO *unpack_file_odi;

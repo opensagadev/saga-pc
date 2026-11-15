@@ -16,7 +16,6 @@
 #ifndef SAGA_SHIM
 #include "legoapi/items/objects/game_obj.h"
 #include "legoapi/lib/hub.h"
-#include "nu2api/nu3d/nu3d_includes.h"
 #include "nu2api/numath/numtx.h"
 #include "nu2api/numath/nuvec.h"
 #endif
@@ -54,6 +53,10 @@ typedef struct RUMBLE_PACKET_RESOURCE { // size 0x14
     f32 duration; // 0x0c
     u8 active;    // 0x10
 } RUMBLE_PACKET_RESOURCE;
+
+typedef struct STATUS_RUMBLE_PAIR {
+    RUMBLE_PACKET_RESOURCE players[2];
+} STATUS_RUMBLE_PAIR;
 #ifdef __cplusplus
 extern "C" {
 #endif
@@ -69,12 +72,7 @@ extern "C" {
 
     /* Additive shared contracts only; existing RTL/flight/game/player types reused. */
     extern NUVEC PanelLightingDirectionsPc[3];
-#ifdef __cplusplus
-}
-#endif
-#ifdef __cplusplus
-extern "C" {
-#endif
+
     extern i32 StatusNewMinikitCount;
     extern i32 currentminikit;
     extern i16 StatusNewCharacterIds[8];

@@ -16,19 +16,13 @@
 #ifndef SAGA_SHIM
 #include "gameapi/ai/aisys/aisys.h"
 #include "gameapi/apitext.h"
-#include "legoapi/audio/audio.h"
 #include "legoapi/gizmo/base/gizmo.h"
 #include "legoapi/gizmo/object/gizmoblowups.h"
 #include "legoapi/items/objects/objectsall.h"
 #include "legoapi/legoapi_types.h"
-#include "legoapi/lib/hub.h"
 #include "legoapi/world/area.h"
-#include "legoapi/world/areas.h"
 #include "legoapi/world/level.h"
-#include "legoapi/world/sceneprogress.h"
 #include "legoapi/world/world.h"
-#include "legogame/game.h"
-#include "nu2api/nu3d/nu3d_includes.h"
 #include "nu2api/nu3d/numtl.h"
 #include "nu2api/nu3d/nuspline.h"
 #include "nu2api/nufile/nufpar.h"
@@ -36,6 +30,11 @@
 #endif
 
 struct AIAREA;
+struct WORLDINFO_s;
+struct gizaimessage_s;
+struct gizmo_s;
+struct level_data_s;
+struct levelspline_s;
 
 /* 4 parts: saga.h includes this header once per part, each where its declarations belong; included directly, it gives
  * all parts at once. */
@@ -53,6 +52,8 @@ typedef struct LEVEL_OBJECT_CONFIG { // size 0x8
 #ifdef __cplusplus
 extern "C" {
 #endif
+    extern LEVEL_OBJECT_CONFIG ObjTab[750];
+
     /* LevelCompletionFallbackFlagPC: reuse existing canonical u32 declaration. */
     extern const char PlayerBeenDeactivated[16];
     extern i16 VehicleSpecialShooterId;
@@ -266,24 +267,19 @@ extern "C" {
     extern NUFPCOMJMP LevelConfig_BeforeLoad_GenericKeywords[5];
     extern NUFPCOMJMP LevelConfig_AfterLoad_GenericKeywords[53];
     extern NUFPCOMJMP *Level_ConfigAfterLoad_GameKeywords;
-    extern LEVELSPLINE_PC *LevSplList;
-    void LevelSplines_InitForGame(LEVELSPLINE_PC *table);
-    extern GIZAIMESSAGE *LevAIMessage[8];
+    extern struct levelspline_s *LevSplList;
+    void LevelSplines_InitForGame(struct levelspline_s *table);
+    extern struct gizaimessage_s *LevAIMessage[8];
     extern AIAREA *LevArea[4];
 
     extern nuhspecial_s LevHSpecial[88];
     void LevelObjects_InitForGame(LEVEL_OBJECT_CONFIG *, VARIPTR *, VARIPTR *, i32, i32);
-    extern GIZMO_PC *LevGizmo[12];
+    extern struct gizmo_s *LevGizmo[12];
     extern GIZMOBLOWUP_PC *LevBlowUp[2];
     extern NUMTL *PermanentEffectsMaterial;
     extern NUMTL *PermanentShadowMaterial;
 
-    extern AREA_EXTRA_MODEL ExtraModelList[6];
-
     extern struct text_crawl_view_s TextCrawlLsw;
-    extern COLLECTION_BUILD_PC JediCollection;
-    extern COLLECTION_BUILD_PC BlasterCollection;
-    extern COLLECTION_BUILD_PC BountyHunterCollection;
     extern NUMTX LevMtx;
 #ifdef __cplusplus
 }
@@ -299,80 +295,79 @@ extern "C" {
 #ifdef __cplusplus
 extern "C" {
 #endif
-    extern LEVELDATA_PC *CRUISERC_LDATA;
-    extern LEVELDATA_PC *GUNSHIPB_LDATA;
+    extern struct level_data_s *CRUISERC_LDATA;
+    extern struct level_data_s *GUNSHIPB_LDATA;
 
-    extern LEVELDATA_PC *BOUNTYHUNTERPURSUITE_LDATA;
-    extern LEVELDATA_PC *RETAKEB_LDATA;
-    extern LEVELDATA_PC *RETAKED_LDATA;
-    extern LEVELDATA_PC *RETAKEE_LDATA;
-    extern LEVELDATA_PC *MAULA_LDATA;
-    extern LEVELDATA_PC *MAULD_LDATA;
-    extern LEVELDATA_PC *KAMINOC_LDATA;
-    extern LEVELDATA_PC *FACTORYB_LDATA;
-    extern LEVELDATA_PC *FACTORYD_LDATA;
-    extern LEVELDATA_PC *FACTORYF_LDATA;
-    extern LEVELDATA_PC *FACTORYG_LDATA;
-    extern LEVELDATA_PC *DOOKUC_LDATA;
-    extern LEVELDATA_PC *CRUISERD_LDATA;
-    extern LEVELDATA_PC *CRUISERG_LDATA;
-    extern LEVELDATA_PC *KASHYYYKD_LDATA;
-    extern OPTIONSSAVE TempOptions;
-    extern LEVELDATA_PC *KAMINOE_LDATA;
-    extern LEVELDATA_PC *PODRACEA_LDATA;
-    extern LEVELDATA_PC *BONUS_GUNSHIPB_LDATA;
-    extern LEVELDATA_PC *PODSPRINTA_LDATA;
-    extern LEVELDATA_PC *PODRACEB_LDATA;
-    extern LEVELDATA_PC *BONUS_GUNSHIPA_LDATA;
-    extern LEVELDATA_PC *DOGFIGHTA_LDATA;
-    extern LEVELDATA_PC *VADERA_LDATA;
+    extern struct level_data_s *BOUNTYHUNTERPURSUITE_LDATA;
+    extern struct level_data_s *RETAKEB_LDATA;
+    extern struct level_data_s *RETAKED_LDATA;
+    extern struct level_data_s *RETAKEE_LDATA;
+    extern struct level_data_s *MAULA_LDATA;
+    extern struct level_data_s *MAULD_LDATA;
+    extern struct level_data_s *KAMINOC_LDATA;
+    extern struct level_data_s *FACTORYB_LDATA;
+    extern struct level_data_s *FACTORYD_LDATA;
+    extern struct level_data_s *FACTORYF_LDATA;
+    extern struct level_data_s *FACTORYG_LDATA;
+    extern struct level_data_s *DOOKUC_LDATA;
+    extern struct level_data_s *CRUISERD_LDATA;
+    extern struct level_data_s *CRUISERG_LDATA;
+    extern struct level_data_s *KASHYYYKD_LDATA;
+    extern struct level_data_s *KAMINOE_LDATA;
+    extern struct level_data_s *PODRACEA_LDATA;
+    extern struct level_data_s *BONUS_GUNSHIPB_LDATA;
+    extern struct level_data_s *PODSPRINTA_LDATA;
+    extern struct level_data_s *PODRACEB_LDATA;
+    extern struct level_data_s *BONUS_GUNSHIPA_LDATA;
+    extern struct level_data_s *DOGFIGHTA_LDATA;
+    extern struct level_data_s *VADERA_LDATA;
     extern AREAFIXUP_PC AreaFixUpLSW[65];
     extern AREAFIXUP_PC AreaFixUpLostTemple[2];
     extern AREAFIXUP_PC AreaFixUpGotham[5];
-    extern LEVELDATA_PC *VADERC_LDATA;
-    extern LEVELDATA_PC *MAULF_LDATA;
-    extern LEVELDATA_PC *GUNSHIPA_LDATA;
-    extern LEVELDATA_PC *UpdateSockets_LDATA;
-    extern LEVELDATA_PC *ObstacleReturnLevel;
+    extern struct level_data_s *VADERC_LDATA;
+    extern struct level_data_s *MAULF_LDATA;
+    extern struct level_data_s *GUNSHIPA_LDATA;
+    extern struct level_data_s *UpdateSockets_LDATA;
+    extern struct level_data_s *ObstacleReturnLevel;
     extern PART_PC *LevGamePart[8];
     extern NUGSPLINE *LevelCodeSpline[8];
-    void NewLevelFromMenu(LEVELDATA_PC *, i32, i32, i32);
-    extern LEVELDATA_PC *JEDI_B_LDATA;
-    extern LEVELDATA_PC *CollisionVehicleExcludedLevel;
+    void NewLevelFromMenu(struct level_data_s *, i32, i32, i32);
+    extern struct level_data_s *JEDI_B_LDATA;
+    extern struct level_data_s *CollisionVehicleExcludedLevel;
 
-    extern LEVELDATA_PC *WorldArchiveOneLevels[11];
-    extern LEVELDATA_PC *WorldArchiveThreeLevels[4];
+    extern struct level_data_s *WorldArchiveOneLevels[11];
+    extern struct level_data_s *WorldArchiveThreeLevels[4];
 
-    extern LEVELDATA_PC *dat_0087b0b4;
-    extern LEVELDATA_PC *dat_0087b0b8;
-    extern LEVELDATA_PC *dat_0087b0bc;
-    extern LEVELDATA_PC *dat_0087b0f0;
-    extern LEVELDATA_PC *dat_0087b12c;
-    extern LEVELDATA_PC *dat_0087b138;
-    extern LEVELDATA_PC *dat_0087b140;
-    extern LEVELDATA_PC *dat_0087b148;
-    extern LEVELDATA_PC *dat_0087b150;
-    extern LEVELDATA_PC *dat_0087b154;
-    extern LEVELDATA_PC *dat_0087b164;
-    extern LEVELDATA_PC *dat_0087b170;
-    extern LEVELDATA_PC *dat_0087b17c;
-    extern LEVELDATA_PC *dat_0087b194;
-    extern LEVELDATA_PC *dat_0087b1c0;
-    extern LEVELDATA_PC *dat_0087b200;
-    extern LEVELDATA_PC *dat_0087b204;
-    extern LEVELDATA_PC *dat_0087b210;
-    extern LEVELDATA_PC *dat_0087b218;
-    extern LEVELDATA_PC *dat_0087b220;
-    extern LEVELDATA_PC *dat_0087b228;
-    extern LEVELDATA_PC *dat_0087b258;
-    extern LEVELDATA_PC *dat_0087b268;
-    extern LEVELDATA_PC *dat_0087b2b0;
-    void Titles_Init(WORLDINFO *);
-    void Titles_Update(WORLDINFO *);
-    void Titles_Draw(WORLDINFO *);
-    void Credits_Init_Game(WORLDINFO *);
-    void Credits_Update_Game(WORLDINFO *);
-    void Credits_Draw_Game(WORLDINFO *);
+    extern struct level_data_s *dat_0087b0b4;
+    extern struct level_data_s *dat_0087b0b8;
+    extern struct level_data_s *dat_0087b0bc;
+    extern struct level_data_s *dat_0087b0f0;
+    extern struct level_data_s *dat_0087b12c;
+    extern struct level_data_s *dat_0087b138;
+    extern struct level_data_s *dat_0087b140;
+    extern struct level_data_s *dat_0087b148;
+    extern struct level_data_s *dat_0087b150;
+    extern struct level_data_s *dat_0087b154;
+    extern struct level_data_s *dat_0087b164;
+    extern struct level_data_s *dat_0087b170;
+    extern struct level_data_s *dat_0087b17c;
+    extern struct level_data_s *dat_0087b194;
+    extern struct level_data_s *dat_0087b1c0;
+    extern struct level_data_s *dat_0087b200;
+    extern struct level_data_s *dat_0087b204;
+    extern struct level_data_s *dat_0087b210;
+    extern struct level_data_s *dat_0087b218;
+    extern struct level_data_s *dat_0087b220;
+    extern struct level_data_s *dat_0087b228;
+    extern struct level_data_s *dat_0087b258;
+    extern struct level_data_s *dat_0087b268;
+    extern struct level_data_s *dat_0087b2b0;
+    void Titles_Init(struct WORLDINFO_s *);
+    void Titles_Update(struct WORLDINFO_s *);
+    void Titles_Draw(struct WORLDINFO_s *);
+    void Credits_Init_Game(struct WORLDINFO_s *);
+    void Credits_Update_Game(struct WORLDINFO_s *);
+    void Credits_Draw_Game(struct WORLDINFO_s *);
 #ifdef __cplusplus
 }
 #endif
@@ -384,13 +379,6 @@ extern "C" {
 #endif
 
 #if SAGA_LEGOAPI_WORLD_LEVELS_H_PART == 4 && !defined(SAGA_LEGOAPI_WORLD_LEVELS_H_STOP)
-#ifdef __cplusplus
-extern "C" {
-#endif
-    extern GAMESAVE BackupGame;
-#ifdef __cplusplus
-}
-#endif
 #undef SAGA_LEGOAPI_WORLD_LEVELS_H_PART
 #define SAGA_LEGOAPI_WORLD_LEVELS_H_PART 5
 #ifdef SAGA_SHIM

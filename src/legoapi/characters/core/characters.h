@@ -7,26 +7,40 @@
 
 /* The module headers this header uses. saga.h includes every header itself, so the shim skips these. */
 #ifndef SAGA_SHIM
-#include "nu2api/nu3d/nu3d_includes.h"
+#include "nu2api/nu3d/nuhspecial.h"
 #endif
+
+struct nuhspecial_s;
 
 struct NUGSCN_s;
 struct WORLDINFO_s;
 struct gameobject_s;
 struct numtx_s;
 
-typedef struct GAME_CUSTOMISER_START { // size 0x38
-    u16 pieces[9];                     // 0x00
-    u8 reserved_12[2];                 // 0x12
-    char name[32];                     // 0x14
-    u8 use_saved_name;                 // 0x34
-    u8 reserved_35[3];                 // 0x35
-} GAME_CUSTOMISER_START;
-
 typedef struct apicharactermodellist_s { // size 0x4
     i16 model_id;                        // 0x0
     i16 count;                           // 0x2
 } APICHARACTERMODELLIST;
+
+#ifdef __cplusplus
+extern "C" {
+#endif
+    extern APICHARACTERMODELLIST Area_PlayerModelList[9];
+
+    extern APICHARACTERMODELLIST Area_FreePlayModelList[49];
+
+    extern APICHARACTERMODELLIST fplist[341];
+
+    extern APICHARACTERMODELLIST Area_MissionModelList[49];
+
+    extern APICHARACTERMODELLIST FreePlayModelList[49];
+
+    extern APICHARACTERMODELLIST Hub_ModelList[6];
+
+    extern APICHARACTERMODELLIST fplist[341];
+#ifdef __cplusplus
+}
+#endif
 
 typedef struct KILLPARTS_CHARSCENE { // size 0x10
     struct NUGSCN_s *scene;          // 0x0
@@ -37,7 +51,7 @@ typedef struct KILLPARTS_CHARSCENE { // size 0x10
 extern "C" {
 #endif
     void CharScene_Draw(struct WORLDINFO_s *, i32, struct numtx_s *, struct numtx_s *);
-    nuhspecial_s *CharScene_FindHSpecial(struct WORLDINFO_s *, i32);
+    struct nuhspecial_s *CharScene_FindHSpecial(struct WORLDINFO_s *, i32);
     extern KILLPARTS_CHARSCENE *KillPartsCharSceneArea;
     void HeadMovement(struct gameobject_s *);
     void HairMovement(struct gameobject_s *);

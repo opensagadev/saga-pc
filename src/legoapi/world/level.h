@@ -14,10 +14,8 @@
 
 /* The module headers this header uses. saga.h includes every header itself, so the shim skips these. */
 #ifndef SAGA_SHIM
-#include "legoapi/render/core/screen.h"
-#include "legoapi/world/levels.h"
 #include "legoapi/world/sceneprogress.h"
-#include "nu2api/nu3d/nu3d_includes.h"
+#include "nu2api/nu3d/nuhspecial.h"
 #include "nu2api/numath/nuvec.h"
 #endif
 
@@ -142,6 +140,18 @@ enum LEVEL_FLAGS {
     LEVEL_OVERRIDE_NO_PICKUP_GRAVITY = 0x400000, /* override_nopickupgravity */
     LEVEL_HIDE_ICONS = 0x800000                  /* hidden_icons off */
 };
+
+typedef struct level_display_s { // size 0x10
+    f32 farclip_hack;            // 0x0
+    f32 near_clip;               // 0x4
+    i16 far_clip;                // 0x8
+    u8 bg_red_top;               // 0xa
+    u8 bg_red_bottom;            // 0xb
+    u8 bg_green_top;             // 0xc
+    u8 bg_green_bottom;          // 0xd
+    u8 bg_blue_top;              // 0xe
+    u8 bg_blue_bottom;           // 0xf
+} LEVEL_DISPLAY_PC;
 
 typedef struct level_data_s { // size 0x130
     char dir[0x40];           // 0x000

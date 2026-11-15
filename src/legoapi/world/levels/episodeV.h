@@ -12,13 +12,13 @@
 #include "nu2api/numath/nuvec.h"
 #endif
 
+struct GIZBUILDIT_s;
 struct PART_PC;
 struct WORLDINFO_s;
 struct gameobject_s;
 struct gizmo_s;
 struct level_data_s;
 
-typedef void (*PART_KILL)(struct PART_PC *, i32);
 #ifdef __cplusplus
 extern "C" {
 #endif
@@ -126,13 +126,13 @@ extern "C" {
 }
 #endif
 
-typedef struct TROOPERCANNON {   // size 0x30
-    struct gizmo_s *base;        // 0x00
-    GIZBUILDIT_s *buildit;       // 0x04
-    struct gameobject_s *object; // 0x08
-    char character_name[32];     // 0x0c
-    u8 rebuilding;               // 0x2c
-    u8 padding[3];               // 0x2d
+typedef struct TROOPERCANNON {    // size 0x30
+    struct gizmo_s *base;         // 0x00
+    struct GIZBUILDIT_s *buildit; // 0x04
+    struct gameobject_s *object;  // 0x08
+    char character_name[32];      // 0x0c
+    u8 rebuilding;                // 0x2c
+    u8 padding[3];                // 0x2d
 } TROOPERCANNON;
 
 #ifdef __cplusplus

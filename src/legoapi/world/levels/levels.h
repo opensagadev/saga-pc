@@ -13,11 +13,12 @@
 #include "legoapi/legoapi_types.h"
 #include "legoapi/lib/hub.h"
 #include "legoapi/world/level.h"
-#include "legoapi/world/levels.h"
 #include "legoapi/world/levels/episodeI.h"
 #include "legoapi/world/world.h"
 #include "nu2api/nu3d/nugscn.h"
 #endif
+
+struct gizaimessagesys_s;
 
 #ifdef __cplusplus
 extern "C" FadeSystem FadeSys;
@@ -80,7 +81,7 @@ extern "C" {
     extern u16 temp_zrot;
     extern AREA_DATA_PC *GUNSHIP_ADATA;
     extern f32 PANEL3DMULX;
-    extern GIZAIMESSAGESYS *gizaimessagesys;
+    extern struct gizaimessagesys_s *gizaimessagesys;
     extern GAMECAMERA *GameCam;
     extern i32 MiniCutCam;
     extern i32 pause_rndr_on;

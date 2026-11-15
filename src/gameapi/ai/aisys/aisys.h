@@ -18,8 +18,6 @@
 #include "editor/edpath_types.h"
 #include "gameapi/ai/aisys/aipath.h"
 #include "legoapi/ai/core/gameai.h"
-#include "legogame/batman_gameai.h"
-#include "nu2api/nu3d/nu3d_includes.h"
 #include "nu2api/nucore/nulist.h"
 #include "nu2api/numath/nuvec.h"
 #endif
@@ -529,9 +527,6 @@ extern "C" {
 #ifdef __cplusplus
 extern "C" {
 #endif
-
-    extern AI_PREPARING_SPECIAL_MOVE_PC PreparingForSpecialMoveFn;
-    extern AI_MID_SPECIAL_MOVE_PC MidSpecialMoveFn;
 
     void SetSpecialMove(struct gameobject_s *, AIPATHNODE *, AIPATHNODE *, i8);
     i32 TryToTeleportToNextNode(struct gameobject_s *, AIPATHNODE *, i32);

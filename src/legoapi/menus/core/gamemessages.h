@@ -19,6 +19,9 @@
 #include "nu2api/numath/nuvec.h"
 #endif
 
+struct add_game_message_s;
+struct game_message_s;
+
 /* 2 parts: saga.h includes this header once per part, each where its declarations belong; included directly, it gives
  * all parts at once. */
 
@@ -26,7 +29,6 @@
 
 struct nuhspecial_s;
 
-typedef void (*GAME_MESSAGE_CALLBACK)(GAME_MESSAGE_PC *);
 #ifdef __cplusplus
 extern "C" {
 #endif
@@ -52,16 +54,15 @@ extern "C" {
 #ifdef __cplusplus
 extern "C" {
 #endif
-    i32 FindGameMsgsWithID(i32, i32, i32, GAME_MESSAGE_PC *);
-    void EndScoreMessage(GAME_MESSAGE_PC *);
-    void GameMsg_DrawAdjustNewPos_CoinToTotal(GAME_MESSAGE_PC *);
-    void EndScoreMessage(GAME_MESSAGE_PC *message);
-    void GameMsg_DrawAdjustNewPos_CoinToTotal(GAME_MESSAGE_PC *message);
-    extern ADD_GAME_MESSAGE_PC AddGameMsg_Default;
+    i32 FindGameMsgsWithID(i32, i32, i32, struct game_message_s *);
+    void EndScoreMessage(struct game_message_s *);
+    void GameMsg_DrawAdjustNewPos_CoinToTotal(struct game_message_s *);
+    void EndScoreMessage(struct game_message_s *message);
+    void GameMsg_DrawAdjustNewPos_CoinToTotal(struct game_message_s *message);
 
     extern GAME_MESSAGE_PC GameMessage[128];
-    GAME_MESSAGE_PC *AddGameMsg(ADD_GAME_MESSAGE_PC *message);
-    extern struct nuhspecial_s *(*GameMsg_GetExtraObjFn)(GAME_MESSAGE_PC *message);
+    struct game_message_s *AddGameMsg(struct add_game_message_s *message);
+    extern struct nuhspecial_s *(*GameMsg_GetExtraObjFn)(struct game_message_s *message);
 #ifdef __cplusplus
 }
 #endif
