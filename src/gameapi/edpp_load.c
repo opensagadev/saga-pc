@@ -360,9 +360,6 @@ void cbPtlQuickDeleteMenu(eduimenu_s *menu, eduiitem_s *unused1, u32 unused2) {
     }
 }
 
-extern i32 edbits_particle_general_page;
-extern i32 edbits_particle_char_page;
-
 i32 edppLoadPage(char *path, i8 flag, NUGSCN *scene) {
     i32 page;
     i32 n;

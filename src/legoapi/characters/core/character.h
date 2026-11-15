@@ -536,6 +536,9 @@ extern "C" {
 extern "C" {
 #endif
     extern BLADE BladeTab[4];
+    extern char *(*GlobalCharacterNameFn)(i32);
+    extern void (*GlobalCharacterRenderFn)(NUVEC *, i16, i32, i32, void *);
+    extern void *(*GlobalCharacterHGobjFn)(i32);
 #ifdef __cplusplus
 }
 #endif

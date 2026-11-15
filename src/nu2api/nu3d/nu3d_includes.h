@@ -1462,6 +1462,9 @@ typedef struct NU_POST_DEFERRED_VIEW {         // size 0xdc
 extern "C" {
 #endif
     extern NU_POST_DEFERRED_VIEW *deferredFilter;
+    void NuRndrGradRect2di(i32 x, i32 y, i32 width, i32 height, u32 *colours, NUMTL *material);
+    void NuRndrLineStrip2di(i32 *positions, f32 *uvs, i32 count, i32 colour, NUMTL *material);
+    void NuRndrTriStrip2di(i32 *positions, f32 *uvs, i32 count, i32 colour, NUMTL *material);
 #ifdef __cplusplus
 }
 #endif

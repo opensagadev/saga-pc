@@ -44,6 +44,7 @@ extern "C" {
     void NuHGobjEvalAnimBlend(NUHGOBJ_EVAL *, NUANIM_LEGACY_HEADER *, f32, NUANIM_LEGACY_HEADER *, f32, f32, i32, NUHGOBJ_JOINT_OVERRIDE *,
                               struct numtx_s *);
     NUHGOBJ_EVAL *NuGHGRead(char *, VARIPTR *, VARIPTR);
+    extern void NuHGobjDestroy(NUHGOBJ_EVAL *object);
 #ifdef __cplusplus
 }
 #endif

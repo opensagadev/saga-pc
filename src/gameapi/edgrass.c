@@ -862,8 +862,6 @@ void edgracbDpadModeMenu(eduimenu_s *parent, eduiitem_s *unused1, u32 unused2);
 
 #define EDGRA_INDIVIDUAL(clump, element) (&IndGrassClumps[EDGRA_MAX_UNITS_PER_INDIVIDUAL_CLUMP * (clump) + (element)])
 
-extern i32 edgra_pageid;
-
 void edgraClumpPlace(i32 index, NUVEC *position) {
     GrassClumps[index].position = *position;
     GrassClumps[index].size = edgra_size;

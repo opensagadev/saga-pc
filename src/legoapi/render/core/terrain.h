@@ -81,6 +81,7 @@ extern "C" {
     i32 NewRayCastPlatForm(NUVEC *, NUVEC *, f32, f32, i32, i32);
     void DrawWallSpline(f32);
     i32 NewPlatPickupInst(void *, i32);
+    i32 NewRayCastScaleY(NUVEC *position, NUVEC *movement, f32 radius, f32 scale_y, i32 scan_flags);
 #ifdef __cplusplus
 }
 #endif

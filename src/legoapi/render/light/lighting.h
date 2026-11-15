@@ -50,6 +50,8 @@ extern "C" {
 
     void RenderShadowLights(i32);
     void SetShadowLight(void);
+    char *rtlGetEnvPath(void);
+    char *rtlGetEnvSceneName(void);
 #ifdef __cplusplus
 }
 #endif

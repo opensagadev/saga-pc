@@ -109,8 +109,6 @@ typedef struct CHARACTER_LIST_ENTRY {      // size 0x4c
     u32 unknown_48;                        // 0x48
 } CHARACTER_LIST_ENTRY;
 
-extern void NuHGobjDestroy(NUHGOBJ_EVAL *object);
-
 static f32 APIObjectFabs(f32 value);
 
 static f32 APIObjectSafeDivide(f32 a, f32 b) {

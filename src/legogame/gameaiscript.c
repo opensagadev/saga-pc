@@ -16,10 +16,6 @@ typedef union AI_ACTION_FLAGS_EF4 { // size 0x4
     } bits;
 } AI_ACTION_FLAGS_EF4;
 
-extern void AiRndrLine3d(NURND_VERTEX3D_PC *, NUMTL *, NUMTX *);
-
-void AIRetreatFromDestination2(AISYS_PC *, AIPACKET *, APIOBJECT *, i32);
-
 typedef struct GIZSPECIAL_PARTIAL { // size 0x24
     u8 unknown_00[0x20];            // 0x00
     GAMEANIMSET *anim_set;          // 0x20
@@ -76,12 +72,6 @@ typedef struct torpedo_action_packet_s { // size 0x88
 } TORPEDO_ACTION_PACKET;
 
 void NuRndrBoundingBox(NUVEC *minimum, NUVEC *maximum, NUMTX *matrix, i32 colour);
-
-i32 NewRayCastScaleY(NUVEC *position, NUVEC *movement, f32 radius, f32 scale_y, i32 scan_flags);
-
-void routeEditor_Render(i32 x, i32 y, f32 xscale, f32 yscale);
-
-void areaEditor_Render(i32 x, i32 y, f32 xscale, f32 yscale);
 
 void FollowAPIObject(APIOBJECT *, APIOBJECT *, i32, f32);
 

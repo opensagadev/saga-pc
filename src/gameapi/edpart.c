@@ -1033,7 +1033,6 @@ void edpartClose(void) {
 }
 
 extern NUVEC edpart_entry_position;
-void edcamSetPosAng(NUVEC *position, i32 pitch, i32 yaw);
 
 /* Remembers where the editor was entered and moves the
  * camera there on the first entry of a level. */

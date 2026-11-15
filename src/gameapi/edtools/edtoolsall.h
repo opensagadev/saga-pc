@@ -31,6 +31,12 @@ extern "C" {
     void eduiSetCameraEnabled(i32 enabled);
     void eduiSetCursorColour(u32 colour);
     void eduiSetFontScale(f32 x, f32 y);
+    extern i32 near_clip_at_cursor;
+    void AddColourPick(eduimenu_s *menu, eduiitem_s *item, f32 *red, f32 *green, f32 *blue, u32 *rgba);
+    void CreateColourPicker(void);
+    void cbCancelSubMenuFromItem(eduimenu_s *menu, eduiitem_s *item, u32 buttons);
+    void cbNearClipAtCursor(eduimenu_s *menu, eduiitem_s *item, u32 buttons);
+    void cbTriggerSubMenu(eduimenu_s *menu, eduiitem_s *item, u32 buttons);
 #ifdef __cplusplus
 }
 #endif

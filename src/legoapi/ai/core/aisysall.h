@@ -82,6 +82,21 @@ extern "C" {
     struct AIGROUP *CreateAIGroup(struct AISYS_PC *arg0, i32 arg1, f32 arg2, f32 arg3, f32 arg4);
     void AiRndrLine3dDbg(f32 x0, f32 y0, f32 z0, f32 x1, f32 y1, f32 z1, u32 colour);
     extern f32 aiEditor_DrawYOffset;
+    extern f32 default_xspacing;
+    extern f32 default_zspacing;
+    extern u8 default_nacross;
+    extern u8 default_ngroup;
+    extern void (*AIPathDeletedFn)(EDAIPATH_s *path);
+    extern void (*GameAISaveFn)(AIPATHSYS *);
+    extern void AiRndrLine3d(NURND_VERTEX3D_PC *, NUMTL *, NUMTX *);
+    void AIRetreatFromDestination2(AISYS_PC *, AIPACKET *, APIOBJECT *, i32);
+    void areaEditor_Render(i32 x, i32 y, f32 xscale, f32 yscale);
+    void routeEditor_Render(i32 x, i32 y, f32 xscale, f32 yscale);
+    void xConst(NUFPAR_PC *parser);
+    void xDeriveFromScript(NUFPAR_PC *parser);
+    void xInclude(NUFPAR_PC *parser);
+    void xParam(NUFPAR_PC *parser);
+    void xState(NUFPAR_PC *parser);
 #ifdef __cplusplus
 }
 #endif

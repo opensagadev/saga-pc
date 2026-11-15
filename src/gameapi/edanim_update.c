@@ -2,8 +2,6 @@
 #include <math.h>
 #include <string.h>
 
-extern i32 EdAnimLocalFrameCount;
-f32 edanimPlayerAnimDistance(i32 parameter_index);
 void edanimParticleDestroy(i32 parameter_index, i32 particle_index);
 
 /* Flags are deliberately not compacted by this helper. */

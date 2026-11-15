@@ -9,7 +9,6 @@ void EdFileWriteInt(i32 value);
 void EdFileWriteShort(i16 value);
 void EdFileWriteChar(char value);
 void EdFileWriteNuVec(NUVEC *value);
-void edbricbFileLoad(eduimenu_s *menu, eduiitem_s *unused1, u32 unused2);
 extern NUMTL *edbri_mtl;
 
 i32 edbri_bridges_used = 0;

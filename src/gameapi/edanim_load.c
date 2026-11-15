@@ -7,10 +7,6 @@
 void edbitsDrawCube(f32 x, f32 y, f32 z, f32 half_x, f32 half_y, f32 half_z, i32 rotation_z, i32 rotation_y, i32 rotation_x, i32 outer_z,
                     i32 outer_y, i32 colour, NUMTL *material);
 
-extern i32 edqseed;
-extern char edbits_level_filename[256];
-extern i8 edbits_what_game;
-
 i32 edanimLookupSpecial(char *name, NUGSCN *scene) {
     nuhspecial_s special;
     i32 index;
@@ -929,9 +925,6 @@ void edanimDrawCursor(void) {
 }
 
 extern struct eduimenu_s *edanim_localsound_menu;
-void edanimcbCancelLocalSoundMenu(eduimenu_s *unused0, eduimenu_s *unused1);
-void edanimcbToggleSoundType(eduimenu_s *menu, eduiitem_s *item, u32 unused2);
-void edanimcbSetSoundTiming(eduimenu_s *unused0, eduiitem_s *item, u32 unused2);
 
 void edanimcbLocalSoundMenu(eduimenu_s *parent, eduiitem_s *unused1, u32 unused2) {
     u32 colours[4] = {0x80000000, 0x80ff0000, 0x80808080, 0x80404040};
@@ -982,12 +975,6 @@ void edanimcbCubeMap(eduimenu_s *unused0, eduiitem_s *unused1, u32 unused2) {
         NuRndrDoingScreenGrab = 1;
     }
 }
-
-void edanimcbParticleMenu(eduimenu_s *parent, eduiitem_s *unused1, u32 unused2);
-void edanimcbSwitchMenu(eduimenu_s *parent, eduiitem_s *unused1, u32 unused2);
-void edanimcbFileSave(eduimenu_s *menu, eduiitem_s *unused1, u32 unused2);
-void edanimcbMCTBMenu(eduimenu_s *parent, eduiitem_s *unused1, u32 unused2);
-void edanimcbCancelOptMenu(eduimenu_s *unused0, eduimenu_s *unused1);
 
 void edanimInit(void) {
     u32 colours[4] = {0x80000000, 0x80ff0000, 0x80808080, 0x80404040};

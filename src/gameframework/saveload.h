@@ -52,6 +52,15 @@ extern "C" {
     i32 saveloadLoadSlot(i32 slot, void *buffer, i32 size);
     void saveloadASLoad(i32 slot, void *buffer, i32 size);
     void saveloadASCallEachFrame(void);
+    extern char *fullslotname(i32);
+    extern char SaveFolderPathPc[256];
+    extern char SaveFullCodePath[256];
+    extern char SaveFullSlotPath[256];
+    extern char SaveSlotName[256];
+    extern i32 saveload_slotcode[6];
+    void saveloadASDelete(i32 slot);
+    void saveloadASFormat(void);
+    void saveloadASSave(i32 slot, void *buffer, i32 size, u32 hash);
 #ifdef __cplusplus
 }
 #endif

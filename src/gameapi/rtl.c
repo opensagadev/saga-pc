@@ -2703,8 +2703,6 @@ void cbPasteIntoLight(eduimenu_s *menu, eduiitem_s *item, u32 buttons) {
     }
 }
 
-void cbTriggerSubMenu(eduimenu_s *menu, eduiitem_s *item, u32 buttons);
-
 void edrtlcbCancelDeleteMenu(eduimenu_s *menu, eduimenu_s *parent) {
     delete_menu_active = 0;
 }
@@ -2777,7 +2775,6 @@ void rtlCbBlurDensity(struct eduimenu_s *menu, struct eduiitem_s *item, u32 butt
     }
 }
 
-void CreateColourPicker(void);
 void cbAssocID(eduimenu_s *menu, eduiitem_s *item, u32 buttons);
 void cbExcludeID(eduimenu_s *menu, eduiitem_s *item, u32 buttons);
 void cbUserID(eduimenu_s *menu, eduiitem_s *item, u32 buttons);
@@ -2788,13 +2785,11 @@ void cbLowColour(eduimenu_s *menu, eduiitem_s *item, u32 buttons);
 void cbHighColour(eduimenu_s *menu, eduiitem_s *item, u32 buttons);
 void cbMultiplier(eduimenu_s *menu, eduiitem_s *item, u32 buttons);
 void cbGroupID(eduimenu_s *menu, eduiitem_s *item, u32 buttons);
-void cbCancelSubMenuFromItem(eduimenu_s *menu, eduiitem_s *item, u32 buttons);
 void cbScaleAllMultipliersUp(eduimenu_s *menu, eduiitem_s *item, u32 buttons);
 void cbScaleAllMultipliersDown(eduimenu_s *menu, eduiitem_s *item, u32 buttons);
 void cbLoad(eduimenu_s *menu, eduiitem_s *item, u32 buttons);
 void cbUndoLight(eduimenu_s *menu, eduiitem_s *item, u32 buttons);
 void cbRedoLight(eduimenu_s *menu, eduiitem_s *item, u32 buttons);
-void cbNearClipAtCursor(eduimenu_s *menu, eduiitem_s *item, u32 buttons);
 void cbSave(eduimenu_s *menu, eduiitem_s *item, u32 buttons);
 void cbFogColour(eduimenu_s *menu, eduiitem_s *item, u32 buttons);
 void cbFogStart(eduimenu_s *menu, eduiitem_s *item, u32 buttons);
@@ -3493,8 +3488,6 @@ void cbDOFFStop(eduimenu_s *menu, eduiitem_s *item, u32 buttons) {
     }
 }
 
-void AddColourPick(eduimenu_s *menu, eduiitem_s *item, f32 *red, f32 *green, f32 *blue, u32 *rgba);
-
 void cbMultiplier(eduimenu_s *menu, eduiitem_s *item, u32 buttons) {
     if (curr_rtl != NULL) {
         curr_rtl->intensity = ((edui_slider_s *)item)->value;
@@ -3676,9 +3669,6 @@ void edrtlRedo(void) {
     }
 }
 
-char *rtlGetEnvPath(void);
-char *rtlGetEnvSceneName(void);
-
 void rtlSetExt(char *extension) {
     rtl_ext = extension;
 }
@@ -3769,8 +3759,6 @@ RTL_LIGHT *edrtl_drag_rtl = NULL;
 i32 edrtl_dragundo = 1;
 NUVEC edrtl_dragstart = {0};
 NUVEC edrtl_dragoff = {0};
-
-void edcamSetAng(i32 pitch, i32 yaw);
 
 static RTL_LIGHT *FindNearestRTL(NUVEC *position, int ignore_radius) {
     i32 i;

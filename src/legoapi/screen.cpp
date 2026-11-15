@@ -39,9 +39,6 @@ typedef struct CUT_BORDER_RECORD { // size 0x54
 } CUT_BORDER_RECORD;
 
 extern "C" NUMTL *FadeMtl;
-extern "C" {
-    void NuRndrGradRect2di(i32, i32, i32, i32, u32 *, NUMTL *);
-}
 extern "C" u8 ScreenGrabNeeded;
 extern "C" f32 pause_fade;
 extern "C" NUVPCURRENT *NuVpGetCurrentViewport(void);

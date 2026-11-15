@@ -30,19 +30,13 @@ enum {
 
 extern void (*GameAISYSRebuildFromEditorDataFn)(AISYS_PC *, VARIPTR *, VARIPTR *);
 
-extern void (*GameAISaveFn)(AIPATHSYS *);
-
 extern void (*AIPathNodeMovedFn)(EDAIPATHNODE_s *node);
-
-extern void (*AIPathDeletedFn)(EDAIPATH_s *path);
 
 extern void (*AiEditorMovePlayersCallback)(NUVEC *);
 
 extern i32 ai_onlyusepackfile;
 
 static const u32 iAISysPathColoursG[5] = {0xffff0000, 0xff00ff00, 0xff00ffff, 0xffff00ff, 0xffffff00};
-
-extern void AiRndrLine3d(NURND_VERTEX3D_PC *, NUMTL *, NUMTX *);
 
 /* Path-build view of the runtime path system (AIPATHSYS is opaque here). */
 typedef struct AI_PATH_BUILD_SYSTEM {   // size 0x10
@@ -122,8 +116,6 @@ typedef struct AILOCALMESSAGE {  // size 0x30
     AIMESSAGE message;           // 0x00
     struct AILOCALMESSAGE *next; // 0x2c
 } AILOCALMESSAGE;
-
-void AIRetreatFromDestination2(AISYS_PC *, AIPACKET *, APIOBJECT *, i32);
 
 typedef struct INTERACTION_ANTINODE_VIEW { // size 0x58
     u8 unknown[0x50];                      // 0x00
@@ -300,8 +292,6 @@ typedef struct condition_trigger_process_s { // size 0xa4
     AIAREA *trigger_area;                    // 0xa0
 } CONDITION_TRIGGER_PROCESS;
 
-extern char *(*GlobalCharacterNameFn)(i32);
-
 typedef struct AI_EDITOR_MODE_ENTRY {       // size 0x30
     char name[32];                          // 0x00
     void (*enter)(void);                    // 0x20
@@ -394,16 +384,12 @@ i32 AIPathConnectionTypeCount = 0;
 f32 AiEditorUpperHeightOverride = 0;
 f32 AiEditorLowerHeightOverride = 0;
 
-extern i32 near_clip_at_cursor;
-
 f32 AiEditorNearClipOffset = 5.0f;
 i32 AIPathDefaultChecks = 1;
 
 extern const char dat_0075f2c0[3];
 
 extern const char dat_0075f2c4[4];
-
-void cbNearClipAtCursor(eduimenu_s *menu, eduiitem_s *item, u32 buttons);
 
 extern f32 default_path_radius;
 
@@ -428,8 +414,6 @@ i32 aisys_maxnumcreaturesets = 32;
 
 f32 AiEditorPickHeightTolerance = 0.1f;
 
-extern void *(*GlobalCharacterHGobjFn)(i32);
-
 extern EDAICREATURE_s *creatureEditor_GetNearest(i32 use_radius);
 
 void NuRndrBoundingBox(NUVEC *minimum, NUVEC *maximum, NUMTX *matrix, i32 colour);
@@ -440,14 +424,6 @@ typedef struct AI_PATH_DRAW_FLAGS { // size 0xc
     u8 unknown_08[2];               // 0x8
     i16 flags;                      // 0xa
 } AI_PATH_DRAW_FLAGS;
-
-extern void (*GlobalCharacterRenderFn)(NUVEC *, i16, i32, i32, void *);
-
-extern u8 default_ngroup;
-extern u8 default_nacross;
-
-extern f32 default_xspacing;
-extern f32 default_zspacing;
 
 eduiitem_s *creatureEditor_ResetParamsItem = NULL;
 
@@ -462,20 +438,12 @@ extern void (*ClearAICreaturesFn)(void);
 
 i32 geom = 0;
 
-i32 NewRayCastScaleY(NUVEC *position, NUVEC *movement, f32 radius, f32 scale_y, i32 scan_flags);
-
 f32 AiEditorCursorRayScalePc = 1e-17f;
 
 /* NUL-terminated instruction strings, each in its own section to keep the data layout. */
 
 #pragma section(".data$AiEditorRouteYOffsetPc", read, write)
 __declspec(allocate(".data$AiEditorRouteYOffsetPc")) f32 AiEditorRouteYOffset = 0.1f;
-
-void routeEditor_Render(i32 x, i32 y, f32 xscale, f32 yscale);
-
-void areaEditor_Render(i32 x, i32 y, f32 xscale, f32 yscale);
-
-eduimenu_s *locatorEditor_Process(FRAME_PAD_PC *pad);
 
 #define AIEDITOR_REGISTER(id, mode_name, enter_fn, process_fn, draw_fn)                                                                    \
     do {                                                                                                                                   \
@@ -523,16 +491,6 @@ static AISCRIPT *AIScriptLoadPakFile(void *pak, char *filename, char *path, VARI
 i32 ai_onlyusepackfile = 0;
 AISCRIPTPROCESS *AiSysStateDebugee = 0;
 AI_LEVEL_CHARACTER_TYPE_ID_PC SpecialRouteCharacterTypeIDFn = 0;
-
-void xConst(NUFPAR_PC *parser);
-
-void xState(NUFPAR_PC *parser);
-
-void xParam(NUFPAR_PC *parser);
-
-void xDeriveFromScript(NUFPAR_PC *parser);
-
-void xInclude(NUFPAR_PC *parser);
 
 i32 aidata_version = 20;
 static NUFPCOMJMP AIScriptCommands[9] = {

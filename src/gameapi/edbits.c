@@ -1,11 +1,9 @@
 #include "saga.h"
 #include <stdio.h>
 
-extern EDBITS_GAME_SOUND edbitsGameSound[320];
 extern i32 edbits_numsounds;
 extern void (*edbitsPlaySound)(NUVEC *position, i32 id);
 extern i32 (*edbitsRequestSound)(char *name);
-extern i32 edbitsSfxVol;
 
 void edbitsRegisterSaveFormat(char *general_save_directory, char *general_save_name, char *general_save_extension,
                               char *level_save_directory, char *level_save_name, char *level_save_extension) {
@@ -205,10 +203,8 @@ i32 edbitsStartCubemapDump(void) {
     return 1;
 }
 
-extern NUCAMERA *cubemapcam;
 extern f32 edbits_cubemap_fov;
 extern f32 edbits_cubemap_aspect;
-void edcamSetAng(i32 pitch, i32 yaw);
 
 f32 edbits_cubemap_fov = 1.5708f;
 f32 edbits_cubemap_aspect = 1.0f;

@@ -72,9 +72,6 @@ i32 eduicbRenderSel(eduimenu_s *unused_menu, eduiitem_s *item, i32 x, i32 y, i32
     return height;
 }
 
-extern "C" void NuRndrLineStrip2di(i32 *positions, f32 *uvs, i32 count, i32 colour, NUMTL *material);
-extern "C" void NuRndrTriStrip2di(i32 *positions, f32 *uvs, i32 count, i32 colour, NUMTL *material);
-
 i32 eduicbRenderCheck(eduimenu_s *unused_menu, eduiitem_s *item, i32 x, i32 y, i32 width, i32 unused_selected) {
     i32 points[10];
     i32 height = (i32)(NuQFntHeight(edui_font) * 1.25) >> 3;
@@ -259,7 +256,6 @@ void eduiItemColourPickSetHSV(edui_colour_pick_s *item, f32 hue, f32 saturation,
 }
 
 extern "C" i32 EduiSelectionMaterial;
-extern "C" void NuRndrGradRect2di(i32 x, i32 y, i32 width, i32 height, u32 *colours, NUMTL *material);
 extern "C" void NuRndrLineRect2di(i32 x, i32 y, i32 width, i32 height, i32 colour, NUMTL *material);
 
 static void EduiDrawGradientSpan(i32 x, i32 y, i32 width, i32 height, u32 first_colour, u32 second_colour, f32 start, f32 end);

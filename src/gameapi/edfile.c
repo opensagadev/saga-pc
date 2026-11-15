@@ -2394,7 +2394,6 @@ char FS_FileList[65536] = {0};
 f32 EduiPropLabelWidth = 50.0f;
 extern void NuKeyFlush(void);
 extern void EduiFntPrintScaled(void *font, f32 x, f32 y, i32 alignment, char *text);
-extern void NuRndrTriStrip2di(i32 *positions, f32 *uvs, i32 count, i32 colour, NUMTL *material);
 
 i32 eduiItemPropSetText(edui_prop_s *item, char *text) {
     if (item->property_text && NuStrLen(item->property_text) < NuStrLen(text)) {

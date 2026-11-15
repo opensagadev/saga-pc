@@ -72,6 +72,7 @@ extern "C" {
     extern struct eduimenu_s *edgra_clumpsizes_menu;
     extern struct eduimenu_s *edgra_changeinstance_menu;
     extern struct PC_SCENE_MTL_VIEW *edgra_mtl;
+    extern i32 edgra_pageid;
 #ifdef __cplusplus
 }
 #endif

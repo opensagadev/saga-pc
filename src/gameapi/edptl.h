@@ -259,6 +259,13 @@ extern "C" {
         u8 fields_062[2];                               // 0x62
     } DEBRIS_RENDER_CHUNK_PC;
 
+    extern i32 EdAnimLocalFrameCount;
+    void cbPtlAddEffect(eduimenu_s *menu, eduiitem_s *unused1, u32 unused2);
+    void cbPtlInstanceSettingsMenu(eduimenu_s *parent, eduiitem_s *unused1, u32 unused2);
+    void cbPtlQuickDeleteMenu(eduimenu_s *menu, eduiitem_s *unused1, u32 unused2);
+    void cbPtlTextureMenu(eduimenu_s *menu, eduiitem_s *unused1, u32 unused2);
+    void edbricbFileLoad(eduimenu_s *menu, eduiitem_s *unused1, u32 unused2);
+    void edptlcbApplyNumGhosts(eduimenu_s *unused0, eduiitem_s *item, u32 unused2);
 #ifdef __cplusplus
 }
 #endif

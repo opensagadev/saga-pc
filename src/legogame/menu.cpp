@@ -74,7 +74,6 @@ extern "C" {
     extern i16 dat_00880820;
     extern i16 dat_008809ec;
     extern i16 dat_00880b0c;
-    extern i32 saveload_slotcode[6];
     extern f32 MenuSaveSlotsWidth;
     extern f32 MenuSaveSlotsStepY;
 }

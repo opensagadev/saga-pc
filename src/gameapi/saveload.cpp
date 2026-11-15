@@ -3,12 +3,6 @@
 #include <string.h>
 
 extern "C" {
-    extern char SaveFolderPathPc[256];
-    extern char SaveFullSlotPath[256];
-    extern char SaveFullCodePath[256];
-    extern char SaveSlotName[256];
-    extern i32 saveload_slotcode[6];
-    void saveloadASSave(i32 slot, void *buffer, i32 size, u32 hash);
 
     /* the file name of a save slot. */
     char *slotname(i32 slot) {

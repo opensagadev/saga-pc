@@ -1,10 +1,7 @@
 #include "saga.h"
 #include <stdio.h>
 
-void saveloadASFormat(void);
-void saveloadASDelete(i32 slot);
 extern i32 saveload_slotused[];
-void saveloadASSave(i32 slot, void *buffer, i32 size, u32 hash);
 
 i32 SAVESLOTS = 6;
 

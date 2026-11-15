@@ -937,7 +937,6 @@ void edbitsDrawCube(f32 x, f32 y, f32 z, f32 half_x, f32 half_y, f32 half_z, i32
                     i32 outer_y, i32 colour, NUMTL *material);
 void edbitsDrawBasicCube(f32 x, f32 y, f32 z, f32 half_x, f32 half_y, f32 half_z, i32 rotation_x, i32 rotation_y, i32 rotation_z,
                          i32 colour, NUMTL *material);
-void edbitsDrawSphere(NUVEC *centre, f32 radius, i32 colour, NUMTL *material);
 void edbitsDrawTorus(NUVEC *centre, f32 radius, f32 radial_extent, f32 vertical_extent, i32 colour, NUMTL *material);
 
 void edppDrawSpheres(DEBRIS_INFO_PC *effect, i32 key_index) {
@@ -1293,10 +1292,8 @@ void edppDrawCursor(void) {
 }
 
 extern i32 edpp_copy_source[8];
-extern i32 edpp_snap_enabled;
 extern i32 edpp_cam_ax;
 extern i32 edpp_cam_ay;
-void edcamGetPosAngSnap(NUVEC *position, i32 *angle_x, i32 *angle_y);
 
 typedef union EDPP_FLOAT_BITS {
     f32 value;
@@ -2089,9 +2086,6 @@ void cbFileSaveEffects(eduimenu_s *parent, eduiitem_s *unused1, u32 unused2) {
     }
 }
 
-void cbPtlQuickDeleteMenu(eduimenu_s *menu, eduiitem_s *unused1, u32 unused2);
-void cbPtlReadoutMenu(eduimenu_s *menu, eduiitem_s *unused1, u32 unused2);
-
 void cbPtlCancelDataMenu(eduimenu_s *unused0, eduimenu_s *unused1) {
     eduiMenuDestroy(ptldatamenu);
     ptldatamenu = NULL;
@@ -2303,8 +2297,6 @@ void cbPtlDataMenu(eduimenu_s *parent, eduiitem_s *unused1, u32 unused2) {
     }
 }
 
-void cbPtlAddEffect(eduimenu_s *menu, eduiitem_s *unused1, u32 unused2);
-
 void cbPtlTypeMenu(eduimenu_s *parent, eduiitem_s *unused1, u32 unused2) {
     i32 count = 0;
     i32 found_selected;
@@ -2426,7 +2418,6 @@ void cbPtlEmitMenu(eduimenu_s *parent, eduiitem_s *unused1, u32 unused2) {
 
 extern struct eduimenu_s *ptlemitvelmenu;
 extern struct eduimenu_s *ptlgravmenu;
-void edptlcbApplyNumGhosts(eduimenu_s *unused0, eduiitem_s *item, u32 unused2);
 
 static void cbPtlCancelEmitVelMenu(eduimenu_s *unused0, eduimenu_s *unused1) {
     eduiMenuDestroy(ptlemitvelmenu);
@@ -3724,9 +3715,7 @@ void cbPtlTorusMenu(eduimenu_s *parent, eduiitem_s *unused1, u32 unused2) {
     edptl_torus_menu->y = parent->y + 40;
 }
 
-extern i32 edpp_first_time_this_level;
 extern NUVEC entry_position;
-void edcamSetPosAng(NUVEC *position, i32 pitch, i32 yaw);
 
 void cbPtlSelGCode(eduimenu_s *menu, eduiitem_s *item, u32 unused2) {
     eduiMenuDetach(menu);
@@ -4202,8 +4191,6 @@ void edptlcbSoundsMenu(eduimenu_s *parent, eduiitem_s *unused1, u32 unused2) {
     edptl_sounds_menu->y = parent->y + 40;
 }
 
-void cbPtlTextureMenu(eduimenu_s *menu, eduiitem_s *unused1, u32 unused2);
-void cbPtlInstanceSettingsMenu(eduimenu_s *parent, eduiitem_s *unused1, u32 unused2);
 void cbPtlSScaleMenu(eduimenu_s *parent, eduiitem_s *unused1, u32 unused2);
 
 void edppInit(void) {

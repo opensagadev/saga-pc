@@ -18,7 +18,6 @@ typedef struct PC_SAVE_HEADER {   // size 0x2028
 } PC_SAVE_HEADER;
 
 extern "C" {
-    extern char SaveFolderPathPc[256];
     /* User-approved Debug save-location exception; the game requires the res cwd. */
 #ifdef SAGA_DEBUG
     char SaveCreateFolderPathPc[256] = "SavedGames";
@@ -32,7 +31,6 @@ extern "C" {
     u8 PcSaveHeaderMetadata[16] = {0};
     i32 saveload_slotid = 0;
     extern i32 saveload_slotused[6];
-    extern char *fullslotname(i32);
 
     void PcRegisterSaveMetadata(const void *metadata) {
         if (metadata != NULL) {
