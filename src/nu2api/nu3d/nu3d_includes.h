@@ -14,7 +14,6 @@
 
 /* The module headers this header uses. saga.h includes every header itself, so the shim skips these. */
 #ifndef SAGA_SHIM
-#include "legoapi/cutscenes/gcutscn.h"
 #include "legoapi/render/fx/game_deb.h"
 #include "nu2api/nu3d/nucamera.h"
 #include "nu2api/nu3d/nudlist.h"
@@ -23,7 +22,7 @@
 #include "nu2api/nu3d/numtl.h"
 #include "nu2api/nu3d/nuqfnt.h"
 #include "nu2api/nu3d/nutexanm.h"
-#include "nu2api/nucore/nuhgobj.h"
+#include "nu2api/nucore/nuanimdata.h"
 #include "nu2api/nucore/nulst.h"
 #include "nu2api/nudynamiclight_gen.h"
 #include "nu2api/nufile/nufile.h"
@@ -1008,6 +1007,8 @@ typedef struct NUHGOBJ_EVAL {                 // size 0x1c4
     NUVEC bounds_min;                         // 0x1ac
     NUVEC bounds_max;                         // 0x1b8
 } NUHGOBJ_EVAL;
+
+typedef void (*NUJOINTPROCANIMFN_PC)(ANI3_BUFFER *, NUHGOBJ_EVAL *, i32, NUHGOBJ_JOINT_OVERRIDE *);
 
 /* PC NuDynamicLight::RenderSet. */
 typedef struct NU_LIGHT_SHADOW_LIST_VIEW {     // size 0x44

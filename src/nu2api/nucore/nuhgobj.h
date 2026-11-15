@@ -14,7 +14,6 @@
 struct NUANIMDATA2;
 struct numtx_s;
 
-typedef void (*NUJOINTPROCANIMFN_PC)(ANI3_BUFFER *, NUHGOBJ_EVAL *, i32, NUHGOBJ_JOINT_OVERRIDE *);
 #ifdef __cplusplus
 extern "C" {
 #endif

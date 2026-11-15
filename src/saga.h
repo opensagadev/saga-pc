@@ -200,6 +200,7 @@
 #include "legoapi/items/base/apiobject.h"
 #include "nu2api/nucore/nugcutscene.h"
 #include "nu2api/trigger.h"
+#include "nu2api/nucore/nuanimdata.h"
 #include "legoapi/cutscenes/gcutscn.h"
 #include "nu2api/nu3d/nu3d_includes.h"
 #include "nu2api/nustencilshadows_PC.h"

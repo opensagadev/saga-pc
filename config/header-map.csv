@@ -2281,9 +2281,9 @@ assert:-#1892,assert,,7720,7720,1,nu2api/nu3d/nu3d_includes.h,follow-type,ANI3_H
 assert:-#1893,assert,,7721,7721,1,nu2api/nu3d/nu3d_includes.h,follow-type,ANI3_HEADER
 assert:-#1894,assert,,7722,7722,1,nu2api/nu3d/nu3d_includes.h,follow-type,ANI3_HEADER
 union:DWA_CURVE_CELL,union,DWA_CURVE_CELL,7724,7727,5,nu2api/nu3d/nu3d_includes.h,rule,used most in nu2api/nu3d_includes.cpp (7) android-path
-union:DWA_FRAME_HEADER,union,DWA_FRAME_HEADER,7729,7732,5,legoapi/cutscenes/gcutscn.h,rule,"used in saga.h only, most by legoapi/cutscenes/gcutscn.h (1)"
-union:DWA_NODE_COUNT,union,DWA_NODE_COUNT,7734,7737,5,legoapi/cutscenes/gcutscn.h,rule,"used in saga.h only, most by legoapi/cutscenes/gcutscn.h (1)"
-struct:NUANIMDATA2,struct,NUANIMDATA2,7739,7747,10,legoapi/cutscenes/gcutscn.h,rule,used most in nu2api/cutscene_include.cpp[gcutscn.cpp] (6) android-path
+union:DWA_FRAME_HEADER,union,DWA_FRAME_HEADER,7729,7732,5,nu2api/nucore/nuanimdata.h,review,"used in saga.h only, most by legoapi/cutscenes/gcutscn.h (1)"
+union:DWA_NODE_COUNT,union,DWA_NODE_COUNT,7734,7737,5,nu2api/nucore/nuanimdata.h,review,"used in saga.h only, most by legoapi/cutscenes/gcutscn.h (1)"
+struct:NUANIMDATA2,struct,NUANIMDATA2,7739,7747,10,nu2api/nucore/nuanimdata.h,review,used most in nu2api/cutscene_include.cpp[gcutscn.cpp] (6) android-path
 struct:NUANIMDATA2_SKELETAL,struct,NUANIMDATA2_SKELETAL,7749,7752,5,nu2api/nu3d/nu3d_includes.h,users,NUANIMDATA2_SKELETAL: only nu2api/nu3d_includes.cpp android-path
 assert:-#1895,assert,,7754,7754,2,nu2api/nu3d/nu3d_includes.h,follow-type,NUANIMDATA2_SKELETAL
 assert:-#1896,assert,,7755,7755,1,nu2api/nu3d/nu3d_includes.h,follow-type,NUANIMDATA2_SKELETAL
@@ -9131,7 +9131,7 @@ function:DebFreeChunksInstantly,function,DebFreeChunksInstantly,17937,17937,1,le
 function:DebFreeOrphansInstantly,function,DebFreeOrphansInstantly,17938,17938,1,legoapi/render/core/gameliball.h,android,DebFreeOrphansInstantly
 function:RemoveDebrisEffectFromStack,function,RemoveDebrisEffectFromStack,17939,17939,1,legoapi/render/core/gameliball.h,android,RemoveDebrisEffectFromStack
 function:DebFreeInstantly,function,DebFreeInstantly,17940,17940,1,legoapi/render/fx.h,android,DebFreeInstantly
-struct:state_anim_s,struct,state_anim_s STATE_ANIM_PC,17942,17947,7,legoapi/cutscenes/gcutscn.h,users,state_anim_s: only nu2api/cutscene_include.cpp[gcutscn.cpp] android-path
+struct:state_anim_s,struct,state_anim_s STATE_ANIM_PC,17942,17947,7,nu2api/nucore/nuanimdata.h,review,state_anim_s: only nu2api/cutscene_include.cpp[gcutscn.cpp] android-path
 assert:-#3574,assert,,17949,17949,2,legoapi/cutscenes/gcutscn.h,follow-type,STATE_ANIM_PC
 assert:-#3575,assert,,17950,17950,1,legoapi/cutscenes/gcutscn.h,follow-type,STATE_ANIM_PC
 assert:-#3576,assert,,17951,17951,1,legoapi/cutscenes/gcutscn.h,follow-type,STATE_ANIM_PC

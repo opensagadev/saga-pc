@@ -14,6 +14,8 @@
 
 /* The module headers this header uses. saga.h includes every header itself, so the shim skips these. */
 #ifndef SAGA_SHIM
+#include "nu2api/nu3d/nu3d_includes.h"
+#include "nu2api/nucore/nuanimdata.h"
 #include "nu2api/numath/numtx.h"
 #include "nu2api/numath/nuvec.h"
 #endif
@@ -32,26 +34,6 @@ struct cut_load_locator_instance_s;
 struct instnugcutscene_s;
 struct numtl_s;
 struct nuspecial_handle_s;
-
-typedef union DWA_FRAME_HEADER {
-    f32 duration;
-    u32 magic;
-} DWA_FRAME_HEADER;
-
-typedef union DWA_NODE_COUNT {
-    i16 legacy;
-    u16 modern;
-} DWA_NODE_COUNT;
-
-typedef struct NUANIMDATA2 {      // size 0x14
-    DWA_FRAME_HEADER header;      // 0x00
-    DWA_NODE_COUNT node_count;    // 0x04
-    i16 curve_count;              // 0x06
-    i16 chunk_count;              // 0x08
-    u16 modern_frame_count;       // 0x0a
-    union DWA_CURVE_CELL *curves; // 0x0c
-    i8 *curve_types;              // 0x10
-} NUANIMDATA2;
 
 typedef struct CUT_LOCATOR_ANIMATION { // size 0x54
     NUMTX base_matrix;                 // 0x00
@@ -104,13 +86,6 @@ extern "C" {
     void PCCutCharacterAni3(CUT_CHARACTER_ANIMATION *, f32, NUMTX *, i32 *, u32 *, f32 *, f32 *, f32 *, i32 *);
     i32 PCCutAni3CurveInteger(struct ANI3_HEADER *, f32 *, i32);
     extern const f64 AIPathAngularScale;
-
-    typedef struct state_anim_s { // size 0xc
-        u16 count;                // 0x0
-        u16 unknown_0002;         // 0x2
-        f32 *times;               // 0x4
-        u8 *values;               // 0x8
-    } STATE_ANIM_PC;
 
     void instNuGCutSceneDestroy(struct instnugcutscene_s *);
     void instNuGCutSceneEndButNotSystems(struct instnugcutscene_s *);
