@@ -1,9 +1,7 @@
 #include "saga.h"
 
 extern "C" {
-#pragma bss_seg(".bss$FadeSys")
     FadeSystem FadeSys;
-#pragma bss_seg()
 }
 
 class Fade : public FadeBase {

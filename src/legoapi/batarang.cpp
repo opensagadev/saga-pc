@@ -1,5 +1,4 @@
 #include "saga.h"
-#pragma data_seg(".data$id_ROBIN")
 static i16 id_ROBIN = -1;
 
 extern "C" {
@@ -908,9 +907,7 @@ extern "C" {
         return 0;
     }
 
-#pragma data_seg(".data$BatmanJumpDistancePc")
     f32 BatmanJumpDistance[3] = {0.8f, 1.2f, 10000.0f};
-#pragma data_seg()
 
     i32 Batman_PrepareJump(AIPACKET *packet, APIOBJECT *object, i32 checks) {
         i32 index;
@@ -1581,7 +1578,6 @@ extern "C" {
         return 0;
     }
 
-#pragma data_seg(".data$batman_prepareforspecialmove")
     BATMAN_PREPARE_PC batman_prepareforspecialmove[11] = {
         {4,          Batman_PrepareJump        },
         {0x23,       Batman_PrepareJump        },
@@ -1595,7 +1591,6 @@ extern "C" {
         {0x300000,   Batman_PrepareClimb       },
         {0,          NULL                      },
     };
-#pragma data_seg()
 
     i32 Batman_PreparingForSpecialMove(AIPACKET *packet, APIOBJECT *apiobject, i32 checks) {
         GAMEOBJECT *owner = apiobject->owner;
@@ -1639,12 +1634,10 @@ extern "C" {
         return 0;
     }
 
-#pragma data_seg(".data$batman_midspecialmovefns")
     AI_MID_SPECIAL_MOVE_PC batman_midspecialmovefns[8] = {
         Batman_MidSpecialMove_Default, Batman_MidSpecialMove_StartJump, Batman_MidSpecialMove_SpecialUse, Batman_MidSpecialMove_BigJump,
         Batman_MidSpecialMove_Glide,   Batman_MidSpecialMove_ClimbUp,   Batman_MidSpecialMove_ClimbDown,  Batman_MidSpecialMove_Grapple,
     };
-#pragma data_seg()
 
     i32 Batman_MidSpecialMove(AISYS_PC *system, AIPACKET *packet, APIOBJECT *apiobject) {
         GAMEOBJECT *object = (GAMEOBJECT *)apiobject;

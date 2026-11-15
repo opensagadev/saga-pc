@@ -507,9 +507,7 @@ TTNetwork::~TTNetwork() {
 }
 
 TTNetwork theTTNetwork;
-#pragma bss_seg(".bss$sm_poolMessageData")
 TPool<NETMESSAGE::MessageData, 512> NETMESSAGE::sm_poolMessageData;
-#pragma bss_seg()
 
 /* Drops every outstanding reference of the message pool. */
 template <> void TPool<NETMESSAGE::MessageData, 512>::fun_0060f370() {

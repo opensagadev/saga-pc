@@ -34,7 +34,6 @@ struct KILLPARTS_WORLD_SCENES {
 };
 
 extern "C" {
-#pragma data_seg(".data$StartupCharCategoriesDefaultPc")
     CHAR_CATEGORY_RECORD_PC StartupCharCategoriesDefault[6] = {
         {"SuperJump",        0x0u, 0x400000u },
         {"SuperStrength",    0x0u, 0x800000u },
@@ -43,8 +42,6 @@ extern "C" {
         {"HazardProtection", 0x0u, 0x4000000u},
         {NULL,               0x0u, 0x0u      },
     };
-#pragma data_seg()
-#pragma data_seg(".data$StartupCharCategoriesLswPc")
     CHAR_CATEGORY_RECORD_PC StartupCharCategoriesLsw[10] = {
         {(char *)AreaFixUpName_Jedi, 0x8u,       0x0u     },
         {"JediBaddie",               0xcu,       0x0u     },
@@ -57,8 +54,6 @@ extern "C" {
         {"Blaster",                  0x80u,      0x0u     },
         {NULL,                       0x0u,       0x0u     },
     };
-#pragma data_seg()
-#pragma data_seg(".data$StartupCharVariantNamesPc")
     char *StartupCharVariantNames[23] = {
         "weirdo",       "stormtrooper", "fett",       "macewindu", "battledroid",
         "wookiee",      "obiwankenobi", "leia",       "clone",     "rebel",
@@ -66,7 +61,6 @@ extern "C" {
         "walker_2legs", "walker_4legs", "hoverdroid", "critter",   "naboostarfighter",
         "henchman",     NULL,           NULL,
     };
-#pragma data_seg()
 }
 
 i32 CharIDFromName(const char *name) {

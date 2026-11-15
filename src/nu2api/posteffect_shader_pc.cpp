@@ -23,12 +23,8 @@ struct POST_SHADER_PROGRAM_POOL_PC {     // size 0x40c
 
 extern "C" {
     POST_SHADER_PROGRAM_POOL_PC PostShaderProgramPoolPc = {0};
-#pragma bss_seg(".bss$PostVertexShaderCachePc")
     std::vector<POST_VERTEX_SHADER_CACHE_ENTRY_PC> PostVertexShaderCachePc;
-#pragma bss_seg()
-#pragma bss_seg(".bss$PostPixelShaderCachePc")
     std::vector<POST_PIXEL_SHADER_CACHE_ENTRY_PC> PostPixelShaderCachePc;
-#pragma bss_seg()
 }
 
 POST_SHADER_PROGRAM_PC *POST_SHADER_PROGRAM_POOL_PC::Allocate(void) {

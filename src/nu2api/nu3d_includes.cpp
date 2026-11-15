@@ -3764,7 +3764,6 @@ extern "C" {
 extern "C" {
 
     /* Embedded system font pointer block (0x4930 bytes), fixed in place by NuPtrBlockFix. */
-#pragma data_seg(".data$NuQFntSystemFontBlockPc")
     u8 NuQFntSystemFontBlock[0x4930] = {
         0x00, 0x49, 0x00, 0x00, 0x0c, 0x00, 0x00, 0x00, 0x78, 0x08, 0x00, 0x00, 0x00, 0x00, 0x00, 0x00, 0x00, 0x00, 0x00, 0x00, 0x01, 0x00,
         0x00, 0x00, 0x10, 0x08, 0x00, 0x00, 0x7b, 0x00, 0x00, 0x00, 0x7b, 0x00, 0x00, 0x00, 0x00, 0x00, 0x90, 0x41, 0x00, 0x00, 0x50, 0x41,
@@ -4618,7 +4617,6 @@ extern "C" {
         0x00, 0x00, 0x01, 0x00, 0x00, 0x00, 0x55, 0x55, 0x55, 0x55, 0x0b, 0x00, 0x00, 0x00, 0x00, 0xb7, 0xff, 0xff, 0x00, 0xb7, 0xff, 0xff,
         0x2c, 0xb7, 0xff, 0xff, 0x2c, 0xb7, 0xff, 0xff, 0x2c, 0xb7, 0xff, 0xff, 0x2c, 0xb7, 0xff, 0xff, 0x2c, 0xb7, 0xff, 0xff, 0x2c, 0xb7,
         0xff, 0xff, 0x2c, 0xb7, 0xff, 0xff, 0x2c, 0xb7, 0xff, 0xff, 0x2c, 0xb7, 0xff, 0xff};
-#pragma data_seg()
     f32 qfnt_rezscale_w = 1.0f;
     f32 qfnt_rezscale_h = 1.0f;
     f32 qfnt_len_scale = 1.0f;
@@ -6435,9 +6433,7 @@ OcclusionManager::OcclusionManager()
     : initialized(false), enabled(true), building_set(NULL), current_set(NULL), unknown_158(0.3f), unknown_15c(-1.0f) {
 }
 
-#pragma data_seg(".data$g_OcclusionManager")
 OcclusionManager g_OcclusionManager;
-#pragma data_seg()
 
 void OcclusionManager::EndFrame() {
 }
@@ -8650,8 +8646,7 @@ extern "C" {
         f32 v;                        // 0x14
     } RNDR_MASK_VERTEX;
 
-#pragma section(".rdata$MaskCoordinateModesPc", read)
-    __declspec(allocate(".rdata$MaskCoordinateModesPc")) i32 kPRIM_COORD_LOOKUP[3] = {0, 1, 2};
+    i32 kPRIM_COORD_LOOKUP[3] = {0, 1, 2};
 
     void RndrMaskScreen(i32 texture, f32 clear_x, f32 clear_y, f32 clear_width, f32 clear_height, f32 mask_x, f32 mask_y, f32 mask_width,
                         f32 mask_height, i32 coordinate_mode) {
@@ -13831,22 +13826,13 @@ extern "C" void PostFilterInitSharedResources(void) {
 }
 
 extern "C" {
-#pragma data_seg(".data$PostPortOutFramebufferPc")
     PC_POST_DATA_PORT PostPortOutFramebuffer = {-1, NULL};
-#pragma data_seg(".data$PostPortColorBufferPc")
     PC_POST_DATA_PORT PostPortColorBuffer = {-1, NULL};
-#pragma data_seg(".data$PostPortNormalBufferPc")
     PC_POST_DATA_PORT PostPortNormalBuffer = {-1, NULL};
-#pragma data_seg(".data$PostPortVelocityBufferPc")
     PC_POST_DATA_PORT PostPortVelocityBuffer = {-1, NULL};
-#pragma data_seg(".data$PostPortDepthRTBufferPc")
     PC_POST_DATA_PORT PostPortDepthRTBuffer = {-1, NULL};
-#pragma data_seg(".data$PostPortDepthBufferPc")
     PC_POST_DATA_PORT PostPortDepthBuffer = {-1, NULL};
-#pragma data_seg()
-#pragma bss_seg(".bss$PostResourceManagerPc")
     PC_POST_DATA_PORT_MANAGER PostResourceManager;
-#pragma bss_seg()
     PC_FRAMEBUFFER *PostBlurFramebuffer = 0;
     PC_FRAMEBUFFER *PostCopyFramebuffer = 0;
     i32 dat_00973868 = 0;
@@ -13944,9 +13930,7 @@ extern "C" void NuPostEffectRender(PC_FRAMEBUFFER *output) {
 }
 
 extern "C" {
-#pragma data_seg(".data$PostLocalPortOutFramebufferPc")
     PC_POST_DATA_PORT PostLocalPortOutFramebuffer = {-1, NULL};
-#pragma data_seg(".data$PostProxyBuffersPc")
     PC_POST_BUFFER_PROXY PostProxyBuffers[5] = {
         {NULL, 0, true, true, {0, 0}},
         {NULL, 0, true, true, {0, 0}},
@@ -13954,18 +13938,11 @@ extern "C" {
         {NULL, 0, true, true, {0, 0}},
         {NULL, 0, true, true, {0, 0}}
     };
-#pragma data_seg(".data$PostLocalPortMainNormalBufferPc")
     PC_POST_DATA_PORT PostLocalPortMainNormalBuffer = {-1, NULL};
-#pragma data_seg(".data$PostLocalPortMainDepthBufferPc")
     PC_POST_DATA_PORT PostLocalPortMainDepthBuffer = {-1, NULL};
-#pragma data_seg(".data$PostLocalPortMotionVelocityBufferPc")
     PC_POST_DATA_PORT PostLocalPortMotionVelocityBuffer = {-1, NULL};
-#pragma data_seg(".data$PostBloomAttachPendingPc")
     u8 PostBloomAttachPending = 1;
-#pragma data_seg()
-#pragma const_seg(".rdata$PostEffectRenderLabelPc")
     const WCHAR PostEffectRenderLabel[] = L"Post-processing-effect render";
-#pragma const_seg()
 }
 
 PC_POST_DATA_PORT_MANAGER::PC_POST_DATA_PORT_MANAGER() {
@@ -18957,14 +18934,11 @@ extern "C" {
     NUMTX NuPortalProjectionScratch = {0};
 }
 extern "C" NUMTX PostShadowProjection = {0};
-#pragma data_seg(".data$PostShadowWhitePc")
 extern "C" NUVEC4 PostShadowWhite = {1.0f, 1.0f, 1.0f, 1.0f};
-#pragma data_seg()
 extern "C" {
     extern const WCHAR PostDeferredLabel[17] = L"Deferred shading";
     extern const WCHAR PostShadowRenderLabel[14] = L"Shadow render";
 }
-#pragma data_seg(".data$PCDisplayShadowItemHandlersPc")
 extern "C" PC_DISPLAY_ITEM_HANDLER_PC PCDisplayShadowItemHandlers[49] = {NuDisplayListShadowMaterial,
                                                                          NULL,
                                                                          NuDisplayListDrawGeometry,
@@ -19014,7 +18988,6 @@ extern "C" PC_DISPLAY_ITEM_HANDLER_PC PCDisplayShadowItemHandlers[49] = {NuDispl
                                                                          NULL,
                                                                          NULL,
                                                                          NULL};
-#pragma data_seg()
 
 /* nudlist_material */
 

@@ -1774,12 +1774,8 @@ void eduiShowCursor(i32 show) {
     bShowCursor = show;
 }
 
-#pragma bss_seg(".bss$testmenu0")
 f32 edui_cursor_dx;
-#pragma bss_seg()
-#pragma bss_seg(".bss$testmenu0")
 f32 edui_cursor_dy;
-#pragma bss_seg()
 u32 edui_cursor_buttons = 0;
 u32 edui_cursor_buttons_db = 0;
 u32 edui_cursor_colour = 0xff000000;
@@ -1940,12 +1936,8 @@ eduimenu_s *eduiGetActiveMenu(void) {
 
 void PcGetMousePositionPc(f32 *x, f32 *y);
 void PcSetMousePositionPc(f32 x, f32 y);
-#pragma bss_seg(".bss$testmenu0")
 u32 edui_cursor_buttons_old;
-#pragma bss_seg()
-#pragma bss_seg(".bss$testmenu0")
 i32 edui_cursor_locked;
-#pragma bss_seg()
 struct FILE_DIRECTORY_ENTRY_PC *dir_list = 0;
 
 /* A stick nudge recentres the cursor, otherwise it follows the mouse; holding

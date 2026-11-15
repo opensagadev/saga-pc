@@ -3694,23 +3694,15 @@ char *dat_00824be0[238] = {
     dat_007719dc, dat_007719d0, dat_007719c8, dat_007719bc};
 
 extern "C" {
-#pragma data_seg(".data$PlayerStartSplineIndexPc")
     i32 PlayerStartSplineIndex = -1;
-#pragma data_seg()
 
-#pragma data_seg(".data$hub_startoutsidebonusdoor_area")
     i32 hub_startoutsidebonusdoor_area = -1;
-#pragma data_seg()
-#pragma data_seg(".data$TexAnimScriptNamesTitlePc")
     char *TexAnimScriptNamesTitle[3] = {"coin", "coin_pause", 0};
-#pragma data_seg()
-#pragma data_seg(".data$TexAnimScriptNamesGamePc")
     char *TexAnimScriptNamesGame[32] = {
         "arrow",          "blink_01",      "blink_02",  "blink_03",    "coin",        "coin_pause", "control",     "ds_esc_intro_1",
         "ds_esc_intro_2", "ds_1",          "helpmeobi", "lightening1", "plasma",      "screen",     "Dso_screen",  "anakinbows",
         "anakinkilling",  "anakinspod",    "boost1",    "boost2",      "boost3",      "boost4",     "gasganospod", "helpobi",
         "hologram1",      "hologramnoise", "play8",     "quidie",      "sebulbaspod", "sidius",     "crowd",       0};
-#pragma data_seg()
 
     NUVEC DoorCutCameraPosition0 = {0};
 
@@ -3729,33 +3721,19 @@ extern "C" {
 
     u8 LevLock[5] = {0};
 
-#pragma data_seg(".data$SuperStoryEpisode")
     i32 SuperStoryEpisode = -1;
-#pragma data_seg()
 
-#pragma data_seg(".data$hub_from_superstory")
     i32 hub_from_superstory = -1;
-#pragma data_seg()
 
-#pragma data_seg(".data$hub_from_mission")
     i32 hub_from_mission = -1;
-#pragma data_seg()
 
-#pragma data_seg(".data$PodRaceMaxLapTimeKeywordPc")
     char PodRaceMaxLapTimeKeyword[12] = "maxlaptime=";
-#pragma data_seg()
 
-#pragma data_seg(".data$PodRaceLapTimeKeywordPc")
     char PodRaceLapTimeKeyword[9] = "laptime=";
-#pragma data_seg()
 
-#pragma data_seg(".data$PodRaceAttemptsKeywordPc")
     char PodRaceAttemptsKeyword[25] = "nattempts_per_increment=";
-#pragma data_seg()
 
-#pragma data_seg(".data$PodRaceIncrementKeywordPc")
     char PodRaceIncrementKeyword[11] = "increment=";
-#pragma data_seg()
 
     i32 newlevelfrommenu_newmenuy = 0;
 }
@@ -3769,15 +3747,11 @@ extern "C" {
     char GizmoBlowupNameTable[32][32] = {0};
 }
 extern "C" {
-#pragma const_seg(".rdata$PCSoundBuffer8IIDPc")
     extern const IID PCSoundBuffer8IID = {
         0x6825a449, 0x7524, 0x4d82, {0x92, 0xf, 0x50, 0xe3, 0x6a, 0xb3, 0xab, 0x1e}
     };
-#pragma const_seg()
 
-#pragma data_seg(".data$LEGOOBJ_DEFAULTLASTCOIN")
     LEGOOBJ_DEFAULT_LAST_COIN_STORAGE LEGOOBJ_DEFAULTLASTCOIN = {0xffffffffu};
-#pragma data_seg()
 
     PLAYER_BATARANG_SLOT_PC BatarangPackets[8] = {0};
 
@@ -3804,7 +3778,6 @@ extern "C" {
 
 extern "C" {
 
-#pragma data_seg(".data$DebrisNullEffectPc")
     DEBRIS_INFO_PC DebrisNullEffect = {
         "null",
         0,
@@ -3896,7 +3869,6 @@ extern "C" {
         1.0f,
         0
     };
-#pragma data_seg()
 
     u32 dat_0091ef20 = 0;
 
@@ -3921,9 +3893,7 @@ extern "C" {
 
 struct SoundQueue;
 struct PC_SOUND_COMMIT;
-#pragma bss_seg(".bss$music_man")
 NuMusic music_man;
-#pragma bss_seg()
 
 // Startup and main-loop state; defaults follow the PC executable.
 i32 ChallengeMode = 0;
@@ -3967,15 +3937,9 @@ extern "C" {
         &GlobalBoltType_Default, 1, NULL, Bolt_Debris_Default, Bolt_GetShootOrigin_Default, Bolt_GetShootDirection_Default, NULL, NULL,
     };
     NUSTRINGBANK StringBank[3] = {0};
-#pragma data_seg(".data$BoltShootClassId0")
     u16 BoltShootClassId0 = 0xffff;
-#pragma data_seg()
-#pragma data_seg(".data$BoltShootClassId1")
     u16 BoltShootClassId1 = 0xffff;
-#pragma data_seg()
-#pragma data_seg(".data$BoltShootClassId2")
     u16 BoltShootClassId2 = 0xffff;
-#pragma data_seg()
     i16 CurrentStringBank = 0;
     u32 nustring_format = 1;
     f32 spline_seek_pos = 10.0f;
@@ -3990,102 +3954,65 @@ extern "C" {
     extern const f64 MoveSplineRunSpeedSentinel = 1000000000.0;
     extern const f64 BoltTargetRandomDenominator = 65535.0;
     extern const f64 NuAnimDataFloatMax = 3.4028234663852886e38;
-#pragma data_seg(".data$GameObjectRotationBuggyId")
     u16 GameObjectRotationBuggyId = 0xffff;
-#pragma data_seg()
-#pragma data_seg(".data$GameObjectRotationRadioCarId")
     u16 GameObjectRotationRadioCarId = 0xffff;
-#pragma data_seg()
-#pragma data_seg(".data$GameObjectRotationPoliceCarId")
     u16 GameObjectRotationPoliceCarId = 0xffff;
-#pragma data_seg()
-#pragma data_seg(".data$GameObjectRotationMowerId")
     u16 GameObjectRotationMowerId = 0xffff;
-#pragma data_seg()
-#pragma data_seg(".data$GameObjectRotationAtstId")
     u16 GameObjectRotationAtstId = 0xffff;
-#pragma data_seg()
     u16 temp_xrot = 0;
     u16 temp_zrot = 0;
     i32 VehicleArea = 0;
     char *NuBlankString = (char *)NuBlankStringValue;
     extern const f64 GameObjectNearFloorNoFloorHeight = 2000000.0;
-#pragma const_seg(".rdata$AIPathAngularScale")
     extern const f64 AIPathAngularScale = 10430.3779296875;
-#pragma const_seg()
-#pragma const_seg(".rdata$PCAtan2RadianScale")
     extern const f64 PCAtan2RadianScale = 9.58738019107841e-05;
-#pragma const_seg()
-#pragma const_seg(".rdata$PCPathArcSineCoefficient3")
     extern const f64 PCPathArcSineCoefficient3 = -0.166667f;
-#pragma const_seg()
-#pragma const_seg(".rdata$PCPathArcSineCoefficient5")
     extern const f64 PCPathArcSineCoefficient5 = -0.075f;
-#pragma const_seg()
-#pragma const_seg(".rdata$PCPathArcSineCoefficient7")
     extern const f64 PCPathArcSineCoefficient7 = -0.0446429f;
-#pragma const_seg()
-#pragma const_seg(".rdata$PCPathArcSineCoefficient9")
     extern const f64 PCPathArcSineCoefficient9 = -0.0303819f;
-#pragma const_seg()
-#pragma const_seg(".rdata$NuBlankStringValue")
     extern const char NuBlankStringValue[2] = " ";
-#pragma const_seg()
-#pragma const_seg(".rdata$GameObjectRotationBuggyOffsets")
     extern const NUVEC GAMEOBJECT_ROTATION_BUGGY_OFFSETS[4] = {
         {-0.1175f, 0.0f, 0.1575f },
         {0.1175f,  0.0f, 0.1575f },
         {0.1175f,  0.0f, -0.1575f},
         {-0.1175f, 0.0f, -0.1575f},
     };
-#pragma const_seg()
-#pragma const_seg(".rdata$GameObjectRotationRadioCarOffsets")
     extern const NUVEC GAMEOBJECT_ROTATION_RADIOCAR_OFFSETS[4] = {
         {-0.12f, 0.0f, 0.08f },
         {0.12f,  0.0f, 0.08f },
         {0.12f,  0.0f, -0.08f},
         {-0.12f, 0.0f, -0.08f},
     };
-#pragma const_seg()
-#pragma const_seg(".rdata$GameObjectRotationPoliceCarOffsets")
     extern const NUVEC GAMEOBJECT_ROTATION_POLICECAR_OFFSETS[4] = {
         {-0.19f, 0.0f, 0.31f },
         {0.19f,  0.0f, 0.31f },
         {0.19f,  0.0f, -0.31f},
         {-0.19f, 0.0f, -0.31f},
     };
-#pragma const_seg()
-#pragma const_seg(".rdata$GameObjectRotationMowerOffsets")
     extern const NUVEC GAMEOBJECT_ROTATION_MOWER_OFFSETS[4] = {
         {-0.1175f, 0.0f, 0.155f },
         {0.1175f,  0.0f, 0.155f },
         {0.1175f,  0.0f, -0.155f},
         {-0.1175f, 0.0f, -0.155f},
     };
-#pragma const_seg()
-#pragma const_seg(".rdata$GameObjectRotationDefaultOffsets")
     extern const NUVEC GAMEOBJECT_ROTATION_DEFAULT_OFFSETS[4] = {
         {-0.2f, 0.0f, 0.2f },
         {0.2f,  0.0f, 0.2f },
         {0.2f,  0.0f, -0.2f},
         {-0.2f, 0.0f, -0.2f},
     };
-#pragma const_seg()
     i32 StartupGameFlag0 = 0;
     i32 StartupGameFlag1 = 1;
     u8 dat_009737ff = 0;
 
     AISYS_SPECIAL_NODE_CALLBACK_PC AISysSpecialNodeCallback = 0;
-#pragma const_seg(".rdata$ANI3_EVAL_IDENTITY_MATRIX")
     extern const NUMTX ANI3_EVAL_IDENTITY_MATRIX = {
         1.0f, 0.0f, 0.0f, 0.0f, 0.0f, 1.0f, 0.0f, 0.0f, 0.0f, 0.0f, 1.0f, 0.0f, 0.0f, 0.0f, 0.0f, 1.0f,
     };
-#pragma const_seg()
     NUBRIDGE_PC Bridges[8] = {0};
     i32 NuBridgeProc = 0;
     TERRAIN_SET_PC *CurrentTerrain = 0;
     GAMEOBJECT_LOOKUP_CALLBACK_PC GetNamedGameObjectCallback = 0;
-#pragma data_seg(".data$TerLayer")
     TERRAIN_LAYER_PC TerLayer[17] = {
         {0x00000000, 0x0000ffff, 0x40000000},
         {0x00000000, 0x0000ffff, 0x40000000},
@@ -4105,7 +4032,6 @@ extern "C" {
         {0x00000000, 0x0000ffff, 0x3f800000},
         {0x00000000, 0x0000ffff, 0x00000000},
     };
-#pragma data_seg()
     const FLOWBOX_CALLBACKS flowbox_callbacks[3] = {
         {ResetGizmoFlowBox, ProcessGizmoFlowBox,     CheckOutputGizmoFlowBox    },
         {NULL,              ProcessConditionFlowBox, CheckOutputConditionFlowBox},
@@ -4113,9 +4039,7 @@ extern "C" {
     };
     GAMEAUDIO *GameAudio = &GameAudioStorage;
     NUVEC nusound_special_positions[5] = {0};
-#pragma const_seg(".rdata$AIScriptFalse")
     extern const char AIScriptFalse[6] = "false";
-#pragma const_seg()
     i32 nufile_blkcnt = 1;
     PC_NUFILE_READBLOCK nufile_blkinfo[1024] = {0};
     GAMEANIMPROGRESS gameanimsysprogress = {0};
@@ -4132,23 +4056,16 @@ extern "C" {
     void *debris_cutoff_camera_vec = 0;
     i32 debris_render_group = 0;
     f32 FRAMETIME = 0;
-#pragma const_seg(".rdata$NuPrimPS2XScale")
     extern const f32 NuPrimPS2XScale = 0.003125f;
-#pragma const_seg(".rdata$NuPrimPS2YScale")
     extern const f32 NuPrimPS2YScale = -1.0f / 112.0f;
-#pragma const_seg()
     NUFPAR_PC NuFParRecords[4] = {0};
     char NuFParBuffers[4][0x1000] = {0};
     i32 file_criticalsection = 0;
     PC_NUDATFILEINFO *unpack_file_info = 0;
     NUDATOPENFILEINFO *unpack_file_odi = 0;
     i64 unpack_file_pos = 0;
-#pragma const_seg(".rdata$PCKeyboardMouse2Name_candidate")
     extern const char PCKeyboardMouse2Name[16] = "KeyboardMouse2";
-#pragma const_seg()
-#pragma const_seg(".rdata$NuQFntHalfScale")
     extern const f64 NuQFntHalfScale = 0.5;
-#pragma const_seg()
     GAMESAVE Game = {0};
     OPTIONSSAVE TempOptions = {0};
     PLAYERPROGRESS PlayerProgress[8] = {0};
@@ -4156,9 +4073,7 @@ extern "C" {
     i32 startnewgame = 0;
     i32 saveload_autosave = -1;
     i32 NuFadeObjEnabled = 1;
-#pragma const_seg(".rdata$PermLegalScale")
     extern const f32 PermLegalScale = 2.2f;
-#pragma const_seg()
     i32 readpads_always = 0;
     TIMER GlobalTimer = {0};
     NUGSCN *save_icon_scene = 0;
@@ -4166,7 +4081,6 @@ extern "C" {
     f32 PodAvalancheShakeFrames = 111.0f;
     NUVEC PodAvalanchePeakPos = {-110.0f, -10.0f, -455.0f};
     f32 PodAvalancheShakeRange = 750.0f;
-#pragma data_seg(".data$LevelSplinesTable")
     LEVELSPLINE_PC LevelSplinesTable[26] = {
         {NULL, "start",           2, 0,    -1, -1},
         {NULL, "start_cam",       2, 0,    -1, -1},
@@ -4195,7 +4109,6 @@ extern "C" {
         {NULL, "mission_cam",     2, 2,    -1, -1},
         {NULL, NULL,              0, 0,    0,  0 },
     };
-#pragma data_seg()
     i32 nudlist_field_fc4 = 0;
     u32 nudlist_field_1598 = 0;
     void *game_cutscenes_cutscene = 0;
@@ -4297,27 +4210,13 @@ extern "C" {
     f32 dat_02975608 = 0.0f;
 
     NUMTX clip_test_mtx = {0};
-#pragma const_seg(".rdata$ClipOutcodeMask32")
     __declspec(align(16)) extern const u32 ClipOutcodeMask32[4] = {32, 32, 32, 32};
-#pragma const_seg()
-#pragma const_seg(".rdata$ClipOutcodeMask16")
     __declspec(align(16)) extern const u32 ClipOutcodeMask16[4] = {16, 16, 16, 16};
-#pragma const_seg()
-#pragma const_seg(".rdata$ClipOutcodeMask1")
     __declspec(align(16)) extern const u32 ClipOutcodeMask1[4] = {1, 1, 1, 1};
-#pragma const_seg()
-#pragma const_seg(".rdata$ClipOutcodeMask2")
     __declspec(align(16)) extern const u32 ClipOutcodeMask2[4] = {2, 2, 2, 2};
-#pragma const_seg()
-#pragma const_seg(".rdata$ClipOutcodeMask8")
     __declspec(align(16)) extern const u32 ClipOutcodeMask8[4] = {8, 8, 8, 8};
-#pragma const_seg()
-#pragma const_seg(".rdata$ClipOutcodeMask4")
     __declspec(align(16)) extern const u32 ClipOutcodeMask4[4] = {4, 4, 4, 4};
-#pragma const_seg()
-#pragma const_seg(".rdata$ClipOutcodeMinusOne")
     __declspec(align(16)) extern const f32 ClipOutcodeMinusOne[4] = {-1.0f, -1.0f, -1.0f, -1.0f};
-#pragma const_seg()
     NUCAMERA *pNuCam = 0;
 #define IDENTITY_NUMTX 1.0f, 0.0f, 0.0f, 0.0f, 0.0f, 1.0f, 0.0f, 0.0f, 0.0f, 0.0f, 1.0f, 0.0f, 0.0f, 0.0f, 0.0f, 1.0f
     NUMTX NuMtxSetIdentityTemplate = {IDENTITY_NUMTX};
@@ -4334,214 +4233,85 @@ extern "C" {
 #undef IDENTITY_NUMTX
     f32 NuTrigTable[32768] = {0};
 
-#pragma const_seg(".rdata$SoundVoice3DBufferIID")
     extern const GUID SoundVoice3DBufferIID = {
         0x279afa86,
         0x4981,
         0x11ce,
         {0xa5, 0x21, 0x00, 0x20, 0xaf, 0x0b, 0xe5, 0x60},
     };
-#pragma const_seg()
     f32 NuSound3VolumeTable[0x4000] = {0};
     PC_NUDATFILEINFO pc_dat_file_infos[20] = {0};
     PC_NUMEMFILE pc_memfiles[20] = {0};
     AREA_DATA_PC *ADataList = 0;
     i32 AREACOUNT = 0;
     CHEATSYSTEM_PC CheatSystem = {0};
-#pragma data_seg(".data$AREA_DEFAULTBONUSTIMETRIALTIME")
     u16 AREA_DEFAULTBONUSTIMETRIALTIME = 300;
-#pragma data_seg(".data$AREA_DEFAULTCHALLENGETIME")
     u16 AREA_DEFAULTCHALLENGETIME = 600;
-#pragma data_seg()
     AREA_DATA_PC *LastAData = 0;
     AREA_DATA_PC *HUB_ADATA = 0;
 
-#pragma const_seg(".rdata$AreaFixUpName_Jedi")
     extern char AreaFixUpName_Jedi[8] = "Jedi";
-#pragma const_seg()
-#pragma const_seg(".rdata$AreaFixUpName_Gungan")
     extern char AreaFixUpName_Gungan[8] = "Gungan";
-#pragma const_seg()
-#pragma const_seg(".rdata$AreaFixUpName_Senate")
     extern char AreaFixUpName_Senate[8] = "senate";
-#pragma const_seg()
-#pragma const_seg(".rdata$AreaFixUpName_Losttemple")
     extern char AreaFixUpName_Losttemple[12] = "losttemple";
-#pragma const_seg()
-#pragma const_seg(".rdata$AreaFixUpName_Emperorfight")
     extern char AreaFixUpName_Emperorfight[16] = "emperorfight";
-#pragma const_seg()
-#pragma const_seg(".rdata$AreaFixUpName_Moseisley")
     extern char AreaFixUpName_Moseisley[12] = "moseisley";
-#pragma const_seg()
-#pragma const_seg(".rdata$AreaFixUpName_Tatooine")
     extern char AreaFixUpName_Tatooine[12] = "tatooine";
-#pragma const_seg()
-#pragma const_seg(".rdata$AreaFixUpName_Gunship")
     extern char AreaFixUpName_Gunship[8] = "gunship";
-#pragma const_seg()
-#pragma const_seg(".rdata$AreaFixUpName_Pursuit")
     extern char AreaFixUpName_Pursuit[8] = "pursuit";
-#pragma const_seg()
-#pragma const_seg(".rdata$AreaFixUpName_Podsprint")
     extern char AreaFixUpName_Podsprint[12] = "podsprint";
-#pragma const_seg()
-#pragma const_seg(".rdata$AreaFixUpName_Negotiations")
     extern char AreaFixUpName_Negotiations[16] = "negotiations";
-#pragma const_seg()
-#pragma const_seg(".rdata$AreaFixUpName_Fairground")
     extern char AreaFixUpName_Fairground[12] = "Fairground";
-#pragma const_seg()
-#pragma const_seg(".rdata$AreaFixUpName_Rooftops")
     extern char AreaFixUpName_Rooftops[12] = "Rooftops";
-#pragma const_seg()
-#pragma const_seg(".rdata$AreaFixUpName_Gothamstreets")
     extern char AreaFixUpName_Gothamstreets[16] = "GothamStreets";
-#pragma const_seg()
-#pragma const_seg(".rdata$AreaFixUpName_Batcave")
     extern char AreaFixUpName_Batcave[8] = "batcave";
-#pragma const_seg()
-#pragma const_seg(".rdata$AreaFixUpName_Jimtest")
     extern char AreaFixUpName_Jimtest[8] = "JimTest";
-#pragma const_seg()
-#pragma const_seg(".rdata$AreaFixUpName_NbKashyyyk")
     extern char AreaFixUpName_NbKashyyyk[12] = "nb_kashyyyk";
-#pragma const_seg()
-#pragma const_seg(".rdata$AreaFixUpName_NbKamino")
     extern char AreaFixUpName_NbKamino[12] = "nb_kamino";
-#pragma const_seg()
-#pragma const_seg(".rdata$AreaFixUpName_NbDagobah")
     extern char AreaFixUpName_NbDagobah[12] = "nb_dagobah";
-#pragma const_seg()
-#pragma const_seg(".rdata$AreaFixUpName_Hoth")
     extern char AreaFixUpName_Hoth[8] = "hoth";
-#pragma const_seg()
-#pragma const_seg(".rdata$AreaFixUpName_Utapau")
     extern char AreaFixUpName_Utapau[8] = "utapau";
-#pragma const_seg()
-#pragma const_seg(".rdata$AreaFixUpName_LostTemple")
     extern char AreaFixUpName_LostTemple[12] = "LostTemple";
-#pragma const_seg()
-#pragma const_seg(".rdata$AreaFixUpName_Bonus")
     extern char AreaFixUpName_Bonus[8] = "Bonus";
-#pragma const_seg()
-#pragma const_seg(".rdata$AreaFixUpName_Bonus2")
     extern char AreaFixUpName_Bonus2[8] = "Bonus2";
-#pragma const_seg()
-#pragma const_seg(".rdata$AreaFixUpName_Anewhope")
     extern char AreaFixUpName_Anewhope[12] = "ANewHope";
-#pragma const_seg()
-#pragma const_seg(".rdata$AreaFixUpName_BonusGunship")
     extern char AreaFixUpName_BonusGunship[16] = "Bonus_Gunship";
-#pragma const_seg()
-#pragma const_seg(".rdata$AreaFixUpName_Anakinsflight")
     extern char AreaFixUpName_Anakinsflight[16] = "AnakinsFlight";
-#pragma const_seg()
-#pragma const_seg(".rdata$AreaFixUpName_Podrace")
     extern char AreaFixUpName_Podrace[8] = "PodRace";
-#pragma const_seg()
-#pragma const_seg(".rdata$AreaFixUpName_E6characterbonus")
     extern char AreaFixUpName_E6characterbonus[20] = "E6CharacterBonus";
-#pragma const_seg()
-#pragma const_seg(".rdata$AreaFixUpName_E5characterbonus")
     extern char AreaFixUpName_E5characterbonus[20] = "E5CharacterBonus";
-#pragma const_seg()
-#pragma const_seg(".rdata$AreaFixUpName_E4characterbonus")
     extern char AreaFixUpName_E4characterbonus[20] = "E4CharacterBonus";
-#pragma const_seg()
-#pragma const_seg(".rdata$AreaFixUpName_E3characterbonus")
     extern char AreaFixUpName_E3characterbonus[20] = "E3CharacterBonus";
-#pragma const_seg()
-#pragma const_seg(".rdata$AreaFixUpName_E2characterbonus")
     extern char AreaFixUpName_E2characterbonus[20] = "E2CharacterBonus";
-#pragma const_seg()
-#pragma const_seg(".rdata$AreaFixUpName_E1characterbonus")
     extern char AreaFixUpName_E1characterbonus[20] = "E1CharacterBonus";
-#pragma const_seg()
-#pragma const_seg(".rdata$AreaFixUpName_Deathstar2battle")
     extern char AreaFixUpName_Deathstar2battle[20] = "DeathStar2Battle";
-#pragma const_seg()
-#pragma const_seg(".rdata$AreaFixUpName_Endorbattle")
     extern char AreaFixUpName_Endorbattle[12] = "EndorBattle";
-#pragma const_seg()
-#pragma const_seg(".rdata$AreaFixUpName_Speederchase")
     extern char AreaFixUpName_Speederchase[16] = "SpeederChase";
-#pragma const_seg()
-#pragma const_seg(".rdata$AreaFixUpName_Sarlaccpit")
     extern char AreaFixUpName_Sarlaccpit[12] = "SarlaccPit";
-#pragma const_seg()
-#pragma const_seg(".rdata$AreaFixUpName_Jabbaspalace")
     extern char AreaFixUpName_Jabbaspalace[16] = "JabbasPalace";
-#pragma const_seg()
-#pragma const_seg(".rdata$AreaFixUpName_Cloudcityescape")
     extern char AreaFixUpName_Cloudcityescape[16] = "CloudCityEscape";
-#pragma const_seg()
-#pragma const_seg(".rdata$AreaFixUpName_Cloudcitytrap")
     extern char AreaFixUpName_Cloudcitytrap[16] = "CloudCityTrap";
-#pragma const_seg()
-#pragma const_seg(".rdata$AreaFixUpName_Dagobah")
     extern char AreaFixUpName_Dagobah[8] = "Dagobah";
-#pragma const_seg()
-#pragma const_seg(".rdata$AreaFixUpName_Asteroidchase")
     extern char AreaFixUpName_Asteroidchase[16] = "AsteroidChase";
-#pragma const_seg()
-#pragma const_seg(".rdata$AreaFixUpName_Hothescape")
     extern char AreaFixUpName_Hothescape[12] = "HothEscape";
-#pragma const_seg()
-#pragma const_seg(".rdata$AreaFixUpName_Hothbattle")
     extern char AreaFixUpName_Hothbattle[12] = "HothBattle";
-#pragma const_seg()
-#pragma const_seg(".rdata$AreaFixUpName_Deathstarbattle")
     extern char AreaFixUpName_Deathstarbattle[16] = "DeathStarBattle";
-#pragma const_seg()
-#pragma const_seg(".rdata$AreaFixUpName_Deathstarescape")
     extern char AreaFixUpName_Deathstarescape[16] = "DeathStarEscape";
-#pragma const_seg()
-#pragma const_seg(".rdata$AreaFixUpName_Deathstarrescue")
     extern char AreaFixUpName_Deathstarrescue[16] = "DeathStarRescue";
-#pragma const_seg()
-#pragma const_seg(".rdata$AreaFixUpName_Blockaderunner")
     extern char AreaFixUpName_Blockaderunner[16] = "BlockadeRunner";
-#pragma const_seg()
-#pragma const_seg(".rdata$AreaFixUpName_Vader")
     extern char AreaFixUpName_Vader[8] = "Vader";
-#pragma const_seg()
-#pragma const_seg(".rdata$AreaFixUpName_Temple")
     extern char AreaFixUpName_Temple[8] = "Temple";
-#pragma const_seg()
-#pragma const_seg(".rdata$AreaFixUpName_Kashyyyk")
     extern char AreaFixUpName_Kashyyyk[12] = "Kashyyyk";
-#pragma const_seg()
-#pragma const_seg(".rdata$AreaFixUpName_Grievous")
     extern char AreaFixUpName_Grievous[12] = "Grievous";
-#pragma const_seg()
-#pragma const_seg(".rdata$AreaFixUpName_Cruiser")
     extern char AreaFixUpName_Cruiser[8] = "Cruiser";
-#pragma const_seg()
-#pragma const_seg(".rdata$AreaFixUpName_Dogfight")
     extern char AreaFixUpName_Dogfight[12] = "Dogfight";
-#pragma const_seg()
-#pragma const_seg(".rdata$AreaFixUpName_Dooku")
     extern char AreaFixUpName_Dooku[8] = "Dooku";
-#pragma const_seg()
-#pragma const_seg(".rdata$AreaFixUpName_Factory")
     extern char AreaFixUpName_Factory[8] = "Factory";
-#pragma const_seg()
-#pragma const_seg(".rdata$AreaFixUpName_Kamino")
     extern char AreaFixUpName_Kamino[8] = "Kamino";
-#pragma const_seg()
-#pragma const_seg(".rdata$AreaFixUpName_Maul")
     extern char AreaFixUpName_Maul[8] = "Maul";
-#pragma const_seg()
-#pragma const_seg(".rdata$AreaFixUpName_Retakepalace")
     extern char AreaFixUpName_Retakepalace[16] = "RetakePalace";
-#pragma const_seg()
-#pragma const_seg(".rdata$AreaFixUpName_Palacerescue")
     extern char AreaFixUpName_Palacerescue[16] = "PalaceRescue";
-#pragma const_seg()
-#pragma const_seg(".rdata$AreaFixUpName_Map")
     extern char AreaFixUpName_Map[4] = "map";
-#pragma const_seg()
 
     AREA_DATA_PC *GOTHAMSTREETS_ADATA = 0;
     AREA_DATA_PC *ROOFTOPS_ADATA = 0;
@@ -4607,7 +4377,6 @@ extern "C" {
     AREA_DATA_PC *BONUSKASHYYYK_ADATA = 0;
     AREA_DATA_PC *JIMTEST_ADATA = 0;
 
-#pragma const_seg(".rdata$AreaFixUpLSW")
     AREAFIXUP_PC AreaFixUpLSW[65] = {
         {AreaFixUpName_Map,              &HUB_ADATA                },
         {AreaFixUpName_Negotiations,     &NEGOTIATIONS_ADATA       },
@@ -4675,16 +4444,12 @@ extern "C" {
         {AreaFixUpName_Jimtest,          &JIMTEST_ADATA            },
         {NULL,                           NULL                      },
     };
-#pragma const_seg()
 
-#pragma const_seg(".rdata$AreaFixUpLostTemple")
     AREAFIXUP_PC AreaFixUpLostTemple[2] = {
         {AreaFixUpName_Losttemple, &LOSTTEMPLE_ADATA},
         {NULL,                     NULL             },
     };
-#pragma const_seg()
 
-#pragma const_seg(".rdata$AreaFixUpGotham")
     AREAFIXUP_PC AreaFixUpGotham[5] = {
         {AreaFixUpName_Batcave,       &HUB_ADATA          },
         {AreaFixUpName_Gothamstreets, &GOTHAMSTREETS_ADATA},
@@ -4692,54 +4457,25 @@ extern "C" {
         {AreaFixUpName_Fairground,    &FAIRGROUND_ADATA   },
         {NULL,                        NULL                },
     };
-#pragma const_seg()
-#pragma const_seg(".rdata$NuTimeBarEngineColours")
     extern const u32 NuTimeBar_EngineColours[7] = {0x7f00007f, 0x7f007f00, 0x7f007f50, 0x7f507f50, 0x7f000050, 0x7f40407f, 0x7f7f0000};
-#pragma const_seg()
-#pragma const_seg(".rdata$NuTimeBarDefaultColours")
     extern const u32 NuTimeBar_DefaultColours[16] = {
         0x00000040, 0x22222240, 0x00004440, 0x00008840, 0x44000040, 0x88000040, 0x44004440, 0x88008840,
         0x00440040, 0x00880040, 0x00444440, 0x00888840, 0x44440040, 0x88880040, 0x44444440, 0x88888840,
     };
-#pragma const_seg()
-#pragma const_seg(".rdata$NuTimeBarQFontSize")
     extern const f32 NuTimeBarQFontSize = 16.0f;
-#pragma const_seg()
-#pragma const_seg(".rdata$NuTimeBarQFontScale")
     extern const f32 NuTimeBarQFontScale = 0.0625f;
-#pragma const_seg()
-#pragma const_seg(".rdata$NuTimeBarColumnStep")
     extern const f64 NuTimeBarColumnStep = 3.0;
-#pragma const_seg()
-#pragma const_seg(".rdata$NuTimeBarSlotWidth")
     extern const f64 NuTimeBarSlotWidth = 0.02500000037252903;
-#pragma const_seg()
-#pragma const_seg(".rdata$NuTimeBarFontScale")
     extern const f32 NuTimeBarFontScale = 0.85f;
-#pragma const_seg()
-#pragma const_seg(".rdata$NuTimeBarNegativeSlotWidth")
     extern const f64 NuTimeBarNegativeSlotWidth = -0.02500000037252903;
-#pragma const_seg()
-#pragma const_seg(".rdata$NuTimeBarLinesPerSecond")
     extern const f64 NuTimeBarLinesPerSecond = 15734.0;
-#pragma const_seg()
 
-#pragma data_seg(".data$PS2_VREZ_W")
     i32 PS2_VREZ_W = 640;
-#pragma data_seg()
-#pragma data_seg(".data$PS2_VREZ_H")
     i32 PS2_VREZ_H = 224;
-#pragma data_seg()
-#pragma data_seg(".data$NuCameraScissorWidthPc")
     i32 NuCameraScissorWidth = 0x1000;
-#pragma data_seg()
-#pragma data_seg(".data$NuCameraScissorHeightPc")
     i32 NuCameraScissorHeight = 0x1000;
-#pragma data_seg()
 
-#pragma data_seg(".data$dat_0080e6a4")
     i32 dat_0080e6a4 = 1;
-#pragma data_seg()
 
     i16 PlayerList[8] = {0};
     LEVELDATA_PC *LDataList = 0;
@@ -4747,29 +4483,17 @@ extern "C" {
     LEVELDATA_PC *NewLData = 0;
     LEVELDATA_PC *STATUS_LDATA = 0;
     LEVELDATA_PC *CREDITS_LDATA = 0;
-#pragma data_seg(".data$ScreenStillXPc")
     i32 ScreenStillX = -32;
-#pragma data_seg()
-#pragma data_seg(".data$ScreenStillYPc")
     i32 ScreenStillY = -12;
-#pragma data_seg()
-#pragma data_seg(".data$ScreenStillWidthPc")
     i32 ScreenStillWidth = 10260;
-#pragma data_seg()
-#pragma data_seg(".data$ScreenStillHeightPc")
     i32 ScreenStillHeight = 3592;
-#pragma data_seg()
     f32 WaitingForCharacterTime = 0;
     f32 MAXFRAMETIME = 0;
     i32 save_paused = 0;
     i32 netclient = 0;
     u8 snakebodies[0x440] = {0};
-#pragma data_seg(".data$gizaimessage_prefix")
     char gizaimessage_prefix[5] = "msg_";
-#pragma data_seg()
-#pragma const_seg(".rdata$GizAIMessage_NameFormat")
     extern const char GizAIMessage_NameFormat[3] = "%s";
-#pragma const_seg()
     LANGUAGEDATA Game_LanguageList[7] = {
         {1,  apitxt_ENGLISH},
         {2,  apitxt_FRENCH },
@@ -4819,15 +4543,9 @@ extern "C" {
     i32 nu_water_reset_state = 0;
     i64 NuTime_TickBase = 0;
     i64 NuTime_PerformanceFrequency = 0;
-#pragma const_seg(".rdata$NuTimeLowScale")
     extern const f64 NuTime_LowScale = 4294967295.0;
-#pragma const_seg()
-#pragma const_seg(".rdata$NuTimeMicroScale")
     extern const f64 NuTime_MicroScale = 1000000.0;
-#pragma const_seg()
-#pragma const_seg(".rdata$NuTimeRefreshRate")
     extern const f64 NuTime_RefreshRate = 60.0;
-#pragma const_seg()
     NUGSCN *edbits_base_scene = 0;
     void *edbits_base_terrain = 0;
     i32 NuSound3Initialized = 0;
@@ -4868,9 +4586,7 @@ extern "C" {
         {1.0f, 64,     0xffff},
     };
 
-#pragma const_seg(".rdata$LevelConfigFarDistance")
     extern const f32 LevelConfigFarDistance = 2000000.0f;
-#pragma const_seg()
 
     i32 edanim_page_on[8] = {0};
     i32 edanim_page_used[8] = {0};
@@ -4933,17 +4649,10 @@ extern "C" {
     void (*drawslotsfn)(MENU *, f32) = APIMenuDrawMemCardSlots;
     i32 MenuDrawDropShadows = 0;
     u8 MENUHEADERR = 0;
-#pragma data_seg(".data$MENUHEADERG")
     u8 MENUHEADERG = 0x7f;
-#pragma data_seg(".data$MENUHEADERB")
     u8 MENUHEADERB = 0xff;
-#pragma data_seg()
-#pragma const_seg(".rdata$nu_wind_phase_scale")
     extern const f64 nu_wind_phase_scale = 1.0 / 256.0;
-#pragma const_seg()
-#pragma const_seg(".rdata$PCKeyboardDefaultValue_candidate")
     extern const f32 PCKeyboardDefaultValue = 0.1f;
-#pragma const_seg()
     f32 dme_sy = 1.0f;
     f32 default_targetmomf = 4.0f;
     f32 default_ownermomf = 5.0f;
@@ -5005,11 +4714,8 @@ extern "C" {
         {22, MenuEnterSelectControls, MenuDrawControlSetup,   MenuUpdateSelectControls, MenuExitSelectControls, 0,  0,  0, 0, 0, 0},
     };
 
-#pragma data_seg(".data$PS2_VCNTR_X")
     i32 PS2_VCNTR_X = 320;
-#pragma data_seg(".data$PS2_VCNTR_Y")
     i32 PS2_VCNTR_Y = 240;
-#pragma data_seg()
 }
 i32 app_tbgameset = 0;
 i32 app_tbplayerset = 0;
@@ -5024,21 +4730,13 @@ char **argv = 0;
 NUDATHDR *curr_dat = 0;
 MSG win_message = {0};
 
-#pragma data_seg(".data$CHARACTERBUFFERSIZE")
 i32 CHARACTERBUFFERSIZE = 0x02800000;
-#pragma data_seg()
 
 WORLDINFO WorldInfo[2] = {0};
-#pragma data_seg(".data$WORLD")
 WORLDINFO *WORLD = &WorldInfo[0];
-#pragma data_seg()
-#pragma data_seg(".data$LWorld")
 WORLDINFO *LWORLD = &WorldInfo[0];
-#pragma data_seg()
 
-#pragma data_seg(".data$WaitingForCharacter")
 i32 waiting_for_character = -1;
-#pragma data_seg()
 
 // PC reads pairs of 16-bit code points, ending with a zero pair.
 u16 bad_equiv[8][2] = {
@@ -5067,9 +4765,7 @@ extern "C" {
     i32 party_under_cover = 0;
     GAMEOBJECT *alert_obj = 0;
     f32 alert_timer = 0;
-#pragma data_seg(".data$ForcePush_Speed")
     f32 ForcePush_Speed = 2.5f;
-#pragma data_seg()
 }
 
 // Additional PC movement, targeting, arcade and callback state.
@@ -5077,20 +4773,13 @@ extern "C" {
     f32 TargetDist_Near2 = 0;
 
     LEVELDATA_PC *DEATHSTARRESCUEA_LDATA = 0;
-#pragma const_seg(".rdata$ForcePushApproachInnerSquare")
     extern const f32 ForcePushApproachInnerSquare = 0.010000001f;
-#pragma const_seg()
-#pragma const_seg(".rdata$ForcePushApproachOuterSquare")
     extern const f32 ForcePushApproachOuterSquare = 0.040000003f;
-#pragma const_seg()
-#pragma data_seg(".data$id_GONKDROID")
     u16 id_GONKDROID = 0xffff;
-#pragma data_seg()
     APIOBJECT_FROM_ID_PC APIOBJECTFromObjIDFn = 0;
     i16 PCArcadeModeText0 = 0;
     i16 PCArcadeModeText1 = 0;
     i16 PCArcadeModeText2 = 0;
-#pragma data_seg(".data$Arcade_Mode")
     ARCADE_MODE_PC Arcade_Mode[7] = {
         {&PCArcadeModeText0, 0,      0x19},
         {&PCArcadeModeText1, 10,     0x12},
@@ -5100,37 +4789,20 @@ extern "C" {
         {&PCArcadeModeText2, 100000, 4   },
         {&PCArcadeModeText2, 250000, 4   },
     };
-#pragma data_seg()
 
 }
 
 // PC movement tuning, timers, input masks and parser path.
 extern "C" {
     TIMER GamePlayTimer = {0};
-#pragma data_seg(".data$GAMEPAD_JUMP")
     u32 GAMEPAD_JUMP = PAD_BUTTON_CROSS;
-#pragma data_seg()
-#pragma data_seg(".data$GAMEPAD_ACTION")
     u32 GAMEPAD_ACTION = PAD_BUTTON_SQUARE;
-#pragma data_seg()
-#pragma data_seg(".data$GAMEPAD_SPECIAL")
     u32 GAMEPAD_SPECIAL = PAD_BUTTON_CIRCLE;
-#pragma data_seg()
-#pragma data_seg(".data$GAMEPAD_TAG")
     u32 GAMEPAD_TAG = PAD_BUTTON_TRIANGLE;
-#pragma data_seg()
-#pragma data_seg(".data$id_DRAGBOMB")
     u16 id_DRAGBOMB = 0xffff;
-#pragma data_seg()
-#pragma const_seg(".rdata$ApplyGravityVelocityFactor")
     extern const f64 ApplyGravityVelocityFactor = 0.3330000042915344;
-#pragma const_seg()
-#pragma const_seg(".rdata$ApplyGravityFrameScale")
     extern const f64 ApplyGravityFrameScale = 180.0;
-#pragma const_seg()
-#pragma const_seg(".rdata$ApplyGravityMinimumFrameTime")
     extern const f32 ApplyGravityMinimumFrameTime = 0.016666668f;
-#pragma const_seg()
 }
 
 extern "C" {
@@ -5140,15 +4812,9 @@ extern "C" {
 
 extern "C" {
     CUSTOMISER_LAYERS *CharacterCustomiser = 0;
-#pragma data_seg(".data$id_BODYGUARD")
     i16 id_BODYGUARD = -1;
-#pragma data_seg()
-#pragma data_seg(".data$id_GEONOSIAN")
     i16 id_GEONOSIAN = -1;
-#pragma data_seg()
-#pragma data_seg(".data$id_CHEWBACCA")
     i16 id_CHEWBACCA = -1;
-#pragma data_seg()
 }
 
 extern "C" {
@@ -5164,42 +4830,20 @@ extern "C" {
 extern "C" {
     GAMEOBJECT *CarWashHack = 0;
     LEVELDATA_PC *MOSEISLEYB_LDATA = 0;
-#pragma data_seg(".data$id_LANDSPEEDER")
     i16 id_LANDSPEEDER = -1;
-#pragma data_seg()
-#pragma data_seg(".data$id_WOOKIEFLYER")
     i16 id_WOOKIEFLYER = -1;
-#pragma data_seg()
-#pragma data_seg(".data$id_IMPERIALGUARD")
     i16 id_IMPERIALGUARD = -1;
-#pragma data_seg()
-#pragma data_seg(".data$id_GRIEVOUS")
     i16 id_GRIEVOUS = -1;
-#pragma data_seg()
-#pragma data_seg(".data$id_THEEMPEROR")
     i16 id_THEEMPEROR = -1;
-#pragma data_seg()
-#pragma data_seg(".data$id_BOB")
     i16 id_BOB = -1;
-#pragma data_seg()
-#pragma data_seg(".data$id_DOOKU")
     i16 id_DOOKU = -1;
-#pragma data_seg()
-#pragma data_seg(".data$id_DARTHMAUL")
     i16 id_DARTHMAUL = -1;
-#pragma data_seg()
-#pragma data_seg(".data$id_ANAKINPADAWAN")
     i16 id_ANAKINPADAWAN = -1;
-#pragma data_seg()
 }
 
 extern "C" {
-#pragma data_seg(".data$GameDeflectPartGravity")
     f32 GameDeflectPartGravity = -2.5f;
-#pragma data_seg()
-#pragma data_seg(".data$GameDeflectPartSpeed")
     f32 GameDeflectPartSpeed = 5.0f;
-#pragma data_seg()
 
     PODSPRINT_PC podsprint = {0};
     NARROWSOCKEXCEPTION_PC *NarrowSockException = 0;
@@ -5212,15 +4856,9 @@ extern "C" {
 }
 
 extern "C" {
-#pragma data_seg(".data$id_TIEFIGHTER")
     i16 id_TIEFIGHTER = -1;
-#pragma data_seg()
-#pragma data_seg(".data$id_XWING")
     i16 id_XWING = -1;
-#pragma data_seg()
-#pragma data_seg(".data$id_STAP2")
     i16 id_STAP2 = -1;
-#pragma data_seg()
     AI_PARSE_SPEED_PC AIActionParseSpeedFn = 0;
     AI_CHARACTER_DISTANCE_PC GetViewRangeFn = 0;
     AI_CHARACTER_DISTANCE_PC GetHearDistanceFn = 0;
@@ -5241,71 +4879,33 @@ extern "C" {
     GAMEOBJECT *player_tag_to = 0;
     f32 player_tag_timer = 0;
     i32 do_player_tag = 0;
-#pragma data_seg(".data$LEGOCONTEXT_DOOMED")
     i32 LEGOCONTEXT_DOOMED = -1;
-#pragma data_seg()
-#pragma data_seg(".data$LEGOCONTEXT_BEENTAKENOVER")
     i32 LEGOCONTEXT_BEENTAKENOVER = -1;
-#pragma data_seg()
-#pragma data_seg(".data$LEGOCONTEXT_GETIN")
     i32 LEGOCONTEXT_GETIN = -1;
-#pragma data_seg()
-#pragma data_seg(".data$LEGOCONTEXT_EATEN")
     i32 LEGOCONTEXT_EATEN = -1;
-#pragma data_seg()
-#pragma data_seg(".data$LEGOCONTEXT_BUCK")
     i32 LEGOCONTEXT_BUCK = -1;
-#pragma data_seg()
-#pragma data_seg(".data$LEGOCONTEXT_JUMP")
     i32 LEGOCONTEXT_JUMP = -1;
-#pragma data_seg()
-#pragma data_seg(".data$LEGOACT_BUCK")
     i16 LEGOACT_BUCK = -1;
-#pragma data_seg()
-#pragma data_seg(".data$LEGOACT_JUMP")
     i16 LEGOACT_JUMP = -1;
-#pragma data_seg()
 }
 
 extern "C" {
 // Two-entry reconstruction access view; the original full array extent is unknown.
 // PC readers and reset producers access these two i32 entries; no original sizeof credit.
-#pragma data_seg(".data$LevSafePlatID")
     i32 LevSafePlatID[2] = {-1, -1};
-#pragma data_seg()
 }
 
 extern "C" {
-#pragma data_seg(".data$id_CLONEWALKER")
     i16 id_CLONEWALKER = -1;
-#pragma data_seg()
-#pragma data_seg(".data$id_TAUNTAUN")
     i16 id_TAUNTAUN = -1;
-#pragma data_seg()
-#pragma data_seg(".data$id_FLASHSPEEDER")
     i16 id_FLASHSPEEDER = -1;
-#pragma data_seg()
-#pragma data_seg(".data$id_DEWBACK")
     i16 id_DEWBACK = -1;
-#pragma data_seg()
-#pragma data_seg(".data$id_BANTHA")
     i16 id_BANTHA = -1;
-#pragma data_seg()
-#pragma data_seg(".data$id_GYROCOPTER")
     i16 id_GYROCOPTER = -1;
-#pragma data_seg()
-#pragma data_seg(".data$id_LUKESKYWALKERDAGOBAH")
     i16 id_LUKESKYWALKERDAGOBAH = -1;
-#pragma data_seg()
-#pragma data_seg(".data$id_ATAT")
     i16 id_ATAT = -1;
-#pragma data_seg()
-#pragma data_seg(".data$DEFAULT_PLAYERHITPOINTS")
     i32 DEFAULT_PLAYERHITPOINTS = 8;
-#pragma data_seg()
-#pragma data_seg(".data$TOGGLEHOLDTIME")
     f32 TOGGLEHOLDTIME = 1.0f;
-#pragma data_seg()
 }
 
 extern "C" {
@@ -5317,18 +4917,10 @@ extern "C" {
 }
 
 extern "C" {
-#pragma data_seg(".data$LEGOCONTEXT_BIGJUMP")
     i32 LEGOCONTEXT_BIGJUMP = -1;
-#pragma data_seg()
-#pragma data_seg(".data$LEGOACT_FALL")
     i16 LEGOACT_FALL = -1;
-#pragma data_seg()
-#pragma data_seg(".data$LEGOACT_COMBOJUMP")
     i16 LEGOACT_COMBOJUMP = -1;
-#pragma data_seg()
-#pragma data_seg(".data$LEGOACT_JUMP2")
     i16 LEGOACT_JUMP2 = -1;
-#pragma data_seg()
 }
 
 extern "C" {
@@ -5337,31 +4929,21 @@ extern "C" {
 }
 
 extern "C" {
-#pragma data_seg(".data$LEGOCONTEXT_TUBE")
     i32 LEGOCONTEXT_TUBE = -1;
-#pragma data_seg()
-#pragma data_seg(".data$LEGOCONTEXT_GLIDE")
     i32 LEGOCONTEXT_GLIDE = -1;
-#pragma data_seg()
 }
 
 extern "C" {
     f32 party_follow_offsets[8] = {0};
     i32 ai_fighting = 0;
     f32 drop_back_in_timer = 0;
-#pragma data_seg(".data$aitol")
     f32 aitol = 0.5f;
-#pragma data_seg()
-#pragma data_seg(".data$direction_scale")
     f32 direction_scale = 100.0f;
-#pragma data_seg()
 }
 
 extern "C" {
     i32 nethost = 0;
-#pragma data_seg(".data$id_PKDROID")
     i16 id_PKDROID = -1;
-#pragma data_seg()
     LEVELDATA_PC *NEGOTIATIONSC_LDATA = 0;
 }
 
@@ -5377,29 +4959,15 @@ extern "C" {
 extern "C" {}
 
 extern "C" {
-#pragma data_seg(".data$GUNSHIPAHACK")
     i32 GUNSHIPAHACK = 2;
-#pragma data_seg()
     i32 podrace_section = 0;
     i32 newgamecam = 0;
-#pragma data_seg(".data$GAMEPAD_DUP")
     i32 GAMEPAD_DUP = PAD_BUTTON_UP;
-#pragma data_seg()
-#pragma data_seg(".data$GAMEPAD_DDOWN")
     i32 GAMEPAD_DDOWN = PAD_BUTTON_DOWN;
-#pragma data_seg()
-#pragma data_seg(".data$GAMEPAD_DLEFT")
     i32 GAMEPAD_DLEFT = PAD_BUTTON_LEFT;
-#pragma data_seg()
-#pragma data_seg(".data$GAMEPAD_DRIGHT")
     i32 GAMEPAD_DRIGHT = PAD_BUTTON_RIGHT;
-#pragma data_seg()
-#pragma data_seg(".data$GAMEPAD_LIFT")
     i32 GAMEPAD_LIFT = PAD_BUTTON_R1;
-#pragma data_seg()
-#pragma data_seg(".data$OFFSCREEN_CATCHUP_TIME")
     f32 OFFSCREEN_CATCHUP_TIME = 1.0f;
-#pragma data_seg()
 }
 
 extern "C" {
@@ -5408,53 +4976,26 @@ extern "C" {
 }
 
 extern "C" {
-#pragma data_seg(".data$idealgoalrange")
     f32 idealgoalrange = 1.5f;
-#pragma data_seg()
-#pragma data_seg(".data$engagefiretime")
     f32 engagefiretime = 1.5f;
-#pragma data_seg()
     f32 DEFAULT_MOVE_RANGE = 0;
     AI_LEVEL_CHARACTER_TYPE_ID_PC LevelCharacterTypeIDFn = 0;
 }
 
 extern "C" {
-#pragma data_seg(".data$LEGOCONTEXT_WHIP")
     i32 LEGOCONTEXT_WHIP = -1;
-#pragma data_seg()
-#pragma data_seg(".data$LEGOCONTEXT_SUPERCARRY")
     i32 LEGOCONTEXT_SUPERCARRY = -1;
-#pragma data_seg()
-#pragma data_seg(".data$LEGOCONTEXT_SPECIALMOVE_ATTACKER")
     i32 LEGOCONTEXT_SPECIALMOVE_ATTACKER = -1;
-#pragma data_seg()
-#pragma data_seg(".data$LEGOCONTEXT_SPECIALMOVE_VICTIM")
     i32 LEGOCONTEXT_SPECIALMOVE_VICTIM = -1;
-#pragma data_seg()
-#pragma data_seg(".data$LEGOCONTEXT_BUILDIT")
     i32 LEGOCONTEXT_BUILDIT = -1;
-#pragma data_seg()
-#pragma data_seg(".data$LEGOCONTEXT_PUSHOBSTACLE")
     i32 LEGOCONTEXT_PUSHOBSTACLE = -1;
-#pragma data_seg()
-#pragma data_seg(".data$AIFireIntervalMul")
     f32 AIFireIntervalMul = 1.0f;
-#pragma data_seg()
-#pragma data_seg(".data$GhostLightMul")
     f32 GhostLightMul = 1.0f;
-#pragma data_seg()
-#pragma data_seg(".data$GhostLightTargetMul")
     f32 GhostLightTargetMul = 1.0f;
-#pragma data_seg()
-#pragma data_seg(".data$timebase_updates")
     i32 timebase_updates = 1;
-#pragma data_seg()
     f32 tieonsfxwait = 0;
     f32 tieoffsfxwait = 0;
-#pragma data_seg(".data$id_SEBULBASPOD")
     i16 id_SEBULBASPOD = -1;
-#pragma data_seg()
-#pragma data_seg(".data$adtabentries")
     i8 adtabentries[9][4] = {
         {-1, -1, -1, -1},
         {-1, -1, -1, 0 },
@@ -5466,46 +5007,25 @@ extern "C" {
         {1,  1,  1,  0 },
         {1,  1,  1,  1 }
     };
-#pragma data_seg()
-#pragma data_seg(".data$adtab")
     i8 (*adtab)[4] = &adtabentries[4];
-#pragma data_seg()
     ADAPTIVEDIFFICULTY adaptivedifficulty = {0};
-#pragma data_seg(".data$AdaptiveDifficultyRecoveryTimePc")
     f32 AdaptiveDifficultyRecoveryTime = 30.0f;
-#pragma data_seg()
-#pragma data_seg(".data$id_YWING")
     i16 id_YWING = -1;
-#pragma data_seg()
-#pragma data_seg(".data$id_MINIYWING")
     i16 id_MINIYWING = -1;
-#pragma data_seg()
-#pragma data_seg(".data$id_TIEBOMBER")
     i16 id_TIEBOMBER = -1;
-#pragma data_seg()
-#pragma data_seg(".data$id_MINITIEBOMBER")
     i16 id_MINITIEBOMBER = -1;
-#pragma data_seg()
-#pragma data_seg(".data$id_MINISTARDESTROYER")
     i16 id_MINISTARDESTROYER = -1;
-#pragma data_seg()
     u32 LEGO_AIPATHCNX_FORGOODIES = 0;
     u32 LEGO_AIPATHCNX_FORBADDIES = 0;
-#pragma data_seg(".data$v100")
     NUVEC v100 = {1.0f, 0.0f, 0.0f};
-#pragma data_seg()
-#pragma data_seg(".data$v010")
     NUVEC v010 = {0.0f, 1.0f, 0.0f};
-#pragma data_seg()
 // Eight queue slots are a source access view; the complete original extent is unknown.
     u32 LevelCompletionFallbackFlagPC = 0;
     i16 castnum = 0;
     NUVEC ShadNorm = {0};
     NUVEC GetSurfaceInfoWaterNormal = {0};
     PC_SURFACE_MASK GetSurfaceInfoRuntimeMask = {0};
-#pragma data_seg(".data$GetSurfaceInfoDefaultMaskPc")
     PC_SURFACE_MASK GetSurfaceInfoDefaultMask = {0x20};
-#pragma data_seg()
 }
 
 extern "C" {
@@ -5514,15 +5034,10 @@ extern "C" {
 }
 
 extern "C" {
-#pragma const_seg(".rdata$TerrainSkinSampleCountPc")
     extern const f64 TerrainSkinSampleCount = 8.0;
-#pragma const_seg(".rdata$TerrainSkinSampleIndexScalePc")
     extern const f64 TerrainSkinSampleIndexScale = -8.0;
-#pragma const_seg(".rdata$TerrainSkinBoundsMaxPc")
     extern const f32 TerrainSkinBoundsMax = 123456792.0f;
-#pragma const_seg(".rdata$TerrainSkinBoundsMinPc")
     extern const f32 TerrainSkinBoundsMin = -123456792.0f;
-#pragma const_seg()
 }
 
 struct TERRAIN_SKIN_INFO;
@@ -5531,9 +5046,7 @@ struct TERRAIN_SKIN_USE_RECORD;
 extern "C" {
 // Accessed terrain state and literals; full original allocation extents remain unknown.
     struct TERRAIN_SKIN_USE_RECORD *SkinMemInfo = 0;
-#pragma const_seg(".rdata$TerrainCastLowerSentinel")
     extern const f32 TerrainCastLowerSentinel = -2000000.0f;
-#pragma const_seg()
 }
 
 extern "C" {
@@ -5541,35 +5054,23 @@ extern "C" {
 }
 
 extern "C" {
-#pragma const_seg(".rdata$ActionSnapWeightedRandomZeroPc")
     extern const f64 ActionSnapWeightedRandomZero = 0.0;
-#pragma const_seg()
 }
 
 extern "C" {
 
     HRESULT PCDeviceLastResult = 0;
-#pragma const_seg(".rdata$NuVpFixed16ScalePc")
     extern const f64 NuVpFixed16Scale = 1.0 / 65536.0;
-#pragma const_seg()
 }
 
 extern "C" {
-#pragma const_seg(".rdata$AITransferLiteral757a7c")
     extern const char dat_00757a7c[8] = "looping";
-#pragma const_seg()
 }
 
 extern "C" {
-#pragma data_seg(".data$PCDeviceStateCacheEnabled")
     u8 PCDeviceStateCacheEnabled = 1;
-#pragma data_seg()
-#pragma bss_seg(".bss$PCDeviceStateCachePc")
     PC_DEVICE_STATE_CACHE_PC PCDeviceStateCachePc;
-#pragma bss_seg()
-#pragma data_seg(".data$nufile_lsn_allowed")
     i32 nufile_lsn_allowed = 1;
-#pragma data_seg()
 }
 
 extern "C" {
@@ -5578,23 +5079,15 @@ extern "C" {
 }
 
 extern "C" {
-#pragma data_seg(".data$turret_gizmotype_id")
     i32 turret_gizmotype_id = -1;
-#pragma data_seg()
-#pragma data_seg(".data$blowup_gizmotype_id")
     i32 blowup_gizmotype_id = -1;
-#pragma data_seg()
-#pragma data_seg(".data$obstacle_gizmotype_id")
     i32 obstacle_gizmotype_id = -1;
-#pragma data_seg()
 }
 
 extern "C" {}
 
 extern "C" {
-#pragma data_seg(".data$HIGHJUMPHEIGHT")
     f32 HIGHJUMPHEIGHT = 1.14f;
-#pragma data_seg()
     TIMER AreaTimer = {0};
     i32 OldBonusScore[2] = {0};
     i32 BonusScore[2] = {0};
@@ -5604,48 +5097,28 @@ extern "C" {
 }
 
 extern "C" {
-#pragma data_seg(".data$NuLgtSeed")
     i32 NuLgtSeed = 12345;
-#pragma data_seg()
 }
 
 extern "C" {
     i32 BeenAttacked = 0;
-#pragma data_seg(".data$Door_NextSock")
     i32 Door_NextSock = -1;
-#pragma data_seg()
 }
 
 extern "C" {
-#pragma const_seg(".rdata$GizmoSnapOptionNamePc")
     extern const char GizmoSnapOptionName[5] = "SNAP";
-#pragma const_seg()
 }
 
 extern "C" {
-#pragma const_seg(".rdata$AITransferLiteral757824")
     extern const char dat_00757824[7] = "random";
-#pragma const_seg()
-#pragma const_seg(".rdata$GizObstacleActionNamePC")
     extern const char GizObstacleActionNamePC[5] = "Name";
-#pragma const_seg()
-#pragma const_seg(".rdata$GizObstacleActionBackwardPC")
     extern const char GizObstacleActionBackwardPC[9] = "BACKWARD";
-#pragma const_seg()
-#pragma const_seg(".rdata$GizObstacleActionForwardPC")
     extern const char GizObstacleActionForwardPC[8] = "FORWARD";
-#pragma const_seg()
-#pragma const_seg(".rdata$GizObstacleActionStayOpenPC")
     extern const char GizObstacleActionStayOpenPC[9] = "STAYOPEN";
-#pragma const_seg()
-#pragma const_seg(".rdata$GizObstacleActionStayShutPC")
     extern const char GizObstacleActionStayShutPC[9] = "STAYSHUT";
-#pragma const_seg()
     i32 bonus_gunship_store_progress_flag = 0;
 
-#pragma data_seg(".data$LEGOACT_HANG_MOVE")
     i16 LEGOACT_HANG_MOVE = -1;
-#pragma data_seg()
 }
 
 extern "C" {
@@ -5668,27 +5141,17 @@ extern "C" {
     PC_EDGRACLUMP *GrassClumps = 0;
     PC_EDGRAINDIVIDUAL *IndGrassClumps = 0;
     i32 edgra_clumps_used = 0;
-#pragma data_seg(".data$edgra_global_fadein")
     f32 edgra_global_fadein = 15.0f;
-#pragma data_seg()
-#pragma data_seg(".data$edgra_global_fadeout")
     f32 edgra_global_fadeout = 25.0f;
-#pragma data_seg()
     void edgraInit(void);
     void edgraClose(void);
     void edgraEnter(void);
     i32 edgraProc(f32 delta_time, FRAME_PAD_PC *pad);
     void edgraRender(void);
-#pragma data_seg(".data$edgradesc")
     ed_module_s edgradesc = {NULL, NULL, "Grass Editor", edgraInit,  edgraClose, edgraEnter,  NULL,
                              NULL, NULL, NULL,           0x73617267, edgraProc,  edgraRender, NULL};
-#pragma data_seg()
-#pragma data_seg(".data$edgra_clumpthin")
     i32 edgra_clumpthin = 1;
-#pragma data_seg()
-#pragma data_seg(".data$edgra_elementthin")
     i32 edgra_elementthin = 1;
-#pragma data_seg()
     f32 globaltime = 0;
     f32 panelglobaltime = 0;
     i32 maxdebkeys = 0;
@@ -5704,32 +5167,22 @@ extern "C" {
     i32 NuWindDir = 0;
     i32 NuWindDir2 = 0;
     i32 edgra_units_used = 0;
-#pragma data_seg(".data$debrischunks")
     i32 debrischunks = 256;
-#pragma data_seg()
-#pragma data_seg(".data$debrischunksglass")
     i32 debrischunksglass = 32;
-#pragma data_seg()
     i32 freechunkcontrolsptr = 0;
     volatile i32 debris_control_stack_lock = 0;
     DEBRIS_PART_HEADER_PC **DmaDebTypes = 0;
 }
 
 extern "C" {
-#pragma const_seg(".rdata$AIPositionUnsetPc")
     extern const f32 AIPositionUnset = 1000000000.0f;
-#pragma const_seg()
 }
 
 extern "C" {
     i32 forced_debris_thinning = 0;
-#pragma data_seg(".data$debris_thinning_level")
     f32 debris_thinning_level = 1.0f;
-#pragma data_seg()
     i32 part_emits_used = 0;
-#pragma data_seg(".data$SceneUploadBufferSizePC")
     i32 SceneUploadBufferSizePC = 41943040;
-#pragma data_seg()
     i32 PCDeviceHardwareVertexProcessingPC = 0;
     u8 PCFrameLoadingYieldEnabledPC = 0;
 }
@@ -5750,9 +5203,7 @@ extern "C" {
 }
 
 extern "C" {
-#pragma bss_seg(".bss$PCNativeWarningDebugState")
     PC_NATIVE_DEBUG_STATE PCNativeWarningDebugState;
-#pragma bss_seg()
     void (*PCWarningHandler)(char *) = 0;
 }
 
@@ -5762,85 +5213,38 @@ extern "C" {
     i32 curSphereter = 0;
     i32 PlatImpactId = 0;
     i32 TerrShapeAdjCnt = 0;
-#pragma const_seg(".rdata$TerrainUnusedSpatialBlockPc")
     extern const f32 TerrainUnusedSpatialBlock = 2147483648.0f;
-#pragma const_seg()
-#pragma const_seg(".rdata$TerrainBoundsMinimumPc")
     extern const f32 TerrainBoundsMinimum = -200000000.0f;
-#pragma const_seg()
-#pragma const_seg(".rdata$TerrainBoundsMaximumPc")
     extern const f32 TerrainBoundsMaximum = 200000000.0f;
-#pragma const_seg()
-#pragma data_seg(".data$LEGOACT_CLIMB_UP")
     i16 LEGOACT_CLIMB_UP = -1;
-#pragma data_seg()
-#pragma data_seg(".data$LEGOACT_CLIMB_DOWN")
     i16 LEGOACT_CLIMB_DOWN = -1;
-#pragma data_seg()
-#pragma data_seg(".data$LEGOACT_CLIMB_LEFT")
     i16 LEGOACT_CLIMB_LEFT = -1;
-#pragma data_seg()
-#pragma data_seg(".data$LEGOACT_CLIMB_RIGHT")
     i16 LEGOACT_CLIMB_RIGHT = -1;
-#pragma data_seg()
-#pragma data_seg(".data$LEGOACT_WALLSHUFFLE_IDLE")
     i16 LEGOACT_WALLSHUFFLE_IDLE = -1;
-#pragma data_seg()
-#pragma data_seg(".data$LEGOACT_WALLSHUFFLE_LEFT")
     i16 LEGOACT_WALLSHUFFLE_LEFT = -1;
-#pragma data_seg()
-#pragma data_seg(".data$LEGOACT_WALLSHUFFLE_RIGHT")
     i16 LEGOACT_WALLSHUFFLE_RIGHT = -1;
-#pragma data_seg()
-#pragma data_seg(".data$LEGOACT_MAGNET_WALK_METAL")
     i16 LEGOACT_MAGNET_WALK_METAL = -1;
-#pragma data_seg()
-#pragma data_seg(".data$debris_detail_level")
     i32 debris_detail_level = 4;
-#pragma data_seg()
 }
 
 extern "C" {
-#pragma data_seg(".data$LEGOACT_SUPERCARRY_WALK")
     i16 LEGOACT_SUPERCARRY_WALK = -1;
-#pragma data_seg()
-#pragma const_seg(".rdata$PlayerSlideSpeedPc")
     extern const f64 PlayerSlideSpeed = 1.2000000476837158;
-#pragma const_seg()
-#pragma const_seg(".rdata$PlayerRandomScalePc")
     extern const f64 PlayerRandomScale = 1.5259021893143654e-05;
-#pragma const_seg()
-#pragma data_seg(".data$LEGOCONTEXT_COMBO")
     i32 LEGOCONTEXT_COMBO = -1;
-#pragma data_seg()
-#pragma const_seg(".rdata$PlayerStepInnerActionPc")
     extern const f64 PlayerStepInnerAction = 1.75;
-#pragma const_seg()
-#pragma const_seg(".rdata$PlayerStepOuterActionPc")
     extern const f64 PlayerStepOuterAction = 2.25;
-#pragma const_seg()
-#pragma const_seg(".rdata$PlayerBuildItNegativeLimitPc")
     extern const f32 PlayerBuildItNegativeLimit = -1000000000.0f;
-#pragma const_seg()
-#pragma data_seg(".data$LEGOCONTEXT_PUSHSPINNER")
     i32 LEGOCONTEXT_PUSHSPINNER = -1;
-#pragma data_seg()
-#pragma data_seg(".data$force_gizmotype_id")
     i32 force_gizmotype_id = -1;
-#pragma data_seg()
-#pragma data_seg(".data$gizpanel_gizmotype_id")
     i32 gizpanel_gizmotype_id = -1;
-#pragma data_seg()
 }
 
 extern "C" {
     i32 curPickInst = 0;
-#pragma const_seg(".rdata$TerrainScanMargin10Pc")
     extern const f64 TerrainScanMargin10 = 0.10000000149011612;
-#pragma const_seg()
     NUMTX debris_box_camera_cache = {0};
     i32 NuRndrStopUpdate = 0;
-#pragma const_seg(".rdata$debris_box_corners")
     extern const NUVEC debris_box_corners[8] = {
         {-0.2f, -0.2f, -0.05f},
         {0.2f,  -0.2f, -0.05f},
@@ -5851,7 +5255,6 @@ extern "C" {
         {-0.5f, 0.5f,  0.8f  },
         {0.5f,  0.5f,  0.8f  }
     };
-#pragma const_seg()
 }
 
 extern "C" {
@@ -5860,62 +5263,30 @@ extern "C" {
     PC_VERTEX_DECL_ENTRY PCVertexDeclarationCachePC[256] = {0};
 }
 
-#pragma bss_seg(".bss$CRC16InstancePC")
 CRC16 CRC16InstancePC;
-#pragma bss_seg()
 
 extern "C" {
     void *GHGTextureProgramsPC = 0;
-#pragma const_seg(".rdata$GHGJointFormatWarningPC")
     extern const char GHGJointFormatWarningPC[95] =
         "Your Character version is %d, whereas the Engine only accepts Character versions from %d to %d";
-#pragma const_seg()
-#pragma const_seg(".rdata$GHGSceneFormatWarningPC")
     extern const char GHGSceneFormatWarningPC[87] =
         "Your Scene version is %d, whereas the Engine only accepts Scene versions from %d to %d";
-#pragma const_seg()
-#pragma data_seg(".data$id_GRABCONTROL")
     i16 id_GRABCONTROL = -1;
-#pragma data_seg()
-#pragma data_seg(".data$id_GRABR2CONTROL")
     i16 id_GRABR2CONTROL = -1;
-#pragma data_seg()
-#pragma data_seg(".data$id_MINIATST")
     i16 id_MINIATST = -1;
-#pragma data_seg()
-#pragma data_seg(".data$id_ATST_LOWRES")
     i16 id_ATST_LOWRES = -1;
-#pragma data_seg()
-#pragma data_seg(".data$id_MINIATAT")
     i16 id_MINIATAT = -1;
-#pragma data_seg()
-#pragma data_seg(".data$id_MINIATTE")
     i16 id_MINIATTE = -1;
-#pragma data_seg()
-#pragma data_seg(".data$id_MINISLAVE1")
     i16 id_MINISLAVE1 = -1;
-#pragma data_seg()
-#pragma data_seg(".data$id_YODA")
     i16 id_YODA = -1;
-#pragma data_seg()
-#pragma data_seg(".data$id_YODAGHOST")
     i16 id_YODAGHOST = -1;
-#pragma data_seg()
-#pragma data_seg(".data$id_C3PO")
     i16 id_C3PO = -1;
-#pragma data_seg()
-#pragma data_seg(".data$id_TC14")
     i16 id_TC14 = -1;
-#pragma data_seg()
-#pragma data_seg(".data$id_DROIDEKA")
     i16 id_DROIDEKA = -1;
-#pragma data_seg()
 }
 
 extern "C" {
-#pragma const_seg(".rdata$TerrainOpposingContactThresholdPc")
     extern const f64 TerrainOpposingContactThreshold = -0.7f;
-#pragma const_seg()
 
     TERRAIN_POLYGON_INFO TerrPolyInfo = {0};
     TERRAIN_TRACK_SLOT *CurTrackInfo = 0;
@@ -5925,21 +5296,15 @@ extern "C" {
 }
 
 extern "C" {
-#pragma data_seg(".data$DebrisSuspendDrawObjectSwitch")
     i32 DebrisSuspendDrawObjectSwitch = -1;
-#pragma data_seg()
-#pragma data_seg(".data$debris_render_scale")
     f32 debris_render_scale = 1.0f;
-#pragma data_seg()
     void edanimInit(void);
     void edanimClose(void);
     void edanimEnter(void);
     i32 edanimProc(f32 delta_time, FRAME_PAD_PC *pad);
     void edanimRender(void);
-#pragma data_seg(".data$edanimdesc")
     ed_module_s edanimdesc = {NULL, NULL, "Anim Editor", edanimInit, edanimClose, edanimEnter,  NULL,
                               NULL, NULL, NULL,          0x6d696e61, edanimProc,  edanimRender, NULL};
-#pragma data_seg()
     NUMTX xzfacingmtx = {0};
     i32 g_renderingDebris = 0;
     i32 edbits_editor_state = 0;
@@ -5950,59 +5315,27 @@ extern "C" {
 }
 
 extern "C" {
-#pragma data_seg(".data$TerrainPlayerOtherMovementScalePc")
     f32 TerrainPlayerOtherMovementScale = 2.5f;
-#pragma data_seg()
-#pragma data_seg(".data$TerrainPlayerBikeMovementScalePc")
     f32 TerrainPlayerBikeMovementScale = 15.0f;
-#pragma data_seg()
-#pragma data_seg(".data$TerrainPlayerPlatConnectTolerancePc")
     f32 TerrainPlayerPlatConnectTolerance = 0.01f;
-#pragma data_seg()
-#pragma data_seg(".data$TerrainPlayerShadowFixPc")
     i32 TerrainPlayerShadowFix = 1;
-#pragma data_seg()
-#pragma data_seg(".data$MAXBLOWUPRANDSPANG")
     i32 MAXBLOWUPRANDSPANG = 60;
-#pragma data_seg()
     void (*GizmoBlowUp_SfxFn)(GIZMOBLOWUP_PC *, NUVEC *) = 0;
 }
 
 extern "C" {
-#pragma data_seg(".data$ScorePanelName")
     char ScorePanelName[9] = "MK-Panel";
-#pragma data_seg()
-#pragma data_seg(".data$ScoreCounterName")
     char ScoreCounterName[8] = "Counter";
-#pragma data_seg()
-#pragma data_seg(".data$PickupCoinsLandName")
     char PickupCoinsLandName[10] = "CoinsLand";
-#pragma data_seg()
-#pragma data_seg(".data$CoinTab")
     u8 CoinTab[4] = {0, 1, 2, 3};
-#pragma data_seg()
-#pragma data_seg(".data$TerrainLastChatterSfxPc")
     i32 TerrainLastChatterSfx = -1;
-#pragma data_seg()
-#pragma data_seg(".data$AddGameMsg_Default")
     ADD_GAME_MESSAGE_PC AddGameMsg_Default = {NULL, &v000, &v000, 1.0f, 1.0f, 255,  255,  255,  128,  0,  1.0f, 0.0f, 0, -1,
                                               NULL, 0,     0.0f,  0.0f, NULL, NULL, NULL, NULL, NULL, -1, 0,    255,  0};
-#pragma data_seg()
-#pragma data_seg(".data$COINMSGTIME")
     f32 COINMSGTIME = 1.0f;
-#pragma data_seg()
-#pragma data_seg(".data$PCArcadeUnpairedIconModel")
     i32 PCArcadeUnpairedIconModel = -1;
-#pragma data_seg()
-#pragma data_seg(".data$BigJumpLandFallbackPc")
     i16 BigJumpLandFallback = -1;
-#pragma data_seg()
-#pragma data_seg(".data$BigJumpLandSecondaryPc")
     i16 BigJumpLandSecondary = -1;
-#pragma data_seg()
-#pragma data_seg(".data$BigJumpLandPreferredPc")
     i16 BigJumpLandPreferred = -1;
-#pragma data_seg()
     u32 BonusCoinTarget = 0;
     i32 BonusWinFlag = 0;
     i32 MenuValidated = 0;
@@ -6013,53 +5346,24 @@ extern "C" {
 }
 
 extern "C" {
-#pragma data_seg(".data$alert_time")
     f32 alert_time = 10.0f;
-#pragma data_seg()
     NUVEC alert_pos = {0};
 }
 
 extern "C" {
-#pragma data_seg(".data$PickupTypeLiteral758c00")
     char dat_00758c00[9] = "Power Up";
-#pragma data_seg()
-#pragma data_seg(".data$PickupTypeLiteral758c0c")
     char dat_00758c0c[8] = "Torpedo";
-#pragma data_seg()
-#pragma data_seg(".data$PickupTypeLiteral758c14")
     char dat_00758c14[10] = "MK-Pickup";
-#pragma data_seg()
-#pragma data_seg(".data$PickupTypeLiteral758c20")
     char dat_00758c20[8] = "Charkit";
-#pragma data_seg()
-#pragma data_seg(".data$PickupTypeLiteral758c28")
     char dat_00758c28[10] = "Red Brick";
-#pragma data_seg()
-#pragma data_seg(".data$PickupTypeLiteral758c34")
     char dat_00758c34[6] = "Heart";
-#pragma data_seg()
-#pragma data_seg(".data$PickupTypeLiteral758c3c")
     char dat_00758c3c[10] = "MK-Appear";
-#pragma data_seg()
-#pragma data_seg(".data$PickupTypeLiteral758c48")
     char dat_00758c48[8] = "Minikit";
-#pragma data_seg()
-#pragma data_seg(".data$PickupTypeLiteral758c50")
     char dat_00758c50[12] = "Purple Coin";
-#pragma data_seg()
-#pragma data_seg(".data$PickupTypeLiteral758c5c")
     char dat_00758c5c[12] = "PickupCoinB";
-#pragma data_seg()
-#pragma data_seg(".data$PickupTypeLiteral758c68")
     char dat_00758c68[10] = "Blue Coin";
-#pragma data_seg()
-#pragma data_seg(".data$PickupTypeLiteral758c74")
     char dat_00758c74[10] = "Gold Coin";
-#pragma data_seg()
-#pragma data_seg(".data$PickupTypeLiteral758c80")
     char dat_00758c80[12] = "Silver Coin";
-#pragma data_seg()
-#pragma data_seg(".data$GizmoPickupType")
     // clang-format off: aligned table wider than the column limit
     GIZMO_PICKUP_TYPE GizmoPickupType[10] = {
         {dat_00758c80, NULL,                    NULL,                    115, 4, 64, 0, 183, 10,    0.045f, 0.045f, 10.0f,
@@ -6084,19 +5388,14 @@ extern "C" {
          0.05f, Pup_UpdatePowerUp,    Pup_CollectPowerUp,  -1, 209, 0.0f, 0.0f},
     };
     // clang-format on
-#pragma data_seg()
     f32 PowerUp_PanelPosMul[2] = {0};
 }
 
 extern "C" {
-#pragma data_seg(".data$MiniKitModelId_PC")
     i32 MiniKitModelId = -1;
-#pragma data_seg()
 }
 extern "C" {
-#pragma data_seg(".data$CharKitModelId_PC")
     i32 CharKitModelId = -1;
-#pragma data_seg()
 }
 extern "C" {
     NEW_MINI_PIECE NewMiniPiece[10] = {0};
@@ -6105,61 +5404,41 @@ extern "C" {
     u16 PowerUp_PanelYRot[2] = {0};
 }
 extern "C" {
-#pragma data_seg(".data$PartExtraCoinRate_PC")
     f32 PartExtraCoinRate = 5.0f;
-#pragma data_seg()
 }
 extern "C" {
-#pragma data_seg(".data$PartVehicleHeartLifetime_PC")
     f32 PartVehicleHeartLifetime = 1.0f;
-#pragma data_seg()
 }
 extern "C" {
-#pragma data_seg(".data$PartVehicleHeartPodraceHeight_PC")
     f32 PartVehicleHeartPodraceHeight = 2.0f;
-#pragma data_seg()
 }
 extern "C" {
-#pragma data_seg(".data$PartVehicleHeartHeight_PC")
     f32 PartVehicleHeartHeight = 3.0f;
-#pragma data_seg()
 }
 extern "C" {
-#pragma data_seg(".data$PartVehicleHeartPodraceScale_PC")
     f32 PartVehicleHeartPodraceScale = 4.0f;
-#pragma data_seg()
 }
 extern "C" {
-#pragma data_seg(".data$PartVehicleHeartGunshipScale_PC")
     f32 PartVehicleHeartGunshipScale = 7.5f;
-#pragma data_seg()
 }
 extern "C" {
-#pragma data_seg(".data$PartVehicleHeartScale_PC")
     f32 PartVehicleHeartScale = 5.0f;
-#pragma data_seg()
 }
 extern "C" {
     f32 coinimpactwait = 0;
 }
 extern "C" {}
 extern "C" {
-#pragma const_seg(".rdata$PickupCoinSfx_PC")
     extern const char PickupCoinSfx[11] = "PickupCoin";
-#pragma const_seg()
 }
 extern "C" {}
 extern "C" {}
 extern "C" {}
 extern "C" {
-#pragma data_seg(".data$id_BOBAFETT")
     i16 id_BOBAFETT = -1;
-#pragma data_seg()
 }
 extern "C" {
-#pragma data_seg(".data$id_MINIDROIDEKA")
     i16 id_MINIDROIDEKA = -1;
-#pragma data_seg()
 }
 extern "C" {
     i32 KillPartsPreviousVariant = 0;
@@ -6171,99 +5450,59 @@ extern "C" {
     f32 brickimpactwait = 0;
 }
 extern "C" {
-#pragma data_seg(".data$KillPartsLegoSingleTextPc")
     char KillPartsLegoSingleText[11] = "LegoSingle";
-#pragma data_seg()
 }
 extern "C" {
     KILLPARTS_BIKE KillPartsBikes[4] = {0};
 }
 extern "C" {
-#pragma data_seg(".data$KillPartsTieSpinsTextPc")
     char KillPartsTieSpinsText[10] = "Tie_Spins";
-#pragma data_seg()
 }
 extern "C" {
-#pragma data_seg(".data$KillPartsTieTrailScalePc")
     f32 KillPartsTieTrailScale = 0.1f;
-#pragma data_seg()
 }
 extern "C" {
-#pragma data_seg(".data$KillPartsTieSpinTranslationPc")
     NUVEC KillPartsTieSpinTranslation = {0.0f, 0.0f, -0.05f};
-#pragma data_seg()
 }
 extern "C" {
-#pragma data_seg(".data$KillPartsAtatExplodeTextPc")
     char KillPartsAtatExplodeText[9] = "EXPLODE1";
-#pragma data_seg()
 }
 
 extern "C" {
-#pragma data_seg(".data$PANEL_COINSCALE_START")
     f32 PANEL_COINSCALE_START = 1.0f;
-#pragma data_seg()
 }
 
 extern "C" {}
 
 extern "C" {
 
-#pragma data_seg(".data$id_GAMORREANGUARD")
     i16 id_GAMORREANGUARD = -1;
-#pragma data_seg()
 
-#pragma data_seg(".data$id_SNAKE")
     i16 id_SNAKE = -1;
-#pragma data_seg()
 
-#pragma data_seg(".data$id_WOOKIEE")
     i16 id_WOOKIEE = -1;
-#pragma data_seg()
 
-#pragma data_seg(".data$id_OBIWANKENOBIEP3")
     i16 id_OBIWANKENOBIEP3 = -1;
-#pragma data_seg()
 
-#pragma data_seg(".data$id_ANAKINJEDI")
     i16 id_ANAKINJEDI = -1;
-#pragma data_seg()
 
-#pragma data_seg(".data$id_ROYALGUARD")
     i16 id_ROYALGUARD = -1;
-#pragma data_seg()
 
-#pragma data_seg(".data$CombatNpcKillDifficultyAmountPc")
     f32 CombatNpcKillDifficultyAmount = 0.01f;
-#pragma data_seg()
 
-#pragma data_seg(".data$CombatPlayerDeathDifficultyAmountPc")
     f32 CombatPlayerDeathDifficultyAmount = -0.025f;
-#pragma data_seg()
 
-#pragma data_seg(".data$CombatHitReactionIntervalPc")
     i32 CombatHitReactionInterval = 3;
-#pragma data_seg()
 
-#pragma data_seg(".data$CombatReactionDurationPc")
     f32 CombatReactionDuration = 3.0f;
-#pragma data_seg()
 
-#pragma data_seg(".data$objhit_damage_joints")
     u8 objhit_damage_joints[3] = {6, 8, 7};
-#pragma data_seg()
 
-#pragma data_seg(".data$LEGOCONTEXT_HOLD")
     i32 LEGOCONTEXT_HOLD = -1;
-#pragma data_seg()
 
-#pragma data_seg(".data$LEGOCONTEXT_LAND_LUNGE")
     i32 LEGOCONTEXT_LAND_LUNGE = -1;
-#pragma data_seg()
 
-#pragma data_seg(".data$LEGOCONTEXT_LAND_SLAM")
     i32 LEGOCONTEXT_LAND_SLAM = -1;
-#pragma data_seg()
 
     BOLT *objhitobj_bolt = 0;
 
@@ -6279,13 +5518,9 @@ extern "C" {
 }
 
 extern "C" {
-#pragma data_seg(".data$LEGOCONTEXT_WEAPONIN")
     i32 LEGOCONTEXT_WEAPONIN = -1;
-#pragma data_seg()
 
-#pragma data_seg(".data$LEGOCONTEXT_WEAPONOUT")
     i32 LEGOCONTEXT_WEAPONOUT = -1;
-#pragma data_seg()
 }
 
 extern "C" {
@@ -6298,20 +5533,14 @@ extern "C" {
 
 extern "C" {
 
-#pragma data_seg(".data$id_CATAPULT")
     i16 id_CATAPULT = -1;
-#pragma data_seg()
 
-#pragma data_seg(".data$id_FIRETRUCK")
     i16 id_FIRETRUCK = -1;
-#pragma data_seg()
 }
 
 extern "C" {
 
-#pragma data_seg(".data$PCStereoChannel1A")
     i32 PCStereoChannel1A = 2;
-#pragma data_seg()
 }
 
 extern "C" {
@@ -6323,129 +5552,67 @@ extern "C" {
 
 extern "C" {
 
-#pragma data_seg(".data$VehicleBoltId7f17d0Pc")
     i16 dat_007f17d0 = -1;
-#pragma data_seg()
 
-#pragma data_seg(".data$VehicleBoltId7f17d4Pc")
     i16 dat_007f17d4 = -1;
-#pragma data_seg()
 
-#pragma data_seg(".data$VehicleBoltId7f18b4Pc")
     i16 dat_007f18b4 = -1;
-#pragma data_seg()
 
-#pragma data_seg(".data$VehicleBoltId7f190cPc")
     i16 dat_007f190c = -1;
-#pragma data_seg()
 
-#pragma data_seg(".data$VehicleBoltId7f1910Pc")
     i16 dat_007f1910 = -1;
-#pragma data_seg()
 
-#pragma data_seg(".data$VehicleBoltId7f195cPc")
     i16 dat_007f195c = -1;
-#pragma data_seg()
 
-#pragma data_seg(".data$VehicleBoltId7f196cPc")
     i16 dat_007f196c = -1;
-#pragma data_seg()
 
-#pragma data_seg(".data$id_JAWA")
     i16 id_JAWA = -1;
-#pragma data_seg()
 
-#pragma data_seg(".data$VehicleBoltId7f19a4Pc")
     i16 dat_007f19a4 = -1;
-#pragma data_seg()
 
-#pragma data_seg(".data$VehicleBoltId7f19a8Pc")
     i16 dat_007f19a8 = -1;
-#pragma data_seg()
 
-#pragma data_seg(".data$id_REPUBLICGUNSHIP")
     i16 id_REPUBLICGUNSHIP = -1;
-#pragma data_seg()
 
-#pragma data_seg(".data$VehicleBoltId7f1a24Pc")
     i16 dat_007f1a24 = -1;
-#pragma data_seg()
 
-#pragma data_seg(".data$VehicleBoltId7f1a28Pc")
     i16 dat_007f1a28 = -1;
-#pragma data_seg()
 
-#pragma data_seg(".data$VehicleBoltId7f1a2cPc")
     i16 dat_007f1a2c = -1;
-#pragma data_seg()
 
-#pragma data_seg(".data$id_SENTRYDROID")
     i16 id_SENTRYDROID = -1;
-#pragma data_seg()
 
-#pragma data_seg(".data$VehicleBoltId7f1a38Pc")
     i16 dat_007f1a38 = -1;
-#pragma data_seg()
 
-#pragma data_seg(".data$VehicleBoltId7f1a9cPc")
     i16 dat_007f1a9c = -1;
-#pragma data_seg()
 
-#pragma data_seg(".data$VehicleBoltId7f1aa0Pc")
     i16 dat_007f1aa0 = -1;
-#pragma data_seg()
 
-#pragma data_seg(".data$VehicleBoltId7f1aacPc")
     i16 dat_007f1aac = -1;
-#pragma data_seg()
 
-#pragma data_seg(".data$VehicleSpecialShooterIdPc")
     i16 VehicleSpecialShooterId = -1;
-#pragma data_seg()
 
-#pragma data_seg(".data$VehicleBoltId7f1ad8Pc")
     i16 dat_007f1ad8 = -1;
-#pragma data_seg()
 
-#pragma data_seg(".data$VehicleBoltId7f1aecPc")
     i16 dat_007f1aec = -1;
-#pragma data_seg()
 
-#pragma data_seg(".data$VehicleBoltId7f1af0Pc")
     i16 dat_007f1af0 = -1;
-#pragma data_seg()
 
-#pragma data_seg(".data$VehicleBoltId7f1b00Pc")
     i16 dat_007f1b00 = -1;
-#pragma data_seg()
 
-#pragma data_seg(".data$VehicleBoltId7f1b04Pc")
     i16 dat_007f1b04 = -1;
-#pragma data_seg()
 
-#pragma data_seg(".data$VehicleBoltId7f1b08Pc")
     i16 dat_007f1b08 = -1;
-#pragma data_seg()
 
-#pragma data_seg(".data$VehicleBoltId7f1b0cPc")
     i16 dat_007f1b0c = -1;
-#pragma data_seg()
 
-#pragma data_seg(".data$VehicleBoltId7f1b34Pc")
     i16 dat_007f1b34 = -1;
-#pragma data_seg()
 
-#pragma data_seg(".data$VehicleBoltId7f1b38Pc")
     i16 dat_007f1b38 = -1;
-#pragma data_seg()
 
-#pragma data_seg(".data$id_ZAMSSPEEDER")
     i16 id_ZAMSSPEEDER = -1;
-#pragma data_seg()
 
-#pragma data_seg(".data$DEACTIVATEDTIME")
     f32 DEACTIVATEDTIME = 8.0f;
-#pragma data_seg()
 }
 
 extern "C" {
@@ -6460,575 +5627,290 @@ extern "C" {
 extern "C" {
     char dat_007516c0[1] = "";
 
-#pragma data_seg(".data$TextInputKeyNameTextPc753370")
     char dat_00753370[2] = "]";
-#pragma data_seg()
 
-#pragma data_seg(".data$TextInputKeyNameTextPc753374")
     char dat_00753374[2] = "[";
-#pragma data_seg()
 
-#pragma data_seg(".data$TextInputKeyNameTextPc75ac34")
     char dat_0075ac34[5] = "Down";
-#pragma data_seg()
 
-#pragma data_seg(".data$TextInputKeyNameTextPc76fde8")
     char dat_0076fde8[7] = "Delete";
-#pragma data_seg()
 
-#pragma data_seg(".data$TextInputKeyNameTextPc7719bc")
     char dat_007719bc[12] = "MEDIASELECT";
-#pragma data_seg()
 
-#pragma data_seg(".data$TextInputKeyNameTextPc7719c8")
     char dat_007719c8[5] = "MAIL";
-#pragma data_seg()
 
-#pragma data_seg(".data$TextInputKeyNameTextPc7719d0")
     char dat_007719d0[11] = "MYCOMPUTER";
-#pragma data_seg()
 
-#pragma data_seg(".data$TextInputKeyNameTextPc7719dc")
     char dat_007719dc[8] = "WEBBACK";
-#pragma data_seg()
 
-#pragma data_seg(".data$TextInputKeyNameTextPc7719e4")
     char dat_007719e4[11] = "WEBFORWARD";
-#pragma data_seg()
 
-#pragma data_seg(".data$TextInputKeyNameTextPc7719f0")
     char dat_007719f0[8] = "WEBSTOP";
-#pragma data_seg()
 
-#pragma data_seg(".data$TextInputKeyNameTextPc7719f8")
     char dat_007719f8[11] = "WEBREFRESH";
-#pragma data_seg()
 
-#pragma data_seg(".data$TextInputKeyNameTextPc771a04")
     char dat_00771a04[13] = "WEBFAVORITES";
-#pragma data_seg()
 
-#pragma data_seg(".data$TextInputKeyNameTextPc771a14")
     char dat_00771a14[10] = "WEBSEARCH";
-#pragma data_seg()
 
-#pragma data_seg(".data$TextInputKeyNameTextPc771a20")
     char dat_00771a20[5] = "WAKE";
-#pragma data_seg()
 
-#pragma data_seg(".data$TextInputKeyNameTextPc771a28")
     char dat_00771a28[6] = "SLEEP";
-#pragma data_seg()
 
-#pragma data_seg(".data$TextInputKeyNameTextPc771a30")
     char dat_00771a30[6] = "POWER";
-#pragma data_seg()
 
-#pragma data_seg(".data$TextInputKeyNameTextPc771a38")
     char dat_00771a38[5] = "APPS";
-#pragma data_seg()
 
-#pragma data_seg(".data$TextInputKeyNameTextPc771a40")
     char dat_00771a40[7] = "R. Win";
-#pragma data_seg()
 
-#pragma data_seg(".data$TextInputKeyNameTextPc771a48")
     char dat_00771a48[7] = "L. Win";
-#pragma data_seg()
 
-#pragma data_seg(".data$TextInputKeyNameTextPc771a50")
     char dat_00771a50[7] = "Insert";
-#pragma data_seg()
 
-#pragma data_seg(".data$TextInputKeyNameTextPc771a58")
     char dat_00771a58[9] = "Pg. Down";
-#pragma data_seg()
 
-#pragma data_seg(".data$TextInputKeyNameTextPc771a64")
     char dat_00771a64[4] = "End";
-#pragma data_seg()
 
-#pragma data_seg(".data$TextInputKeyNameTextPc771a68")
     char dat_00771a68[6] = "Right";
-#pragma data_seg()
 
-#pragma data_seg(".data$TextInputKeyNameTextPc771a70")
     char dat_00771a70[5] = "Left";
-#pragma data_seg()
 
-#pragma data_seg(".data$TextInputKeyNameTextPc771a78")
     char dat_00771a78[7] = "Pg. Up";
-#pragma data_seg()
 
-#pragma data_seg(".data$TextInputKeyNameTextPc771a80")
     char dat_00771a80[3] = "Up";
-#pragma data_seg()
 
-#pragma data_seg(".data$TextInputKeyNameTextPc771a84")
     char dat_00771a84[5] = "Home";
-#pragma data_seg()
 
-#pragma data_seg(".data$TextInputKeyNameTextPc771a8c")
     char dat_00771a8c[6] = "Pause";
-#pragma data_seg()
 
-#pragma data_seg(".data$TextInputKeyNameTextPc771a94")
     char dat_00771a94[7] = "R. Alt";
-#pragma data_seg()
 
-#pragma data_seg(".data$TextInputKeyNameTextPc771a9c")
     char dat_00771a9c[6] = "SysRq";
-#pragma data_seg()
 
-#pragma data_seg(".data$TextInputKeyNameTextPc771aa4")
     char dat_00771aa4[7] = "Num. /";
-#pragma data_seg()
 
-#pragma data_seg(".data$TextInputKeyNameTextPc771aac")
     char dat_00771aac[11] = "Num. COMMA";
-#pragma data_seg()
 
-#pragma data_seg(".data$TextInputKeyNameTextPc771ab8")
     char dat_00771ab8[8] = "WEBHOME";
-#pragma data_seg()
 
-#pragma data_seg(".data$TextInputKeyNameTextPc771ac0")
     char dat_00771ac0[6] = "VOLUP";
-#pragma data_seg()
 
-#pragma data_seg(".data$TextInputKeyNameTextPc771ac8")
     char dat_00771ac8[8] = "VOLDOWN";
-#pragma data_seg()
 
-#pragma data_seg(".data$TextInputKeyNameTextPc771ad0")
     char dat_00771ad0[10] = "MEDIASTOP";
-#pragma data_seg()
 
-#pragma data_seg(".data$TextInputKeyNameTextPc771adc")
     char dat_00771adc[5] = "PLAY";
-#pragma data_seg()
 
-#pragma data_seg(".data$TextInputKeyNameTextPc771ae4")
     char dat_00771ae4[5] = "CALC";
-#pragma data_seg()
 
-#pragma data_seg(".data$TextInputKeyNameTextPc771aec")
     char dat_00771aec[5] = "MUTE";
-#pragma data_seg()
 
-#pragma data_seg(".data$TextInputKeyNameTextPc771af4")
     char dat_00771af4[8] = "R. Ctrl";
-#pragma data_seg()
 
-#pragma data_seg(".data$TextInputKeyNameTextPc771afc")
     char dat_00771afc[11] = "Num. Enter";
-#pragma data_seg()
 
-#pragma data_seg(".data$TextInputKeyNameTextPc771b08")
     char dat_00771b08[10] = "NEXTTRACK";
-#pragma data_seg()
 
-#pragma data_seg(".data$TextInputKeyNameTextPc771b14")
     char dat_00771b14[10] = "UNLABELED";
-#pragma data_seg()
 
-#pragma data_seg(".data$TextInputKeyNameTextPc771b20")
     char dat_00771b20[3] = "AX";
-#pragma data_seg()
 
-#pragma data_seg(".data$TextInputKeyNameTextPc771b24")
     char dat_00771b24[5] = "STOP";
-#pragma data_seg()
 
-#pragma data_seg(".data$TextInputKeyNameTextPc771b2c")
     char dat_00771b2c[6] = "KANJI";
-#pragma data_seg()
 
-#pragma data_seg(".data$TextInputKeyNameTextPc771b34")
     char dat_00771b34[10] = "UNDERLINE";
-#pragma data_seg()
 
-#pragma data_seg(".data$TextInputKeyNameTextPc771b40")
     char dat_00771b40[6] = "COLON";
-#pragma data_seg()
 
-#pragma data_seg(".data$TextInputKeyNameTextPc771b48")
     char dat_00771b48[3] = "AT";
-#pragma data_seg()
 
-#pragma data_seg(".data$TextInputKeyNameTextPc771b4c")
     char dat_00771b4c[10] = "PREVTRACK";
-#pragma data_seg()
 
-#pragma data_seg(".data$TextInputKeyNameTextPc771b58")
     char dat_00771b58[7] = "Num. =";
-#pragma data_seg()
 
-#pragma data_seg(".data$TextInputKeyNameTextPc771b60")
     char dat_00771b60[8] = "ABNT_C2";
-#pragma data_seg()
 
-#pragma data_seg(".data$TextInputKeyNameTextPc771b68")
     char dat_00771b68[4] = "YEN";
-#pragma data_seg()
 
-#pragma data_seg(".data$TextInputKeyNameTextPc771b6c")
     char dat_00771b6c[10] = "NOCONVERT";
-#pragma data_seg()
 
-#pragma data_seg(".data$TextInputKeyNameTextPc771b78")
     char dat_00771b78[8] = "CONVERT";
-#pragma data_seg()
 
-#pragma data_seg(".data$TextInputKeyNameTextPc771b80")
     char dat_00771b80[8] = "ABNT_C1";
-#pragma data_seg()
 
-#pragma data_seg(".data$TextInputKeyNameTextPc771b88")
     char dat_00771b88[5] = "KANA";
-#pragma data_seg()
 
-#pragma data_seg(".data$TextInputKeyNameTextPc771b90")
     char dat_00771b90[4] = "F15";
-#pragma data_seg()
 
-#pragma data_seg(".data$TextInputKeyNameTextPc771b94")
     char dat_00771b94[4] = "F14";
-#pragma data_seg()
 
-#pragma data_seg(".data$TextInputKeyNameTextPc771b98")
     char dat_00771b98[4] = "F13";
-#pragma data_seg()
 
-#pragma data_seg(".data$TextInputKeyNameTextPc771b9c")
     char dat_00771b9c[4] = "F12";
-#pragma data_seg()
 
-#pragma data_seg(".data$TextInputKeyNameTextPc771ba0")
     char dat_00771ba0[4] = "F11";
-#pragma data_seg()
 
-#pragma data_seg(".data$TextInputKeyNameTextPc771ba4")
     char dat_00771ba4[11] = "Num. Point";
-#pragma data_seg()
 
-#pragma data_seg(".data$TextInputKeyNameTextPc771bb0")
     char dat_00771bb0[7] = "Num. 0";
-#pragma data_seg()
 
-#pragma data_seg(".data$TextInputKeyNameTextPc771bb8")
     char dat_00771bb8[7] = "Num. 3";
-#pragma data_seg()
 
-#pragma data_seg(".data$TextInputKeyNameTextPc771bc0")
     char dat_00771bc0[7] = "Num. 2";
-#pragma data_seg()
 
-#pragma data_seg(".data$TextInputKeyNameTextPc771bc8")
     char dat_00771bc8[7] = "Num. 1";
-#pragma data_seg()
 
-#pragma data_seg(".data$TextInputKeyNameTextPc771bd0")
     char dat_00771bd0[7] = "Num. +";
-#pragma data_seg()
 
-#pragma data_seg(".data$TextInputKeyNameTextPc771bd8")
     char dat_00771bd8[7] = "Num. 6";
-#pragma data_seg()
 
-#pragma data_seg(".data$TextInputKeyNameTextPc771be0")
     char dat_00771be0[7] = "Num. 5";
-#pragma data_seg()
 
-#pragma data_seg(".data$TextInputKeyNameTextPc771be8")
     char dat_00771be8[7] = "Num. 4";
-#pragma data_seg()
 
-#pragma data_seg(".data$TextInputKeyNameTextPc771bf0")
     char dat_00771bf0[7] = "Num. -";
-#pragma data_seg()
 
-#pragma data_seg(".data$TextInputKeyNameTextPc771bf8")
     char dat_00771bf8[7] = "Num. 9";
-#pragma data_seg()
 
-#pragma data_seg(".data$TextInputKeyNameTextPc771c00")
     char dat_00771c00[7] = "Num. 8";
-#pragma data_seg()
 
-#pragma data_seg(".data$TextInputKeyNameTextPc771c08")
     char dat_00771c08[7] = "Num. 7";
-#pragma data_seg()
 
-#pragma data_seg(".data$TextInputKeyNameTextPc771c10")
     char dat_00771c10[12] = "Scroll Lock";
-#pragma data_seg()
 
-#pragma data_seg(".data$TextInputKeyNameTextPc771c1c")
     char dat_00771c1c[9] = "Num Lock";
-#pragma data_seg()
 
-#pragma data_seg(".data$TextInputKeyNameTextPc771c28")
     char dat_00771c28[4] = "F10";
-#pragma data_seg()
 
-#pragma data_seg(".data$TextInputKeyNameTextPc771c2c")
     char dat_00771c2c[3] = "F9";
-#pragma data_seg()
 
-#pragma data_seg(".data$TextInputKeyNameTextPc771c30")
     char dat_00771c30[3] = "F8";
-#pragma data_seg()
 
-#pragma data_seg(".data$TextInputKeyNameTextPc771c34")
     char dat_00771c34[3] = "F7";
-#pragma data_seg()
 
-#pragma data_seg(".data$TextInputKeyNameTextPc771c38")
     char dat_00771c38[3] = "F6";
-#pragma data_seg()
 
-#pragma data_seg(".data$TextInputKeyNameTextPc771c3c")
     char dat_00771c3c[3] = "F5";
-#pragma data_seg()
 
-#pragma data_seg(".data$TextInputKeyNameTextPc771c40")
     char dat_00771c40[3] = "F4";
-#pragma data_seg()
 
-#pragma data_seg(".data$TextInputKeyNameTextPc771c44")
     char dat_00771c44[3] = "F3";
-#pragma data_seg()
 
-#pragma data_seg(".data$TextInputKeyNameTextPc771c48")
     char dat_00771c48[3] = "F2";
-#pragma data_seg()
 
-#pragma data_seg(".data$TextInputKeyNameTextPc771c4c")
     char dat_00771c4c[3] = "F1";
-#pragma data_seg()
 
-#pragma data_seg(".data$TextInputKeyNameTextPc771c50")
     char dat_00771c50[10] = "Caps Lock";
-#pragma data_seg()
 
-#pragma data_seg(".data$TextInputKeyNameTextPc771c5c")
     char dat_00771c5c[6] = "Space";
-#pragma data_seg()
 
-#pragma data_seg(".data$TextInputKeyNameTextPc771c64")
     char dat_00771c64[7] = "L. Alt";
-#pragma data_seg()
 
-#pragma data_seg(".data$TextInputKeyNameTextPc771c6c")
     char dat_00771c6c[7] = "Num. *";
-#pragma data_seg()
 
-#pragma data_seg(".data$TextInputKeyNameTextPc771c74")
     char dat_00771c74[9] = "R. Shift";
-#pragma data_seg()
 
-#pragma data_seg(".data$TextInputKeyNameTextPc771c80")
     char dat_00771c80[11] = "For. Slash";
-#pragma data_seg()
 
-#pragma data_seg(".data$TextInputKeyNameTextPc771c8c")
     char dat_00771c8c[5] = "Stop";
-#pragma data_seg()
 
-#pragma data_seg(".data$TextInputKeyNameTextPc771c94")
     char dat_00771c94[6] = "Comma";
-#pragma data_seg()
 
-#pragma data_seg(".data$TextInputKeyNameTextPc771c9c")
     char dat_00771c9c[2] = "M";
-#pragma data_seg()
 
-#pragma data_seg(".data$TextInputKeyNameTextPc771ca0")
     char dat_00771ca0[2] = "N";
-#pragma data_seg()
 
-#pragma data_seg(".data$TextInputKeyNameTextPc771ca4")
     char dat_00771ca4[2] = "B";
-#pragma data_seg()
 
-#pragma data_seg(".data$TextInputKeyNameTextPc771ca8")
     char dat_00771ca8[2] = "V";
-#pragma data_seg()
 
-#pragma data_seg(".data$TextInputKeyNameTextPc771cac")
     char dat_00771cac[2] = "C";
-#pragma data_seg()
 
-#pragma data_seg(".data$TextInputKeyNameTextPc771cb0")
     char dat_00771cb0[2] = "#";
-#pragma data_seg()
 
-#pragma data_seg(".data$TextInputKeyNameTextPc771cb4")
     char dat_00771cb4[9] = "L. Shift";
-#pragma data_seg()
 
-#pragma data_seg(".data$TextInputKeyNameTextPc771cc0")
     char dat_00771cc0[6] = "Grave";
-#pragma data_seg()
 
-#pragma data_seg(".data$TextInputKeyNameTextPc771cc8")
     char dat_00771cc8[11] = "Apostrophe";
-#pragma data_seg()
 
-#pragma data_seg(".data$TextInputKeyNameTextPc771cd4")
     char dat_00771cd4[10] = "Semicolon";
-#pragma data_seg()
 
-#pragma data_seg(".data$TextInputKeyNameTextPc771ce0")
     char dat_00771ce0[2] = "L";
-#pragma data_seg()
 
-#pragma data_seg(".data$TextInputKeyNameTextPc771ce4")
     char dat_00771ce4[2] = "K";
-#pragma data_seg()
 
-#pragma data_seg(".data$TextInputKeyNameTextPc771ce8")
     char dat_00771ce8[2] = "J";
-#pragma data_seg()
 
-#pragma data_seg(".data$TextInputKeyNameTextPc771cec")
     char dat_00771cec[2] = "H";
-#pragma data_seg()
 
-#pragma data_seg(".data$TextInputKeyNameTextPc771cf0")
     char dat_00771cf0[2] = "G";
-#pragma data_seg()
 
-#pragma data_seg(".data$TextInputKeyNameTextPc771cf4")
     char dat_00771cf4[2] = "F";
-#pragma data_seg()
 
-#pragma data_seg(".data$TextInputKeyNameTextPc771cf8")
     char dat_00771cf8[2] = "D";
-#pragma data_seg()
 
-#pragma data_seg(".data$TextInputKeyNameTextPc771cfc")
     char dat_00771cfc[2] = "S";
-#pragma data_seg()
 
-#pragma data_seg(".data$TextInputKeyNameTextPc771d00")
     char dat_00771d00[2] = "A";
-#pragma data_seg()
 
-#pragma data_seg(".data$TextInputKeyNameTextPc771d04")
     char dat_00771d04[8] = "L. Ctrl";
-#pragma data_seg()
 
-#pragma data_seg(".data$TextInputKeyNameTextPc771d0c")
     char dat_00771d0c[6] = "Enter";
-#pragma data_seg()
 
-#pragma data_seg(".data$TextInputKeyNameTextPc771d14")
     char dat_00771d14[2] = "P";
-#pragma data_seg()
 
-#pragma data_seg(".data$TextInputKeyNameTextPc771d18")
     char dat_00771d18[2] = "O";
-#pragma data_seg()
 
-#pragma data_seg(".data$TextInputKeyNameTextPc771d1c")
     char dat_00771d1c[2] = "I";
-#pragma data_seg()
 
-#pragma data_seg(".data$TextInputKeyNameTextPc771d20")
     char dat_00771d20[2] = "U";
-#pragma data_seg()
 
-#pragma data_seg(".data$TextInputKeyNameTextPc771d24")
     char dat_00771d24[2] = "T";
-#pragma data_seg()
 
-#pragma data_seg(".data$TextInputKeyNameTextPc771d28")
     char dat_00771d28[2] = "R";
-#pragma data_seg()
 
-#pragma data_seg(".data$TextInputKeyNameTextPc771d2c")
     char dat_00771d2c[2] = "E";
-#pragma data_seg()
 
-#pragma data_seg(".data$TextInputKeyNameTextPc771d30")
     char dat_00771d30[2] = "W";
-#pragma data_seg()
 
-#pragma data_seg(".data$TextInputKeyNameTextPc771d34")
     char dat_00771d34[2] = "Q";
-#pragma data_seg()
 
-#pragma data_seg(".data$TextInputKeyNameTextPc771d38")
     char dat_00771d38[4] = "Tab";
-#pragma data_seg()
 
-#pragma data_seg(".data$TextInputKeyNameTextPc771d3c")
     char dat_00771d3c[10] = "Backspace";
-#pragma data_seg()
 
-#pragma data_seg(".data$TextInputKeyNameTextPc771d48")
     char dat_00771d48[7] = "Equals";
-#pragma data_seg()
 
-#pragma data_seg(".data$TextInputKeyNameTextPc771d50")
     char dat_00771d50[6] = "Minus";
-#pragma data_seg()
 
-#pragma data_seg(".data$TextInputKeyNameTextPc771d58")
     char dat_00771d58[2] = "0";
-#pragma data_seg()
 
-#pragma data_seg(".data$TextInputKeyNameTextPc771d5c")
     char dat_00771d5c[2] = "9";
-#pragma data_seg()
 
-#pragma data_seg(".data$TextInputKeyNameTextPc771d60")
     char dat_00771d60[2] = "8";
-#pragma data_seg()
 
-#pragma data_seg(".data$TextInputKeyNameTextPc771d64")
     char dat_00771d64[2] = "7";
-#pragma data_seg()
 
-#pragma data_seg(".data$TextInputKeyNameTextPc771d68")
     char dat_00771d68[2] = "6";
-#pragma data_seg()
 
-#pragma data_seg(".data$TextInputKeyNameTextPc771d6c")
     char dat_00771d6c[2] = "5";
-#pragma data_seg()
 
-#pragma data_seg(".data$TextInputKeyNameTextPc771d70")
     char dat_00771d70[2] = "4";
-#pragma data_seg()
 
-#pragma data_seg(".data$TextInputKeyNameTextPc771d74")
     char dat_00771d74[2] = "3";
-#pragma data_seg()
 
-#pragma data_seg(".data$TextInputKeyNameTextPc771d78")
     char dat_00771d78[2] = "2";
-#pragma data_seg()
 
-#pragma data_seg(".data$TextInputKeyNameTextPc771d7c")
     char dat_00771d7c[4] = "Esc";
-#pragma data_seg()
 
-#pragma data_seg(".data$TextInputKeyNameTextPc771d80")
     char dat_00771d80[8] = "(empty)";
-#pragma data_seg()
 
-#pragma data_seg(".data$TextInputKeyNameTextPc774180")
     char dat_00774180[2] = "Z";
-#pragma data_seg()
 
-#pragma data_seg(".data$TextInputKeyNameTextPc774184")
     char dat_00774184[2] = "Y";
-#pragma data_seg()
 
-#pragma data_seg(".data$TextInputKeyNameTablePc")
     char *TextInputKeyNameTablePc[238] = {
         dat_00771d80, dat_00771d7c, "1",          dat_00771d78, dat_00771d74, dat_00771d70, dat_00771d6c, dat_00771d68, dat_00771d64,
         dat_00771d60, dat_00771d5c, dat_00771d58, dat_00771d50, dat_00771d48, dat_00771d3c, dat_00771d38, dat_00771d34, dat_00771d30,
@@ -7057,67 +5939,40 @@ extern "C" {
         dat_007516c0, dat_007516c0, dat_007516c0, dat_00771a48, dat_00771a40, dat_00771a38, dat_00771a30, dat_00771a28, dat_007516c0,
         dat_007516c0, dat_007516c0, dat_00771a20, dat_007516c0, dat_00771a14, dat_00771a04, dat_007719f8, dat_007719f0, dat_007719e4,
         dat_007719dc, dat_007719d0, dat_007719c8, dat_007719bc};
-#pragma data_seg()
 
     NUPADMAPPING g_nupadMapping[3] = {0};
 }
 
 extern "C" {
-#pragma data_seg(".data$PunchRangeUnitIdPc")
     i16 PunchRangeUnitId = -1;
-#pragma data_seg()
 
-#pragma data_seg(".data$PunchRangeCompanionIdPc")
     i16 PunchRangeCompanionId = -1;
-#pragma data_seg()
 
-#pragma data_seg(".data$id_CAPTAINTARPALS")
     i16 id_CAPTAINTARPALS = -1;
-#pragma data_seg()
 
     u8 CheatPooPartsEnabled = 0;
 
     u8 CheatPooCoinsEnabled = 0;
 
-#pragma data_seg(".data$LEGOCONTEXT_PUNCH")
     i32 LEGOCONTEXT_PUNCH = -1;
-#pragma data_seg()
 
-#pragma data_seg(".data$LEGOCONTEXT_LAND_JUMP")
     i32 LEGOCONTEXT_LAND_JUMP = -1;
-#pragma data_seg()
 
-#pragma data_seg(".data$LegoContextNetWaitPc")
     i32 LegoContextNetWait = -1;
-#pragma data_seg()
 
-#pragma data_seg(".data$LEGOACT_FALLLAND")
     i16 LEGOACT_FALLLAND = -1;
-#pragma data_seg()
 
-#pragma data_seg(".data$LEGOACT_BACKPACKFALLLAND")
     i16 LEGOACT_BACKPACKFALLLAND = -1;
-#pragma data_seg()
 
-#pragma data_seg(".data$LegoActPunchBehindPc")
     i16 LegoActPunchBehind = -1;
-#pragma data_seg()
 
-#pragma data_seg(".data$LEGOACT_EXTRA_LAND2")
     i16 LEGOACT_EXTRA_LAND2 = -1;
-#pragma data_seg()
 
-#pragma data_seg(".data$PUNCHGAP")
     f32 PUNCHGAP = 0.3f;
-#pragma data_seg()
 
-#pragma data_seg(".data$PUNCHCHARGAP")
     f32 PUNCHCHARGAP = 0.6f;
-#pragma data_seg()
 
-#pragma data_seg(".data$CanPunchGirls")
     i32 CanPunchGirls = 1;
-#pragma data_seg()
 
     LEVELDATA_PC *MOSEISLEYC_LDATA = 0;
 
@@ -7169,30 +6024,20 @@ extern "C" {
 
     LEVELDATA_PC *DEATHSTARBATTLEC_LDATA = 0;
 
-#pragma data_seg(".data$TorpedoGrabRangeSquaredPc")
     f32 TorpedoGrabRangeSquared = 36.0f;
-#pragma data_seg()
 }
 
 extern "C" {
-#pragma data_seg(".data$CutSceneSingleStreamBufferPc")
     i32 CutSceneSingleStreamBuffer = 2;
-#pragma data_seg()
 }
 
 extern "C" {
 
-#pragma data_seg(".data$id_DODGEM")
     i16 id_DODGEM = -1;
-#pragma data_seg()
 
-#pragma data_seg(".data$id_SNOWMOB")
     i16 id_SNOWMOB = -1;
-#pragma data_seg()
 
-#pragma data_seg(".data$id_TRACTOR")
     i16 id_TRACTOR = -1;
-#pragma data_seg()
 
     u32 LswForceUsedHintFlags = 0;
 
@@ -7203,13 +6048,9 @@ extern "C" {
 
 extern "C" {
 
-#pragma data_seg(".data$DrawCharIconPanelPc")
     i32 drawcharicon_i_panel = -1;
-#pragma data_seg()
 
-#pragma data_seg(".data$LegoObjectIconQuestionPc")
     i32 LegoObjectIconQuestion = -1;
-#pragma data_seg()
 
     NUGSCN *things_scene = 0;
 
@@ -7220,49 +6061,31 @@ extern "C" {
 
 extern "C" {
 
-#pragma data_seg(".data$LightingUnitDirectionPc")
     NUVEC LightingUnitDirectionPc = {1.0f, 0.0f, 0.0f};
-#pragma data_seg()
 
-#pragma data_seg(".data$RtlUnitDirectionYPc")
     NUVEC RtlUnitDirectionYPc = {0.0f, 1.0f, 0.0f};
-#pragma data_seg()
 
-#pragma data_seg(".data$RtlUnitDirectionZPc")
     NUVEC RtlUnitDirectionZPc = {0.0f, 0.0f, 1.0f};
-#pragma data_seg()
 }
 
 extern "C" {
-#pragma data_seg(".data$UiBackPromptLiteralPc")
     char UiBackPromptLiteral[5] = "Back";
-#pragma data_seg()
 
-#pragma data_seg(".data$UiSelectPromptLiteralPc")
     char UiSelectPromptLiteral[7] = "Select";
-#pragma data_seg()
 }
 
 extern "C" {
-#pragma data_seg(".data$g_enableButtonPrompts")
     i32 g_enableButtonPrompts = 1;
-#pragma data_seg()
 
-#pragma data_seg(".data$MENUNORMALR")
     u8 MENUNORMALR = 255;
-#pragma data_seg()
 
-#pragma data_seg(".data$MENUNORMALG")
     u8 MENUNORMALG = 127;
-#pragma data_seg()
 
     u8 MENUNORMALB = 0;
 }
 
 extern "C" {
-#pragma data_seg(".data$CutSceneDrawSettingsPc")
     CUT_DRAW_SETTINGS CutSceneDrawSettings = {-1, -1, -1, -1, 0};
-#pragma data_seg()
 
     i32 (*MatrixReflection_CanOverrideFn)(void) = 0;
 
@@ -7282,93 +6105,51 @@ extern "C" {
 }
 
 extern "C" {
-#pragma data_seg(".data$SuitMetadataName0075314cPc")
     char dat_0075314c[7] = "batman";
-#pragma data_seg()
 
-#pragma data_seg(".data$SuitMetadataName0075d280Pc")
     char dat_0075d280[14] = "batman_shadow";
-#pragma data_seg()
 
-#pragma data_seg(".data$SuitMetadataName0075d270Pc")
     char dat_0075d270[13] = "batman_glide";
-#pragma data_seg()
 
-#pragma data_seg(".data$SuitMetadataName0075d25cPc")
     char dat_0075d25c[18] = "batman_demolition";
-#pragma data_seg()
 
-#pragma data_seg(".data$SuitMetadataName0075d24cPc")
     char dat_0075d24c[13] = "batman_sonar";
-#pragma data_seg()
 
-#pragma data_seg(".data$SuitMetadataName00753144Pc")
     char dat_00753144[6] = "robin";
-#pragma data_seg()
 
-#pragma data_seg(".data$SuitMetadataName0075d240Pc")
     char dat_0075d240[12] = "robin_water";
-#pragma data_seg()
 
-#pragma data_seg(".data$SuitMetadataName0075d22cPc")
     char dat_0075d22c[17] = "robin_technology";
-#pragma data_seg()
 
-#pragma data_seg(".data$SuitMetadataName0075d21cPc")
     char dat_0075d21c[13] = "robin_magnet";
-#pragma data_seg()
 
-#pragma data_seg(".data$SuitMetadataName0075d20cPc")
     char dat_0075d20c[14] = "robin_attract";
-#pragma data_seg()
 
     i32 addcreature_override_id_check = 0;
 
-#pragma data_seg(".data$default_mover_extra")
     f32 default_mover_extra = 0.05f;
-#pragma data_seg()
 
-#pragma data_seg(".data$id_MOSEISLEYCITIZEN")
     i16 id_MOSEISLEYCITIZEN = -1;
-#pragma data_seg()
 
-#pragma data_seg(".data$id_CANTINAALIEN")
     i16 id_CANTINAALIEN = -1;
-#pragma data_seg()
 
-#pragma data_seg(".data$id_CLOUDCITYCITIZEN")
     i16 id_CLOUDCITYCITIZEN = -1;
-#pragma data_seg()
 
     GAMEOBJECT *PodPacemaker = 0;
 
-#pragma data_seg(".data$PodRaceSplineIncrementPc")
     f32 PodRaceSplineIncrement = 0.001f;
-#pragma data_seg()
 
-#pragma data_seg(".data$PodCreateSplineKeywordPc")
     char PodCreateSplineKeyword[11] = "spline_id=";
-#pragma data_seg()
 
-#pragma data_seg(".data$PodCreateStartKeywordPc")
     char PodCreateStartKeyword[14] = "spline_start=";
-#pragma data_seg()
 
-#pragma data_seg(".data$PodCreateEndKeywordPc")
     char PodCreateEndKeyword[12] = "spline_end=";
-#pragma data_seg()
 
-#pragma data_seg(".data$PodCreateTimeKeywordPc")
     char PodCreateTimeKeyword[13] = "time_factor=";
-#pragma data_seg()
 
-#pragma data_seg(".data$PodCreatePacemakerKeywordPc")
     char PodCreatePacemakerKeyword[10] = "pacemaker";
-#pragma data_seg()
 
-#pragma data_seg(".data$PodCreateDamagedKeywordPc")
     char PodCreateDamagedKeyword[8] = "damaged";
-#pragma data_seg()
 
     /* PodRacePc is defined as a private static in legoapi/episodeI.c. */
     /* (was: void *PodRacePc) */
@@ -7380,25 +6161,15 @@ extern "C" {
 }
 
 extern "C" {
-#pragma data_seg(".data$gExplodeInitialised")
     i32 gExplodeInitialised = 1;
-#pragma data_seg()
 
-#pragma data_seg(".data$GAMEPAD_TOGGLELEFT")
     u32 GAMEPAD_TOGGLELEFT = PAD_BUTTON_L2 | PAD_BUTTON_L1;
-#pragma data_seg()
 
-#pragma data_seg(".data$GAMEPAD_TOGGLERIGHT")
     u32 GAMEPAD_TOGGLERIGHT = PAD_BUTTON_R2 | PAD_BUTTON_R1;
-#pragma data_seg()
 
-#pragma data_seg(".data$TOGGLEREPEATTIME")
     f32 TOGGLEREPEATTIME = 0.25f;
-#pragma data_seg()
 
-#pragma data_seg(".data$LEGOHINT_FREEPLAYTOGGLE")
     i32 LEGOHINT_FREEPLAYTOGGLE = -1;
-#pragma data_seg()
 
     char *implode_inbuffer = 0;
 
@@ -7416,49 +6187,29 @@ extern "C" {
 }
 
 extern "C" {
-#pragma data_seg(".data$GizmoBlowupUnitScalePc")
     NUVEC GizmoBlowupUnitScale = {1.0f, 1.0f, 1.0f};
-#pragma data_seg()
 }
 
 struct PC_OGG_CACHE_RECORD;
 extern "C" {
-#pragma const_seg(".rdata$PCSoundListenerIIDPc")
     extern const IID PCSoundListenerIID = {
         0x279afa84, 0x4981, 0x11ce, {0xa5, 0x21, 0x00, 0x20, 0xaf, 0x0b, 0xe5, 0x60}
     };
-#pragma const_seg()
-#pragma const_seg(".rdata$PCSampleBufferAlgorithmPc")
     extern const GUID PCSampleBufferAlgorithm = {
         0x00000000, 0x0000, 0x0000, {0x00, 0x00, 0x00, 0x00, 0x00, 0x00, 0x00, 0x00}
     };
-#pragma const_seg()
     i32 PCSoundStreamSerial = 0;
 }
 
 extern "C" {
-#pragma const_seg(".rdata$ZipUpHookOffsetPc")
     extern const NUVEC ZipUpHookOffset = {0.0f, -0.1143f, -0.0859f};
-#pragma const_seg()
-#pragma data_seg(".data$ZipUpSwingStartAnimationPc")
     u16 ZipUpSwingStartAnimationPc = 0xffff;
-#pragma data_seg()
-#pragma data_seg(".data$ZipUpSwingSwingAnimationPc")
     u16 ZipUpSwingSwingAnimationPc = 0xffff;
-#pragma data_seg()
-#pragma data_seg(".data$ZipUpSwingJumpAnimationPc")
     u16 ZipUpSwingJumpAnimationPc = 0xffff;
-#pragma data_seg()
-#pragma data_seg(".data$ZipUpLineCharacterIdPc")
     i16 ZipUpLineCharacterId = -1;
-#pragma data_seg()
     NUMTL *ZipUpLineMaterial = 0;
-#pragma data_seg(".data$ZipUpLandCombatRollContextPc")
     i32 ZipUpLandCombatRollContext = -1;
-#pragma data_seg()
-#pragma data_seg(".data$ZipUpWallShuffleContextPc")
     i32 ZipUpWallShuffleContext = -1;
-#pragma data_seg()
 }
 
 extern "C" {
@@ -7466,24 +6217,16 @@ extern "C" {
 }
 
 extern "C" {
-#pragma const_seg(".rdata$NuPortalBoundsOnePc")
     const NUVEC NuPortalBoundsOne = {1.0f, 1.0f, 1.0f};
-#pragma const_seg()
-#pragma const_seg(".rdata$NuPortalBoundsMinusOnePc")
     const NUVEC NuPortalBoundsMinusOne = {-1.0f, -1.0f, -1.0f};
-#pragma const_seg()
     NUVEC NuPortalWorldCamera = {0};
     NUCAMERA NuPortalRestoreCamera = {0};
 }
 
 extern "C" {
     i32 (*BlowupExFunc)(GIZMOBLOWUP_PC *, i32) = 0;
-#pragma data_seg(".data$BoltBlockContextPc")
     i32 BoltBlockContext = -1;
-#pragma data_seg()
-#pragma data_seg(".data$BoltDeactivatedActionPc")
     i16 BoltDeactivatedAction = -1;
-#pragma data_seg()
 }
 
 extern "C" {
@@ -7491,154 +6234,72 @@ extern "C" {
 }
 
 extern "C" {
-#pragma data_seg(".data$GrabMachineIdPc")
     i16 GrabMachineId = -1;
-#pragma data_seg()
-#pragma data_seg(".data$GrabMagnetIdPc")
     i16 GrabMagnetId = -1;
-#pragma data_seg()
-#pragma data_seg(".data$RobotBaseIdPc")
     i16 RobotBaseId = -1;
-#pragma data_seg()
 }
 
 extern "C" {
     i32 PartGeneralPage = 0;
-#pragma data_seg(".data$PartLevelPagePc")
     i32 PartLevelPage = 1;
-#pragma data_seg()
 }
 
 extern "C" {
-#pragma data_seg(".data$id_UGNAUGHT")
     i16 id_UGNAUGHT = -1;
-#pragma data_seg()
-#pragma data_seg(".data$OpponentSelectionHysteresisPc")
     f32 OpponentSelectionHysteresis = 0.5f;
-#pragma data_seg()
-#pragma data_seg(".data$nbaddies_can_see_players")
     i32 nbaddies_can_see_players = 0;
-#pragma data_seg()
 }
 
 extern "C" {
-#pragma data_seg(".data$spinner_gizmotype_id")
     i32 spinner_gizmotype_id = -1;
-#pragma data_seg()
-#pragma data_seg(".data$LEGOCONTEXT_GRAPPLE")
     i32 LEGOCONTEXT_GRAPPLE = -1;
-#pragma data_seg()
 }
 
 extern "C" {
-#pragma data_seg(".data$draw_attention_distance")
     f32 draw_attention_distance = 2.0f;
-#pragma data_seg()
-#pragma data_seg(".data$GAMEPAD_START")
     u32 GAMEPAD_START = PAD_BUTTON_START;
-#pragma data_seg()
-#pragma data_seg(".data$active_neutral_count")
     i32 active_neutral_count = 0;
-#pragma data_seg()
-#pragma data_seg(".data$GameAiPartyFollowSpacingPc")
     f32 GameAiPartyFollowSpacing = 0.2f;
-#pragma data_seg()
-#pragma data_seg(".data$id_JANGOFETT")
     i16 id_JANGOFETT = -1;
-#pragma data_seg()
-#pragma data_seg(".data$LEGO_AIPATHCNX_R2D2GLIDE")
     i32 LEGO_AIPATHCNX_R2D2GLIDE = 0;
-#pragma data_seg()
-#pragma data_seg(".data$jump_stuck_time")
     f32 jump_stuck_time = 0.1f;
-#pragma data_seg()
-#pragma data_seg(".data$LEGO_AIPATHCNX_JUMP")
     i32 LEGO_AIPATHCNX_JUMP = 0;
-#pragma data_seg()
-#pragma data_seg(".data$drop_in_teleport")
     i32 drop_in_teleport = 3;
-#pragma data_seg()
-#pragma data_seg(".data$teleport_all_freeplay_modes")
     i32 teleport_all_freeplay_modes = 1;
-#pragma data_seg()
-#pragma data_seg(".data$DEFENDTIME")
     f32 DEFENDTIME = 4.0f;
-#pragma data_seg()
-#pragma data_seg(".data$debug_ignore_players")
     i32 debug_ignore_players = 0;
-#pragma data_seg()
-#pragma data_seg(".data$WALKSTEALTH")
     i32 WALKSTEALTH = 0;
-#pragma data_seg()
-#pragma data_seg(".data$active_goody_count")
     i32 active_goody_count = 0;
-#pragma data_seg()
-#pragma data_seg(".data$active_baddy_count")
     i32 active_baddy_count = 0;
-#pragma data_seg()
-#pragma data_seg(".data$GameAiLosDivisorPc")
     i32 GameAiLosDivisor = 2;
-#pragma data_seg()
-#pragma data_seg(".data$timetogetlos")
     f32 timetogetlos = 0.0f;
-#pragma data_seg()
-#pragma data_seg(".data$test_new_interaction")
     i32 test_new_interaction = 0;
-#pragma data_seg()
 }
 
 extern "C" {
-#pragma data_seg(".data$TextureAnimationScriptMaskPc")
     u16 script_mask = 0xffff;
-#pragma data_seg()
 }
 
 extern "C" {
-#pragma data_seg(".data$RippleSetPc")
     RIPPLE_SET_PC *RippleSet = NULL;
-#pragma data_seg()
-#pragma data_seg(".data$RipplePerturbationPc")
     f32 RipplePerturbation = 0.15f;
-#pragma data_seg()
-#pragma data_seg(".data$RippleSfxCooldownPc")
     f32 RippleSfxCooldown = 0.5f;
-#pragma data_seg()
-#pragma data_seg(".data$ForceFieldRippleRatePc")
     f32 ForceFieldRippleRate = 100.0f;
-#pragma data_seg()
-#pragma data_seg(".data$PodDustLocatorIndicesPc")
     i32 PodDustLocatorIndices[2] = {1, 2};
-#pragma data_seg()
-#pragma data_seg(".data$PodDustEmissionRatePc")
     f32 PodDustEmissionRate = 100.0f;
-#pragma data_seg()
-#pragma data_seg(".data$PodDustHeightScalePc")
     f32 PodDustHeightScale = 2.0f;
-#pragma data_seg()
-#pragma data_seg(".data$GunshipDustEmissionRatePc")
     f32 GunshipDustEmissionRate = 75.0f;
-#pragma data_seg()
 }
 
 extern "C" {
-#pragma data_seg(".data$PlayPlanePc")
     KEEP_SCREEN_PLANE PlayPlane[6] = {};
-#pragma data_seg()
-#pragma data_seg(".data$KEEPONSCREEN_SIDESONLY")
     i32 KEEPONSCREEN_SIDESONLY = 0;
-#pragma data_seg()
-#pragma data_seg(".data$GunshipANorm")
     NUVEC GunshipANorm = {};
-#pragma data_seg()
 }
 
 extern "C" {
-#pragma data_seg(".data$GizmoPickupSys_Game")
     PICKUP_TYPE_SYSTEM GizmoPickupSys_Game = {GizmoPickupType, CoinTab, 10, 4, 4, 2, 0, 0};
-#pragma data_seg()
-#pragma data_seg(".data$GizmoPickups_Collide2DFn")
     f32 (*GizmoPickups_Collide2DFn)(GAMEOBJECT *) = NULL;
-#pragma data_seg()
 }
 
 extern "C" {
@@ -15264,28 +13925,21 @@ char uberShader2[158576] = {
     0x5f, 0x5f, 0x5f, 0x5f, 0x5f, 0x5f, 0x5f, 0x0d, 0x0a, 0x23, 0x65, 0x6e, 0x64, 0x69, 0x66, 0x0d, 0x0a, 0x0d, 0x0a, 0x0d, 0x0a, 0x00,
 };
 
-#pragma data_seg(".data$FrameRenderCaptureStatePc")
 extern "C" {
     NUFILE nudlist_field_988 = 0;
     char *PCDisplayCaptureCursorPc = NULL;
 }
-#pragma data_seg()
 
-#pragma data_seg(".data$DisplayHandlerBCDeviceStatePc")
 extern "C" {
     i32 NuDisplayHandlerZMode = -1;
     u32 PCDevicePrimitiveCallCountPc = 0;
     u32 PCDeviceIndexedPrimitiveCallCountPc = 0;
 }
-#pragma data_seg()
 
-#pragma const_seg(".rdata$MaterialSamplerConstantsPc")
 extern "C" {
     extern const f32 PCSamplerBiasMinimum = -16.0f;
 }
-#pragma const_seg()
 
-#pragma data_seg(".data$DisplayHandlerTablePc")
 extern "C" PC_DISPLAY_ITEM_HANDLER_PC PCDisplayItemHandlerPrefix[49] = {
     NuDisplayListMaterial,             /* item type 0x80 */
     NULL,                              /* item type 0x81 */
@@ -15338,7 +13992,6 @@ extern "C" PC_DISPLAY_ITEM_HANDLER_PC PCDisplayItemHandlerPrefix[49] = {
     NuDisplayListLightmapPacket,       /* item type 0xb0 */
 };
 extern "C" PC_DISPLAY_ITEM_HANDLER_PC *CurrentItemTable = PCDisplayItemHandlerPrefix;
-#pragma data_seg()
 
 /* Verified DWORD working inputs; original owning extents remain unknown. */
 
@@ -15454,18 +14107,14 @@ extern "C" {
 
 extern "C" {
 
-#pragma data_seg(".data$MusicActive")
     i32 MusicActive = -1;
 
     i32 MusicInside = 0;
 
-#pragma data_seg(".data$MusicOnFlag")
     i32 MusicOnFlag = 1;
 
-#pragma data_seg(".data$CurrentMusicPair_Quiet")
     i32 CurrentMusicPair_Quiet = -1;
 
-#pragma data_seg(".data$last_currentmusicpair_quiet")
     i32 last_currentmusicpair_quiet = -1;
 }
 
@@ -15474,37 +14123,26 @@ extern "C" {
 }
 
 extern "C" {
-#pragma data_seg(".data$id_PENGUIN_GOON_GUN")
     i16 id_PENGUIN_GOON_GUN = -1;
 
-#pragma data_seg(".data$id_JOKER_GOON_GUN")
     i16 id_JOKER_GOON_GUN = -1;
 
-#pragma data_seg(".data$id_RIDDLER_GOON_GUN")
     i16 id_RIDDLER_GOON_GUN = -1;
 
-#pragma data_seg(".data$id_PENGUIN_GOON")
     i16 id_PENGUIN_GOON = -1;
 
-#pragma data_seg(".data$id_JOKER_GOON")
     i16 id_JOKER_GOON = -1;
 
-#pragma data_seg(".data$id_RIDDLER_GOON")
     i16 id_RIDDLER_GOON = -1;
 }
 
-extern "C" {
-
-#pragma data_seg(".data$FS_SortMode")
-}
+extern "C" {}
 
 extern "C" {
     struct NUGSCN_s *FadeLoop_ObjScene = 0;
 }
 
-extern "C" {
-#pragma data_seg(".data$gizmopickup_typeid")
-}
+extern "C" {}
 
 extern "C" {
     i32 CustomiseMode[2] = {0};
@@ -15529,10 +14167,7 @@ extern "C" {
 }
 
 extern "C" {
-#pragma data_seg(".data$g_lowEndLevelBehaviour")
     i32 g_lowEndLevelBehaviour = 1;
-
-#pragma data_seg(".data$traffic_portalling")
 }
 
 extern "C" {
@@ -15548,22 +14183,15 @@ extern "C" {
     void edppApply(void);
     i32 edppProc(f32 delta_time, FRAME_PAD_PC *pad);
     void edppRender(void);
-#pragma data_seg(".data$edptldesc")
     ed_module_s edptldesc = {
         NULL,       NULL, "Particle Positioner", edppInit, edppClose, edppEnter, NULL, edppApply, NULL, NULL, 0x706c7470, edppProc,
         edppRender, NULL};
-#pragma data_seg()
-
-#pragma data_seg(".data$edpp_create_type")
 
     i8 edbits_what_game = 0;
 
     u8 edpp_effect_list = 0;
 
     VARIPTR *gra_end = 0;
-#pragma data_seg()
-
-#pragma data_seg(".data$edpp_copy_size")
 }
 
 extern "C" {
@@ -15585,13 +14213,10 @@ extern "C" {
 
     i32 mushroom_collapse = 0;
 
-#pragma data_seg(".data$mushroom0_along")
     f32 mushroom0_along = 65.0f;
 
-#pragma data_seg(".data$mushroom2_along")
     f32 mushroom2_along = 85.0f;
 
-#pragma data_seg(".data$mushroom_time_increment")
     f32 mushroom_time_increment = 1.0f;
 
     i32 mushroom_nattempts_per_increment = 0;
@@ -15612,27 +14237,22 @@ extern "C" {
 extern "C" {
     i32 PodRace_nsnipers = 0;
 
-#pragma data_seg(".data$PodRace_sniper_fire_time")
     f32 PodRace_sniper_fire_time = 0.25f;
 }
 
 extern "C" {}
 
 extern "C" {
-#pragma data_seg(".data$id_MINIXWING")
     i16 id_MINIXWING = -1;
 
-#pragma data_seg(".data$id_MINIROYALSTARSHIP")
     i16 id_MINIROYALSTARSHIP = -1;
 }
 
 extern "C" {}
 
 extern "C" {
-#pragma data_seg(".data$gizturret_test_ang")
     i32 gizturret_test_ang = 3640;
 
-#pragma data_seg(".data$gizturret_rapid_fire_rate")
     f32 gizturret_rapid_fire_rate = 0.2f;
 }
 
@@ -15644,51 +14264,37 @@ extern "C" {
 
     struct PC_SCENE_MTL_VIEW *edpart_mtl = 0;
 
-#pragma data_seg(".data$edpart_copy_size")
-
     struct PC_SCENE_MTL_VIEW *edpart_boxmtl = 0;
 }
 
 extern "C" {}
 
 extern "C" {
-#pragma data_seg(".data$cable_damping")
     f32 cable_damping = 2.0f;
 
-#pragma data_seg(".data$cable_gravity")
     f32 cable_gravity = 3.0f;
 
-#pragma data_seg(".data$cable_ground_damping")
     f32 cable_ground_damping = 20.0f;
-#pragma data_seg(".data$nsegments_per_unit")
     f32 nsegments_per_unit = 6.0f;
-#pragma data_seg(".data$cable_slack")
     f32 cable_slack = 1.0f;
-#pragma data_seg(".data$slack_factor")
     f32 slack_factor = 1.0f;
 
-#pragma data_seg(".data$atat_locators")
     i32 atat_locators[4] = {0, 1, 2, 3};
 
-#pragma data_seg(".data$cable_speed")
     f32 cable_speed = 20.0f;
 }
 
 extern "C" {}
 
 extern "C" {
-#pragma data_seg(".data$test_missile_scale")
     f32 test_missile_scale = 8.0f;
 }
 
 extern "C" {
-#pragma data_seg(".data$PodRace_sniper_start_fire_radius")
     f32 PodRace_sniper_start_fire_radius = 90.0f;
 
-#pragma data_seg(".data$PodRace_sniper_fire_radius")
     f32 PodRace_sniper_fire_radius = 2.5f;
 
-#pragma data_seg(".data$PodRace_sniper_fire_range_time")
     f32 PodRace_sniper_fire_range_time = 2.0f;
 
     SNIPER_s PodRace_snipers[10] = {0};
@@ -15716,13 +14322,10 @@ extern "C" {
 
     struct eduimenu_s *edgra_clumpfade_menu = 0;
 
-#pragma data_seg(".data$edgra_superscale")
     i32 edgra_superscale = 1;
 
-#pragma data_seg(".data$edgra_filter_string")
     char edgra_filter_string[16] = "GRASS";
 
-#pragma data_seg(".data$edgra_copy_source")
     i32 edgra_copy_source = -1;
 
     i32 edgra_rotz = 0;
@@ -15745,7 +14348,6 @@ extern "C" {
 
     struct eduimenu_s *edgra_clumpmode_menu = 0;
 
-#pragma data_seg(".data$edgra_mode")
     i32 edgra_mode = 1;
 
     struct eduimenu_s *edgra_globals_menu = 0;
@@ -15761,16 +14363,13 @@ extern "C" {
 
 extern "C" {
 
-#pragma data_seg(".data$edbri_post_interval")
     void edbriInit(void);
     void edbriClose(void);
     void edbriEnter(void);
     i32 edbriProc(f32 delta_time, FRAME_PAD_PC *pad);
     void edbriRender(void);
-#pragma data_seg(".data$edbridesc")
     ed_module_s edbridesc = {NULL, NULL, "Bridge Editor", edbriInit, edbriClose,  edbriEnter, NULL, NULL,
                              NULL, NULL, 0x64697262,      edbriProc, edbriRender, NULL};
-#pragma data_seg()
 }
 
 extern "C" {
@@ -15790,29 +14389,20 @@ extern "C" {
     struct eduimenu_s *edbri_active_menu = 0;
 }
 
-extern "C" {
-#pragma const_seg(".rdata$EduiSourcePathPc")
-}
+extern "C" {}
 
 extern "C" {
     struct eduimenu_s *active_menu = 0;
 
-#pragma data_seg(".data$edui_font_scale_y")
     f32 edui_font_scale_y = 0.9f;
 
-#pragma data_seg(".data$edui_font_scale_x")
     f32 edui_font_scale_x = 0.9f;
 
-#pragma data_seg(".data$edui_cursor_x")
     f32 edui_cursor_x = 50.0f;
 
-#pragma data_seg(".data$EduiScaleXPc")
     f32 EduiScaleX = 16.0f;
 
-#pragma data_seg(".data$EduiScaleYPc")
     f32 EduiScaleY = 8.0f;
-
-#pragma data_seg(".data$edui_textrow_lower")
 
     char *textrow[4] = {0};
 
@@ -15861,59 +14451,35 @@ extern "C" {
 extern "C" {
     struct GIZFORCE_s *force_array[4] = {0};
 
-#pragma data_seg(".data$sockstep")
     f32 sockstep = 10.0f;
 
-#pragma data_seg(".data$test_factor")
     f32 test_factor = 10.0f;
 
-#pragma data_seg(".data$test_seek_rate")
     f32 test_seek_rate = 0.01f;
 
-#pragma data_seg(".data$max_speed_mul")
     f32 max_speed_mul = 1.3f;
 
-#pragma data_seg(".data$min_speed_mul")
     f32 min_speed_mul = 0.5f;
 
-#pragma data_seg(".data$sebulba_goal_ahead")
     f32 sebulba_goal_ahead = 10.0f;
-#pragma data_seg()
-#pragma data_seg(".data$sebulba_catchup_dist")
     f32 sebulba_catchup_dist = -3.0f;
-#pragma data_seg()
-#pragma data_seg(".data$sebulba_catchup_speed_mul")
     f32 sebulba_catchup_speed_mul = 1.5f;
-#pragma data_seg()
-#pragma data_seg(".data$sebulba_catchup_lerpf")
     f32 sebulba_catchup_lerpf = 5.0f;
-#pragma data_seg()
-#pragma data_seg(".data$sebulba_fallback_dist")
     f32 sebulba_fallback_dist = 150.0f;
-#pragma data_seg()
-#pragma data_seg(".data$sebulba_fallback_lerpf")
     f32 sebulba_fallback_lerpf = 5.0f;
-#pragma data_seg()
-#pragma data_seg(".data$sebulba_goal_ahead_vals")
     f32 sebulba_goal_ahead_vals[4] = {100.0f, 75.0f, 50.0f, 25.0f};
-#pragma data_seg()
     f32 sebulba_fallback_speed_mul = 0;
-#pragma data_seg(".data$sebulba_lerpf")
     f32 sebulba_lerpf = 0.5f;
 
     i32 do_mine = 0;
 }
 
 extern "C" {
-#pragma data_seg(".data$gizaimessage_gizmotype_id")
     i32 gizaimessage_gizmotype_id = -1;
 }
 
 extern "C" {
-#pragma data_seg(".data$bombgen_gizmotype_id")
     i32 bombgen_gizmotype_id = -1;
-
-#pragma data_seg(".data$fire_clip_dist")
 }
 
 extern "C" {
@@ -15927,7 +14493,6 @@ extern "C" {
 }
 
 extern "C" {
-#pragma data_seg(".data$edcam_default")
     edcam_s edcam_default = {
         {0.0f, 0.0f, 0.0f},
         0,
@@ -15956,20 +14521,14 @@ extern "C" {
         {0x3f}
     };
 
-#pragma data_seg(".data$gp_cam")
     edcam_s *gp_cam = &edcam_default;
-
-#pragma data_seg(".data$edbri_width")
 }
 
 extern "C" {
     f32 edgra_size = 0;
 }
 
-extern "C" {
-
-#pragma data_seg(".data$aiEditor_LocatorWidth")
-}
+extern "C" {}
 
 extern "C" {
     void *factoryb_netpacket = 0;
@@ -15980,9 +14539,7 @@ extern "C" {
 }
 
 extern "C" {
-#pragma data_seg(".data$hub_character_ready")
     i32 hub_character_ready = -1;
-#pragma data_seg(".data$CharacterLoadAreaModelsPc")
     i32 CharacterLoadAreaModels = 1;
 }
 
@@ -15993,14 +14550,12 @@ extern "C" {
 extern "C" {
     i32 netcamera = 0;
 
-#pragma data_seg(".data$movegamecamera_forcesock")
     i32 movegamecamera_forcesock = -1;
 
     f32 PodCamDist = 0;
 
     NUVEC CustomisePos[2] = {0};
 
-#pragma data_seg(".data$CamStopBlend")
     f32 CamStopBlend = 1.0f;
 }
 
@@ -16012,57 +14567,40 @@ extern "C" {
 
 extern "C" {
 
-#pragma data_seg(".data$GunshipAOffset")
     NUVEC GunshipAOffset = {12.0f, 22.5f, -12.0f};
 
-#pragma data_seg(".data$testmovef")
     f32 testmovef = 0.005f;
 }
 
 extern "C" {
-#pragma data_seg(".data$CamTitlesSplineEndPc")
     f32 CamTitlesSplineEnd = 0.95f;
 
-#pragma data_seg(".data$CamTitlesBonusTimePc")
     f32 CamTitlesBonusTime = 51.0f;
 
-#pragma data_seg(".data$CamShopBlendTimePc")
     f32 CamShopBlendTime = 1.0f;
 
-#pragma data_seg(".data$CamNewGameDurationPc")
     f32 CamNewGameDuration = 10.0f;
 
-#pragma data_seg(".data$CamPodSprintStartDistPc")
     f32 CamPodSprintStartDist = 12.0f;
 
-#pragma data_seg(".data$CamPodSprintEndDistPc")
     f32 CamPodSprintEndDist = 2.0f;
 
-#pragma data_seg(".data$CamPodSprintHeightPc")
     f32 CamPodSprintHeight = 0.65f;
 
-#pragma data_seg(".data$CamPodSprintRollScalePc")
     f32 CamPodSprintRollScale = 0.6f;
 
-#pragma data_seg(".data$CamPodSprintAngleSeekPc")
     f32 CamPodSprintAngleSeek = 7.0f;
 
-#pragma data_seg(".data$CamPodShakeScalePc")
     f32 CamPodShakeScale = 2.0f;
 
-#pragma data_seg(".data$CamWalkerRadiusPc")
     f32 CamWalkerRadius = 5.0f;
 
-#pragma data_seg(".data$CamWalkerLiftPc")
     f32 CamWalkerLift = 4.0f;
 
-#pragma data_seg(".data$CamDewbackRadiusPc")
     f32 CamDewbackRadius = 5.0f;
 
-#pragma data_seg(".data$CamDewbackLiftPc")
     f32 CamDewbackLift = 1.5f;
 
-#pragma data_seg(".data$PlayPlaneCornersPc")
     NUVEC PlayPlaneCorners[4] = {
         {-0.85f, 0.85f,  1.0f},
         {0.85f,  0.85f,  1.0f},
@@ -16070,21 +14608,15 @@ extern "C" {
         {0.85f,  -0.85f, 1.0f}
     };
 
-#pragma data_seg(".data$PlayPlaneDepthPc")
     f32 PP_dist = 5.0f;
 
-#pragma data_seg(".data$GameCamShakeRadiusPc")
     f32 GameCamShakeRadius = 0.1f;
 
-#pragma data_seg(".data$GameCamShakeRetargetPc")
     f32 GameCamShakeRetarget = 0.025f;
 
-#pragma data_seg(".data$GameCamShakeDirSeekPc")
     f32 GameCamShakeDirSeek = 10.0f;
 
-#pragma data_seg(".data$GameCamShakeOffsetSeekPc")
     f32 GameCamShakeOffsetSeek = 2.0f;
-#pragma data_seg()
     // Frontend strings: language-selected index/string tables.
 
     extern const char dat_0075f2c0[3] = "No";
@@ -16259,7 +14791,6 @@ extern "C" {
         {39, NULL                                                           },
     };
     f32 MenuNewGameY = -0.5f;
-#pragma const_seg()
 }
 
 extern "C" {}
@@ -16267,7 +14798,6 @@ extern "C" {}
 extern "C" {}
 
 extern "C" {
-#pragma data_seg(".data$GameAudioLswPc")
     GAMEAUDIO GameAudioLsw = {
         GameAudio_OverrideFootStep_LSW,
         GameAudio_CheckReverb_LSW,
@@ -16317,7 +14847,6 @@ extern "C" {
         {-1,            0, 0,            0, 0,           0, 0,             0, 0,           0, 0,           0, 0,          0, 0,    0, 0,           0, 0,           0, 0,            0, 0,           0, 0,          0, 0,            0, 0,            0, 0,                    0, 0,    0, 0,        0, 0,            0, 0,              0, 0,          0,
           0,                                                                                                                                                                                                                                                                                                                                                             0, 0,                0, 0,                 0, 0,            0, 0,             0, 0,           0, 0,            0, 0,                      0, 0,            0, 0,                       0, 0,         0, 0,             0, 0,                0, 0,    0, 0,             0, 0,               0, 0,           0, 0,           0, 0,          0, 0,            0, 0,             0}
     };
-#pragma data_seg(".data$GameAudioAlternatePc")
     GAMEAUDIO GameAudioAlternate = {
         NULL,
         NULL,
@@ -16367,11 +14896,9 @@ extern "C" {
         {-1,     0, 0,    0, 0,    0, 0,    0, 0,      0, 0,      0, 0,      0, 0,      0, 0,           0, 0,           0, 0,            0, 0,           0, 0,          0, 0,            0, 0,           0, 0,    0, 0,             0, 0,        0, 0,            0, 0,              0, 0,          0,
           0,                                                                                                                                                                                                                                                                                                          0, 0,                0, 0,                 0, 0,            0, 0,             0, 0,           0, 0,            0, 0,                      0, 0,            0, 0,          0, 0,              0, 0,              0, 0,             0, 0,               0, 0,             0, 0,         0, 0,      0, 0,         0, 0,             0, 0,              0, 0,                 0}
     };
-#pragma data_seg()
 }
 
 extern "C" {
-#pragma data_seg(".data$ObjTab")
     LEVEL_OBJECT_CONFIG ObjTab[750] = {
         {4,   0, 0, const_cast<char *>("save_icon")                           },
         {1,   0, 0, const_cast<char *>("parallax")                            },
@@ -16690,77 +15217,42 @@ extern "C" {
         {0,   0, 0, const_cast<char *>("Network_Icon_Glow")                   },
         {255, 0, 0, NULL                                                      },
     };
-#pragma data_seg()
 }
 
 extern "C" {
-#pragma data_seg(".data$CharacterFixupIdPc007f1810")
     i16 dat_007f1810 = -1;
-#pragma data_seg(".data$CharacterFixupIdPc007f1820")
     i16 dat_007f1820 = -1;
-#pragma data_seg(".data$CharacterFixupIdPc007f1824")
     i16 dat_007f1824 = -1;
-#pragma data_seg(".data$CharacterFixupIdPc007f1828")
     i16 dat_007f1828 = -1;
-#pragma data_seg(".data$CharacterFixupIdPc007f1844")
     i16 dat_007f1844 = -1;
-#pragma data_seg(".data$CharacterFixupIdPc007f1854")
     i16 dat_007f1854 = -1;
-#pragma data_seg(".data$CharacterFixupIdPc007f1858")
     i16 dat_007f1858 = -1;
-#pragma data_seg(".data$CharacterFixupIdPc007f1864")
     i16 dat_007f1864 = -1;
-#pragma data_seg(".data$CharacterFixupIdPc007f1870")
     i16 dat_007f1870 = -1;
-#pragma data_seg(".data$CharacterFixupIdPc007f18a8")
     i16 dat_007f18a8 = -1;
-#pragma data_seg(".data$CharacterFixupIdPc007f18c4")
     i16 dat_007f18c4 = -1;
-#pragma data_seg(".data$CharacterFixupIdPc007f19ac")
     i16 dat_007f19ac = -1;
-#pragma data_seg(".data$CharacterFixupIdPc007f19b0")
     i16 dat_007f19b0 = -1;
-#pragma data_seg(".data$CharacterFixupIdPc007f19b4")
     i16 dat_007f19b4 = -1;
-#pragma data_seg(".data$CharacterFixupIdPc007f19c4")
     i16 dat_007f19c4 = -1;
-#pragma data_seg(".data$CharacterFixupIdPc007f19c8")
     i16 dat_007f19c8 = -1;
-#pragma data_seg(".data$CharacterFixupIdPc007f19d0")
     i16 dat_007f19d0 = -1;
-#pragma data_seg(".data$CharacterFixupIdPc007f19d4")
     i16 dat_007f19d4 = -1;
-#pragma data_seg(".data$CharacterFixupIdPc007f19d8")
     i16 dat_007f19d8 = -1;
-#pragma data_seg(".data$CharacterFixupIdPc007f1a0c")
     i16 dat_007f1a0c = -1;
-#pragma data_seg(".data$CharacterFixupIdPc007f1a10")
     i16 dat_007f1a10 = -1;
-#pragma data_seg(".data$CharacterFixupIdPc007f1a14")
     i16 dat_007f1a14 = -1;
-#pragma data_seg(".data$CharacterFixupIdPc007f1a3c")
     i16 dat_007f1a3c = -1;
-#pragma data_seg(".data$CharacterFixupIdPc007f1a40")
     i16 dat_007f1a40 = -1;
-#pragma data_seg(".data$CharacterFixupIdPc007f1a78")
     i16 dat_007f1a78 = -1;
-#pragma data_seg(".data$CharacterFixupIdPc007f1a7c")
     i16 dat_007f1a7c = -1;
-#pragma data_seg(".data$CharacterFixupIdPc007f1a88")
     i16 dat_007f1a88 = -1;
-#pragma data_seg(".data$CharacterFixupIdPc007f1ac0")
     i16 dat_007f1ac0 = -1;
-#pragma data_seg(".data$CharacterFixupIdPc007f1b10")
     i16 dat_007f1b10 = -1;
-#pragma data_seg(".data$CharacterFixupIdPc007f1b20")
     i16 dat_007f1b20 = -1;
-#pragma data_seg(".data$CharacterFixupIdPc007f1b24")
     i16 dat_007f1b24 = -1;
-#pragma data_seg(".data$CharacterFixupIdPc007f1b28")
     i16 dat_007f1b28 = -1;
-#pragma data_seg(".data$CharacterFixupIdPc007f1b48")
     i16 dat_007f1b48 = -1;
-#pragma data_seg(".data$CharacterFixupTablePc")
     CHARFIXUP_PC CharacterFixupTable[219] = {
         {const_cast<char *>("weirdo1"),                    &PermanentWeirdo1Id                                    },
         {const_cast<char *>("weirdo2"),                    &PermanentWeirdo2Id                                    },
@@ -16982,13 +15474,10 @@ extern "C" {
         {const_cast<char *>("droidstarfighter"),           &dat_007f1b48                                          },
         {NULL,                                             NULL                                                   },
     };
-#pragma data_seg()
 }
 
 extern "C" {
-#pragma data_seg(".data$ComplexShadowBasePc")
     f32 ComplexShadowBase = 25.0f;
-#pragma data_seg()
 }
 
 extern "C" {
@@ -17000,24 +15489,14 @@ extern "C" {
 extern "C" {}
 
 extern "C" {
-#pragma const_seg(".rdata$PanelVariantTwoTargetZ")
     extern const f64 PanelVariantTwoTargetZ = 0.19f;
-#pragma const_seg()
-#pragma const_seg(".rdata$PanelVariantTwoTargetY")
     extern const f64 PanelVariantTwoTargetY = 0.245f;
-#pragma const_seg()
-#pragma const_seg(".rdata$PanelVariantThreeTargetZ")
     extern const f64 PanelVariantThreeTargetZ = 0.17f;
-#pragma const_seg()
-#pragma const_seg(".rdata$PanelVariantThreeTargetY")
     extern const f64 PanelVariantThreeTargetY = 0.34f;
-#pragma const_seg()
 }
 
 extern "C" {
-#pragma data_seg(".data$RopeCurveSubdivisionsPc")
     i32 RopeCurveSubdivisions = 3;
-#pragma data_seg()
 }
 
 extern "C" {
@@ -17035,9 +15514,7 @@ extern "C" {
 }
 
 extern "C" {
-#pragma data_seg(".data$DrawParaphernaliaEnabledPc")
     i32 DrawParaphernaliaEnabled = 1;
-#pragma data_seg()
 }
 
 extern "C" {}
@@ -17378,15 +15855,9 @@ extern "C" {
 }
 
 extern "C" {
-#pragma data_seg(".data$COLLECTION_DX")
     f32 COLLECTION_DX = 0.15f;
-#pragma data_seg()
-#pragma data_seg(".data$COLLECTION_DY")
     f32 COLLECTION_DY = -0.2f;
-#pragma data_seg()
-#pragma data_seg(".data$COLLECTION_ICONSIZE")
     f32 COLLECTION_ICONSIZE = 0.16f;
-#pragma data_seg()
 }
 
 /* Append inside data.cpp; each original new owner gets its own section. */
@@ -17417,72 +15888,28 @@ extern "C" {
 }
 
 extern "C" {
-#pragma const_seg(".rdata$AIControllerLiteralPc00757e34")
     extern const char dat_00757e34[10] = "pathname=";
-#pragma const_seg()
-#pragma const_seg(".rdata$AIControllerLiteralPc00757d98")
     extern const char dat_00757d98[10] = "obstacle=";
-#pragma const_seg()
-#pragma const_seg(".rdata$AIControllerLiteralPc00757d70")
     extern const char dat_00757d70[16] = "OBSTACLE_CLOSED";
-#pragma const_seg()
-#pragma const_seg(".rdata$AIControllerLiteralPc00757db4")
     extern const char dat_00757db4[9] = "flowbox=";
-#pragma const_seg()
-#pragma const_seg(".rdata$AIControllerLiteralPc00757de4")
     extern const char dat_00757de4[9] = "buildit=";
-#pragma const_seg()
-#pragma const_seg(".rdata$AIControllerLiteralPc00757e18")
     extern const char dat_00757e18[9] = "bothways";
-#pragma const_seg()
-#pragma const_seg(".rdata$AIControllerLiteralPc00757e40")
     extern const char dat_00757e40[10] = "on_frames";
-#pragma const_seg()
-#pragma const_seg(".rdata$AIControllerLiteralPc00757dc8")
     extern const char dat_00757dc8[14] = "gizmo_output=";
-#pragma const_seg()
-#pragma const_seg(".rdata$AIControllerLiteralPc00757da4")
     extern const char dat_00757da4[7] = "force=";
-#pragma const_seg()
-#pragma const_seg(".rdata$AIControllerLiteralPc00757e10")
     extern const char dat_00757e10[8] = "on_flag";
-#pragma const_seg()
-#pragma const_seg(".rdata$AIControllerLiteralPc00757d60")
     extern const char dat_00757d60[12] = "lastframe-1";
-#pragma const_seg()
-#pragma const_seg(".rdata$AIControllerLiteralPc00757dac")
     extern const char dat_00757dac[8] = "blowup=";
-#pragma const_seg()
-#pragma const_seg(".rdata$AIControllerLiteralPc00757dc0")
     extern const char dat_00757dc0[7] = "gizmo=";
-#pragma const_seg()
-#pragma const_seg(".rdata$AIControllerLiteralPc00757dfc")
     extern const char dat_00757dfc[5] = "obj=";
-#pragma const_seg()
-#pragma const_seg(".rdata$AIControllerLiteralPc00757d6c")
     extern const char dat_00757d6c[3] = "to";
-#pragma const_seg()
-#pragma const_seg(".rdata$AIControllerLiteralPc00757d80")
     extern const char dat_00757d80[14] = "OBSTACLE_OPEN";
-#pragma const_seg()
-#pragma const_seg(".rdata$AIControllerLiteralPc00757e04")
     extern const char dat_00757e04[9] = "off_flag";
-#pragma const_seg()
-#pragma const_seg(".rdata$AIControllerLiteralPc00757d54")
     extern const char dat_00757d54[10] = "lastframe";
-#pragma const_seg()
-#pragma const_seg(".rdata$AIControllerLiteralPc00757dd8")
     extern const char dat_00757dd8[12] = "fakeanimid=";
-#pragma const_seg()
-#pragma const_seg(".rdata$AIControllerLiteralPc00757d90")
     extern const char dat_00757d90[7] = "zipup=";
-#pragma const_seg()
-#pragma const_seg(".rdata$AIControllerLiteralPc00757e24")
     extern const char dat_00757e24[13] = "CheckVisible";
-#pragma const_seg()
-#pragma const_seg(".rdata$AIControllerLiteralPc00757df0")
     extern const char dat_00757df0[10] = "cutscene=";
-#pragma const_seg()
     f32 fakeanimendframe[1] = {0};
 }
 
@@ -17514,7 +15941,6 @@ extern "C" {
 }
 
 extern "C" {
-#pragma data_seg(".data$Hints_LSW")
     HINT Hints_LSW[65] = {
         {{{600, 0, -1, 0, 7.5f}},     15.0f, {Tag_UpdateHint},          0, {0, 0, 0}, 0.0f},
         {{{601, 0, -1, 0, 6.0f}},     4.0f,  {GizForce_UpdateHint},     0, {0, 0, 0}, 0.0f},
@@ -17582,19 +16008,14 @@ extern "C" {
         {{{1447, 1, 4, 0, 8.0f}},     0.0f,  {IndyUnlocked_UpdateHint}, 0, {0, 0, 0}, 0.0f},
         {{{-1, 0, -1, 1000, 1.0f}},   1.0f,  {NULL},                    0, {0, 0, 0}, 0.0f},
     };
-
-#pragma data_seg()
 }
 
 extern "C" {
-#pragma data_seg(".data$KashyyykDBoulderTuningPc")
     f32 boulder_radius = 0.3f;
     i32 boulder_blowup_type = -1;
-#pragma data_seg()
 }
 
 extern "C" {
-#pragma data_seg(".data$JediBArenaTuningPc")
     f32 jedib_safe_r = 9.0f;
     NUVEC jedib_offsets[3] = {
         {0.1f,  -0.1f, -0.1f},
@@ -17633,37 +16054,25 @@ extern "C" {
         {&id_DROIDEKA,         "phase_droids"},
         {NULL,                 NULL          }
     };
-#pragma data_seg()
 }
 
 extern "C" {
-#pragma data_seg(".data$ForceThrowTuningPc")
     f32 MaulF_ForceThrowGravity = -0.5f;
     f32 MaulF_ForceThrowSpeed = 1.0f;
     f32 DookuC_ForceThrowGravity = -2.5f;
     f32 DookuC_ForceThrowSpeed = 2.5f;
     NUVEC ForceThrowMaulPosition = {19.05f, 4.0f, -105.23f};
-#pragma data_seg()
+}
+
+extern "C" {}
+
+extern "C" {
+    f32 InteractionArrowScale = 0.7f;
 }
 
 extern "C" {
-#pragma section(".bss$HeadCloakHairTuningPc", read, write)
-}
-
-#pragma section(".bss$TagTransfersPc", read, write)
-
-#pragma section(".data$InteractionArrowScalePc", read, write)
-extern "C" {
-    __declspec(allocate(".data$InteractionArrowScalePc")) f32 InteractionArrowScale = 0.7f;
-}
-
-extern "C" {
-#pragma data_seg(".data$DrawGameObjectsFarClipPc")
     f32 DrawGameObjectsFarClip = 20.0f;
-#pragma data_seg()
-#pragma data_seg(".data$DrawGameObjectsVehicleFarClipPc")
     f32 DrawGameObjectsVehicleFarClip = 50.0f;
-#pragma data_seg()
 }
 
 extern "C" {
@@ -17671,15 +16080,9 @@ extern "C" {
 }
 
 extern "C" {
-#pragma data_seg(".data$SebulbaThrowIntervalPc")
     f32 SebulbaThrowIntervalPc = 1.0f;
-#pragma data_seg()
-#pragma data_seg(".data$SebulbaDistanceBiasPc")
     f32 SebulbaDistanceBias = 25.0f;
-#pragma data_seg()
 }
-
-#pragma section(".bss$DRAWBGLOAD", read, write)
 
 extern "C" {
     void (*GameAISaveFn)(AIPATHSYS *) = NULL;
@@ -17690,24 +16093,16 @@ extern "C" {
     AI_MID_SPECIAL_MOVE_PC MidSpecialMoveFn = 0;
 }
 
-#pragma section(".bss$GameAISYSRebuildFromEditorDataFn", read, write)
 extern "C" {
-    __declspec(allocate(".bss$GameAISYSRebuildFromEditorDataFn")) void (*GameAISYSRebuildFromEditorDataFn)(AISYS_PC *, VARIPTR *,
-                                                                                                           VARIPTR *) = NULL;
+    void (*GameAISYSRebuildFromEditorDataFn)(AISYS_PC *, VARIPTR *, VARIPTR *) = NULL;
 }
 
-#pragma section(".data$AIPathConnectionViewsPc", read, write)
 extern "C" {
-    __declspec(allocate(".data$AIPathConnectionViewsPc")) AI_PATH_CONNECTION_TYPE AIPathConnectionTypes[32] = {};
+    AI_PATH_CONNECTION_TYPE AIPathConnectionTypes[32] = {};
 }
-
-#pragma section(".data$AiEditorModeWorkingPc", read, write)
-
-#pragma section(".data$AiEditorAntinodeModeWorkingPc", read, write)
 
 extern "C" {
     void xEndState(NUFPAR_PC *parser);
-#pragma data_seg(".data$AIScriptStateCommandsPc")
     NUFPCOMJMP AIScriptStateCommands[5] = {
         {"CONDITIONS",      xConditions},
         {"ACTIONS",         xActions   },
@@ -17715,24 +16110,12 @@ extern "C" {
         {"}",               xEndState  },
         {NULL,              NULL       }
     };
-#pragma data_seg()
 }
-
-#pragma section(".data$AiEditorPathsModeIdPc", read, write)
-#pragma section(".data$AiEditorCreaturesModeIdPc", read, write)
-#pragma section(".data$AiEditorLocatorsModeIdPc", read, write)
-#pragma section(".data$AiEditorAreasModeIdPc", read, write)
-#pragma section(".bss$AiEditorUpperHeightOverridePc", read, write)
-#pragma section(".bss$AiEditorLowerHeightOverridePc", read, write)
-
-#pragma section(".bss$EmperorFloorRouteOnPc", read, write)
 
 extern "C" {
     /* DDS image used for textures that fail to resolve (128x128, 0x2080 bytes). */
 }
 
-#pragma data_seg(".data$g_shaderSaveFolder")
 extern "C" {
     char g_shaderSaveFolder[256] = "shaders";
 }
-#pragma data_seg()

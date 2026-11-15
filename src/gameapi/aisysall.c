@@ -328,8 +328,7 @@ typedef struct AIEDITORSETTINGS {                                     // size 0x
 } AIEDITORSETTINGS;
 
 NULISTHDR global_aiscripts = {0};
-#pragma section(".bss$aieditorsettings", read, write)
-__declspec(allocate(".bss$aieditorsettings")) AIEDITORSETTINGS aieditorsettings = {0};
+AIEDITORSETTINGS aieditorsettings = {0};
 
 AIPATHSYS *pathEditorCreateData(VARIPTR *, VARIPTR *, void **, void **);
 
@@ -440,8 +439,7 @@ f32 AiEditorCursorRayScalePc = 1e-17f;
 
 /* NUL-terminated instruction strings, each in its own section to keep the data layout. */
 
-#pragma section(".data$AiEditorRouteYOffsetPc", read, write)
-__declspec(allocate(".data$AiEditorRouteYOffsetPc")) f32 AiEditorRouteYOffset = 0.1f;
+f32 AiEditorRouteYOffset = 0.1f;
 
 #define AIEDITOR_REGISTER(id, mode_name, enter_fn, process_fn, draw_fn)                                                                    \
     do {                                                                                                                                   \
@@ -18278,7 +18276,6 @@ void AIScriptMissingStateDiagnosticAlternate(const char *format, ...) {
 void AIScriptMissingConditionDiagnostic(const char *format, ...) {
 }
 
-#pragma data_seg(".data$api_aiactiondefs")
 AIACTIONDEF api_aiactiondefs[55] = {
     {"Idle",                       Action_Idle,                       0, 0, 0},
     {"SetState",                   Action_SetState,                   0, 0, 0},
@@ -18336,7 +18333,6 @@ AIACTIONDEF api_aiactiondefs[55] = {
     {"NotifyStateChange",          Action_NotifyStateChange,          0, 0, 0},
     {NULL,                         NULL,                              0, 0, 0},
 };
-#pragma data_seg()
 f32 default_path_radius = 0.25f;
 f32 default_path_heighttol = 0.2f;
 u8 AiLoadActivationDifficulty = 1;
@@ -18349,7 +18345,6 @@ f32 ai_moveradius = 0.1f;
 f32 antinode_time = 1.0f;
 f32 antinode_reverse_time = 1.0f;
 
-#pragma data_seg(".data$api_aiconditiondefs")
 AICONDITIONDEF api_aiconditiondefs[50] = {
     {"PreviousResult",            NULL,                                NULL                               },
     {"AlwaysTrue",                Condition_AlwaysTrue,                Condition_AlwaysTrueInit           },
@@ -18402,4 +18397,3 @@ AICONDITIONDEF api_aiconditiondefs[50] = {
     {"Param",                     Condition_Param,                     NULL                               },
     {NULL,                        NULL,                                NULL                               },
 };
-#pragma data_seg()
