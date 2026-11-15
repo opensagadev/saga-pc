@@ -877,7 +877,7 @@ extern "C" void Batarangs_Update(void) {
             if (victim->id == (u16)PunchRangeUnitId && victim->player_index == -1) {
                 victim->portal_flags |= 1;
                 PlayerTakeHitReaction(victim, batarang->owner, BatarangCatwomanStunTime, 0);
-            } else if (!(victim->portal_flags & 0x8000000)) {
+            } else if (!(victim->portal_flags & APIOBJECT_BOSS)) {
                 ObjHitObj(batarang->owner, victim, 1, 0, 0, 1);
             }
         } else if (target.type == 1) {

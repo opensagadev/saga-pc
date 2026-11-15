@@ -631,7 +631,7 @@ i32 StarWars_PrepareJump(AIPACKET *packet, APIOBJECT *object, i32 checks) {
     GAMEOBJECT *other;
 
     owner = object->owner;
-    if ((owner->flags_ef4 & 0x40000000) != 0) {
+    if ((owner->flags_ef4 & APIOBJECT_USE_BIG_JUMP_TO_JUMP) != 0) {
         return StarWars_PrepareBigJump(packet, object, checks);
     }
     flags = packet->path_info.connection->traversal_flags[packet->path_info.direction] & packet->capabilities;

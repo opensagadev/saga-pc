@@ -52,7 +52,7 @@ void ShoveSystemCheckGameObject(GAMEOBJECT *object) {
     f32 best_penetration = 0.0f;
     SHOVE_OBJECT *shove;
     i32 i;
-    if (object->flags_ef0 & 1) {
+    if (object->flags_ef0 & APIOBJECT_IGNORE_SHOVE_SYSTEM) {
         return;
     }
     for (i = 0, shove = ShoveSystem.objects; i < ShoveSystem.count; ++i, ++shove) {

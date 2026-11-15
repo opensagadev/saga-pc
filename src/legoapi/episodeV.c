@@ -1016,7 +1016,7 @@ void CloudCityEscapeC_Update(WORLDINFO *world) {
 }
 
 i32 TakeOverYodaSeekDistanceHack(GAMEOBJECT *object, GAMEOBJECT *luke, NUVEC *offset) {
-    if ((object->flags_ef4 & 2) == 0 || dagobah_training == 0 || object->rider != NULL || luke == NULL ||
+    if ((object->flags_ef4 & APIOBJECT_CAN_BE_CARRIED) == 0 || dagobah_training == 0 || object->rider != NULL || luke == NULL ||
         (luke->flags_1fc_word & APIOBJECT_FLAG_PLAYER_ACTIVE) == 0 ||
         !((f64)NuVecDistSqr(&object->position, &luke->position, offset) < (f64)(0.7f * 0.7f))) {
         return 0;
@@ -1359,7 +1359,7 @@ void HothBattle_ManageBackgroundCreatures(void) {
         if (object == NULL) {
             break;
         }
-        object->portal_flags |= 0x10000000;
+        object->portal_flags |= APIOBJECT_CAN_SHOOT_OBSTRUCTIONS;
         for (index = 0; index < set->locator_count; ++index) {
             entry = &WORLD->ai_sys->locators[set->locator_entries[index]];
             if (entry == spawn) {
@@ -1398,7 +1398,7 @@ void HothBattle_ManageBackgroundCreatures(void) {
         if (object == NULL) {
             return;
         }
-        object->portal_flags |= 0x10000000;
+        object->portal_flags |= APIOBJECT_CAN_SHOOT_OBSTRUCTIONS;
         for (index = 0; index < set->locator_count; ++index) {
             entry = &WORLD->ai_sys->locators[set->locator_entries[index]];
             if (entry == spawn) {

@@ -130,7 +130,7 @@ static void ReleaseCable(CABLE_RECORD *cable, i32 snapped) {
     i32 i;
     cable->flags |= 4;
     if (cable->target != NULL) {
-        cable->target->flags_ef4 &= ~0x20u;
+        cable->target->flags_ef4 &= ~APIOBJECT_NO_TIME_BASED_UPDATE;
         cable->target->flags_ef4 &= ~0x200u;
     }
     if (snapped) {
@@ -406,12 +406,12 @@ void UpdateCables(void) {
                                         cable->target->ai_packet.opponent = cable->source;
                                         FaceOpponent(cable->target, &cable->source->collision_position);
                                         target = cable->target;
-                                        if ((target->flags_ef0 & 0x8000) &&
+                                        if ((target->flags_ef0 & APIOBJECT_WALK_BACKWARDS) &&
                                             !(((CABLE_CONTEXT_INFO *)CInfo)[target->character_context].flags & 1)) {
                                             target->movement_facing_angle += 0x8000;
                                         }
                                         cable->target->ai_packet.goal_speed_mode = 1;
-                                        cable->target->flags_ef0 |= 0x8000;
+                                        cable->target->flags_ef0 |= APIOBJECT_WALK_BACKWARDS;
                                     }
                                     if (distance_sq > tow_length * tow_length) {
                                         f32 strength = 1.0f;
@@ -426,7 +426,7 @@ void UpdateCables(void) {
                                             NuVecAdd(&cable->target->velocity, &cable->target->velocity, &target_impulse);
                                             if (cable->total_length > tow_length) {
                                                 cable->pull_time += FRAMETIME;
-                                                cable->target->flags_ef4 |= 0x20;
+                                                cable->target->flags_ef4 |= APIOBJECT_NO_TIME_BASED_UPDATE;
                                             } else {
                                                 cable->pull_time = 0.0f;
                                             }

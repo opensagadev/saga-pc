@@ -540,7 +540,7 @@ void UpdateLastSafePosition(GAMEOBJECT *object) {
         }
     }
 safe_position_done:
-    if ((object->flags_ef4 & 0x1000000) == 0 && (object->flags_1fc_word & APIOBJECT_FLAG_PLAYER_ACTIVE) == 0 &&
+    if ((object->flags_ef4 & APIOBJECT_IGNORE_LAST_SAFE_PATH_POS) == 0 && (object->flags_1fc_word & APIOBJECT_FLAG_PLAYER_ACTIVE) == 0 &&
         (LEGOCONTEXT_EATEN == -1 || object->character_context != LEGOCONTEXT_EATEN) && (object->flags_1fc_word & 0x2000) != 0) {
         if ((object->ai_packet.path_info.flags & 1) != 0) {
             if (object->takeover_owner != NULL && (LEGOCONTEXT_GETIN == -1 || object->character_context != LEGOCONTEXT_GETIN) &&

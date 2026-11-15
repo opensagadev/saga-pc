@@ -1413,7 +1413,7 @@ void MovePlayerSpline(GAMEOBJECT *object) {
         NuVecAdd(&position, &position, &offset);
     }
 
-    if ((object->flags_ef4 & 0x1000) != 0) {
+    if ((object->flags_ef4 & APIOBJECT_SPLINE_FOLLOW_TERRAIN) != 0) {
         hover = GetVehicleHoverHeight(object, NULL);
         hover += object->collision_position.y - object->lower_position.y;
         if (WORLD->current_level == PODSPRINTA_LDATA) {
@@ -1593,7 +1593,7 @@ void MovePlayer(GAMEOBJECT *object) {
                     pad->waggle_magnitude = object == Player[0] || object == Player[1] ? GamePad_Rotate(object) : 0.0f;
                 }
             } else {
-                if ((object->flags_ef0 & 0x10) != 0) {
+                if ((object->flags_ef0 & APIOBJECT_DONT_MOVE) != 0) {
                     pad->input_magnitude = 0.0f;
                     object->pad->buttons_pressed = object->pad->buttons_held = 0;
                 } else if (object->ai_packet.movement_stopped == 1) {
@@ -1650,7 +1650,7 @@ void MovePlayer(GAMEOBJECT *object) {
                             }
                         }
                     }
-                    if ((object->flags_1f8 & APIOBJECT_CREATURE) == 0 && (object->portal_flags & 0x2000000) == 0 &&
+                    if ((object->flags_1f8 & APIOBJECT_CREATURE) == 0 && (object->portal_flags & APIOBJECT_CATCH_UP_FORBIDDEN) == 0 &&
                         (object->unknown_f10 >= OFFSCREEN_CATCHUP_TIME ||
                          (object->model_draw_result == 0 && (object->tag_flags & 2) == 0 && drop_back_in_timer > 0.0f)) &&
                         (pad->input_magnitude + (f64)0.001f >= walk_speed || object->id == (u16)id_SPEEDERBIKE)) {
@@ -1892,11 +1892,11 @@ void TerrainPlayer(GAMEOBJECT *object) {
             }
 
             speed_squared = (api->velocity.x * api->velocity.x + api->velocity.y * api->velocity.y) + api->velocity.z * api->velocity.z;
-            if ((object->flags_ef0 & 0x20) == 0 && (object->flags_ef4 & 0x400000) != 0 && !special_path_endpoints &&
-                object->ai_packet.path_target == NULL && !((api->flags_1fc_word & APIOBJECT_FLAG_PLAYER_ACTIVE) != 0) &&
-                (object->flags_e20 & 0x10000000) == 0 && object->jump_variant_state == 0 &&
-                object->character_context != CHARACTER_CONTEXT_JUMP && object->character_context != CHARACTER_CONTEXT_FORCE_PUSHED &&
-                api->jump_animation_state != 8 &&
+            if ((object->flags_ef0 & APIOBJECT_DONT_SET_STOPPED_FLAG) == 0 && (object->flags_ef4 & 0x400000) != 0 &&
+                !special_path_endpoints && object->ai_packet.path_target == NULL &&
+                !((api->flags_1fc_word & APIOBJECT_FLAG_PLAYER_ACTIVE) != 0) && (object->flags_e20 & 0x10000000) == 0 &&
+                object->jump_variant_state == 0 && object->character_context != CHARACTER_CONTEXT_JUMP &&
+                object->character_context != CHARACTER_CONTEXT_FORCE_PUSHED && api->jump_animation_state != 8 &&
                 (GameTimer.update_count >= 2 || (api->flags_1f8 & (APIOBJECT_SIDE_BADDIE | APIOBJECT_SIDE_NEUTRAL)) != 0) &&
                 (api->unknown_281 & 3) != 0 && api->supporting_platform_id == -1 &&
                 movement_threshold * movement_threshold >= speed_squared && object->character_context != CHARACTER_CONTEXT_TELEPORT &&
@@ -2092,7 +2092,7 @@ void TerrainPlayer(GAMEOBJECT *object) {
                                 GAMEOBJECT *platform_object;
 
                                 platform_object = platforms->entries[i].object;
-                                if (platform_object != NULL && ((object->flags_ef4 & 0x80000) == 0 || player)) {
+                                if (platform_object != NULL && ((object->flags_ef4 & APIOBJECT_CAN_COLLIDE_WITH_OBJECTS) == 0 || player)) {
                                     excluded_platforms[excluded_count++] = platform_object->level_object_index;
                                 }
                             }
@@ -2337,7 +2337,7 @@ void TerrainPlayer(GAMEOBJECT *object) {
                     }
                     if (CannotKill(object) == 0 && api->dead == 0 &&
                         (VehicleArea == 0 || ((api->flags_1fc_word & APIOBJECT_FLAG_PLAYER_ACTIVE) != 0)) &&
-                        (object->flags_ef0 & 0x40000) != 0 && (object->portal_flags & 0x40000) == 0 &&
+                        (object->flags_ef0 & 0x40000) != 0 && (object->portal_flags & APIOBJECT_IMMUNE_TO_KILL_TERRAIN) == 0 &&
                         object->character_context != CHARACTER_CONTEXT_BALLOONING) {
                         if (object->contact_count != 0) {
                             i32 i;
@@ -2391,7 +2391,7 @@ void TerrainPlayer(GAMEOBJECT *object) {
                             }
                         }
                     }
-                    if (CannotKill(object) == 0 && (object->portal_flags & 0x40000) == 0 && api->dead == 0 &&
+                    if (CannotKill(object) == 0 && (object->portal_flags & APIOBJECT_IMMUNE_TO_KILL_TERRAIN) == 0 && api->dead == 0 &&
                         api->water_height != 2000000.0f) {
                         i32 layer;
 
@@ -2415,7 +2415,7 @@ void TerrainPlayer(GAMEOBJECT *object) {
                                  (((api->flags_1fc_word >> 7) & 1) != 0 || (object->character_context != CHARACTER_CONTEXT_ZIP_UP &&
                                                                             object->character_context != CHARACTER_CONTEXT_GRAPPLE)))) {
                                 if (object->doomed_escape_locator != NULL && ((api->flags_1fc_word >> 7) & 1) == 0) {
-                                    if ((object->flags_ef0 & 0x800) != 0) {
+                                    if ((object->flags_ef0 & APIOBJECT_DOOMED_ESCAPE_TAKE_DAMAGE) != 0) {
                                         ObjHitObj(NULL, object, 1, 0, 0, 1);
                                     }
                                     if (api->dead == 0) {
@@ -2543,8 +2543,8 @@ void TerrainPlayer(GAMEOBJECT *object) {
                 object->pad->buttons_pressed = pressed_buttons;
             }
 
-            if ((object->portal_flags & 0x40000) == 0 && ((TERRAIN_PLAYER_SET *)(CurrentTerrain)) != NULL && api->dead == 0 &&
-                (WORLD->current_level->flags & (LEVEL_INTRO | LEVEL_MIDTRO | LEVEL_OUTRO)) == 0 &&
+            if ((object->portal_flags & APIOBJECT_IMMUNE_TO_KILL_TERRAIN) == 0 && ((TERRAIN_PLAYER_SET *)(CurrentTerrain)) != NULL &&
+                api->dead == 0 && (WORLD->current_level->flags & (LEVEL_INTRO | LEVEL_MIDTRO | LEVEL_OUTRO)) == 0 &&
                 (((((TERRAIN_PLAYER_SET *)(CurrentTerrain))->minimum_height))) - 5.0f > api->position.y) {
                 if (api->model_draw_result != 0) {
                     InstantKillParts(object, 0, 0.0f);
@@ -3412,7 +3412,7 @@ static void SetLayersCloud(GAMEOBJECT *object) {
     object->layer_mask |= 1u << CreatureCloudHead[qrand() / 0x5556];
     object->layer_mask |= 1u << CreatureCloudBody[qrand() / 0x5556];
     object->layer_mask |= 1u << CreatureCloudLegs[qrand() / 0x5556];
-    object->flags_ef4 = (object->flags_ef4 & ~0x800u) | ((object->layer_mask << 4) & 0x800);
+    object->flags_ef4 = (object->flags_ef4 & ~APIOBJECT_GIRL) | ((object->layer_mask << 4) & 0x800);
 }
 
 static void SetLayersBob(GAMEOBJECT *object) {
@@ -3521,7 +3521,7 @@ void InitPlayerAI(GAMEOBJECT *object) {
     }
     can_pull_levers = CanPullLevers((i16)object->id);
     object->ai_packet.flags &= ~0x10000u;
-    object->flags_ef0 = (object->flags_ef0 & ~0x800000u) | (((u32)can_pull_levers << 23) & 0x800000u);
+    object->flags_ef0 = (object->flags_ef0 & ~APIOBJECT_CAN_PULL_LEVERS) | (((u32)can_pull_levers << 23) & 0x800000u);
     object->ai_packet.route_mask_low = 0;
     object->ai_packet.route_mask_high = 0;
     if (FreePlay != 0 && (object->flags_1f8 & APIOBJECT_CREATURE) == 0) {
@@ -3549,13 +3549,13 @@ void InitPlayerAI(GAMEOBJECT *object) {
     object->walk_speed_override = 1000000000.0f;
     character = object->character_data;
     object->ai_packet.creature_set = 0;
-    object->portal_flags |= 2;
+    object->portal_flags |= APIOBJECT_CAN_DEFEND;
     if ((character->model_flags & CHARACTER_MODEL_BLASTER) != 0) {
         object->portal_flags |= 4;
     } else {
         object->portal_flags &= ~4u;
     }
-    object->portal_flags = (object->portal_flags & 0x25fffc27) | 8;
+    object->portal_flags = (object->portal_flags & 0x25fffc27) | APIOBJECT_CAN_USE_WEAPON;
     object->flags_ef0 &= 0xc7ffe6c0;
     object->hover_height_override = 1000000000.0f;
     object->flags_ef4 &= 0x31f7e95c;
@@ -3563,9 +3563,9 @@ void InitPlayerAI(GAMEOBJECT *object) {
     object->flags_ef8_word &= 0xfffffffc;
     object->doomed_escape_locator = NULL;
     if ((object->flags_1f8 & APIOBJECT_CREATURE) != 0) {
-        object->flags_ef4 &= ~0x40000u;
+        object->flags_ef4 &= ~APIOBJECT_CAN_HELP_WITH_TRIGGERS;
     } else {
-        object->flags_ef4 |= 0x40000u;
+        object->flags_ef4 |= APIOBJECT_CAN_HELP_WITH_TRIGGERS;
     }
     object->extra_layer_mask = 0;
     object->ai_packet.movement_target_radius = DEFAULT_MOVE_RANGE;
@@ -3579,9 +3579,9 @@ void InitPlayerAI(GAMEOBJECT *object) {
     object->flags_ef4 &= 0xfe5fffff;
     object->portal_flags &= 0xfff3ffff;
     if ((character->model_flags & CHARACTER_MODEL_RESPAWN) != 0) {
-        object->portal_flags |= 0x100000;
+        object->portal_flags |= APIOBJECT_RESPAWNABLE;
     } else {
-        object->portal_flags &= ~0x100000u;
+        object->portal_flags &= ~APIOBJECT_RESPAWNABLE;
     }
     object->tag_flags &= ~2u;
     object->unknown_ec4 = 0.0f;
@@ -3591,7 +3591,7 @@ void InitPlayerAI(GAMEOBJECT *object) {
     object->ai_packet.antinode_timer = 0.0f;
     object->portal_flags &= 0xfadff7fe;
     object->timer_ecc = 0.0f;
-    object->flags_ef0 &= ~0x1000000u;
+    object->flags_ef0 &= ~APIOBJECT_NOT_WITH_PARTY;
     object->alert_target = NULL;
     object->ai_packet.nearest_opponent = NULL;
     object->ai_packet.target_dc = NULL;
@@ -3745,7 +3745,7 @@ i32 NewPlayerCharacter(GAMEOBJECT *object, i32 id, i32 old_id, i32 unused) {
     object->max_view_height = apicharsys->char_data[(i16)object->id].game_character->maxviewheight;
     object->min_view_height = apicharsys->char_data[(i16)object->id].game_character->minviewheight;
     config = object->character_data->game_character;
-    object->flags_ef4 = (object->flags_ef4 & ~0x800u) | ((config->flags_090 >> 6) & 0x800);
+    object->flags_ef4 = (object->flags_ef4 & ~APIOBJECT_GIRL) | ((config->flags_090 >> 6) & 0x800);
     if (object->id == (u16)id_MOSEISLEYCITIZEN) {
         SetLayersMos(object);
     } else if (object->id == (u16)id_CANTINAALIEN) {
@@ -3983,7 +3983,7 @@ i32 InitCreature(GAMEOBJECT *object, i32 id, i32 parameter) {
     GameObjectOrigin(object);
     object->last_safe_position = object->position;
     object->ai_update_position = object->position;
-    object->flags_ef4 = (object->flags_ef4 & ~0x800u) | ((object->character_data->game_character->flags_090 >> 6) & 0x800);
+    object->flags_ef4 = (object->flags_ef4 & ~APIOBJECT_GIRL) | ((object->character_data->game_character->flags_090 >> 6) & 0x800);
     if (object->id == (u16)id_MOSEISLEYCITIZEN) {
         SetLayersMos(object);
     } else if (object->id == (u16)id_CANTINAALIEN) {

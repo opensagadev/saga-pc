@@ -212,15 +212,15 @@ extern "C" void Detonator_MoveCode(GAMEOBJECT *object) {
         if (WORLD->level_objects[0xec].active == 0 || (object->flags_1fc & APIOBJECT_FLAG_PLAYER_ACTIVE) == 0 ||
             (object->unknown_281 == 0 && object->jump_variant_state != 1) ||
             (ObjLandReady(object) == 0 && (*(u64 *)&CInfo[object->character_context].flags & 0x2000) == 0)) {
-            object->flags_e20 |= 0x8000;
+            object->flags_e20 |= APIOBJECT_DETONATOR_WAIT_RELEASE;
             object->unknown_de0 = 0.0f;
             return;
         }
         if ((object->pad->buttons_held & GAMEPAD_SPECIAL) != 0) {
-            if (!(object->unknown_de0 > 0.0f) && (object->flags_e20 & 0x8000) != 0) {
+            if (!(object->unknown_de0 > 0.0f) && (object->flags_e20 & APIOBJECT_DETONATOR_WAIT_RELEASE) != 0) {
                 return;
             }
-            object->flags_e20 |= 0x8000;
+            object->flags_e20 |= APIOBJECT_DETONATOR_WAIT_RELEASE;
             object->unknown_de0 += FRAMETIME;
             if (object->unknown_de0 >= 0.3f && object->unknown_de0 >= 1.0f) {
                 DETONATOR_s *oldest = Detonator_FindOldest();
@@ -229,7 +229,7 @@ extern "C" void Detonator_MoveCode(GAMEOBJECT *object) {
                     object->unknown_de0 = 0.7f;
                 } else {
                     object->unknown_de0 = 0.0f;
-                    object->flags_e20 |= 0x8000;
+                    object->flags_e20 |= APIOBJECT_DETONATOR_WAIT_RELEASE;
                 }
             }
             return;
@@ -281,12 +281,12 @@ extern "C" void Detonator_MoveCode(GAMEOBJECT *object) {
                 }
             }
         }
-        object->flags_e20 &= ~0x8000;
+        object->flags_e20 &= ~APIOBJECT_DETONATOR_WAIT_RELEASE;
         object->unknown_de0 = 0.0f;
         return;
     }
 
-    object->flags_e20 |= 0x8000;
+    object->flags_e20 |= APIOBJECT_DETONATOR_WAIT_RELEASE;
     object->unknown_de0 = 0.0f;
     f32 *frame = NULL;
     if (object->character_model->model_data_b[object->unknown_7aa] != NULL) {

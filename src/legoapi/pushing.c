@@ -216,7 +216,7 @@ void PushCode(GAMEOBJECT *object, i32 allow_push) {
                (allow_push == 0 || (LEGOACT_PUSH != -1 && object->character_model->model_data_b[LEGOACT_PUSH] != NULL))) {
         if (((PART_RELEASE_PUSH *)object)->push_timer >= 0.25f) {
             i32 push_surface = surface;
-            if (push_surface == 30 || push_surface == 31 || (object->flags_ef4 & 0x20000) != 0) {
+            if (push_surface == 30 || push_surface == 31 || (object->flags_ef4 & APIOBJECT_HELPING_WITH_TRIGGERS) != 0) {
                 GIZSPINNER_s *spinner = NULL;
                 if (LEGOCONTEXT_PUSHSPINNER != -1) {
                     spinner = GizSpinner_Find(WORLD, &object->collision_position, 1);

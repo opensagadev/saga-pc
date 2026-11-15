@@ -117,9 +117,9 @@ void SpeederChaseA_Update(WORLDINFO *world) {
         if (object != NULL) {
             if (WORLD->current_level == SPEEDERCHASEA_LDATA && disable_narrow_socks == 0 && object->id == (u16)id_SPEEDERBIKE &&
                 object->rider != NULL && (object->rider->flags_1fc & APIOBJECT_FLAG_PLAYER_ACTIVE) != 0) {
-                object->flags_ef4 |= 0x1000000;
+                object->flags_ef4 |= APIOBJECT_IGNORE_LAST_SAFE_PATH_POS;
             } else {
-                object->flags_ef4 &= ~0x1000000;
+                object->flags_ef4 &= ~APIOBJECT_IGNORE_LAST_SAFE_PATH_POS;
             }
         }
     }

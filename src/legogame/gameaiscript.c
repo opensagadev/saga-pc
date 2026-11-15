@@ -2094,7 +2094,7 @@ f32 Condition_PSP(AISYS_PC *system, AISCRIPTPROCESS *process, AIPACKET *packet, 
 }
 
 f32 Condition_BoltsDontGetDeflectedBack(AISYS_PC *system, AISCRIPTPROCESS *process, AIPACKET *packet, char *name, void *argument) {
-    if (packet != NULL && packet->owner != NULL && (packet->owner->objptr->unknown_ef0 & 8) != 0) {
+    if (packet != NULL && packet->owner != NULL && (packet->owner->objptr->unknown_ef0 & APIOBJECT_BOLTS_DONT_GET_DEFLECTED_BACK) != 0) {
         return 1.0f;
     }
     return 0.0f;
@@ -3135,10 +3135,10 @@ i32 Action_CanDefend(AISYS_PC *sys, AISCRIPTPROCESS *processor, AIPACKET *packet
     }
     object = packet->owner->objptr;
     if (param_5 != 0) {
-        object->portal_flags |= 2u;
+        object->portal_flags |= APIOBJECT_CAN_DEFEND;
         for (index = 0; index < param_4; ++index) {
             if (NuStrICmp(params[index], (char *)AIScriptFalse) == 0) {
-                object->portal_flags &= ~2u;
+                object->portal_flags &= ~APIOBJECT_CAN_DEFEND;
             }
         }
     }
@@ -3156,10 +3156,10 @@ i32 Action_DontAimAt(AISYS_PC *sys, AISCRIPTPROCESS *processor, AIPACKET *packet
     }
     object = packet->owner->objptr;
     if (param_5 != 0) {
-        object->flags_ef4 |= 1;
+        object->flags_ef4 |= APIOBJECT_DONT_AIM_AT;
         for (index = 0; index < param_4; ++index) {
             if (NuStrICmp(params[index], (char *)AIScriptFalse) == 0) {
-                object->flags_ef4 &= ~1u;
+                object->flags_ef4 &= ~APIOBJECT_DONT_AIM_AT;
             }
         }
     }
@@ -3175,10 +3175,10 @@ i32 Action_ImmuneToKillTerrain(AISYS_PC *sys, AISCRIPTPROCESS *processor, AIPACK
     }
     object = packet->owner->objptr;
     if (first_time) {
-        object->portal_flags |= 0x40000u;
+        object->portal_flags |= APIOBJECT_IMMUNE_TO_KILL_TERRAIN;
         for (index = 0; index < param_count; ++index) {
             if (NuStrICmp(params[index], (char *)AIScriptFalse) == 0) {
-                object->portal_flags &= ~0x40000u;
+                object->portal_flags &= ~APIOBJECT_IMMUNE_TO_KILL_TERRAIN;
             }
         }
     }
@@ -3197,10 +3197,10 @@ i32 Action_ImmuneToBolts(AISYS_PC *sys, AISCRIPTPROCESS *processor, AIPACKET *pa
     }
     object = packet->owner->objptr;
     if (param_5 != 0) {
-        object->portal_flags |= 0x80000u;
+        object->portal_flags |= APIOBJECT_IMMUNE_TO_BOLTS;
         for (index = 0; index < param_4; ++index) {
             if (NuStrICmp(params[index], (char *)AIScriptFalse) == 0) {
-                object->portal_flags &= ~0x80000u;
+                object->portal_flags &= ~APIOBJECT_IMMUNE_TO_BOLTS;
             }
         }
     }
@@ -3218,12 +3218,12 @@ i32 Action_Respawnable(AISYS_PC *sys, AISCRIPTPROCESS *processor, AIPACKET *pack
     }
     object = packet->owner->objptr;
     if (param_5 != 0) {
-        object->portal_flags = (object->portal_flags & ~0x200000u) | 0x100000u;
+        object->portal_flags = (object->portal_flags & ~APIOBJECT_RESPAWN_AT_ORIGIN) | APIOBJECT_RESPAWNABLE;
         for (index = 0; index < param_4; ++index) {
             if (NuStrICmp(params[index], "origin") == 0) {
-                object->portal_flags |= 0x200000u;
+                object->portal_flags |= APIOBJECT_RESPAWN_AT_ORIGIN;
             } else if (NuStrICmp(params[index], (char *)AIScriptFalse) == 0) {
-                object->portal_flags &= ~0x100000u;
+                object->portal_flags &= ~APIOBJECT_RESPAWNABLE;
             }
         }
     }
@@ -3241,10 +3241,10 @@ i32 Action_CanUseWeapon(AISYS_PC *sys, AISCRIPTPROCESS *processor, AIPACKET *pac
     }
     object = packet->owner->objptr;
     if (param_5 != 0) {
-        object->portal_flags |= 8;
+        object->portal_flags |= APIOBJECT_CAN_USE_WEAPON;
         for (index = 0; index < param_4; ++index) {
             if (NuStrICmp(params[index], (char *)AIScriptFalse) == 0) {
-                object->portal_flags &= ~8u;
+                object->portal_flags &= ~APIOBJECT_CAN_USE_WEAPON;
             }
         }
     }
@@ -3262,10 +3262,10 @@ i32 Action_SetBoss(AISYS_PC *sys, AISCRIPTPROCESS *processor, AIPACKET *packet, 
     }
     object = packet->owner->objptr;
     if (param_5 != 0) {
-        object->portal_flags |= 0x8000000u;
+        object->portal_flags |= APIOBJECT_BOSS;
         for (index = 0; index < param_4; ++index) {
             if (NuStrICmp(params[index], (char *)AIScriptFalse) == 0) {
-                object->portal_flags &= ~0x8000000u;
+                object->portal_flags &= ~APIOBJECT_BOSS;
             }
         }
     }
@@ -3531,10 +3531,10 @@ i32 Action_UpdateSockPos(AISYS_PC *sys, AISCRIPTPROCESS *processor, AIPACKET *pa
     }
     object = packet->owner->objptr;
     if (param_5 != 0) {
-        object->portal_flags |= 0x4000u;
+        object->portal_flags |= APIOBJECT_UPDATE_SOCK_POS;
         for (index = 0; index < param_4; ++index) {
             if (NuStrICmp(params[index], (char *)AIScriptFalse) == 0) {
-                object->portal_flags &= ~0x4000u;
+                object->portal_flags &= ~APIOBJECT_UPDATE_SOCK_POS;
             }
         }
     }
@@ -3601,7 +3601,8 @@ i32 Action_Kill(AISYS_PC *system, AISCRIPTPROCESS *processor, AIPACKET *packet, 
             if ((candidate->flags_1fc_word & APIOBJECT_FLAG_IN_USE) && (candidate->flags_1fc_word & APIOBJECT_FLAG_CHARACTER) &&
                 (candidate->flags_1f8 & APIOBJECT_CREATURE) && candidate != excluded &&
                 (!check_dead || (candidate->dead == 0 && candidate->unknown_1010 <= 0.0f))) {
-                candidate->portal_flags = (candidate->portal_flags & ~0x00300000u) | ((u32)((respawn & 1) | ((origin & 1) << 1)) << 20);
+                candidate->portal_flags = (candidate->portal_flags & ~(APIOBJECT_RESPAWNABLE | APIOBJECT_RESPAWN_AT_ORIGIN)) |
+                                          ((u32)((respawn & 1) | ((origin & 1) << 1)) << 20);
                 if (parts) {
                     KillParts(candidate, -1, -1, 1, 0.0f, 0, NULL);
                 }
@@ -3618,7 +3619,8 @@ i32 Action_Kill(AISYS_PC *system, AISCRIPTPROCESS *processor, AIPACKET *packet, 
             if ((candidate->flags_1fc_word & APIOBJECT_FLAG_IN_USE) && (candidate->flags_1fc_word & APIOBJECT_FLAG_CHARACTER) &&
                 candidate->ai_packet.creature_set == creature_set &&
                 (!check_dead || (candidate->dead == 0 && candidate->unknown_1010 <= 0.0f))) {
-                candidate->portal_flags = (candidate->portal_flags & ~0x00300000u) | ((u32)((respawn & 1) | ((origin & 1) << 1)) << 20);
+                candidate->portal_flags = (candidate->portal_flags & ~(APIOBJECT_RESPAWNABLE | APIOBJECT_RESPAWN_AT_ORIGIN)) |
+                                          ((u32)((respawn & 1) | ((origin & 1) << 1)) << 20);
                 if (parts) {
                     KillParts(candidate, -1, -1, 1, 0.0f, 0, NULL);
                 }
@@ -3630,7 +3632,8 @@ i32 Action_Kill(AISYS_PC *system, AISCRIPTPROCESS *processor, AIPACKET *packet, 
             }
         }
     } else if (object != NULL && (!check_dead || (object->dead == 0 && object->unknown_1010 <= 0.0f))) {
-        object->portal_flags = (object->portal_flags & ~0x00300000u) | ((u32)((respawn & 1) | ((origin & 1) << 1)) << 20);
+        object->portal_flags = (object->portal_flags & ~(APIOBJECT_RESPAWNABLE | APIOBJECT_RESPAWN_AT_ORIGIN)) |
+                               ((u32)((respawn & 1) | ((origin & 1) << 1)) << 20);
         if (parts) {
             KillParts(object, -1, -1, 1, 0.0f, 0, NULL);
         }
@@ -3826,7 +3829,7 @@ i32 Action_SetDontMove(AISYS_PC *sys, AISCRIPTPROCESS *processor, AIPACKET *pack
             }
         }
         if (object != NULL) {
-            object->flags_ef0 = (object->flags_ef0 & ~0x10u) | ((enabled & 1) << 4);
+            object->flags_ef0 = (object->flags_ef0 & ~APIOBJECT_DONT_MOVE) | ((enabled & 1) << 4);
         }
     }
     return 1;
@@ -3854,7 +3857,7 @@ i32 Action_DontSetStoppedFlag(AISYS_PC *system, AISCRIPTPROCESS *processor, AIPA
             }
         }
         if (object != NULL) {
-            object->flags_ef0 = (object->flags_ef0 & ~0x20u) | ((enabled & 1) << 5);
+            object->flags_ef0 = (object->flags_ef0 & ~APIOBJECT_DONT_SET_STOPPED_FLAG) | ((enabled & 1) << 5);
         }
     }
     return 1;
@@ -4244,7 +4247,7 @@ i32 Action_SetDoomedEscapeLocator(AISYS_PC *system, AISCRIPTPROCESS *processor, 
         }
     }
     if (object != NULL) {
-        object->flags_ef0 &= ~0x800u;
+        object->flags_ef0 &= ~APIOBJECT_DOOMED_ESCAPE_TAKE_DAMAGE;
         object->doomed_escape_locator = NULL;
         if (name != NULL) {
             if (indexed && (i8)(object->unknown_280) != -1) {
@@ -4258,7 +4261,7 @@ i32 Action_SetDoomedEscapeLocator(AISYS_PC *system, AISCRIPTPROCESS *processor, 
             }
             object->doomed_escape_locator = AIPathFindLocator(system, locator_name);
             if (object->doomed_escape_locator != NULL) {
-                object->flags_ef0 = (object->flags_ef0 & ~0x800u) | (take_damage << 11);
+                object->flags_ef0 = (object->flags_ef0 & ~APIOBJECT_DOOMED_ESCAPE_TAKE_DAMAGE) | (take_damage << 11);
             }
         }
     }
@@ -4616,7 +4619,7 @@ i32 Action_AttackOpponent(AISYS_PC *system, AISCRIPTPROCESS *processor, AIPACKET
         return 0;
     }
     distance_squared = NuVecDistSqr(&target->position, &((APIOBJECT *)packet->owner)->position, &delta);
-    if ((object->flags_ef4 & 0x2000u) != 0) {
+    if ((object->flags_ef4 & APIOBJECT_USE_ONE_AT_ONCE) != 0) {
         reloaded_opponent = (APIOBJECT *)object->ai_packet.opponent;
         if (oneAtOnce_CanAttack(object, reloaded_opponent->owner) != 0) {
             packet->movement_instruction_parameter = 0.0f;
@@ -4789,7 +4792,7 @@ i32 Action_EngageOpponent(AISYS_PC *sys, AISCRIPTPROCESS *processor, AIPACKET *p
 
     distance_squared = NuVecDistSqr(&opponent->position, &packet->owner->position, &difference);
 
-    if ((object->flags_ef4 & 0x2000u) != 0) {
+    if ((object->flags_ef4 & APIOBJECT_USE_ONE_AT_ONCE) != 0) {
         if (oneAtOnce_CanAttack(object, ((APIOBJECT *)object->ai_packet.opponent)->owner)) {
             processor->action_data_1 &= (u8)(~2u);
             goal_range = 0.1f;
@@ -4827,7 +4830,7 @@ i32 Action_EngageOpponent(AISYS_PC *sys, AISCRIPTPROCESS *processor, AIPACKET *p
                 AIMoveInstruction(packet, &opponent->ai_packet.last_path_position, stopping_distance, &opponent->ai_packet.path_info, 2,
                                   goal_range);
                 packet->goal_speed_mode = 1;
-                object->flags_ef0 |= 0x8000u;
+                object->flags_ef0 |= APIOBJECT_WALK_BACKWARDS;
             } else {
                 AIMoveInstruction(packet, &opponent->ai_packet.last_path_position, 0.0f, &opponent->ai_packet.path_info, 1, 0.01f);
                 packet->goal_speed_mode = 0;
@@ -4838,7 +4841,7 @@ i32 Action_EngageOpponent(AISYS_PC *sys, AISCRIPTPROCESS *processor, AIPACKET *p
                               goal_range);
             packet->goal_speed_mode = 1;
             if ((object->character_data->game_character->flags_090 & CHARACTER_RUNTIME_TURNING_CIRCLE) != 0) {
-                object->flags_ef0 |= 0x8000u;
+                object->flags_ef0 |= APIOBJECT_WALK_BACKWARDS;
             }
         } else if ((processor->action_data_1 & 0x20) != 0 && distance_squared < (goal_range - aitol) * (goal_range - aitol)) {
             AIMoveInstruction(packet, &opponent->ai_packet.last_path_position, stopping_distance, &opponent->ai_packet.path_info, 2,
@@ -6548,19 +6551,19 @@ i32 Action_UseCurrentSpeed(AISYS_PC *system, AISCRIPTPROCESS *processor, AIPACKE
         if (!first_time) {
             return 1;
         }
-        object->flags_ef4 |= 0x200000u;
+        object->flags_ef4 |= APIOBJECT_USE_CURRENT_SPEED;
         object->movement_speed_scale = 1.0f;
         for (; index < num_params; index++) {
             if (NuStrICmp(params[index], "FALSE") == 0) {
-                object->flags_ef4 &= ~0x200000u;
+                object->flags_ef4 &= ~APIOBJECT_USE_CURRENT_SPEED;
             } else if ((value = NuStrIStr(params[index], "multiplier")) != NULL) {
                 object->movement_speed_scale = AIParamToFloat(processor, value + 11);
             } else if (NuStrICmp(params[index], "snaptospeed") == 0) {
                 snap = 1;
             }
         }
-        if ((object->flags_ef4 & 0x200000u) != 0 && (object->portal_flags & 0x4000u) == 0) {
-            object->portal_flags |= 0x4000u;
+        if ((object->flags_ef4 & APIOBJECT_USE_CURRENT_SPEED) != 0 && (object->portal_flags & APIOBJECT_UPDATE_SOCK_POS) == 0) {
+            object->portal_flags |= APIOBJECT_UPDATE_SOCK_POS;
             if (!snap) {
                 return 1;
             }
@@ -6752,10 +6755,10 @@ i32 Action_ApplyGravity(AISYS_PC *sys, AISCRIPTPROCESS *processor, AIPACKET *pac
     }
     object = packet->owner->objptr;
     if (param_5 != 0) {
-        object->portal_flags &= ~0x80000000u;
+        object->portal_flags &= ~APIOBJECT_NO_GRAVITY;
         for (index = 0; index < param_4; ++index) {
             if (NuStrICmp(params[index], "FALSE") == 0) {
-                object->portal_flags |= 0x80000000u;
+                object->portal_flags |= APIOBJECT_NO_GRAVITY;
             }
         }
     }
@@ -6771,10 +6774,10 @@ i32 Action_IgnoreShoveSystem(AISYS_PC *sys, AISCRIPTPROCESS *processor, AIPACKET
     }
     object = packet->owner->objptr;
     if (first_time) {
-        object->flags_ef0 |= 1;
+        object->flags_ef0 |= APIOBJECT_IGNORE_SHOVE_SYSTEM;
         for (index = 0; index < param_count; ++index) {
             if (NuStrICmp(params[index], "FALSE") == 0) {
-                object->flags_ef0 &= ~1;
+                object->flags_ef0 &= ~APIOBJECT_IGNORE_SHOVE_SYSTEM;
             }
         }
     }
@@ -6790,10 +6793,10 @@ i32 Action_CannotBeForcedBack(AISYS_PC *sys, AISCRIPTPROCESS *processor, AIPACKE
     }
     object = packet->owner->objptr;
     if (first_time) {
-        object->flags_ef0 |= 0x10000000u;
+        object->flags_ef0 |= APIOBJECT_CANNOT_BE_FORCED_BACK;
         for (index = 0; index < param_count; ++index) {
             if (NuStrICmp(params[index], "FALSE") == 0) {
-                object->flags_ef0 &= ~0x10000000u;
+                object->flags_ef0 &= ~APIOBJECT_CANNOT_BE_FORCED_BACK;
             }
         }
     }
@@ -6811,10 +6814,10 @@ i32 Action_CanTurn(AISYS_PC *sys, AISCRIPTPROCESS *processor, AIPACKET *packet, 
     }
     object = packet->owner->objptr;
     if (param_5 != 0) {
-        object->flags_ef0 |= 0x20000000u;
+        object->flags_ef0 |= APIOBJECT_CAN_TURN;
         for (index = 0; index < param_4; ++index) {
             if (NuStrICmp(params[index], "FALSE") == 0) {
-                object->flags_ef0 &= ~0x20000000u;
+                object->flags_ef0 &= ~APIOBJECT_CAN_TURN;
             }
         }
     }
@@ -6864,10 +6867,10 @@ i32 Action_CannotBeSeen(AISYS_PC *sys, AISCRIPTPROCESS *processor, AIPACKET *pac
     }
     object = packet->owner->objptr;
     if (param_5 != 0) {
-        object->flags_ef0 |= 2;
+        object->flags_ef0 |= APIOBJECT_CANNOT_BE_SEEN;
         for (index = 0; index < param_4; ++index) {
             if (NuStrICmp(params[index], "FALSE") == 0) {
-                object->flags_ef0 &= ~2u;
+                object->flags_ef0 &= ~APIOBJECT_CANNOT_BE_SEEN;
             }
         }
     }
@@ -8035,7 +8038,7 @@ i32 Action_KeepWeaponOut(AISYS_PC *sys, AISCRIPTPROCESS *processor, AIPACKET *pa
             }
         }
         if (object != NULL) {
-            object->portal_flags = (object->portal_flags & ~0x10u) | ((keep_out & 1) << 4);
+            object->portal_flags = (object->portal_flags & ~APIOBJECT_KEEP_WEAPON_OUT) | ((keep_out & 1) << 4);
         }
     }
     return 1;
@@ -8076,12 +8079,12 @@ i32 Action_SnapWeaponOut(AISYS_PC *sys, AISCRIPTPROCESS *processor, AIPACKET *pa
                 object->flags_e20 |= APIOBJECT_WEAPON_OUT;
                 object->weapon_scale = 1.0f;
                 if (keep_out != -1) {
-                    object->portal_flags = (object->portal_flags & ~0x10u) | ((keep_out << 4) & 0x10u);
+                    object->portal_flags = (object->portal_flags & ~APIOBJECT_KEEP_WEAPON_OUT) | ((keep_out << 4) & 0x10u);
                 }
             } else {
                 object->weapon_scale = 0.0f;
                 object->flags_e20 &= ~APIOBJECT_WEAPON_OUT;
-                object->portal_flags &= ~0x10u;
+                object->portal_flags &= ~APIOBJECT_KEEP_WEAPON_OUT;
             }
         }
     }
@@ -8131,11 +8134,11 @@ i32 Action_PrefersPlayers(AISYS_PC *sys, AISCRIPTPROCESS *processor, AIPACKET *p
         return 1;
     }
     object = packet->owner->objptr;
-    object->portal_flags |= 0x40000000u;
+    object->portal_flags |= APIOBJECT_PREFERS_PLAYERS;
     if (param_4 != 0) {
         for (index = 0; index < param_4; ++index) {
             if (NuStrICmp(params[index], "FALSE") == 0) {
-                object->portal_flags &= ~0x40000000u;
+                object->portal_flags &= ~APIOBJECT_PREFERS_PLAYERS;
             }
         }
     }
@@ -8150,11 +8153,11 @@ i32 Action_SetBoltsDontGetDeflectedBack(AISYS_PC *sys, AISCRIPTPROCESS *processo
         return 1;
     }
     object = packet->owner->objptr;
-    object->flags_ef0 |= 8u;
+    object->flags_ef0 |= APIOBJECT_BOLTS_DONT_GET_DEFLECTED_BACK;
     if (param_count != 0) {
         for (index = 0; index < param_count; ++index) {
             if (NuStrICmp(params[index], "FALSE") == 0) {
-                object->flags_ef0 &= ~8u;
+                object->flags_ef0 &= ~APIOBJECT_BOLTS_DONT_GET_DEFLECTED_BACK;
             }
         }
     }
@@ -8169,11 +8172,11 @@ i32 Action_CanShootObstructions(AISYS_PC *sys, AISCRIPTPROCESS *processor, AIPAC
         return 1;
     }
     object = packet->owner->objptr;
-    object->portal_flags |= 0x10000000u;
+    object->portal_flags |= APIOBJECT_CAN_SHOOT_OBSTRUCTIONS;
     if (param_count != 0) {
         for (index = 0; index < param_count; ++index) {
             if (NuStrICmp(params[index], "FALSE") == 0) {
-                object->portal_flags &= ~0x10000000u;
+                object->portal_flags &= ~APIOBJECT_CAN_SHOOT_OBSTRUCTIONS;
             }
         }
     }
@@ -8192,11 +8195,11 @@ i32 Action_UseBigJumpToJump(AISYS_PC *sys, AISCRIPTPROCESS *processor, AIPACKET 
         return 1;
     }
     object = packet->owner->objptr;
-    object->flags_ef4 |= 0x40000000u;
+    object->flags_ef4 |= APIOBJECT_USE_BIG_JUMP_TO_JUMP;
     if (param_4 != 0) {
         for (index = 0; index < param_4; ++index) {
             if (NuStrICmp(params[index], "FALSE") == 0) {
-                object->flags_ef4 &= ~0x40000000u;
+                object->flags_ef4 &= ~APIOBJECT_USE_BIG_JUMP_TO_JUMP;
             }
         }
     }
@@ -8211,11 +8214,11 @@ i32 Action_IgnoreTurnAroundSpline(AISYS_PC *sys, AISCRIPTPROCESS *processor, AIP
         return 1;
     }
     object = packet->owner->objptr;
-    object->flags_ef4 |= 0x80000000u;
+    object->flags_ef4 |= APIOBJECT_IGNORE_TURN_AROUND_SPLINE;
     if (param_count != 0) {
         for (index = 0; index < param_count; ++index) {
             if (NuStrICmp(params[index], "FALSE") == 0) {
-                object->flags_ef4 &= ~0x80000000u;
+                object->flags_ef4 &= ~APIOBJECT_IGNORE_TURN_AROUND_SPLINE;
             }
         }
     }
@@ -8267,11 +8270,11 @@ i32 Action_CanPullLevers(AISYS_PC *sys, AISCRIPTPROCESS *processor, AIPACKET *pa
         return 1;
     }
     object = packet->owner->objptr;
-    object->flags_ef0 |= 0x800000u;
+    object->flags_ef0 |= APIOBJECT_CAN_PULL_LEVERS;
     if (param_4 != 0) {
         for (index = 0; index < param_4; ++index) {
             if (NuStrICmp(params[index], "FALSE") == 0) {
-                object->flags_ef0 &= ~0x800000u;
+                object->flags_ef0 &= ~APIOBJECT_CAN_PULL_LEVERS;
             }
         }
     }
@@ -8286,11 +8289,11 @@ i32 Action_CanHitForceObjects(AISYS_PC *sys, AISCRIPTPROCESS *processor, AIPACKE
         return 1;
     }
     object = packet->owner->objptr;
-    object->portal_flags |= 0x40;
+    object->portal_flags |= APIOBJECT_CAN_HIT_FORCE_OBJECTS;
     if (param_count != 0) {
         for (index = 0; index < param_count; ++index) {
             if (NuStrICmp(params[index], "FALSE") == 0) {
-                object->portal_flags &= ~0x40;
+                object->portal_flags &= ~APIOBJECT_CAN_HIT_FORCE_OBJECTS;
             }
         }
     }
@@ -8309,11 +8312,11 @@ i32 Action_AlwaysBackFlip(AISYS_PC *sys, AISCRIPTPROCESS *processor, AIPACKET *p
         return 1;
     }
     object = packet->owner->objptr;
-    object->portal_flags |= 0x100u;
+    object->portal_flags |= APIOBJECT_ALWAYS_BACK_FLIP;
     if (param_4 != 0) {
         for (index = 0; index < param_4; ++index) {
             if (NuStrICmp(params[index], "FALSE") == 0) {
-                object->portal_flags &= ~0x100u;
+                object->portal_flags &= ~APIOBJECT_ALWAYS_BACK_FLIP;
             }
         }
     }
@@ -8411,7 +8414,7 @@ i32 Action_CatchUpForbidden(AISYS_PC *sys, AISCRIPTPROCESS *processor, AIPACKET 
             }
         }
         if (object != NULL) {
-            object->portal_flags = (object->portal_flags & ~0x2000000u) | ((forbidden & 1) << 25);
+            object->portal_flags = (object->portal_flags & ~APIOBJECT_CATCH_UP_FORBIDDEN) | ((forbidden & 1) << 25);
         }
     }
     return 1;
@@ -8483,7 +8486,7 @@ i32 Action_CannotDropIn(AISYS_PC *sys, AISCRIPTPROCESS *processor, AIPACKET *pac
             }
         }
         if (object != NULL) {
-            object->portal_flags = (object->portal_flags & ~0x4000000u) | ((enabled << 26) & 0x4000000u);
+            object->portal_flags = (object->portal_flags & ~APIOBJECT_CANNOT_DROP_IN) | ((enabled << 26) & 0x4000000u);
         }
     }
     return 1;
@@ -8512,7 +8515,7 @@ i32 Action_NotWithParty(AISYS_PC *sys, AISCRIPTPROCESS *processor, AIPACKET *pac
             }
         }
         if (object != NULL) {
-            object->flags_ef0 = (object->flags_ef0 & ~0x1000000u) | ((enabled & 1) << 24);
+            object->flags_ef0 = (object->flags_ef0 & ~APIOBJECT_NOT_WITH_PARTY) | ((enabled & 1) << 24);
         }
     }
     return 1;
@@ -8541,7 +8544,7 @@ i32 Action_CanAttack(AISYS_PC *sys, AISCRIPTPROCESS *processor, AIPACKET *packet
             }
         }
         if (object != NULL) {
-            object->portal_flags = (object->portal_flags & ~0x200u) | ((enabled & 1) << 9);
+            object->portal_flags = (object->portal_flags & ~APIOBJECT_CAN_ATTACK) | ((enabled & 1) << 9);
         }
     }
     return 1;
@@ -8827,11 +8830,11 @@ i32 Action_DeflectPlayersPart(AISYS_PC *sys, AISCRIPTPROCESS *processor, AIPACKE
         return 1;
     }
     object = packet->owner->objptr;
-    object->flags_ef0 |= 0x100u;
+    object->flags_ef0 |= APIOBJECT_DEFLECT_PLAYERS_PART;
     if (param_count != 0) {
         for (index = 0; index < param_count; ++index) {
             if (NuStrICmp(params[index], "FALSE") == 0) {
-                object->flags_ef0 &= ~0x100u;
+                object->flags_ef0 &= ~APIOBJECT_DEFLECT_PLAYERS_PART;
             }
         }
     }
@@ -9890,7 +9893,7 @@ i32 Action_HelpWithTriggers(AISYS_PC *unused0, AISCRIPTPROCESS *processor, AIPAC
             if (object->unknown_281 != 0 && NuVecXZDistSqr(spinner_origin, &spinner_position, NULL) < packet->mover_height) {
                 NuVecAddScale(&spinner_position, &spinner_position, &spinner_direction, -0.5f);
                 AIMoveInstruction(packet, &spinner_position, 0.0f, &target->path, 1, 0.0f);
-                object->flags_ef4 |= 0x20000;
+                object->flags_ef4 |= APIOBJECT_HELPING_WITH_TRIGGERS;
                 object->respawn_timer = 0.0f;
             }
         } else if (gizmo->type_id == force_gizmotype_id) {
@@ -10018,7 +10021,7 @@ i32 Action_PullLever(AISYS_PC *system, AISCRIPTPROCESS *processor, AIPACKET *pac
     }
     object = ((APIOBJECT *)packet->owner)->owner;
     AIMoveInstruction(packet, &processor->action_pos, 0.0f, &processor->path_info, 1, 0.0f);
-    if ((object->flags_ef0 & 0x800000) == 0) {
+    if ((object->flags_ef0 & APIOBJECT_CAN_PULL_LEVERS) == 0) {
         if (FreePlay != 0) {
             processor->action_timer -= elapsed;
             if (processor->action_timer < 0.0f) {
@@ -10752,9 +10755,9 @@ i32 Action_SetCanTakeOver(AISYS_PC *sys, AISCRIPTPROCESS *processor, AIPACKET *p
     if (object != NULL) {
         for (index = 0; index < param_4; ++index) {
             if (NuStrICmp("True", params[index]) == 0) {
-                object->flags_ef0 |= 0x40000000u;
+                object->flags_ef0 |= APIOBJECT_CAN_TAKE_OVER;
             } else if (NuStrIStr(params[index], (char *)AIScriptFalse) != NULL) {
-                object->flags_ef0 &= ~0x40000000u;
+                object->flags_ef0 &= ~APIOBJECT_CAN_TAKE_OVER;
             }
         }
     }
@@ -10791,7 +10794,7 @@ i32 Action_CanBeCarried(AISYS_PC *system, AISCRIPTPROCESS *processor, AIPACKET *
         if (object->character_context == CHARACTER_CONTEXT_GET_IN || object->takeover_source != NULL) {
             Player_ClearContext(object, 1);
         }
-        object->flags_ef4 = (object->flags_ef4 & ~2u) | ((u32)(enabled & 1) << 1);
+        object->flags_ef4 = (object->flags_ef4 & ~APIOBJECT_CAN_BE_CARRIED) | ((u32)(enabled & 1) << 1);
     }
     return 1;
 }
@@ -10828,7 +10831,7 @@ i32 Action_IgnoreLastSafePathPos(AISYS_PC *system, AISCRIPTPROCESS *processor, A
             if (object->character_context == CHARACTER_CONTEXT_GET_IN || object->rider != NULL) {
                 Player_ClearContext(object, 1);
             }
-            object->flags_ef4 = (object->flags_ef4 & ~0x01000000u) | ((ignore & 1) << 24);
+            object->flags_ef4 = (object->flags_ef4 & ~APIOBJECT_IGNORE_LAST_SAFE_PATH_POS) | ((ignore & 1) << 24);
         }
     }
     return 1;
@@ -10866,7 +10869,7 @@ i32 Action_AwkwardShapeOverride(AISYS_PC *system, AISCRIPTPROCESS *processor, AI
             if (object->character_context == CHARACTER_CONTEXT_GET_IN || object->rider != NULL) {
                 Player_ClearContext(object, 1);
             }
-            object->flags_ef4 = (object->flags_ef4 & ~0x80u) | ((enabled & 1) << 7);
+            object->flags_ef4 = (object->flags_ef4 & ~APIOBJECT_AWKWARD_SHAPE_OVERRIDE) | ((enabled & 1) << 7);
         }
     }
     return 1;
@@ -10901,7 +10904,7 @@ i32 Action_IgnoreSlideTerrain(AISYS_PC *system, AISCRIPTPROCESS *processor, AIPA
             }
         }
         if (object != NULL) {
-            object->flags_ef4 = (object->flags_ef4 & ~0x400u) | ((enabled & 1) << 10);
+            object->flags_ef4 = (object->flags_ef4 & ~APIOBJECT_IGNORE_SLIDE_TERRAIN) | ((enabled & 1) << 10);
         }
     }
     return 1;
@@ -10936,7 +10939,7 @@ i32 Action_SplineFollowTerrain(AISYS_PC *system, AISCRIPTPROCESS *processor, AIP
             }
         }
         if (object != NULL) {
-            object->flags_ef4 = (object->flags_ef4 & ~0x1000u) | ((enabled & 1) << 12);
+            object->flags_ef4 = (object->flags_ef4 & ~APIOBJECT_SPLINE_FOLLOW_TERRAIN) | ((enabled & 1) << 12);
         }
     }
     return 1;
@@ -11114,7 +11117,7 @@ i32 Action_UseTimeBasedUpdate(AISYS_PC *sys, AISCRIPTPROCESS *processor, AIPACKE
                 }
             }
         }
-        object->flags_ef4 = (object->flags_ef4 & ~0x20u) | (((enabled == 0) & 1) << 5);
+        object->flags_ef4 = (object->flags_ef4 & ~APIOBJECT_NO_TIME_BASED_UPDATE) | (((enabled == 0) & 1) << 5);
     }
     return 1;
 }
@@ -11143,7 +11146,7 @@ i32 Action_WalkBackwards(AISYS_PC *sys, AISCRIPTPROCESS *processor, AIPACKET *pa
         owner = packet->owner->objptr;
         AIMoveInstruction(packet, &opponent->ai->last_path_position, opponent->ai->mover_height, &opponent->ai->path_info, 2,
                           packet->movement_instruction_parameter);
-        owner->flags_ef0 |= 0x8000u;
+        owner->flags_ef0 |= APIOBJECT_WALK_BACKWARDS;
         owner->ai_packet.goal_speed_mode = 1;
     }
     return 0;
@@ -11324,7 +11327,7 @@ i32 Action_SetUseOneAtOnce(AISYS_PC *sys, AISCRIPTPROCESS *processor, AIPACKET *
             }
         }
         if (object != NULL) {
-            object->flags_ef4 = (object->flags_ef4 & ~0x2000u) | ((enabled & 1) << 13);
+            object->flags_ef4 = (object->flags_ef4 & ~APIOBJECT_USE_ONE_AT_ONCE) | ((enabled & 1) << 13);
         }
     }
     return 1;
@@ -11649,10 +11652,10 @@ i32 Action_CanHelpWithTriggers(AISYS_PC *sys, AISCRIPTPROCESS *processor, AIPACK
     }
     object = packet->owner->objptr;
     if (first_time) {
-        object->flags_ef4 |= 0x40000u;
+        object->flags_ef4 |= APIOBJECT_CAN_HELP_WITH_TRIGGERS;
         for (index = 0; index < param_count; ++index) {
             if (NuStrICmp(params[index], "FALSE") == 0) {
-                object->flags_ef4 &= ~0x40000u;
+                object->flags_ef4 &= ~APIOBJECT_CAN_HELP_WITH_TRIGGERS;
             }
         }
     }
@@ -11668,10 +11671,10 @@ i32 Action_CanCollideWithObjects(AISYS_PC *sys, AISCRIPTPROCESS *processor, AIPA
     }
     object = packet->owner->objptr;
     if (first_time) {
-        object->flags_ef4 &= ~0x80000u;
+        object->flags_ef4 &= ~APIOBJECT_CAN_COLLIDE_WITH_OBJECTS;
         for (index = 0; index < param_count; ++index) {
             if (NuStrICmp(params[index], "TRUE") == 0) {
-                object->flags_ef4 |= 0x80000u;
+                object->flags_ef4 |= APIOBJECT_CAN_COLLIDE_WITH_OBJECTS;
             }
         }
     }
@@ -11730,10 +11733,10 @@ i32 Action_SetShootOpponents(AISYS_PC *system, AISCRIPTPROCESS *processor, AIPAC
     }
     object = packet->owner->objptr;
     if (first_time != 0) {
-        object->portal_flags |= 0x80;
+        object->portal_flags |= APIOBJECT_SHOOT_OPPONENTS;
         for (index = 0; index < count; ++index) {
             if (NuStrICmp(params[index], AIScriptFalse) == 0) {
-                object->portal_flags &= ~0x80u;
+                object->portal_flags &= ~APIOBJECT_SHOOT_OPPONENTS;
             }
         }
     }
@@ -11811,8 +11814,8 @@ i32 Action_RaceOpponent(AISYS_PC *system, AISCRIPTPROCESS *processor, AIPACKET *
     actor = packet->owner->objptr;
 
     if (first_time != 0) {
-        actor->portal_flags |= 0x4000u;
-        actor->flags_ef4 |= 0x200000u;
+        actor->portal_flags |= APIOBJECT_UPDATE_SOCK_POS;
+        actor->flags_ef4 |= APIOBJECT_USE_CURRENT_SPEED;
         actor->movement_speed_scale = 1.0f;
         actor->ai_packet.movement_stopped = 1;
         processor->action_data_4 = 10.0f;

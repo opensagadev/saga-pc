@@ -71,7 +71,7 @@ i32 Tag_FindGameObject_CYCLICAL(GAMEOBJECT *object) {
         candidate = &Obj[index];
         if (candidate != NULL && candidate != object && (candidate->flags_1fc_word & APIOBJECT_FLAG_IN_USE) != 0 &&
             (candidate->flags_1fc_word & APIOBJECT_FLAG_CHARACTER) != 0 && candidate->dead == 0 && candidate->player_index != -1 &&
-            (candidate->tag_flags & 2) == 0 && (candidate->flags_ef4 & 2) == 0 &&
+            (candidate->tag_flags & 2) == 0 && (candidate->flags_ef4 & APIOBJECT_CAN_BE_CARRIED) == 0 &&
             (U64_PAIR(&CInfo[candidate->character_context].flags) & 0x800) == 0) {
             return candidate->player_index;
         }
@@ -95,7 +95,7 @@ static GAMEOBJECT *Tag_FindGameObject_TRANSFER(GAMEOBJECT *object) {
         }
         if (candidate->character_context == CHARACTER_CONTEXT_DEACTIVATED || candidate->character_context == CHARACTER_CONTEXT_FLATTEN ||
             (U64_PAIR(&CInfo[candidate->character_context].flags) & 0x8000) != 0 ||
-            ((candidate->flags_ef4 & 2) != 0 && object->id != (u16)id_LUKESKYWALKERDAGOBAH)) {
+            ((candidate->flags_ef4 & APIOBJECT_CAN_BE_CARRIED) != 0 && object->id != (u16)id_LUKESKYWALKERDAGOBAH)) {
             continue;
         }
         distance = NuVecDistSqr(&object->position, &candidate->position, &direction);
@@ -201,7 +201,7 @@ i32 TakeOverYoda(GAMEOBJECT *rider, GAMEOBJECT *vehicle, i32 blend_camera, i32 u
     ReleaseBuildIt(rider, 0);
     ReleasePush(rider);
     Player_ResetContexts(rider->ai_player_packet);
-    if ((rider->portal_flags & 0x10) == 0) {
+    if ((rider->portal_flags & APIOBJECT_KEEP_WEAPON_OUT) == 0) {
         SetWeaponIn(rider);
     }
     rider->rider = vehicle;
@@ -414,7 +414,7 @@ i32 TagCode(GAMEOBJECT *source, GAMEOBJECT *destination, i32 takeover, i32 blend
             ReleaseBuildIt(source, 0);
             ReleasePush(source);
             Player_ResetContexts(source->ai_player_packet);
-            if ((source->portal_flags & 0x10) == 0) {
+            if ((source->portal_flags & APIOBJECT_KEEP_WEAPON_OUT) == 0) {
                 SetWeaponIn(source);
             }
             source->rider = destination;
@@ -540,7 +540,7 @@ void Tag_Check(GAMEOBJECT *object) {
                             }
                         }
                         if (target != NULL) {
-                            if ((target->flags_ef4 & 2) != 0) {
+                            if ((target->flags_ef4 & APIOBJECT_CAN_BE_CARRIED) != 0) {
                                 TakeOver2GetIn(target, object);
                                 goto draw_icon;
                             }
@@ -576,8 +576,8 @@ void Tag_Check(GAMEOBJECT *object) {
         object->tag_cooldown -= FRAMETIME;
         if (object->tag_cooldown > 0.0f && (target = object->pending_tag_target) != NULL) {
             if ((target->flags_1fc_word & APIOBJECT_FLAG_CHARACTER) != 0 && (target->flags_1fc_word & APIOBJECT_FLAG_IN_USE) != 0) {
-                result = (object->flags_ef4 & 2) != 0 ? TakeOverYoda(object, target, 0, 1)
-                                                      : TagCode(object, target, (object->tag_flags >> 3) & 1, 0, 1);
+                result = (object->flags_ef4 & APIOBJECT_CAN_BE_CARRIED) != 0 ? TakeOverYoda(object, target, 0, 1)
+                                                                             : TagCode(object, target, (object->tag_flags >> 3) & 1, 0, 1);
                 if (result != 0) {
                     goto tagged_result;
                 }
@@ -640,7 +640,7 @@ void ReleaseTakeOver(GAMEOBJECT *target, i32 unused) {
     object_script = TAG_SCRIPT_STATE(object);
     rider_flag = TAG_FLAGS(rider)->ai;
     object_flag = TAG_FLAGS(object)->ai;
-    if ((rider->flags_ef4 & 2) == 0 && TagCode(rider, object, 1, 0, 0) == 0) {
+    if ((rider->flags_ef4 & APIOBJECT_CAN_BE_CARRIED) == 0 && TagCode(rider, object, 1, 0, 0) == 0) {
         return;
     }
     TakeOverReleaseDiagnostic(rider->character_data->name, object->character_data->name);
@@ -708,7 +708,7 @@ void TakeOverGameObject2(GAMEOBJECT *rider, GAMEOBJECT *vehicle, i32 blend_camer
         (vehicle->flags_1fc_word & APIOBJECT_FLAG_IN_USE) == 0 || rider->rider != NULL || vehicle->rider != NULL) {
         return;
     }
-    if ((rider->flags_ef4 & 2) != 0) {
+    if ((rider->flags_ef4 & APIOBJECT_CAN_BE_CARRIED) != 0) {
         result = TakeOverYoda(rider, vehicle, blend_camera, 1);
     } else {
         if (WORLD->current_level == SPEEDERCHASEA_LDATA && disable_narrow_socks == 0 &&
@@ -806,7 +806,7 @@ void TakeOverCode(GAMEOBJECT *object, i32 tag_pressed) {
         if (object->character_context == CHARACTER_CONTEXT_BEEN_TAKEN_OVER) {
             if (!(players_cannot_exit_speeder != 0 && target->id == (u16)id_SPEEDERBIKE)) {
                 u32 buttons = target->pad->buttons_pressed;
-                if ((object->flags_ef4 & 2) != 0) {
+                if ((object->flags_ef4 & APIOBJECT_CAN_BE_CARRIED) != 0) {
                     buttons &= ~GAMEPAD_JUMP;
                 }
                 if (target->character_context != CHARACTER_CONTEXT_TURN && (buttons & (GAMEPAD_JUMP | GAMEPAD_TAG)) != 0) {

@@ -1534,7 +1534,8 @@ extern "C" void Bolt_Init(void *storage, NETMESSAGE &message) {
                 !Bolt_HitGameObjects(bolt, points, &bolt->bounds_min, &bolt->bounds_max, bolt->collision_radius, NULL)) {
                 i32 hit = 0;
                 if ((bolt->flags & 0x13) != 0 ||
-                    (bolt->owner != NULL && ((bolt->owner->portal_flags & 0x10000000) != 0 || bolt->owner->unknown_f00 == 5))) {
+                    (bolt->owner != NULL &&
+                     ((bolt->owner->portal_flags & APIOBJECT_CAN_SHOOT_OBSTRUCTIONS) != 0 || bolt->owner->unknown_f00 == 5))) {
                     hit = bolt->hit_platform != -1 && Bolt_HitPlatPrivate(bolt, NULL);
                     if (!hit) {
                         hit = GizmoSys_BoltHit(world->gizmo_sys, world, bolt, points, &bolt->bounds_min, &bolt->bounds_max,
@@ -1687,8 +1688,8 @@ extern "C" void Bolts_Update(WORLDINFO *world) {
             if (Bolt_HitGameObjects(bolt, points, &bolt->bounds_min, &bolt->bounds_max, bolt->collision_radius, NULL) != 0) {
                 continue;
             }
-            if ((bolt->flags & 0x13) != 0 ||
-                (bolt->owner != NULL && ((bolt->owner->portal_flags & 0x10000000) != 0 || bolt->owner->unknown_f00 == 5))) {
+            if ((bolt->flags & 0x13) != 0 || (bolt->owner != NULL && ((bolt->owner->portal_flags & APIOBJECT_CAN_SHOOT_OBSTRUCTIONS) != 0 ||
+                                                                      bolt->owner->unknown_f00 == 5))) {
                 if (bolt->hit_platform != -1) {
                     if (Bolt_HitPlatFn == NULL || !Bolt_HitPlatFn(bolt)) {
                         Bolt_HitPlatPrivate(bolt, processed);
@@ -1773,8 +1774,8 @@ extern "C" void Bolts_Update(WORLDINFO *world) {
                     goto next_bolt;
                 }
             }
-            if ((bolt->flags & 0x13) != 0 ||
-                (bolt->owner != NULL && ((bolt->owner->portal_flags & 0x10000000) != 0 || bolt->owner->unknown_f00 == 5))) {
+            if ((bolt->flags & 0x13) != 0 || (bolt->owner != NULL && ((bolt->owner->portal_flags & APIOBJECT_CAN_SHOOT_OBSTRUCTIONS) != 0 ||
+                                                                      bolt->owner->unknown_f00 == 5))) {
                 if (GizmoSys_BoltHit(world->gizmo_sys, world, bolt, points, &bolt->bounds_min, &bolt->bounds_max, bolt->collision_radius,
                                      processed)) {
                     continue;
@@ -1822,7 +1823,7 @@ extern "C" {
                 flags |= 2;
             }
         }
-        if ((object->flags_ef0 & 8) != 0) {
+        if ((object->flags_ef0 & APIOBJECT_BOLTS_DONT_GET_DEFLECTED_BACK) != 0) {
             flags |= 0x40;
         }
         aimed_position = object->attack_target_position;
@@ -1971,7 +1972,7 @@ extern "C" {
                 object->unknown_d54 = BoltShootParameter;
             }
         }
-        object->flags_e20 |= 0x40000;
+        object->flags_e20 |= APIOBJECT_SHOT_FIRED;
         if (sound_count > 0) {
             i32 sound = sound_count > 1 ? qrand() / (0xffff / sound_count + 1) : 0;
             GameAudio_PlaySfxById(sounds[sound], &sound_positions[sound], 0, 0);

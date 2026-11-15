@@ -1435,8 +1435,8 @@ void SarlaccPitC_Update(WORLDINFO *world) {
                         panel->state_flags &= ~2;
                     }
                 }
-            } else if (LevGameObject[0]->portal_flags & 8) {
-                LevGameObject[0]->portal_flags &= ~8;
+            } else if (LevGameObject[0]->portal_flags & APIOBJECT_CAN_USE_WEAPON) {
+                LevGameObject[0]->portal_flags &= ~APIOBJECT_CAN_USE_WEAPON;
             }
         } else if (SarlaccTakenOver) {
             SarlaccTakenOver = 0;
@@ -1451,7 +1451,7 @@ void SarlaccPitC_Update(WORLDINFO *world) {
         } else {
             SarlaccRechargeTimer -= FRAMETIME;
             if (SarlaccRechargeTimer <= 0.0f) {
-                LevGameObject[0]->portal_flags |= 8;
+                LevGameObject[0]->portal_flags |= APIOBJECT_CAN_USE_WEAPON;
                 NuSpecialSetVisibility(&LevHSpecial[SarlaccPower], 0);
                 NuSpecialSetVisibility(&LevHSpecial[SarlaccPower + 8], 1);
                 PlaySfx("imp_c3po_magnet_drop", NuSpecialGetDrawPos(&LevHSpecial[SarlaccPower + 8]));

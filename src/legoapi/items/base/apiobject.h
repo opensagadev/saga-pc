@@ -180,6 +180,66 @@ extern "C" {
 #define APIOBJECT_BOLT_ON_COURSE 0x2000      /* the incoming bolt's line passes through the object (dodge it) */
 #define APIOBJECT_WEAPON_OUT 0x10000         /* SetWeaponOut/KeepWeaponOut set it, SetWeaponIn clears it */
 
+/* gameobject_s.flags_e20, more runtime bits from their setters. */
+#define APIOBJECT_LAUNCH_ROCKET 0x10            /* set at the JgRocket release frame; GameObjectStuffAfterAnimation fires the rocket part */
+#define APIOBJECT_COMBO_IN_TIME 0x40            /* sabre combo: no mistimed press yet, the next hit takes the special branch */
+#define APIOBJECT_DETONATOR_WAIT_RELEASE 0x8000 /* Detonator_MoveCode ignores the held special button until it is released */
+#define APIOBJECT_SHOT_FIRED 0x40000            /* the shot of the current shoot animation has been fired */
+
+/* gameobject_s.portal_flags: the AI script actions that set them (keyword in the action table). */
+#define APIOBJECT_CAN_DEFEND 0x2                    /* CanDefend */
+#define APIOBJECT_CAN_USE_WEAPON 0x8                /* CanUseWeapon */
+#define APIOBJECT_KEEP_WEAPON_OUT 0x10              /* KeepWeaponOut, SnapWeaponOut */
+#define APIOBJECT_CAN_HIT_FORCE_OBJECTS 0x40        /* CanHitForceObjects */
+#define APIOBJECT_SHOOT_OPPONENTS 0x80              /* SetShootOpponents */
+#define APIOBJECT_ALWAYS_BACK_FLIP 0x100            /* AlwaysBackFlip */
+#define APIOBJECT_CAN_ATTACK 0x200                  /* CanAttack */
+#define APIOBJECT_UPDATE_SOCK_POS 0x4000            /* UpdateSockPos (also UseCurrentSpeed, RaceOpponent) */
+#define APIOBJECT_IMMUNE_TO_KILL_TERRAIN 0x40000    /* ImmuneToKillTerrain */
+#define APIOBJECT_IMMUNE_TO_BOLTS 0x80000           /* ImmuneToBolts */
+#define APIOBJECT_RESPAWNABLE 0x100000              /* Respawnable, Kill respawn */
+#define APIOBJECT_RESPAWN_AT_ORIGIN 0x200000        /* Respawnable origin, Kill respawn_at_origin */
+#define APIOBJECT_CATCH_UP_FORBIDDEN 0x2000000      /* CatchUpForbidden */
+#define APIOBJECT_CANNOT_DROP_IN 0x4000000          /* CannotDropIn */
+#define APIOBJECT_BOSS 0x8000000                    /* SetBoss */
+#define APIOBJECT_CAN_SHOOT_OBSTRUCTIONS 0x10000000 /* CanShootObstructions */
+#define APIOBJECT_PREFERS_PLAYERS 0x40000000        /* PrefersPlayers */
+#define APIOBJECT_NO_GRAVITY 0x80000000u            /* ApplyGravity FALSE */
+
+/* gameobject_s.flags_ef0: AI script actions. */
+#define APIOBJECT_IGNORE_SHOVE_SYSTEM 0x1           /* IgnoreShoveSystem */
+#define APIOBJECT_CANNOT_BE_SEEN 0x2                /* CannotBeSeen */
+#define APIOBJECT_BOLTS_DONT_GET_DEFLECTED_BACK 0x8 /* SetBoltsDontGetDeflectedBack */
+#define APIOBJECT_DONT_MOVE 0x10                    /* SetDontMove */
+#define APIOBJECT_DONT_SET_STOPPED_FLAG 0x20        /* DontSetStoppedFlag */
+#define APIOBJECT_DEFLECT_PLAYERS_PART 0x100        /* DeflectPlayersPart */
+#define APIOBJECT_DOOMED_ESCAPE_TAKE_DAMAGE 0x800   /* SetDoomedEscapeLocator take_damage */
+#define APIOBJECT_WALK_BACKWARDS 0x8000             /* WalkBackwards */
+#define APIOBJECT_CAN_PULL_LEVERS 0x800000          /* CanPullLevers */
+#define APIOBJECT_NOT_WITH_PARTY 0x1000000          /* NotWithParty */
+#define APIOBJECT_CANNOT_BE_FORCED_BACK 0x10000000  /* CannotBeForcedBack */
+#define APIOBJECT_CAN_TURN 0x20000000               /* CanTurn */
+#define APIOBJECT_CAN_TAKE_OVER 0x40000000          /* SetCanTakeOver */
+
+/* gameobject_s.flags_ef4: AI script actions, the AI update rate UpdateGameObjects keeps and the girl bit. */
+#define APIOBJECT_DONT_AIM_AT 0x1                       /* DontAimAt */
+#define APIOBJECT_CAN_BE_CARRIED 0x2                    /* CanBeCarried */
+#define APIOBJECT_AI_UPDATE_NOW 0x8                     /* this frame is the object's AI update (every interval frames) */
+#define APIOBJECT_AI_EVERY_FRAME 0x10                   /* the AI update interval is 1 */
+#define APIOBJECT_NO_TIME_BASED_UPDATE 0x20             /* UseTimeBasedUpdate FALSE: always every frame */
+#define APIOBJECT_AWKWARD_SHAPE_OVERRIDE 0x80           /* AwkwardShapeOverride */
+#define APIOBJECT_IGNORE_SLIDE_TERRAIN 0x400            /* IgnoreSlideTerrain */
+#define APIOBJECT_GIRL 0x800                            /* from CHARACTER_RUNTIME_IS_A_GIRL (CanPunchGirls, voices) */
+#define APIOBJECT_SPLINE_FOLLOW_TERRAIN 0x1000          /* SplineFollowTerrain */
+#define APIOBJECT_USE_ONE_AT_ONCE 0x2000                /* SetUseOneAtOnce */
+#define APIOBJECT_HELPING_WITH_TRIGGERS 0x20000         /* set by HelpWithTriggers */
+#define APIOBJECT_CAN_HELP_WITH_TRIGGERS 0x40000        /* CanHelpWithTriggers */
+#define APIOBJECT_CAN_COLLIDE_WITH_OBJECTS 0x80000      /* CanCollideWithObjects TRUE */
+#define APIOBJECT_USE_CURRENT_SPEED 0x200000            /* UseCurrentSpeed, RaceOpponent */
+#define APIOBJECT_IGNORE_LAST_SAFE_PATH_POS 0x1000000   /* IgnoreLastSafePathPos */
+#define APIOBJECT_USE_BIG_JUMP_TO_JUMP 0x40000000       /* UseBigJumpToJump */
+#define APIOBJECT_IGNORE_TURN_AROUND_SPLINE 0x80000000u /* IgnoreTurnAroundSpline */
+
 /* gameobject_s.character_context: the index into CInfo (PCContextInfoTable[1 + context]), whose rows name them. */
 #define CHARACTER_CONTEXT_NONE (-1)
 #define CHARACTER_CONTEXT_JUMP 0

@@ -54,7 +54,7 @@ void CheckForPlayersTurnedOff(void) {
             i32 target_index;
             for (target_index = 2; target_index < 8; ++target_index) {
                 GAMEOBJECT *target = Player[target_index];
-                if (target == NULL || (target->tag_flags & 2) || (target->portal_flags & 0x4000000) ||
+                if (target == NULL || (target->tag_flags & 2) || (target->portal_flags & APIOBJECT_CANNOT_DROP_IN) ||
                     target->character_context == CHARACTER_CONTEXT_DROP_OUT || target->character_context == CHARACTER_CONTEXT_BIG_JUMP) {
                     continue;
                 }
@@ -348,8 +348,9 @@ i32 PlayersDropInOut(void) {
         }
         object->model_draw_result = 1;
         join = VehicleArea != 0 && object->character_context != CHARACTER_CONTEXT_DROP_OUT;
-        if (!join && CUTSTOPGAME == 0 && MiniCutCam != 2 && !(object->tag_flags & 2) && !(object->portal_flags & 0x4000000) &&
-            object->character_context != CHARACTER_CONTEXT_DROP_OUT && object->character_context != CHARACTER_CONTEXT_BIG_JUMP) {
+        if (!join && CUTSTOPGAME == 0 && MiniCutCam != 2 && !(object->tag_flags & 2) &&
+            !(object->portal_flags & APIOBJECT_CANNOT_DROP_IN) && object->character_context != CHARACTER_CONTEXT_DROP_OUT &&
+            object->character_context != CHARACTER_CONTEXT_BIG_JUMP) {
             if (DROPIN_SCREEN_INSIDE(object) &&
                 (force_join || object->unknown_281 != 0 || object->id == (u16)id_SPEEDERBIKE ||
                  (object->jump_variant_state == 1 && object->character_data->game_character->unknown_028 > 0.0f))) {
@@ -367,9 +368,9 @@ i32 PlayersDropInOut(void) {
                     continue;
                 }
                 tag = VehicleArea != 0 && object->character_context != CHARACTER_CONTEXT_DROP_OUT;
-                if (!tag && CUTSTOPGAME == 0 && MiniCutCam != 2 && !(target->tag_flags & 2) && !(target->portal_flags & 0x4000000) &&
-                    target->character_context != CHARACTER_CONTEXT_DROP_OUT && target->character_context != CHARACTER_CONTEXT_BIG_JUMP &&
-                    target->model_draw_result != 0 &&
+                if (!tag && CUTSTOPGAME == 0 && MiniCutCam != 2 && !(target->tag_flags & 2) &&
+                    !(target->portal_flags & APIOBJECT_CANNOT_DROP_IN) && target->character_context != CHARACTER_CONTEXT_DROP_OUT &&
+                    target->character_context != CHARACTER_CONTEXT_BIG_JUMP && target->model_draw_result != 0 &&
                     (target->unknown_281 != 0 ||
                      (target->jump_variant_state == 1 && target->character_data->game_character->unknown_028 > 0.0f)) &&
                     DROPIN_SCREEN_INSIDE(target)) {
@@ -441,7 +442,7 @@ i32 PlayersDropInOut(void) {
                 continue;
             }
             if ((object->model_draw_result != 0 || DROPIN_SCREEN_OUTSIDE(object)) && !(object->tag_flags & 2) &&
-                !(object->portal_flags & 0x4000000)) {
+                !(object->portal_flags & APIOBJECT_CANNOT_DROP_IN)) {
                 drop_back_in_timer = 0.000001f;
             }
         } else if (Player[0] != NULL && (Player[0]->flags_1fc_word & APIOBJECT_FLAG_PLAYER_ACTIVE) && Player[1] != NULL &&

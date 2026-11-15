@@ -1051,10 +1051,10 @@ extern "C" void UpdatePushBlocks(void *world_ptr, void *, f32) {
         }
         if (p->pushing_object != NULL) {
             if (p->platform_id != -1 && (p->packed_state_flags & 9u) != 0) {
-                p->pushing_object->flags_ef0 |= 1u;
+                p->pushing_object->flags_ef0 |= APIOBJECT_IGNORE_SHOVE_SYSTEM;
                 AddShoveObject(&p->special, static_cast<i16>(p->platform_id));
             } else {
-                p->pushing_object->flags_ef0 &= ~1u;
+                p->pushing_object->flags_ef0 &= ~APIOBJECT_IGNORE_SHOVE_SYSTEM;
             }
         }
         if ((p->packed_state_flags & 0x20u) == 0 && (p->packed_state_flags & 0x200u) == 0) {

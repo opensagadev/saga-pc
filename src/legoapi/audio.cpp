@@ -307,7 +307,7 @@ void PlayJumpSfx(GAMEOBJECT *object, i32 type) {
         sfx = GameAudio->sfx_ids[0];
     }
     if (sfx != -1) {
-        if ((object->flags_1fc & APIOBJECT_FLAG_PLAYER_ACTIVE) == 0 && (object->portal_flags & 0x08000000) == 0) {
+        if ((object->flags_1fc & APIOBJECT_FLAG_PLAYER_ACTIVE) == 0 && (object->portal_flags & APIOBJECT_BOSS) == 0) {
             PlaySfxByIdAndSetVolume(sfx, &object->lower_position, 0.5f);
         } else {
             PlaySfxById(sfx, &object->lower_position);
@@ -355,7 +355,7 @@ extern "C" {
             }
         }
         if (sfx != -1) {
-            if ((object->flags_1fc_word & APIOBJECT_FLAG_PLAYER_ACTIVE) != 0 || (object->portal_flags & 0x8000000) != 0) {
+            if ((object->flags_1fc_word & APIOBJECT_FLAG_PLAYER_ACTIVE) != 0 || (object->portal_flags & APIOBJECT_BOSS) != 0) {
                 PlaySfxById(sfx, &object->lower_position);
             } else {
                 PlaySfxByIdAndSetVolume(sfx, &object->lower_position, 0.5f);
@@ -402,7 +402,7 @@ extern "C" {
             }
         }
         if (sound != -1) {
-            if ((object->flags_1fc_word & APIOBJECT_FLAG_PLAYER_ACTIVE) != 0 || (object->portal_flags & 0x8000000) != 0) {
+            if ((object->flags_1fc_word & APIOBJECT_FLAG_PLAYER_ACTIVE) != 0 || (object->portal_flags & APIOBJECT_BOSS) != 0) {
                 PlaySfxById(sound, &object->lower_position);
             } else {
                 PlaySfxByIdAndSetVolume(sound, &object->lower_position, 0.5f);
@@ -432,7 +432,7 @@ extern "C" {
                 (CHARACTER_MODEL_DROID | CHARACTER_MODEL_VEHICLE | CHARACTER_MODEL_MINIKIT | CHARACTER_MODEL_BEAST)) {
                 return;
             }
-            if (object->flags_ef4 & 0x800) {
+            if (object->flags_ef4 & APIOBJECT_GIRL) {
                 sfx = GameAudio->sfx_ids[0x14];
             } else {
                 sfx = GameAudio->sfx_ids[0x15];
@@ -453,7 +453,7 @@ extern "C" {
                 (CHARACTER_MODEL_DROID | CHARACTER_MODEL_VEHICLE | CHARACTER_MODEL_MINIKIT | CHARACTER_MODEL_BEAST)) {
                 goto extra;
             }
-            if (object->flags_ef4 & 0x800) {
+            if (object->flags_ef4 & APIOBJECT_GIRL) {
                 sfx = GameAudio->sfx_ids[0x16];
             } else {
                 sfx = GameAudio->sfx_ids[0x17];
@@ -483,7 +483,7 @@ extern "C" void PlayDieSfx(GAMEOBJECT *object) {
         sfx = GameAudio->sfx_ids[0x1a];
     } else if ((object->character_data->model_flags & CHARACTER_MODEL_BEAST) != 0) {
         sfx = -1;
-    } else if ((object->flags_ef4 & 0x800) != 0) {
+    } else if ((object->flags_ef4 & APIOBJECT_GIRL) != 0) {
         sfx = GameAudio->sfx_ids[0x1b];
     } else {
         sfx = GameAudio->sfx_ids[0x1c];

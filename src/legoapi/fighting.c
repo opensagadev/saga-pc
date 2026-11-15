@@ -205,7 +205,7 @@ void WeaponOutCode(GAMEOBJECT *object) {
 void KeepWeaponOut(GAMEOBJECT *object) {
     object->weapon_scale = 1.0f;
     object->flags_e20 |= APIOBJECT_WEAPON_OUT;
-    object->portal_flags |= 0x10;
+    object->portal_flags |= APIOBJECT_KEEP_WEAPON_OUT;
     object->unknown_e33 = 0;
 }
 
@@ -329,7 +329,7 @@ void WeaponInCode(GAMEOBJECT *object) {
 void KeepWeaponIn(GAMEOBJECT *object) {
     object->flags_e20 &= ~APIOBJECT_WEAPON_OUT;
     object->weapon_scale = 0.0f;
-    object->portal_flags &= ~0x10u;
+    object->portal_flags &= ~APIOBJECT_KEEP_WEAPON_OUT;
     object->unknown_e33 = 0;
 }
 

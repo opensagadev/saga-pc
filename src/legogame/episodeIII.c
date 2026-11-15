@@ -562,7 +562,7 @@ i32 Action_BoulderSection(AISYS_PC *system, AISCRIPTPROCESS *processor, AIPACKET
             object->pad->buttons_pressed |= GAMEPAD_TOGGLELEFT;
         }
     }
-    object->portal_flags |= 0x10;
+    object->portal_flags |= APIOBJECT_KEEP_WEAPON_OUT;
     nearest_distance = processor->action_data_4 * processor->action_data_4;
     /* MATCH-EXCEPTION: the original scans three entries of the two-entry boulder_part array; the third read is
        the first word of the next global (vader_a). */

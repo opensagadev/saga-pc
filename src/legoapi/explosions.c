@@ -196,9 +196,9 @@ void UpdateExplosion_Generic(EXPLOSION_PC *explosion) {
             }
             if ((object->flags_1fc & APIOBJECT_FLAG_PLAYER_ACTIVE) != 0 && Player_HasInvincibility(target)) {
                 damage = 0;
-            } else if ((explosion->flags & 0x800) != 0 && (target->portal_flags & 0x8000000) == 0) {
+            } else if ((explosion->flags & 0x800) != 0 && (target->portal_flags & APIOBJECT_BOSS) == 0) {
                 damage = -1;
-            } else if ((explosion->flags & 0x20) != 0 && (target->portal_flags & 0x8000000) == 0 && target->current_hp > 0) {
+            } else if ((explosion->flags & 0x20) != 0 && (target->portal_flags & APIOBJECT_BOSS) == 0 && target->current_hp > 0) {
                 damage = -1;
             } else {
                 damage = explosion->unknown_32;

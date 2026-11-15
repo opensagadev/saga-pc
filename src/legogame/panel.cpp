@@ -573,7 +573,7 @@ extern "C" {
         f32 start_x;
         if (SuperStory != 0 && WORLD->current_level == VADERC_LDATA && object->unknown_107e == 10) {
             two_rows = 1;
-        } else if ((object->portal_flags & 0x08000000) != 0) {
+        } else if ((object->portal_flags & APIOBJECT_BOSS) != 0) {
             two_rows = DrawBossHitPointsTwoRows != 0;
             DrawBossHitPointsTwoRows = 0;
         } else {

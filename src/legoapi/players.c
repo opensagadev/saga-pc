@@ -939,7 +939,7 @@ void ResetPlayer(GAMEOBJECT *object, i32 reset_moves, NUVEC *position, i32 snap_
     // emits a memory and.
     object->flags_1f8 |= 0x100;
     object->flags_1f8 ^= 0x100;
-    object->flags_e20 |= 0x8000;
+    object->flags_e20 |= APIOBJECT_DETONATOR_WAIT_RELEASE;
     object->directional_seek_multiplier = 1.0f;
     object->dead = 0;
     object->wall_run_state = 0;

@@ -199,8 +199,8 @@ static void BlockadeRunnerDEjectCreature(i32 eject_index) {
         model = models[qrand() / 0x4000];
         LevGameObject[i] = AddDynamicCreature(model, &BlockadeRunnerDEjectVec[eject_index], 0, "default", NULL, NULL, 0, NULL, NULL, 0, 0);
         if (LevGameObject[i] != NULL) {
-            LevGameObject[i]->flags_ef4 = (LevGameObject[i]->flags_ef4 & ~0x20) | ((test_tb & 1) << 5);
-            LevGameObject[i]->flags_ef0 |= 0x10;
+            LevGameObject[i]->flags_ef4 = (LevGameObject[i]->flags_ef4 & ~APIOBJECT_NO_TIME_BASED_UPDATE) | ((test_tb & 1) << 5);
+            LevGameObject[i]->flags_ef0 |= APIOBJECT_DONT_MOVE;
             LevGameObject[i]->ai_packet.animation_override_from = 0xe9;
             LevGameObject[i]->ai_packet.animation_override_to = 5;
             LevGameObject[i]->flags_ef0 |= 0x4000000;

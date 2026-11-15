@@ -52,7 +52,7 @@ i32 NoLayerKill(GAMEOBJECT *object) {
 
 GAMEOBJECT *BossKilled(i32 character_id) {
     GAMEOBJECT *object = FindGameObject(character_id, APIOBJECT_SIDE_BADDIE, 1, 1, 0);
-    if (object != NULL && (object->portal_flags & 0x08000000) != 0) {
+    if (object != NULL && (object->portal_flags & APIOBJECT_BOSS) != 0) {
         if (object->dead != 0 || object->current_hp == 0) {
             return object;
         }

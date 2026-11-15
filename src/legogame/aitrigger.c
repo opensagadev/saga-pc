@@ -403,7 +403,7 @@ void AITriggerSetSysProcess(TRIGGER_SYSTEM *system) {
                         if (character_mask != 0 && (U64_PAIR(&object->ai_packet.route_mask_low) & character_mask) == 0) {
                             continue;
                         }
-                        if ((object->flags_ef4 & 0x40000) == 0) {
+                        if ((object->flags_ef4 & APIOBJECT_CAN_HELP_WITH_TRIGGERS) == 0) {
                             continue;
                         }
                         if (set->occupied == 0 && object->active_trigger_set != set) {
@@ -411,7 +411,7 @@ void AITriggerSetSysProcess(TRIGGER_SYSTEM *system) {
                         }
                         if (FreePlay == 0) {
                             gizmo = set->gizmos[index];
-                            if (gizmo->type_id == lever_gizmotype_id && (Obj[object_index].flags_ef0 & 0x800000) == 0) {
+                            if (gizmo->type_id == lever_gizmotype_id && (Obj[object_index].flags_ef0 & APIOBJECT_CAN_PULL_LEVERS) == 0) {
                                 continue;
                             }
                             if (gizmo->type_id == force_gizmotype_id) {

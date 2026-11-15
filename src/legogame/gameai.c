@@ -331,7 +331,7 @@ void GameCreatureOpponentSelection(AISYS_PC *system, i32 count, APIOBJECT **obje
                     if (baddy == goody || OPPONENT_PACKET(baddy->ai)->pending_opponent == goody) {
                         continue;
                     }
-                    if (baddy->owner->flags_ef0 & 2) {
+                    if (baddy->owner->flags_ef0 & APIOBJECT_CANNOT_BE_SEEN) {
                         OPPONENT_OBJECT(goody)->awareness &= ~((u64)1 << baddy->object_id);
                     } else if (OPPONENT_OBJECT(goody)->awareness & ((u64)1 << baddy->object_id)) {
                         distance = NuVecDist(&baddy->position, &goody->position, &difference);
@@ -347,7 +347,7 @@ void GameCreatureOpponentSelection(AISYS_PC *system, i32 count, APIOBJECT **obje
                             awareness |= OPPONENT_OBJECT(goody)->awareness;
                         }
                     }
-                    if (goody->owner->flags_ef0 & 2) {
+                    if (goody->owner->flags_ef0 & APIOBJECT_CANNOT_BE_SEEN) {
                         OPPONENT_OBJECT(baddy)->awareness &= ~((u64)1 << goody->object_id);
                     } else if (OPPONENT_GAME((baddy->owner))->alert_target == goody) {
                         OPPONENT_OBJECT(baddy)->awareness |= (u64)1 << goody->object_id;
@@ -400,7 +400,7 @@ void GameCreatureOpponentSelection(AISYS_PC *system, i32 count, APIOBJECT **obje
                         }
                         if (OPPONENT_OBJECT(baddy)->awareness & ((u64)1 << goody->object_id)) {
                             if (OPPONENT_PACKET(baddy->ai)->pending_opponent != NULL) {
-                                if ((goody->flags_low & 0x80) && (baddy->owner->portal_flags & 0x40000000)) {
+                                if ((goody->flags_low & 0x80) && (baddy->owner->portal_flags & APIOBJECT_PREFERS_PLAYERS)) {
                                     if (!(OPPONENT_PACKET(baddy->ai)->pending_opponent->flags_low & 0x80) ||
                                         metric < OPPONENT_PACKET(baddy->ai)->pending_opponent_metric) {
                                         best_distance = distance;
@@ -1790,7 +1790,7 @@ i32 oneAtOnce_CanAttack(GAMEOBJECT *object, GAMEOBJECT *opponent) {
     if (object == NULL) {
         return 0;
     }
-    if ((object->flags_ef4 & 0x2000u) == 0) {
+    if ((object->flags_ef4 & APIOBJECT_USE_ONE_AT_ONCE) == 0) {
         return 1;
     }
     if (object->one_at_once_player == 0xff) {
@@ -1907,7 +1907,7 @@ void oneAtOnce_MaintainArray(void) {
         object = &Obj[index];
         if (object == NULL || (object->flags_1fc_word & APIOBJECT_FLAG_IN_USE) == 0 ||
             (object->flags_1fc_word & APIOBJECT_FLAG_CHARACTER) == 0 || object->ai_packet.opponent == NULL ||
-            (object->flags_ef4 & 0x2000) == 0) {
+            (object->flags_ef4 & APIOBJECT_USE_ONE_AT_ONCE) == 0) {
             continue;
         }
         old_player = object->one_at_once_player;
@@ -2364,7 +2364,7 @@ void GameAIProcess(void) {
         if (!((object->flags_1fc_word & APIOBJECT_FLAG_CHARACTER) != 0 && object->dead == 0)) {
             continue;
         }
-        object->flags_ef0 &= ~0x8000u;
+        object->flags_ef0 &= ~APIOBJECT_WALK_BACKWARDS;
         object->flags_ef4 &= 0xfffc3fffu;
         object->ai_frame_event = 0;
         if ((object->use_action_frames != 0)) {
@@ -2494,7 +2494,7 @@ void GameAIProcess(void) {
                             object->character_context == CHARACTER_CONTEXT_TIGHTROPE ||
                             object->character_context == CHARACTER_CONTEXT_FLOAT;
             if (object->character_context == CHARACTER_CONTEXT_DEACTIVATED) {
-                if ((object->ai_update_flags & 8) != 0) {
+                if ((object->ai_update_flags & APIOBJECT_AI_UPDATE_NOW) != 0) {
                     AISysUpdateCharacterPathPos(WORLD->ai_sys, (APIOBJECT *)object, &object->ai_packet, ground_checks,
                                                 object->ai_elapsed_time);
                 }
@@ -2543,7 +2543,7 @@ void GameAIProcess(void) {
                 object->ai_packet.opponent_metric = 1.0e9f;
                 object->ai_packet.opponent = NULL;
             }
-            if ((object->ai_update_flags & 8) != 0) {
+            if ((object->ai_update_flags & APIOBJECT_AI_UPDATE_NOW) != 0) {
                 AISysUpdateCharacterPathPos(WORLD->ai_sys, (APIOBJECT *)object, &object->ai_packet, ground_checks, object->ai_elapsed_time);
             }
             continue;
@@ -2559,7 +2559,7 @@ void GameAIProcess(void) {
             object->pad->buttons_pressed = 0;
         }
         awareness |= (u64)object->hostility_mask[0] | ((u64)object->hostility_mask[1] << 32);
-        if ((ai_update_flags & 8) != 0) {
+        if ((ai_update_flags & APIOBJECT_AI_UPDATE_NOW) != 0) {
             combat_flags = object->portal_flags;
             combat_flags = (combat_flags & ~0x420u) | ((combat_flags & 0x200u) << 1);
             object->portal_flags = combat_flags;
@@ -2585,7 +2585,7 @@ void GameAIProcess(void) {
             if (object->character_context == CHARACTER_CONTEXT_BALLOONING) {
                 SetBallooningHeight(object, object->ai_packet.movement_destination.y);
             }
-            if ((WORLD->current_level == JEDI_B_LDATA) && object->id == (u16)id_JANGOFETT && (object->portal_flags & 0x8000000u) != 0 &&
+            if ((WORLD->current_level == JEDI_B_LDATA) && object->id == (u16)id_JANGOFETT && (object->portal_flags & APIOBJECT_BOSS) != 0 &&
                 object->hover_height_override != 1.0e9f && object->jump_variant_state == 0) {
                 object->jump_variant_state = 1;
             }
@@ -2716,7 +2716,7 @@ void GameAIProcess(void) {
         } else {
             object->flags_1fc_word &= ~APIOBJECT_FLAG_CAN_FIRE;
             defend = 0;
-            if ((object->combat_flags & 0x80) != 0 && (APIOBJECT *)object->ai_packet.opponent != NULL) {
+            if ((object->combat_flags & APIOBJECT_SHOOT_OPPONENTS) != 0 && (APIOBJECT *)object->ai_packet.opponent != NULL) {
                 bolt = BoltType_FindByID(0, WORLD);
                 if (bolt->unknown_10 * bolt->unknown_14 > object->ai_packet.opponent_metric) {
                     NuVecSub(&direction, &object->ai_packet.opponent->collision_position, &object->collision_position);
@@ -2735,7 +2735,7 @@ void GameAIProcess(void) {
             if (FreePlay != 0 && (object->flags_1f8 & APIOBJECT_CREATURE) == 0 && object->id == (u16)id_DROIDEKA) {
                 object->pad->buttons_pressed |= GAMEPAD_TOGGLERIGHT;
             }
-            if ((object->combat_flags & 2) != 0 &&
+            if ((object->combat_flags & APIOBJECT_CAN_DEFEND) != 0 &&
                 ((object->flags_1f8 & APIOBJECT_CREATURE) != 0 || party_under_cover == 0 || (object->flags_ef3 & 1) != 0) &&
                 ((CharCategory_IsCategory(object, 0) != 0 || object->id == (u16)id_GRIEVOUS || object->id == (u16)id_BODYGUARD ||
                   object->id == (u16)id_IMPERIALGUARD) != 0 ||
@@ -2757,7 +2757,7 @@ void GameAIProcess(void) {
                     object->combat_flags4 &= ~0x20;
                 }
             }
-            if (0 != (object->combat_flags & 8) &&
+            if (0 != (object->combat_flags & APIOBJECT_CAN_USE_WEAPON) &&
                 (defend || (object->combat_flags & 0x30) != 0 ||
                  ((object->id == (u16)id_YODA || object->id == (u16)id_YODAGHOST) &&
                   (object->flags_1fc_word & APIOBJECT_FLAG_PLAYER_ACTIVE) == 0 && object->player_index != -1))) {

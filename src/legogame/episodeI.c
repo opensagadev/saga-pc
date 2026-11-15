@@ -1351,8 +1351,8 @@ i32 Action_Sebulba(AISYS_PC *unused0, AISCRIPTPROCESS *process, AIPACKET *packet
 
     if (first_time != 0) {
         NuSpecialFind(vehicle_scene, &SebulbaMineSpecial, "mine", 1);
-        object->portal_flags |= 0x4000;
-        object->flags_ef4 |= 0x200000;
+        object->portal_flags |= APIOBJECT_UPDATE_SOCK_POS;
+        object->flags_ef4 |= APIOBJECT_USE_CURRENT_SPEED;
         object->ai_packet.movement_stopped = 1;
         object->movement_speed_scale = 1.0f;
     }
@@ -2411,7 +2411,7 @@ i32 Action_CreatePod(AISYS_PC *system, AISCRIPTPROCESS *process, AIPACKET *packe
     pod->object->movement_mode = 5;
     if (pacemaker != 0) {
         PodPacemaker = pod->object;
-        PodPacemaker->flags_ef4 |= 0x20;
+        PodPacemaker->flags_ef4 |= APIOBJECT_NO_TIME_BASED_UPDATE;
     }
     if (damaged != 0) {
         pod->object->flags_ef4 |= 0x08000000;

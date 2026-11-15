@@ -358,7 +358,7 @@ void JumpCode(GAMEOBJECT *object, i32 jump_pressed, i32 jump_held, u32 animation
 
     player_flag = (object->flags_1fc_word >> 7) & 1;
     flip_kind = 0;
-    if (player_flag != 0 || (object->portal_flags & 0x100) != 0) {
+    if (player_flag != 0 || (object->portal_flags & APIOBJECT_ALWAYS_BACK_FLIP) != 0) {
         if (JumpBackFlipAction != -1 && object->character_model->model_data_b[JumpBackFlipAction] != NULL) {
             flip_kind = 1;
         } else if ((animation_set & 2) != 0 && -1 != LEGOACT_FLIP && object->character_model->model_data_b[LEGOACT_FLIP] != NULL) {
@@ -807,7 +807,7 @@ void JumpCode(GAMEOBJECT *object, i32 jump_pressed, i32 jump_held, u32 animation
             }
         } else {
             if ((animation_set & 0x80) == 0 && LEGOCONTEXT_JUMP != -1 && object->fall_acceleration_timer <= 0.0f &&
-                (jump_pressed != 0 || ((object->portal_flags & 0x100) != 0 && flip_kind != 0)) &&
+                (jump_pressed != 0 || ((object->portal_flags & APIOBJECT_ALWAYS_BACK_FLIP) != 0 && flip_kind != 0)) &&
                 (object->unknown_281 != 0 || aux->ground_grace_timer > 0.0f) &&
                 (U64_PAIR(&CInfo[object->character_context].flags) & 0x1000) != 0 &&
                 ((animation_set & 4) == 0 ||
@@ -827,7 +827,8 @@ void JumpCode(GAMEOBJECT *object, i32 jump_pressed, i32 jump_held, u32 animation
                 if (aux->jump_reentry_timer <= 0.0f) {
                     object->jump_sequence = 0;
                 }
-                if (flip_kind == 0 || (!(object->delayed_turn_timer > 0.0f) && force_flip != 1 && (object->portal_flags & 0x100) == 0)) {
+                if (flip_kind == 0 ||
+                    (!(object->delayed_turn_timer > 0.0f) && force_flip != 1 && (object->portal_flags & APIOBJECT_ALWAYS_BACK_FLIP) == 0)) {
                     if ((animation_set & 4) != 0) {
                         object->action_movement_state = 5;
                     } else {
@@ -970,7 +971,7 @@ void BigJumpCode(GAMEOBJECT *object) {
                     object->context_duration = 1.0f;
                 }
                 object->context_timer = 0.0f;
-                if ((object->portal_flags & 0x8000000) != 0 || (object->flags_ef0 & 0x2000) != 0) {
+                if ((object->portal_flags & APIOBJECT_BOSS) != 0 || (object->flags_ef0 & 0x2000) != 0) {
                     GameCam_Judder(GameCam, -0.3f, 0, &object->collision_position);
                     PlayLandSfx(object, 3, 0);
                     NewRumbleAllPlayers(0.6f, 0.0f, 0, 0);
