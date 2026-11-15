@@ -818,7 +818,9 @@ def units():
 
 def headers_hash():
     digest = hashlib.sha256()
-    for path in sorted((ROOT / "src").rglob("*.h")):
+    # The vendored Ogg/Vorbis headers are part of every unit that includes them (nustream.cpp, oggreader.cpp),
+    # like declscan's hash: without them a cached parse outlives a change to the pinned sources.
+    for path in sorted((ROOT / "src").rglob("*.h")) + sorted((ROOT / "lib").rglob("*.h")):
         digest.update(path.as_posix().encode() + path.read_bytes())
     return digest.hexdigest()
 
