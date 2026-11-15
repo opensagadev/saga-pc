@@ -666,13 +666,13 @@ void MusicPreSeek(i32 track) {
     if (NOSOUND != 0 || NOMUSIC != 0 || track < 0) {
         return;
     }
-    if (track <= SfxFileCount - 1 && (Music.state == 4 || Music.state == 0) &&
+    if (track <= SfxFileCount - 1 && (Music.state == MUSIC_PLAYBACK_PLAYING || Music.state == MUSIC_PLAYBACK_STOPPED) &&
         (Music.requested_track != track || Music.pause_requested != 0)) {
         Music.resume_track = (i16)track;
         Music.queued_track = (i16)track;
         Music.requested_track = (i16)track;
         (&Music.unknown_0012)[Music.primary_stream] = 0;
-        if (Music.transition_frames < 0x40 && Music.state != 0) {
+        if (Music.transition_frames < 0x40 && Music.state != MUSIC_PLAYBACK_STOPPED) {
             Music.pause_requested = 1;
         } else {
             Music.pause_requested = 0;
@@ -680,12 +680,14 @@ void MusicPreSeek(i32 track) {
             Music.seek_offset = 0.0f;
         }
     }
-    if (track <= SfxFileCount - 1 && (Music.state == 11 || Music.state == 12 || Music.state == 13) &&
+    if (track <= SfxFileCount - 1 &&
+        (Music.state == MUSIC_PLAYBACK_DUAL_STREAM || Music.state == MUSIC_PLAYBACK_DUAL_STREAM_THEN_STOP ||
+         Music.state == MUSIC_PLAYBACK_DUAL_STREAM_PENDING) &&
         (Music.current_track != track || Music.pause_requested != 0)) {
         Music.current_track = (i16)track;
         Music.queued_track = (i16)track;
         Music.requested_track = (i16)track;
-        Music.state = 11;
+        Music.state = MUSIC_PLAYBACK_DUAL_STREAM;
         (&Music.unknown_0012)[Music.primary_stream] = 0;
         if (Music.transition_frames >= 0x40) {
             Music.pause_requested = 0;
@@ -704,15 +706,16 @@ void RestoreGameMusic(void) {
             Music.restore_requested = 1;
             return;
         }
-        if (Music.state != 11 && Music.state != 12 && Music.state != 13) {
+        if (Music.state != MUSIC_PLAYBACK_DUAL_STREAM && Music.state != MUSIC_PLAYBACK_DUAL_STREAM_THEN_STOP &&
+            Music.state != MUSIC_PLAYBACK_DUAL_STREAM_PENDING) {
             NuSound3ResumeStereoStream(Music.primary_stream);
             switch (Music.state) {
-                case 5:
-                case 6:
-                case 7:
-                case 8:
-                case 9:
-                case 10:
+                case MUSIC_PLAYBACK_SWAP_FADE:
+                case MUSIC_PLAYBACK_SWAP_FADE_FAST:
+                case MUSIC_PLAYBACK_CROSSFADE:
+                case MUSIC_PLAYBACK_CROSSFADE_START:
+                case MUSIC_PLAYBACK_CROSSFADE_FAST:
+                case MUSIC_PLAYBACK_CROSSFADE_FAST_START:
                     NuSound3ResumeStereoStream(1 - Music.primary_stream);
                     break;
             }
@@ -725,29 +728,29 @@ void SoundUpdate(f32 frame_time) {
         return;
     }
     switch (Music.state) {
-        case 8:
-        case 10:
+        case MUSIC_PLAYBACK_CROSSFADE_START:
+        case MUSIC_PLAYBACK_CROSSFADE_FAST_START:
             if (NuSoundGetStereoStreamStatus(Music.primary_stream) != 2) {
-                Music.state = 7;
+                Music.state = MUSIC_PLAYBACK_CROSSFADE;
             }
             break;
-        case 5:
-        case 6:
-        case 7:
-        case 9:
-            if (Music.state == 9 || Music.state == 6) {
+        case MUSIC_PLAYBACK_SWAP_FADE:
+        case MUSIC_PLAYBACK_SWAP_FADE_FAST:
+        case MUSIC_PLAYBACK_CROSSFADE:
+        case MUSIC_PLAYBACK_CROSSFADE_FAST:
+            if (Music.state == MUSIC_PLAYBACK_CROSSFADE_FAST || Music.state == MUSIC_PLAYBACK_SWAP_FADE_FAST) {
                 Music.transition = frame_time + frame_time + Music.transition;
             } else {
                 Music.transition = frame_time * 0.2f + Music.transition;
             }
             if (Music.transition >= 1.0f) {
                 Music.transition = 1.0f;
-                if (Music.state == 5 || Music.state == 6) {
+                if (Music.state == MUSIC_PLAYBACK_SWAP_FADE || Music.state == MUSIC_PLAYBACK_SWAP_FADE_FAST) {
                     NuSound3PauseStereoStream(1 - Music.primary_stream);
                 } else {
                     NuSound3StopStereoStream(1 - Music.primary_stream);
                 }
-                Music.state = 4;
+                Music.state = MUSIC_PLAYBACK_PLAYING;
                 Music.transition_frames = 0;
             }
             if (Music.current_track != -1) {
@@ -759,9 +762,9 @@ void SoundUpdate(f32 frame_time) {
                                         (i32)((f32)SfxFileTable[Music.queued_track].index * (1.0f - Music.transition) * MusicVolume));
             }
             break;
-        case 11:
-        case 12:
-        case 13:
+        case MUSIC_PLAYBACK_DUAL_STREAM:
+        case MUSIC_PLAYBACK_DUAL_STREAM_THEN_STOP:
+        case MUSIC_PLAYBACK_DUAL_STREAM_PENDING:
             if ((Music.track_data != NULL && (((INSTNUGCUTSCENE *)Music.track_data)->flags_88 & 2) != 0) ||
                 NuSoundGetStereoStreamStatus(1 - Music.primary_stream) == 2) {
                 Music.resume_frames = 0;
@@ -769,14 +772,14 @@ void SoundUpdate(f32 frame_time) {
                 if (Music.resume_frames < 0x40) {
                     Music.resume_frames++;
                 }
-                if (Music.resume_frames > 8 && Music.current_track != -1 && Music.state != 13 &&
+                if (Music.resume_frames > 8 && Music.current_track != -1 && Music.state != MUSIC_PLAYBACK_DUAL_STREAM_PENDING &&
                     NuSoundGetStereoStreamStatus(Music.primary_stream) != 2 && Music.pause_requested == 0) {
-                    if (Music.state == 12) {
-                        Music.state = 0;
+                    if (Music.state == MUSIC_PLAYBACK_DUAL_STREAM_THEN_STOP) {
+                        Music.state = MUSIC_PLAYBACK_STOPPED;
                         NuSound3StopStereoStream(1 - Music.primary_stream);
                         NuSound3StopStereoStream(Music.primary_stream);
                     } else {
-                        Music.state = 4;
+                        Music.state = MUSIC_PLAYBACK_PLAYING;
                         NuSound3StopStereoStream(1 - Music.primary_stream);
                         NuSound3ResumeStereoStream(Music.primary_stream);
                     }
@@ -796,7 +799,7 @@ void SoundUpdate(f32 frame_time) {
                 }
             }
             break;
-        case 4:
+        case MUSIC_PLAYBACK_PLAYING:
             if (NuSoundGetStereoStreamStatus(Music.secondary_stream) != 2) {
                 if (Music.transition_frames < 0x80) {
                     Music.transition_frames++;
@@ -830,7 +833,7 @@ void SoundStopMusic(void) {
         NuSound3StopStereoStream(1);
 
         Music.transition = 0.0f;
-        Music.state = 0;
+        Music.state = MUSIC_PLAYBACK_STOPPED;
         Music.requested_track = -1;
         Music.current_track = -1;
         Music.queued_track = -1;
@@ -1436,7 +1439,7 @@ i32 GetOppMusicId(void) {
 void SetMusicVolume(f32 volume) {
     if (NOSOUND == 0 && NOMUSIC == 0) {
         MusicVolume = volume;
-        if (Music.state == 4) {
+        if (Music.state == MUSIC_PLAYBACK_PLAYING) {
             NuSound3SetStreamVolume(Music.primary_stream, (i32)((f32)SfxFileTable[Music.current_track].index * volume));
         }
     }
@@ -1451,7 +1454,7 @@ i32 GetCurPreSeek(void) {
 }
 
 void ResetPreSeek(void) {
-    if (Music.state == 11) {
+    if (Music.state == MUSIC_PLAYBACK_DUAL_STREAM) {
         Music.current_track = -1;
     } else {
         Music.queued_track = -1;
@@ -1480,12 +1483,13 @@ void MusicSeekOffset(i32 track, f32 seek_offset) {
     if (track < 0) {
         return;
     }
-    if (track <= SfxFileCount - 1 && (Music.state == 11 || Music.state == 12 || Music.state == 13)) {
+    if (track <= SfxFileCount - 1 && (Music.state == MUSIC_PLAYBACK_DUAL_STREAM || Music.state == MUSIC_PLAYBACK_DUAL_STREAM_THEN_STOP ||
+                                      Music.state == MUSIC_PLAYBACK_DUAL_STREAM_PENDING)) {
         if (Music.current_track != track || Music.pause_requested != 0) {
             Music.current_track = (i16)track;
             Music.queued_track = (i16)track;
             Music.requested_track = -1;
-            Music.state = 11;
+            Music.state = MUSIC_PLAYBACK_DUAL_STREAM;
             (&Music.unknown_0012)[Music.primary_stream] = 0;
             if (Music.transition_frames >= 0x40) {
                 Music.pause_requested = 0;
@@ -1502,7 +1506,7 @@ void MusicSeekOffset(i32 track, f32 seek_offset) {
         Music.current_track = (i16)track;
         Music.queued_track = (i16)track;
         Music.requested_track = (i16)track;
-        Music.state = 4;
+        Music.state = MUSIC_PLAYBACK_PLAYING;
         Music.pause_requested = 0;
         Music.transition_frames = 0;
         (&Music.unknown_0012)[Music.primary_stream] = 0;
@@ -1545,12 +1549,12 @@ i32 PlayCutMusic(i32 track, i32 state, void *context) {
         Music.transition = 1.0f;
         Music.requested_track = -1;
         Music.pause_requested = 0;
-        if (state == 13) {
-            Music.state = 13;
-        } else if (state == 12) {
-            Music.state = 12;
+        if (state == MUSIC_PLAYBACK_DUAL_STREAM_PENDING) {
+            Music.state = MUSIC_PLAYBACK_DUAL_STREAM_PENDING;
+        } else if (state == MUSIC_PLAYBACK_DUAL_STREAM_THEN_STOP) {
+            Music.state = MUSIC_PLAYBACK_DUAL_STREAM_THEN_STOP;
         } else {
-            Music.state = Music.state != 0 ? 11 : 12;
+            Music.state = Music.state != MUSIC_PLAYBACK_STOPPED ? MUSIC_PLAYBACK_DUAL_STREAM : MUSIC_PLAYBACK_DUAL_STREAM_THEN_STOP;
         }
         Music.track_data = context;
     }
@@ -1558,16 +1562,17 @@ i32 PlayCutMusic(i32 track, i32 state, void *context) {
 }
 
 void PauseGameMusic(void) {
-    if (NOMUSIC == 0 && NOSOUND == 0 && PCStereoChannel1B != -1 && Music.state != 11 && Music.state != 12 && Music.state != 13) {
+    if (NOMUSIC == 0 && NOSOUND == 0 && PCStereoChannel1B != -1 && Music.state != MUSIC_PLAYBACK_DUAL_STREAM &&
+        Music.state != MUSIC_PLAYBACK_DUAL_STREAM_THEN_STOP && Music.state != MUSIC_PLAYBACK_DUAL_STREAM_PENDING) {
         NuSound3CancelCheckStereo();
         NuSound3PauseStereoStream(Music.primary_stream);
         switch (Music.state) {
-            case 5:
-            case 6:
-            case 7:
-            case 8:
-            case 9:
-            case 10:
+            case MUSIC_PLAYBACK_SWAP_FADE:
+            case MUSIC_PLAYBACK_SWAP_FADE_FAST:
+            case MUSIC_PLAYBACK_CROSSFADE:
+            case MUSIC_PLAYBACK_CROSSFADE_START:
+            case MUSIC_PLAYBACK_CROSSFADE_FAST:
+            case MUSIC_PLAYBACK_CROSSFADE_FAST_START:
                 NuSound3PauseStereoStream(1 - Music.primary_stream);
                 break;
         }
@@ -1611,7 +1616,7 @@ void PlayMusic(i32 track, i32 mode) {
     if (track < 0 || track > SfxFileCount - 1) {
         Music.primary_stream = (i16)(1 - Music.primary_stream);
         Music.restore_requested = 0;
-        Music.state = mode == 3 ? 9 : 7;
+        Music.state = mode == 3 ? MUSIC_PLAYBACK_CROSSFADE_FAST : MUSIC_PLAYBACK_CROSSFADE;
         Music.queued_track = Music.current_track;
         Music.current_track = (i16)track;
         Music.transition = 0.0f;
@@ -1620,16 +1625,16 @@ void PlayMusic(i32 track, i32 mode) {
     Music.queued_track = Music.current_track;
     Music.current_track = (i16)track;
     Music.transition_frames = 0;
-    if (Music.state != 0 && mode != 1 && PCStereoChannel1B != -1) {
+    if (Music.state != MUSIC_PLAYBACK_STOPPED && mode != 1 && PCStereoChannel1B != -1) {
         Music.primary_stream = (i16)(1 - Music.primary_stream);
         (&Music.unknown_0012)[Music.primary_stream] = 0;
         if (Music.requested_track == track && Music.pause_requested == 0) {
-            Music.state = mode == 3 ? 9 : 7;
+            Music.state = mode == 3 ? MUSIC_PLAYBACK_CROSSFADE_FAST : MUSIC_PLAYBACK_CROSSFADE;
             NuSound3ResumeStereoStream(Music.primary_stream);
             NuSound3SetStreamVolume(Music.primary_stream, 0);
             NuSound3Update();
         } else {
-            Music.state = mode == 3 ? 10 : 8;
+            Music.state = mode == 3 ? MUSIC_PLAYBACK_CROSSFADE_FAST_START : MUSIC_PLAYBACK_CROSSFADE_START;
             PlayAMusic(Music.primary_stream, track, 0, 0);
         }
         Music.pause_requested = 0;
@@ -1639,7 +1644,7 @@ void PlayMusic(i32 track, i32 mode) {
         return;
     }
     (&Music.unknown_0012)[Music.primary_stream] = 0;
-    if (Music.requested_track == track && Music.state != 11) {
+    if (Music.requested_track == track && Music.state != MUSIC_PLAYBACK_DUAL_STREAM) {
         Music.primary_stream = (i16)(1 - Music.primary_stream);
     }
     NuSound3StopStereoStream(1 - Music.primary_stream);
@@ -1653,7 +1658,7 @@ void PlayMusic(i32 track, i32 mode) {
     Music.pause_requested = 0;
     Music.transition = 1.0f;
     Music.restore_requested = 0;
-    Music.state = 4;
+    Music.state = MUSIC_PLAYBACK_PLAYING;
     Music.requested_track = -1;
 }
 
@@ -1674,23 +1679,24 @@ void SwapMusic(i32 mode) {
         NuSound3PauseStereoStream(1 - Music.primary_stream);
         NuSound3SetStreamVolume(1 - Music.primary_stream, 0);
         Music.transition = 1.0f;
-        Music.state = 4;
+        Music.state = MUSIC_PLAYBACK_PLAYING;
     } else {
-        if (Music.state == 5 || Music.state == 6) {
+        if (Music.state == MUSIC_PLAYBACK_SWAP_FADE || Music.state == MUSIC_PLAYBACK_SWAP_FADE_FAST) {
             Music.transition = 1.0f - Music.transition;
         } else {
             Music.transition = 0.0f;
         }
         NuSound3SetStreamVolume(Music.primary_stream, (i32)((f32)SfxFileTable[track].index * Music.transition));
-        Music.state = mode == 3 ? 6 : 5;
+        Music.state = mode == 3 ? MUSIC_PLAYBACK_SWAP_FADE_FAST : MUSIC_PLAYBACK_SWAP_FADE;
     }
     NuSound3Update();
 }
 
 void SetLinkedCutSceneMusic(void *context, i32 state) {
     Music.track_data = context;
-    if (Music.state == 11 || Music.state == 12 || Music.state == 13) {
-        Music.state = state == 13 ? 13 : 11;
+    if (Music.state == MUSIC_PLAYBACK_DUAL_STREAM || Music.state == MUSIC_PLAYBACK_DUAL_STREAM_THEN_STOP ||
+        Music.state == MUSIC_PLAYBACK_DUAL_STREAM_PENDING) {
+        Music.state = state == MUSIC_PLAYBACK_DUAL_STREAM_PENDING ? MUSIC_PLAYBACK_DUAL_STREAM_PENDING : MUSIC_PLAYBACK_DUAL_STREAM;
     }
 }
 

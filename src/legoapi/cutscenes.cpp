@@ -2241,7 +2241,7 @@ extern "C" {
             }
         } else {
             PauseGameAudio(0);
-            SetLinkedCutSceneMusic(cut->instance, cut->linked_audio != 0 ? 13 : 11);
+            SetLinkedCutSceneMusic(cut->instance, cut->linked_audio != 0 ? MUSIC_PLAYBACK_DUAL_STREAM_PENDING : MUSIC_PLAYBACK_DUAL_STREAM);
             rate = cut->frames_per_second * FRAMETIME;
             reinterpret_cast<CUT_CONTROLLER_INSTANCE *>(cut->instance)->rate = rate;
             if ((cut->flags & 1) == 0) {

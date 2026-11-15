@@ -250,9 +250,22 @@ extern "C" {
 }
 #endif
 
-enum { MUSIC_PLAYBACK_DUAL_STREAM = 11 };
-
-enum { MUSIC_PLAYBACK_DUAL_STREAM_PENDING = 13 };
+/* music_playback_s.state, named after what SoundUpdate, PlayMusic, SwapMusic and PlayCutMusic do in each:
+ * the SWAP fades pause the old stream when done, the CROSSFADEs stop it; a _START state waits for the new
+ * stream to begin; the FAST ones (mode 3) fade ten times as fast. The DUAL_STREAM states play cutscene
+ * music on the second stream: DUAL_STREAM resumes the game music after it, DUAL_STREAM_THEN_STOP (nothing
+ * played before) stops, DUAL_STREAM_PENDING (linked cutscene audio) waits to be ended. */
+#define MUSIC_PLAYBACK_STOPPED 0
+#define MUSIC_PLAYBACK_PLAYING 4
+#define MUSIC_PLAYBACK_SWAP_FADE 5
+#define MUSIC_PLAYBACK_SWAP_FADE_FAST 6
+#define MUSIC_PLAYBACK_CROSSFADE 7
+#define MUSIC_PLAYBACK_CROSSFADE_START 8
+#define MUSIC_PLAYBACK_CROSSFADE_FAST 9
+#define MUSIC_PLAYBACK_CROSSFADE_FAST_START 10
+#define MUSIC_PLAYBACK_DUAL_STREAM 11
+#define MUSIC_PLAYBACK_DUAL_STREAM_THEN_STOP 12
+#define MUSIC_PLAYBACK_DUAL_STREAM_PENDING 13
 
 #ifdef __cplusplus
 extern "C" {

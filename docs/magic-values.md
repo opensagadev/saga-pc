@@ -26,6 +26,7 @@ where to look.
 | `nudisplaylistitem_s.type`, `NuDisplayListLinkItem` type | `NUDLIST_*` (nudlist.h) | `DisplayListPrintItem` text per type; the render state packets after the packet cache they link (0xa7, 0xae, 0xaf, 0x98, 0x99 still literal) |
 | `FRAME_PAD_PC.digital_buttons*`, `FRAME_SCANNED_PAD_PC`, `GAMEPAD_PC.buttons_*`, the `GAMEPAD_*` button globals | `PAD_BUTTON_*` (edui.h) | level editor pad help (`SetPadText` labels, PS2 bit order) |
 | `debris_info_s.particle_type` | `DEBRIS_PARTICLE_*` (edgra.h) | particle editor texture type menu (`cbPtlSelTextureType`) |
+| `music_playback_s.state` | `MUSIC_PLAYBACK_*` (nusound.h) | what `SoundUpdate`, `PlayMusic`, `SwapMusic` and `PlayCutMusic` do in each state (fade speed, which stream stops or pauses) |
 | `AIPACKET.flags` (5 of its bits) | `AIPACKET_*` (apiobject.h) | AI script actions and conditions that set or test them (`IgnoreWallSplines`, `CheckWallSplines`, `SetCircleDirection`, `PathBlocked`, `SetFormationCommander`) |
 
 ## Still literal (meaning not known yet)
@@ -37,7 +38,6 @@ where to look.
 | `gameobject_s.action_movement_state` | 72 | 2..9 | movement mode of AI packets; the sibling build calls it `AIPACKET_MOVEMENT_MODE`, not verified on PC |
 | `AIPACKET.path_connection_state` | 53 | 0..5 | path-following state; no strings |
 | `gameobject_s.unknown_7b3` | 57 | 0..7 | a per-context sub-state (batarang, techno); meaning differs per context |
-| `music_playback_s.state` | 59 | 4..13 | two values named (`MUSIC_PLAYBACK_*`); the rest have no strings |
 | `gameobject_s.flags_1fc_word`, `flags_e20`, `flags_ef0`, `flags_ef4`, `flags_1f8`, `portal_flags`, `context_variant_flags` | 100-540 each | bit sets | runtime state bits set in code, no keywords; the sibling build's names are guesses |
 | cheat indices (`Cheat_IsOn`) | 57 | 0..0x2c | come from the game's cheat config file, which is not among the retail files here |
 | AI script `action_data_1` | ~20 | bit sets | keyword-driven, but each action gives the bits its own meaning: needs a set per action |
