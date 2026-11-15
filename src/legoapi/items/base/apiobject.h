@@ -175,6 +175,11 @@ extern "C" {
 #define APIOBJECT_CONTEXT_EVENT_DONE 0x40
 #define APIOBJECT_CONTEXT_INVULNERABLE 0x20000 /* hits do nothing while the context's info has the flag for it */
 
+/* gameobject_s.tag_flags, from the tagging code (legoapi_tag.c) and the SetTaggable AI action. */
+#define APIOBJECT_TAG_DISABLED 0x2         /* SetTaggable FALSE: cannot be tagged to or dropped in on */
+#define APIOBJECT_TAG_PENDING 0x4          /* a tag to pending_tag_target waits for tag_cooldown */
+#define APIOBJECT_TAG_PENDING_TAKEOVER 0x8 /* the pending tag is a take-over (TagCode's takeover) */
+
 /* gameobject_s.portal_flags: the AI script actions that set them (keyword in the action table). */
 #define APIOBJECT_CAN_DEFEND 0x2                    /* CanDefend */
 #define APIOBJECT_CAN_USE_WEAPON 0x8                /* CanUseWeapon */

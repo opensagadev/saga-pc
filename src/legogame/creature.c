@@ -804,9 +804,9 @@ void ResetPlayerPacket(void *opaque_packet, CHARACTERDATA *character) {
     ((GAMEPAD_RESET *)packet->gamepad)->rumble_amount = 0.0f;
     ((GAMEPAD_RESET *)packet->gamepad)->rumble_field_48 = 0.0f;
     ((GAMEPAD_RESET *)packet->gamepad)->rumble_time = 0.0f;
-    packet->gamepad->runtime_flags &= (u16)~2;
-    packet->gamepad->runtime_flags &= (u16)~4;
-    packet->gamepad->runtime_flags &= (u16)~0x10;
+    packet->gamepad->runtime_flags &= (u16)~GAMEPAD_AI_ATTACK;
+    packet->gamepad->runtime_flags &= (u16)~GAMEPAD_AI_USE_FORCE;
+    packet->gamepad->runtime_flags &= (u16)~GAMEPAD_AI_FORCE_PUSH;
     packet->secondary_flags &= ~0x400u;
     packet->input_state = 0;
     packet->gamepad->operator_data = NULL;
@@ -1505,7 +1505,7 @@ void MovePlayer(GAMEOBJECT *object) {
         analog_x = analog_y = 0;
     }
     if (pad->input_magnitude != pad->previous_input_magnitude) {
-        pad->runtime_flags |= 0x40;
+        pad->runtime_flags |= GAMEPAD_MAGNITUDE_CHANGED;
     }
     object->previous_floor_height = object->floor_height;
     object->start_position = object->position;
@@ -1525,7 +1525,7 @@ void MovePlayer(GAMEOBJECT *object) {
     }
     if ((object->flags_ef4 & 0x4000000) == 0) {
         if (!object->dead) {
-            pad->runtime_flags &= ~8;
+            pad->runtime_flags &= ~GAMEPAD_WAGGLE;
             pad->waggle_magnitude = 0.0f;
             object->unknown_106e = -1;
             object->flags_ef0 &= ~0x400;
@@ -1660,7 +1660,8 @@ void MovePlayer(GAMEOBJECT *object) {
                     }
                     if ((object->flags_1f8 & APIOBJECT_CREATURE) == 0 && (object->portal_flags & APIOBJECT_CATCH_UP_FORBIDDEN) == 0 &&
                         (object->unknown_f10 >= OFFSCREEN_CATCHUP_TIME ||
-                         (object->model_draw_result == 0 && (object->tag_flags & 2) == 0 && drop_back_in_timer > 0.0f)) &&
+                         (object->model_draw_result == 0 && (object->tag_flags & APIOBJECT_TAG_DISABLED) == 0 &&
+                          drop_back_in_timer > 0.0f)) &&
                         (pad->input_magnitude + (f64)0.001f >= walk_speed || object->id == (u16)id_SPEEDERBIKE)) {
                         object->flags_ef0 |= 0x400;
                     }
@@ -2562,7 +2563,7 @@ void TerrainPlayer(GAMEOBJECT *object) {
         }
     }
 
-    entry_pad->runtime_flags &= ~0x16u;
+    entry_pad->runtime_flags &= ~(GAMEPAD_AI_ATTACK | GAMEPAD_AI_USE_FORCE | GAMEPAD_AI_FORCE_PUSH);
     object->unknown_d20 = 0;
     entry_pad->operator_data = NULL;
     NuVecRotateYValZ(&object->facing_direction, 1.0f, object->unknown_276);
@@ -3591,7 +3592,7 @@ void InitPlayerAI(GAMEOBJECT *object) {
     } else {
         object->portal_flags &= ~APIOBJECT_RESPAWNABLE;
     }
-    object->tag_flags &= ~2u;
+    object->tag_flags &= ~APIOBJECT_TAG_DISABLED;
     object->unknown_ec4 = 0.0f;
     object->ai_packet.flags &= 0xffffafff;
     object->ai_packet.target_metric_e0 = 1000000000.0f;

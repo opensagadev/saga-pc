@@ -856,7 +856,8 @@ static i32 PodRaceUpdatePod(RACEPOD_RESOURCE *pod, WORLDINFO *world) {
                     part.unknown_14 = NuSpecialGetOriginRadius(&minesys.mine_special);
                     part.unknown_18 = part.unknown_14;
                     part.special = &minesys.mine_special;
-                    part.flags = 0x29a;
+                    part.flags = PART_FLAG_COLLIDE_WITH_CHARACTERS | PART_FLAG_DAMAGE_CHARACTERS | PART_FLAG_KEEP_OFF_SCREEN |
+                                 PART_FLAG_ROTATE_RANDOMLY | PART_FLAG_SLOT_CANNOT_BE_STOLEN;
                     part.gravity = PodSebulbaThrowGravity;
                     part.collision_fn = PartCollide_3D;
                     part.kill_fn = PodRaceMineKill;
@@ -1435,7 +1436,8 @@ i32 Action_Sebulba(AISYS_PC *unused0, AISCRIPTPROCESS *process, AIPACKET *packet
                 part.unknown_14 = 0.1f;
                 part.unknown_18 = 0.1f;
                 part.gravity = PodSebulbaThrowGravity;
-                part.flags = 0x29b;
+                part.flags = PART_FLAG_DIE_WHEN_STOPPED | PART_FLAG_COLLIDE_WITH_CHARACTERS | PART_FLAG_DAMAGE_CHARACTERS |
+                             PART_FLAG_KEEP_OFF_SCREEN | PART_FLAG_ROTATE_RANDOMLY | PART_FLAG_SLOT_CANNOT_BE_STOLEN;
                 part.collision_fn = PartCollide_3D;
                 part.time_step = FRAMETIME;
                 AddPart(&part);

@@ -87,6 +87,12 @@ struct PC_CONTROL_ITEM { // size 0x8
     f32 pulse; // 0x4
 };
 
+/* PC_CONTROL_ITEM.flags: the bits of the bit-field above (PC_CONTROL_SCREEN sets them from the players' ports). */
+#define PC_CONTROL_ITEM_NO_KEYBOARD 0x8       /* not offered on a keyboard port */
+#define PC_CONTROL_ITEM_UNBOUND_PLAYER1 0x20  /* not available to player 1's port */
+#define PC_CONTROL_ITEM_UNBOUND_PLAYER2 0x40  /* not available to player 2's port */
+#define PC_CONTROL_ITEM_UNBOUND_SELECTED 0x80 /* not available to the selected player */
+
 struct PC_CONTROL_ROW {     // size 0xc
     i32 count;              // 0x0
     i32 selected;           // 0x4

@@ -121,13 +121,13 @@ void GizmoObstacle_Activate(GIZMO_PC *ptr, i32 activate) {
         return;
     }
     obstacle = gizmo->object;
-    if (activate && !(obstacle->progress_flags & 1)) {
+    if (activate && !(obstacle->progress_flags & OBSTACLE_ACTIVE)) {
         GameAnimSet_JumpToStart(obstacle->anim_set);
     }
     obstacle->proximity_output = 0;
     ((OBSTACLE_PROGRESS_FLAGS *)&obstacle->progress_flags)->active = activate != 0;
     if (activate) {
-        obstacle->runtime_flags &= ~0x80u;
+        obstacle->runtime_flags &= ~GIZOBSTACLE_DESTROYED;
         obstacle->progress_flags &= ~0x100u;
         GameAnimSet_EvaluateState(obstacle->anim_set);
     }
@@ -162,7 +162,7 @@ i32 GizmoObstacle_GetOutput(GIZMO_PC *gizmo, i32 output, i32 ignore_activation) 
     if (!obstacle) {
         return 0;
     }
-    if (((obstacle->progress_flags & 2) == 0 || (obstacle->progress_flags & 1) == 0) && !ignore_activation) {
+    if (((obstacle->progress_flags & OBSTACLE_VISIBLE) == 0 || (obstacle->progress_flags & OBSTACLE_ACTIVE) == 0) && !ignore_activation) {
         return 0;
     }
     switch (output) {
@@ -192,11 +192,11 @@ i32 GizmoObstacle_ActivateRev(GIZMO_PC *gizmo, i32 activate, i32 flags) {
         return 0;
     }
     if ((obstacle->progress_flags & 0x100) && (obstacle->anim_set->state == 2 || obstacle->anim_set->state == 1)) {
-        obstacle->progress_flags = (obstacle->progress_flags & ~0x100u) | 1;
+        obstacle->progress_flags = (obstacle->progress_flags & ~0x100u) | OBSTACLE_ACTIVE;
     }
     ai_active = (obstacle->runtime_flags >> 2) & 1;
     if (ai_active) {
-        obstacle->progress_flags = (obstacle->progress_flags & ~0x100u) | 1;
+        obstacle->progress_flags = (obstacle->progress_flags & ~0x100u) | OBSTACLE_ACTIVE;
     }
     if (flags & 1) {
         if (activate == ((obstacle->progress_flags >> 8) & 1) && (!(flags & 4) || ((obstacle->progress_flags >> 1) & 1) != activate)) {
@@ -209,10 +209,10 @@ i32 GizmoObstacle_ActivateRev(GIZMO_PC *gizmo, i32 activate, i32 flags) {
     }
     if (activate) {
         GizObstacle_PlayBackwards(obstacle);
-        obstacle->progress_flags = (obstacle->progress_flags & ~1u) | 0x100;
+        obstacle->progress_flags = (obstacle->progress_flags & ~OBSTACLE_ACTIVE) | 0x100;
         return 1;
     }
-    obstacle->progress_flags = (obstacle->progress_flags & ~0x100u) | 1;
+    obstacle->progress_flags = (obstacle->progress_flags & ~0x100u) | OBSTACLE_ACTIVE;
     return 1;
 }
 
@@ -267,25 +267,25 @@ void GizObstacles_StoreProgress(void *world, void *ptr, void *progress_ptr) {
         }
         word = i / 32;
         bit = 1u << (i & 31);
-        if (!(obstacle->progress_flags & 2)) {
+        if (!(obstacle->progress_flags & OBSTACLE_VISIBLE)) {
             progress->visible[word] &= ~bit;
         }
-        if (!(obstacle->progress_flags & 1)) {
+        if (!(obstacle->progress_flags & OBSTACLE_ACTIVE)) {
             progress->enabled[word] &= ~bit;
         }
-        if (obstacle->runtime_flags & 1) {
+        if (obstacle->runtime_flags & GIZOBSTACLE_PICKUPS_SPAWNED) {
             progress->pickups_spawned[word] |= bit;
         }
-        if (obstacle->runtime_flags & 4) {
+        if (obstacle->runtime_flags & GIZOBSTACLE_LOCKED_OPEN) {
             progress->ai_active[word] |= bit;
         }
-        if (obstacle->runtime_flags & 8) {
+        if (obstacle->runtime_flags & GIZOBSTACLE_LOCKED_SHUT) {
             progress->blocked[word] |= bit;
         }
-        if (obstacle->runtime_flags & 0x40) {
+        if (obstacle->runtime_flags & GIZOBSTACLE_TRIGGER_LATCHED) {
             progress->trigger_latched[word] |= bit;
         }
-        if (obstacle->runtime_flags & 0x80) {
+        if (obstacle->runtime_flags & GIZOBSTACLE_DESTROYED) {
             progress->destroyed[word] |= bit;
         }
     }
@@ -417,7 +417,7 @@ i32 GizObstacles_Load(void *world_ptr, void *data) {
                         EdFileRead(name, length);
                         obstacle->blowup_type = (i16)GizmoBlowupGetNameTableId(name);
                         if (obstacle->blowup_type != -1) {
-                            obstacle->runtime_flags |= 2;
+                            obstacle->runtime_flags |= GIZOBSTACLE_BLOWUP_NAME;
                         }
                     }
                 } else {
@@ -463,9 +463,9 @@ void GizObstacles_PostLoad(void *world, void *data) {
     }
     obstacle = system->obstacles;
     for (i = 0; i < system->count; ++i, ++obstacle) {
-        if (obstacle->runtime_flags & 2) {
+        if (obstacle->runtime_flags & GIZOBSTACLE_BLOWUP_NAME) {
             obstacle->blowup_type = (i16)GizmoBlowupGetTypeFromNameTableId(world, obstacle->blowup_type);
-            obstacle->runtime_flags &= ~2u;
+            obstacle->runtime_flags &= ~GIZOBSTACLE_BLOWUP_NAME;
         }
     }
 }
@@ -479,7 +479,8 @@ static void GizObstacle_EvalAveragePosAndRadius(GIZOBSTACLE *obstacle, i32 state
 static void GizObstacle_ResetOnePrivate(WORLDINFO *world, GIZOBSTACLE *obstacle) {
     GAMEANIMSET *set;
     GAMEANIMOBJ *object;
-    obstacle->progress_flags = (obstacle->progress_flags & ~0xcu) | 3;
+    obstacle->progress_flags =
+        (obstacle->progress_flags & ~(OBSTACLE_TECHNO_CONTROLLED | OBSTACLE_PUSH_CONTROLLED)) | OBSTACLE_ACTIVE | OBSTACLE_VISIBLE;
     obstacle->runtime_flags &= 0xffffff03u;
     obstacle->animation_speed = 1.f;
     set = obstacle->anim_set;
@@ -492,7 +493,7 @@ static void GizObstacle_ResetOnePrivate(WORLDINFO *world, GIZOBSTACLE *obstacle)
         if (world->terrain && !(object_data[0] & 1) && NuSpecialExistsFn(&object->special)) {
             object_data[1] = (i16)FindPlatInst(NuSpecialGetInstanceix(&object->special));
             if (object_data[1] != -1) {
-                obstacle->runtime_flags |= 0x10;
+                obstacle->runtime_flags |= GIZOBSTACLE_ON_PLATFORM;
             }
         }
         if (object_data[0] & 2) {
@@ -582,7 +583,7 @@ static i32 GizObstacle_SatisfyingTerrainChecks(GIZOBSTACLE *obstacle, GAMEOBJECT
         if (!object->unknown_281 && !(object->flags_ef4 & 0x20000000)) {
             return 0;
         }
-        if (object->supporting_platform_id >= 0 && obstacle->anim_set && (obstacle->runtime_flags & 0x10)) {
+        if (object->supporting_platform_id >= 0 && obstacle->anim_set && (obstacle->runtime_flags & GIZOBSTACLE_ON_PLATFORM)) {
             for (anim_object = obstacle->anim_set->objects; anim_object; anim_object = anim_object->next) {
                 if (((GIZOBSTACLE_OBJECT_DATA *)anim_object->object_data)->platform_id == object->supporting_platform_id) {
                     return 1;
@@ -600,7 +601,7 @@ static void GizObstacleUpdate_Proximity(GIZOBSTACLE *obstacle) {
     i32 state;
     u32 players = 0;
     obstacle->proximity_output = 0;
-    if (!(obstacle->runtime_flags & 8)) {
+    if (!(obstacle->runtime_flags & GIZOBSTACLE_LOCKED_SHUT)) {
         f32 closest = obstacle->trigger_radius * obstacle->trigger_radius;
         NUVEC *closest_position = NULL;
         GAMEOBJECT *closest_object = NULL;
@@ -697,11 +698,11 @@ static void GizObstacleUpdate_Proximity(GIZOBSTACLE *obstacle) {
         return;
     }
     if (!state) {
-        if (obstacle->proximity_output || (obstacle->runtime_flags & 0x44)) {
+        if (obstacle->proximity_output || (obstacle->runtime_flags & (GIZOBSTACLE_LOCKED_OPEN | GIZOBSTACLE_TRIGGER_LATCHED))) {
             GizObstacle_PlayForwards(obstacle);
             obstacle->auto_return_timer = obstacle->auto_return_delay;
         }
-    } else if (!obstacle->proximity_output && !(obstacle->runtime_flags & 0x44)) {
+    } else if (!obstacle->proximity_output && !(obstacle->runtime_flags & (GIZOBSTACLE_LOCKED_OPEN | GIZOBSTACLE_TRIGGER_LATCHED))) {
         if (obstacle->auto_return_timer > 0.0f) {
             if (state == 2) {
                 obstacle->auto_return_timer -= FRAMETIME;
@@ -713,10 +714,10 @@ static void GizObstacleUpdate_Proximity(GIZOBSTACLE *obstacle) {
 }
 
 static void GizObstacleUpdate_NoTrigger(GIZOBSTACLE *obstacle) {
-    if (!(obstacle->config_flags & 0x800) && !(obstacle->runtime_flags & 4) && !obstacle->anim_set->state) {
+    if (!(obstacle->config_flags & 0x800) && !(obstacle->runtime_flags & GIZOBSTACLE_LOCKED_OPEN) && !obstacle->anim_set->state) {
         return;
     }
-    obstacle->runtime_flags |= 8;
+    obstacle->runtime_flags |= GIZOBSTACLE_LOCKED_SHUT;
     GizObstacleUpdate_Proximity(obstacle);
 }
 
@@ -730,7 +731,7 @@ static void GizObstacleUpdate_PushOnly(GIZOBSTACLE *obstacle) {
 
 static void GizObstacleUpdate_AutoStart(GIZOBSTACLE *obstacle) {
     if (obstacle->config_flags & 0x800) {
-        obstacle->runtime_flags |= 8;
+        obstacle->runtime_flags |= GIZOBSTACLE_LOCKED_SHUT;
         GizObstacleUpdate_Proximity(obstacle);
     } else if (!obstacle->anim_set->state || obstacle->anim_set->state == 3) {
         GizObstacle_PlayForwards(obstacle);
@@ -763,12 +764,13 @@ void GizObstacles_Update(void *world_ptr, void *data, f32 time) {
         GIZOBSTACLE *obstacle = gizmo->object;
         GAMEOBJECT *previous = obstacle->triggering_object;
         obstacle->triggering_object = NULL;
-        if (!(obstacle->progress_flags & 2) || !(obstacle->progress_flags & 5) || !obstacle->anim_set ||
-            (obstacle->progress_flags & 0x100) || (obstacle->runtime_flags & 0x80)) {
+        if (!(obstacle->progress_flags & OBSTACLE_VISIBLE) ||
+            !(obstacle->progress_flags & (OBSTACLE_ACTIVE | OBSTACLE_TECHNO_CONTROLLED)) || !obstacle->anim_set ||
+            (obstacle->progress_flags & 0x100) || (obstacle->runtime_flags & GIZOBSTACLE_DESTROYED)) {
             continue;
         }
         if (obstacle->mode == 7) {
-            if (obstacle->progress_flags & 8) {
+            if (obstacle->progress_flags & OBSTACLE_PUSH_CONTROLLED) {
                 obstacle->triggering_object = previous;
             } else if (obstacle->playback_state == 1) {
                 obstacle->animation_speed = -1.0f;
@@ -780,16 +782,17 @@ void GizObstacles_Update(void *world_ptr, void *data, f32 time) {
             } else {
                 GizObstacle_Stop(obstacle);
             }
-        } else if ((obstacle->progress_flags & 4) && obstacle->animation_speed != 0.0f) {
+        } else if ((obstacle->progress_flags & OBSTACLE_TECHNO_CONTROLLED) && obstacle->animation_speed != 0.0f) {
             GizObstacle_PlayForwards(obstacle);
-        } else if ((obstacle->progress_flags & 4) && obstacle->animation_speed == 0.0f) {
+        } else if ((obstacle->progress_flags & OBSTACLE_TECHNO_CONTROLLED) && obstacle->animation_speed == 0.0f) {
             GizObstacle_Stop(obstacle);
         } else if (GizObstacleUpdateFns[obstacle->mode]) {
             GizObstacleUpdateFns[obstacle->mode](obstacle);
         }
         // MATCH-EXCEPTION: the original tests the three low GAMEANIMSET flag bits one by one (word load, test al,
         // 7); a single `flags & 7` compiles to a byte test.
-        if ((obstacle->anim_set->flags & 1) || (obstacle->anim_set->flags & 2) || (obstacle->anim_set->flags & 4)) {
+        if ((obstacle->anim_set->flags & GAMEANIMSET_PLAYING) || (obstacle->anim_set->flags & GAMEANIMSET_STOPPED) ||
+            (obstacle->anim_set->flags & GAMEANIMSET_IN_ACTIVE_LIST)) {
             GizObstacle_EvalAveragePosAndRadius(obstacle, 2);
             if (obstacle->runtime_flags & 0x20) {
                 GAMEANIMOBJ *object;
@@ -809,10 +812,11 @@ void GizObstacles_Update(void *world_ptr, void *data, f32 time) {
             }
         }
         if (obstacle->anim_set->state == 2) {
-            obstacle->runtime_flags &= ~0x40u;
+            obstacle->runtime_flags &= ~GIZOBSTACLE_TRIGGER_LATCHED;
         }
         if ((!obstacle->playback_state || obstacle->playback_state == 3 || (obstacle->config_flags & 0x80)) &&
-            ((obstacle->anim_set->flags & 2) || !obstacle->anim_set->animated_object_count) && obstacle->anim_set->state == 2) {
+            ((obstacle->anim_set->flags & GAMEANIMSET_STOPPED) || !obstacle->anim_set->animated_object_count) &&
+            obstacle->anim_set->state == 2) {
             if (obstacle->blowup_type != -1 || obstacle->pickup_count) {
                 if (obstacle->blowup_type != -1) {
                     if (obstacle->config_flags & 0x200) {
@@ -827,9 +831,10 @@ void GizObstacles_Update(void *world_ptr, void *data, f32 time) {
                         GizmoBlowUpTypeBlowUp(world, obstacle->blowup_type, &obstacle->evaluated_position);
                     }
                     GameAnimSet_SetVisibility(obstacle->anim_set, 0);
-                    obstacle->runtime_flags |= 0x80;
+                    obstacle->runtime_flags |= GIZOBSTACLE_DESTROYED;
                 }
-                if (obstacle->pickup_count && (!(obstacle->runtime_flags & 1) || (obstacle->config_flags & 0x80))) {
+                if (obstacle->pickup_count &&
+                    (!(obstacle->runtime_flags & GIZOBSTACLE_PICKUPS_SPAWNED) || (obstacle->config_flags & 0x80))) {
                     NUVEC position;
                     NUVEC direction;
                     NuVecAdd(&position, &obstacle->evaluated_position, &obstacle->pickup_offset);
@@ -837,21 +842,21 @@ void GizObstacles_Update(void *world_ptr, void *data, f32 time) {
                     NuVecRotateY(&direction, &direction, (u16)obstacle->pickup_direction_y);
                     AddPickups((u16)obstacle->pickup_count, 0, 0, 0, &position, &direction, 2.0f, -1, obstacle->pickup_scatter_height,
                                2000000.0f, NULL, 1, 0);
-                    obstacle->runtime_flags |= 1;
+                    obstacle->runtime_flags |= GIZOBSTACLE_PICKUPS_SPAWNED;
                 }
             }
             if (obstacle->playback_state == 3) {
                 GameAnimSet_JumpToStart(obstacle->anim_set);
                 GizObstacle_EvalAveragePosAndRadius(obstacle, 2);
                 GameAnimSet_SetVisibility(obstacle->anim_set, 1);
-                obstacle->runtime_flags &= ~0x80u;
+                obstacle->runtime_flags &= ~GIZOBSTACLE_DESTROYED;
             }
         }
-        if (!(obstacle->runtime_flags & 0x80) && (obstacle->config_flags & 0x1800)) {
+        if (!(obstacle->runtime_flags & GIZOBSTACLE_DESTROYED) && (obstacle->config_flags & 0x1800)) {
             system->active_gizmos[system->active_gizmo_count++] = gizmo;
         }
         obstacle->animation_speed = 1.0f;
-        obstacle->progress_flags &= ~0xcu;
+        obstacle->progress_flags &= ~(OBSTACLE_TECHNO_CONTROLLED | OBSTACLE_PUSH_CONTROLLED);
     }
     ngizobstacletriggers = 0;
 }
@@ -871,7 +876,7 @@ void GizObstacles_AddTrigger(NUVEC *position) {
 }
 
 void GizObstacle_SetTechnoControlled(GIZOBSTACLE *obstacle, f32 speed) {
-    obstacle->progress_flags |= 4;
+    obstacle->progress_flags |= OBSTACLE_TECHNO_CONTROLLED;
     obstacle->animation_speed = speed;
 }
 
@@ -879,7 +884,7 @@ void GizObstacle_SetPushControlled(GIZOBSTACLE *obstacle, GAMEOBJECT *object, f3
     if (!obstacle->playback_state && obstacle->anim_set->state == 2 && !(obstacle->config_flags & 0x100)) {
         return;
     }
-    obstacle->progress_flags |= 8;
+    obstacle->progress_flags |= OBSTACLE_PUSH_CONTROLLED;
     obstacle->animation_speed = speed;
     obstacle->triggering_object = object;
 }
@@ -895,8 +900,8 @@ GIZOBSTACLE *GizObstacle_FindNearest(void *ptr, NUVEC *position, GAMEOBJECT *obj
         closest = 1.0e9f;
         for (i = 0, obstacle = system->obstacles; i < system->count; ++i, ++obstacle) {
             f32 distance;
-            if ((mode != -1 && obstacle->mode != mode) || !(obstacle->progress_flags & 2) || !(obstacle->progress_flags & 1) ||
-                (obstacle->runtime_flags & 0x80)) {
+            if ((mode != -1 && obstacle->mode != mode) || !(obstacle->progress_flags & OBSTACLE_VISIBLE) ||
+                !(obstacle->progress_flags & OBSTACLE_ACTIVE) || (obstacle->runtime_flags & GIZOBSTACLE_DESTROYED)) {
                 continue;
             }
             if (object && obstacle->anim_set) {
@@ -922,11 +927,12 @@ GIZOBSTACLE *GizObstacle_FindNearest(void *ptr, NUVEC *position, GAMEOBJECT *obj
 i32 GizObstacles_Hit(void *world, GIZOBSTACLE *obstacle, NUVEC *position, i32 player, i32 damage) {
     (void)position;
     (void)damage;
-    if (!(obstacle->progress_flags & 2) || !(obstacle->progress_flags & 1) || (obstacle->runtime_flags & 0x80)) {
+    if (!(obstacle->progress_flags & OBSTACLE_VISIBLE) || !(obstacle->progress_flags & OBSTACLE_ACTIVE) ||
+        (obstacle->runtime_flags & GIZOBSTACLE_DESTROYED)) {
         return 0;
     }
     if (obstacle->config_flags & 0x800) {
-        obstacle->runtime_flags |= 0x40;
+        obstacle->runtime_flags |= GIZOBSTACLE_TRIGGER_LATCHED;
         if (player != -1 && (Player[player]->flags_1fc & APIOBJECT_FLAG_PLAYER_ACTIVE)) {
             NewBuzz(Player[player]->pad->bound_pad, 0.1f, 0);
         }
@@ -951,7 +957,7 @@ i32 GizObstacles_Hit(void *world, GIZOBSTACLE *obstacle, NUVEC *position, i32 pl
     GameAnimSet_JumpToEnd(obstacle->anim_set);
     GizObstacle_EvalAveragePosAndRadius(obstacle, 2);
     GameAnimSet_SetVisibility(obstacle->anim_set, 0);
-    obstacle->runtime_flags |= 0x80;
+    obstacle->runtime_flags |= GIZOBSTACLE_DESTROYED;
     if (player != -1 && (Player[player]->flags_1fc & APIOBJECT_FLAG_PLAYER_ACTIVE)) {
         NewBuzz(Player[player]->pad->bound_pad, 0.1f, 0);
     }
@@ -1003,7 +1009,8 @@ GIZMO_PC *GizObstacles_GetBestBoltTarget(GIZMOSET *set, f32 *result_distance, NU
             f32 distance;
             f32 dot;
             u16 angle;
-            if (!(obstacle->progress_flags & 2) || !(obstacle->progress_flags & 1) || (obstacle->runtime_flags & 0x80)) {
+            if (!(obstacle->progress_flags & OBSTACLE_VISIBLE) || !(obstacle->progress_flags & OBSTACLE_ACTIVE) ||
+                (obstacle->runtime_flags & GIZOBSTACLE_DESTROYED)) {
                 continue;
             }
             target = &obstacle->evaluated_position;
@@ -1075,8 +1082,8 @@ void GizObstacles_Draw(void *world_ptr, void *data, f32 time) {
         return;
     }
     for (i = 0, obstacle = system->obstacles; i < system->count; ++i, ++obstacle) {
-        if ((obstacle->progress_flags & 2) && (obstacle->room_id < 0 || world->rooms_visible_ptr[obstacle->room_id]) &&
-            !(obstacle->runtime_flags & 0x80) && (obstacle->config_flags & 0x40)) {
+        if ((obstacle->progress_flags & OBSTACLE_VISIBLE) && (obstacle->room_id < 0 || world->rooms_visible_ptr[obstacle->room_id]) &&
+            !(obstacle->runtime_flags & GIZOBSTACLE_DESTROYED) && (obstacle->config_flags & 0x40)) {
             GameAnimSet_DrawReflection(obstacle->anim_set, 2, obstacle->reflection_alpha, NULL);
         }
     }
@@ -1128,8 +1135,8 @@ static i32 GizObstacles_BoltHitPlat(void *world, void *data, BOLT_PC *bolt, u8 *
         for (i = 0; i < count; ++i) {
             GIZOBSTACLE *obstacle = system->active_gizmos[i]->object;
             GAMEANIMOBJ *object;
-            if (!(obstacle->progress_flags & 2) || !(obstacle->progress_flags & 1) || !(obstacle->runtime_flags & 0x10) ||
-                (obstacle->runtime_flags & 0x80)) {
+            if (!(obstacle->progress_flags & OBSTACLE_VISIBLE) || !(obstacle->progress_flags & OBSTACLE_ACTIVE) ||
+                !(obstacle->runtime_flags & GIZOBSTACLE_ON_PLATFORM) || (obstacle->runtime_flags & GIZOBSTACLE_DESTROYED)) {
                 continue;
             }
             for (object = obstacle->anim_set->objects; object; object = object->next) {
@@ -1165,7 +1172,8 @@ static i32 GizObstacles_BoltHit(void *world, void *data, void *attacker_ptr, NUV
             NUVEC *position;
             i32 point_index;
             f32 obstacle_radius;
-            if (!(obstacle->progress_flags & 2) || !(obstacle->progress_flags & 1) || (obstacle->runtime_flags & 0x80)) {
+            if (!(obstacle->progress_flags & OBSTACLE_VISIBLE) || !(obstacle->progress_flags & OBSTACLE_ACTIVE) ||
+                (obstacle->runtime_flags & GIZOBSTACLE_DESTROYED)) {
                 continue;
             }
             // MATCH-EXCEPTION: the radius local feeds only the first bound; the original then loads the position

@@ -203,7 +203,7 @@ extern "C" {
 void PC_INPUT_RUNTIME::InitKeyboardProfiles() {
     PC_INPUT_CONFIG *config;
     NuStrCpy(devices[10].name, "KeyboardMouse1");
-    devices[10].kind = 1;
+    devices[10].kind = PC_INPUT_DEVICE_KEYBOARD_MOUSE1;
     devices[10].product.Data1 = 1;
     devices[10].config_dirty = 1;
     devices[10].capabilities_valid = 1;
@@ -217,7 +217,7 @@ void PC_INPUT_RUNTIME::InitKeyboardProfiles() {
     }
     devices[11].device = nu_keyboard_owner.device;
     NuStrCpy(devices[11].name, "Keyboard1");
-    devices[11].kind = 3;
+    devices[11].kind = PC_INPUT_DEVICE_KEYBOARD1;
     devices[11].product.Data1 = 3;
     devices[11].config_dirty = 1;
     devices[11].capabilities_valid = 1;
@@ -230,7 +230,7 @@ void PC_INPUT_RUNTIME::InitKeyboardProfiles() {
         InstallConfig(config, 11, config->key, 0, 0);
     }
     NuStrCpy(devices[12].name, PCKeyboardMouse2Name);
-    devices[12].kind = 2;
+    devices[12].kind = PC_INPUT_DEVICE_KEYBOARD_MOUSE2;
     devices[12].product.Data1 = 2;
     devices[12].config_dirty = 1;
     devices[12].capabilities_valid = 1;
@@ -244,7 +244,7 @@ void PC_INPUT_RUNTIME::InitKeyboardProfiles() {
     }
     devices[13].device = nu_keyboard_owner.device;
     NuStrCpy(devices[13].name, "Keyboard2");
-    devices[13].kind = 4;
+    devices[13].kind = PC_INPUT_DEVICE_KEYBOARD2;
     devices[13].product.Data1 = 4;
     devices[13].config_dirty = 1;
     devices[13].capabilities_valid = 1;
@@ -847,7 +847,7 @@ extern "C" BOOL __stdcall InputEnumDevicesPc(const PC_DI_INSTANCE *instance, voi
         }
         memset(devices[port].name, 0, 63);
         PCByteCopy(devices[port].name, instance->product_name, length);
-        devices[port].kind = 6;
+        devices[port].kind = PC_INPUT_DEVICE_XINPUT;
         devices[port].capabilities_valid = 0;
         devices[port].deadzone = 64;
         PC_XINPUT_CAPABILITIES capabilities;
@@ -878,7 +878,7 @@ extern "C" BOOL __stdcall InputEnumDevicesPc(const PC_DI_INSTANCE *instance, voi
         }
         i32 port;
         for (port = 4; port < 10; ++port) {
-            if (devices[port].kind == 0) {
+            if (devices[port].kind == PC_INPUT_DEVICE_NONE) {
                 break;
             }
         }
@@ -898,7 +898,7 @@ extern "C" BOOL __stdcall InputEnumDevicesPc(const PC_DI_INSTANCE *instance, voi
         record->device = device;
         record->axis_count = (u8)caps.axes;
         record->deadzone = 32;
-        record->kind = 5;
+        record->kind = PC_INPUT_DEVICE_DIRECTINPUT;
         record->config_dirty = 1;
         record->product = instance->product;
         i32 length = (i32)strlen(instance->product_name);
@@ -1029,7 +1029,7 @@ void NuKeyboardOwner::Shutdown() {
                 devices[index].device = NULL;
             }
         }
-        devices[index].kind = 0;
+        devices[index].kind = PC_INPUT_DEVICE_NONE;
         devices[index].capabilities_valid = 0;
     }
     if (mouse != NULL) {
@@ -1060,7 +1060,7 @@ void PC_INPUT_RUNTIME::AutoConfigurePadsPc(i32 count) {
     for (i32 pad = 0; pad < count; ++pad) {
         i32 linked = NuPadGetPort(pad);
         for (; device < 14; ++device) {
-            if (devices[device].kind != 0 && (device < 10 || device > 13 || devices[device].action_keys_active)) {
+            if (devices[device].kind != PC_INPUT_DEVICE_NONE && (device < 10 || device > 13 || devices[device].action_keys_active)) {
                 if (device != linked) {
                     NuPadMapPlayerToPort(pad, device);
                     NuPadSetValid(device, 1);
@@ -1891,7 +1891,7 @@ void NuKeyboardOwner::RescanDevicesPc() {
             record->config_dirty = 1;
             ++device_count;
         } else {
-            record->kind = 0;
+            record->kind = PC_INPUT_DEVICE_NONE;
             record->capabilities_valid = 0;
             record->device = NULL;
         }
@@ -1905,7 +1905,7 @@ void NuKeyboardOwner::RescanDevicesPc() {
                 record->device = NULL;
             }
         }
-        record->kind = 0;
+        record->kind = PC_INPUT_DEVICE_NONE;
         record->capabilities_valid = 0;
     }
     if (nu_keyboard_owner.device != NULL) {
@@ -1916,7 +1916,7 @@ void NuKeyboardOwner::RescanDevicesPc() {
         }
         for (i32 port = 10; port < 14; ++port) {
             devices[port].device = NULL;
-            devices[port].kind = 0;
+            devices[port].kind = PC_INPUT_DEVICE_NONE;
             devices[port].capabilities_valid = 0;
         }
     }
@@ -2130,7 +2130,7 @@ extern "C" void fun_006d5ce0(i32 device, i32 auxiliary, i32 auxiliary_port) {
 
 extern "C" i32 fun_006d5d60(i32 device) {
     if (device >= 0) {
-        return ((PC_INPUT_RUNTIME *)nu_input_state)->devices[device].kind != 0;
+        return ((PC_INPUT_RUNTIME *)nu_input_state)->devices[device].kind != PC_INPUT_DEVICE_NONE;
     }
     return 0;
 }

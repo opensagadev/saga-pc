@@ -470,6 +470,10 @@ struct EdDefunctList { // size 0xc
 #define EDREF_SPLINE_DROP 0x80000003
 #define EDREF_SPLINE_CLOSED 0x80000004
 
+/* EdRef.attributes, the bits the EdRef constructor sets from the member's type name. */
+#define EDREF_ATTR_POINTER 0x40000000 /* the type name ends in '*' */
+#define EDREF_ATTR_CLASS 0x80000000   /* not a registered type: a registered class */
+
 class EdRef : public CSListLink<EdRef> { // size 0x28
   public:
     EdRef(char *type_name, char *member_name, i32 offset, i32 member_size, i32 member_attributes, EdControl *member_control, i32 group);

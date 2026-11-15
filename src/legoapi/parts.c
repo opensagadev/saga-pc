@@ -353,7 +353,8 @@ PART_PC *AddPart(ADDPART *parameters) {
         return NULL;
     }
     scanned = 0;
-    while ((Part[part_slot_cursor].active & PART_IN_USE) != 0 && (Part[part_slot_cursor].flags & 0x200) != 0 && scanned < MAXPARTS) {
+    while ((Part[part_slot_cursor].active & PART_IN_USE) != 0 && (Part[part_slot_cursor].flags & PART_FLAG_SLOT_CANNOT_BE_STOLEN) != 0 &&
+           scanned < MAXPARTS) {
         if (++part_slot_cursor == MAXPARTS) {
             part_slot_cursor = 0;
         }
@@ -451,10 +452,10 @@ PART_PC *AddPart(ADDPART *parameters) {
     for (index = 0; index < 5; ++index) {
         part->unknown_124[index] = 0;
     }
-    if ((part->flags & 0x80) != 0) {
+    if ((part->flags & PART_FLAG_ROTATE_RANDOMLY) != 0) {
         NewPartRotation(part);
     }
-    if ((part->flags & 0x100000) != 0) {
+    if ((part->flags & PART_FLAG_ORDERED_ROTATE_RANDOMLY) != 0) {
         NewPartOrderedRotation(part);
     }
     if (parameters->effect_id_58 != -1) {
@@ -488,7 +489,7 @@ PART_PC *AddPart(ADDPART *parameters) {
     part->active |= 0x1800;
     part->hostility_group = hostility_group;
     part->unknown_204 = 1;
-    if ((part->flags & 0x2000) != 0 && parameters->lighting_handle != NULL && PartRTL != NULL) {
+    if ((part->flags & PART_FLAG_REAL_TIME_LIGHTING) != 0 && parameters->lighting_handle != NULL && PartRTL != NULL) {
         part->lighting_handle = parameters->lighting_handle;
         *parameters->lighting_handle = rtlDynamicAllocTemplate((RTL_SET *)PartRTL, parameters->lighting_id);
     }
@@ -860,42 +861,62 @@ void edpartInstanceFlagsMenu(eduimenu_s *menu, eduiitem_s *unused1, u32 unused2)
     }
     edpart_instanceflags_menu = eduiMenuCreate(70, 70, 300, 250, ed_fnt, edpartCancelInstanceFlagsMenu, "Instance Flags");
     if (edpart_instanceflags_menu != NULL) {
-        eduiMenuAddItem(edpart_instanceflags_menu, eduiItemToggleCreate(1, edblack, (edpart_nearest_type->flags & 1) != 0, group++,
-                                                                        edpartChangeInstanceFlag, "Die when stopped"));
-        eduiMenuAddItem(edpart_instanceflags_menu, eduiItemToggleCreate(2, edblack, (edpart_nearest_type->flags & 2) != 0, group++,
-                                                                        edpartChangeInstanceFlag, "Collide with Characters"));
-        eduiMenuAddItem(edpart_instanceflags_menu, eduiItemToggleCreate(4, edblack, (edpart_nearest_type->flags & 4) != 0, group++,
-                                                                        edpartChangeInstanceFlag, "Interact only with Active Chars"));
-        eduiMenuAddItem(edpart_instanceflags_menu, eduiItemToggleCreate(8, edblack, (edpart_nearest_type->flags & 8) != 0, group++,
-                                                                        edpartChangeInstanceFlag, "Damage Characters"));
+        eduiMenuAddItem(edpart_instanceflags_menu, eduiItemToggleCreate(PART_FLAG_DIE_WHEN_STOPPED, edblack,
+                                                                        (edpart_nearest_type->flags & PART_FLAG_DIE_WHEN_STOPPED) != 0,
+                                                                        group++, edpartChangeInstanceFlag, "Die when stopped"));
+        eduiMenuAddItem(edpart_instanceflags_menu,
+                        eduiItemToggleCreate(PART_FLAG_COLLIDE_WITH_CHARACTERS, edblack,
+                                             (edpart_nearest_type->flags & PART_FLAG_COLLIDE_WITH_CHARACTERS) != 0, group++,
+                                             edpartChangeInstanceFlag, "Collide with Characters"));
+        eduiMenuAddItem(edpart_instanceflags_menu,
+                        eduiItemToggleCreate(PART_FLAG_ACTIVE_CHARACTERS_ONLY, edblack,
+                                             (edpart_nearest_type->flags & PART_FLAG_ACTIVE_CHARACTERS_ONLY) != 0, group++,
+                                             edpartChangeInstanceFlag, "Interact only with Active Chars"));
+        eduiMenuAddItem(edpart_instanceflags_menu, eduiItemToggleCreate(PART_FLAG_DAMAGE_CHARACTERS, edblack,
+                                                                        (edpart_nearest_type->flags & PART_FLAG_DAMAGE_CHARACTERS) != 0,
+                                                                        group++, edpartChangeInstanceFlag, "Damage Characters"));
         if (edpart_nearest_type->effect_ids[0] != 9999) {
             eduiMenuAddItem(edpart_instanceflags_menu,
-                            eduiItemToggleCreate(0x10, edblack, (edpart_nearest_type->flags & 0x10) != 0, group++, edpartChangeInstanceFlag,
-                                                 "Don't die when off-screen"));
+                            eduiItemToggleCreate(PART_FLAG_KEEP_OFF_SCREEN, edblack,
+                                                 (edpart_nearest_type->flags & PART_FLAG_KEEP_OFF_SCREEN) != 0, group++,
+                                                 edpartChangeInstanceFlag, "Don't die when off-screen"));
         }
-        eduiMenuAddItem(edpart_instanceflags_menu, eduiItemToggleCreate(0x40, edblack, (edpart_nearest_type->flags & 0x40) != 0, group++,
-                                                                        edpartChangeInstanceFlag, "Is a Collectible"));
-        eduiMenuAddItem(edpart_instanceflags_menu, eduiItemToggleCreate(0x80, edblack, (edpart_nearest_type->flags & 0x80) != 0, group++,
-                                                                        edpartChangeInstanceFlag, "Rotate Randomly"));
-        eduiMenuAddItem(edpart_instanceflags_menu, eduiItemToggleCreate(0x100000, edblack, (edpart_nearest_type->flags & 0x100000) != 0,
-                                                                        group++, edpartChangeInstanceFlag, "Ordered Rotate Randomly"));
-        eduiMenuAddItem(edpart_instanceflags_menu, eduiItemToggleCreate(0x100, edblack, (edpart_nearest_type->flags & 0x100) != 0, group++,
-                                                                        edpartChangeInstanceFlag, "No Bounce"));
-        eduiMenuAddItem(edpart_instanceflags_menu, eduiItemToggleCreate(0x200, edblack, (edpart_nearest_type->flags & 0x200) != 0, group++,
-                                                                        edpartChangeInstanceFlag, "Slot Cannot be Stolen"));
-        eduiMenuAddItem(edpart_instanceflags_menu, eduiItemToggleCreate(0x400, edblack, (edpart_nearest_type->flags & 0x400) != 0, group++,
-                                                                        edpartChangeInstanceFlag, "Ignore Terrain"));
-        eduiMenuAddItem(edpart_instanceflags_menu, eduiItemToggleCreate(0x800, edblack, (edpart_nearest_type->flags & 0x800) != 0, group++,
-                                                                        edpartChangeInstanceFlag, "Face Direction of Movement"));
-        eduiMenuAddItem(edpart_instanceflags_menu, eduiItemToggleCreate(0x1000, edblack, (edpart_nearest_type->flags & 0x1000) != 0,
-                                                                        group++, edpartChangeInstanceFlag, "Disable Draw"));
-        eduiMenuAddItem(edpart_instanceflags_menu, eduiItemToggleCreate(0x2000, edblack, (edpart_nearest_type->flags & 0x2000) != 0,
+        eduiMenuAddItem(edpart_instanceflags_menu,
+                        eduiItemToggleCreate(PART_FLAG_COLLECTIBLE, edblack, (edpart_nearest_type->flags & PART_FLAG_COLLECTIBLE) != 0,
+                                             group++, edpartChangeInstanceFlag, "Is a Collectible"));
+        eduiMenuAddItem(edpart_instanceflags_menu, eduiItemToggleCreate(PART_FLAG_ROTATE_RANDOMLY, edblack,
+                                                                        (edpart_nearest_type->flags & PART_FLAG_ROTATE_RANDOMLY) != 0,
+                                                                        group++, edpartChangeInstanceFlag, "Rotate Randomly"));
+        eduiMenuAddItem(edpart_instanceflags_menu,
+                        eduiItemToggleCreate(PART_FLAG_ORDERED_ROTATE_RANDOMLY, edblack,
+                                             (edpart_nearest_type->flags & PART_FLAG_ORDERED_ROTATE_RANDOMLY) != 0, group++,
+                                             edpartChangeInstanceFlag, "Ordered Rotate Randomly"));
+        eduiMenuAddItem(edpart_instanceflags_menu,
+                        eduiItemToggleCreate(PART_FLAG_NO_BOUNCE, edblack, (edpart_nearest_type->flags & PART_FLAG_NO_BOUNCE) != 0, group++,
+                                             edpartChangeInstanceFlag, "No Bounce"));
+        eduiMenuAddItem(edpart_instanceflags_menu, eduiItemToggleCreate(PART_FLAG_SLOT_CANNOT_BE_STOLEN, edblack,
+                                                                        (edpart_nearest_type->flags & PART_FLAG_SLOT_CANNOT_BE_STOLEN) != 0,
+                                                                        group++, edpartChangeInstanceFlag, "Slot Cannot be Stolen"));
+        eduiMenuAddItem(edpart_instanceflags_menu, eduiItemToggleCreate(PART_FLAG_IGNORE_TERRAIN, edblack,
+                                                                        (edpart_nearest_type->flags & PART_FLAG_IGNORE_TERRAIN) != 0,
+                                                                        group++, edpartChangeInstanceFlag, "Ignore Terrain"));
+        eduiMenuAddItem(edpart_instanceflags_menu,
+                        eduiItemToggleCreate(PART_FLAG_FACE_MOVEMENT, edblack, (edpart_nearest_type->flags & PART_FLAG_FACE_MOVEMENT) != 0,
+                                             group++, edpartChangeInstanceFlag, "Face Direction of Movement"));
+        eduiMenuAddItem(edpart_instanceflags_menu,
+                        eduiItemToggleCreate(PART_FLAG_DISABLE_DRAW, edblack, (edpart_nearest_type->flags & PART_FLAG_DISABLE_DRAW) != 0,
+                                             group++, edpartChangeInstanceFlag, "Disable Draw"));
+        eduiMenuAddItem(edpart_instanceflags_menu, eduiItemToggleCreate(PART_FLAG_REAL_TIME_LIGHTING, edblack,
+                                                                        (edpart_nearest_type->flags & PART_FLAG_REAL_TIME_LIGHTING) != 0,
                                                                         group++, edpartChangeInstanceFlag, "Real Time Lighting"));
-        eduiMenuAddItem(edpart_instanceflags_menu, eduiItemToggleCreate(0x4000, edblack, (edpart_nearest_type->flags & 0x4000) != 0,
+        eduiMenuAddItem(edpart_instanceflags_menu, eduiItemToggleCreate(PART_FLAG_IGNORE_CREATURE, edblack,
+                                                                        (edpart_nearest_type->flags & PART_FLAG_IGNORE_CREATURE) != 0,
                                                                         group++, edpartChangeInstanceFlag, "Ignore Creature"));
-        eduiMenuAddItem(edpart_instanceflags_menu, eduiItemToggleCreate(0x8000, edblack, (edpart_nearest_type->flags & 0x8000) != 0,
-                                                                        group++, edpartChangeInstanceFlag, "Thrown"));
-        eduiMenuAddItem(edpart_instanceflags_menu, eduiItemToggleCreate(0x10000, edblack, (edpart_nearest_type->flags & 0x10000) != 0,
+        eduiMenuAddItem(edpart_instanceflags_menu,
+                        eduiItemToggleCreate(PART_FLAG_THROWN, edblack, (edpart_nearest_type->flags & PART_FLAG_THROWN) != 0, group++,
+                                             edpartChangeInstanceFlag, "Thrown"));
+        eduiMenuAddItem(edpart_instanceflags_menu, eduiItemToggleCreate(PART_FLAG_CAN_DAMAGE_OWNER, edblack,
+                                                                        (edpart_nearest_type->flags & PART_FLAG_CAN_DAMAGE_OWNER) != 0,
                                                                         group++, edpartChangeInstanceFlag, "Can Damage Owner"));
     }
     eduiMenuAttach(menu, edpart_instanceflags_menu);
@@ -925,8 +946,9 @@ void edpartDebrisSettingsMenu(eduimenu_s *menu, eduiitem_s *unused1, u32 unused2
             eduiMenuAddItem(edpart_debrissettings_menu, eduiItemSelCreate(1, edblack, 0, 0, edpartImpactDebrisMenu, "Impact Debris..."));
             eduiMenuAddItem(edpart_debrissettings_menu, eduiItemSelCreate(1, edblack, 0, 0, edpartDieDebrisMenu, "Die Debris..."));
             eduiMenuAddItem(edpart_debrissettings_menu, eduiItemSelCreate(1, edblack, 0, 0, edpartImpactPartMenu, "Impact Part..."));
-            eduiMenuAddItem(edpart_debrissettings_menu, eduiItemToggleCreate(0x200000, edblack, (edpart_nearest_type->flags >> 21) & 1, 1,
-                                                                             edpartChangeInstanceFlag, "Debris stops when Part stops"));
+            eduiMenuAddItem(edpart_debrissettings_menu,
+                            eduiItemToggleCreate(PART_FLAG_DEBRIS_STOPS_WITH_PART, edblack, (edpart_nearest_type->flags >> 21) & 1, 1,
+                                                 edpartChangeInstanceFlag, "Debris stops when Part stops"));
             eduiMenuAddItem(edpart_debrissettings_menu, eduiItemSelCreate(1, edblack, 0, 0, edpartDebrisScaleMenu, "Debris Scale..."));
         }
         eduiMenuAttach(menu, edpart_debrissettings_menu);
@@ -1297,7 +1319,9 @@ PART_PC *TargetPart(GAMEOBJECT *object, NUVEC *position, NUVEC *direction, f32 r
         }
     }
     for (i = 0; i < MAXPARTS; ++i, ++part) {
-        if ((part->active & PART_IN_USE) == 0 || ((part->flags & 0x8000000) == 0 && (part->flags & 0xa) != 0xa)) {
+        if ((part->active & PART_IN_USE) == 0 ||
+            ((part->flags & 0x8000000) == 0 && (part->flags & (PART_FLAG_COLLIDE_WITH_CHARACTERS | PART_FLAG_DAMAGE_CHARACTERS)) !=
+                                                   (PART_FLAG_COLLIDE_WITH_CHARACTERS | PART_FLAG_DAMAGE_CHARACTERS))) {
             continue;
         }
         if (part->position.x < minimum.x || part->position.x > maximum.x || part->position.z < minimum.z || part->position.z > maximum.z) {
@@ -4682,7 +4706,7 @@ void DrawParts(i32 keep_offscreen) {
     NUMTX *matrix;
     NUVEC scale;
     for (i = 0; i < MAXPARTS; ++i, ++part) {
-        if ((part->active & PART_IN_USE) == 0 || (part->flags & 0x1000) != 0) {
+        if ((part->active & PART_IN_USE) == 0 || (part->flags & PART_FLAG_DISABLE_DRAW) != 0) {
             continue;
         }
         if (part->draw_fn != NULL && part->draw_fn(part) == 0) {
@@ -4708,7 +4732,7 @@ void DrawParts(i32 keep_offscreen) {
         }
         if (part->source_special != NULL && NuSpecialDrawAt(&part->special, matrix) != 0) {
             part->active |= 0x600;
-        } else if (keep_offscreen == 0 && ((part->flags & 0x10) == 0 || (part->active & 0x100) != 0)) {
+        } else if (keep_offscreen == 0 && ((part->flags & PART_FLAG_KEEP_OFF_SCREEN) == 0 || (part->active & 0x100) != 0)) {
             KillPart(part, 0);
         }
     }
@@ -4773,7 +4797,7 @@ void UpdateParts(f32 time) {
         part->scale_time += time;
         if ((part->active & 2) == 0) {
             f32 movement_time = time;
-            if ((part->flags & 0x400) == 0) {
+            if ((part->flags & PART_FLAG_IGNORE_TERRAIN) == 0) {
                 if (time >= part->unknown_f4) {
                     if (part->unknown_e0 < part->radius) {
                         part->active = (part->active & ~0x40) | 0x20;
@@ -4784,12 +4808,12 @@ void UpdateParts(f32 time) {
                         if ((part->flags & 0x80000) != 0 && (part->active & 0x10) != 0 && part_platimpactcnt < 4) {
                             PartPlatformImpactListPc[part_platimpactcnt++] = state->platform_id;
                         }
-                        if ((part->flags & 0x100) != 0) {
+                        if ((part->flags & PART_FLAG_NO_BOUNCE) != 0) {
                             part->active |= 2;
                             if (part->stop_fn != NULL) {
                                 part->stop_fn(part);
                             }
-                            if ((part->flags & 1) != 0 || (part->active & 0x10) != 0) {
+                            if ((part->flags & PART_FLAG_DIE_WHEN_STOPPED) != 0 || (part->active & 0x10) != 0) {
                                 KillPart(part, 0);
                             }
                         } else {
@@ -4798,10 +4822,10 @@ void UpdateParts(f32 time) {
                             part->position.y = part->impact_position.y;
                             part->position.z = part->impact_position.z;
                             FullReflect(&part->impact_normal, &part->velocity, &part->velocity);
-                            if ((part->flags & 0x80) != 0) {
+                            if ((part->flags & PART_FLAG_ROTATE_RANDOMLY) != 0) {
                                 NewPartRotation(part);
                             }
-                            if ((part->flags & 0x100000) != 0) {
+                            if ((part->flags & PART_FLAG_ORDERED_ROTATE_RANDOMLY) != 0) {
                                 NewPartOrderedRotation(part);
                             }
                             part->velocity.x *= part->field_ec;
@@ -4815,7 +4839,8 @@ void UpdateParts(f32 time) {
                                     if (part->stop_fn != NULL) {
                                         part->stop_fn(part);
                                     }
-                                    if ((part->flags & 1) != 0 || (part->active & 0x10) != 0 || (part->active & 0x100) != 0) {
+                                    if ((part->flags & PART_FLAG_DIE_WHEN_STOPPED) != 0 || (part->active & 0x10) != 0 ||
+                                        (part->active & 0x100) != 0) {
                                         KillPart(part, 0);
                                     }
                                 } else if ((part->active & 0x100) != 0) {
@@ -4881,7 +4906,7 @@ void UpdateParts(f32 time) {
                     part->unknown_e0 = part->time_step / PARTSCALEUPTIME * part->radius;
                 }
             }
-            if ((part->flags & 0x80) != 0) {
+            if ((part->flags & PART_FLAG_ROTATE_RANDOMLY) != 0) {
                 for (axis = 0; axis < 2; ++axis) {
                     angle = (i32)((f32)part->unknown_124[3 + axis] * time);
                     switch (part->rotation_axes[axis]) {
@@ -4897,7 +4922,7 @@ void UpdateParts(f32 time) {
                     }
                 }
             }
-            if ((part->flags & 0x100000) != 0) {
+            if ((part->flags & PART_FLAG_ORDERED_ROTATE_RANDOMLY) != 0) {
                 if (part->unknown_124[0] != 0) {
                     NuMtxPreRotateX(&part->transform, (i32)((f64)part->unknown_124[0] * time));
                 }
@@ -4908,7 +4933,7 @@ void UpdateParts(f32 time) {
                     NuMtxPreRotateZ(&part->transform, (i32)((f64)part->unknown_124[2] * time));
                 }
             }
-            if ((part->flags & 0x800) != 0) {
+            if ((part->flags & PART_FLAG_FACE_MOVEMENT) != 0) {
                 direction.x = -part->velocity.x;
                 direction.y = -part->velocity.y;
                 direction.z = -part->velocity.z;
@@ -4918,7 +4943,7 @@ void UpdateParts(f32 time) {
             }
         }
         if ((part->active & PART_IN_USE) != 0) {
-            if ((part->flags & 2) != 0 && part->collision_fn != NULL) {
+            if ((part->flags & PART_FLAG_COLLIDE_WITH_CHARACTERS) != 0 && part->collision_fn != NULL) {
                 part->collision_fn(part);
             }
             if ((part->active & PART_IN_USE) != 0) {
@@ -4942,24 +4967,27 @@ void UpdateParts(f32 time) {
             NuMtxLookAtY(&mtx, &velocity);
             DebrisOrientationMtx(*part->debris_handle, &mtx);
             DebrisEmitterPos(*part->debris_handle, part->position.x, part->position.y, part->position.z);
-            if (((part->flags & 0x200000) != 0 && (part->active & 2) != 0) || (part->flags & 0x1000) != 0) {
+            if (((part->flags & PART_FLAG_DEBRIS_STOPS_WITH_PART) != 0 && (part->active & 2) != 0) ||
+                (part->flags & PART_FLAG_DISABLE_DRAW) != 0) {
                 DebrisStatusAlwaysOff(part->debris_handle);
             }
         }
         if (time != 0.0f) {
-            if ((part->flags & 0x40000) != 0 && part->effect_id_1e0 != -1 && !((part->flags & 0x200000) != 0 && (part->active & 2) != 0) &&
-                (part->flags & 0x1000) == 0) {
+            if ((part->flags & 0x40000) != 0 && part->effect_id_1e0 != -1 &&
+                !((part->flags & PART_FLAG_DEBRIS_STOPS_WITH_PART) != 0 && (part->active & 2) != 0) &&
+                (part->flags & PART_FLAG_DISABLE_DRAW) == 0) {
                 AddScaledVariableShotDebrisEffect1(part->effect_id_1e0, &part->position, (i32)(part->unknown_1e8), time, 0, 0, NULL,
                                                    part->effect_scale);
             }
-            if ((part->flags & 0x40000) != 0 && part->effect_id_1e4 != -1 && !((part->flags & 0x200000) != 0 && (part->active & 2) != 0) &&
-                (part->flags & 0x1000) == 0) {
+            if ((part->flags & 0x40000) != 0 && part->effect_id_1e4 != -1 &&
+                !((part->flags & PART_FLAG_DEBRIS_STOPS_WITH_PART) != 0 && (part->active & 2) != 0) &&
+                (part->flags & PART_FLAG_DISABLE_DRAW) == 0) {
                 AddScaledVariableShotDebrisEffect1(part->effect_id_1e4, &part->position, (i32)(part->unknown_1ec), time, 0, 0, NULL,
                                                    part->effect_scale);
             }
         }
         if (part->lighting_handle != NULL) {
-            if ((part->flags & 0x1000) == 0) {
+            if ((part->flags & PART_FLAG_DISABLE_DRAW) == 0) {
                 rtlDynamicSetPos(*part->lighting_handle, &part->position);
             } else {
                 NUVEC offscreen;

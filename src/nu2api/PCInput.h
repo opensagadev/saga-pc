@@ -348,6 +348,16 @@ struct PC_INPUT_BINDING { // size 0x4
     i16 value;            // 0x2
 };
 
+/* PC_INPUT_DEVICE.kind: InitKeyboardProfiles names devices 10-13 (KeyboardMouse1, Keyboard1, KeyboardMouse2,
+ * Keyboard2); a joystick port is a DirectInput device (its DIDEVCAPS) or an XInput pad. */
+#define PC_INPUT_DEVICE_NONE 0
+#define PC_INPUT_DEVICE_KEYBOARD_MOUSE1 1
+#define PC_INPUT_DEVICE_KEYBOARD_MOUSE2 2
+#define PC_INPUT_DEVICE_KEYBOARD1 3
+#define PC_INPUT_DEVICE_KEYBOARD2 4
+#define PC_INPUT_DEVICE_DIRECTINPUT 5
+#define PC_INPUT_DEVICE_XINPUT 6
+
 struct PC_INPUT_DEVICE {      // size 0x17c
     i32 kind;                 // 0x000
     NuKeyboardDevice *device; // 0x004

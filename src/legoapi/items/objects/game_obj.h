@@ -86,6 +86,28 @@ typedef void (*PART_KILL)(struct PART_PC *, i32);
  * without it. */
 #define PART_IN_USE 0x1
 
+/* PART_PC.flags, ADDPART.flags and the part type's flags: the part editor's "Instance Flags" and "Debris Settings"
+ * toggles (parts.c), labels in the comments. */
+#define PART_FLAG_DIE_WHEN_STOPPED 0x1             /* "Die when stopped" */
+#define PART_FLAG_COLLIDE_WITH_CHARACTERS 0x2      /* "Collide with Characters" */
+#define PART_FLAG_ACTIVE_CHARACTERS_ONLY 0x4       /* "Interact only with Active Chars" */
+#define PART_FLAG_DAMAGE_CHARACTERS 0x8            /* "Damage Characters" */
+#define PART_FLAG_KEEP_OFF_SCREEN 0x10             /* "Don't die when off-screen" */
+#define PART_FLAG_COLLECTIBLE 0x40                 /* "Is a Collectible" */
+#define PART_FLAG_ROTATE_RANDOMLY 0x80             /* "Rotate Randomly" */
+#define PART_FLAG_NO_BOUNCE 0x100                  /* "No Bounce" */
+#define PART_FLAG_SLOT_CANNOT_BE_STOLEN 0x200      /* "Slot Cannot be Stolen" */
+#define PART_FLAG_IGNORE_TERRAIN 0x400             /* "Ignore Terrain" */
+#define PART_FLAG_FACE_MOVEMENT 0x800              /* "Face Direction of Movement" */
+#define PART_FLAG_DISABLE_DRAW 0x1000              /* "Disable Draw" */
+#define PART_FLAG_REAL_TIME_LIGHTING 0x2000        /* "Real Time Lighting" */
+#define PART_FLAG_IGNORE_CREATURE 0x4000           /* "Ignore Creature" */
+#define PART_FLAG_THROWN 0x8000                    /* "Thrown" */
+#define PART_FLAG_CAN_DAMAGE_OWNER 0x10000         /* "Can Damage Owner" */
+#define PART_FLAG_ORDERED_ROTATE_RANDOMLY 0x100000 /* "Ordered Rotate Randomly" */
+#define PART_FLAG_DEBRIS_STOPS_WITH_PART 0x200000  /* "Debris stops when Part stops" */
+#define PART_FLAG_TRIGGER_INSIDE_CUTOFF 0x400000   /* "Trigger effect inside cutoff" */
+
 struct PART_PC { // size 0x220
 
     union { // size 0x40

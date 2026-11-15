@@ -42,6 +42,14 @@ typedef struct GAMEPAD {           // size 0x5c
     u16 runtime_flags;        // 0x5a
 } GAMEPAD;
 
+/* GAMEPAD.runtime_flags. The AI script actions set the AI bits on the pads of AI-driven characters; the waggle bit is
+ * MOVEPLAYER_PAD_BITS.waggle, written from GamePad_Waggle. */
+#define GAMEPAD_AI_ATTACK 0x2          /* AttackOpponent: attack where the character stands */
+#define GAMEPAD_AI_USE_FORCE 0x4       /* UseForce, HelpWithTriggers on a force object */
+#define GAMEPAD_WAGGLE 0x8             /* GamePad_Waggle: the stick is being waggled */
+#define GAMEPAD_AI_FORCE_PUSH 0x10     /* UseForce in the force push context, ForcePush */
+#define GAMEPAD_MAGNITUDE_CHANGED 0x40 /* input_magnitude differs from previous_input_magnitude */
+
 typedef struct blowup_target_s { // size 0x58
     u8 unknown_00[0x4c];         // 0x00
     NUVEC mid_position;          // 0x4c

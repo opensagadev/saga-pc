@@ -849,11 +849,13 @@ extern "C" {
         PART_PC *part = Part;
         i32 i;
         i32 point;
+
         for (i = 0; i < MAXPARTS; ++i, ++part) {
             if (!(part->active & PART_IN_USE)) {
                 continue;
             }
-            if (!(part->flags & 0x08000000) && (part->flags & 0xa) != 0xa) {
+            if (!(part->flags & 0x08000000) && (part->flags & (PART_FLAG_COLLIDE_WITH_CHARACTERS | PART_FLAG_DAMAGE_CHARACTERS)) !=
+                                                   (PART_FLAG_COLLIDE_WITH_CHARACTERS | PART_FLAG_DAMAGE_CHARACTERS)) {
                 continue;
             }
             if (part->collision_max.x < minimum->x || part->collision_min.x > maximum->x || part->collision_max.z < minimum->z ||

@@ -37,7 +37,7 @@ void PC_SHADER_MATERIAL_FILTER_VIEW::Initialize(const PC_SHADER_FILTER_DESC_VIEW
         second_path = 0;
     }
     layer_count = variant == 0;
-    if (first_path != 0 || (variant == 0 && (desc->layer_flags & 0x10000) != 0)) {
+    if (first_path != 0 || (variant == 0 && (desc->layer_flags & PC_SHADER_LAYER_GLOW) != 0)) {
         ++layer_count;
     }
     if (second_path != 0) {
@@ -53,11 +53,11 @@ bool PC_SHADER_MATERIAL_FILTER_VIEW::UnfilteredHasLayer(i32 which) const {
         case 0:
             return true;
         case 1:
-            return (descriptor->layer_flags & 0x40) != 0 && descriptor->blend_ops[0] != 0xff;
+            return (descriptor->layer_flags & PC_SHADER_LAYER_LAYER1) != 0 && descriptor->blend_ops[0] != 0xff;
         case 2:
-            return (descriptor->layer_flags & 0x80) != 0 && descriptor->blend_ops[1] != 0xff;
+            return (descriptor->layer_flags & PC_SHADER_LAYER_LAYER2) != 0 && descriptor->blend_ops[1] != 0xff;
         case 3:
-            return (descriptor->layer_flags & 0x100) != 0 && descriptor->blend_ops[2] != 0xff;
+            return (descriptor->layer_flags & PC_SHADER_LAYER_LAYER3) != 0 && descriptor->blend_ops[2] != 0xff;
         default:
             return false;
     }
@@ -180,43 +180,43 @@ i32 PC_SHADER_MATERIAL_FILTER_VIEW::HasLayerFlag20() const {
     if (variant != 0) {
         return 0;
     }
-    return (descriptor->layer_flags & 0x100000) != 0;
+    return (descriptor->layer_flags & PC_SHADER_LAYER_REFLECTIVITY2) != 0;
 }
 
 i32 PC_SHADER_MATERIAL_FILTER_VIEW::HasLayerFlag1() const {
     if (variant != 0) {
         return 0;
     }
-    return (descriptor->layer_flags & 2) != 0;
+    return (descriptor->layer_flags & PC_SHADER_LAYER_PARALLAX_MAP) != 0;
 }
 
 i32 PC_SHADER_MATERIAL_FILTER_VIEW::HasNormalLayer1() const {
-    return variant == 0 && (descriptor->layer_flags & 2) != 0 && descriptor->normal_threshold > parameter;
+    return variant == 0 && (descriptor->layer_flags & PC_SHADER_LAYER_PARALLAX_MAP) != 0 && descriptor->normal_threshold > parameter;
 }
 
 i32 PC_SHADER_MATERIAL_FILTER_VIEW::HasLayerFlag0() const {
     if (variant != 0) {
         return 0;
     }
-    return (descriptor->layer_flags & 1) != 0;
+    return (descriptor->layer_flags & PC_SHADER_LAYER_NORMAL_MAP) != 0;
 }
 
 i32 PC_SHADER_MATERIAL_FILTER_VIEW::HasNormalLayer0() const {
-    return variant == 0 && (descriptor->layer_flags & 1) != 0 && descriptor->normal_threshold > parameter;
+    return variant == 0 && (descriptor->layer_flags & PC_SHADER_LAYER_NORMAL_MAP) != 0 && descriptor->normal_threshold > parameter;
 }
 
 i32 PC_SHADER_MATERIAL_FILTER_VIEW::HasLayerFlag14() const {
     if (variant != 0) {
         return 0;
     }
-    return (descriptor->layer_flags & 0x4000) != 0;
+    return (descriptor->layer_flags & PC_SHADER_LAYER_VTF_NORMAL_MAP) != 0;
 }
 
 i32 PC_SHADER_MATERIAL_FILTER_VIEW::HasLayerFlag13() const {
     if (variant != 0) {
         return 0;
     }
-    return (descriptor->layer_flags & 0x2000) != 0;
+    return (descriptor->layer_flags & PC_SHADER_LAYER_VERTEX_DISPLACEMENT) != 0;
 }
 
 i32 PC_SHADER_MATERIAL_FILTER_VIEW::HasFlag31With23() const {
@@ -240,11 +240,11 @@ bool PC_SHADER_MATERIAL_FILTER_VIEW::HasEnvironmentTexture() const {
 }
 
 i32 PC_SHADER_MATERIAL_FILTER_VIEW::HasSurfaceLayerAbove() const {
-    return variant == 0 && (descriptor->layer_flags & 0x100000) != 0 && descriptor->surface_threshold > parameter;
+    return variant == 0 && (descriptor->layer_flags & PC_SHADER_LAYER_REFLECTIVITY2) != 0 && descriptor->surface_threshold > parameter;
 }
 
 i32 PC_SHADER_MATERIAL_FILTER_VIEW::HasSurfaceLayerAtOrBelow() const {
-    return variant == 0 && (descriptor->layer_flags & 0x100000) != 0 && descriptor->surface_threshold <= parameter;
+    return variant == 0 && (descriptor->layer_flags & PC_SHADER_LAYER_REFLECTIVITY2) != 0 && descriptor->surface_threshold <= parameter;
 }
 
 #undef SHADER_VERTEX_FORMAT_HAS_UV_SETS
@@ -253,60 +253,61 @@ i32 PC_SHADER_MATERIAL_FILTER_VIEW::HasAnisoFlip() const {
     if (variant != 0) {
         return 0;
     }
-    return (descriptor->layer_flags & 0x2000000) != 0;
+    return (descriptor->layer_flags & PC_SHADER_LAYER_ANISO_FLIP) != 0;
 }
 
 i32 PC_SHADER_MATERIAL_FILTER_VIEW::HasPhongLighting() const {
     if (variant != 0) {
         return 0;
     }
-    return (descriptor->layer_flags & 8) != 0;
+    return (descriptor->layer_flags & PC_SHADER_LAYER_PHONG) != 0;
 }
 
 i32 PC_SHADER_MATERIAL_FILTER_VIEW::HasLayerFlag2() const {
     if (variant != 0) {
         return 0;
     }
-    return (descriptor->layer_flags & 0x4) != 0;
+    return (descriptor->layer_flags & PC_SHADER_LAYER_FRESNEL) != 0;
 }
 
 i32 PC_SHADER_MATERIAL_FILTER_VIEW::HasLayerFlag5() const {
     if (variant != 0) {
         return 0;
     }
-    return (descriptor->layer_flags & 0x20) != 0;
+    return (descriptor->layer_flags & PC_SHADER_LAYER_ENVMAP_CUBE) != 0;
 }
 
 i32 PC_SHADER_MATERIAL_FILTER_VIEW::HasLayerFlags5And15() const {
-    return variant == 0 && (descriptor->layer_flags & 0x20) != 0 && (descriptor->layer_flags & 0x8000) != 0;
+    return variant == 0 && (descriptor->layer_flags & PC_SHADER_LAYER_ENVMAP_CUBE) != 0 &&
+           (descriptor->layer_flags & PC_SHADER_LAYER_SHINEMAP) != 0;
 }
 
 i32 PC_SHADER_MATERIAL_FILTER_VIEW::HasLayerFlag15() const {
     if (variant != 0) {
         return 0;
     }
-    return (descriptor->layer_flags & 0x8000) != 0;
+    return (descriptor->layer_flags & PC_SHADER_LAYER_SHINEMAP) != 0;
 }
 
 i32 PC_SHADER_MATERIAL_FILTER_VIEW::HasLayerFlag10() const {
     if (variant != 0) {
         return 0;
     }
-    return (descriptor->layer_flags & 0x400) != 0;
+    return (descriptor->layer_flags & PC_SHADER_LAYER_REFRACTION) != 0;
 }
 
 i32 PC_SHADER_MATERIAL_FILTER_VIEW::HasLayerFlag21() const {
     if (variant != 0) {
         return 0;
     }
-    return (descriptor->layer_flags & 0x200000) != 0;
+    return (descriptor->layer_flags & PC_SHADER_LAYER_DAPPLE) != 0;
 }
 
 i32 PC_SHADER_MATERIAL_FILTER_VIEW::HasLayerFlag4() const {
     if (variant != 0) {
         return 0;
     }
-    return (descriptor->layer_flags & 0x10) != 0;
+    return (descriptor->layer_flags & PC_SHADER_LAYER_ANISO) != 0;
 }
 
 bool PC_SHADER_MATERIAL_FILTER_VIEW::HasNoExtraLayer() const {
@@ -317,14 +318,14 @@ i32 PC_SHADER_MATERIAL_FILTER_VIEW::HasLayerFlag17() const {
     if (variant != 0) {
         return 0;
     }
-    return (descriptor->layer_flags & 0x20000) != 0;
+    return (descriptor->layer_flags & PC_SHADER_LAYER_GOOCH) != 0;
 }
 
 i32 PC_SHADER_MATERIAL_FILTER_VIEW::HasLayerFlag19() const {
     if (variant != 0) {
         return 0;
     }
-    return (descriptor->layer_flags & 0x80000) != 0;
+    return (descriptor->layer_flags & PC_SHADER_LAYER_ENVMAP_LIGHTING) != 0;
 }
 
 bool PC_SHADER_MATERIAL_FILTER_VIEW::HasNoExtraLighting() const {
@@ -342,25 +343,25 @@ i32 PC_SHADER_MATERIAL_FILTER_VIEW::HasLayerFlag30() const {
     if (variant != 0) {
         return 0;
     }
-    return (descriptor->layer_flags & 0x40000000) != 0;
+    return (descriptor->layer_flags & PC_SHADER_LAYER_LEGO) != 0;
 }
 
 i32 PC_SHADER_MATERIAL_FILTER_VIEW::HasLayerFlag9() const {
     if (variant != 0) {
         return 0;
     }
-    return (descriptor->layer_flags & 0x200) != 0;
+    return (descriptor->layer_flags & PC_SHADER_LAYER_WATER) != 0;
 }
 
 i32 PC_SHADER_MATERIAL_FILTER_VIEW::HasLayerFlag29() const {
     if (variant != 0) {
         return 0;
     }
-    return (descriptor->layer_flags & 0x20000000) != 0;
+    return (descriptor->layer_flags & PC_SHADER_LAYER_REFRACTED_GLASS) != 0;
 }
 
 i32 PC_SHADER_MATERIAL_FILTER_VIEW::HasUnfilteredLayerFlag22() const {
-    return (descriptor->layer_flags & 0x400000) != 0;
+    return (descriptor->layer_flags & PC_SHADER_LAYER_WIND) != 0;
 }
 
 i32 PC_SHADER_MATERIAL_FILTER_VIEW::IsVariantOrLayerFlag12() const {
@@ -371,14 +372,14 @@ i32 PC_SHADER_MATERIAL_FILTER_VIEW::HasLayerFlag28() const {
     if (variant != 0) {
         return 0;
     }
-    return (descriptor->layer_flags & 0x10000000) != 0;
+    return (descriptor->layer_flags & PC_SHADER_LAYER_FRACTAL) != 0;
 }
 
 i32 PC_SHADER_MATERIAL_FILTER_VIEW::HasLayerFlag27() const {
     if (variant != 0) {
         return 0;
     }
-    return (descriptor->layer_flags & 0x8000000) != 0;
+    return (descriptor->layer_flags & PC_SHADER_LAYER_EDGE_LIGHTING) != 0;
 }
 
 i32 PC_SHADER_MATERIAL_FILTER_VIEW::HasSelector0() const {
@@ -406,7 +407,7 @@ void ShaderManagerHLSLPc::AdaptDescriptor(const PC_SHADER_FILTER_DESC_VIEW *inpu
     PC_SHADER_FILTER_DESC_VIEW *desc = const_cast<PC_SHADER_FILTER_DESC_VIEW *>(input);
     PC_SHADER_FILTER_MATERIAL_VIEW *material = const_cast<PC_SHADER_FILTER_MATERIAL_VIEW *>(input_material);
     if ((desc->vertex_format & 0x4000000) != 0) {
-        desc->layer_flags |= 0x80000000;
+        desc->layer_flags |= PC_SHADER_LAYER_PRELIGHT_FX;
         desc->flags |= 0x200000;
     }
     i32 version = compiler->dictionary.profile;
@@ -423,19 +424,19 @@ void ShaderManagerHLSLPc::AdaptDescriptor(const PC_SHADER_FILTER_DESC_VIEW *inpu
             desc->layer_flags &= 0xbffbfffb;
             if ((desc->flags & 0x20) != 0) {
                 desc->flags &= ~8U;
-                desc->layer_flags &= ~8U;
+                desc->layer_flags &= ~PC_SHADER_LAYER_PHONG;
             }
             if ((desc->flags & 0x20) != 0) {
                 desc->flags &= ~0x20000U;
-                desc->layer_flags &= ~0x8000U;
+                desc->layer_flags &= ~PC_SHADER_LAYER_SHINEMAP;
             }
             if ((desc->flags & 0x20) != 0) {
                 desc->flags &= ~3U;
-                desc->layer_flags &= ~3U;
+                desc->layer_flags &= ~(PC_SHADER_LAYER_NORMAL_MAP | PC_SHADER_LAYER_PARALLAX_MAP);
             }
-            if ((desc->flags & 0x20000) != 0 || (desc->layer_flags & 0x8000) != 0) {
+            if ((desc->flags & 0x20000) != 0 || (desc->layer_flags & PC_SHADER_LAYER_SHINEMAP) != 0) {
                 desc->flags &= ~8U;
-                desc->layer_flags &= ~8U;
+                desc->layer_flags &= ~PC_SHADER_LAYER_PHONG;
             }
             if ((desc->flags & 3) != 0) {
                 desc->flags &= 0xbfffffef;
@@ -443,55 +444,55 @@ void ShaderManagerHLSLPc::AdaptDescriptor(const PC_SHADER_FILTER_DESC_VIEW *inpu
             }
             if ((desc->flags & 2) != 0) {
                 desc->flags = (desc->flags & ~2U) | 1;
-                desc->layer_flags = (desc->layer_flags & ~2U) | 1;
+                desc->layer_flags = (desc->layer_flags & ~PC_SHADER_LAYER_PARALLAX_MAP) | PC_SHADER_LAYER_NORMAL_MAP;
             }
             if ((desc->flags & 0x60) == 0x60) {
                 desc->flags &= ~1U;
-                desc->layer_flags &= ~1U;
+                desc->layer_flags &= ~PC_SHADER_LAYER_NORMAL_MAP;
             }
             if ((desc->flags & 0x80) != 0) {
                 desc->flags &= ~1U;
-                desc->layer_flags &= ~1U;
+                desc->layer_flags &= ~PC_SHADER_LAYER_NORMAL_MAP;
             }
             if ((desc->flags & 0x25) == 0x25) {
                 desc->flags &= ~1U;
-                desc->layer_flags &= ~1U;
+                desc->layer_flags &= ~PC_SHADER_LAYER_NORMAL_MAP;
             }
             if ((desc->flags & 1) != 0 && desc->normal_threshold != 0) {
                 desc->flags &= ~1U;
-                desc->layer_flags &= ~1U;
+                desc->layer_flags &= ~PC_SHADER_LAYER_NORMAL_MAP;
             }
             desc->flags &= 0xffff9bff;
             desc->layer_flags &= 0xffff9bff;
-            if ((desc->layer_flags & 0x4000000) != 0 && (desc->layer_flags & 8) != 0 && (desc->layer_flags & 0x80000000) != 0 &&
-                (desc->layer_flags & 1) != 0) {
+            if ((desc->layer_flags & 0x4000000) != 0 && (desc->layer_flags & PC_SHADER_LAYER_PHONG) != 0 &&
+                (desc->layer_flags & PC_SHADER_LAYER_PRELIGHT_FX) != 0 && (desc->layer_flags & PC_SHADER_LAYER_NORMAL_MAP) != 0) {
                 desc->flags &= ~8U;
-                desc->layer_flags &= ~8U;
+                desc->layer_flags &= ~PC_SHADER_LAYER_PHONG;
             }
             desc->flags &= 0xfdffffef;
             desc->layer_flags &= 0xffefffef;
             if ((desc->flags & 0x49) == 0x49) {
                 desc->flags &= ~1U;
-                desc->layer_flags &= ~1U;
+                desc->layer_flags &= ~PC_SHADER_LAYER_NORMAL_MAP;
             }
             if ((desc->flags & 0x100) != 0 && (desc->flags & 8) != 0) {
                 desc->flags &= ~8U;
-                desc->layer_flags &= ~8U;
+                desc->layer_flags &= ~PC_SHADER_LAYER_PHONG;
             }
             if ((desc->flags & 0x80201000) == 0x80201000) {
                 desc->flags &= ~9U;
-                desc->layer_flags &= ~9U;
+                desc->layer_flags &= ~(PC_SHADER_LAYER_NORMAL_MAP | PC_SHADER_LAYER_PHONG);
             }
             desc->flags &= 0xfff7ffff;
             desc->layer_flags &= 0xe7feffff;
             break;
         case 1: {
-            bool layer = (desc->layer_flags & 0x400) != 0;
+            bool layer = (desc->layer_flags & PC_SHADER_LAYER_REFRACTION) != 0;
             if ((desc->flags & 0x40200) == 0) {
                 desc->flags &= ~0x400U;
             }
-            desc->layer_flags &= ~0x400U;
-            if (layer && (desc->layer_flags & 0x400) == 0 && (material->blend_flags & 0x700000) != 0x100000) {
+            desc->layer_flags &= ~PC_SHADER_LAYER_REFRACTION;
+            if (layer && (desc->layer_flags & PC_SHADER_LAYER_REFRACTION) == 0 && (material->blend_flags & 0x700000) != 0x100000) {
                 material->blend_flags &= 0x807fffff;
             }
             if ((desc->flags & 0x4000) != 0) {
@@ -502,21 +503,21 @@ void ShaderManagerHLSLPc::AdaptDescriptor(const PC_SHADER_FILTER_DESC_VIEW *inpu
             if ((desc->flags & 0x10000) == 0) {
                 if ((desc->flags & 0x20) != 0) {
                     desc->flags &= ~8U;
-                    desc->layer_flags &= ~8U;
+                    desc->layer_flags &= ~PC_SHADER_LAYER_PHONG;
                 }
             } else {
                 desc->flags &= ~0x20U;
-                desc->layer_flags &= ~0x20U;
+                desc->layer_flags &= ~PC_SHADER_LAYER_ENVMAP_CUBE;
             }
             if ((desc->flags & 3) != 0) {
                 desc->flags &= ~8U;
-                desc->layer_flags &= ~8U;
+                desc->layer_flags &= ~PC_SHADER_LAYER_PHONG;
             }
             desc->flags &= 0xf916fffb;
             desc->layer_flags &= 0x27c8fffb;
             if ((desc->layer_flags & 0x4000000) != 0) {
                 desc->flags &= ~0x28U;
-                desc->layer_flags &= ~0x28U;
+                desc->layer_flags &= ~(PC_SHADER_LAYER_PHONG | PC_SHADER_LAYER_ENVMAP_CUBE);
             }
             break;
         }

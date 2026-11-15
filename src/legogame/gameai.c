@@ -1424,7 +1424,7 @@ i32 TryToTeleportToNextNode(GAMEOBJECT *object, AIPATHNODE *node, i32 tightrope)
     NUVEC position;
     if ((object->flags_1f8 & APIOBJECT_CREATURE) == 0 && (object->ai_packet.path_info.flags & 1) != 0 &&
         (object->unknown_f10 >= OFFSCREEN_CATCHUP_TIME ||
-         (object->model_draw_result == 0 && (object->tag_flags & 2) == 0 && drop_back_in_timer > 0.0f))) {
+         (object->model_draw_result == 0 && (object->tag_flags & APIOBJECT_TAG_DISABLED) == 0 && drop_back_in_timer > 0.0f))) {
         position = node->position;
         position.y = object->bounds_half_height + position.y;
         if (NuCameraClipTestSphere(&position, object->bounds_half_height, &NuMtxSetIdentityTemplate) != 0) {
@@ -2449,7 +2449,7 @@ void GameAIProcess(void) {
             }
             if (!(object->camera_screen_position.x > (f64)-0.85f && object->camera_screen_position.x < (f64)0.85f &&
                   object->camera_screen_position.y > (f64)-0.85f && object->camera_screen_position.y < (f64)0.85f) &&
-                (object->tag_flags & 2) == 0 && drop_back_in_timer > 0.0f) {
+                (object->tag_flags & APIOBJECT_TAG_DISABLED) == 0 && drop_back_in_timer > 0.0f) {
                 object->ai_packet.flags &= ~0x1000u;
                 object->ai_packet.target_metric_e0 = 1.0e9f;
                 object->ai_packet.target_metric_f0 = 1.0e9f;
@@ -2636,7 +2636,7 @@ void GameAIProcess(void) {
         if (FreePlay != 0 && (object->flags_1f8 & APIOBJECT_CREATURE) == 0) {
             if ((object->flags_1fc_word & APIOBJECT_FLAG_PLAYER_ACTIVE) == 0 && object->character_context != CHARACTER_CONTEXT_INTERFACE) {
                 if (drop_in_teleport == 1 && VehicleArea == 0 && (Arcade != 0 || teleport_all_freeplay_modes != 0) &&
-                    object->model_draw_result == 0 && (object->tag_flags & 2) == 0 && drop_back_in_timer > 0.0f) {
+                    object->model_draw_result == 0 && (object->tag_flags & APIOBJECT_TAG_DISABLED) == 0 && drop_back_in_timer > 0.0f) {
                     position = player->last_safe_position;
                     if (position.x == player->position.x && position.y == player->position.y && position.z == player->position.z) {
                         position.z += 0.01f;
@@ -2814,7 +2814,7 @@ void GameAIProcess(void) {
                 if ((object->ai_packet.navigation_flags & 1) != 0) {
                     object->ai_collision_priority |= 0x1000;
                 }
-                if ((object->pad->runtime_flags & 2) != 0) {
+                if ((object->pad->runtime_flags & GAMEPAD_AI_ATTACK) != 0) {
                     object->ai_collision_priority |= 0x800;
                 }
                 if ((object->ai_packet.path_info.flags_word & 1) == 0 || object->ai_packet.path_info.connection == NULL) {

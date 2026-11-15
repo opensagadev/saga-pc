@@ -166,7 +166,8 @@ i32 MatrixReflectionVU0_AXISY(NUMTX *matrix, f32 plane, f32 override_plane, NUMT
             Grab_grabber->field = NULL;                                                                                                    \
     } else                                                                                                                                 \
         Grab_grabber->field = NULL
-#define GRABBER_SWITCH_ON(obstacle) ((obstacle) != NULL && ((obstacle)->progress_flags & 2) != 0 && (obstacle)->anim_set->state == 2)
+#define GRABBER_SWITCH_ON(obstacle)                                                                                                        \
+    ((obstacle) != NULL && ((obstacle)->progress_flags & OBSTACLE_VISIBLE) != 0 && (obstacle)->anim_set->state == 2)
 
 static void GrabberMtxSetRotationZ(NUMTX *m, NUANG a) {
     f32 cosz;
@@ -259,9 +260,9 @@ static void Grab_type(NUFPAR *parser) {
 }
 
 static void Grab_shadow(NUFPAR *parser) {
-    Grab_grabber->flags |= 0x10;
+    Grab_grabber->flags |= GRABBER_SHADOW;
     if (NuFParGetWord(parser) != 0 && NuStrICmp(parser->word_buffer_ptr, "off") == 0) {
-        Grab_grabber->flags &= ~0x10;
+        Grab_grabber->flags &= ~GRABBER_SHADOW;
     }
 }
 
@@ -308,10 +309,10 @@ void Grabber_Configure(WORLDINFO *world_ptr, char *config) {
                 Grab_grabber->move_xy = 0;
                 Grab_grabber->radius = 0.5f;
                 Grab_grabber->speed = 1.0f;
-                Grab_grabber->flags &= ~8;
+                Grab_grabber->flags &= ~GRABBER_ROTATE;
                 Grab_grabber->scale = 1.0f;
                 Grab_grabber->invert_x = 0;
-                Grab_grabber->flags |= 0x10;
+                Grab_grabber->flags |= GRABBER_SHADOW;
                 Grab_grabber->character_id = GrabMachineId;
                 active = 1;
             } else if (NuStrICmp(parser->word_buffer_ptr, "grabber_end") == 0) {
@@ -386,7 +387,8 @@ static void GrabberGrabVictim(GAMEOBJECT *victim) {
 
 NUVEC *Grabber_GetGrabPos(void *context, NUMTX *matrix) {
     GRABBER *grabber = context;
-    if (grabber->character_model != NULL && (grabber->flags & 1) != 0 && grabber->character_model->points_of_interest[0] != NULL) {
+    if (grabber->character_model != NULL && (grabber->flags & GRABBER_DRAWN) != 0 &&
+        grabber->character_model->points_of_interest[0] != NULL) {
         if (matrix != NULL) {
             *matrix = grabber->grab_matrix;
         }
@@ -454,7 +456,7 @@ void Grabber_Draw(WORLDINFO *world) {
         }
     }
     if (grabber->shadow_height != 2000000.0f) {
-        if ((grabber->flags & 0x10) != 0 && CharacterBlobShadowsOn != 0 &&
+        if ((grabber->flags & GRABBER_SHADOW) != 0 && CharacterBlobShadowsOn != 0 &&
             (grabber->character_model == NULL || ((GRABBER_HG_VIEW *)grabber->character_model->hierarchy)->shadow_surface_points == 0)) {
             position.x = grabber->grab_position.x;
             position.y = grabber->shadow_height + 0.005f;
@@ -476,9 +478,9 @@ void Grabber_Draw(WORLDINFO *world) {
         }
     }
     if (grabber->character_model != NULL) {
-        grabber->flags &= ~1;
+        grabber->flags &= ~GRABBER_DRAWN;
         MakeLayerList = GCDataList[grabber->character_model->model_id].make_layer_list;
-        if ((grabber->flags & 0x10) != 0) {
+        if ((grabber->flags & GRABBER_SHADOW) != 0) {
             ((GRABBER_HG_VIEW *)grabber->character_model->hierarchy)->suppress_shadow_points = 0;
             EnableShadowMapRendering(0);
         } else {
@@ -489,9 +491,9 @@ void Grabber_Draw(WORLDINFO *world) {
                                   &grabber->animation, &matrix, NULL, grabber->floor_height != 2000000.0f ? &reflection : NULL, NULL,
                                   &grabber->grab_matrix, NULL, 0xffff, NULL, 0, Paused, FRAMETIME, joints, NULL,
                                   WORLD->game_debris_sys) != 0) {
-            grabber->flags |= 1;
+            grabber->flags |= GRABBER_DRAWN;
         }
-        if ((grabber->flags & 0x10) != 0) {
+        if ((grabber->flags & GRABBER_SHADOW) != 0) {
             ResetShadowMapRendering();
         }
         ((GRABBER_HG_VIEW *)grabber->character_model->hierarchy)->suppress_shadow_points = 0;
@@ -613,7 +615,7 @@ void Grabber_Drop(GRABBER *grabber, NUVEC *previous) {
     NUVEC centre;
     PART_PC *part;
 
-    grabber->flags |= 2;
+    grabber->flags |= GRABBER_LIFTED;
     if (grabber->victim != NULL) {
         if (grabber->character_id == GrabMagnetId && grabber->victim->unknown_7b3 != 0) {
             PlaySfx("imp_C3PO_magnet_drop", Grabber_GetGrabPos(grabber, NULL));
@@ -642,7 +644,7 @@ void Grabber_Drop(GRABBER *grabber, NUVEC *previous) {
         params.special = &grabber->carried_blowup->type->animated_special;
         params.time_step = FRAMETIME;
         params.unknown_a4 = 3.0f;
-        params.flags = 0x311;
+        params.flags = PART_FLAG_DIE_WHEN_STOPPED | PART_FLAG_KEEP_OFF_SCREEN | PART_FLAG_NO_BOUNCE | PART_FLAG_SLOT_CANNOT_BE_STOLEN;
         params.kill_fn = PartKill_Grabber;
         part = AddPart(&params);
         if (part != NULL) {
@@ -748,7 +750,7 @@ void Grabber_Update(WORLDINFO *world) {
     grabber->velocity.x = SeekValF(grabber->velocity.x, grabber->target_velocity.x, 5.0f);
     grabber->velocity.y = SeekValF(grabber->velocity.y, grabber->target_velocity.y, 5.0f);
     grabber->velocity.z = SeekValF(grabber->velocity.z, grabber->target_velocity.z, 5.0f);
-    if ((grabber->flags & 8) != 0 && (grabber->target_velocity.x != 0.0f || grabber->target_velocity.z != 0.0f)) {
+    if ((grabber->flags & GRABBER_ROTATE) != 0 && (grabber->target_velocity.x != 0.0f || grabber->target_velocity.z != 0.0f)) {
         grabber->target_yaw = NuAtan2D(grabber->target_velocity.x, grabber->target_velocity.z);
     }
     next.x += FRAMETIME * grabber->velocity.x;
@@ -807,16 +809,15 @@ void Grabber_Update(WORLDINFO *world) {
             }
         }
     }
-    if ((grabber->flags & 8) != 0) {
+    if ((grabber->flags & GRABBER_ROTATE) != 0) {
         grabber->yaw = SeekRot(grabber->yaw, grabber->target_yaw, 3.0f);
     }
     matrix = grabber->matrix;
-    if ((grabber->flags & 8) != 0) {
+    if ((grabber->flags & GRABBER_ROTATE) != 0) {
         NuMtxPreRotateY(&matrix, grabber->yaw);
     }
     if (grabber->scale != 1.0f) {
         NUVEC scale;
-
         scale.x = scale.y = scale.z = grabber->scale;
         NuMtxPreScale(&matrix, &scale);
     }
@@ -843,14 +844,14 @@ void Grabber_Update(WORLDINFO *world) {
                 }
                 break;
             }
-            if ((grabber->flags & 2) != 0) {
+            if ((grabber->flags & GRABBER_LIFTED) != 0) {
                 break;
             }
             value = AnimListFrame(grabber->character_model, ACTION_PICKUP, 0);
             if (!(value > 0.0f) || !(*frame >= value)) {
                 break;
             }
-            grabber->flags |= 2;
+            grabber->flags |= GRABBER_LIFTED;
             position = Grabber_GetGrabPos(grabber, NULL);
             low.x = position->x - 0.5f;
             high.x = position->x + 0.5f;
@@ -897,11 +898,11 @@ void Grabber_Update(WORLDINFO *world) {
             grabber->animation_timer = value;
             if (value <= 0.0f) {
                 grabber->state = 0;
-                if ((grabber->flags & 2) != 0) {
+                if ((grabber->flags & GRABBER_LIFTED) != 0) {
                     break;
                 }
             } else {
-                if ((grabber->flags & 2) != 0) {
+                if ((grabber->flags & GRABBER_LIFTED) != 0) {
                     break;
                 }
                 value = AnimListFrame(grabber->character_model, ACTION_DROP, 0);
@@ -930,16 +931,18 @@ void Grabber_Update(WORLDINFO *world) {
                     break;
                 }
             } else {
-                if ((grabber->flags & 4) != 0 && grabber->action_switch != NULL && (grabber->action_switch->progress_flags & 2) != 0 &&
+                if ((grabber->flags & GRABBER_SWITCH_LATCHED) != 0 && grabber->action_switch != NULL &&
+                    (grabber->action_switch->progress_flags & OBSTACLE_VISIBLE) != 0 &&
                     GameAnimSet_IsAnimationReset(grabber->action_switch->anim_set) != 0) {
-                    grabber->flags &= ~4;
+                    grabber->flags &= ~GRABBER_SWITCH_LATCHED;
                 }
                 if (grabber->victim == NULL && grabber->carried_blowup == NULL) {
                     grabber->state = 0;
                     break;
                 }
-                if ((grabber->flags & 4) != 0 || grabber->action_switch == NULL || (grabber->action_switch->progress_flags & 2) == 0 ||
-                    (grabber->action_switch->anim_set->flags & 1) != 0) {
+                if ((grabber->flags & GRABBER_SWITCH_LATCHED) != 0 || grabber->action_switch == NULL ||
+                    (grabber->action_switch->progress_flags & OBSTACLE_VISIBLE) == 0 ||
+                    (grabber->action_switch->anim_set->flags & GAMEANIMSET_PLAYING) != 0) {
                     break;
                 }
             }
@@ -947,15 +950,15 @@ void Grabber_Update(WORLDINFO *world) {
             if (grabber->character_model != NULL && grabber->character_model->model_data_b[103] != NULL) {
                 grabber->state = 3;
                 grabber->animation_timer = AnimDuration(grabber->character_model->model_id, 0x67, 0.0f, 0.0f, 1);
-                grabber->flags &= ~2;
+                grabber->flags &= ~GRABBER_LIFTED;
                 if (control == NULL) {
-                    grabber->flags |= 4;
+                    grabber->flags |= GRABBER_SWITCH_LATCHED;
                 }
                 NewRumbleAllPlayers(0.0f, 0.0f, 2, 0);
             } else {
                 Grabber_Drop(grabber, &previous);
                 if (control == NULL) {
-                    grabber->flags |= 4;
+                    grabber->flags |= GRABBER_SWITCH_LATCHED;
                 }
             }
             PlaySfx("env_grabber_down", Grabber_GetGrabPos(grabber, NULL));
@@ -966,24 +969,25 @@ void Grabber_Update(WORLDINFO *world) {
                     break;
                 }
             } else {
-                if ((grabber->flags & 4) != 0 && grabber->action_switch != NULL && (grabber->action_switch->progress_flags & 2) != 0 &&
+                if ((grabber->flags & GRABBER_SWITCH_LATCHED) != 0 && grabber->action_switch != NULL &&
+                    (grabber->action_switch->progress_flags & OBSTACLE_VISIBLE) != 0 &&
                     GameAnimSet_IsAnimationReset(grabber->action_switch->anim_set) != 0) {
-                    grabber->flags &= ~4;
+                    grabber->flags &= ~GRABBER_SWITCH_LATCHED;
                 }
-                if ((grabber->flags & 4) != 0) {
+                if ((grabber->flags & GRABBER_SWITCH_LATCHED) != 0) {
                     break;
                 }
-                if (grabber->action_switch == NULL || (grabber->action_switch->progress_flags & 2) == 0 ||
-                    (grabber->action_switch->anim_set->flags & 1) != 0) {
+                if (grabber->action_switch == NULL || (grabber->action_switch->progress_flags & OBSTACLE_VISIBLE) == 0 ||
+                    (grabber->action_switch->anim_set->flags & GAMEANIMSET_PLAYING) != 0) {
                     break;
                 }
             }
             if (grabber->character_model != NULL && grabber->character_model->model_data_b[102] != NULL) {
                 grabber->state = 1;
                 grabber->animation_timer = AnimDuration(grabber->character_model->model_id, 0x66, 0.0f, 0.0f, 1);
-                grabber->flags &= ~2;
+                grabber->flags &= ~GRABBER_LIFTED;
                 if (control == NULL) {
-                    grabber->flags |= 4;
+                    grabber->flags |= GRABBER_SWITCH_LATCHED;
                 }
                 NewRumbleAllPlayers(0.0f, 0.0f, 2, 0);
             } else if (grabber->character_id == GrabMagnetId) {
@@ -994,7 +998,7 @@ void Grabber_Update(WORLDINFO *world) {
                     grabber->stuck_timer = 0.0f;
                     grabber->state = 2;
                     if (control == NULL) {
-                        grabber->flags |= 4;
+                        grabber->flags |= GRABBER_SWITCH_LATCHED;
                     }
                 }
             }

@@ -27,7 +27,7 @@ void GizFlowStoreProgress(GIZFLOW *system, GIZFLOWPROGRESS *progress) {
     for (i = 0; i < system->flowbox_count; ++i, ++box) {
         i32 word = i / 32;
         u32 bit = 1u << (i & 31);
-        if ((box->state_flags_low & 1) != 0) {
+        if ((box->state_flags_low & FLOWBOX_ENABLED) != 0) {
             progress->active[word] |= bit;
         }
         if ((box->state_flags_high & 1) != 0) {
@@ -50,7 +50,7 @@ void ResetGizmoFlowBox(GIZFLOW *system, FLOWBOX *box) {
     i32 i;
 
     data = box->data;
-    if ((box->state_flags & 0x1000) != 0) {
+    if ((box->state_flags & FLOWBOX_OUTPUT_ONLY) != 0) {
         return;
     }
     for (i = 0; i < data->gizmo_count; ++i) {
@@ -64,7 +64,7 @@ i32 CheckOutputGizmoFlowBox(GIZFLOW *system, FLOWBOX *box, u8 output) {
     i32 i;
 
     data = box->data;
-    if (((box->state_flags & 0x4000) == 0 && FreePlay == 0) || ((box->state_flags & 0x2000) == 0 && FreePlay != 0)) {
+    if (((box->state_flags & FLOWBOX_STORY) == 0 && FreePlay == 0) || ((box->state_flags & FLOWBOX_FREEPLAY) == 0 && FreePlay != 0)) {
         return 1;
     }
     for (i = 0; i < data->gizmo_count; ++i) {
@@ -111,7 +111,7 @@ static void ResetForLoopEx(GIZFLOW *flow, FLOWBOX *root, FLOWBOX *box, i32 check
         return;
     }
     box->loop_checksum = checksum;
-    if (box->type == 0 && (box->state_flags & 0x1000) == 0 && box->data != NULL) {
+    if (box->type == 0 && (box->state_flags & FLOWBOX_OUTPUT_ONLY) == 0 && box->data != NULL) {
         data = box->data;
         for (i = 0; i < data->gizmo_count; ++i) {
             GizmoActivate(flow->gizmo_sys, data->gizmos[i]->gizmo, 0, 1);
@@ -265,8 +265,8 @@ void CheckIfParentsFinished(GIZFLOW *system, FLOWBOX *box) {
                 break;
             }
             child_flags = parent->children[child_index]->state_flags;
-            if ((child_flags & 0xc0) == 0) {
-                if ((child_flags & 1) != 0 && parent->children[child_index] != box) {
+            if ((child_flags & (FLOWBOX_REVERSE | FLOWBOX_REVERSE_INVISIBLE)) == 0) {
+                if ((child_flags & FLOWBOX_ENABLED) != 0 && parent->children[child_index] != box) {
                     finished = 0;
                 }
             } else if ((child_flags & 2) == 0 || (child_flags & 0x100) != 0) {
@@ -276,13 +276,13 @@ void CheckIfParentsFinished(GIZFLOW *system, FLOWBOX *box) {
         if (!finished) {
             continue;
         }
-        if ((flags & 8) != 0) {
+        if ((flags & FLOWBOX_END_INVISIBLE) != 0) {
             FLOWBOXGIZMODATA *data = parent->data;
             i32 j;
             for (j = 0; j < data->gizmo_count; ++j) {
                 GizmoSetVisibility(system->gizmo_sys, data->gizmos[j]->gizmo, 0, 1);
             }
-        } else if ((flags & 0x10) != 0) {
+        } else if ((flags & FLOWBOX_END_DEACTIVATED) != 0) {
             FLOWBOXGIZMODATA *data = parent->data;
             i32 j;
             for (j = 0; j < data->gizmo_count; ++j) {
@@ -290,7 +290,7 @@ void CheckIfParentsFinished(GIZFLOW *system, FLOWBOX *box) {
             }
         }
         flags = parent->state_flags;
-        if ((flags & 0x40) != 0) {
+        if ((flags & FLOWBOX_REVERSE) != 0) {
             parent->state_flags = flags & 0xfeff;
             CheckIfParentsFinished(system, parent);
         }
@@ -335,7 +335,8 @@ i32 ProcessGizmoFlowBox(GIZFLOW *system, FLOWBOX *box, u8 frame) {
     }
     CheckIfParentsFinished(system, box);
     flags = box->state_flags;
-    if ((flags & 0x1000) != 0 || ((flags & 0x4000) == 0 && FreePlay == 0) || ((flags & 0x2000) == 0 && FreePlay != 0)) {
+    if ((flags & FLOWBOX_OUTPUT_ONLY) != 0 || ((flags & FLOWBOX_STORY) == 0 && FreePlay == 0) ||
+        ((flags & FLOWBOX_FREEPLAY) == 0 && FreePlay != 0)) {
         return 1;
     }
     data = box->data;
@@ -401,25 +402,25 @@ void ProcessFlowBox(GIZFLOW *system, FLOWBOX *box, u8 frame) {
     if ((box->state_flags_high & 1) != 0) {
         FlowBoxActivationFeedback(system, box);
     }
-    if ((box->state_flags_low & 1) == 0 || !flowbox_callbacks[box->type].process(system, box, frame)) {
+    if ((box->state_flags_low & FLOWBOX_ENABLED) == 0 || !flowbox_callbacks[box->type].process(system, box, frame)) {
         return;
     }
 
     if ((box->state_flags & 0x400) != 0 && (box->state_flags & 0x800) != 0) {
         box->state_flags &= (u16)~0x400;
     }
-    box->state_flags = (u16)((box->state_flags & (u16)~1) | 0x802);
+    box->state_flags = (u16)((box->state_flags & (u16)~FLOWBOX_ENABLED) | 0x802);
 
     if (box->type == 0) {
         u16 set_visibility = (box->state_flags >> 3) & 1;
-        if (set_visibility || (box->state_flags & 0x10) != 0) {
+        if (set_visibility || (box->state_flags & FLOWBOX_END_DEACTIVATED) != 0) {
             if (box->child_count == 0) {
                 data = box->data;
                 if (set_visibility) {
                     for (i = 0; i < data->gizmo_count; ++i) {
                         GizmoSetVisibility(system->gizmo_sys, data->gizmos[i]->gizmo, 0, 1);
                     }
-                } else if ((box->state_flags & 0x10) != 0) {
+                } else if ((box->state_flags & FLOWBOX_END_DEACTIVATED) != 0) {
                     for (i = 0; i < data->gizmo_count; ++i) {
                         GizmoActivate(system->gizmo_sys, data->gizmos[i]->gizmo, 0, 1);
                     }
@@ -429,13 +430,13 @@ void ProcessFlowBox(GIZFLOW *system, FLOWBOX *box, u8 frame) {
                 box->state_flags |= 0x20;
             }
         }
-        if ((box->state_flags & 0xc0) != 0) {
+        if ((box->state_flags & (FLOWBOX_REVERSE | FLOWBOX_REVERSE_INVISIBLE)) != 0) {
             box->state_flags |= 0x120;
             for (i = 0; i < box->parent_count; ++i) {
                 if (box->parents[i]->type == 1) {
                     box->parents[i]->state_flags |= 0x200;
                 }
-                if (box->parents[i]->type == 0 && (box->parents[i]->state_flags_low & 0x40) != 0) {
+                if (box->parents[i]->type == 0 && (box->parents[i]->state_flags_low & FLOWBOX_REVERSE) != 0) {
                     box->parents[i]->state_flags |= 0x100;
                     box->parents[i]->state_flags |= 0x20;
                 }
@@ -446,7 +447,7 @@ void ProcessFlowBox(GIZFLOW *system, FLOWBOX *box, u8 frame) {
         CheckIfParentsFinished(system, box);
     }
     for (i = 0; i < box->child_count; ++i) {
-        box->children[i]->state_flags |= 1;
+        box->children[i]->state_flags |= FLOWBOX_ENABLED;
         if (box->children[i]->last_process_frame != frame || box->type == 1) {
             box->children[i]->last_process_frame = frame;
             ProcessFlowBox(system, box->children[i], frame);
@@ -464,7 +465,7 @@ void ProcessGizFlow(GIZFLOW *system, f32 delta_time) {
     ++system->frame;
     box = system->flowboxes;
     for (i = 0; i < system->flowbox_count; ++i, ++box) {
-        if (box->last_process_frame != system->frame && ((box->state_flags & 1) != 0 || (box->state_flags & 0x100) != 0)) {
+        if (box->last_process_frame != system->frame && ((box->state_flags & FLOWBOX_ENABLED) != 0 || (box->state_flags & 0x100) != 0)) {
             ProcessFlowBox(system, box, system->frame);
         }
         box->last_process_frame = system->frame;
@@ -505,11 +506,11 @@ void ResetGizFlowPointers(GIZFLOW *system) {
             } else {
                 void *found = GizmoFindByName(system->gizmo_sys, -1, data->gizmos[j]->name);
                 data->gizmos[j]->gizmo = found;
-                if (data->gizmos[j]->gizmo != NULL && (box->state_flags_low & 1) == 0) {
+                if (data->gizmos[j]->gizmo != NULL && (box->state_flags_low & FLOWBOX_ENABLED) == 0) {
                     if (flowbox_callbacks[box->type].reset != NULL) {
                         flowbox_callbacks[box->type].reset(system, box);
                     }
-                    if ((box->state_flags & 1) == 0 && (box->state_flags & 4) != 0 && box->type == 0) {
+                    if ((box->state_flags & FLOWBOX_ENABLED) == 0 && (box->state_flags & FLOWBOX_START_INVISIBLE) != 0 && box->type == 0) {
                         GizmoSetVisibility(system->gizmo_sys, data->gizmos[j]->gizmo, 0, 1);
                     }
                 }
@@ -596,25 +597,25 @@ void ResetGizFlow(GIZFLOW *system, GIZFLOWPROGRESS *progress) {
             if (box->parent_count == box->loop_parent_count) {
                 box->state_flags |= 0x801;
             } else {
-                box->state_flags &= (u16)~1;
+                box->state_flags &= (u16)~FLOWBOX_ENABLED;
             }
         } else if (box->parent_count != 0) {
-            box->state_flags &= (u16)~1;
+            box->state_flags &= (u16)~FLOWBOX_ENABLED;
         } else {
-            box->state_flags |= 1;
+            box->state_flags |= FLOWBOX_ENABLED;
         }
 
-        if (flowbox_callbacks[box->type].reset != NULL && (box->state_flags & 0x1000) == 0) {
+        if (flowbox_callbacks[box->type].reset != NULL && (box->state_flags & FLOWBOX_OUTPUT_ONLY) == 0) {
             flowbox_callbacks[box->type].reset(system, box);
         }
         if (box->type == 0 &&
-            (((box->state_flags & 0x4000) == 0 && FreePlay == 0) || ((box->state_flags & 0x2000) == 0 && FreePlay != 0))) {
+            (((box->state_flags & FLOWBOX_STORY) == 0 && FreePlay == 0) || ((box->state_flags & FLOWBOX_FREEPLAY) == 0 && FreePlay != 0))) {
             FLOWBOXGIZMODATA *data = box->data;
             i32 j;
             for (j = 0; j < data->gizmo_count; ++j) {
                 GizmoSetVisibility(system->gizmo_sys, data->gizmos[j]->gizmo, 0, 1);
             }
-        } else if ((box->state_flags & 1) == 0 && (box->state_flags & 4) != 0 && box->type == 0) {
+        } else if ((box->state_flags & FLOWBOX_ENABLED) == 0 && (box->state_flags & FLOWBOX_START_INVISIBLE) != 0 && box->type == 0) {
             FLOWBOXGIZMODATA *data = box->data;
             i32 j;
             for (j = 0; j < data->gizmo_count; ++j) {
@@ -1301,11 +1302,11 @@ void DynamicAddGizmoToFlow(GIZFLOW *system, GIZMO_PC *gizmo) {
                 continue;
             }
             data->gizmos[j]->gizmo = gizmo;
-            if ((box->state_flags_low & 1) == 0) {
+            if ((box->state_flags_low & FLOWBOX_ENABLED) == 0) {
                 if (flowbox_callbacks[box->type].reset != NULL) {
                     flowbox_callbacks[box->type].reset(system, box);
                 }
-                if ((box->state_flags & 1) == 0 && (box->state_flags & 4) != 0 && box->type == 0) {
+                if ((box->state_flags & FLOWBOX_ENABLED) == 0 && (box->state_flags & FLOWBOX_START_INVISIBLE) != 0 && box->type == 0) {
                     GizmoSetVisibility(system->gizmo_sys, data->gizmos[j]->gizmo, 0, 1);
                 }
             }

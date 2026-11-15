@@ -501,7 +501,7 @@ extern "C" {
     }
 
     static void CS_no_fog(NUFPAR *) {
-        CS_CutInfo->flags |= 4;
+        CS_CutInfo->flags |= CUTINFO_NO_FOG;
     }
 
     static void CS_draw_world(NUFPAR *fp) {
@@ -509,9 +509,9 @@ extern "C" {
             return;
         }
         if (NuStrICmp(fp->word_buffer_ptr, "on") == 0) {
-            CS_CutInfo->flags |= 2;
+            CS_CutInfo->flags |= CUTINFO_DRAW_WORLD;
         } else if (NuStrICmp(fp->word_buffer_ptr, "off") == 0) {
-            CS_CutInfo->flags &= ~2U;
+            CS_CutInfo->flags &= ~CUTINFO_DRAW_WORLD;
         }
     }
 
@@ -520,15 +520,15 @@ extern "C" {
             return;
         }
         if (NuStrICmp(fp->word_buffer_ptr, "on") == 0) {
-            CS_CutInfo->flags |= 0x8000;
+            CS_CutInfo->flags |= CUTINFO_DRAW_GIZMO_SYS;
         } else if (NuStrICmp(fp->word_buffer_ptr, "off") == 0) {
-            CS_CutInfo->flags &= ~0x8000U;
+            CS_CutInfo->flags &= ~CUTINFO_DRAW_GIZMO_SYS;
         }
     }
 
     static void CS_in_game(NUFPAR *) {
         CUT_LOAD_RECORD *info = CS_CutInfo;
-        info->flags = (info->flags & ~3U) | 0x800;
+        info->flags = (info->flags & ~3U) | CUTINFO_IN_GAME;
     }
 
     static void CS_blobshadow_alpha(NUFPAR *fp) {
@@ -562,57 +562,57 @@ extern "C" {
             return;
         }
         if (NuStrICmp(fp->word_buffer_ptr, "level") == 0) {
-            CS_CutInfo->flags |= 8;
+            CS_CutInfo->flags |= CUTINFO_LEVEL_DEBRIS_PAGE;
         } else {
-            CS_CutInfo->flags &= ~8U;
+            CS_CutInfo->flags &= ~CUTINFO_LEVEL_DEBRIS_PAGE;
         }
     }
 
     static void CS_snap_out(NUFPAR *) {
-        CS_CutInfo->flags |= 0x10;
+        CS_CutInfo->flags |= CUTINFO_SNAP_OUT;
     }
 
     static void CS_cam_only(NUFPAR *) {
-        CS_CutInfo->flags |= 0x20;
+        CS_CutInfo->flags |= CUTINFO_CAM_ONLY;
     }
 
     static void CS_wipe_out(NUFPAR *) {
-        CS_CutInfo->flags |= 0x100;
+        CS_CutInfo->flags |= CUTINFO_WIPE_OUT;
     }
 
     static void CS_new_mode(NUFPAR *) {
-        CS_CutInfo->flags |= 0x400;
+        CS_CutInfo->flags |= CUTINFO_NEW_MODE;
     }
 
     static void CS_replace_players(NUFPAR *) {
-        CS_CutInfo->flags |= 0x40;
+        CS_CutInfo->flags |= CUTINFO_REPLACE_PLAYERS;
     }
 
     static void CS_looping(NUFPAR *) {
-        CS_CutInfo->flags |= 0x200;
+        CS_CutInfo->flags |= CUTINFO_LOOPING;
     }
 
     static void CS_start_cam(NUFPAR *) {
-        CS_CutInfo->flags |= 0x2000;
+        CS_CutInfo->flags |= CUTINFO_START_CAM;
     }
 
     static void CS_super_widescreen(NUFPAR *) {
-        CS_CutInfo->flags |= 0x4000;
+        CS_CutInfo->flags |= CUTINFO_SUPER_WIDESCREEN;
     }
 
     static void CS_burnout_threshold(NUFPAR *fp) {
         CS_CutInfo->burnout_threshold = NuFParGetFloat(fp);
-        CS_CutInfo->flags |= 0x80;
+        CS_CutInfo->flags |= CUTINFO_BURNOUT;
     }
 
     static void CS_burnout_intensity(NUFPAR *fp) {
         CS_CutInfo->burnout_intensity = NuFParGetFloat(fp);
-        CS_CutInfo->flags |= 0x80;
+        CS_CutInfo->flags |= CUTINFO_BURNOUT;
     }
 
     static void CS_burnout_flare(NUFPAR *fp) {
         CS_CutInfo->burnout_flare = NuFParGetFloat(fp);
-        CS_CutInfo->flags |= 0x80;
+        CS_CutInfo->flags |= CUTINFO_BURNOUT;
     }
 
     static void CS_go_through_door(NUFPAR *fp) {
@@ -696,7 +696,7 @@ extern "C" {
     }
 
     static void CS_level_intro(NUFPAR *) {
-        CS_CutInfo->flags |= 0x1000;
+        CS_CutInfo->flags |= CUTINFO_LEVEL_INTRO;
     }
 
     static void CS_nearclip(NUFPAR *fp) {
@@ -1090,7 +1090,8 @@ extern "C" {
             NuStrCpy(config_path, path);
             NuStrCat(config_path, ".txt");
             CutScene_Configure(cut, config_path, buf, buf_end);
-            if ((cut->flags & 0x800) != 0 || InStory() != 0 || (LDataList[level].flags & (LEVEL_INTRO | LEVEL_MIDTRO | LEVEL_OUTRO)) != 0) {
+            if ((cut->flags & CUTINFO_IN_GAME) != 0 || InStory() != 0 ||
+                (LDataList[level].flags & (LEVEL_INTRO | LEVEL_MIDTRO | LEVEL_OUTRO)) != 0) {
                 NuStrCpy(config_path, path);
                 NuStrCat(config_path, ".cu2");
                 cut->scene = NuGCutSceneLoad(config_path, buf, buf_end, 0);
@@ -1185,7 +1186,8 @@ extern "C" CUT_LOAD_SYS *CutScenes_Load(char *config, NUGSCN *gscn1, NUGSCN *gsc
         NuStrCat(full_path, name);
         NuStrCat(full_path, ".txt");
 
-        if ((cut->flags & 0x800) != 0 || InStory() != 0 || (LDataList[param3].flags & (LEVEL_INTRO | LEVEL_MIDTRO | LEVEL_OUTRO)) != 0) {
+        if ((cut->flags & CUTINFO_IN_GAME) != 0 || InStory() != 0 ||
+            (LDataList[param3].flags & (LEVEL_INTRO | LEVEL_MIDTRO | LEVEL_OUTRO)) != 0) {
             buf->void_ptr = (char *)((buf->addr + 63) & ~63U);
             NuStrCpy(full_path, "cut\\");
             NuStrCat(full_path, name);
@@ -1420,8 +1422,8 @@ extern "C" {
     static void SetStopCutFlags(CUT_LOAD_RECORD *cut) {
         CUTSTOPGAME = 1;
         CutStopInfo = cut;
-        CUTDRAWWORLD = cut->flags & 2;
-        CUTNOFOG = cut->flags & 4;
+        CUTDRAWWORLD = cut->flags & CUTINFO_DRAW_WORLD;
+        CUTNOFOG = cut->flags & CUTINFO_NO_FOG;
         DebrisSetRenderGroup(cut->debris_render_group);
         LevelNameMul = 0.0f;
         LevelNameTime = 0.0f;
@@ -1544,7 +1546,7 @@ extern "C" {
             SetLevelLights(world->rtl_set, 1.0f);
             NuGScnRndr3(world->current_gscn);
             if (world->gizmo_sys != NULL && CutStopInfo != NULL &&
-                (reinterpret_cast<CUT_LOAD_RECORD *>(CutStopInfo)->flags & 0x8000) != 0) {
+                (reinterpret_cast<CUT_LOAD_RECORD *>(CutStopInfo)->flags & CUTINFO_DRAW_GIZMO_SYS) != 0) {
                 GizmoSysDraw(world->gizmo_sys, world, FRAMETIME);
             }
         }
@@ -2280,7 +2282,7 @@ extern "C" {
         f32 rate = cut->frames_per_second * FRAMETIME;
         reinterpret_cast<CUT_CONTROLLER_INSTANCE *>(cut->instance)->rate = rate;
         instNuGCutSceneStart(cut->instance);
-        if ((cut->flags & 0x200) != 0) {
+        if ((cut->flags & CUTINFO_LOOPING) != 0) {
             reinterpret_cast<CUT_CONTROLLER_INSTANCE *>(cut->instance)->flags_88 |= 8;
         } else {
             reinterpret_cast<CUT_CONTROLLER_INSTANCE *>(cut->instance)->flags_88 &= ~8U;
@@ -2382,7 +2384,7 @@ extern "C" {
             if (cut == NULL) {
                 for (i32 i = 0; cut == NULL && i < system->count;) {
                     CUT_LOAD_RECORD *record = reinterpret_cast<CUT_LOAD_RECORD *>(system->records[i]);
-                    if ((record->flags & 0x1000) != 0) {
+                    if ((record->flags & CUTINFO_LEVEL_INTRO) != 0) {
                         cut = reinterpret_cast<CUTINFO *>(record);
                     } else {
                         ++i;
@@ -2450,7 +2452,7 @@ extern "C" {
                     CutFrame = static_cast<i32>(static_cast<u32>(CutFrame) + 1U);
                     goto stopped;
                 }
-                if ((cut->flags & 0x20) != 0) {
+                if ((cut->flags & CUTINFO_CAM_ONLY) != 0) {
                     CUTCAMONLY = 1;
                 }
             }
@@ -2591,14 +2593,14 @@ extern "C" {
             if (CutScenePlayer != NULL && CutScenePlayer->active != NULL && next == NULL) {
                 NewLevelFromMenu(HUB_LDATA, -1, -1, 1);
                 RenderHubFromCutscenePlayer = 1;
-            } else if ((stop_cut->flags & 0x400) != 0) {
+            } else if ((stop_cut->flags & CUTINFO_NEW_MODE) != 0) {
                 NewMode = 1;
             } else if (stop_cut->door_name[0] != 0) {
                 void *door = Door_FindByName(world, stop_cut->door_name);
                 if (door != NULL) {
                     Door_GoThrough(world, static_cast<DOOR_s *>(door), 1);
                 }
-            } else if ((stop_cut->flags & 0x100) != 0) {
+            } else if ((stop_cut->flags & CUTINFO_WIPE_OUT) != 0) {
                 FADETYPE type = {FADE_TYPE_STILL_WIPE};
                 FadeSys.SetFade(type, 0);
                 NeedScreenGrab(1);

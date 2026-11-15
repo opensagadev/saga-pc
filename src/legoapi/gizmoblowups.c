@@ -681,7 +681,7 @@ void GizmoBlowUp_AddEffects(NUVEC *position, GIZMOBLOWUP_PC *blowup, i32 offset,
                 part.unknown_c4 = 1;
                 part.stop_fn = PartStop_Flickerer;
                 part.draw_fn = PartDraw_Flickerer;
-                part.flags |= 0x80;
+                part.flags |= PART_FLAG_ROTATE_RANDOMLY;
                 part.gravity = type->fragment_gravity;
                 part.special = &type->alternate_specials[i];
                 AddPart(&part);

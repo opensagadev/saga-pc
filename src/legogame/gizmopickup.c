@@ -717,7 +717,7 @@ void AddTorpedoAsPart(NUVEC *position, NUVEC *velocity, f32 scale, f32 lifetime)
     params.collision_fn = PartCollide_3D;
     params.draw_fn = PartDraw_Torp;
     params.update_fn = NULL;
-    params.flags = 0x256;
+    params.flags = PART_FLAG_COLLIDE_WITH_CHARACTERS | PART_FLAG_ACTIVE_CHARACTERS_ONLY | PART_FLAG_KEEP_OFF_SCREEN | PART_FLAG_COLLECTIBLE | PART_FLAG_SLOT_CANNOT_BE_STOLEN;
     params.unknown_88 = lifetime;
     if (params.gravity == 0.0f) {
         params.move_fn = PartMove_VehiclePickup;
@@ -749,13 +749,13 @@ void AddHeartAsPart(GAMEOBJECT *recipient, NUVEC *position, NUVEC *velocity, f32
     params.unknown_88 = lifetime;
     params.collision_fn = PartCollide_3D;
     params.update_fn = PartUpdate_Heart;
-    params.flags = 0x256;
+    params.flags = PART_FLAG_COLLIDE_WITH_CHARACTERS | PART_FLAG_ACTIVE_CHARACTERS_ONLY | PART_FLAG_KEEP_OFF_SCREEN | PART_FLAG_COLLECTIBLE | PART_FLAG_SLOT_CANNOT_BE_STOLEN;
     if ((world->current_level->flags & LEVEL_PICKUPS_TO_PANEL) != 0) {
         params.unknown_a4 = PartVehicleHeartLifetime;
         params.move_fn = PartMove_VehicleHeart;
         params.recipient = recipient;
         params.draw_fn = PartDraw_VehicleHeart;
-        params.flags |= 0x400;
+        params.flags |= PART_FLAG_IGNORE_TERRAIN;
     } else {
         params.stop_fn = PartStop_Flickerer;
         params.draw_fn = PartDraw_Flickerer;
@@ -820,7 +820,7 @@ void PowerUp_AddPart(NUVEC *position, NUVEC *velocity, f32 scale, f32 lifetime) 
     params.collision_fn = PartCollide_3D;
     params.update_fn = PowerUp_UpdatePart;
     params.impact_fn = PowerUp_ImpactPart;
-    params.flags = 0x256;
+    params.flags = PART_FLAG_COLLIDE_WITH_CHARACTERS | PART_FLAG_ACTIVE_CHARACTERS_ONLY | PART_FLAG_KEEP_OFF_SCREEN | PART_FLAG_COLLECTIBLE | PART_FLAG_SLOT_CANNOT_BE_STOLEN;
     params.stop_fn = PartStop_Flickerer;
     params.draw_fn = PowerUp_DrawPart;
     params.unknown_88 = lifetime;
@@ -1169,14 +1169,14 @@ void AddCoinsAsParts(i32 type_id, NUVEC *position, NUVEC *velocity, f32 lifetime
     params.unknown_18 = params.unknown_14 = scale * type->shadow_radius_x;
     params.gravity = AreaPickupGravity;
     params.special = &world->level_objects[model].special;
-    params.flags = 0x56;
+    params.flags = PART_FLAG_COLLIDE_WITH_CHARACTERS | PART_FLAG_ACTIVE_CHARACTERS_ONLY | PART_FLAG_KEEP_OFF_SCREEN | PART_FLAG_COLLECTIBLE;
     if (params.part_id >= 0xd5 && params.part_id <= 0xd8) {
-        params.flags |= 0x200;
+        params.flags |= PART_FLAG_SLOT_CANNOT_BE_STOLEN;
     } else if (params.part_id >= 0xc7 && params.part_id <= 0xca) {
-        params.flags |= 0x200;
+        params.flags |= PART_FLAG_SLOT_CANNOT_BE_STOLEN;
         params.callback_30 = PartExtra_BlueCoin;
     } else if (params.part_id >= 0xd5 && params.part_id <= 0xd8) {
-        params.flags |= 0x200;
+        params.flags |= PART_FLAG_SLOT_CANNOT_BE_STOLEN;
         params.callback_30 = PartExtra_PurpleCoin;
     } else {
         params.destroy_fn = PartStolen_Coin;

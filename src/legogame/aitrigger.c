@@ -229,7 +229,7 @@ static i32 TriggerGizmoAvailable(GIZMO_PC *gizmo) {
         }
     } else if (gizmo->type_id == obstacle_gizmotype_id) {
         GIZOBSTACLE *obstacle = gizmo->object;
-        if ((obstacle->progress_flags & 1) && obstacle->anim_set->state != 2) {
+        if ((obstacle->progress_flags & OBSTACLE_ACTIVE) && obstacle->anim_set->state != 2) {
             return 1;
         }
     } else if (gizmo->type_id == spinner_gizmotype_id) {
@@ -313,7 +313,7 @@ void AITriggerSetSysProcess(TRIGGER_SYSTEM *system) {
                             (obstacle->anim_set->state == 0 || obstacle->anim_set->state == 3 || obstacle->anim_set->state == 4)) {
                             set->occupied &= ~(1 << index);
                         }
-                    } else if ((obstacle->progress_flags & 2) == 0 || (obstacle->progress_flags & 1) == 0) {
+                    } else if ((obstacle->progress_flags & OBSTACLE_VISIBLE) == 0 || (obstacle->progress_flags & OBSTACLE_ACTIVE) == 0) {
                         AITRIGGER_RELEASE(system, set, index);
                     }
                 } else if (gizmo->type_id == spinner_gizmotype_id) {

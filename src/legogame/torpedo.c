@@ -465,7 +465,8 @@ void *FindNearestTorpTarget(WORLDINFO *world, NUVEC *position, f32 distance_squa
     if (WORLD->area != NULL && WORLD->area == BOUNTYHUNTERPURSUIT_ADATA && view->obstacles != NULL) {
         for (index = 0; index < view->obstacles->active_gizmo_count; ++index) {
             TORPEDO_OBSTACLE_QUERY *obstacle = view->obstacles->active_gizmos[index]->object;
-            if ((obstacle->progress_flags & 2) != 0 && (obstacle->progress_flags & 1) != 0 && (obstacle->runtime_flags & 0x80) == 0) {
+            if ((obstacle->progress_flags & OBSTACLE_VISIBLE) != 0 && (obstacle->progress_flags & OBSTACLE_ACTIVE) != 0 &&
+                (obstacle->runtime_flags & 0x80) == 0) {
                 f32 distance = NuVecDistSqr(&obstacle->evaluated_position, position, &delta);
                 if (distance < best) {
                     best = distance;

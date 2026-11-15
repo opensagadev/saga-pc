@@ -746,14 +746,14 @@ f32 Condition_ObstacleAtEnd(AISYS_PC *system, AISCRIPTPROCESS *process, AIPACKET
 }
 
 f32 Condition_ObstacleLockedShut(AISYS_PC *system, AISCRIPTPROCESS *process, AIPACKET *packet, char *name, void *argument) {
-    if ((((GIZOBSTACLE *)argument)->runtime_flags & 8) != 0) {
+    if ((((GIZOBSTACLE *)argument)->runtime_flags & GIZOBSTACLE_LOCKED_SHUT) != 0) {
         return 1.0f;
     }
     return 0.0f;
 }
 
 f32 Condition_ObstacleLockedOpen(AISYS_PC *system, AISCRIPTPROCESS *process, AIPACKET *packet, char *name, void *argument) {
-    if ((((GIZOBSTACLE *)argument)->runtime_flags & 4) != 0) {
+    if ((((GIZOBSTACLE *)argument)->runtime_flags & GIZOBSTACLE_LOCKED_OPEN) != 0) {
         return 1.0f;
     }
     return 0.0f;
@@ -1059,7 +1059,7 @@ void *Condition_OnForcePlatformInit(AISYS_PC *system, char *name, AISCRIPT *scri
     GIZFORCE *force;
     if (gizmo != NULL) {
         force = gizmo->object;
-        if (force != NULL && (force->runtime_flags & 0x100) != 0) {
+        if (force != NULL && (force->runtime_flags & GIZFORCE_ON_PLATFORM) != 0) {
             return force;
         }
     }
@@ -1175,7 +1175,7 @@ f32 Condition_EitherPlayerOnForcePlatform(AISYS_PC *system, AISCRIPTPROCESS *pro
 
 f32 Condition_ForceBeingUsed(AISYS_PC *system, AISCRIPTPROCESS *process, AIPACKET *packet, char *name, void *argument) {
     GIZFORCE *force = argument;
-    if (force != NULL && ((force->runtime_flags & 0x200000) != 0 || force->reset_word != 0)) {
+    if (force != NULL && ((force->runtime_flags & GIZFORCE_BEING_USED) != 0 || force->reset_word != 0)) {
         return 1.0f;
     }
     return 0.0f;
@@ -4700,7 +4700,7 @@ i32 Action_AttackOpponent(AISYS_PC *system, AISCRIPTPROCESS *processor, AIPACKET
             fire = 1;
         }
     } else {
-        object->pad->runtime_flags |= 2;
+        object->pad->runtime_flags |= GAMEPAD_AI_ATTACK;
         fire = 1;
     }
     if (fire != 0) {
@@ -6362,7 +6362,8 @@ i32 Action_AddPart(AISYS_PC *system, AISCRIPTPROCESS *processor, AIPACKET *packe
             part.matrix = &matrix;
             part.velocity = &velocity;
             part.special = &special;
-            part.flags = 0x29b;
+            part.flags = PART_FLAG_DIE_WHEN_STOPPED | PART_FLAG_COLLIDE_WITH_CHARACTERS | PART_FLAG_DAMAGE_CHARACTERS |
+                         PART_FLAG_KEEP_OFF_SCREEN | PART_FLAG_ROTATE_RANDOMLY | PART_FLAG_SLOT_CANNOT_BE_STOLEN;
             part.collision_fn = PartCollide_3D;
             AddPart(&part);
             NewRumble(player->pad->bound_pad, 0.5f, 0);
@@ -6478,8 +6479,8 @@ void GuidedMissile_Kill(PART_PC *part, i32 reason) {
 }
 
 void GuidedMissile_Deflect(PART_PC *part) {
-    part->flags &= ~0x4000;
-    part->flags |= 0x80;
+    part->flags &= ~PART_FLAG_IGNORE_CREATURE;
+    part->flags |= PART_FLAG_ROTATE_RANDOMLY;
     NewPartRotation(part);
 }
 
@@ -6531,7 +6532,8 @@ i32 Action_LaunchGuidedMissile(AISYS_PC *system, AISCRIPTPROCESS *processor, AIP
             part.special = &WORLD->level_objects[232].special;
             part.time_step = FRAMETIME;
             part.gravity = 0.0f;
-            part.flags = 0x831b;
+            part.flags = PART_FLAG_DIE_WHEN_STOPPED | PART_FLAG_COLLIDE_WITH_CHARACTERS | PART_FLAG_DAMAGE_CHARACTERS |
+                         PART_FLAG_KEEP_OFF_SCREEN | PART_FLAG_NO_BOUNCE | PART_FLAG_SLOT_CANNOT_BE_STOLEN | PART_FLAG_THROWN;
             part.kill_fn = GuidedMissile_Kill;
             part.unknown_c0 = test_missile_scale;
             part.move_fn = GuidedMissile_Move;
@@ -7842,7 +7844,7 @@ i32 Action_AlwaysTriggerObstacle(AISYS_PC *sys, AISCRIPTPROCESS *processor, AIPA
                 }
             }
             if (obstacle != NULL) {
-                obstacle->runtime_flags = (obstacle->runtime_flags & ~4u) | ((enabled & 1) << 2);
+                obstacle->runtime_flags = (obstacle->runtime_flags & ~GIZOBSTACLE_LOCKED_OPEN) | ((enabled & 1) << 2);
             }
         }
     }
@@ -7872,7 +7874,7 @@ i32 Action_CanTriggerObstacle(AISYS_PC *sys, AISCRIPTPROCESS *processor, AIPACKE
                 }
             }
             if (obstacle != NULL) {
-                obstacle->runtime_flags = (obstacle->runtime_flags & ~8u) | ((blocked & 1) << 3);
+                obstacle->runtime_flags = (obstacle->runtime_flags & ~GIZOBSTACLE_LOCKED_SHUT) | ((blocked & 1) << 3);
             }
         }
     }
@@ -7925,7 +7927,8 @@ i32 Action_PlayGizObstacle(AISYS_PC *system, AISCRIPTPROCESS *processor, AIPACKE
         } else {
             GizObstacle_PlayForwards(obstacle);
         }
-        obstacle->runtime_flags = (obstacle->runtime_flags & ~0xcu) | ((u32)(stay_open & 1) << 2) | ((u32)(stay_shut & 1) << 3);
+        obstacle->runtime_flags = (obstacle->runtime_flags & ~(GIZOBSTACLE_LOCKED_OPEN | GIZOBSTACLE_LOCKED_SHUT)) |
+                                  ((u32)(stay_open & 1) << 2) | ((u32)(stay_shut & 1) << 3);
     }
     return 1;
 }
@@ -8499,7 +8502,7 @@ i32 Action_SetTaggable(AISYS_PC *system, AISCRIPTPROCESS *processor, AIPACKET *p
                 }
                 SetPlayer();
             }
-            object->tag_flags = (object->tag_flags & ~2U) | ((disabled << 1) & 2U);
+            object->tag_flags = (object->tag_flags & ~APIOBJECT_TAG_DISABLED) | ((disabled << 1) & 2U);
         }
     }
     return 1;
@@ -8725,7 +8728,7 @@ i32 Action_UseForce(AISYS_PC *system, AISCRIPTPROCESS *processor, AIPACKET *pack
                         force = gizmo->object;
                         candidates[candidate_count] = force;
                         view = (AI_FORCE_FIELDS *)force;
-                        if ((view->runtime_flags & 2) && !(view->runtime_flags & 0x10000)) {
+                        if ((view->runtime_flags & GIZFORCE_VISIBLE) && !(view->runtime_flags & GIZFORCE_DESTROYED)) {
                             ++candidate_count;
                         }
                     }
@@ -8741,7 +8744,7 @@ i32 Action_UseForce(AISYS_PC *system, AISCRIPTPROCESS *processor, AIPACKET *pack
         return 1;
     }
     view = (AI_FORCE_FIELDS *)force;
-    if (!(view->runtime_flags & 1)) {
+    if (!(view->runtime_flags & GIZFORCE_ENABLED)) {
         return 0;
     }
     valid_category = 1;
@@ -8753,14 +8756,14 @@ i32 Action_UseForce(AISYS_PC *system, AISCRIPTPROCESS *processor, AIPACKET *pack
         valid_category = 0;
     }
     if (triggered_by_hit) {
-        view->runtime_flags |= 0x8000;
+        view->runtime_flags |= GIZFORCE_COMPLETION_PENDING;
     } else if (valid_category) {
         packet->movement_look_target = &view->position;
-        object->pad->runtime_flags |= 4;
+        object->pad->runtime_flags |= GAMEPAD_AI_USE_FORCE;
         ((AI_FORCE_OBJECT *)object)->force = force;
         if (processor->action_data_1 != 0) {
             if (packet->nearest_opponent == NULL) {
-                object->pad->runtime_flags &= ~4;
+                object->pad->runtime_flags &= ~GAMEPAD_AI_USE_FORCE;
                 ((AI_FORCE_OBJECT *)object)->force = NULL;
             }
             return 1;
@@ -8833,7 +8836,7 @@ i32 Action_ForcePush(AISYS_PC *system, AISCRIPTPROCESS *processor, AIPACKET *pac
         }
         if (object->character_context == CHARACTER_CONTEXT_FORCE_PUSH && processor->action_data_1 == 0 && object->force_target != NULL &&
             processor->action_data_3 == NULL) {
-            object->pad->runtime_flags |= 0x10;
+            object->pad->runtime_flags |= GAMEPAD_AI_FORCE_PUSH;
             object->unknown_d20 = (u32)object->force_target;
             object->flags_e20 = (object->flags_e20 & ~APIOBJECT_FORCE_HIGHLIGHT_ONLY) | ((processor->action_data_1 << 10) & 0x400u);
             object->character_context = CHARACTER_CONTEXT_NONE;
@@ -8851,7 +8854,7 @@ i32 Action_ForcePush(AISYS_PC *system, AISCRIPTPROCESS *processor, AIPACKET *pac
             }
         }
     } else {
-        object->pad->runtime_flags |= 0x10;
+        object->pad->runtime_flags |= GAMEPAD_AI_FORCE_PUSH;
         object->unknown_d20 = (u32)processor->action_data_3;
         object->flags_e20 = (object->flags_e20 & ~APIOBJECT_FORCE_HIGHLIGHT_ONLY) | ((processor->action_data_1 << 10) & 0x400u);
         memcpy(&action_object, &processor->action_data_4, sizeof(action_object));
@@ -9961,7 +9964,7 @@ i32 Action_HelpWithTriggers(AISYS_PC *unused0, AISCRIPTPROCESS *processor, AIPAC
             dist = NuVecXZDistSqr(&packet->terrain_origin, &target->position, &offset);
             if (dist < ai_moveradius * ai_moveradius) {
                 packet->movement_look_target = &force->position;
-                object->pad->runtime_flags |= 4;
+                object->pad->runtime_flags |= GAMEPAD_AI_USE_FORCE;
                 object->gizforce_target = force;
             }
         } else if (gizmo->type_id == grapple_gizmotype_id) {

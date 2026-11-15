@@ -252,7 +252,8 @@ static void BlockadeRunnerDEjectCreature(i32 eject_index) {
             params.unknown_18 = 0.15f;
             params.gravity = 0.0f;
             params.special = &WORLD->level_objects[254].special;
-            params.flags = 0x8698;
+            params.flags = PART_FLAG_DAMAGE_CHARACTERS | PART_FLAG_KEEP_OFF_SCREEN | PART_FLAG_ROTATE_RANDOMLY |
+                           PART_FLAG_SLOT_CANNOT_BE_STOLEN | PART_FLAG_IGNORE_TERRAIN | PART_FLAG_THROWN;
             params.collision_fn = PartCollide_3D;
             params.kill_fn = BlockadeRunnerDKillEjectedCreature;
             params.draw_fn = BlockadeRunnerDDrawCreature;

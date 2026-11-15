@@ -205,7 +205,7 @@ void SnakeBeenHit(GAMEOBJECT *object) {
             params.special = special;
             params.time_step = FRAMETIME;
             params.lighting_data = &reader->lighting;
-            params.flags = 0x90;
+            params.flags = PART_FLAG_KEEP_OFF_SCREEN | PART_FLAG_ROTATE_RANDOMLY;
             params.stop_fn = PartStop_Flickerer;
             params.draw_fn = PartDraw_Flickerer;
             params.impact_fn = PartImpact_Brick;
@@ -261,7 +261,7 @@ void BlowUpSnakeBody(GAMEOBJECT *object) {
             params.special = special;
             params.time_step = FRAMETIME;
             params.lighting_data = &reader->lighting;
-            params.flags = 0x90;
+            params.flags = PART_FLAG_KEEP_OFF_SCREEN | PART_FLAG_ROTATE_RANDOMLY;
             params.stop_fn = PartStop_Flickerer;
             params.draw_fn = PartDraw_Flickerer;
             params.impact_fn = PartImpact_Brick;

@@ -3788,7 +3788,7 @@ void *EdClassInterface::GetNextObject(void *current, i32 (*filter)(void *)) {
 void *EdRef::GetMemberObject(void *object) {
     void *member = static_cast<u8 *>(object) + member_offset;
     if (member != NULL) {
-        if (attributes & 0x40000000) {
+        if (attributes & EDREF_ATTR_POINTER) {
             return *static_cast<void **>(member);
         }
         return member;
@@ -6176,7 +6176,7 @@ void PropertyTool::SelectAttr(i32 selected) {
 
 void PropertyTool::AddPropertyMenuItems(eduimenu_s *menu, EdClass *ed_class, void *object, eduiitem_s *parent) {
     for (EdRef *member = ed_class->members; member != NULL; member = member->next) {
-        if (member->attributes & 0x80000000) {
+        if (member->attributes & EDREF_ATTR_CLASS) {
             eduiitem_s *expander = eduiItemExpanderCreate(0, &EdLevelAttr, NULL, member->name);
             if (parent != NULL) {
                 eduiItemExpanderAddChild(parent, expander);
@@ -6342,7 +6342,7 @@ EdRef::EdRef(char *type_name, char *member_name, i32 offset, i32 member_size, i3
     length = NuStrLen(type_name);
     if (length > 0 && type_name[length - 1] == '*') {
         NuStrCpy(direct_type, type_name);
-        attributes |= 0x40000000;
+        attributes |= EDREF_ATTR_POINTER;
         direct_type[length - 1] = '\0';
         type_name = direct_type;
     }
@@ -6354,7 +6354,7 @@ EdRef::EdRef(char *type_name, char *member_name, i32 offset, i32 member_size, i3
         }
     } else {
         type_id = theRegistry.GetClassId(type_name);
-        attributes |= 0x80000000;
+        attributes |= EDREF_ATTR_CLASS;
     }
     name = member_name;
     member_offset = offset;
@@ -6374,7 +6374,7 @@ void EdRef::Serialise(EdStream &stream, i32 *class_mapping) {
         stream.SerialiseBuffer(&attributes, sizeof(i32), 1);
         return;
     }
-    if ((attributes & 0x80000000) && class_mapping != NULL) {
+    if ((attributes & EDREF_ATTR_CLASS) && class_mapping != NULL) {
         stream.SerialiseBuffer(&class_mapping[type_id], sizeof(i32), 1);
     } else {
         stream.SerialiseBuffer(&type_id, sizeof(i32), 1);
@@ -6408,7 +6408,7 @@ void EdRef::GetMemberData(void *object, i32 requested_type, void *data, i32 data
     void *member = static_cast<u8 *>(object) + member_offset;
     i32 type_size = GetTypeSize(requested_type, data_size);
     if (member != NULL) {
-        if (attributes & 0x40000000) {
+        if (attributes & EDREF_ATTR_POINTER) {
             member = *static_cast<void **>(member);
         }
         PCByteCopy(data, member, type_size);
@@ -6419,7 +6419,7 @@ void EdRef::SetMemberData(void *object, i32 requested_type, void *data, i32 data
     void *member = static_cast<u8 *>(object) + member_offset;
     i32 type_size = GetTypeSize(requested_type, data_size);
     if (member != NULL) {
-        if (attributes & 0x40000000) {
+        if (attributes & EDREF_ATTR_POINTER) {
             member = *static_cast<void **>(member);
         }
         PCByteCopy(member, data, type_size);
@@ -6517,7 +6517,7 @@ void EdClass::SerialiseObject(EdStream &stream, void *object) {
             if (skip) {
                 continue;
             }
-            if (member->attributes & 0x80000000) {
+            if (member->attributes & EDREF_ATTR_CLASS) {
                 EdClass *member_class = theRegistry.GetClass(member->type_id);
                 member_class->SerialiseObject(stream, member->GetMemberObject(object));
             } else {
@@ -6556,7 +6556,7 @@ void EdClass::CopyObject(void *destination, void *source) {
         if (member->attributes & 0x1800000) {
             continue;
         }
-        if (member->attributes & 0x80000000) {
+        if (member->attributes & EDREF_ATTR_CLASS) {
             EdClass *member_class = theRegistry.GetClass(member->type_id);
             void *source_member = member->GetMemberObject(source);
             void *destination_member = member->GetMemberObject(destination);
@@ -6583,7 +6583,7 @@ void EdClass::AddType(EdRef *member) {
     }
     member_count++;
     flags |= member->attributes & 0x17a;
-    if (member->attributes & 0x80000000) {
+    if (member->attributes & EDREF_ATTR_CLASS) {
         flags |= theRegistry.GetClass(member->type_id)->flags & 0x17a;
     }
 }
@@ -6596,7 +6596,7 @@ i32 EdClass::GetStreamClasses(EdStream &stream, i32 *stream_classes, i32 &count,
         count++;
     }
     for (EdRef *member = members; member != NULL; member = member->next) {
-        if (!(member->attributes & 0x80000000)) {
+        if (!(member->attributes & EDREF_ATTR_CLASS)) {
             continue;
         }
         i32 skip = 0;
@@ -6619,7 +6619,7 @@ i32 EdClass::GetStreamClasses(EdStream &stream, i32 *stream_classes, i32 &count,
 /* Kept out of line: SerialiseObject calls it. */
 EdRef *EdClass::FindTypeRef(char *member_name, i32 recursive) {
     for (EdRef *member = members; member != NULL; member = member->next) {
-        if (member->attributes & 0x80000000) {
+        if (member->attributes & EDREF_ATTR_CLASS) {
             if (recursive) {
                 EdRef *reference = theRegistry.GetClass(member->type_id)->FindTypeRef(member_name, 1);
                 if (reference != NULL) {
@@ -6641,7 +6641,7 @@ EdRef *EdClass::FindTypeRef(char *member_name, i32 recursive) {
  * classes when recursive. */
 EdRef *EdClass::FindTypeRef(i32 attributes, i32 recursive) {
     for (EdRef *member = members; member != NULL; member = member->next) {
-        if (member->attributes & 0x80000000) {
+        if (member->attributes & EDREF_ATTR_CLASS) {
             if (recursive) {
                 EdRef *reference = theRegistry.GetClass(member->type_id)->FindTypeRef(attributes, 1);
                 if (reference != NULL) {
@@ -6660,7 +6660,7 @@ EdRef *EdClass::FindTypeRef(i32 attributes, i32 recursive) {
 i32 EdClass::FindMember(EdMember *result, void *object, i32 attributes, i32 recursive) {
     EdRef *member;
     for (member = members; member != NULL; member = member->next) {
-        if (member->attributes & 0x80000000) {
+        if (member->attributes & EDREF_ATTR_CLASS) {
             if (recursive) {
                 EdClass *member_class;
                 void *member_object;
@@ -9313,7 +9313,7 @@ void EdClass::Serialise(EdStream &stream, i32 *class_mapping) {
                 if (member->attributes & 0x10000000) {
                     keep = 0;
                 }
-                if ((member->attributes & 0x80000000) && class_mapping != NULL && class_mapping[member->type_id] == -1) {
+                if ((member->attributes & EDREF_ATTR_CLASS) && class_mapping != NULL && class_mapping[member->type_id] == -1) {
                     keep = 0;
                 }
             }
@@ -9333,7 +9333,7 @@ void EdClass::Serialise(EdStream &stream, i32 *class_mapping) {
                 if (member->attributes & 0x10000000) {
                     keep = 0;
                 }
-                if ((member->attributes & 0x80000000) && class_mapping != NULL && class_mapping[member->type_id] == -1) {
+                if ((member->attributes & EDREF_ATTR_CLASS) && class_mapping != NULL && class_mapping[member->type_id] == -1) {
                     keep = 0;
                 }
             }
@@ -9393,7 +9393,7 @@ void EdClass::SerialiseObject(EdStream &stream, void *object, EdClass *schema, E
                         continue;
                     }
                 }
-                if (member->attributes & 0x80000000) {
+                if (member->attributes & EDREF_ATTR_CLASS) {
                     EdClass *source_class = registry->GetClass(source->type_id);
                     EdClass *member_class = theRegistry.GetClass(member->type_id);
                     void *member_object = member->GetMemberObject(object);

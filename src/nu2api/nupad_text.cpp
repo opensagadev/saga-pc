@@ -329,7 +329,7 @@ extern "C" void fun_006da460(i32 player) {
     PC_INPUT_CONFIG config;
     for (i32 port = 0; port < 14; ++port) {
         i32 owner = NuPadGetPlayer(port);
-        if (runtime->devices[port].kind != 0 && (owner == -1 || owner == player)) {
+        if (runtime->devices[port].kind != PC_INPUT_DEVICE_NONE && (owner == -1 || owner == player)) {
             PC_INPUT_CONFIG *found = runtime->FindConfig(3, port, player);
             if (found == NULL) {
                 found = runtime->FindConfig(3, port, -1);

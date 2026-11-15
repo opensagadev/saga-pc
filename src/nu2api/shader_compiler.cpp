@@ -46,17 +46,17 @@ void ShaderCompilerBasePc::Configure(PC_SHADER_MATERIAL_FILTER_VIEW *filter, Sha
     }
     definitions->AddDefinition("BUILD_EFFECT", NULL, 0);
     bool nvidia_profile = profile == 4 && 0x10de == PCDeviceBackend.identifier.vendor;
-    if (filter->variant == 0 && (filter->descriptor->layer_flags & 0x4000)) {
+    if (filter->variant == 0 && (filter->descriptor->layer_flags & PC_SHADER_LAYER_VTF_NORMAL_MAP)) {
         used_uvs[descriptor->sampler_indices[5] - 1] = 1;
         definitions->AddDefinition(uv_functions[descriptor->sampler_indices[5] - 1], "UVSET_ANIMATION", 0);
         definitions->AddDefinition("VTF_NORMAL_UVSET", uv_names[descriptor->sampler_indices[5] - 1], 1);
         definitions->AddDefinition("FUNC_fs_computeVTFNormal", "VTF_SURFACE_NORMAL_MAP", 0);
     }
-    if (0 == filter->variant && (filter->descriptor->layer_flags & 0x40000000)) {
+    if (0 == filter->variant && (filter->descriptor->layer_flags & PC_SHADER_LAYER_LEGO)) {
         definitions->AddDefinition("LEGO", NULL, 0);
     }
     if (nvidia_profile) {
-        if ((filter->descriptor->layer_flags & 0x400000) && (filter->descriptor->vertex_format & 0x2000000)) {
+        if ((filter->descriptor->layer_flags & PC_SHADER_LAYER_WIND) && (filter->descriptor->vertex_format & 0x2000000)) {
             definitions->AddDefinition("FUNC_pipePosition",
                                        filter->variant == 0 && (filter->descriptor->layer_flags & 0x40000) ? "VERTEX_TRANSFORM_PLANT2"
                                                                                                            : "VERTEX_TRANSFORM_PLANT",
@@ -70,22 +70,22 @@ void ShaderCompilerBasePc::Configure(PC_SHADER_MATERIAL_FILTER_VIEW *filter, Sha
         if ((filter->descriptor->selectors & 2) && (filter->descriptor->vertex_format & 0x2000000)) {
             definitions->AddDefinition("WIND", NULL, 0);
         }
-        if (filter->variant == 0 && (filter->descriptor->layer_flags & 0x2000)) {
+        if (filter->variant == 0 && (filter->descriptor->layer_flags & PC_SHADER_LAYER_VERTEX_DISPLACEMENT)) {
             used_uvs[descriptor->sampler_indices[5] - 1] = 1;
             definitions->AddDefinition(uv_functions[descriptor->sampler_indices[5] - 1], "UVSET_ANIMATION", 0);
             definitions->AddDefinition("VERTEX_FETCH_UVSET", vertex_uvs[descriptor->sampler_indices[5] - 1], 1);
             definitions->AddDefinition("FUNC_pipePosition", "VERTEX_FETCH_DISPLACEMENT", 0);
         }
     }
-    if (!nvidia_profile || filter->variant != 0 || !(filter->descriptor->layer_flags & 0x2000)) {
-        if (0 == filter->variant && (filter->descriptor->layer_flags & 0x20000000) && (filter->descriptor->vertex_format & 0x30000) &&
-            !(filter->descriptor->vertex_format & 0x400000)) {
+    if (!nvidia_profile || filter->variant != 0 || !(filter->descriptor->layer_flags & PC_SHADER_LAYER_VERTEX_DISPLACEMENT)) {
+        if (0 == filter->variant && (filter->descriptor->layer_flags & PC_SHADER_LAYER_REFRACTED_GLASS) &&
+            (filter->descriptor->vertex_format & 0x30000) && !(filter->descriptor->vertex_format & 0x400000)) {
             definitions->AddDefinition("FUNC_pipePosition", "VERTEX_TRANSFORM_REFRACTED_GLASS_SKINNING", 0);
             definitions->AddDefinition("FUNC_computeNormal", "VERTEX_TRANSFORM_SKINNING", 0);
             definitions->AddDefinition("FUNC_computeTangent", "VERTEX_TRANSFORM_SKINNING", 0);
-        } else if (filter->variant == 0 && (filter->descriptor->layer_flags & 0x20000000)) {
+        } else if (filter->variant == 0 && (filter->descriptor->layer_flags & PC_SHADER_LAYER_REFRACTED_GLASS)) {
             definitions->AddDefinition("FUNC_pipePosition", "VERTEX_TRANSFORM_REFRACTED_GLASS", 0);
-        } else if (filter->variant == 0 && (filter->descriptor->layer_flags & 0x200)) {
+        } else if (filter->variant == 0 && (filter->descriptor->layer_flags & PC_SHADER_LAYER_WATER)) {
             definitions->AddDefinition("FUNC_pipePosition", "VERTEX_TRANSFORM_WATER", 0);
         } else if (filter->descriptor->vertex_format & 0x40000) {
             definitions->AddDefinition("FUNC_pipePosition", "VERTEX_RAW", 0);
@@ -101,19 +101,22 @@ void ShaderCompilerBasePc::Configure(PC_SHADER_MATERIAL_FILTER_VIEW *filter, Sha
     if (filter->descriptor->vertex_format & 0x1000000) {
         definitions->AddDefinition("FUNC_WATERCOEF", "WATERCOEF_AMPLITUDE", 1);
     }
-    if (filter->variant == 0 && (filter->descriptor->layer_flags & 2)) {
+    if (filter->variant == 0 && (filter->descriptor->layer_flags & PC_SHADER_LAYER_PARALLAX_MAP)) {
         used_uvs[descriptor->sampler_indices[0] - 1] = 1;
         definitions->AddDefinition("SURFACE_UVSET", uv_names[descriptor->sampler_indices[0] - 1], 1);
         definitions->AddDefinition("SURFACE_TYPE", "SURFACE_PARALLAX_MAP", 0);
-    } else if (filter->variant == 0 && (filter->descriptor->layer_flags & 1)) {
+    } else if (filter->variant == 0 && (filter->descriptor->layer_flags & PC_SHADER_LAYER_NORMAL_MAP)) {
         used_uvs[descriptor->sampler_indices[0] - 1] = 1;
         definitions->AddDefinition("SURFACE_UVSET", uv_names[descriptor->sampler_indices[0] - 1], 1);
         definitions->AddDefinition("SURFACE_TYPE", "SURFACE_NORMAL_MAP", 0);
     } else {
         definitions->AddDefinition("SURFACE_TYPE", "SURFACE_SMOOTH", 0);
     }
-    if (filter->variant == 0 && (filter->descriptor->layer_flags & 3) && filter->descriptor->normal_threshold > filter->parameter) {
-        definitions->AddDefinition("SURFACE_TYPE2", filter->descriptor->layer_flags & 2 ? "SURFACE_PARALLAX_MAP" : "SURFACE_NORMAL_MAP", 0);
+    if (filter->variant == 0 && (filter->descriptor->layer_flags & (PC_SHADER_LAYER_NORMAL_MAP | PC_SHADER_LAYER_PARALLAX_MAP)) &&
+        filter->descriptor->normal_threshold > filter->parameter) {
+        definitions->AddDefinition(
+            "SURFACE_TYPE2", filter->descriptor->layer_flags & PC_SHADER_LAYER_PARALLAX_MAP ? "SURFACE_PARALLAX_MAP" : "SURFACE_NORMAL_MAP",
+            0);
         definitions->AddDefinition("LAYER1_UVSET", uv_names[descriptor->sampler_indices[2] - 1], 1);
     } else {
         definitions->AddDefinition("SURFACE_TYPE2", "SURFACE_SMOOTH", 0);
@@ -174,29 +177,30 @@ void ShaderCompilerBasePc::Configure(PC_SHADER_MATERIAL_FILTER_VIEW *filter, Sha
         }
     }
     if (filter->variant == 0 && !(filter->descriptor->layer_flags & 0x1000)) {
-        if (filter->descriptor->layer_flags & 0x20000) {
+        if (filter->descriptor->layer_flags & PC_SHADER_LAYER_GOOCH) {
             definitions->AddDefinition("LIGHTING_STAGE", "LIGHTING_GOOCH", 0);
-        } else if (filter->descriptor->layer_flags & 0x80000) {
+        } else if (filter->descriptor->layer_flags & PC_SHADER_LAYER_ENVMAP_LIGHTING) {
             definitions->AddDefinition("LIGHTING_STAGE", "LIGHTING_ENVMAP", 0);
-        } else if (filter->descriptor->layer_flags & 0x10) {
+        } else if (filter->descriptor->layer_flags & PC_SHADER_LAYER_ANISO) {
             definitions->AddDefinition("LIGHTING_STAGE", "LIGHTING_ANISO", 0);
-            if (filter->variant == 0 && (filter->descriptor->layer_flags & 0x2000000)) {
+            if (filter->variant == 0 && (filter->descriptor->layer_flags & PC_SHADER_LAYER_ANISO_FLIP)) {
                 definitions->AddDefinition("ANISO_FLIP", NULL, 0);
             }
         } else {
             definitions->AddDefinition("LIGHTING_STAGE", filter->HasPhongLighting() ? "LIGHTING_PHONG" : "LIGHTING_LAMBERT", 0);
         }
-    } else if (filter->variant == 0 && (filter->descriptor->layer_flags & 0x80000000)) {
+    } else if (filter->variant == 0 && (filter->descriptor->layer_flags & PC_SHADER_LAYER_PRELIGHT_FX)) {
         definitions->AddDefinition("PRELIGHT_FX", NULL, 0);
-        if (filter->variant == 0 && (filter->descriptor->layer_flags & 0x18)) {
+        if (filter->variant == 0 && (filter->descriptor->layer_flags & (PC_SHADER_LAYER_PHONG | PC_SHADER_LAYER_ANISO))) {
             definitions->AddDefinition("PRELIGHT_FX_LIVE_SPECULAR", NULL, 0);
         }
-        if (filter->variant == 0 && !(filter->descriptor->layer_flags & 0xa0000) && (filter->descriptor->layer_flags & 0x10)) {
+        if (filter->variant == 0 && !(filter->descriptor->layer_flags & (PC_SHADER_LAYER_GOOCH | PC_SHADER_LAYER_ENVMAP_LIGHTING)) &&
+            (filter->descriptor->layer_flags & PC_SHADER_LAYER_ANISO)) {
             definitions->AddDefinition("LIGHTING_STAGE", "LIGHTING_ANISO", 0);
             if (filter->HasAnisoFlip()) {
                 definitions->AddDefinition("ANISO_FLIP", NULL, 0);
             }
-        } else if (filter->variant == 0 && (filter->descriptor->layer_flags & 0xa0000)) {
+        } else if (filter->variant == 0 && (filter->descriptor->layer_flags & (PC_SHADER_LAYER_GOOCH | PC_SHADER_LAYER_ENVMAP_LIGHTING))) {
             definitions->AddDefinition("LIGHTING_STAGE", "DISABLE", 0);
         } else {
             definitions->AddDefinition("LIGHTING_STAGE", filter->HasPhongLighting() ? "LIGHTING_PHONG" : "LIGHTING_LAMBERT", 0);
@@ -204,7 +208,7 @@ void ShaderCompilerBasePc::Configure(PC_SHADER_MATERIAL_FILTER_VIEW *filter, Sha
     } else {
         definitions->AddDefinition("LIGHTING_STAGE", "DISABLE", 0);
     }
-    if (filter->variant == 0 && (filter->descriptor->layer_flags & 0x40000) && !(filter->descriptor->layer_flags & 0x400000) &&
+    if (filter->variant == 0 && (filter->descriptor->layer_flags & 0x40000) && !(filter->descriptor->layer_flags & PC_SHADER_LAYER_WIND) &&
         ((i32)filter->descriptor->flags >= 0 || !(filter->descriptor->flags & 0x800000))) {
         definitions->AddDefinition("CAR_PAINT", NULL, 0);
     }
@@ -233,17 +237,18 @@ void ShaderCompilerBasePc::Configure(PC_SHADER_MATERIAL_FILTER_VIEW *filter, Sha
     }
     bool environment = false;
     if (filter->variant == 0 &&
-        ((filter->descriptor->layer_flags & 0x20) || ((filter->descriptor->layer_flags & 0x60000000) && profile != 1))) {
+        ((filter->descriptor->layer_flags & PC_SHADER_LAYER_ENVMAP_CUBE) ||
+         ((filter->descriptor->layer_flags & (PC_SHADER_LAYER_REFRACTED_GLASS | PC_SHADER_LAYER_LEGO)) && profile != 1))) {
         environment = true;
         definitions->AddDefinition("ENVMAP_STAGE", "ENVMAP_CUBE", 0);
-        if (filter->variant == 0 && (filter->descriptor->layer_flags & 0x20000000) && profile != 1) {
+        if (filter->variant == 0 && (filter->descriptor->layer_flags & PC_SHADER_LAYER_REFRACTED_GLASS) && profile != 1) {
             definitions->AddDefinition("SPECULAR_STAGE", "SPECULAR_PHONG", 0);
         }
-    } else if (filter->variant == 0 && (filter->descriptor->layer_flags & 0x8000)) {
+    } else if (filter->variant == 0 && (filter->descriptor->layer_flags & PC_SHADER_LAYER_SHINEMAP)) {
         environment = true;
         definitions->AddDefinition("ENVMAP_STAGE", "PS2_SHINEMAP", 0);
     }
-    const bool lighting = filter->variant == 0 && (filter->descriptor->layer_flags & 0x18) != 0;
+    const bool lighting = filter->variant == 0 && (filter->descriptor->layer_flags & (PC_SHADER_LAYER_PHONG | PC_SHADER_LAYER_ANISO)) != 0;
     if (environment || lighting) {
         if (profile != 1) {
             definitions->AddDefinition("REFLECTIVITY_STAGE", NULL, 0);
@@ -254,7 +259,7 @@ void ShaderCompilerBasePc::Configure(PC_SHADER_MATERIAL_FILTER_VIEW *filter, Sha
         } else {
             definitions->AddDefinition("SPECULAR_SPECULARENABLE", NULL, 0);
         }
-        if (filter->variant == 0 && (filter->descriptor->layer_flags & 0x100000)) {
+        if (filter->variant == 0 && (filter->descriptor->layer_flags & PC_SHADER_LAYER_REFLECTIVITY2)) {
             definitions->AddDefinition("REFLECTIVITY_STAGE2", NULL, 0);
             if (filter->descriptor->surface_threshold > filter->parameter) {
                 definitions->AddDefinition("LAYER1_UVSET", uv_names[descriptor->sampler_indices[2] - 1], 1);
@@ -263,15 +268,15 @@ void ShaderCompilerBasePc::Configure(PC_SHADER_MATERIAL_FILTER_VIEW *filter, Sha
             }
         }
     }
-    if (filter->variant == 0 && (environment || lighting || (filter->descriptor->layer_flags & 0x400))) {
-        if (filter->descriptor->layer_flags & 4) {
+    if (filter->variant == 0 && (environment || lighting || (filter->descriptor->layer_flags & PC_SHADER_LAYER_REFRACTION))) {
+        if (filter->descriptor->layer_flags & PC_SHADER_LAYER_FRESNEL) {
             definitions->AddDefinition("FRESNEL_STAGE", NULL, 0);
         }
-        if (filter->variant == 0 && (filter->descriptor->layer_flags & 0x400)) {
+        if (filter->variant == 0 && (filter->descriptor->layer_flags & PC_SHADER_LAYER_REFRACTION)) {
             definitions->AddDefinition("REFRACTION_STAGE",
-                                       filter->descriptor->layer_flags & 0x200        ? "REFRACTION_WATER"
-                                       : filter->descriptor->layer_flags & 0x20000000 ? "REFRACTION_GLASS"
-                                                                                      : "REFRACTION_DEFAULT",
+                                       filter->descriptor->layer_flags & PC_SHADER_LAYER_WATER             ? "REFRACTION_WATER"
+                                       : filter->descriptor->layer_flags & PC_SHADER_LAYER_REFRACTED_GLASS ? "REFRACTION_GLASS"
+                                                                                                           : "REFRACTION_DEFAULT",
                                        0);
         }
     }
@@ -287,11 +292,12 @@ void ShaderCompilerBasePc::Configure(PC_SHADER_MATERIAL_FILTER_VIEW *filter, Sha
     if (filter->first_path) {
         definitions->AddDefinition("NORMAL_OUTPUT", "1", 1);
         if ((filter->descriptor->vertex_format & 0xc) &&
-            !(filter->variant == 0 && ((i32)filter->descriptor->flags < 0 || (filter->descriptor->layer_flags & 0x80000000)))) {
+            !(filter->variant == 0 &&
+              ((i32)filter->descriptor->flags < 0 || (filter->descriptor->layer_flags & PC_SHADER_LAYER_PRELIGHT_FX)))) {
             definitions->AddDefinition("NORMAL_OUTPUT_NOT_NULL", NULL, 0);
         }
     }
-    if (filter->variant == 0 && (filter->descriptor->layer_flags & 0x10000)) {
+    if (filter->variant == 0 && (filter->descriptor->layer_flags & PC_SHADER_LAYER_GLOW)) {
         definitions->AddDefinition("GLOW_OUTPUT", "1", 1);
     }
     if (filter->deferred_path) {
@@ -311,13 +317,13 @@ void ShaderCompilerBasePc::Configure(PC_SHADER_MATERIAL_FILTER_VIEW *filter, Sha
     if (!(filter->descriptor->vertex_format & 0x40000) && filter->variant == 0 && profile != 1) {
         definitions->AddDefinition("FOG_STAGE", "FOG_VERTEX_CLAMP_EXPONENTIAL2", 0);
     }
-    if (filter->variant == 0 && (filter->descriptor->layer_flags & 0x200000) && profile != 1) {
+    if (filter->variant == 0 && (filter->descriptor->layer_flags & PC_SHADER_LAYER_DAPPLE) && profile != 1) {
         definitions->AddDefinition("DAPPLE", NULL, 0);
     }
-    if (filter->variant == 0 && (0x10000000 & filter->descriptor->layer_flags)) {
+    if (filter->variant == 0 && (PC_SHADER_LAYER_FRACTAL & filter->descriptor->layer_flags)) {
         definitions->AddDefinition("FRACTAL", NULL, 0);
     }
-    if (filter->variant == 0 && (filter->descriptor->layer_flags & 0x8000000)) {
+    if (filter->variant == 0 && (filter->descriptor->layer_flags & PC_SHADER_LAYER_EDGE_LIGHTING)) {
         definitions->AddDefinition("EDGE_LIGHTING", NULL, 0);
     }
     bool swizzle = true;

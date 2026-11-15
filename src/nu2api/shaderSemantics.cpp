@@ -60,12 +60,12 @@ i32 PC_SHADER_MATERIAL_FILTER_VIEW::fun_00744390() const {
     if (variant != 0) {
         return 0;
     }
-    return (descriptor->layer_flags & 0x80000000) != 0;
+    return (descriptor->layer_flags & PC_SHADER_LAYER_PRELIGHT_FX) != 0;
 }
 
 i32 PC_SHADER_MATERIAL_FILTER_VIEW::fun_007443b0() const {
     if (variant != 0) {
         return 0;
     }
-    return (descriptor->layer_flags & 0x10000) != 0;
+    return (descriptor->layer_flags & PC_SHADER_LAYER_GLOW) != 0;
 }

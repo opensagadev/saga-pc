@@ -230,7 +230,7 @@ void UpdatePaintPuzzle(WORLDINFO *world) {
             PAINTPUZZLESTAGE = 1;
             break;
         case 1:
-            if (paintmixed != 0 && (((GIZOBSTACLE *)paintobst[paintmixed]->object)->anim_set->flags & 1) != 0) {
+            if (paintmixed != 0 && (((GIZOBSTACLE *)paintobst[paintmixed]->object)->anim_set->flags & GAMEANIMSET_PLAYING) != 0) {
                 break;
             }
             paintmixed = 0;
@@ -2100,7 +2100,7 @@ void BonusGunshipB_Update(WORLDINFO *world) {
             if (GameTimer.time_elapsed >= delay) {
                 BONUS_GUNSHIP_FLAGS_PC_VIEW->progress = 1;
                 if (LevGizObst[0] != NULL) {
-                    LevGizObst[0]->runtime_flags |= 4;
+                    LevGizObst[0]->runtime_flags |= GIZOBSTACLE_LOCKED_OPEN;
                 }
                 MiscTime = 45.0f;
                 TimerScale = 1.0f;

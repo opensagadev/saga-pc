@@ -35,6 +35,35 @@ struct PC_SHADER_FILTER_DESC_VIEW {
     i32 environment_texture;
 };
 
+/* PC_SHADER_FILTER_DESC_VIEW.layer_flags, named after the shader definitions each bit selects when the shader source
+ * is built (shader_compiler.cpp) and the filter's Has* tests (nushadermanager.cpp). */
+#define PC_SHADER_LAYER_NORMAL_MAP 0x1             /* SURFACE_NORMAL_MAP */
+#define PC_SHADER_LAYER_PARALLAX_MAP 0x2           /* SURFACE_PARALLAX_MAP */
+#define PC_SHADER_LAYER_FRESNEL 0x4                /* FRESNEL_STAGE */
+#define PC_SHADER_LAYER_PHONG 0x8                  /* LIGHTING_PHONG */
+#define PC_SHADER_LAYER_ANISO 0x10                 /* LIGHTING_ANISO */
+#define PC_SHADER_LAYER_ENVMAP_CUBE 0x20           /* ENVMAP_CUBE */
+#define PC_SHADER_LAYER_LAYER1 0x40                /* blend layer 1 */
+#define PC_SHADER_LAYER_LAYER2 0x80                /* blend layer 2 */
+#define PC_SHADER_LAYER_LAYER3 0x100               /* blend layer 3 */
+#define PC_SHADER_LAYER_WATER 0x200                /* VERTEX_TRANSFORM_WATER, REFRACTION_WATER */
+#define PC_SHADER_LAYER_REFRACTION 0x400           /* REFRACTION_STAGE */
+#define PC_SHADER_LAYER_VERTEX_DISPLACEMENT 0x2000 /* VERTEX_FETCH_DISPLACEMENT */
+#define PC_SHADER_LAYER_VTF_NORMAL_MAP 0x4000      /* VTF_SURFACE_NORMAL_MAP */
+#define PC_SHADER_LAYER_SHINEMAP 0x8000            /* PS2_SHINEMAP */
+#define PC_SHADER_LAYER_GLOW 0x10000               /* GLOW_OUTPUT */
+#define PC_SHADER_LAYER_GOOCH 0x20000              /* LIGHTING_GOOCH */
+#define PC_SHADER_LAYER_ENVMAP_LIGHTING 0x80000    /* LIGHTING_ENVMAP */
+#define PC_SHADER_LAYER_REFLECTIVITY2 0x100000     /* REFLECTIVITY_STAGE2 */
+#define PC_SHADER_LAYER_DAPPLE 0x200000            /* DAPPLE */
+#define PC_SHADER_LAYER_WIND 0x400000              /* WIND */
+#define PC_SHADER_LAYER_ANISO_FLIP 0x2000000       /* ANISO_FLIP */
+#define PC_SHADER_LAYER_EDGE_LIGHTING 0x8000000    /* EDGE_LIGHTING */
+#define PC_SHADER_LAYER_FRACTAL 0x10000000         /* FRACTAL */
+#define PC_SHADER_LAYER_REFRACTED_GLASS 0x20000000 /* VERTEX_TRANSFORM_REFRACTED_GLASS, REFRACTION_GLASS */
+#define PC_SHADER_LAYER_LEGO 0x40000000            /* LEGO */
+#define PC_SHADER_LAYER_PRELIGHT_FX 0x80000000     /* PRELIGHT_FX */
+
 struct PC_SHADER_FILTER_DESC_VIEW;
 
 struct PC_SHADER_FILTER_MATERIAL_VIEW {

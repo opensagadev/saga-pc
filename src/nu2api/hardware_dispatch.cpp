@@ -102,16 +102,16 @@ extern "C" i32 NuInitHardware(VARIPTR *buffer, VARIPTR *end, i32 allocate, ...) 
     do {
         selector = va_arg(args, i32);
         switch (selector) {
-            case 68:
+            case NUHW_ANIMATION_COUNT:
                 animation_count = va_arg(args, i32);
                 break;
-            case 6:
+            case NUHW_FILE_MODE:
                 file_mode = va_arg(args, i32);
                 break;
-            case 7:
+            case NUHW_EJECT:
                 eject = va_arg(args, i32);
                 break;
-            case 4:
+            case NUHW_HOSTFS:
                 hostfs = va_arg(args, i32);
                 break;
             case 5:
@@ -137,20 +137,20 @@ extern "C" i32 NuInitHardware(VARIPTR *buffer, VARIPTR *end, i32 allocate, ...) 
             case 78:
                 va_arg(args, i32);
                 break;
-            case 22:
+            case NUHW_DFS_NAME:
                 NuHwDfsName = va_arg(args, const char *);
                 break;
-            case 23:
+            case NUHW_SOUND_DFS_NAME:
                 NuHwSoundDfsName = va_arg(args, const char *);
                 break;
-            case 24:
+            case NUHW_DAT_NAMES:
                 dat_names = va_arg(args, const char **);
                 dat_count = va_arg(args, i32);
                 break;
             case 25:
                 NuHwParameter19 = va_arg(args, u32);
                 break;
-            case 8:
+            case NUHW_STREAM_SIZE:
                 stream_size = va_arg(args, i32);
                 break;
             case 9:
@@ -160,14 +160,14 @@ extern "C" i32 NuInitHardware(VARIPTR *buffer, VARIPTR *end, i32 allocate, ...) 
                 va_arg(args, i32);
                 va_arg(args, i32);
                 break;
-            case 10:
+            case NUHW_AUDIO:
                 audio_enabled = 1;
                 audio_gate = va_arg(args, i32);
                 audio_buffer_size = va_arg(args, i32);
                 audio_names = va_arg(args, void *);
                 audio_parameter = va_arg(args, void *);
                 break;
-            case 28:
+            case NUHW_NO_AUDIO:
                 audio_enabled = 0;
                 va_arg(args, i32);
                 va_arg(args, i32);
@@ -181,23 +181,23 @@ extern "C" i32 NuInitHardware(VARIPTR *buffer, VARIPTR *end, i32 allocate, ...) 
             case 36:
                 video_parameter = va_arg(args, i32);
                 break;
-            case 11:
+            case NUHW_AUDIO_CHANNELS:
                 audio_channels = va_arg(args, i32);
                 audio_capacity = va_arg(args, i32);
                 break;
-            case 14:
+            case NUHW_PAD0:
                 pads[0] = va_arg(args, void **);
                 break;
-            case 15:
+            case NUHW_PAD1:
                 pads[1] = va_arg(args, void **);
                 break;
-            case 16:
+            case NUHW_PAD2:
                 pads[2] = va_arg(args, void **);
                 break;
-            case 17:
+            case NUHW_PAD3:
                 pads[3] = va_arg(args, void **);
                 break;
-            case 18: {
+            case NUHW_VIDEO_MODE: {
                 i32 mode = va_arg(args, i32);
                 if (video_height == 224) {
                     switch (mode) {
@@ -209,7 +209,7 @@ extern "C" i32 NuInitHardware(VARIPTR *buffer, VARIPTR *end, i32 allocate, ...) 
                 }
                 break;
             }
-            case 33:
+            case NUHW_VIDEO_HEIGHT:
                 va_arg(args, i32);
                 video_height = va_arg(args, i32);
                 break;
@@ -218,25 +218,25 @@ extern "C" i32 NuInitHardware(VARIPTR *buffer, VARIPTR *end, i32 allocate, ...) 
                 va_arg(args, i32);
                 va_arg(args, i32);
                 break;
-            case 26:
+            case NUHW_TEXTURE_COUNT:
                 texture_count = va_arg(args, i32);
                 break;
-            case 37:
+            case NUHW_MATERIAL_COUNT:
                 material_count = va_arg(args, i32);
                 break;
             case 46:
                 parameter_2e = va_arg(args, const char *);
                 break;
-            case 47:
+            case NUHW_CONFIG_NAME:
                 config_name = va_arg(args, const char *);
                 break;
             case 45:
                 parameter_2d = va_arg(args, void *);
                 break;
-            case 48:
+            case NUHW_SAVE_FOLDER_COMPANY:
                 parameter_30 = va_arg(args, void *);
                 break;
-            case 49:
+            case NUHW_SAVE_FOLDER_GAME:
                 parameter_31 = va_arg(args, void *);
                 break;
             case 50:
@@ -245,10 +245,10 @@ extern "C" i32 NuInitHardware(VARIPTR *buffer, VARIPTR *end, i32 allocate, ...) 
             case 51:
                 parameter_33 = va_arg(args, void *);
                 break;
-            case 52:
+            case NUHW_SHOW_COMMAND:
                 show = va_arg(args, i32);
                 break;
-            case 60:
+            case NUHW_WINDOW:
                 supplied_window = va_arg(args, HWND);
                 break;
             case 56:
@@ -256,22 +256,22 @@ extern "C" i32 NuInitHardware(VARIPTR *buffer, VARIPTR *end, i32 allocate, ...) 
             case 58:
                 va_arg(args, i32);
                 continue;
-            case 82:
+            case NUHW_MAX_GAME_PADS:
                 NuPadSetMaxGamePads(va_arg(args, i32));
                 break;
-            case 76:
+            case NUHW_OCCLUSION_CAPACITY:
                 occlusion_capacity = va_arg(args, u32);
                 break;
             case 79:
                 NuHwParameter4f = va_arg(args, u32);
                 /* fall through */
-            case 83:
+            case NUHW_ICON:
                 icon = va_arg(args, u32);
                 break;
             default:
                 break;
         }
-    } while (selector != 0);
+    } while (selector != NUHW_END);
     va_end(args);
     if (parameter_30 != NULL && parameter_31 != NULL) {
         PcRegisterSaveFolderPc((const char *)parameter_30, (const char *)parameter_31, parameter_2e, 0);

@@ -257,11 +257,11 @@ void LSW_Hub_UpdateAI(WORLDINFO *world) {
     }
     if (LevGizObst[0] != NULL) {
         if (aicreature_sets_alive[2] != 0) {
-            LevGizObst[0]->runtime_flags |= 4;
-            LevGizObst[0]->runtime_flags &= ~8u;
+            LevGizObst[0]->runtime_flags |= GIZOBSTACLE_LOCKED_OPEN;
+            LevGizObst[0]->runtime_flags &= ~GIZOBSTACLE_LOCKED_SHUT;
         } else {
-            LevGizObst[0]->runtime_flags &= ~4u;
-            LevGizObst[0]->runtime_flags |= 8;
+            LevGizObst[0]->runtime_flags &= ~GIZOBSTACLE_LOCKED_OPEN;
+            LevGizObst[0]->runtime_flags |= GIZOBSTACLE_LOCKED_SHUT;
         }
     }
 }

@@ -62,6 +62,18 @@ struct FLOWBOX {          // size 0x20
     char *name;         // 0x1c
 };
 
+/* FLOWBOX.state_flags: enabled (the bit-field above) and a gizmo box's options, the gizmo keywords of the flow
+ * config (cfgtab_gizmo, packed by GizFlowConfigGizmo). */
+#define FLOWBOX_ENABLED 0x1
+#define FLOWBOX_START_INVISIBLE 0x4    /* StartInvisible */
+#define FLOWBOX_END_INVISIBLE 0x8      /* FinishedInvisible */
+#define FLOWBOX_END_DEACTIVATED 0x10   /* FinishedDeactive */
+#define FLOWBOX_REVERSE 0x40           /* Reverse */
+#define FLOWBOX_REVERSE_INVISIBLE 0x80 /* RevInvis */
+#define FLOWBOX_OUTPUT_ONLY 0x1000     /* OutputOnly */
+#define FLOWBOX_FREEPLAY 0x2000        /* not NotFreeplay */
+#define FLOWBOX_STORY 0x4000           /* not NotStoryMode */
+
 struct FLOWBOXGIZMOREF { // size 0x8
     void *gizmo;         // 0x0
     char *name;          // 0x4

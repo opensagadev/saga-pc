@@ -40,7 +40,7 @@
 extern GAMEOBJECT *player_tag_from;
 #define TAG_CAN_TARGET(source, target)                                                                                                     \
     ((target) != NULL && ((target)->flags_1fc_word & 1) != 0 && ((target)->flags_1fc_word & 0x1000) != 0 && (target) != (source) &&        \
-     (target)->dead == 0 && ((target)->flags_1fc_word & 0x80) == 0 && ((target)->tag_flags & 2) == 0)
+     (target)->dead == 0 && ((target)->flags_1fc_word & 0x80) == 0 && ((target)->tag_flags & APIOBJECT_TAG_DISABLED) == 0)
 
 /* A copy of the 33-DWORD script cohort (script processor plus takeover link), without extending the
    packet. Held as words so the copy is one block move and the local is not treated as a /GS buffer. */
@@ -71,7 +71,7 @@ i32 Tag_FindGameObject_CYCLICAL(GAMEOBJECT *object) {
         candidate = &Obj[index];
         if (candidate != NULL && candidate != object && (candidate->flags_1fc_word & APIOBJECT_FLAG_IN_USE) != 0 &&
             (candidate->flags_1fc_word & APIOBJECT_FLAG_CHARACTER) != 0 && candidate->dead == 0 && candidate->player_index != -1 &&
-            (candidate->tag_flags & 2) == 0 && (candidate->flags_ef4 & APIOBJECT_CAN_BE_CARRIED) == 0 &&
+            (candidate->tag_flags & APIOBJECT_TAG_DISABLED) == 0 && (candidate->flags_ef4 & APIOBJECT_CAN_BE_CARRIED) == 0 &&
             (U64_PAIR(&CInfo[candidate->character_context].flags) & 0x800) == 0) {
             return candidate->player_index;
         }
@@ -90,7 +90,7 @@ static GAMEOBJECT *Tag_FindGameObject_TRANSFER(GAMEOBJECT *object) {
         f32 distance;
         if (candidate == NULL || (candidate->flags_1fc_word & APIOBJECT_FLAG_IN_USE) == 0 ||
             (candidate->flags_1fc_word & APIOBJECT_FLAG_CHARACTER) == 0 || candidate == object || candidate->dead != 0 ||
-            (candidate->tag_flags & 2) != 0) {
+            (candidate->tag_flags & APIOBJECT_TAG_DISABLED) != 0) {
             continue;
         }
         if (candidate->character_context == CHARACTER_CONTEXT_DEACTIVATED || candidate->character_context == CHARACTER_CONTEXT_FLATTEN ||
@@ -457,7 +457,7 @@ found:
     source_active = source->player_controlled;
     result = TagCode(source, target, 0, 0, mode);
     if (result == 2) {
-        source->tag_flags = (source->tag_flags & ~8U) | 4;
+        source->tag_flags = (source->tag_flags & ~APIOBJECT_TAG_PENDING_TAKEOVER) | APIOBJECT_TAG_PENDING;
         source->pending_tag_target = target;
         source->tag_cooldown = 3.0f;
         return 0;
@@ -489,7 +489,7 @@ void Tag_Check(GAMEOBJECT *object) {
     if (object->player_index == -1) {
         return;
     }
-    if ((object->tag_flags & 4) == 0) {
+    if ((object->tag_flags & APIOBJECT_TAG_PENDING) == 0) {
         u32 flags;
         object->tag_player_index = -1;
         flags = object->flags_1fc_word;
@@ -559,7 +559,7 @@ void Tag_Check(GAMEOBJECT *object) {
                             if (result == 2) {
                                 object->tag_cooldown = 1.0f;
                                 object->pending_tag_target = target;
-                                object->tag_flags = (object->tag_flags & ~8u) | 4;
+                                object->tag_flags = (object->tag_flags & ~APIOBJECT_TAG_PENDING_TAKEOVER) | APIOBJECT_TAG_PENDING;
                                 goto draw_icon;
                             }
                             goto tagged_result;
@@ -582,17 +582,17 @@ void Tag_Check(GAMEOBJECT *object) {
                     goto tagged_result;
                 }
             } else {
-                object->tag_flags &= ~4u;
+                object->tag_flags &= ~APIOBJECT_TAG_PENDING;
                 object->pending_tag_target = NULL;
                 goto draw_icon;
             }
         }
-        object->tag_flags &= ~4u;
+        object->tag_flags &= ~APIOBJECT_TAG_PENDING;
         goto draw_icon;
     }
 tagged_result:
     if (result == 1) {
-        object->tag_flags &= ~4u;
+        object->tag_flags &= ~APIOBJECT_TAG_PENDING;
         GameAudio_PlaySfx(0x21, &object->collision_position, 0, 0);
         if (target->model_draw_result != 0) {
             GameCam_Blend(GameCam, 0.5f, 0.0f, 1);
@@ -719,7 +719,7 @@ void TakeOverGameObject2(GAMEOBJECT *rider, GAMEOBJECT *vehicle, i32 blend_camer
         result = TagCode(rider, vehicle, 1, blend_camera, 1);
     }
     if (result == 2) {
-        rider->tag_flags |= 0xc;
+        rider->tag_flags |= APIOBJECT_TAG_PENDING | APIOBJECT_TAG_PENDING_TAKEOVER;
         rider->tag_cooldown = 1.0f;
         rider->pending_tag_target = vehicle;
     }
@@ -867,7 +867,7 @@ void TakeOverCode(GAMEOBJECT *object, i32 tag_pressed) {
                 ((candidate->character_data->model_flags & CHARACTER_MODEL_BEAST) != 0 &&
                  (candidate->character_context == CHARACTER_CONTEXT_DEACTIVATED ||
                   candidate->character_context == CHARACTER_CONTEXT_BUCK)) ||
-                (candidate->tag_flags & 2) != 0) {
+                (candidate->tag_flags & APIOBJECT_TAG_DISABLED) != 0) {
                 continue;
             }
             if (candidate->id == (u16)id_ATAT && WORLD->current_level == SPEEDERCHASEA_LDATA) {

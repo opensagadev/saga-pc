@@ -4664,7 +4664,8 @@ extern "C" {
             destination = &packet->path_info.path->nodes[destination_index];
             distance = NuVecXZDistSqr(&object->position, &destination->position, &offset);
             if (!(distance < destination->radius_squared)) {
-                if ((packet->path_info.connection->traversal_flags[packet->path_info.direction] & 0x20) == 0 &&
+                if ((packet->path_info.connection->traversal_flags[packet->path_info.direction] & INDY_AIPATHCNX_NO_DESTINATION_CHECK) ==
+                        0 &&
                     packet->inside_path_node != destination_index &&
                     (packet->path_info.path->previous_inside_node_bits[destination_index / 8] & (1 << (destination_index % 8))) != 0) {
                     if (TryToTeleportToNextNode(owner, destination, 0) != 0) {
@@ -4705,7 +4706,7 @@ extern "C" {
             }
             packet->movement_stopping_distance = 0.0f;
             jump_distance = (flags & 2) != 0 ? IndyJumpDistance[1] : IndyJumpDistance[0];
-            if ((packet->path_info.connection->traversal_flags[packet->path_info.direction] & 0x80) != 0) {
+            if ((packet->path_info.connection->traversal_flags[packet->path_info.direction] & INDY_AIPATHCNX_DONT_JUMP_NOW) != 0) {
                 packet->flags |= 0x800000;
                 packet->path_connection_state = 1;
             }
@@ -4713,15 +4714,17 @@ extern "C" {
                 case 1:
                     if (ready != 0) {
                         u32 connection_flags = packet->path_info.connection->traversal_flags[packet->path_info.direction];
-                        skip_ahead = (connection_flags & 0x20) == 0 && packet->inside_path_node != destination_index &&
+                        skip_ahead = (connection_flags & INDY_AIPATHCNX_NO_DESTINATION_CHECK) == 0 &&
+                                     packet->inside_path_node != destination_index &&
                                      (packet->path_info.path->previous_inside_node_bits[destination_index / 8] &
                                       (1 << (destination_index % 8))) != 0;
                         if (skip_ahead) {
                             if (TryToTeleportToNextNode(owner, destination, 0) != 0) {
                                 return 1;
                             }
-                        } else if ((connection_flags & 0x80) == 0) {
-                            if ((connection_flags & 0x40) != 0 || ((destination->runtime_flags | source->runtime_flags) & 2) == 0 ||
+                        } else if ((connection_flags & INDY_AIPATHCNX_DONT_JUMP_NOW) == 0) {
+                            if ((connection_flags & INDY_AIPATHCNX_JUMP_NOW) != 0 ||
+                                ((destination->runtime_flags | source->runtime_flags) & 2) == 0 ||
                                 NuSpecialCompare(&source->special_handle, &destination->special_handle) != 0) {
                                 packet->path_connection_state = 4;
                             } else {
@@ -4731,7 +4734,7 @@ extern "C" {
                     }
                     break;
                 case 2:
-                    if ((packet->path_info.connection->traversal_flags[packet->path_info.direction] & 0x40) != 0) {
+                    if ((packet->path_info.connection->traversal_flags[packet->path_info.direction] & INDY_AIPATHCNX_JUMP_NOW) != 0) {
                         packet->path_connection_state = 4;
                     } else {
                         distance = NuVecDist(&object->position, &destination->position, &offset);
@@ -4747,7 +4750,7 @@ extern "C" {
                     }
                     break;
                 case 3:
-                    if ((packet->path_info.connection->traversal_flags[packet->path_info.direction] & 0x40) != 0) {
+                    if ((packet->path_info.connection->traversal_flags[packet->path_info.direction] & INDY_AIPATHCNX_JUMP_NOW) != 0) {
                         packet->path_connection_state = 4;
                     } else {
                         distance = NuVecDist(&object->position, &destination->position, &offset);
@@ -4782,7 +4785,7 @@ extern "C" {
                         return 1;
                     }
                     connection = packet->path_info.connection;
-                    if ((connection->traversal_flags[packet->path_info.direction] & 0x20) == 0) {
+                    if ((connection->traversal_flags[packet->path_info.direction] & INDY_AIPATHCNX_NO_DESTINATION_CHECK) == 0) {
                         other = Obj;
                         for (index = 0; index < HIGHGAMEOBJECT; ++index, ++other) {
                             if ((other->flags_1fc_word & APIOBJECT_FLAG_IN_USE) == 0 || other == owner ||
@@ -4835,7 +4838,7 @@ extern "C" {
         GAMEOBJECT *owner = apiobject->owner;
         AIPATHNODE *destination =
             &packet->path_info.path->nodes[packet->path_info.connection->node_indices[packet->path_info.direction == 0]];
-        if ((packet->path_info.connection->traversal_flags[packet->path_info.direction] & 0x80) != 0) {
+        if ((packet->path_info.connection->traversal_flags[packet->path_info.direction] & INDY_AIPATHCNX_DONT_JUMP_NOW) != 0) {
             packet->movement_destination =
                 packet->path_info.path->nodes[packet->path_info.connection->node_indices[packet->path_info.direction]].position;
             packet->flags |= 0x800000;
@@ -5034,7 +5037,7 @@ extern "C" {
                 return 1;
             }
         }
-        if ((packet->flags & 0x20000000) != 0 && (owner->tag_flags & 2) == 0 && drop_back_in_timer > 0.0f &&
+        if ((packet->flags & 0x20000000) != 0 && (owner->tag_flags & APIOBJECT_TAG_DISABLED) == 0 && drop_back_in_timer > 0.0f &&
             (packet->path_info.connection->traversal_flags[packet->path_info.direction] &
              (AIPATHCNX_TOO_LONG | AIPATHCNX_HIDDEN | AIPATHCNX_PERMANENT_BLOCK | AIPATHCNX_TEMPORARY_BLOCK)) == 0) {
             TryToTeleportToNextNode(
@@ -5113,14 +5116,14 @@ extern "C" {
     i8 net_FreePlayModelCount = 0;
 
     void Indy_GameAISysInit(void) {
-        LEGO_AIPATHCNX_JUMP = 0x1;
-        LEGO_AIPATHCNX_FORGOODIES = 0x100;
-        LEGO_AIPATHCNX_FORBADDIES = 0x200;
-        LEGO_AIPATHCNX_BIGJUMP = 0x4;
-        LEGO_AIPATHCNX_NO_DESTINATION_CHECK = 0x20;
-        LEGO_AIPATHCNX_JUMP_NOW = 0x40;
-        LEGO_AIPATHCNX_DONT_JUMP_NOW = 0x80;
-        LEGO_AIPATHCNX_VARIANT_FLAG0 = 0x10;
+        LEGO_AIPATHCNX_JUMP = INDY_AIPATHCNX_JUMP;
+        LEGO_AIPATHCNX_FORGOODIES = INDY_AIPATHCNX_FORGOODIES;
+        LEGO_AIPATHCNX_FORBADDIES = INDY_AIPATHCNX_FORBADDIES;
+        LEGO_AIPATHCNX_BIGJUMP = INDY_AIPATHCNX_BIGJUMP;
+        LEGO_AIPATHCNX_NO_DESTINATION_CHECK = INDY_AIPATHCNX_NO_DESTINATION_CHECK;
+        LEGO_AIPATHCNX_JUMP_NOW = INDY_AIPATHCNX_JUMP_NOW;
+        LEGO_AIPATHCNX_DONT_JUMP_NOW = INDY_AIPATHCNX_DONT_JUMP_NOW;
+        LEGO_AIPATHCNX_VARIANT_FLAG0 = INDY_AIPATHCNX_VARIANT_FLAG0;
         InitFn_PreparingForSpecialMove(Indy_PreparingForSpecialMove);
         InitFn_MidSpecialMove(Indy_MidSpecialMove);
         HubInitAIFn = LSW_Hub_InitAI;
@@ -5217,7 +5220,7 @@ extern "C" void LostTempleC_Reset(WORLDINFO *world) {
 
 extern "C" void LostTempleC_Update(WORLDINFO *world) {
     i32 inside = 0;
-    if (LevGizObst[0] == NULL || (LevGizObst[0]->anim_set->flags & 1) == 0) {
+    if (LevGizObst[0] == NULL || (LevGizObst[0]->anim_set->flags & GAMEANIMSET_PLAYING) == 0) {
         return;
     }
     ComplexSockPosition(world->sock_sys, &LevGizObst[0]->evaluated_position, LostTempleExitSockPosition.sock_index,

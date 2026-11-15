@@ -24,6 +24,34 @@ extern "C" {
 struct ShaderLexicalSlicePc;
 
 #endif
+/* ShaderSourceNodePc.semantic: the semantic_* keywords of a declaration (ShaderDeclarationSemanticPc) and the
+ * names ShaderSourceNodePc::SemanticName prints; a custom semantic keeps its own text. */
+#define SHADER_SEMANTIC_CUSTOM 0
+#define SHADER_SEMANTIC_DEFAULT 1
+#define SHADER_SEMANTIC_POSITION 2
+#define SHADER_SEMANTIC_POSITION1 3
+#define SHADER_SEMANTIC_VPOS 4
+#define SHADER_SEMANTIC_NORMAL 5
+#define SHADER_SEMANTIC_TANGENT 6
+#define SHADER_SEMANTIC_BINORMAL 7
+#define SHADER_SEMANTIC_TANGENT1 8
+#define SHADER_SEMANTIC_COLORX 9
+#define SHADER_SEMANTIC_COLOR0 10
+#define SHADER_SEMANTIC_COLOR1 11
+#define SHADER_SEMANTIC_FOG 12
+#define SHADER_SEMANTIC_TEXCOORDX 13
+#define SHADER_SEMANTIC_TEXCOORD0 14
+#define SHADER_SEMANTIC_TEXCOORD1 15
+#define SHADER_SEMANTIC_TEXCOORD2 16
+#define SHADER_SEMANTIC_TEXCOORD3 17
+#define SHADER_SEMANTIC_TEXCOORD4 18
+#define SHADER_SEMANTIC_TEXCOORD5 19
+#define SHADER_SEMANTIC_TEXCOORD6 20
+#define SHADER_SEMANTIC_TEXCOORD7 21
+#define SHADER_SEMANTIC_BLENDINDICES0 22
+#define SHADER_SEMANTIC_BLENDWEIGHT0 23
+#define SHADER_SEMANTIC_INDEX 24
+
 #ifdef __cplusplus
 struct ShaderConditionNodePc {    // size 0xc
     ShaderConditionNodePc *left;  // 0x0

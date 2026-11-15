@@ -636,7 +636,7 @@ void Technos_MoveTarget(TECHNO *techno_pointer, GAMEOBJECT *object) {
     } else if ((object->flags_1fc & APIOBJECT_FLAG_PLAYER_ACTIVE) == 0 && object->unknown_f00 == 2) {
         speed = 1.0f;
     } else if ((techno->enabled & 1) != 0) {
-        speed = (object->pad->runtime_flags & 8) != 0 ? 1.0f : 0.0f;
+        speed = (object->pad->runtime_flags & GAMEPAD_WAGGLE) != 0 ? 1.0f : 0.0f;
     } else if ((techno->enabled & 2) != 0) {
         speed = object->pad->waggle_magnitude;
     } else if ((techno->enabled & 4) != 0) {

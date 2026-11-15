@@ -658,7 +658,8 @@ static void NuMainRenderWorld(WORLDINFO *world) {
     NuRndrShadPolys(PermanentShadowMaterial);
     NuLgtLaserDraw(paused);
     if (world->current_level == TITLES_LDATA || (world->current_level->flags & LEVEL_STATUS) != 0 ||
-        world->current_level == CREDITS_LDATA || (world->current_level == STATUS_LDATA && (StatusPacket.flags_word & 0x400) != 0)) {
+        world->current_level == CREDITS_LDATA ||
+        (world->current_level == STATUS_LDATA && (StatusPacket.flags_word & STATUSPACKET_SUPER_STORY_MODE) != 0)) {
         BackDrop_Draw(1.0f, 0);
     }
     if (MainRenderTime != 1.0f) {

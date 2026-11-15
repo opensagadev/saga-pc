@@ -254,6 +254,13 @@ typedef struct sfx_record_s { // size 0x40
     const char *filename;     // 0x3c
 } SFX_RECORD;
 
+/* sfx_record_s.sample_id_flags above the sample id (bits 0-14): the sound config's Sample keywords (fnAudioSample). */
+#define SFX_LOOP 0x8000      /* loop */
+#define SFX_GLOBAL 0x20000   /* global */
+#define SFX_DISABLED 0x40000 /* disable */
+#define SFX_COMMENT 0x80000  /* comment */
+#define SFX_NO_FADE 0x400000 /* nofade */
+
 typedef struct sfx_file_info_s { // size 0x1c
     const char *filename;        // 0x00
     i32 pitch;                   // 0x04

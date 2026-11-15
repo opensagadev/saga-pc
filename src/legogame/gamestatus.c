@@ -157,7 +157,7 @@ void TrueHero_LSW_Update(STATUS_STAGE_s *stage, STATUSPACKET_s *packet, f32 elap
         case 2: {
             f32 percent;
             SetDrawGoldBrick(packet, packet->current_gold_brick);
-            if ((packet->unknown_b0 & 4) == 0) {
+            if ((packet->unknown_b0 & STATUSPACKET_TRUE_HERO_COMPLETE) == 0) {
                 percent = packet->collected_score * 100.0 / packet->true_hero_target;
                 if (percent > 99.0f) {
                     percent = 99.0f;
@@ -295,7 +295,7 @@ void TrueHero_LSW_Draw(STATUS_STAGE_s *stage, STATUSPACKET_s *packet, i32 curren
     NuStrCpy(text, TTab[dat_00880f9c]);
     if (HubBothTrueJediGoldBricks != 0) {
         NuStrCat(text, " ");
-        NuStrCat(text, TTab[(packet->unknown_b0 & 0x40) != 0 ? dat_008808a8 : dat_008808a4]);
+        NuStrCat(text, TTab[(packet->unknown_b0 & STATUSPACKET_FREE_PLAY) != 0 ? dat_008808a8 : dat_008808a4]);
     }
     Text3DEx(text, 0.0f, StatusCoinsTitleY, 1.0f, StatusCoinsTitleScale, StatusCoinsTitleScale, StatusCoinsTitleScale, 0, 255, 255, 255,
              (u8)(alpha * 128.0f));
@@ -304,7 +304,8 @@ void TrueHero_LSW_Draw(STATUS_STAGE_s *stage, STATUSPACKET_s *packet, i32 curren
 void MiniKit_LSW_Skip(STATUS_STAGE_s *stage, STATUSPACKET_s *packet) {
     if ((packet->unknown_b0 & 2) == 0) {
         currentminikit = (i32)((u32)currentminikit + (u32)StatusNewMinikitCount);
-        if ((packet->unknown_b0 & 0x10) != 0 && (stage->unknown_14 != 6 || !(stage->unknown_18 >= stage->unknown_1c))) {
+        if ((packet->unknown_b0 & STATUSPACKET_NEW_MINIKIT_COMPLETE) != 0 &&
+            (stage->unknown_14 != 6 || !(stage->unknown_18 >= stage->unknown_1c))) {
             IncreaseScore(packet->score, 50000, 0);
         }
     }
@@ -382,7 +383,7 @@ void MiniKit_LSW_Update(STATUS_STAGE_s *stage, STATUSPACKET_s *packet, f32 elaps
                 stage->unknown_14 = 4;
             }
             if (stage->unknown_14 == 4) {
-                if ((packet->unknown_b0 & 0x10) != 0) {
+                if ((packet->unknown_b0 & STATUSPACKET_NEW_MINIKIT_COMPLETE) != 0) {
                     stage->unknown_14 = 6;
                     stage->unknown_1c = 1.0f;
                 } else {
@@ -994,7 +995,7 @@ void GoldBrick_LSW_Update(STATUS_STAGE_s *stage, STATUSPACKET_s *packet, f32 ela
                         if (HubBothTrueJediGoldBricks != 0) {
                             i16 name_id;
                             NuStrCat(text, " - ");
-                            name_id = (packet->unknown_b0 & 0x40) != 0 ? dat_008808a8 : dat_008808a4;
+                            name_id = (packet->unknown_b0 & STATUSPACKET_FREE_PLAY) != 0 ? dat_008808a8 : dat_008808a4;
                             NuStrCat(text, TTab[name_id]);
                         }
                         message = text;
@@ -1078,10 +1079,12 @@ void Prompt_LSW_Update(STATUS_STAGE_s *stage, STATUSPACKET_s *packet, f32 elapse
                 if (packet->player_active[player] != 0) {
                     if ((pad->menu_buttons_pressed & GAMEPAD_MENUSELECT) != 0) {
                         selected = 1;
-                    } else if (((packet->flags_word & 0x40u) == 0 && (packet->flags_word & 8u) != 0 &&
+                    } else if (((packet->flags_word & STATUSPACKET_FREE_PLAY) == 0 &&
+                                (packet->flags_word & STATUSPACKET_NEXT_AREA_UNLOCKED) != 0 &&
                                 (packet->next_area == -1 || (packet->area->flags & AREAFLAG_ENDING_AREA) != 0 ||
                                  Game.area_save[packet->next_area].complete != 0)) ||
-                               (packet->flags_word & 0x100u) != 0 || packet->challenge_state != 0 || packet->mission_state != 0) {
+                               (packet->flags_word & STATUSPACKET_BONUS_MODE) != 0 || packet->challenge_state != 0 ||
+                               packet->mission_state != 0) {
                         if (status_prompt > 0 &&
                             ((pad->menu_directions & GAMEPAD_DUP) != 0 || (pad->menu_buttons_pressed & GAMEPAD_DUP) != 0)) {
                             GameAudio_PlaySfx(0x2f, NULL, 0, 0);
@@ -1097,8 +1100,8 @@ void Prompt_LSW_Update(STATUS_STAGE_s *stage, STATUSPACKET_s *packet, f32 elapse
                 }
             }
             if (selected != 0) {
-                if ((packet->flags_word & 8u) != 0 && packet->next_area != -1 && (packet->area->flags & AREAFLAG_ENDING_AREA) == 0 &&
-                    Game.area_save[packet->next_area].complete == 0) {
+                if ((packet->flags_word & STATUSPACKET_NEXT_AREA_UNLOCKED) != 0 && packet->next_area != -1 &&
+                    (packet->area->flags & AREAFLAG_ENDING_AREA) == 0 && Game.area_save[packet->next_area].complete == 0) {
                     packet->prompt_choice = 1;
                 } else {
                     packet->prompt_choice = (u8)status_prompt;
@@ -1186,7 +1189,7 @@ i32 StatusCollectionAppearSoundPlayed = 0;
 i32 StatusCollectionMoveSoundPlayed = 0;
 
 void CollectCharcters_Draw(STATUS_STAGE_s *stage, STATUSPACKET_s *packet, i32 current) {
-    COLLECTION_BUILD *collection = (packet->unknown_b0 & 0x80) != 0 ? &VehicleCollection : &CharacterCollection;
+    COLLECTION_BUILD *collection = (packet->unknown_b0 & STATUSPACKET_VEHICLE_AREA) != 0 ? &VehicleCollection : &CharacterCollection;
     if (current == 0) {
         return;
     }
@@ -1282,7 +1285,7 @@ void CollectCharactersOff_Update(STATUS_STAGE_s *stage, STATUSPACKET_s *packet, 
 
 void CollectCharactersOff_Draw(STATUS_STAGE_s *stage, STATUSPACKET_s *packet, i32 current) {
     f32 alpha;
-    COLLECTION_BUILD *collection = (packet->unknown_b0 & 0x80) != 0 ? &VehicleCollection : &CharacterCollection;
+    COLLECTION_BUILD *collection = (packet->unknown_b0 & STATUSPACKET_VEHICLE_AREA) != 0 ? &VehicleCollection : &CharacterCollection;
     if (current == 0) {
         return;
     }
@@ -1919,7 +1922,7 @@ void BonusWin_LSW_Update(STATUS_STAGE_s *stage, STATUSPACKET_s *packet, f32 elap
                 NewStatusRumbleBuzz(-1, 0.6f, 0.0f, 0);
                 BonusScore[(packet->flags_word >> 5) & 1]++;
                 sprintf(text, "%i", BonusScore[(packet->flags_word >> 5) & 1]);
-                if ((packet->unknown_b0 & 0x20) == 0) {
+                if ((packet->unknown_b0 & STATUSPACKET_BONUS_WINNER) == 0) {
                     position.x = -0.015f;
                     message.unknown_4f = 8;
                 } else {
@@ -2074,9 +2077,9 @@ void Save_LSW_Update(STATUS_STAGE_s *stage, STATUSPACKET_s *packet, f32 elapsed)
         stage->unknown_18 = accumulated;
         if (stage->unknown_18 >= stage->unknown_1c) {
             u32 flags = packet->flags_word;
-            if ((flags & 0x400) == 0 && packet->prompt_choice == 0 && (flags & 0x40) == 0 && packet->mission_state == 0 &&
-                packet->challenge_state == 0) {
-                packet->flags_word = flags | 0x1000;
+            if ((flags & STATUSPACKET_SUPER_STORY_MODE) == 0 && packet->prompt_choice == 0 && (flags & STATUSPACKET_FREE_PLAY) == 0 &&
+                packet->mission_state == 0 && packet->challenge_state == 0) {
+                packet->flags_word = flags | STATUSPACKET_CONTINUE_STORY;
             }
             NextStatusStage(packet);
         }

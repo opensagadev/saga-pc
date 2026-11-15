@@ -386,8 +386,8 @@ void Player_ResetContexts(void *packet_ptr) {
     packet->action_movement_variant = 0;
     packet->action_movement_state = 0;
     packet->unknown_664 = 0.0f;
-    packet->gamepad->runtime_flags &= ~4;
-    packet->gamepad->runtime_flags &= ~0x10;
+    packet->gamepad->runtime_flags &= ~GAMEPAD_AI_USE_FORCE;
+    packet->gamepad->runtime_flags &= ~GAMEPAD_AI_FORCE_PUSH;
     packet->secondary_flags &= ~0x400;
     packet->input_state = 0;
     packet->unknown_648 = 0;

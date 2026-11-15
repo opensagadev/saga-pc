@@ -133,3 +133,20 @@ typedef struct cut_player_config_s {
     i16 *outro_text;
     i16 *ending_text;
 } CUT_PLAYER_CONFIG;
+
+/* CUT_LOAD_RECORD.flags: the cutscene config keywords that set them (the CS_* handlers). */
+#define CUTINFO_DRAW_WORLD 0x2          /* draw_world on */
+#define CUTINFO_NO_FOG 0x4              /* no_fog */
+#define CUTINFO_LEVEL_DEBRIS_PAGE 0x8   /* deb_page level */
+#define CUTINFO_SNAP_OUT 0x10           /* snap_out */
+#define CUTINFO_CAM_ONLY 0x20           /* cam_only */
+#define CUTINFO_REPLACE_PLAYERS 0x40    /* replace_players */
+#define CUTINFO_BURNOUT 0x80            /* burnout_threshold, burnout_intensity, burnout_flare */
+#define CUTINFO_WIPE_OUT 0x100          /* wipe_out */
+#define CUTINFO_LOOPING 0x200           /* looping */
+#define CUTINFO_NEW_MODE 0x400          /* new_mode */
+#define CUTINFO_IN_GAME 0x800           /* in_game */
+#define CUTINFO_LEVEL_INTRO 0x1000      /* level_intro */
+#define CUTINFO_START_CAM 0x2000        /* start_cam */
+#define CUTINFO_SUPER_WIDESCREEN 0x4000 /* super_widescreen */
+#define CUTINFO_DRAW_GIZMO_SYS 0x8000   /* drawgizmosys on */

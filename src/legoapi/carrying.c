@@ -281,9 +281,9 @@ void SuperCarry_Throw(GAMEOBJECT *object, i32 mode) {
     blowup = object->grapple;
     params.special = &((GIZMOBLOWUP_PC *)blowup)->type->animated_special;
     params.unknown_14 = params.unknown_18 = (f32)(0.5 * blowup->target_scale);
-    params.flags = 0x8011;
+    params.flags = PART_FLAG_DIE_WHEN_STOPPED | PART_FLAG_KEEP_OFF_SCREEN | PART_FLAG_THROWN;
     if (!(blowup->secondary_flags & 4)) {
-        params.flags = 0x8111;
+        params.flags = PART_FLAG_DIE_WHEN_STOPPED | PART_FLAG_KEEP_OFF_SCREEN | PART_FLAG_NO_BOUNCE | PART_FLAG_THROWN;
     }
     params.owner = object;
     params.time_step = FRAMETIME;

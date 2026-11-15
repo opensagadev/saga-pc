@@ -323,7 +323,7 @@ void ShaderCompilerParserPc::ParseDeclaration(ShaderCompilerBufferAllocatorPc *i
     u32 flags = 1;
     i32 depth = 0;
     ShaderLexicalSlicePc token = {NULL, 0};
-    i32 semantic = 1;
+    i32 semantic = SHADER_SEMANTIC_DEFAULT;
     ShaderLexicalReaderPc *reader = reinterpret_cast<ShaderLexicalReaderPc *>(&lexical_state);
     while (state != 26 && reader->Next(input, cursor, &token)) {
         switch (state) {
@@ -560,7 +560,7 @@ void ShaderCompilerParserPc::ParseDeclaration(ShaderCompilerBufferAllocatorPc *i
                 break;
             case 20:
                 semantic = ShaderDeclarationSemanticPc(&token);
-                if (semantic == 0) {
+                if (semantic == SHADER_SEMANTIC_CUSTOM) {
                     custom = token.ArenaCopy(&memory);
                 }
                 state = 21;

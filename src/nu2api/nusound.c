@@ -251,7 +251,7 @@ void PlaySfxByIdEx(i32 sfx_id, NUVEC *position, f32 volume, f32 pitch) {
         return;
     }
 
-    if ((SfxInfo[sfx_id].sample_id_flags & 0x000c0000u) != 0) {
+    if ((SfxInfo[sfx_id].sample_id_flags & (SFX_DISABLED | SFX_COMMENT)) != 0) {
         return;
     }
 
@@ -266,7 +266,7 @@ void PlaySfxByIdEx(i32 sfx_id, NUVEC *position, f32 volume, f32 pitch) {
     buzz_timer = SfxInfo[sfx_id].buzz_timer;
     rumble_strength = SfxInfo[sfx_id].rumble_strength;
     rumble_sustain = SfxInfo[sfx_id].rumble_sustain;
-    loop = (SfxInfo[sfx_id].sample_id_flags & 0x8000u) != 0;
+    loop = (SfxInfo[sfx_id].sample_id_flags & SFX_LOOP) != 0;
     rumble_release = SfxInfo[sfx_id].rumble_release;
 
     if (SfxInfo[sfx_id].falloff_near != 0.0f || SfxInfo[sfx_id].falloff_far != 0.0f) {
@@ -300,7 +300,7 @@ void PlaySfxByIdEx(i32 sfx_id, NUVEC *position, f32 volume, f32 pitch) {
     } else {
         volume_scale = (f32)SfxInfo[sfx_id].volume;
     }
-    if ((SfxInfo[sfx_id].sample_id_flags & 0x00400000u) == 0) {
+    if ((SfxInfo[sfx_id].sample_id_flags & SFX_NO_FADE) == 0) {
         volume_scale *= AUDIOFADELEVEL;
         volume_scale *= numusicGetDuckVolume();
     }
@@ -315,7 +315,7 @@ void PlaySfxByIdEx(i32 sfx_id, NUVEC *position, f32 volume, f32 pitch) {
             pitch_scale = (f32)(1.0 - (f64)pitch_variation * 0.5);
         }
         pitch_parameter = (i32)(pitch_parameter * pitch_scale);
-        if ((SfxInfo[sfx_id].sample_id_flags & 0x8000u) != 0) {
+        if ((SfxInfo[sfx_id].sample_id_flags & SFX_LOOP) != 0) {
             pitch_parameter = -pitch_parameter;
         }
     }
@@ -1149,9 +1149,9 @@ static void fnAudioSample(NUFPAR *fpar) {
     InitSoundInfo(NumSfxInst);
     while (NuFParGetWord(fpar) != 0) {
         if (NuStrICmp(fpar->word_buffer_ptr, "disable") == 0) {
-            SfxInfo[NumSfxInst].sample_id_flags |= 0x40000u;
+            SfxInfo[NumSfxInst].sample_id_flags |= SFX_DISABLED;
         } else if (NuStrICmp(fpar->word_buffer_ptr, "comment") == 0) {
-            SfxInfo[NumSfxInst].sample_id_flags |= 0x80000u;
+            SfxInfo[NumSfxInst].sample_id_flags |= SFX_COMMENT;
         } else if (NuStrICmp(fpar->word_buffer_ptr, "name") == 0) {
             NuFParGetWord(fpar);
             NuStrNCpy(SfxNameSlots[NumSfxInst], fpar->word_buffer_ptr, sizeof(SfxNameSlots[NumSfxInst]));
@@ -1171,7 +1171,7 @@ static void fnAudioSample(NUFPAR *fpar) {
             NuFParGetWord(fpar);
             NuStrCat(fpar->word_buffer_ptr, ".wav");
 
-            if ((SfxInfo[NumSfxInst].sample_id_flags & 0xc0000u) == 0) {
+            if ((SfxInfo[NumSfxInst].sample_id_flags & (SFX_DISABLED | SFX_COMMENT)) == 0) {
                 i = 0;
                 for (; i < NumSfx; i++) {
                     if (NuStrICmp(SfxFileInfo[i].filename, fpar->word_buffer_ptr) == 0) {
@@ -1223,7 +1223,7 @@ static void fnAudioSample(NUFPAR *fpar) {
             priority = NuFParGetInt(fpar);
             SfxInfo[NumSfxInst].priority = priority < -128 ? -128 : priority > 127 ? 127 : priority;
         } else if (NuStrICmp(fpar->word_buffer_ptr, "loop") == 0) {
-            SfxInfo[NumSfxInst].sample_id_flags |= 0x8000u;
+            SfxInfo[NumSfxInst].sample_id_flags |= SFX_LOOP;
         } else if (NuStrICmp(fpar->word_buffer_ptr, "pitch_rnd") == 0) {
             pitch_rnd = NuFParGetFloat(fpar);
             if (pitch_rnd < 0.0f) {
@@ -1236,7 +1236,7 @@ static void fnAudioSample(NUFPAR *fpar) {
             volume = NuFParGetInt(fpar);
             SfxInfo[NumSfxInst].volume = volume < 0 ? 0 : volume > 0x3fff ? 0x3fff : volume;
         } else if (NuStrICmp(fpar->word_buffer_ptr, "nofade") == 0) {
-            SfxInfo[NumSfxInst].sample_id_flags |= 0x400000u;
+            SfxInfo[NumSfxInst].sample_id_flags |= SFX_NO_FADE;
         } else if (NuStrICmp(fpar->word_buffer_ptr, "volume_rnd") == 0) {
             volume_rnd = NuFParGetFloat(fpar);
             if (volume_rnd < -1.0f) {
@@ -1264,7 +1264,7 @@ static void fnAudioSample(NUFPAR *fpar) {
             }
             SfxInfo[NumSfxInst].falloff_far = falloff_far;
         } else if (NuStrICmp(fpar->word_buffer_ptr, "global") == 0) {
-            SfxInfo[NumSfxInst].sample_id_flags |= 0x20000u;
+            SfxInfo[NumSfxInst].sample_id_flags |= SFX_GLOBAL;
         } else if (NuStrICmp(fpar->word_buffer_ptr, "rumble") == 0) {
             buzz_timer = NuFParGetFloat(fpar);
             rumble_strength = NuFParGetInt(fpar);
@@ -1318,15 +1318,15 @@ void InitSoundInfo(i32 index) {
     SfxInfo[index].pitch = 0x5622;
     SfxInfo[index].priority = 0;
     SfxInfo[index].pan = 0.0f;
-    SfxInfo[index].sample_id_flags &= ~0x400000u;
+    SfxInfo[index].sample_id_flags &= ~SFX_NO_FADE;
     SfxInfo[index].volume = 0x3fff;
     SfxInfo[index].pitch_rnd = 0.0f;
     SfxInfo[index].volume_rnd = 0.0f;
     SfxInfo[index].group = -1;
-    SfxInfo[index].sample_id_flags &= ~0x8000u;
+    SfxInfo[index].sample_id_flags &= ~SFX_LOOP;
     SfxInfo[index].sample_id_flags &= ~0x10000u;
-    SfxInfo[index].sample_id_flags &= ~0x20000u;
-    SfxInfo[index].sample_id_flags &= ~0x40000u;
+    SfxInfo[index].sample_id_flags &= ~SFX_GLOBAL;
+    SfxInfo[index].sample_id_flags &= ~SFX_DISABLED;
     SfxInfo[index].sample_id_flags &= ~0x100000u;
     SfxInfo[index].falloff_near = 0.0f;
     SfxInfo[index].falloff_far = 0.0f;
@@ -1402,7 +1402,7 @@ void InitSfx(VARIPTR *cursor, VARIPTR end, const char *file) {
     LoadSfx(file, cursor, end);
     memset(GlobalSfxBits, 0, sizeof(GlobalSfxBits));
     for (i = 0; i < NumSfxInst; ++i) {
-        if (SfxInfo[i].sample_id_flags & 0x20000) {
+        if (SfxInfo[i].sample_id_flags & SFX_GLOBAL) {
             sample = ((i32)(SfxInfo[i].sample_id_flags << 17)) >> 17;
             GlobalSfxBits[sample >> 4] |= (u16)(1 << (sample & 15));
         }

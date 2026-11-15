@@ -134,7 +134,7 @@ i32 StarWars_PrepareR2D2Glide(AIPACKET *packet, APIOBJECT *object, i32 checks_un
     destination = &packet->path_info.path->nodes[connection->node_indices[packet->path_info.direction == 0]];
     source = &packet->path_info.path->nodes[connection->node_indices[packet->path_info.direction]];
 
-    if ((connection->traversal_flags[packet->path_info.direction] & 0x800) != 0) {
+    if ((connection->traversal_flags[packet->path_info.direction] & STARWARS_AIPATHCNX_DONT_JUMP_NOW) != 0) {
         offset.x = destination->position.x - source->position.x;
         offset.y = 0.0f;
         offset.z = destination->position.z - source->position.z;
@@ -258,7 +258,7 @@ i32 StarWars_PrepareHoverTube(AIPACKET *packet, APIOBJECT *apiobject, i32 checks
     target = &packet->path_info.path->nodes[to];
     packet->movement_destination = packet->path_info.path->nodes[from].position;
     packet->movement_stopping_distance = 0.0f;
-    if ((connection->traversal_flags[packet->path_info.direction] & 0x200) == 0 &&
+    if ((connection->traversal_flags[packet->path_info.direction] & STARWARS_AIPATHCNX_NO_DESTINATION_CHECK) == 0 &&
         (packet->path_info.path->previous_inside_node_bits[to / 8] & (1 << (to % 8))) != 0) {
         if (TryToTeleportToNextNode(object, target, 0) != 0) {
             return 1;
@@ -305,7 +305,7 @@ i32 StarWars_PrepareBigJump(AIPACKET *packet, APIOBJECT *object, i32 checks_unus
     if (owner->ai_packet.inside_path_node == destination_index || owner->character_context == CHARACTER_CONTEXT_DOOMED) {
         return 0;
     }
-    if ((packet->path_info.connection->traversal_flags[packet->path_info.direction] & 0x800) != 0) {
+    if ((packet->path_info.connection->traversal_flags[packet->path_info.direction] & STARWARS_AIPATHCNX_DONT_JUMP_NOW) != 0) {
         packet->movement_destination =
             packet->path_info.path->nodes[packet->path_info.connection->node_indices[packet->path_info.direction]].position;
         packet->flags |= 0x800000;
@@ -461,7 +461,7 @@ i32 StarWars_PreparingForSpecialMove(AIPACKET *packet, APIOBJECT *apiobject, i32
             return 1;
         }
     }
-    if ((packet->flags & 0x20000000) != 0 && (owner->tag_flags & 2) == 0 && drop_back_in_timer > 0.0f &&
+    if ((packet->flags & 0x20000000) != 0 && (owner->tag_flags & APIOBJECT_TAG_DISABLED) == 0 && drop_back_in_timer > 0.0f &&
         (packet->path_info.connection->traversal_flags[packet->path_info.direction] &
          (AIPATHCNX_TOO_LONG | AIPATHCNX_HIDDEN | AIPATHCNX_PERMANENT_BLOCK | AIPATHCNX_TEMPORARY_BLOCK)) == 0) {
         TryToTeleportToNextNode(
@@ -492,18 +492,18 @@ i32 LEGO_AIPATHCNX_DONTTOGGLE = 0;
 i32 LEGO_AIPATHCNX_FULLTERRAIN = 0;
 
 void StarWars_GameAISysInit(void) {
-    LEGO_AIPATHCNX_JUMP = 0x1;
-    LEGO_AIPATHCNX_R2D2GLIDE = 0x4;
-    LEGO_AIPATHCNX_FORGOODIES = 0x80;
-    LEGO_AIPATHCNX_FORBADDIES = 0x100;
-    LEGO_AIPATHCNX_BLOCKAGE = 0x40000;
-    LEGO_AIPATHCNX_DONTTOGGLE = 0x80000;
-    LEGO_AIPATHCNX_FULLTERRAIN = 0x100000;
-    LEGO_AIPATHCNX_BIGJUMP = 0x1000;
-    LEGO_AIPATHCNX_REQUIRESPERMISSION = 0x2000;
-    LEGO_AIPATHCNX_NO_DESTINATION_CHECK = 0x200;
-    LEGO_AIPATHCNX_JUMP_NOW = 0x400;
-    LEGO_AIPATHCNX_DONT_JUMP_NOW = 0x800;
+    LEGO_AIPATHCNX_JUMP = STARWARS_AIPATHCNX_JUMP;
+    LEGO_AIPATHCNX_R2D2GLIDE = STARWARS_AIPATHCNX_R2D2GLIDE;
+    LEGO_AIPATHCNX_FORGOODIES = STARWARS_AIPATHCNX_FORGOODIES;
+    LEGO_AIPATHCNX_FORBADDIES = STARWARS_AIPATHCNX_FORBADDIES;
+    LEGO_AIPATHCNX_BLOCKAGE = STARWARS_AIPATHCNX_BLOCKAGE;
+    LEGO_AIPATHCNX_DONTTOGGLE = STARWARS_AIPATHCNX_DONTTOGGLE;
+    LEGO_AIPATHCNX_FULLTERRAIN = STARWARS_AIPATHCNX_FULLTERRAIN;
+    LEGO_AIPATHCNX_BIGJUMP = STARWARS_AIPATHCNX_BIGJUMP;
+    LEGO_AIPATHCNX_REQUIRESPERMISSION = STARWARS_AIPATHCNX_REQUIRESPERMISSION;
+    LEGO_AIPATHCNX_NO_DESTINATION_CHECK = STARWARS_AIPATHCNX_NO_DESTINATION_CHECK;
+    LEGO_AIPATHCNX_JUMP_NOW = STARWARS_AIPATHCNX_JUMP_NOW;
+    LEGO_AIPATHCNX_DONT_JUMP_NOW = STARWARS_AIPATHCNX_DONT_JUMP_NOW;
     InitFn_PreparingForSpecialMove(StarWars_PreparingForSpecialMove);
     InitFn_MidSpecialMove(StarWars_MidSpecialMove);
     HubInitAIFn = LSW_Hub_InitAI;
@@ -643,7 +643,8 @@ i32 StarWars_PrepareJump(AIPACKET *packet, APIOBJECT *object, i32 checks) {
         destination = &packet->path_info.path->nodes[destination_index];
         distance = NuVecXZDistSqr(&object->position, &destination->position, &offset);
         if (!(distance < destination->radius_squared)) {
-            if ((packet->path_info.connection->traversal_flags[packet->path_info.direction] & 0x200) == 0 &&
+            if ((packet->path_info.connection->traversal_flags[packet->path_info.direction] & STARWARS_AIPATHCNX_NO_DESTINATION_CHECK) ==
+                    0 &&
                 packet->inside_path_node != destination_index &&
                 (packet->path_info.path->previous_inside_node_bits[destination_index / 8] & (1 << (destination_index % 8))) != 0) {
                 if (TryToTeleportToNextNode(owner, destination, 0) != 0) {
@@ -685,7 +686,7 @@ check:
         packet->movement_stopping_distance = 0.0f;
         jump_distance =
             (flags & 0x20) != 0 ? StarWarsJumpDistance[2] : ((flags & 2) != 0 ? StarWarsJumpDistance[1] : StarWarsJumpDistance[0]);
-        if ((packet->path_info.connection->traversal_flags[packet->path_info.direction] & 0x800) != 0) {
+        if ((packet->path_info.connection->traversal_flags[packet->path_info.direction] & STARWARS_AIPATHCNX_DONT_JUMP_NOW) != 0) {
             packet->flags |= 0x800000;
             packet->path_connection_state = 1;
         }
@@ -693,15 +694,18 @@ check:
             case 1:
                 if (ready != 0) {
                     skip_ahead =
-                        (packet->path_info.connection->traversal_flags[packet->path_info.direction] & 0x200) == 0 &&
+                        (packet->path_info.connection->traversal_flags[packet->path_info.direction] &
+                         STARWARS_AIPATHCNX_NO_DESTINATION_CHECK) == 0 &&
                         packet->inside_path_node != destination_index &&
                         (packet->path_info.path->previous_inside_node_bits[destination_index / 8] & (1 << (destination_index % 8))) != 0;
                     if (skip_ahead) {
                         if (TryToTeleportToNextNode(owner, destination, 0) != 0) {
                             return 1;
                         }
-                    } else if ((packet->path_info.connection->traversal_flags[packet->path_info.direction] & 0x800) == 0) {
-                        if ((packet->path_info.connection->traversal_flags[packet->path_info.direction] & 0x400) != 0 ||
+                    } else if ((packet->path_info.connection->traversal_flags[packet->path_info.direction] &
+                                STARWARS_AIPATHCNX_DONT_JUMP_NOW) == 0) {
+                        if ((packet->path_info.connection->traversal_flags[packet->path_info.direction] & STARWARS_AIPATHCNX_JUMP_NOW) !=
+                                0 ||
                             ((destination->runtime_flags | source->runtime_flags) & 2) == 0 ||
                             NuSpecialCompare(&source->special_handle, &destination->special_handle) != 0) {
                             packet->path_connection_state = 4;
@@ -712,7 +716,7 @@ check:
                 }
                 break;
             case 2:
-                if ((packet->path_info.connection->traversal_flags[packet->path_info.direction] & 0x400) != 0) {
+                if ((packet->path_info.connection->traversal_flags[packet->path_info.direction] & STARWARS_AIPATHCNX_JUMP_NOW) != 0) {
                     packet->path_connection_state = 4;
                 } else {
                     distance = NuVecDist(&object->position, &destination->position, &offset);
@@ -727,7 +731,7 @@ check:
                 }
                 break;
             case 3:
-                if ((packet->path_info.connection->traversal_flags[packet->path_info.direction] & 0x400) != 0) {
+                if ((packet->path_info.connection->traversal_flags[packet->path_info.direction] & STARWARS_AIPATHCNX_JUMP_NOW) != 0) {
                     packet->path_connection_state = 4;
                 } else {
                     distance = NuVecDist(&object->position, &destination->position, &offset);
@@ -760,7 +764,7 @@ check:
                     return 1;
                 }
                 connection = packet->path_info.connection;
-                if ((connection->traversal_flags[packet->path_info.direction] & 0x200) == 0) {
+                if ((connection->traversal_flags[packet->path_info.direction] & STARWARS_AIPATHCNX_NO_DESTINATION_CHECK) == 0) {
                     other = Obj;
                     for (index = 0; index < HIGHGAMEOBJECT; ++index, ++other) {
                         if ((other->flags_1fc_word & APIOBJECT_FLAG_IN_USE) == 0 || other == owner ||

@@ -970,7 +970,7 @@ extern "C" {
             params.unknown_14 = 0.2f;
             params.unknown_18 = 0.2f;
             params.gravity = -4.0f;
-            params.flags = 0x90;
+            params.flags = PART_FLAG_KEEP_OFF_SCREEN | PART_FLAG_ROTATE_RANDOMLY;
             params.unknown_c4 = 1;
             params.stop_fn = PartStop_Flickerer;
             params.draw_fn = PartDraw_Flickerer;

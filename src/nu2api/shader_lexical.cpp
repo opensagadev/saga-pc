@@ -419,87 +419,87 @@ extern "C" u32 ShaderDeclarationFlagsPc(u8 shared, u8 vertex, u8 pixel) {
 
 extern "C" i32 ShaderDeclarationSemanticPc(ShaderLexicalSlicePc *slice) {
     if (slice->Equals("default")) {
-        return 1;
+        return SHADER_SEMANTIC_DEFAULT;
     }
     if (slice->Equals("strict")) {
-        return 13;
+        return SHADER_SEMANTIC_TEXCOORDX;
     }
     if (slice->Equals("semantic_default")) {
-        return 1;
+        return SHADER_SEMANTIC_DEFAULT;
     }
     if (slice->Equals("semantic_position")) {
-        return 2;
+        return SHADER_SEMANTIC_POSITION;
     }
     if (slice->Equals("semantic_position1")) {
-        return 3;
+        return SHADER_SEMANTIC_POSITION1;
     }
     if (slice->Equals("semantic_vpos")) {
-        return 4;
+        return SHADER_SEMANTIC_VPOS;
     }
     if (slice->Equals("semantic_normal")) {
-        return 5;
+        return SHADER_SEMANTIC_NORMAL;
     }
     if (slice->Equals("semantic_tangent")) {
-        return 6;
+        return SHADER_SEMANTIC_TANGENT;
     }
     if (slice->Equals("semantic_binormal")) {
-        return 7;
+        return SHADER_SEMANTIC_BINORMAL;
     }
     if (slice->Equals("semantic_bitangent")) {
-        return 7;
+        return SHADER_SEMANTIC_BINORMAL;
     }
     if (slice->Equals("semantic_tangent1")) {
-        return 8;
+        return SHADER_SEMANTIC_TANGENT1;
     }
     if (slice->Equals("semantic_colorx")) {
-        return 9;
+        return SHADER_SEMANTIC_COLORX;
     }
     if (slice->Equals("semantic_color0")) {
-        return 10;
+        return SHADER_SEMANTIC_COLOR0;
     }
     if (slice->Equals("semantic_color1")) {
-        return 11;
+        return SHADER_SEMANTIC_COLOR1;
     }
     if (slice->Equals("semantic_fog")) {
-        return 12;
+        return SHADER_SEMANTIC_FOG;
     }
     if (slice->Equals("semantic_texcoordx")) {
-        return 13;
+        return SHADER_SEMANTIC_TEXCOORDX;
     }
     if (slice->Equals("semantic_texcoord0")) {
-        return 14;
+        return SHADER_SEMANTIC_TEXCOORD0;
     }
     if (slice->Equals("semantic_texcoord1")) {
-        return 15;
+        return SHADER_SEMANTIC_TEXCOORD1;
     }
     if (slice->Equals("semantic_texcoord2")) {
-        return 16;
+        return SHADER_SEMANTIC_TEXCOORD2;
     }
     if (slice->Equals("semantic_texcoord3")) {
-        return 17;
+        return SHADER_SEMANTIC_TEXCOORD3;
     }
     if (slice->Equals("semantic_texcoord4")) {
-        return 18;
+        return SHADER_SEMANTIC_TEXCOORD4;
     }
     if (slice->Equals("semantic_texcoord5")) {
-        return 19;
+        return SHADER_SEMANTIC_TEXCOORD5;
     }
     if (slice->Equals("semantic_texcoord6")) {
-        return 20;
+        return SHADER_SEMANTIC_TEXCOORD6;
     }
     if (slice->Equals("semantic_texcoord7")) {
-        return 21;
+        return SHADER_SEMANTIC_TEXCOORD7;
     }
     if (slice->Equals("semantic_blendIndices0")) {
-        return 22;
+        return SHADER_SEMANTIC_BLENDINDICES0;
     }
     if (slice->Equals("semantic_blendWeight0")) {
-        return 23;
+        return SHADER_SEMANTIC_BLENDWEIGHT0;
     }
     if (slice->Equals("semantic_index")) {
-        return 24;
+        return SHADER_SEMANTIC_INDEX;
     }
-    return 0;
+    return SHADER_SEMANTIC_CUSTOM;
 }
 
 extern "C" bool fun_0074bd00(const char *left, const char *right) {

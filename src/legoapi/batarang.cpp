@@ -1004,7 +1004,8 @@ extern "C" {
             destination = &packet->path_info.path->nodes[destination_index];
             distance = NuVecXZDistSqr(&object->position, &destination->position, &offset);
             if (!(distance < destination->radius_squared)) {
-                if ((packet->path_info.connection->traversal_flags[packet->path_info.direction] & 0x200) == 0 &&
+                if ((packet->path_info.connection->traversal_flags[packet->path_info.direction] & BATMAN_AIPATHCNX_NO_DESTINATION_CHECK) ==
+                        0 &&
                     packet->inside_path_node != destination_index &&
                     (packet->path_info.path->previous_inside_node_bits[destination_index / 8] & (1 << (destination_index % 8))) != 0) {
                     if (TryToTeleportToNextNode(owner, destination, 0) != 0) {
@@ -1053,14 +1054,15 @@ extern "C" {
             } else {
                 jump_distance = BatmanJumpDistance[0];
             }
-            if ((packet->path_info.connection->traversal_flags[packet->path_info.direction] & 0x800) != 0) {
+            if ((packet->path_info.connection->traversal_flags[packet->path_info.direction] & BATMAN_AIPATHCNX_DONT_JUMP_NOW) != 0) {
                 packet->flags |= 0x800000;
                 packet->path_connection_state = 1;
             }
             switch (packet->path_connection_state) {
                 case 1:
                     if (ready != 0) {
-                        skip_ahead = (packet->path_info.connection->traversal_flags[packet->path_info.direction] & 0x200) == 0 &&
+                        skip_ahead = (packet->path_info.connection->traversal_flags[packet->path_info.direction] &
+                                      BATMAN_AIPATHCNX_NO_DESTINATION_CHECK) == 0 &&
                                      packet->inside_path_node != destination_index &&
                                      (packet->path_info.path->previous_inside_node_bits[destination_index / 8] &
                                       (1 << (destination_index % 8))) != 0;
@@ -1068,8 +1070,10 @@ extern "C" {
                             if (TryToTeleportToNextNode(owner, destination, 0) != 0) {
                                 return 1;
                             }
-                        } else if ((packet->path_info.connection->traversal_flags[packet->path_info.direction] & 0x800) == 0) {
-                            if ((packet->path_info.connection->traversal_flags[packet->path_info.direction] & 0x400) != 0 ||
+                        } else if ((packet->path_info.connection->traversal_flags[packet->path_info.direction] &
+                                    BATMAN_AIPATHCNX_DONT_JUMP_NOW) == 0) {
+                            if ((packet->path_info.connection->traversal_flags[packet->path_info.direction] & BATMAN_AIPATHCNX_JUMP_NOW) !=
+                                    0 ||
                                 ((destination->runtime_flags | source->runtime_flags) & 2) == 0 ||
                                 NuSpecialCompare(&source->special_handle, &destination->special_handle) != 0) {
                                 packet->path_connection_state = 4;
@@ -1080,7 +1084,7 @@ extern "C" {
                     }
                     break;
                 case 2:
-                    if ((packet->path_info.connection->traversal_flags[packet->path_info.direction] & 0x400) != 0) {
+                    if ((packet->path_info.connection->traversal_flags[packet->path_info.direction] & BATMAN_AIPATHCNX_JUMP_NOW) != 0) {
                         packet->path_connection_state = 4;
                     } else {
                         distance = NuVecDist(&object->position, &destination->position, &offset);
@@ -1096,7 +1100,7 @@ extern "C" {
                     }
                     break;
                 case 3:
-                    if ((packet->path_info.connection->traversal_flags[packet->path_info.direction] & 0x400) != 0) {
+                    if ((packet->path_info.connection->traversal_flags[packet->path_info.direction] & BATMAN_AIPATHCNX_JUMP_NOW) != 0) {
                         packet->path_connection_state = 4;
                     } else {
                         distance = NuVecDist(&object->position, &destination->position, &offset);
@@ -1129,7 +1133,7 @@ extern "C" {
                         return 1;
                     }
                     connection = packet->path_info.connection;
-                    if ((connection->traversal_flags[packet->path_info.direction] & 0x200) == 0) {
+                    if ((connection->traversal_flags[packet->path_info.direction] & BATMAN_AIPATHCNX_NO_DESTINATION_CHECK) == 0) {
                         other = Obj;
                         for (index = 0; index < HIGHGAMEOBJECT; ++index, ++other) {
                             if ((other->flags_1fc_word & APIOBJECT_FLAG_IN_USE) == 0 || other == owner ||
@@ -1247,7 +1251,7 @@ extern "C" {
         GAMEOBJECT *owner = apiobject->owner;
         AIPATHCNX *connection = packet->path_info.connection;
         AIPATHNODE *destination = &packet->path_info.path->nodes[connection->node_indices[packet->path_info.direction == 0]];
-        if ((connection->traversal_flags[packet->path_info.direction] & 0x800) != 0) {
+        if ((connection->traversal_flags[packet->path_info.direction] & BATMAN_AIPATHCNX_DONT_JUMP_NOW) != 0) {
             packet->movement_destination = packet->path_info.path->nodes[connection->node_indices[packet->path_info.direction]].position;
             packet->flags |= 0x800000;
             packet->movement_stopping_distance = 0.0f;
@@ -1594,7 +1598,7 @@ extern "C" {
         target = &packet->path_info.path->nodes[to];
         packet->movement_destination = packet->path_info.path->nodes[from].position;
         packet->movement_stopping_distance = 0.0f;
-        if ((connection->traversal_flags[packet->path_info.direction] & 0x200) == 0 &&
+        if ((connection->traversal_flags[packet->path_info.direction] & BATMAN_AIPATHCNX_NO_DESTINATION_CHECK) == 0 &&
             (packet->path_info.path->previous_inside_node_bits[to / 8] & (1 << (to % 8))) != 0) {
             if (TryToTeleportToNextNode(object, target, 0) != 0) {
                 return 1;
@@ -1698,7 +1702,7 @@ extern "C" {
                 return 1;
             }
         }
-        if ((packet->flags & 0x20000000) != 0 && (owner->tag_flags & 2) == 0 && drop_back_in_timer > 0.0f &&
+        if ((packet->flags & 0x20000000) != 0 && (owner->tag_flags & APIOBJECT_TAG_DISABLED) == 0 && drop_back_in_timer > 0.0f &&
             (packet->path_info.connection->traversal_flags[packet->path_info.direction] &
              (AIPATHCNX_TOO_LONG | AIPATHCNX_HIDDEN | AIPATHCNX_PERMANENT_BLOCK | AIPATHCNX_TEMPORARY_BLOCK)) == 0) {
             TryToTeleportToNextNode(
@@ -1736,18 +1740,18 @@ extern "C" {
     u32 LEGO_AIPATHCNX_FORBADDIES = 0;
 
     void Batman_GameAISysInit(void) {
-        LEGO_AIPATHCNX_BLOCKAGE = 0x4000;
-        LEGO_AIPATHCNX_WALLSHUFFLE = 0x400000;
-        LEGO_AIPATHCNX_VARIANT_FLAG0 = 0x100000;
-        LEGO_AIPATHCNX_VARIANT_FLAG1 = 0x200000;
-        LEGO_AIPATHCNX_JUMP = 0x1;
-        LEGO_AIPATHCNX_FORGOODIES = 0x80;
-        LEGO_AIPATHCNX_FORBADDIES = 0x100;
-        LEGO_AIPATHCNX_BIGJUMP = 0x1000;
-        LEGO_AIPATHCNX_REQUIRESPERMISSION = 0x2000;
-        LEGO_AIPATHCNX_NO_DESTINATION_CHECK = 0x200;
-        LEGO_AIPATHCNX_JUMP_NOW = 0x400;
-        LEGO_AIPATHCNX_DONT_JUMP_NOW = 0x800;
+        LEGO_AIPATHCNX_BLOCKAGE = BATMAN_AIPATHCNX_BLOCKAGE;
+        LEGO_AIPATHCNX_WALLSHUFFLE = BATMAN_AIPATHCNX_WALLSHUFFLE;
+        LEGO_AIPATHCNX_VARIANT_FLAG0 = BATMAN_AIPATHCNX_VARIANT_FLAG0;
+        LEGO_AIPATHCNX_VARIANT_FLAG1 = BATMAN_AIPATHCNX_VARIANT_FLAG1;
+        LEGO_AIPATHCNX_JUMP = BATMAN_AIPATHCNX_JUMP;
+        LEGO_AIPATHCNX_FORGOODIES = BATMAN_AIPATHCNX_FORGOODIES;
+        LEGO_AIPATHCNX_FORBADDIES = BATMAN_AIPATHCNX_FORBADDIES;
+        LEGO_AIPATHCNX_BIGJUMP = BATMAN_AIPATHCNX_BIGJUMP;
+        LEGO_AIPATHCNX_REQUIRESPERMISSION = BATMAN_AIPATHCNX_REQUIRESPERMISSION;
+        LEGO_AIPATHCNX_NO_DESTINATION_CHECK = BATMAN_AIPATHCNX_NO_DESTINATION_CHECK;
+        LEGO_AIPATHCNX_JUMP_NOW = BATMAN_AIPATHCNX_JUMP_NOW;
+        LEGO_AIPATHCNX_DONT_JUMP_NOW = BATMAN_AIPATHCNX_DONT_JUMP_NOW;
         InitFn_PreparingForSpecialMove(Batman_PreparingForSpecialMove);
         InitFn_MidSpecialMove(Batman_MidSpecialMove);
     }

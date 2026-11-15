@@ -367,51 +367,51 @@ static const char *ShaderCompilerTypeNamesPc[22] = {
 
 const char *ShaderSourceNodePc::SemanticName() {
     switch (semantic) {
-        case 0:
+        case SHADER_SEMANTIC_CUSTOM:
             return custom_semantic;
-        case 1:
+        case SHADER_SEMANTIC_DEFAULT:
             return "DEFAULT";
-        case 2:
+        case SHADER_SEMANTIC_POSITION:
             return "POSITION";
-        case 3:
+        case SHADER_SEMANTIC_POSITION1:
             return "POSITION1";
-        case 4:
+        case SHADER_SEMANTIC_VPOS:
             return "VPOS";
-        case 5:
+        case SHADER_SEMANTIC_NORMAL:
             return "NORMAL";
-        case 6:
+        case SHADER_SEMANTIC_TANGENT:
             return "TANGENT";
-        case 7:
+        case SHADER_SEMANTIC_BINORMAL:
             return "BINORMAL";
-        case 8:
+        case SHADER_SEMANTIC_TANGENT1:
             return "TANGENT1";
-        case 9:
+        case SHADER_SEMANTIC_COLORX:
             return "COLORX";
-        case 10:
+        case SHADER_SEMANTIC_COLOR0:
             return "COLOR0";
-        case 11:
+        case SHADER_SEMANTIC_COLOR1:
             return "COLOR1";
-        case 12:
+        case SHADER_SEMANTIC_FOG:
             return "FOG";
-        case 13:
+        case SHADER_SEMANTIC_TEXCOORDX:
             return "TEXCOORDX";
-        case 14:
+        case SHADER_SEMANTIC_TEXCOORD0:
             return "TEXCOORD0";
-        case 15:
+        case SHADER_SEMANTIC_TEXCOORD1:
             return "TEXCOORD1";
-        case 16:
+        case SHADER_SEMANTIC_TEXCOORD2:
             return "TEXCOORD2";
-        case 17:
+        case SHADER_SEMANTIC_TEXCOORD3:
             return "TEXCOORD3";
-        case 20:
+        case SHADER_SEMANTIC_TEXCOORD6:
             return "TEXCOORD6";
-        case 21:
+        case SHADER_SEMANTIC_TEXCOORD7:
             return "TEXCOORD7";
-        case 22:
+        case SHADER_SEMANTIC_BLENDINDICES0:
             return "BLENDINDICES0";
-        case 23:
+        case SHADER_SEMANTIC_BLENDWEIGHT0:
             return "BLENDWEIGHT0";
-        case 24:
+        case SHADER_SEMANTIC_INDEX:
             return "INDEX";
         default:
             return "INVALID";
@@ -447,7 +447,7 @@ void ShaderCompilerDictionaryPc::EmitRegister(ShaderCompilerBufferAllocatorPc *o
             output->AppendText(ShaderCompilerTypeNamesPc[node->type]);
             output->AppendText(NuBlankStringValue);
             output->AppendText(node->name);
-            if (node->semantic != 1) {
+            if (node->semantic != SHADER_SEMANTIC_DEFAULT) {
                 output->AppendText(":");
                 output->AppendText(node->SemanticName());
             }
@@ -646,7 +646,7 @@ void ShaderCompilerDictionaryPc::EmitAttribute(ShaderCompilerBufferAllocatorPc *
     }
     for (i32 i = 0; i < definition_count; ++i) {
         ShaderSourceNodePc *node = definitions[i];
-        if (node->flags != 0x3008 || node->expansion_state <= 0 || node->semantic != 1) {
+        if (node->flags != 0x3008 || node->expansion_state <= 0 || node->semantic != SHADER_SEMANTIC_DEFAULT) {
             continue;
         }
         i32 slot = -1;

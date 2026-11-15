@@ -769,7 +769,7 @@ i32 PC_INPUT_RUNTIME::SampleDevicePc(i32 port, PC_INPUT_RAW_SAMPLE *sample) {
     if (port < 4) {
         PC_INPUT_DEVICE *record = &devices[port];
         record->unknown_29 = 0;
-        if (record->kind != 6) {
+        if (record->kind != PC_INPUT_DEVICE_XINPUT) {
             return 0;
         }
         PC_XINPUT_STATE state;
@@ -1702,7 +1702,7 @@ extern "C" i32 fun_006d6760(void) {
     PC_INPUT_RUNTIME *state = (PC_INPUT_RUNTIME *)nu_input_state;
     i32 i;
     for (i = 0; i <= 3; ++i) {
-        if (state->devices[i].kind == 6 && state->devices[i].unknown_29 != 0) {
+        if (state->devices[i].kind == PC_INPUT_DEVICE_XINPUT && state->devices[i].unknown_29 != 0) {
             return 1;
         }
     }

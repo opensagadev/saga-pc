@@ -176,7 +176,7 @@ static i32 GizSpecial_GetOutput(GIZMO_PC *gizmo, i32 output, i32 include_inactiv
         ((special->flags & 2) == 0 && include_inactive == 0)) {
         return 0;
     }
-    if ((special->anim_set->flags & 4) == 0) {
+    if ((special->anim_set->flags & GAMEANIMSET_IN_ACTIVE_LIST) == 0) {
         GameAnimSet_EvaluateState(special->anim_set);
     }
     switch (output) {

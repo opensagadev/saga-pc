@@ -496,10 +496,10 @@ extern "C" {
             p->status_flags = 0;
             return;
         }
-        p->flags_word = (p->flags_word & ~0x400u) | (((u32)SuperStory << 10) & 0x400u);
-        p->flags_word = (p->flags_word & ~0x40u) | (((u32)FreePlay << 6) & 0x40u);
-        p->flags_word = (p->flags_word & ~0x800u) | (((u32)PauseSaveAndExit << 11) & 0x800u);
-        p->flags_word &= ~0x1000u;
+        p->flags_word = (p->flags_word & ~STATUSPACKET_SUPER_STORY_MODE) | (((u32)SuperStory << 10) & 0x400u);
+        p->flags_word = (p->flags_word & ~STATUSPACKET_FREE_PLAY) | (((u32)FreePlay << 6) & 0x40u);
+        p->flags_word = (p->flags_word & ~STATUSPACKET_SAVED_AND_EXITED) | (((u32)PauseSaveAndExit << 11) & 0x800u);
+        p->flags_word &= ~STATUSPACKET_CONTINUE_STORY;
         p->stage_count = 0;
         p->mission = Mission_Active(NULL);
         if (p->mission != NULL) {
@@ -510,9 +510,9 @@ extern "C" {
         p->challenge_state = (u8)ChallengeMode;
         PauseSaveAndExit = 0;
         area = (i8)world->area_index;
-        p->flags_word &= ~8u;
+        p->flags_word &= ~STATUSPACKET_NEXT_AREA_UNLOCKED;
         p->previous_completion = (u8)Game.save_hash;
-        p->flags_word &= ~0x380u;
+        p->flags_word &= ~(STATUSPACKET_VEHICLE_AREA | STATUSPACKET_BONUS_MODE | STATUSPACKET_SUPER_BONUS_MODE);
         p->next_area = -1;
         p->field_0xbe = -1;
         p->score = &Game.coins;
@@ -530,13 +530,13 @@ extern "C" {
             }
             p->chapter = p->area->area_index;
             if ((p->area->flags & AREAFLAG_VEHICLE_AREA) != 0) {
-                p->flags_word |= 0x80;
+                p->flags_word |= STATUSPACKET_VEHICLE_AREA;
             }
             if ((p->area->flags & AREAFLAG_BONUS_AREA) != 0) {
-                p->flags_word |= 0x100;
+                p->flags_word |= STATUSPACKET_BONUS_MODE;
             }
             if ((p->area->flags & AREAFLAG_SUPER_BONUS) != 0) {
-                p->flags_word |= 0x200;
+                p->flags_word |= STATUSPACKET_SUPER_BONUS_MODE;
             }
         } else {
             p->area = NULL;
@@ -546,7 +546,7 @@ extern "C" {
         if (p->init_callback(world, p) != 0) {
             return;
         }
-        if ((p->flags_word & 0x400) != 0) {
+        if ((p->flags_word & STATUSPACKET_SUPER_STORY_MODE) != 0) {
             /* Tests the current level separately for loaded and unloaded worlds. */
             if (NewLData == STATUS_LDATA || (WORLD->loaded && WORLD->current_level == STATUS_LDATA) ||
                 (!WORLD->loaded && WORLD->current_level == STATUS_LDATA)) {
@@ -616,10 +616,10 @@ extern "C" {
             }
             return;
         }
-        if ((p->flags_word & 0x100) != 0 && area != -1) {
+        if ((p->flags_word & STATUSPACKET_BONUS_MODE) != 0 && area != -1) {
             i32 gold = 0;
             p->elapsed_time = BonusTimer.time_elapsed;
-            p->flags_word = (p->flags_word & ~0x20u) | (((u32)BonusWinner << 5) & 0x20u);
+            p->flags_word = (p->flags_word & ~STATUSPACKET_BONUS_WINNER) | (((u32)BonusWinner << 5) & 0x20u);
             p->previous_best_time = Game.area_save[area].challenge_trial_time;
             if (p->previous_best_time <= 0.0f || p->previous_best_time > p->elapsed_time) {
                 if (WORLD->area->challenge_trial_time != 0 && p->previous_best_time >= WORLD->area->challenge_trial_time) {
@@ -629,7 +629,7 @@ extern "C" {
                 p->new_best_time = p->elapsed_time;
                 Game.area_save[area].challenge_trial_time = p->elapsed_time;
             }
-            if ((p->flags_word & 0x200) != 0) {
+            if ((p->flags_word & STATUSPACKET_SUPER_BONUS_MODE) != 0) {
                 if (Game.area_save[p->area_id].area_complete == 0) {
                     Game.area_save[p->area_id].area_complete = 1;
                     AddToCompletionPoints(POINTS_PER_SUPERBONUSCOMPLETE);
@@ -749,7 +749,7 @@ extern "C" {
         }
         if (area != -1) {
             if (BuildUpDone != 0) {
-                p->flags_word |= 4;
+                p->flags_word |= STATUSPACKET_TRUE_HERO_COMPLETE;
             }
             p->minikit_count = (u8)(Game.area_save[area].minikit_count + (u8)AreaGlobals.new_minikit_count);
             p->minikit_max = (p->area->flags & AREAFLAG_MINIKIT) != 0 ? 10 : 0;
@@ -765,7 +765,7 @@ extern "C" {
             p->collected_score = (f32)(p->coins_remaining[0] + p->coins_remaining[1]);
         }
         p->newly_completed = 0;
-        if ((p->unknown_b0 & 4) != 0) {
+        if ((p->unknown_b0 & STATUSPACKET_TRUE_HERO_COMPLETE) != 0) {
             p->true_hero_percent = 100.0f;
         } else {
             f32 target = p->true_hero_target;
@@ -777,10 +777,10 @@ extern "C" {
         }
         p->coins_collected[0] = p->coins_remaining[0];
         p->coins_collected[1] = p->coins_remaining[1];
-        if (area != -1 && (p->unknown_b0 & 0x40) == 0 && p->episode != NULL && p->chapter < p->episode->regular_areas) {
+        if (area != -1 && (p->unknown_b0 & STATUSPACKET_FREE_PLAY) == 0 && p->episode != NULL && p->chapter < p->episode->regular_areas) {
             p->next_area = p->episode->area_ids[p->chapter + 1];
             if (p->chapter < p->episode->regular_areas - 1) {
-                p->flags_word |= 8;
+                p->flags_word |= STATUSPACKET_NEXT_AREA_UNLOCKED;
             }
         }
         StatusDrawPlayerIcons = 0;
@@ -799,12 +799,12 @@ extern "C" {
         {
             i32 gold = 0;
             i32 completed_episode = 0;
-            if (area != -1 && (p->unknown_b0 & 0x40) == 0 && Game.area_save[area].area_complete == 0 &&
+            if (area != -1 && (p->unknown_b0 & STATUSPACKET_FREE_PLAY) == 0 && Game.area_save[area].area_complete == 0 &&
                 (p->area->flags & (AREAFLAG_ENDING_AREA | AREAFLAG_BONUS_AREA | AREAFLAG_TEST_AREA)) == 0) {
                 p->newly_completed = 1;
                 Game.area_save[area].area_complete = 1;
                 AddToCompletionPoints(POINTS_PER_STORY);
-                if ((p->flags_word & 0x100) == 0 && (p->area->flags & AREAFLAG_NO_GOLD_BRICK) == 0) {
+                if ((p->flags_word & STATUSPACKET_BONUS_MODE) == 0 && (p->area->flags & AREAFLAG_NO_GOLD_BRICK) == 0) {
                     gold = AddGoldBrickMessage(p, dat_00880728);
                 }
                 if (p->episode != NULL && Episode_IsComplete(p->episode, NULL) != 0) {
@@ -815,7 +815,7 @@ extern "C" {
                         Game.area_save[EDataList[i].area_ids[0]].complete = 1;
                     }
                 }
-                if ((p->unknown_b0 & 8) != 0) {
+                if ((p->unknown_b0 & STATUSPACKET_NEXT_AREA_UNLOCKED) != 0) {
                     Game.area_save[p->next_area].complete = 1;
                 } else if (p->episode != NULL) {
                     i32 bonus = Episode_FindAreaFromFlags(p->episode, AREAFLAG_VEHICLE_AREA | AREAFLAG_BONUS_AREA, 4);
@@ -863,7 +863,7 @@ extern "C" {
             if (HubBothTrueJediGoldBricks != 0) {
                 u8 *complete = &Game.area_save[area].true_hero_complete[(p->flags_word >> 6) & 1];
                 if (*complete == 0) {
-                    if ((p->unknown_b0 & 4) != 0) {
+                    if ((p->unknown_b0 & STATUSPACKET_TRUE_HERO_COMPLETE) != 0) {
                         *complete = 1;
                         AddToCompletionPoints(POINTS_PER_TRUEJEDI);
                         AddStatusStage(p, STATUS_STAGE_TRUE_JEDI, AddGoldBrickMessage(p, dat_00880818));
@@ -872,12 +872,12 @@ extern "C" {
                     }
                 }
             } else if (Game.area_save[area].true_hero_complete[0] == 0 && Game.area_save[area].true_hero_complete[1] == 0) {
-                if ((p->unknown_b0 & 4) != 0) {
+                if ((p->unknown_b0 & STATUSPACKET_TRUE_HERO_COMPLETE) != 0) {
                     Game.area_save[area].true_hero_complete[1] = 1;
                     Game.area_save[area].true_hero_complete[0] = 1;
                     AddToCompletionPoints(POINTS_PER_TRUEJEDI);
                     AddStatusStage(p, STATUS_STAGE_TRUE_JEDI, AddGoldBrickMessage(p, dat_00880818));
-                } else if (p->collected_score > 0.0f && (p->flags_word & 0x800) == 0) {
+                } else if (p->collected_score > 0.0f && (p->flags_word & STATUSPACKET_SAVED_AND_EXITED) == 0) {
                     AddStatusStage(p, STATUS_STAGE_TRUE_JEDI_SCORE, 0);
                 }
             }
@@ -892,14 +892,14 @@ extern "C" {
             p->new_minikits = AreaGlobals.new_minikit_count;
             if (Game.area_save[area].minikit_count >= p->minikit_max) {
                 Game.area_save[area].minikit_complete = 1;
-                p->flags_word |= 0x10;
+                p->flags_word |= STATUSPACKET_NEW_MINIKIT_COMPLETE;
                 AddToCompletionPoints(POINTS_PER_MINIKIT);
                 gold = AddGoldBrickMessage(p, dat_008808d0);
             }
             if (PauseSaveAndExit == 0 || p->new_minikits != 0) {
                 AddStatusStage(p, STATUS_STAGE_MINIKIT, gold);
             }
-            if ((p->unknown_b0 & 0x10) != 0 && AllMiniKitsDone((AREASAVE_s *)Game.area_save) != 0) {
+            if ((p->unknown_b0 & STATUSPACKET_NEW_MINIKIT_COMPLETE) != 0 && AllMiniKitsDone((AREASAVE_s *)Game.area_save) != 0) {
                 AddToCollection(dat_007f195c);
                 AddStatusStage(p, STATUS_STAGE_ALL_MINIKITS, 0);
             }
@@ -907,7 +907,7 @@ extern "C" {
         if (Game.gold_bricks > p->previous_gold_bricks) {
             AddStatusStage(p, STATUS_STAGE_GOLD_BRICK, 0);
         }
-        if ((p->flags_word & 0x800) == 0) {
+        if ((p->flags_word & STATUSPACKET_SAVED_AND_EXITED) == 0) {
             AddStatusStage(p, STATUS_STAGE_PROMPT, 0);
         }
         STATUS_APPEND_STAGE_INLINE(p, STATUS_STAGE_EXIT, 0);
@@ -1098,7 +1098,7 @@ void AddStatusMiniKitParts(void) {
         part.velocity = &velocity;
         part.lighting_data = &StatusMiniKitPartLighting;
         part.special = &StatusMiniKitDrawCache[i].piece->special;
-        part.flags = 0x480;
+        part.flags = PART_FLAG_ROTATE_RANDOMLY | PART_FLAG_IGNORE_TERRAIN;
         part.gravity = 0.0f;
         part.time_step = FRAMETIME;
         AddPart(&part);
@@ -1147,7 +1147,7 @@ extern "C" {
         f32 step;
         f32 y;
         labels[1] = -1;
-        if ((packet->flags_word & 0x100u) != 0) {
+        if ((packet->flags_word & STATUSPACKET_BONUS_MODE) != 0) {
             labels[0] = dat_0088083c;
             labels[1] = dat_008806f8;
         } else if (packet->challenge_state != 0) {
@@ -1156,7 +1156,7 @@ extern "C" {
         } else if (packet->mission_state != 0) {
             labels[0] = dat_0088083c;
             labels[1] = dat_008806f8;
-        } else if ((packet->flags_word & 0x40u) != 0) {
+        } else if ((packet->flags_word & STATUSPACKET_FREE_PLAY) != 0) {
             labels[0] = dat_008806f8;
         } else if (packet->area_id != -1 && (u8)areas[packet->area_id].episode_index == 0xff) {
             labels[0] = dat_008806f8;
@@ -1203,7 +1203,7 @@ extern "C" {
             count = 2;
             y = (f64)y - (f64)step * 0.5;
         }
-        if ((packet->flags_word & 0x100u) != 0) {
+        if ((packet->flags_word & STATUSPACKET_BONUS_MODE) != 0) {
             y = (f64)y + (f64)0.075f;
         }
         for (row = 0; row < count; ++row) {
@@ -1447,7 +1447,7 @@ extern "C" void FinishStatusPacket(i32 choice) {
         return;
     }
     NewLData = HUB_LDATA;
-    if (choice == 0 && ((StatusPacket.flags_word & 0x100) != 0 ||
+    if (choice == 0 && ((StatusPacket.flags_word & STATUSPACKET_BONUS_MODE) != 0 ||
                         (StartupGameFlag1 != 0 && (StatusPacket.challenge_state != 0 || StatusPacket.mission_state != 0)))) {
         NewLData = Area_FindNextPlayLevel(ADataList[StatusPacket.area->index].levels[0]);
         ResetBits = 0xffffffbfu;
@@ -1469,15 +1469,15 @@ extern "C" void FinishStatusPacket(i32 choice) {
             LevelCompletionFallbackFlagPC = 1;
         } else {
             loadareacharacters_no_backdrop_reset = 1;
-            if ((StatusPacket.flags_word & 0x400) != 0) {
+            if ((StatusPacket.flags_word & STATUSPACKET_SUPER_STORY_MODE) != 0) {
                 finishloop_backdroponly = 1;
             }
         }
-    } else if (StartupGameFlag1 != 0 && ((StatusPacket.flags_word & 0x400) != 0 ||
+    } else if (StartupGameFlag1 != 0 && ((StatusPacket.flags_word & STATUSPACKET_SUPER_STORY_MODE) != 0 ||
                                          ((StatusPacket.area->flags & AREAFLAG_BONUS_AREA) != 0 && StatusPacket.free_play == 0))) {
         NewLData = CREDITS_LDATA;
     }
-    if ((StatusPacket.flags_word & 0x800) != 0) {
+    if ((StatusPacket.flags_word & STATUSPACKET_SAVED_AND_EXITED) != 0) {
         NewLData = HUB_LDATA;
     }
     if (NewLData->area_index != -1 && (ADataList[NewLData->area_index].flags & AREAFLAG_HUB_AREA) != 0 && StatusPacket.mission_state != 0 &&

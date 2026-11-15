@@ -233,7 +233,8 @@ void SpawnCreatureFromCrate(GAMEOBJECT *object, f32 height, f32 delay) {
     parameters.special = &WORLD->level_objects[0xe6].special;
     parameters.time_step = FRAMETIME;
     parameters.gravity = -2.0f;
-    parameters.flags = 0x313;
+    parameters.flags = PART_FLAG_DIE_WHEN_STOPPED | PART_FLAG_COLLIDE_WITH_CHARACTERS | PART_FLAG_KEEP_OFF_SCREEN | PART_FLAG_NO_BOUNCE |
+                       PART_FLAG_SLOT_CANNOT_BE_STOLEN;
     parameters.owner = object;
     parameters.draw_fn = CreatureCrate_DrawFn;
     parameters.move_fn = CreatureCrate_MoveFn;
@@ -1376,12 +1377,12 @@ char KillPartsTieSpinsText[10] = "Tie_Spins";
 
 void KillParts_TIEFIGHTER(ADDPART *params, i32 part_index, i32 variant, GAMEOBJECT *object, i32 mode, u16 xrot, u16 yrot, NUVEC *velocity) {
     if (variant != 0) {
-        params->flags = 0x10;
+        params->flags = PART_FLAG_KEEP_OFF_SCREEN;
     } else {
-        params->flags = 0x400;
+        params->flags = PART_FLAG_IGNORE_TERRAIN;
     }
     if (((f64)object->horizontal_velocity_magnitude) / object->character_data->game_character->run_speed <= 0.25) {
-        params->flags = 0x90;
+        params->flags = PART_FLAG_KEEP_OFF_SCREEN | PART_FLAG_ROTATE_RANDOMLY;
         params->stop_fn = PartStop_Flickerer;
         params->draw_fn = PartDraw_Flickerer;
         params->impact_fn = PartImpact_Brick;
@@ -1393,7 +1394,7 @@ void KillParts_TIEFIGHTER(ADDPART *params, i32 part_index, i32 variant, GAMEOBJE
     switch (mode) {
         default: {
             params->unknown_20 = 0.5f;
-            params->flags = 0x91;
+            params->flags = PART_FLAG_DIE_WHEN_STOPPED | PART_FLAG_KEEP_OFF_SCREEN | PART_FLAG_ROTATE_RANDOMLY;
             params->kill_fn = TiePart_Kill;
             params->draw_fn = PartDraw_Flickerer;
             params->impact_fn = TiePart_Impact;
@@ -1402,7 +1403,7 @@ void KillParts_TIEFIGHTER(ADDPART *params, i32 part_index, i32 variant, GAMEOBJE
         }
         case 1: {
             NUVEC spin_velocity;
-            params->flags = 0x111;
+            params->flags = PART_FLAG_DIE_WHEN_STOPPED | PART_FLAG_KEEP_OFF_SCREEN | PART_FLAG_NO_BOUNCE;
             spin_velocity.x = object->velocity.x * 0.75f;
             spin_velocity.y = object->velocity.x * 0.75f;
             spin_velocity.z = object->velocity.z * 0.75f;
@@ -1423,7 +1424,7 @@ void KillParts_TIEFIGHTER(ADDPART *params, i32 part_index, i32 variant, GAMEOBJE
             break;
         }
         case 0: {
-            params->flags = 0x111;
+            params->flags = PART_FLAG_DIE_WHEN_STOPPED | PART_FLAG_KEEP_OFF_SCREEN | PART_FLAG_NO_BOUNCE;
             params->kill_fn = TiePart_KillExplode;
             params->unknown_a4 = FRAMETIME;
             params->velocity = &v000;
@@ -1595,7 +1596,7 @@ void LoseHelmet(GAMEOBJECT *object, i32 unused1, i32 unused2) {
         params.unknown_18 = 0.1f;
         params.gravity = -5.0f;
         params.special = &WORLD->level_objects[object->helmet + 0xf9].special;
-        params.flags = 0x90;
+        params.flags = PART_FLAG_KEEP_OFF_SCREEN | PART_FLAG_ROTATE_RANDOMLY;
         params.time_step = FRAMETIME;
         params.unknown_c4 = 1;
         params.stop_fn = PartStop_Flickerer;
@@ -2546,10 +2547,10 @@ void UpdateGameObjects(WORLDINFO *world) {
         if (player_tag_to != NULL && player_tag_from != NULL && player_tag_to != player_tag_from &&
             (player_tag_to->flags_1fc_word & (APIOBJECT_FLAG_IN_USE | APIOBJECT_FLAG_CHARACTER)) ==
                 (APIOBJECT_FLAG_IN_USE | APIOBJECT_FLAG_CHARACTER) &&
-            player_tag_to->dead == 0 && (player_tag_to->tag_flags & 2) == 0 &&
+            player_tag_to->dead == 0 && (player_tag_to->tag_flags & APIOBJECT_TAG_DISABLED) == 0 &&
             (player_tag_from->flags_1fc_word & (APIOBJECT_FLAG_IN_USE | APIOBJECT_FLAG_CHARACTER)) ==
                 (APIOBJECT_FLAG_IN_USE | APIOBJECT_FLAG_CHARACTER) &&
-            player_tag_from->dead == 0 && (2 & player_tag_from->tag_flags) == 0) {
+            player_tag_from->dead == 0 && (APIOBJECT_TAG_DISABLED & player_tag_from->tag_flags) == 0) {
             result = TagCode(player_tag_to, player_tag_from, 0, 0, 1);
             if (result == 1) {
                 GameAudio_PlaySfx(0x22, &player_tag_to->collision_position, 0, 0);
@@ -2570,10 +2571,10 @@ void UpdateGameObjects(WORLDINFO *world) {
         if (player_tag_timer < 0.0f || player_tag_to == NULL || player_tag_from == NULL ||
             (APIOBJECT_FLAG_IN_USE | APIOBJECT_FLAG_CHARACTER) !=
                 ((player_tag_to->flags_1fc_word & (APIOBJECT_FLAG_IN_USE | APIOBJECT_FLAG_CHARACTER))) ||
-            player_tag_to->dead != 0 || (player_tag_to->tag_flags & 2) != 0 ||
+            player_tag_to->dead != 0 || (player_tag_to->tag_flags & APIOBJECT_TAG_DISABLED) != 0 ||
             (player_tag_from->flags_1fc_word & (APIOBJECT_FLAG_IN_USE | APIOBJECT_FLAG_CHARACTER)) !=
                 (APIOBJECT_FLAG_IN_USE | APIOBJECT_FLAG_CHARACTER) ||
-            player_tag_from->dead != 0 || (player_tag_from->tag_flags & 2) != 0) {
+            player_tag_from->dead != 0 || (player_tag_from->tag_flags & APIOBJECT_TAG_DISABLED) != 0) {
             player_tag_to = NULL;
             player_tag_timer = 0.0f;
             player_tag_from = NULL;
@@ -3091,7 +3092,7 @@ void KillParts_SpeederBike(ADDPART *params, i32 unused1, i32 unused2, GAMEOBJECT
     NUVEC velocity;
     u16 yaw;
     u16 pitch;
-    params->flags = 0x400;
+    params->flags = PART_FLAG_IGNORE_TERRAIN;
     velocity.x = object->velocity.x * 1.5f;
     velocity.y = 0.0f;
     velocity.z = object->velocity.z * 1.5f;

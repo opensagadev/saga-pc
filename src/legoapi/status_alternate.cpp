@@ -383,7 +383,8 @@ extern "C" {
     void MiniKit_Alt_Skip(STATUS_STAGE_s *stage, STATUSPACKET_s *packet) {
         if ((packet->unknown_b0 & 2) == 0) {
             currentminikit = (i32)((u32)currentminikit + (u32)StatusNewMinikitCount);
-            if ((packet->unknown_b0 & 0x10) != 0 && (stage->unknown_14 != 6 || !(stage->unknown_18 >= stage->unknown_1c))) {
+            if ((packet->unknown_b0 & STATUSPACKET_NEW_MINIKIT_COMPLETE) != 0 &&
+                (stage->unknown_14 != 6 || !(stage->unknown_18 >= stage->unknown_1c))) {
                 IncreaseScore(packet->score, 50000, 0);
             }
         }
@@ -458,10 +459,12 @@ extern "C" {
                         u32 buttons = pad->menu_buttons_pressed;
                         if ((buttons & GAMEPAD_MENUSELECT) != 0) {
                             selected = 1;
-                        } else if (((packet->flags_word & 0x40u) == 0 && (packet->flags_word & 8u) != 0 &&
+                        } else if (((packet->flags_word & STATUSPACKET_FREE_PLAY) == 0 &&
+                                    (packet->flags_word & STATUSPACKET_NEXT_AREA_UNLOCKED) != 0 &&
                                     (packet->next_area == -1 || (packet->area->flags & AREAFLAG_ENDING_AREA) != 0 ||
                                      Game.area_save[packet->next_area].complete != 0)) ||
-                                   (packet->flags_word & 0x100u) != 0 || packet->challenge_state != 0 || packet->mission_state != 0) {
+                                   (packet->flags_word & STATUSPACKET_BONUS_MODE) != 0 || packet->challenge_state != 0 ||
+                                   packet->mission_state != 0) {
                             if (status_prompt > 0) {
                                 if (((pad->menu_directions | buttons) & GAMEPAD_DUP) != 0) {
                                     GameAudio_PlaySfx(0x2f, NULL, 0, 0);
@@ -479,8 +482,8 @@ extern "C" {
                     ++pad;
                 } while (player < 2);
                 if (selected != 0) {
-                    if ((packet->flags_word & 8u) != 0 && packet->next_area != -1 && (packet->area->flags & AREAFLAG_ENDING_AREA) == 0 &&
-                        Game.area_save[packet->next_area].complete == 0) {
+                    if ((packet->flags_word & STATUSPACKET_NEXT_AREA_UNLOCKED) != 0 && packet->next_area != -1 &&
+                        (packet->area->flags & AREAFLAG_ENDING_AREA) == 0 && Game.area_save[packet->next_area].complete == 0) {
                         packet->prompt_choice = 1;
                     } else {
                         packet->prompt_choice = (u8)status_prompt;
@@ -569,8 +572,8 @@ extern "C" {
             stage->unknown_18 = accumulated;
             if (stage->unknown_18 >= stage->unknown_1c) {
                 u32 flags = packet->flags_word;
-                if ((flags & 0x400) == 0 && packet->prompt_choice == 0 && (flags & 0x40) == 0 && packet->mission_state == 0 &&
-                    packet->challenge_state == 0) {
+                if ((flags & STATUSPACKET_SUPER_STORY_MODE) == 0 && packet->prompt_choice == 0 && (flags & STATUSPACKET_FREE_PLAY) == 0 &&
+                    packet->mission_state == 0 && packet->challenge_state == 0) {
                     FinishStatusPacket(0);
                 } else {
                     NextStatusStage(packet);
@@ -1067,7 +1070,7 @@ extern "C" {
                     if (message_id == dat_00880818) {
                         NuStrCpy(text, TTab[message_id]);
                         NuStrCat(text, " - ");
-                        NuStrCat(text, TTab[(packet->unknown_b0 & 0x40) != 0 ? dat_008808a8 : dat_008808a4]);
+                        NuStrCat(text, TTab[(packet->unknown_b0 & STATUSPACKET_FREE_PLAY) != 0 ? dat_008808a8 : dat_008808a4]);
                         message = text;
                     } else {
                         message = TTab[message_id];
@@ -1320,7 +1323,7 @@ extern "C" {
             case 5: {
                 f32 target;
                 SetDrawGoldBrick(packet, 3);
-                if ((packet->unknown_b0 & 4) == 0) {
+                if ((packet->unknown_b0 & STATUSPACKET_TRUE_HERO_COMPLETE) == 0) {
                     target = (f64)packet->collected_score * 100.0 / (f64)packet->true_hero_target;
                     if (target > 99.0f) {
                         target = 99.0f;
@@ -1469,7 +1472,7 @@ extern "C" {
                     stage->unknown_14 = 4;
                 }
                 if (stage->unknown_14 == 4) {
-                    if ((packet->unknown_b0 & 0x10) != 0) {
+                    if ((packet->unknown_b0 & STATUSPACKET_NEW_MINIKIT_COMPLETE) != 0) {
                         stage->unknown_1c = 1.0f;
                         stage->unknown_14 = 5;
                     } else {
@@ -1678,7 +1681,7 @@ extern "C" {
         NuStrCpy(text, TTab[dat_00880818]);
         colour = ((u8)(title_alpha * 128.0) << 24) | 0xffffff;
         DrawStatusText(text, title_angle, title_scale * StatusAltTrueHeroX, StatusCoinsTitleY * title_scale, title_scale, colour, 0);
-        NuStrCpy(text, TTab[(packet->unknown_b0 & 0x40) ? dat_008808a8 : dat_008808a4]);
+        NuStrCpy(text, TTab[(packet->unknown_b0 & STATUSPACKET_FREE_PLAY) ? dat_008808a8 : dat_008808a4]);
         DrawStatusText(text, mode_angle, mode_scale * StatusAltTrueHeroX, -StatusCoinsTitleY * mode_scale, mode_scale, colour, 0);
         if (stage->unknown_14 == 6) {
             colour = ((u8)((1.0f - full_fade) * 64.0) << 24) | 0xbfff;

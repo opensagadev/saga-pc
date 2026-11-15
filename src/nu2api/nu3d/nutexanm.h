@@ -70,3 +70,29 @@ extern "C" {
 #ifdef __cplusplus
 }
 #endif
+
+/* TEXTURE_ANIM_PROGRAM.instructions: the opcodes, each written by the handler of its script keyword
+ * (TextureAnimationCommandsPrivate). */
+#define TEXANIM_OP_TEX 0
+#define TEXANIM_OP_TEXR 1
+#define TEXANIM_OP_TEXADJ 2
+#define TEXANIM_OP_TEXADJR 3
+#define TEXANIM_OP_WAIT 4
+#define TEXANIM_OP_RATE 7
+#define TEXANIM_OP_GOTO 9
+#define TEXANIM_OP_GOSUB 10
+#define TEXANIM_OP_BTEX 11
+#define TEXANIM_OP_RET 12
+#define TEXANIM_OP_REPEAT 13
+#define TEXANIM_OP_REPEND 14
+#define TEXANIM_OP_UNTILTEX 15
+#define TEXANIM_OP_END 16
+#define TEXANIM_OP_XREF 17
+
+/* The comparisons of btex and untiltex (TextureAnimationReadComparisonPrivate). */
+#define TEXANIM_CMP_EQ 0
+#define TEXANIM_CMP_LT 1
+#define TEXANIM_CMP_GT 2
+#define TEXANIM_CMP_LE 3
+#define TEXANIM_CMP_GE 4
+#define TEXANIM_CMP_NE 5

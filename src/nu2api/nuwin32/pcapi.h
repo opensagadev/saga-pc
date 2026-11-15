@@ -106,6 +106,37 @@ extern "C" {
 }
 #endif
 #endif
+/* NuInitHardware's variable arguments: a list of tags, each followed by the values the tag takes (the tags the
+ * function reads; it skips the values of the others). */
+#define NUHW_END 0 /* ends the list */
+#define NUHW_HOSTFS 4
+#define NUHW_FILE_MODE 6
+#define NUHW_EJECT 7
+#define NUHW_STREAM_SIZE 8
+#define NUHW_AUDIO 10          /* gate, buffer size, names, parameter */
+#define NUHW_AUDIO_CHANNELS 11 /* channels, capacity */
+#define NUHW_PAD0 14
+#define NUHW_PAD1 15
+#define NUHW_PAD2 16
+#define NUHW_PAD3 17
+#define NUHW_VIDEO_MODE 18 /* PAL modes 2 and 8 make a 224-line height 256 */
+#define NUHW_DFS_NAME 22
+#define NUHW_SOUND_DFS_NAME 23
+#define NUHW_DAT_NAMES 24 /* names, count */
+#define NUHW_TEXTURE_COUNT 26
+#define NUHW_NO_AUDIO 28     /* four ignored values */
+#define NUHW_VIDEO_HEIGHT 33 /* an ignored value, then the height */
+#define NUHW_MATERIAL_COUNT 37
+#define NUHW_CONFIG_NAME 47         /* the registry key */
+#define NUHW_SAVE_FOLDER_COMPANY 48 /* PcRegisterSaveFolderPc */
+#define NUHW_SAVE_FOLDER_GAME 49    /* PcRegisterSaveFolderPc */
+#define NUHW_SHOW_COMMAND 52        /* the window's show command */
+#define NUHW_WINDOW 60
+#define NUHW_ANIMATION_COUNT 68
+#define NUHW_OCCLUSION_CAPACITY 76
+#define NUHW_MAX_GAME_PADS 82
+#define NUHW_ICON 83
+
 #ifdef __cplusplus
 extern "C" {
 #endif

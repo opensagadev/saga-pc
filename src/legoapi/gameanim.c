@@ -110,9 +110,9 @@ GAMEANIMSET *GameAnimSet_Create(VARIPTR *buf, VARIPTR *end, GAMEANIMOBJPOOL *poo
 }
 
 void GameAnimSet_AddToSystemList(GAMEANIMSET *set) {
-    if (set != NULL && set->system != NULL && (set->flags & 4) == 0) {
+    if (set != NULL && set->system != NULL && (set->flags & GAMEANIMSET_IN_ACTIVE_LIST) == 0) {
         NuLinkedListAppend(&set->system->active_sets, &set->links);
-        set->flags = (u16)(set->flags | 4);
+        set->flags = (u16)(set->flags | GAMEANIMSET_IN_ACTIVE_LIST);
     }
 }
 
@@ -123,7 +123,7 @@ void GameAnimSet_EvaluateState(GAMEANIMSET *set) {
     i32 all_at_start = 1;
     f32 direction;
 
-    if ((set->flags & 4) != 0) {
+    if ((set->flags & GAMEANIMSET_IN_ACTIVE_LIST) != 0) {
         return;
     }
     object = set->objects;
@@ -150,9 +150,9 @@ void GameAnimSet_EvaluateState(GAMEANIMSET *set) {
 
 void GameAnimSet_RemoveFromSystemList(GAMEANIMSET *set) {
     if (set != NULL && set->system != NULL) {
-        if ((set->flags & 4) != 0) {
+        if ((set->flags & GAMEANIMSET_IN_ACTIVE_LIST) != 0) {
             NuLinkedListRemove(&set->system->active_sets, &set->links);
-            set->flags = (u16)(set->flags & ~4);
+            set->flags = (u16)(set->flags & ~GAMEANIMSET_IN_ACTIVE_LIST);
         }
         GameAnimSet_EvaluateState(set);
     }
@@ -172,10 +172,10 @@ void GameAnimSys_ReStoreProgress(GAMEANIMSYS *system, i32 index) {
         }
         system->sets[i]->state = (i8)progress[i];
         if (system->sets[i]->state == 1 || system->sets[i]->state == 3) {
-            if ((system->sets[i]->flags & 4) == 0) {
+            if ((system->sets[i]->flags & GAMEANIMSET_IN_ACTIVE_LIST) == 0) {
                 GameAnimSet_AddToSystemList(system->sets[i]);
             }
-        } else if ((system->sets[i]->flags & 4) != 0) {
+        } else if ((system->sets[i]->flags & GAMEANIMSET_IN_ACTIVE_LIST) != 0) {
             GameAnimSet_RemoveFromSystemList(system->sets[i]);
         }
     }
@@ -328,7 +328,7 @@ i32 GameAnimSet_Play(GAMEANIMSET *set, f32 speed, i32 evaluate_state) {
     if (evaluate_state != 0) {
         GameAnimSet_EvaluateState(set);
     }
-    set->flags = (u16)(set->flags & ~2);
+    set->flags = (u16)(set->flags & ~GAMEANIMSET_STOPPED);
     if (speed >= 0.0f) {
         if (set->state == 2) {
             return 1;
@@ -355,7 +355,7 @@ i32 GameAnimSet_Play(GAMEANIMSET *set, f32 speed, i32 evaluate_state) {
             }
         }
     }
-    if ((set->flags & 4) == 0) {
+    if ((set->flags & GAMEANIMSET_IN_ACTIVE_LIST) == 0) {
         GameAnimSet_AddToSystemList(set);
     }
     return 1;
@@ -365,7 +365,7 @@ i32 GameAnimSet_Stop(GAMEANIMSET *set) {
     GAMEANIMOBJ *object;
 
     if (set != NULL && (set->state == 1 || set->state == 3)) {
-        set->flags = (u16)(set->flags | 2);
+        set->flags = (u16)(set->flags | GAMEANIMSET_STOPPED);
         for (object = set->objects; object != NULL; object = object->next) {
             if (object->instance_animation != NULL) {
                 object->instance_animation->flags &= ~NUINSTANIM_FLAG_PLAYING;
@@ -827,10 +827,10 @@ void GameAnimSys_Update(GAMEANIMSYS *system) {
     set = (GAMEANIMSET *)NuLinkedListGetHead(&system->active_sets);
     while (set != NULL) {
         next_set = (GAMEANIMSET *)NuLinkedListGetNext(&system->active_sets, &set->links);
-        was_no_visibility_test = set->flags & 1;
-        set->flags &= (u16)~1;
-        if ((set->flags & 2) != 0) {
-            set->flags &= (u16)~2;
+        was_no_visibility_test = set->flags & GAMEANIMSET_PLAYING;
+        set->flags &= (u16)~GAMEANIMSET_PLAYING;
+        if ((set->flags & GAMEANIMSET_STOPPED) != 0) {
+            set->flags &= (u16)~GAMEANIMSET_STOPPED;
             GameAnimSet_RemoveFromSystemList(set);
             set = next_set;
             continue;
@@ -842,7 +842,7 @@ void GameAnimSys_Update(GAMEANIMSYS *system) {
         any_special_no_visibility_test = 0;
         for (object = set->objects; object != NULL; object = object->next) {
             if (NuSpecialGetNoVisiTestFn(&object->special) != 0) {
-                any_special_no_visibility_test = 1;
+                any_special_no_visibility_test = GAMEANIMSET_PLAYING;
             }
             if (object->instance_animation != NULL) {
                 direction = object->start_frame > object->end_frame ? -1.0f : 1.0f;
@@ -872,7 +872,7 @@ void GameAnimSys_Update(GAMEANIMSYS *system) {
                     EvalAnim2(&object->special, object->instance_animation->ltime);
                 }
                 if ((object->instance_animation->flags & NUINSTANIM_FLAG_PLAYING) != 0) {
-                    set->flags |= 1;
+                    set->flags |= GAMEANIMSET_PLAYING;
                     if (object->instance_animation->tfactor * direction < 0.0f) {
                         all_playing_forward = 0;
                     }
@@ -885,12 +885,12 @@ void GameAnimSys_Update(GAMEANIMSYS *system) {
                 }
             }
         }
-        if ((set->flags & 1) != any_special_no_visibility_test) {
+        if ((set->flags & GAMEANIMSET_PLAYING) != any_special_no_visibility_test) {
             for (object = set->objects; object != NULL; object = object->next) {
-                NuSpecialSetNoVisiTest(&object->special, set->flags & 1);
+                NuSpecialSetNoVisiTest(&object->special, set->flags & GAMEANIMSET_PLAYING);
             }
         }
-        if ((set->flags & 1) != 0) {
+        if ((set->flags & GAMEANIMSET_PLAYING) != 0) {
             set->state = all_playing_forward != 0 ? 1 : 3;
         } else {
             if (all_at_end != 0) {
@@ -899,10 +899,10 @@ void GameAnimSys_Update(GAMEANIMSYS *system) {
                 set->state = 4;
             }
             if (was_no_visibility_test != 0) {
-                set->flags |= 2;
+                set->flags |= GAMEANIMSET_STOPPED;
             }
         }
-        if ((set->flags & (1 | 2)) == 0) {
+        if ((set->flags & (GAMEANIMSET_PLAYING | GAMEANIMSET_STOPPED)) == 0) {
             GameAnimSet_RemoveFromSystemList(set);
         }
         set = next_set;

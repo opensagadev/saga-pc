@@ -648,7 +648,7 @@ void GizActions_PlayObstacle(GIZFLOW *flow, FLOWBOX *box, char **params, i32 cou
         GizObstacle_PlayBackwards(obstacle);
     }
     flags = obstacle->runtime_flags;
-    flags &= ~0xcu;
+    flags &= ~(GIZOBSTACLE_LOCKED_OPEN | GIZOBSTACLE_LOCKED_SHUT);
     flags |= (stay_shut & 1) << 3;
     flags |= (stay_open & 1) << 2;
     obstacle->runtime_flags = flags;

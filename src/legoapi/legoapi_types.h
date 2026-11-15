@@ -1168,6 +1168,11 @@ struct gameanimset_s {            // size 0x1c
     GAMEANIMOBJ *objects;         // 0x18
 };
 
+/* gameanimset_s.flags, from gameanim.c. */
+#define GAMEANIMSET_PLAYING 0x1        /* an object's animation played this update */
+#define GAMEANIMSET_STOPPED 0x2        /* GameAnimSet_Stop; the next update takes the set off the active list */
+#define GAMEANIMSET_IN_ACTIVE_LIST 0x4 /* GameAnimSet_AddToSystemList */
+
 struct gameanimsys_s {     // size 0x10
     NULISTHDR active_sets; // 0x0
     i32 set_count;         // 0x8
@@ -1210,6 +1215,22 @@ typedef struct gizobstacle_s {              // size 0xa0
     i32 proximity_output;                   // 0x98
     u32 runtime_flags;                      // 0x9c
 } GIZOBSTACLE;
+
+/* gizobstacle_s.runtime_flags: the bits gizobstacle.c saves in the level progress, and the AI script's
+ * locks (AlwaysTriggerObstacle and ObstacleLockedOpen, CanTriggerObstacle and ObstacleLockedShut). */
+#define GIZOBSTACLE_PICKUPS_SPAWNED 0x1 /* the reward has been released */
+#define GIZOBSTACLE_BLOWUP_NAME 0x2     /* blowup_type holds a name table id until the post-load */
+#define GIZOBSTACLE_LOCKED_OPEN 0x4
+#define GIZOBSTACLE_LOCKED_SHUT 0x8
+#define GIZOBSTACLE_ON_PLATFORM 0x10 /* an animated object has a terrain platform */
+#define GIZOBSTACLE_TRIGGER_LATCHED 0x40
+#define GIZOBSTACLE_DESTROYED 0x80
+
+/* gizobstacle_s.progress_flags, from gizobstacle.c. */
+#define OBSTACLE_ACTIVE 0x1            /* GizmoObstacle_Activate (saved in the progress) */
+#define OBSTACLE_VISIBLE 0x2           /* saved in the progress */
+#define OBSTACLE_TECHNO_CONTROLLED 0x4 /* GizObstacle_SetTechnoControlled */
+#define OBSTACLE_PUSH_CONTROLLED 0x8   /* GizObstacle_SetPushControlled */
 
 typedef void (*PICKUP_COLLECT_FN)(struct WORLDINFO_s *, struct GIZMOPICKUP *, i32, struct gameobject_s *, i32);
 
@@ -1293,6 +1314,24 @@ struct gizforce_s {                    // size 0xa4
         };
     }; // 0xa0
 };
+
+/* gizforce_s.runtime_flags: the bits the bit-field above names, and the others from their setters in gizforce.c. */
+#define GIZFORCE_ENABLED 0x1                /* GizmoForce_Activate; GizmoForce_ActivateRev forwards */
+#define GIZFORCE_VISIBLE 0x2                /* GizForce_SetVisibility */
+#define GIZFORCE_REVERSED 0x10              /* GizmoForce_ActivateRev backwards */
+#define GIZFORCE_IN_STACK 0x20              /* added to its group's stack of forces */
+#define GIZFORCE_STACK_COMPLETE 0x40        /* stacked, its animation complete and nobody using it */
+#define GIZFORCE_ON_SCREEN 0x80             /* in the camera's view, listed in visible_forces */
+#define GIZFORCE_ON_PLATFORM 0x100          /* an animated object has a terrain platform */
+#define GIZFORCE_REWARD_RELEASED 0x200      /* the pickups have been released */
+#define GIZFORCE_BLOWUP_NAME 0x400          /* blowup_type holds a name table id until GizForces_PostLoad */
+#define GIZFORCE_SOCKET_HIDDEN 0x800        /* hidden at the end of the animation (base special forces) */
+#define GIZFORCE_SHAKE_OFFSET 0x1000        /* the shake offset is applied to the animation */
+#define GIZFORCE_SHAKE_DONE 0x2000          /* shaken for force_range seconds */
+#define GIZFORCE_COMPLETION_RELEASED 0x4000 /* the completion blowup and reward have happened */
+#define GIZFORCE_COMPLETION_PENDING 0x8000  /* a bolt hit set it moving; cleared when complete */
+#define GIZFORCE_DESTROYED 0x10000          /* blown up or thrown, hidden for good */
+#define GIZFORCE_BEING_USED 0x200000        /* a character is using the force */
 #ifdef __cplusplus
 extern "C" {
 #endif
@@ -1625,6 +1664,20 @@ struct STATUSPACKET_s {                                                         
     struct STATUS_STAGE_s *next_stage;       // 0x128
     u8 unknown_12c[32];                      // 0x12c
 };
+
+/* STATUSPACKET_s.flags_word: the bits of the bit-fields above, set from the area flags and the game globals
+ * (BuildUpDone, BonusWinner, FreePlay, SuperStory, PauseSaveAndExit). */
+#define STATUSPACKET_TRUE_HERO_COMPLETE 0x4 /* BuildUpDone */
+#define STATUSPACKET_NEXT_AREA_UNLOCKED 0x8
+#define STATUSPACKET_NEW_MINIKIT_COMPLETE 0x10
+#define STATUSPACKET_BONUS_WINNER 0x20 /* the second player won the bonus */
+#define STATUSPACKET_FREE_PLAY 0x40
+#define STATUSPACKET_VEHICLE_AREA 0x80      /* AREAFLAG_VEHICLE_AREA */
+#define STATUSPACKET_BONUS_MODE 0x100       /* AREAFLAG_BONUS_AREA */
+#define STATUSPACKET_SUPER_BONUS_MODE 0x200 /* AREAFLAG_SUPER_BONUS */
+#define STATUSPACKET_SUPER_STORY_MODE 0x400
+#define STATUSPACKET_SAVED_AND_EXITED 0x800 /* PauseSaveAndExit */
+#define STATUSPACKET_CONTINUE_STORY 0x1000
 
 /* STATUS_STAGE_s.type: named after the stage callbacks of the status screen tables (StatusStagesLsw,
  * StatusStagesAlt) and the conditions AddStatusStage is called under; 5-7, 24 and 27-34 are not known yet. */

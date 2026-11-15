@@ -1456,7 +1456,7 @@ static void BackDrop_Alpha(f32 *alpha) {
             return;
         }
         if ((WORLD->current_level->flags & LEVEL_STATUS) != 0 && StatusPacket.status_flags != 0 &&
-            StatusPacket.stage->type == STATUS_STAGE_FADE && (StatusPacket.flags_word & 0x1000) == 0) {
+            StatusPacket.stage->type == STATUS_STAGE_FADE && (StatusPacket.flags_word & STATUSPACKET_CONTINUE_STORY) == 0) {
             if (StatusPacket.stage->unknown_18 < 0.5f) {
                 *alpha = 1.0f - StatusPacket.stage->unknown_18 * 2.0f;
             } else {
@@ -2499,16 +2499,16 @@ extern "C" {
                 } else if (api->player_index != -1 && part->scale_time < 0.25f) {
                     continue;
                 }
-            } else if ((part->flags & 0x8000) == 0 && part->owner == object) {
+            } else if ((part->flags & PART_FLAG_THROWN) == 0 && part->owner == object) {
                 continue;
             }
             if (context == CHARACTER_CONTEXT_BEEN_TAKEN_OVER || context == CHARACTER_CONTEXT_EATEN || context == CHARACTER_CONTEXT_GET_IN) {
                 continue;
             }
-            if ((part->flags & 0x4000) != 0 && (i8)part->hostility_group == api->hostility_group) {
+            if ((part->flags & PART_FLAG_IGNORE_CREATURE) != 0 && (i8)part->hostility_group == api->hostility_group) {
                 continue;
             }
-            if ((part->flags & 4) != 0 && (api->flags_1fc_word & APIOBJECT_FLAG_PLAYER_ACTIVE) == 0) {
+            if ((part->flags & PART_FLAG_ACTIVE_CHARACTERS_ONLY) != 0 && (api->flags_1fc_word & APIOBJECT_FLAG_PLAYER_ACTIVE) == 0) {
                 continue;
             }
             if (minimum.x > api->collision_max.x || maximum.x < api->collision_min.x || minimum.z > api->collision_max.z ||
@@ -2516,14 +2516,14 @@ extern "C" {
                 continue;
             }
             if (three_dimensional != 0) {
-                if ((api->character_data->model_flags & CHARACTER_MODEL_VEHICLE) != 0 && (part->flags & 0x40) != 0) {
+                if ((api->character_data->model_flags & CHARACTER_MODEL_VEHICLE) != 0 && (part->flags & PART_FLAG_COLLECTIBLE) != 0) {
                     goto collect_pickup;
                 }
                 if (minimum.y > api->collision_max.y || maximum.y < api->collision_min.y) {
                     continue;
                 }
             }
-            if ((part->flags & 0x40) == 0) {
+            if ((part->flags & PART_FLAG_COLLECTIBLE) == 0) {
                 character = api->character_data->game_character;
                 if ((character->flags_090 & CHARACTER_RUNTIME_GHOST) != 0) {
                     continue;
@@ -2535,7 +2535,7 @@ extern "C" {
                 if (!((part->active & 2) != 0 && (part->flags & 0x1000008) == 0x1000008)) {
                     KillPart(part, 1);
                 }
-                if ((part->flags & 8) != 0 && !((part->flags & 0x1000000) != 0 && (part->active & 2) != 0) &&
+                if ((part->flags & PART_FLAG_DAMAGE_CHARACTERS) != 0 && !((part->flags & 0x1000000) != 0 && (part->active & 2) != 0) &&
                     ((api->flags_1fc_word & APIOBJECT_FLAG_PLAYER_ACTIVE) != 0 || (part->flags & 0x800000) == 0)) {
                     flags = U64_PAIR(&CInfo[(object->character_context)].flags);
                     if ((flags & 0x4000000) != 0 ||
@@ -2558,7 +2558,7 @@ extern "C" {
                             NewRumble(part->owner->pad->bound_pad, 0.5f, 0);
                             NewRumble(object->pad->bound_pad, 0.5f, 0);
                         } else {
-                            ObjHitObj((part->flags & 0x10000) != 0 ? NULL : part->owner, object, part->unknown_204,
+                            ObjHitObj((part->flags & PART_FLAG_CAN_DAMAGE_OWNER) != 0 ? NULL : part->owner, object, part->unknown_204,
                                       (u16)(part->force_flags), 0, 1);
                         }
                     }

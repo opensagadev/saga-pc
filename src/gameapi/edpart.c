@@ -598,7 +598,7 @@ void edpartSetInstanceType(eduimenu_s *unused0, eduiitem_s *item, u32 unused2) {
         if (item->highlighted) {
             edpart_nearest_type->effect_ids[0] = 9999;
         }
-        edpart_nearest_type->flags |= 0x10;
+        edpart_nearest_type->flags |= PART_FLAG_KEEP_OFF_SCREEN;
         edpart_nearest_type->variant_count = 0;
         return;
     }
@@ -699,7 +699,7 @@ static void edpartCancelInstanceOrphansMenu(eduimenu_s *unused0, eduimenu_s *unu
             edpart_nearest_type->effect_pages[index] = 1;
         }
         edpart_nearest_type->effect_ids[0] = 9999;
-        edpart_nearest_type->flags |= 0x10;
+        edpart_nearest_type->flags |= PART_FLAG_KEEP_OFF_SCREEN;
     }
     eduiMenuDestroy(edpart_instanceorphans_menu);
     edpart_instanceorphans_menu = NULL;
@@ -892,8 +892,9 @@ void edpartEmitTimeMenu(eduimenu_s *menu, eduiitem_s *unused1, u32 unused2) {
     if (edpart_nearest_type != NULL) {
         edpart_emittime_menu = eduiMenuCreate(70, 70, 260, 300, ed_fnt, edpartCancelEmitTimeMenu, "Emitter Timing");
         if (edpart_emittime_menu != NULL) {
-            eduiMenuAddItem(edpart_emittime_menu, eduiItemToggleCreate(0x400000, edblack, (edpart_nearest_type->flags >> 22) & 1, 1,
-                                                                       edpartChangeInstanceFlag, "Trigger effect inside cutoff"));
+            eduiMenuAddItem(edpart_emittime_menu,
+                            eduiItemToggleCreate(PART_FLAG_TRIGGER_INSIDE_CUTOFF, edblack, (edpart_nearest_type->flags >> 22) & 1, 1,
+                                                 edpartChangeInstanceFlag, "Trigger effect inside cutoff"));
             eduiMenuAddItem(edpart_emittime_menu, eduiItemSliderCreate(0, edblack, 0, edpartChangeIvalOn, 0.01f, edpart_superscale * 5.0f,
                                                                        edpart_nearest_type->emission_period, "On Time"));
             eduiMenuAddItem(edpart_emittime_menu, eduiItemSliderCreate(0, edblack, 0, edpartChangeIvalOnRan, 0.0f, edpart_superscale * 5.0f,

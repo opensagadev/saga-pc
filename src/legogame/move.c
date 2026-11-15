@@ -3262,7 +3262,8 @@ static PART_PC *BlockFindIncomingPart(GAMEOBJECT *object) {
         return NULL;
     }
     radius = object->bounds_half_height > object->bounds_radius ? object->bounds_half_height : object->bounds_radius;
-    return FindIncomingPart(object, &object->collision_position, radius, 0xa, 0.0f);
+    return FindIncomingPart(object, &object->collision_position, radius, PART_FLAG_COLLIDE_WITH_CHARACTERS | PART_FLAG_DAMAGE_CHARACTERS,
+                            0.0f);
 }
 
 static void StartComboJump(GAMEOBJECT *object, i32 variant) {
@@ -4237,7 +4238,7 @@ particle_contact:
     if ((object->sabre_flags & 6) != 0) {
         PART_PC *part = HitParts(object, points, 3, object->sabre_collision_radius, &minimum, &maximum, 0x08000008);
         if (part != NULL) {
-            if ((part->flags & 8) == 0) {
+            if ((part->flags & PART_FLAG_DAMAGE_CHARACTERS) == 0) {
                 KillPart(part, 0);
             } else {
                 DeflectPart(part, object, GameDeflectPartSpeed, GameDeflectPartGravity, 0, effect);
@@ -4701,10 +4702,10 @@ static void LightSabreComboCode(GAMEOBJECT *object, i32 action_pressed, i32 acti
                 goto combo_finished;
             }
         }
-        if (((object->pad->runtime_flags & 4) != 0 || special_pressed) && (object->flags_e20 & APIOBJECT_WEAPON_OUT) != 0 &&
-            object->unknown_e33 == 0 && context != CHARACTER_CONTEXT_WEAPON_IN && context != CHARACTER_CONTEXT_WEAPON_OUT &&
-            context != CHARACTER_CONTEXT_FORCE_THROW && context != CHARACTER_CONTEXT_FORCE_PUSH &&
-            context != CHARACTER_CONTEXT_FORCE_DEFLECT &&
+        if (((object->pad->runtime_flags & GAMEPAD_AI_USE_FORCE) != 0 || special_pressed) &&
+            (object->flags_e20 & APIOBJECT_WEAPON_OUT) != 0 && object->unknown_e33 == 0 && context != CHARACTER_CONTEXT_WEAPON_IN &&
+            context != CHARACTER_CONTEXT_WEAPON_OUT && context != CHARACTER_CONTEXT_FORCE_THROW &&
+            context != CHARACTER_CONTEXT_FORCE_PUSH && context != CHARACTER_CONTEXT_FORCE_DEFLECT &&
             !(object->character_context == CHARACTER_CONTEXT_JUMP &&
               (object->action_movement_state == 3 || object->action_movement_state == 4)) &&
             context != CHARACTER_CONTEXT_LAND_LUNGE && context != CHARACTER_CONTEXT_LAND_SLAM &&
@@ -4838,7 +4839,7 @@ static void ForceCode(GAMEOBJECT *object, i32 pressed, i32 held, i32 unused) {
     GIZFORCE *force;
     object->flags_ef4 &= ~0x100000u;
     if (object->character_context == CHARACTER_CONTEXT_FORCE) {
-        if ((held || (object->pad->runtime_flags & 4)) && target->force != NULL) {
+        if ((held || (object->pad->runtime_flags & GAMEPAD_AI_USE_FORCE)) && target->force != NULL) {
             if (dagobah_training != 0 && object->rider == NULL && FreePlay == 0) {
                 can_use = 0;
             } else if (GizForce_Complete(target->force)) {
@@ -4883,12 +4884,13 @@ static void ForceCode(GAMEOBJECT *object, i32 pressed, i32 held, i32 unused) {
     }
     if (object->unknown_281 &&
         (object->character_context == CHARACTER_CONTEXT_NONE || (U64_PAIR(&CInfo[object->character_context].flags) & 4) != 0)) {
-        if (((object->flags_1fc & APIOBJECT_FLAG_PLAYER_ACTIVE) && pressed) || (object->pad->runtime_flags & 4) || (previous && held)) {
+        if (((object->flags_1fc & APIOBJECT_FLAG_PLAYER_ACTIVE) && pressed) || (object->pad->runtime_flags & GAMEPAD_AI_USE_FORCE) ||
+            (previous && held)) {
             start = 1;
         }
     }
     if (start) {
-        if (!(object->pad->runtime_flags & 4) || target->force == NULL) {
+        if (!(object->pad->runtime_flags & GAMEPAD_AI_USE_FORCE) || target->force == NULL) {
             GizForce_FindBestForceTarget(((WORLD_FORCE *)WORLD)->force_system, object);
         }
         if (target->force != NULL) {
@@ -5038,7 +5040,7 @@ static void ForcePushCode(GAMEOBJECT *object, i32 held) {
         return;
     }
     AlertSurroundingCreatures(object, &object->collision_position);
-    if ((object->pad->runtime_flags & 0x10) != 0) {
+    if ((object->pad->runtime_flags & GAMEPAD_AI_FORCE_PUSH) != 0) {
         held = 1;
     }
     object->flags_e20 |= 0x20000;
@@ -5123,7 +5125,7 @@ static void ForcePushCode(GAMEOBJECT *object, i32 held) {
                     f32 speed;
                     object->character_context = CHARACTER_CONTEXT_NONE;
                     object->force_target = NULL;
-                    object->pad->runtime_flags &= ~0x10;
+                    object->pad->runtime_flags &= ~GAMEPAD_AI_FORCE_PUSH;
                     object->unknown_d20 = 0;
                     target->force_target = NULL;
                     EndForce(target, 0);
@@ -5179,7 +5181,7 @@ static void ForcePushCode(GAMEOBJECT *object, i32 held) {
                             }
                         }
                         object->force_target = NULL;
-                        object->pad->runtime_flags &= ~0x10;
+                        object->pad->runtime_flags &= ~GAMEPAD_AI_FORCE_PUSH;
                         object->context_duration = 0.0f;
                         object->unknown_d20 = 0;
                         GameCam_HitJudder();
@@ -5274,7 +5276,7 @@ void FindForcePushTarget(GAMEOBJECT *object, i32 activate, i32 target_filter) {
     choke_style = object->character_data->game_character->flags_090 & CHARACTER_RUNTIME_CHOKE;
     second_style = object->character_data->game_character->flags_090 & CHARACTER_RUNTIME_LIGHTNING;
 
-    if ((object->pad->runtime_flags & 0x10) != 0 && ((GAMEOBJECT *)object->unknown_d20) != NULL) {
+    if ((object->pad->runtime_flags & GAMEPAD_AI_FORCE_PUSH) != 0 && ((GAMEOBJECT *)object->unknown_d20) != NULL) {
         best = ((GAMEOBJECT *)object->unknown_d20);
         candidate_direct = 0;
         candidate_second = second_style;
@@ -5774,7 +5776,7 @@ static void ForceThrowCode(GAMEOBJECT *object, i32 pressed) {
         object->context_variant_flags |= APIOBJECT_CONTEXT_EVENT_DONE;
         return;
     }
-    if (pressed == 0 && (object->pad->runtime_flags & 4) == 0) {
+    if (pressed == 0 && (object->pad->runtime_flags & GAMEPAD_AI_USE_FORCE) == 0) {
         return;
     }
     if ((object->flags_1fc_word & APIOBJECT_FLAG_PLAYER_ACTIVE) != 0 && (object->flags_1fc_word & 0x100) == 0) {
@@ -6274,7 +6276,7 @@ void BobaRocket_Kill(PART_PC *part, i32 reason) {
 }
 
 void BobaRocket_Deflect(PART_PC *part) {
-    part->flags = (part->flags & ~0x4000u) | 0x80;
+    part->flags = (part->flags & ~PART_FLAG_IGNORE_CREATURE) | PART_FLAG_ROTATE_RANDOMLY;
     NewPartRotation(part);
 }
 
@@ -7146,7 +7148,8 @@ void PooCode(GAMEOBJECT *object) {
                     params.gravity = -6.0f;
                     params.part_id = 24;
                     params.special = &WORLD->level_objects[24].special;
-                    params.flags = 0x390;
+                    params.flags =
+                        PART_FLAG_KEEP_OFF_SCREEN | PART_FLAG_ROTATE_RANDOMLY | PART_FLAG_NO_BOUNCE | PART_FLAG_SLOT_CANNOT_BE_STOLEN;
                     params.owner = object;
                     params.stop_fn = PartStop_Flickerer;
                     params.draw_fn = PartDraw_Flickerer;
@@ -7489,7 +7492,7 @@ void Animate_CHARACTER(GAMEOBJECT *object) {
                 object->anim_packet.requested_animation = ACTION_IDLE2;
             }
         } else if (object->anim_packet.requested_animation != ACTION_FALL) {
-            if ((object->pad->runtime_flags & 2) == 0 && object->pad->input_magnitude > 0.0f) {
+            if ((object->pad->runtime_flags & GAMEPAD_AI_ATTACK) == 0 && object->pad->input_magnitude > 0.0f) {
                 if ((object->flags_1fc & APIOBJECT_FLAG_PLAYER_ACTIVE) == 0 && object->character_data->game_character->weapon_action == 1) {
                     MoveAnim_Manage(object, object->pad->input_magnitude, 0, 1);
                 } else {
@@ -7667,7 +7670,7 @@ void Animate_BEAST(GAMEOBJECT *object) {
         SetDefaultCharacterAnim(object);
         if (UseFallAnim(object)) {
             object->anim_packet.requested_animation = ACTION_FALL;
-        } else if (object->anim_packet.requested_animation != ACTION_FALL && (object->pad->runtime_flags & 2) == 0 &&
+        } else if (object->anim_packet.requested_animation != ACTION_FALL && (object->pad->runtime_flags & GAMEPAD_AI_ATTACK) == 0 &&
                    pad->input_magnitude > 0.0f) {
             MoveAnim_Check(object);
             if (object->anim_packet.requested_animation == ACTION_WALK && (object->flags_e24 & 1) != 0) {
@@ -7720,7 +7723,7 @@ void Animate_WEIRDO(GAMEOBJECT *object) {
                 object->anim_packet.requested_animation = ACTION_FORCE;
             }
         } else if (object->anim_packet.requested_animation != ACTION_FALL) {
-            if ((object->pad->runtime_flags & 2) == 0 && object->pad->input_magnitude > 0.0f) {
+            if ((object->pad->runtime_flags & GAMEPAD_AI_ATTACK) == 0 && object->pad->input_magnitude > 0.0f) {
                 MoveAnim_Manage(object, object->pad->input_magnitude, 1, 1);
             } else if ((object->unknown_e22 & 1) != 0 || object->unknown_e33 == 1) {
                 if (object->character_data->game_character->hover_fall_mode == 0 &&
@@ -7793,7 +7796,7 @@ void Animate_JEDI(GAMEOBJECT *object) {
                 object->anim_packet.requested_animation = ACTION_FORCE;
             }
         } else if (object->anim_packet.requested_animation != ACTION_FALL) {
-            if ((object->pad->runtime_flags & 2) == 0 && object->pad->input_magnitude > 0.0f) {
+            if ((object->pad->runtime_flags & GAMEPAD_AI_ATTACK) == 0 && object->pad->input_magnitude > 0.0f) {
                 if (object->id == (u16)id_YODA || object->id == (u16)id_YODAGHOST) {
                     object->anim_packet.requested_animation =
                         (object->weapon_scale == 1.0f || object->unknown_e33 == 1) && object->character_model->action_animations[63] != NULL
@@ -7865,7 +7868,7 @@ void Animate_ASTROMECH(GAMEOBJECT *object) {
             }
         } else if (UseFallAnim(object)) {
             object->anim_packet.requested_animation = ACTION_FALL;
-        } else if (object->anim_packet.requested_animation != ACTION_FALL && (object->pad->runtime_flags & 2) == 0 &&
+        } else if (object->anim_packet.requested_animation != ACTION_FALL && (object->pad->runtime_flags & GAMEPAD_AI_ATTACK) == 0 &&
                    object->pad->input_magnitude > 0.0f) {
             object->anim_packet.requested_animation = ACTION_WALK;
         }
@@ -7990,7 +7993,7 @@ void Animate_PROTOCOL(GAMEOBJECT *object) {
         }
         if (UseFallAnim(object)) {
             object->anim_packet.requested_animation = ACTION_FALL;
-        } else if (!falling && (object->pad->runtime_flags & 2) == 0 && object->pad->input_magnitude > 0.0f) {
+        } else if (!falling && (object->pad->runtime_flags & GAMEPAD_AI_ATTACK) == 0 && object->pad->input_magnitude > 0.0f) {
             switch (object->saved_hitpoints) {
                 case 1:
                     object->anim_packet.requested_animation = ACTION_RUN3;
@@ -8037,7 +8040,7 @@ void Animate_BATTLEDROID(GAMEOBJECT *object) {
         SetDefaultCharacterAnim(object);
         if (UseFallAnim(object)) {
             object->anim_packet.requested_animation = ACTION_FALL;
-        } else if ((object->pad->runtime_flags & 2) == 0 && object->pad->input_magnitude > 0.0f) {
+        } else if ((object->pad->runtime_flags & GAMEPAD_AI_ATTACK) == 0 && object->pad->input_magnitude > 0.0f) {
             MoveAnim_Manage(object, object->pad->input_magnitude,
                             (object->character_data->game_character->flags_090 & CHARACTER_RUNTIME_NO_TIPTOE) == 0, 0);
         }
@@ -8097,7 +8100,7 @@ void Animate_SUPERBATTLEDROID(GAMEOBJECT *object) {
         if (UseFallAnim(object)) {
             object->anim_packet.requested_animation = ACTION_FALL;
         } else if (object->anim_packet.requested_animation != ACTION_FALL) {
-            if ((object->pad->runtime_flags & 2) == 0 && object->pad->input_magnitude > 0.0f) {
+            if ((object->pad->runtime_flags & GAMEPAD_AI_ATTACK) == 0 && object->pad->input_magnitude > 0.0f) {
                 if (object->pad->input_magnitude <=
                     ((f64)object->character_data->game_character->walk_speed + object->character_data->game_character->run_speed) * 0.5) {
                     if ((object->unknown_e22 & 1) != 0 || object->weapon_scale > 0.0f) {
@@ -8174,7 +8177,7 @@ void Animate_WALKER(GAMEOBJECT *object) {
         return;
     }
     object->anim_packet.requested_animation = ACTION_IDLE;
-    if ((pad->runtime_flags & 2) == 0 && pad->input_magnitude > 0.0f) {
+    if ((pad->runtime_flags & GAMEPAD_AI_ATTACK) == 0 && pad->input_magnitude > 0.0f) {
         object->anim_packet.requested_animation = ACTION_WALK;
     }
 }
@@ -8201,7 +8204,7 @@ void Animate_CRITTER(GAMEOBJECT *object) {
     SetDefaultCharacterAnim(object);
     if (UseFallAnim(object)) {
         object->anim_packet.requested_animation = ACTION_FALL;
-    } else if (object->anim_packet.requested_animation != ACTION_FALL && (object->pad->runtime_flags & 2) == 0 &&
+    } else if (object->anim_packet.requested_animation != ACTION_FALL && (object->pad->runtime_flags & GAMEPAD_AI_ATTACK) == 0 &&
                object->pad->input_magnitude > 0.0f) {
         MoveAnim_Check(object);
     }
@@ -8209,7 +8212,7 @@ void Animate_CRITTER(GAMEOBJECT *object) {
 
 void Animate_BARMAN(GAMEOBJECT *object) {
     object->anim_packet.requested_animation = ACTION_IDLE;
-    if ((object->pad->runtime_flags & 2) == 0 && object->pad->input_magnitude > 0.0f) {
+    if ((object->pad->runtime_flags & GAMEPAD_AI_ATTACK) == 0 && object->pad->input_magnitude > 0.0f) {
         object->anim_packet.requested_animation = ACTION_WALK;
     }
     UpdateCharacterIdle(object);
@@ -8224,7 +8227,7 @@ void Animate_ATAT(GAMEOBJECT *object) {
         if ((object->flags_1fc & APIOBJECT_FLAG_PLAYER_ACTIVE) != 0 && object->character_model->action_animations[15] != NULL) {
             object->anim_packet.requested_animation = ACTION_IDLE2;
         }
-        if ((pad->runtime_flags & 2) == 0 && pad->input_magnitude > 0.0f) {
+        if ((pad->runtime_flags & GAMEPAD_AI_ATTACK) == 0 && pad->input_magnitude > 0.0f) {
             object->anim_packet.requested_animation = ACTION_WALK;
         }
     }
@@ -8311,7 +8314,7 @@ void Animate_DROIDEKA(GAMEOBJECT *object) {
         SetDefaultCharacterAnim(object);
         if (UseFallAnim(object) || (object->character_context == CHARACTER_CONTEXT_NONE && object->unknown_281 == 0)) {
             object->anim_packet.requested_animation = ACTION_FALL;
-        } else if ((object->pad->runtime_flags & 2) == 0 && object->pad->input_magnitude > 0.0f) {
+        } else if ((object->pad->runtime_flags & GAMEPAD_AI_ATTACK) == 0 && object->pad->input_magnitude > 0.0f) {
             if (object->pad->input_magnitude <=
                 ((f64)object->character_data->game_character->tiptoe_speed + object->character_data->game_character->walk_speed) * 0.5) {
                 object->anim_packet.requested_animation = ACTION_TIPTOE;
@@ -8344,7 +8347,7 @@ void Animate_GEONOSIAN(GAMEOBJECT *object) {
             } else {
                 object->anim_packet.requested_animation = ACTION_IDLE2;
             }
-        } else if (object->anim_packet.requested_animation != ACTION_FALL && (object->pad->runtime_flags & 2) == 0 &&
+        } else if (object->anim_packet.requested_animation != ACTION_FALL && (object->pad->runtime_flags & GAMEPAD_AI_ATTACK) == 0 &&
                    object->pad->input_magnitude > 0.0f) {
             object->anim_packet.requested_animation = ACTION_WALK;
         }
@@ -9838,7 +9841,7 @@ void MovePlayer_DIRECTIONAL(GAMEOBJECT *object) {
                         }
                     } else if (object->character_context == CHARACTER_CONTEXT_BLOCK ||
                                object->character_context == CHARACTER_CONTEXT_HOLD) {
-                        if (object->incoming_bolt != NULL && desired_speed > 0.0f && (pad->runtime_flags & 2) == 0 &&
+                        if (object->incoming_bolt != NULL && desired_speed > 0.0f && (pad->runtime_flags & GAMEPAD_AI_ATTACK) == 0 &&
                             (object->character_context == CHARACTER_CONTEXT_HOLD || object->block_latch == 0)) {
                             object->target_velocity.x = NuTrigTable[input_angle >> 1] * object->character_data->game_character->run_speed;
                             object->target_velocity.z =
@@ -9954,7 +9957,7 @@ void MovePlayer_DIRECTIONAL(GAMEOBJECT *object) {
                             NuTrigTable[object->movement_facing_angle >> 1] * object->character_data->game_character->run_speed;
                         object->target_velocity.z = NuTrigTable[((object->movement_facing_angle + 0x4000) >> 1) & 0x7fff] *
                                                     object->character_data->game_character->run_speed;
-                    } else if ((pad->runtime_flags & 2) != 0) {
+                    } else if ((pad->runtime_flags & GAMEPAD_AI_ATTACK) != 0) {
                         object->target_velocity.x = 0.0f;
                         object->target_velocity.z = 0.0f;
                     } else if (object->character_context == CHARACTER_CONTEXT_ZIP_DOWN) {
@@ -10341,7 +10344,7 @@ void MovePlayer_VEHICLEDIRECTIONAL(GAMEOBJECT *object) {
             CarWashHack = object;
             if (pad->input_magnitude >
                     (object->character_data->game_character->walk_speed + object->character_data->game_character->run_speed) * 0.5f &&
-                (LevGizObst[0] == NULL || LevGizObst[0]->anim_set == NULL || (LevGizObst[0]->anim_set->flags & 1) == 0)) {
+                (LevGizObst[0] == NULL || LevGizObst[0]->anim_set == NULL || (LevGizObst[0]->anim_set->flags & GAMEANIMSET_PLAYING) == 0)) {
                 CarWashHack = NULL;
             }
         }
@@ -11134,7 +11137,7 @@ static void ForceDeflectCode(GAMEOBJECT *object, i32 pressed, i32 held) {
             NUVEC direction;
             NUVEC velocity;
             object->force_part->force_flags |= 1;
-            object->force_part->flags &= ~0x4000u;
+            object->force_part->flags &= ~PART_FLAG_IGNORE_CREATURE;
             if ((f64)object->context_timer < (f64)0.2f) {
                 object->force_part->velocity.y = SeekValF(object->force_part->velocity.y, (f32)((f64)ForceDeflectSpeed * 0.5),
                                                           ForceDeflectSeekRate + ForceDeflectSeekRate);
@@ -11155,8 +11158,8 @@ static void ForceDeflectCode(GAMEOBJECT *object, i32 pressed, i32 held) {
             if (part->move_fn == BobaRocket_Move) {
                 object->force_part->move_fn = NULL;
                 object->force_part->deflect_fn = NULL;
-                object->force_part->flags &= ~0x4000u;
-                object->force_part->flags |= 0x80;
+                object->force_part->flags &= ~PART_FLAG_IGNORE_CREATURE;
+                object->force_part->flags |= PART_FLAG_ROTATE_RANDOMLY;
                 NewPartRotation(object->force_part);
             } else if (part->move_fn == Boulder_Move && object->context_timer >= 0.5f) {
                 Boulder_Kill(part, 0);
@@ -11197,7 +11200,8 @@ static void ForceDeflectCode(GAMEOBJECT *object, i32 pressed, i32 held) {
         part = assist;
     } else {
         f32 radius = object->bounds_half_height > object->bounds_radius ? object->bounds_half_height : object->bounds_radius;
-        part = FindIncomingPart(object, &object->collision_position, radius, 0x800a, 4.0f);
+        part = FindIncomingPart(object, &object->collision_position, radius,
+                                PART_FLAG_COLLIDE_WITH_CHARACTERS | PART_FLAG_DAMAGE_CHARACTERS | PART_FLAG_THROWN, 4.0f);
     }
     if (part == NULL) {
         return;
@@ -11211,7 +11215,7 @@ static void ForceDeflectCode(GAMEOBJECT *object, i32 pressed, i32 held) {
     }
     object->force_part = part;
     part->gravity = 0.0f;
-    object->force_part->flags |= 0x10000;
+    object->force_part->flags |= PART_FLAG_CAN_DAMAGE_OWNER;
     object->context_timer = 0.0f;
     object->context_duration = 0.3f;
     object->force_target = NULL;
@@ -11286,7 +11290,7 @@ void GameObjectStuffAfterAnimation(void) {
                         part.velocity = &scratch.motion.velocity;
                         part.matrix = &matrix;
                         part.part_id = 90;
-                        part.flags = 0x10;
+                        part.flags = PART_FLAG_KEEP_OFF_SCREEN;
                         part.gravity = -10.0f;
                         part.unknown_14 = 0.05f;
                         part.unknown_18 = 0.05f;
@@ -12307,10 +12311,10 @@ finish:
     return 1;
 
 weapon_in:
-    if (weapon_mode == 0 || ((object->pad->runtime_flags & 4) == 0 && special_pressed == 0) || (object->unknown_e22 & 1) == 0 ||
-        object->unknown_e33 != 0 || context == CHARACTER_CONTEXT_WEAPON_IN || context == CHARACTER_CONTEXT_WEAPON_OUT ||
-        context == CHARACTER_CONTEXT_ZIP_UP || context == CHARACTER_CONTEXT_GRAPPLE || context == CHARACTER_CONTEXT_INTERFACE ||
-        context == CHARACTER_CONTEXT_THROW_DETONATOR ||
+    if (weapon_mode == 0 || ((object->pad->runtime_flags & GAMEPAD_AI_USE_FORCE) == 0 && special_pressed == 0) ||
+        (object->unknown_e22 & 1) == 0 || object->unknown_e33 != 0 || context == CHARACTER_CONTEXT_WEAPON_IN ||
+        context == CHARACTER_CONTEXT_WEAPON_OUT || context == CHARACTER_CONTEXT_ZIP_UP || context == CHARACTER_CONTEXT_GRAPPLE ||
+        context == CHARACTER_CONTEXT_INTERFACE || context == CHARACTER_CONTEXT_THROW_DETONATOR ||
         (object->character_data->game_character->weapon_action == 2 && object->jump_variant_state == 1) ||
         context == CHARACTER_CONTEXT_FORCE || context == CHARACTER_CONTEXT_FORCE_PUSH || context == CHARACTER_CONTEXT_FORCE_DEFLECT) {
         return 0;

@@ -28,11 +28,11 @@ i32 PC_CONTROL_SCREEN::ItemAllowsBinding(PC_CONTROL_ROW *row, i32 index, i32 pla
     if (!(flags & 0x10) && (kind == 0 || kind == 2)) {
         i32 blocked = 0;
         if (player == 0) {
-            if (flags & 0x20) {
+            if (flags & PC_CONTROL_ITEM_UNBOUND_PLAYER1) {
                 blocked = 1;
             }
         } else if (player == 1) {
-            if (flags & 0x40) {
+            if (flags & PC_CONTROL_ITEM_UNBOUND_PLAYER2) {
                 blocked = 1;
             }
         }
@@ -47,8 +47,10 @@ i32 PC_CONTROL_SCREEN::ItemAllowsBinding(PC_CONTROL_ROW *row, i32 index, i32 pla
 void PC_CONTROL_SCREEN::AdvanceSelection(PC_CONTROL_ROW *row) {
     PC_CONTROL_ITEM *items = row->items;
     for (;;) {
-        if (!(drop_in && items[row->selected].label != 0) && !(selected_player == 0 && (items[row->selected].flags & 0x20)) &&
-            !(selected_player == 1 && (items[row->selected].flags & 0x40)) && !(items[row->selected].flags & 0x80)) {
+        if (!(drop_in && items[row->selected].label != 0) &&
+            !(selected_player == 0 && (items[row->selected].flags & PC_CONTROL_ITEM_UNBOUND_PLAYER1)) &&
+            !(selected_player == 1 && (items[row->selected].flags & PC_CONTROL_ITEM_UNBOUND_PLAYER2)) &&
+            !(items[row->selected].flags & PC_CONTROL_ITEM_UNBOUND_SELECTED)) {
             return;
         }
         if (++row->selected >= row->count) {
@@ -92,11 +94,11 @@ u8 PC_CONTROL_SCREEN::HasMissingBindings(void) {
                 }
                 i32 blocked = 0;
                 if (player == 0) {
-                    if (item->flags & 0x20) {
+                    if (item->flags & PC_CONTROL_ITEM_UNBOUND_PLAYER1) {
                         blocked = 1;
                     }
                 } else if (player == 1) {
-                    if (item->flags & 0x40) {
+                    if (item->flags & PC_CONTROL_ITEM_UNBOUND_PLAYER2) {
                         blocked = 1;
                     }
                 } else {
@@ -105,7 +107,7 @@ u8 PC_CONTROL_SCREEN::HasMissingBindings(void) {
                 if (blocked) {
                     continue;
                 }
-                if (item->flags & 8) {
+                if (item->flags & PC_CONTROL_ITEM_NO_KEYBOARD) {
                     continue;
                 }
                 if (!PcInputBindingPresentPc(0, item->command, 1, player)) {
@@ -133,30 +135,30 @@ void PC_CONTROL_SCREEN::RefreshItems(void) {
             item->flags &= 0x1f;
             if (item->kind == 4) {
                 if (ports[selected_player] < 0 && (item->label == 0x28 || item->label == 0x2b)) {
-                    item->flags |= 0x80;
+                    item->flags |= PC_CONTROL_ITEM_UNBOUND_SELECTED;
                 }
                 if (item->label == 0x28 && !configuration) {
-                    item->flags |= 0x80;
+                    item->flags |= PC_CONTROL_ITEM_UNBOUND_SELECTED;
                 }
                 if (item->label == 0x2b && !PcInput_PortIsKeyboard(ports[selected_player])) {
-                    item->flags |= 0x80;
+                    item->flags |= PC_CONTROL_ITEM_UNBOUND_SELECTED;
                 }
             }
             if (drop_in && item->kind == 4 && item->label != 0) {
-                item->flags |= 0xe0;
+                item->flags |= PC_CONTROL_ITEM_UNBOUND_PLAYER1 | PC_CONTROL_ITEM_UNBOUND_PLAYER2 | PC_CONTROL_ITEM_UNBOUND_SELECTED;
             }
             if (item->kind == 2) {
                 if (!PcInputIsJoystickDevicePc(ports[0])) {
-                    item->flags |= 0x20;
+                    item->flags |= PC_CONTROL_ITEM_UNBOUND_PLAYER1;
                 }
                 if (!PcInputIsJoystickDevicePc(ports[1])) {
-                    item->flags |= 0x40;
+                    item->flags |= PC_CONTROL_ITEM_UNBOUND_PLAYER2;
                 }
             }
             if (item->kind == 0) {
-                item->flags = (item->flags & ~0x20) | (ports[0] < 0 ? 0x20 : 0);
-                item->flags = (item->flags & ~0x40) | (ports[1] < 0 ? 0x40 : 0);
-                item->flags = (item->flags & ~0x80) | (ports[selected_player] < 0 ? 0x80 : 0);
+                item->flags = (item->flags & ~PC_CONTROL_ITEM_UNBOUND_PLAYER1) | (ports[0] < 0 ? 0x20 : 0);
+                item->flags = (item->flags & ~PC_CONTROL_ITEM_UNBOUND_PLAYER2) | (ports[1] < 0 ? 0x40 : 0);
+                item->flags = (item->flags & ~PC_CONTROL_ITEM_UNBOUND_SELECTED) | (ports[selected_player] < 0 ? 0x80 : 0);
                 if ((item->flags & 7) == 1) {
                     item->label = 7;
                 }
@@ -171,10 +173,10 @@ void PC_CONTROL_SCREEN::RefreshItems(void) {
                 }
                 if ((item->flags & 7) == 1 || (item->flags & 7) == 2) {
                     if (PcInputIsMouseDevicePc(ports[0])) {
-                        item->flags |= 0x20;
+                        item->flags |= PC_CONTROL_ITEM_UNBOUND_PLAYER1;
                     }
                     if (PcInputIsMouseDevicePc(ports[1])) {
-                        item->flags |= 0x40;
+                        item->flags |= PC_CONTROL_ITEM_UNBOUND_PLAYER2;
                     }
                 }
                 if (PcInputIsMouseDevicePc(ports[selected_player])) {
@@ -188,28 +190,28 @@ void PC_CONTROL_SCREEN::RefreshItems(void) {
                 i32 (*filter)(i32, i32) = PcInputGetCommandFilterPc();
                 if (filter) {
                     if (!filter(ports[0], item->command)) {
-                        item->flags |= 0x20;
+                        item->flags |= PC_CONTROL_ITEM_UNBOUND_PLAYER1;
                     }
                     if (!filter(ports[1], item->command)) {
-                        item->flags |= 0x40;
+                        item->flags |= PC_CONTROL_ITEM_UNBOUND_PLAYER2;
                     }
                 }
-                if (item->flags & 8) {
+                if (item->flags & PC_CONTROL_ITEM_NO_KEYBOARD) {
                     if (PcInput_PortIsKeyboard(ports[0])) {
-                        item->flags |= 0x20;
+                        item->flags |= PC_CONTROL_ITEM_UNBOUND_PLAYER1;
                     }
                     if (PcInput_PortIsKeyboard(ports[1])) {
-                        item->flags |= 0x40;
+                        item->flags |= PC_CONTROL_ITEM_UNBOUND_PLAYER2;
                     }
                 }
             }
             if (item->kind == 2) {
                 i32 player = selected_player;
                 if (!player) {
-                    if (item->flags & 0x20) {
+                    if (item->flags & PC_CONTROL_ITEM_UNBOUND_PLAYER1) {
                         player = 1;
                     }
-                } else if (item->flags & 0x40) {
+                } else if (item->flags & PC_CONTROL_ITEM_UNBOUND_PLAYER2) {
                     --player;
                 }
                 item->label = 0x22;
@@ -217,8 +219,9 @@ void PC_CONTROL_SCREEN::RefreshItems(void) {
                     item->label = 0x23;
                 }
             }
-            if (((item->flags & 0x20) && selected_player == 0) || ((item->flags & 0x40) && selected_player != 0)) {
-                item->flags |= 0x80;
+            if (((item->flags & PC_CONTROL_ITEM_UNBOUND_PLAYER1) && selected_player == 0) ||
+                ((item->flags & PC_CONTROL_ITEM_UNBOUND_PLAYER2) && selected_player != 0)) {
+                item->flags |= PC_CONTROL_ITEM_UNBOUND_SELECTED;
             }
         }
     }
@@ -833,9 +836,9 @@ i32 PC_CONTROL_SCREEN::Update(FRAME_PAD *first, FRAME_PAD *second, f32 dt) {
                                 if (--row->selected < 0) {
                                     row->selected = row->count - 1;
                                 }
-                            } while ((selected_player == 0 && (row->items[row->selected].flags & 0x20)) ||
-                                     (selected_player == 1 && (row->items[row->selected].flags & 0x40)) ||
-                                     (row->items[row->selected].flags & 0x80));
+                            } while ((selected_player == 0 && (row->items[row->selected].flags & PC_CONTROL_ITEM_UNBOUND_PLAYER1)) ||
+                                     (selected_player == 1 && (row->items[row->selected].flags & PC_CONTROL_ITEM_UNBOUND_PLAYER2)) ||
+                                     (row->items[row->selected].flags & PC_CONTROL_ITEM_UNBOUND_SELECTED));
                         }
                     }
                     if ((PcControlButtons & 0x20) || escape) {
@@ -1023,7 +1026,8 @@ i32 PC_CONTROL_SCREEN::CountPlayerRows(PC_CONTROL_ROW *row) {
     i32 result = 0;
     PC_CONTROL_ITEM *item = row->items;
     for (i32 i = 0; i < row->count; ++i, ++item) {
-        if ((item->kind == 2 || item->kind == 0) && (!(item->flags & 0x20) || !(item->flags & 0x40))) {
+        if ((item->kind == 2 || item->kind == 0) &&
+            (!(item->flags & PC_CONTROL_ITEM_UNBOUND_PLAYER1) || !(item->flags & PC_CONTROL_ITEM_UNBOUND_PLAYER2))) {
             ++result;
         }
     }
@@ -1472,7 +1476,7 @@ void PC_CONTROL_SCREEN::Draw(void) {
                     if (p == selected_player && r == selected_row && index == row->selected) {
                         intensity = brightness;
                     }
-                    if ((item->flags & 0x80) || p != selected_player) {
+                    if ((item->flags & PC_CONTROL_ITEM_UNBOUND_SELECTED) || p != selected_player) {
                         intensity = (f32)(intensity * 0.4000000059604645);
                     }
                     f32 x = player_count == 2 ? (p == 0 ? left : right) : (f32)(label_x - 0.6499999761581421);
@@ -1484,16 +1488,16 @@ void PC_CONTROL_SCREEN::Draw(void) {
             }
             if (item->kind == 0) {
                 if (missing_binding && !capturing) {
-                    if (!PcInputBindingPresentPc(0, item->command, 1, 0) && !(item->flags & 8)) {
+                    if (!PcInputBindingPresentPc(0, item->command, 1, 0) && !(item->flags & PC_CONTROL_ITEM_NO_KEYBOARD)) {
                         binding0 = missing_colour;
                     }
-                    if (!PcInputBindingPresentPc(0, item->command, 1, 1) && (item->flags & 8)) {
+                    if (!PcInputBindingPresentPc(0, item->command, 1, 1) && (item->flags & PC_CONTROL_ITEM_NO_KEYBOARD)) {
                         binding1 = missing_colour;
                     }
                 }
                 char button[0x40];
                 if (port0 >= 0) {
-                    if (!(item->flags & 0x20)) {
+                    if (!(item->flags & PC_CONTROL_ITEM_UNBOUND_PLAYER1)) {
                         PcInputBindingButtonNamePc(port0, item->command, button, 1, 0, 1, 0, 0);
                         DrawText(button, (f32)(label_x - 0.6499999761581421), y, 0.0f, 0x40, 2.5f, brightness, binding0, 1, 0.45f);
                     }
@@ -1503,7 +1507,7 @@ void PC_CONTROL_SCREEN::Draw(void) {
                 }
                 if (player_count == 2) {
                     if (port1 >= 0) {
-                        if (!(item->flags & 0x40)) {
+                        if (!(item->flags & PC_CONTROL_ITEM_UNBOUND_PLAYER2)) {
                             PcInputBindingButtonNamePc(port1, item->command, button, 1, 1, 1, 0, 0);
                             DrawText(button, (f32)(label_x + 0.6499999761581421), y, 0.0f, 0x40, 2.5f, brightness, binding1, 1, 0.45f);
                         }
@@ -1533,7 +1537,7 @@ void PC_CONTROL_SCREEN::Draw(void) {
                 label = formatted;
                 width = 0.6f;
             }
-            if (item->flags & 0x80) {
+            if (item->flags & PC_CONTROL_ITEM_UNBOUND_SELECTED) {
                 label_colour = ScaleAlpha(0.4f, label_colour);
             }
             y += DrawText(label, label_x, y, 0.0f, 0x40, 2.5f, brightness, label_colour, 1, width);
