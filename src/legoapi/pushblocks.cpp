@@ -320,10 +320,11 @@ extern "C" PUSH_BLOCK *NearestFacingPushBlock(WORLDINFO *world, GAMEOBJECT *obje
                 if (object->collision_position.z >= bound) {
                     continue;
                 }
-                if ((block->packed_state_flags & 0x200000) != 0) {
+                if ((block->packed_state_flags & PUSHBLOCK_Z_AXIS_ONLY) != 0) {
                     continue;
                 }
-                if ((block->packed_state_flags & 0x100000) != 0 && (block->packed_state_flags & 0x800000) != 0) {
+                if ((block->packed_state_flags & PUSHBLOCK_X_AXIS_ONLY) != 0 &&
+                    (block->packed_state_flags & PUSHBLOCK_NO_POSITIVE_PUSH) != 0) {
                     continue;
                 }
                 break;
@@ -339,10 +340,11 @@ extern "C" PUSH_BLOCK *NearestFacingPushBlock(WORLDINFO *world, GAMEOBJECT *obje
                 if (object->collision_position.z <= bound) {
                     continue;
                 }
-                if ((block->packed_state_flags & 0x200000) != 0) {
+                if ((block->packed_state_flags & PUSHBLOCK_Z_AXIS_ONLY) != 0) {
                     continue;
                 }
-                if ((block->packed_state_flags & 0x100000) != 0 && (block->packed_state_flags & 0x400000) != 0) {
+                if ((block->packed_state_flags & PUSHBLOCK_X_AXIS_ONLY) != 0 &&
+                    (block->packed_state_flags & PUSHBLOCK_NO_NEGATIVE_PUSH) != 0) {
                     continue;
                 }
                 break;
@@ -358,10 +360,11 @@ extern "C" PUSH_BLOCK *NearestFacingPushBlock(WORLDINFO *world, GAMEOBJECT *obje
                 if (object->collision_position.x <= bound) {
                     continue;
                 }
-                if ((block->packed_state_flags & 0x100000) != 0) {
+                if ((block->packed_state_flags & PUSHBLOCK_X_AXIS_ONLY) != 0) {
                     continue;
                 }
-                if ((block->packed_state_flags & 0x200000) != 0 && (block->packed_state_flags & 0x800000) != 0) {
+                if ((block->packed_state_flags & PUSHBLOCK_Z_AXIS_ONLY) != 0 &&
+                    (block->packed_state_flags & PUSHBLOCK_NO_POSITIVE_PUSH) != 0) {
                     continue;
                 }
                 break;
@@ -377,10 +380,11 @@ extern "C" PUSH_BLOCK *NearestFacingPushBlock(WORLDINFO *world, GAMEOBJECT *obje
                 if (object->collision_position.x >= bound) {
                     continue;
                 }
-                if ((block->packed_state_flags & 0x100000) != 0) {
+                if ((block->packed_state_flags & PUSHBLOCK_X_AXIS_ONLY) != 0) {
                     continue;
                 }
-                if ((block->packed_state_flags & 0x200000) != 0 && (block->packed_state_flags & 0x400000) != 0) {
+                if ((block->packed_state_flags & PUSHBLOCK_Z_AXIS_ONLY) != 0 &&
+                    (block->packed_state_flags & PUSHBLOCK_NO_NEGATIVE_PUSH) != 0) {
                     continue;
                 }
                 break;
@@ -449,7 +453,7 @@ extern "C" {
                 continue;
             }
             other = &world->push_blocks[i];
-            if ((other->packed_state_flags & 0x02000000u) != 0) {
+            if ((other->packed_state_flags & PUSHBLOCK_PROGRESS_STATE) != 0) {
                 continue;
             }
             if (NuSpecialGetVisibilityFn(&other->special) == 0) {
@@ -536,7 +540,7 @@ extern "C" {
                 continue;
             }
             other = &world->blocks[index];
-            if ((other->packed_state_flags & 0x04000000u) != 0 || (other->packed_state_flags & 0x00040000u) == 0) {
+            if ((other->packed_state_flags & 0x04000000u) != 0 || (other->packed_state_flags & PUSHBLOCK_PUSH_VISIBLE) == 0) {
                 continue;
             }
             other_position = other->position;
@@ -672,7 +676,7 @@ extern "C" i32 OtherBlockInRange(WORLDINFO *opaque_world, PUSH_BLOCK *opaque_blo
             continue;
         }
         other = &world->push_blocks[i];
-        if ((other->packed_state_flags & 0x00040000u) == 0 || (other->packed_state_flags & 0x01000000u) == 0 ||
+        if ((other->packed_state_flags & PUSHBLOCK_PUSH_VISIBLE) == 0 || (other->packed_state_flags & PUSHBLOCK_PUSH_ACTIVE) == 0 ||
             (other->packed_state_flags & 0x04000000u) != 0) {
             continue;
         }
@@ -888,13 +892,14 @@ extern "C" void UpdatePushBlocks(void *world_ptr, void *, f32) {
     }
     for (i32 index = 0; index < world->push_block_count; ++index) {
         PUSH_BLOCK *p = &world->push_blocks[index];
-        if ((p->packed_state_flags & 0x40000u) != 0 && (p->packed_state_flags & 0x06000100u) == 0 && (p->packed_state_flags & 0x69u) != 0) {
+        if ((p->packed_state_flags & PUSHBLOCK_PUSH_VISIBLE) != 0 && (p->packed_state_flags & 0x06000100u) == 0 &&
+            (p->packed_state_flags & 0x69u) != 0) {
             MoveBlocks(world, p, index, &p->velocity);
         }
     }
     for (i32 index = 0; index < world->push_block_count; ++index) {
         PUSH_BLOCK *p = &world->push_blocks[index];
-        if ((p->packed_state_flags & 0x40000u) == 0 || (p->packed_state_flags & 0x02000000u) != 0) {
+        if ((p->packed_state_flags & PUSHBLOCK_PUSH_VISIBLE) == 0 || (p->packed_state_flags & PUSHBLOCK_PROGRESS_STATE) != 0) {
             continue;
         }
         if (NuSpecialGetVisibilityFn(&p->special) == 0 || (p->packed_state_flags & 0x4du) == 0) {
@@ -999,7 +1004,7 @@ extern "C" void UpdatePushBlocks(void *world_ptr, void *, f32) {
     }
     for (i32 index = 0; index < world->push_block_count; ++index) {
         PUSH_BLOCK *p = &world->push_blocks[index];
-        if ((p->packed_state_flags & 0x40000u) == 0 || (p->packed_state_flags & 0x02000100u) != 0) {
+        if ((p->packed_state_flags & PUSHBLOCK_PUSH_VISIBLE) == 0 || (p->packed_state_flags & 0x02000100u) != 0) {
             continue;
         }
         if ((p->packed_state_flags & 0x400u) == 0 && (p->packed_state_flags & 1u) != 0) {
@@ -1049,7 +1054,7 @@ extern "C" void UpdatePushBlocks(void *world_ptr, void *, f32) {
     }
     for (i32 index = 0; index < world->push_block_count; ++index) {
         PUSH_BLOCK *p = &world->push_blocks[index];
-        if ((p->packed_state_flags & 0x40000u) == 0) {
+        if ((p->packed_state_flags & PUSHBLOCK_PUSH_VISIBLE) == 0) {
             continue;
         }
         if (p->pushing_object != NULL) {
@@ -1089,7 +1094,7 @@ extern "C" PUSH_BLOCK *NearestPushBlock(WORLDINFO *opaque_world, NUVEC *position
     f32 nearest_distance = 1000000000.0f;
     PUSH_BLOCK *block = world->push_blocks;
     for (i32 index = 0; index < world->push_block_count; ++index, ++block) {
-        if ((block->packed_state_flags & 0x00040000u) == 0 || (block->packed_state_flags & 0x01000000u) == 0 ||
+        if ((block->packed_state_flags & PUSHBLOCK_PUSH_VISIBLE) == 0 || (block->packed_state_flags & PUSHBLOCK_PUSH_ACTIVE) == 0 ||
             (block->packed_state_flags & 0x100u) != 0) {
             continue;
         }
@@ -1280,10 +1285,10 @@ static void Push_StoreProgress(void *world_ptr, void *, void *progress_ptr) {
     for (i32 index = 0; index < world->push_block_count && index < 16; ++index, ++block) {
         const i32 word = index / 32;
         const u32 mask = 1u << (index & 31);
-        if ((block->packed_state_flags & 0x40000u) == 0) {
+        if ((block->packed_state_flags & PUSHBLOCK_PUSH_VISIBLE) == 0) {
             progress->visible_mask[word] &= ~mask;
         }
-        if ((block->packed_state_flags & 0x02000000u) != 0) {
+        if ((block->packed_state_flags & PUSHBLOCK_PROGRESS_STATE) != 0) {
             progress->state_mask[word] |= mask;
         }
         if (NuSpecialExistsFn(&block->special) != 0) {
@@ -1333,13 +1338,13 @@ static i32 edpush_Load(void *world_ptr, void *) {
             if (EdFileReadChar() != 0) {
                 block->packed_state_flags |= 0x08000000u;
             }
-            block->packed_state_flags &= ~0x00100000u;
+            block->packed_state_flags &= ~PUSHBLOCK_X_AXIS_ONLY;
             if (EdFileReadChar() != 0) {
-                block->packed_state_flags |= 0x00100000u;
+                block->packed_state_flags |= PUSHBLOCK_X_AXIS_ONLY;
             }
-            block->packed_state_flags &= ~0x00200000u;
+            block->packed_state_flags &= ~PUSHBLOCK_Z_AXIS_ONLY;
             if (EdFileReadChar() != 0) {
-                block->packed_state_flags |= 0x00200000u;
+                block->packed_state_flags |= PUSHBLOCK_Z_AXIS_ONLY;
             }
             if (version >= 4) {
                 block->packed_state_flags &= ~0x20000000u;
@@ -1352,13 +1357,13 @@ static i32 edpush_Load(void *world_ptr, void *) {
                 }
             }
             if (version >= 5) {
-                block->packed_state_flags &= ~0x00400000u;
+                block->packed_state_flags &= ~PUSHBLOCK_NO_NEGATIVE_PUSH;
                 if (EdFileReadChar() != 0) {
-                    block->packed_state_flags |= 0x00400000u;
+                    block->packed_state_flags |= PUSHBLOCK_NO_NEGATIVE_PUSH;
                 }
-                block->packed_state_flags &= ~0x00800000u;
+                block->packed_state_flags &= ~PUSHBLOCK_NO_POSITIVE_PUSH;
                 if (EdFileReadChar() != 0) {
-                    block->packed_state_flags |= 0x00800000u;
+                    block->packed_state_flags |= PUSHBLOCK_NO_POSITIVE_PUSH;
                 }
             }
             block->end_position_count = 0;
@@ -1391,8 +1396,8 @@ static i32 Pushblocks_BoltHitPlat(void *world_ptr, void *blocks_ptr, BOLT_PC *bo
     PUSH_BLOCK *block = static_cast<PUSH_BLOCK *>(blocks_ptr);
     if (block != NULL) {
         for (i32 index = 0; index < world->push_block_count; ++index, ++block) {
-            if ((block->packed_state_flags & 0x40000u) == 0 || (block->packed_state_flags & 0x01000000u) == 0 ||
-                (block->packed_state_flags & 0x02000000u) != 0) {
+            if ((block->packed_state_flags & PUSHBLOCK_PUSH_VISIBLE) == 0 || (block->packed_state_flags & PUSHBLOCK_PUSH_ACTIVE) == 0 ||
+                (block->packed_state_flags & PUSHBLOCK_PROGRESS_STATE) != 0) {
                 continue;
             }
             i32 platform = FindPlatInst(NuSpecialGetInstanceix(&block->special));

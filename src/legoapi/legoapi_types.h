@@ -1896,6 +1896,16 @@ struct GIZBUILDITSYS_s {                 // size 0x14
     struct gameanimobj_s **anim_objects; // 0x10
 };
 
+/* pushblock_s.packed_state_flags: push_visible, push_active and progress_state are the struct's bitfield names; the
+ * axis and direction bits are loaded by edpush_Load and limit the pushes NearestFacingPushBlock offers. */
+#define PUSHBLOCK_X_AXIS_ONLY 0x100000
+#define PUSHBLOCK_Z_AXIS_ONLY 0x200000
+#define PUSHBLOCK_NO_NEGATIVE_PUSH 0x400000
+#define PUSHBLOCK_NO_POSITIVE_PUSH 0x800000
+#define PUSHBLOCK_PUSH_VISIBLE 0x40000
+#define PUSHBLOCK_PUSH_ACTIVE 0x1000000
+#define PUSHBLOCK_PROGRESS_STATE 0x2000000
+
 struct pushblock_s { // size 0xd4
 
     union { // size 0x4
